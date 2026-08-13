@@ -1,0 +1,49 @@
+# Build output
+[Bb]in/
+[Oo]bj/
+[Oo]ut/
+dist/
+
+# Visual Studio / IDE state
+.vs/
+.vscode/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+.idea/
+
+# Test and coverage output
+TestResults/
+coverage/
+*.coverage
+*.coveragexml
+*.trx
+
+# Package caches
+packages/
+node_modules/
+
+# NuGet
+*.nupkg
+*.snupkg
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# Logs and local scratch
+*.log
+*.tmp
+
+# OS noise
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Graphify output (navigation aid, regenerable)
+graphify-out/
+GRAPH_REPORT.md
+_graphify_analysis.json
+
+# Local-only audio scratch (committed fixtures live under tests/, reviewed)
+scratch-audio/
