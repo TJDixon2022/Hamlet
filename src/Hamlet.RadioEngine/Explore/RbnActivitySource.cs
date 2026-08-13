@@ -36,7 +36,8 @@ namespace Hamlet.RadioEngine.Explore;
 /// every in-band dot the source holds, because a band's shape is the point of
 /// it. The filter is for the list.</para>
 /// </remarks>
-public sealed class RbnActivitySource : IContextualActivitySource, IDisposable
+public sealed class RbnActivitySource
+    : IContextualActivitySource, IBandScopedActivitySource, IDisposable
 {
     /// <summary>The settings key and display name for this source.</summary>
     public const string SourceName = "RBN";
@@ -99,6 +100,14 @@ public sealed class RbnActivitySource : IContextualActivitySource, IDisposable
 
     /// <inheritdoc/>
     public string Name => SourceName;
+
+    /// <inheritdoc/>
+    /// <remarks>
+    /// Always the band on screen: the list this source returns is filtered to
+    /// it, so RBN has nothing to say about any other band.
+    /// </remarks>
+    public string? ScopedBandName
+        => string.IsNullOrWhiteSpace(_context.BandName) ? null : _context.BandName;
 
     /// <summary>True once the cluster has accepted the callsign.</summary>
     public bool IsLoggedIn => _loggedIn;

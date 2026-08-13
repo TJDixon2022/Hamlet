@@ -218,6 +218,83 @@ public sealed class AggregateSourceTests
         Assert.Empty(await aggregate.GetSpotsAsync());
     }
 
+    /// <remarks>
+    /// Proves a band-scoped source declares its scope on every status it
+    /// publishes. RBN is filtered to the band on screen, so its silence about
+    /// every other band is not an observation — and a caller that could not
+    /// tell would credit it with evidence it never gathered (HM-DEC-031).
+    /// </remarks>
+    [Fact]
+    public async Task Statuses_CarryTheScopeOfABandLimitedSource()
+    {
+        var clock = Start;
+        var wide = new StubSource("POTA", () => new[] { Spot("POTA", "K3ABC", clock) });
+        var scoped = new ScopedStubSource("RBN", "40 m");
+
+        var aggregate = new AggregateActivitySource(
+            new IActivitySource[] { wide, scoped }, _ => true, () => clock);
+
+        await aggregate.GetSpotsAsync();
+
+        var pota = aggregate.Statuses.Single(s => s.Name == "POTA");
+        var rbn = aggregate.Statuses.Single(s => s.Name == "RBN");
+
+        Assert.Null(pota.ScopedToBand);
+        Assert.Equal("40 m", rbn.ScopedToBand);
+
+        // A source that sees everything covers every band...
+        Assert.True(pota.CoversBand("40 m"));
+        Assert.True(pota.CoversBand("17 m"));
+
+        // ...and a scoped one covers only its own.
+        Assert.True(rbn.CoversBand("40 m"));
+        Assert.False(rbn.CoversBand("17 m"));
+    }
+
+    /// <remarks>
+    /// Proves the scope survives a source going down, so a degraded RBN does
+    /// not suddenly appear to have been watching every band.
+    /// </remarks>
+    [Fact]
+    public async Task Scope_SurvivesAFailure()
+    {
+        var clock = Start;
+        var scoped = new ScopedStubSource("RBN", "20 m", throwOnFetch: true);
+
+        var aggregate = new AggregateActivitySource(
+            new IActivitySource[] { scoped }, _ => true, () => clock);
+
+        await aggregate.GetSpotsAsync();
+
+        var status = aggregate.Statuses.Single();
+        Assert.Equal(SourceState.Failed, status.State);
+        Assert.Equal("20 m", status.ScopedToBand);
+        Assert.False(status.CoversBand("40 m"));
+    }
+
+    /// <summary>A source that only ever reports on one band.</summary>
+    private sealed class ScopedStubSource : IBandScopedActivitySource
+    {
+        private readonly bool _throwOnFetch;
+
+        public ScopedStubSource(string name, string band, bool throwOnFetch = false)
+        {
+            Name = name;
+            ScopedBandName = band;
+            _throwOnFetch = throwOnFetch;
+        }
+
+        public string Name { get; }
+
+        public string? ScopedBandName { get; }
+
+        public Task<IReadOnlyList<ActivitySpot>> GetSpotsAsync(
+            CancellationToken cancellationToken = default)
+            => _throwOnFetch
+                ? throw new HttpRequestExceptionStub()
+                : Task.FromResult<IReadOnlyList<ActivitySpot>>(Array.Empty<ActivitySpot>());
+    }
+
     /// <summary>Stands in for a transport failure without a live socket.</summary>
     private sealed class HttpRequestExceptionStub : Exception
     {

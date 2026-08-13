@@ -211,9 +211,25 @@ public sealed class AggregateActivitySource : IContextualActivitySource
             entry.Failures = 0;
             entry.RetryAtUtc = null;
             entry.LastOkUtc = now;
-            entry.Status = new SourceStatus(name, SourceState.Ok, spots.Count, now, null);
+            entry.Status = new SourceStatus(name, SourceState.Ok, spots.Count, now, null)
+            {
+                ScopedToBand = ScopeOf(name),
+            };
         }
     }
+
+    /// <summary>
+    /// The band a source is limited to, or null when it sees them all.
+    /// </summary>
+    /// <remarks>
+    /// Published on every status so callers can tell a source that heard
+    /// nothing on a band from a source that was never pointed at it
+    /// (HM-DEC-031).
+    /// </remarks>
+    private string? ScopeOf(string name)
+        => _sources.FirstOrDefault(s => s.Name == name) is IBandScopedActivitySource scoped
+            ? scoped.ScopedBandName
+            : null;
 
     private void Fail(string name, DateTime now)
     {
@@ -230,7 +246,10 @@ public sealed class AggregateActivitySource : IContextualActivitySource
                 live > 0 ? SourceState.Degraded : SourceState.Failed,
                 live,
                 entry.LastOkUtc,
-                SourceBackoff.Describe(delay));
+                SourceBackoff.Describe(delay))
+            {
+                ScopedToBand = ScopeOf(name),
+            };
         }
     }
 
@@ -243,7 +262,10 @@ public sealed class AggregateActivitySource : IContextualActivitySource
             entry.Failures = 0;
             entry.RetryAtUtc = null;
             entry.Status = new SourceStatus(
-                name, SourceState.Disabled, 0, entry.LastOkUtc, null);
+                name, SourceState.Disabled, 0, entry.LastOkUtc, null)
+            {
+                ScopedToBand = ScopeOf(name),
+            };
         }
     }
 
@@ -258,7 +280,10 @@ public sealed class AggregateActivitySource : IContextualActivitySource
                 live > 0 ? SourceState.Degraded : SourceState.Failed,
                 live,
                 entry.LastOkUtc,
-                message);
+                message)
+            {
+                ScopedToBand = ScopeOf(name),
+            };
         }
     }
 
@@ -278,8 +303,8 @@ public sealed class AggregateActivitySource : IContextualActivitySource
         }
     }
 
-    private static SourceStatus Idle(string name)
-        => new(name, SourceState.Idle, 0, null, null);
+    private SourceStatus Idle(string name)
+        => new(name, SourceState.Idle, 0, null, null) { ScopedToBand = ScopeOf(name) };
 
     private sealed class SourceEntry
     {

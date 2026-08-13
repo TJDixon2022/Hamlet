@@ -36,6 +36,15 @@ public sealed class ActivityContext
     /// <summary>Lower edge of the band on screen, in hertz.</summary>
     public long BandLowHz { get; set; }
 
+    /// <summary>Name of the band on screen, e.g. "40 m".</summary>
+    /// <remarks>
+    /// Carried so a band-scoped source can say WHICH band it is limited to.
+    /// A source that only watches one band must be able to declare that, or
+    /// the UI ends up crediting it with silence on bands it never looked at
+    /// (HM-DEC-031).
+    /// </remarks>
+    public string BandName { get; set; } = "";
+
     /// <summary>Upper edge of the band on screen, in hertz.</summary>
     public long BandHighHz { get; set; } = 30_000_000;
 
@@ -49,6 +58,24 @@ public sealed class ActivityContext
     /// <param name="hz">Frequency in hertz.</param>
     /// <returns>True when in band.</returns>
     public bool IsInBand(long hz) => hz >= BandLowHz && hz <= BandHighHz;
+}
+
+/// <summary>
+/// A source that can only report on one band at a time.
+/// </summary>
+/// <remarks>
+/// RBN is the case this exists for. It is filtered to the band on screen at
+/// the source, because six spots a second worldwide is unusable otherwise
+/// (HM-DEC-024) — which means its silence about 17 m is not evidence about
+/// 17 m, it is evidence that nobody asked it. Anything summarising per-band
+/// activity has to know the difference, or it will report "RBN is answering
+/// and heard nothing here" about a band RBN never looked at (HM-DEC-031).
+/// </remarks>
+public interface IBandScopedActivitySource : IActivitySource
+{
+    /// <summary>The only band this source currently reports on, or null when
+    /// it reports across the whole spectrum.</summary>
+    string? ScopedBandName { get; }
 }
 
 /// <summary>A source that wants to know which band and operator it serves.</summary>

@@ -36,6 +36,23 @@ public enum SourceState
 public sealed record SourceStatus(
     string Name, SourceState State, int SpotCount, DateTime? LastOkUtc, string? Message)
 {
+    /// <summary>
+    /// The one band this source reports on, or null when it sees them all.
+    /// </summary>
+    /// <remarks>
+    /// RBN is scoped to the band on screen (HM-DEC-024). Its silence about
+    /// every other band is not an observation, and a caller that treated it
+    /// as one would be inventing evidence (HM-DEC-031).
+    /// </remarks>
+    public string? ScopedToBand { get; init; }
+
+    /// <summary>True when this source can report on the named band at all.</summary>
+    /// <param name="bandName">Band name, e.g. "40 m".</param>
+    /// <returns>False when the source is scoped to a different band.</returns>
+    public bool CoversBand(string bandName)
+        => ScopedToBand is null
+           || string.Equals(ScopedToBand, bandName, StringComparison.OrdinalIgnoreCase);
+
     /// <summary>True when this source's numbers can be relied on.</summary>
     public bool IsContributing => State is SourceState.Ok or SourceState.Degraded;
 
