@@ -158,6 +158,60 @@ Every panel in the app is collapsible, and stays collapsed across restarts
 Practical test: could the operator shut this panel and still know what it
 would have told them at a glance? If not, the summary is wrong.
 
+### 0.6 Modes have one color language — standing design principle
+
+Every surface that shows a mode family uses the same four colors, defined once
+in `src/Hamlet.App/Controls/ModePalette.cs` (HM-DEC-032). New surfaces read
+from it; they do not carry color literals.
+
+| Family | Fill | Ink | Covers |
+|---|---|---|---|
+| Morse | `#EDC375` | `#5E3800` | CW |
+| Digital | `#BFB6E4` | `#2B2360` | FT8, RTTY, PSK31, JS8 |
+| Voice | `#A3CBE8` | `#0B3B5C` | SSB, AM, FM |
+| Open / mixed | `#E4E0D5` | `#6E6A61` | Unclaimed space, or several at once |
+
+- **Color carries meaning, so it may never be the ONLY carrier of meaning.**
+  Roughly one man in twelve has a color vision deficiency, and this hobby's
+  demographics make that a real slice of the people who will use this. Every
+  colored thing also says what it is: map segments are labeled, the legend
+  names each family in words, the listen-only veil hatches as well as tints,
+  the band cards carry an icon and a width beside their hue.
+- **A map that uses color needs a legend.** A wash nobody can decode is
+  decoration, and decoration that looks like information is worse than none.
+- The family is declared on the data — `Neighborhood.Family`, `ModeInfo.Family`
+  — never on the control. A per-control literal is a second copy of the
+  language, and a second copy drifts silently.
+
+Practical test: print the screen in grayscale. Can the operator still tell what
+each region is? If not, color is doing work nothing else is doing.
+
+### 0.7 The voice — standing rule
+
+Hamlet's explanatory prose is written as **connected speech**: a patient friend
+with forty years on the air explaining it while you both look at the radio
+(HM-DEC-034). This governs tooltips, blurbs, status lines, panel summaries and
+anything else the operator reads.
+
+- Thoughts run into one another. A stack of short declarative sentences reads
+  as machine-written, and the person this is for has had enough of being told
+  things by machines.
+- The reason is attached to the fact, not left implied. "80 m is a night band"
+  is a fact; "daylight thickens a layer that soaks up low frequencies, and
+  after dark it thins" is the same fact with its reason, and only the second
+  one teaches.
+- Ordinary words beat correct ones where they differ.
+- Numbers are spoken, not counted: "the sun went down about an hour and a half
+  ago", never "sunset was 94 minutes ago".
+- **Warmth never buys a claim.** It is a matter of how a thing is said and
+  never of what is asserted (§0.0). A friendly sentence that overstates what
+  Hamlet knows is worse than a cold one, because it is more readily believed.
+
+Copy written before this ruling is corrected where it is touched, not in one
+sweep — the change should arrive with the work that gives it context.
+
+Practical test: read it aloud. Does it sound like a person, or like a manual?
+
 ---
 
 ## 1. Decision log
@@ -167,6 +221,10 @@ this table is the index.
 
 | Date | Decision | Why | Ref |
 |---|---|---|---|
+| 2026-08-13 | **American spelling is the project standard** — code, comments, prose, records and UI alike. Two exceptions: a quoted external source keeps its spelling verbatim, and a rename that changes a stored settings key ships with a migration and a test proving an existing profile survives. `LicenceClass` → `LicenseClass` migrated and proved against Tim's own file. Recorded in §6. | US operators, US regulations, US contributors; and mixed spelling splits identifiers and searches. A silent profile reset would look exactly like the app forgetting who he is. | HM-DEC-035 |
+| 2026-08-13 | **The voice is connected speech, not a stack of facts** — a patient friend with forty years on the air, explaining while you both look at the radio. Reasons attached to facts, numbers spoken not counted, warmth never buying a claim. Standing rule in §0.7. | The product is an argument that this hobby can be explained; clipped fragments sound like the manuals that already failed him. | HM-DEC-034 |
+| 2026-08-13 | **Band buttons become character cards:** width follows wavelength, a drawn sun or moon marks the band's element, the card dims out of it, and hover gives plain prose about the sun and the season. Sunrise/sunset computed from the operator's coordinates, checked against vendored USNO data. No location means nothing dims and nothing is claimed. | A row of identical rectangles teaches nothing, and "80 meters is a long wave" is the fact that makes every other band fact stop being arbitrary. | HM-DEC-033 |
+| 2026-08-13 | **One mode color language across the app**, defined once in `ModePalette`: Morse amber, digital lavender, voice blue, open neutral. The map fills from `Neighborhood.Family` rather than a color literal, and gains a legend. Color is never the only carrier of meaning. Standing rule in §0.6. | Two copies of a language are two languages; and a wash nobody can decode is decoration that looks like information. | HM-DEC-032 |
 | 2026-08-13 | **Band buttons carry a per-band activity indicator** from live spot counts, with hover detail supplying the evidence. Counts are a proxy for activity, never for propagation — the app reports what was heard and does not assert what the ionosphere is doing. No data and no spots are visually and textually distinct, and a band-scoped source (RBN) no longer vouches for bands it cannot see. | The first control anybody touches said nothing, while the data to answer them was already flowing; and a count taken by a source that was not listening is a claim, not an observation (HM-DEC-025). | HM-DEC-031 |
 | 2026-08-13 | **`IRig` gains a capabilities record** — scope, keyer, USB audio, transmit, supported bands — reported by the implementation and never configured. The UI degrades honestly on a radio lacking a feature. | HM-DEC-003's revisit condition, taken early while there are only two implementations to change. | HM-DEC-030 |
 | 2026-08-13 | **Part 97 privileges are cited data under `/data`**, transcribed from eCFR with the paragraph on every row; the two CFR tables stay separate and the join is code with tests. The band map veils listen-only segments over the culture map, tuning is never restricted, the status line explains in amber rather than scolding in red, and an unresolved class draws NO overlay. Guard rail is transmit-only and ships on. | Listening is never restricted and the app must say so; and this is the one place where a confident error has legal consequences (HM-DEC-009). | HM-DEC-029 |
@@ -358,6 +416,24 @@ Rows marked `<<<FILL IN>>>` await the named ruling.
 | FFT | `<<<FILL IN — FftSharp vs Math.NET, decide when the audio pipeline is scaffolded>>>` |
 | CI | GitHub Actions, build + engine tests, added once the solution exists |
 | Data files | `/data` at repo root; vendored citations in `data/vendor/`; cited Part 97 privileges in `data/privileges/` (HM-DEC-029) |
+| Spelling | **American English throughout** — identifiers, comments, prose, records, UI text (HM-DEC-035) |
+
+### 6.1 Spelling — the two exceptions
+
+American spelling is the standard everywhere, with exactly two exceptions:
+
+1. **A quoted external source keeps its own spelling, verbatim.** SOTA's terms
+   of service, the CFR, a vendored manual page: a quotation that has been
+   tidied is no longer a quotation (§4). This covers `data/vendor/` entirely.
+2. **A rename that changes a stored settings key ships with a migration**, and
+   a test that proves an existing profile survives it. `LicenceClass` →
+   `LicenseClass` renamed the key in `settings.json`; without
+   `SettingsMigrations`, the first launch after the upgrade would silently take
+   the default and forget the operator's class and its provenance.
+
+The second is the one that bites. A spelling change to a *public* identifier is
+not cosmetic — check whether it is persisted, sent over a wire, or written into
+the telemetry record before making it.
 
 ---
 

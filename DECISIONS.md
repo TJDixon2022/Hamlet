@@ -4,6 +4,163 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-035
+date: 2026-08-13
+refs: CLAUDE.md §6, src/Hamlet.App/Settings/SettingsMigrations.cs, HM-DEC-028
+---
+
+American spelling is the project standard, in code, comments, prose, records
+and UI text alike. Two exceptions: a quoted external source keeps its own
+spelling verbatim, and a rename that changes a stored settings key ships with a
+migration and a test that proves an existing profile survives it.
+
+Hamlet is written for US operators, against the FCC's Part 97, by an operator
+in Pennsylvania, and it is heading for a public repository where the
+contributors it hopes to attract will be American too. The prose was drifting
+between the two conventions — "licence class" beside `Hamlet.RadioEngine.
+Licensing`, "colour" beside `ColorHex` — and mixed spelling in a codebase is
+not a style question. It splits identifiers, it splits searches, and it makes a
+newcomer guess which convention this file uses.
+
+The quoted-source exception is the same rule as §4's vendored citations: a
+quotation that has been tidied is no longer a quotation. SOTA's terms and the
+CFR are reproduced as they were written.
+
+The migration exception is the one with teeth. Renaming `LicenceClass` to
+`LicenseClass` renames the key it is stored under, so the first launch after
+the upgrade would find no `LicenseClass`, take the default, and forget that Tim
+is General and that callook.info established it on 13 August. Nothing would
+crash and nothing would say a word — it would simply look like the app
+forgetting who he is, which is the worst thing a piece of software can do to
+somebody who has just started trusting it. `SettingsMigrations` reads the old
+keys when the new ones are absent, the new key always wins when both are
+present, and the whole of it is proved against a copy of his actual file.
+
+What follows and should not be re-argued: a spelling change to a public
+identifier is not cosmetic. If it is persisted, it needs a migration; if it is
+in a quote, it does not happen at all.
+
+---
+id: HM-DEC-034
+date: 2026-08-13
+refs: CLAUDE.md §0.7, src/Hamlet.RadioEngine/Explore/BandCharacter.cs, HM-DEC-016, HM-DEC-009
+---
+
+Hamlet's explanatory prose is written as connected speech — a patient friend
+with forty years on the air explaining it while you both look at the radio —
+not as a stack of short declarative facts.
+
+This is a standing rule, not a note about one tooltip, because the whole
+product is an argument that this hobby can be explained. The person it is for
+has held a license since 2020 and has never made a contact; what stopped him
+was not a missing feature but the absence of anybody to explain the thing
+plainly. An app that answers him in clipped fragments — "80 m. Night band. High
+absorption in daylight." — has the facts right and has still failed, because it
+sounds like the manuals that already did not help.
+
+So: thoughts run into one another, the reason is attached to the fact rather
+than left implied, ordinary words beat correct ones where they differ, and a
+number is spoken rather than counted — "the sun went down about an hour and a
+half ago", never "sunset was 94 minutes ago".
+
+The rule does not soften §0.0. Warmth is a matter of how a thing is said and
+never of what is claimed; a friendly sentence that overstates what Hamlet knows
+is a worse failure than a cold one, because it is more readily believed.
+
+Existing copy written before this ruling is not all compliant. It is corrected
+where it is touched rather than in one sweep, so the change arrives with the
+work that gives it context.
+
+---
+id: HM-DEC-033
+date: 2026-08-13
+refs: src/Hamlet.RadioEngine/Solar/SolarClock.cs, src/Hamlet.RadioEngine/Explore/BandCharacter.cs, src/Hamlet.App/ViewModels/BandCardStyle.cs, data/vendor/usno/, HM-DEC-015, HM-DEC-031, FG-007
+---
+
+The band buttons become character cards: width follows wavelength, a drawn sun
+or moon says when the band is in its element, the card dims when it is not, and
+hovering gives a passage of plain prose about what the sun and the season are
+doing to it. Sunrise and sunset are computed from the operator's own
+coordinates. Activity pips and the best-bet badge are unchanged.
+
+A row of identical rectangles labeled 80 through 10 teaches nothing. The row
+is the first thing anybody touches and it was carrying one bit of information
+per band. Now it carries four, and the most valuable of them is the one nobody
+ever explains: "80 meters" is a long wave and "10 meters" is a short one. The
+width says so without a word of copy, and once that lands, the rest of the
+band's behavior stops being arbitrary. The scale is logarithmic — true
+proportion would make 80 m eight times the width of 10 m and wreck the row.
+
+Two departures from the brief, both found by running it. The width span asked
+for was 58 to 104; at 58 the card clipped "10 m" to "10 n" with the icon on top
+of the label, so the span is 76 to 122 and the ratio is kept close. And the bar
+was to run as a continuous hue ramp from the night blue to the day amber along
+the wavelength axis — on screen the middle of that ramp is gray, because two
+near-complementary hues interpolated in RGB pass through neutral, and 40 m and
+30 m came out looking dead. The bar now carries the band's element in three
+saturated stops (blue, teal, amber), which is what the card is about anyway and
+agrees with the icon beside it.
+
+WHAT MAY BE SAID. Where the sun is, is arithmetic about the solar system: it is
+computed, it is stated plainly, and it needs no hedge. Whether a band is open
+is a fact about the ionosphere that Hamlet cannot see (FG-007), so no card and
+no passage says a band is open, closed, dead or working, and none tells the
+operator what they will reach. "20 m lives on sunlight and right now it's got
+it" is a claim about sunlight. "20 m is open" is a claim about the ionosphere.
+The first is allowed and the second is not, and a banned-phrase sweep over
+every band at every hour in every season holds the line.
+
+NO LOCATION MEANS NO CLAIM. Without coordinates nothing dims, the icon is a
+hollow ring rather than a sun or a moon, and the prose says what the band is
+like in general and how to fix the gap. A card faded on a guessed location
+would look exactly like a real judgment (HM-DEC-009).
+
+The arithmetic is Hamlet's own — the Almanac for Computers equation — rather
+than a service with a key that can be down. It agrees with the US Naval
+Observatory to within a minute at both solstices, an equinox, the equator and a
+longitude east of Greenwich; the responses it was checked against are vendored
+under `data/vendor/usno/` and the tests read their expectations from there
+rather than from anybody's memory.
+
+The band character text is engine editorial marked [extrapolated], the same
+status as the neighborhood map and the field guide.
+
+---
+id: HM-DEC-032
+date: 2026-08-13
+refs: CLAUDE.md §0.6, src/Hamlet.App/Controls/ModePalette.cs, src/Hamlet.RadioEngine/Explore/ModeFamily.cs, HM-DEC-012, HM-DEC-016
+---
+
+Mode families have one color language across the whole app: Morse amber
+(#EDC375 on #5E3800), digital lavender (#BFB6E4 on #2B2360), voice blue
+(#A3CBE8 on #0B3B5C), open or mixed neutral (#E4E0D5 on #6E6A61). One palette
+file, read by every surface. The neighborhood map fills from the family a
+neighborhood declares rather than from a color literal it carries, and the map
+gains a legend.
+
+Color carries meaning here, so it may never be the ONLY carrier of meaning.
+Roughly one man in twelve has a color vision deficiency and this hobby's
+demographics make that a real slice of the people who will use this. Every
+segment is labeled, the legend names each family in words, the listen-only
+veil hatches as well as tints, and the band cards carry an icon and a width
+beside their hue. Anything added later inherits that obligation.
+
+The old fills separated by lightness alone — a pale amber beside a pale pink
+read as one wash at a glance — and pink was doing double duty as both "phone
+segment" and, under hatching, "listen only", so the veil meant two things at
+once. These four separate by hue and temperature, and none of them is pink.
+
+`ColorHex` is gone from `Neighborhood`. A per-neighborhood color literal is a
+second copy of the language, and a second copy drifts silently; a test asserts
+that no file outside the palette carries one of its hex values.
+
+The colors themselves are Tim's ruling. Where a test sets a threshold — ΔE
+between fills, contrast between ink and fill — it is a floor that guards them,
+not a target that chose them. One measurement is recorded rather than hidden:
+"open / mixed" reaches contrast 4.1 against WCAG AA's 4.5, because its ink and
+fill are both deliberately near-neutral. Raising it is Tim's call.
+
+---
 id: HM-DEC-031
 date: 2026-08-13
 refs: src/Hamlet.App/ViewModels/BandActivity.cs, src/Hamlet.App/Controls/ActivityPipsControl.cs, HM-DEC-009, HM-DEC-020, HM-DEC-022, HM-DEC-025, FG-007
