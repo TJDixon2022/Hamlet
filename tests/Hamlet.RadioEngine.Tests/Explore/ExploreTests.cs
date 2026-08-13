@@ -74,4 +74,50 @@ public sealed class ExploreTests
             Assert.True(s.HeardAtUtc <= DateTime.UtcNow);
         });
     }
+
+    /// <remarks>Proves HM-DEC-020: the fixture feed moves. Ages are recomputed
+    /// every call, and within a handful of calls the set of spots differs — so
+    /// the auto-refresh path's new-arrival handling is actually exercisable
+    /// instead of only appearing once live feeds land behind this seam.</remarks>
+    [Fact]
+    public async Task FakeSpots_ChangeBetweenCalls()
+    {
+        var source = new FakeActivitySource();
+        var seen = new HashSet<string>();
+        var stories = new List<HashSet<string>>();
+
+        for (var i = 0; i < 6; i++)
+        {
+            var spots = await source.GetSpotsAsync();
+            var set = spots.Select(s => s.Story).ToHashSet();
+            stories.Add(set);
+            seen.UnionWith(set);
+        }
+
+        // More distinct spots were reported than any single call returned.
+        Assert.True(seen.Count > stories[0].Count,
+            $"{seen.Count} distinct spots over 6 calls, {stories[0].Count} per call");
+
+        // And at least one call differed from the first.
+        Assert.Contains(stories, s => !s.SetEquals(stories[0]));
+    }
+
+    /// <remarks>Proves the prime directive holds through the variation: every
+    /// spot from every call is still labelled sample and still lands in a real
+    /// band.</remarks>
+    [Fact]
+    public async Task FakeSpots_StayHonestAcrossRotations()
+    {
+        var source = new FakeActivitySource();
+
+        for (var i = 0; i < 12; i++)
+        {
+            var spots = await source.GetSpotsAsync();
+            Assert.All(spots, s =>
+            {
+                Assert.Equal("sample", s.Source);
+                Assert.NotNull(BandPlan.BandFor(s.FrequencyHz));
+            });
+        }
+    }
 }
