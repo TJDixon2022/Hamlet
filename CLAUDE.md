@@ -142,6 +142,7 @@ this table is the index.
 
 | Date | Decision | Why | Ref |
 |---|---|---|---|
+| 2026-08-12 | **Graphify is adopted as a navigation aid with its blind-spot list carried into §10; Tim supplies fresh `repo_listing.txt` and graphify output at the start of each conversation.** The graph raises questions; the listing and file reads answer them. | The parent project lost rounds acting on graph noise; freshness at conversation start prevents confident work against a stale tree. | HM-DEC-014 |
 | 2026-08-12 | **Every delivery ends with a ready-to-paste check-in block: exact git commands, §7-format message covering the zip's contents.** Amends §9.2. | Tim commits every file drop; composing the message for Claude's work is Claude's job, and an uncommitted drop with no message invites an unrecorded one. | HM-DEC-013 |
 | 2026-08-12 | **UI is light theme with color — warm paper, white panels, deep amber, decode green. Not dark mode.** | Tim's ruling; recorded because dark is the SDR convention a future session would revert to. | HM-DEC-012 |
 | 2026-08-12 | **The UI framework is Avalonia 11 on .NET 8.** Closes HM-OPEN-001. | Cross-platform reach for the open-source release; WPF-shaped enough that Tim's MVVM fluency transfers; the WriteableBitmap difference is confined to the waterfall control. | HM-DEC-011 |
@@ -467,11 +468,48 @@ report once at the end of a work unit.
 
 ---
 
-## 10. What Claude does at the start of a session
+## 10. The dependency graph — graphify
+
+Tim runs `graphify` and supplies its output (`GRAPH_REPORT.md`,
+`graph.json`, `manifest.json`) alongside a fresh `repo_listing.txt` at the
+start of each conversation (HM-DEC-014). The graph is a navigation aid.
+
+The report header carries the commit it was built from — compare it to the
+listing's commit; a mismatch means one of them is stale.
+
+### 10.1 Known blind spots — READ BEFORE TRUSTING IT
+
+Recorded from real use in the parent project, where they produced wrong
+conclusions that survived several sessions:
+
+- **Static-class member calls produce no edges.** Graph isolation of a
+  static class is NOT evidence of dead code; acting as though it were has
+  already proposed deleting live code.
+- **Service-locator and reflection calls produce no edges**, likewise
+  XAML→ViewModel wiring (`DataContext` set in code, compiled bindings) —
+  expect the App's views to look less connected than they are.
+- **The file scan has missed files that exist.** Absence from the graph is
+  not absence from the repository — the listing is authoritative for what
+  exists.
+- **Thin communities are omitted from the report.** A node can be in
+  `graph.json` and not in `GRAPH_REPORT.md`. Query the JSON before
+  concluding something is missing.
+- **The graph goes stale silently**, and low cohesion scores on governance
+  prose (this file) are noise, not a refactoring signal.
+
+**Rule: the graph raises questions, it does not answer them.** Anything it
+suggests about dead code or orphaned classes is verified against the real
+tree — the listing or a file read — before it is acted on.
+
+---
+
+## 11. What Claude does at the start of a session
 
 1. Read this file, `OPEN_ISSUES.md` and `DECISIONS.md`.
 2. Establish the surface (§9.0).
-3. In chat: ask for `repo_listing.txt` if the session will touch code and
-   none is held, then request the files the work needs, whole folders.
-4. Do not begin work on the strength of a summary. If it is not in a file,
+3. Take the fresh `repo_listing.txt` and graphify outputs Tim supplies with
+   the conversation (HM-DEC-014); verify their commits agree. If a session
+   will touch code and no listing was supplied, ask for one.
+4. Request the files the work needs, whole folders, via the template script.
+5. Do not begin work on the strength of a summary. If it is not in a file,
    it was not decided.

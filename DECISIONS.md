@@ -4,6 +4,25 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-014
+date: 2026-08-12
+refs: CLAUDE.md §10, §11
+---
+
+Graphify is adopted as a navigation aid, its known blind spots recorded in
+§10.1, and Tim supplies a fresh repo_listing.txt plus graphify output
+(GRAPH_REPORT.md, graph.json, manifest.json) at the start of each
+conversation.
+
+The graph raises questions; the listing and file reads answer them. The
+blind-spot list is carried because the parent project acted on graph noise
+— isolated static classes read as dead code, low cohesion on prose read as
+a refactoring signal — and lost rounds to it. Conversation-start freshness
+exists because a session working from last week's listing makes confident
+requests for paths that no longer exist, and the failure looks like a
+tooling bug instead of a stale input.
+
+---
 id: HM-DEC-013
 date: 2026-08-12
 refs: CLAUDE.md §9.2, §7
