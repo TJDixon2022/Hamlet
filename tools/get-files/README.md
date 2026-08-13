@@ -7,7 +7,7 @@ It lives here rather than only in project knowledge because project knowledge
 goes stale and a Claude Code session reads this repository from disk.
 
 Carried from Tim's simulator project 2026-08-12 with the default repo root
-changed to `C:\Source\HamManager` and the file-list block reset. Subroutines,
+changed to `C:\Source\Hamlet` and the file-list block reset. Subroutines,
 staging paths, output name, zip mechanism and `XD` exclusion list are
 unchanged.
 
@@ -31,7 +31,7 @@ anything.
 
 Save to Downloads. Double-click. Upload the `for_claude.zip` it produces.
 
-Default repo root is `C:\Source\HamManager`. Override it by passing a path as
+Default repo root is `C:\Source\Hamlet`. Override it by passing a path as
 the first argument. A trailing backslash is accepted.
 
 It is not run from the repository root and not run from a PowerShell prompt.
@@ -73,7 +73,7 @@ than no check.
   execution policy. Batch, always. The inline `powershell -Command` used for
   zipping is not a script file and is not affected.
 - A wrong default repo root makes every double-click fail before doing
-  anything. This copy's default was set to `C:\Source\HamManager` at port
+  anything. This copy's default was set to `C:\Source\Hamlet` at port
   time — if the repo ever moves, fix it here and in `get-listing.bat` in the
   same delivery.
 

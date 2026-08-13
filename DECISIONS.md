@@ -4,6 +4,23 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-017
+date: 2026-08-13
+refs: CLAUDE.md throughout, Hamlet.sln
+---
+
+The product is renamed Ham Manager -> Hamlet: repo C:\Source\Hamlet, GitHub
+TJDixon2022/Hamlet, solution Hamlet.sln, namespaces Hamlet.RadioEngine and
+Hamlet.App, tool-script default roots updated.
+
+Name diligence found a collision — "Hamlet UI", an existing Hamlib
+front-end — and one-letter adjacency to Hamlib itself. Tim ruled with eyes
+open: this app's audience is newcomers who have never heard of either, and
+the pun ("let me ham") is the mission in one word. Records dated before
+this ruling keep HamManager verbatim, because rulings are never edited;
+anything that says HamManager is history, not error.
+
+---
 id: HM-DEC-016
 date: 2026-08-12
 refs: FUTURE_GOALS.md FG-001/FG-002/FG-006, CLAUDE.md §2, src/HamManager.RadioEngine/Explore/

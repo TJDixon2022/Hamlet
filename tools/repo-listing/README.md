@@ -7,7 +7,7 @@ files are dirty.
 **Run this first.** It is the bootstrap for everything in `CLAUDE.md` §9.
 
 Carried from Tim's simulator project 2026-08-12 with the default repo root
-changed to `C:\Source\HamManager`. Logic is otherwise identical.
+changed to `C:\Source\Hamlet`. Logic is otherwise identical.
 
 ---
 
@@ -24,7 +24,7 @@ a folder structure it has not read. Without a listing:
 
 Save to Downloads. Double-click. Upload the `repo_listing.txt` it produces.
 
-Default repo root is `C:\Source\HamManager`. Override it by passing a path as
+Default repo root is `C:\Source\Hamlet`. Override it by passing a path as
 the first argument. A trailing backslash is accepted.
 
 ## When to re-run it

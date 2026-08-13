@@ -15,7 +15,7 @@ rem  double-click it, or run it from a prompt. It copies the files
 rem  listed below out of the repo, preserving their relative
 rem  paths, and zips them into Downloads.
 rem
-rem  Repo root defaults to C:\Source\HamManager.
+rem  Repo root defaults to C:\Source\Hamlet.
 rem  Override it:
 rem      get-files.bat D:\Some\Other\Repo
 rem  A trailing backslash on the argument is accepted.
@@ -32,7 +32,7 @@ rem ============================================================
 setlocal
 
 set "REPO=%~1"
-if "%REPO%"=="" set "REPO=C:\Source\HamManager"
+if "%REPO%"=="" set "REPO=C:\Source\Hamlet"
 
 rem --- normalise: drop a trailing backslash -------------------------
 rem  Drag-and-drop and tab completion both produce one.

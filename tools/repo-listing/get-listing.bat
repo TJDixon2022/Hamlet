@@ -10,7 +10,7 @@ rem  Put this in your Downloads folder and double-click it, or run
 rem  it from a prompt. It writes repo_listing.txt to Downloads.
 rem  Upload that file to the session.
 rem
-rem  Repo root defaults to C:\Source\HamManager.
+rem  Repo root defaults to C:\Source\Hamlet.
 rem  Override it:
 rem      get-listing.bat D:\Some\Other\Repo
 rem  A trailing backslash on the argument is accepted.
@@ -23,7 +23,7 @@ rem ============================================================
 setlocal enabledelayedexpansion
 
 set "REPO=%~1"
-if "%REPO%"=="" set "REPO=C:\Source\HamManager"
+if "%REPO%"=="" set "REPO=C:\Source\Hamlet"
 
 rem --- normalise: drop a trailing backslash -------------------------
 rem  Drag-and-drop and tab completion both produce one, and it makes

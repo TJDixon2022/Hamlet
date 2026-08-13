@@ -1,6 +1,6 @@
-# Ham Manager — Project Instructions and Decision Record
+# Hamlet — Project Instructions and Decision Record
 
-**Project:** Ham Manager. A C# MVVM desktop application that controls an Icom
+**Project:** Hamlet. A C# MVVM desktop application that controls an Icom
 IC-7300 over its single USB connection: CW (Morse) send and receive first,
 then frequency control and signal scanning, then digital mode auto-detection
 and decoding, then a polished waterfall UI and open-source release. Tim's own
@@ -33,7 +33,7 @@ on stale rules and will do so confidently.
 
 ## 0.0 Prime directive — the reason everything below exists
 
-> **Never present a guess as a decode.** What Ham Manager shows on screen is
+> **Never present a guess as a decode.** What Hamlet shows on screen is
 > what was actually on the air. Uncertainty is displayed as uncertainty —
 > a low-confidence character is marked, a failed decode is silence, and a
 > mode identification below threshold says "unknown", not its best guess
@@ -53,7 +53,7 @@ HM-DEC-009.
 ## 0.0.1 Second principle — the app must be diagnosable
 
 > **When a decode is wrong or missing, the app's own record must be enough to
-> tell whether the fault is in the signal, the radio, or Ham Manager itself.**
+> tell whether the fault is in the signal, the radio, or Hamlet itself.**
 
 What that requires, at minimum: raw audio can be captured to WAV on demand;
 every CI-V frame sent and received is loggable verbatim with a millisecond
@@ -142,6 +142,7 @@ this table is the index.
 
 | Date | Decision | Why | Ref |
 |---|---|---|---|
+| 2026-08-13 | **Renamed Ham Manager → Hamlet: repo `C:\Source\Hamlet`, GitHub `TJDixon2022/Hamlet`, solution and namespaces `Hamlet.*`.** Hamlib/"Hamlet UI" collision found and accepted. Pre-rename records keep the old name verbatim. | "Let me ham" is the mission in one word; Tim ruled the collision immaterial for this audience. | HM-DEC-017 |
 | 2026-08-12 | **The Explorer is the product's center, built UI-first on fixture data behind an IActivitySource seam: neighborhood map, mode field guide, happening-now feed.** Phase 1.5. | The app demystifies; automation apps already exist. Partially graduates FG-001. | HM-DEC-016 |
 | 2026-08-12 | **Tuning HMI: band buttons with best-bet badge, band ribbon map, dial-tape fine control with momentum; per-digit wheel tuning; no step buttons.** | Tim's approved design; the ribbon and tape become the waterfall's axis in phase 2. | HM-DEC-015 |
 | 2026-08-12 | **Graphify is adopted as a navigation aid with its blind-spot list carried into §10; Tim supplies fresh `repo_listing.txt` and graphify output at the start of each conversation.** The graph raises questions; the listing and file reads answer them. | The parent project lost rounds acting on graph noise; freshness at conversation start prevents confident work against a stale tree. | HM-DEC-014 |
@@ -157,7 +158,7 @@ this table is the index.
 | 2026-08-12 | **License is GPL-3.0.** | Phase 3 links ft8_lib (GPL); anything permissive now is a promise that dependency breaks. Norm for ham software (WSJT-X, fldigi, Hamlib). | HM-DEC-004 |
 | 2026-08-12 | **CI-V is hand-rolled for v1 behind an `IRig` interface; Hamlib is not a dependency.** | One radio, a simple framed protocol, and the learning is the point. The interface keeps Hamlib substitutable if multi-rig support is ever wanted. | HM-DEC-003 |
 | 2026-08-12 | **C# MVVM desktop app. `RadioEngine` class library strictly separated from the UI shell** (§0.1). WPF vs Avalonia is HM-OPEN-001. | Real-time serial + audio + DSP fights the browser sandbox; a web frontend can wrap the same engine later without rework. | HM-DEC-002 |
-| 2026-08-12 | **Governance established** — this file, `OPEN_ISSUES.md`, `DECISIONS.md`, `tools/`, ids `HM-OPEN-###` / `HM-DEC-###`, repo `C:\Source\HamManager`, GitHub `TJDixon2022/HamManager`. Carried from Tim's simulator project. | The rules carried are the ones learned by failing there: scaffolded delivery, the canonical collection script, the repo listing, never editing a file not pulled this session. | HM-DEC-001 |
+| 2026-08-12 | **Governance established** — this file, `OPEN_ISSUES.md`, `DECISIONS.md`, `tools/`, ids `HM-OPEN-###` / `HM-DEC-###`, repo `C:\Source\HamManager` (renamed by HM-DEC-017), GitHub `TJDixon2022/HamManager`. Carried from Tim's simulator project. | The rules carried are the ones learned by failing there: scaffolded delivery, the canonical collection script, the repo listing, never editing a file not pulled this session. | HM-DEC-001 |
 
 ---
 
@@ -311,7 +312,7 @@ Rows marked `<<<FILL IN>>>` await the named ruling.
 | Language / runtime | C# on .NET 8 LTS |
 | UI framework | Avalonia 11, Fluent theme, dark variant (HM-DEC-011). Compiled bindings on by default |
 | MVVM toolkit | CommunityToolkit.Mvvm (source-generated `[ObservableProperty]`, `[RelayCommand]`) |
-| Solution layout | `HamManager.sln` at root; `src/` and `tests/` solution folders. Engine: `src/HamManager.RadioEngine`. Shell: `src/HamManager.App`. Tests: `tests/HamManager.RadioEngine.Tests` |
+| Solution layout | `Hamlet.sln` at root; `src/` and `tests/` solution folders. Engine: `src/Hamlet.RadioEngine`. Shell: `src/Hamlet.App`. Tests: `tests/Hamlet.RadioEngine.Tests` |
 | Project settings | `Nullable` enabled, `ImplicitUsings` enabled, `TreatWarningsAsErrors` true — all new projects |
 | Test framework | xUnit, no mocking framework; seams are hand-rolled interfaces (`IRig`, `IAudioSource`, `FakeRig`) |
 | Audio | NAudio (WASAPI) |
@@ -350,8 +351,8 @@ ids go in the body, not the `Refs:` line.
 
 | Scope | Covers |
 |---|---|
-| `engine` | `src/HamManager.RadioEngine` |
-| `app` | `src/HamManager.App` |
+| `engine` | `src/Hamlet.RadioEngine` |
+| `app` | `src/Hamlet.App` |
 | `tests` | `tests/` |
 | `tools` | `tools/` |
 | `docs` | Governance and record files at the root |
@@ -405,7 +406,7 @@ What holds on **both** surfaces, without exception:
 
 **Every delivery ships fully scaffolded in repo path structure**, as a zip
 whose internal paths are relative to the repository root — even for a single
-file. Extract over `C:\Source\HamManager` and files land where they belong.
+file. Extract over `C:\Source\Hamlet` and files land where they belong.
 No loose files, no path instructions in prose.
 
 Files compile without modification. Too large for one response → split into
@@ -436,7 +437,7 @@ uncommitted prior drop, the block says so and amends instead.
 
 `tools/repo-listing/get-listing.bat` produces `repo_listing.txt`: every file,
 its size, its modified date, the commit, and whether the tree is dirty.
-Default repo root: `C:\Source\HamManager`.
+Default repo root: `C:\Source\Hamlet`.
 
 Claude cannot request a file it does not know exists, and cannot deliver into
 a structure it has not read. Re-run whenever files are added, removed or
