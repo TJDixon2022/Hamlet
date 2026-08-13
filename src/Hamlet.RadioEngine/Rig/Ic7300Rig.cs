@@ -1,4 +1,4 @@
-using Hamlet.RadioEngine.Civ;
+﻿using Hamlet.RadioEngine.Civ;
 using Hamlet.RadioEngine.Transport;
 
 namespace Hamlet.RadioEngine.Rig;
@@ -41,6 +41,10 @@ public sealed class Ic7300Rig : IRig, IDisposable
         _radioAddress = radioAddress;
         _controllerAddress = controllerAddress;
     }
+
+    /// <inheritdoc/>
+    /// <remarks>Always false: there is a radio on the other end of this.</remarks>
+    public bool IsSimulated => false;
 
     /// <inheritdoc/>
     public bool IsConnected { get; private set; }

@@ -1,22 +1,36 @@
-namespace Hamlet.RadioEngine.Rig;
+﻿namespace Hamlet.RadioEngine.Rig;
 
 /// <summary>
-/// An <see cref="IRig"/> with no hardware behind it. Backs UI development
-/// and engine tests when no radio is attached, and stands in for the
-/// IC-7300 until the CI-V implementation lands.
+/// The training radio: an <see cref="IRig"/> with no hardware behind it.
 /// </summary>
-public sealed class FakeRig : IRig
+/// <remarks>
+/// <para>This began as a test double and is now a product feature
+/// (HM-DEC-026). Somebody licensed for years who still cannot tell one
+/// signal from another needs to practise, and practising on the air means
+/// owning a radio, having an antenna up, and hoping the band is open. Here
+/// they can learn the waterfall and the sound of each mode with nothing
+/// plugged in.</para>
+/// <para>It still backs UI development and engine tests, and it still stands
+/// in for the IC-7300 until CI-V lands. What changed is that it is now
+/// something the operator chooses on purpose, so it says so in the port list
+/// and <see cref="IsSimulated"/> makes the app say so on screen.</para>
+/// </remarks>
+public sealed class TrainingRig : IRig
 {
     private long _frequencyHz;
 
     /// <summary>Starts in the 40 m CW segment — a deliberate nod to phase 1.</summary>
-    public FakeRig(long initialFrequencyHz = 7_030_000)
+    public TrainingRig(long initialFrequencyHz = 7_030_000)
     {
         _frequencyHz = initialFrequencyHz;
     }
 
     /// <inheritdoc/>
     public bool IsConnected { get; private set; }
+
+    /// <inheritdoc/>
+    /// <remarks>Always true, with no way to say otherwise. See HM-DEC-026.</remarks>
+    public bool IsSimulated => true;
 
     /// <inheritdoc/>
     public event EventHandler<FrequencyChangedEventArgs>? FrequencyChanged;

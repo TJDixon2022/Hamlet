@@ -30,8 +30,11 @@ namespace Hamlet.App.ViewModels;
 /// </remarks>
 public partial class MainWindowViewModel : ObservableObject
 {
-    /// <summary>The no-hardware entry in the port list.</summary>
-    public const string SimulatedRig = "Simulated rig (no hardware)";
+    /// <summary>
+    /// The no-hardware entry in the port list — something to choose on
+    /// purpose rather than a fallback (HM-DEC-026).
+    /// </summary>
+    public const string TrainingRadio = "Training radio (no hardware)";
 
     /// <summary>How long a newly-arrived spot wears its "new" tag.</summary>
     public static readonly TimeSpan NewSpotTagLifetime = TimeSpan.FromSeconds(30);
@@ -74,7 +77,7 @@ public partial class MainWindowViewModel : ObservableObject
     private string _connectButtonText = "Connect";
 
     [ObservableProperty]
-    private string _selectedPort = SimulatedRig;
+    private string _selectedPort = TrainingRadio;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(MapSummary))]
@@ -153,7 +156,7 @@ public partial class MainWindowViewModel : ObservableObject
     /// <summary>Phase 1 bands with best-bet ranking for the current hour.</summary>
     public ObservableCollection<BandButtonViewModel> Bands { get; }
 
-    /// <summary>The simulated rig plus every serial port on this machine.</summary>
+    /// <summary>The training radio plus every serial port on this machine.</summary>
     public ObservableCollection<string> AvailablePorts { get; }
 
     /// <summary>Collapsed-header line for the neighborhood map (HM-DEC-021).</summary>
@@ -203,7 +206,7 @@ public partial class MainWindowViewModel : ObservableObject
         _spotsExpanded = settings.IsPanelExpanded(PanelKeys.Spots);
         _leadExpanded = settings.IsPanelExpanded(PanelKeys.Lead);
 
-        AvailablePorts = new ObservableCollection<string> { SimulatedRig };
+        AvailablePorts = new ObservableCollection<string> { TrainingRadio };
         foreach (var name in SafePortNames())
         {
             AvailablePorts.Add(name);
@@ -560,7 +563,7 @@ public partial class MainWindowViewModel : ObservableObject
         }
 
         var rig = CreateRig(SelectedPort);
-        var rigType = SelectedPort == SimulatedRig ? "simulated" : "IC-7300";
+        var rigType = SelectedPort == TrainingRadio ? "simulated" : "IC-7300";
         StatusText = $"Connecting to {SelectedPort}…";
 
         if (!await rig.ConnectAsync())
@@ -580,8 +583,8 @@ public partial class MainWindowViewModel : ObservableObject
 
         var hz = await rig.GetFrequencyHzAsync();
         ApplyRigFrequency(hz);
-        StatusText = SelectedPort == SimulatedRig
-            ? "Connected — simulated rig (no hardware attached)"
+        StatusText = SelectedPort == TrainingRadio
+            ? "On the training radio — synthesised signals, nothing on the air"
             : $"Connected — IC-7300 on {SelectedPort} · CI-V bytes unverified until "
               + "HM-OPEN-002 closes";
     }
@@ -902,8 +905,8 @@ public partial class MainWindowViewModel : ObservableObject
     }
 
     private static IRig CreateRig(string selection)
-        => selection == SimulatedRig
-            ? new FakeRig()
+        => selection == TrainingRadio
+            ? new TrainingRig()
             : new Ic7300Rig(new SystemSerialPort(selection));
 
     private static IReadOnlyList<string> SafePortNames()

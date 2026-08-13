@@ -1,9 +1,9 @@
-using Hamlet.RadioEngine.Rig;
+﻿using Hamlet.RadioEngine.Rig;
 using Xunit;
 
 namespace Hamlet.RadioEngine.Tests.Rig;
 
-public sealed class FakeRigTests
+public sealed class TrainingRigTests
 {
     /// <remarks>
     /// Proves: a set frequency reads back exactly — the engine's most basic
@@ -12,7 +12,7 @@ public sealed class FakeRigTests
     [Fact]
     public async Task SetFrequency_ReadsBackExactly()
     {
-        var rig = new FakeRig();
+        var rig = new TrainingRig();
         await rig.ConnectAsync();
 
         await rig.SetFrequencyHzAsync(14_074_000);
@@ -29,7 +29,7 @@ public sealed class FakeRigTests
     [Fact]
     public void KnobTurn_RaisesFrequencyChanged()
     {
-        var rig = new FakeRig(initialFrequencyHz: 7_030_000);
+        var rig = new TrainingRig(initialFrequencyHz: 7_030_000);
         long? reported = null;
         rig.FrequencyChanged += (_, e) => reported = e.FrequencyHz;
 
@@ -46,7 +46,7 @@ public sealed class FakeRigTests
     [Fact]
     public async Task ConnectDisconnect_RoundTripsAndNeverThrows()
     {
-        var rig = new FakeRig();
+        var rig = new TrainingRig();
         await rig.DisconnectAsync();
         Assert.False(rig.IsConnected);
 

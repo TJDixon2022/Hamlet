@@ -17,6 +17,23 @@ public interface IRig
     bool IsConnected { get; }
 
     /// <summary>
+    /// True when there is no radio behind this — the training radio rather
+    /// than hardware on the air.
+    /// </summary>
+    /// <remarks>
+    /// <para>Get-only, and answered by the implementation rather than
+    /// configured on it. Connection state IS the mode (HM-DEC-026): the
+    /// waterfall's "these signals are simulated" label and the choice of
+    /// spectrum source are both derived from this, so there is no separate
+    /// practice mode to enter and no setting that could put synthetic signals
+    /// on screen unlabelled.</para>
+    /// <para>A property rather than a type check at the call site, because a
+    /// type check is a rule spread across every caller and this is a rule
+    /// that has to hold in one place.</para>
+    /// </remarks>
+    bool IsSimulated { get; }
+
+    /// <summary>
     /// Raised when the rig reports a frequency change from any source —
     /// including the operator turning the physical VFO knob. Raised on a
     /// background thread; the UI layer marshals.

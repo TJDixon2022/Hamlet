@@ -1,9 +1,9 @@
-namespace Hamlet.RadioEngine.Explore;
+﻿namespace Hamlet.RadioEngine.Explore;
 
 /// <summary>
 /// The engine's seam for "what's happening on the air" (HM-DEC-016). Live
 /// implementations (RBN, POTA, SOTA) slide in behind it exactly as Ic7300Rig
-/// slid in behind FakeRig.
+/// slid in behind TrainingRig.
 /// </summary>
 public interface IActivitySource
 {
