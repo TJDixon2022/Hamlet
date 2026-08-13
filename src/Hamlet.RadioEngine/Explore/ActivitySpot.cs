@@ -39,7 +39,7 @@ public enum SpotProximity
     /// <summary>Not determined — no reporting station, or an unknown prefix.</summary>
     Unknown,
 
-    /// <summary>Same or neighbouring call district: reliably audible ground.</summary>
+    /// <summary>Same or neighboring call district: reliably audible ground.</summary>
     Local,
 
     /// <summary>Same continent.</summary>

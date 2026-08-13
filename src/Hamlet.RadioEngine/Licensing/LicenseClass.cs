@@ -1,12 +1,12 @@
 namespace Hamlet.RadioEngine.Licensing;
 
-/// <summary>US amateur operator licence classes.</summary>
+/// <summary>US amateur operator license classes.</summary>
 /// <remarks>
 /// Ordered by privilege, weakest first, so a caller can ask whether one class
 /// covers another. <see cref="Unknown"/> sorts below everything on purpose:
 /// it must never satisfy a privilege comparison by accident.
 /// </remarks>
-public enum LicenceClass
+public enum LicenseClass
 {
     /// <summary>Not yet known. Never treated as any privilege level.</summary>
     Unknown = 0,
@@ -27,15 +27,15 @@ public enum LicenceClass
     Extra = 5,
 }
 
-/// <summary>How the operator's licence class came to be known.</summary>
+/// <summary>How the operator's license class came to be known.</summary>
 /// <remarks>
 /// Provenance travels with the value (HM-DEC-028). A class Hamlet looked up
 /// and a class the operator typed are different kinds of fact, and the one
-/// case where the difference decides behaviour — a lookup disagreeing with a
+/// case where the difference decides behavior — a lookup disagreeing with a
 /// hand-set value — is exactly the case where getting it wrong would be
-/// rewriting somebody's licence for them.
+/// rewriting somebody's license for them.
 /// </remarks>
-public enum LicenceClassSource
+public enum LicenseClassSource
 {
     /// <summary>Nothing has set it.</summary>
     Unset = 0,

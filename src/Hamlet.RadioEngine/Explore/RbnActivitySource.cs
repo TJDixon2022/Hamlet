@@ -21,7 +21,7 @@ namespace Hamlet.RadioEngine.Explore;
 /// audible from Pennsylvania.</item>
 /// </list>
 /// <para>Continent, and not the operator's own call district, is deliberate.
-/// On HF a skimmer eight hundred kilometres away hears very nearly what you
+/// On HF a skimmer eight hundred kilometers away hears very nearly what you
 /// hear, so filtering to adjacent districts would throw away good spots to
 /// no purpose. District closeness is not discarded — it rides along on
 /// <see cref="ActivitySpot.Proximity"/> and lifts a spot up the ranking

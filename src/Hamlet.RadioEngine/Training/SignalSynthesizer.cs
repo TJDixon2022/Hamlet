@@ -2,7 +2,7 @@ namespace Hamlet.RadioEngine.Training;
 
 /// <summary>
 /// Paints a spectrum sweep: a noise floor with slow weather in it, plus each
-/// signal drawn with its own mode's behaviour.
+/// signal drawn with its own mode's behavior.
 /// </summary>
 /// <remarks>
 /// <para>Deterministic, and strictly so. Every varying quantity — the noise,

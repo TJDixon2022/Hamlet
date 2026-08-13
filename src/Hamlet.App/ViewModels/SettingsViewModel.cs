@@ -41,13 +41,13 @@ public partial class SettingsViewModel : ObservableObject
     private RefreshChoice _spotRefresh;
 
     [ObservableProperty]
-    private LicenceClass _licenceClass;
+    private LicenseClass _licenseClass;
 
     [ObservableProperty]
     private bool _restrictTransmitToPrivileges;
 
     [ObservableProperty]
-    private string _licenceProvenance = "";
+    private string _licenseProvenance = "";
 
     /// <summary>Designer constructor.</summary>
     public SettingsViewModel() : this(new AppSettings(), null)
@@ -67,8 +67,8 @@ public partial class SettingsViewModel : ObservableObject
         _operatorName = settings.Operator.OperatorName;
         _location = settings.Operator.Location;
         _gridSquare = settings.Operator.GridSquare;
-        _licenceClass = settings.Operator.LicenceClass;
-        _licenceProvenance = LicenceResolver.DescribeProvenance(settings.Operator);
+        _licenseClass = settings.Operator.LicenseClass;
+        _licenseProvenance = LicenseResolver.DescribeProvenance(settings.Operator);
         _restrictTransmitToPrivileges = settings.RestrictTransmitToPrivileges;
 
         SpotRefreshChoices = AppSettings.SpotRefreshChoices
@@ -123,16 +123,16 @@ public partial class SettingsViewModel : ObservableObject
     /// <summary>The switchable activity sources (HM-DEC-022, HM-DEC-024).</summary>
     public ObservableCollection<SourceToggleViewModel> Sources { get; }
 
-    /// <summary>The licence classes the operator can pick from.</summary>
+    /// <summary>The license classes the operator can pick from.</summary>
     /// <remarks>
     /// Unknown is offered on purpose. Clearing the class is a legitimate
     /// thing to do, and it makes the band map stop claiming anything rather
     /// than leaving a stale guess on screen (HM-DEC-029).
     /// </remarks>
-    public IReadOnlyList<LicenceClass> LicenceClasses { get; } = new[]
+    public IReadOnlyList<LicenseClass> LicenseClasses { get; } = new[]
     {
-        LicenceClass.Unknown, LicenceClass.Technician, LicenceClass.General,
-        LicenceClass.Advanced, LicenceClass.Extra, LicenceClass.Novice,
+        LicenseClass.Unknown, LicenseClass.Technician, LicenseClass.General,
+        LicenseClass.Advanced, LicenseClass.Extra, LicenseClass.Novice,
     };
 
     /// <summary>The offered happening-now refresh intervals (HM-DEC-020).</summary>
@@ -165,26 +165,26 @@ public partial class SettingsViewModel : ObservableObject
         SaveProfile("grid");
     }
 
-    partial void OnLicenceClassChanged(LicenceClass value)
+    partial void OnLicenseClassChanged(LicenseClass value)
     {
         // Chosen by hand, and stamped as such: a later lookup will show a
         // disagreement rather than quietly overwriting this (HM-DEC-028).
-        if (value == _settings.Operator.LicenceClass)
+        if (value == _settings.Operator.LicenseClass)
         {
             return;
         }
 
-        _settings.Operator.SetLicenceClass(
+        _settings.Operator.SetLicenseClass(
             value,
-            value == LicenceClass.Unknown
-                ? LicenceClassSource.Unset
-                : LicenceClassSource.EnteredByOperator,
+            value == LicenseClass.Unknown
+                ? LicenseClassSource.Unset
+                : LicenseClassSource.EnteredByOperator,
             "",
             DateTime.UtcNow);
 
         SettingsStore.Save(_settings);
-        LicenceProvenance = LicenceResolver.DescribeProvenance(_settings.Operator);
-        Telemetry.AppEvents.ProfileEdited(_telemetry, "licenceClass");
+        LicenseProvenance = LicenseResolver.DescribeProvenance(_settings.Operator);
+        Telemetry.AppEvents.ProfileEdited(_telemetry, "licenseClass");
     }
 
     partial void OnRestrictTransmitToPrivilegesChanged(bool value)
@@ -284,7 +284,7 @@ public partial class SettingsViewModel : ObservableObject
 
         yield return (
             FakeActivitySource.SourceName,
-            "Built-in sample spots, labelled \"sample\" on every card. For seeing how "
+            "Built-in sample spots, labeled \"sample\" on every card. For seeing how "
             + "the Explorer behaves with no network.",
             "Off by default now that the live feeds work — leaving it on mixes made-up "
             + "spots into a real list.");

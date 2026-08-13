@@ -51,7 +51,7 @@
       "authority": "convenience",
       "title": "ARRL US Amateur Radio Bands chart",
       "url": "http://www.arrl.org/band-plan",
-      "note": "NOT the authority. The ARRL chart is a rendering of the sections above and is widely recognised, so it is named here as the familiar picture this data should agree with. Where the chart and the CFR ever differ, the CFR wins and this file follows the CFR."
+      "note": "NOT the authority. The ARRL chart is a rendering of the sections above and is widely recognized, so it is named here as the familiar picture this data should agree with. Where the chart and the CFR ever differ, the CFR wins and this file follows the CFR."
     }
   ],
 
@@ -199,7 +199,7 @@
   },
 
   "upgradePaths": {
-    "_note": "Editorial, not regulation: what the next licence buys, for the 'what would General unlock?' panel. The frequencies it quotes come from the tables above rather than from this text.",
+    "_note": "Editorial, not regulation: what the next license buys, for the 'what would General unlock?' panel. The frequencies it quotes come from the tables above rather than from this text.",
     "Technician": { "next": "General", "headline": "General opens most of HF" },
     "Novice": { "next": "General", "headline": "General opens most of HF" },
     "General": { "next": "Extra", "headline": "Extra opens the bottom of every band" },

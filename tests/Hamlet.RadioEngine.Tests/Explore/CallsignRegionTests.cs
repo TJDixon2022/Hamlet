@@ -80,7 +80,7 @@ public sealed class CallsignRegionTests
         => Assert.Equal(CallsignRegion.Unknown, CallsignRegions.Classify(call).Region);
 
     /// <remarks>
-    /// Proves proximity from Pittsburgh: district 3's own and neighbouring
+    /// Proves proximity from Pittsburgh: district 3's own and neighboring
     /// districts are Local, other US and Canadian skimmers are Continent, and
     /// Europe is Distant.
     /// </remarks>

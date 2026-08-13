@@ -64,11 +64,11 @@ public sealed class PrivilegeData
     private static readonly Lazy<PrivilegeData> Shared = new(LoadEmbedded);
 
     private PrivilegeData(
-        IReadOnlyDictionary<LicenceClass, IReadOnlyList<FrequencyRange>> classBands,
+        IReadOnlyDictionary<LicenseClass, IReadOnlyList<FrequencyRange>> classBands,
         IReadOnlyList<EmissionRange> emissionRanges,
         IReadOnlyList<PrivilegeSource> sources,
         IReadOnlyList<PrivilegeUnknown> unknowns,
-        IReadOnlyDictionary<LicenceClass, UpgradePath> upgrades,
+        IReadOnlyDictionary<LicenseClass, UpgradePath> upgrades,
         string retrievedUtc)
     {
         ClassBands = classBands;
@@ -83,7 +83,7 @@ public sealed class PrivilegeData
     public static PrivilegeData Current => Shared.Value;
 
     /// <summary>47 CFR 97.301: frequencies each class may transmit on.</summary>
-    public IReadOnlyDictionary<LicenceClass, IReadOnlyList<FrequencyRange>> ClassBands { get; }
+    public IReadOnlyDictionary<LicenseClass, IReadOnlyList<FrequencyRange>> ClassBands { get; }
 
     /// <summary>47 CFR 97.305(c): where each non-CW emission may be sent.</summary>
     public IReadOnlyList<EmissionRange> EmissionRanges { get; }
@@ -95,7 +95,7 @@ public sealed class PrivilegeData
     public IReadOnlyList<PrivilegeUnknown> Unknowns { get; }
 
     /// <summary>What the next class up buys, per class.</summary>
-    public IReadOnlyDictionary<LicenceClass, UpgradePath> Upgrades { get; }
+    public IReadOnlyDictionary<LicenseClass, UpgradePath> Upgrades { get; }
 
     /// <summary>When the regulation was read, as stated in the file.</summary>
     public string RetrievedUtc { get; }
@@ -118,13 +118,13 @@ public sealed class PrivilegeData
             throw new InvalidDataException("privileges file is missing its CFR tables");
         }
 
-        var classBands = new Dictionary<LicenceClass, IReadOnlyList<FrequencyRange>>();
+        var classBands = new Dictionary<LicenseClass, IReadOnlyList<FrequencyRange>>();
         foreach (var pair in dto.ClassFrequencyBands)
         {
             // "_cite" and "_note" sit beside the class entries so the file can
             // carry its own citations. They are documentation, not data.
             if (pair.Key.StartsWith('_')
-                || !Enum.TryParse<LicenceClass>(pair.Key, out var cls)
+                || !Enum.TryParse<LicenseClass>(pair.Key, out var cls)
                 || pair.Value.ValueKind != JsonValueKind.Object)
             {
                 continue;
@@ -153,11 +153,11 @@ public sealed class PrivilegeData
                 r.Standards ?? Array.Empty<string>()))
             .ToList();
 
-        var upgrades = new Dictionary<LicenceClass, UpgradePath>();
+        var upgrades = new Dictionary<LicenseClass, UpgradePath>();
         foreach (var pair in dto.UpgradePaths ?? new Dictionary<string, JsonElement>())
         {
             if (pair.Key.StartsWith('_')
-                || !Enum.TryParse<LicenceClass>(pair.Key, out var cls)
+                || !Enum.TryParse<LicenseClass>(pair.Key, out var cls)
                 || pair.Value.ValueKind != JsonValueKind.Object)
             {
                 continue;
@@ -169,9 +169,9 @@ public sealed class PrivilegeData
                 continue;
             }
 
-            var next = Enum.TryParse<LicenceClass>(path.Next ?? "", out var n)
+            var next = Enum.TryParse<LicenseClass>(path.Next ?? "", out var n)
                 ? n
-                : LicenceClass.Unknown;
+                : LicenseClass.Unknown;
 
             upgrades[cls] = new UpgradePath(next, path.Headline ?? "");
         }
@@ -312,7 +312,7 @@ public sealed class PrivilegeData
     }
 }
 
-/// <summary>What the next licence class up buys.</summary>
+/// <summary>What the next license class up buys.</summary>
 /// <param name="Next">The class above, or Unknown at the top.</param>
 /// <param name="Headline">One line naming what it opens.</param>
-public sealed record UpgradePath(LicenceClass Next, string Headline);
+public sealed record UpgradePath(LicenseClass Next, string Headline);

@@ -52,12 +52,12 @@ public sealed class RbnTests
     }
 
     /// <remarks>
-    /// Proves a beacon is recognised as one. A beacon transmits to nobody, so
+    /// Proves a beacon is recognized as one. A beacon transmits to nobody, so
     /// mislabelling it as a CQ would send a newcomer to call a machine that
     /// will never answer.
     /// </remarks>
     [Fact]
-    public void Parse_RecognisesBeacons()
+    public void Parse_RecognizesBeacons()
     {
         var spot = RbnSpotLine.Parse(BeaconLine, Now);
 
@@ -110,7 +110,7 @@ public sealed class RbnTests
             () => new ScriptedConnection(), "KC3QIS", () => Now);
         source.SetContext(Pittsburgh40m);
 
-        // In band, US skimmer in a neighbouring district: keep.
+        // In band, US skimmer in a neighboring district: keep.
         Assert.True(source.Accept(
             "DX de K3GMQ-#:   7032.00  W1ABC          CW    22 dB  15 WPM  CQ      1513Z"));
 

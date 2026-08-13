@@ -7,7 +7,7 @@ namespace Hamlet.RadioEngine.Training;
 /// Decides what is on the air for practice, and where.
 /// </summary>
 /// <remarks>
-/// <para>THE RULE THIS FILE EXISTS FOR (HM-DEC-026): a newcomer practising on
+/// <para>THE RULE THIS FILE EXISTS FOR (HM-DEC-026): a newcomer practicing on
 /// the training radio must be learning the real band, not a convenient
 /// fiction. So no frequency is written down here. Every signal is placed
 /// inside a neighborhood that <see cref="NeighborhoodPlan"/> already
@@ -59,7 +59,7 @@ public static class TrainingBandPlan
             return new[] { TrainingMode.Cw };
         }
 
-        // "Quiet blocks" and anything unlabelled: genuinely sparse. A band
+        // "Quiet blocks" and anything unlabeled: genuinely sparse. A band
         // with no empty space on it would be its own kind of lie.
         return Array.Empty<TrainingMode>();
     }

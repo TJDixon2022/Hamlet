@@ -151,7 +151,7 @@ public sealed class SynthesisTests
 
     /// <remarks>
     /// Proves FT8 transmits on the quarter-minute and stops before the slot
-    /// ends. That synchronisation is the single fact that makes FT8 look like
+    /// ends. That synchronization is the single fact that makes FT8 look like
     /// rain on a waterfall, and a newcomer who learns it can identify the
     /// mode across the room.
     /// </remarks>
@@ -188,9 +188,9 @@ public sealed class SynthesisTests
         Assert.NotEmpty(litTimes);
 
         // The claim that matters: every transmission falls inside the window
-        // that opens on the quarter-minute. That synchronisation is what
+        // that opens on the quarter-minute. That synchronization is what
         // makes FT8 look like rain, and it is the fact a newcomer learns to
-        // recognise the mode by.
+        // recognize the mode by.
         Assert.All(litTimes, t => Assert.True(
             t % period < window,
             $"FT8 was transmitting {t % period:0.00}s into a cycle, past the "

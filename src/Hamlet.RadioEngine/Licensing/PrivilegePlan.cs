@@ -5,7 +5,7 @@ namespace Hamlet.RadioEngine.Licensing;
 /// <summary>Why a frequency and mode are or are not available.</summary>
 public enum PrivilegeStatus
 {
-    /// <summary>The licence class is not known, so nothing is claimed.</summary>
+    /// <summary>The license class is not known, so nothing is claimed.</summary>
     Unknown,
 
     /// <summary>The operator may transmit here in this mode.</summary>
@@ -24,13 +24,13 @@ public enum PrivilegeStatus
 /// <param name="Citation">The paragraph that decided it, or "".</param>
 /// <param name="LowestClassThatCould">
 /// The weakest class that could transmit here in this mode, or
-/// <see cref="LicenceClass.Unknown"/> when no class could.
+/// <see cref="LicenseClass.Unknown"/> when no class could.
 /// </param>
 public sealed record PrivilegeVerdict(
     PrivilegeStatus Status,
     string Explanation,
     string Citation,
-    LicenceClass LowestClassThatCould)
+    LicenseClass LowestClassThatCould)
 {
     /// <summary>True only when transmitting is affirmatively permitted.</summary>
     /// <remarks>
@@ -63,7 +63,7 @@ public readonly record struct PrivilegeSpan(long LowHz, long HighHz, bool MayTra
 }
 
 /// <summary>
-/// Answers what a licence class may transmit, from the cited Part 97 data.
+/// Answers what a license class may transmit, from the cited Part 97 data.
 /// </summary>
 /// <remarks>
 /// <para>This is the join the data file deliberately does not contain: 97.301
@@ -89,10 +89,10 @@ public sealed class PrivilegePlan
     /// </summary>
     private const string OutsideContiguousUsStandard = "97.307(f)(11)";
 
-    private static readonly LicenceClass[] ByPrivilege =
+    private static readonly LicenseClass[] ByPrivilege =
     {
-        LicenceClass.Novice, LicenceClass.Technician, LicenceClass.General,
-        LicenceClass.Advanced, LicenceClass.Extra,
+        LicenseClass.Novice, LicenseClass.Technician, LicenseClass.General,
+        LicenseClass.Advanced, LicenseClass.Extra,
     };
 
     private readonly PrivilegeData _data;
@@ -113,43 +113,43 @@ public sealed class PrivilegePlan
     /// <summary>
     /// May this class transmit here, in this mode?
     /// </summary>
-    /// <param name="licenceClass">The operator's class.</param>
+    /// <param name="licenseClass">The operator's class.</param>
     /// <param name="frequencyHz">Frequency in hertz.</param>
     /// <param name="mode">What they would transmit.</param>
     /// <returns>The verdict, with its citation.</returns>
     public PrivilegeVerdict Evaluate(
-        LicenceClass licenceClass, long frequencyHz, TransmitMode mode)
+        LicenseClass licenseClass, long frequencyHz, TransmitMode mode)
     {
-        if (licenceClass == LicenceClass.Unknown)
+        if (licenseClass == LicenseClass.Unknown)
         {
             return new PrivilegeVerdict(
                 PrivilegeStatus.Unknown,
-                "Hamlet does not know your licence class, so it will not guess at "
+                "Hamlet does not know your license class, so it will not guess at "
                 + "your privileges. Set it in Settings.",
                 "",
                 LowestClassFor(frequencyHz, mode));
         }
 
-        if (!IsInClassBand(licenceClass, frequencyHz))
+        if (!IsInClassBand(licenseClass, frequencyHz))
         {
             var lowest = LowestClassFor(frequencyHz, mode);
             return new PrivilegeVerdict(
                 PrivilegeStatus.OutsideClassBand,
-                lowest == LicenceClass.Unknown
-                    ? "No US licence class may transmit here."
-                    : $"{Describe(licenceClass)} privileges do not reach this frequency; "
+                lowest == LicenseClass.Unknown
+                    ? "No US license class may transmit here."
+                    : $"{Describe(licenseClass)} privileges do not reach this frequency; "
                       + $"it needs {Describe(lowest)}.",
-                CiteFor(licenceClass),
+                CiteFor(licenseClass),
                 lowest);
         }
 
-        var (allowed, citation, reason) = ModeAllowed(licenceClass, frequencyHz, mode);
+        var (allowed, citation, reason) = ModeAllowed(licenseClass, frequencyHz, mode);
 
         if (allowed)
         {
             return new PrivilegeVerdict(
                 PrivilegeStatus.Allowed,
-                $"Your {Describe(licenceClass)} licence covers {Describe(mode)} here.",
+                $"Your {Describe(licenseClass)} license covers {Describe(mode)} here.",
                 citation,
                 LowestClassFor(frequencyHz, mode));
         }
@@ -164,25 +164,25 @@ public sealed class PrivilegePlan
     /// <summary>
     /// True when the class may transmit at this frequency in some mode.
     /// </summary>
-    /// <param name="licenceClass">The operator's class.</param>
+    /// <param name="licenseClass">The operator's class.</param>
     /// <param name="frequencyHz">Frequency in hertz.</param>
     /// <returns>True when any mode is permitted here.</returns>
-    public bool MayTransmitAnyMode(LicenceClass licenceClass, long frequencyHz)
-        => licenceClass != LicenceClass.Unknown && IsInClassBand(licenceClass, frequencyHz);
+    public bool MayTransmitAnyMode(LicenseClass licenseClass, long frequencyHz)
+        => licenseClass != LicenseClass.Unknown && IsInClassBand(licenseClass, frequencyHz);
 
     /// <summary>
     /// Break a band into stretches the class may and may not transmit in.
     /// </summary>
     /// <param name="band">The band on screen.</param>
-    /// <param name="licenceClass">The operator's class.</param>
+    /// <param name="licenseClass">The operator's class.</param>
     /// <returns>
     /// Contiguous spans covering the whole band, in ascending order. Empty
     /// when the class is unknown — the caller must then draw no overlay at
     /// all rather than a guessed one (HM-DEC-029).
     /// </returns>
-    public IReadOnlyList<PrivilegeSpan> SpansFor(CwBand band, LicenceClass licenceClass)
+    public IReadOnlyList<PrivilegeSpan> SpansFor(CwBand band, LicenseClass licenseClass)
     {
-        if (licenceClass == LicenceClass.Unknown)
+        if (licenseClass == LicenseClass.Unknown)
         {
             return Array.Empty<PrivilegeSpan>();
         }
@@ -191,7 +191,7 @@ public sealed class PrivilegePlan
         // adjacent edges the answer cannot change.
         var edges = new SortedSet<long> { band.LowHz, band.HighHz };
 
-        if (_data.ClassBands.TryGetValue(licenceClass, out var ranges))
+        if (_data.ClassBands.TryGetValue(licenseClass, out var ranges))
         {
             foreach (var range in ranges)
             {
@@ -217,7 +217,7 @@ public sealed class PrivilegePlan
 
             // Sample the middle: no boundary lies strictly inside a span.
             var probe = low + ((high - low) / 2);
-            var may = MayTransmitAnyMode(licenceClass, probe);
+            var may = MayTransmitAnyMode(licenseClass, probe);
 
             if (spans.Count > 0 && spans[^1].MayTransmit == may)
             {
@@ -238,7 +238,7 @@ public sealed class PrivilegePlan
     /// <param name="frequencyHz">Frequency in hertz.</param>
     /// <param name="mode">The mode.</param>
     /// <returns>The class, or Unknown when none may.</returns>
-    public LicenceClass LowestClassFor(long frequencyHz, TransmitMode mode)
+    public LicenseClass LowestClassFor(long frequencyHz, TransmitMode mode)
     {
         foreach (var cls in ByPrivilege)
         {
@@ -248,15 +248,15 @@ public sealed class PrivilegePlan
             }
         }
 
-        return LicenceClass.Unknown;
+        return LicenseClass.Unknown;
     }
 
     /// <summary>What the class above buys, for the upgrade panel.</summary>
-    /// <param name="licenceClass">The operator's class.</param>
+    /// <param name="licenseClass">The operator's class.</param>
     /// <returns>The path, or null at the top or when unknown.</returns>
-    public UpgradePath? UpgradeFrom(LicenceClass licenceClass)
-        => _data.Upgrades.TryGetValue(licenceClass, out var path)
-            && path.Next != LicenceClass.Unknown
+    public UpgradePath? UpgradeFrom(LicenseClass licenseClass)
+        => _data.Upgrades.TryGetValue(licenseClass, out var path)
+            && path.Next != LicenseClass.Unknown
             ? path
             : null;
 
@@ -264,11 +264,11 @@ public sealed class PrivilegePlan
     /// How much of a band a class may transmit on, as a fraction.
     /// </summary>
     /// <param name="band">The band.</param>
-    /// <param name="licenceClass">The class.</param>
+    /// <param name="licenseClass">The class.</param>
     /// <returns>0 to 1; 0 when the class is unknown.</returns>
-    public double CoverageOf(CwBand band, LicenceClass licenceClass)
+    public double CoverageOf(CwBand band, LicenseClass licenseClass)
     {
-        var spans = SpansFor(band, licenceClass);
+        var spans = SpansFor(band, licenseClass);
         if (spans.Count == 0)
         {
             return 0;
@@ -284,18 +284,18 @@ public sealed class PrivilegePlan
         return allowed / total;
     }
 
-    private bool IsInClassBand(LicenceClass licenceClass, long frequencyHz)
-        => _data.ClassBands.TryGetValue(licenceClass, out var ranges)
+    private bool IsInClassBand(LicenseClass licenseClass, long frequencyHz)
+        => _data.ClassBands.TryGetValue(licenseClass, out var ranges)
            && ranges.Any(r => r.Contains(frequencyHz));
 
     /// <summary>
     /// Apply 97.305 and the 97.307(f) standards to one class and frequency.
     /// </summary>
     private (bool Allowed, string Citation, string Reason) ModeAllowed(
-        LicenceClass licenceClass, long frequencyHz, TransmitMode mode)
+        LicenseClass licenseClass, long frequencyHz, TransmitMode mode)
     {
         var rows = _data.EmissionRanges.Where(r => r.Range.Contains(frequencyHz)).ToList();
-        var novicish = licenceClass is LicenceClass.Novice or LicenceClass.Technician;
+        var novicish = licenseClass is LicenseClass.Novice or LicenseClass.Technician;
 
         if (mode == TransmitMode.Cw)
         {
@@ -313,7 +313,7 @@ public sealed class PrivilegePlan
             if (novicish && row.Standards.Contains(CwOnlyStandard))
             {
                 return (false, CwOnlyStandard,
-                    $"{Describe(licenceClass)} licensees may only send Morse here — "
+                    $"{Describe(licenseClass)} licensees may only send Morse here — "
                     + $"{Describe(mode)} on this segment needs General.");
             }
 
@@ -322,7 +322,7 @@ public sealed class PrivilegePlan
                 && mode is not TransmitMode.Phone)
             {
                 return (false, CwOrPhoneStandard,
-                    $"{Describe(licenceClass)} licensees may only send Morse or voice here.");
+                    $"{Describe(licenseClass)} licensees may only send Morse or voice here.");
             }
 
             if (row.Standards.Contains(OutsideContiguousUsStandard))
@@ -343,25 +343,25 @@ public sealed class PrivilegePlan
             + "this part of the band is for other modes.");
     }
 
-    private string CiteFor(LicenceClass licenceClass) => licenceClass switch
+    private string CiteFor(LicenseClass licenseClass) => licenseClass switch
     {
-        LicenceClass.Extra => "97.301(b)",
-        LicenceClass.Advanced => "97.301(c)",
-        LicenceClass.General => "97.301(d)",
-        LicenceClass.Technician or LicenceClass.Novice => "97.301(e)",
+        LicenseClass.Extra => "97.301(b)",
+        LicenseClass.Advanced => "97.301(c)",
+        LicenseClass.General => "97.301(d)",
+        LicenseClass.Technician or LicenseClass.Novice => "97.301(e)",
         _ => "97.301",
     };
 
     /// <summary>The operator-facing name of a class.</summary>
-    /// <param name="licenceClass">The class.</param>
+    /// <param name="licenseClass">The class.</param>
     /// <returns>Its name, or "an unknown class".</returns>
-    public static string Describe(LicenceClass licenceClass) => licenceClass switch
+    public static string Describe(LicenseClass licenseClass) => licenseClass switch
     {
-        LicenceClass.Novice => "Novice",
-        LicenceClass.Technician => "Technician",
-        LicenceClass.General => "General",
-        LicenceClass.Advanced => "Advanced",
-        LicenceClass.Extra => "Extra",
+        LicenseClass.Novice => "Novice",
+        LicenseClass.Technician => "Technician",
+        LicenseClass.General => "General",
+        LicenseClass.Advanced => "Advanced",
+        LicenseClass.Extra => "Extra",
         _ => "an unknown class",
     };
 

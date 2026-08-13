@@ -103,7 +103,7 @@ public sealed class ExploreTests
     }
 
     /// <remarks>Proves the prime directive holds through the variation: every
-    /// spot from every call is still labelled sample and still lands in a real
+    /// spot from every call is still labeled sample and still lands in a real
     /// band.</remarks>
     [Fact]
     public async Task FakeSpots_StayHonestAcrossRotations()

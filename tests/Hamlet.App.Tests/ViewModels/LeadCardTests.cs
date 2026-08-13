@@ -149,7 +149,7 @@ public sealed class LeadCardTests
 
     /// <remarks>
     /// Proves the bar has both sides tested: a fresh nearby slow CQ clears it,
-    /// and a bare unlabelled spot does not.
+    /// and a bare unlabeled spot does not.
     /// </remarks>
     [Fact]
     public void Threshold_SeparatesARecommendationFromAShrug()

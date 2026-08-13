@@ -230,19 +230,19 @@ public static class AppEvents
             });
 
     /// <summary>
-    /// A licence class was resolved from a lookup (HM-DEC-028). The class and
+    /// A license class was resolved from a lookup (HM-DEC-028). The class and
     /// which service answered — never the callsign, which is what was sent to
     /// get this answer and still never enters telemetry (HM-DEC-019).
     /// </summary>
     /// <param name="telemetry">Sink, or null.</param>
-    /// <param name="licenceClass">Class name, e.g. "General".</param>
+    /// <param name="licenseClass">Class name, e.g. "General".</param>
     /// <param name="sourceName">Service that answered.</param>
-    public static void LicenceClassResolved(
-        ITelemetry? telemetry, string licenceClass, string sourceName)
-        => telemetry?.Write(TelemetryCategory.Diagnostics, "licence_class_resolved",
+    public static void LicenseClassResolved(
+        ITelemetry? telemetry, string licenseClass, string sourceName)
+        => telemetry?.Write(TelemetryCategory.Diagnostics, "license_class_resolved",
             new Dictionary<string, object?>
             {
-                ["class"] = licenceClass,
+                ["class"] = licenseClass,
                 ["source"] = sourceName,
             });
 
@@ -252,9 +252,9 @@ public static class AppEvents
     /// <param name="telemetry">Sink, or null.</param>
     /// <param name="found">What the lookup said.</param>
     /// <param name="existing">What the operator had set.</param>
-    public static void LicenceClassMismatch(
+    public static void LicenseClassMismatch(
         ITelemetry? telemetry, string found, string existing)
-        => telemetry?.Write(TelemetryCategory.Diagnostics, "licence_class_mismatch",
+        => telemetry?.Write(TelemetryCategory.Diagnostics, "license_class_mismatch",
             new Dictionary<string, object?>
             {
                 ["found"] = found,
@@ -262,11 +262,11 @@ public static class AppEvents
             },
             TelemetryLevel.Warn);
 
-    /// <summary>A licence lookup did not produce a class.</summary>
+    /// <summary>A license lookup did not produce a class.</summary>
     /// <param name="telemetry">Sink, or null.</param>
     /// <param name="outcome">"NotFound" or "Unavailable".</param>
-    public static void LicenceClassLookupFailed(ITelemetry? telemetry, string outcome)
-        => telemetry?.Write(TelemetryCategory.Diagnostics, "licence_lookup_failed",
+    public static void LicenseClassLookupFailed(ITelemetry? telemetry, string outcome)
+        => telemetry?.Write(TelemetryCategory.Diagnostics, "license_lookup_failed",
             new Dictionary<string, object?> { ["outcome"] = outcome },
             TelemetryLevel.Warn);
 

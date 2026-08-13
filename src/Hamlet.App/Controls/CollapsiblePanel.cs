@@ -7,7 +7,7 @@ using Avalonia.Media;
 namespace Hamlet.App.Controls;
 
 /// <summary>
-/// Which colour family a panel belongs to (HM-DEC-012): amber is tuning,
+/// Which color family a panel belongs to (HM-DEC-012): amber is tuning,
 /// blue is spectrum, green is decode, slate is everything else.
 /// </summary>
 public enum PanelFamily
@@ -32,8 +32,8 @@ public enum PanelFamily
 /// </summary>
 /// <remarks>
 /// <para>The header carries chevron + title on the left in the panel's family
-/// colour — as TEXT colour only. The header bar is never filled with the
-/// family colour: seven filled bars stacked down a window read as a stripe
+/// color — as TEXT color only. The header bar is never filled with the
+/// family color: seven filled bars stacked down a window read as a stripe
 /// pattern, not as structure.</para>
 /// <para><see cref="Summary"/> is right-aligned and survives collapse. That is
 /// the whole point: collapsing hides detail, never information, so a shut
@@ -41,7 +41,7 @@ public enum PanelFamily
 /// </remarks>
 public sealed class CollapsiblePanel : ContentControl
 {
-    /// <summary>Panel title, shown in the family colour.</summary>
+    /// <summary>Panel title, shown in the family color.</summary>
     public static readonly StyledProperty<string> TitleProperty =
         AvaloniaProperty.Register<CollapsiblePanel, string>(nameof(Title), "");
 
@@ -49,7 +49,7 @@ public sealed class CollapsiblePanel : ContentControl
     public static readonly StyledProperty<string> SummaryProperty =
         AvaloniaProperty.Register<CollapsiblePanel, string>(nameof(Summary), "");
 
-    /// <summary>Colour family for the header text and the panel edge.</summary>
+    /// <summary>Color family for the header text and the panel edge.</summary>
     public static readonly StyledProperty<PanelFamily> FamilyProperty =
         AvaloniaProperty.Register<CollapsiblePanel, PanelFamily>(nameof(Family));
 
@@ -81,14 +81,14 @@ public sealed class CollapsiblePanel : ContentControl
         IsExpandedProperty.Changed.AddClassHandler<CollapsiblePanel>((c, _) => c.ApplyChevron());
     }
 
-    /// <summary>Creates the panel with its family colours applied.</summary>
+    /// <summary>Creates the panel with its family colors applied.</summary>
     public CollapsiblePanel()
     {
         ApplyFamily();
         ApplyChevron();
     }
 
-    /// <summary>Panel title, shown in the family colour.</summary>
+    /// <summary>Panel title, shown in the family color.</summary>
     public string Title
     {
         get => GetValue(TitleProperty);
@@ -103,7 +103,7 @@ public sealed class CollapsiblePanel : ContentControl
         set => SetValue(SummaryProperty, value);
     }
 
-    /// <summary>Colour family for the header text and the panel edge.</summary>
+    /// <summary>Color family for the header text and the panel edge.</summary>
     public PanelFamily Family
     {
         get => GetValue(FamilyProperty);
@@ -167,7 +167,7 @@ public sealed class CollapsiblePanel : ContentControl
     }
 
     /// <summary>
-    /// Family colour is applied as header text and panel edge only. Panel
+    /// Family color is applied as header text and panel edge only. Panel
     /// bodies stay white per HM-DEC-012 — white panels on warm paper — which
     /// is also what keeps a column of collapsed headers from striping.
     /// </summary>

@@ -16,7 +16,7 @@ public sealed class BandConditionsTests
     private static ActivitySpot Spot(long hz, int ageMinutes = 1, string mode = "CW")
         => new("someone is calling", hz, mode, "RBN", Now.AddMinutes(-ageMinutes), 18);
 
-    private static IReadOnlyList<ActivitySpot> OnFortyMetres(int count, int ageMinutes = 1)
+    private static IReadOnlyList<ActivitySpot> OnFortyMeters(int count, int ageMinutes = 1)
         => Enumerable.Range(0, count)
             .Select(i => Spot(7_030_000 + (i * 500), ageMinutes))
             .ToList();
@@ -37,7 +37,7 @@ public sealed class BandConditionsTests
     [Fact]
     public void Busy_BandIsNamedBusyWithItsEvidence()
     {
-        var spots = OnFortyMetres(60);
+        var spots = OnFortyMeters(60);
 
         var line = BandConditions.Describe(
             "40 m", spots, spots, new[] { Ok("RBN"), Ok("POTA") }, Now);
@@ -57,7 +57,7 @@ public sealed class BandConditionsTests
     [Fact]
     public void Quiet_BandIsNamedQuiet()
     {
-        var spots = OnFortyMetres(3);
+        var spots = OnFortyMeters(3);
 
         var line = BandConditions.Describe(
             "40 m", spots, spots, new[] { Ok("RBN"), Ok("POTA") }, Now);
@@ -74,7 +74,7 @@ public sealed class BandConditionsTests
     [Fact]
     public void ThinSample_SoftensTheWording()
     {
-        var spots = OnFortyMetres(2);
+        var spots = OnFortyMeters(2);
 
         var line = BandConditions.Describe(
             "40 m", spots, spots, new[] { Ok("RBN") }, Now);
@@ -91,7 +91,7 @@ public sealed class BandConditionsTests
     [Fact]
     public void DownSource_IsConfessedInTheLine()
     {
-        var spots = OnFortyMetres(30);
+        var spots = OnFortyMeters(30);
 
         var line = BandConditions.Describe(
             "40 m", spots, spots, new[] { Ok("RBN"), Down("POTA") }, Now);
@@ -176,7 +176,7 @@ public sealed class BandConditionsTests
     [Fact]
     public void DoesNotSuggest_ABandOnANoisyMargin()
     {
-        var here = OnFortyMetres(10);
+        var here = OnFortyMeters(10);
         var everywhere = here.Concat(new[] { Spot(14_030_000), Spot(14_035_000) }).ToList();
 
         var line = BandConditions.Describe(
@@ -192,7 +192,7 @@ public sealed class BandConditionsTests
     [Fact]
     public void OnlyCounts_WhatIsInsideTheWindow()
     {
-        var old = OnFortyMetres(40, ageMinutes: 30);
+        var old = OnFortyMeters(40, ageMinutes: 30);
 
         var line = BandConditions.Describe(
             "40 m", old, old, new[] { Ok("RBN") }, Now);
@@ -207,7 +207,7 @@ public sealed class BandConditionsTests
     [Fact]
     public void FullText_AlwaysCarriesTheEvidence()
     {
-        var spots = OnFortyMetres(30);
+        var spots = OnFortyMeters(30);
 
         var line = BandConditions.Describe(
             "40 m", spots, spots, new[] { Ok("RBN") }, Now);

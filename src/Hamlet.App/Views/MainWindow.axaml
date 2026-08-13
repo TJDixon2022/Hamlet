@@ -1,4 +1,4 @@
-﻿<Window xmlns="https://github.com/avaloniaui"
+<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:Hamlet.App.ViewModels"
         xmlns:ctl="using:Hamlet.App.Controls"
@@ -243,21 +243,21 @@
                             Background="{StaticResource HmAmberTintBrush}"
                             BorderBrush="{StaticResource HmAmberEdgeBrush}"
                             BorderThickness="1"
-                            IsVisible="{Binding LicenceMismatch,
+                            IsVisible="{Binding LicenseMismatch,
                                 Converter={x:Static ctl:PrivilegeToneConverter.NotNull}}">
                         <StackPanel Spacing="5">
-                            <TextBlock Text="{Binding LicenceMismatch.Narration}"
+                            <TextBlock Text="{Binding LicenseMismatch.Narration}"
                                        FontSize="12" FontWeight="SemiBold"
                                        TextWrapping="Wrap"
                                        Foreground="{StaticResource HmAmberDeepBrush}" />
-                            <TextBlock Text="Your licence, your call. Nothing has been changed."
+                            <TextBlock Text="Your license, your call. Nothing has been changed."
                                        FontSize="11" TextWrapping="Wrap"
                                        Foreground="{StaticResource HmTextMutedBrush}" />
                             <StackPanel Orientation="Horizontal" Spacing="8">
                                 <Button Content="Use the FCC value" FontSize="11" Padding="9,3"
                                         Command="{Binding AcceptLookedUpClassCommand}" />
                                 <Button Content="Keep mine" FontSize="11" Padding="9,3"
-                                        Command="{Binding KeepMyLicenceClassCommand}" />
+                                        Command="{Binding KeepMyLicenseClassCommand}" />
                             </StackPanel>
                         </StackPanel>
                     </Border>

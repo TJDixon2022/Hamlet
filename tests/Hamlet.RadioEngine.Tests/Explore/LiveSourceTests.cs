@@ -224,7 +224,7 @@ public sealed class LiveSourceTests
     }
 
     /// <remarks>
-    /// Proves SOTA ships switched off, and that the switch is a licence
+    /// Proves SOTA ships switched off, and that the switch is a license
     /// decision rather than a technical one: the API's terms require the
     /// developer to be registered with the SOTA Reflector's API-consumers
     /// group and to have had AI-written software approved. Hamlet does not

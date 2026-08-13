@@ -3,7 +3,7 @@ namespace Hamlet.RadioEngine.Explore;
 /// <summary>Which authority issued a callsign, at the coarsest useful grain.</summary>
 public enum CallsignRegion
 {
-    /// <summary>The prefix was not recognised.</summary>
+    /// <summary>The prefix was not recognized.</summary>
     Unknown,
 
     /// <summary>United States, including its territories.</summary>
@@ -12,7 +12,7 @@ public enum CallsignRegion
     /// <summary>Canada.</summary>
     Canada,
 
-    /// <summary>A recognised prefix outside the US and Canada.</summary>
+    /// <summary>A recognized prefix outside the US and Canada.</summary>
     Elsewhere,
 }
 
@@ -38,7 +38,7 @@ public readonly record struct CallsignOrigin(CallsignRegion Region, int? UsDistr
 /// "a 3-land station", never "a station in Pittsburgh" (HM-DEC-009).</para>
 /// <para>The US and Canadian prefix sets below are complete and closed, so a
 /// prefix outside them is genuinely outside North America. Everything else
-/// recognisable lands in <see cref="CallsignRegion.Elsewhere"/>, and anything
+/// recognizable lands in <see cref="CallsignRegion.Elsewhere"/>, and anything
 /// unparseable stays <see cref="CallsignRegion.Unknown"/> rather than being
 /// swept into a bucket that flatters the filter.</para>
 /// </remarks>
@@ -67,7 +67,7 @@ public static class CallsignRegions
     /// <returns>The issuing region and, for US calls, the district digit.</returns>
     public static CallsignOrigin Classify(string? callsign)
     {
-        var call = Normalise(callsign);
+        var call = Normalize(callsign);
         if (call.Length == 0)
         {
             return new CallsignOrigin(CallsignRegion.Unknown, null);
@@ -132,7 +132,7 @@ public static class CallsignRegions
                     return SpotProximity.Continent;
                 }
 
-                return IsNeighbouring(origin.UsDistrict.Value, homeDistrict.Value)
+                return IsNeighboring(origin.UsDistrict.Value, homeDistrict.Value)
                     ? SpotProximity.Local
                     : SpotProximity.Continent;
 
@@ -153,7 +153,7 @@ public static class CallsignRegions
     /// 2 NY/NJ, 3 PA/MD/DE/DC, 4 Southeast, 5 South Central, 6 California,
     /// 7 Northwest/Mountain, 8 MI/OH/WV, 9 IL/IN/WI, 0 Plains.
     /// </remarks>
-    public static bool IsNeighbouring(int district, int home)
+    public static bool IsNeighboring(int district, int home)
     {
         if (district == home)
         {
@@ -176,7 +176,7 @@ public static class CallsignRegions
         };
     }
 
-    private static string Normalise(string? callsign)
+    private static string Normalize(string? callsign)
     {
         if (string.IsNullOrWhiteSpace(callsign))
         {

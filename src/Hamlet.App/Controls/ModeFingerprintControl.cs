@@ -17,11 +17,11 @@ namespace Hamlet.App.Controls;
 /// <remarks>
 /// <para>The field guide used to draw each mode's signature as a static
 /// glyph. A static glyph can show that FT8 is rectangular, but not that it
-/// arrives in synchronised bursts and then stops — and the timing is half of
+/// arrives in synchronized bursts and then stops — and the timing is half of
 /// what identifies a mode. Driving these from
 /// <see cref="SignalSynthesizer"/> means the picture on the card and the
-/// picture on the waterfall are the same picture, so recognising one is
-/// recognising the other (HM-DEC-027).</para>
+/// picture on the waterfall are the same picture, so recognizing one is
+/// recognizing the other (HM-DEC-027).</para>
 /// <para>Small and cheap: sixty-four bins by forty rows, refreshed twelve
 /// times a second, and only while the control is on screen. Six of these on
 /// the field-guide panel cost less than the main waterfall alone.</para>
@@ -145,7 +145,7 @@ public sealed class ModeFingerprintControl : Control
     {
         var mode = ModeFor(Kind);
 
-        // One signal, centred, at full strength: the card is showing what the
+        // One signal, centerd, at full strength: the card is showing what the
         // mode looks like, not how a band looks.
         var signal = new SyntheticSignal(
             mode, CenterHz, 0.95, WordsPerMinute: 16, PhaseOffset: 0);

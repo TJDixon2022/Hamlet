@@ -6,7 +6,7 @@
 /// <remarks>
 /// <para>This began as a test double and is now a product feature
 /// (HM-DEC-026). Somebody licensed for years who still cannot tell one
-/// signal from another needs to practise, and practising on the air means
+/// signal from another needs to practice, and practicing on the air means
 /// owning a radio, having an antenna up, and hoping the band is open. Here
 /// they can learn the waterfall and the sound of each mode with nothing
 /// plugged in.</para>

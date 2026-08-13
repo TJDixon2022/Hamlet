@@ -6,7 +6,7 @@ public enum TrainingMode
     /// <summary>On/off keyed carrier — Morse.</summary>
     Cw,
 
-    /// <summary>Synchronised 15-second bursts.</summary>
+    /// <summary>Synchronized 15-second bursts.</summary>
     Ft8,
 
     /// <summary>Two tones, 170 Hz apart, alternating.</summary>

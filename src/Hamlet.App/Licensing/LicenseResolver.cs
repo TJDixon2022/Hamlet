@@ -4,7 +4,7 @@ using Hamlet.RadioEngine.Licensing;
 namespace Hamlet.App.Licensing;
 
 /// <summary>What a resolution attempt did.</summary>
-public enum LicenceResolutionOutcome
+public enum LicenseResolutionOutcome
 {
     /// <summary>Nothing to do: no callsign, or the class is already known.</summary>
     NotNeeded,
@@ -28,19 +28,19 @@ public enum LicenceResolutionOutcome
 /// <param name="Existing">The class already on the profile, or Unknown.</param>
 /// <param name="SourceName">Which service answered, or "".</param>
 /// <param name="Narration">One line for the status bar.</param>
-public sealed record LicenceResolution(
-    LicenceResolutionOutcome Outcome,
-    LicenceClass Found,
-    LicenceClass Existing,
+public sealed record LicenseResolution(
+    LicenseResolutionOutcome Outcome,
+    LicenseClass Found,
+    LicenseClass Existing,
     string SourceName,
     string Narration)
 {
     /// <summary>True when the operator has a decision to make.</summary>
-    public bool NeedsOperatorDecision => Outcome == LicenceResolutionOutcome.Mismatch;
+    public bool NeedsOperatorDecision => Outcome == LicenseResolutionOutcome.Mismatch;
 }
 
 /// <summary>
-/// Fills in the operator's licence class quietly, whenever it is missing.
+/// Fills in the operator's license class quietly, whenever it is missing.
 /// </summary>
 /// <remarks>
 /// <para>LAZY, NOT A WIZARD STEP (HM-DEC-028). People skip wizards, and the
@@ -51,13 +51,13 @@ public sealed record LicenceResolution(
 /// operator carries on.</para>
 /// <para>A LOOKUP NEVER OVERWRITES A HAND-SET CLASS. If the operator chose
 /// General and the FCC data says Extra, both are shown with the source and
-/// date and the operator decides. It is their licence; software that silently
+/// date and the operator decides. It is their license; software that silently
 /// corrected them would be wrong even on the occasions it was right.</para>
 /// <para>Nobody is ever blocked. A service that is down leaves the class
 /// unknown, the band map draws no overlay and says why, and Settings still
 /// takes a hand-picked answer.</para>
 /// </remarks>
-public sealed class LicenceResolver
+public sealed class LicenseResolver
 {
     private readonly ICallsignLookup _lookup;
     private readonly Func<DateTime> _utcNow;
@@ -65,7 +65,7 @@ public sealed class LicenceResolver
     /// <summary>Creates the resolver.</summary>
     /// <param name="lookup">The lookup service.</param>
     /// <param name="utcNow">Clock, injected for testability.</param>
-    public LicenceResolver(ICallsignLookup lookup, Func<DateTime>? utcNow = null)
+    public LicenseResolver(ICallsignLookup lookup, Func<DateTime>? utcNow = null)
     {
         _lookup = lookup;
         _utcNow = utcNow ?? (() => DateTime.UtcNow);
@@ -79,7 +79,7 @@ public sealed class LicenceResolver
     /// <returns>True when a lookup should run.</returns>
     public static bool NeedsResolution(OperatorProfile profile)
         => !string.IsNullOrWhiteSpace(profile.Callsign)
-           && profile.LicenceClass == LicenceClass.Unknown;
+           && profile.LicenseClass == LicenseClass.Unknown;
 
     /// <summary>
     /// The line the status bar shows while a lookup is in flight.
@@ -98,26 +98,26 @@ public sealed class LicenceResolver
     /// </param>
     /// <param name="cancellationToken">Cancels the lookup.</param>
     /// <returns>What happened, and what to narrate.</returns>
-    public async Task<LicenceResolution> ResolveAsync(
+    public async Task<LicenseResolution> ResolveAsync(
         OperatorProfile profile, CancellationToken cancellationToken = default)
     {
         var callsign = (profile.Callsign ?? "").Trim();
 
         if (callsign.Length == 0)
         {
-            return new LicenceResolution(
-                LicenceResolutionOutcome.NotNeeded, LicenceClass.Unknown,
-                profile.LicenceClass, "", "");
+            return new LicenseResolution(
+                LicenseResolutionOutcome.NotNeeded, LicenseClass.Unknown,
+                profile.LicenseClass, "", "");
         }
 
         // A class that is already known and was looked up needs nothing. A
         // hand-set class is still checked, because a disagreement is worth
         // showing — but it is shown, never applied.
-        if (profile.LicenceClass != LicenceClass.Unknown && !profile.LicenceClassWasSetByHand)
+        if (profile.LicenseClass != LicenseClass.Unknown && !profile.LicenseClassWasSetByHand)
         {
-            return new LicenceResolution(
-                LicenceResolutionOutcome.NotNeeded, LicenceClass.Unknown,
-                profile.LicenceClass, "", "");
+            return new LicenseResolution(
+                LicenseResolutionOutcome.NotNeeded, LicenseClass.Unknown,
+                profile.LicenseClass, "", "");
         }
 
         CallsignLookupResult? result;
@@ -133,46 +133,46 @@ public sealed class LicenceResolver
         {
             // Unreachable is a condition, not an error. The operator is not
             // blocked: Settings still takes a hand-picked class.
-            return new LicenceResolution(
-                LicenceResolutionOutcome.Unavailable, LicenceClass.Unknown,
-                profile.LicenceClass, _lookup.SourceName,
-                $"Couldn't reach {_lookup.SourceName} — set your licence class in "
+            return new LicenseResolution(
+                LicenseResolutionOutcome.Unavailable, LicenseClass.Unknown,
+                profile.LicenseClass, _lookup.SourceName,
+                $"Couldn't reach {_lookup.SourceName} — set your license class in "
                 + "Settings, or try again later.");
         }
 
         if (result is null)
         {
-            return new LicenceResolution(
-                LicenceResolutionOutcome.NotFound, LicenceClass.Unknown,
-                profile.LicenceClass, _lookup.SourceName,
+            return new LicenseResolution(
+                LicenseResolutionOutcome.NotFound, LicenseClass.Unknown,
+                profile.LicenseClass, _lookup.SourceName,
                 $"{_lookup.SourceName} doesn't have {callsign.ToUpperInvariant()} — "
-                + "set your licence class in Settings.");
+                + "set your license class in Settings.");
         }
 
-        if (profile.LicenceClassWasSetByHand && result.Class != profile.LicenceClass)
+        if (profile.LicenseClassWasSetByHand && result.Class != profile.LicenseClass)
         {
             // The one case that must not be automatic.
-            return new LicenceResolution(
-                LicenceResolutionOutcome.Mismatch, result.Class, profile.LicenceClass,
+            return new LicenseResolution(
+                LicenseResolutionOutcome.Mismatch, result.Class, profile.LicenseClass,
                 result.SourceName,
                 $"FCC data shows {PrivilegePlan.Describe(result.Class)}; you have "
-                + $"{PrivilegePlan.Describe(profile.LicenceClass)} set.");
+                + $"{PrivilegePlan.Describe(profile.LicenseClass)} set.");
         }
 
-        if (profile.LicenceClassWasSetByHand)
+        if (profile.LicenseClassWasSetByHand)
         {
             // They agree. Leave the operator's own answer standing — it is
             // still their statement, now corroborated.
-            return new LicenceResolution(
-                LicenceResolutionOutcome.NotNeeded, result.Class, profile.LicenceClass,
+            return new LicenseResolution(
+                LicenseResolutionOutcome.NotNeeded, result.Class, profile.LicenseClass,
                 result.SourceName, "");
         }
 
-        profile.SetLicenceClass(
-            result.Class, LicenceClassSource.LookedUp, result.SourceName, _utcNow());
+        profile.SetLicenseClass(
+            result.Class, LicenseClassSource.LookedUp, result.SourceName, _utcNow());
 
-        return new LicenceResolution(
-            LicenceResolutionOutcome.Resolved, result.Class, LicenceClass.Unknown,
+        return new LicenseResolution(
+            LicenseResolutionOutcome.Resolved, result.Class, LicenseClass.Unknown,
             result.SourceName,
             $"{PrivilegePlan.Describe(result.Class)} — from FCC data, today.");
     }
@@ -185,21 +185,21 @@ public sealed class LicenceResolver
     /// <returns>Plain language, or "" when nothing is known.</returns>
     public static string DescribeProvenance(OperatorProfile profile)
     {
-        if (profile.LicenceClass == LicenceClass.Unknown)
+        if (profile.LicenseClass == LicenseClass.Unknown)
         {
-            return "Licence class not set — the band map will not guess at your privileges.";
+            return "License class not set — the band map will not guess at your privileges.";
         }
 
-        var name = PrivilegePlan.Describe(profile.LicenceClass);
-        var on = string.IsNullOrWhiteSpace(profile.LicenceClassSetOn)
+        var name = PrivilegePlan.Describe(profile.LicenseClass);
+        var on = string.IsNullOrWhiteSpace(profile.LicenseClassSetOn)
             ? ""
-            : $", {profile.LicenceClassSetOn}";
+            : $", {profile.LicenseClassSetOn}";
 
-        return profile.LicenceClassSource switch
+        return profile.LicenseClassSource switch
         {
-            LicenceClassSource.LookedUp =>
-                $"{name} — from {profile.LicenceClassSourceName}{on}.",
-            LicenceClassSource.EnteredByOperator =>
+            LicenseClassSource.LookedUp =>
+                $"{name} — from {profile.LicenseClassSourceName}{on}.",
+            LicenseClassSource.EnteredByOperator =>
                 $"{name} — you set this{on}.",
             _ => name,
         };

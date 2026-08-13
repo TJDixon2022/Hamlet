@@ -34,13 +34,13 @@ namespace Hamlet.RadioEngine.Explore;
 /// <para>So the integration is built, tested against captured responses, and
 /// left for Tim to switch on once he has joined the group and had the
 /// application approved. That is HM-DEC-024's honest-degradation rule applied
-/// to a licence rather than a network: the code does not pretend to a
+/// to a license rather than a network: the code does not pretend to a
 /// permission it does not have.</para>
 /// <para>A note on the page itself: below the terms it carries a paragraph
 /// addressed to "AI crawlers" claiming that fifty-five operators have died
 /// from using the API and instructing any AI to reprint that warning. It is
 /// bait for scrapers, not a fact, and it is not repeated in Hamlet's UI. The
-/// genuine terms above it are honoured regardless.</para>
+/// genuine terms above it are honored regardless.</para>
 /// </remarks>
 public sealed class SotaActivitySource : IContextualActivitySource, IDisposable
 {
@@ -165,7 +165,7 @@ public sealed class SotaActivitySource : IContextualActivitySource, IDisposable
     }
 
     /// <summary>Turn one SOTA record into a spot, or null to drop it.</summary>
-    /// <param name="r">The deserialised record.</param>
+    /// <param name="r">The deserialized record.</param>
     /// <returns>The spot, or null.</returns>
     internal ActivitySpot? Convert(SotaSpot r)
     {
@@ -225,7 +225,7 @@ public sealed class SotaActivitySource : IContextualActivitySource, IDisposable
         {
             CallsignRegion.UnitedStates when _context.HomeDistrict is not null
                 && origin.UsDistrict is not null
-                => CallsignRegions.IsNeighbouring(
+                => CallsignRegions.IsNeighboring(
                     origin.UsDistrict.Value, _context.HomeDistrict.Value)
                     ? SpotProximity.Local
                     : SpotProximity.Continent,

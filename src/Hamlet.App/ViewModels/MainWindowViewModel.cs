@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using Avalonia;
 using Avalonia.Threading;
@@ -57,7 +57,7 @@ public partial class MainWindowViewModel : ObservableObject
     private TrainingSpectrumSource? _trainingSpectrum;
     private readonly Audio.ModeAudioPlayer _audio = new();
     private readonly PrivilegePlan _privileges = new();
-    private CancellationTokenSource? _licenceLookup;
+    private CancellationTokenSource? _licenseLookup;
     private IRig? _rig;
     private bool _updatingFromRig;
     private bool _rigSendPending;
@@ -142,7 +142,7 @@ public partial class MainWindowViewModel : ObservableObject
     private double _waterfallGain = 1.35;
 
     /// <summary>
-    /// Where this licence class may transmit across the band on screen.
+    /// Where this license class may transmit across the band on screen.
     /// </summary>
     /// <remarks>
     /// Computed once, here, from the cited Part 97 data, and handed to every
@@ -176,7 +176,7 @@ public partial class MainWindowViewModel : ObservableObject
     /// while this is set — the operator decides (HM-DEC-028).
     /// </remarks>
     [ObservableProperty]
-    private LicenceResolution? _licenceMismatch;
+    private LicenseResolution? _licenseMismatch;
 
     /// <summary>One line naming which sources answered, for the panel header.</summary>
     [ObservableProperty]
@@ -219,11 +219,11 @@ public partial class MainWindowViewModel : ObservableObject
     /// <summary>The training radio plus every serial port on this machine.</summary>
     public ObservableCollection<string> AvailablePorts { get; }
 
-    /// <summary>The operator's licence class, or Unknown.</summary>
-    public LicenceClass LicenceClass => _settings.Operator.LicenceClass;
+    /// <summary>The operator's license class, or Unknown.</summary>
+    public LicenseClass LicenseClass => _settings.Operator.LicenseClass;
 
     /// <summary>Provenance for the class, shown in Settings and the About box.</summary>
-    public string LicenceProvenance => LicenceResolver.DescribeProvenance(_settings.Operator);
+    public string LicenseProvenance => LicenseResolver.DescribeProvenance(_settings.Operator);
 
     /// <summary>Collapsed-header line for the neighborhood map (HM-DEC-021).</summary>
     public string MapSummary => string.Create(CultureInfo.InvariantCulture,
@@ -239,7 +239,7 @@ public partial class MainWindowViewModel : ObservableObject
     /// neither does this. That is the whole of HM-DEC-026: connection state
     /// IS the mode, so the label cannot drift out of step with what is on
     /// screen, and there is no setting anywhere that could put synthetic
-    /// signals up unlabelled.
+    /// signals up unlabeled.
     /// </remarks>
     public bool SignalsAreSimulated => SpectrumSource?.IsSimulated == true;
 
@@ -335,7 +335,7 @@ public partial class MainWindowViewModel : ObservableObject
         UpdateSpotFreshness();
 
         _ = ReloadSpotsAsync("startup");
-        _ = ResolveLicenceClassAsync();
+        _ = ResolveLicenseClassAsync();
         ApplyFeedTimers();
     }
 
@@ -630,7 +630,7 @@ public partial class MainWindowViewModel : ObservableObject
 
         // The callsign or the class may have changed while the dialog was
         // open, so the lazy resolve gets another chance (HM-DEC-028).
-        _ = ResolveLicenceClassAsync();
+        _ = ResolveLicenseClassAsync();
         UpdatePrivileges();
 
         // The interval may have changed while the dialog was open.
@@ -665,7 +665,7 @@ public partial class MainWindowViewModel : ObservableObject
     /// </summary>
     /// <remarks>
     /// Rebuilt per band rather than retuned, because the signals are placed
-    /// against that band's own neighborhood map — practising on 20 m has to
+    /// against that band's own neighborhood map — practicing on 20 m has to
     /// teach 20 m (HM-DEC-026).
     /// </remarks>
     private void StartTrainingSpectrum()
@@ -1036,7 +1036,7 @@ public partial class MainWindowViewModel : ObservableObject
     /// </remarks>
     private void UpdateBandActivity(DateTime now)
     {
-        var readings = BandActivity.Summarise(
+        var readings = BandActivity.Summarize(
             Bands.Select(b => b.Band).ToList(),
             _allBandSpots,
             _activitySource.Statuses,
@@ -1075,7 +1075,7 @@ public partial class MainWindowViewModel : ObservableObject
               + (down.Count > 0 ? $" · {string.Join(", ", down.Select(d => d.Name))} down" : "");
     }
 
-    /// <summary>Re-age everything on screen: the header line, its colour, each
+    /// <summary>Re-age everything on screen: the header line, its color, each
     /// card's own age, and the expiry of the "new" tags.</summary>
     private void UpdateSpotFreshness()
     {
@@ -1143,7 +1143,7 @@ public partial class MainWindowViewModel : ObservableObject
     /// </remarks>
     private void UpdatePrivileges()
     {
-        var cls = _settings.Operator.LicenceClass;
+        var cls = _settings.Operator.LicenseClass;
 
         PrivilegeSpans = _privileges.SpansFor(SelectedBand.Band, cls);
         PrivilegeStatus = PrivilegeStatusLine.Build(
@@ -1153,9 +1153,9 @@ public partial class MainWindowViewModel : ObservableObject
         // since changed. Answering it by other means makes it moot, and a
         // panel still offering "keep Technician" after they picked General
         // would be asking about a world that no longer exists.
-        if (LicenceMismatch is { } pending && pending.Existing != cls)
+        if (LicenseMismatch is { } pending && pending.Existing != cls)
         {
-            LicenceMismatch = null;
+            LicenseMismatch = null;
         }
 
         // The ladder was opened from the listen-only line, and the button
@@ -1174,8 +1174,8 @@ public partial class MainWindowViewModel : ObservableObject
                 _privileges, cls, SelectedBand.Band);
         }
 
-        OnPropertyChanged(nameof(LicenceClass));
-        OnPropertyChanged(nameof(LicenceProvenance));
+        OnPropertyChanged(nameof(LicenseClass));
+        OnPropertyChanged(nameof(LicenseProvenance));
     }
 
     /// <summary>
@@ -1193,18 +1193,18 @@ public partial class MainWindowViewModel : ObservableObject
 
         UpgradeLadder = UpgradeLadderVisible
             ? PrivilegeStatusLine.UpgradeLadder(
-                _privileges, _settings.Operator.LicenceClass, SelectedBand.Band)
+                _privileges, _settings.Operator.LicenseClass, SelectedBand.Band)
             : Array.Empty<string>();
 
         if (UpgradeLadderVisible)
         {
             AppEvents.UpgradeLadderOpened(
-                _telemetry, PrivilegePlan.Describe(_settings.Operator.LicenceClass));
+                _telemetry, PrivilegePlan.Describe(_settings.Operator.LicenseClass));
         }
     }
 
     /// <summary>
-    /// Look up the operator's licence class when it is missing (HM-DEC-028).
+    /// Look up the operator's license class when it is missing (HM-DEC-028).
     /// </summary>
     /// <remarks>
     /// <para>Lazy and automatic: attached to the fact rather than to a wizard
@@ -1216,10 +1216,10 @@ public partial class MainWindowViewModel : ObservableObject
     /// unknown, the map draws no overlay, and Settings still takes a
     /// hand-picked answer.</para>
     /// </remarks>
-    public async Task ResolveLicenceClassAsync()
+    public async Task ResolveLicenseClassAsync()
     {
-        if (!LicenceResolver.NeedsResolution(_settings.Operator)
-            && !_settings.Operator.LicenceClassWasSetByHand)
+        if (!LicenseResolver.NeedsResolution(_settings.Operator)
+            && !_settings.Operator.LicenseClassWasSetByHand)
         {
             return;
         }
@@ -1230,23 +1230,23 @@ public partial class MainWindowViewModel : ObservableObject
             return;
         }
 
-        _licenceLookup?.Cancel();
-        _licenceLookup?.Dispose();
+        _licenseLookup?.Cancel();
+        _licenseLookup?.Dispose();
         var cts = new CancellationTokenSource();
-        _licenceLookup = cts;
+        _licenseLookup = cts;
 
-        var showNarration = LicenceResolver.NeedsResolution(_settings.Operator);
+        var showNarration = LicenseResolver.NeedsResolution(_settings.Operator);
         if (showNarration)
         {
-            StatusText = LicenceResolver.LookingUpNarration(callsign);
+            StatusText = LicenseResolver.LookingUpNarration(callsign);
         }
 
-        LicenceResolution resolution;
+        LicenseResolution resolution;
         try
         {
             using var lookup = new CallookCallsignLookup(
                 AboutViewModel.AppVersion, callsign);
-            var resolver = new LicenceResolver(lookup);
+            var resolver = new LicenseResolver(lookup);
             resolution = await resolver.ResolveAsync(_settings.Operator, cts.Token);
         }
         catch (OperationCanceledException)
@@ -1261,32 +1261,32 @@ public partial class MainWindowViewModel : ObservableObject
 
         switch (resolution.Outcome)
         {
-            case LicenceResolutionOutcome.Resolved:
+            case LicenseResolutionOutcome.Resolved:
                 SettingsStore.Save(_settings);
                 StatusText = resolution.Narration;
-                AppEvents.LicenceClassResolved(
+                AppEvents.LicenseClassResolved(
                     _telemetry, PrivilegePlan.Describe(resolution.Found),
                     resolution.SourceName);
                 break;
 
-            case LicenceResolutionOutcome.Mismatch:
-                // Shown, never applied. Their licence, their call.
-                LicenceMismatch = resolution;
+            case LicenseResolutionOutcome.Mismatch:
+                // Shown, never applied. Their license, their call.
+                LicenseMismatch = resolution;
                 StatusText = resolution.Narration;
-                AppEvents.LicenceClassMismatch(
+                AppEvents.LicenseClassMismatch(
                     _telemetry,
                     PrivilegePlan.Describe(resolution.Found),
                     PrivilegePlan.Describe(resolution.Existing));
                 break;
 
-            case LicenceResolutionOutcome.NotFound:
-            case LicenceResolutionOutcome.Unavailable:
+            case LicenseResolutionOutcome.NotFound:
+            case LicenseResolutionOutcome.Unavailable:
                 if (showNarration)
                 {
                     StatusText = resolution.Narration;
                 }
 
-                AppEvents.LicenceClassLookupFailed(
+                AppEvents.LicenseClassLookupFailed(
                     _telemetry, resolution.Outcome.ToString());
                 break;
 
@@ -1301,20 +1301,20 @@ public partial class MainWindowViewModel : ObservableObject
     [RelayCommand]
     private void AcceptLookedUpClass()
     {
-        if (LicenceMismatch is not { } mismatch)
+        if (LicenseMismatch is not { } mismatch)
         {
             return;
         }
 
-        _settings.Operator.SetLicenceClass(
-            mismatch.Found, LicenceClassSource.LookedUp, mismatch.SourceName, DateTime.UtcNow);
+        _settings.Operator.SetLicenseClass(
+            mismatch.Found, LicenseClassSource.LookedUp, mismatch.SourceName, DateTime.UtcNow);
         SettingsStore.Save(_settings);
 
-        AppEvents.LicenceClassResolved(
+        AppEvents.LicenseClassResolved(
             _telemetry, PrivilegePlan.Describe(mismatch.Found), mismatch.SourceName);
 
-        LicenceMismatch = null;
-        StatusText = LicenceResolver.DescribeProvenance(_settings.Operator);
+        LicenseMismatch = null;
+        StatusText = LicenseResolver.DescribeProvenance(_settings.Operator);
         UpdatePrivileges();
     }
 
@@ -1325,19 +1325,19 @@ public partial class MainWindowViewModel : ObservableObject
     /// asked again tomorrow would not have heard it.
     /// </remarks>
     [RelayCommand]
-    private void KeepMyLicenceClass()
+    private void KeepMyLicenseClass()
     {
-        if (LicenceMismatch is not { } mismatch)
+        if (LicenseMismatch is not { } mismatch)
         {
             return;
         }
 
-        _settings.Operator.SetLicenceClass(
-            mismatch.Existing, LicenceClassSource.EnteredByOperator, "", DateTime.UtcNow);
+        _settings.Operator.SetLicenseClass(
+            mismatch.Existing, LicenseClassSource.EnteredByOperator, "", DateTime.UtcNow);
         SettingsStore.Save(_settings);
 
-        LicenceMismatch = null;
-        StatusText = LicenceResolver.DescribeProvenance(_settings.Operator);
+        LicenseMismatch = null;
+        StatusText = LicenseResolver.DescribeProvenance(_settings.Operator);
         UpdatePrivileges();
     }
 

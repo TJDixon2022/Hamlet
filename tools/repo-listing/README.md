@@ -69,7 +69,7 @@ a folder at the repository root is caught as well as a nested one.
 ## Traps carried from real use
 
 - A trailing backslash on the argument used to make every path in the listing
-  absolute instead of relative. Normalised now.
+  absolute instead of relative. Normalized now.
 - `Total bytes` is computed with `set /a` and is 32-bit. Past about 2.1 GB it
   wraps and shows negative.
 - Delayed expansion means a file path containing `!` will have its row

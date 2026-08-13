@@ -105,10 +105,10 @@ public static class OperatorLocation
     }
 
     /// <summary>
-    /// Convert a Maidenhead locator to the centre of the square it names.
+    /// Convert a Maidenhead locator to the center of the square it names.
     /// </summary>
     /// <param name="grid">Four or six characters, e.g. "EN90" or "FN00aa".</param>
-    /// <returns>The centre point, or null when the locator is malformed.</returns>
+    /// <returns>The center point, or null when the locator is malformed.</returns>
     public static LatLon? FromGrid(string? grid)
     {
         if (string.IsNullOrWhiteSpace(grid))
@@ -128,7 +128,7 @@ public static class OperatorLocation
         var lat = ((g[1] - 'A') * 10.0) - 90.0 + (g[3] - '0');
 
         // Six-character locators refine to a subsquare; four-character ones
-        // resolve to the centre of the whole square.
+        // resolve to the center of the whole square.
         if (g.Length >= 6 && g[4] is >= 'A' and <= 'X' && g[5] is >= 'A' and <= 'X')
         {
             lon += (g[4] - 'A') * (2.0 / 24.0) + (1.0 / 24.0);
@@ -167,15 +167,15 @@ public static class OperatorLocation
     /// </summary>
     /// <param name="grid">Maidenhead locator.</param>
     /// <returns>The trimmed, upper-cased locator, or "".</returns>
-    public static string Normalise(string? grid)
+    public static string Normalize(string? grid)
         => string.IsNullOrWhiteSpace(grid)
             ? string.Empty
             : grid.Trim().ToUpperInvariant();
 
-    /// <summary>Great-circle distance in kilometres between two points.</summary>
+    /// <summary>Great-circle distance in kilometers between two points.</summary>
     /// <param name="a">First point.</param>
     /// <param name="b">Second point.</param>
-    /// <returns>Distance in kilometres.</returns>
+    /// <returns>Distance in kilometers.</returns>
     public static double DistanceKm(LatLon a, LatLon b)
     {
         const double earthRadiusKm = 6371.0;
@@ -191,7 +191,7 @@ public static class OperatorLocation
     }
 
     /// <summary>Render a distance for display, e.g. "480 km".</summary>
-    /// <param name="km">Distance in kilometres.</param>
+    /// <param name="km">Distance in kilometers.</param>
     /// <returns>Rounded distance with its unit.</returns>
     public static string DescribeDistance(double km)
         => Math.Round(km).ToString("0", CultureInfo.InvariantCulture) + " km";

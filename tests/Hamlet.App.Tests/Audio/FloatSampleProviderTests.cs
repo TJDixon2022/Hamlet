@@ -74,7 +74,7 @@ public sealed class FloatSampleProviderTests
     }
 
     /// <remarks>
-    /// Proves reads honour a non-zero offset and never write outside the
+    /// Proves reads honor a non-zero offset and never write outside the
     /// window they were given. NAudio reads into the middle of a shared buffer,
     /// and a provider that ignored the offset would corrupt whatever else was
     /// in it.

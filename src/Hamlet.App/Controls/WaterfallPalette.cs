@@ -1,17 +1,17 @@
 namespace Hamlet.App.Controls;
 
 /// <summary>
-/// The waterfall's colour ramp: 256 pre-mixed colours from noise floor to
+/// The waterfall's color ramp: 256 pre-mixed colors from noise floor to
 /// full scale.
 /// </summary>
 /// <remarks>
 /// <para>A dark instrument surface on warm paper, which is how HM-DEC-012 was
-/// already applied to the rig's LCD. The app is a light theme with colour,
+/// already applied to the rig's LCD. The app is a light theme with color,
 /// but a waterfall is a screen you read faint detail off, and faint detail on
 /// white is unreadable. Making it dark is consistent with the ruling rather
 /// than an exception to it — the panel around it stays white.</para>
 /// <para>Built once into a lookup table. At twenty-five frames a second times
-/// five hundred bins, mixing a colour per pixel would be twelve thousand
+/// five hundred bins, mixing a color per pixel would be twelve thousand
 /// interpolations a second for a picture that only has 256 possible values
 /// (HM-DEC-006).</para>
 /// </remarks>
@@ -36,15 +36,15 @@ public static class WaterfallPalette
     private static readonly int[] Table = Build();
 
     /// <summary>
-    /// The colour for one amplitude, as premultiplied BGRA packed into an
+    /// The color for one amplitude, as premultiplied BGRA packed into an
     /// int.
     /// </summary>
     /// <param name="amplitude">Bin amplitude, 0 to 255.</param>
     /// <returns>Packed BGRA suitable for a Bgra8888 bitmap.</returns>
-    public static int Colour(byte amplitude) => Table[amplitude];
+    public static int Color(byte amplitude) => Table[amplitude];
 
     /// <summary>The whole table, for the renderer to index directly.</summary>
-    /// <returns>256 packed BGRA colours.</returns>
+    /// <returns>256 packed BGRA colors.</returns>
     public static int[] Lookup() => Table;
 
     private static int[] Build()

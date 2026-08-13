@@ -27,7 +27,7 @@ public sealed record RankedSpot(ActivitySpot Spot, int Score, string Reason);
 /// radio somewhere on purpose to be called, needs contacts for the
 /// activation to count, and will slow down for an obvious beginner. It is
 /// the friendliest contact on the band.</item>
-/// <item><b>CQ</b> beats a contest run beats an unlabelled spot. A CQ is an
+/// <item><b>CQ</b> beats a contest run beats an unlabeled spot. A CQ is an
 /// open invitation; a contest exchange is a closed loop at speed; a beacon
 /// answers nobody and is pushed to the bottom.</item>
 /// <item><b>Slow CW</b> beats fast. Under about 18 WPM is copyable by

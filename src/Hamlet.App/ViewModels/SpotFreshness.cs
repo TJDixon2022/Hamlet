@@ -11,7 +11,7 @@ public enum FreshnessLevel
     /// <summary>Past twice the interval: shown amber.</summary>
     Aging,
 
-    /// <summary>Past four times the interval: labelled "stale".</summary>
+    /// <summary>Past four times the interval: labeled "stale".</summary>
     Stale,
 }
 

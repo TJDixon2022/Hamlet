@@ -105,7 +105,7 @@ echo.
 echo   Scope note: only files graphify scans can make its graph stale.
 echo   Editing this batch file, or anything .graphifyignore excludes, cannot.
 
-REM --- 8. Commit line, correctly labelled ------------------------------------
+REM --- 8. Commit line, correctly labeled ------------------------------------
 if defined REPORT (
   echo.
   echo --- last full build ---

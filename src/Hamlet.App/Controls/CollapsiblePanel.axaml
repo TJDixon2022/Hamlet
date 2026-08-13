@@ -41,7 +41,7 @@
 
                         <!-- The header carries the panel's name for screen
                              readers and UI automation; without it a shut
-                             panel is an unlabelled button. -->
+                             panel is an unlabeled button. -->
                         <Button Grid.Row="0" Name="PART_Header"
                                 Theme="{StaticResource HmPanelHeaderButton}"
                                 AutomationProperties.Name="{TemplateBinding Title}"

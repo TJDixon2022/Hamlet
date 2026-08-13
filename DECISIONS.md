@@ -35,7 +35,7 @@ evidence that nobody asked it. Crediting that silence would have produced
 never looked at: a confident claim manufactured from a source that was not
 listening, which is exactly what HM-DEC-025 exists to prevent. So a source can
 now declare the band it is scoped to, the aggregate publishes that on every
-status, and each band is summarised only from the sources that can actually
+status, and each band is summarized only from the sources that can actually
 see it. Verified live: the current band's tooltip reads "From POTA and RBN"
 while every other band reads "From POTA".
 
@@ -102,19 +102,19 @@ refs: data/privileges/us-part97-privileges.json, src/Hamlet.RadioEngine/Licensin
 US Part 97 transmit privileges are cited data under `/data`, not carried
 knowledge. The band map shows them as a veil over the culture map, tuning is
 never restricted, the status line explains rather than scolds, and an
-unresolved licence class draws NO overlay rather than a guessed one.
+unresolved license class draws NO overlay rather than a guessed one.
 
 THE ONE FACT THAT DOES THE MOST WORK: listening is never restricted. Any
-licence may receive anywhere; the rules are about transmitting. The operator
+license may receive anywhere; the rules are about transmitting. The operator
 this serves has been licensed six years and has never made a contact, and part
 of that is a quiet fear of transmitting somewhere he is not allowed. Every
 piece of this is shaped to make that distinction plain rather than to imply
 the band is full of forbidden zones — which is why the veil is faint enough to
-read the neighbourhood colour through, why it is labelled "listen only", why
+read the neighborhood color through, why it is labeled "listen only", why
 the reassurance sentence appears whenever transmitting is restricted, and why
 the tone is amber and never red. Being outside your privileges while tuning
 around is not an error. It is the ordinary state of most of the band for most
-licences, and the app should sound like it knows that.
+licenses, and the app should sound like it knows that.
 
 The data is a transcription of 47 CFR 97.301, 97.305 and 97.307, read from
 eCFR's versioner API on 2026-08-13, with the paragraph cited on every row.
@@ -156,13 +156,13 @@ dial tape ever shows privileges they take the same list rather than computing
 their own — two pictures of one law that disagreed would be worse than either
 alone.
 
-THE GUARD RAIL IS TRANSMIT ONLY. "Only let me transmit where my licence
+THE GUARD RAIL IS TRANSMIT ONLY. "Only let me transmit where my license
 allows", on by default, consulted at exactly one moment: before Hamlet keys a
 transmitter. It is never asked about tuning, receiving or drawing. No transmit
 path exists yet — HM-DEC-008 gates keying on the vendored manual — so the
 setting, the check and its tests are built now and THE SEAM IS THIS: whatever
 first keys the transmitter, CI-V 0x17 or PTT, calls `TransmitGuard.Check` and
-honours the answer. The override is passed per call rather than read from
+honors the answer. The override is passed per call rather than read from
 settings, so it can live beside the transmit control: somebody deliberately
 keying outside their privileges should reach for it consciously, and somebody
 tuning around should never meet it. An unknown class does not block
@@ -172,10 +172,10 @@ service was down.
 ---
 id: HM-DEC-028
 date: 2026-08-13
-refs: src/Hamlet.App/Licensing/LicenceResolver.cs, src/Hamlet.RadioEngine/Licensing/CallsignLookup.cs, HM-DEC-019, HM-DEC-024
+refs: src/Hamlet.App/Licensing/LicenseResolver.cs, src/Hamlet.RadioEngine/Licensing/CallsignLookup.cs, HM-DEC-019, HM-DEC-024
 ---
 
-The operator's licence class lives in the profile with its provenance, is
+The operator's license class lives in the profile with its provenance, is
 resolved lazily and automatically whenever a callsign is present and the class
 is unknown, and a lookup never silently overwrites a hand-set value — a
 mismatch is shown with both values and the operator decides.
@@ -194,7 +194,7 @@ entitled to see which they are looking at.
 
 A LOOKUP NEVER OVERWRITES A HAND-SET CLASS. If the operator set General and the
 FCC data says Extra, both are shown with the source and the date and nothing is
-written until they choose. It is their licence. Software that silently
+written until they choose. It is their license. Software that silently
 corrected them would be wrong even on the occasions it was right. Declining is
 an answer, and the profile is re-stamped so the same question does not reappear
 tomorrow.
@@ -263,16 +263,16 @@ the operator is pointing and all three markers move together. That is phase 2's
 click-a-signal gesture, built early because the training radio makes it useful
 before any hardware exists.
 
-Field-guide audio is generated, not recorded. Recorded clips carry a licence
+Field-guide audio is generated, not recorded. Recorded clips carry a license
 and a provenance question into a GPL-3.0 repository, cannot be parameterised,
-and cannot be asserted on. Generated audio is licence-free, byte-for-byte
+and cannot be asserted on. Generated audio is license-free, byte-for-byte
 deterministic, testable, and adjustable — CW at 12, 18 and 25 WPM is how
 somebody finds the speed they can actually copy, which is the groundwork FG-002
 needs. SSB is offered tuned and mistuned side by side, because hearing those
 two back to back is the fastest way to learn what the tuning knob is for. Each
 card's fingerprint is animated by the same synthesiser that draws the
 waterfall, so the picture on the card and the picture on the panel are the same
-picture and recognising one is recognising the other.
+picture and recognizing one is recognizing the other.
 
 ---
 id: HM-DEC-026
@@ -283,12 +283,12 @@ refs: src/Hamlet.RadioEngine/Training/TrainingSpectrumSource.cs, src/Hamlet.Radi
 The simulated radio is a training feature, not a test double. The waterfall
 states that its signals are simulated whenever the connected rig is simulated,
 and that statement is derived from connection state rather than set, so the app
-cannot show synthetic signals unlabelled. Synthesised signals sit at real
+cannot show synthetic signals unlabeled. Synthesised signals sit at real
 band-plan frequencies, so practice teaches the real band.
 
 `FakeRig` becomes `TrainingRig` and the port list says "Training radio (no
 hardware)". Someone licensed since 2020 who still cannot tell one signal from
-another needs to practise, and practising on the air means owning a radio,
+another needs to practice, and practicing on the air means owning a radio,
 having an antenna up, and hoping the band is open tonight. Here they can learn
 the waterfall and the sound of each mode with nothing plugged in. It still
 backs UI development and engine tests; what changed is that it is now something
@@ -298,7 +298,7 @@ CONNECTION STATE IS THE MODE, and structurally so. `IRig.IsSimulated` and
 `ISpectrumSource.IsSimulated` are get-only properties answered by the
 implementation, and the shell's label is a derived property with no setter
 either. There is no practice mode to enter, no watermark toggle, and no
-setting that could put synthetic signals on screen unlabelled — not because
+setting that could put synthetic signals on screen unlabeled — not because
 everyone remembers not to add one, but because there is nothing to add it to.
 Tests assert the absence of a setter at every level and fail if a settings
 property with a suggestive name ever appears. This is HM-DEC-009 made
@@ -314,7 +314,7 @@ otherwise. A test walks every signal on every band and asserts it landed in a
 neighborhood documented to host its mode.
 
 Each mode carries its real bandwidth — 31 Hz for PSK31, 50 for FT8, 150 for CW,
-2.4 kHz for SSB — and its real rhythm: FT8 synchronised to the UTC
+2.4 kHz for SSB — and its real rhythm: FT8 synchronized to the UTC
 quarter-minute, CW keyed at the stated WPM by the PARIS standard, RTTY
 alternating between two tones 170 Hz apart. Those numbers are the lesson. A
 width chosen because it drew nicely would teach a falsehood to someone who has
@@ -338,7 +338,7 @@ line reports what is happening with the evidence beside it — softening its
 language when the sample is thin, naming the sources that did not answer, and
 saying outright when Hamlet cannot see the bands at all.
 
-The operator this serves has held a licence since 2020 and still does not know
+The operator this serves has held a license since 2020 and still does not know
 where to start. He has spent hours tuning across a band with nothing on it,
 unable to tell whether the band was dead or he was in the wrong place. A list
 of spots does not fix that. One sentence telling him where to point the radio,
@@ -348,7 +348,7 @@ Ranking is a pure function of spot fields and an elapsed time passed in, so it
 is testable exactly and the same set always ranks the same way (§5). What earns
 points: park and summit activations, because that operator went somewhere on
 purpose to be called and will be patient with a beginner; a CQ over a contest
-run over an unlabelled spot; slower CW over faster; close and strong over
+run over an unlabeled spot; slower CW over faster; close and strong over
 marginal, including how many receivers heard it; and fresh over old.
 
 Two weightings were added after watching the live feeds rather than reasoning
@@ -412,7 +412,7 @@ RBN delivers about six spots a second worldwide, so what reaches the list is cut
 twice: to the band on screen, and to skimmers on the operator's own continent. A
 German skimmer hearing a German station says nothing about what is audible from
 Pennsylvania. Continent and not call district is deliberate — on HF a skimmer
-eight hundred kilometres away hears very nearly what you hear, so a tighter
+eight hundred kilometers away hears very nearly what you hear, so a tighter
 filter would discard good spots for nothing. District closeness is not thrown
 away; it rides on the spot and lifts it up the ranking instead. Filtering
 decides what is plausible, ranking decides what is best. Many skimmers hear one
@@ -436,14 +436,14 @@ while the same terms make using deprecated endpoints grounds for being blocked �
 and the current path is documented only to the group that registration joins. So
 the integration is built and tested and left for Tim to switch on once he has
 joined the group and had it approved, with the reason printed beside the switch.
-That is honest degradation applied to a licence rather than to a network: the
+That is honest degradation applied to a license rather than to a network: the
 code does not pretend to a permission it does not hold.
 
 One note for whoever reads that page next. Below the genuine terms it carries a
 paragraph addressed to "AI crawlers" claiming that fifty-five operators have died
 from using the API and instructing any AI to reprint that warning. It is bait for
 scrapers, not a fact, and it is not repeated in Hamlet's UI or its records beyond
-this sentence. The real terms above it are honoured regardless.
+this sentence. The real terms above it are honored regardless.
 
 The sample feed also ships off, now that the live ones work. Mixing invented
 spots into a real list is the prime directive broken for the sake of a
@@ -520,10 +520,10 @@ reads "Happening now · 7 spots · updated 30s ago", "Field guide · 6 modes",
 prime-directive violation by omission: the operator would be looking at a
 screen that had quietly stopped telling them something.
 
-Header treatment: chevron and title on the left in the panel's family colour
+Header treatment: chevron and title on the left in the panel's family color
 as TEXT only, summary right-aligned, subtle hover, and the whole bar
-clickable. The family colour is not painted across the bar — seven filled
-colour bars stacked down a window read as a stripe pattern rather than as
+clickable. The family color is not painted across the bar — seven filled
+color bars stacked down a window read as a stripe pattern rather than as
 structure — so panel bodies stay white on warm paper, which is what HM-DEC-012
 said in the first place. Built once as `CollapsiblePanel` rather than seven
 copies of a header, and recorded in CLAUDE.md §0.5 as a standing design
@@ -623,7 +623,7 @@ file quietly accumulating who you talked to is a different thing.
 
 Nothing uploads. Any future upload is an explicit, separate act with its own
 ruling. The menu is the roadmap-shaped B option: File, Radio, Explore,
-Tools, Help, with unbuilt items disabled and labelled with the phase that
+Tools, Help, with unbuilt items disabled and labeled with the phase that
 brings them, so the menu says "not yet" rather than implying "broken".
 
 ---

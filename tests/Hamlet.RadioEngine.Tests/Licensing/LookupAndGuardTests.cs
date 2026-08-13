@@ -45,7 +45,7 @@ public sealed class LookupAndGuardTests
         var result = await lookup.LookupAsync("kc3qis");
 
         Assert.NotNull(result);
-        Assert.Equal(LicenceClass.General, result!.Class);
+        Assert.Equal(LicenseClass.General, result!.Class);
         Assert.Equal("KC3QIS", result.Callsign);
         Assert.Equal("callook.info", result.SourceName);
         Assert.Equal(Now, result.RetrievedUtc);
@@ -109,7 +109,7 @@ public sealed class LookupAndGuardTests
 
     /// <remarks>
     /// Proves a transport failure surfaces as an exception, so the caller can
-    /// tell "try later" from "no such licence" and fall down the ladder
+    /// tell "try later" from "no such license" and fall down the ladder
     /// without blocking anything.
     /// </remarks>
     [Fact]
@@ -122,25 +122,25 @@ public sealed class LookupAndGuardTests
     }
 
     /// <remarks>
-    /// Proves an unrecognised class string yields Unknown rather than the
+    /// Proves an unrecognized class string yields Unknown rather than the
     /// nearest guess. The whole feature exists to state privileges correctly
     /// (HM-DEC-009).
     /// </remarks>
     [Theory]
-    [InlineData("GENERAL", LicenceClass.General)]
-    [InlineData("Technician", LicenceClass.Technician)]
-    [InlineData("AMATEUR EXTRA", LicenceClass.Extra)]
-    [InlineData("EXTRA", LicenceClass.Extra)]
-    [InlineData("ADVANCED", LicenceClass.Advanced)]
-    [InlineData("NOVICE", LicenceClass.Novice)]
-    [InlineData("SOMETHING NEW", LicenceClass.Unknown)]
-    [InlineData("", LicenceClass.Unknown)]
-    [InlineData(null, LicenceClass.Unknown)]
-    public void Lookup_MapsClassesOrAdmitsItCannot(string? raw, LicenceClass expected)
+    [InlineData("GENERAL", LicenseClass.General)]
+    [InlineData("Technician", LicenseClass.Technician)]
+    [InlineData("AMATEUR EXTRA", LicenseClass.Extra)]
+    [InlineData("EXTRA", LicenseClass.Extra)]
+    [InlineData("ADVANCED", LicenseClass.Advanced)]
+    [InlineData("NOVICE", LicenseClass.Novice)]
+    [InlineData("SOMETHING NEW", LicenseClass.Unknown)]
+    [InlineData("", LicenseClass.Unknown)]
+    [InlineData(null, LicenseClass.Unknown)]
+    public void Lookup_MapsClassesOrAdmitsItCannot(string? raw, LicenseClass expected)
         => Assert.Equal(expected, CallookCallsignLookup.ParseClass(raw));
 
     /// <remarks>
-    /// Proves the guard permits what the licence covers and refuses what it
+    /// Proves the guard permits what the license covers and refuses what it
     /// does not — the two cases it exists for.
     /// </remarks>
     [Fact]
@@ -148,11 +148,11 @@ public sealed class LookupAndGuardTests
     {
         var guard = new TransmitGuard();
 
-        var ok = guard.Check(LicenceClass.General, 7_030_000, TransmitMode.Cw, true);
+        var ok = guard.Check(LicenseClass.General, 7_030_000, TransmitMode.Cw, true);
         Assert.True(ok.MayTransmit);
         Assert.False(ok.WasOverridden);
 
-        var no = guard.Check(LicenceClass.Technician, 7_200_000, TransmitMode.Phone, true);
+        var no = guard.Check(LicenseClass.Technician, 7_200_000, TransmitMode.Phone, true);
         Assert.False(no.MayTransmit);
         Assert.NotEmpty(no.Reason);
         Assert.NotEmpty(no.Citation);
@@ -160,14 +160,14 @@ public sealed class LookupAndGuardTests
 
     /// <remarks>
     /// Proves the override lets a deliberate operator through and records
-    /// that it was used. Their licence, their call — Hamlet's job is to make
+    /// that it was used. Their license, their call — Hamlet's job is to make
     /// the decision conscious, not to make it for them.
     /// </remarks>
     [Fact]
     public void Guard_OverrideLetsThroughAndSaysSo()
     {
         var decision = new TransmitGuard()
-            .Check(LicenceClass.Technician, 7_200_000, TransmitMode.Phone, guardEnabled: false);
+            .Check(LicenseClass.Technician, 7_200_000, TransmitMode.Phone, guardEnabled: false);
 
         Assert.True(decision.MayTransmit);
         Assert.True(decision.WasOverridden);
@@ -183,7 +183,7 @@ public sealed class LookupAndGuardTests
     public void Guard_DoesNotBlockOnAnUnknownClass()
     {
         var decision = new TransmitGuard()
-            .Check(LicenceClass.Unknown, 7_030_000, TransmitMode.Cw, guardEnabled: true);
+            .Check(LicenseClass.Unknown, 7_030_000, TransmitMode.Cw, guardEnabled: true);
 
         Assert.True(decision.MayTransmit);
         Assert.False(decision.WasOverridden);

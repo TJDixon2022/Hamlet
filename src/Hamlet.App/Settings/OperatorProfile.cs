@@ -31,21 +31,21 @@ public sealed class OperatorProfile
     public string GridSquare { get; set; } = "";
 
     /// <summary>
-    /// The operator's licence class, which decides what the band map shows as
+    /// The operator's license class, which decides what the band map shows as
     /// theirs to use (HM-DEC-028).
     /// </summary>
     /// <remarks>
-    /// Defaults to <see cref="LicenceClass.Unknown"/>, and unknown means the
+    /// Defaults to <see cref="LicenseClass.Unknown"/>, and unknown means the
     /// app says so rather than assuming the commonest class. Guessing here
     /// would be the one guess with legal consequences (HM-DEC-009).
     /// </remarks>
-    public LicenceClass LicenceClass { get; set; } = LicenceClass.Unknown;
+    public LicenseClass LicenseClass { get; set; } = LicenseClass.Unknown;
 
     /// <summary>How the class came to be known.</summary>
-    public LicenceClassSource LicenceClassSource { get; set; } = LicenceClassSource.Unset;
+    public LicenseClassSource LicenseClassSource { get; set; } = LicenseClassSource.Unset;
 
     /// <summary>Which service answered, when it was looked up.</summary>
-    public string LicenceClassSourceName { get; set; } = "";
+    public string LicenseClassSourceName { get; set; } = "";
 
     /// <summary>
     /// When the class was set, as an ISO date. Empty when never set.
@@ -55,7 +55,7 @@ public sealed class OperatorProfile
     /// "General, because you said so in 2019" are different claims, and the
     /// operator is entitled to see which one they are looking at.
     /// </remarks>
-    public string LicenceClassSetOn { get; set; } = "";
+    public string LicenseClassSetOn { get; set; } = "";
 
     /// <summary>True when the operator chose the class themselves.</summary>
     /// <remarks>
@@ -63,27 +63,27 @@ public sealed class OperatorProfile
     /// is never silently overwritten (HM-DEC-028).
     /// </remarks>
     [JsonIgnore]
-    public bool LicenceClassWasSetByHand
-        => LicenceClassSource == LicenceClassSource.EnteredByOperator
-           && LicenceClass != LicenceClass.Unknown;
+    public bool LicenseClassWasSetByHand
+        => LicenseClassSource == LicenseClassSource.EnteredByOperator
+           && LicenseClass != LicenseClass.Unknown;
 
     /// <summary>
-    /// Record a licence class along with where it came from.
+    /// Record a license class along with where it came from.
     /// </summary>
-    /// <param name="licenceClass">The class.</param>
+    /// <param name="licenseClass">The class.</param>
     /// <param name="source">How it was determined.</param>
     /// <param name="sourceName">Service name for a lookup, else "".</param>
     /// <param name="onUtc">When, for the provenance line.</param>
-    public void SetLicenceClass(
-        LicenceClass licenceClass,
-        LicenceClassSource source,
+    public void SetLicenseClass(
+        LicenseClass licenseClass,
+        LicenseClassSource source,
         string sourceName,
         DateTime onUtc)
     {
-        LicenceClass = licenceClass;
-        LicenceClassSource = source;
-        LicenceClassSourceName = sourceName;
-        LicenceClassSetOn = onUtc.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+        LicenseClass = licenseClass;
+        LicenseClassSource = source;
+        LicenseClassSourceName = sourceName;
+        LicenseClassSetOn = onUtc.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
     }
 
     /// <summary>True when nothing has been filled in at all.</summary>

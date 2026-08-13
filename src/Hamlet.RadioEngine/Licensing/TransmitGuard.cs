@@ -17,9 +17,9 @@ public sealed record TransmitDecision(
 /// </summary>
 /// <remarks>
 /// <para>TRANSMIT ONLY, and that boundary is the whole design (HM-DEC-029).
-/// Listening is never restricted — any licence may receive anywhere, and a
+/// Listening is never restricted — any license may receive anywhere, and a
 /// program that implied otherwise would be teaching a beginner something
-/// false about their own licence. Nothing here is consulted when tuning,
+/// false about their own license. Nothing here is consulted when tuning,
 /// when receiving, or when drawing. It is asked one question, at one moment:
 /// may this key down.</para>
 /// <para>NO TRANSMIT PATH EXISTS YET. HM-DEC-008 gates keying on the vendored
@@ -27,7 +27,7 @@ public sealed record TransmitDecision(
 /// its tests, so that when CW send lands the check is already proved and the
 /// only remaining work is the call site. THE SEAM: whatever first keys the
 /// transmitter — CI-V 0x17, or PTT — calls <see cref="Check"/> first and
-/// honours the answer.</para>
+/// honors the answer.</para>
 /// <para>The override is deliberately not a setting to be forgotten. It is
 /// passed in per call, so the decision records whether it was used and the UI
 /// can keep it beside the transmit control rather than buried three screens
@@ -51,23 +51,23 @@ public sealed class TransmitGuard
     /// <summary>
     /// May Hamlet key the transmitter here?
     /// </summary>
-    /// <param name="licenceClass">The operator's licence class.</param>
+    /// <param name="licenseClass">The operator's license class.</param>
     /// <param name="frequencyHz">Where they would transmit.</param>
     /// <param name="mode">What they would transmit.</param>
     /// <param name="guardEnabled">
-    /// The operator's "only let me transmit where my licence allows" setting.
+    /// The operator's "only let me transmit where my license allows" setting.
     /// </param>
     /// <returns>The decision, with its reason and citation.</returns>
     /// <remarks>
-    /// An unknown licence class does not block transmitting. Hamlet has no
+    /// An unknown license class does not block transmitting. Hamlet has no
     /// business refusing to key a radio because it could not reach a lookup
-    /// service — the operator holds the licence and knows what it says. It
+    /// service — the operator holds the license and knows what it says. It
     /// warns, names what it does not know, and gets out of the way.
     /// </remarks>
     public TransmitDecision Check(
-        LicenceClass licenceClass, long frequencyHz, TransmitMode mode, bool guardEnabled)
+        LicenseClass licenseClass, long frequencyHz, TransmitMode mode, bool guardEnabled)
     {
-        var verdict = _plan.Evaluate(licenceClass, frequencyHz, mode);
+        var verdict = _plan.Evaluate(licenseClass, frequencyHz, mode);
 
         if (verdict.MayTransmit)
         {
@@ -78,7 +78,7 @@ public sealed class TransmitGuard
         {
             return new TransmitDecision(
                 true,
-                "Hamlet does not know your licence class, so it is not checking this "
+                "Hamlet does not know your license class, so it is not checking this "
                 + "transmission. Set your class in Settings and it will.",
                 "",
                 false);

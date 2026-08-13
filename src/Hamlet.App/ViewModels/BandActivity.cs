@@ -57,7 +57,7 @@ public sealed record BandActivityReading(
 }
 
 /// <summary>
-/// Summarises how busy each band is, from the spots already in hand.
+/// Summarizes how busy each band is, from the spots already in hand.
 /// </summary>
 /// <remarks>
 /// <para>The band buttons are the first control anybody touches, and six of
@@ -76,7 +76,7 @@ public sealed record BandActivityReading(
 /// screen, so its silence about 17 m is not evidence about 17 m. Crediting it
 /// with that silence would manufacture confidence out of a source that was
 /// never pointed there, which is the exact failure HM-DEC-025 exists to
-/// prevent. Every band is summarised only from the sources that can actually
+/// prevent. Every band is summarized only from the sources that can actually
 /// see it.</para>
 /// <para>Pure functions of a spot set, a window and the source statuses. No
 /// clock read (§5), same shape as <see cref="BandConditions"/>.</para>
@@ -98,7 +98,7 @@ public static class BandActivity
     public const int BusyThreshold = BandConditions.BusyThreshold;
 
     /// <summary>
-    /// Summarise every band on display.
+    /// Summarize every band on display.
     /// </summary>
     /// <param name="bands">The bands shown as buttons.</param>
     /// <param name="allSpots">Every spot held, across all bands.</param>
@@ -111,7 +111,7 @@ public static class BandActivity
     /// number nobody can calibrate — "34 spots" means nothing without knowing
     /// whether 34 is a lot tonight.
     /// </remarks>
-    public static IReadOnlyList<BandActivityReading> Summarise(
+    public static IReadOnlyList<BandActivityReading> Summarize(
         IReadOnlyList<CwBand> bands,
         IReadOnlyList<ActivitySpot> allSpots,
         IReadOnlyList<SourceStatus> statuses,

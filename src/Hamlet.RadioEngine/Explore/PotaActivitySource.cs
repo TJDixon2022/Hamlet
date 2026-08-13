@@ -140,7 +140,7 @@ public sealed class PotaActivitySource : IContextualActivitySource, IDisposable
     /// <summary>
     /// Turn one POTA record into a spot, or null when it should not be shown.
     /// </summary>
-    /// <param name="r">The deserialised record.</param>
+    /// <param name="r">The deserialized record.</param>
     /// <returns>The spot, or null.</returns>
     /// <remarks>
     /// Exposed for tests, which feed it captured records rather than reaching
@@ -168,7 +168,7 @@ public sealed class PotaActivitySource : IContextualActivitySource, IDisposable
         }
 
         var activator = (r.Activator ?? "").Trim();
-        var mode = NormaliseMode(r.Mode);
+        var mode = NormalizeMode(r.Mode);
         var place = (r.LocationDesc ?? "").Trim();
         var parkName = FirstNonBlank(r.Name, r.ParkName);
 
@@ -209,7 +209,7 @@ public sealed class PotaActivitySource : IContextualActivitySource, IDisposable
             var parkDistrict = OperatorLocation.HomeDistrict(place[3..]);
             if (parkDistrict is not null && district is not null)
             {
-                return CallsignRegions.IsNeighbouring(parkDistrict.Value, district.Value)
+                return CallsignRegions.IsNeighboring(parkDistrict.Value, district.Value)
                     ? SpotProximity.Local
                     : SpotProximity.Continent;
             }
@@ -313,7 +313,7 @@ public sealed class PotaActivitySource : IContextualActivitySource, IDisposable
             : null;
     }
 
-    private static string NormaliseMode(string? mode)
+    private static string NormalizeMode(string? mode)
     {
         var m = (mode ?? "").Trim().ToUpperInvariant();
         return m switch

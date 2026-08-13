@@ -51,7 +51,7 @@ public sealed class SpotRankingTests
 
         Assert.True(cq > contest, $"CQ {cq} should beat contest {contest}");
         Assert.True(contest > beacon, $"contest {contest} should beat beacon {beacon}");
-        Assert.True(cq > unknown, $"CQ {cq} should beat unlabelled {unknown}");
+        Assert.True(cq > unknown, $"CQ {cq} should beat unlabeled {unknown}");
     }
 
     /// <remarks>
@@ -137,7 +137,7 @@ public sealed class SpotRankingTests
         Assert.Equal("PARK", ranked[0].Spot.DxCall);
         Assert.Equal("BEACON", ranked[^1].Spot.DxCall);
 
-        // Explicitly: the beacon sits below the bare unlabelled spot, which
+        // Explicitly: the beacon sits below the bare unlabeled spot, which
         // at least might be a person.
         var beacon = ranked.Single(r => r.Spot.DxCall == "BEACON").Score;
         var plain = ranked.Single(r => r.Spot.DxCall == "PLAIN").Score;

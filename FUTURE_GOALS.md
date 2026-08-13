@@ -95,7 +95,7 @@ marginal cost once the band plan is a data file.
 
 ## FG-007 — Propagation: why a band is empty
 
-Solar flux index, K- and A-index, MUF, greyline and the other published
+Solar flux index, K- and A-index, MUF, grayline and the other published
 propagation data, so Hamlet can tell a band that is QUIET from a band that is
 CLOSED.
 
@@ -122,7 +122,7 @@ What it would change, concretely:
 
 Direction, not scope. When it is built it gets the treatment POTA, RBN and
 SOTA got (HM-DEC-024): read the source's terms before using it and report
-them, identify politely with app, version and callsign, honour the documented
+them, identify politely with app, version and callsign, honor the documented
 rate limits, and degrade honestly when it is unavailable — a propagation
 service that is down must never turn into a confident silence.
 

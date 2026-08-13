@@ -67,7 +67,7 @@ public sealed class ActivityContext
 /// RBN is the case this exists for. It is filtered to the band on screen at
 /// the source, because six spots a second worldwide is unusable otherwise
 /// (HM-DEC-024) — which means its silence about 17 m is not evidence about
-/// 17 m, it is evidence that nobody asked it. Anything summarising per-band
+/// 17 m, it is evidence that nobody asked it. Anything summarizing per-band
 /// activity has to know the difference, or it will report "RBN is answering
 /// and heard nothing here" about a band RBN never looked at (HM-DEC-031).
 /// </remarks>

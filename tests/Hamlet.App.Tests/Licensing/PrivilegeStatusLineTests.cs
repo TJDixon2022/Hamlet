@@ -27,7 +27,7 @@ public sealed class PrivilegeStatusLineTests
     public void StatusLine_InsidePrivileges_IsEncouraging()
     {
         var line = PrivilegeStatusLine.Build(
-            new PrivilegePlan(), LicenceClass.General, 7_030_000, TransmitMode.Cw);
+            new PrivilegePlan(), LicenseClass.General, 7_030_000, TransmitMode.Cw);
 
         Assert.Equal(PrivilegeTone.Yours, line.Tone);
         Assert.Contains("7.030 MHz", line.Headline, StringComparison.Ordinal);
@@ -45,7 +45,7 @@ public sealed class PrivilegeStatusLineTests
     public void StatusLine_OutsidePrivileges_ExplainsAndReassures()
     {
         var line = PrivilegeStatusLine.Build(
-            new PrivilegePlan(), LicenceClass.Technician, 7_200_000, TransmitMode.Cw);
+            new PrivilegePlan(), LicenseClass.Technician, 7_200_000, TransmitMode.Cw);
 
         Assert.Equal(PrivilegeTone.ListenOnly, line.Tone);
         Assert.Contains("listen all you like", line.Headline, StringComparison.OrdinalIgnoreCase);
@@ -63,7 +63,7 @@ public sealed class PrivilegeStatusLineTests
     public void StatusLine_UnknownClass_SaysSoAndClaimsNothing()
     {
         var line = PrivilegeStatusLine.Build(
-            new PrivilegePlan(), LicenceClass.Unknown, 7_200_000, TransmitMode.Cw);
+            new PrivilegePlan(), LicenseClass.Unknown, 7_200_000, TransmitMode.Cw);
 
         Assert.Equal(PrivilegeTone.Unknown, line.Tone);
         Assert.Contains("unknown", line.Detail, StringComparison.OrdinalIgnoreCase);
@@ -84,7 +84,7 @@ public sealed class PrivilegeStatusLineTests
     public void UpgradeLadder_NamesWhatItWouldOpen()
     {
         var lines = PrivilegeStatusLine.UpgradeLadder(
-            new PrivilegePlan(), LicenceClass.Technician, Forty);
+            new PrivilegePlan(), LicenseClass.Technician, Forty);
 
         Assert.NotEmpty(lines);
         Assert.Contains(lines, l => l.Contains("40 m", StringComparison.Ordinal));
@@ -100,7 +100,7 @@ public sealed class PrivilegeStatusLineTests
     public void UpgradeLadder_TellsAnExtraTheyAreDone()
     {
         var lines = PrivilegeStatusLine.UpgradeLadder(
-            new PrivilegePlan(), LicenceClass.Extra, Forty);
+            new PrivilegePlan(), LicenseClass.Extra, Forty);
 
         Assert.Single(lines);
         Assert.Contains("every US privilege", lines[0], StringComparison.OrdinalIgnoreCase);

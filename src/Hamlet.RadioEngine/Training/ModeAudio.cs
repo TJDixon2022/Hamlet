@@ -16,9 +16,9 @@ public readonly record struct AudioSampleRequest(
 /// </summary>
 /// <remarks>
 /// <para>Generated rather than recorded, on purpose (HM-DEC-027). Recorded
-/// clips carry a licence and a provenance question into a GPL-3.0 repository,
+/// clips carry a license and a provenance question into a GPL-3.0 repository,
 /// cannot be parameterised, and cannot be asserted on. Generated audio is
-/// licence-free, byte-for-byte deterministic, testable, and — the part that
+/// license-free, byte-for-byte deterministic, testable, and — the part that
 /// matters for this operator — adjustable: CW at 12, 18 and 25 WPM is how
 /// somebody finds their own copy speed, which is the groundwork FG-002
 /// needs.</para>

@@ -34,7 +34,7 @@ namespace Hamlet.App.Controls;
 /// </remarks>
 public sealed class NeighborhoodMapControl : Control
 {
-    /// <summary>How far from a dot's centre still counts as hovering it.</summary>
+    /// <summary>How far from a dot's center still counts as hovering it.</summary>
     private const double HitTolerance = 5.0;
 
     private static readonly Pen EdgePen = new(new SolidColorBrush(Color.Parse("#AECBEA")), 0.8);
@@ -46,7 +46,7 @@ public sealed class NeighborhoodMapControl : Control
         new SolidColorBrush(Color.Parse("#B3261E"));
 
     /// <summary>
-    /// The listen-only hatch. Deliberately faint: the neighbourhood colour
+    /// The listen-only hatch. Deliberately faint: the neighborhood color
     /// stays visible through it, so a segment reads as "not yours yet" rather
     /// than as a forbidden zone (HM-DEC-029).
     /// </summary>
@@ -100,7 +100,7 @@ public sealed class NeighborhoodMapControl : Control
         AvaloniaProperty.Register<NeighborhoodMapControl, ICommand?>(nameof(TuneCommand));
 
     /// <summary>
-    /// Where this licence class may and may not transmit, from the engine.
+    /// Where this license class may and may not transmit, from the engine.
     /// </summary>
     /// <remarks>
     /// THE ONE SET OF BOUNDARIES (HM-DEC-029). These spans are computed once
@@ -260,13 +260,13 @@ public sealed class NeighborhoodMapControl : Control
         foreach (var dot in _layout)
         {
             var brush = MayTransmitAt(dot.Dot.FrequencyHz) ? dot.Brush : DimDotBrush;
-            context.DrawEllipse(brush, null, dot.Centre, dot.Radius, dot.Radius);
+            context.DrawEllipse(brush, null, dot.Center, dot.Radius, dot.Radius);
         }
 
         if (_hovered is not null)
         {
             context.DrawEllipse(
-                HoverBrush, HoverPen, _hovered.Centre,
+                HoverBrush, HoverPen, _hovered.Center,
                 _hovered.Radius + 2, _hovered.Radius + 2);
         }
 
@@ -304,7 +304,7 @@ public sealed class NeighborhoodMapControl : Control
     /// </summary>
     /// <remarks>
     /// With no spans the answer is "yes" so that nothing is dimmed or
-    /// flagged. An unknown licence class must produce a map that looks
+    /// flagged. An unknown license class must produce a map that looks
     /// exactly as it did before privileges existed.
     /// </remarks>
     private bool MayTransmitAt(long hz)
@@ -330,7 +330,7 @@ public sealed class NeighborhoodMapControl : Control
     /// Hatch the stretches this class may not transmit in.
     /// </summary>
     /// <remarks>
-    /// A 135° diagonal at low opacity, so the neighbourhood colour reads
+    /// A 135° diagonal at low opacity, so the neighborhood color reads
     /// through it. "Listen only" is written where there is room, because the
     /// fact that matters most is that listening is never restricted — the
     /// veil marks where transmitting stops, not where the operator may not
@@ -386,7 +386,7 @@ public sealed class NeighborhoodMapControl : Control
     }
 
     /// <summary>
-    /// Recompute every dot's position, size and colour.
+    /// Recompute every dot's position, size and color.
     /// </summary>
     /// <remarks>
     /// Called only when the dots, the band window or the control's size
@@ -419,7 +419,7 @@ public sealed class NeighborhoodMapControl : Control
             var x = (dot.FrequencyHz - BandLowHz) / span * w;
 
             // Scatter vertically, deterministically from the frequency, so
-            // neighbours on the same kilohertz do not stack into one blob.
+            // neighbors on the same kilohertz do not stack into one blob.
             var y = h * (0.42 + 0.4 * (dot.FrequencyHz / 100 % 7) / 7.0);
 
             var prominence = Math.Clamp(dot.Prominence, 0, 1);
@@ -453,8 +453,8 @@ public sealed class NeighborhoodMapControl : Control
 
         foreach (var dot in _layout)
         {
-            var dx = dot.Centre.X - p.X;
-            var dy = dot.Centre.Y - p.Y;
+            var dx = dot.Center.X - p.X;
+            var dy = dot.Center.Y - p.Y;
             var distance = Math.Sqrt((dx * dx) + (dy * dy));
 
             if (distance <= dot.Radius + HitTolerance && distance < bestDistance)
@@ -592,5 +592,5 @@ public sealed class NeighborhoodMapControl : Control
 
     /// <summary>A dot's precomputed screen geometry.</summary>
     private sealed record DotLayout(
-        ActivityDot Dot, Point Centre, double Radius, IBrush Brush);
+        ActivityDot Dot, Point Center, double Radius, IBrush Brush);
 }

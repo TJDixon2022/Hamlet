@@ -64,34 +64,34 @@ public sealed class PrivilegeTests
     /// </remarks>
     [Theory]
     // Extra reaches the bottom of 40 m; nobody else does (97.301(b)).
-    [InlineData(LicenceClass.Extra, 7_010_000, true)]
-    [InlineData(LicenceClass.Advanced, 7_010_000, false)]
-    [InlineData(LicenceClass.General, 7_010_000, false)]
-    [InlineData(LicenceClass.Technician, 7_010_000, false)]
+    [InlineData(LicenseClass.Extra, 7_010_000, true)]
+    [InlineData(LicenseClass.Advanced, 7_010_000, false)]
+    [InlineData(LicenseClass.General, 7_010_000, false)]
+    [InlineData(LicenseClass.Technician, 7_010_000, false)]
     // From 7.025 everyone with HF has CW (97.301(c),(d),(e)).
-    [InlineData(LicenceClass.General, 7_030_000, true)]
-    [InlineData(LicenceClass.Technician, 7_030_000, true)]
+    [InlineData(LicenseClass.General, 7_030_000, true)]
+    [InlineData(LicenseClass.Technician, 7_030_000, true)]
     // Technician stops at 7.125; General has a gap to 7.175 (97.301(d),(e)).
-    [InlineData(LicenceClass.Technician, 7_150_000, false)]
-    [InlineData(LicenceClass.General, 7_150_000, false)]
-    [InlineData(LicenceClass.Advanced, 7_150_000, true)]
-    [InlineData(LicenceClass.Extra, 7_150_000, true)]
+    [InlineData(LicenseClass.Technician, 7_150_000, false)]
+    [InlineData(LicenseClass.General, 7_150_000, false)]
+    [InlineData(LicenseClass.Advanced, 7_150_000, true)]
+    [InlineData(LicenseClass.Extra, 7_150_000, true)]
     // The phone segment: General is back in from 7.175.
-    [InlineData(LicenceClass.General, 7_200_000, true)]
-    [InlineData(LicenceClass.Technician, 7_200_000, false)]
-    public void FortyMetres_ClassEdgesMatchTheRegulation(
-        LicenceClass cls, long hz, bool mayTransmit)
+    [InlineData(LicenseClass.General, 7_200_000, true)]
+    [InlineData(LicenseClass.Technician, 7_200_000, false)]
+    public void FortyMeters_ClassEdgesMatchTheRegulation(
+        LicenseClass cls, long hz, bool mayTransmit)
         => Assert.Equal(mayTransmit, Plan.MayTransmitAnyMode(cls, hz));
 
     /// <remarks>
     /// Proves 97.305(a): CW rides on the class frequency table alone, so a
-    /// General may send Morse anywhere their licence reaches — including up in
+    /// General may send Morse anywhere their license reaches — including up in
     /// the phone segment, where it surprises people.
     /// </remarks>
     [Fact]
     public void Cw_IsAllowedWhereverTheClassMayTransmit()
     {
-        var verdict = Plan.Evaluate(LicenceClass.General, 7_200_000, TransmitMode.Cw);
+        var verdict = Plan.Evaluate(LicenseClass.General, 7_200_000, TransmitMode.Cw);
 
         Assert.True(verdict.MayTransmit);
         Assert.Equal("97.305(a)", verdict.Citation);
@@ -103,17 +103,17 @@ public sealed class PrivilegeTests
     /// generous way would put a beginner on the air illegally.
     /// </remarks>
     [Fact]
-    public void Technician_OnFortyMetres_IsMorseOnly()
+    public void Technician_OnFortyMeters_IsMorseOnly()
     {
         Assert.True(
-            Plan.Evaluate(LicenceClass.Technician, 7_030_000, TransmitMode.Cw).MayTransmit);
+            Plan.Evaluate(LicenseClass.Technician, 7_030_000, TransmitMode.Cw).MayTransmit);
 
         // Digital IS authorised here for everyone else — 97.305(c)(3)(iv) —
         // so a Technician being refused is the class restriction speaking.
         Assert.True(
-            Plan.Evaluate(LicenceClass.General, 7_030_000, TransmitMode.Data).MayTransmit);
+            Plan.Evaluate(LicenseClass.General, 7_030_000, TransmitMode.Data).MayTransmit);
 
-        var tech = Plan.Evaluate(LicenceClass.Technician, 7_030_000, TransmitMode.Data);
+        var tech = Plan.Evaluate(LicenseClass.Technician, 7_030_000, TransmitMode.Data);
         Assert.False(tech.MayTransmit);
         Assert.Equal("97.307(f)(9)", tech.Citation);
         Assert.Contains("Morse", tech.Explanation, StringComparison.OrdinalIgnoreCase);
@@ -126,16 +126,16 @@ public sealed class PrivilegeTests
     /// deciding whether to upgrade needs to know which one is stopping them.
     /// </remarks>
     [Fact]
-    public void Refusals_DistinguishTheModeFromTheLicence()
+    public void Refusals_DistinguishTheModeFromTheLicense()
     {
-        var voice = Plan.Evaluate(LicenceClass.Technician, 7_030_000, TransmitMode.Phone);
+        var voice = Plan.Evaluate(LicenseClass.Technician, 7_030_000, TransmitMode.Phone);
 
         Assert.False(voice.MayTransmit);
         Assert.Equal("97.305(c)", voice.Citation);
         Assert.Contains("any class", voice.Explanation, StringComparison.OrdinalIgnoreCase);
 
         // No class could work voice here, so there is nobody to upgrade to.
-        Assert.Equal(LicenceClass.Unknown, voice.LowestClassThatCould);
+        Assert.Equal(LicenseClass.Unknown, voice.LowestClassThatCould);
     }
 
     /// <remarks>
@@ -144,15 +144,15 @@ public sealed class PrivilegeTests
     /// about in the encouraging direction too.
     /// </remarks>
     [Fact]
-    public void Technician_GetsVoiceOnTenMetres()
+    public void Technician_GetsVoiceOnTenMeters()
     {
         Assert.True(
-            Plan.Evaluate(LicenceClass.Technician, 28_400_000, TransmitMode.Phone)
+            Plan.Evaluate(LicenseClass.Technician, 28_400_000, TransmitMode.Phone)
                 .MayTransmit);
 
         // But not below 28.3, where the band is data and CW.
         Assert.False(
-            Plan.Evaluate(LicenceClass.Technician, 28_100_000, TransmitMode.Phone)
+            Plan.Evaluate(LicenseClass.Technician, 28_100_000, TransmitMode.Phone)
                 .MayTransmit);
     }
 
@@ -163,9 +163,9 @@ public sealed class PrivilegeTests
     /// qualifies and says which rule decided it.
     /// </remarks>
     [Fact]
-    public void FortyMetrePhone_BelowSevenOneTwoFive_IsRefusedWithItsReason()
+    public void FortyMeterPhone_BelowSevenOneTwoFive_IsRefusedWithItsReason()
     {
-        var verdict = Plan.Evaluate(LicenceClass.Extra, 7_080_000, TransmitMode.Phone);
+        var verdict = Plan.Evaluate(LicenseClass.Extra, 7_080_000, TransmitMode.Phone);
 
         Assert.False(verdict.MayTransmit);
         Assert.Equal("97.307(f)(11)", verdict.Citation);
@@ -174,12 +174,12 @@ public sealed class PrivilegeTests
 
     /// <remarks>
     /// Proves voice is refused down in the CW/data end for the right reason —
-    /// the mode is wrong for the segment, not the licence.
+    /// the mode is wrong for the segment, not the license.
     /// </remarks>
     [Fact]
     public void Voice_InTheCwSegment_IsRefusedAsAModeProblem()
     {
-        var verdict = Plan.Evaluate(LicenceClass.Extra, 7_030_000, TransmitMode.Phone);
+        var verdict = Plan.Evaluate(LicenseClass.Extra, 7_030_000, TransmitMode.Phone);
 
         Assert.False(verdict.MayTransmit);
         Assert.Equal(PrivilegeStatus.ModeNotAuthorised, verdict.Status);
@@ -193,7 +193,7 @@ public sealed class PrivilegeTests
     [Fact]
     public void UnknownClass_ClaimsNothing()
     {
-        var verdict = Plan.Evaluate(LicenceClass.Unknown, 7_030_000, TransmitMode.Cw);
+        var verdict = Plan.Evaluate(LicenseClass.Unknown, 7_030_000, TransmitMode.Cw);
 
         Assert.Equal(PrivilegeStatus.Unknown, verdict.Status);
         Assert.False(verdict.MayTransmit);
@@ -207,20 +207,20 @@ public sealed class PrivilegeTests
     /// </remarks>
     [Fact]
     public void UnknownClass_ProducesNoSpansToDraw()
-        => Assert.Empty(Plan.SpansFor(Band("40 m"), LicenceClass.Unknown));
+        => Assert.Empty(Plan.SpansFor(Band("40 m"), LicenseClass.Unknown));
 
     /// <remarks>
     /// Proves the three classes produce genuinely different pictures of 40 m —
     /// the thing the operator will see change when they set their class.
     /// </remarks>
     [Fact]
-    public void Technician_General_And_Extra_SeeDifferentFortyMetres()
+    public void Technician_General_And_Extra_SeeDifferentFortyMeters()
     {
         var band = Band("40 m");
 
-        var tech = Plan.SpansFor(band, LicenceClass.Technician);
-        var gen = Plan.SpansFor(band, LicenceClass.General);
-        var extra = Plan.SpansFor(band, LicenceClass.Extra);
+        var tech = Plan.SpansFor(band, LicenseClass.Technician);
+        var gen = Plan.SpansFor(band, LicenseClass.General);
+        var extra = Plan.SpansFor(band, LicenseClass.Extra);
 
         Assert.NotEmpty(tech);
         Assert.NotEmpty(gen);
@@ -231,9 +231,9 @@ public sealed class PrivilegeTests
         Assert.True(extra[0].MayTransmit);
 
         // Coverage strictly increases with privilege.
-        var techCover = Plan.CoverageOf(band, LicenceClass.Technician);
-        var genCover = Plan.CoverageOf(band, LicenceClass.General);
-        var extraCover = Plan.CoverageOf(band, LicenceClass.Extra);
+        var techCover = Plan.CoverageOf(band, LicenseClass.Technician);
+        var genCover = Plan.CoverageOf(band, LicenseClass.General);
+        var extraCover = Plan.CoverageOf(band, LicenseClass.Extra);
 
         Assert.True(techCover < genCover, $"tech {techCover:P0} < general {genCover:P0}");
         Assert.True(genCover < extraCover, $"general {genCover:P0} < extra {extraCover:P0}");
@@ -257,8 +257,8 @@ public sealed class PrivilegeTests
 
         foreach (var cls in new[]
                  {
-                     LicenceClass.Technician, LicenceClass.General,
-                     LicenceClass.Advanced, LicenceClass.Extra,
+                     LicenseClass.Technician, LicenseClass.General,
+                     LicenseClass.Advanced, LicenseClass.Extra,
                  })
         {
             var spans = Plan.SpansFor(band, cls);
@@ -286,7 +286,7 @@ public sealed class PrivilegeTests
         var band = Band("40 m");
 
         foreach (var cls in new[]
-                 { LicenceClass.Technician, LicenceClass.General, LicenceClass.Extra })
+                 { LicenseClass.Technician, LicenseClass.General, LicenseClass.Extra })
         {
             foreach (var span in Plan.SpansFor(band, cls))
             {
@@ -310,10 +310,10 @@ public sealed class PrivilegeTests
     [Fact]
     public void UpgradePath_PointsUpwardAndStopsAtExtra()
     {
-        Assert.Equal(LicenceClass.General, Plan.UpgradeFrom(LicenceClass.Technician)!.Next);
-        Assert.Equal(LicenceClass.Extra, Plan.UpgradeFrom(LicenceClass.General)!.Next);
-        Assert.Null(Plan.UpgradeFrom(LicenceClass.Extra));
-        Assert.Null(Plan.UpgradeFrom(LicenceClass.Unknown));
+        Assert.Equal(LicenseClass.General, Plan.UpgradeFrom(LicenseClass.Technician)!.Next);
+        Assert.Equal(LicenseClass.Extra, Plan.UpgradeFrom(LicenseClass.General)!.Next);
+        Assert.Null(Plan.UpgradeFrom(LicenseClass.Extra));
+        Assert.Null(Plan.UpgradeFrom(LicenseClass.Unknown));
     }
 
     /// <remarks>
@@ -324,11 +324,11 @@ public sealed class PrivilegeTests
     public void LowestClassFor_NamesWhoCouldWorkIt()
     {
         Assert.Equal(
-            LicenceClass.Extra, Plan.LowestClassFor(7_010_000, TransmitMode.Cw));
+            LicenseClass.Extra, Plan.LowestClassFor(7_010_000, TransmitMode.Cw));
         Assert.Equal(
-            LicenceClass.General, Plan.LowestClassFor(7_200_000, TransmitMode.Phone));
+            LicenseClass.General, Plan.LowestClassFor(7_200_000, TransmitMode.Phone));
         Assert.Equal(
-            LicenceClass.Novice, Plan.LowestClassFor(7_030_000, TransmitMode.Cw));
+            LicenseClass.Novice, Plan.LowestClassFor(7_030_000, TransmitMode.Cw));
     }
 
     /// <remarks>
@@ -337,8 +337,8 @@ public sealed class PrivilegeTests
     [Fact]
     public void Evaluation_IsDeterministic()
     {
-        var a = Plan.Evaluate(LicenceClass.General, 7_150_000, TransmitMode.Phone);
-        var b = Plan.Evaluate(LicenceClass.General, 7_150_000, TransmitMode.Phone);
+        var a = Plan.Evaluate(LicenseClass.General, 7_150_000, TransmitMode.Phone);
+        var b = Plan.Evaluate(LicenseClass.General, 7_150_000, TransmitMode.Phone);
 
         Assert.Equal(a, b);
     }

@@ -11,7 +11,7 @@ namespace Hamlet.RadioEngine.Training;
 /// <para><see cref="IsSimulated"/> is hardcoded true and has no setter. That
 /// is the whole mechanism behind HM-DEC-026: the waterfall's "simulated"
 /// label is read off the source, so synthetic frames cannot reach the screen
-/// unlabelled — there is no flag to forget to set and none to switch off.</para>
+/// unlabeled — there is no flag to forget to set and none to switch off.</para>
 /// <para>The clock lives here and only here. The synthesiser is handed an
 /// elapsed time, so everything below this class stays reproducible (§5), and
 /// <see cref="PumpOnce"/> lets a test drive the whole path at chosen instants

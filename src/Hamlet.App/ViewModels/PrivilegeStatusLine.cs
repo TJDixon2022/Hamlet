@@ -6,7 +6,7 @@ namespace Hamlet.App.ViewModels;
 /// <summary>How the status line under the band map should read.</summary>
 public enum PrivilegeTone
 {
-    /// <summary>Nothing is claimed — the licence class is not known.</summary>
+    /// <summary>Nothing is claimed — the license class is not known.</summary>
     Unknown,
 
     /// <summary>Inside privileges. Green family.</summary>
@@ -48,10 +48,10 @@ public sealed record PrivilegeStatus(
 /// a quiet fear of transmitting somewhere he is not allowed. A line that
 /// scolds would make that worse. So restriction is stated as a fact and
 /// immediately paired with the one thing that removes the fear: listening is
-/// never restricted, anywhere, on any licence.</para>
+/// never restricted, anywhere, on any license.</para>
 /// <para>Which is also why the amber family and not red. Being outside your
 /// privileges while tuning around is not an error — it is the ordinary state
-/// of most of the band for most licences, and the app should sound like it
+/// of most of the band for most licenses, and the app should sound like it
 /// knows that.</para>
 /// <para>Pure: a class, a frequency and a mode in, a line out. No clock, no
 /// state (§5).</para>
@@ -60,51 +60,51 @@ public static class PrivilegeStatusLine
 {
     /// <summary>The sentence that does the most work in this whole feature.</summary>
     public const string ListeningIsNeverRestricted =
-        "Receiving is never restricted — any licence may listen anywhere.";
+        "Receiving is never restricted — any license may listen anywhere.";
 
     /// <summary>
     /// Build the status line.
     /// </summary>
     /// <param name="plan">The privileges plan.</param>
-    /// <param name="licenceClass">The operator's class.</param>
+    /// <param name="licenseClass">The operator's class.</param>
     /// <param name="frequencyHz">Where they are tuned.</param>
     /// <param name="mode">What they would transmit here.</param>
     /// <returns>The line, and what sits behind it.</returns>
     public static PrivilegeStatus Build(
         PrivilegePlan plan,
-        LicenceClass licenceClass,
+        LicenseClass licenseClass,
         long frequencyHz,
         TransmitMode mode)
     {
         var megahertz = (frequencyHz / 1_000_000.0)
             .ToString("0.000", CultureInfo.InvariantCulture);
 
-        if (licenceClass == LicenceClass.Unknown)
+        if (licenseClass == LicenseClass.Unknown)
         {
             return new PrivilegeStatus(
                 PrivilegeTone.Unknown,
                 $"{megahertz} MHz",
-                "Licence class unknown — set it in Settings to see your privileges.",
+                "License class unknown — set it in Settings to see your privileges.",
                 ListeningIsNeverRestricted,
                 "",
                 "");
         }
 
-        var verdict = plan.Evaluate(licenceClass, frequencyHz, mode);
+        var verdict = plan.Evaluate(licenseClass, frequencyHz, mode);
 
         if (verdict.MayTransmit)
         {
             return new PrivilegeStatus(
                 PrivilegeTone.Yours,
                 $"{megahertz} MHz · yours to use",
-                $"Your {PrivilegePlan.Describe(licenceClass)} licence covers "
+                $"Your {PrivilegePlan.Describe(licenseClass)} license covers "
                 + $"{PrivilegePlan.Describe(mode)} here. Call away.",
                 "",
                 verdict.Citation,
                 "");
         }
 
-        var upgrade = plan.UpgradeFrom(licenceClass);
+        var upgrade = plan.UpgradeFrom(licenseClass);
         var prompt = upgrade is not null
             ? $"What would {PrivilegePlan.Describe(upgrade.Next)} unlock?"
             : "";
@@ -123,7 +123,7 @@ public static class PrivilegeStatusLine
     /// chrome.
     /// </summary>
     /// <param name="plan">The privileges plan.</param>
-    /// <param name="licenceClass">The operator's current class.</param>
+    /// <param name="licenseClass">The operator's current class.</param>
     /// <param name="band">The band on screen.</param>
     /// <returns>Lines describing what the next class up would open.</returns>
     /// <remarks>
@@ -132,17 +132,17 @@ public static class PrivilegeStatusLine
     /// press is an invitation.
     /// </remarks>
     public static IReadOnlyList<string> UpgradeLadder(
-        PrivilegePlan plan, LicenceClass licenceClass, RadioEngine.Bands.CwBand band)
+        PrivilegePlan plan, LicenseClass licenseClass, RadioEngine.Bands.CwBand band)
     {
-        var upgrade = plan.UpgradeFrom(licenceClass);
+        var upgrade = plan.UpgradeFrom(licenseClass);
         if (upgrade is null)
         {
-            return licenceClass == LicenceClass.Extra
+            return licenseClass == LicenseClass.Extra
                 ? new[] { "You already hold every US privilege. There is nothing above this." }
                 : Array.Empty<string>();
         }
 
-        var now = plan.CoverageOf(band, licenceClass);
+        var now = plan.CoverageOf(band, licenseClass);
         var then = plan.CoverageOf(band, upgrade.Next);
         var next = PrivilegePlan.Describe(upgrade.Next);
 
@@ -155,7 +155,7 @@ public static class PrivilegeStatusLine
 
         // Name a concrete thing the upgrade buys on this band, rather than a
         // percentage nobody can picture.
-        var gained = FirstGain(plan, licenceClass, upgrade.Next, band);
+        var gained = FirstGain(plan, licenseClass, upgrade.Next, band);
         if (gained is not null)
         {
             lines.Add(gained);
@@ -171,7 +171,7 @@ public static class PrivilegeStatusLine
     /// The first stretch of this band the upgrade would open, described.
     /// </summary>
     private static string? FirstGain(
-        PrivilegePlan plan, LicenceClass from, LicenceClass to, RadioEngine.Bands.CwBand band)
+        PrivilegePlan plan, LicenseClass from, LicenseClass to, RadioEngine.Bands.CwBand band)
     {
         var mine = plan.SpansFor(band, from);
         var theirs = plan.SpansFor(band, to);

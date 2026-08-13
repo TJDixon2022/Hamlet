@@ -6,15 +6,15 @@ using Hamlet.App.ViewModels;
 namespace Hamlet.App.Controls;
 
 /// <summary>
-/// Colours the band-map status line by tone, and hides the parts of it that
+/// Colors the band-map status line by tone, and hides the parts of it that
 /// have nothing to say.
 /// </summary>
 /// <remarks>
 /// <para>Green when the frequency is theirs, amber when it is listen-only,
-/// and plain slate when the licence class is unknown.</para>
+/// and plain slate when the license class is unknown.</para>
 /// <para>Amber and not red is the whole point (HM-DEC-029). Being outside
 /// your privileges while tuning around is not an error — it is the ordinary
-/// state of most of the band for most licences, and an app that flashed red
+/// state of most of the band for most licenses, and an app that flashed red
 /// at somebody for listening would be teaching exactly the fear this feature
 /// exists to remove.</para>
 /// </remarks>
@@ -51,7 +51,7 @@ public sealed class PrivilegeToneConverter : IValueConverter
     /// <summary>The panel border for a tone.</summary>
     public static PrivilegeToneConverter Border { get; } = new(Role.Border);
 
-    /// <summary>The headline colour for a tone.</summary>
+    /// <summary>The headline color for a tone.</summary>
     public static PrivilegeToneConverter Text { get; } = new(Role.Text);
 
     /// <summary>True when a string has something to show.</summary>

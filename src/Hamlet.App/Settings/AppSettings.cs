@@ -61,14 +61,14 @@ public sealed class AppSettings
     public int TelemetryMaxMegabytes { get; set; } = 50;
 
     /// <summary>
-    /// "Only let me transmit where my licence allows" (HM-DEC-029). On by
+    /// "Only let me transmit where my license allows" (HM-DEC-029). On by
     /// default.
     /// </summary>
     /// <remarks>
     /// TRANSMIT ONLY. This never restricts tuning, receiving or anything the
     /// band map draws — listening is not regulated and a setting that implied
     /// otherwise would teach a beginner something false about their own
-    /// licence. It is read at one moment: before Hamlet keys a transmitter.
+    /// license. It is read at one moment: before Hamlet keys a transmitter.
     /// </remarks>
     public bool RestrictTransmitToPrivileges { get; set; } = true;
 
@@ -157,8 +157,8 @@ public static class SettingsStore
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
 
         // Enums as names, not numbers. Two reasons, and the second is the
-        // serious one. "LicenceClass": "General" is legible to somebody
-        // reading their own settings file, where "LicenceClass": 3 is not.
+        // serious one. "LicenseClass": "General" is legible to somebody
+        // reading their own settings file, where "LicenseClass": 3 is not.
         // And a person who hand-edits it to "General" gets what they meant —
         // without this converter that write throws, LoadFrom catches, and
         // EVERY setting silently reverts to defaults, which is a spectacular

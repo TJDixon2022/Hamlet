@@ -8,10 +8,10 @@ using Xunit;
 namespace Hamlet.App.Tests.Licensing;
 
 /// <summary>
-/// Lazy licence resolution (HM-DEC-028) and the status line it feeds
+/// Lazy license resolution (HM-DEC-028) and the status line it feeds
 /// (HM-DEC-029).
 /// </summary>
-public sealed class LicenceResolverTests
+public sealed class LicenseResolverTests
 {
     private static readonly DateTime Now = new(2026, 8, 13, 12, 0, 0, DateTimeKind.Utc);
 
@@ -36,7 +36,7 @@ public sealed class LicenceResolverTests
         }
     }
 
-    private static StubLookup Answering(LicenceClass cls)
+    private static StubLookup Answering(LicenseClass cls)
         => new(call => new CallsignLookupResult(call, cls, "stub-registry", Now));
 
     /// <remarks>
@@ -48,13 +48,13 @@ public sealed class LicenceResolverTests
     public void NeedsResolution_TracksTheFactRatherThanAScreen()
     {
         var profile = new OperatorProfile { Callsign = "KC3QIS" };
-        Assert.True(LicenceResolver.NeedsResolution(profile));
+        Assert.True(LicenseResolver.NeedsResolution(profile));
 
-        profile.SetLicenceClass(
-            LicenceClass.General, LicenceClassSource.LookedUp, "x", Now);
-        Assert.False(LicenceResolver.NeedsResolution(profile));
+        profile.SetLicenseClass(
+            LicenseClass.General, LicenseClassSource.LookedUp, "x", Now);
+        Assert.False(LicenseResolver.NeedsResolution(profile));
 
-        Assert.False(LicenceResolver.NeedsResolution(new OperatorProfile { Callsign = "  " }));
+        Assert.False(LicenseResolver.NeedsResolution(new OperatorProfile { Callsign = "  " }));
     }
 
     /// <remarks>
@@ -65,15 +65,15 @@ public sealed class LicenceResolverTests
     public async Task Resolve_FillsAnUnknownClassWithItsProvenance()
     {
         var profile = new OperatorProfile { Callsign = "KC3QIS" };
-        var resolver = new LicenceResolver(Answering(LicenceClass.General), () => Now);
+        var resolver = new LicenseResolver(Answering(LicenseClass.General), () => Now);
 
         var result = await resolver.ResolveAsync(profile);
 
-        Assert.Equal(LicenceResolutionOutcome.Resolved, result.Outcome);
-        Assert.Equal(LicenceClass.General, profile.LicenceClass);
-        Assert.Equal(LicenceClassSource.LookedUp, profile.LicenceClassSource);
-        Assert.Equal("stub-registry", profile.LicenceClassSourceName);
-        Assert.Equal("2026-08-13", profile.LicenceClassSetOn);
+        Assert.Equal(LicenseResolutionOutcome.Resolved, result.Outcome);
+        Assert.Equal(LicenseClass.General, profile.LicenseClass);
+        Assert.Equal(LicenseClassSource.LookedUp, profile.LicenseClassSource);
+        Assert.Equal("stub-registry", profile.LicenseClassSourceName);
+        Assert.Equal("2026-08-13", profile.LicenseClassSetOn);
         Assert.Contains("General", result.Narration, StringComparison.Ordinal);
     }
 
@@ -81,26 +81,26 @@ public sealed class LicenceResolverTests
     /// Proves the ruling that matters most (HM-DEC-028): a lookup NEVER
     /// silently overwrites a class the operator set by hand. Both values come
     /// back with the source, and the profile is untouched until they choose.
-    /// It is their licence.
+    /// It is their license.
     /// </remarks>
     [Fact]
     public async Task Resolve_NeverOverwritesAHandSetClass()
     {
         var profile = new OperatorProfile { Callsign = "KC3QIS" };
-        profile.SetLicenceClass(
-            LicenceClass.General, LicenceClassSource.EnteredByOperator, "", Now);
+        profile.SetLicenseClass(
+            LicenseClass.General, LicenseClassSource.EnteredByOperator, "", Now);
 
-        var resolver = new LicenceResolver(Answering(LicenceClass.Extra), () => Now);
+        var resolver = new LicenseResolver(Answering(LicenseClass.Extra), () => Now);
         var result = await resolver.ResolveAsync(profile);
 
-        Assert.Equal(LicenceResolutionOutcome.Mismatch, result.Outcome);
+        Assert.Equal(LicenseResolutionOutcome.Mismatch, result.Outcome);
         Assert.True(result.NeedsOperatorDecision);
-        Assert.Equal(LicenceClass.Extra, result.Found);
-        Assert.Equal(LicenceClass.General, result.Existing);
+        Assert.Equal(LicenseClass.Extra, result.Found);
+        Assert.Equal(LicenseClass.General, result.Existing);
 
         // The profile is exactly as the operator left it.
-        Assert.Equal(LicenceClass.General, profile.LicenceClass);
-        Assert.Equal(LicenceClassSource.EnteredByOperator, profile.LicenceClassSource);
+        Assert.Equal(LicenseClass.General, profile.LicenseClass);
+        Assert.Equal(LicenseClassSource.EnteredByOperator, profile.LicenseClassSource);
 
         // And the operator is shown both, plainly.
         Assert.Contains("Extra", result.Narration, StringComparison.Ordinal);
@@ -115,15 +115,15 @@ public sealed class LicenceResolverTests
     public async Task Resolve_IsSilentWhenTheLookupAgrees()
     {
         var profile = new OperatorProfile { Callsign = "KC3QIS" };
-        profile.SetLicenceClass(
-            LicenceClass.General, LicenceClassSource.EnteredByOperator, "", Now);
+        profile.SetLicenseClass(
+            LicenseClass.General, LicenseClassSource.EnteredByOperator, "", Now);
 
-        var result = await new LicenceResolver(Answering(LicenceClass.General), () => Now)
+        var result = await new LicenseResolver(Answering(LicenseClass.General), () => Now)
             .ResolveAsync(profile);
 
-        Assert.Equal(LicenceResolutionOutcome.NotNeeded, result.Outcome);
+        Assert.Equal(LicenseResolutionOutcome.NotNeeded, result.Outcome);
         Assert.False(result.NeedsOperatorDecision);
-        Assert.Equal(LicenceClassSource.EnteredByOperator, profile.LicenceClassSource);
+        Assert.Equal(LicenseClassSource.EnteredByOperator, profile.LicenseClassSource);
     }
 
     /// <remarks>
@@ -137,10 +137,10 @@ public sealed class LicenceResolverTests
         var profile = new OperatorProfile { Callsign = "KC3QIS" };
         var broken = new StubLookup(_ => throw new HttpRequestException("down"));
 
-        var result = await new LicenceResolver(broken, () => Now).ResolveAsync(profile);
+        var result = await new LicenseResolver(broken, () => Now).ResolveAsync(profile);
 
-        Assert.Equal(LicenceResolutionOutcome.Unavailable, result.Outcome);
-        Assert.Equal(LicenceClass.Unknown, profile.LicenceClass);
+        Assert.Equal(LicenseResolutionOutcome.Unavailable, result.Outcome);
+        Assert.Equal(LicenseClass.Unknown, profile.LicenseClass);
         Assert.Contains("Settings", result.Narration, StringComparison.OrdinalIgnoreCase);
     }
 
@@ -152,11 +152,11 @@ public sealed class LicenceResolverTests
     public async Task Resolve_HandlesAnUnknownCallsign()
     {
         var profile = new OperatorProfile { Callsign = "XX0XXX" };
-        var result = await new LicenceResolver(new StubLookup(_ => null), () => Now)
+        var result = await new LicenseResolver(new StubLookup(_ => null), () => Now)
             .ResolveAsync(profile);
 
-        Assert.Equal(LicenceResolutionOutcome.NotFound, result.Outcome);
-        Assert.Equal(LicenceClass.Unknown, profile.LicenceClass);
+        Assert.Equal(LicenseResolutionOutcome.NotFound, result.Outcome);
+        Assert.Equal(LicenseClass.Unknown, profile.LicenseClass);
         Assert.Contains("Settings", result.Narration, StringComparison.OrdinalIgnoreCase);
     }
 
@@ -167,7 +167,7 @@ public sealed class LicenceResolverTests
     /// </remarks>
     [Fact]
     public void Narration_NamesTheCallsignBeingLookedUp()
-        => Assert.Equal("Looking up KC3QIS…", LicenceResolver.LookingUpNarration(" kc3qis "));
+        => Assert.Equal("Looking up KC3QIS…", LicenseResolver.LookingUpNarration(" kc3qis "));
 
     /// <remarks>
     /// Proves provenance is stated differently for a lookup and a hand-set
@@ -177,15 +177,15 @@ public sealed class LicenceResolverTests
     public void Provenance_DistinguishesLookedUpFromHandSet()
     {
         var looked = new OperatorProfile();
-        looked.SetLicenceClass(LicenceClass.General, LicenceClassSource.LookedUp, "callook.info", Now);
-        Assert.Contains("callook.info", LicenceResolver.DescribeProvenance(looked), StringComparison.Ordinal);
+        looked.SetLicenseClass(LicenseClass.General, LicenseClassSource.LookedUp, "callook.info", Now);
+        Assert.Contains("callook.info", LicenseResolver.DescribeProvenance(looked), StringComparison.Ordinal);
 
         var typed = new OperatorProfile();
-        typed.SetLicenceClass(LicenceClass.General, LicenceClassSource.EnteredByOperator, "", Now);
-        Assert.Contains("you set this", LicenceResolver.DescribeProvenance(typed), StringComparison.OrdinalIgnoreCase);
+        typed.SetLicenseClass(LicenseClass.General, LicenseClassSource.EnteredByOperator, "", Now);
+        Assert.Contains("you set this", LicenseResolver.DescribeProvenance(typed), StringComparison.OrdinalIgnoreCase);
 
         var none = new OperatorProfile();
-        Assert.Contains("not set", LicenceResolver.DescribeProvenance(none), StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("not set", LicenseResolver.DescribeProvenance(none), StringComparison.OrdinalIgnoreCase);
     }
 
     /// <remarks>
@@ -193,7 +193,7 @@ public sealed class LicenceResolverTests
     /// real loader.
     /// </remarks>
     [Fact]
-    public void LicenceClass_RoundTripsThroughSettingsJson()
+    public void LicenseClass_RoundTripsThroughSettingsJson()
     {
         var folder = Path.Combine(Path.GetTempPath(), "hamlet-tests", Guid.NewGuid().ToString("N"));
         var path = Path.Combine(folder, "settings.json");
@@ -201,16 +201,16 @@ public sealed class LicenceResolverTests
         try
         {
             var written = new AppSettings();
-            written.Operator.SetLicenceClass(
-                LicenceClass.Extra, LicenceClassSource.EnteredByOperator, "", Now);
+            written.Operator.SetLicenseClass(
+                LicenseClass.Extra, LicenseClassSource.EnteredByOperator, "", Now);
 
             SettingsStore.SaveTo(written, path);
             var read = SettingsStore.LoadFrom(path);
 
-            Assert.Equal(LicenceClass.Extra, read.Operator.LicenceClass);
-            Assert.Equal(LicenceClassSource.EnteredByOperator, read.Operator.LicenceClassSource);
-            Assert.True(read.Operator.LicenceClassWasSetByHand);
-            Assert.Equal("2026-08-13", read.Operator.LicenceClassSetOn);
+            Assert.Equal(LicenseClass.Extra, read.Operator.LicenseClass);
+            Assert.Equal(LicenseClassSource.EnteredByOperator, read.Operator.LicenseClassSource);
+            Assert.True(read.Operator.LicenseClassWasSetByHand);
+            Assert.Equal("2026-08-13", read.Operator.LicenseClassSetOn);
         }
         finally
         {
@@ -230,14 +230,14 @@ public sealed class LicenceResolverTests
 
     /// <remarks>
     /// Proves the class is written as a readable name and a hand-edited one
-    /// is honoured. This was found by hand-editing the real settings file:
-    /// the class serialised as a bare number, and editing it to "General"
+    /// is honored. This was found by hand-editing the real settings file:
+    /// the class serialized as a bare number, and editing it to "General"
     /// threw, was caught by the never-throw loader, and silently reverted
     /// EVERY setting to defaults. HM-DEC-028 expects the callsign and class
     /// to arrive from hand-edited files, so that had to work.
     /// </remarks>
     [Fact]
-    public void LicenceClass_IsWrittenAsAName_AndHandEditsAreHonoured()
+    public void LicenseClass_IsWrittenAsAName_AndHandEditsAreHonored()
     {
         var folder = Path.Combine(Path.GetTempPath(), "hamlet-tests", Guid.NewGuid().ToString("N"));
         var path = Path.Combine(folder, "settings.json");
@@ -245,8 +245,8 @@ public sealed class LicenceResolverTests
         try
         {
             var written = new AppSettings { LastBand = "20 m" };
-            written.Operator.SetLicenceClass(
-                LicenceClass.General, LicenceClassSource.LookedUp, "callook.info", Now);
+            written.Operator.SetLicenseClass(
+                LicenseClass.General, LicenseClassSource.LookedUp, "callook.info", Now);
             SettingsStore.SaveTo(written, path);
 
             var json = File.ReadAllText(path);
@@ -256,7 +256,7 @@ public sealed class LicenceResolverTests
             File.WriteAllText(path, json.Replace("\"General\"", "\"Extra\""));
             var read = SettingsStore.LoadFrom(path);
 
-            Assert.Equal(LicenceClass.Extra, read.Operator.LicenceClass);
+            Assert.Equal(LicenseClass.Extra, read.Operator.LicenseClass);
 
             // And nothing else was lost on the way through.
             Assert.Equal("20 m", read.LastBand);
@@ -282,13 +282,13 @@ public sealed class LicenceResolverTests
     /// class would be the one guess with legal consequences (HM-DEC-009).
     /// </remarks>
     [Fact]
-    public void FreshProfile_HasNoLicenceClass()
+    public void FreshProfile_HasNoLicenseClass()
     {
         var profile = new OperatorProfile();
 
-        Assert.Equal(LicenceClass.Unknown, profile.LicenceClass);
-        Assert.Equal(LicenceClassSource.Unset, profile.LicenceClassSource);
-        Assert.False(profile.LicenceClassWasSetByHand);
+        Assert.Equal(LicenseClass.Unknown, profile.LicenseClass);
+        Assert.Equal(LicenseClassSource.Unset, profile.LicenseClassSource);
+        Assert.False(profile.LicenseClassWasSetByHand);
     }
 
     /// <remarks>

@@ -9,7 +9,7 @@ namespace Hamlet.RadioEngine.Tests.Training;
 
 /// <summary>
 /// The honesty rule of HM-DEC-026, proved structurally: a simulated source
-/// always yields the labelled state, a real rig never does, and neither can
+/// always yields the labeled state, a real rig never does, and neither can
 /// be told otherwise.
 /// </summary>
 public sealed class SimulationHonestyTests

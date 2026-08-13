@@ -19,7 +19,7 @@ public sealed class TrainingRadioTests
     /// Proves the label is read-only all the way up. The engine test shows
     /// the source cannot lie about being simulated; this shows the shell
     /// cannot override it — together they are the guarantee that there is no
-    /// code path putting synthetic signals on screen unlabelled.
+    /// code path putting synthetic signals on screen unlabeled.
     /// </remarks>
     [Theory]
     [InlineData(nameof(MainWindowViewModel.SignalsAreSimulated))]
@@ -38,12 +38,12 @@ public sealed class TrainingRadioTests
 
     /// <remarks>
     /// Proves there is no user setting that could put fake signals on screen
-    /// unlabelled. HM-DEC-026 rules out a practice mode and a watermark
+    /// unlabeled. HM-DEC-026 rules out a practice mode and a watermark
     /// toggle, and the way to keep that true a year from now is to fail a
     /// test the moment such a switch is added to the settings file.
     /// </remarks>
     [Fact]
-    public void NoSetting_ControlsWhetherSignalsAreLabelled()
+    public void NoSetting_ControlsWhetherSignalsAreLabeled()
     {
         var suspicious = typeof(AppSettings)
             .GetProperties(BindingFlags.Public | BindingFlags.Instance)
@@ -134,7 +134,7 @@ public sealed class TrainingRadioTests
 
     /// <remarks>
     /// Proves the waterfall's palette covers the whole amplitude range with
-    /// opaque colours, and gets brighter with signal — a ramp that dimmed in
+    /// opaque colors, and gets brighter with signal — a ramp that dimmed in
     /// the middle would make a strong signal look weak.
     /// </remarks>
     [Fact]

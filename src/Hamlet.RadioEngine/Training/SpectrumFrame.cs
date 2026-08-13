@@ -54,9 +54,9 @@ public readonly ref struct SpectrumFrame
     /// <summary>Width of the span in hertz.</summary>
     public long SpanHz => HighHz - LowHz;
 
-    /// <summary>The centre frequency of one bin.</summary>
+    /// <summary>The center frequency of one bin.</summary>
     /// <param name="index">Bin index.</param>
-    /// <returns>Centre frequency in hertz.</returns>
+    /// <returns>Center frequency in hertz.</returns>
     public long BinCenterHz(int index)
         => Bins.Length == 0
             ? LowHz

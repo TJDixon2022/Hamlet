@@ -92,7 +92,7 @@ public sealed class CallsignPrivacyTests : IDisposable
     }
 
     /// <remarks>
-    /// Proves the guarantee structurally as well as behaviourally: the
+    /// Proves the guarantee structurally as well as behaviorally: the
     /// telemetry payload builders cannot read the profile, because they are
     /// never handed one. No AppEvents method takes an AppSettings or an
     /// OperatorProfile, and the class holds no state to reach it through.
@@ -175,12 +175,12 @@ public sealed class CallsignPrivacyTests : IDisposable
         AppEvents.ModeSamplePlayed(telemetry, "Cw", 18);
 
         // HM-DEC-028 sends the callsign to a lookup service to learn the
-        // licence class. That is the same bargain as HM-DEC-024's spot feeds:
+        // license class. That is the same bargain as HM-DEC-024's spot feeds:
         // the callsign goes over the wire and still never into this file, so
         // these five events join the walk that proves it.
-        AppEvents.LicenceClassResolved(telemetry, "General", "callook.info");
-        AppEvents.LicenceClassMismatch(telemetry, "Extra", "General");
-        AppEvents.LicenceClassLookupFailed(telemetry, "Unavailable");
+        AppEvents.LicenseClassResolved(telemetry, "General", "callook.info");
+        AppEvents.LicenseClassMismatch(telemetry, "Extra", "General");
+        AppEvents.LicenseClassLookupFailed(telemetry, "Unavailable");
         AppEvents.UpgradeLadderOpened(telemetry, "Technician");
         AppEvents.TransmitGuardToggled(telemetry, enabled: true);
     }

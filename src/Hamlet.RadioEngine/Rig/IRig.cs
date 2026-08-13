@@ -26,7 +26,7 @@ public interface IRig
     /// waterfall's "these signals are simulated" label and the choice of
     /// spectrum source are both derived from this, so there is no separate
     /// practice mode to enter and no setting that could put synthetic signals
-    /// on screen unlabelled.</para>
+    /// on screen unlabeled.</para>
     /// <para>A property rather than a type check at the call site, because a
     /// type check is a rule spread across every caller and this is a rule
     /// that has to hold in one place.</para>

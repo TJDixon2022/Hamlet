@@ -12,7 +12,7 @@ scope** until a ruling schedules it (§0.4) — same rule as `FUTURE_GOALS.md`.
 
 ## Why onboarding exists at all
 
-The person Hamlet is built for has held a licence for six years and has never
+The person Hamlet is built for has held a license for six years and has never
 made a contact. Not for lack of equipment or intelligence — for lack of
 knowing where to start, what is allowed, and what any of it sounds like.
 
@@ -50,10 +50,10 @@ anything wrong.
 ### ONB-001 — Welcome
 Who Hamlet is for, in two sentences. No feature list. The single most freeing
 fact in the hobby, stated plainly and early: **listening is never restricted
-— you may tune anywhere, on any band, with any licence. The rules are about
+— you may tune anywhere, on any band, with any license. The rules are about
 transmitting.**
 
-### ONB-002 — Callsign and licence class
+### ONB-002 — Callsign and license class
 **Built 2026-08-13 (HM-DEC-028), and it no longer depends on this step.**
 Resolution is lazy and automatic: whenever a callsign is present and the class
 is unknown, Hamlet looks it up in the background and narrates in the status
@@ -116,7 +116,7 @@ into the step list by ruling.
 
 | Id | Candidate | Why it might belong |
 |---|---|---|
-| ONB-C01 | Location / grid square | Feeds propagation and distance-to-spot (FG-001); could be derived from the licence lookup rather than asked |
+| ONB-C01 | Location / grid square | Feeds propagation and distance-to-spot (FG-001); could be derived from the license lookup rather than asked |
 | ONB-C02 | Telemetry disclosure | HM-DEC-018 keeps everything local, but saying so unprompted buys trust cheaply |
 | ONB-C03 | Audio device selection | Needed before any decoding; belongs with ONB-005 when a real rig is connected |
 | ONB-C04 | CW copy speed | What speed can they read? Sets the Explorer's spot filtering (FG-002). Could be a listening exercise rather than a question |

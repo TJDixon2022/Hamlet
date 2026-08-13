@@ -45,7 +45,7 @@ public sealed class BandActivityTests
         string bandName,
         IReadOnlyList<ActivitySpot> spots,
         IReadOnlyList<SourceStatus> statuses)
-        => BandActivity.Summarise(Bands, spots, statuses, Now).Single(r => r.BandName == bandName);
+        => BandActivity.Summarize(Bands, spots, statuses, Now).Single(r => r.BandName == bandName);
 
     /// <remarks>
     /// Proves the scale is relative: the busiest band fills the indicator and
@@ -59,7 +59,7 @@ public sealed class BandActivityTests
         var spots = Spots("40 m", 40).Concat(Spots("20 m", 10)).Concat(Spots("15 m", 2)).ToList();
         var statuses = new[] { Ok("POTA") };
 
-        var readings = BandActivity.Summarise(Bands, spots, statuses, Now);
+        var readings = BandActivity.Summarize(Bands, spots, statuses, Now);
 
         var forty = readings.Single(r => r.BandName == "40 m");
         var twenty = readings.Single(r => r.BandName == "20 m");
@@ -312,7 +312,7 @@ public sealed class BandActivityTests
         {
             foreach (var statuses in statusSets)
             {
-                foreach (var reading in BandActivity.Summarise(Bands, spots, statuses, Now))
+                foreach (var reading in BandActivity.Summarize(Bands, spots, statuses, Now))
                 {
                     foreach (var phrase in banned)
                     {
@@ -342,13 +342,13 @@ public sealed class BandActivityTests
     /// same readings every call.
     /// </remarks>
     [Fact]
-    public void Summarise_IsDeterministic()
+    public void Summarize_IsDeterministic()
     {
         var spots = Spots("40 m", 12).Concat(Spots("20 m", 3)).ToList();
         var statuses = new[] { Ok("POTA"), Ok("RBN", "40 m") };
 
-        var a = BandActivity.Summarise(Bands, spots, statuses, Now);
-        var b = BandActivity.Summarise(Bands, spots, statuses, Now);
+        var a = BandActivity.Summarize(Bands, spots, statuses, Now);
+        var b = BandActivity.Summarize(Bands, spots, statuses, Now);
 
         Assert.Equal(a, b);
     }
@@ -360,7 +360,7 @@ public sealed class BandActivityTests
     [Fact]
     public void EveryBand_GetsAReading()
     {
-        var readings = BandActivity.Summarise(
+        var readings = BandActivity.Summarize(
             Bands, Spots("40 m", 5), new[] { Ok("POTA") }, Now);
 
         Assert.Equal(Bands.Count, readings.Count);
