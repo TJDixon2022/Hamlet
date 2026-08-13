@@ -33,6 +33,21 @@ public sealed class TrainingRig : IRig
     public bool IsSimulated => true;
 
     /// <inheritdoc/>
+    /// <remarks>
+    /// The training radio claims a scope because it genuinely has one — the
+    /// synthesiser — and refuses transmit because it genuinely cannot: there
+    /// is no transmitter behind it, and saying otherwise would be the one
+    /// claim this class must never make.
+    /// </remarks>
+    public RigCapabilities Capabilities { get; } = new(
+        "Training radio",
+        HasSpectrumScope: true,
+        HasBuiltInCwKeyer: false,
+        HasUsbAudio: false,
+        CanTransmit: false,
+        Bands.BandPlan.Bands.Select(b => b.Name).ToList());
+
+    /// <inheritdoc/>
     public event EventHandler<FrequencyChangedEventArgs>? FrequencyChanged;
 
     /// <inheritdoc/>

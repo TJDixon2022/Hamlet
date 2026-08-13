@@ -47,6 +47,22 @@ public sealed class Ic7300Rig : IRig, IDisposable
     public bool IsSimulated => false;
 
     /// <inheritdoc/>
+    /// <remarks>
+    /// The 7300's own feature set: a spectrum scope over CI-V 0x27
+    /// (HM-DEC-005), an internal keyer driven by 0x17, and a USB audio codec
+    /// on the same cable (§4). CanTransmit is true of the radio; whether
+    /// Hamlet will key it is a separate question answered by
+    /// <see cref="Licensing.TransmitGuard"/> and gated on HM-DEC-008.
+    /// </remarks>
+    public RigCapabilities Capabilities { get; } = new(
+        "IC-7300",
+        HasSpectrumScope: true,
+        HasBuiltInCwKeyer: true,
+        HasUsbAudio: true,
+        CanTransmit: true,
+        Bands.BandPlan.Bands.Select(b => b.Name).ToList());
+
+    /// <inheritdoc/>
     public bool IsConnected { get; private set; }
 
     /// <inheritdoc/>

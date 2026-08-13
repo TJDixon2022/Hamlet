@@ -33,6 +33,15 @@ public interface IRig
     /// </remarks>
     bool IsSimulated { get; }
 
+    /// <summary>What this particular radio can do (HM-DEC-030).</summary>
+    /// <remarks>
+    /// Reported by the implementation. The UI reads this rather than assuming
+    /// IC-7300 features, so a radio without a spectrum scope or a built-in
+    /// keyer degrades to an honest "this radio does not do that" instead of
+    /// offering a control that cannot work.
+    /// </remarks>
+    RigCapabilities Capabilities { get; }
+
     /// <summary>
     /// Raised when the rig reports a frequency change from any source —
     /// including the operator turning the physical VFO knob. Raised on a
