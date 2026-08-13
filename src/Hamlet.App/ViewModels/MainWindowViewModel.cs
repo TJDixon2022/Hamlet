@@ -1,9 +1,13 @@
 using System.Collections.ObjectModel;
+using Avalonia;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Avalonia.Controls.ApplicationLifetimes;
+using Hamlet.App.Settings;
 using Hamlet.RadioEngine.Bands;
 using Hamlet.RadioEngine.Explore;
+using Hamlet.RadioEngine.Telemetry;
 using Hamlet.RadioEngine.Rig;
 using Hamlet.RadioEngine.Transport;
 
@@ -23,6 +27,8 @@ public partial class MainWindowViewModel : ObservableObject
     private static readonly TimeSpan RigSendThrottle = TimeSpan.FromMilliseconds(150);
 
     private readonly DispatcherTimer _rigSendTimer;
+    private readonly AppSettings _settings;
+    private readonly JsonlTelemetry? _telemetry;
     private IRig? _rig;
     private bool _updatingFromRig;
     private bool _rigSendPending;
@@ -81,9 +87,17 @@ public partial class MainWindowViewModel : ObservableObject
     /// <summary>The simulated rig plus every serial port on this machine.</summary>
     public ObservableCollection<string> AvailablePorts { get; }
 
-    /// <summary>Runtime constructor.</summary>
-    public MainWindowViewModel()
+    /// <summary>Designer constructor.</summary>
+    public MainWindowViewModel() : this(new AppSettings(), null)
     {
+    }
+
+    /// <summary>Runtime constructor.</summary>
+    public MainWindowViewModel(AppSettings settings, JsonlTelemetry? telemetry)
+    {
+        _settings = settings;
+        _telemetry = telemetry;
+
         var bets = BandPlan.BestBets(DateTime.Now.Hour);
         Bands = new ObservableCollection<BandButtonViewModel>(
             BandPlan.Bands.Select(b => new BandButtonViewModel(
@@ -91,13 +105,19 @@ public partial class MainWindowViewModel : ObservableObject
                 isBestBet: bets.Count > 0 && bets[0] == b.Name,
                 isSecondBet: bets.Count > 1 && bets[1] == b.Name)));
 
-        _selectedBand = Bands.First(b => b.Band.Name == "40 m");
+        _selectedBand = Bands.FirstOrDefault(b => b.Band.Name == settings.LastBand)
+                        ?? Bands.First(b => b.Band.Name == "40 m");
         _frequencyHz = _selectedBand.Band.JumpHz;
 
         AvailablePorts = new ObservableCollection<string> { SimulatedRig };
         foreach (var name in SafePortNames())
         {
             AvailablePorts.Add(name);
+        }
+
+        if (settings.LastPort is not null && AvailablePorts.Contains(settings.LastPort))
+        {
+            _selectedPort = settings.LastPort;
         }
 
         _rigSendTimer = new DispatcherTimer(
@@ -126,6 +146,8 @@ public partial class MainWindowViewModel : ObservableObject
     [RelayCommand]
     private void ShowNeighborhood(Neighborhood hood)
     {
+        _telemetry?.Write(TelemetryCategory.Explore, "neighborhood_clicked",
+            new Dictionary<string, object?> { ["name"] = hood.Name });
         StoryTitle = hood.Name;
         StoryBadge = hood.Vibe;
         StoryBody = hood.Blurb;
@@ -136,6 +158,8 @@ public partial class MainWindowViewModel : ObservableObject
     [RelayCommand]
     private void ShowMode(ModeInfo mode)
     {
+        _telemetry?.Write(TelemetryCategory.Explore, "mode_card_opened",
+            new Dictionary<string, object?> { ["mode"] = mode.Name });
         StoryTitle = $"{mode.Name} — {mode.Tagline}";
         StoryBadge = mode.Difficulty;
         StoryBody = $"{mode.Why} Sounds like: {mode.Sound}. Learn its waterfall "
@@ -148,6 +172,8 @@ public partial class MainWindowViewModel : ObservableObject
     [RelayCommand]
     private void TuneTo(long hz)
     {
+        _telemetry?.Write(TelemetryCategory.Tuning, "tune_requested",
+            new Dictionary<string, object?> { ["hz"] = hz, ["source"] = "story_or_spot" });
         var band = BandPlan.BandFor(hz);
         if (band is not null && band.Name != SelectedBand.Band.Name)
         {
@@ -160,6 +186,63 @@ public partial class MainWindowViewModel : ObservableObject
     partial void OnSelectedBandChanged(BandButtonViewModel value)
     {
         Neighborhoods = NeighborhoodPlan.ForBand(value.Band);
+        _settings.LastBand = value.Band.Name;
+        SettingsStore.Save(_settings);
+        _telemetry?.Write(TelemetryCategory.Tuning, "band_changed",
+            new Dictionary<string, object?> { ["band"] = value.Band.Name });
+    }
+
+    partial void OnSelectedPortChanged(string value)
+    {
+        _settings.LastPort = value;
+        SettingsStore.Save(_settings);
+    }
+
+    /// <summary>Reload the happening-now feed.</summary>
+    [RelayCommand]
+    private async Task RefreshSpotsAsync()
+    {
+        await LoadSpotsAsync(new FakeActivitySource());
+        _telemetry?.Write(TelemetryCategory.Explore, "spots_refreshed");
+    }
+
+    /// <summary>Open the settings dialog.</summary>
+    [RelayCommand]
+    private async Task OpenSettingsAsync()
+    {
+        if (Application.Current?.ApplicationLifetime
+            is not IClassicDesktopStyleApplicationLifetime desktop
+            || desktop.MainWindow is null)
+        {
+            return;
+        }
+
+        var window = new Views.SettingsWindow
+        {
+            DataContext = new SettingsViewModel(_settings, _telemetry),
+        };
+        await window.ShowDialog(desktop.MainWindow);
+    }
+
+    /// <summary>Open %AppData%\Hamlet in the file browser.</summary>
+    [RelayCommand]
+    private void OpenDataFolder() => SettingsStore.OpenDataFolder();
+
+    /// <summary>Show the about box.</summary>
+    [RelayCommand]
+    private void About()
+        => StatusText = "Hamlet — let me ham. Open source, GPL-3.0. "
+                      + "Telemetry stays on this computer.";
+
+    /// <summary>Close the app.</summary>
+    [RelayCommand]
+    private void Exit()
+    {
+        if (Application.Current?.ApplicationLifetime
+            is IClassicDesktopStyleApplicationLifetime desktop)
+        {
+            desktop.Shutdown();
+        }
     }
 
     /// <summary>Jump to a band's CW watering hole.</summary>
@@ -186,12 +269,26 @@ public partial class MainWindowViewModel : ObservableObject
         if (!await rig.ConnectAsync())
         {
             (rig as IDisposable)?.Dispose();
+            _telemetry?.Write(TelemetryCategory.Rig, "connect_failed",
+                new Dictionary<string, object?>
+                {
+                    ["port"] = SelectedPort,
+                    ["rigType"] = SelectedPort == SimulatedRig ? "simulated" : "IC-7300",
+                    ["reason"] = "no_response",
+                },
+                TelemetryLevel.Warn);
             StatusText = $"No answer on {SelectedPort} — check cable, baud and "
                        + "CI-V address (HM-OPEN-003)";
             return;
         }
 
         _rig = rig;
+        _telemetry?.Write(TelemetryCategory.Rig, "connect_ok",
+            new Dictionary<string, object?>
+            {
+                ["port"] = SelectedPort,
+                ["rigType"] = SelectedPort == SimulatedRig ? "simulated" : "IC-7300",
+            });
         rig.FrequencyChanged += OnRigFrequencyChanged;
         IsConnected = true;
         ConnectButtonText = "Disconnect";

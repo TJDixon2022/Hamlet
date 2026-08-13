@@ -4,6 +4,31 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-018
+date: 2026-08-13
+refs: src/Hamlet.App/Settings/AppSettings.cs, src/Hamlet.RadioEngine/Telemetry/
+---
+
+Hamlet remembers state and records telemetry locally, per Tim's interview
+rulings: one settings.json in %AppData%\Hamlet (window bounds, last port and
+band, telemetry switches), a corrupt file yielding defaults rather than a
+crash; telemetry in %AppData%\Hamlet\telemetry as daily YYYY-MM-DD.jsonl
+files, size-capped with oldest-first eviction, cap editable in Settings.
+
+Six switchable categories — Diagnostics, Rig, Tuning, Explore, Decode,
+Performance — all ON by default, each independently switchable in Settings.
+Line schema is timestamp, sessionId, level, appVersion, category, event,
+data. Deliberately absent: any machine identifier, callsigns, and decoded
+message content. Decode telemetry records that a decode happened and its
+confidence, never what was said — amateur transmissions are public, but a
+file quietly accumulating who you talked to is a different thing.
+
+Nothing uploads. Any future upload is an explicit, separate act with its own
+ruling. The menu is the roadmap-shaped B option: File, Radio, Explore,
+Tools, Help, with unbuilt items disabled and labelled with the phase that
+brings them, so the menu says "not yet" rather than implying "broken".
+
+---
 id: HM-DEC-017
 date: 2026-08-13
 refs: CLAUDE.md throughout, Hamlet.sln

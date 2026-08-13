@@ -61,7 +61,7 @@ public static class NeighborhoodPlan
             "Sparser territory: JS8 keyboard chats, occasional digital nets, "
             + "and open space. Good hunting ground once you can identify "
             + "signals by their waterfall shape.",
-            7_078_000, "#F1EFE8"),
+            7_090_000, "#F1EFE8"),
         new Neighborhood("Phone downtown", "SSB DX", 7_125_000, 7_175_000,
             "Cocktail party",
             "Voice at last — single sideband, which sounds like ducks until "

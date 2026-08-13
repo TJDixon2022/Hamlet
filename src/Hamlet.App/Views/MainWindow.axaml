@@ -43,19 +43,48 @@
 
     <Grid RowDefinitions="Auto,Auto,Auto,*,Auto" Margin="16">
 
-        <!-- Header + connection -->
-        <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="4,0,4,12">
-            <StackPanel Grid.Column="0" Spacing="2">
-                <StackPanel Orientation="Horizontal" Spacing="8">
-                    <TextBlock Text="Ham" FontSize="26" FontWeight="Bold"
-                               Foreground="{StaticResource HmAmberBrush}" />
-                    <TextBlock Text="let" FontSize="26" FontWeight="Bold"
-                               Foreground="{StaticResource HmBlueBrush}" />
-                </StackPanel>
-                <TextBlock Text="The IC-7300 command console — the air, decoded."
-                           FontSize="13" Foreground="{StaticResource HmTextMutedBrush}" />
+        <!-- Brand, menu, connection -->
+        <Grid Grid.Row="0" ColumnDefinitions="Auto,Auto,*,Auto" Margin="4,0,4,12">
+            <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="0"
+                        VerticalAlignment="Center" Margin="0,0,14,0">
+                <TextBlock Text="Ham" FontSize="24" FontWeight="Bold"
+                           Foreground="{StaticResource HmAmberBrush}" />
+                <TextBlock Text="let" FontSize="24" FontWeight="Bold"
+                           Foreground="{StaticResource HmBlueBrush}" />
             </StackPanel>
-            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10"
+
+            <Menu Grid.Column="1" VerticalAlignment="Center" Background="Transparent">
+                <MenuItem Header="_File">
+                    <MenuItem Header="Settings…" Command="{Binding OpenSettingsCommand}" />
+                    <Separator />
+                    <MenuItem Header="Exit" Command="{Binding ExitCommand}" />
+                </MenuItem>
+                <MenuItem Header="_Radio">
+                    <MenuItem Header="{Binding ConnectButtonText}"
+                              Command="{Binding ToggleConnectCommand}" />
+                    <Separator />
+                    <MenuItem Header="Send CW…  (phase 1)" IsEnabled="False" />
+                    <MenuItem Header="Spectrum scope  (phase 2)" IsEnabled="False" />
+                </MenuItem>
+                <MenuItem Header="_Explore">
+                    <MenuItem Header="Refresh spots" Command="{Binding RefreshSpotsCommand}" />
+                    <Separator />
+                    <MenuItem Header="Live spot feeds  (phase 1.5)" IsEnabled="False" />
+                    <MenuItem Header="Find me a CQ I can copy  (phase 2)" IsEnabled="False" />
+                </MenuItem>
+                <MenuItem Header="_Tools">
+                    <MenuItem Header="Settings…" Command="{Binding OpenSettingsCommand}" />
+                    <MenuItem Header="Open data folder" Command="{Binding OpenDataFolderCommand}" />
+                    <Separator />
+                    <MenuItem Header="Diagnostics viewer  (later)" IsEnabled="False" />
+                </MenuItem>
+                <MenuItem Header="_Help">
+                    <MenuItem Header="Getting started  (phase 1.5)" IsEnabled="False" />
+                    <MenuItem Header="About Hamlet" Command="{Binding AboutCommand}" />
+                </MenuItem>
+            </Menu>
+
+            <StackPanel Grid.Column="3" Orientation="Horizontal" Spacing="10"
                         VerticalAlignment="Center">
                 <ComboBox ItemsSource="{Binding AvailablePorts}"
                           SelectedItem="{Binding SelectedPort}"

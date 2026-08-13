@@ -142,6 +142,7 @@ this table is the index.
 
 | Date | Decision | Why | Ref |
 |---|---|---|---|
+| 2026-08-13 | **Local settings and telemetry:** `%AppData%\Hamlet\settings.json` (window state, last port/band, switches) and `telemetry\YYYY-MM-DD.jsonl`, size-capped. Six categories, all on, switchable. No machine id, no callsigns, no message content, no upload. Roadmap-shaped menu with phase-labelled disabled items. | HM-DEC-013-style honesty applied to the app's own record; the community is right to distrust phone-home software. | HM-DEC-018 |
 | 2026-08-13 | **Renamed Ham Manager → Hamlet: repo `C:\Source\Hamlet`, GitHub `TJDixon2022/Hamlet`, solution and namespaces `Hamlet.*`.** Hamlib/"Hamlet UI" collision found and accepted. Pre-rename records keep the old name verbatim. | "Let me ham" is the mission in one word; Tim ruled the collision immaterial for this audience. | HM-DEC-017 |
 | 2026-08-12 | **The Explorer is the product's center, built UI-first on fixture data behind an IActivitySource seam: neighborhood map, mode field guide, happening-now feed.** Phase 1.5. | The app demystifies; automation apps already exist. Partially graduates FG-001. | HM-DEC-016 |
 | 2026-08-12 | **Tuning HMI: band buttons with best-bet badge, band ribbon map, dial-tape fine control with momentum; per-digit wheel tuning; no step buttons.** | Tim's approved design; the ribbon and tape become the waterfall's axis in phase 2. | HM-DEC-015 |

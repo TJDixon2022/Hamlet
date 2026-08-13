@@ -14,4 +14,11 @@
     <PackageReference Include="System.IO.Ports" Version="8.0.0" />
   </ItemGroup>
 
+  <!-- The telemetry line format is an internal detail with a public promise
+       attached (HM-DEC-018), so the schema test reaches it directly rather
+       than the format being widened to public just to be provable. -->
+  <ItemGroup>
+    <InternalsVisibleTo Include="Hamlet.RadioEngine.Tests" />
+  </ItemGroup>
+
 </Project>
