@@ -201,12 +201,35 @@
                                               Title="Waterfall"
                                               Summary="{Binding WaterfallSummary}"
                                               IsExpanded="{Binding WaterfallExpanded, Mode=TwoWay}">
-                            <TextBlock Text="Spectrum scope lands here — CI-V 0x27"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center"
-                                       MinHeight="300"
-                                       FontFamily="{StaticResource HmMonoFont}"
-                                       Foreground="{StaticResource HmBlueEdgeBrush}" FontSize="13" />
+                            <StackPanel Spacing="6">
+
+                                <!-- The persistent label of HM-DEC-026. Bound
+                                     to a property with no setter, derived from
+                                     the source itself, so it cannot be shown
+                                     without the signals being simulated or
+                                     hidden while they are. -->
+                                <Border Background="{StaticResource HmAmberTintBrush}"
+                                        BorderBrush="{StaticResource HmAmberEdgeBrush}"
+                                        BorderThickness="1" CornerRadius="6"
+                                        Padding="8,4"
+                                        IsVisible="{Binding SignalsAreSimulated}">
+                                    <TextBlock Text="{Binding SpectrumNotice}"
+                                               FontSize="12" FontWeight="SemiBold"
+                                               Foreground="{StaticResource HmAmberDeepBrush}" />
+                                </Border>
+
+                                <ctl:WaterfallControl MinHeight="260"
+                                    Source="{Binding SpectrumSource}"
+                                    FrequencyHz="{Binding FrequencyHz}"
+                                    BandLowHz="{Binding SelectedBand.Band.LowHz}"
+                                    BandHighHz="{Binding SelectedBand.Band.HighHz}"
+                                    Gain="{Binding WaterfallGain}"
+                                    TuneCommand="{Binding TuneToCommand}" />
+
+                                <TextBlock Text="click a signal to tune to it — the axis matches the map and the dial tape above"
+                                           FontSize="12" TextWrapping="Wrap"
+                                           Foreground="{StaticResource HmTextMutedBrush}" />
+                            </StackPanel>
                         </ctl:CollapsiblePanel>
 
                         <ctl:CollapsiblePanel Family="Green"
@@ -316,31 +339,65 @@
                                               Summary="{Binding GuideSummary}"
                                               IsExpanded="{Binding GuideExpanded, Mode=TwoWay}">
                             <ItemsControl ItemsSource="{Binding ModeCards}">
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <UniformGrid Columns="2" />
-                                    </ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
                                 <ItemsControl.ItemTemplate>
-                                    <DataTemplate x:DataType="explore:ModeInfo">
-                                        <Button Margin="0,0,6,6" Padding="8"
-                                                HorizontalAlignment="Stretch"
-                                                HorizontalContentAlignment="Left"
+                                    <DataTemplate x:DataType="vm:ModeCardViewModel">
+                                        <Border Margin="0,0,0,8" Padding="10,8"
                                                 Background="White"
                                                 BorderBrush="{StaticResource HmSlateEdgeBrush}"
-                                                BorderThickness="1" CornerRadius="8"
-                                                Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).ShowModeCommand}"
-                                                CommandParameter="{Binding}">
-                                            <StackPanel Orientation="Horizontal" Spacing="8">
-                                                <ctl:SignatureGlyphControl Kind="{Binding Signature}" />
-                                                <StackPanel VerticalAlignment="Center">
-                                                    <TextBlock Text="{Binding Name}" FontSize="13"
-                                                               FontWeight="SemiBold" />
-                                                    <TextBlock Text="{Binding Tagline}" FontSize="11"
+                                                BorderThickness="1" CornerRadius="8">
+                                            <StackPanel Spacing="6">
+
+                                                <!-- The animated fingerprint:
+                                                     the same synthesiser that
+                                                     draws the waterfall, so
+                                                     ear and eye learn one
+                                                     picture (HM-DEC-027). -->
+                                                <Grid ColumnDefinitions="Auto,*,Auto">
+                                                    <ctl:ModeFingerprintControl Grid.Column="0"
+                                                        Kind="{Binding Mode.Signature}"
+                                                        VerticalAlignment="Center" />
+
+                                                    <StackPanel Grid.Column="1"
+                                                                Margin="10,0,0,0"
+                                                                VerticalAlignment="Center">
+                                                        <TextBlock Text="{Binding Mode.Name}"
+                                                                   FontSize="13" FontWeight="SemiBold" />
+                                                        <TextBlock Text="{Binding Mode.Sound}"
+                                                                   FontSize="11" TextWrapping="Wrap"
+                                                                   Foreground="{StaticResource HmTextMutedBrush}" />
+                                                    </StackPanel>
+
+                                                    <Button Grid.Column="2" Content="?"
+                                                            FontSize="12" Padding="8,3"
+                                                            VerticalAlignment="Center"
+                                                            ToolTip.Tip="What is this mode, and why bother?"
+                                                            Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).ShowModeCommand}"
+                                                            CommandParameter="{Binding Mode}" />
+                                                </Grid>
+
+                                                <StackPanel Orientation="Horizontal" Spacing="6"
+                                                            IsVisible="{Binding HasSamples}">
+                                                    <TextBlock Text="Hear it:" FontSize="11"
+                                                               VerticalAlignment="Center"
                                                                Foreground="{StaticResource HmTextMutedBrush}" />
+                                                    <ItemsControl ItemsSource="{Binding Samples}">
+                                                        <ItemsControl.ItemsPanel>
+                                                            <ItemsPanelTemplate>
+                                                                <StackPanel Orientation="Horizontal" Spacing="6" />
+                                                            </ItemsPanelTemplate>
+                                                        </ItemsControl.ItemsPanel>
+                                                        <ItemsControl.ItemTemplate>
+                                                            <DataTemplate x:DataType="vm:ModeSampleButton">
+                                                                <Button Content="{Binding Label}"
+                                                                        FontSize="11" Padding="9,3"
+                                                                        Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).PlaySampleCommand}"
+                                                                        CommandParameter="{Binding}" />
+                                                            </DataTemplate>
+                                                        </ItemsControl.ItemTemplate>
+                                                    </ItemsControl>
                                                 </StackPanel>
                                             </StackPanel>
-                                        </Button>
+                                        </Border>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>

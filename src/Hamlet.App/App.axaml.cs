@@ -43,7 +43,14 @@ public partial class App : Application
             };
 
             RestoreWindowState(window);
-            window.Closing += (_, _) => SaveWindowState(window);
+            window.Closing += (_, _) =>
+            {
+                SaveWindowState(window);
+
+                // Stop the training radio and any sample still playing, so
+                // nothing outlives the window (HM-DEC-027).
+                (window.DataContext as MainWindowViewModel)?.ShutDownTraining();
+            };
 
             desktop.MainWindow = window;
             desktop.ShutdownRequested += (_, _) =>

@@ -10,6 +10,7 @@ using Hamlet.App.Telemetry;
 using Hamlet.RadioEngine.Bands;
 using Hamlet.RadioEngine.Explore;
 using Hamlet.RadioEngine.Telemetry;
+using Hamlet.RadioEngine.Training;
 using Hamlet.RadioEngine.Rig;
 using Hamlet.RadioEngine.Transport;
 
@@ -51,6 +52,8 @@ public partial class MainWindowViewModel : ObservableObject
     private AggregateActivitySource _activitySource;
     private RbnActivitySource? _rbn;
     private IDisposable[] _ownedSources = Array.Empty<IDisposable>();
+    private TrainingSpectrumSource? _trainingSpectrum;
+    private readonly Audio.ModeAudioPlayer _audio = new();
     private IRig? _rig;
     private bool _updatingFromRig;
     private bool _rigSendPending;
@@ -119,6 +122,21 @@ public partial class MainWindowViewModel : ObservableObject
     private ConditionsLine _conditions = new(
         "Checking the bands…", "", ConditionsConfidence.Thin, null);
 
+    /// <summary>
+    /// The spectrum the waterfall draws, or null when nothing is receiving.
+    /// The control subscribes to it directly; pixels never travel through
+    /// binding (HM-DEC-006).
+    /// </summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(SignalsAreSimulated))]
+    [NotifyPropertyChangedFor(nameof(WaterfallSummary))]
+    [NotifyPropertyChangedFor(nameof(SpectrumNotice))]
+    private ISpectrumSource? _spectrumSource;
+
+    /// <summary>Waterfall display gain — a setting, not per-frame data.</summary>
+    [ObservableProperty]
+    private double _waterfallGain = 1.35;
+
     /// <summary>One line naming which sources answered, for the panel header.</summary>
     [ObservableProperty]
     private string _sourcesSummary = "";
@@ -147,8 +165,9 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty]
     private bool _leadExpanded = true;
 
-    /// <summary>The field guide entries.</summary>
-    public IReadOnlyList<ModeInfo> ModeCards { get; } = ModeGuide.Modes;
+    /// <summary>The field guide entries, each with its samples.</summary>
+    public IReadOnlyList<ModeCardViewModel> ModeCards { get; } =
+        ModeGuide.Modes.Select(m => new ModeCardViewModel(m)).ToList();
 
     /// <summary>Happening-now spots, plain language, source-labeled.</summary>
     public ObservableCollection<SpotViewModel> Spots { get; } = new();
@@ -164,14 +183,46 @@ public partial class MainWindowViewModel : ObservableObject
         $"CW main street · {SelectedBand.Band.CwLowHz / 1e6:0.000}"
         + $"–{SelectedBand.Band.CwHighHz / 1e6:0.000}");
 
-    /// <summary>Collapsed-header line for the waterfall.</summary>
-    public string WaterfallSummary => "not yet receiving";
+    /// <summary>
+    /// True when what the waterfall is drawing was synthesised rather than
+    /// received off the air.
+    /// </summary>
+    /// <remarks>
+    /// Derived on every read from the source itself, which has no setter and
+    /// neither does this. That is the whole of HM-DEC-026: connection state
+    /// IS the mode, so the label cannot drift out of step with what is on
+    /// screen, and there is no setting anywhere that could put synthetic
+    /// signals up unlabelled.
+    /// </remarks>
+    public bool SignalsAreSimulated => SpectrumSource?.IsSimulated == true;
+
+    /// <summary>The persistent label the waterfall panel carries.</summary>
+    public string SpectrumNotice
+        => SignalsAreSimulated
+            ? "Simulated signals — the training radio, not the air"
+            : "";
+
+    /// <summary>Collapsed-header line for the waterfall (HM-DEC-021).</summary>
+    public string WaterfallSummary
+    {
+        get
+        {
+            if (SpectrumSource is null)
+            {
+                return "not yet receiving";
+            }
+
+            return SignalsAreSimulated
+                ? $"simulated signals · {SelectedBand.Band.Name}"
+                : $"receiving · {SelectedBand.Band.Name}";
+        }
+    }
 
     /// <summary>Collapsed-header line for the CW terminal.</summary>
     public string TerminalSummary => "no decode yet";
 
     /// <summary>Collapsed-header line for the field guide.</summary>
-    public string GuideSummary => $"{ModeCards.Count} modes";
+    public string GuideSummary => $"{ModeCards.Count} modes · hear each one";
 
     /// <summary>Designer constructor.</summary>
     public MainWindowViewModel() : this(new AppSettings(), null)
@@ -341,6 +392,21 @@ public partial class MainWindowViewModel : ObservableObject
         _windowVisible = visible;
         ApplyFeedTimers();
 
+        // Nothing is watching a hidden window, and twenty-five frames a
+        // second of synthesis for nobody is the same rudeness HM-DEC-020
+        // named — here it is only the operator's own CPU being spent.
+        if (_trainingSpectrum is not null)
+        {
+            if (visible)
+            {
+                _trainingSpectrum.Start();
+            }
+            else
+            {
+                _trainingSpectrum.Stop();
+            }
+        }
+
         if (visible)
         {
             _ = ReloadSpotsAsync("resume");
@@ -428,6 +494,13 @@ public partial class MainWindowViewModel : ObservableObject
         // about the band on screen, so changing band re-asks rather than
         // leaving the previous band's answers up.
         _ = ReloadSpotsAsync("band_changed");
+
+        // The training radio synthesises one band at a time, and its signals
+        // are placed against that band's neighborhood map.
+        if (_trainingSpectrum is not null)
+        {
+            StartTrainingSpectrum();
+        }
     }
 
     /// <summary>
@@ -533,6 +606,79 @@ public partial class MainWindowViewModel : ObservableObject
         await window.ShowDialog(desktop.MainWindow);
     }
 
+    /// <summary>
+    /// Point the waterfall at a freshly synthesised band.
+    /// </summary>
+    /// <remarks>
+    /// Rebuilt per band rather than retuned, because the signals are placed
+    /// against that band's own neighborhood map — practising on 20 m has to
+    /// teach 20 m (HM-DEC-026).
+    /// </remarks>
+    private void StartTrainingSpectrum()
+    {
+        StopTrainingSpectrum();
+
+        _trainingSpectrum = new TrainingSpectrumSource(
+            SelectedBand.Band, callsign: _settings.Operator.Callsign);
+        _trainingSpectrum.Start();
+
+        SpectrumSource = _trainingSpectrum;
+        AppEvents.SpectrumSourceChanged(
+            _telemetry, "training", SelectedBand.Band.Name, simulated: true);
+    }
+
+    private void StopTrainingSpectrum()
+    {
+        if (_trainingSpectrum is null)
+        {
+            return;
+        }
+
+        SpectrumSource = null;
+        _trainingSpectrum.Dispose();
+        _trainingSpectrum = null;
+    }
+
+    /// <summary>
+    /// Play one of the field guide's generated samples.
+    /// </summary>
+    /// <param name="sample">Which sample the operator asked for.</param>
+    /// <remarks>
+    /// Fire-and-forget on purpose: generation runs off the UI thread inside
+    /// the player, and a field guide that froze while it built six seconds of
+    /// SSB would be teaching patience rather than radio (HM-DEC-027).
+    /// </remarks>
+    [RelayCommand]
+    private async Task PlaySampleAsync(ModeSampleButton? sample)
+    {
+        if (sample is null)
+        {
+            return;
+        }
+
+        AppEvents.ModeSamplePlayed(
+            _telemetry, sample.Request.Mode.ToString(), sample.Request.WordsPerMinute);
+
+        await _audio.PlayAsync(sample.Request);
+    }
+
+    /// <summary>Stop any sample that is playing.</summary>
+    [RelayCommand]
+    private void StopSample() => _audio.Stop();
+
+    /// <summary>
+    /// Release the training radio and the audio device on the way out.
+    /// </summary>
+    /// <remarks>
+    /// Called from the shell's shutdown path. Leaving a sample playing after
+    /// the window closes would be a small thing that feels broken.
+    /// </remarks>
+    public void ShutDownTraining()
+    {
+        StopTrainingSpectrum();
+        _audio.Dispose();
+    }
+
     /// <summary>Close the app.</summary>
     [RelayCommand]
     private void Exit()
@@ -580,6 +726,19 @@ public partial class MainWindowViewModel : ObservableObject
         rig.FrequencyChanged += OnRigFrequencyChanged;
         IsConnected = true;
         ConnectButtonText = "Disconnect";
+
+        // Connection state IS the mode (HM-DEC-026). A simulated rig gets the
+        // synthesiser; a real one will get CI-V 0x27 in phase 2 and, until
+        // then, honestly gets nothing rather than synthetic signals dressed
+        // as its own.
+        if (rig.IsSimulated)
+        {
+            StartTrainingSpectrum();
+        }
+        else
+        {
+            StopTrainingSpectrum();
+        }
 
         var hz = await rig.GetFrequencyHzAsync();
         ApplyRigFrequency(hz);
@@ -890,6 +1049,7 @@ public partial class MainWindowViewModel : ObservableObject
 
     private async Task TearDownRigAsync()
     {
+        StopTrainingSpectrum();
         _rigSendTimer.Stop();
         _rigSendPending = false;
         if (_rig is not null)

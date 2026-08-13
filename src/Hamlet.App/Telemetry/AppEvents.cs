@@ -192,6 +192,43 @@ public static class AppEvents
         => telemetry?.Write(TelemetryCategory.Tuning, "map_dot_tuned",
             new Dictionary<string, object?> { ["hz"] = hz });
 
+    /// <summary>
+    /// The waterfall's spectrum source changed (HM-DEC-026). Records whether
+    /// the signals are simulated, because "the waterfall was showing
+    /// synthetic signals" is the first thing worth knowing when someone
+    /// reports that a decode looked wrong.
+    /// </summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="sourceKind">"training", or the radio's scope.</param>
+    /// <param name="bandName">Band being swept, e.g. "40 m".</param>
+    /// <param name="simulated">True when the frames are synthesised.</param>
+    public static void SpectrumSourceChanged(
+        ITelemetry? telemetry, string sourceKind, string bandName, bool simulated)
+        => telemetry?.Write(TelemetryCategory.Explore, "spectrum_source_changed",
+            new Dictionary<string, object?>
+            {
+                ["source"] = sourceKind,
+                ["band"] = bandName,
+                ["simulated"] = simulated,
+            });
+
+    /// <summary>
+    /// A field-guide audio sample was played (HM-DEC-027). The mode and the
+    /// speed, which is the part that says whether the copy-speed ladder is
+    /// being used at all.
+    /// </summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="mode">Mode demonstrated, e.g. "Cw".</param>
+    /// <param name="wordsPerMinute">CW speed; meaningless for other modes.</param>
+    public static void ModeSamplePlayed(
+        ITelemetry? telemetry, string mode, int wordsPerMinute)
+        => telemetry?.Write(TelemetryCategory.Explore, "mode_sample_played",
+            new Dictionary<string, object?>
+            {
+                ["mode"] = mode,
+                ["wpm"] = wordsPerMinute,
+            });
+
     /// <summary>A panel was expanded or collapsed (HM-DEC-021).</summary>
     /// <param name="telemetry">Sink, or null.</param>
     /// <param name="panelKey">Stable panel id, e.g. "spots".</param>
