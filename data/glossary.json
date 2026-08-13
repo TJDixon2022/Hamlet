@@ -1,0 +1,280 @@
+{
+  "$comment": [
+    "The vocabulary is the gate. This hobby runs on shared shorthand, most of it",
+    "inherited from telegraph operators who died before anybody reading this was",
+    "born, and none of it is written down anywhere a newcomer would look.",
+    "Handing out the dictionary is the most direct thing Hamlet can do about that.",
+    "",
+    "The definitions do emotional work as well as semantic. Where the etymology",
+    "demystifies, it is included: knowing WHY the jargon is strange makes it feel",
+    "like an inherited quirk rather than a password somebody forgot to give you.",
+    "",
+    "Terms are marked automatically wherever they appear in the app's own copy, so",
+    "adding one here lights it up everywhere it already occurs. If Hamlet says it,",
+    "Hamlet explains it (HM-DEC-041).",
+    "",
+    "Fields: term, expansion (optional, for initials), explanation."
+  ],
+  "terms": [
+    {
+      "term": "CQ",
+      "expansion": "seek you",
+      "explanation": "A general call to anybody at all who is listening. Calling CQ is putting your hand up and saying you'd like to talk to someone, without caring who. It comes from the French sécurité by way of the old landline telegraph, where CQ meant a message for every station on the wire."
+    },
+    {
+      "term": "QSO",
+      "explanation": "One conversation between two stations, hello to 73. Might be ninety seconds, might be an hour. Making one is the whole point of the hobby, and your first one is a bigger deal than anyone will let on."
+    },
+    {
+      "term": "CW",
+      "expansion": "continuous wave",
+      "explanation": "Morse code, sent by switching a steady tone on and off. The name is a leftover from the 1920s, when the alternative was a spark transmitter that splattered across half the band. Nobody has used a spark gap in a century and the name stuck anyway."
+    },
+    {
+      "term": "SSB",
+      "expansion": "single sideband",
+      "explanation": "Voice, sent in a clever way that throws away the parts of an ordinary AM signal that carry no information. It sounds like ducks arguing until you tune it precisely, and then it turns into a person. That knack takes about ten minutes to learn and then you have it forever."
+    },
+    {
+      "term": "WPM",
+      "expansion": "words per minute",
+      "explanation": "How fast Morse is being sent. Five is a crawl, twenty is conversational, and forty is showing off. Speed is the single biggest thing standing between a beginner and a contact, which is why Hamlet tells you the speed before you tune there."
+    },
+    {
+      "term": "QRP",
+      "explanation": "Operating on very low power, usually five watts or less. That's about what a nightlight draws, and people cross oceans with it. It's a point of pride rather than a limitation, so a modest setup is nothing to apologize for."
+    },
+    {
+      "term": "QRO",
+      "explanation": "The opposite of QRP: running high power, up to the legal limit. Useful, occasionally necessary, and much less impressive to the people who have been doing this a long time than working the same station on five watts would be."
+    },
+    {
+      "term": "QSB",
+      "explanation": "A signal fading up and down while you listen, sometimes over seconds and sometimes over minutes. It isn't your radio and it isn't your antenna. The path through the upper atmosphere is shifting under the signal, and everyone hears it."
+    },
+    {
+      "term": "QRM",
+      "explanation": "Interference from other stations, meaning somebody else is on or near your frequency. It's a fact of a crowded band rather than rudeness, and the usual fix is to move a little rather than to shout."
+    },
+    {
+      "term": "QRN",
+      "explanation": "Natural noise: lightning, mostly, from storms that can be a thousand miles away. It's the crackle and hiss under everything on the low bands in summer. Nothing you own is causing it and nothing you buy will remove it."
+    },
+    {
+      "term": "DX",
+      "explanation": "Distance, and by extension a far-away station. Chasing DX is the sport of working stations further and further off. It's another telegraph leftover, where D meant distant and X stood in for the rest of the word."
+    },
+    {
+      "term": "DXpedition",
+      "explanation": "A group who fly somewhere with almost no amateur radio activity, often an uninhabited island, and put it on the air for a fortnight. They're doing it so that thousands of people can work a place that is otherwise unreachable, and the pile-ups are enormous."
+    },
+    {
+      "term": "split",
+      "explanation": "Listening on one frequency while transmitting on another. A busy DX station does this so the crowd calling isn't sitting on top of the station everybody is trying to hear. If somebody is working split they will say so, usually as 'up 5'."
+    },
+    {
+      "term": "rag chew",
+      "explanation": "A long, unhurried conversation, as opposed to the ninety-second exchange of signal reports. The name is old American slang for chewing the fat. This is where the friendships in this hobby actually happen."
+    },
+    {
+      "term": "ragchew",
+      "explanation": "A long, unhurried conversation, as opposed to the ninety-second exchange of signal reports. The name is old American slang for chewing the fat. This is where the friendships in this hobby actually happen."
+    },
+    {
+      "term": "elmer",
+      "explanation": "A mentor, the person who helps a newcomer get on the air. Named after Elmer Bud Frohardt, a ham who wrote about doing exactly that in the 1970s and had his first name turned into a job title. Most operators are glad to be one and are rarely asked."
+    },
+    {
+      "term": "QSL",
+      "explanation": "Confirming a contact happened, and also the postcard people send to prove it. Collecting them was the whole scrapbook side of this hobby for a century, and plenty of operators still send them because a card from Mongolia is nicer than a database row."
+    },
+    {
+      "term": "LoTW",
+      "expansion": "Logbook of the World",
+      "explanation": "The ARRL's electronic system for confirming contacts, which is what most people use instead of posting cards. Both stations upload their log and the system matches them up. It's free, and it's what awards are counted from."
+    },
+    {
+      "term": "73",
+      "explanation": "Sign-off, meaning best regards. Never 73s, since the number is already plural. It's leftover telegraph shorthand that outlived the telegraph by a century."
+    },
+    {
+      "term": "88",
+      "explanation": "Love and kisses, from the same old telegraph list as 73. Sent sparingly and usually to family, so if you get one it is meant warmly."
+    },
+    {
+      "term": "RST",
+      "expansion": "readability, strength, tone",
+      "explanation": "The signal report you give the other station. Readability runs one to five, strength one to nine, and tone one to nine for Morse. In practice a great deal of it is a polite fiction that everybody joins in with, so if somebody hands you a 59 it usually means 'I can hear you fine'."
+    },
+    {
+      "term": "S-meter",
+      "explanation": "The needle or bar showing how strong an incoming signal is, one to nine and then decibels over nine. The scale is only loosely standardized between radios, so it is best read as a rough sense of loud or faint rather than as a measurement."
+    },
+    {
+      "term": "activator",
+      "explanation": "Someone who hauled a radio up a mountain or out to a park just to put it on the air. They need contacts to make the trip worth it, so they genuinely want to hear from you. Even if you're slow. Even if you're nervous."
+    },
+    {
+      "term": "chaser",
+      "explanation": "The other half of the arrangement: somebody sitting at home working the activators. It's a friendly, low-pressure way to make contacts, because the person on the mountain is actively hoping you call."
+    },
+    {
+      "term": "hunter",
+      "explanation": "What Parks on the Air calls a chaser: somebody at home working the operators who carried a radio out to a park. The park operator wants your call, which makes this one of the gentlest ways into the hobby."
+    },
+    {
+      "term": "POTA",
+      "expansion": "Parks on the Air",
+      "explanation": "A scheme where operators take radios into parks and everybody else tries to work them. It has turned into one of the friendliest corners of the hobby, partly because the person in the park needs contacts and will be patient to get them."
+    },
+    {
+      "term": "SOTA",
+      "expansion": "Summits on the Air",
+      "explanation": "The same idea as POTA, but up a mountain. Operators carry tiny low-power radios to a summit, often send slow Morse because they're cold and the battery is small, and are usually short of contacts."
+    },
+    {
+      "term": "RBN",
+      "expansion": "Reverse Beacon Network",
+      "explanation": "A worldwide net of automated receivers that listen constantly and report every Morse signal they decode. Nobody is at the keyboard. It means the network can tell you who is calling CQ right now, and one day it can tell you who heard you."
+    },
+    {
+      "term": "skimmer",
+      "explanation": "One of the automated receivers behind the Reverse Beacon Network. It sits there decoding every Morse signal it can hear and posting what it found. When Hamlet says a station was heard by twelve skimmers, that is twelve unattended receivers around the world agreeing."
+    },
+    {
+      "term": "watering hole",
+      "explanation": "An agreed frequency where people who share an interest gather, by convention rather than by rule. 7.030 is the low-power watering hole, so calling there tells everybody listening what kind of contact you are hoping for."
+    },
+    {
+      "term": "band",
+      "explanation": "A slice of the radio spectrum set aside for amateurs, named for the rough length of its radio wave. 80 metres is a long wave that behaves quite differently from 10 metres, which is a short one, and that single fact explains most of what the bands do."
+    },
+    {
+      "term": "mode",
+      "explanation": "The way information is put onto the radio wave: Morse, voice, or one of the digital modes. Each one sounds different, looks different on a waterfall, and asks something different of you."
+    },
+    {
+      "term": "net",
+      "explanation": "A scheduled on-air gathering with somebody running it, usually at the same time and frequency each week. There is a script, everybody checks in by callsign, and newcomers are expected and welcomed. It is the single easiest first contact to make."
+    },
+    {
+      "term": "pile-up",
+      "explanation": "What happens when one interesting station is worked by everybody at once, and forty people call on top of each other. It sounds like chaos and is fairly orderly underneath. Not the place to start, but worth listening to."
+    },
+    {
+      "term": "pileup",
+      "explanation": "What happens when one interesting station is worked by everybody at once, and forty people call on top of each other. It sounds like chaos and is fairly orderly underneath. Not the place to start, but worth listening to."
+    },
+    {
+      "term": "worked",
+      "explanation": "To work a station is simply to have a contact with it. 'I worked Japan last night' means a conversation happened, however brief. The word is a leftover from when getting a signal that far genuinely was work."
+    },
+    {
+      "term": "break-in",
+      "explanation": "A Morse setup where the receiver comes back between your own dots and dashes, so you can hear somebody interrupting you mid-word. It makes a Morse contact feel much more like a conversation and much less like sending letters."
+    },
+    {
+      "term": "straight key",
+      "explanation": "The classic Morse key: a lever you push down for every single dot and dash, entirely by hand. Slower and more tiring than the alternatives, and it gives everybody a recognizable accent. Plenty of people use nothing else."
+    },
+    {
+      "term": "paddle",
+      "explanation": "A Morse key with two levers, one for dots and one for dashes, driven by an electronic keyer that times them for you. Easier on the wrist than a straight key and much easier to send evenly at speed."
+    },
+    {
+      "term": "keyer",
+      "explanation": "The electronics that turn taps on a paddle into properly timed Morse. Most modern radios have one built in, including this one, which is why Hamlet can send Morse without any extra hardware."
+    },
+    {
+      "term": "dummy load",
+      "explanation": "A resistor in a can that pretends to be an antenna, so you can transmit into it and test the radio without putting a signal on the air. It is the safe way to try anything new, and it is where all of Hamlet's transmit testing happens."
+    },
+    {
+      "term": "SWR",
+      "expansion": "standing wave ratio",
+      "explanation": "A number saying how well your antenna matches your radio. Perfect is 1 to 1, most real antennas sit somewhere near 1.5, and above about 3 the radio starts protecting itself. A wire in an attic with a mediocre SWR that is on the air beats a perfect antenna still in its box."
+    },
+    {
+      "term": "ERP",
+      "expansion": "effective radiated power",
+      "explanation": "How much power your signal actually leaves with, once the antenna's gain and the losses in the cable are counted. It is usually the antenna rather than the transmitter that decides this, which is why a better wire beats a bigger amplifier nearly every time."
+    },
+    {
+      "term": "grayline",
+      "explanation": "The moving band of twilight that circles the earth at dawn and dusk. Signals on the low bands often travel remarkably well along it for a few minutes, so operators set alarms for it. It is one of the genuinely magical things about this hobby."
+    },
+    {
+      "term": "ionosphere",
+      "explanation": "The electrically charged layers high in the atmosphere that bend radio signals back to the ground, which is the only reason you can talk to another continent with a wire in the garden. Sunlight makes and unmakes those layers, so the whole thing changes between noon and midnight."
+    },
+    {
+      "term": "propagation",
+      "explanation": "Whether a signal will actually get from here to there, given what the ionosphere is doing. It changes with the hour, the season and an eleven-year cycle in the sun's activity. Hamlet does not claim to know it, and says so rather than guessing."
+    },
+    {
+      "term": "grid square",
+      "explanation": "A short code for where you are, a bit like a postal code for the planet. Six characters put you within a few miles, which is enough to work out how far away somebody is and when the sun rises where you're sitting."
+    },
+    {
+      "term": "Maidenhead",
+      "explanation": "The naming scheme behind grid squares, agreed at a meeting in Maidenhead, England in 1980. That is the entire reason for the name. You never have to look yours up, since Hamlet works it out from your callsign."
+    },
+    {
+      "term": "ADIF",
+      "expansion": "amateur data interchange format",
+      "explanation": "The plain text file format every logging program can read and write, so your log is never trapped in one piece of software. If you keep a log anywhere, it can come with you."
+    },
+    {
+      "term": "simplex",
+      "explanation": "Talking directly to the other station on one frequency, with nothing in between. Everything on the HF bands works this way, which is part of the appeal: no towers, no network, no company, just the two of you and the atmosphere."
+    },
+    {
+      "term": "repeater",
+      "explanation": "A radio on a hilltop that listens on one frequency and rebroadcasts on another, extending the range of small handheld sets. Common on the VHF bands, and essentially absent from the shortwave bands Hamlet is about."
+    },
+    {
+      "term": "QTH",
+      "explanation": "Where you are, given as a town or a grid square. Another one from the old telegraph list, where every Q code was a whole question or answer in three letters, because every letter cost money to send."
+    },
+    {
+      "term": "QRZ",
+      "explanation": "'Who is calling me?', sent when you heard somebody but not clearly enough to get their callsign. It is also the name of the biggest callsign lookup website, which took its name from the code."
+    },
+    {
+      "term": "beacon",
+      "explanation": "An unattended transmitter that sends its callsign over and over so people can tell whether a band is open. There is nobody there and nobody will answer, which is why Hamlet pushes beacons to the bottom of the list."
+    },
+    {
+      "term": "waterfall",
+      "explanation": "A display showing the radio spectrum scrolling down the screen over time, with strong signals as bright marks. Each mode leaves a shape you can learn to recognize, and after a while you can see what a band is doing without listening to it."
+    },
+    {
+      "term": "callsign",
+      "explanation": "Your licence, in the form of a unique string of letters and numbers issued by your country's regulator. It is how you identify yourself on the air, and the rules require you to send it. The number in the middle says roughly which part of the country it was issued in."
+    },
+    {
+      "term": "contest",
+      "explanation": "A weekend where thousands of stations try to make as many very short contacts as possible. Bands get crowded and fast. It is not the place for a first contact, though it is a remarkable thing to listen to."
+    },
+    {
+      "term": "band plan",
+      "explanation": "The agreed carve-up of each band into areas for Morse, digital modes and voice. Mostly convention rather than regulation, kept because it works. It is why Hamlet can tell you what you will hear before you tune there."
+    },
+    {
+      "term": "shack",
+      "explanation": "Wherever your radio lives, whether that's a spare room, a corner of a desk, or a rucksack on a hill. The word carries no expectation about size or expense, whatever the photographs online suggest."
+    },
+    {
+      "term": "Technician",
+      "explanation": "The entry-level US licence class. It grants full privileges above 30 MHz and a slice of the shortwave bands, including Morse on 80, 40 and 15 metres, which is more than most new licensees realize they have."
+    },
+    {
+      "term": "General",
+      "explanation": "The middle US licence class, and the one that opens up most of the shortwave bands for worldwide contacts. It is the step that turns amateur radio from a local hobby into a global one."
+    },
+    {
+      "term": "Extra",
+      "explanation": "The top US licence class, which adds the last slices at the bottom edge of each band where the DX crowd tends to gather. Nothing below it stops you talking to the world."
+    }
+  ]
+}

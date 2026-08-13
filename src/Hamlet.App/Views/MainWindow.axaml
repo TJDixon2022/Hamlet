@@ -430,9 +430,9 @@
                                                    FontSize="14" FontWeight="SemiBold"
                                                    TextWrapping="Wrap"
                                                    Foreground="{StaticResource HmTextPrimaryBrush}" />
-                                        <TextBlock Text="{Binding Lead.Body}"
-                                                   FontSize="12" TextWrapping="Wrap"
-                                                   Foreground="{StaticResource HmTextPrimaryBrush}" />
+                                        <ctl:GlossaryTextControl Text="{Binding Lead.Body}"
+                                                                 FontSize="12" LineSpacing="1.4"
+                                                                 Foreground="{StaticResource HmTextPrimaryBrush}" />
 
                                         <!-- The evidence, never hidden: the
                                              same reason line the ranked card
@@ -456,10 +456,9 @@
                                         BorderThickness="1" CornerRadius="8"
                                         Padding="12,10">
                                     <StackPanel Spacing="4">
-                                        <TextBlock Text="{Binding Conditions.Claim}"
-                                                   FontSize="13" FontWeight="SemiBold"
-                                                   TextWrapping="Wrap"
-                                                   Foreground="{StaticResource HmTextPrimaryBrush}" />
+                                        <ctl:GlossaryTextControl Text="{Binding Conditions.Claim}"
+                                                                 FontSize="13" LineSpacing="1.4"
+                                                                 Foreground="{StaticResource HmTextPrimaryBrush}" />
                                         <TextBlock Text="{Binding Conditions.Evidence}"
                                                    FontSize="11" TextWrapping="Wrap"
                                                    Foreground="{StaticResource HmTextMutedBrush}" />
@@ -487,9 +486,9 @@
                                                    Foreground="{StaticResource HmAmberDeepBrush}" />
                                     </Border>
                                 </Grid>
-                                <TextBlock Text="{Binding StoryBody}" FontSize="13"
-                                           TextWrapping="Wrap" LineHeight="19"
-                                           Foreground="{StaticResource HmTextPrimaryBrush}" />
+                                <ctl:GlossaryTextControl Text="{Binding StoryBody}"
+                                                         FontSize="13" LineSpacing="1.45"
+                                                         Foreground="{StaticResource HmTextPrimaryBrush}" />
                                 <Button Content="Take me there" FontSize="12"
                                         Command="{Binding TuneToCommand}"
                                         CommandParameter="{Binding StoryTuneHz}" />

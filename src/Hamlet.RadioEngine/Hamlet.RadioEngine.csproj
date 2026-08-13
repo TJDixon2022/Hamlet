@@ -22,6 +22,13 @@
                       LogicalName="Hamlet.RadioEngine.Data.Privileges.us-part97-privileges.json" />
   </ItemGroup>
 
+  <!-- The glossary lives in /data with the other editorial content and is
+       embedded so it ships with the app (HM-DEC-041). -->
+  <ItemGroup>
+    <EmbeddedResource Include="..\..\data\glossary.json"
+                      LogicalName="Hamlet.RadioEngine.Data.glossary.json" />
+  </ItemGroup>
+
   <!-- The telemetry line format is an internal detail with a public promise
        attached (HM-DEC-018), so the schema test reaches it directly rather
        than the format being widened to public just to be provable. -->
