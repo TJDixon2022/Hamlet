@@ -4,6 +4,38 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-011
+date: 2026-08-12
+closes: HM-OPEN-001
+refs: CLAUDE.md §6
+---
+
+The UI framework is Avalonia 11 on .NET 8.
+
+Cross-platform reach matters for the phase 4 public release — Linux is
+common in ham shacks — and Avalonia is deliberately WPF-shaped, so Tim's
+MVVM fluency transfers whole. The learning cost lands on Claude, who writes
+the code. The one API divergence that matters, WriteableBitmap's lock/write
+surface, is confined to the waterfall control by HM-DEC-006. Rejected: WPF
+(Windows-only forever), WPF-then-port (every control written twice,
+including the hardest one).
+
+---
+id: HM-DEC-010
+date: 2026-08-12
+refs: CLAUDE.md §0.3
+---
+
+Questions follow a fixed protocol: one question at a time, probed as deeply
+as needed before the next; every question is a clear decision ask — option
+A, option B, option C — with pros and cons in a table. Walls of text are
+the enemy.
+
+Amends §0.3. An unstructured question invites an unstructured answer, and a
+question buried in prose is a question Tim has to excavate before he can
+rule on it.
+
+---
 id: HM-DEC-009
 date: 2026-08-12
 refs: CLAUDE.md §0.0

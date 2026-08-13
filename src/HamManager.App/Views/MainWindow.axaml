@@ -1,0 +1,103 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:HamManager.App.ViewModels"
+        x:Class="HamManager.App.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Title="Ham Manager"
+        Width="1100" Height="720"
+        MinWidth="860" MinHeight="560"
+        Background="{StaticResource HmBackgroundBrush}">
+
+    <Design.DataContext>
+        <vm:MainWindowViewModel />
+    </Design.DataContext>
+
+    <Grid RowDefinitions="Auto,Auto,*,Auto" Margin="16">
+
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Spacing="2" Margin="4,0,4,12">
+            <TextBlock Text="Ham Manager"
+                       FontSize="26" FontWeight="SemiBold"
+                       Foreground="{StaticResource HmTextPrimaryBrush}" />
+            <TextBlock Text="The IC-7300 command console — the air, decoded."
+                       FontSize="13"
+                       Foreground="{StaticResource HmTextMutedBrush}" />
+        </StackPanel>
+
+        <!-- Frequency face -->
+        <Border Grid.Row="1"
+                Background="{StaticResource HmPanelBrush}"
+                BorderBrush="{StaticResource HmPanelEdgeBrush}"
+                BorderThickness="1" CornerRadius="8"
+                Padding="24,16" Margin="0,0,0,12">
+            <Grid ColumnDefinitions="*,Auto">
+                <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="12"
+                            VerticalAlignment="Center">
+                    <TextBlock Text="{Binding FrequencyDisplay}"
+                               FontFamily="{StaticResource HmMonoFont}"
+                               FontSize="44"
+                               Foreground="{StaticResource HmAmberBrush}" />
+                    <TextBlock Text="MHz  ·  CW"
+                               FontSize="16" VerticalAlignment="Bottom"
+                               Margin="0,0,0,8"
+                               Foreground="{StaticResource HmTextMutedBrush}" />
+                </StackPanel>
+                <Button Grid.Column="1"
+                        Content="Connect"
+                        Command="{Binding ToggleConnectCommand}"
+                        VerticalAlignment="Center"
+                        Padding="20,10" />
+            </Grid>
+        </Border>
+
+        <!-- Body: waterfall placeholder over CW terminal placeholder -->
+        <Grid Grid.Row="2" RowDefinitions="3*,2*">
+
+            <Border Grid.Row="0"
+                    Background="{StaticResource HmPanelBrush}"
+                    BorderBrush="{StaticResource HmPanelEdgeBrush}"
+                    BorderThickness="1" CornerRadius="8"
+                    Margin="0,0,0,12">
+                <Grid>
+                    <TextBlock Text="Waterfall"
+                               Margin="16,12"
+                               VerticalAlignment="Top"
+                               Foreground="{StaticResource HmTextMutedBrush}" />
+                    <TextBlock Text="Spectrum scope lands here — CI-V 0x27, HM-DEC-005"
+                               HorizontalAlignment="Center" VerticalAlignment="Center"
+                               FontFamily="{StaticResource HmMonoFont}"
+                               Foreground="{StaticResource HmPanelEdgeBrush}"
+                               FontSize="14" />
+                </Grid>
+            </Border>
+
+            <Border Grid.Row="1"
+                    Background="{StaticResource HmPanelBrush}"
+                    BorderBrush="{StaticResource HmPanelEdgeBrush}"
+                    BorderThickness="1" CornerRadius="8">
+                <Grid RowDefinitions="Auto,*">
+                    <TextBlock Grid.Row="0" Text="CW terminal"
+                               Margin="16,12,16,4"
+                               Foreground="{StaticResource HmTextMutedBrush}" />
+                    <TextBlock Grid.Row="1"
+                               Text="&gt; decoded text will arrive here — phase 1"
+                               Margin="16,4,16,12"
+                               FontFamily="{StaticResource HmMonoFont}"
+                               Foreground="{StaticResource HmGreenBrush}"
+                               VerticalAlignment="Top" />
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- Status bar -->
+        <Border Grid.Row="3"
+                Background="{StaticResource HmPanelBrush}"
+                BorderBrush="{StaticResource HmPanelEdgeBrush}"
+                BorderThickness="1" CornerRadius="6"
+                Padding="12,6" Margin="0,12,0,0">
+            <TextBlock Text="{Binding StatusText}"
+                       FontSize="12"
+                       Foreground="{StaticResource HmTextMutedBrush}" />
+        </Border>
+    </Grid>
+</Window>

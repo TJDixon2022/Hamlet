@@ -109,10 +109,18 @@ without touching it? If not, something leaked.
   available (CI-V `0x17` with `0xFF`, and PTT off as the fallback).
 - No unattended transmission. A scan never transmits.
 
-### 0.3 Terse
+### 0.3 Terse, and how questions are asked
 
-Claude answers short. Point first, no preamble, no walls of text. Options as
-a table with pros and cons, not prose. **One question at a time.**
+Claude answers short. Point first, no preamble. **Walls of text are the
+enemy.**
+
+Questions follow a fixed protocol (HM-DEC-010):
+
+- **One question at a time.** Probe as deeply as needed — follow-ups on the
+  same question are fine — before moving to a second question.
+- Every question is a **clear decision ask**: option A, option B, option C,
+  each with pros and cons, as a table.
+- Claude states the industry-standard answer and why (§0), then Tim rules.
 
 ### 0.4 Tim rules, Claude executes
 
@@ -133,6 +141,8 @@ this table is the index.
 
 | Date | Decision | Why | Ref |
 |---|---|---|---|
+| 2026-08-12 | **The UI framework is Avalonia 11 on .NET 8.** Closes HM-OPEN-001. | Cross-platform reach for the open-source release; WPF-shaped enough that Tim's MVVM fluency transfers; the WriteableBitmap difference is confined to the waterfall control. | HM-DEC-011 |
+| 2026-08-12 | **Question protocol: one question at a time, probed to depth before the next; every question a decision ask — options A/B/C with pros and cons in a table.** Amends §0.3. | Walls of text are the enemy; an unstructured question invites an unstructured answer. | HM-DEC-010 |
 | 2026-08-12 | **Prime directive: never present a guess as a decode.** | The app exists to tell the operator what is on the air; a confident wrong answer is worse than none. | HM-DEC-009 |
 | 2026-08-12 | **Development transmit goes into a dummy load until a feature is proven.** | Buggy keying code on an antenna is an on-air incident, not a bug. | HM-DEC-008 |
 | 2026-08-12 | **Decoders are built and tested against recorded WAV fixtures before live audio.** Every decoder bug becomes a replayable case. | Live signals are unrepeatable; a decoder that only ever ran live cannot be regression-tested. | HM-DEC-007 |
@@ -292,7 +302,7 @@ Rows marked `<<<FILL IN>>>` await the named ruling.
 | Item | Value |
 |---|---|
 | Language / runtime | C# on .NET 8 LTS |
-| UI framework | `<<<FILL IN — HM-OPEN-001, WPF vs Avalonia>>>` |
+| UI framework | Avalonia 11, Fluent theme, dark variant (HM-DEC-011). Compiled bindings on by default |
 | MVVM toolkit | CommunityToolkit.Mvvm (source-generated `[ObservableProperty]`, `[RelayCommand]`) |
 | Solution layout | `HamManager.sln` at root; `src/` and `tests/` solution folders. Engine: `src/HamManager.RadioEngine`. Shell: `src/HamManager.App`. Tests: `tests/HamManager.RadioEngine.Tests` |
 | Project settings | `Nullable` enabled, `ImplicitUsings` enabled, `TreatWarningsAsErrors` true — all new projects |

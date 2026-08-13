@@ -1,0 +1,31 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="HamManager.App.App"
+             RequestedThemeVariant="Dark">
+
+    <Application.Styles>
+        <FluentTheme />
+    </Application.Styles>
+
+    <Application.Resources>
+        <!-- Ham Manager palette: dark console, signal amber, decode green -->
+        <Color x:Key="HmBackground">#0E1317</Color>
+        <Color x:Key="HmPanel">#161D24</Color>
+        <Color x:Key="HmPanelEdge">#26303A</Color>
+        <Color x:Key="HmAmber">#FFB347</Color>
+        <Color x:Key="HmGreen">#4CE0A0</Color>
+        <Color x:Key="HmTextPrimary">#E8ECEF</Color>
+        <Color x:Key="HmTextMuted">#8A99A6</Color>
+
+        <SolidColorBrush x:Key="HmBackgroundBrush" Color="{StaticResource HmBackground}" />
+        <SolidColorBrush x:Key="HmPanelBrush" Color="{StaticResource HmPanel}" />
+        <SolidColorBrush x:Key="HmPanelEdgeBrush" Color="{StaticResource HmPanelEdge}" />
+        <SolidColorBrush x:Key="HmAmberBrush" Color="{StaticResource HmAmber}" />
+        <SolidColorBrush x:Key="HmGreenBrush" Color="{StaticResource HmGreen}" />
+        <SolidColorBrush x:Key="HmTextPrimaryBrush" Color="{StaticResource HmTextPrimary}" />
+        <SolidColorBrush x:Key="HmTextMutedBrush" Color="{StaticResource HmTextMuted}" />
+
+        <FontFamily x:Key="HmMonoFont">Consolas, Menlo, DejaVu Sans Mono, monospace</FontFamily>
+    </Application.Resources>
+
+</Application>

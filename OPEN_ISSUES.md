@@ -5,11 +5,13 @@ Questions with owner and severity. `owner` is who must act next. Format in
 
 ---
 id: HM-OPEN-001
-status: open
+status: closed
 owner: tim
 raised: 2026-08-12
 severity: hard
 blocks: solution scaffold — the App project cannot be created without it
+closed: 2026-08-12
+refs: HM-DEC-011
 ---
 
 WPF or Avalonia for the UI shell?
