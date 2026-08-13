@@ -46,6 +46,13 @@ public sealed class AppSettings
     /// key means expanded — a new panel arrives open (HM-DEC-021).</summary>
     public Dictionary<string, bool> PanelExpanded { get; set; } = new();
 
+    /// <summary>
+    /// Per-source on/off switches, keyed by source name (HM-DEC-022,
+    /// HM-DEC-024). An absent key falls back to
+    /// <see cref="DefaultSourceEnabled"/>.
+    /// </summary>
+    public Dictionary<string, bool> SourceEnabled { get; set; } = new();
+
     /// <summary>Telemetry category switches. Absent category means enabled —
     /// all categories default on (HM-DEC-018).</summary>
     public Dictionary<string, bool> TelemetryCategories { get; set; } = new();
@@ -79,6 +86,47 @@ public sealed class AppSettings
     /// <param name="panelKey">Stable panel id, e.g. "spots".</param>
     public bool IsPanelExpanded(string panelKey)
         => !PanelExpanded.TryGetValue(panelKey, out var open) || open;
+
+    /// <summary>
+    /// Whether an activity source ships switched on.
+    /// </summary>
+    /// <param name="sourceName">Source name, e.g. "POTA".</param>
+    /// <returns>True when the source is on by default.</returns>
+    /// <remarks>
+    /// <para>Two ship off. SOTA is off for a reason that is not technical: its
+    /// API's terms of service require the developer to have registered with
+    /// the SOTA Reflector's API-consumers group and to have had AI-written
+    /// software approved before it connects. Hamlet will not enter into that
+    /// on the operator's behalf, so the switch starts off and the reason is
+    /// printed next to it (HM-DEC-024).</para>
+    /// <para>The sample feed is off because live feeds now work, and mixing
+    /// invented spots into a real list is the prime directive broken for the
+    /// sake of a fuller-looking panel. It stays one click away, because it is
+    /// how the Explorer gets built with no network.</para>
+    /// </remarks>
+    public static bool DefaultSourceEnabled(string sourceName)
+        => !string.Equals(
+               sourceName,
+               RadioEngine.Explore.SotaActivitySource.SourceName,
+               StringComparison.OrdinalIgnoreCase)
+           && !string.Equals(
+               sourceName,
+               RadioEngine.Explore.FakeActivitySource.SourceName,
+               StringComparison.OrdinalIgnoreCase);
+
+    /// <summary>True when an activity source is switched on.</summary>
+    /// <param name="sourceName">Source name, e.g. "POTA".</param>
+    /// <returns>True when the source should be polled.</returns>
+    public bool IsSourceEnabled(string sourceName)
+        => SourceEnabled.TryGetValue(sourceName, out var on)
+            ? on
+            : DefaultSourceEnabled(sourceName);
+
+    /// <summary>Switch an activity source on or off.</summary>
+    /// <param name="sourceName">Source name, e.g. "POTA".</param>
+    /// <param name="enabled">True to poll it.</param>
+    public void SetSourceEnabled(string sourceName, bool enabled)
+        => SourceEnabled[sourceName] = enabled;
 
     /// <summary>Record a panel's expand/collapse state.</summary>
     /// <param name="panelKey">Stable panel id, e.g. "spots".</param>

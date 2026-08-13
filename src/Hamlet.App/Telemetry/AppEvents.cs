@@ -138,6 +138,60 @@ public static class AppEvents
                 ["intervalMinutes"] = intervalMinutes,
             });
 
+    /// <summary>An activity source was switched on or off (HM-DEC-022).</summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="sourceName">Source name, e.g. "POTA".</param>
+    /// <param name="enabled">True when the source is now on.</param>
+    public static void SourceToggled(
+        ITelemetry? telemetry, string sourceName, bool enabled)
+        => telemetry?.Write(TelemetryCategory.Explore, "source_toggled",
+            new Dictionary<string, object?>
+            {
+                ["source"] = sourceName,
+                ["enabled"] = enabled,
+            });
+
+    /// <summary>
+    /// A source failed a refresh. Records which network and how it failed,
+    /// never the request — a spot query carries the operator's callsign in
+    /// its User-Agent, and that stays out of the log (HM-DEC-024).
+    /// </summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="sourceName">Source name, e.g. "POTA".</param>
+    /// <param name="state">The state it landed in, e.g. "Degraded".</param>
+    public static void SourceUnhealthy(
+        ITelemetry? telemetry, string sourceName, string state)
+        => telemetry?.Write(TelemetryCategory.Explore, "source_unhealthy",
+            new Dictionary<string, object?>
+            {
+                ["source"] = sourceName,
+                ["state"] = state,
+            },
+            TelemetryLevel.Warn);
+
+    /// <summary>
+    /// The lead card was rebuilt. Records whether there was anything to
+    /// suggest and the winning score, never the station it named.
+    /// </summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="hasSuggestion">True when a spot cleared the bar.</param>
+    /// <param name="score">The chosen spot's score, or 0.</param>
+    public static void LeadCardBuilt(
+        ITelemetry? telemetry, bool hasSuggestion, int score)
+        => telemetry?.Write(TelemetryCategory.Explore, "lead_card_built",
+            new Dictionary<string, object?>
+            {
+                ["hasSuggestion"] = hasSuggestion,
+                ["score"] = score,
+            });
+
+    /// <summary>A dot on the neighborhood map was clicked to tune.</summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="hz">Target frequency.</param>
+    public static void MapDotTuned(ITelemetry? telemetry, long hz)
+        => telemetry?.Write(TelemetryCategory.Tuning, "map_dot_tuned",
+            new Dictionary<string, object?> { ["hz"] = hz });
+
     /// <summary>A panel was expanded or collapsed (HM-DEC-021).</summary>
     /// <param name="telemetry">Sink, or null.</param>
     /// <param name="panelKey">Stable panel id, e.g. "spots".</param>

@@ -144,6 +144,13 @@ public partial class AboutViewModel : ObservableObject
         return sb.ToString();
     }
 
+    /// <summary>
+    /// The app version, for anything that needs it without building an About
+    /// box — chiefly the User-Agent Hamlet introduces itself with to POTA,
+    /// SOTA and RBN (HM-DEC-024).
+    /// </summary>
+    public static string AppVersion => ReadVersion();
+
     private static string ReadVersion()
         => typeof(AboutViewModel).Assembly.GetName().Version?.ToString(3) ?? "unknown";
 

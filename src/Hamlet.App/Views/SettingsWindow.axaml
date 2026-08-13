@@ -93,6 +93,39 @@
                     </Grid>
                 </Border>
 
+                <!-- Activity sources (HM-DEC-022, HM-DEC-024) -->
+                <StackPanel Spacing="2" Margin="0,8,0,0">
+                    <TextBlock Text="Where spots come from" Classes="hm-section" />
+                    <TextBlock Classes="hm-note"
+                               Text="Each network Hamlet asks about what is on the air. Every request identifies Hamlet, its version and your callsign, because these are volunteer-run services and they are owed knowing who is calling. A source that stops answering leaves its last spots on screen, ageing, and Hamlet says which network went quiet rather than pretending the band went quiet." />
+                </StackPanel>
+
+                <ItemsControl ItemsSource="{Binding Sources}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="vm:SourceToggleViewModel">
+                            <Border Background="White"
+                                    BorderBrush="{StaticResource HmSlateEdgeBrush}"
+                                    BorderThickness="1" CornerRadius="8"
+                                    Padding="12,10" Margin="0,0,0,8">
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <StackPanel Grid.Column="0" Spacing="2" Margin="0,0,10,0">
+                                        <TextBlock Text="{Binding SourceName}"
+                                                   FontWeight="SemiBold" FontSize="13" />
+                                        <TextBlock Classes="hm-note"
+                                                   Text="{Binding Description}" />
+                                        <TextBlock Classes="hm-note"
+                                                   IsVisible="{Binding HasNote}"
+                                                   Foreground="{StaticResource HmAmberDeepBrush}"
+                                                   Text="{Binding Note}" />
+                                    </StackPanel>
+                                    <ToggleSwitch Grid.Column="1" VerticalAlignment="Center"
+                                                  IsChecked="{Binding IsEnabled}" />
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
                 <!-- Telemetry (HM-DEC-018) -->
                 <StackPanel Spacing="2" Margin="0,8,0,0">
                     <TextBlock Text="Telemetry" Classes="hm-section" />

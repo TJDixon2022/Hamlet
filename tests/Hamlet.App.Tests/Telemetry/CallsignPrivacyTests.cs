@@ -1,4 +1,4 @@
-using System.Reflection;
+﻿using System.Reflection;
 using Hamlet.App.Settings;
 using Hamlet.App.Telemetry;
 using Hamlet.App.ViewModels;
@@ -16,7 +16,7 @@ public sealed class CallsignPrivacyTests : IDisposable
     /// <summary>Every public event-writing method on <see cref="AppEvents"/>.
     /// If this number moves, a new event was added and the walk below has to
     /// grow with it — that is the point.</summary>
-    private const int ExpectedEventMethodCount = 15;
+    private const int ExpectedEventMethodCount = 19;
 
     private const string Callsign = "KC3QIS";
     // "Timothy", not "Tim": a three-letter needle matches "timer", which is a
@@ -158,6 +158,15 @@ public sealed class CallsignPrivacyTests : IDisposable
         AppEvents.SpotsRefreshed(telemetry, "timer", 7, 1);
         AppEvents.SpotTimerChanged(telemetry, running: true, intervalMinutes: 5);
         AppEvents.PanelToggled(telemetry, PanelKeys.Spots, expanded: false);
+
+        // HM-DEC-024 sends the callsign to POTA, SOTA and RBN over the wire.
+        // These four events exist because of that work, and they are walked
+        // here for exactly that reason: the rule did not change, so the proof
+        // has to grow to cover the new ground.
+        AppEvents.SourceToggled(telemetry, "POTA", enabled: true);
+        AppEvents.SourceUnhealthy(telemetry, "RBN", "Degraded");
+        AppEvents.LeadCardBuilt(telemetry, hasSuggestion: true, score: 88);
+        AppEvents.MapDotTuned(telemetry, 7_032_000);
     }
 
     private string[] ReadAllLines()

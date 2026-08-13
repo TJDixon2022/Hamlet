@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Hamlet.App.Settings;
+using Hamlet.RadioEngine.Explore;
 using Hamlet.RadioEngine.Telemetry;
 
 namespace Hamlet.App.ViewModels;
@@ -81,11 +82,32 @@ public partial class SettingsViewModel : ObservableObject
                 return vm;
             }));
 
+        Sources = new ObservableCollection<SourceToggleViewModel>(
+            DescribeSources(settings).Select(d =>
+            {
+                var vm = new SourceToggleViewModel(
+                    d.Name, d.Description, d.Note, settings.IsSourceEnabled(d.Name));
+                vm.PropertyChanged += (_, e) =>
+                {
+                    if (e.PropertyName == nameof(SourceToggleViewModel.IsEnabled))
+                    {
+                        _settings.SetSourceEnabled(vm.SourceName, vm.IsEnabled);
+                        SettingsStore.Save(_settings);
+                        Telemetry.AppEvents.SourceToggled(
+                            _telemetry, vm.SourceName, vm.IsEnabled);
+                    }
+                };
+                return vm;
+            }));
+
         RefreshUsage();
     }
 
     /// <summary>The switchable categories.</summary>
     public ObservableCollection<TelemetryCategoryViewModel> Categories { get; }
+
+    /// <summary>The switchable activity sources (HM-DEC-022, HM-DEC-024).</summary>
+    public ObservableCollection<SourceToggleViewModel> Sources { get; }
 
     /// <summary>The offered happening-now refresh intervals (HM-DEC-020).</summary>
     public IReadOnlyList<RefreshChoice> SpotRefreshChoices { get; }
@@ -172,6 +194,79 @@ public partial class SettingsViewModel : ObservableObject
         yield return (TelemetryCategory.Performance, "Performance",
             "Frame rates and render timings, for finding slowness.");
     }
+
+    /// <summary>
+    /// The activity sources, what each one is, and any caveat the operator
+    /// needs before switching it on (HM-DEC-024).
+    /// </summary>
+    private static IEnumerable<(string Name, string Description, string Note)>
+        DescribeSources(AppSettings settings)
+    {
+        yield return (
+            PotaActivitySource.SourceName,
+            "Parks on the Air — operators calling from parks. The friendliest "
+            + "contacts on the band: they want to be found and they will slow down "
+            + "for you.",
+            "");
+
+        yield return (
+            SotaActivitySource.SourceName,
+            "Summits on the Air — operators calling from mountain tops. Often slow "
+            + "CW, often short of contacts.",
+            SotaActivitySource.DisabledReason);
+
+        yield return (
+            RbnActivitySource.SourceName,
+            "Reverse Beacon Network — automated receivers reporting every CW signal "
+            + "they decode. Filtered to your band and to receivers on your continent, "
+            + "or it would be thousands a minute.",
+            string.IsNullOrWhiteSpace(settings.Operator.Callsign)
+                ? "Needs your callsign — RBN has no anonymous login, and Hamlet will "
+                  + "not invent one. Set it under Operator above."
+                : "Your callsign is sent to RBN as the login, and to POTA and SOTA in "
+                  + "the User-Agent, because those services are owed knowing who is "
+                  + "calling them. It is still never written to telemetry.");
+
+        yield return (
+            FakeActivitySource.SourceName,
+            "Built-in sample spots, labelled \"sample\" on every card. For seeing how "
+            + "the Explorer behaves with no network.",
+            "Off by default now that the live feeds work — leaving it on mixes made-up "
+            + "spots into a real list.");
+    }
+}
+
+/// <summary>One switchable activity source.</summary>
+public partial class SourceToggleViewModel : ObservableObject
+{
+    [ObservableProperty]
+    private bool _isEnabled;
+
+    /// <summary>Creates the row.</summary>
+    /// <param name="sourceName">Stable source name and settings key.</param>
+    /// <param name="description">What the source is, in plain language.</param>
+    /// <param name="note">A caveat to show under it, or "".</param>
+    /// <param name="isEnabled">Current switch position.</param>
+    public SourceToggleViewModel(
+        string sourceName, string description, string note, bool isEnabled)
+    {
+        SourceName = sourceName;
+        Description = description;
+        Note = note;
+        _isEnabled = isEnabled;
+    }
+
+    /// <summary>Stable source name, e.g. "POTA".</summary>
+    public string SourceName { get; }
+
+    /// <summary>What the source is.</summary>
+    public string Description { get; }
+
+    /// <summary>A caveat, or "".</summary>
+    public string Note { get; }
+
+    /// <summary>True when there is a caveat to show.</summary>
+    public bool HasNote => Note.Length > 0;
 }
 
 /// <summary>One happening-now refresh interval offered in Settings.</summary>
