@@ -34,6 +34,9 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty]
     private string _gridSquare = "";
 
+    [ObservableProperty]
+    private RefreshChoice _spotRefresh;
+
     /// <summary>Designer constructor.</summary>
     public SettingsViewModel() : this(new AppSettings(), null)
     {
@@ -52,6 +55,14 @@ public partial class SettingsViewModel : ObservableObject
         _operatorName = settings.Operator.OperatorName;
         _location = settings.Operator.Location;
         _gridSquare = settings.Operator.GridSquare;
+
+        SpotRefreshChoices = AppSettings.SpotRefreshChoices
+            .Select(m => new RefreshChoice(m))
+            .ToList();
+        _spotRefresh = SpotRefreshChoices
+            .FirstOrDefault(c => c.Minutes == settings.SpotRefreshMinutes)
+            ?? SpotRefreshChoices.First(
+                c => c.Minutes == AppSettings.DefaultSpotRefreshMinutes);
 
         Categories = new ObservableCollection<TelemetryCategoryViewModel>(
             Describe().Select(d =>
@@ -75,6 +86,9 @@ public partial class SettingsViewModel : ObservableObject
 
     /// <summary>The switchable categories.</summary>
     public ObservableCollection<TelemetryCategoryViewModel> Categories { get; }
+
+    /// <summary>The offered happening-now refresh intervals (HM-DEC-020).</summary>
+    public IReadOnlyList<RefreshChoice> SpotRefreshChoices { get; }
 
     /// <summary>Where everything is stored.</summary>
     public string DataFolderPath => SettingsStore.DataFolder;
@@ -101,6 +115,12 @@ public partial class SettingsViewModel : ObservableObject
     {
         _settings.Operator.GridSquare = value;
         SaveProfile("grid");
+    }
+
+    partial void OnSpotRefreshChanged(RefreshChoice value)
+    {
+        _settings.SpotRefreshMinutes = value.Minutes;
+        SettingsStore.Save(_settings);
     }
 
     /// <summary>Persist the profile, and record only WHICH field moved — the
@@ -152,6 +172,29 @@ public partial class SettingsViewModel : ObservableObject
         yield return (TelemetryCategory.Performance, "Performance",
             "Frame rates and render timings, for finding slowness.");
     }
+}
+
+/// <summary>One happening-now refresh interval offered in Settings.</summary>
+public sealed class RefreshChoice
+{
+    /// <summary>Creates the choice.</summary>
+    /// <param name="minutes">Interval in minutes; 0 is off.</param>
+    public RefreshChoice(int minutes)
+    {
+        Minutes = minutes;
+        Label = minutes switch
+        {
+            0 => "Off",
+            1 => "Every minute",
+            _ => $"Every {minutes} minutes",
+        };
+    }
+
+    /// <summary>Interval in minutes; 0 is off.</summary>
+    public int Minutes { get; }
+
+    /// <summary>What the combo box shows.</summary>
+    public string Label { get; }
 }
 
 /// <summary>One switchable telemetry category.</summary>

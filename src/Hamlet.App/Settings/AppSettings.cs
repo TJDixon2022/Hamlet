@@ -37,12 +37,25 @@ public sealed class AppSettings
     /// here, and never written to telemetry.</summary>
     public OperatorProfile Operator { get; set; } = new();
 
+    /// <summary>Minutes between happening-now refreshes; 0 is off
+    /// (HM-DEC-020). Allowed values are in
+    /// <see cref="SpotRefreshChoices"/>.</summary>
+    public int SpotRefreshMinutes { get; set; } = DefaultSpotRefreshMinutes;
+
     /// <summary>Telemetry category switches. Absent category means enabled —
     /// all categories default on (HM-DEC-018).</summary>
     public Dictionary<string, bool> TelemetryCategories { get; set; } = new();
 
     /// <summary>Telemetry folder size cap in megabytes.</summary>
     public int TelemetryMaxMegabytes { get; set; } = 50;
+
+    /// <summary>The refresh interval the app ships with, in minutes.</summary>
+    public const int DefaultSpotRefreshMinutes = 5;
+
+    /// <summary>The offered refresh intervals in minutes; 0 is off
+    /// (HM-DEC-020).</summary>
+    public static IReadOnlyList<int> SpotRefreshChoices { get; } =
+        new[] { 0, 1, 2, 5, 10, 15 };
 
     /// <summary>True when the category is on. Unknown categories are on.</summary>
     public bool IsTelemetryEnabled(TelemetryCategory category)

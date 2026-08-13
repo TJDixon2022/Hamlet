@@ -65,6 +65,34 @@
                     </Grid>
                 </Border>
 
+                <!-- Happening now (HM-DEC-020) -->
+                <StackPanel Spacing="2" Margin="0,8,0,0">
+                    <TextBlock Text="Happening now" Classes="hm-section" />
+                    <TextBlock Classes="hm-note"
+                               Text="How often the spot feed reloads. The panel always shows how old its data is, whatever this is set to, and refreshing pauses while the window is minimised." />
+                </StackPanel>
+
+                <Border Background="White"
+                        BorderBrush="{StaticResource HmSlateEdgeBrush}"
+                        BorderThickness="1" CornerRadius="8" Padding="12,10">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <StackPanel Grid.Column="0" Spacing="2" Margin="0,0,10,0">
+                            <TextBlock Text="Auto-refresh" FontWeight="SemiBold" FontSize="13" />
+                            <TextBlock Classes="hm-note"
+                                       Text="Refresh spots by hand any time from Explore ▸ Refresh spots." />
+                        </StackPanel>
+                        <ComboBox Grid.Column="1" MinWidth="170" VerticalAlignment="Center"
+                                  ItemsSource="{Binding SpotRefreshChoices}"
+                                  SelectedItem="{Binding SpotRefresh}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate x:DataType="vm:RefreshChoice">
+                                    <TextBlock Text="{Binding Label}" />
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                    </Grid>
+                </Border>
+
                 <!-- Telemetry (HM-DEC-018) -->
                 <StackPanel Spacing="2" Margin="0,8,0,0">
                     <TextBlock Text="Telemetry" Classes="hm-section" />
