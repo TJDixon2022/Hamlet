@@ -41,6 +41,27 @@ public sealed class ModeCardViewModel
     /// <summary>True when there is anything to listen to.</summary>
     public bool HasSamples => Samples.Count > 0;
 
+    /// <summary>
+    /// The mode family's colors, from the one palette every surface reads
+    /// (HM-DEC-032).
+    /// </summary>
+    /// <remarks>
+    /// This is what makes the map's legend worth reading. Somebody who learns
+    /// "lavender means digital" from the band map finds the same lavender here
+    /// against FT8 and RTTY, and the color stops being decoration on both
+    /// surfaces at once.
+    /// </remarks>
+    public ModeColors Colors => ModePalette.For(Mode.Family);
+
+    /// <summary>
+    /// The family named in words — "Morse", "Digital", "Voice".
+    /// </summary>
+    /// <remarks>
+    /// The second carrier. A chip that is only a color tells somebody with a
+    /// color vision deficiency nothing at all (§0.6).
+    /// </remarks>
+    public string FamilyLabel => Colors.Label;
+
     private static IReadOnlyList<ModeSampleButton> BuildSamples(ModeInfo mode)
     {
         var training = ModeFingerprintControl.ModeFor(mode.Signature);

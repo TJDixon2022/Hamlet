@@ -1,4 +1,4 @@
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Globalization;
 using Avalonia;
 using Avalonia.Threading;
@@ -12,6 +12,7 @@ using Hamlet.RadioEngine.Bands;
 using Hamlet.RadioEngine.Explore;
 using Hamlet.RadioEngine.Telemetry;
 using Hamlet.RadioEngine.Licensing;
+using Hamlet.RadioEngine.Solar;
 using Hamlet.RadioEngine.Training;
 using Hamlet.RadioEngine.Rig;
 using Hamlet.RadioEngine.Transport;
@@ -1050,6 +1051,36 @@ public partial class MainWindowViewModel : ObservableObject
                 button.Activity = reading;
             }
         }
+
+        UpdateBandCharacter(now);
+    }
+
+    /// <summary>
+    /// Refresh each card's look and its character text for the current hour
+    /// (HM-DEC-033).
+    /// </summary>
+    /// <remarks>
+    /// Sunrise and sunset are computed from the operator's grid square. With
+    /// no grid there are no coordinates, so nothing is dimmed, the icons stay
+    /// neutral and the text says how to fix that — Hamlet never guesses where
+    /// somebody is.
+    /// </remarks>
+    private void UpdateBandCharacter(DateTime nowUtc)
+    {
+        var here = OperatorLocation.FromGrid(_settings.Operator.GridSquare);
+
+        var sun = here is null
+            ? SolarSnapshot.Unknown
+            : SolarClock.At(here.Value.Latitude, here.Value.Longitude, nowUtc);
+
+        var names = Bands.Select(b => b.Band.Name).ToList();
+
+        foreach (var button in Bands)
+        {
+            button.Card = BandCardStyles.For(button.Band.Name, names, sun);
+            button.Character = BandCharacter.Describe(
+                button.Band.Name, sun, nowUtc.Month, here?.Latitude);
+        }
     }
 
     private bool AnySourceAnswering()
@@ -1423,6 +1454,27 @@ public partial class BandButtonViewModel : ObservableObject
     [NotifyPropertyChangedFor(nameof(ActivityTooltip))]
     private BandActivityReading _activity;
 
+    /// <summary>How this card looks with the sun where it is (HM-DEC-033).</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(CardWidth))]
+    [NotifyPropertyChangedFor(nameof(CardIcon))]
+    [NotifyPropertyChangedFor(nameof(CardIconTint))]
+    [NotifyPropertyChangedFor(nameof(CardBar))]
+    [NotifyPropertyChangedFor(nameof(CardOpacity))]
+    private BandCardStyle _card;
+
+    /// <summary>
+    /// What the sun and the season are doing to this band, in plain words.
+    /// </summary>
+    /// <remarks>
+    /// Editorial text from the engine. It says what the sun is doing and what
+    /// the band tends to do; it never says the band is open, which is
+    /// propagation and not something Hamlet can see (FG-007, HM-DEC-033).
+    /// </remarks>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(ActivityTooltip))]
+    private string _character = "";
+
     /// <summary>Creates the button model.</summary>
     /// <param name="band">The band this button selects.</param>
     /// <param name="isBestBet">True on the top-ranked band for the hour.</param>
@@ -1436,6 +1488,9 @@ public partial class BandButtonViewModel : ObservableObject
             band.Name, BandActivityState.NoData, 0, 0, 0,
             "no data.", "Hamlet has not asked the spot sources yet.",
             ConditionsConfidence.Blind);
+
+        _card = BandCardStyles.For(
+            band.Name, new[] { band.Name }, SolarSnapshot.Unknown);
     }
 
     /// <summary>The band this button selects.</summary>
@@ -1453,8 +1508,37 @@ public partial class BandButtonViewModel : ObservableObject
     /// <summary>True when the indicator should draw as unknown.</summary>
     public bool ActivityUnknown => Activity.IsUnknown;
 
-    /// <summary>The hover text carrying the evidence.</summary>
-    public string ActivityTooltip => Activity.Tooltip;
+    /// <summary>
+    /// The hover text: what the sun is doing, what the season tends to do, and
+    /// what was actually heard.
+    /// </summary>
+    /// <remarks>
+    /// The character comes first because it is the part nobody ever told this
+    /// operator, and the evidence sentence closes it because that is the part
+    /// Hamlet can actually vouch for (HM-DEC-031, HM-DEC-033).
+    /// </remarks>
+    public string ActivityTooltip
+        => Character.Length == 0
+            ? Activity.Tooltip
+            : Character + TooltipParagraphBreak + Activity.Tooltip;
+
+    /// <summary>Blank line between the character passage and the evidence.</summary>
+    private const string TooltipParagraphBreak = "\n\n";
+
+    /// <summary>Card width, following wavelength.</summary>
+    public double CardWidth => Card.Width;
+
+    /// <summary>Sun, moon, both, or neutral.</summary>
+    public Controls.DayNightIcon CardIcon => Card.Icon;
+
+    /// <summary>The icon's color.</summary>
+    public Avalonia.Media.IBrush CardIconTint => Card.IconTint;
+
+    /// <summary>The colored bar under the label.</summary>
+    public Avalonia.Media.IBrush CardBar => Card.BarBrush;
+
+    /// <summary>Dimmed when the band is out of its element.</summary>
+    public double CardOpacity => Card.Opacity;
 
     /// <summary>Pips in a full indicator, for the control to size itself.</summary>
     public static int ActivityPipCount => BandActivity.MaxPips;
