@@ -2,7 +2,9 @@ using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Hamlet.App.Settings;
+using Hamlet.App.Licensing;
 using Hamlet.RadioEngine.Explore;
+using Hamlet.RadioEngine.Licensing;
 using Hamlet.RadioEngine.Telemetry;
 
 namespace Hamlet.App.ViewModels;
@@ -38,6 +40,15 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty]
     private RefreshChoice _spotRefresh;
 
+    [ObservableProperty]
+    private LicenceClass _licenceClass;
+
+    [ObservableProperty]
+    private bool _restrictTransmitToPrivileges;
+
+    [ObservableProperty]
+    private string _licenceProvenance = "";
+
     /// <summary>Designer constructor.</summary>
     public SettingsViewModel() : this(new AppSettings(), null)
     {
@@ -56,6 +67,9 @@ public partial class SettingsViewModel : ObservableObject
         _operatorName = settings.Operator.OperatorName;
         _location = settings.Operator.Location;
         _gridSquare = settings.Operator.GridSquare;
+        _licenceClass = settings.Operator.LicenceClass;
+        _licenceProvenance = LicenceResolver.DescribeProvenance(settings.Operator);
+        _restrictTransmitToPrivileges = settings.RestrictTransmitToPrivileges;
 
         SpotRefreshChoices = AppSettings.SpotRefreshChoices
             .Select(m => new RefreshChoice(m))
@@ -109,6 +123,18 @@ public partial class SettingsViewModel : ObservableObject
     /// <summary>The switchable activity sources (HM-DEC-022, HM-DEC-024).</summary>
     public ObservableCollection<SourceToggleViewModel> Sources { get; }
 
+    /// <summary>The licence classes the operator can pick from.</summary>
+    /// <remarks>
+    /// Unknown is offered on purpose. Clearing the class is a legitimate
+    /// thing to do, and it makes the band map stop claiming anything rather
+    /// than leaving a stale guess on screen (HM-DEC-029).
+    /// </remarks>
+    public IReadOnlyList<LicenceClass> LicenceClasses { get; } = new[]
+    {
+        LicenceClass.Unknown, LicenceClass.Technician, LicenceClass.General,
+        LicenceClass.Advanced, LicenceClass.Extra, LicenceClass.Novice,
+    };
+
     /// <summary>The offered happening-now refresh intervals (HM-DEC-020).</summary>
     public IReadOnlyList<RefreshChoice> SpotRefreshChoices { get; }
 
@@ -137,6 +163,35 @@ public partial class SettingsViewModel : ObservableObject
     {
         _settings.Operator.GridSquare = value;
         SaveProfile("grid");
+    }
+
+    partial void OnLicenceClassChanged(LicenceClass value)
+    {
+        // Chosen by hand, and stamped as such: a later lookup will show a
+        // disagreement rather than quietly overwriting this (HM-DEC-028).
+        if (value == _settings.Operator.LicenceClass)
+        {
+            return;
+        }
+
+        _settings.Operator.SetLicenceClass(
+            value,
+            value == LicenceClass.Unknown
+                ? LicenceClassSource.Unset
+                : LicenceClassSource.EnteredByOperator,
+            "",
+            DateTime.UtcNow);
+
+        SettingsStore.Save(_settings);
+        LicenceProvenance = LicenceResolver.DescribeProvenance(_settings.Operator);
+        Telemetry.AppEvents.ProfileEdited(_telemetry, "licenceClass");
+    }
+
+    partial void OnRestrictTransmitToPrivilegesChanged(bool value)
+    {
+        _settings.RestrictTransmitToPrivileges = value;
+        SettingsStore.Save(_settings);
+        Telemetry.AppEvents.TransmitGuardToggled(_telemetry, value);
     }
 
     partial void OnSpotRefreshChanged(RefreshChoice value)

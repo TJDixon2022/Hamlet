@@ -5,11 +5,13 @@ using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Avalonia.Controls.ApplicationLifetimes;
+using Hamlet.App.Licensing;
 using Hamlet.App.Settings;
 using Hamlet.App.Telemetry;
 using Hamlet.RadioEngine.Bands;
 using Hamlet.RadioEngine.Explore;
 using Hamlet.RadioEngine.Telemetry;
+using Hamlet.RadioEngine.Licensing;
 using Hamlet.RadioEngine.Training;
 using Hamlet.RadioEngine.Rig;
 using Hamlet.RadioEngine.Transport;
@@ -54,6 +56,8 @@ public partial class MainWindowViewModel : ObservableObject
     private IDisposable[] _ownedSources = Array.Empty<IDisposable>();
     private TrainingSpectrumSource? _trainingSpectrum;
     private readonly Audio.ModeAudioPlayer _audio = new();
+    private readonly PrivilegePlan _privileges = new();
+    private CancellationTokenSource? _licenceLookup;
     private IRig? _rig;
     private bool _updatingFromRig;
     private bool _rigSendPending;
@@ -137,6 +141,43 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty]
     private double _waterfallGain = 1.35;
 
+    /// <summary>
+    /// Where this licence class may transmit across the band on screen.
+    /// </summary>
+    /// <remarks>
+    /// Computed once, here, from the cited Part 97 data, and handed to every
+    /// surface that shows privileges. The band map binds to it today; if the
+    /// waterfall or the dial tape ever shows privileges they take this same
+    /// list rather than computing their own, so two pictures of one law
+    /// cannot disagree (HM-DEC-029).
+    /// Empty means the class is unknown and nothing is drawn.
+    /// </remarks>
+    [ObservableProperty]
+    private IReadOnlyList<PrivilegeSpan> _privilegeSpans = Array.Empty<PrivilegeSpan>();
+
+    /// <summary>The line under the band map (HM-DEC-029).</summary>
+    [ObservableProperty]
+    private PrivilegeStatus _privilegeStatus = new(
+        PrivilegeTone.Unknown, "", "", "", "", "");
+
+    /// <summary>The upgrade ladder, shown only while the operator asks for it.</summary>
+    [ObservableProperty]
+    private IReadOnlyList<string> _upgradeLadder = Array.Empty<string>();
+
+    /// <summary>True while the upgrade panel is open.</summary>
+    [ObservableProperty]
+    private bool _upgradeLadderVisible;
+
+    /// <summary>
+    /// A lookup disagreeing with a hand-set class, or null.
+    /// </summary>
+    /// <remarks>
+    /// Non-null puts the choice on screen. Nothing is written to the profile
+    /// while this is set — the operator decides (HM-DEC-028).
+    /// </remarks>
+    [ObservableProperty]
+    private LicenceResolution? _licenceMismatch;
+
     /// <summary>One line naming which sources answered, for the panel header.</summary>
     [ObservableProperty]
     private string _sourcesSummary = "";
@@ -177,6 +218,12 @@ public partial class MainWindowViewModel : ObservableObject
 
     /// <summary>The training radio plus every serial port on this machine.</summary>
     public ObservableCollection<string> AvailablePorts { get; }
+
+    /// <summary>The operator's licence class, or Unknown.</summary>
+    public LicenceClass LicenceClass => _settings.Operator.LicenceClass;
+
+    /// <summary>Provenance for the class, shown in Settings and the About box.</summary>
+    public string LicenceProvenance => LicenceResolver.DescribeProvenance(_settings.Operator);
 
     /// <summary>Collapsed-header line for the neighborhood map (HM-DEC-021).</summary>
     public string MapSummary => string.Create(CultureInfo.InvariantCulture,
@@ -288,6 +335,7 @@ public partial class MainWindowViewModel : ObservableObject
         UpdateSpotFreshness();
 
         _ = ReloadSpotsAsync("startup");
+        _ = ResolveLicenceClassAsync();
         ApplyFeedTimers();
     }
 
@@ -578,6 +626,11 @@ public partial class MainWindowViewModel : ObservableObject
         // rebuilt rather than reconfigured.
         _activitySource = BuildSources();
         _ = ReloadSpotsAsync("settings");
+
+        // The callsign or the class may have changed while the dialog was
+        // open, so the lazy resolve gets another chance (HM-DEC-028).
+        _ = ResolveLicenceClassAsync();
+        UpdatePrivileges();
 
         // The interval may have changed while the dialog was open.
         ApplyFeedTimers();
@@ -1045,6 +1098,219 @@ public partial class MainWindowViewModel : ObservableObject
         IsInsideCwSegment = SelectedBand.Band.IsInCwSegment(FrequencyHz);
         ModeLineText = $"CW · {SelectedBand.Band.Name} · "
             + (IsInsideCwSegment ? "inside the CW segment" : "OUTSIDE the CW segment");
+
+        UpdatePrivileges();
+    }
+
+    /// <summary>
+    /// Recompute the privilege spans and the status line for where the
+    /// operator is tuned.
+    /// </summary>
+    /// <remarks>
+    /// One computation feeding both the map's veil and the line beneath it,
+    /// so the hatching and the words can never contradict each other
+    /// (HM-DEC-029). Phase 1 is a CW app, so the line answers for Morse; when
+    /// other modes can be sent, the mode being transmitted becomes the
+    /// argument rather than a constant.
+    /// </remarks>
+    private void UpdatePrivileges()
+    {
+        var cls = _settings.Operator.LicenceClass;
+
+        PrivilegeSpans = _privileges.SpansFor(SelectedBand.Band, cls);
+        PrivilegeStatus = PrivilegeStatusLine.Build(
+            _privileges, cls, FrequencyHz, TransmitMode.Cw);
+
+        // A pending mismatch is a question about a class the operator has
+        // since changed. Answering it by other means makes it moot, and a
+        // panel still offering "keep Technician" after they picked General
+        // would be asking about a world that no longer exists.
+        if (LicenceMismatch is { } pending && pending.Existing != cls)
+        {
+            LicenceMismatch = null;
+        }
+
+        // The ladder was opened from the listen-only line, and the button
+        // that opens it disappears once the frequency is theirs. Leaving the
+        // panel behind would turn an invitation into permanent chrome — and
+        // an upgrade pitch inside a green "yours to use" box reads as a nag
+        // (HM-DEC-029).
+        if (UpgradeLadderVisible && PrivilegeStatus.Tone != PrivilegeTone.ListenOnly)
+        {
+            UpgradeLadderVisible = false;
+            UpgradeLadder = Array.Empty<string>();
+        }
+        else if (UpgradeLadderVisible)
+        {
+            UpgradeLadder = PrivilegeStatusLine.UpgradeLadder(
+                _privileges, cls, SelectedBand.Band);
+        }
+
+        OnPropertyChanged(nameof(LicenceClass));
+        OnPropertyChanged(nameof(LicenceProvenance));
+    }
+
+    /// <summary>
+    /// Show or hide the upgrade ladder.
+    /// </summary>
+    /// <remarks>
+    /// On click only, never permanent chrome: a restriction the operator
+    /// asked about is motivation, and the same words shown unbidden are a nag
+    /// (HM-DEC-029).
+    /// </remarks>
+    [RelayCommand]
+    private void ToggleUpgradeLadder()
+    {
+        UpgradeLadderVisible = !UpgradeLadderVisible;
+
+        UpgradeLadder = UpgradeLadderVisible
+            ? PrivilegeStatusLine.UpgradeLadder(
+                _privileges, _settings.Operator.LicenceClass, SelectedBand.Band)
+            : Array.Empty<string>();
+
+        if (UpgradeLadderVisible)
+        {
+            AppEvents.UpgradeLadderOpened(
+                _telemetry, PrivilegePlan.Describe(_settings.Operator.LicenceClass));
+        }
+    }
+
+    /// <summary>
+    /// Look up the operator's licence class when it is missing (HM-DEC-028).
+    /// </summary>
+    /// <remarks>
+    /// <para>Lazy and automatic: attached to the fact rather than to a wizard
+    /// screen, because people skip wizards and a callsign can arrive from
+    /// Settings or a hand-edited file. Runs on startup and whenever the
+    /// profile changes.</para>
+    /// <para>Never blocks and never opens a dialog. The status bar narrates
+    /// and the operator carries on; if the service is down the class stays
+    /// unknown, the map draws no overlay, and Settings still takes a
+    /// hand-picked answer.</para>
+    /// </remarks>
+    public async Task ResolveLicenceClassAsync()
+    {
+        if (!LicenceResolver.NeedsResolution(_settings.Operator)
+            && !_settings.Operator.LicenceClassWasSetByHand)
+        {
+            return;
+        }
+
+        var callsign = _settings.Operator.Callsign?.Trim() ?? "";
+        if (callsign.Length == 0)
+        {
+            return;
+        }
+
+        _licenceLookup?.Cancel();
+        _licenceLookup?.Dispose();
+        var cts = new CancellationTokenSource();
+        _licenceLookup = cts;
+
+        var showNarration = LicenceResolver.NeedsResolution(_settings.Operator);
+        if (showNarration)
+        {
+            StatusText = LicenceResolver.LookingUpNarration(callsign);
+        }
+
+        LicenceResolution resolution;
+        try
+        {
+            using var lookup = new CallookCallsignLookup(
+                AboutViewModel.AppVersion, callsign);
+            var resolver = new LicenceResolver(lookup);
+            resolution = await resolver.ResolveAsync(_settings.Operator, cts.Token);
+        }
+        catch (OperationCanceledException)
+        {
+            return;
+        }
+        catch (Exception)
+        {
+            // Never fatal: an unresolved class is a supported state (§8).
+            return;
+        }
+
+        switch (resolution.Outcome)
+        {
+            case LicenceResolutionOutcome.Resolved:
+                SettingsStore.Save(_settings);
+                StatusText = resolution.Narration;
+                AppEvents.LicenceClassResolved(
+                    _telemetry, PrivilegePlan.Describe(resolution.Found),
+                    resolution.SourceName);
+                break;
+
+            case LicenceResolutionOutcome.Mismatch:
+                // Shown, never applied. Their licence, their call.
+                LicenceMismatch = resolution;
+                StatusText = resolution.Narration;
+                AppEvents.LicenceClassMismatch(
+                    _telemetry,
+                    PrivilegePlan.Describe(resolution.Found),
+                    PrivilegePlan.Describe(resolution.Existing));
+                break;
+
+            case LicenceResolutionOutcome.NotFound:
+            case LicenceResolutionOutcome.Unavailable:
+                if (showNarration)
+                {
+                    StatusText = resolution.Narration;
+                }
+
+                AppEvents.LicenceClassLookupFailed(
+                    _telemetry, resolution.Outcome.ToString());
+                break;
+
+            default:
+                break;
+        }
+
+        UpdatePrivileges();
+    }
+
+    /// <summary>Take the looked-up class in place of the hand-set one.</summary>
+    [RelayCommand]
+    private void AcceptLookedUpClass()
+    {
+        if (LicenceMismatch is not { } mismatch)
+        {
+            return;
+        }
+
+        _settings.Operator.SetLicenceClass(
+            mismatch.Found, LicenceClassSource.LookedUp, mismatch.SourceName, DateTime.UtcNow);
+        SettingsStore.Save(_settings);
+
+        AppEvents.LicenceClassResolved(
+            _telemetry, PrivilegePlan.Describe(mismatch.Found), mismatch.SourceName);
+
+        LicenceMismatch = null;
+        StatusText = LicenceResolver.DescribeProvenance(_settings.Operator);
+        UpdatePrivileges();
+    }
+
+    /// <summary>Keep the class the operator set, and stop asking.</summary>
+    /// <remarks>
+    /// Re-stamps the profile as hand-set today, so the same disagreement does
+    /// not reappear on every startup. Declining is an answer, and an app that
+    /// asked again tomorrow would not have heard it.
+    /// </remarks>
+    [RelayCommand]
+    private void KeepMyLicenceClass()
+    {
+        if (LicenceMismatch is not { } mismatch)
+        {
+            return;
+        }
+
+        _settings.Operator.SetLicenceClass(
+            mismatch.Existing, LicenceClassSource.EnteredByOperator, "", DateTime.UtcNow);
+        SettingsStore.Save(_settings);
+
+        LicenceMismatch = null;
+        StatusText = LicenceResolver.DescribeProvenance(_settings.Operator);
+        UpdatePrivileges();
     }
 
     private async Task TearDownRigAsync()

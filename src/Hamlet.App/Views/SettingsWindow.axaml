@@ -65,6 +65,41 @@
                     </Grid>
                 </Border>
 
+                <!-- Licence class and the transmit guard rail
+                     (HM-DEC-028, HM-DEC-029) -->
+                <StackPanel Spacing="2" Margin="0,8,0,0">
+                    <TextBlock Text="Licence" Classes="hm-section" />
+                    <TextBlock Classes="hm-note"
+                               Text="Your class decides what the band map shows as yours to use. Hamlet looks it up from your callsign when it can, and never overwrites a value you set yourself — if they disagree it shows you both and lets you choose. Listening is never restricted by any of this." />
+                </StackPanel>
+
+                <Border Background="White"
+                        BorderBrush="{StaticResource HmSlateEdgeBrush}"
+                        BorderThickness="1" CornerRadius="8" Padding="12,10">
+                    <StackPanel Spacing="8">
+                        <Grid ColumnDefinitions="110,*">
+                            <TextBlock Grid.Column="0" Text="Class" Classes="hm-field" />
+                            <ComboBox Grid.Column="1" MinWidth="170"
+                                      ItemsSource="{Binding LicenceClasses}"
+                                      SelectedItem="{Binding LicenceClass}" />
+                        </Grid>
+
+                        <TextBlock Classes="hm-note" Text="{Binding LicenceProvenance}" />
+
+                        <Grid ColumnDefinitions="*,Auto">
+                            <StackPanel Grid.Column="0" Spacing="2" Margin="0,0,10,0">
+                                <TextBlock Text="Only let me transmit where my licence allows"
+                                           FontWeight="SemiBold" FontSize="13"
+                                           TextWrapping="Wrap" />
+                                <TextBlock Classes="hm-note"
+                                           Text="Holds a transmission back when the frequency is outside your privileges. It never restricts tuning or receiving — those are not regulated. There is no transmit path yet, so this takes effect when CW send lands." />
+                            </StackPanel>
+                            <ToggleSwitch Grid.Column="1" VerticalAlignment="Center"
+                                          IsChecked="{Binding RestrictTransmitToPrivileges}" />
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
                 <!-- Happening now (HM-DEC-020) -->
                 <StackPanel Spacing="2" Margin="0,8,0,0">
                     <TextBlock Text="Happening now" Classes="hm-section" />

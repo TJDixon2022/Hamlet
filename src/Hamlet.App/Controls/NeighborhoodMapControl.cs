@@ -7,6 +7,7 @@ using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Media;
 using Hamlet.RadioEngine.Explore;
+using Hamlet.RadioEngine.Licensing;
 
 namespace Hamlet.App.Controls;
 
@@ -39,10 +40,32 @@ public sealed class NeighborhoodMapControl : Control
     private static readonly Pen EdgePen = new(new SolidColorBrush(Color.Parse("#AECBEA")), 0.8);
     private static readonly Pen SeamPen = new(new SolidColorBrush(Color.Parse("#40000000")), 0.5);
     private static readonly IBrush MarkerBrush = new SolidColorBrush(Color.Parse("#C25E00"));
+
+    /// <summary>The marker when the frequency is outside transmit privileges.</summary>
+    private static readonly IBrush MarkerOutsideBrush =
+        new SolidColorBrush(Color.Parse("#B3261E"));
+
+    /// <summary>
+    /// The listen-only hatch. Deliberately faint: the neighbourhood colour
+    /// stays visible through it, so a segment reads as "not yours yet" rather
+    /// than as a forbidden zone (HM-DEC-029).
+    /// </summary>
+    private static readonly IBrush VeilBrush =
+        new SolidColorBrush(Color.FromArgb(0x33, 0x3A, 0x3A, 0x44));
+
+    private static readonly IBrush VeilLabelBrush =
+        new SolidColorBrush(Color.FromArgb(0xB0, 0x3A, 0x3A, 0x44));
+
+    /// <summary>Dots outside privileges: still there, just quieter.</summary>
+    private static readonly IBrush DimDotBrush =
+        new SolidColorBrush(Color.FromArgb(0x88, 0x7A, 0x7A, 0x82));
     private static readonly IBrush LabelBrush = new SolidColorBrush(Color.Parse("#55534E"));
     private static readonly IBrush HoverBrush = new SolidColorBrush(Color.Parse("#1A1A18"));
     private static readonly Pen HoverPen = new(new SolidColorBrush(Color.Parse("#FFFFFF")), 1.5);
     private static readonly Typeface Sans = new("Segoe UI,Inter,sans-serif");
+
+    /// <summary>The hatch stroke. Thin and pale on purpose.</summary>
+    private static readonly Pen VeilPen = new(VeilBrush, 2.5);
 
     /// <summary>Current frequency in hertz. Two-way: dragging writes it back.</summary>
     public static readonly StyledProperty<long> FrequencyHzProperty =
@@ -76,6 +99,21 @@ public sealed class NeighborhoodMapControl : Control
     public static readonly StyledProperty<ICommand?> TuneCommandProperty =
         AvaloniaProperty.Register<NeighborhoodMapControl, ICommand?>(nameof(TuneCommand));
 
+    /// <summary>
+    /// Where this licence class may and may not transmit, from the engine.
+    /// </summary>
+    /// <remarks>
+    /// THE ONE SET OF BOUNDARIES (HM-DEC-029). These spans are computed once
+    /// from the cited Part 97 data and handed to every surface that shows
+    /// privileges — this map today, the waterfall or the dial tape whenever
+    /// they want it. Nothing recomputes them locally, because two renderings
+    /// of the same law that disagreed would be worse than either alone.
+    /// An empty list means the class is unknown and NOTHING is drawn.
+    /// </remarks>
+    public static readonly StyledProperty<IReadOnlyList<PrivilegeSpan>?> PrivilegeSpansProperty =
+        AvaloniaProperty.Register<NeighborhoodMapControl, IReadOnlyList<PrivilegeSpan>?>(
+            nameof(PrivilegeSpans));
+
     private readonly Cursor _handCursor = new(StandardCursorType.Hand);
     private readonly Cursor _dotCursor = new(StandardCursorType.Cross);
 
@@ -89,7 +127,7 @@ public sealed class NeighborhoodMapControl : Control
     {
         AffectsRender<NeighborhoodMapControl>(
             FrequencyHzProperty, BandLowHzProperty, BandHighHzProperty,
-            NeighborhoodsProperty, ActivityDotsProperty);
+            NeighborhoodsProperty, ActivityDotsProperty, PrivilegeSpansProperty);
     }
 
     /// <summary>Creates the map.</summary>
@@ -149,6 +187,13 @@ public sealed class NeighborhoodMapControl : Control
         set => SetValue(TuneCommandProperty, value);
     }
 
+    /// <summary>Transmit privileges across this band; empty draws nothing.</summary>
+    public IReadOnlyList<PrivilegeSpan>? PrivilegeSpans
+    {
+        get => GetValue(PrivilegeSpansProperty);
+        set => SetValue(PrivilegeSpansProperty, value);
+    }
+
     /// <inheritdoc/>
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
@@ -204,10 +249,18 @@ public sealed class NeighborhoodMapControl : Control
             }
         }
 
-        // Activity dots from the cached layout.
+        // The listen-only veil, over the culture tints and under the dots.
+        // Nothing is drawn when the class is unknown: an empty span list is
+        // how "do not guess" is expressed structurally (HM-DEC-029).
+        DrawListenOnlyVeil(context, w, h, span);
+
+        // Activity dots from the cached layout. Dots outside privileges are
+        // dimmed rather than removed — the operator still needs to see where
+        // the action is, even where they cannot answer it yet.
         foreach (var dot in _layout)
         {
-            context.DrawEllipse(dot.Brush, null, dot.Centre, dot.Radius, dot.Radius);
+            var brush = MayTransmitAt(dot.Dot.FrequencyHz) ? dot.Brush : DimDotBrush;
+            context.DrawEllipse(brush, null, dot.Centre, dot.Radius, dot.Radius);
         }
 
         if (_hovered is not null)
@@ -219,8 +272,117 @@ public sealed class NeighborhoodMapControl : Control
 
         context.DrawRectangle(null, EdgePen, new Rect(0.5, 0.5, w - 1, h - 1), 6, 6);
 
+        // The marker turns red outside privileges, with a small flag. It
+        // never stops anybody tuning there — it is a fact on the screen, not
+        // a barrier (HM-DEC-029).
         var markerX = (FrequencyHz - BandLowHz) / span * w;
-        context.FillRectangle(MarkerBrush, new Rect(markerX - 1, 0, 2, h));
+        var outside = HasPrivilegeData && !MayTransmitAt(FrequencyHz);
+        var markerBrush = outside ? MarkerOutsideBrush : MarkerBrush;
+
+        context.FillRectangle(markerBrush, new Rect(markerX - 1, 0, 2, h));
+
+        if (outside)
+        {
+            var flag = new StreamGeometry();
+            using (var g = flag.Open())
+            {
+                g.BeginFigure(new Point(markerX, 0), isFilled: true);
+                g.LineTo(new Point(markerX + 8, 0));
+                g.LineTo(new Point(markerX, 8));
+                g.EndFigure(true);
+            }
+
+            context.DrawGeometry(markerBrush, null, flag);
+        }
+    }
+
+    /// <summary>True when privilege data is available to draw at all.</summary>
+    private bool HasPrivilegeData => PrivilegeSpans is { Count: > 0 };
+
+    /// <summary>
+    /// Whether the operator may transmit at a frequency, from the spans.
+    /// </summary>
+    /// <remarks>
+    /// With no spans the answer is "yes" so that nothing is dimmed or
+    /// flagged. An unknown licence class must produce a map that looks
+    /// exactly as it did before privileges existed.
+    /// </remarks>
+    private bool MayTransmitAt(long hz)
+    {
+        if (PrivilegeSpans is not { Count: > 0 } spans)
+        {
+            return true;
+        }
+
+        foreach (var s in spans)
+        {
+            if (s.Contains(hz))
+            {
+                return s.MayTransmit;
+            }
+        }
+
+        // Past the last span's exclusive upper edge: take the last answer.
+        return spans[^1].MayTransmit;
+    }
+
+    /// <summary>
+    /// Hatch the stretches this class may not transmit in.
+    /// </summary>
+    /// <remarks>
+    /// A 135° diagonal at low opacity, so the neighbourhood colour reads
+    /// through it. "Listen only" is written where there is room, because the
+    /// fact that matters most is that listening is never restricted — the
+    /// veil marks where transmitting stops, not where the operator may not
+    /// go.
+    /// </remarks>
+    private void DrawListenOnlyVeil(DrawingContext context, double w, double h, double span)
+    {
+        if (PrivilegeSpans is not { Count: > 0 } spans)
+        {
+            return;
+        }
+
+        foreach (var s in spans)
+        {
+            if (s.MayTransmit)
+            {
+                continue;
+            }
+
+            var left = (s.LowHz - BandLowHz) / span * w;
+            var right = (s.HighHz - BandLowHz) / span * w;
+            var width = Math.Max(0, right - left);
+            if (width <= 0)
+            {
+                continue;
+            }
+
+            var rect = new Rect(left, 0, width, h);
+
+            using (context.PushClip(rect))
+            {
+                // 135°: lines running down-left to up-right across the block.
+                for (var x = left - h; x < right + h; x += 6)
+                {
+                    context.DrawLine(VeilPen, new Point(x, h), new Point(x + h, 0));
+                }
+            }
+
+            if (width > 66)
+            {
+                var label = new FormattedText(
+                    "listen only", CultureInfo.InvariantCulture,
+                    FlowDirection.LeftToRight, Sans, 10, VeilLabelBrush);
+
+                if (label.Width < width - 8)
+                {
+                    context.DrawText(
+                        label,
+                        new Point(left + ((width - label.Width) / 2), h - label.Height - 3));
+                }
+            }
+        }
     }
 
     /// <summary>
