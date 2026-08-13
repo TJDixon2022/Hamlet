@@ -148,9 +148,11 @@ public static class LeadCard
         {
             why.Add($"{reports} receivers are hearing it, so yours probably can too");
         }
-        else if (spot.SignalDb is >= SpotRanking.StrongSignalDb)
+        else if (spot.SignalDb is { } db && db >= SpotRanking.StrongSignalDb)
         {
-            why.Add("coming in strong");
+            // The figure and its meaning together, so the scale starts to mean
+            // something after a few dozen cards (HM-DEC-042).
+            why.Add($"coming in at {SignalReport.Describe(db)}");
         }
 
         if (spot.IsActivation)

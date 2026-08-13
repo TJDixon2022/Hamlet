@@ -191,27 +191,29 @@ public static class SpotRanking
                 break;
         }
 
-        // Signal strength, where somebody measured it.
+        // Signal strength, where somebody measured it. The figure travels with
+        // its meaning rather than as a bare word, so the operator can see what
+        // "strong" was derived from and start to learn the scale (HM-DEC-042).
         if (spot.SignalDb is { } db)
         {
             if (db >= StrongSignalDb)
             {
                 score += 12;
-                parts.Add((14, "strong signal"));
+                parts.Add((14, SignalReport.Describe(db)));
             }
-            else if (db >= 10)
+            else if (db >= SignalReport.FairDb)
             {
                 score += 7;
-                parts.Add((7, "fair signal"));
+                parts.Add((7, SignalReport.Describe(db)));
             }
-            else if (db >= 5)
+            else if (db >= SignalReport.WeakDb)
             {
                 score += 2;
             }
             else
             {
                 score -= 2;
-                parts.Add((2, "weak signal"));
+                parts.Add((2, SignalReport.Describe(db)));
             }
         }
 
