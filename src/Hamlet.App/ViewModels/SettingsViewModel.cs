@@ -22,17 +22,36 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty]
     private string _usageText = "";
 
+    [ObservableProperty]
+    private string _callsign = "";
+
+    [ObservableProperty]
+    private string _operatorName = "";
+
+    [ObservableProperty]
+    private string _location = "";
+
+    [ObservableProperty]
+    private string _gridSquare = "";
+
     /// <summary>Designer constructor.</summary>
     public SettingsViewModel() : this(new AppSettings(), null)
     {
     }
 
     /// <summary>Runtime constructor.</summary>
+    /// <param name="settings">Live settings, written through on every edit.</param>
+    /// <param name="telemetry">The writer, or null.</param>
     public SettingsViewModel(AppSettings settings, JsonlTelemetry? telemetry)
     {
         _settings = settings;
         _telemetry = telemetry;
         _maxMegabytes = settings.TelemetryMaxMegabytes;
+
+        _callsign = settings.Operator.Callsign;
+        _operatorName = settings.Operator.OperatorName;
+        _location = settings.Operator.Location;
+        _gridSquare = settings.Operator.GridSquare;
 
         Categories = new ObservableCollection<TelemetryCategoryViewModel>(
             Describe().Select(d =>
@@ -59,6 +78,39 @@ public partial class SettingsViewModel : ObservableObject
 
     /// <summary>Where everything is stored.</summary>
     public string DataFolderPath => SettingsStore.DataFolder;
+
+    partial void OnCallsignChanged(string value)
+    {
+        _settings.Operator.Callsign = value;
+        SaveProfile("callsign");
+    }
+
+    partial void OnOperatorNameChanged(string value)
+    {
+        _settings.Operator.OperatorName = value;
+        SaveProfile("name");
+    }
+
+    partial void OnLocationChanged(string value)
+    {
+        _settings.Operator.Location = value;
+        SaveProfile("location");
+    }
+
+    partial void OnGridSquareChanged(string value)
+    {
+        _settings.Operator.GridSquare = value;
+        SaveProfile("grid");
+    }
+
+    /// <summary>Persist the profile, and record only WHICH field moved — the
+    /// value is the identifying part and never goes to telemetry
+    /// (HM-DEC-019).</summary>
+    private void SaveProfile(string field)
+    {
+        SettingsStore.Save(_settings);
+        Telemetry.AppEvents.ProfileEdited(_telemetry, field);
+    }
 
     [RelayCommand]
     private void OpenFolder() => SettingsStore.OpenDataFolder();

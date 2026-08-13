@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Avalonia.Controls.ApplicationLifetimes;
 using Hamlet.App.Settings;
+using Hamlet.App.Telemetry;
 using Hamlet.RadioEngine.Bands;
 using Hamlet.RadioEngine.Explore;
 using Hamlet.RadioEngine.Telemetry;
@@ -146,8 +147,7 @@ public partial class MainWindowViewModel : ObservableObject
     [RelayCommand]
     private void ShowNeighborhood(Neighborhood hood)
     {
-        _telemetry?.Write(TelemetryCategory.Explore, "neighborhood_clicked",
-            new Dictionary<string, object?> { ["name"] = hood.Name });
+        AppEvents.NeighborhoodClicked(_telemetry, hood.Name);
         StoryTitle = hood.Name;
         StoryBadge = hood.Vibe;
         StoryBody = hood.Blurb;
@@ -158,8 +158,7 @@ public partial class MainWindowViewModel : ObservableObject
     [RelayCommand]
     private void ShowMode(ModeInfo mode)
     {
-        _telemetry?.Write(TelemetryCategory.Explore, "mode_card_opened",
-            new Dictionary<string, object?> { ["mode"] = mode.Name });
+        AppEvents.ModeCardOpened(_telemetry, mode.Name);
         StoryTitle = $"{mode.Name} — {mode.Tagline}";
         StoryBadge = mode.Difficulty;
         StoryBody = $"{mode.Why} Sounds like: {mode.Sound}. Learn its waterfall "
@@ -172,8 +171,7 @@ public partial class MainWindowViewModel : ObservableObject
     [RelayCommand]
     private void TuneTo(long hz)
     {
-        _telemetry?.Write(TelemetryCategory.Tuning, "tune_requested",
-            new Dictionary<string, object?> { ["hz"] = hz, ["source"] = "story_or_spot" });
+        AppEvents.TuneRequested(_telemetry, hz, "story_or_spot");
         var band = BandPlan.BandFor(hz);
         if (band is not null && band.Name != SelectedBand.Band.Name)
         {
@@ -188,8 +186,7 @@ public partial class MainWindowViewModel : ObservableObject
         Neighborhoods = NeighborhoodPlan.ForBand(value.Band);
         _settings.LastBand = value.Band.Name;
         SettingsStore.Save(_settings);
-        _telemetry?.Write(TelemetryCategory.Tuning, "band_changed",
-            new Dictionary<string, object?> { ["band"] = value.Band.Name });
+        AppEvents.BandChanged(_telemetry, value.Band.Name);
     }
 
     partial void OnSelectedPortChanged(string value)
@@ -217,6 +214,7 @@ public partial class MainWindowViewModel : ObservableObject
             return;
         }
 
+        AppEvents.SettingsOpened(_telemetry);
         var window = new Views.SettingsWindow
         {
             DataContext = new SettingsViewModel(_settings, _telemetry),
@@ -264,31 +262,20 @@ public partial class MainWindowViewModel : ObservableObject
         }
 
         var rig = CreateRig(SelectedPort);
+        var rigType = SelectedPort == SimulatedRig ? "simulated" : "IC-7300";
         StatusText = $"Connecting to {SelectedPort}…";
 
         if (!await rig.ConnectAsync())
         {
             (rig as IDisposable)?.Dispose();
-            _telemetry?.Write(TelemetryCategory.Rig, "connect_failed",
-                new Dictionary<string, object?>
-                {
-                    ["port"] = SelectedPort,
-                    ["rigType"] = SelectedPort == SimulatedRig ? "simulated" : "IC-7300",
-                    ["reason"] = "no_response",
-                },
-                TelemetryLevel.Warn);
+            AppEvents.ConnectFailed(_telemetry, SelectedPort, rigType, "no_response");
             StatusText = $"No answer on {SelectedPort} — check cable, baud and "
                        + "CI-V address (HM-OPEN-003)";
             return;
         }
 
         _rig = rig;
-        _telemetry?.Write(TelemetryCategory.Rig, "connect_ok",
-            new Dictionary<string, object?>
-            {
-                ["port"] = SelectedPort,
-                ["rigType"] = SelectedPort == SimulatedRig ? "simulated" : "IC-7300",
-            });
+        AppEvents.ConnectOk(_telemetry, SelectedPort, rigType);
         rig.FrequencyChanged += OnRigFrequencyChanged;
         IsConnected = true;
         ConnectButtonText = "Disconnect";

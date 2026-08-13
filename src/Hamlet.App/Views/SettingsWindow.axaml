@@ -4,22 +4,73 @@
         x:Class="Hamlet.App.Views.SettingsWindow"
         x:DataType="vm:SettingsViewModel"
         Title="Hamlet — Settings"
-        Width="560" Height="560"
+        Width="580" Height="680"
         WindowStartupLocation="CenterOwner"
         Background="{StaticResource HmBackgroundBrush}">
 
-    <Grid RowDefinitions="Auto,*,Auto" Margin="18">
+    <Window.Styles>
+        <Style Selector="TextBlock.hm-section">
+            <Setter Property="FontSize" Value="17" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="{StaticResource HmTextPrimaryBrush}" />
+        </Style>
+        <Style Selector="TextBlock.hm-note">
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="Foreground" Value="{StaticResource HmTextMutedBrush}" />
+        </Style>
+        <Style Selector="TextBlock.hm-field">
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Foreground" Value="{StaticResource HmTextMutedBrush}" />
+        </Style>
+    </Window.Styles>
 
-        <StackPanel Grid.Row="0" Spacing="2" Margin="0,0,0,14">
-            <TextBlock Text="Telemetry" FontSize="18" FontWeight="SemiBold"
-                       Foreground="{StaticResource HmTextPrimaryBrush}" />
-            <TextBlock TextWrapping="Wrap" FontSize="12"
-                       Foreground="{StaticResource HmTextMutedBrush}"
-                       Text="Everything Hamlet records stays on this computer. Nothing is uploaded. No callsigns, no decoded message content, and no machine identifier are ever written." />
-        </StackPanel>
+    <Grid RowDefinitions="*,Auto" Margin="18">
 
-        <ScrollViewer Grid.Row="1">
+        <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto">
             <StackPanel Spacing="10">
+
+                <!-- Operator profile (HM-DEC-019) -->
+                <StackPanel Spacing="2">
+                    <TextBlock Text="Operator" Classes="hm-section" />
+                    <TextBlock Classes="hm-note"
+                               Text="Who is at the key. Used for display in the app and, later, for your log (FG-004). Stored on this computer only — never written to telemetry, never uploaded." />
+                </StackPanel>
+
+                <Border Background="White"
+                        BorderBrush="{StaticResource HmSlateEdgeBrush}"
+                        BorderThickness="1" CornerRadius="8" Padding="12,10">
+                    <Grid ColumnDefinitions="110,*" RowDefinitions="Auto,Auto,Auto,Auto"
+                          RowSpacing="8">
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Callsign"
+                                   Classes="hm-field" />
+                        <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Callsign}"
+                                 Watermark="KC3QIS" />
+
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Name"
+                                   Classes="hm-field" />
+                        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding OperatorName}"
+                                 Watermark="how you want to be greeted" />
+
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Location"
+                                   Classes="hm-field" />
+                        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Location}"
+                                 Watermark="city, state" />
+
+                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Grid square"
+                                   Classes="hm-field" />
+                        <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding GridSquare}"
+                                 Watermark="e.g. FN00 — optional" />
+                    </Grid>
+                </Border>
+
+                <!-- Telemetry (HM-DEC-018) -->
+                <StackPanel Spacing="2" Margin="0,8,0,0">
+                    <TextBlock Text="Telemetry" Classes="hm-section" />
+                    <TextBlock Classes="hm-note"
+                               Text="Everything Hamlet records stays on this computer. Nothing is uploaded. No callsigns, no decoded message content, and no machine identifier are ever written." />
+                </StackPanel>
 
                 <ItemsControl ItemsSource="{Binding Categories}">
                     <ItemsControl.ItemTemplate>
@@ -52,8 +103,7 @@
                         <Grid ColumnDefinitions="*,Auto">
                             <StackPanel Grid.Column="0" Spacing="2" Margin="0,0,10,0">
                                 <TextBlock Text="Disk limit" FontWeight="SemiBold" FontSize="13" />
-                                <TextBlock FontSize="12" TextWrapping="Wrap"
-                                           Foreground="{StaticResource HmTextMutedBrush}"
+                                <TextBlock Classes="hm-note"
                                            Text="Daily files are kept until the folder passes this size, then the oldest are deleted." />
                             </StackPanel>
                             <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="6"
@@ -89,7 +139,7 @@
             </StackPanel>
         </ScrollViewer>
 
-        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right"
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right"
                     Spacing="8" Margin="0,14,0,0">
             <Button Content="Close" Click="OnCloseClick" Padding="20,8" />
         </StackPanel>

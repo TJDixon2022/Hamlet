@@ -5,6 +5,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Hamlet.App.Settings;
+using Hamlet.App.Telemetry;
 using Hamlet.App.ViewModels;
 using Hamlet.App.Views;
 using Hamlet.RadioEngine.Telemetry;
@@ -34,7 +35,7 @@ public partial class App : Application
                 version,
                 category => _settings.IsTelemetryEnabled(category),
                 _settings.TelemetryMaxMegabytes * 1024L * 1024L);
-            _telemetry.Write(TelemetryCategory.Diagnostics, "app_start");
+            AppEvents.AppStart(_telemetry);
 
             var window = new MainWindow
             {
@@ -47,7 +48,7 @@ public partial class App : Application
             desktop.MainWindow = window;
             desktop.ShutdownRequested += (_, _) =>
             {
-                _telemetry?.Write(TelemetryCategory.Diagnostics, "app_stop");
+                AppEvents.AppStop(_telemetry);
                 _telemetry?.Dispose();
             };
         }
@@ -109,7 +110,7 @@ public partial class App : Application
         }
 
         SettingsStore.Save(_settings);
-        _telemetry?.Write(TelemetryCategory.Diagnostics, "app_stop");
+        AppEvents.AppStop(_telemetry);
         _telemetry?.Dispose();
     }
 }

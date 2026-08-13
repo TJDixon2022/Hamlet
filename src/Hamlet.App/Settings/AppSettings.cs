@@ -33,6 +33,10 @@ public sealed class AppSettings
     /// <summary>Last selected band name, e.g. "40 m".</summary>
     public string? LastBand { get; set; }
 
+    /// <summary>Who is operating (HM-DEC-019). Displayed in the app, written
+    /// here, and never written to telemetry.</summary>
+    public OperatorProfile Operator { get; set; } = new();
+
     /// <summary>Telemetry category switches. Absent category means enabled —
     /// all categories default on (HM-DEC-018).</summary>
     public Dictionary<string, bool> TelemetryCategories { get; set; } = new();
@@ -47,6 +51,13 @@ public sealed class AppSettings
     /// <summary>Turn a category on or off.</summary>
     public void SetTelemetryEnabled(TelemetryCategory category, bool enabled)
         => TelemetryCategories[category.ToString()] = enabled;
+
+    /// <summary>How many telemetry categories are currently on. Derived from
+    /// the switches, never stored alongside them.</summary>
+    [JsonIgnore]
+    public int EnabledTelemetryCategoryCount
+        => Enum.GetValues<TelemetryCategory>().Count(IsTelemetryEnabled);
+
 }
 
 /// <summary>Loads and saves <see cref="AppSettings"/>, and owns the paths
