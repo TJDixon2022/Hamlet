@@ -110,16 +110,25 @@ public static class SettingsStore
 
     /// <summary>Load settings, or defaults if the file is missing, corrupt or
     /// unreadable. Never throws.</summary>
-    public static AppSettings Load()
+    public static AppSettings Load() => LoadFrom(SettingsPath);
+
+    /// <summary>Save settings. Never throws; a failed save loses preferences,
+    /// nothing more.</summary>
+    public static void Save(AppSettings settings) => SaveTo(settings, SettingsPath);
+
+    /// <summary>Load settings from an explicit path. The real load and the
+    /// tested load are the same code (§5).</summary>
+    /// <param name="path">Settings file path.</param>
+    public static AppSettings LoadFrom(string path)
     {
         try
         {
-            if (!File.Exists(SettingsPath))
+            if (!File.Exists(path))
             {
                 return new AppSettings();
             }
 
-            var json = File.ReadAllText(SettingsPath);
+            var json = File.ReadAllText(path);
             return JsonSerializer.Deserialize<AppSettings>(json, Options)
                    ?? new AppSettings();
         }
@@ -129,14 +138,20 @@ public static class SettingsStore
         }
     }
 
-    /// <summary>Save settings. Never throws; a failed save loses preferences,
-    /// nothing more.</summary>
-    public static void Save(AppSettings settings)
+    /// <summary>Save settings to an explicit path. Never throws.</summary>
+    /// <param name="settings">Settings to write.</param>
+    /// <param name="path">Destination file path.</param>
+    public static void SaveTo(AppSettings settings, string path)
     {
         try
         {
-            Directory.CreateDirectory(DataFolder);
-            File.WriteAllText(SettingsPath, JsonSerializer.Serialize(settings, Options));
+            var folder = Path.GetDirectoryName(path);
+            if (!string.IsNullOrEmpty(folder))
+            {
+                Directory.CreateDirectory(folder);
+            }
+
+            File.WriteAllText(path, JsonSerializer.Serialize(settings, Options));
         }
         catch (Exception)
         {
