@@ -114,9 +114,24 @@
                                        Foreground="{StaticResource HmGreenBrush}" />
                         </Border>
                         <Button Grid.Row="1" Classes="hm-band"
-                                Content="{Binding Band.Name}"
+                                ToolTip.Tip="{Binding ActivityTooltip}"
+                                ToolTip.ShowDelay="250"
                                 Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).SelectBandCommand}"
-                                CommandParameter="{Binding}" />
+                                CommandParameter="{Binding}">
+                            <StackPanel Spacing="3" HorizontalAlignment="Center">
+                                <TextBlock Text="{Binding Band.Name}"
+                                           HorizontalAlignment="Center" />
+
+                                <!-- The activity indicator (HM-DEC-031):
+                                     quiet, relative to the busiest band right
+                                     now, and drawn as unknown rather than
+                                     empty when no source can see this band. -->
+                                <ctl:ActivityPipsControl
+                                    HorizontalAlignment="Center"
+                                    Filled="{Binding ActivityPips}"
+                                    IsUnknown="{Binding ActivityUnknown}" />
+                            </StackPanel>
+                        </Button>
                     </Grid>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>

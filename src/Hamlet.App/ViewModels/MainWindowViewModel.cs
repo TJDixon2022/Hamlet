@@ -396,6 +396,7 @@ public partial class MainWindowViewModel : ObservableObject
     /// </summary>
     private ActivityContext BuildContext() => new()
     {
+        BandName = SelectedBand.Band.Name,
         BandLowHz = SelectedBand.Band.LowHz,
         BandHighHz = SelectedBand.Band.HighHz,
         HomeDistrict = OperatorLocation.HomeDistrict(_settings.Operator.Location),
@@ -894,6 +895,7 @@ public partial class MainWindowViewModel : ObservableObject
         var ranked = SpotRanking.Rank(onBand, now);
         var newCount = RebuildSpotList(ranked, now);
 
+        UpdateBandActivity(now);
         ActivityDots = BuildDots(ranked, now);
         Lead = LeadCard.Choose(ranked, SelectedBand.Band.Name, AnySourceAnswering());
         Conditions = BandConditions.Describe(
@@ -1022,6 +1024,32 @@ public partial class MainWindowViewModel : ObservableObject
         }
 
         return dots;
+    }
+
+    /// <summary>
+    /// Refresh every band button's activity indicator (HM-DEC-031).
+    /// </summary>
+    /// <remarks>
+    /// Computed from the whole-spectrum spot set and the source statuses, so
+    /// a band button and the conditions line under the map are always
+    /// counting the same minutes from the same evidence.
+    /// </remarks>
+    private void UpdateBandActivity(DateTime now)
+    {
+        var readings = BandActivity.Summarise(
+            Bands.Select(b => b.Band).ToList(),
+            _allBandSpots,
+            _activitySource.Statuses,
+            now);
+
+        foreach (var reading in readings)
+        {
+            var button = Bands.FirstOrDefault(b => b.Band.Name == reading.BandName);
+            if (button is not null)
+            {
+                button.Activity = reading;
+            }
+        }
     }
 
     private bool AnySourceAnswering()
@@ -1379,8 +1407,22 @@ public static class PanelKeys
 
 /// <summary>One band button: the band plus its best-bet ranking for the hour
 /// the app started. FG-001 replaces the ranking with live spot data.</summary>
-public sealed class BandButtonViewModel
+public partial class BandButtonViewModel : ObservableObject
 {
+    /// <summary>
+    /// What is currently known about this band's activity (HM-DEC-031).
+    /// </summary>
+    /// <remarks>
+    /// Starts as "no data" rather than as an empty band, so a button says
+    /// nothing until there is something to say. Refreshed on every spot
+    /// reload.
+    /// </remarks>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(ActivityPips))]
+    [NotifyPropertyChangedFor(nameof(ActivityUnknown))]
+    [NotifyPropertyChangedFor(nameof(ActivityTooltip))]
+    private BandActivityReading _activity;
+
     /// <summary>Creates the button model.</summary>
     /// <param name="band">The band this button selects.</param>
     /// <param name="isBestBet">True on the top-ranked band for the hour.</param>
@@ -1390,6 +1432,10 @@ public sealed class BandButtonViewModel
         Band = band;
         IsBestBet = isBestBet;
         IsSecondBet = isSecondBet;
+        _activity = new BandActivityReading(
+            band.Name, BandActivityState.NoData, 0, 0, 0,
+            "no data.", "Hamlet has not asked the spot sources yet.",
+            ConditionsConfidence.Blind);
     }
 
     /// <summary>The band this button selects.</summary>
@@ -1400,6 +1446,18 @@ public sealed class BandButtonViewModel
 
     /// <summary>True on the runner-up band.</summary>
     public bool IsSecondBet { get; }
+
+    /// <summary>Filled pips on the indicator.</summary>
+    public int ActivityPips => Activity.Pips;
+
+    /// <summary>True when the indicator should draw as unknown.</summary>
+    public bool ActivityUnknown => Activity.IsUnknown;
+
+    /// <summary>The hover text carrying the evidence.</summary>
+    public string ActivityTooltip => Activity.Tooltip;
+
+    /// <summary>Pips in a full indicator, for the control to size itself.</summary>
+    public static int ActivityPipCount => BandActivity.MaxPips;
 }
 
 /// <summary>One happening-now card: the plain-language invitation plus the
