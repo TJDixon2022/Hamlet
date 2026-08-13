@@ -30,9 +30,11 @@ public enum SignatureKind
 /// <param name="Why">One sentence of why it's cool. No jargon.</param>
 /// <param name="LivesAt40mHz">Where it lives on 40 m, for "take me there";
 /// null when it has no 40 m home.</param>
+/// <param name="Family">Which mode family it belongs to, so the field guide
+/// and the band map color it the same way (HM-DEC-032).</param>
 public sealed record ModeInfo(
     string Name, string Tagline, string Sound, SignatureKind Signature,
-    string Difficulty, string Why, long? LivesAt40mHz);
+    string Difficulty, string Why, long? LivesAt40mHz, ModeFamily Family);
 
 /// <summary>
 /// The field guide to the modes. Editorial content, the demystifying kind
@@ -47,31 +49,31 @@ public static class ModeGuide
             "Learnable",
             "The original digital mode — your brain is the decoder. A century "
             + "old and still the best watts-to-distance deal in radio.",
-            7_030_000),
+            7_030_000, ModeFamily.Cw),
         new ModeInfo("FT8", "Robot handshakes", "15-second warbles",
             SignatureKind.Blocks, "Easy",
             "Works the world on a wet-noodle antenna. Watching your callsign "
             + "come back from Japan never gets old.",
-            7_074_000),
+            7_074_000, ModeFamily.Digital),
         new ModeInfo("SSB", "Voice", "Duck talk until tuned",
             SignatureKind.Smear, "Easy",
             "Actual conversation with actual humans, no infrastructure "
             + "between you and them.",
-            7_188_000),
+            7_188_000, ModeFamily.Phone),
         new ModeInfo("RTTY", "1930s teletype", "Two-tone chatter",
             SignatureKind.Rails, "Medium",
             "Mechanical-era technology still on the air. Sounds like a robot "
             + "bird; looks like train tracks on the waterfall.",
-            7_062_000),
+            7_062_000, ModeFamily.Digital),
         new ModeInfo("PSK31", "Keyboard whisper", "Soft warble",
             SignatureKind.Ribbon, "Medium",
             "Typed chats in a signal 31 Hz wide — a thousand of them could "
             + "fit where one voice sits.",
-            7_065_000),
+            7_065_000, ModeFamily.Digital),
         new ModeInfo("JS8", "FT8 that chats", "Same warble, longer",
             SignatureKind.Blocks, "Medium",
             "FT8's machinery, but free text — the campfire version of the "
             + "robot handshake.",
-            7_078_000),
+            7_078_000, ModeFamily.Digital),
     };
 }

@@ -231,15 +231,21 @@ public sealed class NeighborhoodMapControl : Control
                 var left = (hood.LowHz - BandLowHz) / span * w;
                 var right = (hood.HighHz - BandLowHz) / span * w;
                 var rect = new Rect(left, 0, Math.Max(0, right - left), h);
-                context.FillRectangle(
-                    new SolidColorBrush(Color.Parse(hood.ColorHex)), rect);
+
+                // Fill from the mode family, never from a per-neighborhood
+                // literal: one language, one definition (HM-DEC-032).
+                var colors = ModePalette.For(hood.Family);
+                context.FillRectangle(colors.FillBrush, rect);
                 context.DrawLine(SeamPen, new Point(right, 0), new Point(right, h));
 
                 if (hood.ShortName.Length > 0)
                 {
+                    // The family's own ink, so the label stays legible on its
+                    // fill and repeats the color's meaning in words — color is
+                    // never the only carrier (HM-DEC-032).
                     var label = new FormattedText(hood.ShortName,
                         CultureInfo.InvariantCulture, FlowDirection.LeftToRight,
-                        Sans, 11, LabelBrush);
+                        Sans, 11, colors.InkBrush);
                     if (label.Width < rect.Width - 6)
                     {
                         context.DrawText(label,

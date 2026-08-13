@@ -10,11 +10,12 @@ namespace Hamlet.RadioEngine.Explore;
 /// <param name="Vibe">Two-or-three-word character tag.</param>
 /// <param name="Blurb">The plain-language story a newcomer needs.</param>
 /// <param name="JumpHz">Where "take me there" lands.</param>
-/// <param name="ColorHex">Suggested map tint. Presentation data carried here
-/// pragmatically so the map and any future surface agree.</param>
+/// <param name="Family">Which mode family lives here. The map colors from
+/// this rather than from a per-neighborhood literal, so every surface that
+/// shows a mode family agrees without being told twice (HM-DEC-032).</param>
 public sealed record Neighborhood(
     string Name, string ShortName, long LowHz, long HighHz,
-    string Vibe, string Blurb, long JumpHz, string ColorHex)
+    string Vibe, string Blurb, long JumpHz, ModeFamily Family)
 {
     /// <summary>True when the frequency lies inside this neighborhood.</summary>
     public bool Contains(long hz) => hz >= LowHz && hz <= HighHz;
@@ -35,45 +36,47 @@ public static class NeighborhoodPlan
             "Where the contest and DX crowd runs Morse at 25+ WPM. Thrilling "
             + "to watch on the waterfall, brutal to copy by ear. Visit later; "
             + "listen now.",
-            7_005_000, "#F4E3C8"),
+            7_005_000, ModeFamily.Cw),
         new Neighborhood("CW main street", "CW", 7_025_000, 7_060_000,
             "Friendly, unhurried",
             "Everyday Morse. 7.030 is the QRP watering hole — tiny five-watt "
             + "rigs saying hi across oceans. 7.055 is the slow-speed club, "
             + "where calling as a beginner is the whole point. This is your "
             + "Morse home.",
-            7_030_000, "#FBE9CF"),
+            7_030_000, ModeFamily.Cw),
         new Neighborhood("Digital corner", "RTTY+", 7_060_000, 7_070_000,
             "Quirky neighbors",
             "The old digital modes: RTTY chirping on twin rails, PSK31 "
             + "whispering in 31 Hz ribbons. Quiet most days, packed during "
             + "digital contests.",
-            7_062_000, "#EDE6F7"),
+            7_062_000, ModeFamily.Digital),
         new Neighborhood("FT8 city", "FT8", 7_070_000, 7_080_000,
             "Always open, 24/7",
             "The busiest 3 kHz in all of radio. Everyone transmits in "
             + "synchronized 15-second bursts — the waterfall looks like rain. "
-            + "Contacts are structured handshakes: not chatty, but you WILL "
-            + "work the world tonight, even at low power.",
-            7_074_000, "#E4EEF9"),
+            + "Contacts are structured handshakes rather than conversations, "
+            + "and the mode is built to dig a callsign out of noise you can "
+            + "barely hear, which is why people reach so far on so little "
+            + "power here.",
+            7_074_000, ModeFamily.Digital),
         new Neighborhood("Quiet blocks", "", 7_080_000, 7_125_000,
             "Off the beaten path",
             "Sparser territory: JS8 keyboard chats, occasional digital nets, "
             + "and open space. Good hunting ground once you can identify "
             + "signals by their waterfall shape.",
-            7_090_000, "#F1EFE8"),
+            7_090_000, ModeFamily.Open),
         new Neighborhood("Phone downtown", "SSB DX", 7_125_000, 7_175_000,
             "Cocktail party",
             "Voice at last — single sideband, which sounds like ducks until "
             + "you tune it just right, and then suddenly it is a person in "
             + "Portugal. DX chasers work the low end.",
-            7_150_000, "#FBE4E4"),
+            7_150_000, ModeFamily.Phone),
         new Neighborhood("Ragchew boulevard", "SSB", 7_175_000, 7_300_000,
             "Front porch",
             "Long, friendly voice conversations and evening nets — organized "
             + "round-tables where checking in as a newcomer is expected and "
             + "welcomed. The most welcoming street in radio.",
-            7_188_000, "#FDEBDD"),
+            7_188_000, ModeFamily.Phone),
     };
 
     /// <summary>
@@ -95,7 +98,7 @@ public static class NeighborhoodPlan
                 $"The CW and digital end of {band.Name}. Its full neighborhood "
                 + "map hasn't been written yet — the 40 m map shows what one "
                 + "looks like.",
-                band.JumpHz, "#FBE9CF"),
+                band.JumpHz, ModeFamily.Cw),
         };
 
         if (band.CwHighHz < band.HighHz)
@@ -104,7 +107,7 @@ public static class NeighborhoodPlan
                 band.CwHighHz, band.HighHz,
                 "Voices live here",
                 $"The voice end of {band.Name}. Neighborhood stories to come.",
-                (band.CwHighHz + band.HighHz) / 2, "#FDEBDD"));
+                (band.CwHighHz + band.HighHz) / 2, ModeFamily.Phone));
         }
 
         return hoods;
