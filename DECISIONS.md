@@ -4,6 +4,156 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-039
+date: 2026-08-13
+refs: data/bylines.json, src/Hamlet.App/Bylines.cs, HM-DEC-034
+---
+
+A line of Shakespeare, bent toward ham radio, sits under the wordmark — one of
+forty-five, drawn at random each launch, never the same one twice running, with
+the play it came from on hover.
+
+The point is joy. Ham radio is intimidating, which is the whole reason this app
+exists, and a small daily chuckle costs nothing and softens the thing. It is
+the only feature in Hamlet that is there purely to be liked, and that is a
+sufficient reason for one file.
+
+The play is a tooltip rather than permanent text, so the joke stays legible to
+somebody who does not know the original without the wordmark turning into a
+citation. The index shown is saved immediately rather than at shutdown, because
+an app that is killed rather than closed would otherwise show the same line
+forever, and a surprise that repeats is a fixture.
+
+Shakespeare died in 1616, so the source text is long out of copyright and these
+alterations are the project's own. Nothing here needs anybody's permission
+(§2.1).
+
+NEVER A PLACEHOLDER. A missing, malformed or empty file means there is no
+byline at all — not a line reading "byline unavailable". This runs while the
+main window is being constructed, and a decorative feature that could stop the
+app from opening would be a spectacularly bad trade (§8).
+
+---
+id: HM-DEC-038
+date: 2026-08-13
+refs: src/Hamlet.RadioEngine/Explore/SpotDistance.cs, HM-DEC-023, HM-DEC-025, HM-DEC-037
+---
+
+Happening-now cards and map dot tooltips carry how far away a station is and
+roughly which way — "530 miles west-northwest" — computed from the operator's
+coordinates and the station's. Miles by default, with a setting behind it.
+
+WHY IT IS WORTH THE WORK. A newcomer has no sense of what distances are
+plausible on which bands and no way to acquire one: they see a callsign and a
+frequency, work out nothing from either, and the intuition every experienced
+operator has and none of them can explain stays out of reach. After a few dozen
+spots reading "530 miles" beside 40 m and "4100 miles" beside 20 m, the shape
+of it starts to arrive on its own. It is a teaching device that happens to look
+like a label.
+
+THE DISTINCTION THAT MAKES IT HONEST. The two things a spot network can tell
+you about location mean opposite things. POTA states where the park is and the
+activator is standing in it, so that is the station. RBN states which skimmer
+decoded the signal — where somebody who HEARD it is — and a distance attached
+to that would be a straightforward lie about the transmitter. So the field is
+named `StationLocation`, only POTA fills it, and RBN spots carry no distance at
+all. The skimmer's callsign prefix could be turned into a country, but a
+callsign says where a license was issued and not where its owner is standing,
+and stacking that guess under a figure in miles would dress it as a
+measurement.
+
+SOTA leaves it null too. Summits have coordinates in principle and the current
+parser does not read them; an empty field is the honest state until it does.
+
+NO GRID MEANS NO DISTANCE, anywhere, on any card or any dot. Not an estimate
+from the location string, not a country-sized guess from a prefix. The figure
+is rounded to two significant figures because it is a distance to a park's
+stated reference point, and "483 miles" would claim a precision nothing in the
+chain supports.
+
+Bearings are given as one of sixteen compass points rather than in degrees.
+"480 miles northeast" is a direction a person can picture; "480 miles at 47°"
+is a reading off an instrument (§0.7).
+
+---
+id: HM-DEC-037
+date: 2026-08-13
+refs: src/Hamlet.App/Licensing/GridResolver.cs, src/Hamlet.RadioEngine/Explore/OperatorLocation.cs, HM-DEC-028, HM-DEC-033, ONB-C01
+---
+
+The grid square is derived from the coordinates the callsign lookup already
+returns, resolved lazily and automatically like the license class, stored with
+its own provenance, and never overwritten once the operator has typed one.
+
+"Maidenhead grid locator" is exactly the kind of jargon Hamlet exists to
+dissolve, and it is a barrier with nothing behind it. The FCC's record of the
+license already carries coordinates, callook republishes them, and the locator
+is arithmetic on top — no service, no key, nothing that can be down. So the
+operator is never asked to look theirs up: the field fills itself, and the one
+line beside it says what the thing is in words somebody would use, a short code
+for where you are, a bit like a postal code for the planet.
+
+This is the piece that makes HM-DEC-033 visible. Tim's profile had a callsign
+and an empty grid, so no band card dimmed and every icon was a hollow ring —
+correct behavior and an invisible feature. It resolves on the next launch.
+
+THE COORDINATES ARE THE STORED FACT and the locator is a rendering of them.
+Distance, bearing and the solar clock all want degrees, and a locator only ever
+gives them back to within a few miles. callook sends a `gridsquare` field and
+Hamlet reads past it deliberately: one derivation cannot disagree with itself
+the way two stored values can. The tests check Hamlet's arithmetic against
+callook's own answer, which arrives by a different route.
+
+A HAND-ENTERED GRID IS NEVER OVERWRITTEN — the whole of HM-DEC-028 applied a
+second time, and it binds harder here. The FCC holds a mailing address, not an
+antenna, and somebody operating portable or from a club station knows where
+they are far better than it does. A disagreement shows both and the operator
+chooses. The comparison is at four characters, because an antenna sitting in
+FN00DJ rather than FN00DK is not a disagreement worth interrupting anybody
+over.
+
+NEVER GUESSED FROM THE LOCATION STRING. "Trafford, PA" names a call district,
+which is a lookup in a published table, and it does not place a station within
+seventy miles. A grid derived from a town name would be a guess wearing the
+clothes of a measurement (§0.0). No coordinates means the field stays empty and
+hand-editable, and Hamlet does without.
+
+The coordinates are more identifying than a class, so HM-DEC-019 binds harder:
+they are written to the local profile, shown to the operator, and never entered
+into telemetry.
+
+---
+id: HM-DEC-036
+date: 2026-08-13
+refs: CLAUDE.md §0.6, CLAUDE.md §6.1, HM-DEC-032, HM-DEC-035
+---
+
+Two corrections Tim ruled on, both to records this session's predecessor
+raised rather than settled.
+
+THE CONTRAST FLOOR. HM-DEC-032 recorded that the "open / mixed" ink reached
+only 4.09:1 against its fill, short of WCAG AA's 4.5, and left raising it to
+Tim. He ruled the carve-out away rather than the shortfall: the ink darkens
+from #6E6A61 to #5F5C53, which measures 5.07:1, and the test floor that was set
+at 4.0 to accommodate the gap now applies 4.5 to all four families with no
+exceptions. It is the least colorful and least meaningful of the four, so the
+change costs nothing visually — and this hobby's median age makes contrast a
+mainstream requirement here rather than an accessibility footnote. §0.6 carries
+the rule and the corrected value.
+
+THE TOOL SCRIPTS ARE EXEMPT FROM THE SPELLING STANDARD. The US-spelling sweep
+(HM-DEC-035) changed one `rem` comment inside `get-files.template.bat`, a file
+§9.4 makes verbatim. Tim ruled it reverted, byte-identical, and the reasoning
+generalizes: a rule with a "but it was only a comment" exception is not a rule,
+and the whole value of those scripts is being known-good and untouched. §6.1
+gains a third exception covering the canonical scripts under `tools/`
+entirely — `get-files.template.bat`, `get-listing.bat` and `GoClaude.bat` are
+all restored and their spelling is frozen at whatever it is.
+
+Neither of these supersedes its parent ruling; each corrects one measurement or
+one boundary inside it, and the parent stands otherwise.
+
+---
 id: HM-DEC-035
 date: 2026-08-13
 refs: CLAUDE.md §6, src/Hamlet.App/Settings/SettingsMigrations.cs, HM-DEC-028

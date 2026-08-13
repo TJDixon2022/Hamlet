@@ -169,7 +169,7 @@ from it; they do not carry color literals.
 | Morse | `#EDC375` | `#5E3800` | CW |
 | Digital | `#BFB6E4` | `#2B2360` | FT8, RTTY, PSK31, JS8 |
 | Voice | `#A3CBE8` | `#0B3B5C` | SSB, AM, FM |
-| Open / mixed | `#E4E0D5` | `#6E6A61` | Unclaimed space, or several at once |
+| Open / mixed | `#E4E0D5` | `#5F5C53` | Unclaimed space, or several at once |
 
 - **Color carries meaning, so it may never be the ONLY carrier of meaning.**
   Roughly one man in twelve has a color vision deficiency, and this hobby's
@@ -179,6 +179,9 @@ from it; they do not carry color literals.
   the band cards carry an icon and a width beside their hue.
 - **A map that uses color needs a legend.** A wash nobody can decode is
   decoration, and decoration that looks like information is worse than none.
+- **Every ink clears WCAG AA — 4.5:1 — against its own fill**, with no
+  exceptions (HM-DEC-036). This hobby's median age makes contrast a mainstream
+  requirement here, not an accessibility footnote.
 - The family is declared on the data — `Neighborhood.Family`, `ModeInfo.Family`
   — never on the control. A per-control literal is a second copy of the
   language, and a second copy drifts silently.
@@ -221,6 +224,10 @@ this table is the index.
 
 | Date | Decision | Why | Ref |
 |---|---|---|---|
+| 2026-08-13 | **A rotating Shakespeare byline under the wordmark** — one of forty-five bent toward radio, never the same twice running, the play on hover, the index stored in settings.json. A missing or malformed file means no byline at all, never a placeholder. | Ham radio is intimidating and a small daily chuckle costs nothing. Shakespeare died in 1616, so the source is public domain and the alterations are ours. | HM-DEC-039 |
+| 2026-08-13 | **Distance and rough bearing on spot cards and map tooltips**, in miles by default. Shown ONLY where the source stated where the *station* is — POTA does, RBN states where a *receiver* is and so carries none. No grid means no distance anywhere; never estimated from a location string or a callsign prefix. | It is the only way a newcomer acquires the sense of what distances are plausible on which bands; and a distance to whoever heard a signal is a lie about the transmitter. | HM-DEC-038 |
+| 2026-08-13 | **The grid square is derived from the lookup's coordinates**, resolved lazily and automatically like the class, with its own provenance, explained in one plain sentence, and never overwriting a hand-entered value. Coordinates are the stored fact; the locator is rendered from them. | "Maidenhead locator" is jargon with nothing behind it — the coordinates are already in the response. This is also what makes the band cards visible at all (HM-DEC-033). | HM-DEC-037 |
+| 2026-08-13 | **Two corrections Tim ruled:** the open/mixed ink darkens to `#5F5C53` so every family clears WCAG AA with no carve-out, and the canonical tool scripts under `tools/` are exempt from the spelling standard entirely and restored byte-identical. | Contrast is mainstream in a hobby this age; and a rule with a "but it was only a comment" exception is not a rule. | HM-DEC-036 |
 | 2026-08-13 | **American spelling is the project standard** — code, comments, prose, records and UI alike. Two exceptions: a quoted external source keeps its spelling verbatim, and a rename that changes a stored settings key ships with a migration and a test proving an existing profile survives. `LicenceClass` → `LicenseClass` migrated and proved against Tim's own file. Recorded in §6. | US operators, US regulations, US contributors; and mixed spelling splits identifiers and searches. A silent profile reset would look exactly like the app forgetting who he is. | HM-DEC-035 |
 | 2026-08-13 | **The voice is connected speech, not a stack of facts** — a patient friend with forty years on the air, explaining while you both look at the radio. Reasons attached to facts, numbers spoken not counted, warmth never buying a claim. Standing rule in §0.7. | The product is an argument that this hobby can be explained; clipped fragments sound like the manuals that already failed him. | HM-DEC-034 |
 | 2026-08-13 | **Band buttons become character cards:** width follows wavelength, a drawn sun or moon marks the band's element, the card dims out of it, and hover gives plain prose about the sun and the season. Sunrise/sunset computed from the operator's coordinates, checked against vendored USNO data. No location means nothing dims and nothing is claimed. | A row of identical rectangles teaches nothing, and "80 meters is a long wave" is the fact that makes every other band fact stop being arbitrary. | HM-DEC-033 |
@@ -418,9 +425,9 @@ Rows marked `<<<FILL IN>>>` await the named ruling.
 | Data files | `/data` at repo root; vendored citations in `data/vendor/`; cited Part 97 privileges in `data/privileges/` (HM-DEC-029) |
 | Spelling | **American English throughout** — identifiers, comments, prose, records, UI text (HM-DEC-035) |
 
-### 6.1 Spelling — the two exceptions
+### 6.1 Spelling — the three exceptions
 
-American spelling is the standard everywhere, with exactly two exceptions:
+American spelling is the standard everywhere, with exactly three exceptions:
 
 1. **A quoted external source keeps its own spelling, verbatim.** SOTA's terms
    of service, the CFR, a vendored manual page: a quotation that has been
@@ -430,6 +437,11 @@ American spelling is the standard everywhere, with exactly two exceptions:
    `LicenseClass` renamed the key in `settings.json`; without
    `SettingsMigrations`, the first launch after the upgrade would silently take
    the default and forget the operator's class and its provenance.
+3. **The canonical tool scripts under `tools/` are exempt entirely**
+   (HM-DEC-036). §9.4 makes `get-files.template.bat` verbatim, and their whole
+   value is being known-good and untouched — a rule with a "but it was only a
+   comment" exception is not a rule. Their spelling is frozen at whatever it
+   is, including `rem --- normalise`.
 
 The second is the one that bites. A spelling change to a *public* identifier is
 not cosmetic — check whether it is persisted, sent over a wire, or written into

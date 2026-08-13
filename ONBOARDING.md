@@ -116,7 +116,7 @@ into the step list by ruling.
 
 | Id | Candidate | Why it might belong |
 |---|---|---|
-| ONB-C01 | Location / grid square | Feeds propagation and distance-to-spot (FG-001); could be derived from the license lookup rather than asked |
+| ONB-C01 | ~~Location / grid square~~ | **Answered 2026-08-13 (HM-DEC-037): derived, not asked.** The callsign lookup already returns coordinates, so the grid fills itself on startup and the operator is never shown the word "Maidenhead". Nothing is left for onboarding here except the greeting — see the note below the table |
 | ONB-C02 | Telemetry disclosure | HM-DEC-018 keeps everything local, but saying so unprompted buys trust cheaply |
 | ONB-C03 | Audio device selection | Needed before any decoding; belongs with ONB-005 when a real rig is connected |
 | ONB-C04 | CW copy speed | What speed can they read? Sets the Explorer's spot filtering (FG-002). Could be a listening exercise rather than a question |
@@ -124,6 +124,19 @@ into the step list by ruling.
 | ONB-C06 | Logging setup | Callsign is already known; ADIF import of an existing log (FG-004) |
 | ONB-C07 | Activity source consent | Which spot networks to enable, and what Hamlet sends them (HM-DEC-024) |
 | ONB-C08 | "What is a QSO?" glossary | The vocabulary barrier is part of the mystique; may be better as always-available hover help than an onboarding step |
+
+**On ONB-C01, and the pattern it sets.** Standing principle 1 says competence on
+the user's behalf: where Hamlet can find something out, it finds it out. The
+grid square is the second fact to go that way after the license class, and both
+went the same route — attach the resolution to the fact rather than to a
+screen, narrate it in the status bar, and let anybody who skips onboarding
+entirely still end up with it filled in.
+
+That is worth stating as a pattern because it keeps shrinking this file, which
+is the right direction. Every candidate below should be asked the same question
+first: can Hamlet just work this out? ONB-C06 is the obvious next one — the
+callsign is known, so an ADIF import has somewhere to start without a question
+being put to anybody.
 
 ---
 
