@@ -16,7 +16,7 @@ public sealed class CallsignPrivacyTests : IDisposable
     /// <summary>Every public event-writing method on <see cref="AppEvents"/>.
     /// If this number moves, a new event was added and the walk below has to
     /// grow with it — that is the point.</summary>
-    private const int ExpectedEventMethodCount = 21;
+    private const int ExpectedEventMethodCount = 26;
 
     private const string Callsign = "KC3QIS";
     // "Timothy", not "Tim": a three-letter needle matches "timer", which is a
@@ -173,6 +173,16 @@ public sealed class CallsignPrivacyTests : IDisposable
         // so that stays provable rather than assumed.
         AppEvents.SpectrumSourceChanged(telemetry, "training", "40 m", simulated: true);
         AppEvents.ModeSamplePlayed(telemetry, "Cw", 18);
+
+        // HM-DEC-028 sends the callsign to a lookup service to learn the
+        // licence class. That is the same bargain as HM-DEC-024's spot feeds:
+        // the callsign goes over the wire and still never into this file, so
+        // these five events join the walk that proves it.
+        AppEvents.LicenceClassResolved(telemetry, "General", "callook.info");
+        AppEvents.LicenceClassMismatch(telemetry, "Extra", "General");
+        AppEvents.LicenceClassLookupFailed(telemetry, "Unavailable");
+        AppEvents.UpgradeLadderOpened(telemetry, "Technician");
+        AppEvents.TransmitGuardToggled(telemetry, enabled: true);
     }
 
     private string[] ReadAllLines()

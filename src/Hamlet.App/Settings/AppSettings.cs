@@ -60,6 +60,18 @@ public sealed class AppSettings
     /// <summary>Telemetry folder size cap in megabytes.</summary>
     public int TelemetryMaxMegabytes { get; set; } = 50;
 
+    /// <summary>
+    /// "Only let me transmit where my licence allows" (HM-DEC-029). On by
+    /// default.
+    /// </summary>
+    /// <remarks>
+    /// TRANSMIT ONLY. This never restricts tuning, receiving or anything the
+    /// band map draws — listening is not regulated and a setting that implied
+    /// otherwise would teach a beginner something false about their own
+    /// licence. It is read at one moment: before Hamlet keys a transmitter.
+    /// </remarks>
+    public bool RestrictTransmitToPrivileges { get; set; } = true;
+
     /// <summary>The refresh interval the app ships with, in minutes.</summary>
     public const int DefaultSpotRefreshMinutes = 5;
 
@@ -143,6 +155,18 @@ public static class SettingsStore
     {
         WriteIndented = true,
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+
+        // Enums as names, not numbers. Two reasons, and the second is the
+        // serious one. "LicenceClass": "General" is legible to somebody
+        // reading their own settings file, where "LicenceClass": 3 is not.
+        // And a person who hand-edits it to "General" gets what they meant —
+        // without this converter that write throws, LoadFrom catches, and
+        // EVERY setting silently reverts to defaults, which is a spectacular
+        // punishment for a reasonable guess (HM-DEC-028 expects the callsign
+        // and class to arrive from hand-edited files).
+        // Reading still accepts the numeric form, so files written by earlier
+        // builds load unchanged.
+        Converters = { new JsonStringEnumConverter() },
     };
 
     /// <summary>%AppData%\Hamlet — the one folder Hamlet writes to.</summary>

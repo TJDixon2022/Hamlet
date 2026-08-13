@@ -229,6 +229,63 @@ public static class AppEvents
                 ["wpm"] = wordsPerMinute,
             });
 
+    /// <summary>
+    /// A licence class was resolved from a lookup (HM-DEC-028). The class and
+    /// which service answered — never the callsign, which is what was sent to
+    /// get this answer and still never enters telemetry (HM-DEC-019).
+    /// </summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="licenceClass">Class name, e.g. "General".</param>
+    /// <param name="sourceName">Service that answered.</param>
+    public static void LicenceClassResolved(
+        ITelemetry? telemetry, string licenceClass, string sourceName)
+        => telemetry?.Write(TelemetryCategory.Diagnostics, "licence_class_resolved",
+            new Dictionary<string, object?>
+            {
+                ["class"] = licenceClass,
+                ["source"] = sourceName,
+            });
+
+    /// <summary>
+    /// A lookup disagreed with a hand-set class, so the operator was asked.
+    /// </summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="found">What the lookup said.</param>
+    /// <param name="existing">What the operator had set.</param>
+    public static void LicenceClassMismatch(
+        ITelemetry? telemetry, string found, string existing)
+        => telemetry?.Write(TelemetryCategory.Diagnostics, "licence_class_mismatch",
+            new Dictionary<string, object?>
+            {
+                ["found"] = found,
+                ["existing"] = existing,
+            },
+            TelemetryLevel.Warn);
+
+    /// <summary>A licence lookup did not produce a class.</summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="outcome">"NotFound" or "Unavailable".</param>
+    public static void LicenceClassLookupFailed(ITelemetry? telemetry, string outcome)
+        => telemetry?.Write(TelemetryCategory.Diagnostics, "licence_lookup_failed",
+            new Dictionary<string, object?> { ["outcome"] = outcome },
+            TelemetryLevel.Warn);
+
+    /// <summary>
+    /// The transmit guard rail was switched on or off (HM-DEC-029).
+    /// </summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="enabled">True when Hamlet will hold transmissions back.</param>
+    public static void TransmitGuardToggled(ITelemetry? telemetry, bool enabled)
+        => telemetry?.Write(TelemetryCategory.Diagnostics, "transmit_guard_toggled",
+            new Dictionary<string, object?> { ["enabled"] = enabled });
+
+    /// <summary>The upgrade ladder was opened from the band-map status line.</summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="fromClass">The class the operator holds now.</param>
+    public static void UpgradeLadderOpened(ITelemetry? telemetry, string fromClass)
+        => telemetry?.Write(TelemetryCategory.Explore, "upgrade_ladder_opened",
+            new Dictionary<string, object?> { ["fromClass"] = fromClass });
+
     /// <summary>A panel was expanded or collapsed (HM-DEC-021).</summary>
     /// <param name="telemetry">Sink, or null.</param>
     /// <param name="panelKey">Stable panel id, e.g. "spots".</param>

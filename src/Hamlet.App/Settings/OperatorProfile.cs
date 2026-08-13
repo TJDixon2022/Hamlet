@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using Hamlet.RadioEngine.Licensing;
 
 namespace Hamlet.App.Settings;
 
@@ -28,6 +29,62 @@ public sealed class OperatorProfile
 
     /// <summary>Maidenhead grid square, e.g. "FN00". Optional.</summary>
     public string GridSquare { get; set; } = "";
+
+    /// <summary>
+    /// The operator's licence class, which decides what the band map shows as
+    /// theirs to use (HM-DEC-028).
+    /// </summary>
+    /// <remarks>
+    /// Defaults to <see cref="LicenceClass.Unknown"/>, and unknown means the
+    /// app says so rather than assuming the commonest class. Guessing here
+    /// would be the one guess with legal consequences (HM-DEC-009).
+    /// </remarks>
+    public LicenceClass LicenceClass { get; set; } = LicenceClass.Unknown;
+
+    /// <summary>How the class came to be known.</summary>
+    public LicenceClassSource LicenceClassSource { get; set; } = LicenceClassSource.Unset;
+
+    /// <summary>Which service answered, when it was looked up.</summary>
+    public string LicenceClassSourceName { get; set; } = "";
+
+    /// <summary>
+    /// When the class was set, as an ISO date. Empty when never set.
+    /// </summary>
+    /// <remarks>
+    /// Provenance travels with the value: "General, from FCC data, today" and
+    /// "General, because you said so in 2019" are different claims, and the
+    /// operator is entitled to see which one they are looking at.
+    /// </remarks>
+    public string LicenceClassSetOn { get; set; } = "";
+
+    /// <summary>True when the operator chose the class themselves.</summary>
+    /// <remarks>
+    /// The one flag that decides whether a lookup may write: a hand-set class
+    /// is never silently overwritten (HM-DEC-028).
+    /// </remarks>
+    [JsonIgnore]
+    public bool LicenceClassWasSetByHand
+        => LicenceClassSource == LicenceClassSource.EnteredByOperator
+           && LicenceClass != LicenceClass.Unknown;
+
+    /// <summary>
+    /// Record a licence class along with where it came from.
+    /// </summary>
+    /// <param name="licenceClass">The class.</param>
+    /// <param name="source">How it was determined.</param>
+    /// <param name="sourceName">Service name for a lookup, else "".</param>
+    /// <param name="onUtc">When, for the provenance line.</param>
+    public void SetLicenceClass(
+        LicenceClass licenceClass,
+        LicenceClassSource source,
+        string sourceName,
+        DateTime onUtc)
+    {
+        LicenceClass = licenceClass;
+        LicenceClassSource = source;
+        LicenceClassSourceName = sourceName;
+        LicenceClassSetOn = onUtc.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+    }
 
     /// <summary>True when nothing has been filled in at all.</summary>
     /// <remarks>Derived, never stored: a settings file that carries both the
