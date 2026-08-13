@@ -201,8 +201,15 @@ public static class SettingsStore
             }
 
             var json = File.ReadAllText(path);
-            return JsonSerializer.Deserialize<AppSettings>(json, Options)
-                   ?? new AppSettings();
+            var settings = JsonSerializer.Deserialize<AppSettings>(json, Options)
+                           ?? new AppSettings();
+
+            // Keys that have been renamed since the file was written are
+            // carried forward here, so an upgrade never looks like the app
+            // forgetting who the operator is (HM-DEC-035).
+            SettingsMigrations.Apply(settings, json);
+
+            return settings;
         }
         catch (Exception)
         {
