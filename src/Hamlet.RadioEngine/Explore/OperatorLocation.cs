@@ -144,6 +144,109 @@ public static class OperatorLocation
     }
 
     /// <summary>
+    /// Convert coordinates to a six-character Maidenhead locator.
+    /// </summary>
+    /// <param name="point">The position.</param>
+    /// <returns>Six characters, e.g. "FN00DJ".</returns>
+    /// <remarks>
+    /// <para>"Maidenhead grid locator" is exactly the kind of jargon Hamlet
+    /// exists to dissolve (HM-DEC-037). The operator should never have to look
+    /// theirs up: the callsign lookup already returns coordinates, and turning
+    /// those into a locator is arithmetic — no service, no key, nothing to be
+    /// down.</para>
+    /// <para>Six characters rather than four because the extra precision is
+    /// free and it takes the square from about seventy miles across to about
+    /// three, which matters once distances are being drawn from it.</para>
+    /// <para>The scheme: the world is divided into 18 fields of 20° longitude
+    /// by 10° latitude lettered A–R from the antimeridian and the south pole,
+    /// each field into 10 by 10 numbered squares, each square into 24 by 24
+    /// lettered subsquares. Everything is measured from −180° and −90°, so the
+    /// hemispheres need no special case — which is the part that usually gets
+    /// this wrong, and the reason the tests cross both.</para>
+    /// </remarks>
+    public static string ToGrid(LatLon point)
+    {
+        // Clamp rather than throw: a coordinate a hair outside the range is a
+        // rounding artifact from somebody else's data, not a reason to have no
+        // locator at all.
+        var lon = Math.Clamp(point.Longitude, -180.0, 179.999999) + 180.0;
+        var lat = Math.Clamp(point.Latitude, -90.0, 89.999999) + 90.0;
+
+        var lonField = (int)(lon / 20.0);
+        var latField = (int)(lat / 10.0);
+
+        lon -= lonField * 20.0;
+        lat -= latField * 10.0;
+
+        var lonSquare = (int)(lon / 2.0);
+        var latSquare = (int)lat;
+
+        lon -= lonSquare * 2.0;
+        lat -= latSquare;
+
+        var lonSub = (int)(lon / (2.0 / 24.0));
+        var latSub = (int)(lat / (1.0 / 24.0));
+
+        return string.Create(6, (lonField, latField, lonSquare, latSquare, lonSub, latSub), (span, p) =>
+        {
+            span[0] = (char)('A' + p.lonField);
+            span[1] = (char)('A' + p.latField);
+            span[2] = (char)('0' + p.lonSquare);
+            span[3] = (char)('0' + p.latSquare);
+            span[4] = (char)('A' + Math.Clamp(p.lonSub, 0, 23));
+            span[5] = (char)('A' + Math.Clamp(p.latSub, 0, 23));
+        });
+    }
+
+    /// <summary>
+    /// Initial great-circle bearing from one point to another, in degrees
+    /// clockwise from true north.
+    /// </summary>
+    /// <param name="from">Where the operator is.</param>
+    /// <param name="to">Where the station is.</param>
+    /// <returns>0 to 360 degrees.</returns>
+    public static double BearingDegrees(LatLon from, LatLon to)
+    {
+        var lat1 = ToRadians(from.Latitude);
+        var lat2 = ToRadians(to.Latitude);
+        var dLon = ToRadians(to.Longitude - from.Longitude);
+
+        var y = Math.Sin(dLon) * Math.Cos(lat2);
+        var x = (Math.Cos(lat1) * Math.Sin(lat2))
+                - (Math.Sin(lat1) * Math.Cos(lat2) * Math.Cos(dLon));
+
+        var degrees = ToDegrees(Math.Atan2(y, x));
+        return (degrees + 360.0) % 360.0;
+    }
+
+    /// <summary>
+    /// A bearing in the words somebody would actually use.
+    /// </summary>
+    /// <param name="bearingDegrees">Degrees clockwise from north.</param>
+    /// <returns>"northeast", "south-southwest" and so on.</returns>
+    /// <remarks>
+    /// Sixteen points rather than a number, because "480 miles northeast"
+    /// is a direction a person can picture and "480 miles at 47°" is a reading
+    /// off an instrument (§0.7). The extra precision would be spurious anyway:
+    /// this is the bearing to a park's reference point, not to an antenna.
+    /// </remarks>
+    public static string DescribeCompass(double bearingDegrees)
+    {
+        string[] points =
+        {
+            "north", "north-northeast", "northeast", "east-northeast",
+            "east", "east-southeast", "southeast", "south-southeast",
+            "south", "south-southwest", "southwest", "west-southwest",
+            "west", "west-northwest", "northwest", "north-northwest",
+        };
+
+        var normalized = ((bearingDegrees % 360.0) + 360.0) % 360.0;
+        var index = (int)Math.Round(normalized / 22.5) % 16;
+
+        return points[index];
+    }
+
+    /// <summary>
     /// True when a locator falls inside North America.
     /// </summary>
     /// <param name="grid">Maidenhead locator.</param>
@@ -196,5 +299,46 @@ public static class OperatorLocation
     public static string DescribeDistance(double km)
         => Math.Round(km).ToString("0", CultureInfo.InvariantCulture) + " km";
 
+    /// <summary>Kilometers to statute miles.</summary>
+    /// <param name="km">Distance in kilometers.</param>
+    /// <returns>Distance in miles.</returns>
+    public static double ToMiles(double km) => km / 1.609344;
+
+    /// <summary>
+    /// Render a distance in the operator's units, rounded to the precision the
+    /// figure actually deserves.
+    /// </summary>
+    /// <param name="km">Distance in kilometers.</param>
+    /// <param name="miles">True for statute miles, false for kilometers.</param>
+    /// <returns>e.g. "480 miles" or "770 km".</returns>
+    /// <remarks>
+    /// Rounded to two significant figures above a hundred. The underlying
+    /// number is a distance to a park's stated reference point, so "483 miles"
+    /// would be claiming a precision nothing in the chain supports (§0.0).
+    /// </remarks>
+    public static string DescribeRange(double km, bool miles)
+    {
+        var value = miles ? ToMiles(km) : km;
+        var unit = miles ? "miles" : "km";
+
+        var rounded = value switch
+        {
+            < 10 => Math.Round(value),
+            < 100 => Math.Round(value / 5) * 5,
+            < 1000 => Math.Round(value / 10) * 10,
+            _ => Math.Round(value / 50) * 50,
+        };
+
+        if (rounded < 1)
+        {
+            return miles ? "under a mile" : "under a kilometer";
+        }
+
+        return rounded.ToString("0", CultureInfo.InvariantCulture)
+            + " " + (miles && rounded == 1 ? "mile" : unit);
+    }
+
     private static double ToRadians(double degrees) => degrees * Math.PI / 180.0;
+
+    private static double ToDegrees(double radians) => radians * 180.0 / Math.PI;
 }

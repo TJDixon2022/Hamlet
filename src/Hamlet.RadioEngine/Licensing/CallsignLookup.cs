@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Net.Http;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -11,7 +12,19 @@ namespace Hamlet.RadioEngine.Licensing;
 /// <param name="SourceName">Which service answered, for provenance.</param>
 /// <param name="RetrievedUtc">When it answered.</param>
 public sealed record CallsignLookupResult(
-    string Callsign, LicenseClass Class, string SourceName, DateTime RetrievedUtc);
+    string Callsign, LicenseClass Class, string SourceName, DateTime RetrievedUtc)
+{
+    /// <summary>
+    /// The station's coordinates as the service holds them, or null when it
+    /// did not say.
+    /// </summary>
+    /// <remarks>
+    /// Null is a real answer and never a zero: 0°N 0°E is in the Gulf of
+    /// Guinea, and a profile quietly placed there would put every band card
+    /// and every distance wrong while looking entirely confident (HM-DEC-009).
+    /// </remarks>
+    public LatLon? Location { get; init; }
+}
 
 /// <summary>Looks up a US callsign's operator class.</summary>
 public interface ICallsignLookup
@@ -48,11 +61,23 @@ public interface ICallsignLookup
 /// version and the operator (HM-DEC-024), and a result is cached so a
 /// callsign is asked about once rather than on every profile touch.</para>
 /// <para>WHAT IS READ, AND WHAT IS DELIBERATELY NOT. The response carries the
-/// licensee's full name and street address. Hamlet reads the operator class
-/// and nothing else. It is the operator's own record, but a program that
-/// quietly harvested a home address because it happened to be in the payload
-/// would be doing something nobody asked it to do — and the parser is the
-/// natural place for that restraint to be visible.</para>
+/// licensee's full name, street address, coordinates and grid square. Hamlet
+/// reads the operator class and the coordinates, and nothing else. It is the
+/// operator's own record, but a program that quietly harvested a home address
+/// because it happened to be in the payload would be doing something nobody
+/// asked it to do — and the parser is the natural place for that restraint to
+/// be visible.</para>
+/// <para>The coordinates were added deliberately and are used for exactly two
+/// things (HM-DEC-037): the grid square, so nobody has to be told what
+/// "Maidenhead locator" means, and sunrise and sunset for the band cards. The
+/// service's own <c>gridsquare</c> field is read past rather than used —
+/// Hamlet derives the locator from the coordinates, because the coordinates
+/// are what distance and the solar clock need, and one derivation cannot
+/// disagree with itself the way two stored values can (§0). The derivation is
+/// checked against callook's own answer in the tests.</para>
+/// <para>Coordinates are more identifying than a class, so the same rule binds
+/// harder: they are written to the local profile, displayed to the operator,
+/// and NEVER entered into telemetry (HM-DEC-018, HM-DEC-019).</para>
 /// <para>The class is public information, as public as the callsign itself:
 /// it is in the FCC's own searchable database. Sending the callsign to look
 /// it up is ordinary. It still never enters telemetry (HM-DEC-019).</para>
@@ -140,7 +165,10 @@ public sealed class CallookCallsignLookup : ICallsignLookup, IDisposable
             string.IsNullOrWhiteSpace(dto.Current?.Callsign) ? call : dto.Current!.Callsign!,
             cls,
             ServiceName,
-            _utcNow());
+            _utcNow())
+        {
+            Location = ParseLocation(dto.Location),
+        };
     }
 
     /// <inheritdoc/>
@@ -174,9 +202,41 @@ public sealed class CallookCallsignLookup : ICallsignLookup, IDisposable
         };
 
     /// <summary>
-    /// The two fields Hamlet reads. The response carries more — a name, a
-    /// street address, coordinates — and this type does not name them, so
-    /// there is nothing to accidentally start using.
+    /// Read coordinates, which callook sends as strings, or null.
+    /// </summary>
+    /// <remarks>
+    /// Both must parse and both must be in range. A half-answer is discarded
+    /// entirely rather than kept with a zero standing in for the missing half:
+    /// a latitude with a longitude of 0 is a point in the ocean, and it would
+    /// look exactly like a real location all the way down to the band cards.
+    /// </remarks>
+    internal static LatLon? ParseLocation(CallookLocation? location)
+    {
+        if (location is null
+            || !double.TryParse(
+                location.Latitude, NumberStyles.Float, CultureInfo.InvariantCulture, out var lat)
+            || !double.TryParse(
+                location.Longitude, NumberStyles.Float, CultureInfo.InvariantCulture, out var lon)
+            || lat is < -90 or > 90
+            || lon is < -180 or > 180)
+        {
+            return null;
+        }
+
+        // callook fills these with "0" for a licence whose address it cannot
+        // place. Null Island is not a station location.
+        if (Math.Abs(lat) < 0.0001 && Math.Abs(lon) < 0.0001)
+        {
+            return null;
+        }
+
+        return new LatLon(lat, lon);
+    }
+
+    /// <summary>
+    /// The fields Hamlet reads. The response carries more — a name, a street
+    /// address, an FRN — and this type does not name them, so there is nothing
+    /// to accidentally start using.
     /// </summary>
     private sealed class CallookResponse
     {
@@ -186,6 +246,9 @@ public sealed class CallookCallsignLookup : ICallsignLookup, IDisposable
         [JsonPropertyName("current")]
         public CurrentBlock? Current { get; set; }
 
+        [JsonPropertyName("location")]
+        public CallookLocation? Location { get; set; }
+
         public sealed class CurrentBlock
         {
             [JsonPropertyName("callsign")]
@@ -194,5 +257,21 @@ public sealed class CallookCallsignLookup : ICallsignLookup, IDisposable
             [JsonPropertyName("operClass")]
             public string? OperClass { get; set; }
         }
+    }
+
+    /// <summary>
+    /// callook's location block. Its <c>gridsquare</c> field is deliberately
+    /// not named here: Hamlet derives the locator from the coordinates so
+    /// there is only ever one answer (HM-DEC-037).
+    /// </summary>
+    internal sealed class CallookLocation
+    {
+        /// <summary>Latitude in degrees, as a string.</summary>
+        [JsonPropertyName("latitude")]
+        public string? Latitude { get; set; }
+
+        /// <summary>Longitude in degrees, as a string.</summary>
+        [JsonPropertyName("longitude")]
+        public string? Longitude { get; set; }
     }
 }

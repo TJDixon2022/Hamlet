@@ -60,8 +60,18 @@
 
                         <TextBlock Grid.Row="3" Grid.Column="0" Text="Grid square"
                                    Classes="hm-field" />
-                        <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding GridSquare}"
-                                 Watermark="e.g. FN00 — optional" />
+                        <StackPanel Grid.Row="3" Grid.Column="1" Spacing="4">
+                            <TextBox Text="{Binding GridSquare}"
+                                     Watermark="Hamlet fills this in from your callsign" />
+
+                            <!-- The jargon gets dissolved where it appears,
+                                 not in a help page nobody opens
+                                 (HM-DEC-034, HM-DEC-037). -->
+                            <TextBlock Classes="hm-note"
+                                       Text="{Binding GridExplanation}" />
+                            <TextBlock Classes="hm-note"
+                                       Text="{Binding GridProvenance}" />
+                        </StackPanel>
                     </Grid>
                 </Border>
 

@@ -13,7 +13,16 @@ namespace Hamlet.RadioEngine.Tests.Licensing;
 /// </summary>
 public sealed class LookupAndGuardTests
 {
-    /// <summary>A real callook.info response, trimmed to what Hamlet reads.</summary>
+    /// <summary>
+    /// A real callook.info response for KC3QIS, captured from the live service
+    /// on 2026-08-13 with only the name and street address replaced.
+    /// </summary>
+    /// <remarks>
+    /// The coordinates and the <c>gridsquare</c> field are verbatim, which is
+    /// what makes them worth keeping: callook's own answer is "FN00dj", so
+    /// Hamlet's derivation of the locator from the coordinates has something
+    /// independent to agree with (HM-DEC-037).
+    /// </remarks>
     private const string ValidJson = """
     {
       "status": "VALID",
@@ -21,7 +30,11 @@ public sealed class LookupAndGuardTests
       "current": { "callsign": "KC3QIS", "operClass": "GENERAL" },
       "name": "A NAME THE PARSER MUST IGNORE",
       "address": { "line1": "A STREET ADDRESS", "line2": "A TOWN" },
-      "location": { "gridsquare": "FN00dj" },
+      "location": {
+        "latitude": "40.3782746",
+        "longitude": "-79.7081649",
+        "gridsquare": "FN00dj"
+      },
       "otherInfo": { "grantDate": "10/26/2020" }
     }
     """;
@@ -52,12 +65,18 @@ public sealed class LookupAndGuardTests
     }
 
     /// <remarks>
-    /// Proves the parser takes the class and leaves the rest. The response
-    /// carries the licensee's name and street address; Hamlet has no use for
-    /// them and does not read them, so there is nothing to leak later.
+    /// <para>Proves the parser takes the class and the coordinates and leaves
+    /// the rest. The response carries the licensee's name and street address;
+    /// Hamlet has no use for them and does not read them, so there is nothing
+    /// to leak later.</para>
+    /// <para>The coordinates were added deliberately for the grid square and
+    /// the solar clock (HM-DEC-037), so the list below grew by exactly one
+    /// name. That is the point of pinning it: widening this type is a decision
+    /// somebody has to make on purpose, and a test that had to be edited is a
+    /// decision that was made.</para>
     /// </remarks>
     [Fact]
-    public async Task Lookup_ReadsNothingButTheClass()
+    public async Task Lookup_ReadsNothingButTheClassAndTheCoordinates()
     {
         using var handler = new StubHttp(ValidJson);
         using var lookup = new CallookCallsignLookup("0.1", "KC3QIS", handler, () => Now);
@@ -72,9 +91,64 @@ public sealed class LookupAndGuardTests
             .ToList();
 
         Assert.Equal(
-            new[] { "Callsign", "Class", "SourceName", "RetrievedUtc" }.OrderBy(x => x),
+            new[] { "Callsign", "Class", "SourceName", "RetrievedUtc", "Location" }
+                .OrderBy(x => x),
             properties.OrderBy(x => x));
+
         Assert.NotNull(result);
+        Assert.DoesNotContain(
+            properties, p => p.Contains("Name", StringComparison.OrdinalIgnoreCase)
+                             && p != "SourceName");
+        Assert.DoesNotContain(
+            properties, p => p.Contains("Address", StringComparison.OrdinalIgnoreCase));
+    }
+
+    /// <remarks>
+    /// Proves the coordinates are read, and that the locator Hamlet derives
+    /// from them matches the one callook computed independently — the two
+    /// arrive by different routes and agree, which is the check that would
+    /// catch a hemisphere sign error in <c>ToGrid</c> (HM-DEC-037).
+    /// </remarks>
+    [Fact]
+    public async Task Lookup_ReadsCoordinatesThatAgreeWithTheServicesOwnGrid()
+    {
+        using var handler = new StubHttp(ValidJson);
+        using var lookup = new CallookCallsignLookup("0.1", "KC3QIS", handler, () => Now);
+
+        var result = await lookup.LookupAsync("KC3QIS");
+
+        Assert.NotNull(result!.Location);
+        Assert.Equal(40.3782746, result.Location!.Value.Latitude, 6);
+        Assert.Equal(-79.7081649, result.Location.Value.Longitude, 6);
+
+        // callook's own answer for this callsign is "FN00dj".
+        Assert.Equal(
+            "FN00DJ", RadioEngine.Explore.OperatorLocation.ToGrid(result.Location.Value));
+    }
+
+    /// <remarks>
+    /// Proves a response with no location block, a half-filled one, or a pair
+    /// of zeros yields no coordinates at all. Null Island is in the Gulf of
+    /// Guinea, and a profile quietly placed there would put every band card and
+    /// every distance wrong while looking entirely confident (HM-DEC-009).
+    /// </remarks>
+    [Theory]
+    [InlineData("""{ "status": "VALID", "current": { "callsign": "K1AA", "operClass": "EXTRA" } }""")]
+    [InlineData("""{ "status": "VALID", "current": { "callsign": "K1AA", "operClass": "EXTRA" }, "location": {} }""")]
+    [InlineData("""{ "status": "VALID", "current": { "callsign": "K1AA", "operClass": "EXTRA" }, "location": { "latitude": "41.2" } }""")]
+    [InlineData("""{ "status": "VALID", "current": { "callsign": "K1AA", "operClass": "EXTRA" }, "location": { "latitude": "0", "longitude": "0" } }""")]
+    [InlineData("""{ "status": "VALID", "current": { "callsign": "K1AA", "operClass": "EXTRA" }, "location": { "latitude": "", "longitude": "" } }""")]
+    [InlineData("""{ "status": "VALID", "current": { "callsign": "K1AA", "operClass": "EXTRA" }, "location": { "latitude": "999", "longitude": "12" } }""")]
+    public async Task Lookup_WithoutUsableCoordinates_ReportsNone(string json)
+    {
+        using var handler = new StubHttp(json);
+        using var lookup = new CallookCallsignLookup("0.1", "K1AA", handler, () => Now);
+
+        var result = await lookup.LookupAsync("K1AA");
+
+        Assert.NotNull(result);
+        Assert.Null(result!.Location);
+        Assert.Equal(LicenseClass.Extra, result.Class);
     }
 
     /// <remarks>

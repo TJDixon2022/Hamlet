@@ -49,6 +49,18 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty]
     private string _licenseProvenance = "";
 
+    [ObservableProperty]
+    private string _gridProvenance = "";
+
+    /// <summary>
+    /// The one line that says what a grid square is (HM-DEC-037).
+    /// </summary>
+    /// <remarks>
+    /// Beside the field rather than in a help page, because the person who
+    /// needs it is looking at the field right now and will not go looking.
+    /// </remarks>
+    public string GridExplanation => GridResolver.Explanation;
+
     /// <summary>Designer constructor.</summary>
     public SettingsViewModel() : this(new AppSettings(), null)
     {
@@ -69,6 +81,7 @@ public partial class SettingsViewModel : ObservableObject
         _gridSquare = settings.Operator.GridSquare;
         _licenseClass = settings.Operator.LicenseClass;
         _licenseProvenance = LicenseResolver.DescribeProvenance(settings.Operator);
+        _gridProvenance = GridResolver.DescribeProvenance(settings.Operator);
         _restrictTransmitToPrivileges = settings.RestrictTransmitToPrivileges;
 
         SpotRefreshChoices = AppSettings.SpotRefreshChoices
@@ -159,9 +172,18 @@ public partial class SettingsViewModel : ObservableObject
         SaveProfile("location");
     }
 
+    /// <remarks>
+    /// A typed grid is stamped as hand-entered, so a later lookup shows a
+    /// disagreement rather than quietly replacing it — the same rule the
+    /// license class follows, and it binds harder here because the FCC holds a
+    /// mailing address and not an antenna (HM-DEC-028, HM-DEC-037).
+    /// Clearing the box clears the stamp too, which hands the field back to
+    /// the lookup.
+    /// </remarks>
     partial void OnGridSquareChanged(string value)
     {
-        _settings.Operator.GridSquare = value;
+        _settings.Operator.SetGridByHand(value, DateTime.UtcNow);
+        GridProvenance = GridResolver.DescribeProvenance(_settings.Operator);
         SaveProfile("grid");
     }
 

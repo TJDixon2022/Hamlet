@@ -140,13 +140,48 @@ public sealed class LicenseResolver
                 + "Settings, or try again later.");
         }
 
+        return Apply(profile, result, _lookup.SourceName, callsign, _utcNow());
+    }
+
+    /// <summary>
+    /// Apply an already-fetched lookup to the class on a profile.
+    /// </summary>
+    /// <param name="profile">The profile. Written to only when the class was
+    /// unknown.</param>
+    /// <param name="result">What the service said, or null when it does not
+    /// know this callsign.</param>
+    /// <param name="sourceName">Which service answered.</param>
+    /// <param name="callsign">The callsign that was asked about.</param>
+    /// <param name="utcNow">The moment to stamp on the provenance.</param>
+    /// <returns>What happened, and what to narrate.</returns>
+    /// <remarks>
+    /// Split out from <see cref="ResolveAsync"/> so one HTTP call can serve
+    /// both the class and the grid square (HM-DEC-037). Pure: no clock read,
+    /// no network, so the mismatch rule that matters most is testable without
+    /// either.
+    /// </remarks>
+    public static LicenseResolution Apply(
+        OperatorProfile profile,
+        CallsignLookupResult? result,
+        string sourceName,
+        string callsign,
+        DateTime utcNow)
+    {
         if (result is null)
         {
             return new LicenseResolution(
                 LicenseResolutionOutcome.NotFound, LicenseClass.Unknown,
-                profile.LicenseClass, _lookup.SourceName,
-                $"{_lookup.SourceName} doesn't have {callsign.ToUpperInvariant()} — "
+                profile.LicenseClass, sourceName,
+                $"{sourceName} doesn't have {callsign.Trim().ToUpperInvariant()} — "
                 + "set your license class in Settings.");
+        }
+
+        if (profile.LicenseClass != LicenseClass.Unknown && !profile.LicenseClassWasSetByHand)
+        {
+            // Already resolved by a lookup. Nothing to say.
+            return new LicenseResolution(
+                LicenseResolutionOutcome.NotNeeded, result.Class,
+                profile.LicenseClass, sourceName, "");
         }
 
         if (profile.LicenseClassWasSetByHand && result.Class != profile.LicenseClass)
@@ -169,7 +204,7 @@ public sealed class LicenseResolver
         }
 
         profile.SetLicenseClass(
-            result.Class, LicenseClassSource.LookedUp, result.SourceName, _utcNow());
+            result.Class, LicenseClassSource.LookedUp, result.SourceName, utcNow);
 
         return new LicenseResolution(
             LicenseResolutionOutcome.Resolved, result.Class, LicenseClass.Unknown,

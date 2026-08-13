@@ -1,7 +1,29 @@
 using System.Text.Json.Serialization;
+using Hamlet.RadioEngine.Explore;
 using Hamlet.RadioEngine.Licensing;
 
 namespace Hamlet.App.Settings;
+
+/// <summary>Where a fact on the operator profile came from.</summary>
+/// <remarks>
+/// The same three states <see cref="LicenseClassSource"/> carries, for the
+/// facts that are not the license class. It is a separate type rather than a
+/// reuse because a field named <c>GridSquareSource</c> of type
+/// <c>LicenseClassSource</c> reads as a mistake, and because
+/// <see cref="LicenseClassSource"/> is a persisted key whose name is now
+/// expensive to change (HM-DEC-035).
+/// </remarks>
+public enum ProfileFactSource
+{
+    /// <summary>Nothing has established this yet.</summary>
+    Unset,
+
+    /// <summary>The operator typed it. A lookup never overwrites this.</summary>
+    EnteredByOperator,
+
+    /// <summary>A lookup service supplied it.</summary>
+    LookedUp,
+}
 
 /// <summary>
 /// Who is operating (HM-DEC-019). One shaped object rather than three loose
@@ -27,8 +49,62 @@ public sealed class OperatorProfile
     /// <summary>Free text: city and state, or wherever the antenna is.</summary>
     public string Location { get; set; } = "";
 
-    /// <summary>Maidenhead grid square, e.g. "FN00". Optional.</summary>
+    /// <summary>
+    /// Maidenhead grid square, e.g. "FN00DJ". Optional, and derived rather
+    /// than demanded (HM-DEC-037).
+    /// </summary>
+    /// <remarks>
+    /// The operator is never asked to look this up. When the callsign lookup
+    /// returns coordinates, the locator is computed from them; the field stays
+    /// hand-editable for anybody the lookup cannot place, and a hand-entered
+    /// value is never overwritten.
+    /// </remarks>
     public string GridSquare { get; set; } = "";
+
+    /// <summary>Latitude in degrees north, or null when unknown.</summary>
+    /// <remarks>
+    /// The coordinates are the stored fact and the grid square is a rendering
+    /// of them: distance, bearing and the solar clock all want degrees, and a
+    /// locator only ever gives them back to within a few miles. Null means
+    /// unknown and is never a zero (HM-DEC-009).
+    /// </remarks>
+    public double? Latitude { get; set; }
+
+    /// <summary>Longitude in degrees east, or null when unknown.</summary>
+    public double? Longitude { get; set; }
+
+    /// <summary>How the grid square came to be known.</summary>
+    public ProfileFactSource GridSquareSource { get; set; } = ProfileFactSource.Unset;
+
+    /// <summary>Which service supplied the coordinates, when one did.</summary>
+    public string GridSquareSourceName { get; set; } = "";
+
+    /// <summary>When the grid was set, as an ISO date. Empty when never set.</summary>
+    public string GridSquareSetOn { get; set; } = "";
+
+    /// <summary>True when the operator typed the grid square themselves.</summary>
+    /// <remarks>
+    /// Same rule as the license class (HM-DEC-028): the one flag that decides
+    /// whether a lookup may write. Somebody operating portable, or from a
+    /// second location, knows where they are better than the FCC's record of
+    /// their mailing address does.
+    /// </remarks>
+    [JsonIgnore]
+    public bool GridSquareWasSetByHand
+        => GridSquareSource == ProfileFactSource.EnteredByOperator
+           && !string.IsNullOrWhiteSpace(GridSquare);
+
+    /// <summary>The operator's position, or null when it is not known.</summary>
+    /// <remarks>
+    /// Coordinates first, because they are what was stored; a hand-entered
+    /// locator with no coordinates falls back to the center of its square,
+    /// which is the best anybody can do with four or six characters.
+    /// </remarks>
+    [JsonIgnore]
+    public LatLon? Position
+        => Latitude is { } lat && Longitude is { } lon
+            ? new LatLon(lat, lon)
+            : OperatorLocation.FromGrid(GridSquare);
 
     /// <summary>
     /// The operator's license class, which decides what the band map shows as
@@ -84,6 +160,51 @@ public sealed class OperatorProfile
         LicenseClassSource = source;
         LicenseClassSourceName = sourceName;
         LicenseClassSetOn = onUtc.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+    }
+
+    /// <summary>
+    /// Record a position from a lookup, deriving the grid square from it.
+    /// </summary>
+    /// <param name="position">The coordinates the service supplied.</param>
+    /// <param name="sourceName">Which service supplied them.</param>
+    /// <param name="onUtc">When, for the provenance line.</param>
+    public void SetPositionFromLookup(LatLon position, string sourceName, DateTime onUtc)
+    {
+        Latitude = position.Latitude;
+        Longitude = position.Longitude;
+        GridSquare = OperatorLocation.ToGrid(position);
+        GridSquareSource = ProfileFactSource.LookedUp;
+        GridSquareSourceName = sourceName;
+        GridSquareSetOn = onUtc.ToString(
+            "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+    }
+
+    /// <summary>
+    /// Record a grid square the operator typed, and the coordinates it implies.
+    /// </summary>
+    /// <param name="grid">The locator, four or six characters.</param>
+    /// <param name="onUtc">When, for the provenance line.</param>
+    /// <remarks>
+    /// A malformed locator is stored as typed with no coordinates behind it, so
+    /// the operator sees their own text rather than having it silently
+    /// discarded, and nothing downstream draws a distance from a square that
+    /// does not exist.
+    /// </remarks>
+    public void SetGridByHand(string? grid, DateTime onUtc)
+    {
+        var text = OperatorLocation.Normalize(grid);
+        var point = OperatorLocation.FromGrid(text);
+
+        GridSquare = text;
+        Latitude = point?.Latitude;
+        Longitude = point?.Longitude;
+        GridSquareSource = text.Length == 0
+            ? ProfileFactSource.Unset
+            : ProfileFactSource.EnteredByOperator;
+        GridSquareSourceName = "";
+        GridSquareSetOn = text.Length == 0
+            ? ""
+            : onUtc.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
     }
 
     /// <summary>True when nothing has been filled in at all.</summary>
