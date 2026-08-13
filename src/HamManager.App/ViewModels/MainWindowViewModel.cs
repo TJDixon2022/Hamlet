@@ -3,6 +3,7 @@ using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using HamManager.RadioEngine.Bands;
+using HamManager.RadioEngine.Explore;
 using HamManager.RadioEngine.Rig;
 using HamManager.RadioEngine.Transport;
 
@@ -50,6 +51,30 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty]
     private BandButtonViewModel _selectedBand;
 
+    [ObservableProperty]
+    private IReadOnlyList<Neighborhood> _neighborhoods = Array.Empty<Neighborhood>();
+
+    [ObservableProperty]
+    private IReadOnlyList<long> _activityFrequencies = Array.Empty<long>();
+
+    [ObservableProperty]
+    private string _storyTitle = "";
+
+    [ObservableProperty]
+    private string _storyBadge = "";
+
+    [ObservableProperty]
+    private string _storyBody = "";
+
+    [ObservableProperty]
+    private long _storyTuneHz;
+
+    /// <summary>The field guide entries.</summary>
+    public IReadOnlyList<ModeInfo> ModeCards { get; } = ModeGuide.Modes;
+
+    /// <summary>Happening-now spots, plain language, source-labeled.</summary>
+    public ObservableCollection<SpotViewModel> Spots { get; } = new();
+
     /// <summary>Phase 1 bands with best-bet ranking for the current hour.</summary>
     public ObservableCollection<BandButtonViewModel> Bands { get; }
 
@@ -79,7 +104,62 @@ public partial class MainWindowViewModel : ObservableObject
             RigSendThrottle, DispatcherPriority.Background, OnRigSendTick);
         _rigSendTimer.Stop();
 
+        Neighborhoods = NeighborhoodPlan.ForBand(_selectedBand.Band);
+        ShowNeighborhood(Neighborhoods.First(n => n.Contains(FrequencyHz)));
         UpdateModeLine();
+        _ = LoadSpotsAsync(new FakeActivitySource());
+    }
+
+    private async Task LoadSpotsAsync(IActivitySource source)
+    {
+        var spots = await source.GetSpotsAsync();
+        Spots.Clear();
+        foreach (var s in spots)
+        {
+            Spots.Add(new SpotViewModel(s));
+        }
+
+        ActivityFrequencies = spots.Select(s => s.FrequencyHz).ToArray();
+    }
+
+    /// <summary>Show a neighborhood's story in the Explorer card.</summary>
+    [RelayCommand]
+    private void ShowNeighborhood(Neighborhood hood)
+    {
+        StoryTitle = hood.Name;
+        StoryBadge = hood.Vibe;
+        StoryBody = hood.Blurb;
+        StoryTuneHz = hood.JumpHz;
+    }
+
+    /// <summary>Show a mode's field-guide story in the Explorer card.</summary>
+    [RelayCommand]
+    private void ShowMode(ModeInfo mode)
+    {
+        StoryTitle = $"{mode.Name} — {mode.Tagline}";
+        StoryBadge = mode.Difficulty;
+        StoryBody = $"{mode.Why} Sounds like: {mode.Sound}. Learn its waterfall "
+            + "fingerprint and the void stops being static.";
+        StoryTuneHz = mode.LivesAt40mHz ?? SelectedBand.Band.JumpHz;
+    }
+
+    /// <summary>Tune the rig (and the whole UI) to a target — the payoff
+    /// click on every story and spot.</summary>
+    [RelayCommand]
+    private void TuneTo(long hz)
+    {
+        var band = BandPlan.BandFor(hz);
+        if (band is not null && band.Name != SelectedBand.Band.Name)
+        {
+            SelectedBand = Bands.First(b => b.Band.Name == band.Name);
+        }
+
+        FrequencyHz = hz;
+    }
+
+    partial void OnSelectedBandChanged(BandButtonViewModel value)
+    {
+        Neighborhoods = NeighborhoodPlan.ForBand(value.Band);
     }
 
     /// <summary>Jump to a band's CW watering hole.</summary>
@@ -260,4 +340,32 @@ public sealed class BandButtonViewModel
 
     /// <summary>True on the runner-up band.</summary>
     public bool IsSecondBet { get; }
+}
+
+/// <summary>One happening-now card: the plain-language invitation plus the
+/// honesty fields — source and age — the prime directive requires.</summary>
+public sealed class SpotViewModel
+{
+    /// <summary>Wraps an engine spot for display.</summary>
+    public SpotViewModel(ActivitySpot spot)
+    {
+        Story = spot.Story;
+        FrequencyHz = spot.FrequencyHz;
+        TuneLabel = "Tune " + (spot.FrequencyHz / 1_000_000.0)
+            .ToString("0.000", System.Globalization.CultureInfo.InvariantCulture);
+        var age = (int)Math.Max(0, (DateTime.UtcNow - spot.HeardAtUtc).TotalMinutes);
+        Provenance = $"{spot.Mode} · {spot.Source} · {age} min ago";
+    }
+
+    /// <summary>The invitation.</summary>
+    public string Story { get; }
+
+    /// <summary>Where the Tune button goes.</summary>
+    public long FrequencyHz { get; }
+
+    /// <summary>Button text, e.g. "Tune 7.032".</summary>
+    public string TuneLabel { get; }
+
+    /// <summary>Mode, source, and age — shown, never hidden.</summary>
+    public string Provenance { get; }
 }

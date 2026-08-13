@@ -11,6 +11,9 @@ Ids are `FG-###` and are never reused.
 
 ## FG-001 — Activity discovery: "what's happening on the air right now"
 
+**Partially graduated 2026-08-12 (HM-DEC-016):** the discovery UI is phase
+1.5 on fixture data; the live feeds below remain future work.
+
 The hardest thing in ham radio for a newer operator is finding something
 interesting in the static. The data to fix that already exists, live, free:
 

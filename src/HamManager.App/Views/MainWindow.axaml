@@ -2,6 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:HamManager.App.ViewModels"
         xmlns:ctl="using:HamManager.App.Controls"
+        xmlns:explore="using:HamManager.RadioEngine.Explore"
         x:Class="HamManager.App.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Title="Ham Manager"
@@ -112,8 +113,8 @@
             </StackPanel>
         </Border>
 
-        <!-- Ribbon, tape, waterfall, terminal -->
-        <Grid Grid.Row="3" RowDefinitions="Auto,Auto,3*,2*">
+        <!-- Map, tape, then explorer beside waterfall/terminal -->
+        <Grid Grid.Row="3" RowDefinitions="Auto,Auto,*">
 
             <Border Grid.Row="0"
                     Background="{StaticResource HmBlueTintBrush}"
@@ -121,15 +122,16 @@
                     BorderThickness="1" CornerRadius="8"
                     Padding="16,10" Margin="0,0,0,10">
                 <StackPanel Spacing="6">
-                    <TextBlock Text="band — click or drag to jump"
+                    <TextBlock Text="the neighborhood map — click a neighborhood for its story, drag to tune"
                                Classes="hm-panel-label"
                                Foreground="{StaticResource HmBlueBrush}" />
-                    <ctl:BandRibbonControl Height="26"
+                    <ctl:NeighborhoodMapControl Height="44"
                         FrequencyHz="{Binding FrequencyHz}"
                         BandLowHz="{Binding SelectedBand.Band.LowHz}"
                         BandHighHz="{Binding SelectedBand.Band.HighHz}"
-                        CwLowHz="{Binding SelectedBand.Band.CwLowHz}"
-                        CwHighHz="{Binding SelectedBand.Band.CwHighHz}" />
+                        Neighborhoods="{Binding Neighborhoods}"
+                        ActivityFrequencies="{Binding ActivityFrequencies}"
+                        SelectCommand="{Binding ShowNeighborhoodCommand}" />
                 </StackPanel>
             </Border>
 
@@ -155,38 +157,134 @@
                 </StackPanel>
             </Border>
 
-            <Border Grid.Row="2"
-                    Background="{StaticResource HmBlueTintBrush}"
-                    BorderBrush="{StaticResource HmBlueEdgeBrush}"
-                    BorderThickness="1" CornerRadius="8"
-                    Margin="0,0,0,10">
-                <Grid>
-                    <TextBlock Text="Waterfall" Classes="hm-panel-label"
-                               Margin="16,12" VerticalAlignment="Top"
-                               Foreground="{StaticResource HmBlueBrush}" />
-                    <TextBlock Text="Spectrum scope lands here — CI-V 0x27, HM-DEC-005"
-                               HorizontalAlignment="Center" VerticalAlignment="Center"
-                               FontFamily="{StaticResource HmMonoFont}"
-                               Foreground="{StaticResource HmBlueEdgeBrush}" FontSize="14" />
-                </Grid>
-            </Border>
+            <Grid Grid.Row="2" ColumnDefinitions="3*,2*">
 
-            <Border Grid.Row="3"
-                    Background="{StaticResource HmGreenTintBrush}"
-                    BorderBrush="{StaticResource HmGreenEdgeBrush}"
-                    BorderThickness="1" CornerRadius="8">
-                <Grid RowDefinitions="Auto,*">
-                    <TextBlock Grid.Row="0" Text="CW terminal" Classes="hm-panel-label"
-                               Margin="16,12,16,4"
-                               Foreground="{StaticResource HmGreenBrush}" />
-                    <TextBlock Grid.Row="1"
-                               Text="&gt; decoded text will arrive here — phase 1"
-                               Margin="16,4,16,12"
-                               FontFamily="{StaticResource HmMonoFont}"
-                               Foreground="{StaticResource HmGreenBrush}"
-                               VerticalAlignment="Top" />
+                <Grid Grid.Column="0" RowDefinitions="3*,2*" Margin="0,0,10,0">
+                    <Border Grid.Row="0"
+                            Background="{StaticResource HmBlueTintBrush}"
+                            BorderBrush="{StaticResource HmBlueEdgeBrush}"
+                            BorderThickness="1" CornerRadius="8"
+                            Margin="0,0,0,10">
+                        <Grid>
+                            <TextBlock Text="Waterfall" Classes="hm-panel-label"
+                                       Margin="16,12" VerticalAlignment="Top"
+                                       Foreground="{StaticResource HmBlueBrush}" />
+                            <TextBlock Text="Spectrum scope lands here — CI-V 0x27"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                                       FontFamily="{StaticResource HmMonoFont}"
+                                       Foreground="{StaticResource HmBlueEdgeBrush}" FontSize="13" />
+                        </Grid>
+                    </Border>
+
+                    <Border Grid.Row="1"
+                            Background="{StaticResource HmGreenTintBrush}"
+                            BorderBrush="{StaticResource HmGreenEdgeBrush}"
+                            BorderThickness="1" CornerRadius="8">
+                        <Grid RowDefinitions="Auto,*">
+                            <TextBlock Grid.Row="0" Text="CW terminal" Classes="hm-panel-label"
+                                       Margin="16,12,16,4"
+                                       Foreground="{StaticResource HmGreenBrush}" />
+                            <TextBlock Grid.Row="1"
+                                       Text="&gt; decoded text will arrive here — phase 1"
+                                       Margin="16,4,16,12"
+                                       FontFamily="{StaticResource HmMonoFont}"
+                                       Foreground="{StaticResource HmGreenBrush}"
+                                       VerticalAlignment="Top" />
+                        </Grid>
+                    </Border>
                 </Grid>
-            </Border>
+
+                <!-- The Explorer (HM-DEC-016) -->
+                <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto">
+                    <StackPanel Spacing="10">
+
+                        <Border Background="White"
+                                BorderBrush="{StaticResource HmSlateEdgeBrush}"
+                                BorderThickness="1" CornerRadius="8" Padding="14,12">
+                            <StackPanel Spacing="6">
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <TextBlock Grid.Column="0" Text="{Binding StoryTitle}"
+                                               FontWeight="SemiBold"
+                                               Foreground="{StaticResource HmAmberDeepBrush}"
+                                               TextWrapping="Wrap" />
+                                    <Border Grid.Column="1"
+                                            Background="{StaticResource HmAmberTintBrush}"
+                                            BorderBrush="{StaticResource HmAmberEdgeBrush}"
+                                            BorderThickness="1" CornerRadius="8" Padding="6,1">
+                                        <TextBlock Text="{Binding StoryBadge}" FontSize="11"
+                                                   Foreground="{StaticResource HmAmberDeepBrush}" />
+                                    </Border>
+                                </Grid>
+                                <TextBlock Text="{Binding StoryBody}" FontSize="13"
+                                           TextWrapping="Wrap" LineHeight="19"
+                                           Foreground="{StaticResource HmTextPrimaryBrush}" />
+                                <Button Content="Take me there" FontSize="12"
+                                        Command="{Binding TuneToCommand}"
+                                        CommandParameter="{Binding StoryTuneHz}" />
+                            </StackPanel>
+                        </Border>
+
+                        <TextBlock Text="Field guide" Classes="hm-panel-label"
+                                   Foreground="{StaticResource HmBlueBrush}" />
+                        <ItemsControl ItemsSource="{Binding ModeCards}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <UniformGrid Columns="2" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="explore:ModeInfo">
+                                    <Button Margin="0,0,6,6" Padding="8"
+                                            HorizontalAlignment="Stretch"
+                                            HorizontalContentAlignment="Left"
+                                            Background="White"
+                                            BorderBrush="{StaticResource HmSlateEdgeBrush}"
+                                            BorderThickness="1" CornerRadius="8"
+                                            Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).ShowModeCommand}"
+                                            CommandParameter="{Binding}">
+                                        <StackPanel Orientation="Horizontal" Spacing="8">
+                                            <ctl:SignatureGlyphControl Kind="{Binding Signature}" />
+                                            <StackPanel VerticalAlignment="Center">
+                                                <TextBlock Text="{Binding Name}" FontSize="13"
+                                                           FontWeight="SemiBold" />
+                                                <TextBlock Text="{Binding Tagline}" FontSize="11"
+                                                           Foreground="{StaticResource HmTextMutedBrush}" />
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Button>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <TextBlock Text="Happening now" Classes="hm-panel-label"
+                                   Foreground="{StaticResource HmGreenBrush}" />
+                        <ItemsControl ItemsSource="{Binding Spots}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="vm:SpotViewModel">
+                                    <Border Background="{StaticResource HmGreenTintBrush}"
+                                            BorderBrush="{StaticResource HmGreenEdgeBrush}"
+                                            BorderThickness="1" CornerRadius="8"
+                                            Padding="10,8" Margin="0,0,0,8">
+                                        <Grid ColumnDefinitions="*,Auto">
+                                            <StackPanel Grid.Column="0" Spacing="2" Margin="0,0,8,0">
+                                                <TextBlock Text="{Binding Story}" FontSize="12"
+                                                           TextWrapping="Wrap" />
+                                                <TextBlock Text="{Binding Provenance}" FontSize="10"
+                                                           Foreground="{StaticResource HmTextMutedBrush}" />
+                                            </StackPanel>
+                                            <Button Grid.Column="1" Content="{Binding TuneLabel}"
+                                                    FontSize="12" VerticalAlignment="Center"
+                                                    Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).TuneToCommand}"
+                                                    CommandParameter="{Binding FrequencyHz}" />
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                    </StackPanel>
+                </ScrollViewer>
+            </Grid>
         </Grid>
 
         <!-- Status bar -->

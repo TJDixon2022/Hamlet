@@ -142,6 +142,7 @@ this table is the index.
 
 | Date | Decision | Why | Ref |
 |---|---|---|---|
+| 2026-08-12 | **The Explorer is the product's center, built UI-first on fixture data behind an IActivitySource seam: neighborhood map, mode field guide, happening-now feed.** Phase 1.5. | The app demystifies; automation apps already exist. Partially graduates FG-001. | HM-DEC-016 |
 | 2026-08-12 | **Tuning HMI: band buttons with best-bet badge, band ribbon map, dial-tape fine control with momentum; per-digit wheel tuning; no step buttons.** | Tim's approved design; the ribbon and tape become the waterfall's axis in phase 2. | HM-DEC-015 |
 | 2026-08-12 | **Graphify is adopted as a navigation aid with its blind-spot list carried into §10; Tim supplies fresh `repo_listing.txt` and graphify output at the start of each conversation.** The graph raises questions; the listing and file reads answer them. | The parent project lost rounds acting on graph noise; freshness at conversation start prevents confident work against a stale tree. | HM-DEC-014 |
 | 2026-08-12 | **Every delivery ends with a ready-to-paste check-in block: exact git commands, §7-format message covering the zip's contents.** Amends §9.2. | Tim commits every file drop; composing the message for Claude's work is Claude's job, and an uncommitted drop with no message invites an unrecorded one. | HM-DEC-013 |
@@ -167,6 +168,7 @@ Four phases, each delivering something usable on the air:
 | Phase | Delivers | Exit criterion |
 |---|---|---|
 | 1 | CW terminal: connect, key CW from typed text via the radio's keyer, decode received CW to text. Foundation: solution, `RadioEngine`, CI-V serial, audio capture, crude scope display | Call CQ; read the reply on screen |
+| 1.5 | The Explorer (HM-DEC-016): neighborhood map with activity dots, mode field guide with waterfall fingerprints, happening-now feed with one-click tune — fixture data behind IActivitySource | A newcomer clicks a story and the rig goes there |
 | 2 | Frequency control and scanning: tune, band presets, peak detection on scope data, CW-keying discrimination, click/auto-hop to a found signal | The app finds a CW signal Tim did not tune to |
 | 3 | Digital modes: `IModeDecoder` plugins (FT8 via ft8_lib wrap, PSK31, RTTY), auto-detection by convention + spectral signature + parallel probe decode | The app names the mode and decodes it without Tim guessing |
 | 4 | Polish and release: waterfall palettes/zoom, decoded-text overlays, settings persistence, installer, docs, public GitHub | A stranger installs it and works a QSO |

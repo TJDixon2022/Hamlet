@@ -4,6 +4,30 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-016
+date: 2026-08-12
+refs: FUTURE_GOALS.md FG-001/FG-002/FG-006, CLAUDE.md §2, src/HamManager.RadioEngine/Explore/
+---
+
+The Explorer is the product's center, and it is built UI-first: the app
+explores in the interface until the UI tells the story, then implements
+behind it. Phase 1.5 "Explorer" enters the plan between the CW terminal and
+scanning: the neighborhood map (the band drawn as named places with live
+activity), the mode field guide (sound, waterfall fingerprint, why it's
+cool), and the happening-now feed (spots as plain-language invitations with
+one-click tune). All three run on fixture data behind an IActivitySource
+seam today; live feeds (RBN, POTA, PSK Reporter, contest calendars) slide
+in behind the same seam later, exactly as Ic7300Rig slid in behind FakeRig.
+
+Tim's ruling on seeing the concept: ham radio is hidden behind the wizard's
+mask, and the app exists to take something hard and make it intuitive —
+rig-automation apps already exist and are not the goal. This partially
+graduates FG-001 (discovery UI now, live feeds still future), seeds FG-002
+(spots carry WPM), and previews FG-006 (the map is band coaching). The
+prime directive extends to spots: source and age always shown; sample data
+is labeled sample.
+
+---
 id: HM-DEC-015
 date: 2026-08-12
 refs: src/HamManager.App/Controls/, HM-DEC-005, FG-001
