@@ -226,6 +226,22 @@ public partial class MainWindowViewModel : ObservableObject
     /// <summary>Provenance for the class, shown in Settings and the About box.</summary>
     public string LicenseProvenance => LicenseResolver.DescribeProvenance(_settings.Operator);
 
+    /// <summary>
+    /// The Shakespeare line under the wordmark, or "" when there is none
+    /// (HM-DEC-039).
+    /// </summary>
+    [ObservableProperty]
+    private string _byline = "";
+
+    /// <summary>Which play the line was bent out of; shown on hover.</summary>
+    [ObservableProperty]
+    private string _bylineSource = "";
+
+    /// <summary>True when there is a line to show at all.</summary>
+    public bool HasByline => Byline.Length > 0;
+
+    partial void OnBylineChanged(string value) => OnPropertyChanged(nameof(HasByline));
+
     /// <summary>Collapsed-header line for the neighborhood map (HM-DEC-021).</summary>
     public string MapSummary => string.Create(CultureInfo.InvariantCulture,
         $"CW main street · {SelectedBand.Band.CwLowHz / 1e6:0.000}"
@@ -335,9 +351,38 @@ public partial class MainWindowViewModel : ObservableObject
         UpdateModeLine();
         UpdateSpotFreshness();
 
+        PickByline();
+
         _ = ReloadSpotsAsync("startup");
-        _ = ResolveLicenseClassAsync();
+        _ = ResolveProfileAsync();
         ApplyFeedTimers();
+    }
+
+    /// <summary>
+    /// Choose the line under the wordmark, avoiding last launch's
+    /// (HM-DEC-039).
+    /// </summary>
+    /// <remarks>
+    /// The chosen index is saved immediately rather than at shutdown, because
+    /// an app that is killed rather than closed would otherwise show the same
+    /// line forever — and this is meant to be a small surprise, not a fixture.
+    /// </remarks>
+    private void PickByline()
+    {
+        var picked = Bylines.Pick(_settings.LastBylineIndex);
+
+        if (picked is not { } choice)
+        {
+            // No file, or nothing in it. There is simply no byline; a
+            // placeholder would be worse than the silence.
+            return;
+        }
+
+        Byline = choice.Line.Text;
+        BylineSource = choice.Line.Source;
+
+        _settings.LastBylineIndex = choice.Index;
+        SettingsStore.Save(_settings);
     }
 
     /// <summary>
@@ -629,9 +674,13 @@ public partial class MainWindowViewModel : ObservableObject
         _activitySource = BuildSources();
         _ = ReloadSpotsAsync("settings");
 
-        // The callsign or the class may have changed while the dialog was
-        // open, so the lazy resolve gets another chance (HM-DEC-028).
-        _ = ResolveLicenseClassAsync();
+        // The callsign, the class or the grid may have changed while the
+        // dialog was open, so the lazy resolve gets another chance
+        // (HM-DEC-028, HM-DEC-037).
+        OnPropertyChanged(nameof(GridProvenance));
+        UpdateBandCharacter(DateTime.UtcNow);
+        UpdateSpotDistances();
+        _ = ResolveProfileAsync();
         UpdatePrivileges();
 
         // The interval may have changed while the dialog was open.
@@ -943,16 +992,18 @@ public partial class MainWindowViewModel : ObservableObject
         {
             var key = SpotViewModel.KeyFor(entry.Spot);
 
+            var distance = DescribeDistance(entry.Spot);
+
             if (existing.TryGetValue(key, out var vm))
             {
-                vm.Update(entry.Spot, now, entry.Reason);
+                vm.Update(entry.Spot, now, entry.Reason, distance);
                 rebuilt.Add(vm);
                 continue;
             }
 
             // Nothing is "new" on the first load — everything would be.
             rebuilt.Add(new SpotViewModel(
-                entry.Spot, now, isNew: _spotsEverLoaded, entry.Reason));
+                entry.Spot, now, isNew: _spotsEverLoaded, entry.Reason, distance));
 
             if (_spotsEverLoaded)
             {
@@ -995,7 +1046,7 @@ public partial class MainWindowViewModel : ObservableObject
     /// Turn ranked spots into map dots, with prominence following the rank so
     /// the map and the list agree about what matters (HM-DEC-023).
     /// </summary>
-    private static IReadOnlyList<Controls.ActivityDot> BuildDots(
+    private IReadOnlyList<Controls.ActivityDot> BuildDots(
         IReadOnlyList<RankedSpot> ranked, DateTime now)
     {
         if (ranked.Count == 0)
@@ -1021,10 +1072,61 @@ public partial class MainWindowViewModel : ObservableObject
                 entry.Spot.Source,
                 SpotFreshness.Describe(now - entry.Spot.HeardAtUtc),
                 entry.Reason,
-                prominence));
+                prominence)
+            {
+                Distance = DescribeDistance(entry.Spot),
+            });
         }
 
         return dots;
+    }
+
+    /// <summary>
+    /// How far away a spot is, or "" when the app cannot justify a figure
+    /// (HM-DEC-038).
+    /// </summary>
+    /// <param name="spot">The spot.</param>
+    /// <returns>e.g. "480 miles northeast", or "".</returns>
+    private string DescribeDistance(ActivitySpot spot)
+        => SpotDistance.Describe(
+            _settings.Operator.Position, spot, _settings.DistanceUnits);
+
+    /// <summary>
+    /// Recompute every visible distance.
+    /// </summary>
+    /// <remarks>
+    /// Called when the grid arrives, when it changes, and when the units
+    /// change — the moment a position becomes known, every card and dot on
+    /// screen can say something it could not say a second ago.
+    /// </remarks>
+    private void UpdateSpotDistances()
+    {
+        foreach (var spot in Spots)
+        {
+            spot.Distance = DescribeDistance(spot.Spot);
+        }
+
+        // The dots are a record type rebuilt wholesale, so the cheapest
+        // correct thing is to rebuild them from the spots that are already on
+        // the list rather than hold a second copy of the ranking.
+        if (ActivityDots.Count > 0)
+        {
+            ActivityDots = ActivityDots
+                .Select(d => d with
+                {
+                    Distance = DistanceForFrequency(d.FrequencyHz),
+                })
+                .ToList();
+        }
+    }
+
+    /// <summary>
+    /// The distance for whatever spot sits on this frequency, or "".
+    /// </summary>
+    private string DistanceForFrequency(long frequencyHz)
+    {
+        var match = Spots.FirstOrDefault(s => s.FrequencyHz == frequencyHz);
+        return match is null ? "" : DescribeDistance(match.Spot);
     }
 
     /// <summary>
@@ -1247,10 +1349,9 @@ public partial class MainWindowViewModel : ObservableObject
     /// unknown, the map draws no overlay, and Settings still takes a
     /// hand-picked answer.</para>
     /// </remarks>
-    public async Task ResolveLicenseClassAsync()
+    public async Task ResolveProfileAsync()
     {
-        if (!LicenseResolver.NeedsResolution(_settings.Operator)
-            && !_settings.Operator.LicenseClassWasSetByHand)
+        if (!ProfileResolver.NeedsLookup(_settings.Operator))
         {
             return;
         }
@@ -1266,18 +1367,23 @@ public partial class MainWindowViewModel : ObservableObject
         var cts = new CancellationTokenSource();
         _licenseLookup = cts;
 
-        var showNarration = LicenseResolver.NeedsResolution(_settings.Operator);
+        // Narrate only when something is actually missing. A profile that is
+        // complete still gets checked for a class disagreement, and announcing
+        // that check on every startup would be the app talking about itself.
+        var showNarration = LicenseResolver.NeedsResolution(_settings.Operator)
+                            || GridResolver.NeedsResolution(_settings.Operator);
+
         if (showNarration)
         {
-            StatusText = LicenseResolver.LookingUpNarration(callsign);
+            StatusText = ProfileResolver.LookingUpNarration(callsign);
         }
 
-        LicenseResolution resolution;
+        ProfileResolution resolution;
         try
         {
             using var lookup = new CallookCallsignLookup(
                 AboutViewModel.AppVersion, callsign);
-            var resolver = new LicenseResolver(lookup);
+            var resolver = new ProfileResolver(lookup);
             resolution = await resolver.ResolveAsync(_settings.Operator, cts.Token);
         }
         catch (OperationCanceledException)
@@ -1286,46 +1392,137 @@ public partial class MainWindowViewModel : ObservableObject
         }
         catch (Exception)
         {
-            // Never fatal: an unresolved class is a supported state (§8).
+            // Never fatal: an unresolved profile is a supported state (§8).
             return;
         }
 
-        switch (resolution.Outcome)
+        var changed = false;
+
+        switch (resolution.License.Outcome)
         {
             case LicenseResolutionOutcome.Resolved:
-                SettingsStore.Save(_settings);
-                StatusText = resolution.Narration;
+                changed = true;
                 AppEvents.LicenseClassResolved(
-                    _telemetry, PrivilegePlan.Describe(resolution.Found),
-                    resolution.SourceName);
+                    _telemetry, PrivilegePlan.Describe(resolution.License.Found),
+                    resolution.License.SourceName);
                 break;
 
             case LicenseResolutionOutcome.Mismatch:
                 // Shown, never applied. Their license, their call.
-                LicenseMismatch = resolution;
-                StatusText = resolution.Narration;
+                LicenseMismatch = resolution.License;
                 AppEvents.LicenseClassMismatch(
                     _telemetry,
-                    PrivilegePlan.Describe(resolution.Found),
-                    PrivilegePlan.Describe(resolution.Existing));
+                    PrivilegePlan.Describe(resolution.License.Found),
+                    PrivilegePlan.Describe(resolution.License.Existing));
                 break;
 
             case LicenseResolutionOutcome.NotFound:
-            case LicenseResolutionOutcome.Unavailable:
-                if (showNarration)
-                {
-                    StatusText = resolution.Narration;
-                }
-
                 AppEvents.LicenseClassLookupFailed(
-                    _telemetry, resolution.Outcome.ToString());
+                    _telemetry, resolution.License.Outcome.ToString());
                 break;
 
             default:
                 break;
         }
 
+        if (resolution.Unavailable)
+        {
+            AppEvents.LicenseClassLookupFailed(
+                _telemetry, LicenseResolutionOutcome.Unavailable.ToString());
+        }
+
+        switch (resolution.Grid.Outcome)
+        {
+            case GridResolutionOutcome.Resolved:
+                changed = true;
+
+                // The grid is what the band cards and every distance rest on,
+                // so the moment it arrives the screen has to catch up: nothing
+                // dimmed a second ago and the sun is known now (HM-DEC-033).
+                OnPropertyChanged(nameof(GridProvenance));
+                UpdateBandCharacter(DateTime.UtcNow);
+                UpdateSpotDistances();
+                break;
+
+            case GridResolutionOutcome.Mismatch:
+                GridMismatch = resolution.Grid;
+                break;
+
+            default:
+                break;
+        }
+
+        if (changed)
+        {
+            SettingsStore.Save(_settings);
+        }
+
+        if (showNarration || resolution.License.NeedsOperatorDecision)
+        {
+            var line = resolution.Narration;
+            if (line.Length > 0)
+            {
+                StatusText = line;
+            }
+        }
+
         UpdatePrivileges();
+    }
+
+    /// <summary>Provenance for the grid square, shown in Settings.</summary>
+    public string GridProvenance => GridResolver.DescribeProvenance(_settings.Operator);
+
+    /// <summary>
+    /// A lookup that disagrees with a hand-entered grid, awaiting the
+    /// operator's answer (HM-DEC-037). Null when there is nothing to ask.
+    /// </summary>
+    [ObservableProperty]
+    private GridResolution? _gridMismatch;
+
+    /// <summary>Take the looked-up grid in place of the hand-entered one.</summary>
+    [RelayCommand]
+    private void AcceptLookedUpGrid()
+    {
+        if (GridMismatch is not { } mismatch)
+        {
+            return;
+        }
+
+        var point = OperatorLocation.FromGrid(mismatch.Found);
+        if (point is not null)
+        {
+            _settings.Operator.SetPositionFromLookup(
+                point.Value, mismatch.SourceName, DateTime.UtcNow);
+            SettingsStore.Save(_settings);
+        }
+
+        GridMismatch = null;
+        OnPropertyChanged(nameof(GridProvenance));
+        UpdateBandCharacter(DateTime.UtcNow);
+        UpdateSpotDistances();
+        StatusText = GridResolver.DescribeProvenance(_settings.Operator);
+    }
+
+    /// <summary>Keep the grid the operator typed, and stop asking.</summary>
+    /// <remarks>
+    /// Re-stamps it as hand-entered today, so the same disagreement does not
+    /// reappear on every startup. Declining is an answer, and an app that asked
+    /// again tomorrow would not have heard it.
+    /// </remarks>
+    [RelayCommand]
+    private void KeepMyGrid()
+    {
+        if (GridMismatch is not { } mismatch)
+        {
+            return;
+        }
+
+        _settings.Operator.SetGridByHand(mismatch.Existing, DateTime.UtcNow);
+        SettingsStore.Save(_settings);
+
+        GridMismatch = null;
+        OnPropertyChanged(nameof(GridProvenance));
+        StatusText = GridResolver.DescribeProvenance(_settings.Operator);
     }
 
     /// <summary>Take the looked-up class in place of the hand-set one.</summary>
@@ -1562,6 +1759,18 @@ public partial class SpotViewModel : ObservableObject
     [ObservableProperty]
     private string _reason = "";
 
+    /// <summary>
+    /// How far away and roughly which way, e.g. "480 miles northeast", or ""
+    /// (HM-DEC-038).
+    /// </summary>
+    /// <remarks>
+    /// Blank whenever the grid is unknown or the source did not say where the
+    /// station is — an RBN spot never carries one, because what RBN states is
+    /// where a receiver is, not where the transmitter is.
+    /// </remarks>
+    [ObservableProperty]
+    private string _distance = "";
+
     private ActivitySpot _spot;
     private DateTime _newUntilUtc;
 
@@ -1570,9 +1779,13 @@ public partial class SpotViewModel : ObservableObject
     /// <param name="nowUtc">The reference time for the age line.</param>
     /// <param name="isNew">True when this spot was not in the previous set.</param>
     /// <param name="reason">The ranking's stated reason for this card.</param>
-    public SpotViewModel(ActivitySpot spot, DateTime nowUtc, bool isNew, string reason = "")
+    /// <param name="distance">How far away, or "" when it cannot be said.</param>
+    public SpotViewModel(
+        ActivitySpot spot, DateTime nowUtc, bool isNew,
+        string reason = "", string distance = "")
     {
         _spot = spot;
+        _distance = distance;
         Key = KeyFor(spot);
         Story = spot.Story;
         FrequencyHz = spot.FrequencyHz;
@@ -1609,7 +1822,9 @@ public partial class SpotViewModel : ObservableObject
     /// <param name="spot">The same spot, freshly reported.</param>
     /// <param name="nowUtc">Reference time.</param>
     /// <param name="reason">The ranking's reason, recomputed with the spot.</param>
-    public void Update(ActivitySpot spot, DateTime nowUtc, string reason = "")
+    /// <param name="distance">How far away, recomputed with the spot.</param>
+    public void Update(
+        ActivitySpot spot, DateTime nowUtc, string reason = "", string distance = "")
     {
         _spot = spot;
         IsNew = false;
@@ -1618,6 +1833,7 @@ public partial class SpotViewModel : ObservableObject
             Reason = reason;
         }
 
+        Distance = distance;
         Reage(nowUtc);
     }
 
@@ -1627,7 +1843,8 @@ public partial class SpotViewModel : ObservableObject
     public void Reage(DateTime nowUtc)
     {
         Provenance = $"{_spot.Mode} · {_spot.Source} · "
-            + SpotFreshness.Describe(nowUtc - _spot.HeardAtUtc);
+            + SpotFreshness.Describe(nowUtc - _spot.HeardAtUtc)
+            + (Distance.Length > 0 ? $" · {Distance}" : "");
 
         if (IsNew && nowUtc >= _newUntilUtc)
         {

@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Hamlet.RadioEngine.Explore;
 using Hamlet.RadioEngine.Telemetry;
 
 namespace Hamlet.App.Settings;
@@ -71,6 +72,24 @@ public sealed class AppSettings
     /// license. It is read at one moment: before Hamlet keys a transmitter.
     /// </remarks>
     public bool RestrictTransmitToPrivileges { get; set; } = true;
+
+    /// <summary>
+    /// Whether distances are spoken in miles or kilometers (HM-DEC-038).
+    /// </summary>
+    /// <remarks>
+    /// Miles, because the operator is American, the licence is American and the
+    /// regulations are American — the same reasoning as the spelling standard
+    /// (HM-DEC-035). It is a setting rather than a constant because the app is
+    /// headed for a public release where most of the world counts the other
+    /// way, and the default is picked rather than asked (§0.4).
+    /// </remarks>
+    public DistanceUnits DistanceUnits { get; set; } = DistanceUnits.Miles;
+
+    /// <summary>
+    /// Which byline was shown last launch, so the next one differs
+    /// (HM-DEC-039). −1 when none has been shown.
+    /// </summary>
+    public int LastBylineIndex { get; set; } = -1;
 
     /// <summary>The refresh interval the app ships with, in minutes.</summary>
     public const int DefaultSpotRefreshMinutes = 5;
