@@ -69,11 +69,17 @@
                                Margin="0,0,0,8"
                                Foreground="{StaticResource HmAmberBrush}" />
                 </StackPanel>
-                <Button Grid.Column="1"
-                        Classes="hm-connect"
-                        Content="Connect"
-                        Command="{Binding ToggleConnectCommand}"
-                        VerticalAlignment="Center" />
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10"
+                            VerticalAlignment="Center">
+                    <ComboBox ItemsSource="{Binding AvailablePorts}"
+                              SelectedItem="{Binding SelectedPort}"
+                              IsEnabled="{Binding !IsConnected}"
+                              MinWidth="220" VerticalAlignment="Center" />
+                    <Button Classes="hm-connect"
+                            Content="{Binding ConnectButtonText}"
+                            Command="{Binding ToggleConnectCommand}"
+                            VerticalAlignment="Center" />
+                </StackPanel>
             </Grid>
         </Border>
 

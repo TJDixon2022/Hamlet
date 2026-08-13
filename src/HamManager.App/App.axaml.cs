@@ -3,7 +3,6 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using HamManager.App.ViewModels;
 using HamManager.App.Views;
-using HamManager.RadioEngine.Rig;
 
 namespace HamManager.App;
 
@@ -18,13 +17,10 @@ public partial class App : Application
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            // FakeRig until the CI-V IRig lands (HM-DEC-003). Swapping the
-            // implementation here is the only change the UI will feel.
-            IRig rig = new FakeRig();
-
+            // The VM owns rig selection now: simulated rig or a live port.
             desktop.MainWindow = new MainWindow
             {
-                DataContext = new MainWindowViewModel(rig),
+                DataContext = new MainWindowViewModel(),
             };
         }
 

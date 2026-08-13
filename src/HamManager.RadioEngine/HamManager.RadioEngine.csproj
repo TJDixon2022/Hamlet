@@ -10,4 +10,8 @@
 
   <!-- CLAUDE.md §0.1: this project references no UI assembly, ever. -->
 
+  <ItemGroup>
+    <PackageReference Include="System.IO.Ports" Version="8.0.0" />
+  </ItemGroup>
+
 </Project>
