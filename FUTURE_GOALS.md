@@ -9,6 +9,38 @@ Ids are `FG-###` and are never reused.
 
 ---
 
+## FG-008 — RBN reverse lookup: "did anyone hear me?"
+
+RBN skimmers report every signal they decode, which means that after the
+operator calls CQ, Hamlet can show who around the world heard it. Nobody has
+to answer for this to work.
+
+**Why this one matters more than its size suggests.** The person Hamlet is
+built for has never made a contact, and the thing standing in the way is not
+equipment. It is the moment of pressing the key and waiting, with no way to
+tell whether the silence means nobody was interested or the signal never left
+the house. Those two silences feel identical and mean completely different
+things.
+
+This answers that, and it answers it with no social risk at all. A map of
+twelve skimmers that decoded your callsign is proof the antenna works, the
+radio works, the licence is real, and somebody on the far side of the country
+heard you. Nobody has to like you for it to happen. For an operator frightened
+of calling, that is an enormous first step, and it is one nobody else has to
+participate in.
+
+The plumbing already exists. RBN is integrated, the spot window is already
+retained and deduplicated, and filtering it by the operator's own callsign
+rather than by band is a small change to a class that is already there.
+
+Waits on the transmit path, since there is nothing to hear until Hamlet can
+key the radio. When it lands it inherits the honesty rules the rest of the spot
+handling already follows (HM-DEC-025): a skimmer report is a third party's
+claim, so it carries its source and its age, and silence from the network is
+reported as silence from the network rather than as silence on the air.
+
+---
+
 ## FG-001 — Activity discovery: "what's happening on the air right now"
 
 **Partially graduated 2026-08-12 (HM-DEC-016):** the discovery UI is phase

@@ -107,6 +107,16 @@ End on the Explorer's lead card: a real spot, with the reason it suits them,
 and a button that tunes there. The first five minutes end with somebody
 calling CQ and a way to hear them.
 
+### ONB-007 — What you would actually say
+**Built 2026-08-13 (HM-DEC-043), and like ONB-002 it no longer depends on this
+step.** The Explorer carries a worked contact, both sides, in the operator's own
+callsign, with Morse and voice on one toggle.
+
+What remains for onboarding is the pointing: somebody who reached ONB-006 and
+is looking at a real station calling CQ needs to be told, once, that the panel
+below shows exactly what to say to them. The panel does the teaching. This step
+only has to make sure nobody misses that it is there.
+
 ---
 
 ## Candidates — not yet placed
@@ -123,7 +133,7 @@ into the step list by ruling.
 | ONB-C05 | Transmit safety | Dummy load, guard rail default, where the override lives (HM-DEC-008). Only relevant once transmit exists |
 | ONB-C06 | Logging setup | Callsign is already known; ADIF import of an existing log (FG-004) |
 | ONB-C07 | Activity source consent | Which spot networks to enable, and what Hamlet sends them (HM-DEC-024) |
-| ONB-C08 | "What is a QSO?" glossary | The vocabulary barrier is part of the mystique; may be better as always-available hover help than an onboarding step |
+| ONB-C08 | ~~"What is a QSO?" glossary~~ | **Answered 2026-08-13 (HM-DEC-041): built as always-available hover help, which is what this row suspected.** Sixty-seven terms marked automatically wherever the app's own copy uses them, so nothing has to be taught up front and nothing is on screen for somebody who already knows it |
 
 **On ONB-C01, and the pattern it sets.** Standing principle 1 says competence on
 the user's behalf: where Hamlet can find something out, it finds it out. The

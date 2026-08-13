@@ -4,6 +4,161 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-043
+date: 2026-08-13
+refs: src/Hamlet.RadioEngine/Explore/ContactShape.cs, HM-DEC-021, HM-DEC-041, HM-DEC-042, ONB-006
+---
+
+The Explorer carries a panel showing what a contact actually sounds like:
+a worked example, both sides, from the first CQ to the sign-off, annotated in
+plain language, with Morse and voice as a toggle on the one panel.
+
+THE REAL TERROR IS NOT THE RADIO. It is not knowing what to say. A contact has
+a shape, close to a ritual, and everybody knows it except the person who has
+never made one. Nothing in the license exam teaches it and no manual writes it
+down, because to everybody already doing it the shape is too obvious to
+mention. That silence is the last wall, and this takes it down by simply
+printing the thing.
+
+Morse and voice share one panel because they are the same shape with different
+words, and noticing that is most of the lesson. Learn it once and it works on
+any band in any mode.
+
+The example uses the operator's own callsign throughout. Reading your own call
+in the worked example is the difference between a manual and a rehearsal, and
+it costs nothing to do.
+
+The mechanical parts are explained where they arrive rather than in a legend:
+DE is French for "from" and has meant "this is" since the landline telegraph;
+K is "go ahead"; BK is a quicker handover between two stations already talking;
+SK ends a contact rather than an over. The callsign goes twice because the
+first one is often half-missed while somebody is still tuning you in.
+
+TONE MATTERS MORE HERE THAN ANYWHERE ELSE IN THE APP, so it is enforced rather
+than hoped for: a test fails the panel if any of its copy says "you must",
+"make sure you", "be careful", "required" or "correctly". Nobody should finish
+reading this feeling like there is a test. The closing paragraph says outright
+that operators get callsigns wrong and forget where they are, and that the
+worst realistic outcome is nobody answering, which happens to everybody several
+times a week.
+
+Editorial content marked [extrapolated], the same status as the neighborhood
+map and the field guide. It is common convention rather than regulation, and
+nothing in it is required by anybody.
+
+---
+id: HM-DEC-042
+date: 2026-08-13
+refs: src/Hamlet.RadioEngine/Explore/SignalReport.cs, HM-DEC-025, HM-DEC-041
+---
+
+Signal reports are made legible wherever they appear. A spot carrying a
+signal-to-noise figure shows what it means in words as well as the number, and
+the RST convention is explained in one paragraph wherever a report is shown.
+
+"You're five by nine" is in every contact ever made and nobody explains it. A
+newcomer hears a number pair, has no idea whether it is good news, and cannot
+tell whether the answer they give back is a lie. The glossary carries the
+definition; this carries the part a definition cannot, which is what a given
+figure means for the person deciding whether to answer.
+
+The number stays beside the word. "24 dB over the noise, which is strong" gives
+the operator both the verdict and the evidence it came from (§0.0.1), and after
+a few dozen cards the scale starts to belong to them rather than to the app.
+
+A MEASURED FIGURE AND A REPORTED ONE ARE DIFFERENT THINGS and are kept apart.
+The skimmer measured signal-to-noise with a computer. The person guessed,
+generously, in a convention where almost everybody says 59 whatever they heard.
+Nothing converts between them, because a measured number dressed up as
+somebody's opinion would be inventing a courtesy.
+
+The guidance never promises the operator will hear it, and a test holds that
+line. A skimmer measured its own receiver on its own antenna, and turning that
+into "you will hear this" is exactly the overreach HM-DEC-009 forbids.
+
+---
+id: HM-DEC-041
+date: 2026-08-13
+refs: data/glossary.json, src/Hamlet.RadioEngine/Explore/Glossary.cs, CLAUDE.md §0.7, HM-DEC-034
+---
+
+Hamlet marks the jargon in its own copy and explains it on hover, from a
+glossary data file, matched automatically at render time. **If Hamlet says it,
+Hamlet explains it.**
+
+THE VOCABULARY IS THE GATE. This hobby runs on shared shorthand, most of it
+inherited from telegraph operators who died before anybody using this app was
+born, and none of it is written down anywhere a newcomer would look. The old
+boys club runs on that vocabulary, and handing out the dictionary is the most
+direct thing a piece of software can do about it.
+
+THE DEFINITIONS DO EMOTIONAL WORK, not only semantic. That is the difference
+between a dictionary and the app being on the operator's side. Where the
+etymology demystifies it is included, because knowing why the jargon is strange
+makes it feel like an inherited quirk rather than a password somebody forgot to
+give you. QRP is five watts and a point of pride rather than a limitation. 73
+is never 73s, since the number is already plural. An activator genuinely wants
+to hear from you, even if you are slow, even if you are nervous.
+
+MARKING IS AUTOMATIC rather than hand-tagged. Copy is scanned at render time,
+so a string written next month inherits the glossary for free and adding a term
+lights it up everywhere it already appears. Hand-tagging would guarantee the
+opposite: the copy and the glossary would drift apart the first time somebody
+was in a hurry, and the drift would be silent (§0).
+
+THE MARK IS QUIET. A dotted rule in a muted brown, visible if you are looking
+for it and invisible if you are not. Somebody who has known what CQ means for
+forty years should never notice this exists, and nothing anywhere says
+"tutorial mode". That restraint is the whole design: the person this is for has
+spent six years feeling like the hobby has a password he was never given, and
+an app that decorated every third word with a help icon would be saying the
+same thing in a friendlier font.
+
+The matching rules exist because a false positive is worse than a miss. Whole
+words only, so "band" does not fire inside "bandwidth". Case-insensitive, and
+the copy's own casing survives. First occurrence only within a block, or a
+paragraph reads as a language exercise. And never inside a callsign or a
+frequency, because underlining half of K3CQ would look like the app had misread
+something the operator can plainly see.
+
+Matching is a pure function whose runs reassemble into exactly the input, so a
+renderer cannot lose or duplicate a character by using it.
+
+---
+id: HM-DEC-040
+date: 2026-08-13
+refs: CLAUDE.md §0.7, tests/Hamlet.App.Tests/VoiceTests.cs, HM-DEC-034
+---
+
+The voice standard gains a mechanical constraint: **em dashes are used
+sparingly, at most one in a paragraph and usually none.**
+
+A dash is usually a sentence that has not decided where it ends. A comma
+carries most of them, and a full stop carries the rest better than either.
+Warm writing breathes with periods; short sentences are allowed to land on
+their own, and a pause where the reader should reflect is worth more than a
+clause bolted on with a dash.
+
+The rule arrived with a sweep rather than only as a note, and the sweep recast
+the copy rather than swapping the character for a comma. Reading each passage
+back as something somebody would say out loud left several of them shorter than
+they started and gave a few the reason they had been leaning on the dash to
+imply.
+
+IT IS ENFORCED RATHER THAN RECORDED. `VoiceTests` walks the source, joins runs
+of concatenated literals into the passage the operator actually reads, skips
+comments and identifiers, and fails on the second dash. A rule that lives only
+in CLAUDE.md is a rule the next session rediscovers by breaking it. The sweep
+was checked against a deliberate violation before being trusted, because a
+directory-walking test that silently matches nothing passes forever.
+
+What is outside it: records, comments and code. This file and CLAUDE.md are
+written for whoever maintains Hamlet rather than for the operator, and they are
+deliberately full of dashes. The rotating bylines are outside it too, in effect
+rather than by exception: each is a single line carrying at most one dash,
+where the dash is the joke's pivot.
+
+---
 id: HM-DEC-039
 date: 2026-08-13
 refs: data/bylines.json, src/Hamlet.App/Bylines.cs, HM-DEC-034
