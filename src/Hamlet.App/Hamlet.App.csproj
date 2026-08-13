@@ -28,4 +28,13 @@
     <ProjectReference Include="..\Hamlet.RadioEngine\Hamlet.RadioEngine.csproj" />
   </ItemGroup>
 
+  <!-- The sample provider is an implementation detail of playback with a
+       promise attached: it must hand back every generated sample, in order,
+       for every mode. The test reaches it directly rather than the type being
+       widened to public just to be provable — the same trade the engine makes
+       for its telemetry format. -->
+  <ItemGroup>
+    <InternalsVisibleTo Include="Hamlet.App.Tests" />
+  </ItemGroup>
+
 </Project>

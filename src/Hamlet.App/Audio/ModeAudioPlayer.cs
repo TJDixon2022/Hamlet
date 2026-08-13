@@ -88,7 +88,7 @@ public sealed class ModeAudioPlayer : IDisposable
         {
             lock (_gate)
             {
-                var provider = new FloatArraySampleProvider(samples, ModeAudio.SampleRate);
+                var provider = new FloatSampleProvider(samples, ModeAudio.SampleRate);
                 var device = new WaveOutEvent { DesiredLatency = 120 };
                 device.Init(provider);
                 device.PlaybackStopped += OnPlaybackStopped;
@@ -152,35 +152,5 @@ public sealed class ModeAudioPlayer : IDisposable
     {
         Current = null;
         StateChanged?.Invoke(this, EventArgs.Empty);
-    }
-
-    /// <summary>Feeds a generated buffer to NAudio, once.</summary>
-    private sealed class FloatArraySampleProvider : ISampleProvider
-    {
-        private readonly float[] _samples;
-        private int _position;
-
-        public FloatArraySampleProvider(float[] samples, int sampleRate)
-        {
-            _samples = samples;
-            WaveFormat = WaveFormat.CreateIeeeFloatWaveFormat(sampleRate, 1);
-        }
-
-        public WaveFormat WaveFormat { get; }
-
-        public int Read(float[] buffer, int offset, int count)
-        {
-            var remaining = _samples.Length - _position;
-            var take = Math.Min(remaining, count);
-
-            if (take <= 0)
-            {
-                return 0;
-            }
-
-            Array.Copy(_samples, _position, buffer, offset, take);
-            _position += take;
-            return take;
-        }
     }
 }
