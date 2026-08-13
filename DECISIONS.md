@@ -4,6 +4,103 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-027
+date: 2026-08-13
+refs: src/Hamlet.App/Controls/WaterfallControl.cs, src/Hamlet.RadioEngine/Training/ModeAudio.cs, HM-DEC-006, HM-DEC-005, HM-DEC-012, FG-002
+---
+
+The waterfall renderer is built now, against synthesised frames of the same
+shape CI-V `0x27` will deliver, so phase 2 swaps the data source and not the
+UI. The field guide's audio is synthesised rather than recorded.
+
+Building the renderer against a fake source is not a compromise, it is the
+point. `SpectrumFrame` carries a span, a timestamp and a run of one-byte
+amplitudes because that is what the IC-7300's scope reports; when the radio
+starts filling those frames the control does not change. And a renderer that
+exists is a renderer being exercised — the alternative was writing it blind in
+phase 2 against hardware, with no way to tell a rendering bug from a CI-V
+parsing bug.
+
+Built as HM-DEC-006 requires: the control owns a `WriteableBitmap` and
+subscribes to the engine's event directly, and no spectrum data passes through
+data binding. Frames arrive on the source's thread, which does nothing but
+write ints into a plain array under a short lock; a UI-side timer copies that
+array into the bitmap. Measured at 0.012 ms to synthesise a frame and 0.006 ms
+to scroll and map it, against a 40 ms budget at twenty-five frames a second.
+
+The waterfall is a dark instrument surface on warm paper. That is consistent
+with HM-DEC-012 rather than an exception to it — the same reasoning already
+applied to the rig's LCD. Faint detail is what a waterfall is for, and faint
+detail on white is unreadable.
+
+Clicking the waterfall tunes to that frequency. It shares its frequency
+mapping with the dial tape and the neighborhood map, so a click lands where
+the operator is pointing and all three markers move together. That is phase 2's
+click-a-signal gesture, built early because the training radio makes it useful
+before any hardware exists.
+
+Field-guide audio is generated, not recorded. Recorded clips carry a licence
+and a provenance question into a GPL-3.0 repository, cannot be parameterised,
+and cannot be asserted on. Generated audio is licence-free, byte-for-byte
+deterministic, testable, and adjustable — CW at 12, 18 and 25 WPM is how
+somebody finds the speed they can actually copy, which is the groundwork FG-002
+needs. SSB is offered tuned and mistuned side by side, because hearing those
+two back to back is the fastest way to learn what the tuning knob is for. Each
+card's fingerprint is animated by the same synthesiser that draws the
+waterfall, so the picture on the card and the picture on the panel are the same
+picture and recognising one is recognising the other.
+
+---
+id: HM-DEC-026
+date: 2026-08-13
+refs: src/Hamlet.RadioEngine/Training/TrainingSpectrumSource.cs, src/Hamlet.RadioEngine/Rig/TrainingRig.cs, src/Hamlet.RadioEngine/Training/TrainingBandPlan.cs, HM-DEC-009, HM-DEC-016
+---
+
+The simulated radio is a training feature, not a test double. The waterfall
+states that its signals are simulated whenever the connected rig is simulated,
+and that statement is derived from connection state rather than set, so the app
+cannot show synthetic signals unlabelled. Synthesised signals sit at real
+band-plan frequencies, so practice teaches the real band.
+
+`FakeRig` becomes `TrainingRig` and the port list says "Training radio (no
+hardware)". Someone licensed since 2020 who still cannot tell one signal from
+another needs to practise, and practising on the air means owning a radio,
+having an antenna up, and hoping the band is open tonight. Here they can learn
+the waterfall and the sound of each mode with nothing plugged in. It still
+backs UI development and engine tests; what changed is that it is now something
+the operator chooses on purpose.
+
+CONNECTION STATE IS THE MODE, and structurally so. `IRig.IsSimulated` and
+`ISpectrumSource.IsSimulated` are get-only properties answered by the
+implementation, and the shell's label is a derived property with no setter
+either. There is no practice mode to enter, no watermark toggle, and no
+setting that could put synthetic signals on screen unlabelled — not because
+everyone remembers not to add one, but because there is nothing to add it to.
+Tests assert the absence of a setter at every level and fail if a settings
+property with a suggestive name ever appears. This is HM-DEC-009 made
+structural: the honest thing is the only thing the type system permits.
+
+Signals are placed by reading `NeighborhoodPlan`, never by writing frequencies
+down again. Each neighborhood's own label says which modes it hosts, so CW
+lands in the CW segments, FT8 in FT8 city, voice up in the phone segment, and
+the fast lane sends at contest speed while main street stays copyable. A second
+copy of the band plan would drift from the first, and the day it drifted the
+app would be teaching a band that does not exist while the map beside it said
+otherwise. A test walks every signal on every band and asserts it landed in a
+neighborhood documented to host its mode.
+
+Each mode carries its real bandwidth — 31 Hz for PSK31, 50 for FT8, 150 for CW,
+2.4 kHz for SSB — and its real rhythm: FT8 synchronised to the UTC
+quarter-minute, CW keyed at the stated WPM by the PARIS standard, RTTY
+alternating between two tones 170 Hz apart. Those numbers are the lesson. A
+width chosen because it drew nicely would teach a falsehood to someone who has
+no way to check it yet.
+
+Synthesis is deterministic given a seed, with elapsed time passed in and no
+clock read anywhere below the frame pump, so a test can assert on exact bytes
+and a practice session can be replayed.
+
+---
 id: HM-DEC-025
 date: 2026-08-13
 refs: src/Hamlet.App/ViewModels/SpotRanking.cs, src/Hamlet.App/ViewModels/LeadCard.cs, src/Hamlet.App/ViewModels/BandConditions.cs, HM-DEC-009, HM-DEC-020, HM-DEC-024

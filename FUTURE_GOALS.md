@@ -55,6 +55,19 @@ copy" answerable: filter live CQs by speed, suggest stations at or just
 above the operator's comfort rate, nudge upward over time. The app as the
 patient Elmer every new CW operator wishes they had. Extends FG-001.
 
+**Groundwork laid 2026-08-13 (HM-DEC-026, HM-DEC-027):** the training radio
+puts synthesised CW on a waterfall at a known WPM, and the field guide plays
+Morse at 12, 18 and 25 WPM. Between them an operator can find the speed they
+actually copy without waiting for a real station to oblige — which is the
+number this goal needs and had no way to obtain.
+
+The path this opens, as direction and not scope: structured CW practice off
+the air. Send a call at a chosen speed, let the operator type what they heard,
+score it, and move the speed up when they are ready. The synthesiser already
+produces real Morse from real text at an exact speed, so what is missing is the
+exercise and the scoring, not the radio. Nothing here is scheduled; it becomes
+scope by a ruling (§2).
+
 ## FG-003 — Voice-to-CW
 
 Speech-to-text feeding the CW transmit path: the operator talks, the rig
