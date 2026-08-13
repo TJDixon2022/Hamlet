@@ -262,7 +262,27 @@
     },
     {
       "term": "shack",
-      "explanation": "Wherever your radio lives, whether that's a spare room, a corner of a desk, or a rucksack on a hill. The word carries no expectation about size or expense, whatever the photographs online suggest."
+      "explanation": "Wherever your radio lives, whether that's a spare room, a corner of a desk, or a rucksack on a hill. The word carries no expectation about size or expense, whatever the photographs online suggest. Plenty of people work the world from a windowsill."
+    },
+    {
+      "term": "antenna",
+      "explanation": "The wire or aluminium that turns the transmitter's power into a radio wave, and by far the most important thing in the station. A modest radio on a good antenna beats an expensive one on a poor antenna every single time, which is good news when the good antenna is a length of wire that costs almost nothing."
+    },
+    {
+      "term": "compromise antenna",
+      "explanation": "Anything that had to be shortened, bent, hidden in an attic or slung round a balcony because a full-size one would not fit. Most stations have one. It costs a few dB, which is far less than it sounds like, and an antenna that is up and working beats a perfect one still in its box."
+    },
+    {
+      "term": "attic antenna",
+      "explanation": "A wire strung through the roof space, usually because an outdoor one is not allowed or not practical. It loses something to the roof and the wiring around it, and people work the world with them anyway. Being on the air at all is most of the battle."
+    },
+    {
+      "term": "five watts",
+      "explanation": "The usual ceiling for low-power operating, and about what a nightlight draws. Contacts across oceans on five watts happen every day, and the people who do it on purpose are the ones least likely to be impressed by an amplifier."
+    },
+    {
+      "term": "watt",
+      "explanation": "The unit of transmitter power. Going from five watts to fifty is a real improvement but a smaller one than it sounds, since it takes roughly a fourfold increase to move a signal report by one point. A better antenna almost always buys more than a bigger radio."
     },
     {
       "term": "Technician",

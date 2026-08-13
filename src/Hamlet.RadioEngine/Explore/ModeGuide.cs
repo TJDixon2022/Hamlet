@@ -48,12 +48,15 @@ public static class ModeGuide
         new ModeInfo("CW", "Morse code", "Musical beeps", SignatureKind.Dots,
             "Learnable",
             "The original digital mode, and your brain is the decoder. A century "
-            + "old and still the best watts-to-distance deal in radio.",
+            + "old and still the best watts-to-distance deal in radio, which is "
+            + "why five watts and a wire gets so much further here than anywhere "
+            + "else on the dial.",
             7_030_000, ModeFamily.Cw),
         new ModeInfo("FT8", "Robot handshakes", "15-second warbles",
             SignatureKind.Blocks, "Easy",
-            "Works the world on a wet-noodle antenna. Watching your callsign "
-            + "come back from Japan never gets old.",
+            "Works the world on a compromise antenna and a few watts. Watching "
+            + "your callsign come back from Japan never gets old, and nobody on "
+            + "the other end knows or cares what your station cost.",
             7_074_000, ModeFamily.Digital),
         new ModeInfo("SSB", "Voice", "Duck talk until tuned",
             SignatureKind.Smear, "Easy",
