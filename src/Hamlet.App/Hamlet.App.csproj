@@ -28,6 +28,13 @@
     <ProjectReference Include="..\Hamlet.RadioEngine\Hamlet.RadioEngine.csproj" />
   </ItemGroup>
 
+  <!-- The bylines live in /data with everything else the app reads, and are
+       embedded so they ship with it (HM-DEC-039). One file, no copy to drift. -->
+  <ItemGroup>
+    <EmbeddedResource Include="..\..\data\bylines.json"
+                      LogicalName="Hamlet.App.Data.bylines.json" />
+  </ItemGroup>
+
   <!-- The sample provider is an implementation detail of playback with a
        promise attached: it must hand back every generated sample, in order,
        for every mode. The test reaches it directly rather than the type being
