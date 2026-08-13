@@ -4,6 +4,36 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-013
+date: 2026-08-12
+refs: CLAUDE.md §9.2, §7
+---
+
+Every delivery ends with a check-in block: the exact git add and git commit
+commands, ready to paste, message in §7 format covering precisely what the
+zip contains.
+
+Tim commits every file drop. Composing the commit message for Claude's work
+is Claude's job — Claude knows what changed and why; making Tim reconstruct
+it invites messages that drift from the diff, and an uncommitted drop with
+no prepared message invites an unrecorded one. If a delivery amends a prior
+uncommitted drop, the block says so and amends.
+
+---
+id: HM-DEC-012
+date: 2026-08-12
+refs: src/HamManager.App/App.axaml
+---
+
+The UI is a light theme with color: warm paper ground, white panels, deep
+amber frequency face, decode green. Not dark mode.
+
+Tim's ruling on seeing the first shell. Dark is the SDR-software convention,
+which is exactly why this is recorded — a future session would otherwise
+"correct" back to it. A dark variant may return later as a user option;
+the default is light.
+
+---
 id: HM-DEC-011
 date: 2026-08-12
 closes: HM-OPEN-001

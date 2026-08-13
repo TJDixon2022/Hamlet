@@ -12,22 +12,49 @@
         <vm:MainWindowViewModel />
     </Design.DataContext>
 
+    <Window.Styles>
+        <Style Selector="Button.hm-connect">
+            <Setter Property="Background" Value="{StaticResource HmAmberBrush}" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Padding" Value="22,10" />
+            <Setter Property="CornerRadius" Value="6" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+        </Style>
+        <Style Selector="Button.hm-connect:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource HmAmberDeepBrush}" />
+            <Setter Property="Foreground" Value="White" />
+        </Style>
+        <Style Selector="Button.hm-connect:pressed /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource HmAmberDeepBrush}" />
+            <Setter Property="Foreground" Value="White" />
+        </Style>
+        <Style Selector="TextBlock.hm-panel-label">
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+        </Style>
+    </Window.Styles>
+
     <Grid RowDefinitions="Auto,Auto,*,Auto" Margin="16">
 
         <!-- Header -->
         <StackPanel Grid.Row="0" Spacing="2" Margin="4,0,4,12">
-            <TextBlock Text="Ham Manager"
-                       FontSize="26" FontWeight="SemiBold"
-                       Foreground="{StaticResource HmTextPrimaryBrush}" />
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <TextBlock Text="Ham"
+                           FontSize="26" FontWeight="Bold"
+                           Foreground="{StaticResource HmAmberBrush}" />
+                <TextBlock Text="Manager"
+                           FontSize="26" FontWeight="Bold"
+                           Foreground="{StaticResource HmBlueBrush}" />
+            </StackPanel>
             <TextBlock Text="The IC-7300 command console — the air, decoded."
                        FontSize="13"
                        Foreground="{StaticResource HmTextMutedBrush}" />
         </StackPanel>
 
-        <!-- Frequency face -->
+        <!-- Frequency face: amber family -->
         <Border Grid.Row="1"
-                Background="{StaticResource HmPanelBrush}"
-                BorderBrush="{StaticResource HmPanelEdgeBrush}"
+                Background="{StaticResource HmAmberTintBrush}"
+                BorderBrush="{StaticResource HmAmberEdgeBrush}"
                 BorderThickness="1" CornerRadius="8"
                 Padding="24,16" Margin="0,0,0,12">
             <Grid ColumnDefinitions="*,Auto">
@@ -35,50 +62,52 @@
                             VerticalAlignment="Center">
                     <TextBlock Text="{Binding FrequencyDisplay}"
                                FontFamily="{StaticResource HmMonoFont}"
-                               FontSize="44"
-                               Foreground="{StaticResource HmAmberBrush}" />
+                               FontSize="44" FontWeight="SemiBold"
+                               Foreground="{StaticResource HmAmberDeepBrush}" />
                     <TextBlock Text="MHz  ·  CW"
                                FontSize="16" VerticalAlignment="Bottom"
                                Margin="0,0,0,8"
-                               Foreground="{StaticResource HmTextMutedBrush}" />
+                               Foreground="{StaticResource HmAmberBrush}" />
                 </StackPanel>
                 <Button Grid.Column="1"
+                        Classes="hm-connect"
                         Content="Connect"
                         Command="{Binding ToggleConnectCommand}"
-                        VerticalAlignment="Center"
-                        Padding="20,10" />
+                        VerticalAlignment="Center" />
             </Grid>
         </Border>
 
-        <!-- Body: waterfall placeholder over CW terminal placeholder -->
+        <!-- Body: waterfall (blue family) over CW terminal (green family) -->
         <Grid Grid.Row="2" RowDefinitions="3*,2*">
 
             <Border Grid.Row="0"
-                    Background="{StaticResource HmPanelBrush}"
-                    BorderBrush="{StaticResource HmPanelEdgeBrush}"
+                    Background="{StaticResource HmBlueTintBrush}"
+                    BorderBrush="{StaticResource HmBlueEdgeBrush}"
                     BorderThickness="1" CornerRadius="8"
                     Margin="0,0,0,12">
                 <Grid>
                     <TextBlock Text="Waterfall"
+                               Classes="hm-panel-label"
                                Margin="16,12"
                                VerticalAlignment="Top"
-                               Foreground="{StaticResource HmTextMutedBrush}" />
+                               Foreground="{StaticResource HmBlueBrush}" />
                     <TextBlock Text="Spectrum scope lands here — CI-V 0x27, HM-DEC-005"
                                HorizontalAlignment="Center" VerticalAlignment="Center"
                                FontFamily="{StaticResource HmMonoFont}"
-                               Foreground="{StaticResource HmPanelEdgeBrush}"
+                               Foreground="{StaticResource HmBlueEdgeBrush}"
                                FontSize="14" />
                 </Grid>
             </Border>
 
             <Border Grid.Row="1"
-                    Background="{StaticResource HmPanelBrush}"
-                    BorderBrush="{StaticResource HmPanelEdgeBrush}"
+                    Background="{StaticResource HmGreenTintBrush}"
+                    BorderBrush="{StaticResource HmGreenEdgeBrush}"
                     BorderThickness="1" CornerRadius="8">
                 <Grid RowDefinitions="Auto,*">
                     <TextBlock Grid.Row="0" Text="CW terminal"
+                               Classes="hm-panel-label"
                                Margin="16,12,16,4"
-                               Foreground="{StaticResource HmTextMutedBrush}" />
+                               Foreground="{StaticResource HmGreenBrush}" />
                     <TextBlock Grid.Row="1"
                                Text="&gt; decoded text will arrive here — phase 1"
                                Margin="16,4,16,12"
@@ -89,10 +118,10 @@
             </Border>
         </Grid>
 
-        <!-- Status bar -->
+        <!-- Status bar: slate -->
         <Border Grid.Row="3"
-                Background="{StaticResource HmPanelBrush}"
-                BorderBrush="{StaticResource HmPanelEdgeBrush}"
+                Background="{StaticResource HmSlateTintBrush}"
+                BorderBrush="{StaticResource HmSlateEdgeBrush}"
                 BorderThickness="1" CornerRadius="6"
                 Padding="12,6" Margin="0,12,0,0">
             <TextBlock Text="{Binding StatusText}"

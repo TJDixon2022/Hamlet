@@ -25,6 +25,7 @@ on stale rules and will do so confidently.
 |---|---|
 | `OPEN_ISSUES.md` | Questions, with owner and severity |
 | `DECISIONS.md` | Rulings, newest first, never edited |
+| `FUTURE_GOALS.md` | Aspirations (`FG-###`) — direction, not scope; graduate only by ruling |
 | `data/vendor/` | Pinned snapshots of documents cited from outside this repository (see §4) |
 | `tools/` | The repo-listing and get-files scripts — the chat-session workflow |
 
@@ -141,6 +142,8 @@ this table is the index.
 
 | Date | Decision | Why | Ref |
 |---|---|---|---|
+| 2026-08-12 | **Every delivery ends with a ready-to-paste check-in block: exact git commands, §7-format message covering the zip's contents.** Amends §9.2. | Tim commits every file drop; composing the message for Claude's work is Claude's job, and an uncommitted drop with no message invites an unrecorded one. | HM-DEC-013 |
+| 2026-08-12 | **UI is light theme with color — warm paper, white panels, deep amber, decode green. Not dark mode.** | Tim's ruling; recorded because dark is the SDR convention a future session would revert to. | HM-DEC-012 |
 | 2026-08-12 | **The UI framework is Avalonia 11 on .NET 8.** Closes HM-OPEN-001. | Cross-platform reach for the open-source release; WPF-shaped enough that Tim's MVVM fluency transfers; the WriteableBitmap difference is confined to the waterfall control. | HM-DEC-011 |
 | 2026-08-12 | **Question protocol: one question at a time, probed to depth before the next; every question a decision ask — options A/B/C with pros and cons in a table.** Amends §0.3. | Walls of text are the enemy; an unstructured question invites an unstructured answer. | HM-DEC-010 |
 | 2026-08-12 | **Prime directive: never present a guess as a decode.** | The app exists to tell the operator what is on the air; a confident wrong answer is worse than none. | HM-DEC-009 |
@@ -404,7 +407,7 @@ No loose files, no path instructions in prose.
 Files compile without modification. Too large for one response → split into
 multiple complete files. Ask for files by repo path, not by name.
 
-### 9.2 Every delivery is presented as four lists — ABSOLUTE
+### 9.2 Every delivery is presented as four lists and a check-in — ABSOLUTE
 
 No preamble between them:
 
@@ -418,6 +421,12 @@ No preamble between them:
 Bullets, not paragraphs. "Need from you" may be empty, and an empty list is a
 real answer. Reasoning goes in the delivered file, where it survives the
 conversation.
+
+**Every delivery ends with a Check-in block** (HM-DEC-013): the exact
+`git add` and `git commit` commands, ready to paste, message in §7 format
+covering precisely what the zip contains. Tim commits every file drop; he
+never composes the message for Claude's work. If a delivery amends an
+uncommitted prior drop, the block says so and amends instead.
 
 ### 9.3 The repo listing — RUN THIS FIRST, chat sessions
 
