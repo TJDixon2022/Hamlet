@@ -42,6 +42,10 @@ public sealed class AppSettings
     /// <see cref="SpotRefreshChoices"/>.</summary>
     public int SpotRefreshMinutes { get; set; } = DefaultSpotRefreshMinutes;
 
+    /// <summary>Per-panel expand/collapse state, keyed by panel id. An absent
+    /// key means expanded — a new panel arrives open (HM-DEC-021).</summary>
+    public Dictionary<string, bool> PanelExpanded { get; set; } = new();
+
     /// <summary>Telemetry category switches. Absent category means enabled —
     /// all categories default on (HM-DEC-018).</summary>
     public Dictionary<string, bool> TelemetryCategories { get; set; } = new();
@@ -71,6 +75,16 @@ public sealed class AppSettings
     public int EnabledTelemetryCategoryCount
         => Enum.GetValues<TelemetryCategory>().Count(IsTelemetryEnabled);
 
+    /// <summary>True when the panel is expanded. Unknown panels are expanded.</summary>
+    /// <param name="panelKey">Stable panel id, e.g. "spots".</param>
+    public bool IsPanelExpanded(string panelKey)
+        => !PanelExpanded.TryGetValue(panelKey, out var open) || open;
+
+    /// <summary>Record a panel's expand/collapse state.</summary>
+    /// <param name="panelKey">Stable panel id, e.g. "spots".</param>
+    /// <param name="expanded">True when the panel is open.</param>
+    public void SetPanelExpanded(string panelKey, bool expanded)
+        => PanelExpanded[panelKey] = expanded;
 }
 
 /// <summary>Loads and saves <see cref="AppSettings"/>, and owns the paths

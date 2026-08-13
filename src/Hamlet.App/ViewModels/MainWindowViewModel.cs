@@ -74,6 +74,7 @@ public partial class MainWindowViewModel : ObservableObject
     private string _selectedPort = SimulatedRig;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(MapSummary))]
     private BandButtonViewModel _selectedBand;
 
     [ObservableProperty]
@@ -100,6 +101,27 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty]
     private FreshnessLevel _spotsFreshness = FreshnessLevel.Fresh;
 
+    [ObservableProperty]
+    private bool _mapExpanded = true;
+
+    [ObservableProperty]
+    private bool _tapeExpanded = true;
+
+    [ObservableProperty]
+    private bool _waterfallExpanded = true;
+
+    [ObservableProperty]
+    private bool _terminalExpanded = true;
+
+    [ObservableProperty]
+    private bool _storyExpanded = true;
+
+    [ObservableProperty]
+    private bool _guideExpanded = true;
+
+    [ObservableProperty]
+    private bool _spotsExpanded = true;
+
     /// <summary>The field guide entries.</summary>
     public IReadOnlyList<ModeInfo> ModeCards { get; } = ModeGuide.Modes;
 
@@ -112,12 +134,28 @@ public partial class MainWindowViewModel : ObservableObject
     /// <summary>The simulated rig plus every serial port on this machine.</summary>
     public ObservableCollection<string> AvailablePorts { get; }
 
+    /// <summary>Collapsed-header line for the neighborhood map (HM-DEC-021).</summary>
+    public string MapSummary => string.Create(CultureInfo.InvariantCulture,
+        $"CW main street · {SelectedBand.Band.CwLowHz / 1e6:0.000}"
+        + $"–{SelectedBand.Band.CwHighHz / 1e6:0.000}");
+
+    /// <summary>Collapsed-header line for the waterfall.</summary>
+    public string WaterfallSummary => "not yet receiving";
+
+    /// <summary>Collapsed-header line for the CW terminal.</summary>
+    public string TerminalSummary => "no decode yet";
+
+    /// <summary>Collapsed-header line for the field guide.</summary>
+    public string GuideSummary => $"{ModeCards.Count} modes";
+
     /// <summary>Designer constructor.</summary>
     public MainWindowViewModel() : this(new AppSettings(), null)
     {
     }
 
     /// <summary>Runtime constructor.</summary>
+    /// <param name="settings">Live settings; panel and feed state persist here.</param>
+    /// <param name="telemetry">The writer, or null.</param>
     public MainWindowViewModel(AppSettings settings, JsonlTelemetry? telemetry)
     {
         _settings = settings;
@@ -133,6 +171,14 @@ public partial class MainWindowViewModel : ObservableObject
         _selectedBand = Bands.FirstOrDefault(b => b.Band.Name == settings.LastBand)
                         ?? Bands.First(b => b.Band.Name == "40 m");
         _frequencyHz = _selectedBand.Band.JumpHz;
+
+        _mapExpanded = settings.IsPanelExpanded(PanelKeys.Map);
+        _tapeExpanded = settings.IsPanelExpanded(PanelKeys.Tape);
+        _waterfallExpanded = settings.IsPanelExpanded(PanelKeys.Waterfall);
+        _terminalExpanded = settings.IsPanelExpanded(PanelKeys.Terminal);
+        _storyExpanded = settings.IsPanelExpanded(PanelKeys.Story);
+        _guideExpanded = settings.IsPanelExpanded(PanelKeys.Guide);
+        _spotsExpanded = settings.IsPanelExpanded(PanelKeys.Spots);
 
         AvailablePorts = new ObservableCollection<string> { SimulatedRig };
         foreach (var name in SafePortNames())
@@ -273,7 +319,31 @@ public partial class MainWindowViewModel : ObservableObject
         SettingsStore.Save(_settings);
     }
 
-    /// <summary>Reload the happening-now feed.</summary>
+    partial void OnMapExpandedChanged(bool value) => PersistPanel(PanelKeys.Map, value);
+
+    partial void OnTapeExpandedChanged(bool value) => PersistPanel(PanelKeys.Tape, value);
+
+    partial void OnWaterfallExpandedChanged(bool value)
+        => PersistPanel(PanelKeys.Waterfall, value);
+
+    partial void OnTerminalExpandedChanged(bool value)
+        => PersistPanel(PanelKeys.Terminal, value);
+
+    partial void OnStoryExpandedChanged(bool value) => PersistPanel(PanelKeys.Story, value);
+
+    partial void OnGuideExpandedChanged(bool value) => PersistPanel(PanelKeys.Guide, value);
+
+    partial void OnSpotsExpandedChanged(bool value) => PersistPanel(PanelKeys.Spots, value);
+
+    private void PersistPanel(string key, bool expanded)
+    {
+        _settings.SetPanelExpanded(key, expanded);
+        SettingsStore.Save(_settings);
+        AppEvents.PanelToggled(_telemetry, key, expanded);
+    }
+
+    /// <summary>Reload the happening-now feed by hand. Always works, whatever
+    /// the interval setting says, and resets the timer (HM-DEC-020).</summary>
     [RelayCommand]
     private async Task RefreshSpotsAsync()
     {
@@ -590,11 +660,40 @@ public partial class MainWindowViewModel : ObservableObject
     }
 }
 
+/// <summary>The persisted panel ids (HM-DEC-021). Strings typed once here,
+/// never at a call site, so a typo cannot silently lose a saved state.</summary>
+public static class PanelKeys
+{
+    /// <summary>The neighborhood map.</summary>
+    public const string Map = "map";
+
+    /// <summary>The dial tape.</summary>
+    public const string Tape = "tape";
+
+    /// <summary>The waterfall.</summary>
+    public const string Waterfall = "waterfall";
+
+    /// <summary>The CW terminal.</summary>
+    public const string Terminal = "terminal";
+
+    /// <summary>The Explorer's story card.</summary>
+    public const string Story = "story";
+
+    /// <summary>The mode field guide.</summary>
+    public const string Guide = "guide";
+
+    /// <summary>The happening-now feed.</summary>
+    public const string Spots = "spots";
+}
+
 /// <summary>One band button: the band plus its best-bet ranking for the hour
 /// the app started. FG-001 replaces the ranking with live spot data.</summary>
 public sealed class BandButtonViewModel
 {
     /// <summary>Creates the button model.</summary>
+    /// <param name="band">The band this button selects.</param>
+    /// <param name="isBestBet">True on the top-ranked band for the hour.</param>
+    /// <param name="isSecondBet">True on the runner-up band.</param>
     public BandButtonViewModel(CwBand band, bool isBestBet, bool isSecondBet)
     {
         Band = band;

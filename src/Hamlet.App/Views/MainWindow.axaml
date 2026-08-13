@@ -122,7 +122,8 @@
             </ItemsControl.ItemTemplate>
         </ItemsControl>
 
-        <!-- Frequency face: the rig's own LCD on the console -->
+        <!-- Frequency face: the rig's own LCD on the console. Deliberately
+             NOT collapsible (HM-DEC-021) — it is the app's anchor. -->
         <Border Grid.Row="2"
                 Background="{StaticResource HmAmberTintBrush}"
                 BorderBrush="{StaticResource HmAmberEdgeBrush}"
@@ -143,15 +144,15 @@
         <!-- Map, tape, then explorer beside waterfall/terminal -->
         <Grid Grid.Row="3" RowDefinitions="Auto,Auto,*">
 
-            <Border Grid.Row="0"
-                    Background="{StaticResource HmBlueTintBrush}"
-                    BorderBrush="{StaticResource HmBlueEdgeBrush}"
-                    BorderThickness="1" CornerRadius="8"
-                    Padding="16,10" Margin="0,0,0,10">
+            <ctl:CollapsiblePanel Grid.Row="0" Margin="0,0,0,10"
+                                  Family="Blue"
+                                  Title="Neighborhood map"
+                                  Summary="{Binding MapSummary}"
+                                  IsExpanded="{Binding MapExpanded, Mode=TwoWay}">
                 <StackPanel Spacing="6">
-                    <TextBlock Text="the neighborhood map — click a neighborhood for its story, drag to tune"
-                               Classes="hm-panel-label"
-                               Foreground="{StaticResource HmBlueBrush}" />
+                    <TextBlock Text="click a neighborhood for its story, drag to tune"
+                               FontSize="12"
+                               Foreground="{StaticResource HmTextMutedBrush}" />
                     <ctl:NeighborhoodMapControl Height="44"
                         FrequencyHz="{Binding FrequencyHz}"
                         BandLowHz="{Binding SelectedBand.Band.LowHz}"
@@ -160,17 +161,19 @@
                         ActivityFrequencies="{Binding ActivityFrequencies}"
                         SelectCommand="{Binding ShowNeighborhoodCommand}" />
                 </StackPanel>
-            </Border>
+            </ctl:CollapsiblePanel>
 
-            <Border Grid.Row="1"
-                    Background="White"
-                    BorderBrush="{StaticResource HmBlueEdgeBrush}"
-                    BorderThickness="1" CornerRadius="8"
-                    Padding="0,8" Margin="0,0,0,10">
+            <ctl:CollapsiblePanel Grid.Row="1" Margin="0,0,0,10"
+                                  Family="Amber"
+                                  Title="Dial tape"
+                                  Summary="{Binding ModeLineText}"
+                                  SummaryBrush="{Binding IsInsideCwSegment,
+                                      Converter={x:Static ctl:ModeLineBrushConverter.Instance}}"
+                                  IsExpanded="{Binding TapeExpanded, Mode=TwoWay}">
                 <StackPanel Spacing="4">
-                    <TextBlock Text="dial tape — drag to tune, flick for momentum, wheel = ±10 Hz"
-                               Classes="hm-panel-label" HorizontalAlignment="Center"
-                               Foreground="{StaticResource HmBlueBrush}" />
+                    <TextBlock Text="drag to tune, flick for momentum, wheel = ±10 Hz"
+                               FontSize="12" HorizontalAlignment="Center"
+                               Foreground="{StaticResource HmTextMutedBrush}" />
                     <ctl:DialTapeControl Height="74"
                         FrequencyHz="{Binding FrequencyHz}"
                         BandLowHz="{Binding SelectedBand.Band.LowHz}"
@@ -182,52 +185,50 @@
                                Foreground="{Binding IsInsideCwSegment,
                                    Converter={x:Static ctl:ModeLineBrushConverter.Instance}}" />
                 </StackPanel>
-            </Border>
+            </ctl:CollapsiblePanel>
 
             <Grid Grid.Row="2" ColumnDefinitions="3*,2*">
 
-                <Grid Grid.Column="0" RowDefinitions="3*,2*" Margin="0,0,10,0">
-                    <Border Grid.Row="0"
-                            Background="{StaticResource HmBlueTintBrush}"
-                            BorderBrush="{StaticResource HmBlueEdgeBrush}"
-                            BorderThickness="1" CornerRadius="8"
-                            Margin="0,0,0,10">
-                        <Grid>
-                            <TextBlock Text="Waterfall" Classes="hm-panel-label"
-                                       Margin="16,12" VerticalAlignment="Top"
-                                       Foreground="{StaticResource HmBlueBrush}" />
+                <!-- Stacked rather than proportioned: a collapsed panel must
+                     hand its space to the panel below it, not leave a hole
+                     where a fixed grid row used to be (HM-DEC-021). -->
+                <ScrollViewer Grid.Column="0" Margin="0,0,10,0"
+                              VerticalScrollBarVisibility="Auto">
+                    <StackPanel Spacing="10">
+
+                        <ctl:CollapsiblePanel Family="Blue"
+                                              Title="Waterfall"
+                                              Summary="{Binding WaterfallSummary}"
+                                              IsExpanded="{Binding WaterfallExpanded, Mode=TwoWay}">
                             <TextBlock Text="Spectrum scope lands here — CI-V 0x27"
-                                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       MinHeight="300"
                                        FontFamily="{StaticResource HmMonoFont}"
                                        Foreground="{StaticResource HmBlueEdgeBrush}" FontSize="13" />
-                        </Grid>
-                    </Border>
+                        </ctl:CollapsiblePanel>
 
-                    <Border Grid.Row="1"
-                            Background="{StaticResource HmGreenTintBrush}"
-                            BorderBrush="{StaticResource HmGreenEdgeBrush}"
-                            BorderThickness="1" CornerRadius="8">
-                        <Grid RowDefinitions="Auto,*">
-                            <TextBlock Grid.Row="0" Text="CW terminal" Classes="hm-panel-label"
-                                       Margin="16,12,16,4"
-                                       Foreground="{StaticResource HmGreenBrush}" />
-                            <TextBlock Grid.Row="1"
-                                       Text="&gt; decoded text will arrive here — phase 1"
-                                       Margin="16,4,16,12"
+                        <ctl:CollapsiblePanel Family="Green"
+                                              Title="CW terminal"
+                                              Summary="{Binding TerminalSummary}"
+                                              IsExpanded="{Binding TerminalExpanded, Mode=TwoWay}">
+                            <TextBlock Text="&gt; decoded text will arrive here — phase 1"
+                                       MinHeight="150"
                                        FontFamily="{StaticResource HmMonoFont}"
                                        Foreground="{StaticResource HmGreenBrush}"
                                        VerticalAlignment="Top" />
-                        </Grid>
-                    </Border>
-                </Grid>
+                        </ctl:CollapsiblePanel>
+                    </StackPanel>
+                </ScrollViewer>
 
                 <!-- The Explorer (HM-DEC-016) -->
                 <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto">
                     <StackPanel Spacing="10">
 
-                        <Border Background="White"
-                                BorderBrush="{StaticResource HmSlateEdgeBrush}"
-                                BorderThickness="1" CornerRadius="8" Padding="14,12">
+                        <ctl:CollapsiblePanel Family="Amber"
+                                              Title="Field notes"
+                                              Summary="{Binding StoryTitle}"
+                                              IsExpanded="{Binding StoryExpanded, Mode=TwoWay}">
                             <StackPanel Spacing="6">
                                 <Grid ColumnDefinitions="*,Auto">
                                     <TextBlock Grid.Column="0" Text="{Binding StoryTitle}"
@@ -249,65 +250,85 @@
                                         Command="{Binding TuneToCommand}"
                                         CommandParameter="{Binding StoryTuneHz}" />
                             </StackPanel>
-                        </Border>
+                        </ctl:CollapsiblePanel>
 
-                        <TextBlock Text="Field guide" Classes="hm-panel-label"
-                                   Foreground="{StaticResource HmBlueBrush}" />
-                        <ItemsControl ItemsSource="{Binding ModeCards}">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <UniformGrid Columns="2" />
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate x:DataType="explore:ModeInfo">
-                                    <Button Margin="0,0,6,6" Padding="8"
-                                            HorizontalAlignment="Stretch"
-                                            HorizontalContentAlignment="Left"
-                                            Background="White"
-                                            BorderBrush="{StaticResource HmSlateEdgeBrush}"
-                                            BorderThickness="1" CornerRadius="8"
-                                            Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).ShowModeCommand}"
-                                            CommandParameter="{Binding}">
-                                        <StackPanel Orientation="Horizontal" Spacing="8">
-                                            <ctl:SignatureGlyphControl Kind="{Binding Signature}" />
-                                            <StackPanel VerticalAlignment="Center">
-                                                <TextBlock Text="{Binding Name}" FontSize="13"
-                                                           FontWeight="SemiBold" />
-                                                <TextBlock Text="{Binding Tagline}" FontSize="11"
-                                                           Foreground="{StaticResource HmTextMutedBrush}" />
+                        <ctl:CollapsiblePanel Family="Blue"
+                                              Title="Field guide"
+                                              Summary="{Binding GuideSummary}"
+                                              IsExpanded="{Binding GuideExpanded, Mode=TwoWay}">
+                            <ItemsControl ItemsSource="{Binding ModeCards}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <UniformGrid Columns="2" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="explore:ModeInfo">
+                                        <Button Margin="0,0,6,6" Padding="8"
+                                                HorizontalAlignment="Stretch"
+                                                HorizontalContentAlignment="Left"
+                                                Background="White"
+                                                BorderBrush="{StaticResource HmSlateEdgeBrush}"
+                                                BorderThickness="1" CornerRadius="8"
+                                                Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).ShowModeCommand}"
+                                                CommandParameter="{Binding}">
+                                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                                <ctl:SignatureGlyphControl Kind="{Binding Signature}" />
+                                                <StackPanel VerticalAlignment="Center">
+                                                    <TextBlock Text="{Binding Name}" FontSize="13"
+                                                               FontWeight="SemiBold" />
+                                                    <TextBlock Text="{Binding Tagline}" FontSize="11"
+                                                               Foreground="{StaticResource HmTextMutedBrush}" />
+                                                </StackPanel>
                                             </StackPanel>
-                                        </StackPanel>
-                                    </Button>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
+                                        </Button>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ctl:CollapsiblePanel>
 
-                        <TextBlock Text="Happening now" Classes="hm-panel-label"
-                                   Foreground="{StaticResource HmGreenBrush}" />
-                        <ItemsControl ItemsSource="{Binding Spots}">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate x:DataType="vm:SpotViewModel">
-                                    <Border Background="{StaticResource HmGreenTintBrush}"
-                                            BorderBrush="{StaticResource HmGreenEdgeBrush}"
-                                            BorderThickness="1" CornerRadius="8"
-                                            Padding="10,8" Margin="0,0,0,8">
-                                        <Grid ColumnDefinitions="*,Auto">
-                                            <StackPanel Grid.Column="0" Spacing="2" Margin="0,0,8,0">
-                                                <TextBlock Text="{Binding Story}" FontSize="12"
-                                                           TextWrapping="Wrap" />
-                                                <TextBlock Text="{Binding Provenance}" FontSize="10"
-                                                           Foreground="{StaticResource HmTextMutedBrush}" />
-                                            </StackPanel>
-                                            <Button Grid.Column="1" Content="{Binding TuneLabel}"
-                                                    FontSize="12" VerticalAlignment="Center"
-                                                    Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).TuneToCommand}"
-                                                    CommandParameter="{Binding FrequencyHz}" />
-                                        </Grid>
-                                    </Border>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
+                        <ctl:CollapsiblePanel Family="Green"
+                                              Title="Happening now"
+                                              Summary="{Binding SpotsSummary}"
+                                              SummaryBrush="{Binding SpotsFreshness,
+                                                  Converter={x:Static ctl:FreshnessBrushConverter.Instance}}"
+                                              IsExpanded="{Binding SpotsExpanded, Mode=TwoWay}">
+                            <ItemsControl ItemsSource="{Binding Spots}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:SpotViewModel">
+                                        <Border Background="{StaticResource HmGreenTintBrush}"
+                                                BorderBrush="{StaticResource HmGreenEdgeBrush}"
+                                                BorderThickness="1" CornerRadius="8"
+                                                Padding="10,8" Margin="0,0,0,8">
+                                            <Grid ColumnDefinitions="*,Auto">
+                                                <StackPanel Grid.Column="0" Spacing="2" Margin="0,0,8,0">
+                                                    <TextBlock Text="{Binding Story}" FontSize="12"
+                                                               TextWrapping="Wrap" />
+                                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                                        <Border Background="{StaticResource HmAmberTintBrush}"
+                                                                BorderBrush="{StaticResource HmAmberEdgeBrush}"
+                                                                BorderThickness="1" CornerRadius="6"
+                                                                Padding="5,0"
+                                                                VerticalAlignment="Center"
+                                                                IsVisible="{Binding IsNew}">
+                                                            <TextBlock Text="new" FontSize="10"
+                                                                       Foreground="{StaticResource HmAmberDeepBrush}" />
+                                                        </Border>
+                                                        <TextBlock Text="{Binding Provenance}" FontSize="10"
+                                                                   VerticalAlignment="Center"
+                                                                   Foreground="{StaticResource HmTextMutedBrush}" />
+                                                    </StackPanel>
+                                                </StackPanel>
+                                                <Button Grid.Column="1" Content="{Binding TuneLabel}"
+                                                        FontSize="12" VerticalAlignment="Center"
+                                                        Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).TuneToCommand}"
+                                                        CommandParameter="{Binding FrequencyHz}" />
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ctl:CollapsiblePanel>
 
                     </StackPanel>
                 </ScrollViewer>

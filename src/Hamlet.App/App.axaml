@@ -8,6 +8,14 @@
     </Application.Styles>
 
     <Application.Resources>
+      <ResourceDictionary>
+        <ResourceDictionary.MergedDictionaries>
+            <!-- The collapsible-panel theme (HM-DEC-021). Self-contained:
+                 it references no palette resource, so merge order is not a
+                 trap for a future session. -->
+            <ResourceInclude Source="avares://Hamlet.App/Controls/CollapsiblePanel.axaml" />
+        </ResourceDictionary.MergedDictionaries>
+
         <!-- Hamlet palette (HM-DEC-012): light with COLOR. Each panel
              owns a color family: amber = tuning, blue = spectrum,
              green = decode. -->
@@ -52,6 +60,7 @@
         <SolidColorBrush x:Key="HmSlateEdgeBrush" Color="{StaticResource HmSlateEdge}" />
 
         <FontFamily x:Key="HmMonoFont">Consolas, Menlo, DejaVu Sans Mono, monospace</FontFamily>
+      </ResourceDictionary>
     </Application.Resources>
 
 </Application>
