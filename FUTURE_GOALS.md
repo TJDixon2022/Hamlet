@@ -12,7 +12,20 @@ Ids are `FG-###` and are never reused.
 ## FG-001 — Activity discovery: "what's happening on the air right now"
 
 **Partially graduated 2026-08-12 (HM-DEC-016):** the discovery UI is phase
-1.5 on fixture data; the live feeds below remain future work.
+1.5, built on fixture data.
+
+**Live feeds graduated 2026-08-13 (HM-DEC-024, HM-DEC-025):** RBN, POTA and
+SOTA are implemented behind `IActivitySource`, the list is ranked for newcomer
+usefulness with a stated reason on every card, and a lead card and
+band-conditions line answer "where do I start" and "is tonight worth it".
+SOTA ships switched off pending registration with the SOTA Reflector's
+API-consumers group and approval of AI-written code — see HM-DEC-024.
+
+**What remains future work from the table below:** PSK Reporter, DX cluster
+spots, contest calendars and solar/propagation data. Propagation data is the
+biggest gap: the band-conditions line currently reasons only from what the
+spot networks report, so it can say a band is quiet but not why, and cannot
+yet say which band is likely to be open to where.
 
 The hardest thing in ham radio for a newer operator is finding something
 interesting in the static. The data to fix that already exists, live, free:

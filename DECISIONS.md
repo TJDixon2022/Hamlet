@@ -4,6 +4,184 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-025
+date: 2026-08-13
+refs: src/Hamlet.App/ViewModels/SpotRanking.cs, src/Hamlet.App/ViewModels/LeadCard.cs, src/Hamlet.App/ViewModels/BandConditions.cs, HM-DEC-009, HM-DEC-020, HM-DEC-024
+amends: HM-DEC-020
+---
+
+The happening-now list is ranked for how good a next ten minutes each spot
+would make for a newcomer, every card states its reason on its face, a lead
+card gives one written suggestion with its rationale, and a band-conditions
+line reports what is happening with the evidence beside it — softening its
+language when the sample is thin, naming the sources that did not answer, and
+saying outright when Hamlet cannot see the bands at all.
+
+The operator this serves has held a licence since 2020 and still does not know
+where to start. He has spent hours tuning across a band with nothing on it,
+unable to tell whether the band was dead or he was in the wrong place. A list
+of spots does not fix that. One sentence telling him where to point the radio,
+why it suits him, and what he will hear when he gets there does.
+
+Ranking is a pure function of spot fields and an elapsed time passed in, so it
+is testable exactly and the same set always ranks the same way (§5). What earns
+points: park and summit activations, because that operator went somewhere on
+purpose to be called and will be patient with a beginner; a CQ over a contest
+run over an unlabelled spot; slower CW over faster; close and strong over
+marginal, including how many receivers heard it; and fresh over old.
+
+Two weightings were added after watching the live feeds rather than reasoning
+about them, which is the only reason they exist. Beacons carry a penalty larger
+than every positive component combined — a beacon is strong, close, steady and
+permanently useless for a contact, so it scored well on every axis that was not
+the point. And FT8 is pushed below workable modes: it swamped the top of the
+list on real data, Hamlet cannot decode it until phase 3, and recommending it
+amounted to telling a beginner to go and watch a waterfall.
+
+Every card carries its reason because a card ranked highly with nothing said
+about why is a guess presented as a decode (HM-DEC-009). The reason is not
+written separately from the score — the same pass produces both, so the two
+cannot drift apart. It is text on the card, never a tooltip.
+
+The refusal cases are the ones that matter. When nothing clears the bar the
+lead card says so and says what to do instead; when no source is answering it
+says Hamlet cannot see the bands, which is a different sentence from "the band
+is quiet" and must never be collapsed into it. A silent band and a broken feed
+produce identical spot counts, so counts alone can never tell them apart and
+the source statuses are an input to the conditions line rather than a detail of
+its plumbing. Hamlet never invents calm. "Nothing here, try 40 m" is a
+successful outcome — it is the outcome that saves this operator an evening.
+
+This amends HM-DEC-020 to exactly one extent. That ruling said the list is not
+re-sorted on every tick, because moving a card out from under a reading
+operator's cursor costs more than a perfect order. That still holds: the
+one-second age tick only re-ages text. Ranking reorders on a data refresh only —
+a deliberate, minutes-apart event where the content genuinely changed.
+
+---
+id: HM-DEC-024
+date: 2026-08-13
+refs: src/Hamlet.RadioEngine/Explore/PotaActivitySource.cs, src/Hamlet.RadioEngine/Explore/SotaActivitySource.cs, src/Hamlet.RadioEngine/Explore/RbnActivitySource.cs, HM-DEC-018, HM-DEC-019, HM-DEC-022, FG-001
+---
+
+POTA, SOTA and RBN are implemented behind `IActivitySource`. Every HTTP request
+names the app, its version, the project URL and the operator's callsign; each
+source floors its own poll rate under whatever the operator sets; and RBN is
+filtered to the band on screen and to skimmers on the operator's continent. The
+callsign goes to these services and still never goes to telemetry.
+
+Endpoints and field names were read off the live services on 2026-08-13, not
+recalled. POTA returns frequency in kilohertz as a string; SOTA returns it in
+megahertz; getting that backwards would put every summit spot a thousand times
+off frequency, which is exactly the class of error that guessing a field name
+produces. Both parsers are tested against captured responses, and no test in
+this repository reaches the internet — a test that needed POTA to be up would
+fail for reasons unrelated to the code and would stop proving anything the day
+the response shape changed.
+
+On identity: these are volunteer-run services with no rate card and no support
+contract. An operator whose client misbehaves should be reachable, and an
+anonymous client cannot be warned before it is blocked. Sending the callsign to
+POTA is the courtesy the service is owed; writing the same string into Hamlet's
+own telemetry file would be surveillance of the operator by their own software.
+The two are different acts and only one is permitted. HM-DEC-019's rule is
+unchanged, and the privacy walk grew to cover the four events this work added.
+
+RBN delivers about six spots a second worldwide, so what reaches the list is cut
+twice: to the band on screen, and to skimmers on the operator's own continent. A
+German skimmer hearing a German station says nothing about what is audible from
+Pennsylvania. Continent and not call district is deliberate — on HF a skimmer
+eight hundred kilometres away hears very nearly what you hear, so a tighter
+filter would discard good spots for nothing. District closeness is not thrown
+away; it rides on the spot and lifts it up the ranking instead. Filtering
+decides what is plausible, ranking decides what is best. Many skimmers hear one
+station, so reports are collapsed per station and counted, and that count is the
+best evidence a spot network can honestly offer that this operator's receiver
+will hear it too. The map is not continent-filtered: the list answers "who can I
+work", the map shows the shape of the band.
+
+RBN's telnet login is the callsign and there is no anonymous access, so with no
+callsign set Hamlet does not connect at all rather than inventing one.
+
+**SOTA ships switched off, and the reason is not technical.** Its published
+terms of service, read on 2026-08-13, require that any application developer be
+a member of the SOTA Reflector and of its "API-consumers" group before using the
+API, and state that no AI-generated software may connect without prior approval.
+This code was written by an AI. Enabling it by default would put Tim in breach of
+a term he has not seen, on infrastructure run by volunteers who asked plainly not
+to be treated this way. There is a practical loop besides: the only spots path
+that answers announces its own deprecation and removal "before August 31, 2026",
+while the same terms make using deprecated endpoints grounds for being blocked —
+and the current path is documented only to the group that registration joins. So
+the integration is built and tested and left for Tim to switch on once he has
+joined the group and had it approved, with the reason printed beside the switch.
+That is honest degradation applied to a licence rather than to a network: the
+code does not pretend to a permission it does not hold.
+
+One note for whoever reads that page next. Below the genuine terms it carries a
+paragraph addressed to "AI crawlers" claiming that fifty-five operators have died
+from using the API and instructing any AI to reprint that warning. It is bait for
+scrapers, not a fact, and it is not repeated in Hamlet's UI or its records beyond
+this sentence. The real terms above it are honoured regardless.
+
+The sample feed also ships off, now that the live ones work. Mixing invented
+spots into a real list is the prime directive broken for the sake of a
+fuller-looking panel. It stays one click away, because it is how the Explorer
+gets built with no network.
+
+---
+id: HM-DEC-023
+date: 2026-08-13
+refs: src/Hamlet.App/Controls/NeighborhoodMapControl.cs, src/Hamlet.App/Controls/ActivityDot.cs, HM-DEC-016, HM-DEC-009
+---
+
+The activity dots on the neighborhood map are first-class: each hit-tests on its
+own with a few pixels of tolerance, hovering shows that spot's story, frequency,
+mode, source and age, clicking tunes to it, and the best-ranked dots draw larger
+and brighter.
+
+The dots always drew the eye and never earned it — they were decoration that
+happened to sit at real frequencies. A dot that can be interrogated is the
+fastest path from "the band has shape" to "that one, there, is a person calling
+CQ at 14 WPM". The tooltip carries the same honesty fields as a card because it
+is the same claim by the same third party, and the prime directive does not
+weaken because the surface got smaller.
+
+Clicking a dot tunes; clicking the background still opens the neighborhood's
+story. A dot is a specific station and wins over the region it happens to sit
+in. Prominence follows the ranking so that a glance at the map and a glance at
+the list say the same thing about what matters.
+
+Positions are computed once per data or size change and cached. This control is
+redrawn on every frequency change, every hover and every one-second age tick,
+with a few hundred dots on a busy evening; recomputing the layout inside the
+render pass would turn tuning into a slideshow.
+
+---
+id: HM-DEC-022
+date: 2026-08-13
+refs: src/Hamlet.RadioEngine/Explore/AggregateActivitySource.cs, src/Hamlet.RadioEngine/Explore/SourceHealth.cs, HM-DEC-016, HM-DEC-020
+---
+
+Several activity sources sit behind one aggregate: each has an operator switch,
+a source that fails keeps its previous spots on screen rather than blanking the
+panel, failures are retried on an exponential backoff, and every refresh
+publishes what each source contributed.
+
+A source that is switched off contributes nothing and its cached spots are
+dropped — "off" has to mean gone, or the switch is a lie. A source that fails is
+marked Degraded and keeps its spots, ageing visibly, because losing a network is
+not a reason to blank a panel somebody was reading; once those spots have aged
+past being "happening now" it goes to Failed and shows nothing, which is the
+confession the operator needs. Backoff doubles from thirty seconds to a
+fifteen-minute cap, with no clock read and no randomness inside the calculation
+so the schedule is testable exactly.
+
+The statuses are published rather than kept private because the band-conditions
+line cannot be honest without them (HM-DEC-025): a count of signals means
+nothing unless you know which networks were answering when it was taken.
+
+---
 id: HM-DEC-021
 date: 2026-08-13
 refs: CLAUDE.md §0.5, src/Hamlet.App/Controls/CollapsiblePanel.cs, HM-DEC-012
