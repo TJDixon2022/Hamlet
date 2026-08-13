@@ -209,9 +209,22 @@ anything else the operator reads.
 - **Warmth never buys a claim.** It is a matter of how a thing is said and
   never of what is asserted (§0.0). A friendly sentence that overstates what
   Hamlet knows is worse than a cold one, because it is more readily believed.
+- **If Hamlet says it, Hamlet explains it** (HM-DEC-041). Any term a
+  six-year licensee might not know earns a glossary entry, and the marking
+  finds it automatically wherever it already appears.
 
-Copy written before this ruling is corrected where it is touched, not in one
-sweep — the change should arrive with the work that gives it context.
+**Em dashes are used sparingly: at most one in a paragraph, and usually none**
+(HM-DEC-040). A dash is usually a sentence that has not decided where it ends.
+Prefer a comma, or a full stop and a fresh sentence. Warm writing breathes with
+periods, short sentences are allowed to land on their own, and a pause where the
+reader should reflect is worth more than a clause bolted on with a dash.
+
+The rule is enforced rather than remembered: `VoiceTests` sweeps every string
+the operator can read and fails on the second dash in one passage. Records,
+comments and code are outside it, and this file is deliberately full of them.
+
+Copy written before a voice ruling is corrected where it is touched rather than
+in one sweep, so the change arrives with the work that gives it context.
 
 Practical test: read it aloud. Does it sound like a person, or like a manual?
 

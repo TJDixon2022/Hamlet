@@ -136,7 +136,7 @@ public sealed class LicenseResolver
             return new LicenseResolution(
                 LicenseResolutionOutcome.Unavailable, LicenseClass.Unknown,
                 profile.LicenseClass, _lookup.SourceName,
-                $"Couldn't reach {_lookup.SourceName} — set your license class in "
+                $"Couldn't reach {_lookup.SourceName}. Set your license class in "
                 + "Settings, or try again later.");
         }
 
@@ -172,8 +172,8 @@ public sealed class LicenseResolver
             return new LicenseResolution(
                 LicenseResolutionOutcome.NotFound, LicenseClass.Unknown,
                 profile.LicenseClass, sourceName,
-                $"{sourceName} doesn't have {callsign.Trim().ToUpperInvariant()} — "
-                + "set your license class in Settings.");
+                $"{sourceName} doesn't have {callsign.Trim().ToUpperInvariant()}. "
+                + "Set your license class in Settings.");
         }
 
         if (profile.LicenseClass != LicenseClass.Unknown && !profile.LicenseClassWasSetByHand)
@@ -209,7 +209,7 @@ public sealed class LicenseResolver
         return new LicenseResolution(
             LicenseResolutionOutcome.Resolved, result.Class, LicenseClass.Unknown,
             result.SourceName,
-            $"{PrivilegePlan.Describe(result.Class)} — from FCC data, today.");
+            $"{PrivilegePlan.Describe(result.Class)}, from FCC data, today.");
     }
 
     /// <summary>
@@ -222,7 +222,7 @@ public sealed class LicenseResolver
     {
         if (profile.LicenseClass == LicenseClass.Unknown)
         {
-            return "License class not set — the band map will not guess at your privileges.";
+            return "License class not set, so the band map will not guess at your privileges.";
         }
 
         var name = PrivilegePlan.Describe(profile.LicenseClass);
@@ -233,9 +233,9 @@ public sealed class LicenseResolver
         return profile.LicenseClassSource switch
         {
             LicenseClassSource.LookedUp =>
-                $"{name} — from {profile.LicenseClassSourceName}{on}.",
+                $"{name}, from {profile.LicenseClassSourceName}{on}.",
             LicenseClassSource.EnteredByOperator =>
-                $"{name} — you set this{on}.",
+                $"{name}, and you set this{on}.",
             _ => name,
         };
     }

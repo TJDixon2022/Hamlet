@@ -107,7 +107,12 @@ public sealed class LeadCardTests
 
         Assert.False(lead.HasSuggestion);
         Assert.Contains("20 m", lead.Body, StringComparison.Ordinal);
-        Assert.Contains("not a failure", lead.Body, StringComparison.OrdinalIgnoreCase);
+
+        // The framing is the point, not the exact wording: an empty band has to
+        // read as a result the operator can act on rather than as the app
+        // shrugging.
+        Assert.Contains("a real answer", lead.Body, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("rather than a failure", lead.Body, StringComparison.OrdinalIgnoreCase);
     }
 
     /// <remarks>

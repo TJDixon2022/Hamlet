@@ -104,11 +104,11 @@ public static class SourceBackoff
     {
         if (remaining <= TimeSpan.Zero)
         {
-            return "no answer — retrying now";
+            return "no answer, retrying now";
         }
 
         return remaining.TotalSeconds < 90
-            ? $"no answer — retrying in {Math.Max(1, (int)remaining.TotalSeconds)}s"
-            : $"no answer — retrying in {(int)Math.Round(remaining.TotalMinutes)} min";
+            ? $"no answer, retrying in {Math.Max(1, (int)remaining.TotalSeconds)}s"
+            : $"no answer, retrying in {(int)Math.Round(remaining.TotalMinutes)} min";
     }
 }

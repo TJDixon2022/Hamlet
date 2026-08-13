@@ -1,4 +1,4 @@
-﻿namespace Hamlet.RadioEngine.Explore;
+namespace Hamlet.RadioEngine.Explore;
 
 /// <summary>
 /// The engine's seam for "what's happening on the air" (HM-DEC-016). Live
@@ -109,17 +109,17 @@ public sealed class FakeActivitySource : IActivitySource
     /// <summary>The steady spots: present on every call, ages advancing.</summary>
     private static readonly SampleSpot[] Steady =
     {
-        new("Park activation in Ohio — calling CQ in Morse at 15 WPM",
+        new("Park activation in Ohio, calling CQ in Morse at 15 WPM",
             7_032_000, "CW", 2, 15, SpotCallType.Cq, true, "US-OH", 14),
-        new("Japan reachable on FT8 — 14 US stations decoded it this minute",
+        new("Japan reachable on FT8, with 14 US stations decoding it this minute",
             7_074_000, "FT8", 1, null, SpotCallType.Unknown, false, null, null),
-        new("Evening ragchew net starting — newcomers welcomed on check-in",
+        new("Evening ragchew net starting, and newcomers are welcomed on check-in",
             7_188_000, "SSB", 4, null, SpotCallType.Unknown, false, null, null),
-        new("Summit activation, slow CW — the operator is cold, be quick",
+        new("Summit activation, slow CW. The operator is cold, so be quick",
             7_062_500, "CW", 7, 12, SpotCallType.Cq, true, "W3", 9),
         new("Slow-speed CW club calling near the beginners' spot",
             7_055_000, "CW", 3, 10, SpotCallType.Cq, false, null, 21),
-        new("RTTY roundup practice — twin rails all over the digital corner",
+        new("RTTY roundup practice, twin rails all over the digital corner",
             7_063_000, "RTTY", 9, null, SpotCallType.Contest, false, null, 6),
     };
 
@@ -128,11 +128,11 @@ public sealed class FakeActivitySource : IActivitySource
     {
         new("20 m open to Europe on FT8 while the sun is up",
             14_074_000, "FT8", 5, null, SpotCallType.Unknown, false, null, null),
-        new("A beacon-like CQ machine near the QRP watering hole — easy first copy",
+        new("A beacon-like CQ machine near the QRP watering hole, and an easy first copy",
             7_030_000, "CW", 1, 13, SpotCallType.Cq, false, null, 18),
-        new("Straight-key night warm-up — hand-sent CW, plenty of character",
+        new("Straight-key night warm-up, hand-sent CW with plenty of character",
             7_058_000, "CW", 2, 14, SpotCallType.Cq, false, null, 11),
-        new("PSK31 ribbon on the digital shelf — someone is typing to Spain",
+        new("PSK31 ribbon on the digital shelf, and someone is typing to Spain",
             14_070_000, "PSK31", 6, null, SpotCallType.Unknown, false, null, null),
     };
 

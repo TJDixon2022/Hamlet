@@ -268,7 +268,7 @@ public sealed class PotaActivitySource : IContextualActivitySource, IDisposable
 
         var modePhrase = mode switch
         {
-            "CW" => "on CW — Morse, and they want callers",
+            "CW" => "on CW, which is Morse, and they want callers",
             "SSB" => "on voice",
             "" => "",
             _ => $"on {mode}",

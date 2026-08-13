@@ -121,7 +121,7 @@ public static class SpotRanking
                 break;
             case SpotCallType.Contest:
                 score -= 10;
-                parts.Add((4, "contest exchange — fast and formulaic"));
+                parts.Add((4, "a contest exchange, fast and formulaic"));
                 break;
             case SpotCallType.Beacon:
                 // Decisive, not merely heavy. A beacon is strong, close,
@@ -133,7 +133,7 @@ public static class SpotRanking
                 // real signals, and a band's beacons are worth seeing on the
                 // map.
                 score -= BeaconPenalty;
-                parts.Add((3, "beacon — nobody is listening for you"));
+                parts.Add((3, "a beacon, so nobody is listening for you"));
                 break;
             case SpotCallType.Unknown:
             default:
@@ -147,7 +147,7 @@ public static class SpotRanking
             if (wpm <= ComfortableWpm)
             {
                 score += 20;
-                parts.Add((22, $"{wpm} WPM — slow enough to copy"));
+                parts.Add((22, $"{wpm} WPM, slow enough to copy"));
             }
             else if (wpm <= CopyableWpm)
             {
@@ -157,12 +157,12 @@ public static class SpotRanking
             else if (wpm <= FastWpm)
             {
                 score += 4;
-                parts.Add((6, $"{wpm} WPM — quick"));
+                parts.Add((6, $"{wpm} WPM, which is quick"));
             }
             else
             {
                 score -= 6;
-                parts.Add((5, $"{wpm} WPM — very fast"));
+                parts.Add((5, $"{wpm} WPM, which is very fast"));
             }
         }
 
@@ -184,7 +184,7 @@ public static class SpotRanking
                 // are not a contact a beginner is going to make, and putting
                 // them at the top would send this operator to listen to noise.
                 score -= 25;
-                parts.Add((6, "heard far away — a hard first contact"));
+                parts.Add((6, "heard far away, so a hard first contact"));
                 break;
             case SpotProximity.Unknown:
             default:
@@ -250,12 +250,12 @@ public static class SpotRanking
         {
             case "CW":
                 score += 12;
-                parts.Add((11, "Morse — what Hamlet is built to decode"));
+                parts.Add((11, "Morse, which is what Hamlet is built to decode"));
                 break;
             case "FT8":
             case "FT4":
                 score -= 20;
-                parts.Add((15, "FT8 — Hamlet cannot decode this until phase 3"));
+                parts.Add((15, "FT8, which Hamlet cannot decode until phase 3"));
                 break;
             default:
                 break;
@@ -285,7 +285,7 @@ public static class SpotRanking
         else
         {
             score -= 10;
-            parts.Add((7, $"{(int)minutes} min ago — probably gone"));
+            parts.Add((7, $"{(int)minutes} min ago, so probably gone"));
         }
 
         return new RankedSpot(spot, score, BuildReason(parts));
@@ -305,7 +305,7 @@ public static class SpotRanking
     {
         if (parts.Count == 0)
         {
-            return "on the air — nothing else reported";
+            return "on the air, with nothing else reported";
         }
 
         var chosen = parts

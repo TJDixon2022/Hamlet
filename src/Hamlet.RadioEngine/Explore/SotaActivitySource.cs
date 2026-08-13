@@ -56,7 +56,7 @@ public sealed class SotaActivitySource : IContextualActivitySource, IDisposable
     /// <summary>Why this source ships off, shown in Settings.</summary>
     public const string DisabledReason =
         "Off until you have joined the SOTA Reflector's \"API-consumers\" group and had "
-        + "Hamlet approved — the SOTA API's terms require both, and one of them is "
+        + "Hamlet approved. The SOTA API's terms require both, and one of them is "
         + "about AI-written code. Hamlet will not connect on your behalf until you say so.";
 
     /// <summary>Politeness floor under the poll rate.</summary>
@@ -252,7 +252,7 @@ public sealed class SotaActivitySource : IContextualActivitySource, IDisposable
 
         var modePhrase = mode switch
         {
-            "CW" => ", on CW — Morse, and they need contacts",
+            "CW" => ", on CW, which is Morse, and they need contacts",
             "SSB" => ", on voice",
             "" => "",
             _ => $", on {mode}",

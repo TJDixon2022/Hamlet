@@ -39,10 +39,10 @@ public static class NeighborhoodPlan
             7_005_000, ModeFamily.Cw),
         new Neighborhood("CW main street", "CW", 7_025_000, 7_060_000,
             "Friendly, unhurried",
-            "Everyday Morse. 7.030 is the QRP watering hole — tiny five-watt "
-            + "rigs saying hi across oceans. 7.055 is the slow-speed club, "
-            + "where calling as a beginner is the whole point. This is your "
-            + "Morse home.",
+            "Everyday Morse. 7.030 is the QRP watering hole, where tiny "
+            + "five-watt rigs say hello across oceans. 7.055 is the slow-speed "
+            + "club, and calling there as a beginner is the whole point of the "
+            + "place. This is your Morse home.",
             7_030_000, ModeFamily.Cw),
         new Neighborhood("Digital corner", "RTTY+", 7_060_000, 7_070_000,
             "Quirky neighbors",
@@ -53,11 +53,11 @@ public static class NeighborhoodPlan
         new Neighborhood("FT8 city", "FT8", 7_070_000, 7_080_000,
             "Always open, 24/7",
             "The busiest 3 kHz in all of radio. Everyone transmits in "
-            + "synchronized 15-second bursts — the waterfall looks like rain. "
+            + "synchronized 15-second bursts, so the waterfall looks like rain. "
             + "Contacts are structured handshakes rather than conversations, "
             + "and the mode is built to dig a callsign out of noise you can "
-            + "barely hear, which is why people reach so far on so little "
-            + "power here.",
+            + "barely hear. That's why people reach so far here on so little "
+            + "power, and with antennas they're faintly embarrassed about.",
             7_074_000, ModeFamily.Digital),
         new Neighborhood("Quiet blocks", "", 7_080_000, 7_125_000,
             "Off the beaten path",
@@ -67,15 +67,15 @@ public static class NeighborhoodPlan
             7_090_000, ModeFamily.Open),
         new Neighborhood("Phone downtown", "SSB DX", 7_125_000, 7_175_000,
             "Cocktail party",
-            "Voice at last — single sideband, which sounds like ducks until "
-            + "you tune it just right, and then suddenly it is a person in "
-            + "Portugal. DX chasers work the low end.",
+            "Voice at last. Single sideband sounds like ducks until you tune it "
+            + "just right, and then suddenly it is a person in Portugal. DX "
+            + "chasers work the low end.",
             7_150_000, ModeFamily.Phone),
         new Neighborhood("Ragchew boulevard", "SSB", 7_175_000, 7_300_000,
             "Front porch",
-            "Long, friendly voice conversations and evening nets — organized "
-            + "round-tables where checking in as a newcomer is expected and "
-            + "welcomed. The most welcoming street in radio.",
+            "Long, friendly voice conversations, and evening nets. A net is an "
+            + "organized round-table where checking in as a newcomer is "
+            + "expected and welcomed. The most welcoming street in radio.",
             7_188_000, ModeFamily.Phone),
     };
 
@@ -96,7 +96,7 @@ public static class NeighborhoodPlan
             new("CW side", "CW", band.CwLowHz, band.CwHighHz,
                 "Beeps live here",
                 $"The CW and digital end of {band.Name}. Its full neighborhood "
-                + "map hasn't been written yet — the 40 m map shows what one "
+                + "map hasn't been written yet. The 40 m map shows what one "
                 + "looks like.",
                 band.JumpHz, ModeFamily.Cw),
         };

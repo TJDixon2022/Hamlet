@@ -47,7 +47,7 @@ public static class ModeGuide
     {
         new ModeInfo("CW", "Morse code", "Musical beeps", SignatureKind.Dots,
             "Learnable",
-            "The original digital mode — your brain is the decoder. A century "
+            "The original digital mode, and your brain is the decoder. A century "
             + "old and still the best watts-to-distance deal in radio.",
             7_030_000, ModeFamily.Cw),
         new ModeInfo("FT8", "Robot handshakes", "15-second warbles",
@@ -67,13 +67,13 @@ public static class ModeGuide
             7_062_000, ModeFamily.Digital),
         new ModeInfo("PSK31", "Keyboard whisper", "Soft warble",
             SignatureKind.Ribbon, "Medium",
-            "Typed chats in a signal 31 Hz wide — a thousand of them could "
-            + "fit where one voice sits.",
+            "Typed chats in a signal 31 Hz wide. A thousand of them could fit "
+            + "in the space one voice takes up.",
             7_065_000, ModeFamily.Digital),
         new ModeInfo("JS8", "FT8 that chats", "Same warble, longer",
             SignatureKind.Blocks, "Medium",
-            "FT8's machinery, but free text — the campfire version of the "
-            + "robot handshake.",
+            "FT8's machinery with free text on top. It's the campfire version "
+            + "of the robot handshake.",
             7_078_000, ModeFamily.Digital),
     };
 }

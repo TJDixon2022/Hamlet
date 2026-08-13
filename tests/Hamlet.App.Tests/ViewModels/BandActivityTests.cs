@@ -333,7 +333,7 @@ public sealed class BandActivityTests
     {
         var reading = For("40 m", Spots("40 m", 30), new[] { Ok("POTA") });
 
-        Assert.StartsWith("40 m — busy.", reading.Tooltip, StringComparison.Ordinal);
+        Assert.StartsWith("40 m · busy.", reading.Tooltip, StringComparison.Ordinal);
         Assert.Contains(reading.Evidence, reading.Tooltip, StringComparison.Ordinal);
     }
 

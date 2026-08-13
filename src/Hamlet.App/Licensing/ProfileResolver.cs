@@ -135,7 +135,7 @@ public sealed class ProfileResolver
                     profile.LicenseClass, _lookup.SourceName, ""),
                 GridResolution.None,
                 true,
-                $"Couldn't reach {_lookup.SourceName} — set your license class in "
+                $"Couldn't reach {_lookup.SourceName}. Set your license class in "
                 + "Settings, or try again later.");
         }
 

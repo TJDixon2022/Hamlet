@@ -304,8 +304,8 @@ public sealed class RbnActivitySource
 
         var speed = s.Wpm is not null ? $" at {s.Wpm} WPM" : "";
         var heard = reports > 1
-            ? $" — {reports} receivers hear it"
-            : $" — heard by {s.Spotter}";
+            ? $", and {reports} receivers hear it"
+            : $", heard by {s.Spotter}";
 
         return what + speed + heard;
     }

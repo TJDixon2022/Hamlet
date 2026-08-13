@@ -47,10 +47,16 @@ public sealed record BandActivityReading(
     ConditionsConfidence Confidence)
 {
     /// <summary>The hover text: claim first, then its receipts.</summary>
+    /// <remarks>
+    /// The band and the claim are separated by the middle dot the rest of the
+    /// app uses for label runs, rather than by a dash. It is a separator and
+    /// not punctuation, so it reads the same way "CW · POTA · 2 min ago" does
+    /// and stays out of the prose rule's way (HM-DEC-040).
+    /// </remarks>
     public string Tooltip
         => Evidence.Length == 0
-            ? $"{BandName} — {Claim}"
-            : $"{BandName} — {Claim} {Evidence}";
+            ? $"{BandName} · {Claim}"
+            : $"{BandName} · {Claim} {Evidence}";
 
     /// <summary>True when the indicator should render as unknown rather than empty.</summary>
     public bool IsUnknown => State == BandActivityState.NoData;

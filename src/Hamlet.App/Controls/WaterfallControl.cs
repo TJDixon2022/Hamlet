@@ -208,7 +208,7 @@ public sealed class WaterfallControl : Control
             context.FillRectangle(IdleBrush, rect);
 
             var text = new FormattedText(
-                "no spectrum yet — connect a radio, or pick the training radio",
+                "no spectrum yet, so connect a radio or pick the training radio",
                 CultureInfo.InvariantCulture, FlowDirection.LeftToRight,
                 Mono, 12, IdleTextBrush);
             context.DrawText(text,

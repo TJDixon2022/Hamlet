@@ -153,15 +153,15 @@ public static class BandCharacter
     private static string InDaylight(string bandName, SolarSnapshot sun) => bandName switch
     {
         "80 m" =>
-            "Right now the sun's up, and that's bad news for 80 m — daylight thickens a "
+            "Right now the sun's up, and that's bad news for 80 m. Daylight thickens a "
             + "layer of the atmosphere that soaks up low frequencies before they get "
             + "anywhere. Come back after dark and this band turns into something else "
             + "entirely.",
 
         "40 m" =>
-            "With the sun up, 40 m pulls in close: that same daylight layer absorbs part "
+            "With the sun up, 40 m pulls in close. That same daylight layer absorbs part "
             + "of what you send, so what survives tends to come back down within a few "
-            + "hundred miles. That's its own kind of useful — this is when you'll find "
+            + "hundred miles. That's its own kind of useful. This is when you'll find "
             + "the regional nets and the people a couple of states over.",
 
         "30 m" =>
@@ -171,9 +171,9 @@ public static class BandCharacter
             + "to sit in the afternoon.",
 
         "20 m" =>
-            "20 m lives on sunlight — it needs the sun overhead to bounce a signal around "
-            + "the world, and right now it's got it. If you're going to talk to someone on "
-            + "the far side of an ocean today, the odds are it happens here.",
+            "20 m lives on sunlight. It needs the sun overhead to bounce a signal around "
+            + "the world, and right now it's got it. If you're going to talk to someone "
+            + "on the far side of an ocean today, the odds are it happens here.",
 
         "17 m" =>
             "17 m is 20 m's quieter neighbor, a narrow band with no contests allowed on "
@@ -186,8 +186,8 @@ public static class BandCharacter
             + "that much it has right now.",
 
         "10 m" =>
-            "The sun's up, which is the first condition 10 m asks for — it's the highest "
-            + "band Hamlet knows and the one that leans hardest on the sun being active.",
+            "The sun's up, which is the first condition 10 m asks for. It's the highest "
+            + "band Hamlet knows, and the one that leans hardest on the sun being active.",
 
         _ =>
             "The sun's up, which generally suits the higher bands more than the lower "
@@ -205,9 +205,9 @@ public static class BandCharacter
         {
             "80 m" =>
                 $"{sunset}, and the layer that spends all day swallowing low frequencies "
-                + "is thinning away. This is 80 m at its best — a big, slow, sociable band "
-                + "where the voices come from a few hundred miles off and nobody's in a "
-                + "hurry.",
+                + "is thinning away. This is 80 m at its best. It's a big, slow, sociable "
+                + "band where the voices come from a few hundred miles off and nobody's "
+                + "in a hurry.",
 
             "40 m" =>
                 $"{sunset}, and the layer that was absorbing your signal all day is "
@@ -215,9 +215,9 @@ public static class BandCharacter
                 + "a way it simply can't at noon.",
 
             "30 m" =>
-                $"{sunset}, which suits 30 m — no voice is allowed here, so it stays "
-                + "quiet, and the loss of the daylight layer lets it stretch out further "
-                + "than it manages in the afternoon.",
+                $"{sunset}, which suits 30 m. No voice is allowed here, so it stays quiet, "
+                + "and the loss of the daylight layer lets it stretch out further than it "
+                + "manages in the afternoon.",
 
             "20 m" =>
                 $"{sunset}, and 20 m tends to fold up as the light goes: the sunlight that "
@@ -251,8 +251,8 @@ public static class BandCharacter
             + "can tell you where the sun is from here.",
 
         "40 m" =>
-            "40 m works either side of sunset, differently — close to home in the "
-            + "afternoon, reaching much further once the daylight absorption fades. Set "
+            "40 m works either side of sunset, differently. It stays close to home in the "
+            + "afternoon and reaches much further once the daylight absorption fades. Set "
             + "your location in Settings and Hamlet can tell you which of those you're in.",
 
         "30 m" =>
@@ -265,9 +265,9 @@ public static class BandCharacter
             + "your location in Settings and Hamlet can tell you whether the sun is up.",
 
         "17 m" =>
-            "17 m is 20 m's quieter neighbor — narrow, no contests, and dependent on the "
-            + "sun. Set your location in Settings and Hamlet can tell you whether the sun "
-            + "is up.",
+            "17 m is 20 m's quieter neighbor. It's narrow, it allows no contests, and it "
+            + "depends on the sun. Set your location in Settings and Hamlet can tell you "
+            + "whether the sun is up.",
 
         "15 m" =>
             "15 m wants a strong sun as well as a present one. Set your location in "
@@ -305,7 +305,7 @@ public static class BandCharacter
         return bandName switch
         {
             "80 m" when summer =>
-                "Summer isn't kind to it, though — thunderstorms hundreds of miles away "
+                "Summer isn't kind to it, though. Thunderstorms hundreds of miles away "
                 + "crackle across this band all season and arrive as a wash of static. "
                 + "Come the winter the nights are long and that noise falls away.",
 
@@ -319,7 +319,7 @@ public static class BandCharacter
                 + "longer and the storm static of summer has died back.",
 
             "40 m" when summer =>
-                "Summer costs it something, mind — distant thunderstorms wash static "
+                "Summer costs it something, mind. Distant thunderstorms wash static "
                 + "across the low bands from June onward, and it's quieter here in winter.",
 
             "40 m" when winter =>

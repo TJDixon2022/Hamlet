@@ -109,7 +109,7 @@ public partial class AboutViewModel : ObservableObject
         }
         catch (Exception)
         {
-            CopyStatus = "Could not open a browser — the address is " + GitHubUrl;
+            CopyStatus = "Could not open a browser. The address is " + GitHubUrl;
         }
     }
 
@@ -120,13 +120,13 @@ public partial class AboutViewModel : ObservableObject
     /// <summary>Called by the view once the clipboard write succeeded.</summary>
     public void ReportCopied()
     {
-        CopyStatus = "Diagnostics copied — paste it into the bug report.";
+        CopyStatus = "Diagnostics copied. Paste it into the bug report.";
         Telemetry.AppEvents.DiagnosticsCopied(_telemetry);
     }
 
     /// <summary>Called by the view when the clipboard is unavailable.</summary>
     public void ReportCopyFailed()
-        => CopyStatus = "Clipboard unavailable — the block is shown above.";
+        => CopyStatus = "Clipboard unavailable, so the block is shown above.";
 
     private string BuildDiagnostics(int enabled, int total, double megabytes)
     {

@@ -263,7 +263,7 @@ public partial class SettingsViewModel : ObservableObject
         yield return (TelemetryCategory.Rig, "Radio",
             "Connect attempts, timeouts and CI-V errors, with the port and radio type.");
         yield return (TelemetryCategory.Tuning, "Tuning",
-            "Band changes and where a tune came from — map, dial tape, digits or a spot.");
+            "Band changes and where a tune came from: the map, the dial tape, the digits or a spot.");
         yield return (TelemetryCategory.Explore, "Explore",
             "Which neighborhoods and field-guide cards get opened, and which spots get tuned.");
         yield return (TelemetryCategory.Decode, "Decoding",
@@ -281,24 +281,24 @@ public partial class SettingsViewModel : ObservableObject
     {
         yield return (
             PotaActivitySource.SourceName,
-            "Parks on the Air — operators calling from parks. The friendliest "
+            "Parks on the Air. Operators calling from parks, and the friendliest "
             + "contacts on the band: they want to be found and they will slow down "
             + "for you.",
             "");
 
         yield return (
             SotaActivitySource.SourceName,
-            "Summits on the Air — operators calling from mountain tops. Often slow "
+            "Summits on the Air. Operators calling from mountain tops, often on slow "
             + "CW, often short of contacts.",
             SotaActivitySource.DisabledReason);
 
         yield return (
             RbnActivitySource.SourceName,
-            "Reverse Beacon Network — automated receivers reporting every CW signal "
+            "Reverse Beacon Network. Automated receivers reporting every CW signal "
             + "they decode. Filtered to your band and to receivers on your continent, "
             + "or it would be thousands a minute.",
             string.IsNullOrWhiteSpace(settings.Operator.Callsign)
-                ? "Needs your callsign — RBN has no anonymous login, and Hamlet will "
+                ? "Needs your callsign. RBN has no anonymous login and Hamlet will "
                   + "not invent one. Set it under Operator above."
                 : "Your callsign is sent to RBN as the login, and to POTA and SOTA in "
                   + "the User-Agent, because those services are owed knowing who is "
@@ -308,7 +308,7 @@ public partial class SettingsViewModel : ObservableObject
             FakeActivitySource.SourceName,
             "Built-in sample spots, labeled \"sample\" on every card. For seeing how "
             + "the Explorer behaves with no network.",
-            "Off by default now that the live feeds work — leaving it on mixes made-up "
+            "Off by default now that the live feeds work. Leaving it on mixes made-up "
             + "spots into a real list.");
     }
 }

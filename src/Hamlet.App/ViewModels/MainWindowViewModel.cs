@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using Avalonia;
 using Avalonia.Threading;
@@ -263,7 +263,7 @@ public partial class MainWindowViewModel : ObservableObject
     /// <summary>The persistent label the waterfall panel carries.</summary>
     public string SpectrumNotice
         => SignalsAreSimulated
-            ? "Simulated signals — the training radio, not the air"
+            ? "Simulated signals, from the training radio rather than the air"
             : "";
 
     /// <summary>Collapsed-header line for the waterfall (HM-DEC-021).</summary>
@@ -556,7 +556,7 @@ public partial class MainWindowViewModel : ObservableObject
     private void ShowMode(ModeInfo mode)
     {
         AppEvents.ModeCardOpened(_telemetry, mode.Name);
-        StoryTitle = $"{mode.Name} — {mode.Tagline}";
+        StoryTitle = $"{mode.Name} · {mode.Tagline}";
         StoryBadge = mode.Difficulty;
         StoryBody = $"{mode.Why} Sounds like: {mode.Sound}. Learn its waterfall "
             + "fingerprint and the void stops being static.";
@@ -820,7 +820,7 @@ public partial class MainWindowViewModel : ObservableObject
         {
             (rig as IDisposable)?.Dispose();
             AppEvents.ConnectFailed(_telemetry, SelectedPort, rigType, "no_response");
-            StatusText = $"No answer on {SelectedPort} — check cable, baud and "
+            StatusText = $"No answer on {SelectedPort}. Check cable, baud and "
                        + "CI-V address (HM-OPEN-003)";
             return;
         }
@@ -847,8 +847,8 @@ public partial class MainWindowViewModel : ObservableObject
         var hz = await rig.GetFrequencyHzAsync();
         ApplyRigFrequency(hz);
         StatusText = SelectedPort == TrainingRadio
-            ? "On the training radio — synthesised signals, nothing on the air"
-            : $"Connected — IC-7300 on {SelectedPort} · CI-V bytes unverified until "
+            ? "On the training radio, with synthesised signals and nothing on the air"
+            : $"Connected. IC-7300 on {SelectedPort} · CI-V bytes unverified until "
               + "HM-OPEN-002 closes";
     }
 

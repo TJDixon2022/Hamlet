@@ -119,7 +119,7 @@ public static class LeadCard
         {
             var who = string.IsNullOrWhiteSpace(spot.DxCall) ? "Someone" : spot.DxCall;
             var speed = spot.Wpm is not null ? $" at {spot.Wpm} WPM" : "";
-            return $"{who} is calling CQ{speed} — and wants an answer";
+            return $"{who} is calling CQ{speed}, and wants an answer";
         }
 
         return spot.Story;
@@ -179,14 +179,15 @@ public static class LeadCard
 
         return mode switch
         {
-            "CW" => "Listen for a few repeats before you answer — you will hear the "
+            "CW" => "Listen for a few repeats before you answer. You will hear the "
                     + "rhythm of the call before you can read it. Then send your "
                     + "callsign once, at your speed, and wait.",
             "SSB" => "Listen for a gap, then give your callsign once, clearly. "
                      + "If nobody comes back, wait for the next round and try again.",
-            "FT8" or "FT4" => "This one is the computer's job, not the key's — Hamlet "
-                              + "cannot decode it yet (phase 3), so treat it as a sign "
-                              + "the band is open rather than a contact to make.",
+            "FT8" or "FT4" => "This one is the computer's job rather than the key's, and "
+                              + "Hamlet cannot decode it until phase 3. Treat it as a sign "
+                              + "the band is doing something rather than a contact to "
+                              + "make today.",
             _ => "Tune there and listen for a minute before you do anything else. "
                  + "Knowing what a busy frequency sounds like is worth the minute.",
         };
@@ -201,9 +202,9 @@ public static class LeadCard
                 false,
                 "Hamlet cannot see the bands right now",
                 "No spot source is answering, so there is nothing to recommend and "
-                + "Hamlet will not guess. The band may be busy or empty — this is "
-                + "Hamlet's problem, not the ionosphere's. Check the Sources section "
-                + "in Settings, or tune around and trust your own ears.",
+                + "Hamlet will not guess. The band may be busy or empty. This is "
+                + "Hamlet's problem rather than the ionosphere's. Check the Sources "
+                + "section in Settings, or tune around and trust your own ears.",
                 "no sources answering",
                 0,
                 "");
@@ -217,9 +218,9 @@ public static class LeadCard
         return new LeadSuggestion(
             false,
             NothingHeadline,
-            evidence + " That is a real answer, not a failure — it is the answer that "
-            + "saves you an hour of tuning across a dead band. Try another band from "
-            + "the row above, or come back at a different time of day.",
+            evidence + " That is a real answer rather than a failure. It is the one "
+            + "that saves you an hour of tuning across a quiet band. Try another band "
+            + "from the row above, or come back at a different time of day.",
             "nothing on this band clears the bar",
             0,
             "");

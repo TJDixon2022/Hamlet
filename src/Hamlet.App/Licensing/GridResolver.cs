@@ -121,7 +121,7 @@ public static class GridResolver
                 : new GridResolution(
                     GridResolutionOutcome.NoCoordinates, "", "", result.SourceName,
                     $"{result.SourceName} has no location for "
-                    + $"{result.Callsign.ToUpperInvariant()} — you can type your grid "
+                    + $"{result.Callsign.ToUpperInvariant()}. You can type your grid "
                     + "square in Settings, or leave it and Hamlet will do without.");
         }
 
@@ -134,7 +134,7 @@ public static class GridResolver
                 : new GridResolution(
                     GridResolutionOutcome.Mismatch, found, existing, result.SourceName,
                     $"Your license address puts you in {found[..ComparisonLength]}, and "
-                    + $"you have {existing} set — if you're operating from somewhere "
+                    + $"you have {existing} set. If you're operating from somewhere "
                     + "else, yours is the one to keep.");
         }
 
@@ -151,7 +151,7 @@ public static class GridResolver
 
         return new GridResolution(
             GridResolutionOutcome.Resolved, found, "", result.SourceName,
-            $"You're in grid {found} — Hamlet can work out sunrise, sunset and how "
+            $"You're in grid {found}. Hamlet can work out sunrise, sunset and how "
             + "far away a station is from here.");
     }
 
@@ -186,7 +186,7 @@ public static class GridResolver
 
         if (grid.Length == 0)
         {
-            return "Not set yet — Hamlet fills this in from your callsign, and until "
+            return "Not set yet. Hamlet fills this in from your callsign, and until "
                 + "it does it won't guess how far away anything is.";
         }
 
@@ -197,10 +197,10 @@ public static class GridResolver
         return profile.GridSquareSource switch
         {
             ProfileFactSource.LookedUp =>
-                $"{grid} — worked out from your license address on "
+                $"{grid}, worked out from your license address on "
                 + $"{profile.GridSquareSourceName}{on}.",
             ProfileFactSource.EnteredByOperator =>
-                $"{grid} — you set this{on}.",
+                $"{grid}, and you set this{on}.",
             _ => grid,
         };
     }

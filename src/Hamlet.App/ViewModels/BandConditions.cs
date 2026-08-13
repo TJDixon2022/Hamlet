@@ -95,8 +95,8 @@ public static class BandConditions
                 "Hamlet cannot see the bands right now.",
                 enabled.Count == 0
                     ? "Every spot source is switched off in Settings."
-                    : $"No answer from {NameList(enabled.Select(s => s.Name))} — "
-                      + "this says nothing about whether the band is busy.",
+                    : $"No answer from {NameList(enabled.Select(s => s.Name))}. "
+                      + "That says nothing about whether the band is busy.",
                 ConditionsConfidence.Blind,
                 null);
         }
@@ -150,7 +150,7 @@ public static class BandConditions
         {
             var tail = alternative is null ? "" : $" {alternative} looks better.";
             return total <= QuietThreshold
-                ? $"{bandName} looks thin — but that is too little to be sure.{tail}"
+                ? $"{bandName} looks thin, but that is too little to be sure.{tail}"
                 : $"{bandName} has something going on, though not enough to call it.{tail}";
         }
 
@@ -161,7 +161,7 @@ public static class BandConditions
 
         if (total >= BusyThreshold)
         {
-            return $"{bandName} is busy — a good night to be on it.";
+            return $"{bandName} is busy, and a good night to be on it.";
         }
 
         if (total <= QuietThreshold)

@@ -313,7 +313,7 @@ public sealed class PrivilegePlan
             if (novicish && row.Standards.Contains(CwOnlyStandard))
             {
                 return (false, CwOnlyStandard,
-                    $"{Describe(licenseClass)} licensees may only send Morse here — "
+                    $"{Describe(licenseClass)} licensees may only send Morse here. "
                     + $"{Describe(mode)} on this segment needs General.");
             }
 
@@ -339,7 +339,7 @@ public sealed class PrivilegePlan
         }
 
         return (false, "97.305(c)",
-            $"{Describe(mode)} is not authorised on this frequency for any class — "
+            $"{Describe(mode)} is not authorized on this frequency for any class. "
             + "this part of the band is for other modes.");
     }
 

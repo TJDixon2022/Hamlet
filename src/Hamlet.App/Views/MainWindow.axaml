@@ -1,4 +1,4 @@
-﻿<Window xmlns="https://github.com/avaloniaui"
+<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:Hamlet.App.ViewModels"
         xmlns:ctl="using:Hamlet.App.Controls"
@@ -388,7 +388,7 @@
                                     Gain="{Binding WaterfallGain}"
                                     TuneCommand="{Binding TuneToCommand}" />
 
-                                <TextBlock Text="click a signal to tune to it — the axis matches the map and the dial tape above"
+                                <TextBlock Text="click a signal to tune to it. the axis matches the map and the dial tape above"
                                            FontSize="12" TextWrapping="Wrap"
                                            Foreground="{StaticResource HmTextMutedBrush}" />
                             </StackPanel>
@@ -398,7 +398,7 @@
                                               Title="CW terminal"
                                               Summary="{Binding TerminalSummary}"
                                               IsExpanded="{Binding TerminalExpanded, Mode=TwoWay}">
-                            <TextBlock Text="&gt; decoded text will arrive here — phase 1"
+                            <TextBlock Text="&gt; decoded text will arrive here in phase 1"
                                        MinHeight="150"
                                        FontFamily="{StaticResource HmMonoFont}"
                                        Foreground="{StaticResource HmGreenBrush}"

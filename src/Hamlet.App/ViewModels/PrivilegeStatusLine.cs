@@ -60,7 +60,7 @@ public static class PrivilegeStatusLine
 {
     /// <summary>The sentence that does the most work in this whole feature.</summary>
     public const string ListeningIsNeverRestricted =
-        "Receiving is never restricted — any license may listen anywhere.";
+        "Receiving is never restricted. Any license may listen anywhere.";
 
     /// <summary>
     /// Build the status line.
@@ -84,7 +84,7 @@ public static class PrivilegeStatusLine
             return new PrivilegeStatus(
                 PrivilegeTone.Unknown,
                 $"{megahertz} MHz",
-                "License class unknown — set it in Settings to see your privileges.",
+                "License class unknown. Set it in Settings to see your privileges.",
                 ListeningIsNeverRestricted,
                 "",
                 "");
@@ -111,7 +111,7 @@ public static class PrivilegeStatusLine
 
         return new PrivilegeStatus(
             PrivilegeTone.ListenOnly,
-            $"{megahertz} MHz · listen all you like — don't transmit",
+            $"{megahertz} MHz · listen all you like, but don't transmit",
             verdict.Explanation,
             ListeningIsNeverRestricted,
             verdict.Citation,

@@ -33,12 +33,12 @@
                 <TextBlock Text="let" FontSize="30" FontWeight="Bold"
                            Foreground="{StaticResource HmBlueBrush}" />
             </StackPanel>
-            <TextBlock Text="Let me ham — the radio, demystified."
+            <TextBlock Text="Let me ham. The radio, demystified."
                        FontSize="14" FontStyle="Italic"
                        Foreground="{StaticResource HmAmberDeepBrush}" />
             <TextBlock TextWrapping="Wrap" FontSize="13" LineHeight="19"
                        Foreground="{StaticResource HmTextPrimaryBrush}"
-                       Text="Hamlet exists to make amateur radio intuitive for people who have a license but not fifty years at the key. The bands are not a mystery to be earned — they are a place, and this app draws the map, names what you are hearing, and takes you there in one click." />
+                       Text="Hamlet exists to make amateur radio intuitive for people who have a license but not fifty years at the key. The bands are not a mystery to be earned. They are a place, and this app draws the map, names what you are hearing, and takes you there in one click." />
             <TextBlock Text="{Binding Byline}" FontSize="13" FontWeight="SemiBold"
                        IsVisible="{Binding HasByline}"
                        Foreground="{StaticResource HmTextPrimaryBrush}" />
