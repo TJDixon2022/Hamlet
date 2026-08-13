@@ -1,11 +1,12 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:HamManager.App.ViewModels"
+        xmlns:ctl="using:HamManager.App.Controls"
         x:Class="HamManager.App.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Title="Ham Manager"
-        Width="1100" Height="720"
-        MinWidth="860" MinHeight="560"
+        Width="1100" Height="780"
+        MinWidth="900" MinHeight="620"
         Background="{StaticResource HmBackgroundBrush}">
 
     <Design.DataContext>
@@ -24,9 +25,14 @@
             <Setter Property="Background" Value="{StaticResource HmAmberDeepBrush}" />
             <Setter Property="Foreground" Value="White" />
         </Style>
-        <Style Selector="Button.hm-connect:pressed /template/ ContentPresenter">
-            <Setter Property="Background" Value="{StaticResource HmAmberDeepBrush}" />
-            <Setter Property="Foreground" Value="White" />
+        <Style Selector="Button.hm-band">
+            <Setter Property="Background" Value="White" />
+            <Setter Property="Foreground" Value="{StaticResource HmTextPrimaryBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource HmSlateEdgeBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Padding" Value="14,8" />
+            <Setter Property="CornerRadius" Value="6" />
+            <Setter Property="FontWeight" Value="SemiBold" />
         </Style>
         <Style Selector="TextBlock.hm-panel-label">
             <Setter Property="FontSize" Value="13" />
@@ -34,84 +40,142 @@
         </Style>
     </Window.Styles>
 
-    <Grid RowDefinitions="Auto,Auto,*,Auto" Margin="16">
+    <Grid RowDefinitions="Auto,Auto,Auto,*,Auto" Margin="16">
 
-        <!-- Header -->
-        <StackPanel Grid.Row="0" Spacing="2" Margin="4,0,4,12">
-            <StackPanel Orientation="Horizontal" Spacing="8">
-                <TextBlock Text="Ham"
-                           FontSize="26" FontWeight="Bold"
-                           Foreground="{StaticResource HmAmberBrush}" />
-                <TextBlock Text="Manager"
-                           FontSize="26" FontWeight="Bold"
-                           Foreground="{StaticResource HmBlueBrush}" />
+        <!-- Header + connection -->
+        <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="4,0,4,12">
+            <StackPanel Grid.Column="0" Spacing="2">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <TextBlock Text="Ham" FontSize="26" FontWeight="Bold"
+                               Foreground="{StaticResource HmAmberBrush}" />
+                    <TextBlock Text="Manager" FontSize="26" FontWeight="Bold"
+                               Foreground="{StaticResource HmBlueBrush}" />
+                </StackPanel>
+                <TextBlock Text="The IC-7300 command console — the air, decoded."
+                           FontSize="13" Foreground="{StaticResource HmTextMutedBrush}" />
             </StackPanel>
-            <TextBlock Text="The IC-7300 command console — the air, decoded."
-                       FontSize="13"
-                       Foreground="{StaticResource HmTextMutedBrush}" />
-        </StackPanel>
+            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10"
+                        VerticalAlignment="Center">
+                <ComboBox ItemsSource="{Binding AvailablePorts}"
+                          SelectedItem="{Binding SelectedPort}"
+                          IsEnabled="{Binding !IsConnected}"
+                          MinWidth="220" VerticalAlignment="Center" />
+                <Button Classes="hm-connect"
+                        Content="{Binding ConnectButtonText}"
+                        Command="{Binding ToggleConnectCommand}" />
+            </StackPanel>
+        </Grid>
 
-        <!-- Frequency face: amber family -->
-        <Border Grid.Row="1"
+        <!-- Band buttons -->
+        <ItemsControl Grid.Row="1" ItemsSource="{Binding Bands}" Margin="0,6,0,12">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Horizontal" Spacing="8" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="vm:BandButtonViewModel">
+                    <Grid RowDefinitions="Auto,Auto">
+                        <Border Grid.Row="0" HorizontalAlignment="Center"
+                                Background="{StaticResource HmGreenTintBrush}"
+                                BorderBrush="{StaticResource HmGreenEdgeBrush}"
+                                BorderThickness="1" CornerRadius="8"
+                                Padding="6,0" Margin="0,0,0,2"
+                                IsVisible="{Binding IsBestBet}">
+                            <TextBlock Text="best bet now" FontSize="11"
+                                       Foreground="{StaticResource HmGreenBrush}" />
+                        </Border>
+                        <Button Grid.Row="1" Classes="hm-band"
+                                Content="{Binding Band.Name}"
+                                Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).SelectBandCommand}"
+                                CommandParameter="{Binding}" />
+                    </Grid>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <!-- Frequency face -->
+        <Border Grid.Row="2"
                 Background="{StaticResource HmAmberTintBrush}"
                 BorderBrush="{StaticResource HmAmberEdgeBrush}"
                 BorderThickness="1" CornerRadius="8"
-                Padding="24,16" Margin="0,0,0,12">
-            <Grid ColumnDefinitions="*,Auto">
-                <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="12"
-                            VerticalAlignment="Center">
-                    <TextBlock Text="{Binding FrequencyDisplay}"
-                               FontFamily="{StaticResource HmMonoFont}"
-                               FontSize="44" FontWeight="SemiBold"
-                               Foreground="{StaticResource HmAmberDeepBrush}" />
-                    <TextBlock Text="MHz  ·  CW"
-                               FontSize="16" VerticalAlignment="Bottom"
-                               Margin="0,0,0,8"
-                               Foreground="{StaticResource HmAmberBrush}" />
-                </StackPanel>
-                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10"
-                            VerticalAlignment="Center">
-                    <ComboBox ItemsSource="{Binding AvailablePorts}"
-                              SelectedItem="{Binding SelectedPort}"
-                              IsEnabled="{Binding !IsConnected}"
-                              MinWidth="220" VerticalAlignment="Center" />
-                    <Button Classes="hm-connect"
-                            Content="{Binding ConnectButtonText}"
-                            Command="{Binding ToggleConnectCommand}"
-                            VerticalAlignment="Center" />
-                </StackPanel>
-            </Grid>
+                Padding="20,14" Margin="0,0,0,12">
+            <StackPanel Spacing="6">
+                <ctl:FrequencyDigitsControl HorizontalAlignment="Center"
+                    FrequencyHz="{Binding FrequencyHz}"
+                    BandLowHz="{Binding SelectedBand.Band.LowHz}"
+                    BandHighHz="{Binding SelectedBand.Band.HighHz}" />
+                <TextBlock Text="scroll wheel over a digit tunes that digit"
+                           FontSize="12" HorizontalAlignment="Center"
+                           Foreground="{StaticResource HmAmberBrush}" />
+            </StackPanel>
         </Border>
 
-        <!-- Body: waterfall (blue family) over CW terminal (green family) -->
-        <Grid Grid.Row="2" RowDefinitions="3*,2*">
+        <!-- Ribbon, tape, waterfall, terminal -->
+        <Grid Grid.Row="3" RowDefinitions="Auto,Auto,3*,2*">
 
             <Border Grid.Row="0"
                     Background="{StaticResource HmBlueTintBrush}"
                     BorderBrush="{StaticResource HmBlueEdgeBrush}"
                     BorderThickness="1" CornerRadius="8"
-                    Margin="0,0,0,12">
-                <Grid>
-                    <TextBlock Text="Waterfall"
+                    Padding="16,10" Margin="0,0,0,10">
+                <StackPanel Spacing="6">
+                    <TextBlock Text="band — click or drag to jump"
                                Classes="hm-panel-label"
-                               Margin="16,12"
-                               VerticalAlignment="Top"
+                               Foreground="{StaticResource HmBlueBrush}" />
+                    <ctl:BandRibbonControl Height="26"
+                        FrequencyHz="{Binding FrequencyHz}"
+                        BandLowHz="{Binding SelectedBand.Band.LowHz}"
+                        BandHighHz="{Binding SelectedBand.Band.HighHz}"
+                        CwLowHz="{Binding SelectedBand.Band.CwLowHz}"
+                        CwHighHz="{Binding SelectedBand.Band.CwHighHz}" />
+                </StackPanel>
+            </Border>
+
+            <Border Grid.Row="1"
+                    Background="White"
+                    BorderBrush="{StaticResource HmBlueEdgeBrush}"
+                    BorderThickness="1" CornerRadius="8"
+                    Padding="0,8" Margin="0,0,0,10">
+                <StackPanel Spacing="4">
+                    <TextBlock Text="dial tape — drag to tune, flick for momentum, wheel = ±10 Hz"
+                               Classes="hm-panel-label" HorizontalAlignment="Center"
+                               Foreground="{StaticResource HmBlueBrush}" />
+                    <ctl:DialTapeControl Height="74"
+                        FrequencyHz="{Binding FrequencyHz}"
+                        BandLowHz="{Binding SelectedBand.Band.LowHz}"
+                        BandHighHz="{Binding SelectedBand.Band.HighHz}"
+                        CwLowHz="{Binding SelectedBand.Band.CwLowHz}"
+                        CwHighHz="{Binding SelectedBand.Band.CwHighHz}" />
+                    <TextBlock Text="{Binding ModeLineText}"
+                               FontSize="12" HorizontalAlignment="Center"
+                               Foreground="{Binding IsInsideCwSegment,
+                                   Converter={x:Static ctl:ModeLineBrushConverter.Instance}}" />
+                </StackPanel>
+            </Border>
+
+            <Border Grid.Row="2"
+                    Background="{StaticResource HmBlueTintBrush}"
+                    BorderBrush="{StaticResource HmBlueEdgeBrush}"
+                    BorderThickness="1" CornerRadius="8"
+                    Margin="0,0,0,10">
+                <Grid>
+                    <TextBlock Text="Waterfall" Classes="hm-panel-label"
+                               Margin="16,12" VerticalAlignment="Top"
                                Foreground="{StaticResource HmBlueBrush}" />
                     <TextBlock Text="Spectrum scope lands here — CI-V 0x27, HM-DEC-005"
                                HorizontalAlignment="Center" VerticalAlignment="Center"
                                FontFamily="{StaticResource HmMonoFont}"
-                               Foreground="{StaticResource HmBlueEdgeBrush}"
-                               FontSize="14" />
+                               Foreground="{StaticResource HmBlueEdgeBrush}" FontSize="14" />
                 </Grid>
             </Border>
 
-            <Border Grid.Row="1"
+            <Border Grid.Row="3"
                     Background="{StaticResource HmGreenTintBrush}"
                     BorderBrush="{StaticResource HmGreenEdgeBrush}"
                     BorderThickness="1" CornerRadius="8">
                 <Grid RowDefinitions="Auto,*">
-                    <TextBlock Grid.Row="0" Text="CW terminal"
-                               Classes="hm-panel-label"
+                    <TextBlock Grid.Row="0" Text="CW terminal" Classes="hm-panel-label"
                                Margin="16,12,16,4"
                                Foreground="{StaticResource HmGreenBrush}" />
                     <TextBlock Grid.Row="1"
@@ -124,14 +188,13 @@
             </Border>
         </Grid>
 
-        <!-- Status bar: slate -->
-        <Border Grid.Row="3"
+        <!-- Status bar -->
+        <Border Grid.Row="4"
                 Background="{StaticResource HmSlateTintBrush}"
                 BorderBrush="{StaticResource HmSlateEdgeBrush}"
                 BorderThickness="1" CornerRadius="6"
                 Padding="12,6" Margin="0,12,0,0">
-            <TextBlock Text="{Binding StatusText}"
-                       FontSize="12"
+            <TextBlock Text="{Binding StatusText}" FontSize="12"
                        Foreground="{StaticResource HmTextMutedBrush}" />
         </Border>
     </Grid>

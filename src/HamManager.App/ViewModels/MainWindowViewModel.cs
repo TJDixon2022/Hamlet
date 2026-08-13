@@ -2,28 +2,41 @@ using System.Collections.ObjectModel;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using HamManager.RadioEngine.Bands;
 using HamManager.RadioEngine.Rig;
 using HamManager.RadioEngine.Transport;
 
 namespace HamManager.App.ViewModels;
 
 /// <summary>
-/// Shell ViewModel. Phase 1 plumbing milestone: pick a port (or the
-/// simulated rig), connect, see the VFO frequency live — including the
-/// operator's knob turns arriving as unsolicited CI-V transceive frames.
+/// Shell ViewModel. One source of truth — <see cref="FrequencyHz"/> — that
+/// the digits, ribbon and tape all bind to two-way. UI-origin changes are
+/// throttled out to the rig; rig-origin changes (the physical knob) flow in
+/// without echoing back out.
 /// </summary>
 public partial class MainWindowViewModel : ObservableObject
 {
     /// <summary>The no-hardware entry in the port list.</summary>
     public const string SimulatedRig = "Simulated rig (no hardware)";
 
+    private static readonly TimeSpan RigSendThrottle = TimeSpan.FromMilliseconds(150);
+
+    private readonly DispatcherTimer _rigSendTimer;
     private IRig? _rig;
+    private bool _updatingFromRig;
+    private bool _rigSendPending;
 
     [ObservableProperty]
-    private string _frequencyDisplay = "--.---.---";
+    private long _frequencyHz;
 
     [ObservableProperty]
     private string _statusText = "Pick a port and connect";
+
+    [ObservableProperty]
+    private string _modeLineText = "";
+
+    [ObservableProperty]
+    private bool _isInsideCwSegment = true;
 
     [ObservableProperty]
     private bool _isConnected;
@@ -34,17 +47,47 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty]
     private string _selectedPort = SimulatedRig;
 
+    [ObservableProperty]
+    private BandButtonViewModel _selectedBand;
+
+    /// <summary>Phase 1 bands with best-bet ranking for the current hour.</summary>
+    public ObservableCollection<BandButtonViewModel> Bands { get; }
+
     /// <summary>The simulated rig plus every serial port on this machine.</summary>
     public ObservableCollection<string> AvailablePorts { get; }
 
     /// <summary>Runtime constructor.</summary>
     public MainWindowViewModel()
     {
+        var bets = BandPlan.BestBets(DateTime.Now.Hour);
+        Bands = new ObservableCollection<BandButtonViewModel>(
+            BandPlan.Bands.Select(b => new BandButtonViewModel(
+                b,
+                isBestBet: bets.Count > 0 && bets[0] == b.Name,
+                isSecondBet: bets.Count > 1 && bets[1] == b.Name)));
+
+        _selectedBand = Bands.First(b => b.Band.Name == "40 m");
+        _frequencyHz = _selectedBand.Band.JumpHz;
+
         AvailablePorts = new ObservableCollection<string> { SimulatedRig };
         foreach (var name in SafePortNames())
         {
             AvailablePorts.Add(name);
         }
+
+        _rigSendTimer = new DispatcherTimer(
+            RigSendThrottle, DispatcherPriority.Background, OnRigSendTick);
+        _rigSendTimer.Stop();
+
+        UpdateModeLine();
+    }
+
+    /// <summary>Jump to a band's CW watering hole.</summary>
+    [RelayCommand]
+    private void SelectBand(BandButtonViewModel band)
+    {
+        SelectedBand = band;
+        FrequencyHz = band.Band.JumpHz;
     }
 
     [RelayCommand]
@@ -74,22 +117,99 @@ public partial class MainWindowViewModel : ObservableObject
         ConnectButtonText = "Disconnect";
 
         var hz = await rig.GetFrequencyHzAsync();
-        FrequencyDisplay = FormatHz(hz);
+        ApplyRigFrequency(hz);
         StatusText = SelectedPort == SimulatedRig
             ? "Connected — simulated rig (no hardware attached)"
             : $"Connected — IC-7300 on {SelectedPort} · CI-V bytes unverified until "
               + "HM-OPEN-002 closes";
     }
 
-    private void OnRigFrequencyChanged(object? sender, FrequencyChangedEventArgs e)
+    /// <summary>UI-origin frequency changes: clamp to band, refresh the mode
+    /// line, and schedule a throttled rig send so tape drags don't flood the
+    /// CI-V bus.</summary>
+    partial void OnFrequencyHzChanged(long value)
     {
-        // Engine events arrive on the read-loop thread; bindings update on
-        // the UI thread only.
-        Dispatcher.UIThread.Post(() => FrequencyDisplay = FormatHz(e.FrequencyHz));
+        var clamped = SelectedBand.Band.Clamp(value);
+        if (clamped != value)
+        {
+            FrequencyHz = clamped;
+            return;
+        }
+
+        UpdateModeLine();
+
+        if (_updatingFromRig || _rig is null || !IsConnected)
+        {
+            return;
+        }
+
+        _rigSendPending = true;
+        if (!_rigSendTimer.IsEnabled)
+        {
+            _rigSendTimer.Start();
+        }
+    }
+
+    private async void OnRigSendTick(object? sender, EventArgs e)
+    {
+        if (!_rigSendPending || _rig is null || !IsConnected)
+        {
+            _rigSendTimer.Stop();
+            return;
+        }
+
+        _rigSendPending = false;
+        try
+        {
+            await _rig.SetFrequencyHzAsync(FrequencyHz);
+        }
+        catch (Exception ex)
+        {
+            StatusText = $"Set frequency failed: {ex.Message}";
+        }
+
+        if (!_rigSendPending)
+        {
+            _rigSendTimer.Stop();
+        }
+    }
+
+    private void OnRigFrequencyChanged(object? sender, FrequencyChangedEventArgs e)
+        => Dispatcher.UIThread.Post(() => ApplyRigFrequency(e.FrequencyHz));
+
+    /// <summary>Rig-origin frequency (the physical knob): follow it, switch
+    /// the selected band if the operator crossed one, and never echo it back
+    /// out to the rig.</summary>
+    private void ApplyRigFrequency(long hz)
+    {
+        _updatingFromRig = true;
+        try
+        {
+            var band = BandPlan.BandFor(hz);
+            if (band is not null && band.Name != SelectedBand.Band.Name)
+            {
+                SelectedBand = Bands.First(b => b.Band.Name == band.Name);
+            }
+
+            FrequencyHz = SelectedBand.Band.Clamp(hz);
+        }
+        finally
+        {
+            _updatingFromRig = false;
+        }
+    }
+
+    private void UpdateModeLine()
+    {
+        IsInsideCwSegment = SelectedBand.Band.IsInCwSegment(FrequencyHz);
+        ModeLineText = $"CW · {SelectedBand.Band.Name} · "
+            + (IsInsideCwSegment ? "inside the CW segment" : "OUTSIDE the CW segment");
     }
 
     private async Task TearDownRigAsync()
     {
+        _rigSendTimer.Stop();
+        _rigSendPending = false;
         if (_rig is not null)
         {
             _rig.FrequencyChanged -= OnRigFrequencyChanged;
@@ -100,7 +220,6 @@ public partial class MainWindowViewModel : ObservableObject
 
         IsConnected = false;
         ConnectButtonText = "Connect";
-        FrequencyDisplay = "--.---.---";
     }
 
     private static IRig CreateRig(string selection)
@@ -116,14 +235,29 @@ public partial class MainWindowViewModel : ObservableObject
         }
         catch (Exception)
         {
-            // No serial subsystem (some Linux containers): the simulated rig
-            // still works, and the list stays honest rather than invented.
             return Array.Empty<string>();
         }
     }
+}
 
-    /// <summary>7030000 → "7.030.000" — the radio-face convention.</summary>
-    internal static string FormatHz(long hz)
-        => hz.ToString("N0", System.Globalization.CultureInfo.InvariantCulture)
-             .Replace(",", ".");
+/// <summary>One band button: the band plus its best-bet ranking for the hour
+/// the app started. FG-001 replaces the ranking with live spot data.</summary>
+public sealed class BandButtonViewModel
+{
+    /// <summary>Creates the button model.</summary>
+    public BandButtonViewModel(CwBand band, bool isBestBet, bool isSecondBet)
+    {
+        Band = band;
+        IsBestBet = isBestBet;
+        IsSecondBet = isSecondBet;
+    }
+
+    /// <summary>The band this button selects.</summary>
+    public CwBand Band { get; }
+
+    /// <summary>True on the top-ranked band for the current hour.</summary>
+    public bool IsBestBet { get; }
+
+    /// <summary>True on the runner-up band.</summary>
+    public bool IsSecondBet { get; }
 }

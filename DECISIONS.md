@@ -4,6 +4,26 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-015
+date: 2026-08-12
+refs: src/HamManager.App/Controls/, HM-DEC-005, FG-001
+---
+
+The tuning HMI is the approved three-tier design: band buttons that jump to
+each band's CW watering hole and carry a time-of-day best-bet badge; a band
+ribbon (the map) with the CW segment shaded and click/drag tuning; and a
+dial tape (the fine control) — a fixed hairline with the frequency scale
+dragged underneath it, flick momentum, 10 Hz snap. Per-digit mouse-wheel
+tuning on the frequency face; arrow keys are plus/minus 10 Hz. There are no
+step buttons.
+
+Tim rejected the plus/minus step buttons on sight. The tape and ribbon share
+one frequency axis: in phase 2 the waterfall paints behind the tape and the
+ribbon, so click-a-signal-to-tune falls out of controls that already exist.
+The best-bet badge is the seed FG-001 replaces with live spot data. The mode
+line goes red outside the CW segment — honest state per the prime directive.
+
+---
 id: HM-DEC-014
 date: 2026-08-12
 refs: CLAUDE.md §10, §11

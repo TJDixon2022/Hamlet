@@ -82,3 +82,20 @@ ft8_lib is small, clean C, designed for embedding; jt9 is the reference
 decoder with better weak-signal performance but a process boundary and
 version coupling. Both are GPL (HM-DEC-004 already accounts for that).
 Decide during phase 3 planning; nothing before then depends on it.
+
+---
+id: HM-OPEN-005
+status: open
+owner: unassigned
+raised: 2026-08-12
+severity: none
+refs: src/HamManager.RadioEngine/Bands/BandPlan.cs, CLAUDE.md §0
+---
+
+Move the band plan out of code into a source-marked data file in /data, with
+citations (ARRL band plan, FCC Part 97) and per-license-class privileges.
+
+The current BandPlan.cs carries US allocations marked [extrapolated] from
+general knowledge. Fine for phase 1 tuning; not fine as the basis for FG-006
+band-plan coaching or transmit-privilege warnings, which need cited,
+class-aware data. Generate-don't-transcribe applies (§0).
