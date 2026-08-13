@@ -4,6 +4,105 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-021
+date: 2026-08-13
+refs: CLAUDE.md §0.5, src/Hamlet.App/Controls/CollapsiblePanel.cs, HM-DEC-012
+---
+
+Every panel in Hamlet collapses, its state persists in settings.json, and a
+collapsed panel still carries its summary on the header.
+
+Screen real estate belongs to the operator, not to the designer's idea of
+what matters today: a CW operator with no antenna for 20 m does not need the
+waterfall open, and an operator reading the field guide does not need the
+dial tape. Collapsing hides detail, never information — the shut header still
+reads "Happening now · 7 spots · updated 30s ago", "Field guide · 6 modes",
+"CW main street · 7.000–7.125". A collapse that silences a panel would be a
+prime-directive violation by omission: the operator would be looking at a
+screen that had quietly stopped telling them something.
+
+Header treatment: chevron and title on the left in the panel's family colour
+as TEXT only, summary right-aligned, subtle hover, and the whole bar
+clickable. The family colour is not painted across the bar — seven filled
+colour bars stacked down a window read as a stripe pattern rather than as
+structure — so panel bodies stay white on warm paper, which is what HM-DEC-012
+said in the first place. Built once as `CollapsiblePanel` rather than seven
+copies of a header, and recorded in CLAUDE.md §0.5 as a standing design
+principle so future panels inherit it without re-litigation.
+
+The rig display is the single exception. It is the IC-7300's own face and the
+app's anchor; a Hamlet window with the frequency hidden is not Hamlet.
+
+---
+id: HM-DEC-020
+date: 2026-08-13
+refs: src/Hamlet.App/ViewModels/SpotFreshness.cs, HM-DEC-016, HM-DEC-009, FG-001
+---
+
+The happening-now feed refreshes on a timer the operator sets (off, 1, 2, 5,
+10 or 15 minutes; five by default), shows its own age at all times, marks
+arrivals, and pauses while the window is not on screen.
+
+The feed is the product's star and it must never be silently stale. The panel
+header reads "7 spots · updated 30s ago" and ticks; the age goes amber past
+twice the refresh interval and reads "stale" past four times it. That is
+HM-DEC-009 turned on the Explorer itself — a confident count of spots that
+stopped being true twenty minutes ago is a guess presented as a decode.
+Switching auto-refresh off does not switch off aging: the operator turned off
+the refresh, not the passage of time, so the panel keeps measuring against the
+shipped five minutes. The rule lives in `SpotFreshness` as pure functions of
+elapsed time and interval, so every threshold is testable without a clock.
+
+Arrivals get a small "new" tag that fades after thirty seconds or on the next
+refresh. Surviving spots keep their position in the list and departures drop
+out; the list is not re-sorted on every tick, because moving a card out from
+under a reading operator's cursor is a worse cost than a perfectly ranked
+order. Manual refresh from the Explore menu always works whatever the interval
+says, and resets the timer.
+
+Pausing when the window is minimised or hidden costs nothing today against a
+fixture. It is recorded now because the seam it protects is HM-DEC-016's
+`IActivitySource`: when RBN, POTA and PSK Reporter land behind it, an app that
+polls them while nobody is watching is rude to services that are free, and
+the polite version has to be built before the first live call, not after.
+`FakeActivitySource` now varies its output between calls so the new-arrival
+path is exercisable at all.
+
+---
+id: HM-DEC-019
+date: 2026-08-13
+refs: src/Hamlet.App/Settings/OperatorProfile.cs, src/Hamlet.App/Telemetry/AppEvents.cs, HM-DEC-018, FG-001, FG-004
+---
+
+Hamlet stores an operator profile — callsign, name, location, grid square —
+in the existing settings.json, and shows an About window carrying version,
+runtime, dependency versions, session id and a copy-diagnostics button.
+
+The profile is one shaped object rather than three loose strings because
+these fields already have futures: location and grid feed propagation and
+distance-to-spot work (FG-001), and the callsign feeds logging (FG-004). It
+goes in the one settings file, not a second one — §0's "one place" applied
+literally.
+
+That puts the operator's identity in the same file as the telemetry switches,
+which makes HM-DEC-018's rule — no callsigns in telemetry, ever — easy to
+break by accident at a call site. So there are no call sites: every telemetry
+payload the shell emits is now built in `AppEvents`, the ViewModels call those
+methods, and no method on that class is handed an `AppSettings` or an
+`OperatorProfile` to reach the profile through. One test walks every method on
+it with a full profile loaded and asserts no written line contains the
+callsign, name, location or grid; a second test fails if a new event is added
+without joining the walk.
+
+The About box is §0.0.1 meeting the user. "The app must be diagnosable" is
+only half true if the diagnosis needs Tim at the keyboard — a stranger filing
+a bug needs the build, the runtime, the Avalonia version, the session id and
+the telemetry state in one click, and the copied block deliberately carries no
+identity because it is going into a public issue tracker. Runtime and library
+versions are read at run time; nothing is hardcoded, and a build date that
+cannot be read says "unknown" rather than a plausible number.
+
+---
 id: HM-DEC-018
 date: 2026-08-13
 refs: src/Hamlet.App/Settings/AppSettings.cs, src/Hamlet.RadioEngine/Telemetry/

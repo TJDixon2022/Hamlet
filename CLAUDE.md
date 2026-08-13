@@ -133,6 +133,30 @@ Never ask him to re-confirm a rule he has already given. Executing inside an
 approved plan is not deciding — building the files the plan names needs no
 per-file permission.
 
+### 0.5 Panels collapse — standing design principle
+
+Every panel in the app is collapsible, and stays collapsed across restarts
+(HM-DEC-021). New panels inherit this; it is not re-decided per panel.
+
+- Built once, as `src/Hamlet.App/Controls/CollapsiblePanel.cs`. Seven copies
+  of a header bar is seven places for it to drift.
+- Header: chevron + title on the left in the panel's family colour — amber
+  tuning, blue spectrum, green decode — as **text colour only**. The bar is
+  never filled with the family colour; a column of filled bars reads as
+  stripes, not as structure. Panel bodies stay white on warm paper
+  (HM-DEC-012). Summary right-aligned, subtle hover, whole bar clickable.
+- **A collapsed panel still carries its summary.** Collapsing hides detail,
+  never information: `▸ Happening now · 7 spots · updated 30s ago`,
+  `▸ Field guide · 6 modes`, `▸ Waterfall · not yet receiving`. A shut panel
+  that goes silent is the prime directive broken by omission.
+- Expand/collapse state persists per panel in `settings.json`; an unknown
+  panel is open.
+- The rig display — the IC-7300's own face — is the one exception. It is the
+  app's anchor.
+
+Practical test: could the operator shut this panel and still know what it
+would have told them at a glance? If not, the summary is wrong.
+
 ---
 
 ## 1. Decision log
@@ -142,6 +166,9 @@ this table is the index.
 
 | Date | Decision | Why | Ref |
 |---|---|---|---|
+| 2026-08-13 | **Every panel collapses**, state persisted per panel in settings.json, and a collapsed header still carries its summary line. Chevron + title in the family colour as text only — never a filled colour bar. Rig display exempt. Standing design principle in §0.5. | Screen real estate belongs to the operator; collapsing hides detail, never information. | HM-DEC-021 |
+| 2026-08-13 | **Happening-now auto-refresh:** operator-set interval (off/1/2/5/10/15 min, default 5), always-visible age that goes amber at 2× and reads "stale" at 4×, "new" tags on arrivals, pause while the window is hidden, manual refresh always available. | The feed is the product's star and must never be silently stale; pausing when unwatched is politeness to the live spot networks it will call later. | HM-DEC-020 |
+| 2026-08-13 | **Operator profile** (callsign, name, location, grid) in the existing settings.json; every telemetry payload built in one place (`AppEvents`) that cannot see the profile, proved by test. **About window** with version, .NET and Avalonia versions read at run time, session id and a copy-diagnostics button. | The callsign now shares a file with the telemetry switches, so HM-DEC-018's rule needs one site to hold; the About box is §0.0.1 meeting the user. | HM-DEC-019 |
 | 2026-08-13 | **Local settings and telemetry:** `%AppData%\Hamlet\settings.json` (window state, last port/band, switches) and `telemetry\YYYY-MM-DD.jsonl`, size-capped. Six categories, all on, switchable. No machine id, no callsigns, no message content, no upload. Roadmap-shaped menu with phase-labelled disabled items. | HM-DEC-013-style honesty applied to the app's own record; the community is right to distrust phone-home software. | HM-DEC-018 |
 | 2026-08-13 | **Renamed Ham Manager → Hamlet: repo `C:\Source\Hamlet`, GitHub `TJDixon2022/Hamlet`, solution and namespaces `Hamlet.*`.** Hamlib/"Hamlet UI" collision found and accepted. Pre-rename records keep the old name verbatim. | "Let me ham" is the mission in one word; Tim ruled the collision immaterial for this audience. | HM-DEC-017 |
 | 2026-08-12 | **The Explorer is the product's center, built UI-first on fixture data behind an IActivitySource seam: neighborhood map, mode field guide, happening-now feed.** Phase 1.5. | The app demystifies; automation apps already exist. Partially graduates FG-001. | HM-DEC-016 |
@@ -313,7 +340,7 @@ Rows marked `<<<FILL IN>>>` await the named ruling.
 | Language / runtime | C# on .NET 8 LTS |
 | UI framework | Avalonia 11, Fluent theme, dark variant (HM-DEC-011). Compiled bindings on by default |
 | MVVM toolkit | CommunityToolkit.Mvvm (source-generated `[ObservableProperty]`, `[RelayCommand]`) |
-| Solution layout | `Hamlet.sln` at root; `src/` and `tests/` solution folders. Engine: `src/Hamlet.RadioEngine`. Shell: `src/Hamlet.App`. Tests: `tests/Hamlet.RadioEngine.Tests` |
+| Solution layout | `Hamlet.sln` at root; `src/` and `tests/` solution folders. Engine: `src/Hamlet.RadioEngine`. Shell: `src/Hamlet.App`. Tests: `tests/Hamlet.RadioEngine.Tests`, `tests/Hamlet.App.Tests` (settings, telemetry payloads, freshness rule — app-layer facts with public promises attached) |
 | Project settings | `Nullable` enabled, `ImplicitUsings` enabled, `TreatWarningsAsErrors` true — all new projects |
 | Test framework | xUnit, no mocking framework; seams are hand-rolled interfaces (`IRig`, `IAudioSource`, `FakeRig`) |
 | Audio | NAudio (WASAPI) |
