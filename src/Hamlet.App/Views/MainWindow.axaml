@@ -1,4 +1,4 @@
-<Window xmlns="https://github.com/avaloniaui"
+﻿<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:Hamlet.App.ViewModels"
         xmlns:ctl="using:Hamlet.App.Controls"
@@ -150,15 +150,16 @@
                                   Summary="{Binding MapSummary}"
                                   IsExpanded="{Binding MapExpanded, Mode=TwoWay}">
                 <StackPanel Spacing="6">
-                    <TextBlock Text="click a neighborhood for its story, drag to tune"
-                               FontSize="12"
+                    <TextBlock Text="hover a dot to see who it is · click a dot to tune there · click the background for a neighborhood's story · drag to tune"
+                               FontSize="12" TextWrapping="Wrap"
                                Foreground="{StaticResource HmTextMutedBrush}" />
                     <ctl:NeighborhoodMapControl Height="44"
                         FrequencyHz="{Binding FrequencyHz}"
                         BandLowHz="{Binding SelectedBand.Band.LowHz}"
                         BandHighHz="{Binding SelectedBand.Band.HighHz}"
                         Neighborhoods="{Binding Neighborhoods}"
-                        ActivityFrequencies="{Binding ActivityFrequencies}"
+                        ActivityDots="{Binding ActivityDots}"
+                        TuneCommand="{Binding TuneToDotCommand}"
                         SelectCommand="{Binding ShowNeighborhoodCommand}" />
                 </StackPanel>
             </ctl:CollapsiblePanel>
@@ -224,6 +225,64 @@
                 <!-- The Explorer (HM-DEC-016) -->
                 <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto">
                     <StackPanel Spacing="10">
+
+                        <!-- The lead card and the band-conditions line
+                             (HM-DEC-025): one written suggestion for somebody
+                             with no idea where to start, and an honest answer
+                             to "is tonight worth it". -->
+                        <ctl:CollapsiblePanel Family="Amber"
+                                              Title="Where to start"
+                                              Summary="{Binding Lead.Headline}"
+                                              IsExpanded="{Binding LeadExpanded, Mode=TwoWay}">
+                            <StackPanel Spacing="10">
+
+                                <Border Background="{StaticResource HmAmberTintBrush}"
+                                        BorderBrush="{StaticResource HmAmberEdgeBrush}"
+                                        BorderThickness="1" CornerRadius="8"
+                                        Padding="12,10">
+                                    <StackPanel Spacing="6">
+                                        <TextBlock Text="{Binding Lead.Headline}"
+                                                   FontSize="14" FontWeight="SemiBold"
+                                                   TextWrapping="Wrap"
+                                                   Foreground="{StaticResource HmTextPrimaryBrush}" />
+                                        <TextBlock Text="{Binding Lead.Body}"
+                                                   FontSize="12" TextWrapping="Wrap"
+                                                   Foreground="{StaticResource HmTextPrimaryBrush}" />
+
+                                        <!-- The evidence, never hidden: the
+                                             same reason line the ranked card
+                                             carries (HM-DEC-009). -->
+                                        <TextBlock Text="{Binding Lead.Reason}"
+                                                   FontSize="11" TextWrapping="Wrap"
+                                                   Foreground="{StaticResource HmTextMutedBrush}" />
+
+                                        <Button Content="{Binding Lead.FrequencyLabel,
+                                                    StringFormat='Tune {0}'}"
+                                                FontSize="12"
+                                                HorizontalAlignment="Left"
+                                                IsVisible="{Binding Lead.HasSuggestion}"
+                                                Command="{Binding TuneToCommand}"
+                                                CommandParameter="{Binding Lead.TuneHz}" />
+                                    </StackPanel>
+                                </Border>
+
+                                <Border Background="White"
+                                        BorderBrush="{StaticResource HmSlateEdgeBrush}"
+                                        BorderThickness="1" CornerRadius="8"
+                                        Padding="12,10">
+                                    <StackPanel Spacing="4">
+                                        <TextBlock Text="{Binding Conditions.Claim}"
+                                                   FontSize="13" FontWeight="SemiBold"
+                                                   TextWrapping="Wrap"
+                                                   Foreground="{StaticResource HmTextPrimaryBrush}" />
+                                        <TextBlock Text="{Binding Conditions.Evidence}"
+                                                   FontSize="11" TextWrapping="Wrap"
+                                                   Foreground="{StaticResource HmTextMutedBrush}" />
+                                    </StackPanel>
+                                </Border>
+
+                            </StackPanel>
+                        </ctl:CollapsiblePanel>
 
                         <ctl:CollapsiblePanel Family="Amber"
                                               Title="Field notes"
@@ -304,6 +363,15 @@
                                                 <StackPanel Grid.Column="0" Spacing="2" Margin="0,0,8,0">
                                                     <TextBlock Text="{Binding Story}" FontSize="12"
                                                                TextWrapping="Wrap" />
+
+                                                    <!-- Why this card is where
+                                                         it is, on its face and
+                                                         never in a tooltip
+                                                         (HM-DEC-025). -->
+                                                    <TextBlock Text="{Binding Reason}" FontSize="11"
+                                                               TextWrapping="Wrap"
+                                                               Foreground="{StaticResource HmGreenBrush}" />
+
                                                     <StackPanel Orientation="Horizontal" Spacing="6">
                                                         <Border Background="{StaticResource HmAmberTintBrush}"
                                                                 BorderBrush="{StaticResource HmAmberEdgeBrush}"

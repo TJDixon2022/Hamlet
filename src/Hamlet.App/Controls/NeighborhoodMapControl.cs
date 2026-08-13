@@ -16,13 +16,32 @@ namespace Hamlet.App.Controls;
 /// Click a neighborhood to hear its story; drag to tune. Successor to the
 /// plain band ribbon — same axis the waterfall inherits in phase 2.
 /// </summary>
+/// <remarks>
+/// <para>The dots are the part that draws the eye, so they are made to earn
+/// it (HM-DEC-023). Each one hit-tests on its own with a few pixels of
+/// tolerance: hovering shows that spot's story, frequency, mode, source and
+/// age, and clicking tunes straight to it. Clicking the background between
+/// dots still opens the neighborhood's story, which is what it always
+/// did.</para>
+/// <para>Best-ranked spots draw larger and brighter, so a glance at the map
+/// and a glance at the list say the same thing about what matters.</para>
+/// <para>Positions are computed once per data or size change and cached, never
+/// per render pass. A busy 40 m evening puts a few hundred dots on this
+/// control and it is redrawn on every frequency change, every hover and every
+/// one-second age tick; recomputing the layout inside
+/// <see cref="Render"/> would turn tuning into a slideshow.</para>
+/// </remarks>
 public sealed class NeighborhoodMapControl : Control
 {
+    /// <summary>How far from a dot's centre still counts as hovering it.</summary>
+    private const double HitTolerance = 5.0;
+
     private static readonly Pen EdgePen = new(new SolidColorBrush(Color.Parse("#AECBEA")), 0.8);
     private static readonly Pen SeamPen = new(new SolidColorBrush(Color.Parse("#40000000")), 0.5);
     private static readonly IBrush MarkerBrush = new SolidColorBrush(Color.Parse("#C25E00"));
-    private static readonly IBrush DotBrush = new SolidColorBrush(Color.Parse("#C25E00"));
     private static readonly IBrush LabelBrush = new SolidColorBrush(Color.Parse("#55534E"));
+    private static readonly IBrush HoverBrush = new SolidColorBrush(Color.Parse("#1A1A18"));
+    private static readonly Pen HoverPen = new(new SolidColorBrush(Color.Parse("#FFFFFF")), 1.5);
     private static readonly Typeface Sans = new("Segoe UI,Inter,sans-serif");
 
     /// <summary>Current frequency in hertz. Two-way: dragging writes it back.</summary>
@@ -43,17 +62,25 @@ public sealed class NeighborhoodMapControl : Control
         AvaloniaProperty.Register<NeighborhoodMapControl, IReadOnlyList<Neighborhood>?>(
             nameof(Neighborhoods));
 
-    /// <summary>Frequencies of current activity spots; each in-band entry
-    /// draws a glowing dot. Real spot data, never decoration.</summary>
-    public static readonly StyledProperty<IReadOnlyList<long>?> ActivityFrequenciesProperty =
-        AvaloniaProperty.Register<NeighborhoodMapControl, IReadOnlyList<long>?>(
-            nameof(ActivityFrequencies));
+    /// <summary>Current activity spots. Real spot data, never decoration.</summary>
+    public static readonly StyledProperty<IReadOnlyList<ActivityDot>?> ActivityDotsProperty =
+        AvaloniaProperty.Register<NeighborhoodMapControl, IReadOnlyList<ActivityDot>?>(
+            nameof(ActivityDots));
 
     /// <summary>Executed with the clicked <see cref="Neighborhood"/> when the
-    /// pointer goes down and up without dragging.</summary>
+    /// pointer goes down and up on the background without dragging.</summary>
     public static readonly StyledProperty<ICommand?> SelectCommandProperty =
         AvaloniaProperty.Register<NeighborhoodMapControl, ICommand?>(nameof(SelectCommand));
 
+    /// <summary>Executed with a dot's frequency in hertz when it is clicked.</summary>
+    public static readonly StyledProperty<ICommand?> TuneCommandProperty =
+        AvaloniaProperty.Register<NeighborhoodMapControl, ICommand?>(nameof(TuneCommand));
+
+    private readonly Cursor _handCursor = new(StandardCursorType.Hand);
+    private readonly Cursor _dotCursor = new(StandardCursorType.Cross);
+
+    private DotLayout[] _layout = Array.Empty<DotLayout>();
+    private DotLayout? _hovered;
     private bool _pointerDown;
     private bool _draggedBeyondClick;
     private Point _downPoint;
@@ -62,14 +89,15 @@ public sealed class NeighborhoodMapControl : Control
     {
         AffectsRender<NeighborhoodMapControl>(
             FrequencyHzProperty, BandLowHzProperty, BandHighHzProperty,
-            NeighborhoodsProperty, ActivityFrequenciesProperty);
+            NeighborhoodsProperty, ActivityDotsProperty);
     }
 
     /// <summary>Creates the map.</summary>
     public NeighborhoodMapControl()
     {
-        Cursor = new Cursor(StandardCursorType.Hand);
+        Cursor = _handCursor;
         ClipToBounds = true;
+        ToolTip.SetShowDelay(this, 120);
     }
 
     /// <summary>Current frequency in hertz.</summary>
@@ -100,11 +128,11 @@ public sealed class NeighborhoodMapControl : Control
         set => SetValue(NeighborhoodsProperty, value);
     }
 
-    /// <summary>Activity spot frequencies.</summary>
-    public IReadOnlyList<long>? ActivityFrequencies
+    /// <summary>Activity spots to draw as dots.</summary>
+    public IReadOnlyList<ActivityDot>? ActivityDots
     {
-        get => GetValue(ActivityFrequenciesProperty);
-        set => SetValue(ActivityFrequenciesProperty, value);
+        get => GetValue(ActivityDotsProperty);
+        set => SetValue(ActivityDotsProperty, value);
     }
 
     /// <summary>Neighborhood click command.</summary>
@@ -112,6 +140,30 @@ public sealed class NeighborhoodMapControl : Control
     {
         get => GetValue(SelectCommandProperty);
         set => SetValue(SelectCommandProperty, value);
+    }
+
+    /// <summary>Dot click command; the parameter is a frequency in hertz.</summary>
+    public ICommand? TuneCommand
+    {
+        get => GetValue(TuneCommandProperty);
+        set => SetValue(TuneCommandProperty, value);
+    }
+
+    /// <inheritdoc/>
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+
+        // Layout depends on the dots, the band window and the control's own
+        // width — and on nothing else, which is why the frequency marker
+        // moving does not rebuild it.
+        if (change.Property == ActivityDotsProperty
+            || change.Property == BandLowHzProperty
+            || change.Property == BandHighHzProperty
+            || change.Property == BoundsProperty)
+        {
+            RebuildLayout();
+        }
     }
 
     /// <inheritdoc/>
@@ -152,26 +204,130 @@ public sealed class NeighborhoodMapControl : Control
             }
         }
 
-        // Activity dots at real spot frequencies; y scattered deterministically.
-        if (ActivityFrequencies is { Count: > 0 } dots)
+        // Activity dots from the cached layout.
+        foreach (var dot in _layout)
         {
-            foreach (var hz in dots)
-            {
-                if (hz < BandLowHz || hz > BandHighHz)
-                {
-                    continue;
-                }
+            context.DrawEllipse(dot.Brush, null, dot.Centre, dot.Radius, dot.Radius);
+        }
 
-                var x = (hz - BandLowHz) / span * w;
-                var y = h * (0.42 + 0.4 * (hz / 100 % 7) / 7.0);
-                context.DrawEllipse(DotBrush, null, new Point(x, y), 3, 3);
-            }
+        if (_hovered is not null)
+        {
+            context.DrawEllipse(
+                HoverBrush, HoverPen, _hovered.Centre,
+                _hovered.Radius + 2, _hovered.Radius + 2);
         }
 
         context.DrawRectangle(null, EdgePen, new Rect(0.5, 0.5, w - 1, h - 1), 6, 6);
 
         var markerX = (FrequencyHz - BandLowHz) / span * w;
         context.FillRectangle(MarkerBrush, new Rect(markerX - 1, 0, 2, h));
+    }
+
+    /// <summary>
+    /// Recompute every dot's position, size and colour.
+    /// </summary>
+    /// <remarks>
+    /// Called only when the dots, the band window or the control's size
+    /// changes — see the type remarks on why this is not done during
+    /// rendering.
+    /// </remarks>
+    private void RebuildLayout()
+    {
+        var w = Bounds.Width;
+        var h = Bounds.Height;
+
+        if (ActivityDots is not { Count: > 0 } dots
+            || w <= 0 || h <= 0 || BandHighHz <= BandLowHz)
+        {
+            _layout = Array.Empty<DotLayout>();
+            _hovered = null;
+            return;
+        }
+
+        double span = BandHighHz - BandLowHz;
+        var built = new List<DotLayout>(dots.Count);
+
+        foreach (var dot in dots)
+        {
+            if (dot.FrequencyHz < BandLowHz || dot.FrequencyHz > BandHighHz)
+            {
+                continue;
+            }
+
+            var x = (dot.FrequencyHz - BandLowHz) / span * w;
+
+            // Scatter vertically, deterministically from the frequency, so
+            // neighbours on the same kilohertz do not stack into one blob.
+            var y = h * (0.42 + 0.4 * (dot.FrequencyHz / 100 % 7) / 7.0);
+
+            var prominence = Math.Clamp(dot.Prominence, 0, 1);
+            var radius = 2.5 + (2.5 * prominence);
+
+            built.Add(new DotLayout(
+                dot, new Point(x, y), radius, BrushFor(prominence)));
+        }
+
+        _layout = built.ToArray();
+
+        // The dot under the pointer may have moved or vanished.
+        _hovered = null;
+        ToolTip.SetIsOpen(this, false);
+    }
+
+    /// <summary>
+    /// Best-ranked dots are darker and fully opaque; the rest fade back so the
+    /// eye lands on what the ranking chose.
+    /// </summary>
+    private static IBrush BrushFor(double prominence)
+    {
+        var alpha = (byte)Math.Clamp(110 + (145 * prominence), 90, 255);
+        return new SolidColorBrush(Color.FromArgb(alpha, 0xC2, 0x5E, 0x00));
+    }
+
+    private DotLayout? DotAt(Point p)
+    {
+        DotLayout? best = null;
+        var bestDistance = double.MaxValue;
+
+        foreach (var dot in _layout)
+        {
+            var dx = dot.Centre.X - p.X;
+            var dy = dot.Centre.Y - p.Y;
+            var distance = Math.Sqrt((dx * dx) + (dy * dy));
+
+            if (distance <= dot.Radius + HitTolerance && distance < bestDistance)
+            {
+                best = dot;
+                bestDistance = distance;
+            }
+        }
+
+        return best;
+    }
+
+    private void SetHover(DotLayout? dot)
+    {
+        if (ReferenceEquals(dot, _hovered))
+        {
+            return;
+        }
+
+        _hovered = dot;
+
+        if (dot is null)
+        {
+            ToolTip.SetIsOpen(this, false);
+            Cursor = _handCursor;
+        }
+        else
+        {
+            ToolTip.SetIsOpen(this, false);
+            ToolTip.SetTip(this, dot.Dot.TooltipText);
+            ToolTip.SetIsOpen(this, true);
+            Cursor = _dotCursor;
+        }
+
+        InvalidateVisual();
     }
 
     /// <inheritdoc/>
@@ -189,20 +345,30 @@ public sealed class NeighborhoodMapControl : Control
     protected override void OnPointerMoved(PointerEventArgs e)
     {
         base.OnPointerMoved(e);
+        var p = e.GetPosition(this);
+
         if (!_pointerDown)
         {
+            SetHover(DotAt(p));
             return;
         }
 
-        var p = e.GetPosition(this);
         if (!_draggedBeyondClick && Math.Abs(p.X - _downPoint.X) < 4)
         {
             return;
         }
 
         _draggedBeyondClick = true;
+        SetHover(null);
         TuneToPointer(p.X);
         e.Handled = true;
+    }
+
+    /// <inheritdoc/>
+    protected override void OnPointerExited(PointerEventArgs e)
+    {
+        base.OnPointerExited(e);
+        SetHover(null);
     }
 
     /// <inheritdoc/>
@@ -219,10 +385,25 @@ public sealed class NeighborhoodMapControl : Control
 
         if (!_draggedBeyondClick)
         {
-            var hood = HoodAt(e.GetPosition(this).X);
-            if (hood is not null && SelectCommand?.CanExecute(hood) == true)
+            var point = e.GetPosition(this);
+            var dot = DotAt(point);
+
+            if (dot is not null)
             {
-                SelectCommand.Execute(hood);
+                // A dot is a specific station, so it wins over the
+                // neighborhood it happens to sit in.
+                if (TuneCommand?.CanExecute(dot.Dot.FrequencyHz) == true)
+                {
+                    TuneCommand.Execute(dot.Dot.FrequencyHz);
+                }
+            }
+            else
+            {
+                var hood = HoodAt(point.X);
+                if (hood is not null && SelectCommand?.CanExecute(hood) == true)
+                {
+                    SelectCommand.Execute(hood);
+                }
             }
         }
 
@@ -246,4 +427,8 @@ public sealed class NeighborhoodMapControl : Control
         var hz = BandLowHz + (long)(frac * (BandHighHz - BandLowHz));
         SetCurrentValue(FrequencyHzProperty, hz / 100 * 100);
     }
+
+    /// <summary>A dot's precomputed screen geometry.</summary>
+    private sealed record DotLayout(
+        ActivityDot Dot, Point Centre, double Radius, IBrush Brush);
 }

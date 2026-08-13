@@ -1,4 +1,4 @@
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Globalization;
 using Avalonia;
 using Avalonia.Threading;
@@ -44,7 +44,10 @@ public partial class MainWindowViewModel : ObservableObject
     private readonly DispatcherTimer _ageTimer;
     private readonly AppSettings _settings;
     private readonly JsonlTelemetry? _telemetry;
-    private readonly IActivitySource _activitySource = new FakeActivitySource();
+    private readonly List<ActivitySpot> _allBandSpots = new();
+    private AggregateActivitySource _activitySource;
+    private RbnActivitySource? _rbn;
+    private IDisposable[] _ownedSources = Array.Empty<IDisposable>();
     private IRig? _rig;
     private bool _updatingFromRig;
     private bool _rigSendPending;
@@ -81,7 +84,8 @@ public partial class MainWindowViewModel : ObservableObject
     private IReadOnlyList<Neighborhood> _neighborhoods = Array.Empty<Neighborhood>();
 
     [ObservableProperty]
-    private IReadOnlyList<long> _activityFrequencies = Array.Empty<long>();
+    private IReadOnlyList<Controls.ActivityDot> _activityDots =
+        Array.Empty<Controls.ActivityDot>();
 
     [ObservableProperty]
     private string _storyTitle = "";
@@ -100,6 +104,21 @@ public partial class MainWindowViewModel : ObservableObject
 
     [ObservableProperty]
     private FreshnessLevel _spotsFreshness = FreshnessLevel.Fresh;
+
+    /// <summary>The one written suggestion above the list (HM-DEC-025).</summary>
+    [ObservableProperty]
+    private LeadSuggestion _lead = new(
+        false, "Looking…", "Hamlet is asking the spot networks what is on the air.",
+        "", 0, "");
+
+    /// <summary>The band-conditions claim and its evidence (HM-DEC-025).</summary>
+    [ObservableProperty]
+    private ConditionsLine _conditions = new(
+        "Checking the bands…", "", ConditionsConfidence.Thin, null);
+
+    /// <summary>One line naming which sources answered, for the panel header.</summary>
+    [ObservableProperty]
+    private string _sourcesSummary = "";
 
     [ObservableProperty]
     private bool _mapExpanded = true;
@@ -121,6 +140,9 @@ public partial class MainWindowViewModel : ObservableObject
 
     [ObservableProperty]
     private bool _spotsExpanded = true;
+
+    [ObservableProperty]
+    private bool _leadExpanded = true;
 
     /// <summary>The field guide entries.</summary>
     public IReadOnlyList<ModeInfo> ModeCards { get; } = ModeGuide.Modes;
@@ -179,6 +201,7 @@ public partial class MainWindowViewModel : ObservableObject
         _storyExpanded = settings.IsPanelExpanded(PanelKeys.Story);
         _guideExpanded = settings.IsPanelExpanded(PanelKeys.Guide);
         _spotsExpanded = settings.IsPanelExpanded(PanelKeys.Spots);
+        _leadExpanded = settings.IsPanelExpanded(PanelKeys.Lead);
 
         AvailablePorts = new ObservableCollection<string> { SimulatedRig };
         foreach (var name in SafePortNames())
@@ -203,6 +226,8 @@ public partial class MainWindowViewModel : ObservableObject
         _ageTimer = new DispatcherTimer(AgeTick, DispatcherPriority.Background, OnAgeTick);
         _ageTimer.Stop();
 
+        _activitySource = BuildSources();
+
         Neighborhoods = NeighborhoodPlan.ForBand(_selectedBand.Band);
         ShowNeighborhood(Neighborhoods.First(n => n.Contains(FrequencyHz)));
         UpdateModeLine();
@@ -210,6 +235,90 @@ public partial class MainWindowViewModel : ObservableObject
 
         _ = ReloadSpotsAsync("startup");
         ApplyFeedTimers();
+    }
+
+    /// <summary>
+    /// Assemble the live sources the operator has switched on (HM-DEC-024).
+    /// </summary>
+    /// <returns>The aggregate to poll.</returns>
+    /// <remarks>
+    /// <para>Order is preference order: the aggregate keeps the first version
+    /// of a duplicate spot, and an activation carries far more meaning for a
+    /// newcomer than the same station seen bare by a skimmer, so POTA and
+    /// SOTA lead.</para>
+    /// <para>RBN is left out entirely when the operator has not set a
+    /// callsign. Its telnet login is the callsign — there is no anonymous
+    /// access — and inventing one would be lying to the service on the
+    /// operator's behalf. Settings says so next to the switch.</para>
+    /// </remarks>
+    private AggregateActivitySource BuildSources()
+    {
+        DisposeSources();
+
+        var version = AboutViewModel.AppVersion;
+        var callsign = _settings.Operator.Callsign?.Trim() ?? "";
+        var owned = new List<IDisposable>();
+        var sources = new List<IActivitySource>();
+
+        var pota = new PotaActivitySource(version, callsign);
+        sources.Add(pota);
+        owned.Add(pota);
+
+        var sota = new SotaActivitySource(version, callsign);
+        sources.Add(sota);
+        owned.Add(sota);
+
+        if (callsign.Length > 0)
+        {
+            _rbn = new RbnActivitySource(callsign);
+            sources.Add(_rbn);
+            owned.Add(_rbn);
+        }
+        else
+        {
+            _rbn = null;
+        }
+
+        sources.Add(new FakeActivitySource());
+
+        _ownedSources = owned.ToArray();
+
+        var aggregate = new AggregateActivitySource(sources, _settings.IsSourceEnabled);
+        aggregate.SetContext(BuildContext());
+        return aggregate;
+    }
+
+    /// <summary>
+    /// What the sources need to know about the operator and the band on
+    /// screen.
+    /// </summary>
+    private ActivityContext BuildContext() => new()
+    {
+        BandLowHz = SelectedBand.Band.LowHz,
+        BandHighHz = SelectedBand.Band.HighHz,
+        HomeDistrict = OperatorLocation.HomeDistrict(_settings.Operator.Location),
+        HomeInNorthAmerica =
+            OperatorLocation.IsNorthAmerica(_settings.Operator.GridSquare)
+            || OperatorLocation.HomeDistrict(_settings.Operator.Location) is not null
+            || CallsignRegions.Classify(_settings.Operator.Callsign).Region
+                is CallsignRegion.UnitedStates or CallsignRegion.Canada,
+    };
+
+    private void DisposeSources()
+    {
+        foreach (var source in _ownedSources)
+        {
+            try
+            {
+                source.Dispose();
+            }
+            catch (Exception)
+            {
+                // Tearing down a feed is best-effort; never fatal (§8).
+            }
+        }
+
+        _ownedSources = Array.Empty<IDisposable>();
     }
 
     /// <summary>
@@ -311,6 +420,23 @@ public partial class MainWindowViewModel : ObservableObject
         _settings.LastBand = value.Band.Name;
         SettingsStore.Save(_settings);
         AppEvents.BandChanged(_telemetry, value.Band.Name);
+
+        // The list, the dots, the lead card and the conditions line are all
+        // about the band on screen, so changing band re-asks rather than
+        // leaving the previous band's answers up.
+        _ = ReloadSpotsAsync("band_changed");
+    }
+
+    /// <summary>
+    /// Tune to a dot on the neighborhood map (HM-DEC-023). Separate from
+    /// <see cref="TuneToCommand"/> only so the telemetry can tell a map click
+    /// from a card click.
+    /// </summary>
+    [RelayCommand]
+    private void TuneToDot(long hz)
+    {
+        AppEvents.MapDotTuned(_telemetry, hz);
+        TuneTo(hz);
     }
 
     partial void OnSelectedPortChanged(string value)
@@ -334,6 +460,8 @@ public partial class MainWindowViewModel : ObservableObject
     partial void OnGuideExpandedChanged(bool value) => PersistPanel(PanelKeys.Guide, value);
 
     partial void OnSpotsExpandedChanged(bool value) => PersistPanel(PanelKeys.Spots, value);
+
+    partial void OnLeadExpandedChanged(bool value) => PersistPanel(PanelKeys.Lead, value);
 
     private void PersistPanel(string key, bool expanded)
     {
@@ -368,6 +496,12 @@ public partial class MainWindowViewModel : ObservableObject
             DataContext = new SettingsViewModel(_settings, _telemetry),
         };
         await window.ShowDialog(desktop.MainWindow);
+
+        // Source switches and the callsign may both have changed while the
+        // dialog was open, and the callsign is RBN's login, so the sources are
+        // rebuilt rather than reconfigured.
+        _activitySource = BuildSources();
+        _ = ReloadSpotsAsync("settings");
 
         // The interval may have changed while the dialog was open.
         ApplyFeedTimers();
@@ -516,6 +650,8 @@ public partial class MainWindowViewModel : ObservableObject
     /// </summary>
     private async Task ReloadSpotsAsync(string trigger)
     {
+        _activitySource.SetContext(BuildContext());
+
         IReadOnlyList<ActivitySpot> spots;
         try
         {
@@ -529,49 +665,171 @@ public partial class MainWindowViewModel : ObservableObject
         }
 
         var now = DateTime.UtcNow;
-        var incoming = new Dictionary<string, ActivitySpot>();
-        foreach (var s in spots)
-        {
-            incoming[SpotViewModel.KeyFor(s)] = s;
-        }
 
-        for (var i = Spots.Count - 1; i >= 0; i--)
-        {
-            if (!incoming.ContainsKey(Spots[i].Key))
-            {
-                Spots.RemoveAt(i);
-            }
-        }
+        _allBandSpots.Clear();
+        _allBandSpots.AddRange(spots);
 
-        var existing = new Dictionary<string, SpotViewModel>();
+        // The list shows the band on screen; the conditions line keeps the
+        // whole spectrum, which is what lets it say "try 40 m" with a count.
+        var onBand = spots
+            .Where(s => SelectedBand.Band.LowHz <= s.FrequencyHz
+                        && s.FrequencyHz <= SelectedBand.Band.HighHz)
+            .ToList();
+
+        var ranked = SpotRanking.Rank(onBand, now);
+        var newCount = RebuildSpotList(ranked, now);
+
+        ActivityDots = BuildDots(ranked, now);
+        Lead = LeadCard.Choose(ranked, SelectedBand.Band.Name, AnySourceAnswering());
+        Conditions = BandConditions.Describe(
+            SelectedBand.Band.Name, onBand, _allBandSpots, _activitySource.Statuses, now);
+
+        _lastSpotLoadUtc = now;
+        _spotsEverLoaded = true;
+        UpdateSourceSummary();
+        UpdateSpotFreshness();
+
+        AppEvents.SpotsRefreshed(_telemetry, trigger, Spots.Count, newCount);
+        AppEvents.LeadCardBuilt(
+            _telemetry, Lead.HasSuggestion,
+            ranked.Count > 0 && Lead.HasSuggestion ? ranked[0].Score : 0);
+    }
+
+    /// <summary>
+    /// Rebuild the card list in ranked order, reusing the cards already on
+    /// screen so a surviving spot keeps its identity.
+    /// </summary>
+    /// <param name="ranked">Ranked spots, best first.</param>
+    /// <param name="now">Reference time.</param>
+    /// <returns>How many spots were not in the previous set.</returns>
+    /// <remarks>
+    /// HM-DEC-020 said the list is not re-sorted on every tick, because moving
+    /// a card out from under a reading operator's cursor costs more than a
+    /// perfect order. That still holds and is why the one-second age tick only
+    /// re-ages text. Ranking reorders on a data refresh only — a deliberate,
+    /// five-minutes-apart event where the content genuinely changed
+    /// (HM-DEC-025 amends HM-DEC-020 to exactly this extent).
+    /// </remarks>
+    private int RebuildSpotList(IReadOnlyList<RankedSpot> ranked, DateTime now)
+    {
+        var existing = new Dictionary<string, SpotViewModel>(StringComparer.Ordinal);
         foreach (var vm in Spots)
         {
             existing[vm.Key] = vm;
         }
 
+        var rebuilt = new List<SpotViewModel>(ranked.Count);
         var newCount = 0;
-        foreach (var pair in incoming)
+
+        foreach (var entry in ranked)
         {
-            if (existing.TryGetValue(pair.Key, out var vm))
+            var key = SpotViewModel.KeyFor(entry.Spot);
+
+            if (existing.TryGetValue(key, out var vm))
             {
-                vm.Update(pair.Value, now);
+                vm.Update(entry.Spot, now, entry.Reason);
+                rebuilt.Add(vm);
                 continue;
             }
 
             // Nothing is "new" on the first load — everything would be.
-            var arrival = new SpotViewModel(pair.Value, now, isNew: _spotsEverLoaded);
-            Spots.Add(arrival);
+            rebuilt.Add(new SpotViewModel(
+                entry.Spot, now, isNew: _spotsEverLoaded, entry.Reason));
+
             if (_spotsEverLoaded)
             {
                 newCount++;
             }
         }
 
-        ActivityFrequencies = spots.Select(s => s.FrequencyHz).ToArray();
-        _lastSpotLoadUtc = now;
-        _spotsEverLoaded = true;
-        UpdateSpotFreshness();
-        AppEvents.SpotsRefreshed(_telemetry, trigger, Spots.Count, newCount);
+        if (!SameOrder(Spots, rebuilt))
+        {
+            Spots.Clear();
+            foreach (var vm in rebuilt)
+            {
+                Spots.Add(vm);
+            }
+        }
+
+        return newCount;
+    }
+
+    private static bool SameOrder(
+        IReadOnlyList<SpotViewModel> current, IReadOnlyList<SpotViewModel> rebuilt)
+    {
+        if (current.Count != rebuilt.Count)
+        {
+            return false;
+        }
+
+        for (var i = 0; i < current.Count; i++)
+        {
+            if (!ReferenceEquals(current[i], rebuilt[i]))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /// <summary>
+    /// Turn ranked spots into map dots, with prominence following the rank so
+    /// the map and the list agree about what matters (HM-DEC-023).
+    /// </summary>
+    private static IReadOnlyList<Controls.ActivityDot> BuildDots(
+        IReadOnlyList<RankedSpot> ranked, DateTime now)
+    {
+        if (ranked.Count == 0)
+        {
+            return Array.Empty<Controls.ActivityDot>();
+        }
+
+        var dots = new List<Controls.ActivityDot>(ranked.Count);
+
+        for (var i = 0; i < ranked.Count; i++)
+        {
+            var entry = ranked[i];
+
+            // Prominence falls away over the first ten places; past that every
+            // dot is drawn at the floor rather than vanishing, because it is
+            // still a real signal on a real frequency.
+            var prominence = Math.Max(0.0, 1.0 - (i / 10.0));
+
+            dots.Add(new Controls.ActivityDot(
+                entry.Spot.FrequencyHz,
+                entry.Spot.Story,
+                entry.Spot.Mode,
+                entry.Spot.Source,
+                SpotFreshness.Describe(now - entry.Spot.HeardAtUtc),
+                entry.Reason,
+                prominence));
+        }
+
+        return dots;
+    }
+
+    private bool AnySourceAnswering()
+        => _activitySource.Statuses.Any(s => s.State == SourceState.Ok);
+
+    /// <summary>
+    /// Name which sources answered, and confess the ones that did not.
+    /// </summary>
+    private void UpdateSourceSummary()
+    {
+        var statuses = _activitySource.Statuses;
+        var ok = statuses.Where(s => s.State == SourceState.Ok).Select(s => s.Name).ToList();
+        var down = statuses.Where(s => s.IsLetDown).ToList();
+
+        foreach (var status in down)
+        {
+            AppEvents.SourceUnhealthy(_telemetry, status.Name, status.State.ToString());
+        }
+
+        SourcesSummary = ok.Count == 0
+            ? "no sources answering"
+            : string.Join(", ", ok)
+              + (down.Count > 0 ? $" · {string.Join(", ", down.Select(d => d.Name))} down" : "");
     }
 
     /// <summary>Re-age everything on screen: the header line, its colour, each
@@ -583,7 +841,8 @@ public partial class MainWindowViewModel : ObservableObject
         var interval = _settings.SpotRefreshMinutes;
 
         SpotsSummary = SpotFreshness.Summary(
-            Spots.Count, since, interval, _spotsEverLoaded);
+            Spots.Count, since, interval, _spotsEverLoaded)
+            + (SourcesSummary.Length > 0 ? $" · {SourcesSummary}" : "");
         SpotsFreshness = _spotsEverLoaded
             ? SpotFreshness.Evaluate(since, interval)
             : FreshnessLevel.Fresh;
@@ -684,6 +943,9 @@ public static class PanelKeys
 
     /// <summary>The happening-now feed.</summary>
     public const string Spots = "spots";
+
+    /// <summary>The lead card and the band-conditions line (HM-DEC-025).</summary>
+    public const string Lead = "lead";
 }
 
 /// <summary>One band button: the band plus its best-bet ranking for the hour
@@ -721,6 +983,14 @@ public partial class SpotViewModel : ObservableObject
     [ObservableProperty]
     private bool _isNew;
 
+    /// <summary>
+    /// Why the ranking put this card where it is (HM-DEC-025) — shown on the
+    /// card's face, never in a tooltip. A card ranked highly without a stated
+    /// reason is a guess presented as a decode.
+    /// </summary>
+    [ObservableProperty]
+    private string _reason = "";
+
     private ActivitySpot _spot;
     private DateTime _newUntilUtc;
 
@@ -728,7 +998,8 @@ public partial class SpotViewModel : ObservableObject
     /// <param name="spot">The engine's spot.</param>
     /// <param name="nowUtc">The reference time for the age line.</param>
     /// <param name="isNew">True when this spot was not in the previous set.</param>
-    public SpotViewModel(ActivitySpot spot, DateTime nowUtc, bool isNew)
+    /// <param name="reason">The ranking's stated reason for this card.</param>
+    public SpotViewModel(ActivitySpot spot, DateTime nowUtc, bool isNew, string reason = "")
     {
         _spot = spot;
         Key = KeyFor(spot);
@@ -737,9 +1008,13 @@ public partial class SpotViewModel : ObservableObject
         TuneLabel = "Tune " + (spot.FrequencyHz / 1_000_000.0)
             .ToString("0.000", CultureInfo.InvariantCulture);
         _isNew = isNew;
+        _reason = reason;
         _newUntilUtc = nowUtc + MainWindowViewModel.NewSpotTagLifetime;
         Reage(nowUtc);
     }
+
+    /// <summary>The spot behind this card.</summary>
+    public ActivitySpot Spot => _spot;
 
     /// <summary>Identity across refreshes: what was said, and where.</summary>
     /// <param name="spot">The spot to key.</param>
@@ -762,10 +1037,16 @@ public partial class SpotViewModel : ObservableObject
     /// <summary>Take the refreshed spot; a surviving card stops being new.</summary>
     /// <param name="spot">The same spot, freshly reported.</param>
     /// <param name="nowUtc">Reference time.</param>
-    public void Update(ActivitySpot spot, DateTime nowUtc)
+    /// <param name="reason">The ranking's reason, recomputed with the spot.</param>
+    public void Update(ActivitySpot spot, DateTime nowUtc, string reason = "")
     {
         _spot = spot;
         IsNew = false;
+        if (reason.Length > 0)
+        {
+            Reason = reason;
+        }
+
         Reage(nowUtc);
     }
 
