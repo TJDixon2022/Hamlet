@@ -101,11 +101,11 @@
                 BorderThickness="1" CornerRadius="8"
                 Padding="20,12" Margin="0,0,0,12">
             <StackPanel Spacing="6">
-                <ctl:FrequencyDigitsControl HorizontalAlignment="Center"
+                <ctl:RigDisplayControl HorizontalAlignment="Center"
                     FrequencyHz="{Binding FrequencyHz}"
                     BandLowHz="{Binding SelectedBand.Band.LowHz}"
                     BandHighHz="{Binding SelectedBand.Band.HighHz}"
-                    ModeText="CW" />
+                    ModeText="CW" FilterText="FIL2" />
                 <TextBlock Text="scroll wheel over a digit tunes that digit"
                            FontSize="12" HorizontalAlignment="Center"
                            Foreground="{StaticResource HmAmberBrush}" />

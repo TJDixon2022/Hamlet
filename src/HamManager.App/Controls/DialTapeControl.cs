@@ -148,7 +148,11 @@ public sealed class DialTapeControl : Control
                     mhz.ToString("0.0####", CultureInfo.InvariantCulture),
                     CultureInfo.InvariantCulture, FlowDirection.LeftToRight,
                     Mono, 11, LabelBrush);
-                context.DrawText(label, new Point(x - label.Width / 2, h * 0.12));
+                var lx = x - label.Width / 2;
+                if (lx >= 2 && lx + label.Width <= w - 2)
+                {
+                    context.DrawText(label, new Point(lx, h * 0.12));
+                }
             }
         }
 
