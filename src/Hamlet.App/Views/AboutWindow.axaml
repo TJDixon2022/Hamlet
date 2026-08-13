@@ -1,0 +1,129 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Hamlet.App.ViewModels"
+        x:Class="Hamlet.App.Views.AboutWindow"
+        x:DataType="vm:AboutViewModel"
+        Title="About Hamlet"
+        Width="520" Height="640"
+        WindowStartupLocation="CenterOwner"
+        Background="{StaticResource HmBackgroundBrush}">
+
+    <Design.DataContext>
+        <vm:AboutViewModel />
+    </Design.DataContext>
+
+    <Window.Styles>
+        <Style Selector="TextBlock.hm-fact-key">
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Foreground" Value="{StaticResource HmTextMutedBrush}" />
+        </Style>
+        <Style Selector="TextBlock.hm-fact-value">
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="Foreground" Value="{StaticResource HmTextPrimaryBrush}" />
+        </Style>
+    </Window.Styles>
+
+    <Grid RowDefinitions="Auto,*,Auto" Margin="18">
+
+        <StackPanel Grid.Row="0" Spacing="6" Margin="0,0,0,14">
+            <StackPanel Orientation="Horizontal" Spacing="0">
+                <TextBlock Text="Ham" FontSize="30" FontWeight="Bold"
+                           Foreground="{StaticResource HmAmberBrush}" />
+                <TextBlock Text="let" FontSize="30" FontWeight="Bold"
+                           Foreground="{StaticResource HmBlueBrush}" />
+            </StackPanel>
+            <TextBlock Text="Let me ham — the radio, demystified."
+                       FontSize="14" FontStyle="Italic"
+                       Foreground="{StaticResource HmAmberDeepBrush}" />
+            <TextBlock TextWrapping="Wrap" FontSize="13" LineHeight="19"
+                       Foreground="{StaticResource HmTextPrimaryBrush}"
+                       Text="Hamlet exists to make amateur radio intuitive for people who have a license but not fifty years at the key. The bands are not a mystery to be earned — they are a place, and this app draws the map, names what you are hearing, and takes you there in one click." />
+            <TextBlock Text="{Binding Byline}" FontSize="13" FontWeight="SemiBold"
+                       IsVisible="{Binding HasByline}"
+                       Foreground="{StaticResource HmTextPrimaryBrush}" />
+        </StackPanel>
+
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel Spacing="10">
+
+                <Border Background="White"
+                        BorderBrush="{StaticResource HmSlateEdgeBrush}"
+                        BorderThickness="1" CornerRadius="8" Padding="12,10">
+                    <StackPanel Spacing="6">
+                        <TextBlock Text="This build" FontWeight="SemiBold" FontSize="13"
+                                   Foreground="{StaticResource HmBlueBrush}" />
+                        <Grid ColumnDefinitions="110,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto">
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Version"
+                                       Classes="hm-fact-key" />
+                            <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Version}"
+                                       Classes="hm-fact-value" />
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Built"
+                                       Classes="hm-fact-key" />
+                            <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding BuildDate}"
+                                       Classes="hm-fact-value" />
+                            <TextBlock Grid.Row="2" Grid.Column="0" Text=".NET"
+                                       Classes="hm-fact-key" />
+                            <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding RuntimeVersion}"
+                                       Classes="hm-fact-value" />
+                            <TextBlock Grid.Row="3" Grid.Column="0" Text="Avalonia"
+                                       Classes="hm-fact-key" />
+                            <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding AvaloniaVersion}"
+                                       Classes="hm-fact-value" />
+                            <TextBlock Grid.Row="4" Grid.Column="0" Text="License"
+                                       Classes="hm-fact-key" />
+                            <TextBlock Grid.Row="4" Grid.Column="1"
+                                       Text="GPL-3.0 · free and open source"
+                                       Classes="hm-fact-value" />
+                        </Grid>
+                        <Button Content="github.com/TJDixon2022/Hamlet"
+                                FontSize="12" HorizontalAlignment="Left"
+                                Command="{Binding OpenGitHubCommand}" />
+                    </StackPanel>
+                </Border>
+
+                <Border Background="White"
+                        BorderBrush="{StaticResource HmSlateEdgeBrush}"
+                        BorderThickness="1" CornerRadius="8" Padding="12,10">
+                    <StackPanel Spacing="6">
+                        <TextBlock Text="Diagnostics" FontWeight="SemiBold" FontSize="13"
+                                   Foreground="{StaticResource HmGreenBrush}" />
+                        <TextBlock FontSize="12" TextWrapping="Wrap"
+                                   Foreground="{StaticResource HmTextMutedBrush}"
+                                   Text="Copy this into a bug report. It carries no callsign, no name and no location." />
+                        <Grid ColumnDefinitions="110,*" RowDefinitions="Auto,Auto,Auto">
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Data folder"
+                                       Classes="hm-fact-key" />
+                            <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding DataFolderPath}"
+                                       Classes="hm-fact-value"
+                                       FontFamily="{StaticResource HmMonoFont}" />
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Session id"
+                                       Classes="hm-fact-key" />
+                            <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding SessionId}"
+                                       Classes="hm-fact-value"
+                                       FontFamily="{StaticResource HmMonoFont}" />
+                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Telemetry"
+                                       Classes="hm-fact-key" />
+                            <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding TelemetryStatus}"
+                                       Classes="hm-fact-value" />
+                        </Grid>
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <Button Content="Copy diagnostics" Click="OnCopyDiagnosticsClick" />
+                            <Button Content="Open data folder"
+                                    Command="{Binding OpenDataFolderCommand}" />
+                        </StackPanel>
+                        <TextBlock Text="{Binding CopyStatus}" FontSize="12"
+                                   TextWrapping="Wrap"
+                                   Foreground="{StaticResource HmGreenBrush}" />
+                    </StackPanel>
+                </Border>
+
+            </StackPanel>
+        </ScrollViewer>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right"
+                    Spacing="8" Margin="0,14,0,0">
+            <Button Content="Close" Click="OnCloseClick" Padding="20,8" />
+        </StackPanel>
+    </Grid>
+</Window>

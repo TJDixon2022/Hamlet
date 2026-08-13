@@ -226,11 +226,24 @@ public partial class MainWindowViewModel : ObservableObject
     [RelayCommand]
     private void OpenDataFolder() => SettingsStore.OpenDataFolder();
 
-    /// <summary>Show the about box.</summary>
+    /// <summary>Show the About window.</summary>
     [RelayCommand]
-    private void About()
-        => StatusText = "Hamlet — let me ham. Open source, GPL-3.0. "
-                      + "Telemetry stays on this computer.";
+    private async Task OpenAboutAsync()
+    {
+        if (Application.Current?.ApplicationLifetime
+            is not IClassicDesktopStyleApplicationLifetime desktop
+            || desktop.MainWindow is null)
+        {
+            return;
+        }
+
+        AppEvents.AboutOpened(_telemetry);
+        var window = new Views.AboutWindow
+        {
+            DataContext = new AboutViewModel(_settings, _telemetry),
+        };
+        await window.ShowDialog(desktop.MainWindow);
+    }
 
     /// <summary>Close the app.</summary>
     [RelayCommand]

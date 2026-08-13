@@ -78,7 +78,7 @@
                 </MenuItem>
                 <MenuItem Header="_Help">
                     <MenuItem Header="Getting started  (phase 1.5)" IsEnabled="False" />
-                    <MenuItem Header="About Hamlet" Command="{Binding AboutCommand}" />
+                    <MenuItem Header="About Hamlet" Command="{Binding OpenAboutCommand}" />
                 </MenuItem>
             </Menu>
 
