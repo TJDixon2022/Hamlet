@@ -99,3 +99,25 @@ The current BandPlan.cs carries US allocations marked [extrapolated] from
 general knowledge. Fine for phase 1 tuning; not fine as the basis for FG-006
 band-plan coaching or transmit-privilege warnings, which need cited,
 class-aware data. Generate-don't-transcribe applies (§0).
+
+**NARROWED 2026-08-13 (HM-DEC-029).** The privileges half is done:
+`data/privileges/us-part97-privileges.json` carries 47 CFR 97.301, 97.305 and
+97.307 transcribed from eCFR, cited per row, with its gaps declared as explicit
+unknowns. Transmit-privilege warnings now rest on cited data.
+
+What remains is `BandPlan.cs` itself, which still holds three kinds of number
+in code:
+
+- **Band edges** (`LowHz`, `HighHz`). Now redundant — the same edges are in the
+  privileges file under the Extra class, which by definition reaches every band
+  edge. These should be derived from it rather than kept in parallel.
+- **CW segment boundaries** (`CwLowHz`, `CwHighHz`). Still [extrapolated].
+  These are convention, not regulation, and they do NOT align with the
+  privilege boundaries — both encodings are needed and neither derives from the
+  other (HM-DEC-029).
+- **Jump spots** (`JumpHz`). Editorial: QRP watering holes and activity
+  conventions. A citation would be an ARRL band plan or a club convention, not
+  a regulation.
+
+So this stays open at severity `none`, now meaning: derive the band edges from
+the cited data, and give the conventions a source mark of their own kind.

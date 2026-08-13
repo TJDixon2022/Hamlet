@@ -54,29 +54,50 @@ fact in the hobby, stated plainly and early: **listening is never restricted
 transmitting.**
 
 ### ONB-002 — Callsign and licence class
-Ask for the callsign. Look up the class (HM-DEC-024-style: API first, offer
-the FCC bulk download if the lookup misses, hand entry always available).
-Greet them by it: "Hi KC3QIS — I see you're a General."
+**Built 2026-08-13 (HM-DEC-028), and it no longer depends on this step.**
+Resolution is lazy and automatic: whenever a callsign is present and the class
+is unknown, Hamlet looks it up in the background and narrates in the status
+bar. That happens on startup and after any profile change, so somebody who
+skips this wizard entirely still ends up with a resolved class.
 
-Store class in the operator profile with its provenance and date. This is
-what the band map's privilege overlay reads.
+What remains for this step is the greeting and the asking — "Hi KC3QIS — I see
+you're a General" — over a class that will usually already be there by the time
+they arrive.
 
-Fallback ladder, in order: API lookup → offer bulk data download → pick from
-a list. Nobody is blocked by a service being down.
+Class is stored in the operator profile with its provenance and date, and a
+lookup never overwrites a hand-set value: a disagreement shows both and the
+operator chooses.
+
+Fallback ladder as built: API lookup → hand selection in Settings. The FCC bulk
+download rung is deliberately not built — see HM-DEC-028 for why. Nobody is
+blocked by a service being down.
 
 ### ONB-003 — What you're allowed to do
+**Buildable 2026-08-13 (HM-DEC-029):** the band map's privilege overlay, the
+status line and the upgrade-on-click all exist. This step is now a matter of
+framing what is already on screen.
+
 The band map with the privilege overlay, live, for their class. Show the
 hatched listen-only areas, the yours-to-use areas, and the upgrade ladder on
 click. This is the fear-removal step and probably the most important screen
 in the app.
 
+Lead with the fact that does the most work: listening is never restricted. The
+overlay marks where transmitting stops, not where they may not go.
+
 ### ONB-004 — What things sound and look like
+**Buildable 2026-08-13:** the field guide, its generated audio samples and its
+animated fingerprints all exist (HM-DEC-027).
+
 The field guide, with audio samples and animated waterfall fingerprints
 (HM-DEC-027). Let them hear mistuned SSB. Let them hear CW at 12 WPM and at
 25 and understand why speed matters. Two minutes here changes what the band
 sounds like forever.
 
 ### ONB-005 — Your radio, or ours
+**Buildable 2026-08-13:** the training radio is a product feature with its own
+synthesised band and a permanent "simulated signals" label (HM-DEC-026).
+
 Connect a rig, or continue on the training radio. Explicitly fine to pick
 the training radio — many people will open Hamlet before their cable
 arrives, and the app should be worth opening anyway.

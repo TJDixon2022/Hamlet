@@ -26,6 +26,7 @@ on stale rules and will do so confidently.
 | `OPEN_ISSUES.md` | Questions, with owner and severity |
 | `DECISIONS.md` | Rulings, newest first, never edited |
 | `FUTURE_GOALS.md` | Aspirations (`FG-###`) — direction, not scope; graduate only by ruling |
+| `ONBOARDING.md` | The first-run experience: seeded steps (`ONB-###`), standing principles, and what still needs a first-time moment. Direction, not scope, until ruled |
 | `data/vendor/` | Pinned snapshots of documents cited from outside this repository (see §4) |
 | `tools/` | The repo-listing and get-files scripts — the chat-session workflow |
 
@@ -166,6 +167,9 @@ this table is the index.
 
 | Date | Decision | Why | Ref |
 |---|---|---|---|
+| 2026-08-13 | **`IRig` gains a capabilities record** — scope, keyer, USB audio, transmit, supported bands — reported by the implementation and never configured. The UI degrades honestly on a radio lacking a feature. | HM-DEC-003's revisit condition, taken early while there are only two implementations to change. | HM-DEC-030 |
+| 2026-08-13 | **Part 97 privileges are cited data under `/data`**, transcribed from eCFR with the paragraph on every row; the two CFR tables stay separate and the join is code with tests. The band map veils listen-only segments over the culture map, tuning is never restricted, the status line explains in amber rather than scolding in red, and an unresolved class draws NO overlay. Guard rail is transmit-only and ships on. | Listening is never restricted and the app must say so; and this is the one place where a confident error has legal consequences (HM-DEC-009). | HM-DEC-029 |
+| 2026-08-13 | **Licence class in the profile with provenance**, resolved lazily and automatically whenever a callsign has no class, narrated in the status bar. A lookup NEVER overwrites a hand-set class — a mismatch shows both values and the operator decides. The callsign goes to callook.info and still never to telemetry. | People skip wizards, so resolution attaches to the fact rather than a screen; and it is their licence. | HM-DEC-028 |
 | 2026-08-13 | **The waterfall renderer is built now**, against synthesised frames of the same shape CI-V 0x27 will deliver, per HM-DEC-006: a custom control owning a WriteableBitmap, subscribing to the engine's event directly, click-to-tune sharing the dial tape's and map's frequency axis. **Field-guide audio is synthesised, not recorded** — licence-free, deterministic, testable, and parameterised by speed. | Phase 2 then swaps the data source and not the UI; and a renderer that exists is a renderer being exercised. | HM-DEC-027 |
 | 2026-08-13 | **The simulated radio is a training feature, not a test double.** FakeRig becomes TrainingRig, the port list says "Training radio", and the waterfall states its signals are simulated whenever the connected rig is — derived from connection state, with no setter at any level, so no practice mode or toggle can put synthetic signals on screen unlabelled. Signals are placed by reading NeighborhoodPlan, so practice teaches the real band. | Someone who cannot yet tell one signal from another needs to practise without owning an antenna; and a rule the type system enforces is a rule nobody has to remember (HM-DEC-009). | HM-DEC-026 |
 | 2026-08-13 | **Ranked happening-now list with a stated reason on every card**, a written lead card with its rationale, and a band-conditions line that shows its evidence, softens on a thin sample and says when Hamlet cannot see the bands. Amends HM-DEC-020 on re-sorting. | The operator needs one sentence telling him where to point the radio and what he will hear, not another list; and a confident count taken while the feeds were down is a guess presented as a decode. | HM-DEC-025 |
@@ -352,7 +356,7 @@ Rows marked `<<<FILL IN>>>` await the named ruling.
 | Audio | NAudio (WASAPI) |
 | FFT | `<<<FILL IN — FftSharp vs Math.NET, decide when the audio pipeline is scaffolded>>>` |
 | CI | GitHub Actions, build + engine tests, added once the solution exists |
-| Data files | `/data` at repo root; vendored citations in `data/vendor/` |
+| Data files | `/data` at repo root; vendored citations in `data/vendor/`; cited Part 97 privileges in `data/privileges/` (HM-DEC-029) |
 
 ---
 

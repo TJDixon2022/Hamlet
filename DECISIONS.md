@@ -4,6 +4,168 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-030
+date: 2026-08-13
+refs: src/Hamlet.RadioEngine/Rig/RigCapabilities.cs, HM-DEC-003
+---
+
+`IRig` gains a capabilities record — model, spectrum scope, built-in keyer,
+USB audio, whether it can transmit, and which bands it covers — and the UI
+degrades honestly on a radio that lacks a feature rather than showing a
+control that cannot work.
+
+HM-DEC-003 confined Hamlet to one radio behind an interface and named
+multi-rig support as the condition for revisiting. This is that revisit
+arriving early and cheaply, while there are still only two implementations to
+change. Every assumption about the IC-7300 that lives at a call site is a
+place a second radio will break, and they are much easier to remove now than
+after phase 2 has built a scope UI on top of them.
+
+Capabilities are reported by the implementation and have no setter, the same
+shape as `IsSimulated` and for the same reason: a radio is the only thing that
+knows what it is. `RigCapabilities.Unknown` claims nothing at all, so a radio
+that has not said cannot inherit the 7300's feature set by default — which is
+the assumption the type exists to remove.
+
+The training radio claims a spectrum scope, because the synthesiser genuinely
+is one, and refuses transmit, because there is nothing behind it to transmit
+with. That is the one claim it must never make.
+
+---
+id: HM-DEC-029
+date: 2026-08-13
+refs: data/privileges/us-part97-privileges.json, src/Hamlet.RadioEngine/Licensing/PrivilegePlan.cs, src/Hamlet.RadioEngine/Licensing/TransmitGuard.cs, src/Hamlet.App/Controls/NeighborhoodMapControl.cs, HM-DEC-009, HM-DEC-008, HM-OPEN-005
+---
+
+US Part 97 transmit privileges are cited data under `/data`, not carried
+knowledge. The band map shows them as a veil over the culture map, tuning is
+never restricted, the status line explains rather than scolds, and an
+unresolved licence class draws NO overlay rather than a guessed one.
+
+THE ONE FACT THAT DOES THE MOST WORK: listening is never restricted. Any
+licence may receive anywhere; the rules are about transmitting. The operator
+this serves has been licensed six years and has never made a contact, and part
+of that is a quiet fear of transmitting somewhere he is not allowed. Every
+piece of this is shaped to make that distinction plain rather than to imply
+the band is full of forbidden zones — which is why the veil is faint enough to
+read the neighbourhood colour through, why it is labelled "listen only", why
+the reassurance sentence appears whenever transmitting is restricted, and why
+the tone is amber and never red. Being outside your privileges while tuning
+around is not an error. It is the ordinary state of most of the band for most
+licences, and the app should sound like it knows that.
+
+The data is a transcription of 47 CFR 97.301, 97.305 and 97.307, read from
+eCFR's versioner API on 2026-08-13, with the paragraph cited on every row.
+This has legal weight and must not come from anybody's memory. The ARRL band
+chart is named as the familiar rendering it is, and marked "convenience": where
+it and the CFR ever differ, the CFR wins.
+
+The two CFR tables are carried SEPARATELY, as the regulation carries them, and
+the join that answers "may this class send this mode here" happens in code with
+tests. A pre-joined table would be a third artefact free to disagree with both
+its parents (§0). What that join has to know is not obvious — 97.305(a) puts CW
+on any frequency the class may use, so CW is absent from the emission table
+entirely; 97.307(f)(9) makes a Technician's HF privileges Morse-only;
+97.307(f)(11) keeps 7.075–7.100 phone away from the contiguous US. Each of
+those is a test.
+
+Figures the sources do not state are explicit unknowns with reasons — 60 m's
+five channels, VHF and UHF, power limits, Regions 1 and 3. A Technician's 2 m
+privileges are their most-used privilege, and a file that stayed silent about
+omitting them would read as complete.
+
+TUNING NEVER RESISTS. The operator may tune anywhere, including deep into
+Extra-only territory: nothing blocks, nothing pops up, nothing beeps. The
+marker turns red with a small flag, the dots outside privileges dim rather than
+vanish — the operator still needs to see where the action is — and the status
+line says what is true. The upgrade ladder appears on click and never as
+permanent chrome, and collapses again the moment the frequency becomes theirs.
+Restriction becomes motivation; the same words shown unbidden would be a nag.
+
+AN UNRESOLVED CLASS DRAWS NOTHING. Not a permissive overlay, not a restrictive
+one. `SpansFor` returns an empty list for an unknown class, so "do not guess"
+is structural rather than a rule the control has to remember, and the map looks
+exactly as it did before privileges existed. This is HM-DEC-009 at the one
+point in Hamlet where a confident error has legal consequences.
+
+THE SPANS ARE THE ONE SET OF BOUNDARIES. They are computed once, in the
+ViewModel, from the cited data, and handed to the map. If the waterfall or the
+dial tape ever shows privileges they take the same list rather than computing
+their own — two pictures of one law that disagreed would be worse than either
+alone.
+
+THE GUARD RAIL IS TRANSMIT ONLY. "Only let me transmit where my licence
+allows", on by default, consulted at exactly one moment: before Hamlet keys a
+transmitter. It is never asked about tuning, receiving or drawing. No transmit
+path exists yet — HM-DEC-008 gates keying on the vendored manual — so the
+setting, the check and its tests are built now and THE SEAM IS THIS: whatever
+first keys the transmitter, CI-V 0x17 or PTT, calls `TransmitGuard.Check` and
+honours the answer. The override is passed per call rather than read from
+settings, so it can live beside the transmit control: somebody deliberately
+keying outside their privileges should reach for it consciously, and somebody
+tuning around should never meet it. An unknown class does not block
+transmitting — Hamlet has no business refusing to key a radio because a lookup
+service was down.
+
+---
+id: HM-DEC-028
+date: 2026-08-13
+refs: src/Hamlet.App/Licensing/LicenceResolver.cs, src/Hamlet.RadioEngine/Licensing/CallsignLookup.cs, HM-DEC-019, HM-DEC-024
+---
+
+The operator's licence class lives in the profile with its provenance, is
+resolved lazily and automatically whenever a callsign is present and the class
+is unknown, and a lookup never silently overwrites a hand-set value — a
+mismatch is shown with both values and the operator decides.
+
+LAZY, NOT A WIZARD STEP. People skip wizards, and the callsign can arrive from
+Settings, a hand-edited settings file or a version that never asked. So
+resolution is attached to the fact rather than to a screen: on startup and
+whenever the profile changes, a callsign with no class gets looked up. It never
+blocks and never opens a dialog. The status bar narrates — "Looking up
+KC3QIS…", then "General — from FCC data, today." — and that visible competence
+is the point.
+
+Provenance travels with the value. "General, from FCC data, today" and
+"General, because you said so in 2019" are different claims and the operator is
+entitled to see which they are looking at.
+
+A LOOKUP NEVER OVERWRITES A HAND-SET CLASS. If the operator set General and the
+FCC data says Extra, both are shown with the source and the date and nothing is
+written until they choose. It is their licence. Software that silently
+corrected them would be wrong even on the occasions it was right. Declining is
+an answer, and the profile is re-stamped so the same question does not reappear
+tomorrow.
+
+THE SERVICE, AND ITS TERMS. callook.info, which republishes FCC ULS data. Its
+API reference states under a "Usage Terms" heading: "The callook.info API is
+publicly available and is free to use however you wish." No rate limit, no
+attribution requirement, no restriction on automated access, and nothing about
+how the software was written. Read 2026-08-13. Unlike SOTA (HM-DEC-024) nothing
+in those terms stands in the way, so this ships on. Politeness is still
+self-imposed: the User-Agent names the app, its version and the operator.
+
+WHAT IS READ, AND WHAT IS NOT. The response carries the licensee's full name
+and street address. Hamlet reads the operator class and nothing else, and the
+result type has nowhere to put the rest. It is the operator's own record, but a
+program that quietly harvested a home address because it happened to be in the
+payload would be doing something nobody asked for.
+
+The callsign goes to the lookup service — the class is public information, as
+public as the callsign itself, and it is in the FCC's own searchable database.
+It still never enters telemetry. HM-DEC-019's rule is unchanged and the privacy
+walk grew to cover the five events this work added.
+
+NOBODY IS EVER BLOCKED. The ladder is API lookup, then hand selection in
+Settings, and an unresolved class is a supported state throughout: the band map
+draws no overlay and says why, and the guard rail lets transmissions through
+while saying what it does not know. The FCC bulk-download rung named in the
+brief is not built; the API and hand selection cover every case reached so far,
+and a 100 MB download offered to somebody whose lookup merely timed out would
+be worse than the "try again later" they get now. Recorded here so the next
+session knows it was a decision rather than an omission.
+
+---
 id: HM-DEC-027
 date: 2026-08-13
 refs: src/Hamlet.App/Controls/WaterfallControl.cs, src/Hamlet.RadioEngine/Training/ModeAudio.cs, HM-DEC-006, HM-DEC-005, HM-DEC-012, FG-002
