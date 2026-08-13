@@ -55,8 +55,6 @@
 
             <Menu Grid.Column="1" VerticalAlignment="Center" Background="Transparent">
                 <MenuItem Header="_File">
-                    <MenuItem Header="Settings…" Command="{Binding OpenSettingsCommand}" />
-                    <Separator />
                     <MenuItem Header="Exit" Command="{Binding ExitCommand}" />
                 </MenuItem>
                 <MenuItem Header="_Radio">
