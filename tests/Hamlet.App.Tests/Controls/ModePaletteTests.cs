@@ -63,12 +63,10 @@ public sealed class ModePaletteTests
     /// <para>Proves every family's ink is readable on its own fill. A label
     /// nobody can read is the same as no label, which would leave color as the
     /// only carrier of meaning after all.</para>
-    /// <para>WCAG AA for normal text is 4.5. Three of the four clear it
-    /// comfortably; "Open / mixed" measures 4.1, because its ink and fill are
-    /// both deliberately near-neutral — it is the color for space nothing owns,
-    /// and making it shout would defeat that. The floor here is set at 4.0 so
-    /// the ruled palette passes, and the shortfall is recorded rather than
-    /// hidden: raising that one ink is Tim's call, not this test's.</para>
+    /// <para>The floor is WCAG AA for normal text, 4.5:1, with no exceptions
+    /// (HM-DEC-036). "Open / mixed" used to sit at 4.09 and was carved out; Tim
+    /// ruled the carve-out away rather than the shortfall, so the ink darkened
+    /// and the floor now applies to all four.</para>
     /// </remarks>
     [Fact]
     public void InkIsReadableOnItsOwnFill()
@@ -78,17 +76,25 @@ public sealed class ModePaletteTests
             var ratio = ContrastRatio(colors.Ink, colors.Fill);
 
             Assert.True(
-                ratio >= 4.0,
-                $"{colors.Label}: contrast ratio {ratio:0.0}, below the 4.0 floor");
+                ratio >= 4.5,
+                $"{colors.Label}: contrast ratio {ratio:0.00}, below WCAG AA's 4.5");
         }
+    }
 
-        // The three families that name a mode carry full AA contrast.
-        foreach (var colors in ModePalette.All.Where(c => c.Family != ModeFamily.Open))
-        {
-            Assert.True(
-                ContrastRatio(colors.Ink, colors.Fill) >= 4.5,
-                $"{colors.Label} fell below WCAG AA");
-        }
+    /// <remarks>
+    /// Names the measurement the ruling records, so a later change to the
+    /// near-neutral ink cannot quietly slide back under the bar it was
+    /// darkened to clear (HM-DEC-036).
+    /// </remarks>
+    [Fact]
+    public void OpenMixedInkClearsTheBarItWasDarkenedFor()
+    {
+        var ratio = ContrastRatio(ModePalette.Open.Ink, ModePalette.Open.Fill);
+
+        Assert.True(ratio >= 4.5, $"open/mixed fell back to {ratio:0.00}");
+        Assert.True(
+            ratio >= 5.0,
+            $"open/mixed is at {ratio:0.00}, with none of the headroom it was given");
     }
 
     /// <remarks>

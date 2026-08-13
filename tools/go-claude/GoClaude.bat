@@ -23,7 +23,7 @@ setlocal
 
 set "REPO=%~1"
 
-rem --- normalize: drop a trailing backslash -------------------------
+rem --- normalise: drop a trailing backslash -------------------------
 if defined REPO if "%REPO:~-1%"=="\" set "REPO=%REPO:~0,-1%"
 
 rem --- default, with pre-rename fallback ----------------------------

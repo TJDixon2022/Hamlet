@@ -25,7 +25,7 @@ setlocal enabledelayedexpansion
 set "REPO=%~1"
 if "%REPO%"=="" set "REPO=C:\Source\Hamlet"
 
-rem --- normalize: drop a trailing backslash -------------------------
+rem --- normalise: drop a trailing backslash -------------------------
 rem  Drag-and-drop and tab completion both produce one, and it makes
 rem  every path in the listing come out absolute instead of relative.
 if "%REPO:~-1%"=="\" set "REPO=%REPO:~0,-1%"

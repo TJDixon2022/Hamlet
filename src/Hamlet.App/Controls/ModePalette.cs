@@ -54,8 +54,16 @@ public static class ModePalette
         ModeFamily.Phone, "Voice", Color.Parse("#A3CBE8"), Color.Parse("#0B3B5C"));
 
     /// <summary>Open space, or a mixture.</summary>
+    /// <remarks>
+    /// The ink was #6E6A61 and reached only 4.09:1 against this fill, short of
+    /// WCAG AA's 4.5 for normal text (HM-DEC-036). Darkening it to #5F5C53
+    /// clears the bar at 5.07:1 and costs nothing: this is the least colorful
+    /// of the four and its label is the one most often read at a glance. The
+    /// hobby skews old enough that eyes which need the contrast are not an
+    /// edge case here — they are a large share of the people who will use this.
+    /// </remarks>
     public static ModeColors Open { get; } = new(
-        ModeFamily.Open, "Open / mixed", Color.Parse("#E4E0D5"), Color.Parse("#6E6A61"));
+        ModeFamily.Open, "Open / mixed", Color.Parse("#E4E0D5"), Color.Parse("#5F5C53"));
 
     /// <summary>All four, in the order the legend shows them.</summary>
     public static IReadOnlyList<ModeColors> All { get; } = new[] { Cw, Digital, Phone, Open };

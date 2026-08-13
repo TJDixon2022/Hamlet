@@ -34,7 +34,7 @@ setlocal
 set "REPO=%~1"
 if "%REPO%"=="" set "REPO=C:\Source\Hamlet"
 
-rem --- normalize: drop a trailing backslash -------------------------
+rem --- normalise: drop a trailing backslash -------------------------
 rem  Drag-and-drop and tab completion both produce one.
 if "%REPO:~-1%"=="\" set "REPO=%REPO:~0,-1%"
 
