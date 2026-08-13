@@ -1,0 +1,242 @@
+{
+  "schema": "hamlet.privileges/1",
+  "jurisdiction": "US",
+  "ituRegion": 2,
+  "retrievedUtc": "2026-08-13",
+
+  "_about": [
+    "US amateur transmit privileges by operator class. THIS FILE HAS LEGAL WEIGHT.",
+    "",
+    "It is a transcription of the regulation, not a summary of it. The two CFR",
+    "tables are carried separately, exactly as they appear in the source, and the",
+    "join that produces 'may this class send this mode here' is done in code with",
+    "tests (CLAUDE.md 0: generate, do not transcribe twice). A pre-joined table",
+    "would be a third artefact that could disagree with both its parents.",
+    "",
+    "Every row cites the paragraph it came from. Figures that could not be",
+    "sourced are in 'unknowns' with a reason, never guessed (CLAUDE.md 4).",
+    "",
+    "Region 2 columns only. Hamlet is a US application; Regions 1 and 3 are",
+    "listed as an explicit unknown rather than half-copied."
+  ],
+
+  "sources": [
+    {
+      "id": "97.301",
+      "authority": "regulation",
+      "title": "47 CFR 97.301 - Authorized frequency bands",
+      "url": "https://www.ecfr.gov/current/title-47/chapter-I/subchapter-D/part-97/subpart-D/section-97.301",
+      "retrievedUtc": "2026-08-13",
+      "via": "eCFR versioner API, title-47 as of 2026-08-01",
+      "amendments": "75 FR 27201; 75 FR 78171; 80 FR 38911; 82 FR 27214; 85 FR 64068; 91 FR 1430 (Jan 14, 2026)"
+    },
+    {
+      "id": "97.305",
+      "authority": "regulation",
+      "title": "47 CFR 97.305 - Authorized emission types",
+      "url": "https://www.ecfr.gov/current/title-47/chapter-I/subchapter-D/part-97/subpart-D/section-97.305",
+      "retrievedUtc": "2026-08-13",
+      "via": "eCFR versioner API, title-47 as of 2026-08-01"
+    },
+    {
+      "id": "97.307",
+      "authority": "regulation",
+      "title": "47 CFR 97.307 - Emission standards",
+      "url": "https://www.ecfr.gov/current/title-47/chapter-I/subchapter-D/part-97/subpart-D/section-97.307",
+      "retrievedUtc": "2026-08-13",
+      "via": "eCFR versioner API, title-47 as of 2026-08-01"
+    },
+    {
+      "id": "arrl-chart",
+      "authority": "convenience",
+      "title": "ARRL US Amateur Radio Bands chart",
+      "url": "http://www.arrl.org/band-plan",
+      "note": "NOT the authority. The ARRL chart is a rendering of the sections above and is widely recognised, so it is named here as the familiar picture this data should agree with. Where the chart and the CFR ever differ, the CFR wins and this file follows the CFR."
+    }
+  ],
+
+  "rules": [
+    {
+      "id": "97.305(a)",
+      "effect": "cw-anywhere-authorized",
+      "text": "Except as specified elsewhere in this part, an amateur station may transmit a CW emission on any frequency authorized to the control operator.",
+      "_note": "This is why the emission table below does not list CW: CW follows the class frequency table alone."
+    },
+    {
+      "id": "97.307(f)(9)",
+      "effect": "cw-only",
+      "appliesToClasses": ["Novice", "Technician"],
+      "text": "A station having a control operator holding a Novice or Technician Class operator license may only transmit a CW emission using the international Morse code."
+    },
+    {
+      "id": "97.307(f)(10)",
+      "effect": "cw-or-phone-only",
+      "appliesToClasses": ["Novice", "Technician"],
+      "text": "A station having a control operator holding a Novice Class operator license or a Technician Class operator license may only transmit a CW emission using the international Morse code or phone emissions J3E and R3E."
+    },
+    {
+      "id": "97.307(f)(11)",
+      "effect": "region2-west-of-130w-or-south-of-20n",
+      "text": "Phone and image emissions may be transmitted only by stations located in ITU Regions 1 and 3, and by stations located within ITU Region 2 that are west of 130 degrees West longitude or south of 20 degrees North latitude.",
+      "_note": "Excludes the contiguous United States. Applied conservatively: unless the operator's grid square proves they qualify, a segment carrying this standard is treated as not available to them, and the status line says which rule did it."
+    }
+  ],
+
+  "classFrequencyBands": {
+    "_cite": "47 CFR 97.301, ITU Region 2 column",
+    "_note": "Which frequencies each class may transmit on at all, before emission type is considered. Novice and Technician share one table in 97.301(e).",
+
+    "Extra": {
+      "_cite": "97.301(b)",
+      "ranges": [
+        { "band": "160 m", "lowHz": 1800000, "highHz": 2000000 },
+        { "band": "80 m", "lowHz": 3500000, "highHz": 3600000 },
+        { "band": "75 m", "lowHz": 3600000, "highHz": 4000000 },
+        { "band": "40 m", "lowHz": 7000000, "highHz": 7300000 },
+        { "band": "30 m", "lowHz": 10100000, "highHz": 10150000 },
+        { "band": "20 m", "lowHz": 14000000, "highHz": 14350000 },
+        { "band": "17 m", "lowHz": 18068000, "highHz": 18168000 },
+        { "band": "15 m", "lowHz": 21000000, "highHz": 21450000 },
+        { "band": "12 m", "lowHz": 24890000, "highHz": 24990000 },
+        { "band": "10 m", "lowHz": 28000000, "highHz": 29700000 }
+      ]
+    },
+
+    "Advanced": {
+      "_cite": "97.301(c)",
+      "ranges": [
+        { "band": "160 m", "lowHz": 1800000, "highHz": 2000000 },
+        { "band": "80 m", "lowHz": 3525000, "highHz": 3600000 },
+        { "band": "75 m", "lowHz": 3700000, "highHz": 4000000 },
+        { "band": "40 m", "lowHz": 7025000, "highHz": 7300000 },
+        { "band": "30 m", "lowHz": 10100000, "highHz": 10150000 },
+        { "band": "20 m", "lowHz": 14025000, "highHz": 14150000 },
+        { "band": "20 m", "lowHz": 14175000, "highHz": 14350000 },
+        { "band": "17 m", "lowHz": 18068000, "highHz": 18168000 },
+        { "band": "15 m", "lowHz": 21025000, "highHz": 21200000 },
+        { "band": "15 m", "lowHz": 21225000, "highHz": 21450000 },
+        { "band": "12 m", "lowHz": 24890000, "highHz": 24990000 },
+        { "band": "10 m", "lowHz": 28000000, "highHz": 29700000 }
+      ]
+    },
+
+    "General": {
+      "_cite": "97.301(d)",
+      "ranges": [
+        { "band": "160 m", "lowHz": 1800000, "highHz": 2000000 },
+        { "band": "80 m", "lowHz": 3525000, "highHz": 3600000 },
+        { "band": "75 m", "lowHz": 3800000, "highHz": 4000000 },
+        { "band": "40 m", "lowHz": 7025000, "highHz": 7125000 },
+        { "band": "40 m", "lowHz": 7175000, "highHz": 7300000 },
+        { "band": "30 m", "lowHz": 10100000, "highHz": 10150000 },
+        { "band": "20 m", "lowHz": 14025000, "highHz": 14150000 },
+        { "band": "20 m", "lowHz": 14225000, "highHz": 14350000 },
+        { "band": "17 m", "lowHz": 18068000, "highHz": 18168000 },
+        { "band": "15 m", "lowHz": 21025000, "highHz": 21200000 },
+        { "band": "15 m", "lowHz": 21275000, "highHz": 21450000 },
+        { "band": "12 m", "lowHz": 24890000, "highHz": 24990000 },
+        { "band": "10 m", "lowHz": 28000000, "highHz": 29700000 }
+      ]
+    },
+
+    "Technician": {
+      "_cite": "97.301(e)",
+      "_note": "97.301(e) covers Novice and Technician together. HF only below; VHF/UHF privileges exist and are listed as an unknown, since Hamlet is HF-only in phase 1.",
+      "ranges": [
+        { "band": "80 m", "lowHz": 3525000, "highHz": 3600000 },
+        { "band": "40 m", "lowHz": 7025000, "highHz": 7125000 },
+        { "band": "15 m", "lowHz": 21025000, "highHz": 21200000 },
+        { "band": "10 m", "lowHz": 28000000, "highHz": 28500000 }
+      ]
+    },
+
+    "Novice": {
+      "_cite": "97.301(e)",
+      "_note": "Identical to Technician: the regulation gives them one table.",
+      "ranges": [
+        { "band": "80 m", "lowHz": 3525000, "highHz": 3600000 },
+        { "band": "40 m", "lowHz": 7025000, "highHz": 7125000 },
+        { "band": "15 m", "lowHz": 21025000, "highHz": 21200000 },
+        { "band": "10 m", "lowHz": 28000000, "highHz": 28500000 }
+      ]
+    }
+  },
+
+  "emissionRanges": {
+    "_cite": "47 CFR 97.305(c), HF rows",
+    "_note": "Where each emission type other than CW may be sent, regardless of class. CW is absent on purpose: 97.305(a) allows it on any frequency authorized to the control operator.",
+    "ranges": [
+      { "band": "160 m", "lowHz": 1800000, "highHz": 2000000, "emissions": ["Data"], "cite": "97.305(c)(2)(iii)", "standards": ["97.307(f)(3)"] },
+      { "band": "160 m", "lowHz": 1800000, "highHz": 2000000, "emissions": ["Phone", "Image"], "cite": "97.305(c)(2)(iv)", "standards": ["97.307(f)(1)", "97.307(f)(2)"] },
+
+      { "band": "80 m", "lowHz": 3500000, "highHz": 3600000, "emissions": ["Data"], "cite": "97.305(c)(3)(i)", "standards": ["97.307(f)(3)", "97.307(f)(9)"] },
+      { "band": "75 m", "lowHz": 3600000, "highHz": 4000000, "emissions": ["Phone", "Image"], "cite": "97.305(c)(3)(ii)", "standards": ["97.307(f)(1)", "97.307(f)(2)"] },
+
+      { "band": "40 m", "lowHz": 7000000, "highHz": 7100000, "emissions": ["Data"], "cite": "97.305(c)(3)(iv)", "standards": ["97.307(f)(3)", "97.307(f)(9)"] },
+      { "band": "40 m", "lowHz": 7075000, "highHz": 7100000, "emissions": ["Phone", "Image"], "cite": "97.305(c)(3)(v)", "standards": ["97.307(f)(1)", "97.307(f)(2)", "97.307(f)(9)", "97.307(f)(11)"] },
+      { "band": "40 m", "lowHz": 7100000, "highHz": 7125000, "emissions": ["Data"], "cite": "97.305(c)(3)(vi)", "standards": ["97.307(f)(3)", "97.307(f)(9)"] },
+      { "band": "40 m", "lowHz": 7125000, "highHz": 7300000, "emissions": ["Phone", "Image"], "cite": "97.305(c)(3)(vii)", "standards": ["97.307(f)(1)", "97.307(f)(2)"] },
+
+      { "band": "30 m", "lowHz": 10100000, "highHz": 10150000, "emissions": ["Data"], "cite": "97.305(c)(3)(viii)", "standards": ["97.307(f)(3)"] },
+
+      { "band": "20 m", "lowHz": 14000000, "highHz": 14150000, "emissions": ["Data"], "cite": "97.305(c)(3)(ix)", "standards": ["97.307(f)(3)"] },
+      { "band": "20 m", "lowHz": 14150000, "highHz": 14350000, "emissions": ["Phone", "Image"], "cite": "97.305(c)(3)(x)", "standards": ["97.307(f)(1)", "97.307(f)(2)"] },
+
+      { "band": "17 m", "lowHz": 18068000, "highHz": 18110000, "emissions": ["Data"], "cite": "97.305(c)(3)(xi)", "standards": ["97.307(f)(3)"] },
+      { "band": "17 m", "lowHz": 18110000, "highHz": 18168000, "emissions": ["Phone", "Image"], "cite": "97.305(c)(3)(xii)", "standards": ["97.307(f)(1)", "97.307(f)(2)"] },
+
+      { "band": "15 m", "lowHz": 21000000, "highHz": 21200000, "emissions": ["Data"], "cite": "97.305(c)(3)(xiii)", "standards": ["97.307(f)(3)", "97.307(f)(9)"] },
+      { "band": "15 m", "lowHz": 21200000, "highHz": 21450000, "emissions": ["Phone", "Image"], "cite": "97.305(c)(3)(xiv)", "standards": ["97.307(f)(1)", "97.307(f)(2)"] },
+
+      { "band": "12 m", "lowHz": 24890000, "highHz": 24930000, "emissions": ["Data"], "cite": "97.305(c)(3)(xv)", "standards": ["97.307(f)(3)"] },
+      { "band": "12 m", "lowHz": 24930000, "highHz": 24990000, "emissions": ["Phone", "Image"], "cite": "97.305(c)(3)(xvi)", "standards": ["97.307(f)(1)", "97.307(f)(2)"] },
+
+      { "band": "10 m", "lowHz": 28000000, "highHz": 28300000, "emissions": ["Data"], "cite": "97.305(c)(3)(xvii)", "standards": ["97.307(f)(3)"] },
+      { "band": "10 m", "lowHz": 28300000, "highHz": 28500000, "emissions": ["Phone", "Image"], "cite": "97.305(c)(3)(xviii)", "standards": ["97.307(f)(1)", "97.307(f)(2)", "97.307(f)(10)"] },
+      { "band": "10 m", "lowHz": 28500000, "highHz": 29000000, "emissions": ["Phone", "Image"], "cite": "97.305(c)(3)(xix)", "standards": ["97.307(f)(1)", "97.307(f)(2)"] },
+      { "band": "10 m", "lowHz": 29000000, "highHz": 29700000, "emissions": ["Phone", "Image"], "cite": "97.305(c)(3)(xx)", "standards": ["97.307(f)(2)"] }
+    ]
+  },
+
+  "upgradePaths": {
+    "_note": "Editorial, not regulation: what the next licence buys, for the 'what would General unlock?' panel. The frequencies it quotes come from the tables above rather than from this text.",
+    "Technician": { "next": "General", "headline": "General opens most of HF" },
+    "Novice": { "next": "General", "headline": "General opens most of HF" },
+    "General": { "next": "Extra", "headline": "Extra opens the bottom of every band" },
+    "Advanced": { "next": "Extra", "headline": "Extra opens the last exclusive segments" },
+    "Extra": { "next": null, "headline": "You already hold every US privilege" }
+  },
+
+  "unknowns": [
+    {
+      "topic": "60 m band",
+      "value": null,
+      "confirmed": false,
+      "reason": "60 m is five discrete channels with their own rules (97.303(h), 97.305(c)(3)(iii), 97.307(f)(14)), not a contiguous segment like every other HF band. Hamlet's band plan does not include 60 m, so encoding it here would add a shape the rest of the code cannot represent. Must be added before 60 m appears in BandPlan."
+    },
+    {
+      "topic": "VHF and UHF privileges",
+      "value": null,
+      "confirmed": false,
+      "reason": "97.301(a) and (e) grant VHF/UHF privileges that are real and not transcribed here. Hamlet is HF-only through phase 4; a Technician's 2 m privileges are their most-used privilege and this file would mislead if read as complete. Must be added before any VHF band appears."
+    },
+    {
+      "topic": "ITU Regions 1 and 3",
+      "value": null,
+      "confirmed": false,
+      "reason": "97.301 lists all three regions; only Region 2 is transcribed. Hamlet is a US application and a half-copied foreign table is worse than an absent one."
+    },
+    {
+      "topic": "Power limits",
+      "value": null,
+      "confirmed": false,
+      "reason": "97.313 sets power limits, including per-band and per-class ones. Not needed for a transmit-privilege overlay and not transcribed. Must be added before Hamlet says anything about power."
+    },
+    {
+      "topic": "Automatic control and bandwidth sub-bands",
+      "value": null,
+      "confirmed": false,
+      "reason": "97.221 automatic-control segments and the 97.307(f) bandwidth standards are not encoded. Hamlet does not yet claim anything about either."
+    }
+  ]
+}

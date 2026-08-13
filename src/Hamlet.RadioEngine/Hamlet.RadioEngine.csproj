@@ -14,6 +14,14 @@
     <PackageReference Include="System.IO.Ports" Version="8.0.0" />
   </ItemGroup>
 
+  <!-- The cited Part 97 privileges data lives in /data as its single source
+       of truth (HM-OPEN-005) and is embedded so it ships with the app. One
+       file, so there is no copy to drift away from the regulation. -->
+  <ItemGroup>
+    <EmbeddedResource Include="..\..\data\privileges\us-part97-privileges.json"
+                      LogicalName="Hamlet.RadioEngine.Data.Privileges.us-part97-privileges.json" />
+  </ItemGroup>
+
   <!-- The telemetry line format is an internal detail with a public promise
        attached (HM-DEC-018), so the schema test reaches it directly rather
        than the format being widened to public just to be provable. -->
