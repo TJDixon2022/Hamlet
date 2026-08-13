@@ -24,6 +24,17 @@ public sealed record ActivityDot(
     string Reason,
     double Prominence)
 {
+    /// <summary>
+    /// How far away and roughly which way, e.g. "480 miles northeast", or ""
+    /// when the app cannot justify a figure (HM-DEC-038).
+    /// </summary>
+    /// <remarks>
+    /// Empty whenever the operator's grid is unknown or the source did not
+    /// state where the station is. It is never estimated from a callsign or a
+    /// location string, and the absence is the honest answer.
+    /// </remarks>
+    public string Distance { get; init; } = "";
+
     /// <summary>Frequency in megahertz, three decimals.</summary>
     public string FrequencyLabel
         => (FrequencyHz / 1_000_000.0).ToString("0.000", CultureInfo.InvariantCulture);
@@ -36,7 +47,11 @@ public sealed record ActivityDot(
     {
         get
         {
-            var lines = new List<string>(4) { Story, $"{FrequencyLabel} MHz · {Mode}" };
+            var head = Distance.Length > 0
+                ? $"{FrequencyLabel} MHz · {Mode} · {Distance}"
+                : $"{FrequencyLabel} MHz · {Mode}";
+
+            var lines = new List<string>(4) { Story, head };
 
             if (Reason.Length > 0)
             {

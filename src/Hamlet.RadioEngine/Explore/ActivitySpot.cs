@@ -109,4 +109,29 @@ public sealed record ActivitySpot(
     /// that a spot network can honestly offer.
     /// </summary>
     public int? ReportCount { get; init; }
+
+    /// <summary>
+    /// Where the TRANSMITTING STATION is, when the source states it. Null
+    /// otherwise, and null is the normal case.
+    /// </summary>
+    /// <remarks>
+    /// <para>THE STATION, NEVER THE REPORTER (HM-DEC-038). This is the one
+    /// field a distance may be drawn from, and it is named this way because
+    /// the two things a spot network can tell you about location are easy to
+    /// confuse and mean opposite things. POTA states where the park is, and
+    /// the activator is standing in it, so that is the station. RBN states
+    /// which skimmer decoded the signal, which says where somebody who HEARD
+    /// it is — a completely different fact, and "480 miles northeast" attached
+    /// to it would be a straightforward lie about the station.</para>
+    /// <para>So RBN leaves this null and its spots show no distance at all.
+    /// The skimmer's callsign prefix could be turned into a country, but a
+    /// callsign says where a license was issued and not where its owner is
+    /// standing (<see cref="CallsignRegions"/>), and stacking that guess under
+    /// a distance in miles would dress it as a measurement (§0.0).</para>
+    /// <para>A source that supplies a reference point for a large area — POTA
+    /// does this for trails that cross a continent — is still stating its own
+    /// figure for where the activation is. It is shown as such, rounded, and
+    /// attributed to the source like every other claim a spot carries.</para>
+    /// </remarks>
+    public LatLon? StationLocation { get; init; }
 }

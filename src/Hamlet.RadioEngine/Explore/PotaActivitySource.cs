@@ -190,7 +190,40 @@ public sealed class PotaActivitySource : IContextualActivitySource, IDisposable
             Reference = string.IsNullOrWhiteSpace(r.Reference) ? null : r.Reference.Trim(),
             PlaceLabel = place.Length == 0 ? null : place,
             Proximity = ProximityOf(r),
+
+            // The park's own coordinates, as POTA states them. The activator
+            // is standing in the park, so this is where the STATION is —
+            // which is the only thing a distance may be drawn from
+            // (HM-DEC-038).
+            StationLocation = ParkLocation(r),
         };
+    }
+
+    /// <summary>
+    /// The park's position as POTA states it, or null.
+    /// </summary>
+    /// <remarks>
+    /// The coordinates are used rather than <c>grid6</c>, because they are
+    /// what POTA derived the grid from and because distance wants degrees.
+    /// Both must be present and in range; a half-answer is discarded, since a
+    /// longitude of zero would place a park in the Gulf of Guinea and look
+    /// entirely plausible on a card.
+    /// </remarks>
+    internal static LatLon? ParkLocation(PotaSpot r)
+    {
+        if (r.Latitude is not { } lat || r.Longitude is not { } lon)
+        {
+            return null;
+        }
+
+        if (lat is < -90 or > 90 || lon is < -180 or > 180)
+        {
+            return null;
+        }
+
+        return Math.Abs(lat) < 0.0001 && Math.Abs(lon) < 0.0001
+            ? null
+            : new LatLon(lat, lon);
     }
 
     /// <summary>
@@ -376,6 +409,19 @@ public sealed class PotaActivitySource : IContextualActivitySource, IDisposable
         /// <summary>Four-character grid square of the park.</summary>
         [JsonPropertyName("grid4")]
         public string? Grid4 { get; set; }
+
+        /// <summary>The park's latitude in degrees north.</summary>
+        /// <remarks>
+        /// Present on every record the live service returns. Used for the
+        /// distance on a card, which is a distance to the station because the
+        /// activator is in the park (HM-DEC-038).
+        /// </remarks>
+        [JsonPropertyName("latitude")]
+        public double? Latitude { get; set; }
+
+        /// <summary>The park's longitude in degrees east.</summary>
+        [JsonPropertyName("longitude")]
+        public double? Longitude { get; set; }
 
         /// <summary>Non-null when POTA has flagged the spot as invalid.</summary>
         [JsonPropertyName("invalid")]
