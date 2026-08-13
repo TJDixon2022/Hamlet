@@ -37,7 +37,7 @@ interesting in the static. The data to fix that already exists, live, free:
 | DX cluster spots | Human-reported interesting stations |
 | POTA / SOTA APIs | Parks and summits activations, live spot feeds |
 | Contest calendars | When the bands will be full, and with what |
-| Solar / propagation data | Which bands are likely open, and to where |
+| Solar / propagation data | Which bands are likely open, and to where. Now tracked separately as FG-007 |
 
 The feature: a "Right now" panel that fuses these into ranked suggestions —
 "40 m CW is active; three stations calling CQ near 7.030 within your likely
@@ -92,3 +92,41 @@ The app knows the band plan (phase 2 data). Surface it: warn before
 transmitting outside privileges, explain *why* a segment is what it is,
 show where each license class may operate. Newer-operator value, near-zero
 marginal cost once the band plan is a data file.
+
+## FG-007 — Propagation: why a band is empty
+
+Solar flux index, K- and A-index, MUF, greyline and the other published
+propagation data, so Hamlet can tell a band that is QUIET from a band that is
+CLOSED.
+
+Today the app can only report what was heard. HM-DEC-031 is careful about that
+boundary: a spot count says where skimmers are and where activators went, never
+what the ionosphere is doing, so the band buttons state observations and stop
+short of explaining them. The one hedged sentence they are allowed — "likely
+closed rather than unwatched" — is exactly the shape of the gap. With
+propagation data that hedge becomes a reason.
+
+This is the difference between "try later" and "the ionosphere is not
+supporting this right now", and it is the largest remaining hole in the
+band-conditions story — noted as such when the live feeds landed (HM-DEC-024)
+and again when the conditions line was written (HM-DEC-025).
+
+What it would change, concretely:
+
+- The band buttons could distinguish a dead band from an unwatched one on
+  physics rather than on source health alone.
+- The lead card could stop recommending a band that is about to close.
+- "Try 40 m" could become "try 40 m — 20 m closes here in about an hour".
+- FG-006's band-plan coaching gains the half it is missing: not just where
+  things live, but when they are reachable.
+
+Direction, not scope. When it is built it gets the treatment POTA, RBN and
+SOTA got (HM-DEC-024): read the source's terms before using it and report
+them, identify politely with app, version and callsign, honour the documented
+rate limits, and degrade honestly when it is unavailable — a propagation
+service that is down must never turn into a confident silence.
+
+The prime directive applies with particular force here. Propagation figures
+are predictions, and a prediction rendered as a fact is the exact failure
+HM-DEC-009 forbids. Anything derived from them carries its source, its age and
+its uncertainty, or it does not ship.

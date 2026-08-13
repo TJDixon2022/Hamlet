@@ -4,6 +4,68 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-031
+date: 2026-08-13
+refs: src/Hamlet.App/ViewModels/BandActivity.cs, src/Hamlet.App/Controls/ActivityPipsControl.cs, HM-DEC-009, HM-DEC-020, HM-DEC-022, HM-DEC-025, FG-007
+---
+
+Every band button carries an activity indicator computed from the spots
+already in hand, with hover detail supplying the evidence. Counts are a proxy
+for ACTIVITY, never for propagation — the app reports what was heard and does
+not assert what the ionosphere is doing. A band with no data and a band with
+no spots are visually and textually distinct.
+
+The band buttons are the first control anybody touches, and six of the seven
+said nothing. A newcomer picking a band was guessing, while the data to answer
+them was already flowing through the Explorer.
+
+THE HONESTY CONSTRAINT. A spot count says where skimmers are and where
+activators went. It does not say whether this operator can work anything, and
+it does not say whether a band is open. So nothing in the tooltip asserts
+propagation. There is exactly one hedged sentence — "likely closed rather than
+unwatched" — and it is reachable only when every source that can see the band
+is healthy and reporting zero, names the possibility it cannot rule out, and
+is withdrawn the moment any source goes quiet. A test walks every combination
+of spot set and source health and fails on a banned phrase.
+
+WHICH FORCED A CHANGE IN THE ENGINE. RBN is filtered to the band on screen
+(HM-DEC-024), so its silence about 17 m is not evidence about 17 m — it is
+evidence that nobody asked it. Crediting that silence would have produced
+"POTA and RBN are both answering, so 10 m is likely closed" about a band RBN
+never looked at: a confident claim manufactured from a source that was not
+listening, which is exactly what HM-DEC-025 exists to prevent. So a source can
+now declare the band it is scoped to, the aggregate publishes that on every
+status, and each band is summarised only from the sources that can actually
+see it. Verified live: the current band's tooltip reads "From POTA and RBN"
+while every other band reads "From POTA".
+
+NO DATA IS NOT ZERO. "I cannot see this band" and "I am watching and hearing
+nothing" are different claims and never render the same. No data draws hollow
+dashed pips and says "no enabled source is reporting on this band right now";
+nothing heard draws solid empty pips and says what was watched. That
+distinction is the visual form of the rule the text is already careful about.
+
+THE SCALE IS RELATIVE, AND NOT LINEAR. Relative because "34 signals" means
+nothing without knowing whether 34 is a lot tonight; the busiest band right
+now sets the top of the range. Not linear because band activity is heavily
+tailed — one band routinely carries several times the traffic of every other —
+and a linear scale across four pips put almost everything in the bottom bucket,
+which a test caught. The square root of the ratio spreads them, and
+compressing the top of a range is the idiom of the domain anyway: S-meters and
+signal reports are logarithmic for the same reason.
+
+The indicator is kept quiet. The buttons still have to read as buttons, and
+"best bet now" stays the single editorial call on top; this is a softer second
+signal underneath it.
+
+Pure function of spots, an elapsed window and source health, sharing
+`BandConditions`' window so a button and the line under the map are never
+counting different minutes. No clock read (§5).
+
+What this cannot do is say WHY a band is empty. That needs propagation data,
+which is now FG-007.
+
+---
 id: HM-DEC-030
 date: 2026-08-13
 refs: src/Hamlet.RadioEngine/Rig/RigCapabilities.cs, HM-DEC-003
