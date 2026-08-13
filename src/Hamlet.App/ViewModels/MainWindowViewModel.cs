@@ -207,6 +207,15 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty]
     private bool _leadExpanded = true;
 
+    [ObservableProperty]
+    private bool _contactExpanded = true;
+
+    /// <summary>
+    /// The worked contact, both sides, in the operator's own callsign
+    /// (HM-DEC-043).
+    /// </summary>
+    public ContactShapeViewModel ContactShape { get; }
+
     /// <summary>The field guide entries, each with its samples.</summary>
     public IReadOnlyList<ModeCardViewModel> ModeCards { get; } =
         ModeGuide.Modes.Select(m => new ModeCardViewModel(m)).ToList();
@@ -320,6 +329,9 @@ public partial class MainWindowViewModel : ObservableObject
         _guideExpanded = settings.IsPanelExpanded(PanelKeys.Guide);
         _spotsExpanded = settings.IsPanelExpanded(PanelKeys.Spots);
         _leadExpanded = settings.IsPanelExpanded(PanelKeys.Lead);
+        _contactExpanded = settings.IsPanelExpanded(PanelKeys.Contact);
+
+        ContactShape = new ContactShapeViewModel(settings.Operator.Callsign);
 
         AvailablePorts = new ObservableCollection<string> { TrainingRadio };
         foreach (var name in SafePortNames())
@@ -633,6 +645,8 @@ public partial class MainWindowViewModel : ObservableObject
     partial void OnSpotsExpandedChanged(bool value) => PersistPanel(PanelKeys.Spots, value);
 
     partial void OnLeadExpandedChanged(bool value) => PersistPanel(PanelKeys.Lead, value);
+
+    partial void OnContactExpandedChanged(bool value) => PersistPanel(PanelKeys.Contact, value);
 
     private void PersistPanel(string key, bool expanded)
     {
@@ -1631,6 +1645,9 @@ public static class PanelKeys
 
     /// <summary>The lead card and the band-conditions line (HM-DEC-025).</summary>
     public const string Lead = "lead";
+
+    /// <summary>The worked contact, both sides (HM-DEC-043).</summary>
+    public const string Contact = "contact";
 }
 
 /// <summary>One band button: the band plus its best-bet ranking for the hour

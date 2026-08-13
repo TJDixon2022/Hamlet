@@ -583,6 +583,89 @@
                             </ItemsControl>
                         </ctl:CollapsiblePanel>
 
+                        <!-- What a contact actually sounds like (HM-DEC-043).
+                             The real terror is not the radio, it is not
+                             knowing what to say, and the shape is a ritual
+                             everybody knows except the person who has never
+                             made one. -->
+                        <ctl:CollapsiblePanel Family="Amber"
+                                              Title="What a contact sounds like"
+                                              Summary="{Binding ContactShape.Summary}"
+                                              IsExpanded="{Binding ContactExpanded, Mode=TwoWay}">
+                            <StackPanel Spacing="8" DataContext="{Binding ContactShape}">
+
+                                <ctl:GlossaryTextControl Text="{Binding Preamble}"
+                                                         FontSize="12" LineSpacing="1.45"
+                                                         Foreground="{StaticResource HmTextPrimaryBrush}" />
+
+                                <!-- Morse and voice are the same shape with
+                                     different words, so they are one toggle
+                                     rather than two panels. Seeing that they
+                                     are the same shape is most of the lesson. -->
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <TextBlock Text="Show it in" FontSize="11"
+                                               VerticalAlignment="Center"
+                                               Foreground="{StaticResource HmTextMutedBrush}" />
+                                    <ToggleSwitch IsChecked="{Binding IsVoice}"
+                                                  OnContent="Voice" OffContent="Morse" />
+                                </StackPanel>
+
+                                <ItemsControl ItemsSource="{Binding Steps}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="vm:ContactStepViewModel">
+                                            <Border Margin="0,0,0,8" Padding="10,8"
+                                                    CornerRadius="8" BorderThickness="1"
+                                                    Background="{Binding IsYou,
+                                                        Converter={x:Static ctl:SpeakerBrushConverter.Fill}}"
+                                                    BorderBrush="{Binding IsYou,
+                                                        Converter={x:Static ctl:SpeakerBrushConverter.Edge}}">
+                                                <StackPanel Spacing="4">
+                                                    <TextBlock Text="{Binding SpeakerLabel}"
+                                                               FontSize="10" FontWeight="SemiBold"
+                                                               Foreground="{StaticResource HmTextMutedBrush}" />
+
+                                                    <!-- Exactly what goes out,
+                                                         in the monospace the
+                                                         rig display uses, so
+                                                         it reads as something
+                                                         sent rather than as
+                                                         prose. -->
+                                                    <SelectableTextBlock Text="{Binding Sent}"
+                                                               FontFamily="Consolas,Menlo,monospace"
+                                                               FontSize="12" TextWrapping="Wrap"
+                                                               Foreground="{StaticResource HmTextPrimaryBrush}" />
+
+                                                    <TextBlock Text="{Binding Meaning}"
+                                                               FontSize="12" TextWrapping="Wrap"
+                                                               FontStyle="Italic"
+                                                               Foreground="{StaticResource HmTextPrimaryBrush}" />
+
+                                                    <ctl:GlossaryTextControl Text="{Binding Note}"
+                                                                             IsVisible="{Binding HasNote}"
+                                                                             FontSize="11" LineSpacing="1.4"
+                                                                             Foreground="{StaticResource HmTextMutedBrush}" />
+                                                </StackPanel>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+
+                                <ctl:GlossaryTextControl Text="{Binding RstExplained}"
+                                                         FontSize="11" LineSpacing="1.4"
+                                                         Foreground="{StaticResource HmTextMutedBrush}" />
+
+                                <!-- The part that actually gets somebody on
+                                     the air. -->
+                                <Border Background="{StaticResource HmGreenTintBrush}"
+                                        BorderBrush="{StaticResource HmGreenEdgeBrush}"
+                                        BorderThickness="1" CornerRadius="8" Padding="10,8">
+                                    <ctl:GlossaryTextControl Text="{Binding Closing}"
+                                                             FontSize="12" LineSpacing="1.45"
+                                                             Foreground="{StaticResource HmTextPrimaryBrush}" />
+                                </Border>
+                            </StackPanel>
+                        </ctl:CollapsiblePanel>
+
                         <ctl:CollapsiblePanel Family="Green"
                                               Title="Happening now"
                                               Summary="{Binding SpotsSummary}"
