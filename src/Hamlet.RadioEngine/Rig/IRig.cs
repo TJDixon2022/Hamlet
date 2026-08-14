@@ -110,6 +110,37 @@ public interface IRig
         Civ.CivMode mode, bool dataMode, CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// Hand one keyer message to the radio (HM-DEC-059).
+    /// </summary>
+    /// <param name="message">
+    /// Up to thirty characters from the keyer's own character set. The caller
+    /// has already cleaned and split it; this sends exactly what it is given.
+    /// </param>
+    /// <param name="cancellationToken">Cancellation.</param>
+    /// <returns>
+    /// True when the radio acknowledged it. Never throws: a radio that stopped
+    /// answering is a condition rather than an error.
+    /// </returns>
+    /// <remarks>
+    /// THE ONE CALL IN THIS INTERFACE THAT PUTS A SIGNAL ON THE AIR (§0.2). It
+    /// is reached only through <see cref="Cw.ICwSender"/>, which checks the
+    /// transmit guard and the break-in precondition first, and nothing here
+    /// checks them again: one gate, in one place, that every path goes through.
+    /// </remarks>
+    Task<bool> SendCwAsync(string message, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Stop a keyer message in progress, on this thread, awaiting nothing.
+    /// </summary>
+    /// <remarks>
+    /// COMMAND 17 WITH FF (p. 19-11), written straight at the port rather than
+    /// behind the command gate, because a stop that waits its turn behind the
+    /// send it is stopping is not a stop (§0.2). Safe when nothing is sending,
+    /// safe twice, and it never throws.
+    /// </remarks>
+    void AbortCw();
+
+    /// <summary>
     /// Raised when the radio volunteers a value without being asked.
     /// </summary>
     /// <remarks>

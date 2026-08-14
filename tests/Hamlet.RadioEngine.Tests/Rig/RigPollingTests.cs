@@ -221,6 +221,16 @@ public sealed class RigPollingTests
             return Task.CompletedTask;
         }
 
+        /// <summary>This one exists to count reads, so it never keys.</summary>
+        public Task<bool> SendCwAsync(
+            string message, CancellationToken cancellationToken = default)
+            => Task.FromResult(false);
+
+        /// <summary>Nothing is ever keyed here, so there is nothing to stop.</summary>
+        public void AbortCw()
+        {
+        }
+
         /// <summary>This one exists to count reads, so it writes nothing.</summary>
         public Task<RigWriteResult> SetModeAsync(
             Hamlet.RadioEngine.Civ.CivMode mode, bool dataMode,

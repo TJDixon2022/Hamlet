@@ -284,6 +284,68 @@ public sealed class Ic7300Rig : IRig, IDisposable
         }
     }
 
+    /// <inheritdoc/>
+    /// <remarks>
+    /// One keyer message, acknowledged or not. Everything that makes this safe
+    /// happened before the call: the transmit guard, the break-in precondition
+    /// and the split into pieces the radio will take (HM-DEC-059).
+    /// </remarks>
+    public async Task<bool> SendCwAsync(
+        string message, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrEmpty(message))
+        {
+            return false;
+        }
+
+        try
+        {
+            var response = await RequestAsync(
+                CivConstants.CmdSendCwMessage,
+                System.Text.Encoding.ASCII.GetBytes(message),
+                null, null, cancellationToken).ConfigureAwait(false);
+
+            return response.Command == CivConstants.ResultOk;
+        }
+        catch (TimeoutException)
+        {
+            return false;
+        }
+        catch (OperationCanceledException)
+        {
+            return false;
+        }
+    }
+
+    /// <inheritdoc/>
+    /// <remarks>
+    /// <para>STRAIGHT AT THE PORT, ON THIS THREAD (§0.2). Every other frame in
+    /// this class goes out behind <c>_commandGate</c>, which is right for
+    /// politeness on a slow bus and wrong for this: a stop queued behind the
+    /// send it is stopping would arrive after the message finished, which is not
+    /// a stop at all.</para>
+    /// <para>It never throws. An abort that could fail is not an abort, so a
+    /// closed port, a disposed rig and a port that refuses the write all end the
+    /// same way: nothing happens and nothing propagates (§8).</para>
+    /// </remarks>
+    public void AbortCw()
+    {
+        try
+        {
+            var frame = new CivFrame(
+                _radioAddress, _controllerAddress, CivConstants.CmdSendCwMessage,
+                new[] { CivConstants.CwStopByte });
+
+            FrameTrace?.Invoke(true, frame);
+            _port.Write(frame.ToWireBytes());
+        }
+        catch (Exception)
+        {
+            // Nothing here is worth taking the app down for, least of all on
+            // the path somebody reaches for when something has gone wrong.
+        }
+    }
+
     /// <summary>Mark the mode unknown after a write nobody confirmed.</summary>
     private void ReportModeUnknown(string why)
     {

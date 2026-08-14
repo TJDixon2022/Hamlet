@@ -137,6 +137,23 @@ public sealed class TrainingRig : IRig
                 + "another mode"));
 
     /// <inheritdoc/>
+    /// <remarks>
+    /// THE TRAINING RADIO HAS NO TRANSMITTER AND SAYS SO (HM-DEC-030,
+    /// HM-DEC-026). It reports <c>CanTransmit: false</c>, so nothing above it
+    /// ever reaches here, and if something did it would refuse rather than
+    /// pretend: a practice radio that answered "sent" would teach somebody that
+    /// their first call went out when nothing left the house.
+    /// </remarks>
+    public Task<bool> SendCwAsync(string message, CancellationToken cancellationToken = default)
+        => Task.FromResult(false);
+
+    /// <inheritdoc/>
+    /// <remarks>Nothing is ever keyed here, so there is nothing to stop.</remarks>
+    public void AbortCw()
+    {
+    }
+
+    /// <inheritdoc/>
     public Task<long> GetFrequencyHzAsync(CancellationToken cancellationToken = default)
         => Task.FromResult(Interlocked.Read(ref _frequencyHz));
 

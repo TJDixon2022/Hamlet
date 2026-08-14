@@ -24,4 +24,18 @@ public interface ISerialPort : IDisposable
 
     /// <summary>Write the whole buffer to the port.</summary>
     ValueTask WriteAsync(ReadOnlyMemory<byte> buffer, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Write the whole buffer, on this thread, awaiting nothing.
+    /// </summary>
+    /// <param name="buffer">The bytes.</param>
+    /// <remarks>
+    /// THE ABORT PATH AND NOTHING ELSE (§0.2, HM-DEC-059). Every ordinary write
+    /// goes through <see cref="WriteAsync"/> behind the rig's command gate. This
+    /// exists because the moment somebody wants a transmitter to stop is the
+    /// moment they cannot wait for a task to be scheduled behind whatever is
+    /// already queued, and a stop that waits its turn behind the send it is
+    /// stopping is not a stop.
+    /// </remarks>
+    void Write(ReadOnlySpan<byte> buffer);
 }

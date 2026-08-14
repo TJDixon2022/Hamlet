@@ -3,6 +3,7 @@
         xmlns:vm="using:Hamlet.App.ViewModels"
         xmlns:ctl="using:Hamlet.App.Controls"
         xmlns:explore="using:Hamlet.RadioEngine.Explore"
+        xmlns:cw="using:Hamlet.RadioEngine.Cw"
         x:Class="Hamlet.App.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Title="Hamlet"
@@ -563,6 +564,194 @@
                                            FontSize="12" TextWrapping="Wrap"
                                            Foreground="{StaticResource HmTextMutedBrush}" />
                             </StackPanel>
+                        </ctl:CollapsiblePanel>
+
+                        <!-- SENDING MORSE (HM-DEC-059). Contextual: the one or
+                             two things anybody would say next, never the whole
+                             ritual at once. The terror is not the radio, it is
+                             not knowing what to say. -->
+                        <ctl:CollapsiblePanel Family="Amber"
+                                              Title="Send"
+                                              Summary="{Binding Transmit.Summary}"
+                                              IsExpanded="{Binding TransmitExpanded, Mode=TwoWay}">
+                            <StackPanel Spacing="8" DataContext="{Binding Transmit}">
+
+                                <!-- HM-DEC-008, in the app's voice and said
+                                     once, where somebody reads it before their
+                                     first send rather than after. -->
+                                <Border Background="{StaticResource HmAmberTintBrush}"
+                                        BorderBrush="{StaticResource HmAmberEdgeBrush}"
+                                        BorderThickness="1" CornerRadius="6"
+                                        Padding="10,7">
+                                    <TextBlock
+                                        Text="{x:Static vm:CwTransmitViewModel.DummyLoadNote}"
+                                        FontSize="12" TextWrapping="Wrap" LineHeight="18"
+                                        Foreground="{StaticResource HmAmberDeepBrush}" />
+                                </Border>
+
+                                <!-- What stands in the way, read before the
+                                     press rather than discovered at the moment
+                                     of keying. -->
+                                <Border Background="{StaticResource HmAmberTintBrush}"
+                                        BorderBrush="{StaticResource HmAmberEdgeBrush}"
+                                        BorderThickness="1" CornerRadius="6"
+                                        Padding="10,7"
+                                        IsVisible="{Binding IsRefusal}">
+                                    <StackPanel Spacing="2">
+                                        <ctl:GlossaryTextControl
+                                            Text="{Binding Status}"
+                                            FontSize="12" LineSpacing="1.4"
+                                            Foreground="{StaticResource HmAmberDeepBrush}" />
+                                        <TextBlock Text="{Binding Citation}" FontSize="10"
+                                                   IsVisible="{Binding Citation,
+                                                       Converter={x:Static ctl:PrivilegeToneConverter.NotEmpty}}"
+                                                   Foreground="{StaticResource HmTextMutedBrush}" />
+                                    </StackPanel>
+                                </Border>
+
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <TextBlock Grid.Column="0" Text="{Binding StageName}"
+                                               FontSize="13" FontWeight="SemiBold"
+                                               VerticalAlignment="Center"
+                                               Foreground="{StaticResource HmAmberBrush}" />
+
+                                    <!-- Default on, because somebody who can
+                                         read the words before they go out will
+                                         press the button at all. -->
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal"
+                                                Spacing="8" VerticalAlignment="Center">
+                                        <TextBlock Text="let me read it first" FontSize="11"
+                                                   VerticalAlignment="Center"
+                                                   Foreground="{StaticResource HmTextMutedBrush}" />
+                                        <ToggleSwitch IsChecked="{Binding ReadFirst}" />
+                                    </StackPanel>
+                                </Grid>
+
+                                <ItemsControl ItemsSource="{Binding Options}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="vm:SendButtonViewModel">
+                                            <Border Background="White"
+                                                    BorderBrush="{StaticResource HmAmberEdgeBrush}"
+                                                    BorderThickness="1" CornerRadius="8"
+                                                    Padding="10,8" Margin="0,0,0,6">
+                                                <StackPanel Spacing="3">
+                                                    <Grid ColumnDefinitions="*,Auto">
+                                                        <TextBlock Grid.Column="0"
+                                                                   Text="{Binding Meaning}"
+                                                                   FontSize="12" TextWrapping="Wrap"
+                                                                   Margin="0,0,8,0" />
+                                                        <Button Grid.Column="1"
+                                                                Content="{Binding Label}"
+                                                                FontSize="12"
+                                                                VerticalAlignment="Center"
+                                                                Command="{Binding $parent[ItemsControl].((vm:CwTransmitViewModel)DataContext).PressCommand}"
+                                                                CommandParameter="{Binding}" />
+                                                    </Grid>
+
+                                                    <!-- Exactly what would go
+                                                         out, in the terminal's
+                                                         own ink so it reads as
+                                                         the radio's words. -->
+                                                    <Border CornerRadius="6" Padding="8,5"
+                                                            Background="{x:Static ctl:InstrumentPalette.SurfaceBrush}">
+                                                        <TextBlock Text="{Binding Message}"
+                                                                   FontFamily="Consolas,Menlo,monospace"
+                                                                   FontSize="12" TextWrapping="Wrap"
+                                                                   Foreground="{x:Static ctl:InstrumentPalette.ConfidentBrush}" />
+                                                    </Border>
+
+                                                    <TextBlock Text="{Binding Note}" FontSize="11"
+                                                               TextWrapping="Wrap"
+                                                               Foreground="{StaticResource HmTextMutedBrush}" />
+                                                </StackPanel>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+
+                                <!-- The abort, visible the whole time anything
+                                     is going out, and it awaits nothing. -->
+                                <StackPanel Orientation="Horizontal" Spacing="8"
+                                            IsVisible="{Binding IsSending}">
+                                    <Button Content="Stop sending"
+                                            Command="{Binding AbortCommand}"
+                                            Background="{StaticResource HmAmberDeepBrush}"
+                                            Foreground="White" Padding="16,6" />
+                                    <TextBlock Text="going out now" FontSize="12"
+                                               VerticalAlignment="Center"
+                                               Foreground="{StaticResource HmTextMutedBrush}" />
+                                </StackPanel>
+
+                                <TextBlock Text="{Binding Status}" FontSize="11"
+                                           TextWrapping="Wrap"
+                                           IsVisible="{Binding !IsRefusal}"
+                                           Foreground="{StaticResource HmTextMutedBrush}" />
+
+                                <TextBlock Text="{Binding SpeedOffer}" FontSize="11"
+                                           TextWrapping="Wrap"
+                                           IsVisible="{Binding SpeedOffer,
+                                               Converter={x:Static ctl:PrivilegeToneConverter.NotEmpty}}"
+                                           Foreground="{StaticResource HmTextMutedBrush}" />
+
+                                <!-- AN EXPLICIT KNOWN-UNKNOWN, not a control
+                                     that silently does nothing. -->
+                                <TextBlock Text="{Binding SpacingNote}" FontSize="11"
+                                           TextWrapping="Wrap" LineHeight="17"
+                                           IsVisible="{Binding SpacingNote,
+                                               Converter={x:Static ctl:PrivilegeToneConverter.NotEmpty}}"
+                                           Foreground="{StaticResource HmTextMutedBrush}" />
+                            </StackPanel>
+                        </ctl:CollapsiblePanel>
+
+                        <!-- The phrases people actually send (HM-DEC-059). -->
+                        <ctl:CollapsiblePanel Family="Green"
+                                              Title="Phrasebook"
+                                              Summary="{Binding Phrasebook.Summary}"
+                                              IsExpanded="{Binding PhrasebookExpanded, Mode=TwoWay}">
+                            <ItemsControl ItemsSource="{Binding Phrasebook.Columns}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:PhraseColumn">
+                                        <StackPanel Spacing="4" Margin="0,0,0,12">
+                                            <TextBlock Text="{Binding Heading}"
+                                                       FontSize="13" FontWeight="SemiBold"
+                                                       Foreground="{StaticResource HmGreenBrush}" />
+
+                                            <!-- The column somebody needs and
+                                                 would never ask for, doing the
+                                                 emotional work the definitions
+                                                 cannot (HM-DEC-041). -->
+                                            <ctl:GlossaryTextControl Text="{Binding Note}"
+                                                FontSize="11" LineSpacing="1.4"
+                                                IsVisible="{Binding Note,
+                                                    Converter={x:Static ctl:PrivilegeToneConverter.NotEmpty}}"
+                                                Foreground="{StaticResource HmTextMutedBrush}" />
+
+                                            <ItemsControl ItemsSource="{Binding Phrases}">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate x:DataType="cw:CwPhrase">
+                                                        <Grid ColumnDefinitions="90,*" Margin="0,2">
+                                                            <TextBlock Grid.Column="0"
+                                                                       Text="{Binding Sent}"
+                                                                       FontFamily="Consolas,Menlo,monospace"
+                                                                       FontSize="12"
+                                                                       Foreground="{StaticResource HmAmberDeepBrush}" />
+                                                            <StackPanel Grid.Column="1" Spacing="0">
+                                                                <TextBlock Text="{Binding Meaning}"
+                                                                           FontSize="12"
+                                                                           TextWrapping="Wrap" />
+                                                                <TextBlock Text="{Binding When}"
+                                                                           FontSize="11"
+                                                                           TextWrapping="Wrap"
+                                                                           Foreground="{StaticResource HmTextMutedBrush}" />
+                                                            </StackPanel>
+                                                        </Grid>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
                         </ctl:CollapsiblePanel>
                 </StackPanel>
 

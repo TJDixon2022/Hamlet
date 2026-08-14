@@ -87,5 +87,14 @@ internal sealed class FakeSerialPort : ISerialPort
         return ValueTask.CompletedTask;
     }
 
+    /// <summary>The abort path's synchronous write (§0.2).</summary>
+    public void Write(ReadOnlySpan<byte> buffer)
+    {
+        lock (_writeLock)
+        {
+            _written.AddRange(buffer.ToArray());
+        }
+    }
+
     public void Dispose() => Close();
 }

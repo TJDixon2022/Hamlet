@@ -359,11 +359,40 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty]
     private bool _contactExpanded = true;
 
+    [ObservableProperty]
+    private bool _transmitExpanded = true;
+
+    [ObservableProperty]
+    private bool _phrasebookExpanded = true;
+
     /// <summary>
     /// The worked contact, both sides, in the operator's own callsign
     /// (HM-DEC-043).
     /// </summary>
     public ContactShapeViewModel ContactShape { get; }
+
+    /// <summary>Sending Morse (HM-DEC-059).</summary>
+    public CwTransmitViewModel Transmit { get; }
+
+    /// <summary>The phrases people actually send (HM-DEC-059).</summary>
+    public PhrasebookViewModel Phrasebook { get; }
+
+    /// <summary>
+    /// Everything the transmit guard and the break-in precondition need.
+    /// </summary>
+    /// <remarks>
+    /// Read at the moment somebody presses rather than captured earlier, because
+    /// the frequency, the mode and the break-in setting can all have moved since
+    /// the panel was drawn and the guard has to answer about now (§0.2).
+    /// </remarks>
+    private TransmitContext BuildTransmitContext()
+        => new(
+            _settings.Operator.LicenseClass,
+            FrequencyHz,
+            _settings.RestrictTransmitToPrivileges,
+            IsConnected,
+            _rig?.Capabilities,
+            RigState);
 
     /// <summary>How long spot history is kept before it is pruned.</summary>
     /// <remarks>
@@ -548,8 +577,21 @@ public partial class MainWindowViewModel : ObservableObject
         _spotsExpanded = settings.IsPanelExpanded(PanelKeys.Spots);
         _leadExpanded = settings.IsPanelExpanded(PanelKeys.Lead);
         _contactExpanded = settings.IsPanelExpanded(PanelKeys.Contact);
+        _transmitExpanded = settings.IsPanelExpanded(PanelKeys.Transmit);
+        _phrasebookExpanded = settings.IsPanelExpanded(PanelKeys.Phrasebook);
 
         ContactShape = new ContactShapeViewModel(settings.Operator.Callsign);
+
+        // Everything the guard and the break-in precondition need, read at the
+        // moment somebody presses rather than captured when the panel was built
+        // (HM-DEC-059).
+        Transmit = new CwTransmitViewModel(BuildTransmitContext)
+        {
+            YourCall = settings.Operator.Callsign,
+            Qth = settings.Operator.Location,
+        };
+
+        Phrasebook = new PhrasebookViewModel();
 
         // A stored lens is the operator's own last answer rather than a guess,
         // so it is restored and inference never runs against it (HM-DEC-057).
@@ -950,6 +992,12 @@ public partial class MainWindowViewModel : ObservableObject
         SettingsStore.Save(_settings);
     }
 
+    partial void OnTransmitExpandedChanged(bool value)
+        => PersistPanel(PanelKeys.Transmit, value);
+
+    partial void OnPhrasebookExpandedChanged(bool value)
+        => PersistPanel(PanelKeys.Phrasebook, value);
+
     partial void OnMapExpandedChanged(bool value) => PersistPanel(PanelKeys.Map, value);
 
     partial void OnTapeExpandedChanged(bool value) => PersistPanel(PanelKeys.Tape, value);
@@ -1179,6 +1227,12 @@ public partial class MainWindowViewModel : ObservableObject
 
         OnPropertyChanged(nameof(RigState));
         OnPropertyChanged(nameof(TerminalSummary));
+
+        // The break-in setting and the mode both live in here, and both decide
+        // whether a send would reach the air. So the panel re-asks whenever the
+        // radio says anything, and somebody reads "break-in is off" before they
+        // press rather than after (HM-DEC-059).
+        Transmit.Refresh();
     }
 
     /// <summary>
@@ -1333,6 +1387,12 @@ public partial class MainWindowViewModel : ObservableObject
         DetectedWpm = _decoder.State.WordsPerMinute;
         DecodeNote = _decoder.Watch.NoteText;
         OnPropertyChanged(nameof(TerminalSummary));
+
+        // OFFERED, NEVER ASSERTED (HM-DEC-059, HM-OPEN-006). The decoder
+        // measured what the other station is sending at, so Hamlet may say so.
+        // It has never asked what speed this operator can copy, so it may not
+        // claim that this one suits them.
+        Transmit.HeardWpm = _decoder.State.HasSignal ? _decoder.State.WordsPerMinute : null;
     }
 
     private void StopTrainingSpectrum()
@@ -1490,6 +1550,10 @@ public partial class MainWindowViewModel : ObservableObject
         // the operator chose. So the terminal fills in either way.
         StartDecoding();
         StartRigMonitor(rig);
+
+        // The one door to the transmitter, and it only exists while a radio is
+        // connected (§0.2, HM-DEC-059).
+        Transmit.Attach(new CwTransmitter(new KeyerCwSender(rig)));
 
         var hz = await rig.GetFrequencyHzAsync();
         ApplyRigFrequency(hz);
@@ -2693,6 +2757,7 @@ public partial class MainWindowViewModel : ObservableObject
         {
             StopRigMonitor();
             StopDecoding();
+            Transmit.Attach(null);
             StopTrainingSpectrum();
             _rigSendTimer.Stop();
             _rigSendPending = false;
@@ -2764,6 +2829,12 @@ public static class PanelKeys
 
     /// <summary>The worked contact, both sides (HM-DEC-043).</summary>
     public const string Contact = "contact";
+
+    /// <summary>Sending Morse (HM-DEC-059).</summary>
+    public const string Transmit = "transmit";
+
+    /// <summary>The phrasebook (HM-DEC-059).</summary>
+    public const string Phrasebook = "phrasebook";
 }
 
 /// <summary>One band button: the band plus its best-bet ranking for the hour

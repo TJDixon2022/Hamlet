@@ -237,6 +237,7 @@ this table is the index.
 
 | Date | Decision | Why | Ref |
 |---|---|---|---|
+| 2026-08-14 | **Hamlet keys the radio and sends Morse**, by handing text to the radio's own keyer with CI-V `17`. One door to the transmitter that calls the guard first, a same-thread abort that awaits nothing, the break-in precondition checked before the send rather than reported after, and nothing that could key unattended. Contextual send buttons, staged sending on by default, a phrasebook with a column for admitting you are new, speed offered and never asserted, and a closing card that is not a logbook. **USB keying and Farnsworth are deferred to their own ruling**, and the absence is stated in the UI rather than hidden. | The app has been walking toward this, and it belongs to somebody who has held a license for six years and made one contact. | HM-DEC-059 |
 | 2026-08-14 | **The happening-now list ranks for what a newcomer can work, not for distance.** Distance does not run in a straight line with workability on HF, and a distance-led sort would bury every RBN spot besides, so it stays on the card and earns a vote when FG-007 lands. Liveness comes from the lens machinery and runs from a penalty to a bonus, so a finished activation cannot outrank a live CQ. Weights in one named place with their reasons, no control for them, and speed describes the station and never matches the operator. | Sorting nearest-first would put the hardest contacts at the top and call them the best chance; and Hamlet has never asked what speed this person can copy. | HM-DEC-058 |
 | 2026-08-14 | **The happening-now panel gets two named lenses, not a refresh button.** "Best chance" is the arrival question and ranks everything alive; "what's new" is the between-contacts question and shows the delta since the operator last looked. Both always visible, age fading the display across each source's ruled lifetime, inference may choose which opens and may never override afterward, and nothing is ever deleted. **Recorded, not built.** | Two different questions, and refresh answers neither; and a newcomer learning that people hunt again after a contact is worth the control on its own. | HM-DEC-057 |
 | 2026-08-14 | **Hamlet writes to the radio for the first time, and the write is the mode: tuning into a neighborhood sets the mode it is worked in.** Command `26` and not `06`, because only 26 carries the data flag and USB is not USB-D. Visible setting on by default, the operator's own hand always wins and suspends it visibly until the next band change, one write per settled dial, narrated in the app's voice, and a write the radio did not confirm leaves the mode unknown rather than assumed. **This is the writes ruling HM-DEC-050 deferred.** | Having the mode wrong is the commonest reason a beginner hears nothing, and the app already knows what lives where. | HM-DEC-056 |
@@ -415,10 +416,28 @@ turns to the page named.
 | Operating mode and filter | `04`; mode byte then filter byte, filter may be omitted | 19-3, 19-9 |
 | S-meter | `15 02`; `00 00`=S0, `01 20`=S9, `02 41`=S9+60 dB | 19-3 |
 | CI-V USB baud | **Default Auto**; 4800/9600/19200/38400/57600/115200 | 12-11 |
+| CW message character set | 0-9, A-Z, a-z, and `/ ? . - , : ' ( ) = + " @` and space; `FF` stops, `^` runs characters together | 19-11 |
+| CW keyer menu | Side tone, keyer repeat, dot/dash ratio, rise time, paddle polarity, key type. **No character spacing, so no Farnsworth** | 4-21 |
+| USB keying (CW) | Connectors set screen; OFF / DTR / RTS. The second keying path, not built | 12-9 |
+| Scope waveform data | `27 00`: sequence, division current 01-11, division maximum 11 over USB, center-or-fixed flag, waveform info, out-of-range flag, then the data. Range 0-160, length 475 | 19-12 |
+| Scope preconditions | `27 10` scope ON and `27 11` wave data output ON. **`27 11` needs CI-V USB port = "Unlink from [REMOTE]" and CI-V baud 115200** (footnote 4) | 19-7 |
 | Set operating mode | `06`, mode byte then optional filter byte; **no data variant** | 19-8 |
 | Set mode, data variant and filter | `26`, VFO selector then mode then `00`/`01` data mode then optional filter; skipping the filter selects that mode's default | 19-11 |
 | Read mode, data variant and filter | `26` with the VFO selector alone; the only read that tells USB from USB-D | 19-11 |
 | Mode bytes | `00`=LSB, `01`=USB, `02`=AM, `03`=CW, `04`=RTTY, `05`=FM, `07`=CW-R, `08`=RTTY-R | 19-8 |
+
+**ADDED 2026-08-14 (HM-DEC-059, HM-DEC-061): the transmit and scope rows,
+read column-aware from `IC-7300_Full_English v6`.** Page numbers are that
+edition's own; §4's older rows came from a different printing and its 19-3
+command-table citation still holds.
+
+**A TYPO IN THE MANUAL, FOUND AND RECORDED.** The `27 00` row's own description
+says the waveform data is output only when `27 10` and **`27 20`** are on. There
+is no `27 20`: the sub-command list on the same page runs 00, 10, 11, 12, 13, 14,
+15, 16, 17, 19, 1A, 1B, and `11` is "Send/read the Scope wave data output". So
+`27 10` and `27 11` is right, which is what HM-DEC-049 already recorded, and the
+cross-reference beside it is wrong. Worth writing down because the next session
+to read that page will see the same contradiction.
 
 **ADDED 2026-08-14 (HM-DEC-056): the write commands, read column-aware from
 `IC-7300_Full_English v6`.** Page numbers above are that edition's own. The rows

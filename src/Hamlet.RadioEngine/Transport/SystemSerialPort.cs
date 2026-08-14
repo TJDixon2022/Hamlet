@@ -45,6 +45,15 @@ public sealed class SystemSerialPort : ISerialPort
         => await _port.BaseStream.WriteAsync(buffer, cancellationToken).ConfigureAwait(false);
 
     /// <inheritdoc/>
+    /// <remarks>
+    /// Straight at the port rather than through the base stream, because
+    /// <c>SerialPort.Write</c> is genuinely synchronous and the abort path
+    /// cannot afford to be anything else (§0.2).
+    /// </remarks>
+    public void Write(ReadOnlySpan<byte> buffer)
+        => _port.Write(buffer.ToArray(), 0, buffer.Length);
+
+    /// <inheritdoc/>
     public void Dispose()
     {
         Close();

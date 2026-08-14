@@ -4,6 +4,106 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-059
+date: 2026-08-14
+refs: src/Hamlet.RadioEngine/Cw/ICwSender.cs, src/Hamlet.RadioEngine/Cw/CwTransmitter.cs, src/Hamlet.RadioEngine/Cw/TransmitReadiness.cs, src/Hamlet.RadioEngine/Cw/ContactStage.cs, tests/Hamlet.RadioEngine.Tests/Cw/CwTransmitTests.cs, HM-DEC-008, HM-DEC-029, HM-DEC-043, HM-DEC-049, HM-OPEN-006
+---
+
+Hamlet keys the radio and sends Morse, by handing text to the radio's own keyer
+with CI-V command 17. **USB keying and Farnsworth are deliberately deferred to
+their own ruling and their own session**, after this path is proven at a dummy
+load.
+
+THIS IS THE FEATURE THE WHOLE APP HAS BEEN WALKING TOWARD, and it belongs to
+somebody who has held a license for six years and made one contact. Everything
+below is shaped by that rather than by what a contest station would want.
+
+TWO KEYING PATHS EXIST AND ONLY ONE IS BUILT. Command 17 hands up to thirty
+characters to the radio's keyer, which sends them at its own speed with its own
+clean timing, which is better timing than a PC can produce down a serial line.
+USB keying, where the radio exposes a keying line on DTR or RTS and the PC owns
+every element, is the second path. It is what Farnsworth needs and it is not
+built here.
+
+SO THE SENDING PATH IS BEHIND AN INTERFACE with one implementation today. What
+that buys is that adding USB keying later is a new implementation rather than a
+rewrite of everything above it. Nothing above the seam learns which path it is
+on, except through one property, which exists for exactly one purpose.
+
+FARNSWORTH IS AN EXPLICIT KNOWN-UNKNOWN IN THE UI, NOT A HIDDEN ABSENCE. The
+radio's CW-KEY SET menu offers dot/dash ratio, rise time, paddle polarity and key
+type, and nothing at all for the gaps between characters (Full Manual p. 4-21,
+`IC-7300_Full_English v6`). Farnsworth means characters sent briskly with wide
+gaps between them, which is how a learner hears a whole letter as one shape
+rather than counting elements, and it needs control of the timing between
+characters. So where speed is chosen the panel says plainly that the spacing is
+the radio's own and cannot be widened yet. There is no Farnsworth control that
+silently does nothing (§0.0).
+
+THE SAFETY RULES, WHICH ARE §0.2 AND ARE ABSOLUTE:
+
+- **One door.** Every path that keys goes through `CwTransmitter`, which calls
+  `TransmitGuard.Check` first, every time, before it touches the radio
+  (HM-DEC-029). There is no second way in and no bypass, and nothing else holds
+  a reference to the sender.
+- **The abort is same-thread and awaits nothing.** Command 17 carrying FF
+  (p. 19-11), written straight at the port rather than behind the command gate,
+  because a stop queued behind the send it is stopping would arrive after the
+  message finished. It needed a synchronous write on the port seam, which did
+  not exist and does now. It works mid-send, it is safe when nothing is sending,
+  it is safe twice, and it never throws: an abort that could fail is not an
+  abort.
+- **Nothing transmits unattended.** No timer, no retry, no scan and no reconnect
+  path can reach the transmitter, and a failed send is not repeated. A test
+  proves the class has no timer and raises no event, so there is nothing in it
+  that could key without being asked.
+- **The dummy load is said once**, where somebody reads it before their first
+  send, as the ordinary precaution it is rather than as a warning about their
+  competence (HM-DEC-008).
+
+THE PRECONDITION NOBODY HAD WRITTEN DOWN IS CHECKED BEFORE THE SEND, NOT AFTER.
+In CW mode a message sent with command 17 is transmitted only when TRANSMIT or an
+external TX switch is on, or Break-in is on (command table footnote 2, p. 19-7).
+Without it Hamlet sends a correct frame, gets a correct acknowledgement, and the
+radio stays silent. That is the prime directive broken by omission: the app would
+report a success that never left the antenna, and somebody making their first
+call would sit there wondering why nobody answered. Hamlet already reads break-in
+(HM-DEC-050), so it answers rather than guessing, and an UNREAD setting refuses
+too, because "I do not know whether this will go out" is a different answer from
+"it will".
+
+THIRTY CHARACTERS IS THE LIMIT and the UI never presents a message it cannot
+send. Longer messages split in the engine, at the spaces, so a callsign is never
+cut in half.
+
+WHAT THE OPERATOR SEES:
+
+- **Contextual send buttons.** Calling CQ is one button when nothing is
+  happening; answering is a different one when a station is calling; the
+  exchange, the confirmation and the sign-off each appear when they are the next
+  thing anybody would say. The whole ritual is never laid out at once and the
+  operator is never asked to pick from it, because the terror is not the radio,
+  it is not knowing what to say, and a wall of choices is the same problem in a
+  different coat (HM-DEC-043).
+- **Staged sending, under a "let me read it first" toggle, default on.** The
+  first press composes and shows; the second sends. Somebody who can read the
+  words before they go out will press the button at all, which is the entire
+  point.
+- **A phrasebook, collapsible, with a column for admitting you are new.** "QRS
+  PSE, I am new" is a real and welcome thing to send. A beginner who knows that
+  sentence exists is far more likely to call; one who does not assumes the band
+  is a room full of experts who will be annoyed with them.
+- **Speed offered, never asserted.** The decoder measured what the other station
+  is sending at, so Hamlet may say so. It has never asked what this operator can
+  copy, so it may not claim any speed suits them. That gap is HM-OPEN-006.
+- **A closing card when a contact ends**, saying who, where, what band and what
+  was exchanged, written like a friend saying it went fine. It is not a logbook
+  and does not try to be; FG-004 is where logging lives.
+
+Nothing observed is invented and nothing unobserved is filled in: a report nobody
+sent is not mentioned, a speed nobody measured is not stated.
+
+---
 id: HM-DEC-058
 date: 2026-08-14
 refs: src/Hamlet.RadioEngine/Explore/SpotRankWeights.cs, src/Hamlet.RadioEngine/Explore/SpotRanking.cs, tests/Hamlet.RadioEngine.Tests/Explore/SpotRankingTests.cs, HM-OPEN-006, HM-DEC-038, HM-DEC-057, FG-007

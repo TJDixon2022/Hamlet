@@ -55,6 +55,17 @@ public static class CivConstants
     /// </summary>
     public const byte CmdSendCwMessage = 0x17;
 
+    /// <summary>
+    /// The message that stops a keyer send in progress: <c>FF</c> (p. 19-11).
+    /// </summary>
+    /// <remarks>
+    /// The manual states it as a message rather than as a sub-command: "FF stops
+    /// sending CW messages". So the abort is command 17 carrying one byte, which
+    /// is why it can be written straight at the port with no gate and no reply
+    /// to wait for (§0.2, HM-DEC-059).
+    /// </remarks>
+    public const byte CwStopByte = 0xFF;
+
     /// <summary>Spectrum scope data family (HM-DEC-005, p. 19-14).</summary>
     public const byte CmdScope = 0x27;
 
