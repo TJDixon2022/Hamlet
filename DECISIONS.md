@@ -4,6 +4,82 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-071
+date: 2026-08-14
+refs: CLAUDE.md §4, src/Hamlet.RadioEngine/Civ/CivReads.cs, src/Hamlet.RadioEngine/Civ/CivValues.cs, tests/Hamlet.RadioEngine.Tests/Civ/CitationTests.cs, HM-DEC-049, HM-DEC-050, HM-DEC-067, HM-DEC-069
+---
+
+**One edition of the truth. Every citation in §4 is re-verified against the IC-7300
+Full Manual, publication `A7292-4EX-6`, and the edition is now part of the
+citation.**
+
+WHY THIS WAS WORTH A SESSION. §4 had come to span three printings, each block
+naming its own, so nothing in it was dishonest. Page numbers drift between
+printings, and that seam had already produced two defects: the `14 08`
+sub-command error HM-DEC-050 corrected, and its copy in `AppSettings` that
+survived undetected for weeks. A table that is right in three different books is
+a table nobody can check in one sitting.
+
+THE EDITION, AND WHY THIS ONE. `A7292-4EX-6`, © 2016–2018, from Icom UK. It is
+the newest full manual obtainable: there is no v7 or later at that source, and
+Icom America publishes only the Basic Manual. It supersedes the `A7292-4EX-5`
+printing two recent rulings read.
+
+READ COLUMN-AWARE, WHICH IS NOT A DETAIL. `pdftotext -table`, because the command
+table is two columns and a flattened read is what put the CW pitch against the
+wrong row. Every attribution was made from a page-footer map, and that map was
+then checked independently against the manual's own index, which agrees.
+
+SIX PAGE NUMBERS MOVED AND EVERY VALUE HELD. The radio address to 12-8, the CI-V
+USB baud rate to 12-9, the three command `17` rows to 19-11, command `04`'s data
+content to 19-8, footnote 2 to 19-7, and `1A 03` to 19-4. **Two rows cited a page
+19-14 that does not exist in this edition**, whose chapter 19 ends at 19-13; both
+were duplicates of scope rows already read correctly, so they merged. The old
+`00`–`A0` data range and the current `0`–`160` are one range in two bases, and the
+manual writes decimal.
+
+ONE ROW WAS SIMPLY WRONG, and the code was the thing that caught it. §4 said the
+filter-width scale is on p. 4-6 "and not in the command table". The command table
+carries the endpoints; only the steps need p. 4-6. `CivFilterWidth`'s own comment
+had said exactly that for weeks, which is the argument for putting reasoning next
+to code rather than only in a table.
+
+ONE ROW GAINED A CLAUSE THAT MATTERS. Command `26`'s skippable bytes were recorded
+as "skipping the filter selects that mode's default". The manual says both may be
+skipped and that **DATA OFF** and the default filter are then selected. A `26`
+without the data byte turns the data variant off rather than leaving it alone.
+`CivWrites` already sends the byte and already quoted the sentence, so nothing was
+broken; the summary was.
+
+A NEW KNOWN-UNKNOWN CLOSED. The frequency BCD encoding was the last figure in §4
+carried from general knowledge rather than from a source. It is on p. 19-8: five
+bytes, least significant pair first, two BCD digits per byte with the more
+significant in the high nibble. `Bcd.DecodeFrequencyHz` matches it exactly. §4's
+"still unverified" list is now two entries, both of which are configuration rather
+than constants.
+
+TWO NOTATIONS, WRITTEN DOWN BECAUSE CONFUSING THEM IS A REAL HAZARD. Where §4
+writes `01 28`, that is BCD on the wire; the manual writes the same value as
+decimal `0128` in its own column. Reading `02 55` as hexadecimal gives 597 rather
+than 255. Both forms now appear together where they occur.
+
+A SECOND TYPO IN THE MANUAL, alongside the `27 20` one HM-DEC-062 recorded and
+which is present in this edition too. Page 19-12 refers the reader to page 19-14
+for the Scope Fixed edge frequency settings, and chapter 19 ends at 19-13; the
+settings are on 19-13.
+
+RULINGS WERE NOT EDITED. HM-DEC-049, HM-DEC-050, HM-DEC-067 and HM-DEC-069 carry
+page numbers from the printings they were written against, and each now carries a
+dated correction note beside the passage, in the treatment §4 already gives the
+`14 08` error (§1). HM-DEC-069's conclusion was re-checked in full against this
+edition and every page in it holds.
+
+A TEST PINS THE EDITION so the next drift is loud rather than quiet. It reads the
+citation strings the engine actually carries and fails on any page outside the
+chapter ranges this edition has, which is what would have caught a 19-14 the day
+it was written.
+
+---
 id: HM-DEC-070
 date: 2026-08-14
 supersedes: HM-DEC-060 (the star's placement and its label only)
@@ -82,6 +158,12 @@ describes the [USB] port itself, listing remote control by CI-V and sending the
 decoded RTTY output as separate bullets on the one connector. Three statements
 and no contradiction between them: **the conflict is real and the manual is not
 ambiguous about it.**
+
+> **NOTE 2026-08-14 (HM-DEC-071): re-checked against `A7292-4EX-6`, the edition
+> this project has settled on, and every page above holds.** USB Serial Function
+> and RTTY Decode Baud Rate are on 12-9 there too, the [USB] port description on
+> 2-3, the RTTY tip on 2-5. The conclusion is unchanged and now rests on the
+> newer printing as well.
 
 SO THE MODE IS NOT BUILT, AND THAT IS THE ANSWER RATHER THAN A DEFERRAL. An RTTY
 terminal fed from that port would be an application that stops following the
@@ -202,6 +284,15 @@ Baud Rate" screen, and the radio has two: CI-V Baud Rate for the [REMOTE] jack
 and CI-V USB Baud Rate for the USB port. Hamlet is on the USB port, so the USB
 one is what the app names. 115200 is also the rate Hamlet already talks at, so
 setting it costs the connection nothing.
+
+> **RESOLVED 2026-08-14: Tim confirms the USB screen is the one that gates it,
+> because Hamlet talks to the radio over the USB cable.** The ambiguity note is
+> gone from the code and the reading above stands.
+>
+> **CORRECTION 2026-08-14 (HM-DEC-071): one page number above is not this
+> project's edition.** Against `A7292-4EX-6`, CI-V USB Port is on **12-8** and
+> CI-V USB Baud Rate on **12-9**, so the two settings are on facing pages rather
+> than one. Footnote 4 is on 19-7 in both. Noted rather than edited (§1).
 
 NO FAULT LANGUAGE, and a test holds it. Nothing here is anybody's mistake, and a
 radio that shipped with these switches off is a radio behaving exactly as
@@ -986,7 +1077,8 @@ A gap in Hamlet's own table produces `Unknown` and says Hamlet is the gap.
 
 Fixing the classification rather than the row caught the second instance
 immediately. The filter designator arrives on the back of the mode command
-(p. 19-9) and has no read of its own, so the same sweep concluded the radio had
+(p. 19-9 as recorded; **p. 19-8** in `A7292-4EX-6`, corrected by HM-DEC-071) and
+has no read of its own, so the same sweep concluded the radio had
 no filter moments after reporting which filter was selected. Nobody had noticed,
 because the badge is fed from the mode read and looked right.
 
@@ -1247,6 +1339,16 @@ waveform data and only does so when `27 10` and `27 11` are both on; the data
 runs `00` to `A0` over a length of 475 and arrives in eleven parts over USB
 (p. 19-14).
 
+> **CORRECTION 2026-08-14 (HM-DEC-071): the values in the paragraph above are
+> all confirmed and four of its page numbers are not this project's edition.**
+> Against `A7292-4EX-6`, the settled edition, the address is on **12-8** rather
+> than 12-10, the three command `17` facts are on **19-11** rather than 19-13,
+> and the scope waveform rows are on **19-7** for the command and **19-12** for
+> the data shape. There is no page 19-14 in that edition, whose chapter 19 ends
+> at 19-13. The manual writes the data range in decimal as `0~160`, which is the
+> same range as `00` to `A0`. Noted here rather than edited, because a ruling is
+> never edited (§1).
+
 AND THE PRECONDITION NOBODY HAD WRITTEN DOWN, which is the reason this record
 is worth more than a tidy citation list. In CW mode a message sent with command
 `17` is only transmitted when TRANSMIT or an external TX switch is on, or
@@ -1257,7 +1359,8 @@ never broken.
 
 Two corrections to what §4 assumed. The USB CI-V baud rate defaults to Auto
 rather than to any fixed figure, and 115200 is one of six options rather than a
-convention (p. 12-11), so the app must not hard-code it. And the CW pitch is
+convention (**p. 12-9** in `A7292-4EX-6`; recorded here as 12-11 from an earlier
+printing, corrected by HM-DEC-071), so the app must not hard-code it. And the CW pitch is
 adjustable from 300 to 900 Hz (p. 4-14), encoded by `14 08` with 600 Hz at the
 midpoint in 5 Hz steps (p. 19-3). The manual states the range and not a factory
 default, so the decoder starts at 600 because that is the middle of what this

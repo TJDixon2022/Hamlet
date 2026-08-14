@@ -11,7 +11,7 @@ namespace Hamlet.RadioEngine.Tests.Explore;
 /// <para>The IC-7300 decodes RTTY by itself and will send the decoded text down
 /// the USB cable. The catch is that "USB Serial Function" is one setting with two
 /// options, CI-V or RTTY Decode, on one port (Full Manual p. 12-9, publication
-/// A7292-4EX-5). Taking the decoded text costs rig control entirely.</para>
+/// A7292-4EX-6). Taking the decoded text costs rig control entirely.</para>
 /// <para>So the constraint is a fact about the radio and it belongs in the field
 /// guide where somebody reads about the mode. These hold that it is said, and
 /// that nothing in the engine offers to make the switch.</para>

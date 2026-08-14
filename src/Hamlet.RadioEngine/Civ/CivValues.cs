@@ -126,8 +126,9 @@ public static class CivValues
 /// <remarks>
 /// <para>THE NUMBER THIS WHOLE SUBSYSTEM EXISTS FOR. Command <c>1A 03</c>
 /// returns a position on a scale rather than a bandwidth, and the scale is not
-/// linear: it is documented on p. 4-6 of the Full Manual rather than in the
-/// command table, which gives only its endpoints.</para>
+/// linear: the command table on p. 19-4 gives only its endpoints and the steps
+/// between them are on p. 4-6 of the Full Manual. Both pages verified against
+/// publication A7292-4EX-6 (HM-DEC-071).</para>
 /// <para>Two scales, and which one applies depends on the mode. SSB, CW and
 /// RTTY step 50 Hz at a time from 50 Hz to 500 Hz and then 100 Hz at a time up
 /// to 3.6 kHz. AM steps 200 Hz at a time from 200 Hz to 10 kHz. FM cannot be

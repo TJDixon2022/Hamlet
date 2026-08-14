@@ -237,6 +237,7 @@ this table is the index.
 
 | Date | Decision | Why | Ref |
 |---|---|---|---|
+| 2026-08-14 | **One edition of the truth: every §4 citation re-verified column-aware against the Full Manual, publication `A7292-4EX-6`**, the newest obtainable. Six page numbers moved and every value held; two rows cited a page 19-14 this edition does not have and merged into the scope rows. The filter-width row was wrong about where the scale lives, command `26`'s skipped bytes also force DATA OFF, and the frequency BCD encoding is verified rather than assumed. Affected rulings gain dated correction notes rather than edits, and a test pins the edition. | A table right in three different books is one nobody can check in a sitting, and that seam had already produced two defects. | HM-DEC-071 |
 | 2026-08-14 | **The star moves inside the display and says `save` or `saved`, superseding HM-DEC-060 on placement and label only.** Tim weighed keeping Hamlet's chrome off a faithful LCD against being able to find the control, and chose finding it. A strip along the top of the warm panel carries the favorite's name at the left and the dropdown at the right, and the tuning hint gets its own line back. The hit test reads where the glyph was actually drawn, and the wheel does not tune over it. | A star against near-black is the brightest thing on the panel; and a favorite's name is as long as somebody made it, which collides with the mode badge or the clock at some width. | HM-DEC-070 |
 | 2026-08-14 | **Hamlet does not read the radio's RTTY decoder, and the reason is the radio.** Verified against the Full Manual, publication A7292-4EX-5, p. 12-9: "USB Serial Function" is one setting with two options, CI-V or RTTY Decode, on one port, so taking the decoded text costs rig control entirely. The manual also never says what that output looks like on the wire (HM-OPEN-008). The field guide says the tradeoff plainly, the choice stays the operator's and is made at the radio, and a connect failure now names the setting beside the cable and the baud rate. | A terminal fed from that port would stop following the radio the moment it started working, and everything on screen would keep looking right. | HM-DEC-069 |
 | 2026-08-14 | **A card's lines are composed together and no card may say the same thing twice.** A clause an earlier line carried is dropped from a later one, splitting on the separator and on commas, with the first line always surviving whole. Spot cards and the lead card compose through it; a new family joins by calling it rather than by being remembered. A sweep over every source, call type, mode and age fails on any repeat, and it was checked against the unfixed code to be sure it fires. | Both lines asked one function for one sentence and neither was wrong to; and a thing said twice reads as two pieces of evidence when it is one. | HM-DEC-068 |
@@ -403,57 +404,97 @@ severity to make the picture look better.
 two functions: a virtual COM port for CI-V CAT control, and a USB audio
 codec for RX/TX audio. No external interface hardware is needed or used.
 
-**Verified 2026-08-14 against the IC-7300 Full Manual (HM-DEC-049, closing
-HM-OPEN-002).** Page numbers below are the manual's own. The PDF is **cited and
-never committed**: Icom's terms permit individual use and prohibit
-redistribution, and §2.1 forbids third-party proprietary material in this
-repository. Anybody checking a figure downloads the manual free from Icom and
-turns to the page named.
+**EVERY ROW BELOW WAS RE-VERIFIED 2026-08-14 AGAINST ONE EDITION**, and the
+edition is part of the citation rather than a detail:
+
+> **IC-7300 Full Manual, publication `A7292-4EX-6`, © 2016–2018.** Chapter 19
+> runs 19-1 to 19-13, chapter 12 runs 12-1 to 12-12. Read with a column-aware
+> extraction (`pdftotext -table`), which is not optional: the command table is
+> two columns, and a flattened read is what put the CW pitch on the wrong
+> sub-command and cost weeks (HM-DEC-050, HM-DEC-071).
+
+This table used to span three printings, with each block naming its own, and
+that seam produced two defects. It now points at one document. **A page number
+here is a page number in `A7292-4EX-6` and nowhere else**; a different printing
+paginates differently, so a figure checked against another edition is checked
+against a different book. The earlier page numbers are not deleted from the
+rulings that carry them, because a ruling is never edited (§1). They are
+corrected in place with a dated note, which is what the entries below the table
+are.
+
+The PDF is **cited and never committed**: Icom's terms permit individual use and
+prohibit redistribution, and §2.1 forbids third-party proprietary material in
+this repository. Anybody checking a figure downloads the manual free from Icom
+and turns to the page named.
+
+**TWO NOTATIONS, AND MISREADING ONE FOR THE OTHER IS A REAL HAZARD.** Where a
+row below writes a value as byte pairs like `01 28`, that is the BCD on the wire.
+The manual writes the same value in its own column as the decimal `0128`. They
+are the same number in two alphabets, and reading `02 55` as hexadecimal gives
+597 rather than 255. Where both appear below, the manual's decimal is in
+parentheses.
 
 | Fact | Value | Page |
 |---|---|---|
 | CI-V frame, controller to radio | `FE FE 94 E0 Cn Sc <data> FD` | 19-2 |
 | CI-V frame, radio to controller | `FE FE E0 94 Cn Sc <data> FD` | 19-2 |
 | Acknowledged / not acknowledged | `FE FE E0 94 FB FD` / `... FA FD` | 19-2 |
-| Radio address | `94h` default, `02h`–`DFh` settable | 12-10 |
-| CW message send | Command `17`, **up to 30 characters** | 19-13 |
-| Stop sending | `FF` as the message | 19-13 |
-| Run characters together | `^` sends a string with no inter-character space | 19-13 |
-| Scope waveform data | `27 00`, only while `27 10` and `27 11` are both ON | 19-14 |
-| Scope data shape | Range `00`–`A0`, length 475, sent in 11 parts over USB | 19-14 |
+| Radio address | `94h` default; range `02h ~ 94h ~ DFh` | 12-8 |
+| CW message send | Command `17`, **up to 30 characters** | 19-11 |
+| Stop sending | `FF` as the message | 19-11 |
+| Run characters together | `^` sends a string with no inter-character space | 19-11 |
+| CW message character set | 0-9, A-Z, a-z, and `/ ? . - , : ' ( ) = + " @` and space, as ASCII codes | 19-11 |
 | CW pitch range | 300–900 Hz | 4-14 |
-| CW pitch over CI-V | `14 09`; `00 00`=300 Hz, `01 28`=600 Hz, `02 55`=900 Hz, 5 Hz steps | 19-3 |
-| IF filter width | `1A 03`, an index; the scale is on **p. 4-6**, not in the command table | 19-3, 4-6 |
-| Operating mode and filter | `04`; mode byte then filter byte, filter may be omitted | 19-3, 19-9 |
-| S-meter | `15 02`; `00 00`=S0, `01 20`=S9, `02 41`=S9+60 dB | 19-3 |
-| CI-V USB baud | **Default Auto**; 4800/9600/19200/38400/57600/115200 | 12-11 |
-| CW message character set | 0-9, A-Z, a-z, and `/ ? . - , : ' ( ) = + " @` and space; `FF` stops, `^` runs characters together | 19-11 |
-| CW keyer menu | Side tone, keyer repeat, dot/dash ratio, rise time, paddle polarity, key type. **No character spacing, so no Farnsworth** | 4-21 |
+| CW pitch over CI-V | `14 09`; `00 00`=300 Hz (0000), `01 28`=600 Hz (0128), `02 55`=900 Hz (0255), 5 Hz steps | 19-3 |
+| S-meter | `15 02`; `00 00`=S0 (0000), `01 20`=S9 (0120), `02 41`=S9+60 dB (0241) | 19-3 |
+| IF filter width | `1A 03`, an index `00` to `49`. The table gives the **endpoints** (`00`=50 Hz, `31`/`40`=2700/3600 Hz, AM `00`=200 Hz to `49`=10 kHz); the **step scale** is on p. 4-6 | 19-4, 4-6 |
+| IF filter scale | SSB/SSB-D/CW 50–500 Hz in 50 Hz steps then 600 Hz–3.6 kHz in 100 Hz; RTTY the same to 2.7 kHz; AM 200 Hz–10 kHz in 200 Hz; **FM fixed**, FIL1 15 kHz / FIL2 10 kHz / FIL3 7 kHz | 4-6 |
+| Read operating mode and filter | `04`; command table on 19-3, data content on 19-8. Filter byte `01`=FIL1, `02`=FIL2, `03`=FIL3 | 19-3, 19-8 |
+| CI-V USB baud | **Default Auto**; 4800/9600/19200/38400/57600/115200 | 12-9 |
+| CI-V USB port | **Default "Link to [REMOTE]"**; the other option is "Unlink from [REMOTE]" | 12-8 |
+| CW keyer menu | `MENU > KEYER > EDIT/SET > CW-KEY SET`: side tone level, side tone limit, keyer repeat time, dot/dash ratio, rise time, paddle polarity, key type, MIC up/down keyer. **No character spacing, so no Farnsworth**, and the word appears nowhere in the manual | 4-21 |
 | USB keying (CW) | Connectors set screen; OFF / DTR / RTS. The second keying path, not built | 12-9 |
-| Scope waveform data | `27 00`: sequence, division current 01-11, division maximum 11 over USB, center-or-fixed flag, waveform info, out-of-range flag, then the data. Range 0-160, length 475 | 19-12 |
-| Scope preconditions | `27 10` scope ON and `27 11` wave data output ON. **`27 11` needs CI-V USB port = "Unlink from [REMOTE]" and CI-V baud 115200** (footnote 4) | 19-7 |
-| Set operating mode | `06`, mode byte then optional filter byte; **no data variant** | 19-8 |
-| Set mode, data variant and filter | `26`, VFO selector then mode then `00`/`01` data mode then optional filter; skipping the filter selects that mode's default | 19-11 |
+| Scope waveform data | `27 00`. First part is header only; parts 2 and later carry waveform. Division current `01`–`11`, division maximum `11` over USB, center-or-fixed flag, waveform information, out-of-range flag, then the data. **Data range 0–160, data length 475** | 19-12 |
+| Scope preconditions | `27 10` scope ON and `27 11` wave data output ON. **`27 11` needs CI-V USB Port = "Unlink from [REMOTE]" and CI-V USB Baud Rate 115200** (footnote 4) | 19-7 |
+| Command `17` precondition | In CW mode a `17` message transmits **only** when TRANSMIT or an external TX switch is on, or Break-in is on (footnote 2) | 19-7 |
+| Set operating mode | `06`, mode byte then optional filter byte; **no data variant**. Omitting the filter selects that mode's default | 19-8 |
+| Set mode, data variant and filter | `26`, VFO selector then mode then `00`/`01` data mode then optional filter. **Omitting them selects DATA OFF and that mode's default filter**, so the data byte must be sent to get a data mode | 19-11 |
 | Read mode, data variant and filter | `26` with the VFO selector alone; the only read that tells USB from USB-D | 19-11 |
 | Mode bytes | `00`=LSB, `01`=USB, `02`=AM, `03`=CW, `04`=RTTY, `05`=FM, `07`=CW-R, `08`=RTTY-R | 19-8 |
+| Frequency encoding | Commands `00`, `03`, `05`, `1C 03`. **Five bytes, least significant pair first**, two BCD digits per byte with the more significant in the high nibble: `[10 Hz][1 Hz] [1 kHz][100 Hz] [100 kHz][10 kHz] [10 MHz][1 MHz] [1000 MHz][100 MHz]`, the last pair fixed at zero. **Verified 2026-08-14, no longer carried from general knowledge** | 19-8 |
 | USB serial function | **One setting, two options, one port: `CI-V` or `RTTY Decode`.** Choosing the decoded text means CI-V stops (HM-DEC-069) | 12-9 |
 | RTTY decode baud rate | Default 9600; 4800/9600/19200/38400 | 12-9 |
+| RTTY mark frequency / shift | `1A 05 0036` (`00`=1275, `01`=1615, `02`=2125 Hz) and `1A 05 0037` (`00`=170, `01`=200, `02`=425 Hz) | 19-4 |
 | RTTY decode output format | **NOT STATED ANYWHERE IN THE MANUAL.** Explicit known-unknown: HM-OPEN-008 | — |
 
-**ADDED 2026-08-14 (HM-DEC-067, HM-DEC-069): the two menu rows and the RTTY
-rows, read column-aware from the Full Manual, publication `A7292-4EX-5`, 173
-pages.** That is a DIFFERENT EDITION from the `v6` the transmit and scope rows
-came from, and the edition is named on purpose: page 19-7's footnote 4 reads the
-same in both, and nothing else was assumed to. The two settings behind the scope
-stream are on **p. 12-9** under MENU, SET, Connectors: "CI-V USB Port (Default:
-Link to [REMOTE])" and "CI-V USB Baud Rate (Default: Auto)". Footnote 4 names a
-"CI-V Baud Rate" screen and the radio has two of them, one for [REMOTE] and one
-for USB; Hamlet is on the USB port, so that is the one it names.
+**WHAT CHANGED WHEN THE TABLE WAS BROUGHT ONTO ONE EDITION (HM-DEC-071).** Six
+page numbers moved, and every value they pointed at was confirmed unchanged. The
+radio address is on 12-8 rather than 12-10; the CI-V USB baud rate on 12-9 rather
+than 12-11; the three command `17` rows on 19-11 rather than 19-13; command `04`'s
+data content on 19-8 rather than 19-9; footnote 2 on 19-7 rather than 19-8; and
+`1A 03` on 19-4 rather than 19-3. **Two rows cited a page 19-14 that does not
+exist in this edition**, whose chapter 19 ends at 19-13, and both were duplicates
+of the scope rows already read from `A7292-4EX-6`, so they merged. The old `00`–`A0`
+and the current `0–160` are the same range in hexadecimal and decimal; the manual
+writes decimal, so the table now does.
 
-**ADDED 2026-08-14 (HM-DEC-059, HM-DEC-061): the transmit and scope rows,
-read column-aware from `IC-7300_Full_English v6`.** Page numbers are that
-edition's own; §4's older rows came from a different printing and its 19-3
-command-table citation still holds.
+**THE ONE PLACE THE TABLE WAS SIMPLY WRONG** was the IF filter width. It said the
+scale is on p. 4-6 "and not in the command table", and the command table does
+carry the endpoints: `00`=50 Hz, `31`/`40`=2700/3600 Hz, and AM `00`=200 Hz to
+`49`=10 kHz. Only the step scale needs p. 4-6. The code was already right about
+this and its comment said so, which is how the row was caught.
+
+**AND ONE ROW GAINED A CLAUSE THAT MATTERS.** Command `26`'s skippable bytes were
+recorded as "skipping the filter selects that mode's default". The manual says
+both settings can be skipped, and that "DATA OFF" **and** the default filter are
+then selected. So a `26` sent without the data byte turns the data variant off
+rather than leaving it alone, which is the opposite of harmless for HM-DEC-056's
+mode writes.
+
+**A SECOND TYPO IN THE MANUAL.** Page 19-12 says "See page 19-14 for Scope Fixed
+edge frequency settings" and this edition's chapter 19 ends at 19-13. The
+settings themselves are on 19-13. Recorded for the same reason as the one below:
+the next session to read that page will see it too.
 
 **A TYPO IN THE MANUAL, FOUND AND RECORDED.** The `27 00` row's own description
 says the waveform data is output only when `27 10` and **`27 20`** are on. There
@@ -463,16 +504,15 @@ is no `27 20`: the sub-command list on the same page runs 00, 10, 11, 12, 13, 14
 cross-reference beside it is wrong. Worth writing down because the next session
 to read that page will see the same contradiction.
 
-**ADDED 2026-08-14 (HM-DEC-056): the write commands, read column-aware from
-`IC-7300_Full_English v6`.** Page numbers above are that edition's own. The rows
-carrying `26` are the ones that matter: command `06` sets a mode and a filter and
-has no way at all to say whether the data variant is wanted, so a radio told
-"USB" by `06` lands in voice USB with the microphone live rather than in USB-D
-routing the computer's audio, which is the difference between hearing FT8 and
-hearing nothing useful.
+**WHY THE `26` ROWS ARE THE ONES THAT MATTER (HM-DEC-056).** Command `06` sets a
+mode and a filter and has no way at all to say whether the data variant is
+wanted, so a radio told "USB" by `06` lands in voice USB with the microphone live
+rather than in USB-D routing the computer's audio, which is the difference
+between hearing FT8 and hearing nothing useful.
 
-**CORRECTION 2026-08-15 (HM-DEC-050): the CW pitch was recorded here as `14 08`
-and it is `14 09`.** Sub-command 08 is the outer Twin PBT position. The command
+**CORRECTION 2026-08-15 (HM-DEC-050), CONFIRMED AGAIN 2026-08-14 against
+`A7292-4EX-6` p. 19-3: the CW pitch was recorded here as `14 08` and it is
+`14 09`.** Sub-command 08 is the outer Twin PBT position. The command
 table is two columns and the extraction that verified it had been flattened into
 one, so the description landed against the wrong row. Issuing 08 with a payload
 would move the passband while trying to read a pitch. **A citation is only as
@@ -482,8 +522,9 @@ table, and check a value against a second mention of it where one exists.**
 **THE PRECONDITION ON COMMAND `17`, which is not optional and cost nothing only
 because it was found before the transmit work started:** in CW mode a message
 sent with `17` is transmitted **only when TRANSMIT or an external TX switch is
-on, or Break-in is on** (p. 19-8, footnote 2). Without it the app sends a
-correct frame, gets a correct acknowledgement, and the radio stays silent.
+on, or Break-in is on** (p. 19-7, footnote 2, corrected from 19-8 by HM-DEC-071).
+Without it the app sends a correct frame, gets a correct acknowledgement, and the
+radio stays silent.
 
 Still unverified, and marked so rather than filled in:
 
@@ -496,8 +537,6 @@ Still unverified, and marked so rather than filled in:
   encoding and no default. The decoder starts at 600 Hz because that is the
   midpoint of what this radio produces, which is a citation and not a
   recollection.
-- **Frequency BCD encoding**, little-endian by byte pair, still carried from
-  general knowledge. Verify before the tuning path depends on it.
 
 **A figure the source does not state is an explicit known-unknown** — marked
 in the data file as `value: null, confirmed: false, reason`, loaded loud, and

@@ -60,7 +60,7 @@ public static class ScopeReadiness
     /// <summary>The manual pages behind the preconditions.</summary>
     public const string Citation =
         "IC-7300 Full Manual, command table and footnote 4, p. 19-7; "
-        + "the two menu settings, p. 12-9 (edition 5, A7292-4EX-5)";
+        + "the two menu settings, pp. 12-8 and 12-9 (A7292-4EX-6)";
 
     /// <summary>
     /// Where the two settings live, named exactly as the radio names them.
@@ -74,8 +74,9 @@ public static class ScopeReadiness
     /// command, so no amount of code makes the stream arrive.</para>
     /// <para>The names are quoted from the radio's own menus rather than
     /// paraphrased, because a paraphrase sends somebody hunting for a screen
-    /// that does not exist. Read column-aware from the Full Manual, edition 5,
-    /// publication A7292-4EX-5, p. 12-9.</para>
+    /// that does not exist. Read column-aware from the Full Manual, publication
+    /// A7292-4EX-6, CI-V USB Port on p. 12-8 and CI-V USB Baud Rate on p. 12-9
+    /// (HM-DEC-071).</para>
     /// <para>Footnote 4 on p. 19-7 writes "CI-V Baud Rate" and the radio has two
     /// screens by nearly that name, one for the [REMOTE] jack and one for the
     /// USB port. Hamlet talks to the radio over the USB cable, so the USB screen

@@ -100,12 +100,13 @@ public static class CivReads
     /// <summary>Read the operating mode and filter selection together.</summary>
     /// <remarks>
     /// One command answers two fields: the reply is one byte of mode and one of
-    /// filter (p. 19-9). That is why the mode badge and the filter badge on the
-    /// rig display refresh together, and why the filter is never asked for on its
-    /// own.
+    /// filter (p. 19-8, and the table row on 19-3). That is why the mode badge
+    /// and the filter badge on the rig display refresh together, and why the
+    /// filter is never asked for on its own. The data page was 19-9 here and it
+    /// is 19-8 in this project's edition (HM-DEC-071).
     /// </remarks>
     public static CivRead ModeAndFilter { get; } = new(
-        RigField.Mode, 0x04, Array.Empty<byte>(), "19-3, 19-9",
+        RigField.Mode, 0x04, Array.Empty<byte>(), "19-3, 19-8",
         "00=LSB, 01=USB, 02=AM, 03=CW, 04=RTTY, 05=FM, 07=CW-R, 08=RTTY-R; "
         + "then 01=FIL1, 02=FIL2, 03=FIL3",
         new[] { RigField.FilterSelection });
@@ -128,12 +129,13 @@ public static class CivReads
 
     /// <summary>Read the selected filter's width.</summary>
     /// <remarks>
-    /// An index rather than a figure in hertz, and the two step scales it
-    /// covers are documented on p. 4-6 rather than in the command table.
-    /// <see cref="CivFilterWidth"/> does the conversion.
+    /// An index rather than a figure in hertz. The command table gives its
+    /// endpoints and the two step scales between them are on p. 4-6, so both
+    /// pages are needed and <see cref="CivFilterWidth"/> does the conversion.
+    /// The page was 19-3 here and this row is on 19-4 (HM-DEC-071).
     /// </remarks>
     public static CivRead FilterWidth { get; } = new(
-        RigField.FilterBandwidth, 0x1A, new byte[] { 0x03 }, "19-3",
+        RigField.FilterBandwidth, 0x1A, new byte[] { 0x03 }, "19-4",
         "00 to 49; AM 00=200 Hz to 49=10 kHz, other modes 00=50 Hz to "
         + "31/40=2700 Hz/3600 Hz");
 
