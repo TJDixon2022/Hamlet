@@ -431,6 +431,19 @@
                                               Title="CW terminal"
                                               Summary="{Binding TerminalSummary}"
                                               IsExpanded="{Binding TerminalExpanded, Mode=TwoWay}">
+
+                            <!-- Worded, not an icon. "Clear" is what it does and
+                                 a broom would need explaining. It sits beside
+                                 the header button rather than in it, so it
+                                 cannot collapse the panel on its way past. -->
+                            <ctl:CollapsiblePanel.HeaderAction>
+                                <Button Content="Clear"
+                                        FontSize="11" Padding="10,2"
+                                        Command="{Binding ClearTerminalCommand}"
+                                        ToolTip.Tip="Wipes what is on screen. The decoder keeps listening, and keeps the speed and the noise floor it has worked out."
+                                        ToolTip.ShowDelay="300" />
+                            </ctl:CollapsiblePanel.HeaderAction>
+
                             <StackPanel Spacing="6">
 
                                 <!-- The header carries the sending speed live,

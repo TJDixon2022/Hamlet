@@ -201,6 +201,52 @@ public sealed class CwTerminalTests
         Assert.Equal(inks.Count, inks.Distinct().Count());
     }
 
+    /// <remarks>
+    /// CLEARING WIPES THE DISPLAY AND NOTHING ELSE (HM-DEC-051). Tuning around
+    /// leaves a pile of half-decoded garbage above whatever is arriving now, and
+    /// the way to start fresh must not cost the decoder what it has worked out.
+    /// The speed estimate and the adapted noise floor took real seconds of
+    /// signal to arrive at, and losing them mid-decode is exactly what nobody
+    /// wants while chasing a marginal one.
+    /// </remarks>
+    [Fact]
+    public void ClearingTheTranscriptLeavesTheDecoderAlone()
+    {
+        using var source = new TrainingAudioSource("CQ DE W1AW K", wordsPerMinute: 12);
+        var decoder = new CwDecoder(source.SampleRate, 600);
+        var transcript = new CwTranscript();
+
+        decoder.CharacterDecoded += transcript.Append;
+        decoder.Listen(source);
+
+        source.PumpOnce(source.SampleRate * 14);
+
+        var before = decoder.State;
+        Assert.InRange(before.WordsPerMinute, 11, 13);
+        Assert.False(transcript.IsEmpty);
+
+        transcript.Clear();
+
+        // The screen is empty and the decoder has not noticed.
+        Assert.True(transcript.IsEmpty);
+
+        var after = decoder.State;
+        Assert.Equal(before.WordsPerMinute, after.WordsPerMinute);
+        Assert.Equal(before.ToneHz, after.ToneHz);
+        Assert.Equal(before.NoiseFloorDb, after.NoiseFloorDb);
+        Assert.Equal(before.PeakDb, after.PeakDb);
+        Assert.Equal(before.HasSignal, after.HasSignal);
+
+        // And it is still decoding: more audio still fills the screen again,
+        // at the speed it already knew rather than from scratch.
+        source.PumpOnce(source.SampleRate * 14);
+        decoder.Flush();
+
+        Assert.False(transcript.IsEmpty);
+        Assert.Contains("CQ DE W1AW K", transcript.PlainText, StringComparison.Ordinal);
+        Assert.InRange(decoder.State.WordsPerMinute, 11, 13);
+    }
+
     private static CwCharacter Character(string text)
         => new(text, CwConfidence.High, 1, ".", 30, 18, TimeSpan.FromSeconds(1));
 

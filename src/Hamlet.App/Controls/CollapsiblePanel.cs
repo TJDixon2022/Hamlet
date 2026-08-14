@@ -69,6 +69,19 @@ public sealed class CollapsiblePanel : ContentControl
         AvaloniaProperty.Register<CollapsiblePanel, IBrush?>(
             nameof(SummaryBrush), new SolidColorBrush(Color.Parse("#6E6E66")));
 
+    /// <summary>
+    /// Something with its own job, shown at the right of the header.
+    /// Null for most panels.
+    /// </summary>
+    /// <remarks>
+    /// Deliberately OUTSIDE the header button in the template. The whole header
+    /// toggles the panel, so a control placed inside it would collapse the panel
+    /// every time somebody used it, which reads as the app misbehaving rather
+    /// than as a layout decision.
+    /// </remarks>
+    public static readonly StyledProperty<object?> HeaderActionProperty =
+        AvaloniaProperty.Register<CollapsiblePanel, object?>(nameof(HeaderAction));
+
     /// <summary>The chevron glyph for the current state.</summary>
     public static readonly StyledProperty<string> ChevronProperty =
         AvaloniaProperty.Register<CollapsiblePanel, string>(nameof(Chevron), "▾");
@@ -86,6 +99,13 @@ public sealed class CollapsiblePanel : ContentControl
     {
         ApplyFamily();
         ApplyChevron();
+    }
+
+    /// <summary>A control shown at the right of the header, or null.</summary>
+    public object? HeaderAction
+    {
+        get => GetValue(HeaderActionProperty);
+        set => SetValue(HeaderActionProperty, value);
     }
 
     /// <summary>Panel title, shown in the family color.</summary>

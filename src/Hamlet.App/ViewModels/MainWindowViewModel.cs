@@ -923,6 +923,28 @@ public partial class MainWindowViewModel : ObservableObject
     }
 
     /// <summary>
+    /// Wipe the terminal, and nothing else.
+    /// </summary>
+    /// <remarks>
+    /// <para>WHAT THIS DOES NOT TOUCH IS THE POINT (HM-DEC-051). Tuning around
+    /// leaves a pile of half-decoded garbage above whatever is arriving now, and
+    /// there was no way to start fresh. So this clears what is displayed, and
+    /// stops there.</para>
+    /// <para>The decoder keeps running. It keeps its speed estimate, its
+    /// adapted noise floor and its tone tracking, because those took real
+    /// seconds of signal to arrive at and throwing them away mid-decode is
+    /// exactly what nobody wants while chasing a marginal one. A clear that
+    /// quietly reset the decoder would look like the app losing the signal at
+    /// the moment the operator asked for a tidy screen.</para>
+    /// </remarks>
+    [RelayCommand]
+    private void ClearTerminal()
+    {
+        Transcript.Clear();
+        OnPropertyChanged(nameof(TerminalSummary));
+    }
+
+    /// <summary>
     /// Open the screen that says what the radio is doing.
     /// </summary>
     /// <remarks>

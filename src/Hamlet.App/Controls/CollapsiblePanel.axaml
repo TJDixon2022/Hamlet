@@ -39,10 +39,18 @@
                         CornerRadius="{TemplateBinding CornerRadius}">
                     <Grid RowDefinitions="Auto,*">
 
+                        <!-- The whole header is a toggle, so anything with its
+                             own job sits BESIDE the button rather than inside
+                             it. A button nested in a button would collapse the
+                             panel every time somebody used it. A null action
+                             presenter measures to nothing, so panels without one
+                             are unchanged. -->
+                        <Grid Grid.Row="0" ColumnDefinitions="*,Auto">
+
                         <!-- The header carries the panel's name for screen
                              readers and UI automation; without it a shut
                              panel is an unlabeled button. -->
-                        <Button Grid.Row="0" Name="PART_Header"
+                        <Button Grid.Column="0" Name="PART_Header"
                                 Theme="{StaticResource HmPanelHeaderButton}"
                                 AutomationProperties.Name="{TemplateBinding Title}"
                                 Background="Transparent">
@@ -68,6 +76,13 @@
                                            Foreground="{TemplateBinding SummaryBrush}" />
                             </Grid>
                         </Button>
+
+                        <ContentPresenter Grid.Column="1"
+                                          Name="PART_HeaderAction"
+                                          Content="{TemplateBinding HeaderAction}"
+                                          VerticalAlignment="Center"
+                                          Margin="8,0,10,0" />
+                        </Grid>
 
                         <ContentPresenter Grid.Row="1"
                                           Name="PART_Content"
