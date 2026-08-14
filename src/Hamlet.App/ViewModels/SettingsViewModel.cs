@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Hamlet.App.Settings;
 using Hamlet.App.Licensing;
+using Hamlet.RadioEngine.Audio;
 using Hamlet.RadioEngine.Explore;
 using Hamlet.RadioEngine.Licensing;
 using Hamlet.RadioEngine.Telemetry;
@@ -73,6 +74,14 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty]
     private ProfileFactBadge _licenseBadge = ProfileFactBadge.None;
 
+    /// <summary>Which capture device the decoder listens to.</summary>
+    [ObservableProperty]
+    private AudioDevice? _audioDevice;
+
+    /// <summary>The pitch the operator hears CW at, in hertz.</summary>
+    [ObservableProperty]
+    private int _cwPitchHz;
+
     /// <summary>
     /// Recompute every badge from the profile as it stands right now.
     /// </summary>
@@ -107,11 +116,22 @@ public partial class SettingsViewModel : ObservableObject
     /// <summary>Runtime constructor.</summary>
     /// <param name="settings">Live settings, written through on every edit.</param>
     /// <param name="telemetry">The writer, or null.</param>
-    public SettingsViewModel(AppSettings settings, JsonlTelemetry? telemetry)
+    /// <param name="audioDevices">
+    /// Where the capture device list comes from. Null uses WASAPI, which is
+    /// what the running app wants and what a test never does.
+    /// </param>
+    public SettingsViewModel(
+        AppSettings settings,
+        JsonlTelemetry? telemetry,
+        IAudioDevices? audioDevices = null)
     {
         _settings = settings;
         _telemetry = telemetry;
         _maxMegabytes = settings.TelemetryMaxMegabytes;
+
+        AudioDevices = (audioDevices ?? new WasapiAudioDevices()).List();
+        _audioDevice = AudioDeviceChoice.Choose(AudioDevices, settings.AudioInputDeviceId);
+        _cwPitchHz = settings.CwPitchHz;
 
         _callsign = settings.Operator.Callsign;
         _operatorName = settings.Operator.OperatorName;
@@ -176,6 +196,26 @@ public partial class SettingsViewModel : ObservableObject
         RefreshUsage();
     }
 
+    /// <summary>The capture devices this machine offers; empty is normal.</summary>
+    public IReadOnlyList<AudioDevice> AudioDevices { get; }
+
+    /// <summary>
+    /// What to say when there is nothing to listen to.
+    /// </summary>
+    /// <remarks>
+    /// A machine with no capture device is a perfectly ordinary machine, and
+    /// the training radio works without one, so this states the fact and points
+    /// at the way round it rather than reading as a fault.
+    /// </remarks>
+    public string AudioDeviceNote
+        => AudioDevices.Count == 0
+            ? "Hamlet cannot see a recording device on this computer just now. "
+              + "Plug the radio in and reopen this window, or carry on with the "
+              + "training radio, which makes its own Morse and needs nothing plugged in."
+            : "Pick the input the radio's audio arrives on. With an IC-7300 that "
+              + "is its own USB codec, which Hamlet chooses for you when it "
+              + "recognizes the name.";
+
     /// <summary>The switchable categories.</summary>
     public ObservableCollection<TelemetryCategoryViewModel> Categories { get; }
 
@@ -199,6 +239,33 @@ public partial class SettingsViewModel : ObservableObject
 
     /// <summary>Where everything is stored.</summary>
     public string DataFolderPath => SettingsStore.DataFolder;
+
+    partial void OnAudioDeviceChanged(AudioDevice? value)
+    {
+        _settings.AudioInputDeviceId = value?.Id;
+        SettingsStore.Save(_settings);
+        Telemetry.AppEvents.AudioDeviceChosen(_telemetry, value?.LooksLikeRadio ?? false);
+    }
+
+    /// <remarks>
+    /// Held to the range the radio can actually produce (Full Manual p. 4-14).
+    /// A pitch outside it is not a preference Hamlet can honor, and letting one
+    /// be typed would leave the decoder hunting for a tone that is not there.
+    /// </remarks>
+    partial void OnCwPitchHzChanged(int value)
+    {
+        var held = Math.Clamp(
+            value, AppSettings.MinimumCwPitchHz, AppSettings.MaximumCwPitchHz);
+
+        if (held != value)
+        {
+            CwPitchHz = held;
+            return;
+        }
+
+        _settings.CwPitchHz = held;
+        SettingsStore.Save(_settings);
+    }
 
     partial void OnCallsignChanged(string value)
     {

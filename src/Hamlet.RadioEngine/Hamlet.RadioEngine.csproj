@@ -13,6 +13,13 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.10" />
     <PackageReference Include="System.IO.Ports" Version="8.0.0" />
+
+    <!-- Receive audio capture (§6, §0.1). Audio and DSP belong to the engine,
+         so the device seam lives here rather than in the shell. NAudio is not
+         a UI assembly and does not make it one. The WASAPI implementation is
+         one class behind IAudioSource; everything else in the engine, the
+         decoder included, only ever meets the interface. -->
+    <PackageReference Include="NAudio" Version="2.2.1" />
   </ItemGroup>
 
   <!-- The cited Part 97 privileges data lives in /data as its single source

@@ -16,7 +16,7 @@ public sealed class CallsignPrivacyTests : IDisposable
     /// <summary>Every public event-writing method on <see cref="AppEvents"/>.
     /// If this number moves, a new event was added and the walk below has to
     /// grow with it — that is the point.</summary>
-    private const int ExpectedEventMethodCount = 29;
+    private const int ExpectedEventMethodCount = 30;
 
     private const string Callsign = "KC3QIS";
     // "Timothy", not "Tim": a three-letter needle matches "timer", which is a
@@ -172,6 +172,12 @@ public sealed class CallsignPrivacyTests : IDisposable
         // its own gesture with its own event. A spot names a station, so a new
         // way of clicking a spot is new ground this walk has to cover.
         AppEvents.TapeMarkerTuned(telemetry, 7_032_000);
+
+        // HM-DEC-048 adds audio input, and a capture device's NAME routinely
+        // carries a computer's name or a person's. The event records only
+        // whether Hamlet's guess was kept, and this walk is what keeps that
+        // provable rather than asserted.
+        AppEvents.AudioDeviceChosen(telemetry, looksLikeRadio: true);
 
         // HM-DEC-026 and HM-DEC-027 added the training radio and the field
         // guide's audio. Neither touches the profile, and both join the walk

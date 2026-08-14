@@ -92,6 +92,40 @@ public sealed class AppSettings
     public int LastBylineIndex { get; set; } = -1;
 
     /// <summary>
+    /// The capture device the operator chose to decode from, or null to let
+    /// Hamlet pick.
+    /// </summary>
+    /// <remarks>
+    /// Stored as the device's own id rather than its name, because names
+    /// change when a driver updates and an id does not. A device that has
+    /// been unplugged falls back quietly rather than leaving the app with
+    /// nothing to listen to.
+    /// </remarks>
+    public string? AudioInputDeviceId { get; set; }
+
+    /// <summary>
+    /// The pitch the operator hears a CW signal at, in hertz.
+    /// </summary>
+    /// <remarks>
+    /// The IC-7300 sets this between 300 and 900 Hz, and CI-V command
+    /// <c>14 08</c> encodes exactly that range with 600 Hz at its midpoint
+    /// (Full Manual section 19, p. 19-3, and p. 4-14). So 600 is the middle of
+    /// what this radio does rather than a number carried in from elsewhere.
+    /// The decoder tracks the tone within a window either side of this, since
+    /// nobody tunes exactly.
+    /// </remarks>
+    public int CwPitchHz { get; set; } = DefaultCwPitchHz;
+
+    /// <summary>The CW pitch the app ships with, in hertz.</summary>
+    public const int DefaultCwPitchHz = 600;
+
+    /// <summary>Lowest CW pitch the radio offers, in hertz.</summary>
+    public const int MinimumCwPitchHz = 300;
+
+    /// <summary>Highest CW pitch the radio offers, in hertz.</summary>
+    public const int MaximumCwPitchHz = 900;
+
+    /// <summary>
     /// How long a park or summit activation stays a live invitation, in
     /// minutes (HM-DEC-045).
     /// </summary>

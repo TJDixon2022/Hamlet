@@ -238,6 +238,24 @@ public static class AppEvents
             new Dictionary<string, object?> { ["hz"] = hz });
 
     /// <summary>
+    /// The operator chose a capture device to decode from.
+    /// </summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="looksLikeRadio">
+    /// Whether the chosen device's name matches the radio's USB codec.
+    /// </param>
+    /// <remarks>
+    /// The device NAME is deliberately not recorded. It can carry a computer's
+    /// name, a person's name, or the model of somebody's headset, and none of
+    /// that belongs in a file the operator might paste into a public issue
+    /// (HM-DEC-018). Whether Hamlet's guess was the one they kept is the part
+    /// that would actually help.
+    /// </remarks>
+    public static void AudioDeviceChosen(ITelemetry? telemetry, bool looksLikeRadio)
+        => telemetry?.Write(TelemetryCategory.Decode, "audio_device_chosen",
+            new Dictionary<string, object?> { ["looksLikeRadio"] = looksLikeRadio });
+
+    /// <summary>
     /// The waterfall's spectrum source changed (HM-DEC-026). Records whether
     /// the signals are simulated, because "the waterfall was showing
     /// synthetic signals" is the first thing worth knowing when someone
