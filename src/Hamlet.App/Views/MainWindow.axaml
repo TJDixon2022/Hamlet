@@ -1068,15 +1068,22 @@
                                              reading a timestamp (HM-DEC-057).
                                              Never to nothing: a card faded away
                                              is a card removed. -->
-                                        <Border Background="{StaticResource HmGreenTintBrush}"
+                                        <Border Background="{Binding Family,
+                                                    Converter={x:Static ctl:ModeFamilyConverter.Fill}}"
                                                 BorderBrush="{StaticResource HmGreenEdgeBrush}"
                                                 BorderThickness="1" CornerRadius="8"
                                                 Opacity="{Binding Prominence}"
                                                 Padding="10,8" Margin="0,0,0,8">
                                             <Grid ColumnDefinitions="*,Auto">
                                                 <StackPanel Grid.Column="0" Spacing="2" Margin="0,0,8,0">
+                                                    <!-- The family's own ink, so
+                                                         the words stay legible
+                                                         on the family's fill
+                                                         (HM-DEC-036). -->
                                                     <TextBlock Text="{Binding Story}" FontSize="12"
-                                                               TextWrapping="Wrap" />
+                                                               TextWrapping="Wrap"
+                                                               Foreground="{Binding Family,
+                                                                   Converter={x:Static ctl:ModeFamilyConverter.Ink}}" />
 
                                                     <!-- Why this card is where
                                                          it is, on its face and

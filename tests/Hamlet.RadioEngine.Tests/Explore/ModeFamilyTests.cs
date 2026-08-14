@@ -129,4 +129,35 @@ public sealed class ModeFamilyTests
         // And it is filled rather than cited, which is what makes it open.
         Assert.All(open, h => Assert.Equal("", h.Cite));
     }
+
+    /// <remarks>
+    /// THE SPOT CARDS JOIN THE COLOR LANGUAGE (§0.6, HM-DEC-032). They were the
+    /// last surface still speaking in one color, and the family they color from
+    /// is read off the guide's own table rather than a list the control carries.
+    /// A live feed reports more mode names than the guide describes, so one it
+    /// does not know is open rather than wrong.
+    /// </remarks>
+    [Theory]
+    [InlineData("CW", ModeFamily.Cw)]
+    [InlineData("cw", ModeFamily.Cw)]
+    [InlineData("FT8", ModeFamily.Digital)]
+    [InlineData("RTTY", ModeFamily.Digital)]
+    [InlineData("JS8", ModeFamily.Digital)]
+    [InlineData("SSB", ModeFamily.Phone)]
+    [InlineData("USB", ModeFamily.Phone)]
+    [InlineData("AM", ModeFamily.Phone)]
+    [InlineData("", ModeFamily.Open)]
+    [InlineData("SOMETHING NOBODY HAS HEARD OF", ModeFamily.Open)]
+    public void AModeNameResolvesToTheFamilyTheGuideGivesIt(string mode, ModeFamily expected)
+        => Assert.Equal(expected, ModeGuide.FamilyFor(mode));
+
+    /// <remarks>
+    /// Proves the guide is the source rather than the fallback list. Every mode
+    /// the guide describes answers with the family the guide declared, so the
+    /// two can never disagree.
+    /// </remarks>
+    [Fact]
+    public void TheGuidesOwnModesAnswerWithTheGuidesOwnFamily()
+        => Assert.All(ModeGuide.Modes, m => Assert.Equal(
+            m.Family, ModeGuide.FamilyFor(m.Name)));
 }

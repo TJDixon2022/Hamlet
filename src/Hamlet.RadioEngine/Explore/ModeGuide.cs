@@ -79,4 +79,46 @@ public static class ModeGuide
             + "of the robot handshake.",
             7_078_000, ModeFamily.Digital),
     };
+
+    /// <summary>
+    /// Which family a mode name belongs to (§0.6, HM-DEC-032).
+    /// </summary>
+    /// <param name="mode">The mode as a source reported it, e.g. "CW", "SSB".</param>
+    /// <returns>Its family, or open when nothing in the guide claims it.</returns>
+    /// <remarks>
+    /// THE FAMILY IS DECLARED ON THE DATA, NEVER ON A CONTROL (§0.6). The guide
+    /// already names a family for every mode it describes, so a surface that
+    /// wants to color by family reads it from here rather than carrying its own
+    /// list. A second copy of the language is a second language.
+    /// </remarks>
+    public static ModeFamily FamilyFor(string? mode)
+    {
+        var name = (mode ?? "").Trim();
+
+        if (name.Length == 0)
+        {
+            return ModeFamily.Open;
+        }
+
+        foreach (var described in Modes)
+        {
+            if (string.Equals(described.Name, name, StringComparison.OrdinalIgnoreCase))
+            {
+                return described.Family;
+            }
+        }
+
+        // Modes the guide does not describe yet, grouped by what they are. A
+        // spot's mode comes from a live feed and the feeds report more names
+        // than the guide covers, so an unknown one is open rather than wrong.
+        return name.ToUpperInvariant() switch
+        {
+            "CW" or "CW-R" or "CWR" => ModeFamily.Cw,
+            "SSB" or "USB" or "LSB" or "AM" or "FM" or "PHONE" => ModeFamily.Phone,
+            "FT8" or "FT4" or "JS8" or "PSK31" or "PSK" or "RTTY" or "DATA"
+                or "DIGITAL" or "MFSK" or "OLIVIA" or "JT65" or "JT9" or "WSPR"
+                => ModeFamily.Digital,
+            _ => ModeFamily.Open,
+        };
+    }
 }

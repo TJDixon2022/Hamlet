@@ -2999,6 +2999,19 @@ public partial class SpotViewModel : ObservableObject
     private string _ageTooltip = "";
 
     /// <summary>
+    /// The mode family this spot belongs to (§0.6, HM-DEC-032).
+    /// </summary>
+    /// <remarks>
+    /// READ OFF THE DATA, LIKE EVERY OTHER SURFACE. The card was the last thing
+    /// in the app still speaking in one color while the map, the field guide and
+    /// the waterfall all used the mode language. The family comes from the
+    /// guide's own table rather than from a list this control carries, and there
+    /// is no color literal anywhere near the card.
+    /// </remarks>
+    [ObservableProperty]
+    private ModeFamily _family = ModeFamily.Open;
+
+    /// <summary>
     /// How strongly to draw this card, 1 down to a floor (HM-DEC-057).
     /// </summary>
     /// <remarks>
@@ -3031,6 +3044,7 @@ public partial class SpotViewModel : ObservableObject
         _spot = spot;
         _distance = distance;
         _prominence = prominence;
+        _family = ModeGuide.FamilyFor(spot.Mode);
         _lifetimes = lifetimes ?? SpotLifetimeSettings.Defaults;
         Key = KeyFor(spot);
         Story = spot.Story;
@@ -3078,6 +3092,7 @@ public partial class SpotViewModel : ObservableObject
         _spot = spot;
         _lifetimes = lifetimes ?? _lifetimes;
         Prominence = prominence;
+        Family = ModeGuide.FamilyFor(spot.Mode);
         IsNew = false;
         if (reason.Length > 0)
         {
