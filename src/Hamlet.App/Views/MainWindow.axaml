@@ -90,7 +90,9 @@
                     <MenuItem Header="{Binding ConnectButtonText}"
                               Command="{Binding ToggleConnectCommand}" />
                     <Separator />
-                    <MenuItem Header="Send CW…  (phase 1)" IsEnabled="False" />
+                    <MenuItem Header="What the radio is doing…"
+                              Command="{Binding OpenRigDiagnosticsCommand}" />
+                    <Separator />
                     <MenuItem Header="Spectrum scope  (phase 2)" IsEnabled="False" />
                 </MenuItem>
                 <MenuItem Header="_Explore">
@@ -99,10 +101,11 @@
                     <MenuItem Header="Live spot feeds  (phase 1.5)" IsEnabled="False" />
                     <MenuItem Header="Find me a CQ I can copy  (phase 2)" IsEnabled="False" />
                 </MenuItem>
+                <!-- EVERYTHING ABOUT THE RADIO BELONGS UNDER RADIO. What the
+                     radio is doing moved out of here, and Tools keeps the
+                     things that are about Hamlet rather than about the rig. -->
                 <MenuItem Header="_Tools">
                     <MenuItem Header="Settings…" Command="{Binding OpenSettingsCommand}" />
-                    <MenuItem Header="What the radio is doing…"
-                              Command="{Binding OpenRigDiagnosticsCommand}" />
                     <MenuItem Header="Open data folder" Command="{Binding OpenDataFolderCommand}" />
                     <Separator />
                     <MenuItem Header="Decode log viewer  (later)" IsEnabled="False" />
