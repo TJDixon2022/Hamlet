@@ -38,14 +38,19 @@ public static class SpotRanking
     /// </summary>
     /// <param name="lensed">What the lens shows, with its liveness.</param>
     /// <param name="lifetimes">The configured source lifetimes.</param>
+    /// <param name="copySpeedWpm">
+    /// The speed the operator has stated, or null when nothing has stated one.
+    /// </param>
     /// <returns>Every spot, scored and explained, highest first.</returns>
     public static IReadOnlyList<RankedSpot> Rank(
-        IEnumerable<LensedSpot> lensed, SpotLifetimeSettings? lifetimes = null)
+        IEnumerable<LensedSpot> lensed,
+        SpotLifetimeSettings? lifetimes = null,
+        int? copySpeedWpm = null)
     {
         ArgumentNullException.ThrowIfNull(lensed);
 
         return lensed
-            .Select(l => Evaluate(l.Spot, l.Liveness, lifetimes))
+            .Select(l => Evaluate(l.Spot, l.Liveness, lifetimes, copySpeedWpm))
             .OrderByDescending(r => r.Score)
             .ThenByDescending(r => r.Spot.HeardAtUtc)
             .ToList();
@@ -57,17 +62,22 @@ public static class SpotRanking
     /// <param name="spots">The spots to rank.</param>
     /// <param name="nowUtc">Reference time; liveness is measured against it.</param>
     /// <param name="lifetimes">The configured source lifetimes.</param>
+    /// <param name="copySpeedWpm">
+    /// The speed the operator has stated, or null when nothing has stated one.
+    /// </param>
     /// <returns>Every spot, scored and explained, highest first.</returns>
     public static IReadOnlyList<RankedSpot> Rank(
         IEnumerable<ActivitySpot> spots,
         DateTime nowUtc,
-        SpotLifetimeSettings? lifetimes = null)
+        SpotLifetimeSettings? lifetimes = null,
+        int? copySpeedWpm = null)
     {
         ArgumentNullException.ThrowIfNull(spots);
 
         return spots
             .Select(s => Evaluate(
-                s, SpotLensView.Liveness(s, nowUtc - s.HeardAtUtc, lifetimes), lifetimes))
+                s, SpotLensView.Liveness(s, nowUtc - s.HeardAtUtc, lifetimes), lifetimes,
+                copySpeedWpm))
             .OrderByDescending(r => r.Score)
             .ThenByDescending(r => r.Spot.HeardAtUtc)
             .ToList();
@@ -79,9 +89,15 @@ public static class SpotRanking
     /// <param name="spot">The spot.</param>
     /// <param name="liveness">How much of its lifetime is left, 1 down to 0.</param>
     /// <param name="lifetimes">The configured source lifetimes.</param>
+    /// <param name="copySpeedWpm">
+    /// The speed the operator has stated, or null when nothing has stated one.
+    /// </param>
     /// <returns>The spot with its score and reason.</returns>
     public static RankedSpot Evaluate(
-        ActivitySpot spot, double liveness, SpotLifetimeSettings? lifetimes = null)
+        ActivitySpot spot,
+        double liveness,
+        SpotLifetimeSettings? lifetimes = null,
+        int? copySpeedWpm = null)
     {
         ArgumentNullException.ThrowIfNull(spot);
 
@@ -90,7 +106,7 @@ public static class SpotRanking
 
         score += Soliciting(spot, parts);
         score += StillThere(spot, liveness, parts, lifetimes);
-        score += Speed(spot, parts);
+        score += Speed(spot, parts, copySpeedWpm);
         score += Audible(spot, parts);
         score += Workable(spot, parts);
 
@@ -193,39 +209,70 @@ public static class SpotRanking
     /// How fast the station is sending, where the source measured it.
     /// </summary>
     /// <remarks>
-    /// DESCRIBES THE STATION AND NEVER MATCHES THE OPERATOR (HM-DEC-058). Hamlet
-    /// has never asked what speed this person can copy, so it may not claim any
-    /// speed suits them: that would be a confident match against a number nobody
-    /// has ever measured, which is the guess §0.0 forbids. The gap is recorded
-    /// as HM-OPEN-006. The small preference is a fact about Morse rather than
-    /// about this person, which is why the slow-speed clubs exist at all.
+    /// <para>DESCRIBES THE STATION, AND COMPARES IT ONLY TO A NUMBER THE
+    /// OPERATOR STATED (HM-DEC-058, HM-DEC-066). Hamlet has never measured what
+    /// speed this person can copy, so it may not claim any speed suits them:
+    /// that would be a confident match against a number nobody has ever taken,
+    /// which is the guess §0.0 forbids. What it may do, once there is a setting,
+    /// is say a station is sending faster than what the setting says, because
+    /// that is a comparison between two stated numbers and no claim about
+    /// anybody. Every phrase below is one or the other and never a verdict.</para>
+    /// <para>With nothing stated the scale falls back to the pace Morse itself
+    /// runs at, which is where it started (HM-OPEN-006).</para>
     /// </remarks>
-    private static int Speed(ActivitySpot spot, List<(int, string)> parts)
+    private static int Speed(ActivitySpot spot, List<(int, string)> parts, int? copySpeedWpm)
     {
         if (spot.Wpm is not { } wpm)
         {
             return 0;
         }
 
-        if (wpm <= SpotRankWeights.RelaxedWpm)
+        if (copySpeedWpm is not { } stated)
         {
-            parts.Add((14, $"{wpm} WPM, which is a relaxed pace"));
+            if (wpm <= SpotRankWeights.RelaxedWpm)
+            {
+                parts.Add((14, $"{wpm} WPM, which is a relaxed pace"));
+                return SpotRankWeights.RelaxedSpeed;
+            }
+
+            if (wpm <= SpotRankWeights.ModerateWpm)
+            {
+                parts.Add((10, $"{wpm} WPM"));
+                return SpotRankWeights.ModerateSpeed;
+            }
+
+            if (wpm <= SpotRankWeights.QuickWpm)
+            {
+                parts.Add((6, $"{wpm} WPM, which is quick"));
+                return SpotRankWeights.QuickSpeed;
+            }
+
+            parts.Add((5, $"{wpm} WPM, which is very fast"));
+            return SpotRankWeights.VeryFastSpeed;
+        }
+
+        // The bands keep the shape they always had and slide to wherever the
+        // operator put their number, so a setting left at the shipped default
+        // ranks exactly as this always has (HM-DEC-066).
+        if (wpm <= stated)
+        {
+            parts.Add((14, $"{wpm} WPM, at or under the {stated} in your settings"));
             return SpotRankWeights.RelaxedSpeed;
         }
 
-        if (wpm <= SpotRankWeights.ModerateWpm)
+        if (wpm <= stated + SpotRankWeights.ALittleOverWpm)
         {
-            parts.Add((10, $"{wpm} WPM"));
+            parts.Add((10, $"{wpm} WPM, a little over the {stated} in your settings"));
             return SpotRankWeights.ModerateSpeed;
         }
 
-        if (wpm <= SpotRankWeights.QuickWpm)
+        if (wpm <= stated + SpotRankWeights.WellOverWpm)
         {
-            parts.Add((6, $"{wpm} WPM, which is quick"));
+            parts.Add((6, $"{wpm} WPM, well over the {stated} in your settings"));
             return SpotRankWeights.QuickSpeed;
         }
 
-        parts.Add((5, $"{wpm} WPM, which is very fast"));
+        parts.Add((5, $"{wpm} WPM, far over the {stated} in your settings"));
         return SpotRankWeights.VeryFastSpeed;
     }
 

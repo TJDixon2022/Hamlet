@@ -174,7 +174,7 @@ public sealed class AppSettings
     /// </summary>
     /// <remarks>
     /// The IC-7300 sets this between 300 and 900 Hz, and CI-V command
-    /// <c>14 08</c> encodes exactly that range with 600 Hz at its midpoint
+    /// <c>14 09</c> encodes exactly that range with 600 Hz at its midpoint
     /// (Full Manual section 19, p. 19-3, and p. 4-14). So 600 is the middle of
     /// what this radio does rather than a number carried in from elsewhere.
     /// The decoder tracks the tone within a window either side of this, since
@@ -190,6 +190,51 @@ public sealed class AppSettings
 
     /// <summary>Highest CW pitch the radio offers, in hertz.</summary>
     public const int MaximumCwPitchHz = 900;
+
+    /// <summary>
+    /// The Morse speed the operator would rather work at, in words a minute.
+    /// </summary>
+    /// <remarks>
+    /// <para>A PREFERENCE AND NOT A MEASUREMENT (HM-DEC-066, HM-OPEN-006).
+    /// Hamlet has never listened to anybody copy anything, so this number says
+    /// what they would rather work at and nothing about what they can do. The
+    /// difference decides what the app is allowed to say: it may put a station
+    /// at 28 words a minute against the number here and call it far over, since
+    /// both are stated figures, and it may never turn that into a verdict about
+    /// the person reading it.</para>
+    /// <para>Nothing is filtered out by it and nothing is hidden. It is a
+    /// preference the ranking weighs, so a station sending at a pace somebody
+    /// asked for sits higher up a list they can still scroll past.</para>
+    /// </remarks>
+    public int CopySpeedWpm { get; set; } = DefaultCopySpeedWpm;
+
+    /// <summary>
+    /// The copy speed a fresh install starts at, in words a minute.
+    /// </summary>
+    /// <remarks>
+    /// Thirteen, which is where the ranking has always drawn the line between a
+    /// relaxed pace and an ordinary one, so the number is read from that scale
+    /// rather than typed again beside it (HM-DEC-066). It is deliberately below
+    /// what most of the band runs at. Somebody new is better served by an app
+    /// that starts gentle and lets them raise it than by one that starts where
+    /// the contest operators live and leaves them wondering why none of this
+    /// sounds like the practice files.
+    /// </remarks>
+    public const int DefaultCopySpeedWpm = SpotRankWeights.RelaxedWpm;
+
+    /// <summary>Slowest copy speed the setting offers, in words a minute.</summary>
+    /// <remarks>
+    /// Five is where the licensing code tests once sat and where most people
+    /// start, so it is the floor rather than a number chosen for roundness.
+    /// </remarks>
+    public const int MinimumCopySpeedWpm = 5;
+
+    /// <summary>Fastest copy speed the setting offers, in words a minute.</summary>
+    /// <remarks>
+    /// Forty is comfortably past what a contest runs at, so nobody meets a
+    /// ceiling that says more about the app than about them.
+    /// </remarks>
+    public const int MaximumCopySpeedWpm = 40;
 
     /// <summary>
     /// How long a park or summit activation stays a live invitation, in

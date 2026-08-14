@@ -209,9 +209,23 @@ can copy either, and asking them to type a number invites a guess. FG-002 is the
 other half, since a copy speed Hamlet knows is what turns the Elmer mode's
 practice into something aimed at where this person actually is.
 
+**Update 2026-08-14 (HM-DEC-066): the setting now exists and this stays open.**
+The operator states a Morse speed in Settings, defaulting to 13, and the ranking
+reads it. That is the weaker half of the answer. A stated preference is not a
+measured ability, so what the app gained is permission to compare two stated
+numbers and say a station is far over the one in the settings. It gained no
+permission to say anybody can or cannot copy something, and `CopySpeedTests`
+sweeps the composed card text for every phrasing that would.
+
+What still closes this is ONB-C04, for the reason its own note gives: somebody
+who has never made a contact does not know what speed they can copy either, and
+asking them to type a number invites a guess. The setting takes an answer; the
+listening exercise finds one out.
+
 Severity `none`: the ranking works without it and says nothing untrue. It stays
 open because the day somebody adds a speed filter without noticing this is the
-day the app starts making a claim it cannot support.
+day the app starts making a claim it cannot support. Nothing is filtered today
+and a test holds that too.
 
 ---
 id: HM-OPEN-007

@@ -4,6 +4,60 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-066
+date: 2026-08-14
+refs: HM-OPEN-006, src/Hamlet.App/Settings/AppSettings.cs, src/Hamlet.App/ViewModels/SettingsViewModel.cs, src/Hamlet.RadioEngine/Explore/SpotRanking.cs, tests/Hamlet.RadioEngine.Tests/Explore/CopySpeedTests.cs
+---
+
+The operator states a **Morse speed** in Settings, beside the other listening
+preferences. The ranking reads it and the happening-now cards say how a station
+compares to it.
+
+THE DEFAULT IS 13 WORDS A MINUTE, and it is not a new number. It is
+`SpotRankWeights.RelaxedWpm`, which is where this ranking has always drawn the
+line between a relaxed pace and an ordinary one, so the setting is read off the
+existing scale rather than typed again beside it and a test fails if the two
+ever part company (§0). Thirteen is also about where the slow-speed clubs run,
+which is the answer to "conservative and suited to somebody new" from the hobby
+rather than from arithmetic. It sits deliberately below what most of the band
+does. Somebody new is better served by an app that starts gentle and lets them
+raise it than by one that starts where the contest operators live and leaves
+them wondering why none of this sounds like the practice files.
+
+A SHIPPED DEFAULT CHANGES NOBODY'S LIST ON ITS OWN. The speed bands keep the
+shape they always had and slide to wherever the number is put, so a fresh
+install ranks exactly as this ranked before the setting existed, and a stated 20
+treats a 20 words a minute station the way a stated 13 treats a 13. The offsets
+are derived from the old thresholds rather than restated.
+
+THE HONESTY RULE SURVIVES INTACT, and it is the whole reason this needed a
+ruling. A stated speed is a preference and a measured ability is a different kind
+of fact. Hamlet may say a station is sending far over the number in the settings,
+because both figures were stated and the comparison is arithmetic. It may not say
+that speed is too fast for this person, or slow enough for them, or within their
+reach, because it has never heard them copy anything and that would be a
+confident match against a measurement nobody ever took (§0.0). A test sweeps the
+composed card text for every phrasing that crosses back over.
+
+NOTHING IS FILTERED AND NOTHING IS HIDDEN. A station sending three times faster
+than somebody asked for still appears, ranked lower, with the reason printed on
+it. Hiding it would be Hamlet deciding what they are capable of, which is exactly
+the claim it may not make. This is offered and never asserted.
+
+THE SETTING'S OWN COPY DOES THE WORK THE NUMBER CANNOT. A speed box in a radio
+program reads like a test, and somebody who has never made a contact will read
+it as one and enter what they think they ought to manage. So the copy says what
+words a minute means, says what the figure is used for, says out loud that
+nothing is being tested and nothing disappears from the list, and says to move it
+up as the letters start arriving on their own.
+
+HM-OPEN-006 STAYS OPEN, with its severity unchanged. The setting is the weaker
+half of the answer. The stronger half is still ONB-C04's listening exercise,
+because somebody who has never made a contact does not know what speed they can
+copy either, and asking them to type a number invites a guess. What closed here
+is the gap where the app had no way to hear the preference at all.
+
+---
 id: HM-DEC-065
 date: 2026-08-14
 confirms: HM-DEC-029

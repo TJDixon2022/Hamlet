@@ -96,6 +96,25 @@ public sealed class SettingsRoundTripTests : IDisposable
         Assert.True(read.IsPanelExpanded(PanelKeys.Guide));
     }
 
+    /// <remarks>
+    /// Proves HM-DEC-066: the stated Morse speed survives a restart, and a
+    /// fresh install starts at the pace the ranking calls relaxed rather than
+    /// where the contest operators live. The default is read from the ranking's
+    /// own scale, so this also catches the two of them drifting apart.
+    /// </remarks>
+    [Fact]
+    public void CopySpeed_PersistsAndStartsGentle()
+    {
+        Assert.Equal(13, new AppSettings().CopySpeedWpm);
+        Assert.Equal(
+            Hamlet.RadioEngine.Explore.SpotRankWeights.RelaxedWpm,
+            AppSettings.DefaultCopySpeedWpm);
+
+        SettingsStore.SaveTo(new AppSettings { CopySpeedWpm = 22 }, SettingsPath);
+
+        Assert.Equal(22, SettingsStore.LoadFrom(SettingsPath).CopySpeedWpm);
+    }
+
     /// <remarks>Proves HM-DEC-064: reordering the Explorer's panels costs
     /// nobody the preferences they set. A settings file written before the move
     /// still opens and closes exactly the panels it named, because the state is

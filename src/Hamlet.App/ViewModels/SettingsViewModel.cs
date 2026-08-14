@@ -82,6 +82,16 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty]
     private int _cwPitchHz;
 
+    /// <summary>
+    /// The Morse speed the operator would rather work at, in words a minute.
+    /// </summary>
+    /// <remarks>
+    /// A preference and never a measurement (HM-DEC-066). Nothing here tests
+    /// anybody and nothing is hidden from a list because of it.
+    /// </remarks>
+    [ObservableProperty]
+    private int _copySpeedWpm;
+
     /// <summary>Reconnect to the last radio when the app opens.</summary>
     [ObservableProperty]
     private bool _reconnectOnStartup;
@@ -140,6 +150,7 @@ public partial class SettingsViewModel : ObservableObject
         AudioDevices = (audioDevices ?? new WasapiAudioDevices()).List();
         _audioDevice = AudioDeviceChoice.Choose(AudioDevices, settings.AudioInputDeviceId);
         _cwPitchHz = settings.CwPitchHz;
+        _copySpeedWpm = settings.CopySpeedWpm;
         _reconnectOnStartup = settings.ReconnectOnStartup;
         _modeFollowsTheMap = settings.ModeFollowsTheMap;
 
@@ -290,6 +301,46 @@ public partial class SettingsViewModel : ObservableObject
 
         _settings.CwPitchHz = held;
         SettingsStore.Save(_settings);
+    }
+
+    /// <summary>
+    /// What the Morse speed setting is for, in plain words.
+    /// </summary>
+    /// <remarks>
+    /// THE COPY DOES THE WORK THE NUMBER CANNOT (HM-DEC-066, HM-OPEN-006). A
+    /// speed box in a radio program reads like a test, and somebody who has
+    /// never made a contact will read it as one and put a number in that they
+    /// think they ought to manage. So this says what the figure means, says
+    /// nothing is being measured, and says out loud that nothing disappears
+    /// from the list because of it.
+    /// </remarks>
+    public string CopySpeedNote =>
+        $"Words a minute is how Morse speed is counted, and {CopySpeedWpm} is about "
+        + "the pace of the clubs that exist for people still finding their feet. "
+        + "Hamlet uses it to sort the list, so stations sending around there come "
+        + "up first and faster ones say how much faster they are. Nothing is "
+        + "hidden and nothing is being tested here. Hamlet has never heard you "
+        + "copy anything, so it will not tell you what you can manage. Move it up "
+        + "as the letters start arriving on their own.";
+
+    /// <remarks>
+    /// Held to a range that spans the beginners and the contest operators, so
+    /// nobody meets a ceiling that says more about the app than about them.
+    /// </remarks>
+    partial void OnCopySpeedWpmChanged(int value)
+    {
+        var held = Math.Clamp(
+            value, AppSettings.MinimumCopySpeedWpm, AppSettings.MaximumCopySpeedWpm);
+
+        if (held != value)
+        {
+            CopySpeedWpm = held;
+            return;
+        }
+
+        _settings.CopySpeedWpm = held;
+        SettingsStore.Save(_settings);
+        OnPropertyChanged(nameof(CopySpeedNote));
     }
 
     partial void OnCallsignChanged(string value)

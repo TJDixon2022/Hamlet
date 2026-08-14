@@ -2325,7 +2325,7 @@ public partial class MainWindowViewModel : ObservableObject
         // The rank reads the lens's own liveness rather than measuring the
         // clock again, so the fade on a card and its place in the list are two
         // readings of one number (HM-DEC-058).
-        var ranked = SpotRanking.Rank(kept, Lifetimes);
+        var ranked = SpotRanking.Rank(kept, Lifetimes, _settings.CopySpeedWpm);
 
         _lastNewSpotCount = RebuildSpotList(ranked, now, prominence);
         UpdateSpotFreshness();

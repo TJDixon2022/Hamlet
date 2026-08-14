@@ -18,11 +18,14 @@ namespace Hamlet.RadioEngine.Explore;
 /// as a decode. Distance stays on the card, where it teaches what ranges are
 /// plausible on which band, and earns a vote when FG-007 lands and Hamlet can
 /// say which bands are open to where.</para>
-/// <para>THERE IS NO MATCH AGAINST THE OPERATOR'S OWN COPY SPEED EITHER, because
-/// Hamlet has never asked what it is (HM-OPEN-006). A spot's speed describes the
-/// station and nothing more. The small preference below is a fact about Morse
-/// rather than about this person: slower sending is easier for anybody still
-/// learning, which is why the slow-speed clubs exist.</para>
+/// <para>THE OPERATOR NOW STATES A COPY SPEED AND THE RANKING READS IT, and the
+/// line it may not cross is unchanged (HM-DEC-066, HM-OPEN-006). A stated speed
+/// is a preference and not a measured ability, so Hamlet may say a station is
+/// sending faster than the speed somebody named, because they named it, and it
+/// still may not say they can or cannot copy it. Offered, never asserted. The
+/// scale below is a fact about Morse rather than about this person: slower
+/// sending is easier for anybody still learning, which is why the slow-speed
+/// clubs exist.</para>
 /// </remarks>
 public static class SpotRankWeights
 {
@@ -160,6 +163,12 @@ public static class SpotRankWeights
     public const int VeryFastSpeed = -6;
 
     /// <summary>At or under this, Morse is a relaxed pace.</summary>
+    /// <remarks>
+    /// Also the copy speed a fresh install starts at (HM-DEC-066). One number
+    /// rather than two: the pace the slow-speed clubs run at is the same pace
+    /// this scale calls relaxed, and two constants that mean the same thing
+    /// drift apart the first time somebody edits one of them (§0).
+    /// </remarks>
     public const int RelaxedWpm = 13;
 
     /// <summary>At or under this, Morse is an ordinary pace.</summary>
@@ -167,6 +176,20 @@ public static class SpotRankWeights
 
     /// <summary>Above this, Morse is very fast.</summary>
     public const int QuickWpm = 24;
+
+    /// <summary>
+    /// How far above a stated copy speed still counts as a little over.
+    /// </summary>
+    /// <remarks>
+    /// Derived from the scale above rather than typed again, so a stated speed
+    /// of 13 reproduces exactly the bands this ranking has always used and any
+    /// other stated speed carries the same shape up or down with it
+    /// (HM-DEC-066).
+    /// </remarks>
+    public const int ALittleOverWpm = ModerateWpm - RelaxedWpm;
+
+    /// <summary>How far above a stated copy speed counts as well over.</summary>
+    public const int WellOverWpm = QuickWpm - RelaxedWpm;
 
     /// <summary>Signal in dB at or above which RBN reports read as strong.</summary>
     public const int StrongSignalDb = 20;

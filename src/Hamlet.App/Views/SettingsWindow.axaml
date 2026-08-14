@@ -228,6 +228,28 @@
                             FontSize="12" LineSpacing="1.4"
                             Foreground="{StaticResource HmTextMutedBrush}" />
 
+                        <!-- A preference and never a measurement (HM-DEC-066,
+                             HM-OPEN-006). The copy says what the number is for
+                             and what it is not, because a speed box in a radio
+                             program reads like a test unless somebody says
+                             otherwise. -->
+                        <Grid ColumnDefinitions="110,Auto,*" ColumnSpacing="8">
+                            <TextBlock Grid.Column="0" Text="Morse speed"
+                                       Classes="hm-field" />
+                            <NumericUpDown Grid.Column="1" Width="130"
+                                           Minimum="5" Maximum="40" Increment="1"
+                                           FormatString="0"
+                                           Value="{Binding CopySpeedWpm}" />
+                            <TextBlock Grid.Column="2" Text="words a minute"
+                                       Classes="hm-field"
+                                       VerticalAlignment="Center" />
+                        </Grid>
+
+                        <ctl:GlossaryTextControl
+                            Text="{Binding CopySpeedNote}"
+                            FontSize="12" LineSpacing="1.4"
+                            Foreground="{StaticResource HmTextMutedBrush}" />
+
                         <!-- Beside the audio settings rather than buried, since
                              it is about the same thing: what Hamlet is listening
                              to when you open it (HM-DEC-052). -->
