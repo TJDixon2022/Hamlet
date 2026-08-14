@@ -1,8 +1,7 @@
 namespace Hamlet.RadioEngine.Civ;
 
 /// <summary>
-/// One parsed CI-V frame: FE FE [to] [from] [cmd] [data...] FD.
-/// [frame layout unverified — CLAUDE.md §4, HM-OPEN-002]
+/// One parsed CI-V frame: FE FE [to] [from] [cmd] [data...] FD (p. 19-2).
 /// </summary>
 /// <param name="To">Destination address.</param>
 /// <param name="From">Source address.</param>

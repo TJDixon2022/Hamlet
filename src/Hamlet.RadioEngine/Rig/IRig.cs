@@ -61,6 +61,53 @@ public interface IRig
 
     /// <summary>Set the VFO frequency in hertz.</summary>
     Task SetFrequencyHzAsync(long frequencyHz, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Read one thing about the radio's current state.
+    /// </summary>
+    /// <param name="field">What to read.</param>
+    /// <param name="context">
+    /// What is already known, for the few readings that need it. A filter index
+    /// means nothing without the mode, because the scale it sits on depends on
+    /// it.
+    /// </param>
+    /// <param name="cancellationToken">Cancellation.</param>
+    /// <returns>
+    /// One or more values. Never empty, and never throws for an unreachable
+    /// value: a read that times out comes back
+    /// <see cref="RigValueState.Unknown"/> with the reason attached, because a
+    /// radio that stopped answering is a condition rather than an error and
+    /// retrying it in a loop would flood a slow bus (HM-DEC-050).
+    /// </returns>
+    /// <remarks>
+    /// One command answers two fields in one case: mode and filter selection
+    /// arrive together, so asking for the mode returns both rather than
+    /// spending a second transaction on a bus this slow.
+    /// </remarks>
+    Task<IReadOnlyList<RigValue>> ReadAsync(
+        RigField field, RigState context, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Raised when the radio volunteers a value without being asked.
+    /// </summary>
+    /// <remarks>
+    /// The IC-7300 broadcasts frequency and mode changes as they happen, which
+    /// is better than polling for the same fact in every way: it is instant, it
+    /// costs no bus traffic, and it cannot be stale. Anything the radio will
+    /// tell Hamlet unprompted is not polled for.
+    /// </remarks>
+    event EventHandler<RigValuesReportedEventArgs>? ValuesReported;
+}
+
+/// <summary>Payload for <see cref="IRig.ValuesReported"/>.</summary>
+public sealed class RigValuesReportedEventArgs : EventArgs
+{
+    /// <summary>Creates the payload.</summary>
+    /// <param name="values">What the radio volunteered.</param>
+    public RigValuesReportedEventArgs(IReadOnlyList<RigValue> values) => Values = values;
+
+    /// <summary>What the radio volunteered.</summary>
+    public IReadOnlyList<RigValue> Values { get; }
 }
 
 /// <summary>Payload for <see cref="IRig.FrequencyChanged"/>.</summary>

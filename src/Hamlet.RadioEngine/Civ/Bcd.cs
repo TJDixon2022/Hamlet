@@ -3,7 +3,9 @@ namespace Hamlet.RadioEngine.Civ;
 /// <summary>
 /// CI-V binary-coded-decimal frequency encoding: ten decimal digits packed
 /// two per byte, least-significant pair first. 14,074,000 Hz encodes as
-/// 00 40 07 14 00. [unverified — CLAUDE.md §4, HM-OPEN-002]
+/// 00 40 07 14 00. The digit order is shown on p. 19-9; the little-endian byte
+/// pairing is still carried from general knowledge and is the one §4 item this
+/// file rests on that the manual does not state in so many words.
 /// </summary>
 public static class Bcd
 {

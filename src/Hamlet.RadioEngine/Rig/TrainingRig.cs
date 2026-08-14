@@ -51,6 +51,64 @@ public sealed class TrainingRig : IRig
     public event EventHandler<FrequencyChangedEventArgs>? FrequencyChanged;
 
     /// <inheritdoc/>
+    /// <remarks>
+    /// Declared and never raised, which the compiler is right to notice. The
+    /// training radio has no front panel for anybody to touch, so there is
+    /// nothing for it to volunteer, and pretending otherwise by inventing
+    /// changes would put synthetic readings on screen (§0.0).
+    /// </remarks>
+#pragma warning disable CS0067
+    public event EventHandler<RigValuesReportedEventArgs>? ValuesReported;
+#pragma warning restore CS0067
+
+    /// <inheritdoc/>
+    /// <remarks>
+    /// <para>DEGRADES HONESTLY, which is the whole of HM-DEC-030. The training
+    /// radio has no receiver, so it has no AGC to be fast or slow, no preamp to
+    /// be on, and no S-meter to read. Every one of those comes back
+    /// <see cref="RigValueState.Unsupported"/>, which the diagnostics screen
+    /// shows as "this radio does not have it" rather than leaving somebody
+    /// waiting for a number that is never coming.</para>
+    /// <para>It would be easy, and wrong, to invent plausible values here so the
+    /// screen looked full. A synthesized S-meter reading is a measurement of
+    /// nothing presented as a measurement of something, which is the prime
+    /// directive broken for the sake of a tidier demonstration (§0.0). The two
+    /// fields it does answer are the two it genuinely models: the frequency it
+    /// is tuned to, and CW, which is the mode it synthesizes.</para>
+    /// </remarks>
+    public Task<IReadOnlyList<RigValue>> ReadAsync(
+        RigField field, RigState context, CancellationToken cancellationToken = default)
+    {
+        var now = DateTime.UtcNow;
+        const string source = "training radio";
+
+        IReadOnlyList<RigValue> answer = field switch
+        {
+            RigField.Frequency => new[]
+            {
+                RigValue.Known(
+                    field, Interlocked.Read(ref _frequencyHz),
+                    Ic7300Rig.FrequencyText(Interlocked.Read(ref _frequencyHz)), now, source),
+            },
+
+            // It synthesizes Morse and nothing else, so this is a fact about it
+            // rather than a stand-in for a radio it is pretending to be.
+            RigField.Mode => new[]
+            {
+                RigValue.Known(field, (int)Civ.CivMode.Cw, "CW", now, source),
+            },
+
+            _ => new[]
+            {
+                RigValue.Unsupported(
+                    field, "the training radio has no receiver, so there is nothing to read"),
+            },
+        };
+
+        return Task.FromResult(answer);
+    }
+
+    /// <inheritdoc/>
     public Task<bool> ConnectAsync(CancellationToken cancellationToken = default)
     {
         IsConnected = true;

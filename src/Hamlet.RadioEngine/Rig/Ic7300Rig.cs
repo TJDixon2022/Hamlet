@@ -10,11 +10,15 @@ namespace Hamlet.RadioEngine.Rig;
 /// transceive reports (the operator's VFO knob).
 /// </summary>
 /// <remarks>
-/// Command bytes are unverified against the manual (HM-OPEN-002). This class
-/// is proven against <c>FakeSerialPort</c> canned traffic; live-rig trust
-/// waits for the vendored citation. Every frame in and out is surfaced via
+/// <para>Command bytes are verified against the Full Manual's section 19
+/// command table with the page on every row (HM-DEC-049); see
+/// <see cref="CivReads"/>. Every frame in and out is surfaced via
 /// <see cref="FrameTrace"/> so a session can log wire traffic verbatim
-/// (§0.0.1).
+/// (§0.0.1).</para>
+/// <para>READS ONLY, apart from frequency. Nothing added by HM-DEC-050 writes
+/// to the radio: the state reads issue a command with its sub-command and no
+/// payload, which is the read form of commands the manual documents as
+/// "send/read". Changing somebody's rig gets its own ruling.</para>
 /// </remarks>
 public sealed class Ic7300Rig : IRig, IDisposable
 {
@@ -29,6 +33,9 @@ public sealed class Ic7300Rig : IRig, IDisposable
     private CancellationTokenSource? _readLoopCts;
     private Task? _readLoop;
     private TaskCompletionSource<CivFrame>? _pending;
+    private byte[]? _pendingSubCommand;
+    private CivMode? _lastMode;
+    private string? _lastFilterName;
 
     /// <summary>Create a rig over an open-able port. Addresses default to the
     /// CI-V conventions; both are radio-menu settings (HM-OPEN-003).</summary>
@@ -68,6 +75,9 @@ public sealed class Ic7300Rig : IRig, IDisposable
     /// <inheritdoc/>
     public event EventHandler<FrequencyChangedEventArgs>? FrequencyChanged;
 
+    /// <inheritdoc/>
+    public event EventHandler<RigValuesReportedEventArgs>? ValuesReported;
+
     /// <summary>Every frame sent (out=true) or received (out=false), verbatim,
     /// for the CI-V log. Raised on the read loop thread.</summary>
     public event Action<bool, CivFrame>? FrameTrace;
@@ -97,7 +107,8 @@ public sealed class Ic7300Rig : IRig, IDisposable
         try
         {
             await RequestAsync(CivConstants.CmdReadFrequency, Array.Empty<byte>(),
-                CivConstants.CmdReadFrequency, cancellationToken).ConfigureAwait(false);
+                CivConstants.CmdReadFrequency, Array.Empty<byte>(),
+                cancellationToken).ConfigureAwait(false);
             IsConnected = true;
             return true;
         }
@@ -120,7 +131,8 @@ public sealed class Ic7300Rig : IRig, IDisposable
     public async Task<long> GetFrequencyHzAsync(CancellationToken cancellationToken = default)
     {
         var response = await RequestAsync(CivConstants.CmdReadFrequency, Array.Empty<byte>(),
-            CivConstants.CmdReadFrequency, cancellationToken).ConfigureAwait(false);
+            CivConstants.CmdReadFrequency, Array.Empty<byte>(),
+            cancellationToken).ConfigureAwait(false);
         return Bcd.DecodeFrequencyHz(response.Data);
     }
 
@@ -130,12 +142,111 @@ public sealed class Ic7300Rig : IRig, IDisposable
     public async Task SetFrequencyHzAsync(long frequencyHz, CancellationToken cancellationToken = default)
     {
         var response = await RequestAsync(CivConstants.CmdSetFrequency,
-            Bcd.EncodeFrequencyHz(frequencyHz), null, cancellationToken).ConfigureAwait(false);
+            Bcd.EncodeFrequencyHz(frequencyHz), null, null,
+            cancellationToken).ConfigureAwait(false);
 
         if (response.Command == CivConstants.ResultNg)
         {
             throw new InvalidOperationException(
                 $"Rig refused set-frequency {frequencyHz} Hz (NG).");
+        }
+    }
+
+    /// <inheritdoc/>
+    /// <remarks>
+    /// Never throws. A radio that stopped answering is a condition, not an
+    /// error, so a timed-out read comes back unknown with the reason attached
+    /// and the caller moves on. Retrying here would turn one unresponsive value
+    /// into a stream of commands on a bus that is already struggling
+    /// (HM-DEC-050).
+    /// </remarks>
+    public async Task<IReadOnlyList<RigValue>> ReadAsync(
+        RigField field, RigState context, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(context);
+
+        if (CivReads.Undocumented.TryGetValue(field, out var why))
+        {
+            return new[] { RigValue.Undocumented(field, why) };
+        }
+
+        if (CivReads.For(field) is not { } read)
+        {
+            return new[]
+            {
+                RigValue.Unsupported(field, Capabilities.Model + ": Hamlet reads nothing for this"),
+            };
+        }
+
+        try
+        {
+            var response = await RequestAsync(
+                read.Command, read.SubCommand, read.Command, read.SubCommand,
+                cancellationToken).ConfigureAwait(false);
+
+            var values = Decode(read, response, ModeFrom(context), FilterFrom(context));
+            RememberModeAndFilter(values);
+            return values;
+        }
+        catch (TimeoutException)
+        {
+            return new[]
+            {
+                RigValue.Unknown(field, read.Label + " did not answer within the timeout"),
+            };
+        }
+        catch (OperationCanceledException)
+        {
+            return new[] { RigValue.Unknown(field, read.Label + " was cancelled") };
+        }
+    }
+
+    /// <summary>
+    /// Decode a response, outside the async method.
+    /// </summary>
+    /// <remarks>
+    /// Separate because a span cannot live across an await in C# 12, and
+    /// copying the payload to a fresh array on every read would allocate on a
+    /// path that runs several times a second for as long as the app is open.
+    /// </remarks>
+    private static IReadOnlyList<RigValue> Decode(
+        CivRead read, CivFrame response, CivMode? mode, string? filterName)
+    {
+        // The radio echoes the sub-command in front of the payload, so the
+        // payload starts after it.
+        var payload = response.Data.Length >= read.SubCommand.Length
+            ? response.Data.AsSpan(read.SubCommand.Length)
+            : ReadOnlySpan<byte>.Empty;
+
+        return CivDecode.Values(read, payload, DateTime.UtcNow, mode, filterName);
+    }
+
+    /// <summary>The mode to decode against: what the caller knows, or what was
+    /// last seen here.</summary>
+    private CivMode? ModeFrom(RigState context) => context.Mode ?? _lastMode;
+
+    /// <summary>The filter designator to decode against.</summary>
+    private string? FilterFrom(RigState context)
+        => context[RigField.FilterSelection] is { IsKnown: true } filter
+            ? filter.Text
+            : _lastFilterName;
+
+    /// <summary>
+    /// Keep the mode and filter to hand, because the filter width cannot be
+    /// decoded without them.
+    /// </summary>
+    private void RememberModeAndFilter(IReadOnlyList<RigValue> values)
+    {
+        foreach (var value in values)
+        {
+            if (value is { Field: RigField.Mode, IsKnown: true, Number: { } mode })
+            {
+                _lastMode = (CivMode)(int)mode;
+            }
+            else if (value is { Field: RigField.FilterSelection, IsKnown: true } filter)
+            {
+                _lastFilterName = filter.Text;
+            }
         }
     }
 
@@ -152,6 +263,7 @@ public sealed class Ic7300Rig : IRig, IDisposable
     /// when null, the radio's OK/NG result.</summary>
     private async Task<CivFrame> RequestAsync(
         byte command, byte[] data, byte? expectedResponseCommand,
+        byte[]? expectedSubCommand,
         CancellationToken cancellationToken)
     {
         await _commandGate.WaitAsync(cancellationToken).ConfigureAwait(false);
@@ -160,6 +272,7 @@ public sealed class Ic7300Rig : IRig, IDisposable
             var tcs = new TaskCompletionSource<CivFrame>(
                 TaskCreationOptions.RunContinuationsAsynchronously);
             _pendingExpected = expectedResponseCommand;
+            _pendingSubCommand = expectedSubCommand;
             _pending = tcs;
 
             var frame = new CivFrame(_radioAddress, _controllerAddress, command, data);
@@ -181,6 +294,7 @@ public sealed class Ic7300Rig : IRig, IDisposable
         {
             _pending = null;
             _pendingExpected = null;
+            _pendingSubCommand = null;
             _commandGate.Release();
         }
     }
@@ -232,8 +346,30 @@ public sealed class Ic7300Rig : IRig, IDisposable
         if (frame.Command == CivConstants.CmdTransceiveFrequency
             && frame.Data.Length == Bcd.FrequencyByteCount)
         {
-            FrequencyChanged?.Invoke(this,
-                new FrequencyChangedEventArgs(Bcd.DecodeFrequencyHz(frame.Data)));
+            var hz = Bcd.DecodeFrequencyHz(frame.Data);
+            FrequencyChanged?.Invoke(this, new FrequencyChangedEventArgs(hz));
+
+            ValuesReported?.Invoke(this, new RigValuesReportedEventArgs(new[]
+            {
+                RigValue.Known(
+                    RigField.Frequency, hz, FrequencyText(hz),
+                    DateTime.UtcNow, "transceive 00"),
+            }));
+
+            return;
+        }
+
+        // The operator changing mode on the radio's own front panel. Better
+        // than polling for it in every way: instant, free of bus traffic, and
+        // it cannot be stale (HM-DEC-050).
+        if (frame.Command == CivConstants.CmdTransceiveMode && frame.Data.Length >= 1)
+        {
+            var values = CivDecode.Values(
+                CivReads.ModeAndFilter, frame.Data, DateTime.UtcNow,
+                _lastMode, _lastFilterName, "transceive 01");
+
+            RememberModeAndFilter(values);
+            ValuesReported?.Invoke(this, new RigValuesReportedEventArgs(values));
             return;
         }
 
@@ -245,7 +381,9 @@ public sealed class Ic7300Rig : IRig, IDisposable
         }
 
         var expected = _pendingExpected;
-        var isExpectedEcho = expected.HasValue && frame.Command == expected.Value;
+        var isExpectedEcho = expected.HasValue
+                             && frame.Command == expected.Value
+                             && SubCommandMatches(frame);
         var isResult = frame.Command is CivConstants.ResultOk or CivConstants.ResultNg;
 
         if (isExpectedEcho || (!expected.HasValue && isResult))
@@ -253,6 +391,47 @@ public sealed class Ic7300Rig : IRig, IDisposable
             pending.TrySetResult(frame);
         }
     }
+
+    /// <summary>
+    /// Whether a frame echoes back the sub-command that was asked for.
+    /// </summary>
+    /// <remarks>
+    /// MATCHING ON THE COMMAND BYTE ALONE IS NOT ENOUGH once there is more than
+    /// one read per command. The AGC, the preamp and the noise blanker are all
+    /// command 16 and differ only in their sub-command, so a reply to one would
+    /// otherwise satisfy a request for another and the model would fill a field
+    /// with a different field's value. The radio echoes the sub-command in
+    /// front of the payload, which is exactly what makes this checkable.
+    /// </remarks>
+    private bool SubCommandMatches(CivFrame frame)
+    {
+        var expected = _pendingSubCommand;
+
+        if (expected is null || expected.Length == 0)
+        {
+            return true;
+        }
+
+        if (frame.Data.Length < expected.Length)
+        {
+            return false;
+        }
+
+        for (var i = 0; i < expected.Length; i++)
+        {
+            if (frame.Data[i] != expected[i])
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /// <summary>A frequency in the form the diagnostics screen shows it.</summary>
+    internal static string FrequencyText(long hz)
+        => (hz / 1_000_000.0).ToString("0.000000", System.Globalization.CultureInfo.InvariantCulture)
+           + " MHz";
 
     private async Task TearDownAsync()
     {
