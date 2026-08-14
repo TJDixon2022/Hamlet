@@ -20,6 +20,23 @@ internal sealed class FakeSerialPort : ISerialPort
     /// exist" condition ConnectAsync must translate to false.</summary>
     public bool FailOnOpen { get; set; }
 
+    /// <summary>
+    /// When true, <see cref="ReadAsync"/> never returns and ignores its
+    /// cancellation token, closed port or not.
+    /// </summary>
+    /// <remarks>
+    /// THIS IS WINDOWS, NOT A HYPOTHETICAL.
+    /// <c>SerialPort.BaseStream.ReadAsync</c> has a long history of ignoring
+    /// the token it is handed, which is what left Disconnect dead against a
+    /// real IC-7300 (HM-DEC-051). Modelling the worst version of it here, where
+    /// even closing the handle does not free the read, is what proves teardown
+    /// gives up rather than waits.
+    /// </remarks>
+    public bool ReadNeverReturns { get; set; }
+
+    /// <summary>True once a stuck read has actually been entered.</summary>
+    public bool IsReadParked { get; private set; }
+
     /// <summary>Everything the rig has written, as one contiguous byte run.</summary>
     public byte[] Written
     {
@@ -45,6 +62,16 @@ internal sealed class FakeSerialPort : ISerialPort
 
     public async ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken)
     {
+        if (ReadNeverReturns)
+        {
+            IsReadParked = true;
+
+            // No token, no timeout, no way out. Exactly the behavior that hung
+            // the app, so that the fix is proved against the real failure rather
+            // than against a polite imitation of it.
+            await new TaskCompletionSource<int>().Task.ConfigureAwait(false);
+        }
+
         var chunk = await _incoming.Reader.ReadAsync(cancellationToken).ConfigureAwait(false);
         chunk.CopyTo(buffer);
         return chunk.Length;

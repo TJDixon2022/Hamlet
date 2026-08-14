@@ -37,6 +37,9 @@ public sealed class RigStateChangedEventArgs : EventArgs
 /// </remarks>
 public sealed class RigStateMonitor : IDisposable
 {
+    /// <summary>How long <see cref="Stop"/> waits for the loop to notice.</summary>
+    private static readonly TimeSpan StopTimeout = TimeSpan.FromMilliseconds(500);
+
     private readonly IRig _rig;
     private readonly Func<TimeSpan, CancellationToken, Task> _delay;
     private readonly object _gate = new();
@@ -145,7 +148,11 @@ public sealed class RigStateMonitor : IDisposable
 
         try
         {
-            loop?.GetAwaiter().GetResult();
+            // Bounded. The loop's own waits are cancellable so it normally ends
+            // at once, but it must never be able to hold up a disconnect: the
+            // rig it polls may be parked inside a read that will not return, and
+            // the operator asking to be let go outranks a tidy shutdown (§8).
+            loop?.Wait(StopTimeout);
         }
         catch (Exception)
         {

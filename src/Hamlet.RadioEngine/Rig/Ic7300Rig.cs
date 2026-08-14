@@ -24,6 +24,18 @@ public sealed class Ic7300Rig : IRig, IDisposable
 {
     private static readonly TimeSpan ResponseTimeout = TimeSpan.FromMilliseconds(750);
 
+    /// <summary>
+    /// How long teardown waits for the read loop before abandoning it.
+    /// </summary>
+    /// <remarks>
+    /// LONG ENOUGH FOR THE ORDINARY CASE AND SHORT ENOUGH TO NEVER MATTER.
+    /// Closing the handle normally makes the parked read fault within
+    /// milliseconds, so this budget is not usually spent at all. When it is,
+    /// the loop is genuinely stuck and waiting longer would only make the
+    /// button stay dead for longer.
+    /// </remarks>
+    private static readonly TimeSpan ReadLoopStopTimeout = TimeSpan.FromMilliseconds(500);
+
     private readonly ISerialPort _port;
     private readonly byte _radioAddress;
     private readonly byte _controllerAddress;
@@ -120,11 +132,12 @@ public sealed class Ic7300Rig : IRig, IDisposable
     }
 
     /// <inheritdoc/>
-    public async Task DisconnectAsync()
-    {
-        await TearDownAsync().ConfigureAwait(false);
-        IsConnected = false;
-    }
+    /// <remarks>
+    /// Returns promptly whatever the port does, and never throws (§8).
+    /// Disconnecting is the operator asking to be let go, and an app that
+    /// cannot honor that has taken their radio hostage.
+    /// </remarks>
+    public async Task DisconnectAsync() => await TearDownAsync().ConfigureAwait(false);
 
     /// <inheritdoc/>
     /// <exception cref="TimeoutException">The rig stopped answering.</exception>
@@ -251,9 +264,22 @@ public sealed class Ic7300Rig : IRig, IDisposable
     }
 
     /// <inheritdoc/>
+    /// <remarks>
+    /// Bounded, like <see cref="DisconnectAsync"/>, so a stuck read loop cannot
+    /// wedge shutdown. In the ordinary path teardown has already run and this
+    /// returns at once.
+    /// </remarks>
     public void Dispose()
     {
-        TearDownAsync().GetAwaiter().GetResult();
+        try
+        {
+            TearDownAsync().GetAwaiter().GetResult();
+        }
+        catch (Exception)
+        {
+            // Shutdown never throws (§8).
+        }
+
         _commandGate.Dispose();
         _port.Dispose();
     }
@@ -433,28 +459,79 @@ public sealed class Ic7300Rig : IRig, IDisposable
         => (hz / 1_000_000.0).ToString("0.000000", System.Globalization.CultureInfo.InvariantCulture)
            + " MHz";
 
+    /// <summary>
+    /// Stop the read loop and close the port, promptly and whatever happens.
+    /// </summary>
+    /// <remarks>
+    /// <para>THIS USED TO HANG FOREVER ON A REAL RADIO, and it is worth writing
+    /// down why so nobody reintroduces it. The old order was: cancel the token,
+    /// then await the read loop, then close the port. On Windows
+    /// <c>SerialPort.BaseStream.ReadAsync</c> does not observe its cancellation
+    /// token, so the loop stayed parked inside a read that was never going to
+    /// return, the await never completed, and everything downstream waited with
+    /// it. The Disconnect button and the port list stayed disabled and the app
+    /// believed it was still connected, because the line that said otherwise sat
+    /// after the await.</para>
+    /// <para>So the order is inverted. Connection state drops first, because no
+    /// port behavior may leave the UI believing something untrue. The handle is
+    /// closed next, which is what actually makes a parked read return. Only then
+    /// is the loop waited for, and only for a bounded moment: if it has not
+    /// finished by then it is abandoned rather than waited on, since a loop that
+    /// survives its own port being closed is not going to finish because
+    /// somebody waited longer.</para>
+    /// <para>Never throws, and never blocks past the budget. Disconnecting is
+    /// the one thing the operator must always be able to do (§8).</para>
+    /// </remarks>
     private async Task TearDownAsync()
     {
-        if (_readLoopCts is not null)
-        {
-            _readLoopCts.Cancel();
-            if (_readLoop is not null)
-            {
-                try
-                {
-                    await _readLoop.ConfigureAwait(false);
-                }
-                catch (Exception)
-                {
-                    // Shutdown path never throws (§8).
-                }
-            }
+        // First, and unconditionally. Everything below is best effort; this is
+        // not.
+        IsConnected = false;
 
-            _readLoopCts.Dispose();
-            _readLoopCts = null;
-            _readLoop = null;
+        var cts = _readLoopCts;
+        var loop = _readLoop;
+        _readLoopCts = null;
+        _readLoop = null;
+
+        // Closing before cancelling is the whole fix: it is the handle going
+        // away that makes a parked read fault, not the token.
+        try
+        {
+            _port.Close();
+        }
+        catch (Exception)
+        {
+            // A port that refuses to close is still a port we are done with.
         }
 
-        _port.Close();
+        cts?.Cancel();
+
+        var finished = loop is null;
+
+        if (loop is not null)
+        {
+            try
+            {
+                await loop.WaitAsync(ReadLoopStopTimeout).ConfigureAwait(false);
+                finished = true;
+            }
+            catch (TimeoutException)
+            {
+                // Genuinely stuck. Abandoned on purpose.
+            }
+            catch (Exception)
+            {
+                // Faulted on the closed port, which is the expected way out.
+                finished = true;
+            }
+        }
+
+        // Only disposed when the loop is definitely done with it. An abandoned
+        // loop still holding a disposed token would throw on its next check,
+        // which it would swallow, but there is no reason to hand it that.
+        if (finished)
+        {
+            cts?.Dispose();
+        }
     }
 }

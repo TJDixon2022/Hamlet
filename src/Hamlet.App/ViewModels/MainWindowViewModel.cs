@@ -2111,23 +2111,43 @@ public partial class MainWindowViewModel : ObservableObject
         UpdatePrivileges();
     }
 
+    /// <summary>
+    /// Put the radio down and give the operator their controls back.
+    /// </summary>
+    /// <remarks>
+    /// THE UI COMES BACK WHATEVER THE RADIO DOES. The rig's own teardown is
+    /// bounded and never throws, and this belt goes with that brace: the state
+    /// that re-enables Disconnect and the port list is set in a finally, so no
+    /// failure anywhere above it can leave somebody stuck with a dead button
+    /// and an app that thinks it is still connected (HM-DEC-051).
+    /// </remarks>
     private async Task TearDownRigAsync()
     {
-        StopRigMonitor();
-        StopDecoding();
-        StopTrainingSpectrum();
-        _rigSendTimer.Stop();
-        _rigSendPending = false;
-        if (_rig is not null)
+        try
         {
-            _rig.FrequencyChanged -= OnRigFrequencyChanged;
-            await _rig.DisconnectAsync();
-            (_rig as IDisposable)?.Dispose();
-            _rig = null;
-        }
+            StopRigMonitor();
+            StopDecoding();
+            StopTrainingSpectrum();
+            _rigSendTimer.Stop();
+            _rigSendPending = false;
 
-        IsConnected = false;
-        ConnectButtonText = "Connect";
+            if (_rig is not null)
+            {
+                _rig.FrequencyChanged -= OnRigFrequencyChanged;
+                await _rig.DisconnectAsync();
+                (_rig as IDisposable)?.Dispose();
+            }
+        }
+        catch (Exception)
+        {
+            // Nothing here is worth trapping the operator for (§8).
+        }
+        finally
+        {
+            _rig = null;
+            IsConnected = false;
+            ConnectButtonText = "Connect";
+        }
     }
 
     private static IRig CreateRig(string selection)
