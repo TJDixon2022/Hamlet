@@ -16,7 +16,7 @@ public sealed class CallsignPrivacyTests : IDisposable
     /// <summary>Every public event-writing method on <see cref="AppEvents"/>.
     /// If this number moves, a new event was added and the walk below has to
     /// grow with it — that is the point.</summary>
-    private const int ExpectedEventMethodCount = 28;
+    private const int ExpectedEventMethodCount = 29;
 
     private const string Callsign = "KC3QIS";
     // "Timothy", not "Tim": a three-letter needle matches "timer", which is a
@@ -167,6 +167,11 @@ public sealed class CallsignPrivacyTests : IDisposable
         AppEvents.SourceUnhealthy(telemetry, "RBN", "Degraded");
         AppEvents.LeadCardBuilt(telemetry, hasSuggestion: true, score: 88);
         AppEvents.MapDotTuned(telemetry, 7_032_000);
+
+        // HM-DEC-047 puts the same spots on the dial tape, and clicking one is
+        // its own gesture with its own event. A spot names a station, so a new
+        // way of clicking a spot is new ground this walk has to cover.
+        AppEvents.TapeMarkerTuned(telemetry, 7_032_000);
 
         // HM-DEC-026 and HM-DEC-027 added the training radio and the field
         // guide's audio. Neither touches the profile, and both join the walk

@@ -223,6 +223,21 @@ public static class AppEvents
             new Dictionary<string, object?> { ["hz"] = hz });
 
     /// <summary>
+    /// A spot marker on the dial tape was clicked to tune.
+    /// </summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="hz">Target frequency.</param>
+    /// <remarks>
+    /// Kept apart from the map's event rather than folded into it. The two
+    /// surfaces show the same spots at two zoom levels, and which one people
+    /// reach for is the question that says whether the tape is earning its
+    /// space.
+    /// </remarks>
+    public static void TapeMarkerTuned(ITelemetry? telemetry, long hz)
+        => telemetry?.Write(TelemetryCategory.Tuning, "tape_marker_tuned",
+            new Dictionary<string, object?> { ["hz"] = hz });
+
+    /// <summary>
     /// The waterfall's spectrum source changed (HM-DEC-026). Records whether
     /// the signals are simulated, because "the waterfall was showing
     /// synthetic signals" is the first thing worth knowing when someone

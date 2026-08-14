@@ -4,6 +4,65 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-047
+date: 2026-08-14
+refs: src/Hamlet.App/Controls/FrequencyAxis.cs, src/Hamlet.App/Controls/SpotMarkerStrip.cs, src/Hamlet.App/Controls/DialTapeControl.cs, HM-DEC-015, HM-DEC-023, HM-DEC-006
+---
+
+The dial tape carries the same spots the neighborhood map does, as a thin rail
+of markers along its top edge, placed by one shared frequency axis and clicked
+with the same gesture.
+
+The tape showed nothing while the map showed dots for the same stations on the
+same band. A newcomer clicks a spot on the map, arrives at a scale with no
+landmarks on it at all, and learns that the tape is decoration. It is not: it is
+the fine control, and in phase 2 it is the axis the waterfall paints behind.
+
+ONE AXIS, THREE SURFACES. The map, the tape and the waterfall each asked "where
+on my width does this frequency sit" and each answered with its own copy of the
+same arithmetic. Three copies of a mapping is three mappings, and the day one of
+them rounds differently the operator is looking at a marker that says one thing
+on the map and another an inch below it. `FrequencyAxis` is now the only answer:
+the map and the waterfall lay the whole band across their width, the tape lays a
+few kilohertz across its and slides that window under the hairline, and that is
+the entire difference between them.
+
+BUILT FOR THE WATERFALL, USED BY THE TAPE. `SpotMarkerStrip` takes an axis and a
+rectangle and knows nothing about either control. Phase 2 gets it by asking. The
+gesture is the same one: drag a marker under the hairline and the radio is on
+it, click it and the radio jumps there, and when there is real spectrum
+underneath, a marker over a smear is what tells the operator that somebody has
+already worked out who that is.
+
+The markers stay out of the frequency scale's way, which is why they are a rail
+rather than dots. The map scatters its dots through its full height because it
+has height to spare and nothing underneath them; the tape's middle belongs to
+the ticks and the waterfall's belongs to the spectrum. The scale's labels clear
+the rail whether or not anything is on it, because a scale that shifted when a
+spot arrived would be worse than either position.
+
+AN EMPTY RAIL IS NOT DRAWN. A permanent groove with nothing in it reads as
+"nobody is here", and Hamlet cannot tell that apart from a quiet band, a gap
+between two busy patches, or every spot feed being down at once. The panel
+summary and the conditions line are where that gets said, and they say which one
+it is (HM-DEC-025).
+
+A press that lands on a marker holds the tape still for four pixels before it
+becomes a drag. Without it a three-pixel bar is almost impossible to click
+without nudging the radio first, and this hobby's median age makes that a
+mainstream concern rather than a nicety.
+
+The tape click gets its own telemetry event rather than borrowing the map's. The
+two surfaces show the same spots at two zoom levels, and which one people
+actually reach for is the question that says whether the tape is earning its
+space.
+
+Tested where it can be: a spot placed by the map's axis and by the tape's reads
+back as the frequency it actually is, tuning to a marker puts it under the
+hairline, and a spot outside the window is dropped rather than pinned to an edge
+where it would be claiming a frequency its station is not on (§0.0).
+
+---
 id: HM-DEC-046
 date: 2026-08-14
 refs: src/Hamlet.App/ViewModels/BandOpportunity.cs, HM-DEC-031, HM-DEC-045, HM-DEC-009

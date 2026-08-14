@@ -339,15 +339,18 @@
                                       Converter={x:Static ctl:ModeLineBrushConverter.Instance}}"
                                   IsExpanded="{Binding TapeExpanded, Mode=TwoWay}">
                 <StackPanel Spacing="4">
-                    <TextBlock Text="drag to tune, flick for momentum, wheel = ±10 Hz"
-                               FontSize="12" HorizontalAlignment="Center"
+                    <TextBlock Text="drag to tune, flick for momentum, wheel = ±10 Hz. the marks along the top are the same stations the map is showing, so hover one to see who it is or click it to go there"
+                               FontSize="12" TextWrapping="Wrap"
+                               HorizontalAlignment="Center" TextAlignment="Center"
                                Foreground="{StaticResource HmTextMutedBrush}" />
                     <ctl:DialTapeControl Height="74"
                         FrequencyHz="{Binding FrequencyHz}"
                         BandLowHz="{Binding SelectedBand.Band.LowHz}"
                         BandHighHz="{Binding SelectedBand.Band.HighHz}"
                         CwLowHz="{Binding SelectedBand.Band.CwLowHz}"
-                        CwHighHz="{Binding SelectedBand.Band.CwHighHz}" />
+                        CwHighHz="{Binding SelectedBand.Band.CwHighHz}"
+                        ActivityDots="{Binding ActivityDots}"
+                        TuneCommand="{Binding TuneToTapeMarkerCommand}" />
                     <TextBlock Text="{Binding ModeLineText}"
                                FontSize="12" HorizontalAlignment="Center"
                                Foreground="{Binding IsInsideCwSegment,

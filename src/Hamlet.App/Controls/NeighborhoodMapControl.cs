@@ -194,6 +194,14 @@ public sealed class NeighborhoodMapControl : Control
         set => SetValue(PrivilegeSpansProperty, value);
     }
 
+    /// <summary>
+    /// The whole band laid across the width. The dial tape's zoomed window is
+    /// the same axis with different edges, which is what makes a spot land on
+    /// the same frequency in both.
+    /// </summary>
+    private FrequencyAxis Axis
+        => FrequencyAxis.Across(BandLowHz, BandHighHz, Bounds.Width);
+
     /// <inheritdoc/>
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
@@ -221,15 +229,15 @@ public sealed class NeighborhoodMapControl : Control
             return;
         }
 
-        double span = BandHighHz - BandLowHz;
+        var axis = Axis;
 
         // Tinted neighborhoods with short labels.
         if (Neighborhoods is { Count: > 0 } hoods)
         {
             foreach (var hood in hoods)
             {
-                var left = (hood.LowHz - BandLowHz) / span * w;
-                var right = (hood.HighHz - BandLowHz) / span * w;
+                var left = axis.XOf(hood.LowHz);
+                var right = axis.XOf(hood.HighHz);
                 var rect = new Rect(left, 0, Math.Max(0, right - left), h);
 
                 // Fill from the mode family, never from a per-neighborhood
@@ -258,7 +266,7 @@ public sealed class NeighborhoodMapControl : Control
         // The listen-only veil, over the culture tints and under the dots.
         // Nothing is drawn when the class is unknown: an empty span list is
         // how "do not guess" is expressed structurally (HM-DEC-029).
-        DrawListenOnlyVeil(context, w, h, span);
+        DrawListenOnlyVeil(context, axis, h);
 
         // Activity dots from the cached layout. Dots outside privileges are
         // dimmed rather than removed — the operator still needs to see where
@@ -281,7 +289,7 @@ public sealed class NeighborhoodMapControl : Control
         // The marker turns red outside privileges, with a small flag. It
         // never stops anybody tuning there — it is a fact on the screen, not
         // a barrier (HM-DEC-029).
-        var markerX = (FrequencyHz - BandLowHz) / span * w;
+        var markerX = axis.XOf(FrequencyHz);
         var outside = HasPrivilegeData && !MayTransmitAt(FrequencyHz);
         var markerBrush = outside ? MarkerOutsideBrush : MarkerBrush;
 
@@ -342,7 +350,7 @@ public sealed class NeighborhoodMapControl : Control
     /// veil marks where transmitting stops, not where the operator may not
     /// go.
     /// </remarks>
-    private void DrawListenOnlyVeil(DrawingContext context, double w, double h, double span)
+    private void DrawListenOnlyVeil(DrawingContext context, FrequencyAxis axis, double h)
     {
         if (PrivilegeSpans is not { Count: > 0 } spans)
         {
@@ -356,8 +364,8 @@ public sealed class NeighborhoodMapControl : Control
                 continue;
             }
 
-            var left = (s.LowHz - BandLowHz) / span * w;
-            var right = (s.HighHz - BandLowHz) / span * w;
+            var left = axis.XOf(s.LowHz);
+            var right = axis.XOf(s.HighHz);
             var width = Math.Max(0, right - left);
             if (width <= 0)
             {
@@ -412,17 +420,17 @@ public sealed class NeighborhoodMapControl : Control
             return;
         }
 
-        double span = BandHighHz - BandLowHz;
+        var axis = Axis;
         var built = new List<DotLayout>(dots.Count);
 
         foreach (var dot in dots)
         {
-            if (dot.FrequencyHz < BandLowHz || dot.FrequencyHz > BandHighHz)
+            if (!axis.Covers(dot.FrequencyHz))
             {
                 continue;
             }
 
-            var x = (dot.FrequencyHz - BandLowHz) / span * w;
+            var x = axis.XOf(dot.FrequencyHz);
 
             // Scatter vertically, deterministically from the frequency, so
             // neighbors on the same kilohertz do not stack into one blob.
@@ -432,7 +440,7 @@ public sealed class NeighborhoodMapControl : Control
             var radius = 2.5 + (2.5 * prominence);
 
             built.Add(new DotLayout(
-                dot, new Point(x, y), radius, BrushFor(prominence)));
+                dot, new Point(x, y), radius, SpotMarkerStrip.BrushFor(prominence)));
         }
 
         _layout = built.ToArray();
@@ -440,16 +448,6 @@ public sealed class NeighborhoodMapControl : Control
         // The dot under the pointer may have moved or vanished.
         _hovered = null;
         ToolTip.SetIsOpen(this, false);
-    }
-
-    /// <summary>
-    /// Best-ranked dots are darker and fully opaque; the rest fade back so the
-    /// eye lands on what the ranking chose.
-    /// </summary>
-    private static IBrush BrushFor(double prominence)
-    {
-        var alpha = (byte)Math.Clamp(110 + (145 * prominence), 90, 255);
-        return new SolidColorBrush(Color.FromArgb(alpha, 0xC2, 0x5E, 0x00));
     }
 
     private DotLayout? DotAt(Point p)
@@ -580,20 +578,23 @@ public sealed class NeighborhoodMapControl : Control
 
     private Neighborhood? HoodAt(double x)
     {
-        if (Neighborhoods is not { Count: > 0 } hoods || Bounds.Width <= 0)
+        if (Neighborhoods is not { Count: > 0 } hoods || !Axis.IsUsable)
         {
             return null;
         }
 
-        var hz = BandLowHz + (long)(x / Bounds.Width * (BandHighHz - BandLowHz));
+        var hz = Axis.HzAt(x);
         return hoods.FirstOrDefault(n => n.Contains(hz));
     }
 
     private void TuneToPointer(double x)
     {
-        var frac = Math.Min(1.0, Math.Max(0.0, x / Math.Max(1, Bounds.Width)));
-        var hz = BandLowHz + (long)(frac * (BandHighHz - BandLowHz));
-        SetCurrentValue(FrequencyHzProperty, hz / 100 * 100);
+        if (!Axis.IsUsable)
+        {
+            return;
+        }
+
+        SetCurrentValue(FrequencyHzProperty, Axis.HzAtClamped(x) / 100 * 100);
     }
 
     /// <summary>A dot's precomputed screen geometry.</summary>

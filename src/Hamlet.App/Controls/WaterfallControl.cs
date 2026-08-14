@@ -218,12 +218,19 @@ public sealed class WaterfallControl : Control
 
         context.DrawImage(_bitmap, new Rect(0, 0, _width, HistoryRows), rect);
 
-        if (BandHighHz > BandLowHz)
+        if (Axis.IsUsable)
         {
-            var markerX = (FrequencyHz - BandLowHz) / (double)(BandHighHz - BandLowHz) * w;
-            context.FillRectangle(MarkerBrush, new Rect(markerX - 0.5, 0, 1, h));
+            context.FillRectangle(
+                MarkerBrush, new Rect(Axis.XOf(FrequencyHz) - 0.5, 0, 1, h));
         }
     }
+
+    /// <summary>
+    /// The band laid across the width, from the one definition the map and the
+    /// dial tape also read. Same x, same frequency, on all three.
+    /// </summary>
+    private FrequencyAxis Axis
+        => FrequencyAxis.Across(BandLowHz, BandHighHz, Bounds.Width);
 
     /// <summary>
     /// Swap the subscription, keeping exactly one live at a time.
@@ -360,14 +367,12 @@ public sealed class WaterfallControl : Control
     {
         base.OnPointerPressed(e);
 
-        if (BandHighHz <= BandLowHz || Bounds.Width <= 0)
+        if (!Axis.IsUsable)
         {
             return;
         }
 
-        var fraction = Math.Clamp(e.GetPosition(this).X / Bounds.Width, 0, 1);
-        var hz = BandLowHz + (long)(fraction * (BandHighHz - BandLowHz));
-        hz = hz / 100 * 100;
+        var hz = Axis.HzAtClamped(e.GetPosition(this).X) / 100 * 100;
 
         if (TuneCommand?.CanExecute(hz) == true)
         {

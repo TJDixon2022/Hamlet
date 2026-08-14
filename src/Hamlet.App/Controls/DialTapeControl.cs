@@ -4,7 +4,9 @@ using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.Threading;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Windows.Input;
 
 namespace Hamlet.App.Controls;
 
@@ -14,10 +16,47 @@ namespace Hamlet.App.Controls;
 /// the phase 2 waterfall, which paints behind this same axis.
 /// Approved design: HM-DEC-015.
 /// </summary>
+/// <remarks>
+/// <para>Spots ride along the top edge on a <see cref="SpotMarkerStrip"/>, out
+/// of the frequency scale's way. They are the same spots the neighborhood map
+/// draws, placed by the same <see cref="FrequencyAxis"/> arithmetic, so a
+/// station visible on both surfaces is at the same frequency on both. The tape
+/// is simply the zoomed window: a few kilohertz across its width where the map
+/// carries the whole band.</para>
+/// <para>The tape showing nothing while the map showed dots was the whole
+/// reason for this. A newcomer who has just clicked a spot on the map arrives
+/// at a scale with no landmarks on it, which teaches them the tape is
+/// decoration.</para>
+/// <para>The gesture is the one the waterfall inherits in phase 2. Drag a
+/// marker under the hairline and the radio is on it; click it and the radio
+/// jumps there. When the waterfall starts drawing real spectrum, a marker over
+/// a smear is what tells the operator that somebody has already worked out who
+/// that is.</para>
+/// </remarks>
 public sealed class DialTapeControl : Control
 {
-    private const double PixelsPerHz = 0.16;
+    /// <summary>
+    /// The tape's zoom. Public because it is half of what the tape's window
+    /// is, and anything reasoning about where a marker lands needs both halves.
+    /// </summary>
+    public const double PixelsPerHz = 0.16;
+
     private const double MomentumDecayPerFrame = 0.94;
+
+    /// <summary>How tall the spot rail along the top edge is drawn.</summary>
+    private const double RailHeight = 8;
+
+    /// <summary>How far down from the top edge a pointer still counts as on the rail.</summary>
+    private const double RailReach = 16;
+
+    /// <summary>Below this the tape is too short for a rail and gets none.</summary>
+    private const double RailMinimumTapeHeight = 40;
+
+    /// <summary>
+    /// How far a press that landed on a marker may wander before it is a drag
+    /// rather than a click.
+    /// </summary>
+    private const double ClickSlop = 4;
 
     // HM-DEC-012 palette.
     private static readonly IBrush CwSegmentBrush = PanelPalette.Green.FillBrush;
@@ -48,9 +87,27 @@ public sealed class DialTapeControl : Control
     public static readonly StyledProperty<long> CwHighHzProperty =
         AvaloniaProperty.Register<DialTapeControl, long>(nameof(CwHighHz), 7_125_000);
 
+    /// <summary>
+    /// The spots to mark. The same list the neighborhood map draws, so the two
+    /// surfaces can never be showing different activity.
+    /// </summary>
+    public static readonly StyledProperty<IReadOnlyList<ActivityDot>?> ActivityDotsProperty =
+        AvaloniaProperty.Register<DialTapeControl, IReadOnlyList<ActivityDot>?>(
+            nameof(ActivityDots));
+
+    /// <summary>Executed with a marker's frequency in hertz when it is clicked.</summary>
+    public static readonly StyledProperty<ICommand?> TuneCommandProperty =
+        AvaloniaProperty.Register<DialTapeControl, ICommand?>(nameof(TuneCommand));
+
     private readonly DispatcherTimer _coastTimer;
+    private readonly SpotMarkerStrip _rail = new();
+    private readonly Cursor _dragCursor = new(StandardCursorType.SizeWestEast);
+    private readonly Cursor _markerCursor = new(StandardCursorType.Cross);
+
     private bool _dragging;
     private double _lastX;
+    private double _downX;
+    private SpotMarker? _pressedMarker;
     private long _lastMoveTicks;
     private double _velocityHzPerMs;
     private long _coastLastTicks;
@@ -59,7 +116,7 @@ public sealed class DialTapeControl : Control
     {
         AffectsRender<DialTapeControl>(
             FrequencyHzProperty, BandLowHzProperty, BandHighHzProperty,
-            CwLowHzProperty, CwHighHzProperty);
+            CwLowHzProperty, CwHighHzProperty, ActivityDotsProperty);
     }
 
     /// <summary>Creates the tape with its momentum timer stopped.</summary>
@@ -68,9 +125,10 @@ public sealed class DialTapeControl : Control
         _coastTimer = new DispatcherTimer(
             TimeSpan.FromMilliseconds(16), DispatcherPriority.Render, OnCoastTick);
         _coastTimer.Stop();
-        Cursor = new Cursor(StandardCursorType.SizeWestEast);
+        Cursor = _dragCursor;
         ClipToBounds = true;
         Focusable = true;
+        ToolTip.SetShowDelay(this, 120);
     }
 
     /// <summary>Current frequency in hertz.</summary>
@@ -108,6 +166,40 @@ public sealed class DialTapeControl : Control
         set => SetValue(CwHighHzProperty, value);
     }
 
+    /// <summary>The spots to mark along the top edge.</summary>
+    public IReadOnlyList<ActivityDot>? ActivityDots
+    {
+        get => GetValue(ActivityDotsProperty);
+        set => SetValue(ActivityDotsProperty, value);
+    }
+
+    /// <summary>Marker click command; the parameter is a frequency in hertz.</summary>
+    public ICommand? TuneCommand
+    {
+        get => GetValue(TuneCommandProperty);
+        set => SetValue(TuneCommandProperty, value);
+    }
+
+    /// <summary>The window of the band currently under the tape.</summary>
+    private FrequencyAxis Axis
+        => FrequencyAxis.Zoomed(FrequencyHz, PixelsPerHz, Bounds.Width);
+
+    /// <inheritdoc/>
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+
+        // Unlike the map's, this window moves with the frequency, so the rail
+        // is relaid on every tuning step as well as on new data.
+        if (change.Property == FrequencyHzProperty
+            || change.Property == ActivityDotsProperty
+            || change.Property == BoundsProperty)
+        {
+            _rail.Rebuild(ActivityDots, Axis);
+            ToolTip.SetIsOpen(this, false);
+        }
+    }
+
     /// <inheritdoc/>
     public override void Render(DrawingContext context)
     {
@@ -118,23 +210,26 @@ public sealed class DialTapeControl : Control
             return;
         }
 
-        var spanHz = w / PixelsPerHz;
-        var loHz = FrequencyHz - spanHz / 2;
-        var hiHz = FrequencyHz + spanHz / 2;
+        var axis = Axis;
+        var railHeight = h >= RailMinimumTapeHeight ? RailHeight : 0;
 
         // CW segment shading.
-        var segLeft = Math.Max(0, (CwLowHz - loHz) * PixelsPerHz);
-        var segRight = Math.Min(w, (CwHighHz - loHz) * PixelsPerHz);
+        var segLeft = Math.Max(0, axis.XOf(CwLowHz));
+        var segRight = Math.Min(w, axis.XOf(CwHighHz));
         if (segRight > segLeft)
         {
             context.FillRectangle(CwSegmentBrush, new Rect(segLeft, 0, segRight - segLeft, h));
         }
 
-        // Ticks: minor every 100 Hz, major with label every 500 Hz.
-        var firstTick = (long)Math.Ceiling(loHz / 100) * 100;
-        for (var f = firstTick; f <= hiHz; f += 100)
+        // Ticks: minor every 100 Hz, major with label every 500 Hz. The labels
+        // clear the rail whether or not anything is on it, because a scale that
+        // shifted when a spot arrived would be worse than either position.
+        var labelTop = railHeight > 0 ? railHeight + 4 : h * 0.12;
+        var firstTick = (long)Math.Ceiling(axis.LowHz / 100) * 100;
+
+        for (var f = firstTick; f <= axis.HighHz; f += 100)
         {
-            var x = (f - loHz) * PixelsPerHz;
+            var x = axis.XOf(f);
             var major = f % 500 == 0;
             context.DrawLine(
                 major ? MajorTickPen : MinorTickPen,
@@ -151,7 +246,7 @@ public sealed class DialTapeControl : Control
                 var lx = x - label.Width / 2;
                 if (lx >= 2 && lx + label.Width <= w - 2)
                 {
-                    context.DrawText(label, new Point(lx, h * 0.12));
+                    context.DrawText(label, new Point(lx, labelTop));
                 }
             }
         }
@@ -169,16 +264,30 @@ public sealed class DialTapeControl : Control
         }
 
         context.DrawGeometry(HairlineBrush, null, pointer);
+
+        // The rail goes on last, over the hairline rather than under it. A
+        // marker dragged under the hairline is the whole gesture, and it has to
+        // stay visible at the moment it arrives.
+        if (railHeight > 0)
+        {
+            _rail.Render(context, new Rect(0, 0, w, railHeight));
+        }
     }
 
     /// <inheritdoc/>
     protected override void OnPointerPressed(PointerPressedEventArgs e)
     {
         base.OnPointerPressed(e);
+        var p = e.GetPosition(this);
+
+        _pressedMarker = MarkerAt(p);
+        SetHover(null);
+
         _dragging = true;
         _coastTimer.Stop();
         _velocityHzPerMs = 0;
-        _lastX = e.GetPosition(this).X;
+        _lastX = p.X;
+        _downX = p.X;
         _lastMoveTicks = Environment.TickCount64;
         e.Pointer.Capture(this);
         Focus();
@@ -189,13 +298,33 @@ public sealed class DialTapeControl : Control
     protected override void OnPointerMoved(PointerEventArgs e)
     {
         base.OnPointerMoved(e);
+        var p = e.GetPosition(this);
+
         if (!_dragging)
         {
+            SetHover(MarkerAt(p));
             return;
         }
 
-        var x = e.GetPosition(this).X;
+        var x = p.X;
         var now = Environment.TickCount64;
+
+        // A press that landed on a marker holds the tape still until the
+        // operator plainly means to drag. Without it a three-pixel bar is
+        // almost impossible to click without nudging the radio first.
+        if (_pressedMarker is not null)
+        {
+            if (Math.Abs(x - _downX) < ClickSlop)
+            {
+                _lastX = x;
+                _lastMoveTicks = now;
+                e.Handled = true;
+                return;
+            }
+
+            _pressedMarker = null;
+        }
+
         var dx = x - _lastX;
         if (dx != 0)
         {
@@ -220,6 +349,18 @@ public sealed class DialTapeControl : Control
 
         _dragging = false;
         e.Pointer.Capture(null);
+
+        // A marker click is a specific station, so it wins over the snap the
+        // tape would otherwise do. Same rule the map's dots follow.
+        if (_pressedMarker is not null)
+        {
+            var marker = _pressedMarker;
+            _pressedMarker = null;
+            TuneToMarker(marker);
+            e.Handled = true;
+            return;
+        }
+
         if (Math.Abs(_velocityHzPerMs) > 5)
         {
             _coastLastTicks = Environment.TickCount64;
@@ -234,12 +375,63 @@ public sealed class DialTapeControl : Control
     }
 
     /// <inheritdoc/>
+    protected override void OnPointerExited(PointerEventArgs e)
+    {
+        base.OnPointerExited(e);
+        SetHover(null);
+    }
+
+    /// <inheritdoc/>
     protected override void OnPointerWheelChanged(PointerWheelEventArgs e)
     {
         base.OnPointerWheelChanged(e);
         _coastTimer.Stop();
         Tune(FrequencyHz + (e.Delta.Y > 0 ? 10 : -10));
         e.Handled = true;
+    }
+
+    private SpotMarker? MarkerAt(Point p)
+        => Bounds.Height >= RailMinimumTapeHeight
+            ? _rail.At(p, new Rect(0, 0, Bounds.Width, RailReach))
+            : null;
+
+    private void SetHover(SpotMarker? marker)
+    {
+        if (!_rail.SetHover(marker))
+        {
+            return;
+        }
+
+        if (marker is null)
+        {
+            ToolTip.SetIsOpen(this, false);
+            Cursor = _dragCursor;
+        }
+        else
+        {
+            // The map's tooltip verbatim: story, frequency, mode, the reason it
+            // ranked where it did, and who heard it when (HM-DEC-009).
+            ToolTip.SetIsOpen(this, false);
+            ToolTip.SetTip(this, marker.Dot.TooltipText);
+            ToolTip.SetIsOpen(this, true);
+            Cursor = _markerCursor;
+        }
+
+        InvalidateVisual();
+    }
+
+    private void TuneToMarker(SpotMarker marker)
+    {
+        var hz = marker.Dot.FrequencyHz;
+
+        if (TuneCommand?.CanExecute(hz) == true)
+        {
+            TuneCommand.Execute(hz);
+        }
+        else
+        {
+            Tune(hz);
+        }
     }
 
     private void OnCoastTick(object? sender, EventArgs e)

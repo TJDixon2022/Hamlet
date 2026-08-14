@@ -642,6 +642,17 @@ public partial class MainWindowViewModel : ObservableObject
         TuneTo(hz);
     }
 
+    /// <summary>
+    /// Tune to a spot marker on the dial tape. The same spots the map draws,
+    /// separated here only so the telemetry can tell the two gestures apart.
+    /// </summary>
+    [RelayCommand]
+    private void TuneToTapeMarker(long hz)
+    {
+        AppEvents.TapeMarkerTuned(_telemetry, hz);
+        TuneTo(hz);
+    }
+
     partial void OnSelectedPortChanged(string value)
     {
         _settings.LastPort = value;
