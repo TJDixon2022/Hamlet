@@ -435,6 +435,19 @@ turns to the page named.
 | Set mode, data variant and filter | `26`, VFO selector then mode then `00`/`01` data mode then optional filter; skipping the filter selects that mode's default | 19-11 |
 | Read mode, data variant and filter | `26` with the VFO selector alone; the only read that tells USB from USB-D | 19-11 |
 | Mode bytes | `00`=LSB, `01`=USB, `02`=AM, `03`=CW, `04`=RTTY, `05`=FM, `07`=CW-R, `08`=RTTY-R | 19-8 |
+| USB serial function | **One setting, two options, one port: `CI-V` or `RTTY Decode`.** Choosing the decoded text means CI-V stops (HM-DEC-069) | 12-9 |
+| RTTY decode baud rate | Default 9600; 4800/9600/19200/38400 | 12-9 |
+| RTTY decode output format | **NOT STATED ANYWHERE IN THE MANUAL.** Explicit known-unknown: HM-OPEN-008 | — |
+
+**ADDED 2026-08-14 (HM-DEC-067, HM-DEC-069): the two menu rows and the RTTY
+rows, read column-aware from the Full Manual, publication `A7292-4EX-5`, 173
+pages.** That is a DIFFERENT EDITION from the `v6` the transmit and scope rows
+came from, and the edition is named on purpose: page 19-7's footnote 4 reads the
+same in both, and nothing else was assumed to. The two settings behind the scope
+stream are on **p. 12-9** under MENU, SET, Connectors: "CI-V USB Port (Default:
+Link to [REMOTE])" and "CI-V USB Baud Rate (Default: Auto)". Footnote 4 names a
+"CI-V Baud Rate" screen and the radio has two of them, one for [REMOTE] and one
+for USB; Hamlet is on the USB port, so that is the one it names.
 
 **ADDED 2026-08-14 (HM-DEC-059, HM-DEC-061): the transmit and scope rows,
 read column-aware from `IC-7300_Full_English v6`.** Page numbers are that
