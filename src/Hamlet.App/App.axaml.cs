@@ -12,16 +12,22 @@ using Hamlet.RadioEngine.Telemetry;
 
 namespace Hamlet.App;
 
+/// <summary>
+/// The application shell: loads settings, opens the telemetry writer, and puts
+/// the main window on screen with its state restored.
+/// </summary>
 public partial class App : Application
 {
     private AppSettings _settings = new();
     private JsonlTelemetry? _telemetry;
 
+    /// <inheritdoc/>
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
     }
 
+    /// <inheritdoc/>
     public override void OnFrameworkInitializationCompleted()
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)

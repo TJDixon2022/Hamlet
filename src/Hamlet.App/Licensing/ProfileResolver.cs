@@ -14,6 +14,18 @@ public sealed record ProfileResolution(
     bool Unavailable,
     string UnavailableNarration)
 {
+    /// <summary>
+    /// True when the service answered and its receipt was written onto the
+    /// profile, whether or not either fact was adopted.
+    /// </summary>
+    /// <remarks>
+    /// The caller has to save on this alone (HM-DEC-044). A lookup that
+    /// confirmed a value nothing needed to change still recorded what it saw,
+    /// and dropping that would leave the badges recomputing from an empty
+    /// record and the profile asking again on every launch.
+    /// </remarks>
+    public bool RecordedALookup { get; init; }
+
     /// <summary>The line for the status bar, or "" when there is nothing to say.</summary>
     /// <remarks>
     /// One line, not two. Both facts are settled by the same request, and a
@@ -178,6 +190,9 @@ public sealed class ProfileResolver
 
         var grid = GridResolver.Apply(profile, result, now);
 
-        return new ProfileResolution(license, grid, false, "");
+        return new ProfileResolution(license, grid, false, "")
+        {
+            RecordedALookup = result is not null,
+        };
     }
 }

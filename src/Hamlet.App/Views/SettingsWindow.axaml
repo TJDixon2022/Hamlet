@@ -1,18 +1,23 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:Hamlet.App.ViewModels"
+        xmlns:ctl="using:Hamlet.App.Controls"
         x:Class="Hamlet.App.Views.SettingsWindow"
         x:DataType="vm:SettingsViewModel"
         Title="Hamlet Settings"
-        Width="580" Height="680"
+        Width="620" Height="700"
         WindowStartupLocation="CenterOwner"
         Background="{StaticResource HmBackgroundBrush}">
 
+    <!-- Every other surface in Hamlet uses color to say what a thing belongs
+         to (HM-DEC-012, §0.6). This window used to be white boxes on white and
+         did not participate, so each section now carries its family: green for
+         the operator, amber for the license that governs transmitting, blue
+         for the feeds, and slate for the quiet one (HM-DEC-044). -->
     <Window.Styles>
         <Style Selector="TextBlock.hm-section">
             <Setter Property="FontSize" Value="17" />
             <Setter Property="FontWeight" Value="SemiBold" />
-            <Setter Property="Foreground" Value="{StaticResource HmTextPrimaryBrush}" />
         </Style>
         <Style Selector="TextBlock.hm-note">
             <Setter Property="FontSize" Value="12" />
@@ -24,221 +29,325 @@
             <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="Foreground" Value="{StaticResource HmTextMutedBrush}" />
         </Style>
+
+        <!-- A value a lookup confirmed reads as a fact rather than as a form
+             entry: the section's darker ink, a shade bolder. -->
+        <Style Selector="TextBox.hm-verified">
+            <Setter Property="FontWeight" Value="SemiBold" />
+        </Style>
     </Window.Styles>
 
     <Grid RowDefinitions="*,Auto" Margin="18">
 
         <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto">
-            <StackPanel Spacing="10">
+            <StackPanel Spacing="14">
 
-                <!-- Operator profile (HM-DEC-019) -->
-                <StackPanel Spacing="2">
-                    <TextBlock Text="Operator" Classes="hm-section" />
-                    <TextBlock Classes="hm-note"
-                               Text="Who is at the key. Used for display in the app and, later, for your log (FG-004). Stored on this computer only. It is never written to telemetry and never uploaded." />
-                </StackPanel>
-
-                <Border Background="White"
-                        BorderBrush="{StaticResource HmSlateEdgeBrush}"
-                        BorderThickness="1" CornerRadius="8" Padding="12,10">
-                    <Grid ColumnDefinitions="110,*" RowDefinitions="Auto,Auto,Auto,Auto"
-                          RowSpacing="8">
-                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Callsign"
-                                   Classes="hm-field" />
-                        <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Callsign}"
-                                 Watermark="KC3QIS" />
-
-                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Name"
-                                   Classes="hm-field" />
-                        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding OperatorName}"
-                                 Watermark="how you want to be greeted" />
-
-                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Location"
-                                   Classes="hm-field" />
-                        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Location}"
-                                 Watermark="city, state" />
-
-                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Grid square"
-                                   Classes="hm-field" />
-                        <StackPanel Grid.Row="3" Grid.Column="1" Spacing="4">
-                            <TextBox Text="{Binding GridSquare}"
-                                     Watermark="Hamlet fills this in from your callsign" />
-
-                            <!-- The jargon gets dissolved where it appears,
-                                 not in a help page nobody opens
-                                 (HM-DEC-034, HM-DEC-037). -->
-                            <TextBlock Classes="hm-note"
-                                       Text="{Binding GridExplanation}" />
-                            <TextBlock Classes="hm-note"
-                                       Text="{Binding GridProvenance}" />
+                <!-- Operator profile (HM-DEC-019), in the decode family -->
+                <Border Background="{StaticResource HmGreenTintBrush}"
+                        BorderBrush="{StaticResource HmGreenEdgeBrush}"
+                        BorderThickness="1" CornerRadius="10" Padding="14,12">
+                    <StackPanel Spacing="10">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <TextBlock Text="&#x25CF;" FontSize="15"
+                                       VerticalAlignment="Center"
+                                       Foreground="{StaticResource HmGreenBrush}" />
+                            <TextBlock Text="Operator" Classes="hm-section"
+                                       Foreground="{StaticResource HmGreenBrush}" />
                         </StackPanel>
-                    </Grid>
+
+                        <TextBlock Classes="hm-note"
+                                   Text="Who is at the key. Used for display in the app and, later, for your log (FG-004). Stored on this computer only. It is never written to telemetry and never uploaded." />
+
+                        <Grid ColumnDefinitions="110,*" RowDefinitions="Auto,Auto,Auto,Auto"
+                              RowSpacing="10">
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Callsign"
+                                       Classes="hm-field" />
+                            <StackPanel Grid.Row="0" Grid.Column="1" Spacing="4">
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                                    <TextBox Grid.Column="0" Text="{Binding Callsign}"
+                                             Watermark="KC3QIS"
+                                             Classes.hm-verified="{Binding CallsignBadge.IsVerified}"
+                                             Foreground="{Binding CallsignBadge.IsVerified,
+                                                 Converter={x:Static ctl:VerifiedInkConverter.Green}}" />
+                                    <ctl:FactBadgeControl Grid.Column="1" Family="Green"
+                                                          VerticalAlignment="Center"
+                                                          Badge="{Binding CallsignBadge}" />
+                                </Grid>
+                            </StackPanel>
+
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Name"
+                                       Classes="hm-field" />
+                            <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding OperatorName}"
+                                     Watermark="how you want to be greeted" />
+
+                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Location"
+                                       Classes="hm-field" />
+                            <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Location}"
+                                     Watermark="city, state" />
+
+                            <!-- Top-aligned: this row carries the explanation
+                                 and the provenance under its box, so a
+                                 centered label would drift away from the field
+                                 it names. -->
+                            <TextBlock Grid.Row="3" Grid.Column="0" Text="Grid square"
+                                       Classes="hm-field" VerticalAlignment="Top"
+                                       Margin="0,6,0,0" />
+                            <StackPanel Grid.Row="3" Grid.Column="1" Spacing="5">
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                                    <TextBox Grid.Column="0" Text="{Binding GridSquare}"
+                                             Watermark="Hamlet fills this in from your callsign"
+                                             Classes.hm-verified="{Binding GridBadge.IsVerified}"
+                                             Foreground="{Binding GridBadge.IsVerified,
+                                                 Converter={x:Static ctl:VerifiedInkConverter.Green}}" />
+                                    <ctl:FactBadgeControl Grid.Column="1" Family="Green"
+                                                          VerticalAlignment="Center"
+                                                          Badge="{Binding GridBadge}" />
+                                </Grid>
+
+                                <!-- The jargon gets dissolved where it appears,
+                                     not in a help page nobody opens
+                                     (HM-DEC-034, HM-DEC-037). -->
+                                <ctl:GlossaryTextControl Text="{Binding GridExplanation}"
+                                                         FontSize="12" LineSpacing="1.4"
+                                                         Foreground="{StaticResource HmTextMutedBrush}" />
+
+                                <StackPanel Orientation="Horizontal" Spacing="6">
+                                    <TextBlock Text="&#x2691;" FontSize="11"
+                                               VerticalAlignment="Top"
+                                               Foreground="{StaticResource HmGreenBrush}" />
+                                    <TextBlock Text="{Binding GridProvenance}"
+                                               FontSize="12" TextWrapping="Wrap"
+                                               Foreground="{StaticResource HmGreenBrush}" />
+                                </StackPanel>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
                 </Border>
 
                 <!-- License class and the transmit guard rail
-                     (HM-DEC-028, HM-DEC-029) -->
-                <StackPanel Spacing="2" Margin="0,8,0,0">
-                    <TextBlock Text="License" Classes="hm-section" />
-                    <TextBlock Classes="hm-note"
-                               Text="Your class decides what the band map shows as yours to use. Hamlet looks it up from your callsign when it can, and never overwrites a value you set yourself. If they disagree it shows you both and lets you choose. Listening is never restricted by any of this." />
-                </StackPanel>
+                     (HM-DEC-028, HM-DEC-029), in the tuning family -->
+                <Border Background="{StaticResource HmAmberTintBrush}"
+                        BorderBrush="{StaticResource HmAmberEdgeBrush}"
+                        BorderThickness="1" CornerRadius="10" Padding="14,12">
+                    <StackPanel Spacing="10">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <TextBlock Text="&#x25C6;" FontSize="15"
+                                       VerticalAlignment="Center"
+                                       Foreground="{StaticResource HmAmberDeepBrush}" />
+                            <TextBlock Text="License" Classes="hm-section"
+                                       Foreground="{StaticResource HmAmberDeepBrush}" />
+                        </StackPanel>
 
-                <Border Background="White"
-                        BorderBrush="{StaticResource HmSlateEdgeBrush}"
-                        BorderThickness="1" CornerRadius="8" Padding="12,10">
-                    <StackPanel Spacing="8">
-                        <Grid ColumnDefinitions="110,*">
+                        <TextBlock Classes="hm-note"
+                                   Text="Your class decides what the band map shows as yours to use. Hamlet looks it up from your callsign when it can, and never overwrites a value you set yourself. If they disagree it shows you both and lets you choose. Listening is never restricted by any of this." />
+
+                        <Grid ColumnDefinitions="110,*,Auto" ColumnSpacing="8">
                             <TextBlock Grid.Column="0" Text="Class" Classes="hm-field" />
                             <ComboBox Grid.Column="1" MinWidth="170"
+                                      HorizontalAlignment="Left"
                                       ItemsSource="{Binding LicenseClasses}"
                                       SelectedItem="{Binding LicenseClass}" />
+                            <ctl:FactBadgeControl Grid.Column="2" Family="Amber"
+                                                  VerticalAlignment="Center"
+                                                  Badge="{Binding LicenseBadge}" />
                         </Grid>
 
-                        <TextBlock Classes="hm-note" Text="{Binding LicenseProvenance}" />
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <TextBlock Text="&#x2691;" FontSize="11"
+                                       VerticalAlignment="Top"
+                                       Foreground="{StaticResource HmAmberDeepBrush}" />
+                            <TextBlock Text="{Binding LicenseProvenance}"
+                                       FontSize="12" TextWrapping="Wrap"
+                                       Foreground="{StaticResource HmAmberDeepBrush}" />
+                        </StackPanel>
 
-                        <Grid ColumnDefinitions="*,Auto">
-                            <StackPanel Grid.Column="0" Spacing="2" Margin="0,0,10,0">
-                                <TextBlock Text="Only let me transmit where my license allows"
-                                           FontWeight="SemiBold" FontSize="13"
-                                           TextWrapping="Wrap" />
-                                <TextBlock Classes="hm-note"
-                                           Text="Holds a transmission back when the frequency is outside your privileges. It never restricts tuning or receiving, because those are not regulated. There is no transmit path yet, so this takes effect when CW send lands." />
-                            </StackPanel>
-                            <ToggleSwitch Grid.Column="1" VerticalAlignment="Center"
-                                          IsChecked="{Binding RestrictTransmitToPrivileges}" />
-                        </Grid>
+                        <Border Background="White" CornerRadius="8" Padding="12,10"
+                                BorderBrush="{StaticResource HmAmberEdgeBrush}"
+                                BorderThickness="1">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <StackPanel Grid.Column="0" Spacing="2" Margin="0,0,10,0">
+                                    <TextBlock Text="Only let me transmit where my license allows"
+                                               FontWeight="SemiBold" FontSize="13"
+                                               TextWrapping="Wrap" />
+                                    <ctl:GlossaryTextControl
+                                        Text="Holds a transmission back when the frequency is outside your privileges. It never restricts tuning or receiving, because those are not regulated. There is no transmit path yet, so this takes effect when CW send lands."
+                                        FontSize="12" LineSpacing="1.4"
+                                        Foreground="{StaticResource HmTextMutedBrush}" />
+                                </StackPanel>
+                                <ToggleSwitch Grid.Column="1" VerticalAlignment="Center"
+                                              IsChecked="{Binding RestrictTransmitToPrivileges}" />
+                            </Grid>
+                        </Border>
                     </StackPanel>
                 </Border>
 
-                <!-- Happening now (HM-DEC-020) -->
-                <StackPanel Spacing="2" Margin="0,8,0,0">
-                    <TextBlock Text="Happening now" Classes="hm-section" />
-                    <TextBlock Classes="hm-note"
-                               Text="How often the spot feed reloads. The panel always shows how old its data is, whatever this is set to, and refreshing pauses while the window is out of sight." />
-                </StackPanel>
-
-                <Border Background="White"
-                        BorderBrush="{StaticResource HmSlateEdgeBrush}"
-                        BorderThickness="1" CornerRadius="8" Padding="12,10">
-                    <Grid ColumnDefinitions="*,Auto">
-                        <StackPanel Grid.Column="0" Spacing="2" Margin="0,0,10,0">
-                            <TextBlock Text="Auto-refresh" FontWeight="SemiBold" FontSize="13" />
-                            <TextBlock Classes="hm-note"
-                                       Text="Refresh spots by hand any time from Explore ▸ Refresh spots." />
+                <!-- Happening now and where the spots come from
+                     (HM-DEC-020, HM-DEC-022, HM-DEC-024), in the spectrum
+                     family. They belong together, so they share a panel. -->
+                <Border Background="{StaticResource HmBlueTintBrush}"
+                        BorderBrush="{StaticResource HmBlueEdgeBrush}"
+                        BorderThickness="1" CornerRadius="10" Padding="14,12">
+                    <StackPanel Spacing="10">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <TextBlock Text="&#x25B2;" FontSize="13"
+                                       VerticalAlignment="Center"
+                                       Foreground="{StaticResource HmBlueBrush}" />
+                            <TextBlock Text="Happening now" Classes="hm-section"
+                                       Foreground="{StaticResource HmBlueBrush}" />
                         </StackPanel>
-                        <ComboBox Grid.Column="1" MinWidth="170" VerticalAlignment="Center"
-                                  ItemsSource="{Binding SpotRefreshChoices}"
-                                  SelectedItem="{Binding SpotRefresh}">
-                            <ComboBox.ItemTemplate>
-                                <DataTemplate x:DataType="vm:RefreshChoice">
-                                    <TextBlock Text="{Binding Label}" />
+
+                        <TextBlock Classes="hm-note"
+                                   Text="How often the spot feed reloads. The panel always shows how old its data is, whatever this is set to, and refreshing pauses while the window is out of sight." />
+
+                        <Border Background="White" CornerRadius="8" Padding="12,10"
+                                BorderBrush="{StaticResource HmBlueEdgeBrush}"
+                                BorderThickness="1">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <StackPanel Grid.Column="0" Spacing="2" Margin="0,0,10,0">
+                                    <TextBlock Text="Auto-refresh" FontWeight="SemiBold"
+                                               FontSize="13" />
+                                    <TextBlock Classes="hm-note"
+                                               Text="Refresh spots by hand any time from Explore ▸ Refresh spots." />
+                                </StackPanel>
+                                <ComboBox Grid.Column="1" MinWidth="170" VerticalAlignment="Center"
+                                          ItemsSource="{Binding SpotRefreshChoices}"
+                                          SelectedItem="{Binding SpotRefresh}">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate x:DataType="vm:RefreshChoice">
+                                            <TextBlock Text="{Binding Label}" />
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                            </Grid>
+                        </Border>
+
+                        <TextBlock Text="Where spots come from" FontSize="14"
+                                   FontWeight="SemiBold" Margin="0,4,0,0"
+                                   Foreground="{StaticResource HmBlueBrush}" />
+
+                        <ctl:GlossaryTextControl
+                            Text="Each network Hamlet asks about what is on the air. Every request identifies Hamlet, its version and your callsign, because these are volunteer-run services and they are owed knowing who is calling. A source that stops answering leaves its last spots on screen, ageing, and Hamlet says which network went quiet rather than pretending the band went quiet."
+                            FontSize="12" LineSpacing="1.4"
+                            Foreground="{StaticResource HmTextMutedBrush}" />
+
+                        <ItemsControl ItemsSource="{Binding Sources}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="vm:SourceToggleViewModel">
+                                    <Border Background="White"
+                                            BorderBrush="{StaticResource HmBlueEdgeBrush}"
+                                            BorderThickness="1" CornerRadius="8"
+                                            Padding="12,10" Margin="0,0,0,8">
+                                        <Grid ColumnDefinitions="*,Auto">
+                                            <StackPanel Grid.Column="0" Spacing="3"
+                                                        Margin="0,0,10,0">
+                                                <TextBlock Text="{Binding SourceName}"
+                                                           FontWeight="SemiBold" FontSize="13"
+                                                           Foreground="{StaticResource HmBlueBrush}" />
+                                                <ctl:GlossaryTextControl
+                                                    Text="{Binding Description}"
+                                                    FontSize="12" LineSpacing="1.4"
+                                                    Foreground="{StaticResource HmTextMutedBrush}" />
+                                                <TextBlock Classes="hm-note"
+                                                           IsVisible="{Binding HasNote}"
+                                                           Foreground="{StaticResource HmAmberDeepBrush}"
+                                                           Text="{Binding Note}" />
+                                            </StackPanel>
+                                            <ToggleSwitch Grid.Column="1" VerticalAlignment="Center"
+                                                          IsChecked="{Binding IsEnabled}" />
+                                        </Grid>
+                                    </Border>
                                 </DataTemplate>
-                            </ComboBox.ItemTemplate>
-                        </ComboBox>
-                    </Grid>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
                 </Border>
 
-                <!-- Activity sources (HM-DEC-022, HM-DEC-024) -->
-                <StackPanel Spacing="2" Margin="0,8,0,0">
-                    <TextBlock Text="Where spots come from" Classes="hm-section" />
-                    <TextBlock Classes="hm-note"
-                               Text="Each network Hamlet asks about what is on the air. Every request identifies Hamlet, its version and your callsign, because these are volunteer-run services and they are owed knowing who is calling. A source that stops answering leaves its last spots on screen, ageing, and Hamlet says which network went quiet rather than pretending the band went quiet." />
-                </StackPanel>
+                <!-- Telemetry (HM-DEC-018). Slate: the quiet one, and it keeps
+                     a white body so it does not compete with the rest. -->
+                <Border Background="White"
+                        BorderBrush="{StaticResource HmSlateEdgeBrush}"
+                        BorderThickness="1" CornerRadius="10" Padding="14,12">
+                    <StackPanel Spacing="10">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <TextBlock Text="&#x25A0;" FontSize="13"
+                                       VerticalAlignment="Center"
+                                       Foreground="{StaticResource HmTextPrimaryBrush}" />
+                            <TextBlock Text="Telemetry" Classes="hm-section"
+                                       Foreground="{StaticResource HmTextPrimaryBrush}" />
+                        </StackPanel>
 
-                <ItemsControl ItemsSource="{Binding Sources}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate x:DataType="vm:SourceToggleViewModel">
-                            <Border Background="White"
-                                    BorderBrush="{StaticResource HmSlateEdgeBrush}"
-                                    BorderThickness="1" CornerRadius="8"
-                                    Padding="12,10" Margin="0,0,0,8">
+                        <TextBlock Classes="hm-note"
+                                   Text="Everything Hamlet records stays on this computer. Nothing is uploaded. No callsigns, no decoded message content, and no machine identifier are ever written." />
+
+                        <ItemsControl ItemsSource="{Binding Categories}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="vm:TelemetryCategoryViewModel">
+                                    <Border Background="{StaticResource HmSlateTintBrush}"
+                                            BorderBrush="{StaticResource HmSlateEdgeBrush}"
+                                            BorderThickness="1" CornerRadius="8"
+                                            Padding="12,10" Margin="0,0,0,8">
+                                        <Grid ColumnDefinitions="*,Auto">
+                                            <StackPanel Grid.Column="0" Spacing="2"
+                                                        Margin="0,0,10,0">
+                                                <TextBlock Text="{Binding Name}"
+                                                           FontWeight="SemiBold" FontSize="13" />
+                                                <TextBlock Text="{Binding Description}"
+                                                           FontSize="12" TextWrapping="Wrap"
+                                                           Foreground="{StaticResource HmTextMutedBrush}" />
+                                            </StackPanel>
+                                            <ToggleSwitch Grid.Column="1"
+                                                          IsChecked="{Binding IsEnabled}"
+                                                          OnContent="On" OffContent="Off"
+                                                          VerticalAlignment="Center" />
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <Border Background="{StaticResource HmSlateTintBrush}"
+                                BorderBrush="{StaticResource HmSlateEdgeBrush}"
+                                BorderThickness="1" CornerRadius="8" Padding="12,10">
+                            <StackPanel Spacing="8">
                                 <Grid ColumnDefinitions="*,Auto">
                                     <StackPanel Grid.Column="0" Spacing="2" Margin="0,0,10,0">
-                                        <TextBlock Text="{Binding SourceName}"
-                                                   FontWeight="SemiBold" FontSize="13" />
-                                        <TextBlock Classes="hm-note"
-                                                   Text="{Binding Description}" />
-                                        <TextBlock Classes="hm-note"
-                                                   IsVisible="{Binding HasNote}"
-                                                   Foreground="{StaticResource HmAmberDeepBrush}"
-                                                   Text="{Binding Note}" />
-                                    </StackPanel>
-                                    <ToggleSwitch Grid.Column="1" VerticalAlignment="Center"
-                                                  IsChecked="{Binding IsEnabled}" />
-                                </Grid>
-                            </Border>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-
-                <!-- Telemetry (HM-DEC-018) -->
-                <StackPanel Spacing="2" Margin="0,8,0,0">
-                    <TextBlock Text="Telemetry" Classes="hm-section" />
-                    <TextBlock Classes="hm-note"
-                               Text="Everything Hamlet records stays on this computer. Nothing is uploaded. No callsigns, no decoded message content, and no machine identifier are ever written." />
-                </StackPanel>
-
-                <ItemsControl ItemsSource="{Binding Categories}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate x:DataType="vm:TelemetryCategoryViewModel">
-                            <Border Background="White"
-                                    BorderBrush="{StaticResource HmSlateEdgeBrush}"
-                                    BorderThickness="1" CornerRadius="8"
-                                    Padding="12,10" Margin="0,0,0,8">
-                                <Grid ColumnDefinitions="*,Auto">
-                                    <StackPanel Grid.Column="0" Spacing="2" Margin="0,0,10,0">
-                                        <TextBlock Text="{Binding Name}" FontWeight="SemiBold"
+                                        <TextBlock Text="Disk limit" FontWeight="SemiBold"
                                                    FontSize="13" />
-                                        <TextBlock Text="{Binding Description}" FontSize="12"
-                                                   TextWrapping="Wrap"
+                                        <TextBlock Classes="hm-note"
+                                                   Text="Daily files are kept until the folder passes this size, then the oldest are deleted." />
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="6"
+                                                VerticalAlignment="Center">
+                                        <NumericUpDown Value="{Binding MaxMegabytes}"
+                                                       Minimum="5" Maximum="2000" Increment="5"
+                                                       FormatString="0" Width="110" />
+                                        <TextBlock Text="MB" VerticalAlignment="Center"
                                                    Foreground="{StaticResource HmTextMutedBrush}" />
                                     </StackPanel>
-                                    <ToggleSwitch Grid.Column="1" IsChecked="{Binding IsEnabled}"
-                                                  OnContent="On" OffContent="Off"
-                                                  VerticalAlignment="Center" />
                                 </Grid>
-                            </Border>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-
-                <Border Background="White"
-                        BorderBrush="{StaticResource HmSlateEdgeBrush}"
-                        BorderThickness="1" CornerRadius="8" Padding="12,10">
-                    <StackPanel Spacing="8">
-                        <Grid ColumnDefinitions="*,Auto">
-                            <StackPanel Grid.Column="0" Spacing="2" Margin="0,0,10,0">
-                                <TextBlock Text="Disk limit" FontWeight="SemiBold" FontSize="13" />
-                                <TextBlock Classes="hm-note"
-                                           Text="Daily files are kept until the folder passes this size, then the oldest are deleted." />
-                            </StackPanel>
-                            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="6"
-                                        VerticalAlignment="Center">
-                                <NumericUpDown Value="{Binding MaxMegabytes}"
-                                               Minimum="5" Maximum="2000" Increment="5"
-                                               FormatString="0" Width="110" />
-                                <TextBlock Text="MB" VerticalAlignment="Center"
+                                <TextBlock Text="{Binding UsageText}" FontSize="12"
                                            Foreground="{StaticResource HmTextMutedBrush}" />
                             </StackPanel>
-                        </Grid>
-                        <TextBlock Text="{Binding UsageText}" FontSize="12"
-                                   Foreground="{StaticResource HmTextMutedBrush}" />
-                    </StackPanel>
-                </Border>
+                        </Border>
 
-                <Border Background="White"
-                        BorderBrush="{StaticResource HmSlateEdgeBrush}"
-                        BorderThickness="1" CornerRadius="8" Padding="12,10">
-                    <StackPanel Spacing="8">
-                        <TextBlock Text="Data folder" FontWeight="SemiBold" FontSize="13" />
-                        <TextBlock Text="{Binding DataFolderPath}" FontSize="11"
-                                   FontFamily="{StaticResource HmMonoFont}"
-                                   TextWrapping="Wrap"
-                                   Foreground="{StaticResource HmTextMutedBrush}" />
-                        <StackPanel Orientation="Horizontal" Spacing="8">
-                            <Button Content="Open folder" Command="{Binding OpenFolderCommand}" />
-                            <Button Content="Clear telemetry" Command="{Binding ClearTelemetryCommand}" />
-                        </StackPanel>
+                        <Border Background="{StaticResource HmSlateTintBrush}"
+                                BorderBrush="{StaticResource HmSlateEdgeBrush}"
+                                BorderThickness="1" CornerRadius="8" Padding="12,10">
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="Data folder" FontWeight="SemiBold"
+                                           FontSize="13" />
+                                <TextBlock Text="{Binding DataFolderPath}" FontSize="11"
+                                           FontFamily="{StaticResource HmMonoFont}"
+                                           TextWrapping="Wrap"
+                                           Foreground="{StaticResource HmTextMutedBrush}" />
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <Button Content="Open folder"
+                                            Command="{Binding OpenFolderCommand}" />
+                                    <Button Content="Clear telemetry"
+                                            Command="{Binding ClearTelemetryCommand}" />
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
                     </StackPanel>
                 </Border>
 

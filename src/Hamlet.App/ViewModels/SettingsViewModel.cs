@@ -52,6 +52,32 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty]
     private string _gridProvenance = "";
 
+    [ObservableProperty]
+    private ProfileFactBadge _callsignBadge = ProfileFactBadge.None;
+
+    [ObservableProperty]
+    private ProfileFactBadge _gridBadge = ProfileFactBadge.None;
+
+    [ObservableProperty]
+    private ProfileFactBadge _licenseBadge = ProfileFactBadge.None;
+
+    /// <summary>
+    /// Recompute every badge from the profile as it stands right now.
+    /// </summary>
+    /// <remarks>
+    /// Called on every keystroke rather than on save, because that is the
+    /// whole promise: a badge saying "this is what the FCC record holds" has
+    /// to stop saying it the instant the field says something else
+    /// (HM-DEC-044). The badges are pure functions of the profile, so calling
+    /// this too often costs nothing and calling it too rarely is a lie.
+    /// </remarks>
+    private void RefreshBadges()
+    {
+        CallsignBadge = ProfileFacts.Callsign(_settings.Operator);
+        GridBadge = ProfileFacts.GridSquare(_settings.Operator);
+        LicenseBadge = ProfileFacts.LicenseClass(_settings.Operator);
+    }
+
     /// <summary>
     /// The one line that says what a grid square is (HM-DEC-037).
     /// </summary>
@@ -83,6 +109,10 @@ public partial class SettingsViewModel : ObservableObject
         _licenseProvenance = LicenseResolver.DescribeProvenance(settings.Operator);
         _gridProvenance = GridResolver.DescribeProvenance(settings.Operator);
         _restrictTransmitToPrivileges = settings.RestrictTransmitToPrivileges;
+
+        _callsignBadge = ProfileFacts.Callsign(settings.Operator);
+        _gridBadge = ProfileFacts.GridSquare(settings.Operator);
+        _licenseBadge = ProfileFacts.LicenseClass(settings.Operator);
 
         SpotRefreshChoices = AppSettings.SpotRefreshChoices
             .Select(m => new RefreshChoice(m))
@@ -157,6 +187,7 @@ public partial class SettingsViewModel : ObservableObject
     partial void OnCallsignChanged(string value)
     {
         _settings.Operator.Callsign = value;
+        RefreshBadges();
         SaveProfile("callsign");
     }
 
@@ -184,6 +215,7 @@ public partial class SettingsViewModel : ObservableObject
     {
         _settings.Operator.SetGridByHand(value, DateTime.UtcNow);
         GridProvenance = GridResolver.DescribeProvenance(_settings.Operator);
+        RefreshBadges();
         SaveProfile("grid");
     }
 
@@ -206,6 +238,7 @@ public partial class SettingsViewModel : ObservableObject
 
         SettingsStore.Save(_settings);
         LicenseProvenance = LicenseResolver.DescribeProvenance(_settings.Operator);
+        RefreshBadges();
         Telemetry.AppEvents.ProfileEdited(_telemetry, "licenseClass");
     }
 

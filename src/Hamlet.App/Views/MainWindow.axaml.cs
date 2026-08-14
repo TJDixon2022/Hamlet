@@ -4,8 +4,14 @@ using Hamlet.App.ViewModels;
 
 namespace Hamlet.App.Views;
 
+/// <summary>
+/// The main window. Its code-behind owns only the two facts the view knows and
+/// the ViewModel cannot: which keys were pressed, and whether anybody is
+/// looking at it.
+/// </summary>
 public partial class MainWindow : Window
 {
+    /// <summary>Creates the window and wires the view-only facts.</summary>
     public MainWindow()
     {
         InitializeComponent();

@@ -4,8 +4,13 @@ using Hamlet.App.ViewModels;
 
 namespace Hamlet.App.Views;
 
+/// <summary>
+/// The About box: version, runtime, session id and a copy-diagnostics button
+/// (HM-DEC-019). It is §0.0.1 meeting the user.
+/// </summary>
 public partial class AboutWindow : Window
 {
+    /// <summary>Creates the dialog.</summary>
     public AboutWindow()
     {
         InitializeComponent();

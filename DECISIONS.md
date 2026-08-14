@@ -4,6 +4,72 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-044
+date: 2026-08-14
+refs: src/Hamlet.App/Views/SettingsWindow.axaml, src/Hamlet.App/Settings/ProfileFactBadge.cs, src/Hamlet.App/Controls/ModePalette.cs, HM-DEC-012, HM-DEC-028, HM-DEC-036
+---
+
+The Settings window joins the rest of the app: each section carries its family
+color, and the provenance the profile already stores is shown as a badge beside
+the field rather than buried in a gray line of small print.
+
+Every other surface in Hamlet uses color to say what a thing belongs to, and
+this window was white boxes on white. It now tints per family, reusing the ones
+already established rather than inventing any: green for the operator, amber for
+the license that governs transmitting, blue for the feeds, and slate for
+telemetry, which is the quiet one and keeps a white body.
+
+ONE DEFINITION. The family colors used to be hex literals inside
+`CollapsiblePanel.ApplyFamily`, which is exactly why this window could not reuse
+them without becoming a second copy. They live in `PanelPalette` beside the mode
+language now, and nine literals across six drawn controls were pointed at it.
+Two duplications survive on purpose and are tested rather than tolerated: the
+theme dictionary has to hold them as XAML resources, so a test asserts the two
+representations agree key by key; and the CollapsiblePanel control theme keeps
+its hover tint literal so it depends on no application resource.
+
+Each family carries two inks, for contrast rather than taste. The header on warm
+paper and the header on that family's own tinted fill are different values,
+because the tint lifts the background: amber #C25E00 reaches only 3.84:1 on
+#FDF1DE, short of the 4.5 every ink here has to clear (§0.6), while #9A4A00 gets
+there at 5.61.
+
+THE BADGE IS A RENDERING OF STORED PROVENANCE AND NOTHING ELSE. A field whose
+value a lookup confirmed shows "verified"; a field the operator typed shows
+nothing; a field with no recorded source shows nothing. Never inferred, never
+assumed, never defaulted. A check mark that does not correspond to a real lookup
+is the confident decoration HM-DEC-009 forbids.
+
+To make that possible the profile now records what a lookup actually confirmed,
+not merely that one happened: the exact callsign, the exact class reported, the
+exact locator derived. Recording what was SEEN is deliberately separate from
+adopting it, because a hand-set class is never overwritten (HM-DEC-028) and the
+window still has to be able to say what the FCC record holds without the profile
+pretending to agree with it.
+
+THE BADGE CLEARS AS YOU TYPE, because it is computed from the current value
+against the confirmed one rather than from a flag. Nothing has to be remembered
+and reset, it is live on every keystroke rather than on save, and it is still
+right after a restart. Typing the confirmed value back brings it back, which is
+correct: the badge means "this matches the FCC record", and that is true again
+the moment the text matches.
+
+A hand-set value that differs from what the lookup reported shows an amber
+"differs from FCC data" pill instead, with both values on hover. The pill is the
+signpost and the existing mismatch panel is still where the decision is made.
+
+WHAT "VERIFIED" CLAIMS, AND WHAT IT DOES NOT. It means the value matches a public
+FCC record. It is not a check that the operator is who they say they are, and the
+tooltip says so in as many words rather than letting anybody assume otherwise.
+
+Nothing is knowable by color alone (§0.6): the pill carries the word "verified"
+beside its tick, and the disagreement state says what it means in words.
+
+Profiles written before this know a lookup happened and cannot say what it
+confirmed. Rather than backfilling from the current value, which would be a guess
+wearing a check mark, such a profile asks again. One request, once.
+
+---
 id: HM-DEC-043
 date: 2026-08-13
 refs: src/Hamlet.RadioEngine/Explore/ContactShape.cs, HM-DEC-021, HM-DEC-041, HM-DEC-042, ONB-006

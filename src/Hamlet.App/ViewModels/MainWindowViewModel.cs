@@ -1410,7 +1410,12 @@ public partial class MainWindowViewModel : ObservableObject
             return;
         }
 
-        var changed = false;
+        // A lookup that answered at all wrote its receipt onto the profile
+        // (HM-DEC-044), whether or not either fact was adopted. That is a
+        // change worth saving: without it the badges would be recomputed from
+        // an empty record on the next launch, and the profile would ask again
+        // forever.
+        var changed = resolution.RecordedALookup;
 
         switch (resolution.License.Outcome)
         {

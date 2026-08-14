@@ -9,6 +9,12 @@
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+
+    <!-- The engine has had this since the start; the shell had not, which
+         meant a public member here could ship undocumented and nothing would
+         say so. With TreatWarningsAsErrors on, CS1591 is now a build failure
+         rather than a note nobody reads. -->
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
