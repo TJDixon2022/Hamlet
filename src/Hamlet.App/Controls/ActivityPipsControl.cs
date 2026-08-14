@@ -24,7 +24,7 @@ public sealed class ActivityPipsControl : Control
     private const double PipHeight = 5;
     private const double Gap = 2.5;
 
-    private static readonly IBrush FilledBrush = new SolidColorBrush(Color.Parse("#C25E00"));
+    private static readonly IBrush FilledBrush = PanelPalette.Amber.TitleBrush;
     private static readonly IBrush EmptyBrush = new SolidColorBrush(Color.Parse("#E4E0D8"));
     private static readonly Pen UnknownPen =
         new(new SolidColorBrush(Color.Parse("#C9C4BA")), 1)

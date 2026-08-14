@@ -20,11 +20,11 @@ public sealed class DialTapeControl : Control
     private const double MomentumDecayPerFrame = 0.94;
 
     // HM-DEC-012 palette.
-    private static readonly IBrush CwSegmentBrush = new SolidColorBrush(Color.Parse("#EAF6EF"));
-    private static readonly IBrush LabelBrush = new SolidColorBrush(Color.Parse("#1F5FA8"));
-    private static readonly Pen MinorTickPen = new(new SolidColorBrush(Color.Parse("#AECBEA")), 0.8);
+    private static readonly IBrush CwSegmentBrush = PanelPalette.Green.FillBrush;
+    private static readonly IBrush LabelBrush = PanelPalette.Blue.TitleBrush;
+    private static readonly Pen MinorTickPen = new(PanelPalette.Blue.EdgeBrush, 0.8);
     private static readonly Pen MajorTickPen = new(new SolidColorBrush(Color.Parse("#7FA8D6")), 1.4);
-    private static readonly IBrush HairlineBrush = new SolidColorBrush(Color.Parse("#C25E00"));
+    private static readonly IBrush HairlineBrush = PanelPalette.Amber.TitleBrush;
     private static readonly Typeface Mono = new("Consolas,Menlo,DejaVu Sans Mono,monospace");
 
     /// <summary>Current frequency in hertz. Two-way: dragging the tape writes it back.</summary>

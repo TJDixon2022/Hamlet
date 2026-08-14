@@ -35,7 +35,7 @@ public sealed class MapLegendControl : Control
     private static readonly IBrush VeilBrush =
         new SolidColorBrush(Color.FromArgb(0x33, 0x3A, 0x3A, 0x44));
     private static readonly Pen VeilPen = new(VeilBrush, 2.5);
-    private static readonly IBrush DotBrush = new SolidColorBrush(Color.Parse("#C25E00"));
+    private static readonly IBrush DotBrush = PanelPalette.Amber.TitleBrush;
 
     /// <inheritdoc/>
     protected override Size MeasureOverride(Size availableSize)

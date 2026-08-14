@@ -168,20 +168,20 @@ public sealed class CollapsiblePanel : ContentControl
 
     /// <summary>
     /// Family color is applied as header text and panel edge only. Panel
-    /// bodies stay white per HM-DEC-012 — white panels on warm paper — which
-    /// is also what keeps a column of collapsed headers from striping.
+    /// bodies stay white per HM-DEC-012, white panels on warm paper, which is
+    /// also what keeps a column of collapsed headers from striping.
     /// </summary>
+    /// <remarks>
+    /// The values come from <see cref="PanelPalette"/> rather than from hex
+    /// literals here. They used to live in this method, which is why the
+    /// Settings window could not use the same families without becoming a
+    /// second copy of them (HM-DEC-044).
+    /// </remarks>
     private void ApplyFamily()
     {
-        var (text, edge) = Family switch
-        {
-            PanelFamily.Amber => ("#C25E00", "#E8C093"),
-            PanelFamily.Blue => ("#1F5FA8", "#AECBEA"),
-            PanelFamily.Green => ("#0F7B4D", "#A9D8C1"),
-            _ => ("#2B2B28", "#D5CFC0"),
-        };
+        var colors = PanelPalette.For(Family);
 
-        SetCurrentValue(FamilyBrushProperty, new SolidColorBrush(Color.Parse(text)));
-        SetCurrentValue(BorderBrushProperty, new SolidColorBrush(Color.Parse(edge)));
+        SetCurrentValue(FamilyBrushProperty, colors.TitleBrush);
+        SetCurrentValue(BorderBrushProperty, colors.EdgeBrush);
     }
 }

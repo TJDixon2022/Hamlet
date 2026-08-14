@@ -10,7 +10,7 @@ namespace Hamlet.App.Controls;
 /// </summary>
 public sealed class ModeLineBrushConverter : IValueConverter
 {
-    private static readonly IBrush Inside = new SolidColorBrush(Color.Parse("#9A4A00"));
+    private static readonly IBrush Inside = PanelPalette.Amber.HeaderInkBrush;
     private static readonly IBrush Outside = new SolidColorBrush(Color.Parse("#A32D2D"));
 
     /// <summary>Singleton for XAML use.</summary>

@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Text.RegularExpressions;
 using Avalonia.Media;
 using Hamlet.App.Controls;
 using Hamlet.RadioEngine.Explore;
@@ -149,6 +150,143 @@ public sealed class ModePaletteTests
             {
                 offenders.Add($"{Path.GetFileName(file)} carries {literal}");
             }
+        }
+
+        Assert.Empty(offenders);
+    }
+
+    /// <remarks>
+    /// Proves the panel families obey the same contrast rule the mode families
+    /// do (§0.6): every ink clears WCAG AA against the surface it is drawn on.
+    /// This is the check that forced the darker amber, since the header color
+    /// used on warm paper reaches only 3.84:1 on its own tinted fill.
+    /// </remarks>
+    [Fact]
+    public void EveryPanelInkClearsAaOnItsOwnSurface()
+    {
+        foreach (var colors in PanelPalette.All)
+        {
+            var header = ContrastRatio(colors.HeaderInk, colors.Fill);
+            var pill = ContrastRatio(colors.PillInk, colors.PillFill);
+
+            Assert.True(
+                header >= 4.5,
+                $"{colors.Family} header: {header:0.00} on its own fill");
+            Assert.True(
+                pill >= 4.5,
+                $"{colors.Family} badge: {pill:0.00} on its own pill");
+        }
+    }
+
+    /// <remarks>
+    /// Proves every family is present and distinct, so a section cannot land
+    /// on a family the palette has no answer for.
+    /// </remarks>
+    [Fact]
+    public void EveryPanelFamilyHasColors()
+    {
+        foreach (var family in Enum.GetValues<PanelFamily>())
+        {
+            Assert.Equal(family, PanelPalette.For(family).Family);
+        }
+
+        Assert.Equal(Enum.GetValues<PanelFamily>().Length, PanelPalette.All.Count);
+        Assert.Equal(
+            PanelPalette.All.Count,
+            PanelPalette.All.Select(c => c.Fill).Distinct().Count());
+    }
+
+    /// <remarks>
+    /// ONE DEFINITION, IN TWO NECESSARY FORMS (HM-DEC-044). The theme
+    /// dictionary in App.axaml has to hold these values as XAML resources and
+    /// C# has to hold them as typed colors, so there are two representations
+    /// and no way around it. What there is a way around is drift, so this
+    /// asserts they agree key by key. Anywhere else carrying one of these
+    /// literals is a third copy and is a failure.
+    /// </remarks>
+    [Fact]
+    public void ThePanelColorsAgreeWithTheThemeDictionary()
+    {
+        var source = SourceRoot();
+        var theme = File.ReadAllText(Path.Combine(source, "App.axaml"));
+
+        void Same(string key, Color expected)
+        {
+            var match = Regex.Match(
+                theme, $"x:Key=\"{Regex.Escape(key)}\">(#[0-9A-Fa-f]{{6}})<");
+
+            Assert.True(match.Success, $"App.axaml has no {key}");
+            Assert.Equal(Hex(expected), match.Groups[1].Value.ToUpperInvariant());
+        }
+
+        Same("HmAmber", PanelPalette.Amber.Title);
+        Same("HmAmberDeep", PanelPalette.Amber.HeaderInk);
+        Same("HmAmberEdge", PanelPalette.Amber.Edge);
+        Same("HmAmberTint", PanelPalette.Amber.Fill);
+
+        Same("HmBlue", PanelPalette.Blue.Title);
+        Same("HmBlueEdge", PanelPalette.Blue.Edge);
+        Same("HmBlueTint", PanelPalette.Blue.Fill);
+
+        Same("HmGreen", PanelPalette.Green.Title);
+        Same("HmGreenEdge", PanelPalette.Green.Edge);
+        Same("HmGreenTint", PanelPalette.Green.Fill);
+
+        Same("HmSlateEdge", PanelPalette.Slate.Edge);
+        Same("HmTextPrimary", PanelPalette.Slate.Title);
+    }
+
+    /// <remarks>
+    /// Proves no THIRD copy exists. The theme dictionary is the one file
+    /// allowed to repeat these values, because XAML cannot read the C# ones;
+    /// every other file has to go through the palette or a resource key.
+    /// </remarks>
+    [Fact]
+    public void NoOtherFileCarriesAPanelColorLiteral()
+    {
+        var source = SourceRoot();
+
+        var allowed = new[]
+        {
+            Path.Combine(source, "Controls", "ModePalette.cs"),
+
+            // The theme dictionary. XAML cannot read the C# values, so these
+            // two representations both have to exist; the test above holds
+            // them to agreeing.
+            Path.Combine(source, "App.axaml"),
+
+            // The CollapsiblePanel control theme keeps its hover tint as a
+            // literal on purpose, so it depends on no application resource and
+            // cannot load before the thing it would need. That reason is
+            // written at the line itself.
+            Path.Combine(source, "Controls", "CollapsiblePanel.axaml"),
+        };
+
+        var literals = PanelPalette.All
+            .SelectMany(c => new[]
+            {
+                Hex(c.Title), Hex(c.Edge), Hex(c.HeaderInk), Hex(c.PillFill), Hex(c.PillInk),
+            })
+            .Where(h => h != "#FFFFFF")
+            .Distinct()
+            .ToList();
+
+        var offenders = new List<string>();
+
+        foreach (var file in Directory.EnumerateFiles(source, "*.*", SearchOption.AllDirectories))
+        {
+            if (Path.GetExtension(file) is not (".cs" or ".axaml")
+                || allowed.Any(a => string.Equals(a, file, StringComparison.OrdinalIgnoreCase)))
+            {
+                continue;
+            }
+
+            var text = File.ReadAllText(file);
+
+            offenders.AddRange(
+                literals
+                    .Where(l => text.Contains(l, StringComparison.OrdinalIgnoreCase))
+                    .Select(l => $"{Path.GetFileName(file)} carries {l}"));
         }
 
         Assert.Empty(offenders);

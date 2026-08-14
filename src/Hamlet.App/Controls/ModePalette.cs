@@ -79,3 +79,119 @@ public static class ModePalette
         _ => Open,
     };
 }
+
+/// <summary>One panel family's colors.</summary>
+/// <param name="Family">The family these colors stand for.</param>
+/// <param name="Title">Header text on warm paper, where the panel body is white.</param>
+/// <param name="Edge">The panel border.</param>
+/// <param name="Fill">A tinted panel body, where one is wanted.</param>
+/// <param name="HeaderInk">Header text ON that tinted fill.</param>
+/// <param name="PillFill">Background for a small badge in this family.</param>
+/// <param name="PillInk">Text on that badge.</param>
+public sealed record PanelColors(
+    PanelFamily Family,
+    Color Title,
+    Color Edge,
+    Color Fill,
+    Color HeaderInk,
+    Color PillFill,
+    Color PillInk)
+{
+    /// <summary>Header text on warm paper, as a brush.</summary>
+    public IBrush TitleBrush { get; } = new SolidColorBrush(Title);
+
+    /// <summary>The panel border, as a brush.</summary>
+    public IBrush EdgeBrush { get; } = new SolidColorBrush(Edge);
+
+    /// <summary>A tinted panel body, as a brush.</summary>
+    public IBrush FillBrush { get; } = new SolidColorBrush(Fill);
+
+    /// <summary>Header text on the tinted fill, as a brush.</summary>
+    public IBrush HeaderInkBrush { get; } = new SolidColorBrush(HeaderInk);
+
+    /// <summary>Badge background, as a brush.</summary>
+    public IBrush PillFillBrush { get; } = new SolidColorBrush(PillFill);
+
+    /// <summary>Badge text, as a brush.</summary>
+    public IBrush PillInkBrush { get; } = new SolidColorBrush(PillInk);
+}
+
+/// <summary>
+/// The panel-family colors: amber is tuning, blue is spectrum, green is
+/// decode, slate is everything else (HM-DEC-012).
+/// </summary>
+/// <remarks>
+/// <para>ONE DEFINITION, like the mode language above it (§0.6). These values
+/// used to live as hex literals inside <see cref="CollapsiblePanel"/>, which
+/// meant the Settings window could not use them without becoming a second
+/// copy. They live here now and the panel reads them, so there is one place
+/// to change and nothing to drift.</para>
+/// <para>TWO INKS PER FAMILY, and the reason is contrast rather than taste.
+/// <see cref="PanelColors.Title"/> is the header on warm paper, where the
+/// panel body is white (HM-DEC-012). <see cref="PanelColors.HeaderInk"/> is
+/// the header on that family's own tinted fill, and it is darker because the
+/// tint lifts the background: amber #C25E00 reaches only 3.84:1 on #FDF1DE,
+/// short of the 4.5 every ink in this app has to clear, while #9A4A00 gets
+/// there at 5.61. Green and blue happen to be dark enough already and carry
+/// the same value twice.</para>
+/// <para>COLOR IS NEVER THE ONLY CARRIER here either. A tinted section is
+/// still titled in words and every badge drawn in these colors says what it
+/// means (HM-DEC-044).</para>
+/// </remarks>
+public static class PanelPalette
+{
+    /// <summary>Tuning, and the license section that governs it.</summary>
+    public static PanelColors Amber { get; } = new(
+        PanelFamily.Amber,
+        Color.Parse("#C25E00"),
+        Color.Parse("#E8C093"),
+        Color.Parse("#FDF1DE"),
+        Color.Parse("#9A4A00"),
+        Color.Parse("#F7E3C3"),
+        Color.Parse("#9A4A00"));
+
+    /// <summary>Spectrum, and the feeds that fill it.</summary>
+    public static PanelColors Blue { get; } = new(
+        PanelFamily.Blue,
+        Color.Parse("#1F5FA8"),
+        Color.Parse("#AECBEA"),
+        Color.Parse("#EAF2FB"),
+        Color.Parse("#1F5FA8"),
+        Color.Parse("#D3E4F7"),
+        Color.Parse("#174A85"));
+
+    /// <summary>Decode, and the operator doing it.</summary>
+    public static PanelColors Green { get; } = new(
+        PanelFamily.Green,
+        Color.Parse("#0F7B4D"),
+        Color.Parse("#A9D8C1"),
+        Color.Parse("#EAF6EF"),
+        Color.Parse("#0F7B4D"),
+        Color.Parse("#CFEBDD"),
+        Color.Parse("#0B5C39"));
+
+    /// <summary>Everything else. The quiet one, and it keeps a white body.</summary>
+    public static PanelColors Slate { get; } = new(
+        PanelFamily.Slate,
+        Color.Parse("#2B2B28"),
+        Color.Parse("#D5CFC0"),
+        Colors.White,
+        Color.Parse("#2B2B28"),
+        Color.Parse("#EDEAE1"),
+        Color.Parse("#4A4740"));
+
+    /// <summary>All four.</summary>
+    public static IReadOnlyList<PanelColors> All { get; } =
+        new[] { Amber, Blue, Green, Slate };
+
+    /// <summary>The colors for a panel family.</summary>
+    /// <param name="family">The family.</param>
+    /// <returns>Its colors.</returns>
+    public static PanelColors For(PanelFamily family) => family switch
+    {
+        PanelFamily.Amber => Amber,
+        PanelFamily.Blue => Blue,
+        PanelFamily.Green => Green,
+        _ => Slate,
+    };
+}

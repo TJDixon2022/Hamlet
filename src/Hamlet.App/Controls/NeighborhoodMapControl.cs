@@ -37,9 +37,9 @@ public sealed class NeighborhoodMapControl : Control
     /// <summary>How far from a dot's center still counts as hovering it.</summary>
     private const double HitTolerance = 5.0;
 
-    private static readonly Pen EdgePen = new(new SolidColorBrush(Color.Parse("#AECBEA")), 0.8);
+    private static readonly Pen EdgePen = new(PanelPalette.Blue.EdgeBrush, 0.8);
     private static readonly Pen SeamPen = new(new SolidColorBrush(Color.Parse("#40000000")), 0.5);
-    private static readonly IBrush MarkerBrush = new SolidColorBrush(Color.Parse("#C25E00"));
+    private static readonly IBrush MarkerBrush = PanelPalette.Amber.TitleBrush;
 
     /// <summary>The marker when the frequency is outside transmit privileges.</summary>
     private static readonly IBrush MarkerOutsideBrush =

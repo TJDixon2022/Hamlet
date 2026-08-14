@@ -14,7 +14,7 @@ namespace Hamlet.App.Controls;
 public sealed class FreshnessBrushConverter : IValueConverter
 {
     private static readonly IBrush Fresh = new SolidColorBrush(Color.Parse("#6E6E66"));
-    private static readonly IBrush Aging = new SolidColorBrush(Color.Parse("#C25E00"));
+    private static readonly IBrush Aging = PanelPalette.Amber.TitleBrush;
     private static readonly IBrush Stale = new SolidColorBrush(Color.Parse("#A32D2D"));
 
     /// <summary>Singleton for XAML use.</summary>
