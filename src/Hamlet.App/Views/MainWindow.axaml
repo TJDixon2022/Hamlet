@@ -41,7 +41,14 @@
         </Style>
     </Window.Styles>
 
-    <Grid RowDefinitions="Auto,Auto,Auto,*,Auto" Margin="16">
+    <!-- THE HEADER AND THE STATUS BAR ARE PINNED AND EVERYTHING ELSE
+         SCROLLS (HM-DEC-051). On a 1080p screen there was no way to reach the
+         waterfall or the CW terminal and no scrollbar to reach them with, which
+         made the two panels that matter most for diagnosing a live signal the
+         two nobody could see. Connect and the port picker stay put because they
+         are what somebody reaches for when something is wrong, and the status
+         line stays put because it is where the app answers them. -->
+    <Grid RowDefinitions="Auto,*,Auto" Margin="16">
 
         <!-- Brand, menu, connection, and a line of Shakespeare -->
         <StackPanel Grid.Row="0" Margin="4,0,4,12" Spacing="1">
@@ -111,8 +118,19 @@
                        ToolTip.ShowDelay="400" />
         </StackPanel>
 
+        <!-- Always visible, and deliberately not the overlay bar that fades
+             out when the pointer leaves. The complaint was not that scrolling
+             was awkward, it was that there was no scrollbar to reach for, and a
+             bar somebody has to discover by hovering is the same complaint
+             wearing a thinner coat. -->
+        <ScrollViewer Grid.Row="1"
+                      VerticalScrollBarVisibility="Visible"
+                      HorizontalScrollBarVisibility="Disabled"
+                      ScrollViewer.AllowAutoHide="False">
+            <StackPanel>
+
         <!-- Band buttons -->
-        <ItemsControl Grid.Row="1" ItemsSource="{Binding Bands}" Margin="0,6,0,14">
+        <ItemsControl ItemsSource="{Binding Bands}" Margin="0,6,0,14">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <StackPanel Orientation="Horizontal" Spacing="8" />
@@ -176,8 +194,7 @@
 
         <!-- Frequency face: the rig's own LCD on the console. Deliberately
              NOT collapsible (HM-DEC-021) — it is the app's anchor. -->
-        <Border Grid.Row="2"
-                Background="{StaticResource HmAmberTintBrush}"
+        <Border Background="{StaticResource HmAmberTintBrush}"
                 BorderBrush="{StaticResource HmAmberEdgeBrush}"
                 BorderThickness="1" CornerRadius="8"
                 Padding="20,12" Margin="0,0,0,12">
@@ -195,8 +212,11 @@
             </StackPanel>
         </Border>
 
-        <!-- Map, tape, then explorer beside waterfall/terminal -->
-        <Grid Grid.Row="3" RowDefinitions="Auto,Auto,*">
+        <!-- Map, tape, then explorer beside waterfall/terminal. Every row is
+             Auto because there is no leftover height to share inside a
+             scroller: a star row would measure to nothing and take the panels
+             with it. -->
+        <Grid RowDefinitions="Auto,Auto,Auto">
 
             <ctl:CollapsiblePanel Grid.Row="0" Margin="0,0,0,10"
                                   Family="Blue"
@@ -366,10 +386,11 @@
 
                 <!-- Stacked rather than proportioned: a collapsed panel must
                      hand its space to the panel below it, not leave a hole
-                     where a fixed grid row used to be (HM-DEC-021). -->
-                <ScrollViewer Grid.Column="0" Margin="0,0,10,0"
-                              VerticalScrollBarVisibility="Auto">
-                    <StackPanel Spacing="10">
+                     where a fixed grid row used to be (HM-DEC-021). No scroller
+                     of its own: the window has one now, and two nested
+                     scrollbars send the wheel to whichever happens to be under
+                     the pointer. -->
+                <StackPanel Grid.Column="0" Margin="0,0,10,0" Spacing="10">
 
                         <ctl:CollapsiblePanel Family="Blue"
                                               Title="Waterfall"
@@ -484,12 +505,10 @@
                                            Foreground="{StaticResource HmTextMutedBrush}" />
                             </StackPanel>
                         </ctl:CollapsiblePanel>
-                    </StackPanel>
-                </ScrollViewer>
+                </StackPanel>
 
                 <!-- The Explorer (HM-DEC-016) -->
-                <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto">
-                    <StackPanel Spacing="10">
+                <StackPanel Grid.Column="1" Spacing="10">
 
                         <!-- The lead card and the band-conditions line
                              (HM-DEC-025): one written suggestion for somebody
@@ -752,6 +771,17 @@
                                               SummaryBrush="{Binding SpotsFreshness,
                                                   Converter={x:Static ctl:FreshnessBrushConverter.Instance}}"
                                               IsExpanded="{Binding SpotsExpanded, Mode=TwoWay}">
+                            <!-- A bounded viewport rather than a second page
+                                 scroller. A busy evening puts twenty park
+                                 activations in here, which used to make the
+                                 Explorer column so much taller than the one
+                                 beside it that the waterfall and the terminal
+                                 sat in a column of empty space. Capping the list
+                                 keeps the window's own scrollbar meaningful, and
+                                 this is the same shape the CW terminal's
+                                 transcript already uses. -->
+                            <ScrollViewer MaxHeight="520"
+                                          VerticalScrollBarVisibility="Auto">
                             <ItemsControl ItemsSource="{Binding Spots}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate x:DataType="vm:SpotViewModel">
@@ -812,15 +842,18 @@
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
+                            </ScrollViewer>
                         </ctl:CollapsiblePanel>
 
-                    </StackPanel>
-                </ScrollViewer>
+                </StackPanel>
             </Grid>
         </Grid>
 
+            </StackPanel>
+        </ScrollViewer>
+
         <!-- Status bar -->
-        <Border Grid.Row="4"
+        <Border Grid.Row="2"
                 Background="{StaticResource HmSlateTintBrush}"
                 BorderBrush="{StaticResource HmSlateEdgeBrush}"
                 BorderThickness="1" CornerRadius="6"
