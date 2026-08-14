@@ -229,8 +229,8 @@
                                Foreground="{StaticResource HmTextMutedBrush}" />
                     <ctl:NeighborhoodMapControl Height="44"
                         FrequencyHz="{Binding FrequencyHz}"
-                        BandLowHz="{Binding SelectedBand.Band.LowHz}"
-                        BandHighHz="{Binding SelectedBand.Band.HighHz}"
+                        BandLowHz="{Binding MapLowHz}"
+                        BandHighHz="{Binding MapHighHz}"
                         Neighborhoods="{Binding Neighborhoods}"
                         ActivityDots="{Binding ActivityDots}"
                         PrivilegeSpans="{Binding PrivilegeSpans}"

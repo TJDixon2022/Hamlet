@@ -66,7 +66,10 @@ public sealed class MapLegendControl : Control
         double x = 0;
         double y = 0;
 
-        foreach (var colors in ModePalette.All)
+        // Legend rather than All: the map draws a fifth region that is not a
+        // mode family, and a wash nobody can decode is decoration that looks
+        // like information (§0.6, HM-DEC-055).
+        foreach (var colors in ModePalette.Legend)
         {
             Place(context, colors.Label, ref x, ref y, width, (rect, c) =>
             {

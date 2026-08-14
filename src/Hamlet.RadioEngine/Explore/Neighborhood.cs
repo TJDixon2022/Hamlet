@@ -63,6 +63,66 @@ public static class NeighborhoodPlan
         return Build(band, NeighborhoodData.Current, PrivilegeData.Current);
     }
 
+    /// <summary>
+    /// How far past each band edge the map shows, so the wall is visible.
+    /// </summary>
+    /// <param name="band">The band.</param>
+    /// <returns>The margin in hertz.</returns>
+    /// <remarks>
+    /// A twelfth of the band, and never less than five kilohertz, so 30 m gets a
+    /// visible sliver rather than a hairline. It is a fraction rather than a
+    /// fixed figure because the map is drawn to a width and what matters is how
+    /// much of that width the edge takes up.
+    /// </remarks>
+    public static long MarginHz(CwBand band)
+    {
+        ArgumentNullException.ThrowIfNull(band);
+
+        return Math.Max((band.HighHz - band.LowHz) / 12, 5_000);
+    }
+
+    /// <summary>
+    /// The band's map with the spectrum either side of it shown as what it is.
+    /// </summary>
+    /// <param name="band">The band.</param>
+    /// <returns>The map, running from a margin below the band to one above.</returns>
+    /// <remarks>
+    /// THE EDGE HAS TO BE VISIBLE TO BE LEARNED (HM-DEC-055). A map that stops
+    /// exactly at the band edge shows a wall as the end of the picture, which
+    /// teaches nothing at all, and the operator who tuned to the very top of
+    /// 20 m had no way to see that a little further up there is no amateur
+    /// spectrum. So the map runs past both edges and says what is out there.
+    /// </remarks>
+    public static IReadOnlyList<Neighborhood> WithEdges(CwBand band)
+    {
+        ArgumentNullException.ThrowIfNull(band);
+
+        var margin = MarginHz(band);
+        var map = new List<Neighborhood> { Beyond(band, band.LowHz - margin, band.LowHz - 1) };
+
+        map.AddRange(ForBand(band));
+        map.Add(Beyond(band, band.HighHz + 1, band.HighHz + margin));
+
+        return map;
+    }
+
+    /// <summary>One stretch of spectrum that is not amateur at all.</summary>
+    private static Neighborhood Beyond(CwBand band, long lowHz, long highHz)
+        => new(
+            "Not a ham band", "not ham", lowHz, highHz,
+            "Somebody else's spectrum",
+            $"This is past the edge of {band.Name} and it is not amateur "
+            + "spectrum at all. Broadcasters, maritime and aeronautical "
+            + "services and a good deal else live up and down the dial from "
+            + "every ham band, and no amateur license permits transmitting on "
+            + "any of it. " + AmateurSpectrum.ListeningIsStillFine,
+            lowHz + ((highHz - lowHz) / 2),
+            ModeFamily.OutsideTheBand,
+            Cite: "cfr-97.301",
+            Caution: "There is no amateur license that permits transmitting "
+                   + "here, so a call in any mode would be going out on "
+                   + "somebody else's allocation.");
+
     /// <summary>Build a band's map from given data, for the tests.</summary>
     /// <param name="band">The band.</param>
     /// <param name="data">The cited conventions.</param>

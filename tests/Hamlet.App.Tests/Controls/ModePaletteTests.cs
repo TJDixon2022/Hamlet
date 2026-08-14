@@ -28,7 +28,10 @@ public sealed class ModePaletteTests
             Assert.False(string.IsNullOrWhiteSpace(colors.Label));
         }
 
-        Assert.Equal(Enum.GetValues<ModeFamily>().Length, ModePalette.All.Count);
+        // Four mode families in All, and a fifth region in the legend that is
+        // not one: not amateur spectrum at all (HM-DEC-055).
+        Assert.Equal(Enum.GetValues<ModeFamily>().Length - 1, ModePalette.All.Count);
+        Assert.Equal(Enum.GetValues<ModeFamily>().Length, ModePalette.Legend.Count);
     }
 
     /// <remarks>
@@ -46,15 +49,15 @@ public sealed class ModePaletteTests
     [Fact]
     public void FillsAreDistinguishableFromOneAnother()
     {
-        for (var i = 0; i < ModePalette.All.Count; i++)
+        for (var i = 0; i < ModePalette.Legend.Count; i++)
         {
-            for (var j = i + 1; j < ModePalette.All.Count; j++)
+            for (var j = i + 1; j < ModePalette.Legend.Count; j++)
             {
-                var difference = DeltaE(ModePalette.All[i].Fill, ModePalette.All[j].Fill);
+                var difference = DeltaE(ModePalette.Legend[i].Fill, ModePalette.Legend[j].Fill);
 
                 Assert.True(
                     difference > 10,
-                    $"{ModePalette.All[i].Label} and {ModePalette.All[j].Label} are only "
+                    $"{ModePalette.Legend[i].Label} and {ModePalette.Legend[j].Label} are only "
                     + $"ΔE {difference:0.0} apart");
             }
         }
@@ -72,7 +75,7 @@ public sealed class ModePaletteTests
     [Fact]
     public void InkIsReadableOnItsOwnFill()
     {
-        foreach (var colors in ModePalette.All)
+        foreach (var colors in ModePalette.Legend)
         {
             var ratio = ContrastRatio(colors.Ink, colors.Fill);
 
@@ -123,7 +126,7 @@ public sealed class ModePaletteTests
 
         Assert.True(File.Exists(palette), $"palette not found at {palette}");
 
-        var literals = ModePalette.All
+        var literals = ModePalette.Legend
             .SelectMany(c => new[] { Hex(c.Fill), Hex(c.Ink) })
             .ToList();
 

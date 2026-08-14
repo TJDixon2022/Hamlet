@@ -28,4 +28,17 @@ public enum ModeFamily
 
     /// <summary>Open space, or a stretch that hosts a mixture.</summary>
     Open,
+
+    /// <summary>
+    /// Not amateur spectrum at all. Other services live here.
+    /// </summary>
+    /// <remarks>
+    /// NOT A MODE FAMILY, and carried on this enum only because everything that
+    /// draws a band region reads from here (HM-DEC-055). It is deliberately not
+    /// <see cref="Open"/>: open means unclaimed amateur space, and this is not
+    /// amateur space. It is deliberately not the listen-only marking either,
+    /// because "you may listen and not transmit" is true inside the band too and
+    /// this is a different fact.
+    /// </remarks>
+    OutsideTheBand,
 }

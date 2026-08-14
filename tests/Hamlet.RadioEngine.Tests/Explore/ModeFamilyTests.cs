@@ -61,14 +61,16 @@ public sealed class ModeFamilyTests
     }
 
     /// <remarks>
-    /// Proves all four families appear somewhere, so the legend never names a
-    /// color the map cannot show.
+    /// Proves every region the legend names appears somewhere on the map, so
+    /// the legend never explains a color nobody will ever see. The fifth entry
+    /// is not a mode family at all: it is the spectrum either side of the band,
+    /// which the map now draws so the edge can be learned (HM-DEC-055).
     /// </remarks>
     [Fact]
-    public void AllFourFamiliesAppearOnTheMap()
+    public void EveryRegionTheLegendNamesAppearsOnTheMap()
     {
         var seen = BandPlan.Bands
-            .SelectMany(NeighborhoodPlan.ForBand)
+            .SelectMany(NeighborhoodPlan.WithEdges)
             .Select(h => h.Family)
             .Distinct()
             .ToList();
@@ -77,6 +79,11 @@ public sealed class ModeFamilyTests
         {
             Assert.Contains(family, seen);
         }
+
+        // And the in-band map never claims a frequency is outside the band.
+        Assert.DoesNotContain(
+            ModeFamily.OutsideTheBand,
+            BandPlan.Bands.SelectMany(NeighborhoodPlan.ForBand).Select(h => h.Family));
     }
 
     /// <remarks>

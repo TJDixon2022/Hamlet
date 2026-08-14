@@ -4,6 +4,63 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-055
+date: 2026-08-14
+refs: src/Hamlet.RadioEngine/Bands/AmateurSpectrum.cs, src/Hamlet.App/ViewModels/PrivilegeStatusLine.cs, src/Hamlet.App/Controls/ModePalette.cs, tests/Hamlet.App.Tests/Licensing/OutOfBandTests.cs, HM-DEC-029, HM-DEC-046, HM-DEC-009
+---
+
+One out-of-band fact is derived in the engine and every surface that speaks
+reads it from there, so no two surfaces can disagree.
+
+WHAT HAPPENED. The operator tuned to 14.350.000, the very top edge of 20 m, and
+the card said "14.350 MHz, yours to use. Your General license covers Morse here.
+Call away." Above 14.350 is not amateur spectrum at all. The privilege overlay
+was treating "past the end of my data" as "no restriction found", which inverts
+the meaning of the silence, in the one place in this app where a confident error
+has legal consequences.
+
+ONE DERIVATION, EVERY SURFACE, which is HM-DEC-046's pattern applied to the band
+edge. `AmateurSpectrum` answers from the cited Part 97 data read against the
+Extra class, which by definition reaches every band edge, so the band edges are
+not carried a second time. The map, the card, the dial tape line and the rig
+display all read it.
+
+THE MAP DRAWS PAST THE EDGE, because an edge that is the end of the picture
+teaches nothing. Beyond it is a labeled region in a cold gray that belongs to no
+mode family, and the legend gains it. It is explicitly not the listen-only
+hatching, since "you may listen but not transmit" is true inside the band too and
+this is a different fact. It is explicitly not the open neutral, since that means
+unclaimed amateur space and this is not amateur space at all. Both separations
+had to survive the grayscale test as well as the color one, so the gray is darker
+than the four families rather than merely cooler, and the block carries its name
+in words.
+
+THE CARD GOES AMBER AND NEVER RED (HM-DEC-029: explain, never scold). It states
+that listening is fine anywhere, that transmitting here is permitted on no
+amateur license, and it carries its citation the way the in-band card already
+does. It says which edge was crossed, because "you have gone past the top of
+20 m" is something somebody can act on and "out of band" is not. And it does not
+depend on who is asking: an Extra holds every US privilege there is and still may
+not transmit on somebody else's allocation.
+
+The dial tape said "OUTSIDE the CW segment" at 14.350, which is true and wildly
+understates matters. It now speaks from the same fact.
+
+NOTHING STOPS THE DIAL, and this turned out to need a change rather than only a
+reassurance. The frequency was being clamped hard at the band edge, which is a
+locked control standing in for an explanation and is the thing HM-DEC-029 says
+not to do. It was also how somebody ended up sitting exactly on 14.350 reading a
+card that invited him to call. The stop is now the end of the drawn picture
+rather than the end of the band, so tuning off the top shows what is out there
+and says why it is not yours.
+
+And a frequency the RADIO reported is never clamped at all. A 7300 tunes right
+across the shortwave broadcast bands and somebody will do it. Clamping a
+measurement to fit a picture would put a number on screen that the radio is not
+on, which is the prime directive broken on the one value every other surface
+trusts.
+
+---
 id: HM-DEC-054
 date: 2026-08-14
 refs: data/bands/us-neighborhoods.json, src/Hamlet.RadioEngine/Explore/NeighborhoodData.cs, src/Hamlet.App/ViewModels/PrivilegeStatusLine.cs, HM-OPEN-005, HM-DEC-029, HM-DEC-032

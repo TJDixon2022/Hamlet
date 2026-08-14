@@ -96,10 +96,28 @@ public partial class MainWindowViewModel : ObservableObject
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(MapSummary))]
+    [NotifyPropertyChangedFor(nameof(MapLowHz))]
+    [NotifyPropertyChangedFor(nameof(MapHighHz))]
     private BandButtonViewModel _selectedBand;
 
     [ObservableProperty]
     private IReadOnlyList<Neighborhood> _neighborhoods = Array.Empty<Neighborhood>();
+
+    /// <summary>
+    /// The lowest frequency the neighborhood map draws.
+    /// </summary>
+    /// <remarks>
+    /// Wider than the band on purpose (HM-DEC-055). The map that stopped exactly
+    /// at the band edge showed a wall as the end of the picture, so the operator
+    /// who tuned to the very top of 20 m had no way to see that a little further
+    /// up there is no amateur spectrum at all. The dial tape and the waterfall
+    /// keep the band's own edges, because those are zoomed views of where the
+    /// radio is rather than pictures of the whole band.
+    /// </remarks>
+    public long MapLowHz => SelectedBand.Band.LowHz - NeighborhoodPlan.MarginHz(SelectedBand.Band);
+
+    /// <summary>The highest frequency the neighborhood map draws.</summary>
+    public long MapHighHz => SelectedBand.Band.HighHz + NeighborhoodPlan.MarginHz(SelectedBand.Band);
 
     [ObservableProperty]
     private IReadOnlyList<Controls.ActivityDot> _activityDots =
@@ -516,7 +534,7 @@ public partial class MainWindowViewModel : ObservableObject
 
         _activitySource = BuildSources();
 
-        Neighborhoods = NeighborhoodPlan.ForBand(_selectedBand.Band);
+        Neighborhoods = NeighborhoodPlan.WithEdges(_selectedBand.Band);
         ShowNeighborhood(Neighborhoods.First(n => n.Contains(FrequencyHz)));
         UpdateModeLine();
         UpdateSpotFreshness();
@@ -759,7 +777,7 @@ public partial class MainWindowViewModel : ObservableObject
 
     partial void OnSelectedBandChanged(BandButtonViewModel value)
     {
-        Neighborhoods = NeighborhoodPlan.ForBand(value.Band);
+        Neighborhoods = NeighborhoodPlan.WithEdges(value.Band);
         _settings.LastBand = value.Band.Name;
         SettingsStore.Save(_settings);
         AppEvents.BandChanged(_telemetry, value.Band.Name);
@@ -1394,7 +1412,19 @@ public partial class MainWindowViewModel : ObservableObject
     /// CI-V bus.</summary>
     partial void OnFrequencyHzChanged(long value)
     {
-        var clamped = SelectedBand.Band.Clamp(value);
+        // THE DIAL REACHES PAST THE BAND EDGE, on purpose (HM-DEC-055). It used
+        // to stop dead at the edge, which is a locked control standing in for an
+        // explanation and is what HM-DEC-029 says not to do. The stop is now the
+        // end of the picture rather than the end of the band, so somebody who
+        // tunes off the top of 20 m sees what is out there and reads why it is
+        // not theirs, instead of finding the knob refusing to turn. Nothing here
+        // is about privileges: it is about what the map on screen can show.
+        //
+        // And it binds to the operator's own tuning only. A frequency the radio
+        // reported is a measurement, and a measurement that has been clamped to
+        // fit a picture is a wrong number about the one thing every other
+        // surface trusts (§0.0).
+        var clamped = _updatingFromRig ? value : Math.Clamp(value, MapLowHz, MapHighHz);
         if (clamped != value)
         {
             FrequencyHz = clamped;
@@ -1908,18 +1938,26 @@ public partial class MainWindowViewModel : ObservableObject
     /// <summary>Rig-origin frequency (the physical knob): follow it, switch
     /// the selected band if the operator crossed one, and never echo it back
     /// out to the rig.</summary>
+    /// <remarks>
+    /// THE RADIO IS NEVER ARGUED WITH (§0.0, HM-DEC-055). A 7300 tunes right
+    /// across the shortwave broadcast bands and somebody will do it, so when the
+    /// reading is off every ham band the nearest one is put on screen and the
+    /// display follows the radio out into it. Clamping here would show a
+    /// frequency the radio is not on, which is a confident wrong answer about
+    /// the one number every other surface trusts.
+    /// </remarks>
     private void ApplyRigFrequency(long hz)
     {
         _updatingFromRig = true;
         try
         {
-            var band = BandPlan.BandFor(hz);
+            var band = BandPlan.BandFor(hz) ?? AmateurSpectrum.Nearest(hz);
             if (band is not null && band.Name != SelectedBand.Band.Name)
             {
                 SelectedBand = Bands.First(b => b.Band.Name == band.Name);
             }
 
-            FrequencyHz = SelectedBand.Band.Clamp(hz);
+            FrequencyHz = hz;
         }
         finally
         {
@@ -1930,8 +1968,18 @@ public partial class MainWindowViewModel : ObservableObject
     private void UpdateModeLine()
     {
         IsInsideCwSegment = SelectedBand.Band.IsInCwSegment(FrequencyHz);
-        ModeLineText = $"CW · {SelectedBand.Band.Name} · "
-            + (IsInsideCwSegment ? "inside the CW segment" : "OUTSIDE the CW segment");
+
+        // THE SAME FACT, FROM THE SAME PLACE (HM-DEC-055). This line used to say
+        // "OUTSIDE the CW segment" above the top of 20 m, which is true and
+        // wildly understates matters, because up there it is not a ham band at
+        // all. The map, the card and this line now all read one derivation, so
+        // no two of them can disagree about it.
+        var standing = AmateurSpectrum.Describe(FrequencyHz);
+
+        ModeLineText = standing.IsAmateur
+            ? $"CW · {SelectedBand.Band.Name} · "
+              + (IsInsideCwSegment ? "inside the CW segment" : "OUTSIDE the CW segment")
+            : $"CW · past the edge of {SelectedBand.Band.Name} · not a ham band";
 
         UpdatePrivileges();
     }

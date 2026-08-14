@@ -1,4 +1,5 @@
 using System.Globalization;
+using Hamlet.RadioEngine.Bands;
 using Hamlet.RadioEngine.Explore;
 using Hamlet.RadioEngine.Licensing;
 
@@ -96,6 +97,26 @@ public static class PrivilegeStatusLine
     {
         var megahertz = (frequencyHz / 1_000_000.0)
             .ToString("0.000", CultureInfo.InvariantCulture);
+
+        // PAST THE END OF THE DATA IS NOT "NO RESTRICTION FOUND" (HM-DEC-055).
+        // Above 14.350 there is no amateur spectrum at all, and the card used
+        // to read that silence as permission, which is the inversion this app
+        // can least afford: it is the one place where a confident error has
+        // legal consequences. Answered before the class is even consulted,
+        // because it does not depend on who is asking.
+        var standing = AmateurSpectrum.Describe(frequencyHz);
+
+        if (!standing.IsAmateur)
+        {
+            return new PrivilegeStatus(
+                PrivilegeTone.ListenOnly,
+                $"{megahertz} MHz · {standing.Headline}",
+                standing.Detail,
+                AmateurSpectrum.ListeningIsStillFine,
+                standing.Citation,
+                "",
+                here?.Caution ?? "");
+        }
 
         if (licenseClass == LicenseClass.Unknown)
         {

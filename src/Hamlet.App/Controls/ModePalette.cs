@@ -66,8 +66,35 @@ public static class ModePalette
     public static ModeColors Open { get; } = new(
         ModeFamily.Open, "Open / mixed", Color.Parse("#E4E0D5"), Color.Parse("#5F5C53"));
 
-    /// <summary>All four, in the order the legend shows them.</summary>
+    /// <summary>
+    /// Not a ham band at all. Colder and darker than any of the four, on purpose.
+    /// </summary>
+    /// <remarks>
+    /// NOT A MODE FAMILY (HM-DEC-055). It is a fifth region kind and it has to
+    /// read as one at a glance: the four families are warm, light washes and
+    /// this is a cold gray that stops the eye, because the thing it marks is a
+    /// wall rather than a neighborhood. It is deliberately separated from
+    /// <see cref="Open"/>, which is a warm neutral meaning unclaimed amateur
+    /// space, and the grayscale test §0.6 sets is what forced the lightness
+    /// apart as well as the hue. Ink measures 8.5:1 on the fill.
+    /// </remarks>
+    public static ModeColors OutsideTheBand { get; } = new(
+        ModeFamily.OutsideTheBand, "Not a ham band",
+        Color.Parse("#B4B8BC"), Color.Parse("#23282D"));
+
+    /// <summary>The four families, in the order the legend shows them.</summary>
     public static IReadOnlyList<ModeColors> All { get; } = new[] { Cw, Digital, Phone, Open };
+
+    /// <summary>
+    /// Every region the map can draw, including the one that is not a family.
+    /// </summary>
+    /// <remarks>
+    /// The legend reads this rather than <see cref="All"/>, because a wash
+    /// nobody can decode is decoration, and decoration that looks like
+    /// information is worse than none (§0.6).
+    /// </remarks>
+    public static IReadOnlyList<ModeColors> Legend { get; } =
+        new[] { Cw, Digital, Phone, Open, OutsideTheBand };
 
     /// <summary>The colors for a family.</summary>
     /// <param name="family">The family.</param>
@@ -77,6 +104,7 @@ public static class ModePalette
         ModeFamily.Cw => Cw,
         ModeFamily.Digital => Digital,
         ModeFamily.Phone => Phone,
+        ModeFamily.OutsideTheBand => OutsideTheBand,
         _ => Open,
     };
 }
