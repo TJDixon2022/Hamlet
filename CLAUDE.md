@@ -237,6 +237,7 @@ this table is the index.
 
 | Date | Decision | Why | Ref |
 |---|---|---|---|
+| 2026-08-15 | **Hamlet keeps a model of the radio's whole state**, from twenty-five cited CI-V reads across twenty-eight fields and the broadcasts the radio already sends. Unknown is a state and never a number, distinct from unsupported and from undocumented. Polling is rationed: fast values only while the window is visible, settings on connect and rarely, nothing polled that the radio volunteers, one command in flight, a timeout marks unknown rather than retrying. **The hardcoded "CW" and "FIL2" badges are corrected**, the S-meter is fed, and a diagnostics screen under Tools shows every value with its age and provenance. **Corrects §4: the CW pitch is `14 09`, not `14 08`.** Reads only; writes get their own ruling. | The first live connection produced garbage and took half an hour to diagnose by asking somebody to walk to the radio and read menu settings out loud, and the filter was wide open the whole time. | HM-DEC-050 |
 | 2026-08-14 | **The IC-7300 Full Manual is read and §4 is verified with page citations.** Command `17` takes 30 characters, `FF` stops, `^` runs characters together; `27 00` needs `27 10` and `27 11` on; CW pitch is 300 to 900 Hz. **Two corrections: USB CI-V baud defaults to Auto, and the manual states no default CW pitch.** The manual is cited and never committed, because Icom permits individual use and prohibits redistribution. Closes HM-OPEN-002. | Code must not rest on a recalled command byte; and the transmit precondition nobody had written down would have cost an evening. | HM-DEC-049 |
 | 2026-08-14 | **Hamlet decodes received CW, and says how sure it is about every character.** Goertzel bank tracking the note anywhere in 300 to 900 Hz, adaptive gate that follows a fade down, speed re-derived from a rolling window, prosigns as prosigns. Confidence from two measurements with the worse one winning, plus a veto for a contested signal; low renders dimmed and unresolved renders as a placeholder, never a guessed letter. Nothing raises a score. Nothing is emitted at all when the timings do not look like Morse. Poor decodes get plain-language notes that describe measurements and are tested against diagnosing the band or anybody's equipment. Audio behind `IAudioSource`; seven synthesized WAV fixtures in `tests/fixtures/cw`. Receive only. | CW is the last part of this hobby still guarded by the claim that you need an ear for it, and a beginner reading clean-looking garbage concludes the fault is theirs. | HM-DEC-048 |
 | 2026-08-14 | **The dial tape carries the map's spots on a rail along its top edge.** One `FrequencyAxis` now serves the map, the tape and the waterfall, so a station is at the same frequency on all three; `SpotMarkerStrip` takes an axis and a rectangle and is the phase 2 waterfall's for the asking. Same tooltip, same click-to-tune, out of the frequency scale's way, and an empty rail is not drawn. | The tape showed nothing while the map showed dots for the same stations, which teaches a newcomer that the tape is decoration; and three copies of one mapping is three mappings. | HM-DEC-047 |
@@ -401,8 +402,19 @@ turns to the page named.
 | Scope waveform data | `27 00`, only while `27 10` and `27 11` are both ON | 19-14 |
 | Scope data shape | Range `00`–`A0`, length 475, sent in 11 parts over USB | 19-14 |
 | CW pitch range | 300–900 Hz | 4-14 |
-| CW pitch over CI-V | `14 08`; `00 00`=300 Hz, `01 28`=600 Hz, `02 55`=900 Hz, 5 Hz steps | 19-3 |
+| CW pitch over CI-V | `14 09`; `00 00`=300 Hz, `01 28`=600 Hz, `02 55`=900 Hz, 5 Hz steps | 19-3 |
+| IF filter width | `1A 03`, an index; the scale is on **p. 4-6**, not in the command table | 19-3, 4-6 |
+| Operating mode and filter | `04`; mode byte then filter byte, filter may be omitted | 19-3, 19-9 |
+| S-meter | `15 02`; `00 00`=S0, `01 20`=S9, `02 41`=S9+60 dB | 19-3 |
 | CI-V USB baud | **Default Auto**; 4800/9600/19200/38400/57600/115200 | 12-11 |
+
+**CORRECTION 2026-08-15 (HM-DEC-050): the CW pitch was recorded here as `14 08`
+and it is `14 09`.** Sub-command 08 is the outer Twin PBT position. The command
+table is two columns and the extraction that verified it had been flattened into
+one, so the description landed against the wrong row. Issuing 08 with a payload
+would move the passband while trying to read a pitch. **A citation is only as
+good as the extraction it came from: use a column-aware read on a two-column
+table, and check a value against a second mention of it where one exists.**
 
 **THE PRECONDITION ON COMMAND `17`, which is not optional and cost nothing only
 because it was found before the transmit work started:** in CW mode a message
@@ -461,7 +473,7 @@ Rows marked `<<<FILL IN>>>` await the named ruling.
 | Language / runtime | C# on .NET 8 LTS |
 | UI framework | Avalonia 11, Fluent theme, dark variant (HM-DEC-011). Compiled bindings on by default |
 | MVVM toolkit | CommunityToolkit.Mvvm (source-generated `[ObservableProperty]`, `[RelayCommand]`) |
-| Solution layout | `Hamlet.sln` at root; `src/` and `tests/` solution folders. Engine: `src/Hamlet.RadioEngine`. Shell: `src/Hamlet.App`. Live activity sources: `src/Hamlet.RadioEngine/Explore`. Signal synthesis and mode audio: `src/Hamlet.RadioEngine/Training`. Audio input and the WAV round trip: `src/Hamlet.RadioEngine/Audio`. CW decoding: `src/Hamlet.RadioEngine/Cw`. Tests: `tests/Hamlet.RadioEngine.Tests`, `tests/Hamlet.App.Tests` (settings, telemetry payloads, freshness rule — app-layer facts with public promises attached) |
+| Solution layout | `Hamlet.sln` at root; `src/` and `tests/` solution folders. Engine: `src/Hamlet.RadioEngine`. Shell: `src/Hamlet.App`. Live activity sources: `src/Hamlet.RadioEngine/Explore`. Signal synthesis and mode audio: `src/Hamlet.RadioEngine/Training`. Audio input and the WAV round trip: `src/Hamlet.RadioEngine/Audio`. CW decoding: `src/Hamlet.RadioEngine/Cw`. Rig state, polling and the CI-V read table: `src/Hamlet.RadioEngine/Rig` and `Civ` (HM-DEC-050). Tests: `tests/Hamlet.RadioEngine.Tests`, `tests/Hamlet.App.Tests` (settings, telemetry payloads, freshness rule — app-layer facts with public promises attached) |
 | Project settings | `Nullable` enabled, `ImplicitUsings` enabled, `TreatWarningsAsErrors` true — all new projects |
 | Test framework | xUnit, no mocking framework; seams are hand-rolled interfaces (`IRig`, `IAudioSource`, `FakeRig`) |
 | Audio | NAudio (WASAPI), in the engine behind `IAudioSource` (HM-DEC-048) |

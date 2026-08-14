@@ -4,6 +4,114 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-050
+date: 2026-08-15
+refs: src/Hamlet.RadioEngine/Rig/, src/Hamlet.RadioEngine/Civ/CivReads.cs, src/Hamlet.App/Views/RigDiagnosticsWindow.axaml, HM-DEC-009, HM-DEC-030, HM-DEC-049
+---
+
+Hamlet keeps a model of the radio's whole state, populated by cited CI-V reads
+and by the broadcasts the radio already sends, with unknown as a first-class
+state distinct from unsupported. **Reads only. Writing to the radio is
+deliberately excluded and gets its own ruling.**
+
+WHY, AND IT COMES FROM ONE EVENING. The IC-7300 was connected for the first
+time and the CW decoder produced garbage. Diagnosing it took half an hour of
+asking the operator to walk to the radio and read menu settings out loud: what
+is the filter set to, what is the ACC output level, is the squelch open, what is
+the CW pitch. Every one of those is a CI-V read the app could have answered
+instantly. The filter turned out to be wide open, which was the whole problem,
+and Hamlet had no idea because it read frequency and mode and nothing else.
+
+TWENTY-EIGHT FIELDS AND TWENTY-FIVE CITED READS, since mode and filter selection arrive from one command and the VFO has none. Mode, filter selection and the filter's
+actual width in hertz; the S-meter; transmit status and front-end overload; RF
+power, RF gain, squelch level and whether the squelch is open right now; AGC,
+preamp, attenuator, noise blanker, noise reduction and both notches; break-in
+and keyer speed, which the transmit work will need; the ACC and USB audio
+settings that took four menu screens to check by hand; and split. Every read carries
+the Full Manual page it came from, as HM-DEC-049 established.
+
+Reading the table properly caught an error this project had already made and
+recorded. **The CW pitch is sub-command `14 09`, not `14 08`.** Sub-command 08
+is the outer Twin PBT position. A two-column page had been flattened during
+extraction and the description landed against the wrong row, so §4 carried the
+wrong byte from the day it was verified. Issuing 08 with a payload would have
+moved somebody's passband while trying to read a pitch. The lesson is narrow and
+worth keeping: a citation is only as good as the extraction it came from, and a
+column-aware read is not optional on a two-column table.
+
+THE FILTER WIDTH TAKES TWO PAGES, which is why nobody had it. Command `1A 03`
+returns a position on a scale and the scale is documented on p. 4-6 rather than
+in the command table, which gives only its endpoints. Fifty hertz apart up to
+500, then a hundred apart to 3.6 kHz, with AM on its own two-hundred-hertz scale
+and FM not adjustable at all. The read takes the current mode as context and
+REFUSES rather than guessing when the mode is unknown, because reading an AM
+index on the sideband scale would report 2.4 kHz as 600 Hz and that is the
+number an operator would act on.
+
+UNKNOWN IS A STATE AND NEVER A NUMBER (§0.0, HM-DEC-009). A field never read
+answers unknown rather than zero, because an S-meter needle at rest looks
+exactly like a measurement of a quiet band. Unsupported is a different state
+again: "this radio has no AGC" means nothing is ever coming and the screen can
+stop waiting, which is HM-DEC-030 doing its job. And undocumented is a third,
+for a value the radio may well have and the manual describes no command for, so
+the gap is recorded as being in Hamlet rather than in the radio. Inventing a
+byte to close it is what §4 forbids and the radio would be the one to find out.
+
+A reading also carries when it was taken, so stale is expressible. A number read
+four minutes ago shown as current is a claim about now that is really a claim
+about then, and the S-meter is where that matters most. The staleness window is
+several times the poll interval on purpose: if they matched, an ordinary missed
+read would flicker the screen and the operator would learn to ignore the marking.
+
+POLLING IS RATIONED, because CI-V is a slow line shared with the transceive
+stream and hammering it makes the radio sluggish and the app unreliable, which
+is the hardest kind of defect to attribute because nothing actually breaks. Fast
+values a few times a second and only while the window is visible. Settings swept
+on connect and then every half minute. The frequency never polled at all,
+because the radio broadcasts it and asking could only ever be more stale. The
+filter selection never asked for separately, because reading the mode answers
+it. One command in flight, which the test proves by counting overlap rather than
+by trusting the gate. A read that times out marks its value unknown and the loop
+moves on, because a bus already struggling is the last thing to send more
+commands to.
+
+AND THE BADGES THAT LIED ARE FIXED. The mode indicator on the rig display has
+been hardcoded to "CW" since the LCD was built, and the filter designator to
+"FIL2", both bound to string literals in the window. The screen lied the moment
+anybody switched to sideband. It was the app's oldest prime-directive violation
+and it survived because nothing ever read the real mode. Both are blank until
+the radio has been asked, because a blank badge is somebody not having asked and
+a badge reading CW is a claim.
+
+The S-meter is fed for the first time, and its level is nullable all the way
+from the model to the control: null is nobody having asked and zero is a quiet
+band, and they would draw as the same unlit bar, so the scale dims and the meter
+says "no reading" instead.
+
+There is a diagnostics screen under Tools with every field, its value, the
+command that produced it and how long ago, and a button that copies the lot for
+a bug report. It is the screen that would have answered the evening's questions
+in one glance, and §0.0.1 wanted it: a wrong value that arrives with its
+provenance is something somebody can fix.
+
+WHAT HAMLET MAY SAY ABOUT WHAT IT READ, and the line is narrow. "The filter is
+open to 3 kHz and the radio is in Morse, so everything else inside that span is
+arriving at the decoder at the same time" is a statement about two numbers it
+read and a mechanism it understands. Telling the operator to narrow it is not:
+that is operating somebody's radio for them. Every observation is a consequence
+and never an instruction, and none may imply a fault, because a wide filter is a
+perfectly good setting for listening around and may have been chosen on purpose.
+A sweep enforces it against the imperatives, the fault words and the claims
+about the world outside the numbers. Nothing is said at all from a setting
+nobody has read.
+
+Eleven glossary entries land with it, for the controls this now exposes: AGC,
+preamp, attenuator, noise blanker, noise reduction, notch, RF gain, squelch,
+passband, filter width and IF. Reading a value out is not the same as
+understanding it, and the vocabulary is the gate this hobby is kept behind
+(HM-DEC-041).
+
+---
 id: HM-DEC-049
 date: 2026-08-14
 closes: HM-OPEN-002

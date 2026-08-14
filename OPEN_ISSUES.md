@@ -63,8 +63,9 @@ id: HM-OPEN-003
 status: open
 owner: tim
 raised: 2026-08-12
-severity: slows
-blocks: first live connection test, end of phase 1 plumbing
+severity: none
+blocks: nothing; the app reads most of these itself now
+refs: HM-DEC-050, HM-DEC-048
 ---
 
 Station configuration facts from Tim's PC: the COM port the IC-7300
@@ -75,6 +76,30 @@ setting.
 These are config values, not constants. Needed before the first
 connect-and-read-frequency test. Device Manager and the radio's SET menu
 answer all of them in five minutes at the desk.
+
+**NARROWED 2026-08-15 (HM-DEC-050), severity dropped from `slows` to `none`.**
+The first live connection has happened, so this no longer blocks anything, and
+the app now answers most of it itself:
+
+- **CW sidetone pitch** is read from the radio (`14 09`) and shown on the
+  diagnostics screen. Nobody has to walk over and look.
+- **Audio device names** are enumerated and chosen automatically, preferring one
+  whose name matches the radio's USB codec, with the operator's own choice
+  remembered (HM-DEC-048). A machine with none says so and carries on.
+- **CI-V address** is proved by the connection succeeding at all: the probe read
+  only answers when the radio, the address and the baud agree.
+
+What is genuinely left is the pair a person still has to supply, because nothing
+can be read until they are right:
+
+- **The COM port.** Hamlet lists the ports it can see and the operator picks;
+  there is no way to know which one is the radio until something answers on it.
+- **CI-V USB baud when it is not Auto.** The radio defaults to Auto (p. 12-11)
+  and Hamlet has no way to discover a fixed setting except by failing to
+  connect.
+
+Both are answered by connecting once and writing down what worked, which is
+configuration rather than a question anybody has to research.
 
 ---
 id: HM-OPEN-004
