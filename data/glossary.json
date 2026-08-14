@@ -295,6 +295,53 @@
     {
       "term": "Extra",
       "explanation": "The top US licence class, which adds the last slices at the bottom edge of each band where the DX crowd tends to gather. Nothing below it stops you talking to the world."
+    },
+    {
+      "term": "AGC",
+      "expansion": "automatic gain control",
+      "explanation": "The receiver turning its own volume down when a strong signal arrives, so a loud station does not take your ears off. Fast, medium and slow describe how quickly it lets the gain come back up afterwards. Slow is kind on a steady voice and unkind on Morse, because it ducks for the first loud dit and is still recovering through the next three."
+    },
+    {
+      "term": "preamp",
+      "expansion": "preamplifier",
+      "explanation": "A small amplifier at the front of the receiver that lifts everything coming in, the wanted signal and the noise together. It helps on the higher bands where the noise from the sky is faint and the radio's own hiss is what limits you. On 40 and 80 metres at night there is already far more noise arriving than the radio makes, so turning it on mostly amplifies the racket."
+    },
+    {
+      "term": "attenuator",
+      "explanation": "A deliberate turn-down at the front of the receiver, usually about twenty decibels, for when a signal is so strong it overloads things and smears across the band. It is the opposite of the preamp and it is used far less often. Most of the time an attenuator left on by accident just makes everything sound weak."
+    },
+    {
+      "term": "noise blanker",
+      "explanation": "A trick for noise that arrives in sharp regular ticks, like car ignition or an electric fence. The radio spots each tick and mutes for the instant it lasts, which your ear does not notice. It does nothing for steady hiss, and on a crowded band it can chew up strong signals near you and make things worse instead of better."
+    },
+    {
+      "term": "noise reduction",
+      "explanation": "Digital processing that tries to keep the parts of the audio that look like a signal and throw away the parts that look like hiss. Wound up high it leaves voices sounding underwater and can swallow a weak Morse note completely, so a little of it goes a long way."
+    },
+    {
+      "term": "notch",
+      "explanation": "A very narrow hole cut in what you are listening to, for killing a single steady whistle from a carrier sitting on top of your signal. The automatic version hunts for the whistle itself. It only works on tones that stay put, so it does nothing about somebody talking or sending Morse across you."
+    },
+    {
+      "term": "RF gain",
+      "explanation": "How much amplification the receiver applies before anything else happens. Turning it down raises the level a signal has to reach before you hear it, which on a noisy night can make a weak station easier to read rather than harder. It is the control most often left somewhere odd by accident, because nothing announces that it is not all the way up."
+    },
+    {
+      "term": "squelch",
+      "explanation": "A gate that keeps the speaker quiet until something loud enough arrives, so you are not sitting in hiss between contacts. Set too high it holds the gate shut on exactly the weak signals worth chasing, and the band sounds dead when it is not."
+    },
+    {
+      "term": "passband",
+      "explanation": "The slice of frequencies the receiver lets through to your ears, measured in hertz. Everything inside it arrives together, so a wide passband on a busy band means several stations at once. Voice needs a couple of thousand hertz to sound like a person; Morse needs a few hundred at most, and narrowing it is how you pull one signal out of a crowd."
+    },
+    {
+      "term": "filter width",
+      "explanation": "How wide the receiver's passband is set, in hertz. The radio keeps three filters for each mode and every one of them is adjustable, so knowing you are on FIL2 tells you nothing about how wide FIL2 currently is. This is the number that decides whether one signal reaches you or three do."
+    },
+    {
+      "term": "IF",
+      "expansion": "intermediate frequency",
+      "explanation": "The frequency a receiver shifts everything down to internally so it can do the fiddly work of filtering at one fixed place instead of all over the band. You never hear the IF itself. Its only visible consequence is that the filters are described as belonging to it."
     }
   ]
 }

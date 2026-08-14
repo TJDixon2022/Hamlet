@@ -70,6 +70,21 @@ public partial class RigDiagnosticsViewModel : ObservableObject
     /// <summary>Every field, known or not.</summary>
     public ObservableCollection<RigDiagnosticRow> Rows { get; }
 
+    /// <summary>
+    /// What Hamlet can say about these settings from the values it read.
+    /// </summary>
+    /// <remarks>
+    /// Consequences rather than instructions (HM-DEC-050). "The filter is open
+    /// to 3 kHz and the radio is in Morse" is a statement about two numbers
+    /// Hamlet read; telling somebody to narrow it would be operating their radio
+    /// for them, which this does not do.
+    /// </remarks>
+    public ObservableCollection<string> Observations { get; } = new();
+
+    /// <summary>True when there is anything worth saying.</summary>
+    [ObservableProperty]
+    private bool _hasObservations;
+
     /// <summary>Which radio this describes.</summary>
     [ObservableProperty]
     private string _rigName = "no radio connected";
@@ -100,6 +115,14 @@ public partial class RigDiagnosticsViewModel : ObservableObject
                 readout.Freshness == RigFreshness.Stale));
         }
 
+        Observations.Clear();
+
+        foreach (var line in RigObservations.For(state))
+        {
+            Observations.Add(line);
+        }
+
+        HasObservations = Observations.Count > 0;
         RigName = state.RigName ?? "no radio connected";
 
         var known = Rows.Count(r => r.State == RigValueState.Known);
@@ -132,6 +155,16 @@ public partial class RigDiagnosticsViewModel : ObservableObject
     private string BuildCopyText()
     {
         var lines = new List<string> { $"Rig: {RigName}", Summary, "" };
+
+        foreach (var line in Observations)
+        {
+            lines.Add("* " + line);
+        }
+
+        if (Observations.Count > 0)
+        {
+            lines.Add("");
+        }
 
         foreach (var row in Rows)
         {
