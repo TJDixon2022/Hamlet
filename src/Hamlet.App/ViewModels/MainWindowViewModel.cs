@@ -1969,7 +1969,10 @@ public partial class MainWindowViewModel : ObservableObject
         var prominence = lensed.ToDictionary(
             l => SpotViewModel.KeyFor(l.Spot), l => l.Prominence, StringComparer.Ordinal);
 
-        var ranked = SpotRanking.Rank(lensed.Select(l => l.Spot), now);
+        // The rank reads the lens's own liveness rather than measuring the
+        // clock again, so the fade on a card and its place in the list are two
+        // readings of one number (HM-DEC-058).
+        var ranked = SpotRanking.Rank(lensed, Lifetimes);
 
         _lastNewSpotCount = RebuildSpotList(ranked, now, prominence);
         UpdateSpotFreshness();

@@ -4,6 +4,78 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-058
+date: 2026-08-14
+refs: src/Hamlet.RadioEngine/Explore/SpotRankWeights.cs, src/Hamlet.RadioEngine/Explore/SpotRanking.cs, tests/Hamlet.RadioEngine.Tests/Explore/SpotRankingTests.cs, HM-OPEN-006, HM-DEC-038, HM-DEC-057, FG-007
+---
+
+The happening-now list ranks for what a newcomer can actually work, not for
+distance. It is built on the lens machinery, so liveness comes from one clock
+rather than a parallel one.
+
+WHY DISTANCE IS NOT THE ANSWER, AND THIS BELONGS IN THE RECORD. Distance does
+not run in a straight line with workability on HF. There is a skip zone: on 20 m
+a station two hundred miles off is often unreachable, because the signal leaves
+at too shallow an angle and comes down beyond them, while somebody two thousand
+miles out is easy. On 40 m at night the close-in stations come back in loud.
+Sorting nearest-first would put the hardest contacts at the top and call them the
+best chance, which is a guess presented as a decode.
+
+HM-DEC-038 compounds it. Only sources that said where the STATION is carry a
+distance at all, so POTA has one and RBN has none, and a distance-led sort would
+bury every RBN spot. That is where "somebody is calling CQ right this second"
+comes from, which is the freshest evidence this app has of anything.
+
+DISTANCE STAYS ON THE CARD, because it teaches a newcomer what ranges are
+plausible on which band, and that sense is exactly what this operator is missing.
+It earns a real vote when FG-007 lands and Hamlet can say which bands are open to
+where.
+
+The consequence, stated so nobody is surprised by it: until then, a park in
+Bavaria and a park in Ohio rank the same if they are alike in every way Hamlet
+can judge. That is uncomfortable and it is honest. The card carries "4250 miles
+northeast" and the operator learns from it, which is more than a silent penalty
+would have taught them.
+
+ONE PROXIMITY STILL VOTES, AND IT IS NOT A DISTANCE. A skimmer report states
+where a receiver that decoded the signal is standing. A skimmer in the operator's
+own call district is the closest thing to "your receiver will hear it too" that
+any spot network can honestly offer, so it counts, and it counts only for sources
+that report a receiver. An activation's proximity is where the station is, which
+is a distance, so it does not.
+
+WHAT THE RANK WEIGHS. Whether the station is alive right now, taken from the lens
+machinery. Whether they are soliciting contacts, since an activator calling CQ is
+the friendliest target on the band for a first QSO. The mode, against what Hamlet
+can currently help with. And sending speed where the source reports it.
+
+LIVENESS RUNS FROM A PENALTY TO A BONUS, which was not the first design and is
+the correction the tests forced. An activation calling CQ in Morse at a relaxed
+pace scores over seventy before liveness is counted at all, so the absence of a
+freshness bonus was not enough: somebody who packed up an hour ago still led the
+list. It now slides from minus twenty-five to plus thirty across the source's own
+ruled lifetime, so a finished activation cannot outrank a live station calling
+CQ, and no threshold steps where nobody could see it coming.
+
+THE WEIGHTS LIVE IN ONE NAMED PLACE and are legible rather than imagined:
+`SpotRankWeights`, each one with the reason it is what it is, and the reason line
+on every card extended to four phrases so the ordering is explainable from the
+screen. There is deliberately no control for them in the app. They are a judgment
+about what a beginner can work, and a slider would ask the operator to make that
+judgment before they have the experience to make it. Tim rules on the numbers;
+this makes them readable rather than asking him to imagine them.
+
+THE SPEED FACTOR HAS A HOLE AND IT IS DECLARED RATHER THAN FILLED. Hamlet has
+never asked what speed this operator can copy, which is ONB-C04 and the missing
+half of FG-002. Until it does, the rank may use a reported speed to DESCRIBE a
+station and may not claim any speed suits this person: a confident match against
+a number nobody has ever measured is what §0.0 forbids, and it would fail in the
+direction that costs most, sending somebody to a contact they cannot make and
+letting them conclude the fault is theirs. So "15 WPM, slow enough to copy"
+became "15 WPM, which is a relaxed pace", the gap is HM-OPEN-006, and a test
+sweeps the reason lines for the phrasings that would cross back over.
+
+---
 id: HM-DEC-057
 date: 2026-08-14
 refs: HM-DEC-045, HM-DEC-020, HM-DEC-025, FUTURE_GOALS.md

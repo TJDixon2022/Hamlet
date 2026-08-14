@@ -153,22 +153,30 @@ public static class LeadCard
         var spot = ranked.Spot;
         var why = new List<string>();
 
-        if (spot.Wpm is { } wpm && wpm <= SpotRanking.CopyableWpm)
+        // WHAT THE STATION IS DOING, NEVER WHAT SUITS THIS OPERATOR
+        // (HM-DEC-058). Hamlet has never asked what speed they can copy
+        // (HM-OPEN-006), so the card says how fast the sending is and stops.
+        // "Slow enough to copy" was a claim about the reader, made against a
+        // number nobody has ever measured.
+        if (spot.Wpm is { } wpm && wpm <= SpotRankWeights.ModerateWpm)
         {
-            why.Add(wpm <= SpotRanking.ComfortableWpm
-                ? "Slow enough to copy while you are still counting"
-                : "Close to a copyable speed");
+            why.Add(wpm <= SpotRankWeights.RelaxedWpm
+                ? $"sending at {wpm} words a minute, which is a relaxed pace"
+                : $"sending at {wpm} words a minute");
         }
 
-        if (spot.Proximity == SpotProximity.Local)
+        // A nearby RECEIVER heard it, which is evidence your own will. An
+        // activation's proximity is where the station is, and that is a
+        // distance rather than an audibility claim (HM-DEC-038).
+        if (spot.Proximity == SpotProximity.Local && SpotLifetime.IsSkimmer(spot))
         {
-            why.Add("close enough that your antenna should hear it");
+            why.Add("a receiver near you decoded it, so yours should hear it too");
         }
         else if (spot.ReportCount is { } reports && reports >= 5)
         {
             why.Add($"{reports} receivers are hearing it, so yours probably can too");
         }
-        else if (spot.SignalDb is { } db && db >= SpotRanking.StrongSignalDb)
+        else if (spot.SignalDb is { } db && db >= SpotRankWeights.StrongSignalDb)
         {
             // The figure and its meaning together, so the scale starts to mean
             // something after a few dozen cards (HM-DEC-042).

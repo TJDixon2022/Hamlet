@@ -187,4 +187,48 @@ public sealed class LeadCardTests
         Assert.True(lead.HasSuggestion);
         Assert.Contains("phase 3", lead.Body, StringComparison.OrdinalIgnoreCase);
     }
+
+    /// <remarks>
+    /// ONE RANKING, READ BY BOTH (HM-DEC-046, HM-DEC-058). The lead card takes
+    /// the first spot in the ranked list it is willing to recommend, so it can
+    /// never point at one station while the list beneath it leads with another.
+    /// Where the top of the list is suitable, the lead card IS the top of the
+    /// list.
+    /// </remarks>
+    [Fact]
+    public void TheLeadCardIsTheTopOfTheListWheneverTheTopIsWorthRecommending()
+    {
+        var now = new DateTime(2026, 8, 15, 15, 0, 0, DateTimeKind.Utc);
+
+        var spots = new[]
+        {
+            // A fresh park activation calling CQ in Morse: the best thing here.
+            new ActivitySpot("W3ABC is activating a park", 7_032_000, "CW", "POTA",
+                now.AddMinutes(-8), 15)
+            {
+                DxCall = "W3ABC", CallType = SpotCallType.Cq,
+                IsActivation = true, PlaceLabel = "US-PA",
+            },
+
+            // An activation an hour old, on voice: still on the list, well down.
+            new ActivitySpot("DL1XYZ is activating a park", 7_179_000, "SSB", "POTA",
+                now.AddMinutes(-58), null)
+            {
+                DxCall = "DL1XYZ", CallType = SpotCallType.Cq,
+                IsActivation = true, PlaceLabel = "DE-BY",
+            },
+        };
+
+        var ranked = SpotRanking.Rank(spots, now);
+        var lead = LeadCard.Choose(ranked, "40 m");
+
+        Assert.Equal("W3ABC", ranked[0].Spot.DxCall);
+        Assert.True(lead.HasSuggestion);
+        Assert.Equal(ranked[0].Spot.FrequencyHz, lead.TuneHz);
+
+        // And the nearly spent one really is below it, which is the liveness
+        // slope doing its job rather than a threshold.
+        Assert.Equal("DL1XYZ", ranked[1].Spot.DxCall);
+        Assert.True(ranked[1].Score < LeadCard.MinimumScore);
+    }
 }

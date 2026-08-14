@@ -175,3 +175,40 @@ What remains in `BandPlan.cs` and is still `[extrapolated]`:
   jumps to 14.030 and QRP ARCI puts the 20 m center of activity at 14.060. The
   neighborhood file has cited jump spots per block, so a band button could take
   its landing place from there instead of carrying its own number.
+
+---
+id: HM-OPEN-006
+status: open
+owner: tim
+raised: 2026-08-14
+severity: none
+refs: FG-002, ONBOARDING.md ONB-C04, HM-DEC-058, src/Hamlet.RadioEngine/Explore/SpotRankWeights.cs
+---
+
+Hamlet has never asked the operator what Morse speed they can copy, so the spot
+ranking may describe a station's sending speed and may not claim any speed suits
+this person.
+
+The ranking weighs sending speed where the source reports it, which RBN does.
+What it cannot do is match that figure against the operator, because there is no
+figure to match it against. A card reading "15 WPM, slow enough for you" would
+be a confident match against a number nobody has ever measured, which is exactly
+what §0.0 forbids, and it would be wrong in the direction that costs most: it
+would send somebody to a contact they cannot make and let them conclude the
+fault is theirs.
+
+So the copy is descriptive and the preference in `SpotRankWeights` is a fact
+about Morse rather than about this person: slower sending is easier for anybody
+still learning, which is why the slow-speed clubs exist. `SpotRankingTests`
+sweeps the reason lines for the phrasings that would cross back over.
+
+What closes it is ONB-C04, which is the onboarding step that finds out, and its
+own note says the honest form is probably a listening exercise rather than a
+question: somebody who has never made a contact does not know what speed they
+can copy either, and asking them to type a number invites a guess. FG-002 is the
+other half, since a copy speed Hamlet knows is what turns the Elmer mode's
+practice into something aimed at where this person actually is.
+
+Severity `none`: the ranking works without it and says nothing untrue. It stays
+open because the day somebody adds a speed filter without noticing this is the
+day the app starts making a claim it cannot support.
