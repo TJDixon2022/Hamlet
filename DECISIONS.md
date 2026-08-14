@@ -4,6 +4,51 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-063
+date: 2026-08-14
+refs: Directory.Build.props, CHANGELOG.md, tests/Hamlet.App.Tests/ViewModels/VersionTests.cs, HM-DEC-019
+---
+
+The version is **1.2.0**, and this ruling establishes the convention rather than
+applying one, because there was none recorded anywhere.
+
+WHY 1.2.0 AND NOT A PATCH. A radio application that can key a transmitter for
+the first time is not a fix. CW transmit is a new capability the operator can
+see and use, which is exactly what a minor release is for.
+
+SEMANTIC VERSIONING, WITH THE MEANINGS SAID PLAINLY for a project of this kind,
+because "breaking change" means something different in a library and in a
+program somebody runs at their desk:
+
+- **Major** for a change that breaks the operator's existing setup or data, or a
+  reconception of what the application is. Losing somebody's settings, their
+  favorites or their spot history is a major release even when the code change
+  is small.
+- **Minor** for a new capability the operator can see and use. CW transmit is
+  the clearest possible example, and so were the Explorer and the decoder.
+- **Patch** for fixes, corrections and polish that add no new capability.
+
+THE NUMBER LIVES IN ONE PLACE, `Directory.Build.props`, and every project reads
+it from there. The About box already read the assembly at run time rather than
+carrying a string of its own (HM-DEC-019), which is what makes one place enough:
+the box, the telemetry line and the binary cannot disagree, because there is
+only one thing for them to disagree with.
+
+A CHANGELOG EXISTS AND IS DELIBERATELY THIN. `DECISIONS.md` already records
+every ruling with its date, its reasoning and what was rejected, and it does
+that far better than a changelog would. Writing the reasons out again would be a
+second copy of the same facts, and §0 is explicit that a second copy drifts. But
+there is one fact `DECISIONS.md` does not hold: which release contains which
+rulings. So `CHANGELOG.md` is that index and nothing more, one line and a range
+of ids per release, pointing at the decision log for the why.
+
+The tests hold the chain rather than the number. A test pinning the exact
+version would need editing on every release and would fail for the wrong reason;
+what is worth guarding is that About reads the assembly, that the shell and the
+engine ship as one thing, and that the number never silently falls back to
+1.0.0.
+
+---
 id: HM-DEC-062
 date: 2026-08-14
 refs: src/Hamlet.RadioEngine/Civ/CivScope.cs, src/Hamlet.RadioEngine/Rig/RigSpectrumSource.cs, src/Hamlet.RadioEngine/Rig/ScopeReadiness.cs, tests/Hamlet.RadioEngine.Tests/Rig/ScopeStreamTests.cs, HM-DEC-005, HM-DEC-006, HM-DEC-026, HM-DEC-050

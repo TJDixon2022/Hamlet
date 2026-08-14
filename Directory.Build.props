@@ -1,0 +1,21 @@
+<Project>
+
+  <!--
+    THE VERSION LIVES HERE AND NOWHERE ELSE (HM-DEC-063).
+
+    Every project in the solution reads it from this one file, so the About
+    window, the telemetry line and the assembly all report the same number and
+    none of them can drift from the others. About reads it off the assembly at
+    run time rather than carrying a string of its own (HM-DEC-019), which is
+    what makes one place enough.
+
+    Semantic versioning, with the meanings §1 of CLAUDE.md records: major for a
+    change that breaks somebody's existing setup or data, minor for a new
+    capability the operator can see and use, patch for fixes and polish that add
+    none.
+  -->
+  <PropertyGroup>
+    <Version>1.2.0</Version>
+  </PropertyGroup>
+
+</Project>
