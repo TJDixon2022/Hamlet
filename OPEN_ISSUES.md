@@ -263,3 +263,33 @@ rather than a decision.
 
 Severity `none`: favorites work, nothing is wrong, and neither question has to be
 answered before somebody uses them.
+
+---
+id: HM-OPEN-008
+status: open
+owner: unassigned
+raised: 2026-08-14
+severity: none
+refs: HM-DEC-069, IC-7300 Full Manual p. 12-9 (publication A7292-4EX-5)
+---
+
+The IC-7300 will send its decoded RTTY out the USB port, and the manual never
+says what those bytes look like.
+
+It states that the setting exists, that "an RTTY decoded signal is output," and
+that the rate is 4800, 9600, 19200 or 38400 bps with 9600 the default. It does
+not say whether the characters are ASCII, what marks the end of a line, whether
+anything frames or brackets the text, or how the decode screen's own display maps
+onto what leaves the port. A read column-aware over the whole manual found no
+fourth statement about it.
+
+So a decoder written against it today would be guessing, and dressing a guess as
+decoded text is what §0.0 exists to forbid.
+
+What would close it is an observation rather than a document: setting USB Serial
+Function to RTTY Decode, tuning an RTTY signal, and capturing the port. That
+costs rig control for as long as it runs (HM-DEC-069), so it is an experiment
+somebody chooses to do rather than something the app can find out on its own.
+
+Severity `none`: nothing is blocked. HM-DEC-069 already rules that the mode is
+not built, and for a reason this answer would not change on its own.

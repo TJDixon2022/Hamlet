@@ -66,7 +66,16 @@ public static class ModeGuide
         new ModeInfo("RTTY", "1930s teletype", "Two-tone chatter",
             SignatureKind.Rails, "Medium",
             "Mechanical-era technology still on the air. Sounds like a robot "
-            + "bird; looks like train tracks on the waterfall.",
+            + "bird, and looks like train tracks on the waterfall. Your radio "
+            + "decodes this one by itself, on its own screen, with no computer "
+            + "involved at all. It will send that decoded text down the USB "
+            + "cable too, and there is a catch worth knowing before you go "
+            + "looking for it. The radio has one setting for what comes out of "
+            + "that port, so choosing the decoded text means the control "
+            + "messages stop, and Hamlet would lose the radio entirely for as "
+            + "long as it ran. That makes it a thing to do at the radio's own "
+            + "screen when you want it, rather than something Hamlet can offer "
+            + "you here.",
             7_062_000, ModeFamily.Digital),
         new ModeInfo("PSK31", "Keyboard whisper", "Soft warble",
             SignatureKind.Ribbon, "Medium",

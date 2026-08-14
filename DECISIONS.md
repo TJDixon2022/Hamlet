@@ -4,6 +4,65 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-069
+date: 2026-08-14
+refs: src/Hamlet.RadioEngine/Explore/ModeGuide.cs, src/Hamlet.App/ViewModels/MainWindowViewModel.cs, tests/Hamlet.RadioEngine.Tests/Explore/RttyConstraintTests.cs, HM-OPEN-008, HM-DEC-054
+---
+
+**Hamlet does not read the radio's RTTY decoder, and the reason is a constraint
+in the radio rather than a gap in the app.** The IC-7300 decodes RTTY internally
+and will send the decoded text out the USB port. That is the same port CI-V uses,
+and one setting chooses which of the two it carries. Taking the decoded text
+costs rig control entirely.
+
+VERIFIED, NOT ASSUMED. IC-7300 Full Manual, publication **A7292-4EX-5**, 173
+pages, read column-aware with `pdftotext -table`. Page **12-9**, under MENU then
+SET then Connectors:
+
+> USB Serial Function (Default: CI-V) — Selects the signal output from [USB].
+> CI-V: A CI-V command is output. RTTY Decode: An RTTY decoded signal is output.
+
+One setting, two options, one port. Page **12-9** also gives RTTY Decode Baud
+Rate (Default: 9600), options 4800, 9600, 19200 or 38400 bps. Page **2-5**
+carries the same fact as a tip beside the USB connection drawing, and page **2-3**
+describes the [USB] port itself, listing remote control by CI-V and sending the
+decoded RTTY output as separate bullets on the one connector. Three statements
+and no contradiction between them: **the conflict is real and the manual is not
+ambiguous about it.**
+
+SO THE MODE IS NOT BUILT, AND THAT IS THE ANSWER RATHER THAN A DEFERRAL. An RTTY
+terminal fed from that port would be an application that stops following the
+radio the moment it starts working. Every frame Hamlet sent would still be
+correct and answered by nothing, the frequency would freeze at whatever it last
+was, the waterfall would empty, and all of it would look like a fault in Hamlet.
+That is the prime directive broken in the worst available way, because everything
+on screen would keep looking right (§0.0).
+
+A SECOND REASON, AND ON ITS OWN IT WOULD BE ENOUGH. **The manual never states
+what the decoded output looks like on the wire.** It says an RTTY decoded signal
+is output and gives the baud rate, and it does not say whether the bytes are
+ASCII, what marks a line ending, or how the decode screen's characters map onto
+them. Code that guessed would be presenting an interpretation as a decode, which
+§4 forbids by name. Recorded as HM-OPEN-008 rather than filled in with something
+plausible.
+
+WHAT WAS BUILT INSTEAD is the honest half: the field guide's RTTY entry now says
+the radio decodes this one by itself, that it will send the text down the cable,
+and that one setting governs the port so choosing it means losing the radio for
+as long as it runs. The choice is the operator's and it is made at the radio's own
+screen. Hamlet does not offer to make it, and could not undo it if it did, since
+the switch that severs CI-V cannot be reached over CI-V afterward.
+
+AND ONE DIAGNOSTIC, WHICH IS THE PART THAT EARNS ITS KEEP TODAY (§0.0.1). A radio
+left on RTTY Decode answers nothing, which looks exactly like a bad cable. The
+connect failure now names that possibility beside the cable, the baud rate and the
+CI-V address, so nobody spends an evening on a lead that was never the problem.
+
+The digital neighborhoods already know where RTTY lives (HM-DEC-054), and that
+does not change. Knowing where a mode lives and being able to read it are
+different things, and the map has never claimed the second.
+
+---
 id: HM-DEC-068
 date: 2026-08-14
 refs: src/Hamlet.RadioEngine/Explore/CardText.cs, src/Hamlet.App/ViewModels/MainWindowViewModel.cs, src/Hamlet.App/ViewModels/LeadCard.cs, tests/Hamlet.App.Tests/ViewModels/CardRepetitionTests.cs, HM-DEC-025, HM-DEC-045

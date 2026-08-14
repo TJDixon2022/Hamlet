@@ -1807,8 +1807,16 @@ public partial class MainWindowViewModel : ObservableObject
         {
             (rig as IDisposable)?.Dispose();
             AppEvents.ConnectFailed(_telemetry, port, rigType, "no_response");
-            StatusText = $"No answer on {port}. Check the cable, the baud rate and "
-                       + "the CI-V address on the radio";
+            // THE THIRD CAUSE IS THE ONE NOBODY GUESSES (HM-DEC-069). The
+            // radio has a single setting for what leaves its USB port, and set
+            // to RTTY Decode that port carries decoded text instead of control
+            // messages. Every frame Hamlet sends is then correct and answered
+            // by nothing, which looks exactly like a bad cable (§0.0.1).
+            StatusText = $"No answer on {port}. It is usually the cable, the baud "
+                       + "rate or the CI-V address, and there is one more that "
+                       + "catches people out: with USB Serial Function set to RTTY "
+                       + "Decode, that port carries decoded text rather than "
+                       + "control messages and nothing Hamlet asks will be answered";
             return false;
         }
 
