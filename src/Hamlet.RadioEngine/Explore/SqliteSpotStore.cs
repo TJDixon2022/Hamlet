@@ -92,10 +92,13 @@ public sealed class SqliteSpotStore : ISpotStore
                     + "  place_label TEXT,"
                     + "  report_count INTEGER,"
                     + "  latitude REAL,"
-                    + "  longitude REAL);"
+                    + "  longitude REAL,"
+                    + "  acted_on TEXT);"
                     + "CREATE INDEX IF NOT EXISTS ix_spots_heard ON spots(heard_at);";
                 pragma.ExecuteNonQuery();
             }
+
+            AddActedOnColumn(connection);
 
             return new SqliteSpotStore(connection);
         }
@@ -104,6 +107,31 @@ public sealed class SqliteSpotStore : ISpotStore
             // A locked file, a full disk, a read-only folder. None of these is
             // a reason the app cannot run.
             return null;
+        }
+    }
+
+    /// <summary>
+    /// Give an older database the acted-on column.
+    /// </summary>
+    /// <remarks>
+    /// CREATE TABLE IF NOT EXISTS leaves a table that already exists alone, so a
+    /// database written before HM-DEC-057 would keep its old shape and every
+    /// read of the new column would fail. The ALTER is tried and its failure
+    /// swallowed, because "the column is already there" and "it could not be
+    /// added" both end the same way: carry on, and lose nothing worse than the
+    /// memory of which spots were visited (§8).
+    /// </remarks>
+    private static void AddActedOnColumn(SqliteConnection connection)
+    {
+        try
+        {
+            using var command = connection.CreateCommand();
+            command.CommandText = "ALTER TABLE spots ADD COLUMN acted_on TEXT;";
+            command.ExecuteNonQuery();
+        }
+        catch (Exception)
+        {
+            // Already present, which is the ordinary case.
         }
     }
 
@@ -223,7 +251,7 @@ public sealed class SqliteSpotStore : ISpotStore
                     "SELECT story, frequency_hz, mode, source, heard_at, first_seen,"
                     + " last_seen, wpm, call_type, signal_db, dx_call, spotter_call,"
                     + " proximity, is_activation, reference, place_label, report_count,"
-                    + " latitude, longitude"
+                    + " latitude, longitude, acted_on"
                     + " FROM spots WHERE heard_at >= $since ORDER BY heard_at DESC;";
                 command.Parameters.AddWithValue("$since", Stamp(sinceUtc));
 
@@ -264,6 +292,33 @@ public sealed class SqliteSpotStore : ISpotStore
             catch (Exception)
             {
                 return 0;
+            }
+        }
+    }
+
+    /// <inheritdoc/>
+    public void MarkActedOn(string key, DateTime nowUtc)
+    {
+        lock (_gate)
+        {
+            if (_disposed)
+            {
+                return;
+            }
+
+            try
+            {
+                using var command = _connection.CreateCommand();
+                command.CommandText =
+                    "UPDATE spots SET acted_on = $now WHERE key = $key;";
+                command.Parameters.AddWithValue("$now", Stamp(nowUtc));
+                command.Parameters.AddWithValue("$key", key);
+                command.ExecuteNonQuery();
+            }
+            catch (Exception)
+            {
+                // Forgetting that somebody visited a spot costs them one
+                // repeated card, which is not worth an exception (§8).
             }
         }
     }
@@ -340,7 +395,11 @@ public sealed class SqliteSpotStore : ISpotStore
             StationLocation = lat is { } la && lon is { } lo ? new LatLon(la, lo) : null,
         };
 
-        return new StoredSpot(spot, Parse(r.GetString(5)), Parse(r.GetString(6)));
+        return new StoredSpot(
+            spot,
+            Parse(r.GetString(5)),
+            Parse(r.GetString(6)),
+            r.IsDBNull(19) ? null : Parse(r.GetString(19)));
     }
 
     /// <summary>

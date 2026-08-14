@@ -68,6 +68,36 @@ public partial class MainWindowViewModel : ObservableObject
     private readonly AppSettings _settings;
     private readonly JsonlTelemetry? _telemetry;
     private readonly List<ActivitySpot> _allBandSpots = new();
+
+    /// <summary>
+    /// Spots the operator tuned to in this session.
+    /// </summary>
+    /// <remarks>
+    /// The store keeps the durable record; this covers the moments between an
+    /// operator clicking Tune and the next write reaching the disk, so a card
+    /// they have just been to does not reappear under "what's new" one refresh
+    /// later (HM-DEC-057).
+    /// </remarks>
+    private readonly HashSet<string> _actedOnSpots =
+        new(StringComparer.OrdinalIgnoreCase);
+
+    /// <summary>
+    /// Which of the two questions the happening-now list is answering
+    /// (HM-DEC-057).
+    /// </summary>
+    /// <remarks>
+    /// Not observable on its own: the two booleans below are what the segmented
+    /// control binds to, because a toggle needs to know whether it is the one
+    /// that is down.
+    /// </remarks>
+    private SpotLens _lens = SpotLens.BestChance;
+
+    /// <summary>True once the operator has chosen a lens themselves.</summary>
+    /// <remarks>
+    /// The whole of "may never override the operator afterward". Inference runs
+    /// while this is false and never once it is true.
+    /// </remarks>
+    private bool _lensChosenByOperator;
     private AggregateActivitySource _activitySource;
     private RbnActivitySource? _rbn;
     private IDisposable[] _ownedSources = Array.Empty<IDisposable>();
@@ -87,6 +117,20 @@ public partial class MainWindowViewModel : ObservableObject
     private CivMode? _lastKnownMode;
     private bool _windowVisible = true;
     private bool _spotsEverLoaded;
+    private IReadOnlyList<StoredSpot> _bandHistory = Array.Empty<StoredSpot>();
+    private int _lastNewSpotCount;
+
+    /// <summary>True when "Best chance" is the lens in use.</summary>
+    [ObservableProperty]
+    private bool _isBestChance = true;
+
+    /// <summary>True when "What's new" is the lens in use.</summary>
+    [ObservableProperty]
+    private bool _isWhatsNew;
+
+    /// <summary>What the active lens is for, on hover.</summary>
+    [ObservableProperty]
+    private string _lensQuestion = "";
     private DateTime _lastSpotLoadUtc = DateTime.UtcNow;
 
     [ObservableProperty]
@@ -507,6 +551,18 @@ public partial class MainWindowViewModel : ObservableObject
 
         ContactShape = new ContactShapeViewModel(settings.Operator.Callsign);
 
+        // A stored lens is the operator's own last answer rather than a guess,
+        // so it is restored and inference never runs against it (HM-DEC-057).
+        if (Enum.TryParse<SpotLens>(settings.SpotLens, out var storedLens))
+        {
+            _lens = storedLens;
+            _lensChosenByOperator = true;
+        }
+
+        _isBestChance = _lens == SpotLens.BestChance;
+        _isWhatsNew = _lens == SpotLens.WhatsNew;
+        _lensQuestion = SpotLensView.Question(_lens);
+
         // History, or an honest substitute for it. A store that cannot be
         // opened is a nuisance, never a reason not to start (§8, HM-DEC-045).
         _spotStore = SqliteSpotStore.TryOpen(
@@ -781,12 +837,53 @@ public partial class MainWindowViewModel : ObservableObject
         StoryTuneHz = mode.LivesAt40mHz ?? SelectedBand.Band.JumpHz;
     }
 
+    /// <summary>
+    /// Switch the happening-now list between its two questions (HM-DEC-057).
+    /// </summary>
+    /// <param name="lensName">The lens, as its enum name.</param>
+    /// <remarks>
+    /// LEAVING "WHAT'S NEW" IS WHAT MOVES THE WATERMARK, not arriving at it.
+    /// Moving it on arrival would empty the list the instant somebody opened it,
+    /// which is the one thing a delta must not do. So the list stays still while
+    /// they are reading it, and is a fresh delta the next time they come back.
+    /// </remarks>
+    [RelayCommand]
+    private void SelectLens(string lensName)
+    {
+        if (!Enum.TryParse<SpotLens>(lensName, out var lens) || lens == _lens)
+        {
+            return;
+        }
+
+        if (_lens == SpotLens.WhatsNew)
+        {
+            MarkLookedAtWhatsNew();
+        }
+
+        SetLens(lens);
+        _lensChosenByOperator = true;
+
+        _settings.SpotLens = lens.ToString();
+        SettingsStore.Save(_settings);
+
+        AppEvents.SpotLensChosen(_telemetry, lens.ToString());
+        ApplyLens(DateTime.UtcNow);
+    }
+
+    /// <summary>Record that the operator has now seen what was new.</summary>
+    private void MarkLookedAtWhatsNew()
+    {
+        _settings.SpotsLastLookedUtc = DateTime.UtcNow;
+        SettingsStore.Save(_settings);
+    }
+
     /// <summary>Tune the rig (and the whole UI) to a target — the payoff
     /// click on every story and spot.</summary>
     [RelayCommand]
     private void TuneTo(long hz)
     {
         AppEvents.TuneRequested(_telemetry, hz, "story_or_spot");
+        MarkActedOn(hz);
         var band = BandPlan.BandFor(hz);
         if (band is not null && band.Name != SelectedBand.Band.Name)
         {
@@ -1733,13 +1830,15 @@ public partial class MainWindowViewModel : ObservableObject
     /// one may carry a newer report count or a better story. Identity is the
     /// same rule the store and the aggregate use.</para>
     /// </remarks>
-    private IReadOnlyList<ActivitySpot> LiveFromHistory(
+    private IReadOnlyList<StoredSpot> LiveFromHistory(
         IReadOnlyList<ActivitySpot> live, DateTime now)
     {
-        var merged = new List<ActivitySpot>(live);
-        var seen = new HashSet<string>(
-            live.Select(SpotIdentity.KeyFor), StringComparer.OrdinalIgnoreCase);
+        var merged = new List<StoredSpot>();
+        var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
+        // The store first, because its rows carry the two facts the lenses need
+        // and a live spot cannot: when Hamlet first saw this, and whether the
+        // operator has already been to it (HM-DEC-057).
         foreach (var stored in _spotStore.Since(now - Lifetimes.Longest))
         {
             if (!SpotLifetime.IsLive(stored.Spot, now, Lifetimes))
@@ -1749,11 +1848,24 @@ public partial class MainWindowViewModel : ObservableObject
 
             if (seen.Add(SpotIdentity.KeyFor(stored.Spot)))
             {
-                merged.Add(stored.Spot);
+                merged.Add(stored);
             }
         }
 
-        merged.Sort((a, b) => b.HeardAtUtc.CompareTo(a.HeardAtUtc));
+        // Anything the feed just returned that the store did not give back. It
+        // was recorded a moment ago, so this is a store that could not be
+        // written rather than a spot that is new, and the list still shows it
+        // rather than losing it to a disk problem (§8).
+        foreach (var spot in live)
+        {
+            if (SpotLifetime.IsLive(spot, now, Lifetimes)
+                && seen.Add(SpotIdentity.KeyFor(spot)))
+            {
+                merged.Add(new StoredSpot(spot, now, now));
+            }
+        }
+
+        merged.Sort((a, b) => b.Spot.HeardAtUtc.CompareTo(a.Spot.HeardAtUtc));
         return merged;
     }
 
@@ -1783,18 +1895,21 @@ public partial class MainWindowViewModel : ObservableObject
         // forgets. What the feed just returned is merged with everything still
         // inside its source's lifetime, so a park activator spotted twenty
         // minutes ago is still an invitation instead of being discarded.
+        var history = LiveFromHistory(spots, now);
+
         _allBandSpots.Clear();
-        _allBandSpots.AddRange(LiveFromHistory(spots, now));
+        _allBandSpots.AddRange(history.Select(h => h.Spot));
 
         // The list shows the band on screen; the conditions line keeps the
         // whole spectrum, which is what lets it say "try 40 m" with a count.
-        var onBand = _allBandSpots
-            .Where(s => SelectedBand.Band.LowHz <= s.FrequencyHz
-                        && s.FrequencyHz <= SelectedBand.Band.HighHz)
+        _bandHistory = history
+            .Where(h => SelectedBand.Band.LowHz <= h.Spot.FrequencyHz
+                        && h.Spot.FrequencyHz <= SelectedBand.Band.HighHz)
             .ToList();
 
-        var ranked = SpotRanking.Rank(onBand, now);
-        var newCount = RebuildSpotList(ranked, now);
+        var onBand = _bandHistory.Select(h => h.Spot).ToList();
+        var ranked = ApplyLens(now);
+        var newCount = _lastNewSpotCount;
 
         UpdateBandActivity(now);
         ActivityDots = BuildDots(ranked, now);
@@ -1828,11 +1943,97 @@ public partial class MainWindowViewModel : ObservableObject
     }
 
     /// <summary>
+    /// Put the current lens over the band's history and redraw the list.
+    /// </summary>
+    /// <param name="now">Reference time.</param>
+    /// <returns>The ranked spots the lens shows.</returns>
+    /// <remarks>
+    /// <para>NOTHING IS DELETED HERE OR ANYWHERE BELOW IT (HM-DEC-057). This
+    /// filters the history the store handed back and the store keeps every row
+    /// either way, so switching lenses changes what is on screen and changes
+    /// nothing about what Hamlet holds.</para>
+    /// <para>Inference chooses the opening lens once, and only while the
+    /// operator has not chosen one themselves. After that it is theirs.</para>
+    /// </remarks>
+    private IReadOnlyList<RankedSpot> ApplyLens(DateTime now)
+    {
+        var attention = new SpotAttention(_settings.SpotsLastLookedUtc, _actedOnSpots);
+
+        if (!_lensChosenByOperator)
+        {
+            var unseen = _bandHistory.Count(h => SpotLensView.IsUnseen(h, attention));
+            SetLens(SpotLensView.OpeningLens(attention.LastLookedUtc, now, unseen));
+        }
+
+        var lensed = SpotLensView.Apply(_lens, _bandHistory, attention, now, Lifetimes);
+        var prominence = lensed.ToDictionary(
+            l => SpotViewModel.KeyFor(l.Spot), l => l.Prominence, StringComparer.Ordinal);
+
+        var ranked = SpotRanking.Rank(lensed.Select(l => l.Spot), now);
+
+        _lastNewSpotCount = RebuildSpotList(ranked, now, prominence);
+        UpdateSpotFreshness();
+
+        return ranked;
+    }
+
+    /// <summary>
+    /// Move the lens and tell the two toggles which of them is down.
+    /// </summary>
+    /// <param name="lens">The lens now in use.</param>
+    /// <remarks>
+    /// EVERY PATH THAT MOVES THE LENS COMES THROUGH HERE, which it did not at
+    /// first: the operator's own click set the field and left the buttons
+    /// bound to stale booleans, so the control showed the wrong one down until
+    /// something else happened to refresh it. The toggles bind one way on
+    /// purpose, since which lens is in use is the ViewModel's answer rather than
+    /// the button's.
+    /// </remarks>
+    private void SetLens(SpotLens lens)
+    {
+        _lens = lens;
+        IsBestChance = lens == SpotLens.BestChance;
+        IsWhatsNew = lens == SpotLens.WhatsNew;
+        LensQuestion = SpotLensView.Question(lens);
+    }
+
+    /// <summary>
+    /// Mark every spot at this frequency as one the operator has been to.
+    /// </summary>
+    /// <param name="hz">Where they tuned.</param>
+    /// <remarks>
+    /// By frequency bucket rather than by card, because the click that tunes
+    /// carries a frequency and two skimmers measuring the same carrier rarely
+    /// agree to the hertz. It is the same bucket the store identifies a spot by
+    /// (<see cref="SpotIdentity.FrequencyBucketHz"/>), so the two cannot drift.
+    /// </remarks>
+    private void MarkActedOn(long hz)
+    {
+        var bucket = hz / SpotIdentity.FrequencyBucketHz;
+        var now = DateTime.UtcNow;
+
+        foreach (var stored in _bandHistory)
+        {
+            if (stored.Spot.FrequencyHz / SpotIdentity.FrequencyBucketHz != bucket)
+            {
+                continue;
+            }
+
+            var key = SpotIdentity.KeyFor(stored.Spot);
+            if (_actedOnSpots.Add(key))
+            {
+                _spotStore.MarkActedOn(key, now);
+            }
+        }
+    }
+
+    /// <summary>
     /// Rebuild the card list in ranked order, reusing the cards already on
     /// screen so a surviving spot keeps its identity.
     /// </summary>
     /// <param name="ranked">Ranked spots, best first.</param>
     /// <param name="now">Reference time.</param>
+    /// <param name="prominence">How strongly to draw each card, by key.</param>
     /// <returns>How many spots were not in the previous set.</returns>
     /// <remarks>
     /// HM-DEC-020 said the list is not re-sorted on every tick, because moving
@@ -1842,7 +2043,10 @@ public partial class MainWindowViewModel : ObservableObject
     /// five-minutes-apart event where the content genuinely changed
     /// (HM-DEC-025 amends HM-DEC-020 to exactly this extent).
     /// </remarks>
-    private int RebuildSpotList(IReadOnlyList<RankedSpot> ranked, DateTime now)
+    private int RebuildSpotList(
+        IReadOnlyList<RankedSpot> ranked,
+        DateTime now,
+        IReadOnlyDictionary<string, double> prominence)
     {
         var existing = new Dictionary<string, SpotViewModel>(StringComparer.Ordinal);
         foreach (var vm in Spots)
@@ -1859,9 +2063,14 @@ public partial class MainWindowViewModel : ObservableObject
 
             var distance = DescribeDistance(entry.Spot);
 
+            // How strongly to draw it: the fade that lets the eye find what is
+            // current without reading a timestamp (HM-DEC-057). A card the lens
+            // did not measure is drawn plainly rather than dimmed on a guess.
+            var drawAt = prominence.TryGetValue(key, out var p) ? p : 1.0;
+
             if (existing.TryGetValue(key, out var vm))
             {
-                vm.Update(entry.Spot, now, entry.Reason, distance, Lifetimes);
+                vm.Update(entry.Spot, now, entry.Reason, distance, Lifetimes, drawAt);
                 rebuilt.Add(vm);
                 continue;
             }
@@ -1869,7 +2078,7 @@ public partial class MainWindowViewModel : ObservableObject
             // Nothing is "new" on the first load — everything would be.
             rebuilt.Add(new SpotViewModel(
                 entry.Spot, now, isNew: _spotsEverLoaded, entry.Reason, distance,
-                Lifetimes));
+                Lifetimes, drawAt));
 
             if (_spotsEverLoaded)
             {
@@ -2082,8 +2291,12 @@ public partial class MainWindowViewModel : ObservableObject
         var since = now - _lastSpotLoadUtc;
         var interval = _settings.SpotRefreshMinutes;
 
-        SpotsSummary = SpotFreshness.Summary(
-            Spots.Count, since, interval, _spotsEverLoaded)
+        // THE LENS IS NAMED FIRST (§0.5, HM-DEC-057). A shut panel that has
+        // silently changed which question it is answering is the prime
+        // directive broken by omission: the operator reads a count and takes it
+        // for a count of everything.
+        SpotsSummary = SpotLensView.Summary(_lens, Spots.Count)
+            + " · " + SpotFreshness.Tail(since, interval, _spotsEverLoaded)
             + (SourcesSummary.Length > 0 ? $" · {SourcesSummary}" : "");
         SpotsFreshness = _spotsEverLoaded
             ? SpotFreshness.Evaluate(since, interval)
@@ -2711,6 +2924,18 @@ public partial class SpotViewModel : ObservableObject
     [ObservableProperty]
     private string _ageTooltip = "";
 
+    /// <summary>
+    /// How strongly to draw this card, 1 down to a floor (HM-DEC-057).
+    /// </summary>
+    /// <remarks>
+    /// AGE FADES THE DISPLAY across each source's ruled lifetime, so the eye
+    /// finds what is current without anybody reading a timestamp. Never zero: a
+    /// card faded to nothing is a card removed, and removing one is what this
+    /// whole design exists not to do.
+    /// </remarks>
+    [ObservableProperty]
+    private double _prominence = 1.0;
+
     private ActivitySpot _spot;
     private DateTime _newUntilUtc;
     private SpotLifetimeSettings _lifetimes = SpotLifetimeSettings.Defaults;
@@ -2723,13 +2948,15 @@ public partial class SpotViewModel : ObservableObject
     /// <param name="distance">How far away, or "" when it cannot be said.</param>
     /// <param name="lifetimes">The configured source lifetimes, which decide
     /// how this card talks about its own age (HM-DEC-045).</param>
+    /// <param name="prominence">How strongly to draw it (HM-DEC-057).</param>
     public SpotViewModel(
         ActivitySpot spot, DateTime nowUtc, bool isNew,
         string reason = "", string distance = "",
-        SpotLifetimeSettings? lifetimes = null)
+        SpotLifetimeSettings? lifetimes = null, double prominence = 1.0)
     {
         _spot = spot;
         _distance = distance;
+        _prominence = prominence;
         _lifetimes = lifetimes ?? SpotLifetimeSettings.Defaults;
         Key = KeyFor(spot);
         Story = spot.Story;
@@ -2769,12 +2996,14 @@ public partial class SpotViewModel : ObservableObject
     /// <param name="reason">The ranking's reason, recomputed with the spot.</param>
     /// <param name="distance">How far away, recomputed with the spot.</param>
     /// <param name="lifetimes">The configured source lifetimes.</param>
+    /// <param name="prominence">How strongly to draw it (HM-DEC-057).</param>
     public void Update(
         ActivitySpot spot, DateTime nowUtc, string reason = "", string distance = "",
-        SpotLifetimeSettings? lifetimes = null)
+        SpotLifetimeSettings? lifetimes = null, double prominence = 1.0)
     {
         _spot = spot;
         _lifetimes = lifetimes ?? _lifetimes;
+        Prominence = prominence;
         IsNew = false;
         if (reason.Length > 0)
         {

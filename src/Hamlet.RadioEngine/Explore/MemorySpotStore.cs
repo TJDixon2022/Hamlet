@@ -86,6 +86,18 @@ public sealed class MemorySpotStore : ISpotStore
     }
 
     /// <inheritdoc/>
+    public void MarkActedOn(string key, DateTime nowUtc)
+    {
+        lock (_gate)
+        {
+            if (_rows.TryGetValue(key, out var held))
+            {
+                _rows[key] = held with { ActedOnUtc = nowUtc };
+            }
+        }
+    }
+
+    /// <inheritdoc/>
     public int Count()
     {
         lock (_gate)

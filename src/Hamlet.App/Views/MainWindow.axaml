@@ -35,6 +35,26 @@
             <Setter Property="FontWeight" Value="SemiBold" />
             <Setter Property="HorizontalContentAlignment" Value="Stretch" />
         </Style>
+        <!-- The segmented control at the head of the happening-now panel
+             (HM-DEC-057). Both lenses are always visible, because two words on
+             screen teach more than any inference, and the one in use is filled
+             so there is never a question which is answering. -->
+        <Style Selector="ToggleButton.hm-lens">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="{StaticResource HmTextMutedBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource HmGreenEdgeBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="10" />
+            <Setter Property="Padding" Value="10,2" />
+            <Setter Property="FontSize" Value="11" />
+        </Style>
+        <Style Selector="ToggleButton.hm-lens:checked /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource HmGreenTintBrush}" />
+            <Setter Property="Foreground" Value="{StaticResource HmGreenBrush}" />
+        </Style>
+        <Style Selector="ToggleButton.hm-lens:checked">
+            <Setter Property="FontWeight" Value="SemiBold" />
+        </Style>
         <Style Selector="TextBlock.hm-panel-label">
             <Setter Property="FontSize" Value="13" />
             <Setter Property="FontWeight" Value="SemiBold" />
@@ -810,6 +830,7 @@
                                               SummaryBrush="{Binding SpotsFreshness,
                                                   Converter={x:Static ctl:FreshnessBrushConverter.Instance}}"
                                               IsExpanded="{Binding SpotsExpanded, Mode=TwoWay}">
+
                             <!-- A bounded viewport rather than a second page
                                  scroller. A busy evening puts twenty park
                                  activations in here, which used to make the
@@ -819,14 +840,46 @@
                                  keeps the window's own scrollbar meaningful, and
                                  this is the same shape the CW terminal's
                                  transcript already uses. -->
+                            <StackPanel Spacing="8">
+
+                            <!-- THE TWO QUESTIONS, AT THE HEAD OF THE PANEL AND
+                                 BOTH ALWAYS VISIBLE (HM-DEC-057). Two words on
+                                 screen teach more than any inference: a newcomer
+                                 who reads "what's new" learns that going hunting
+                                 again after a contact is a normal thing people
+                                 do, which is a fact about this hobby nobody
+                                 tells them. Inside the panel rather than in its
+                                 header because the header already carries the
+                                 lens name for when it is shut, and two copies
+                                 of it left no room for either. -->
+                            <StackPanel Orientation="Horizontal" Spacing="6"
+                                        ToolTip.Tip="{Binding LensQuestion}"
+                                        ToolTip.ShowDelay="300">
+                                <ToggleButton Classes="hm-lens" Content="Best chance"
+                                              IsChecked="{Binding IsBestChance, Mode=OneWay}"
+                                              Command="{Binding SelectLensCommand}"
+                                              CommandParameter="BestChance" />
+                                <ToggleButton Classes="hm-lens" Content="What's new"
+                                              IsChecked="{Binding IsWhatsNew, Mode=OneWay}"
+                                              Command="{Binding SelectLensCommand}"
+                                              CommandParameter="WhatsNew" />
+                            </StackPanel>
+
                             <ScrollViewer MaxHeight="520"
                                           VerticalScrollBarVisibility="Auto">
                             <ItemsControl ItemsSource="{Binding Spots}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate x:DataType="vm:SpotViewModel">
+                                        <!-- AGE FADES THE DISPLAY across each
+                                             source's ruled lifetime, so the eye
+                                             finds what is current without
+                                             reading a timestamp (HM-DEC-057).
+                                             Never to nothing: a card faded away
+                                             is a card removed. -->
                                         <Border Background="{StaticResource HmGreenTintBrush}"
                                                 BorderBrush="{StaticResource HmGreenEdgeBrush}"
                                                 BorderThickness="1" CornerRadius="8"
+                                                Opacity="{Binding Prominence}"
                                                 Padding="10,8" Margin="0,0,0,8">
                                             <Grid ColumnDefinitions="*,Auto">
                                                 <StackPanel Grid.Column="0" Spacing="2" Margin="0,0,8,0">
@@ -882,6 +935,7 @@
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
                             </ScrollViewer>
+                            </StackPanel>
                         </ctl:CollapsiblePanel>
 
                 </StackPanel>

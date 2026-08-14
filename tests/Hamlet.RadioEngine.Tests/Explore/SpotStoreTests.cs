@@ -328,4 +328,69 @@ public sealed class SpotStoreTests : IDisposable
         Assert.True(disk!.IsPersistent);
         Assert.False(memory.IsPersistent);
     }
+
+    /// <remarks>
+    /// MARKED, NEVER REMOVED (HM-DEC-057). Tuning to a spot takes it out of
+    /// "what's new" and leaves it exactly where it was under "best chance",
+    /// because it is still a live station and somebody may want to go back. The
+    /// mark survives a restart, so a station worked last night is not offered
+    /// again this morning as an arrival.
+    /// </remarks>
+    [Fact]
+    public void AVisitIsRecordedAndSurvivesARestartWithoutRemovingAnything()
+    {
+        var spot = Spot("W3ABC");
+        var key = SpotIdentity.KeyFor(spot);
+
+        using (var store = SqliteSpotStore.TryOpen(DbPath))
+        {
+            store!.Record(new[] { spot, Spot("K2XYZ", 7_040_000) }, Now);
+            store.MarkActedOn(key, Now);
+
+            Assert.Equal(2, store.Count());
+        }
+
+        using var reopened = SqliteSpotStore.TryOpen(DbPath);
+        var held = reopened!.Since(Now.AddHours(-1));
+
+        // Both rows are still there. One of them remembers being visited.
+        Assert.Equal(2, held.Count);
+        Assert.Single(held, r => r.ActedOnUtc is not null);
+        Assert.Equal(
+            "W3ABC",
+            held.Single(r => r.ActedOnUtc is not null).Spot.DxCall);
+    }
+
+    /// <remarks>
+    /// Proves marking something the store has never heard of does nothing and
+    /// says nothing, rather than inventing a row for a spot that does not exist
+    /// (§0.0).
+    /// </remarks>
+    [Fact]
+    public void MarkingASpotTheStoreDoesNotHoldChangesNothing()
+    {
+        using var store = SqliteSpotStore.TryOpen(DbPath);
+
+        store!.MarkActedOn("nobody|0", Now);
+
+        Assert.Equal(0, store.Count());
+    }
+
+    /// <remarks>
+    /// Proves the memory fallback behaves the same way, since it is what the
+    /// app runs on when the database cannot be opened and what most of these
+    /// tests drive.
+    /// </remarks>
+    [Fact]
+    public void TheMemoryFallbackRemembersAVisitToo()
+    {
+        using var store = new MemorySpotStore();
+        var spot = Spot("W3ABC");
+
+        store.Record(new[] { spot }, Now);
+        store.MarkActedOn(SpotIdentity.KeyFor(spot), Now);
+
+        Assert.Equal(1, store.Count());
+        Assert.NotNull(store.Since(Now.AddHours(-1))[0].ActedOnUtc);
+    }
 }

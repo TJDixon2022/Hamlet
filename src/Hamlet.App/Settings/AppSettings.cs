@@ -63,6 +63,27 @@ public sealed class AppSettings
     /// here, and never written to telemetry.</summary>
     public OperatorProfile Operator { get; set; } = new();
 
+    /// <summary>
+    /// Which of the happening-now panel's two lenses was last chosen, or null
+    /// when the operator has never chosen one (HM-DEC-057).
+    /// </summary>
+    /// <remarks>
+    /// Null is the state that lets Hamlet guess. Once it holds a value the
+    /// operator has answered the question themselves, and guessing again after
+    /// that is the app arguing with them.
+    /// </remarks>
+    public string? SpotLens { get; set; }
+
+    /// <summary>
+    /// When the operator last finished looking at "what's new", or null.
+    /// </summary>
+    /// <remarks>
+    /// The watermark the delta is measured from. It moves when they leave the
+    /// lens rather than when they arrive at it, so the list stays still while
+    /// they are reading it and is a fresh delta the next time they come back.
+    /// </remarks>
+    public DateTime? SpotsLastLookedUtc { get; set; }
+
     /// <summary>Minutes between happening-now refreshes; 0 is off
     /// (HM-DEC-020). Allowed values are in
     /// <see cref="SpotRefreshChoices"/>.</summary>

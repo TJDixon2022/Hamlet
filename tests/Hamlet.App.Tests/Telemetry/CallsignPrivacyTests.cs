@@ -16,7 +16,7 @@ public sealed class CallsignPrivacyTests : IDisposable
     /// <summary>Every public event-writing method on <see cref="AppEvents"/>.
     /// If this number moves, a new event was added and the walk below has to
     /// grow with it — that is the point.</summary>
-    private const int ExpectedEventMethodCount = 33;
+    private const int ExpectedEventMethodCount = 34;
 
     private const string Callsign = "KC3QIS";
     // "Timothy", not "Tim": a three-letter needle matches "timer", which is a
@@ -215,6 +215,7 @@ public sealed class CallsignPrivacyTests : IDisposable
         AppEvents.SpotHistoryPruned(telemetry, 120, 400);
         AppEvents.SpotHistoryUnavailable(telemetry);
         AppEvents.ModeFollowed(telemetry, "Usb", dataMode: true, "Confirmed");
+        AppEvents.SpotLensChosen(telemetry, "WhatsNew");
     }
 
     private string[] ReadAllLines()

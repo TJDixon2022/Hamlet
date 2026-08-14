@@ -105,6 +105,18 @@ public static class AppEvents
                 ["outcome"] = outcome,
             });
 
+    /// <summary>The operator switched the happening-now list's lens.</summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="lens">"BestChance" or "WhatsNew".</param>
+    /// <remarks>
+    /// Which question somebody asks and how often is the thing worth knowing
+    /// about this control, and it is two words with nothing identifying in
+    /// either (HM-DEC-018, HM-DEC-057).
+    /// </remarks>
+    public static void SpotLensChosen(ITelemetry? telemetry, string lens)
+        => telemetry?.Write(TelemetryCategory.Explore, "spot_lens_chosen",
+            new Dictionary<string, object?> { ["lens"] = lens });
+
     /// <summary>A tune was requested from a story card or a spot.</summary>
     /// <param name="telemetry">Sink, or null.</param>
     /// <param name="hz">Target frequency.</param>

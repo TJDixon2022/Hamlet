@@ -4,7 +4,15 @@ namespace Hamlet.RadioEngine.Explore;
 /// <param name="Spot">The spot itself.</param>
 /// <param name="FirstSeenUtc">When Hamlet first recorded it.</param>
 /// <param name="LastSeenUtc">The last time a source reported it again.</param>
-public sealed record StoredSpot(ActivitySpot Spot, DateTime FirstSeenUtc, DateTime LastSeenUtc);
+/// <param name="ActedOnUtc">
+/// When the operator tuned to it, or null. Kept so "what's new" never re-offers
+/// somebody they have already been to see (HM-DEC-057).
+/// </param>
+public sealed record StoredSpot(
+    ActivitySpot Spot,
+    DateTime FirstSeenUtc,
+    DateTime LastSeenUtc,
+    DateTime? ActedOnUtc = null);
 
 /// <summary>
 /// Somewhere to keep every spot Hamlet has seen, so nothing is lost on
@@ -53,6 +61,20 @@ public interface ISpotStore : IDisposable
     /// <param name="beforeUtc">Delete spots reported before this.</param>
     /// <returns>How many rows went.</returns>
     int Prune(DateTime beforeUtc);
+
+    /// <summary>
+    /// Record that the operator tuned to a spot.
+    /// </summary>
+    /// <param name="key">The spot's identity, from <see cref="SpotIdentity"/>.</param>
+    /// <param name="nowUtc">When they did it.</param>
+    /// <remarks>
+    /// MARKED, NEVER REMOVED (HM-DEC-057). Acting on a spot takes it out of
+    /// "what's new" and leaves it exactly where it was under "best chance",
+    /// because it is still a live station and somebody may want to go back.
+    /// Marking something the store has never heard of is harmless and does
+    /// nothing, which is the honest answer rather than an invented row.
+    /// </remarks>
+    void MarkActedOn(string key, DateTime nowUtc);
 
     /// <summary>How many spots are held.</summary>
     /// <returns>The row count.</returns>

@@ -140,6 +140,28 @@ public sealed class SettingsRoundTripTests : IDisposable
         Assert.False(SettingsStore.LoadFrom(SettingsPath).ModeFollowsTheMap);
     }
 
+    /// <remarks>Proves HM-DEC-057: a fresh profile has chosen no lens, which is
+    /// the state that lets Hamlet guess one. Once the operator picks, the choice
+    /// and the watermark both survive a restart, because guessing again after
+    /// they have answered is the app arguing with them.</remarks>
+    [Fact]
+    public void TheChosenLensAndTheWatermarkSurviveARestart()
+    {
+        Assert.Null(new AppSettings().SpotLens);
+        Assert.Null(new AppSettings().SpotsLastLookedUtc);
+
+        var looked = new DateTime(2026, 8, 15, 12, 0, 0, DateTimeKind.Utc);
+
+        SettingsStore.SaveTo(
+            new AppSettings { SpotLens = "WhatsNew", SpotsLastLookedUtc = looked },
+            SettingsPath);
+
+        var read = SettingsStore.LoadFrom(SettingsPath);
+
+        Assert.Equal("WhatsNew", read.SpotLens);
+        Assert.Equal(looked, read.SpotsLastLookedUtc!.Value.ToUniversalTime());
+    }
+
     /// <remarks>Proves HM-DEC-018 still holds with the profile added: a
     /// corrupt settings file yields defaults rather than a crash, and the
     /// defaults include a usable profile.</remarks>

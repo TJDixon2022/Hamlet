@@ -123,4 +123,33 @@ public static class SpotFreshness
 
         return $"{count}{stale} · checked {Describe(sinceUpdate)}";
     }
+
+    /// <summary>
+    /// How the feed itself is doing, without the spot count.
+    /// </summary>
+    /// <param name="sinceUpdate">How long since the last successful load.</param>
+    /// <param name="intervalMinutes">The configured refresh interval.</param>
+    /// <param name="everLoaded">False before the first load has finished.</param>
+    /// <returns>e.g. "checked just now", or "feed is stale · checked 42m ago".</returns>
+    /// <remarks>
+    /// FEED FRESHNESS AND OPPORTUNITY FRESHNESS ARE DIFFERENT FACTS
+    /// (HM-DEC-045), and this is the feed half on its own. The count moved out
+    /// of it when the panel's header gained the lens name, which carries its own
+    /// count (HM-DEC-057): saying "7 spots" twice in one line reads as the app
+    /// stuttering rather than as two facts.
+    /// </remarks>
+    public static string Tail(
+        TimeSpan sinceUpdate, int intervalMinutes, bool everLoaded = true)
+    {
+        if (!everLoaded)
+        {
+            return "loading…";
+        }
+
+        var stale = Evaluate(sinceUpdate, intervalMinutes) == FreshnessLevel.Stale
+            ? "feed is stale · "
+            : "";
+
+        return $"{stale}checked {Describe(sinceUpdate)}";
+    }
 }
