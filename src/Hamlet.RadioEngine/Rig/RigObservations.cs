@@ -46,6 +46,9 @@ public static class RigObservations
 
         WideFilterInCw(state, said);
         NoiseBlankerOnACrowdedBand(state, said);
+        NoiseReductionSofteningTheEdges(state, said);
+        AutoNotchHuntingASteadyTone(state, said);
+        AllThreeAtOnce(state, said);
         AttenuatorAndPreampTogether(state, said);
         SquelchHoldingTheAudioShut(state, said);
         AudioSentAsIf(state, said);
@@ -89,6 +92,81 @@ public static class RigObservations
             + "arrives, which is invisible on ignition noise and audible on a busy "
             + "band, where a strong nearby signal can look like a tick and get "
             + "chopped along with it.");
+    }
+
+    /// <summary>
+    /// Noise reduction is on, which softens the edges a decoder times by.
+    /// </summary>
+    /// <remarks>
+    /// A statement about a value Hamlet read and a mechanism it understands,
+    /// which is what HM-DEC-050 permits. It does not say to turn it off: a
+    /// listener chasing a weak signal by ear may want it very much, and this is
+    /// their radio.
+    /// </remarks>
+    private static void NoiseReductionSofteningTheEdges(RigState state, List<string> said)
+    {
+        if (state[RigField.NoiseReduction] is not { IsKnown: true, Number: 1 })
+        {
+            return;
+        }
+
+        var level = state[RigField.NoiseReductionLevel];
+        var howHard = level.IsKnown ? $", at {level.Text}" : "";
+
+        said.Add(
+            $"Noise reduction is on{howHard}. It works by averaging the audio, which "
+            + "is easier on the ear and rounds off the sharp starts and stops the "
+            + "decoder measures a dit and a dah by.");
+    }
+
+    /// <summary>
+    /// The automatic notch is on, and a Morse signal is a steady tone.
+    /// </summary>
+    /// <remarks>
+    /// The one most worth saying out loud, because the mechanism is exactly
+    /// backwards for this use. The notch hunts for a steady carrier and removes
+    /// it, and a Morse note is a steady carrier switched on and off.
+    /// </remarks>
+    private static void AutoNotchHuntingASteadyTone(RigState state, List<string> said)
+    {
+        if (state[RigField.AutoNotch] is not { IsKnown: true, Number: 1 }
+            || state.Mode is not { } mode
+            || !CivValues.IsCw(mode))
+        {
+            return;
+        }
+
+        said.Add(
+            "The automatic notch is on and the radio is in Morse. The notch hunts "
+            + "for a steady tone and takes it out, which is what it is for on a "
+            + "voice band, and a Morse note is a steady tone that switches on and "
+            + "off. So the thing being decoded is the shape it is looking for.");
+    }
+
+    /// <summary>
+    /// All three noise controls on at once, which is what the first live evening
+    /// found.
+    /// </summary>
+    /// <remarks>
+    /// Said once rather than three times, because three separate lines read as
+    /// three separate faults and this is one situation: a radio set up for
+    /// listening comfortably rather than for decoding.
+    /// </remarks>
+    private static void AllThreeAtOnce(RigState state, List<string> said)
+    {
+        var on = new[] { RigField.NoiseBlanker, RigField.NoiseReduction, RigField.AutoNotch }
+            .Count(f => state[f] is { IsKnown: true, Number: 1 });
+
+        if (on < 3)
+        {
+            return;
+        }
+
+        said.Add(
+            "The noise blanker, noise reduction and the automatic notch are all on "
+            + "together. That is a radio set up to be comfortable to listen to, and "
+            + "each of the three works by removing something from the audio before "
+            + "the decoder ever hears it.");
     }
 
     /// <summary>Both ends of the gain chain fighting each other.</summary>

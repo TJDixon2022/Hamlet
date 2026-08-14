@@ -49,10 +49,27 @@ public sealed class RigObservationTests
 
         ["IF instead of audio"] = With((RigField.AccUsbOutputSelect, 1, "IF")),
 
+        ["noise reduction on"] = With(
+            (RigField.NoiseReduction, 1, "on"),
+            (RigField.NoiseReductionLevel, 50, "50%")),
+
+        ["auto notch in CW"] = With(
+            (RigField.Mode, (int)CivMode.Cw, "CW"),
+            (RigField.AutoNotch, 1, "on")),
+
+        // What the first live evening actually found.
+        ["all three noise controls on"] = With(
+            (RigField.Mode, (int)CivMode.Cw, "CW"),
+            (RigField.NoiseBlanker, 1, "on"),
+            (RigField.NoiseReduction, 1, "on"),
+            (RigField.AutoNotch, 1, "on")),
+
         ["everything at once"] = With(
             (RigField.Mode, (int)CivMode.Cw, "CW"),
             (RigField.FilterBandwidth, 3600, "3.6 kHz"),
             (RigField.NoiseBlanker, 1, "on"),
+            (RigField.NoiseReduction, 1, "on"),
+            (RigField.AutoNotch, 1, "on"),
             (RigField.Attenuator, 20, "20 dB"),
             (RigField.Preamp, 2, "preamp 2"),
             (RigField.SquelchStatus, 0, "closed"),
@@ -206,7 +223,44 @@ public sealed class RigObservationTests
     {
         var said = RigObservations.For(Cases["everything at once"]);
 
-        Assert.Equal(5, said.Count);
+        Assert.Equal(8, said.Count);
         Assert.Equal(said.Count, said.Distinct().Count());
+    }
+
+    /// <remarks>
+    /// THE THREE THE FIRST LIVE EVENING FOUND ON (HM-DEC-050 permits this: they
+    /// are values Hamlet read and mechanisms it understands). The blanker mutes
+    /// on a sharp tick and a strong nearby signal looks like one; noise
+    /// reduction averages and rounds off the edges a decoder times by; and the
+    /// automatic notch hunts a steady tone, which is precisely what a Morse note
+    /// is. Each is a consequence and none of them says to change anything.
+    /// </remarks>
+    [Fact]
+    public void TheNoiseControlsSayWhatTheyDoToADecode()
+    {
+        var nr = RigObservations.For(Cases["noise reduction on"]);
+        Assert.Contains(nr, l => l.Contains("averaging", StringComparison.Ordinal));
+
+        var notch = RigObservations.For(Cases["auto notch in CW"]);
+        Assert.Contains(notch, l => l.Contains("steady tone", StringComparison.Ordinal));
+
+        // Said once rather than three times: three lines read as three faults
+        // and this is one situation.
+        var all = RigObservations.For(Cases["all three noise controls on"]);
+        Assert.Contains(all, l => l.Contains("all on", StringComparison.Ordinal));
+    }
+
+    /// <remarks>
+    /// Proves it says nothing at all when the values have not been read. An
+    /// observation resting on an assumed setting is the confident guess §0.0
+    /// forbids, wearing the clothes of helpfulness.
+    /// </remarks>
+    [Fact]
+    public void NothingIsSaidAboutNoiseControlsNobodyRead()
+    {
+        Assert.Empty(RigObservations.For(RigState.Empty));
+
+        // Mode known, noise controls not: still nothing.
+        Assert.Empty(RigObservations.For(With((RigField.Mode, (int)CivMode.Cw, "CW"))));
     }
 }

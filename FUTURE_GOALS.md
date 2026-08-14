@@ -9,6 +9,47 @@ Ids are `FG-###` and are never reused.
 
 ---
 
+## FG-010 — The training wheels come off by themselves
+
+Hamlet is full of scaffolding: glossary underlines, blurbs on every
+neighborhood, an explanation attached to every fact. The operator it was built
+for will outgrow parts of that and not others, at very different rates, and the
+app should notice rather than ask.
+
+**Why the obvious implementation fails.** A beginner/expert switch is the first
+thing anybody would build and it does not work, because nobody self-identifies
+out of beginner mode. The person who most needs to graduate is the least likely
+to click a button saying they have stopped being new, and somebody who clicks it
+on day one out of pride loses exactly the help they needed. A switch asks the
+operator to assess themselves, which is the one thing this app is trying to
+spare them.
+
+**Earned rather than declared**, which is the pattern `ONBOARDING.md` already
+set with the license class and the grid square: do not ask, work it out. The
+evidence is already being generated. Somebody who has hovered a glossary term
+nine times has not learned it, so the underline stays and the definition may
+even want to get better. Somebody who has never once hovered "activator" knows
+what it means, and that underline could quietly retire. The same shape applies
+to blurbs nobody expands and explanations nobody reads.
+
+**Whatever fades must be visible and reversible.** A screen that changes for
+reasons the operator cannot see is its own kind of confusion, and it is the
+failure mode of every app that has tried this. So there is a place that says
+what has faded and puts it back, and the fading itself is gradual enough to
+notice rather than a thing that happens overnight.
+
+**And the line that does not move: scaffolding may fade, the prime directive
+never does.** Confidence marking on a decode, provenance on a reading, the
+honesty about what Hamlet does not know: none of that is a training wheel. It is
+not eligible, at any level of experience, for any operator, ever. An expert
+reading an unmarked low-confidence character is wrong in exactly the same way a
+beginner is, and rather more likely to act on it.
+
+Waits on there being enough of a usage record to draw from, and on somebody
+having used the app long enough that the question is real.
+
+---
+
 ## FG-009 — Hunt for CW in progress
 
 One control. Hamlet moves the radio, looking for a CW signal it can actually

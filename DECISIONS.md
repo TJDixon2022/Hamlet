@@ -4,6 +4,47 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-057
+date: 2026-08-14
+refs: HM-DEC-045, HM-DEC-020, HM-DEC-025, FUTURE_GOALS.md
+---
+
+The happening-now panel gains a segmented control at its head with two named
+lenses, because there are two different questions and refresh answers neither.
+**Recorded, not built.**
+
+TWO QUESTIONS, AND THEY ARE NOT THE SAME ONE. "Best chance" is the arrival
+question: somebody sits down, and wants a ranking over everything currently
+alive. "What's new" is the between-contacts question: somebody has just finished
+a contact, and wants the delta since they last looked, without being re-offered
+what they have already worked or already passed over. A refresh button answers
+neither, because it conflates "show me the good ones" with "show me the fresh
+ones" and the answer to those is different on almost every band.
+
+BOTH ARE ALWAYS VISIBLE, AND THAT IS THE TEACHING. Two words on screen say more
+than any inference: a newcomer who sees a lens called "what's new" learns that
+hunting again after a contact is a normal thing people do, which is a fact about
+this hobby nobody tells them. That is worth the control by itself.
+
+AGE FADES THE DISPLAY ACROSS EACH SOURCE'S RULED LIFETIME (HM-DEC-045), so the
+eye finds what is current without anybody reading a timestamp. Under "best
+chance" a solid old park activation is still allowed to rank high, because
+somebody is still standing in that park and an hour is what an activation is.
+Under "what's new" it is not new and does not appear. The two lenses are allowed
+to disagree; that is what makes them two lenses.
+
+INFERENCE MAY CHOOSE WHICH LENS OPENS AND MAY NEVER OVERRIDE THE OPERATOR
+AFTERWARD. Guessing which question somebody is asking is a reasonable thing to do
+once. Guessing again, after they have answered it by clicking, is the app
+arguing with them.
+
+NOTHING IS DELETED, EVER. This is a view over the store, which is exactly what
+HM-DEC-045 built the store for. A hard refresh that emptied history would
+re-create the failure that ruling ended: throwing away good invitations at ten
+minutes and then saying "nothing here" while holding them, which is the moment a
+newcomer gives up.
+
+---
 id: HM-DEC-056
 date: 2026-08-14
 refs: src/Hamlet.RadioEngine/Civ/CivWrites.cs, src/Hamlet.RadioEngine/Explore/ModeFollowPlan.cs, src/Hamlet.RadioEngine/Rig/RigWriteResult.cs, tests/Hamlet.RadioEngine.Tests/Rig/ModeFollowTests.cs, CLAUDE.md §4, HM-DEC-050, HM-DEC-054
@@ -452,6 +493,15 @@ preamp, attenuator, noise blanker, noise reduction, notch, RF gain, squelch,
 passband, filter width and IF. Reading a value out is not the same as
 understanding it, and the vocabulary is the gate this hobby is kept behind
 (HM-DEC-041).
+
+**NOTE ADDED 2026-08-14.** The `date:` above reads 2026-08-15, which was
+tomorrow when this was written; the commits it describes are dated 2026-08-14.
+Nothing in the ruling changes and nothing above has been edited. The note is
+here rather than left alone because dates are how this log is ordered and how
+anybody later reconstructs what was known when, so a wrong one is not the same
+kind of harmless as a typo in prose. It is the same treatment §4 already gives
+the `14 08` correction: labeled, dated, and beside the thing it corrects rather
+than instead of it.
 
 ---
 id: HM-DEC-049
