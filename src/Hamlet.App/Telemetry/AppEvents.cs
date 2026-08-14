@@ -256,6 +256,22 @@ public static class AppEvents
             new Dictionary<string, object?> { ["looksLikeRadio"] = looksLikeRadio });
 
     /// <summary>
+    /// The diagnostics screen was opened (HM-DEC-050).
+    /// </summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="knownCount">How many values had actually been read.</param>
+    /// <remarks>
+    /// The count and nothing else. What the radio is tuned to and how its
+    /// filters are set are the operator's business, and none of it belongs in a
+    /// file they might paste into a public issue (HM-DEC-018). That somebody
+    /// needed this screen, and how much Hamlet knew when they did, is the part
+    /// worth recording.
+    /// </remarks>
+    public static void RigDiagnosticsOpened(ITelemetry? telemetry, int knownCount)
+        => telemetry?.Write(TelemetryCategory.Rig, "rig_diagnostics_opened",
+            new Dictionary<string, object?> { ["knownValues"] = knownCount });
+
+    /// <summary>
     /// The CW decoder started listening (HM-DEC-048).
     /// </summary>
     /// <param name="telemetry">Sink, or null.</param>

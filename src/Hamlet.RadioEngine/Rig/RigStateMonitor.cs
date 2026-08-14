@@ -168,9 +168,17 @@ public sealed class RigStateMonitor : IDisposable
     public async Task RefreshAsync(RigField field, CancellationToken cancellationToken = default)
         => await ReadIntoStateAsync(field, cancellationToken).ConfigureAwait(false);
 
-    /// <summary>Read every field the plan is willing to ask for.</summary>
+    /// <summary>Read every field, including the ones never polled for.</summary>
     /// <param name="cancellationToken">Cancellation.</param>
     /// <returns>A task that completes when the sweep is done.</returns>
+    /// <remarks>
+    /// <see cref="RigPollRate.Never"/> means "not asked for over and over",
+    /// not "never asked". The frequency is the case: the radio broadcasts
+    /// changes, so polling for it would be waste, but nothing broadcasts what it
+    /// was already sitting on when Hamlet connected. So it is read once here and
+    /// then left to the broadcasts, which is why this sweep runs on connect and
+    /// again whenever somebody opens the diagnostics screen.
+    /// </remarks>
     public async Task RefreshAllAsync(CancellationToken cancellationToken = default)
     {
         foreach (var field in Enum.GetValues<RigField>())
@@ -178,11 +186,6 @@ public sealed class RigStateMonitor : IDisposable
             if (cancellationToken.IsCancellationRequested)
             {
                 return;
-            }
-
-            if (RigPollPlan.RateFor(field) == RigPollRate.Never)
-            {
-                continue;
             }
 
             await ReadIntoStateAsync(field, cancellationToken).ConfigureAwait(false);
@@ -211,7 +214,13 @@ public sealed class RigStateMonitor : IDisposable
         {
             var live = RigPollPlan.At(RigPollRate.Live);
             var session = RigPollPlan.At(RigPollRate.Session);
-            var sinceSweep = RigPollPlan.SessionInterval;
+
+            // Once, on connect, including the values that are never polled for
+            // afterwards. Nothing broadcasts what the radio was already sitting
+            // on before Hamlet arrived.
+            await RefreshAllAsync(cancellationToken).ConfigureAwait(false);
+
+            var sinceSweep = TimeSpan.Zero;
 
             while (!cancellationToken.IsCancellationRequested)
             {

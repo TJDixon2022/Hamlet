@@ -1,0 +1,78 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Hamlet.App.ViewModels"
+        xmlns:ctl="using:Hamlet.App.Controls"
+        x:Class="Hamlet.App.Views.RigDiagnosticsWindow"
+        x:DataType="vm:RigDiagnosticsViewModel"
+        Title="What the radio is doing"
+        Width="720" Height="720"
+        WindowStartupLocation="CenterOwner"
+        Background="{StaticResource HmBackgroundBrush}">
+
+    <!-- The screen that would have answered half an hour of questions in one
+         glance (HM-DEC-050). Every row carries where it came from and how old
+         it is, because that is what makes it worth attaching to a bug report
+         rather than just worth looking at (§0.0.1). -->
+    <Grid RowDefinitions="Auto,*,Auto" Margin="18">
+
+        <StackPanel Grid.Row="0" Spacing="4" Margin="0,0,0,12">
+            <TextBlock Text="{Binding RigName}" FontSize="18" FontWeight="SemiBold"
+                       Foreground="{StaticResource HmTextPrimaryBrush}" />
+            <TextBlock Text="{Binding Summary}" FontSize="12"
+                       Foreground="{StaticResource HmTextMutedBrush}" />
+            <TextBlock Text="Everything Hamlet has asked the radio, with what each answer was and when it arrived. A row that says unknown is one nobody has managed to read, which is not the same as a radio that does not have it."
+                       FontSize="12" TextWrapping="Wrap" Margin="0,4,0,0"
+                       Foreground="{StaticResource HmTextMutedBrush}" />
+        </StackPanel>
+
+        <Border Grid.Row="1" CornerRadius="8" ClipToBounds="True"
+                BorderThickness="1"
+                Background="{x:Static ctl:InstrumentPalette.SurfaceBrush}"
+                BorderBrush="{x:Static ctl:InstrumentPalette.EdgeBrush}">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <ItemsControl ItemsSource="{Binding Rows}" Margin="10,8">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="vm:RigDiagnosticRow">
+                            <Grid ColumnDefinitions="170,200,*" Margin="0,3">
+                                <TextBlock Grid.Column="0" Text="{Binding Label}"
+                                           FontSize="12.5"
+                                           Foreground="{x:Static ctl:InstrumentPalette.IdleBrush}" />
+
+                                <!-- Green when it is a real, current reading;
+                                     dimmer when it is stale or absent. The
+                                     colour repeats what the age column already
+                                     says in words, so it is never the only
+                                     carrier (§0.6). -->
+                                <TextBlock Grid.Column="1" Text="{Binding Value}"
+                                           FontSize="12.5" FontFamily="{StaticResource HmMonoFont}"
+                                           Foreground="{Binding IsCurrent,
+                                               Converter={x:Static ctl:ReadingInkConverter.Instance}}" />
+
+                                <WrapPanel Grid.Column="2" Orientation="Horizontal"
+                                           ItemSpacing="8">
+                                    <TextBlock Text="{Binding Source}" FontSize="11"
+                                               TextWrapping="Wrap"
+                                               FontFamily="{StaticResource HmMonoFont}"
+                                               Foreground="{x:Static ctl:InstrumentPalette.IdleBrush}" />
+                                    <TextBlock Text="{Binding Age}" FontSize="11"
+                                               Foreground="{x:Static ctl:InstrumentPalette.IdleBrush}" />
+                                    <TextBlock Text="stale" FontSize="11" FontWeight="SemiBold"
+                                               IsVisible="{Binding IsStale}"
+                                               Foreground="{x:Static ctl:InstrumentPalette.UnreadableBrush}" />
+                                </WrapPanel>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </Border>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="10"
+                    HorizontalAlignment="Right" Margin="0,14,0,0">
+            <Button Content="Copy for a bug report" Click="OnCopy" Padding="14,7" />
+            <Button Content="Ask the radio again" Command="{Binding RefreshCommand}"
+                    Padding="14,7" />
+            <Button Content="Close" Click="OnClose" Padding="18,7" />
+        </StackPanel>
+    </Grid>
+</Window>

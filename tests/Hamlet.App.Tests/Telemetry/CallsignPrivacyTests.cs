@@ -16,7 +16,7 @@ public sealed class CallsignPrivacyTests : IDisposable
     /// <summary>Every public event-writing method on <see cref="AppEvents"/>.
     /// If this number moves, a new event was added and the walk below has to
     /// grow with it — that is the point.</summary>
-    private const int ExpectedEventMethodCount = 31;
+    private const int ExpectedEventMethodCount = 32;
 
     private const string Callsign = "KC3QIS";
     // "Timothy", not "Tim": a three-letter needle matches "timer", which is a
@@ -184,6 +184,12 @@ public sealed class CallsignPrivacyTests : IDisposable
         // transcript names two stations who did not agree to be in this file.
         AppEvents.DecoderStarted(
             telemetry, simulated: true, sampleRate: 8_000, pitchHz: 600);
+
+        // HM-DEC-050 puts the radio's whole state on a screen. What it is tuned
+        // to and how its filters are set are the operator's business, so the
+        // event carries a count and nothing else, and this walk is what keeps
+        // that provable.
+        AppEvents.RigDiagnosticsOpened(telemetry, knownCount: 18);
 
         // HM-DEC-026 and HM-DEC-027 added the training radio and the field
         // guide's audio. Neither touches the profile, and both join the walk

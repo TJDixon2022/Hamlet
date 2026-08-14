@@ -73,9 +73,11 @@
                 </MenuItem>
                 <MenuItem Header="_Tools">
                     <MenuItem Header="Settings…" Command="{Binding OpenSettingsCommand}" />
+                    <MenuItem Header="What the radio is doing…"
+                              Command="{Binding OpenRigDiagnosticsCommand}" />
                     <MenuItem Header="Open data folder" Command="{Binding OpenDataFolderCommand}" />
                     <Separator />
-                    <MenuItem Header="Diagnostics viewer  (later)" IsEnabled="False" />
+                    <MenuItem Header="Decode log viewer  (later)" IsEnabled="False" />
                 </MenuItem>
                 <MenuItem Header="_Help">
                     <MenuItem Header="Getting started  (phase 1.5)" IsEnabled="False" />
@@ -184,7 +186,9 @@
                     FrequencyHz="{Binding FrequencyHz}"
                     BandLowHz="{Binding SelectedBand.Band.LowHz}"
                     BandHighHz="{Binding SelectedBand.Band.HighHz}"
-                    ModeText="CW" FilterText="FIL2" />
+                    ModeText="{Binding RigModeText}"
+                    FilterText="{Binding RigFilterText}"
+                    SMeterLevel="{Binding SMeterLevel}" />
                 <TextBlock Text="scroll wheel over a digit tunes that digit"
                            FontSize="12" HorizontalAlignment="Center"
                            Foreground="{StaticResource HmAmberBrush}" />
@@ -417,16 +421,34 @@
                                                Text="what the radio is hearing, as it arrives"
                                                FontSize="12" VerticalAlignment="Center"
                                                Foreground="{StaticResource HmTextMutedBrush}" />
-                                    <Border Grid.Column="1"
-                                            Background="{StaticResource HmGreenTintBrush}"
-                                            BorderBrush="{StaticResource HmGreenEdgeBrush}"
-                                            BorderThickness="1" CornerRadius="6"
-                                            Padding="8,2"
-                                            IsVisible="{Binding HasDetectedSpeed}">
-                                        <TextBlock Text="{Binding TerminalSpeedText}"
-                                                   FontSize="12" FontWeight="SemiBold"
-                                                   Foreground="{StaticResource HmGreenBrush}" />
-                                    </Border>
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal"
+                                                Spacing="6">
+                                        <!-- The filter width, because it is the
+                                             number that explains a bad decode:
+                                             a passband wide open at 3 kHz puts
+                                             several signals into the decoder at
+                                             once (HM-DEC-050). -->
+                                        <Border Background="{StaticResource HmBlueTintBrush}"
+                                                BorderBrush="{StaticResource HmBlueEdgeBrush}"
+                                                BorderThickness="1" CornerRadius="6"
+                                                Padding="8,2"
+                                                ToolTip.Tip="How wide the radio's filter is right now. Everything inside it reaches the decoder together."
+                                                IsVisible="{Binding HasFilterBandwidth}">
+                                            <TextBlock Text="{Binding FilterBandwidthText}"
+                                                       FontSize="12" FontWeight="SemiBold"
+                                                       Foreground="{StaticResource HmBlueBrush}" />
+                                        </Border>
+
+                                        <Border Background="{StaticResource HmGreenTintBrush}"
+                                                BorderBrush="{StaticResource HmGreenEdgeBrush}"
+                                                BorderThickness="1" CornerRadius="6"
+                                                Padding="8,2"
+                                                IsVisible="{Binding HasDetectedSpeed}">
+                                            <TextBlock Text="{Binding TerminalSpeedText}"
+                                                       FontSize="12" FontWeight="SemiBold"
+                                                       Foreground="{StaticResource HmGreenBrush}" />
+                                        </Border>
+                                    </StackPanel>
                                 </Grid>
 
                                 <Border CornerRadius="8" ClipToBounds="True"

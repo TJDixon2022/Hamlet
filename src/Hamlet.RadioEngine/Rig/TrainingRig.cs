@@ -100,8 +100,7 @@ public sealed class TrainingRig : IRig
 
             _ => new[]
             {
-                RigValue.Unsupported(
-                    field, "the training radio has no receiver, so there is nothing to read"),
+                RigValue.Unsupported(field, "training radio: no receiver"),
             },
         };
 

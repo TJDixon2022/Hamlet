@@ -59,6 +59,7 @@ public partial class MainWindowViewModel : ObservableObject
     private IDisposable[] _ownedSources = Array.Empty<IDisposable>();
     private TrainingSpectrumSource? _trainingSpectrum;
     private readonly DispatcherTimer _decodeTimer;
+    private RigStateMonitor? _rigMonitor;
     private IAudioSource? _audioInput;
     private CwDecoder? _decoder;
     private readonly Audio.ModeAudioPlayer _audio = new();
@@ -102,6 +103,44 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty]
     private IReadOnlyList<Controls.ActivityDot> _activityDots =
         Array.Empty<Controls.ActivityDot>();
+
+    /// <summary>
+    /// The mode the radio is actually in, or empty when it has not been read.
+    /// </summary>
+    /// <remarks>
+    /// THIS WAS THE LITERAL "CW" IN THE WINDOW until HM-DEC-050. The rig display
+    /// showed CW whatever the radio was set to, which meant the screen lied the
+    /// moment somebody switched to sideband. Empty is the honest starting point:
+    /// nobody has asked yet.
+    /// </remarks>
+    [ObservableProperty]
+    private string _rigModeText = "";
+
+    /// <summary>The filter designator, or empty. It always read FIL2 before.</summary>
+    [ObservableProperty]
+    private string _rigFilterText = "";
+
+    /// <summary>
+    /// Where the S-meter sits, 0 to 1, or null when there is no reading.
+    /// </summary>
+    /// <remarks>
+    /// Null rather than zero, all the way to the control. A needle at rest looks
+    /// exactly like a measurement of a quiet band (§0.0).
+    /// </remarks>
+    [ObservableProperty]
+    private double? _sMeterLevel;
+
+    /// <summary>
+    /// The filter's width in words, or empty when it is not known.
+    /// </summary>
+    /// <remarks>
+    /// Shown beside the decoder's speed readout, because this is the number that
+    /// explains a bad decode: a passband wide open at 3 kHz puts several signals
+    /// into the decoder at once.
+    /// </remarks>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasFilterBandwidth))]
+    private string _filterBandwidthText = "";
 
     /// <summary>The sending speed the decoder is tracking, or 0.</summary>
     [ObservableProperty]
@@ -346,6 +385,12 @@ public partial class MainWindowViewModel : ObservableObject
 
     /// <summary>True when there is something worth saying about the signal.</summary>
     public bool HasDecodeNote => DecodeNote.Length > 0;
+
+    /// <summary>True once the filter width has been read from the radio.</summary>
+    public bool HasFilterBandwidth => FilterBandwidthText.Length > 0;
+
+    /// <summary>Everything Hamlet currently knows about the radio.</summary>
+    public RigState RigState => _rigMonitor?.State ?? RigState.Empty;
 
     /// <summary>True once the decoder is tracking a speed worth showing.</summary>
     public bool HasDetectedSpeed => DetectedWpm > 0;
@@ -611,6 +656,15 @@ public partial class MainWindowViewModel : ObservableObject
         _windowVisible = visible;
         ApplyFeedTimers();
 
+        // CI-V is a slow bus shared with the radio's own transceive stream, and
+        // a minimized window has no S-meter on screen to justify asking for one
+        // four times a second. Same politeness the spot feeds observe
+        // (HM-DEC-020, HM-DEC-050).
+        if (_rigMonitor is not null)
+        {
+            _rigMonitor.IsWatching = visible;
+        }
+
         // Nothing is watching a hidden window, and twenty-five frames a
         // second of synthesis for nobody is the same rudeness HM-DEC-020
         // named — here it is only the operator's own CPU being spent.
@@ -869,6 +923,96 @@ public partial class MainWindowViewModel : ObservableObject
     }
 
     /// <summary>
+    /// Open the screen that says what the radio is doing.
+    /// </summary>
+    /// <remarks>
+    /// Under Tools rather than buried, because the moment somebody needs it is
+    /// the moment something is wrong and they are already frustrated
+    /// (HM-DEC-050).
+    /// </remarks>
+    [RelayCommand]
+    private void OpenRigDiagnostics()
+    {
+        var owner = (Application.Current?.ApplicationLifetime
+            as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
+
+        if (owner is null)
+        {
+            return;
+        }
+
+        var window = new Views.RigDiagnosticsWindow
+        {
+            DataContext = new RigDiagnosticsViewModel(_rigMonitor, RigState),
+        };
+
+        AppEvents.RigDiagnosticsOpened(_telemetry, RigState.KnownCount);
+        window.ShowDialog(owner);
+    }
+
+    /// <summary>
+    /// Begin keeping track of what the radio is doing.
+    /// </summary>
+    /// <remarks>
+    /// The monitor polls on its own thread and raises state changes from it, so
+    /// everything it hands over is marshalled onto the UI thread here rather
+    /// than each surface remembering to.
+    /// </remarks>
+    private void StartRigMonitor(IRig rig)
+    {
+        StopRigMonitor();
+
+        _rigMonitor = new RigStateMonitor(rig);
+        _rigMonitor.StateChanged += OnRigStateChanged;
+        _rigMonitor.IsWatching = _windowVisible;
+        _rigMonitor.Start();
+    }
+
+    private void StopRigMonitor()
+    {
+        if (_rigMonitor is null)
+        {
+            return;
+        }
+
+        _rigMonitor.StateChanged -= OnRigStateChanged;
+        _rigMonitor.Dispose();
+        _rigMonitor = null;
+
+        // Back to knowing nothing, rather than leaving the last radio's
+        // readings on screen as though they were this one's (§0.0).
+        ApplyRigState(RigState.Empty);
+    }
+
+    private void OnRigStateChanged(object? sender, RigStateChangedEventArgs e)
+        => Dispatcher.UIThread.Post(() => ApplyRigState(e.State));
+
+    /// <summary>
+    /// Push what the radio said onto the surfaces that show it.
+    /// </summary>
+    /// <remarks>
+    /// Every one of these is empty or null when the value is not known, and
+    /// none of them substitutes a default. That is the whole point of the model
+    /// underneath (HM-DEC-050).
+    /// </remarks>
+    private void ApplyRigState(RigState state)
+    {
+        RigModeText = state[RigField.Mode] is { IsKnown: true } mode ? mode.Text : "";
+        RigFilterText = state[RigField.FilterSelection] is { IsKnown: true } filter
+            ? filter.Text
+            : "";
+
+        SMeterLevel = state.SMeterFraction;
+
+        FilterBandwidthText = state[RigField.FilterBandwidth] is { IsKnown: true } width
+            ? width.Text
+            : "";
+
+        OnPropertyChanged(nameof(RigState));
+        OnPropertyChanged(nameof(TerminalSummary));
+    }
+
+    /// <summary>
     /// Start listening, and decoding what is heard.
     /// </summary>
     /// <remarks>
@@ -1024,6 +1168,7 @@ public partial class MainWindowViewModel : ObservableObject
     /// </remarks>
     public void ShutDownTraining()
     {
+        StopRigMonitor();
         StopDecoding();
         StopTrainingSpectrum();
         _audio.Dispose();
@@ -1098,6 +1243,7 @@ public partial class MainWindowViewModel : ObservableObject
         // makes its own Morse and a real one arrives through the capture device
         // the operator chose. So the terminal fills in either way.
         StartDecoding();
+        StartRigMonitor(rig);
 
         var hz = await rig.GetFrequencyHzAsync();
         ApplyRigFrequency(hz);
@@ -1967,6 +2113,7 @@ public partial class MainWindowViewModel : ObservableObject
 
     private async Task TearDownRigAsync()
     {
+        StopRigMonitor();
         StopDecoding();
         StopTrainingSpectrum();
         _rigSendTimer.Stop();

@@ -52,7 +52,7 @@ public sealed record RigValue(
     /// <param name="source">What decided that, e.g. "training radio".</param>
     /// <returns>The value.</returns>
     public static RigValue Unsupported(RigField field, string source)
-        => new(field, RigValueState.Unsupported, null, "this radio does not have it", null, source);
+        => new(field, RigValueState.Unsupported, null, "not on this radio", null, source);
 
     /// <summary>
     /// A field the manual documents no command for.

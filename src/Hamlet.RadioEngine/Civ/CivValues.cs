@@ -218,12 +218,36 @@ public static class CivSMeter
     public const int S9Plus60Reading = 241;
 
     /// <summary>
+    /// Where S9 sits along the scale, as a share of its width.
+    /// </summary>
+    /// <remarks>
+    /// A radio's S-meter is not linear in its own reported units: the nine
+    /// S-units take most of the scale and the decibels above S9 are compressed
+    /// into what is left. The IC-7300's face puts S9 about sixty per cent along,
+    /// and the display Hamlet draws follows it, so the two agree.
+    /// </remarks>
+    public const double S9Position = 0.6;
+
+    /// <summary>
     /// Where a reading sits on the meter, from 0 at rest to 1 at full scale.
     /// </summary>
     /// <param name="reading">The value from <c>15 02</c>.</param>
     /// <returns>0 to 1.</returns>
+    /// <remarks>
+    /// Two straight lines meeting at S9 rather than one across the whole range.
+    /// A single line would put S9 at the halfway mark, and every reading would
+    /// then sit to the left of where the radio's own needle is, which is the
+    /// sort of quiet disagreement that makes somebody distrust both.
+    /// </remarks>
     public static double Fraction(int reading)
-        => Math.Clamp((double)reading / S9Plus60Reading, 0, 1);
+    {
+        var held = Math.Clamp(reading, ZeroReading, S9Plus60Reading);
+
+        return held <= S9Reading
+            ? held * S9Position / S9Reading
+            : S9Position
+              + ((held - S9Reading) * (1 - S9Position) / (S9Plus60Reading - S9Reading));
+    }
 
     /// <summary>The reading in the words an operator would use.</summary>
     /// <param name="reading">The value from <c>15 02</c>.</param>
