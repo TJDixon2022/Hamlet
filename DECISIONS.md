@@ -4,6 +4,159 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-049
+date: 2026-08-14
+closes: HM-OPEN-002
+refs: CLAUDE.md §4, HM-DEC-005, HM-DEC-008
+---
+
+The IC-7300 Full Manual is in hand, the command facts CLAUDE.md §4 carried as
+general knowledge are verified against section 19 with page citations, and the
+figures the manual does not state stay marked as unknown rather than being
+filled in with plausible numbers.
+
+THE MANUAL IS CITED AND NOT COMMITTED. Icom's terms permit an individual to use
+the documentation and prohibit redistributing it, so this repository carries
+page references and the facts read off them, and no part of the PDF itself.
+That is a stricter reading than §4's "vendor the cited pages" rule, and it wins
+here because §2.1 forbids third-party proprietary material outright and a
+public GPL-3.0 repository is exactly where that matters. Anybody checking the
+work downloads the manual from Icom, free, and turns to the page named.
+
+What was confirmed, and where. The frame is
+`FE FE 94 E0 Cn Sc <data> FD` from the controller and `FE FE E0 94 ...` back,
+with `FB` for acknowledged and `FA` for not (p. 19-2). The transceiver's default
+address is `94h`, settable from `02h` to `DFh` (p. 12-10). Command `17` sends up
+to thirty characters as CW, `FF` stops a message in progress, and `^` transmits
+a string with no inter-character space (p. 19-13). Command `27 00` reads scope
+waveform data and only does so when `27 10` and `27 11` are both on; the data
+runs `00` to `A0` over a length of 475 and arrives in eleven parts over USB
+(p. 19-14).
+
+AND THE PRECONDITION NOBODY HAD WRITTEN DOWN, which is the reason this record
+is worth more than a tidy citation list. In CW mode a message sent with command
+`17` is only transmitted when TRANSMIT or an external TX switch is on, or
+Break-in is on (p. 19-8, footnote 2). Without that, the transmit work would have
+sent a perfectly correct frame, received a perfectly correct acknowledgement,
+and produced silence, which is an evening lost to debugging a thing that was
+never broken.
+
+Two corrections to what §4 assumed. The USB CI-V baud rate defaults to Auto
+rather than to any fixed figure, and 115200 is one of six options rather than a
+convention (p. 12-11), so the app must not hard-code it. And the CW pitch is
+adjustable from 300 to 900 Hz (p. 4-14), encoded by `14 08` with 600 Hz at the
+midpoint in 5 Hz steps (p. 19-3). The manual states the range and not a factory
+default, so the decoder starts at 600 because that is the middle of what this
+radio can produce, which is a citation rather than a recollection.
+
+Still unknown, and marked so: what Windows calls the radio's audio codec. The
+manual describes the USB connection and never names the device as an operating
+system enumerates it, so that stays configuration and stays in HM-OPEN-003.
+`AudioDevice.LooksLikeRadioCodec` matches on "USB Audio CODEC" to PRESELECT a
+device and never to claim one is the radio, which is the honest shape for a
+guess with no source behind it (§0.0).
+
+---
+id: HM-DEC-048
+date: 2026-08-14
+refs: src/Hamlet.RadioEngine/Cw/, src/Hamlet.RadioEngine/Audio/, src/Hamlet.App/Controls/CwTerminalControl.cs, tests/fixtures/cw/, HM-DEC-007, HM-DEC-009, HM-DEC-026, HM-DEC-027
+---
+
+Hamlet decodes received CW, and says how sure it is about every character it
+prints. Receive only; the transmit half is not built here.
+
+WHY THIS ONE MATTERS MORE THAN ITS SIZE. CW is the last part of this hobby the
+old guard still guards, and the line is that you have to develop an ear, that
+the code test kept the riffraff out, that if you cannot read twenty words a
+minute you are not really doing it. A decoder that works turns that from a gate
+into a preference. It takes nothing from anybody learning to copy by ear, and it
+lets somebody who has held a license for six years without making a contact read
+what is on the air tonight.
+
+The chain is the standard one and there is deliberately no cleverness in it. A
+bank of Goertzel filters finds the note and follows it across the 300 to 900 Hz
+the radio can produce, because nobody tunes exactly and a decoder that punished
+being off frequency would be teaching the wrong lesson. An adaptive gate decides
+where the key is down from a noise floor and a peak that both keep moving, so a
+signal sinking through a fade takes the threshold down with it instead of
+leaving it stranded. Runs of key-down and key-up become dits, dahs and the three
+gap lengths by re-deriving the speed from a rolling window of what was actually
+heard. Patterns become characters through a table that is allowed to say no.
+
+PROSIGNS ARRIVE AS PROSIGNS. An operator ending a message sends `.-.-.` as one
+run with no gap in it, and a decoder that split that into letters would be wrong
+in the most confusing way available: it would read as a mistake in a sentence
+rather than as a symbol the reader has not met. Where a pattern has both a
+punctuation name and a prosign name they are the same sound on the air, so
+choosing `<BT>` over `=` is a naming decision and not a claim about the signal.
+
+THE CONFIDENCE IS THE FEATURE, not a decoration on it. Two measurements and the
+worse one wins: how far each element sat from the decision made about it, and
+how far the weakest of them stood above the noise and above any station near
+enough to be confused with it. Then one veto, for a character that arrived while
+somebody else was within a few decibels of the same note, because that failure
+is not a matter of degree. High renders normally, low renders dimmed,
+unresolved renders as a placeholder and never as a guessed letter. Nothing
+anywhere raises a score: not a spell check, not a callsign that nearly matches,
+not a word that would make sense.
+
+The reason is specific to this feature. A beginner reading a line of
+clean-looking garbage concludes they are the problem, which is exactly what
+they have been told for years. Dimmed text says the app is struggling. Clean
+text that is wrong says the operator is, and that is a lie this whole project
+exists to stop telling.
+
+NOTHING IS CLAIMED FROM AN EMPTY BAND. Noise crosses a threshold constantly, and
+a gate handed nothing at all will chop it into runs the right length to be
+believed; building against the fixtures produced exactly that, a stream of
+confident letters out of twelve seconds of static. So the timings have to look
+like Morse before anything is emitted at all: marks clustered near one dit and
+three, at a speed a person could actually send. Not marked unreadable, which
+would be saying something was heard, but not emitted, because nothing was.
+
+WHEN THE DECODE IS POOR, THE TERMINAL SAYS WHY, in measurements rather than
+diagnoses. Fading, faster than Hamlet is following, only just above the noise,
+nothing coming through. The constraint is that these describe what the decoder
+measured and may not diagnose the band, the antenna, the other operator's
+equipment or propagation, and a test sweeps every one of them for the phrases
+that would. The one sentence that comes close is deliberate: telling somebody
+that a fading signal is not their fault declines to blame them rather than
+asserting anything about the ionosphere, and warmth that buys no claim is
+exactly what §0.7 allows.
+
+DETERMINISM IS WHAT MAKES ANY OF IT PROVABLE. No clock is read below the audio
+seam; elapsed time is counted in samples. The same audio decodes to the same
+text on any machine at any speed, which is what lets a test push ten minutes of
+signal through in a millisecond and assert an exact string, and what turns a
+decoder bug into a regression test rather than an anecdote (HM-DEC-007).
+
+Audio input arrives behind `IAudioSource`, built the way `ISerialPort` was: one
+interface, a WASAPI implementation that is the only class in the engine knowing
+what a sound device is, and in-memory sources so every decoder test runs without
+hardware. `IsSimulated` is get-only on all of them, which is HM-DEC-026's
+guarantee carried onto the audio seam: a decode from a fixture cannot reach the
+screen dressed as something that was on the air.
+
+THE FIXTURES ARE SYNTHESIZED AND NOT RECORDED OFF AIR, and that is a ruling
+rather than a convenience. An off-air recording carries somebody's callsign and
+somebody's transmission, which §2.1 makes Tim's to review before it ships;
+nothing in `tests/fixtures/cw` belongs to anyone. Seven files, about a megabyte,
+eight kilohertz mono, covering three speeds clean plus prosigns, noise, fading
+and a second station. Every one regenerates byte for byte from the request
+beside it and a test proves it, because a fixture that changed quietly would
+take its own assertions with it.
+
+Building against them found three defects worth recording, all the same shape:
+the gate deciding things about audio that had nothing in it. The trackers were
+fast enough to follow noise, so peak sat on its high points and floor on its low
+ones and the gap read as twenty-five decibels of signal on an empty band. A
+de-glitch vote was needed for runs shorter than anything anybody sends. And a
+level-stability term meant to catch fade-truncated characters was reading
+dit-versus-dah composition as level movement and marking clean signals
+uncertain; with the gate fixed the fades pass without it, and what remained was
+the contested-signal case, which is now a veto.
+
+---
 id: HM-DEC-047
 date: 2026-08-14
 refs: src/Hamlet.App/Controls/FrequencyAxis.cs, src/Hamlet.App/Controls/SpotMarkerStrip.cs, src/Hamlet.App/Controls/DialTapeControl.cs, HM-DEC-015, HM-DEC-023, HM-DEC-006

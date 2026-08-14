@@ -86,6 +86,12 @@ Lead with the fact that does the most work: listening is never restricted. The
 overlay marks where transmitting stops, not where they may not go.
 
 ### ONB-004 — What things sound and look like
+**Gained a second half 2026-08-14 (HM-DEC-048):** the CW terminal now decodes,
+so a newcomer can hear Morse at 12 words a minute AND read what it says at the
+same time. Hearing a rhythm teaches what it sounds like; watching the letters
+appear beside it teaches that the rhythm is language. The training radio does
+both with nothing plugged in.
+
 **Buildable 2026-08-13:** the field guide, its generated audio samples and its
 animated fingerprints all exist (HM-DEC-027).
 
@@ -128,7 +134,7 @@ into the step list by ruling.
 |---|---|---|
 | ONB-C01 | ~~Location / grid square~~ | **Answered 2026-08-13 (HM-DEC-037): derived, not asked.** The callsign lookup already returns coordinates, so the grid fills itself on startup and the operator is never shown the word "Maidenhead". Nothing is left for onboarding here except the greeting — see the note below the table |
 | ONB-C02 | Telemetry disclosure | HM-DEC-018 keeps everything local, but saying so unprompted buys trust cheaply |
-| ONB-C03 | Audio device selection | Needed before any decoding; belongs with ONB-005 when a real rig is connected |
+| ONB-C03 | ~~Audio device selection~~ | **Largely answered 2026-08-14 (HM-DEC-048): worked out, not asked.** Hamlet picks the capture device, preferring one whose name matches the radio's USB codec, and remembers whatever the operator chooses instead. A machine with none says so and carries on, because the training radio makes its own Morse and needs nothing plugged in. What is left for onboarding is the sentence pointing at Settings for somebody whose radio is not the obvious device |
 | ONB-C04 | CW copy speed | What speed can they read? Sets the Explorer's spot filtering (FG-002). Could be a listening exercise rather than a question |
 | ONB-C05 | Transmit safety | Dummy load, guard rail default, where the override lives (HM-DEC-008). Only relevant once transmit exists |
 | ONB-C06 | Logging setup | Callsign is already known; ADIF import of an existing log (FG-004) |

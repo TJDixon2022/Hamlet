@@ -237,6 +237,8 @@ this table is the index.
 
 | Date | Decision | Why | Ref |
 |---|---|---|---|
+| 2026-08-14 | **The IC-7300 Full Manual is read and §4 is verified with page citations.** Command `17` takes 30 characters, `FF` stops, `^` runs characters together; `27 00` needs `27 10` and `27 11` on; CW pitch is 300 to 900 Hz. **Two corrections: USB CI-V baud defaults to Auto, and the manual states no default CW pitch.** The manual is cited and never committed, because Icom permits individual use and prohibits redistribution. Closes HM-OPEN-002. | Code must not rest on a recalled command byte; and the transmit precondition nobody had written down would have cost an evening. | HM-DEC-049 |
+| 2026-08-14 | **Hamlet decodes received CW, and says how sure it is about every character.** Goertzel bank tracking the note anywhere in 300 to 900 Hz, adaptive gate that follows a fade down, speed re-derived from a rolling window, prosigns as prosigns. Confidence from two measurements with the worse one winning, plus a veto for a contested signal; low renders dimmed and unresolved renders as a placeholder, never a guessed letter. Nothing raises a score. Nothing is emitted at all when the timings do not look like Morse. Poor decodes get plain-language notes that describe measurements and are tested against diagnosing the band or anybody's equipment. Audio behind `IAudioSource`; seven synthesized WAV fixtures in `tests/fixtures/cw`. Receive only. | CW is the last part of this hobby still guarded by the claim that you need an ear for it, and a beginner reading clean-looking garbage concludes the fault is theirs. | HM-DEC-048 |
 | 2026-08-14 | **The dial tape carries the map's spots on a rail along its top edge.** One `FrequencyAxis` now serves the map, the tape and the waterfall, so a station is at the same frequency on all three; `SpotMarkerStrip` takes an axis and a rectangle and is the phase 2 waterfall's for the asking. Same tooltip, same click-to-tune, out of the frequency scale's way, and an empty rail is not drawn. | The tape showed nothing while the map showed dots for the same stations, which teaches a newcomer that the tape is decoration; and three copies of one mapping is three mappings. | HM-DEC-047 |
 | 2026-08-14 | **The best-bet badge is ranked from observation, not the clock.** One `BandOpportunities.Rank` feeds the badge, the pips and the lead card, so they cannot disagree about which band is best. The clock heuristic drops to a tiebreaker for when nothing has been heard anywhere, and the badge then says it is going on the hour rather than wearing the same words as an observation. | Three surfaces answered one question and the loudest answered from a first-week lookup table that cannot hear anything: badge on 80 m with no pips while the lead card pointed at 40 m. | HM-DEC-046 |
 | 2026-08-14 | **Spots persist to a local SQLite store and the display is a view over history.** Each source gets a lifetime (activation an hour, skimmer twenty minutes, contest longest), age is spoken with likelihood claims only the source can support, and feed freshness ("checked") is kept apart from opportunity freshness. An empty band reaches for a busier one before declaring nothing. **SQLite is chosen here, not inherited: no prior ruling covered local storage.** | The app discarded good invitations at ten minutes and said "nothing here" while holding them, which is exactly when a newcomer gives up. | HM-DEC-045 |
@@ -380,25 +382,47 @@ severity to make the picture look better.
 two functions: a virtual COM port for CI-V CAT control, and a USB audio
 codec for RX/TX audio. No external interface hardware is needed or used.
 
-Facts Claude carries from general knowledge, **all to be verified against the
-IC-7300 Full Manual and CI-V reference before code depends on them**, with
-the cited pages vendored into `data/vendor/` (the simulator project's
-SIM-DEC-034 rule, carried here):
+**Verified 2026-08-14 against the IC-7300 Full Manual (HM-DEC-049, closing
+HM-OPEN-002).** Page numbers below are the manual's own. The PDF is **cited and
+never committed**: Icom's terms permit individual use and prohibit
+redistribution, and §2.1 forbids third-party proprietary material in this
+repository. Anybody checking a figure downloads the manual free from Icom and
+turns to the page named.
 
-- CI-V frame: `FE FE <to> <from> <cmd> [subcmd] [data] FD`. Radio default
-  address `0x94`; controller conventionally `0xE0`. Frequencies are BCD,
-  little-endian by byte pair.
-- CW transmit: command `0x17` sends a text string that the radio keys with
-  its internal keyer at the set WPM; limited length per message (believed 30
-  characters — verify); `0xFF` as the message aborts sending.
-- Spectrum scope: command `0x27` family reads/streams scope waveform data;
-  "scope ON" and "output to controller" flags must be set. Exact framing,
-  span encoding and update rate: verify.
-- USB serial baud: configurable on the radio; CI-V USB commonly run at
-  115200. The radio menu setting and the app config must agree.
-- Audio: the codec appears as a standard Windows audio device
-  ("USB Audio CODEC"). Sample rate for DSP: decided when the audio pipeline
-  is scaffolded; 48 kHz is the working assumption.
+| Fact | Value | Page |
+|---|---|---|
+| CI-V frame, controller to radio | `FE FE 94 E0 Cn Sc <data> FD` | 19-2 |
+| CI-V frame, radio to controller | `FE FE E0 94 Cn Sc <data> FD` | 19-2 |
+| Acknowledged / not acknowledged | `FE FE E0 94 FB FD` / `... FA FD` | 19-2 |
+| Radio address | `94h` default, `02h`–`DFh` settable | 12-10 |
+| CW message send | Command `17`, **up to 30 characters** | 19-13 |
+| Stop sending | `FF` as the message | 19-13 |
+| Run characters together | `^` sends a string with no inter-character space | 19-13 |
+| Scope waveform data | `27 00`, only while `27 10` and `27 11` are both ON | 19-14 |
+| Scope data shape | Range `00`–`A0`, length 475, sent in 11 parts over USB | 19-14 |
+| CW pitch range | 300–900 Hz | 4-14 |
+| CW pitch over CI-V | `14 08`; `00 00`=300 Hz, `01 28`=600 Hz, `02 55`=900 Hz, 5 Hz steps | 19-3 |
+| CI-V USB baud | **Default Auto**; 4800/9600/19200/38400/57600/115200 | 12-11 |
+
+**THE PRECONDITION ON COMMAND `17`, which is not optional and cost nothing only
+because it was found before the transmit work started:** in CW mode a message
+sent with `17` is transmitted **only when TRANSMIT or an external TX switch is
+on, or Break-in is on** (p. 19-8, footnote 2). Without it the app sends a
+correct frame, gets a correct acknowledgement, and the radio stays silent.
+
+Still unverified, and marked so rather than filled in:
+
+- **What Windows calls the audio codec.** The manual describes the USB
+  connection and never names the device as an operating system enumerates it.
+  This is configuration, not a constant: HM-OPEN-003. `LooksLikeRadioCodec`
+  matches "USB Audio CODEC" to **preselect** a device and never to claim one is
+  the radio.
+- **The factory default CW pitch.** The manual states the range and the CI-V
+  encoding and no default. The decoder starts at 600 Hz because that is the
+  midpoint of what this radio produces, which is a citation and not a
+  recollection.
+- **Frequency BCD encoding**, little-endian by byte pair, still carried from
+  general knowledge. Verify before the tuning path depends on it.
 
 **A figure the source does not state is an explicit known-unknown** — marked
 in the data file as `value: null, confirmed: false, reason`, loaded loud, and
@@ -437,13 +461,14 @@ Rows marked `<<<FILL IN>>>` await the named ruling.
 | Language / runtime | C# on .NET 8 LTS |
 | UI framework | Avalonia 11, Fluent theme, dark variant (HM-DEC-011). Compiled bindings on by default |
 | MVVM toolkit | CommunityToolkit.Mvvm (source-generated `[ObservableProperty]`, `[RelayCommand]`) |
-| Solution layout | `Hamlet.sln` at root; `src/` and `tests/` solution folders. Engine: `src/Hamlet.RadioEngine`. Shell: `src/Hamlet.App`. Live activity sources: `src/Hamlet.RadioEngine/Explore`. Signal synthesis and mode audio: `src/Hamlet.RadioEngine/Training`. Tests: `tests/Hamlet.RadioEngine.Tests`, `tests/Hamlet.App.Tests` (settings, telemetry payloads, freshness rule — app-layer facts with public promises attached) |
+| Solution layout | `Hamlet.sln` at root; `src/` and `tests/` solution folders. Engine: `src/Hamlet.RadioEngine`. Shell: `src/Hamlet.App`. Live activity sources: `src/Hamlet.RadioEngine/Explore`. Signal synthesis and mode audio: `src/Hamlet.RadioEngine/Training`. Audio input and the WAV round trip: `src/Hamlet.RadioEngine/Audio`. CW decoding: `src/Hamlet.RadioEngine/Cw`. Tests: `tests/Hamlet.RadioEngine.Tests`, `tests/Hamlet.App.Tests` (settings, telemetry payloads, freshness rule — app-layer facts with public promises attached) |
 | Project settings | `Nullable` enabled, `ImplicitUsings` enabled, `TreatWarningsAsErrors` true — all new projects |
 | Test framework | xUnit, no mocking framework; seams are hand-rolled interfaces (`IRig`, `IAudioSource`, `FakeRig`) |
-| Audio | NAudio (WASAPI) |
-| FFT | `<<<FILL IN — FftSharp vs Math.NET, decide when the audio pipeline is scaffolded>>>` |
+| Audio | NAudio (WASAPI), in the engine behind `IAudioSource` (HM-DEC-048) |
+| Decoder fixtures | `tests/fixtures/cw` — synthesized WAV, 8 kHz 16-bit mono, regenerated byte for byte from the request beside each one (HM-DEC-007, HM-DEC-048) |
+| FFT | **None, and that is the answer rather than a deferral** (HM-DEC-048). The audio pipeline is scaffolded and the CW decoder wants a couple of dozen known frequencies rather than a whole spectrum, which is a Goertzel filter bank: a handful of multiplies per bin per sample, nothing to allocate, no dependency. The question reopens if phase 3 needs a wideband transform in software, and the waterfall does not count because the radio computes that itself (HM-DEC-005) |
 | CI | GitHub Actions, build + engine tests, added once the solution exists |
-| Data files | `/data` at repo root; vendored citations in `data/vendor/`; cited Part 97 privileges in `data/privileges/` (HM-DEC-029) |
+| Data files | `/data` at repo root; vendored citations in `data/vendor/`; cited Part 97 privileges in `data/privileges/` (HM-DEC-029). A source whose terms forbid redistribution is cited by page and never vendored (HM-DEC-049) |
 | Spelling | **American English throughout** — identifiers, comments, prose, records, UI text (HM-DEC-035) |
 
 ### 6.1 Spelling — the three exceptions

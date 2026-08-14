@@ -30,12 +30,13 @@ reason, but "Tim ships phase 1" has weight too. Tim rules.
 
 ---
 id: HM-OPEN-002
-status: open
+status: closed
 owner: tim
 raised: 2026-08-12
 severity: slows
 blocks: nothing yet; becomes hard when CI-V code is written
-refs: HM-DEC-005, CLAUDE.md §4
+closed: 2026-08-14
+refs: HM-DEC-049, HM-DEC-005, CLAUDE.md §4
 ---
 
 Obtain the IC-7300 CI-V reference (the "Full Manual" / CI-V command tables
@@ -47,6 +48,15 @@ frame format and BCD encoding is general knowledge, marked unverified. Code
 must not depend on an unverified command byte. Tim downloads the PDF from
 Icom and uploads it to the session; Claude extracts and vendors the cited
 sections only.
+
+**CLOSED 2026-08-14 (HM-DEC-049).** Tim supplied the Full Manual and section 19
+CONTROL COMMAND was read directly. §4 now carries the verified facts with page
+citations, two corrections and one precondition nobody had written down.
+
+**The vendoring half was NOT done, and that is the ruling rather than an
+omission.** Icom's terms permit individual use and prohibit redistribution, so
+the repository cites pages and carries none of the PDF. §4's "vendor the cited
+pages" rule stands for sources that allow it; this one does not, and §2.1 wins.
 
 ---
 id: HM-OPEN-003

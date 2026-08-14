@@ -93,6 +93,12 @@ Morse at 12, 18 and 25 WPM. Between them an operator can find the speed they
 actually copy without waiting for a real station to oblige — which is the
 number this goal needs and had no way to obtain.
 
+**And the missing number arrived 2026-08-14 (HM-DEC-048).** The decoder reports
+the sending speed of whatever it is listening to, live, so "what speed is this
+person sending at" stopped being something only RBN could answer. That is one
+half of this goal; the other half is knowing what speed the operator can copy,
+which is still a question nobody has asked them.
+
 The path this opens, as direction and not scope: structured CW practice off
 the air. Send a call at a chosen speed, let the operator type what they heard,
 score it, and move the speed up when they are ready. The synthesiser already
