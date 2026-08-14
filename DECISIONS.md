@@ -4,6 +4,33 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-064
+date: 2026-08-14
+refs: src/Hamlet.App/Views/MainWindow.axaml, tests/Hamlet.App.Tests/Settings/SettingsRoundTripTests.cs, HM-DEC-016, HM-DEC-021, HM-DEC-025
+---
+
+The Explorer's panels run in this order, top to bottom: **where to start,
+happening now, field notes, field guide, what a contact sounds like.**
+
+WHY THAT ORDER. The first two help somebody get on the air and the last three
+help them understand what they are hearing, so the ones that lead to a contact
+come first. Six years of understanding without a contact is exactly the problem
+this application exists to solve. Learning supports acting here, and it does not
+precede it.
+
+The rig display stays above all of them and stays the one panel that does not
+collapse (§0.5). It is the radio's own face and the app's anchor.
+
+REORDERING COSTS NOBODY THE PREFERENCE THEY SET. Every panel remembers whether
+it is open under its own key in `settings.json` and never by its position, so a
+file written before the move opens and closes exactly the panels it named. A
+test writes that file by hand and reads it back, which is what would catch it if
+somebody ever rewrote the storage as a positional list.
+
+This is layout and nothing else. No panel gained or lost a summary, and a
+collapsed one still says what it would have told you (§0.5).
+
+---
 id: HM-DEC-063
 date: 2026-08-14
 refs: Directory.Build.props, CHANGELOG.md, tests/Hamlet.App.Tests/ViewModels/VersionTests.cs, HM-DEC-019

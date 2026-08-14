@@ -96,6 +96,37 @@ public sealed class SettingsRoundTripTests : IDisposable
         Assert.True(read.IsPanelExpanded(PanelKeys.Guide));
     }
 
+    /// <remarks>Proves HM-DEC-064: reordering the Explorer's panels costs
+    /// nobody the preferences they set. A settings file written before the move
+    /// still opens and closes exactly the panels it named, because the state is
+    /// keyed by the panel and never by where it sits in the column. The JSON is
+    /// written by hand here on purpose, so the test would still catch it if
+    /// somebody rewrote the storage as a positional list.</remarks>
+    [Fact]
+    public void PanelCollapseState_SurvivesTheExplorerReorder()
+    {
+        Directory.CreateDirectory(_folder);
+        File.WriteAllText(SettingsPath, """
+            {
+              "PanelExpanded": {
+                "lead": true,
+                "spots": false,
+                "story": false,
+                "guide": true,
+                "contact": false
+              }
+            }
+            """);
+
+        var read = SettingsStore.LoadFrom(SettingsPath);
+
+        Assert.True(read.IsPanelExpanded(PanelKeys.Lead));
+        Assert.False(read.IsPanelExpanded(PanelKeys.Spots));
+        Assert.False(read.IsPanelExpanded(PanelKeys.Story));
+        Assert.True(read.IsPanelExpanded(PanelKeys.Guide));
+        Assert.False(read.IsPanelExpanded(PanelKeys.Contact));
+    }
+
     /// <remarks>Proves HM-DEC-020: the chosen refresh interval survives a
     /// restart, and "Off" (0) survives as Off rather than being rounded back
     /// up to the default by a null-ish check.</remarks>

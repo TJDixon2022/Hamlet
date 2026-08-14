@@ -810,7 +810,17 @@
                         </ctl:CollapsiblePanel>
                 </StackPanel>
 
-                <!-- The Explorer (HM-DEC-016) -->
+                <!-- The Explorer (HM-DEC-016).
+
+                     THE ORDER OF THESE PANELS IS A RULING (HM-DEC-064), not a
+                     layout accident. The first two get somebody on the air and
+                     the last three help them understand what they are hearing,
+                     so the ones leading to a contact come first. Learning
+                     supports acting here; it does not precede it.
+
+                     Each panel remembers whether it is open under its own key
+                     in settings.json (§0.5), so moving one up the column costs
+                     nobody the preference they set. -->
                 <StackPanel Grid.Column="1" Spacing="10">
 
                         <!-- The lead card and the band-conditions line
@@ -867,6 +877,154 @@
                                     </StackPanel>
                                 </Border>
 
+                            </StackPanel>
+                        </ctl:CollapsiblePanel>
+
+                        <ctl:CollapsiblePanel Family="Green"
+                                              Title="Happening now"
+                                              Summary="{Binding SpotsSummary}"
+                                              SummaryBrush="{Binding SpotsFreshness,
+                                                  Converter={x:Static ctl:FreshnessBrushConverter.Instance}}"
+                                              IsExpanded="{Binding SpotsExpanded, Mode=TwoWay}">
+
+                            <!-- A bounded viewport rather than a second page
+                                 scroller. A busy evening puts twenty park
+                                 activations in here, which used to make the
+                                 Explorer column so much taller than the one
+                                 beside it that the waterfall and the terminal
+                                 sat in a column of empty space. Capping the list
+                                 keeps the window's own scrollbar meaningful, and
+                                 this is the same shape the CW terminal's
+                                 transcript already uses. -->
+                            <StackPanel Spacing="8">
+
+                            <!-- THE TWO QUESTIONS, AT THE HEAD OF THE PANEL AND
+                                 BOTH ALWAYS VISIBLE (HM-DEC-057). Two words on
+                                 screen teach more than any inference: a newcomer
+                                 who reads "what's new" learns that going hunting
+                                 again after a contact is a normal thing people
+                                 do, which is a fact about this hobby nobody
+                                 tells them. Inside the panel rather than in its
+                                 header because the header already carries the
+                                 lens name for when it is shut, and two copies
+                                 of it left no room for either. -->
+                            <StackPanel Orientation="Horizontal" Spacing="6"
+                                        ToolTip.Tip="{Binding LensQuestion}"
+                                        ToolTip.ShowDelay="300">
+                                <ToggleButton Classes="hm-lens" Content="Best chance"
+                                              IsChecked="{Binding IsBestChance, Mode=OneWay}"
+                                              Command="{Binding SelectLensCommand}"
+                                              CommandParameter="BestChance" />
+                                <ToggleButton Classes="hm-lens" Content="What's new"
+                                              IsChecked="{Binding IsWhatsNew, Mode=OneWay}"
+                                              Command="{Binding SelectLensCommand}"
+                                              CommandParameter="WhatsNew" />
+                            </StackPanel>
+
+                            <!-- THE COUNT SHOWS EVEN WHEN THE FAMILY IS OFF
+                                 (HM-DEC-061). Somebody who filters to Morse and
+                                 still sees forty-one voice stations learns the
+                                 band is full of people they could talk to, which
+                                 is the fact this whole app exists to reveal. -->
+                            <ItemsControl ItemsSource="{Binding FamilyChips}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Horizontal" Spacing="6" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:FamilyChipViewModel">
+                                        <Button Padding="9,2" FontSize="11" CornerRadius="10"
+                                                Command="{Binding $parent[ItemsControl].((vm:MainWindowViewModel)DataContext).ToggleFamilyCommand}"
+                                                CommandParameter="{Binding Name}"
+                                                Opacity="{Binding IsOn,
+                                                    Converter={x:Static ctl:ChipOpacityConverter.Instance}}"
+                                                Background="{Binding Family,
+                                                    Converter={x:Static ctl:ModeFamilyConverter.Fill}}"
+                                                Foreground="{Binding Family,
+                                                    Converter={x:Static ctl:ModeFamilyConverter.Ink}}"
+                                                Content="{Binding Text}" />
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+
+                            <ScrollViewer MaxHeight="520"
+                                          VerticalScrollBarVisibility="Auto">
+                            <ItemsControl ItemsSource="{Binding Spots}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:SpotViewModel">
+                                        <!-- AGE FADES THE DISPLAY across each
+                                             source's ruled lifetime, so the eye
+                                             finds what is current without
+                                             reading a timestamp (HM-DEC-057).
+                                             Never to nothing: a card faded away
+                                             is a card removed. -->
+                                        <Border Background="{Binding Family,
+                                                    Converter={x:Static ctl:ModeFamilyConverter.Fill}}"
+                                                BorderBrush="{StaticResource HmGreenEdgeBrush}"
+                                                BorderThickness="1" CornerRadius="8"
+                                                Opacity="{Binding Prominence}"
+                                                Padding="10,8" Margin="0,0,0,8">
+                                            <Grid ColumnDefinitions="*,Auto">
+                                                <StackPanel Grid.Column="0" Spacing="2" Margin="0,0,8,0">
+                                                    <!-- The family's own ink, so
+                                                         the words stay legible
+                                                         on the family's fill
+                                                         (HM-DEC-036). -->
+                                                    <TextBlock Text="{Binding Story}" FontSize="12"
+                                                               TextWrapping="Wrap"
+                                                               Foreground="{Binding Family,
+                                                                   Converter={x:Static ctl:ModeFamilyConverter.Ink}}" />
+
+                                                    <!-- Why this card is where
+                                                         it is, on its face and
+                                                         never in a tooltip
+                                                         (HM-DEC-025). -->
+                                                    <TextBlock Text="{Binding Reason}" FontSize="11"
+                                                               TextWrapping="Wrap"
+                                                               Foreground="{StaticResource HmGreenBrush}" />
+
+                                                    <!-- A Grid rather than a horizontal StackPanel: the
+                                                         provenance line now carries a whole clause about
+                                                         whether that person is still there, and a
+                                                         StackPanel hands its children infinite width, so
+                                                         wrapping never happened and the sentence ran off
+                                                         the card (HM-DEC-045). -->
+                                                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="6">
+                                                        <Border Grid.Column="0"
+                                                                Background="{StaticResource HmAmberTintBrush}"
+                                                                BorderBrush="{StaticResource HmAmberEdgeBrush}"
+                                                                BorderThickness="1" CornerRadius="6"
+                                                                Padding="5,0"
+                                                                VerticalAlignment="Top"
+                                                                IsVisible="{Binding IsNew}">
+                                                            <TextBlock Text="new" FontSize="10"
+                                                                       Foreground="{StaticResource HmAmberDeepBrush}" />
+                                                        </Border>
+
+                                                        <!-- Opportunity freshness: how long since the
+                                                             spot happened and whether that person is
+                                                             likely still there. Feed freshness is a
+                                                             different fact and lives in the panel
+                                                             header. The exact figure is one hover away. -->
+                                                        <TextBlock Grid.Column="1"
+                                                                   Text="{Binding Provenance}" FontSize="10"
+                                                                   TextWrapping="Wrap"
+                                                                   ToolTip.Tip="{Binding AgeTooltip}"
+                                                                   ToolTip.ShowDelay="300"
+                                                                   Foreground="{StaticResource HmTextMutedBrush}" />
+                                                    </Grid>
+                                                </StackPanel>
+                                                <Button Grid.Column="1" Content="{Binding TuneLabel}"
+                                                        FontSize="12" VerticalAlignment="Center"
+                                                        Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).TuneToCommand}"
+                                                        CommandParameter="{Binding FrequencyHz}" />
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            </ScrollViewer>
                             </StackPanel>
                         </ctl:CollapsiblePanel>
 
@@ -1065,154 +1223,6 @@
                                                              FontSize="12" LineSpacing="1.45"
                                                              Foreground="{StaticResource HmTextPrimaryBrush}" />
                                 </Border>
-                            </StackPanel>
-                        </ctl:CollapsiblePanel>
-
-                        <ctl:CollapsiblePanel Family="Green"
-                                              Title="Happening now"
-                                              Summary="{Binding SpotsSummary}"
-                                              SummaryBrush="{Binding SpotsFreshness,
-                                                  Converter={x:Static ctl:FreshnessBrushConverter.Instance}}"
-                                              IsExpanded="{Binding SpotsExpanded, Mode=TwoWay}">
-
-                            <!-- A bounded viewport rather than a second page
-                                 scroller. A busy evening puts twenty park
-                                 activations in here, which used to make the
-                                 Explorer column so much taller than the one
-                                 beside it that the waterfall and the terminal
-                                 sat in a column of empty space. Capping the list
-                                 keeps the window's own scrollbar meaningful, and
-                                 this is the same shape the CW terminal's
-                                 transcript already uses. -->
-                            <StackPanel Spacing="8">
-
-                            <!-- THE TWO QUESTIONS, AT THE HEAD OF THE PANEL AND
-                                 BOTH ALWAYS VISIBLE (HM-DEC-057). Two words on
-                                 screen teach more than any inference: a newcomer
-                                 who reads "what's new" learns that going hunting
-                                 again after a contact is a normal thing people
-                                 do, which is a fact about this hobby nobody
-                                 tells them. Inside the panel rather than in its
-                                 header because the header already carries the
-                                 lens name for when it is shut, and two copies
-                                 of it left no room for either. -->
-                            <StackPanel Orientation="Horizontal" Spacing="6"
-                                        ToolTip.Tip="{Binding LensQuestion}"
-                                        ToolTip.ShowDelay="300">
-                                <ToggleButton Classes="hm-lens" Content="Best chance"
-                                              IsChecked="{Binding IsBestChance, Mode=OneWay}"
-                                              Command="{Binding SelectLensCommand}"
-                                              CommandParameter="BestChance" />
-                                <ToggleButton Classes="hm-lens" Content="What's new"
-                                              IsChecked="{Binding IsWhatsNew, Mode=OneWay}"
-                                              Command="{Binding SelectLensCommand}"
-                                              CommandParameter="WhatsNew" />
-                            </StackPanel>
-
-                            <!-- THE COUNT SHOWS EVEN WHEN THE FAMILY IS OFF
-                                 (HM-DEC-061). Somebody who filters to Morse and
-                                 still sees forty-one voice stations learns the
-                                 band is full of people they could talk to, which
-                                 is the fact this whole app exists to reveal. -->
-                            <ItemsControl ItemsSource="{Binding FamilyChips}">
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <StackPanel Orientation="Horizontal" Spacing="6" />
-                                    </ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate x:DataType="vm:FamilyChipViewModel">
-                                        <Button Padding="9,2" FontSize="11" CornerRadius="10"
-                                                Command="{Binding $parent[ItemsControl].((vm:MainWindowViewModel)DataContext).ToggleFamilyCommand}"
-                                                CommandParameter="{Binding Name}"
-                                                Opacity="{Binding IsOn,
-                                                    Converter={x:Static ctl:ChipOpacityConverter.Instance}}"
-                                                Background="{Binding Family,
-                                                    Converter={x:Static ctl:ModeFamilyConverter.Fill}}"
-                                                Foreground="{Binding Family,
-                                                    Converter={x:Static ctl:ModeFamilyConverter.Ink}}"
-                                                Content="{Binding Text}" />
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-
-                            <ScrollViewer MaxHeight="520"
-                                          VerticalScrollBarVisibility="Auto">
-                            <ItemsControl ItemsSource="{Binding Spots}">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate x:DataType="vm:SpotViewModel">
-                                        <!-- AGE FADES THE DISPLAY across each
-                                             source's ruled lifetime, so the eye
-                                             finds what is current without
-                                             reading a timestamp (HM-DEC-057).
-                                             Never to nothing: a card faded away
-                                             is a card removed. -->
-                                        <Border Background="{Binding Family,
-                                                    Converter={x:Static ctl:ModeFamilyConverter.Fill}}"
-                                                BorderBrush="{StaticResource HmGreenEdgeBrush}"
-                                                BorderThickness="1" CornerRadius="8"
-                                                Opacity="{Binding Prominence}"
-                                                Padding="10,8" Margin="0,0,0,8">
-                                            <Grid ColumnDefinitions="*,Auto">
-                                                <StackPanel Grid.Column="0" Spacing="2" Margin="0,0,8,0">
-                                                    <!-- The family's own ink, so
-                                                         the words stay legible
-                                                         on the family's fill
-                                                         (HM-DEC-036). -->
-                                                    <TextBlock Text="{Binding Story}" FontSize="12"
-                                                               TextWrapping="Wrap"
-                                                               Foreground="{Binding Family,
-                                                                   Converter={x:Static ctl:ModeFamilyConverter.Ink}}" />
-
-                                                    <!-- Why this card is where
-                                                         it is, on its face and
-                                                         never in a tooltip
-                                                         (HM-DEC-025). -->
-                                                    <TextBlock Text="{Binding Reason}" FontSize="11"
-                                                               TextWrapping="Wrap"
-                                                               Foreground="{StaticResource HmGreenBrush}" />
-
-                                                    <!-- A Grid rather than a horizontal StackPanel: the
-                                                         provenance line now carries a whole clause about
-                                                         whether that person is still there, and a
-                                                         StackPanel hands its children infinite width, so
-                                                         wrapping never happened and the sentence ran off
-                                                         the card (HM-DEC-045). -->
-                                                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="6">
-                                                        <Border Grid.Column="0"
-                                                                Background="{StaticResource HmAmberTintBrush}"
-                                                                BorderBrush="{StaticResource HmAmberEdgeBrush}"
-                                                                BorderThickness="1" CornerRadius="6"
-                                                                Padding="5,0"
-                                                                VerticalAlignment="Top"
-                                                                IsVisible="{Binding IsNew}">
-                                                            <TextBlock Text="new" FontSize="10"
-                                                                       Foreground="{StaticResource HmAmberDeepBrush}" />
-                                                        </Border>
-
-                                                        <!-- Opportunity freshness: how long since the
-                                                             spot happened and whether that person is
-                                                             likely still there. Feed freshness is a
-                                                             different fact and lives in the panel
-                                                             header. The exact figure is one hover away. -->
-                                                        <TextBlock Grid.Column="1"
-                                                                   Text="{Binding Provenance}" FontSize="10"
-                                                                   TextWrapping="Wrap"
-                                                                   ToolTip.Tip="{Binding AgeTooltip}"
-                                                                   ToolTip.ShowDelay="300"
-                                                                   Foreground="{StaticResource HmTextMutedBrush}" />
-                                                    </Grid>
-                                                </StackPanel>
-                                                <Button Grid.Column="1" Content="{Binding TuneLabel}"
-                                                        FontSize="12" VerticalAlignment="Center"
-                                                        Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).TuneToCommand}"
-                                                        CommandParameter="{Binding FrequencyHz}" />
-                                            </Grid>
-                                        </Border>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                            </ScrollViewer>
                             </StackPanel>
                         </ctl:CollapsiblePanel>
 
