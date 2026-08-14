@@ -692,20 +692,36 @@
                                                                TextWrapping="Wrap"
                                                                Foreground="{StaticResource HmGreenBrush}" />
 
-                                                    <StackPanel Orientation="Horizontal" Spacing="6">
-                                                        <Border Background="{StaticResource HmAmberTintBrush}"
+                                                    <!-- A Grid rather than a horizontal StackPanel: the
+                                                         provenance line now carries a whole clause about
+                                                         whether that person is still there, and a
+                                                         StackPanel hands its children infinite width, so
+                                                         wrapping never happened and the sentence ran off
+                                                         the card (HM-DEC-045). -->
+                                                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="6">
+                                                        <Border Grid.Column="0"
+                                                                Background="{StaticResource HmAmberTintBrush}"
                                                                 BorderBrush="{StaticResource HmAmberEdgeBrush}"
                                                                 BorderThickness="1" CornerRadius="6"
                                                                 Padding="5,0"
-                                                                VerticalAlignment="Center"
+                                                                VerticalAlignment="Top"
                                                                 IsVisible="{Binding IsNew}">
                                                             <TextBlock Text="new" FontSize="10"
                                                                        Foreground="{StaticResource HmAmberDeepBrush}" />
                                                         </Border>
-                                                        <TextBlock Text="{Binding Provenance}" FontSize="10"
-                                                                   VerticalAlignment="Center"
+
+                                                        <!-- Opportunity freshness: how long since the
+                                                             spot happened and whether that person is
+                                                             likely still there. Feed freshness is a
+                                                             different fact and lives in the panel
+                                                             header. The exact figure is one hover away. -->
+                                                        <TextBlock Grid.Column="1"
+                                                                   Text="{Binding Provenance}" FontSize="10"
+                                                                   TextWrapping="Wrap"
+                                                                   ToolTip.Tip="{Binding AgeTooltip}"
+                                                                   ToolTip.ShowDelay="300"
                                                                    Foreground="{StaticResource HmTextMutedBrush}" />
-                                                    </StackPanel>
+                                                    </Grid>
                                                 </StackPanel>
                                                 <Button Grid.Column="1" Content="{Binding TuneLabel}"
                                                         FontSize="12" VerticalAlignment="Center"

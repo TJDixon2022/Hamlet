@@ -91,6 +91,37 @@ public sealed class AppSettings
     /// </summary>
     public int LastBylineIndex { get; set; } = -1;
 
+    /// <summary>
+    /// How long a park or summit activation stays a live invitation, in
+    /// minutes (HM-DEC-045).
+    /// </summary>
+    /// <remarks>
+    /// An activator hauled gear somewhere on purpose and stays put working
+    /// whoever calls, often for well over an hour, so an hour is generous
+    /// rather than optimistic.
+    /// </remarks>
+    public int ActivationLifetimeMinutes { get; set; } = 60;
+
+    /// <summary>How long a skimmer report stays a live invitation, in minutes.</summary>
+    /// <remarks>
+    /// Much shorter, because a skimmer report says somebody called CQ at that
+    /// moment and nothing at all about whether they are still calling.
+    /// </remarks>
+    public int SkimmerLifetimeMinutes { get; set; } = 20;
+
+    /// <summary>How long contest activity stays a live invitation, in minutes.</summary>
+    /// <remarks>
+    /// Longest of the three: contest stations sit on one frequency for the
+    /// whole event. Only applied where the source actually said it was a
+    /// contest exchange, never guessed from a busy band.
+    /// </remarks>
+    public int ContestLifetimeMinutes { get; set; } = 180;
+
+    /// <summary>The configured lifetimes, with absurd values refused.</summary>
+    [JsonIgnore]
+    public SpotLifetimeSettings Lifetimes => SpotLifetimeSettings.FromMinutes(
+        ActivationLifetimeMinutes, SkimmerLifetimeMinutes, ContestLifetimeMinutes);
+
     /// <summary>The refresh interval the app ships with, in minutes.</summary>
     public const int DefaultSpotRefreshMinutes = 5;
 

@@ -52,8 +52,17 @@ public sealed record ConditionsLine(
 /// </remarks>
 public static class BandConditions
 {
-    /// <summary>The window the line reports on.</summary>
-    public static readonly TimeSpan Window = TimeSpan.FromMinutes(10);
+    /// <summary>
+    /// The window the line reports on.
+    /// </summary>
+    /// <remarks>
+    /// Widened from ten minutes to an hour (HM-DEC-045). Ten was never a
+    /// considered figure, and once the lead card started counting history the
+    /// two lines contradicted each other on screen: "nine on 40 m" sitting
+    /// directly above "no spots in the last 10 minutes". The count and the
+    /// claim have to be measured over the same ground.
+    /// </remarks>
+    public static readonly TimeSpan Window = TimeSpan.FromMinutes(60);
 
     /// <summary>Under this many reports, the wording softens.</summary>
     public const int ThinSample = 5;

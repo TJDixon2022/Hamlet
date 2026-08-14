@@ -53,8 +53,18 @@ public static class LeadCard
     /// </remarks>
     public const int MinimumScore = 40;
 
-    /// <summary>What a beginner is told when nothing qualifies.</summary>
-    public const string NothingHeadline = "Nothing here worth your next ten minutes";
+    /// <summary>
+    /// What a beginner is told when Hamlet has genuinely looked everywhere and
+    /// found nothing.
+    /// </summary>
+    /// <remarks>
+    /// REACHABLE ONLY AFTER AN ACTUAL SEARCH (HM-DEC-045). This sentence used
+    /// to appear whenever the current band had nothing inside a ten-minute
+    /// window, while history held perfectly good invitations on other bands
+    /// and older ones on this one. Saying it then was not honesty, it was the
+    /// app giving up out loud, and it is exactly when a newcomer goes to bed.
+    /// </remarks>
+    public const string NothingHeadline = "Nothing on any band right now";
 
     /// <summary>
     /// Choose the lead suggestion from a ranked list.
@@ -63,15 +73,24 @@ public static class LeadCard
     /// <param name="bandName">The band on screen, e.g. "40 m".</param>
     /// <param name="anySourceAnswering">False when no spot source is
     /// answering, which changes the wording of the refusal.</param>
+    /// <param name="elsewhere">What the other bands are holding, so an empty
+    /// band can point at a busy one rather than giving up (HM-DEC-045).</param>
+    /// <param name="lookedBack">How far back the search went, so the refusal
+    /// can say what it actually looked at (HM-DEC-025).</param>
     /// <returns>The suggestion, or a refusal that says what to do instead.</returns>
     public static LeadSuggestion Choose(
-        IReadOnlyList<RankedSpot> ranked, string bandName, bool anySourceAnswering = true)
+        IReadOnlyList<RankedSpot> ranked,
+        string bandName,
+        bool anySourceAnswering = true,
+        IReadOnlyList<BandOpportunity>? elsewhere = null,
+        TimeSpan? lookedBack = null)
     {
         var best = ranked.FirstOrDefault(r => IsSuitable(r));
 
         if (best is null)
         {
-            return NoSuggestion(bandName, anySourceAnswering, ranked.Count);
+            return NoSuggestion(
+                bandName, anySourceAnswering, ranked.Count, elsewhere, lookedBack);
         }
 
         return new LeadSuggestion(
@@ -195,8 +214,22 @@ public static class LeadCard
         };
     }
 
+    /// <summary>
+    /// The refusal, which is the case that decides whether somebody keeps
+    /// going or goes to bed.
+    /// </summary>
+    /// <remarks>
+    /// LOOK ELSEWHERE BEFORE GIVING UP (HM-DEC-045). "Nothing on 80 m, but
+    /// 40 m had eleven stations in the last twenty minutes" is a genuinely
+    /// useful answer and the app has the data for it. Declaring emptiness
+    /// while holding that is the bug this exists to fix.
+    /// </remarks>
     private static LeadSuggestion NoSuggestion(
-        string bandName, bool anySourceAnswering, int rankedCount)
+        string bandName,
+        bool anySourceAnswering,
+        int rankedCount,
+        IReadOnlyList<BandOpportunity>? elsewhere,
+        TimeSpan? lookedBack)
     {
         if (!anySourceAnswering)
         {
@@ -212,20 +245,57 @@ public static class LeadCard
                 "");
         }
 
-        var evidence = rankedCount == 0
-            ? $"Nothing is being reported on {bandName} at all."
+        var here = rankedCount == 0
+            ? $"Nothing on {bandName} just now."
             : $"There are {rankedCount} spots on {bandName}, but they are beacons, "
               + "contest runs or too old to chase.";
+
+        var best = elsewhere?
+            .Where(b => b.Count > 0 && !string.Equals(b.BandName, bandName, StringComparison.Ordinal))
+            .OrderByDescending(b => b.Count)
+            .FirstOrDefault();
+
+        if (best is not null)
+        {
+            return new LeadSuggestion(
+                false,
+                $"Try {best.BandName} instead",
+                $"{here} {best.Describe()} That is where Hamlet would point the radio, "
+                + "and the band buttons above will take you there.",
+                $"{best.Count} on {best.BandName}, nothing here",
+                0,
+                "");
+        }
+
+        var window = lookedBack is { } span
+            ? $" Hamlet looked back {Spoken(span)} across every band it watches."
+            : "";
 
         return new LeadSuggestion(
             false,
             NothingHeadline,
-            evidence + " That is a real answer rather than a failure. It is the one "
-            + "that saves you an hour of tuning across a quiet band. Try another band "
-            + "from the row above, or come back at a different time of day.",
-            "nothing on this band clears the bar",
+            here + window + " That is a real answer rather than a failure. It is the "
+            + "one that saves you an hour of tuning across a quiet band. Come back at "
+            + "a different time of day, or put the training radio on and practice "
+            + "reading a signal while it is quiet.",
+            "nothing on any band clears the bar",
             0,
             "");
+    }
+
+    /// <summary>A span in the words somebody would use (§0.7).</summary>
+    private static string Spoken(TimeSpan span)
+    {
+        var hours = span.TotalHours;
+
+        return hours switch
+        {
+            < 1.5 => "an hour",
+            < 2.5 => "a couple of hours",
+            < 5 => "a few hours",
+            < 30 => "a day",
+            _ => "several days",
+        };
     }
 
     private static string Sentence(List<string> reasons)

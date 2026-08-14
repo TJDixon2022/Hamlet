@@ -62,6 +62,26 @@ public sealed class GlossaryTextControl : Control
     {
         AffectsMeasure<GlossaryTextControl>(TextProperty, FontSizeProperty, LineSpacingProperty);
         AffectsRender<GlossaryTextControl>(ForegroundProperty);
+
+        // The layout is cached against the width it was built for, which is
+        // most of what makes this control cheap. Anything that changes the
+        // GLYPHS rather than the box has to drop that cache by hand, or the
+        // control keeps drawing the previous text at the same size forever.
+        // The lead card is bound to a property that changes on every refresh
+        // inside a panel of fixed width, so it sat on its first value.
+        TextProperty.Changed.AddClassHandler<GlossaryTextControl>((c, _) => c.Invalidate());
+        FontSizeProperty.Changed.AddClassHandler<GlossaryTextControl>((c, _) => c.Invalidate());
+        ForegroundProperty.Changed.AddClassHandler<GlossaryTextControl>((c, _) => c.Invalidate());
+        LineSpacingProperty.Changed.AddClassHandler<GlossaryTextControl>((c, _) => c.Invalidate());
+    }
+
+    /// <summary>Drop the cached layout so the next pass rebuilds it.</summary>
+    private void Invalidate()
+    {
+        _laidOutFor = -1;
+        _layout = Array.Empty<Placed>();
+        _hovered = null;
+        InvalidateVisual();
     }
 
     /// <summary>Creates the control.</summary>

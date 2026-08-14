@@ -221,6 +221,75 @@
                             </Grid>
                         </Border>
 
+                        <!-- How long a spot stays a live invitation, per source
+                             (HM-DEC-045). Settable because the right answer
+                             depends on how somebody operates, and generous by
+                             default because the old ten-minute window threw
+                             away perfectly good invitations. -->
+                        <TextBlock Text="How long a spot stays worth chasing" FontSize="14"
+                                   FontWeight="SemiBold" Margin="0,4,0,0"
+                                   Foreground="{StaticResource HmBlueBrush}" />
+
+                        <ctl:GlossaryTextControl
+                            Text="The question is not how old a spot is, it is whether that person is probably still on that frequency. A park or summit activator hauled gear somewhere and stays put working callers, so their spot is good for a long while. A skimmer report only means somebody called CQ at that moment, which says much less about now."
+                            FontSize="12" LineSpacing="1.4"
+                            Foreground="{StaticResource HmTextMutedBrush}" />
+
+                        <Border Background="White" CornerRadius="8" Padding="12,10"
+                                BorderBrush="{StaticResource HmBlueEdgeBrush}"
+                                BorderThickness="1">
+                            <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto"
+                                  RowSpacing="10">
+                                <StackPanel Grid.Row="0" Grid.Column="0" Spacing="1"
+                                            Margin="0,0,10,0">
+                                    <TextBlock Text="Park and summit activations"
+                                               FontWeight="SemiBold" FontSize="13" />
+                                    <TextBlock Classes="hm-note"
+                                               Text="They stay put for the whole activation, often well over an hour." />
+                                </StackPanel>
+                                <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal"
+                                            Spacing="6" VerticalAlignment="Center">
+                                    <NumericUpDown Value="{Binding ActivationLifetimeMinutes}"
+                                                   Minimum="5" Maximum="1440" Increment="15"
+                                                   FormatString="0" Width="110" />
+                                    <TextBlock Text="min" VerticalAlignment="Center"
+                                               Foreground="{StaticResource HmTextMutedBrush}" />
+                                </StackPanel>
+
+                                <StackPanel Grid.Row="1" Grid.Column="0" Spacing="1"
+                                            Margin="0,0,10,0">
+                                    <TextBlock Text="Skimmer reports"
+                                               FontWeight="SemiBold" FontSize="13" />
+                                    <TextBlock Classes="hm-note"
+                                               Text="An automated receiver heard somebody call. Weaker evidence they are still calling." />
+                                </StackPanel>
+                                <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal"
+                                            Spacing="6" VerticalAlignment="Center">
+                                    <NumericUpDown Value="{Binding SkimmerLifetimeMinutes}"
+                                                   Minimum="5" Maximum="1440" Increment="5"
+                                                   FormatString="0" Width="110" />
+                                    <TextBlock Text="min" VerticalAlignment="Center"
+                                               Foreground="{StaticResource HmTextMutedBrush}" />
+                                </StackPanel>
+
+                                <StackPanel Grid.Row="2" Grid.Column="0" Spacing="1"
+                                            Margin="0,0,10,0">
+                                    <TextBlock Text="Contest activity"
+                                               FontWeight="SemiBold" FontSize="13" />
+                                    <TextBlock Classes="hm-note"
+                                               Text="Contest stations sit on one frequency for the whole event." />
+                                </StackPanel>
+                                <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal"
+                                            Spacing="6" VerticalAlignment="Center">
+                                    <NumericUpDown Value="{Binding ContestLifetimeMinutes}"
+                                                   Minimum="5" Maximum="1440" Increment="30"
+                                                   FormatString="0" Width="110" />
+                                    <TextBlock Text="min" VerticalAlignment="Center"
+                                               Foreground="{StaticResource HmTextMutedBrush}" />
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+
                         <TextBlock Text="Where spots come from" FontSize="14"
                                    FontWeight="SemiBold" Margin="0,4,0,0"
                                    Foreground="{StaticResource HmBlueBrush}" />

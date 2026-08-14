@@ -4,6 +4,74 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-045
+date: 2026-08-14
+refs: src/Hamlet.RadioEngine/Explore/SqliteSpotStore.cs, src/Hamlet.RadioEngine/Explore/SpotLifetime.cs, src/Hamlet.App/ViewModels/BandOpportunity.cs, HM-DEC-020, HM-DEC-022, HM-DEC-025
+---
+
+Spots persist to a local SQLite store and the display becomes a view over that
+history; each source gets a lifetime reflecting how long its spots stay
+meaningful; age is spoken in human terms with likelihood claims only where the
+source can support them; and feed freshness and opportunity freshness are
+separate ideas that must never be conflated.
+
+**SQLite is chosen here rather than inherited.** No prior ruling covered local
+storage. HM-DEC-023 is about map dots, and ADIF appears only in FG-004 as a
+future goal, so this record is where the choice actually gets made: one file
+under `%AppData%\Hamlet` beside settings and telemetry, so everything Hamlet
+keeps about a person sits in one folder they can open and delete.
+
+THE OLD BEHAVIOR WAS WRONG IN TWO WAYS AT ONCE. It threw away everything past a
+ten-minute window, and it treated the feed's freshness as if it were the
+opportunity's. Ten minutes was never a considered figure; it was the window the
+band-conditions line happened to use, applied to a question it was not asked. A
+person sits down, looks around, tunes to something and listens, and that loop is
+fifteen or twenty minutes. A spot from eight minutes ago is not stale to that
+person, it is recent.
+
+THE HONEST UNIT IS NOT "WHEN WAS THIS POSTED". It is whether that person is
+probably still on that frequency, and the answer genuinely differs by source.
+An activator hauled gear to a park or a summit and stays put working whoever
+calls, so an hour is generous rather than optimistic. A skimmer report means
+somebody called CQ at that moment, which is much weaker evidence about now, so
+twenty minutes. Contest stations sit on one frequency for the whole event and
+outlast both, and that is claimed only where the source said it was a contest
+exchange, never guessed from a busy band. The lifetimes are settings with
+generous defaults.
+
+THE LIKELIHOOD LANGUAGE TRACKS THE SOURCE, never a flat rule. "A park activator
+spotted twenty minutes ago is probably still working the pileup" is defensible
+because that is what activators do. The same sentence about a skimmer report is
+not, and a sweep across every age from zero to four hours proves no skimmer
+report ever claims it. Age is spoken rather than counted, since nobody says
+"17 min ago" out loud, and the exact figure stays one hover away.
+
+TWO KINDS OF FRESHNESS, KEPT APART. Feed freshness is how long since Hamlet last
+talked to the network; it belongs in the panel header and is what HM-DEC-020's
+amber and stale styling was always about. The header now says "checked", because
+"updated" was ambiguous. Opportunity freshness is how long since the spot
+happened and whether that person is likely still there; it belongs on the card. A
+feed checked four seconds ago can be full of hour-old spots, and an hour-old spot
+from a busy afternoon can be worth more than a fresh one at 3am.
+
+THE EMPTY CASE IS THE ONE THAT MATTERS, because it is exactly when a newcomer
+gives up. The lead card now looks further back, and then looks at other bands
+before declaring anything. "Nothing on 80 m, but 40 m has nine stations, two of
+them park activators" is a genuinely useful answer and the app always had the
+data for it. "Nothing here worth your next ten minutes" is gone; the give-up
+sentence is reachable only when Hamlet has actually looked across every band it
+watches, and it then says how far back it looked (HM-DEC-025).
+
+History also closes the Reverse Beacon Network's startup gap. RBN is a live
+stream, so a fresh run knew nothing at all until somebody transmitted, and now it
+starts with whatever the last session saw.
+
+NEVER BLOCKS AND NEVER CRASHES. Writes run off the UI thread, the store never
+throws for storage reasons, and one that cannot be opened degrades to memory with
+a note in telemetry, the same discipline the telemetry writer follows (§8).
+Pruning keeps a few days, so the file cannot grow without bound.
+
+---
 id: HM-DEC-044
 date: 2026-08-14
 refs: src/Hamlet.App/Views/SettingsWindow.axaml, src/Hamlet.App/Settings/ProfileFactBadge.cs, src/Hamlet.App/Controls/ModePalette.cs, HM-DEC-012, HM-DEC-028, HM-DEC-036

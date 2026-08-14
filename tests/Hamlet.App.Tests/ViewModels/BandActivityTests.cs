@@ -226,7 +226,9 @@ public sealed class BandActivityTests
 
         Assert.Equal(BandActivityState.Heard, reading.State);
         Assert.Equal("busy.", reading.Claim);
-        Assert.Contains("46 signals in the last 10 minutes", reading.Evidence, StringComparison.Ordinal);
+        Assert.Contains(
+            $"46 signals in the last {(int)BandActivity.Window.TotalMinutes} minutes",
+            reading.Evidence, StringComparison.Ordinal);
         Assert.Contains("34 of them CW", reading.Evidence, StringComparison.Ordinal);
         Assert.Contains("From POTA and RBN.", reading.Evidence, StringComparison.Ordinal);
         Assert.Equal(ConditionsConfidence.Sound, reading.Confidence);
@@ -242,7 +244,9 @@ public sealed class BandActivityTests
         var reading = For("17 m", Spots("17 m", 2), new[] { Ok("RBN", scopedTo: "17 m") });
 
         Assert.Equal("quiet.", reading.Claim);
-        Assert.Contains("2 signals in the last 10 minutes", reading.Evidence, StringComparison.Ordinal);
+        Assert.Contains(
+            $"2 signals in the last {(int)BandActivity.Window.TotalMinutes} minutes",
+            reading.Evidence, StringComparison.Ordinal);
         Assert.Contains("too little to be sure", reading.Evidence, StringComparison.Ordinal);
         Assert.Contains("From RBN.", reading.Evidence, StringComparison.Ordinal);
         Assert.Equal(ConditionsConfidence.Thin, reading.Confidence);
@@ -269,7 +273,9 @@ public sealed class BandActivityTests
     [Fact]
     public void OnlyCountsWhatIsInsideTheWindow()
     {
-        var old = Enumerable.Range(0, 30).Select(_ => Spot("40 m", ageMinutes: 30)).ToList();
+        // Comfortably outside whatever the window currently is (HM-DEC-045).
+        var stale = (int)BandActivity.Window.TotalMinutes + 30;
+        var old = Enumerable.Range(0, 30).Select(_ => Spot("40 m", ageMinutes: stale)).ToList();
         var reading = For("40 m", old, new[] { Ok("POTA") });
 
         Assert.Equal(0, reading.SpotCount);

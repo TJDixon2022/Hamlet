@@ -45,7 +45,12 @@ public sealed class BandConditionsTests
         Assert.Equal(ConditionsConfidence.Sound, line.Confidence);
         Assert.Contains("unusually busy", line.Claim, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("60 signals", line.Evidence, StringComparison.Ordinal);
-        Assert.Contains("10 minutes", line.Evidence, StringComparison.Ordinal);
+
+        // The window is named from the rule rather than pinned to a literal,
+        // so widening it stays a decision rather than a test failure.
+        Assert.Contains(
+            $"{(int)BandConditions.Window.TotalMinutes} minutes",
+            line.Evidence, StringComparison.Ordinal);
         Assert.Contains("RBN and POTA", line.Evidence, StringComparison.Ordinal);
     }
 
@@ -165,7 +170,9 @@ public sealed class BandConditionsTests
         Assert.Equal("40 m", line.SuggestedBand);
         Assert.Contains("Nobody's on 20 m", line.Claim, StringComparison.Ordinal);
         Assert.Contains("Try 40 m", line.Claim, StringComparison.Ordinal);
-        Assert.Contains("No spots in the last 10 minutes", line.Evidence, StringComparison.Ordinal);
+        Assert.Contains(
+            $"No spots in the last {(int)BandConditions.Window.TotalMinutes} minutes",
+            line.Evidence, StringComparison.Ordinal);
     }
 
     /// <remarks>
@@ -192,7 +199,10 @@ public sealed class BandConditionsTests
     [Fact]
     public void OnlyCounts_WhatIsInsideTheWindow()
     {
-        var old = OnFortyMeters(40, ageMinutes: 30);
+        // Comfortably outside whatever the window currently is, so this proves
+        // the rule rather than one particular number (HM-DEC-045).
+        var old = OnFortyMeters(
+            40, ageMinutes: (int)BandConditions.Window.TotalMinutes + 30);
 
         var line = BandConditions.Describe(
             "40 m", old, old, new[] { Ok("RBN") }, Now);

@@ -99,6 +99,15 @@ public static class SpotFreshness
     /// <param name="intervalMinutes">Configured interval; 0 means off.</param>
     /// <param name="everLoaded">False before the first load completes.</param>
     /// <returns>The summary line.</returns>
+    /// <remarks>
+    /// FEED FRESHNESS, NOT OPPORTUNITY FRESHNESS (HM-DEC-045). "Checked" is
+    /// deliberate: this line says how long since Hamlet last talked to the
+    /// network, which is a fact about Hamlet. How long since each spot
+    /// happened, and whether that person is likely still there, is a different
+    /// fact and belongs on the card. A feed checked four seconds ago can be
+    /// full of hour-old spots, and the wording must not let anybody read one
+    /// as the other.
+    /// </remarks>
     public static string Summary(
         int spotCount, TimeSpan sinceUpdate, int intervalMinutes, bool everLoaded = true)
     {
@@ -109,9 +118,9 @@ public static class SpotFreshness
 
         var count = spotCount == 1 ? "1 spot" : $"{spotCount} spots";
         var stale = Evaluate(sinceUpdate, intervalMinutes) == FreshnessLevel.Stale
-            ? " · stale"
+            ? " · feed is stale"
             : "";
 
-        return $"{count}{stale} · updated {Describe(sinceUpdate)}";
+        return $"{count}{stale} · checked {Describe(sinceUpdate)}";
     }
 }

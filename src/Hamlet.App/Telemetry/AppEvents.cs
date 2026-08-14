@@ -125,6 +125,36 @@ public static class AppEvents
                 ["newCount"] = newCount,
             });
 
+    /// <summary>
+    /// Old spots were dropped from history, so the store stays bounded
+    /// (HM-DEC-045). Counts only; a spot names a station.
+    /// </summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="removed">How many rows went.</param>
+    /// <param name="remaining">How many are left.</param>
+    public static void SpotHistoryPruned(ITelemetry? telemetry, int removed, int remaining)
+        => telemetry?.Write(TelemetryCategory.Explore, "spot_history_pruned",
+            new Dictionary<string, object?>
+            {
+                ["removed"] = removed,
+                ["remaining"] = remaining,
+            });
+
+    /// <summary>
+    /// The history database could not be opened, so this session remembers
+    /// spots in memory only (HM-DEC-045).
+    /// </summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <remarks>
+    /// Worth recording rather than swallowing: it is the difference between
+    /// "the app forgot" and "the disk would not take it", and only the log can
+    /// tell them apart afterwards (§0.0.1).
+    /// </remarks>
+    public static void SpotHistoryUnavailable(ITelemetry? telemetry)
+        => telemetry?.Write(TelemetryCategory.Diagnostics, "spot_history_unavailable",
+            new Dictionary<string, object?>(),
+            TelemetryLevel.Warn);
+
     /// <summary>Auto-refresh paused or resumed with window visibility.</summary>
     /// <param name="telemetry">Sink, or null.</param>
     /// <param name="running">True when the timer is running.</param>

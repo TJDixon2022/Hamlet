@@ -16,7 +16,7 @@ public sealed class CallsignPrivacyTests : IDisposable
     /// <summary>Every public event-writing method on <see cref="AppEvents"/>.
     /// If this number moves, a new event was added and the walk below has to
     /// grow with it — that is the point.</summary>
-    private const int ExpectedEventMethodCount = 26;
+    private const int ExpectedEventMethodCount = 28;
 
     private const string Callsign = "KC3QIS";
     // "Timothy", not "Tim": a three-letter needle matches "timer", which is a
@@ -183,6 +183,14 @@ public sealed class CallsignPrivacyTests : IDisposable
         AppEvents.LicenseClassLookupFailed(telemetry, "Unavailable");
         AppEvents.UpgradeLadderOpened(telemetry, "Technician");
         AppEvents.TransmitGuardToggled(telemetry, enabled: true);
+
+        // HM-DEC-045 keeps a local history of every spot Hamlet sees, which is
+        // the first time the app has written spot data to disk at all. Both
+        // events carry counts only. A spot names a station, and the store is
+        // one folder away from this file, so this walk covering them is the
+        // thing that keeps the two apart provable rather than assumed.
+        AppEvents.SpotHistoryPruned(telemetry, 120, 400);
+        AppEvents.SpotHistoryUnavailable(telemetry);
     }
 
     private string[] ReadAllLines()

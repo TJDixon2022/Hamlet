@@ -92,7 +92,12 @@ public sealed class LeadCardTests
         Assert.False(lead.HasSuggestion);
         Assert.Equal(0, lead.TuneHz);
         Assert.Contains("2 spots", lead.Body, StringComparison.Ordinal);
-        Assert.Contains("another band", lead.Body, StringComparison.OrdinalIgnoreCase);
+
+        // It still says what to do instead. With no other band offered it no
+        // longer says "try another band", because by then Hamlet has looked at
+        // all of them and that advice would be a shrug (HM-DEC-045).
+        Assert.Contains("different time of day", lead.Body, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("training radio", lead.Body, StringComparison.OrdinalIgnoreCase);
     }
 
     /// <remarks>

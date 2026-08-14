@@ -40,6 +40,18 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty]
     private RefreshChoice _spotRefresh;
 
+    /// <summary>How long a park or summit activation stays worth chasing.</summary>
+    [ObservableProperty]
+    private int _activationLifetimeMinutes;
+
+    /// <summary>How long a skimmer report stays worth chasing.</summary>
+    [ObservableProperty]
+    private int _skimmerLifetimeMinutes;
+
+    /// <summary>How long contest activity stays worth chasing.</summary>
+    [ObservableProperty]
+    private int _contestLifetimeMinutes;
+
     [ObservableProperty]
     private LicenseClass _licenseClass;
 
@@ -109,6 +121,10 @@ public partial class SettingsViewModel : ObservableObject
         _licenseProvenance = LicenseResolver.DescribeProvenance(settings.Operator);
         _gridProvenance = GridResolver.DescribeProvenance(settings.Operator);
         _restrictTransmitToPrivileges = settings.RestrictTransmitToPrivileges;
+
+        _activationLifetimeMinutes = settings.ActivationLifetimeMinutes;
+        _skimmerLifetimeMinutes = settings.SkimmerLifetimeMinutes;
+        _contestLifetimeMinutes = settings.ContestLifetimeMinutes;
 
         _callsignBadge = ProfileFacts.Callsign(settings.Operator);
         _gridBadge = ProfileFacts.GridSquare(settings.Operator);
@@ -252,6 +268,24 @@ public partial class SettingsViewModel : ObservableObject
     partial void OnSpotRefreshChanged(RefreshChoice value)
     {
         _settings.SpotRefreshMinutes = value.Minutes;
+        SettingsStore.Save(_settings);
+    }
+
+    partial void OnActivationLifetimeMinutesChanged(int value)
+    {
+        _settings.ActivationLifetimeMinutes = value;
+        SettingsStore.Save(_settings);
+    }
+
+    partial void OnSkimmerLifetimeMinutesChanged(int value)
+    {
+        _settings.SkimmerLifetimeMinutes = value;
+        SettingsStore.Save(_settings);
+    }
+
+    partial void OnContestLifetimeMinutesChanged(int value)
+    {
+        _settings.ContestLifetimeMinutes = value;
         SettingsStore.Save(_settings);
     }
 

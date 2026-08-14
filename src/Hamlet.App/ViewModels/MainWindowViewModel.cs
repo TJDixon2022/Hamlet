@@ -216,6 +216,19 @@ public partial class MainWindowViewModel : ObservableObject
     /// </summary>
     public ContactShapeViewModel ContactShape { get; }
 
+    /// <summary>How long spot history is kept before it is pruned.</summary>
+    /// <remarks>
+    /// A few days is plenty for anything the app does today, and the store
+    /// must never grow without bound (HM-DEC-045).
+    /// </remarks>
+    public static readonly TimeSpan HistoryRetention = TimeSpan.FromDays(3);
+
+    /// <summary>How often pruning runs.</summary>
+    private static readonly TimeSpan PruneInterval = TimeSpan.FromHours(6);
+
+    private readonly ISpotStore _spotStore;
+    private DateTime _lastPruneUtc = DateTime.MinValue;
+
     /// <summary>The field guide entries, each with its samples.</summary>
     public IReadOnlyList<ModeCardViewModel> ModeCards { get; } =
         ModeGuide.Modes.Select(m => new ModeCardViewModel(m)).ToList();
@@ -332,6 +345,17 @@ public partial class MainWindowViewModel : ObservableObject
         _contactExpanded = settings.IsPanelExpanded(PanelKeys.Contact);
 
         ContactShape = new ContactShapeViewModel(settings.Operator.Callsign);
+
+        // History, or an honest substitute for it. A store that cannot be
+        // opened is a nuisance, never a reason not to start (§8, HM-DEC-045).
+        _spotStore = SqliteSpotStore.TryOpen(
+            System.IO.Path.Combine(SettingsStore.DataFolder, SqliteSpotStore.FileName))
+            ?? (ISpotStore)new MemorySpotStore();
+
+        if (!_spotStore.IsPersistent)
+        {
+            AppEvents.SpotHistoryUnavailable(_telemetry);
+        }
 
         AvailablePorts = new ObservableCollection<string> { TrainingRadio };
         foreach (var name in SafePortNames())
@@ -795,6 +819,10 @@ public partial class MainWindowViewModel : ObservableObject
     {
         StopTrainingSpectrum();
         _audio.Dispose();
+
+        // The history store holds a file handle, so it closes with the window
+        // rather than waiting for the process to end (HM-DEC-045).
+        _spotStore.Dispose();
     }
 
     /// <summary>Close the app.</summary>
@@ -928,6 +956,73 @@ public partial class MainWindowViewModel : ObservableObject
     /// move a card out from under the operator's cursor mid-read
     /// (HM-DEC-020).
     /// </summary>
+    /// <summary>The lifetimes the operator has configured.</summary>
+    private SpotLifetimeSettings Lifetimes => _settings.Lifetimes;
+
+    /// <summary>
+    /// Write what a refresh returned to history, and keep the file bounded.
+    /// </summary>
+    /// <remarks>
+    /// Runs off the UI thread. The store never throws for storage reasons, so
+    /// this needs no guard of its own; the worst case is that history stops
+    /// growing and the app carries on with what it has (§8).
+    /// </remarks>
+    private void RecordAndPrune(IReadOnlyList<ActivitySpot> spots, DateTime now)
+    {
+        _spotStore.Record(spots, now);
+
+        // Pruning on a schedule rather than every refresh, because deleting
+        // nothing a hundred times an hour is just disk noise.
+        if (now - _lastPruneUtc < PruneInterval)
+        {
+            return;
+        }
+
+        _lastPruneUtc = now;
+        var gone = _spotStore.Prune(now - HistoryRetention);
+
+        if (gone > 0)
+        {
+            AppEvents.SpotHistoryPruned(_telemetry, gone, _spotStore.Count());
+        }
+    }
+
+    /// <summary>
+    /// Everything still worth showing: what the feed just returned, plus
+    /// anything in history still inside its own source's lifetime.
+    /// </summary>
+    /// <remarks>
+    /// <para>THE FIX FOR THE ACTUAL COMPLAINT (HM-DEC-045). The feed only
+    /// returns what its sources hold right now, and RBN in particular holds
+    /// nothing at all on a fresh start. History fills that in.</para>
+    /// <para>Live spots win over stored copies of themselves, because the live
+    /// one may carry a newer report count or a better story. Identity is the
+    /// same rule the store and the aggregate use.</para>
+    /// </remarks>
+    private IReadOnlyList<ActivitySpot> LiveFromHistory(
+        IReadOnlyList<ActivitySpot> live, DateTime now)
+    {
+        var merged = new List<ActivitySpot>(live);
+        var seen = new HashSet<string>(
+            live.Select(SpotIdentity.KeyFor), StringComparer.OrdinalIgnoreCase);
+
+        foreach (var stored in _spotStore.Since(now - Lifetimes.Longest))
+        {
+            if (!SpotLifetime.IsLive(stored.Spot, now, Lifetimes))
+            {
+                continue;
+            }
+
+            if (seen.Add(SpotIdentity.KeyFor(stored.Spot)))
+            {
+                merged.Add(stored.Spot);
+            }
+        }
+
+        merged.Sort((a, b) => b.HeardAtUtc.CompareTo(a.HeardAtUtc));
+        return merged;
+    }
+
     private async Task ReloadSpotsAsync(string trigger)
     {
         _activitySource.SetContext(BuildContext());
@@ -946,12 +1041,20 @@ public partial class MainWindowViewModel : ObservableObject
 
         var now = DateTime.UtcNow;
 
+        // Everything seen goes to history before anything is drawn, off the UI
+        // thread, so a slow disk cannot stutter the window (HM-DEC-045).
+        await Task.Run(() => RecordAndPrune(spots, now));
+
+        // The display is a VIEW OVER HISTORY rather than a buffer that
+        // forgets. What the feed just returned is merged with everything still
+        // inside its source's lifetime, so a park activator spotted twenty
+        // minutes ago is still an invitation instead of being discarded.
         _allBandSpots.Clear();
-        _allBandSpots.AddRange(spots);
+        _allBandSpots.AddRange(LiveFromHistory(spots, now));
 
         // The list shows the band on screen; the conditions line keeps the
         // whole spectrum, which is what lets it say "try 40 m" with a count.
-        var onBand = spots
+        var onBand = _allBandSpots
             .Where(s => SelectedBand.Band.LowHz <= s.FrequencyHz
                         && s.FrequencyHz <= SelectedBand.Band.HighHz)
             .ToList();
@@ -961,7 +1064,15 @@ public partial class MainWindowViewModel : ObservableObject
 
         UpdateBandActivity(now);
         ActivityDots = BuildDots(ranked, now);
-        Lead = LeadCard.Choose(ranked, SelectedBand.Band.Name, AnySourceAnswering());
+
+        Lead = LeadCard.Choose(
+            ranked,
+            SelectedBand.Band.Name,
+            AnySourceAnswering(),
+            BandOpportunities.Summarize(
+                Bands.Select(b => b.Band).ToList(), _allBandSpots, now, Lifetimes),
+            _settings.Lifetimes.Longest);
+
         Conditions = BandConditions.Describe(
             SelectedBand.Band.Name, onBand, _allBandSpots, _activitySource.Statuses, now);
 
@@ -1010,14 +1121,15 @@ public partial class MainWindowViewModel : ObservableObject
 
             if (existing.TryGetValue(key, out var vm))
             {
-                vm.Update(entry.Spot, now, entry.Reason, distance);
+                vm.Update(entry.Spot, now, entry.Reason, distance, Lifetimes);
                 rebuilt.Add(vm);
                 continue;
             }
 
             // Nothing is "new" on the first load — everything would be.
             rebuilt.Add(new SpotViewModel(
-                entry.Spot, now, isNew: _spotsEverLoaded, entry.Reason, distance));
+                entry.Spot, now, isNew: _spotsEverLoaded, entry.Reason, distance,
+                Lifetimes));
 
             if (_spotsEverLoaded)
             {
@@ -1793,8 +1905,20 @@ public partial class SpotViewModel : ObservableObject
     [ObservableProperty]
     private string _distance = "";
 
+    /// <summary>
+    /// The exact age, for anybody who wants the number (HM-DEC-045).
+    /// </summary>
+    /// <remarks>
+    /// The card speaks in words because nobody says "17 min ago" out loud, and
+    /// this is the trade that makes that safe: the figure is one hover away
+    /// rather than gone.
+    /// </remarks>
+    [ObservableProperty]
+    private string _ageTooltip = "";
+
     private ActivitySpot _spot;
     private DateTime _newUntilUtc;
+    private SpotLifetimeSettings _lifetimes = SpotLifetimeSettings.Defaults;
 
     /// <summary>Wraps an engine spot for display.</summary>
     /// <param name="spot">The engine's spot.</param>
@@ -1802,12 +1926,16 @@ public partial class SpotViewModel : ObservableObject
     /// <param name="isNew">True when this spot was not in the previous set.</param>
     /// <param name="reason">The ranking's stated reason for this card.</param>
     /// <param name="distance">How far away, or "" when it cannot be said.</param>
+    /// <param name="lifetimes">The configured source lifetimes, which decide
+    /// how this card talks about its own age (HM-DEC-045).</param>
     public SpotViewModel(
         ActivitySpot spot, DateTime nowUtc, bool isNew,
-        string reason = "", string distance = "")
+        string reason = "", string distance = "",
+        SpotLifetimeSettings? lifetimes = null)
     {
         _spot = spot;
         _distance = distance;
+        _lifetimes = lifetimes ?? SpotLifetimeSettings.Defaults;
         Key = KeyFor(spot);
         Story = spot.Story;
         FrequencyHz = spot.FrequencyHz;
@@ -1845,10 +1973,13 @@ public partial class SpotViewModel : ObservableObject
     /// <param name="nowUtc">Reference time.</param>
     /// <param name="reason">The ranking's reason, recomputed with the spot.</param>
     /// <param name="distance">How far away, recomputed with the spot.</param>
+    /// <param name="lifetimes">The configured source lifetimes.</param>
     public void Update(
-        ActivitySpot spot, DateTime nowUtc, string reason = "", string distance = "")
+        ActivitySpot spot, DateTime nowUtc, string reason = "", string distance = "",
+        SpotLifetimeSettings? lifetimes = null)
     {
         _spot = spot;
+        _lifetimes = lifetimes ?? _lifetimes;
         IsNew = false;
         if (reason.Length > 0)
         {
@@ -1862,11 +1993,25 @@ public partial class SpotViewModel : ObservableObject
     /// <summary>Recompute the age line, and expire the "new" tag once it has
     /// had its thirty seconds.</summary>
     /// <param name="nowUtc">Reference time.</param>
+    /// <remarks>
+    /// OPPORTUNITY FRESHNESS, NOT FEED FRESHNESS (HM-DEC-045). This line says
+    /// how long since the spot happened and whether that person is likely
+    /// still there. How long since Hamlet last talked to the network is a
+    /// different fact and belongs in the panel header. A feed that reloaded
+    /// four seconds ago can be full of hour-old spots, and the wording must
+    /// not let those two be confused.
+    /// </remarks>
     public void Reage(DateTime nowUtc)
     {
+        var elapsed = nowUtc - _spot.HeardAtUtc;
+
         Provenance = $"{_spot.Mode} · {_spot.Source} · "
-            + SpotFreshness.Describe(nowUtc - _spot.HeardAtUtc)
+            + SpotLifetime.DescribeOpportunity(_spot, elapsed, _lifetimes)
             + (Distance.Length > 0 ? $" · {Distance}" : "");
+
+        // The exact figure stays available for anybody who wants it, which is
+        // the trade that lets the card speak in words (HM-DEC-045).
+        AgeTooltip = $"Reported {SpotFreshness.Describe(elapsed)} by {_spot.Source}.";
 
         if (IsNew && nowUtc >= _newUntilUtc)
         {

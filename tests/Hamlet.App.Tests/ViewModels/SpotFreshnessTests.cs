@@ -80,16 +80,36 @@ public sealed class SpotFreshnessTests
     public void Summary_CarriesCountAndAge_AndSaysStaleWhenItIs()
     {
         Assert.Equal(
-            "7 spots · updated 30s ago",
+            "7 spots · checked 30s ago",
             SpotFreshness.Summary(7, TimeSpan.FromSeconds(30), 5));
 
         Assert.Equal(
-            "1 spot · updated 2 min ago",
+            "1 spot · checked 2 min ago",
             SpotFreshness.Summary(1, TimeSpan.FromMinutes(2), 5));
 
         Assert.Equal(
-            "7 spots · stale · updated 42 min ago",
+            "7 spots · feed is stale · checked 42 min ago",
             SpotFreshness.Summary(7, TimeSpan.FromMinutes(42), 5));
+    }
+
+    /// <remarks>
+    /// THE TWO FRESHNESSES MUST NOT BE CONFUSABLE (HM-DEC-045). Proves the
+    /// header talks about the feed and never about the spots. "Updated" was
+    /// ambiguous: a feed checked four seconds ago can be full of hour-old
+    /// spots, and a reader who took the header as the age of what it holds
+    /// would be reading the opposite of the truth.
+    /// </remarks>
+    [Fact]
+    public void TheHeaderTalksAboutTheFeedRatherThanTheSpots()
+    {
+        var header = SpotFreshness.Summary(7, TimeSpan.FromMinutes(42), 5);
+
+        Assert.Contains("checked", header, StringComparison.Ordinal);
+        Assert.Contains("feed is stale", header, StringComparison.Ordinal);
+
+        // Nothing here may read as a claim about how old the spots are.
+        Assert.DoesNotContain("spotted", header, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("still there", header, StringComparison.OrdinalIgnoreCase);
     }
 
     /// <remarks>Proves the prime directive on the feed's first moments: before
