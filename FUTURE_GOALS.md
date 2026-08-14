@@ -9,6 +9,74 @@ Ids are `FG-###` and are never reused.
 
 ---
 
+## FG-009 — Hunt for CW in progress
+
+One control. Hamlet moves the radio, looking for a CW signal it can actually
+turn into readable text, and stops when it finds one. The placeholder is
+already in the Explore menu as "Find me a CQ I can copy".
+
+**Why it is the decoder's payoff.** A newcomer with a working CW decoder still
+has to find something to point it at, and finding a signal means tuning slowly
+across a band listening for a tone among tones and knowing which ones are worth
+stopping on. That skill takes months. The app already has the one thing the
+beginner lacks, which is the ability to tell in two seconds whether a tone is
+turning into letters, so it should be the one doing the hunting.
+
+**THE STOPPING CONDITION IS DECODE CONFIDENCE, NOT SIGNAL STRENGTH.** This is
+the whole design and everything else follows from it. A strong carrier is not a
+contact and a loud signal in a mode nobody asked for is a waste of the
+operator's evening. What the operator wants is text they can read, so what
+Hamlet measures is per-character confidence coming out of the decoder it
+already has. Strength is at most a hint about where to look first, never the
+reason to stop, and a signal that is loud and unreadable is passed over exactly
+like a quiet one.
+
+**Two features, and conflating them is the mistake to avoid.**
+
+| | Hopping between known spots | Sweeping the band |
+|---|---|---|
+| Where it looks | Frequencies the spot feeds already reported | Everywhere in the segment |
+| Needs | Nothing new. The spot data is already here | The spectrum scope stream, CI-V `27 10` and `27 11`, which is not wired yet |
+| Finds | What somebody else already heard | What nobody has reported, including the quiet ones |
+| Build it | First, and well before the second | Only once the first is honest and the scope arrives |
+
+The hopping version is cheap enough to be almost free and it teaches the same
+lesson. Build it, live with it, and let it establish what "readable" means in
+practice before anything harder is attempted.
+
+The sweeping version needs the scope data the radio already computes
+(HM-DEC-005) and then needs to do something the spot feeds do for free: tell a
+CW signal from a carrier, a birdie, or a digital mode sitting on one frequency.
+The distinguishing feature is keying rhythm, which means watching a peak for a
+couple of seconds and asking whether it is going on and off in a pattern that
+looks like Morse rather than sitting there. Peaks get tried strongest first,
+because that ordering costs nothing and gets to a readable signal sooner on
+average.
+
+**The rules it inherits, and one it does not get to argue with.**
+
+- **It never transmits, and it says so where the operator can see it.** A hunt
+  is a receive operation from beginning to end. §0.2 already forbids unattended
+  transmission and this is the feature most likely to tempt somebody into
+  answering automatically. It does not answer. It finds, and then it hands the
+  radio back.
+- **The operator stops it instantly**, with a visible control that is present
+  the whole time the hunt is running. Not a menu item, not a keyboard shortcut
+  somebody has to remember while their radio is moving on its own.
+- **It reports in plain language, not as a progress bar.** "Nothing readable
+  between 7.020 and 7.028 yet, still going" says what is happening. A bar
+  crawling to sixty percent says only that the app is busy, which the operator
+  can already see.
+- **Cancelled means put back.** If the operator stops it, the radio returns to
+  the frequency it was on when the hunt started. Somebody who was sitting on a
+  frequency for a reason does not lose it by trying this.
+- **It says why it stopped**, every time. Found something readable, reached the
+  end of the segment, ran out of spots to try, or was stopped by hand. A hunt
+  that simply ends leaves the operator guessing whether it worked, and a guess
+  is exactly what §0.0 exists to prevent.
+
+---
+
 ## FG-008 — RBN reverse lookup: "did anyone hear me?"
 
 RBN skimmers report every signal they decode, which means that after the
