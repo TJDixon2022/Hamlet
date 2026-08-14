@@ -143,6 +143,15 @@ internal static class CwAlignment
             .ToList();
 
     /// <summary>
+    /// How many symbols the text is, spaces excluded and prosigns counted as
+    /// one apiece.
+    /// </summary>
+    /// <param name="sent">The text that was sent.</param>
+    /// <returns>The count.</returns>
+    public static int SymbolCount(string sent)
+        => Expand(sent).Count(s => s != " ");
+
+    /// <summary>
     /// The sent text as the decoder would render it: one entry per symbol, with
     /// run-together groups collapsed into their prosign name.
     /// </summary>

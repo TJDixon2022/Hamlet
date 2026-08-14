@@ -43,9 +43,12 @@ public readonly record struct CwDecoderState(
 /// (<see cref="MorseAlphabet"/>).</para>
 /// <para>WHAT IS NOT STANDARD IS THE CONFIDENCE, and it is the feature rather
 /// than a decoration on it. Every character carries a score the decoder can
-/// actually justify, from how far its elements sat from the decisions made
-/// about them and how far the weakest of them stood above the noise. Nothing
-/// rounds that up (<see cref="CwConfidenceModel"/>).</para>
+/// actually justify: how far its elements sat from the decisions made about
+/// them, and how far the weakest of them stood above the noise and above any
+/// station near enough to be confused with it. On top of that sits one veto,
+/// for a character that arrived while somebody else was within a few decibels
+/// of the same note. Nothing anywhere rounds a score up
+/// (<see cref="CwConfidenceModel"/>).</para>
 /// <para>NO CLOCK IS READ ANYWHERE BELOW THIS LINE. Elapsed time comes from
 /// counting samples, so the same audio always decodes to the same text, on any
 /// machine, at any speed, forever. That is what makes a WAV fixture worth
@@ -108,7 +111,8 @@ public sealed class CwDecoder
     private double _runSnrSum;
     private int _runHops;
     private double _worstSnrDb = double.MaxValue;
-    private double? _previousSnrDb;
+    private double _runContestedDb = double.MinValue;
+    private double _contestedDb = double.MaxValue;
     private bool _silenceFlushed;
     private bool _sawAnyMark;
     private long _lastSample;
@@ -235,6 +239,7 @@ public sealed class CwDecoder
             _runSamples = 0;
             _runSnrSum = 0;
             _runHops = 0;
+            _runContestedDb = double.MinValue;
         }
 
         _runSamples += _tracker.HopSamples;
@@ -251,6 +256,16 @@ public sealed class CwDecoder
             _runSnrSum += Math.Min(
                 gate.SignalToNoiseDb, reading.MarginOverCompetitorDb);
 
+            // THE STRONGEST MOMENT OF THE MARK, not the weakest. A keyed
+            // element's rising and falling edges are amplitude transients, and a
+            // transient throws energy right across the band, so the quietest
+            // instant of any mark always looks contested even on an empty one.
+            // What the veto is asking is whether another station was comparable
+            // in strength to this one, and the fair place to ask that is where
+            // this one was at full height.
+            _runContestedDb = Math.Max(
+                _runContestedDb, reading.RawMarginOverCompetitorDb);
+
             return;
         }
 
@@ -266,7 +281,7 @@ public sealed class CwDecoder
 
         _sawAnyMark = true;
         _speed.AddMark(_runSamples);
-        _pending.Add(new PendingElement(IsMark: true, _runSamples, snr));
+        _pending.Add(new PendingElement(IsMark: true, _runSamples, snr, _runContestedDb));
 
         Drain();
     }
@@ -281,7 +296,8 @@ public sealed class CwDecoder
         }
 
         _speed.AddGap(_runSamples);
-        _pending.Add(new PendingElement(IsMark: false, _runSamples, 0));
+        _pending.Add(
+            new PendingElement(IsMark: false, _runSamples, 0, double.MaxValue));
 
         Drain();
     }
@@ -351,6 +367,8 @@ public sealed class CwDecoder
                 _pattern.Append(mark == CwElement.Dit ? '.' : '-');
                 _clarities.Add(nameable ? _speed.Clarity(mark, element.Samples) : 0);
                 _worstSnrDb = Math.Min(_worstSnrDb, element.SignalToNoiseDb);
+
+                _contestedDb = Math.Min(_contestedDb, element.ContestedMarginDb);
                 _silenceFlushed = false;
                 continue;
             }
@@ -415,14 +433,13 @@ public sealed class CwDecoder
         var timing = WorstClarity();
         var snr = _worstSnrDb == double.MaxValue ? 0 : _worstSnrDb;
 
-        var levelChange = _previousSnrDb is null ? 0 : snr - _previousSnrDb.Value;
-        var score = CwConfidenceModel.Score(timing, snr, levelChange);
-        var confidence = CwConfidenceModel.Rate(score, text is not null);
+        var score = CwConfidenceModel.Score(timing, snr);
+        var confidence = CwConfidenceModel.Rate(score, text is not null, _contestedDb);
 
-        _previousSnrDb = snr;
         _pattern.Clear();
         _clarities.Clear();
         _worstSnrDb = double.MaxValue;
+        _contestedDb = double.MaxValue;
 
         // NOTHING IS CLAIMED WHEN THE TIMINGS DO NOT LOOK LIKE MORSE. Noise
         // makes runs of key-down and key-up too, and a gate will happily chop
@@ -506,6 +523,16 @@ public sealed class CwDecoder
     }
 
     /// <summary>A measured run, waiting for something to be measured against.</summary>
+    /// <param name="IsMark">True when the key was down.</param>
+    /// <param name="Samples">How long it lasted.</param>
+    /// <param name="SignalToNoiseDb">
+    /// How far it stood above the noise and above any rival station, averaged
+    /// across the run.
+    /// </param>
+    /// <param name="ContestedMarginDb">
+    /// The closest another station came during this run, before the filter is
+    /// credited with rejecting any of it.
+    /// </param>
     private readonly record struct PendingElement(
-        bool IsMark, double Samples, double SignalToNoiseDb);
+        bool IsMark, double Samples, double SignalToNoiseDb, double ContestedMarginDb);
 }

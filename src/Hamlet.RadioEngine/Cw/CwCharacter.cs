@@ -81,11 +81,15 @@ public sealed record CwCharacter(
 /// telling.</para>
 /// <para>Two independent measurements, and the worse one wins. Timing clarity
 /// says how far each element sat from the decision made about it. Signal margin
-/// says how far the weakest part of the character stood above the noise. A
-/// character can fail either way and passing one test does not excuse the
-/// other, so they are combined with a minimum rather than an average. An
-/// average would let a beautifully timed character buried in noise come out
-/// looking certain.</para>
+/// says how far the weakest part of the character stood above the noise and
+/// above any station near enough to be confused with it. A character can fail
+/// either way and passing one test does not excuse the other, so they are
+/// combined with a minimum rather than an average. An average would let a
+/// beautifully timed character buried in noise come out looking certain.</para>
+/// <para>Then one veto on top, for the case neither score can see: another
+/// station within a few decibels does not add noise, it moves the gate, and the
+/// letter that comes out is a different letter with perfect timing and a
+/// healthy margin. See <see cref="ContestedWithinDb"/>.</para>
 /// <para>Nothing anywhere may raise a score. Not a spell check, not a callsign
 /// that nearly matches, not a word that would make sense. Those are all ways of
 /// preferring a tidy transcript to a true one.</para>
@@ -114,28 +118,25 @@ public static class CwConfidenceModel
     public const double GoodSignalDb = 18.0;
 
     /// <summary>
-    /// How far the signal level may move between one character and the next
-    /// before the decode stops being trustworthy, in decibels.
+    /// How close another station may come, in decibels, before this one stops
+    /// being worth vouching for.
     /// </summary>
     /// <remarks>
-    /// THE THIRD MEASUREMENT, and it catches a failure the other two cannot see
-    /// at all. A signal sinking through a fade does not get noisy, it gets
-    /// shorter: the dahs go under the threshold before the dits do, so "W"
-    /// arrives as "E" with beautiful timing and a healthy margin above the
-    /// noise, and both other tests wave it through. What gives it away is that
-    /// the level moved. A character decoded while the signal was dropping ten
-    /// decibels may be missing pieces, whatever the pieces that survived look
-    /// like.
+    /// THE VETO, and it is a rule rather than a score because the failure it
+    /// catches is not a matter of degree. A station within a few decibels and a
+    /// couple of hundred hertz does not merely add noise: its keying lifts the
+    /// gate's idea of where a signal sits, the threshold rides up with it, and
+    /// the wanted station's dahs get truncated into dits. The result is a
+    /// different letter with clean timing and a healthy margin above the noise,
+    /// which is exactly the shape of thing both scores are built to wave
+    /// through.
+    /// <para>So a character that arrived while somebody else was that close
+    /// cannot be marked certain, whatever else is true about it. Hamlet can
+    /// still show it, and dimmed is the honest way to show it: somebody was
+    /// sitting on top of this and the decoder is not going to pretend
+    /// otherwise (§0.0).</para>
     /// </remarks>
-    public const double LevelMoveSpanDb = 10.0;
-
-    /// <summary>How much a steady level is worth, from 0 to 1.</summary>
-    /// <param name="levelChangeDb">
-    /// How far the signal margin moved since the character before.
-    /// </param>
-    /// <returns>0 to 1.</returns>
-    public static double LevelStability(double levelChangeDb)
-        => Math.Clamp(1 - (Math.Abs(levelChangeDb) / LevelMoveSpanDb), 0, 1);
+    public const double ContestedWithinDb = 10.0;
 
     /// <summary>How much the signal margin alone is worth, from 0 to 1.</summary>
     /// <param name="signalToNoiseDb">Margin above the noise, in decibels.</param>
@@ -147,31 +148,39 @@ public static class CwConfidenceModel
     /// <summary>Combine the measurements into one score.</summary>
     /// <param name="timingClarity">How cleanly the timings clustered, 0 to 1.</param>
     /// <param name="signalToNoiseDb">Margin above the noise and any rival, in decibels.</param>
-    /// <param name="levelChangeDb">How far the level moved since the last character.</param>
     /// <returns>0 to 1.</returns>
     /// <remarks>
-    /// The worst of the three, never the average. A character can fail in any
-    /// one of these ways on its own, and passing two tests does not excuse
-    /// failing the third. An average would let a beautifully timed character
-    /// buried in noise come out looking certain, which is the whole failure
-    /// this model exists to prevent.
+    /// The worse of the two, never the average. A character can fail either way
+    /// on its own and passing one test does not excuse failing the other. An
+    /// average would let a beautifully timed character buried in noise come out
+    /// looking certain, which is the whole failure this model exists to prevent.
     /// </remarks>
-    public static double Score(
-        double timingClarity, double signalToNoiseDb, double levelChangeDb = 0)
+    public static double Score(double timingClarity, double signalToNoiseDb)
         => Math.Min(
-            Math.Min(Math.Clamp(timingClarity, 0, 1), SignalClarity(signalToNoiseDb)),
-            LevelStability(levelChangeDb));
+            Math.Clamp(timingClarity, 0, 1), SignalClarity(signalToNoiseDb));
 
     /// <summary>
     /// Which of the three states a score and a lookup result add up to.
     /// </summary>
     /// <param name="score">The combined score.</param>
     /// <param name="resolved">Whether the pattern named anything at all.</param>
+    /// <param name="contestedMarginDb">
+    /// How close the nearest other station came while this character was
+    /// arriving, in decibels. Large when nobody else was there.
+    /// </param>
     /// <returns>The confidence.</returns>
-    public static CwConfidence Rate(double score, bool resolved)
-        => !resolved || score < UnreadableBelow
-            ? CwConfidence.Unreadable
-            : score >= HighAbove
-                ? CwConfidence.High
-                : CwConfidence.Low;
+    public static CwConfidence Rate(
+        double score, bool resolved, double contestedMarginDb = double.MaxValue)
+    {
+        if (!resolved || score < UnreadableBelow)
+        {
+            return CwConfidence.Unreadable;
+        }
+
+        // The veto. Nothing raises a confidence, and this is the one thing that
+        // lowers one on evidence outside the score.
+        return score >= HighAbove && contestedMarginDb >= ContestedWithinDb
+            ? CwConfidence.High
+            : CwConfidence.Low;
+    }
 }

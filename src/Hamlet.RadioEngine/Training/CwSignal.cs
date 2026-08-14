@@ -129,6 +129,16 @@ public static class CwSignal
             AddNoise(samples, request.NoiseAmplitude, request.Seed);
         }
 
+        // Held inside full scale, because that is what the audio path this
+        // stands in for can actually carry. A sample past full scale would come
+        // back from a WAV file clipped, and a fixture that does not survive its
+        // own round trip is a fixture nobody can compare anything against
+        // (HM-DEC-007).
+        for (var i = 0; i < samples.Length; i++)
+        {
+            samples[i] = Math.Clamp(samples[i], -1f, 1f);
+        }
+
         return new MonoAudio(sampleRate, samples);
     }
 

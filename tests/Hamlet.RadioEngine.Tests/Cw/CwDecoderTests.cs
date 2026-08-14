@@ -141,15 +141,20 @@ public sealed class CwDecoderTests
     /// is theirs.
     /// </remarks>
     [Theory]
-    [InlineData(0.05)]
-    [InlineData(0.10)]
-    [InlineData(0.18)]
-    [InlineData(0.28)]
-    [InlineData(0.40)]
+    [InlineData(0.03)]
+    [InlineData(0.07)]
+    [InlineData(0.12)]
+    [InlineData(0.17)]
+    [InlineData(0.24)]
     public void NoiseCostsConfidenceRatherThanCorrectness(double noise)
     {
+        // Amplitudes chosen to leave headroom. A signal plus noise that ran past
+        // full scale would come back from the file clipped, and clipping spreads
+        // energy across the whole band, so the fixture would be testing a
+        // distortion nobody's receiver produces rather than the noise it says
+        // it does.
         var result = CwDecodeHarness.Decode(new CwSignalRequest(
-            Call, WordsPerMinute: 18, Amplitude: 0.5, NoiseAmplitude: noise));
+            Call, WordsPerMinute: 18, Amplitude: 0.3, NoiseAmplitude: noise));
 
         Assert.Empty(CwAlignment.ConfidentMistakes(result.Characters, Call));
     }
@@ -168,7 +173,7 @@ public sealed class CwDecoderTests
         var result = CwDecodeHarness.Decode(new CwSignalRequest(
             Call,
             WordsPerMinute: 18,
-            Amplitude: 0.5,
+            Amplitude: 0.4,
             NoiseAmplitude: 0.04,
             InterferenceHz: interferenceHz,
             InterferenceAmplitude: 0.35,

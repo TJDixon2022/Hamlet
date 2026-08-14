@@ -33,14 +33,24 @@ public readonly record struct GateReading(
 /// does not quietly stop being decoded.
 /// </summary>
 /// <remarks>
-/// <para>Two trackers, both in decibels, both asymmetric. The noise floor drops
-/// quickly to meet a quieter band and creeps up over several seconds, so a
-/// burst of static does not convince it the band got noisy. The peak rises
-/// quickly and falls over a couple of seconds, so it follows a signal down
-/// through a fade instead of leaving the threshold stranded above it. That
-/// asymmetry is the whole design: the failure this prevents is a decoder that
-/// works beautifully for thirty seconds and then goes silent without ever
-/// saying why.</para>
+/// <para>Two trackers, both in decibels, both asymmetric. The noise floor
+/// settles to a quieter band over a fraction of a second and creeps back up
+/// over several, so a burst of static does not convince it the band got noisy.
+/// The peak rises within about one dit and falls over a couple of seconds, so
+/// it follows a signal down through a fade instead of leaving the threshold
+/// stranded above it. That asymmetry is the whole design: the failure it
+/// prevents is a decoder that works beautifully for thirty seconds and then
+/// goes silent without ever saying why.</para>
+/// <para>NEITHER TRACKER CHASES INDIVIDUAL MEASUREMENTS, and that was learned
+/// the hard way. Noise in a narrow filter swings about five decibels either
+/// side of its own average from one measurement to the next, so trackers quick
+/// enough to follow that end up with the peak sitting on the noise's high
+/// points and the floor on its low ones. The gap between them then looks like
+/// twenty-five decibels of signal on a band with nothing on it at all, and the
+/// decoder gets handed a stream of imaginary dits and dahs the right length to
+/// be believed. Slowing both to something a real element could still move
+/// leaves noise reading under ten decibels of spread and a real signal reading
+/// nearly forty.</para>
 /// <para>Decibels rather than raw power, because a fade is a multiplication and
 /// a logarithm turns it into a subtraction. A tracker working in linear power
 /// spends its whole life chasing the loud parts.</para>
@@ -62,7 +72,7 @@ public sealed class CwGate
     /// How far a keyed signal must stand above the noise before the gate will
     /// call anything at all, in decibels.
     /// </summary>
-    public const double MinimumSpreadDb = 6.0;
+    public const double MinimumSpreadDb = 10.0;
 
     /// <summary>Where in the gap between noise and peak a mark begins.</summary>
     private const double RisingFraction = 0.50;
@@ -93,11 +103,43 @@ public sealed class CwGate
     /// <summary>How far below the peak a mark ends. Deeper, which is the hysteresis.</summary>
     private const double MaximumFallingDropDb = 9.0;
 
-    private const double NoiseFallAlpha = 0.25;
+    /// <summary>How fast the noise floor settles down to a quieter band.</summary>
+    /// <remarks>About a third of a second, which is slower than noise wobbles
+    /// and faster than a band changes.</remarks>
+    private const double NoiseFallAlpha = 0.03;
+
+    /// <summary>How fast the noise floor gives way to a noisier one.</summary>
+    /// <remarks>Several seconds, so a burst of static does not move it.</remarks>
     private const double NoiseRiseAlpha = 0.0008;
-    private const double PeakRiseAlpha = 0.35;
+
+    /// <summary>How fast the peak follows a signal up.</summary>
+    /// <remarks>About one dit at ordinary speeds, which is as fast as it can be
+    /// without also following the noise.</remarks>
+    private const double PeakRiseAlpha = 0.12;
+
+    /// <summary>How fast the peak follows a signal down.</summary>
+    /// <remarks>A couple of seconds, which is what keeps the threshold with a
+    /// signal through a fade instead of stranded above it.</remarks>
     private const double PeakFallAlpha = 0.002;
 
+    /// <summary>
+    /// How many measurements the de-glitch vote looks at.
+    /// </summary>
+    /// <remarks>
+    /// FIVE, WHICH IS TWENTY-FIVE MILLISECONDS, and it removes any run shorter
+    /// than three. Noise crossing a threshold produces runs of one and two
+    /// measurements constantly, and left alone they become marks, then elements,
+    /// then letters out of an empty band. The shortest thing anybody actually
+    /// sends is a dit at sixty words a minute, which is twenty milliseconds and
+    /// four measurements, so this throws away what cannot be Morse and keeps
+    /// everything that can.
+    /// </remarks>
+    private const int VoteWindow = 5;
+
+    private readonly bool[] _votes = new bool[VoteWindow];
+
+    private int _voteCount;
+    private int _voteWrite;
     private bool _started;
     private bool _keyDown;
 
@@ -153,13 +195,47 @@ public sealed class CwGate
         if (spread < MinimumSpreadDb)
         {
             _keyDown = false;
+            Vote(false);
             return new GateReading(
                 false, powerDb, NoiseFloorDb, PeakDb, threshold, HasSignal: false);
         }
 
+        // The raw decision drives the hysteresis, and the de-glitched one is
+        // what the rest of the chain sees. Keeping them apart matters: voting
+        // on the hysteresis input would fight it, since both are trying to stop
+        // the same chatter and neither would then be doing its job properly.
         _keyDown = powerDb >= threshold;
 
         return new GateReading(
-            _keyDown, powerDb, NoiseFloorDb, PeakDb, threshold, HasSignal: true);
+            Vote(_keyDown), powerDb, NoiseFloorDb, PeakDb, threshold, HasSignal: true);
+    }
+
+    /// <summary>
+    /// The majority decision across the last few measurements.
+    /// </summary>
+    /// <remarks>
+    /// A median filter over the key state, which is what a de-glitch on a
+    /// two-valued signal amounts to. It delays everything by two measurements
+    /// and shifts nothing, because a median moves the edges of a long run not
+    /// at all while deleting short ones outright. A moving average would have
+    /// smeared every edge instead, and edge positions are the entire content of
+    /// Morse.
+    /// </remarks>
+    private bool Vote(bool keyDown)
+    {
+        _votes[_voteWrite] = keyDown;
+        _voteWrite = (_voteWrite + 1) % VoteWindow;
+        _voteCount = Math.Min(_voteCount + 1, VoteWindow);
+
+        var down = 0;
+        for (var i = 0; i < _voteCount; i++)
+        {
+            if (_votes[i])
+            {
+                down++;
+            }
+        }
+
+        return down * 2 > _voteCount;
     }
 }

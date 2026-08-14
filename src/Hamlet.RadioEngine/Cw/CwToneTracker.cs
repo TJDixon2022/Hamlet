@@ -14,8 +14,32 @@ namespace Hamlet.RadioEngine.Cw;
 public readonly record struct ToneReading(
     double PowerDb, double CompetitorDb, double ToneHz, long SampleIndex)
 {
-    /// <summary>How far the tracked note stands above its nearest rival.</summary>
-    public double MarginOverCompetitorDb => PowerDb - CompetitorDb;
+    /// <summary>
+    /// How far the tracked note stands above whatever a rival station is
+    /// actually managing to put into the same filter.
+    /// </summary>
+    /// <remarks>
+    /// NOT SIMPLY HOW MUCH LOUDER WE ARE THAN THEM. A station a couple of
+    /// hundred hertz away can be stronger than the one being read and do no
+    /// harm at all, because the filter rejects it, and a decoder that marked
+    /// every character uncertain whenever somebody louder was on the band would
+    /// be useless on a busy evening. What matters is how much of them gets
+    /// through, which is their strength less what the filter takes off it.
+    /// </remarks>
+    public double MarginOverCompetitorDb
+        => PowerDb - (CompetitorDb - CwToneTracker.FilterRejectionDb);
+
+    /// <summary>
+    /// How far the tracked note stands above the nearest rival before the
+    /// filter is credited with anything.
+    /// </summary>
+    /// <remarks>
+    /// This is the one the veto reads. A rival this close is a problem even
+    /// when the filter is rejecting it cleanly, because it is not the leakage
+    /// that does the damage: it is the gate's idea of where a signal sits being
+    /// pulled up by somebody else's keying.
+    /// </remarks>
+    public double RawMarginOverCompetitorDb => PowerDb - CompetitorDb;
 }
 
 /// <summary>
@@ -34,14 +58,14 @@ public readonly record struct ToneReading(
 /// Manual p. 4-14). Somebody two hundred hertz off frequency still gets a
 /// decode, which matters because being off frequency is what beginners do and
 /// a decoder that punished it would be teaching the wrong lesson.</para>
-/// <para>The tracker is deliberately sticky. When two notes are within three
-/// decibels of one another it stays with whichever is closer to where it
-/// already was, so a louder station arriving nearby does not drag the decode
-/// off the signal the operator was reading. It only moves when the other
-/// signal is genuinely stronger.</para>
-/// <para>The window is ten milliseconds and it advances five, which sets both
+/// <para>The tracker is deliberately sticky. When two notes are within a
+/// decibel of one another it stays with whichever is closer to where it already
+/// was, so a louder station arriving nearby does not drag the decode off the
+/// signal the operator was reading. It only moves when the other signal is
+/// genuinely stronger.</para>
+/// <para>The window is twenty milliseconds and it advances five, which sets both
 /// the frequency selectivity and the timing resolution. At forty words a minute
-/// a dit is thirty milliseconds, so six measurements land inside the shortest
+/// a dit is thirty milliseconds, so four measurements land inside the shortest
 /// element there is.</para>
 /// </remarks>
 public sealed class CwToneTracker
@@ -80,17 +104,32 @@ public sealed class CwToneTracker
     private const double CompetitorSeparationHz = 125;
 
     /// <summary>
+    /// How much of a rival station this far off the tracked note the filter
+    /// takes off, in decibels.
+    /// </summary>
+    /// <remarks>
+    /// A conservative reading of what a Hann-tapered twenty-millisecond window
+    /// does past a hundred and twenty-five hertz of separation. Conservative on
+    /// purpose: understating the rejection makes the decoder mark characters
+    /// uncertain that it could have read, which costs the operator some dimmed
+    /// text. Overstating it lets somebody else's dits into a character that
+    /// still looks clean, which costs them the truth (§0.0).
+    /// </remarks>
+    public const double FilterRejectionDb = 25;
+
+    /// <summary>
     /// How many hops the window spans.
     /// </summary>
     /// <remarks>
     /// FOUR, WHICH IS TWENTY MILLISECONDS, and the number is a trade rather than
-    /// a preference. A longer window hears more finely and so can tell one
+    /// a preference. A longer window hears pitch more finely and so tells one
     /// station from another close by; a shorter one sees the keying more
-    /// sharply. Two hops was too blunt to separate a station a hundred and fifty
-    /// hertz away, which is a completely ordinary thing to find on a busy
-    /// evening, and the decoder merged the two into confident nonsense. Four
-    /// resolves them and still puts four measurements inside the shortest dit
-    /// anyone sends.
+    /// sharply. Measured against a fixture with a second station a hundred and
+    /// fifty hertz away, two hops leaves the tracker pulled twenty-five hertz off
+    /// the signal it is reading and four lands on it exactly. Six is finer still
+    /// and starts blurring the keying, which costs more than the pitch is worth.
+    /// Four also still puts four measurements inside a thirty-millisecond dit,
+    /// which is the shortest anybody sends.
     /// </remarks>
     private const int WindowHops = 4;
 
