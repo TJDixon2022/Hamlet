@@ -165,9 +165,13 @@ public sealed class RigUnknownStateTests
         var accessors = typeof(RigState)
             .GetProperties(BindingFlags.Public | BindingFlags.Instance)
             .Where(p => p.GetIndexParameters().Length == 0)
+            // Two "known to be" accessors are deliberately not nullable, and
+            // the test below says what each of them means when nothing has been
+            // read (§0.2, HM-DEC-056).
             .Where(p => p.Name is not (nameof(RigState.RigName)
                 or nameof(RigState.KnownCount)
-                or nameof(RigState.IsTransmitting)))
+                or nameof(RigState.IsTransmitting)
+                or nameof(RigState.IsDataMode)))
             .ToList();
 
         Assert.NotEmpty(accessors);
@@ -186,10 +190,13 @@ public sealed class RigUnknownStateTests
     }
 
     /// <remarks>
-    /// Proves the one accessor that is deliberately not nullable says what it
-    /// means. "Known to be transmitting" is false when nothing has been read,
-    /// and anything that keys a transmitter later must treat unread and
-    /// receiving as different things (§0.2).
+    /// Proves the accessors that are deliberately not nullable say what they
+    /// mean. "Known to be transmitting" is false when nothing has been read, and
+    /// anything that keys a transmitter later must treat unread and receiving as
+    /// different things (§0.2). "Known to be in the data variant" is the same
+    /// shape, and false there is safe in the other direction: its only caller is
+    /// the automation deciding whether to write, and an unread data setting is a
+    /// reason to set it rather than a reason to leave it (HM-DEC-056).
     /// </remarks>
     [Fact]
     public void KnownToBeTransmittingIsFalseWhenNothingHasBeenRead()
@@ -202,5 +209,15 @@ public sealed class RigUnknownStateTests
 
         Assert.False(receiving.IsTransmitting);
         Assert.True(receiving[RigField.TransmitStatus].IsKnown);
+
+        // The same shape for the data variant, and the field itself still
+        // carries the unknown state for anything that displays it.
+        Assert.False(RigState.Empty.IsDataMode);
+        Assert.Equal(RigValueState.Unknown, RigState.Empty[RigField.DataMode].State);
+
+        var dataOn = RigState.Empty.With(
+            RigValue.Known(RigField.DataMode, 1, "on", Now, "CI-V 26 00"));
+
+        Assert.True(dataOn.IsDataMode);
     }
 }

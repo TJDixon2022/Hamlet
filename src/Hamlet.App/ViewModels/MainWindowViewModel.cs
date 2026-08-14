@@ -11,6 +11,7 @@ using Hamlet.App.Startup;
 using Hamlet.App.Telemetry;
 using Hamlet.RadioEngine.Audio;
 using Hamlet.RadioEngine.Bands;
+using Hamlet.RadioEngine.Civ;
 using Hamlet.RadioEngine.Cw;
 using Hamlet.RadioEngine.Explore;
 using Hamlet.RadioEngine.Telemetry;
@@ -49,7 +50,19 @@ public partial class MainWindowViewModel : ObservableObject
     private static readonly TimeSpan RigSendThrottle = TimeSpan.FromMilliseconds(150);
     private static readonly TimeSpan AgeTick = TimeSpan.FromSeconds(1);
 
+    /// <summary>
+    /// How long the dial has to sit still before the mode follows it.
+    /// </summary>
+    /// <remarks>
+    /// Long enough that a drag across three neighborhoods is one change rather
+    /// than three (HM-DEC-056). Changing mode is not like nudging a frequency:
+    /// the radio mutes for an instant each time, so a flurry of them through one
+    /// gesture would sound broken.
+    /// </remarks>
+    private static readonly TimeSpan ModeSettleDelay = TimeSpan.FromMilliseconds(600);
+
     private readonly DispatcherTimer _rigSendTimer;
+    private readonly DispatcherTimer _modeSettleTimer;
     private readonly DispatcherTimer _spotRefreshTimer;
     private readonly DispatcherTimer _ageTimer;
     private readonly AppSettings _settings;
@@ -69,6 +82,9 @@ public partial class MainWindowViewModel : ObservableObject
     private IRig? _rig;
     private bool _updatingFromRig;
     private bool _rigSendPending;
+    private ModeFollowState _modeFollow = ModeFollowState.Armed(false);
+    private bool _settingModeOurselves;
+    private CivMode? _lastKnownMode;
     private bool _windowVisible = true;
     private bool _spotsEverLoaded;
     private DateTime _lastSpotLoadUtc = DateTime.UtcNow;
@@ -517,6 +533,11 @@ public partial class MainWindowViewModel : ObservableObject
             RigSendThrottle, DispatcherPriority.Background, OnRigSendTick);
         _rigSendTimer.Stop();
 
+        _modeFollow = ModeFollowState.Armed(settings.ModeFollowsTheMap);
+        _modeSettleTimer = new DispatcherTimer(
+            ModeSettleDelay, DispatcherPriority.Background, OnModeSettleTick);
+        _modeSettleTimer.Stop();
+
         _spotRefreshTimer = new DispatcherTimer(
             TimeSpan.FromMinutes(AppSettings.DefaultSpotRefreshMinutes),
             DispatcherPriority.Background, OnSpotRefreshTick);
@@ -778,6 +799,14 @@ public partial class MainWindowViewModel : ObservableObject
     partial void OnSelectedBandChanged(BandButtonViewModel value)
     {
         Neighborhoods = NeighborhoodPlan.WithEdges(value.Band);
+
+        // A band change is a fresh start rather than a continuation, and
+        // somebody who took the wheel on 40 m did not mean to keep it forever
+        // (HM-DEC-056).
+        _modeFollow = _modeFollow.Rearmed();
+        ModeFollowSuspended = false;
+        ScheduleModeFollow();
+
         _settings.LastBand = value.Band.Name;
         SettingsStore.Save(_settings);
         AppEvents.BandChanged(_telemetry, value.Band.Name);
@@ -1038,6 +1067,8 @@ public partial class MainWindowViewModel : ObservableObject
     /// </remarks>
     private void ApplyRigState(RigState state)
     {
+        NoticeOperatorModeChange(state);
+
         RigModeText = state[RigField.Mode] is { IsKnown: true } mode ? mode.Text : "";
         RigFilterText = state[RigField.FilterSelection] is { IsKnown: true } filter
             ? filter.Text
@@ -1052,6 +1083,52 @@ public partial class MainWindowViewModel : ObservableObject
         OnPropertyChanged(nameof(RigState));
         OnPropertyChanged(nameof(TerminalSummary));
     }
+
+    /// <summary>
+    /// A mode Hamlet did not ask for is the operator's own hand, so it stands
+    /// down until the next band change.
+    /// </summary>
+    /// <remarks>
+    /// SUSPENDED IS A VISIBLE STATE AND NEVER A SILENT ONE (HM-DEC-056). An app
+    /// that quietly stopped doing a thing it had been doing is worse than one
+    /// that never did it, because the operator has no way to tell whether it is
+    /// standing down or broken. So it says so, once, in the status line.
+    /// </remarks>
+    private void NoticeOperatorModeChange(RigState state)
+    {
+        if (_settingModeOurselves
+            || _modeFollow.Suspended
+            || !_modeFollow.Enabled
+            || state[RigField.Mode] is not { IsKnown: true } mode)
+        {
+            return;
+        }
+
+        var was = _lastKnownMode;
+        _lastKnownMode = (CivMode)(int)mode.Number!.Value;
+
+        // The first reading of a session is not a change; it is the answer to
+        // Hamlet asking what mode the radio was already in.
+        if (was is null || was == _lastKnownMode)
+        {
+            return;
+        }
+
+        _modeFollow = _modeFollow.SuspendedByOperator();
+        ModeFollowSuspended = true;
+        StatusText = $"You set the radio to {mode.Text}, so Hamlet will leave the "
+                   + "mode alone until you next change band.";
+    }
+
+    /// <summary>
+    /// True while the operator is driving the mode and Hamlet is not.
+    /// </summary>
+    /// <remarks>
+    /// Shown on screen rather than kept in a field, because the operator always
+    /// has to know who is driving (HM-DEC-056).
+    /// </remarks>
+    [ObservableProperty]
+    private bool _modeFollowSuspended;
 
     /// <summary>
     /// Start listening, and decoding what is heard.
@@ -1432,6 +1509,7 @@ public partial class MainWindowViewModel : ObservableObject
         }
 
         UpdateModeLine();
+        ScheduleModeFollow();
 
         if (_updatingFromRig || _rig is null || !IsConnected)
         {
@@ -1466,6 +1544,83 @@ public partial class MainWindowViewModel : ObservableObject
         if (!_rigSendPending)
         {
             _rigSendTimer.Stop();
+        }
+    }
+
+    /// <summary>
+    /// Let the dial settle, then think about the mode.
+    /// </summary>
+    /// <remarks>
+    /// Restarted on every move, so a drag across three neighborhoods produces
+    /// one change and not three (HM-DEC-056).
+    /// </remarks>
+    private void ScheduleModeFollow()
+    {
+        if (!_modeFollow.Enabled || _modeFollow.Suspended || _rig is null || !IsConnected)
+        {
+            return;
+        }
+
+        _modeSettleTimer.Stop();
+        _modeSettleTimer.Start();
+    }
+
+    private async void OnModeSettleTick(object? sender, EventArgs e)
+    {
+        _modeSettleTimer.Stop();
+        await FollowTheMapAsync();
+    }
+
+    /// <summary>
+    /// Set the radio to the mode this stretch of band is worked in.
+    /// </summary>
+    /// <remarks>
+    /// <para>NARRATED, ALWAYS (HM-DEC-056). A radio that changes itself silently
+    /// is the "is it broken" confusion relocated rather than removed, and this
+    /// operator has had enough of machines doing things without saying so.</para>
+    /// <para>A write that is not confirmed leaves the mode unknown rather than
+    /// assumed. The rig reports that itself, so the badge empties and the screen
+    /// stops claiming to know something it does not (§0.0).</para>
+    /// </remarks>
+    private async Task FollowTheMapAsync()
+    {
+        var rig = _rig;
+        if (rig is null || !IsConnected)
+        {
+            return;
+        }
+
+        var here = Neighborhoods.FirstOrDefault(n => n.Contains(FrequencyHz));
+        var decision = ModeFollowPlan.Decide(
+            _modeFollow, RigState.Mode, RigState.IsDataMode,
+            ModeFollowPlan.TargetFor(here));
+
+        if (!decision.Write)
+        {
+            return;
+        }
+
+        _settingModeOurselves = true;
+        try
+        {
+            var result = await rig.SetModeAsync(decision.Mode, decision.DataMode);
+
+            _lastKnownMode = result.Worked ? decision.Mode : null;
+            StatusText = result.Worked ? decision.Narration : result.Detail;
+
+            AppEvents.ModeFollowed(
+                _telemetry, decision.Mode.ToString(), decision.DataMode,
+                result.Outcome.ToString());
+        }
+        catch (Exception ex)
+        {
+            // Never-throw discipline (§8). A mode change that failed is a
+            // sentence, not a crash.
+            StatusText = $"Hamlet could not set the mode: {ex.Message}";
+        }
+        finally
+        {
+            _settingModeOurselves = false;
         }
     }
 

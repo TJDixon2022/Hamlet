@@ -110,6 +110,22 @@ public static class CivReads
         + "then 01=FIL1, 02=FIL2, 03=FIL3",
         new[] { RigField.FilterSelection });
 
+    /// <summary>
+    /// Read the mode, its data variant and its filter, all three.
+    /// </summary>
+    /// <remarks>
+    /// The same command Hamlet writes the mode with, in its read form
+    /// (p. 19-11). It answers everything <see cref="ModeAndFilter"/> does and
+    /// the data flag besides, which nothing else reports: command 04 says USB
+    /// whether the radio is in USB or USB-D. Read on connect and when somebody
+    /// opens the diagnostics screen, and not otherwise, since the mode itself is
+    /// broadcast as it changes.
+    /// </remarks>
+    public static CivRead ModeDataAndFilter { get; } = new(
+        RigField.DataMode, 0x26, new byte[] { 0x00 }, "19-11",
+        "00=selected VFO; reply is mode, then 00=data mode off / 01=on, then "
+        + "01=FIL1, 02=FIL2, 03=FIL3");
+
     /// <summary>Read the selected filter's width.</summary>
     /// <remarks>
     /// An index rather than a figure in hertz, and the two step scales it
@@ -254,7 +270,8 @@ public static class CivReads
     /// <summary>Every read, in the order the diagnostics screen shows them.</summary>
     public static IReadOnlyList<CivRead> All { get; } = new[]
     {
-        Frequency, ModeAndFilter, FilterWidth, SMeter, TransmitStatus, Overflow,
+        Frequency, ModeAndFilter, ModeDataAndFilter, FilterWidth, SMeter,
+        TransmitStatus, Overflow,
         RfPower, RfGain, Squelch, SquelchStatus, Agc, Preamp, Attenuator,
         NoiseBlanker, NoiseBlankerLevel, NoiseReduction, NoiseReductionLevel,
         AutoNotch, ManualNotch, BreakIn, KeyerSpeed, CwPitch,

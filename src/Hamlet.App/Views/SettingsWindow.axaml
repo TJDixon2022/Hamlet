@@ -248,6 +248,27 @@
                                               IsChecked="{Binding ReconnectOnStartup}" />
                             </Grid>
                         </Border>
+
+                        <!-- The first thing Hamlet does to the radio without
+                             being asked, so it says so plainly and can be
+                             switched off (HM-DEC-056). -->
+                        <Border Background="White" CornerRadius="8" Padding="12,10"
+                                BorderBrush="{StaticResource HmGreenEdgeBrush}"
+                                BorderThickness="1">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <StackPanel Grid.Column="0" Spacing="2" Margin="0,0,10,0">
+                                    <TextBlock Text="Set the mode to match where I am tuned"
+                                               FontWeight="SemiBold" FontSize="13"
+                                               TextWrapping="Wrap" />
+                                    <ctl:GlossaryTextControl
+                                        Text="Every part of a band has a mode the people there are using, and getting it wrong is why a beginner hears nothing. Hamlet changes the radio to match the block you are tuned into, and says in the line at the bottom of the window what it did and why. Change the mode yourself at any time and it stops until you next switch bands."
+                                        FontSize="12" LineSpacing="1.4"
+                                        Foreground="{StaticResource HmTextMutedBrush}" />
+                                </StackPanel>
+                                <ToggleSwitch Grid.Column="1" VerticalAlignment="Center"
+                                              IsChecked="{Binding ModeFollowsTheMap}" />
+                            </Grid>
+                        </Border>
                     </StackPanel>
                 </Border>
 

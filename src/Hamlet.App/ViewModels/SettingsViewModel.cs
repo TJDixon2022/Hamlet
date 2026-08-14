@@ -86,6 +86,10 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty]
     private bool _reconnectOnStartup;
 
+    /// <summary>Let Hamlet set the mode to match where the dial is pointing.</summary>
+    [ObservableProperty]
+    private bool _modeFollowsTheMap;
+
     /// <summary>
     /// Recompute every badge from the profile as it stands right now.
     /// </summary>
@@ -137,6 +141,7 @@ public partial class SettingsViewModel : ObservableObject
         _audioDevice = AudioDeviceChoice.Choose(AudioDevices, settings.AudioInputDeviceId);
         _cwPitchHz = settings.CwPitchHz;
         _reconnectOnStartup = settings.ReconnectOnStartup;
+        _modeFollowsTheMap = settings.ModeFollowsTheMap;
 
         _callsign = settings.Operator.Callsign;
         _operatorName = settings.Operator.OperatorName;
@@ -247,6 +252,12 @@ public partial class SettingsViewModel : ObservableObject
 
     /// <summary>Where everything is stored.</summary>
     public string DataFolderPath => SettingsStore.DataFolder;
+
+    partial void OnModeFollowsTheMapChanged(bool value)
+    {
+        _settings.ModeFollowsTheMap = value;
+        SettingsStore.Save(_settings);
+    }
 
     partial void OnReconnectOnStartupChanged(bool value)
     {

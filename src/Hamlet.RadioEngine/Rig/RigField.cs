@@ -23,6 +23,20 @@ public enum RigField
     /// <summary>Which mode the radio is in: CW, USB, AM and the rest.</summary>
     Mode,
 
+    /// <summary>
+    /// Whether the mode's data variant is on, which is the difference between
+    /// USB and USB-D.
+    /// </summary>
+    /// <remarks>
+    /// A separate field because the radio treats it as one: the mode read gives
+    /// USB either way, and only command 26 says which of the two the radio is
+    /// actually in (p. 19-11). It matters because they are different radios to
+    /// the operator, one with the microphone live and one routing the computer's
+    /// audio, and it is the difference between hearing FT8 and hearing nothing
+    /// useful (HM-DEC-056).
+    /// </remarks>
+    DataMode,
+
     /// <summary>Which of the three IF filters is selected: FIL1, FIL2 or FIL3.</summary>
     FilterSelection,
 

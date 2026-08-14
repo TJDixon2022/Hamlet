@@ -126,6 +126,20 @@ public sealed class SettingsRoundTripTests : IDisposable
         Assert.False(SettingsStore.LoadFrom(SettingsPath).ReconnectOnStartup);
     }
 
+    /// <remarks>Proves HM-DEC-056: the first thing Hamlet does to somebody's
+    /// radio without being asked ships on, and an operator who turns it off
+    /// finds it still off next time. A switch that silently reverted to on would
+    /// start moving a control they deliberately took back.</remarks>
+    [Fact]
+    public void ModeFollowingTheMap_IsOnByDefaultAndSurvivesBeingTurnedOff()
+    {
+        Assert.True(new AppSettings().ModeFollowsTheMap);
+
+        SettingsStore.SaveTo(new AppSettings { ModeFollowsTheMap = false }, SettingsPath);
+
+        Assert.False(SettingsStore.LoadFrom(SettingsPath).ModeFollowsTheMap);
+    }
+
     /// <remarks>Proves HM-DEC-018 still holds with the profile added: a
     /// corrupt settings file yields defaults rather than a crash, and the
     /// defaults include a usable profile.</remarks>

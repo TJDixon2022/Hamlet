@@ -88,6 +88,28 @@ public interface IRig
         RigField field, RigState context, CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// Set the operating mode, and its data variant.
+    /// </summary>
+    /// <param name="mode">The mode to select.</param>
+    /// <param name="dataMode">
+    /// Whether the data variant is wanted. USB and USB-D are different facts to
+    /// this radio, and it is the difference between hearing FT8 and hearing
+    /// nothing useful (HM-DEC-056).
+    /// </param>
+    /// <param name="cancellationToken">Cancellation.</param>
+    /// <returns>
+    /// What happened, and never a throw. A radio that did not confirm leaves the
+    /// mode unknown rather than assumed: a mode Hamlet believes it set and did
+    /// not is a guess presented as a decode (§0.0).
+    /// </returns>
+    /// <remarks>
+    /// THE FIRST WRITE THIS APP MAKES, and the pattern the transmit work will
+    /// inherit. Nothing here goes near keying the transmitter (§0.2).
+    /// </remarks>
+    Task<RigWriteResult> SetModeAsync(
+        Civ.CivMode mode, bool dataMode, CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Raised when the radio volunteers a value without being asked.
     /// </summary>
     /// <remarks>

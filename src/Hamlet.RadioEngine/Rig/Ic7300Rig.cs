@@ -229,6 +229,72 @@ public sealed class Ic7300Rig : IRig, IDisposable
         }
     }
 
+    /// <inheritdoc/>
+    /// <remarks>
+    /// <para>THE FIRST WRITE (HM-DEC-056). It goes out through the same gate and
+    /// the same trace as every read, so a session log carries it verbatim with
+    /// its timestamp like everything else (§0.0.1).</para>
+    /// <para>NOTHING IS ASSUMED FROM HAVING SENT IT. The radio acknowledges with
+    /// FB or refuses with FA (p. 19-2), and anything else leaves the mode
+    /// unknown rather than set to what was asked for. A mode Hamlet believes it
+    /// set and did not is a guess presented as a decode, and it would put the
+    /// badge and the radio's own face out of step with nothing on screen saying
+    /// so (§0.0).</para>
+    /// </remarks>
+    public async Task<RigWriteResult> SetModeAsync(
+        CivMode mode, bool dataMode, CancellationToken cancellationToken = default)
+    {
+        var write = CivWrites.Mode;
+
+        try
+        {
+            var response = await RequestAsync(
+                write.Command, CivWrites.ModeData(mode, dataMode), null, null,
+                cancellationToken).ConfigureAwait(false);
+
+            if (response.Command == CivConstants.ResultOk)
+            {
+                // Fold the new mode straight into the model, sourced to the
+                // write that made it true rather than waiting for a poll.
+                var values = new[]
+                {
+                    RigValue.Known(
+                        RigField.Mode, (int)mode, CivValues.Name(mode),
+                        DateTime.UtcNow, write.Label),
+                };
+
+                RememberModeAndFilter(values);
+                ValuesReported?.Invoke(this, new RigValuesReportedEventArgs(values));
+
+                return RigWriteResult.Confirmed(write.Label);
+            }
+
+            ReportModeUnknown($"{write.Label} was refused by the radio");
+            return RigWriteResult.Refused(write.Label);
+        }
+        catch (TimeoutException)
+        {
+            ReportModeUnknown($"{write.Label} was not answered within the timeout");
+            return RigWriteResult.NoAnswer(write.Label);
+        }
+        catch (OperationCanceledException)
+        {
+            ReportModeUnknown($"{write.Label} was cancelled");
+            return RigWriteResult.NoAnswer(write.Label);
+        }
+    }
+
+    /// <summary>Mark the mode unknown after a write nobody confirmed.</summary>
+    private void ReportModeUnknown(string why)
+    {
+        _lastMode = null;
+
+        ValuesReported?.Invoke(this, new RigValuesReportedEventArgs(new[]
+        {
+            RigValue.Unknown(RigField.Mode, why),
+        }));
+    }
+
     /// <summary>
     /// Decode a response, outside the async method.
     /// </summary>

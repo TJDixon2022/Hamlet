@@ -221,6 +221,12 @@ public sealed class RigPollingTests
             return Task.CompletedTask;
         }
 
+        /// <summary>This one exists to count reads, so it writes nothing.</summary>
+        public Task<RigWriteResult> SetModeAsync(
+            Hamlet.RadioEngine.Civ.CivMode mode, bool dataMode,
+            CancellationToken cancellationToken = default)
+            => Task.FromResult(RigWriteResult.NotSupported("counting radio"));
+
         public Task<IReadOnlyList<RigValue>> ReadAsync(
             RigField field, RigState context, CancellationToken cancellationToken = default)
         {

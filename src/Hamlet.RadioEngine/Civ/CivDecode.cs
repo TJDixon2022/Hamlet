@@ -58,6 +58,9 @@ public static class CivDecode
             case RigField.Mode:
                 return DecodeModeAndFilter(payload, atUtc, source);
 
+            case RigField.DataMode:
+                return DecodeModeDataAndFilter(payload, atUtc, source);
+
             case RigField.FilterBandwidth:
                 return One(DecodeFilterBandwidth(payload, atUtc, source, mode, filterName));
 
@@ -134,6 +137,45 @@ public static class CivDecode
     }
 
     private static IReadOnlyList<RigValue> One(RigValue value) => new[] { value };
+
+    /// <summary>
+    /// Mode, data variant and filter, from the one command that carries all
+    /// three (p. 19-11).
+    /// </summary>
+    /// <remarks>
+    /// The mode read on its own says USB whether the radio is in USB or USB-D,
+    /// and those are different radios to the operator. A short reply answers
+    /// what it can and leaves the rest unknown rather than assuming the data
+    /// mode is off, because "off" and "nobody said" are different claims (§0.0).
+    /// </remarks>
+    private static IReadOnlyList<RigValue> DecodeModeDataAndFilter(
+        ReadOnlySpan<byte> payload, DateTime atUtc, string source)
+    {
+        if (payload.Length < 2 || CivValues.Mode(payload[0]) is not { } mode)
+        {
+            return new[]
+            {
+                RigValue.Unknown(RigField.Mode, $"{source} gave an unreadable reply"),
+                RigValue.Unknown(RigField.DataMode, $"{source} gave an unreadable reply"),
+            };
+        }
+
+        var values = new List<RigValue>
+        {
+            RigValue.Known(RigField.Mode, (int)mode, CivValues.Name(mode), atUtc, source),
+            RigValue.Known(
+                RigField.DataMode, payload[1],
+                payload[1] == 0 ? "off" : "on", atUtc, source),
+        };
+
+        if (payload.Length >= 3 && CivValues.FilterName(payload[2]) is { } filter)
+        {
+            values.Add(RigValue.Known(
+                RigField.FilterSelection, payload[2], filter, atUtc, source));
+        }
+
+        return values;
+    }
 
     /// <summary>
     /// The operating frequency, which arrives the same way whether it was asked

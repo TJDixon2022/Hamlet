@@ -389,6 +389,22 @@
                                FontSize="12" HorizontalAlignment="Center"
                                Foreground="{Binding IsInsideCwSegment,
                                    Converter={x:Static ctl:ModeLineBrushConverter.Instance}}" />
+
+                    <!-- SUSPENDED IS A VISIBLE STATE AND NEVER A SILENT ONE
+                         (HM-DEC-056). The operator always knows who is driving
+                         the mode knob, because an app that quietly stopped
+                         doing a thing it had been doing is worse than one that
+                         never did it. -->
+                    <Border IsVisible="{Binding ModeFollowSuspended}"
+                            HorizontalAlignment="Center" Margin="0,4,0,0"
+                            CornerRadius="10" Padding="10,3"
+                            Background="{StaticResource HmAmberTintBrush}"
+                            BorderBrush="{StaticResource HmAmberEdgeBrush}"
+                            BorderThickness="1">
+                        <TextBlock Text="You are setting the mode, so Hamlet is not"
+                                   FontSize="11"
+                                   Foreground="{StaticResource HmAmberDeepBrush}" />
+                    </Border>
                 </StackPanel>
             </ctl:CollapsiblePanel>
 

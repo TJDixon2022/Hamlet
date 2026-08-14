@@ -100,6 +100,12 @@ public static class RigPollPlan
         RigField.FilterSelection => RigPollRate.Session,
         RigField.FilterBandwidth => RigPollRate.Session,
 
+        // Read on connect and when somebody opens the diagnostics screen, and
+        // not in the loop: the mode itself is broadcast as it changes, and the
+        // one command that carries the data flag carries the mode with it, so
+        // sweeping for it would ask the same question twice a minute.
+        RigField.DataMode => RigPollRate.OnDemand,
+
         // Nothing here changes without somebody's hand on the radio.
         RigField.Vfo => RigPollRate.Never,
 

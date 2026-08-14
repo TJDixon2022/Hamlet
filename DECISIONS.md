@@ -4,6 +4,76 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-056
+date: 2026-08-14
+refs: src/Hamlet.RadioEngine/Civ/CivWrites.cs, src/Hamlet.RadioEngine/Explore/ModeFollowPlan.cs, src/Hamlet.RadioEngine/Rig/RigWriteResult.cs, tests/Hamlet.RadioEngine.Tests/Rig/ModeFollowTests.cs, CLAUDE.md §4, HM-DEC-050, HM-DEC-054
+---
+
+Hamlet writes to the radio for the first time, and what it writes is the mode:
+tuning into a neighborhood sets the mode that neighborhood is worked in. **This
+is the writes ruling HM-DEC-050 deferred**, and it is built as a pattern rather
+than as a feature, because the transmit work will inherit it.
+
+WHY THE MODE AND NOT SOMETHING ELSE. Every part of a band has a mode the people
+there are using, and having it wrong is the commonest reason a beginner hears
+nothing at all. The app already knows where the dial is pointing and what lives
+there (HM-DEC-054); the operator does not yet, and that asymmetry is the whole
+product.
+
+**THE COMMAND IS 26, NOT 06, AND THAT IS THE PART WORTH KNOWING.** Command 06
+sets a mode and a filter and has no way at all to say whether the data variant is
+wanted (p. 19-8). Command 26 carries the mode, a data mode flag and the filter,
+for the selected or unselected VFO (p. 19-11). USB and USB-D are different radios
+to the operator, one with the microphone live and one routing the computer's
+audio, and it is the difference between hearing FT8 and hearing nothing useful.
+Hamlet sends the data flag and skips the filter byte, because the manual says the
+radio then picks that mode's own default filter, which is a better answer than
+any Hamlet could invent for somebody else's rig.
+
+READ WITH A COLUMN-AWARE EXTRACTION, which is the lesson HM-DEC-050 paid for. The
+flattened text from that session is still on disk and still puts "Send/read CW
+pitch" against sub-command 08 rather than 09. Re-read from
+`IC-7300_Full_English v6` with `pdftotext -table`, which puts the CW pitch on 09
+and gave both mode commands their pages. The manual is cited and never committed.
+
+WHAT THE PATTERN IS, for transmit to inherit:
+
+- Every write frame goes out through the same gate and the same trace as every
+  read, so a session log carries it verbatim with its timestamp (§0.0.1).
+- Nothing is assumed from having sent it. The radio acknowledges with FB or
+  refuses with FA, and anything else leaves the value UNKNOWN rather than set to
+  what was asked for. A mode Hamlet believes it set and did not is a guess
+  presented as a decode, and it would put the badge and the radio's own face out
+  of step with nothing on screen saying so.
+- Every write the app makes on its own initiative is narrated in the status line,
+  because a radio that changes itself silently is the "is it broken" confusion
+  relocated rather than removed.
+- The decision is a pure function, so the cases nobody exercises by hand are the
+  ones the tests cover.
+
+THE BEHAVIOR. It is a visible setting, on by default, worded plainly. The
+operator's own hand always wins: a mode change Hamlet did not make suspends the
+automation until the next band change re-arms it, and suspended is a visible
+state on screen rather than a silent one, because an app that quietly stopped
+doing a thing it had been doing is worse than one that never did it. A flip waits
+for the dial to settle, so crossing three neighborhoods in one drag produces one
+change and not three. The status line says what changed and why, in the app's
+voice: "Switched to USB-D, this block is where the digital modes gather."
+
+THE SIDEBAND CONVENTION IS CITED. IARU Region 2 Band Plan, September 2020: "For
+SSB phone operations below 10 MHz use lower sideband (LSB); above 10 MHz use
+upper sideband (USB)." Its one exception is 60 m, which Hamlet does not draw.
+
+A NEW READ CAME WITH IT, and it is the honest half of the write. Command 26 in
+its read form reports the mode, the data flag and the filter together, which is
+the only way to tell USB from USB-D: command 04 says USB for both. So `DataMode`
+is a first-class field with an unknown state like every other, read on connect
+and when the diagnostics screen is opened, and never in the poll loop.
+
+NOTHING HERE GOES NEAR KEYING THE TRANSMITTER. §0.2 is untouched. The write table
+holds one entry and a test says so.
+
+---
 id: HM-DEC-055
 date: 2026-08-14
 refs: src/Hamlet.RadioEngine/Bands/AmateurSpectrum.cs, src/Hamlet.App/ViewModels/PrivilegeStatusLine.cs, src/Hamlet.App/Controls/ModePalette.cs, tests/Hamlet.App.Tests/Licensing/OutOfBandTests.cs, HM-DEC-029, HM-DEC-046, HM-DEC-009

@@ -93,6 +93,19 @@ public sealed class RigState
             ? (CivMode)(int)n
             : null;
 
+    /// <summary>
+    /// True when the radio is known to be in the mode's data variant.
+    /// </summary>
+    /// <remarks>
+    /// KNOWN TO BE, and false covers both "off" and "nobody has said". That is
+    /// deliberate rather than sloppy: the only caller is the automation deciding
+    /// whether to write, and an unread data setting is a reason to set it rather
+    /// than a reason to leave it (HM-DEC-056). Anything that displays this reads
+    /// the field itself and gets the unknown state with it.
+    /// </remarks>
+    public bool IsDataMode
+        => this[RigField.DataMode] is { IsKnown: true, Number: 1 };
+
     /// <summary>The filter's width in hertz, or null.</summary>
     public int? FilterBandwidthHz
         => this[RigField.FilterBandwidth] is { IsKnown: true, Number: { } n } ? (int)n : null;

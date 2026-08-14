@@ -121,6 +121,22 @@ public sealed class TrainingRig : IRig
     }
 
     /// <inheritdoc/>
+    /// <remarks>
+    /// DEGRADES HONESTLY, and refuses rather than pretending (HM-DEC-030,
+    /// HM-DEC-056). The training radio synthesizes Morse and nothing else, so a
+    /// mode it cannot be in is not a mode it can be set to, and answering
+    /// "confirmed" would put a mode on the badge that nothing behind it is
+    /// producing.
+    /// </remarks>
+    public Task<RigWriteResult> SetModeAsync(
+        Civ.CivMode mode, bool dataMode, CancellationToken cancellationToken = default)
+        => Task.FromResult(mode == Civ.CivMode.Cw && !dataMode
+            ? RigWriteResult.Confirmed("training radio")
+            : RigWriteResult.NotSupported(
+                "training radio: it only makes Morse, so it cannot be put in "
+                + "another mode"));
+
+    /// <inheritdoc/>
     public Task<long> GetFrequencyHzAsync(CancellationToken cancellationToken = default)
         => Task.FromResult(Interlocked.Read(ref _frequencyHz));
 

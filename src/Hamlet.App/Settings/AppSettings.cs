@@ -44,6 +44,18 @@ public sealed class AppSettings
     /// </remarks>
     public bool ReconnectOnStartup { get; set; } = true;
 
+    /// <summary>
+    /// Let Hamlet set the radio's mode to match where the dial is pointing.
+    /// </summary>
+    /// <remarks>
+    /// On by default, because the operator this is for does not yet know that
+    /// 14.074 wants USB-D and the app does. It is a setting rather than a
+    /// constant because it is the first thing this app does to somebody's radio
+    /// without being asked, and anybody who would rather drive themselves must
+    /// be able to say so and be obeyed (HM-DEC-056).
+    /// </remarks>
+    public bool ModeFollowsTheMap { get; set; } = true;
+
     /// <summary>Last selected band name, e.g. "40 m".</summary>
     public string? LastBand { get; set; }
 

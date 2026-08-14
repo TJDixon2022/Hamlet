@@ -237,6 +237,7 @@ this table is the index.
 
 | Date | Decision | Why | Ref |
 |---|---|---|---|
+| 2026-08-14 | **Hamlet writes to the radio for the first time, and the write is the mode: tuning into a neighborhood sets the mode it is worked in.** Command `26` and not `06`, because only 26 carries the data flag and USB is not USB-D. Visible setting on by default, the operator's own hand always wins and suspends it visibly until the next band change, one write per settled dial, narrated in the app's voice, and a write the radio did not confirm leaves the mode unknown rather than assumed. **This is the writes ruling HM-DEC-050 deferred.** | Having the mode wrong is the commonest reason a beginner hears nothing, and the app already knows what lives where. | HM-DEC-056 |
 | 2026-08-14 | **One out-of-band fact in the engine, read by every surface that speaks.** The map draws past both band edges and labels what is out there in a cold gray belonging to no mode family, distinct from listen-only and from open; the card goes amber and never invites; the dial tape and the rig display speak from the same derivation. The dial stops at the end of the picture rather than the end of the band, and a frequency the radio reported is never clamped at all. | At 14.350 the card said "yours to use, call away", because the overlay read "past the end of my data" as "no restriction found" in the one place a confident error has legal consequences. | HM-DEC-055 |
 | 2026-08-14 | **The neighborhood map becomes cited data under `data/bands/`, and the digital watering holes are on it.** PSK31, FT8, FT4, JS8 and RTTY across all seven bands, every row carrying the source it was read from, with what could not be sourced declared as an explicit unknown. Band edges are derived from the cited Part 97 file rather than transcribed again, unclaimed stretches are open ground rather than Morse, and the card stops saying "Call away" where the crowd cannot hear Morse. | The map said 14.000 to 14.150 was Morse and the card invited a Morse call at 14.074, which is true about the regulation and would have put a beginner on top of the busiest digital block on Earth. | HM-DEC-054 |
 | 2026-08-14 | **Broadcast is a provenance, not an absence.** A field the radio volunteers is supported and populated; `Unsupported` is reserved for what the capabilities record says the rig genuinely lacks. Fixed in the taxonomy rather than as a special case, which caught the filter designator too, and the frequency gains a read of its own for the connect sweep. | The diagnostics screen said "not on this radio" against the frequency while the rig display an inch above it showed the live one, which is the app denying what it holds on the surface built to prove what it holds. | HM-DEC-053 |
@@ -412,6 +413,18 @@ turns to the page named.
 | Operating mode and filter | `04`; mode byte then filter byte, filter may be omitted | 19-3, 19-9 |
 | S-meter | `15 02`; `00 00`=S0, `01 20`=S9, `02 41`=S9+60 dB | 19-3 |
 | CI-V USB baud | **Default Auto**; 4800/9600/19200/38400/57600/115200 | 12-11 |
+| Set operating mode | `06`, mode byte then optional filter byte; **no data variant** | 19-8 |
+| Set mode, data variant and filter | `26`, VFO selector then mode then `00`/`01` data mode then optional filter; skipping the filter selects that mode's default | 19-11 |
+| Read mode, data variant and filter | `26` with the VFO selector alone; the only read that tells USB from USB-D | 19-11 |
+| Mode bytes | `00`=LSB, `01`=USB, `02`=AM, `03`=CW, `04`=RTTY, `05`=FM, `07`=CW-R, `08`=RTTY-R | 19-8 |
+
+**ADDED 2026-08-14 (HM-DEC-056): the write commands, read column-aware from
+`IC-7300_Full_English v6`.** Page numbers above are that edition's own. The rows
+carrying `26` are the ones that matter: command `06` sets a mode and a filter and
+has no way at all to say whether the data variant is wanted, so a radio told
+"USB" by `06` lands in voice USB with the microphone live rather than in USB-D
+routing the computer's audio, which is the difference between hearing FT8 and
+hearing nothing useful.
 
 **CORRECTION 2026-08-15 (HM-DEC-050): the CW pitch was recorded here as `14 08`
 and it is `14 09`.** Sub-command 08 is the outer Twin PBT position. The command

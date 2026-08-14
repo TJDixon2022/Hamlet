@@ -85,6 +85,26 @@ public static class AppEvents
         => telemetry?.Write(TelemetryCategory.Tuning, "band_changed",
             new Dictionary<string, object?> { ["band"] = bandName });
 
+    /// <summary>Hamlet set the radio's mode to match the map.</summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="mode">The mode asked for, e.g. "Usb".</param>
+    /// <param name="dataMode">Whether the data variant was asked for.</param>
+    /// <param name="outcome">What the radio said: confirmed, refused, no answer.</param>
+    /// <remarks>
+    /// THE FIRST WRITE THIS APP MAKES, so its record carries what was asked and
+    /// what came back rather than only that something happened (§0.0.1,
+    /// HM-DEC-056). Nothing identifying: a mode name and an outcome (HM-DEC-018).
+    /// </remarks>
+    public static void ModeFollowed(
+        ITelemetry? telemetry, string mode, bool dataMode, string outcome)
+        => telemetry?.Write(TelemetryCategory.Rig, "mode_followed",
+            new Dictionary<string, object?>
+            {
+                ["mode"] = mode,
+                ["dataMode"] = dataMode,
+                ["outcome"] = outcome,
+            });
+
     /// <summary>A tune was requested from a story card or a spot.</summary>
     /// <param name="telemetry">Sink, or null.</param>
     /// <param name="hz">Target frequency.</param>

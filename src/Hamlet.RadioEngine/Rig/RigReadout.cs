@@ -130,6 +130,7 @@ public static class RigDisplay
     {
         RigField.Frequency => "Frequency",
         RigField.Mode => "Mode",
+        RigField.DataMode => "Data mode",
         RigField.FilterSelection => "Filter",
         RigField.FilterBandwidth => "Filter width",
         RigField.SMeter => "S-meter",
