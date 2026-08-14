@@ -29,6 +29,13 @@
     <EmbeddedResource Include="..\..\data\privileges\us-part97-privileges.json" LogicalName="Hamlet.RadioEngine.Data.Privileges.us-part97-privileges.json" />
   </ItemGroup>
 
+  <!-- The neighborhood conventions live in /data beside the privileges they
+       are deliberately not (HM-DEC-054): that file says what may be
+       transmitted, this one says what will actually be found there. -->
+  <ItemGroup>
+    <EmbeddedResource Include="..\..\data\bands\us-neighborhoods.json" LogicalName="Hamlet.RadioEngine.Data.Bands.us-neighborhoods.json" />
+  </ItemGroup>
+
   <!-- The glossary lives in /data with the other editorial content and is
        embedded so it ships with the app (HM-DEC-041). -->
   <ItemGroup>

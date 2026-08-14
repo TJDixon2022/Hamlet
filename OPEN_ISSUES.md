@@ -156,3 +156,22 @@ in code:
 
 So this stays open at severity `none`, now meaning: derive the band edges from
 the cited data, and give the conventions a source mark of their own kind.
+
+**NARROWED AGAIN 2026-08-14 (HM-DEC-054).** The neighborhood conventions are
+now cited data in `data/bands/us-neighborhoods.json`, with the ARRL Considerate
+Operator's Frequency Guide, WSJT-X's shipped frequency table, the JS8Call user
+guide, the 070 Club's PSK31 list and QRP ARCI's centers of activity on the rows
+that use them. The map derives its data-against-phone boundary from the
+privileges file rather than carrying a copy.
+
+What remains in `BandPlan.cs` and is still `[extrapolated]`:
+
+- **Band edges** (`LowHz`, `HighHz`). Unchanged from above: derivable from the
+  privileges file under the Extra class and still kept in parallel.
+- **CW segment boundaries** (`CwLowHz`, `CwHighHz`). Now used by less than they
+  were, since the map no longer builds itself from them, but they still drive
+  the dial tape's "inside the CW segment" line.
+- **Jump spots** (`JumpHz`). Now demonstrably wrong in at least one place: 20 m
+  jumps to 14.030 and QRP ARCI puts the 20 m center of activity at 14.060. The
+  neighborhood file has cited jump spots per block, so a band button could take
+  its landing place from there instead of carrying its own number.

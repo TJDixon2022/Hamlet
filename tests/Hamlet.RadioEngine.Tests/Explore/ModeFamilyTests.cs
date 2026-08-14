@@ -44,14 +44,18 @@ public sealed class ModeFamilyTests
         var fortyMeters = NeighborhoodPlan.ForBand(
             BandPlan.Bands.Single(b => b.Name == "40 m"));
 
+        // First rather than Single: a band can have two stretches of the same
+        // character with something else between them, and 40 m does.
         ModeFamily FamilyOf(string name)
-            => fortyMeters.Single(h => h.Name == name).Family;
+            => fortyMeters.First(h => h.Name == name).Family;
 
         Assert.Equal(ModeFamily.Cw, FamilyOf("CW fast lane"));
         Assert.Equal(ModeFamily.Cw, FamilyOf("CW main street"));
-        Assert.Equal(ModeFamily.Digital, FamilyOf("Digital corner"));
+        Assert.Equal(ModeFamily.Cw, FamilyOf("QRP watering hole"));
+        Assert.Equal(ModeFamily.Digital, FamilyOf("PSK31 ribbons"));
         Assert.Equal(ModeFamily.Digital, FamilyOf("FT8 city"));
-        Assert.Equal(ModeFamily.Open, FamilyOf("Quiet blocks"));
+        Assert.Equal(ModeFamily.Digital, FamilyOf("RTTY row"));
+        Assert.Equal(ModeFamily.Open, FamilyOf("Open ground"));
         Assert.Equal(ModeFamily.Phone, FamilyOf("Phone downtown"));
         Assert.Equal(ModeFamily.Phone, FamilyOf("Ragchew boulevard"));
     }
@@ -98,17 +102,24 @@ public sealed class ModeFamilyTests
 
     /// <remarks>
     /// Proves no neighborhood claims a family for space that is deliberately
-    /// unclaimed. "Quiet blocks" is open ground, and coloring it as though a
-    /// mode owned it would be an invention.
+    /// unclaimed. Below the phone segment the regulation allows Morse and the
+    /// data modes alike, so a stretch nobody published a convention for is open
+    /// ground, and coloring it amber would say Morse owns space it does not
+    /// (HM-DEC-054).
     /// </remarks>
     [Fact]
     public void UnclaimedSpaceIsMarkedOpen()
     {
-        var quiet = NeighborhoodPlan
+        var open = NeighborhoodPlan
             .ForBand(BandPlan.Bands.Single(b => b.Name == "40 m"))
-            .Single(h => h.Name == "Quiet blocks");
+            .Where(h => h.Name == "Open ground")
+            .ToList();
 
-        Assert.Equal(ModeFamily.Open, quiet.Family);
-        Assert.Equal("", quiet.ShortName);
+        Assert.NotEmpty(open);
+        Assert.All(open, h => Assert.Equal(ModeFamily.Open, h.Family));
+        Assert.All(open, h => Assert.Equal("", h.ShortName));
+
+        // And it is filled rather than cited, which is what makes it open.
+        Assert.All(open, h => Assert.Equal("", h.Cite));
     }
 }

@@ -345,13 +345,17 @@ public sealed class SynthesisTests
 
         var ft8 = hoods.First(h => h.ShortName == "FT8");
         var cw = hoods.First(h => h.ShortName == "CW");
+        var rtty = hoods.First(h => h.ShortName == "RTTY");
+        var psk = hoods.First(h => h.ShortName == "PSK31");
         var phone = hoods.First(h => h.ShortName == "SSB");
-        var quiet = hoods.First(h => h.ShortName.Length == 0);
+        var open = hoods.First(h => h.ShortName.Length == 0);
 
         Assert.Equal(new[] { TrainingMode.Ft8 }, TrainingBandPlan.ModesFor(ft8));
         Assert.Equal(new[] { TrainingMode.Cw }, TrainingBandPlan.ModesFor(cw));
+        Assert.Equal(new[] { TrainingMode.Rtty }, TrainingBandPlan.ModesFor(rtty));
+        Assert.Equal(new[] { TrainingMode.Psk31 }, TrainingBandPlan.ModesFor(psk));
         Assert.Equal(new[] { TrainingMode.Ssb }, TrainingBandPlan.ModesFor(phone));
-        Assert.Empty(TrainingBandPlan.ModesFor(quiet));
+        Assert.Empty(TrainingBandPlan.ModesFor(open));
     }
 
     /// <remarks>

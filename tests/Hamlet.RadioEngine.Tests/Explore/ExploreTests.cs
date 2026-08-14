@@ -6,10 +6,14 @@ namespace Hamlet.RadioEngine.Tests.Explore;
 
 public sealed class ExploreTests
 {
-    /// <remarks>Proves: 40 m neighborhoods tile the band — contiguous, in
-    /// order, first edge to last edge — and every jump spot lands inside its
-    /// own neighborhood. A map with gaps or teleporting doors is worse than
-    /// no map.</remarks>
+    /// <remarks>
+    /// Proves: 40 m neighborhoods tile the band, in order, first edge to last
+    /// edge, and every jump spot lands inside its own neighborhood. A map with
+    /// gaps or teleporting doors is worse than no map.
+    /// <para>Each block ends one hertz below the next so no frequency belongs
+    /// to two of them, which is what lets the card under the map give a single
+    /// answer for where the dial is pointing (HM-DEC-054).</para>
+    /// </remarks>
     [Fact]
     public void FortyMeterNeighborhoods_TileTheBand()
     {
@@ -18,12 +22,20 @@ public sealed class ExploreTests
 
         Assert.Equal(band.LowHz, hoods[0].LowHz);
         Assert.Equal(band.HighHz, hoods[^1].HighHz);
+
         for (var i = 1; i < hoods.Count; i++)
         {
-            Assert.Equal(hoods[i - 1].HighHz, hoods[i].LowHz);
+            Assert.Equal(hoods[i - 1].HighHz + 1, hoods[i].LowHz);
         }
 
         Assert.All(hoods, h => Assert.True(h.Contains(h.JumpHz), h.Name));
+
+        // Single-valued: no frequency in the band answers to two blocks.
+        foreach (var hz in new long[]
+                 { 7_000_000, 7_030_000, 7_074_000, 7_078_000, 7_125_000, 7_300_000 })
+        {
+            Assert.Single(hoods, h => h.Contains(hz));
+        }
     }
 
     /// <remarks>Proves: every band gets a truthful map — never empty, always

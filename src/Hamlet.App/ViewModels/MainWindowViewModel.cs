@@ -1952,8 +1952,11 @@ public partial class MainWindowViewModel : ObservableObject
         var cls = _settings.Operator.LicenseClass;
 
         PrivilegeSpans = _privileges.SpansFor(SelectedBand.Band, cls);
+        // The card answers two questions at once: what the license allows, and
+        // what is actually going on where the dial is pointing (HM-DEC-054).
         PrivilegeStatus = PrivilegeStatusLine.Build(
-            _privileges, cls, FrequencyHz, TransmitMode.Cw);
+            _privileges, cls, FrequencyHz, TransmitMode.Cw,
+            Neighborhoods.FirstOrDefault(n => n.Contains(FrequencyHz)));
 
         // A pending mismatch is a question about a class the operator has
         // since changed. Answering it by other means makes it moot, and a

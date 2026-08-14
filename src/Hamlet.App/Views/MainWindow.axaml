@@ -263,6 +263,16 @@
                                        FontSize="12" TextWrapping="Wrap"
                                        Foreground="{StaticResource HmTextPrimaryBrush}" />
 
+                            <!-- What the map knows and the regulation cannot:
+                                 what would actually happen if you called here
+                                 (HM-DEC-054). A consequence, never an
+                                 instruction. -->
+                            <TextBlock Text="{Binding PrivilegeStatus.Culture}"
+                                       FontSize="12" TextWrapping="Wrap"
+                                       Foreground="{StaticResource HmTextPrimaryBrush}"
+                                       IsVisible="{Binding PrivilegeStatus.Culture,
+                                           Converter={x:Static ctl:PrivilegeToneConverter.NotEmpty}}" />
+
                             <!-- The sentence that removes the fear. Shown
                                  whenever transmitting is restricted. -->
                             <TextBlock Text="{Binding PrivilegeStatus.Reassurance}"

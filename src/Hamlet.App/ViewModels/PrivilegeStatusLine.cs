@@ -1,4 +1,5 @@
 using System.Globalization;
+using Hamlet.RadioEngine.Explore;
 using Hamlet.RadioEngine.Licensing;
 
 namespace Hamlet.App.ViewModels;
@@ -30,13 +31,25 @@ public enum PrivilegeTone
 /// Button text such as "What would General unlock?", or "" when there is
 /// nothing to offer.
 /// </param>
+/// <param name="Culture">
+/// What is actually going on at this frequency, or "" where the map has
+/// nothing to add (HM-DEC-054).
+/// </param>
+/// <remarks>
+/// TWO DIFFERENT FACTS, KEPT APART. Everything above <c>Culture</c> is about
+/// the regulation and is a claim about what the operator may do.
+/// <c>Culture</c> is about the world and is a claim about what would happen if
+/// they did. Both are true at 14.074 and only the second one would have saved
+/// somebody an embarrassing evening.
+/// </remarks>
 public sealed record PrivilegeStatus(
     PrivilegeTone Tone,
     string Headline,
     string Detail,
     string Reassurance,
     string Citation,
-    string UpgradePrompt);
+    string UpgradePrompt,
+    string Culture = "");
 
 /// <summary>
 /// Writes the line under the band map: what this frequency is, for this
@@ -70,11 +83,16 @@ public static class PrivilegeStatusLine
     /// <param name="frequencyHz">Where they are tuned.</param>
     /// <param name="mode">What they would transmit here.</param>
     /// <returns>The line, and what sits behind it.</returns>
+    /// <param name="here">
+    /// The neighborhood this frequency falls in, or null. Supplies the
+    /// cultural half of the answer, which the regulation cannot (HM-DEC-054).
+    /// </param>
     public static PrivilegeStatus Build(
         PrivilegePlan plan,
         LicenseClass licenseClass,
         long frequencyHz,
-        TransmitMode mode)
+        TransmitMode mode,
+        Neighborhood? here = null)
     {
         var megahertz = (frequencyHz / 1_000_000.0)
             .ToString("0.000", CultureInfo.InvariantCulture);
@@ -87,7 +105,8 @@ public static class PrivilegeStatusLine
                 "License class unknown. Set it in Settings to see your privileges.",
                 ListeningIsNeverRestricted,
                 "",
-                "");
+                "",
+                Culture(here, mode));
         }
 
         var verdict = plan.Evaluate(licenseClass, frequencyHz, mode);
@@ -97,11 +116,11 @@ public static class PrivilegeStatusLine
             return new PrivilegeStatus(
                 PrivilegeTone.Yours,
                 $"{megahertz} MHz · yours to use",
-                $"Your {PrivilegePlan.Describe(licenseClass)} license covers "
-                + $"{PrivilegePlan.Describe(mode)} here. Call away.",
+                Permission(licenseClass, mode, here),
                 "",
                 verdict.Citation,
-                "");
+                "",
+                Culture(here, mode));
         }
 
         var upgrade = plan.UpgradeFrom(licenseClass);
@@ -115,8 +134,40 @@ public static class PrivilegeStatusLine
             verdict.Explanation,
             ListeningIsNeverRestricted,
             verdict.Citation,
-            prompt);
+            prompt,
+            Culture(here, mode));
     }
+
+    /// <summary>
+    /// The legal half of an in-privileges card.
+    /// </summary>
+    /// <remarks>
+    /// THE SENTENCE THAT CAUSED THIS. It used to end "Call away" everywhere,
+    /// including at 14.074, where calling away means keying Morse into a block
+    /// of digital signals that cannot hear it. The legal fact is true and stays,
+    /// because it is what the operator asked; the invitation goes wherever the
+    /// map has something to say, and the map says it in the next line rather
+    /// than in this one (HM-DEC-054).
+    /// </remarks>
+    private static string Permission(
+        LicenseClass licenseClass, TransmitMode mode, Neighborhood? here)
+    {
+        var legal = $"Your {PrivilegePlan.Describe(licenseClass)} license covers "
+                  + $"{PrivilegePlan.Describe(mode)} here.";
+
+        return here?.Caution is null ? legal + " Call away." : legal;
+    }
+
+    /// <summary>
+    /// What is actually going on at this frequency.
+    /// </summary>
+    /// <remarks>
+    /// Only where the map has a caution to give, and only about the mode the
+    /// operator would be sending. A consequence and never an instruction: it
+    /// says what would happen, and stops (HM-DEC-050, §0.7).
+    /// </remarks>
+    private static string Culture(Neighborhood? here, TransmitMode mode)
+        => here?.Caution is { } caution && mode == TransmitMode.Cw ? caution : "";
 
     /// <summary>
     /// The upgrade panel's contents — shown on click, never as permanent

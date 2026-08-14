@@ -1,5 +1,6 @@
 using Hamlet.App.ViewModels;
 using Hamlet.RadioEngine.Bands;
+using Hamlet.RadioEngine.Explore;
 using Hamlet.RadioEngine.Licensing;
 using Xunit;
 
@@ -104,5 +105,87 @@ public sealed class PrivilegeStatusLineTests
 
         Assert.Single(lines);
         Assert.Contains("every US privilege", lines[0], StringComparison.OrdinalIgnoreCase);
+    }
+
+    /// <remarks>
+    /// THE CARD THAT SENT SOMEBODY INTO THE FT8 WATERING HOLE (HM-DEC-054). At
+    /// 14.074 the license really does cover Morse, and 14.074 is where the
+    /// entire world's FT8 traffic sits. The old card said "Call away", which is
+    /// a true statement about the regulation and an invitation to key Morse
+    /// into a wall of digital signals that cannot hear it. The legal fact stays,
+    /// because it is what the operator asked; the invitation goes, and the map
+    /// supplies what the regulation cannot.
+    /// </remarks>
+    [Fact]
+    public void AtTheFt8WateringHoleTheCardStopsInvitingAMorseCall()
+    {
+        var twenty = BandPlan.Bands.First(b => b.Name == "20 m");
+        var here = NeighborhoodPlan.ForBand(twenty).Single(n => n.Contains(14_075_000));
+
+        var line = PrivilegeStatusLine.Build(
+            new PrivilegePlan(), LicenseClass.General, 14_075_000, TransmitMode.Cw, here);
+
+        // Still legal, and still said so.
+        Assert.Equal(PrivilegeTone.Yours, line.Tone);
+        Assert.Contains("license covers", line.Detail, StringComparison.Ordinal);
+        Assert.NotEmpty(line.Citation);
+
+        // And no longer an invitation.
+        Assert.DoesNotContain("Call away", line.Detail, StringComparison.Ordinal);
+
+        // The half the regulation could never supply.
+        Assert.Contains("cannot hear Morse", line.Culture, StringComparison.Ordinal);
+    }
+
+    /// <remarks>
+    /// Proves the invitation survives where it belongs. 7.030 is the QRP
+    /// watering hole in the Morse segment, which is exactly where somebody
+    /// should be told to go ahead, and a card that hedged everywhere would
+    /// teach nothing at all.
+    /// </remarks>
+    [Fact]
+    public void OnTheMorseSideTheCardStillSaysCallAway()
+    {
+        var forty = Forty;
+        var here = NeighborhoodPlan.ForBand(forty).Single(n => n.Contains(7_030_000));
+
+        var line = PrivilegeStatusLine.Build(
+            new PrivilegePlan(), LicenseClass.General, 7_030_000, TransmitMode.Cw, here);
+
+        Assert.Contains("Call away", line.Detail, StringComparison.Ordinal);
+        Assert.Empty(line.Culture);
+    }
+
+    /// <remarks>
+    /// Proves the cultural line is about the mode the operator would actually
+    /// be sending. "The software here cannot hear Morse" is beside the point to
+    /// somebody about to send FT8 in the FT8 block, and a warning that fires
+    /// where it does not apply is a warning nobody reads.
+    /// </remarks>
+    [Fact]
+    public void TheCulturalLineOnlySpeaksAboutMorse()
+    {
+        var twenty = BandPlan.Bands.First(b => b.Name == "20 m");
+        var here = NeighborhoodPlan.ForBand(twenty).Single(n => n.Contains(14_075_000));
+
+        var line = PrivilegeStatusLine.Build(
+            new PrivilegePlan(), LicenseClass.General, 14_075_000, TransmitMode.Data, here);
+
+        Assert.Empty(line.Culture);
+    }
+
+    /// <remarks>
+    /// Proves nothing is claimed where the map has nothing to say. A card built
+    /// without a neighborhood behaves exactly as it did before, which is what
+    /// keeps the two halves independent.
+    /// </remarks>
+    [Fact]
+    public void WithNoNeighborhoodTheCardSaysNothingCultural()
+    {
+        var line = PrivilegeStatusLine.Build(
+            new PrivilegePlan(), LicenseClass.General, 7_030_000, TransmitMode.Cw);
+
+        Assert.Empty(line.Culture);
+        Assert.Contains("Call away", line.Detail, StringComparison.Ordinal);
     }
 }

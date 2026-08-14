@@ -4,6 +4,73 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-054
+date: 2026-08-14
+refs: data/bands/us-neighborhoods.json, src/Hamlet.RadioEngine/Explore/NeighborhoodData.cs, src/Hamlet.App/ViewModels/PrivilegeStatusLine.cs, HM-OPEN-005, HM-DEC-029, HM-DEC-032
+---
+
+The neighborhood map moves out of code into `data/bands/us-neighborhoods.json`
+with a source on every row, the digital watering holes are on it, and the card
+under the map speaks about the world as well as about the regulation.
+
+WHAT HAPPENED. The operator tuned to 14.075 on 20 m and heard what he described
+as whale song. That was the FT8 watering hole at 14.074, one of the busiest
+slices of spectrum on Earth. The map labeled the whole of 14.000 to 14.150 as
+Morse, and the card said his General license covered Morse there and invited him
+to call away. Both statements are defensible about the regulation and wrong
+about the world. Anyone acting on that card would have keyed Morse into a wall
+of digital signals that cannot hear him, while stepping on dozens of contacts.
+The map exists so that moment does not happen and it produced the moment
+instead.
+
+CONVENTION AND REGULATION ARE DIFFERENT FILES, on purpose. `data/privileges`
+says what may be transmitted and has legal weight. `data/bands` says what will
+actually be found and has none. They disagree deliberately, and 14.074 is the
+case: legal for Morse under 97.305(a), and the worst place on the band to send
+it.
+
+EVERY ROW CARRIES ITS SOURCE. The ARRL Considerate Operator's Frequency Guide,
+which is the ARRL's own statement and says in its first paragraph that it is not
+regulation. WSJT-X's shipped frequency table, which is what the world is
+actually tuned to for FT8 and FT4. The JS8Call user guide. The 070 Club's PSK31
+list. QRP ARCI's centers of activity. Every one of those was fetched and read
+this session; nothing on the map is written from recollection, because a
+neighborhood invented from memory is the prime directive broken in the data
+layer, where it is hardest to see and where it outlives everybody who could
+correct it.
+
+ONE EDITORIAL RULE, STATED IN THE FILE AND APPLIED EVERYWHERE. Several sources
+publish a watering hole as one dial frequency rather than a range. Those blocks
+run from the published frequency to the next one, or three kilohertz, whichever
+comes first, because these modes are worked in upper sideband with audio up to
+about three kilohertz and that is where the signals land. The 070 Club states
+exactly that, so even the width is cited rather than chosen.
+
+WHAT COULD NOT BE SOURCED IS DECLARED. The slow-speed CW gathering places are
+the one that stings: an earlier version of this map said 7.055 was "the
+slow-speed club" and that number came from nobody. It is now an explicit unknown
+with the reason attached, and it is the field that matters most to the operator
+this app is for, which is exactly why it is marked rather than guessed.
+
+THE BAND EDGES ARE NOT TRANSCRIBED AGAIN. Where the data segment ends and the
+voice segment begins comes from the cited Part 97 file, because a second copy of
+a boundary is a second copy until the two disagree (§0). That turned out to have
+a trap in it. The lowest phone allocation on 40 m is 7.075, which belongs to
+stations in particular places rather than to the band generally, and taking the
+lowest one painted everything above 7.077 as the voice end, FT8 included. What
+is wanted is the point above which the rest of the band really is voice.
+
+A STRETCH NOBODY PUBLISHED A CLAIM TO IS OPEN GROUND, not Morse. Below the phone
+segment the regulation allows Morse and the data modes alike, so coloring an
+unclaimed stretch amber would say Morse owns space it does not (§0.6).
+
+AND THE CARD STOPS INVITING. The legal sentence stays, because it is what the
+operator asked and it is true. "Call away" goes wherever the map has a caution,
+and the map supplies the other half in the app's own voice: this block is where
+the digital modes gather, and the software listening here cannot hear Morse at
+all. Consequence, never instruction, which is the line HM-DEC-050 already drew.
+
+---
 id: HM-DEC-053
 date: 2026-08-14
 refs: src/Hamlet.RadioEngine/Civ/CivReads.cs, src/Hamlet.RadioEngine/Rig/Ic7300Rig.cs, tests/Hamlet.RadioEngine.Tests/Rig/RigBroadcastProvenanceTests.cs, HM-DEC-009, HM-DEC-030, HM-DEC-050

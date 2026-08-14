@@ -27,26 +27,45 @@ public static class TrainingBandPlan
     /// <param name="hood">The neighborhood.</param>
     /// <returns>Modes plausibly heard there; empty for open space.</returns>
     /// <remarks>
-    /// Keyed on the map's short label first, because those are the stable
-    /// identifiers the map itself draws, with the full name as the fallback
-    /// for the thinner maps other bands get.
+    /// <para>Keyed on the map's short label, because those come from the cited
+    /// data file and are the identifiers the map itself draws (HM-DEC-054).
+    /// Practising on a band whose digital blocks were in the wrong place would
+    /// teach the wrong band, which is the one thing this class must not do.</para>
+    /// <para>The synthesiser has five voices and the map names more modes than
+    /// that, so a block whose mode has no synthesis is placed with the nearest
+    /// honest one. FT4 and JS8 sound like FT8 to an ear and on a waterfall,
+    /// which is exactly what is being taught here.</para>
     /// </remarks>
     public static IReadOnlyList<TrainingMode> ModesFor(Neighborhood hood)
     {
+        ArgumentNullException.ThrowIfNull(hood);
+
         var label = hood.ShortName.Trim().ToUpperInvariant();
         var name = hood.Name.Trim().ToUpperInvariant();
 
-        if (label == "FT8" || name.Contains("FT8", StringComparison.Ordinal))
+        // Bursts in a rhythm: the three that draw falling rain.
+        if (label is "FT8" or "FT4" or "JS8" || name.Contains("FT8", StringComparison.Ordinal))
         {
             return new[] { TrainingMode.Ft8 };
         }
 
-        if (label == "RTTY+" || name.Contains("DIGITAL", StringComparison.Ordinal))
+        if (label == "RTTY" || name.Contains("RTTY", StringComparison.Ordinal))
+        {
+            return new[] { TrainingMode.Rtty };
+        }
+
+        if (label == "PSK31" || name.Contains("PSK31", StringComparison.Ordinal))
+        {
+            return new[] { TrainingMode.Psk31 };
+        }
+
+        if (label is "RTTY+" || name.Contains("DIGITAL", StringComparison.Ordinal))
         {
             return new[] { TrainingMode.Rtty, TrainingMode.Psk31 };
         }
 
         if (label.StartsWith("SSB", StringComparison.Ordinal)
+            || label == "AM"
             || name.Contains("PHONE", StringComparison.Ordinal)
             || name.Contains("RAGCHEW", StringComparison.Ordinal))
         {
@@ -54,13 +73,15 @@ public static class TrainingBandPlan
         }
 
         if (label.StartsWith("CW", StringComparison.Ordinal)
+            || label == "QRP"
             || name.Contains("CW", StringComparison.Ordinal))
         {
             return new[] { TrainingMode.Cw };
         }
 
-        // "Quiet blocks" and anything unlabeled: genuinely sparse. A band
-        // with no empty space on it would be its own kind of lie.
+        // Open ground, the beacon block and the automatic stations: nothing the
+        // synthesiser can honestly put there. A band with no empty space on it
+        // would be its own kind of lie.
         return Array.Empty<TrainingMode>();
     }
 

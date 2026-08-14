@@ -1,0 +1,1082 @@
+{
+  "schema": "hamlet.neighborhoods/1",
+  "jurisdiction": "US",
+  "retrievedUtc": "2026-08-14",
+  "_about": [
+    "Where things actually live on each band: the tribal knowledge, written",
+    "down and cited (HM-DEC-054).",
+    "",
+    "THIS FILE IS CONVENTION, NOT REGULATION, and the difference matters. What",
+    "you may transmit is in data/privileges/us-part97-privileges.json and has",
+    "legal weight. What you will FIND when you tune there is here, and has",
+    "none. The two disagree on purpose: 14.074 is legal for Morse under",
+    "97.305(a) and is the worst place on the band to send it, because the",
+    "software listening there cannot hear Morse at all.",
+    "",
+    "Every row carries the source its frequencies came from. Nothing here is",
+    "written from recollection, which is the one thing this file must never",
+    "contain: a neighborhood invented from memory is the prime directive broken",
+    "in the data layer, where it is hardest to see and outlives everybody who",
+    "could correct it (CLAUDE.md 0.0, 4).",
+    "",
+    "THE ONE EDITORIAL RULE, applied everywhere rather than decided per row.",
+    "Several sources publish a watering hole as a single dial frequency rather",
+    "than as a range. Those blocks run from the published frequency to the next",
+    "published one, or three kilohertz, whichever comes first, because these",
+    "modes are worked in upper sideband with audio tones up to about three",
+    "kilohertz and that is where the signals land. Space between two blocks",
+    "belongs to nobody and is filled from the band's own structure.",
+    "",
+    "Band edges and the CW/data against phone split are NOT transcribed here.",
+    "They are derived from the cited CFR file, because carrying them twice is",
+    "carrying them until they disagree (CLAUDE.md 0).",
+    "",
+    "The prose is ours and is not a citation. It is marked as editorial and can",
+    "be argued with; the numbers cannot, without changing the source."
+  ],
+  "sources": [
+    {
+      "id": "arrl-conop",
+      "authority": "convention",
+      "title": "The Considerate Operator's Frequency Guide",
+      "publisher": "ARRL",
+      "url": "https://www.arrl.org/files/file/conop.pdf",
+      "retrievedUtc": "2026-08-14",
+      "via": "column-aware PDF extraction, QST November 2013 p. 103",
+      "note": "The ARRL's own statement of what the bands are used for, and explicit that it is not regulation: 'These are not regulations.' Read with a column-aware extraction because it is a two-column table, which is the lesson HM-DEC-050 paid for."
+    },
+    {
+      "id": "cfr-97.305",
+      "authority": "derived",
+      "title": "47 CFR 97.305(c), by way of data/privileges/us-part97-privileges.json",
+      "note": "Used for the coarse structure only: where the data segment ends and the phone segment begins. Not transcribed again here. A row citing this carries a boundary that comes from the regulation and a character that comes from us."
+    },
+    {
+      "id": "wsjtx-frequencies",
+      "authority": "convention",
+      "title": "WSJT-X default frequency table",
+      "publisher": "WSJT Development Group",
+      "url": "https://sourceforge.net/p/wsjt/wsjtx/ci/master/tree/models/FrequencyList.cpp",
+      "retrievedUtc": "2026-08-14",
+      "note": "The FT8 and FT4 dial frequencies the software itself ships with, which is what the whole world is actually tuned to."
+    },
+    {
+      "id": "js8call-guide",
+      "authority": "convention",
+      "title": "JS8Call User Guide, standard frequencies",
+      "publisher": "JS8Call project",
+      "url": "https://js8call.com/JS8Call-improved/d6/d14/md_docs_2user__guide_2JS8Call__User__Guide.html",
+      "retrievedUtc": "2026-08-14",
+      "note": "The project's own table, stated as suggestions."
+    },
+    {
+      "id": "podxs070",
+      "authority": "convention",
+      "title": "PSK31 Frequencies",
+      "publisher": "070 Club (PODXS)",
+      "url": "https://www.podxs070.com/frequently-asked-questions/psk31-frequencies",
+      "retrievedUtc": "2026-08-14",
+      "note": "The PSK community's own list, and the source of the three-kilohertz rule above: 'most PSK signals are within the 3 kHz above these frequencies.'"
+    },
+    {
+      "id": "qrp-arci",
+      "authority": "convention",
+      "title": "QRP Frequencies",
+      "publisher": "QRP Amateur Radio Club International",
+      "url": "https://www.qrparci.org/qrp-update/qrp-frequency",
+      "retrievedUtc": "2026-08-14",
+      "note": "Explicitly centers of activity rather than calling frequencies: 'places where QRPers are likely to be found.'"
+    }
+  ],
+  "bands": [
+    {
+      "band": "80 m",
+      "neighborhoods": [
+        {
+          "name": "CW fast lane",
+          "shortName": "CW DX",
+          "lowHz": 3500000,
+          "highHz": 3510000,
+          "jumpHz": 3505000,
+          "family": "cw",
+          "vibe": "Rush hour",
+          "blurb": "The bottom of the band is where the contest crowd and the DX chasers run Morse at twenty-five words a minute and up. It is thrilling on the waterfall and brutal to copy by ear, and there is no shame at all in listening here for a year before you call. Everybody starts by watching this street from the pavement.",
+          "cite": "arrl-conop"
+        },
+        {
+          "name": "CW main street",
+          "shortName": "CW",
+          "lowHz": 3510000,
+          "highHz": 3560000,
+          "jumpHz": 3530000,
+          "family": "cw",
+          "vibe": "Friendly, unhurried",
+          "blurb": "Everyday Morse, at the speed people actually talk. This is the part of the band where somebody will slow down for you if you ask, and asking is done by sending your own call slowly and letting them match you. Nobody here minds waiting.",
+          "cite": "cfr-97.305"
+        },
+        {
+          "name": "QRP watering hole",
+          "shortName": "QRP",
+          "lowHz": 3560000,
+          "highHz": 3570000,
+          "jumpHz": 3560000,
+          "family": "cw",
+          "vibe": "Tiny stations, long distances",
+          "blurb": "The QRP crowd gathers here, which means five watts or less, often into an antenna in a tree. It sounds like a handicap and it is really a conversation starter, because working somebody a thousand miles off on the power of a nightlight is the part everybody wants to hear about afterwards.",
+          "cite": "qrp-arci"
+        },
+        {
+          "name": "RTTY row",
+          "shortName": "RTTY",
+          "lowHz": 3570000,
+          "highHz": 3573000,
+          "jumpHz": 3570000,
+          "family": "digital",
+          "vibe": "Twin rails, chattering",
+          "blurb": "Radioteletype, which is the oldest of these and still going. Two tones shifting back and forth carry the letters, so it chirps rather than beeps, and on the waterfall it draws two parallel rails. Quiet most days and packed solid during the big RTTY contests.",
+          "cite": "arrl-conop",
+          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived."
+        },
+        {
+          "name": "FT8 city",
+          "shortName": "FT8",
+          "lowHz": 3573000,
+          "highHz": 3575000,
+          "jumpHz": 3573000,
+          "family": "digital",
+          "vibe": "Always open, never quiet",
+          "blurb": "This is the busiest few kilohertz in all of radio, and if you tune here and hear a wall of warbling that sounds like whale song, nothing is wrong with your radio. Everybody transmits together in fifteen-second bursts, so the waterfall looks like falling rain. The mode is built to dig a callsign out of noise you cannot even hear, which is why people reach so far from so little power, and with antennas they are faintly embarrassed about. Nobody here can hear Morse, and a Morse call in this block lands on top of dozens of contacts without reaching anyone.",
+          "cite": "wsjtx-frequencies",
+          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived."
+        },
+        {
+          "name": "FT4 sprint",
+          "shortName": "FT4",
+          "lowHz": 3575000,
+          "highHz": 3578000,
+          "jumpHz": 3575000,
+          "family": "digital",
+          "vibe": "FT8 in a hurry",
+          "blurb": "The same idea as FT8 with the clock wound on: bursts of seven and a half seconds instead of fifteen, built for contest weekends when the point is how many rather than how far. It sounds like FT8 played at double speed, and it lives just up the band from it so the two do not tread on each other.",
+          "cite": "wsjtx-frequencies",
+          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived."
+        },
+        {
+          "name": "JS8 keyboard corner",
+          "shortName": "JS8",
+          "lowHz": 3578000,
+          "highHz": 3580000,
+          "jumpHz": 3578000,
+          "family": "digital",
+          "vibe": "Keyboard chat, weak signals",
+          "blurb": "JS8 takes the part of FT8 that digs a signal out of the noise and puts free typing on top of it, so you can hold an actual conversation at signal levels where voice would be hopeless. It is slow, a sentence takes a while, and the people who use it are usually the ones interested in getting a message through when nothing else would.",
+          "cite": "js8call-guide",
+          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived."
+        },
+        {
+          "name": "PSK31 ribbons",
+          "shortName": "PSK31",
+          "lowHz": 3580000,
+          "highHz": 3583000,
+          "jumpHz": 3580000,
+          "family": "digital",
+          "vibe": "Whispered ribbons",
+          "blurb": "PSK31 is a typed conversation in a signal thirty-one hertz wide, which is narrower than a Morse note, so a dozen of them fit in the space of one voice contact. On the waterfall they look like thin ribbons. People hold real conversations here rather than trading signal reports, which makes it the friendliest of the digital modes.",
+          "cite": "podxs070",
+          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived."
+        },
+        {
+          "name": "Automatic stations",
+          "shortName": "auto",
+          "lowHz": 3585000,
+          "highHz": 3600000,
+          "jumpHz": 3590000,
+          "family": "digital",
+          "vibe": "Machines talking to machines",
+          "blurb": "Automatically controlled stations live here, which means gateways and mailbox stations that answer without anybody sitting at them. Worth knowing about mostly so that a burst of data arriving out of nowhere does not surprise you.",
+          "cite": "arrl-conop",
+          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived."
+        },
+        {
+          "name": "Phone downtown",
+          "shortName": "SSB DX",
+          "lowHz": 3790000,
+          "highHz": 3800000,
+          "jumpHz": 3795000,
+          "family": "phone",
+          "vibe": "Long distance, sharp elbows",
+          "blurb": "The bottom of the voice segment is where people work the far side of the world, so a pile of stations calling one rare station is normal here and the pace is quick. Listen for a couple of minutes before you say anything, because the pattern of who calls when is the whole game.",
+          "cite": "arrl-conop",
+          "caution": "This is the voice end of the band, so a Morse call here goes out under people holding conversations, and they will hear it as interference rather than as a call."
+        },
+        {
+          "name": "Picture street",
+          "shortName": "SSTV",
+          "lowHz": 3845000,
+          "highHz": 3848000,
+          "jumpHz": 3845000,
+          "family": "phone",
+          "vibe": "Pictures, slowly",
+          "blurb": "Slow-scan television sends a still photograph as sound, one line at a time, taking about two minutes for a picture. It warbles in a way you will recognize immediately once you have heard it, and free software will draw the picture for you while you listen.",
+          "cite": "arrl-conop",
+          "caution": "This is the voice end of the band, so a Morse call here goes out under people holding conversations, and they will hear it as interference rather than as a call."
+        },
+        {
+          "name": "AM corner",
+          "shortName": "AM",
+          "lowHz": 3885000,
+          "highHz": 3888000,
+          "jumpHz": 3885000,
+          "family": "phone",
+          "vibe": "Old iron, warm audio",
+          "blurb": "The AM crowd gathers around here, using the mode broadcast radio used, which is wider and sounds richer than sideband. A lot of the people on it are running restored equipment from the fifties and are delighted to be asked about it.",
+          "cite": "arrl-conop",
+          "caution": "This is the voice end of the band, so a Morse call here goes out under people holding conversations, and they will hear it as interference rather than as a call."
+        }
+      ]
+    },
+    {
+      "band": "40 m",
+      "neighborhoods": [
+        {
+          "name": "CW fast lane",
+          "shortName": "CW DX",
+          "lowHz": 7000000,
+          "highHz": 7025000,
+          "jumpHz": 7005000,
+          "family": "cw",
+          "vibe": "Rush hour",
+          "blurb": "The bottom of the band is where the contest crowd and the DX chasers run Morse at twenty-five words a minute and up. It is thrilling on the waterfall and brutal to copy by ear, and there is no shame at all in listening here for a year before you call. Everybody starts by watching this street from the pavement.",
+          "cite": "cfr-97.305"
+        },
+        {
+          "name": "CW main street",
+          "shortName": "CW",
+          "lowHz": 7025000,
+          "highHz": 7030000,
+          "jumpHz": 7028000,
+          "family": "cw",
+          "vibe": "Friendly, unhurried",
+          "blurb": "Everyday Morse, at the speed people actually talk. This is the part of the band where somebody will slow down for you if you ask, and asking is done by sending your own call slowly and letting them match you. Nobody here minds waiting.",
+          "cite": "cfr-97.305"
+        },
+        {
+          "name": "QRP watering hole",
+          "shortName": "QRP",
+          "lowHz": 7030000,
+          "highHz": 7040000,
+          "jumpHz": 7030000,
+          "family": "cw",
+          "vibe": "Tiny stations, long distances",
+          "blurb": "The QRP crowd gathers here, which means five watts or less, often into an antenna in a tree. It sounds like a handicap and it is really a conversation starter, because working somebody a thousand miles off on the power of a nightlight is the part everybody wants to hear about afterwards.",
+          "cite": "qrp-arci"
+        },
+        {
+          "name": "RTTY row",
+          "shortName": "RTTY",
+          "lowHz": 7040000,
+          "highHz": 7047000,
+          "jumpHz": 7040000,
+          "family": "digital",
+          "vibe": "Twin rails, chattering",
+          "blurb": "Radioteletype, which is the oldest of these and still going. Two tones shifting back and forth carry the letters, so it chirps rather than beeps, and on the waterfall it draws two parallel rails. Quiet most days and packed solid during the big RTTY contests.",
+          "cite": "arrl-conop",
+          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived."
+        },
+        {
+          "name": "FT4 sprint",
+          "shortName": "FT4",
+          "lowHz": 7047000,
+          "highHz": 7050000,
+          "jumpHz": 7047000,
+          "family": "digital",
+          "vibe": "FT8 in a hurry",
+          "blurb": "The same idea as FT8 with the clock wound on: bursts of seven and a half seconds instead of fifteen, built for contest weekends when the point is how many rather than how far. It sounds like FT8 played at double speed, and it lives just up the band from it so the two do not tread on each other.",
+          "cite": "wsjtx-frequencies",
+          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived."
+        },
+        {
+          "name": "CW main street",
+          "shortName": "CW",
+          "lowHz": 7050000,
+          "highHz": 7070000,
+          "jumpHz": 7055000,
+          "family": "cw",
+          "vibe": "Friendly, unhurried",
+          "blurb": "Everyday Morse, at the speed people actually talk. This is the part of the band where somebody will slow down for you if you ask, and asking is done by sending your own call slowly and letting them match you. Nobody here minds waiting.",
+          "cite": "cfr-97.305"
+        },
+        {
+          "name": "PSK31 ribbons",
+          "shortName": "PSK31",
+          "lowHz": 7070000,
+          "highHz": 7074000,
+          "jumpHz": 7070000,
+          "family": "digital",
+          "vibe": "Whispered ribbons",
+          "blurb": "PSK31 is a typed conversation in a signal thirty-one hertz wide, which is narrower than a Morse note, so a dozen of them fit in the space of one voice contact. On the waterfall they look like thin ribbons. People hold real conversations here rather than trading signal reports, which makes it the friendliest of the digital modes.",
+          "cite": "podxs070",
+          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived."
+        },
+        {
+          "name": "FT8 city",
+          "shortName": "FT8",
+          "lowHz": 7074000,
+          "highHz": 7077000,
+          "jumpHz": 7074000,
+          "family": "digital",
+          "vibe": "Always open, never quiet",
+          "blurb": "This is the busiest few kilohertz in all of radio, and if you tune here and hear a wall of warbling that sounds like whale song, nothing is wrong with your radio. Everybody transmits together in fifteen-second bursts, so the waterfall looks like falling rain. The mode is built to dig a callsign out of noise you cannot even hear, which is why people reach so far from so little power, and with antennas they are faintly embarrassed about. Nobody here can hear Morse, and a Morse call in this block lands on top of dozens of contacts without reaching anyone.",
+          "cite": "wsjtx-frequencies",
+          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived."
+        },
+        {
+          "name": "JS8 keyboard corner",
+          "shortName": "JS8",
+          "lowHz": 7078000,
+          "highHz": 7081000,
+          "jumpHz": 7078000,
+          "family": "digital",
+          "vibe": "Keyboard chat, weak signals",
+          "blurb": "JS8 takes the part of FT8 that digs a signal out of the noise and puts free typing on top of it, so you can hold an actual conversation at signal levels where voice would be hopeless. It is slow, a sentence takes a while, and the people who use it are usually the ones interested in getting a message through when nothing else would.",
+          "cite": "js8call-guide",
+          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived."
+        },
+        {
+          "name": "Automatic stations",
+          "shortName": "auto",
+          "lowHz": 7100000,
+          "highHz": 7105000,
+          "jumpHz": 7100000,
+          "family": "digital",
+          "vibe": "Machines talking to machines",
+          "blurb": "Automatically controlled stations live here, which means gateways and mailbox stations that answer without anybody sitting at them. Worth knowing about mostly so that a burst of data arriving out of nowhere does not surprise you.",
+          "cite": "arrl-conop",
+          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived."
+        },
+        {
+          "name": "Phone downtown",
+          "shortName": "SSB DX",
+          "lowHz": 7125000,
+          "highHz": 7171000,
+          "jumpHz": 7150000,
+          "family": "phone",
+          "vibe": "Long distance, sharp elbows",
+          "blurb": "The bottom of the voice segment is where people work the far side of the world, so a pile of stations calling one rare station is normal here and the pace is quick. Listen for a couple of minutes before you say anything, because the pattern of who calls when is the whole game.",
+          "cite": "cfr-97.305",
+          "caution": "This is the voice end of the band, so a Morse call here goes out under people holding conversations, and they will hear it as interference rather than as a call."
+        },
+        {
+          "name": "Picture street",
+          "shortName": "SSTV",
+          "lowHz": 7171000,
+          "highHz": 7174000,
+          "jumpHz": 7171000,
+          "family": "phone",
+          "vibe": "Pictures, slowly",
+          "blurb": "Slow-scan television sends a still photograph as sound, one line at a time, taking about two minutes for a picture. It warbles in a way you will recognize immediately once you have heard it, and free software will draw the picture for you while you listen.",
+          "cite": "arrl-conop",
+          "caution": "This is the voice end of the band, so a Morse call here goes out under people holding conversations, and they will hear it as interference rather than as a call."
+        },
+        {
+          "name": "Ragchew boulevard",
+          "shortName": "SSB",
+          "lowHz": 7174000,
+          "highHz": 7290000,
+          "jumpHz": 7188000,
+          "family": "phone",
+          "vibe": "Front porch",
+          "blurb": "Long, unhurried voice conversations, and in the evenings the nets. A net is an organized round table with somebody running it, and checking in as a newcomer is expected rather than tolerated. This is the most welcoming street in radio and the easiest place to make a first contact.",
+          "cite": "cfr-97.305",
+          "caution": "This is the voice end of the band, so a Morse call here goes out under people holding conversations, and they will hear it as interference rather than as a call."
+        },
+        {
+          "name": "AM corner",
+          "shortName": "AM",
+          "lowHz": 7290000,
+          "highHz": 7293000,
+          "jumpHz": 7290000,
+          "family": "phone",
+          "vibe": "Old iron, warm audio",
+          "blurb": "The AM crowd gathers around here, using the mode broadcast radio used, which is wider and sounds richer than sideband. A lot of the people on it are running restored equipment from the fifties and are delighted to be asked about it.",
+          "cite": "arrl-conop",
+          "caution": "This is the voice end of the band, so a Morse call here goes out under people holding conversations, and they will hear it as interference rather than as a call."
+        }
+      ]
+    },
+    {
+      "band": "30 m",
+      "neighborhoods": [
+        {
+          "name": "CW main street",
+          "shortName": "CW",
+          "lowHz": 10100000,
+          "highHz": 10106000,
+          "jumpHz": 10103000,
+          "family": "cw",
+          "vibe": "Friendly, unhurried",
+          "blurb": "Everyday Morse, at the speed people actually talk. This is the part of the band where somebody will slow down for you if you ask, and asking is done by sending your own call slowly and letting them match you. Nobody here minds waiting.",
+          "cite": "cfr-97.305"
+        },
+        {
+          "name": "QRP watering hole",
+          "shortName": "QRP",
+          "lowHz": 10106000,
+          "highHz": 10116000,
+          "jumpHz": 10106000,
+          "family": "cw",
+          "vibe": "Tiny stations, long distances",
+          "blurb": "The QRP crowd gathers here, which means five watts or less, often into an antenna in a tree. It sounds like a handicap and it is really a conversation starter, because working somebody a thousand miles off on the power of a nightlight is the part everybody wants to hear about afterwards.",
+          "cite": "qrp-arci"
+        },
+        {
+          "name": "CW main street",
+          "shortName": "CW",
+          "lowHz": 10116000,
+          "highHz": 10130000,
+          "jumpHz": 10120000,
+          "family": "cw",
+          "vibe": "Friendly, unhurried",
+          "blurb": "Everyday Morse, at the speed people actually talk. This is the part of the band where somebody will slow down for you if you ask, and asking is done by sending your own call slowly and letting them match you. Nobody here minds waiting.",
+          "cite": "cfr-97.305"
+        },
+        {
+          "name": "PSK31 ribbons",
+          "shortName": "PSK31",
+          "lowHz": 10130000,
+          "highHz": 10136000,
+          "jumpHz": 10130000,
+          "family": "digital",
+          "vibe": "Whispered ribbons",
+          "blurb": "PSK31 is a typed conversation in a signal thirty-one hertz wide, which is narrower than a Morse note, so a dozen of them fit in the space of one voice contact. On the waterfall they look like thin ribbons. People hold real conversations here rather than trading signal reports, which makes it the friendliest of the digital modes.",
+          "cite": "arrl-conop",
+          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived."
+        },
+        {
+          "name": "FT8 city",
+          "shortName": "FT8",
+          "lowHz": 10136000,
+          "highHz": 10138000,
+          "jumpHz": 10136000,
+          "family": "digital",
+          "vibe": "Always open, never quiet",
+          "blurb": "This is the busiest few kilohertz in all of radio, and if you tune here and hear a wall of warbling that sounds like whale song, nothing is wrong with your radio. Everybody transmits together in fifteen-second bursts, so the waterfall looks like falling rain. The mode is built to dig a callsign out of noise you cannot even hear, which is why people reach so far from so little power, and with antennas they are faintly embarrassed about. Nobody here can hear Morse, and a Morse call in this block lands on top of dozens of contacts without reaching anyone.",
+          "cite": "wsjtx-frequencies",
+          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived."
+        },
+        {
+          "name": "RTTY row",
+          "shortName": "RTTY",
+          "lowHz": 10138000,
+          "highHz": 10140000,
+          "jumpHz": 10138000,
+          "family": "digital",
+          "vibe": "Twin rails, chattering",
+          "blurb": "Radioteletype, which is the oldest of these and still going. Two tones shifting back and forth carry the letters, so it chirps rather than beeps, and on the waterfall it draws two parallel rails. Quiet most days and packed solid during the big RTTY contests.",
+          "cite": "arrl-conop",
+          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived."
+        },
+        {
+          "name": "Automatic stations",
+          "shortName": "auto",
+          "lowHz": 10140000,
+          "highHz": 10150000,
+          "jumpHz": 10142000,
+          "family": "digital",
+          "vibe": "Machines talking to machines",
+          "blurb": "Automatically controlled stations live here, which means gateways and mailbox stations that answer without anybody sitting at them. Worth knowing about mostly so that a burst of data arriving out of nowhere does not surprise you.",
+          "cite": "arrl-conop",
+          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived."
+        }
+      ]
+    },
+    {
+      "band": "20 m",
+      "neighborhoods": [
+        {
+          "name": "CW fast lane",
+          "shortName": "CW DX",
+          "lowHz": 14000000,
+          "highHz": 14025000,
+          "jumpHz": 14005000,
+          "family": "cw",
+          "vibe": "Rush hour",
+          "blurb": "The bottom of the band is where the contest crowd and the DX chasers run Morse at twenty-five words a minute and up. It is thrilling on the waterfall and brutal to copy by ear, and there is no shame at all in listening here for a year before you call. Everybody starts by watching this street from the pavement.",
+          "cite": "cfr-97.305"
+        },
+        {
+          "name": "CW main street",
+          "shortName": "CW",
+          "lowHz": 14025000,
+          "highHz": 14060000,
+          "jumpHz": 14030000,
+          "family": "cw",
+          "vibe": "Friendly, unhurried",
+          "blurb": "Everyday Morse, at the speed people actually talk. This is the part of the band where somebody will slow down for you if you ask, and asking is done by sending your own call slowly and letting them match you. Nobody here minds waiting.",
+          "cite": "cfr-97.305"
+        },
+        {
+          "name": "QRP watering hole",
+          "shortName": "QRP",
+          "lowHz": 14060000,
+          "highHz": 14070000,
+          "jumpHz": 14060000,
+          "family": "cw",
+          "vibe": "Tiny stations, long distances",
+          "blurb": "The QRP crowd gathers here, which means five watts or less, often into an antenna in a tree. It sounds like a handicap and it is really a conversation starter, because working somebody a thousand miles off on the power of a nightlight is the part everybody wants to hear about afterwards.",
+          "cite": "qrp-arci"
+        },
+        {
+          "name": "PSK31 ribbons",
+          "shortName": "PSK31",
+          "lowHz": 14070000,
+          "highHz": 14074000,
+          "jumpHz": 14070000,
+          "family": "digital",
+          "vibe": "Whispered ribbons",
+          "blurb": "PSK31 is a typed conversation in a signal thirty-one hertz wide, which is narrower than a Morse note, so a dozen of them fit in the space of one voice contact. On the waterfall they look like thin ribbons. People hold real conversations here rather than trading signal reports, which makes it the friendliest of the digital modes.",
+          "cite": "podxs070",
+          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived."
+        },
+        {
+          "name": "FT8 city",
+          "shortName": "FT8",
+          "lowHz": 14074000,
+          "highHz": 14077000,
+          "jumpHz": 14074000,
+          "family": "digital",
+          "vibe": "Always open, never quiet",
+          "blurb": "This is the busiest few kilohertz in all of radio, and if you tune here and hear a wall of warbling that sounds like whale song, nothing is wrong with your radio. Everybody transmits together in fifteen-second bursts, so the waterfall looks like falling rain. The mode is built to dig a callsign out of noise you cannot even hear, which is why people reach so far from so little power, and with antennas they are faintly embarrassed about. Nobody here can hear Morse, and a Morse call in this block lands on top of dozens of contacts without reaching anyone.",
+          "cite": "wsjtx-frequencies",
+          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived."
+        },
+        {
+          "name": "JS8 keyboard corner",
+          "shortName": "JS8",
+          "lowHz": 14078000,
+          "highHz": 14080000,
+          "jumpHz": 14078000,
+          "family": "digital",
+          "vibe": "Keyboard chat, weak signals",
+          "blurb": "JS8 takes the part of FT8 that digs a signal out of the noise and puts free typing on top of it, so you can hold an actual conversation at signal levels where voice would be hopeless. It is slow, a sentence takes a while, and the people who use it are usually the ones interested in getting a message through when nothing else would.",
+          "cite": "js8call-guide",
+          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived."
+        },
+        {
+          "name": "FT4 sprint",
+          "shortName": "FT4",
+          "lowHz": 14080000,
+          "highHz": 14083000,
+          "jumpHz": 14080000,
+          "family": "digital",
+          "vibe": "FT8 in a hurry",
+          "blurb": "The same idea as FT8 with the clock wound on: bursts of seven and a half seconds instead of fifteen, built for contest weekends when the point is how many rather than how far. It sounds like FT8 played at double speed, and it lives just up the band from it so the two do not tread on each other.",
+          "cite": "wsjtx-frequencies",
+          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived."
+        },
+        {
+          "name": "RTTY row",
+          "shortName": "RTTY",
+          "lowHz": 14083000,
+          "highHz": 14095000,
+          "jumpHz": 14085000,
+          "family": "digital",
+          "vibe": "Twin rails, chattering",
+          "blurb": "Radioteletype, which is the oldest of these and still going. Two tones shifting back and forth carry the letters, so it chirps rather than beeps, and on the waterfall it draws two parallel rails. Quiet most days and packed solid during the big RTTY contests.",
+          "cite": "arrl-conop",
+          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived."
+        },
+        {
+          "name": "Automatic stations",
+          "shortName": "auto",
+          "lowHz": 14095000,
+          "highHz": 14100000,
+          "jumpHz": 14096000,
+          "family": "digital",
+          "vibe": "Machines talking to machines",
+          "blurb": "Automatically controlled stations live here, which means gateways and mailbox stations that answer without anybody sitting at them. Worth knowing about mostly so that a burst of data arriving out of nowhere does not surprise you.",
+          "cite": "arrl-conop",
+          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived."
+        },
+        {
+          "name": "Beacon block",
+          "shortName": "NCDXF",
+          "lowHz": 14100000,
+          "highHz": 14100500,
+          "jumpHz": 14100000,
+          "family": "digital",
+          "vibe": "Nobody home, on purpose",
+          "blurb": "A ring of unattended beacons takes turns transmitting from around the world, one after another, forever. They are not calling anybody. Sitting here for a few minutes and noting which ones you hear is the cheapest propagation report there is, and it costs nothing but patience.",
+          "cite": "arrl-conop",
+          "caution": "These are unattended beacons keeping to a timetable. Nobody is listening, so nothing here will answer whatever you send."
+        },
+        {
+          "name": "Automatic stations",
+          "shortName": "auto",
+          "lowHz": 14100500,
+          "highHz": 14112000,
+          "jumpHz": 14105000,
+          "family": "digital",
+          "vibe": "Machines talking to machines",
+          "blurb": "Automatically controlled stations live here, which means gateways and mailbox stations that answer without anybody sitting at them. Worth knowing about mostly so that a burst of data arriving out of nowhere does not surprise you.",
+          "cite": "arrl-conop",
+          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived."
+        },
+        {
+          "name": "Phone downtown",
+          "shortName": "SSB DX",
+          "lowHz": 14150000,
+          "highHz": 14225000,
+          "jumpHz": 14190000,
+          "family": "phone",
+          "vibe": "Long distance, sharp elbows",
+          "blurb": "The bottom of the voice segment is where people work the far side of the world, so a pile of stations calling one rare station is normal here and the pace is quick. Listen for a couple of minutes before you say anything, because the pattern of who calls when is the whole game.",
+          "cite": "cfr-97.305",
+          "caution": "This is the voice end of the band, so a Morse call here goes out under people holding conversations, and they will hear it as interference rather than as a call."
+        },
+        {
+          "name": "Ragchew boulevard",
+          "shortName": "SSB",
+          "lowHz": 14225000,
+          "highHz": 14286000,
+          "jumpHz": 14250000,
+          "family": "phone",
+          "vibe": "Front porch",
+          "blurb": "Long, unhurried voice conversations, and in the evenings the nets. A net is an organized round table with somebody running it, and checking in as a newcomer is expected rather than tolerated. This is the most welcoming street in radio and the easiest place to make a first contact.",
+          "cite": "cfr-97.305",
+          "caution": "This is the voice end of the band, so a Morse call here goes out under people holding conversations, and they will hear it as interference rather than as a call."
+        },
+        {
+          "name": "AM corner",
+          "shortName": "AM",
+          "lowHz": 14286000,
+          "highHz": 14289000,
+          "jumpHz": 14286000,
+          "family": "phone",
+          "vibe": "Old iron, warm audio",
+          "blurb": "The AM crowd gathers around here, using the mode broadcast radio used, which is wider and sounds richer than sideband. A lot of the people on it are running restored equipment from the fifties and are delighted to be asked about it.",
+          "cite": "arrl-conop",
+          "caution": "This is the voice end of the band, so a Morse call here goes out under people holding conversations, and they will hear it as interference rather than as a call."
+        }
+      ]
+    },
+    {
+      "band": "17 m",
+      "neighborhoods": [
+        {
+          "name": "CW main street",
+          "shortName": "CW",
+          "lowHz": 18068000,
+          "highHz": 18096000,
+          "jumpHz": 18080000,
+          "family": "cw",
+          "vibe": "Friendly, unhurried",
+          "blurb": "Everyday Morse, at the speed people actually talk. This is the part of the band where somebody will slow down for you if you ask, and asking is done by sending your own call slowly and letting them match you. Nobody here minds waiting.",
+          "cite": "cfr-97.305"
+        },
+        {
+          "name": "QRP watering hole",
+          "shortName": "QRP",
+          "lowHz": 18096000,
+          "highHz": 18100000,
+          "jumpHz": 18096000,
+          "family": "cw",
+          "vibe": "Tiny stations, long distances",
+          "blurb": "The QRP crowd gathers here, which means five watts or less, often into an antenna in a tree. It sounds like a handicap and it is really a conversation starter, because working somebody a thousand miles off on the power of a nightlight is the part everybody wants to hear about afterwards.",
+          "cite": "qrp-arci"
+        },
+        {
+          "name": "FT8 city",
+          "shortName": "FT8",
+          "lowHz": 18100000,
+          "highHz": 18102000,
+          "jumpHz": 18100000,
+          "family": "digital",
+          "vibe": "Always open, never quiet",
+          "blurb": "This is the busiest few kilohertz in all of radio, and if you tune here and hear a wall of warbling that sounds like whale song, nothing is wrong with your radio. Everybody transmits together in fifteen-second bursts, so the waterfall looks like falling rain. The mode is built to dig a callsign out of noise you cannot even hear, which is why people reach so far from so little power, and with antennas they are faintly embarrassed about. Nobody here can hear Morse, and a Morse call in this block lands on top of dozens of contacts without reaching anyone.",
+          "cite": "wsjtx-frequencies",
+          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived."
+        },
+        {
+          "name": "JS8 keyboard corner",
+          "shortName": "JS8",
+          "lowHz": 18104000,
+          "highHz": 18105000,
+          "jumpHz": 18104000,
+          "family": "digital",
+          "vibe": "Keyboard chat, weak signals",
+          "blurb": "JS8 takes the part of FT8 that digs a signal out of the noise and puts free typing on top of it, so you can hold an actual conversation at signal levels where voice would be hopeless. It is slow, a sentence takes a while, and the people who use it are usually the ones interested in getting a message through when nothing else would.",
+          "cite": "js8call-guide",
+          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived."
+        },
+        {
+          "name": "Automatic stations",
+          "shortName": "auto",
+          "lowHz": 18105000,
+          "highHz": 18110000,
+          "jumpHz": 18106000,
+          "family": "digital",
+          "vibe": "Machines talking to machines",
+          "blurb": "Automatically controlled stations live here, which means gateways and mailbox stations that answer without anybody sitting at them. Worth knowing about mostly so that a burst of data arriving out of nowhere does not surprise you.",
+          "cite": "arrl-conop",
+          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived."
+        },
+        {
+          "name": "Beacon block",
+          "shortName": "NCDXF",
+          "lowHz": 18110000,
+          "highHz": 18110500,
+          "jumpHz": 18110000,
+          "family": "digital",
+          "vibe": "Nobody home, on purpose",
+          "blurb": "A ring of unattended beacons takes turns transmitting from around the world, one after another, forever. They are not calling anybody. Sitting here for a few minutes and noting which ones you hear is the cheapest propagation report there is, and it costs nothing but patience.",
+          "cite": "arrl-conop",
+          "caution": "These are unattended beacons keeping to a timetable. Nobody is listening, so nothing here will answer whatever you send."
+        },
+        {
+          "name": "Phone downtown",
+          "shortName": "SSB DX",
+          "lowHz": 18110500,
+          "highHz": 18130000,
+          "jumpHz": 18120000,
+          "family": "phone",
+          "vibe": "Long distance, sharp elbows",
+          "blurb": "The bottom of the voice segment is where people work the far side of the world, so a pile of stations calling one rare station is normal here and the pace is quick. Listen for a couple of minutes before you say anything, because the pattern of who calls when is the whole game.",
+          "cite": "cfr-97.305",
+          "caution": "This is the voice end of the band, so a Morse call here goes out under people holding conversations, and they will hear it as interference rather than as a call."
+        },
+        {
+          "name": "Ragchew boulevard",
+          "shortName": "SSB",
+          "lowHz": 18130000,
+          "highHz": 18168000,
+          "jumpHz": 18140000,
+          "family": "phone",
+          "vibe": "Front porch",
+          "blurb": "Long, unhurried voice conversations, and in the evenings the nets. A net is an organized round table with somebody running it, and checking in as a newcomer is expected rather than tolerated. This is the most welcoming street in radio and the easiest place to make a first contact.",
+          "cite": "cfr-97.305",
+          "caution": "This is the voice end of the band, so a Morse call here goes out under people holding conversations, and they will hear it as interference rather than as a call."
+        }
+      ]
+    },
+    {
+      "band": "15 m",
+      "neighborhoods": [
+        {
+          "name": "CW fast lane",
+          "shortName": "CW DX",
+          "lowHz": 21000000,
+          "highHz": 21025000,
+          "jumpHz": 21005000,
+          "family": "cw",
+          "vibe": "Rush hour",
+          "blurb": "The bottom of the band is where the contest crowd and the DX chasers run Morse at twenty-five words a minute and up. It is thrilling on the waterfall and brutal to copy by ear, and there is no shame at all in listening here for a year before you call. Everybody starts by watching this street from the pavement.",
+          "cite": "cfr-97.305"
+        },
+        {
+          "name": "CW main street",
+          "shortName": "CW",
+          "lowHz": 21025000,
+          "highHz": 21060000,
+          "jumpHz": 21030000,
+          "family": "cw",
+          "vibe": "Friendly, unhurried",
+          "blurb": "Everyday Morse, at the speed people actually talk. This is the part of the band where somebody will slow down for you if you ask, and asking is done by sending your own call slowly and letting them match you. Nobody here minds waiting.",
+          "cite": "cfr-97.305"
+        },
+        {
+          "name": "QRP watering hole",
+          "shortName": "QRP",
+          "lowHz": 21060000,
+          "highHz": 21070000,
+          "jumpHz": 21060000,
+          "family": "cw",
+          "vibe": "Tiny stations, long distances",
+          "blurb": "The QRP crowd gathers here, which means five watts or less, often into an antenna in a tree. It sounds like a handicap and it is really a conversation starter, because working somebody a thousand miles off on the power of a nightlight is the part everybody wants to hear about afterwards.",
+          "cite": "qrp-arci"
+        },
+        {
+          "name": "FT8 city",
+          "shortName": "FT8",
+          "lowHz": 21074000,
+          "highHz": 21076000,
+          "jumpHz": 21074000,
+          "family": "digital",
+          "vibe": "Always open, never quiet",
+          "blurb": "This is the busiest few kilohertz in all of radio, and if you tune here and hear a wall of warbling that sounds like whale song, nothing is wrong with your radio. Everybody transmits together in fifteen-second bursts, so the waterfall looks like falling rain. The mode is built to dig a callsign out of noise you cannot even hear, which is why people reach so far from so little power, and with antennas they are faintly embarrassed about. Nobody here can hear Morse, and a Morse call in this block lands on top of dozens of contacts without reaching anyone.",
+          "cite": "wsjtx-frequencies",
+          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived."
+        },
+        {
+          "name": "JS8 keyboard corner",
+          "shortName": "JS8",
+          "lowHz": 21078000,
+          "highHz": 21081000,
+          "jumpHz": 21078000,
+          "family": "digital",
+          "vibe": "Keyboard chat, weak signals",
+          "blurb": "JS8 takes the part of FT8 that digs a signal out of the noise and puts free typing on top of it, so you can hold an actual conversation at signal levels where voice would be hopeless. It is slow, a sentence takes a while, and the people who use it are usually the ones interested in getting a message through when nothing else would.",
+          "cite": "js8call-guide",
+          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived."
+        },
+        {
+          "name": "Automatic stations",
+          "shortName": "auto",
+          "lowHz": 21090000,
+          "highHz": 21100000,
+          "jumpHz": 21092000,
+          "family": "digital",
+          "vibe": "Machines talking to machines",
+          "blurb": "Automatically controlled stations live here, which means gateways and mailbox stations that answer without anybody sitting at them. Worth knowing about mostly so that a burst of data arriving out of nowhere does not surprise you.",
+          "cite": "arrl-conop",
+          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived."
+        },
+        {
+          "name": "RTTY row",
+          "shortName": "RTTY",
+          "lowHz": 21100000,
+          "highHz": 21110000,
+          "jumpHz": 21105000,
+          "family": "digital",
+          "vibe": "Twin rails, chattering",
+          "blurb": "Radioteletype, which is the oldest of these and still going. Two tones shifting back and forth carry the letters, so it chirps rather than beeps, and on the waterfall it draws two parallel rails. Quiet most days and packed solid during the big RTTY contests.",
+          "cite": "arrl-conop",
+          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived."
+        },
+        {
+          "name": "FT4 sprint",
+          "shortName": "FT4",
+          "lowHz": 21140000,
+          "highHz": 21143000,
+          "jumpHz": 21140000,
+          "family": "digital",
+          "vibe": "FT8 in a hurry",
+          "blurb": "The same idea as FT8 with the clock wound on: bursts of seven and a half seconds instead of fifteen, built for contest weekends when the point is how many rather than how far. It sounds like FT8 played at double speed, and it lives just up the band from it so the two do not tread on each other.",
+          "cite": "wsjtx-frequencies",
+          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived."
+        },
+        {
+          "name": "Beacon block",
+          "shortName": "NCDXF",
+          "lowHz": 21150000,
+          "highHz": 21150500,
+          "jumpHz": 21150000,
+          "family": "digital",
+          "vibe": "Nobody home, on purpose",
+          "blurb": "A ring of unattended beacons takes turns transmitting from around the world, one after another, forever. They are not calling anybody. Sitting here for a few minutes and noting which ones you hear is the cheapest propagation report there is, and it costs nothing but patience.",
+          "cite": "arrl-conop",
+          "caution": "These are unattended beacons keeping to a timetable. Nobody is listening, so nothing here will answer whatever you send."
+        },
+        {
+          "name": "Phone downtown",
+          "shortName": "SSB DX",
+          "lowHz": 21200000,
+          "highHz": 21300000,
+          "jumpHz": 21250000,
+          "family": "phone",
+          "vibe": "Long distance, sharp elbows",
+          "blurb": "The bottom of the voice segment is where people work the far side of the world, so a pile of stations calling one rare station is normal here and the pace is quick. Listen for a couple of minutes before you say anything, because the pattern of who calls when is the whole game.",
+          "cite": "cfr-97.305",
+          "caution": "This is the voice end of the band, so a Morse call here goes out under people holding conversations, and they will hear it as interference rather than as a call."
+        },
+        {
+          "name": "Ragchew boulevard",
+          "shortName": "SSB",
+          "lowHz": 21300000,
+          "highHz": 21340000,
+          "jumpHz": 21320000,
+          "family": "phone",
+          "vibe": "Front porch",
+          "blurb": "Long, unhurried voice conversations, and in the evenings the nets. A net is an organized round table with somebody running it, and checking in as a newcomer is expected rather than tolerated. This is the most welcoming street in radio and the easiest place to make a first contact.",
+          "cite": "cfr-97.305",
+          "caution": "This is the voice end of the band, so a Morse call here goes out under people holding conversations, and they will hear it as interference rather than as a call."
+        },
+        {
+          "name": "Picture street",
+          "shortName": "SSTV",
+          "lowHz": 21340000,
+          "highHz": 21343000,
+          "jumpHz": 21340000,
+          "family": "phone",
+          "vibe": "Pictures, slowly",
+          "blurb": "Slow-scan television sends a still photograph as sound, one line at a time, taking about two minutes for a picture. It warbles in a way you will recognize immediately once you have heard it, and free software will draw the picture for you while you listen.",
+          "cite": "arrl-conop",
+          "caution": "This is the voice end of the band, so a Morse call here goes out under people holding conversations, and they will hear it as interference rather than as a call."
+        }
+      ]
+    },
+    {
+      "band": "10 m",
+      "neighborhoods": [
+        {
+          "name": "CW main street",
+          "shortName": "CW",
+          "lowHz": 28000000,
+          "highHz": 28060000,
+          "jumpHz": 28030000,
+          "family": "cw",
+          "vibe": "Friendly, unhurried",
+          "blurb": "Everyday Morse, at the speed people actually talk. This is the part of the band where somebody will slow down for you if you ask, and asking is done by sending your own call slowly and letting them match you. Nobody here minds waiting.",
+          "cite": "cfr-97.305"
+        },
+        {
+          "name": "QRP watering hole",
+          "shortName": "QRP",
+          "lowHz": 28060000,
+          "highHz": 28070000,
+          "jumpHz": 28060000,
+          "family": "cw",
+          "vibe": "Tiny stations, long distances",
+          "blurb": "The QRP crowd gathers here, which means five watts or less, often into an antenna in a tree. It sounds like a handicap and it is really a conversation starter, because working somebody a thousand miles off on the power of a nightlight is the part everybody wants to hear about afterwards.",
+          "cite": "qrp-arci"
+        },
+        {
+          "name": "FT8 city",
+          "shortName": "FT8",
+          "lowHz": 28074000,
+          "highHz": 28077000,
+          "jumpHz": 28074000,
+          "family": "digital",
+          "vibe": "Always open, never quiet",
+          "blurb": "This is the busiest few kilohertz in all of radio, and if you tune here and hear a wall of warbling that sounds like whale song, nothing is wrong with your radio. Everybody transmits together in fifteen-second bursts, so the waterfall looks like falling rain. The mode is built to dig a callsign out of noise you cannot even hear, which is why people reach so far from so little power, and with antennas they are faintly embarrassed about. Nobody here can hear Morse, and a Morse call in this block lands on top of dozens of contacts without reaching anyone.",
+          "cite": "wsjtx-frequencies",
+          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived."
+        },
+        {
+          "name": "JS8 keyboard corner",
+          "shortName": "JS8",
+          "lowHz": 28078000,
+          "highHz": 28081000,
+          "jumpHz": 28078000,
+          "family": "digital",
+          "vibe": "Keyboard chat, weak signals",
+          "blurb": "JS8 takes the part of FT8 that digs a signal out of the noise and puts free typing on top of it, so you can hold an actual conversation at signal levels where voice would be hopeless. It is slow, a sentence takes a while, and the people who use it are usually the ones interested in getting a message through when nothing else would.",
+          "cite": "js8call-guide",
+          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived."
+        },
+        {
+          "name": "RTTY row",
+          "shortName": "RTTY",
+          "lowHz": 28081000,
+          "highHz": 28120000,
+          "jumpHz": 28100000,
+          "family": "digital",
+          "vibe": "Twin rails, chattering",
+          "blurb": "Radioteletype, which is the oldest of these and still going. Two tones shifting back and forth carry the letters, so it chirps rather than beeps, and on the waterfall it draws two parallel rails. Quiet most days and packed solid during the big RTTY contests.",
+          "cite": "arrl-conop",
+          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived."
+        },
+        {
+          "name": "Automatic stations",
+          "shortName": "auto",
+          "lowHz": 28120000,
+          "highHz": 28180000,
+          "jumpHz": 28130000,
+          "family": "digital",
+          "vibe": "Machines talking to machines",
+          "blurb": "Automatically controlled stations live here, which means gateways and mailbox stations that answer without anybody sitting at them. Worth knowing about mostly so that a burst of data arriving out of nowhere does not surprise you.",
+          "cite": "arrl-conop",
+          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived."
+        },
+        {
+          "name": "FT4 sprint",
+          "shortName": "FT4",
+          "lowHz": 28180000,
+          "highHz": 28183000,
+          "jumpHz": 28180000,
+          "family": "digital",
+          "vibe": "FT8 in a hurry",
+          "blurb": "The same idea as FT8 with the clock wound on: bursts of seven and a half seconds instead of fifteen, built for contest weekends when the point is how many rather than how far. It sounds like FT8 played at double speed, and it lives just up the band from it so the two do not tread on each other.",
+          "cite": "wsjtx-frequencies",
+          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived."
+        },
+        {
+          "name": "Beacon block",
+          "shortName": "NCDXF",
+          "lowHz": 28190000,
+          "highHz": 28225000,
+          "jumpHz": 28200000,
+          "family": "digital",
+          "vibe": "Nobody home, on purpose",
+          "blurb": "A ring of unattended beacons takes turns transmitting from around the world, one after another, forever. They are not calling anybody. Sitting here for a few minutes and noting which ones you hear is the cheapest propagation report there is, and it costs nothing but patience.",
+          "cite": "arrl-conop",
+          "caution": "These are unattended beacons keeping to a timetable. Nobody is listening, so nothing here will answer whatever you send."
+        },
+        {
+          "name": "Phone downtown",
+          "shortName": "SSB DX",
+          "lowHz": 28300000,
+          "highHz": 28400000,
+          "jumpHz": 28350000,
+          "family": "phone",
+          "vibe": "Long distance, sharp elbows",
+          "blurb": "The bottom of the voice segment is where people work the far side of the world, so a pile of stations calling one rare station is normal here and the pace is quick. Listen for a couple of minutes before you say anything, because the pattern of who calls when is the whole game.",
+          "cite": "cfr-97.305",
+          "caution": "This is the voice end of the band, so a Morse call here goes out under people holding conversations, and they will hear it as interference rather than as a call."
+        },
+        {
+          "name": "Ragchew boulevard",
+          "shortName": "SSB",
+          "lowHz": 28400000,
+          "highHz": 28680000,
+          "jumpHz": 28450000,
+          "family": "phone",
+          "vibe": "Front porch",
+          "blurb": "Long, unhurried voice conversations, and in the evenings the nets. A net is an organized round table with somebody running it, and checking in as a newcomer is expected rather than tolerated. This is the most welcoming street in radio and the easiest place to make a first contact.",
+          "cite": "cfr-97.305",
+          "caution": "This is the voice end of the band, so a Morse call here goes out under people holding conversations, and they will hear it as interference rather than as a call."
+        },
+        {
+          "name": "Picture street",
+          "shortName": "SSTV",
+          "lowHz": 28680000,
+          "highHz": 28683000,
+          "jumpHz": 28680000,
+          "family": "phone",
+          "vibe": "Pictures, slowly",
+          "blurb": "Slow-scan television sends a still photograph as sound, one line at a time, taking about two minutes for a picture. It warbles in a way you will recognize immediately once you have heard it, and free software will draw the picture for you while you listen.",
+          "cite": "arrl-conop",
+          "caution": "This is the voice end of the band, so a Morse call here goes out under people holding conversations, and they will hear it as interference rather than as a call."
+        },
+        {
+          "name": "AM corner",
+          "shortName": "AM",
+          "lowHz": 29000000,
+          "highHz": 29200000,
+          "jumpHz": 29100000,
+          "family": "phone",
+          "vibe": "Old iron, warm audio",
+          "blurb": "The AM crowd gathers around here, using the mode broadcast radio used, which is wider and sounds richer than sideband. A lot of the people on it are running restored equipment from the fifties and are delighted to be asked about it.",
+          "cite": "arrl-conop",
+          "caution": "This is the voice end of the band, so a Morse call here goes out under people holding conversations, and they will hear it as interference rather than as a call."
+        }
+      ]
+    }
+  ],
+  "unknowns": [
+    {
+      "topic": "160 m and 12 m",
+      "value": null,
+      "confirmed": false,
+      "reason": "Both bands have cited conventions in the sources above and neither is in BandPlan, so Hamlet never draws them. Adding rows for a band the app cannot show would be data nobody could check against the screen. Add these when the bands arrive."
+    },
+    {
+      "topic": "60 m",
+      "value": null,
+      "confirmed": false,
+      "reason": "Five discrete channels with their own rules rather than a contiguous segment, which is the same shape problem the privileges file records. Nothing here can represent it."
+    },
+    {
+      "topic": "Slow-speed CW gathering places",
+      "value": null,
+      "confirmed": false,
+      "reason": "An earlier version of this map said 7.055 was 'the slow-speed club' and that number came from nobody's source. The SKCC and FISTS clubs do publish gathering frequencies, and until one of those lists has been read and cited, Hamlet says nothing about where a beginner should call slowly. This is the field that matters most to the operator this app is for, so it is marked rather than guessed."
+    },
+    {
+      "topic": "Regional differences",
+      "value": null,
+      "confirmed": false,
+      "reason": "Several sources give different numbers by region: PSK31 is 7.070 in the US, 7.040 in Europe and 7.028 in Japan. Only the US convention is carried, matching the jurisdiction field, and a European operator would be shown the wrong map."
+    }
+  ]
+}
