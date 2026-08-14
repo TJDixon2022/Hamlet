@@ -83,7 +83,28 @@ public sealed class ProfileResolver
     public static bool NeedsLookup(OperatorProfile profile)
         => LicenseResolver.NeedsResolution(profile)
            || GridResolver.NeedsResolution(profile)
-           || profile.LicenseClassWasSetByHand;
+           || profile.LicenseClassWasSetByHand
+           || MissingItsReceipt(profile);
+
+    /// <summary>
+    /// True when the profile says a lookup happened but never recorded what it
+    /// confirmed.
+    /// </summary>
+    /// <remarks>
+    /// <para>Profiles written before HM-DEC-044 are in exactly this state:
+    /// they know the class came from callook.info and cannot say which
+    /// callsign or class was seen. The Settings badges are driven only by what
+    /// is stored and never by inference, so rather than assuming the stored
+    /// value is still the confirmed one, Hamlet asks again. One request, once,
+    /// and the profile is whole.</para>
+    /// <para>Backfilling from the current value would have been cheaper and
+    /// would have been a guess wearing a check mark (HM-DEC-009).</para>
+    /// </remarks>
+    private static bool MissingItsReceipt(OperatorProfile profile)
+        => !string.IsNullOrWhiteSpace(profile.Callsign)
+           && string.IsNullOrWhiteSpace(profile.CallsignVerifiedAs)
+           && (profile.LicenseClassSource == LicenseClassSource.LookedUp
+               || profile.GridSquareSource == ProfileFactSource.LookedUp);
 
     /// <summary>
     /// The line the status bar shows while the lookup is in flight.
@@ -140,6 +161,15 @@ public sealed class ProfileResolver
         }
 
         var now = _utcNow();
+
+        // What the service actually said, recorded before anything decides
+        // whether to adopt it. A hand-set class is never overwritten
+        // (HM-DEC-028), and the Settings window still has to be able to say
+        // what the FCC record holds (HM-DEC-044).
+        if (result is not null)
+        {
+            profile.RecordLookup(result.Callsign, result.Class, result.SourceName, now);
+        }
 
         // The class first: it is the one with legal consequences, and the grid
         // rules do not depend on its outcome.

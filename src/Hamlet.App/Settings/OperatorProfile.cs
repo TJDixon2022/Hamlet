@@ -43,6 +43,36 @@ public sealed class OperatorProfile
     /// <summary>The operator's callsign. Displayed; never in telemetry.</summary>
     public string Callsign { get; set; } = "KC3QIS";
 
+    /// <summary>How the callsign came to be known.</summary>
+    /// <remarks>
+    /// A lookup that answers at all has confirmed the callsign exists in the
+    /// FCC record, because that is what it was asked about (HM-DEC-044). The
+    /// operator always typed it first, so this never decides whether a lookup
+    /// may write. It exists only so the Settings window can say whether the
+    /// value was ever corroborated.
+    /// </remarks>
+    public ProfileFactSource CallsignSource { get; set; } = ProfileFactSource.Unset;
+
+    /// <summary>Which service confirmed the callsign, when one did.</summary>
+    public string CallsignSourceName { get; set; } = "";
+
+    /// <summary>When it was confirmed, as an ISO date. Empty when never.</summary>
+    public string CallsignSetOn { get; set; } = "";
+
+    /// <summary>
+    /// The exact callsign a lookup confirmed, so a later edit can be seen for
+    /// what it is.
+    /// </summary>
+    /// <remarks>
+    /// THE BADGE CLEARS THE MOMENT THE TEXT DIFFERS (HM-DEC-044), and this is
+    /// how. "Verified" means "this is what the FCC record says", so it stops
+    /// being true as soon as the field says something else. Comparing against
+    /// the value that was actually confirmed makes that live while somebody
+    /// types, and correct again after a restart, without a flag anybody has to
+    /// remember to clear.
+    /// </remarks>
+    public string CallsignVerifiedAs { get; set; } = "";
+
     /// <summary>The operator's name, as they want to be greeted.</summary>
     public string OperatorName { get; set; } = "";
 
@@ -81,6 +111,10 @@ public sealed class OperatorProfile
 
     /// <summary>When the grid was set, as an ISO date. Empty when never set.</summary>
     public string GridSquareSetOn { get; set; } = "";
+
+    /// <summary>The exact locator a lookup derived, so an edit is visible.</summary>
+    /// <remarks>See <see cref="CallsignVerifiedAs"/> for why this is stored.</remarks>
+    public string GridSquareVerifiedAs { get; set; } = "";
 
     /// <summary>True when the operator typed the grid square themselves.</summary>
     /// <remarks>
@@ -133,6 +167,10 @@ public sealed class OperatorProfile
     /// </remarks>
     public string LicenseClassSetOn { get; set; } = "";
 
+    /// <summary>The exact class a lookup reported, so a later change shows.</summary>
+    /// <remarks>See <see cref="CallsignVerifiedAs"/> for why this is stored.</remarks>
+    public LicenseClass LicenseClassVerifiedAs { get; set; } = LicenseClass.Unknown;
+
     /// <summary>True when the operator chose the class themselves.</summary>
     /// <remarks>
     /// The one flag that decides whether a lookup may write: a hand-set class
@@ -163,6 +201,34 @@ public sealed class OperatorProfile
     }
 
     /// <summary>
+    /// Record that a lookup confirmed the callsign, and which class it
+    /// reported for it.
+    /// </summary>
+    /// <param name="callsign">The callsign the service answered about.</param>
+    /// <param name="reportedClass">The class it reported.</param>
+    /// <param name="sourceName">Which service answered.</param>
+    /// <param name="onUtc">When it answered.</param>
+    /// <remarks>
+    /// Separate from <see cref="SetLicenseClass"/> because it records what was
+    /// SEEN rather than what was adopted. A hand-set class is never
+    /// overwritten (HM-DEC-028), and this is how the Settings window can still
+    /// say what the FCC record holds without the profile pretending to agree
+    /// with it (HM-DEC-044).
+    /// </remarks>
+    public void RecordLookup(
+        string callsign, LicenseClass reportedClass, string sourceName, DateTime onUtc)
+    {
+        var on = onUtc.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+
+        CallsignVerifiedAs = (callsign ?? "").Trim().ToUpperInvariant();
+        CallsignSource = ProfileFactSource.LookedUp;
+        CallsignSourceName = sourceName;
+        CallsignSetOn = on;
+
+        LicenseClassVerifiedAs = reportedClass;
+    }
+
+    /// <summary>
     /// Record a position from a lookup, deriving the grid square from it.
     /// </summary>
     /// <param name="position">The coordinates the service supplied.</param>
@@ -173,6 +239,7 @@ public sealed class OperatorProfile
         Latitude = position.Latitude;
         Longitude = position.Longitude;
         GridSquare = OperatorLocation.ToGrid(position);
+        GridSquareVerifiedAs = GridSquare;
         GridSquareSource = ProfileFactSource.LookedUp;
         GridSquareSourceName = sourceName;
         GridSquareSetOn = onUtc.ToString(
