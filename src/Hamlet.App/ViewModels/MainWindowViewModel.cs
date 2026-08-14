@@ -1606,7 +1606,15 @@ public partial class MainWindowViewModel : ObservableObject
             var result = await rig.SetModeAsync(decision.Mode, decision.DataMode);
 
             _lastKnownMode = result.Worked ? decision.Mode : null;
-            StatusText = result.Worked ? decision.Narration : result.Detail;
+
+            // A radio that has no such mode says so by having nothing to say,
+            // and blanking the status line over it would wipe whatever the
+            // operator was reading.
+            var say = result.Worked ? decision.Narration : result.Detail;
+            if (say.Length > 0)
+            {
+                StatusText = say;
+            }
 
             AppEvents.ModeFollowed(
                 _telemetry, decision.Mode.ToString(), decision.DataMode,

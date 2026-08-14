@@ -198,6 +198,11 @@ public sealed class OutOfBandTests
 
         Assert.False(broadcast.IsAmateur);
         Assert.NotEmpty(broadcast.Detail);
-        Assert.Contains("Listening", broadcast.Detail, StringComparison.Ordinal);
+
+        // The sentence about listening lives in its own slot rather than being
+        // repeated inside the detail, so a card cannot say it twice.
+        Assert.DoesNotContain("Listening", broadcast.Detail, StringComparison.Ordinal);
+        Assert.Contains("Listening", AmateurSpectrum.ListeningIsStillFine,
+            StringComparison.Ordinal);
     }
 }

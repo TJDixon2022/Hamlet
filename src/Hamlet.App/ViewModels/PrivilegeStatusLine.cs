@@ -115,7 +115,11 @@ public static class PrivilegeStatusLine
                 AmateurSpectrum.ListeningIsStillFine,
                 standing.Citation,
                 "",
-                here?.Caution ?? "");
+
+                // No cultural line here. Beyond the band edge the map's caution
+                // says what the detail above already said, and a card that makes
+                // the same point three times reads as the app laboring it.
+                "");
         }
 
         if (licenseClass == LicenseClass.Unknown)

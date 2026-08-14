@@ -62,7 +62,7 @@
 
                                 <!-- Green when it is a real, current reading;
                                      dimmer when it is stale or absent. The
-                                     colour repeats what the age column already
+                                     color repeats what the age column already
                                      says in words, so it is never the only
                                      carrier (§0.6). -->
                                 <TextBlock Grid.Column="1" Text="{Binding Value}"

@@ -13,7 +13,9 @@ namespace Hamlet.RadioEngine.Bands;
 /// amateur band".
 /// </param>
 /// <param name="Detail">
-/// The whole of it in plain language, including the part about listening.
+/// The whole of it in plain language. Deliberately WITHOUT the sentence about
+/// listening: every surface that shows this has its own place for that, and
+/// saying it twice in one card reads as the app laboring the point.
 /// </param>
 /// <param name="Citation">The paragraph behind it, or "".</param>
 /// <param name="NearestBand">
@@ -116,8 +118,7 @@ public static class AmateurSpectrum
             "not an amateur band",
             $"You are {which}, and this is not amateur spectrum at all. Other "
             + "services live up and down the dial from every ham band, and no "
-            + "amateur license permits transmitting on any of them. "
-            + ListeningIsStillFine,
+            + "amateur license permits transmitting on any of them.",
             "97.301",
             nearest);
     }
