@@ -291,5 +291,10 @@ Function to RTTY Decode, tuning an RTTY signal, and capturing the port. That
 costs rig control for as long as it runs (HM-DEC-069), so it is an experiment
 somebody chooses to do rather than something the app can find out on its own.
 
+**Update 2026-08-14: open, and dormant.** Tim has ruled RTTY off the list
+altogether and the thinking moved to FG-012. Nothing is waiting on this: if the
+mode ever returns, the route recorded there is Hamlet demodulating the audio the
+way it already does Morse, and that route never reads this port at all.
+
 Severity `none`: nothing is blocked. HM-DEC-069 already rules that the mode is
 not built, and for a reason this answer would not change on its own.

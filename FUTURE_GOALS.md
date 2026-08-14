@@ -9,6 +9,42 @@ Ids are `FG-###` and are never reused.
 
 ---
 
+## FG-012 — RTTY, but decoded from the audio
+
+Tim has ruled RTTY off the list, and this is the thinking rather than a deletion
+of it. The economics that made it look nearly free did not survive contact with
+the facts.
+
+**The radio decodes RTTY already and the output costs too much.** The IC-7300 has
+a built-in decoder and will send its text down the USB cable, which is why this
+looked like a feature worth almost nothing. It is not: "USB Serial Function" is
+one setting with two options on one port, so taking the decoded text stops CI-V
+entirely and Hamlet goes blind to the radio while it runs (HM-DEC-069). The
+manual also never says what those bytes look like on the wire, which is
+HM-OPEN-008. And RTTY is largely a contest mode, which this operator may never
+want.
+
+**If it ever returns, the answer is Hamlet demodulating the audio itself**, the
+way it already does Morse. That sidesteps the port conflict completely, because
+the audio arrives on the codec rather than the serial port and nothing has to be
+given up to listen. Two tones 170 Hz apart at 45.45 baud is a pair of Goertzel
+bins and a bit clock, which is the machinery `CwDecoder` already has in a
+different arrangement. It would be a fraction of what FT8 needs, and the mark
+frequency and shift are on the wire besides, so Hamlet could read them from the
+radio rather than assume them.
+
+The reason to want it at all is the same reason the Explorer exists: RTTY on the
+waterfall is unmistakable once somebody has seen it, and a beginner who can watch
+the text arrive under the two rails learns what a digital mode is in a way no
+explanation manages.
+
+**HM-OPEN-008 stays open and dormant.** Closing it needs somebody to set the
+radio to RTTY Decode, tune a signal and capture the port, which costs rig control
+for as long as it runs. That is an experiment a person chooses to do, and nothing
+here is waiting on it: this route never reads that port at all.
+
+---
+
 ## FG-011 — Favorites you never starred
 
 Hamlet could notice where the operator actually spends time and offer those as
