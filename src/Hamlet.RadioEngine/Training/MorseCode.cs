@@ -19,6 +19,18 @@ public static class MorseCode
     /// <summary>Milliseconds in one dit at one word per minute.</summary>
     public const double DitMillisecondsAt1Wpm = 1200.0;
 
+    /// <summary>
+    /// Marks the characters after it as one symbol, up to the next space.
+    /// </summary>
+    /// <remarks>
+    /// The IC-7300's own character for this, taken from the Full Manual's CW
+    /// message contents table (p. 19-12): "^" transmits a string of characters
+    /// with no inter-character space. So "^AR" is the prosign AR rather than the
+    /// letters A and R, and writing fixtures in the notation the radio already
+    /// uses means the transmit path will not need a second one.
+    /// </remarks>
+    public const char RunTogether = '^';
+
     private static readonly Dictionary<char, string> Table = new()
     {
         ['A'] = ".-", ['B'] = "-...", ['C'] = "-.-.", ['D'] = "-..",
@@ -66,14 +78,29 @@ public static class MorseCode
     {
         var pattern = new List<int>();
         var pendingGap = 0;
+        var runTogether = false;
+        var runStarted = false;
 
         foreach (var raw in text.Trim())
         {
+            if (raw == RunTogether)
+            {
+                // Everything up to the next space is keyed as one symbol. This
+                // is the radio's own convention rather than an invention: the
+                // Full Manual lists "^" as the character that transmits a
+                // string with no inter-character space (p. 19-12), which is
+                // how a prosign such as AR or SK is actually sent.
+                runTogether = true;
+                runStarted = false;
+                continue;
+            }
+
             if (raw == ' ')
             {
                 // A word gap is seven dits total, and three of them were
                 // already owed as the character gap.
                 pendingGap = 7;
+                runTogether = false;
                 continue;
             }
 
@@ -89,14 +116,21 @@ public static class MorseCode
                 {
                     // Gap before this element: the owed inter-character or
                     // word gap for the first element, one dit inside a
-                    // character.
-                    var gap = i == 0 ? Math.Max(3, pendingGap) : 1;
+                    // character. Inside a run-together group even that first
+                    // gap is one dit, which is what makes the whole group
+                    // arrive as a single symbol.
+                    var gap = i == 0 && !(runTogether && runStarted)
+                        ? Math.Max(3, pendingGap)
+                        : 1;
+
                     pattern.Add(gap);
                 }
 
                 pendingGap = 0;
                 pattern.Add(spelling[i] == '-' ? 3 : 1);
             }
+
+            runStarted = runTogether;
         }
 
         return pattern;
