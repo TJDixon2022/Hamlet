@@ -118,6 +118,7 @@ public partial class MainWindowViewModel : ObservableObject
     private bool _windowVisible = true;
     private bool _spotsEverLoaded;
     private IReadOnlyList<StoredSpot> _bandHistory = Array.Empty<StoredSpot>();
+    private RigSpectrumSource? _rigSpectrum;
     private int _lastNewSpotCount;
 
     /// <summary>True when "Best chance" is the lens in use.</summary>
@@ -131,6 +132,12 @@ public partial class MainWindowViewModel : ObservableObject
     /// <summary>What the active lens is for, on hover.</summary>
     [ObservableProperty]
     private string _lensQuestion = "";
+
+    /// <summary>
+    /// What is stopping the radio's scope from reaching the waterfall, or "".
+    /// </summary>
+    [ObservableProperty]
+    private string _scopeNote = "";
 
     /// <summary>The three family chips, with their counts (HM-DEC-061).</summary>
     public ObservableCollection<FamilyChipViewModel> FamilyChips { get; } = new();
@@ -1318,6 +1325,37 @@ public partial class MainWindowViewModel : ObservableObject
     /// against that band's own neighborhood map — practicing on 20 m has to
     /// teach 20 m (HM-DEC-026).
     /// </remarks>
+    /// <summary>
+    /// Listen to the radio's own spectrum scope (HM-DEC-062, HM-DEC-005).
+    /// </summary>
+    /// <remarks>
+    /// <para>THE RADIO COMPUTES THIS AND HAMLET DOES NOT. The panadapter is
+    /// already running and already band-wide, so the app never computes a
+    /// wideband transform the radio has finished.</para>
+    /// <para>Listening costs the bus nothing: the radio pushes these once its
+    /// own output is switched on, so nothing is polled for and the existing loop
+    /// cannot be starved (HM-DEC-050).</para>
+    /// <para>Nothing here turns the scope on. That is a write, and Hamlet reads
+    /// the two settings and says what is missing instead, because the stream
+    /// also needs two radio menu settings there is no command for at all.</para>
+    /// </remarks>
+    private void StartRigSpectrum(IRig rig)
+    {
+        StopTrainingSpectrum();
+
+        if (rig is not Ic7300Rig radio || !rig.Capabilities.HasSpectrumScope)
+        {
+            return;
+        }
+
+        _rigSpectrum = new RigSpectrumSource(radio);
+        _rigSpectrum.Start();
+
+        SpectrumSource = _rigSpectrum;
+        AppEvents.SpectrumSourceChanged(
+            _telemetry, "rig", SelectedBand.Band.Name, simulated: false);
+    }
+
     private void StartTrainingSpectrum()
     {
         StopTrainingSpectrum();
@@ -1443,6 +1481,12 @@ public partial class MainWindowViewModel : ObservableObject
 
         OnPropertyChanged(nameof(RigState));
         OnPropertyChanged(nameof(TerminalSummary));
+
+        // A waterfall that sat empty without saying why would be the app looking
+        // broken while the answer was four menu screens away (HM-DEC-062).
+        var scope = ScopeReadiness.Check(_rig?.Capabilities, state);
+
+        ScopeNote = _rig is null || _rig.IsSimulated || scope.IsReady ? "" : scope.Detail;
 
         // The break-in setting and the mode both live in here, and both decide
         // whether a send would reach the air. So the panel re-asks whenever the
@@ -1611,6 +1655,24 @@ public partial class MainWindowViewModel : ObservableObject
         Transmit.HeardWpm = _decoder.State.HasSignal ? _decoder.State.WordsPerMinute : null;
     }
 
+    /// <summary>Stop listening to the radio's scope.</summary>
+    private void StopRigSpectrum()
+    {
+        if (_rigSpectrum is null)
+        {
+            return;
+        }
+
+        _rigSpectrum.Stop();
+        _rigSpectrum.Dispose();
+        _rigSpectrum = null;
+
+        if (SpectrumSource is RigSpectrumSource)
+        {
+            SpectrumSource = null;
+        }
+    }
+
     private void StopTrainingSpectrum()
     {
         if (_trainingSpectrum is null)
@@ -1749,16 +1811,17 @@ public partial class MainWindowViewModel : ObservableObject
         ConnectButtonText = "Disconnect";
 
         // Connection state IS the mode (HM-DEC-026). A simulated rig gets the
-        // synthesiser; a real one will get CI-V 0x27 in phase 2 and, until
-        // then, honestly gets nothing rather than synthetic signals dressed
-        // as its own.
+        // synthesiser and a real one gets the radio's own scope, and neither
+        // source has a setter for whether it is simulated: the waterfall's label
+        // is read off whichever one is attached, so real data arriving cannot
+        // weaken it and synthetic data cannot arrive unlabeled (HM-DEC-062).
         if (rig.IsSimulated)
         {
             StartTrainingSpectrum();
         }
         else
         {
-            StopTrainingSpectrum();
+            StartRigSpectrum(rig);
         }
 
         // Audio, on the other hand, both radios can supply: the training radio
@@ -2987,6 +3050,7 @@ public partial class MainWindowViewModel : ObservableObject
         {
             StopRigMonitor();
             StopDecoding();
+            StopRigSpectrum();
             Transmit.Attach(null);
             StopTrainingSpectrum();
             _rigSendTimer.Stop();

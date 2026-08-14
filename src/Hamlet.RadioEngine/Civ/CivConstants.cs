@@ -69,6 +69,9 @@ public static class CivConstants
     /// <summary>Spectrum scope data family (HM-DEC-005, p. 19-14).</summary>
     public const byte CmdScope = 0x27;
 
+    /// <summary>The scope waveform sub-command, <c>27 00</c> (p. 19-12).</summary>
+    public const byte ScopeWaveformSub = 0x00;
+
     /// <summary>Positive acknowledgement from the radio. (p. 19-2)</summary>
     public const byte ResultOk = 0xFB;
 

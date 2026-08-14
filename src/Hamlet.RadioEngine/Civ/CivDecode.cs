@@ -78,6 +78,8 @@ public static class CivDecode
             case RigField.SquelchStatus:
                 return One(DecodeChoice(field, payload, atUtc, source, "closed", "open"));
 
+            case RigField.ScopeOn:
+            case RigField.ScopeOutput:
             case RigField.Split:
             case RigField.NoiseBlanker:
             case RigField.NoiseReduction:

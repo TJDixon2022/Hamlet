@@ -506,6 +506,23 @@
                                     Gain="{Binding WaterfallGain}"
                                     TuneCommand="{Binding TuneToCommand}" />
 
+                                <!-- WHAT IS MISSING, RATHER THAN AN EMPTY
+                                     WATERFALL (HM-DEC-062). The scope stream
+                                     needs two settings on the radio and two more
+                                     on its CI-V screens, and none of them is a
+                                     command Hamlet can send. -->
+                                <Border Background="{StaticResource HmAmberTintBrush}"
+                                        BorderBrush="{StaticResource HmAmberEdgeBrush}"
+                                        BorderThickness="1" CornerRadius="6"
+                                        Padding="10,7"
+                                        IsVisible="{Binding ScopeNote,
+                                            Converter={x:Static ctl:PrivilegeToneConverter.NotEmpty}}">
+                                    <ctl:GlossaryTextControl
+                                        Text="{Binding ScopeNote}"
+                                        FontSize="12" LineSpacing="1.4"
+                                        Foreground="{StaticResource HmAmberDeepBrush}" />
+                                </Border>
+
                                 <TextBlock Text="click a signal to tune to it. the axis matches the map and the dial tape above"
                                            FontSize="12" TextWrapping="Wrap"
                                            Foreground="{StaticResource HmTextMutedBrush}" />

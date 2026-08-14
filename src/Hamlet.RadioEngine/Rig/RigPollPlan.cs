@@ -106,6 +106,12 @@ public static class RigPollPlan
         // sweeping for it would ask the same question twice a minute.
         RigField.DataMode => RigPollRate.OnDemand,
 
+        // The scope stream proves these far better than a command would, and it
+        // shares the bus with everything else, so they are read on connect and
+        // when somebody asks and at no other time (HM-DEC-050, HM-DEC-062).
+        RigField.ScopeOn => RigPollRate.OnDemand,
+        RigField.ScopeOutput => RigPollRate.OnDemand,
+
         // Nothing here changes without somebody's hand on the radio.
         RigField.Vfo => RigPollRate.Never,
 

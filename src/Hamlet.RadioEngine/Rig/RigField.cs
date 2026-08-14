@@ -120,6 +120,20 @@ public enum RigField
     /// <summary>Whether the split function is on.</summary>
     Split,
 
+    /// <summary>Whether the spectrum scope is switched on.</summary>
+    ScopeOn,
+
+    /// <summary>
+    /// Whether the radio is sending its scope data to the computer.
+    /// </summary>
+    /// <remarks>
+    /// Separate from the scope being on, and both are needed before a single
+    /// sweep arrives (p. 19-7). The output setting also depends on two radio
+    /// menu settings Hamlet has no command for, which is why the app reads these
+    /// and says what is missing rather than trying to fix it (HM-DEC-062).
+    /// </remarks>
+    ScopeOutput,
+
     /// <summary>Which VFO is selected, A or B.</summary>
     Vfo,
 }

@@ -94,6 +94,17 @@ public sealed class Ic7300Rig : IRig, IDisposable
     /// for the CI-V log. Raised on the read loop thread.</summary>
     public event Action<bool, CivFrame>? FrameTrace;
 
+    /// <summary>
+    /// One part of a spectrum sweep, as the radio pushed it (HM-DEC-062).
+    /// </summary>
+    /// <remarks>
+    /// Unsolicited, like the transceive reports beside it. The radio sends these
+    /// once its own scope output is on, so Hamlet asks for nothing and the
+    /// stream costs the poll loop nothing (HM-DEC-050). The payload is the data
+    /// after the echoed sub-command; <see cref="Civ.CivScope"/> reads it.
+    /// </remarks>
+    public event Action<byte[]>? ScopeData;
+
     /// <inheritdoc/>
     public async Task<bool> ConnectAsync(CancellationToken cancellationToken = default)
     {
@@ -539,6 +550,17 @@ public sealed class Ic7300Rig : IRig, IDisposable
 
             RememberModeAndFilter(values);
             ValuesReported?.Invoke(this, new RigValuesReportedEventArgs(values));
+            return;
+        }
+
+        // The scope stream, which the radio pushes rather than being asked for.
+        // Handled before the pending-request path because these arrive between
+        // ordinary command replies and must not be mistaken for one.
+        if (frame.Command == CivConstants.CmdScope
+            && frame.Data.Length > 1
+            && frame.Data[0] == CivConstants.ScopeWaveformSub)
+        {
+            ScopeData?.Invoke(frame.Data[1..]);
             return;
         }
 

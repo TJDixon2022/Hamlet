@@ -156,6 +156,8 @@ public static class RigDisplay
         RigField.AccUsbAfLevel => "Audio output level",
         RigField.AccUsbSquelch => "Audio squelch gate",
         RigField.Split => "Split",
+        RigField.ScopeOn => "Spectrum scope",
+        RigField.ScopeOutput => "Scope data to the computer",
         _ => "VFO",
     };
 }

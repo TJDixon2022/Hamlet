@@ -263,6 +263,26 @@ public static class CivReads
         RigField.AccUsbSquelch, 0x1A, new byte[] { 0x05, 0x00, 0x61 }, "19-5",
         "00=open regardless, 01=squelch gates it");
 
+    /// <summary>Read whether the spectrum scope is switched on.</summary>
+    /// <remarks>
+    /// One of the two the waveform stream needs (p. 19-7). Read on connect and
+    /// on demand rather than polled: a scope somebody switched on stays on, and
+    /// the stream itself proves it far better than a command would.
+    /// </remarks>
+    public static CivRead ScopeOn { get; } = new(
+        RigField.ScopeOn, 0x27, new byte[] { 0x10 }, "19-7", "00=off, 01=on");
+
+    /// <summary>Read whether the scope data is being sent to the computer.</summary>
+    /// <remarks>
+    /// The other of the two (p. 19-7). Its own footnote adds two settings that
+    /// are not commands at all: it can only be set with "Unlink from [REMOTE]"
+    /// on the CI-V USB port screen and 115200 on the CI-V baud rate screen. A
+    /// correct frame with neither of those in place is answered and does
+    /// nothing.
+    /// </remarks>
+    public static CivRead ScopeOutput { get; } = new(
+        RigField.ScopeOutput, 0x27, new byte[] { 0x11 }, "19-7", "00=off, 01=on");
+
     /// <summary>Read whether split is on.</summary>
     public static CivRead Split { get; } = new(
         RigField.Split, 0x0F, Array.Empty<byte>(), "19-3", "00=off, 01=on");
@@ -276,6 +296,7 @@ public static class CivReads
         NoiseBlanker, NoiseBlankerLevel, NoiseReduction, NoiseReductionLevel,
         AutoNotch, ManualNotch, BreakIn, KeyerSpeed, CwPitch,
         AccUsbOutputSelect, AccUsbAfLevel, AccUsbSquelch, Split,
+        ScopeOn, ScopeOutput,
     };
 
     /// <summary>

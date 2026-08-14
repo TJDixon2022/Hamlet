@@ -4,6 +4,70 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-062
+date: 2026-08-14
+refs: src/Hamlet.RadioEngine/Civ/CivScope.cs, src/Hamlet.RadioEngine/Rig/RigSpectrumSource.cs, src/Hamlet.RadioEngine/Rig/ScopeReadiness.cs, tests/Hamlet.RadioEngine.Tests/Rig/ScopeStreamTests.cs, HM-DEC-005, HM-DEC-006, HM-DEC-026, HM-DEC-050
+---
+
+Real spectrum data reaches the waterfall from the radio's own scope, CI-V
+`27 00`. **Reads only: nothing here writes to or keys the radio.**
+
+VERIFIED COLUMN-AWARE against `IC-7300_Full_English v6`, p. 19-12, which is the
+lesson HM-DEC-050 paid for. A sweep arrives as a division number, a division
+maximum, a center-or-fixed flag, the span, an out-of-range flag and then the
+waveform. Over USB it is divided by eleven: the first part carries the header
+without waveform data and the rest carry the waveform. Data range 0 to 160, data
+length 475.
+
+A CORRECTION FOUND WHILE READING IT, and worth recording because the next session
+will meet the same page. The `27 00` row's own description says the waveform is
+output only when `27 10` and **`27 20`** are on. There is no `27 20`. The
+sub-command list on the same page runs 00, 10, 11, 12, 13, 14, 15, 16, 17, 19,
+1A, 1B, and `11` is "Send/read the Scope wave data output". HM-DEC-049 already
+recorded `27 10` and `27 11`, and it is right; the cross-reference beside it is a
+typo in the manual.
+
+AND A PRECONDITION NOBODY HAD WRITTEN DOWN, in the same shape as the transmit one
+(HM-DEC-059). Footnote 4 on p. 19-7: `27 11` can only be set with "Unlink from
+[REMOTE]" selected on the CI-V USB port screen and 115200 on the CI-V baud rate
+screen. Neither of those is a command at all, so no amount of code makes the
+stream arrive on a radio whose menus are set otherwise. The waterfall says which
+setting is missing rather than sitting empty, because an app that looked broken
+while the answer was four menu screens away would send somebody hunting.
+
+NOTHING TURNS THE SCOPE ON. That is a write, and this ruling is reads only.
+Hamlet reads the two settings and reports, and turning somebody's scope on stays
+theirs to do.
+
+THE STREAM COSTS THE POLL LOOP NOTHING. The radio pushes these frames once its
+own output is on, so the source asks for nothing and issues no commands at all: it
+is a listener, and a test proves the command count is zero across a whole sweep.
+The two settings behind it are read on connect and on demand and never in the
+loop, which is HM-DEC-050's rationing applied to the highest-rate thing on the
+bus.
+
+A SWEEP WITH A HOLE IN IT IS DROPPED RATHER THAN PATCHED. A part that arrives out
+of order would otherwise be stitched to the one before it, and a waterfall row
+assembled from two different sweeps draws signals that were never simultaneously
+there. Drops are counted, because a stream losing a third of its sweeps looks
+like a slow waterfall and that is the hardest kind of defect to attribute
+(§0.0.1).
+
+A HEADER THAT WILL NOT PARSE PRODUCES NOTHING. Falling back to the band plan's
+own edges would draw a waterfall whose frequencies are Hamlet's invention rather
+than the radio's measurement, on the one surface built to show what is actually
+there. The span comes off the wire or the row does not exist.
+
+THE SIMULATED LABEL IS UNCHANGED AND UNWEAKENED (HM-DEC-026). Each source answers
+`IsSimulated` for itself and neither has a setter, so real data arriving cannot
+turn the label off and synthetic data cannot arrive without it. A test asserts
+the absence of both setters, because that absence is the whole mechanism.
+
+The renderer was not touched. It already owns its bitmap and subscribes to the
+engine's event directly (HM-DEC-006), which is exactly what made swapping the
+data source a matter of attaching a different one.
+
+---
 id: HM-DEC-061
 date: 2026-08-14
 refs: src/Hamlet.RadioEngine/Explore/FamilyFilter.cs, tests/Hamlet.RadioEngine.Tests/Explore/FamilyFilterTests.cs, HM-DEC-032, HM-DEC-045, HM-DEC-057
