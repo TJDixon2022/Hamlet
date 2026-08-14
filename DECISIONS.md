@@ -4,6 +4,59 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-067
+date: 2026-08-14
+narrows: HM-DEC-050
+refs: src/Hamlet.RadioEngine/Rig/ScopeReadiness.cs, src/Hamlet.App/ViewModels/MainWindowViewModel.cs, tests/Hamlet.RadioEngine.Tests/Rig/ScopeStreamTests.cs, HM-DEC-062
+---
+
+**The waterfall says why it is empty, and names the two menus that control it.**
+Where no waveform data has arrived, it says the radio is not sending any, and it
+names the settings as the radio names them and the path to reach them.
+
+THIS NARROWS HM-DEC-050 AND THE NARROWING IS THE POINT. That ruling's
+"consequences, never instructions" is about settings Hamlet reads and judges: it
+reports that the filter is narrow and does not tell anybody to widen it, because
+the radio is theirs and a program that starts issuing corrections has stopped
+being an instrument. That scope does not reach a feature the operator asked for
+which cannot work at all until a switch only they can reach is thrown. Neither of
+these two is a command. No amount of code makes the stream arrive, and an empty
+waterfall that says nothing reads as a broken program while the answer is a pair
+of menu screens away. So the exception is narrow and stated: Hamlet may name a
+menu when a feature is inert without it, and it may not otherwise tell anybody
+how to set their radio.
+
+THE CASE THAT WAS MISSING IS THE ONE SOMEBODY STARES AT. HM-DEC-062 already said
+which of the two settings read as off. What it did not cover was both of them
+reading as on with the waterfall staying blank, which is exactly the state that
+looks like a bug in Hamlet. Now zero sweeps with everything switched on is its
+own answer, and one arriving sweep stops it being said.
+
+VERIFIED COLUMN-AWARE, and the edition is named because it is not the one earlier
+rulings read. IC-7300 Full Manual, publication **A7292-4EX-5**, 173 pages, read
+with `pdftotext -table`. Page **12-9** carries both settings under `MENU` then
+`SET` then `Connectors`: "CI-V USB Port (Default: Link to [REMOTE])" and "CI-V
+USB Baud Rate (Default: Auto)". Page **19-7** footnote 4 is the precondition, and
+it reads the same in this edition as HM-DEC-062 recorded from the other.
+
+ONE AMBIGUITY, RECORDED RATHER THAN SMOOTHED OVER. Footnote 4 names the "CI-V
+Baud Rate" screen, and the radio has two: CI-V Baud Rate for the [REMOTE] jack
+and CI-V USB Baud Rate for the USB port. Hamlet is on the USB port, so the USB
+one is what the app names. 115200 is also the rate Hamlet already talks at, so
+setting it costs the connection nothing.
+
+NO FAULT LANGUAGE, and a test holds it. Nothing here is anybody's mistake, and a
+radio that shipped with these switches off is a radio behaving exactly as
+documented. The note describes what is not arriving and where the switches live,
+and a test fails it on "failed", "error", "wrong", "you must" and their
+neighbors.
+
+THE COLLAPSED SUMMARY GOT THE SAME CORRECTION. It said "receiving" for any real
+radio, including one that has never sent a sweep. A shut panel that goes quiet
+about a problem is §0.5 broken by omission, so it now says "nothing arriving"
+until something does.
+
+---
 id: HM-DEC-066
 date: 2026-08-14
 refs: HM-OPEN-006, src/Hamlet.App/Settings/AppSettings.cs, src/Hamlet.App/ViewModels/SettingsViewModel.cs, src/Hamlet.RadioEngine/Explore/SpotRanking.cs, tests/Hamlet.RadioEngine.Tests/Explore/CopySpeedTests.cs

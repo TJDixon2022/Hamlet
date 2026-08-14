@@ -17,6 +17,11 @@ public enum ScopeReadyState
 
     /// <summary>Hamlet has not read the two settings yet.</summary>
     NotRead,
+
+    /// <summary>
+    /// The settings read as on and no waveform data has arrived anyway.
+    /// </summary>
+    NothingArriving,
 }
 
 /// <summary>What Hamlet can say about the scope stream.</summary>
@@ -24,8 +29,13 @@ public enum ScopeReadyState
 /// <param name="IsReady">True only when sweeps should be arriving.</param>
 /// <param name="Detail">One sentence, or "" when all is well.</param>
 /// <param name="Citation">The manual page behind it, or "".</param>
+/// <param name="WhereToLook">
+/// The menus that control it, named as the radio names them, or "" when there
+/// is nothing for anybody to go and look at.
+/// </param>
 public sealed record ScopeStatus(
-    ScopeReadyState State, bool IsReady, string Detail, string Citation);
+    ScopeReadyState State, bool IsReady, string Detail, string Citation,
+    string WhereToLook = "");
 
 /// <summary>
 /// Whether the radio's scope stream can reach Hamlet, and what is missing
@@ -49,13 +59,53 @@ public static class ScopeReadiness
 {
     /// <summary>The manual pages behind the preconditions.</summary>
     public const string Citation =
-        "IC-7300 Full Manual, command table and footnote 4, p. 19-7";
+        "IC-7300 Full Manual, command table and footnote 4, p. 19-7; "
+        + "the two menu settings, p. 12-9 (edition 5, A7292-4EX-5)";
+
+    /// <summary>
+    /// Where the two settings live, named exactly as the radio names them.
+    /// </summary>
+    /// <remarks>
+    /// <para>THE ONE PLACE HAMLET GIVES AN INSTRUCTION, and it is narrow on
+    /// purpose (HM-DEC-067, narrowing HM-DEC-050). Hamlet reports consequences
+    /// rather than telling anybody how to set their radio. The exception is a
+    /// feature the operator asked for that cannot work at all until a switch
+    /// only they can reach is thrown, and this is that: neither of these is a
+    /// command, so no amount of code makes the stream arrive.</para>
+    /// <para>The names are quoted from the radio's own menus rather than
+    /// paraphrased, because a paraphrase sends somebody hunting for a screen
+    /// that does not exist. Read column-aware from the Full Manual, edition 5,
+    /// publication A7292-4EX-5, p. 12-9.</para>
+    /// <para>One ambiguity, recorded rather than smoothed over. Footnote 4 on
+    /// p. 19-7 names the "CI-V Baud Rate" screen, and the radio has two of
+    /// them: CI-V Baud Rate for the [REMOTE] jack and CI-V USB Baud Rate for
+    /// the USB port. Hamlet is on the USB port, so the USB one is the one named
+    /// here.</para>
+    /// </remarks>
+    public const string WhereToLook =
+        "Both settings are on the radio under MENU, then SET, then Connectors. "
+        + "CI-V USB Port wants Unlink from [REMOTE], and CI-V USB Baud Rate wants "
+        + "115200, which is the rate Hamlet talks at anyway.";
+
+    /// <summary>
+    /// What Hamlet says when the settings look right and nothing arrives.
+    /// </summary>
+    public const string NothingArrivingDetail =
+        "The radio is not sending waveform data. Hamlet reads the two settings "
+        + "that control it and they both look right from here, so the next thing "
+        + "worth a look is the pair on the radio's own menus.";
 
     /// <summary>Can the scope stream reach Hamlet right now?</summary>
     /// <param name="capabilities">What the connected radio can do, or null.</param>
     /// <param name="state">Everything Hamlet has read from it.</param>
+    /// <param name="sweepsSeen">
+    /// How many sweeps have actually arrived, or -1 when nobody is counting.
+    /// Zero with everything switched on is its own answer, and it is the one
+    /// somebody stares at (HM-DEC-067).
+    /// </param>
     /// <returns>The verdict, never null.</returns>
-    public static ScopeStatus Check(RigCapabilities? capabilities, RigState state)
+    public static ScopeStatus Check(
+        RigCapabilities? capabilities, RigState state, long sweepsSeen = -1)
     {
         ArgumentNullException.ThrowIfNull(state);
 
@@ -99,8 +149,18 @@ public static class ScopeReadiness
                 ScopeReadyState.OutputOff, false,
                 "The scope is running on the radio and it is not sending the data "
                 + "to the computer. That switch lives on the radio, and it only "
-                + "works with the CI-V USB port set to unlink from remote and the "
-                + "CI-V baud rate at 115200.", Citation);
+                + "works alongside two settings there.", Citation, WhereToLook);
+        }
+
+        // EVERYTHING READS AS ON AND NOTHING HAS ARRIVED, which is the case
+        // somebody actually sits and stares at (HM-DEC-067). An empty waterfall
+        // that says nothing looks like a broken program, and the answer is
+        // usually a pair of menu screens away.
+        if (sweepsSeen is 0)
+        {
+            return new ScopeStatus(
+                ScopeReadyState.NothingArriving, false,
+                NothingArrivingDetail, Citation, WhereToLook);
         }
 
         return new ScopeStatus(ScopeReadyState.Ready, true, "", Citation);

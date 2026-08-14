@@ -523,8 +523,17 @@ public partial class MainWindowViewModel : ObservableObject
                 return "not yet receiving";
             }
 
-            return SignalsAreSimulated
-                ? $"simulated signals · {SelectedBand.Band.Name}"
+            if (SignalsAreSimulated)
+            {
+                return $"simulated signals · {SelectedBand.Band.Name}";
+            }
+
+            // A shut panel may not claim to be receiving while nothing has
+            // arrived, which is the collapsed-summary half of HM-DEC-067: a
+            // panel that goes quiet about a problem is §0.5 broken by
+            // omission.
+            return _rigSpectrum is { SweepCount: 0 }
+                ? $"nothing arriving · {SelectedBand.Band.Name}"
                 : $"receiving · {SelectedBand.Band.Name}";
         }
     }
@@ -1483,10 +1492,20 @@ public partial class MainWindowViewModel : ObservableObject
         OnPropertyChanged(nameof(TerminalSummary));
 
         // A waterfall that sat empty without saying why would be the app looking
-        // broken while the answer was four menu screens away (HM-DEC-062).
-        var scope = ScopeReadiness.Check(_rig?.Capabilities, state);
+        // broken while the answer was four menu screens away (HM-DEC-062). The
+        // sweep count goes in because settings that read as on and a waterfall
+        // that stays blank is the case somebody actually sits and stares at
+        // (HM-DEC-067).
+        var scope = ScopeReadiness.Check(
+            _rig?.Capabilities, state, _rigSpectrum?.SweepCount ?? -1);
 
-        ScopeNote = _rig is null || _rig.IsSimulated || scope.IsReady ? "" : scope.Detail;
+        ScopeNote = _rig is null || _rig.IsSimulated || scope.IsReady
+            ? ""
+            : string.IsNullOrEmpty(scope.WhereToLook)
+                ? scope.Detail
+                : $"{scope.Detail} {scope.WhereToLook}";
+
+        OnPropertyChanged(nameof(WaterfallSummary));
 
         // The break-in setting and the mode both live in here, and both decide
         // whether a send would reach the air. So the panel re-asks whenever the

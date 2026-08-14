@@ -312,7 +312,7 @@ public sealed class ScopeStreamTests
         var status = ScopeReadiness.Check(radio, outputOff);
 
         Assert.Equal(ScopeReadyState.OutputOff, status.State);
-        Assert.Contains("115200", status.Detail, StringComparison.Ordinal);
+        Assert.Contains("115200", status.WhereToLook, StringComparison.Ordinal);
         Assert.Contains("19-7", status.Citation, StringComparison.Ordinal);
 
         var ready = RigState.Empty.With(new[]
@@ -327,6 +327,57 @@ public sealed class ScopeStreamTests
         Assert.Equal(
             ScopeReadyState.NoScope,
             ScopeReadiness.Check(radio with { HasSpectrumScope = false }, ready).State);
+    }
+
+    /// <summary>
+    /// The settings read as on, nothing arrives, and the waterfall says so
+    /// (HM-DEC-067).
+    /// </summary>
+    /// <remarks>
+    /// The case somebody actually sits and stares at. Both switches report on,
+    /// the waterfall stays blank, and until now the app said nothing at all,
+    /// which reads as a broken program while the answer is a pair of menu
+    /// screens away.
+    /// </remarks>
+    [Fact]
+    public void AWaterfallThatNeverFillsNamesTheMenusThatControlIt()
+    {
+        var radio = new RigCapabilities(
+            "IC-7300", HasSpectrumScope: true, HasBuiltInCwKeyer: true,
+            HasUsbAudio: true, CanTransmit: true, new[] { "40 m" });
+
+        var now = new DateTime(2026, 8, 15, 22, 0, 0, DateTimeKind.Utc);
+
+        var ready = RigState.Empty.With(new[]
+        {
+            RigValue.Known(RigField.ScopeOn, 1, "on", now, "CI-V 27 10"),
+            RigValue.Known(RigField.ScopeOutput, 1, "on", now, "CI-V 27 11"),
+        });
+
+        var silent = ScopeReadiness.Check(radio, ready, sweepsSeen: 0);
+
+        Assert.Equal(ScopeReadyState.NothingArriving, silent.State);
+        Assert.False(silent.IsReady);
+
+        // Named as the radio names them, because a paraphrase sends somebody
+        // hunting for a screen that does not exist.
+        Assert.Contains("MENU", silent.WhereToLook, StringComparison.Ordinal);
+        Assert.Contains("Connectors", silent.WhereToLook, StringComparison.Ordinal);
+        Assert.Contains("CI-V USB Port", silent.WhereToLook, StringComparison.Ordinal);
+        Assert.Contains("CI-V USB Baud Rate", silent.WhereToLook, StringComparison.Ordinal);
+        Assert.Contains("12-9", silent.Citation, StringComparison.Ordinal);
+
+        // No fault language anywhere in it. Nothing here is anybody's mistake.
+        var said = (silent.Detail + " " + silent.WhereToLook).ToLowerInvariant();
+        foreach (var blame in new[]
+                 { "you forgot", "error", "failed", "wrong", "invalid", "you must" })
+        {
+            Assert.False(said.Contains(blame, StringComparison.Ordinal),
+                $"the note says '{blame}'");
+        }
+
+        // And one sweep is enough to stop saying it.
+        Assert.True(ScopeReadiness.Check(radio, ready, sweepsSeen: 1).IsReady);
     }
 
     /// <summary>
