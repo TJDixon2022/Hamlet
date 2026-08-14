@@ -23,7 +23,29 @@ public partial class MainWindow : Window
         // the view's fact, so the view pushes it; the ViewModel owns what to
         // do about it.
         PropertyChanged += OnWindowPropertyChanged;
-        Opened += (_, _) => PushVisibility();
+        Opened += (_, _) =>
+        {
+            PushVisibility();
+            StartReconnect();
+        };
+    }
+
+    /// <summary>
+    /// Kicks off the startup reconnect without waiting for it (HM-DEC-052).
+    /// </summary>
+    /// <remarks>
+    /// Deliberately not awaited. Opening a COM port and waiting for a radio to
+    /// answer takes as long as it takes, and a window that will not paint until
+    /// the radio replies is a window that looks broken to anybody whose rig is
+    /// switched off. So the window comes up first and the status line fills in
+    /// afterwards.
+    /// </remarks>
+    private void StartReconnect()
+    {
+        if (DataContext is MainWindowViewModel vm)
+        {
+            _ = vm.ReconnectOnStartupAsync();
+        }
     }
 
     private void OnWindowPropertyChanged(

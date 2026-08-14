@@ -4,6 +4,105 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-052
+date: 2026-08-14
+refs: src/Hamlet.App/Startup/ReconnectPlan.cs, src/Hamlet.App/ViewModels/MainWindowViewModel.cs, src/Hamlet.App/Settings/AppSettings.cs, tests/Hamlet.App.Tests/Startup/ReconnectPlanTests.cs, CLAUDE.md §8, HM-DEC-026
+---
+
+Hamlet reconnects to the radio it was last using when it opens, as a setting
+that ships on, and every way that can go wrong ends on the training radio with
+one sentence in the status line.
+
+WHY IT IS ON BY DEFAULT. Connecting is the one thing the operator does every
+single time, the app already knows which port they used, and a click that is
+always the same click is friction rather than a choice. It is still a setting,
+because somebody sharing a COM port with a logging program needs Hamlet to keep
+its hands off that port, and the switch sits beside the audio settings rather
+than in a corner, since it is about the same question: what is Hamlet listening
+to when you open it.
+
+NEVER BLOCKS AND NEVER INTERRUPTS. The attempt is started from the window's
+Opened event and not awaited, so the window paints whether or not a radio
+answers. There is no dialog at any point. A modal box between somebody and their
+radio, saying a thing they can neither fix from the box nor act on, is the worst
+version of this feature, and it is the version most software ships.
+
+FALLS BACK TO THE TRAINING RADIO RATHER THAN TO NOTHING. An app that opens dead
+because the rig is switched off has thrown away the evening; the training radio
+puts a band on screen with signals moving on it, and HM-DEC-026 already
+guarantees those signals are labeled as synthesized wherever they appear. So the
+fallback cannot quietly become a lie about what is on the air.
+
+A MISSING PORT IS NAMED, AND THIS IS THE PART THAT MATTERS. Windows hands a USB
+radio whichever COM number is free at the time and changes its mind after an
+update or a different socket, which makes renumbering far and away the most
+common reason a reconnect fails. "Could not connect to COM3" sends somebody to
+check a cable, a baud rate, a CI-V address and their own sanity. "COM3 isn't on
+this computer any more" sends them to the port list, where the answer is. The
+two failures are distinguishable before the port is ever opened, so reporting
+them alike would be discarding information Hamlet already had (§0.0.1).
+
+ONCE, AND NEVER IN A LOOP. If the radio arrives later the operator clicks
+Connect, which they were going to do anyway. A background retry reopening a
+serial port every few seconds is exactly what upsets the other software sharing
+it, and it turns one honest sentence into a status line that will not sit still.
+
+THE FALLBACK DOES NOT ERASE THE REMEMBERED RADIO. Landing on the training radio
+sets the dropdown but leaves `LastPort` alone, so one evening with the rig
+switched off does not quietly cost somebody the setting and leave them wondering
+why the app stopped finding their radio.
+
+The decision itself is a pure function returning a plan, separate from the
+ViewModel, because every case worth having is a case nobody exercises by hand:
+the rig switched off, the cable in a different socket, the setting turned off on
+purpose. Those are the feature, so they are the tests.
+
+---
+id: HM-DEC-051
+date: 2026-08-14
+refs: src/Hamlet.RadioEngine/Rig/Ic7300Rig.cs, src/Hamlet.App/Views/MainWindow.axaml, src/Hamlet.App/Controls/CollapsiblePanel.axaml, tests/Hamlet.RadioEngine.Tests/Rig/RigDisconnectTests.cs, CLAUDE.md §8, §0.5
+---
+
+Three rules taken from the first evening Hamlet spent connected to a real
+IC-7300: teardown returns promptly whatever the port does, the window scrolls to
+everything it contains, and clearing the terminal wipes the display and nothing
+else.
+
+TEARDOWN IS BOUNDED, AND THE ORDER IS THE FIX. Disconnect did not work at all.
+`SerialPort.BaseStream.ReadAsync` ignores its cancellation token on Windows, so
+cancelling the read loop and then awaiting it waits forever, and the line that
+cleared the connected state sat after the await and never ran. The button stayed
+disabled, the port list stayed locked, and the app was still holding the radio.
+Closing the port first and letting the read fault is the fix. State goes down
+first and unconditionally, the port closes, and the loop gets half a second to
+notice before it is abandoned. A read loop that will not die is a leaked thread
+and that is regrettable; a UI that will not come back is a broken app, and §8
+already says which one loses.
+
+The test that proves it uses a fake port whose read never returns and never
+will, which is exactly what Windows was doing. Without that fake the bug is
+invisible to every test and visible to anybody with a radio.
+
+ONE SCROLLER, NOT SEVEN. On a 1080p screen the CW terminal and the waterfall
+were simply unreachable, with no scrollbar to reach them by. The main content is
+one vertical scroller with the menu bar and the connection row pinned above it,
+and the scrollbar is permanently visible rather than auto-hiding. It has to be:
+the dial tape eats the mouse wheel to tune, which is correct, and a page whose
+only affordance is a wheel the tape swallows is a page with no affordance at
+all. Lists that would otherwise make the page enormous are bounded where they
+sit rather than given competing scrollers.
+
+CLEARING IS A DISPLAY OPERATION. Tuning around leaves a pile of half-decoded
+noise above whatever is arriving now, so there is a Clear control, worded rather
+than drawn, in the panel header where the eye already is. It empties the screen
+and touches nothing else: not the speed estimate, not the tracked noise floor,
+not the tone the decoder has settled on, and it does not stop decoding. Those
+took real seconds of signal to arrive at, and losing them while chasing a
+marginal signal is precisely the wrong moment. It gets its own slot in the
+header rather than living inside the collapse toggle, so clearing cannot shut
+the panel you are reading.
+
+---
 id: HM-DEC-050
 date: 2026-08-15
 refs: src/Hamlet.RadioEngine/Rig/, src/Hamlet.RadioEngine/Civ/CivReads.cs, src/Hamlet.App/Views/RigDiagnosticsWindow.axaml, HM-DEC-009, HM-DEC-030, HM-DEC-049

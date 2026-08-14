@@ -31,6 +31,19 @@ public sealed class AppSettings
     /// <summary>Last selected port or the simulated-rig entry.</summary>
     public string? LastPort { get; set; }
 
+    /// <summary>
+    /// Reconnect to <see cref="LastPort"/> when the app opens.
+    /// </summary>
+    /// <remarks>
+    /// On by default, because clicking Connect is friction on the one action
+    /// the operator performs every single time and the app already knows which
+    /// port they used. It fails quietly by design: a radio that is switched off
+    /// or a port that has renumbered is the normal case rather than an error,
+    /// and Hamlet says so in the status line and carries on with the training
+    /// radio (HM-DEC-052).
+    /// </remarks>
+    public bool ReconnectOnStartup { get; set; } = true;
+
     /// <summary>Last selected band name, e.g. "40 m".</summary>
     public string? LastBand { get; set; }
 

@@ -82,6 +82,10 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty]
     private int _cwPitchHz;
 
+    /// <summary>Reconnect to the last radio when the app opens.</summary>
+    [ObservableProperty]
+    private bool _reconnectOnStartup;
+
     /// <summary>
     /// Recompute every badge from the profile as it stands right now.
     /// </summary>
@@ -132,6 +136,7 @@ public partial class SettingsViewModel : ObservableObject
         AudioDevices = (audioDevices ?? new WasapiAudioDevices()).List();
         _audioDevice = AudioDeviceChoice.Choose(AudioDevices, settings.AudioInputDeviceId);
         _cwPitchHz = settings.CwPitchHz;
+        _reconnectOnStartup = settings.ReconnectOnStartup;
 
         _callsign = settings.Operator.Callsign;
         _operatorName = settings.Operator.OperatorName;
@@ -242,6 +247,12 @@ public partial class SettingsViewModel : ObservableObject
 
     /// <summary>Where everything is stored.</summary>
     public string DataFolderPath => SettingsStore.DataFolder;
+
+    partial void OnReconnectOnStartupChanged(bool value)
+    {
+        _settings.ReconnectOnStartup = value;
+        SettingsStore.Save(_settings);
+    }
 
     partial void OnAudioDeviceChanged(AudioDevice? value)
     {

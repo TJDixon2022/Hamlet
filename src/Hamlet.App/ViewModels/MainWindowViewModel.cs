@@ -7,6 +7,7 @@ using CommunityToolkit.Mvvm.Input;
 using Avalonia.Controls.ApplicationLifetimes;
 using Hamlet.App.Licensing;
 using Hamlet.App.Settings;
+using Hamlet.App.Startup;
 using Hamlet.App.Telemetry;
 using Hamlet.RadioEngine.Audio;
 using Hamlet.RadioEngine.Bands;
@@ -1229,17 +1230,48 @@ public partial class MainWindowViewModel : ObservableObject
             return;
         }
 
-        var rig = CreateRig(SelectedPort);
-        var rigType = SelectedPort == TrainingRadio ? "simulated" : "IC-7300";
-        StatusText = $"Connecting to {SelectedPort}…";
+        await ConnectToAsync(SelectedPort);
+    }
+
+    /// <summary>
+    /// Connect to one port, reporting what happened in the status line.
+    /// </summary>
+    /// <param name="port">A COM port name, or the training radio entry.</param>
+    /// <param name="remember">
+    /// Whether this port becomes the one to reconnect to next time. False for
+    /// the startup fallback: landing on the training radio because a COM port
+    /// was missing must not erase the radio the operator actually owns, or one
+    /// evening with the rig switched off would quietly cost them the setting.
+    /// </param>
+    /// <returns>True when the radio answered.</returns>
+    /// <remarks>
+    /// Shared by the Connect button and the startup reconnect, so the two
+    /// cannot drift into connecting differently (HM-DEC-052).
+    /// </remarks>
+    private async Task<bool> ConnectToAsync(string port, bool remember = true)
+    {
+        var rig = CreateRig(port);
+        var rigType = port == TrainingRadio ? "simulated" : "IC-7300";
+        StatusText = $"Connecting to {port}…";
 
         if (!await rig.ConnectAsync())
         {
             (rig as IDisposable)?.Dispose();
-            AppEvents.ConnectFailed(_telemetry, SelectedPort, rigType, "no_response");
-            StatusText = $"No answer on {SelectedPort}. Check cable, baud and "
-                       + "CI-V address (HM-OPEN-003)";
-            return;
+            AppEvents.ConnectFailed(_telemetry, port, rigType, "no_response");
+            StatusText = $"No answer on {port}. Check the cable, the baud rate and "
+                       + "the CI-V address on the radio";
+            return false;
+        }
+
+        var keep = _settings.LastPort;
+        SelectedPort = port;
+
+        if (!remember && keep != port)
+        {
+            // The dropdown shows where Hamlet ended up, and the file still holds
+            // where it was trying to go.
+            _settings.LastPort = keep;
+            SettingsStore.Save(_settings);
         }
 
         _rig = rig;
@@ -1269,10 +1301,92 @@ public partial class MainWindowViewModel : ObservableObject
 
         var hz = await rig.GetFrequencyHzAsync();
         ApplyRigFrequency(hz);
-        StatusText = SelectedPort == TrainingRadio
+        StatusText = port == TrainingRadio
             ? "On the training radio, with synthesised signals and nothing on the air"
-            : $"Connected. IC-7300 on {SelectedPort} · CI-V bytes unverified until "
-              + "HM-OPEN-002 closes";
+            : $"Connected to the IC-7300 on {port}";
+
+        return true;
+    }
+
+    /// <summary>
+    /// Reconnect to the last radio when the app opens, if that is wanted.
+    /// </summary>
+    /// <remarks>
+    /// <para>FAILS QUIETLY AND LEGIBLY, because failing is the normal case
+    /// (HM-DEC-052). A radio switched off, unplugged, or on a COM port Windows
+    /// has renumbered is what happens every time somebody opens Hamlet at their
+    /// desk rather than in the shack. None of that is an error and none of it
+    /// gets a dialog: the status line says what happened, in a sentence, and
+    /// the app carries on with the training radio so it is still worth having
+    /// open.</para>
+    /// <para>A MISSING PORT IS NAMED SPECIFICALLY, because renumbering is the
+    /// single most common cause and saying "COM3 isn't on this computer any
+    /// more" saves somebody twenty minutes of checking a cable that was fine.
+    /// </para>
+    /// <para>Once, and never in a loop. If the radio arrives later the operator
+    /// can click Connect, and a background loop reopening a COM port is exactly
+    /// the kind of thing that upsets other software sharing it.</para>
+    /// </remarks>
+    public async Task ReconnectOnStartupAsync()
+    {
+        // Nothing here is allowed to take the app down with it (§8). This runs
+        // unawaited off the window's Opened event, so an exception escaping it
+        // would surface as a crash with no stack anybody could connect to the
+        // radio being unplugged.
+        try
+        {
+            await ReconnectCoreAsync().ConfigureAwait(true);
+        }
+        catch (Exception)
+        {
+            StatusText = ReconnectPlan.CouldNotOpen();
+        }
+    }
+
+    private async Task ReconnectCoreAsync()
+    {
+        var plan = ReconnectPlan.Decide(
+            _settings.ReconnectOnStartup,
+            IsConnected,
+            _settings.LastPort,
+            AvailablePorts,
+            TrainingRadio);
+
+        switch (plan.Step)
+        {
+            case ReconnectStep.Nothing:
+                return;
+
+            case ReconnectStep.TrainingRadio:
+                if (plan.Explanation is not null)
+                {
+                    AppEvents.ConnectFailed(
+                        _telemetry, _settings.LastPort ?? string.Empty,
+                        "IC-7300", "port_absent");
+                }
+
+                await ConnectToAsync(plan.Port, remember: plan.Explanation is null);
+
+                if (plan.Explanation is not null)
+                {
+                    StatusText = plan.Explanation;
+                }
+
+                return;
+
+            case ReconnectStep.RememberedPort:
+                if (await ConnectToAsync(plan.Port))
+                {
+                    return;
+                }
+
+                // Once, and never in a loop. The radio is off, and a background
+                // retry reopening a COM port is exactly what upsets the other
+                // software sharing it.
+                await ConnectToAsync(TrainingRadio, remember: false);
+                StatusText = ReconnectPlan.NoAnswer(plan.Port);
+                return;
+        }
     }
 
     /// <summary>UI-origin frequency changes: clamp to band, refresh the mode

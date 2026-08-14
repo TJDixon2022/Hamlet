@@ -112,6 +112,20 @@ public sealed class SettingsRoundTripTests : IDisposable
         Assert.Equal(minutes, SettingsStore.LoadFrom(SettingsPath).SpotRefreshMinutes);
     }
 
+    /// <remarks>Proves HM-DEC-052: startup reconnect is on out of the box, and
+    /// an operator who turns it off finds it still off next time. A switch that
+    /// silently reverts to on would reopen a COM port somebody deliberately left
+    /// alone.</remarks>
+    [Fact]
+    public void StartupReconnect_IsOnByDefaultAndSurvivesBeingTurnedOff()
+    {
+        Assert.True(new AppSettings().ReconnectOnStartup);
+
+        SettingsStore.SaveTo(new AppSettings { ReconnectOnStartup = false }, SettingsPath);
+
+        Assert.False(SettingsStore.LoadFrom(SettingsPath).ReconnectOnStartup);
+    }
+
     /// <remarks>Proves HM-DEC-018 still holds with the profile added: a
     /// corrupt settings file yields defaults rather than a crash, and the
     /// defaults include a usable profile.</remarks>
