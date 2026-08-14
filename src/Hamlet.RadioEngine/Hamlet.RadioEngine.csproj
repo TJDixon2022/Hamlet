@@ -11,6 +11,7 @@
   <!-- CLAUDE.md §0.1: this project references no UI assembly, ever. -->
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.10" />
     <PackageReference Include="System.IO.Ports" Version="8.0.0" />
   </ItemGroup>
 
@@ -18,15 +19,13 @@
        of truth (HM-OPEN-005) and is embedded so it ships with the app. One
        file, so there is no copy to drift away from the regulation. -->
   <ItemGroup>
-    <EmbeddedResource Include="..\..\data\privileges\us-part97-privileges.json"
-                      LogicalName="Hamlet.RadioEngine.Data.Privileges.us-part97-privileges.json" />
+    <EmbeddedResource Include="..\..\data\privileges\us-part97-privileges.json" LogicalName="Hamlet.RadioEngine.Data.Privileges.us-part97-privileges.json" />
   </ItemGroup>
 
   <!-- The glossary lives in /data with the other editorial content and is
        embedded so it ships with the app (HM-DEC-041). -->
   <ItemGroup>
-    <EmbeddedResource Include="..\..\data\glossary.json"
-                      LogicalName="Hamlet.RadioEngine.Data.glossary.json" />
+    <EmbeddedResource Include="..\..\data\glossary.json" LogicalName="Hamlet.RadioEngine.Data.glossary.json" />
   </ItemGroup>
 
   <!-- The telemetry line format is an internal detail with a public promise
