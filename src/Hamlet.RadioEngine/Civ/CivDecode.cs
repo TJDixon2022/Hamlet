@@ -52,6 +52,9 @@ public static class CivDecode
 
         switch (field)
         {
+            case RigField.Frequency:
+                return One(DecodeFrequency(payload, atUtc, source));
+
             case RigField.Mode:
                 return DecodeModeAndFilter(payload, atUtc, source);
 
@@ -131,6 +134,31 @@ public static class CivDecode
     }
 
     private static IReadOnlyList<RigValue> One(RigValue value) => new[] { value };
+
+    /// <summary>
+    /// The operating frequency, which arrives the same way whether it was asked
+    /// for or volunteered.
+    /// </summary>
+    /// <remarks>
+    /// A reply of the wrong length is refused rather than padded. A frequency
+    /// decoded from a short frame would be a plausible number on the one field
+    /// every other surface in the app trusts (§0.0).
+    /// </remarks>
+    private static RigValue DecodeFrequency(
+        ReadOnlySpan<byte> payload, DateTime atUtc, string source)
+    {
+        if (payload.Length != Bcd.FrequencyByteCount)
+        {
+            return RigValue.Unknown(field: RigField.Frequency,
+                source: $"{source} gave {payload.Length} bytes rather than "
+                      + $"{Bcd.FrequencyByteCount}");
+        }
+
+        var hz = Bcd.DecodeFrequencyHz(payload);
+
+        return RigValue.Known(
+            RigField.Frequency, hz, CivValues.FrequencyText(hz), atUtc, source);
+    }
 
     /// <summary>
     /// Mode and filter arrive together, so one command answers two fields

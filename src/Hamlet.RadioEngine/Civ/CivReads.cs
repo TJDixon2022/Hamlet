@@ -17,19 +17,51 @@ namespace Hamlet.RadioEngine.Civ;
 /// The Full Manual page this comes from, so anybody can check it (HM-DEC-049).
 /// </param>
 /// <param name="Note">What the manual says the values mean.</param>
+/// <param name="AlsoAnswers">
+/// Other fields this one read fills in. Mode and filter selection arrive from a
+/// single command, so the filter is answered without ever being asked for, and
+/// a caller that does not know that would either ask twice or conclude the
+/// radio has no filter.
+/// </param>
 public sealed record CivRead(
     RigField Field,
     byte Command,
     byte[] SubCommand,
     string Page,
-    string Note)
+    string Note,
+    RigField[]? AlsoAnswers = null)
 {
     /// <summary>How this read is named in the diagnostics screen and the log.</summary>
     public string Label
         => SubCommand.Length == 0
             ? $"CI-V {Command:X2}"
             : $"CI-V {Command:X2} {Convert.ToHexString(SubCommand)}";
+
+    /// <summary>Every field this one command fills in, its own included.</summary>
+    public IReadOnlyList<RigField> Answers
+        => AlsoAnswers is null or { Length: 0 }
+            ? new[] { Field }
+            : new[] { Field }.Concat(AlsoAnswers).ToList();
 }
+
+/// <summary>
+/// A value the radio volunteers rather than one Hamlet asks for.
+/// </summary>
+/// <param name="Field">Which field arrives this way.</param>
+/// <param name="Label">
+/// The mechanism, named as itself: "transceive 00", never a poll command that is
+/// not issued.
+/// </param>
+/// <param name="Page">The Full Manual page describing it.</param>
+/// <param name="Note">What the frame carries.</param>
+/// <remarks>
+/// BROADCAST IS A PROVENANCE, NOT AN ABSENCE, and getting that wrong is what
+/// made the diagnostics screen say the IC-7300 has no frequency while the face
+/// of the radio was showing one. A field the radio pushes is supported and
+/// populated; it simply has no poll command behind it, because asking for a
+/// figure the radio already sent could only ever be more stale (HM-DEC-050).
+/// </remarks>
+public sealed record CivBroadcast(RigField Field, string Label, string Page, string Note);
 
 /// <summary>
 /// Every state read Hamlet performs, with its manual citation.
@@ -51,16 +83,32 @@ public sealed record CivRead(
 /// </remarks>
 public static class CivReads
 {
+    /// <summary>Read the operating frequency.</summary>
+    /// <remarks>
+    /// NOT POLLED, AND STILL READ ONCE. The radio broadcasts every change as the
+    /// operator makes it, so asking over and over would spend bus traffic on a
+    /// fact already in hand (HM-DEC-050). Nothing broadcasts what the radio was
+    /// already sitting on before Hamlet arrived, though, so this is issued by the
+    /// connect sweep and by the diagnostics screen's own refresh and at no other
+    /// time. Its absence from this table was read as "the IC-7300 has no
+    /// frequency", which is how the screen came to deny a value it was holding.
+    /// </remarks>
+    public static CivRead Frequency { get; } = new(
+        RigField.Frequency, 0x03, Array.Empty<byte>(), "19-3",
+        "the operating frequency, BCD, little-endian by byte pair");
+
     /// <summary>Read the operating mode and filter selection together.</summary>
     /// <remarks>
     /// One command answers two fields: the reply is one byte of mode and one of
     /// filter (p. 19-9). That is why the mode badge and the filter badge on the
-    /// rig display refresh together.
+    /// rig display refresh together, and why the filter is never asked for on its
+    /// own.
     /// </remarks>
     public static CivRead ModeAndFilter { get; } = new(
         RigField.Mode, 0x04, Array.Empty<byte>(), "19-3, 19-9",
         "00=LSB, 01=USB, 02=AM, 03=CW, 04=RTTY, 05=FM, 07=CW-R, 08=RTTY-R; "
-        + "then 01=FIL1, 02=FIL2, 03=FIL3");
+        + "then 01=FIL1, 02=FIL2, 03=FIL3",
+        new[] { RigField.FilterSelection });
 
     /// <summary>Read the selected filter's width.</summary>
     /// <remarks>
@@ -206,7 +254,7 @@ public static class CivReads
     /// <summary>Every read, in the order the diagnostics screen shows them.</summary>
     public static IReadOnlyList<CivRead> All { get; } = new[]
     {
-        ModeAndFilter, FilterWidth, SMeter, TransmitStatus, Overflow,
+        Frequency, ModeAndFilter, FilterWidth, SMeter, TransmitStatus, Overflow,
         RfPower, RfGain, Squelch, SquelchStatus, Agc, Preamp, Attenuator,
         NoiseBlanker, NoiseBlankerLevel, NoiseReduction, NoiseReductionLevel,
         AutoNotch, ManualNotch, BreakIn, KeyerSpeed, CwPitch,
@@ -229,9 +277,57 @@ public static class CivReads
                 + "nothing that asks which one is selected (p. 19-3)",
         };
 
+    /// <summary>
+    /// Fields the radio pushes without being asked.
+    /// </summary>
+    /// <remarks>
+    /// <para>THE STATE THIS TABLE EXISTS TO KEEP OUT OF THE MODEL is
+    /// <see cref="RigValueState.Unsupported"/>. A field with no poll command is
+    /// not a field the radio lacks, and treating the two alike put "not on this
+    /// radio" against the frequency while the IC-7300's own face was showing
+    /// it.</para>
+    /// <para>Transceive has to be on at the radio for any of this to arrive. When
+    /// it is off nothing is pushed, the fields simply stay unknown until the
+    /// connect sweep or a refresh reads them, and unknown is the honest answer
+    /// for a value nobody has heard yet (§0.0).</para>
+    /// </remarks>
+    public static IReadOnlyList<CivBroadcast> Broadcasts { get; } = new[]
+    {
+        new CivBroadcast(
+            RigField.Frequency, "transceive 00", "19-3",
+            "the radio sends the new frequency as the operator turns the dial"),
+        new CivBroadcast(
+            RigField.Mode, "transceive 01", "19-3",
+            "the radio sends the new mode, usually with the filter, as the "
+            + "operator changes it"),
+        new CivBroadcast(
+            RigField.FilterSelection, "transceive 01", "19-3",
+            "arrives on the back of the mode report"),
+    };
+
     /// <summary>The read for a field, or null when there is none.</summary>
     /// <param name="field">The field.</param>
     /// <returns>The read, or null.</returns>
     public static CivRead? For(RigField field)
         => All.FirstOrDefault(r => r.Field == field);
+
+    /// <summary>
+    /// The read that fills this field in as a side effect, or null.
+    /// </summary>
+    /// <param name="field">The field.</param>
+    /// <returns>The read that answers it, or null when nothing does.</returns>
+    /// <remarks>
+    /// Only ever the filter selection today. It matters because a sweep that
+    /// walked every field and found no command for this one used to conclude the
+    /// radio had no filter, moments after another command had reported which
+    /// filter was selected.
+    /// </remarks>
+    public static CivRead? AnsweredBy(RigField field)
+        => All.FirstOrDefault(r => r.Field != field && r.Answers.Contains(field));
+
+    /// <summary>How the radio volunteers this field, or null when it does not.</summary>
+    /// <param name="field">The field.</param>
+    /// <returns>The broadcast, or null.</returns>
+    public static CivBroadcast? BroadcastFor(RigField field)
+        => Broadcasts.FirstOrDefault(b => b.Field == field);
 }

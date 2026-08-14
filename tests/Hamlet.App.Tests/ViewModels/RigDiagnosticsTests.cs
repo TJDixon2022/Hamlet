@@ -146,6 +146,51 @@ public sealed class RigDiagnosticsTests
     }
 
     /// <remarks>
+    /// THE ROW THAT DENIED WHAT THE APP WAS HOLDING (HM-DEC-053). The Frequency
+    /// row read "not on this radio" while the rig display beside it showed the
+    /// live frequency, because the field is fed by the radio's broadcasts rather
+    /// than by a poll and the sweep read that absence as an absent feature. A
+    /// broadcast-fed field is a supported, populated field whose provenance is
+    /// the broadcast, and it carries its age like every other row.
+    /// </remarks>
+    [Fact]
+    public void ABroadcastFrequencyShowsItsValueItsProvenanceAndItsAge()
+    {
+        var state = RigState.Empty
+            .WithRigName("IC-7300")
+            .With(RigValue.Known(
+                RigField.Frequency, 14_074_000, "14.074000 MHz",
+                Now.AddSeconds(-20), "transceive 00"));
+
+        var row = new RigDiagnosticsViewModel(null, state)
+            .Rows.Single(r => r.Label == "Frequency");
+
+        Assert.Equal(RigValueState.Known, row.State);
+        Assert.Contains("14.074", row.Value, StringComparison.Ordinal);
+        Assert.Equal("transceive 00", row.Source);
+        Assert.Contains("seconds ago", row.Age, StringComparison.Ordinal);
+
+        Assert.DoesNotContain("not on this radio", row.Value, StringComparison.Ordinal);
+    }
+
+    /// <remarks>
+    /// Proves the pre-broadcast state reads unknown and not unsupported. Nothing
+    /// is pushed until the operator moves the dial or the connect sweep asks, and
+    /// "nobody has heard yet" is a different claim from "this radio has no
+    /// frequency" (HM-DEC-030).
+    /// </remarks>
+    [Fact]
+    public void BeforeAnythingArrivesTheFrequencyRowSaysUnknown()
+    {
+        var row = new RigDiagnosticsViewModel(null, RigState.Empty.WithRigName("IC-7300"))
+            .Rows.Single(r => r.Label == "Frequency");
+
+        Assert.Equal(RigValueState.Unknown, row.State);
+        Assert.Equal("unknown", row.Value);
+        Assert.Equal("", row.Age);
+    }
+
+    /// <remarks>
     /// Proves the screen can be built with no monitor behind it, which is what
     /// the designer and the tests do, and that asking it to refresh then does
     /// nothing rather than throwing.

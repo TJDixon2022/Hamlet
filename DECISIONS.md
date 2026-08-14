@@ -4,6 +4,55 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-053
+date: 2026-08-14
+refs: src/Hamlet.RadioEngine/Civ/CivReads.cs, src/Hamlet.RadioEngine/Rig/Ic7300Rig.cs, tests/Hamlet.RadioEngine.Tests/Rig/RigBroadcastProvenanceTests.cs, HM-DEC-009, HM-DEC-030, HM-DEC-050
+---
+
+A value the radio volunteers is a supported, populated value whose provenance is
+the broadcast. Broadcast is a provenance, not an absence, and
+`Unsupported` is reserved for what the capabilities record says the rig
+genuinely lacks.
+
+WHY, AND IT IS THE WORST KIND OF BUG THIS PROJECT CAN HAVE. The diagnostics
+screen showed the Frequency row as "not on this radio" and "IC-7300: Hamlet
+reads nothing for this" while the rig display an inch above it was showing the
+live frequency. The screen exists to prove what the app knows (§0.0.1) and it
+was asserting the opposite of what the app knew, on the one surface that is
+meant to be immune to that.
+
+THE MECHANISM. HM-DEC-050 rightly never polls the frequency, because the radio
+broadcasts every change as the operator makes it and asking as well could only
+ever be more stale. So there was no entry in the CI-V read table, and the sweep
+that walks every field mapped "no command for this" onto `Unsupported`, which
+means "nothing is ever coming, stop waiting" (HM-DEC-030). One absence stood in
+for a completely different one, and the broadcast reading that was already in
+the model got overwritten by it every time somebody opened the screen.
+
+THE FIX IS IN THE TAXONOMY, NOT IN A SPECIAL CASE FOR THE FREQUENCY. A field is
+now populated by one of three mechanisms, and none of them is an absence: its
+own read command, another command that answers it on the way past, or a
+broadcast the radio pushes. Only the capabilities record produces `Unsupported`.
+A gap in Hamlet's own table produces `Unknown` and says Hamlet is the gap.
+
+Fixing the classification rather than the row caught the second instance
+immediately. The filter designator arrives on the back of the mode command
+(p. 19-9) and has no read of its own, so the same sweep concluded the radio had
+no filter moments after reporting which filter was selected. Nobody had noticed,
+because the badge is fed from the mode read and looked right.
+
+Two mechanisms are named apart rather than blurred. "transceive 00" and
+"CI-V 03" both produce a frequency, they mean different things about how current
+it is, and the provenance column now says which one spoke. The frequency also
+gains a read of its own at last, cited to p. 19-3, issued by the connect sweep
+and by the operator pressing Refresh and at no other time, because nothing
+broadcasts what the radio was already sitting on before Hamlet arrived.
+
+Before the first broadcast, and with transceive switched off at the radio, the
+row reads unknown. Not unsupported, and never zero: 0 Hz is a plausible number
+on the one field every other surface in the app trusts (§0.0).
+
+---
 id: HM-DEC-052
 date: 2026-08-14
 refs: src/Hamlet.App/Startup/ReconnectPlan.cs, src/Hamlet.App/ViewModels/MainWindowViewModel.cs, src/Hamlet.App/Settings/AppSettings.cs, tests/Hamlet.App.Tests/Startup/ReconnectPlanTests.cs, CLAUDE.md §8, HM-DEC-026

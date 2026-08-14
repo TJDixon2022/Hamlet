@@ -185,9 +185,24 @@ public sealed class Ic7300Rig : IRig, IDisposable
 
         if (CivReads.For(field) is not { } read)
         {
+            // NOTHING TO ASK IS NOT NOTHING TO KNOW. A field with no poll command
+            // of its own is answered by another command or pushed by the radio,
+            // and reporting either as "not on this radio" is the diagnostics
+            // screen contradicting the rig display beside it. Returning nothing
+            // leaves whatever is already in the model alone: the broadcast that
+            // filled it, or unknown when none has arrived (§0.0).
+            if (CivReads.AnsweredBy(field) is not null ||
+                CivReads.BroadcastFor(field) is not null)
+            {
+                return Array.Empty<RigValue>();
+            }
+
+            // Unsupported is reserved for what the capabilities record says the
+            // radio genuinely lacks (HM-DEC-030). A gap in Hamlet's table is a
+            // gap in Hamlet, so it says unknown and names itself as the reason.
             return new[]
             {
-                RigValue.Unsupported(field, Capabilities.Model + ": Hamlet reads nothing for this"),
+                RigValue.Unknown(field, Capabilities.Model + ": Hamlet has no read for this yet"),
             };
         }
 
@@ -378,7 +393,7 @@ public sealed class Ic7300Rig : IRig, IDisposable
             ValuesReported?.Invoke(this, new RigValuesReportedEventArgs(new[]
             {
                 RigValue.Known(
-                    RigField.Frequency, hz, FrequencyText(hz),
+                    RigField.Frequency, hz, CivValues.FrequencyText(hz),
                     DateTime.UtcNow, "transceive 00"),
             }));
 
@@ -453,11 +468,6 @@ public sealed class Ic7300Rig : IRig, IDisposable
 
         return true;
     }
-
-    /// <summary>A frequency in the form the diagnostics screen shows it.</summary>
-    internal static string FrequencyText(long hz)
-        => (hz / 1_000_000.0).ToString("0.000000", System.Globalization.CultureInfo.InvariantCulture)
-           + " MHz";
 
     /// <summary>
     /// Stop the read loop and close the port, promptly and whatever happens.

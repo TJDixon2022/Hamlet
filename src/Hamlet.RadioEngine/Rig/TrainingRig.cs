@@ -52,14 +52,13 @@ public sealed class TrainingRig : IRig
 
     /// <inheritdoc/>
     /// <remarks>
-    /// Declared and never raised, which the compiler is right to notice. The
-    /// training radio has no front panel for anybody to touch, so there is
-    /// nothing for it to volunteer, and pretending otherwise by inventing
-    /// changes would put synthetic readings on screen (§0.0).
+    /// Raised for the one field this radio genuinely models, which is the
+    /// frequency it is tuned to. It has no front panel for anybody to touch and
+    /// no receiver, so nothing else is ever volunteered, and inventing changes
+    /// to fill the screen out would put synthetic readings where measurements
+    /// belong (§0.0).
     /// </remarks>
-#pragma warning disable CS0067
     public event EventHandler<RigValuesReportedEventArgs>? ValuesReported;
-#pragma warning restore CS0067
 
     /// <inheritdoc/>
     /// <remarks>
@@ -88,7 +87,7 @@ public sealed class TrainingRig : IRig
             {
                 RigValue.Known(
                     field, Interlocked.Read(ref _frequencyHz),
-                    Ic7300Rig.FrequencyText(Interlocked.Read(ref _frequencyHz)), now, source),
+                    Civ.CivValues.FrequencyText(Interlocked.Read(ref _frequencyHz)), now, source),
             },
 
             // It synthesizes Morse and nothing else, so this is a fact about it
@@ -129,7 +128,7 @@ public sealed class TrainingRig : IRig
     public Task SetFrequencyHzAsync(long frequencyHz, CancellationToken cancellationToken = default)
     {
         Interlocked.Exchange(ref _frequencyHz, frequencyHz);
-        FrequencyChanged?.Invoke(this, new FrequencyChangedEventArgs(frequencyHz));
+        Announce(frequencyHz);
         return Task.CompletedTask;
     }
 
@@ -140,6 +139,28 @@ public sealed class TrainingRig : IRig
     public void SimulateKnobTurn(long newFrequencyHz)
     {
         Interlocked.Exchange(ref _frequencyHz, newFrequencyHz);
-        FrequencyChanged?.Invoke(this, new FrequencyChangedEventArgs(newFrequencyHz));
+        Announce(newFrequencyHz);
+    }
+
+    /// <summary>
+    /// Tell everybody where this radio is now tuned.
+    /// </summary>
+    /// <remarks>
+    /// The state model hears this the same way it hears a real radio's
+    /// transceive report, so the diagnostics screen and the display agree about
+    /// the frequency instead of the screen showing whatever the last sweep
+    /// happened to catch.
+    /// </remarks>
+    private void Announce(long frequencyHz)
+    {
+        FrequencyChanged?.Invoke(this, new FrequencyChangedEventArgs(frequencyHz));
+
+        ValuesReported?.Invoke(this, new RigValuesReportedEventArgs(new[]
+        {
+            RigValue.Known(
+                RigField.Frequency, frequencyHz,
+                Civ.CivValues.FrequencyText(frequencyHz), DateTime.UtcNow,
+                "training radio"),
+        }));
     }
 }

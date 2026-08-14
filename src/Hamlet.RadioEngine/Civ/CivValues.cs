@@ -106,6 +106,18 @@ public static class CivValues
         0x03 => "FIL3",
         _ => null,
     };
+    /// <summary>A frequency in the form the diagnostics screen shows it.</summary>
+    /// <param name="hz">The frequency in hertz.</param>
+    /// <returns>e.g. "7.030000 MHz".</returns>
+    /// <remarks>
+    /// Six decimal places, which is the resolution the radio tunes at, and an
+    /// invariant decimal point so a paste into a bug report reads the same on
+    /// every machine.
+    /// </remarks>
+    public static string FrequencyText(long hz)
+        => (hz / 1_000_000.0).ToString(
+               "0.000000", System.Globalization.CultureInfo.InvariantCulture)
+           + " MHz";
 }
 
 /// <summary>
