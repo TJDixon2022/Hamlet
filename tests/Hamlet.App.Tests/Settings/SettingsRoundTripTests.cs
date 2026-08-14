@@ -146,6 +146,62 @@ public sealed class SettingsRoundTripTests : IDisposable
         Assert.False(read.IsPanelExpanded(PanelKeys.Contact));
     }
 
+    /// <remarks>
+    /// Proves HM-DEC-072: where the operator has been survives a restart. The
+    /// moment this list matters most is the following evening, thinking "where
+    /// was that station", and a list that emptied on exit would fail exactly
+    /// then. The entry with no callsign has to come back with none, because a
+    /// blank that reloaded as something would be worse than not saving it.
+    /// </remarks>
+    [Fact]
+    public void RecentStations_SurviveARestart()
+    {
+        var written = new AppSettings
+        {
+            Recent = new List<SavedRecentStation>
+            {
+                new()
+                {
+                    FrequencyHz = 7_030_000, Station = "W1AW", Mode = "CW",
+                    BandName = "40 m", Neighborhood = "QRP watering hole",
+                    VisitedUtc = new DateTime(2026, 8, 15, 20, 0, 0, DateTimeKind.Utc),
+                },
+                new()
+                {
+                    FrequencyHz = 14_074_000, Station = "", Mode = "USB-D",
+                    BandName = "20 m", Neighborhood = "FT8 city",
+                    VisitedUtc = new DateTime(2026, 8, 15, 19, 0, 0, DateTimeKind.Utc),
+                },
+            },
+        };
+
+        SettingsStore.SaveTo(written, SettingsPath);
+        var read = SettingsStore.LoadFrom(SettingsPath);
+
+        Assert.Equal(2, read.Recent.Count);
+        Assert.Equal("W1AW", read.Recent[0].Station);
+        Assert.Equal("QRP watering hole", read.Recent[0].Neighborhood);
+        Assert.Equal(7_030_000, read.Recent[0].FrequencyHz);
+
+        // The one nobody identified comes back unidentified.
+        Assert.Equal("", read.Recent[1].Station);
+    }
+
+    /// <remarks>Proves HM-DEC-072: a profile written before this feature loads
+    /// with an empty list rather than throwing, which is the same promise every
+    /// other added setting makes (§6.1).</remarks>
+    [Fact]
+    public void RecentStations_AreEmptyInAProfileWrittenBeforeThem()
+    {
+        Directory.CreateDirectory(_folder);
+        File.WriteAllText(SettingsPath, """{ "LastBand": "40 m" }""");
+
+        var read = SettingsStore.LoadFrom(SettingsPath);
+
+        Assert.Empty(read.Recent);
+        Assert.Equal("40 m", read.LastBand);
+    }
+
     /// <remarks>Proves HM-DEC-020: the chosen refresh interval survives a
     /// restart, and "Off" (0) survives as Off rather than being rounded back
     /// up to the default by a null-ish check.</remarks>

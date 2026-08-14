@@ -86,9 +86,36 @@
                 <MenuItem Header="_File">
                     <MenuItem Header="Exit" Command="{Binding ExitCommand}" />
                 </MenuItem>
+                <!-- EVERYTHING ABOUT THE RADIO LIVES UNDER RADIO, which is
+                     what put the diagnostics window here, and is why the two
+                     lists of frequencies are here rather than under Tools.
+                     Favorites was ruled in HM-DEC-060 and never actually built
+                     into the menu, so the manage window had no way in at all
+                     until now. -->
                 <MenuItem Header="_Radio">
                     <MenuItem Header="{Binding ConnectButtonText}"
                               Command="{Binding ToggleConnectCommand}" />
+                    <Separator />
+                    <MenuItem Header="Favorites" ItemsSource="{Binding FavoriteMenu}"
+                              IsEnabled="{Binding HasFavorites}">
+                        <MenuItem.Styles>
+                            <Style Selector="MenuItem" x:DataType="vm:TuneMenuItem">
+                                <Setter Property="Header" Value="{Binding Label}" />
+                                <Setter Property="Command" Value="{Binding Tune}" />
+                            </Style>
+                        </MenuItem.Styles>
+                    </MenuItem>
+                    <MenuItem Header="Recent" ItemsSource="{Binding RecentMenu}"
+                              IsEnabled="{Binding HasRecent}">
+                        <MenuItem.Styles>
+                            <Style Selector="MenuItem" x:DataType="vm:TuneMenuItem">
+                                <Setter Property="Header" Value="{Binding Label}" />
+                                <Setter Property="Command" Value="{Binding Tune}" />
+                            </Style>
+                        </MenuItem.Styles>
+                    </MenuItem>
+                    <MenuItem Header="Manage favorites…"
+                              Command="{Binding ManageFavoritesCommand}" />
                     <Separator />
                     <MenuItem Header="What the radio is doing…"
                               Command="{Binding OpenRigDiagnosticsCommand}" />
@@ -237,18 +264,37 @@
                                Margin="2,0,10,0"
                                Foreground="{StaticResource HmAmberBrush}" />
 
-                    <ComboBox Grid.Column="1"
-                              ItemsSource="{Binding Favorites}"
-                              SelectedItem="{Binding SelectedFavorite}"
-                              PlaceholderText="favorites"
-                              MinWidth="180" FontSize="12"
-                              IsVisible="{Binding HasFavorites}">
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate x:DataType="explore:Favorite">
-                                <TextBlock Text="{Binding Name}" />
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
-                    </ComboBox>
+                    <!-- THE TWO SIT TOGETHER AND READ AS A PAIR (HM-DEC-072).
+                         Favorites are places he chose and recent are places he
+                         was, so scattering them would hide that they are the
+                         same kind of thing. Each is absent until it has
+                         something in it, because an empty dropdown reads as a
+                         control that is broken. -->
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+                        <ComboBox ItemsSource="{Binding Recent}"
+                                  SelectedItem="{Binding SelectedRecent}"
+                                  PlaceholderText="recent"
+                                  MinWidth="180" FontSize="12"
+                                  IsVisible="{Binding HasRecent}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate x:DataType="explore:RecentStation">
+                                    <TextBlock Text="{Binding Label}" />
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+
+                        <ComboBox ItemsSource="{Binding Favorites}"
+                                  SelectedItem="{Binding SelectedFavorite}"
+                                  PlaceholderText="favorites"
+                                  MinWidth="180" FontSize="12"
+                                  IsVisible="{Binding HasFavorites}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate x:DataType="explore:Favorite">
+                                    <TextBlock Text="{Binding Name}" />
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                    </StackPanel>
                 </Grid>
 
                 <!-- THE STAR IS INSIDE THE BLACK (HM-DEC-070), which reverses

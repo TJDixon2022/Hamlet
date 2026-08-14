@@ -4,6 +4,81 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-072
+date: 2026-08-14
+refs: src/Hamlet.RadioEngine/Explore/RecentStation.cs, src/Hamlet.App/ViewModels/TuneMenuItem.cs, src/Hamlet.App/ViewModels/FavoritesViewModel.cs, tests/Hamlet.RadioEngine.Tests/Explore/RecentStationTests.cs, HM-DEC-060, HM-DEC-070
+---
+
+**Hamlet remembers where the operator has been, so he can go back without the
+number.** Ten places, most recent first, beside favorites and behaving like them.
+
+THE SIBLING OF FAVORITES, AND BUILT AS ONE. A favorite is a place he chose; this
+is a place he was. Both carry the context the map already knows, both tune on a
+click, both live on the panel strip and in the Radio menu, and an entry here can
+be starred into a favorite. That last part is how most favorites will actually be
+born: somebody was somewhere good, did not think to save it, and realizes the
+following evening that he wants it.
+
+DWELL, NOT LANDING, AND THE THRESHOLD IS **TWENTY SECONDS**. The dial is a scroll
+wheel, so a literal history would fill with near-identical entries between 7.029
+and 7.031 and be useless inside a minute. An entry appears only once he has
+stayed put. The figure comes from Morse rather than from roundness: hunting
+across a band no frequency holds the dial more than a second or two, while
+deciding whether a signal is worth staying for takes about one CQ call, and a
+full "CQ CQ CQ DE W1AW W1AW W1AW K" at a relaxed thirteen words a minute runs
+close to twenty-five seconds (HM-DEC-066). Twenty sits just inside one call:
+long enough that passing through never counts, short enough that hearing
+somebody out always does. One named place in the engine, and **not a setting** —
+it is a judgment about what counts as stopping, and a slider would ask the
+operator to make it before he has any way to know.
+
+SAME PLACE MEANS **WITHIN TWO HUNDRED HERTZ**, which is the width the app already
+calls one signal (`SpotIdentity.FrequencyBucketHz`), read from there rather than
+chosen again so two numbers meaning "near enough" cannot drift apart. It is a
+tolerance and not a bucket: dividing into buckets puts an invisible boundary
+every two hundred hertz, so 7.030.150 and 7.030.250 would be separate while
+7.030.010 and 7.030.190 merged, which is unpredictable in exactly the way that
+makes somebody stop trusting a list. The tradeoff is stated rather than hidden:
+on Morse two notes that far apart are usually two stations, so a wide tolerance
+can fold two visits into one entry. That costs the older entry; the alternative
+costs the whole list to near-duplicates, which is the failure this exists to
+avoid.
+
+NAMED WHERE HAMLET KNOWS, A PLACE WHERE IT DOES NOT. An entry carries a callsign
+only where something identified one: arriving by clicking a spot card counts,
+because the operator acted on a report of that station. Scroll-wheeling onto a
+frequency a spot happens to sit near does not, because nothing was checked and an
+entry that named a station then would be asserting a presence out of proximity
+(§0.0). Everywhere else the entry is the frequency and what the map says lives
+there, which is exactly what a favorite says when nobody typed a name. The
+decoder resolves no callsigns today, so the card is the only source; the seam is
+there for the day it does.
+
+AND THE NEWEST VISIT'S IDENTIFICATION WINS, INCLUDING WHEN IT IS EMPTY. If Hamlet
+knew a callsign the first time and knows nothing this time, the entry stops
+carrying it. Keeping it would say that station is there now and nothing checked.
+The place survives either way, which is what he is actually navigating by.
+
+TEN, against favorites' ninety-nine, and the difference is the point. Favorites
+are a library somebody curates. This is the last few places he was, and a list
+long enough to need scrolling has stopped answering "where was I just now".
+
+PERSISTED, because the moment it matters most is the following evening thinking
+"where was that station", and a list that emptied on exit would fail exactly
+then.
+
+A GAP FOUND WHILE BUILDING IT: **HM-DEC-060's Favorites submenu was ruled and
+never built.** Nothing in the menu ever invoked `ManageFavoritesCommand`, so the
+manage window had no way in at all and had been unreachable since it was written.
+Both submenus are there now, with the manage window under them.
+
+AND ONE THING THAT WOULD HAVE SHIPPED BROKEN AND SILENT. A menu opens in its own
+popup, and a popup is a separate visual tree, so a submenu item whose command
+binds up to the window resolves to nothing: it compiles, it renders correctly,
+and it does nothing when clicked. So each line carries its own command
+(`TuneMenuItem`), which also makes the menu testable without a window.
+
+---
 id: HM-DEC-071
 date: 2026-08-14
 refs: CLAUDE.md §4, src/Hamlet.RadioEngine/Civ/CivReads.cs, src/Hamlet.RadioEngine/Civ/CivValues.cs, tests/Hamlet.RadioEngine.Tests/Civ/CitationTests.cs, HM-DEC-049, HM-DEC-050, HM-DEC-067, HM-DEC-069

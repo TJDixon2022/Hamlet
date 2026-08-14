@@ -66,6 +66,16 @@ public sealed class AppSettings
     /// </remarks>
     public List<SavedFavorite> Favorites { get; set; } = new();
 
+    /// <summary>
+    /// Where the operator has been, most recent first (HM-DEC-072).
+    /// </summary>
+    /// <remarks>
+    /// Persisted for the same reason favorites are, and the moment it matters
+    /// most is the following evening thinking "where was that station". A list
+    /// that emptied on exit would fail exactly then.
+    /// </remarks>
+    public List<SavedRecentStation> Recent { get; set; } = new();
+
     /// <summary>Last selected band name, e.g. "40 m".</summary>
     public string? LastBand { get; set; }
 
@@ -450,6 +460,33 @@ public static class SettingsStore
             // Nothing to do if the shell refuses.
         }
     }
+}
+
+/// <summary>One visited frequency, as settings.json holds it (HM-DEC-072).</summary>
+/// <remarks>
+/// A settings shape rather than the engine's record, for the same reason
+/// <see cref="SavedFavorite"/> is one: anything persisted has to survive a
+/// rename with a migration behind it (§6.1).
+/// </remarks>
+public sealed class SavedRecentStation
+{
+    /// <summary>Where it is.</summary>
+    public long FrequencyHz { get; set; }
+
+    /// <summary>The callsign if one was identified, or "".</summary>
+    public string Station { get; set; } = "";
+
+    /// <summary>The mode at the time.</summary>
+    public string Mode { get; set; } = "";
+
+    /// <summary>Which band.</summary>
+    public string BandName { get; set; } = "";
+
+    /// <summary>What the map said lives there.</summary>
+    public string Neighborhood { get; set; } = "";
+
+    /// <summary>When the visit was recorded.</summary>
+    public DateTime VisitedUtc { get; set; }
 }
 
 /// <summary>One saved frequency, as settings.json holds it (HM-DEC-060).</summary>

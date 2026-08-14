@@ -12,7 +12,7 @@
         <vm:FavoritesViewModel />
     </Design.DataContext>
 
-    <Grid RowDefinitions="Auto,*,Auto" Margin="16">
+    <Grid RowDefinitions="Auto,*,Auto,Auto" Margin="16">
 
         <TextBlock Grid.Row="0" Margin="0,0,0,10"
                    Text="Each one remembers what it was for, which is the thing a numbered memory channel cannot tell you."
@@ -55,7 +55,46 @@
             </Grid>
         </Border>
 
-        <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="8"
+        <!-- WHERE HE HAS BEEN, BESIDE WHAT HE CHOSE (HM-DEC-072). This is how
+             most favorites will actually be born: somebody was somewhere good,
+             did not think to save it, and wants it the following evening. The
+             section is absent entirely until there is something in it. -->
+        <StackPanel Grid.Row="2" Spacing="6" Margin="0,14,0,0"
+                    IsVisible="{Binding HasRecent}">
+            <TextBlock Text="Where you have been"
+                       FontSize="13" FontWeight="SemiBold"
+                       Foreground="{StaticResource HmAmberBrush}" />
+            <TextBlock Text="Hamlet remembers a place once you have stayed on it a moment, and the star saves it the same way the one in the display does."
+                       FontSize="12" TextWrapping="Wrap"
+                       Foreground="{StaticResource HmTextMutedBrush}" />
+
+            <Border Background="White" CornerRadius="8" MaxHeight="180"
+                    BorderBrush="{StaticResource HmSlateEdgeBrush}" BorderThickness="1">
+                <ListBox ItemsSource="{Binding Recent}"
+                         Background="Transparent" BorderThickness="0">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate x:DataType="vm:RecentRowViewModel">
+                            <Grid ColumnDefinitions="*,Auto" Margin="0,3">
+                                <StackPanel Grid.Column="0" Spacing="1"
+                                            Margin="0,0,10,0">
+                                    <TextBlock Text="{Binding Label}" FontSize="13" />
+                                    <TextBlock Text="{Binding Provenance}" FontSize="11"
+                                               Foreground="{StaticResource HmTextMutedBrush}" />
+                                </StackPanel>
+                                <Button Grid.Column="1" Padding="10,4" FontSize="12"
+                                        VerticalAlignment="Center"
+                                        Content="{Binding StarLabel}"
+                                        IsEnabled="{Binding !IsSaved}"
+                                        Command="{Binding $parent[Window].((vm:FavoritesViewModel)DataContext).StarCommand}"
+                                        CommandParameter="{Binding}" />
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Border>
+        </StackPanel>
+
+        <StackPanel Grid.Row="3" Orientation="Horizontal" Spacing="8"
                     HorizontalAlignment="Right" Margin="0,12,0,0">
             <Button Content="Move up" Command="{Binding MoveUpCommand}" Padding="12,5" />
             <Button Content="Move down" Command="{Binding MoveDownCommand}" Padding="12,5" />

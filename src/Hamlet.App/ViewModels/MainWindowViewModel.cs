@@ -78,6 +78,25 @@ public partial class MainWindowViewModel : ObservableObject
     /// they have just been to does not reappear under "what's new" one refresh
     /// later (HM-DEC-057).
     /// </remarks>
+    /// <summary>
+    /// Whether the dial has sat still long enough to be worth remembering
+    /// (HM-DEC-072).
+    /// </summary>
+    private readonly DwellTracker _dwell = new();
+
+    /// <summary>
+    /// A callsign the operator arrived on, and the frequency it belongs to.
+    /// </summary>
+    /// <remarks>
+    /// TIED TO ITS FREQUENCY ON PURPOSE (§0.0). A call held loose would still be
+    /// attached after the dial had moved somewhere else, and the recent list
+    /// would name a station on a frequency nobody ever heard one on. Tying the
+    /// two together means the pairing expires by itself the moment it stops
+    /// being true.
+    /// </remarks>
+    private string _arrivedOnStation = "";
+    private long _arrivedOnHz = -1;
+
     private readonly HashSet<string> _actedOnSpots =
         new(StringComparer.OrdinalIgnoreCase);
 
@@ -381,6 +400,58 @@ public partial class MainWindowViewModel : ObservableObject
     /// <summary>The frequencies the operator saved (HM-DEC-060).</summary>
     public ObservableCollection<Favorite> Favorites { get; } = new();
 
+    /// <summary>Where the operator has been, most recent first (HM-DEC-072).</summary>
+    public ObservableCollection<RecentStation> Recent { get; } = new();
+
+    /// <summary>The Radio menu's Favorites submenu (HM-DEC-060, HM-DEC-072).</summary>
+    /// <remarks>
+    /// EACH ITEM CARRIES ITS OWN COMMAND, which is not a style choice. A menu
+    /// opens in its own popup, and a popup is a separate visual tree, so a
+    /// binding that walks up to the window for the command resolves to nothing
+    /// and the item silently does nothing when clicked. Nothing about that fails
+    /// to compile and nothing about it looks wrong on screen, which is the worst
+    /// combination there is.
+    /// </remarks>
+    public ObservableCollection<TuneMenuItem> FavoriteMenu { get; } = new();
+
+    /// <summary>The Radio menu's Recent submenu (HM-DEC-072).</summary>
+    public ObservableCollection<TuneMenuItem> RecentMenu { get; } = new();
+
+    /// <summary>Rebuild the two submenus from the two lists.</summary>
+    private void RebuildMenus()
+    {
+        FavoriteMenu.Clear();
+        foreach (var favorite in Favorites)
+        {
+            var target = favorite;
+            FavoriteMenu.Add(new TuneMenuItem(target.Name, () => TuneToFavorite(target)));
+        }
+
+        RecentMenu.Clear();
+        foreach (var entry in Recent)
+        {
+            var target = entry;
+            RecentMenu.Add(new TuneMenuItem(target.Label, () => TuneToRecent(target)));
+        }
+
+        OnPropertyChanged(nameof(HasFavorites));
+        OnPropertyChanged(nameof(HasRecent));
+    }
+
+    /// <summary>
+    /// The recent place picked from the dropdown, which tunes there.
+    /// </summary>
+    /// <remarks>
+    /// Cleared straight after, exactly as the favorites box is, so it reads
+    /// "recent" again rather than showing a stale selection once the dial has
+    /// moved on.
+    /// </remarks>
+    [ObservableProperty]
+    private RecentStation? _selectedRecent;
+
+    /// <summary>True when there is anywhere to go back to.</summary>
+    public bool HasRecent => Recent.Count > 0;
+
     /// <summary>
     /// What the star says, inside the display: one short word (HM-DEC-070).
     /// </summary>
@@ -666,6 +737,15 @@ public partial class MainWindowViewModel : ObservableObject
                 saved.FrequencyHz, saved.Name, saved.Mode, saved.BandName,
                 saved.Neighborhood, saved.SavedUtc));
         }
+
+        foreach (var saved in settings.Recent)
+        {
+            Recent.Add(new RecentStation(
+                saved.FrequencyHz, saved.Station, saved.Mode, saved.BandName,
+                saved.Neighborhood, saved.VisitedUtc));
+        }
+
+        RebuildMenus();
 
         // A stored lens is the operator's own last answer rather than a guess,
         // so it is restored and inference never runs against it (HM-DEC-057).
@@ -1106,7 +1186,8 @@ public partial class MainWindowViewModel : ObservableObject
     {
         var window = new Views.FavoritesWindow
         {
-            DataContext = new FavoritesViewModel(Favorites, PersistFavorites),
+            DataContext = new FavoritesViewModel(
+                Favorites, PersistFavorites, Recent, StarRecent),
         };
 
         if (Application.Current?.ApplicationLifetime
@@ -1137,7 +1218,7 @@ public partial class MainWindowViewModel : ObservableObject
             .ToList();
 
         SettingsStore.Save(_settings);
-        OnPropertyChanged(nameof(HasFavorites));
+        RebuildMenus();
         UpdateFavoriteState();
     }
 
@@ -1169,7 +1250,7 @@ public partial class MainWindowViewModel : ObservableObject
     private void TuneTo(long hz)
     {
         AppEvents.TuneRequested(_telemetry, hz, "story_or_spot");
-        MarkActedOn(hz);
+        var arrivedOn = MarkActedOn(hz);
         var band = BandPlan.BandFor(hz);
         if (band is not null && band.Name != SelectedBand.Band.Name)
         {
@@ -1177,6 +1258,14 @@ public partial class MainWindowViewModel : ObservableObject
         }
 
         FrequencyHz = hz;
+
+        // AFTER THE MOVE, NEVER BEFORE IT. Switching bands can land the dial on
+        // that band's own default on the way past, and the frequency handler
+        // expires an arrival that no longer matches where the dial is. Setting
+        // this first meant the callsign was thrown away in transit
+        // (HM-DEC-072).
+        _arrivedOnStation = arrivedOn;
+        _arrivedOnHz = arrivedOn.Length > 0 ? hz : -1;
     }
 
     partial void OnSelectedBandChanged(BandButtonViewModel value)
@@ -1991,6 +2080,18 @@ public partial class MainWindowViewModel : ObservableObject
         UpdateFavoriteState();
         ScheduleModeFollow();
 
+        // The dwell clock restarts wherever the dial lands, from any source
+        // (HM-DEC-072). A callsign the operator arrived on stops applying the
+        // moment he is somewhere else, which is what keeps the recent list from
+        // naming a station on a frequency nobody heard one on.
+        _dwell.Moved(clamped, DateTime.UtcNow);
+
+        if (_arrivedOnHz != clamped)
+        {
+            _arrivedOnStation = "";
+            _arrivedOnHz = -1;
+        }
+
         if (_updatingFromRig || _rig is null || !IsConnected)
         {
             return;
@@ -2115,7 +2216,144 @@ public partial class MainWindowViewModel : ObservableObject
     private async void OnSpotRefreshTick(object? sender, EventArgs e)
         => await ReloadSpotsAsync("timer");
 
-    private void OnAgeTick(object? sender, EventArgs e) => UpdateSpotFreshness();
+    private void OnAgeTick(object? sender, EventArgs e)
+    {
+        UpdateSpotFreshness();
+        NoteDwell(DateTime.UtcNow);
+    }
+
+    /// <summary>
+    /// Remember where the operator has been, once he has actually stopped there
+    /// (HM-DEC-072).
+    /// </summary>
+    /// <param name="nowUtc">The moment, passed in so the rule is testable.</param>
+    /// <remarks>
+    /// <para>DWELL RATHER THAN LANDING. The decision lives in
+    /// <see cref="DwellTracker"/> and this only supplies the clock and the
+    /// context, so the rule can be proved to the second without waiting twenty
+    /// of them.</para>
+    /// <para>The callsign goes on only where something identified one. Arriving
+    /// by clicking a spot card counts, because the operator acted on a report of
+    /// that station. Scroll-wheeling onto a frequency a spot happens to sit near
+    /// does not, because nothing was checked and an entry that named a station
+    /// then would be asserting a presence out of proximity (§0.0).</para>
+    /// </remarks>
+    internal void NoteDwell(DateTime nowUtc)
+    {
+        // SEEDED HERE RATHER THAN ONLY WHERE THE DIAL MOVES. The frequency the
+        // app opens on was never announced by a change, so nothing started its
+        // clock and the place somebody was already sitting on could never be
+        // remembered. A move to where the tracker already is costs nothing, so
+        // asking every tick is both cheap and the only version that cannot be
+        // defeated by a path that sets the frequency quietly.
+        _dwell.Moved(FrequencyHz, nowUtc);
+
+        if (!_dwell.Settled(nowUtc))
+        {
+            return;
+        }
+
+        var here = Neighborhoods.FirstOrDefault(n => n.Contains(FrequencyHz));
+        var station = _arrivedOnHz == FrequencyHz ? _arrivedOnStation : "";
+
+        var visit = RecentStations.From(
+            FrequencyHz, station, RigModeText, here, nowUtc);
+
+        var kept = RecentStations.Remember(Recent, visit);
+
+        Recent.Clear();
+        foreach (var entry in kept)
+        {
+            Recent.Add(entry);
+        }
+
+        PersistRecent();
+    }
+
+    /// <summary>Write the recent list back to settings.json.</summary>
+    private void PersistRecent()
+    {
+        _settings.Recent = Recent
+            .Select(r => new SavedRecentStation
+            {
+                FrequencyHz = r.FrequencyHz,
+                Station = r.Station,
+                Mode = r.Mode,
+                BandName = r.BandName,
+                Neighborhood = r.Neighborhood,
+                VisitedUtc = r.VisitedUtc,
+            })
+            .ToList();
+
+        SettingsStore.Save(_settings);
+        RebuildMenus();
+    }
+
+    /// <summary>Tune back to somewhere the operator has been.</summary>
+    [RelayCommand]
+    private void TuneToRecent(RecentStation? entry)
+    {
+        if (entry is null)
+        {
+            return;
+        }
+
+        AppEvents.TuneRequested(_telemetry, entry.FrequencyHz, "recent");
+        TuneTo(entry.FrequencyHz);
+    }
+
+    /// <summary>
+    /// Star a place he has been into a favorite (HM-DEC-072).
+    /// </summary>
+    /// <param name="entry">The entry.</param>
+    /// <remarks>
+    /// HOW MOST FAVORITES WILL ACTUALLY BE BORN. Somebody was somewhere good,
+    /// did not think to save it, and wants it the following evening. What it
+    /// captures is what a direct save captures, from the same function, so a
+    /// favorite made this way is indistinguishable from one made at the star.
+    /// </remarks>
+    [RelayCommand]
+    private void StarRecent(RecentStation? entry)
+    {
+        if (entry is null)
+        {
+            return;
+        }
+
+        if (RadioEngine.Explore.Favorites.At(Favorites, entry.FrequencyHz) is not null)
+        {
+            StatusText = $"{entry.Label} is already saved.";
+            return;
+        }
+
+        if (Favorites.Count >= RadioEngine.Explore.Favorites.Maximum)
+        {
+            StatusText = "That is as many favorites as Hamlet keeps. Remove one "
+                       + "from Radio, Manage favorites, and this will save.";
+            return;
+        }
+
+        var here = Neighborhoods.FirstOrDefault(n => n.Contains(entry.FrequencyHz));
+        var favorite = RecentStations.ToFavorite(entry, here, DateTime.UtcNow);
+
+        Favorites.Add(favorite);
+        AppEvents.FavoriteSaved(_telemetry, favorite.BandName);
+        StatusText = $"Saved as \"{favorite.Name}\".";
+
+        PersistFavorites();
+    }
+
+    partial void OnSelectedRecentChanged(RecentStation? value)
+    {
+        if (value is null)
+        {
+            return;
+        }
+
+        var picked = value;
+        SelectedRecent = null;
+        TuneToRecent(picked);
+    }
 
     /// <summary>
     /// Reload the feed, preserving the reading position: spots that are still
@@ -2396,16 +2634,21 @@ public partial class MainWindowViewModel : ObservableObject
     /// Mark every spot at this frequency as one the operator has been to.
     /// </summary>
     /// <param name="hz">Where they tuned.</param>
+    /// <returns>
+    /// The callsign of a station reported there, or "" when none of the spots
+    /// named one (HM-DEC-072).
+    /// </returns>
     /// <remarks>
     /// By frequency bucket rather than by card, because the click that tunes
     /// carries a frequency and two skimmers measuring the same carrier rarely
     /// agree to the hertz. It is the same bucket the store identifies a spot by
     /// (<see cref="SpotIdentity.FrequencyBucketHz"/>), so the two cannot drift.
     /// </remarks>
-    private void MarkActedOn(long hz)
+    private string MarkActedOn(long hz)
     {
         var bucket = hz / SpotIdentity.FrequencyBucketHz;
         var now = DateTime.UtcNow;
+        var arrivedOn = "";
 
         foreach (var stored in _bandHistory)
         {
@@ -2419,7 +2662,17 @@ public partial class MainWindowViewModel : ObservableObject
             {
                 _spotStore.MarkActedOn(key, now);
             }
+
+            // WHO HE WENT TO SEE (HM-DEC-072). Only reached from a click on a
+            // card, a dot or a story, so this is the operator acting on a report
+            // of that station rather than the dial happening to be near one.
+            if (arrivedOn.Length == 0 && !string.IsNullOrWhiteSpace(stored.Spot.DxCall))
+            {
+                arrivedOn = stored.Spot.DxCall.Trim();
+            }
         }
+
+        return arrivedOn;
     }
 
     /// <summary>

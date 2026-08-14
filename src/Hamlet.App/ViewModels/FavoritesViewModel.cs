@@ -74,8 +74,64 @@ public sealed partial class FavoriteRowViewModel : ObservableObject
     }
 }
 
+/// <summary>One place the operator has been, ready to be starred (HM-DEC-072).</summary>
+public sealed partial class RecentRowViewModel : ObservableObject
+{
+    /// <summary>Wraps an entry for the manage window.</summary>
+    /// <param name="entry">The entry.</param>
+    /// <param name="isSaved">Whether a favorite already sits there.</param>
+    public RecentRowViewModel(RecentStation entry, bool isSaved)
+    {
+        Entry = entry;
+        _isSaved = isSaved;
+    }
+
+    /// <summary>The entry.</summary>
+    public RecentStation Entry { get; }
+
+    /// <summary>How it reads: a station where one was identified, a place where
+    /// none was.</summary>
+    public string Label => Entry.Label;
+
+    /// <summary>The frequency as the app writes it.</summary>
+    public string FrequencyLabel => Entry.FrequencyLabel;
+
+    /// <summary>Mode, band and when he was there.</summary>
+    public string Provenance
+    {
+        get
+        {
+            var parts = new List<string>();
+
+            if (Entry.Mode.Length > 0)
+            {
+                parts.Add(Entry.Mode);
+            }
+
+            if (Entry.BandName.Length > 0)
+            {
+                parts.Add(Entry.BandName);
+            }
+
+            parts.Add($"you were here {Entry.VisitedUtc.ToLocalTime():d MMMM}");
+
+            return string.Join(" · ", parts);
+        }
+    }
+
+    /// <summary>True when this place is already a favorite.</summary>
+    [ObservableProperty]
+    private bool _isSaved;
+
+    /// <summary>What the star says.</summary>
+    public string StarLabel => IsSaved ? "★ saved" : "☆ save";
+
+    partial void OnIsSavedChanged(bool value) => OnPropertyChanged(nameof(StarLabel));
+}
+
 /// <summary>
-/// Renaming, reordering and deleting favorites (HM-DEC-060).
+/// Renaming, reordering and deleting favorites, and starring the places he has
+/// been (HM-DEC-060, HM-DEC-072).
 /// </summary>
 /// <remarks>
 /// Every row shows its mode, its band and when it was saved, because those are
@@ -87,17 +143,29 @@ public sealed partial class FavoritesViewModel : ObservableObject
 {
     private readonly ObservableCollection<Favorite> _target;
     private readonly Action _save;
+    private readonly Action<RecentStation>? _star;
 
-    /// <summary>Opens the window over the live list.</summary>
+    /// <summary>Opens the window over the live lists.</summary>
     /// <param name="favorites">The list the app is showing.</param>
     /// <param name="save">How to write it back.</param>
-    public FavoritesViewModel(ObservableCollection<Favorite> favorites, Action save)
+    /// <param name="recent">Where the operator has been, or null.</param>
+    /// <param name="star">How to turn one of those into a favorite, or null.</param>
+    public FavoritesViewModel(
+        ObservableCollection<Favorite> favorites,
+        Action save,
+        IEnumerable<RecentStation>? recent = null,
+        Action<RecentStation>? star = null)
     {
         _target = favorites ?? throw new ArgumentNullException(nameof(favorites));
         _save = save ?? throw new ArgumentNullException(nameof(save));
+        _star = star;
 
         Rows = new ObservableCollection<FavoriteRowViewModel>(
             favorites.Select(f => new FavoriteRowViewModel(f)));
+
+        Recent = new ObservableCollection<RecentRowViewModel>(
+            (recent ?? Enumerable.Empty<RecentStation>())
+                .Select(r => new RecentRowViewModel(r, IsSaved(r))));
     }
 
     /// <summary>Designer constructor.</summary>
@@ -105,6 +173,36 @@ public sealed partial class FavoritesViewModel : ObservableObject
         : this(new ObservableCollection<Favorite>(), () => { })
     {
     }
+
+    /// <summary>Where the operator has been (HM-DEC-072).</summary>
+    public ObservableCollection<RecentRowViewModel> Recent { get; }
+
+    /// <summary>True when there is anywhere to show.</summary>
+    public bool HasRecent => Recent.Count > 0;
+
+    /// <summary>
+    /// Star a place he has been into a favorite.
+    /// </summary>
+    /// <param name="row">The row.</param>
+    /// <remarks>
+    /// THE OTHER DOOR TO THE SAME ACT (HM-DEC-072). The app owns the save, so
+    /// this hands it back rather than building a favorite of its own, and a
+    /// favorite born here is the same object as one born at the star.
+    /// </remarks>
+    [RelayCommand]
+    private void Star(RecentRowViewModel? row)
+    {
+        if (row is null || row.IsSaved || _star is null)
+        {
+            return;
+        }
+
+        _star(row.Entry);
+        row.IsSaved = IsSaved(row.Entry);
+    }
+
+    private bool IsSaved(RecentStation entry)
+        => Favorites.At(_target, entry.FrequencyHz) is not null;
 
     /// <summary>The rows, in the order they appear.</summary>
     public ObservableCollection<FavoriteRowViewModel> Rows { get; }
@@ -123,8 +221,9 @@ public sealed partial class FavoritesViewModel : ObservableObject
     /// </remarks>
     public const string EmptyNote =
         "Nothing saved yet. Tune somewhere worth coming back to and press the star "
-        + "under the display, and Hamlet will remember the frequency and what "
-        + "lives there.";
+        + "in the display, and Hamlet will remember the frequency and what lives "
+        + "there. Anywhere you have already been is below, and the star beside it "
+        + "does the same job after the fact.";
 
     /// <summary>Move a favorite up the list.</summary>
     [RelayCommand]
