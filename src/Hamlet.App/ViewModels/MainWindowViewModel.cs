@@ -3431,9 +3431,17 @@ public partial class SpotViewModel : ObservableObject
     {
         var elapsed = nowUtc - _spot.HeardAtUtc;
 
-        Provenance = $"{_spot.Mode} · {_spot.Source} · "
+        var provenance = $"{_spot.Mode} · {_spot.Source} · "
             + SpotLifetime.DescribeOpportunity(_spot, elapsed, _lifetimes)
             + (Distance.Length > 0 ? $" · {Distance}" : "");
+
+        // COMPOSED TOGETHER, SO THE CARD CANNOT SAY A THING TWICE (HM-DEC-068).
+        // Both lines ask the same function whether that person is probably still
+        // there, and neither of them is wrong to. Read one after the other they
+        // said it twice, which reads as two pieces of evidence when it is one.
+        var lines = CardText.Compose(Reason, provenance);
+
+        Provenance = lines[1];
 
         // The exact figure stays available for anybody who wants it, which is
         // the trade that lets the card speak in words (HM-DEC-045).

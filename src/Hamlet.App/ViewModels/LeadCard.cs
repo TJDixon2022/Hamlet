@@ -94,11 +94,17 @@ public static class LeadCard
                 bandName, anySourceAnswering, ranked.Count, ranking, lookedBack);
         }
 
+        // COMPOSED TOGETHER, SO THE CARD CANNOT SAY A THING TWICE (HM-DEC-068).
+        // The headline, the body and the evidence line are written by three
+        // pieces of code that cannot see one another, and all three reach for
+        // the same facts about the same station.
+        var lines = CardText.Compose(Headline(best), Body(best), best.Reason);
+
         return new LeadSuggestion(
             true,
-            Headline(best),
-            Body(best),
-            best.Reason,
+            lines[0],
+            lines[1],
+            lines[2],
             best.Spot.FrequencyHz,
             FormatMhz(best.Spot.FrequencyHz));
     }

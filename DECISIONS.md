@@ -4,6 +4,52 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-068
+date: 2026-08-14
+refs: src/Hamlet.RadioEngine/Explore/CardText.cs, src/Hamlet.App/ViewModels/MainWindowViewModel.cs, src/Hamlet.App/ViewModels/LeadCard.cs, tests/Hamlet.App.Tests/ViewModels/CardRepetitionTests.cs, HM-DEC-025, HM-DEC-045
+---
+
+**A card's lines are composed together, and a clause an earlier line carried is
+dropped from a later one.** No card may say the same thing twice.
+
+THE BUG THAT WAS FOUND, AND THE ONE THAT WAS FIXED ARE NOT THE SAME. On a park
+activation the ranked reason ended with "activators stay a while, so they are
+probably still there" and the gray line underneath said it again, word for word.
+Neither line is wrong: the ranking explains why the card is where it is, the line
+under it says mode, source, age and distance, and both ask
+`SpotLifetime.DescribeOpportunity` for the same sentence because both of them
+should. Fixing that card would have left the next one to be found by somebody
+reading the screen, which is how this one was found. So the composition is the
+fix, and it holds for whatever the pieces decide to say next.
+
+WHY IT MATTERS BEYOND TIDINESS. A thing said twice reads as two pieces of
+evidence when it is one, which is a confidence the input does not justify (§0.0).
+It also reads as a program that is not paying attention, which is a poor thing
+for an application asking somebody to trust it about what is on the air.
+
+THE UNIT IS A CLAUSE. Phrases split on the card's own separator and then on
+commas, so "an hour ago, and activators stay a while, so they are probably still
+there" is three clauses and a second line can keep the age while losing the part
+already read. Case, trailing punctuation and a leading "and" or "so" are noise
+and are normalized away. Word-level matching would gut ordinary English.
+
+THE FIRST LINE ALWAYS SURVIVES WHOLE. It carries why the card is on screen at
+all, and thinning it from something written underneath would be the tail wagging
+the dog (HM-DEC-025).
+
+TWO FAMILIES COMPOSE THROUGH IT TODAY: the happening-now spot cards and the lead
+card, whose headline, body and evidence line are written by three pieces of code
+that cannot see one another. A new card family joins by calling `CardText.Compose`
+rather than by being remembered.
+
+THE TEST IS THE CLASS AND NOT THE INSTANCE. It sweeps every source, call type,
+mode, age and activation combination through both families and fails on any
+repeated clause, and it was checked against the unfixed code to be sure it fires:
+it catches the activation sentence and a duplicated mode name that nobody had
+noticed. A fourth case proves the check itself can fail, since a sweep that never
+fires proves nothing.
+
+---
 id: HM-DEC-067
 date: 2026-08-14
 narrows: HM-DEC-050
