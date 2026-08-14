@@ -117,6 +117,14 @@ public static class AppEvents
         => telemetry?.Write(TelemetryCategory.Explore, "spot_lens_chosen",
             new Dictionary<string, object?> { ["lens"] = lens });
 
+    /// <summary>A mode family was switched on or off in the spot list.</summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="family">"Cw", "Digital" or "Phone".</param>
+    /// <param name="isOn">Whether it is now shown.</param>
+    public static void SpotFamilyToggled(ITelemetry? telemetry, string family, bool isOn)
+        => telemetry?.Write(TelemetryCategory.Explore, "spot_family_toggled",
+            new Dictionary<string, object?> { ["family"] = family, ["on"] = isOn });
+
     /// <summary>A frequency was saved as a favorite (HM-DEC-060).</summary>
     /// <param name="telemetry">Sink, or null.</param>
     /// <param name="bandName">Which band it is on.</param>

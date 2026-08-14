@@ -1,4 +1,5 @@
 using Hamlet.RadioEngine.Cw;
+using Hamlet.RadioEngine.Explore;
 
 namespace Hamlet.App.ViewModels;
 
@@ -38,4 +39,43 @@ public sealed class PhrasebookViewModel
 
     /// <summary>What a shut panel says about itself (§0.5).</summary>
     public string Summary => CwPhrasebook.Summary();
+}
+
+/// <summary>One family chip, with its live count (HM-DEC-061).</summary>
+/// <remarks>
+/// THE COUNT SHOWS EVEN WHEN THE FAMILY IS SWITCHED OFF, which is the teaching
+/// part. Somebody who filters to Morse and still sees forty-one voice stations
+/// learns the band is full of people they could talk to; a filtered-out family
+/// that went silent would teach the opposite.
+/// </remarks>
+public sealed class FamilyChipViewModel
+{
+    /// <summary>Wraps one chip for the panel.</summary>
+    /// <param name="chip">The chip.</param>
+    public FamilyChipViewModel(FamilyChip chip)
+    {
+        Family = chip.Family;
+        Label = chip.Label;
+        IsOn = chip.IsOn;
+        Count = chip.Count;
+        Name = chip.Family.ToString();
+    }
+
+    /// <summary>Which family.</summary>
+    public ModeFamily Family { get; }
+
+    /// <summary>The family's enum name, for the command parameter.</summary>
+    public string Name { get; }
+
+    /// <summary>What the chip says.</summary>
+    public string Label { get; }
+
+    /// <summary>Whether this family is being shown.</summary>
+    public bool IsOn { get; }
+
+    /// <summary>How many there are, on or off.</summary>
+    public int Count { get; }
+
+    /// <summary>The chip's face, e.g. "Morse 12".</summary>
+    public string Text => $"{Label} {Count}";
 }

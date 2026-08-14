@@ -4,6 +4,53 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-061
+date: 2026-08-14
+refs: src/Hamlet.RadioEngine/Explore/FamilyFilter.cs, tests/Hamlet.RadioEngine.Tests/Explore/FamilyFilterTests.cs, HM-DEC-032, HM-DEC-045, HM-DEC-057
+---
+
+Three chips at the head of the happening-now panel: Morse, Digital, Voice.
+Multi-select, all on by default, each in its family color, persisted across
+restarts, and named in the collapsed summary.
+
+**EACH CHIP CARRIES A LIVE COUNT, AND THE COUNT SHOWS EVEN WHEN THE FAMILY IS
+SWITCHED OFF.** That is the teaching part rather than a detail of the control.
+Somebody who filters to Morse and still sees forty-one voice stations learns that
+the band is full of people they could talk to, which is the fact this whole app
+exists to reveal. A filtered-out family that went silent would teach the
+opposite: that switching something off makes it stop existing, which is exactly
+the belief six years of tuning around and finding nothing already installed.
+
+So the count is taken over everything the lens has, before the filter runs, and
+never over what survives it. A chip reading zero because it was switched off
+would be telling the operator there is nothing there.
+
+THEY FILTER AND THEY NEVER DELETE. This is one more view over the store, like the
+lenses (HM-DEC-045, HM-DEC-057), so a chip changes what is drawn and changes
+nothing about what Hamlet holds. It composes with the lenses rather than fighting
+them: the lens decides what is in play and the chips decide which families of it
+are drawn, in that order.
+
+THREE CHIPS AND NOT FOUR. Open is not a family anybody tunes for, it is the space
+between the families, so a chip for it would be a filter for "whatever is left".
+A mode no chip names is shown whenever anything is, because a spot that vanished
+because of a control that does not mention it would be the app losing something
+quietly (§0.0).
+
+EVERY CHIP OFF SHOWS EVERYTHING rather than an empty panel. Somebody who switched
+all three off has not asked to see nothing; they have wandered into a state with
+no meaning, and a blank panel reads as broken.
+
+THE COLLAPSED SUMMARY SAYS WHAT IS BEING FILTERED TO (§0.5). A shut panel that
+had two families switched off would otherwise show a count the operator would
+take for a count of everything, which is the prime directive broken by omission.
+
+The colors are `ModePalette`'s and the words are the map legend's, to the letter
+(§0.6, HM-DEC-032). A switched-off chip is dimmed rather than hidden, which is
+also its second carrier: the on-or-off state survives the grayscale test without
+depending on the fill.
+
+---
 id: HM-DEC-060
 date: 2026-08-14
 refs: src/Hamlet.RadioEngine/Explore/Favorite.cs, src/Hamlet.App/ViewModels/FavoritesViewModel.cs, src/Hamlet.App/Views/FavoritesWindow.axaml, HM-OPEN-007, FG-011, HM-DEC-054

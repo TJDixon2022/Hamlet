@@ -1092,6 +1092,33 @@
                                               CommandParameter="WhatsNew" />
                             </StackPanel>
 
+                            <!-- THE COUNT SHOWS EVEN WHEN THE FAMILY IS OFF
+                                 (HM-DEC-061). Somebody who filters to Morse and
+                                 still sees forty-one voice stations learns the
+                                 band is full of people they could talk to, which
+                                 is the fact this whole app exists to reveal. -->
+                            <ItemsControl ItemsSource="{Binding FamilyChips}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Horizontal" Spacing="6" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:FamilyChipViewModel">
+                                        <Button Padding="9,2" FontSize="11" CornerRadius="10"
+                                                Command="{Binding $parent[ItemsControl].((vm:MainWindowViewModel)DataContext).ToggleFamilyCommand}"
+                                                CommandParameter="{Binding Name}"
+                                                Opacity="{Binding IsOn,
+                                                    Converter={x:Static ctl:ChipOpacityConverter.Instance}}"
+                                                Background="{Binding Family,
+                                                    Converter={x:Static ctl:ModeFamilyConverter.Fill}}"
+                                                Foreground="{Binding Family,
+                                                    Converter={x:Static ctl:ModeFamilyConverter.Ink}}"
+                                                Content="{Binding Text}" />
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+
                             <ScrollViewer MaxHeight="520"
                                           VerticalScrollBarVisibility="Auto">
                             <ItemsControl ItemsSource="{Binding Spots}">

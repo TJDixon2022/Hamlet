@@ -131,6 +131,12 @@ public partial class MainWindowViewModel : ObservableObject
     /// <summary>What the active lens is for, on hover.</summary>
     [ObservableProperty]
     private string _lensQuestion = "";
+
+    /// <summary>The three family chips, with their counts (HM-DEC-061).</summary>
+    public ObservableCollection<FamilyChipViewModel> FamilyChips { get; } = new();
+
+    /// <summary>Which families are switched on.</summary>
+    private HashSet<ModeFamily> _families = new(FamilyFilter.All);
     private DateTime _lastSpotLoadUtc = DateTime.UtcNow;
 
     [ObservableProperty]
@@ -642,6 +648,8 @@ public partial class MainWindowViewModel : ObservableObject
             _lensChosenByOperator = true;
         }
 
+        _families = new HashSet<ModeFamily>(FamilyFilter.Parse(settings.SpotFamilies));
+
         _isBestChance = _lens == SpotLens.BestChance;
         _isWhatsNew = _lens == SpotLens.WhatsNew;
         _lensQuestion = SpotLensView.Question(_lens);
@@ -951,6 +959,55 @@ public partial class MainWindowViewModel : ObservableObject
 
         AppEvents.SpotLensChosen(_telemetry, lens.ToString());
         ApplyLens(DateTime.UtcNow);
+    }
+
+    /// <summary>
+    /// Switch a mode family on or off in the happening-now list (HM-DEC-061).
+    /// </summary>
+    /// <param name="familyName">The family, as its enum name.</param>
+    /// <remarks>
+    /// THE CHIPS FILTER AND THEY NEVER DELETE. This is one more view over the
+    /// same store the lenses read, so a chip changes what is drawn and changes
+    /// nothing about what Hamlet holds.
+    /// </remarks>
+    [RelayCommand]
+    private void ToggleFamily(string familyName)
+    {
+        if (!Enum.TryParse<ModeFamily>(familyName, out var family)
+            || !FamilyFilter.Offered.Contains(family))
+        {
+            return;
+        }
+
+        if (!_families.Remove(family))
+        {
+            _families.Add(family);
+        }
+
+        _settings.SpotFamilies = _families.Select(f => f.ToString()).ToList();
+        SettingsStore.Save(_settings);
+
+        AppEvents.SpotFamilyToggled(
+            _telemetry, family.ToString(), _families.Contains(family));
+
+        ApplyLens(DateTime.UtcNow);
+    }
+
+    /// <summary>Redraw the chips with their counts.</summary>
+    /// <remarks>
+    /// The count is over everything the lens has rather than over what survives
+    /// the filter, which is the whole teaching: somebody who filters to Morse
+    /// and still sees forty-one voice stations learns the band is full of people
+    /// they could talk to.
+    /// </remarks>
+    private void RebuildFamilyChips(IEnumerable<ActivitySpot> beforeFiltering)
+    {
+        FamilyChips.Clear();
+
+        foreach (var chip in FamilyFilter.Chips(beforeFiltering, _families))
+        {
+            FamilyChips.Add(new FamilyChipViewModel(chip));
+        }
     }
 
     /// <summary>Record that the operator has now seen what was new.</summary>
@@ -2190,13 +2247,22 @@ public partial class MainWindowViewModel : ObservableObject
         }
 
         var lensed = SpotLensView.Apply(_lens, _bandHistory, attention, now, Lifetimes);
-        var prominence = lensed.ToDictionary(
+
+        // The chips count everything the lens has and draw only the families
+        // that are on, which composes with the lens rather than fighting it
+        // (HM-DEC-061).
+        RebuildFamilyChips(lensed.Select(l => l.Spot));
+
+        var shown = FamilyFilter.Apply(lensed.Select(l => l.Spot), _families).ToHashSet();
+        var kept = lensed.Where(l => shown.Contains(l.Spot)).ToList();
+
+        var prominence = kept.ToDictionary(
             l => SpotViewModel.KeyFor(l.Spot), l => l.Prominence, StringComparer.Ordinal);
 
         // The rank reads the lens's own liveness rather than measuring the
         // clock again, so the fade on a card and its place in the list are two
         // readings of one number (HM-DEC-058).
-        var ranked = SpotRanking.Rank(lensed, Lifetimes);
+        var ranked = SpotRanking.Rank(kept, Lifetimes);
 
         _lastNewSpotCount = RebuildSpotList(ranked, now, prominence);
         UpdateSpotFreshness();
@@ -2522,7 +2588,11 @@ public partial class MainWindowViewModel : ObservableObject
         // silently changed which question it is answering is the prime
         // directive broken by omission: the operator reads a count and takes it
         // for a count of everything.
+        // A shut panel never hides that it is filtering (§0.5, HM-DEC-061).
+        var filtered = FamilyFilter.Summary(_families);
+
         SpotsSummary = SpotLensView.Summary(_lens, Spots.Count)
+            + (filtered.Length > 0 ? $" · {filtered}" : "")
             + " · " + SpotFreshness.Tail(since, interval, _spotsEverLoaded)
             + (SourcesSummary.Length > 0 ? $" · {SourcesSummary}" : "");
         SpotsFreshness = _spotsEverLoaded

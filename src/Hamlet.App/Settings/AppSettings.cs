@@ -94,6 +94,16 @@ public sealed class AppSettings
     /// </remarks>
     public DateTime? SpotsLastLookedUtc { get; set; }
 
+    /// <summary>
+    /// Which mode families the happening-now panel is showing (HM-DEC-061).
+    /// </summary>
+    /// <remarks>
+    /// Null means all of them, which is where a fresh profile starts. Stored as
+    /// names rather than numbers so somebody reading their own settings file can
+    /// see what it says.
+    /// </remarks>
+    public List<string>? SpotFamilies { get; set; }
+
     /// <summary>Minutes between happening-now refreshes; 0 is off
     /// (HM-DEC-020). Allowed values are in
     /// <see cref="SpotRefreshChoices"/>.</summary>

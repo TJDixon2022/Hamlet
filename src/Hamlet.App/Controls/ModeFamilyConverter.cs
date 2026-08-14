@@ -41,3 +41,31 @@ public sealed class ModeFamilyConverter : IValueConverter
     public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
         => throw new NotSupportedException();
 }
+
+/// <summary>
+/// A family chip's opacity: full when it is on, dimmed when it is off
+/// (HM-DEC-061).
+/// </summary>
+/// <remarks>
+/// DIMMED AND NEVER HIDDEN, and never to nothing. The chip is what carries the
+/// count of a family that is switched off, and that count is the teaching: a
+/// filtered-out family that disappeared would tell the operator it had stopped
+/// existing. It also gives the chip a second carrier beyond its fill, so the
+/// on-or-off state survives the grayscale test (§0.6).
+/// </remarks>
+public sealed class ChipOpacityConverter : IValueConverter
+{
+    /// <summary>How dim a switched-off chip is drawn.</summary>
+    public const double OffOpacity = 0.45;
+
+    /// <summary>Singleton for XAML use.</summary>
+    public static ChipOpacityConverter Instance { get; } = new();
+
+    /// <inheritdoc/>
+    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+        => value is true ? 1.0 : OffOpacity;
+
+    /// <inheritdoc/>
+    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        => throw new NotSupportedException();
+}
