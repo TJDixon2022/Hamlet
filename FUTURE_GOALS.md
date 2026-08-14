@@ -9,6 +9,28 @@ Ids are `FG-###` and are never reused.
 
 ---
 
+## FG-011 — Favorites you never starred
+
+Hamlet could notice where the operator actually spends time and offer those as
+favorites, because the frequencies somebody keeps coming back to are exactly the
+ones worth saving and exactly the ones they will not think to save.
+
+**Offered, never added silently.** A list that grew on its own would be a list
+nobody trusts, and the first time somebody found an entry they did not put there
+they would stop reading it. So it is a suggestion with a reason attached, in the
+shape the rest of the app already uses: "you have been on 7.030 four evenings
+running, want to keep it?"
+
+The evidence is already there. The app records where the dial goes and for how
+long, and HM-DEC-060 already knows how to name a frequency from what lives there,
+so the whole of this is a pattern over data Hamlet holds plus one card.
+
+What it waits on is enough history to draw from, and on the honesty rule that
+governs every other inference here: it may say what it observed, and it may not
+claim to know why somebody was there.
+
+---
+
 ## FG-010 — The training wheels come off by themselves
 
 Hamlet is full of scaffolding: glossary underlines, blurbs on every

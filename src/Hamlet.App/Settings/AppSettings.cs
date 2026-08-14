@@ -56,6 +56,16 @@ public sealed class AppSettings
     /// </remarks>
     public bool ModeFollowsTheMap { get; set; } = true;
 
+    /// <summary>
+    /// The frequencies the operator saved, in the order they chose (HM-DEC-060).
+    /// </summary>
+    /// <remarks>
+    /// Kept here rather than in the radio's own memory channels, which are
+    /// numbered slots whose meaning you have to remember. Hamlet's carry the
+    /// reason: the band, the mode and what the map said lives there.
+    /// </remarks>
+    public List<SavedFavorite> Favorites { get; set; } = new();
+
     /// <summary>Last selected band name, e.g. "40 m".</summary>
     public string? LastBand { get; set; }
 
@@ -385,4 +395,32 @@ public static class SettingsStore
             // Nothing to do if the shell refuses.
         }
     }
+}
+
+/// <summary>One saved frequency, as settings.json holds it (HM-DEC-060).</summary>
+/// <remarks>
+/// A settings shape rather than the engine's record, because it is persisted and
+/// anything persisted has to survive a rename with a migration behind it
+/// (§6.1). It converts to and from
+/// <see cref="Hamlet.RadioEngine.Explore.Favorite"/> at the edge.
+/// </remarks>
+public sealed class SavedFavorite
+{
+    /// <summary>Where it is.</summary>
+    public long FrequencyHz { get; set; }
+
+    /// <summary>What the operator calls it.</summary>
+    public string Name { get; set; } = "";
+
+    /// <summary>The mode it was saved in.</summary>
+    public string Mode { get; set; } = "";
+
+    /// <summary>Which band.</summary>
+    public string BandName { get; set; } = "";
+
+    /// <summary>What the map said lives there when it was saved.</summary>
+    public string Neighborhood { get; set; } = "";
+
+    /// <summary>When it was saved.</summary>
+    public DateTime SavedUtc { get; set; }
 }

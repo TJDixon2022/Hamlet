@@ -162,6 +162,38 @@ public sealed class SettingsRoundTripTests : IDisposable
         Assert.Equal(looked, read.SpotsLastLookedUtc!.Value.ToUniversalTime());
     }
 
+    /// <remarks>Proves HM-DEC-060: favorites survive a restart with everything
+    /// that answers "what was this for" intact. A favorite that came back as a
+    /// bare number would be the radio's own memory channels again, which is the
+    /// problem rather than the answer.</remarks>
+    [Fact]
+    public void FavoritesSurviveARestartWithTheirReasonAttached()
+    {
+        Assert.Empty(new AppSettings().Favorites);
+
+        var written = new AppSettings();
+        written.Favorites.Add(new SavedFavorite
+        {
+            FrequencyHz = 14_074_000,
+            Name = "14.074, FT8 city",
+            Mode = "USB",
+            BandName = "20 m",
+            Neighborhood = "FT8 city",
+            SavedUtc = new DateTime(2026, 8, 15, 12, 0, 0, DateTimeKind.Utc),
+        });
+
+        SettingsStore.SaveTo(written, SettingsPath);
+        var read = SettingsStore.LoadFrom(SettingsPath).Favorites;
+
+        var back = Assert.Single(read);
+
+        Assert.Equal(14_074_000, back.FrequencyHz);
+        Assert.Equal("14.074, FT8 city", back.Name);
+        Assert.Equal("USB", back.Mode);
+        Assert.Equal("20 m", back.BandName);
+        Assert.Equal("FT8 city", back.Neighborhood);
+    }
+
     /// <remarks>Proves HM-DEC-018 still holds with the profile added: a
     /// corrupt settings file yields defaults rather than a crash, and the
     /// defaults include a usable profile.</remarks>

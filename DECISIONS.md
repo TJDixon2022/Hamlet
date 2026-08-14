@@ -4,6 +4,58 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-060
+date: 2026-08-14
+refs: src/Hamlet.RadioEngine/Explore/Favorite.cs, src/Hamlet.App/ViewModels/FavoritesViewModel.cs, src/Hamlet.App/Views/FavoritesWindow.axaml, HM-OPEN-007, FG-011, HM-DEC-054
+---
+
+Certain frequencies are worth coming back to and nobody remembers the numbers,
+so Hamlet keeps favorites, and its favorites carry the reason.
+
+THE RADIO'S OWN MEMORY CHANNELS ARE THE PROBLEM RATHER THAN THE ANSWER. They are
+numbered slots whose meaning you have to remember, and remembering what channel
+seven was for is exactly the same work as remembering the number. Hamlet already
+knows why somebody was on a frequency, because the neighborhood map says what
+lives there (HM-DEC-054), so a favorite reads "14.074, FT8 city" rather than
+"MEM 07".
+
+SAVING CAPTURES CONTEXT AUTOMATICALLY: frequency, mode, band and neighborhood,
+with nothing typed. The operator may rename it and nobody has to. Where the map
+has published no convention for a stretch, the favorite is the frequency and its
+band and says no more, rather than inventing a description of open ground (§0.0).
+
+ON THE WARM PANEL BELOW THE LCD, NOT INSIDE IT. The black rectangle is a faithful
+picture of the IC-7300's own face, and a control the real radio does not have
+would blur which is which. Two things sit there:
+
+- **The star, which names where you are.** Filled on a saved frequency and
+  reading that favorite's name; hollow anywhere else and reading "save this
+  spot". Pressing it on a favorite un-saves, so it is one toggle rather than two
+  controls. It matches on the exact frequency and not nearby, because a star
+  that lit up a hundred hertz away would make un-saving unpredictable and the
+  operator would learn not to trust it.
+- **A dropdown beside it**, the same list, click to tune. Absent until there is
+  something in it, since a dropdown with nothing in it looks broken.
+
+IN THE RADIO MENU, because everything about the radio belongs there: a Favorites
+submenu that tunes on click, and "Manage favorites…" opening a window that
+renames, reorders and deletes, with every row showing its mode, its band and when
+it was saved. Those three are what answer "what was this for", which is the whole
+reason this exists rather than the radio's numbered slots.
+
+Persisted in `settings.json` like everything else Hamlet remembers, in a settings
+shape rather than the engine's record, because anything persisted has to survive
+a rename with a migration behind it (§6.1).
+
+TWO THINGS ARE DELIBERATELY NOT DECIDED and are recorded as HM-OPEN-007: whether
+favorites ever sync to the radio's own memory channels, and what happens to a
+favorite whose neighborhood data later changes underneath it.
+
+AND ONE THING IS DELIBERATELY LATER, as FG-011: Hamlet could notice where the
+operator actually spends time and offer those as favorites they never starred.
+Offered, never added silently.
+
+---
 id: HM-DEC-059
 date: 2026-08-14
 refs: src/Hamlet.RadioEngine/Cw/ICwSender.cs, src/Hamlet.RadioEngine/Cw/CwTransmitter.cs, src/Hamlet.RadioEngine/Cw/TransmitReadiness.cs, src/Hamlet.RadioEngine/Cw/ContactStage.cs, tests/Hamlet.RadioEngine.Tests/Cw/CwTransmitTests.cs, HM-DEC-008, HM-DEC-029, HM-DEC-043, HM-DEC-049, HM-OPEN-006

@@ -117,6 +117,32 @@ public static class AppEvents
         => telemetry?.Write(TelemetryCategory.Explore, "spot_lens_chosen",
             new Dictionary<string, object?> { ["lens"] = lens });
 
+    /// <summary>A frequency was saved as a favorite (HM-DEC-060).</summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="bandName">Which band it is on.</param>
+    /// <remarks>
+    /// The band and nothing else. A frequency somebody saved is closer to a
+    /// habit than a setting, and the band answers "which bands does this person
+    /// use" without recording where they sit (HM-DEC-018).
+    /// </remarks>
+    public static void FavoriteSaved(ITelemetry? telemetry, string bandName)
+        => telemetry?.Write(TelemetryCategory.Tuning, "favorite_saved",
+            new Dictionary<string, object?> { ["band"] = bandName });
+
+    /// <summary>A favorite was removed.</summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="bandName">Which band it was on.</param>
+    public static void FavoriteRemoved(ITelemetry? telemetry, string bandName)
+        => telemetry?.Write(TelemetryCategory.Tuning, "favorite_removed",
+            new Dictionary<string, object?> { ["band"] = bandName });
+
+    /// <summary>A favorite was tuned to.</summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="bandName">Which band it is on.</param>
+    public static void FavoriteTuned(ITelemetry? telemetry, string bandName)
+        => telemetry?.Write(TelemetryCategory.Tuning, "favorite_tuned",
+            new Dictionary<string, object?> { ["band"] = bandName });
+
     /// <summary>A tune was requested from a story card or a spot.</summary>
     /// <param name="telemetry">Sink, or null.</param>
     /// <param name="hz">Target frequency.</param>

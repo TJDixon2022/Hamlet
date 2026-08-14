@@ -365,6 +365,40 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty]
     private bool _phrasebookExpanded = true;
 
+    /// <summary>The frequencies the operator saved (HM-DEC-060).</summary>
+    public ObservableCollection<Favorite> Favorites { get; } = new();
+
+    /// <summary>
+    /// What the star says: the favorite's name here, or the invitation to save.
+    /// </summary>
+    [ObservableProperty]
+    private string _favoriteLabel = "save this spot";
+
+    /// <summary>
+    /// The favorite picked from the dropdown, which tunes there.
+    /// </summary>
+    /// <remarks>
+    /// Cleared straight after, so the box reads "favorites" again rather than
+    /// showing a stale selection once the dial has moved on.
+    /// </remarks>
+    [ObservableProperty]
+    private Favorite? _selectedFavorite;
+
+    /// <summary>True when there is anything in the list to show.</summary>
+    /// <remarks>
+    /// A dropdown with nothing in it is a control that looks broken, so it is
+    /// absent until there is something to pick.
+    /// </remarks>
+    public bool HasFavorites => Favorites.Count > 0;
+
+    /// <summary>True when the dial is sitting on a saved frequency.</summary>
+    /// <remarks>
+    /// The star is filled here and hollow elsewhere, and pressing it on a
+    /// favorite un-saves, so it is a toggle rather than two controls.
+    /// </remarks>
+    [ObservableProperty]
+    private bool _isFavorite;
+
     /// <summary>
     /// The worked contact, both sides, in the operator's own callsign
     /// (HM-DEC-043).
@@ -592,6 +626,13 @@ public partial class MainWindowViewModel : ObservableObject
         };
 
         Phrasebook = new PhrasebookViewModel();
+
+        foreach (var saved in settings.Favorites)
+        {
+            Favorites.Add(new Favorite(
+                saved.FrequencyHz, saved.Name, saved.Mode, saved.BandName,
+                saved.Neighborhood, saved.SavedUtc));
+        }
 
         // A stored lens is the operator's own last answer rather than a guess,
         // so it is restored and inference never runs against it (HM-DEC-057).
@@ -917,6 +958,124 @@ public partial class MainWindowViewModel : ObservableObject
     {
         _settings.SpotsLastLookedUtc = DateTime.UtcNow;
         SettingsStore.Save(_settings);
+    }
+
+    /// <summary>
+    /// Save where the dial is, or un-save it (HM-DEC-060).
+    /// </summary>
+    /// <remarks>
+    /// SAVING CAPTURES CONTEXT AUTOMATICALLY. The frequency, the mode, the band
+    /// and what the map says lives there, so a favorite reads "14.074, where the
+    /// digital modes gather" with nothing typed. The radio's own memory channels
+    /// are numbered slots whose meaning you have to remember, which is the
+    /// problem rather than the answer.
+    /// </remarks>
+    [RelayCommand]
+    private void ToggleFavorite()
+    {
+        var existing = RadioEngine.Explore.Favorites.At(Favorites, FrequencyHz);
+
+        if (existing is not null)
+        {
+            Favorites.Remove(existing);
+            AppEvents.FavoriteRemoved(_telemetry, existing.BandName);
+        }
+        else
+        {
+            if (Favorites.Count >= RadioEngine.Explore.Favorites.Maximum)
+            {
+                StatusText = "That is as many favorites as Hamlet keeps. Remove one "
+                           + "from Radio, Manage favorites, and this will save.";
+                return;
+            }
+
+            var here = Neighborhoods.FirstOrDefault(n => n.Contains(FrequencyHz));
+
+            var favorite = RadioEngine.Explore.Favorites.From(
+                FrequencyHz, RigModeText, here, DateTime.UtcNow);
+
+            Favorites.Add(favorite);
+            AppEvents.FavoriteSaved(_telemetry, favorite.BandName);
+            StatusText = $"Saved as \"{favorite.Name}\".";
+        }
+
+        PersistFavorites();
+        UpdateFavoriteState();
+    }
+
+    /// <summary>Tune to a saved frequency.</summary>
+    [RelayCommand]
+    private void TuneToFavorite(Favorite? favorite)
+    {
+        if (favorite is null)
+        {
+            return;
+        }
+
+        AppEvents.FavoriteTuned(_telemetry, favorite.BandName);
+        TuneTo(favorite.FrequencyHz);
+    }
+
+    /// <summary>Rename, reorder and delete favorites.</summary>
+    [RelayCommand]
+    private void ManageFavorites()
+    {
+        var window = new Views.FavoritesWindow
+        {
+            DataContext = new FavoritesViewModel(Favorites, PersistFavorites),
+        };
+
+        if (Application.Current?.ApplicationLifetime
+            is IClassicDesktopStyleApplicationLifetime desktop
+            && desktop.MainWindow is { } owner)
+        {
+            window.ShowDialog(owner);
+        }
+        else
+        {
+            window.Show();
+        }
+    }
+
+    /// <summary>Write the list back to settings.json.</summary>
+    private void PersistFavorites()
+    {
+        _settings.Favorites = Favorites
+            .Select(f => new SavedFavorite
+            {
+                FrequencyHz = f.FrequencyHz,
+                Name = f.Name,
+                Mode = f.Mode,
+                BandName = f.BandName,
+                Neighborhood = f.Neighborhood,
+                SavedUtc = f.SavedUtc,
+            })
+            .ToList();
+
+        SettingsStore.Save(_settings);
+        OnPropertyChanged(nameof(HasFavorites));
+        UpdateFavoriteState();
+    }
+
+    partial void OnSelectedFavoriteChanged(Favorite? value)
+    {
+        if (value is null)
+        {
+            return;
+        }
+
+        var picked = value;
+        SelectedFavorite = null;
+        TuneToFavorite(picked);
+    }
+
+    /// <summary>Light or unlight the star for where the dial is now.</summary>
+    private void UpdateFavoriteState()
+    {
+        var here = RadioEngine.Explore.Favorites.At(Favorites, FrequencyHz);
+
+        IsFavorite = here is not null;
+        FavoriteLabel = RadioEngine.Explore.Favorites.StarLabel(here);
     }
 
     /// <summary>Tune the rig (and the whole UI) to a target — the payoff
@@ -1670,6 +1829,7 @@ public partial class MainWindowViewModel : ObservableObject
         }
 
         UpdateModeLine();
+        UpdateFavoriteState();
         ScheduleModeFollow();
 
         if (_updatingFromRig || _rig is null || !IsConnected)

@@ -230,6 +230,41 @@
                     ModeText="{Binding RigModeText}"
                     FilterText="{Binding RigFilterText}"
                     SMeterLevel="{Binding SMeterLevel}" />
+                <!-- ON THE WARM PANEL, NOT INSIDE THE BLACK RECTANGLE
+                     (HM-DEC-060). The LCD is a faithful picture of the
+                     IC-7300's own face, and a control the real radio does not
+                     have would blur which is which. -->
+                <StackPanel Orientation="Horizontal" Spacing="8"
+                            HorizontalAlignment="Center" Margin="0,10,0,0">
+                    <Button Command="{Binding ToggleFavoriteCommand}"
+                            Padding="10,4" FontSize="12"
+                            ToolTip.Tip="Saves this frequency and what lives here, so you can come back to it without remembering the number."
+                            ToolTip.ShowDelay="400">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <TextBlock Text="★" FontSize="13"
+                                       IsVisible="{Binding IsFavorite}"
+                                       Foreground="{StaticResource HmAmberDeepBrush}" />
+                            <TextBlock Text="☆" FontSize="13"
+                                       IsVisible="{Binding !IsFavorite}"
+                                       Foreground="{StaticResource HmTextMutedBrush}" />
+                            <TextBlock Text="{Binding FavoriteLabel}" FontSize="12"
+                                       VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
+
+                    <ComboBox ItemsSource="{Binding Favorites}"
+                              SelectedItem="{Binding SelectedFavorite}"
+                              PlaceholderText="favorites"
+                              MinWidth="200" FontSize="12"
+                              IsVisible="{Binding HasFavorites}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate x:DataType="explore:Favorite">
+                                <TextBlock Text="{Binding Name}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </StackPanel>
+
                 <TextBlock Text="scroll wheel over a digit tunes that digit"
                            FontSize="12" HorizontalAlignment="Center"
                            Foreground="{StaticResource HmAmberBrush}" />

@@ -212,3 +212,40 @@ practice into something aimed at where this person actually is.
 Severity `none`: the ranking works without it and says nothing untrue. It stays
 open because the day somebody adds a speed filter without noticing this is the
 day the app starts making a claim it cannot support.
+
+---
+id: HM-OPEN-007
+status: open
+owner: tim
+raised: 2026-08-14
+severity: none
+refs: HM-DEC-060, HM-DEC-054, src/Hamlet.RadioEngine/Explore/Favorite.cs
+---
+
+Two questions about favorites that HM-DEC-060 deliberately did not answer.
+
+**Do favorites ever sync to the radio's own memory channels?** The IC-7300 holds
+ninety-nine of them and they survive being unplugged from the computer, which is
+the one thing Hamlet's list cannot do. Writing to them would make a favorite
+reachable from the radio's own front panel on a day the PC is switched off, which
+is a real benefit to somebody who operates both ways.
+
+Against it: memory channels are somebody's own, they may already hold things that
+matter, and a program that quietly rewrote ninety-nine of them would be
+unforgivable. If this is ever built it is one-way, explicit, per favorite, and it
+says which channel it is about to overwrite before it does. It also needs its own
+CI-V verification pass, since nothing about the memory commands has been read
+from the manual yet.
+
+**What happens to a favorite whose neighborhood changed underneath it?** A
+favorite records what the map said when it was saved. The map is cited data now
+and it will be corrected as sources are re-read (HM-DEC-054), so a favorite saved
+as "14.070, PSK31 ribbons" could later sit in a block the file calls something
+else. Three options, none obviously right: leave the saved text alone as a record
+of what was true then, re-derive it every time it is shown, or show both and let
+the operator notice. Leaving it alone is what the code does today, because it is
+the only one of the three that cannot surprise anybody, and that is a default
+rather than a decision.
+
+Severity `none`: favorites work, nothing is wrong, and neither question has to be
+answered before somebody uses them.
