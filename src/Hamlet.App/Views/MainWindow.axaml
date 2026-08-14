@@ -124,8 +124,13 @@
                                 BorderBrush="{StaticResource HmGreenEdgeBrush}"
                                 BorderThickness="1" CornerRadius="8"
                                 Padding="6,0" Margin="0,0,0,2"
+                                ToolTip.Tip="{Binding BestBetTooltip}"
+                                ToolTip.ShowDelay="250"
                                 IsVisible="{Binding IsBestBet}">
-                            <TextBlock Text="best bet now" FontSize="11"
+                            <!-- The label travels with the ranking, so a clock
+                                 guess can never wear the same words as an
+                                 observation (HM-DEC-046). -->
+                            <TextBlock Text="{Binding BestBetLabel}" FontSize="11"
                                        Foreground="{StaticResource HmGreenBrush}" />
                         </Border>
 

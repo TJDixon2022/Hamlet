@@ -4,6 +4,48 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-046
+date: 2026-08-14
+refs: src/Hamlet.App/ViewModels/BandOpportunity.cs, HM-DEC-031, HM-DEC-045, HM-DEC-009
+---
+
+The best-bet badge is ranked from what Hamlet actually observed, out of the same
+spot data and recency the pips, the conditions line and the lead card already
+use. The clock heuristic drops to a tiebreaker for when no band has any data at
+all, and in that case the badge says it is going on the time of day.
+
+It was still using `BandPlan.BestBets(localHour)`, a lookup table from the first
+week, evaluated once at construction and never updated. So it contradicted the
+app's own data on the same screen: the badge on 80 m with zero pips, 40 m with
+four, and the lead card underneath saying "Try 40 m instead, nothing on 80 m
+just now, 40 m has 14 stations". Three surfaces answering one question, and the
+loudest of them answering from a table that cannot hear anything.
+
+ONE RANKING, READ BY ALL OF THEM. `BandOpportunities.Rank` returns the order and
+everything else reads it. The badge is `BadgeGoesOn`, the lead card's
+alternative is `BestOtherThan`, and neither makes a second pass over the data.
+That is the difference between agreement being likely and being impossible: a
+surface cannot form its own opinion if it is not given the means to.
+
+Count leads, activations break the first tie, and recency breaks the rest. A
+park operator wanting contacts is worth more to a newcomer than the same number
+of bare skimmer reports, which is the same judgment HM-DEC-045 already makes
+about lifetimes.
+
+A GUESS IS ALLOWED AS LONG AS IT ADMITS TO BEING ONE. With nothing heard on any
+band the clock is all that is left, and it stands in rather than leaving the row
+blank. It does not get to wear the same words: the badge reads "likely, going on
+the hour" instead of "best bet now", and the hover says it is going on the time
+of day rather than on anything reported. The lead card will not repeat it at
+all, because the badge is a hint and the card is an instruction, and sending
+somebody to an empty band on a hunch is worse than saying nothing (§0.0).
+
+The agreement is tested the way the banned-phrase sweep is tested: a hundred
+generated spot distributions, every band as the one on screen, asserting the
+badge lands where the ranking says and that the card never names a different
+band. Putting the clock back fails two of them.
+
+---
 id: HM-DEC-045
 date: 2026-08-14
 refs: src/Hamlet.RadioEngine/Explore/SqliteSpotStore.cs, src/Hamlet.RadioEngine/Explore/SpotLifetime.cs, src/Hamlet.App/ViewModels/BandOpportunity.cs, HM-DEC-020, HM-DEC-022, HM-DEC-025

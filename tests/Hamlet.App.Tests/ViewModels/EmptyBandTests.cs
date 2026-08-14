@@ -34,8 +34,9 @@ public sealed class EmptyBandTests
         };
     }
 
-    private static IReadOnlyList<BandOpportunity> Elsewhere(params ActivitySpot[] spots)
-        => BandOpportunities.Summarize(BandPlan.Bands, spots, Now);
+    /// <summary>The shared ranking, at an hour the tiebreaker would not pick.</summary>
+    private static BandRanking Elsewhere(params ActivitySpot[] spots)
+        => BandOpportunities.Rank(BandPlan.Bands, spots, Now, localHour: 3);
 
     /// <remarks>
     /// THE BUG, IN ONE TEST. Proves an empty band points at a busy one instead
@@ -53,7 +54,7 @@ public sealed class EmptyBandTests
             On("20 m", 3, call: "W2AAA"));
 
         var lead = LeadCard.Choose(
-            Array.Empty<RankedSpot>(), "80 m", elsewhere: elsewhere);
+            Array.Empty<RankedSpot>(), "80 m", ranking: elsewhere);
 
         Assert.False(lead.HasSuggestion);
         Assert.Contains("40 m", lead.Headline, StringComparison.Ordinal);
@@ -78,7 +79,7 @@ public sealed class EmptyBandTests
             On("40 m", 9, call: "W1CCC"));
 
         var lead = LeadCard.Choose(
-            Array.Empty<RankedSpot>(), "80 m", elsewhere: elsewhere);
+            Array.Empty<RankedSpot>(), "80 m", ranking: elsewhere);
 
         Assert.Contains("40 m", lead.Headline, StringComparison.Ordinal);
     }
@@ -95,7 +96,7 @@ public sealed class EmptyBandTests
         var elsewhere = Elsewhere(On("40 m", 15, call: "W1AAA"));
 
         var lead = LeadCard.Choose(
-            Array.Empty<RankedSpot>(), "40 m", elsewhere: elsewhere);
+            Array.Empty<RankedSpot>(), "40 m", ranking: elsewhere);
 
         Assert.Equal(LeadCard.NothingHeadline, lead.Headline);
     }
@@ -110,7 +111,7 @@ public sealed class EmptyBandTests
     {
         var lead = LeadCard.Choose(
             Array.Empty<RankedSpot>(), "40 m",
-            elsewhere: Elsewhere(),
+            ranking: Elsewhere(),
             lookedBack: TimeSpan.FromHours(3));
 
         Assert.Equal(LeadCard.NothingHeadline, lead.Headline);
@@ -141,7 +142,7 @@ public sealed class EmptyBandTests
         var lead = LeadCard.Choose(
             Array.Empty<RankedSpot>(), "40 m",
             anySourceAnswering: false,
-            elsewhere: Elsewhere(On("20 m", 4)));
+            ranking: Elsewhere(On("20 m", 4)));
 
         Assert.Contains("cannot see the bands", lead.Headline, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Hamlet's problem", lead.Body, StringComparison.Ordinal);
@@ -203,7 +204,7 @@ public sealed class EmptyBandTests
             On("40 m", 6, activation: true, call: "W1BBB"),
             On("40 m", 9, call: "W1CCC"));
 
-        var text = summary.Single(b => b.BandName == "40 m").Describe();
+        var text = summary.Bands.Single(b => b.BandName == "40 m").Describe();
 
         Assert.Contains("three stations", text, StringComparison.Ordinal);
         Assert.Contains("two of them park or summit activators", text, StringComparison.Ordinal);
@@ -222,8 +223,8 @@ public sealed class EmptyBandTests
             LeadCard.Choose(Array.Empty<RankedSpot>(), "40 m").Body,
             LeadCard.Choose(
                 Array.Empty<RankedSpot>(), "80 m",
-                elsewhere: Elsewhere(On("40 m", 5, activation: true))).Body,
-            Elsewhere(On("40 m", 5)).Single(b => b.BandName == "40 m").Describe(),
+                ranking: Elsewhere(On("40 m", 5, activation: true))).Body,
+            Elsewhere(On("40 m", 5)).Bands.Single(b => b.BandName == "40 m").Describe(),
         };
 
         Assert.All(passages, p => Assert.True(p.Count(c => c == '—') <= 1, p));

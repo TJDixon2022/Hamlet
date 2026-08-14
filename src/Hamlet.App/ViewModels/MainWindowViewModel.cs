@@ -323,12 +323,8 @@ public partial class MainWindowViewModel : ObservableObject
         _settings = settings;
         _telemetry = telemetry;
 
-        var bets = BandPlan.BestBets(DateTime.Now.Hour);
         Bands = new ObservableCollection<BandButtonViewModel>(
-            BandPlan.Bands.Select(b => new BandButtonViewModel(
-                b,
-                isBestBet: bets.Count > 0 && bets[0] == b.Name,
-                isSecondBet: bets.Count > 1 && bets[1] == b.Name)));
+            BandPlan.Bands.Select(b => new BandButtonViewModel(b)));
 
         _selectedBand = Bands.FirstOrDefault(b => b.Band.Name == settings.LastBand)
                         ?? Bands.First(b => b.Band.Name == "40 m");
@@ -960,6 +956,52 @@ public partial class MainWindowViewModel : ObservableObject
     private SpotLifetimeSettings Lifetimes => _settings.Lifetimes;
 
     /// <summary>
+    /// Rank the bands from what Hamlet has actually heard (HM-DEC-046).
+    /// </summary>
+    /// <param name="nowUtc">The moment to judge against.</param>
+    /// <returns>The ranking, best first.</returns>
+    /// <remarks>
+    /// The local hour is passed in rather than read inside, so the ranking
+    /// stays a pure function and the tiebreaker is testable without waiting
+    /// for a particular time of day (§5).
+    /// </remarks>
+    private BandRanking RankBands(DateTime nowUtc)
+        => BandOpportunities.Rank(
+            Bands.Select(b => b.Band).ToList(),
+            _allBandSpots,
+            nowUtc,
+            DateTime.Now.Hour,
+            Lifetimes);
+
+    /// <summary>
+    /// Move the best-bet badge to whichever band the ranking puts first.
+    /// </summary>
+    /// <param name="ranking">The shared ranking.</param>
+    /// <remarks>
+    /// The label travels with it, so a clock guess never wears the same words
+    /// as an observation (§0.0). Nothing is marked at all when no band has a
+    /// name in the ranking, which cannot happen today but would otherwise be
+    /// a silent badge on the first band in the list.
+    /// </remarks>
+    private void ApplyBestBet(BandRanking ranking)
+    {
+        foreach (var button in Bands)
+        {
+            // The decision lives in the ranking, not here. This loop copies an
+            // answer and is not allowed to form one of its own.
+            var isBest = ranking.BadgeGoesOn(button.Band.Name);
+
+            button.IsBestBet = isBest;
+
+            if (isBest)
+            {
+                button.BestBetLabel = ranking.BadgeLabel;
+                button.BestBetTooltip = ranking.BadgeTooltip;
+            }
+        }
+    }
+
+    /// <summary>
     /// Write what a refresh returned to history, and keep the file bounded.
     /// </summary>
     /// <remarks>
@@ -1065,12 +1107,18 @@ public partial class MainWindowViewModel : ObservableObject
         UpdateBandActivity(now);
         ActivityDots = BuildDots(ranked, now);
 
+        // ONE RANKING, READ BY BOTH (HM-DEC-046). The badge and the lead card
+        // used to answer "which band is best" separately, and the badge
+        // answered it from a clock table, so they could and did contradict
+        // each other on the same screen.
+        var ranking = RankBands(now);
+        ApplyBestBet(ranking);
+
         Lead = LeadCard.Choose(
             ranked,
             SelectedBand.Band.Name,
             AnySourceAnswering(),
-            BandOpportunities.Summarize(
-                Bands.Select(b => b.Band).ToList(), _allBandSpots, now, Lifetimes),
+            ranking,
             _settings.Lifetimes.Longest);
 
         Conditions = BandConditions.Describe(
@@ -1808,13 +1856,9 @@ public partial class BandButtonViewModel : ObservableObject
 
     /// <summary>Creates the button model.</summary>
     /// <param name="band">The band this button selects.</param>
-    /// <param name="isBestBet">True on the top-ranked band for the hour.</param>
-    /// <param name="isSecondBet">True on the runner-up band.</param>
-    public BandButtonViewModel(CwBand band, bool isBestBet, bool isSecondBet)
+    public BandButtonViewModel(CwBand band)
     {
         Band = band;
-        IsBestBet = isBestBet;
-        IsSecondBet = isSecondBet;
         _activity = new BandActivityReading(
             band.Name, BandActivityState.NoData, 0, 0, 0,
             "no data.", "Hamlet has not asked the spot sources yet.",
@@ -1827,11 +1871,27 @@ public partial class BandButtonViewModel : ObservableObject
     /// <summary>The band this button selects.</summary>
     public CwBand Band { get; }
 
-    /// <summary>True on the top-ranked band for the current hour.</summary>
-    public bool IsBestBet { get; }
+    /// <summary>
+    /// True on the band the shared ranking puts first (HM-DEC-046).
+    /// </summary>
+    /// <remarks>
+    /// Observable and recomputed on every refresh. It used to be fixed at
+    /// construction from a clock lookup table, which is how the badge came to
+    /// sit on a band with no pips while the lead card was pointing somewhere
+    /// else on the same screen.
+    /// </remarks>
+    [ObservableProperty]
+    private bool _isBestBet;
 
-    /// <summary>True on the runner-up band.</summary>
-    public bool IsSecondBet { get; }
+    /// <summary>
+    /// What the badge says: an observation, or an admitted guess.
+    /// </summary>
+    [ObservableProperty]
+    private string _bestBetLabel = "best bet now";
+
+    /// <summary>The evidence behind the badge, on hover.</summary>
+    [ObservableProperty]
+    private string _bestBetTooltip = "";
 
     /// <summary>Filled pips on the indicator.</summary>
     public int ActivityPips => Activity.Pips;

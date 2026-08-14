@@ -73,8 +73,9 @@ public static class LeadCard
     /// <param name="bandName">The band on screen, e.g. "40 m".</param>
     /// <param name="anySourceAnswering">False when no spot source is
     /// answering, which changes the wording of the refusal.</param>
-    /// <param name="elsewhere">What the other bands are holding, so an empty
-    /// band can point at a busy one rather than giving up (HM-DEC-045).</param>
+    /// <param name="ranking">The shared band ranking, so an empty band can
+    /// point at a busy one and can never disagree with the best-bet badge
+    /// about which one that is (HM-DEC-045, HM-DEC-046).</param>
     /// <param name="lookedBack">How far back the search went, so the refusal
     /// can say what it actually looked at (HM-DEC-025).</param>
     /// <returns>The suggestion, or a refusal that says what to do instead.</returns>
@@ -82,7 +83,7 @@ public static class LeadCard
         IReadOnlyList<RankedSpot> ranked,
         string bandName,
         bool anySourceAnswering = true,
-        IReadOnlyList<BandOpportunity>? elsewhere = null,
+        BandRanking? ranking = null,
         TimeSpan? lookedBack = null)
     {
         var best = ranked.FirstOrDefault(r => IsSuitable(r));
@@ -90,7 +91,7 @@ public static class LeadCard
         if (best is null)
         {
             return NoSuggestion(
-                bandName, anySourceAnswering, ranked.Count, elsewhere, lookedBack);
+                bandName, anySourceAnswering, ranked.Count, ranking, lookedBack);
         }
 
         return new LeadSuggestion(
@@ -228,7 +229,7 @@ public static class LeadCard
         string bandName,
         bool anySourceAnswering,
         int rankedCount,
-        IReadOnlyList<BandOpportunity>? elsewhere,
+        BandRanking? ranking,
         TimeSpan? lookedBack)
     {
         if (!anySourceAnswering)
@@ -250,10 +251,10 @@ public static class LeadCard
             : $"There are {rankedCount} spots on {bandName}, but they are beacons, "
               + "contest runs or too old to chase.";
 
-        var best = elsewhere?
-            .Where(b => b.Count > 0 && !string.Equals(b.BandName, bandName, StringComparison.Ordinal))
-            .OrderByDescending(b => b.Count)
-            .FirstOrDefault();
+        // Straight from the shared ranking, never a second pass over the same
+        // data. That is what makes it impossible for this card and the
+        // best-bet badge to name different bands (HM-DEC-046).
+        var best = ranking?.BestOtherThan(bandName);
 
         if (best is not null)
         {

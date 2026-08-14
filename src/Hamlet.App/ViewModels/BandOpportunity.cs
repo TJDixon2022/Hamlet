@@ -113,4 +113,148 @@ public static class BandOpportunities
 
         return results.OrderByDescending(r => r.Count).ToList();
     }
+
+    /// <summary>
+    /// The bands in order, best first, and whether that order rests on
+    /// anything Hamlet actually heard.
+    /// </summary>
+    /// <param name="bands">The bands on display.</param>
+    /// <param name="spots">Every spot held, across all bands.</param>
+    /// <param name="nowUtc">The moment to judge against.</param>
+    /// <param name="localHour">Local hour, for the tiebreaker.</param>
+    /// <param name="lifetimes">The configured lifetimes.</param>
+    /// <returns>The ranking.</returns>
+    /// <remarks>
+    /// <para>ONE ORDER, SO NOTHING CAN DISAGREE (HM-DEC-046). The best-bet
+    /// badge, the lead card's alternative and the band pips all read from this.
+    /// They used to answer the same question separately, and the badge answered
+    /// it from a clock lookup table written in the first week, which is how it
+    /// came to sit on a band with no pips while the lead card was pointing
+    /// somewhere else on the same screen.</para>
+    /// <para>Activations break ties ahead of raw count, because a park operator
+    /// wanting contacts is worth more to a newcomer than the same number of
+    /// bare skimmer reports, and recency breaks the rest.</para>
+    /// </remarks>
+    public static BandRanking Rank(
+        IReadOnlyList<CwBand> bands,
+        IReadOnlyList<ActivitySpot> spots,
+        DateTime nowUtc,
+        int localHour,
+        SpotLifetimeSettings? lifetimes = null)
+    {
+        var summary = Summarize(bands, spots, nowUtc, lifetimes);
+
+        if (summary.Any(b => b.Count > 0))
+        {
+            var observed = summary
+                .OrderByDescending(b => b.Count)
+                .ThenByDescending(b => b.Activations)
+                .ThenBy(b => b.NewestAge)
+                .ThenBy(b => b.BandName, StringComparer.Ordinal)
+                .ToList();
+
+            return new BandRanking(observed, FromObservation: true);
+        }
+
+        // Nothing has been heard on any band. The clock heuristic is all
+        // that is left, and it is a guess: low bands at night, high bands by
+        // day, from a table written before the app could hear anything. It is
+        // allowed to stand in, and it has to say so (HM-DEC-009).
+        var order = BandPlan.BestBets(localHour);
+
+        var guessed = summary
+            .OrderBy(b => IndexOf(order, b.BandName))
+            .ThenBy(b => b.BandName, StringComparer.Ordinal)
+            .ToList();
+
+        return new BandRanking(guessed, FromObservation: false);
+    }
+
+    private static int IndexOf(IReadOnlyList<string> order, string name)
+    {
+        for (var i = 0; i < order.Count; i++)
+        {
+            if (string.Equals(order[i], name, StringComparison.Ordinal))
+            {
+                return i;
+            }
+        }
+
+        return int.MaxValue;
+    }
+}
+
+/// <summary>The bands in order, and what the order rests on.</summary>
+/// <param name="Bands">Best first.</param>
+/// <param name="FromObservation">True when at least one band has live spots,
+/// so the order reflects what Hamlet heard rather than the clock.</param>
+public sealed record BandRanking(
+    IReadOnlyList<BandOpportunity> Bands, bool FromObservation)
+{
+    /// <summary>The best band, or null when there are no bands at all.</summary>
+    public BandOpportunity? Best => Bands.Count > 0 ? Bands[0] : null;
+
+    /// <summary>The best band's name, or "".</summary>
+    public string BestBandName => Best?.BandName ?? "";
+
+    /// <summary>
+    /// Whether the best-bet badge belongs on this band.
+    /// </summary>
+    /// <param name="bandName">The band a button is drawing.</param>
+    /// <returns>True on exactly one band, or none when nothing is ranked.</returns>
+    /// <remarks>
+    /// The badge's whole decision, as one function, so it can be tested rather
+    /// than trusted (HM-DEC-046). The ViewModel does nothing but copy this
+    /// answer onto each button, which is what stops the badge quietly
+    /// acquiring a second opinion the way it had one before.
+    /// </remarks>
+    public bool BadgeGoesOn(string bandName)
+        => BestBandName.Length > 0
+           && string.Equals(bandName, BestBandName, StringComparison.Ordinal);
+
+    /// <summary>
+    /// The best band that is not the one already on screen, or null.
+    /// </summary>
+    /// <param name="currentBand">The band the operator is looking at.</param>
+    /// <returns>The alternative to offer, or null when there is none.</returns>
+    /// <remarks>
+    /// The lead card's suggestion comes from here rather than from its own
+    /// pass over the data, which is what makes it impossible for the badge and
+    /// the card to name different bands (HM-DEC-046). Only a band with
+    /// something live on it is ever offered: sending somebody to an empty band
+    /// on a clock guess would be worse than saying nothing.
+    /// </remarks>
+    public BandOpportunity? BestOtherThan(string currentBand)
+        => Bands.FirstOrDefault(
+            b => b.Count > 0
+                 && !string.Equals(b.BandName, currentBand, StringComparison.Ordinal));
+
+    /// <summary>
+    /// What the badge says, so a guess can never look like an observation.
+    /// </summary>
+    /// <remarks>
+    /// "best bet now" is a claim about what is happening. With nothing heard
+    /// on any band it becomes a claim about the hour, and it says so in words
+    /// rather than looking identical to the real thing (§0.0, §0.6).
+    /// </remarks>
+    public string BadgeLabel => FromObservation ? "best bet now" : "likely, going on the hour";
+
+    /// <summary>The hover line behind the badge, with its evidence.</summary>
+    public string BadgeTooltip
+    {
+        get
+        {
+            if (Best is not { } best)
+            {
+                return "";
+            }
+
+            return FromObservation
+                ? $"The busiest band Hamlet can see. {best.Describe()}"
+                : "Nothing has been heard on any band yet, so this is going on the "
+                  + "time of day rather than on anything reported. Low bands after "
+                  + "dark, high bands in daylight. Treat it as a place to start "
+                  + "listening rather than as a fact.";
+        }
+    }
 }
