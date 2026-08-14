@@ -204,7 +204,7 @@
                                       HorizontalAlignment="Left"
                                       ItemsSource="{Binding AudioDevices}"
                                       SelectedItem="{Binding AudioDevice}"
-                                      IsEnabled="{Binding AudioDevices.Count}">
+                                      IsEnabled="{Binding HasAudioDevices}">
                                 <ComboBox.ItemTemplate>
                                     <DataTemplate x:DataType="audio:AudioDevice">
                                         <TextBlock Text="{Binding Name}" />

@@ -406,11 +406,61 @@
                                               Title="CW terminal"
                                               Summary="{Binding TerminalSummary}"
                                               IsExpanded="{Binding TerminalExpanded, Mode=TwoWay}">
-                            <TextBlock Text="&gt; decoded text will arrive here in phase 1"
-                                       MinHeight="150"
-                                       FontFamily="{StaticResource HmMonoFont}"
-                                       Foreground="{StaticResource HmGreenBrush}"
-                                       VerticalAlignment="Top" />
+                            <StackPanel Spacing="6">
+
+                                <!-- The header carries the sending speed live,
+                                     because an operator deciding whether they
+                                     can copy somebody needs the number more
+                                     than anything else on this panel. -->
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <TextBlock Grid.Column="0"
+                                               Text="what the radio is hearing, as it arrives"
+                                               FontSize="12" VerticalAlignment="Center"
+                                               Foreground="{StaticResource HmTextMutedBrush}" />
+                                    <Border Grid.Column="1"
+                                            Background="{StaticResource HmGreenTintBrush}"
+                                            BorderBrush="{StaticResource HmGreenEdgeBrush}"
+                                            BorderThickness="1" CornerRadius="6"
+                                            Padding="8,2"
+                                            IsVisible="{Binding HasDetectedSpeed}">
+                                        <TextBlock Text="{Binding TerminalSpeedText}"
+                                                   FontSize="12" FontWeight="SemiBold"
+                                                   Foreground="{StaticResource HmGreenBrush}" />
+                                    </Border>
+                                </Grid>
+
+                                <Border CornerRadius="8" ClipToBounds="True"
+                                        BorderThickness="1"
+                                        Background="{x:Static ctl:InstrumentPalette.SurfaceBrush}"
+                                        BorderBrush="{x:Static ctl:InstrumentPalette.EdgeBrush}">
+                                    <ScrollViewer MaxHeight="260" MinHeight="150"
+                                                  VerticalScrollBarVisibility="Auto">
+                                        <ctl:CwTerminalControl
+                                            FontSize="14" LineHeight="22"
+                                            Transcript="{Binding Transcript}"
+                                            IdleText="{Binding TerminalIdleText}" />
+                                    </ScrollViewer>
+                                </Border>
+
+                                <!-- The plain-language note, present only when
+                                     there is something to say. An explanation
+                                     that was always on screen would be read as
+                                     decoration and stop being read at all. -->
+                                <Border Background="{StaticResource HmAmberTintBrush}"
+                                        BorderBrush="{StaticResource HmAmberEdgeBrush}"
+                                        BorderThickness="1" CornerRadius="6"
+                                        Padding="10,7"
+                                        IsVisible="{Binding HasDecodeNote}">
+                                    <ctl:GlossaryTextControl
+                                        Text="{Binding DecodeNote}"
+                                        FontSize="12" LineSpacing="1.4"
+                                        Foreground="{StaticResource HmAmberDeepBrush}" />
+                                </Border>
+
+                                <TextBlock Text="a dimmed character is one Hamlet is not sure of, and a block is something it heard and could not read. You can select any of this and copy it."
+                                           FontSize="12" TextWrapping="Wrap"
+                                           Foreground="{StaticResource HmTextMutedBrush}" />
+                            </StackPanel>
                         </ctl:CollapsiblePanel>
                     </StackPanel>
                 </ScrollViewer>

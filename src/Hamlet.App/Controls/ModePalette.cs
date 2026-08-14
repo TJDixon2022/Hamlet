@@ -1,4 +1,5 @@
 using Avalonia.Media;
+using Hamlet.RadioEngine.Cw;
 using Hamlet.RadioEngine.Explore;
 
 namespace Hamlet.App.Controls;
@@ -77,6 +78,91 @@ public static class ModePalette
         ModeFamily.Digital => Digital,
         ModeFamily.Phone => Phone,
         _ => Open,
+    };
+}
+
+/// <summary>
+/// The dark instrument surfaces, and the ink a decode is written in.
+/// </summary>
+/// <remarks>
+/// <para>Hamlet is a light app on warm paper (HM-DEC-012), with two exceptions
+/// that are not exceptions to the taste so much as to the subject. The rig
+/// display is the radio's own face and the waterfall is a spectrum display, and
+/// both of those are dark everywhere in the world because a dark ground is what
+/// makes a faint signal visible. The CW terminal joins them for the same
+/// reason: it shows what the radio heard, so it belongs to the instrument
+/// rather than to the paper.</para>
+/// <para>CONFIDENCE IS SHOWN AS BRIGHTNESS, and brightness survives the
+/// grayscale test §0.6 sets, because it is luminance and nothing else. A
+/// character Hamlet is sure of is written in full decode green. One it is not
+/// sure of is written dimmer, which reads as the app straining rather than as
+/// a different kind of letter. And something it could not resolve is neither:
+/// it is a placeholder in a color of its own, so it can never be mistaken for
+/// content even by somebody who cannot see the color at all.</para>
+/// </remarks>
+public static class InstrumentPalette
+{
+    /// <summary>The dark ground a decode is written on.</summary>
+    public static Color Surface { get; } = Color.Parse("#0B0F16");
+
+    /// <summary>The surface as a brush.</summary>
+    public static IBrush SurfaceBrush { get; } = new SolidColorBrush(Surface);
+
+    /// <summary>The edge around an instrument panel.</summary>
+    public static IBrush EdgeBrush { get; } = new SolidColorBrush(Color.Parse("#1E2A38"));
+
+    /// <summary>A character the decoder stands behind.</summary>
+    public static Color Confident { get; } = Color.Parse("#4ADE9B");
+
+    /// <summary>
+    /// A character the decoder is not sure of. Dimmer, deliberately.
+    /// </summary>
+    /// <remarks>
+    /// Under half the brightness of a confident one, so the difference reads at
+    /// a glance, and still clear of WCAG AA against the surface, because a
+    /// character nobody can read is not a marked character, it is a missing one
+    /// (HM-DEC-036). The first attempt at this was two shades darker and
+    /// measured 3.8 to 1, which is exactly the carve-out §0.6 says there are
+    /// none of.
+    /// </remarks>
+    public static Color Uncertain { get; } = Color.Parse("#3E9E74");
+
+    /// <summary>Something heard and not resolved.</summary>
+    public static Color Unreadable { get; } = Color.Parse("#B8843A");
+
+    /// <summary>The quiet text an idle instrument shows.</summary>
+    public static Color Idle { get; } = Color.Parse("#7E96AB");
+
+    /// <summary>Every ink written on the instrument surface.</summary>
+    public static IReadOnlyList<Color> Inks { get; } =
+        new[] { Confident, Uncertain, Unreadable, Idle };
+
+    /// <summary>A character the decoder stands behind, as a brush.</summary>
+    public static IBrush ConfidentBrush { get; } = new SolidColorBrush(Confident);
+
+    /// <summary>
+    /// A character the decoder is not sure of. Dimmer, deliberately: the reader
+    /// has to be able to see Hamlet struggling (§0.0).
+    /// </summary>
+    public static IBrush UncertainBrush { get; } = new SolidColorBrush(Uncertain);
+
+    /// <summary>
+    /// Something heard and not resolved. Amber, and it is the placeholder glyph
+    /// carrying the meaning rather than the color.
+    /// </summary>
+    public static IBrush UnreadableBrush { get; } = new SolidColorBrush(Unreadable);
+
+    /// <summary>The quiet text an idle instrument shows.</summary>
+    public static IBrush IdleBrush { get; } = new SolidColorBrush(Idle);
+
+    /// <summary>The ink for a decoded character.</summary>
+    /// <param name="confidence">How much the decoder stands behind it.</param>
+    /// <returns>The brush.</returns>
+    public static IBrush For(CwConfidence confidence) => confidence switch
+    {
+        CwConfidence.High => ConfidentBrush,
+        CwConfidence.Low => UncertainBrush,
+        _ => UnreadableBrush,
     };
 }
 

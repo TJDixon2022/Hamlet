@@ -256,6 +256,30 @@ public static class AppEvents
             new Dictionary<string, object?> { ["looksLikeRadio"] = looksLikeRadio });
 
     /// <summary>
+    /// The CW decoder started listening (HM-DEC-048).
+    /// </summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="simulated">Whether the audio is synthesized.</param>
+    /// <param name="sampleRate">Samples per second.</param>
+    /// <param name="pitchHz">The pitch it was told to start looking at.</param>
+    /// <remarks>
+    /// The parameters a decode ran with, which §0.0.1 asks for by name. What is
+    /// NOT here, and never will be, is anything that was decoded: the category's
+    /// own description says decoder runs and confidence statistics, never
+    /// message content, and a transcript names two stations who did not agree to
+    /// be in this file (HM-DEC-018).
+    /// </remarks>
+    public static void DecoderStarted(
+        ITelemetry? telemetry, bool simulated, int sampleRate, int pitchHz)
+        => telemetry?.Write(TelemetryCategory.Decode, "decoder_started",
+            new Dictionary<string, object?>
+            {
+                ["simulated"] = simulated,
+                ["sampleRate"] = sampleRate,
+                ["pitchHz"] = pitchHz,
+            });
+
+    /// <summary>
     /// The waterfall's spectrum source changed (HM-DEC-026). Records whether
     /// the signals are simulated, because "the waterfall was showing
     /// synthetic signals" is the first thing worth knowing when someone

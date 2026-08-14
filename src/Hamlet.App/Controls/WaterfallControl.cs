@@ -47,8 +47,11 @@ public sealed class WaterfallControl : Control
     private static readonly TimeSpan BlitInterval = TimeSpan.FromMilliseconds(33);
 
     private static readonly IBrush MarkerBrush = new SolidColorBrush(Color.Parse("#FF9E3D"));
-    private static readonly IBrush IdleBrush = new SolidColorBrush(Color.Parse("#0B0F16"));
-    private static readonly IBrush IdleTextBrush = new SolidColorBrush(Color.Parse("#5C7285"));
+    // The instrument surface and its quiet ink, from the one place they are
+    // defined. The terminal is written on the same ground for the same reason,
+    // and two copies of a color are two colors.
+    private static readonly IBrush IdleBrush = InstrumentPalette.SurfaceBrush;
+    private static readonly IBrush IdleTextBrush = InstrumentPalette.IdleBrush;
     private static readonly Typeface Mono = new("Consolas,Menlo,monospace");
 
     /// <summary>The engine source to draw. Setting it re-subscribes.</summary>

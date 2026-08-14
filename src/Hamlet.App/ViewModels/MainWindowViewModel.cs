@@ -8,7 +8,9 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Hamlet.App.Licensing;
 using Hamlet.App.Settings;
 using Hamlet.App.Telemetry;
+using Hamlet.RadioEngine.Audio;
 using Hamlet.RadioEngine.Bands;
+using Hamlet.RadioEngine.Cw;
 using Hamlet.RadioEngine.Explore;
 using Hamlet.RadioEngine.Telemetry;
 using Hamlet.RadioEngine.Licensing;
@@ -56,6 +58,9 @@ public partial class MainWindowViewModel : ObservableObject
     private RbnActivitySource? _rbn;
     private IDisposable[] _ownedSources = Array.Empty<IDisposable>();
     private TrainingSpectrumSource? _trainingSpectrum;
+    private readonly DispatcherTimer _decodeTimer;
+    private IAudioSource? _audioInput;
+    private CwDecoder? _decoder;
     private readonly Audio.ModeAudioPlayer _audio = new();
     private readonly PrivilegePlan _privileges = new();
     private CancellationTokenSource? _licenseLookup;
@@ -97,6 +102,32 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty]
     private IReadOnlyList<Controls.ActivityDot> _activityDots =
         Array.Empty<Controls.ActivityDot>();
+
+    /// <summary>The sending speed the decoder is tracking, or 0.</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(TerminalSummary))]
+    [NotifyPropertyChangedFor(nameof(TerminalSpeedText))]
+    [NotifyPropertyChangedFor(nameof(HasDetectedSpeed))]
+    private int _detectedWpm;
+
+    /// <summary>
+    /// What the decoder has noticed about the signal, in plain words, or empty.
+    /// </summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasDecodeNote))]
+    [NotifyPropertyChangedFor(nameof(TerminalSummary))]
+    private string _decodeNote = "";
+
+    /// <summary>Whether the decoder is listening to anything.</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(TerminalSummary))]
+    [NotifyPropertyChangedFor(nameof(TerminalIdleText))]
+    private bool _isDecoding;
+
+    /// <summary>What the decoder is listening to, in words.</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(TerminalIdleText))]
+    private string _audioInputName = "";
 
     [ObservableProperty]
     private string _storyTitle = "";
@@ -304,8 +335,62 @@ public partial class MainWindowViewModel : ObservableObject
         }
     }
 
-    /// <summary>Collapsed-header line for the CW terminal.</summary>
-    public string TerminalSummary => "no decode yet";
+    /// <summary>The decoded Morse, on its way to the terminal.</summary>
+    /// <remarks>
+    /// Held here and read by the control directly rather than bound as a
+    /// string, which is the arrangement HM-DEC-006 settled for the waterfall and
+    /// applies for the same reason: at speed this fills at about forty
+    /// characters a second.
+    /// </remarks>
+    public CwTranscript Transcript { get; } = new();
+
+    /// <summary>True when there is something worth saying about the signal.</summary>
+    public bool HasDecodeNote => DecodeNote.Length > 0;
+
+    /// <summary>True once the decoder is tracking a speed worth showing.</summary>
+    public bool HasDetectedSpeed => DetectedWpm > 0;
+
+    /// <summary>The live speed readout on the terminal's header.</summary>
+    public string TerminalSpeedText
+        => DetectedWpm > 0 ? $"{DetectedWpm} WPM" : "";
+
+    /// <summary>What the terminal shows before anything has been decoded.</summary>
+    public string TerminalIdleText
+        => !IsDecoding
+            ? "not listening yet. Connect a radio, or pick the training radio, and this fills in."
+            : $"listening to {AudioInputName}. Nothing decoded yet.";
+
+    /// <summary>
+    /// Collapsed-header line for the CW terminal (HM-DEC-021).
+    /// </summary>
+    /// <remarks>
+    /// A SHUT PANEL STILL HAS TO TELL THE TRUTH (§0.5). If the decoder is
+    /// struggling, that is exactly the moment somebody would shut the panel and
+    /// conclude the app does not work, so the note travels into the summary
+    /// rather than being hidden with the detail.
+    /// </remarks>
+    public string TerminalSummary
+    {
+        get
+        {
+            if (!IsDecoding)
+            {
+                return "not listening";
+            }
+
+            if (Transcript.IsEmpty)
+            {
+                return HasDecodeNote ? "nothing decoded yet" : "listening";
+            }
+
+            var speed = DetectedWpm > 0 ? $"{DetectedWpm} WPM · " : "";
+            var tail = Transcript.Tail(28);
+
+            return HasDecodeNote
+                ? $"{speed}{tail} · signal is hard going"
+                : $"{speed}{tail}";
+        }
+    }
 
     /// <summary>Collapsed-header line for the field guide.</summary>
     public string GuideSummary => $"{ModeCards.Count} modes · hear each one";
@@ -374,6 +459,13 @@ public partial class MainWindowViewModel : ObservableObject
         _spotRefreshTimer.Stop();
 
         _ageTimer = new DispatcherTimer(AgeTick, DispatcherPriority.Background, OnAgeTick);
+
+        // The decoder runs on whichever thread the audio arrives on, so the
+        // readouts it feeds are refreshed here rather than raised from there.
+        // Four times a second is faster than a speed estimate moves and slower
+        // than anything it would be worth interrupting the UI for.
+        _decodeTimer = new DispatcherTimer(
+            TimeSpan.FromMilliseconds(250), DispatcherPriority.Background, OnDecodeTick);
         _ageTimer.Stop();
 
         _activitySource = BuildSources();
@@ -776,6 +868,114 @@ public partial class MainWindowViewModel : ObservableObject
             _telemetry, "training", SelectedBand.Band.Name, simulated: true);
     }
 
+    /// <summary>
+    /// Start listening, and decoding what is heard.
+    /// </summary>
+    /// <remarks>
+    /// <para>The training radio makes its own Morse, so somebody with no
+    /// hardware at all still gets a working terminal (HM-DEC-026). A real radio
+    /// gets whichever capture device the operator chose, which on a connected
+    /// IC-7300 is its own USB codec.</para>
+    /// <para>A machine with no sound device, or one that refuses to open, leaves
+    /// the terminal saying it is not listening. Nothing here throws: the
+    /// Explorer, the map and the training radio all work perfectly well without
+    /// audio, and refusing to start would be a spectacular punishment for an
+    /// unplugged cable (§8).</para>
+    /// </remarks>
+    private void StartDecoding()
+    {
+        StopDecoding();
+
+        try
+        {
+            _audioInput = OpenAudioInput();
+        }
+        catch (Exception)
+        {
+            _audioInput = null;
+        }
+
+        if (_audioInput is null)
+        {
+            AudioInputName = "";
+            IsDecoding = false;
+            return;
+        }
+
+        _decoder = new CwDecoder(_audioInput.SampleRate, _settings.CwPitchHz);
+        _decoder.CharacterDecoded += Transcript.Append;
+        _decoder.Listen(_audioInput);
+        _audioInput.Start();
+
+        AudioInputName = _audioInput.DeviceName;
+        IsDecoding = true;
+        _decodeTimer.Start();
+
+        AppEvents.DecoderStarted(
+            _telemetry, _audioInput.IsSimulated, _audioInput.SampleRate, _settings.CwPitchHz);
+    }
+
+    /// <summary>
+    /// The source to listen to, or null when there is nothing to listen with.
+    /// </summary>
+    private IAudioSource? OpenAudioInput()
+    {
+        if (_rig?.IsSimulated == true)
+        {
+            // Real Morse at a known speed, with nothing plugged in. Twelve words
+            // a minute is a patient operator, which is where somebody learning
+            // to copy should start (HM-DEC-026).
+            return new TrainingAudioSource(
+                MorseCode.CqCall(_settings.Operator.Callsign),
+                wordsPerMinute: 12,
+                toneHz: _settings.CwPitchHz);
+        }
+
+        var device = AudioDeviceChoice.Choose(
+            new WasapiAudioDevices().List(), _settings.AudioInputDeviceId);
+
+        return device is null ? null : new WasapiAudioSource(device);
+    }
+
+    /// <summary>Stop listening and put the decoder away.</summary>
+    private void StopDecoding()
+    {
+        _decodeTimer.Stop();
+
+        if (_decoder is not null)
+        {
+            _decoder.CharacterDecoded -= Transcript.Append;
+            _decoder.Listen(null);
+            _decoder = null;
+        }
+
+        _audioInput?.Stop();
+        _audioInput?.Dispose();
+        _audioInput = null;
+
+        IsDecoding = false;
+        DetectedWpm = 0;
+        DecodeNote = "";
+        AudioInputName = "";
+        Transcript.Clear();
+        OnPropertyChanged(nameof(TerminalSummary));
+    }
+
+    /// <summary>
+    /// Bring the readouts up to date with what the decoder is doing.
+    /// </summary>
+    private void OnDecodeTick(object? sender, EventArgs e)
+    {
+        if (_decoder is null)
+        {
+            return;
+        }
+
+        DetectedWpm = _decoder.State.WordsPerMinute;
+        DecodeNote = _decoder.Watch.NoteText;
+        OnPropertyChanged(nameof(TerminalSummary));
+    }
+
     private void StopTrainingSpectrum()
     {
         if (_trainingSpectrum is null)
@@ -824,6 +1024,7 @@ public partial class MainWindowViewModel : ObservableObject
     /// </remarks>
     public void ShutDownTraining()
     {
+        StopDecoding();
         StopTrainingSpectrum();
         _audio.Dispose();
 
@@ -892,6 +1093,11 @@ public partial class MainWindowViewModel : ObservableObject
         {
             StopTrainingSpectrum();
         }
+
+        // Audio, on the other hand, both radios can supply: the training radio
+        // makes its own Morse and a real one arrives through the capture device
+        // the operator chose. So the terminal fills in either way.
+        StartDecoding();
 
         var hz = await rig.GetFrequencyHzAsync();
         ApplyRigFrequency(hz);
@@ -1761,6 +1967,7 @@ public partial class MainWindowViewModel : ObservableObject
 
     private async Task TearDownRigAsync()
     {
+        StopDecoding();
         StopTrainingSpectrum();
         _rigSendTimer.Stop();
         _rigSendPending = false;

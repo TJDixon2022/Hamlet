@@ -199,6 +199,9 @@ public partial class SettingsViewModel : ObservableObject
     /// <summary>The capture devices this machine offers; empty is normal.</summary>
     public IReadOnlyList<AudioDevice> AudioDevices { get; }
 
+    /// <summary>True when there is a capture device to choose between.</summary>
+    public bool HasAudioDevices => AudioDevices.Count > 0;
+
     /// <summary>
     /// What to say when there is nothing to listen to.
     /// </summary>
