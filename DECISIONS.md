@@ -4,6 +4,48 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-065
+date: 2026-08-14
+confirms: HM-DEC-029
+refs: src/Hamlet.App/ViewModels/CwTransmitViewModel.cs, src/Hamlet.App/Views/MainWindow.axaml, tests/Hamlet.App.Tests/ViewModels/UnresolvedLicenseTests.cs
+---
+
+An unresolved license class **warns and labels, and never blocks.** Where a send
+control sits and Hamlet does not know which class the callsign holds, it says so
+in one place beside the buttons.
+
+THIS CONFIRMS HM-DEC-029 RATHER THAN AMENDING IT. A brief last session claimed
+`TransmitGuard` refuses on an unresolved class. It does not, it never did, and
+the brief was wrong: the guard permits, states what it does not know, and gets
+out of the way. Tim ruled that behavior correct, so the guard is unchanged and
+the doc comment that explains it stays exactly as it was.
+
+WHY REFUSING WOULD BE WRONG, and it is worth writing down because refusing looks
+like the safe choice from a distance. Hamlet has no business declining to key
+somebody's own radio because a lookup service did not answer. The operator holds
+the license and knows what it says. A program that locked them out of their own
+transmitter over a failed HTTP request would be teaching a beginner something
+false about their license, and it would teach it at the moment they are least
+able to argue with it.
+
+WHAT THE LABEL SAYS AND DOES NOT SAY. It says Hamlet does not know which class
+this callsign holds, that it therefore cannot check this frequency against
+privileges, and that the operator should satisfy himself he is allowed here. It
+is a statement about what Hamlet does not know, which is a fact about Hamlet and
+not about the person reading it. Once, near the control, no repetition anywhere
+else, and no scolding: a test fails the copy on "you must", "you should", "be
+careful" and their neighbors.
+
+NOTHING READS IT BUT THE LABEL. No button is disabled by it, no send path
+consults it, and the guard never sees it. The guard decides for itself from the
+class it is passed, which is what keeps one decision in one place (§0.2).
+
+A stale paragraph in the guard's own documentation was corrected while it was
+open: it said no transmit path existed yet, which was true when it was written
+and stopped being true when HM-DEC-059 landed. The behavior and the comment this
+ruling protects are untouched.
+
+---
 id: HM-DEC-064
 date: 2026-08-14
 refs: src/Hamlet.App/Views/MainWindow.axaml, tests/Hamlet.App.Tests/Settings/SettingsRoundTripTests.cs, HM-DEC-016, HM-DEC-021, HM-DEC-025

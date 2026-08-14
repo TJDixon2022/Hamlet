@@ -682,6 +682,22 @@
                                     </StackPanel>
                                 </Grid>
 
+                                <!-- An unresolved license class warns and
+                                     labels, and never blocks (HM-DEC-065,
+                                     confirming HM-DEC-029). Said once, beside
+                                     the buttons, where it is read before the
+                                     press. -->
+                                <Border Background="{StaticResource HmAmberTintBrush}"
+                                        BorderBrush="{StaticResource HmAmberEdgeBrush}"
+                                        BorderThickness="1" CornerRadius="6"
+                                        Padding="10,7"
+                                        IsVisible="{Binding LicenseUnresolved}">
+                                    <ctl:GlossaryTextControl
+                                        Text="{x:Static vm:CwTransmitViewModel.UnresolvedLicenseNote}"
+                                        FontSize="12" LineSpacing="1.4"
+                                        Foreground="{StaticResource HmAmberDeepBrush}" />
+                                </Border>
+
                                 <ItemsControl ItemsSource="{Binding Options}">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate x:DataType="vm:SendButtonViewModel">

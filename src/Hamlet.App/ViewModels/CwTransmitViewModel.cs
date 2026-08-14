@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Hamlet.RadioEngine.Cw;
+using Hamlet.RadioEngine.Licensing;
 
 namespace Hamlet.App.ViewModels;
 
@@ -77,6 +78,27 @@ public sealed partial class CwTransmitViewModel : ObservableObject
         "While this is new, send into a dummy load rather than an antenna. Keying "
         + "code that has never run before is worth trying somewhere nobody else "
         + "can hear it, and it takes one cable to find out that everything works.";
+
+    /// <summary>
+    /// What Hamlet says when it does not know the operator's license class.
+    /// </summary>
+    /// <remarks>
+    /// <para>CONFIRMS HM-DEC-029 RATHER THAN CHANGING IT (HM-DEC-065). An
+    /// unresolved class warns and labels, and it never blocks. Hamlet has no
+    /// business refusing to key somebody's radio because a lookup service did
+    /// not answer, and the guard is unchanged: it says what it does not know and
+    /// gets out of the way.</para>
+    /// <para>Said once, beside the buttons, where somebody reads it before they
+    /// press rather than after. It is a statement of what Hamlet does not know,
+    /// which is a fact about Hamlet and not about them, so there is nothing here
+    /// telling anybody what to do with their own license (§0.7).</para>
+    /// </remarks>
+    public const string UnresolvedLicenseNote =
+        "Hamlet does not know which class this callsign holds, so it cannot check "
+        + "this frequency against what your license allows. Nothing is stopping "
+        + "you and nothing is checking either. You hold the license and you know "
+        + "what it says, so satisfy yourself you are allowed here before you send. "
+        + "Setting your class in Settings gives Hamlet enough to check from then on.";
 
     private readonly Func<TransmitContext> _context;
     private CwTransmitter? _transmitter;
@@ -162,6 +184,17 @@ public sealed partial class CwTransmitViewModel : ObservableObject
     [ObservableProperty]
     private bool _supportsCharacterSpacing;
 
+    /// <summary>
+    /// True when Hamlet has no license class to check this frequency against.
+    /// </summary>
+    /// <remarks>
+    /// Drives the label and nothing else (HM-DEC-065). No send button reads it,
+    /// no button is disabled by it, and the guard never sees it: it decides for
+    /// itself, from the class it is passed.
+    /// </remarks>
+    [ObservableProperty]
+    private bool _licenseUnresolved;
+
     /// <summary>The panel's collapsed summary (§0.5).</summary>
     public string Summary => IsSending
         ? "sending"
@@ -220,6 +253,11 @@ public sealed partial class CwTransmitViewModel : ObservableObject
     public void Refresh()
     {
         Rebuild();
+
+        // Read before the early returns, so the label is right whether or not
+        // anything is connected. Not knowing somebody's class is true of the
+        // callsign and not of the radio.
+        LicenseUnresolved = _context().LicenseClass == LicenseClass.Unknown;
 
         if (_transmitter is null)
         {

@@ -22,12 +22,12 @@ public sealed record TransmitDecision(
 /// false about their own license. Nothing here is consulted when tuning,
 /// when receiving, or when drawing. It is asked one question, at one moment:
 /// may this key down.</para>
-/// <para>NO TRANSMIT PATH EXISTS YET. HM-DEC-008 gates keying on the vendored
-/// IC-7300 manual, so nothing calls this in anger today. It is built now, with
-/// its tests, so that when CW send lands the check is already proved and the
-/// only remaining work is the call site. THE SEAM: whatever first keys the
-/// transmitter — CI-V 0x17, or PTT — calls <see cref="Check"/> first and
-/// honors the answer.</para>
+/// <para>THE TRANSMIT PATH IS HERE NOW, and it comes through this class.
+/// <c>CwTransmitter</c> calls <see cref="Check"/> before it touches the radio,
+/// every time, and honors the answer (HM-DEC-059). It was built ahead of that
+/// path with its tests, so the day CW send landed the check was already proved
+/// and the only remaining work was the call site. This paragraph used to say no
+/// transmit path existed, which was true when it was written.</para>
 /// <para>The override is deliberately not a setting to be forgotten. It is
 /// passed in per call, so the decision records whether it was used and the UI
 /// can keep it beside the transmit control rather than buried three screens
