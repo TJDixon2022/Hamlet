@@ -66,17 +66,43 @@ public sealed class FavoriteTests
     }
 
     /// <remarks>
-    /// THE STAR IS A TOGGLE AND IT NAMES WHERE YOU ARE. On a saved frequency it
-    /// reads the favorite's name; anywhere else it reads the invitation to save.
+    /// THE STAR IS A TOGGLE AND IT SAYS WHAT PRESSING IT DOES (HM-DEC-070). It
+    /// lives inside the display now, where a name of any length would collide
+    /// with the mode badge or the clock at some window width, so it carries one
+    /// short word in either direction and the name moved to the strip below.
     /// </remarks>
     [Fact]
-    public void TheStarNamesTheFavoriteHereOrInvitesYouToSaveOne()
+    public void TheStarSaysWhatPressingItDoes()
     {
         var saved = Favorites.From(7_030_000, "CW", null, Now);
         var list = new[] { saved };
 
-        Assert.Equal(saved.Name, Favorites.StarLabel(Favorites.At(list, 7_030_000)));
-        Assert.Equal("save this spot", Favorites.StarLabel(Favorites.At(list, 7_040_000)));
+        Assert.Equal("saved", Favorites.StarLabel(Favorites.At(list, 7_030_000)));
+        Assert.Equal("save", Favorites.StarLabel(Favorites.At(list, 7_040_000)));
+
+        // One word each way, whatever anybody named the favorite, because the
+        // display has a badge at one end and a clock at the other.
+        foreach (var where in new long[] { 7_030_000, 7_040_000 })
+        {
+            var label = Favorites.StarLabel(Favorites.At(list, where));
+
+            Assert.DoesNotContain(' ', label);
+        }
+    }
+
+    /// <remarks>
+    /// Proves HM-DEC-070: the strip under the display names the favorite you are
+    /// sitting on, and says nothing at all anywhere else. It confirms which one
+    /// you landed on from the dropdown, and what a save was just named.
+    /// </remarks>
+    [Fact]
+    public void TheStripNamesTheFavoriteYouAreSittingOn()
+    {
+        var saved = Favorites.From(7_030_000, "CW", null, Now);
+        var list = new[] { saved };
+
+        Assert.Equal(saved.Name, Favorites.NameHere(Favorites.At(list, 7_030_000)));
+        Assert.Equal("", Favorites.NameHere(Favorites.At(list, 7_040_000)));
     }
 
     /// <remarks>

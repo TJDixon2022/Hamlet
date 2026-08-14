@@ -382,10 +382,21 @@ public partial class MainWindowViewModel : ObservableObject
     public ObservableCollection<Favorite> Favorites { get; } = new();
 
     /// <summary>
-    /// What the star says: the favorite's name here, or the invitation to save.
+    /// What the star says, inside the display: one short word (HM-DEC-070).
     /// </summary>
     [ObservableProperty]
-    private string _favoriteLabel = "save this spot";
+    private string _favoriteLabel = "save";
+
+    /// <summary>
+    /// The name of the favorite the dial is sitting on, or "".
+    /// </summary>
+    /// <remarks>
+    /// Shown on the strip under the display rather than in the black, because a
+    /// name is as long as somebody made it and the LCD has a mode badge at one
+    /// end and a clock at the other (HM-DEC-070).
+    /// </remarks>
+    [ObservableProperty]
+    private string _favoriteHere = "";
 
     /// <summary>
     /// The favorite picked from the dropdown, which tunes there.
@@ -1149,6 +1160,7 @@ public partial class MainWindowViewModel : ObservableObject
 
         IsFavorite = here is not null;
         FavoriteLabel = RadioEngine.Explore.Favorites.StarLabel(here);
+        FavoriteHere = RadioEngine.Explore.Favorites.NameHere(here);
     }
 
     /// <summary>Tune the rig (and the whole UI) to a target — the payoff

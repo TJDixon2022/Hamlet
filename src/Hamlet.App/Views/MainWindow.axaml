@@ -223,39 +223,25 @@
                 BorderThickness="1" CornerRadius="8"
                 Padding="20,12" Margin="0,0,0,12">
             <StackPanel Spacing="6">
-                <ctl:RigDisplayControl HorizontalAlignment="Center"
-                    FrequencyHz="{Binding FrequencyHz}"
-                    BandLowHz="{Binding SelectedBand.Band.LowHz}"
-                    BandHighHz="{Binding SelectedBand.Band.HighHz}"
-                    ModeText="{Binding RigModeText}"
-                    FilterText="{Binding RigFilterText}"
-                    SMeterLevel="{Binding SMeterLevel}" />
-                <!-- ON THE WARM PANEL, NOT INSIDE THE BLACK RECTANGLE
-                     (HM-DEC-060). The LCD is a faithful picture of the
-                     IC-7300's own face, and a control the real radio does not
-                     have would blur which is which. -->
-                <StackPanel Orientation="Horizontal" Spacing="8"
-                            HorizontalAlignment="Center" Margin="0,10,0,0">
-                    <Button Command="{Binding ToggleFavoriteCommand}"
-                            Padding="10,4" FontSize="12"
-                            ToolTip.Tip="Saves this frequency and what lives here, so you can come back to it without remembering the number."
-                            ToolTip.ShowDelay="400">
-                        <StackPanel Orientation="Horizontal" Spacing="6">
-                            <TextBlock Text="★" FontSize="13"
-                                       IsVisible="{Binding IsFavorite}"
-                                       Foreground="{StaticResource HmAmberDeepBrush}" />
-                            <TextBlock Text="☆" FontSize="13"
-                                       IsVisible="{Binding !IsFavorite}"
-                                       Foreground="{StaticResource HmTextMutedBrush}" />
-                            <TextBlock Text="{Binding FavoriteLabel}" FontSize="12"
-                                       VerticalAlignment="Center" />
-                        </StackPanel>
-                    </Button>
 
-                    <ComboBox ItemsSource="{Binding Favorites}"
+                <!-- The strip along the top of the warm panel (HM-DEC-070):
+                     which favorite you landed on at the left, and the way to
+                     any of them at the right. The name lives out here rather
+                     than in the black because a name is as long as somebody
+                     made it, and the LCD has a mode badge at one end and a
+                     clock at the other. -->
+                <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,4">
+                    <TextBlock Grid.Column="0" Text="{Binding FavoriteHere}"
+                               FontSize="12" VerticalAlignment="Center"
+                               TextTrimming="CharacterEllipsis"
+                               Margin="2,0,10,0"
+                               Foreground="{StaticResource HmAmberBrush}" />
+
+                    <ComboBox Grid.Column="1"
+                              ItemsSource="{Binding Favorites}"
                               SelectedItem="{Binding SelectedFavorite}"
                               PlaceholderText="favorites"
-                              MinWidth="200" FontSize="12"
+                              MinWidth="180" FontSize="12"
                               IsVisible="{Binding HasFavorites}">
                         <ComboBox.ItemTemplate>
                             <DataTemplate x:DataType="explore:Favorite">
@@ -263,10 +249,27 @@
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>
-                </StackPanel>
+                </Grid>
+
+                <!-- THE STAR IS INSIDE THE BLACK (HM-DEC-070), which reverses
+                     what HM-DEC-060 built. That ruling kept Hamlet's chrome off
+                     the LCD so the picture stayed a faithful IC-7300 face, and
+                     Tim weighed that against being able to find the thing and
+                     chose being able to find it. -->
+                <ctl:RigDisplayControl HorizontalAlignment="Center"
+                    FrequencyHz="{Binding FrequencyHz}"
+                    BandLowHz="{Binding SelectedBand.Band.LowHz}"
+                    BandHighHz="{Binding SelectedBand.Band.HighHz}"
+                    ModeText="{Binding RigModeText}"
+                    FilterText="{Binding RigFilterText}"
+                    SMeterLevel="{Binding SMeterLevel}"
+                    IsFavorite="{Binding IsFavorite}"
+                    FavoriteLabel="{Binding FavoriteLabel}"
+                    ToggleFavoriteCommand="{Binding ToggleFavoriteCommand}" />
 
                 <TextBlock Text="scroll wheel over a digit tunes that digit"
                            FontSize="12" HorizontalAlignment="Center"
+                           Margin="0,4,0,0"
                            Foreground="{StaticResource HmAmberBrush}" />
             </StackPanel>
         </Border>

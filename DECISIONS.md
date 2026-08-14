@@ -4,6 +4,59 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-070
+date: 2026-08-14
+supersedes: HM-DEC-060 (the star's placement and its label only)
+refs: src/Hamlet.App/Controls/RigDisplayControl.cs, src/Hamlet.App/Views/MainWindow.axaml, src/Hamlet.RadioEngine/Explore/Favorite.cs, tests/Hamlet.RadioEngine.Tests/Explore/FavoriteTests.cs
+---
+
+**The star lives inside the display, in the black, and it says what pressing it
+does rather than what the favorite is called.** A strip along the top of the warm
+panel carries the name at its left and the dropdown at its right, and the tuning
+hint gets its own uncrowded line back.
+
+WHAT THIS SUPERSEDES, AND WHAT IT LEAVES ALONE. HM-DEC-060 put the controls on the
+warm panel below the LCD and never inside it, reasoning that the black is a
+faithful picture of the IC-7300's own face and a control the real radio does not
+have would blur which is which. That reasoning was sound and Tim has weighed it
+against being able to find the thing, and chosen being able to find it: a star
+against near-black is the brightest object on the panel. **The placement and the
+label are superseded. Everything else in HM-DEC-060 stands** — saving still
+captures frequency, mode, band and neighborhood with nothing typed, the Radio menu
+still has its submenu and its manage window, and the list still survives a
+restart.
+
+THE LABEL SHRANK FOR A REASON THAT ONLY APPEARED ONCE IT WAS BUILT. HM-DEC-060 had
+the star carry the favorite's name, which reads beautifully and costs more width
+than the display has. A name is as long as whoever typed it, and the LCD has a
+mode badge at one end and a UTC clock at the other, so a long name collides with
+one or the other at some window width. So the star says `save` or `saved`, one
+word each way, and a test holds that neither ever grows a space in it.
+
+TWO STATES, ONE CONTROL. Hollow star and `save` where nothing is saved, solid star
+and `saved` where something is, and pressing it on a saved frequency un-saves. It
+is a toggle in both directions rather than two controls that could disagree about
+which one is showing.
+
+THE NAME STILL APPEARS, WHERE THERE IS ROOM FOR IT. The strip's left end shows the
+favorite the dial is sitting on and shows nothing at all elsewhere, which is
+quieter than a line saying nothing. It does two jobs: it confirms which favorite
+you landed on when you arrive from the dropdown, and it confirms what a save was
+just named in the moment after you press the star.
+
+THE DRAWING OWNS THE HIT TEST. The star's rectangle is recorded where the glyph
+was actually drawn rather than computed a second time, since the strip's contents
+move with the mode badge beside them and two calculations of one position drift.
+The target is padded outward, because a target the size of a glyph is a target
+somebody misses, the pointer turns to a hand over it so the one pressable thing on
+a tunable surface says so before the click, and the wheel does not tune while the
+pointer is on it.
+
+THE WORD IS DROPPED BEFORE IT WOULD OVERLAP THE CLOCK, which the display's minimum
+width already prevents. A layout that is only correct because of a constant
+somewhere else is one refactor away from being wrong.
+
+---
 id: HM-DEC-069
 date: 2026-08-14
 refs: src/Hamlet.RadioEngine/Explore/ModeGuide.cs, src/Hamlet.App/ViewModels/MainWindowViewModel.cs, tests/Hamlet.RadioEngine.Tests/Explore/RttyConstraintTests.cs, HM-OPEN-008, HM-DEC-054

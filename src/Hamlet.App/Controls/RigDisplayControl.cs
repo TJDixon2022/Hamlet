@@ -5,6 +5,7 @@ using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.Threading;
 using System.Globalization;
+using System.Windows.Input;
 
 namespace Hamlet.App.Controls;
 
@@ -34,6 +35,12 @@ public sealed class RigDisplayControl : Control
     private static readonly IBrush RxBrush = new SolidColorBrush(Color.Parse("#39C46E"));
     private static readonly IBrush ScaleBrush = new SolidColorBrush(Color.Parse("#8FA0AC"));
     private static readonly IBrush MeterTrackBrush = new SolidColorBrush(Color.Parse("#1B2228"));
+
+    /// <summary>The star once this frequency is saved. The brightest thing here.</summary>
+    private static readonly IBrush StarOnBrush = new SolidColorBrush(Color.Parse("#FFC65C"));
+
+    /// <summary>The star before it is saved: findable, and plainly not lit.</summary>
+    private static readonly IBrush StarOffBrush = new SolidColorBrush(Color.Parse("#C99A4A"));
 
     /// <summary>The scale when there is nothing to show on it.</summary>
     private static readonly IBrush UnreadBrush = new SolidColorBrush(Color.Parse("#4A5A66"));
@@ -96,6 +103,20 @@ public sealed class RigDisplayControl : Control
     public static readonly StyledProperty<double?> SMeterLevelProperty =
         AvaloniaProperty.Register<RigDisplayControl, double?>(nameof(SMeterLevel), null);
 
+    /// <summary>
+    /// True when the dial is sitting on a saved frequency (HM-DEC-070).
+    /// </summary>
+    public static readonly StyledProperty<bool> IsFavoriteProperty =
+        AvaloniaProperty.Register<RigDisplayControl, bool>(nameof(IsFavorite));
+
+    /// <summary>What the star says: two short words at most.</summary>
+    public static readonly StyledProperty<string> FavoriteLabelProperty =
+        AvaloniaProperty.Register<RigDisplayControl, string>(nameof(FavoriteLabel), "save");
+
+    /// <summary>Invoked when the star is pressed. Saves, or un-saves.</summary>
+    public static readonly StyledProperty<ICommand?> ToggleFavoriteCommandProperty =
+        AvaloniaProperty.Register<RigDisplayControl, ICommand?>(nameof(ToggleFavoriteCommand));
+
     private readonly double _bigWidth;
     private readonly double _smallWidth;
     private readonly double _sepWidth;
@@ -103,11 +124,20 @@ public sealed class RigDisplayControl : Control
     private readonly double _smallHeight;
     private readonly DispatcherTimer _clockTimer;
 
+    /// <summary>Where the star was last drawn, for hit testing.</summary>
+    /// <remarks>
+    /// Set during render rather than computed twice. The glyph and the word move
+    /// with the mode badge beside them, so the only honest source for where it is
+    /// is where it was actually put.
+    /// </remarks>
+    private Rect _starRect = default;
+
     static RigDisplayControl()
     {
         AffectsRender<RigDisplayControl>(
             FrequencyHzProperty, BandLowHzProperty, BandHighHzProperty,
-            ModeTextProperty, FilterTextProperty, SMeterLevelProperty);
+            ModeTextProperty, FilterTextProperty, SMeterLevelProperty,
+            IsFavoriteProperty, FavoriteLabelProperty);
     }
 
     /// <summary>Creates the display; the UTC clock repaints once a second.</summary>
@@ -171,6 +201,27 @@ public sealed class RigDisplayControl : Control
         set => SetValue(SMeterLevelProperty, value);
     }
 
+    /// <summary>True when this frequency is already saved.</summary>
+    public bool IsFavorite
+    {
+        get => GetValue(IsFavoriteProperty);
+        set => SetValue(IsFavoriteProperty, value);
+    }
+
+    /// <summary>What the star says.</summary>
+    public string FavoriteLabel
+    {
+        get => GetValue(FavoriteLabelProperty);
+        set => SetValue(FavoriteLabelProperty, value);
+    }
+
+    /// <summary>What pressing the star runs.</summary>
+    public ICommand? ToggleFavoriteCommand
+    {
+        get => GetValue(ToggleFavoriteCommandProperty);
+        set => SetValue(ToggleFavoriteCommandProperty, value);
+    }
+
     /// <inheritdoc/>
     protected override Size MeasureOverride(Size availableSize)
         => new(
@@ -213,12 +264,69 @@ public sealed class RigDisplayControl : Control
 
         var rx = Make("RX", 12, RxBrush);
         context.DrawText(rx, new Point(x, 9));
+        x += rx.WidthIncludingTrailingWhitespace + 16;
 
         // UTC clock, right corner — real time, the one clock hams live on.
         var clock = Make(DateTime.UtcNow.ToString("HH:mm", CultureInfo.InvariantCulture)
             + " UTC", 12, ScaleBrush);
-        context.DrawText(clock,
-            new Point(w - PadX - clock.WidthIncludingTrailingWhitespace, 9));
+        var clockX = w - PadX - clock.WidthIncludingTrailingWhitespace;
+        context.DrawText(clock, new Point(clockX, 9));
+
+        DrawStar(context, x, clockX);
+    }
+
+    /// <summary>
+    /// The star, inside the black, where it is the most findable thing here
+    /// (HM-DEC-070).
+    /// </summary>
+    /// <param name="context">The drawing context.</param>
+    /// <param name="x">Where the strip's left cluster ended.</param>
+    /// <param name="clockX">Where the clock starts, which is the hard limit.</param>
+    /// <remarks>
+    /// <para>INSIDE THE LCD ON PURPOSE, which reverses what HM-DEC-060 built.
+    /// That ruling kept Hamlet's own chrome off the black so the picture stayed a
+    /// faithful IC-7300 face, and Tim weighed that against being able to find the
+    /// thing and chose being able to find it. A star against near-black is the
+    /// brightest object on the panel.</para>
+    /// <para>TWO SHORT WORDS AT MOST, so the strip cannot outgrow itself. The
+    /// word is dropped rather than overlapped if the clock ever gets close, which
+    /// the minimum width already prevents; a layout that is only correct because
+    /// of a constant somewhere else is one refactor from being wrong.</para>
+    /// </remarks>
+    private void DrawStar(DrawingContext context, double x, double clockX)
+    {
+        var brush = IsFavorite ? StarOnBrush : StarOffBrush;
+        var glyph = Make(IsFavorite ? "★" : "☆", 15, brush);
+        var word = Make(FavoriteLabel, 12, brush);
+
+        var wordWidth = word.WidthIncludingTrailingWhitespace;
+        var full = glyph.WidthIncludingTrailingWhitespace + 5 + wordWidth;
+
+        // A gap the clock is never allowed inside.
+        var room = clockX - 14 - x;
+
+        if (room < glyph.WidthIncludingTrailingWhitespace)
+        {
+            _starRect = default;
+            return;
+        }
+
+        context.DrawText(glyph, new Point(x, 6));
+
+        var drawWord = room >= full;
+
+        if (drawWord)
+        {
+            context.DrawText(
+                word, new Point(x + glyph.WidthIncludingTrailingWhitespace + 5, 9));
+        }
+
+        // Padded outward, because a target the size of a glyph is a target
+        // somebody misses.
+        _starRect = new Rect(
+            x - 6, 2,
+            (drawWord ? full : glyph.WidthIncludingTrailingWhitespace) + 12,
+            StripHeight - 4);
     }
 
     private void DrawFrequency(DrawingContext context, double w)
@@ -324,10 +432,53 @@ public sealed class RigDisplayControl : Control
     }
 
     /// <inheritdoc/>
+    /// <remarks>
+    /// The star is the one thing in here that is pressed rather than tuned, so
+    /// the pointer says so before the click rather than after (HM-DEC-070).
+    /// </remarks>
+    protected override void OnPointerMoved(PointerEventArgs e)
+    {
+        base.OnPointerMoved(e);
+
+        Cursor = new Cursor(
+            _starRect.Contains(e.GetPosition(this))
+                ? StandardCursorType.Hand
+                : StandardCursorType.SizeNorthSouth);
+    }
+
+    /// <inheritdoc/>
+    protected override void OnPointerPressed(PointerPressedEventArgs e)
+    {
+        base.OnPointerPressed(e);
+
+        if (!_starRect.Contains(e.GetPosition(this)))
+        {
+            return;
+        }
+
+        var command = ToggleFavoriteCommand;
+
+        if (command?.CanExecute(null) == true)
+        {
+            command.Execute(null);
+        }
+
+        e.Handled = true;
+    }
+
+    /// <inheritdoc/>
     protected override void OnPointerWheelChanged(PointerWheelEventArgs e)
     {
         base.OnPointerWheelChanged(e);
-        var place = PlaceAt(e.GetPosition(this));
+
+        var at = e.GetPosition(this);
+
+        if (_starRect.Contains(at))
+        {
+            return;
+        }
+
+        var place = PlaceAt(at);
         if (place is null)
         {
             return;

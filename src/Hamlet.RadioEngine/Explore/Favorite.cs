@@ -116,9 +116,30 @@ public static class Favorites
     /// What the star says, given where the dial is.
     /// </summary>
     /// <param name="saved">The favorite here, or null.</param>
-    /// <returns>Its name, or the invitation to save.</returns>
+    /// <returns>One short word, either way.</returns>
+    /// <remarks>
+    /// ONE WORD, AND IT SUPERSEDES THE NAME THIS USED TO CARRY (HM-DEC-070).
+    /// The star now lives inside the display, where a name of any length would
+    /// collide with the mode badge or the clock at some window width. It says
+    /// what pressing it does and nothing else, and the name it saved appears on
+    /// the strip below where there is room for it.
+    /// </remarks>
     public static string StarLabel(Favorite? saved)
-        => saved is null ? "save this spot" : saved.Name;
+        => saved is null ? "save" : "saved";
+
+    /// <summary>
+    /// The name of the favorite the dial is sitting on, or "".
+    /// </summary>
+    /// <param name="saved">The favorite here, or null.</param>
+    /// <returns>Its name, or "" when this frequency is not saved.</returns>
+    /// <remarks>
+    /// This is what the strip under the display shows (HM-DEC-070). It does two
+    /// jobs: it confirms which favorite you landed on when you arrive from the
+    /// dropdown, and it confirms what a save was named in the moment after you
+    /// press the star. Blank rather than a placeholder, because an empty line is
+    /// quieter than a line saying nothing.
+    /// </remarks>
+    public static string NameHere(Favorite? saved) => saved?.Name ?? "";
 
     private static string Lowercase(string name)
         => name.Length > 1 && char.IsUpper(name[0]) && !char.IsUpper(name[1])
