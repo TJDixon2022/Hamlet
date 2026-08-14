@@ -1263,6 +1263,15 @@ midpoint in 5 Hz steps (p. 19-3). The manual states the range and not a factory
 default, so the decoder starts at 600 because that is the middle of what this
 radio can produce, which is a citation rather than a recollection.
 
+> **CORRECTION 2026-08-14: the sub-command in the paragraph above is wrong. The
+> CW pitch is `14 09`, not `14 08`.** Sub-command 08 is the outer Twin PBT
+> position, and issuing it with a payload would move the passband while trying
+> to read a pitch. HM-DEC-050 found it and CLAUDE.md §4 records why: the command
+> table is two columns and the extraction behind this ruling had been flattened
+> into one, so the description landed against the row above. The range, the
+> midpoint and the 5 Hz steps in this paragraph are all correct. Noted here
+> rather than edited, because a ruling is never edited (§1).
+
 Still unknown, and marked so: what Windows calls the radio's audio codec. The
 manual describes the USB connection and never names the device as an operating
 system enumerates it, so that stays configuration and stays in HM-OPEN-003.

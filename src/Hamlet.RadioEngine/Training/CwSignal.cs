@@ -70,7 +70,7 @@ public static class CwSignal
     /// </summary>
     /// <remarks>
     /// The IC-7300's CW pitch is adjustable from 300 to 900 Hz, and CI-V
-    /// command <c>14 08</c> encodes exactly that range with 600 Hz at its
+    /// command <c>14 09</c> encodes exactly that range with 600 Hz at its
     /// midpoint (Full Manual, section 19, p. 19-3, and p. 4-14). So 600 is the
     /// middle of what this radio can do rather than a number carried in from
     /// general knowledge, which is the standard §4 sets.

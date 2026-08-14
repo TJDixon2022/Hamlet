@@ -76,11 +76,10 @@ public static class ScopeReadiness
     /// paraphrased, because a paraphrase sends somebody hunting for a screen
     /// that does not exist. Read column-aware from the Full Manual, edition 5,
     /// publication A7292-4EX-5, p. 12-9.</para>
-    /// <para>One ambiguity, recorded rather than smoothed over. Footnote 4 on
-    /// p. 19-7 names the "CI-V Baud Rate" screen, and the radio has two of
-    /// them: CI-V Baud Rate for the [REMOTE] jack and CI-V USB Baud Rate for
-    /// the USB port. Hamlet is on the USB port, so the USB one is the one named
-    /// here.</para>
+    /// <para>Footnote 4 on p. 19-7 writes "CI-V Baud Rate" and the radio has two
+    /// screens by nearly that name, one for the [REMOTE] jack and one for the
+    /// USB port. Hamlet talks to the radio over the USB cable, so the USB screen
+    /// is the one that gates this and the one named here (Tim, 2026-08-14).</para>
     /// </remarks>
     public const string WhereToLook =
         "Both settings are on the radio under MENU, then SET, then Connectors. "
