@@ -16,7 +16,7 @@ public sealed class CallsignPrivacyTests : IDisposable
     /// <summary>Every public event-writing method on <see cref="AppEvents"/>.
     /// If this number moves, a new event was added and the walk below has to
     /// grow with it — that is the point.</summary>
-    private const int ExpectedEventMethodCount = 44;
+    private const int ExpectedEventMethodCount = 46;
 
     private const string Callsign = "KC3QIS";
     // "Timothy", not "Tim": a three-letter needle matches "timer", which is a
@@ -173,6 +173,13 @@ public sealed class CallsignPrivacyTests : IDisposable
             telemetry, false,
             Hamlet.RadioEngine.Cw.TransmitReadiness.Check(true, radio, state, now));
         AppEvents.SendButtonsEnabledChanged(telemetry, true, null);
+
+        // The send lifecycle (HM-DEC-079). These are the events that make a
+        // transmission visible, and they are also the ones most tempted to
+        // carry the text. A CQ is the operator's callsign twice over, so the
+        // length goes in the record and the words never do.
+        AppEvents.SendStarted(telemetry, 27, 1, 7_030_000, "CW");
+        AppEvents.SendFinished(telemetry, 27, "Sent", 1, 1, 18.6, 7_030_000);
 
         AppEvents.RigHeartbeat(telemetry, null, state);
         AppEvents.RigHeartbeat(telemetry, state, state);

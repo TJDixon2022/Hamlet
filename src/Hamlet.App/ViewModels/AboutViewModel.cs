@@ -154,18 +154,32 @@ public partial class AboutViewModel : ObservableObject
     private static string ReadVersion()
         => typeof(AboutViewModel).Assembly.GetName().Version?.ToString(3) ?? "unknown";
 
+    /// <summary>
+    /// When this assembly was compiled, stamped at compile time (HM-DEC-079).
+    /// </summary>
+    /// <remarks>
+    /// <para>THIS USED TO READ THE ASSEMBLY FILE'S LAST-WRITE TIME, which is a
+    /// property of a file copy rather than of a build. An incremental build that
+    /// did not recompile the shell, or a copy that preserved timestamps, made it
+    /// report a day with nothing to do with the code running: it showed
+    /// 2026-08-14 while running code built the next day.</para>
+    /// <para>A build date that can be stale is worse than none, because it is
+    /// the row somebody reads to check that two machines are running the same
+    /// code. This one is written into the assembly by the compilation itself.
+    /// When it is missing it says so, rather than falling back to a timestamp
+    /// that lies (§0.0).</para>
+    /// </remarks>
     private static string ReadBuildDate()
     {
         try
         {
-            var location = typeof(AboutViewModel).Assembly.Location;
-            if (string.IsNullOrEmpty(location) || !File.Exists(location))
-            {
-                return "unknown";
-            }
+            var stamp = typeof(AboutViewModel).Assembly
+                .GetCustomAttributes<AssemblyMetadataAttribute>()
+                .FirstOrDefault(a => string.Equals(
+                    a.Key, "BuildStampUtc", StringComparison.Ordinal))?
+                .Value;
 
-            return File.GetLastWriteTime(location)
-                .ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+            return string.IsNullOrWhiteSpace(stamp) ? "unknown" : $"{stamp} UTC";
         }
         catch (Exception)
         {

@@ -670,6 +670,77 @@ public static class AppEvents
             disagrees ? TelemetryLevel.Error : TelemetryLevel.Info);
     }
 
+    /// <summary>
+    /// A message went to the radio (HM-DEC-079).
+    /// </summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="characters">How long the message was.</param>
+    /// <param name="pieces">How many keyer messages it takes.</param>
+    /// <param name="frequencyHz">Where.</param>
+    /// <param name="mode">The mode, or "".</param>
+    /// <remarks>
+    /// <para>THE RECORD HAD EVERY DECISION THE GATE MADE AND NOTHING ABOUT WHAT
+    /// THE RADIO DID. Two successful transmissions became invisible, and had to
+    /// be reconstructed afterward from the shape of a status line flapping
+    /// (§0.0.1).</para>
+    /// <para>**THE TEXT ITSELF IS NOT WRITTEN, AND THAT IS NOT AN OVERSIGHT.**
+    /// A CQ is the operator's own callsign twice over, and HM-DEC-018 forbids a
+    /// callsign in telemetry without exception. The length, the piece count, the
+    /// frequency, the mode and the duration make a transmission fully visible
+    /// and identify nobody, which is everything the diagnosis needed and
+    /// nothing it did not.</para>
+    /// </remarks>
+    public static void SendStarted(
+        ITelemetry? telemetry, int characters, int pieces, long frequencyHz, string mode)
+        => telemetry?.Write(
+            TelemetryCategory.Rig, "cw_send_started",
+            new Dictionary<string, object?>
+            {
+                ["outcome"] = "proceeded",
+                ["reason"] = "ok",
+                ["characters"] = characters,
+                ["pieces"] = pieces,
+                ["frequencyHz"] = frequencyHz,
+                ["mode"] = mode,
+            });
+
+    /// <summary>
+    /// A message finished, one way or another (HM-DEC-079).
+    /// </summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="characters">How long the message was.</param>
+    /// <param name="outcome">What became of it.</param>
+    /// <param name="piecesSent">How many pieces actually went.</param>
+    /// <param name="piecesTotal">How many it needed.</param>
+    /// <param name="seconds">How long it took.</param>
+    /// <param name="frequencyHz">Where.</param>
+    /// <remarks>
+    /// The duration is the number that proves it: eighteen seconds is a full CQ
+    /// at twenty words a minute, and a send that returned in a tenth of a second
+    /// never keyed anything. No text here either, for the same reason.
+    /// </remarks>
+    public static void SendFinished(
+        ITelemetry? telemetry, int characters, string outcome,
+        int piecesSent, int piecesTotal, double seconds, long frequencyHz)
+    {
+        var worked = string.Equals(outcome, "Sent", StringComparison.Ordinal);
+
+        telemetry?.Write(
+            TelemetryCategory.Rig,
+            worked ? "cw_send_completed" : "cw_send_ended",
+            new Dictionary<string, object?>
+            {
+                ["outcome"] = worked ? "proceeded" : "failed",
+                ["reason"] = outcome.ToLowerInvariant(),
+                ["characters"] = characters,
+                ["piecesSent"] = piecesSent,
+                ["piecesTotal"] = piecesTotal,
+                ["seconds"] = Math.Round(seconds, 2),
+                ["frequencyHz"] = frequencyHz,
+            },
+            worked ? TelemetryLevel.Info : TelemetryLevel.Warn);
+    }
+
     private static IReadOnlyDictionary<string, object?> Merge(
         IReadOnlyDictionary<string, object?> a, IReadOnlyDictionary<string, object?> b)
     {

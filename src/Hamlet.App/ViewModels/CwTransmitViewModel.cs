@@ -6,6 +6,28 @@ using Hamlet.RadioEngine.Licensing;
 
 namespace Hamlet.App.ViewModels;
 
+/// <summary>What a send control is doing (HM-DEC-079).</summary>
+/// <remarks>
+/// THREE STATES, THREE APPEARANCES, AND ONLY ONE OF THEM IS GREY. Grey has one
+/// meaning in every interface anybody has ever used: you cannot press this.
+/// Spending it on three different things left it meaning nothing, and the
+/// operator correctly stopped trusting it.
+/// </remarks>
+public enum SendState
+{
+    /// <summary>It can be pressed and will send. Active.</summary>
+    Ready,
+
+    /// <summary>Edited text waiting for a confirming press. Active.</summary>
+    Armed,
+
+    /// <summary>A message is going out. Active, with an abort beside it.</summary>
+    Sending,
+
+    /// <summary>Readiness refused. **The only state that may look disabled.**</summary>
+    Refused,
+}
+
 /// <summary>One send button, with what it would actually send.</summary>
 public sealed partial class SendButtonViewModel : ObservableObject
 {
@@ -15,7 +37,8 @@ public sealed partial class SendButtonViewModel : ObservableObject
     {
         Option = option;
         Label = option.Label;
-        Message = option.Message;
+        Original = option.Message;
+        _message = option.Message;
         Meaning = option.Meaning;
         Note = option.Note;
         Pieces = option.Pieces;
@@ -24,11 +47,23 @@ public sealed partial class SendButtonViewModel : ObservableObject
     /// <summary>The option behind it.</summary>
     public SendOption Option { get; }
 
-    /// <summary>What the button says.</summary>
+    /// <summary>What the button says when nothing is in the way.</summary>
     public string Label { get; }
 
-    /// <summary>Exactly what would go out.</summary>
-    public string Message { get; }
+    /// <summary>
+    /// Exactly what Hamlet wrote, before anybody touched it.
+    /// </summary>
+    /// <remarks>
+    /// Kept so that editing back to it clears the guard (HM-DEC-079). Somebody
+    /// who changes his mind and deletes back to the original has not written
+    /// anything, and asking him to confirm Hamlet's own words would be the
+    /// guard firing on the case it exists to skip.
+    /// </remarks>
+    public string Original { get; }
+
+    /// <summary>Exactly what would go out, as it stands now.</summary>
+    [ObservableProperty]
+    private string _message;
 
     /// <summary>The same thing in plain English.</summary>
     public string Meaning { get; }
@@ -41,9 +76,107 @@ public sealed partial class SendButtonViewModel : ObservableObject
     /// </summary>
     public int Pieces { get; }
 
-    /// <summary>True when this is the one waiting for a second press.</summary>
+    /// <summary>
+    /// True when the operator has written something Hamlet did not.
+    /// </summary>
+    /// <remarks>
+    /// THE WHOLE OF WHAT THE GUARD GUARDS (HM-DEC-079). Compared against the
+    /// original rather than tracked as "was edited", so reverting genuinely
+    /// un-arms it.
+    /// </remarks>
+    public bool IsEdited
+        => !string.Equals(Message.Trim(), Original.Trim(), StringComparison.Ordinal);
+
+    /// <summary>True when this one is waiting for its confirming press.</summary>
     [ObservableProperty]
-    private bool _isStaged;
+    private bool _isArmed;
+
+    /// <summary>What this control is doing, which decides how it looks.</summary>
+    [ObservableProperty]
+    private SendState _state = SendState.Ready;
+
+    /// <summary>
+    /// True only when readiness refused, and the only thing grey may follow.
+    /// </summary>
+    /// <remarks>
+    /// The style binds here rather than to a negation of something else, so a
+    /// future state cannot accidentally acquire the disabled look by being
+    /// "not ready" (HM-DEC-079). A test asserts armed and sending never set it.
+    /// </remarks>
+    public bool LooksRefused => State == SendState.Refused;
+
+    /// <summary>What the button says right now.</summary>
+    /// <remarks>
+    /// THE BUTTON SAYS WHAT THE NEXT PRESS WILL DO (HM-DEC-079). "Press again to
+    /// send" is the sentence that was missing: the operator pressed, saw
+    /// nothing, and concluded the control was broken, because nothing on screen
+    /// said a first press had armed anything.
+    /// </remarks>
+    public string ButtonLabel => State switch
+    {
+        SendState.Armed => "Press again to send",
+        SendState.Sending => "Sending…",
+        _ => Label,
+    };
+
+    /// <summary>One line under the meaning, or "".</summary>
+    public string StateNote => State switch
+    {
+        SendState.Sending => "going out now",
+        SendState.Refused => "",
+        _ => "",
+    };
+
+    /// <summary>
+    /// How dim this control is. **One, unless readiness refused.**
+    /// </summary>
+    /// <remarks>
+    /// The style binds here and to <see cref="LooksRefused"/> and to nothing
+    /// else, so grey cannot be acquired by a state that merely is not ready
+    /// (HM-DEC-079). Armed and sending are active and are drawn at full
+    /// strength.
+    /// </remarks>
+    public double Dimmed => LooksRefused ? 0.45 : 1.0;
+
+    /// <summary>
+    /// The edge color for this state, from the app's own palette (HM-DEC-012).
+    /// </summary>
+    /// <remarks>
+    /// Amber for armed, because amber is what this app already uses for the
+    /// dial and for anything wanting attention. Green for sending, which is the
+    /// decode family and reads as working.
+    /// </remarks>
+    public Avalonia.Media.IBrush EdgeBrush => State switch
+    {
+        SendState.Armed => ArmedBrush,
+        SendState.Sending => Controls.InstrumentPalette.ConfidentBrush,
+        _ => Controls.InstrumentPalette.IdleBrush,
+    };
+
+    /// <summary>The app's deep amber, which is what wants attention here.</summary>
+    private static readonly Avalonia.Media.IBrush ArmedBrush =
+        new Avalonia.Media.SolidColorBrush(Avalonia.Media.Color.Parse("#8A5200"));
+
+    partial void OnStateChanged(SendState value)
+    {
+        OnPropertyChanged(nameof(LooksRefused));
+        OnPropertyChanged(nameof(ButtonLabel));
+        OnPropertyChanged(nameof(StateNote));
+        OnPropertyChanged(nameof(Dimmed));
+        OnPropertyChanged(nameof(EdgeBrush));
+    }
+
+    partial void OnMessageChanged(string value)
+    {
+        OnPropertyChanged(nameof(IsEdited));
+
+        // EDITING BACK TO HAMLET'S WORDS DISARMS IT. The guard is about text
+        // nobody has checked, and the original has been checked by definition.
+        if (IsArmed && !IsEdited)
+        {
+            IsArmed = false;
+        }
+    }
 }
 
 /// <summary>
@@ -92,6 +225,8 @@ public sealed partial class CwTransmitViewModel : ObservableObject
     private readonly Action<SendOption>? _wentOut;
     private readonly Action<CwReadiness, TransmitContext, string>? _readinessChanged;
     private readonly Action<bool, CwReadiness?>? _sendEnabledChanged;
+    private readonly Action<string, TransmitContext>? _sendStarted;
+    private readonly Action<string, TransmitContext, TransmitOutcome?>? _sendFinished;
 
     /// <summary>
     /// The last verdict written to the record, so an unchanged one is not
@@ -124,16 +259,28 @@ public sealed partial class CwTransmitViewModel : ObservableObject
     /// record carries what the operator saw and not only what the engine
     /// decided (HM-DEC-078).
     /// </param>
+    /// <param name="sendStarted">
+    /// Called the moment a message goes to the radio, so the record says what
+    /// the radio was asked to do and not only what the gate decided
+    /// (HM-DEC-079).
+    /// </param>
+    /// <param name="sendFinished">
+    /// Called when it completed, failed or was aborted.
+    /// </param>
     public CwTransmitViewModel(
         Func<TransmitContext> context,
         Action<SendOption>? wentOut = null,
         Action<CwReadiness, TransmitContext, string>? readinessChanged = null,
-        Action<bool, CwReadiness?>? sendEnabledChanged = null)
+        Action<bool, CwReadiness?>? sendEnabledChanged = null,
+        Action<string, TransmitContext>? sendStarted = null,
+        Action<string, TransmitContext, TransmitOutcome?>? sendFinished = null)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _wentOut = wentOut;
         _readinessChanged = readinessChanged;
         _sendEnabledChanged = sendEnabledChanged;
+        _sendStarted = sendStarted;
+        _sendFinished = sendFinished;
         Options = new ObservableCollection<SendButtonViewModel>();
         Rebuild();
     }
@@ -162,23 +309,34 @@ public sealed partial class CwTransmitViewModel : ObservableObject
     private string _qth = "";
 
     /// <summary>
-    /// Compose first and send on a second press.
+    /// Ask for a confirming press on everything, not only edited text.
     /// </summary>
     /// <remarks>
-    /// On by default (HM-DEC-059). Somebody about to make their first contact
-    /// wants to read the words before they go out, and the whole point of this
-    /// panel is that they press the button at all.
+    /// <para>OFF BY DEFAULT, WHICH REVERSES HM-DEC-059 AND IS THE POINT
+    /// (HM-DEC-079). "Let me read it first" was on by default and made every
+    /// send take two presses with nothing on screen saying so. The operator
+    /// pressed, saw nothing, and concluded the control was broken.</para>
+    /// <para>It survives as an option rather than being deleted, because
+    /// somebody who wants to confirm everything should be able to say so. What
+    /// it may not do is describe a behavior the app no longer has.</para>
     /// </remarks>
     [ObservableProperty]
-    private bool _readFirst = true;
+    private bool _alwaysConfirm;
 
     /// <summary>What is staged and waiting for a second press, or "".</summary>
     [ObservableProperty]
     private string _staged = "";
 
     /// <summary>True while something is going out.</summary>
+    /// <summary>
+    /// True while a message is going out, latched on the send itself.
+    /// </summary>
+    /// <remarks>
+    /// DELIBERATELY NOT PART OF <see cref="CanPress"/> (HM-DEC-079). Sending is
+    /// an active state and must not wear the disabled look, so the command stays
+    /// executable and the double-send is prevented inside the handler instead.
+    /// </remarks>
     [ObservableProperty]
-    [NotifyCanExecuteChangedFor(nameof(PressCommand))]
     private bool _isSending;
 
     /// <summary>What just happened, or what stands in the way.</summary>
@@ -235,7 +393,7 @@ public sealed partial class CwTransmitViewModel : ObservableObject
     /// <c>NotifyCanExecuteChangedFor</c> is what tells the button to ask again.
     /// </remarks>
     private bool CanPress(SendButtonViewModel? button)
-        => CanSend && !IsSending && button is not null;
+        => CanSend && button is not null;
 
     /// <summary>
     /// What Hamlet says beside the buttons about the radio itself.
@@ -257,10 +415,39 @@ public sealed partial class CwTransmitViewModel : ObservableObject
     [ObservableProperty]
     private bool _licenseUnresolved;
 
-    /// <summary>The panel's collapsed summary (§0.5).</summary>
-    public string Summary => IsSending
-        ? "sending"
-        : Options.Count == 0 ? "nothing to send yet" : $"{StageName} · {Options.Count} to send";
+    /// <summary>
+    /// The panel's collapsed summary (§0.5).
+    /// </summary>
+    /// <remarks>
+    /// IT USED TO READ "2 to send", WHICH IS TECHNICALLY HONEST AND COMPLETELY
+    /// OPAQUE (HM-DEC-079). The operator read it as a count of presses rather
+    /// than a count of messages, which is a reasonable reading and the wrong
+    /// one, and it cost an evening. It now says what the messages are for.
+    /// </remarks>
+    public string Summary
+    {
+        get
+        {
+            if (IsSending)
+            {
+                return "sending now";
+            }
+
+            if (Options.Count == 0)
+            {
+                return "nothing to send yet";
+            }
+
+            if (!CanSend)
+            {
+                return $"{StageName} · not ready to send";
+            }
+
+            return Options.Count == 1
+                ? $"{StageName} · one thing to say"
+                : $"{StageName} · {Options.Count} things you could say";
+        }
+    }
 
     /// <summary>What to call the current stage on screen.</summary>
     public string StageName => Stage switch
@@ -342,6 +529,19 @@ public sealed partial class CwTransmitViewModel : ObservableObject
             return;
         }
 
+        // SENDING IS A STATE, NOT A PER-ELEMENT SAMPLE (HM-DEC-079). Under full
+        // break-in the transmit line toggles on every element, so readiness
+        // refuses "already transmitting" dozens of times across one eighteen
+        // second call. Recomputing through that flipped the controls enabled and
+        // disabled on every dah and lost clicks into the disabled frames. The
+        // latch is the send operation itself: returning to ready wants the
+        // message to finish, not a gap between elements.
+        if (IsSending)
+        {
+            ApplyState();
+            return;
+        }
+
         var check = _transmitter.Check(context);
 
         var was = CanSend;
@@ -370,10 +570,36 @@ public sealed partial class CwTransmitViewModel : ObservableObject
         if (!check.Sent)
         {
             SetStatus(check.Detail, refusal: true, citation: check.Citation);
+            ApplyState();
             return;
         }
 
         SetStatus("", refusal: false, citation: "");
+        ApplyState();
+    }
+
+    /// <summary>
+    /// Put every control into the state it is actually in (HM-DEC-079).
+    /// </summary>
+    /// <remarks>
+    /// ONE PLACE, so the three appearances cannot drift apart and so nothing
+    /// can acquire the refused look by accident. Grey follows
+    /// <see cref="SendButtonViewModel.LooksRefused"/> and that follows this.
+    /// </remarks>
+    private void ApplyState()
+    {
+        foreach (var option in Options)
+        {
+            option.State = IsSending
+                ? option.State == SendState.Sending
+                    ? SendState.Sending
+                    : SendState.Ready
+                : !CanSend
+                    ? SendState.Refused
+                    : option.IsArmed
+                        ? SendState.Armed
+                        : SendState.Ready;
+        }
     }
 
     /// <summary>
@@ -389,28 +615,45 @@ public sealed partial class CwTransmitViewModel : ObservableObject
             return;
         }
 
-        // FIRST PRESS COMPOSES, SECOND PRESS SENDS. Nothing goes out on the
-        // press that stages it, which is the whole of the toggle.
-        if (ReadFirst && !button.IsStaged)
+        // THE GUARD IS FOR TEXT THE OPERATOR WROTE, NOT TEXT HAMLET WROTE
+        // (HM-DEC-079). Hamlet's own words are already on screen in full and
+        // have already been read, so a confirming press adds nothing and costs
+        // everything: the operator pressed, saw nothing happen, and concluded
+        // the button was broken. He built this application and still read it
+        // that way.
+        if (NeedsConfirming(button) && !button.IsArmed)
         {
             ClearStaged();
-            button.IsStaged = true;
+            button.IsArmed = true;
+            button.State = SendState.Armed;
             Staged = button.Message;
             SetStatus(
-                "Ready to send. Press it again and it goes out.",
+                "You have changed this one, so Hamlet is holding it. Read it "
+                + "over and press again, and it goes out as it stands.",
                 refusal: false, citation: "");
             return;
         }
 
+        var message = button.Message.Trim();
+
         IsSending = true;
+        button.State = SendState.Sending;
         OnPropertyChanged(nameof(Summary));
+
+        var context = _context();
+
+        _sendStarted?.Invoke(message, context);
+
+        var outcome = default(TransmitOutcome);
 
         try
         {
-            var outcome = await _transmitter.SendAsync(button.Message, _context());
+            outcome = await _transmitter.SendAsync(message, context);
 
             SetStatus(
-                outcome.Sent ? $"Sent: {button.Message}" : outcome.Detail,
+                outcome.Sent
+                    ? "That went out."
+                    : outcome.Detail,
                 refusal: !outcome.Sent,
                 citation: outcome.Citation);
 
@@ -425,9 +668,24 @@ public sealed partial class CwTransmitViewModel : ObservableObject
         {
             IsSending = false;
             ClearStaged();
+            _sendFinished?.Invoke(message, context, outcome);
+            Refresh();
             OnPropertyChanged(nameof(Summary));
         }
     }
+
+    /// <summary>
+    /// Whether this message needs a confirming press.
+    /// </summary>
+    /// <param name="button">The one being pressed.</param>
+    /// <returns>True when the operator has written something Hamlet did not.</returns>
+    /// <remarks>
+    /// EDITED TEXT ONLY (HM-DEC-079), unless somebody has explicitly asked for
+    /// the old behavior. That is the whole ruling: the press guards what nobody
+    /// has checked, and Hamlet's own words have been checked by being on screen.
+    /// </remarks>
+    private bool NeedsConfirming(SendButtonViewModel button)
+        => AlwaysConfirm || button.IsEdited;
 
     /// <summary>
     /// Stop whatever is going out, now.
@@ -454,7 +712,7 @@ public sealed partial class CwTransmitViewModel : ObservableObject
 
     partial void OnStageChanged(ContactStage value) => Refresh();
 
-    partial void OnReadFirstChanged(bool value) => ClearStaged();
+    partial void OnAlwaysConfirmChanged(bool value) => ClearStaged();
 
     partial void OnHeardWpmChanged(int? value) => OnPropertyChanged(nameof(SpeedOffer));
 
@@ -518,8 +776,14 @@ public sealed partial class CwTransmitViewModel : ObservableObject
 
         for (var i = 0; i < offered.Count; i++)
         {
+            // AGAINST THE ORIGINAL, NEVER AGAINST THE EDITED TEXT. The message
+            // is editable now (HM-DEC-079), so comparing what the script offers
+            // against what is in the box would rebuild the moment somebody
+            // typed, and the rebuild would throw their words away four times a
+            // second. What decides a rebuild is the script changing its mind,
+            // not the operator changing his.
             if (!string.Equals(
-                    offered[i].Message, Options[i].Message, StringComparison.Ordinal)
+                    offered[i].Message, Options[i].Original, StringComparison.Ordinal)
                 || !string.Equals(
                     offered[i].Label, Options[i].Label, StringComparison.Ordinal))
             {
@@ -534,10 +798,40 @@ public sealed partial class CwTransmitViewModel : ObservableObject
     {
         foreach (var option in Options)
         {
-            option.IsStaged = false;
+            option.IsArmed = false;
         }
 
         Staged = "";
+    }
+
+    /// <summary>
+    /// Step back from an armed message without sending it (HM-DEC-079).
+    /// </summary>
+    /// <remarks>
+    /// THERE WAS NO WAY BACK OUT. An armed message could only be resolved by
+    /// pressing the very thing somebody was unsure about, which is the opposite
+    /// of what a confirming press is for.
+    /// </remarks>
+    [RelayCommand]
+    private void Disarm()
+    {
+        ClearStaged();
+        SetStatus("", refusal: false, citation: "");
+        ApplyState();
+    }
+
+    /// <summary>Put an edited message back to Hamlet's own words.</summary>
+    [RelayCommand]
+    private void Revert(SendButtonViewModel? button)
+    {
+        if (button is null)
+        {
+            return;
+        }
+
+        button.Message = button.Original;
+        button.IsArmed = false;
+        ApplyState();
     }
 
     private void SetStatus(string text, bool refusal, string citation)

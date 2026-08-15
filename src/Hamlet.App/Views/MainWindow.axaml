@@ -743,15 +743,18 @@
                                                VerticalAlignment="Center"
                                                Foreground="{StaticResource HmAmberBrush}" />
 
-                                    <!-- Default on, because somebody who can
-                                         read the words before they go out will
-                                         press the button at all. -->
+                                    <!-- OFF BY DEFAULT NOW (HM-DEC-079). The
+                                         confirming press guards text the
+                                         operator wrote, not text Hamlet wrote,
+                                         so it fires where it is worth firing
+                                         and nowhere else. This is for somebody
+                                         who wants it on everything. -->
                                     <StackPanel Grid.Column="1" Orientation="Horizontal"
                                                 Spacing="8" VerticalAlignment="Center">
-                                        <TextBlock Text="let me read it first" FontSize="11"
+                                        <TextBlock Text="confirm every send" FontSize="11"
                                                    VerticalAlignment="Center"
                                                    Foreground="{StaticResource HmTextMutedBrush}" />
-                                        <ToggleSwitch IsChecked="{Binding ReadFirst}" />
+                                        <ToggleSwitch IsChecked="{Binding AlwaysConfirm}" />
                                     </StackPanel>
                                 </Grid>
 
@@ -776,39 +779,85 @@
                                      the air says why rather than inviting a
                                      press that produces a correct frame, a
                                      correct acknowledgement and silence. -->
-                                <ItemsControl ItemsSource="{Binding Options}"
-                                              IsEnabled="{Binding CanSend}">
+                                <!-- THREE STATES, THREE APPEARANCES, AND ONLY
+                                     ONE OF THEM IS GREY (HM-DEC-079). Grey means
+                                     refused and nothing else, because grey means
+                                     "you cannot press this" in every interface
+                                     anybody has ever used, and spending it on
+                                     three different things left it meaning
+                                     nothing. Armed is amber and pressable.
+                                     Sending is green and working. Both do
+                                     something, so neither is dimmed. -->
+                                <ItemsControl ItemsSource="{Binding Options}">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate x:DataType="vm:SendButtonViewModel">
-                                            <Border Background="White"
-                                                    BorderBrush="{StaticResource HmAmberEdgeBrush}"
-                                                    BorderThickness="1" CornerRadius="8"
-                                                    Padding="10,8" Margin="0,0,0,6">
-                                                <StackPanel Spacing="3">
+                                            <Border BorderThickness="1" CornerRadius="8"
+                                                    Padding="10,8" Margin="0,0,0,6"
+                                                    Background="White"
+                                                    BorderBrush="{Binding EdgeBrush}"
+                                                    Opacity="{Binding Dimmed}"
+                                                    IsEnabled="{Binding !LooksRefused}">
+                                                <StackPanel Spacing="4">
                                                     <Grid ColumnDefinitions="*,Auto">
-                                                        <TextBlock Grid.Column="0"
-                                                                   Text="{Binding Meaning}"
-                                                                   FontSize="12" TextWrapping="Wrap"
-                                                                   Margin="0,0,8,0" />
+                                                        <StackPanel Grid.Column="0" Spacing="1"
+                                                                    Margin="0,0,8,0">
+                                                            <TextBlock Text="{Binding Meaning}"
+                                                                       FontSize="12"
+                                                                       TextWrapping="Wrap" />
+                                                            <TextBlock Text="{Binding StateNote}"
+                                                                       FontSize="11"
+                                                                       TextWrapping="Wrap"
+                                                                       IsVisible="{Binding StateNote,
+                                                                           Converter={x:Static ctl:PrivilegeToneConverter.NotEmpty}}"
+                                                                       Foreground="{Binding EdgeBrush}" />
+                                                        </StackPanel>
                                                         <Button Grid.Column="1"
-                                                                Content="{Binding Label}"
+                                                                Content="{Binding ButtonLabel}"
                                                                 FontSize="12"
                                                                 VerticalAlignment="Center"
                                                                 Command="{Binding $parent[ItemsControl].((vm:CwTransmitViewModel)DataContext).PressCommand}"
                                                                 CommandParameter="{Binding}" />
                                                     </Grid>
 
-                                                    <!-- Exactly what would go
-                                                         out, in the terminal's
-                                                         own ink so it reads as
-                                                         the radio's words. -->
-                                                    <Border CornerRadius="6" Padding="8,5"
+                                                    <!-- EDITABLE, WHICH IS WHAT
+                                                         THE GUARD IS FOR. Change
+                                                         it and the next press
+                                                         arms rather than sends. -->
+                                                    <Border CornerRadius="6" Padding="2"
                                                             Background="{x:Static ctl:InstrumentPalette.SurfaceBrush}">
-                                                        <TextBlock Text="{Binding Message}"
-                                                                   FontFamily="Consolas,Menlo,monospace"
-                                                                   FontSize="12" TextWrapping="Wrap"
-                                                                   Foreground="{x:Static ctl:InstrumentPalette.ConfidentBrush}" />
+                                                        <TextBox Text="{Binding Message, Mode=TwoWay}"
+                                                                 FontFamily="Consolas,Menlo,monospace"
+                                                                 FontSize="12" TextWrapping="Wrap"
+                                                                 AcceptsReturn="False"
+                                                                 Background="Transparent"
+                                                                 BorderThickness="0"
+                                                                 Foreground="{x:Static ctl:InstrumentPalette.ConfidentBrush}" />
                                                     </Border>
+
+                                                    <!-- ARMED SAYS SO, AND SAYS
+                                                         HOW TO GET BACK OUT.
+                                                         There used to be no way
+                                                         out of an armed message
+                                                         except pressing the very
+                                                         thing you were unsure
+                                                         about. -->
+                                                    <Grid ColumnDefinitions="*,Auto,Auto"
+                                                          IsVisible="{Binding IsArmed}">
+                                                        <TextBlock Grid.Column="0"
+                                                                   Text="Read it over. The next press sends it exactly as it stands."
+                                                                   FontSize="11" TextWrapping="Wrap"
+                                                                   VerticalAlignment="Center"
+                                                                   Margin="0,0,8,0"
+                                                                   Foreground="{StaticResource HmAmberDeepBrush}" />
+                                                        <Button Grid.Column="1" Content="Put it back"
+                                                                FontSize="11" Padding="8,3"
+                                                                Margin="0,0,6,0"
+                                                                Command="{Binding $parent[ItemsControl].((vm:CwTransmitViewModel)DataContext).RevertCommand}"
+                                                                CommandParameter="{Binding}" />
+                                                        <Button Grid.Column="2" Content="Cancel"
+                                                                FontSize="11" Padding="8,3"
+                                                                Command="{Binding $parent[ItemsControl].((vm:CwTransmitViewModel)DataContext).DisarmCommand}" />
+                                                    </Grid>
 
                                                     <TextBlock Text="{Binding Note}" FontSize="11"
                                                                TextWrapping="Wrap"

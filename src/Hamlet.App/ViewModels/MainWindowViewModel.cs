@@ -503,6 +503,50 @@ public partial class MainWindowViewModel : ObservableObject
             DateTime.UtcNow);
     }
 
+    /// <summary>When the send in flight began, for its duration.</summary>
+    private DateTime _sendStartedUtc;
+
+    /// <summary>
+    /// A message went to the radio (HM-DEC-079).
+    /// </summary>
+    /// <param name="message">What is going out. Recorded by length, never by text.</param>
+    /// <param name="context">Where and in what mode.</param>
+    private void OnSendStarted(string message, TransmitContext context)
+    {
+        _sendStartedUtc = DateTime.UtcNow;
+
+        AppEvents.SendStarted(
+            _telemetry, message.Length, CwMessage.PieceCount(message),
+            context.FrequencyHz,
+            context.State[RigField.Mode] is { IsKnown: true } mode ? mode.Text : "");
+
+        Decisions.Note(
+            "Sending", "started", Outcome.Proceeded,
+            $"{message.Length} characters going out.", _sendStartedUtc);
+    }
+
+    /// <summary>A message finished, one way or another (HM-DEC-079).</summary>
+    /// <param name="message">What went. Recorded by length, never by text.</param>
+    /// <param name="context">Where.</param>
+    /// <param name="outcome">What became of it, or null.</param>
+    private void OnSendFinished(
+        string message, TransmitContext context, TransmitOutcome? outcome)
+    {
+        var seconds = (DateTime.UtcNow - _sendStartedUtc).TotalSeconds;
+        var result = outcome?.Result;
+        var what = result?.Outcome.ToString() ?? "Unknown";
+
+        AppEvents.SendFinished(
+            _telemetry, message.Length, what,
+            result?.PiecesSent ?? 0, result?.PiecesTotal ?? 0,
+            seconds, context.FrequencyHz);
+
+        Decisions.Note(
+            "Sending", what.ToLowerInvariant(),
+            outcome?.Sent == true ? Outcome.Proceeded : Outcome.Failed,
+            $"Finished after {seconds:0.0} seconds.", DateTime.UtcNow);
+    }
+
     /// <summary>What Hamlet has recently decided (HM-DEC-077).</summary>
     public DecisionLogViewModel Decisions { get; } = new();
 
@@ -921,7 +965,7 @@ public partial class MainWindowViewModel : ObservableObject
         // (HM-DEC-059).
         Transmit = new CwTransmitViewModel(
             BuildTransmitContext, OnSomethingWentOut, OnReadinessChanged,
-            OnSendEnabledChanged)
+            OnSendEnabledChanged, OnSendStarted, OnSendFinished)
         {
             YourCall = settings.Operator.Callsign,
             Qth = settings.Operator.Location,

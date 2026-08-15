@@ -15,7 +15,31 @@
     none.
   -->
   <PropertyGroup>
-    <Version>1.2.6</Version>
+    <Version>1.2.7</Version>
   </PropertyGroup>
+
+  <!--
+    THE BUILD DATE IS STAMPED AT COMPILE TIME (HM-DEC-079).
+
+    About used to read it off the assembly file's last-write time, which is a
+    property of a file copy rather than of a build: an incremental build that
+    did not recompile this project, or a copy that preserved timestamps, made it
+    report a day that had nothing to do with the code running. It showed
+    2026-08-14 while running code built the next day.
+
+    A build date that can be stale is worse than no build date, because it is
+    the row somebody uses to check that two machines are running the same code.
+    This one comes from the compilation itself and cannot be a copy artifact.
+  -->
+  <PropertyGroup>
+    <BuildStampUtc>$([System.DateTime]::UtcNow.ToString("yyyy-MM-dd HH:mm"))</BuildStampUtc>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
+      <_Parameter1>BuildStampUtc</_Parameter1>
+      <_Parameter2>$(BuildStampUtc)</_Parameter2>
+    </AssemblyAttribute>
+  </ItemGroup>
 
 </Project>

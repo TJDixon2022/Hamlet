@@ -12,6 +12,19 @@ operator can see and use, patch fixes and polishes without adding one.
 
 ---
 
+## 1.2.7
+
+**The send controls tell the truth.**
+
+Grey means refused and nothing else. The confirming press guards text the
+operator edited rather than text Hamlet wrote, so an unedited message sends on
+one press and says so. Sending is one stable state rather than a sample of a
+transmit line that toggles on every Morse element. The send itself is now in the
+record, by length and duration and never by its words. The build date is stamped
+at compile time rather than read off a file timestamp that could lie.
+
+Ruling HM-DEC-079.
+
 ## 1.2.6
 
 **The send button works.**

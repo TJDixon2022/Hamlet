@@ -116,14 +116,14 @@ public sealed class SendButtonEnablementTests
         var state = LiveState();
         var panel = Panel(() => state);
 
-        panel.Options[0].IsStaged = true;
+        panel.Options[0].IsArmed = true;
 
         for (var i = 0; i < 100; i++)
         {
             panel.Refresh();
         }
 
-        Assert.True(panel.Options[0].IsStaged);
+        Assert.True(panel.Options[0].IsArmed);
     }
 
     /// <remarks>

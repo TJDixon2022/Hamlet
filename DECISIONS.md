@@ -4,6 +4,118 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-079
+date: 2026-08-15
+supersedes: HM-DEC-059 (the two-press default only)
+refs: src/Hamlet.App/ViewModels/CwTransmitViewModel.cs, src/Hamlet.App/Views/MainWindow.axaml, src/Hamlet.App/Telemetry/AppEvents.cs, tests/Hamlet.App.Tests/ViewModels/SendGuardTests.cs, HM-DEC-012, HM-DEC-018, HM-DEC-078
+---
+
+**CW transmit works on real hardware. What did not work was the operator being
+able to tell that.** Two transmissions went out, eighteen seconds each, and he
+did not know at the time. Every minute of the evening it cost came from the send
+controls saying something untrue about their own state.
+
+---
+
+**GREY MEANS REFUSED AND NOTHING ELSE. This one is durable and a later session
+should not undo it casually.**
+
+Grey has one meaning in every interface anybody has ever used: you cannot press
+this. Hamlet was spending it on at least three different things, so it meant
+nothing, and the operator correctly stopped trusting it. The disabled appearance
+is now reserved for `TransmitReadiness` refusing, and **a refusal always prints
+its reason beside the button.**
+
+Armed and sending are active states and are drawn at full strength: armed in the
+app's amber because amber is what this app already uses for anything wanting
+attention, sending in the decode green because it reads as working (HM-DEC-012).
+Both do something, so neither may be dimmed. The style binds to
+`LooksRefused` and `Dimmed`, which are true only in the refused state, so a
+future state cannot acquire the disabled look by merely being "not ready". A test
+asserts it at the view-model level on the properties the style binds to.
+
+---
+
+**THE CONFIRMING PRESS GUARDS WHAT THE OPERATOR WROTE, NOT WHAT HAMLET WROTE.
+This one is durable too.**
+
+Every send took two presses, the first armed nothing visibly, and the header read
+`2 to send`, which he read as a count of available messages rather than a count
+of presses. He pressed, saw nothing happen, and concluded the button was broken.
+He built this application and still read it that way, which is the whole
+argument: if the author cannot read it, nobody can.
+
+- **Text Hamlet wrote, unedited, sends on one press.** It is on screen in full
+  and has already been read, so a confirming press adds nothing. The previewing
+  the old toggle existed to force has already happened by the time anybody
+  reaches for the button.
+- **Text the operator edited takes two.** That is the message nobody has checked
+  and the only one worth guarding.
+- **Reverting disarms.** Edited-ness is a comparison against Hamlet's original
+  rather than a flag that was set once, so somebody who changes his mind and
+  deletes back does not face a second press for nothing.
+- The armed button **says what the next press will do**, and there is a way back
+  out that is not the thing you were unsure about: cancel, and put it back.
+
+**This supersedes HM-DEC-059's default only.** That ruling put the toggle on by
+default so somebody could read the words before they went out, and the reasoning
+was right. What was wrong was applying it to text Hamlet had already written and
+already displayed. The toggle survives as "confirm every send", off by default,
+because somebody who wants it on everything should be able to say so. What it may
+not do is describe a behavior the app no longer has.
+
+The collapsed summary is rewritten. `2 to send` was technically honest and
+completely opaque.
+
+---
+
+**SENDING IS A STATE, NOT A PER-ELEMENT SAMPLE.**
+
+Under full break-in the radio keys element by element, so `TransmitStatus`
+toggles every few hundred milliseconds and readiness refused `already
+transmitting` dozens of times across one eighteen second call. The controls
+flipped enabled and disabled on every dah, and a click landing in a disabled
+frame was lost. The latch is the send operation itself: while a message is in
+flight readiness is not recomputed at all, the controls hold one state, and
+returning to ready wants the message to finish rather than a gap between
+elements. The abort that already exists is what stops it (HM-DEC-074).
+
+That also removes the source of the log noise rather than rate-limiting the
+symptom: 137 paired events across 37 seconds were the same unchanged state
+written twice per Morse element, and there is now nothing to write.
+
+---
+
+**THE SEND IS IN THE RECORD.** Start and finish events carry the character
+count, the piece count, the frequency, the mode and the duration, which is what
+makes a transmission visible: eighteen seconds is a full CQ at twenty words a
+minute, and a send that returned in a tenth of a second never keyed anything.
+
+**THE TEXT ITSELF IS NOT WRITTEN, AND THAT IS A DEPARTURE FROM THE BRIEF THAT
+ASKED FOR IT.** A CQ is the operator's own callsign twice over, and HM-DEC-018
+forbids a callsign in telemetry without exception, with a test that proves it
+cannot happen. The length, the count, the duration, the frequency and the mode
+make the transmission fully diagnosable and identify nobody, which is everything
+the diagnosis needed and nothing it did not. Recorded here rather than quietly
+done, because a brief was overridden.
+
+---
+
+**A BUG THIS WORK INTRODUCED AND ITS OWN TEST CAUGHT.** Making the message
+editable meant the rebuild comparison in HM-DEC-078 was comparing the script's
+output against the edited text, so typing would have rebuilt the buttons on the
+next poll and thrown the operator's words away four times a second. What decides
+a rebuild is the script changing its mind, not the operator changing his, so the
+comparison is against the original.
+
+**THE BUILD DATE IS STAMPED AT COMPILE TIME.** About read it off the assembly
+file's last-write time, which is a property of a file copy rather than of a
+build: it showed 2026-08-14 while running code built the next day. It is the row
+somebody reads to check that two machines run the same code, so a date that can
+be stale is worse than none. It now comes from the compilation and says
+"unknown" when it is absent rather than falling back to a timestamp that lies.
+
+---
 id: HM-DEC-078
 date: 2026-08-15
 refs: src/Hamlet.App/ViewModels/CwTransmitViewModel.cs, src/Hamlet.App/ViewModels/MainWindowViewModel.cs, src/Hamlet.App/Telemetry/AppEvents.cs, tests/Hamlet.App.Tests/ViewModels/SendButtonEnablementTests.cs, HM-DEC-059, HM-DEC-077
