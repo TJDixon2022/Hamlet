@@ -629,6 +629,47 @@ public static class AppEvents
             window.Level);
     }
 
+    /// <summary>
+    /// The send buttons became usable, or stopped being (HM-DEC-078).
+    /// </summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="enabled">Whether the operator can press them now.</param>
+    /// <param name="readiness">The verdict behind it, or null.</param>
+    /// <remarks>
+    /// <para>WHAT THE OPERATOR SAW, BESIDE WHAT THE ENGINE DECIDED. The record
+    /// said the engine reached Ready while the screen showed dead buttons, and
+    /// nothing anywhere could show that disagreement. An event describing the
+    /// engine is not a record of the application (§0.0.1); it is a record of
+    /// half of it, and it was the half that was working.</para>
+    /// <para>A button that is off while readiness says Ready is a warning,
+    /// because that combination is the failure itself and somebody should be
+    /// able to find it by scanning (HM-DEC-077).</para>
+    /// </remarks>
+    public static void SendButtonsEnabledChanged(
+        ITelemetry? telemetry, bool enabled, CwReadiness? readiness)
+    {
+        if (telemetry is null)
+        {
+            return;
+        }
+
+        var verdict = readiness?.State.ToString() ?? "unknown";
+        var disagrees = !enabled && readiness is { MaySend: true };
+
+        telemetry.Write(
+            TelemetryCategory.Rig, "send_buttons_enabled",
+            new Dictionary<string, object?>
+            {
+                ["outcome"] = enabled ? "proceeded" : "refused",
+                ["reason"] = readiness?.Reason ?? "no_verdict",
+                ["enabled"] = enabled,
+                ["readinessState"] = verdict,
+                ["readinessMaySend"] = readiness?.MaySend,
+                ["disagreesWithEngine"] = disagrees,
+            },
+            disagrees ? TelemetryLevel.Error : TelemetryLevel.Info);
+    }
+
     private static IReadOnlyDictionary<string, object?> Merge(
         IReadOnlyDictionary<string, object?> a, IReadOnlyDictionary<string, object?> b)
     {

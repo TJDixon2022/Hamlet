@@ -483,6 +483,26 @@ public partial class MainWindowViewModel : ObservableObject
             DateTime.UtcNow);
     }
 
+    /// <summary>
+    /// The send buttons changed state, so the record says what the operator saw
+    /// (HM-DEC-078).
+    /// </summary>
+    /// <param name="enabled">Whether they can be pressed now.</param>
+    /// <param name="readiness">The verdict behind it, or null.</param>
+    private void OnSendEnabledChanged(bool enabled, CwReadiness? readiness)
+    {
+        AppEvents.SendButtonsEnabledChanged(_telemetry, enabled, readiness);
+
+        Decisions.Note(
+            "Send buttons",
+            enabled ? "usable" : readiness?.Reason ?? "no_verdict",
+            enabled ? Outcome.Proceeded : Outcome.Refused,
+            enabled
+                ? "The send buttons are live."
+                : "The send buttons are off, and the reason is beside them.",
+            DateTime.UtcNow);
+    }
+
     /// <summary>What Hamlet has recently decided (HM-DEC-077).</summary>
     public DecisionLogViewModel Decisions { get; } = new();
 
@@ -900,7 +920,8 @@ public partial class MainWindowViewModel : ObservableObject
         // moment somebody presses rather than captured when the panel was built
         // (HM-DEC-059).
         Transmit = new CwTransmitViewModel(
-            BuildTransmitContext, OnSomethingWentOut, OnReadinessChanged)
+            BuildTransmitContext, OnSomethingWentOut, OnReadinessChanged,
+            OnSendEnabledChanged)
         {
             YourCall = settings.Operator.Callsign,
             Qth = settings.Operator.Location,
@@ -1751,6 +1772,21 @@ public partial class MainWindowViewModel : ObservableObject
         ApplyRigState(RigState.Empty);
     }
 
+    /// <summary>
+    /// THE SEAM WHERE RIG STATE ENTERS THE UI, AND THE ONLY ONE (HM-DEC-078).
+    /// </summary>
+    /// <remarks>
+    /// <para>The monitor raises this from the serial read loop, so everything
+    /// downstream would otherwise be touching bindable properties from a
+    /// background thread. Marshalling here rather than at each consumer means a
+    /// property added next month is safe without anybody remembering, and there
+    /// is one line to read to know that it is.</para>
+    /// <para>It fires every poll cycle whether anything changed or not, four
+    /// times a second, which is why everything it reaches has to be cheap and
+    /// idempotent. A consumer that rebuilds controls on this cadence destroys
+    /// them out from under the operator's finger, and that is exactly what
+    /// killed two live attempts (HM-DEC-078).</para>
+    /// </remarks>
     private void OnRigStateChanged(object? sender, RigStateChangedEventArgs e)
         => Dispatcher.UIThread.Post(() => ApplyRigState(e.State));
 
@@ -1764,6 +1800,16 @@ public partial class MainWindowViewModel : ObservableObject
     /// </remarks>
     private void ApplyRigState(RigState state)
     {
+        // EVERYTHING BELOW TOUCHES BINDABLE STATE, so arriving here off the UI
+        // thread would mean notifications the framework may silently drop
+        // (HM-DEC-078). The one caller posts; this is what keeps a second caller
+        // from quietly not doing so.
+        if (!Dispatcher.UIThread.CheckAccess())
+        {
+            Dispatcher.UIThread.Post(() => ApplyRigState(state));
+            return;
+        }
+
         NoticeOperatorModeChange(state);
 
         RigModeText = state[RigField.Mode] is { IsKnown: true } mode ? mode.Text : "";

@@ -91,6 +91,7 @@ public sealed partial class CwTransmitViewModel : ObservableObject
     private readonly Func<TransmitContext> _context;
     private readonly Action<SendOption>? _wentOut;
     private readonly Action<CwReadiness, TransmitContext, string>? _readinessChanged;
+    private readonly Action<bool, CwReadiness?>? _sendEnabledChanged;
 
     /// <summary>
     /// The last verdict written to the record, so an unchanged one is not
@@ -118,14 +119,21 @@ public sealed partial class CwTransmitViewModel : ObservableObject
     /// Called whenever the transmit precondition verdict changes, so the record
     /// carries every refusal whether or not a button was pressed (HM-DEC-077).
     /// </param>
+    /// <param name="sendEnabledChanged">
+    /// Called when the send buttons become usable or stop being usable, so the
+    /// record carries what the operator saw and not only what the engine
+    /// decided (HM-DEC-078).
+    /// </param>
     public CwTransmitViewModel(
         Func<TransmitContext> context,
         Action<SendOption>? wentOut = null,
-        Action<CwReadiness, TransmitContext, string>? readinessChanged = null)
+        Action<CwReadiness, TransmitContext, string>? readinessChanged = null,
+        Action<bool, CwReadiness?>? sendEnabledChanged = null)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _wentOut = wentOut;
         _readinessChanged = readinessChanged;
+        _sendEnabledChanged = sendEnabledChanged;
         Options = new ObservableCollection<SendButtonViewModel>();
         Rebuild();
     }
@@ -170,6 +178,7 @@ public sealed partial class CwTransmitViewModel : ObservableObject
 
     /// <summary>True while something is going out.</summary>
     [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(PressCommand))]
     private bool _isSending;
 
     /// <summary>What just happened, or what stands in the way.</summary>
@@ -211,7 +220,22 @@ public sealed partial class CwTransmitViewModel : ObservableObject
     /// work says why instead of inviting a press that produces silence.
     /// </remarks>
     [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(PressCommand))]
     private bool _canSend;
+
+    /// <summary>
+    /// Whether a send button may be pressed at all (HM-DEC-078).
+    /// </summary>
+    /// <remarks>
+    /// THE COMMAND CARRIES THE GATE, not only the visual tree. A parent whose
+    /// enabled state is bound is a picture of the rule, and a picture can be
+    /// wrong: the buttons were rebuilt out from under it four times a second and
+    /// nobody could tell whether the control was disabled or merely gone. A
+    /// command that refuses cannot be invoked however the tree renders, and
+    /// <c>NotifyCanExecuteChangedFor</c> is what tells the button to ask again.
+    /// </remarks>
+    private bool CanPress(SendButtonViewModel? button)
+        => CanSend && !IsSending && button is not null;
 
     /// <summary>
     /// What Hamlet says beside the buttons about the radio itself.
@@ -307,7 +331,12 @@ public sealed partial class CwTransmitViewModel : ObservableObject
 
         if (_transmitter is null)
         {
-            CanSend = false;
+            if (CanSend)
+            {
+                CanSend = false;
+                _sendEnabledChanged?.Invoke(false, null);
+            }
+
             SetStatus("There is no radio connected, so there is nothing to send with.",
                 refusal: true, citation: "");
             return;
@@ -315,7 +344,19 @@ public sealed partial class CwTransmitViewModel : ObservableObject
 
         var check = _transmitter.Check(context);
 
+        var was = CanSend;
+
         CanSend = check.Sent;
+
+        // WHAT THE OPERATOR ACTUALLY SAW, WHICH IS THE THING THE RECORD COULD
+        // NOT SEE (HM-DEC-078, §0.0.1). The log said Ready while the screen said
+        // no, and nothing anywhere could show that disagreement. So the button's
+        // own state is reported beside the engine's verdict, and the two can be
+        // compared in one file.
+        if (was != CanSend)
+        {
+            _sendEnabledChanged?.Invoke(CanSend, check.Readiness);
+        }
 
         // A REFUSAL WITH NOBODY PRESSING ANYTHING STILL GOES IN THE RECORD
         // (HM-DEC-077). A disabled button fires no handler, so the evening this
@@ -340,7 +381,7 @@ public sealed partial class CwTransmitViewModel : ObservableObject
     /// </summary>
     /// <param name="button">Which one.</param>
     /// <returns>A task that completes when the send has finished.</returns>
-    [RelayCommand]
+    [RelayCommand(CanExecute = nameof(CanPress))]
     private async Task PressAsync(SendButtonViewModel? button)
     {
         if (button is null || _transmitter is null || IsSending || !CanSend)
@@ -420,9 +461,35 @@ public sealed partial class CwTransmitViewModel : ObservableObject
     partial void OnSupportsCharacterSpacingChanged(bool value)
         => OnPropertyChanged(nameof(SpacingNote));
 
+    /// <summary>
+    /// Rebuild the offered messages, and only when they actually changed
+    /// (HM-DEC-078).
+    /// </summary>
+    /// <remarks>
+    /// <para>THIS CLEARED AND REPOPULATED ON EVERY CALL, AND THAT WAS THE BUG
+    /// THAT KILLED TWO LIVE ATTEMPTS. The rig monitor raises its state event
+    /// every poll cycle whether anything changed or not, four times a second,
+    /// and every one of those reaches here. So the send buttons were destroyed
+    /// and constructed again four times a second, and a click cannot survive
+    /// that: a press and its release have to land on the same control, and the
+    /// control the press landed on was gone inside 250 milliseconds. The button
+    /// looked dead because it was, repeatedly, and no handler ever ran so
+    /// nothing was written and the record showed a healthy engine.</para>
+    /// <para>It also wiped a staged message on the same cadence, so composing
+    /// first and sending on a second press could never have worked either
+    /// (HM-DEC-059).</para>
+    /// <para>Now the options are compared to what is already on screen and left
+    /// alone when they match, which is the same rule the spot list already
+    /// follows so a surviving card keeps its identity (HM-DEC-025).</para>
+    /// </remarks>
     private void Rebuild()
     {
         var offered = ContactScript.Offer(Stage, YourCall, TheirCall, Report, Qth);
+
+        if (!HasChanged(offered))
+        {
+            return;
+        }
 
         Options.Clear();
         foreach (var option in offered)
@@ -432,6 +499,35 @@ public sealed partial class CwTransmitViewModel : ObservableObject
 
         OnPropertyChanged(nameof(StageName));
         OnPropertyChanged(nameof(Summary));
+    }
+
+    /// <summary>Whether the offered messages differ from what is on screen.</summary>
+    /// <param name="offered">What the script says to offer now.</param>
+    /// <returns>True when the buttons have to be rebuilt.</returns>
+    /// <remarks>
+    /// By what would actually go out, because that is what a button is. Two
+    /// options with the same label and the same message are the same button to
+    /// everybody who matters, and replacing one with the other costs a click.
+    /// </remarks>
+    private bool HasChanged(IReadOnlyList<SendOption> offered)
+    {
+        if (offered.Count != Options.Count)
+        {
+            return true;
+        }
+
+        for (var i = 0; i < offered.Count; i++)
+        {
+            if (!string.Equals(
+                    offered[i].Message, Options[i].Message, StringComparison.Ordinal)
+                || !string.Equals(
+                    offered[i].Label, Options[i].Label, StringComparison.Ordinal))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private void ClearStaged()

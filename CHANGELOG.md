@@ -12,6 +12,19 @@ operator can see and use, patch fixes and polishes without adding one.
 
 ---
 
+## 1.2.6
+
+**The send button works.**
+
+Readiness reached Ready and the buttons stayed dead, twice, on live hardware.
+The gate was right the whole time: the rig poll rebuilt the buttons four times a
+second and a click cannot survive a control that is destroyed under the
+operator's finger. The buttons now persist, the command carries the gate rather
+than only the visual tree, and the record says what the operator saw beside what
+the engine decided.
+
+Ruling HM-DEC-078.
+
 ## 1.2.5
 
 **Hamlet can explain itself.**

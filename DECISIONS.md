@@ -4,6 +4,75 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-078
+date: 2026-08-15
+refs: src/Hamlet.App/ViewModels/CwTransmitViewModel.cs, src/Hamlet.App/ViewModels/MainWindowViewModel.cs, src/Hamlet.App/Telemetry/AppEvents.cs, tests/Hamlet.App.Tests/ViewModels/SendButtonEnablementTests.cs, HM-DEC-059, HM-DEC-077
+---
+
+**The send buttons were being destroyed and rebuilt four times a second, and
+that is why they were dead.** The gate was right, the notification was raised,
+and the control the operator pressed no longer existed when they let go.
+
+WHICH CANDIDATE IT WAS: **the third, in a form the brief did not anticipate.**
+Not a bool captured at construction and not a readiness object swapped without
+notification. The button *object itself* was the snapshot. `Rebuild` cleared
+`Options` and repopulated it on every `Refresh`, `Refresh` runs from
+`ApplyRigState`, and `RigStateMonitor` raises `StateChanged` on every poll cycle
+whether anything changed or not, at a 250 millisecond live interval. So every
+send button was thrown away and constructed again four times a second. A press
+and its release have to land on the same control, and that control was gone
+inside a quarter of a second, which is exactly the reported symptom: clicking
+produced no handler, no event, nothing.
+
+THE OTHER TWO CANDIDATES WERE CHECKED AND CLEARED, rather than fixed
+speculatively. Rig state is marshalled at `OnRigStateChanged`, which posts to
+the dispatcher, so nothing downstream was notifying from the serial thread. And
+`CanSend` is an observable property the panel writes on the UI thread, so the
+notification was raised and delivered. The engine, the threading and the
+notification were all working; the tree underneath them was being rebuilt.
+
+IT ALSO EXPLAINS A FEATURE THAT COULD NEVER HAVE WORKED. Staged sending is on by
+default (HM-DEC-059): compose on the first press, send on the second. `IsStaged`
+lives on the button view model, which was replaced four times a second, so the
+staging was wiped before anybody could press twice.
+
+THE FIX IS TO REBUILD ONLY WHEN THE OFFER CHANGED, compared by label and by what
+would actually go out, which is the same rule the spot list already follows so a
+surviving card keeps its identity (HM-DEC-025). Two tests fail against the
+unfixed code and pass against the fixed one, and they were run both ways to be
+sure of it.
+
+**THE COMMAND CARRIES THE GATE NOW, NOT ONLY THE VISUAL TREE.** A parent whose
+enabled state is bound is a picture of the rule, and this evening proved a
+picture can be wrong in ways nobody can see: the buttons were rebuilt out from
+under it and there was no way to tell a disabled control from a vanished one. A
+command with a `CanExecute` refuses however the tree renders, and
+`NotifyCanExecuteChangedFor` on `CanSend` and on `IsSending` is what tells the
+button to ask again. The parent binding stays, because it is what greys the
+control visually.
+
+THE SEAM IS NAMED AND GUARDED. `MainWindowViewModel.OnRigStateChanged` is where
+rig state enters the UI and it is the only such place; it posts to the
+dispatcher so every consumer downstream is safe without each one remembering.
+`ApplyRigState` now also checks and re-posts, so a second caller added later
+cannot quietly bypass it. Both carry the note that this path runs four times a
+second and everything it reaches must be cheap and idempotent, which is the
+lesson rather than the patch.
+
+**THE RECORD NOW CARRIES WHAT THE OPERATOR SAW.** This is the §0.0.1 failure
+underneath the whole evening: the log said the engine reached Ready while the
+screen showed dead buttons, and nothing anywhere could show that disagreement.
+An event describing the engine is a record of half the application, and it was
+the half that was working. So the send buttons' own enabled state is written
+whenever it changes, beside the readiness verdict that caused it, and **a button
+that is off while readiness says it may send is logged as an error**, because
+that exact combination is this bug and somebody should find it by scanning.
+
+A DISABLED SEND BUTTON ALWAYS CARRIES ITS REASON, and a test sweeps the states it
+can be dead in to prove none of them is silent. The failure was never the
+strictness; it was a control that refused and explained nothing.
+
+---
 id: HM-DEC-077
 date: 2026-08-15
 refs: CLAUDE.md §8.1, src/Hamlet.RadioEngine/Telemetry/Outcome.cs, src/Hamlet.RadioEngine/Telemetry/RigSnapshot.cs, src/Hamlet.RadioEngine/Telemetry/DecodeWindow.cs, src/Hamlet.App/ViewModels/DecisionLogViewModel.cs, HM-DEC-018, HM-DEC-050, HM-OPEN-009

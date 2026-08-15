@@ -16,7 +16,7 @@ public sealed class CallsignPrivacyTests : IDisposable
     /// <summary>Every public event-writing method on <see cref="AppEvents"/>.
     /// If this number moves, a new event was added and the walk below has to
     /// grow with it — that is the point.</summary>
-    private const int ExpectedEventMethodCount = 43;
+    private const int ExpectedEventMethodCount = 44;
 
     private const string Callsign = "KC3QIS";
     // "Timothy", not "Tim": a three-letter needle matches "timer", which is a
@@ -166,6 +166,13 @@ public sealed class CallsignPrivacyTests : IDisposable
             Hamlet.RadioEngine.Cw.TransmitReadiness.Check(true, radio, state, now),
             state,
             "recomputed");
+
+        // The button's own state (HM-DEC-078), which is what the record could
+        // not see while the engine said Ready and the screen said no.
+        AppEvents.SendButtonsEnabledChanged(
+            telemetry, false,
+            Hamlet.RadioEngine.Cw.TransmitReadiness.Check(true, radio, state, now));
+        AppEvents.SendButtonsEnabledChanged(telemetry, true, null);
 
         AppEvents.RigHeartbeat(telemetry, null, state);
         AppEvents.RigHeartbeat(telemetry, state, state);
