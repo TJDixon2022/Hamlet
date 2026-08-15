@@ -94,7 +94,21 @@ public sealed class SqliteSpotStore : ISpotStore
                     + "  latitude REAL,"
                     + "  longitude REAL,"
                     + "  acted_on TEXT);"
-                    + "CREATE INDEX IF NOT EXISTS ix_spots_heard ON spots(heard_at);";
+                    + "CREATE INDEX IF NOT EXISTS ix_spots_heard ON spots(heard_at);"
+
+                    // TIMES HE WAS HEARD, KEPT PROPERLY FROM THE FIRST ONE
+                    // (HM-DEC-075). The surface that shows a history of these
+                    // comes later, and a record that only started being kept
+                    // when somebody built the screen for it would have missed
+                    // the first one, which is the one that matters most.
+                    + "CREATE TABLE IF NOT EXISTS heard ("
+                    + "  key TEXT PRIMARY KEY,"
+                    + "  receiver_call TEXT NOT NULL,"
+                    + "  frequency_hz INTEGER NOT NULL,"
+                    + "  signal_db INTEGER,"
+                    + "  wpm INTEGER,"
+                    + "  heard_at TEXT NOT NULL);"
+                    + "CREATE INDEX IF NOT EXISTS ix_heard_at ON heard(heard_at);";
                 pragma.ExecuteNonQuery();
             }
 
@@ -321,6 +335,90 @@ public sealed class SqliteSpotStore : ISpotStore
                 // repeated card, which is not worth an exception (§8).
             }
         }
+    }
+
+    /// <summary>
+    /// Keep a report that a receiver heard the operator (HM-DEC-075).
+    /// </summary>
+    /// <param name="report">The report.</param>
+    /// <returns>True when it was new.</returns>
+    /// <remarks>
+    /// Keyed by receiver, frequency and minute, so the same report arriving
+    /// twice from a refresh does not become two times he was heard. Never
+    /// throws: losing the record of a report is a nuisance and crashing in the
+    /// middle of somebody's first contact is not acceptable (§8).
+    /// </remarks>
+    public bool RecordHeard(HeardReport report)
+    {
+        ArgumentNullException.ThrowIfNull(report);
+
+        try
+        {
+            using var command = _connection.CreateCommand();
+            command.CommandText =
+                "INSERT OR IGNORE INTO heard "
+                + "(key, receiver_call, frequency_hz, signal_db, wpm, heard_at) "
+                + "VALUES ($k, $r, $f, $s, $w, $h);";
+
+            var key = $"{report.ReceiverCall}|{report.FrequencyHz / 1000}|"
+                + report.HeardAtUtc.ToString("yyyyMMddHHmm", CultureInfo.InvariantCulture);
+
+            command.Parameters.AddWithValue("$k", key);
+            command.Parameters.AddWithValue("$r", report.ReceiverCall);
+            command.Parameters.AddWithValue("$f", report.FrequencyHz);
+            command.Parameters.AddWithValue(
+                "$s", (object?)report.SignalDb ?? DBNull.Value);
+            command.Parameters.AddWithValue(
+                "$w", (object?)report.Wpm ?? DBNull.Value);
+            command.Parameters.AddWithValue("$h", Stamp(report.HeardAtUtc));
+
+            return command.ExecuteNonQuery() > 0;
+        }
+        catch (Exception)
+        {
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Every time the operator was heard since a moment (HM-DEC-075).
+    /// </summary>
+    /// <param name="sinceUtc">How far back to look.</param>
+    /// <returns>The reports, newest first.</returns>
+    public IReadOnlyList<HeardReport> HeardSince(DateTime sinceUtc)
+    {
+        var found = new List<HeardReport>();
+
+        try
+        {
+            using var command = _connection.CreateCommand();
+            command.CommandText =
+                "SELECT receiver_call, frequency_hz, signal_db, wpm, heard_at "
+                + "FROM heard WHERE heard_at >= $since ORDER BY heard_at DESC;";
+            command.Parameters.AddWithValue("$since", Stamp(sinceUtc));
+
+            using var reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                found.Add(new HeardReport(
+                    reader.GetString(0),
+                    reader.GetInt64(1),
+                    reader.IsDBNull(2) ? null : reader.GetInt32(2),
+                    reader.IsDBNull(3) ? null : reader.GetInt32(3),
+                    DateTime.Parse(
+                        reader.GetString(4), CultureInfo.InvariantCulture,
+                        System.Globalization.DateTimeStyles.AdjustToUniversal
+                        | System.Globalization.DateTimeStyles.AssumeUniversal)));
+            }
+        }
+        catch (Exception)
+        {
+            // A history nobody can read is a history nobody sees, and it is
+            // never a reason to stop (§8).
+        }
+
+        return found;
     }
 
     /// <inheritdoc/>

@@ -165,6 +165,20 @@ public sealed class RbnActivitySource
     /// <returns>In-band spots, newest first.</returns>
     public IReadOnlyList<ActivitySpot> GetMapSpots() => Snapshot(forMap: true);
 
+    /// <summary>
+    /// Every spot line the feed produced, before any filtering (HM-DEC-075).
+    /// </summary>
+    /// <remarks>
+    /// RAW ON PURPOSE. <see cref="GetSpotsAsync"/> keeps what is worth putting
+    /// in front of somebody looking for a contact, which means it drops
+    /// everything out of band and everything a skimmer too far away decoded.
+    /// A report of the operator's own callsign is neither of those things: it
+    /// is the answer to "did anybody hear me", and the further away the
+    /// receiver the more it means. So it is taken here, before the list's own
+    /// judgment is applied to it.
+    /// </remarks>
+    public event Action<RbnSpot>? SpotParsed;
+
     /// <summary>Feed one raw line in, as the reader loop does.</summary>
     /// <param name="line">A line from the cluster.</param>
     /// <returns>True when the line was a spot and was retained.</returns>
@@ -181,6 +195,18 @@ public sealed class RbnActivitySource
         {
             _window.Add(spot);
             Prune();
+        }
+
+        // Outside the lock: a handler that took a moment must not hold the
+        // reader loop, and a handler that threw must not take the feed down
+        // with it (§8).
+        try
+        {
+            SpotParsed?.Invoke(spot);
+        }
+        catch (Exception)
+        {
+            // A listener's problem is never the feed's problem.
         }
 
         return true;

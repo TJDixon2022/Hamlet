@@ -901,6 +901,50 @@
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
                         </ctl:CollapsiblePanel>
+
+                        <!-- DID ANYBODY HEAR ME (HM-DEC-075, closing
+                             FG-008). The first honest answer this operator has
+                             ever had to "did that work". A normal collapsible
+                             panel: the larger treatment of this moment belongs
+                             to an interface rework that has not happened. -->
+                        <ctl:CollapsiblePanel Family="Green"
+                                              Title="Did anybody hear me"
+                                              Summary="{Binding HeardSummary}"
+                                              IsExpanded="{Binding HeardExpanded, Mode=TwoWay}">
+                            <StackPanel Spacing="8">
+                                <ctl:GlossaryTextControl Text="{Binding HeardDetail}"
+                                                         FontSize="12" LineSpacing="1.45"
+                                                         Foreground="{StaticResource HmTextPrimaryBrush}" />
+
+                                <ItemsControl ItemsSource="{Binding HeardReports}"
+                                              IsVisible="{Binding HasHeardReports}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="explore:HeardReport">
+                                            <Border Background="{StaticResource HmGreenTintBrush}"
+                                                    BorderBrush="{StaticResource HmGreenEdgeBrush}"
+                                                    BorderThickness="1" CornerRadius="8"
+                                                    Padding="10,7" Margin="0,0,0,6">
+                                                <StackPanel Spacing="2">
+                                                    <TextBlock Text="{Binding ReceiverCall}"
+                                                               FontSize="14" FontWeight="SemiBold"
+                                                               Foreground="{StaticResource HmGreenBrush}" />
+                                                    <TextBlock Text="{Binding Signal}"
+                                                               FontSize="12" TextWrapping="Wrap"
+                                                               Foreground="{StaticResource HmTextPrimaryBrush}" />
+                                                    <TextBlock Text="{Binding Speed}" FontSize="11"
+                                                               Foreground="{StaticResource HmTextMutedBrush}" />
+                                                    <TextBlock Text="{Binding FrequencyLabel}"
+                                                               FontFamily="Consolas,Menlo,monospace"
+                                                               FontSize="11"
+                                                               Foreground="{StaticResource HmTextMutedBrush}" />
+                                                </StackPanel>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </ctl:CollapsiblePanel>
+
                 </StackPanel>
 
                 <!-- The Explorer (HM-DEC-016).

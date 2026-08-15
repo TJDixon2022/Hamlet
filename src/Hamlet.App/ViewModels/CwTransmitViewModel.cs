@@ -89,6 +89,7 @@ public sealed partial class CwTransmitViewModel : ObservableObject
         + "Setting your class in Settings gives Hamlet enough to check from then on.";
 
     private readonly Func<TransmitContext> _context;
+    private readonly Action<SendOption>? _wentOut;
     private CwTransmitter? _transmitter;
 
     /// <summary>Creates the panel over a supplier of the current state.</summary>
@@ -96,9 +97,15 @@ public sealed partial class CwTransmitViewModel : ObservableObject
     /// How to read everything the guard and the precondition need, at the moment
     /// somebody presses.
     /// </param>
-    public CwTransmitViewModel(Func<TransmitContext> context)
+    /// <param name="wentOut">
+    /// Called when something actually reached the air, so the rest of the app
+    /// can start watching for whoever heard it (HM-DEC-075).
+    /// </param>
+    public CwTransmitViewModel(
+        Func<TransmitContext> context, Action<SendOption>? wentOut = null)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
+        _wentOut = wentOut;
         Options = new ObservableCollection<SendButtonViewModel>();
         Rebuild();
     }
@@ -336,6 +343,13 @@ public sealed partial class CwTransmitViewModel : ObservableObject
                 outcome.Sent ? $"Sent: {button.Message}" : outcome.Detail,
                 refusal: !outcome.Sent,
                 citation: outcome.Citation);
+
+            // ONLY ON A CONFIRMED SEND. Watching for reports of something that
+            // never left would be Hamlet inventing the wait (§0.0).
+            if (outcome.Sent)
+            {
+                _wentOut?.Invoke(button.Option);
+            }
         }
         finally
         {

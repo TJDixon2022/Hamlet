@@ -329,3 +329,36 @@ which is permission, from "transmitting because a send is already in flight",
 which is a reason to wait. The rig state model reads one flag for both.
 
 Severity `none`: the ordinary path works and the refusal explains itself.
+
+---
+id: HM-OPEN-010
+status: open
+owner: unassigned
+raised: 2026-08-15
+severity: slows
+refs: HM-DEC-075, HM-DEC-038, FG-008
+---
+
+"Did anybody hear me" cannot say how far his signal went, because Hamlet has no
+skimmer locations.
+
+The reports carry the receiver's callsign, the signal-to-noise it measured and
+the speed it read, which is what the RBN line format states. What would make the
+panel land is the distance: "19 dB" means nothing to a newcomer and "your signal
+reached Nevada, 2,050 miles" is the thing he would remember for the rest of his
+life.
+
+The obstacle is a ruling rather than an oversight. HM-DEC-038 says no grid means
+no distance anywhere, and names this exact case: a callsign says where a license
+was issued and not where its owner is standing, and stacking that guess under a
+figure in miles would dress it as a measurement. So the prefix cannot be turned
+into a location, and there is nothing else in the feed to use.
+
+What closes it is a **cited file of skimmer locations under `data/`**, with a
+source mark on every row in the shape `data/bands/` and `data/privileges/`
+already use (§4). RBN's own node list is the obvious candidate and it was not
+verified in this session. Skimmers that are not in the file get no distance,
+exactly as a spot with no grid gets none today.
+
+Severity `slows`: the panel works and says only true things, and it is doing half
+of what it exists for.

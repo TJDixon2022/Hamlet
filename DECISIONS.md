@@ -4,6 +4,80 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-075
+date: 2026-08-15
+closes: FG-008
+refs: src/Hamlet.RadioEngine/Explore/HeardWatch.cs, src/Hamlet.RadioEngine/Explore/SqliteSpotStore.cs, tests/Hamlet.RadioEngine.Tests/Explore/HeardWatchTests.cs, tests/Hamlet.App.Tests/Telemetry/HeardPrivacyTests.cs, HM-DEC-018, HM-DEC-038
+---
+
+**Hamlet watches the skimmer network for the operator's own callsign and tells
+him who heard him, whether or not a person answers.** Closes FG-008.
+
+WHY THIS IS THE PAYOFF. He has been licensed six years and made one contact. He
+will call CQ, and perhaps nobody will answer. The Reverse Beacon Network is a
+mesh of automated receivers publishing every callsign they hear, and Hamlet is
+already reading that feed, so real machines can say his signal arrived somewhere.
+For somebody who has heard nothing back for six years, that is the first honest
+answer he has ever had to "did that work".
+
+**NEVER MANUFACTURE THE FEELING, ONLY REPORT THE FACT.** Hamlet says he was heard
+because receivers really heard him. It does not inflate, does not round up, and
+does not soften a silence into something warmer than the truth. The moment this
+becomes encouragement rather than evidence it is worth nothing, and it takes the
+trust that makes the rest of the application useful with it (§0.0).
+
+THREE STATES AND THE WAIT IS NOT A SPINNER. **Waiting** says what it is watching
+for and what is normal: reports usually take a minute or two, and a person takes
+longer because they have to finish listening first. That sentence is the whole
+point of the state. Thirty to ninety seconds of silence after a first call is
+exactly where a beginner decides it is not working and goes and does something
+else, and the window runs ten minutes so an ordinary delay is never turned into a
+verdict. **Heard** names the receivers, counts machines rather than reports, and
+names the strongest rather than averaging, because an average describes a signal
+nobody received. **Nothing** says so plainly and says what it does and does not
+mean: skimmer coverage is uneven and a band can be wide open to people and empty
+of machines, so no report is not proof nobody heard him. A test sweeps that state
+for consolation phrasing, because it must read as information.
+
+THE SPEED A RECEIVER READ IS OFFERED, and it is worth more than it looks. A
+machine that timed his characters read them cleanly, which is the first feedback
+on his sending he has ever had.
+
+**WHAT THIS RULING DOES NOT BUILD, AND WHY.** The brief asked for distance to
+lead: "your signal reached Nevada, 2,050 miles" rather than "19 dB". Hamlet
+cannot say that today and must not pretend to. RBN publishes the skimmer's
+callsign and no location, and HM-DEC-038 rules in as many words that no grid
+means no distance anywhere, naming the skimmer-prefix guess specifically: "a
+callsign says where a license was issued and not where its owner is standing, and
+stacking that guess under a figure in miles would dress it as a measurement."
+Inventing distances to reach for the feeling would break the same rule this
+feature's own honesty line sets. **So the reports carry what RBN actually states
+and the distance half waits on a cited source of skimmer locations under
+`data/`.** Raised as HM-OPEN-010, and it is the first thing to do to this panel.
+
+THE REPORTS ARE KEPT FROM THE FIRST ONE. They go into the existing database
+beside the spots, keyed so one report arriving twice is not two times he was
+heard. The screen for "times you were heard" comes later; a record that only
+started when somebody built that screen would have missed the first one, which is
+the one that matters most.
+
+STARTING A WATCH CLEARS THE LAST ONE'S ANSWERS, because the question is whether
+anybody heard THIS call. Leaving them up would tell him he had been heard when
+nothing had come back, which is the feature inflating a silence and the one thing
+it may never do. Only a confirmed send starts the watch: watching for reports of
+something that never left would be Hamlet inventing the wait.
+
+A NORMAL COLLAPSIBLE PANEL (§0.5) with its summary in the header. The larger
+treatment of this moment belongs to an interface rework that has not happened,
+and building a takeover now would prejudge it.
+
+READS ONLY, and the privacy rule is proved rather than asserted. This feature is
+built entirely out of callsigns, which makes it exactly where HM-DEC-018 would be
+broken by accident. `AppEvents` cannot be handed a report, a summary or a state,
+so no future event can carry a callsign into telemetry without the type system
+objecting first.
+
+---
 id: HM-DEC-074
 date: 2026-08-15
 refs: src/Hamlet.RadioEngine/Cw/TransmitNotes.cs, src/Hamlet.App/ViewModels/CwTransmitViewModel.cs, tests/Hamlet.RadioEngine.Tests/Cw/LiveFireTests.cs, HM-DEC-008, HM-DEC-049, HM-DEC-059

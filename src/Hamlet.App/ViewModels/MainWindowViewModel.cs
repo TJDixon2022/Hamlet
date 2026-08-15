@@ -397,6 +397,105 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty]
     private bool _phrasebookExpanded = true;
 
+    [ObservableProperty]
+    private bool _heardExpanded = true;
+
+    /// <summary>Who heard the operator, newest first (HM-DEC-075).</summary>
+    public ObservableCollection<HeardReport> HeardReports { get; } = new();
+
+    /// <summary>What Hamlet says about whether anybody heard him.</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HeardSummary))]
+    [NotifyPropertyChangedFor(nameof(HeardDetail))]
+    [NotifyPropertyChangedFor(nameof(HasHeardReports))]
+    private HeardSummary _heard = HeardWatch.Describe(
+        null, Array.Empty<HeardReport>(), DateTime.UtcNow);
+
+    /// <summary>The panel's collapsed summary (§0.5).</summary>
+    public string HeardSummary => Heard.Headline;
+
+    /// <summary>The paragraph under it.</summary>
+    public string HeardDetail => Heard.Detail;
+
+    /// <summary>True when there is a list to draw.</summary>
+    public bool HasHeardReports => HeardReports.Count > 0;
+
+    /// <summary>When the operator last called, or null.</summary>
+    private DateTime? _calledAtUtc;
+
+    /// <summary>
+    /// A skimmer line arrived. Is it about him?
+    /// </summary>
+    /// <remarks>
+    /// Runs on the feed's reader thread, so everything that touches the UI is
+    /// posted. The match is exact: telling this operator he was heard when the
+    /// machine heard a different station would be the cruelest bug in the
+    /// application (HM-DEC-075).
+    /// </remarks>
+    private void OnRbnSpotParsed(RbnSpot spot)
+    {
+        if (!HeardWatch.IsMine(spot, _settings.Operator.Callsign))
+        {
+            return;
+        }
+
+        var report = HeardWatch.From(spot);
+
+        // KEPT BEFORE IT IS SHOWN. The screen for a history of these comes
+        // later, and a record that only started when somebody built that screen
+        // would have missed the first one (HM-DEC-075).
+        if (_spotStore is SqliteSpotStore store && !store.RecordHeard(report))
+        {
+            return;
+        }
+
+        Dispatcher.UIThread.Post(() =>
+        {
+            HeardReports.Insert(0, report);
+            OnPropertyChanged(nameof(HasHeardReports));
+            RefreshHeard(DateTime.UtcNow);
+        });
+    }
+
+    /// <summary>
+    /// Something reached the air, so start watching for whoever heard it.
+    /// </summary>
+    /// <remarks>
+    /// A call starts a fresh watch, because "did anybody hear me" is a question
+    /// about this call. An answer or an exchange does not: the reports from the
+    /// call are still the answer, and clearing them mid-contact would throw away
+    /// the thing he came for (HM-DEC-075).
+    /// </remarks>
+    private void OnSomethingWentOut(SendOption option)
+    {
+        if (option.Stage == ContactStage.Calling)
+        {
+            NoteCallWentOut(DateTime.UtcNow);
+        }
+    }
+
+    /// <summary>Recompute what the heard panel says.</summary>
+    /// <param name="nowUtc">The moment, passed in so the states are testable.</param>
+    internal void RefreshHeard(DateTime nowUtc)
+        => Heard = HeardWatch.Describe(_calledAtUtc, HeardReports.ToList(), nowUtc);
+
+    /// <summary>
+    /// A call went out, so start watching (HM-DEC-075).
+    /// </summary>
+    /// <remarks>
+    /// The reports from before this moment are cleared, because the question is
+    /// whether anybody heard THIS call. Leaving the last one's answers up would
+    /// tell him he had been heard when nothing had come back yet, which is the
+    /// feature inflating a silence and the one thing it may never do (§0.0).
+    /// </remarks>
+    internal void NoteCallWentOut(DateTime nowUtc)
+    {
+        _calledAtUtc = nowUtc;
+        HeardReports.Clear();
+        OnPropertyChanged(nameof(HasHeardReports));
+        RefreshHeard(nowUtc);
+    }
+
     /// <summary>The frequencies the operator saved (HM-DEC-060).</summary>
     public ObservableCollection<Favorite> Favorites { get; } = new();
 
@@ -717,13 +816,14 @@ public partial class MainWindowViewModel : ObservableObject
         _contactExpanded = settings.IsPanelExpanded(PanelKeys.Contact);
         _transmitExpanded = settings.IsPanelExpanded(PanelKeys.Transmit);
         _phrasebookExpanded = settings.IsPanelExpanded(PanelKeys.Phrasebook);
+        _heardExpanded = settings.IsPanelExpanded(PanelKeys.Heard);
 
         ContactShape = new ContactShapeViewModel(settings.Operator.Callsign);
 
         // Everything the guard and the break-in precondition need, read at the
         // moment somebody presses rather than captured when the panel was built
         // (HM-DEC-059).
-        Transmit = new CwTransmitViewModel(BuildTransmitContext)
+        Transmit = new CwTransmitViewModel(BuildTransmitContext, OnSomethingWentOut)
         {
             YourCall = settings.Operator.Callsign,
             Qth = settings.Operator.Location,
@@ -892,6 +992,7 @@ public partial class MainWindowViewModel : ObservableObject
         if (callsign.Length > 0)
         {
             _rbn = new RbnActivitySource(callsign);
+            _rbn.SpotParsed += OnRbnSpotParsed;
             sources.Add(_rbn);
             owned.Add(_rbn);
         }
@@ -2229,7 +2330,11 @@ public partial class MainWindowViewModel : ObservableObject
     private void OnAgeTick(object? sender, EventArgs e)
     {
         UpdateSpotFreshness();
-        NoteDwell(DateTime.UtcNow);
+
+        var now = DateTime.UtcNow;
+
+        NoteDwell(now);
+        RefreshHeard(now);
     }
 
     /// <summary>
@@ -3442,6 +3547,9 @@ public static class PanelKeys
 
     /// <summary>Sending Morse (HM-DEC-059).</summary>
     public const string Transmit = "transmit";
+
+    /// <summary>Did anybody hear me (HM-DEC-075).</summary>
+    public const string Heard = "heard";
 
     /// <summary>The phrasebook (HM-DEC-059).</summary>
     public const string Phrasebook = "phrasebook";

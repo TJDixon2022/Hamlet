@@ -176,7 +176,20 @@ average.
 
 ---
 
-## FG-008 — RBN reverse lookup: "did anyone hear me?"
+## FG-008 — RBN reverse lookup: "did anyone hear me?"  ✅ GRADUATED
+
+**Built 2026-08-15 as HM-DEC-075.** Hamlet watches the skimmer feed for the
+operator's own callsign and says who heard him, whether or not a person answers,
+in three states: a wait that says what is normal, a heard state naming the
+receivers, and a silence that says plainly it is not proof nobody heard him. The
+reports are kept from the first one.
+
+One half is deliberately unbuilt and is HM-OPEN-010: distance. RBN publishes no
+skimmer location and HM-DEC-038 forbids deriving one from a callsign prefix, so
+leading with "your signal reached Nevada, 2,050 miles" waits on a cited file of
+skimmer locations under `data/`. The thinking below is kept because that is the
+part still to do.
+
 
 RBN skimmers report every signal they decode, which means that after the
 operator calls CQ, Hamlet can show who around the world heard it. Nobody has
