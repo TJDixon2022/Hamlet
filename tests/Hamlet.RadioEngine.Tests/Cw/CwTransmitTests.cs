@@ -497,6 +497,13 @@ public sealed class CwTransmitTests
             RigField field, RigState context, CancellationToken cancellationToken = default)
             => Task.FromResult<IReadOnlyList<RigValue>>(new[] { RigValue.Unknown(field) });
 
+        public Task<RigWriteResult> SetSettingAsync(
+
+                Hamlet.RadioEngine.Civ.CivWrite write, int value,
+
+                CancellationToken cancellationToken = default)
+
+                => Task.FromResult(RigWriteResult.NotSupported("test rig"));
         public Task<RigWriteResult> SetModeAsync(
             CivMode mode, bool dataMode, CancellationToken cancellationToken = default)
             => Task.FromResult(RigWriteResult.NotSupported("blocking radio"));
@@ -550,6 +557,13 @@ public sealed class CwTransmitTests
             RigField field, RigState context, CancellationToken cancellationToken = default)
             => Task.FromResult<IReadOnlyList<RigValue>>(new[] { RigValue.Unknown(field) });
 
+        public Task<RigWriteResult> SetSettingAsync(
+
+                Hamlet.RadioEngine.Civ.CivWrite write, int value,
+
+                CancellationToken cancellationToken = default)
+
+                => Task.FromResult(RigWriteResult.NotSupported("test rig"));
         public Task<RigWriteResult> SetModeAsync(
             CivMode mode, bool dataMode, CancellationToken cancellationToken = default)
             => Task.FromResult(RigWriteResult.NotSupported("refusing radio"));

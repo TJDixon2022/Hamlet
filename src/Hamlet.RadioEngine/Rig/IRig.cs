@@ -1,3 +1,4 @@
+using Hamlet.RadioEngine.Civ;
 namespace Hamlet.RadioEngine.Rig;
 
 /// <summary>
@@ -103,11 +104,26 @@ public interface IRig
     /// not is a guess presented as a decode (§0.0).
     /// </returns>
     /// <remarks>
-    /// THE FIRST WRITE THIS APP MAKES, and the pattern the transmit work will
-    /// inherit. Nothing here goes near keying the transmitter (§0.2).
+    /// THE FIRST WRITE THIS APP MAKES, and the pattern the setting writes
+    /// inherited. Nothing here goes near keying the transmitter (§0.2).
     /// </remarks>
     Task<RigWriteResult> SetModeAsync(
         Civ.CivMode mode, bool dataMode, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Set one documented setting, and read it back (HM-DEC-084).
+    /// </summary>
+    /// <param name="write">Which setting, with its citation.</param>
+    /// <param name="value">The value, in the units the write's note describes.</param>
+    /// <param name="cancellationToken">Cancellation.</param>
+    /// <returns>What became of it. Never throws.</returns>
+    /// <remarks>
+    /// **READ BEFORE WRITE, READ BACK AFTER.** A write the radio acknowledged is
+    /// not a write that took effect, and the read-back is what tells them apart.
+    /// A write that cannot be confirmed reports as unconfirmed and never as done.
+    /// </remarks>
+    Task<RigWriteResult> SetSettingAsync(
+        CivWrite write, int value, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Hand one keyer message to the radio (HM-DEC-059).

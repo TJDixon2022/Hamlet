@@ -3,6 +3,7 @@
         xmlns:vm="using:Hamlet.App.ViewModels"
         xmlns:ctl="using:Hamlet.App.Controls"
         xmlns:explore="using:Hamlet.RadioEngine.Explore"
+        xmlns:rig="using:Hamlet.RadioEngine.Rig"
         xmlns:cw="using:Hamlet.RadioEngine.Cw"
         x:Class="Hamlet.App.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
@@ -729,6 +730,28 @@
                                         Foreground="{StaticResource HmAmberDeepBrush}" />
                                 </Border>
 
+                                <!-- THE OFFER WHERE THE PROBLEM SHOWS
+                                     (HM-DEC-084). A popup somebody has to know
+                                     to open is a popup they will not open when
+                                     they are frustrated, which is exactly when
+                                     it is needed. One line, not a banner, and
+                                     it goes away when waved off. -->
+                                <Grid ColumnDefinitions="*,Auto,Auto"
+                                      IsVisible="{Binding HasReceiveOffer}"
+                                      Margin="0,4,0,0">
+                                    <ctl:GlossaryTextControl Grid.Column="0"
+                                        Text="{Binding ReceiveOffer}"
+                                        FontSize="11" LineSpacing="1.4"
+                                        Margin="0,0,8,0"
+                                        Foreground="{StaticResource HmBlueBrush}" />
+                                    <Button Grid.Column="1" Content="Have a look"
+                                            FontSize="11" Padding="8,3" Margin="0,0,6,0"
+                                            Command="{Binding OpenReceiveHelpCommand}" />
+                                    <Button Grid.Column="2" Content="No thanks"
+                                            FontSize="11" Padding="8,3"
+                                            Command="{Binding DismissReceiveOfferCommand}" />
+                                </Grid>
+
                                 <TextBlock Text="a dimmed character is one Hamlet is not sure of, and a block is something it heard and could not read. You can select any of this and copy it."
                                            FontSize="12" TextWrapping="Wrap"
                                            Foreground="{StaticResource HmTextMutedBrush}" />
@@ -1043,6 +1066,98 @@
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
+                        </ctl:CollapsiblePanel>
+
+                        <!-- I CAN HEAR IT AND HAMLET CAN'T (HM-DEC-084).
+                             **Settings are consequences of intent, never things
+                             the operator operates.** There is no noise blanker
+                             toggle in this application and there never will be:
+                             there is one button that names a problem, and behind
+                             it the handful of changes that usually cause it.
+
+                             Nobody ever learns what auto notch is. They learn
+                             that pressing that button usually helps. -->
+                        <ctl:CollapsiblePanel Family="Blue"
+                                              Title="I can hear it and Hamlet can't"
+                                              Summary="{Binding ReceiveHelp.ActionLabel}"
+                                              IsExpanded="{Binding ReceiveHelpExpanded, Mode=TwoWay}">
+                            <StackPanel Spacing="8">
+                                <ctl:GlossaryTextControl Text="{Binding ReceiveHeadline}"
+                                                         FontSize="12" LineSpacing="1.45"
+                                                         Foreground="{StaticResource HmTextPrimaryBrush}" />
+
+                                <!-- ROWS ALREADY CORRECT STAY VISIBLE AND SAY
+                                     SO. Hiding them is tidier and teaches
+                                     nothing; showing them is the app proving
+                                     what it checked. -->
+                                <ItemsControl ItemsSource="{Binding ReceiveHelp.Rows}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="vm:AdviceRowViewModel">
+                                            <Grid ColumnDefinitions="18,*,Auto" Margin="0,0,0,5">
+                                                <TextBlock Grid.Column="0" Text="{Binding Mark}"
+                                                           FontSize="12" FontWeight="SemiBold"
+                                                           VerticalAlignment="Top"
+                                                           Foreground="{StaticResource HmBlueBrush}" />
+                                                <ctl:GlossaryTextControl Grid.Column="1"
+                                                    Text="{Binding Says}"
+                                                    FontSize="12" LineSpacing="1.4"
+                                                    Margin="0,0,8,0"
+                                                    Foreground="{StaticResource HmTextPrimaryBrush}" />
+                                                <Button Grid.Column="2" Content="Just this one"
+                                                        FontSize="11" Padding="8,3"
+                                                        VerticalAlignment="Top"
+                                                        IsVisible="{Binding WouldChange}"
+                                                        Command="{Binding $parent[ItemsControl].((vm:ReceiveHelpViewModel)DataContext).ApplyOneCommand}"
+                                                        CommandParameter="{Binding}" />
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+
+                                <!-- ONE PRESS, NOT FOUR CONFIRMATIONS. None of
+                                     these can put anything on the air, and
+                                     asking permission four times trains
+                                     somebody to click through prompts. -->
+                                <Button Classes="hm-send ready"
+                                        Content="{Binding ReceiveHelp.ActionLabel}"
+                                        HorizontalAlignment="Left"
+                                        Command="{Binding ReceiveHelp.FixAllCommand}" />
+
+                                <!-- AFTER ANY CHANGE, THE FOOTER IS THE RECORD:
+                                     what changed, from what, to what, with
+                                     put-it-back beside it. -->
+                                <StackPanel Spacing="4"
+                                            IsVisible="{Binding ReceiveHelp.HasChanges}">
+                                    <TextBlock Text="What Hamlet changed"
+                                               FontSize="12" FontWeight="SemiBold"
+                                               Foreground="{StaticResource HmBlueBrush}" />
+
+                                    <ItemsControl ItemsSource="{Binding ReceiveHelp.Changes}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate x:DataType="rig:SettingChange">
+                                                <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,4">
+                                                    <TextBlock Grid.Column="0"
+                                                               Text="{Binding Says}"
+                                                               FontSize="11" TextWrapping="Wrap"
+                                                               Margin="0,0,8,0"
+                                                               Foreground="{StaticResource HmTextMutedBrush}" />
+                                                    <Button Grid.Column="1" Content="Put it back"
+                                                            FontSize="11" Padding="8,3"
+                                                            VerticalAlignment="Top"
+                                                            IsVisible="{Binding CanUndo}"
+                                                            Command="{Binding $parent[ItemsControl].((vm:ReceiveHelpViewModel)DataContext).UndoCommand}"
+                                                            CommandParameter="{Binding}" />
+                                                </Grid>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+
+                                    <Button Content="Put all of it back"
+                                            FontSize="11" Padding="8,3"
+                                            HorizontalAlignment="Left"
+                                            Command="{Binding ReceiveHelp.UndoAllCommand}" />
+                                </StackPanel>
+                            </StackPanel>
                         </ctl:CollapsiblePanel>
 
                         <!-- DID ANYBODY HEAR ME (HM-DEC-075, closing

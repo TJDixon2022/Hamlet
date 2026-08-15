@@ -603,6 +603,151 @@ public partial class MainWindowViewModel : ObservableObject
             $"Finished after {seconds:0.0} seconds.", DateTime.UtcNow);
     }
 
+    /// <summary>
+    /// "I can hear it and Hamlet can't" (HM-DEC-084).
+    /// </summary>
+    /// <remarks>
+    /// SETTINGS ARE CONSEQUENCES OF INTENT AND NEVER CONTROLS. There is no noise
+    /// blanker toggle anywhere in this application and there never will be:
+    /// there is a button that names a problem the operator has, and behind it
+    /// the handful of changes that usually cause it.
+    /// </remarks>
+    public ReceiveHelpViewModel ReceiveHelp { get; }
+
+    /// <summary>Whether the panel is open (§0.5).</summary>
+    [ObservableProperty]
+    private bool _receiveHelpExpanded = true;
+
+    /// <summary>
+    /// What the radio is telling Hamlet right now, in one sentence.
+    /// </summary>
+    /// <remarks>
+    /// The header of the panel: three figures and then a reading of them
+    /// together. Every one of them measured or absent (§0.0).
+    /// </remarks>
+    public string ReceiveHeadline
+    {
+        get
+        {
+            var state = RigState;
+
+            if (!IsConnected)
+            {
+                return "Nothing is connected, so there is nothing to look at yet.";
+            }
+
+            var heard = DetectedWpm > 0 || !Transcript.IsEmpty;
+            var noise = state[RigField.NoiseBlanker].IsKnown
+                        || state[RigField.RfGain].IsKnown;
+
+            if (!noise)
+            {
+                return "Hamlet has not read enough from the radio yet to say how "
+                    + "it is set up. It asks on connect, so give it a moment.";
+            }
+
+            return heard
+                ? "The radio is hearing something and letters are coming through, "
+                  + "so the path from the antenna to the decoder is working."
+                : "The antenna is hearing something, so the radio is connected to "
+                  + "the world. Nothing has resolved into letters yet.";
+        }
+    }
+
+    /// <summary>How long a quiet decoder waits before offering to look.</summary>
+    /// <remarks>
+    /// Two minutes. Long enough that an ordinary gap between stations does not
+    /// trigger it, short enough that somebody staring at an empty terminal gets
+    /// the offer while they are still staring (HM-DEC-084).
+    /// </remarks>
+    private static readonly TimeSpan QuietBeforeOffering = TimeSpan.FromMinutes(2);
+
+    /// <summary>When the decoder last produced a character.</summary>
+    private DateTime _lastDecodeUtc = DateTime.MinValue;
+
+    /// <summary>Whether the operator has waved the offer away.</summary>
+    private bool _receiveOfferDismissed;
+
+    /// <summary>
+    /// A quiet line in the terminal offering to have a look (HM-DEC-084).
+    /// </summary>
+    /// <remarks>
+    /// <para>**A POPUP SOMEBODY HAS TO KNOW TO OPEN IS A POPUP THEY WILL NOT
+    /// OPEN WHEN THEY ARE FRUSTRATED**, which is exactly when it is needed. So
+    /// the offer also appears where the problem shows: an empty terminal on a
+    /// frequency where the app expected something.</para>
+    /// <para>One line, not a banner, and dismissible. It says nothing at all
+    /// when there is nothing to change, because an offer to fix a radio that is
+    /// already right teaches somebody to ignore the next one.</para>
+    /// </remarks>
+    public string ReceiveOffer
+    {
+        get
+        {
+            if (_receiveOfferDismissed || !IsConnected || !IsDecoding)
+            {
+                return "";
+            }
+
+            if (DateTime.UtcNow - _lastDecodeUtc < QuietBeforeOffering)
+            {
+                return "";
+            }
+
+            return ReceiveHelp.Rows.Any(r => r.WouldChange)
+                ? "Nothing has come through for a while. Hamlet can see a few "
+                  + "things about the radio that usually cause that, and it can "
+                  + "put them back afterward."
+                : "";
+        }
+    }
+
+    /// <summary>True when the offer has something to say.</summary>
+    public bool HasReceiveOffer => ReceiveOffer.Length > 0;
+
+    /// <summary>Wave the offer away for this session.</summary>
+    [RelayCommand]
+    private void DismissReceiveOffer()
+    {
+        _receiveOfferDismissed = true;
+        OnPropertyChanged(nameof(ReceiveOffer));
+        OnPropertyChanged(nameof(HasReceiveOffer));
+    }
+
+    /// <summary>Open the panel from the offer.</summary>
+    [RelayCommand]
+    private void OpenReceiveHelp()
+    {
+        ReceiveHelpExpanded = true;
+        _receiveOfferDismissed = true;
+        OnPropertyChanged(nameof(ReceiveOffer));
+        OnPropertyChanged(nameof(HasReceiveOffer));
+    }
+
+    /// <summary>Write one documented setting to the radio (HM-DEC-084).</summary>
+    private Task<RigWriteResult> WriteSettingAsync(CivWrite write, int value)
+        => _rig is null
+            ? Task.FromResult(RigWriteResult.NotSupported("nothing is connected"))
+            : _rig.SetSettingAsync(write, value);
+
+    /// <summary>Every change Hamlet made is announced (HM-DEC-084).</summary>
+    /// <param name="change">What changed.</param>
+    private void OnSettingChanged(SettingChange change)
+    {
+        StatusText = change.Says;
+
+        AppEvents.SettingChanged(
+            _telemetry, change.Write.Field.ToString(), change.Write.Label,
+            change.Was, change.Now, change.Outcome.ToString());
+
+        Decisions.Note(
+            "Changed a setting",
+            change.Confirmed ? change.Write.Field.ToString() : "unconfirmed",
+            change.Confirmed ? Outcome.Proceeded : Outcome.Failed,
+            change.Says,
+            change.AtUtc);
+    }
+
     /// <summary>What Hamlet has recently decided (HM-DEC-077).</summary>
     public DecisionLogViewModel Decisions { get; } = new();
 
@@ -1058,6 +1203,11 @@ public partial class MainWindowViewModel : ObservableObject
                 saved.FrequencyHz, saved.Station, saved.Mode, saved.BandName,
                 saved.Neighborhood, saved.VisitedUtc, source));
         }
+
+        ReceiveHelp = new ReceiveHelpViewModel(
+            () => RigState, WriteSettingAsync, OnSettingChanged);
+
+        _receiveHelpExpanded = settings.IsPanelExpanded(PanelKeys.ReceiveHelp);
 
         RebuildMenus();
 
@@ -1661,6 +1811,9 @@ public partial class MainWindowViewModel : ObservableObject
 
     partial void OnGuideExpandedChanged(bool value) => PersistPanel(PanelKeys.Guide, value);
 
+    partial void OnReceiveHelpExpandedChanged(bool value)
+        => PersistPanel(PanelKeys.ReceiveHelp, value);
+
     partial void OnSpotsExpandedChanged(bool value) => PersistPanel(PanelKeys.Spots, value);
 
     partial void OnLeadExpandedChanged(bool value) => PersistPanel(PanelKeys.Lead, value);
@@ -1954,6 +2107,7 @@ public partial class MainWindowViewModel : ObservableObject
         // radio says anything, and somebody reads "break-in is off" before they
         // press rather than after (HM-DEC-059).
         Transmit.Refresh();
+        ReceiveHelp.Refresh();
     }
 
     /// <summary>
@@ -2038,6 +2192,12 @@ public partial class MainWindowViewModel : ObservableObject
 
         _decoder = new CwDecoder(_audioInput.SampleRate, _settings.CwPitchHz);
         _decoder.CharacterDecoded += Transcript.Append;
+
+        // WHEN SOMETHING LAST CAME THROUGH, which is what the quiet offer waits
+        // on (HM-DEC-084). Set here rather than polled, so an empty terminal is
+        // measured from the last real character rather than from a timer.
+        _decoder.CharacterDecoded += _ => _lastDecodeUtc = DateTime.UtcNow;
+        _lastDecodeUtc = DateTime.UtcNow;
         _decoder.Listen(_audioInput);
         _audioInput.Start();
 
@@ -2566,6 +2726,9 @@ public partial class MainWindowViewModel : ObservableObject
         NoteDwell(now);
         RefreshHeard(now);
         Heartbeat(now);
+        OnPropertyChanged(nameof(ReceiveHeadline));
+        OnPropertyChanged(nameof(ReceiveOffer));
+        OnPropertyChanged(nameof(HasReceiveOffer));
     }
 
     /// <summary>
@@ -3781,6 +3944,9 @@ public static class PanelKeys
 
     /// <summary>Did anybody hear me (HM-DEC-075).</summary>
     public const string Heard = "heard";
+
+    /// <summary>I can hear it and Hamlet can't (HM-DEC-084).</summary>
+    public const string ReceiveHelp = "receiveHelp";
 
     /// <summary>The phrasebook (HM-DEC-059).</summary>
     public const string Phrasebook = "phrasebook";

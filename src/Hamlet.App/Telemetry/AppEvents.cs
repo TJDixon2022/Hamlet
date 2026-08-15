@@ -774,6 +774,37 @@ public static class AppEvents
             },
             brokeAt == "none" ? TelemetryLevel.Info : TelemetryLevel.Warn);
 
+    /// <summary>
+    /// Hamlet changed a setting on the radio (HM-DEC-084).
+    /// </summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="field">Which setting.</param>
+    /// <param name="command">The CI-V command, for the citation.</param>
+    /// <param name="was">What it was, or null when it was never read.</param>
+    /// <param name="now">What it is.</param>
+    /// <param name="outcome">Whether the read-back confirmed it.</param>
+    /// <remarks>
+    /// EVERY WRITE IS IN THE RECORD. Hamlet changing somebody's radio without
+    /// the file saying so would be the one thing worse than not changing it, and
+    /// the before value is what makes the record an undo rather than a note.
+    /// Null stays null: never read and read as zero are different facts (§0.0).
+    /// </remarks>
+    public static void SettingChanged(
+        ITelemetry? telemetry, string field, string command,
+        int? was, int now, string outcome)
+        => telemetry?.Write(
+            TelemetryCategory.Rig, "setting_changed",
+            new Dictionary<string, object?>
+            {
+                ["outcome"] = outcome == "Confirmed" ? "proceeded" : "failed",
+                ["reason"] = outcome.ToLowerInvariant(),
+                ["field"] = field,
+                ["command"] = command,
+                ["was"] = was,
+                ["now"] = now,
+            },
+            outcome == "Confirmed" ? TelemetryLevel.Info : TelemetryLevel.Warn);
+
     private static IReadOnlyDictionary<string, object?> Merge(
         IReadOnlyDictionary<string, object?> a, IReadOnlyDictionary<string, object?> b)
     {

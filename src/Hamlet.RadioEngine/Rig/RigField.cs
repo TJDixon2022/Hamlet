@@ -139,6 +139,33 @@ public enum RigField
     /// <summary>How loud the audio sent to the computer is.</summary>
     AccUsbAfLevel,
 
+    /// <summary>Where the manual notch sits (HM-DEC-084).</summary>
+    NotchPosition,
+
+    /// <summary>The DSP filter shape: sharp or soft.</summary>
+    FilterShape,
+
+    /// <summary>The audio level out of the speaker.</summary>
+    AfLevel,
+
+    /// <summary>
+    /// What the RF/SQL knob does: auto, squelch only, or both.
+    /// </summary>
+    /// <remarks>
+    /// Set to squelch only, the receive gain is fixed at maximum, which is the
+    /// one write that makes a deaf receiver impossible (HM-DEC-084).
+    /// </remarks>
+    RfSqlFunction,
+
+    /// <summary>How long break-in waits before dropping back to receive.</summary>
+    BreakInDelay,
+
+    /// <summary>The antenna tuner, whose tuning cycle keys the radio.</summary>
+    AntennaTuner,
+
+    /// <summary>The ALC meter, meaningful only while transmitting.</summary>
+    Alc,
+
     /// <summary>Whether the squelch gates the audio sent to the computer.</summary>
     AccUsbSquelch,
 

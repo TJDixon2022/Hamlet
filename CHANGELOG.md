@@ -12,6 +12,22 @@ operator can see and use, patch fixes and polishes without adding one.
 
 ---
 
+## 1.4.0
+
+**Hamlet changes the radio.**
+
+Settings are consequences of intent, never things the operator operates. There
+is no noise blanker toggle and there never will be: there is one button that
+says "I can hear it and Hamlet can't", and behind it the handful of changes that
+usually cause that, each announced in plain words with a way to put it back.
+
+Three tiers, and the tier is the safety design. Nothing on the receive side can
+put a signal on the air, which is why doing all of it is one press. Every write
+carries its manual page, reads back before it is called done, and says so when
+it cannot.
+
+Rulings HM-DEC-084.
+
 ## 1.3.0
 
 **Hamlet answers the question it was built for.**

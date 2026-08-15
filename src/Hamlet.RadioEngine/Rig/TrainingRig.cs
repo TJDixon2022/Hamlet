@@ -128,6 +128,18 @@ public sealed class TrainingRig : IRig
     /// "confirmed" would put a mode on the badge that nothing behind it is
     /// producing.
     /// </remarks>
+    /// <inheritdoc/>
+    /// <remarks>
+    /// The training radio has no settings to move, so it says so rather than
+    /// pretending a write took (HM-DEC-026, HM-DEC-084). A practice radio that
+    /// reported success would teach the one lesson this app must never teach.
+    /// </remarks>
+    public Task<RigWriteResult> SetSettingAsync(
+        Civ.CivWrite write, int value, CancellationToken cancellationToken = default)
+        => Task.FromResult(RigWriteResult.NotSupported(
+            "the training radio has no settings to change"));
+
+    /// <inheritdoc/>
     public Task<RigWriteResult> SetModeAsync(
         Civ.CivMode mode, bool dataMode, CancellationToken cancellationToken = default)
         => Task.FromResult(mode == Civ.CivMode.Cw && !dataMode

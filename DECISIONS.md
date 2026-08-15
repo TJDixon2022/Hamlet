@@ -4,6 +4,120 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-084
+date: 2026-08-15
+closes: the writes question HM-DEC-050 deferred
+refs: src/Hamlet.RadioEngine/Civ/CivWrites.cs, src/Hamlet.RadioEngine/Rig/ReceiveAdvice.cs, src/Hamlet.RadioEngine/Rig/SettingChange.cs, src/Hamlet.App/ViewModels/ReceiveHelpViewModel.cs, tests/Hamlet.RadioEngine.Tests/Rig/RigWriteTests.cs, HM-DEC-049, HM-DEC-050, HM-DEC-056
+---
+
+**Hamlet changes the radio, and never shows a rig control.** This is the writes
+ruling HM-DEC-050 deferred when it said the state model was reads only.
+
+**THE GOVERNING IDEA, AND EVERYTHING ELSE FOLLOWS FROM IT: settings are
+consequences of intent, never things the operator operates.**
+
+A rig control app gives somebody a Noise Blanker button and expects them to know
+when to press it. Hamlet gives them one button that says "I can hear it and you
+can't", does the four things that usually cause that, says what it changed in
+plain words, and offers to put it back. **Nobody ever learns what auto notch is.
+They learn that pressing that button usually helps.**
+
+**NO SCREEN IN HAMLET MAY CONTAIN A CONTROL THAT CORRESPONDS ONE-TO-ONE WITH A
+RADIO SETTING.** If a future session finds itself building a row of toggles named
+after menu items, it has misread this ruling. It is the same pattern as the
+license class, the grid square and the audio device: the app works it out and
+says what it found.
+
+WHY NOW. The operator is licensed six years, made his first contacts this week,
+and spent an evening calling CQ into silence. Two causes were found and both were
+radio settings the app could read and could not change: the receive gain sat at
+42 percent so the receiver was deaf for two hours, and the CW filter was wide
+open the previous evening so the decoder read garbage. Auto notch was on, in CW,
+which the diagnostics screen already explained is wrong. **Hamlet knew, printed
+it, and could not act.** That gap is the feature.
+
+---
+
+**THREE TIERS, AND THE TIER IS THE SAFETY DESIGN** rather than a confirmation
+dialog on everything.
+
+**Tier one is the receive side and Hamlet does it and mentions it.** Nothing in
+it can put a signal on the air, which is what makes "do all four" one press.
+Asking permission four times for four changes nobody else can hear is exactly the
+protectiveness this ruling exists to remove: it trains somebody to click through
+prompts, which is worse than not having them. **What earns a prompt is what other
+people can hear.**
+
+**Tier two changes what the operator sounds like** and is offered rather than
+simply done: power, keyer speed, break-in and its delay.
+
+**Tier three keys the radio.** Only the antenna tuner's tuning cycle is in it,
+and it goes through the same gate, the same visibility and the same record as a
+CW send (§0.2). Never automatic. Offered clearly, because holding TUNER for a
+second is the documented fix for a high standing wave ratio (p. 11-2) and nobody
+should have to know that.
+
+---
+
+**NO BYTE IS WRITTEN THAT IS NOT IN THE TABLE, AND EVERY ROW CARRIES ITS PAGE**
+(§4, HM-DEC-049). `14 08` is the standing warning: a wrong sub-command on a read
+returns a bad number, and on a write it moves somebody's passband. Every row here
+was read column-aware from `A7292-4EX-6` this session rather than transcribed,
+and that produced four corrections worth recording:
+
+- **The AGC row is `00 to 03`, not three values.** It reads
+  `*(00=OFF, 01=FAST, 02=MID, 03=SLOW)`, so AGC can be switched off entirely. A
+  table starting at FAST would have no way to say off and no way to put it back
+  for somebody who had it off.
+- **The antenna tuner is on p. 19-7**, not with the rest. Its three values are
+  spelled out across three lines, and the third, `02`, is "Send/read to tuning".
+- **`1A 05 0061` is on p. 19-5**, not 19-4 with its neighbors.
+- **`16 65`, IP+, is deliberately absent.** Its row reads "Send the IP+ function
+  setting" where every neighbor reads "Send/read", so the manual documents no way
+  to read it back. **A write that cannot be confirmed and cannot be undone is not
+  a write this app makes.** Recorded rather than quietly skipped, because the
+  next session will see the row and wonder.
+
+**READ BEFORE WRITE, READ BACK AFTER.** An acknowledgement says the radio
+understood the frame, not that the setting moved, and those come apart on exactly
+the settings somebody would most want to trust. A write that cannot be confirmed
+by a read-back is reported as unconfirmed and **never as done**.
+
+**EVERY WRITE IS ANNOUNCED** in plain words with its reason. A silent change to
+somebody's radio would break the whole posture of an application that says what
+it knows and where it learned it.
+
+**EVERY WRITE IS UNDOABLE**, individually and together, for the session. And
+**unknown stays a first-class state** (HM-DEC-050): where the prior value was
+never read, the record says so and the undo is not offered, because writing a
+plausible number into somebody's radio while calling it "restoring" would be the
+guess §0.0 forbids wearing the most reassuring word in the application.
+
+---
+
+**THE LIST IS COMPUTED FROM LIVE RIG STATE AND IS NEVER HARDCODED.** Rows already
+correct **stay visible and say so** — hiding them is tidier and teaches nothing,
+while showing them is the app proving what it checked, which after that evening
+is the difference between being trusted and being second-guessed. Rows that could
+not be read **say that**, and are neither acted on nor silently dropped: dropping
+one would leave somebody believing Hamlet had looked at something it never saw.
+
+ONE WRITE IS OFFERED ONCE AND EXPLAINED RATHER THAN SET SILENTLY. `1A 05 0025`
+set to `01` makes the RF/SQL knob do squelch only and fixes the receive gain at
+maximum, which makes the two-hour deaf-receiver failure impossible. It still
+gets asked, because it changes what a physical knob on somebody's radio does, and
+a control that stops behaving the way its owner expects is worse than the problem
+it solves.
+
+**THE OFFER APPEARS WHERE THE PROBLEM SHOWS.** A popup somebody has to know to
+open is a popup they will not open when they are frustrated, which is exactly
+when it is needed. So when the terminal has decoded nothing for two minutes and
+there is something Hamlet would change, a quiet line appears there. One line, not
+a banner, dismissible, and silent when there is nothing to change, because an
+offer to fix a radio that is already right teaches somebody to ignore the next
+one.
+
+---
 id: HM-DEC-083
 date: 2026-08-15
 supersedes: HM-DEC-079 (the sending appearance), HM-DEC-081 (the notice's retirement)

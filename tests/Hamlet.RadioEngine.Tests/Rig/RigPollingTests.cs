@@ -232,6 +232,10 @@ public sealed class RigPollingTests
         }
 
         /// <summary>This one exists to count reads, so it writes nothing.</summary>
+        public Task<RigWriteResult> SetSettingAsync(
+                Hamlet.RadioEngine.Civ.CivWrite write, int value,
+                CancellationToken cancellationToken = default)
+                => Task.FromResult(RigWriteResult.NotSupported("test rig"));
         public Task<RigWriteResult> SetModeAsync(
             Hamlet.RadioEngine.Civ.CivMode mode, bool dataMode,
             CancellationToken cancellationToken = default)

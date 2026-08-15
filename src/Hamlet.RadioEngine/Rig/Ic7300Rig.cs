@@ -252,6 +252,101 @@ public sealed class Ic7300Rig : IRig, IDisposable
     /// badge and the radio's own face out of step with nothing on screen saying
     /// so (§0.0).</para>
     /// </remarks>
+    public async Task<RigWriteResult> SetSettingAsync(
+        CivWrite write, int value, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(write);
+
+        // NOTHING WRITES A BYTE THAT IS NOT IN THE TABLE (§4, HM-DEC-084). The
+        // table is the citation, so a write built from anything else has no page
+        // behind it and does not happen.
+        if (!CivWrites.All.Contains(write))
+        {
+            return RigWriteResult.Refused($"{write.Label} is not a documented write");
+        }
+
+        try
+        {
+            var data = BuildSettingData(write, value);
+
+            var response = await RequestAsync(
+                write.Command, data, null, null, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (response.Command != CivConstants.ResultOk)
+            {
+                return RigWriteResult.Refused(write.Label);
+            }
+
+            // READ IT BACK. An acknowledgement says the radio understood the
+            // frame, not that the setting moved, and those come apart on exactly
+            // the settings somebody would most want to trust (HM-DEC-084).
+            var read = CivReads.All.FirstOrDefault(r => r.Field == write.Field);
+
+            if (read is null)
+            {
+                return RigWriteResult.Confirmed(write.Label);
+            }
+
+            var back = await RequestAsync(
+                read.Command, read.SubCommand, null, null, cancellationToken)
+                .ConfigureAwait(false);
+
+            var values = Decode(read, back, null, null);
+
+            ValuesReported?.Invoke(this, new RigValuesReportedEventArgs(values));
+
+            var confirmed = values.Any(
+                v => v.Field == write.Field && v.IsKnown && (int?)v.Number == value);
+
+            return confirmed
+                ? RigWriteResult.Confirmed(write.Label)
+                : new RigWriteResult(
+                    RigWriteOutcome.NoAnswer,
+                    "The radio took that and read back something else, so Hamlet "
+                    + "cannot say it took.",
+                    write.Label);
+        }
+        catch (TimeoutException)
+        {
+            return RigWriteResult.NoAnswer(write.Label);
+        }
+        catch (OperationCanceledException)
+        {
+            return RigWriteResult.NoAnswer(write.Label);
+        }
+        catch (Exception)
+        {
+            return RigWriteResult.NoAnswer(write.Label);
+        }
+    }
+
+    /// <summary>The data area for one setting write.</summary>
+    /// <remarks>
+    /// Sub-command bytes first, then the value in whatever shape that command
+    /// takes. The 0-to-255 levels go out as BCD decimal digits, which is the
+    /// same encoding the reads already decode (p. 19-3).
+    /// </remarks>
+    private static byte[] BuildSettingData(CivWrite write, int value)
+    {
+        var sub = write.Sub;
+
+        // A LEVEL IS TWO BCD BYTES; EVERYTHING ELSE IS ONE PLAIN BYTE. Which is
+        // which comes from the manual's own range column, carried on the write.
+        var isLevel = write.Note.Contains("0000", StringComparison.Ordinal);
+
+        var payload = isLevel
+            ? CivWrites.LevelBytes(value)
+            : new[] { (byte)value };
+
+        var data = new byte[sub.Length + payload.Length];
+        sub.CopyTo(data, 0);
+        payload.CopyTo(data, sub.Length);
+
+        return data;
+    }
+
+    /// <inheritdoc/>
     public async Task<RigWriteResult> SetModeAsync(
         CivMode mode, bool dataMode, CancellationToken cancellationToken = default)
     {

@@ -16,7 +16,7 @@ public sealed class CallsignPrivacyTests : IDisposable
     /// <summary>Every public event-writing method on <see cref="AppEvents"/>.
     /// If this number moves, a new event was added and the walk below has to
     /// grow with it — that is the point.</summary>
-    private const int ExpectedEventMethodCount = 47;
+    private const int ExpectedEventMethodCount = 48;
 
     private const string Callsign = "KC3QIS";
     // "Timothy", not "Tim": a three-letter needle matches "timer", which is a
@@ -185,6 +185,13 @@ public sealed class CallsignPrivacyTests : IDisposable
         // one of them a callsign or a word of the message.
         AppEvents.TransmitChain(telemetry, "none", 18.6, 143, 48, 41, 0);
         AppEvents.TransmitChain(telemetry, "PowerMade", 18.6, 0, null, null, 0);
+
+        // Hamlet changing somebody's radio (HM-DEC-084): the field, the
+        // command and the numbers, and nothing that could identify anybody.
+        AppEvents.SettingChanged(
+            telemetry, "AutoNotch", "CI-V 16 41", 1, 0, "Confirmed");
+        AppEvents.SettingChanged(
+            telemetry, "RfGain", "CI-V 14 02", null, 255, "NoAnswer");
 
         AppEvents.RigHeartbeat(telemetry, null, state);
         AppEvents.RigHeartbeat(telemetry, state, state);
