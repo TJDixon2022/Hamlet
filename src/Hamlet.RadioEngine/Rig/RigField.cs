@@ -60,6 +60,18 @@ public enum RigField
     /// <summary>Whether the front end is overloading.</summary>
     Overflow,
 
+    /// <summary>
+    /// Standing wave ratio, which only means anything while transmitting
+    /// (HM-DEC-081).
+    /// </summary>
+    /// <remarks>
+    /// SWR is derived from reflected power, so with the radio receiving there is
+    /// nothing to reflect and whatever the meter returns is not a measurement of
+    /// now. It is sampled during a send and unknown otherwise, which is what the
+    /// existing states are for rather than a special case (HM-DEC-050).
+    /// </remarks>
+    Swr,
+
     /// <summary>Transmit power.</summary>
     RfPower,
 

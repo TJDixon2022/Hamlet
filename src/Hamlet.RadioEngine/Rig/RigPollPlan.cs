@@ -90,6 +90,13 @@ public static class RigPollPlan
         // both are on screen while receiving.
         RigField.SMeter => RigPollRate.Live,
         RigField.TransmitStatus => RigPollRate.Live,
+
+        // ONLY WORTH ASKING WHILE KEYING (HM-DEC-081). SWR comes from reflected
+        // power, so a resting radio has nothing to measure and the answer is not
+        // a reading of now. It is polled live so a send has fresh numbers, and
+        // what makes it honest is that it is marked unknown the moment the
+        // transmitter stops rather than being left to look current.
+        RigField.Swr => RigPollRate.Live,
         RigField.SquelchStatus => RigPollRate.Live,
         RigField.Overflow => RigPollRate.Live,
 

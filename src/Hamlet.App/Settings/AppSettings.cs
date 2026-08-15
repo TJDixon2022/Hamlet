@@ -76,6 +76,19 @@ public sealed class AppSettings
     /// </remarks>
     public List<SavedRecentStation> Recent { get; set; } = new();
 
+    /// <summary>
+    /// True once a send on this installation produced a real SWR reading
+    /// (HM-DEC-081).
+    /// </summary>
+    /// <remarks>
+    /// What retires the note about not being able to see the back of the radio.
+    /// It earns its place before a first transmission and becomes furniture
+    /// after one, so it goes when Hamlet has measured something about the socket
+    /// and the operator has seen the number. Persisted so it does not come back
+    /// on restart.
+    /// </remarks>
+    public bool HasMeasuredSwr { get; set; }
+
     /// <summary>Last selected band name, e.g. "40 m".</summary>
     public string? LastBand { get; set; }
 

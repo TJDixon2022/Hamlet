@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Hamlet.RadioEngine.Cw;
 using Hamlet.RadioEngine.Licensing;
+using Hamlet.RadioEngine.Rig;
 
 namespace Hamlet.App.ViewModels;
 
@@ -105,6 +106,23 @@ public sealed partial class SendButtonViewModel : ObservableObject
     /// </remarks>
     public bool LooksRefused => State == SendState.Refused;
 
+    /// <summary>True when this is a plain, pressable send button.</summary>
+    /// <remarks>
+    /// ONE FLAG PER LOOK, so the style can select on it (HM-DEC-080). The
+    /// buttons had no style of their own at all and fell through to the theme's
+    /// default, which is a pale grey fill in every state including the working
+    /// one. Nothing was dimming them; their ordinary appearance was the
+    /// problem, and three sessions went looking for a state bug that was not
+    /// there.
+    /// </remarks>
+    public bool LooksReady => State == SendState.Ready;
+
+    /// <summary>True when this one is waiting for its confirming press.</summary>
+    public bool LooksArmed => State == SendState.Armed;
+
+    /// <summary>True while this one is going out.</summary>
+    public bool LooksSending => State == SendState.Sending;
+
     /// <summary>What the button says right now.</summary>
     /// <remarks>
     /// THE BUTTON SAYS WHAT THE NEXT PRESS WILL DO (HM-DEC-079). "Press again to
@@ -160,6 +178,9 @@ public sealed partial class SendButtonViewModel : ObservableObject
     partial void OnStateChanged(SendState value)
     {
         OnPropertyChanged(nameof(LooksRefused));
+        OnPropertyChanged(nameof(LooksReady));
+        OnPropertyChanged(nameof(LooksArmed));
+        OnPropertyChanged(nameof(LooksSending));
         OnPropertyChanged(nameof(ButtonLabel));
         OnPropertyChanged(nameof(StateNote));
         OnPropertyChanged(nameof(Dimmed));
@@ -227,6 +248,7 @@ public sealed partial class CwTransmitViewModel : ObservableObject
     private readonly Action<bool, CwReadiness?>? _sendEnabledChanged;
     private readonly Action<string, TransmitContext>? _sendStarted;
     private readonly Action<string, TransmitContext, TransmitOutcome?>? _sendFinished;
+    private readonly Action? _swrMeasured;
 
     /// <summary>
     /// The last verdict written to the record, so an unchanged one is not
@@ -267,13 +289,18 @@ public sealed partial class CwTransmitViewModel : ObservableObject
     /// <param name="sendFinished">
     /// Called when it completed, failed or was aborted.
     /// </param>
+    /// <param name="swrMeasured">
+    /// Called the first time a send produces a real SWR reading, so the fact can
+    /// be persisted (HM-DEC-081).
+    /// </param>
     public CwTransmitViewModel(
         Func<TransmitContext> context,
         Action<SendOption>? wentOut = null,
         Action<CwReadiness, TransmitContext, string>? readinessChanged = null,
         Action<bool, CwReadiness?>? sendEnabledChanged = null,
         Action<string, TransmitContext>? sendStarted = null,
-        Action<string, TransmitContext, TransmitOutcome?>? sendFinished = null)
+        Action<string, TransmitContext, TransmitOutcome?>? sendFinished = null,
+        Action? swrMeasured = null)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _wentOut = wentOut;
@@ -281,6 +308,7 @@ public sealed partial class CwTransmitViewModel : ObservableObject
         _sendEnabledChanged = sendEnabledChanged;
         _sendStarted = sendStarted;
         _sendFinished = sendFinished;
+        _swrMeasured = swrMeasured;
         Options = new ObservableCollection<SendButtonViewModel>();
         Rebuild();
     }
@@ -337,6 +365,8 @@ public sealed partial class CwTransmitViewModel : ObservableObject
     /// executable and the double-send is prevented inside the handler instead.
     /// </remarks>
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(StatusBackground))]
+    [NotifyPropertyChangedFor(nameof(StatusEdge))]
     private bool _isSending;
 
     /// <summary>What just happened, or what stands in the way.</summary>
@@ -345,7 +375,44 @@ public sealed partial class CwTransmitViewModel : ObservableObject
 
     /// <summary>True when the status is a refusal rather than a report.</summary>
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(StatusBackground))]
+    [NotifyPropertyChangedFor(nameof(StatusEdge))]
     private bool _isRefusal;
+
+    /// <summary>
+    /// The status block's fill, which changes rather than the block appearing
+    /// (HM-DEC-080).
+    /// </summary>
+    /// <remarks>
+    /// THE PANEL USED TO JUMP SEVERAL TIMES A SECOND. A message came and went
+    /// as the transmit line toggled, and every appearance reflowed everything
+    /// below it, which is distracting to the point of unusable at exactly the
+    /// moment the operator is watching hardest. So the block is always there and
+    /// only its content and its color change.
+    /// </remarks>
+    public Avalonia.Media.IBrush StatusBackground => IsSending
+        ? GreenTint
+        : IsRefusal ? AmberTint : Transparent;
+
+    /// <summary>The status block's edge, matching its fill.</summary>
+    public Avalonia.Media.IBrush StatusEdge => IsSending
+        ? GreenEdge
+        : IsRefusal ? AmberEdge : Transparent;
+
+    private static readonly Avalonia.Media.IBrush AmberTint =
+        new Avalonia.Media.SolidColorBrush(Avalonia.Media.Color.Parse("#FDF1DC"));
+
+    private static readonly Avalonia.Media.IBrush AmberEdge =
+        new Avalonia.Media.SolidColorBrush(Avalonia.Media.Color.Parse("#E8C88A"));
+
+    private static readonly Avalonia.Media.IBrush GreenTint =
+        new Avalonia.Media.SolidColorBrush(Avalonia.Media.Color.Parse("#E4F3E8"));
+
+    private static readonly Avalonia.Media.IBrush GreenEdge =
+        new Avalonia.Media.SolidColorBrush(Avalonia.Media.Color.Parse("#9CC9A9"));
+
+    private static readonly Avalonia.Media.IBrush Transparent =
+        Avalonia.Media.Brushes.Transparent;
 
     /// <summary>The manual page or paragraph behind a refusal, or "".</summary>
     [ObservableProperty]
@@ -365,6 +432,31 @@ public sealed partial class CwTransmitViewModel : ObservableObject
     /// <summary>Whether this path can widen the gaps between characters.</summary>
     [ObservableProperty]
     private bool _supportsCharacterSpacing;
+
+    /// <summary>
+    /// True once a send here has produced a real SWR reading (HM-DEC-081).
+    /// </summary>
+    /// <remarks>
+    /// What retires the note about the back of the radio. Evidence rather than a
+    /// counter: by the time this is true Hamlet has measured something and the
+    /// operator has read the number.
+    /// </remarks>
+    [ObservableProperty]
+    private bool _hasMeasuredSwr;
+
+    /// <summary>
+    /// What the meter said during the last send, or "" (HM-DEC-081).
+    /// </summary>
+    public string SwrNote => _swrNote;
+
+    /// <summary>True when the last reading wants doing something about.</summary>
+    public bool SwrIsHigh => _swrHigh;
+
+    private string _swrNote = "";
+    private bool _swrHigh;
+
+    /// <summary>The highest SWR seen during the send in flight, or null.</summary>
+    private int? _swrDuringSend;
 
     /// <summary>
     /// True when a send would actually reach the air right now (HM-DEC-074).
@@ -511,7 +603,7 @@ public sealed partial class CwTransmitViewModel : ObservableObject
         var context = _context();
 
         Notes.Clear();
-        foreach (var note in TransmitNotes.For(context.State))
+        foreach (var note in TransmitNotes.For(context.State, HasMeasuredSwr))
         {
             Notes.Add(note);
         }
@@ -538,6 +630,17 @@ public sealed partial class CwTransmitViewModel : ObservableObject
         // message to finish, not a gap between elements.
         if (IsSending)
         {
+            // SAMPLED WHILE THE TRANSMITTER IS ACTUALLY KEYING (HM-DEC-081),
+            // which is the only time the meter is measuring anything. The worst
+            // of the send is kept rather than the last, because one bad moment
+            // is the thing worth telling somebody about.
+            if (context.State[RigField.Swr] is { IsKnown: true, Number: { } level })
+            {
+                _swrDuringSend = _swrDuringSend is { } worst
+                    ? Math.Max(worst, (int)level)
+                    : (int)level;
+            }
+
             ApplyState();
             return;
         }
@@ -668,6 +771,24 @@ public sealed partial class CwTransmitViewModel : ObservableObject
         {
             IsSending = false;
             ClearStaged();
+
+            // REPORTED AFTER THE SEND, WHICH IS WHEN IT MEANS ANYTHING
+            // (HM-DEC-081). Nothing is said when nothing was measured, rather
+            // than a resting figure being shown as a current one.
+            _swrNote = SwrReport.Describe(_swrDuringSend);
+            _swrHigh = SwrReport.IsHigh(_swrDuringSend);
+
+            if (_swrDuringSend is not null && !HasMeasuredSwr)
+            {
+                HasMeasuredSwr = true;
+                _swrMeasured?.Invoke();
+            }
+
+            _swrDuringSend = null;
+
+            OnPropertyChanged(nameof(SwrNote));
+            OnPropertyChanged(nameof(SwrIsHigh));
+
             _sendFinished?.Invoke(message, context, outcome);
             Refresh();
             OnPropertyChanged(nameof(Summary));

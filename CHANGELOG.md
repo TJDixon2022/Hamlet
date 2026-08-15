@@ -12,6 +12,20 @@ operator can see and use, patch fixes and polishes without adding one.
 
 ---
 
+## 1.2.8
+
+**The send buttons stop looking grey when they work.**
+
+They had no style of their own and fell through to the theme's pale default, so
+a working button and a refused one looked identical. Ready is filled amber now,
+armed is deeper amber, sending is green, and only a refusal is dimmed. Status
+messages occupy reserved space rather than appearing and shoving the panel
+around. Hamlet reads the SWR meter during a send and says what it measured
+without ever claiming what is connected, and the notice about the back of the
+radio retires once it has.
+
+Rulings HM-DEC-080 and HM-DEC-081.
+
 ## 1.2.7
 
 **The send controls tell the truth.**

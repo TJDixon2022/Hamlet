@@ -289,3 +289,80 @@ public static class CivSMeter
         return rounded <= 0 ? "S9" : $"S9+{rounded}";
     }
 }
+
+/// <summary>
+/// The SWR meter's own scale, from the radio (HM-DEC-081).
+/// </summary>
+/// <remarks>
+/// <para>Four points are cited on p. 19-3 and nothing between them is: `0000` is
+/// 1.0, `0048` is 1.5, `0080` is 2.0 and `0120` is 3.0. So the conversion is
+/// linear between the cited points and refuses past the last one, rather than
+/// extrapolating a curve nobody published (§4).</para>
+/// <para>THE NUMBERS ARE THE MANUAL'S DECIMAL COLUMN, not hexadecimal. Reading
+/// `0120` as hex would give 288 and a wildly wrong ratio, which is the mistake
+/// §4 records against the CW pitch and the S-meter.</para>
+/// </remarks>
+public static class CivSwr
+{
+    /// <summary>The cited points: reading, and the ratio it means.</summary>
+    private static readonly (int Reading, double Ratio)[] Scale =
+    {
+        (0, 1.0),
+        (48, 1.5),
+        (80, 2.0),
+        (120, 3.0),
+    };
+
+    /// <summary>At or below this the antenna is matched (Full Manual p. 11-2).</summary>
+    public const double MatchedBelow = 1.5;
+
+    /// <summary>
+    /// The ratio for a reading, or null when it is off the cited scale.
+    /// </summary>
+    /// <param name="reading">The value from <c>15 12</c>, 0 to 255.</param>
+    /// <returns>The ratio, or null.</returns>
+    /// <remarks>
+    /// Null past the last cited point rather than a guess. "Higher than 3" is
+    /// what the manual supports and it is also everything the operator needs to
+    /// know, since anything up there wants the same action.
+    /// </remarks>
+    public static double? Ratio(int reading)
+    {
+        if (reading < 0)
+        {
+            return null;
+        }
+
+        if (reading >= Scale[^1].Reading)
+        {
+            return reading == Scale[^1].Reading ? Scale[^1].Ratio : null;
+        }
+
+        for (var i = 1; i < Scale.Length; i++)
+        {
+            if (reading > Scale[i].Reading)
+            {
+                continue;
+            }
+
+            var (lowReading, lowRatio) = Scale[i - 1];
+            var (highReading, highRatio) = Scale[i];
+            var span = highReading - lowReading;
+
+            var ratio = lowRatio
+                + ((reading - lowReading) / (double)span * (highRatio - lowRatio));
+
+            return Math.Round(ratio, 2);
+        }
+
+        return null;
+    }
+
+    /// <summary>How to write a ratio for the operator.</summary>
+    /// <param name="reading">The raw reading.</param>
+    /// <returns>e.g. "1.3 to 1", or "higher than 3 to 1".</returns>
+    public static string Describe(int reading)
+        => Ratio(reading) is { } ratio
+            ? $"{ratio.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture)} to 1"
+            : "higher than 3 to 1";
+}

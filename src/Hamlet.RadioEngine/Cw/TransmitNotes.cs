@@ -1,3 +1,4 @@
+using Hamlet.RadioEngine.Civ;
 using Hamlet.RadioEngine.Rig;
 
 namespace Hamlet.RadioEngine.Cw;
@@ -102,11 +103,31 @@ public static class TransmitNotes
     /// </summary>
     /// <param name="state">What Hamlet knows.</param>
     /// <returns>The lines, in reading order, possibly just the one.</returns>
-    public static IReadOnlyList<string> For(RigState state)
+    /// <param name="hasMeasured">
+    /// True once a send on this installation has produced a real SWR reading
+    /// (HM-DEC-081).
+    /// </param>
+    public static IReadOnlyList<string> For(RigState state, bool hasMeasured = false)
     {
         ArgumentNullException.ThrowIfNull(state);
 
-        var said = new List<string> { WhatIsConnected };
+        var said = new List<string>();
+
+        // IT EARNS ITS PLACE EXACTLY ONCE, BEFORE THE FIRST TRANSMISSION
+        // (HM-DEC-081). After that it is a standing block of orange text above
+        // the controls that the operator has stopped reading, and a warning
+        // nobody reads is worse than none because it teaches everything near it
+        // to be ignored.
+        //
+        // The retirement condition is evidence rather than a counter: once a
+        // send has produced a real standing wave ratio, Hamlet has measured
+        // something about what is on the socket and the operator has seen the
+        // number. It stays reachable in Help for somebody who changes stations.
+        if (!hasMeasured)
+        {
+            said.Add(WhatIsConnected);
+        }
+
         var power = PowerNote(state);
 
         if (power.Length > 0)
@@ -116,4 +137,65 @@ public static class TransmitNotes
 
         return said;
     }
+}
+
+/// <summary>
+/// What the SWR meter said during a send (HM-DEC-081).
+/// </summary>
+/// <remarks>
+/// <para>ONLY MEANINGFUL WHILE TRANSMITTING. SWR is derived from reflected
+/// power, so a resting radio has nothing to reflect and whatever the meter
+/// returns is not a measurement of now. A reading taken during a send is
+/// reported after it; at any other time this says nothing at all rather than
+/// showing a resting value as a current one (HM-DEC-050).</para>
+/// <para>**AND IT NEVER SAYS WHAT IS CONNECTED.** A dummy load reads close to
+/// flat, a matched antenna reads under 1.5 and rarely dead flat, and a
+/// disconnected one reads high. That is suggestive and it is not evidence, and
+/// "your antenna is connected" would be a guess dressed as a decode on the one
+/// screen where a wrong answer means somebody keys into the wrong thing (§0.0).
+/// What Hamlet may say is what it measured, in a sentence an operator can act
+/// on.</para>
+/// </remarks>
+public static class SwrReport
+{
+    /// <summary>The manual page behind the advice.</summary>
+    public const string Citation = "IC-7300 Full Manual, p. 11-2";
+
+    /// <summary>
+    /// What to say about a reading taken during a send.
+    /// </summary>
+    /// <param name="reading">The raw value from <c>15 12</c>, or null.</param>
+    /// <returns>One or two sentences, or "" when there was no reading.</returns>
+    public static string Describe(int? reading)
+    {
+        if (reading is not { } level)
+        {
+            return "";
+        }
+
+        var ratio = CivSwr.Ratio(level);
+        var text = CivSwr.Describe(level);
+
+        // MATCHED, AND THAT IS ALL IT SAYS. Not "your antenna is fine" and not
+        // "the antenna is connected": the meter measured a ratio and the ratio
+        // is what gets reported.
+        if (ratio is { } value && value <= CivSwr.MatchedBelow)
+        {
+            return $"The standing wave ratio during that send was {text}, which "
+                + "is matched. Whatever is on the antenna socket is taking the "
+                + "power you gave it.";
+        }
+
+        return $"The standing wave ratio during that send was {text}, which is "
+            + "higher than matched. Holding TUNER for a second tunes the antenna, "
+            + "and it is worth doing before keying again, because power that will "
+            + "not go out comes back into the radio.";
+    }
+
+    /// <summary>True when the reading is worth saying loudly.</summary>
+    /// <param name="reading">The raw value, or null.</param>
+    /// <returns>True above the matched threshold.</returns>
+    public static bool IsHigh(int? reading)
+        => reading is { } level
+           && (CivSwr.Ratio(level) is not { } ratio || ratio > CivSwr.MatchedBelow);
 }

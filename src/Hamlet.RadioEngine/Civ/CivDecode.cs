@@ -67,6 +67,9 @@ public static class CivDecode
             case RigField.SMeter:
                 return One(DecodeSMeter(payload, atUtc, source));
 
+            case RigField.Swr:
+                return One(DecodeSwr(payload, atUtc, source));
+
             case RigField.TransmitStatus:
                 return One(DecodeChoice(
                     field, payload, atUtc, source, "receiving", "transmitting"));
@@ -245,6 +248,28 @@ public static class CivDecode
     /// The filter index turned into hertz, which needs the mode to know which
     /// scale applies.
     /// </summary>
+    /// <summary>
+    /// The SWR meter, which only means anything while transmitting
+    /// (HM-DEC-081).
+    /// </summary>
+    /// <remarks>
+    /// The reading converts through the four cited points on p. 19-3 and stops
+    /// there: past 3 to 1 the manual says nothing, so neither does Hamlet, and
+    /// "higher than 3 to 1" is both what is supported and everything the
+    /// operator needs, since anything up there wants the same action.
+    /// </remarks>
+    private static RigValue DecodeSwr(
+        ReadOnlySpan<byte> payload, DateTime atUtc, string source)
+    {
+        if (payload.Length < 2 || CivValues.Level(payload[0], payload[1]) is not { } level)
+        {
+            return RigValue.Unknown(RigField.Swr, $"{source} gave an unreadable reply");
+        }
+
+        return RigValue.Known(
+            RigField.Swr, level, CivSwr.Describe(level), atUtc, source);
+    }
+
     private static RigValue DecodeFilterBandwidth(
         ReadOnlySpan<byte> payload,
         DateTime atUtc,

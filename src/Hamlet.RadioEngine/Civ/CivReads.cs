@@ -139,6 +139,20 @@ public static class CivReads
         "00 to 49; AM 00=200 Hz to 49=10 kHz, other modes 00=50 Hz to "
         + "31/40=2700 Hz/3600 Hz");
 
+    /// <summary>
+    /// Read the SWR meter (HM-DEC-081).
+    /// </summary>
+    /// <remarks>
+    /// ONLY MEANS ANYTHING WHILE TRANSMITTING. SWR comes from reflected power,
+    /// so a resting radio has nothing to measure and whatever comes back is not
+    /// a reading of now. The poll plan asks for it only during a send, and it is
+    /// unknown the rest of the time, which is what the existing states are for
+    /// (HM-DEC-050).
+    /// </remarks>
+    public static CivRead Swr { get; } = new(
+        RigField.Swr, 0x15, new byte[] { 0x12 }, "19-3",
+        "0000=1.0, 0048=1.5, 0080=2.0, 0120=3.0");
+
     /// <summary>Read the S-meter.</summary>
     public static CivRead SMeter { get; } = new(
         RigField.SMeter, 0x15, new byte[] { 0x02 }, "19-3",
@@ -293,7 +307,7 @@ public static class CivReads
     public static IReadOnlyList<CivRead> All { get; } = new[]
     {
         Frequency, ModeAndFilter, ModeDataAndFilter, FilterWidth, SMeter,
-        TransmitStatus, Overflow,
+        TransmitStatus, Overflow, Swr,
         RfPower, RfGain, Squelch, SquelchStatus, Agc, Preamp, Attenuator,
         NoiseBlanker, NoiseBlankerLevel, NoiseReduction, NoiseReductionLevel,
         AutoNotch, ManualNotch, BreakIn, KeyerSpeed, CwPitch,

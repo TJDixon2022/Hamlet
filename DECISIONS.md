@@ -4,6 +4,118 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-081
+date: 2026-08-15
+refs: src/Hamlet.RadioEngine/Civ/CivValues.cs, src/Hamlet.RadioEngine/Cw/TransmitNotes.cs, src/Hamlet.RadioEngine/Rig/RigStateMonitor.cs, tests/Hamlet.RadioEngine.Tests/Rig/SwrTests.cs, HM-DEC-050, HM-DEC-074
+---
+
+**Hamlet reads the SWR meter during a send and reports what it measured. It never
+says what is connected to the antenna socket.**
+
+THE READ, CITED. `15 12` reads the SWR meter level (Full Manual p. 19-3), and
+the scale is cited on the same page at four points and nowhere else: `0000` is
+1.0, `0048` is 1.5, `0080` is 2.0, `0120` is 3.0. Those numbers are the manual's
+decimal column and not hexadecimal, which is the mistake §4 already records twice.
+The conversion is linear between the cited points and **refuses past the last
+one**: above 3 to 1 the manual says nothing, so Hamlet says "higher than 3 to 1",
+which is also everything the operator needs because anything up there wants the
+same action. It is a normal field in the rig model with its command and its page,
+so the diagnostics screen lists it without anybody adding it there.
+
+**IT ONLY MEANS ANYTHING WHILE TRANSMITTING.** SWR is derived from reflected
+power, so a resting radio has nothing to reflect and whatever the meter returns
+is not a measurement of now. It is sampled during a send and **marked unknown the
+moment the transmitter stops**, so a resting value can never be read as a current
+one. That is HM-DEC-050's existing machinery rather than a special case, which is
+the whole reason those states exist.
+
+WHAT IT SAYS AFTER A SEND, in the Send panel: the ratio in plain words with the
+number, and above 1.5 the manual's own advice to hold TUNER for a second
+(p. 11-2). A high reading is worth saying loudly, because power that will not go
+out comes back into the radio and the operator is about to key again.
+
+**AND IT NEVER SAYS WHAT IS CONNECTED. This is the line that matters.** A dummy
+load reads close to flat, a matched antenna reads under 1.5 and rarely dead flat,
+and a disconnected one reads high. That is suggestive and it is not evidence.
+"Your antenna is connected" would be a guess dressed as a decode on the one
+screen where a wrong answer means somebody keys into the wrong thing (§0.0). A
+test sweeps every reading from 0 to 255 for phrasings that would cross that line.
+
+---
+
+**THE NOTICE ABOUT THE BACK OF THE RADIO RETIRES ON EVIDENCE.** HM-DEC-074 wrote
+it and it earns its place exactly once, before a first transmission. After that
+it is a standing block of orange text above the controls that the operator has
+stopped reading, and **a warning nobody reads is worse than none, because it
+teaches everything near it to be ignored.**
+
+The retirement condition is a real SWR reading rather than a counter of sends,
+which is the better condition and the reason these two rulings are one session's
+work: by the time it fires, Hamlet has measured something about what is on the
+socket and the operator has read the number, so the sentence has been answered by
+evidence rather than merely outlived. Persisted with the profile so it does not
+return on restart, and the text stays in the codebase for the day somebody
+changes stations.
+
+**Tim asked for the text to go entirely.** It is kept for the first-run case the
+onboarding principles care about, and it is now genuinely temporary rather than
+permanent. If he wants it gone outright, deleting the one call site does it.
+
+---
+id: HM-DEC-080
+date: 2026-08-15
+refs: src/Hamlet.App/Views/MainWindow.axaml, src/Hamlet.App/ViewModels/CwTransmitViewModel.cs, HM-DEC-012, HM-DEC-079
+---
+
+**The send buttons had no style of their own and fell through to the theme's
+default, which is grey in every state including the working one. And status
+messages in a panel occupy reserved space rather than appearing and
+disappearing.**
+
+WHY THIS TOOK FOUR ATTEMPTS TO FIND, WHICH IS THE USEFUL PART. The complaint was
+"the buttons look grey" and it was heard three times as a state bug. HM-DEC-079
+verified that the disabled style binds only to `Refused`, wrote a test, and the
+test passed. **That answered the wrong question.** If nothing is dimming them,
+then their normal, un-dimmed, fully-enabled appearance is itself grey, and that
+is the bug. The app uses Avalonia's Fluent light theme and had styled the Connect
+button and the band buttons and never the send buttons, so they rendered as the
+theme's pale neutral. A working button and a refused one looked near enough
+identical that the operator could not tell them apart and reasonably assumed the
+worse of the two.
+
+**A passing test about style binding was not evidence, and it gave a false pass.**
+When a complaint is about appearance, the check is a screenshot.
+
+WHAT THE STATES LOOK LIKE NOW, from the app's own palette (HM-DEC-012): ready is
+filled amber, which is what this app already uses for "do this"; armed is the
+deeper amber, because a message waiting on its confirming press is the loudest
+thing on the panel; sending is the decode green, which reads as working; and only
+refused is a pale outline on a dimmed card. That completes HM-DEC-079 rather than
+changing it: grey means refused was already the rule and the theme was quietly
+contradicting it.
+
+---
+
+**STATUS MESSAGES OCCUPY RESERVED SPACE AND CHANGE THEIR CONTENT, NEVER THEIR
+PRESENCE. This is a layout standard rather than one panel's bug fix.**
+
+A message came and went as the transmit line toggled, and every appearance
+reflowed everything below it, so the Send panel jumped several times a second at
+exactly the moment the operator was watching it hardest. HM-DEC-079's latch
+removed the source of that toggling and the rule stands anyway, because the next
+fast-changing value will do the same thing to the next panel.
+
+The Send panel now has one status block that is always present with a reserved
+height. Its fill, its edge and its words change; its existence does not. The
+abort lives inside it for the same reason: a control that appeared beside the
+thing it stops would move the thing it stops, at the moment somebody is reaching
+for it.
+
+Practical test: does anything on screen move when a value the radio reports
+several times a second changes? If so, that element is appearing rather than
+changing.
+
+---
 id: HM-DEC-079
 date: 2026-08-15
 supersedes: HM-DEC-059 (the two-press default only)

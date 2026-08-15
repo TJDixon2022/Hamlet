@@ -503,6 +503,25 @@ public partial class MainWindowViewModel : ObservableObject
             DateTime.UtcNow);
     }
 
+    /// <summary>
+    /// A send produced a real SWR reading for the first time (HM-DEC-081).
+    /// </summary>
+    /// <remarks>
+    /// Persisted so the note about the back of the radio does not come back on
+    /// restart. It has earned its place by then: Hamlet has measured something
+    /// about the socket and the operator has read the number.
+    /// </remarks>
+    private void OnSwrMeasured()
+    {
+        if (_settings.HasMeasuredSwr)
+        {
+            return;
+        }
+
+        _settings.HasMeasuredSwr = true;
+        SettingsStore.Save(_settings);
+    }
+
     /// <summary>When the send in flight began, for its duration.</summary>
     private DateTime _sendStartedUtc;
 
@@ -965,8 +984,9 @@ public partial class MainWindowViewModel : ObservableObject
         // (HM-DEC-059).
         Transmit = new CwTransmitViewModel(
             BuildTransmitContext, OnSomethingWentOut, OnReadinessChanged,
-            OnSendEnabledChanged, OnSendStarted, OnSendFinished)
+            OnSendEnabledChanged, OnSendStarted, OnSendFinished, OnSwrMeasured)
         {
+            HasMeasuredSwr = settings.HasMeasuredSwr,
             YourCall = settings.Operator.Callsign,
             Qth = settings.Operator.Location,
         };
@@ -998,6 +1018,7 @@ public partial class MainWindowViewModel : ObservableObject
         }
 
         RebuildMenus();
+
 
         // A stored lens is the operator's own last answer rather than a guess,
         // so it is restored and inference never runs against it (HM-DEC-057).

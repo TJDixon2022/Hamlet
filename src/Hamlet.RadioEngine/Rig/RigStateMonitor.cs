@@ -325,6 +325,19 @@ public sealed class RigStateMonitor : IDisposable
         lock (_gate)
         {
             _state = _state.With(values);
+
+            // A RESTING RADIO HAS NO STANDING WAVE RATIO (HM-DEC-081). SWR comes
+            // from reflected power, so the moment the transmitter stops there is
+            // nothing to measure and the last figure is a reading of a moment
+            // that has passed. Leaving it sitting there would let a resting
+            // value be read as a current one, which is the exact shape of thing
+            // HM-DEC-050 exists to prevent.
+            if (!_state.IsTransmitting && _state[RigField.Swr].IsKnown)
+            {
+                _state = _state.With(RigValue.Unknown(
+                    RigField.Swr, "only measurable while transmitting"));
+            }
+
             next = _state;
         }
 

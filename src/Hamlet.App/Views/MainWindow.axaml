@@ -27,6 +27,67 @@
             <Setter Property="Background" Value="{StaticResource HmAmberDeepBrush}" />
             <Setter Property="Foreground" Value="White" />
         </Style>
+        <!-- THE SEND BUTTONS HAD NO STYLE AT ALL (HM-DEC-080), so they fell
+             through to the theme's default, which is a pale grey fill in every
+             state including the working one. Nothing was dimming them: grey WAS
+             their ordinary appearance, and a working button and a refused one
+             were near enough identical that the operator reasonably assumed the
+             worse of the two. Three sessions went looking for a state bug that
+             was not there.
+
+             Filled and colored per state now, from the app's own palette
+             (HM-DEC-012): amber for ready because amber is what this app already
+             uses for "do this", deeper amber for a message waiting on its
+             confirming press, green for one going out, and pale outline only for
+             a refusal. Grey is now the only thing that means unpressable, which
+             is what HM-DEC-079 ruled and what the theme was quietly
+             contradicting. -->
+        <Style Selector="Button.hm-send">
+            <Setter Property="Padding" Value="16,7" />
+            <Setter Property="CornerRadius" Value="6" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="MinWidth" Value="150" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+        </Style>
+
+        <Style Selector="Button.hm-send.ready /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource HmAmberBrush}" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="BorderThickness" Value="0" />
+        </Style>
+        <Style Selector="Button.hm-send.ready:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource HmAmberDeepBrush}" />
+            <Setter Property="Foreground" Value="White" />
+        </Style>
+
+        <Style Selector="Button.hm-send.armed /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource HmAmberDeepBrush}" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="BorderThickness" Value="0" />
+        </Style>
+        <Style Selector="Button.hm-send.armed:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource HmAmberDeepBrush}" />
+            <Setter Property="Foreground" Value="White" />
+        </Style>
+
+        <Style Selector="Button.hm-send.sending /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource HmGreenBrush}" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="BorderThickness" Value="0" />
+        </Style>
+        <Style Selector="Button.hm-send.sending:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource HmGreenBrush}" />
+            <Setter Property="Foreground" Value="White" />
+        </Style>
+
+        <!-- The one state grey is for. -->
+        <Style Selector="Button.hm-send.refused /template/ ContentPresenter">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="{StaticResource HmTextMutedBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource HmSlateEdgeBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+        </Style>
+
         <Style Selector="Button.hm-band">
             <Setter Property="Background" Value="White" />
             <Setter Property="Foreground" Value="{StaticResource HmTextPrimaryBrush}" />
@@ -717,24 +778,44 @@
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
 
-                                <!-- What stands in the way, read before the
-                                     press rather than discovered at the moment
-                                     of keying. -->
-                                <Border Background="{StaticResource HmAmberTintBrush}"
-                                        BorderBrush="{StaticResource HmAmberEdgeBrush}"
-                                        BorderThickness="1" CornerRadius="6"
-                                        Padding="10,7"
-                                        IsVisible="{Binding IsRefusal}">
-                                    <StackPanel Spacing="2">
-                                        <ctl:GlossaryTextControl
-                                            Text="{Binding Status}"
-                                            FontSize="12" LineSpacing="1.4"
-                                            Foreground="{StaticResource HmAmberDeepBrush}" />
-                                        <TextBlock Text="{Binding Citation}" FontSize="10"
-                                                   IsVisible="{Binding Citation,
-                                                       Converter={x:Static ctl:PrivilegeToneConverter.NotEmpty}}"
-                                                   Foreground="{StaticResource HmTextMutedBrush}" />
-                                    </StackPanel>
+                                <!-- RESERVED SPACE, NEVER APPEARING SPACE
+                                     (HM-DEC-080). This block is always here and
+                                     only its content and its color change. It
+                                     used to come and go as the transmit line
+                                     toggled, and every appearance reflowed
+                                     everything below it, so the panel jumped
+                                     several times a second at exactly the moment
+                                     the operator was watching it hardest.
+
+                                     The abort lives inside it for the same
+                                     reason: a control that appears beside the
+                                     thing it stops would move the thing it
+                                     stops. -->
+                                <Border BorderThickness="1" CornerRadius="6"
+                                        Padding="10,7" MinHeight="54"
+                                        Background="{Binding StatusBackground}"
+                                        BorderBrush="{Binding StatusEdge}">
+                                    <Grid ColumnDefinitions="*,Auto"
+                                          VerticalAlignment="Center">
+                                        <StackPanel Grid.Column="0" Spacing="2"
+                                                    Margin="0,0,8,0"
+                                                    VerticalAlignment="Center">
+                                            <ctl:GlossaryTextControl
+                                                Text="{Binding Status}"
+                                                FontSize="12" LineSpacing="1.4"
+                                                Foreground="{StaticResource HmTextPrimaryBrush}" />
+                                            <TextBlock Text="{Binding Citation}" FontSize="10"
+                                                       TextWrapping="Wrap"
+                                                       Foreground="{StaticResource HmTextMutedBrush}" />
+                                        </StackPanel>
+
+                                        <Button Grid.Column="1" Content="Stop sending"
+                                                VerticalAlignment="Center"
+                                                IsVisible="{Binding IsSending}"
+                                                Command="{Binding AbortCommand}"
+                                                Background="{StaticResource HmAmberDeepBrush}"
+                                                Foreground="White" Padding="16,6" />
+                                    </Grid>
                                 </Border>
 
                                 <Grid ColumnDefinitions="*,Auto">
@@ -812,6 +893,11 @@
                                                                        Foreground="{Binding EdgeBrush}" />
                                                         </StackPanel>
                                                         <Button Grid.Column="1"
+                                                                Classes="hm-send"
+                                                                Classes.ready="{Binding LooksReady}"
+                                                                Classes.armed="{Binding LooksArmed}"
+                                                                Classes.sending="{Binding LooksSending}"
+                                                                Classes.refused="{Binding LooksRefused}"
                                                                 Content="{Binding ButtonLabel}"
                                                                 FontSize="12"
                                                                 VerticalAlignment="Center"
@@ -868,23 +954,22 @@
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
 
-                                <!-- The abort, visible the whole time anything
-                                     is going out, and it awaits nothing. -->
-                                <StackPanel Orientation="Horizontal" Spacing="8"
-                                            IsVisible="{Binding IsSending}">
-                                    <Button Content="Stop sending"
-                                            Command="{Binding AbortCommand}"
-                                            Background="{StaticResource HmAmberDeepBrush}"
-                                            Foreground="White" Padding="16,6" />
-                                    <TextBlock Text="going out now" FontSize="12"
-                                               VerticalAlignment="Center"
-                                               Foreground="{StaticResource HmTextMutedBrush}" />
-                                </StackPanel>
 
-                                <TextBlock Text="{Binding Status}" FontSize="11"
-                                           TextWrapping="Wrap"
-                                           IsVisible="{Binding !IsRefusal}"
-                                           Foreground="{StaticResource HmTextMutedBrush}" />
+                                <!-- WHAT THE METER SAID DURING THE SEND
+                                     (HM-DEC-081). Only after one, only when
+                                     something was measured, and it never says
+                                     what is connected. -->
+                                <Border Background="{StaticResource HmAmberTintBrush}"
+                                        BorderBrush="{StaticResource HmAmberEdgeBrush}"
+                                        BorderThickness="1" CornerRadius="6"
+                                        Padding="10,7"
+                                        IsVisible="{Binding SwrNote,
+                                            Converter={x:Static ctl:PrivilegeToneConverter.NotEmpty}}">
+                                    <ctl:GlossaryTextControl Text="{Binding SwrNote}"
+                                        FontSize="12" LineSpacing="1.4"
+                                        Foreground="{StaticResource HmAmberDeepBrush}" />
+                                </Border>
+
 
                                 <TextBlock Text="{Binding SpeedOffer}" FontSize="11"
                                            TextWrapping="Wrap"
