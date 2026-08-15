@@ -2,6 +2,27 @@ using Hamlet.RadioEngine.Bands;
 
 namespace Hamlet.RadioEngine.Explore;
 
+/// <summary>How Hamlet came to know which station was there (HM-DEC-073).</summary>
+/// <remarks>
+/// AN IDENTIFICATION FROM HAMLET'S OWN DECODER AND ONE FROM A SPOT FEED ARE
+/// DIFFERENT FACTS WITH DIFFERENT RELIABILITY, and blurring them would let the
+/// weaker one borrow the stronger one's authority. The decoder heard the
+/// callsign itself, here, now, every character solid. A feed is a report from
+/// somebody else's receiver, minutes ago, about a frequency that may since have
+/// changed hands.
+/// </remarks>
+public enum StationSource
+{
+    /// <summary>Nobody identified a station.</summary>
+    None,
+
+    /// <summary>Hamlet's own decoder read the callsign off the air.</summary>
+    Decoder,
+
+    /// <summary>A spot feed reported it and the operator went there.</summary>
+    SpotFeed,
+}
+
 /// <summary>Somewhere the operator stopped, and who was there if anybody knew
 /// (HM-DEC-072).</summary>
 /// <param name="FrequencyHz">Where it is.</param>
@@ -13,13 +34,18 @@ namespace Hamlet.RadioEngine.Explore;
 /// <param name="BandName">Which band, e.g. "40 m".</param>
 /// <param name="Neighborhood">What the map said lives there, or "".</param>
 /// <param name="VisitedUtc">When the visit was recorded.</param>
+/// <param name="Source">
+/// How the station came to be known, or <see cref="StationSource.None"/>
+/// (HM-DEC-073).
+/// </param>
 public sealed record RecentStation(
     long FrequencyHz,
     string Station,
     string Mode,
     string BandName,
     string Neighborhood,
-    DateTime VisitedUtc)
+    DateTime VisitedUtc,
+    StationSource Source = StationSource.None)
 {
     /// <summary>The frequency as the app writes it, e.g. "7.030".</summary>
     public string FrequencyLabel
@@ -27,7 +53,28 @@ public sealed record RecentStation(
             "0.000", System.Globalization.CultureInfo.InvariantCulture);
 
     /// <summary>True when a station was actually identified here.</summary>
-    public bool IsIdentified => Station.Length > 0;
+    /// <remarks>
+    /// A name with no provenance is not an identification (HM-DEC-073). Hamlet
+    /// has to be able to say where a fact came from before it may show it as
+    /// one, so the two conditions are one property and nothing can read the
+    /// name without meeting both.
+    /// </remarks>
+    public bool IsIdentified => Station.Length > 0 && Source != StationSource.None;
+
+    /// <summary>
+    /// Where the identification came from, in the operator's words, or "".
+    /// </summary>
+    /// <remarks>
+    /// Shown wherever the station is (HM-DEC-073). "Hamlet heard this" and
+    /// "somebody's receiver reported this a few minutes ago" are not the same
+    /// claim and the surface must not let them look like it.
+    /// </remarks>
+    public string Provenance => Source switch
+    {
+        StationSource.Decoder => "Hamlet read this callsign off the air here",
+        StationSource.SpotFeed => "reported by a spot feed, not heard by Hamlet",
+        _ => "",
+    };
 
     /// <summary>
     /// What the entry reads as: a station where one was identified, and a place
@@ -145,20 +192,36 @@ public static class RecentStations
     /// <summary>Build an entry from where the operator has been sitting.</summary>
     /// <param name="frequencyHz">The frequency.</param>
     /// <param name="station">The callsign if one was identified, or null.</param>
+    /// <param name="source">How it came to be known (HM-DEC-073).</param>
     /// <param name="mode">The mode, or "".</param>
     /// <param name="here">The neighborhood, or null.</param>
     /// <param name="nowUtc">The moment.</param>
     /// <returns>The entry.</returns>
     public static RecentStation From(
         long frequencyHz, string? station, string? mode, Neighborhood? here,
-        DateTime nowUtc)
-        => new(
+        DateTime nowUtc, StationSource source = StationSource.None)
+    {
+        var call = (station ?? "").Trim().ToUpperInvariant();
+
+        // A NAME WITHOUT A SOURCE IS NOT KEPT AT ALL (HM-DEC-073). Anything
+        // that cannot say where it learned a callsign has not identified one,
+        // and dropping it here means no surface downstream has to remember to
+        // check.
+        if (call.Length == 0 || source == StationSource.None)
+        {
+            call = "";
+            source = StationSource.None;
+        }
+
+        return new RecentStation(
             frequencyHz,
-            (station ?? "").Trim().ToUpperInvariant(),
+            call,
             (mode ?? "").Trim(),
             BandPlan.BandFor(frequencyHz)?.Name ?? "",
             here?.Name ?? "",
-            nowUtc);
+            nowUtc,
+            source);
+    }
 
     /// <summary>
     /// Take a visit into the list, most recent first.

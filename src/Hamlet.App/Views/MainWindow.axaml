@@ -276,9 +276,21 @@
                                   PlaceholderText="recent"
                                   MinWidth="180" FontSize="12"
                                   IsVisible="{Binding HasRecent}">
+                            <!-- PROVENANCE TRAVELS WITH THE NAME (HM-DEC-073).
+                                 A callsign Hamlet read off the air and one a
+                                 spot feed reported are different facts, and a
+                                 line that showed only the name would let the
+                                 weaker one borrow the stronger one's
+                                 authority. -->
                             <ComboBox.ItemTemplate>
                                 <DataTemplate x:DataType="explore:RecentStation">
-                                    <TextBlock Text="{Binding Label}" />
+                                    <StackPanel Spacing="0">
+                                        <TextBlock Text="{Binding Label}" />
+                                        <TextBlock Text="{Binding Provenance}"
+                                                   FontSize="10"
+                                                   IsVisible="{Binding IsIdentified}"
+                                                   Foreground="{StaticResource HmTextMutedBrush}" />
+                                    </StackPanel>
                                 </DataTemplate>
                             </ComboBox.ItemTemplate>
                         </ComboBox>

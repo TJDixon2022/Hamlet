@@ -18,7 +18,9 @@ public sealed class RecentStationTests
 
     private static RecentStation Visit(
         long hz, string station = "", DateTime? at = null)
-        => RecentStations.From(hz, station, "CW", null, at ?? Now);
+        => RecentStations.From(
+            hz, station, "CW", null, at ?? Now,
+            station.Length > 0 ? StationSource.Decoder : StationSource.None);
 
     // ---- Dwell, not landing -------------------------------------------
 
@@ -197,7 +199,8 @@ public sealed class RecentStationTests
     [Fact]
     public void AnEntryWithAStationReadsAsAStation()
     {
-        var named = RecentStations.From(7_030_000, "w1aw", "CW", null, Now);
+        var named = RecentStations.From(
+            7_030_000, "w1aw", "CW", null, Now, StationSource.Decoder);
 
         Assert.True(named.IsIdentified);
         Assert.Equal("W1AW", named.Station);
@@ -225,6 +228,43 @@ public sealed class RecentStationTests
         Assert.DoesNotContain("W1AW", list[0].Label, StringComparison.Ordinal);
     }
 
+    /// <remarks>
+    /// Proves HM-DEC-073: a name Hamlet cannot say the origin of is not an
+    /// identification. Provenance is not decoration on a fact, it is half of
+    /// what makes it one, so the two conditions are inseparable and no surface
+    /// downstream has to remember to check.
+    /// </remarks>
+    [Fact]
+    public void ANameWithNoProvenanceIsNotAnIdentification()
+    {
+        var bare = RecentStations.From(
+            7_030_000, "W1AW", "CW", null, Now, StationSource.None);
+
+        Assert.False(bare.IsIdentified);
+        Assert.Equal("", bare.Station);
+        Assert.Equal("", bare.Provenance);
+        Assert.DoesNotContain("W1AW", bare.Label, StringComparison.Ordinal);
+    }
+
+    /// <remarks>
+    /// Proves HM-DEC-073: the two sources say different things about
+    /// themselves, since blurring them would let a spot report borrow the
+    /// authority of something Hamlet actually heard.
+    /// </remarks>
+    [Fact]
+    public void TheTwoSourcesDoNotSoundAlike()
+    {
+        var heard = RecentStations.From(
+            7_030_000, "W1AW", "CW", null, Now, StationSource.Decoder);
+        var reported = RecentStations.From(
+            7_030_000, "W1AW", "CW", null, Now, StationSource.SpotFeed);
+
+        Assert.NotEqual(heard.Provenance, reported.Provenance);
+        Assert.Contains("Hamlet", heard.Provenance, StringComparison.Ordinal);
+        Assert.Contains("not heard by Hamlet", reported.Provenance,
+            StringComparison.Ordinal);
+    }
+
     // ---- Starring ------------------------------------------------------
 
     /// <remarks>
@@ -240,7 +280,8 @@ public sealed class RecentStationTests
             "FT8 city", "FT8", 14_070_000, 14_099_000,
             "", "", 14_074_000, ModeFamily.Digital);
 
-        var entry = RecentStations.From(14_074_000, "W1AW", "USB-D", hood, Now);
+        var entry = RecentStations.From(
+            14_074_000, "W1AW", "USB-D", hood, Now, StationSource.SpotFeed);
 
         var starred = RecentStations.ToFavorite(entry, hood, Now);
         var direct = Favorites.From(14_074_000, "USB-D", hood, Now);
@@ -259,7 +300,8 @@ public sealed class RecentStationTests
     [Fact]
     public void StarringDoesNotNameTheFavoriteAfterWhoeverWasThere()
     {
-        var entry = RecentStations.From(7_030_000, "W1AW", "CW", null, Now);
+        var entry = RecentStations.From(
+            7_030_000, "W1AW", "CW", null, Now, StationSource.Decoder);
 
         var starred = RecentStations.ToFavorite(entry, null, Now);
 

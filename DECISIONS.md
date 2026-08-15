@@ -4,6 +4,63 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-073
+date: 2026-08-15
+refs: src/Hamlet.RadioEngine/Cw/CallsignResolver.cs, src/Hamlet.RadioEngine/Explore/RecentStation.cs, tests/Hamlet.RadioEngine.Tests/Cw/CallsignResolverTests.cs, HM-DEC-048, HM-DEC-072
+---
+
+**Hamlet reads callsigns off the air, and refuses to nearly read one.** A claim
+needs two things and both are required: the right structural position, and every
+character solid.
+
+WHY THIS IS A PRIME-DIRECTIVE PROBLEM RATHER THAN A FEATURE (§0.0). The decoder
+already marks per-character confidence: solid where sure, dimmed where not,
+blocked where unresolved (HM-DEC-048). A callsign extracted from text carrying a
+dimmed or blocked character is a guess wearing the costume of an identification.
+`KC3QIS` with one uncertain character is also a plausible reading of other real
+callsigns belonging to other people. A wrong callsign in front of the operator is
+worse than no callsign, and worse still on the day he uses it to decide whether
+somebody answered him.
+
+STRUCTURE. A claim is made only where the ritual puts a callsign. The token after
+`DE` is the station transmitting. The token before `DE` is who they are calling,
+which is the whole of how Hamlet can tell that somebody is answering this
+operator rather than calling anybody. The token immediately before a closing
+prosign is the station signing, since nobody puts anything else there. It reads
+the ritual the app already models rather than building a second description of
+it. **A callsign-shaped string in loose text is not claimed**, however convincing
+it looks, because the shape of a callsign is also the shape of a signal report
+with a letter in it and half the abbreviations in Morse.
+
+CLEANLINESS. Every character of the token must have come back high confidence.
+One dimmed character or one block and nothing is claimed. **No partial claim, no
+most-likely completion, no confidence-marked callsign**, because a callsign shown
+as uncertain still gets read as fact and acted on. A dimmed character elsewhere
+in the transmission does not stop a clean callsign being claimed: the rule is
+about the callsign and not about the noise around it, and refusing on any noise
+anywhere would make this useless on exactly the signals it exists for.
+
+EVERYTHING ELSE STAYS VISIBLE. The terminal shows all of it as decoded text with
+its existing marking. Nothing is hidden and nothing is asserted, and saying
+nothing about a transmission is the ordinary answer rather than a failure.
+
+PROVENANCE IS HALF OF WHAT MAKES IT A FACT, so it is inseparable from the name.
+A callsign Hamlet read off the air, here, now, every character solid, and one a
+spot feed reported minutes ago about a frequency that may since have changed
+hands are different facts with different reliability. `RecentStation.IsIdentified`
+is false unless the source is known, so a name whose origin Hamlet cannot state
+is not shown at all and no surface downstream has to remember to check. Both
+surfaces that show a station show where it came from. Where the decoder and a
+feed both have an answer, the decoder wins, because it is the one that actually
+heard it.
+
+A PROFILE WRITTEN BEFORE THIS reads a name with no recorded source as a spot
+feed, because that was the only way a name could get into the file at the time.
+That is a fact about the history of the file rather than a guess about the entry.
+
+RECEIVE ONLY. Nothing here touches the transmit path.
+
+---
 id: HM-DEC-072
 date: 2026-08-14
 refs: src/Hamlet.RadioEngine/Explore/RecentStation.cs, src/Hamlet.App/ViewModels/TuneMenuItem.cs, src/Hamlet.App/ViewModels/FavoritesViewModel.cs, tests/Hamlet.RadioEngine.Tests/Explore/RecentStationTests.cs, HM-DEC-060, HM-DEC-070

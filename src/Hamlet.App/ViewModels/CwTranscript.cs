@@ -33,8 +33,20 @@ public sealed class CwTranscript
     /// </remarks>
     public const int MaximumCharacters = 4_000;
 
+    /// <summary>
+    /// How far back the callsign resolver can look (HM-DEC-073).
+    /// </summary>
+    /// <remarks>
+    /// A couple of hundred characters is several overs at any speed, which is
+    /// far more than a callsign needs and short enough that the resolver never
+    /// reaches back into a previous contact. The drained queue cannot serve
+    /// this, because the control consumes it as it draws.
+    /// </remarks>
+    public const int RecentCharacters = 240;
+
     private readonly object _gate = new();
     private readonly Queue<CwCharacter> _pending = new();
+    private readonly Queue<CwCharacter> _recent = new();
     private readonly StringBuilder _text = new();
 
     private int _version;
@@ -76,7 +88,13 @@ public sealed class CwTranscript
         lock (_gate)
         {
             _pending.Enqueue(character);
+            _recent.Enqueue(character);
             _text.Append(character.Text);
+
+            while (_recent.Count > RecentCharacters)
+            {
+                _recent.Dequeue();
+            }
 
             if (_text.Length > MaximumCharacters * 2)
             {
@@ -107,12 +125,31 @@ public sealed class CwTranscript
         }
     }
 
+    /// <summary>
+    /// The last few characters, for the callsign resolver (HM-DEC-073).
+    /// </summary>
+    /// <returns>A copy, oldest first, safe to read from any thread.</returns>
+    /// <remarks>
+    /// A copy rather than the queue, because the resolver runs on the UI thread
+    /// and the decoder appends from the audio thread. Handing out the live
+    /// collection would be a race that shows up as a crash on the one evening
+    /// somebody is actually using it.
+    /// </remarks>
+    public IReadOnlyList<CwCharacter> Recent()
+    {
+        lock (_gate)
+        {
+            return _recent.ToArray();
+        }
+    }
+
     /// <summary>Throw everything away and start again.</summary>
     public void Clear()
     {
         lock (_gate)
         {
             _pending.Clear();
+            _recent.Clear();
             _text.Clear();
             _version++;
         }

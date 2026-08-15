@@ -740,9 +740,19 @@ public partial class MainWindowViewModel : ObservableObject
 
         foreach (var saved in settings.Recent)
         {
+            // A NAME WITH NO RECORDED SOURCE CAME FROM A SPOT FEED, because
+            // that was the only way one could get in before provenance existed
+            // (HM-DEC-073). That is a fact about the file rather than a guess
+            // about the entry, so nothing is invented by reading it that way.
+            var source = Enum.TryParse<StationSource>(saved.StationSource, out var parsed)
+                ? parsed
+                : saved.Station.Length > 0
+                    ? StationSource.SpotFeed
+                    : StationSource.None;
+
             Recent.Add(new RecentStation(
                 saved.FrequencyHz, saved.Station, saved.Mode, saved.BandName,
-                saved.Neighborhood, saved.VisitedUtc));
+                saved.Neighborhood, saved.VisitedUtc, source));
         }
 
         RebuildMenus();
@@ -2254,10 +2264,23 @@ public partial class MainWindowViewModel : ObservableObject
         }
 
         var here = Neighborhoods.FirstOrDefault(n => n.Contains(FrequencyHz));
-        var station = _arrivedOnHz == FrequencyHz ? _arrivedOnStation : "";
+
+        // HAMLET'S OWN EARS FIRST (HM-DEC-073). A callsign the decoder read off
+        // the air, here, with every character solid, is a stronger fact than a
+        // report from somebody else's receiver minutes ago about a frequency
+        // that may since have changed hands. Where both exist the decoder wins,
+        // and either way the surface says which one it was.
+        var station = CallsignResolver.StationHeard(Transcript.Recent());
+        var source = StationSource.Decoder;
+
+        if (station is null)
+        {
+            station = _arrivedOnHz == FrequencyHz ? _arrivedOnStation : "";
+            source = station.Length > 0 ? StationSource.SpotFeed : StationSource.None;
+        }
 
         var visit = RecentStations.From(
-            FrequencyHz, station, RigModeText, here, nowUtc);
+            FrequencyHz, station, RigModeText, here, nowUtc, source);
 
         var kept = RecentStations.Remember(Recent, visit);
 
@@ -2282,6 +2305,7 @@ public partial class MainWindowViewModel : ObservableObject
                 BandName = r.BandName,
                 Neighborhood = r.Neighborhood,
                 VisitedUtc = r.VisitedUtc,
+                StationSource = r.Source.ToString(),
             })
             .ToList();
 

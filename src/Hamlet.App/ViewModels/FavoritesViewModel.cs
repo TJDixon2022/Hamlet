@@ -115,6 +115,13 @@ public sealed partial class RecentRowViewModel : ObservableObject
 
             parts.Add($"you were here {Entry.VisitedUtc.ToLocalTime():d MMMM}");
 
+            // Where a station is named, how Hamlet knows travels with it
+            // (HM-DEC-073).
+            if (Entry.IsIdentified)
+            {
+                parts.Add(Entry.Provenance);
+            }
+
             return string.Join(" · ", parts);
         }
     }

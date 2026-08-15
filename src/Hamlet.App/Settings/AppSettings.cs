@@ -487,6 +487,18 @@ public sealed class SavedRecentStation
 
     /// <summary>When the visit was recorded.</summary>
     public DateTime VisitedUtc { get; set; }
+
+    /// <summary>
+    /// How the station came to be known (HM-DEC-073), as its name.
+    /// </summary>
+    /// <remarks>
+    /// Stored as a name rather than a number so somebody reading their own
+    /// settings file can see what it says. Absent in a profile written before
+    /// provenance existed, and those are read back as a spot feed, because that
+    /// was the only way a name could get in there at the time. That is a fact
+    /// about the history of the file rather than a guess about the entry.
+    /// </remarks>
+    public string StationSource { get; set; } = "";
 }
 
 /// <summary>One saved frequency, as settings.json holds it (HM-DEC-060).</summary>
