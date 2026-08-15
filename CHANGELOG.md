@@ -12,6 +12,25 @@ operator can see and use, patch fixes and polishes without adding one.
 
 ---
 
+## 1.3.0
+
+**Hamlet answers the question it was built for.**
+
+After every send it reports what happened link by link: the radio took the
+message, it keyed for this long, it made this much power into this match, this
+many skimmers were reporting on the band, and this many copied you. A station
+making no power and a band with nobody listening are different facts, and until
+now both came out as silence. The Po meter is read for the first time, which is
+the only proof that RF actually left the radio.
+
+Every number is measured or it is not shown, and nothing anywhere diagnoses the
+station.
+
+Also: sending no longer has a look of its own, and the notice about not being
+able to see the back of the radio is gone, replaced by a measurement.
+
+Rulings HM-DEC-082 and HM-DEC-083.
+
 ## 1.2.8
 
 **The send buttons stop looking grey when they work.**

@@ -741,6 +741,39 @@ public static class AppEvents
             worked ? TelemetryLevel.Info : TelemetryLevel.Warn);
     }
 
+    /// <summary>
+    /// The whole chain of one transmission, kept (HM-DEC-082).
+    /// </summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="brokeAt">Which link failed, or "none".</param>
+    /// <param name="keyedSeconds">How long it keyed, or null.</param>
+    /// <param name="powerReading">The Po meter's peak, or null.</param>
+    /// <param name="swrReading">The SWR meter's worst, or null.</param>
+    /// <param name="skimmers">How many were reporting, or null.</param>
+    /// <param name="reports">How many reported this operator.</param>
+    /// <remarks>
+    /// EVERY LINK, NOT JUST THE OUTCOME, so a later history of "times you were
+    /// heard" can be built from what is already on disk. A null stays null: a
+    /// meter that was not read and a meter that read zero are different facts and
+    /// the file has to keep them apart (§0.0). No text, as ever (HM-DEC-018).
+    /// </remarks>
+    public static void TransmitChain(
+        ITelemetry? telemetry, string brokeAt, double? keyedSeconds,
+        int? powerReading, int? swrReading, int? skimmers, int reports)
+        => telemetry?.Write(
+            TelemetryCategory.Rig, "transmit_chain",
+            new Dictionary<string, object?>
+            {
+                ["outcome"] = brokeAt == "none" ? "proceeded" : "degraded",
+                ["reason"] = brokeAt,
+                ["keyedSeconds"] = keyedSeconds is { } s ? Math.Round(s, 2) : null,
+                ["powerReading"] = powerReading,
+                ["swrReading"] = swrReading,
+                ["skimmersReporting"] = skimmers,
+                ["reports"] = reports,
+            },
+            brokeAt == "none" ? TelemetryLevel.Info : TelemetryLevel.Warn);
+
     private static IReadOnlyDictionary<string, object?> Merge(
         IReadOnlyDictionary<string, object?> a, IReadOnlyDictionary<string, object?> b)
     {

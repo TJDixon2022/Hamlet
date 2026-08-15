@@ -7,12 +7,15 @@ using Hamlet.RadioEngine.Rig;
 
 namespace Hamlet.App.ViewModels;
 
-/// <summary>What a send control is doing (HM-DEC-079).</summary>
+/// <summary>What a send control is doing (HM-DEC-079, HM-DEC-083).</summary>
 /// <remarks>
-/// THREE STATES, THREE APPEARANCES, AND ONLY ONE OF THEM IS GREY. Grey has one
-/// meaning in every interface anybody has ever used: you cannot press this.
-/// Spending it on three different things left it meaning nothing, and the
-/// operator correctly stopped trusting it.
+/// <para>GREY MEANS UNPRESSABLE, and that is the rule HM-DEC-079 settled. What
+/// changed is that sending is now one of the things you cannot press, so it
+/// wears the same look rather than one of its own: you cannot send while
+/// sending, which is self-explanatory, and the status text says what is
+/// happening (HM-DEC-083, Tim).</para>
+/// <para>Armed is the state that still needs its own appearance, because it is
+/// pressable and it is the press that matters.</para>
 /// </remarks>
 public enum SendState
 {
@@ -97,14 +100,20 @@ public sealed partial class SendButtonViewModel : ObservableObject
     private SendState _state = SendState.Ready;
 
     /// <summary>
-    /// True only when readiness refused, and the only thing grey may follow.
+    /// True when this control cannot be pressed, which is the only thing grey
+    /// follows.
     /// </summary>
     /// <remarks>
-    /// The style binds here rather than to a negation of something else, so a
-    /// future state cannot accidentally acquire the disabled look by being
-    /// "not ready" (HM-DEC-079). A test asserts armed and sending never set it.
+    /// <para>The style binds here rather than to a negation of something else,
+    /// so a future state cannot acquire the disabled look by being "not ready"
+    /// (HM-DEC-079).</para>
+    /// <para>SENDING IS NOW ONE OF THEM (HM-DEC-083). You cannot send while
+    /// sending, so the buttons go grey for the duration and the status block
+    /// says what is happening. The dedicated green treatment was solving a
+    /// problem the latch had already removed, and a state that needs its own
+    /// color to be understood is a state that has not been explained.</para>
     /// </remarks>
-    public bool LooksRefused => State == SendState.Refused;
+    public bool LooksRefused => State is SendState.Refused or SendState.Sending;
 
     /// <summary>True when this is a plain, pressable send button.</summary>
     /// <remarks>
@@ -120,7 +129,13 @@ public sealed partial class SendButtonViewModel : ObservableObject
     /// <summary>True when this one is waiting for its confirming press.</summary>
     public bool LooksArmed => State == SendState.Armed;
 
-    /// <summary>True while this one is going out.</summary>
+    /// <summary>
+    /// True while this one is going out.
+    /// </summary>
+    /// <remarks>
+    /// Kept so the record and the tests can tell sending from refused, and no
+    /// longer bound to a style of its own (HM-DEC-083).
+    /// </remarks>
     public bool LooksSending => State == SendState.Sending;
 
     /// <summary>What the button says right now.</summary>
@@ -138,12 +153,7 @@ public sealed partial class SendButtonViewModel : ObservableObject
     };
 
     /// <summary>One line under the meaning, or "".</summary>
-    public string StateNote => State switch
-    {
-        SendState.Sending => "going out now",
-        SendState.Refused => "",
-        _ => "",
-    };
+    public string StateNote => "";
 
     /// <summary>
     /// How dim this control is. **One, unless readiness refused.**
@@ -164,12 +174,9 @@ public sealed partial class SendButtonViewModel : ObservableObject
     /// dial and for anything wanting attention. Green for sending, which is the
     /// decode family and reads as working.
     /// </remarks>
-    public Avalonia.Media.IBrush EdgeBrush => State switch
-    {
-        SendState.Armed => ArmedBrush,
-        SendState.Sending => Controls.InstrumentPalette.ConfidentBrush,
-        _ => Controls.InstrumentPalette.IdleBrush,
-    };
+    public Avalonia.Media.IBrush EdgeBrush => State == SendState.Armed
+        ? ArmedBrush
+        : Controls.InstrumentPalette.IdleBrush;
 
     /// <summary>The app's deep amber, which is what wants attention here.</summary>
     private static readonly Avalonia.Media.IBrush ArmedBrush =
@@ -249,6 +256,10 @@ public sealed partial class CwTransmitViewModel : ObservableObject
     private readonly Action<string, TransmitContext>? _sendStarted;
     private readonly Action<string, TransmitContext, TransmitOutcome?>? _sendFinished;
     private readonly Action? _swrMeasured;
+    private readonly Func<double?>? _keyedSeconds;
+    private readonly Func<int?>? _skimmersListening;
+    private readonly Func<string>? _bandName;
+    private readonly Action<TransmitEvidence>? _chainReported;
 
     /// <summary>
     /// The last verdict written to the record, so an unchanged one is not
@@ -293,6 +304,15 @@ public sealed partial class CwTransmitViewModel : ObservableObject
     /// Called the first time a send produces a real SWR reading, so the fact can
     /// be persisted (HM-DEC-081).
     /// </param>
+    /// <param name="keyedSeconds">How long the radio keyed, or null.</param>
+    /// <param name="skimmersListening">
+    /// How many skimmers were reporting on this band, or null when it could not
+    /// be obtained (HM-DEC-082).
+    /// </param>
+    /// <param name="bandName">Which band, for the sentence.</param>
+    /// <param name="chainReported">
+    /// Called with everything measured about the send, so it can be kept.
+    /// </param>
     public CwTransmitViewModel(
         Func<TransmitContext> context,
         Action<SendOption>? wentOut = null,
@@ -300,7 +320,11 @@ public sealed partial class CwTransmitViewModel : ObservableObject
         Action<bool, CwReadiness?>? sendEnabledChanged = null,
         Action<string, TransmitContext>? sendStarted = null,
         Action<string, TransmitContext, TransmitOutcome?>? sendFinished = null,
-        Action? swrMeasured = null)
+        Action? swrMeasured = null,
+        Func<double?>? keyedSeconds = null,
+        Func<int?>? skimmersListening = null,
+        Func<string>? bandName = null,
+        Action<TransmitEvidence>? chainReported = null)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _wentOut = wentOut;
@@ -309,6 +333,10 @@ public sealed partial class CwTransmitViewModel : ObservableObject
         _sendStarted = sendStarted;
         _sendFinished = sendFinished;
         _swrMeasured = swrMeasured;
+        _keyedSeconds = keyedSeconds;
+        _skimmersListening = skimmersListening;
+        _bandName = bandName;
+        _chainReported = chainReported;
         Options = new ObservableCollection<SendButtonViewModel>();
         Rebuild();
     }
@@ -459,6 +487,30 @@ public sealed partial class CwTransmitViewModel : ObservableObject
     private int? _swrDuringSend;
 
     /// <summary>
+    /// The power meter's representative reading during the send, or null.
+    /// </summary>
+    /// <remarks>
+    /// THE HIGHEST, NOT THE LAST AND NOT THE FIRST (HM-DEC-082). Both meters
+    /// settle at key-down, so the first sample is a startup artifact and the last
+    /// one lands as the transmitter drops. The peak across the send is the only
+    /// one of the three that describes what the radio was actually doing while it
+    /// was doing it. For SWR the peak is also the worst case, which is the number
+    /// worth telling somebody about; for power it is the true output rather than
+    /// a ramp.
+    /// </remarks>
+    private int? _powerDuringSend;
+
+    /// <summary>Whether the radio was seen to key at all during the send.</summary>
+    private bool _keyedDuringSend;
+
+    /// <summary>
+    /// The account of the last send, link by link (HM-DEC-082).
+    /// </summary>
+    public string ChainNote => _chainNote;
+
+    private string _chainNote = "";
+
+    /// <summary>
     /// True when a send would actually reach the air right now (HM-DEC-074).
     /// </summary>
     /// <remarks>
@@ -603,7 +655,7 @@ public sealed partial class CwTransmitViewModel : ObservableObject
         var context = _context();
 
         Notes.Clear();
-        foreach (var note in TransmitNotes.For(context.State, HasMeasuredSwr))
+        foreach (var note in TransmitNotes.For(context.State))
         {
             Notes.Add(note);
         }
@@ -639,6 +691,22 @@ public sealed partial class CwTransmitViewModel : ObservableObject
                 _swrDuringSend = _swrDuringSend is { } worst
                     ? Math.Max(worst, (int)level)
                     : (int)level;
+            }
+
+            // LINK 3: THE PROOF THAT RF LEFT THE RADIO (HM-DEC-082). A radio can
+            // key, acknowledge and produce nothing, and until this was sampled
+            // Hamlet's account stopped one link short of the only one that
+            // decides whether a station is broken or a band is quiet.
+            if (context.State[RigField.PowerOut] is { IsKnown: true, Number: { } watts })
+            {
+                _powerDuringSend = _powerDuringSend is { } peak
+                    ? Math.Max(peak, (int)watts)
+                    : (int)watts;
+            }
+
+            if (context.State.IsTransmitting)
+            {
+                _keyedDuringSend = true;
             }
 
             ApplyState();
@@ -778,6 +846,28 @@ public sealed partial class CwTransmitViewModel : ObservableObject
             _swrNote = SwrReport.Describe(_swrDuringSend);
             _swrHigh = SwrReport.IsHigh(_swrDuringSend);
 
+            // THE SENTENCE THIS APPLICATION EXISTS FOR (HM-DEC-082). Speaking
+            // into the void and speaking on the air with nobody listening are
+            // different facts, and until now they both came out as silence.
+            var evidence = new TransmitEvidence(
+                Acknowledged: outcome?.Result?.Worked == true,
+                KeyedSeconds: _keyedSeconds?.Invoke(),
+                PowerReading: _powerDuringSend,
+                SwrReading: _swrDuringSend,
+                Reports: 0,
+                SkimmersListening: _skimmersListening?.Invoke(),
+                BandName: _bandName?.Invoke() ?? "");
+
+            _chainNote = TransmitChain.Describe(evidence with
+            {
+                KeyedSeconds = evidence.KeyedSeconds
+                    ?? (_keyedDuringSend ? null : 0),
+            });
+
+            _chainReported?.Invoke(evidence);
+
+            OnPropertyChanged(nameof(ChainNote));
+
             if (_swrDuringSend is not null && !HasMeasuredSwr)
             {
                 HasMeasuredSwr = true;
@@ -785,6 +875,8 @@ public sealed partial class CwTransmitViewModel : ObservableObject
             }
 
             _swrDuringSend = null;
+            _powerDuringSend = null;
+            _keyedDuringSend = false;
 
             OnPropertyChanged(nameof(SwrNote));
             OnPropertyChanged(nameof(SwrIsHigh));

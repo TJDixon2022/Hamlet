@@ -1,4 +1,3 @@
-using Hamlet.App.Settings;
 using Hamlet.RadioEngine.Civ;
 using Hamlet.RadioEngine.Cw;
 using Hamlet.RadioEngine.Rig;
@@ -7,13 +6,16 @@ using Xunit;
 namespace Hamlet.App.Tests.ViewModels;
 
 /// <summary>
-/// The notice about the back of the radio retires on evidence (HM-DEC-081).
+/// The notice about the back of the radio is gone (HM-DEC-083).
 /// </summary>
 /// <remarks>
-/// It earns its place exactly once, before somebody's first transmission. After
-/// that it is a standing block of orange text above the controls that the
-/// operator has stopped reading, and a warning nobody reads is worse than none
-/// because it teaches everything near it to be ignored.
+/// <para>HM-DEC-081 retired it on evidence, which was the right shape and still
+/// one screen of standing prose too many. Tim asked for it to go and it has
+/// gone.</para>
+/// <para>What answers the question it was gesturing at is the chain report,
+/// which says what the power meter and the SWR meter actually read during the
+/// send. **A sentence with a number in it beats a paragraph admitting
+/// ignorance**, and that is the whole trade.</para>
 /// </remarks>
 public sealed class DummyLoadNoticeTests
 {
@@ -25,81 +27,47 @@ public sealed class DummyLoadNoticeTests
     });
 
     /// <remarks>
-    /// Proves HM-DEC-081: it is there before anything has been measured, which
-    /// is the one moment it is worth reading.
+    /// Proves HM-DEC-083: it is not shown, ever, in any state. A test rather
+    /// than an absence, so somebody reinstating it has to argue with this.
     /// </remarks>
     [Fact]
-    public void ItIsThereBeforeAnythingHasBeenMeasured()
-        => Assert.Contains(
-            TransmitNotes.WhatIsConnected,
-            TransmitNotes.For(State(), hasMeasured: false));
-
-    /// <remarks>
-    /// Proves HM-DEC-081: once a send has produced a real reading it is gone,
-    /// because by then Hamlet has measured something about the socket and the
-    /// operator has seen the number. Evidence rather than a counter.
-    /// </remarks>
-    [Fact]
-    public void ItIsGoneOnceASendHasMeasuredSomething()
+    public void TheNoticeIsNeverShown()
     {
-        var notes = TransmitNotes.For(State(), hasMeasured: true);
+        foreach (var state in new[]
+                 {
+                     RigState.Empty,
+                     State(),
+                     State().With(
+                         RigValue.Known(RigField.RfPower, 5, "5%", Now, "CI-V 14 0A")),
+                     State().With(
+                         RigValue.Known(RigField.RfPower, 99, "99%", Now, "CI-V 14 0A")),
+                 })
+        {
+            var notes = TransmitNotes.For(state);
 
-        Assert.DoesNotContain(TransmitNotes.WhatIsConnected, notes);
-        Assert.DoesNotContain(
-            notes, n => n.Contains("back of the radio", StringComparison.Ordinal));
+            Assert.DoesNotContain(
+                notes, n => n.Contains("back of the radio", StringComparison.Ordinal));
+            Assert.DoesNotContain(
+                notes, n => n.Contains("dummy load", StringComparison.OrdinalIgnoreCase));
+        }
     }
 
     /// <remarks>
-    /// Proves HM-DEC-081: the power line is unaffected either way. Retiring one
-    /// note must not take the others with it.
+    /// Proves HM-DEC-083: removing it took nothing else with it. The power line
+    /// is a consequence of a value Hamlet read and still earns its place.
     /// </remarks>
     [Fact]
-    public void RetiringItDoesNotTakeTheOtherNotesWithIt()
+    public void RemovingItLeavesTheMeasuredNotesAlone()
     {
         var quiet = State().With(
             RigValue.Known(RigField.RfPower, 5, "5%", Now, "CI-V 14 0A"));
 
-        var before = TransmitNotes.For(quiet, hasMeasured: false);
-        var after = TransmitNotes.For(quiet, hasMeasured: true);
+        var notes = TransmitNotes.For(quiet);
 
-        Assert.Equal(2, before.Count);
-        Assert.Single(after);
-        Assert.Contains("percent of its range", after[0], StringComparison.Ordinal);
-    }
+        Assert.Single(notes);
+        Assert.Contains("percent of its range", notes[0], StringComparison.Ordinal);
 
-    /// <remarks>
-    /// Proves HM-DEC-081: the fact survives a restart, so the note does not come
-    /// back the next evening and have to be dismissed by being ignored again.
-    /// </remarks>
-    [Fact]
-    public void TheFactSurvivesARestart()
-    {
-        var folder = Path.Combine(
-            Path.GetTempPath(), "hamlet-tests", Guid.NewGuid().ToString("N"));
-
-        try
-        {
-            var path = Path.Combine(folder, "settings.json");
-
-            Assert.False(new AppSettings().HasMeasuredSwr);
-
-            SettingsStore.SaveTo(new AppSettings { HasMeasuredSwr = true }, path);
-
-            Assert.True(SettingsStore.LoadFrom(path).HasMeasuredSwr);
-        }
-        finally
-        {
-            try
-            {
-                if (Directory.Exists(folder))
-                {
-                    Directory.Delete(folder, recursive: true);
-                }
-            }
-            catch (IOException)
-            {
-                // A leftover temp folder is not a test failure.
-            }
-        }
+        // And an ordinary radio says nothing at all rather than something bland.
+        Assert.Empty(TransmitNotes.For(State()));
     }
 }

@@ -522,6 +522,43 @@ public partial class MainWindowViewModel : ObservableObject
         SettingsStore.Save(_settings);
     }
 
+    /// <summary>
+    /// How many skimmers were reporting on this band, or null (HM-DEC-082).
+    /// </summary>
+    /// <remarks>
+    /// Null rather than zero when the feed is not answering, because an absent
+    /// number reads as zero to somebody who has been disappointed before, and
+    /// those are opposite facts about the evening.
+    /// </remarks>
+    private int? SkimmersOnThisBand()
+        => _rbn?.SkimmersReporting(
+            SelectedBand.Band.LowHz, SelectedBand.Band.HighHz);
+
+    /// <summary>
+    /// Everything measured about a send, kept with its record (HM-DEC-082).
+    /// </summary>
+    /// <param name="evidence">The chain.</param>
+    private void OnChainReported(TransmitEvidence evidence)
+    {
+        AppEvents.TransmitChain(
+            _telemetry,
+            TransmitChain.BrokeAt(evidence)?.ToString() ?? "none",
+            evidence.KeyedSeconds,
+            evidence.PowerReading,
+            evidence.SwrReading,
+            evidence.SkimmersListening,
+            evidence.Reports);
+
+        Decisions.Note(
+            "Transmit chain",
+            TransmitChain.BrokeAt(evidence)?.ToString().ToLowerInvariant() ?? "whole",
+            TransmitChain.BrokeAt(evidence) is null
+                ? Outcome.Proceeded
+                : Outcome.Degraded,
+            TransmitChain.Describe(evidence),
+            DateTime.UtcNow);
+    }
+
     /// <summary>When the send in flight began, for its duration.</summary>
     private DateTime _sendStartedUtc;
 
@@ -984,9 +1021,14 @@ public partial class MainWindowViewModel : ObservableObject
         // (HM-DEC-059).
         Transmit = new CwTransmitViewModel(
             BuildTransmitContext, OnSomethingWentOut, OnReadinessChanged,
-            OnSendEnabledChanged, OnSendStarted, OnSendFinished, OnSwrMeasured)
+            OnSendEnabledChanged, OnSendStarted, OnSendFinished, OnSwrMeasured,
+            () => _sendStartedUtc == default
+                ? null
+                : (DateTime.UtcNow - _sendStartedUtc).TotalSeconds,
+            SkimmersOnThisBand,
+            () => SelectedBand.Band.Name,
+            OnChainReported)
         {
-            HasMeasuredSwr = settings.HasMeasuredSwr,
             YourCall = settings.Operator.Callsign,
             Qth = settings.Operator.Location,
         };

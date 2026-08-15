@@ -72,6 +72,19 @@ public enum RigField
     /// </remarks>
     Swr,
 
+    /// <summary>
+    /// The RF output power meter, which only means anything while transmitting
+    /// (HM-DEC-082).
+    /// </summary>
+    /// <remarks>
+    /// NOT THE SAME THING AS <see cref="RfPower"/>. That is where the power
+    /// control is set, which is a knob position and says nothing about what came
+    /// out. This is the meter, and it is the only evidence Hamlet has that RF
+    /// actually left the radio: a transceiver can key, acknowledge, and produce
+    /// nothing at all.
+    /// </remarks>
+    PowerOut,
+
     /// <summary>Transmit power.</summary>
     RfPower,
 

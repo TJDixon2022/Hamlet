@@ -103,31 +103,19 @@ public static class TransmitNotes
     /// </summary>
     /// <param name="state">What Hamlet knows.</param>
     /// <returns>The lines, in reading order, possibly just the one.</returns>
-    /// <param name="hasMeasured">
-    /// True once a send on this installation has produced a real SWR reading
-    /// (HM-DEC-081).
-    /// </param>
-    public static IReadOnlyList<string> For(RigState state, bool hasMeasured = false)
+    public static IReadOnlyList<string> For(RigState state)
     {
         ArgumentNullException.ThrowIfNull(state);
 
         var said = new List<string>();
 
-        // IT EARNS ITS PLACE EXACTLY ONCE, BEFORE THE FIRST TRANSMISSION
-        // (HM-DEC-081). After that it is a standing block of orange text above
-        // the controls that the operator has stopped reading, and a warning
-        // nobody reads is worse than none because it teaches everything near it
-        // to be ignored.
-        //
-        // The retirement condition is evidence rather than a counter: once a
-        // send has produced a real standing wave ratio, Hamlet has measured
-        // something about what is on the socket and the operator has seen the
-        // number. It stays reachable in Help for somebody who changes stations.
-        if (!hasMeasured)
-        {
-            said.Add(WhatIsConnected);
-        }
-
+        // THE NOTICE ABOUT THE BACK OF THE RADIO IS GONE (HM-DEC-083, Tim).
+        // HM-DEC-081 retired it on evidence, which was the right shape and still
+        // one screen of standing prose too many. The chain report answers the
+        // question that notice was gesturing at, with a measurement rather than
+        // a caveat: it says what the power meter and the SWR meter read during
+        // the send. A sentence with a number in it beats a paragraph admitting
+        // ignorance.
         var power = PowerNote(state);
 
         if (power.Length > 0)

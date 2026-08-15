@@ -153,6 +153,20 @@ public static class CivReads
         RigField.Swr, 0x15, new byte[] { 0x12 }, "19-3",
         "0000=1.0, 0048=1.5, 0080=2.0, 0120=3.0");
 
+    /// <summary>
+    /// Read the RF output power meter (HM-DEC-082).
+    /// </summary>
+    /// <remarks>
+    /// THE PROOF THAT RF LEFT THE RADIO, which nothing else in the model can
+    /// give. A transceiver can take the command, acknowledge it, key, and
+    /// produce no power at all, and until this was read Hamlet's account of a
+    /// transmission stopped one link short of the only one that matters. Like
+    /// the SWR meter it means nothing while receiving.
+    /// </remarks>
+    public static CivRead PowerOut { get; } = new(
+        RigField.PowerOut, 0x15, new byte[] { 0x11 }, "19-3",
+        "0000=0%, 0143=50%, 0213=100%");
+
     /// <summary>Read the S-meter.</summary>
     public static CivRead SMeter { get; } = new(
         RigField.SMeter, 0x15, new byte[] { 0x02 }, "19-3",
@@ -307,7 +321,7 @@ public static class CivReads
     public static IReadOnlyList<CivRead> All { get; } = new[]
     {
         Frequency, ModeAndFilter, ModeDataAndFilter, FilterWidth, SMeter,
-        TransmitStatus, Overflow, Swr,
+        TransmitStatus, Overflow, Swr, PowerOut,
         RfPower, RfGain, Squelch, SquelchStatus, Agc, Preamp, Attenuator,
         NoiseBlanker, NoiseBlankerLevel, NoiseReduction, NoiseReductionLevel,
         AutoNotch, ManualNotch, BreakIn, KeyerSpeed, CwPitch,

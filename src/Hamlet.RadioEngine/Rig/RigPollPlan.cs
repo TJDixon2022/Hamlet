@@ -97,6 +97,7 @@ public static class RigPollPlan
         // what makes it honest is that it is marked unknown the moment the
         // transmitter stops rather than being left to look current.
         RigField.Swr => RigPollRate.Live,
+        RigField.PowerOut => RigPollRate.Live,
         RigField.SquelchStatus => RigPollRate.Live,
         RigField.Overflow => RigPollRate.Live,
 

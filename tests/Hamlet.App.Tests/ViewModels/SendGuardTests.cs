@@ -328,22 +328,40 @@ public sealed class SendGuardTests
     }
 
     /// <remarks>
-    /// Proves HM-DEC-079: sending is an active state and never wears the
-    /// disabled look. It is working, which is the opposite of what grey says.
+    /// Proves HM-DEC-083, which supersedes HM-DEC-079 on this point at Tim's
+    /// direction: **sending has no look of its own.** You cannot send while
+    /// sending, so the buttons go grey for the duration and the status block
+    /// says what is happening. The dedicated green treatment was solving a
+    /// problem the latch had already removed, and a state that needs its own
+    /// color to be understood has not been explained.
+    ///
+    /// Armed is the state that still needs one, because it is pressable and the
+    /// press is the point.
     /// </remarks>
     [Fact]
-    public void SendingIsActiveAndNeverLooksDisabled()
+    public void SendingWearsTheDisabledLookAndArmedDoesNot()
     {
-        var button = new SendButtonViewModel(
+        var sending = new SendButtonViewModel(
             new SendOption(ContactStage.Calling, "Call CQ", "CQ DE KC3QIS K",
                 "Calling anyone.", ""))
         {
             State = SendState.Sending,
         };
 
-        Assert.False(button.LooksRefused);
-        Assert.Equal(1.0, button.Dimmed);
-        Assert.Equal("Sending…", button.ButtonLabel);
+        Assert.True(sending.LooksRefused);
+        Assert.True(sending.LooksSending);
+        Assert.Equal("Sending…", sending.ButtonLabel);
+
+        var armed = new SendButtonViewModel(
+            new SendOption(ContactStage.Calling, "Call CQ", "CQ DE KC3QIS K",
+                "Calling anyone.", ""))
+        {
+            State = SendState.Armed,
+        };
+
+        Assert.False(armed.LooksRefused);
+        Assert.Equal(1.0, armed.Dimmed);
+        Assert.Equal("Press again to send", armed.ButtonLabel);
     }
 
     // ---- Sending is a state, not a per-element sample ---------------------
@@ -383,8 +401,10 @@ public sealed class SendGuardTests
             panel.Refresh();
             seen.Add(button.State);
 
-            // Whatever the transmit line is doing, this control is not grey.
-            Assert.False(button.LooksRefused);
+            // Whatever the transmit line is doing, this control holds one
+            // state for the whole send (HM-DEC-079's latch), and that state is
+            // sending rather than a per-element sample.
+            Assert.True(button.LooksSending);
             Assert.True(panel.IsSending);
         }
 

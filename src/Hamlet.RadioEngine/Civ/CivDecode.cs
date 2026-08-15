@@ -70,6 +70,9 @@ public static class CivDecode
             case RigField.Swr:
                 return One(DecodeSwr(payload, atUtc, source));
 
+            case RigField.PowerOut:
+                return One(DecodePowerOut(payload, atUtc, source));
+
             case RigField.TransmitStatus:
                 return One(DecodeChoice(
                     field, payload, atUtc, source, "receiving", "transmitting"));
@@ -268,6 +271,23 @@ public static class CivDecode
 
         return RigValue.Known(
             RigField.Swr, level, CivSwr.Describe(level), atUtc, source);
+    }
+
+    /// <summary>
+    /// The RF output power meter, which only means anything while transmitting
+    /// (HM-DEC-082).
+    /// </summary>
+    private static RigValue DecodePowerOut(
+        ReadOnlySpan<byte> payload, DateTime atUtc, string source)
+    {
+        if (payload.Length < 2 || CivValues.Level(payload[0], payload[1]) is not { } level)
+        {
+            return RigValue.Unknown(
+                RigField.PowerOut, $"{source} gave an unreadable reply");
+        }
+
+        return RigValue.Known(
+            RigField.PowerOut, level, CivPowerOut.Describe(level), atUtc, source);
     }
 
     private static RigValue DecodeFilterBandwidth(

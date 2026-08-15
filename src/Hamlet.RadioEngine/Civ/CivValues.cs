@@ -366,3 +366,89 @@ public static class CivSwr
             ? $"{ratio.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture)} to 1"
             : "higher than 3 to 1";
 }
+
+/// <summary>
+/// The RF output power meter's own scale, from the radio (HM-DEC-082).
+/// </summary>
+/// <remarks>
+/// <para>Three points are cited on p. 19-3 and nothing between them is: `0000`
+/// is 0%, `0143` is 50% and `0213` is 100%. So the conversion is linear between
+/// the cited points, which is the most three points support, and it clamps at
+/// the top rather than reporting more than full scale.</para>
+/// <para>**A PERCENTAGE AND NEVER A WATTAGE**, for the same reason the power
+/// setting is (HM-DEC-074). The meter reports a position on its own scale, and
+/// turning that into watts needs the radio's power curve, which §4 has no
+/// citation for. Icom's meter faces are not linear in watts, so the arithmetic
+/// that looks obvious is wrong, and a figure in watts on this screen would be an
+/// invented number underwriting the one claim this whole feature exists to make
+/// (§0.0).</para>
+/// </remarks>
+public static class CivPowerOut
+{
+    /// <summary>The cited points: reading, and the percentage it means.</summary>
+    private static readonly (int Reading, double Percent)[] Scale =
+    {
+        (0, 0.0),
+        (143, 50.0),
+        (213, 100.0),
+    };
+
+    /// <summary>
+    /// The percentage of full scale for a reading, or null when unreadable.
+    /// </summary>
+    /// <param name="reading">The value from <c>15 11</c>, 0 to 255.</param>
+    /// <returns>0 to 100, or null.</returns>
+    public static double? Percent(int reading)
+    {
+        if (reading < 0)
+        {
+            return null;
+        }
+
+        if (reading >= Scale[^1].Reading)
+        {
+            return 100.0;
+        }
+
+        for (var i = 1; i < Scale.Length; i++)
+        {
+            if (reading > Scale[i].Reading)
+            {
+                continue;
+            }
+
+            var (lowReading, lowPercent) = Scale[i - 1];
+            var (highReading, highPercent) = Scale[i];
+            var span = highReading - lowReading;
+
+            return Math.Round(
+                lowPercent + ((reading - lowReading) / (double)span * (highPercent - lowPercent)),
+                0);
+        }
+
+        return null;
+    }
+
+    /// <summary>How to write a reading for the operator.</summary>
+    /// <param name="reading">The raw reading.</param>
+    /// <returns>e.g. "62 percent of full power", or "no power at all".</returns>
+    public static string Describe(int reading)
+    {
+        var percent = Percent(reading);
+
+        if (percent is not { } value)
+        {
+            return "";
+        }
+
+        return value <= 0
+            ? "no power at all"
+            : $"{value.ToString("0", System.Globalization.CultureInfo.InvariantCulture)}"
+              + " percent of full power";
+    }
+
+    /// <summary>True when the meter says nothing came out.</summary>
+    /// <param name="reading">The raw reading.</param>
+    /// <returns>True at zero.</returns>
+    public static bool IsSilent(int reading) => Percent(reading) is <= 0;
+}

@@ -70,16 +70,6 @@
             <Setter Property="Foreground" Value="White" />
         </Style>
 
-        <Style Selector="Button.hm-send.sending /template/ ContentPresenter">
-            <Setter Property="Background" Value="{StaticResource HmGreenBrush}" />
-            <Setter Property="Foreground" Value="White" />
-            <Setter Property="BorderThickness" Value="0" />
-        </Style>
-        <Style Selector="Button.hm-send.sending:pointerover /template/ ContentPresenter">
-            <Setter Property="Background" Value="{StaticResource HmGreenBrush}" />
-            <Setter Property="Foreground" Value="White" />
-        </Style>
-
         <!-- The one state grey is for. -->
         <Style Selector="Button.hm-send.refused /template/ ContentPresenter">
             <Setter Property="Background" Value="Transparent" />
@@ -896,7 +886,6 @@
                                                                 Classes="hm-send"
                                                                 Classes.ready="{Binding LooksReady}"
                                                                 Classes.armed="{Binding LooksArmed}"
-                                                                Classes.sending="{Binding LooksSending}"
                                                                 Classes.refused="{Binding LooksRefused}"
                                                                 Content="{Binding ButtonLabel}"
                                                                 FontSize="12"
@@ -954,6 +943,24 @@
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
 
+
+                                <!-- WHAT ACTUALLY HAPPENED, LINK BY LINK
+                                     (HM-DEC-082). The question this application
+                                     exists to answer: speaking into the void and
+                                     speaking on the air with nobody listening are
+                                     different facts, and until now both came out
+                                     as silence. Every number here was measured or
+                                     it is not here. -->
+                                <Border Background="{StaticResource HmGreenTintBrush}"
+                                        BorderBrush="{StaticResource HmGreenEdgeBrush}"
+                                        BorderThickness="1" CornerRadius="8"
+                                        Padding="12,9"
+                                        IsVisible="{Binding ChainNote,
+                                            Converter={x:Static ctl:PrivilegeToneConverter.NotEmpty}}">
+                                    <ctl:GlossaryTextControl Text="{Binding ChainNote}"
+                                        FontSize="13" LineSpacing="1.45"
+                                        Foreground="{StaticResource HmTextPrimaryBrush}" />
+                                </Border>
 
                                 <!-- WHAT THE METER SAID DURING THE SEND
                                      (HM-DEC-081). Only after one, only when

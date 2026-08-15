@@ -338,6 +338,16 @@ public sealed class RigStateMonitor : IDisposable
                     RigField.Swr, "only measurable while transmitting"));
             }
 
+            // AND THE SAME FOR THE POWER METER (HM-DEC-082). A resting radio is
+            // making no power, so a figure left sitting there would be read as
+            // "it made nothing" when what it means is "nobody asked it to".
+            // Those are opposite conclusions about a station.
+            if (!_state.IsTransmitting && _state[RigField.PowerOut].IsKnown)
+            {
+                _state = _state.With(RigValue.Unknown(
+                    RigField.PowerOut, "only measurable while transmitting"));
+            }
+
             next = _state;
         }
 

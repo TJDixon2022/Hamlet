@@ -223,16 +223,17 @@ public sealed class LiveFireTests
     [Fact]
     public void HamletDoesNotPretendToKnowWhatIsConnected()
     {
-        var notes = TransmitNotes.For(State());
+        // THE NOTICE IS GONE (HM-DEC-083). What replaced it is the chain report,
+        // which says what the meters read rather than admitting ignorance, and
+        // its own test sweeps it for claims about the socket. What survives here
+        // is the rule the notice served: nothing Hamlet says beside the send
+        // controls is an instruction or a scolding.
+        var said = string.Join(" ", TransmitNotes.For(
+            State().With(RigValue.Known(
+                RigField.RfPower, 5, "5%", Now, "CI-V 14 0A")))).ToLowerInvariant();
 
-        Assert.Contains(TransmitNotes.WhatIsConnected, notes);
+        Assert.NotEqual("", said);
 
-        var said = string.Join(" ", notes).ToLowerInvariant();
-
-        Assert.Contains("cannot see what is on the back", said, StringComparison.Ordinal);
-
-        // Not an instruction and not a scolding, the same treatment the noise
-        // controls got.
         foreach (var scold in new[]
                  { "you must", "you should", "be careful", "make sure", "do not " })
         {
@@ -273,7 +274,10 @@ public sealed class LiveFireTests
     public void NothingIsSaidAboutAnOrdinaryPowerSetting(int percent)
     {
         Assert.Equal("", TransmitNotes.PowerNote(State(powerPercent: percent)));
-        Assert.Single(TransmitNotes.For(State(powerPercent: percent)));
+
+        // And nothing else stands in for it: an ordinary radio says nothing at
+        // all rather than something bland (HM-DEC-083).
+        Assert.Empty(TransmitNotes.For(State(powerPercent: percent)));
     }
 
     /// <remarks>Proves HM-DEC-074: a power nobody has read says nothing.</remarks>

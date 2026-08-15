@@ -124,6 +124,45 @@ public sealed class RbnActivitySource
         }
     }
 
+    /// <summary>
+    /// How many distinct skimmers have reported anybody in a frequency range,
+    /// or null when the feed is not answering (HM-DEC-082).
+    /// </summary>
+    /// <param name="lowHz">Band lower edge.</param>
+    /// <param name="highHz">Band upper edge.</param>
+    /// <returns>A count, or null when it cannot be obtained.</returns>
+    /// <remarks>
+    /// <para>"NONE OF THEM COPIED YOU" IS WORTH NOTHING WITHOUT KNOWING HOW MANY
+    /// "THEM" THERE WERE. Zero skimmers watching a band is not the same event as
+    /// forty, and today both produced the same silence.</para>
+    /// <para>IT IS A LOWER BOUND AND IT IS DESCRIBED AS ONE. A skimmer that
+    /// heard nothing publishes nothing, so it cannot be counted, and this
+    /// measures machines that reported somebody rather than machines that were
+    /// listening. Calling it a count of who was listening would claim more than
+    /// the wire supports.</para>
+    /// <para>NULL WHEN THE FEED IS NOT ANSWERING, never zero. An absent number
+    /// reads as zero to somebody who has been disappointed before, and those are
+    /// opposite facts about the evening.</para>
+    /// </remarks>
+    public int? SkimmersReporting(long lowHz, long highHz)
+    {
+        if (!_loggedIn)
+        {
+            return null;
+        }
+
+        lock (_gate)
+        {
+            Prune();
+
+            return _window
+                .Where(s => s.FrequencyHz >= lowHz && s.FrequencyHz <= highHz)
+                .Select(s => s.Spotter)
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .Count();
+        }
+    }
+
     /// <inheritdoc/>
     public void SetContext(ActivityContext context) => _context = context;
 

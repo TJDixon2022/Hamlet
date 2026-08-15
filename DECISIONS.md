@@ -4,6 +4,137 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-083
+date: 2026-08-15
+supersedes: HM-DEC-079 (the sending appearance), HM-DEC-081 (the notice's retirement)
+refs: src/Hamlet.App/ViewModels/CwTransmitViewModel.cs, src/Hamlet.App/Views/MainWindow.axaml, HM-DEC-074, HM-DEC-082
+---
+
+**Two simplifications, both Tim's, both replacing something built two rulings
+ago.**
+
+**SENDING HAS NO LOOK OF ITS OWN.** While a message is going out the buttons are
+disabled and the status text says what is happening. That is all. HM-DEC-079 gave
+sending a dedicated green appearance, and the reasoning there was that sending is
+an active state which should not wear grey. Tim has ruled otherwise and he is
+right: **you cannot send while sending**, so grey is exactly correct and
+self-explanatory, and the extra state was solving a problem HM-DEC-079's own
+latch had already removed. A state that needs its own color to be understood is a
+state that has not been explained.
+
+The latch itself stands. The controls still hold one stable state for the whole
+send rather than sampling a transmit line that toggles on every Morse element;
+they simply no longer get a color for it. Armed keeps its appearance, because
+armed is pressable and the press is the point.
+
+**THE NOTICE ABOUT THE BACK OF THE RADIO IS DELETED.** Not retired on evidence,
+not shown once: gone. HM-DEC-081 retired it on the first real SWR reading, which
+was the right shape and still one screen of standing prose too many, and Tim has
+said repeatedly that he hates the wall of text.
+
+What replaced it is better than a shorter version of it. **HM-DEC-082's chain
+report answers the question that notice was gesturing at, with a measurement
+instead of a caveat**: it says what the power meter and the SWR meter actually
+read during the send. A sentence with a number in it beats a paragraph admitting
+ignorance, and that is the whole trade. A test asserts it never returns.
+
+STILL STANDING PROSE IN THE SEND PANEL, PROPOSED AND NOT CUT. The per-message
+explanatory lines under each phrase ("the callsign goes twice because the first
+one is often half-missed", "QRS means send more slowly") teach on first read and
+become wallpaper on the fiftieth, and the same is true of the two paragraphs
+about keyer speed and character spacing at the foot of the panel. They are the
+next candidates and they are not removed here, because they are the app's
+teaching voice and cutting them is a decision rather than a tidy-up.
+
+---
+id: HM-DEC-082
+date: 2026-08-15
+refs: src/Hamlet.RadioEngine/Cw/TransmitChain.cs, src/Hamlet.RadioEngine/Civ/CivValues.cs, src/Hamlet.RadioEngine/Explore/RbnActivitySource.cs, tests/Hamlet.RadioEngine.Tests/Cw/TransmitChainTests.cs, HM-DEC-050, HM-DEC-074, HM-DEC-075, HM-DEC-081
+---
+
+**After every send, Hamlet reports what happened link by link, and names the
+link that failed.** This is the question the application exists to answer.
+
+THE PROBLEM, IN THE OPERATOR'S WORDS: "Am I speaking into the void, as in nothing
+is going out, or am I speaking on the air and no one is just listening? This is
+my frustration for six years. This app is supposed to solve it." He has now
+transmitted successfully twice and still does not know which of those happened.
+The app watched both and said "nothing called yet", which was true, useless, and
+exactly the silence that has been his experience of this hobby since 2020.
+
+**THE INSIGHT THE WHOLE DESIGN RESTS ON: "did anybody hear me" is not one
+question. It is a chain of five links, and only the last is about other people.**
+
+1. Hamlet sent the command — CI-V acknowledgement.
+2. The radio keyed — `TransmitStatus`, `1C 00`.
+3. The amplifier made power — the Po meter, `15 11`.
+4. The power went into a real load — SWR, `15 12` (HM-DEC-081).
+5. Somebody was listening and copied it — RBN reports for his callsign.
+
+**Four of those five are machine-checkable and none of the four need another
+human being to cooperate.** Before tonight the app checked two and reported
+neither.
+
+**A FAILURE AT LINK 3 AND A FAILURE AT LINK 5 ARE COMPLETELY DIFFERENT FACTS
+ABOUT THE WORLD, and they looked identical to the operator: silence.** One means
+his station is broken. The other means his station works and the band was short
+or nobody was pointed his way. He cannot act on the first without knowing it is
+the first, and telling them apart is the entire product.
+
+LINK 3 IS THE ONE THAT WAS MISSING. `15 11` reads the RF output power meter
+(p. 19-3), cited at three points: `0000` is 0%, `0143` is 50%, `0213` is 100%.
+It is not the same thing as `14 0A`, which is where the power control is set: a
+knob position says nothing about what came out, and **a radio can key,
+acknowledge, and produce nothing at all.** Like the SWR meter it means nothing
+while receiving, so it is sampled during a send and marked unknown the moment
+the transmitter stops, because a resting figure would read as "it made nothing"
+when it means "nobody asked it to", and those are opposite conclusions about a
+station.
+
+**THE PEAK ACROSS THE SEND IS KEPT, NOT THE FIRST AND NOT THE LAST.** Both meters
+settle at key-down, so the first sample is a startup artifact and the last lands
+as the transmitter drops. For power the peak is the true output rather than a
+ramp; for SWR it is the worst case, which is the number worth telling somebody
+about.
+
+**EVERY NUMBER IS MEASURED OR IT IS NOT SHOWN.** §0.0 governs here more tightly
+than anywhere else in the application. A link Hamlet could not read says so, and
+"Hamlet could not read the power meter, so it cannot say whether anything left
+the antenna" is honest and useful. **A link that could not be read is not a
+failed link**: not knowing whether power was made is different from knowing none
+was, and reporting the first as the second would tell somebody their station is
+broken on the strength of a read that did not come back.
+
+**A PERCENTAGE AND NEVER A WATTAGE**, which departs from the brief's example
+sentence and is recorded rather than done quietly. The meter reports a position
+on its own scale, Icom's meter faces are not linear in watts, and §4 has no
+citation for the curve. A figure in watts here would be an invented number
+underwriting the one claim this whole feature exists to make (HM-DEC-074).
+
+**AND IT NEVER DIAGNOSES THE STATION.** "Made no power" is a reading. "Your
+antenna is disconnected" is a guess about somebody's equipment, and the
+prohibition that governs the SWR report governs the whole chain. A test sweeps
+every combination of every link for phrasings that would cross it. Hamlet reports
+measurements; the operator draws conclusions, because he is the one standing next
+to the radio.
+
+LINK 5 GAINED THE NUMBER IT WAS MISSING. "None of them copied you" is worth
+nothing without knowing how many "them" there were, and zero skimmers watching a
+band is not the same event as forty. The count is of **skimmers that reported
+somebody on that band**, which is a lower bound on how many were awake rather
+than a census of who was listening: a machine hearing nothing publishes nothing,
+so it cannot be counted, and "41 were listening" would claim more than the wire
+supports. **A count that could not be obtained says so rather than being
+omitted**, because an absent number reads as zero to somebody who has been
+disappointed before.
+
+LINKS THAT SUCCEEDED ARE STATED BRIEFLY AND THE FAILED ONE GETS THE WORDS.
+Somebody whose station is working does not want a five-line audit every time he
+calls. The whole chain persists with the send record, so a later history of
+"times you were heard" can be built from what is already on disk, and a null
+stays null in the file for the same reason it does on screen.
+
+---
 id: HM-DEC-081
 date: 2026-08-15
 refs: src/Hamlet.RadioEngine/Civ/CivValues.cs, src/Hamlet.RadioEngine/Cw/TransmitNotes.cs, src/Hamlet.RadioEngine/Rig/RigStateMonitor.cs, tests/Hamlet.RadioEngine.Tests/Rig/SwrTests.cs, HM-DEC-050, HM-DEC-074
