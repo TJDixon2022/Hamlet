@@ -1,0 +1,76 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Hamlet.App.ViewModels"
+        x:Class="Hamlet.App.Views.DecisionLogWindow"
+        x:DataType="vm:DecisionLogViewModel"
+        Title="What Hamlet decided"
+        Width="720" Height="620"
+        WindowStartupLocation="CenterOwner"
+        Background="{StaticResource HmBackgroundBrush}">
+
+    <!-- THE COMPANION TO "WHAT THE RADIO IS DOING" (HM-DEC-077). That window
+         answers what the radio is doing; this one answers what Hamlet did about
+         it. The evening this was built, both questions had to be answered from
+         a photograph, because a disabled button fires no handler and the file
+         recorded nothing at all. -->
+    <Design.DataContext>
+        <vm:DecisionLogViewModel />
+    </Design.DataContext>
+
+    <Grid RowDefinitions="Auto,*,Auto" Margin="16">
+
+        <TextBlock Grid.Row="0" Margin="0,0,0,10"
+                   Text="Every time Hamlet worked something out and it came out differently from last time, it is here with the reason beside it. A refused line is Hamlet declining on purpose, and the reason says what decided it."
+                   FontSize="12" TextWrapping="Wrap"
+                   Foreground="{StaticResource HmTextMutedBrush}" />
+
+        <Border Grid.Row="1" Background="White" CornerRadius="8"
+                BorderBrush="{StaticResource HmSlateEdgeBrush}" BorderThickness="1">
+            <Grid>
+                <TextBlock Text="{x:Static vm:DecisionLogViewModel.EmptyNote}"
+                           IsVisible="{Binding IsEmpty}"
+                           Margin="16" FontSize="12" TextWrapping="Wrap"
+                           VerticalAlignment="Center"
+                           Foreground="{StaticResource HmTextMutedBrush}" />
+
+                <ScrollViewer IsVisible="{Binding !IsEmpty}">
+                    <ItemsControl ItemsSource="{Binding Rows}" Margin="8">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="vm:DecisionRow">
+                                <Grid ColumnDefinitions="70,110,*" Margin="0,3">
+                                    <TextBlock Grid.Column="0" Text="{Binding At}"
+                                               FontFamily="Consolas,Menlo,monospace"
+                                               FontSize="11" VerticalAlignment="Top"
+                                               Foreground="{StaticResource HmTextMutedBrush}" />
+
+                                    <TextBlock Grid.Column="1" Text="{Binding Verdict}"
+                                               FontSize="12" FontWeight="SemiBold"
+                                               VerticalAlignment="Top" />
+
+                                    <StackPanel Grid.Column="2" Spacing="1">
+                                        <TextBlock FontSize="12" TextWrapping="Wrap">
+                                            <Run Text="{Binding Question}" />
+                                            <Run Text="  " />
+                                            <Run Text="{Binding Reason}"
+                                                 FontFamily="Consolas,Menlo,monospace"
+                                                 FontSize="11" />
+                                        </TextBlock>
+                                        <TextBlock Text="{Binding Says}" FontSize="11"
+                                                   TextWrapping="Wrap"
+                                                   Foreground="{StaticResource HmTextMutedBrush}" />
+                                    </StackPanel>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </Grid>
+        </Border>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="8"
+                    HorizontalAlignment="Right" Margin="0,12,0,0">
+            <Button Content="Copy for a bug report" Click="OnCopy" Padding="12,5" />
+            <Button Content="Close" Click="OnClose" Padding="12,5" />
+        </StackPanel>
+    </Grid>
+</Window>

@@ -328,6 +328,16 @@ Hamlet should distinguish "transmitting because the operator is holding it on",
 which is permission, from "transmitting because a send is already in flight",
 which is a reason to wait. The rig state model reads one flag for both.
 
+**Update 2026-08-15 (HM-DEC-077): the refusal is now visible, which changes what
+this costs.** Transmit status is checked before mode and before break-in, so it
+refuses ahead of both, and until now nothing recorded that it had. Every readiness
+evaluation now carries the transmit-status reading with its provenance and age, so
+a session where this fired can be told from one where it did not, and it is one of
+the things the next file will settle about the greyed-out buttons.
+
+The ruling is unchanged and the gate is not loosened. What was missing was never
+the strictness, it was the silence.
+
 Severity `none`: the ordinary path works and the refusal explains itself.
 
 ---

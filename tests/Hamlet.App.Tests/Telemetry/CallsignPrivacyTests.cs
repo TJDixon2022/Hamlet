@@ -16,7 +16,7 @@ public sealed class CallsignPrivacyTests : IDisposable
     /// <summary>Every public event-writing method on <see cref="AppEvents"/>.
     /// If this number moves, a new event was added and the walk below has to
     /// grow with it — that is the point.</summary>
-    private const int ExpectedEventMethodCount = 38;
+    private const int ExpectedEventMethodCount = 43;
 
     private const string Callsign = "KC3QIS";
     // "Timothy", not "Tim": a three-letter needle matches "timer", which is a
@@ -143,6 +143,45 @@ public sealed class CallsignPrivacyTests : IDisposable
     /// <summary>Every event the shell can emit, once each.</summary>
     private static void WriteEveryEvent(ITelemetry telemetry)
     {
+        // The decision events (HM-DEC-077). This work expanded what is logged
+        // more than anything before it, so the walk grows with it rather than
+        // the new events quietly escaping the privacy check.
+        var now = new DateTime(2026, 8, 15, 21, 0, 0, DateTimeKind.Utc);
+
+        var radio = new Hamlet.RadioEngine.Rig.RigCapabilities(
+            "IC-7300", HasSpectrumScope: true, HasBuiltInCwKeyer: true,
+            HasUsbAudio: true, CanTransmit: true, new[] { "40 m" });
+
+        var state = Hamlet.RadioEngine.Rig.RigState.Empty.With(new[]
+        {
+            Hamlet.RadioEngine.Rig.RigValue.Known(
+                Hamlet.RadioEngine.Rig.RigField.Mode,
+                (int)Hamlet.RadioEngine.Civ.CivMode.Cw, "CW", now, "CI-V 04"),
+            Hamlet.RadioEngine.Rig.RigValue.Known(
+                Hamlet.RadioEngine.Rig.RigField.BreakIn, 0, "off", now, "CI-V 16 47"),
+        });
+
+        AppEvents.TransmitReadinessEvaluated(
+            telemetry,
+            Hamlet.RadioEngine.Cw.TransmitReadiness.Check(true, radio, state, now),
+            state,
+            "recomputed");
+
+        AppEvents.RigHeartbeat(telemetry, null, state);
+        AppEvents.RigHeartbeat(telemetry, state, state);
+
+        AppEvents.ConnectOutcome(
+            telemetry, Hamlet.RadioEngine.Telemetry.Outcome.Proceeded, "ok",
+            "COM3", "IC-7300", state);
+
+        AppEvents.RigReadTimedOut(telemetry, "BreakIn", "16 47");
+
+        var window = new Hamlet.RadioEngine.Telemetry.DecodeWindow();
+        window.Emitted(Hamlet.RadioEngine.Cw.CwConfidence.High);
+        window.Rejected(Hamlet.RadioEngine.Telemetry.DecodeRejection.Contested);
+        window.Observed(-98.5, 604, 15);
+        AppEvents.DecodeWindow(telemetry, window);
+
         AppEvents.AppStart(telemetry);
         AppEvents.AppStop(telemetry);
         AppEvents.AboutOpened(telemetry);

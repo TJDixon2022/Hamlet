@@ -4,6 +4,93 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-077
+date: 2026-08-15
+refs: CLAUDE.md §8.1, src/Hamlet.RadioEngine/Telemetry/Outcome.cs, src/Hamlet.RadioEngine/Telemetry/RigSnapshot.cs, src/Hamlet.RadioEngine/Telemetry/DecodeWindow.cs, src/Hamlet.App/ViewModels/DecisionLogViewModel.cs, HM-DEC-018, HM-DEC-050, HM-OPEN-009
+---
+
+**The telemetry record becomes a decision record.** Every decision point that can
+go more than one way emits an event naming the branch taken and the state that
+determined it, and significant events carry the rig state as Hamlet believed it
+at that moment. Recorded in §8.1, where the logging rules live.
+
+WHAT PROMPTED IT, BECAUSE THE SHAPE OF THE FAILURE IS THE ARGUMENT. A live on-air
+attempt failed with both Call CQ buttons greyed out, the radio connected, tuned
+inside the CW segment, break-in on. Nothing on screen said why. Then the record
+could not say why either: **144 events across five sessions and not one of them
+concerns the failure.** The long session ran an hour and fifty minutes with its
+last human action in the first five, and everything after it was the spot timer.
+The diagnosis had to come from a photograph of a window. That is §0.0.1 failing
+at the one job it has.
+
+THE ORGANIZING FAULT, IN ONE SENTENCE: **Hamlet logged what it did and never what
+it decided.** Every event in the file was a completed action, so there was no
+event anywhere for a thing Hamlet chose not to do, or tried and failed at. A
+disabled button fires no handler, so nothing was written, so the record cannot
+distinguish "Hamlet refused" from "Hamlet is broken" from "nobody pressed it".
+
+A REFUSAL IS AN OUTCOME AND A FAILURE IS AN OUTCOME. Both are as loggable as
+success and more useful, because success is the case nobody ever has to diagnose.
+So the vocabulary gained its negatives, and every outcome event carries the same
+three things: `outcome`, a `reason` that is a **stable machine token rather than
+a display string**, and `determinedBy` naming the values that decided it with
+their provenance and age.
+
+**UNKNOWN AND OFF ARE NOW DIFFERENT ALL THE WAY DOWN**, and this was the sharpest
+finding. `BreakInOff` covered both, so one verdict and one sentence served a
+setting nobody had read and a setting the operator could walk across the room and
+switch on. Refusing on unknown is correct (HM-DEC-050) and refusing on off calls
+for something completely different. They are now separate states, separate
+tokens, separate sentences on screen, and separate provenance in the file, and
+`ModeUnknown` was split from `NotInMorse` for the same reason.
+
+THE RIG STATE TRAVELS. Thirty-one values were held and not one appeared in
+telemetry, which is why break-in could only be learned by photographing a window.
+A full snapshot goes on every connect, every readiness evaluation and every
+decoder transition; a delta goes on a one-minute heartbeat so a quiet session
+still has a spine without thirty-one rows a minute burying what is worth finding.
+Ageing is not a change.
+
+LEVELS START MEANING SOMETHING. All 144 events were `info`, so nothing could be
+found by scanning and a second connect firing thirteen seconds after the first
+was logged identically to a healthy one. A refusal is a warning, a failure is an
+error, and a reconnect nobody asked for is a warning however well it went.
+
+THE DECODER EXPLAINS ITSELF, aggregated over an interval rather than per
+character: counts by confidence, rejections by reason, noise floor, tracked pitch
+and its drift. It already computed every one of these and nothing asked. The hot
+path allocates nothing and a test proves it across five hundred thousand calls,
+because a decoder that stutters to write its diagnostics has traded the thing for
+the record of the thing (§8).
+
+THE REASON REACHES THE OPERATOR, NOT ONLY THE FILE. A file somebody has to upload
+is the second line of defense and the screen is the first. The Send panel says
+the reason beside the disabled control in three different sentences for three
+different situations, and a "What Hamlet decided" window sits beside "What the
+radio is doing" with the same copy button. That window answers what Hamlet did
+about the radio; the other answers what the radio is doing.
+
+**WHAT THE INSTRUMENTATION ESTABLISHED ABOUT THE FAILURE, AND WHAT IT DID NOT.**
+The gate is not wrong about the reported state: a test drives tonight's exact
+reading, break-in full, transmitting false, mode CW, and it produces a ready
+verdict. Two of the three candidates were also narrowed by reading the code
+rather than guessing at it. Readiness recomputes on every rig state change, so
+"evaluated once at connect and never again" would require the state event itself
+not to fire. And readiness and the diagnostics window read the same live
+property, so they cannot be reading different sources. **What is left is not
+determined and is deliberately not guessed at**: the next file will separate it,
+because the readiness event now carries every precondition it looked at with its
+provenance and age, including the transmit-status read that is checked before
+mode and break-in and refuses ahead of both. HM-OPEN-009 is updated rather than
+closed.
+
+HM-DEC-018 HOLDS WITHOUT EXCEPTION, and this expands what is logged more than
+anything before it, so the boundary is proved rather than assumed. The payload
+shapes have nowhere to put a callsign, a location or decoded text, which is
+stronger than every call site remembering. The privacy walk grew to cover all
+five new events with a full profile loaded.
+
+---
 id: HM-DEC-076
 date: 2026-08-15
 refs: src/Hamlet.RadioEngine/Cw/ContactTracker.cs, tests/Hamlet.RadioEngine.Tests/Cw/ContactTrackerTests.cs, HM-DEC-043, HM-DEC-073

@@ -12,6 +12,20 @@ operator can see and use, patch fixes and polishes without adding one.
 
 ---
 
+## 1.2.5
+
+**Hamlet can explain itself.**
+
+Telemetry became a decision record rather than a list of completions: every
+decision point that can go more than one way now names the branch it took and
+the state that decided it. The rig state travels with the record, levels mean
+something, the decoder says what it heard and rejected, and a window shows what
+Hamlet recently decided beside the one showing what the radio is doing. Also the
+callsign resolver, the live-fire hardening of the transmit path, "did anybody
+hear me", and the contact tracker.
+
+Rulings HM-DEC-063 through HM-DEC-077.
+
 ## 1.2.0
 
 **Hamlet can key the radio.**

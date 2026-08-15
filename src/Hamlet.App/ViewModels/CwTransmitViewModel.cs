@@ -90,6 +90,19 @@ public sealed partial class CwTransmitViewModel : ObservableObject
 
     private readonly Func<TransmitContext> _context;
     private readonly Action<SendOption>? _wentOut;
+    private readonly Action<CwReadiness, TransmitContext, string>? _readinessChanged;
+
+    /// <summary>
+    /// The last verdict written to the record, so an unchanged one is not
+    /// written again every second (HM-DEC-077).
+    /// </summary>
+    /// <remarks>
+    /// The evaluation fires when readiness recomputes rather than when somebody
+    /// presses, which is the whole point. It does not fire when the answer is
+    /// the same as last time, because a file with two thousand identical rows
+    /// is a file nobody reads and the transitions are the diagnosis.
+    /// </remarks>
+    private CwReadyState? _lastLogged;
     private CwTransmitter? _transmitter;
 
     /// <summary>Creates the panel over a supplier of the current state.</summary>
@@ -101,11 +114,18 @@ public sealed partial class CwTransmitViewModel : ObservableObject
     /// Called when something actually reached the air, so the rest of the app
     /// can start watching for whoever heard it (HM-DEC-075).
     /// </param>
+    /// <param name="readinessChanged">
+    /// Called whenever the transmit precondition verdict changes, so the record
+    /// carries every refusal whether or not a button was pressed (HM-DEC-077).
+    /// </param>
     public CwTransmitViewModel(
-        Func<TransmitContext> context, Action<SendOption>? wentOut = null)
+        Func<TransmitContext> context,
+        Action<SendOption>? wentOut = null,
+        Action<CwReadiness, TransmitContext, string>? readinessChanged = null)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _wentOut = wentOut;
+        _readinessChanged = readinessChanged;
         Options = new ObservableCollection<SendButtonViewModel>();
         Rebuild();
     }
@@ -296,6 +316,15 @@ public sealed partial class CwTransmitViewModel : ObservableObject
         var check = _transmitter.Check(context);
 
         CanSend = check.Sent;
+
+        // A REFUSAL WITH NOBODY PRESSING ANYTHING STILL GOES IN THE RECORD
+        // (HM-DEC-077). A disabled button fires no handler, so the evening this
+        // was written produced no event at all for the thing that went wrong.
+        if (check.Readiness is { } readiness && _lastLogged != readiness.State)
+        {
+            _lastLogged = readiness.State;
+            _readinessChanged?.Invoke(readiness, context, "recomputed");
+        }
 
         if (!check.Sent)
         {

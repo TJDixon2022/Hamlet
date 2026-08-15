@@ -458,6 +458,50 @@ public partial class MainWindowViewModel : ObservableObject
     }
 
     /// <summary>
+    /// The transmit precondition verdict changed, so the record says so
+    /// (HM-DEC-077).
+    /// </summary>
+    /// <param name="readiness">The verdict, carrying what decided it.</param>
+    /// <param name="context">The state it was decided from.</param>
+    /// <param name="trigger">What caused the evaluation.</param>
+    /// <remarks>
+    /// AND IT REACHES THE OPERATOR TOO, not only the file. A file somebody has
+    /// to upload is the second line of defense; the first is the screen, and the
+    /// evening this was written the screen said nothing at all.
+    /// </remarks>
+    private void OnReadinessChanged(
+        CwReadiness readiness, TransmitContext context, string trigger)
+    {
+        AppEvents.TransmitReadinessEvaluated(
+            _telemetry, readiness, context.State, trigger);
+
+        Decisions.Note(
+            "Can I send",
+            readiness.Reason,
+            readiness.MaySend ? Outcome.Proceeded : Outcome.Refused,
+            readiness.Detail,
+            DateTime.UtcNow);
+    }
+
+    /// <summary>What Hamlet has recently decided (HM-DEC-077).</summary>
+    public DecisionLogViewModel Decisions { get; } = new();
+
+    /// <summary>Open the record of what Hamlet decided.</summary>
+    [RelayCommand]
+    private void OpenDecisionLog()
+    {
+        var owner = (Application.Current?.ApplicationLifetime
+            as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
+
+        if (owner is null)
+        {
+            return;
+        }
+
+        new Views.DecisionLogWindow { DataContext = Decisions }.ShowDialog(owner);
+    }
+
+    /// <summary>
     /// Something reached the air, so start watching for whoever heard it.
     /// </summary>
     /// <remarks>
@@ -472,6 +516,38 @@ public partial class MainWindowViewModel : ObservableObject
         {
             NoteCallWentOut(DateTime.UtcNow);
         }
+    }
+
+    /// <summary>When the last rig heartbeat went into the record.</summary>
+    private DateTime _lastHeartbeatUtc = DateTime.MinValue;
+
+    /// <summary>What the last heartbeat reported, so the next one is a delta.</summary>
+    private RigState? _lastHeartbeatState;
+
+    /// <summary>How often a quiet session writes its spine (HM-DEC-077).</summary>
+    /// <remarks>
+    /// A minute. The session that prompted this ran nearly two hours with its
+    /// last human action in the first five minutes, and nothing in between said
+    /// what the radio was doing.
+    /// </remarks>
+    private static readonly TimeSpan HeartbeatInterval = TimeSpan.FromMinutes(1);
+
+    /// <summary>Put the rig state in the record on a slow interval.</summary>
+    /// <param name="nowUtc">The moment.</param>
+    private void Heartbeat(DateTime nowUtc)
+    {
+        if (nowUtc - _lastHeartbeatUtc < HeartbeatInterval)
+        {
+            return;
+        }
+
+        _lastHeartbeatUtc = nowUtc;
+
+        var state = RigState;
+
+        AppEvents.RigHeartbeat(_telemetry, _lastHeartbeatState, state);
+
+        _lastHeartbeatState = state;
     }
 
     /// <summary>Recompute what the heard panel says.</summary>
@@ -823,7 +899,8 @@ public partial class MainWindowViewModel : ObservableObject
         // Everything the guard and the break-in precondition need, read at the
         // moment somebody presses rather than captured when the panel was built
         // (HM-DEC-059).
-        Transmit = new CwTransmitViewModel(BuildTransmitContext, OnSomethingWentOut)
+        Transmit = new CwTransmitViewModel(
+            BuildTransmitContext, OnSomethingWentOut, OnReadinessChanged)
         {
             YourCall = settings.Operator.Callsign,
             Qth = settings.Operator.Location,
@@ -2335,6 +2412,7 @@ public partial class MainWindowViewModel : ObservableObject
 
         NoteDwell(now);
         RefreshHeard(now);
+        Heartbeat(now);
     }
 
     /// <summary>

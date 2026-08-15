@@ -237,6 +237,7 @@ this table is the index.
 
 | Date | Decision | Why | Ref |
 |---|---|---|---|
+| 2026-08-15 | **Telemetry becomes a decision record: every decision point that can go more than one way names the branch taken and the state that determined it.** Outcome, a stable reason token, and `determinedBy` with provenance and age. Unknown, off, unsupported and stale stay four different things in the file and on screen. The rig state travels with connects, readiness and decoder transitions, with a delta heartbeat. Levels mean something. The decoder reports counts and rejections without allocating per character. A refusal emits with nobody pressing anything, and a "What Hamlet decided" window sits beside the rig one. Recorded in §8.1. | A live attempt failed with the buttons greyed out and 144 events said nothing about it; Hamlet logged what it did and never what it decided. | HM-DEC-077 |
 | 2026-08-15 | **Hamlet follows where a contact has got to and says when it has lost the thread. The model only, no interface.** Lost is the default and was designed first, because a guide that silently keeps guessing sends somebody confidently to the wrong part of a ritual they have never performed. Transitions come only from what was sent and what resolved cleanly; a half-read word moves nothing, and evidence goes stale at four minutes. | Knowing which part of a contact you are in is most of what a beginner lacks, and a wrong answer about it is worse than none. | HM-DEC-076 |
 | 2026-08-15 | **Hamlet watches the skimmer network for the operator's own callsign and says who heard him, answered or not. Closes FG-008.** Three states: a wait that says what is normal because that is where a beginner gives up, a heard state naming receivers and the strongest report, and a silence that says it is not proof nobody heard him. Reports kept from the first one. **The distance-led presentation is not built**: RBN gives no skimmer location and HM-DEC-038 forbids deriving one from a prefix, so that half waits on cited data (HM-OPEN-010). Reads only, and a test proves no telemetry event can be handed a callsign. | Six years licensed and one contact; this is the first honest answer he has had to "did that work", and it is worth nothing the moment it becomes encouragement rather than evidence. | HM-DEC-075 |
 | 2026-08-15 | **The transmit path is hardened for a real antenna, and no transmit feature is added.** The break-in precondition gates the send buttons rather than sitting beside them, naming the setting, because a correct frame with a correct acknowledgement and no signal is the worst outcome available on a live day. The abort is proved against a send that is actually running. **The dummy load warning is retired**: the code has run and the test passed, and what replaces it does not pretend to know what is on the antenna socket. Power below a quarter of range is said as a consequence, as a percentage and never a wattage. | He would read a silent transmitter as nobody wanting to talk to him; and a warning nobody needs is one everybody learns to read past. | HM-DEC-074 |
@@ -664,7 +665,47 @@ The app's own record exists to prove what it heard and what it did (§0.0.1):
 3. **Test authoring** — a captured failure becomes a fixture.
 
 **Never-throw discipline**: logging that can crash the app is worse than no
-logging. A failed write is dropped and counted, never propagated.
+logging. A failed write is dropped and counted, never propagated. This binds
+hardest on the decoder's own record, which runs on the audio thread: aggregate
+over an interval and allocate nothing per character, because a decoder that
+stutters to write its diagnostics has traded the thing for the record of it.
+
+### 8.1 The record is a decision record — HM-DEC-077
+
+> **Every decision point that can go more than one way emits an event naming the
+> branch taken and the state that determined it. Significant events carry the
+> rig state as Hamlet believed it at that moment.**
+
+The fault this replaces, in one sentence: **Hamlet logged what it did and never
+what it decided.** Every event was a completed action, so there was no record
+anywhere of a thing Hamlet chose not to do or tried and failed at. A refusal is
+an outcome. A failure is an outcome. Both are as loggable as success and more
+useful, because success is the case nobody ever has to diagnose.
+
+What follows, and is not to be re-argued:
+
+- **Every outcome event carries the same three things.** `outcome` — proceeded,
+  refused, failed or degraded. `reason` — a **stable machine token**, never a
+  display string, because a display string gets reworded the next time somebody
+  improves the copy and takes every comparison across sessions with it.
+  `determinedBy` — the state values that decided it, each with its provenance
+  and the age of the reading.
+- **Unknown, off, unsupported and stale stay four different things**, in the
+  file and on the screen. Refusing on unknown is correct (HM-DEC-050); refusing
+  on off is something the operator can walk across the room and fix. A record
+  that conflates them is worth nothing on the evening it is needed.
+- **A row nobody read says unknown and never zero.**
+- **Levels mean something.** A refusal is a warning, a failure is an error, a
+  reconnect nobody asked for is a warning however well it went. Anything a
+  person would want to find by scanning is not `info`.
+- **A decision emits when it is made, not when a button is pressed.** A disabled
+  control fires no handler, so a record that only listens to handlers cannot
+  tell "Hamlet refused" from "Hamlet is broken" from "nobody pressed it".
+- **The reason reaches the operator, not only the file.** A file somebody has to
+  upload is the second line of defense; the screen is the first.
+- **HM-DEC-018 holds without exception.** No callsign, no name, no location, no
+  message content, no decoded text, no upload. The payload shapes have nowhere
+  to put them, which is stronger than every call site remembering.
 
 ---
 

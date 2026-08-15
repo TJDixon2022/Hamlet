@@ -1,3 +1,5 @@
+using Hamlet.RadioEngine.Cw;
+using Hamlet.RadioEngine.Rig;
 using Hamlet.RadioEngine.Telemetry;
 
 namespace Hamlet.App.Telemetry;
@@ -466,4 +468,182 @@ public static class AppEvents
                 ["panel"] = panelKey,
                 ["expanded"] = expanded,
             });
+
+    // ---- Decisions, not only completions (HM-DEC-077) --------------------
+
+    /// <summary>
+    /// Hamlet evaluated whether a send could reach the air.
+    /// </summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="readiness">The verdict, carrying what decided it.</param>
+    /// <param name="state">Rig state as Hamlet believed it.</param>
+    /// <param name="trigger">What caused the evaluation, as a stable token.</param>
+    /// <remarks>
+    /// <para>THE EVENT THE EVENING THIS WAS WRITTEN NEEDED AND DID NOT HAVE. A
+    /// disabled button fires no handler, so nothing was written, so the record
+    /// could not tell "Hamlet refused" from "Hamlet is broken" from "nobody
+    /// pressed it". This fires when readiness recomputes rather than when
+    /// something is pressed, which is what makes the absence of a press
+    /// visible.</para>
+    /// <para>NO MESSAGE TEXT, EVER (HM-DEC-018). It names preconditions and
+    /// carries numbers. There is no parameter here that could hold what was
+    /// being sent.</para>
+    /// </remarks>
+    public static void TransmitReadinessEvaluated(
+        ITelemetry? telemetry, CwReadiness readiness, RigState state, string trigger)
+    {
+        if (telemetry is null || readiness is null || state is null)
+        {
+            return;
+        }
+
+        var body = readiness.AsEvent();
+
+        telemetry.Write(
+            TelemetryCategory.Rig, "transmit_readiness",
+            body.ToBag(Merge(
+                new Dictionary<string, object?>
+                {
+                    ["trigger"] = trigger,
+                    ["state"] = readiness.State.ToString(),
+                },
+                RigSnapshot.Full(state, DateTime.UtcNow))),
+            body.Level);
+    }
+
+    /// <summary>
+    /// The rig state as Hamlet holds it, on a slow heartbeat.
+    /// </summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="previous">What was reported last time, or null.</param>
+    /// <param name="state">What Hamlet knows now.</param>
+    /// <remarks>
+    /// A DELTA, SO A QUIET SESSION STILL HAS A SPINE. The long session that
+    /// prompted this ran nearly two hours with its last human action in the
+    /// first five minutes, and nothing in between said what the radio was doing.
+    /// </remarks>
+    public static void RigHeartbeat(
+        ITelemetry? telemetry, RigState? previous, RigState state)
+    {
+        if (telemetry is null || state is null)
+        {
+            return;
+        }
+
+        telemetry.Write(
+            TelemetryCategory.Rig, "rig_heartbeat",
+            RigSnapshot.Delta(previous, state, DateTime.UtcNow));
+    }
+
+    /// <summary>
+    /// A connection outcome, with the state it produced.
+    /// </summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="outcome">What happened.</param>
+    /// <param name="reason">A stable token for why.</param>
+    /// <param name="port">Port name or the simulated-rig entry.</param>
+    /// <param name="rigType">"simulated" or the model.</param>
+    /// <param name="state">Rig state after it, or null.</param>
+    /// <param name="unrequested">
+    /// True when nobody asked for this, which makes it a warning however well
+    /// it went (HM-DEC-077).
+    /// </param>
+    /// <remarks>
+    /// A RECONNECT NOBODY ASKED FOR IS A WARNING. The evening this was written,
+    /// a second connect fired thirteen seconds after the first with the decoder
+    /// restarting alongside it, and it was logged identically to a healthy one.
+    /// </remarks>
+    public static void ConnectOutcome(
+        ITelemetry? telemetry, Outcome outcome, string reason,
+        string port, string rigType, RigState? state, bool unrequested = false)
+    {
+        if (telemetry is null)
+        {
+            return;
+        }
+
+        var body = new OutcomeEvent(outcome, reason, Array.Empty<DeterminedBy>());
+
+        var extra = new Dictionary<string, object?>
+        {
+            ["port"] = port,
+            ["rigType"] = rigType,
+            ["unrequested"] = unrequested,
+        };
+
+        if (state is not null)
+        {
+            foreach (var pair in RigSnapshot.Full(state, DateTime.UtcNow))
+            {
+                extra[pair.Key] = pair.Value;
+            }
+        }
+
+        var level = unrequested && body.Level == TelemetryLevel.Info
+            ? TelemetryLevel.Warn
+            : body.Level;
+
+        telemetry.Write(
+            TelemetryCategory.Rig, "connect_outcome", body.ToBag(extra), level);
+    }
+
+    /// <summary>
+    /// A rig read did not come back.
+    /// </summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="field">Which field, as its name.</param>
+    /// <param name="command">The CI-V command, e.g. "16 47".</param>
+    public static void RigReadTimedOut(
+        ITelemetry? telemetry, string field, string command)
+        => telemetry?.Write(
+            TelemetryCategory.Rig, "rig_read_timeout",
+            new Dictionary<string, object?>
+            {
+                ["outcome"] = "failed",
+                ["reason"] = "timeout",
+                ["field"] = field,
+                ["command"] = command,
+            },
+            TelemetryLevel.Warn);
+
+    /// <summary>
+    /// What the decoder has been hearing, aggregated over an interval.
+    /// </summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="window">The counts and measurements.</param>
+    /// <remarks>
+    /// COUNTS AND MEASUREMENTS, NEVER TEXT (HM-DEC-018). The window carries how
+    /// many characters were emitted at each confidence and why things were
+    /// rejected. It has no member that can hold a decoded character, which is
+    /// deliberate: the shape refuses rather than the call site remembering.
+    /// </remarks>
+    public static void DecodeWindow(ITelemetry? telemetry, DecodeWindow? window)
+    {
+        if (telemetry is null || window is null || window.IsEmpty)
+        {
+            return;
+        }
+
+        telemetry.Write(
+            TelemetryCategory.Decode, "decode_window", window.ToBag(),
+            window.Level);
+    }
+
+    private static IReadOnlyDictionary<string, object?> Merge(
+        IReadOnlyDictionary<string, object?> a, IReadOnlyDictionary<string, object?> b)
+    {
+        var merged = new Dictionary<string, object?>(StringComparer.Ordinal);
+
+        foreach (var pair in a)
+        {
+            merged[pair.Key] = pair.Value;
+        }
+
+        foreach (var pair in b)
+        {
+            merged[pair.Key] = pair.Value;
+        }
+
+        return merged;
+    }
 }

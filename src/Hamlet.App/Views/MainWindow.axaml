@@ -119,6 +119,8 @@
                     <Separator />
                     <MenuItem Header="What the radio is doing…"
                               Command="{Binding OpenRigDiagnosticsCommand}" />
+                    <MenuItem Header="What Hamlet decided…"
+                              Command="{Binding OpenDecisionLogCommand}" />
                     <Separator />
                     <MenuItem Header="Spectrum scope  (phase 2)" IsEnabled="False" />
                 </MenuItem>

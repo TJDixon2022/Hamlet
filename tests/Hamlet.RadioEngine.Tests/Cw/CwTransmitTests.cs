@@ -203,8 +203,22 @@ public sealed class CwTransmitTests
         var readiness = TransmitReadiness.Check(true, Radio, noBreakIn);
 
         Assert.False(readiness.MaySend);
-        Assert.Equal(CwReadyState.BreakInOff, readiness.State);
         Assert.Contains("has not read", readiness.Detail, StringComparison.Ordinal);
+
+        // AND IT IS ITS OWN STATE NOW (HM-DEC-077). Unread and off used to
+        // produce one verdict, so neither the file nor the screen could tell
+        // them apart, and they call for completely different things: waiting,
+        // against walking over to the radio.
+        Assert.Equal(CwReadyState.BreakInUnknown, readiness.State);
+        Assert.Equal("break_in_unknown", readiness.Reason);
+
+        var off = TransmitReadiness.Check(
+            true, Radio,
+            noBreakIn.With(
+                RigValue.Known(RigField.BreakIn, 0, "off", Now, "CI-V 16 47")));
+
+        Assert.Equal(CwReadyState.BreakInOff, off.State);
+        Assert.NotEqual(readiness.Detail, off.Detail);
     }
 
     /// <remarks>

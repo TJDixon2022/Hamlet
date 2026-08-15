@@ -1,5 +1,6 @@
 using Hamlet.RadioEngine.Civ;
 using Hamlet.RadioEngine.Rig;
+using Hamlet.RadioEngine.Telemetry;
 
 namespace Hamlet.RadioEngine.Cw;
 
@@ -22,7 +23,24 @@ public enum CwReadyState
     /// Break-in is off and nothing is holding the transmitter on, so a message
     /// sent with command 17 would be keyed into a radio that is still receiving.
     /// </summary>
+    /// <remarks>
+    /// THE OPERATOR CAN WALK OVER AND FIX THIS ONE, which is exactly why it is
+    /// no longer the same state as never having read it (HM-DEC-077). The two
+    /// produced one verdict and one message, so a file could not tell them apart
+    /// and neither could the person reading the screen.
+    /// </remarks>
     BreakInOff,
+
+    /// <summary>Hamlet has not read break-in yet, which is not permission.</summary>
+    /// <remarks>
+    /// Refusing on unknown is correct (HM-DEC-050) and it calls for something
+    /// completely different from refusing on off: waiting, or asking the radio
+    /// again, rather than walking across the room.
+    /// </remarks>
+    BreakInUnknown,
+
+    /// <summary>Hamlet has not read the mode yet.</summary>
+    ModeUnknown,
 
     /// <summary>The radio is already transmitting.</summary>
     AlreadyTransmitting,
@@ -35,8 +53,44 @@ public enum CwReadyState
 /// What to tell the operator, in one sentence, or "" when all is well.
 /// </param>
 /// <param name="Citation">The manual page behind it, or "".</param>
+/// <param name="DeterminedBy">
+/// Every precondition that was checked, with the value seen, its provenance and
+/// its age (HM-DEC-077). Carried on the verdict rather than recomputed, so the
+/// record cannot disagree with the decision it describes.
+/// </param>
 public sealed record CwReadiness(
-    CwReadyState State, bool MaySend, string Detail, string Citation);
+    CwReadyState State, bool MaySend, string Detail, string Citation,
+    IReadOnlyList<DeterminedBy>? DeterminedBy = null)
+{
+    /// <summary>
+    /// The stable machine token for this verdict (HM-DEC-077).
+    /// </summary>
+    /// <remarks>
+    /// A token rather than the sentence, because the sentence is written for a
+    /// person and gets reworded the next time somebody improves the copy, taking
+    /// every comparison across sessions with it.
+    /// </remarks>
+    public string Reason => State switch
+    {
+        CwReadyState.Ready => OutcomeEvent.Ok,
+        CwReadyState.NotConnected => "not_connected",
+        CwReadyState.RadioCannotTransmit => "radio_cannot_transmit",
+        CwReadyState.NotInMorse => "not_in_morse",
+        CwReadyState.BreakInOff => "break_in_off",
+        CwReadyState.BreakInUnknown => "break_in_unknown",
+        CwReadyState.ModeUnknown => "mode_unknown",
+        _ => "already_transmitting",
+    };
+
+    /// <summary>The outcome this verdict is.</summary>
+    public Outcome Outcome
+        => MaySend ? Outcome.Proceeded : Outcome.Refused;
+
+    /// <summary>The event body for this verdict.</summary>
+    public OutcomeEvent AsEvent()
+        => new(Outcome, Reason,
+            DeterminedBy ?? Array.Empty<DeterminedBy>());
+}
 
 /// <summary>
 /// The precondition nobody had written down (HM-DEC-059, HM-DEC-049).
@@ -71,57 +125,96 @@ public static class TransmitReadiness
     /// <returns>The verdict, never null.</returns>
     public static CwReadiness Check(
         bool connected, RigCapabilities? capabilities, RigState state)
+        => Check(connected, capabilities, state, DateTime.UtcNow);
+
+    /// <summary>Can a keyer message actually reach the air right now?</summary>
+    /// <param name="connected">Whether a radio is connected.</param>
+    /// <param name="capabilities">What the connected radio can do.</param>
+    /// <param name="state">Everything Hamlet has read from it.</param>
+    /// <param name="nowUtc">The moment, for the ages in the record.</param>
+    /// <returns>The verdict, never null, carrying what decided it.</returns>
+    /// <remarks>
+    /// EVERY PRECONDITION IT LOOKED AT TRAVELS WITH THE VERDICT (HM-DEC-077),
+    /// including the ones that passed. A record of only the failing condition
+    /// cannot tell "break-in was read as on and something else refused" from
+    /// "break-in was never reached", and those need different fixes.
+    /// </remarks>
+    public static CwReadiness Check(
+        bool connected, RigCapabilities? capabilities, RigState state, DateTime nowUtc)
     {
         ArgumentNullException.ThrowIfNull(state);
+
+        var saw = new List<DeterminedBy>
+        {
+            Telemetry.DeterminedBy.Fact("connected", connected ? 1 : 0),
+        };
 
         if (!connected || capabilities is null)
         {
             return new CwReadiness(
                 CwReadyState.NotConnected, false,
-                "There is no radio connected, so there is nothing to send with.", "");
+                "There is no radio connected, so there is nothing to send with.", "",
+                saw);
         }
+
+        saw.Add(Telemetry.DeterminedBy.Fact(
+            "canTransmit", capabilities.CanTransmit ? 1 : 0));
 
         if (!capabilities.CanTransmit)
         {
             return new CwReadiness(
                 CwReadyState.RadioCannotTransmit, false,
-                $"{capabilities.Model} does not transmit, so this is receive only.", "");
+                $"{capabilities.Model} does not transmit, so this is receive only.", "",
+                saw);
         }
+
+        var transmitting = state[RigField.TransmitStatus];
+        saw.Add(Telemetry.DeterminedBy.From(transmitting, nowUtc, RigSnapshot.FreshFor));
 
         if (state.IsTransmitting)
         {
             return new CwReadiness(
                 CwReadyState.AlreadyTransmitting, false,
                 "The radio is already transmitting, so this will wait until it stops.",
-                "");
+                "", saw);
+        }
+
+        var modeValue = state[RigField.Mode];
+        saw.Add(Telemetry.DeterminedBy.From(modeValue, nowUtc, RigSnapshot.FreshFor));
+
+        if (!modeValue.IsKnown)
+        {
+            return new CwReadiness(
+                CwReadyState.ModeUnknown, false,
+                "Hamlet has not read the radio's mode yet, so it cannot tell whether "
+                + "the keyer would send anything. It asks on connect, so give it a "
+                + "moment.",
+                "", saw);
         }
 
         if (state.Mode is not { } mode || !CivValues.IsCw(mode))
         {
-            var what = state[RigField.Mode] is { IsKnown: true } read
-                ? $"The radio is in {read.Text} rather than Morse"
-                : "Hamlet has not read the radio's mode yet";
-
             return new CwReadiness(
                 CwReadyState.NotInMorse, false,
-                $"{what}, and the keyer only sends Morse. Switch to CW and it will "
-                + "be ready.",
-                "");
+                $"The radio is in {modeValue.Text} rather than Morse, and the keyer "
+                + "only sends Morse. Switch to CW and it will be ready.",
+                "", saw);
         }
 
         // THE ONE THAT COSTS AN EVENING IF IT IS SKIPPED. An unread break-in
         // setting is not permission: it is a thing nobody has looked at, and
         // saying "this will go out" from it would be a guess (§0.0).
         var breakIn = state[RigField.BreakIn];
+        saw.Add(Telemetry.DeterminedBy.From(breakIn, nowUtc, RigSnapshot.FreshFor));
 
         if (!breakIn.IsKnown)
         {
             return new CwReadiness(
-                CwReadyState.BreakInOff, false,
+                CwReadyState.BreakInUnknown, false,
                 "Hamlet has not read whether break-in is on, and without it the "
                 + "radio takes the message and sends nothing. It reads that on "
                 + "connect, so give it a moment or open what the radio is doing.",
-                BreakInCitation);
+                BreakInCitation, saw);
         }
 
         if (breakIn.Number is 0)
@@ -129,11 +222,11 @@ public static class TransmitReadiness
             return new CwReadiness(
                 CwReadyState.BreakInOff, false,
                 "Break-in is off on the radio, and with it off the radio accepts "
-                + "the message and stays quiet. Turn break-in on, or hold the "
-                + "transmitter on yourself, and the same button will work.",
-                BreakInCitation);
+                + "the message and stays quiet. Turn break-in on at the radio, or "
+                + "hold the transmitter on yourself, and the same button will work.",
+                BreakInCitation, saw);
         }
 
-        return new CwReadiness(CwReadyState.Ready, true, "", "");
+        return new CwReadiness(CwReadyState.Ready, true, "", "", saw);
     }
 }

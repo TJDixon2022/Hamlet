@@ -27,12 +27,17 @@ public sealed record TransmitContext(
 /// True when the operator had the privilege guard switched off and the transmit
 /// proceeded on their own authority (HM-DEC-029).
 /// </param>
+/// <param name="Readiness">
+/// What the precondition check saw, carried so the record and the screen can
+/// both name it without evaluating it a second time (HM-DEC-077).
+/// </param>
 public sealed record TransmitOutcome(
     bool Sent,
     string Detail,
     string Citation,
     CwSendResult? Result,
-    bool GuardOverridden);
+    bool GuardOverridden,
+    CwReadiness? Readiness = null);
 
 /// <summary>
 /// The one door to the transmitter (HM-DEC-059, §0.2).
@@ -102,13 +107,11 @@ public sealed class CwTransmitter
         var ready = TransmitReadiness.Check(
             context.Connected, context.Capabilities, context.State);
 
-        if (!ready.MaySend)
-        {
-            return new TransmitOutcome(
-                false, ready.Detail, ready.Citation, null, decision.WasOverridden);
-        }
-
-        return new TransmitOutcome(true, "", decision.Citation, null, decision.WasOverridden);
+        return ready.MaySend
+            ? new TransmitOutcome(
+                true, "", decision.Citation, null, decision.WasOverridden, ready)
+            : new TransmitOutcome(
+                false, ready.Detail, ready.Citation, null, decision.WasOverridden, ready);
     }
 
     /// <summary>
