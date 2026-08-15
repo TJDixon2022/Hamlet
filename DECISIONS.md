@@ -4,6 +4,71 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-074
+date: 2026-08-15
+refs: src/Hamlet.RadioEngine/Cw/TransmitNotes.cs, src/Hamlet.App/ViewModels/CwTransmitViewModel.cs, tests/Hamlet.RadioEngine.Tests/Cw/LiveFireTests.cs, HM-DEC-008, HM-DEC-049, HM-DEC-059
+---
+
+**The transmit path is hardened for a real antenna.** No new transmit features,
+and nothing here weakens §0.2.
+
+THE PRECONDITION GATES THE BUTTONS RATHER THAN SITTING BESIDE THEM. Break-in
+being off is not a permission Hamlet is withholding, it is a fact about the
+radio: command `17` goes out, the acknowledgement comes back, and no signal
+leaves the antenna (Full Manual footnote 2, p. 19-7). Somebody making the second
+contact of his life would read that silence as nobody wanting to talk to him. So
+a control that cannot reach the air says why instead of inviting a press, and the
+message names the setting. An unread break-in setting refuses on the same terms:
+not having looked is not permission, and "I do not know whether this will go out"
+is a different answer from "it will".
+
+THE ABORT IS PROVED AGAINST A SEND THAT IS ACTUALLY RUNNING. It was always
+same-thread and await-free by construction; what it did not have was a test that
+held a send open and stopped it mid-flight. It has one now, along with proof that
+aborting when nothing is sending and aborting twice are both safe. An abort that
+could throw is one nobody can rely on at the moment they need it most.
+
+HONEST FAILURE WAS ALREADY RIGHT AND IS NOW HELD BY A TEST. Only an
+acknowledged send reports as sent; a radio that did not confirm produces an
+unknown that says so. Success is never inferred from the absence of an error, and
+every outcome the sender can produce is swept to prove it.
+
+**THE DUMMY LOAD WARNING IS RETIRED (amending HM-DEC-008 in practice, not in
+principle).** It said to key into a dummy load because the keying code had never
+run. It has now, and the test passed. Leaving the warning up would be the app
+telling somebody something it no longer believes, and a warning nobody needs is a
+warning everybody learns to read past. HM-DEC-008's rule is unchanged for the
+next untested thing that keys; it has simply been satisfied for this one.
+
+WHAT REPLACES IT DOES NOT PRETEND TO KNOW. Nothing in the CI-V read table reports
+what is on the antenna socket, and the SWR meter only says anything while
+transmitting, so Hamlet says once and calmly that it cannot see the back of the
+radio and that the operator is the one who knows which he is on. That is the
+whole line, and it is not a caution.
+
+POWER IS SAID AS A CONSEQUENCE, the same treatment the noise controls got
+(HM-DEC-050). Below a quarter of the radio's range it says what that means for a
+call, because the specific failure this exists for is somebody turning the power
+down for a dummy load test, connecting an antenna, and being unable to work out
+why the band has gone quiet. Nothing is said in the middle of the range, because
+a line that always appears is a line nobody reads, and nothing at all is said
+from a power that was never read.
+
+**A PERCENTAGE AND NEVER A WATTAGE.** The radio reports power as a position on
+its own scale, and turning that into watts needs a power curve §4 has no citation
+for. A figure in watts would be Hamlet inventing a number on the one screen where
+a number decides whether somebody keys a transmitter (§0.0).
+
+ONE THING DELIBERATELY NOT CHANGED, and it is recorded rather than fixed.
+Footnote 2 allows three ways for `17` to reach the air: break-in on, TRANSMIT on,
+or an external TX switch on. `TransmitReadiness` refuses while the radio reports
+it is already transmitting, so an operator holding TRANSMIT down cannot send
+through Hamlet even though the manual says it would work. The refusal is the
+conservative direction, break-in is the ordinary path and the panel now names it,
+and loosening a transmit precondition hours before a live contact is not a change
+worth making. Raised as HM-OPEN-009.
+
+---
 id: HM-DEC-073
 date: 2026-08-15
 refs: src/Hamlet.RadioEngine/Cw/CallsignResolver.cs, src/Hamlet.RadioEngine/Explore/RecentStation.cs, tests/Hamlet.RadioEngine.Tests/Cw/CallsignResolverTests.cs, HM-DEC-048, HM-DEC-072

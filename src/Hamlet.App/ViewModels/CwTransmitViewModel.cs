@@ -66,18 +66,6 @@ public sealed partial class SendButtonViewModel : ObservableObject
 /// </remarks>
 public sealed partial class CwTransmitViewModel : ObservableObject
 {
-    /// <summary>
-    /// The one sentence about the dummy load, shown once before a first send.
-    /// </summary>
-    /// <remarks>
-    /// HM-DEC-008 in the app's own voice. Said once, where somebody will read it
-    /// before their first send, and written as the ordinary precaution it is
-    /// rather than as a warning about their competence (§0.7).
-    /// </remarks>
-    public const string DummyLoadNote =
-        "While this is new, send into a dummy load rather than an antenna. Keying "
-        + "code that has never run before is worth trying somewhere nobody else "
-        + "can hear it, and it takes one cable to find out that everything works.";
 
     /// <summary>
     /// What Hamlet says when it does not know the operator's license class.
@@ -185,6 +173,29 @@ public sealed partial class CwTransmitViewModel : ObservableObject
     private bool _supportsCharacterSpacing;
 
     /// <summary>
+    /// True when a send would actually reach the air right now (HM-DEC-074).
+    /// </summary>
+    /// <remarks>
+    /// THE BUTTONS FOLLOW THIS, which is a change from warning beside a live
+    /// control. Break-in being off is not a permission Hamlet is withholding, it
+    /// is a fact about the radio: the frame goes, the acknowledgement comes back,
+    /// and no signal leaves the antenna. Somebody making their first call would
+    /// read that as nobody wanting to talk to him. So the control that cannot
+    /// work says why instead of inviting a press that produces silence.
+    /// </remarks>
+    [ObservableProperty]
+    private bool _canSend;
+
+    /// <summary>
+    /// What Hamlet says beside the buttons about the radio itself.
+    /// </summary>
+    /// <remarks>
+    /// What is on the antenna socket, and the power setting where it is worth a
+    /// sentence. Consequences and never instructions (HM-DEC-074).
+    /// </remarks>
+    public ObservableCollection<string> Notes { get; } = new();
+
+    /// <summary>
     /// True when Hamlet has no license class to check this frequency against.
     /// </summary>
     /// <remarks>
@@ -259,14 +270,25 @@ public sealed partial class CwTransmitViewModel : ObservableObject
         // callsign and not of the radio.
         LicenseUnresolved = _context().LicenseClass == LicenseClass.Unknown;
 
+        var context = _context();
+
+        Notes.Clear();
+        foreach (var note in TransmitNotes.For(context.State))
+        {
+            Notes.Add(note);
+        }
+
         if (_transmitter is null)
         {
+            CanSend = false;
             SetStatus("There is no radio connected, so there is nothing to send with.",
                 refusal: true, citation: "");
             return;
         }
 
-        var check = _transmitter.Check(_context());
+        var check = _transmitter.Check(context);
+
+        CanSend = check.Sent;
 
         if (!check.Sent)
         {
@@ -285,7 +307,7 @@ public sealed partial class CwTransmitViewModel : ObservableObject
     [RelayCommand]
     private async Task PressAsync(SendButtonViewModel? button)
     {
-        if (button is null || _transmitter is null || IsSending)
+        if (button is null || _transmitter is null || IsSending || !CanSend)
         {
             return;
         }

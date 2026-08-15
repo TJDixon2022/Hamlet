@@ -692,18 +692,28 @@
                                               IsExpanded="{Binding TransmitExpanded, Mode=TwoWay}">
                             <StackPanel Spacing="8" DataContext="{Binding Transmit}">
 
-                                <!-- HM-DEC-008, in the app's voice and said
-                                     once, where somebody reads it before their
-                                     first send rather than after. -->
-                                <Border Background="{StaticResource HmAmberTintBrush}"
-                                        BorderBrush="{StaticResource HmAmberEdgeBrush}"
-                                        BorderThickness="1" CornerRadius="6"
-                                        Padding="10,7">
-                                    <TextBlock
-                                        Text="{x:Static vm:CwTransmitViewModel.DummyLoadNote}"
-                                        FontSize="12" TextWrapping="Wrap" LineHeight="18"
-                                        Foreground="{StaticResource HmAmberDeepBrush}" />
-                                </Border>
+                                <!-- WHAT THE RADIO IS ACTUALLY SET TO
+                                     (HM-DEC-074). The dummy load warning is
+                                     retired: it said to key into one because
+                                     the code had never run, and it has now. In
+                                     its place, what Hamlet can honestly say
+                                     about the socket and the power, as
+                                     consequences and never instructions. -->
+                                <ItemsControl ItemsSource="{Binding Notes}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="x:String">
+                                            <Border Background="{StaticResource HmAmberTintBrush}"
+                                                    BorderBrush="{StaticResource HmAmberEdgeBrush}"
+                                                    BorderThickness="1" CornerRadius="6"
+                                                    Padding="10,7" Margin="0,0,0,6">
+                                                <TextBlock Text="{Binding}"
+                                                           FontSize="12" TextWrapping="Wrap"
+                                                           LineHeight="18"
+                                                           Foreground="{StaticResource HmAmberDeepBrush}" />
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
 
                                 <!-- What stands in the way, read before the
                                      press rather than discovered at the moment
@@ -759,7 +769,13 @@
                                         Foreground="{StaticResource HmAmberDeepBrush}" />
                                 </Border>
 
-                                <ItemsControl ItemsSource="{Binding Options}">
+                                <!-- The buttons follow the precondition
+                                     (HM-DEC-074). A control that cannot reach
+                                     the air says why rather than inviting a
+                                     press that produces a correct frame, a
+                                     correct acknowledgement and silence. -->
+                                <ItemsControl ItemsSource="{Binding Options}"
+                                              IsEnabled="{Binding CanSend}">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate x:DataType="vm:SendButtonViewModel">
                                             <Border Background="White"

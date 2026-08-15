@@ -298,3 +298,34 @@ way it already does Morse, and that route never reads this port at all.
 
 Severity `none`: nothing is blocked. HM-DEC-069 already rules that the mode is
 not built, and for a reason this answer would not change on its own.
+
+---
+id: HM-OPEN-009
+status: open
+owner: tim
+raised: 2026-08-15
+severity: none
+refs: HM-DEC-074, HM-DEC-049, src/Hamlet.RadioEngine/Cw/TransmitReadiness.cs
+---
+
+Holding TRANSMIT down is one of the three ways a command `17` message reaches the
+air, and Hamlet refuses to send while the radio reports it is transmitting.
+
+Footnote 2 on p. 19-7 says a CW message sent with `17` is transmitted when
+TRANSMIT is on, **or** an external TX switch is on, **or** break-in is on.
+`TransmitReadiness` returns `AlreadyTransmitting` and refuses whenever the radio
+reports transmit status on, which closes off the first of those three.
+
+The refusal is in the conservative direction: nothing goes out unexpectedly, and
+break-in is the ordinary path for keyer sends and the one the panel now names.
+So this costs an operator who prefers to hold the transmitter on himself, and it
+costs nobody a signal they did not ask for.
+
+Left alone deliberately on 2026-08-15 rather than fixed, because loosening a
+transmit precondition hours before a live contact is not a change worth making
+against a benefit this small (§0.2). What it needs is a decision about whether
+Hamlet should distinguish "transmitting because the operator is holding it on",
+which is permission, from "transmitting because a send is already in flight",
+which is a reason to wait. The rig state model reads one flag for both.
+
+Severity `none`: the ordinary path works and the refusal explains itself.
