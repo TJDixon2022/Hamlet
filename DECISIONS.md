@@ -4,6 +4,51 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-076
+date: 2026-08-15
+refs: src/Hamlet.RadioEngine/Cw/ContactTracker.cs, tests/Hamlet.RadioEngine.Tests/Cw/ContactTrackerTests.cs, HM-DEC-043, HM-DEC-073
+---
+
+**Hamlet follows where a contact has got to, and says when it has lost the
+thread.** The model only, with no interface on it.
+
+THE LOST STATE WAS DESIGNED FIRST AND IS THE DEFAULT. A guide that silently keeps
+guessing after it stopped following is far worse than one that admits it: the
+first sends somebody confidently to the wrong part of a ritual they have never
+performed, and the second hands them back the only thing that was ever reliable,
+which is what the radio is actually hearing. So every path returns to lost when
+evidence runs out, and lost is where it starts (§0.0).
+
+WHAT IT WILL MOVE ON, AND NOTHING ELSE. What the operator sent, which Hamlet
+knows exactly because it sent it. A callsign the decoder resolved cleanly, which
+means the ritual position and every character solid (HM-DEC-073). A whole ritual
+word, solid, in the same decode. Nothing infers a stage from the passage of time,
+from a partial decode, or from what usually happens next.
+
+THE ONE TRANSITION IT CAN BE CERTAIN OF is his own callsign in the addressed
+position with a clean callsign after the `DE`. That is somebody coming back to
+him by name, and it is the moment this operator has been waiting six years for.
+Somebody answering a different station moves nothing, which is the false positive
+that would hurt most.
+
+EVIDENCE GOES STALE AT FOUR MINUTES. A Morse exchange has long gaps in it, so a
+short window would call itself lost in the middle of an ordinary contact; much
+longer and Hamlet would still claim to follow a contact that ended while somebody
+made tea. Sitting on a stale stage is exactly the failure this exists to avoid.
+
+A HALF-READ WORD MOVES NOTHING, for the same reason a half-read callsign does
+not. A dimmed `73` is also a dimmed anything else, and ending a contact that was
+still going on one would be the worst version of this being wrong. The two rules
+compose rather than each having its own idea of what counts as heard, and a
+callsign sent twice with one clean copy still resolves, because that repeat
+exists precisely so the first can be half-missed.
+
+**NO INTERFACE, DELIBERATELY.** The brief that will design what sits on top of
+this has not been written. Building a surface now would prejudge it, and the
+model is proved by its tests rather than by a screen. Nothing in the application
+reads this yet.
+
+---
 id: HM-DEC-075
 date: 2026-08-15
 closes: FG-008
