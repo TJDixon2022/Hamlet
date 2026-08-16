@@ -42,7 +42,17 @@ public sealed record BandCardStyle(
 /// </remarks>
 public static class BandCardStyles
 {
-    /// <summary>Narrowest card, for the shortest wavelength.</summary>
+    /// <summary>
+    /// Narrowest card, for the shortest wavelength.
+    /// </summary>
+    /// <remarks>
+    /// **THE RATIO IS THE MEANING, NOT THE SIZE** (HM-DEC-033). Width follows
+    /// wavelength so that eighty meters is visibly a longer wave than ten, and
+    /// that survives the whole set being scaled. Both ends came down by a
+    /// quarter when the bands moved beside the frequency readout rather than
+    /// above it (HM-DEC-088), which keeps the row and the readout on one line at
+    /// the width a laptop actually has.
+    /// </remarks>
     /// <remarks>
     /// The ruling asked for 58 to 104. At 58 the card clipped "10 m" to "10 n"
     /// with the icon sitting on top of the label — the range is narrower than
@@ -50,10 +60,10 @@ public static class BandCardStyles
     /// ratio kept close to the one asked for; shrinking the type instead would
     /// have made the band names smaller than everything around them.
     /// </remarks>
-    public const double MinWidth = 76;
+    public const double MinWidth = 58;
 
     /// <summary>Widest card, for the longest wavelength.</summary>
-    public const double MaxWidth = 122;
+    public const double MaxWidth = 93;
 
     /// <summary>How much a card dims when its band is out of its element.</summary>
     public const double DimmedOpacity = 0.62;

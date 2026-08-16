@@ -44,6 +44,44 @@ public sealed class WasapiAudioDevices : IAudioDevices
         }
     }
 
+    /// <summary>
+    /// What Windows is doing to one capture device (HM-DEC-088).
+    /// </summary>
+    /// <param name="deviceId">Which device, or null for the default one.</param>
+    /// <returns>What was read, with unread values left null.</returns>
+    /// <remarks>
+    /// **NEVER THROWS AND NEVER GUESSES.** A machine with no sound card, a device
+    /// that has gone away, or an endpoint that will not answer all produce
+    /// nulls rather than an exception or a plausible number, because a level
+    /// nobody read reported as a level would send the operator to adjust
+    /// something that was never the problem (§0.0).
+    /// </remarks>
+    public static CaptureHealth Health(string? deviceId)
+    {
+        try
+        {
+            using var enumerator = new MMDeviceEnumerator();
+
+            using var device = string.IsNullOrEmpty(deviceId)
+                ? enumerator.GetDefaultAudioEndpoint(DataFlow.Capture, Role.Console)
+                : enumerator.GetDevice(deviceId);
+
+            if (device is null)
+            {
+                return CaptureHealth.Unknown;
+            }
+
+            return new CaptureHealth(
+                device.FriendlyName,
+                device.AudioEndpointVolume.MasterVolumeLevelScalar,
+                device.AudioEndpointVolume.Mute);
+        }
+        catch (Exception)
+        {
+            return CaptureHealth.Unknown;
+        }
+    }
+
     private static string? DefaultCaptureId(MMDeviceEnumerator enumerator)
     {
         try

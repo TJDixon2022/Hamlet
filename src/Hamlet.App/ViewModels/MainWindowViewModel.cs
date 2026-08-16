@@ -1311,6 +1311,8 @@ public partial class MainWindowViewModel : ObservableObject
         UpdateModeLine();
         UpdateSpotFreshness();
 
+        _hasTunedByWheel = settings.HasTunedByWheel;
+
         PickByline();
 
         // THE CANVAS, LAST, because everything it places has to exist first
@@ -2278,6 +2280,11 @@ public partial class MainWindowViewModel : ObservableObject
             return;
         }
 
+        // WHAT WINDOWS IS DOING TO THE INPUT, read once when listening starts
+        // (HM-DEC-088). It is a third gain nobody can see, after the radio's
+        // speaker level and its quite separate USB output level.
+        _capture = WasapiAudioDevices.Health(_settings.AudioInputDeviceId);
+
         _decoder = new CwDecoder(_audioInput.SampleRate, _settings.CwPitchHz);
         _decoder.CharacterDecoded += Transcript.Append;
 
@@ -2355,13 +2362,252 @@ public partial class MainWindowViewModel : ObservableObject
 
         DetectedWpm = _decoder.State.WordsPerMinute;
         DecodeNote = _decoder.Watch.NoteText;
+
+        // WHAT IS ARRIVING, WHETHER OR NOT ANYTHING DECODES (HM-DEC-088). A
+        // strong signal that will not resolve and an empty band used to produce
+        // the same screen, and they are different problems.
+        DecodeReport = _decoder.Report;
         OnPropertyChanged(nameof(TerminalSummary));
+        OnPropertyChanged(nameof(InputLevelText));
+        OnPropertyChanged(nameof(InputLevelFraction));
+        OnPropertyChanged(nameof(DecoderStory));
+        OnPropertyChanged(nameof(HasDecoderStory));
+        OnPropertyChanged(nameof(CaptureNote));
+        OnPropertyChanged(nameof(HasCaptureNote));
+
+        NoteDecodeQuality();
 
         // OFFERED, NEVER ASSERTED (HM-DEC-059, HM-OPEN-006). The decoder
         // measured what the other station is sending at, so Hamlet may say so.
         // It has never asked what speed this operator can copy, so it may not
         // claim that this one suits them.
         Transmit.HeardWpm = _decoder.State.HasSignal ? _decoder.State.WordsPerMinute : null;
+    }
+
+    /// <summary>
+    /// True once the operator has tuned with the wheel (HM-DEC-088).
+    /// </summary>
+    /// <remarks>
+    /// Persisted, because a hint that came back every launch would not have
+    /// retired at all.
+    /// </remarks>
+    [ObservableProperty]
+    private bool _hasTunedByWheel;
+
+    partial void OnHasTunedByWheelChanged(bool value)
+    {
+        if (value && !_settings.HasTunedByWheel)
+        {
+            _settings.HasTunedByWheel = true;
+            SettingsStore.Save(_settings);
+        }
+    }
+
+    /// <summary>What the decoder is hearing and making of it (HM-DEC-088).</summary>
+    [ObservableProperty]
+    private CwDecodeReport _decodeReport = CwDecodeReport.None;
+
+    /// <summary>
+    /// The input level in words, always, even when nothing is decoding.
+    /// </summary>
+    /// <remarks>
+    /// **THIS IS THE ONE-GLANCE ANSWER TO THE WHOLE COMPLAINT.** If the level is
+    /// down at the bottom while the operator is listening to a perfectly good
+    /// signal, the two audio paths have come apart and no amount of decoder work
+    /// will fix it.
+    /// </remarks>
+    public string InputLevelText
+    {
+        get
+        {
+            if (!IsDecoding)
+            {
+                return "";
+            }
+
+            var level = DecodeReport.Level;
+
+            if (level.Clipping)
+            {
+                return "input overloading";
+            }
+
+            if (level.NearlySilent)
+            {
+                return "almost nothing arriving";
+            }
+
+            return $"input peaking at {level.PeakDb:0} dB, noise around "
+                + $"{level.FloorDb:0} dB";
+        }
+    }
+
+    /// <summary>The input level as a bar, zero to one.</summary>
+    public double InputLevelFraction
+    {
+        get
+        {
+            var peak = DecodeReport.Level.PeakDb;
+
+            return Math.Clamp(
+                (peak - AudioLevel.SilenceDb)
+                    / (AudioLevel.FullScaleDb - AudioLevel.SilenceDb),
+                0, 1);
+        }
+    }
+
+    /// <summary>What the decoder can see, when it is producing nothing.</summary>
+    public string DecoderStory => CwDecodeStory.Describe(DecodeReport, IsDecoding);
+
+    /// <summary>True when there is something to say about it.</summary>
+    public bool HasDecoderStory => DecoderStory.Length > 0;
+
+    /// <summary>What Windows is doing to the input, where it could be read.</summary>
+    public string CaptureNote => CaptureAdvice.Describe(_capture);
+
+    /// <summary>True when Windows is doing something worth saying.</summary>
+    public bool HasCaptureNote => CaptureNote.Length > 0;
+
+    /// <summary>The standing note about enhancements, which Hamlet cannot read.</summary>
+    public static string EnhancementsNote => CaptureAdvice.EnhancementsNote;
+
+    private CaptureHealth _capture = CaptureHealth.Unknown;
+
+    /// <summary>The last decode-quality figures written, so an unchanged one is not.</summary>
+    private CwDecodeReport _lastQuality = CwDecodeReport.None;
+
+    /// <summary>When the last one was written.</summary>
+    private DateTime _lastQualityUtc = DateTime.MinValue;
+
+    /// <summary>
+    /// How rarely the decode-quality figures may be written.
+    /// </summary>
+    /// <remarks>
+    /// **THE LAST TELEMETRY FILE WROTE THE SAME UNCHANGED STATE TWICE PER MORSE
+    /// ELEMENT** and buried everything that mattered under it (HM-DEC-077). Ten
+    /// seconds, and only when something actually moved.
+    /// </remarks>
+    private static readonly TimeSpan QualityInterval = TimeSpan.FromSeconds(10);
+
+    /// <summary>Put the decode-quality figures in the record, rarely.</summary>
+    private void NoteDecodeQuality()
+    {
+        var now = DateTime.UtcNow;
+
+        if (now - _lastQualityUtc < QualityInterval)
+        {
+            return;
+        }
+
+        var report = DecodeReport;
+
+        // WHAT DECIDES IT IS WHICH NUMBERS MOVED, which is why the rate limit
+        // lives here and not inside the event (§8.1).
+        var moved = report.CharactersEmitted != _lastQuality.CharactersEmitted
+            || report.HasTone != _lastQuality.HasTone
+            || report.Clipping != _lastQuality.Clipping
+            || report.NearlySilent != _lastQuality.NearlySilent
+            || Math.Abs(report.Level.PeakDb - _lastQuality.Level.PeakDb) >= 3;
+
+        if (!moved)
+        {
+            return;
+        }
+
+        _lastQualityUtc = now;
+        _lastQuality = report;
+
+        AppEvents.DecodeQuality(_telemetry, report, "sampled");
+    }
+
+    /// <summary>
+    /// Keep the last half minute the decoder heard, as a file (HM-DEC-088).
+    /// </summary>
+    /// <remarks>
+    /// <para>**EVERYTHING ELSE ABOUT THE FAINT-SIGNAL PROBLEM IS A HYPOTHESIS
+    /// UNTIL ONE OF THESE EXISTS.** A wrong decode with its input attached is a
+    /// regression test; a wrong decode without one is an argument that runs for
+    /// three sessions (§0.0.1, HM-DEC-007).</para>
+    /// <para>The state at the moment of capture is written beside it, because a
+    /// recording whose filter width and keyer speed are unknown can be listened
+    /// to and cannot be reasoned about.</para>
+    /// </remarks>
+    [RelayCommand]
+    private void CaptureAudio()
+    {
+        var audio = _decoder?.Tap.Snapshot();
+
+        if (audio is null)
+        {
+            StatusText = "There is no audio to keep just now.";
+            AppEvents.AudioCaptured(_telemetry, 0, FrequencyHz, worked: false);
+            return;
+        }
+
+        try
+        {
+            var folder = Path.Combine(SettingsStore.DataFolder, "captures");
+            Directory.CreateDirectory(folder);
+
+            var stamp = DateTime.UtcNow.ToString("yyyy-MM-dd-HHmmss");
+            var wav = Path.Combine(folder, $"cw-{stamp}.wav");
+
+            WavAudio.Write(wav, audio);
+            File.WriteAllText(
+                Path.Combine(folder, $"cw-{stamp}.txt"), CaptureNotes(audio));
+
+            StatusText =
+                $"Kept the last {audio.Duration.TotalSeconds:0} seconds of what the "
+                + "decoder heard, with what the radio was doing beside it.";
+
+            AppEvents.AudioCaptured(
+                _telemetry, audio.Duration.TotalSeconds, FrequencyHz, worked: true);
+        }
+        catch (Exception)
+        {
+            // A capture that cannot be written loses a recording and nothing
+            // else (§8).
+            StatusText = "Hamlet could not write the recording.";
+            AppEvents.AudioCaptured(_telemetry, 0, FrequencyHz, worked: false);
+        }
+    }
+
+    /// <summary>Everything worth knowing about a capture, beside it.</summary>
+    private string CaptureNotes(MonoAudio audio)
+    {
+        var state = RigState;
+        var report = DecodeReport;
+
+        var lines = new List<string>
+        {
+            $"captured   {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC",
+            $"seconds    {audio.Duration.TotalSeconds:0.0}",
+            $"sampleRate {audio.SampleRate}",
+            $"frequency  {FrequencyHz} Hz",
+            $"band       {SelectedBand.Band.Name}",
+            "",
+            $"inputPeak  {report.Level.PeakDb:0.0} dBFS",
+            $"inputFloor {report.Level.FloorDb:0.0} dBFS",
+            $"clipping   {report.Clipping}",
+            $"toneHz     {(report.HasTone ? report.ToneHz.ToString("0") : "none")}",
+            $"snrDb      {(double.IsNaN(report.SnrDb) ? "unread" : report.SnrDb.ToString("0.0"))}",
+            $"elements   {report.ElementsSeen} seen, {report.ElementsResolved} resolved",
+            $"characters {report.CharactersEmitted} emitted, {report.CharactersUnsure} unsure",
+            "",
+        };
+
+        // EVERY FIELD WITH ITS PROVENANCE, and unread stays unread rather than
+        // becoming a zero somebody later reasons from (HM-DEC-050).
+        foreach (var value in state.All())
+        {
+            lines.Add(
+                $"{value.Field,-20} "
+                + (value.IsKnown
+                    ? value.Text
+                    : value.State.ToString().ToLowerInvariant()));
+        }
+
+        return string.Join(Environment.NewLine, lines);
     }
 
     /// <summary>Stop listening to the radio's scope.</summary>

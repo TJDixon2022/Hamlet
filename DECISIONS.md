@@ -4,6 +4,139 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-088
+date: 2026-08-16
+refs: src/Hamlet.RadioEngine/Cw/CwToneTracker.cs, src/Hamlet.RadioEngine/Cw/CwGate.cs, src/Hamlet.RadioEngine/Cw/CwDecodeReport.cs, src/Hamlet.RadioEngine/Audio/AudioTap.cs, src/Hamlet.RadioEngine/Audio/CaptureHealth.cs, src/Hamlet.RadioEngine/Rig/ReceiveAdvice.cs, tests/Hamlet.RadioEngine.Tests/Cw/CwSensitivity.cs, tests/Hamlet.RadioEngine.Tests/Cw/CwDiagnosisTests.cs, HM-DEC-007, HM-DEC-048, HM-DEC-084
+---
+
+**The decoder measures the noise beside the tone rather than inferring it from
+the tone, integrates over the element rather than over a constant, keeps a
+recording of whatever it heard, and says what it can see even when it produces
+nothing.**
+
+The operator copies faint signals by ear that produce nothing on screen. Strong
+signals decode. This is not a no-signal case: he is hearing Morse and the
+application is silent.
+
+---
+
+**THE MEASUREMENT CAME FIRST AND IT CORRECTED THE BRIEF.** The session was asked
+to rebuild detection as narrowband on the grounds that the decoder listens across
+a six-hundred-hertz window and so collects about twelve times the noise the ear
+does, worth roughly eleven decibels. **The decoder was already narrowband.** It
+has been a bank of Goertzel filters at twenty-five hertz spacing since
+HM-DEC-048, tracking one bin, and its noise bandwidth is set by the twenty-
+millisecond window rather than by the range it hunts across, which puts it near
+seventy-five hertz and not six hundred. So the eleven decibels were real as a gap
+against the ear and the stated cause was not the cause.
+
+**What actually helped was measured one change at a time**, against a sweep built
+before anything was touched:
+
+| Change | Reads down to | Wrong share |
+|---|---|---|
+| Before anything | **−3.0 dB** | up to 0.28 |
+| Noise from neighboring bins | −3.0 dB | 0.19 |
+| Gate floor at 8 dB instead of 10 | −4.0 dB | 0.19 |
+| Goertzel window doubled to 40 ms | −4.0 dB | 0.11 |
+| De-glitch sized from the element | **−5.0 dB** | 0.19 |
+
+Two of those were rejected on the evidence. **Lowering the gate floor further
+made it worse, not better**: four decibels read only to −1.0. **Doubling the
+window bought a decibel and broke speed tracking**, which the corpus caught, and
+it would have been unsafe at speeds the corpus does not cover anyway, since a
+forty-millisecond window spans a whole dit at sixty words a minute. A decibel is
+not worth a failure mode nobody can see.
+
+**The two that shipped are the two that are principled.** Noise measured in the
+bins either side, at the same instant, by median so a station nearby cannot drag
+it; and a de-glitch window sized at a third of a dit instead of a fixed
+twenty-five milliseconds. The second is integration over the element in the only
+place a two-valued signal allows it, and it is the largest single gain.
+
+**Final: −3.0 dB to −5.0 dB, and clean where it was not.** The old decoder
+returned one character wrong out of nine even at eighteen decibels, on every run.
+The new one returns the message perfectly from eighteen decibels down to minus
+two. That second result is worth more than the two decibels.
+
+**THE SWEEP IS NOW A TEST, WITH TWO ASSERTIONS**, and the second matters more:
+that it reads as far down as it did, and that **it goes quiet rather than
+inventing letters below that**. A change that buys sensitivity by guessing fails.
+
+---
+
+**EVIDENCE BEFORE HYPOTHESES.** The decoder keeps the last thirty seconds of
+exactly what it was fed, and one press writes it out with the frequency, the mode,
+the filter width, the levels and every rig field beside it. The tap sits at the
+decoder rather than at the sound card, so a capture is what the decoder received
+and not what something upstream believes it sent. **A wrong decode with its input
+attached is a regression test; without one it is an argument that runs for three
+sessions** (§0.0.1, HM-DEC-007).
+
+**THE TWO AUDIO PATHS ARE NAMED, BECAUSE THEY MAY BE THE WHOLE ANSWER.** What
+reaches the speaker and what reaches the computer are separate signals with
+separate gains, and turning the volume up does nothing for the decoder. Three
+things sit in that second path and the operator could see none of them: the
+radio's own USB output level (`1A 05 0060`), the capture level Windows keeps per
+device, and the enhancements Windows applies to capture inputs.
+
+The first two are read and reported as measurements, and the first is now
+offered through the writes layer. **The third is named and never diagnosed**,
+because it cannot be read reliably from an ordinary application, and an unread
+setting reported as off would be worse than not mentioning it (§0.0). Clipping is
+reported too: it is the opposite failure and equally fatal.
+
+**And the input level is on screen continuously.** If it is on the floor while a
+signal is plainly audible, that is the diagnosis and it takes one glance.
+
+---
+
+**THE THINGS THAT EAT A WEAK TONE ARE NOW ON THE LIST** (HM-DEC-084). Noise
+reduction off, because it smooths the edges that are the entire content of Morse.
+The gain control to fast, because a slow one lets a loud element hold the quiet
+ones behind it down; **off is left alone**, since some operators choose it and
+changing what somebody chose deliberately is the protectiveness that ruling
+exists to remove. The filter to about five hundred hertz, and **both directions
+are faults**: wide open lets in the neighbors, and too narrow loses a station
+tuned slightly off, which looks exactly like nobody being there.
+
+---
+
+**WHAT IT SAYS WHEN NOTHING DECODES.** A strong signal that will not resolve and
+an empty band used to produce the same screen. They are completely different
+problems, and one of them is a third thing again: audio never arriving. So the
+decoder reports what it can observe. Whether there is a tone, at what pitch, how
+far above the band beside it, and whether the timing is resolving.
+
+**EVERYTHING IT REPORTS IS A MEASUREMENT OF THE AUDIO AND NEVER AN INFERENCE
+ABOUT A STATION**, and this is the rule the speed estimate had to learn once
+already, when a number derived from noise reached the screen as a fact about an
+operator. No speed, no callsign, no confidence marks unless characters are
+genuinely being decoded. A test sweeps every passage at every level for words a
+decoder could only know by inferring something about a person.
+
+**And it says nothing at all while it is working**, because a diagnosis printed
+beside a working decode is what teaches somebody to stop reading the notices.
+
+---
+
+**MEASURABILITY IS PART OF THE FEATURE AND NOT A FOOTNOTE.** The operator asked
+for it explicitly: this is experimental, and without numbers there is no way to
+tell whether it helped. A decode-quality event carries the input level, the noise
+floor, the tone, the ratio, elements attempted and resolved, and characters
+emitted and marked. **Rate-limited at the caller**, at ten seconds and only when
+something moved, because the file that prompted HM-DEC-077 wrote the same
+unchanged state twice per Morse element and buried what mattered.
+
+---
+
+**NONE OF THE DECODER WORK HAS MET A RADIO.** It is measured against synthesized
+audio, and the corpus is synthetic because §2.1 makes an off-air recording Tim's
+to review. The capture button exists so that stops being true: the first real
+recording of a signal he can hear and Hamlet cannot joins the corpus, and from
+then on the argument has an exhibit.
+
+---
 id: HM-DEC-087
 date: 2026-08-16
 refs: src/Hamlet.App/App.axaml, src/Hamlet.App/Views/MainWindow.axaml, src/Hamlet.App/Controls/WidgetFrame.cs, src/Hamlet.App/ViewModels/CanvasViewModel.cs, tests/Hamlet.App.Tests/Views/BindingHealthTests.cs, tests/Hamlet.App.Tests/Layout/CanvasArrivalTests.cs, HM-DEC-078, HM-DEC-079, HM-DEC-080, HM-DEC-086

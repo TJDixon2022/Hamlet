@@ -16,7 +16,7 @@ public sealed class CallsignPrivacyTests : IDisposable
     /// <summary>Every public event-writing method on <see cref="AppEvents"/>.
     /// If this number moves, a new event was added and the walk below has to
     /// grow with it — that is the point.</summary>
-    private const int ExpectedEventMethodCount = 48;
+    private const int ExpectedEventMethodCount = 50;
 
     private const string Callsign = "KC3QIS";
     // "Timothy", not "Tim": a three-letter needle matches "timer", which is a
@@ -207,6 +207,18 @@ public sealed class CallsignPrivacyTests : IDisposable
         window.Rejected(Hamlet.RadioEngine.Telemetry.DecodeRejection.Contested);
         window.Observed(-98.5, 604, 15);
         AppEvents.DecodeWindow(telemetry, window);
+
+        // The decode-quality figures and a capture, both of which describe audio
+        // and could describe a station if anybody let them (HM-DEC-088).
+        AppEvents.DecodeQuality(
+            telemetry,
+            new Hamlet.RadioEngine.Cw.CwDecodeReport(
+                new Hamlet.RadioEngine.Audio.AudioLevel(-12, -20, -46, false, 30),
+                620, 9.5, true, 44, 40, 11, 2),
+            "sampled");
+
+        AppEvents.AudioCaptured(telemetry, 30, 7_030_000, worked: true);
+        AppEvents.AudioCaptured(telemetry, 0, 7_030_000, worked: false);
 
         AppEvents.AppStart(telemetry);
         AppEvents.AppStop(telemetry);

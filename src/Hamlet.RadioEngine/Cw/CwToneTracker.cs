@@ -11,9 +11,30 @@ namespace Hamlet.RadioEngine.Cw;
 /// </param>
 /// <param name="ToneHz">The pitch being followed.</param>
 /// <param name="SampleIndex">Index of the last sample in this measurement.</param>
+/// <param name="NoiseDb">
+/// What the band is doing either side of the tone, measured at this instant
+/// (HM-DEC-088).
+/// </param>
 public readonly record struct ToneReading(
-    double PowerDb, double CompetitorDb, double ToneHz, long SampleIndex)
+    double PowerDb, double CompetitorDb, double ToneHz, long SampleIndex,
+    double NoiseDb = double.NaN)
 {
+    /// <summary>True when the noise beside the tone was actually measured.</summary>
+    public bool HasNoise => !double.IsNaN(NoiseDb);
+
+    /// <summary>
+    /// How far the tone stands above the noise beside it, right now.
+    /// </summary>
+    /// <remarks>
+    /// **MEASURED AT THE SAME INSTANT, IN OTHER BINS** (HM-DEC-088). The old
+    /// estimate came from watching the signal's own bin during the gaps between
+    /// elements, which is the only place a single-bin decoder can look. That
+    /// works and it has two faults: it cannot tell a fade from a gap, and it is
+    /// always one element behind. Taking the noise from either side instead is
+    /// free, unbiased, and follows a fade without ever chasing the signal.
+    /// </remarks>
+    public double SnrDb => HasNoise ? PowerDb - NoiseDb : double.NaN;
+
     /// <summary>
     /// How far the tracked note stands above whatever a rival station is
     /// actually managing to put into the same filter.
@@ -139,6 +160,7 @@ public sealed class CwToneTracker
     private readonly float[] _window;
     private readonly float[] _hann;
     private readonly float[] _scratch;
+    private readonly double[] _neighbors;
 
     private int _windowFill;
     private int _windowWrite;
@@ -167,6 +189,7 @@ public sealed class CwToneTracker
             _binCoefficient[i] = 2 * Math.Cos(2 * Math.PI * _binHz[i] / SampleRate);
         }
 
+        _neighbors = new double[count];
         _window = new float[WindowSamples];
         _scratch = new float[WindowSamples];
         _hann = new float[WindowSamples];
@@ -257,6 +280,7 @@ public sealed class CwToneTracker
         var trackedPower = 0.0;
         var competitorPower = 0.0;
         var trackedHz = _binHz[_tracked];
+        var neighbors = 0;
 
         for (var b = 0; b < _binHz.Length; b++)
         {
@@ -267,10 +291,17 @@ public sealed class CwToneTracker
             {
                 trackedPower = power;
             }
-            else if (Math.Abs(_binHz[b] - trackedHz) >= CompetitorSeparationHz
-                     && power > competitorPower)
+            else if (Math.Abs(_binHz[b] - trackedHz) >= CompetitorSeparationHz)
             {
-                competitorPower = power;
+                if (power > competitorPower)
+                {
+                    competitorPower = power;
+                }
+
+                // Far enough out that the tone itself does not reach, which is
+                // what makes these a sample of the band rather than of the
+                // signal.
+                _neighbors[neighbors++] = power;
             }
         }
 
@@ -281,7 +312,8 @@ public sealed class CwToneTracker
         }
 
         return new ToneReading(
-            ToDb(trackedPower), ToDb(competitorPower), trackedHz, _samplesSeen);
+            ToDb(trackedPower), ToDb(competitorPower), trackedHz, _samplesSeen,
+            ToDb(NoiseFrom(neighbors)));
     }
 
     /// <summary>Goertzel power over the scratch buffer at one coefficient.</summary>
@@ -341,6 +373,34 @@ public sealed class CwToneTracker
         }
 
         _tracked = chosen;
+    }
+
+    /// <summary>
+    /// What the band is doing beside the tone (HM-DEC-088).
+    /// </summary>
+    /// <param name="count">How many neighboring bins were collected.</param>
+    /// <returns>A noise power, or NaN when there was nothing to look at.</returns>
+    /// <remarks>
+    /// <para>**THE MEDIAN, NOT THE MEAN**, and that is the whole reason this
+    /// works on a busy band. A second station sitting in one or two of these bins
+    /// drags a mean upward and takes the threshold with it, which would make the
+    /// decoder deaf exactly when somebody is calling nearby. A median ignores any
+    /// minority of loud bins entirely.</para>
+    /// <para>Selection is by partial sort into a scratch array that is allocated
+    /// once. This runs two hundred times a second for as long as the application
+    /// is open, and §8 is explicit that the decoder's own measurements may not
+    /// allocate per element.</para>
+    /// </remarks>
+    private double NoiseFrom(int count)
+    {
+        if (count == 0)
+        {
+            return double.NaN;
+        }
+
+        Array.Sort(_neighbors, 0, count);
+
+        return _neighbors[count / 2];
     }
 
     /// <summary>Power in decibels, with a floor so silence is a number.</summary>

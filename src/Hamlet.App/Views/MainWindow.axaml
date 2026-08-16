@@ -452,6 +452,33 @@
                         </StackPanel>
                     </Grid>
 
+                    <!-- WHAT THE DECODER IS ACTUALLY BEING FED (HM-DEC-088).
+
+                         The operator hears the speaker and the decoder hears the
+                         USB codec, and those are two paths with two gains.
+                         Turning the volume up to hear a faint signal better does
+                         nothing at all for the decoder, and until now nothing on
+                         screen said so. If this bar is on the floor while a
+                         signal is plainly audible, that is the whole diagnosis
+                         and it takes one glance. -->
+                    <Grid ColumnDefinitions="Auto,*,Auto" Margin="0,2,0,0"
+                          IsVisible="{Binding IsDecoding}">
+                        <TextBlock Grid.Column="0" Text="input"
+                                   FontSize="11" VerticalAlignment="Center"
+                                   Margin="0,0,8,0"
+                                   Foreground="{StaticResource HmTextMutedBrush}" />
+
+                        <ProgressBar Grid.Column="1" Minimum="0" Maximum="1"
+                                     Height="6" VerticalAlignment="Center"
+                                     Value="{Binding InputLevelFraction}"
+                                     Foreground="{StaticResource HmGreenBrush}" />
+
+                        <TextBlock Grid.Column="2" Text="{Binding InputLevelText}"
+                                   FontSize="11" VerticalAlignment="Center"
+                                   Margin="8,0,0,0"
+                                   Foreground="{StaticResource HmTextMutedBrush}" />
+                    </Grid>
+
                     <Border CornerRadius="8" ClipToBounds="True"
                             BorderThickness="1"
                             Background="{x:Static ctl:InstrumentPalette.SurfaceBrush}"
@@ -464,6 +491,54 @@
                                 IdleText="{Binding TerminalIdleText}" />
                         </ScrollViewer>
                     </Border>
+
+                    <!-- WHAT IT CAN SEE WHEN IT IS PRODUCING NOTHING
+                         (HM-DEC-088). A strong signal that will not resolve and
+                         an empty band used to produce the same screen, and they
+                         are completely different problems. Everything in here is
+                         a measurement of the audio and never a claim about
+                         whoever is sending. -->
+                    <Border IsVisible="{Binding HasDecoderStory}"
+                            Background="{StaticResource HmBlueTintBrush}"
+                            BorderBrush="{StaticResource HmBlueEdgeBrush}"
+                            BorderThickness="1" CornerRadius="6"
+                            Padding="10,7" Margin="0,2,0,0">
+                        <ctl:GlossaryTextControl Text="{Binding DecoderStory}"
+                                                 FontSize="12" LineSpacing="1.45"
+                                                 Foreground="{StaticResource HmTextPrimaryBrush}" />
+                    </Border>
+
+                    <!-- What Windows is doing to the input, where it could be
+                         read, and the enhancements it could not. -->
+                    <Border IsVisible="{Binding HasCaptureNote}"
+                            Background="{StaticResource HmAmberTintBrush}"
+                            BorderBrush="{StaticResource HmAmberEdgeBrush}"
+                            BorderThickness="1" CornerRadius="6"
+                            Padding="10,7" Margin="0,2,0,0">
+                        <ctl:GlossaryTextControl Text="{Binding CaptureNote}"
+                                                 FontSize="12" LineSpacing="1.45"
+                                                 Foreground="{StaticResource HmTextPrimaryBrush}" />
+                    </Border>
+
+                    <!-- KEEP WHAT IT HEARD (HM-DEC-088). Everything about the
+                         faint-signal problem is a hypothesis until one of these
+                         exists: a wrong decode with its input attached is a
+                         regression test, and without one it is an argument that
+                         runs for three sessions. -->
+                    <Grid ColumnDefinitions="*,Auto" Margin="0,2,0,0">
+                        <TextBlock Grid.Column="0"
+                                   Text="If you can hear Morse that is not arriving here, keep the last half minute and it becomes something anybody can look at."
+                                   FontSize="11" TextWrapping="Wrap"
+                                   VerticalAlignment="Center" Margin="0,0,10,0"
+                                   Foreground="{StaticResource HmTextMutedBrush}" />
+
+                        <Button Grid.Column="1" Content="Keep this audio"
+                                FontSize="11" Padding="10,4"
+                                VerticalAlignment="Center"
+                                IsEnabled="{Binding IsDecoding}"
+                                ToolTip.Tip="Writes a WAV of exactly what the decoder heard, with what the radio was doing beside it."
+                                Command="{Binding CaptureAudioCommand}" />
+                    </Grid>
 
                     <!-- The plain-language note, present only when
                          there is something to say. An explanation
@@ -1529,10 +1604,19 @@
                  surface you can rearrange is the wrong place for them. This
                  widens HM-DEC-021's exemption for the rig display to the whole
                  strip it sits in. -->
-            <StackPanel Grid.Row="0">
+            <!-- ONE ROW: where you are, what you are on, and whether you may
+                 use it (HM-DEC-088). It is context rather than a tool, so it
+                 stays fixed and outside the canvas, and it now costs a strip
+                 rather than a third of the window. -->
+            <Grid Grid.Row="0" ColumnDefinitions="*,Auto"
+                  RowDefinitions="Auto,Auto" Margin="0,0,0,10">
 
-    <!-- Band buttons -->
-    <ItemsControl ItemsSource="{Binding Bands}" Margin="0,6,0,14">
+    <!-- THE BANDS SIT BESIDE THE READOUT NOW (HM-DEC-088), not above it. As
+         two stacked blocks they took about a third of the window height to
+         convey a band, a frequency, a mode and a hint, and the canvas below
+         them is what the operator actually works in. -->
+    <ItemsControl Grid.Row="0" Grid.Column="0" VerticalAlignment="Top"
+                  ItemsSource="{Binding Bands}" Margin="0,0,14,0">
         <ItemsControl.ItemsPanel>
             <ItemsPanelTemplate>
                 <StackPanel Orientation="Horizontal" Spacing="8" />
@@ -1595,70 +1679,16 @@
     </ItemsControl>
 
     <!-- Frequency face: the rig's own LCD on the console. Deliberately
-         NOT collapsible (HM-DEC-021) — it is the app's anchor. -->
-    <Border Background="{StaticResource HmAmberTintBrush}"
+         NOT collapsible (HM-DEC-021), and the whole strip it sits in is
+         exempt from the canvas (HM-DEC-086). Padding cut from twenty by
+         twelve, because the space around it was doing nothing. -->
+    <Border Grid.Row="0" Grid.RowSpan="2" Grid.Column="1"
+            VerticalAlignment="Top"
+            Background="{StaticResource HmAmberTintBrush}"
             BorderBrush="{StaticResource HmAmberEdgeBrush}"
             BorderThickness="1" CornerRadius="8"
-            Padding="20,12" Margin="0,0,0,12">
-        <StackPanel Spacing="6">
-
-            <!-- The strip along the top of the warm panel (HM-DEC-070):
-                 which favorite you landed on at the left, and the way to
-                 any of them at the right. The name lives out here rather
-                 than in the black because a name is as long as somebody
-                 made it, and the LCD has a mode badge at one end and a
-                 clock at the other. -->
-            <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,4">
-                <TextBlock Grid.Column="0" Text="{Binding FavoriteHere}"
-                           FontSize="12" VerticalAlignment="Center"
-                           TextTrimming="CharacterEllipsis"
-                           Margin="2,0,10,0"
-                           Foreground="{StaticResource HmAmberBrush}" />
-
-                <!-- THE TWO SIT TOGETHER AND READ AS A PAIR (HM-DEC-072).
-                     Favorites are places he chose and recent are places he
-                     was, so scattering them would hide that they are the
-                     same kind of thing. Each is absent until it has
-                     something in it, because an empty dropdown reads as a
-                     control that is broken. -->
-                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
-                    <ComboBox ItemsSource="{Binding Recent}"
-                              SelectedItem="{Binding SelectedRecent}"
-                              PlaceholderText="recent"
-                              MinWidth="180" FontSize="12"
-                              IsVisible="{Binding HasRecent}">
-                        <!-- PROVENANCE TRAVELS WITH THE NAME (HM-DEC-073).
-                             A callsign Hamlet read off the air and one a
-                             spot feed reported are different facts, and a
-                             line that showed only the name would let the
-                             weaker one borrow the stronger one's
-                             authority. -->
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate x:DataType="explore:RecentStation">
-                                <StackPanel Spacing="0">
-                                    <TextBlock Text="{Binding Label}" />
-                                    <TextBlock Text="{Binding Provenance}"
-                                               FontSize="10"
-                                               IsVisible="{Binding IsIdentified}"
-                                               Foreground="{StaticResource HmTextMutedBrush}" />
-                                </StackPanel>
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
-                    </ComboBox>
-
-                    <ComboBox ItemsSource="{Binding Favorites}"
-                              SelectedItem="{Binding SelectedFavorite}"
-                              PlaceholderText="favorites"
-                              MinWidth="180" FontSize="12"
-                              IsVisible="{Binding HasFavorites}">
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate x:DataType="explore:Favorite">
-                                <TextBlock Text="{Binding Name}" />
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
-                    </ComboBox>
-                </StackPanel>
-            </Grid>
+            Padding="12,6" Margin="0">
+        <StackPanel Spacing="3">
 
             <!-- THE STAR IS INSIDE THE BLACK (HM-DEC-070), which reverses
                  what HM-DEC-060 built. That ruling kept Hamlet's chrome off
@@ -1666,6 +1696,8 @@
                  Tim weighed that against being able to find the thing and
                  chose being able to find it. -->
             <ctl:RigDisplayControl HorizontalAlignment="Center"
+                ToolTip.Tip="Roll the scroll wheel over any digit to tune that digit."
+                HasTunedByWheel="{Binding HasTunedByWheel, Mode=TwoWay}"
                 FrequencyHz="{Binding FrequencyHz}"
                 BandLowHz="{Binding SelectedBand.Band.LowHz}"
                 BandHighHz="{Binding SelectedBand.Band.HighHz}"
@@ -1676,18 +1708,106 @@
                 FavoriteLabel="{Binding FavoriteLabel}"
                 ToggleFavoriteCommand="{Binding ToggleFavoriteCommand}" />
 
+            <!-- THE HINT RETIRES ONCE IT HAS BEEN USED (HM-DEC-088). It is a
+                 line somebody needs exactly once, and a line that stays on
+                 screen forever after it has been learned is a line that teaches
+                 people to stop reading that part of the window. Once the
+                 operator has tuned by the wheel it goes, and the readout's own
+                 tooltip carries it from then on. -->
             <TextBlock Text="scroll wheel over a digit tunes that digit"
-                       FontSize="12" HorizontalAlignment="Center"
-                       Margin="0,4,0,0"
+                       FontSize="11" HorizontalAlignment="Center"
+                       IsVisible="{Binding !HasTunedByWheel}"
                        Foreground="{StaticResource HmAmberBrush}" />
         </StackPanel>
     </Border>
 
-    <!-- Map, tape, then explorer beside waterfall/terminal. Every row is
-         Auto because there is no leftover height to share inside a
-         scroller: a star row would measure to nothing and take the panels
-         with it. -->
+    <!-- WHERE YOU ARE AND WHETHER YOU MAY TRANSMIT, which is not decoration
+         and does not get dropped for space (HM-DEC-029, HM-DEC-088). It moves
+         to the end of the row rather than under the readout, where it has the
+         width to say the whole sentence. -->
+    <!-- WHERE YOU ARE AND WHERE YOU HAVE BEEN, on one line under the bands
+         (HM-DEC-088). Both used to have a row to themselves. -->
+    <Grid Grid.Row="1" Grid.Column="0" ColumnDefinitions="Auto,*"
+          Margin="0,8,14,0" VerticalAlignment="Center">
+
+    <Border Grid.Column="0" VerticalAlignment="Center"
+            CornerRadius="6" Padding="10,6" BorderThickness="1"
+            Background="{Binding PrivilegeStatus.Tone,
+                Converter={x:Static ctl:PrivilegeToneConverter.Background}}"
+            BorderBrush="{Binding PrivilegeStatus.Tone,
+                Converter={x:Static ctl:PrivilegeToneConverter.Border}}">
+        <StackPanel Spacing="2">
+            <TextBlock Text="{Binding PrivilegeStatus.Headline}"
+                       FontSize="12" FontWeight="SemiBold"
+                       TextWrapping="Wrap"
+                       Foreground="{Binding PrivilegeStatus.Tone,
+                           Converter={x:Static ctl:PrivilegeToneConverter.Text}}" />
+
+            <TextBlock Text="{Binding PrivilegeStatus.Citation}"
+                       FontSize="10" TextWrapping="Wrap"
+                       Foreground="{StaticResource HmTextMutedBrush}" />
+        </StackPanel>
+    </Border>
+
+        <!-- The strip along the top of the warm panel (HM-DEC-070):
+             which favorite you landed on at the left, and the way to
+             any of them at the right. The name lives out here rather
+             than in the black because a name is as long as somebody
+             made it, and the LCD has a mode badge at one end and a
+             clock at the other. -->
+        <Grid Grid.Column="1" ColumnDefinitions="*,Auto" Margin="14,0,0,0">
+            <TextBlock Grid.Column="0" Text="{Binding FavoriteHere}"
+                       FontSize="12" VerticalAlignment="Center"
+                       TextTrimming="CharacterEllipsis"
+                       Margin="2,0,10,0"
+                       Foreground="{StaticResource HmAmberBrush}" />
+
+            <!-- THE TWO SIT TOGETHER AND READ AS A PAIR (HM-DEC-072).
+                 Favorites are places he chose and recent are places he
+                 was, so scattering them would hide that they are the
+                 same kind of thing. Each is absent until it has
+                 something in it, because an empty dropdown reads as a
+                 control that is broken. -->
+            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+                <ComboBox ItemsSource="{Binding Recent}"
+                          SelectedItem="{Binding SelectedRecent}"
+                          PlaceholderText="recent"
+                          MinWidth="180" FontSize="12"
+                          IsVisible="{Binding HasRecent}">
+                    <!-- PROVENANCE TRAVELS WITH THE NAME (HM-DEC-073).
+                         A callsign Hamlet read off the air and one a
+                         spot feed reported are different facts, and a
+                         line that showed only the name would let the
+                         weaker one borrow the stronger one's
+                         authority. -->
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate x:DataType="explore:RecentStation">
+                            <StackPanel Spacing="0">
+                                <TextBlock Text="{Binding Label}" />
+                                <TextBlock Text="{Binding Provenance}"
+                                           FontSize="10"
+                                           IsVisible="{Binding IsIdentified}"
+                                           Foreground="{StaticResource HmTextMutedBrush}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+
+                <ComboBox ItemsSource="{Binding Favorites}"
+                          SelectedItem="{Binding SelectedFavorite}"
+                          PlaceholderText="favorites"
+                          MinWidth="180" FontSize="12"
+                          IsVisible="{Binding HasFavorites}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate x:DataType="explore:Favorite">
+                            <TextBlock Text="{Binding Name}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
             </StackPanel>
+        </Grid>
+    </Grid>
+            </Grid>
 
             <!-- PRESETS SIT ABOVE THE CANVAS, NOT IN A MENU. An arrangement
                  buried two levels into a menu is an arrangement nobody finds,

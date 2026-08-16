@@ -103,6 +103,18 @@ public sealed class CwGate
     /// <summary>How far below the peak a mark ends. Deeper, which is the hysteresis.</summary>
     private const double MaximumFallingDropDb = 9.0;
 
+    /// <summary>
+    /// How fast the floor follows a noise level that was actually measured.
+    /// </summary>
+    /// <remarks>
+    /// Symmetric and quick, about a tenth of a second, because a measurement
+    /// taken beside the tone has no reason to be trusted more in one direction
+    /// than the other. The asymmetry below exists only because inferring noise
+    /// from the signal's own bin is biased, and a measurement does not need
+    /// protecting from a bias it does not have.
+    /// </remarks>
+    private const double MeasuredNoiseAlpha = 0.05;
+
     /// <summary>How fast the noise floor settles down to a quieter band.</summary>
     /// <remarks>About a third of a second, which is slower than noise wobbles
     /// and faster than a band changes.</remarks>
@@ -123,7 +135,7 @@ public sealed class CwGate
     private const double PeakFallAlpha = 0.002;
 
     /// <summary>
-    /// How many measurements the de-glitch vote looks at.
+    /// The shortest de-glitch window, in measurements.
     /// </summary>
     /// <remarks>
     /// FIVE, WHICH IS TWENTY-FIVE MILLISECONDS, and it removes any run shorter
@@ -134,10 +146,38 @@ public sealed class CwGate
     /// four measurements, so this throws away what cannot be Morse and keeps
     /// everything that can.
     /// </remarks>
-    private const int VoteWindow = 5;
+    public const int ShortestVote = 5;
 
-    private readonly bool[] _votes = new bool[VoteWindow];
+    /// <summary>
+    /// The longest de-glitch window, in measurements.
+    /// </summary>
+    /// <remarks>
+    /// **NINE IS WHERE IT STOPS, AND THE REASON IS A MEASUREMENT RATHER THAN A
+    /// PREFERENCE** (HM-DEC-088). Widening the window buys sensitivity and then
+    /// abruptly stops buying it and starts inventing: measured across a sweep,
+    /// seven reads a decibel and a half further into the noise than five, nine is
+    /// about the same, and eleven and thirteen read no further while returning
+    /// most of the message as the wrong letters. A window that spans a real dit
+    /// deletes real dits, and what comes out the other side is the right length
+    /// to be believed (§0.0).
+    /// </remarks>
+    public const int LongestVote = 9;
 
+    /// <summary>
+    /// How much of a dit the window is allowed to span.
+    /// </summary>
+    /// <remarks>
+    /// A third. The median deletes runs shorter than half the window, so a window
+    /// of a third of a dit deletes nothing longer than a sixth of one, and no
+    /// real element is that short. This is what makes the window safe to widen at
+    /// twelve words a minute and safe to narrow at forty, where a fixed number
+    /// has to be wrong at one end or the other.
+    /// </remarks>
+    private const double VoteShareOfDit = 1.0 / 3.0;
+
+    private readonly bool[] _votes = new bool[LongestVote];
+
+    private int _voteWindow = ShortestVote;
     private int _voteCount;
     private int _voteWrite;
     private bool _started;
@@ -145,6 +185,46 @@ public sealed class CwGate
 
     /// <summary>Where the gate believes the noise sits, in decibels.</summary>
     public double NoiseFloorDb { get; private set; }
+
+    /// <summary>How many measurements the de-glitch is currently voting over.</summary>
+    public int VoteWindow => _voteWindow;
+
+    /// <summary>
+    /// Size the de-glitch from the element it is protecting (HM-DEC-088).
+    /// </summary>
+    /// <param name="ditHops">How many measurements a dit currently spans.</param>
+    /// <remarks>
+    /// **THE SINGLE LARGEST GAIN IN SENSITIVITY THIS CHANGE MADE**, and it is
+    /// integration over the element in the only place a two-valued signal allows
+    /// it. A median over a third of a dit throws away far more of the chatter a
+    /// marginal signal produces than a fixed twenty-five milliseconds does at
+    /// ordinary speeds, while still being shorter than a dit at forty words a
+    /// minute, where a fixed wider window would delete real elements.
+    /// </remarks>
+    public void FollowSpeed(double ditHops)
+    {
+        if (ditHops <= 0 || double.IsNaN(ditHops))
+        {
+            return;
+        }
+
+        var wanted = (int)Math.Round(ditHops * VoteShareOfDit);
+
+        // Odd, so a median has a middle and cannot tie.
+        if (wanted % 2 == 0)
+        {
+            wanted++;
+        }
+
+        var next = Math.Clamp(wanted, ShortestVote, LongestVote);
+
+        if (next != _voteWindow)
+        {
+            _voteWindow = next;
+            _voteCount = 0;
+            _voteWrite = 0;
+        }
+    }
 
     /// <summary>Where the gate believes a keyed signal sits, in decibels.</summary>
     public double PeakDb { get; private set; }
@@ -159,22 +239,48 @@ public sealed class CwGate
     /// Judge one measurement.
     /// </summary>
     /// <param name="powerDb">Energy at the tracked pitch, in decibels.</param>
+    /// <param name="measuredNoiseDb">
+    /// What the band is doing beside the tone at this instant, or NaN when
+    /// nothing measured it (HM-DEC-088).
+    /// </param>
     /// <returns>The decision and what it was made from.</returns>
-    public GateReading Judge(double powerDb)
+    /// <remarks>
+    /// **WHERE THE NOISE COMES FROM CHANGED, AND THE REST DID NOT.** Given a
+    /// measurement from the bins either side, the floor follows that instead of
+    /// being inferred from the signal's own bin during the gaps. It is unbiased,
+    /// it is available during a mark as well as between marks, and it cannot be
+    /// dragged up by the signal it is supposed to be measuring. Without one, the
+    /// old asymmetric tracker still runs, so nothing that fed this before behaves
+    /// differently.
+    /// </remarks>
+    public GateReading Judge(double powerDb, double measuredNoiseDb = double.NaN)
     {
+        var measured = !double.IsNaN(measuredNoiseDb);
+
         if (!_started)
         {
             // The first measurement is all there is to go on, so both trackers
             // start there and are allowed to diverge from real evidence rather
             // than from a number picked in advance.
             _started = true;
-            NoiseFloorDb = powerDb;
+            NoiseFloorDb = measured ? measuredNoiseDb : powerDb;
             PeakDb = powerDb;
         }
         else
         {
-            NoiseFloorDb += (powerDb - NoiseFloorDb)
-                * (powerDb < NoiseFloorDb ? NoiseFallAlpha : NoiseRiseAlpha);
+            if (measured)
+            {
+                // Smoothed, not taken raw. One measurement of the noise is
+                // itself noisy by several decibels, and a threshold that jitters
+                // with it produces exactly the imaginary dits this gate was
+                // slowed down to prevent.
+                NoiseFloorDb += (measuredNoiseDb - NoiseFloorDb) * MeasuredNoiseAlpha;
+            }
+            else
+            {
+                NoiseFloorDb += (powerDb - NoiseFloorDb)
+                    * (powerDb < NoiseFloorDb ? NoiseFallAlpha : NoiseRiseAlpha);
+            }
 
             PeakDb += (powerDb - PeakDb)
                 * (powerDb > PeakDb ? PeakRiseAlpha : PeakFallAlpha);
@@ -224,8 +330,8 @@ public sealed class CwGate
     private bool Vote(bool keyDown)
     {
         _votes[_voteWrite] = keyDown;
-        _voteWrite = (_voteWrite + 1) % VoteWindow;
-        _voteCount = Math.Min(_voteCount + 1, VoteWindow);
+        _voteWrite = (_voteWrite + 1) % _voteWindow;
+        _voteCount = Math.Min(_voteCount + 1, _voteWindow);
 
         var down = 0;
         for (var i = 0; i < _voteCount; i++)

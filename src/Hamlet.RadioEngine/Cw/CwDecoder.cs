@@ -183,10 +183,42 @@ public sealed class CwDecoder
         }
     }
 
+    /// <summary>
+    /// The last half minute of exactly what the decoder was fed (HM-DEC-088).
+    /// </summary>
+    /// <remarks>
+    /// **THE TAP IS HERE RATHER THAN AT THE SOUND CARD** so that what a capture
+    /// contains is what the decoder received, not what something upstream
+    /// believes it sent. A recording of a nearly-but-not-quite identical signal
+    /// would settle nothing.
+    /// </remarks>
+    public AudioTap Tap { get; } = new();
+
+    /// <summary>What is arriving, and what can be seen in it.</summary>
+    public CwDecodeReport Report => new(
+        Tap.Level,
+        _tracker.ToneHz,
+        _lastSnrDb,
+        HasTone: !double.IsNaN(_lastSnrDb)
+            && _lastSnrDb >= CwDecodeReport.ToneThresholdDb,
+        _elementsSeen,
+        _elementsResolved,
+        _charactersEmitted,
+        _charactersUnsure);
+
+    private double _lastSnrDb = double.NaN;
+    private int _elementsSeen;
+    private int _elementsResolved;
+    private int _charactersEmitted;
+    private int _charactersUnsure;
+
     /// <summary>Feed samples directly, without a source.</summary>
     /// <param name="chunk">The samples.</param>
     public void Process(in AudioChunk chunk)
-        => _tracker.Process(chunk.Samples, chunk.FirstSampleIndex, _onReading);
+    {
+        Tap.Take(chunk.Samples, chunk.SampleRate);
+        _tracker.Process(chunk.Samples, chunk.FirstSampleIndex, _onReading);
+    }
 
     /// <summary>
     /// Finish: decode anything still held and emit it.
@@ -221,7 +253,27 @@ public sealed class CwDecoder
     {
         _lastSample = reading.SampleIndex;
 
-        var gate = _gate.Judge(reading.PowerDb);
+        // THE DE-GLITCH IS SIZED FROM THE ELEMENT (HM-DEC-088). The speed
+        // estimator already knows how long a dit is here, and telling the gate
+        // lets it integrate over a third of one instead of over a fixed
+        // twenty-five milliseconds that is too short at twelve words a minute
+        // and too long at sixty.
+        _gate.FollowSpeed(_speed.DitSamples / _tracker.HopSamples);
+
+        // SMOOTHED, BECAUSE ONE MEASUREMENT OF A RATIO OF TWO NOISY THINGS IS
+        // NOISIER THAN EITHER. This is read by a screen rather than by the gate,
+        // and a figure that jumps ten decibels five times a second cannot be
+        // read by anybody (HM-DEC-088).
+        if (reading.HasNoise)
+        {
+            var snr = reading.SnrDb;
+
+            _lastSnrDb = double.IsNaN(_lastSnrDb)
+                ? snr
+                : _lastSnrDb + ((snr - _lastSnrDb) * SnrSmoothing);
+        }
+
+        var gate = _gate.Judge(reading.PowerDb, reading.NoiseDb);
         Watch.Observe(gate, _tracker.HopSamples, SampleRate);
 
         if (gate.KeyDown != _keyDown)
@@ -275,11 +327,17 @@ public sealed class CwDecoder
         CheckSilence();
     }
 
+    /// <summary>How fast the displayed signal-to-noise figure follows.</summary>
+    /// <remarks>About a second, which is slower than the eye needs and faster
+    /// than a band changes.</remarks>
+    private const double SnrSmoothing = 0.02;
+
     private void OnMarkEnded()
     {
         var snr = _runHops > 0 ? _runSnrSum / _runHops : 0;
 
         _sawAnyMark = true;
+        _elementsSeen++;
         _speed.AddMark(_runSamples);
         _pending.Add(new PendingElement(IsMark: true, _runSamples, snr, _runContestedDb));
 
@@ -295,6 +353,7 @@ public sealed class CwDecoder
             return;
         }
 
+        _elementsSeen++;
         _speed.AddGap(_runSamples);
         _pending.Add(
             new PendingElement(IsMark: false, _runSamples, 0, double.MaxValue));
@@ -518,6 +577,25 @@ public sealed class CwDecoder
 
     private void Emit(CwCharacter character)
     {
+        // COUNTED HERE, WHERE EVERY CHARACTER GOES PAST, so the metrics cannot
+        // drift away from what actually reached the screen (HM-DEC-088). Word
+        // gaps are spacing rather than copy and are not counted as either.
+        if (!character.IsWordGap)
+        {
+            _charactersEmitted++;
+
+            if (character.IsUnreadable || character.Confidence != CwConfidence.High)
+            {
+                _charactersUnsure++;
+            }
+
+            // A character that resolved consumed the elements behind it, which
+            // is what makes the resolved count mean something next to the seen
+            // one: the gap between them is what the decoder measured and could
+            // not turn into letters.
+            _elementsResolved += Math.Max(1, character.Pattern.Length);
+        }
+
         Watch.Observe(character);
         CharacterDecoded?.Invoke(character);
     }

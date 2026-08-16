@@ -12,6 +12,37 @@ operator can see and use, patch fixes and polishes without adding one.
 
 ---
 
+## 1.6.0
+
+**Hamlet hears further into the noise, and says what it is hearing.**
+
+The decoder now measures the noise beside the signal instead of guessing it from
+the signal, and sizes its own smoothing from the length of a dit rather than a
+fixed number. Measured against a sweep, it reads a message two decibels further
+down than it did, and it now returns easy signals perfectly where it used to get
+one character wrong every time.
+
+When nothing is decoding it tells you why. There is a difference between an empty
+band, a signal it can see and cannot read, and audio that is not arriving at all,
+and those used to look identical.
+
+The input level is on screen while it listens. What comes out of your speaker and
+what goes down the USB cable are two different signals with two different levels,
+and turning one up does nothing for the other. Hamlet now reads the radio's USB
+output level and the level Windows applies, and offers to fix the first.
+
+"I can hear it and Hamlet can't" learned four more things: noise reduction,
+the gain control, the filter width and that USB output level.
+
+And there is a button that keeps the last thirty seconds of exactly what the
+decoder heard, with everything the radio was doing written beside it. If you can
+hear Morse that is not arriving, that file is how it gets fixed.
+
+**The top strip is one row now**, giving about 150 px back to the canvas on every
+screen.
+
+Rulings HM-DEC-088.
+
 ## 1.5.1
 
 **The canvas can now be operated.**

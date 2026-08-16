@@ -630,6 +630,79 @@ public static class AppEvents
     }
 
     /// <summary>
+    /// How well the decoder is doing, and on what (HM-DEC-088).
+    /// </summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="report">What the decoder measured.</param>
+    /// <param name="reason">Why this was written, as a stable token.</param>
+    /// <remarks>
+    /// <para>**THE OPERATOR ASKED FOR THIS EXPLICITLY: the decoder work is
+    /// experimental and has to be measurable, or nobody can tell whether it
+    /// helped.** So every figure a change could move is here, and every one of
+    /// them is a measurement of the audio rather than a claim about a station
+    /// (§0.0). No speed, no callsign, no text.</para>
+    /// <para>**RATE-LIMITED BY THE CALLER, NOT HERE**, and the reason is a real
+    /// fault: the file that prompted HM-DEC-077 wrote the same unchanged state
+    /// twice per Morse element and buried everything that mattered. What decides
+    /// when this is worth writing is which of these numbers moved, and only the
+    /// caller knows that.</para>
+    /// </remarks>
+    public static void DecodeQuality(
+        ITelemetry? telemetry, CwDecodeReport report, string reason)
+        => telemetry?.Write(
+            TelemetryCategory.Decode,
+            "decode_quality",
+            new Dictionary<string, object?>
+            {
+                ["reason"] = reason,
+                ["inputPeakDb"] = Math.Round(report.Level.PeakDb, 1),
+                ["inputRmsDb"] = Math.Round(report.Level.RmsDb, 1),
+                ["inputFloorDb"] = Math.Round(report.Level.FloorDb, 1),
+                ["clipping"] = report.Clipping,
+                ["nearlySilent"] = report.NearlySilent,
+
+                // Unknown stays unknown rather than becoming a zero that reads
+                // like a measurement (HM-DEC-050).
+                ["toneHz"] = report.HasTone ? Math.Round(report.ToneHz) : null,
+                ["snrDb"] = double.IsNaN(report.SnrDb)
+                    ? null
+                    : Math.Round(report.SnrDb, 1),
+
+                ["elementsSeen"] = report.ElementsSeen,
+                ["elementsResolved"] = report.ElementsResolved,
+                ["charactersEmitted"] = report.CharactersEmitted,
+                ["charactersUnsure"] = report.CharactersUnsure,
+            });
+
+    /// <summary>
+    /// The operator kept a recording of what the decoder was hearing
+    /// (HM-DEC-088).
+    /// </summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="seconds">How much audio was written.</param>
+    /// <param name="frequencyHz">Where the radio was.</param>
+    /// <param name="worked">Whether the file was actually written.</param>
+    /// <remarks>
+    /// The file name is not here and neither is anything on the recording. A
+    /// capture may contain somebody's callsign being sent, which §2.1 makes
+    /// Tim's to review before it goes anywhere, and HM-DEC-018 keeps it out of
+    /// the record regardless.
+    /// </remarks>
+    public static void AudioCaptured(
+        ITelemetry? telemetry, double seconds, long frequencyHz, bool worked)
+        => telemetry?.Write(
+            TelemetryCategory.Decode,
+            "audio_captured",
+            new Dictionary<string, object?>
+            {
+                ["outcome"] = worked ? "proceeded" : "failed",
+                ["reason"] = worked ? "written" : "could_not_write",
+                ["seconds"] = Math.Round(seconds, 1),
+                ["frequencyHz"] = frequencyHz,
+            },
+            worked ? TelemetryLevel.Info : TelemetryLevel.Warn);
+
+    /// <summary>
     /// The send buttons became usable, or stopped being (HM-DEC-078).
     /// </summary>
     /// <param name="telemetry">Sink, or null.</param>

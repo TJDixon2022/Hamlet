@@ -56,6 +56,25 @@ public sealed class RigDisplayControl : Control
     private const double MeterHeight = 34;
     private const double PadBottom = 10;
 
+    /// <summary>
+    /// True once the operator has tuned with the wheel (HM-DEC-088).
+    /// </summary>
+    /// <remarks>
+    /// Two-way, so the view model can remember it across launches. The hint that
+    /// explains the wheel retires when this goes true, and the readout's tooltip
+    /// carries it from then on.
+    /// </remarks>
+    public static readonly StyledProperty<bool> HasTunedByWheelProperty =
+        AvaloniaProperty.Register<RigDisplayControl, bool>(
+            nameof(HasTunedByWheel), defaultBindingMode: BindingMode.TwoWay);
+
+    /// <summary>True once the wheel has been used to tune.</summary>
+    public bool HasTunedByWheel
+    {
+        get => GetValue(HasTunedByWheelProperty);
+        set => SetValue(HasTunedByWheelProperty, value);
+    }
+
     /// <summary>Current frequency in hertz. Two-way: wheel tuning writes it back.</summary>
     public static readonly StyledProperty<long> FrequencyHzProperty =
         AvaloniaProperty.Register<RigDisplayControl, long>(
@@ -487,6 +506,12 @@ public sealed class RigDisplayControl : Control
         var next = FrequencyHz + (e.Delta.Y > 0 ? place.Value : -place.Value);
         SetCurrentValue(FrequencyHzProperty,
             Math.Min(BandHighHz, Math.Max(BandLowHz, next)));
+
+        // THE HINT HAS DONE ITS JOB (HM-DEC-088). A line telling somebody how to
+        // do a thing they have just done is a line that teaches them to stop
+        // reading that part of the window.
+        SetCurrentValue(HasTunedByWheelProperty, true);
+
         e.Handled = true;
     }
 

@@ -193,6 +193,16 @@ public sealed class AppSettings
     public string? AudioInputDeviceId { get; set; }
 
     /// <summary>
+    /// True once the operator has tuned with the scroll wheel (HM-DEC-088).
+    /// </summary>
+    /// <remarks>
+    /// What retires the hint under the frequency readout. A line explaining how
+    /// to do something the operator has already done is a line that teaches them
+    /// to stop reading that part of the window.
+    /// </remarks>
+    public bool HasTunedByWheel { get; set; }
+
+    /// <summary>
     /// The pitch the operator hears a CW signal at, in hertz.
     /// </summary>
     /// <remarks>

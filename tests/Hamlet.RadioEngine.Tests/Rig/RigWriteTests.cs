@@ -202,13 +202,17 @@ public sealed class RigWriteTests
             RigValue.Known(RigField.Mode, (int)CivMode.Cw, "CW", Now, "CI-V 04"),
             RigValue.Known(RigField.AutoNotch, 1, "on", Now, "CI-V 16 41"),
             RigValue.Known(RigField.NoiseBlanker, 1, "on", Now, "CI-V 16 22"),
+            RigValue.Known(RigField.NoiseReduction, 1, "on", Now, "CI-V 16 40"),
+            RigValue.Known(RigField.Agc, 3, "slow", Now, "CI-V 16 12"),
+            RigValue.Known(RigField.FilterBandwidth, 40, "3.6 kHz", Now, "CI-V 1A 03"),
             RigValue.Known(RigField.Preamp, 0, "off", Now, "CI-V 16 02"),
             RigValue.Known(RigField.RfGain, 107, "42%", Now, "CI-V 14 02"),
+            RigValue.Known(RigField.AccUsbAfLevel, 20, "8%", Now, "CI-V 1A 05 0060"),
         });
 
         var advice = ReceiveAdvice.For(bad);
 
-        Assert.Equal(4, advice.Count);
+        Assert.Equal(ReceiveAdvice.For(RigState.Empty).Count, advice.Count);
         Assert.All(advice, a => Assert.True(a.WouldChange));
 
         // Every one of them is receive side, which is what makes one press right.
@@ -235,13 +239,17 @@ public sealed class RigWriteTests
             RigValue.Known(RigField.Mode, (int)CivMode.Cw, "CW", Now, "CI-V 04"),
             RigValue.Known(RigField.AutoNotch, 0, "off", Now, "CI-V 16 41"),
             RigValue.Known(RigField.NoiseBlanker, 0, "off", Now, "CI-V 16 22"),
+            RigValue.Known(RigField.NoiseReduction, 0, "off", Now, "CI-V 16 40"),
+            RigValue.Known(RigField.Agc, 1, "fast", Now, "CI-V 16 12"),
+            RigValue.Known(RigField.FilterBandwidth, 9, "500 Hz", Now, "CI-V 1A 03"),
             RigValue.Known(RigField.Preamp, 1, "P.AMP1", Now, "CI-V 16 02"),
             RigValue.Known(RigField.RfGain, 255, "100%", Now, "CI-V 14 02"),
+            RigValue.Known(RigField.AccUsbAfLevel, 128, "50%", Now, "CI-V 1A 05 0060"),
         });
 
         var advice = ReceiveAdvice.For(good);
 
-        Assert.Equal(4, advice.Count);
+        Assert.Equal(ReceiveAdvice.For(RigState.Empty).Count, advice.Count);
         Assert.All(advice, a => Assert.True(a.AlreadyRight));
         Assert.DoesNotContain(advice, a => a.WouldChange);
         Assert.All(advice, a => Assert.NotEqual("", a.Says));
@@ -258,7 +266,7 @@ public sealed class RigWriteTests
     {
         var advice = ReceiveAdvice.For(RigState.Empty);
 
-        Assert.Equal(4, advice.Count);
+        Assert.Equal(ReceiveAdvice.For(RigState.Empty).Count, advice.Count);
         Assert.All(advice, a => Assert.True(a.Unreadable));
         Assert.DoesNotContain(advice, a => a.WouldChange);
 
@@ -283,10 +291,14 @@ public sealed class RigWriteTests
 
         var advice = ReceiveAdvice.For(partial);
 
-        Assert.Equal(4, advice.Count);
+        Assert.Equal(ReceiveAdvice.For(RigState.Empty).Count, advice.Count);
         Assert.Single(advice, a => a.WouldChange);
         Assert.Single(advice, a => a.AlreadyRight);
-        Assert.Equal(2, advice.Count(a => a.Unreadable));
+
+        // Everything else could not be read, and every row is one of the three.
+        Assert.Equal(advice.Count - 2, advice.Count(a => a.Unreadable));
+        Assert.All(
+            advice, a => Assert.True(a.WouldChange || a.AlreadyRight || a.Unreadable));
     }
 
     /// <remarks>
