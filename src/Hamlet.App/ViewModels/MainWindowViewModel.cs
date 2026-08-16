@@ -1318,11 +1318,50 @@ public partial class MainWindowViewModel : ObservableObject
         // layouts file that could not be read, lands on Getting started with
         // widgets already on it.
         Canvas = new CanvasViewModel(
-            this, LayoutStore.Load(), () => LayoutStore.Save(Canvas!.Book()));
+            this, LayoutStore.Load(), () => LayoutStore.Save(Canvas!.Book()),
+            OpenPanel);
 
         _ = ReloadSpotsAsync("startup");
         _ = ResolveProfileAsync();
         ApplyFeedTimers();
+    }
+
+    /// <summary>
+    /// Open a panel that has just arrived on the canvas (HM-DEC-087).
+    /// </summary>
+    /// <param name="widgetId">Which widget.</param>
+    /// <remarks>
+    /// <para>**A WIDGET SOMEBODY REACHED FOR ARRIVES SHOWING ITS CONTENTS.**
+    /// They all used to arrive shut, so pulling three things out of the tray
+    /// gave three title bars and an empty canvas.</para>
+    /// <para>The panel still owns whether it is open and goes on persisting that
+    /// (HM-DEC-021), so this sets the same property the header would. The widget
+    /// ids and the panel keys are the same words on purpose, and the two that
+    /// differ are named here rather than assumed.</para>
+    /// </remarks>
+    private void OpenPanel(string widgetId)
+    {
+        switch (widgetId)
+        {
+            case Layout.Widgets.Map: MapExpanded = true; break;
+            case Layout.Widgets.Tape: TapeExpanded = true; break;
+            case Layout.Widgets.Waterfall: WaterfallExpanded = true; break;
+            case Layout.Widgets.Terminal: TerminalExpanded = true; break;
+            case Layout.Widgets.Story: StoryExpanded = true; break;
+            case Layout.Widgets.Guide: GuideExpanded = true; break;
+            case Layout.Widgets.Spots: SpotsExpanded = true; break;
+            case Layout.Widgets.Lead: LeadExpanded = true; break;
+            case Layout.Widgets.Contact: ContactExpanded = true; break;
+            case Layout.Widgets.Heard: HeardExpanded = true; break;
+            case Layout.Widgets.ReceiveHelp: ReceiveHelpExpanded = true; break;
+            case Layout.Widgets.Phrasebook: PhrasebookExpanded = true; break;
+
+            // The send panel's widget is called "send" and its stored key is
+            // "transmit", which is the one place the two lists disagree. Renaming
+            // either would change a settings key, so it is written down instead
+            // (§6.1).
+            case Layout.Widgets.Send: TransmitExpanded = true; break;
+        }
     }
 
     /// <summary>
@@ -2811,18 +2850,24 @@ public partial class MainWindowViewModel : ObservableObject
     /// </remarks>
     private void TellTheCanvasWhatItIsMissing()
     {
+        // LIVE: it is going on right now, and while the terminal is away the
+        // operator is missing a conversation as it happens (HM-DEC-087).
         Canvas.News(
             Layout.Widgets.Terminal,
             IsDecoding && !Transcript.IsEmpty
-                ? "Morse is arriving and the terminal is not out. Nothing has been "
-                  + "lost, so bringing it back shows everything that has come in."
-                : "");
+                ? "Morse is arriving right now and the terminal is not out. Nothing "
+                  + "is being lost, so bringing it back shows all of it."
+                : "",
+            AbsentUrgency.Live);
 
+        // QUIET: the reports are counted and kept, and they will read the same
+        // whenever the panel comes back, so there is nothing to hurry for.
         Canvas.News(
             Layout.Widgets.Heard,
             HasHeardReports
-                ? "Somebody heard your call, and the panel that says who is not out."
-                : "");
+                ? "Somebody heard your call, and the panel that says who is away."
+                : "",
+            AbsentUrgency.Quiet);
     }
 
     /// <summary>

@@ -3,10 +3,6 @@
              x:Class="Hamlet.App.App"
              RequestedThemeVariant="Light">
 
-    <Application.Styles>
-        <FluentTheme />
-    </Application.Styles>
-
     <Application.Resources>
       <ResourceDictionary>
         <ResourceDictionary.MergedDictionaries>
@@ -62,5 +58,63 @@
         <FontFamily x:Key="HmMonoFont">Consolas, Menlo, DejaVu Sans Mono, monospace</FontFamily>
       </ResourceDictionary>
     </Application.Resources>
+
+    <Application.Styles>
+        <FluentTheme />
+
+        <!-- WHAT A BUTTON LOOKS LIKE WHEN IT CAN BE PRESSED (HM-DEC-087).
+
+             Fluent's default button is a pale grey fill in every state
+             including the working one, and its disabled state is a slightly
+             paler grey. On warm paper those are near enough identical that a
+             live control and a dead one cannot be told apart, and the operator
+             reasonably assumes the worse of the two.
+
+             This has now been diagnosed three times: twice as a state bug that
+             was not there, and once as nine dead tray items that really were
+             dead and looked exactly like the seven live ones beside them. Each
+             time it was fixed for the two or three controls that had been
+             complained about. Fixing it here is what stops a fourth.
+
+             Ordinary buttons are white-faced with an amber edge and amber
+             lettering, which reads as press me without shouting on a screen
+             that can hold forty of them. The loud treatments stay where they
+             are: the connect button, the send buttons and the band cards
+             declare their own classes in the window's styles, which are applied
+             after these and win. -->
+        <Style Selector="Button">
+            <Setter Property="CornerRadius" Value="6" />
+            <Setter Property="Padding" Value="12,6" />
+        </Style>
+
+        <Style Selector="Button /template/ ContentPresenter">
+            <Setter Property="Background" Value="White" />
+            <Setter Property="BorderBrush" Value="{StaticResource HmAmberEdgeBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="TextElement.Foreground" Value="{StaticResource HmAmberDeepBrush}" />
+        </Style>
+
+        <Style Selector="Button:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource HmAmberTintBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource HmAmberBrush}" />
+            <Setter Property="TextElement.Foreground" Value="{StaticResource HmAmberDeepBrush}" />
+        </Style>
+
+        <Style Selector="Button:pressed /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource HmAmberBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource HmAmberDeepBrush}" />
+            <Setter Property="TextElement.Foreground" Value="White" />
+        </Style>
+
+        <!-- GREY MEANS UNPRESSABLE AND NOTHING ELSE (HM-DEC-079), which only
+             becomes true once everything pressable has stopped being grey. This
+             is the one appearance reserved for a control that genuinely cannot
+             be used. -->
+        <Style Selector="Button:disabled /template/ ContentPresenter">
+            <Setter Property="Background" Value="#F2F0EA" />
+            <Setter Property="BorderBrush" Value="#DAD6CC" />
+            <Setter Property="TextElement.Foreground" Value="#9A968C" />
+        </Style>
+    </Application.Styles>
 
 </Application>

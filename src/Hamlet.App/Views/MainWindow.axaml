@@ -80,6 +80,21 @@
             <Setter Property="BorderThickness" Value="1" />
         </Style>
 
+        <!-- THE TWO WAYS A NOTE ABOUT AN ABSENT WIDGET IS DRAWN (HM-DEC-087).
+             Quiet is the resting one and is nearly the paper it sits on; live is
+             the app's amber, which is what it already uses for "look at this".
+             Color is not the only carrier: a live note also has a mark beside it
+             (§0.6). -->
+        <Style Selector="Border.hm-note">
+            <Setter Property="Background" Value="White" />
+            <Setter Property="BorderBrush" Value="{StaticResource HmSlateEdgeBrush}" />
+        </Style>
+
+        <Style Selector="Border.hm-note.live">
+            <Setter Property="Background" Value="{StaticResource HmAmberTintBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource HmAmberEdgeBrush}" />
+        </Style>
+
         <Style Selector="Button.hm-band">
             <Setter Property="Background" Value="White" />
             <Setter Property="Foreground" Value="{StaticResource HmTextPrimaryBrush}" />
@@ -1402,19 +1417,33 @@
                     <MenuItem Header="{Binding ConnectButtonText}"
                               Command="{Binding ToggleConnectCommand}" />
                     <Separator />
-                    <MenuItem Header="Favorites" ItemsSource="{Binding FavoriteMenu}"
+                    <MenuItem x:Name="FavoriteRows" Header="Favorites"
+                              ItemsSource="{Binding FavoriteMenu}"
                               IsEnabled="{Binding HasFavorites}">
                         <MenuItem.Styles>
-                            <Style Selector="MenuItem" x:DataType="vm:TuneMenuItem">
+                            <!-- THE ROWS, NOT THE MENU THEY ARE IN. A bare
+                                 MenuItem selector inside MenuItem.Styles also
+                                 matches the owner, whose data context is the
+                                 main view model, so the cast failed twice on
+                                 every open and wrote two binding errors nobody
+                                 was reading (HM-DEC-087). -->
+                            <Style Selector="#FavoriteRows MenuItem" x:DataType="vm:TuneMenuItem">
                                 <Setter Property="Header" Value="{Binding Label}" />
                                 <Setter Property="Command" Value="{Binding Tune}" />
                             </Style>
                         </MenuItem.Styles>
                     </MenuItem>
-                    <MenuItem Header="Recent" ItemsSource="{Binding RecentMenu}"
+                    <MenuItem x:Name="RecentRows" Header="Recent"
+                              ItemsSource="{Binding RecentMenu}"
                               IsEnabled="{Binding HasRecent}">
                         <MenuItem.Styles>
-                            <Style Selector="MenuItem" x:DataType="vm:TuneMenuItem">
+                            <!-- THE ROWS, NOT THE MENU THEY ARE IN. A bare
+                                 MenuItem selector inside MenuItem.Styles also
+                                 matches the owner, whose data context is the
+                                 main view model, so the cast failed twice on
+                                 every open and wrote two binding errors nobody
+                                 was reading (HM-DEC-087). -->
+                            <Style Selector="#RecentRows MenuItem" x:DataType="vm:TuneMenuItem">
                                 <Setter Property="Header" Value="{Binding Label}" />
                                 <Setter Property="Command" Value="{Binding Tune}" />
                             </Style>
@@ -1693,7 +1722,7 @@
                                     <Button Content="{Binding Name}"
                                             FontSize="12" Padding="12,5"
                                             ToolTip.Tip="{Binding Blurb}"
-                                            Command="{Binding $parent[ItemsControl].((vm:CanvasViewModel)DataContext).LoadCommand}"
+                                            Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).Canvas.LoadCommand}"
                                             CommandParameter="{Binding}" />
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
@@ -1712,7 +1741,7 @@
                                     <Button Content="{Binding Name}"
                                             FontSize="12" Padding="12,5"
                                             ToolTip.Tip="{Binding Blurb}"
-                                            Command="{Binding $parent[ItemsControl].((vm:CanvasViewModel)DataContext).LoadCommand}"
+                                            Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).Canvas.LoadCommand}"
                                             CommandParameter="{Binding}" />
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
@@ -1726,9 +1755,15 @@
                     <StackPanel Grid.Column="2" Orientation="Horizontal"
                                 Spacing="6" VerticalAlignment="Center">
                         <TextBox Text="{Binding Canvas.NewName, Mode=TwoWay}"
-                                 Watermark="name this arrangement"
+                                 Watermark="name this layout"
                                  FontSize="12" MinWidth="170" />
-                        <Button Content="Keep it" FontSize="12" Padding="12,5"
+
+                        <!-- SAY WHAT IT DOES (HM-DEC-087). "Keep it" was coy
+                             about an action that is neither unusual nor
+                             delicate, and the operator had to guess at it.
+                             Saved layouts appear on this same bar beside the
+                             ones Hamlet ships. -->
+                        <Button Content="Save this layout" FontSize="12" Padding="12,5"
                                 Command="{Binding Canvas.KeepCommand}" />
                     </StackPanel>
                 </Grid>
@@ -1762,7 +1797,7 @@
                                         <Button HorizontalAlignment="Stretch"
                                                 HorizontalContentAlignment="Left"
                                                 Margin="0,0,0,4" Padding="8,6"
-                                                Command="{Binding $parent[ItemsControl].((vm:CanvasViewModel)DataContext).AddCommand}"
+                                                Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).Canvas.AddCommand}"
                                                 CommandParameter="{Binding}">
                                             <StackPanel Spacing="1">
                                                 <TextBlock Text="{Binding Title}"
@@ -1782,10 +1817,9 @@
                     </ScrollViewer>
                 </Border>
 
-                <Grid Grid.Column="1" RowDefinitions="*,Auto">
+                <Panel Grid.Column="1">
 
-                    <ScrollViewer Grid.Row="0"
-                                  VerticalScrollBarVisibility="Visible"
+                    <ScrollViewer VerticalScrollBarVisibility="Visible"
                                   HorizontalScrollBarVisibility="Auto"
                                   ScrollViewer.AllowAutoHide="False">
                         <ItemsControl x:Name="CanvasItems"
@@ -1832,7 +1866,7 @@
                                                             Content="✕" FontSize="11"
                                                             Padding="6,0" Background="Transparent"
                                                             ToolTip.Tip="put this back in the tray"
-                                                            Command="{Binding $parent[ItemsControl].((vm:CanvasViewModel)DataContext).RemoveCommand}"
+                                                            Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).Canvas.RemoveCommand}"
                                                             CommandParameter="{Binding}" />
                                                 </Grid>
                                             </ctl:WidgetFrame>
@@ -1868,34 +1902,56 @@
                          still carries its summary; a widget that is not out
                          still carries its news, with one press to bring it out.
                          Nothing was lost while it was away. -->
-                    <ItemsControl Grid.Row="1" Margin="0,8,0,0"
+                    <!-- IT SITS ON THE CANVAS (HM-DEC-087). It used to run
+                         along the bottom of the window, where a permanent strip
+                         becomes part of the frame and stops being read. Here it
+                         floats over the surface it is talking about, and it is
+                         only there at all when there is something to say.
+
+                         AND ITS LOUDNESS FOLLOWS THE NEWS. Morse arriving right
+                         now is amber with a mark beside it and reads at a
+                         glance; a tally that will keep is said quietly, because
+                         two notices that look identical teach the operator to
+                         read past both. -->
+                    <ItemsControl Margin="14"
+                                  HorizontalAlignment="Right"
+                                  VerticalAlignment="Bottom"
+                                  MaxWidth="470"
                                   IsVisible="{Binding Canvas.HasAbsent}"
                                   ItemsSource="{Binding Canvas.Absent}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate x:DataType="vm:AbsentNote">
-                                <Border Margin="0,0,0,4" Padding="10,6"
-                                        CornerRadius="6"
-                                        Background="{StaticResource HmAmberTintBrush}"
-                                        BorderBrush="{StaticResource HmAmberEdgeBrush}"
+                                <Border Classes="hm-note"
+                                        Classes.live="{Binding IsLive}"
+                                        Margin="0,6,0,0" Padding="11,7"
+                                        CornerRadius="8"
+                                        BoxShadow="0 2 10 0 #22000000"
                                         BorderThickness="1">
-                                    <Grid ColumnDefinitions="*,Auto">
+                                    <Grid ColumnDefinitions="Auto,*,Auto">
                                         <TextBlock Grid.Column="0"
+                                                   Text="&#x25CF;" FontSize="10"
+                                                   Margin="0,0,8,0"
+                                                   VerticalAlignment="Center"
+                                                   IsVisible="{Binding IsLive}"
+                                                   Foreground="{StaticResource HmAmberDeepBrush}" />
+                                        <TextBlock Grid.Column="1"
                                                    Text="{Binding Says}"
                                                    FontSize="12" TextWrapping="Wrap"
                                                    VerticalAlignment="Center"
                                                    Margin="0,0,10,0"
                                                    Foreground="{StaticResource HmTextPrimaryBrush}" />
-                                        <Button Grid.Column="1"
+                                        <Button Grid.Column="2"
                                                 Content="{Binding Title}"
                                                 FontSize="11" Padding="10,4"
-                                                Command="{Binding $parent[ItemsControl].((vm:CanvasViewModel)DataContext).ShowCommand}"
+                                                VerticalAlignment="Center"
+                                                Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).Canvas.ShowCommand}"
                                                 CommandParameter="{Binding}" />
                                     </Grid>
                                 </Border>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
-                </Grid>
+                </Panel>
             </Grid>
         </Grid>
 

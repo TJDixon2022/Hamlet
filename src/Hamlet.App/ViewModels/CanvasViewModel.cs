@@ -107,18 +107,80 @@ public sealed partial class WidgetViewModel : ObservableObject
     /// </remarks>
     public Action<WidgetViewModel>? Settled { get; init; }
 
+    /// <summary>
+    /// Called when the operator takes hold of it (HM-DEC-087).
+    /// </summary>
+    /// <remarks>
+    /// What brings it to the front. Dragging one widget over another used to put
+    /// the moving one underneath, so it disappeared behind the thing it was
+    /// being moved next to, which reads as the drag having failed.
+    /// </remarks>
+    public Action<WidgetViewModel>? Raised { get; init; }
+
     /// <summary>Where it is now, for saving.</summary>
     /// <returns>The placement.</returns>
     public Placement Placement() => new(Id, X, Y, Width, Height);
 }
 
 /// <summary>
-/// One line about a widget that is not out (HM-DEC-086).
+/// How much a widget that is not out wants looking at (HM-DEC-087).
+/// </summary>
+/// <remarks>
+/// **THE TWO USED TO LOOK IDENTICAL**, which made both of them wallpaper. Morse
+/// arriving right now with no terminal on the canvas is not the same kind of
+/// news as a tally that will still be there in an hour, and a notice that
+/// cannot tell them apart teaches the operator to read past both.
+/// </remarks>
+public enum AbsentUrgency
+{
+    /// <summary>
+    /// Worth knowing, and it will keep.
+    /// </summary>
+    /// <remarks>
+    /// Nothing is being missed. Whatever this is has accumulated and will still
+    /// be there whenever the widget comes back, so it is said quietly.
+    /// </remarks>
+    Quiet,
+
+    /// <summary>
+    /// Happening now.
+    /// </summary>
+    /// <remarks>
+    /// Still nothing lost (§0.5, HM-DEC-086), but the operator is missing
+    /// something while it is going on, which is a different fact and is said in
+    /// a different voice.
+    /// </remarks>
+    Live,
+}
+
+/// <summary>
+/// One line about a widget that is not out (HM-DEC-086, HM-DEC-087).
 /// </summary>
 /// <param name="Id">Which widget would show it.</param>
 /// <param name="Title">What that widget is called.</param>
 /// <param name="Says">What is happening, in one line.</param>
-public sealed record AbsentNote(string Id, string Title, string Says);
+/// <param name="Urgency">How much it wants looking at.</param>
+public sealed record AbsentNote(
+    string Id, string Title, string Says, AbsentUrgency Urgency = AbsentUrgency.Quiet)
+{
+    /// <summary>True when this is happening right now.</summary>
+    public bool IsLive => Urgency == AbsentUrgency.Live;
+
+    /// <summary>True when it will keep.</summary>
+    public bool IsQuiet => Urgency == AbsentUrgency.Quiet;
+
+    /// <summary>
+    /// How the note is drawn, as a style class rather than a brush (HM-DEC-087).
+    /// </summary>
+    /// <remarks>
+    /// **THE COLORS STAY IN THE MARKUP**, where the app's palette already lives.
+    /// Writing them here would be a second copy of that palette, and a second
+    /// copy drifts: the send panel already carries a hand-typed amber a shade off
+    /// the real one, which is exactly the fault §0 exists to prevent. So this
+    /// says which of the two a note is and the styles say what that looks like.
+    /// </remarks>
+    public string Look => IsLive ? "live" : "quiet";
+}
 
 /// <summary>
 /// The canvas: what is out, what is available, and what is going on off it
@@ -140,6 +202,7 @@ public sealed partial class CanvasViewModel : ObservableObject
 {
     private readonly object? _body;
     private readonly Action? _changed;
+    private readonly Action<string>? _open;
     private readonly HashSet<string> _summoned = new(StringComparer.Ordinal);
 
     /// <summary>Builds the canvas over whatever the widgets bind against.</summary>
@@ -150,10 +213,19 @@ public sealed partial class CanvasViewModel : ObservableObject
     /// <param name="changed">
     /// Called whenever the arrangement changes, so it can be kept.
     /// </param>
-    public CanvasViewModel(object? body, LayoutBook? book = null, Action? changed = null)
+    /// <param name="open">
+    /// How to open a panel that has just arrived, so a widget somebody reached
+    /// for shows what they reached for (HM-DEC-087).
+    /// </param>
+    public CanvasViewModel(
+        object? body,
+        LayoutBook? book = null,
+        Action? changed = null,
+        Action<string>? open = null)
     {
         _body = body;
         _changed = changed;
+        _open = open;
 
         foreach (var preset in LayoutPresets.All)
         {
@@ -233,8 +305,17 @@ public sealed partial class CanvasViewModel : ObservableObject
         Changed();
     }
 
-    /// <summary>Put a widget on the canvas.</summary>
+    /// <summary>
+    /// Put a widget on the canvas, showing its contents (HM-DEC-087).
+    /// </summary>
     /// <param name="widget">Which one.</param>
+    /// <remarks>
+    /// **IT ARRIVES OPEN.** Somebody who reaches into the tray for a thing wants
+    /// to see the thing, and every widget used to appear as a title bar with a
+    /// triangle on it, so the canvas filled up with names of panels rather than
+    /// panels. Collapse stays exactly where it was for something being kept
+    /// around and not watched (§0.5).
+    /// </remarks>
     [RelayCommand]
     public void Add(Widget? widget)
     {
@@ -244,6 +325,7 @@ public sealed partial class CanvasViewModel : ObservableObject
         }
 
         Place(widget, Current().Room(widget), adopted: true);
+        _open?.Invoke(widget.Id);
         Sync();
         Changed();
     }
@@ -344,6 +426,7 @@ public sealed partial class CanvasViewModel : ObservableObject
         }
 
         Place(widget, Current().Room(widget), adopted: false);
+        _open?.Invoke(id);
         _summoned.Add(id);
         Sync();
     }
@@ -375,6 +458,7 @@ public sealed partial class CanvasViewModel : ObservableObject
     /// </summary>
     /// <param name="id">Which widget would have shown it.</param>
     /// <param name="says">What happened, in one line, or "" when nothing is.</param>
+    /// <param name="urgency">How much it wants looking at (HM-DEC-087).</param>
     /// <remarks>
     /// <para>**THE ANSWER TO WHAT HAPPENS WHEN THE WIDGET IS NOT OUT.** Morse
     /// arrives and the terminal is not on the canvas. The app may not swallow it,
@@ -386,7 +470,7 @@ public sealed partial class CanvasViewModel : ObservableObject
     /// on working out what that widget would say, so bringing it out shows the
     /// history rather than starting from the moment it appeared.</para>
     /// </remarks>
-    public void News(string id, string says)
+    public void News(string id, string says, AbsentUrgency urgency = AbsentUrgency.Quiet)
     {
         var existing = Absent.FirstOrDefault(a => a.Id == id);
         var gone = string.IsNullOrWhiteSpace(says) || Placed.Any(p => p.Id == id);
@@ -402,14 +486,14 @@ public sealed partial class CanvasViewModel : ObservableObject
             return;
         }
 
-        var note = new AbsentNote(id, Widgets.Find(id)?.Title ?? id, says);
+        var note = new AbsentNote(id, Widgets.Find(id)?.Title ?? id, says, urgency);
 
         if (existing is null)
         {
             Absent.Add(note);
             OnPropertyChanged(nameof(HasAbsent));
         }
-        else if (existing.Says != says)
+        else if (existing != note)
         {
             Absent[Absent.IndexOf(existing)] = note;
         }
@@ -458,6 +542,32 @@ public sealed partial class CanvasViewModel : ObservableObject
         Changed();
     }
 
+    /// <summary>
+    /// Bring one widget to the front (HM-DEC-087).
+    /// </summary>
+    /// <param name="widget">Which one.</param>
+    /// <remarks>
+    /// Last in the list is drawn last and therefore on top. Done once, when the
+    /// operator takes hold of it, rather than continuously: moving the item
+    /// rebuilds its container, and a control rebuilt in the middle of a gesture
+    /// is how the send buttons came to be dead (HM-DEC-078). The pointer is
+    /// captured by the canvas rather than by the widget, so the drag survives it.
+    /// </remarks>
+    public void Raise(WidgetViewModel? widget)
+    {
+        if (widget is null)
+        {
+            return;
+        }
+
+        var at = Placed.IndexOf(widget);
+
+        if (at >= 0 && at != Placed.Count - 1)
+        {
+            Placed.Move(at, Placed.Count - 1);
+        }
+    }
+
     private void Apply(CanvasLayout layout)
     {
         Placed.Clear();
@@ -482,6 +592,7 @@ public sealed partial class CanvasViewModel : ObservableObject
         {
             Adopted = adopted,
             Settled = Moved,
+            Raised = Raise,
         });
 
     private void Sync()

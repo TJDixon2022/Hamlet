@@ -1,7 +1,7 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
-using Avalonia.LogicalTree;
+using Avalonia.VisualTree;
 using Hamlet.App.ViewModels;
 
 namespace Hamlet.App.Controls;
@@ -41,7 +41,13 @@ public sealed class WidgetFrame : ContentControl
             return;
         }
 
-        if (this.FindLogicalAncestorOfType<WidgetCanvas>() is not { } canvas)
+        // THE VISUAL TREE, NOT THE LOGICAL ONE, AND THAT IS WHY DRAGGING NEVER
+        // WORKED (HM-DEC-087). An items control's containers are its own logical
+        // children and the panel is only a visual one, so walking the logical
+        // tree from here reaches the items control and never passes through the
+        // canvas at all. It returned null on every press, the drag never began,
+        // and nothing anywhere said so.
+        if (this.FindAncestorOfType<WidgetCanvas>() is not { } canvas)
         {
             return;
         }
@@ -57,7 +63,13 @@ public sealed class WidgetFrame : ContentControl
             canvas.BeginMove(widget, at);
         }
 
+        // THE CANVAS TAKES THE POINTER, NOT THIS CONTROL, and that is what makes
+        // it safe to reorder immediately afterward: bringing the widget to the
+        // front rebuilds its container, and this frame goes with it (HM-DEC-087).
         e.Pointer.Capture(canvas);
+
+        widget.Raised?.Invoke(widget);
+
         e.Handled = true;
     }
 }

@@ -164,6 +164,23 @@ Every panel in the app is collapsible, and stays collapsed across restarts
 Practical test: could the operator shut this panel and still know what it
 would have told them at a glance? If not, the summary is wrong.
 
+### 0.5.1 What a control looks like — standing rule
+
+**A control's resting appearance says it can be pressed. Grey is reserved for
+what genuinely cannot be used** (HM-DEC-087). Fixed once, in the application's
+own styles, and never again per screen: the same fault was fixed narrowly three
+times before it was fixed here.
+
+**A binding that does not resolve is a defect, not a diagnostic.** Avalonia
+yields null on a failed cast rather than throwing, and a button whose command is
+null renders and behaves exactly like a disabled one, so the failure is silent
+and its symptom is indistinguishable from a design decision. `BindingHealthTests`
+builds the real window headless and fails on any unresolved binding. There is no
+acceptable number of them.
+
+Practical test: can the operator tell a live control from a dead one without
+pressing it? If not, the style is wrong, whatever the state machine says.
+
 ### 0.6 Modes have one color language — standing design principle
 
 Every surface that shows a mode family uses the same four colors, defined once
@@ -243,6 +260,7 @@ this table is the index.
 
 | Date | Decision | Why | Ref |
 |---|---|---|---|
+| 2026-08-16 | **A control's resting look says press me, grey is reserved for genuinely unavailable, and every binding in the window must resolve or the build fails.** Seventeen canvas controls were dead because their bindings cast an items control's data context to the wrong type: Avalonia yields null on a failed cast, and **a button with a null command is indistinguishable from a disabled one.** Nothing failed. So the window is now built headless in a test and any unresolved binding fails it, which found two more nobody had reported. The resting style is fixed once for the whole application rather than a fourth time per screen. **Dragging never worked**: the frame walked the logical tree for a canvas that is only a visual ancestor. A pointer was driven this time. | Three narrow fixes to the same fault in three sessions, and a canvas nobody could move a widget on. | HM-DEC-087 |
 | 2026-08-15 | **The panels become widgets on a canvas the operator arranges.** The top strip stays put and cannot be closed or moved, widening HM-DEC-021's rig-display exemption to the whole strip. Free placement with snapping and never a grid; presets above the canvas rather than in a menu, named by activity, and **a preset is a starting point and never a document**, so pressing one loads a fresh copy every time. Nobody ever starts on an empty canvas. Saving is one action from where you are, into `layouts.json` beside the profile. **Some widgets arrive on their own**, phrasebook first, and one the operator has moved is theirs from then on. **A widget that is not out still carries its news**, with nothing lost while it is away. | One column in the order things were built, and the operator scrolling past the ten they were not using to reach the two they were. | HM-DEC-086 |
 | 2026-08-15 | **A transmission is one state, from the press to the last dah, and the send controls change once each way.** The third attempt at the blinking, and the first two are recorded because both looked right: sampling the transmit line, then latching on the send call, which returns in thirteen milliseconds while the radio keys for eighteen seconds. **Handing the message over is not the transmission.** The duration is arithmetic and known before the first dit, and the transmit line may only extend it, **never shorten it**, because sampled four times a second it shows a second and a half of apparent quiet inside a real CQ. An operator stop ends it immediately. The reported seconds become the transmission rather than the handover, and how the end was established is recorded beside them. | The panel strobed through every send, the record said a hundredth of a second for an eighteen-second call, and that figure reached the screen as "the radio keyed for 0 seconds". | HM-DEC-085 |
 | 2026-08-15 | **Hamlet changes the radio, and never shows a rig control. The writes ruling HM-DEC-050 deferred.** **Settings are consequences of intent, never things the operator operates**, and no screen may carry a control corresponding one-to-one with a radio setting. Three tiers, and the tier is the safety design rather than a prompt on everything: receive side done and mentioned, what others hear offered, and the one that keys gated like a send. No byte written that is not cited; read before write and read back after; announced, undoable, and unknown stays unknown. The list comes from live state, says what is already right, and says what it could not read. | Six years, and two evenings lost to a receive gain at 42 percent and a wide-open filter that Hamlet could read and could not change. | HM-DEC-084 |

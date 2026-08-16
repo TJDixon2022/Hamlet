@@ -12,6 +12,30 @@ operator can see and use, patch fixes and polishes without adding one.
 
 ---
 
+## 1.5.1
+
+**The canvas can now be operated.**
+
+The tray, the preset buttons and the close buttons on each widget were dead:
+seventeen controls that rendered perfectly and did nothing. They work.
+
+And widgets can be dragged. Press anywhere on a widget's header and it follows
+the pointer, comes to the front as you move it, lines up with its neighbors when
+it gets close, and stays where you drop it. The corner grip resizes. All of it
+works collapsed as well as open.
+
+Buttons everywhere now look like buttons. Grey means a control genuinely cannot
+be used and nothing else.
+
+A widget you drag in arrives showing its contents rather than shut. The notice
+about a panel that is away has moved onto the canvas, and it is louder when
+something is happening right now than when it is telling you about something
+that will keep.
+
+"Keep it" is now "Save this layout".
+
+Rulings HM-DEC-087.
+
 ## 1.5.0
 
 **The screen is yours to arrange.**

@@ -4,6 +4,121 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-087
+date: 2026-08-16
+refs: src/Hamlet.App/App.axaml, src/Hamlet.App/Views/MainWindow.axaml, src/Hamlet.App/Controls/WidgetFrame.cs, src/Hamlet.App/ViewModels/CanvasViewModel.cs, tests/Hamlet.App.Tests/Views/BindingHealthTests.cs, tests/Hamlet.App.Tests/Layout/CanvasArrivalTests.cs, HM-DEC-078, HM-DEC-079, HM-DEC-080, HM-DEC-086
+---
+
+**A control's resting appearance says press me, and grey is reserved for what
+genuinely cannot be used. Enforced in one style rather than fixed again per
+screen, and every binding in the window has to resolve or the build fails.**
+
+Seventeen controls on the new canvas were dead from first paint: nine tray
+items, three preset buttons, four widget close buttons and the bring-it-back
+button. The canvas could only be used with the widgets it was born with.
+
+**THE CAUSE WAS NEITHER OF THE TWO THINGS IT LOOKED LIKE**, and both were
+plausible enough to be worth naming. It was not a command reporting `CanExecute`
+false and never re-raising, which is the fault already found on the send buttons
+(HM-DEC-078), and those commands have no `CanExecute` at all so they can never
+report false. It was not a missing handler either.
+
+**The bindings resolved to null.** Every one read
+`$parent[ItemsControl].((CanvasViewModel)DataContext).SomeCommand`, and those
+items controls inherit the **main** view model as their data context. The cast
+fails, Avalonia's compiled binding yields null rather than throwing, and **a
+button whose `Command` is null renders and behaves exactly like a disabled
+one.** Nothing failed. The build passed, the tests passed, the screenshot looked
+right, and a line went into a log nobody was reading.
+
+That is the whole problem in one sentence: **the failure was silent, and its
+symptom was indistinguishable from a design decision.**
+
+---
+
+**SO THE WINDOW IS BUILT IN A TEST AND ANY BINDING THAT DOES NOT RESOLVE FAILS
+IT.** The real window, the real view model, headless, with Avalonia's own log
+turned into an assertion. It costs about a second. It was written before the
+fix, watched to fail on the real defect, and watched to fail again afterward
+with one binding deliberately put back, so it is known to catch this rather than
+assumed to (§0: where a check can run in CI, run it in CI).
+
+It immediately found two more nobody had reported: the favorites and recent
+submenus styled their rows with a bare `MenuItem` selector, which also matches
+the menu that owns them, so the cast failed twice on every open.
+
+**A BINDING ERROR IS A DEFECT AND NOT A DIAGNOSTIC.** That is the rule this
+establishes. There is no acceptable number of them.
+
+---
+
+**THE RESTING STYLE, FIXED AT THE SOURCE.** Fluent's default button is a pale
+grey fill in every state including the working one, and its disabled state is a
+slightly paler grey. On warm paper those are near enough identical.
+
+This has now been diagnosed three times. Twice as a state bug that was not there
+(HM-DEC-080), and once here, where the controls really were dead and looked
+exactly like the live ones beside them. **Each time it was fixed for the two or
+three controls somebody had complained about.** Ordinary buttons are now
+white-faced with an amber edge and amber lettering, defined once for the whole
+application: readable as pressable without shouting on a screen that can hold
+forty of them. The loud treatments keep their classes and still win, because the
+window's styles are applied after the application's.
+
+**This is what makes HM-DEC-079 true rather than aspirational.** "Grey means
+unpressable and nothing else" only becomes a fact once everything pressable has
+stopped being grey.
+
+---
+
+**DRAGGING NEVER WORKED, AND THE REASON IS ONE WORD.** The widget frame looked
+for its canvas with `FindLogicalAncestorOfType`. An items control's containers
+are its own **logical** children and the panel holding them is only a **visual**
+one, so walking the logical tree from a widget reaches the items control and
+never passes through the canvas at all. It returned null on every press, the
+drag never began, and nothing anywhere said so. The canvas was built, reported
+complete and shipped without one widget ever having been moved.
+
+**Taking hold of a widget now brings it to the front.** Dragging one over
+another put the moving one underneath, so it disappeared behind the thing it was
+being moved beside, which reads as the drag having failed. It is reordered once,
+at the press, after the canvas has taken the pointer, because a control rebuilt
+in the middle of a gesture is how the send buttons came to be dead (HM-DEC-078).
+
+**A POINTER WAS ACTUALLY DRIVEN THIS TIME.** Not a test and not a screenshot:
+synthesized operating-system mouse input, which Avalonia receives exactly as it
+receives a hand. Dragged across the canvas, dragged to overlap a neighbor,
+dragged into both edges where it clamps at zero, resized larger by the grip,
+resized down to the floor where it clamps at 160, and dragged again collapsed.
+The arrangement was read back out of `layouts.json` after each one and the
+numbers match the pixels moved.
+
+---
+
+**TWO THINGS FROM THE FIRST LOOK.**
+
+**A widget arrives showing its contents.** They all arrived shut, so pulling
+three things out of the tray gave three title bars and an empty canvas, and
+somebody who reaches for a panel is reaching for what is in it. Collapse stays
+exactly where it was for something kept around and not watched (§0.5).
+
+**The absent-widget notice sits on the canvas and its loudness follows the
+news.** It used to run along the bottom of the window, where a permanent strip
+becomes part of the frame and stops being read. **Morse arriving right now and a
+tally that will keep are different facts**, and drawing them identically teaches
+the operator to read past both, so a live note is amber with a mark beside it
+and a quiet one is nearly the paper it sits on. Color is not the only carrier
+(§0.6): the mark is what survives a grayscale print.
+
+**Its colors live in the markup, beside the palette**, rather than as brushes on
+the view model. Writing them in C# would be a second copy of the palette, and a
+second copy drifts, which the standing palette guard proved by catching this
+attempt on its first run.
+
+**And the save button says what it does.** "Keep it" was coy about an action
+that is neither unusual nor delicate, and the operator had to guess at it.
+
+---
 id: HM-DEC-086
 date: 2026-08-15
 refs: src/Hamlet.App/Layout/Widget.cs, src/Hamlet.App/Layout/CanvasLayout.cs, src/Hamlet.App/Layout/LayoutPresets.cs, src/Hamlet.App/Layout/LayoutStore.cs, src/Hamlet.App/ViewModels/CanvasViewModel.cs, src/Hamlet.App/Controls/WidgetCanvas.cs, src/Hamlet.App/Controls/WidgetFrame.cs, src/Hamlet.App/Controls/WidgetBody.cs, tests/Hamlet.App.Tests/Layout/CanvasTests.cs, HM-DEC-021, HM-DEC-064
