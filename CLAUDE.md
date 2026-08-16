@@ -153,7 +153,13 @@ Every panel in the app is collapsible, and stays collapsed across restarts
 - Expand/collapse state persists per panel in `settings.json`; an unknown
   panel is open.
 - The rig display — the IC-7300's own face — is the one exception. It is the
-  app's anchor.
+  app's anchor, and **HM-DEC-086 widens that exemption to the whole top strip**
+  it sits in: band, frequency, mode, where you are and whether you may transmit
+  are not on the canvas, cannot be closed and cannot be moved.
+- **A widget that is not on the canvas still carries its news** (HM-DEC-086).
+  The same rule one level up: taking a panel off removes a display and never a
+  subscription, so a quiet line says what is happening with one press to bring
+  it back, and nothing accumulated while it was away is lost.
 
 Practical test: could the operator shut this panel and still know what it
 would have told them at a glance? If not, the summary is wrong.
@@ -237,6 +243,7 @@ this table is the index.
 
 | Date | Decision | Why | Ref |
 |---|---|---|---|
+| 2026-08-15 | **The panels become widgets on a canvas the operator arranges.** The top strip stays put and cannot be closed or moved, widening HM-DEC-021's rig-display exemption to the whole strip. Free placement with snapping and never a grid; presets above the canvas rather than in a menu, named by activity, and **a preset is a starting point and never a document**, so pressing one loads a fresh copy every time. Nobody ever starts on an empty canvas. Saving is one action from where you are, into `layouts.json` beside the profile. **Some widgets arrive on their own**, phrasebook first, and one the operator has moved is theirs from then on. **A widget that is not out still carries its news**, with nothing lost while it is away. | One column in the order things were built, and the operator scrolling past the ten they were not using to reach the two they were. | HM-DEC-086 |
 | 2026-08-15 | **A transmission is one state, from the press to the last dah, and the send controls change once each way.** The third attempt at the blinking, and the first two are recorded because both looked right: sampling the transmit line, then latching on the send call, which returns in thirteen milliseconds while the radio keys for eighteen seconds. **Handing the message over is not the transmission.** The duration is arithmetic and known before the first dit, and the transmit line may only extend it, **never shorten it**, because sampled four times a second it shows a second and a half of apparent quiet inside a real CQ. An operator stop ends it immediately. The reported seconds become the transmission rather than the handover, and how the end was established is recorded beside them. | The panel strobed through every send, the record said a hundredth of a second for an eighteen-second call, and that figure reached the screen as "the radio keyed for 0 seconds". | HM-DEC-085 |
 | 2026-08-15 | **Hamlet changes the radio, and never shows a rig control. The writes ruling HM-DEC-050 deferred.** **Settings are consequences of intent, never things the operator operates**, and no screen may carry a control corresponding one-to-one with a radio setting. Three tiers, and the tier is the safety design rather than a prompt on everything: receive side done and mentioned, what others hear offered, and the one that keys gated like a send. No byte written that is not cited; read before write and read back after; announced, undoable, and unknown stays unknown. The list comes from live state, says what is already right, and says what it could not read. | Six years, and two evenings lost to a receive gain at 42 percent and a wide-open filter that Hamlet could read and could not change. | HM-DEC-084 |
 | 2026-08-15 | **After every send Hamlet reports what happened link by link and names the link that failed. This is the question the application exists to answer.** Five links, four of them machine-checkable and needing nobody else to cooperate: command acknowledged, radio keyed, power made (`15 11`, added here), power into a real load, somebody copied it. **A station making no power and a band with nobody listening are different facts and used to look identical: silence.** Every number is measured or absent, an unread link is not a failed link, a percentage and never a wattage, the skimmer count says what it actually measures, and nothing diagnoses the station. | Six years of not knowing whether he was speaking into the void or on the air with nobody listening, which is what Hamlet was built for. | HM-DEC-082 |

@@ -6,6 +6,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Avalonia.Controls.ApplicationLifetimes;
 using Hamlet.App.Licensing;
+using Hamlet.App.Layout;
 using Hamlet.App.Settings;
 using Hamlet.App.Startup;
 using Hamlet.App.Telemetry;
@@ -798,6 +799,23 @@ public partial class MainWindowViewModel : ObservableObject
         {
             NoteCallWentOut(DateTime.UtcNow);
         }
+
+        // SOME WIDGETS ARRIVE ON THEIR OWN (HM-DEC-086), and the phrasebook is
+        // the first of them. A contact beginning is exactly when somebody needs
+        // to know what people say, and a contact ending is exactly when they do
+        // not, so it comes out on the first thing that reaches the air and goes
+        // away again after the sign-off.
+        //
+        // If the operator has moved it in the meantime it is theirs, and Hamlet
+        // stops taking it away.
+        if (option.Stage == ContactStage.SigningOff)
+        {
+            Canvas.Dismiss(Layout.Widgets.Phrasebook);
+        }
+        else
+        {
+            Canvas.Summon(Layout.Widgets.Phrasebook);
+        }
     }
 
     /// <summary>When the last rig heartbeat went into the record.</summary>
@@ -1295,10 +1313,27 @@ public partial class MainWindowViewModel : ObservableObject
 
         PickByline();
 
+        // THE CANVAS, LAST, because everything it places has to exist first
+        // (HM-DEC-086). Nobody ever starts on an empty one: a first run, or a
+        // layouts file that could not be read, lands on Getting started with
+        // widgets already on it.
+        Canvas = new CanvasViewModel(
+            this, LayoutStore.Load(), () => LayoutStore.Save(Canvas!.Book()));
+
         _ = ReloadSpotsAsync("startup");
         _ = ResolveProfileAsync();
         ApplyFeedTimers();
     }
+
+    /// <summary>
+    /// What is on the canvas, and what could be (HM-DEC-086).
+    /// </summary>
+    /// <remarks>
+    /// The widgets all bind against this view model, exactly as the panels they
+    /// used to be did, so the canvas holds their arrangement and nothing about
+    /// their contents.
+    /// </remarks>
+    public CanvasViewModel Canvas { get; }
 
     /// <summary>
     /// Choose the line under the wordmark, avoiding last launch's
@@ -2755,6 +2790,39 @@ public partial class MainWindowViewModel : ObservableObject
         OnPropertyChanged(nameof(ReceiveHeadline));
         OnPropertyChanged(nameof(ReceiveOffer));
         OnPropertyChanged(nameof(HasReceiveOffer));
+
+        TellTheCanvasWhatItIsMissing();
+    }
+
+    /// <summary>
+    /// What is happening on widgets that are not out (HM-DEC-086).
+    /// </summary>
+    /// <remarks>
+    /// <para>**NOTHING IS SWALLOWED AND NOTHING IS FLUNG ONTO THE CANVAS.** Morse
+    /// arriving while the terminal is in the tray is a thing the operator would
+    /// want to know, and it is not a reason for Hamlet to rearrange their
+    /// screen.</para>
+    /// <para>So it says so, once, in a line with the widget's name on a button
+    /// beside it. It is §0.5 one level up: a collapsed panel still carries its
+    /// summary, and a widget that is not out still carries its news. **The work
+    /// never stopped** — the decoder ran, the spots came in, the reports were
+    /// counted, all of it into the same view model. Bringing the widget out shows
+    /// the history rather than starting from the moment it appeared.</para>
+    /// </remarks>
+    private void TellTheCanvasWhatItIsMissing()
+    {
+        Canvas.News(
+            Layout.Widgets.Terminal,
+            IsDecoding && !Transcript.IsEmpty
+                ? "Morse is arriving and the terminal is not out. Nothing has been "
+                  + "lost, so bringing it back shows everything that has come in."
+                : "");
+
+        Canvas.News(
+            Layout.Widgets.Heard,
+            HasHeardReports
+                ? "Somebody heard your call, and the panel that says who is not out."
+                : "");
     }
 
     /// <summary>

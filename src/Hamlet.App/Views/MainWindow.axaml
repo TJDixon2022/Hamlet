@@ -5,6 +5,7 @@
         xmlns:explore="using:Hamlet.RadioEngine.Explore"
         xmlns:rig="using:Hamlet.RadioEngine.Rig"
         xmlns:cw="using:Hamlet.RadioEngine.Cw"
+        xmlns:lay="using:Hamlet.App.Layout"
         x:Class="Hamlet.App.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Title="Hamlet"
@@ -114,285 +115,20 @@
         </Style>
     </Window.Styles>
 
-    <!-- THE HEADER AND THE STATUS BAR ARE PINNED AND EVERYTHING ELSE
-         SCROLLS (HM-DEC-051). On a 1080p screen there was no way to reach the
-         waterfall or the CW terminal and no scrollbar to reach them with, which
-         made the two panels that matter most for diagnosing a live signal the
-         two nobody could see. Connect and the port picker stay put because they
-         are what somebody reaches for when something is wrong, and the status
-         line stays put because it is where the app answers them. -->
-    <Grid RowDefinitions="Auto,*,Auto" Margin="16">
+    <!-- THE THIRTEEN PANELS, KEYED BY WIDGET (HM-DEC-086).
 
-        <!-- Brand, menu, connection, and a line of Shakespeare -->
-        <StackPanel Grid.Row="0" Margin="4,0,4,12" Spacing="1">
-        <Grid ColumnDefinitions="Auto,Auto,*,Auto">
-            <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="0"
-                        VerticalAlignment="Center" Margin="0,0,14,0">
-                <TextBlock Text="Ham" FontSize="24" FontWeight="Bold"
-                           Foreground="{StaticResource HmAmberBrush}" />
-                <TextBlock Text="let" FontSize="24" FontWeight="Bold"
-                           Foreground="{StaticResource HmBlueBrush}" />
-            </StackPanel>
+         Each one is exactly the markup it was before it gained a position,
+         and what it binds against is still the main view model, so not one
+         binding inside thirteen panels had to be rewritten to put them on a
+         canvas. The only things taken away are the row and column numbers a
+         fixed layout needed.
 
-            <Menu Grid.Column="1" VerticalAlignment="Center" Background="Transparent">
-                <MenuItem Header="_File">
-                    <MenuItem Header="Exit" Command="{Binding ExitCommand}" />
-                </MenuItem>
-                <!-- EVERYTHING ABOUT THE RADIO LIVES UNDER RADIO, which is
-                     what put the diagnostics window here, and is why the two
-                     lists of frequencies are here rather than under Tools.
-                     Favorites was ruled in HM-DEC-060 and never actually built
-                     into the menu, so the manage window had no way in at all
-                     until now. -->
-                <MenuItem Header="_Radio">
-                    <MenuItem Header="{Binding ConnectButtonText}"
-                              Command="{Binding ToggleConnectCommand}" />
-                    <Separator />
-                    <MenuItem Header="Favorites" ItemsSource="{Binding FavoriteMenu}"
-                              IsEnabled="{Binding HasFavorites}">
-                        <MenuItem.Styles>
-                            <Style Selector="MenuItem" x:DataType="vm:TuneMenuItem">
-                                <Setter Property="Header" Value="{Binding Label}" />
-                                <Setter Property="Command" Value="{Binding Tune}" />
-                            </Style>
-                        </MenuItem.Styles>
-                    </MenuItem>
-                    <MenuItem Header="Recent" ItemsSource="{Binding RecentMenu}"
-                              IsEnabled="{Binding HasRecent}">
-                        <MenuItem.Styles>
-                            <Style Selector="MenuItem" x:DataType="vm:TuneMenuItem">
-                                <Setter Property="Header" Value="{Binding Label}" />
-                                <Setter Property="Command" Value="{Binding Tune}" />
-                            </Style>
-                        </MenuItem.Styles>
-                    </MenuItem>
-                    <MenuItem Header="Manage favorites…"
-                              Command="{Binding ManageFavoritesCommand}" />
-                    <Separator />
-                    <MenuItem Header="What the radio is doing…"
-                              Command="{Binding OpenRigDiagnosticsCommand}" />
-                    <MenuItem Header="What Hamlet decided…"
-                              Command="{Binding OpenDecisionLogCommand}" />
-                    <Separator />
-                    <MenuItem Header="Spectrum scope  (phase 2)" IsEnabled="False" />
-                </MenuItem>
-                <MenuItem Header="_Explore">
-                    <MenuItem Header="Refresh spots" Command="{Binding RefreshSpotsCommand}" />
-                    <Separator />
-                    <MenuItem Header="Live spot feeds  (phase 1.5)" IsEnabled="False" />
-                    <MenuItem Header="Find me a CQ I can copy  (phase 2)" IsEnabled="False" />
-                </MenuItem>
-                <!-- EVERYTHING ABOUT THE RADIO BELONGS UNDER RADIO. What the
-                     radio is doing moved out of here, and Tools keeps the
-                     things that are about Hamlet rather than about the rig. -->
-                <MenuItem Header="_Tools">
-                    <MenuItem Header="Settings…" Command="{Binding OpenSettingsCommand}" />
-                    <MenuItem Header="Open data folder" Command="{Binding OpenDataFolderCommand}" />
-                    <Separator />
-                    <MenuItem Header="Decode log viewer  (later)" IsEnabled="False" />
-                </MenuItem>
-                <MenuItem Header="_Help">
-                    <MenuItem Header="Getting started  (phase 1.5)" IsEnabled="False" />
-                    <MenuItem Header="About Hamlet" Command="{Binding OpenAboutCommand}" />
-                </MenuItem>
-            </Menu>
-
-            <StackPanel Grid.Column="3" Orientation="Horizontal" Spacing="10"
-                        VerticalAlignment="Center">
-                <ComboBox ItemsSource="{Binding AvailablePorts}"
-                          SelectedItem="{Binding SelectedPort}"
-                          IsEnabled="{Binding !IsConnected}"
-                          MinWidth="220" VerticalAlignment="Center" />
-                <Button Classes="hm-connect"
-                        Content="{Binding ConnectButtonText}"
-                        Command="{Binding ToggleConnectCommand}" />
-            </StackPanel>
-        </Grid>
-
-            <!-- One Shakespeare line, bent toward radio, different every
-                 launch (HM-DEC-039). The play is on hover so the joke is
-                 legible to somebody who does not know the original, without
-                 the wordmark turning into a citation. Absent entirely when
-                 the file did not load — never a placeholder. -->
-            <TextBlock Text="{Binding Byline}"
-                       IsVisible="{Binding HasByline}"
-                       FontSize="12.5" FontStyle="Italic"
-                       Margin="2,0,0,0"
-                       Foreground="{StaticResource HmTextMutedBrush}"
-                       ToolTip.Tip="{Binding BylineSource}"
-                       ToolTip.ShowDelay="400" />
-        </StackPanel>
-
-        <!-- Always visible, and deliberately not the overlay bar that fades
-             out when the pointer leaves. The complaint was not that scrolling
-             was awkward, it was that there was no scrollbar to reach for, and a
-             bar somebody has to discover by hovering is the same complaint
-             wearing a thinner coat. -->
-        <ScrollViewer Grid.Row="1"
-                      VerticalScrollBarVisibility="Visible"
-                      HorizontalScrollBarVisibility="Disabled"
-                      ScrollViewer.AllowAutoHide="False">
-            <StackPanel>
-
-        <!-- Band buttons -->
-        <ItemsControl ItemsSource="{Binding Bands}" Margin="0,6,0,14">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <StackPanel Orientation="Horizontal" Spacing="8" />
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-            <ItemsControl.ItemTemplate>
-                <DataTemplate x:DataType="vm:BandButtonViewModel">
-                    <Grid RowDefinitions="Auto,Auto">
-                        <Border Grid.Row="0" HorizontalAlignment="Center"
-                                Background="{StaticResource HmGreenTintBrush}"
-                                BorderBrush="{StaticResource HmGreenEdgeBrush}"
-                                BorderThickness="1" CornerRadius="8"
-                                Padding="6,0" Margin="0,0,0,2"
-                                ToolTip.Tip="{Binding BestBetTooltip}"
-                                ToolTip.ShowDelay="250"
-                                IsVisible="{Binding IsBestBet}">
-                            <!-- The label travels with the ranking, so a clock
-                                 guess can never wear the same words as an
-                                 observation (HM-DEC-046). -->
-                            <TextBlock Text="{Binding BestBetLabel}" FontSize="11"
-                                       Foreground="{StaticResource HmGreenBrush}" />
-                        </Border>
-
-                        <!-- A character card, not a plain button (HM-DEC-033).
-                             Width follows wavelength, the icon and the bar say
-                             whether the band is in its element, and the card
-                             dims when it is not — three carriers for one fact,
-                             so color is never doing the work alone. -->
-                        <Button Grid.Row="1" Classes="hm-band"
-                                Width="{Binding CardWidth}"
-                                Opacity="{Binding CardOpacity}"
-                                Padding="8,6"
-                                ToolTip.Tip="{Binding ActivityTooltip}"
-                                ToolTip.ShowDelay="250"
-                                Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).SelectBandCommand}"
-                                CommandParameter="{Binding}">
-                            <StackPanel Spacing="4">
-                                <Grid ColumnDefinitions="*,Auto">
-                                    <TextBlock Grid.Column="0"
-                                               Text="{Binding Band.Name}"
-                                               VerticalAlignment="Center" />
-                                    <ctl:DayNightIconControl Grid.Column="1"
-                                                             VerticalAlignment="Center"
-                                                             Icon="{Binding CardIcon}"
-                                                             Tint="{Binding CardIconTint}" />
-                                </Grid>
-
-                                <Border Height="3" CornerRadius="2"
-                                        Background="{Binding CardBar}" />
-
-                                <ctl:ActivityPipsControl
-                                    HorizontalAlignment="Center"
-                                    Filled="{Binding ActivityPips}"
-                                    IsUnknown="{Binding ActivityUnknown}" />
-                            </StackPanel>
-                        </Button>
-                    </Grid>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
-
-        <!-- Frequency face: the rig's own LCD on the console. Deliberately
-             NOT collapsible (HM-DEC-021) — it is the app's anchor. -->
-        <Border Background="{StaticResource HmAmberTintBrush}"
-                BorderBrush="{StaticResource HmAmberEdgeBrush}"
-                BorderThickness="1" CornerRadius="8"
-                Padding="20,12" Margin="0,0,0,12">
-            <StackPanel Spacing="6">
-
-                <!-- The strip along the top of the warm panel (HM-DEC-070):
-                     which favorite you landed on at the left, and the way to
-                     any of them at the right. The name lives out here rather
-                     than in the black because a name is as long as somebody
-                     made it, and the LCD has a mode badge at one end and a
-                     clock at the other. -->
-                <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,4">
-                    <TextBlock Grid.Column="0" Text="{Binding FavoriteHere}"
-                               FontSize="12" VerticalAlignment="Center"
-                               TextTrimming="CharacterEllipsis"
-                               Margin="2,0,10,0"
-                               Foreground="{StaticResource HmAmberBrush}" />
-
-                    <!-- THE TWO SIT TOGETHER AND READ AS A PAIR (HM-DEC-072).
-                         Favorites are places he chose and recent are places he
-                         was, so scattering them would hide that they are the
-                         same kind of thing. Each is absent until it has
-                         something in it, because an empty dropdown reads as a
-                         control that is broken. -->
-                    <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
-                        <ComboBox ItemsSource="{Binding Recent}"
-                                  SelectedItem="{Binding SelectedRecent}"
-                                  PlaceholderText="recent"
-                                  MinWidth="180" FontSize="12"
-                                  IsVisible="{Binding HasRecent}">
-                            <!-- PROVENANCE TRAVELS WITH THE NAME (HM-DEC-073).
-                                 A callsign Hamlet read off the air and one a
-                                 spot feed reported are different facts, and a
-                                 line that showed only the name would let the
-                                 weaker one borrow the stronger one's
-                                 authority. -->
-                            <ComboBox.ItemTemplate>
-                                <DataTemplate x:DataType="explore:RecentStation">
-                                    <StackPanel Spacing="0">
-                                        <TextBlock Text="{Binding Label}" />
-                                        <TextBlock Text="{Binding Provenance}"
-                                                   FontSize="10"
-                                                   IsVisible="{Binding IsIdentified}"
-                                                   Foreground="{StaticResource HmTextMutedBrush}" />
-                                    </StackPanel>
-                                </DataTemplate>
-                            </ComboBox.ItemTemplate>
-                        </ComboBox>
-
-                        <ComboBox ItemsSource="{Binding Favorites}"
-                                  SelectedItem="{Binding SelectedFavorite}"
-                                  PlaceholderText="favorites"
-                                  MinWidth="180" FontSize="12"
-                                  IsVisible="{Binding HasFavorites}">
-                            <ComboBox.ItemTemplate>
-                                <DataTemplate x:DataType="explore:Favorite">
-                                    <TextBlock Text="{Binding Name}" />
-                                </DataTemplate>
-                            </ComboBox.ItemTemplate>
-                        </ComboBox>
-                    </StackPanel>
-                </Grid>
-
-                <!-- THE STAR IS INSIDE THE BLACK (HM-DEC-070), which reverses
-                     what HM-DEC-060 built. That ruling kept Hamlet's chrome off
-                     the LCD so the picture stayed a faithful IC-7300 face, and
-                     Tim weighed that against being able to find the thing and
-                     chose being able to find it. -->
-                <ctl:RigDisplayControl HorizontalAlignment="Center"
-                    FrequencyHz="{Binding FrequencyHz}"
-                    BandLowHz="{Binding SelectedBand.Band.LowHz}"
-                    BandHighHz="{Binding SelectedBand.Band.HighHz}"
-                    ModeText="{Binding RigModeText}"
-                    FilterText="{Binding RigFilterText}"
-                    SMeterLevel="{Binding SMeterLevel}"
-                    IsFavorite="{Binding IsFavorite}"
-                    FavoriteLabel="{Binding FavoriteLabel}"
-                    ToggleFavoriteCommand="{Binding ToggleFavoriteCommand}" />
-
-                <TextBlock Text="scroll wheel over a digit tunes that digit"
-                           FontSize="12" HorizontalAlignment="Center"
-                           Margin="0,4,0,0"
-                           Foreground="{StaticResource HmAmberBrush}" />
-            </StackPanel>
-        </Border>
-
-        <!-- Map, tape, then explorer beside waterfall/terminal. Every row is
-             Auto because there is no leftover height to share inside a
-             scroller: a star row would measure to nothing and take the panels
-             with it. -->
-        <Grid RowDefinitions="Auto,Auto,Auto">
-
-            <ctl:CollapsiblePanel Grid.Row="0" Margin="0,0,0,10"
+         They keep their own headers, their own family colors and their own
+         collapse, because none of that stopped being true (§0.5, §0.6). -->
+    <Window.Resources>
+        <!-- Neighborhood map -->
+        <DataTemplate x:Key="widget.map" x:DataType="vm:MainWindowViewModel">
+            <ctl:CollapsiblePanel
                                   Family="Blue"
                                   Title="Neighborhood map"
                                   Summary="{Binding MapSummary}"
@@ -538,8 +274,11 @@
                     </Border>
                 </StackPanel>
             </ctl:CollapsiblePanel>
+        </DataTemplate>
 
-            <ctl:CollapsiblePanel Grid.Row="1" Margin="0,0,0,10"
+        <!-- Dial tape -->
+        <DataTemplate x:Key="widget.tape" x:DataType="vm:MainWindowViewModel">
+            <ctl:CollapsiblePanel
                                   Family="Amber"
                                   Title="Dial tape"
                                   Summary="{Binding ModeLineText}"
@@ -581,1078 +320,1584 @@
                     </Border>
                 </StackPanel>
             </ctl:CollapsiblePanel>
+        </DataTemplate>
 
-            <Grid Grid.Row="2" ColumnDefinitions="3*,2*">
+        <!-- Waterfall -->
+        <DataTemplate x:Key="widget.waterfall" x:DataType="vm:MainWindowViewModel">
+            <ctl:CollapsiblePanel Family="Blue"
+                                  Title="Waterfall"
+                                  Summary="{Binding WaterfallSummary}"
+                                  IsExpanded="{Binding WaterfallExpanded, Mode=TwoWay}">
+                <StackPanel Spacing="6">
 
-                <!-- Stacked rather than proportioned: a collapsed panel must
-                     hand its space to the panel below it, not leave a hole
-                     where a fixed grid row used to be (HM-DEC-021). No scroller
-                     of its own: the window has one now, and two nested
-                     scrollbars send the wheel to whichever happens to be under
-                     the pointer. -->
-                <StackPanel Grid.Column="0" Margin="0,0,10,0" Spacing="10">
+                    <!-- The persistent label of HM-DEC-026. Bound
+                         to a property with no setter, derived from
+                         the source itself, so it cannot be shown
+                         without the signals being simulated or
+                         hidden while they are. -->
+                    <Border Background="{StaticResource HmAmberTintBrush}"
+                            BorderBrush="{StaticResource HmAmberEdgeBrush}"
+                            BorderThickness="1" CornerRadius="6"
+                            Padding="8,4"
+                            IsVisible="{Binding SignalsAreSimulated}">
+                        <TextBlock Text="{Binding SpectrumNotice}"
+                                   FontSize="12" FontWeight="SemiBold"
+                                   Foreground="{StaticResource HmAmberDeepBrush}" />
+                    </Border>
 
-                        <ctl:CollapsiblePanel Family="Blue"
-                                              Title="Waterfall"
-                                              Summary="{Binding WaterfallSummary}"
-                                              IsExpanded="{Binding WaterfallExpanded, Mode=TwoWay}">
-                            <StackPanel Spacing="6">
+                    <ctl:WaterfallControl MinHeight="260"
+                        Source="{Binding SpectrumSource}"
+                        FrequencyHz="{Binding FrequencyHz}"
+                        BandLowHz="{Binding SelectedBand.Band.LowHz}"
+                        BandHighHz="{Binding SelectedBand.Band.HighHz}"
+                        Gain="{Binding WaterfallGain}"
+                        TuneCommand="{Binding TuneToCommand}" />
 
-                                <!-- The persistent label of HM-DEC-026. Bound
-                                     to a property with no setter, derived from
-                                     the source itself, so it cannot be shown
-                                     without the signals being simulated or
-                                     hidden while they are. -->
+                    <!-- WHAT IS MISSING, RATHER THAN AN EMPTY
+                         WATERFALL (HM-DEC-062). The scope stream
+                         needs two settings on the radio and two more
+                         on its CI-V screens, and none of them is a
+                         command Hamlet can send. -->
+                    <Border Background="{StaticResource HmAmberTintBrush}"
+                            BorderBrush="{StaticResource HmAmberEdgeBrush}"
+                            BorderThickness="1" CornerRadius="6"
+                            Padding="10,7"
+                            IsVisible="{Binding ScopeNote,
+                                Converter={x:Static ctl:PrivilegeToneConverter.NotEmpty}}">
+                        <ctl:GlossaryTextControl
+                            Text="{Binding ScopeNote}"
+                            FontSize="12" LineSpacing="1.4"
+                            Foreground="{StaticResource HmAmberDeepBrush}" />
+                    </Border>
+
+                    <TextBlock Text="click a signal to tune to it. the axis matches the map and the dial tape above"
+                               FontSize="12" TextWrapping="Wrap"
+                               Foreground="{StaticResource HmTextMutedBrush}" />
+                </StackPanel>
+            </ctl:CollapsiblePanel>
+        </DataTemplate>
+
+        <!-- CW terminal -->
+        <DataTemplate x:Key="widget.terminal" x:DataType="vm:MainWindowViewModel">
+            <ctl:CollapsiblePanel Family="Green"
+                                  Title="CW terminal"
+                                  Summary="{Binding TerminalSummary}"
+                                  IsExpanded="{Binding TerminalExpanded, Mode=TwoWay}">
+
+                <!-- Worded, not an icon. "Clear" is what it does and
+                     a broom would need explaining. It sits beside
+                     the header button rather than in it, so it
+                     cannot collapse the panel on its way past. -->
+                <ctl:CollapsiblePanel.HeaderAction>
+                    <Button Content="Clear"
+                            FontSize="11" Padding="10,2"
+                            Command="{Binding ClearTerminalCommand}"
+                            ToolTip.Tip="Wipes what is on screen. The decoder keeps listening, and keeps the speed and the noise floor it has worked out."
+                            ToolTip.ShowDelay="300" />
+                </ctl:CollapsiblePanel.HeaderAction>
+
+                <StackPanel Spacing="6">
+
+                    <!-- The header carries the sending speed live,
+                         because an operator deciding whether they
+                         can copy somebody needs the number more
+                         than anything else on this panel. -->
+                    <Grid ColumnDefinitions="*,Auto">
+                        <TextBlock
+                                   Text="what the radio is hearing, as it arrives"
+                                   FontSize="12" VerticalAlignment="Center"
+                                   Foreground="{StaticResource HmTextMutedBrush}" />
+                        <StackPanel Grid.Column="1" Orientation="Horizontal"
+                                    Spacing="6">
+                            <!-- The filter width, because it is the
+                                 number that explains a bad decode:
+                                 a passband wide open at 3 kHz puts
+                                 several signals into the decoder at
+                                 once (HM-DEC-050). -->
+                            <Border Background="{StaticResource HmBlueTintBrush}"
+                                    BorderBrush="{StaticResource HmBlueEdgeBrush}"
+                                    BorderThickness="1" CornerRadius="6"
+                                    Padding="8,2"
+                                    ToolTip.Tip="How wide the radio's filter is right now. Everything inside it reaches the decoder together."
+                                    IsVisible="{Binding HasFilterBandwidth}">
+                                <TextBlock Text="{Binding FilterBandwidthText}"
+                                           FontSize="12" FontWeight="SemiBold"
+                                           Foreground="{StaticResource HmBlueBrush}" />
+                            </Border>
+
+                            <Border Background="{StaticResource HmGreenTintBrush}"
+                                    BorderBrush="{StaticResource HmGreenEdgeBrush}"
+                                    BorderThickness="1" CornerRadius="6"
+                                    Padding="8,2"
+                                    IsVisible="{Binding HasDetectedSpeed}">
+                                <TextBlock Text="{Binding TerminalSpeedText}"
+                                           FontSize="12" FontWeight="SemiBold"
+                                           Foreground="{StaticResource HmGreenBrush}" />
+                            </Border>
+                        </StackPanel>
+                    </Grid>
+
+                    <Border CornerRadius="8" ClipToBounds="True"
+                            BorderThickness="1"
+                            Background="{x:Static ctl:InstrumentPalette.SurfaceBrush}"
+                            BorderBrush="{x:Static ctl:InstrumentPalette.EdgeBrush}">
+                        <ScrollViewer MaxHeight="260" MinHeight="150"
+                                      VerticalScrollBarVisibility="Auto">
+                            <ctl:CwTerminalControl
+                                FontSize="14" LineHeight="22"
+                                Transcript="{Binding Transcript}"
+                                IdleText="{Binding TerminalIdleText}" />
+                        </ScrollViewer>
+                    </Border>
+
+                    <!-- The plain-language note, present only when
+                         there is something to say. An explanation
+                         that was always on screen would be read as
+                         decoration and stop being read at all. -->
+                    <Border Background="{StaticResource HmAmberTintBrush}"
+                            BorderBrush="{StaticResource HmAmberEdgeBrush}"
+                            BorderThickness="1" CornerRadius="6"
+                            Padding="10,7"
+                            IsVisible="{Binding HasDecodeNote}">
+                        <ctl:GlossaryTextControl
+                            Text="{Binding DecodeNote}"
+                            FontSize="12" LineSpacing="1.4"
+                            Foreground="{StaticResource HmAmberDeepBrush}" />
+                    </Border>
+
+                    <!-- THE OFFER WHERE THE PROBLEM SHOWS
+                         (HM-DEC-084). A popup somebody has to know
+                         to open is a popup they will not open when
+                         they are frustrated, which is exactly when
+                         it is needed. One line, not a banner, and
+                         it goes away when waved off. -->
+                    <Grid ColumnDefinitions="*,Auto,Auto"
+                          IsVisible="{Binding HasReceiveOffer}">
+                        <ctl:GlossaryTextControl Grid.Column="0"
+                            Text="{Binding ReceiveOffer}"
+                            FontSize="11" LineSpacing="1.4"
+                            Margin="0,0,8,0"
+                            Foreground="{StaticResource HmBlueBrush}" />
+                        <Button Grid.Column="1" Content="Have a look"
+                                FontSize="11" Padding="8,3" Margin="0,0,6,0"
+                                Command="{Binding OpenReceiveHelpCommand}" />
+                        <Button Grid.Column="2" Content="No thanks"
+                                FontSize="11" Padding="8,3"
+                                Command="{Binding DismissReceiveOfferCommand}" />
+                    </Grid>
+
+                    <TextBlock Text="a dimmed character is one Hamlet is not sure of, and a block is something it heard and could not read. You can select any of this and copy it."
+                               FontSize="12" TextWrapping="Wrap"
+                               Foreground="{StaticResource HmTextMutedBrush}" />
+                </StackPanel>
+            </ctl:CollapsiblePanel>
+        </DataTemplate>
+
+        <!-- Send -->
+        <DataTemplate x:Key="widget.send" x:DataType="vm:MainWindowViewModel">
+            <ctl:CollapsiblePanel Family="Amber"
+                                  Title="Send"
+                                  Summary="{Binding Transmit.Summary}"
+                                  IsExpanded="{Binding TransmitExpanded, Mode=TwoWay}">
+                <StackPanel Spacing="8" DataContext="{Binding Transmit}">
+
+                    <!-- WHAT THE RADIO IS ACTUALLY SET TO
+                         (HM-DEC-074). The dummy load warning is
+                         retired: it said to key into one because
+                         the code had never run, and it has now. In
+                         its place, what Hamlet can honestly say
+                         about the socket and the power, as
+                         consequences and never instructions. -->
+                    <ItemsControl ItemsSource="{Binding Notes}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="x:String">
                                 <Border Background="{StaticResource HmAmberTintBrush}"
                                         BorderBrush="{StaticResource HmAmberEdgeBrush}"
                                         BorderThickness="1" CornerRadius="6"
-                                        Padding="8,4"
-                                        IsVisible="{Binding SignalsAreSimulated}">
-                                    <TextBlock Text="{Binding SpectrumNotice}"
-                                               FontSize="12" FontWeight="SemiBold"
+                                        Padding="10,7">
+                                    <TextBlock Text="{Binding}"
+                                               FontSize="12" TextWrapping="Wrap"
+                                               LineHeight="18"
                                                Foreground="{StaticResource HmAmberDeepBrush}" />
                                 </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
 
-                                <ctl:WaterfallControl MinHeight="260"
-                                    Source="{Binding SpectrumSource}"
-                                    FrequencyHz="{Binding FrequencyHz}"
-                                    BandLowHz="{Binding SelectedBand.Band.LowHz}"
-                                    BandHighHz="{Binding SelectedBand.Band.HighHz}"
-                                    Gain="{Binding WaterfallGain}"
-                                    TuneCommand="{Binding TuneToCommand}" />
+                    <!-- RESERVED SPACE, NEVER APPEARING SPACE
+                         (HM-DEC-080). This block is always here and
+                         only its content and its color change. It
+                         used to come and go as the transmit line
+                         toggled, and every appearance reflowed
+                         everything below it, so the panel jumped
+                         several times a second at exactly the moment
+                         the operator was watching it hardest.
 
-                                <!-- WHAT IS MISSING, RATHER THAN AN EMPTY
-                                     WATERFALL (HM-DEC-062). The scope stream
-                                     needs two settings on the radio and two more
-                                     on its CI-V screens, and none of them is a
-                                     command Hamlet can send. -->
-                                <Border Background="{StaticResource HmAmberTintBrush}"
-                                        BorderBrush="{StaticResource HmAmberEdgeBrush}"
-                                        BorderThickness="1" CornerRadius="6"
-                                        Padding="10,7"
-                                        IsVisible="{Binding ScopeNote,
-                                            Converter={x:Static ctl:PrivilegeToneConverter.NotEmpty}}">
-                                    <ctl:GlossaryTextControl
-                                        Text="{Binding ScopeNote}"
-                                        FontSize="12" LineSpacing="1.4"
-                                        Foreground="{StaticResource HmAmberDeepBrush}" />
-                                </Border>
-
-                                <TextBlock Text="click a signal to tune to it. the axis matches the map and the dial tape above"
-                                           FontSize="12" TextWrapping="Wrap"
-                                           Foreground="{StaticResource HmTextMutedBrush}" />
-                            </StackPanel>
-                        </ctl:CollapsiblePanel>
-
-                        <ctl:CollapsiblePanel Family="Green"
-                                              Title="CW terminal"
-                                              Summary="{Binding TerminalSummary}"
-                                              IsExpanded="{Binding TerminalExpanded, Mode=TwoWay}">
-
-                            <!-- Worded, not an icon. "Clear" is what it does and
-                                 a broom would need explaining. It sits beside
-                                 the header button rather than in it, so it
-                                 cannot collapse the panel on its way past. -->
-                            <ctl:CollapsiblePanel.HeaderAction>
-                                <Button Content="Clear"
-                                        FontSize="11" Padding="10,2"
-                                        Command="{Binding ClearTerminalCommand}"
-                                        ToolTip.Tip="Wipes what is on screen. The decoder keeps listening, and keeps the speed and the noise floor it has worked out."
-                                        ToolTip.ShowDelay="300" />
-                            </ctl:CollapsiblePanel.HeaderAction>
-
-                            <StackPanel Spacing="6">
-
-                                <!-- The header carries the sending speed live,
-                                     because an operator deciding whether they
-                                     can copy somebody needs the number more
-                                     than anything else on this panel. -->
-                                <Grid ColumnDefinitions="*,Auto">
-                                    <TextBlock Grid.Column="0"
-                                               Text="what the radio is hearing, as it arrives"
-                                               FontSize="12" VerticalAlignment="Center"
-                                               Foreground="{StaticResource HmTextMutedBrush}" />
-                                    <StackPanel Grid.Column="1" Orientation="Horizontal"
-                                                Spacing="6">
-                                        <!-- The filter width, because it is the
-                                             number that explains a bad decode:
-                                             a passband wide open at 3 kHz puts
-                                             several signals into the decoder at
-                                             once (HM-DEC-050). -->
-                                        <Border Background="{StaticResource HmBlueTintBrush}"
-                                                BorderBrush="{StaticResource HmBlueEdgeBrush}"
-                                                BorderThickness="1" CornerRadius="6"
-                                                Padding="8,2"
-                                                ToolTip.Tip="How wide the radio's filter is right now. Everything inside it reaches the decoder together."
-                                                IsVisible="{Binding HasFilterBandwidth}">
-                                            <TextBlock Text="{Binding FilterBandwidthText}"
-                                                       FontSize="12" FontWeight="SemiBold"
-                                                       Foreground="{StaticResource HmBlueBrush}" />
-                                        </Border>
-
-                                        <Border Background="{StaticResource HmGreenTintBrush}"
-                                                BorderBrush="{StaticResource HmGreenEdgeBrush}"
-                                                BorderThickness="1" CornerRadius="6"
-                                                Padding="8,2"
-                                                IsVisible="{Binding HasDetectedSpeed}">
-                                            <TextBlock Text="{Binding TerminalSpeedText}"
-                                                       FontSize="12" FontWeight="SemiBold"
-                                                       Foreground="{StaticResource HmGreenBrush}" />
-                                        </Border>
-                                    </StackPanel>
-                                </Grid>
-
-                                <Border CornerRadius="8" ClipToBounds="True"
-                                        BorderThickness="1"
-                                        Background="{x:Static ctl:InstrumentPalette.SurfaceBrush}"
-                                        BorderBrush="{x:Static ctl:InstrumentPalette.EdgeBrush}">
-                                    <ScrollViewer MaxHeight="260" MinHeight="150"
-                                                  VerticalScrollBarVisibility="Auto">
-                                        <ctl:CwTerminalControl
-                                            FontSize="14" LineHeight="22"
-                                            Transcript="{Binding Transcript}"
-                                            IdleText="{Binding TerminalIdleText}" />
-                                    </ScrollViewer>
-                                </Border>
-
-                                <!-- The plain-language note, present only when
-                                     there is something to say. An explanation
-                                     that was always on screen would be read as
-                                     decoration and stop being read at all. -->
-                                <Border Background="{StaticResource HmAmberTintBrush}"
-                                        BorderBrush="{StaticResource HmAmberEdgeBrush}"
-                                        BorderThickness="1" CornerRadius="6"
-                                        Padding="10,7"
-                                        IsVisible="{Binding HasDecodeNote}">
-                                    <ctl:GlossaryTextControl
-                                        Text="{Binding DecodeNote}"
-                                        FontSize="12" LineSpacing="1.4"
-                                        Foreground="{StaticResource HmAmberDeepBrush}" />
-                                </Border>
-
-                                <!-- THE OFFER WHERE THE PROBLEM SHOWS
-                                     (HM-DEC-084). A popup somebody has to know
-                                     to open is a popup they will not open when
-                                     they are frustrated, which is exactly when
-                                     it is needed. One line, not a banner, and
-                                     it goes away when waved off. -->
-                                <Grid ColumnDefinitions="*,Auto,Auto"
-                                      IsVisible="{Binding HasReceiveOffer}"
-                                      Margin="0,4,0,0">
-                                    <ctl:GlossaryTextControl Grid.Column="0"
-                                        Text="{Binding ReceiveOffer}"
-                                        FontSize="11" LineSpacing="1.4"
+                         The abort lives inside it for the same
+                         reason: a control that appears beside the
+                         thing it stops would move the thing it
+                         stops. -->
+                    <Border BorderThickness="1" CornerRadius="6"
+                            Padding="10,7" MinHeight="54"
+                            Background="{Binding StatusBackground}"
+                            BorderBrush="{Binding StatusEdge}">
+                        <Grid ColumnDefinitions="*,Auto"
+                              VerticalAlignment="Center">
+                            <StackPanel Spacing="2"
                                         Margin="0,0,8,0"
-                                        Foreground="{StaticResource HmBlueBrush}" />
-                                    <Button Grid.Column="1" Content="Have a look"
-                                            FontSize="11" Padding="8,3" Margin="0,0,6,0"
-                                            Command="{Binding OpenReceiveHelpCommand}" />
-                                    <Button Grid.Column="2" Content="No thanks"
-                                            FontSize="11" Padding="8,3"
-                                            Command="{Binding DismissReceiveOfferCommand}" />
-                                </Grid>
-
-                                <TextBlock Text="a dimmed character is one Hamlet is not sure of, and a block is something it heard and could not read. You can select any of this and copy it."
-                                           FontSize="12" TextWrapping="Wrap"
+                                        VerticalAlignment="Center">
+                                <ctl:GlossaryTextControl
+                                    Text="{Binding Status}"
+                                    FontSize="12" LineSpacing="1.4"
+                                    Foreground="{StaticResource HmTextPrimaryBrush}" />
+                                <TextBlock Text="{Binding Citation}" FontSize="10"
+                                           TextWrapping="Wrap"
                                            Foreground="{StaticResource HmTextMutedBrush}" />
+
+                                <!-- WHILE IT IS GOING OUT, THE PANEL
+                                     DOES SOMETHING RATHER THAN
+                                     PREVENTING SOMETHING
+                                     (HM-DEC-085). The operator
+                                     pressed the button and Hamlet
+                                     started the send, so Hamlet
+                                     knows exactly what is happening
+                                     and can say how much is left
+                                     rather than reporting that the
+                                     radio is busy.
+
+                                     Inside the block that is always
+                                     there, so nothing below reflows
+                                     when it appears. -->
+                                <TextBlock Text="{Binding SendingLine}"
+                                           FontSize="11" TextWrapping="Wrap"
+                                           IsVisible="{Binding IsSending}"
+                                           Margin="0,2,0,0"
+                                           Foreground="{StaticResource HmTextMutedBrush}" />
+
+                                <ProgressBar Minimum="0" Maximum="1"
+                                             Value="{Binding SendingProgress}"
+                                             IsVisible="{Binding IsSending}"
+                                             Height="4" Margin="0,4,0,0"
+                                             Foreground="{StaticResource HmGreenBrush}" />
                             </StackPanel>
-                        </ctl:CollapsiblePanel>
 
-                        <!-- SENDING MORSE (HM-DEC-059). Contextual: the one or
-                             two things anybody would say next, never the whole
-                             ritual at once. The terror is not the radio, it is
-                             not knowing what to say. -->
-                        <ctl:CollapsiblePanel Family="Amber"
-                                              Title="Send"
-                                              Summary="{Binding Transmit.Summary}"
-                                              IsExpanded="{Binding TransmitExpanded, Mode=TwoWay}">
-                            <StackPanel Spacing="8" DataContext="{Binding Transmit}">
+                            <Button Grid.Column="1" Content="Stop sending"
+                                    VerticalAlignment="Center"
+                                    IsVisible="{Binding IsSending}"
+                                    Command="{Binding AbortCommand}"
+                                    Background="{StaticResource HmAmberDeepBrush}"
+                                    Foreground="White" Padding="16,6" />
+                        </Grid>
+                    </Border>
 
-                                <!-- WHAT THE RADIO IS ACTUALLY SET TO
-                                     (HM-DEC-074). The dummy load warning is
-                                     retired: it said to key into one because
-                                     the code had never run, and it has now. In
-                                     its place, what Hamlet can honestly say
-                                     about the socket and the power, as
-                                     consequences and never instructions. -->
-                                <ItemsControl ItemsSource="{Binding Notes}">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <TextBlock Grid.Column="0" Text="{Binding StageName}"
+                                   FontSize="13" FontWeight="SemiBold"
+                                   VerticalAlignment="Center"
+                                   Foreground="{StaticResource HmAmberBrush}" />
+
+                        <!-- OFF BY DEFAULT NOW (HM-DEC-079). The
+                             confirming press guards text the
+                             operator wrote, not text Hamlet wrote,
+                             so it fires where it is worth firing
+                             and nowhere else. This is for somebody
+                             who wants it on everything. -->
+                        <StackPanel Grid.Column="1" Orientation="Horizontal"
+                                    Spacing="8" VerticalAlignment="Center">
+                            <TextBlock Text="confirm every send" FontSize="11"
+                                       VerticalAlignment="Center"
+                                       Foreground="{StaticResource HmTextMutedBrush}" />
+                            <ToggleSwitch IsChecked="{Binding AlwaysConfirm}" />
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- An unresolved license class warns and
+                         labels, and never blocks (HM-DEC-065,
+                         confirming HM-DEC-029). Said once, beside
+                         the buttons, where it is read before the
+                         press. -->
+                    <Border Background="{StaticResource HmAmberTintBrush}"
+                            BorderBrush="{StaticResource HmAmberEdgeBrush}"
+                            BorderThickness="1" CornerRadius="6"
+                            Padding="10,7"
+                            IsVisible="{Binding LicenseUnresolved}">
+                        <ctl:GlossaryTextControl
+                            Text="{x:Static vm:CwTransmitViewModel.UnresolvedLicenseNote}"
+                            FontSize="12" LineSpacing="1.4"
+                            Foreground="{StaticResource HmAmberDeepBrush}" />
+                    </Border>
+
+                    <!-- The buttons follow the precondition
+                         (HM-DEC-074). A control that cannot reach
+                         the air says why rather than inviting a
+                         press that produces a correct frame, a
+                         correct acknowledgement and silence. -->
+                    <!-- THREE STATES, THREE APPEARANCES, AND ONLY
+                         ONE OF THEM IS GREY (HM-DEC-079). Grey means
+                         refused and nothing else, because grey means
+                         "you cannot press this" in every interface
+                         anybody has ever used, and spending it on
+                         three different things left it meaning
+                         nothing. Armed is amber and pressable.
+                         Sending is green and working. Both do
+                         something, so neither is dimmed. -->
+                    <ItemsControl ItemsSource="{Binding Options}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="vm:SendButtonViewModel">
+                                <Border BorderThickness="1" CornerRadius="8"
+                                        Padding="10,8" Margin="0,0,0,6"
+                                        Background="White"
+                                        BorderBrush="{Binding EdgeBrush}"
+                                        Opacity="{Binding Dimmed}"
+                                        IsEnabled="{Binding !LooksRefused}">
+                                    <StackPanel Spacing="4">
+                                        <Grid ColumnDefinitions="*,Auto">
+                                            <StackPanel Grid.Column="0" Spacing="1"
+                                                        Margin="0,0,8,0">
+                                                <TextBlock Text="{Binding Meaning}"
+                                                           FontSize="12"
+                                                           TextWrapping="Wrap" />
+                                                <TextBlock Text="{Binding StateNote}"
+                                                           FontSize="11"
+                                                           TextWrapping="Wrap"
+                                                           IsVisible="{Binding StateNote,
+                                                               Converter={x:Static ctl:PrivilegeToneConverter.NotEmpty}}"
+                                                           Foreground="{Binding EdgeBrush}" />
+                                            </StackPanel>
+                                            <Button Grid.Column="1"
+                                                    Classes="hm-send"
+                                                    Classes.ready="{Binding LooksReady}"
+                                                    Classes.armed="{Binding LooksArmed}"
+                                                    Classes.refused="{Binding LooksRefused}"
+                                                    Content="{Binding ButtonLabel}"
+                                                    FontSize="12"
+                                                    VerticalAlignment="Center"
+                                                    Command="{Binding $parent[ItemsControl].((vm:CwTransmitViewModel)DataContext).PressCommand}"
+                                                    CommandParameter="{Binding}" />
+                                        </Grid>
+
+                                        <!-- EDITABLE, WHICH IS WHAT
+                                             THE GUARD IS FOR. Change
+                                             it and the next press
+                                             arms rather than sends. -->
+                                        <Border CornerRadius="6" Padding="2"
+                                                Background="{x:Static ctl:InstrumentPalette.SurfaceBrush}">
+                                            <TextBox Text="{Binding Message, Mode=TwoWay}"
+                                                     FontFamily="Consolas,Menlo,monospace"
+                                                     FontSize="12" TextWrapping="Wrap"
+                                                     AcceptsReturn="False"
+                                                     Background="Transparent"
+                                                     BorderThickness="0"
+                                                     Foreground="{x:Static ctl:InstrumentPalette.ConfidentBrush}" />
+                                        </Border>
+
+                                        <!-- ARMED SAYS SO, AND SAYS
+                                             HOW TO GET BACK OUT.
+                                             There used to be no way
+                                             out of an armed message
+                                             except pressing the very
+                                             thing you were unsure
+                                             about. -->
+                                        <Grid ColumnDefinitions="*,Auto,Auto"
+                                              IsVisible="{Binding IsArmed}">
+                                            <TextBlock Grid.Column="0"
+                                                       Text="Read it over. The next press sends it exactly as it stands."
+                                                       FontSize="11" TextWrapping="Wrap"
+                                                       VerticalAlignment="Center"
+                                                       Margin="0,0,8,0"
+                                                       Foreground="{StaticResource HmAmberDeepBrush}" />
+                                            <Button Grid.Column="1" Content="Put it back"
+                                                    FontSize="11" Padding="8,3"
+                                                    Margin="0,0,6,0"
+                                                    Command="{Binding $parent[ItemsControl].((vm:CwTransmitViewModel)DataContext).RevertCommand}"
+                                                    CommandParameter="{Binding}" />
+                                            <Button Grid.Column="2" Content="Cancel"
+                                                    FontSize="11" Padding="8,3"
+                                                    Command="{Binding $parent[ItemsControl].((vm:CwTransmitViewModel)DataContext).DisarmCommand}" />
+                                        </Grid>
+
+                                        <TextBlock Text="{Binding Note}" FontSize="11"
+                                                   TextWrapping="Wrap"
+                                                   Foreground="{StaticResource HmTextMutedBrush}" />
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+
+                    <!-- WHAT ACTUALLY HAPPENED, LINK BY LINK
+                         (HM-DEC-082). The question this application
+                         exists to answer: speaking into the void and
+                         speaking on the air with nobody listening are
+                         different facts, and until now both came out
+                         as silence. Every number here was measured or
+                         it is not here. -->
+                    <Border Background="{StaticResource HmGreenTintBrush}"
+                            BorderBrush="{StaticResource HmGreenEdgeBrush}"
+                            BorderThickness="1" CornerRadius="8"
+                            Padding="12,9"
+                            IsVisible="{Binding ChainNote,
+                                Converter={x:Static ctl:PrivilegeToneConverter.NotEmpty}}">
+                        <ctl:GlossaryTextControl Text="{Binding ChainNote}"
+                            FontSize="13" LineSpacing="1.45"
+                            Foreground="{StaticResource HmTextPrimaryBrush}" />
+                    </Border>
+
+                    <!-- WHAT THE METER SAID DURING THE SEND
+                         (HM-DEC-081). Only after one, only when
+                         something was measured, and it never says
+                         what is connected. -->
+                    <Border Background="{StaticResource HmAmberTintBrush}"
+                            BorderBrush="{StaticResource HmAmberEdgeBrush}"
+                            BorderThickness="1" CornerRadius="6"
+                            Padding="10,7"
+                            IsVisible="{Binding SwrNote,
+                                Converter={x:Static ctl:PrivilegeToneConverter.NotEmpty}}">
+                        <ctl:GlossaryTextControl Text="{Binding SwrNote}"
+                            FontSize="12" LineSpacing="1.4"
+                            Foreground="{StaticResource HmAmberDeepBrush}" />
+                    </Border>
+
+
+                    <TextBlock Text="{Binding SpeedOffer}" FontSize="11"
+                               TextWrapping="Wrap"
+                               IsVisible="{Binding SpeedOffer,
+                                   Converter={x:Static ctl:PrivilegeToneConverter.NotEmpty}}"
+                               Foreground="{StaticResource HmTextMutedBrush}" />
+
+                    <!-- AN EXPLICIT KNOWN-UNKNOWN, not a control
+                         that silently does nothing. -->
+                    <TextBlock Text="{Binding SpacingNote}" FontSize="11"
+                               TextWrapping="Wrap" LineHeight="17"
+                               IsVisible="{Binding SpacingNote,
+                                   Converter={x:Static ctl:PrivilegeToneConverter.NotEmpty}}"
+                               Foreground="{StaticResource HmTextMutedBrush}" />
+                </StackPanel>
+            </ctl:CollapsiblePanel>
+        </DataTemplate>
+
+        <!-- Phrasebook -->
+        <DataTemplate x:Key="widget.phrasebook" x:DataType="vm:MainWindowViewModel">
+            <ctl:CollapsiblePanel Family="Green"
+                                  Title="Phrasebook"
+                                  Summary="{Binding Phrasebook.Summary}"
+                                  IsExpanded="{Binding PhrasebookExpanded, Mode=TwoWay}">
+                <ItemsControl ItemsSource="{Binding Phrasebook.Columns}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="vm:PhraseColumn">
+                            <StackPanel Spacing="4">
+                                <TextBlock Text="{Binding Heading}"
+                                           FontSize="13" FontWeight="SemiBold"
+                                           Foreground="{StaticResource HmGreenBrush}" />
+
+                                <!-- The column somebody needs and
+                                     would never ask for, doing the
+                                     emotional work the definitions
+                                     cannot (HM-DEC-041). -->
+                                <ctl:GlossaryTextControl Text="{Binding Note}"
+                                    FontSize="11" LineSpacing="1.4"
+                                    IsVisible="{Binding Note,
+                                        Converter={x:Static ctl:PrivilegeToneConverter.NotEmpty}}"
+                                    Foreground="{StaticResource HmTextMutedBrush}" />
+
+                                <ItemsControl ItemsSource="{Binding Phrases}">
                                     <ItemsControl.ItemTemplate>
-                                        <DataTemplate x:DataType="x:String">
-                                            <Border Background="{StaticResource HmAmberTintBrush}"
+                                        <DataTemplate x:DataType="cw:CwPhrase">
+                                            <Grid ColumnDefinitions="90,*" Margin="0,2">
+                                                <TextBlock
+                                                           Text="{Binding Sent}"
+                                                           FontFamily="Consolas,Menlo,monospace"
+                                                           FontSize="12"
+                                                           Foreground="{StaticResource HmAmberDeepBrush}" />
+                                                <StackPanel Grid.Column="1" Spacing="0">
+                                                    <TextBlock Text="{Binding Meaning}"
+                                                               FontSize="12"
+                                                               TextWrapping="Wrap" />
+                                                    <TextBlock Text="{Binding When}"
+                                                               FontSize="11"
+                                                               TextWrapping="Wrap"
+                                                               Foreground="{StaticResource HmTextMutedBrush}" />
+                                                </StackPanel>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ctl:CollapsiblePanel>
+        </DataTemplate>
+
+        <!-- I can hear it and Hamlet can't -->
+        <DataTemplate x:Key="widget.receiveHelp" x:DataType="vm:MainWindowViewModel">
+            <ctl:CollapsiblePanel Family="Blue"
+                                  Title="I can hear it and Hamlet can't"
+                                  Summary="{Binding ReceiveHelp.ActionLabel}"
+                                  IsExpanded="{Binding ReceiveHelpExpanded, Mode=TwoWay}">
+                <StackPanel Spacing="8">
+                    <ctl:GlossaryTextControl Text="{Binding ReceiveHeadline}"
+                                             FontSize="12" LineSpacing="1.45"
+                                             Foreground="{StaticResource HmTextPrimaryBrush}" />
+
+                    <!-- ROWS ALREADY CORRECT STAY VISIBLE AND SAY
+                         SO. Hiding them is tidier and teaches
+                         nothing; showing them is the app proving
+                         what it checked. -->
+                    <ItemsControl ItemsSource="{Binding ReceiveHelp.Rows}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="vm:AdviceRowViewModel">
+                                <Grid ColumnDefinitions="18,*,Auto">
+                                    <TextBlock Text="{Binding Mark}"
+                                               FontSize="12" FontWeight="SemiBold"
+                                               VerticalAlignment="Top"
+                                               Foreground="{StaticResource HmBlueBrush}" />
+                                    <ctl:GlossaryTextControl Grid.Column="1"
+                                        Text="{Binding Says}"
+                                        FontSize="12" LineSpacing="1.4"
+                                        Margin="0,0,8,0"
+                                        Foreground="{StaticResource HmTextPrimaryBrush}" />
+                                    <Button Grid.Column="2" Content="Just this one"
+                                            FontSize="11" Padding="8,3"
+                                            VerticalAlignment="Top"
+                                            IsVisible="{Binding WouldChange}"
+                                            Command="{Binding $parent[ItemsControl].((vm:ReceiveHelpViewModel)DataContext).ApplyOneCommand}"
+                                            CommandParameter="{Binding}" />
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <!-- ONE PRESS, NOT FOUR CONFIRMATIONS. None of
+                         these can put anything on the air, and
+                         asking permission four times trains
+                         somebody to click through prompts. -->
+                    <Button Classes="hm-send ready"
+                            Content="{Binding ReceiveHelp.ActionLabel}"
+                            HorizontalAlignment="Left"
+                            Command="{Binding ReceiveHelp.FixAllCommand}" />
+
+                    <!-- AFTER ANY CHANGE, THE FOOTER IS THE RECORD:
+                         what changed, from what, to what, with
+                         put-it-back beside it. -->
+                    <StackPanel Spacing="4"
+                                IsVisible="{Binding ReceiveHelp.HasChanges}">
+                        <TextBlock Text="What Hamlet changed"
+                                   FontSize="12" FontWeight="SemiBold"
+                                   Foreground="{StaticResource HmBlueBrush}" />
+
+                        <ItemsControl ItemsSource="{Binding ReceiveHelp.Changes}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="rig:SettingChange">
+                                    <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,4">
+                                        <TextBlock Grid.Column="0"
+                                                   Text="{Binding Says}"
+                                                   FontSize="11" TextWrapping="Wrap"
+                                                   Margin="0,0,8,0"
+                                                   Foreground="{StaticResource HmTextMutedBrush}" />
+                                        <Button Grid.Column="1" Content="Put it back"
+                                                FontSize="11" Padding="8,3"
+                                                VerticalAlignment="Top"
+                                                IsVisible="{Binding CanUndo}"
+                                                Command="{Binding $parent[ItemsControl].((vm:ReceiveHelpViewModel)DataContext).UndoCommand}"
+                                                CommandParameter="{Binding}" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <Button Content="Put all of it back"
+                                FontSize="11" Padding="8,3"
+                                HorizontalAlignment="Left"
+                                Command="{Binding ReceiveHelp.UndoAllCommand}" />
+                    </StackPanel>
+                </StackPanel>
+            </ctl:CollapsiblePanel>
+        </DataTemplate>
+
+        <!-- Did anybody hear me -->
+        <DataTemplate x:Key="widget.heard" x:DataType="vm:MainWindowViewModel">
+            <ctl:CollapsiblePanel Family="Green"
+                                  Title="Did anybody hear me"
+                                  Summary="{Binding HeardSummary}"
+                                  IsExpanded="{Binding HeardExpanded, Mode=TwoWay}">
+                <StackPanel Spacing="8">
+                    <ctl:GlossaryTextControl Text="{Binding HeardDetail}"
+                                             FontSize="12" LineSpacing="1.45"
+                                             Foreground="{StaticResource HmTextPrimaryBrush}" />
+
+                    <ItemsControl ItemsSource="{Binding HeardReports}"
+                                  IsVisible="{Binding HasHeardReports}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="explore:HeardReport">
+                                <Border Background="{StaticResource HmGreenTintBrush}"
+                                        BorderBrush="{StaticResource HmGreenEdgeBrush}"
+                                        BorderThickness="1" CornerRadius="8"
+                                        Padding="10,7">
+                                    <StackPanel Spacing="2">
+                                        <TextBlock Text="{Binding ReceiverCall}"
+                                                   FontSize="14" FontWeight="SemiBold"
+                                                   Foreground="{StaticResource HmGreenBrush}" />
+                                        <TextBlock Text="{Binding Signal}"
+                                                   FontSize="12" TextWrapping="Wrap"
+                                                   Foreground="{StaticResource HmTextPrimaryBrush}" />
+                                        <TextBlock Text="{Binding Speed}" FontSize="11"
+                                                   Foreground="{StaticResource HmTextMutedBrush}" />
+                                        <TextBlock Text="{Binding FrequencyLabel}"
+                                                   FontFamily="Consolas,Menlo,monospace"
+                                                   FontSize="11"
+                                                   Foreground="{StaticResource HmTextMutedBrush}" />
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </ctl:CollapsiblePanel>
+        </DataTemplate>
+
+        <!-- Where to start -->
+        <DataTemplate x:Key="widget.lead" x:DataType="vm:MainWindowViewModel">
+            <ctl:CollapsiblePanel Family="Amber"
+                                  Title="Where to start"
+                                  Summary="{Binding Lead.Headline}"
+                                  IsExpanded="{Binding LeadExpanded, Mode=TwoWay}">
+                <StackPanel Spacing="10">
+
+                    <Border Background="{StaticResource HmAmberTintBrush}"
+                            BorderBrush="{StaticResource HmAmberEdgeBrush}"
+                            BorderThickness="1" CornerRadius="8"
+                            Padding="12,10">
+                        <StackPanel Spacing="6">
+                            <TextBlock Text="{Binding Lead.Headline}"
+                                       FontSize="14" FontWeight="SemiBold"
+                                       TextWrapping="Wrap"
+                                       Foreground="{StaticResource HmTextPrimaryBrush}" />
+                            <ctl:GlossaryTextControl Text="{Binding Lead.Body}"
+                                                     FontSize="12" LineSpacing="1.4"
+                                                     Foreground="{StaticResource HmTextPrimaryBrush}" />
+
+                            <!-- The evidence, never hidden: the
+                                 same reason line the ranked card
+                                 carries (HM-DEC-009). -->
+                            <TextBlock Text="{Binding Lead.Reason}"
+                                       FontSize="11" TextWrapping="Wrap"
+                                       Foreground="{StaticResource HmTextMutedBrush}" />
+
+                            <Button Content="{Binding Lead.FrequencyLabel,
+                                        StringFormat='Tune {0}'}"
+                                    FontSize="12"
+                                    HorizontalAlignment="Left"
+                                    IsVisible="{Binding Lead.HasSuggestion}"
+                                    Command="{Binding TuneToCommand}"
+                                    CommandParameter="{Binding Lead.TuneHz}" />
+                        </StackPanel>
+                    </Border>
+
+                    <Border Background="White"
+                            BorderBrush="{StaticResource HmSlateEdgeBrush}"
+                            BorderThickness="1" CornerRadius="8"
+                            Padding="12,10">
+                        <StackPanel Spacing="4">
+                            <ctl:GlossaryTextControl Text="{Binding Conditions.Claim}"
+                                                     FontSize="13" LineSpacing="1.4"
+                                                     Foreground="{StaticResource HmTextPrimaryBrush}" />
+                            <TextBlock Text="{Binding Conditions.Evidence}"
+                                       FontSize="11" TextWrapping="Wrap"
+                                       Foreground="{StaticResource HmTextMutedBrush}" />
+                        </StackPanel>
+                    </Border>
+
+                </StackPanel>
+            </ctl:CollapsiblePanel>
+        </DataTemplate>
+
+        <!-- Happening now -->
+        <DataTemplate x:Key="widget.spots" x:DataType="vm:MainWindowViewModel">
+            <ctl:CollapsiblePanel Family="Green"
+                                  Title="Happening now"
+                                  Summary="{Binding SpotsSummary}"
+                                  SummaryBrush="{Binding SpotsFreshness,
+                                      Converter={x:Static ctl:FreshnessBrushConverter.Instance}}"
+                                  IsExpanded="{Binding SpotsExpanded, Mode=TwoWay}">
+
+                <!-- A bounded viewport rather than a second page
+                     scroller. A busy evening puts twenty park
+                     activations in here, which used to make the
+                     Explorer column so much taller than the one
+                     beside it that the waterfall and the terminal
+                     sat in a column of empty space. Capping the list
+                     keeps the window's own scrollbar meaningful, and
+                     this is the same shape the CW terminal's
+                     transcript already uses. -->
+                <StackPanel Spacing="8">
+
+                <!-- THE TWO QUESTIONS, AT THE HEAD OF THE PANEL AND
+                     BOTH ALWAYS VISIBLE (HM-DEC-057). Two words on
+                     screen teach more than any inference: a newcomer
+                     who reads "what's new" learns that going hunting
+                     again after a contact is a normal thing people
+                     do, which is a fact about this hobby nobody
+                     tells them. Inside the panel rather than in its
+                     header because the header already carries the
+                     lens name for when it is shut, and two copies
+                     of it left no room for either. -->
+                <StackPanel Orientation="Horizontal" Spacing="6"
+                            ToolTip.Tip="{Binding LensQuestion}"
+                            ToolTip.ShowDelay="300">
+                    <ToggleButton Classes="hm-lens" Content="Best chance"
+                                  IsChecked="{Binding IsBestChance, Mode=OneWay}"
+                                  Command="{Binding SelectLensCommand}"
+                                  CommandParameter="BestChance" />
+                    <ToggleButton Classes="hm-lens" Content="What's new"
+                                  IsChecked="{Binding IsWhatsNew, Mode=OneWay}"
+                                  Command="{Binding SelectLensCommand}"
+                                  CommandParameter="WhatsNew" />
+                </StackPanel>
+
+                <!-- THE COUNT SHOWS EVEN WHEN THE FAMILY IS OFF
+                     (HM-DEC-061). Somebody who filters to Morse and
+                     still sees forty-one voice stations learns the
+                     band is full of people they could talk to, which
+                     is the fact this whole app exists to reveal. -->
+                <ItemsControl ItemsSource="{Binding FamilyChips}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal" Spacing="6" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="vm:FamilyChipViewModel">
+                            <Button Padding="9,2" FontSize="11" CornerRadius="10"
+                                    Command="{Binding $parent[ItemsControl].((vm:MainWindowViewModel)DataContext).ToggleFamilyCommand}"
+                                    CommandParameter="{Binding Name}"
+                                    Opacity="{Binding IsOn,
+                                        Converter={x:Static ctl:ChipOpacityConverter.Instance}}"
+                                    Background="{Binding Family,
+                                        Converter={x:Static ctl:ModeFamilyConverter.Fill}}"
+                                    Foreground="{Binding Family,
+                                        Converter={x:Static ctl:ModeFamilyConverter.Ink}}"
+                                    Content="{Binding Text}" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <ScrollViewer MaxHeight="520"
+                              VerticalScrollBarVisibility="Auto">
+                <ItemsControl ItemsSource="{Binding Spots}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="vm:SpotViewModel">
+                            <!-- AGE FADES THE DISPLAY across each
+                                 source's ruled lifetime, so the eye
+                                 finds what is current without
+                                 reading a timestamp (HM-DEC-057).
+                                 Never to nothing: a card faded away
+                                 is a card removed. -->
+                            <Border Background="{Binding Family,
+                                        Converter={x:Static ctl:ModeFamilyConverter.Fill}}"
+                                    BorderBrush="{StaticResource HmGreenEdgeBrush}"
+                                    BorderThickness="1" CornerRadius="8"
+                                    Opacity="{Binding Prominence}"
+                                    Padding="10,8">
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <StackPanel Spacing="2" Margin="0,0,8,0">
+                                        <!-- The family's own ink, so
+                                             the words stay legible
+                                             on the family's fill
+                                             (HM-DEC-036). -->
+                                        <TextBlock Text="{Binding Story}" FontSize="12"
+                                                   TextWrapping="Wrap"
+                                                   Foreground="{Binding Family,
+                                                       Converter={x:Static ctl:ModeFamilyConverter.Ink}}" />
+
+                                        <!-- Why this card is where
+                                             it is, on its face and
+                                             never in a tooltip
+                                             (HM-DEC-025). -->
+                                        <TextBlock Text="{Binding Reason}" FontSize="11"
+                                                   TextWrapping="Wrap"
+                                                   Foreground="{StaticResource HmGreenBrush}" />
+
+                                        <!-- A Grid rather than a horizontal StackPanel: the
+                                             provenance line now carries a whole clause about
+                                             whether that person is still there, and a
+                                             StackPanel hands its children infinite width, so
+                                             wrapping never happened and the sentence ran off
+                                             the card (HM-DEC-045). -->
+                                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="6">
+                                            <Border Grid.Column="0"
+                                                    Background="{StaticResource HmAmberTintBrush}"
                                                     BorderBrush="{StaticResource HmAmberEdgeBrush}"
                                                     BorderThickness="1" CornerRadius="6"
-                                                    Padding="10,7" Margin="0,0,0,6">
-                                                <TextBlock Text="{Binding}"
-                                                           FontSize="12" TextWrapping="Wrap"
-                                                           LineHeight="18"
+                                                    Padding="5,0"
+                                                    VerticalAlignment="Top"
+                                                    IsVisible="{Binding IsNew}">
+                                                <TextBlock Text="new" FontSize="10"
                                                            Foreground="{StaticResource HmAmberDeepBrush}" />
                                             </Border>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
 
-                                <!-- RESERVED SPACE, NEVER APPEARING SPACE
-                                     (HM-DEC-080). This block is always here and
-                                     only its content and its color change. It
-                                     used to come and go as the transmit line
-                                     toggled, and every appearance reflowed
-                                     everything below it, so the panel jumped
-                                     several times a second at exactly the moment
-                                     the operator was watching it hardest.
-
-                                     The abort lives inside it for the same
-                                     reason: a control that appears beside the
-                                     thing it stops would move the thing it
-                                     stops. -->
-                                <Border BorderThickness="1" CornerRadius="6"
-                                        Padding="10,7" MinHeight="54"
-                                        Background="{Binding StatusBackground}"
-                                        BorderBrush="{Binding StatusEdge}">
-                                    <Grid ColumnDefinitions="*,Auto"
-                                          VerticalAlignment="Center">
-                                        <StackPanel Grid.Column="0" Spacing="2"
-                                                    Margin="0,0,8,0"
-                                                    VerticalAlignment="Center">
-                                            <ctl:GlossaryTextControl
-                                                Text="{Binding Status}"
-                                                FontSize="12" LineSpacing="1.4"
-                                                Foreground="{StaticResource HmTextPrimaryBrush}" />
-                                            <TextBlock Text="{Binding Citation}" FontSize="10"
+                                            <!-- Opportunity freshness: how long since the
+                                                 spot happened and whether that person is
+                                                 likely still there. Feed freshness is a
+                                                 different fact and lives in the panel
+                                                 header. The exact figure is one hover away. -->
+                                            <TextBlock Grid.Column="1"
+                                                       Text="{Binding Provenance}" FontSize="10"
                                                        TextWrapping="Wrap"
+                                                       ToolTip.Tip="{Binding AgeTooltip}"
+                                                       ToolTip.ShowDelay="300"
                                                        Foreground="{StaticResource HmTextMutedBrush}" />
+                                        </Grid>
+                                    </StackPanel>
+                                    <Button Grid.Column="1" Content="{Binding TuneLabel}"
+                                            FontSize="12" VerticalAlignment="Center"
+                                            Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).TuneToCommand}"
+                                            CommandParameter="{Binding FrequencyHz}" />
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                </ScrollViewer>
+                </StackPanel>
+            </ctl:CollapsiblePanel>
+        </DataTemplate>
 
-                                            <!-- WHILE IT IS GOING OUT, THE PANEL
-                                                 DOES SOMETHING RATHER THAN
-                                                 PREVENTING SOMETHING
-                                                 (HM-DEC-085). The operator
-                                                 pressed the button and Hamlet
-                                                 started the send, so Hamlet
-                                                 knows exactly what is happening
-                                                 and can say how much is left
-                                                 rather than reporting that the
-                                                 radio is busy.
+        <!-- Field notes -->
+        <DataTemplate x:Key="widget.story" x:DataType="vm:MainWindowViewModel">
+            <ctl:CollapsiblePanel Family="Amber"
+                                  Title="Field notes"
+                                  Summary="{Binding StoryTitle}"
+                                  IsExpanded="{Binding StoryExpanded, Mode=TwoWay}">
+                <StackPanel Spacing="6">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <TextBlock Text="{Binding StoryTitle}"
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource HmAmberDeepBrush}"
+                                   TextWrapping="Wrap" />
+                        <Border Grid.Column="1"
+                                Background="{StaticResource HmAmberTintBrush}"
+                                BorderBrush="{StaticResource HmAmberEdgeBrush}"
+                                BorderThickness="1" CornerRadius="8" Padding="6,1">
+                            <TextBlock Text="{Binding StoryBadge}" FontSize="11"
+                                       Foreground="{StaticResource HmAmberDeepBrush}" />
+                        </Border>
+                    </Grid>
+                    <ctl:GlossaryTextControl Text="{Binding StoryBody}"
+                                             FontSize="13" LineSpacing="1.45"
+                                             Foreground="{StaticResource HmTextPrimaryBrush}" />
+                    <Button Content="Take me there" FontSize="12"
+                            Command="{Binding TuneToCommand}"
+                            CommandParameter="{Binding StoryTuneHz}" />
+                </StackPanel>
+            </ctl:CollapsiblePanel>
+        </DataTemplate>
 
-                                                 Inside the block that is always
-                                                 there, so nothing below reflows
-                                                 when it appears. -->
-                                            <TextBlock Text="{Binding SendingLine}"
+        <!-- Field guide -->
+        <DataTemplate x:Key="widget.guide" x:DataType="vm:MainWindowViewModel">
+            <ctl:CollapsiblePanel Family="Blue"
+                                  Title="Field guide"
+                                  Summary="{Binding GuideSummary}"
+                                  IsExpanded="{Binding GuideExpanded, Mode=TwoWay}">
+                <ItemsControl ItemsSource="{Binding ModeCards}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="vm:ModeCardViewModel">
+                            <Border Padding="10,8"
+                                    Background="White"
+                                    BorderBrush="{StaticResource HmSlateEdgeBrush}"
+                                    BorderThickness="1" CornerRadius="8">
+                                <StackPanel Spacing="6">
+
+                                    <!-- The animated fingerprint:
+                                         the same synthesiser that
+                                         draws the waterfall, so
+                                         ear and eye learn one
+                                         picture (HM-DEC-027). -->
+                                    <Grid ColumnDefinitions="Auto,*,Auto">
+                                        <ctl:ModeFingerprintControl
+                                            Kind="{Binding Mode.Signature}"
+                                            VerticalAlignment="Center" />
+
+                                        <StackPanel Grid.Column="1"
+                                                    Margin="10,0,0,0"
+                                                    VerticalAlignment="Center"
+                                                    Spacing="3">
+                                            <StackPanel Orientation="Horizontal"
+                                                        Spacing="7">
+                                                <TextBlock Text="{Binding Mode.Name}"
+                                                           FontSize="13" FontWeight="SemiBold"
+                                                           VerticalAlignment="Center" />
+
+                                                <!-- The family chip: the same color the
+                                                     band map fills this mode's streets
+                                                     with, and the same word the map's
+                                                     legend uses for it (HM-DEC-032). -->
+                                                <Border CornerRadius="3"
+                                                        Padding="6,1"
+                                                        VerticalAlignment="Center"
+                                                        Background="{Binding Colors.FillBrush}">
+                                                    <TextBlock Text="{Binding FamilyLabel}"
+                                                               FontSize="10"
+                                                               Foreground="{Binding Colors.InkBrush}" />
+                                                </Border>
+                                            </StackPanel>
+
+                                            <TextBlock Text="{Binding Mode.Sound}"
                                                        FontSize="11" TextWrapping="Wrap"
-                                                       IsVisible="{Binding IsSending}"
-                                                       Margin="0,2,0,0"
                                                        Foreground="{StaticResource HmTextMutedBrush}" />
-
-                                            <ProgressBar Minimum="0" Maximum="1"
-                                                         Value="{Binding SendingProgress}"
-                                                         IsVisible="{Binding IsSending}"
-                                                         Height="4" Margin="0,4,0,0"
-                                                         Foreground="{StaticResource HmGreenBrush}" />
                                         </StackPanel>
 
-                                        <Button Grid.Column="1" Content="Stop sending"
+                                        <Button Grid.Column="2" Content="?"
+                                                FontSize="12" Padding="8,3"
                                                 VerticalAlignment="Center"
-                                                IsVisible="{Binding IsSending}"
-                                                Command="{Binding AbortCommand}"
-                                                Background="{StaticResource HmAmberDeepBrush}"
-                                                Foreground="White" Padding="16,6" />
+                                                ToolTip.Tip="What is this mode, and why bother?"
+                                                Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).ShowModeCommand}"
+                                                CommandParameter="{Binding Mode}" />
                                     </Grid>
-                                </Border>
 
-                                <Grid ColumnDefinitions="*,Auto">
-                                    <TextBlock Grid.Column="0" Text="{Binding StageName}"
-                                               FontSize="13" FontWeight="SemiBold"
-                                               VerticalAlignment="Center"
-                                               Foreground="{StaticResource HmAmberBrush}" />
-
-                                    <!-- OFF BY DEFAULT NOW (HM-DEC-079). The
-                                         confirming press guards text the
-                                         operator wrote, not text Hamlet wrote,
-                                         so it fires where it is worth firing
-                                         and nowhere else. This is for somebody
-                                         who wants it on everything. -->
-                                    <StackPanel Grid.Column="1" Orientation="Horizontal"
-                                                Spacing="8" VerticalAlignment="Center">
-                                        <TextBlock Text="confirm every send" FontSize="11"
+                                    <StackPanel Orientation="Horizontal" Spacing="6"
+                                                IsVisible="{Binding HasSamples}">
+                                        <TextBlock Text="Hear it:" FontSize="11"
                                                    VerticalAlignment="Center"
                                                    Foreground="{StaticResource HmTextMutedBrush}" />
-                                        <ToggleSwitch IsChecked="{Binding AlwaysConfirm}" />
-                                    </StackPanel>
-                                </Grid>
-
-                                <!-- An unresolved license class warns and
-                                     labels, and never blocks (HM-DEC-065,
-                                     confirming HM-DEC-029). Said once, beside
-                                     the buttons, where it is read before the
-                                     press. -->
-                                <Border Background="{StaticResource HmAmberTintBrush}"
-                                        BorderBrush="{StaticResource HmAmberEdgeBrush}"
-                                        BorderThickness="1" CornerRadius="6"
-                                        Padding="10,7"
-                                        IsVisible="{Binding LicenseUnresolved}">
-                                    <ctl:GlossaryTextControl
-                                        Text="{x:Static vm:CwTransmitViewModel.UnresolvedLicenseNote}"
-                                        FontSize="12" LineSpacing="1.4"
-                                        Foreground="{StaticResource HmAmberDeepBrush}" />
-                                </Border>
-
-                                <!-- The buttons follow the precondition
-                                     (HM-DEC-074). A control that cannot reach
-                                     the air says why rather than inviting a
-                                     press that produces a correct frame, a
-                                     correct acknowledgement and silence. -->
-                                <!-- THREE STATES, THREE APPEARANCES, AND ONLY
-                                     ONE OF THEM IS GREY (HM-DEC-079). Grey means
-                                     refused and nothing else, because grey means
-                                     "you cannot press this" in every interface
-                                     anybody has ever used, and spending it on
-                                     three different things left it meaning
-                                     nothing. Armed is amber and pressable.
-                                     Sending is green and working. Both do
-                                     something, so neither is dimmed. -->
-                                <ItemsControl ItemsSource="{Binding Options}">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate x:DataType="vm:SendButtonViewModel">
-                                            <Border BorderThickness="1" CornerRadius="8"
-                                                    Padding="10,8" Margin="0,0,0,6"
-                                                    Background="White"
-                                                    BorderBrush="{Binding EdgeBrush}"
-                                                    Opacity="{Binding Dimmed}"
-                                                    IsEnabled="{Binding !LooksRefused}">
-                                                <StackPanel Spacing="4">
-                                                    <Grid ColumnDefinitions="*,Auto">
-                                                        <StackPanel Grid.Column="0" Spacing="1"
-                                                                    Margin="0,0,8,0">
-                                                            <TextBlock Text="{Binding Meaning}"
-                                                                       FontSize="12"
-                                                                       TextWrapping="Wrap" />
-                                                            <TextBlock Text="{Binding StateNote}"
-                                                                       FontSize="11"
-                                                                       TextWrapping="Wrap"
-                                                                       IsVisible="{Binding StateNote,
-                                                                           Converter={x:Static ctl:PrivilegeToneConverter.NotEmpty}}"
-                                                                       Foreground="{Binding EdgeBrush}" />
-                                                        </StackPanel>
-                                                        <Button Grid.Column="1"
-                                                                Classes="hm-send"
-                                                                Classes.ready="{Binding LooksReady}"
-                                                                Classes.armed="{Binding LooksArmed}"
-                                                                Classes.refused="{Binding LooksRefused}"
-                                                                Content="{Binding ButtonLabel}"
-                                                                FontSize="12"
-                                                                VerticalAlignment="Center"
-                                                                Command="{Binding $parent[ItemsControl].((vm:CwTransmitViewModel)DataContext).PressCommand}"
-                                                                CommandParameter="{Binding}" />
-                                                    </Grid>
-
-                                                    <!-- EDITABLE, WHICH IS WHAT
-                                                         THE GUARD IS FOR. Change
-                                                         it and the next press
-                                                         arms rather than sends. -->
-                                                    <Border CornerRadius="6" Padding="2"
-                                                            Background="{x:Static ctl:InstrumentPalette.SurfaceBrush}">
-                                                        <TextBox Text="{Binding Message, Mode=TwoWay}"
-                                                                 FontFamily="Consolas,Menlo,monospace"
-                                                                 FontSize="12" TextWrapping="Wrap"
-                                                                 AcceptsReturn="False"
-                                                                 Background="Transparent"
-                                                                 BorderThickness="0"
-                                                                 Foreground="{x:Static ctl:InstrumentPalette.ConfidentBrush}" />
-                                                    </Border>
-
-                                                    <!-- ARMED SAYS SO, AND SAYS
-                                                         HOW TO GET BACK OUT.
-                                                         There used to be no way
-                                                         out of an armed message
-                                                         except pressing the very
-                                                         thing you were unsure
-                                                         about. -->
-                                                    <Grid ColumnDefinitions="*,Auto,Auto"
-                                                          IsVisible="{Binding IsArmed}">
-                                                        <TextBlock Grid.Column="0"
-                                                                   Text="Read it over. The next press sends it exactly as it stands."
-                                                                   FontSize="11" TextWrapping="Wrap"
-                                                                   VerticalAlignment="Center"
-                                                                   Margin="0,0,8,0"
-                                                                   Foreground="{StaticResource HmAmberDeepBrush}" />
-                                                        <Button Grid.Column="1" Content="Put it back"
-                                                                FontSize="11" Padding="8,3"
-                                                                Margin="0,0,6,0"
-                                                                Command="{Binding $parent[ItemsControl].((vm:CwTransmitViewModel)DataContext).RevertCommand}"
-                                                                CommandParameter="{Binding}" />
-                                                        <Button Grid.Column="2" Content="Cancel"
-                                                                FontSize="11" Padding="8,3"
-                                                                Command="{Binding $parent[ItemsControl].((vm:CwTransmitViewModel)DataContext).DisarmCommand}" />
-                                                    </Grid>
-
-                                                    <TextBlock Text="{Binding Note}" FontSize="11"
-                                                               TextWrapping="Wrap"
-                                                               Foreground="{StaticResource HmTextMutedBrush}" />
-                                                </StackPanel>
-                                            </Border>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-
-
-                                <!-- WHAT ACTUALLY HAPPENED, LINK BY LINK
-                                     (HM-DEC-082). The question this application
-                                     exists to answer: speaking into the void and
-                                     speaking on the air with nobody listening are
-                                     different facts, and until now both came out
-                                     as silence. Every number here was measured or
-                                     it is not here. -->
-                                <Border Background="{StaticResource HmGreenTintBrush}"
-                                        BorderBrush="{StaticResource HmGreenEdgeBrush}"
-                                        BorderThickness="1" CornerRadius="8"
-                                        Padding="12,9"
-                                        IsVisible="{Binding ChainNote,
-                                            Converter={x:Static ctl:PrivilegeToneConverter.NotEmpty}}">
-                                    <ctl:GlossaryTextControl Text="{Binding ChainNote}"
-                                        FontSize="13" LineSpacing="1.45"
-                                        Foreground="{StaticResource HmTextPrimaryBrush}" />
-                                </Border>
-
-                                <!-- WHAT THE METER SAID DURING THE SEND
-                                     (HM-DEC-081). Only after one, only when
-                                     something was measured, and it never says
-                                     what is connected. -->
-                                <Border Background="{StaticResource HmAmberTintBrush}"
-                                        BorderBrush="{StaticResource HmAmberEdgeBrush}"
-                                        BorderThickness="1" CornerRadius="6"
-                                        Padding="10,7"
-                                        IsVisible="{Binding SwrNote,
-                                            Converter={x:Static ctl:PrivilegeToneConverter.NotEmpty}}">
-                                    <ctl:GlossaryTextControl Text="{Binding SwrNote}"
-                                        FontSize="12" LineSpacing="1.4"
-                                        Foreground="{StaticResource HmAmberDeepBrush}" />
-                                </Border>
-
-
-                                <TextBlock Text="{Binding SpeedOffer}" FontSize="11"
-                                           TextWrapping="Wrap"
-                                           IsVisible="{Binding SpeedOffer,
-                                               Converter={x:Static ctl:PrivilegeToneConverter.NotEmpty}}"
-                                           Foreground="{StaticResource HmTextMutedBrush}" />
-
-                                <!-- AN EXPLICIT KNOWN-UNKNOWN, not a control
-                                     that silently does nothing. -->
-                                <TextBlock Text="{Binding SpacingNote}" FontSize="11"
-                                           TextWrapping="Wrap" LineHeight="17"
-                                           IsVisible="{Binding SpacingNote,
-                                               Converter={x:Static ctl:PrivilegeToneConverter.NotEmpty}}"
-                                           Foreground="{StaticResource HmTextMutedBrush}" />
-                            </StackPanel>
-                        </ctl:CollapsiblePanel>
-
-                        <!-- The phrases people actually send (HM-DEC-059). -->
-                        <ctl:CollapsiblePanel Family="Green"
-                                              Title="Phrasebook"
-                                              Summary="{Binding Phrasebook.Summary}"
-                                              IsExpanded="{Binding PhrasebookExpanded, Mode=TwoWay}">
-                            <ItemsControl ItemsSource="{Binding Phrasebook.Columns}">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate x:DataType="vm:PhraseColumn">
-                                        <StackPanel Spacing="4" Margin="0,0,0,12">
-                                            <TextBlock Text="{Binding Heading}"
-                                                       FontSize="13" FontWeight="SemiBold"
-                                                       Foreground="{StaticResource HmGreenBrush}" />
-
-                                            <!-- The column somebody needs and
-                                                 would never ask for, doing the
-                                                 emotional work the definitions
-                                                 cannot (HM-DEC-041). -->
-                                            <ctl:GlossaryTextControl Text="{Binding Note}"
-                                                FontSize="11" LineSpacing="1.4"
-                                                IsVisible="{Binding Note,
-                                                    Converter={x:Static ctl:PrivilegeToneConverter.NotEmpty}}"
-                                                Foreground="{StaticResource HmTextMutedBrush}" />
-
-                                            <ItemsControl ItemsSource="{Binding Phrases}">
-                                                <ItemsControl.ItemTemplate>
-                                                    <DataTemplate x:DataType="cw:CwPhrase">
-                                                        <Grid ColumnDefinitions="90,*" Margin="0,2">
-                                                            <TextBlock Grid.Column="0"
-                                                                       Text="{Binding Sent}"
-                                                                       FontFamily="Consolas,Menlo,monospace"
-                                                                       FontSize="12"
-                                                                       Foreground="{StaticResource HmAmberDeepBrush}" />
-                                                            <StackPanel Grid.Column="1" Spacing="0">
-                                                                <TextBlock Text="{Binding Meaning}"
-                                                                           FontSize="12"
-                                                                           TextWrapping="Wrap" />
-                                                                <TextBlock Text="{Binding When}"
-                                                                           FontSize="11"
-                                                                           TextWrapping="Wrap"
-                                                                           Foreground="{StaticResource HmTextMutedBrush}" />
-                                                            </StackPanel>
-                                                        </Grid>
-                                                    </DataTemplate>
-                                                </ItemsControl.ItemTemplate>
-                                            </ItemsControl>
-                                        </StackPanel>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                        </ctl:CollapsiblePanel>
-
-                        <!-- I CAN HEAR IT AND HAMLET CAN'T (HM-DEC-084).
-                             **Settings are consequences of intent, never things
-                             the operator operates.** There is no noise blanker
-                             toggle in this application and there never will be:
-                             there is one button that names a problem, and behind
-                             it the handful of changes that usually cause it.
-
-                             Nobody ever learns what auto notch is. They learn
-                             that pressing that button usually helps. -->
-                        <ctl:CollapsiblePanel Family="Blue"
-                                              Title="I can hear it and Hamlet can't"
-                                              Summary="{Binding ReceiveHelp.ActionLabel}"
-                                              IsExpanded="{Binding ReceiveHelpExpanded, Mode=TwoWay}">
-                            <StackPanel Spacing="8">
-                                <ctl:GlossaryTextControl Text="{Binding ReceiveHeadline}"
-                                                         FontSize="12" LineSpacing="1.45"
-                                                         Foreground="{StaticResource HmTextPrimaryBrush}" />
-
-                                <!-- ROWS ALREADY CORRECT STAY VISIBLE AND SAY
-                                     SO. Hiding them is tidier and teaches
-                                     nothing; showing them is the app proving
-                                     what it checked. -->
-                                <ItemsControl ItemsSource="{Binding ReceiveHelp.Rows}">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate x:DataType="vm:AdviceRowViewModel">
-                                            <Grid ColumnDefinitions="18,*,Auto" Margin="0,0,0,5">
-                                                <TextBlock Grid.Column="0" Text="{Binding Mark}"
-                                                           FontSize="12" FontWeight="SemiBold"
-                                                           VerticalAlignment="Top"
-                                                           Foreground="{StaticResource HmBlueBrush}" />
-                                                <ctl:GlossaryTextControl Grid.Column="1"
-                                                    Text="{Binding Says}"
-                                                    FontSize="12" LineSpacing="1.4"
-                                                    Margin="0,0,8,0"
-                                                    Foreground="{StaticResource HmTextPrimaryBrush}" />
-                                                <Button Grid.Column="2" Content="Just this one"
-                                                        FontSize="11" Padding="8,3"
-                                                        VerticalAlignment="Top"
-                                                        IsVisible="{Binding WouldChange}"
-                                                        Command="{Binding $parent[ItemsControl].((vm:ReceiveHelpViewModel)DataContext).ApplyOneCommand}"
-                                                        CommandParameter="{Binding}" />
-                                            </Grid>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-
-                                <!-- ONE PRESS, NOT FOUR CONFIRMATIONS. None of
-                                     these can put anything on the air, and
-                                     asking permission four times trains
-                                     somebody to click through prompts. -->
-                                <Button Classes="hm-send ready"
-                                        Content="{Binding ReceiveHelp.ActionLabel}"
-                                        HorizontalAlignment="Left"
-                                        Command="{Binding ReceiveHelp.FixAllCommand}" />
-
-                                <!-- AFTER ANY CHANGE, THE FOOTER IS THE RECORD:
-                                     what changed, from what, to what, with
-                                     put-it-back beside it. -->
-                                <StackPanel Spacing="4"
-                                            IsVisible="{Binding ReceiveHelp.HasChanges}">
-                                    <TextBlock Text="What Hamlet changed"
-                                               FontSize="12" FontWeight="SemiBold"
-                                               Foreground="{StaticResource HmBlueBrush}" />
-
-                                    <ItemsControl ItemsSource="{Binding ReceiveHelp.Changes}">
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate x:DataType="rig:SettingChange">
-                                                <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,4">
-                                                    <TextBlock Grid.Column="0"
-                                                               Text="{Binding Says}"
-                                                               FontSize="11" TextWrapping="Wrap"
-                                                               Margin="0,0,8,0"
-                                                               Foreground="{StaticResource HmTextMutedBrush}" />
-                                                    <Button Grid.Column="1" Content="Put it back"
-                                                            FontSize="11" Padding="8,3"
-                                                            VerticalAlignment="Top"
-                                                            IsVisible="{Binding CanUndo}"
-                                                            Command="{Binding $parent[ItemsControl].((vm:ReceiveHelpViewModel)DataContext).UndoCommand}"
+                                        <ItemsControl ItemsSource="{Binding Samples}">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <StackPanel Orientation="Horizontal" Spacing="6" />
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate x:DataType="vm:ModeSampleButton">
+                                                    <Button Content="{Binding Label}"
+                                                            FontSize="11" Padding="9,3"
+                                                            Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).PlaySampleCommand}"
                                                             CommandParameter="{Binding}" />
-                                                </Grid>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-
-                                    <Button Content="Put all of it back"
-                                            FontSize="11" Padding="8,3"
-                                            HorizontalAlignment="Left"
-                                            Command="{Binding ReceiveHelp.UndoAllCommand}" />
-                                </StackPanel>
-                            </StackPanel>
-                        </ctl:CollapsiblePanel>
-
-                        <!-- DID ANYBODY HEAR ME (HM-DEC-075, closing
-                             FG-008). The first honest answer this operator has
-                             ever had to "did that work". A normal collapsible
-                             panel: the larger treatment of this moment belongs
-                             to an interface rework that has not happened. -->
-                        <ctl:CollapsiblePanel Family="Green"
-                                              Title="Did anybody hear me"
-                                              Summary="{Binding HeardSummary}"
-                                              IsExpanded="{Binding HeardExpanded, Mode=TwoWay}">
-                            <StackPanel Spacing="8">
-                                <ctl:GlossaryTextControl Text="{Binding HeardDetail}"
-                                                         FontSize="12" LineSpacing="1.45"
-                                                         Foreground="{StaticResource HmTextPrimaryBrush}" />
-
-                                <ItemsControl ItemsSource="{Binding HeardReports}"
-                                              IsVisible="{Binding HasHeardReports}">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate x:DataType="explore:HeardReport">
-                                            <Border Background="{StaticResource HmGreenTintBrush}"
-                                                    BorderBrush="{StaticResource HmGreenEdgeBrush}"
-                                                    BorderThickness="1" CornerRadius="8"
-                                                    Padding="10,7" Margin="0,0,0,6">
-                                                <StackPanel Spacing="2">
-                                                    <TextBlock Text="{Binding ReceiverCall}"
-                                                               FontSize="14" FontWeight="SemiBold"
-                                                               Foreground="{StaticResource HmGreenBrush}" />
-                                                    <TextBlock Text="{Binding Signal}"
-                                                               FontSize="12" TextWrapping="Wrap"
-                                                               Foreground="{StaticResource HmTextPrimaryBrush}" />
-                                                    <TextBlock Text="{Binding Speed}" FontSize="11"
-                                                               Foreground="{StaticResource HmTextMutedBrush}" />
-                                                    <TextBlock Text="{Binding FrequencyLabel}"
-                                                               FontFamily="Consolas,Menlo,monospace"
-                                                               FontSize="11"
-                                                               Foreground="{StaticResource HmTextMutedBrush}" />
-                                                </StackPanel>
-                                            </Border>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                            </StackPanel>
-                        </ctl:CollapsiblePanel>
-
-                </StackPanel>
-
-                <!-- The Explorer (HM-DEC-016).
-
-                     THE ORDER OF THESE PANELS IS A RULING (HM-DEC-064), not a
-                     layout accident. The first two get somebody on the air and
-                     the last three help them understand what they are hearing,
-                     so the ones leading to a contact come first. Learning
-                     supports acting here; it does not precede it.
-
-                     Each panel remembers whether it is open under its own key
-                     in settings.json (§0.5), so moving one up the column costs
-                     nobody the preference they set. -->
-                <StackPanel Grid.Column="1" Spacing="10">
-
-                        <!-- The lead card and the band-conditions line
-                             (HM-DEC-025): one written suggestion for somebody
-                             with no idea where to start, and an honest answer
-                             to "is tonight worth it". -->
-                        <ctl:CollapsiblePanel Family="Amber"
-                                              Title="Where to start"
-                                              Summary="{Binding Lead.Headline}"
-                                              IsExpanded="{Binding LeadExpanded, Mode=TwoWay}">
-                            <StackPanel Spacing="10">
-
-                                <Border Background="{StaticResource HmAmberTintBrush}"
-                                        BorderBrush="{StaticResource HmAmberEdgeBrush}"
-                                        BorderThickness="1" CornerRadius="8"
-                                        Padding="12,10">
-                                    <StackPanel Spacing="6">
-                                        <TextBlock Text="{Binding Lead.Headline}"
-                                                   FontSize="14" FontWeight="SemiBold"
-                                                   TextWrapping="Wrap"
-                                                   Foreground="{StaticResource HmTextPrimaryBrush}" />
-                                        <ctl:GlossaryTextControl Text="{Binding Lead.Body}"
-                                                                 FontSize="12" LineSpacing="1.4"
-                                                                 Foreground="{StaticResource HmTextPrimaryBrush}" />
-
-                                        <!-- The evidence, never hidden: the
-                                             same reason line the ranked card
-                                             carries (HM-DEC-009). -->
-                                        <TextBlock Text="{Binding Lead.Reason}"
-                                                   FontSize="11" TextWrapping="Wrap"
-                                                   Foreground="{StaticResource HmTextMutedBrush}" />
-
-                                        <Button Content="{Binding Lead.FrequencyLabel,
-                                                    StringFormat='Tune {0}'}"
-                                                FontSize="12"
-                                                HorizontalAlignment="Left"
-                                                IsVisible="{Binding Lead.HasSuggestion}"
-                                                Command="{Binding TuneToCommand}"
-                                                CommandParameter="{Binding Lead.TuneHz}" />
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
                                     </StackPanel>
-                                </Border>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ctl:CollapsiblePanel>
+        </DataTemplate>
 
-                                <Border Background="White"
-                                        BorderBrush="{StaticResource HmSlateEdgeBrush}"
-                                        BorderThickness="1" CornerRadius="8"
-                                        Padding="12,10">
+        <!-- What a contact sounds like -->
+        <DataTemplate x:Key="widget.contact" x:DataType="vm:MainWindowViewModel">
+            <ctl:CollapsiblePanel Family="Amber"
+                                  Title="What a contact sounds like"
+                                  Summary="{Binding ContactShape.Summary}"
+                                  IsExpanded="{Binding ContactExpanded, Mode=TwoWay}">
+                <StackPanel Spacing="8" DataContext="{Binding ContactShape}">
+
+                    <ctl:GlossaryTextControl Text="{Binding Preamble}"
+                                             FontSize="12" LineSpacing="1.45"
+                                             Foreground="{StaticResource HmTextPrimaryBrush}" />
+
+                    <!-- Morse and voice are the same shape with
+                         different words, so they are one toggle
+                         rather than two panels. Seeing that they
+                         are the same shape is most of the lesson. -->
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <TextBlock Text="Show it in" FontSize="11"
+                                   VerticalAlignment="Center"
+                                   Foreground="{StaticResource HmTextMutedBrush}" />
+                        <ToggleSwitch IsChecked="{Binding IsVoice}"
+                                      OnContent="Voice" OffContent="Morse" />
+                    </StackPanel>
+
+                    <ItemsControl ItemsSource="{Binding Steps}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="vm:ContactStepViewModel">
+                                <Border Padding="10,8"
+                                        CornerRadius="8" BorderThickness="1"
+                                        Background="{Binding IsYou,
+                                            Converter={x:Static ctl:SpeakerBrushConverter.Fill}}"
+                                        BorderBrush="{Binding IsYou,
+                                            Converter={x:Static ctl:SpeakerBrushConverter.Edge}}">
                                     <StackPanel Spacing="4">
-                                        <ctl:GlossaryTextControl Text="{Binding Conditions.Claim}"
-                                                                 FontSize="13" LineSpacing="1.4"
-                                                                 Foreground="{StaticResource HmTextPrimaryBrush}" />
-                                        <TextBlock Text="{Binding Conditions.Evidence}"
-                                                   FontSize="11" TextWrapping="Wrap"
+                                        <TextBlock Text="{Binding SpeakerLabel}"
+                                                   FontSize="10" FontWeight="SemiBold"
                                                    Foreground="{StaticResource HmTextMutedBrush}" />
+
+                                        <!-- Exactly what goes out,
+                                             in the monospace the
+                                             rig display uses, so
+                                             it reads as something
+                                             sent rather than as
+                                             prose. -->
+                                        <SelectableTextBlock Text="{Binding Sent}"
+                                                   FontFamily="Consolas,Menlo,monospace"
+                                                   FontSize="12" TextWrapping="Wrap"
+                                                   Foreground="{StaticResource HmTextPrimaryBrush}" />
+
+                                        <TextBlock Text="{Binding Meaning}"
+                                                   FontSize="12" TextWrapping="Wrap"
+                                                   FontStyle="Italic"
+                                                   Foreground="{StaticResource HmTextPrimaryBrush}" />
+
+                                        <ctl:GlossaryTextControl Text="{Binding Note}"
+                                                                 IsVisible="{Binding HasNote}"
+                                                                 FontSize="11" LineSpacing="1.4"
+                                                                 Foreground="{StaticResource HmTextMutedBrush}" />
                                     </StackPanel>
                                 </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
 
-                            </StackPanel>
-                        </ctl:CollapsiblePanel>
+                    <ctl:GlossaryTextControl Text="{Binding RstExplained}"
+                                             FontSize="11" LineSpacing="1.4"
+                                             Foreground="{StaticResource HmTextMutedBrush}" />
 
-                        <ctl:CollapsiblePanel Family="Green"
-                                              Title="Happening now"
-                                              Summary="{Binding SpotsSummary}"
-                                              SummaryBrush="{Binding SpotsFreshness,
-                                                  Converter={x:Static ctl:FreshnessBrushConverter.Instance}}"
-                                              IsExpanded="{Binding SpotsExpanded, Mode=TwoWay}">
-
-                            <!-- A bounded viewport rather than a second page
-                                 scroller. A busy evening puts twenty park
-                                 activations in here, which used to make the
-                                 Explorer column so much taller than the one
-                                 beside it that the waterfall and the terminal
-                                 sat in a column of empty space. Capping the list
-                                 keeps the window's own scrollbar meaningful, and
-                                 this is the same shape the CW terminal's
-                                 transcript already uses. -->
-                            <StackPanel Spacing="8">
-
-                            <!-- THE TWO QUESTIONS, AT THE HEAD OF THE PANEL AND
-                                 BOTH ALWAYS VISIBLE (HM-DEC-057). Two words on
-                                 screen teach more than any inference: a newcomer
-                                 who reads "what's new" learns that going hunting
-                                 again after a contact is a normal thing people
-                                 do, which is a fact about this hobby nobody
-                                 tells them. Inside the panel rather than in its
-                                 header because the header already carries the
-                                 lens name for when it is shut, and two copies
-                                 of it left no room for either. -->
-                            <StackPanel Orientation="Horizontal" Spacing="6"
-                                        ToolTip.Tip="{Binding LensQuestion}"
-                                        ToolTip.ShowDelay="300">
-                                <ToggleButton Classes="hm-lens" Content="Best chance"
-                                              IsChecked="{Binding IsBestChance, Mode=OneWay}"
-                                              Command="{Binding SelectLensCommand}"
-                                              CommandParameter="BestChance" />
-                                <ToggleButton Classes="hm-lens" Content="What's new"
-                                              IsChecked="{Binding IsWhatsNew, Mode=OneWay}"
-                                              Command="{Binding SelectLensCommand}"
-                                              CommandParameter="WhatsNew" />
-                            </StackPanel>
-
-                            <!-- THE COUNT SHOWS EVEN WHEN THE FAMILY IS OFF
-                                 (HM-DEC-061). Somebody who filters to Morse and
-                                 still sees forty-one voice stations learns the
-                                 band is full of people they could talk to, which
-                                 is the fact this whole app exists to reveal. -->
-                            <ItemsControl ItemsSource="{Binding FamilyChips}">
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <StackPanel Orientation="Horizontal" Spacing="6" />
-                                    </ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate x:DataType="vm:FamilyChipViewModel">
-                                        <Button Padding="9,2" FontSize="11" CornerRadius="10"
-                                                Command="{Binding $parent[ItemsControl].((vm:MainWindowViewModel)DataContext).ToggleFamilyCommand}"
-                                                CommandParameter="{Binding Name}"
-                                                Opacity="{Binding IsOn,
-                                                    Converter={x:Static ctl:ChipOpacityConverter.Instance}}"
-                                                Background="{Binding Family,
-                                                    Converter={x:Static ctl:ModeFamilyConverter.Fill}}"
-                                                Foreground="{Binding Family,
-                                                    Converter={x:Static ctl:ModeFamilyConverter.Ink}}"
-                                                Content="{Binding Text}" />
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-
-                            <ScrollViewer MaxHeight="520"
-                                          VerticalScrollBarVisibility="Auto">
-                            <ItemsControl ItemsSource="{Binding Spots}">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate x:DataType="vm:SpotViewModel">
-                                        <!-- AGE FADES THE DISPLAY across each
-                                             source's ruled lifetime, so the eye
-                                             finds what is current without
-                                             reading a timestamp (HM-DEC-057).
-                                             Never to nothing: a card faded away
-                                             is a card removed. -->
-                                        <Border Background="{Binding Family,
-                                                    Converter={x:Static ctl:ModeFamilyConverter.Fill}}"
-                                                BorderBrush="{StaticResource HmGreenEdgeBrush}"
-                                                BorderThickness="1" CornerRadius="8"
-                                                Opacity="{Binding Prominence}"
-                                                Padding="10,8" Margin="0,0,0,8">
-                                            <Grid ColumnDefinitions="*,Auto">
-                                                <StackPanel Grid.Column="0" Spacing="2" Margin="0,0,8,0">
-                                                    <!-- The family's own ink, so
-                                                         the words stay legible
-                                                         on the family's fill
-                                                         (HM-DEC-036). -->
-                                                    <TextBlock Text="{Binding Story}" FontSize="12"
-                                                               TextWrapping="Wrap"
-                                                               Foreground="{Binding Family,
-                                                                   Converter={x:Static ctl:ModeFamilyConverter.Ink}}" />
-
-                                                    <!-- Why this card is where
-                                                         it is, on its face and
-                                                         never in a tooltip
-                                                         (HM-DEC-025). -->
-                                                    <TextBlock Text="{Binding Reason}" FontSize="11"
-                                                               TextWrapping="Wrap"
-                                                               Foreground="{StaticResource HmGreenBrush}" />
-
-                                                    <!-- A Grid rather than a horizontal StackPanel: the
-                                                         provenance line now carries a whole clause about
-                                                         whether that person is still there, and a
-                                                         StackPanel hands its children infinite width, so
-                                                         wrapping never happened and the sentence ran off
-                                                         the card (HM-DEC-045). -->
-                                                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="6">
-                                                        <Border Grid.Column="0"
-                                                                Background="{StaticResource HmAmberTintBrush}"
-                                                                BorderBrush="{StaticResource HmAmberEdgeBrush}"
-                                                                BorderThickness="1" CornerRadius="6"
-                                                                Padding="5,0"
-                                                                VerticalAlignment="Top"
-                                                                IsVisible="{Binding IsNew}">
-                                                            <TextBlock Text="new" FontSize="10"
-                                                                       Foreground="{StaticResource HmAmberDeepBrush}" />
-                                                        </Border>
-
-                                                        <!-- Opportunity freshness: how long since the
-                                                             spot happened and whether that person is
-                                                             likely still there. Feed freshness is a
-                                                             different fact and lives in the panel
-                                                             header. The exact figure is one hover away. -->
-                                                        <TextBlock Grid.Column="1"
-                                                                   Text="{Binding Provenance}" FontSize="10"
-                                                                   TextWrapping="Wrap"
-                                                                   ToolTip.Tip="{Binding AgeTooltip}"
-                                                                   ToolTip.ShowDelay="300"
-                                                                   Foreground="{StaticResource HmTextMutedBrush}" />
-                                                    </Grid>
-                                                </StackPanel>
-                                                <Button Grid.Column="1" Content="{Binding TuneLabel}"
-                                                        FontSize="12" VerticalAlignment="Center"
-                                                        Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).TuneToCommand}"
-                                                        CommandParameter="{Binding FrequencyHz}" />
-                                            </Grid>
-                                        </Border>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                            </ScrollViewer>
-                            </StackPanel>
-                        </ctl:CollapsiblePanel>
-
-                        <ctl:CollapsiblePanel Family="Amber"
-                                              Title="Field notes"
-                                              Summary="{Binding StoryTitle}"
-                                              IsExpanded="{Binding StoryExpanded, Mode=TwoWay}">
-                            <StackPanel Spacing="6">
-                                <Grid ColumnDefinitions="*,Auto">
-                                    <TextBlock Grid.Column="0" Text="{Binding StoryTitle}"
-                                               FontWeight="SemiBold"
-                                               Foreground="{StaticResource HmAmberDeepBrush}"
-                                               TextWrapping="Wrap" />
-                                    <Border Grid.Column="1"
-                                            Background="{StaticResource HmAmberTintBrush}"
-                                            BorderBrush="{StaticResource HmAmberEdgeBrush}"
-                                            BorderThickness="1" CornerRadius="8" Padding="6,1">
-                                        <TextBlock Text="{Binding StoryBadge}" FontSize="11"
-                                                   Foreground="{StaticResource HmAmberDeepBrush}" />
-                                    </Border>
-                                </Grid>
-                                <ctl:GlossaryTextControl Text="{Binding StoryBody}"
-                                                         FontSize="13" LineSpacing="1.45"
-                                                         Foreground="{StaticResource HmTextPrimaryBrush}" />
-                                <Button Content="Take me there" FontSize="12"
-                                        Command="{Binding TuneToCommand}"
-                                        CommandParameter="{Binding StoryTuneHz}" />
-                            </StackPanel>
-                        </ctl:CollapsiblePanel>
-
-                        <ctl:CollapsiblePanel Family="Blue"
-                                              Title="Field guide"
-                                              Summary="{Binding GuideSummary}"
-                                              IsExpanded="{Binding GuideExpanded, Mode=TwoWay}">
-                            <ItemsControl ItemsSource="{Binding ModeCards}">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate x:DataType="vm:ModeCardViewModel">
-                                        <Border Margin="0,0,0,8" Padding="10,8"
-                                                Background="White"
-                                                BorderBrush="{StaticResource HmSlateEdgeBrush}"
-                                                BorderThickness="1" CornerRadius="8">
-                                            <StackPanel Spacing="6">
-
-                                                <!-- The animated fingerprint:
-                                                     the same synthesiser that
-                                                     draws the waterfall, so
-                                                     ear and eye learn one
-                                                     picture (HM-DEC-027). -->
-                                                <Grid ColumnDefinitions="Auto,*,Auto">
-                                                    <ctl:ModeFingerprintControl Grid.Column="0"
-                                                        Kind="{Binding Mode.Signature}"
-                                                        VerticalAlignment="Center" />
-
-                                                    <StackPanel Grid.Column="1"
-                                                                Margin="10,0,0,0"
-                                                                VerticalAlignment="Center"
-                                                                Spacing="3">
-                                                        <StackPanel Orientation="Horizontal"
-                                                                    Spacing="7">
-                                                            <TextBlock Text="{Binding Mode.Name}"
-                                                                       FontSize="13" FontWeight="SemiBold"
-                                                                       VerticalAlignment="Center" />
-
-                                                            <!-- The family chip: the same color the
-                                                                 band map fills this mode's streets
-                                                                 with, and the same word the map's
-                                                                 legend uses for it (HM-DEC-032). -->
-                                                            <Border CornerRadius="3"
-                                                                    Padding="6,1"
-                                                                    VerticalAlignment="Center"
-                                                                    Background="{Binding Colors.FillBrush}">
-                                                                <TextBlock Text="{Binding FamilyLabel}"
-                                                                           FontSize="10"
-                                                                           Foreground="{Binding Colors.InkBrush}" />
-                                                            </Border>
-                                                        </StackPanel>
-
-                                                        <TextBlock Text="{Binding Mode.Sound}"
-                                                                   FontSize="11" TextWrapping="Wrap"
-                                                                   Foreground="{StaticResource HmTextMutedBrush}" />
-                                                    </StackPanel>
-
-                                                    <Button Grid.Column="2" Content="?"
-                                                            FontSize="12" Padding="8,3"
-                                                            VerticalAlignment="Center"
-                                                            ToolTip.Tip="What is this mode, and why bother?"
-                                                            Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).ShowModeCommand}"
-                                                            CommandParameter="{Binding Mode}" />
-                                                </Grid>
-
-                                                <StackPanel Orientation="Horizontal" Spacing="6"
-                                                            IsVisible="{Binding HasSamples}">
-                                                    <TextBlock Text="Hear it:" FontSize="11"
-                                                               VerticalAlignment="Center"
-                                                               Foreground="{StaticResource HmTextMutedBrush}" />
-                                                    <ItemsControl ItemsSource="{Binding Samples}">
-                                                        <ItemsControl.ItemsPanel>
-                                                            <ItemsPanelTemplate>
-                                                                <StackPanel Orientation="Horizontal" Spacing="6" />
-                                                            </ItemsPanelTemplate>
-                                                        </ItemsControl.ItemsPanel>
-                                                        <ItemsControl.ItemTemplate>
-                                                            <DataTemplate x:DataType="vm:ModeSampleButton">
-                                                                <Button Content="{Binding Label}"
-                                                                        FontSize="11" Padding="9,3"
-                                                                        Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).PlaySampleCommand}"
-                                                                        CommandParameter="{Binding}" />
-                                                            </DataTemplate>
-                                                        </ItemsControl.ItemTemplate>
-                                                    </ItemsControl>
-                                                </StackPanel>
-                                            </StackPanel>
-                                        </Border>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                        </ctl:CollapsiblePanel>
-
-                        <!-- What a contact actually sounds like (HM-DEC-043).
-                             The real terror is not the radio, it is not
-                             knowing what to say, and the shape is a ritual
-                             everybody knows except the person who has never
-                             made one. -->
-                        <ctl:CollapsiblePanel Family="Amber"
-                                              Title="What a contact sounds like"
-                                              Summary="{Binding ContactShape.Summary}"
-                                              IsExpanded="{Binding ContactExpanded, Mode=TwoWay}">
-                            <StackPanel Spacing="8" DataContext="{Binding ContactShape}">
-
-                                <ctl:GlossaryTextControl Text="{Binding Preamble}"
-                                                         FontSize="12" LineSpacing="1.45"
-                                                         Foreground="{StaticResource HmTextPrimaryBrush}" />
-
-                                <!-- Morse and voice are the same shape with
-                                     different words, so they are one toggle
-                                     rather than two panels. Seeing that they
-                                     are the same shape is most of the lesson. -->
-                                <StackPanel Orientation="Horizontal" Spacing="8">
-                                    <TextBlock Text="Show it in" FontSize="11"
-                                               VerticalAlignment="Center"
-                                               Foreground="{StaticResource HmTextMutedBrush}" />
-                                    <ToggleSwitch IsChecked="{Binding IsVoice}"
-                                                  OnContent="Voice" OffContent="Morse" />
-                                </StackPanel>
-
-                                <ItemsControl ItemsSource="{Binding Steps}">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate x:DataType="vm:ContactStepViewModel">
-                                            <Border Margin="0,0,0,8" Padding="10,8"
-                                                    CornerRadius="8" BorderThickness="1"
-                                                    Background="{Binding IsYou,
-                                                        Converter={x:Static ctl:SpeakerBrushConverter.Fill}}"
-                                                    BorderBrush="{Binding IsYou,
-                                                        Converter={x:Static ctl:SpeakerBrushConverter.Edge}}">
-                                                <StackPanel Spacing="4">
-                                                    <TextBlock Text="{Binding SpeakerLabel}"
-                                                               FontSize="10" FontWeight="SemiBold"
-                                                               Foreground="{StaticResource HmTextMutedBrush}" />
-
-                                                    <!-- Exactly what goes out,
-                                                         in the monospace the
-                                                         rig display uses, so
-                                                         it reads as something
-                                                         sent rather than as
-                                                         prose. -->
-                                                    <SelectableTextBlock Text="{Binding Sent}"
-                                                               FontFamily="Consolas,Menlo,monospace"
-                                                               FontSize="12" TextWrapping="Wrap"
-                                                               Foreground="{StaticResource HmTextPrimaryBrush}" />
-
-                                                    <TextBlock Text="{Binding Meaning}"
-                                                               FontSize="12" TextWrapping="Wrap"
-                                                               FontStyle="Italic"
-                                                               Foreground="{StaticResource HmTextPrimaryBrush}" />
-
-                                                    <ctl:GlossaryTextControl Text="{Binding Note}"
-                                                                             IsVisible="{Binding HasNote}"
-                                                                             FontSize="11" LineSpacing="1.4"
-                                                                             Foreground="{StaticResource HmTextMutedBrush}" />
-                                                </StackPanel>
-                                            </Border>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-
-                                <ctl:GlossaryTextControl Text="{Binding RstExplained}"
-                                                         FontSize="11" LineSpacing="1.4"
-                                                         Foreground="{StaticResource HmTextMutedBrush}" />
-
-                                <!-- The part that actually gets somebody on
-                                     the air. -->
-                                <Border Background="{StaticResource HmGreenTintBrush}"
-                                        BorderBrush="{StaticResource HmGreenEdgeBrush}"
-                                        BorderThickness="1" CornerRadius="8" Padding="10,8">
-                                    <ctl:GlossaryTextControl Text="{Binding Closing}"
-                                                             FontSize="12" LineSpacing="1.45"
-                                                             Foreground="{StaticResource HmTextPrimaryBrush}" />
-                                </Border>
-                            </StackPanel>
-                        </ctl:CollapsiblePanel>
-
+                    <!-- The part that actually gets somebody on
+                         the air. -->
+                    <Border Background="{StaticResource HmGreenTintBrush}"
+                            BorderBrush="{StaticResource HmGreenEdgeBrush}"
+                            BorderThickness="1" CornerRadius="8" Padding="10,8">
+                        <ctl:GlossaryTextControl Text="{Binding Closing}"
+                                                 FontSize="12" LineSpacing="1.45"
+                                                 Foreground="{StaticResource HmTextPrimaryBrush}" />
+                    </Border>
                 </StackPanel>
-            </Grid>
+            </ctl:CollapsiblePanel>
+        </DataTemplate>
+    </Window.Resources>
+
+
+    <!-- THE HEADER AND THE STATUS BAR ARE PINNED AND EVERYTHING ELSE
+         SCROLLS (HM-DEC-051). On a 1080p screen there was no way to reach the
+         waterfall or the CW terminal and no scrollbar to reach them with, which
+         made the two panels that matter most for diagnosing a live signal the
+         two nobody could see. Connect and the port picker stay put because they
+         are what somebody reaches for when something is wrong, and the status
+         line stays put because it is where the app answers them. -->
+    <Grid RowDefinitions="Auto,*,Auto" Margin="16">
+
+        <!-- Brand, menu, connection, and a line of Shakespeare -->
+        <StackPanel Grid.Row="0" Margin="4,0,4,12" Spacing="1">
+        <Grid ColumnDefinitions="Auto,Auto,*,Auto">
+            <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="0"
+                        VerticalAlignment="Center" Margin="0,0,14,0">
+                <TextBlock Text="Ham" FontSize="24" FontWeight="Bold"
+                           Foreground="{StaticResource HmAmberBrush}" />
+                <TextBlock Text="let" FontSize="24" FontWeight="Bold"
+                           Foreground="{StaticResource HmBlueBrush}" />
+            </StackPanel>
+
+            <Menu Grid.Column="1" VerticalAlignment="Center" Background="Transparent">
+                <MenuItem Header="_File">
+                    <MenuItem Header="Exit" Command="{Binding ExitCommand}" />
+                </MenuItem>
+                <!-- EVERYTHING ABOUT THE RADIO LIVES UNDER RADIO, which is
+                     what put the diagnostics window here, and is why the two
+                     lists of frequencies are here rather than under Tools.
+                     Favorites was ruled in HM-DEC-060 and never actually built
+                     into the menu, so the manage window had no way in at all
+                     until now. -->
+                <MenuItem Header="_Radio">
+                    <MenuItem Header="{Binding ConnectButtonText}"
+                              Command="{Binding ToggleConnectCommand}" />
+                    <Separator />
+                    <MenuItem Header="Favorites" ItemsSource="{Binding FavoriteMenu}"
+                              IsEnabled="{Binding HasFavorites}">
+                        <MenuItem.Styles>
+                            <Style Selector="MenuItem" x:DataType="vm:TuneMenuItem">
+                                <Setter Property="Header" Value="{Binding Label}" />
+                                <Setter Property="Command" Value="{Binding Tune}" />
+                            </Style>
+                        </MenuItem.Styles>
+                    </MenuItem>
+                    <MenuItem Header="Recent" ItemsSource="{Binding RecentMenu}"
+                              IsEnabled="{Binding HasRecent}">
+                        <MenuItem.Styles>
+                            <Style Selector="MenuItem" x:DataType="vm:TuneMenuItem">
+                                <Setter Property="Header" Value="{Binding Label}" />
+                                <Setter Property="Command" Value="{Binding Tune}" />
+                            </Style>
+                        </MenuItem.Styles>
+                    </MenuItem>
+                    <MenuItem Header="Manage favorites…"
+                              Command="{Binding ManageFavoritesCommand}" />
+                    <Separator />
+                    <MenuItem Header="What the radio is doing…"
+                              Command="{Binding OpenRigDiagnosticsCommand}" />
+                    <MenuItem Header="What Hamlet decided…"
+                              Command="{Binding OpenDecisionLogCommand}" />
+                    <Separator />
+                    <MenuItem Header="Spectrum scope  (phase 2)" IsEnabled="False" />
+                </MenuItem>
+                <MenuItem Header="_Explore">
+                    <MenuItem Header="Refresh spots" Command="{Binding RefreshSpotsCommand}" />
+                    <Separator />
+                    <MenuItem Header="Live spot feeds  (phase 1.5)" IsEnabled="False" />
+                    <MenuItem Header="Find me a CQ I can copy  (phase 2)" IsEnabled="False" />
+                </MenuItem>
+                <!-- EVERYTHING ABOUT THE RADIO BELONGS UNDER RADIO. What the
+                     radio is doing moved out of here, and Tools keeps the
+                     things that are about Hamlet rather than about the rig. -->
+                <MenuItem Header="_Tools">
+                    <MenuItem Header="Settings…" Command="{Binding OpenSettingsCommand}" />
+                    <MenuItem Header="Open data folder" Command="{Binding OpenDataFolderCommand}" />
+                    <Separator />
+                    <MenuItem Header="Decode log viewer  (later)" IsEnabled="False" />
+                </MenuItem>
+                <MenuItem Header="_Help">
+                    <MenuItem Header="Getting started  (phase 1.5)" IsEnabled="False" />
+                    <MenuItem Header="About Hamlet" Command="{Binding OpenAboutCommand}" />
+                </MenuItem>
+            </Menu>
+
+            <StackPanel Grid.Column="3" Orientation="Horizontal" Spacing="10"
+                        VerticalAlignment="Center">
+                <ComboBox ItemsSource="{Binding AvailablePorts}"
+                          SelectedItem="{Binding SelectedPort}"
+                          IsEnabled="{Binding !IsConnected}"
+                          MinWidth="220" VerticalAlignment="Center" />
+                <Button Classes="hm-connect"
+                        Content="{Binding ConnectButtonText}"
+                        Command="{Binding ToggleConnectCommand}" />
+            </StackPanel>
         </Grid>
 
+            <!-- One Shakespeare line, bent toward radio, different every
+                 launch (HM-DEC-039). The play is on hover so the joke is
+                 legible to somebody who does not know the original, without
+                 the wordmark turning into a citation. Absent entirely when
+                 the file did not load — never a placeholder. -->
+            <TextBlock Text="{Binding Byline}"
+                       IsVisible="{Binding HasByline}"
+                       FontSize="12.5" FontStyle="Italic"
+                       Margin="2,0,0,0"
+                       Foreground="{StaticResource HmTextMutedBrush}"
+                       ToolTip.Tip="{Binding BylineSource}"
+                       ToolTip.ShowDelay="400" />
+        </StackPanel>
+
+        <!-- Always visible, and deliberately not the overlay bar that fades
+             out when the pointer leaves. The complaint was not that scrolling
+             was awkward, it was that there was no scrollbar to reach for, and a
+             bar somebody has to discover by hovering is the same complaint
+             wearing a thinner coat. -->
+
+        <!-- THE CANVAS (HM-DEC-086).
+
+             The main screen was one vertical scroll and had outgrown it. Every
+             panel this application ever grew went into one column in the order
+             it was built, and the operator scrolled past the ten they were not
+             using to reach the two they were.
+
+             So: the strip above stays put, a bar of starting points sits under
+             it, and everything else is theirs to arrange. -->
+        <Grid Grid.Row="1" RowDefinitions="Auto,Auto,*">
+
+            <!-- THE STRIP IS NOT PART OF THE CANVAS and cannot be closed or
+                 moved. Band, frequency, mode, where you are and whether you may
+                 transmit are what you need before you need anything else, and a
+                 surface you can rearrange is the wrong place for them. This
+                 widens HM-DEC-021's exemption for the rig display to the whole
+                 strip it sits in. -->
+            <StackPanel Grid.Row="0">
+
+    <!-- Band buttons -->
+    <ItemsControl ItemsSource="{Binding Bands}" Margin="0,6,0,14">
+        <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+                <StackPanel Orientation="Horizontal" Spacing="8" />
+            </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+        <ItemsControl.ItemTemplate>
+            <DataTemplate x:DataType="vm:BandButtonViewModel">
+                <Grid RowDefinitions="Auto,Auto">
+                    <Border Grid.Row="0" HorizontalAlignment="Center"
+                            Background="{StaticResource HmGreenTintBrush}"
+                            BorderBrush="{StaticResource HmGreenEdgeBrush}"
+                            BorderThickness="1" CornerRadius="8"
+                            Padding="6,0" Margin="0,0,0,2"
+                            ToolTip.Tip="{Binding BestBetTooltip}"
+                            ToolTip.ShowDelay="250"
+                            IsVisible="{Binding IsBestBet}">
+                        <!-- The label travels with the ranking, so a clock
+                             guess can never wear the same words as an
+                             observation (HM-DEC-046). -->
+                        <TextBlock Text="{Binding BestBetLabel}" FontSize="11"
+                                   Foreground="{StaticResource HmGreenBrush}" />
+                    </Border>
+
+                    <!-- A character card, not a plain button (HM-DEC-033).
+                         Width follows wavelength, the icon and the bar say
+                         whether the band is in its element, and the card
+                         dims when it is not — three carriers for one fact,
+                         so color is never doing the work alone. -->
+                    <Button Grid.Row="1" Classes="hm-band"
+                            Width="{Binding CardWidth}"
+                            Opacity="{Binding CardOpacity}"
+                            Padding="8,6"
+                            ToolTip.Tip="{Binding ActivityTooltip}"
+                            ToolTip.ShowDelay="250"
+                            Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).SelectBandCommand}"
+                            CommandParameter="{Binding}">
+                        <StackPanel Spacing="4">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <TextBlock Grid.Column="0"
+                                           Text="{Binding Band.Name}"
+                                           VerticalAlignment="Center" />
+                                <ctl:DayNightIconControl Grid.Column="1"
+                                                         VerticalAlignment="Center"
+                                                         Icon="{Binding CardIcon}"
+                                                         Tint="{Binding CardIconTint}" />
+                            </Grid>
+
+                            <Border Height="3" CornerRadius="2"
+                                    Background="{Binding CardBar}" />
+
+                            <ctl:ActivityPipsControl
+                                HorizontalAlignment="Center"
+                                Filled="{Binding ActivityPips}"
+                                IsUnknown="{Binding ActivityUnknown}" />
+                        </StackPanel>
+                    </Button>
+                </Grid>
+            </DataTemplate>
+        </ItemsControl.ItemTemplate>
+    </ItemsControl>
+
+    <!-- Frequency face: the rig's own LCD on the console. Deliberately
+         NOT collapsible (HM-DEC-021) — it is the app's anchor. -->
+    <Border Background="{StaticResource HmAmberTintBrush}"
+            BorderBrush="{StaticResource HmAmberEdgeBrush}"
+            BorderThickness="1" CornerRadius="8"
+            Padding="20,12" Margin="0,0,0,12">
+        <StackPanel Spacing="6">
+
+            <!-- The strip along the top of the warm panel (HM-DEC-070):
+                 which favorite you landed on at the left, and the way to
+                 any of them at the right. The name lives out here rather
+                 than in the black because a name is as long as somebody
+                 made it, and the LCD has a mode badge at one end and a
+                 clock at the other. -->
+            <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,4">
+                <TextBlock Grid.Column="0" Text="{Binding FavoriteHere}"
+                           FontSize="12" VerticalAlignment="Center"
+                           TextTrimming="CharacterEllipsis"
+                           Margin="2,0,10,0"
+                           Foreground="{StaticResource HmAmberBrush}" />
+
+                <!-- THE TWO SIT TOGETHER AND READ AS A PAIR (HM-DEC-072).
+                     Favorites are places he chose and recent are places he
+                     was, so scattering them would hide that they are the
+                     same kind of thing. Each is absent until it has
+                     something in it, because an empty dropdown reads as a
+                     control that is broken. -->
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+                    <ComboBox ItemsSource="{Binding Recent}"
+                              SelectedItem="{Binding SelectedRecent}"
+                              PlaceholderText="recent"
+                              MinWidth="180" FontSize="12"
+                              IsVisible="{Binding HasRecent}">
+                        <!-- PROVENANCE TRAVELS WITH THE NAME (HM-DEC-073).
+                             A callsign Hamlet read off the air and one a
+                             spot feed reported are different facts, and a
+                             line that showed only the name would let the
+                             weaker one borrow the stronger one's
+                             authority. -->
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate x:DataType="explore:RecentStation">
+                                <StackPanel Spacing="0">
+                                    <TextBlock Text="{Binding Label}" />
+                                    <TextBlock Text="{Binding Provenance}"
+                                               FontSize="10"
+                                               IsVisible="{Binding IsIdentified}"
+                                               Foreground="{StaticResource HmTextMutedBrush}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+
+                    <ComboBox ItemsSource="{Binding Favorites}"
+                              SelectedItem="{Binding SelectedFavorite}"
+                              PlaceholderText="favorites"
+                              MinWidth="180" FontSize="12"
+                              IsVisible="{Binding HasFavorites}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate x:DataType="explore:Favorite">
+                                <TextBlock Text="{Binding Name}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </StackPanel>
+            </Grid>
+
+            <!-- THE STAR IS INSIDE THE BLACK (HM-DEC-070), which reverses
+                 what HM-DEC-060 built. That ruling kept Hamlet's chrome off
+                 the LCD so the picture stayed a faithful IC-7300 face, and
+                 Tim weighed that against being able to find the thing and
+                 chose being able to find it. -->
+            <ctl:RigDisplayControl HorizontalAlignment="Center"
+                FrequencyHz="{Binding FrequencyHz}"
+                BandLowHz="{Binding SelectedBand.Band.LowHz}"
+                BandHighHz="{Binding SelectedBand.Band.HighHz}"
+                ModeText="{Binding RigModeText}"
+                FilterText="{Binding RigFilterText}"
+                SMeterLevel="{Binding SMeterLevel}"
+                IsFavorite="{Binding IsFavorite}"
+                FavoriteLabel="{Binding FavoriteLabel}"
+                ToggleFavoriteCommand="{Binding ToggleFavoriteCommand}" />
+
+            <TextBlock Text="scroll wheel over a digit tunes that digit"
+                       FontSize="12" HorizontalAlignment="Center"
+                       Margin="0,4,0,0"
+                       Foreground="{StaticResource HmAmberBrush}" />
+        </StackPanel>
+    </Border>
+
+    <!-- Map, tape, then explorer beside waterfall/terminal. Every row is
+         Auto because there is no leftover height to share inside a
+         scroller: a star row would measure to nothing and take the panels
+         with it. -->
             </StackPanel>
-        </ScrollViewer>
+
+            <!-- PRESETS SIT ABOVE THE CANVAS, NOT IN A MENU. An arrangement
+                 buried two levels into a menu is an arrangement nobody finds,
+                 and these are the fastest way out of a canvas that has got away
+                 from somebody.
+
+                 A PRESET IS A STARTING POINT AND NEVER A DOCUMENT: pressing one
+                 loads a fresh copy every time, and dragging things about
+                 afterward does not change it. -->
+            <Border Grid.Row="1" Margin="0,0,0,10" Padding="10,7"
+                    CornerRadius="8"
+                    Background="{StaticResource HmSlateTintBrush}"
+                    BorderBrush="{StaticResource HmSlateEdgeBrush}"
+                    BorderThickness="1">
+                <Grid ColumnDefinitions="Auto,*,Auto">
+
+                    <TextBlock Grid.Column="0" Text="Start from" FontSize="12"
+                               VerticalAlignment="Center" Margin="0,0,10,0"
+                               Foreground="{StaticResource HmTextMutedBrush}" />
+
+                    <StackPanel Grid.Column="1" Orientation="Horizontal"
+                                Spacing="8" VerticalAlignment="Center">
+
+                        <ItemsControl ItemsSource="{Binding Canvas.Presets}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal" Spacing="8" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="lay:CanvasLayout">
+                                    <Button Content="{Binding Name}"
+                                            FontSize="12" Padding="12,5"
+                                            ToolTip.Tip="{Binding Blurb}"
+                                            Command="{Binding $parent[ItemsControl].((vm:CanvasViewModel)DataContext).LoadCommand}"
+                                            CommandParameter="{Binding}" />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <!-- The operator's own, beside Hamlet's. Same press,
+                             same fresh copy, no separate place to look. -->
+                        <ItemsControl ItemsSource="{Binding Canvas.Saved}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal" Spacing="8" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="lay:CanvasLayout">
+                                    <Button Content="{Binding Name}"
+                                            FontSize="12" Padding="12,5"
+                                            ToolTip.Tip="{Binding Blurb}"
+                                            Command="{Binding $parent[ItemsControl].((vm:CanvasViewModel)DataContext).LoadCommand}"
+                                            CommandParameter="{Binding}" />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+
+                    <!-- SAVING IS ONE ACTION FROM WHERE YOU ARE. Not a dialog,
+                         not a manager window: a box on the bar you are already
+                         looking at, and what is in front of you is what gets
+                         kept. -->
+                    <StackPanel Grid.Column="2" Orientation="Horizontal"
+                                Spacing="6" VerticalAlignment="Center">
+                        <TextBox Text="{Binding Canvas.NewName, Mode=TwoWay}"
+                                 Watermark="name this arrangement"
+                                 FontSize="12" MinWidth="170" />
+                        <Button Content="Keep it" FontSize="12" Padding="12,5"
+                                Command="{Binding Canvas.KeepCommand}" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <Grid Grid.Row="2" ColumnDefinitions="Auto,*">
+
+                <!-- THE TRAY, DOWN THE LEFT EDGE. Every widget that is not out,
+                     with a line saying what it is for, because a list of names
+                     is only useful to somebody who already knows what they
+                     mean and the person this is for does not yet (§0.7). -->
+                <Border Grid.Column="0" Width="196" Margin="0,0,10,0"
+                        Padding="8" CornerRadius="8"
+                        Background="{StaticResource HmSlateTintBrush}"
+                        BorderBrush="{StaticResource HmSlateEdgeBrush}"
+                        BorderThickness="1">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <StackPanel Spacing="6">
+                            <TextBlock Text="Add to the canvas" FontSize="12"
+                                       FontWeight="SemiBold"
+                                       Foreground="{StaticResource HmTextPrimaryBrush}" />
+
+                            <TextBlock Text="everything is out already"
+                                       FontSize="11" TextWrapping="Wrap"
+                                       IsVisible="{Binding !Canvas.HasTray}"
+                                       Foreground="{StaticResource HmTextMutedBrush}" />
+
+                            <ItemsControl ItemsSource="{Binding Canvas.Tray}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="lay:Widget">
+                                        <Button HorizontalAlignment="Stretch"
+                                                HorizontalContentAlignment="Left"
+                                                Margin="0,0,0,4" Padding="8,6"
+                                                Command="{Binding $parent[ItemsControl].((vm:CanvasViewModel)DataContext).AddCommand}"
+                                                CommandParameter="{Binding}">
+                                            <StackPanel Spacing="1">
+                                                <TextBlock Text="{Binding Title}"
+                                                           FontSize="12"
+                                                           FontWeight="SemiBold"
+                                                           TextWrapping="Wrap" />
+                                                <TextBlock Text="{Binding Blurb}"
+                                                           FontSize="10"
+                                                           TextWrapping="Wrap"
+                                                           Foreground="{StaticResource HmTextMutedBrush}" />
+                                            </StackPanel>
+                                        </Button>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Border>
+
+                <Grid Grid.Column="1" RowDefinitions="*,Auto">
+
+                    <ScrollViewer Grid.Row="0"
+                                  VerticalScrollBarVisibility="Visible"
+                                  HorizontalScrollBarVisibility="Auto"
+                                  ScrollViewer.AllowAutoHide="False">
+                        <ItemsControl x:Name="CanvasItems"
+                                      ItemsSource="{Binding Canvas.Placed}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <ctl:WidgetCanvas x:Name="TheCanvas" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+
+                            <ItemsControl.Styles>
+                                <Style Selector="ItemsControl#CanvasItems > ContentPresenter">
+                                    <Setter Property="Canvas.Left" Value="{Binding X, DataType=vm:WidgetViewModel}" />
+                                    <Setter Property="Canvas.Top" Value="{Binding Y, DataType=vm:WidgetViewModel}" />
+                                </Style>
+                            </ItemsControl.Styles>
+
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="vm:WidgetViewModel">
+                                    <Border Width="{Binding Width}"
+                                            Height="{Binding DrawnHeight}"
+                                            VerticalAlignment="Top"
+                                            Background="White"
+                                            BorderBrush="{StaticResource HmSlateEdgeBrush}"
+                                            BorderThickness="1" CornerRadius="8"
+                                            BoxShadow="0 2 8 0 #14000000">
+                                        <Grid RowDefinitions="Auto,*,Auto">
+
+                                            <!-- MOVE BY THE HEADER. The panel
+                                                 inside keeps its own, so this
+                                                 one is a thin bar carrying the
+                                                 handle and the way off. -->
+                                            <ctl:WidgetFrame Grid.Row="0"
+                                                             Background="Transparent"
+                                                             Cursor="SizeAll"
+                                                             Padding="8,4">
+                                                <Grid ColumnDefinitions="*,Auto">
+                                                    <TextBlock Grid.Column="0"
+                                                               Text="{Binding Title}"
+                                                               FontSize="10"
+                                                               VerticalAlignment="Center"
+                                                               Foreground="{StaticResource HmTextMutedBrush}" />
+                                                    <Button Grid.Column="1"
+                                                            Content="✕" FontSize="11"
+                                                            Padding="6,0" Background="Transparent"
+                                                            ToolTip.Tip="put this back in the tray"
+                                                            Command="{Binding $parent[ItemsControl].((vm:CanvasViewModel)DataContext).RemoveCommand}"
+                                                            CommandParameter="{Binding}" />
+                                                </Grid>
+                                            </ctl:WidgetFrame>
+
+                                            <ScrollViewer Grid.Row="1"
+                                                          Padding="10,0,10,0"
+                                                          VerticalScrollBarVisibility="Auto">
+                                                <ctl:WidgetBody />
+                                            </ScrollViewer>
+
+                                            <!-- RESIZE BY THE GRIP. -->
+                                            <ctl:WidgetFrame Grid.Row="2" IsGrip="True"
+                                                             HorizontalAlignment="Right"
+                                                             Background="Transparent"
+                                                             Cursor="BottomRightCorner"
+                                                             Padding="6,2">
+                                                <TextBlock Text="◢" FontSize="11"
+                                                           Foreground="{StaticResource HmTextMutedBrush}" />
+                                            </ctl:WidgetFrame>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+
+                    <!-- WHAT IS HAPPENING ON A WIDGET THAT IS NOT OUT
+                         (HM-DEC-086). Morse arrives and the terminal is not on
+                         the canvas: the app may not swallow it, and it may not
+                         throw the terminal onto somebody's arrangement either.
+
+                         So this is §0.5's rule one level up. A collapsed panel
+                         still carries its summary; a widget that is not out
+                         still carries its news, with one press to bring it out.
+                         Nothing was lost while it was away. -->
+                    <ItemsControl Grid.Row="1" Margin="0,8,0,0"
+                                  IsVisible="{Binding Canvas.HasAbsent}"
+                                  ItemsSource="{Binding Canvas.Absent}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="vm:AbsentNote">
+                                <Border Margin="0,0,0,4" Padding="10,6"
+                                        CornerRadius="6"
+                                        Background="{StaticResource HmAmberTintBrush}"
+                                        BorderBrush="{StaticResource HmAmberEdgeBrush}"
+                                        BorderThickness="1">
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <TextBlock Grid.Column="0"
+                                                   Text="{Binding Says}"
+                                                   FontSize="12" TextWrapping="Wrap"
+                                                   VerticalAlignment="Center"
+                                                   Margin="0,0,10,0"
+                                                   Foreground="{StaticResource HmTextPrimaryBrush}" />
+                                        <Button Grid.Column="1"
+                                                Content="{Binding Title}"
+                                                FontSize="11" Padding="10,4"
+                                                Command="{Binding $parent[ItemsControl].((vm:CanvasViewModel)DataContext).ShowCommand}"
+                                                CommandParameter="{Binding}" />
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Grid>
+            </Grid>
+        </Grid>
 
         <!-- Status bar -->
         <Border Grid.Row="2"

@@ -1,0 +1,13 @@
+394 539 map
+541 582 tape
+594 644 waterfall
+646 758 terminal
+764 1043 send
+1046 1094 phrasebook
+1105 1186 receiveHelp
+1193 1229 heard
+1250 1301 lead
+1303 1449 spots
+1451 1476 story
+1478 1564 guide
+1571 1647 contact

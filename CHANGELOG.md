@@ -12,6 +12,31 @@ operator can see and use, patch fixes and polishes without adding one.
 
 ---
 
+## 1.5.0
+
+**The screen is yours to arrange.**
+
+The panels are widgets now, on a canvas you lay out however suits what you are
+doing. Drag them by the header, resize them by the corner, and they line up with
+each other when they get close without being forced onto a grid.
+
+Above the canvas is a row of starting points, named for what you are doing
+rather than for a mode: Getting started, Listening around, Making contacts.
+Pressing one gives you a fresh copy every time, so rearranging can never spoil
+the way back. Name what you have and keep it, in the box on the same bar.
+
+The strip along the top does not move. Band, frequency, mode, where you are and
+whether you may transmit are what you need before you need anything else.
+
+The phrasebook comes out on its own when a contact starts and goes away after
+you sign off, unless you have moved it, in which case it is yours and stays.
+
+And a panel you have put away still speaks up. If Morse starts arriving while
+the terminal is in the tray, a line says so with a button to bring it back, and
+nothing that came in while it was away has been lost.
+
+Rulings HM-DEC-086.
+
 ## 1.4.1
 
 **The send buttons stop blinking.**

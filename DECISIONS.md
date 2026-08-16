@@ -4,6 +4,135 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-086
+date: 2026-08-15
+refs: src/Hamlet.App/Layout/Widget.cs, src/Hamlet.App/Layout/CanvasLayout.cs, src/Hamlet.App/Layout/LayoutPresets.cs, src/Hamlet.App/Layout/LayoutStore.cs, src/Hamlet.App/ViewModels/CanvasViewModel.cs, src/Hamlet.App/Controls/WidgetCanvas.cs, src/Hamlet.App/Controls/WidgetFrame.cs, src/Hamlet.App/Controls/WidgetBody.cs, tests/Hamlet.App.Tests/Layout/CanvasTests.cs, HM-DEC-021, HM-DEC-064
+---
+
+**The panels become widgets on a canvas the operator arranges, and Hamlet stops
+deciding what matters this minute.**
+
+The main screen was one vertical scroll and had outgrown it. Every panel this
+application ever grew went into one column in the order it was built, and the
+operator scrolled past the ten they were not using to reach the two they were.
+Reordering them helped once (HM-DEC-064) and could only ever help once, because
+the right order depends on what somebody is doing, and that changes every few
+minutes.
+
+**THE STRIP ALONG THE TOP IS NOT PART OF IT**, and cannot be closed or moved.
+Band, frequency, mode, where you are and whether you may transmit are what you
+need before you need anything else. This widens HM-DEC-021's exemption for the
+rig display to the whole strip it sits in, on the same reasoning: it is the
+app's anchor, and an anchor you can drag away is not one.
+
+---
+
+**FREE PLACEMENT, NOT A GRID.** A grid decides in advance how big things are
+allowed to be and where their edges may fall, and the operator then spends their
+time negotiating with it. The canvas is a plain surface with real coordinates.
+The only cleverness is that an edge within ten pixels of a neighbor's edge lines
+up with it, so things sit straight without having to be made to, and a
+deliberate gap survives untouched. **Snapping that fights the operator is worse
+than no snapping.**
+
+**A PRESET IS A STARTING POINT AND NEVER A DOCUMENT.** Pressing one loads a
+fresh copy, every time, and dragging things about afterward does not change it.
+That is what makes the bar safe to press: the way back from a canvas that has
+got away from somebody is one press, and it cannot itself be spoiled by
+rearranging. **PRESETS SIT ABOVE THE CANVAS, NOT IN A MENU**, because an
+arrangement buried two levels into a menu is one nobody finds.
+
+**THEY ARE NAMED BY ACTIVITY, NOT BY MODE.** Getting started, Listening around,
+Making contacts. "CW layout" is a name somebody has to already understand in
+order to pick, and this application exists for a person who has held a license
+for six years and made one contact. **There is no FT8 preset**, ruled rather
+than overlooked.
+
+**Making contacts is Tim's own arrangement and the reasoning is his:** the send
+controls sit directly beneath the terminal so that reading a call and answering
+it is one motion, "Did anybody hear me" goes under that because it answers the
+question the send raises, and who is out there stands tall on the right. The
+band map is deliberately absent, because it belongs to looking around and this
+is the arrangement for when you have already found somebody.
+
+**NOBODY EVER STARTS ON AN EMPTY CANVAS.** A first run lands on Getting started,
+furnished, and so does a layouts file that could not be read. An empty rectangle
+beside a list of things to drag is a puzzle handed to somebody who came here to
+talk on the radio.
+
+**SAVING IS ONE ACTION FROM WHERE YOU ARE**: a box on the bar already in front
+of them, and the arrangement in front of them is what gets kept. Anything more
+and nobody saves anything, and the presets become the only arrangements that
+exist. Saved layouts live in `layouts.json` beside the operator profile, in
+their own file rather than a corner of the settings, so an arrangement can be
+kept, mailed to somebody or put back after an experiment, and so a corrupt
+layout cannot take the callsign down with it.
+
+**SOME WIDGETS ARRIVE ON THEIR OWN.** The mechanism is general and the
+phrasebook is the first case: it comes out when a contact starts and goes away
+after the sign-off, which is exactly when somebody needs to know what people say
+and exactly when they do not. Only widgets that declare themselves summonable
+can arrive that way, so no later wiring can make an arbitrary panel jump onto
+somebody's canvas. **And one the operator has moved is theirs from then on and
+is never taken away again**, because a panel that vanishes just after somebody
+has put it where they want it teaches them not to touch anything.
+
+---
+
+**WHAT HAPPENS WHEN THE WIDGET IS NOT OUT, WHICH IS THE QUESTION THIS RULING HAD
+TO SETTLE.** Morse arrives and the CW terminal is in the tray. Hamlet may not
+swallow it, and it may not fling the terminal onto somebody's arrangement
+either, because they took it off on purpose.
+
+**So the canvas carries a quiet line saying what is happening, with the widget's
+name on a button beside it.** This is §0.5 one level up: a collapsed panel still
+carries its summary, and a widget that is not out still carries its news.
+
+**And nothing is lost while it is away.** The decoder goes on decoding, the
+spots go on arriving, the reports go on being counted, all of it into the same
+view model the widget would have been reading. Taking a widget off the canvas
+removes a display and never a subscription, so bringing it back shows the
+history rather than starting from the moment it reappeared. That is the part
+that matters, and it is the part a lesser answer would have got wrong.
+
+---
+
+**A COLLAPSED WIDGET SHRINKS TO ITS HEADER**, found by running the thing rather
+than by reasoning about it. In a column a panel that shut handed its space to
+the panel below (HM-DEC-021); on a canvas the frame kept the height it had been
+given, so collapsing something left a rectangle of nothing. **The panel still
+owns whether it is open** and goes on persisting that per panel in
+`settings.json` exactly as before. The frame only follows it, so there is one
+answer to the question rather than two that can disagree (§0).
+
+**The thirteen panels are unchanged.** Each one moved into a template keyed by
+its widget id, and what it binds against is still the main view model, so not
+one binding inside thirteen panels had to be rewritten to gain a position, and
+none of them can have been rewritten wrongly. The only things taken away are the
+row and column numbers a fixed layout needed.
+
+**A LAYOUT NAMING A WIDGET THIS BUILD DOES NOT HAVE LOSES THAT WIDGET AND
+NOTHING ELSE**, and the line stays in the file, so going back to a build that
+has it restores the arrangement whole. A widget id is never renamed for the same
+reason.
+
+---
+
+**"Where am I in this contact" is not a widget**, and that is worth writing down
+because the brief listed it as one. Today it is the stage strip inside the send
+panel rather than a panel of its own, so it travels with Send and cannot be
+placed separately. Making it its own widget is a change to what the send panel
+is, not a change to the canvas, and it is not made here.
+
+**WHAT HAS BEEN SEEN AND WHAT HAS NOT.** The canvas was run, screenshotted and
+looked at: the presets, the tray, the widgets, a panel's full contents inside a
+frame, a collapsed widget shrinking, and the absent-widget line with its button.
+The snapping arithmetic and every rule above about presets, saving, summoning
+and absent widgets are held by tests. **Dragging and resizing with a real
+pointer have not been done by anybody yet**, because a screenshot cannot press a
+mouse button, and that is where a first look should go.
+
+---
 id: HM-DEC-085
 date: 2026-08-15
 refs: src/Hamlet.RadioEngine/Cw/CwDuration.cs, src/Hamlet.RadioEngine/Cw/TransmissionWatch.cs, src/Hamlet.App/ViewModels/CwTransmitViewModel.cs, tests/Hamlet.RadioEngine.Tests/Cw/TransmissionWatchTests.cs, tests/Hamlet.App.Tests/ViewModels/SendGuardTests.cs, HM-DEC-079, HM-DEC-083
