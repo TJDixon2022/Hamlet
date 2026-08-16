@@ -20,6 +20,50 @@ public enum CwReadyState
     NotInMorse,
 
     /// <summary>
+    /// The operator's license does not cover transmitting here (HM-DEC-089).
+    /// </summary>
+    /// <remarks>
+    /// **THE ONE STATE WHERE A DISABLED CONTROL IS THE RIGHT ANSWER** rather
+    /// than a fault. Everywhere else in the application grey means something
+    /// broke (HM-DEC-087). Here it means the law, and it still says why and what
+    /// would change it.
+    /// </remarks>
+    OutsidePrivileges,
+
+    /// <summary>
+    /// This stretch is receive only for the operator's class (HM-DEC-029).
+    /// </summary>
+    /// <remarks>
+    /// Kept apart from being outside the band entirely, because they call for
+    /// different things: one is a stretch to move out of, the other is a stretch
+    /// to listen in.
+    /// </remarks>
+    ListenOnly,
+
+    /// <summary>
+    /// Hamlet does not know the operator's license class (HM-DEC-089).
+    /// </summary>
+    /// <remarks>
+    /// **THIS SUPERSEDES HM-DEC-065**, which had an unresolved class permit and
+    /// warn. It refuses while the privilege guard is on, because a frequency
+    /// cannot be checked against a class nobody has, and unknown is not
+    /// permission (HM-DEC-050). The guard remains the operator's to switch off,
+    /// which is what keeps them from ever being locked out of their own
+    /// transmitter.
+    /// </remarks>
+    LicenseClassUnknown,
+
+    /// <summary>
+    /// Hamlet does not know where the radio is (HM-DEC-089).
+    /// </summary>
+    /// <remarks>
+    /// A different ignorance from not knowing the class. Transmitting on
+    /// Hamlet's own idea of where the radio is tuned would be a guess in the one
+    /// place a confident error has legal consequences (§0.0, HM-DEC-029).
+    /// </remarks>
+    FrequencyUnknown,
+
+    /// <summary>
     /// Break-in is off and nothing is holding the transmitter on, so a message
     /// sent with command 17 would be keyed into a radio that is still receiving.
     /// </summary>
@@ -141,6 +185,30 @@ public static class TransmitReadiness
     /// </remarks>
     public static CwReadiness Check(
         bool connected, RigCapabilities? capabilities, RigState state, DateTime nowUtc)
+        => Check(connected, capabilities, state, nowUtc, null);
+
+    /// <summary>Can a keyer message actually reach the air right now?</summary>
+    /// <param name="connected">Whether a radio is connected.</param>
+    /// <param name="capabilities">What the connected radio can do.</param>
+    /// <param name="state">Everything Hamlet has read from it.</param>
+    /// <param name="nowUtc">The moment, for the ages in the record.</param>
+    /// <param name="privileges">
+    /// Where the operator is and what their license covers, or null to skip the
+    /// check entirely (HM-DEC-089).
+    /// </param>
+    /// <returns>The verdict, never null, carrying what decided it.</returns>
+    /// <remarks>
+    /// **PRIVILEGES ARE SETTLED BEFORE THE RADIO IS BLAMED.** Being in the wrong
+    /// place is the operator's to fix and break-in is the radio's, and sending
+    /// somebody across the room to change a setting for a transmission that was
+    /// never allowed wastes their evening and teaches them nothing.
+    /// </remarks>
+    public static CwReadiness Check(
+        bool connected,
+        RigCapabilities? capabilities,
+        RigState state,
+        DateTime nowUtc,
+        TransmitPrivileges? privileges)
     {
         ArgumentNullException.ThrowIfNull(state);
 
@@ -199,6 +267,16 @@ public static class TransmitReadiness
                 $"The radio is in {modeValue.Text} rather than Morse, and the keyer "
                 + "only sends Morse. Switch to CW and it will be ready.",
                 "", saw);
+        }
+
+        if (privileges is { } may)
+        {
+            var verdict = may.Judge(saw);
+
+            if (verdict is not null)
+            {
+                return verdict;
+            }
         }
 
         // THE ONE THAT COSTS AN EVENING IF IT IS SKIPPED. An unread break-in

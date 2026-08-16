@@ -59,7 +59,17 @@ public sealed record RecentStation(
     /// one, so the two conditions are one property and nothing can read the
     /// name without meeting both.
     /// </remarks>
-    public bool IsIdentified => Station.Length > 0 && Source != StationSource.None;
+    /// <remarks>
+    /// **NULL-TOLERANT ON PURPOSE** (HM-DEC-089). The compiler says this string
+    /// cannot be null and a settings file says otherwise: nullable reference
+    /// types are not enforced at run time, so a hand-edited or truncated
+    /// `settings.json` hands a null straight through the deserializer. It used to
+    /// take the whole application down before the window opened, past the
+    /// never-throw load that was supposed to make a bad settings file survivable
+    /// (§8).
+    /// </remarks>
+    public bool IsIdentified
+        => !string.IsNullOrEmpty(Station) && Source != StationSource.None;
 
     /// <summary>
     /// Where the identification came from, in the operator's words, or "".
@@ -98,9 +108,9 @@ public sealed record RecentStation(
                 return $"{Station} on {FrequencyLabel}";
             }
 
-            return Neighborhood.Length > 0
+            return !string.IsNullOrEmpty(Neighborhood)
                 ? $"{FrequencyLabel}, {Lowercase(Neighborhood)}"
-                : BandName.Length > 0
+                : !string.IsNullOrEmpty(BandName)
                     ? $"{FrequencyLabel} on {BandName}"
                     : FrequencyLabel;
         }

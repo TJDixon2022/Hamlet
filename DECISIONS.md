@@ -4,6 +4,116 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-089
+date: 2026-08-16
+supersedes: HM-DEC-065
+refs: src/Hamlet.RadioEngine/Cw/TransmitPrivileges.cs, src/Hamlet.RadioEngine/Cw/TransmitReadiness.cs, src/Hamlet.RadioEngine/Cw/CwTransmitter.cs, src/Hamlet.App/ViewModels/CanvasViewModel.cs, tests/Hamlet.RadioEngine.Tests/Cw/TransmitPrivilegeTests.cs, HM-DEC-029, HM-DEC-050, HM-DEC-086, HM-DEC-087
+---
+
+**Hamlet does not offer a send the operator is not licensed to make, and a
+restored widget has to be somewhere the operator can see it.**
+
+---
+
+**THE SEND CONTROLS REFUSE OUTSIDE THE OPERATOR'S PRIVILEGES.** Hamlet knows the
+class, knows the frequency, and has printed the privilege line with its citation
+since HM-DEC-029. It must not put a button in front of somebody for a
+transmission the law does not allow them.
+
+The refusal is a **readiness precondition** and not a separate answer arriving
+before one. The guard already refused at the moment of the press, which disabled
+the buttons correctly and left the record blind: the outcome carried no readiness
+at all, so a refusal on privileges and a refusal nobody evaluated looked
+identical in the file (HM-DEC-077). It now travels with everything that decided
+it, like every other precondition.
+
+**IT READS THE SAME PRIVILEGES DATA THE BAND MAP READS.** One source. Two sources
+for one fact is how the frequency row went wrong.
+
+**THIS IS THE ONE PLACE IN THE APPLICATION WHERE GREY GENUINELY MEANS YOU CANNOT
+DO THIS.** HM-DEC-087 made a disabled control a defect everywhere else, and this
+is the exception that proves it rather than weakens it: it is the law rather than
+a binding that failed to resolve. **It still says why, and it still says what
+would change it** — the nearest frequency on this band the operator's own license
+covers, because a disabled button that only says no is a dead end and this
+application exists for somebody who does not yet know where they are allowed. It
+says where and never tunes there.
+
+**PRIVILEGES ARE SETTLED BEFORE THE RADIO IS BLAMED.** Sending somebody across
+the room to turn break-in on, for a transmission that was never allowed, wastes
+their evening and teaches them nothing.
+
+---
+
+**THIS SUPERSEDES HM-DEC-065, AND SAYING SO IS THE POINT OF THIS PARAGRAPH.**
+That ruling had an unresolved license class permit and warn, on the grounds that
+locking somebody out of their own transmitter over a failed lookup teaches a
+beginner something false about their own license. **An unknown class now
+refuses** while the privilege guard is on, because a frequency cannot be checked
+against a class nobody has, and unknown is not permission (HM-DEC-050).
+
+**What made HM-DEC-065 right is kept.** The guard is the operator's own setting,
+it ships on, and switching it off hands the decision back to the person who holds
+the license, refusal on an unknown class included. So nobody is ever locked out of
+their own transmitter; they are asked to tell Hamlet what their license is, or to
+tell Hamlet to stop asking. The refusal names the class as the thing it could not
+establish, so it cannot be read as being in the wrong place.
+
+**An unread frequency refuses too, and it is a different ignorance.** Not knowing
+the class is not knowing something about the operator; not knowing the frequency
+is not knowing where the radio is, and transmitting on Hamlet's own idea of where
+it is tuned would be a guess in the one place a confident error has legal
+consequences (§0.0).
+
+**A FINDING RATHER THAN A BEHAVIOR, RECORDED SO IT IS NOTICED IF IT CHANGES:** a
+stretch a class holds but may not use in Morse **does not exist** in the shipped
+Part 97 data. Telegraphy is authorized everywhere a class holds the band, so the
+mode-restricted refusal is reachable for voice and not for Morse. The distinction
+is kept in the states and pinned by a test, because it is a fact about the
+regulation rather than about this build.
+
+---
+
+**THE CANVAS ALWAYS CAME BACK. IT CAME BACK OFF THE EDGE OF THE SCREEN.**
+
+Position, size, membership, stacking order and collapse all persisted and all
+restored, and every one was verified by hand this session: arranged, closed
+through the window button, relaunched, compared. What happened is that an
+arrangement built on a wide window and reopened on a narrow one restored every
+widget faithfully to coordinates a long way past the right-hand edge, and the
+operator was shown an empty canvas and reasonably concluded the whole thing was
+lost.
+
+**So anything entirely out of view is brought back, and the canvas says it did
+it.** Only what is entirely out of view moves: a widget hanging over the edge is
+one the operator can see and grab, and dragging it back for them would be undoing
+a choice they made. What gets rescued is what they could not have found.
+
+**Restoring less than was saved and saying nothing is the fault**, not restoring
+less. A layout naming a widget this build does not have, a file from an older
+version missing a width, a window too small to hold the arrangement: each restores
+what it can and says plainly what it could not, rather than reverting to a
+default and leaving somebody to wonder what they did wrong.
+
+---
+
+**THREE THINGS THIS SESSION FOUND ON THE WAY**, none of them asked for, all of
+them real:
+
+- **A null in `settings.json` took the application down before the window
+  opened.** The compiler says the field cannot be null and the deserializer does
+  not care, so a hand-edited or truncated file walked straight past the
+  never-throw load that was supposed to make a bad settings file survivable (§8).
+- **Two more dead controls of exactly the kind HM-DEC-087 was about**, in the
+  receive-help panel, whose rows only render once the radio has been read, which
+  is why the headless binding guard had not reached them. The guard caught them
+  the moment a new code path realized those templates. **That is the guard
+  working, and it is the argument for having built it.**
+- **The binding guard was reading and writing the operator's own layout file.**
+  A test that depends on what is on the machine it runs on is a test that can
+  flake, and one that writes there is a test that can destroy.
+
+---
 id: HM-DEC-088
 date: 2026-08-16
 refs: src/Hamlet.RadioEngine/Cw/CwToneTracker.cs, src/Hamlet.RadioEngine/Cw/CwGate.cs, src/Hamlet.RadioEngine/Cw/CwDecodeReport.cs, src/Hamlet.RadioEngine/Audio/AudioTap.cs, src/Hamlet.RadioEngine/Audio/CaptureHealth.cs, src/Hamlet.RadioEngine/Rig/ReceiveAdvice.cs, tests/Hamlet.RadioEngine.Tests/Cw/CwSensitivity.cs, tests/Hamlet.RadioEngine.Tests/Cw/CwDiagnosisTests.cs, HM-DEC-007, HM-DEC-048, HM-DEC-084

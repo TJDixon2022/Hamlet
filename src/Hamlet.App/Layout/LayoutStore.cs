@@ -21,6 +21,13 @@ public sealed record LayoutBook(
     string StartedFrom = "")
 {
     /// <summary>The arrangements the operator saved, never null.</summary>
+    /// <remarks>
+    /// **NOT WRITTEN TO THE FILE.** It is a convenience over
+    /// <see cref="Saved"/>, and a serializer left to itself will happily write a
+    /// second copy of every saved layout under this name and then ignore it on
+    /// the way back in (HM-DEC-089).
+    /// </remarks>
+    [JsonIgnore]
     public IReadOnlyList<CanvasLayout> Kept => Saved ?? Array.Empty<CanvasLayout>();
 }
 
@@ -45,8 +52,16 @@ public static class LayoutStore
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
     };
 
-    /// <summary>%AppData%\Hamlet\layouts.json.</summary>
-    public static string Path { get; } =
+    /// <summary>
+    /// %AppData%\Hamlet\layouts.json, unless something has redirected it.
+    /// </summary>
+    /// <remarks>
+    /// Settable so a test can point it at a temporary file (HM-DEC-089). The
+    /// headless window test builds the real view model, which loads and saves
+    /// the canvas, and a test that reads and writes the operator's own
+    /// arrangement is a test that can both flake and destroy.
+    /// </remarks>
+    public static string Path { get; set; } =
         System.IO.Path.Combine(SettingsStore.DataFolder, "layouts.json");
 
     /// <summary>What was saved, or an empty book.</summary>

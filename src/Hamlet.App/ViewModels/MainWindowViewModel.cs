@@ -359,7 +359,19 @@ public partial class MainWindowViewModel : ObservableObject
     /// while this is set — the operator decides (HM-DEC-028).
     /// </remarks>
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(LicenseMismatchNarration))]
     private LicenseResolution? _licenseMismatch;
+
+    /// <summary>
+    /// What the disagreement says, or "" when there is none (HM-DEC-089).
+    /// </summary>
+    /// <remarks>
+    /// **FLATTENED RATHER THAN REACHED THROUGH.** A binding that walks into a
+    /// null object logs a binding error on every evaluation, and a binding error
+    /// is a defect rather than a diagnostic (§0.5.1). The panel is hidden when
+    /// there is nothing to ask, and hidden is not the same as not evaluated.
+    /// </remarks>
+    public string LicenseMismatchNarration => LicenseMismatch?.Narration ?? "";
 
     /// <summary>One line naming which sources answered, for the panel header.</summary>
     [ObservableProperty]
@@ -1327,6 +1339,16 @@ public partial class MainWindowViewModel : ObservableObject
         _ = ResolveProfileAsync();
         ApplyFeedTimers();
     }
+
+    /// <summary>
+    /// Write the canvas out, whatever else is happening (HM-DEC-089).
+    /// </summary>
+    /// <remarks>
+    /// The arrangement already saves on every change, so this is the belt beside
+    /// the braces: called as the window closes, because rebuilding a workspace by
+    /// hand is the one loss the operator would actually feel.
+    /// </remarks>
+    public void KeepTheCanvas() => LayoutStore.Save(Canvas.Book());
 
     /// <summary>
     /// Open a panel that has just arrived on the canvas (HM-DEC-087).
@@ -4142,7 +4164,11 @@ public partial class MainWindowViewModel : ObservableObject
     /// operator's answer (HM-DEC-037). Null when there is nothing to ask.
     /// </summary>
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(GridMismatchNarration))]
     private GridResolution? _gridMismatch;
+
+    /// <summary>What the grid disagreement says, or "" (HM-DEC-089).</summary>
+    public string GridMismatchNarration => GridMismatch?.Narration ?? "";
 
     /// <summary>Take the looked-up grid in place of the hand-entered one.</summary>
     [RelayCommand]

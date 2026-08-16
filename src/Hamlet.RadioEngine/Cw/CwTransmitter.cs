@@ -98,14 +98,16 @@ public sealed class CwTransmitter
             context.LicenseClass, context.FrequencyHz, TransmitMode.Cw,
             context.GuardEnabled);
 
-        if (!decision.MayTransmit)
-        {
-            return new TransmitOutcome(
-                false, decision.Reason, decision.Citation, null, false);
-        }
-
+        // THE PRIVILEGE CHECK IS A READINESS PRECONDITION NOW (HM-DEC-089), not
+        // a separate answer arriving before one. It refused here before, which
+        // disabled the buttons correctly and left the record unable to say why:
+        // the outcome carried no readiness at all, so a refusal on privileges
+        // and a refusal nobody evaluated looked identical in the file
+        // (HM-DEC-077).
         var ready = TransmitReadiness.Check(
-            context.Connected, context.Capabilities, context.State);
+            context.Connected, context.Capabilities, context.State, DateTime.UtcNow,
+            new TransmitPrivileges(
+                context.LicenseClass, context.FrequencyHz, context.GuardEnabled));
 
         return ready.MaySend
             ? new TransmitOutcome(

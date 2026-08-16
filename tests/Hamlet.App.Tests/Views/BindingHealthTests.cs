@@ -95,6 +95,14 @@ public sealed class BindingHealthTests
         var was = Logger.Sink;
         Logger.Sink = complaints;
 
+        // THE OPERATOR'S OWN ARRANGEMENT IS NOT THIS TEST'S TO READ OR WRITE
+        // (HM-DEC-089). The real view model loads and saves the canvas, so
+        // without this the test both depends on and can overwrite whatever is
+        // on the machine it happens to run on.
+        var layouts = Hamlet.App.Layout.LayoutStore.Path;
+        Hamlet.App.Layout.LayoutStore.Path =
+            Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".json");
+
         try
         {
             var window = new MainWindow
@@ -116,6 +124,17 @@ public sealed class BindingHealthTests
         finally
         {
             Logger.Sink = was;
+
+            try
+            {
+                File.Delete(Hamlet.App.Layout.LayoutStore.Path);
+            }
+            catch (IOException)
+            {
+                // A leftover temporary file is not a failing test.
+            }
+
+            Hamlet.App.Layout.LayoutStore.Path = layouts;
         }
 
         var bindings = complaints.Lines

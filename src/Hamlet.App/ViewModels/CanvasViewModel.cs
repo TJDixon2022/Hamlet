@@ -513,6 +513,105 @@ public sealed partial class CanvasViewModel : ObservableObject
         News(note.Id, "");
     }
 
+    /// <summary>
+    /// What the last restore could not put back the way it found it.
+    /// </summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasRestoreNote))]
+    private string _restoreNote = "";
+
+    /// <summary>True when there is something to say about the restore.</summary>
+    public bool HasRestoreNote => RestoreNote.Length > 0;
+
+    /// <summary>Stop saying it.</summary>
+    [RelayCommand]
+    public void ClearRestoreNote() => RestoreNote = "";
+
+    /// <summary>
+    /// Bring anything that is entirely out of view back onto the canvas
+    /// (HM-DEC-089).
+    /// </summary>
+    /// <param name="width">How wide the visible canvas is.</param>
+    /// <param name="height">How tall it is.</param>
+    /// <returns>True when anything had to be moved.</returns>
+    /// <remarks>
+    /// <para>**THIS IS WHY THE LAYOUT LOOKED LIKE IT DID NOT COME BACK.** It
+    /// always came back. Position, size, membership and stacking order all
+    /// persisted and all restored. What happened is that an arrangement built on
+    /// a wide window, reopened on a narrow one, restored every widget faithfully
+    /// to coordinates a long way off the right-hand edge, and the operator was
+    /// shown an empty canvas and reasonably concluded it had been lost.</para>
+    /// <para>**ONLY WHAT IS ENTIRELY OUT OF VIEW MOVES.** A widget hanging over
+    /// the edge is a widget the operator can see and grab, and dragging it back
+    /// for them would be undoing a choice they made. What gets rescued is what
+    /// they could not have found.</para>
+    /// <para>The rescue is a fallback and never a layout engine: things land in a
+    /// simple cascade from the top left, because somewhere predictable can be
+    /// fixed with one drag and somewhere clever cannot be found at all.</para>
+    /// </remarks>
+    public bool FitInto(double width, double height)
+    {
+        if (width <= 0 || height <= 0 || Placed.Count == 0)
+        {
+            return false;
+        }
+
+        var stranded = Placed
+            .Where(p => p.X >= width - EdgeGrace || p.Y >= height - EdgeGrace)
+            .ToList();
+
+        if (stranded.Count == 0)
+        {
+            return false;
+        }
+
+        var x = Gap;
+        var y = Gap;
+
+        foreach (var widget in stranded)
+        {
+            widget.X = Math.Max(0, Math.Min(x, Math.Max(0, width - EdgeGrace)));
+            widget.Y = Math.Max(0, Math.Min(y, Math.Max(0, height - EdgeGrace)));
+
+            x += Cascade;
+            y += Cascade;
+
+            if (y > height - EdgeGrace)
+            {
+                y = Gap;
+            }
+
+            if (x > width - EdgeGrace)
+            {
+                x = Gap;
+            }
+        }
+
+        RestoreNote = stranded.Count == 1
+            ? $"{stranded[0].Title} was off the edge of a window this size, so it "
+              + "has been moved back into view. Everything else is where you left it."
+            : $"{stranded.Count} widgets were off the edge of a window this size, "
+              + "so they have been moved back into view. Everything else is where "
+              + "you left it.";
+
+        Changed();
+
+        return true;
+    }
+
+    /// <summary>How much of a widget has to be on screen for it to count.</summary>
+    /// <remarks>
+    /// Sixty pixels, which is about a header bar. Less than that and there is
+    /// nothing to take hold of.
+    /// </remarks>
+    private const double EdgeGrace = 60;
+
+    /// <summary>Where a rescued widget starts.</summary>
+    private const double Gap = 12;
+
+    /// <summary>How far each rescued widget is offset from the last.</summary>
+    private const double Cascade = 46;
+
     /// <summary>The arrangement as it stands.</summary>
     /// <returns>What is on the canvas and where.</returns>
     public CanvasLayout Current()
@@ -573,6 +672,8 @@ public sealed partial class CanvasViewModel : ObservableObject
         Placed.Clear();
         _summoned.Clear();
 
+        var unknown = 0;
+
         foreach (var placement in layout.Placements)
         {
             // A LAYOUT NAMING A WIDGET THIS BUILD DOES NOT HAVE IS SKIPPED AND
@@ -580,12 +681,54 @@ public sealed partial class CanvasViewModel : ObservableObject
             // build that has it restores the arrangement whole.
             if (Widgets.Find(placement.Id) is { } widget)
             {
-                Place(widget, placement, adopted: true);
+                Place(widget, Sane(widget, placement), adopted: true);
+            }
+            else
+            {
+                unknown++;
             }
         }
 
+        // SAY WHAT COULD NOT BE RESTORED RATHER THAN QUIETLY RESTORING LESS
+        // (HM-DEC-089). A file written by a later build can name widgets this one
+        // has never heard of, and an arrangement that silently comes back one
+        // widget short is the operator wondering what they did wrong.
+        RestoreNote = unknown switch
+        {
+            0 => "",
+            1 => "One thing in your saved layout is not a widget this version has, "
+                 + "so it was left out. It is still in the file.",
+            _ => $"{unknown} things in your saved layout are not widgets this "
+                 + "version has, so they were left out. They are still in the file.",
+        };
+
         Sync();
     }
+
+    /// <summary>
+    /// A placement that can actually be seen and grabbed (HM-DEC-089).
+    /// </summary>
+    /// <param name="widget">What it is.</param>
+    /// <param name="placement">What the file said.</param>
+    /// <returns>The placement, with anything nonsensical replaced.</returns>
+    /// <remarks>
+    /// **A FILE FROM AN OLDER BUILD CAN BE MISSING FIELDS**, and a missing width
+    /// deserializes to zero rather than to an error. A widget nought pixels wide
+    /// is a widget that has been lost, so the widget's own default size stands in
+    /// and everything else about the placement is kept.
+    /// </remarks>
+    private static Placement Sane(Widget widget, Placement placement)
+        => placement with
+        {
+            X = double.IsFinite(placement.X) ? Math.Max(0, placement.X) : 0,
+            Y = double.IsFinite(placement.Y) ? Math.Max(0, placement.Y) : 0,
+            Width = placement.Width >= Smallest ? placement.Width : widget.Width,
+            Height = placement.Height >= Smallest ? placement.Height : widget.Height,
+        };
+
+    /// <summary>The smallest a saved size may be before it is not believed.</summary>
+    /// <remarks>Matches the canvas's own resize floor.</remarks>
+    private const double Smallest = 160;
 
     private void Place(Widget widget, Placement placement, bool adopted)
         => Placed.Add(new WidgetViewModel(widget, placement, _body)

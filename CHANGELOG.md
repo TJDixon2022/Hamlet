@@ -12,6 +12,27 @@ operator can see and use, patch fixes and polishes without adding one.
 
 ---
 
+## 1.6.1
+
+**Your layout comes back, and the send buttons know the law.**
+
+The canvas always was being saved. What went wrong is that an arrangement built
+on a big window, reopened on a smaller one, put everything faithfully back at
+coordinates off the right-hand edge, so it looked like nothing had survived.
+Anything entirely out of view is now brought back where you can reach it, and the
+canvas tells you it did that rather than leaving you guessing.
+
+The send controls now refuse where your license does not reach. They say which
+rule decided it, and they name the nearest frequency on that band you could call
+from instead. If Hamlet does not know your license class or cannot read the
+frequency, it refuses and says which of the two it could not establish; the
+privilege check remains yours to switch off in Settings.
+
+Also fixed: a bad entry in the settings file could stop Hamlet starting at all,
+and two buttons in "I can hear it and Hamlet can't" were dead.
+
+Rulings HM-DEC-089.
+
 ## 1.6.0
 
 **Hamlet hears further into the noise, and says what it is hearing.**
