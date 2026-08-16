@@ -559,9 +559,6 @@ public partial class MainWindowViewModel : ObservableObject
             DateTime.UtcNow);
     }
 
-    /// <summary>When the send in flight began, for its duration.</summary>
-    private DateTime _sendStartedUtc;
-
     /// <summary>
     /// A message went to the radio (HM-DEC-079).
     /// </summary>
@@ -569,8 +566,6 @@ public partial class MainWindowViewModel : ObservableObject
     /// <param name="context">Where and in what mode.</param>
     private void OnSendStarted(string message, TransmitContext context)
     {
-        _sendStartedUtc = DateTime.UtcNow;
-
         AppEvents.SendStarted(
             _telemetry, message.Length, CwMessage.PieceCount(message),
             context.FrequencyHz,
@@ -578,29 +573,51 @@ public partial class MainWindowViewModel : ObservableObject
 
         Decisions.Note(
             "Sending", "started", Outcome.Proceeded,
-            $"{message.Length} characters going out.", _sendStartedUtc);
+            $"{message.Length} characters going out.", DateTime.UtcNow);
     }
 
-    /// <summary>A message finished, one way or another (HM-DEC-079).</summary>
+    /// <summary>
+    /// The radio finished sending, one way or another (HM-DEC-079, HM-DEC-085).
+    /// </summary>
     /// <param name="message">What went. Recorded by length, never by text.</param>
     /// <param name="context">Where.</param>
     /// <param name="outcome">What became of it, or null.</param>
+    /// <param name="elapsed">How long the radio really keyed.</param>
+    /// <param name="end">How the end of it was established.</param>
+    /// <remarks>
+    /// **COMPLETION MEANS THE RADIO FINISHED SENDING, NOT THAT THE BYTES WERE
+    /// ACCEPTED** (HM-DEC-085). This used to be measured from the send call, so
+    /// an eighteen-second transmission was recorded as a hundredth of a second,
+    /// and that figure was not only wrong in the file: it reached the operator as
+    /// "the radio keyed for 0 seconds" in the account of what happened. How the
+    /// end was established is recorded beside it, because a duration Hamlet
+    /// watched and one it worked out are different kinds of fact (§0.0).
+    /// </remarks>
     private void OnSendFinished(
-        string message, TransmitContext context, TransmitOutcome? outcome)
+        string message,
+        TransmitContext context,
+        TransmitOutcome? outcome,
+        TimeSpan elapsed,
+        TransmissionEnd end)
     {
-        var seconds = (DateTime.UtcNow - _sendStartedUtc).TotalSeconds;
+        var seconds = elapsed.TotalSeconds;
         var result = outcome?.Result;
         var what = result?.Outcome.ToString() ?? "Unknown";
 
         AppEvents.SendFinished(
             _telemetry, message.Length, what,
             result?.PiecesSent ?? 0, result?.PiecesTotal ?? 0,
-            seconds, context.FrequencyHz);
+            seconds, context.FrequencyHz, end.ToString());
 
         Decisions.Note(
             "Sending", what.ToLowerInvariant(),
             outcome?.Sent == true ? Outcome.Proceeded : Outcome.Failed,
-            $"Finished after {seconds:0.0} seconds.", DateTime.UtcNow);
+            end == TransmissionEnd.Expected
+                ? $"Ran about {seconds:0.0} seconds by the arithmetic. This radio "
+                  + "does not report whether it is keying, so that is a calculation "
+                  + "and not something Hamlet watched."
+                : $"The radio keyed for {seconds:0.0} seconds.",
+            DateTime.UtcNow);
     }
 
     /// <summary>
@@ -1167,9 +1184,6 @@ public partial class MainWindowViewModel : ObservableObject
         Transmit = new CwTransmitViewModel(
             BuildTransmitContext, OnSomethingWentOut, OnReadinessChanged,
             OnSendEnabledChanged, OnSendStarted, OnSendFinished, OnSwrMeasured,
-            () => _sendStartedUtc == default
-                ? null
-                : (DateTime.UtcNow - _sendStartedUtc).TotalSeconds,
             SkimmersOnThisBand,
             () => SelectedBand.Band.Name,
             OnChainReported)
@@ -2726,6 +2740,18 @@ public partial class MainWindowViewModel : ObservableObject
         NoteDwell(now);
         RefreshHeard(now);
         Heartbeat(now);
+
+        // A SECOND WAY FOR THE TRANSMISSION TO END (HM-DEC-085). The latch is
+        // normally released by the rig poll, which runs four times a second while
+        // the window is up. If that stalls, on a disconnect or a window that goes
+        // away mid-send, nothing else would ever look at the clock and the send
+        // controls would stay unavailable until something happened to refresh
+        // them. This ticks once a second regardless, so the arithmetic still runs
+        // out on its own.
+        if (Transmit.IsSending)
+        {
+            Transmit.Refresh();
+        }
         OnPropertyChanged(nameof(ReceiveHeadline));
         OnPropertyChanged(nameof(ReceiveOffer));
         OnPropertyChanged(nameof(HasReceiveOffer));

@@ -12,6 +12,23 @@ operator can see and use, patch fixes and polishes without adding one.
 
 ---
 
+## 1.4.1
+
+**The send buttons stop blinking.**
+
+A transmission is now one state from the press to the last dah. The buttons go
+unavailable once and come back once, and in between the panel says what is going
+out and how much of it is left instead of reporting that the radio is busy.
+
+The duration is worked out from the message and the keyer speed before the first
+dit goes out, and the transmit line can only hold that open longer. It is never
+allowed to end it early, because sampled at the rate the rig is polled that line
+shows a second and a half of apparent quiet in the middle of a real call.
+
+The seconds in the record are now the transmission rather than the handover.
+
+Rulings HM-DEC-085.
+
 ## 1.4.0
 
 **Hamlet changes the radio.**

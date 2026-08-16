@@ -712,16 +712,26 @@ public static class AppEvents
     /// <param name="outcome">What became of it.</param>
     /// <param name="piecesSent">How many pieces actually went.</param>
     /// <param name="piecesTotal">How many it needed.</param>
-    /// <param name="seconds">How long it took.</param>
+    /// <param name="seconds">How long the radio really keyed.</param>
     /// <param name="frequencyHz">Where.</param>
+    /// <param name="establishedBy">How the end of it was established.</param>
     /// <remarks>
-    /// The duration is the number that proves it: eighteen seconds is a full CQ
-    /// at twenty words a minute, and a send that returned in a tenth of a second
-    /// never keyed anything. No text here either, for the same reason.
+    /// <para>The duration is the number that proves it: eighteen seconds is a
+    /// full CQ at twenty words a minute, and a send that returned in a tenth of a
+    /// second never keyed anything. No text here either, for the same reason.
+    /// </para>
+    /// <para>**AND FOR A WHILE THIS FILE SAID EXACTLY THAT AND RECORDED A
+    /// HUNDREDTH OF A SECOND ANYWAY** (HM-DEC-085), because it was measured
+    /// across the send call, and command `17` hands the message to the radio's
+    /// keyer and returns. So the record proved the opposite of the truth on every
+    /// row. How the end was established goes in beside it, because a duration
+    /// watched and a duration calculated are different kinds of fact and a file
+    /// that cannot tell them apart cannot settle an argument (§0.0.1).</para>
     /// </remarks>
     public static void SendFinished(
         ITelemetry? telemetry, int characters, string outcome,
-        int piecesSent, int piecesTotal, double seconds, long frequencyHz)
+        int piecesSent, int piecesTotal, double seconds, long frequencyHz,
+        string establishedBy = "")
     {
         var worked = string.Equals(outcome, "Sent", StringComparison.Ordinal);
 
@@ -736,6 +746,7 @@ public static class AppEvents
                 ["piecesSent"] = piecesSent,
                 ["piecesTotal"] = piecesTotal,
                 ["seconds"] = Math.Round(seconds, 2),
+                ["establishedBy"] = establishedBy,
                 ["frequencyHz"] = frequencyHz,
             },
             worked ? TelemetryLevel.Info : TelemetryLevel.Warn);

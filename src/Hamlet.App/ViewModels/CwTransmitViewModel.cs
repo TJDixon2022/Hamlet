@@ -254,12 +254,39 @@ public sealed partial class CwTransmitViewModel : ObservableObject
     private readonly Action<CwReadiness, TransmitContext, string>? _readinessChanged;
     private readonly Action<bool, CwReadiness?>? _sendEnabledChanged;
     private readonly Action<string, TransmitContext>? _sendStarted;
-    private readonly Action<string, TransmitContext, TransmitOutcome?>? _sendFinished;
+    private readonly Action<string, TransmitContext, TransmitOutcome?, TimeSpan, TransmissionEnd>?
+        _sendFinished;
     private readonly Action? _swrMeasured;
-    private readonly Func<double?>? _keyedSeconds;
     private readonly Func<int?>? _skimmersListening;
     private readonly Func<string>? _bandName;
     private readonly Action<TransmitEvidence>? _chainReported;
+
+    /// <summary>
+    /// What the clock says, so a whole transmission can be run in a test
+    /// (HM-DEC-085).
+    /// </summary>
+    private readonly Func<DateTime> _now;
+
+    /// <summary>
+    /// The transmission in flight, latched from the press to the last dah
+    /// (HM-DEC-085).
+    /// </summary>
+    /// <remarks>
+    /// **THE LATCH IS NOT THE SEND CALL, AND THAT IS THE WHOLE FIX.** It used to
+    /// be: the state was raised before <c>SendAsync</c> and dropped in the
+    /// <c>finally</c> after it, which reads as obviously right and is wrong,
+    /// because command `17` hands the message to the radio's own keyer and
+    /// returns about thirteen milliseconds later. The radio then keys for another
+    /// eighteen seconds with nothing watching, and the panel spent all of it
+    /// following a transmit line that drops between every dit.
+    /// </remarks>
+    private readonly TransmissionWatch _watch = new();
+
+    /// <summary>The message in flight, held for the completion report.</summary>
+    private string _sending = "";
+
+    /// <summary>What the send call returned, held for the completion report.</summary>
+    private TransmitOutcome? _sendOutcome;
 
     /// <summary>
     /// The last verdict written to the record, so an unchanged one is not
@@ -298,13 +325,13 @@ public sealed partial class CwTransmitViewModel : ObservableObject
     /// (HM-DEC-079).
     /// </param>
     /// <param name="sendFinished">
-    /// Called when it completed, failed or was aborted.
+    /// Called when the radio has finished sending, failed or been stopped, with
+    /// how long it really took and how that was established (HM-DEC-085).
     /// </param>
     /// <param name="swrMeasured">
     /// Called the first time a send produces a real SWR reading, so the fact can
     /// be persisted (HM-DEC-081).
     /// </param>
-    /// <param name="keyedSeconds">How long the radio keyed, or null.</param>
     /// <param name="skimmersListening">
     /// How many skimmers were reporting on this band, or null when it could not
     /// be obtained (HM-DEC-082).
@@ -313,18 +340,23 @@ public sealed partial class CwTransmitViewModel : ObservableObject
     /// <param name="chainReported">
     /// Called with everything measured about the send, so it can be kept.
     /// </param>
+    /// <param name="now">
+    /// What the clock says, so a whole transmission can be run in a test without
+    /// waiting eighteen seconds for it (HM-DEC-085, §5.4).
+    /// </param>
     public CwTransmitViewModel(
         Func<TransmitContext> context,
         Action<SendOption>? wentOut = null,
         Action<CwReadiness, TransmitContext, string>? readinessChanged = null,
         Action<bool, CwReadiness?>? sendEnabledChanged = null,
         Action<string, TransmitContext>? sendStarted = null,
-        Action<string, TransmitContext, TransmitOutcome?>? sendFinished = null,
+        Action<string, TransmitContext, TransmitOutcome?, TimeSpan, TransmissionEnd>?
+            sendFinished = null,
         Action? swrMeasured = null,
-        Func<double?>? keyedSeconds = null,
         Func<int?>? skimmersListening = null,
         Func<string>? bandName = null,
-        Action<TransmitEvidence>? chainReported = null)
+        Action<TransmitEvidence>? chainReported = null,
+        Func<DateTime>? now = null)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _wentOut = wentOut;
@@ -333,10 +365,10 @@ public sealed partial class CwTransmitViewModel : ObservableObject
         _sendStarted = sendStarted;
         _sendFinished = sendFinished;
         _swrMeasured = swrMeasured;
-        _keyedSeconds = keyedSeconds;
         _skimmersListening = skimmersListening;
         _bandName = bandName;
         _chainReported = chainReported;
+        _now = now ?? (() => DateTime.UtcNow);
         Options = new ObservableCollection<SendButtonViewModel>();
         Rebuild();
     }
@@ -442,6 +474,50 @@ public sealed partial class CwTransmitViewModel : ObservableObject
     private static readonly Avalonia.Media.IBrush Transparent =
         Avalonia.Media.Brushes.Transparent;
 
+    /// <summary>
+    /// What is happening, while it is happening (HM-DEC-085).
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE PANEL DOES SOMETHING RATHER THAN PREVENTING SOMETHING.** The
+    /// operator pressed the button and Hamlet started the send, so Hamlet knows
+    /// exactly what is going on and can say so. The old wording came from the
+    /// readiness guard and read "the radio is already transmitting", which was
+    /// written for the case where something else keys the radio and that is a
+    /// genuine unknown. When Hamlet is the one transmitting it is not an unknown,
+    /// and saying it that way makes the app sound like a bystander to its own
+    /// work.</para>
+    /// <para>The remaining time comes from the arithmetic and is described as
+    /// roughly what it is, in seconds spoken rather than counted (§0.7). It is
+    /// never presented as a measurement, because it is a calculation.</para>
+    /// </remarks>
+    public string SendingLine
+    {
+        get
+        {
+            if (!IsSending)
+            {
+                return "";
+            }
+
+            var left = _watch.Remaining(_now());
+
+            if (left <= TimeSpan.FromSeconds(1))
+            {
+                return "Going out now, just about finished.";
+            }
+
+            var seconds = (int)Math.Round(left.TotalSeconds);
+
+            return seconds < 10
+                ? $"Going out now, about {seconds} seconds to go."
+                : $"Going out now, and it runs about {seconds} seconds altogether "
+                  + "from here.";
+        }
+    }
+
+    /// <summary>How far through, zero to one, for a progress bar.</summary>
+    public double SendingProgress => _watch.Progress(_now());
+
     /// <summary>The manual page or paragraph behind a refusal, or "".</summary>
     [ObservableProperty]
     private string _citation = "";
@@ -499,9 +575,6 @@ public sealed partial class CwTransmitViewModel : ObservableObject
     /// a ramp.
     /// </remarks>
     private int? _powerDuringSend;
-
-    /// <summary>Whether the radio was seen to key at all during the send.</summary>
-    private bool _keyedDuringSend;
 
     /// <summary>
     /// The account of the last send, link by link (HM-DEC-082).
@@ -574,7 +647,11 @@ public sealed partial class CwTransmitViewModel : ObservableObject
         {
             if (IsSending)
             {
-                return "sending now";
+                // A SHUT PANEL STILL CARRIES ITS INFORMATION (§0.5), and while a
+                // message is going out the interesting part is how much is left.
+                var left = (int)Math.Round(_watch.Remaining(_now()).TotalSeconds);
+
+                return left > 1 ? $"sending · about {left} seconds left" : "sending now";
             }
 
             if (Options.Count == 0)
@@ -704,11 +781,25 @@ public sealed partial class CwTransmitViewModel : ObservableObject
                     : (int)watts;
             }
 
-            if (context.State.IsTransmitting)
+            // ONE LOOK AT THE TRANSMIT LINE, WHICH CAN ONLY HOLD THE STATE OPEN
+            // LONGER (HM-DEC-085). It cannot end the transmission early, because
+            // sampled four times a second against sixty-millisecond dits it shows
+            // a second and a half of apparent quiet in the middle of a real CQ.
+            // Null where the radio does not report it, so the watch can tell a
+            // line that said nothing from a line that said no.
+            var keyed = context.State[RigField.TransmitStatus] is { IsKnown: true } read
+                ? read.Number > 0
+                : (bool?)null;
+
+            if (_watch.Observe(keyed, _now()))
             {
-                _keyedDuringSend = true;
+                Complete();
+                return;
             }
 
+            OnPropertyChanged(nameof(SendingLine));
+            OnPropertyChanged(nameof(SendingProgress));
+            OnPropertyChanged(nameof(Summary));
             ApplyState();
             return;
         }
@@ -761,10 +852,16 @@ public sealed partial class CwTransmitViewModel : ObservableObject
     {
         foreach (var option in Options)
         {
+            // WHILE A MESSAGE IS GOING OUT, NONE OF THEM CAN BE PRESSED, AND ALL
+            // OF THEM SAY SO (HM-DEC-085). The one going out keeps the sending
+            // state, so it is the only one whose label reads "Sending…"; the rest
+            // are genuinely unavailable and wear the unpressable look rather than
+            // looking ready and doing nothing, which is the dead-button complaint
+            // in a different costume.
             option.State = IsSending
                 ? option.State == SendState.Sending
                     ? SendState.Sending
-                    : SendState.Ready
+                    : SendState.Refused
                 : !CanSend
                     ? SendState.Refused
                     : option.IsArmed
@@ -806,85 +903,151 @@ public sealed partial class CwTransmitViewModel : ObservableObject
         }
 
         var message = button.Message.Trim();
+        var context = _context();
 
+        // THE LATCH GOES DOWN HERE AND COMES UP IN ONE OTHER PLACE (HM-DEC-085).
+        // Started against the keyer speed the radio reported, so the arithmetic
+        // is about this radio at this moment rather than an assumption. An
+        // unread speed falls back rather than failing, and the fallback only
+        // sizes a progress bar.
+        _watch.Begin(message, KeyerWpm(context), _now());
+        _sending = message;
+        _sendOutcome = null;
         IsSending = true;
         button.State = SendState.Sending;
         OnPropertyChanged(nameof(Summary));
-
-        var context = _context();
+        OnPropertyChanged(nameof(SendingLine));
 
         _sendStarted?.Invoke(message, context);
 
-        var outcome = default(TransmitOutcome);
-
         try
         {
-            outcome = await _transmitter.SendAsync(message, context);
+            // **THIS RETURNS IN ABOUT THIRTEEN MILLISECONDS.** It means the radio
+            // took the message, not that the radio sent it. Nothing here ends the
+            // transmission, and the two previous attempts at this both did.
+            var outcome = await _transmitter.SendAsync(message, context);
+            _sendOutcome = outcome;
+
+            if (!outcome.Sent)
+            {
+                // It never left, so there is nothing to wait out.
+                SetStatus(outcome.Detail, refusal: true, citation: outcome.Citation);
+                Complete(TransmissionEnd.Stopped);
+                return;
+            }
 
             SetStatus(
-                outcome.Sent
-                    ? "That went out."
-                    : outcome.Detail,
-                refusal: !outcome.Sent,
-                citation: outcome.Citation);
+                "That is going out now. The radio is keying it, and the buttons "
+                + "come back the moment it finishes.",
+                refusal: false, citation: "");
 
             // ONLY ON A CONFIRMED SEND. Watching for reports of something that
             // never left would be Hamlet inventing the wait (§0.0).
-            if (outcome.Sent)
-            {
-                _wentOut?.Invoke(button.Option);
-            }
-        }
-        finally
-        {
-            IsSending = false;
+            _wentOut?.Invoke(button.Option);
             ClearStaged();
-
-            // REPORTED AFTER THE SEND, WHICH IS WHEN IT MEANS ANYTHING
-            // (HM-DEC-081). Nothing is said when nothing was measured, rather
-            // than a resting figure being shown as a current one.
-            _swrNote = SwrReport.Describe(_swrDuringSend);
-            _swrHigh = SwrReport.IsHigh(_swrDuringSend);
-
-            // THE SENTENCE THIS APPLICATION EXISTS FOR (HM-DEC-082). Speaking
-            // into the void and speaking on the air with nobody listening are
-            // different facts, and until now they both came out as silence.
-            var evidence = new TransmitEvidence(
-                Acknowledged: outcome?.Result?.Worked == true,
-                KeyedSeconds: _keyedSeconds?.Invoke(),
-                PowerReading: _powerDuringSend,
-                SwrReading: _swrDuringSend,
-                Reports: 0,
-                SkimmersListening: _skimmersListening?.Invoke(),
-                BandName: _bandName?.Invoke() ?? "");
-
-            _chainNote = TransmitChain.Describe(evidence with
-            {
-                KeyedSeconds = evidence.KeyedSeconds
-                    ?? (_keyedDuringSend ? null : 0),
-            });
-
-            _chainReported?.Invoke(evidence);
-
-            OnPropertyChanged(nameof(ChainNote));
-
-            if (_swrDuringSend is not null && !HasMeasuredSwr)
-            {
-                HasMeasuredSwr = true;
-                _swrMeasured?.Invoke();
-            }
-
-            _swrDuringSend = null;
-            _powerDuringSend = null;
-            _keyedDuringSend = false;
-
-            OnPropertyChanged(nameof(SwrNote));
-            OnPropertyChanged(nameof(SwrIsHigh));
-
-            _sendFinished?.Invoke(message, context, outcome);
-            Refresh();
-            OnPropertyChanged(nameof(Summary));
+            ApplyState();
         }
+        catch
+        {
+            Complete(TransmissionEnd.Stopped);
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// The keyer speed the radio reported, or zero when it did not.
+    /// </summary>
+    /// <remarks>
+    /// Read rather than assumed, per §0.0. Zero is passed straight through as
+    /// "not read", and <see cref="CwDuration"/> decides what to do about that in
+    /// one place rather than every caller inventing a number.
+    /// </remarks>
+    private static int KeyerWpm(TransmitContext context)
+        => context.State[RigField.KeyerSpeed] is { IsKnown: true, Number: { } wpm }
+            ? (int)wpm
+            : 0;
+
+    /// <summary>
+    /// The transmission is over, whatever ended it (HM-DEC-085).
+    /// </summary>
+    /// <param name="end">How it ended, when it is already known.</param>
+    /// <remarks>
+    /// **THE ONE PLACE THE LATCH COMES UP.** Everything about a send that is only
+    /// true afterward is reported from here, so it cannot be reported at the
+    /// thirteen-millisecond mark by something that thought the send call was the
+    /// send.
+    /// </remarks>
+    private void Complete(TransmissionEnd? end = null)
+    {
+        if (end is { } forced)
+        {
+            _watch.Stop(_now());
+        }
+
+        var outcome = _sendOutcome;
+        var context = _context();
+
+        IsSending = false;
+        ClearStaged();
+
+        // REPORTED AFTER THE SEND, WHICH IS WHEN IT MEANS ANYTHING (HM-DEC-081).
+        // Nothing is said when nothing was measured, rather than a resting figure
+        // being shown as a current one.
+        _swrNote = SwrReport.Describe(_swrDuringSend);
+        _swrHigh = SwrReport.IsHigh(_swrDuringSend);
+
+        // THE SENTENCE THIS APPLICATION EXISTS FOR (HM-DEC-082). Speaking into
+        // the void and speaking on the air with nobody listening are different
+        // facts, and until now they both came out as silence.
+        //
+        // AND THE NUMBER IN IT IS NOW THE REAL ONE (HM-DEC-085). It used to be
+        // measured across the send call and came out at a hundredth of a second,
+        // which reached the operator as "the radio keyed for 0 seconds" under an
+        // eighteen-second transmission. Unknown stays unknown: where the transmit
+        // line could not be read at all, this is null rather than a figure Hamlet
+        // worked out and would be presenting as something it watched.
+        var evidence = new TransmitEvidence(
+            Acknowledged: outcome?.Result?.Worked == true,
+            KeyedSeconds: _watch.Outcome == TransmissionEnd.Expected
+                ? null
+                : _watch.Keyed ? _watch.Elapsed.TotalSeconds : 0,
+            PowerReading: _powerDuringSend,
+            SwrReading: _swrDuringSend,
+            Reports: 0,
+            SkimmersListening: _skimmersListening?.Invoke(),
+            BandName: _bandName?.Invoke() ?? "");
+
+        _chainNote = TransmitChain.Describe(evidence);
+        _chainReported?.Invoke(evidence);
+
+        OnPropertyChanged(nameof(ChainNote));
+
+        if (_swrDuringSend is not null && !HasMeasuredSwr)
+        {
+            HasMeasuredSwr = true;
+            _swrMeasured?.Invoke();
+        }
+
+        _swrDuringSend = null;
+        _powerDuringSend = null;
+
+        OnPropertyChanged(nameof(SwrNote));
+        OnPropertyChanged(nameof(SwrIsHigh));
+
+        if (_watch.Outcome != TransmissionEnd.Stopped || outcome?.Sent == true)
+        {
+            SetStatus("That went out.", refusal: false, citation: "");
+        }
+
+        _sendFinished?.Invoke(
+            _sending, context, outcome, _watch.Elapsed, _watch.Outcome);
+
+        _sending = "";
+        _sendOutcome = null;
+
+        Refresh();
+        OnPropertyChanged(nameof(Summary));
+        OnPropertyChanged(nameof(SendingLine));
     }
 
     /// <summary>
@@ -910,8 +1073,23 @@ public sealed partial class CwTransmitViewModel : ObservableObject
     [RelayCommand]
     private void Abort()
     {
+        // THE RADIO FIRST, AND EVERYTHING ELSE AFTER (§0.2). The abort itself
+        // awaits nothing and runs on the thread that pressed it, and the state
+        // that follows is bookkeeping.
         _transmitter?.Abort();
+
+        var wasSending = IsSending;
+
         ClearStaged();
+
+        if (wasSending)
+        {
+            // IMMEDIATE, WITH NO HOLD-OFF (HM-DEC-085). The hold-off exists
+            // because Hamlet cannot see the end of a transmission it did not
+            // cause. This one it caused, so there is nothing to wait for.
+            Complete(TransmissionEnd.Stopped);
+        }
+
         SetStatus("Stopped.", refusal: false, citation: "");
     }
 

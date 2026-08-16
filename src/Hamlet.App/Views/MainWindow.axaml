@@ -820,6 +820,32 @@
                                             <TextBlock Text="{Binding Citation}" FontSize="10"
                                                        TextWrapping="Wrap"
                                                        Foreground="{StaticResource HmTextMutedBrush}" />
+
+                                            <!-- WHILE IT IS GOING OUT, THE PANEL
+                                                 DOES SOMETHING RATHER THAN
+                                                 PREVENTING SOMETHING
+                                                 (HM-DEC-085). The operator
+                                                 pressed the button and Hamlet
+                                                 started the send, so Hamlet
+                                                 knows exactly what is happening
+                                                 and can say how much is left
+                                                 rather than reporting that the
+                                                 radio is busy.
+
+                                                 Inside the block that is always
+                                                 there, so nothing below reflows
+                                                 when it appears. -->
+                                            <TextBlock Text="{Binding SendingLine}"
+                                                       FontSize="11" TextWrapping="Wrap"
+                                                       IsVisible="{Binding IsSending}"
+                                                       Margin="0,2,0,0"
+                                                       Foreground="{StaticResource HmTextMutedBrush}" />
+
+                                            <ProgressBar Minimum="0" Maximum="1"
+                                                         Value="{Binding SendingProgress}"
+                                                         IsVisible="{Binding IsSending}"
+                                                         Height="4" Margin="0,4,0,0"
+                                                         Foreground="{StaticResource HmGreenBrush}" />
                                         </StackPanel>
 
                                         <Button Grid.Column="1" Content="Stop sending"

@@ -3,6 +3,7 @@ using Hamlet.RadioEngine.Civ;
 using Hamlet.RadioEngine.Cw;
 using Hamlet.RadioEngine.Licensing;
 using Hamlet.RadioEngine.Rig;
+using Hamlet.RadioEngine.Training;
 using Xunit;
 
 namespace Hamlet.App.Tests.ViewModels;
@@ -413,7 +414,11 @@ public sealed class SendGuardTests
         sender.Finish();
         await sending;
 
-        Assert.True(panel.Options[0].State is SendState.Ready or SendState.Refused);
+        // AND IT IS STILL SENDING (HM-DEC-085). The send call returning means the
+        // radio took the message, not that the radio sent it, and this line used
+        // to assert the opposite. The state ends when the transmission does.
+        Assert.True(panel.IsSending);
+        Assert.True(panel.Options[0].LooksSending);
     }
 
     /// <summary>A sender the test can hold open, as a real send holds open.</summary>
@@ -452,30 +457,210 @@ public sealed class SendGuardTests
     /// successful transmissions had to be reconstructed from the shape of a
     /// status line flapping (§0.0.1).
     /// </remarks>
+    /// <remarks>
+    /// <para>Proves HM-DEC-085, and it is the assertion this test used to make
+    /// backwards. It used to require the finish to arrive inside the press,
+    /// which encoded the bug: **handing the message over is not the
+    /// transmission.** Command `17` gives the keyer up to thirty characters and
+    /// returns about thirteen milliseconds later, and the radio then keys for
+    /// another eighteen seconds.</para>
+    /// <para>So the start arrives at the press and the finish does not.</para>
+    /// </remarks>
     [Fact]
-    public async Task ASendWritesItsStartAndItsFinish()
+    public async Task TheSendStartsAtThePressAndDoesNotFinishThere()
     {
+        var clock = Now;
         var state = Live();
         var started = new List<string>();
-        var finished = new List<TransmitOutcome?>();
+        var finished = new List<double>();
 
         var panel = new CwTransmitViewModel(
             () => new TransmitContext(
                 LicenseClass.General, 7_030_000, true, true, Radio, state),
             null, null, null,
             (message, _) => started.Add(message),
-            (_, _, outcome) => finished.Add(outcome));
+            (_, _, _, elapsed, _) => finished.Add(elapsed.TotalSeconds),
+            now: () => clock);
 
         panel.Attach(new CwTransmitter(new Recorder()));
 
         await panel.PressCommand.ExecuteAsync(panel.Options[0]);
 
         Assert.Single(started);
-        Assert.Single(finished);
-        Assert.True(finished[0]?.Sent);
+        Assert.Empty(finished);
+        Assert.True(panel.IsSending);
 
         // The start carries the message so the caller can measure it. What
         // reaches telemetry is its length and never its words (HM-DEC-018).
         Assert.Equal(panel.Options[0].Original, started[0]);
+    }
+
+    /// <remarks>
+    /// <para>**THE TEST THE PREVIOUS TWO ATTEMPTS DID NOT HAVE** (HM-DEC-085).
+    /// It runs a whole send at the panel and drives the transmit line the way
+    /// full break-in really drives it, from the message's own key pattern at the
+    /// rate the rig is really polled, and counts how many times the send controls
+    /// change appearance.</para>
+    /// <para>**One change down and one back up. Nothing in between.** That is the
+    /// operator's most-repeated complaint, raised three times and shipped wrong
+    /// twice, and this is the assertion that would have caught both.</para>
+    /// </remarks>
+    [Fact]
+    public async Task TheSendButtonsChangeOnceDownAndOnceBackUp()
+    {
+        var clock = Now;
+        var keying = 0;
+
+        var panel = new CwTransmitViewModel(
+            () => new TransmitContext(
+                LicenseClass.General, 7_030_000, true, true, Radio,
+                Live(transmitting: keying)),
+            now: () => clock);
+
+        panel.Attach(new CwTransmitter(new Recorder()));
+
+        var message = panel.Options[0].Original;
+        await panel.PressCommand.ExecuteAsync(panel.Options[0]);
+
+        // What the operator looks at: whether the buttons are wearing the
+        // unpressable look. Sampled every time the rig state comes round.
+        bool Grey() => panel.Options.All(o => o.LooksRefused);
+
+        var was = Grey();
+        var changes = 0;
+        var lineMoved = 0;
+        var wasKeyed = false;
+
+        var pattern = MorseCode.KeyPattern(message);
+        var dits = MorseCode.LengthInDits(message);
+        var dit = MorseCode.Dit(CwDuration.DefaultWpm).TotalMilliseconds;
+        var total = dits * dit;
+
+        Assert.True(was, "the buttons did not go grey when the send started");
+
+        for (var t = 250.0; t < total + 4000; t += 250)
+        {
+            var down = t <= total
+                && MorseCode.IsKeyDown(pattern, dits, dits * 10, t / dit);
+
+            if (down != wasKeyed)
+            {
+                lineMoved++;
+                wasKeyed = down;
+            }
+
+            keying = down ? 1 : 0;
+            clock = Now.AddMilliseconds(t);
+            panel.Refresh();
+
+            if (Grey() != was)
+            {
+                changes++;
+                was = Grey();
+            }
+        }
+
+        // The line really flapped, so this is the condition that broke the panel
+        // and not an easier one.
+        Assert.True(lineMoved > 20, $"the line only moved {lineMoved} times");
+
+        Assert.Equal(1, changes);
+        Assert.False(panel.IsSending);
+        Assert.False(Grey());
+    }
+
+    /// <remarks>
+    /// Proves HM-DEC-085: what the record and the operator are told is the length
+    /// of the transmission and not of the handover. It used to be a hundredth of
+    /// a second, and that figure reached the screen as "the radio keyed for 0
+    /// seconds" under an eighteen-second call.
+    /// </remarks>
+    [Fact]
+    public async Task TheFinishReportsTheRealSeconds()
+    {
+        var clock = Now;
+        var keying = 0;
+        var finished = new List<double>();
+
+        var panel = new CwTransmitViewModel(
+            () => new TransmitContext(
+                LicenseClass.General, 7_030_000, true, true, Radio,
+                Live(transmitting: keying)),
+            null, null, null, null,
+            (_, _, _, elapsed, _) => finished.Add(elapsed.TotalSeconds),
+            now: () => clock);
+
+        panel.Attach(new CwTransmitter(new Recorder()));
+
+        var message = panel.Options[0].Original;
+        await panel.PressCommand.ExecuteAsync(panel.Options[0]);
+
+        var pattern = MorseCode.KeyPattern(message);
+        var dits = MorseCode.LengthInDits(message);
+        var dit = MorseCode.Dit(CwDuration.DefaultWpm).TotalMilliseconds;
+        var total = dits * dit;
+
+        for (var t = 250.0; t < total + 4000; t += 250)
+        {
+            keying = t <= total
+                && MorseCode.IsKeyDown(pattern, dits, dits * 10, t / dit) ? 1 : 0;
+            clock = Now.AddMilliseconds(t);
+            panel.Refresh();
+        }
+
+        var expected = CwDuration.Of(message, CwDuration.DefaultWpm).TotalSeconds;
+
+        Assert.Single(finished);
+        Assert.True(finished[0] > 1.0, $"reported {finished[0]:0.00} seconds");
+        Assert.InRange(finished[0], expected * 0.9, expected * 1.3);
+    }
+
+    /// <remarks>
+    /// Proves HM-DEC-085 and §0.2: stopping ends the state on the spot, with no
+    /// hold-off and nothing awaited. The abort may never wait for a poll.
+    /// </remarks>
+    [Fact]
+    public async Task StoppingEndsTheSendImmediately()
+    {
+        var clock = Now;
+
+        // Not keying yet at the moment of the press, which is the only state the
+        // guard will let a send start from.
+        var keying = 0;
+        var finished = new List<double>();
+
+        var panel = new CwTransmitViewModel(
+            () => new TransmitContext(
+                LicenseClass.General, 7_030_000, true, true, Radio,
+                Live(transmitting: keying)),
+            null, null, null, null,
+            (_, _, _, elapsed, _) => finished.Add(elapsed.TotalSeconds),
+            now: () => clock);
+
+        panel.Attach(new CwTransmitter(new Recorder()));
+
+        await panel.PressCommand.ExecuteAsync(panel.Options[0]);
+        Assert.True(panel.IsSending);
+
+        // The radio starts keying, and the panel sees it.
+        keying = 1;
+        clock = Now.AddSeconds(1);
+        panel.Refresh();
+        Assert.True(panel.IsSending);
+
+        // Three seconds into an eighteen-second call, and the radio drops its
+        // transmit line the moment the abort reaches it.
+        clock = Now.AddSeconds(3);
+        keying = 0;
+        panel.AbortCommand.Execute(null);
+
+        // No hold-off waited out and no poll waited for.
+        Assert.False(panel.IsSending);
+        Assert.Single(finished);
+        Assert.Equal(3.0, finished[0], precision: 2);
+
+        // And the controls come straight back rather than staying grey until
+        // something else happens to refresh them.
+        Assert.DoesNotContain(panel.Options, o => o.LooksRefused);
     }
 }

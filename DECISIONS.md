@@ -4,6 +4,133 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-085
+date: 2026-08-15
+refs: src/Hamlet.RadioEngine/Cw/CwDuration.cs, src/Hamlet.RadioEngine/Cw/TransmissionWatch.cs, src/Hamlet.App/ViewModels/CwTransmitViewModel.cs, tests/Hamlet.RadioEngine.Tests/Cw/TransmissionWatchTests.cs, tests/Hamlet.App.Tests/ViewModels/SendGuardTests.cs, HM-DEC-079, HM-DEC-083
+---
+
+**A transmission is one state, from the press to the last dah. The send controls
+change once on the way down and once on the way back up, and never in between.**
+
+This is the third attempt at the operator's most-repeated complaint, and the
+first two are worth writing down because both of them looked right.
+
+**THE FIRST ATTEMPT SAMPLED THE TRANSMIT LINE.** Readiness refused with "the
+radio is already transmitting", which is correct on every individual reading and
+useless as a description of a state, because under full break-in the transmit
+line drops between every dit. An eighteen-second call put the panel through
+dozens of enable and disable cycles and lost presses into the disabled frames.
+
+**THE SECOND ATTEMPT BUILT A LATCH, PASSED ITS TESTS, AND FAILED ON THE RADIO.**
+It latched on the send operation, which is the right instinct and the wrong
+operation. Command `17` hands up to thirty characters to the radio's own keyer
+and returns as soon as the bytes are accepted, about thirteen milliseconds later.
+The radio then keys on its own for the next eighteen seconds with nothing
+watching. So the latch released at 13 ms and gave the panel straight back to the
+flapping line, and every test passed because no test crossed that boundary.
+
+**HANDING THE MESSAGE OVER IS NOT THE TRANSMISSION.** That sentence is the whole
+ruling and everything below it is consequence.
+
+---
+
+**THE END OF A TRANSMISSION IS PREDICTED BEFORE IT STARTS.** Morse timing is
+arithmetic: PARIS is fifty dit lengths, a word a minute means PARIS once, and the
+element count follows from the text. The keyer speed is already read over
+`14 0C`, so the duration is known at the moment of the press. It is counted by
+`MorseCode`, which already held the table, the dit and the element counter for
+the waterfall's keying rhythm and the field guide's audio, and which already knew
+about the radio's `^` run-together character that a second copy written for the
+transmit path got wrong on its first attempt. One table (§0).
+
+**AND THE TRANSMIT LINE MAY ONLY EVER EXTEND THAT, NEVER SHORTEN IT.** This is
+the correction the session made against its own brief, and it came from a
+measurement rather than an argument. The brief called for a hold-off: the
+transmission is over when the line has been quiet longer than the longest gap the
+message could contain, a word space being seven dit lengths, so about half a
+second at twenty words a minute. That reasoning is sound about the radio and
+wrong about Hamlet, **because Hamlet does not watch the line, it samples it.**
+The rig state is read about four times a second and a dit at twenty words a
+minute is sixty milliseconds, so the samples beat against the keying rather than
+observing it. Replaying a real CQ through its real key pattern at the real poll
+rate, **the longest stretch in which no sample catches the key down is a second
+and a half, in the middle of the message.** There is no hold-off both short
+enough to be useful and long enough to survive that.
+
+So the arithmetic is the floor and the line only holds the state open longer. A
+missed sample costs nothing and a seen one can only help, which is the way round
+that cannot blink. What it gives up is an ending Hamlet did not cause: if the
+radio stops on its own the panel stays busy until the computed time is up, a few
+seconds at worst. **The operator's own stop still ends it on the spot**, with no
+hold-off and nothing awaited (§0.2), because that ending Hamlet did cause.
+
+**A DURATION WATCHED AND A DURATION CALCULATED ARE DIFFERENT KINDS OF FACT**
+(§0.0). Where the radio does not report its transmit line at all, the arithmetic
+is the only thing there is, and that is recorded as such and never reported as
+something Hamlet saw. Unknown stays unknown (HM-DEC-050): the keyed-seconds
+figure in the transmit chain is null in that case rather than a number.
+
+---
+
+**THE DURATION IN THE RECORD WAS WRONG, AND IT HAD ALREADY REACHED THE
+OPERATOR.** `cw_send_completed` reported a hundredth of a second for an
+eighteen-second transmission, because it was measured across the send call. The
+telemetry method's own documentation said the duration was the number that proves
+it, and the field it wrote proved the opposite on every row. Worse, it fed the
+account of the send, so the screen said the radio keyed for 0 seconds while the
+radio was audibly keying. **Completion means the radio finished sending, not that
+the bytes were accepted.** How the end was established goes in the record beside
+the figure, because a file that cannot tell a measurement from a calculation
+cannot settle an argument (§0.0.1).
+
+---
+
+**DURING THE TRANSMISSION THE PANEL DOES SOMETHING RATHER THAN PREVENTING
+SOMETHING.** The operator pressed the button and Hamlet started the send, so
+Hamlet knows exactly what is happening and says so: what is going out, how much
+of it is left, and a stop. The refusal wording it used to show was written for
+the case where something else keys the radio, which is a genuine unknown. When
+Hamlet is the one transmitting it is not an unknown, and describing it that way
+makes the application sound like a bystander to its own work.
+
+The busy message appears once and holds, in space that was already reserved, so
+nothing below it reflows (HM-DEC-080). Every send button wears the unpressable
+look for the duration, including the ones not going out, because none of them can
+be pressed and a control that looks ready and does nothing is the dead-button
+complaint in a different costume. The explanatory text stays readable throughout.
+
+---
+
+**THE TESTS, AND WHY THEY LOOK LIKE THIS.** The brief asked for a simulated send
+in which the transmit line toggles twenty times and the state changes exactly
+once in each direction. **Written that way it passes against plain edge
+detection**, which ends the transmission in the gap between the first two dits,
+because a latch can only change twice by construction: once it is down it is
+never raised again, so counting its changes cannot tell a latch that held from
+one that let go immediately. That was found by writing it, watching it pass
+against a deliberately broken implementation, and rewriting it.
+
+What is asserted instead is that the controls were still unavailable at **every
+sample** up to the moment the message could possibly have ended. The line is not
+toggled by hand: it is driven by the real key pattern of the real message at the
+rate the rig is really polled, which is the closest a test gets to the radio
+without one plugged in. The line's own transition count is asserted too, so a
+simulation that stopped flapping could not let the test pass by becoming easy.
+Both the naive edge detection and the brief's hold-off-as-stated were run against
+it and both fail it.
+
+**Everything below the UI takes the time rather than reading a clock**, so a whole
+eighteen-second transmission runs in a test in microseconds and comes out the
+same every time (§5.4).
+
+**NONE OF THIS HAS MET A RADIO.** It is arithmetic and a state machine, tested
+against a simulation of the keying built from the app's own tables. The two
+previous attempts also passed their tests. What is different is that the boundary
+those tests did not cross is now the thing being tested, and that the design was
+changed by a measurement taken during the session rather than by the reasoning
+that opened it.
+
+---
 id: HM-DEC-084
 date: 2026-08-15
 closes: the writes question HM-DEC-050 deferred
