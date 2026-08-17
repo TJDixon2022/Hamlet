@@ -2890,7 +2890,14 @@ public partial class MainWindowViewModel : ObservableObject
             // radio is the answer, and where it has not, the header says so
             // rather than presenting a guess in the same shape as a measurement.
             $"frequency  {CapturedFrequency()}",
-            $"band       {SelectedBand.Band.Name}",
+
+            // **AND THE BAND COMES FROM THE SAME READING AS THE FREQUENCY**
+            // (HM-DEC-096, phase 6). This line took the band button the operator
+            // last pressed, which is the app's idea of where it is rather than
+            // the radio's, and it is how three captures came to say 40 m in a
+            // header whose own rig block read 14.055 MHz. Two fields describing
+            // one fact from two sources is the fault, not the wrong value.
+            $"band       {CapturedBand()}",
             "",
             // THE RECORDING'S OWN PEAK, not the meter's last fifth of a second
             // (HM-DEC-094). Those differed by eight decibels on a file that was
@@ -2949,6 +2956,33 @@ public partial class MainWindowViewModel : ObservableObject
         return read is { IsKnown: true, Number: { } hz }
             ? $"{(long)hz} Hz  (read from the radio)"
             : $"{FrequencyHz} Hz  (Hamlet's own, the radio was not read)";
+    }
+
+    /// <summary>
+    /// Which band the capture was made on, derived from the frequency that was
+    /// actually read (HM-DEC-096, phase 6).
+    /// </summary>
+    /// <returns>The band's name, with where it came from.</returns>
+    /// <remarks>
+    /// **DERIVED, NOT SELECTED.** The band a capture was made on is a fact about
+    /// the frequency, and the frequency is a fact about the radio. Taking it from
+    /// the button the operator last pressed makes it a fact about the app, which
+    /// is how a header came to disagree with the rig block four lines under it.
+    /// Where the radio has not been read, this says so rather than presenting a
+    /// guess in the same shape as a measurement (§0.0).
+    /// </remarks>
+    private string CapturedBand()
+    {
+        var read = RigState[RigField.Frequency];
+
+        if (read is { IsKnown: true, Number: { } hz })
+        {
+            return BandPlan.BandFor((long)hz) is { } band
+                ? $"{band.Name}  (from the frequency the radio reported)"
+                : "outside every band Hamlet knows";
+        }
+
+        return $"{SelectedBand.Band.Name}  (Hamlet's own, the radio was not read)";
     }
 
     /// <summary>What the decoder had emitted at the last capture.</summary>
