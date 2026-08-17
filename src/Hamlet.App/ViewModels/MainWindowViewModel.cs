@@ -2685,7 +2685,13 @@ public partial class MainWindowViewModel : ObservableObject
             $"fingerprint {Fingerprint(audio)}",
             $"seconds    {audio.Duration.TotalSeconds:0.0}",
             $"sampleRate {audio.SampleRate}",
-            $"frequency  {FrequencyHz} Hz",
+            // **ONE SOURCE, AND IT SAYS WHICH** (HM-DEC-091). This line read
+            // 7.030 MHz in a file whose own rig block, four lines further down,
+            // read 14.055: the header took the app's idea of where it was tuned
+            // and the block took the radio's. Where the radio has been read, the
+            // radio is the answer, and where it has not, the header says so
+            // rather than presenting a guess in the same shape as a measurement.
+            $"frequency  {CapturedFrequency()}",
             $"band       {SelectedBand.Band.Name}",
             "",
             $"inputPeak  {report.Level.PeakDb:0.0} dBFS",
@@ -2723,6 +2729,24 @@ public partial class MainWindowViewModel : ObservableObject
         }
 
         return string.Join(Environment.NewLine, lines);
+    }
+
+    /// <summary>
+    /// Where the radio actually is, for the capture header (HM-DEC-091).
+    /// </summary>
+    /// <returns>The frequency and where it came from.</returns>
+    /// <remarks>
+    /// The stale-frequency fault has now appeared four times in this project, and
+    /// every one of them was two sources for one fact. The radio's own reading
+    /// wins whenever there is one; Hamlet's own is labeled as Hamlet's.
+    /// </remarks>
+    private string CapturedFrequency()
+    {
+        var read = RigState[RigField.Frequency];
+
+        return read is { IsKnown: true, Number: { } hz }
+            ? $"{(long)hz} Hz  (read from the radio)"
+            : $"{FrequencyHz} Hz  (Hamlet's own, the radio was not read)";
     }
 
     /// <summary>What the decoder had emitted at the last capture.</summary>

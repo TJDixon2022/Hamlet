@@ -402,3 +402,60 @@ real thing and the claim that it now finds a tone near 627 Hz and 595 Hz can be
 stated as a measurement rather than as a reasonable expectation. §2.1 makes an
 off-air recording Tim's to review before it ships in a public repository, which
 is the other reason this cannot be done without him.
+
+---
+id: HM-OPEN-012
+status: open
+owner: claude
+raised: 2026-08-17
+severity: slows
+blocks: reading a real station, which is what the application is for
+refs: HM-DEC-091, HM-DEC-090, HM-DEC-048
+---
+
+The keying gate's peak tracker cannot survive a station that keys five percent of
+the time, and the fix that works breaks the one guarantee that cannot be traded.
+
+**The mechanism, measured on `tests/fixtures/cw/captured`.** `CwGate` places its
+threshold below a tracked peak that follows a signal down over a couple of
+seconds, so a fade cannot strand it above the signal (HM-DEC-048). A station
+answering a call sends short bursts seconds apart. Between them the peak decays
+the whole way to the noise, `PeakDb - NoiseFloorDb` collapses to about eight
+decibels against a `MinimumSpreadDb` of ten, and the gate stops deciding on a
+signal that the narrowband measurement puts twenty-eight decibels above the band.
+With the threshold that low the key also stays down through the gaps: eleven
+seconds of key-down were measured in a recording containing roughly one and a
+half.
+
+It is the same duty-cycle fault HM-DEC-090 fixed in the reported ratio and the
+located pitch, one layer further down.
+
+**The fix that works.** Build the threshold from the held narrowband figure
+rather than from the tracked peak: `NoiseFloorDb + heldSpread - drop`, with
+`HasSignal` reading the same held figure. Measured:
+
+- `cw-2026-08-17-013347`: one unreadable character becomes `I■E■N`
+- `cw-2026-08-17-013622`: nothing becomes `■EI`
+- key-down falls from 11.2 s to 7.1 s, marks from 138 to 72
+- synthetic sensitivity improves from −4.0 dB to −5.0 dB
+
+**Why it is not shipped.** It makes the decoder confidently wrong on
+`fading-18wpm`, failing `NothingTheDecoderWasSureOfIsWrong`. A held peak is the
+right answer for deciding whether a tone exists and the wrong one for deciding
+where the threshold goes, because after a fade it strands the threshold above the
+signal, which is exactly what the tracked peak was designed to prevent.
+
+**Three narrower variants were tried and none is both safe and useful.** Falling
+only while the key is down: two fade tests still fail. Falling normally unless
+the held figure says a tone is still present: the held figure stays high through
+a five-second fade, so it does not discriminate. Holding only once the power is
+within six decibels of the noise: one fade test still fails. Holding only once
+the tracked spread has already collapsed past `MinimumSpreadDb`: everything
+passes and the real captures are unchanged, so it rescues nothing.
+
+**What is probably needed.** The gate wants a threshold whose memory of the
+signal is separate from its memory of the silence, which is the same shape of
+answer as HM-DEC-090's held peak but applied to marks rather than to
+measurements. Something like a peak over the last N *marks* rather than over
+time. Whatever is tried, `fading-18wpm` and the two captures now fail in opposite
+directions, so the corpus can tell a real fix from a trade.

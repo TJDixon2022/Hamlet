@@ -12,6 +12,25 @@ operator can see and use, patch fixes and polishes without adding one.
 
 ---
 
+## 1.7.1
+
+**Two recordings of a real station are now part of the build.**
+
+Every synthetic test in this project passed while the decoder could not hear
+anybody on the air. Two thirty-second captures of a real station are now
+permanent fixtures, each carrying what the radio was set to when it was made, so
+a failure can say what was going on rather than only that something went wrong.
+
+Against those recordings Hamlet now finds the tone and measures it correctly
+where it used to report almost nothing, and it no longer fills the screen with
+characters from noise. It still cannot read what that station sent, and that is
+stated rather than papered over.
+
+A capture's header now gives the radio's own frequency instead of Hamlet's idea
+of it. One file had those two disagreeing by seven megahertz.
+
+Rulings HM-DEC-091.
+
 ## 1.7.0
 
 **Hamlet stops hearing things that are not there, and starts hearing things that
