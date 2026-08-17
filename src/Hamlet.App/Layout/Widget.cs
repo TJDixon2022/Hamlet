@@ -85,6 +85,9 @@ public static class Widgets
     /// <summary>What a contact sounds like.</summary>
     public const string Contact = "contact";
 
+    /// <summary>The band scanner (HM-DEC-107).</summary>
+    public const string Scan = "scan";
+
     /// <summary>Every widget, in the order the tray offers them.</summary>
     /// <remarks>
     /// Ordered by what a newcomer reaches for rather than alphabetically, which
@@ -141,6 +144,12 @@ public static class Widgets
             "Fine tuning by dragging, with the stations somebody has reported "
             + "marked along the top.",
             560, 180),
+
+        new Widget(
+            Scan, "Scanner", "Blue",
+            "Hamlet works down the band for you, stopping where somebody is "
+            + "actually calling rather than wherever there is a tone.",
+            460, 400),
 
         new Widget(
             Waterfall, "Waterfall", "Blue",

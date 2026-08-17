@@ -408,6 +408,30 @@ public static class SettingsStore
     /// <summary>%AppData%\Hamlet\settings.json.</summary>
     public static string SettingsPath { get; } = Path.Combine(DataFolder, "settings.json");
 
+    /// <summary>
+    /// %AppData%\Hamlet\scan-segments.json — where a scan may move the dial.
+    /// </summary>
+    /// <remarks>
+    /// **THE OPERATOR'S FILE, NOT HAMLET'S** (§0.2.1). Hamlet writes it once, the
+    /// first time it has anywhere to put it, and never touches it again. It sits
+    /// beside the settings rather than inside them because it is meant to be
+    /// opened in an editor, and a stretch of band buried in a settings blob is a
+    /// stretch of band nobody will edit.
+    /// </remarks>
+    public static string ScanSegmentsPath { get; }
+        = Path.Combine(DataFolder, "scan-segments.json");
+
+    /// <summary>
+    /// %AppData%\Hamlet\scan-home — where the dial was when a scan started.
+    /// </summary>
+    /// <remarks>
+    /// **A FILE RATHER THAN A SETTING, BECAUSE OF WHEN IT IS WRITTEN** (§0.2.1).
+    /// It goes down in the moment before the first tune and is deleted the moment
+    /// the dial is back, so it exists only while a scan is in flight. Settings
+    /// are saved on a clean exit, which is the one exit this has to survive.
+    /// </remarks>
+    public static string ScanHomePath { get; } = Path.Combine(DataFolder, "scan-home");
+
     /// <summary>Load settings, or defaults if the file is missing, corrupt or
     /// unreadable. Never throws.</summary>
     public static AppSettings Load() => LoadFrom(SettingsPath);

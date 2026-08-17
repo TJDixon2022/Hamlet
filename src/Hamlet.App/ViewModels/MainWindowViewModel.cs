@@ -20,6 +20,7 @@ using Hamlet.RadioEngine.Licensing;
 using Hamlet.RadioEngine.Solar;
 using Hamlet.RadioEngine.Training;
 using Hamlet.RadioEngine.Rig;
+using Hamlet.RadioEngine.Scan;
 using Hamlet.RadioEngine.Transport;
 
 namespace Hamlet.App.ViewModels;
@@ -385,6 +386,9 @@ public partial class MainWindowViewModel : ObservableObject
 
     [ObservableProperty]
     private bool _waterfallExpanded = true;
+
+    [ObservableProperty]
+    private bool _scanExpanded = true;
 
     [ObservableProperty]
     private bool _terminalExpanded = true;
@@ -1257,6 +1261,7 @@ public partial class MainWindowViewModel : ObservableObject
         _mapExpanded = settings.IsPanelExpanded(PanelKeys.Map);
         _tapeExpanded = settings.IsPanelExpanded(PanelKeys.Tape);
         _waterfallExpanded = settings.IsPanelExpanded(PanelKeys.Waterfall);
+        _scanExpanded = settings.IsPanelExpanded(PanelKeys.Scan);
         _terminalExpanded = settings.IsPanelExpanded(PanelKeys.Terminal);
         _storyExpanded = settings.IsPanelExpanded(PanelKeys.Story);
         _guideExpanded = settings.IsPanelExpanded(PanelKeys.Guide);
@@ -1388,6 +1393,17 @@ public partial class MainWindowViewModel : ObservableObject
 
         PickByline();
 
+        // THE SCANNER'S FACE (HM-DEC-107, §0.2.1). It is built before the
+        // canvas because the canvas places it, and it stays detached from any
+        // radio until one connects: a scanner that could move the dial with no
+        // rig behind it would be a scanner with nothing to abort against.
+        Scan = new ScanViewModel(_settings, line => StatusText = line);
+
+        // THE OPERATOR'S OWN SCAN FILE, WRITTEN ONCE (§0.2.1). It cannot be
+        // edited until it exists, and nothing else in the app was going to
+        // create it. Never overwritten afterwards: what he wrote is his.
+        ScanSegments.WriteDefaultIfMissing(SettingsStore.ScanSegmentsPath);
+
         // THE CANVAS, LAST, because everything it places has to exist first
         // (HM-DEC-086). Nobody ever starts on an empty one: a first run, or a
         // layouts file that could not be read, lands on Getting started with
@@ -1431,6 +1447,7 @@ public partial class MainWindowViewModel : ObservableObject
             case Layout.Widgets.Map: MapExpanded = true; break;
             case Layout.Widgets.Tape: TapeExpanded = true; break;
             case Layout.Widgets.Waterfall: WaterfallExpanded = true; break;
+            case Layout.Widgets.Scan: ScanExpanded = true; break;
             case Layout.Widgets.Terminal: TerminalExpanded = true; break;
             case Layout.Widgets.Story: StoryExpanded = true; break;
             case Layout.Widgets.Guide: GuideExpanded = true; break;
@@ -1458,6 +1475,9 @@ public partial class MainWindowViewModel : ObservableObject
     /// their contents.
     /// </remarks>
     public CanvasViewModel Canvas { get; }
+
+    /// <summary>The scanner, and the stop control §0.2.1 requires.</summary>
+    public ScanViewModel Scan { get; }
 
     /// <summary>
     /// Choose the line under the wordmark, avoiding last launch's
@@ -1976,6 +1996,8 @@ public partial class MainWindowViewModel : ObservableObject
 
     partial void OnWaterfallExpandedChanged(bool value)
         => PersistPanel(PanelKeys.Waterfall, value);
+
+    partial void OnScanExpandedChanged(bool value) => PersistPanel(PanelKeys.Scan, value);
 
     partial void OnTerminalExpandedChanged(bool value)
         => PersistPanel(PanelKeys.Terminal, value);
@@ -3192,6 +3214,13 @@ public partial class MainWindowViewModel : ObservableObject
         // The one door to the transmitter, and it only exists while a radio is
         // connected (§0.2, HM-DEC-059).
         Transmit.Attach(new CwTransmitter(new KeyerCwSender(rig)));
+
+        // THE SCANNER GETS ITS RADIO, AND THE DIAL GOES BACK IF A SCAN DIED
+        // MID-RUN (§0.2.1). The note is written before the first tune for
+        // exactly this case, and connecting is the only moment Hamlet can act
+        // on it: until there is a radio there is nothing to put back.
+        Scan.Attach(rig, _rigMonitor, _decoder, SpectrumSource);
+        await Scan.RestoreHomeAsync();
 
         var hz = await rig.GetFrequencyHzAsync();
         ApplyRigFrequency(hz);
@@ -4656,6 +4685,11 @@ public partial class MainWindowViewModel : ObservableObject
             _rigSendTimer.Stop();
             _rigSendPending = false;
 
+            // The scanner loses its radio first, so nothing can be mid-tune
+            // while the port is closing (§0.2.1).
+            Scan.StopNow();
+            Scan.Attach(null, null, null, null);
+
             if (_rig is not null)
             {
                 _rig.FrequencyChanged -= OnRigFrequencyChanged;
@@ -4705,6 +4739,9 @@ public static class PanelKeys
 
     /// <summary>The waterfall.</summary>
     public const string Waterfall = "waterfall";
+
+    /// <summary>The band scanner (HM-DEC-107).</summary>
+    public const string Scan = "scan";
 
     /// <summary>The CW terminal.</summary>
     public const string Terminal = "terminal";

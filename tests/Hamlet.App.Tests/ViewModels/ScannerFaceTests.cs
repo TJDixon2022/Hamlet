@@ -1,0 +1,177 @@
+using Hamlet.App.Settings;
+using Hamlet.App.ViewModels;
+using Hamlet.RadioEngine.Cw;
+using Hamlet.RadioEngine.Scan;
+using Xunit;
+using Xunit.Abstractions;
+
+namespace Hamlet.App.Tests.ViewModels;
+
+/// <summary>
+/// What the scanner puts on screen (HM-DEC-107, §0.2.1).
+/// </summary>
+/// <remarks>
+/// <para>Most of this phase is verified at the screen rather than here, which is
+/// why it waited for Tim. What can be proved by test is proved by test anyway,
+/// and these are the claims §0.0 and §0.2.1 make about the words rather than
+/// about the pixels.</para>
+/// </remarks>
+public sealed class ScannerFaceTests
+{
+    private readonly ITestOutputHelper _output;
+
+    /// <summary>Creates the tests.</summary>
+    /// <param name="output">Where the rows are printed.</param>
+    public ScannerFaceTests(ITestOutputHelper output) => _output = output;
+
+    private static ScanDwell Dwell(long hz, string heard, double score = 0.95)
+    {
+        var dwell = new ScanDwell(hz);
+
+        foreach (var c in heard)
+        {
+            dwell.Take(c == ' '
+                ? new CwCharacter(
+                    MorseAlphabet.WordGap, CwConfidence.High, 1, "", 20, 18,
+                    TimeSpan.Zero)
+                : new CwCharacter(
+                    c.ToString(),
+                    score >= 0.7 ? CwConfidence.High : CwConfidence.Low,
+                    score, ".-", 20, 18, TimeSpan.Zero));
+        }
+
+        return dwell;
+    }
+
+    private static ScanDwellRow Row(ScanDwell dwell)
+    {
+        var stopped = dwell.Decide(dwell.Seconds) == DwellAction.Stay;
+
+        return new ScanDwellRow(
+            $"{dwell.FrequencyHz / 1_000_000.0:0.000} MHz",
+            dwell.Verdict.Sentence,
+            stopped,
+            stopped ? dwell.Verdict.Confidence : null);
+    }
+
+    /// <remarks>
+    /// <para>Proves §0.2.1 and §0.5: **a place the scan listened to and found
+    /// nobody at still says so.** A scan whose record holds only its stops
+    /// cannot be told from one that never ran, and the frequencies it passed
+    /// over are half of what it measured. Hiding detail is fine and hiding
+    /// information is not.</para>
+    /// </remarks>
+    [Fact]
+    public void APlaceThatHeldNobodyStillSaysWhereItWasAndWhatWasHeard()
+    {
+        var row = Row(Dwell(7_030_000, "XZ QJ WY"));
+
+        _output.WriteLine($"{row.Label}: {row.Sentence}");
+
+        Assert.False(row.Stopped);
+        Assert.Contains("7.030", row.Label, StringComparison.Ordinal);
+        Assert.NotEqual("", row.Sentence);
+
+        // And it makes no claim about how sure it is, because there is nothing
+        // to be sure of.
+        Assert.False(row.HasSureness);
+    }
+
+    /// <remarks>
+    /// <para>**PROVES THE CARRY-THROUGH ONTO THE SCREEN.** The engine's verdict
+    /// already reads "not at all sure" for a call assembled from dim letters,
+    /// and a screen that re-derived its own word from the same number would be a
+    /// second place for the two to disagree. A stop drawn identically whatever
+    /// it rests on is a guess presented as a decode (§0.0, HM-DEC-108).</para>
+    /// </remarks>
+    [Fact]
+    public void ADimCallAndASolidOneAreNotDrawnTheSame()
+    {
+        var solid = Row(Dwell(7_030_000, "CQ DE W1AW", score: 0.95));
+        var dim = Row(Dwell(7_031_000, "CQ DE W1AW", score: 0.3));
+
+        _output.WriteLine($"solid: {solid.SurenessText}  ({solid.Sureness:0.00})");
+        _output.WriteLine($"dim  : {dim.SurenessText}  ({dim.Sureness:0.00})");
+
+        Assert.True(solid.Stopped);
+        Assert.True(dim.Stopped);
+
+        Assert.Equal("sure", solid.SurenessText);
+        Assert.Equal("not at all sure", dim.SurenessText);
+    }
+
+    /// <remarks>
+    /// <para>Proves HM-DEC-073 survives onto the screen: **a callsign-shaped
+    /// token stops the scan and is never printed as a callsign.** The engine
+    /// carries no name on that verdict, and this is the check that nothing in
+    /// the display puts one back.</para>
+    /// </remarks>
+    [Fact]
+    public void ACallsignShapedStopNeverPrintsTheCallsign()
+    {
+        var row = Row(Dwell(7_030_000, "TU VA3VRR FB"));
+
+        _output.WriteLine($"{row.Label}: {row.Sentence}");
+
+        Assert.True(row.Stopped);
+        Assert.DoesNotContain("VA3VRR", row.Sentence, StringComparison.Ordinal);
+        Assert.DoesNotContain("VA3VRR", row.Label, StringComparison.Ordinal);
+    }
+
+    /// <remarks>
+    /// Proves §0.5: **a collapsed scanner still carries its news.** A shut panel
+    /// that goes silent about a scan moving the dial is the prime directive
+    /// broken by omission.
+    /// </remarks>
+    [Fact]
+    public void TheCollapsedScannerStillSaysWhatIsHappening()
+    {
+        var scan = new ScanViewModel(new AppSettings(), _ => { });
+
+        Assert.Equal("not scanning", scan.Summary);
+
+        scan.WhereNow = "listening at 7.030 MHz";
+        scan.IsScanning = true;
+
+        _output.WriteLine(scan.Summary);
+
+        Assert.Contains("scanning", scan.Summary, StringComparison.Ordinal);
+        Assert.Contains("7.030", scan.Summary, StringComparison.Ordinal);
+    }
+
+    /// <remarks>
+    /// <para>Proves §0.2.1: **the stop is safe to press whatever is happening.**
+    /// It awaits nothing, so it cannot queue behind the tune it is stopping, and
+    /// it is harmless when nothing is running. A stop that throws when nothing
+    /// is scanning is a stop nobody will reach for in a hurry.</para>
+    /// </remarks>
+    [Fact]
+    public void TheStopIsSafeWithNoRadioAndNoScan()
+    {
+        var scan = new ScanViewModel(new AppSettings(), _ => { });
+
+        scan.StopNow();
+        scan.StopCommand.Execute(null);
+        scan.StopNow();
+
+        Assert.False(scan.IsScanning);
+    }
+
+    /// <remarks>
+    /// Proves §0.2.1: **a scan cannot be started before there is a radio to
+    /// abort against.** The engine refuses too, and this keeps the offer off the
+    /// screen rather than letting the operator press something that will only
+    /// tell him no.
+    /// </remarks>
+    [Fact]
+    public void NoScanIsOfferedWithoutARadio()
+    {
+        var scan = new ScanViewModel(new AppSettings(), _ => { });
+
+        Assert.False(scan.CanStart);
+
+        scan.Attach(null, null, null, null);
+
+        Assert.False(scan.CanStart);
+    }
+}

@@ -63,6 +63,14 @@ public static class LayoutPresets
             new Placement(Widgets.Waterfall, Gap, 406, 700, 300),
             new Placement(Widgets.Terminal, 724, Gap, 400, 400),
             new Placement(Widgets.ReceiveHelp, 724, 424, 400, 282),
+
+            // THE SCANNER BELONGS IN THIS ONE AND NOWHERE ELSE (HM-DEC-107).
+            // It is the same argument the waterfall makes one step further on:
+            // the picture says which parts of the band are busy, and the scanner
+            // is what turns that into the radio actually pointing at them.
+            // Appended rather than fitted in, so nothing already on this preset
+            // moves under somebody who has learned where it sits.
+            new Placement(Widgets.Scan, 724, 722, 400, 380),
         },
         Preset: true);
 

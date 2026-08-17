@@ -414,6 +414,135 @@
             </ctl:CollapsiblePanel>
         </DataTemplate>
 
+        <!-- The scanner (HM-DEC-107) -->
+        <DataTemplate x:Key="widget.scan" x:DataType="vm:MainWindowViewModel">
+            <ctl:CollapsiblePanel Family="Blue"
+                                  Title="Scanner"
+                                  Summary="{Binding Scan.Summary}"
+                                  IsExpanded="{Binding ScanExpanded, Mode=TwoWay}">
+                <StackPanel Spacing="8">
+
+                    <ctl:GlossaryTextControl
+                        Text="The waterfall watches a stretch of band about a thousand times wider than you can hear at once, so it can say which parts of it are busy. It cannot tell Morse from anything else, and that is what the scanner is for: it points the radio at each busy patch in turn and lets the decoder decide whether there is really somebody there."
+                        FontSize="12" LineSpacing="1.45"
+                        Foreground="{StaticResource HmTextMutedBrush}" />
+
+                    <!-- THE START AND THE STOP SIT TOGETHER, and the stop is
+                         also in the pinned strip above, where it cannot be
+                         scrolled away from or closed (§0.2.1). -->
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <Button Classes="hm-send"
+                                Content="Scan the band"
+                                IsVisible="{Binding !Scan.IsScanning}"
+                                IsEnabled="{Binding Scan.CanStart}"
+                                Command="{Binding Scan.StartCommand}" />
+
+                        <Button Classes="hm-send"
+                                Content="Stop the scan"
+                                IsVisible="{Binding Scan.IsScanning}"
+                                Command="{Binding Scan.StopCommand}" />
+                    </StackPanel>
+
+                    <!-- A REFUSAL ALWAYS PRINTS ITS REASON (HM-DEC-080), and a
+                         scan file that could not be read is refused loudly
+                         rather than quietly replaced with Hamlet's own list
+                         (§0.2.1). -->
+                    <Border IsVisible="{Binding Scan.Refusal,
+                                Converter={x:Static ctl:PrivilegeToneConverter.NotEmpty}}"
+                            Background="{StaticResource HmAmberTintBrush}"
+                            BorderBrush="{StaticResource HmAmberEdgeBrush}"
+                            BorderThickness="1" CornerRadius="6" Padding="10,7">
+                        <TextBlock Text="{Binding Scan.Refusal}"
+                                   FontSize="12" TextWrapping="Wrap"
+                                   Foreground="{StaticResource HmAmberDeepBrush}" />
+                    </Border>
+
+                    <TextBlock Text="{Binding Scan.OutcomeLine}"
+                               IsVisible="{Binding Scan.OutcomeLine,
+                                   Converter={x:Static ctl:PrivilegeToneConverter.NotEmpty}}"
+                               FontSize="12" TextWrapping="Wrap"
+                               Foreground="{StaticResource HmTextPrimaryBrush}" />
+
+                    <!-- WHAT THE WATERFALL PROPOSED, named as proposals because
+                         nothing here is a claim that anybody is on any of them
+                         (§0.0). -->
+                    <TextBlock Text="places worth a look"
+                               IsVisible="{Binding Scan.HasCandidates}"
+                               FontSize="11" FontWeight="SemiBold"
+                               Foreground="{StaticResource HmTextMutedBrush}" />
+
+                    <ItemsControl ItemsSource="{Binding Scan.Candidates}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="vm:ScanCandidateRow">
+                                <Grid ColumnDefinitions="Auto,*" Margin="0,0,0,4">
+                                    <TextBlock Grid.Column="0" Text="{Binding Label}"
+                                               FontFamily="Consolas,Menlo,monospace"
+                                               FontSize="12" Margin="0,0,10,0"
+                                               VerticalAlignment="Top"
+                                               Foreground="{StaticResource HmTextPrimaryBrush}" />
+
+                                    <TextBlock Grid.Column="1" Text="{Binding Why}"
+                                               FontSize="11" TextWrapping="Wrap"
+                                               Foreground="{StaticResource HmTextMutedBrush}" />
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <!-- EVERYWHERE IT LISTENED, INCLUDING WHERE IT FOUND NOBODY.
+                         A scan whose record holds only its stops cannot be told
+                         from one that never ran, and the places it passed over
+                         are half of what it measured (§0.5, §0.0.1). -->
+                    <TextBlock Text="what it heard"
+                               IsVisible="{Binding Scan.HasDwells}"
+                               FontSize="11" FontWeight="SemiBold"
+                               Foreground="{StaticResource HmTextMutedBrush}" />
+
+                    <ItemsControl ItemsSource="{Binding Scan.Dwells}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="vm:ScanDwellRow">
+                                <Border Margin="0,0,0,5" Padding="9,6" CornerRadius="6"
+                                        Background="{StaticResource HmSlateTintBrush}"
+                                        BorderBrush="{StaticResource HmSlateEdgeBrush}"
+                                        BorderThickness="1">
+                                    <StackPanel Spacing="2">
+                                        <Grid ColumnDefinitions="Auto,*,Auto">
+                                            <TextBlock Grid.Column="0"
+                                                       Text="{Binding Label}"
+                                                       FontFamily="Consolas,Menlo,monospace"
+                                                       FontSize="12"
+                                                       Foreground="{StaticResource HmTextPrimaryBrush}" />
+
+                                            <!-- HOW SURE, CARRIED FROM THE
+                                                 ENGINE VERDICT AND NEVER
+                                                 RE-DERIVED. A call assembled
+                                                 from dim letters may not be
+                                                 drawn like a solid one (§0.0,
+                                                 HM-DEC-108). -->
+                                            <Border Grid.Column="2"
+                                                    IsVisible="{Binding HasSureness}"
+                                                    CornerRadius="4" Padding="6,1"
+                                                    Background="{StaticResource HmGreenTintBrush}"
+                                                    BorderBrush="{StaticResource HmGreenEdgeBrush}"
+                                                    BorderThickness="1">
+                                                <TextBlock Text="{Binding SurenessText}"
+                                                           FontSize="10"
+                                                           Foreground="{StaticResource HmGreenBrush}" />
+                                            </Border>
+                                        </Grid>
+
+                                        <TextBlock Text="{Binding Sentence}"
+                                                   FontSize="11" TextWrapping="Wrap"
+                                                   Foreground="{StaticResource HmTextMutedBrush}" />
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </ctl:CollapsiblePanel>
+        </DataTemplate>
+
         <!-- CW terminal -->
         <DataTemplate x:Key="widget.terminal" x:DataType="vm:MainWindowViewModel">
             <ctl:CollapsiblePanel Family="Green"
@@ -1579,6 +1708,24 @@
 
             <StackPanel Grid.Column="3" Orientation="Horizontal" Spacing="10"
                         VerticalAlignment="Center">
+
+                <!-- THE STOP §0.2.1 REQUIRES, AND IT IS HERE RATHER THAN IN THE
+                     SCANNER PANEL FOR ONE REASON: this strip is pinned and
+                     outside the canvas, so it cannot be scrolled away from,
+                     closed, or dragged off the edge. A stop inside a widget is
+                     a stop the operator can lose while the radio goes on being
+                     tuned, and a window close button was rejected for the same
+                     reason: it is a way to leave the room rather than a way to
+                     stop the dial.
+
+                     It appears only while a scan runs, because a control that
+                     stops something that is not happening teaches people to
+                     stop reading this part of the window. -->
+                <Button Classes="hm-send"
+                        Content="Stop the scan"
+                        IsVisible="{Binding Scan.IsScanning}"
+                        Command="{Binding Scan.StopCommand}" />
+
                 <ComboBox ItemsSource="{Binding AvailablePorts}"
                           SelectedItem="{Binding SelectedPort}"
                           IsEnabled="{Binding !IsConnected}"
@@ -1594,6 +1741,28 @@
                  legible to somebody who does not know the original, without
                  the wordmark turning into a citation. Absent entirely when
                  the file did not load — never a placeholder. -->
+            <!-- HAMLET SAYS SO WHEN IT IS MOVING THE DIAL (§0.2.1). The
+                 operator must never wonder why his frequency changed, and this
+                 sits in the pinned strip rather than in the scanner panel for
+                 the same reason the stop does: the panel can be taken off the
+                 canvas and the dial still moves. -->
+            <Border IsVisible="{Binding Scan.IsScanning}"
+                    Margin="2,4,0,2" Padding="10,6" CornerRadius="6"
+                    Background="{StaticResource HmAmberTintBrush}"
+                    BorderBrush="{StaticResource HmAmberEdgeBrush}"
+                    BorderThickness="1">
+                <StackPanel Spacing="2">
+                    <TextBlock Text="{Binding Scan.MovingLine}"
+                               FontSize="12" FontWeight="SemiBold"
+                               TextWrapping="Wrap"
+                               Foreground="{StaticResource HmAmberDeepBrush}" />
+
+                    <TextBlock Text="{Binding Scan.WhereNow}"
+                               FontSize="11" TextWrapping="Wrap"
+                               Foreground="{StaticResource HmAmberBrush}" />
+                </StackPanel>
+            </Border>
+
             <TextBlock Text="{Binding Byline}"
                        IsVisible="{Binding HasByline}"
                        FontSize="12.5" FontStyle="Italic"
