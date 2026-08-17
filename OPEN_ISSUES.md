@@ -500,3 +500,26 @@ around pp. 19-4 to 19-6.
 itself. With this row it would know the other, and the refusal message could name
 which condition failed as a reading rather than offering the remaining candidate
 as something left to check (HM-DEC-092).
+
+---
+id: HM-OPEN-014
+status: open
+owner: claude
+raised: 2026-08-17
+severity: none
+refs: HM-DEC-093, §8
+---
+
+`TheDecoderAggregationDoesNotAllocatePerCharacter` fails under concurrent load.
+
+Seen once on 2026-08-17 while two `dotnet test` processes were running at the
+same time, and passing on every isolated run and on three consecutive clean full
+runs afterwards. It measures allocation with `GC.GetAllocatedBytesForCurrentThread`
+and asserts a ceiling, which is a real and worthwhile property (§8: the decoder's
+own record may not allocate per character) measured in a way that another busy
+process can disturb.
+
+Not urgent and not ignorable: it will flake in CI on a shared runner, and a
+guard that cries wolf is one somebody eventually reruns without reading. Worth
+either widening the ceiling with a stated margin or forcing the test onto its own
+xUnit collection so nothing runs beside it.
