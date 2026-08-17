@@ -12,6 +12,27 @@ operator can see and use, patch fixes and polishes without adding one.
 
 ---
 
+## 1.8.0
+
+**Hamlet asks the radio for its spectrum.**
+
+The waterfall used to find the radio's data output switched off and print a
+paragraph telling you to go and change two settings on the radio. It had never
+read either of them, and on the evening this was found they had both been right
+for months.
+
+That switch is an ordinary command Hamlet can send, and it now sends it. If the
+radio refuses, Hamlet says the radio refused and names the one condition it
+genuinely cannot check, as something left to look at rather than something it has
+found to be wrong.
+
+The rig diagnostics now show the CI-V link itself: which port, what speed, and how
+many commands the radio has not answered. That last number matters here, because
+transmitting on this station knocks USB devices off the bus, and a link that goes
+quiet mid-send is worth knowing about rather than guessing at.
+
+Rulings HM-DEC-092.
+
 ## 1.7.1
 
 **Two recordings of a real station are now part of the build.**

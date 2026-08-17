@@ -10,6 +10,12 @@ namespace Hamlet.RadioEngine.Tests.Rig;
 /// </summary>
 internal sealed class FakeSerialPort : ISerialPort
 {
+    /// <inheritdoc />
+    public string PortName { get; init; } = "COM-TEST";
+
+    /// <inheritdoc />
+    public int BaudRate { get; init; } = 115_200;
+
     private readonly Channel<byte[]> _incoming = Channel.CreateUnbounded<byte[]>();
     private readonly List<byte> _written = new();
     private readonly object _writeLock = new();

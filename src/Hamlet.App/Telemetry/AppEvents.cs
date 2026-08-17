@@ -630,6 +630,73 @@ public static class AppEvents
     }
 
     /// <summary>
+    /// Hamlet asked the radio to send its spectrum (HM-DEC-092).
+    /// </summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="outcome">What the radio answered.</param>
+    /// <param name="baudRate">The rate the link is running at.</param>
+    /// <param name="unanswered">Commands the link has not answered.</param>
+    /// <remarks>
+    /// **THERE WAS NO ATTEMPT ANYWHERE IN THE LOG.** The panel read the setting,
+    /// found it off, printed advice and stopped, and nothing recorded that it had
+    /// declined to act. A refusal is an outcome and is as loggable as a success
+    /// (§8.1).
+    /// </remarks>
+    public static void ScopeOutputRequested(
+        ITelemetry? telemetry, string outcome, int baudRate, long unanswered)
+        => telemetry?.Write(
+            TelemetryCategory.Rig,
+            "scope_output_requested",
+            new Dictionary<string, object?>
+            {
+                ["outcome"] = string.Equals(outcome, "Confirmed", StringComparison.Ordinal)
+                    ? "proceeded"
+                    : "failed",
+                ["reason"] = outcome.ToLowerInvariant(),
+                ["command"] = "27 11",
+                ["baudRate"] = baudRate,
+                ["unansweredCommands"] = unanswered,
+            },
+            string.Equals(outcome, "Confirmed", StringComparison.Ordinal)
+                ? TelemetryLevel.Info
+                : TelemetryLevel.Warn);
+
+    /// <summary>
+    /// How the CI-V conversation is going (HM-DEC-092).
+    /// </summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="link">What the link reports about itself.</param>
+    /// <param name="sweeps">Spectrum sweeps that have arrived.</param>
+    /// <param name="dropped">Sweeps that arrived incomplete and were dropped.</param>
+    /// <remarks>
+    /// A panel that has data and a panel that has never had data are different
+    /// states, and so are a link answering everything and one dropping commands.
+    /// On this station radio frequency energy knocks USB devices off the bus, so
+    /// a link that stops answering mid-send is expected rather than mysterious.
+    /// </remarks>
+    public static void CivLink(
+        ITelemetry? telemetry, CivLinkHealth link, long sweeps, long dropped)
+        => telemetry?.Write(
+            TelemetryCategory.Rig,
+            "civ_link",
+            new Dictionary<string, object?>
+            {
+                ["outcome"] = link.IsHealthy ? "proceeded" : "degraded",
+                ["reason"] = link.IsHealthy ? "answering" : "commands_unanswered",
+                ["port"] = link.PortName,
+                ["baudRate"] = link.BaudRate,
+                ["sent"] = link.Sent,
+                ["answered"] = link.Answered,
+                ["unanswered"] = link.Unanswered,
+                ["lastUnansweredCommand"] = link.LastUnansweredCommand is { } c
+                    ? $"{c:X2}"
+                    : null,
+                ["sweeps"] = sweeps,
+                ["sweepsDropped"] = dropped,
+            },
+            link.IsHealthy ? TelemetryLevel.Info : TelemetryLevel.Warn);
+
+    /// <summary>
     /// How well the decoder is doing, and on what (HM-DEC-088).
     /// </summary>
     /// <param name="telemetry">Sink, or null.</param>

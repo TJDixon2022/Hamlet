@@ -24,6 +24,12 @@ public sealed class SystemSerialPort : ISerialPort
     /// <inheritdoc/>
     public bool IsOpen => _port.IsOpen;
 
+    /// <inheritdoc />
+    public string PortName => _port.PortName;
+
+    /// <inheritdoc />
+    public int BaudRate => _port.BaudRate;
+
     /// <inheritdoc/>
     public void Open() => _port.Open();
 

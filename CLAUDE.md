@@ -44,6 +44,14 @@ Practical test: could the operator, acting on what the screen says, be wrong
 because the app was more confident than its input justified? If yes, the
 display is wrong regardless of how much cleaner it looks.
 
+**This binds pictures as hard as sentences** (HM-DEC-092). A waterfall, a meter,
+a bar or a chart asserts that a signal is at a frequency, that a band is busy,
+that one thing is louder than another. It is more persuasive than a sentence and
+harder to catch, because nobody reads a picture sceptically and there is no
+wording to object to. A display draws what was measured; an empty band renders as
+an empty band; an axis is a claim and carries real values from one source of
+truth; and "no data" and "data that is all noise" are different pictures.
+
 This binds hardest exactly where it is most tempting to break: a Morse
 decoder in noise, a mode classifier at low SNR, an S-meter reading
 interpolated between polls. Show the confidence, or show nothing.
@@ -265,6 +273,7 @@ this table is the index.
 
 | Date | Decision | Why | Ref |
 |---|---|---|---|
+| 2026-08-17 | **Hamlet asks the radio for its spectrum instead of advising about it, and a display is subject to §0.0 exactly as a sentence is.** The panel read `27 11`, found it off, and named two menu settings as the cause **having read neither**; both were already correct and the operator walked to the radio for nothing. `27 11` is send/read and tier one, so it is attempted and its answer recorded. Three states get three sentences, and what cannot be read is said to be unread. **A waterfall asserts things and is harder to catch than a sentence**: it draws what was measured, an empty band renders empty, and an axis is a claim. The link now reports commands sent, answered and unanswered. **Supersedes HM-DEC-067** on the point it got wrong: one of the two switches is a command Hamlet can send. | An evening spent checking two settings that were right, because the app asserted a cause it had never looked at. | HM-DEC-092 |
 | 2026-08-17 | **Recordings made on the air are permanent fixtures, and a capture header names the radio's frequency rather than Hamlet's idea of it.** **The seven synthetic fixtures all passed while the decoder was deaf on the air**, which is the whole argument: two real recordings did in an afternoon what they could not do at all. They assert what was measured and what §0.0 forbids, never a transcript, because nobody knows what that station sent. The tone is now found at 28.6 and 18.8 dB and **the characters still do not resolve**; the reason is diagnosed, and a fix that works on real audio but makes the decoder confidently wrong on a fade was measured and deliberately not shipped (HM-OPEN-012). | 1,732 characters out of band noise, and a real station nobody could read. | HM-DEC-091 |
 | 2026-08-17 | **A keyed signal is measured while it is keyed, nothing is emitted without a tone to emit it from, and a capture that cannot prove it is fresh is not written.** **The cause was time, not frequency**: the decoder was already narrowband, and both the reported ratio and the located pitch were averages over the ninety-six percent of a recording in which a station answering a call is silent. Both become held peaks, and a threshold calibrated from measured noise and the decoder's own working limit. The emission gate is safe only because the measurement under it was fixed first, and it costs a measured decibel of reach, stated rather than buried. One guarded speed read by every surface. | A signal fifty decibels out of the noise reported as minus nought point six, and seventeen hundred characters out of half a minute of band noise. | HM-DEC-090 |
 | 2026-08-16 | **Hamlet does not offer a send the operator is not licensed to make, and a restored widget has to be somewhere they can see it.** The privilege refusal becomes a readiness precondition reading the band map's own data, settled before the radio is blamed, naming the nearest frequency the license does cover. **Supersedes HM-DEC-065**: an unknown class now refuses rather than warning, and what that ruling protected is kept, because the guard is the operator's to switch off and nobody is locked out of their own transmitter. **The canvas always came back; it came back off the edge of the screen**, so anything entirely out of view is rescued and the canvas says it did it. | The one place grey may mean you cannot do this, and a workspace rebuilt by hand every evening. | HM-DEC-089 |

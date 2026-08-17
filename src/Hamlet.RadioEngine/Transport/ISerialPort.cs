@@ -10,6 +10,20 @@ public interface ISerialPort : IDisposable
     /// <summary>True while the port is open.</summary>
     bool IsOpen { get; }
 
+    /// <summary>What the port is called, for the record.</summary>
+    string PortName { get; }
+
+    /// <summary>
+    /// The rate it was opened at (HM-DEC-092).
+    /// </summary>
+    /// <remarks>
+    /// One of the two preconditions on the scope's data output is a baud rate,
+    /// and it is one Hamlet does not have to ask the radio about: it opened the
+    /// port itself. Reading it back off the port is the difference between
+    /// knowing and assuming.
+    /// </remarks>
+    int BaudRate { get; }
+
     /// <summary>Open the port. Throws on failure — the caller (the rig)
     /// translates that into its "unreachable is a condition" contract.</summary>
     void Open();

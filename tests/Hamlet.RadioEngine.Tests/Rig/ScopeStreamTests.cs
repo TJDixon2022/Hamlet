@@ -274,7 +274,27 @@ public sealed class ScopeStreamTests
         Assert.Equal(new byte[] { 0x11 }, CivReads.ScopeOutput.SubCommand);
 
         // And no scope write exists in the write table at all.
-        Assert.DoesNotContain(CivWrites.All, w => w.Command == CivConstants.CmdScope);
+        // **THE SCOPE OUTPUT IS A WRITE NOW** (HM-DEC-092), which reverses what
+        // this line used to assert. `27 11` is send/read in the command table and
+        // an ordinary tier one receive-side setting: it decides whether the
+        // picture the radio is already drawing is also sent down the cable, and
+        // nothing about it can put a signal on the air. Reading it, finding it
+        // off, and printing advice was the application declining to use the write
+        // layer it had.
+        var scopeWrite = Assert.Single(
+            CivWrites.All, w => w.Command == CivConstants.CmdScope);
+
+        Assert.Equal(new byte[] { 0x11 }, scopeWrite.SubCommand);
+        Assert.Equal(RigWriteTier.Receive, scopeWrite.Tier);
+        Assert.Equal("19-7", scopeWrite.Page);
+
+        // And the scope's own on/off switch is still read only, because turning
+        // somebody's scope on is a change to what their radio shows them.
+        Assert.DoesNotContain(
+            CivWrites.All,
+            w => w.Command == CivConstants.CmdScope
+                && (w.SubCommand ?? Array.Empty<byte>()).SequenceEqual(
+                    new byte[] { 0x10 }));
     }
 
     /// <remarks>
@@ -311,8 +331,13 @@ public sealed class ScopeStreamTests
 
         var status = ScopeReadiness.Check(radio, outputOff);
 
+        // **IT IS A THING TO DO, NOT A THING TO REPORT** (HM-DEC-092). This used
+        // to name two menu settings as the cause. Neither was among the forty
+        // fields Hamlet reads, both were already correct, and the operator walked
+        // to the radio for nothing.
         Assert.Equal(ScopeReadyState.OutputOff, status.State);
-        Assert.Contains("115200", status.WhereToLook, StringComparison.Ordinal);
+        Assert.Equal("", status.WhereToLook);
+        Assert.Contains("asking it to", status.Detail, StringComparison.Ordinal);
         Assert.Contains("19-7", status.Citation, StringComparison.Ordinal);
 
         var ready = RigState.Empty.With(new[]
@@ -340,7 +365,7 @@ public sealed class ScopeStreamTests
     /// screens away.
     /// </remarks>
     [Fact]
-    public void AWaterfallThatNeverFillsNamesTheMenusThatControlIt()
+    public void AWaterfallThatNeverFillsSaysSoAndBlamesNothing()
     {
         var radio = new RigCapabilities(
             "IC-7300", HasSpectrumScope: true, HasBuiltInCwKeyer: true,
@@ -358,14 +383,16 @@ public sealed class ScopeStreamTests
 
         Assert.Equal(ScopeReadyState.NothingArriving, silent.State);
         Assert.False(silent.IsReady);
+        Assert.Contains("none of it has", silent.Detail, StringComparison.Ordinal);
 
         // Named as the radio names them, because a paraphrase sends somebody
         // hunting for a screen that does not exist.
-        Assert.Contains("MENU", silent.WhereToLook, StringComparison.Ordinal);
-        Assert.Contains("Connectors", silent.WhereToLook, StringComparison.Ordinal);
-        Assert.Contains("CI-V USB Port", silent.WhereToLook, StringComparison.Ordinal);
-        Assert.Contains("CI-V USB Baud Rate", silent.WhereToLook, StringComparison.Ordinal);
-        Assert.Contains("12-9", silent.Citation, StringComparison.Ordinal);
+        // **AND IT NAMES NOTHING IT HAS NOT READ** (HM-DEC-092). Everything
+        // Hamlet can read says the spectrum should be arriving and none of it
+        // has, which is worth saying on its own and is not grounds for pointing
+        // at a menu setting nobody has looked at.
+        Assert.Equal("", silent.WhereToLook);
+        Assert.Contains("19-7", silent.Citation, StringComparison.Ordinal);
 
         // No fault language anywhere in it. Nothing here is anybody's mistake.
         var said = (silent.Detail + " " + silent.WhereToLook).ToLowerInvariant();

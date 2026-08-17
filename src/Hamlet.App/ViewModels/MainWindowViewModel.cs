@@ -2045,6 +2045,108 @@ public partial class MainWindowViewModel : ObservableObject
         SpectrumSource = _rigSpectrum;
         AppEvents.SpectrumSourceChanged(
             _telemetry, "rig", SelectedBand.Band.Name, simulated: false);
+
+        _ = AskForTheSpectrumAsync(radio);
+    }
+
+    /// <summary>
+    /// Ask the radio to send its spectrum down the cable (HM-DEC-092).
+    /// </summary>
+    /// <param name="radio">The connected radio.</param>
+    /// <returns>A task.</returns>
+    /// <remarks>
+    /// <para>**THE APPLICATION READ THIS SETTING FOR MONTHS AND NEVER ONCE TRIED
+    /// TO SET IT.** It found the output off, printed a paragraph naming two menu
+    /// settings it had never read, and stopped. Both were already correct and the
+    /// operator walked to the radio for nothing.</para>
+    /// <para>`27 11` is send/read and tier one: it decides whether the picture
+    /// the radio is already drawing on its own screen is also sent to the
+    /// computer, and nothing about it can key anything (HM-DEC-084). The
+    /// preconditions in footnote 4 are real and are not grounds to decline in
+    /// advance, because one of them Hamlet cannot read at all: attempting it and
+    /// reporting the answer replaces a guess with a measurement (§0.0).</para>
+    /// <para>Not awaited, for the same reason the startup reconnect is not: a
+    /// window that will not paint until the radio answers looks broken to
+    /// anybody whose radio is busy.</para>
+    /// </remarks>
+    private async Task AskForTheSpectrumAsync(Ic7300Rig radio)
+    {
+        var already = RigState[RigField.ScopeOutput];
+
+        if (already is { IsKnown: true, Number: > 0 })
+        {
+            return;
+        }
+
+        // WHAT IT WAS BEFORE, SO IT CAN BE PUT BACK. Unknown stays unknown and
+        // the restore is simply not offered, rather than a plausible value being
+        // written back under the name of restoring (HM-DEC-084).
+        _scopeOutputWas = already.IsKnown ? (int?)already.Number : null;
+
+        try
+        {
+            var result = await radio
+                .SetSettingAsync(CivWrites.ScopeOutput, 1)
+                .ConfigureAwait(true);
+
+            _scopeWriteRefused = !result.Worked;
+
+            AppEvents.ScopeOutputRequested(
+                _telemetry, result.Outcome.ToString(), radio.Link.BaudRate,
+                radio.Link.Unanswered);
+
+            Decisions.Note(
+                "Scope output",
+                result.Worked ? "asked and granted" : "asked and refused",
+                result.Worked ? Outcome.Proceeded : Outcome.Failed,
+                result.Worked
+                    ? "The radio is sending its spectrum to the computer now."
+                    : "The radio would not send its spectrum. Hamlet asked rather "
+                      + "than assuming which setting was in the way.",
+                DateTime.UtcNow);
+        }
+        catch (Exception)
+        {
+            // A radio that will not answer is a condition, never a crash (§8).
+            _scopeWriteRefused = true;
+        }
+    }
+
+    /// <summary>What the scope output was before Hamlet asked, or null.</summary>
+    private int? _scopeOutputWas;
+
+    /// <summary>True once the radio has refused to send its spectrum.</summary>
+    private bool _scopeWriteRefused;
+
+    /// <summary>
+    /// Put the scope output back if Hamlet turned it on (HM-DEC-092).
+    /// </summary>
+    /// <returns>A task.</returns>
+    /// <remarks>
+    /// Every write is undoable (HM-DEC-084), and an operator who had this off had
+    /// it off for a reason even if the reason was only that they never turned it
+    /// on. Where the previous value was never read, nothing is restored, because
+    /// writing a plausible number back would be a guess wearing the most
+    /// reassuring word in the application.
+    /// </remarks>
+    private async Task ReleaseTheSpectrumAsync()
+    {
+        if (_rig is not Ic7300Rig radio || _scopeOutputWas is not { } was)
+        {
+            return;
+        }
+
+        _scopeOutputWas = null;
+
+        try
+        {
+            await radio.SetSettingAsync(CivWrites.ScopeOutput, was)
+                .ConfigureAwait(true);
+        }
+        catch (Exception)
+        {
+            // Leaving a receive-side setting on is not worth a crash (§8).
+        }
     }
 
     private void StartTrainingSpectrum()
@@ -2204,7 +2306,8 @@ public partial class MainWindowViewModel : ObservableObject
         // that stays blank is the case somebody actually sits and stares at
         // (HM-DEC-067).
         var scope = ScopeReadiness.Check(
-            _rig?.Capabilities, state, _rigSpectrum?.SweepCount ?? -1);
+            _rig?.Capabilities, state, _rigSpectrum?.SweepCount ?? -1,
+            (_rig as Ic7300Rig)?.Link, _scopeWriteRefused);
 
         ScopeNote = _rig is null || _rig.IsSimulated || scope.IsReady
             ? ""

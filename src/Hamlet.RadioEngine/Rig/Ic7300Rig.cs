@@ -552,6 +552,9 @@ public sealed class Ic7300Rig : IRig, IDisposable
 
             var frame = new CivFrame(_radioAddress, _controllerAddress, command, data);
             FrameTrace?.Invoke(true, frame);
+
+            Interlocked.Increment(ref _sent);
+
             await _port.WriteAsync(frame.ToWireBytes(), cancellationToken).ConfigureAwait(false);
 
             var winner = await Task.WhenAny(
@@ -559,9 +562,22 @@ public sealed class Ic7300Rig : IRig, IDisposable
             if (winner != tcs.Task)
             {
                 cancellationToken.ThrowIfCancellationRequested();
+
+                // **COUNTED WHERE IT HAPPENS** (HM-DEC-092). Five settings were
+                // written one evening, all five reported as unanswered, and at
+                // least two had actually taken effect. Nothing on any screen
+                // said the link was dropping commands, so the operator was told
+                // things about his radio that were not true and had no way to
+                // see why.
+                Interlocked.Increment(ref _unanswered);
+                _lastUnansweredCommand = command;
+                _lastUnansweredUtc = DateTime.UtcNow;
+
                 throw new TimeoutException(
                     $"No CI-V response to 0x{command:X2} within {ResponseTimeout.TotalMilliseconds} ms.");
             }
+
+            Interlocked.Increment(ref _answered);
 
             return await tcs.Task.ConfigureAwait(false);
         }
@@ -575,6 +591,31 @@ public sealed class Ic7300Rig : IRig, IDisposable
     }
 
     private byte? _pendingExpected;
+
+    private long _sent;
+    private long _answered;
+    private long _unanswered;
+    private byte? _lastUnansweredCommand;
+    private DateTime? _lastUnansweredUtc;
+
+    /// <summary>
+    /// How the conversation with the radio is going (HM-DEC-092).
+    /// </summary>
+    /// <remarks>
+    /// The diagnostics screen read forty values and said nothing about the link
+    /// carrying them. On this station radio frequency energy from the operator's
+    /// own transmissions knocks USB devices off the bus, and the CI-V link shares
+    /// it, so a link that stops answering mid-send is expected rather than
+    /// mysterious. Saying so is worth more than any amount of guessing.
+    /// </remarks>
+    public CivLinkHealth Link => new(
+        _port.PortName,
+        _port.BaudRate,
+        Interlocked.Read(ref _sent),
+        Interlocked.Read(ref _answered),
+        Interlocked.Read(ref _unanswered),
+        _lastUnansweredCommand,
+        _lastUnansweredUtc);
 
     private async Task ReadLoopAsync(CancellationToken cancellationToken)
     {

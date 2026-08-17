@@ -459,3 +459,37 @@ answer as HM-DEC-090's held peak but applied to marks rather than to
 measurements. Something like a peak over the last N *marks* rather than over
 time. Whatever is tried, `fading-18wpm` and the two captures now fail in opposite
 directions, so the corpus can tell a real fix from a trade.
+
+---
+id: HM-OPEN-013
+status: open
+owner: tim
+raised: 2026-08-17
+severity: slows
+blocks: naming the CI-V USB Port setting as a reading rather than as a candidate
+refs: HM-DEC-092, HM-DEC-071, §4
+---
+
+Is `1A 05 0074` the CI-V USB Port setting, and on which page of `A7292-4EX-6`?
+
+The brief of 2026-08-17 states that `1A 05 0074` reads it, `00=Link to [REMOTE],
+01=Unlink from [REMOTE]`, and asked for it to be added to the rig state model
+with its citation. **It has not been added, because §4 requires a page number
+from a column-aware read of the settled edition and this session had no access to
+the manual.**
+
+That discipline is not ceremony here. The command table is two columns, a
+flattened read is what put the CW pitch on `14 08` instead of `14 09`, and that
+error survived for weeks and would have moved somebody's passband while trying to
+read a pitch (HM-DEC-050, HM-DEC-071). A sub-command taken on trust is exactly
+the same shape of mistake.
+
+What is needed: the row confirmed against `A7292-4EX-6` with a column-aware
+extraction, and its page. It is almost certainly in the `1A 05` settings block
+around pp. 19-4 to 19-6.
+
+**What it unlocks.** The scope's data output has two documented preconditions
+(p. 19-7, footnote 4). Hamlet knows the baud rate because it opened the port
+itself. With this row it would know the other, and the refusal message could name
+which condition failed as a reading rather than offering the remaining candidate
+as something left to check (HM-DEC-092).

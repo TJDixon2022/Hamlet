@@ -309,6 +309,31 @@ public static class CivWrites
     /// <summary>Start a tuning cycle, which transmits (p. 19-7).</summary>
     public const byte TuneNow = 0x02;
 
+    /// <summary>
+    /// Send the scope's waveform data to the computer (`27 11`, HM-DEC-092).
+    /// </summary>
+    /// <remarks>
+    /// <para>**IT IS SEND/READ, AND IT IS AN ORDINARY TIER ONE WRITE.** The
+    /// command table lists it with every other scope setting on p. 19-7,
+    /// `00=OFF, 01=ON`. Nothing about it can put a signal on the air: it decides
+    /// whether the picture the radio is already drawing on its own screen is also
+    /// sent down the cable.</para>
+    /// <para>The application read this setting, found it off, and printed a
+    /// paragraph telling the operator to go and change two menu settings, while
+    /// never once attempting the write it had a whole cited write layer for
+    /// (HM-DEC-084).</para>
+    /// <para>**THE PRECONDITIONS ARE REAL AND THEY ARE NOT A REASON TO DECLINE IN
+    /// ADVANCE.** Footnote 4 on p. 19-7 says this can only be set with CI-V USB
+    /// Port on "Unlink from [REMOTE]" and the USB baud rate at 115200. Hamlet
+    /// knows the second from the port it opened itself and cannot read the first
+    /// (HM-OPEN-013), so the honest move is to try it and report what the radio
+    /// said, rather than guess which of two settings is at fault and send
+    /// somebody across the room (§0.0).</para>
+    /// </remarks>
+    public static CivWrite ScopeOutput { get; } = new(
+        RigField.ScopeOutput, 0x27, "19-7", "00=off, 01=on", RigWriteTier.Receive,
+        new byte[] { 0x11 });
+
     /// <summary>Every write, so the diagnostics screen can list them.</summary>
     /// <remarks>
     /// **`16 65`, IP+, IS DELIBERATELY ABSENT.** Its row reads "Send the IP+
@@ -321,7 +346,7 @@ public static class CivWrites
     /// </remarks>
     public static IReadOnlyList<CivWrite> All { get; } = new[]
     {
-        Mode,
+        Mode, ScopeOutput,
         AutoNotch, ManualNotch, NotchPosition,
         NoiseBlanker, NoiseBlankerLevel, NoiseReduction, NoiseReductionLevel,
         Agc, Preamp, Attenuator, RfGain, Squelch,

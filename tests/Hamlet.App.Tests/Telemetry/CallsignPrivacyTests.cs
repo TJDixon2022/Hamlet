@@ -16,7 +16,7 @@ public sealed class CallsignPrivacyTests : IDisposable
     /// <summary>Every public event-writing method on <see cref="AppEvents"/>.
     /// If this number moves, a new event was added and the walk below has to
     /// grow with it — that is the point.</summary>
-    private const int ExpectedEventMethodCount = 50;
+    private const int ExpectedEventMethodCount = 52;
 
     private const string Callsign = "KC3QIS";
     // "Timothy", not "Tim": a three-letter needle matches "timer", which is a
@@ -219,6 +219,15 @@ public sealed class CallsignPrivacyTests : IDisposable
 
         AppEvents.AudioCaptured(telemetry, 30, 7_030_000, worked: true);
         AppEvents.AudioCaptured(telemetry, 0, 7_030_000, worked: false);
+
+        // The scope path and the link carrying it (HM-DEC-092).
+        AppEvents.ScopeOutputRequested(telemetry, "Confirmed", 115_200, 0);
+        AppEvents.ScopeOutputRequested(telemetry, "NoAnswer", 9_600, 3);
+        AppEvents.CivLink(
+            telemetry,
+            new Hamlet.RadioEngine.Rig.CivLinkHealth(
+                "COM3", 115_200, 120, 118, 2, 0x27, DateTime.UtcNow),
+            sweeps: 44, dropped: 1);
 
         AppEvents.AppStart(telemetry);
         AppEvents.AppStop(telemetry);

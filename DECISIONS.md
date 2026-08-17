@@ -4,6 +4,122 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-092
+date: 2026-08-17
+supersedes: HM-DEC-067
+refs: src/Hamlet.RadioEngine/Civ/CivWrites.cs, src/Hamlet.RadioEngine/Rig/ScopeReadiness.cs, src/Hamlet.RadioEngine/Rig/CivLinkHealth.cs, tests/Hamlet.RadioEngine.Tests/Rig/ScopeHonestyTests.cs, HM-DEC-062, HM-DEC-084, HM-DEC-050
+---
+
+**Hamlet asks the radio for its spectrum instead of advising the operator about
+it, and a display is subject to §0.0 exactly as a sentence is.**
+
+---
+
+**THE APPLICATION READ A SETTING FOR MONTHS AND NEVER ONCE TRIED TO SET IT.** The
+waterfall found the scope's data output off and printed a paragraph naming two
+radio menu settings as the cause. **Neither was among the forty fields Hamlet
+reads.** Both had been correct for a long time. The operator walked to the radio
+and verified them, and the errand was for something that was never the problem.
+
+That is a hardcoded explanation presented as a diagnosis, in an application whose
+founding rule is that a guess is never dressed as a reading. It is the prime
+directive broken about a menu screen rather than about a signal, and it cost an
+evening.
+
+**`27 11` IS SEND/READ AND AN ORDINARY TIER ONE WRITE** (p. 19-7,
+`00=OFF, 01=ON`). It decides whether the picture the radio is already drawing on
+its own screen is also sent down the cable. Nothing about it can put a signal on
+the air. There was a write layer with twenty-six cited commands in it and the
+panel declined to use it.
+
+**This supersedes HM-DEC-067 on the narrow point it got wrong.** That ruling said
+the waterfall's emptiness was a feature inert until a switch only the operator
+could reach was thrown, and that "nothing here writes". One of the two switches
+it named is a command Hamlet can send. The rest of HM-DEC-067 stands: a feature
+that genuinely cannot work until somebody walks to the radio should say so, and
+`27 10`, the scope's own on/off, remains read-only because turning it on changes
+what the operator sees on their own radio.
+
+---
+
+**THE PRECONDITIONS ARE REAL AND THEY ARE NOT GROUNDS TO DECLINE IN ADVANCE.**
+Footnote 4 on p. 19-7 gates `27 11` on two things. **One of them Hamlet already
+knows without asking**: the baud rate, because it opened the port itself, and
+reading it back off the port is the difference between knowing and assuming. **The
+other it cannot read at all** with any command this project has verified
+(HM-OPEN-013).
+
+So it attempts the write and reports what the radio answered. **A measurement
+replaces a guess**, which is the whole posture of this application, and it is
+available here for the asking.
+
+**THREE STATES, THREE SENTENCES.** The output is off and Hamlet is turning it on.
+A condition is unmet and here is which one. Everything readable says it should be
+arriving and it is not. Those used to collapse into one paragraph of advice, so
+every one of them read as an instruction to go and change something.
+
+**And where a fact cannot be established the honest form is "I could not read
+this"**, never a confident instruction. Where the write is refused and the link is
+fast enough, the one documented condition left is named **as the thing left to
+check** rather than as a finding.
+
+---
+
+**§0.0 APPLIES TO DISPLAYS AND NOT ONLY TO TEXT**, and this is the durable half of
+the ruling.
+
+A waterfall, a meter, a bar or a chart asserts things. It asserts that a signal is
+at a frequency, that a band is busy, that something is louder than something else.
+**It is more persuasive than a sentence and far harder to catch**, because nobody
+reads a picture sceptically and there is no wording to object to. A display that
+paints suggestive texture into noise is the decoder's phantom output in a much
+larger font.
+
+What follows, and is not to be re-argued:
+
+- **A display draws what was measured.** No peak markers, no signal counts, no
+  inferred station positions unless they can be substantiated.
+- **An empty band renders as an empty band.** Interpolation, smoothing and
+  decorative gradients that imply structure are inventions.
+- **An axis is a claim.** Frequencies are labelled with real frequencies from one
+  source of truth, never offsets the operator has to convert, and never from a
+  value that has gone stale. That fault has now occurred four times in this
+  project.
+- **"No data" and "data that is all noise" are different pictures**, and a
+  display that cannot tell them apart is lying in one direction or the other.
+
+Practical test: could the operator point at something on this display and be
+wrong about the radio because the drawing implied more than the data carried? If
+so it is the prime directive broken, whatever the numbers underneath are doing.
+
+---
+
+**THE LINK REPORTS ITS OWN HEALTH.** The diagnostics screen read forty values and
+said nothing about the conversation carrying them. It now carries the port, the
+rate, and commands sent, answered and unanswered.
+
+**That last number is the one that matters.** Five settings were written one
+evening, all five reported as failed for want of an answer, and at least two had
+actually taken effect: the operator was being told things about his own radio that
+were not true. A visible count would have shown it at a glance.
+
+**And it matters beyond any one command on this station.** Radio frequency energy
+from the operator's own transmissions knocks USB devices off the bus, mouse and
+keyboard included, and the CI-V link shares it. A link that stops answering
+mid-send is expected here until ferrites are fitted. **"The radio stopped
+answering while you were transmitting" is a diagnosis nobody reaches alone**, and
+Hamlet is now in a position to offer it.
+
+---
+
+**WHAT HAS NOT MET A RADIO.** The write is built, cited, tested and wired, and
+**no radio has answered it**. There is no hardware on the machine this session ran
+on. The waterfall has been reported as built once before while never having
+received a single frame, and this ruling does not repeat that claim: what can be
+said is that `27 11 01` is now attempted, that its outcome is recorded either way,
+and that the answer will be in the telemetry the first time the operator connects.
+
+---
 id: HM-DEC-091
 date: 2026-08-17
 refs: tests/fixtures/cw/captured, tests/Hamlet.RadioEngine.Tests/Cw/CapturedSignalTests.cs, src/Hamlet.App/ViewModels/MainWindowViewModel.cs, HM-DEC-007, HM-DEC-048, HM-DEC-090

@@ -12,8 +12,29 @@ public enum ScopeReadyState
     /// <summary>The scope itself is switched off on the radio.</summary>
     ScopeOff,
 
-    /// <summary>The scope is on and its output to the computer is not.</summary>
+    /// <summary>
+    /// The scope is on, its output to the computer is not, and Hamlet is
+    /// turning it on (HM-DEC-092).
+    /// </summary>
     OutputOff,
+
+    /// <summary>
+    /// The output write was refused and Hamlet knows which precondition failed.
+    /// </summary>
+    LinkTooSlow,
+
+    /// <summary>
+    /// The output write was refused and Hamlet cannot say which precondition
+    /// failed (HM-DEC-092).
+    /// </summary>
+    /// <remarks>
+    /// The honest form of "I could not read this". One of the two conditions on
+    /// `27 11` is the CI-V USB Port setting, which Hamlet has no cited way to
+    /// read (HM-OPEN-013), so where the baud rate is right and the write is still
+    /// refused, the remaining candidate is named as a candidate rather than as a
+    /// finding.
+    /// </remarks>
+    WriteRefused,
 
     /// <summary>Hamlet has not read the two settings yet.</summary>
     NotRead,
@@ -83,17 +104,18 @@ public static class ScopeReadiness
     /// is the one that gates this and the one named here (Tim, 2026-08-14).</para>
     /// </remarks>
     public const string WhereToLook =
-        "Both settings are on the radio under MENU, then SET, then Connectors. "
-        + "CI-V USB Port wants Unlink from [REMOTE], and CI-V USB Baud Rate wants "
-        + "115200, which is the rate Hamlet talks at anyway.";
+        "The setting is on the radio under MENU, then SET, then Connectors, and "
+        + "it is called CI-V USB Port. It wants Unlink from [REMOTE]. Hamlet has "
+        + "no way to read that one, so this is the thing left to check rather "
+        + "than something it has found to be wrong.";
 
     /// <summary>
     /// What Hamlet says when the settings look right and nothing arrives.
     /// </summary>
     public const string NothingArrivingDetail =
-        "The radio is not sending waveform data. Hamlet reads the two settings "
-        + "that control it and they both look right from here, so the next thing "
-        + "worth a look is the pair on the radio's own menus.";
+        "Everything Hamlet can read says the spectrum should be arriving, and "
+        + "none of it has. That is worth knowing on its own: the settings are "
+        + "right and something between them and here is not working.";
 
     /// <summary>Can the scope stream reach Hamlet right now?</summary>
     /// <param name="capabilities">What the connected radio can do, or null.</param>
@@ -106,6 +128,35 @@ public static class ScopeReadiness
     /// <returns>The verdict, never null.</returns>
     public static ScopeStatus Check(
         RigCapabilities? capabilities, RigState state, long sweepsSeen = -1)
+        => Check(capabilities, state, sweepsSeen, null, false);
+
+    /// <summary>Can the scope stream reach Hamlet right now?</summary>
+    /// <param name="capabilities">What the connected radio can do, or null.</param>
+    /// <param name="state">Everything Hamlet has read from it.</param>
+    /// <param name="sweepsSeen">How many sweeps have arrived, or -1.</param>
+    /// <param name="link">
+    /// What Hamlet knows about its own link, or null when there is none
+    /// (HM-DEC-092).
+    /// </param>
+    /// <param name="writeRefused">
+    /// True when Hamlet has asked the radio to send its spectrum and been
+    /// refused.
+    /// </param>
+    /// <returns>The verdict, never null.</returns>
+    /// <remarks>
+    /// <para>**THREE STATES, THREE SENTENCES, AND THEY USED TO BE ONE PARAGRAPH**
+    /// (HM-DEC-092). The output is off and Hamlet is turning it on; a condition
+    /// is unmet and here is which; data should be arriving and is not. Collapsing
+    /// them meant every one of them read as an instruction to go and change
+    /// something on the radio, and on the evening this was written the settings
+    /// it named had been right for months.</para>
+    /// </remarks>
+    public static ScopeStatus Check(
+        RigCapabilities? capabilities,
+        RigState state,
+        long sweepsSeen,
+        CivLinkHealth? link,
+        bool writeRefused)
     {
         ArgumentNullException.ThrowIfNull(state);
 
@@ -145,11 +196,41 @@ public static class ScopeReadiness
 
         if (output.Number is 0)
         {
+            // Refused, and Hamlet knows exactly why: the link is too slow for
+            // this setting and it opened the link itself, so this is a reading
+            // rather than a candidate (p. 19-7, footnote 4).
+            if (link is { FastEnoughForScope: false, BaudRate: > 0 })
+            {
+                return new ScopeStatus(
+                    ScopeReadyState.LinkTooSlow, false,
+                    "The radio will not send its spectrum over a link this slow. "
+                    + $"Hamlet opened {link.Value.PortName} at "
+                    + $"{link.Value.BaudRate} and this setting needs "
+                    + $"{CivLinkHealth.ScopeOutputBaudRate}, which is a Hamlet "
+                    + "setting rather than a radio one.",
+                    Citation);
+            }
+
+            if (writeRefused)
+            {
+                return new ScopeStatus(
+                    ScopeReadyState.WriteRefused, false,
+                    "Hamlet asked the radio to send its spectrum and the radio "
+                    + "refused. The link is running fast enough, so the one "
+                    + "condition left is a setting Hamlet has no way to read.",
+                    Citation, WhereToLook);
+            }
+
+            // **THIS IS A THING TO DO, NOT A THING TO REPORT** (HM-DEC-092). It
+            // used to print a paragraph naming two menu settings as the cause,
+            // neither of which Hamlet had ever read, in an application whose
+            // founding rule is that a guess is never dressed as a reading. Both
+            // were already correct and the operator walked to the radio for
+            // nothing.
             return new ScopeStatus(
                 ScopeReadyState.OutputOff, false,
-                "The scope is running on the radio and it is not sending the data "
-                + "to the computer. That switch lives on the radio, and it only "
-                + "works alongside two settings there.", Citation, WhereToLook);
+                "The radio is not sending its spectrum to the computer yet. "
+                + "Hamlet is asking it to.", Citation);
         }
 
         // EVERYTHING READS AS ON AND NOTHING HAS ARRIVED, which is the case
@@ -160,7 +241,7 @@ public static class ScopeReadiness
         {
             return new ScopeStatus(
                 ScopeReadyState.NothingArriving, false,
-                NothingArrivingDetail, Citation, WhereToLook);
+                NothingArrivingDetail, Citation);
         }
 
         return new ScopeStatus(ScopeReadyState.Ready, true, "", Citation);
