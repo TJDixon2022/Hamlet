@@ -186,6 +186,15 @@ public enum RigField
     /// </remarks>
     ScopeOutput,
 
+    /// <summary>
+    /// Which way the CI-V USB port is pointed (`1A 05 0074`, p. 19-5).
+    /// </summary>
+    /// <remarks>
+    /// One of the two conditions on the scope's wave output, and read-only, so
+    /// Hamlet can check it and can never change it (HM-DEC-093).
+    /// </remarks>
+    CivUsbPort,
+
     /// <summary>Which VFO is selected, A or B.</summary>
     Vfo,
 }

@@ -360,6 +360,28 @@
                                    Foreground="{StaticResource HmAmberDeepBrush}" />
                     </Border>
 
+                    <!-- WHAT THE SCOPE PATH HAS ACTUALLY DONE (HM-DEC-093).
+                         An empty waterfall and a waterfall that has never
+                         received a byte paint the same picture, and they are
+                         completely different facts. Three sessions reported
+                         this working while the second was true. -->
+                    <Border IsVisible="{Binding HasScopeStages}"
+                            Background="{StaticResource HmSlateTintBrush}"
+                            BorderBrush="{StaticResource HmSlateEdgeBrush}"
+                            BorderThickness="1" CornerRadius="6"
+                            Padding="10,6" Margin="0,0,0,6">
+                        <StackPanel Spacing="3">
+                            <TextBlock Text="{Binding ScopeStages}"
+                                       FontSize="12" TextWrapping="Wrap"
+                                       Foreground="{StaticResource HmTextPrimaryBrush}" />
+
+                            <TextBlock Text="{Binding ScopeRejection}"
+                                       FontSize="10" TextWrapping="Wrap"
+                                       IsVisible="{Binding HasScopeRejection}"
+                                       Foreground="{StaticResource HmTextMutedBrush}" />
+                        </StackPanel>
+                    </Border>
+
                     <ctl:WaterfallControl MinHeight="260"
                         Source="{Binding SpectrumSource}"
                         FrequencyHz="{Binding FrequencyHz}"

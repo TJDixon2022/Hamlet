@@ -462,13 +462,20 @@ directions, so the corpus can tell a real fix from a trade.
 
 ---
 id: HM-OPEN-013
-status: open
+status: closed
 owner: tim
 raised: 2026-08-17
+closed: 2026-08-17
 severity: slows
 blocks: naming the CI-V USB Port setting as a reading rather than as a candidate
-refs: HM-DEC-092, HM-DEC-071, §4
+refs: HM-DEC-092, HM-DEC-093, HM-DEC-071, §4
 ---
+
+**CLOSED 2026-08-17.** Tim supplied the citation: `1A 05 0074`, Full Manual
+p. 19-5, "Send/read the CI-V USB port setting (00=Link to [REMOTE], 01=Unlink to
+[REMOTE]) (Read only)". Recorded as FACT-002 in `SHACK_FACTS.md` and added to the
+rig state model (HM-DEC-093). It is read so the precondition is a measurement and
+never so that anybody is asked to go and look at it.
 
 Is `1A 05 0074` the CI-V USB Port setting, and on which page of `A7292-4EX-6`?
 

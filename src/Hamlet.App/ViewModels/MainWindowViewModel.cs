@@ -1101,11 +1101,72 @@ public partial class MainWindowViewModel : ObservableObject
             // arrived, which is the collapsed-summary half of HM-DEC-067: a
             // panel that goes quiet about a problem is §0.5 broken by
             // omission.
+            if (_rigSpectrum is { PartsReceived: 0 })
+            {
+                return $"no data has ever arrived · {SelectedBand.Band.Name}";
+            }
+
             return _rigSpectrum is { SweepCount: 0 }
-                ? $"nothing arriving · {SelectedBand.Band.Name}"
+                ? $"parts arriving, no complete sweep · {SelectedBand.Band.Name}"
                 : $"receiving · {SelectedBand.Band.Name}";
         }
     }
+
+    /// <summary>
+    /// What the scope path has actually done, stage by stage (HM-DEC-093).
+    /// </summary>
+    /// <remarks>
+    /// <para>**AN EMPTY WATERFALL IS A CLAIM AND BLACK IS NOT A STATE**
+    /// (HM-DEC-092). "Receiving frames and the band is quiet" and "no frame has
+    /// ever arrived" paint exactly the same picture, and they are completely
+    /// different facts. Three sessions reported this feature working while the
+    /// second was true, and nothing on screen or in the log could have told them
+    /// apart.</para>
+    /// <para>So the counters are on the display itself: what came off the wire,
+    /// what parsed, what was thrown away and why, and what was handed to the
+    /// drawing. The first zero is the address of the fault.</para>
+    /// </remarks>
+    public string ScopeStages
+    {
+        get
+        {
+            if (_rigSpectrum is not { } stream)
+            {
+                return "";
+            }
+
+            if (stream.PartsReceived == 0)
+            {
+                return "No spectrum data has ever arrived from the radio. This is "
+                    + "not a quiet band: nothing at all has come down the cable "
+                    + "since Hamlet connected.";
+            }
+
+            var since = stream.LastPartUtc is { } last
+                ? (int)(DateTime.UtcNow - last).TotalSeconds
+                : -1;
+
+            var rejected = stream.PartsRejected == 0
+                ? ""
+                : $", {stream.PartsRejected} thrown away";
+
+            var quiet = since > 3 ? $", nothing for {since} seconds" : "";
+
+            return $"{stream.PartsReceived} parts in, {stream.PartsParsed} read"
+                + $"{rejected}, {stream.SweepsDelivered} sweeps drawn{quiet}.";
+        }
+    }
+
+    /// <summary>True when there is anything to say about the stages.</summary>
+    public bool HasScopeStages => ScopeStages.Length > 0;
+
+    /// <summary>
+    /// Why the first part Hamlet could not read was rejected, or "".
+    /// </summary>
+    public string ScopeRejection => _rigSpectrum?.FirstRejection ?? "";
+
+    /// <summary>True when at least one part could not be read.</summary>
+    public bool HasScopeRejection => ScopeRejection.Length > 0;
 
     /// <summary>The decoded Morse, on its way to the terminal.</summary>
     /// <remarks>
@@ -2316,6 +2377,10 @@ public partial class MainWindowViewModel : ObservableObject
                 : $"{scope.Detail} {scope.WhereToLook}";
 
         OnPropertyChanged(nameof(WaterfallSummary));
+        OnPropertyChanged(nameof(ScopeStages));
+        OnPropertyChanged(nameof(HasScopeStages));
+        OnPropertyChanged(nameof(ScopeRejection));
+        OnPropertyChanged(nameof(HasScopeRejection));
 
         // The break-in setting and the mode both live in here, and both decide
         // whether a send would reach the air. So the panel re-asks whenever the

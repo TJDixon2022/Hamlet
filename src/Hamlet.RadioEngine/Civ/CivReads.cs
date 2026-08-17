@@ -302,13 +302,30 @@ public static class CivReads
     public static CivRead ScopeOn { get; } = new(
         RigField.ScopeOn, 0x27, new byte[] { 0x10 }, "19-7", "00=off, 01=on");
 
+    /// <summary>
+    /// Which way the CI-V USB port is pointed (`1A 05 0074`, p. 19-5).
+    /// </summary>
+    /// <remarks>
+    /// <para>**READ ONLY, AND THAT IS WHAT MAKES IT USEFUL.** The manual's own
+    /// row says so: "Send/read the CI-V USB port setting (00=Link to [REMOTE],
+    /// 01=Unlink to [REMOTE]) (Read only)". It is one of the two conditions on
+    /// the scope's wave output (footnote 4), and until this row was cited Hamlet
+    /// had no way to check it and said so out loud, repeatedly, to an operator
+    /// whose setting had been correct for days (HM-DEC-092, FACT-001).</para>
+    /// <para>Citation supplied by Tim, 2026-08-17, closing HM-OPEN-013. It is
+    /// read now so that the condition is a measurement rather than a candidate,
+    /// and **never so that anybody is asked to go and look at it**.</para>
+    /// </remarks>
+    public static CivRead CivUsbPort { get; } = new(
+        RigField.CivUsbPort, 0x1A, new byte[] { 0x05, 0x00, 0x74 }, "19-5",
+        "00=Link to [REMOTE], 01=Unlink from [REMOTE], read only");
+
     /// <summary>Read whether the scope data is being sent to the computer.</summary>
     /// <remarks>
-    /// The other of the two (p. 19-7). Its own footnote adds two settings that
-    /// are not commands at all: it can only be set with "Unlink from [REMOTE]"
-    /// on the CI-V USB port screen and 115200 on the CI-V baud rate screen. A
-    /// correct frame with neither of those in place is answered and does
-    /// nothing.
+    /// The other of the two (p. 19-7). Its footnote names two conditions that
+    /// were long thought to be settings nobody could check from here. One of
+    /// them is <see cref="CivUsbPort"/> and is readable; the other is the link's
+    /// own rate, which Hamlet knows because it opened the port (HM-DEC-092).
     /// </remarks>
     public static CivRead ScopeOutput { get; } = new(
         RigField.ScopeOutput, 0x27, new byte[] { 0x11 }, "19-7", "00=off, 01=on");
@@ -326,7 +343,7 @@ public static class CivReads
         NoiseBlanker, NoiseBlankerLevel, NoiseReduction, NoiseReductionLevel,
         AutoNotch, ManualNotch, BreakIn, KeyerSpeed, CwPitch,
         AccUsbOutputSelect, AccUsbAfLevel, AccUsbSquelch, Split,
-        ScopeOn, ScopeOutput,
+        ScopeOn, ScopeOutput, CivUsbPort,
     };
 
     /// <summary>

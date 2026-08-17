@@ -68,6 +68,40 @@ public sealed class RigSpectrumSource : ISpectrumSource, IDisposable
     /// </remarks>
     public long DroppedCount { get; private set; }
 
+    /// <summary>
+    /// Parts that arrived off the wire, whatever became of them (HM-DEC-093).
+    /// </summary>
+    /// <remarks>
+    /// **THE FIRST ZERO IN THE CHAIN IS THE BUG'S ADDRESS.** Three sessions
+    /// reported this feature working and not one of them could have said whether
+    /// a single byte had ever arrived, because nothing counted. Received, parsed,
+    /// rejected and delivered are four different numbers and the gaps between
+    /// them are the diagnosis.
+    /// </remarks>
+    public long PartsReceived { get; private set; }
+
+    /// <summary>Parts whose header this build could read.</summary>
+    public long PartsParsed { get; private set; }
+
+    /// <summary>Parts this build could not read at all.</summary>
+    public long PartsRejected { get; private set; }
+
+    /// <summary>
+    /// Why the first rejected part was rejected, or "" (HM-DEC-093).
+    /// </summary>
+    /// <remarks>
+    /// The first one rather than the last, because the first is the one that
+    /// happened before anything else went wrong. A parser that quietly returns
+    /// on a part it cannot read is a parser that can be wrong for months.
+    /// </remarks>
+    public string FirstRejection { get; private set; } = "";
+
+    /// <summary>Complete sweeps handed to whoever is listening.</summary>
+    public long SweepsDelivered { get; private set; }
+
+    /// <summary>When the last part arrived, or null if none ever has.</summary>
+    public DateTime? LastPartUtc { get; private set; }
+
     /// <inheritdoc/>
     public event SpectrumFrameHandler? FrameReady;
 
@@ -127,10 +161,28 @@ public sealed class RigSpectrumSource : ISpectrumSource, IDisposable
         {
             var span = payload.AsSpan();
 
+            PartsReceived++;
+            LastPartUtc = DateTime.UtcNow;
+
             if (CivScope.ReadPart(span) is not { } part)
             {
+                // **NOT A SILENT RETURN ANY MORE** (HM-DEC-093). This line is
+                // where every sweep would vanish if the real 11-part shape
+                // differs from the constructed frames the parser was tested
+                // against, and nothing anywhere would have said so.
+                PartsRejected++;
+
+                if (FirstRejection.Length == 0)
+                {
+                    FirstRejection =
+                        $"part header unreadable, {payload.Length} bytes, "
+                        + $"first bytes {Describe(payload)}";
+                }
+
                 return;
             }
+
+            PartsParsed++;
 
             if (part.Sequence == 1)
             {
@@ -191,8 +243,17 @@ public sealed class RigSpectrumSource : ISpectrumSource, IDisposable
                 header.LowHz, header.HighHz, DateTime.UtcNow, _bins);
         }
 
+        SweepsDelivered++;
         FrameReady?.Invoke(in frame);
     }
+
+    /// <summary>The first few bytes of a part, for a rejection reason.</summary>
+    /// <remarks>
+    /// Enough to recognize the shape and never the whole payload: a rejection
+    /// reason is a clue, and a screen of hexadecimal is not one.
+    /// </remarks>
+    private static string Describe(byte[] payload)
+        => Convert.ToHexString(payload.AsSpan(0, Math.Min(6, payload.Length)));
 
     private int LastSequence { get; set; }
 

@@ -12,6 +12,27 @@ operator can see and use, patch fixes and polishes without adding one.
 
 ---
 
+## 1.8.1
+
+**The waterfall can now be diagnosed instead of guessed at.**
+
+It has been reported working three times and has never drawn a single pixel from
+a radio. Nothing counted anything, so none of those claims could be checked.
+
+Now every stage counts: how many parts came off the wire, how many were read, how
+many were thrown away and why, and how many complete sweeps reached the drawing.
+Those numbers are on the waterfall itself, because an empty display and a display
+that has never received a byte look identical and are completely different facts.
+
+There is a command-line check, `scope-check`, that connects to the radio, asks for
+the spectrum output, listens, and prints the six numbers with the address of the
+first thing that is zero. It puts the setting back as it found it.
+
+Nothing in this release advises anything about the radio's own menus. Those
+settings are correct and have been for days.
+
+Rulings HM-DEC-093.
+
 ## 1.8.0
 
 **Hamlet asks the radio for its spectrum.**

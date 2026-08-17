@@ -4,6 +4,99 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-093
+date: 2026-08-17
+closes: HM-OPEN-013
+refs: tools/Hamlet.ScopeCheck, src/Hamlet.RadioEngine/Rig/RigSpectrumSource.cs, src/Hamlet.RadioEngine/Civ/CivReads.cs, SHACK_FACTS.md, HM-DEC-092, HM-DEC-062
+---
+
+**Every stage of the scope path is counted, and no session may report the
+waterfall working without a nonzero frame count from a connected radio.**
+
+**THE WATERFALL HAS BEEN REPORTED WORKING THREE TIMES AND HAS NEVER DRAWN ONE
+PIXEL FROM A RADIO.** Every one of those reports was true of tests and synthetic
+sources and false of the instrument. None of them was checkable, because nothing
+counted anything: there was a sweep count and a dropped count, and between the
+wire and the drawing there were four stages with no numbers on them at all.
+
+That is the fault this ruling is about. **It is not the waterfall; it is that the
+waterfall could be wrong for months and nobody could tell.**
+
+---
+
+**FOUR NUMBERS, AND THE FIRST ZERO IS THE ADDRESS OF THE BUG.** Parts received off
+the wire, parts parsed, parts rejected with the reason the first one failed, and
+sweeps delivered. A parser that quietly returns on a part it cannot read is a
+parser that can be wrong forever, and `RigSpectrumSource` had exactly that line in
+it: `if (CivScope.ReadPart(span) is not { } part) return;`. Every sweep on the
+real wire could have been vanishing there and nothing anywhere would have said so.
+
+**AND THEY ARE ON THE DISPLAY, NOT ONLY IN A LOG** (HM-DEC-092). "Receiving frames
+and the band is quiet" and "no frame has ever arrived" paint exactly the same
+picture, and an empty axis is a claim. The second now says so in words: *no
+spectrum data has ever arrived from the radio; this is not a quiet band.*
+
+---
+
+**WHAT WAS ELIMINATED BY READING, WITHOUT A RADIO.** Two of the ranked candidates
+are code facts and both are cleared:
+
+- **The composition root is correct.** `rig.IsSimulated` chooses the training
+  synthesiser and everything else gets `RigSpectrumSource`, and the operator's own
+  telemetry agrees: `spectrum_source_changed source "rig", simulated false`. The
+  app is not quietly wired to the demo.
+- **The renderer marshals properly.** Frames land in a locked pixel buffer on
+  whatever thread delivers them, and a `DispatcherTimer` at render priority does
+  the `Lock`, the copy and the `InvalidateVisual` on the UI thread. This is the
+  correct Avalonia pattern and not the silent-nothing-forever one.
+
+So the remaining candidates are the write never having fired on a connected run,
+the real 11-part shape differing from the constructed frames the parser was tested
+against, and the link itself. **All three are measurements, and none of them can
+be made from here.**
+
+---
+
+**HM-OPEN-013 IS CLOSED BY CITATION RATHER THAN BY GUESSWORK.** `1A 05 0074` is
+the CI-V USB port setting, Full Manual p. 19-5, read-only, `00=Link to [REMOTE],
+01=Unlink to [REMOTE]`. Supplied by Tim. The previous session declined to add it
+on a page-less assertion, which was right: a sub-command taken on trust is the
+same shape of mistake as `14 08` for the CW pitch, and that one survived weeks and
+would have moved somebody's passband.
+
+It is read **so that a precondition becomes a measurement, and never so that
+anybody is asked to go and look at it.** `SHACK_FACTS.md` now carries that as
+standing ground truth: the radio's CI-V USB port and baud rate are correct, have
+been for days, and no output of any session may advise checking them. A reading
+that contradicts it is a finding about the reading.
+
+---
+
+**NO CLAIM OF SUCCESS WITHOUT A NUMBER.** This is the durable half.
+
+A session may not report the waterfall, or any streaming display, as working
+unless it carries a nonzero received-frame count taken from a connected radio.
+Tests passing is not the claim. A synthetic source rendering is not the claim.
+**The instrument is the claim**, and three reports that were honest about the
+demo and worthless about the radio are what this rule exists to prevent.
+
+Practical test: does the report contain a number that could only have come from
+the hardware? If not, the feature is unproven however much of it compiles.
+
+---
+
+**WHAT THIS SESSION DID AND DID NOT DO.** No radio was connectable: this machine
+reports one serial port, COM1, a legacy motherboard port, and no USB serial device
+of any kind. The work order's instruction in that case is explicit and was
+followed: **build the diagnostic, hand it over, and stop rather than fix blind.**
+
+So nothing in the scope path was changed on a hypothesis. What was built is the
+measurement: the four counters, the CI-V USB port read, the stage line on the
+display, and `tools/Hamlet.ScopeCheck`, which connects, reads, asks for the wave
+output, listens, prints the six numbers and the address of the first zero, and
+puts the setting back as it found it.
+
+---
 id: HM-DEC-092
 date: 2026-08-17
 supersedes: HM-DEC-067
