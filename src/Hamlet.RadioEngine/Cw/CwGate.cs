@@ -253,8 +253,34 @@ public sealed class CwGate
     /// old asymmetric tracker still runs, so nothing that fed this before behaves
     /// differently.
     /// </remarks>
-    public GateReading Judge(double powerDb, double measuredNoiseDb = double.NaN)
+    /// <param name="blocked">
+    /// True when this measurement covers the operator's own transmission
+    /// (HM-DEC-095).
+    /// </param>
+    public GateReading Judge(
+        double powerDb, double measuredNoiseDb = double.NaN, bool blocked = false)
     {
+        // **FREEZE, DO NOT ADAPT** (HM-DEC-095). On full break-in the receiver
+        // mutes between the operator's own elements, so what arrives is fifty to
+        // eighty decibels of near-digital silence hundreds of times over. Both
+        // trackers followed it all the way down, and by the time the answering
+        // station arrived they were calibrated to a band that does not exist.
+        //
+        // Holding them exactly where they were means his own transmission
+        // teaches them nothing, which is the whole point: it is not evidence
+        // about anybody else.
+        if (blocked)
+        {
+            _keyDown = false;
+            Vote(false);
+
+            return new GateReading(
+                false, powerDb, NoiseFloorDb, PeakDb,
+                PeakDb - Math.Min(
+                    (PeakDb - NoiseFloorDb) * (1 - RisingFraction), MaximumRisingDropDb),
+                HasSignal: false);
+        }
+
         var measured = !double.IsNaN(measuredNoiseDb);
 
         if (!_started)
@@ -284,6 +310,18 @@ public sealed class CwGate
 
             PeakDb += (powerDb - PeakDb)
                 * (powerDb > PeakDb ? PeakRiseAlpha : PeakFallAlpha);
+        }
+
+        // **A BOTTOM UNDER THE FLOOR** (HM-DEC-095). Freezing during a mute stops
+        // the floor being dragged down, and does nothing about a floor that was
+        // already dragged down before the guard recognized what was happening.
+        // Real band noise in a narrow filter does not go below about minus
+        // seventy on this radio, so anything lower is an artifact, and a floor
+        // sitting at minus a hundred and twenty reports every subsequent breath
+        // of noise as forty decibels of signal.
+        if (NoiseFloorDb < CwTransmitGuard.FloorFloorDb)
+        {
+            NoiseFloorDb = CwTransmitGuard.FloorFloorDb;
         }
 
         var spread = PeakDb - NoiseFloorDb;

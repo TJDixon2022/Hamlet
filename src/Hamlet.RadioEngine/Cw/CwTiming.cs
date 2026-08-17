@@ -167,6 +167,25 @@ public sealed class CwSpeedEstimator
         }
     }
 
+    /// <summary>
+    /// Throw away everything measured so far (HM-DEC-095).
+    /// </summary>
+    /// <remarks>
+    /// Called when the tracker moves to a different part of the band, because
+    /// every length in these windows was measured through a filter pointed
+    /// somewhere else and averaging it with what comes next would carry the old
+    /// mistake into the new signal.
+    /// </remarks>
+    public void Forget()
+    {
+        _markCount = 0;
+        _markWrite = 0;
+        _gapCount = 0;
+        _gapWrite = 0;
+        _gapCutsKnown = false;
+        Coherence = 0;
+    }
+
     /// <summary>Record a mark and re-derive the speed.</summary>
     /// <param name="samples">How long the key was down.</param>
     public void AddMark(double samples)
@@ -202,12 +221,50 @@ public sealed class CwSpeedEstimator
     /// <summary>Which gap a silence of this length is.</summary>
     /// <param name="samples">How long the key was up.</param>
     /// <returns>The gap kind.</returns>
+    /// <remarks>
+    /// <para>**THE GAPS ARE CLASSIFIED BY CLUSTERING THE GAPS, NOT BY COUNTING
+    /// DITS** (HM-DEC-095). Textbook Morse spaces elements one dit apart,
+    /// characters three and words seven, and almost nobody sends that way. The
+    /// station recorded answering a call on 40 m sends dits of about a hundred
+    /// milliseconds with element gaps of seventy, which is shorter than its own
+    /// dit, and character gaps of about a hundred and forty, which is one and a
+    /// half dits rather than three.</para>
+    /// <para>Against fixed multiples every one of those gaps is an element gap,
+    /// so the whole transmission arrives as a single run of thirty-odd elements
+    /// and decodes to nothing. That is precisely what it did: one fifteen-element
+    /// pattern, marked unreadable, out of a station whose callsign is plainly
+    /// there.</para>
+    /// <para>The clusters are used only when the gaps actually fall into
+    /// separated groups. A transmission that never pauses has one group and
+    /// nothing to learn from, and then the textbook multiples are the better
+    /// guess and are what this falls back to.</para>
+    /// </remarks>
     public CwElement ClassifyGap(double samples)
-        => samples < 2 * DitSamples
+    {
+        if (!_gapCutsKnown)
+        {
+            return samples < 2 * DitSamples
+                ? CwElement.ElementGap
+                : samples < 5 * DitSamples
+                    ? CwElement.CharacterGap
+                    : CwElement.WordGap;
+        }
+
+        return samples < _elementGapCut
             ? CwElement.ElementGap
-            : samples < 5 * DitSamples
+            : samples < _characterGapCut
                 ? CwElement.CharacterGap
                 : CwElement.WordGap;
+    }
+
+    /// <summary>Where a gap stops being an element gap, in samples.</summary>
+    /// <remarks>Measured from the gaps themselves where they separate cleanly,
+    /// and two dits otherwise.</remarks>
+    public double ElementGapBoundary
+        => _gapCutsKnown ? _elementGapCut : 2 * DitSamples;
+
+    /// <summary>True when the gaps fell into groups the estimator could measure.</summary>
+    public bool GapsAreClustered => _gapCutsKnown;
 
     /// <summary>
     /// How far a measurement sat from the decision that was made about it, from
@@ -234,6 +291,34 @@ public sealed class CwSpeedEstimator
 
         var units = samples / dit;
 
+        // **A GAP IS SCORED AGAINST THE BOUNDARY IT WAS JUDGED BY** (HM-DEC-095).
+        // Where this sender's own gaps were measured, the textbook multiples are
+        // not the decision that was taken, so scoring against them reports a
+        // confidence for a judgement nothing made. On a compressed fist every
+        // character gap read as zero and every letter came out unreadable while
+        // the classification above it was perfectly correct.
+        if (_gapCutsKnown && element is CwElement.ElementGap
+            or CwElement.CharacterGap or CwElement.WordGap)
+        {
+            // **NOUGHT AT THE BOUNDARY AND ONE AT THE MIDDLE OF ITS OWN GROUP**,
+            // which is the same meaning the textbook version has and the only
+            // scale that survives a sender whose spacing is nothing like the
+            // textbook. Normalizing against the boundary's own value instead
+            // scored every character gap in a clean recording at four tenths and
+            // marked a perfect decode uncertain (HM-DEC-095).
+            return element switch
+            {
+                CwElement.ElementGap => Toward(
+                    samples, _elementGapCut, _elementGapMean),
+
+                CwElement.CharacterGap => Math.Min(
+                    Toward(samples, _elementGapCut, _characterGapMean),
+                    Toward(samples, _characterGapCut, _characterGapMean)),
+
+                _ => Toward(samples, _characterGapCut, _wordGapMean),
+            };
+        }
+
         return element switch
         {
             // Ideal 1, boundary 2.
@@ -259,6 +344,23 @@ public sealed class CwSpeedEstimator
     }
 
     /// <summary>
+    /// How far a measurement has travelled from a boundary toward the middle of
+    /// the group it was placed in.
+    /// </summary>
+    /// <param name="samples">The measurement.</param>
+    /// <param name="boundary">The decision it was on one side of.</param>
+    /// <param name="center">The middle of that group.</param>
+    /// <returns>Nought at the boundary, one at the center or beyond.</returns>
+    private static double Toward(double samples, double boundary, double center)
+    {
+        var reach = Math.Abs(center - boundary);
+
+        return reach <= 0
+            ? 0
+            : Math.Clamp(Math.Abs(samples - boundary) / reach, 0, 1);
+    }
+
+    /// <summary>
     /// How sure the decoder is that a gap really ended the character, from 0 at
     /// the boundary to 1 well past it.
     /// </summary>
@@ -274,9 +376,18 @@ public sealed class CwSpeedEstimator
     /// something that was never about the letter.
     /// </remarks>
     public double EndOfCharacterClarity(double samples)
-        => DitSamples <= 0
-            ? 0
+    {
+        if (DitSamples <= 0)
+        {
+            return 0;
+        }
+
+        // Against the boundary that was actually used, for the reason given on
+        // Clarity above (HM-DEC-095).
+        return _gapCutsKnown
+            ? Toward(samples, _elementGapCut, _characterGapMean)
             : Math.Clamp((samples / DitSamples) - 2, 0, 1);
+    }
 
     /// <summary>
     /// Re-derive the dit length from the rolling windows.
@@ -295,8 +406,19 @@ public sealed class CwSpeedEstimator
 
         if (markHigh >= 2 * markLow)
         {
-            // Two clear clusters, so the lower one is the dits.
-            markDit = markLow;
+            // **THE MIDDLE OF THE SHORT CLUSTER, NOT ITS AVERAGE** (HM-DEC-095).
+            // A handful of very short marks survive the gate on any real signal,
+            // and an average is defenseless against them: on the recording that
+            // prompted this, marks of fifteen and twenty milliseconds among dits
+            // of a hundred pulled the estimate to seventy-two and put the speed
+            // at seventeen words a minute against a true twelve.
+            //
+            // That is not a small error in a number. The dit is what every later
+            // judgement is measured against, so a dit thirty percent short makes
+            // every element look long, drives the coherence check below its own
+            // limit, and the decoder discards a message it has correctly heard
+            // because it no longer believes the timings are Morse.
+            markDit = MedianOfShortCluster((markLow + markHigh) / 2);
         }
         else if (shortestGap > 0 && markLow >= 2 * shortestGap)
         {
@@ -318,6 +440,205 @@ public sealed class CwSpeedEstimator
 
         DitSamples = Refine(markDit);
         Coherence = MeasureCoherence();
+        RecomputeGapCuts();
+    }
+
+    /// <summary>
+    /// The middle mark of those shorter than a threshold.
+    /// </summary>
+    /// <param name="threshold">Where the dits stop and the dahs begin.</param>
+    /// <returns>The median, or zero when nothing is below it.</returns>
+    private double MedianOfShortCluster(double threshold)
+    {
+        var count = 0;
+
+        for (var i = 0; i < _markCount; i++)
+        {
+            if (_marks[i] < threshold)
+            {
+                _sorted[count++] = _marks[i];
+            }
+        }
+
+        if (count == 0)
+        {
+            return 0;
+        }
+
+        Array.Sort(_sorted, 0, count);
+        return _sorted[count / 2];
+    }
+
+    private readonly double[] _sorted = new double[WindowSize];
+
+    /// <summary>How many gaps before their own grouping is worth believing.</summary>
+    private const int MinimumGapsForCuts = 8;
+
+    /// <summary>
+    /// How far apart two groups must sit before they count as two groups.
+    /// </summary>
+    /// <remarks>
+    /// Half as long again. Below that it is one spread of gaps being cut in half,
+    /// which would invent a character boundary in the middle of a letter.
+    /// </remarks>
+    private const double GroupSeparation = 1.6;
+
+    private readonly double[] _longGaps = new double[WindowSize];
+
+    private double _elementGapCut;
+    private double _characterGapCut;
+    private double _elementGapMean;
+    private double _characterGapMean;
+    private double _wordGapMean;
+    private bool _gapCutsKnown;
+
+    /// <summary>
+    /// Find where this sender's own gaps divide (HM-DEC-095).
+    /// </summary>
+    private void RecomputeGapCuts()
+    {
+        _gapCutsKnown = false;
+
+        if (_gapCount < MinimumGapsForCuts)
+        {
+            return;
+        }
+
+        var (low, high, elementCut) = SplitAtMean(_gaps, _gapCount);
+
+        // One group of gaps means somebody sending without pausing, and there is
+        // nothing here to learn from.
+        if (low <= 0 || high < GroupSeparation * low)
+        {
+            return;
+        }
+
+        var longCount = 0;
+
+        for (var i = 0; i < _gapCount; i++)
+        {
+            if (_gaps[i] >= elementCut)
+            {
+                _longGaps[longCount++] = _gaps[i];
+            }
+        }
+
+        // The longer group splits again into character gaps and word gaps, when
+        // there are enough of them and they genuinely separate. A transmission
+        // with no word gaps in it has one group up here, and inventing a split
+        // would put spaces inside somebody's callsign.
+        //
+        // **THE FALLBACK IS THE CONVENTION, NOT INFINITY.** Saying "no word gaps
+        // are possible" whenever too few have been heard yet deleted every space
+        // from a clean recording: "CQ DE W1AW K" came back as "CQDEW1AWK". Where
+        // there is no measurement, the textbook five dits is the honest guess,
+        // and it is exactly what this code used before any of it was measured.
+        // Where the long gaps have not separated yet, the whole judgement up here
+        // is the textbook one, so the centers have to be the textbook ones too.
+        // Using the measured mean of every long gap put the character center up
+        // among the word gaps and scored perfectly ordinary character gaps at a
+        // fifth, which marked the first letters of a clean recording uncertain.
+        var characterCut = 5 * DitSamples;
+        var characterMean = 3 * DitSamples;
+        var wordMean = 7 * DitSamples;
+
+        if (longCount >= 4)
+        {
+            var (wordLow, wordHigh, wordCut) = SplitAtMean(_longGaps, longCount);
+
+            if (wordLow > 0 && wordHigh >= GroupSeparation * wordLow)
+            {
+                characterCut = wordCut;
+                characterMean = wordLow;
+                wordMean = wordHigh;
+            }
+        }
+
+        _elementGapCut = elementCut;
+        _characterGapCut = characterCut;
+        _elementGapMean = low;
+        _characterGapMean = characterMean;
+        _wordGapMean = wordMean;
+        _gapCutsKnown = true;
+    }
+
+    /// <summary>
+    /// Split values in two, seeded from their own mean.
+    /// </summary>
+    /// <param name="values">The values.</param>
+    /// <param name="count">How many of them.</param>
+    /// <returns>The two centers and the level between them.</returns>
+    /// <remarks>
+    /// <para>**THE SEEDING IS THE WHOLE DIFFERENCE, AND GETTING IT WRONG LOOKED
+    /// EXACTLY LIKE GETTING IT RIGHT** (HM-DEC-095). <see cref="TwoMeans"/> seeds
+    /// from the smallest and largest value and assigns each point to the nearer
+    /// center, which is correct for marks, where dits and dahs arrive in
+    /// comparable numbers.</para>
+    /// <para>Gaps are not shaped like that. A transmission is mostly element
+    /// gaps, with a scattering of character gaps and one or two word gaps, so
+    /// seeding from the extremes puts the character gaps in with the element gaps
+    /// and lands the boundary between "everything short" and "the word gap".
+    /// Every character then runs into the next one. Seeding from the mean instead
+    /// lets the crowded short cluster hold the low center and the boundary falls
+    /// where the characters divide.</para>
+    /// <para>Measured on the real recording: seeded from the extremes the
+    /// boundary lands near 195 ms and nothing separates, because that fist's
+    /// character gaps are 140. Seeded from the mean it lands near 122 and the
+    /// callsign comes out.</para>
+    /// </remarks>
+    private static (double Low, double High, double Threshold) SplitAtMean(
+        double[] values, int count)
+    {
+        var threshold = 0.0;
+
+        for (var i = 0; i < count; i++)
+        {
+            threshold += values[i];
+        }
+
+        threshold /= count;
+
+        var low = threshold;
+        var high = threshold;
+
+        for (var pass = 0; pass < 12; pass++)
+        {
+            double lowSum = 0, highSum = 0;
+            int lowCount = 0, highCount = 0;
+
+            for (var i = 0; i < count; i++)
+            {
+                if (values[i] < threshold)
+                {
+                    lowSum += values[i];
+                    lowCount++;
+                }
+                else
+                {
+                    highSum += values[i];
+                    highCount++;
+                }
+            }
+
+            if (lowCount == 0 || highCount == 0)
+            {
+                return (threshold, threshold, threshold);
+            }
+
+            low = lowSum / lowCount;
+            high = highSum / highCount;
+
+            var next = (low + high) / 2;
+
+            if (Math.Abs(next - threshold) < 1e-9)
+            {
+                break;
+            }
+
+            threshold = next;
+        }
+
+        return (low, high, threshold);
     }
 
     /// <summary>

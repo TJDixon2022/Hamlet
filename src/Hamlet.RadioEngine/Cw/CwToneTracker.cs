@@ -15,9 +15,19 @@ namespace Hamlet.RadioEngine.Cw;
 /// What the band is doing either side of the tone, measured at this instant
 /// (HM-DEC-088).
 /// </param>
+/// <param name="BroadbandDbfs">
+/// Total power across the whole audio band, which is how the operator's own
+/// transmission is recognized (HM-DEC-095).
+/// </param>
+/// <param name="Blocked">
+/// True when this measurement covers the operator transmitting, and so may not
+/// be learned from (HM-DEC-095).
+/// </param>
 public readonly record struct ToneReading(
     double PowerDb, double CompetitorDb, double ToneHz, long SampleIndex,
-    double NoiseDb = double.NaN)
+    double NoiseDb = double.NaN,
+    double BroadbandDbfs = double.NaN,
+    bool Blocked = false)
 {
     /// <summary>True when the noise beside the tone was actually measured.</summary>
     public bool HasNoise => !double.IsNaN(NoiseDb);
@@ -71,23 +81,43 @@ public readonly record struct ToneReading(
 /// evaluated over a short sliding window. Goertzel rather than an FFT because
 /// this needs a couple of dozen known frequencies rather than a whole spectrum,
 /// and it is a handful of multiplies per bin per sample with nothing to
-/// allocate. The waterfall has its own reasons for wanting a full transform;
-/// a decoder listening for one note does not.</para>
-/// <para>NOBODY TUNES EXACTLY, so the pitch is hunted rather than assumed. The
-/// operator's setting says where to start, and the tracker follows the strongest
-/// note across the range the IC-7300 can put a signal at, 300 to 900 Hz (Full
-/// Manual p. 4-14). Somebody two hundred hertz off frequency still gets a
-/// decode, which matters because being off frequency is what beginners do and
-/// a decoder that punished it would be teaching the wrong lesson.</para>
-/// <para>The tracker is deliberately sticky. When two notes are within a
-/// decibel of one another it stays with whichever is closer to where it already
-/// was, so a louder station arriving nearby does not drag the decode off the
-/// signal the operator was reading. It only moves when the other signal is
-/// genuinely stronger.</para>
-/// <para>The window is twenty milliseconds and it advances five, which sets both
-/// the frequency selectivity and the timing resolution. At forty words a minute
-/// a dit is thirty milliseconds, so four measurements land inside the shortest
-/// element there is.</para>
+/// allocate.</para>
+/// <para>**TWO STAGES, AND THE REASON IS MEASURED RATHER THAN CITED**
+/// (HM-DEC-095). A coarse bank surveys the whole range the radio can put a note
+/// in and decides, by keying structure alone, which region holds somebody
+/// sending (<see cref="CwToneSurvey"/>). A fine bank five hertz apart then reads
+/// the exact pitch inside that region. The old single bank was spaced twenty-five
+/// hertz, so an exact answer was arithmetically impossible, and it chose by
+/// loudness, so it landed on whatever was strongest whether or not anybody was
+/// keying it.</para>
+/// <para>**THE WINDOW LENGTH IS THE DIFFERENCE BETWEEN A DECODE AND NOTHING.**
+/// Swept against the real recording of a station answering a call, the message
+/// resolves like this:</para>
+/// <list type="bullet">
+/// <item>20 ms, about 75 Hz of bandwidth: `M ? ?3VRA`</item>
+/// <item>30 ms, about 50 Hz: `M ?R ?3VRA`</item>
+/// <item>40 ms, about 38 Hz: `M VRR VA3VRA`</item>
+/// <item>50 ms and beyond: the same, and no better</item>
+/// </list>
+/// <para>Twenty milliseconds is what this tracker used to run at, and it loses
+/// half the callsign. The band is five hundred hertz wide and the signal occupies
+/// a few tens, so most of what the filter passes is noise the decoder never
+/// needed to hear.</para>
+/// <para>**AND A NARROW WINDOW IS NOT FREE, WHICH IS WHY IT MOVES.** A window
+/// that spans an appreciable part of an element smears its edges, and edge
+/// positions are the entire content of Morse. Forty milliseconds is a fraction of
+/// a dit at twelve words a minute and most of one at forty, so above eighteen
+/// words a minute the window shortens again and trades the sensitivity back for
+/// timing. Nobody needs both at once: a fast fist is a strong fist far more often
+/// than not, and a signal at the edge of readability is almost never being sent
+/// at forty.</para>
+/// <para>NOBODY TUNES EXACTLY, so the pitch is hunted rather than assumed, across
+/// the range the IC-7300 can put a signal at, 300 to 900 Hz (Full Manual p. 4-14).
+/// **What is no longer done is hunting toward the operator's own setting.** The
+/// old tie-break preferred whichever bin was nearest where the tracker already
+/// sat, and the tracker was seeded from the configured pitch, so the answer was
+/// pulled toward the number somebody typed in. A measurement that leans on the
+/// expected answer is not a measurement (§0.0).</para>
 /// </remarks>
 public sealed class CwToneTracker
 {
@@ -97,47 +127,42 @@ public sealed class CwToneTracker
     /// <summary>Highest pitch searched, in hertz.</summary>
     public const double MaximumToneHz = 900;
 
-    /// <summary>Spacing between candidate pitches, in hertz.</summary>
-    private const double BinSpacingHz = 25;
+    /// <summary>Spacing of the survey bank, in hertz.</summary>
+    private const double CoarseSpacingHz = 25;
 
-    /// <summary>How often the tracked pitch is reconsidered, in hops.</summary>
-    private const int RetuneEveryHops = 40;
-
-    /// <summary>
-    /// How much stronger a rival note must be before the tracker moves to it.
-    /// </summary>
-    private const double StickinessDb = 1.0;
-
-    /// <summary>
-    /// How fast a bin's held peak decays, per measurement.
-    /// </summary>
+    /// <summary>Spacing of the reading bank, in hertz.</summary>
     /// <remarks>
-    /// <para>**A HELD PEAK, NOT AN AVERAGE, AND THAT IS THE WHOLE OF WHY THE
-    /// TRACKER USED TO LAND ON THE WRONG NOTE** (HM-DEC-090). A station answering
-    /// a call keys for about a second and a half in thirty seconds. Averaged over
-    /// all thirty, the bin holding that station reads as its own noise floor,
-    /// because for ninety-six percent of the time that is exactly what is in it.
-    /// The tracker then chose whichever bin the noise happened to favor and
-    /// reported a pitch twenty hertz off the real one, on a signal fifty decibels
-    /// out of the noise.</para>
-    /// <para>Rising instantly and decaying over about ten seconds means a bin is
-    /// judged by the loudest thing that has recently been in it, which is what a
-    /// keyed signal actually is. Ten seconds is longer than any gap inside a
-    /// message and shorter than a station going away.</para>
+    /// Five, which is what makes an exact answer possible at all. The reported
+    /// pitch was never right on any recording this project holds, and a quarter
+    /// of that error was the old twenty-five hertz grid on its own.
     /// </remarks>
-    private const double BinPeakDecay = 0.9975;
+    private const double FineSpacingHz = 5;
+
+    /// <summary>How far either side of the survey's choice the fine bank reaches.</summary>
+    private const double FineReachHz = 30;
+
+    /// <summary>How often the survey is re-read, in hops.</summary>
+    /// <remarks>
+    /// <para>Twice a second. The survey works over three seconds of history, so
+    /// asking more often returns nearly the same answer for the same work.</para>
+    /// <para>**AND THE INTERVAL IS THE CONFIRMATION'S INDEPENDENCE, WHICH IS WHY
+    /// IT WAS NOT SHORTENED.** A candidate has to be seen twice running before the
+    /// tracker moves to it. Polling four times a second was tried, to cut the
+    /// delay before an off-frequency signal is acquired, and it makes the two
+    /// readings a quarter of a second apart over three seconds of shared history:
+    /// nearly the same measurement asked twice, which is not a second opinion. It
+    /// cost six more failures across the suite than it fixed.
+    /// </para>
+    /// </remarks>
+    private const int SurveyEveryHops = 100;
+
+    /// <summary>Every second hop goes to the survey, which is a ten millisecond grid.</summary>
+    private const int SurveyDecimation = 2;
 
     /// <summary>
     /// How far from the tracked note another one has to be before it counts as
     /// a different station rather than the same one leaking sideways.
     /// </summary>
-    /// <remarks>
-    /// The window is twenty milliseconds, so the filter's own response reaches
-    /// about a hundred hertz either side of where it is pointed. Past that,
-    /// energy belongs to something else. Inside it, energy is the signal being
-    /// read and calling it competition would have the decoder reporting itself
-    /// as interference.
-    /// </remarks>
     private const double CompetitorSeparationHz = 125;
 
     /// <summary>
@@ -145,45 +170,95 @@ public sealed class CwToneTracker
     /// takes off, in decibels.
     /// </summary>
     /// <remarks>
-    /// A conservative reading of what a Hann-tapered twenty-millisecond window
-    /// does past a hundred and twenty-five hertz of separation. Conservative on
-    /// purpose: understating the rejection makes the decoder mark characters
-    /// uncertain that it could have read, which costs the operator some dimmed
-    /// text. Overstating it lets somebody else's dits into a character that
-    /// still looks clean, which costs them the truth (§0.0).
+    /// A conservative reading of what a Hann-tapered window does past a hundred
+    /// and twenty-five hertz of separation. Conservative on purpose: understating
+    /// the rejection makes the decoder mark characters uncertain that it could
+    /// have read, which costs the operator some dimmed text. Overstating it lets
+    /// somebody else's dits into a character that still looks clean, which costs
+    /// them the truth (§0.0).
     /// </remarks>
     public const double FilterRejectionDb = 25;
 
+    /// <summary>Window used while acquiring, and for the survey, in hops.</summary>
+    /// <remarks>Eight hops is forty milliseconds, about thirty-eight hertz of
+    /// bandwidth, which is where the real recording starts resolving.</remarks>
+    private const int AcquireWindowHops = 8;
+
+    /// <summary>Window used once the speed is known and slow, in hops.</summary>
+    /// <remarks>Ten hops is fifty milliseconds, about thirty hertz.</remarks>
+    private const int NarrowWindowHops = 10;
+
+    /// <summary>Window used for a fast fist, in hops.</summary>
+    /// <remarks>Four hops is twenty milliseconds, about seventy-five hertz, which
+    /// still puts four measurements inside a dit at forty words a minute.</remarks>
+    private const int FastWindowHops = 4;
+
+    /// <summary>Above this speed the window shortens to keep the edges.</summary>
+    public const double FastFistWpm = 18;
+
     /// <summary>
-    /// How many hops the window spans.
+    /// How far past the speed limit the estimate has to go before the window
+    /// changes, in words a minute.
     /// </summary>
     /// <remarks>
-    /// FOUR, WHICH IS TWENTY MILLISECONDS, and the number is a trade rather than
-    /// a preference. A longer window hears pitch more finely and so tells one
-    /// station from another close by; a shorter one sees the keying more
-    /// sharply. Measured against a fixture with a second station a hundred and
-    /// fifty hertz away, two hops leaves the tracker pulled twenty-five hertz off
-    /// the signal it is reading and four lands on it exactly. Six is finer still
-    /// and starts blurring the keying, which costs more than the pitch is worth.
-    /// Four also still puts four measurements inside a thirty-millisecond dit,
-    /// which is the shortest anybody sends.
+    /// Four either way, so a fist at the limit has to be read as fourteen or
+    /// twenty-two before anything moves. Eighteen is squarely where most people
+    /// send, which is the worst possible place to put a bare threshold.
     /// </remarks>
-    private const int WindowHops = 4;
+    private const double SpeedHysteresisWpm = 4;
 
-    private readonly double[] _binHz;
-    private readonly double[] _binCoefficient;
-    private readonly double[] _binAverage;
-    private readonly float[] _window;
-    private readonly float[] _hann;
+    /// <summary>
+    /// How close two consecutive surveys have to agree to count as the same
+    /// signal.
+    /// </summary>
+    /// <remarks>One coarse bin either way, which is a station drifting or the
+    /// survey preferring its neighbor, rather than a different signal.</remarks>
+    private const double ConfirmWithinHz = CoarseSpacingHz;
+
+    private readonly double[] _coarseHz;
+    private readonly double[] _coarseCoefficient;
+    private readonly double[] _coarseDb;
+
+    private readonly double[] _fineHz;
+    private readonly double[] _fineCoefficient;
+    private readonly double[] _fineDb;
+
+    private readonly float[] _ring;
     private readonly float[] _scratch;
+    private readonly float[] _hann;
     private readonly double[] _neighbors;
 
-    private int _windowFill;
-    private int _windowWrite;
+    private readonly CwToneSurvey _survey;
+    private readonly CwToneSurvey _fineSurvey;
+
+    private int _ringWrite;
+    private int _ringFill;
     private int _hopFill;
-    private int _hopsSinceRetune;
+    private int _hopsSinceSurvey;
+    private int _surveyPhase;
     private long _samplesSeen;
     private int _tracked;
+    private int _windowHops;
+    private int _hannHops;
+
+    /// <summary>What the previous survey said, so a fluke has to happen twice.</summary>
+    private double _previousKeyedHz = double.NaN;
+
+    /// <summary>The last pitch keying was actually found at.</summary>
+    private double _lastKeyedHz = double.NaN;
+
+    /// <summary>
+    /// How many more surveys the last keying finding may go on protecting its
+    /// own frequency from being called interference.
+    /// </summary>
+    /// <remarks>
+    /// **IT HAS TO EXPIRE, AND FINDING THAT OUT COST A REAL DEFECT.** Without a
+    /// countdown, one transient keying finding at six hundred hertz silenced the
+    /// interference report at five hundred for the rest of the session, because
+    /// they are inside one filter width of each other. The recording with an
+    /// obvious carrier in it reported nothing at all.
+    /// </remarks>
+    private int _keyedProtects;
 
     /// <summary>Creates a tracker.</summary>
     /// <param name="sampleRate">Samples per second.</param>
@@ -192,30 +267,46 @@ public sealed class CwToneTracker
     {
         SampleRate = Math.Max(1_000, sampleRate);
         HopSamples = Math.Max(4, SampleRate / 200);
-        WindowSamples = HopSamples * WindowHops;
+        MaximumWindowSamples = HopSamples * NarrowWindowHops;
+        _windowHops = AcquireWindowHops;
 
-        var count = (int)Math.Round((MaximumToneHz - MinimumToneHz) / BinSpacingHz) + 1;
-        _binHz = new double[count];
-        _binCoefficient = new double[count];
-        _binAverage = new double[count];
+        var coarse = (int)Math.Round((MaximumToneHz - MinimumToneHz) / CoarseSpacingHz) + 1;
+        _coarseHz = new double[coarse];
+        _coarseCoefficient = new double[coarse];
+        _coarseDb = new double[coarse];
 
-        for (var i = 0; i < count; i++)
+        for (var i = 0; i < coarse; i++)
         {
-            _binHz[i] = MinimumToneHz + (i * BinSpacingHz);
-            _binCoefficient[i] = 2 * Math.Cos(2 * Math.PI * _binHz[i] / SampleRate);
+            _coarseHz[i] = MinimumToneHz + (i * CoarseSpacingHz);
+            _coarseCoefficient[i] = Coefficient(_coarseHz[i]);
         }
 
-        _neighbors = new double[count];
-        _window = new float[WindowSamples];
-        _scratch = new float[WindowSamples];
-        _hann = new float[WindowSamples];
+        var fine = (int)Math.Round(2 * FineReachHz / FineSpacingHz) + 1;
+        _fineHz = new double[fine];
+        _fineCoefficient = new double[fine];
+        _fineDb = new double[fine];
 
-        for (var i = 0; i < WindowSamples; i++)
-        {
-            _hann[i] = (float)(0.5 - (0.5 * Math.Cos(2 * Math.PI * i / (WindowSamples - 1))));
-        }
+        _neighbors = new double[coarse];
+        _ring = new float[MaximumWindowSamples];
+        _scratch = new float[MaximumWindowSamples];
+        _hann = new float[MaximumWindowSamples];
 
-        _tracked = NearestBin(startingToneHz);
+        var surveyHop = (double)HopSamples * SurveyDecimation / SampleRate;
+
+        _survey = new CwToneSurvey(_coarseHz, surveyHop);
+
+        // **THE SECOND STAGE HAS TO ASK THE SAME QUESTION, NOT A CHEAPER ONE.**
+        // Taking the coarse winner and reading the loudest fine bin under it puts
+        // the answer back on the twenty-five hertz grid the coarse bank was
+        // spaced at, which is the error this whole change exists to remove. The
+        // fine bank scores keying structure exactly as the coarse one does.
+        _fineSurvey = new CwToneSurvey(_fineHz, surveyHop);
+
+        BuildHann();
+        CenterFineBank(Math.Clamp(startingToneHz, MinimumToneHz, MaximumToneHz));
+        _tracked = _fineHz.Length / 2;
+
+        Guard = new CwTransmitGuard((double)HopSamples / SampleRate);
     }
 
     /// <summary>Samples per second.</summary>
@@ -224,14 +315,80 @@ public sealed class CwToneTracker
     /// <summary>How many samples one measurement advances by.</summary>
     public int HopSamples { get; }
 
-    /// <summary>How many samples each measurement looks at.</summary>
-    public int WindowSamples { get; }
+    /// <summary>The longest window the tracker can look through.</summary>
+    public int MaximumWindowSamples { get; }
+
+    /// <summary>How many samples the current measurement looks at.</summary>
+    public int WindowSamples => HopSamples * _windowHops;
 
     /// <summary>How long one hop lasts.</summary>
     public TimeSpan HopDuration => TimeSpan.FromSeconds((double)HopSamples / SampleRate);
 
     /// <summary>The pitch currently being followed, in hertz.</summary>
-    public double ToneHz => _binHz[_tracked];
+    public double ToneHz => _fineHz[_tracked];
+
+    /// <summary>Watches for the operator's own transmissions (HM-DEC-095).</summary>
+    public CwTransmitGuard Guard { get; }
+
+    /// <summary>What the survey last found, keying and interference alike.</summary>
+    public ToneVerdict Verdict { get; private set; } = ToneVerdict.Empty;
+
+    /// <summary>
+    /// How many times the tracker has moved to a different part of the band.
+    /// </summary>
+    /// <remarks>
+    /// **WHAT WAS MEASURED AT THE OLD PITCH IS NOT EVIDENCE ABOUT THE NEW ONE**
+    /// (HM-DEC-095). Everything the decoder is holding when this changes was
+    /// measured through a filter pointed somewhere else, and letting it through
+    /// turns the first seconds of a signal found off-frequency into a row of
+    /// placeholders. Counting the moves is how the decoder knows to drop it.
+    /// </remarks>
+    public int Retunes { get; private set; }
+
+    /// <summary>
+    /// True when something on the band is actually being keyed (HM-DEC-095).
+    /// </summary>
+    /// <remarks>
+    /// Distinct from there being energy at the tracked pitch. A carrier, a
+    /// switching supply and an empty band all put energy somewhere; only a person
+    /// sending puts it there in two lengths.
+    /// </remarks>
+    public bool HasKeying => Verdict.Keyed is not null;
+
+    /// <summary>
+    /// Follow the sending speed, which decides how finely the tracker listens.
+    /// </summary>
+    /// <param name="wordsPerMinute">The speed, or zero when it is not known.</param>
+    public void FollowSpeed(double wordsPerMinute)
+    {
+        // **HYSTERESIS, BECAUSE THE SPEED ESTIMATE JITTERS AND THE WINDOW MUST
+        // NOT** (HM-DEC-095). A bare threshold at eighteen words a minute sat
+        // exactly where the commonest sending speed is, so an estimate wandering
+        // a word either side of it rebuilt the filter every few characters and
+        // changed the scale every measurement was being judged against. Signals
+        // eighteen decibels out of the noise came back a third wrong, which is
+        // worse than the same decoder managed at ten.
+        var wanted = _windowHops;
+
+        if (wordsPerMinute <= 0)
+        {
+            wanted = AcquireWindowHops;
+        }
+        else if (wordsPerMinute > FastFistWpm + SpeedHysteresisWpm)
+        {
+            wanted = FastWindowHops;
+        }
+        else if (wordsPerMinute < FastFistWpm - SpeedHysteresisWpm)
+        {
+            wanted = NarrowWindowHops;
+        }
+
+        if (wanted != _windowHops)
+        {
+            _windowHops = wanted;
+            BuildHann();
+        }
+    }
 
     /// <summary>
     /// Feed samples, calling back once per hop.
@@ -244,18 +401,18 @@ public sealed class CwToneTracker
     {
         for (var i = 0; i < samples.Length; i++)
         {
-            _window[_windowWrite] = samples[i];
-            _windowWrite = (_windowWrite + 1) % WindowSamples;
+            _ring[_ringWrite] = samples[i];
+            _ringWrite = (_ringWrite + 1) % MaximumWindowSamples;
 
-            if (_windowFill < WindowSamples)
+            if (_ringFill < MaximumWindowSamples)
             {
-                _windowFill++;
+                _ringFill++;
             }
 
             _samplesSeen = firstSampleIndex + i + 1;
             _hopFill++;
 
-            if (_hopFill < HopSamples || _windowFill < WindowSamples)
+            if (_hopFill < HopSamples || _ringFill < WindowSamples)
             {
                 continue;
             }
@@ -265,84 +422,290 @@ public sealed class CwToneTracker
         }
     }
 
-    /// <summary>The nearest candidate bin to a pitch.</summary>
-    private int NearestBin(double hz)
+    /// <summary>The Goertzel coefficient for one pitch.</summary>
+    private double Coefficient(double hz) => 2 * Math.Cos(2 * Math.PI * hz / SampleRate);
+
+    /// <summary>Point the fine bank at a region.</summary>
+    private void CenterFineBank(double centerHz)
     {
-        var clamped = Math.Clamp(hz, MinimumToneHz, MaximumToneHz);
-        var index = (int)Math.Round((clamped - MinimumToneHz) / BinSpacingHz);
-        return Math.Clamp(index, 0, _binHz.Length - 1);
+        var clamped = Math.Clamp(centerHz, MinimumToneHz, MaximumToneHz);
+
+        for (var i = 0; i < _fineHz.Length; i++)
+        {
+            _fineHz[i] = clamped - FineReachHz + (i * FineSpacingHz);
+            _fineCoefficient[i] = Coefficient(_fineHz[i]);
+        }
+    }
+
+    /// <summary>Rebuild the taper for the current window length.</summary>
+    private void BuildHann()
+    {
+        var length = WindowSamples;
+
+        for (var i = 0; i < length; i++)
+        {
+            _hann[i] = (float)(0.5 - (0.5 * Math.Cos(2 * Math.PI * i / (length - 1))));
+        }
+
+        _hannHops = _windowHops;
     }
 
     /// <summary>
     /// One measurement over the current window.
     /// </summary>
-    /// <remarks>
-    /// Copies the ring into a linear scratch buffer with a Hann taper applied,
-    /// then runs every Goertzel over it. The taper is what stops a strong
-    /// station a couple of hundred hertz away from smearing into the bin being
-    /// read, which is the whole reason this can decode through interference at
-    /// all. Both buffers are allocated once and reused; this runs two hundred
-    /// times a second for as long as the app is open.
-    /// </remarks>
     private ToneReading Measure()
     {
-        var start = _windowWrite;
-
-        for (var i = 0; i < WindowSamples; i++)
+        if (_hannHops != _windowHops)
         {
-            _scratch[i] = _window[(start + i) % WindowSamples] * _hann[i];
+            BuildHann();
         }
 
-        var trackedPower = 0.0;
+        var window = WindowSamples;
+        var start = (_ringWrite - window + MaximumWindowSamples) % MaximumWindowSamples;
+
+        var sumSquares = 0.0;
+
+        for (var i = 0; i < window; i++)
+        {
+            var raw = _ring[(start + i) % MaximumWindowSamples];
+            sumSquares += (double)raw * raw;
+            _scratch[i] = raw * _hann[i];
+        }
+
+        // **BROADBAND, NOT AT THE TONE.** A receiver muting takes the whole audio
+        // band down together and a signal fading takes one note down, so the only
+        // measurement that recognizes the operator's own transmission is the one
+        // that looks at everything (HM-DEC-095).
+        var broadband = 20 * Math.Log10(Math.Sqrt(sumSquares / window) + 1e-12);
+        var blocked = Guard.Observe(broadband);
+
+        var trackedPower = Goertzel(_fineCoefficient[_tracked], window);
+        var trackedHz = _fineHz[_tracked];
         var competitorPower = 0.0;
-        var trackedHz = _binHz[_tracked];
         var neighbors = 0;
 
-        for (var b = 0; b < _binHz.Length; b++)
+        // The survey runs on a ten millisecond grid, which is what the validated
+        // receive chain uses and half the work of running it every hop.
+        var surveying = ++_surveyPhase >= SurveyDecimation;
+
+        if (surveying)
         {
-            var power = Goertzel(_binCoefficient[b]);
-
-            // Rise to anything louder at once; fall away slowly.
-            _binAverage[b] = power > _binAverage[b]
-                ? power
-                : _binAverage[b] * BinPeakDecay;
-
-            if (b == _tracked)
-            {
-                trackedPower = power;
-            }
-            else if (Math.Abs(_binHz[b] - trackedHz) >= CompetitorSeparationHz)
-            {
-                if (power > competitorPower)
-                {
-                    competitorPower = power;
-                }
-
-                // Far enough out that the tone itself does not reach, which is
-                // what makes these a sample of the band rather than of the
-                // signal.
-                _neighbors[neighbors++] = power;
-            }
+            _surveyPhase = 0;
         }
 
-        if (++_hopsSinceRetune >= RetuneEveryHops)
+        for (var b = 0; b < _coarseHz.Length; b++)
         {
-            _hopsSinceRetune = 0;
-            Retune();
+            if (!surveying
+                && Math.Abs(_coarseHz[b] - trackedHz) < CompetitorSeparationHz)
+            {
+                continue;
+            }
+
+            var power = Goertzel(_coarseCoefficient[b], window);
+
+            if (surveying)
+            {
+                _coarseDb[b] = ToDb(power);
+            }
+
+            if (Math.Abs(_coarseHz[b] - trackedHz) < CompetitorSeparationHz)
+            {
+                continue;
+            }
+
+            if (power > competitorPower)
+            {
+                competitorPower = power;
+            }
+
+            // Far enough out that the tone itself does not reach, which is what
+            // makes these a sample of the band rather than of the signal.
+            _neighbors[neighbors++] = power;
+        }
+
+        if (surveying)
+        {
+            for (var f = 0; f < _fineHz.Length; f++)
+            {
+                _fineDb[f] = f == _tracked
+                    ? ToDb(trackedPower)
+                    : ToDb(Goertzel(_fineCoefficient[f], window));
+            }
+
+            _survey.Observe(_coarseDb, blocked);
+            _fineSurvey.Observe(_fineDb, blocked);
+        }
+
+        if (++_hopsSinceSurvey >= SurveyEveryHops)
+        {
+            _hopsSinceSurvey = 0;
+            ReadSurvey();
         }
 
         return new ToneReading(
             ToDb(trackedPower), ToDb(competitorPower), trackedHz, _samplesSeen,
-            ToDb(NoiseFrom(neighbors)));
+            ToDb(NoiseFrom(neighbors)), broadband, blocked);
+    }
+
+    /// <summary>
+    /// Take the survey's answer and point the fine bank at it.
+    /// </summary>
+    /// <remarks>
+    /// **NOTHING MOVES WHEN NOTHING IS KEYING.** The old tracker retuned on every
+    /// pass to whichever bin was loudest, so on an empty band it wandered and
+    /// reported a pitch for noise. If there is no keying candidate the tracker
+    /// stays exactly where it is and says so, which is what lets the decoder
+    /// tell an empty band from a signal it cannot read (§0.0).
+    /// </remarks>
+    private void ReadSurvey()
+    {
+        var coarse = _survey.Analyze();
+        var previous = _previousKeyedHz;
+
+        _previousKeyedHz = coarse.Keyed?.ToneHz ?? double.NaN;
+
+        if (_keyedProtects > 0)
+        {
+            _keyedProtects--;
+        }
+
+        if (coarse.Keyed is not { } keyed)
+        {
+            // Nothing is keying anywhere. Keep the interference finding, because
+            // a band with a carrier and nobody sending is exactly the case worth
+            // reporting.
+            Verdict = new ToneVerdict(
+                null, Filtered(coarse.Interference ?? coarse.Strongest), coarse.Strongest);
+
+            // **FROM COLD, POINT AT THE LOUDEST THING AND LET THE DECODER LOOK.**
+            // Deciding somebody is keying takes three seconds of evidence and it
+            // should, but refusing even to listen anywhere else until then leaves
+            // the decoder pointed at the operator's configured pitch through the
+            // opening of every signal that is not on it. That is most of a short
+            // call.
+            //
+            // This is not a claim and does not set the verdict: it moves where
+            // the filter points, nothing else, and only while nothing has ever
+            // been confirmed. Once a signal has been found, the confirmation rule
+            // below owns every subsequent move, because being dragged off a
+            // working decode by a loud carrier is the fault this whole survey
+            // exists to prevent.
+            if (double.IsNaN(_lastKeyedHz)
+                && coarse.Strongest is { } loudest
+                && Math.Abs(loudest.ToneHz - _fineHz[_fineHz.Length / 2]) > FineReachHz)
+            {
+                CenterFineBank(loudest.ToneHz);
+                _fineSurvey.Reset();
+                _tracked = _fineHz.Length / 2;
+                Retunes++;
+            }
+
+            return;
+        }
+
+        // **A CANDIDATE HAS TO SURVIVE TWICE BEFORE THE TRACKER ACTS ON IT**
+        // (HM-DEC-095). Three seconds of noise occasionally produces eight marks
+        // that cluster convincingly, and one such fluke was enough to announce
+        // keying on a recording that has none. Two agreeing surveys half a second
+        // apart rest on six seconds of evidence, and noise does not repeat itself
+        // in the same bin (§0.0).
+        //
+        // **MOVING THE FILTER BEFORE CONFIRMING WAS TRIED AND IS WORSE**, on the
+        // reasoning that where the tracker listens is not a claim and only the
+        // verdict is. It acquires an off-pitch signal two to four seconds sooner
+        // and it also follows every fluke, and each move discards what the speed
+        // estimator has learned. Measured across the suite it fixed four tests and
+        // broke ten, including decodes that had nothing wrong with them. The delay
+        // is the price of not being dragged around by noise.
+        if (double.IsNaN(previous) || Math.Abs(previous - keyed.ToneHz) > ConfirmWithinHz)
+        {
+            // Refusing to believe it is keying does not make it stop existing.
+            Verdict = new ToneVerdict(
+                null, Filtered(coarse.Interference ?? coarse.Strongest), coarse.Strongest);
+            return;
+        }
+
+        KeyingFoundAt(keyed.ToneHz);
+
+        // Outside what the fine bank can reach, so it has to move, and its
+        // history is about different pitches and cannot come with it.
+        if (Math.Abs(keyed.ToneHz - _fineHz[_fineHz.Length / 2]) > FineReachHz)
+        {
+            CenterFineBank(keyed.ToneHz);
+            _fineSurvey.Reset();
+            _tracked = _fineHz.Length / 2;
+            Retunes++;
+            Verdict = new ToneVerdict(keyed, Filtered(coarse.Interference));
+            return;
+        }
+
+        // Inside reach: the fine bank's own reading of the keying is the answer,
+        // and the coarse one only said where to look.
+        var refined = _fineSurvey.Analyze();
+
+        if (refined.Keyed is { } exact)
+        {
+            _tracked = NearestFine(exact.ToneHz);
+            KeyingFoundAt(exact.ToneHz);
+            Verdict = new ToneVerdict(exact, Filtered(coarse.Interference));
+            return;
+        }
+
+        _tracked = NearestFine(keyed.ToneHz);
+        Verdict = new ToneVerdict(keyed, Filtered(coarse.Interference));
+    }
+
+    /// <summary>
+    /// Drop an interference finding that is really a station that has stopped.
+    /// </summary>
+    /// <remarks>
+    /// **A STATION THAT HAS JUST FINISHED SENDING IS NOT INTERFERENCE.** The
+    /// survey looks back three seconds, so for a few seconds after somebody stops
+    /// their energy is still in the history with no keying left in it, and naming
+    /// the person who was just answering as a source of interference is both
+    /// wrong and insulting (§0.0).
+    /// </remarks>
+    private ToneInterference? Filtered(ToneInterference? found)
+        => found is { } noise
+            && _keyedProtects > 0
+            && !double.IsNaN(_lastKeyedHz)
+            && Math.Abs(noise.ToneHz - _lastKeyedHz) < CompetitorSeparationHz
+                ? null
+                : found;
+
+    /// <summary>Remember that keying was found here, for a while.</summary>
+    private void KeyingFoundAt(double toneHz)
+    {
+        _lastKeyedHz = toneHz;
+
+        // Six surveys is three seconds, which is exactly how long the survey's
+        // own history takes to forget a station that has stopped.
+        _keyedProtects = 6;
+    }
+
+    /// <summary>The fine bin nearest a pitch.</summary>
+    private int NearestFine(double hz)
+    {
+        var best = 0;
+
+        for (var i = 1; i < _fineHz.Length; i++)
+        {
+            if (Math.Abs(_fineHz[i] - hz) < Math.Abs(_fineHz[best] - hz))
+            {
+                best = i;
+            }
+        }
+
+        return best;
     }
 
     /// <summary>Goertzel power over the scratch buffer at one coefficient.</summary>
-    private double Goertzel(double coefficient)
+    private double Goertzel(double coefficient, int length)
     {
         var s1 = 0.0;
         var s2 = 0.0;
 
-        for (var i = 0; i < _scratch.Length; i++)
+        for (var i = 0; i < length; i++)
         {
             var s0 = _scratch[i] + (coefficient * s1) - s2;
             s2 = s1;
@@ -350,51 +713,7 @@ public sealed class CwToneTracker
         }
 
         var power = (s1 * s1) + (s2 * s2) - (coefficient * s1 * s2);
-        return Math.Max(0, power) / ((double)WindowSamples * WindowSamples);
-    }
-
-    /// <summary>
-    /// Reconsider which note to follow.
-    /// </summary>
-    /// <remarks>
-    /// Reads the held per-bin peaks rather than the instant powers, because a
-    /// decision taken during the gap between two dits would follow whatever the
-    /// noise happened to be doing, and rather than their averages, because a
-    /// signal that is keyed a twentieth of the time disappears into its own
-    /// average (HM-DEC-090). Ties inside the stickiness margin go to the bin
-    /// nearest where the tracker already is.
-    /// </remarks>
-    private void Retune()
-    {
-        var best = 0;
-
-        for (var b = 1; b < _binAverage.Length; b++)
-        {
-            if (_binAverage[b] > _binAverage[best])
-            {
-                best = b;
-            }
-        }
-
-        if (_binAverage[best] <= 0)
-        {
-            return;
-        }
-
-        var floor = ToDb(_binAverage[best]) - StickinessDb;
-        var chosen = best;
-
-        for (var b = 0; b < _binAverage.Length; b++)
-        {
-            if (_binAverage[b] > 0
-                && ToDb(_binAverage[b]) >= floor
-                && Math.Abs(b - _tracked) < Math.Abs(chosen - _tracked))
-            {
-                chosen = b;
-            }
-        }
-
-        _tracked = chosen;
+        return Math.Max(0, power) / ((double)length * length);
     }
 
     /// <summary>
@@ -403,15 +722,11 @@ public sealed class CwToneTracker
     /// <param name="count">How many neighboring bins were collected.</param>
     /// <returns>A noise power, or NaN when there was nothing to look at.</returns>
     /// <remarks>
-    /// <para>**THE MEDIAN, NOT THE MEAN**, and that is the whole reason this
-    /// works on a busy band. A second station sitting in one or two of these bins
-    /// drags a mean upward and takes the threshold with it, which would make the
-    /// decoder deaf exactly when somebody is calling nearby. A median ignores any
-    /// minority of loud bins entirely.</para>
-    /// <para>Selection is by partial sort into a scratch array that is allocated
-    /// once. This runs two hundred times a second for as long as the application
-    /// is open, and §8 is explicit that the decoder's own measurements may not
-    /// allocate per element.</para>
+    /// **THE MEDIAN, NOT THE MEAN**, and that is the whole reason this works on a
+    /// busy band. A second station sitting in one or two of these bins drags a
+    /// mean upward and takes the threshold with it, which would make the decoder
+    /// deaf exactly when somebody is calling nearby. A median ignores any minority
+    /// of loud bins entirely.
     /// </remarks>
     private double NoiseFrom(int count)
     {

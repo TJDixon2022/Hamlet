@@ -4,6 +4,163 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-095
+date: 2026-08-17
+refs: src/Hamlet.RadioEngine/Cw/CwToneSurvey.cs, src/Hamlet.RadioEngine/Cw/CwTransmitGuard.cs, src/Hamlet.RadioEngine/Cw/CwToneTracker.cs, src/Hamlet.RadioEngine/Cw/CwTiming.cs, tests/Hamlet.RadioEngine.Tests/Cw/CwToneSurveyTests.cs, HM-OPEN-016, HM-DEC-090, HM-DEC-091
+---
+
+**A note is chosen by how it is keyed and never by how loud it is; the operator's
+own transmission is not evidence about anybody else; and a sender's gaps are
+classified by clustering that sender's own gaps.**
+
+**THIS RULING SITS ON A BRANCH AND IS NOT MERGED.** The measurements below are
+solid and the code implementing them regresses eleven tests that were passing,
+all of them against synthesized fixtures. HM-OPEN-016 holds that list. A ruling
+is never edited, so it says so here rather than being tidied later.
+
+---
+
+**LOUDEST IS NOT KEYED, AND THE OLD DETECTOR WAS WRONG ON EVERY RECORDING THIS
+PROJECT HAS.** It answered 600 Hz where the station was at 613, 575 where it was
+at 612, and 375 on a recording whose loudest signal is at 500. The last of those
+is the diagnostic one: a figure that is neither the strongest thing, nor the real
+thing, nor the operator's configured pitch is not a measurement of anything.
+
+Two faults sat underneath it. The bins were twenty-five hertz apart, so an exact
+answer was arithmetically impossible; and the tie-break preferred whichever bin
+was nearest where the tracker already sat, which was seeded from the operator's
+own pitch setting. **A measurement pulled toward the number somebody typed in is
+not a measurement** (§0.0).
+
+**WHAT REPLACES IT IS THE ONE QUESTION THAT SEPARATES MORSE FROM EVERYTHING ELSE:
+are the mark lengths two clusters or one smear?** Everything cheaper was tried
+first against the three recordings and every one of them failed:
+
+- Loudness picks a carrier over a station, which is the reported fault.
+- **Duty cycle does not separate them, and the brief's own hypothesis was that it
+  would.** The keyed station in the 01:33 recording holds the band for
+  seventy-nine percent of the time it is on; the unkeyed signal in the 13:47 one
+  for forty. Disqualifying whatever is "continuously on" would have been a branch
+  that never ran while the real fault went unfixed.
+- The one-to-three ratio on its own passes almost every empty bin, because
+  cutting any smooth spread of durations in two yields a short group and a long
+  group whose means land near one to three by construction.
+- Absolute element lengths help and are not enough: noise routinely produces
+  twenty-five millisecond marks, which is a legal dit at forty-eight words a
+  minute.
+
+What noise has never got is a **gap** between the two groups. Measured across
+these recordings the keyed station scores between eleven and thirty and the best
+empty bin scores two point eight.
+
+**AND ONE SURVEY IS NOT THE WHOLE GUARD.** Sweep three-second windows across half
+a minute of a fluctuating carrier and one of them will eventually cluster
+convincingly, at about eight. So the claim takes two agreeing surveys half a
+second apart, and across the whole interference recording the carrier never
+manages that twice running. Recorded because the limit is real and the test
+that documents it asserts at the level where the claim reaches the operator.
+
+---
+
+**INTERFERENCE IS A FIRST-CLASS FINDING, AND IT SAYS WHAT WAS MEASURED AND
+NOTHING ELSE.** Anything loud inside a five hundred hertz filter sets the
+receiver's gain for everything quieter, which is an operational fact worth a
+sentence. What is reported is a frequency, a strength over the band beside it,
+and how much of the time it was there. **Hamlet does not say what it is or whose
+it is**, because it has no way to know and the operator has a receiver and forty
+years of ears (§0.0).
+
+Two things had to be kept apart to make this work at all. Refusing to believe
+something is keying does not make it stop existing, and folding the two together
+meant a rejected candidate took the report of its own existence with it: the
+recording with an obvious carrier in it reported nothing at all. And a station
+that has just stopped sending is not interference, so a keying finding protects
+its own frequency for three seconds, which is exactly how long the survey takes
+to forget it.
+
+---
+
+**THE OPERATOR'S OWN TRANSMISSION IS NOT EVIDENCE ABOUT ANYBODY ELSE, AND IT IS
+WHY A REAL CONTACT DECODED AS NOTHING.** In the recording made while a station
+was answering him, he is transmitting for eighteen of its thirty seconds. On full
+break-in the receiver mutes between his own elements, so what reaches the sound
+card is his keying cut into the band, hundreds of times, with about twenty-four
+milliseconds of transmit-receive hang either side of each one. The gate's
+trackers followed it all the way down and were calibrated to a band that does not
+exist by the time the answer arrived. Twelve hundred and eleven elements came out
+of that recording and one character.
+
+The guard freezes both trackers rather than adapting, holds a hundred and fifty
+milliseconds past the moment the audio returns so a gain ramp is never measured
+as an element, and clamps the floor at minus seventy-five so it can never chase
+digital silence.
+
+**AND WHAT IS HEARD BETWEEN HIS OWN ELEMENTS IS NOT AN ELEMENT.** Those slivers
+are cut at both ends by his keying rather than by anybody's sending, so their
+lengths are facts about him. They are excluded from the clock fit and rendered as
+a placeholder, never a letter, because decoded they produce a confident string of
+E and T, which is the most seductive wrong output this feature can produce: it
+looks exactly like a weak station being read (§0.0).
+
+**A MUTED RECEIVER IS QUIET AND AN EMPTY FILE IS ZERO, AND THEY ARE A HUNDRED AND
+FIFTY DECIBELS APART.** The real mutes bottom out between minus eighty and minus
+eighty-four, because the radio stops the audio while the codec carries on
+streaming; synthesized Morse has exact digital zero between its elements, which
+measures minus two hundred and forty. Without that lower bound the guard read
+every gap in every synthetic fixture as a transmission and deleted the decode
+outright. **The fixtures found that, which is the argument for having them.**
+
+---
+
+**A SENDER'S GAPS ARE CLASSIFIED BY CLUSTERING THAT SENDER'S GAPS.** Textbook
+Morse spaces elements one dit apart, characters three and words seven, and almost
+nobody sends that way. The station on 40 m sends dits of about a hundred
+milliseconds with element gaps of seventy, **which is shorter than its own dit**,
+and character gaps of about a hundred and forty, which is one and a half dits
+rather than three. Against fixed multiples every one of those is an element gap,
+so thirty-odd elements arrive as a single run and decode to nothing, which is
+exactly what happened.
+
+Two seeding details cost an afternoon each and are recorded so nobody pays for
+them twice. The mark clusters are seeded from the extremes and assigned to the
+nearer center, which is right where dits and dahs arrive in comparable numbers.
+**The gap clusters must be seeded from their own mean instead**, because a
+transmission is mostly element gaps with a scattering of character gaps, and
+seeding from the extremes puts the boundary between "everything short" and "the
+word gap" and runs every character into the next. And **the dit is the median of
+the short cluster and not its average**, because a handful of very short marks
+survive any gate and an average is defenseless against them: fifteen and twenty
+millisecond marks among dits of a hundred pulled the estimate to seventy-two and
+put the speed at seventeen against a true twelve.
+
+Where the gaps do not separate, the textbook multiples are the honest fallback
+and the textbook centers have to come with them. Scoring an ordinary character
+gap against a measured center that sat up among the word gaps marked a perfect
+decode uncertain.
+
+---
+
+**WHAT WAS ESTABLISHED, AND HOW.** Independent analysis of the 01:33 recording,
+written before any of this code was touched, puts a station at 613 Hz sending
+dits of 100 ms and dahs of 275 ms, a ratio of 2.76, about twelve words a minute,
+and reading `VRR VA3VR` followed by a character that is not stable across
+analysis windows. The survey now answers 615 Hz, dit 99 ms, dah 280 ms, ratio
+2.84. **The last character is deliberately not asserted anywhere**, because three
+windows give three different answers and nobody knows what that station sent
+(HM-DEC-091).
+
+The detection window is load-bearing and the figure is measured rather than
+cited. Swept against that recording the message resolves at 20 ms as `M ? ?3VRA`,
+at 30 ms as `M ?R ?3VRA`, and at 40 ms as `M VRR VA3VRA`. Twenty milliseconds is
+what the tracker used to run at.
+
+**WHAT WAS NOT ESTABLISHED.** The end-to-end decode of that recording is better
+and is not clean: recognizable letters with placeholders among them, rather than
+the callsign. Eleven tests against synthesized fixtures regressed, and no session
+may call this done while that is true (HM-OPEN-016). It ran on the development
+computer, COM1 only, so **nothing here is evidence about the radio** (HM-DEC-093).
+
+---
 id: HM-DEC-094
 date: 2026-08-17
 refs: src/Hamlet.RadioEngine/Civ/CivScope.cs, src/Hamlet.RadioEngine/Civ/Bcd.cs, src/Hamlet.RadioEngine/Rig/RigStateMonitor.cs, src/Hamlet.App/ViewModels/CanvasViewModel.cs, tests/Hamlet.RadioEngine.Tests/Rig/ScopeWireShapeTests.cs, HM-DEC-093, HM-DEC-084, HM-DEC-050

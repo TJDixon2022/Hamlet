@@ -17,6 +17,17 @@ namespace Hamlet.RadioEngine.Cw;
 /// <param name="ElementsResolved">How many of those became part of a character.</param>
 /// <param name="CharactersEmitted">How many characters reached the screen.</param>
 /// <param name="CharactersUnsure">How many of those were marked or blocked.</param>
+/// <param name="HasKeying">
+/// Whether anything on the band is actually being keyed, as against merely
+/// present (HM-DEC-095).
+/// </param>
+/// <param name="Interference">
+/// The strongest thing in the passband that is not somebody sending, if there is
+/// one (HM-DEC-095).
+/// </param>
+/// <param name="OwnTransmitSeconds">
+/// How much of what was heard was the operator's own transmitter (HM-DEC-095).
+/// </param>
 public readonly record struct CwDecodeReport(
     AudioLevel Level,
     double ToneHz,
@@ -25,7 +36,10 @@ public readonly record struct CwDecodeReport(
     int ElementsSeen,
     int ElementsResolved,
     int CharactersEmitted,
-    int CharactersUnsure)
+    int CharactersUnsure,
+    bool HasKeying = false,
+    ToneInterference? Interference = null,
+    double OwnTransmitSeconds = 0)
 {
     /// <summary>
     /// How far above the band a tone has to stand before it is worth mentioning.

@@ -117,6 +117,28 @@ public sealed class CwDecoder
     private bool _sawAnyMark;
     private long _lastSample;
 
+    /// <summary>
+    /// How many measurements since the operator was last transmitting.
+    /// </summary>
+    /// <remarks>
+    /// **A COUNTER RATHER THAN A FLAG, BECAUSE THE GATE ANSWERS LATE.** Asking
+    /// only whether the measurement immediately before a mark was blocked caught
+    /// nothing at all: the gate de-glitches over as much as nine measurements, so
+    /// by the time a mark is declared the block it grew out of is already several
+    /// measurements behind. Every sliver of the operator's own transmission
+    /// passed the test and went into the clock fit (HM-DEC-095).
+    /// </remarks>
+    private int _hopsSinceBlocked = int.MaxValue / 2;
+
+    /// <summary>Did the run now ending begin out of one of his own mutes?</summary>
+    private bool _runFollowedBlock;
+
+    /// <summary>Has anything in the character being built been cut short?</summary>
+    private bool _patternTruncated;
+
+    /// <summary>How many times the tracker had moved, last time this looked.</summary>
+    private int _lastRetunes;
+
     /// <summary>Creates a decoder.</summary>
     /// <param name="sampleRate">Samples per second of the audio it will be fed.</param>
     /// <param name="expectedToneHz">
@@ -203,7 +225,10 @@ public sealed class CwDecoder
         _elementsSeen,
         _elementsResolved,
         _charactersEmitted,
-        _charactersUnsure);
+        _charactersUnsure,
+        _tracker.HasKeying,
+        _tracker.Verdict.Interference,
+        (double)_tracker.Guard.BlockedHops * _tracker.HopSamples / SampleRate);
 
     private double _lastSnrDb = double.NaN;
 
@@ -255,12 +280,49 @@ public sealed class CwDecoder
     {
         _lastSample = reading.SampleIndex;
 
+        // **THE TRACKER MOVED, SO EVERYTHING HELD WAS HEARD SOMEWHERE ELSE**
+        // (HM-DEC-095). Nobody tunes exactly, and a signal found two or three
+        // hundred hertz from where Hamlet started listening spends its first
+        // seconds being measured through a filter pointed at empty band. Those
+        // elements are real measurements of nothing, and carrying them into the
+        // decode produced a row of placeholders in front of every message found
+        // off-frequency.
+        if (_tracker.Retunes != _lastRetunes)
+        {
+            _lastRetunes = _tracker.Retunes;
+            _pending.Clear();
+            _pattern.Clear();
+            _clarities.Clear();
+            _patternTruncated = false;
+            _worstSnrDb = double.MaxValue;
+            _contestedDb = double.MaxValue;
+
+            // **THE SPEED SURVIVES THE MOVE, AND THE ELEMENTS DO NOT.** Throwing
+            // the speed away too was tried and it is what a retune costs that is
+            // hardest to earn back: twelve marks, which on a slow fist is several
+            // seconds during which nothing can be decoded at all. It also made
+            // strong signals decode worse than weak ones, because a strong signal
+            // gets the tracker moving sooner and so paid the price more often.
+            //
+            // Lengths are lengths whatever bin measured them, so a speed learned
+            // just before a move is still the speed. What cannot survive is the
+            // elements themselves, since those were measured through a filter
+            // pointed at empty band.
+        }
+
         // THE DE-GLITCH IS SIZED FROM THE ELEMENT (HM-DEC-088). The speed
         // estimator already knows how long a dit is here, and telling the gate
         // lets it integrate over a third of one instead of over a fixed
         // twenty-five milliseconds that is too short at twelve words a minute
         // and too long at sixty.
         _gate.FollowSpeed(_speed.DitSamples / _tracker.HopSamples);
+
+        // **AND THE TRACKER LISTENS AS NARROWLY AS THE SPEED ALLOWS**
+        // (HM-DEC-095). Forty milliseconds of window is the difference between
+        // half a callsign and all of it on the recording that prompted this, and
+        // it would smear the edges off a fast fist, so it follows the speed
+        // rather than being chosen once.
+        _tracker.FollowSpeed(_speed.IsReady ? _speed.WordsPerMinute : 0);
 
         // **HOW FAR THE TONE STANDS ABOVE THE BAND WHILE IT IS KEYED**, which is
         // not the same question as how far it stands above it on average, and
@@ -297,14 +359,22 @@ public sealed class CwDecoder
             }
         }
 
-        var gate = _gate.Judge(reading.PowerDb, reading.NoiseDb);
+        var gate = _gate.Judge(reading.PowerDb, reading.NoiseDb, reading.Blocked);
         Watch.Observe(gate, _tracker.HopSamples, SampleRate);
 
         if (gate.KeyDown != _keyDown)
         {
             if (_keyDown)
             {
-                OnMarkEnded();
+                // **A MARK CUT OFF BY HIS OWN TRANSMITTER IS NOT A MARK**
+                // (HM-DEC-095). What is audible between his own elements is a
+                // sliver of somebody else's signal, cut at both ends by his
+                // keying rather than by theirs, so its length is a fact about
+                // him. Measured as elements, those slivers decode into a
+                // confident string of E and T, which is the most seductive wrong
+                // output this feature can produce: it looks exactly like a weak
+                // station being read (§0.0).
+                OnMarkEnded(_runFollowedBlock || reading.Blocked);
             }
             else
             {
@@ -316,7 +386,17 @@ public sealed class CwDecoder
             _runSnrSum = 0;
             _runHops = 0;
             _runContestedDb = double.MinValue;
+
+            // Anything beginning within the guard's own hold of his last mute
+            // grew out of it, whatever the gate's de-glitch delay happens to be.
+            _runFollowedBlock =
+                (double)_hopsSinceBlocked * _tracker.HopSamples / SampleRate
+                    <= CwTransmitGuard.HoldSeconds;
         }
+
+        _hopsSinceBlocked = reading.Blocked
+            ? 0
+            : Math.Min(_hopsSinceBlocked + 1, int.MaxValue / 2);
 
         _runSamples += _tracker.HopSamples;
         _runHops++;
@@ -382,14 +462,24 @@ public sealed class CwDecoder
         return copy[copy.Length / 2];
     }
 
-    private void OnMarkEnded()
+    private void OnMarkEnded(bool truncated)
     {
         var snr = _runHops > 0 ? _runSnrSum / _runHops : 0;
 
         _sawAnyMark = true;
         _elementsSeen++;
-        _speed.AddMark(_runSamples);
-        _pending.Add(new PendingElement(IsMark: true, _runSamples, snr, _runContestedDb));
+
+        // EXCLUDED FROM THE CLOCK FIT, which is the half of this rule that
+        // decides whether anything else works. A speed estimator fed the lengths
+        // of somebody's own keying gaps settles on a speed nobody is sending at,
+        // and every character after it is measured against that.
+        if (!truncated)
+        {
+            _speed.AddMark(_runSamples);
+        }
+
+        _pending.Add(new PendingElement(
+            IsMark: true, _runSamples, snr, _runContestedDb, truncated));
 
         Drain();
     }
@@ -406,7 +496,7 @@ public sealed class CwDecoder
         _elementsSeen++;
         _speed.AddGap(_runSamples);
         _pending.Add(
-            new PendingElement(IsMark: false, _runSamples, 0, double.MaxValue));
+            new PendingElement(IsMark: false, _runSamples, 0, double.MaxValue, false));
 
         Drain();
     }
@@ -472,6 +562,17 @@ public sealed class CwDecoder
         {
             if (element.IsMark)
             {
+                if (element.Truncated)
+                {
+                    // Nothing is appended, because there is nothing honest to
+                    // append. The character carries the fact that part of it was
+                    // lost and is emitted as a placeholder rather than as
+                    // whatever the surviving fragment happens to spell.
+                    _patternTruncated = true;
+                    _silenceFlushed = false;
+                    continue;
+                }
+
                 var mark = _speed.ClassifyMark(element.Samples);
                 _pattern.Append(mark == CwElement.Dit ? '.' : '-');
                 _clarities.Add(nameable ? _speed.Clarity(mark, element.Samples) : 0);
@@ -527,6 +628,35 @@ public sealed class CwDecoder
     /// </summary>
     private void FlushCharacter(bool force)
     {
+        // **TRUNCATED EVIDENCE IS NOT EVIDENCE** (HM-DEC-095). A character built
+        // partly out of slivers heard between the operator's own elements is
+        // emitted as the placeholder and never as a letter, however plausible
+        // what survived happens to look.
+        if (_patternTruncated)
+        {
+            var lost = _pattern.Length > 0 || force;
+
+            _pattern.Clear();
+            _clarities.Clear();
+            _patternTruncated = false;
+            _worstSnrDb = double.MaxValue;
+            _contestedDb = double.MaxValue;
+
+            if (lost && _speed.LooksLikeMorse)
+            {
+                Emit(new CwCharacter(
+                    MorseAlphabet.Unreadable,
+                    CwConfidence.Unreadable,
+                    0,
+                    string.Empty,
+                    0,
+                    _speed.WordsPerMinute,
+                    TimeSpan.FromSeconds((double)_lastSample / SampleRate)));
+            }
+
+            return;
+        }
+
         if (_pattern.Length == 0)
         {
             return;
@@ -725,6 +855,12 @@ public sealed class CwDecoder
     /// The closest another station came during this run, before the filter is
     /// credited with rejecting any of it.
     /// </param>
+    /// <param name="Truncated">
+    /// True when the operator's own transmission cut this run short, so its
+    /// length is a fact about him rather than about anybody on the band
+    /// (HM-DEC-095).
+    /// </param>
     private readonly record struct PendingElement(
-        bool IsMark, double Samples, double SignalToNoiseDb, double ContestedMarginDb);
+        bool IsMark, double Samples, double SignalToNoiseDb, double ContestedMarginDb,
+        bool Truncated);
 }

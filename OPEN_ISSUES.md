@@ -559,3 +559,54 @@ The brief's own warning applies and is worth repeating: the operator heard CW in
 the 13:47 capture that independent analysis could not find. Human copy at low
 signal-to-noise beats automatic detection, and an analysis finding nothing is not
 evidence that nothing is there.
+
+---
+id: HM-OPEN-016
+status: open
+owner: claude
+raised: 2026-08-17
+severity: hard
+blocks: merging feature/honest-cw-detection, and sessions 2 and 3 of the batch brief
+refs: HM-DEC-095
+---
+
+The keying-structure detector regresses eleven tests against synthesized
+fixtures, and must not merge until they pass or are shown to be wrong.
+
+Nothing here is a real-signal failure. Every one is a synthetic fixture, and
+the common cause is architectural: the old tracker retuned to the loudest bin
+five times a second, which is perfect for one clean strong tone and wrong on
+every real recording. The new survey wants three seconds of keying evidence
+and two agreeing readings before it moves, which is right on the air and slow
+on a fixture that lasts eight seconds.
+
+| Test | What it does now |
+|---|---|
+| `ASignalAtTheWrongPitchIsStillFound` (400, 875 Hz) | `■ DE W1AW K` — loses the opening character to acquisition |
+| `ASignalAtTheWrongPitchIsStillFound` (500, 750 Hz) | `■ B ■AW K` — worse, and `B` is a wrong character rather than a placeholder |
+| `ACleanSignalDecodesExactly` (25 wpm) | fails; 12 and 18 pass |
+| `TheCleanRecordingsDecodeExactly` / `EveryRecordingGivesBackTheShareItShould` (clean-25wpm) | as above |
+| `TheSpeedEstimateFollowsAChangeWithinAFewCharacters` | speed adaptation across a change |
+| `AFadingSignalComesBackRatherThanStayingDead` | fade recovery |
+| `TheDecoderReadsAsFarDownAsItDidBefore` | reads to −2 dB and below, but the 17 and 18 dB rows are worse than the 10 dB row |
+| `CwTerminalTests.ClearingTheTranscriptLeavesTheDecoderAlone` (app) | transcript content after a clear |
+
+**The sensitivity one is the most interesting and should be read before the
+others.** The decoder still returns better than half the characters correct at
+minus two decibels. What broke is the top of the range: eighteen decibels out of
+the noise returns a third right and a third wrong, which is worse than the same
+decoder manages at ten. A strong signal failing where a weak one succeeds is not
+a sensitivity problem, it is something firing on strong signals that does not
+fire on weak ones, and the two candidates already found and fixed in that family
+were the window switching without hysteresis at eighteen words a minute and the
+speed being discarded whenever the tracker moved.
+
+**The 500 and 750 Hz cases deserve their own look.** Those two produce a wrong
+letter where 400 and 875 produce a placeholder, and they are the two nearest the
+600 Hz starting pitch, which suggests the fine bank is being left straddling the
+signal rather than moved onto it.
+
+What must not be done to close this: loosening the separation limit, the
+confirmation rule, or the plausibility bounds. Those are what stop a carrier
+being announced as a station, and every one of them was set from a measurement
+with margin on both sides (HM-DEC-095).
