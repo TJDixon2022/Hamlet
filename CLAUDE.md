@@ -130,6 +130,31 @@ pulled mid-cycle. Reasoning about an interlock is not the same as seeing it
 work, and this is the one feature where the difference is somebody else's
 band.
 
+### 0.2.1 Tuning writes — the scanner moves the operator's dial
+
+Reading the radio is unrestricted. **Changing the VFO is a different category**:
+it moves the dial out from under the person sitting at it, and a scanner does it
+repeatedly and unasked. Proposed by Claude 2026-08-17; ratified by Tim's commit
+of this file. HM-DEC-107.
+
+- **Never while transmitting**, and never while a transmit path is armed.
+- **The starting frequency is remembered and restored** when scanning stops, by
+  any route including a crash-safe path on next connect.
+- **Scanning stays inside a band-plan segment the operator configures in a data
+  file he edits.** Frequencies are never asserted from a model's memory, per §0
+  on generated-from-a-source-of-truth data.
+- **Abort instantly** on: the operator touching the dial or PTT, rig state going
+  unknown or stale, or the link failing to answer a read. Silence is a stop.
+- **Refuse to start** unless `RigStateMonitor.Populated` is satisfied — the gate
+  added after three separate faults raced the same poll sweep.
+- **One obvious, always-visible stop control**, and the scan states plainly that
+  it is moving the dial.
+- A scan **never transmits** (§0.2), and never runs while an automatic transmit
+  cycle is armed (HM-DEC-098).
+
+Practical test: could the operator walk away mid-scan, come back, and be unable
+to tell where his radio had been left or why? If yes, the scan is wrong.
+
 ### 0.3 Terse, and how questions are asked
 
 Claude answers short. Point first, no preamble. **Walls of text are the
@@ -318,6 +343,8 @@ this table is the index.
 
 | Date | Decision | Why | Ref |
 |---|---|---|---|
+| 2026-08-17 | **Tuning writes are their own category and the scanner is governed by §0.2.1: never while transmitting, the starting frequency restored by any exit route, confined to a band-plan segment the operator configures in a file he edits, aborting on a touched dial or an unanswered read, and refusing to start before rig state is populated.** Reading the radio is unrestricted and moving the dial is not: a scan takes the tuning knob out of the hand of the person sitting at it, repeatedly and unasked. Frequencies come from configured data and never from a model's memory (§0). **Proposed by Claude; ratified by Tim's commit of this file**, on the precedent of HM-DEC-009. | The operator must always be able to tell where his radio was left and why, and silence from the link is a stop rather than a licence to keep moving. | HM-DEC-107 |
+| 2026-08-17 | **A session's report is four sections — what Claude did, what Tim should expect, what we should do next, what is blocking us — written to `OUTPUT.md` at the repo root and not only to the terminal.** Supersedes HM-DEC-096 on the report's headings and nothing else; §12.1's four-part test for what a session may record itself is untouched, and a recorded entry now appears in full inside section one while everything handed back appears in section four. Reports were being read off photographs of a scrollback buffer, which is a transcription step between a measurement and the person who has to rule on it. | The split that matters is between what a session settled and what it is handing back, and a report he has to photograph is a report he reads less carefully. | HM-DEC-106 |
 | 2026-08-17 | **A fixture the reference cannot read is a generator defect, and the control for the generator is the real recording.** Three fixtures were held out by the scoring gate, including a tight fist at the easy tier — while the reference reads the *real* tight fist at high confidence off capture 013347. The synthesis is therefore wrong and is fixed against the measured parameters of that capture until the reference scores it as well as it scores the audio. **Lowering the gate to admit them was rejected outright** (§12.5). The same defect is carried as the leading hypothesis for the `MVRR` shortfall, since both symptoms appear on the one fist whose gaps are shorter than its dits. | The gate exists to make fixtures falsifiable, and the first thing it falsified was a fixture. | HM-DEC-101 |
 | 2026-08-17 | **Nothing is diagnosed against audio that has not itself been proved.** The settled pass currently reads worse than the provisional tip on the five-decibel fading tier, which is the opposite of why the settled pass exists — but the reference scores only 52–53% on that same tier, so the fixture has proved nothing about Hamlet yet. Re-measured after HM-DEC-101, and investigated only if the gap survives on sound audio. HM-OPEN-017's labelled-approximation fallback stays available and is not taken on this evidence. | A defect measured against suspect audio is a phantom, and chasing one costs a session and teaches nothing. | HM-DEC-102 |
 | 2026-08-17 | **Twenty-five words per minute is generated and covered, and the old fixture retires once replaced.** The one old fixture that fails is the only fast-CW coverage the repository has, so retiring it silently narrows what Hamlet is claimed to handle. Speed is a generator parameter and the gate governs the result exactly as it does the rest. New failures are expected and wanted: at 25 WPM the window's thirty-element floor binds rather than its two-and-a-half-second one, and no test has ever exercised that path. **Thirty-five was rejected** as scope invented at a test bench, since nothing has yet been decoded above twenty. | A claim about speed with no evidence behind it is the same defect as a decode with no signal behind it. | HM-DEC-103 |
@@ -1018,26 +1045,48 @@ The attribution rule is not part of this relaxation and stays absolute. An
 entry written under this section says so on its face and cites the principle
 that decided it.
 
-### 12.2 Every report ends with three headings — MANDATORY
+### 12.2 Every report is four sections, written to `OUTPUT.md` — MANDATORY
 
-No prose between them:
+**The report is written to `OUTPUT.md` at the repository root, overwriting it,
+and the same text is printed to the session.** Tim pastes that file rather than
+screenshotting a terminal, and a report that exists only in scrollback is a
+report he has to photograph.
 
-| Heading | Contains |
-|---|---|
-| **`GATE`** | One line: the project name the prompt claimed, and what in the tree confirmed it (§0.3.1) |
-| **`RECORDED`** | Entries written under §12.1, each with its id and **full text**, never a summary. Empty is a real answer |
-| **`NEEDS A RULING`** | Proposals, no id, in `DECISIONS.md`'s own format — ruling first, then reasoning, then what was rejected and why. Ordered with the one blocking the most work first |
-| **`STATE`** | Build status, tests passing and failing with the failing ones named, what was pushed and to which branch, and what remains unproven and why |
+Four sections, in this order, no prose between them, no other headings:
 
-An unlabelled mixture of the first two puts the triage back on Tim, which is
-the cost this exists to remove. A session on the development computer states
-in `STATE` that nothing in its report is evidence about the radio
-(`SHACK_FACTS.md`, HM-DEC-093).
+**1. What Claude did.** What was built, what was measured, what the numbers
+were. Any decision recorded under §12.1 appears here **with its id and full
+text**, never summarized. If nothing was recorded, say so in one line.
+
+**2. What Tim should expect.** What is now true of the app and the suite, what
+he will see if he runs it, and **what will look wrong but is not** — a red
+count that is the known baseline, a fixture held out on purpose, a capability
+that is engine-side only. Build status, tests passing and failing with the
+failing ones named, what was pushed and to which branch.
+
+**3. What we should do next.** The work this session made possible or
+necessary, in the order it should happen, one line each.
+
+**4. What's blocking us.** Anything that stops the next step, and **every
+question needing Tim's ruling** — each in `DECISIONS.md`'s own format, ruling
+first, then reasoning, then what was rejected and why, no id assigned. Ordered
+with the one blocking the most work first. Empty is a real answer.
+
+The first line of section 1 states the surface and the gate: which machine,
+which project name the prompt claimed, and what in the tree confirmed it
+(§0.3.1). A session on the development computer states there that **nothing in
+its report is evidence about the radio** (`SHACK_FACTS.md`, HM-DEC-093).
+
+The load-bearing split is between what a session settled and what it is handing
+back. Section 1 is the first; section 4 is the second. **An unlabelled mixture
+of them puts the triage back on Tim**, which is the cost this exists to remove.
 
 ### 12.3 Work units are written wide, in ordered phases — Tim's side
 
 Five or six phases, each independently committable, ordered so each is
-buildable when reached. The plan **names the phase to drop** if the session
+buildable when reached. **Every work order ends by requiring the report in
+`OUTPUT.md`** per §12.2 — a plan that does not say so gets a report Tim has to
+photograph. The plan **names the phase to drop** if the session
 runs out of room, and the session **says it dropped one** rather than
 half-building it. Every plan ends with what not to do next — "if you finish
 every phase, stop and report; do not start the next work unit" — because a
