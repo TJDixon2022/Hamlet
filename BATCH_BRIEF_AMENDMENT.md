@@ -1,3 +1,5 @@
+**PROJECT: Hamlet**
+
 # Amendment to BATCH_BRIEF.md — session 1's remaining work, phased
 
 Answers HM-OPEN-017 and HM-OPEN-018, which the last session correctly escalated

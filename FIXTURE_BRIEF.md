@@ -1,3 +1,5 @@
+**PROJECT: Hamlet**
+
 # Work order: rebuild the CW fixtures so they test a receiver instead of a fantasy
 
 HM-OPEN-018. Ruled 2026-08-17. Six phases per `CLAUDE.md` §12.3, reported per

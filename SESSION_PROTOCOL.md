@@ -1,3 +1,5 @@
+**PROJECT: Hamlet**
+
 # Session protocol — how work units are scoped and how sessions report
 
 **Status: in force. Ratified as HM-DEC-096, summarized in `CLAUDE.md` §12.**

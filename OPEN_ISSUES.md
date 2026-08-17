@@ -727,3 +727,92 @@ Recorded rather than acted on. Making failing tests pass by rewriting their
 fixtures is exactly the move that deserves suspicion, and the case for it here
 rests on a measurement anybody can repeat: run the reference against them.
 
+---
+id: HM-OPEN-019
+status: open
+owner: tim
+raised: 2026-08-17
+severity: slows
+refs: HM-OPEN-018, HM-DEC-097, FIXTURE_BRIEF.md
+---
+
+Phase 6's retirement assessment ran and **nothing qualified**, so both fixture
+sets stay in place.
+
+`FIXTURE_BRIEF.md` phase 6 asks for superseded fixtures to be retired one at a
+time with a reason each, and names leaving both sets in place as the safe
+state. That is where this landed, and the reasoning is worth keeping so the
+next session does not redo it:
+
+| Old fixture | Tests | Retired? | Reason |
+|---|---|---|---|
+| `clean-12wpm` | all pass | no | Passing. Retiring it removes coverage and gains nothing |
+| `clean-18wpm` | all pass | no | Passing |
+| `prosigns-18wpm` | all pass | no | Passing, and the new `prosigns-*` set does not yet read well enough to replace it |
+| `noisy-18wpm` | all pass | no | Passing |
+| `fading-18wpm` | all pass | no | Passing |
+| `interference-18wpm` | all pass | no | Passing |
+| `clean-25wpm` | 2 fail | **no** | The only twenty-five words a minute coverage in the repository. The rebuilt suite is at twelve, so retiring this deletes the fast-fist case rather than replacing it |
+
+**The one that fails is the one with no replacement**, which is the shape that
+makes retirement destroy evidence rather than tidy up. A twenty-five word a
+minute fixture on realistic audio would close it, and the measurement to do
+that first is already in `CwAdjudicationTests`: at that speed Hamlet reads
+`■ALL N0CALL K E` off a realistic signal against nothing at all off the
+noiseless one, so the scenario is real and the fixture is what was wrong.
+
+---
+id: HM-OPEN-020
+status: open
+owner: tim
+raised: 2026-08-17
+severity: slows
+refs: HM-OPEN-018, cwdecoder.py, CW_RECEIVE_BRIEF.md
+---
+
+The reference chain measures every mark about twenty-five milliseconds long,
+and at high contrast that pushes a real fist below its own ratio floor.
+
+Measured across the rebuilt fixtures, on the fist recorded off the air — dit
+105 ms, dah 283 ms, a true ratio of **2.70**:
+
+| Gate contrast | Measured dit | Measured dah | Ratio | Read? |
+|---|---|---|---|---|
+| 10 dB | 109 | 295 | 2.70 | yes |
+| 13 dB | 112 | 294 | 2.63 | partly |
+| 22 dB | 128 | 305 | **2.39** | **refused** |
+
+The cause is arithmetic rather than mysterious. A twenty hertz detection
+bandwidth needs a fifty millisecond window, and a window that long smears each
+keyed edge over about the same. The gate crosses its threshold early on the
+rise and late on the fall, so every mark measures long by roughly a constant,
+and adding a constant to both lengths compresses their ratio. The stronger the
+signal, the lower the threshold sits relative to the peak, and the earlier it
+crosses.
+
+`cwdecoder.py` refuses any clock outside 2.5 to 3.8, so **it refuses at fifteen
+decibels a fist it reads perfectly at zero**. Three rebuilt fixtures are held
+out of the phase 4 gate for this and none of them was edited to get round it:
+`tightfist-easy`, `tightfist-working`, `qsk-preamble`.
+
+This matters beyond the fixtures. `FIXTURE_BRIEF.md` phase 4 says a fixture the
+reference cannot decode is a bad fixture rather than a Hamlet failure, and here
+**the fixture is a measurement taken off the air and the floor is what fails**.
+The rule is right about the common case and this is the case it does not cover.
+
+Two things worth settling, neither of them Claude's:
+
+- whether the 2.5 floor should be widened, or the bias corrected before the
+  ratio is taken, in Hamlet's own clock fit — which uses the same floor
+  (`CwToneSurvey.MinimumRatio`) and will meet the same wall;
+- whether a held-out list is the right shape for phase 4's exception, or
+  whether the gate should record a reason per fixture instead.
+
+A separate finding from the same work, recorded so it is not rediscovered:
+**five dahs in a row do not survive a tight fist.** `N0CALL` contains `0`, and
+at sixty-five millisecond gaps read through a fifty millisecond window those
+five dahs merge into a single mark of about one and two thirds of a second,
+which dominates the clock fit and collapses it. The reference read
+`K W BG EN` out of `N0CALL N0CALL`. The tight-fist message avoids digits for
+that reason and the case deserves a fixture of its own.
+

@@ -143,6 +143,28 @@ Questions follow a fixed protocol (HM-DEC-010):
   each with pros and cons, as a table.
 - Claude states the industry-standard answer and why (§0), then Tim rules.
 
+### 0.3.1 Every prompt is gated by project name — ABSOLUTE
+
+Tim runs several projects and can put the wrong prompt into the wrong session.
+The cost of that is a session confidently editing a repository it was never
+written for.
+
+**Every work order and every pasted prompt opens with `PROJECT: Hamlet`.**
+
+- A session whose **first action** is not verifying that gate has already
+  failed. Verify against the tree, not against the prompt's own claim: this
+  file's header says `Project: Hamlet`, the solution is `Hamlet.sln`, the
+  namespaces are `Hamlet.*`.
+- **A prompt with no gate line is not executed.** Say so and stop.
+- **A prompt gated to another project is not executed, not adapted, and not
+  partially applied.** Say which project it names and stop. Do not reason
+  about whether it might still be relevant here.
+- The gate is checked once, before reading the work order, and the report's
+  `STATE` block records that it passed.
+
+Claude's own deliveries carry the gate too. A work order Claude writes without
+`PROJECT: Hamlet` on its first line is a defective delivery and is redone.
+
 ### 0.4 Tim rules, Claude executes
 
 Tim is the architect and owns the outcome. Claude makes no assumptions, no
@@ -296,6 +318,7 @@ this table is the index.
 
 | Date | Decision | Why | Ref |
 |---|---|---|---|
+| 2026-08-17 | **Every prompt and every work order opens with `PROJECT: Hamlet`, and a session's first action is verifying that gate against the tree rather than against the prompt's own claim.** No gate line, or a gate naming another project: the session says so and stops, without adapting or partially applying anything. Tim runs several projects and the failure this prevents is a session confidently editing a repository it was never written for — which no test catches, because the tests it runs are the wrong project's. Claude's deliveries carry the gate too; one written without it is defective and redone. | A misdirected prompt is the one class of error where being capable makes the damage worse. | HM-DEC-099 |
 | 2026-08-17 | **An automated transmit cycle is built and exercised into a dummy load only, and reaching an antenna is a separate ruling taken afterwards.** §0.2's first sentence stands unamended: nothing transmits unattended. Auto-CQ is automated repeating transmission and cannot be reconciled with that sentence by argument, so it is proved against a load first — every stop condition watched to fire, including the USB link pulled mid-cycle — and the on-air question is re-opened once there is something to reason from. HM-DEC-008 unchanged. Governance had already named the abort this needs: `0x17` with `0xFF`, which is also the keying method's documented stop code. | Reasoning about an interlock is not seeing it work, and the cost of being wrong lands on somebody else's band. | HM-DEC-098 |
 | 2026-08-17 | **The CW decoder refuses below 0 dB SNR rather than copying into the band where it is half wrong.** Measured on the sensitivity sweep: from 18 dB down to 0 dB the whole message returns with nothing wrong; at −1 dB one character in five is wrong; at −2 dB it emits a full message of which **44% is invented**; below −3 dB it already refuses. A trained ear copies to roughly 0 dB, so refusing there meets the stated goal — decode almost anything the operator can hear — rather than falling short of it. **A degraded label was rejected as a substitute**: marking a message does not make a plausible wrong callsign on screen any less actionable. | §0.0's practical test decides it one way — at −1 dB the operator can act and be wrong, and at −2 dB nearly half of what he acts on was never on the air. | HM-DEC-097 |
 | 2026-08-17 | **A work unit is five or six ordered phases, every report ends with `RECORDED` / `NEEDS A RULING` / `STATE`, and one narrow class of conclusion becomes the session's to record rather than Tim's** — decided one way by a governing principle, superseding nothing, weighing no trade-off, reproduced in full so it can be overridden. Anything touching §0.0, §0.1, §0.2, transmit or what the display asserts stays Tim's without exception, and the attribution rule is untouched. **Tim does not edit files**; a delivery requiring him to hand-patch anything has failed §9.1. Full text in `SESSION_PROTOCOL.md`, summary in §12. Measured on the parent project: the same model on the same repository went from a five-minute session producing three fixes to consecutive forty-seven and fifty-one minute sessions producing six phases, ninety-one tests and a live defect found and fixed. | A session's authority is exactly as wide as the plan it was given, and a queue that mixes the conclusions needing judgement with the ones that could not have gone another way buries the ones that need him. | HM-DEC-096 |
@@ -989,6 +1012,7 @@ No prose between them:
 
 | Heading | Contains |
 |---|---|
+| **`GATE`** | One line: the project name the prompt claimed, and what in the tree confirmed it (§0.3.1) |
 | **`RECORDED`** | Entries written under §12.1, each with its id and **full text**, never a summary. Empty is a real answer |
 | **`NEEDS A RULING`** | Proposals, no id, in `DECISIONS.md`'s own format — ruling first, then reasoning, then what was rejected and why. Ordered with the one blocking the most work first |
 | **`STATE`** | Build status, tests passing and failing with the failing ones named, what was pushed and to which branch, and what remains unproven and why |

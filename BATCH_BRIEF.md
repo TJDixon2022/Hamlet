@@ -1,3 +1,5 @@
+**PROJECT: Hamlet**
+
 # Batch work order: honest CW detection, then band scanning, then auto-CQ
 
 Three sessions, in this order. Each depends on the one before it, and the
