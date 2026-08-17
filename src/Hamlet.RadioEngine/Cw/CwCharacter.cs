@@ -28,6 +28,40 @@ public enum CwConfidence
 }
 
 /// <summary>
+/// Which of Hamlet's two passes produced a character (HM-DEC-096, phase 1).
+/// </summary>
+/// <remarks>
+/// <para>**HAMLET READS THE SAME AUDIO TWICE AND THE READER HAS TO BE ABLE TO
+/// TELL WHICH ONE IS SPEAKING.** The streaming pass answers at the leading edge,
+/// while somebody is still sending, and it decides where the threshold is before
+/// it has heard the stretch that threshold describes. The settled pass runs a few
+/// seconds behind with the whole stretch in hand.</para>
+/// <para>A provisional reading shown as though it were final is §0.0 broken by
+/// omission: it is a guess presented as a decode, however good a guess it usually
+/// is.</para>
+/// </remarks>
+public enum CwReadingStage
+{
+    /// <summary>
+    /// The leading edge, read as the elements completed. Correct far more often
+    /// than not and never final.
+    /// </summary>
+    Provisional,
+
+    /// <summary>
+    /// The leading edge while the settled pass has refused or is re-acquiring, so
+    /// nothing is coming along behind to confirm it. Shown marked (phase 4).
+    /// </summary>
+    Unstable,
+
+    /// <summary>
+    /// Read a second time from a threshold fitted to the stretch it sits in. This
+    /// is what the transcript keeps.
+    /// </summary>
+    Settled,
+}
+
+/// <summary>
 /// One decoded character, with the evidence behind it.
 /// </summary>
 /// <param name="Text">
@@ -60,12 +94,33 @@ public sealed record CwCharacter(
     int WordsPerMinute,
     TimeSpan At)
 {
+    /// <summary>Which pass read it (HM-DEC-096, phase 1).</summary>
+    public CwReadingStage Stage { get; init; } = CwReadingStage.Provisional;
+
     /// <summary>True when this is the gap between two words rather than a character.</summary>
     public bool IsWordGap => Text == MorseAlphabet.WordGap;
 
     /// <summary>True when something was heard and could not be resolved.</summary>
     public bool IsUnreadable => Confidence == CwConfidence.Unreadable;
+
+    /// <summary>True when nothing is coming along behind to confirm this.</summary>
+    public bool IsUnstable => Stage == CwReadingStage.Unstable;
 }
+
+/// <summary>
+/// A provisional reading and what the settled pass made of the same audio
+/// (HM-DEC-096, phase 1).
+/// </summary>
+/// <param name="Provisional">What the leading edge said.</param>
+/// <param name="Settled">What the second pass said.</param>
+/// <param name="Agreed">Whether the two read the same character.</param>
+/// <remarks>
+/// **IN MEMORY AND EXPORTABLE, NEVER WRITTEN TO DISK.** This is diagnostic
+/// (§0.0.1) rather than a record of the air, and a log that grows on disk needs a
+/// retention policy nobody has designed.
+/// </remarks>
+public readonly record struct CwRevision(
+    CwCharacter Provisional, CwCharacter Settled, bool Agreed);
 
 /// <summary>
 /// Turns two measurements into a confidence, and refuses to round it up.

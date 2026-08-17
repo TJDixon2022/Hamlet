@@ -374,6 +374,18 @@ public sealed class CwToneTracker
     public bool HasKeying => Verdict.Keyed is not null;
 
     /// <summary>
+    /// True when keying was found within the last few seconds (HM-DEC-096).
+    /// </summary>
+    /// <remarks>
+    /// **THE SETTLED PASS READS AUDIO THE SURVEY HAS ALREADY MOVED PAST**, by
+    /// design: it trails the leading edge so it can fit a threshold to a stretch
+    /// it has heard all of. Gating it on whether somebody is keying *right now*
+    /// therefore asks the wrong question and answers it wrongly in both
+    /// directions, and in practice suppressed the whole of a real decode.
+    /// </remarks>
+    public bool KeyingRecently => _keyedProtects > 0;
+
+    /// <summary>
     /// Follow the sending speed, which decides how finely the tracker listens.
     /// </summary>
     /// <param name="wordsPerMinute">The speed, or zero when it is not known.</param>

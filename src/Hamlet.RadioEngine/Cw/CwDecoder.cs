@@ -139,6 +139,27 @@ public sealed class CwDecoder
     /// <summary>How many times the tracker had moved, last time this looked.</summary>
     private int _lastRetunes;
 
+    /// <summary>Every second measurement goes to the settled pass.</summary>
+    private const int SettledDecimation = 2;
+
+    /// <summary>How often the settled pass is asked to read, in its own points.</summary>
+    /// <remarks>
+    /// Fifty, which is half a second. The pass reads a trailing window ending
+    /// half a second behind the leading edge, so asking more often re-reads
+    /// almost the same audio.
+    /// </remarks>
+    private const int SettledEveryPoints = 50;
+
+    private readonly CwSettledPass _settled;
+    private readonly List<SettledCharacter> _settledOut = new();
+    private readonly List<CwCharacter> _awaitingSettlement = new();
+    private readonly List<CwRevision> _revisions = new();
+
+    private int _settledPhase;
+    private int _settledSinceRun;
+    private bool _settledStale = true;
+    private SettledOutcome _lastOutcome;
+
     /// <summary>Creates a decoder.</summary>
     /// <param name="sampleRate">Samples per second of the audio it will be fed.</param>
     /// <param name="expectedToneHz">
@@ -151,13 +172,51 @@ public sealed class CwDecoder
         _tracker = new CwToneTracker(SampleRate, expectedToneHz);
         _speed = new CwSpeedEstimator(SampleRate);
         _onReading = OnReading;
+        _settled = new CwSettledPass(
+            SampleRate,
+            (double)_tracker.HopSamples * SettledDecimation / SampleRate);
     }
 
     /// <summary>Samples per second.</summary>
     public int SampleRate { get; }
 
     /// <summary>Raised for every character, space and placeholder, in order.</summary>
+    /// <remarks>
+    /// **THIS IS THE PROVISIONAL TIP** (HM-DEC-096, phase 1). It arrives as each
+    /// element completes, which is what makes the line live while somebody is
+    /// calling, and it is never the last word. What the transcript keeps comes
+    /// from <see cref="CharacterSettled"/> a few seconds behind.
+    /// </remarks>
     public event Action<CwCharacter>? CharacterDecoded;
+
+    /// <summary>
+    /// Raised for each character the second pass has read and stands behind.
+    /// </summary>
+    /// <remarks>
+    /// These consume the provisional readings covering the same audio. A reader
+    /// showing one line puts these behind the cursor and the provisional tip in
+    /// front of it.
+    /// </remarks>
+    public event Action<CwCharacter>? CharacterSettled;
+
+    /// <summary>
+    /// What the two passes each made of the same audio, in memory only.
+    /// </summary>
+    /// <remarks>
+    /// **NOT PERSISTED, BY RULING** (HM-DEC-096). Diagnostic under §0.0.1, so it
+    /// is exportable on demand and never written to disk, because a growing
+    /// on-disk log needs a retention policy nobody has designed.
+    /// </remarks>
+    public IReadOnlyList<CwRevision> Revisions => _revisions;
+
+    /// <summary>What the settled pass last did, including why it read nothing.</summary>
+    public SettledOutcome SettledState => _lastOutcome;
+
+    /// <summary>
+    /// True when nothing is coming along behind the provisional tip to confirm
+    /// it (HM-DEC-096, phase 4).
+    /// </summary>
+    public bool SettledIsRefusing => _settledStale || !_lastOutcome.Read;
 
     /// <summary>What the decoder is currently working from.</summary>
     public CwDecoderState State => new(
@@ -269,6 +328,20 @@ public sealed class CwDecoder
 
         FlushCharacter(force: true);
         _pending.Clear();
+
+        // The recording ended, so everything still behind the settled cursor is
+        // read now rather than being dropped with the last few seconds of audio.
+        for (var pass = 0; pass < 16; pass++)
+        {
+            var before = _settled.SettledThrough;
+
+            RunSettledPass(drain: true);
+
+            if (_settled.SettledThrough == before)
+            {
+                break;
+            }
+        }
     }
 
     private void OnSamples(in AudioChunk chunk) => Process(in chunk);
@@ -297,6 +370,13 @@ public sealed class CwDecoder
             _worstSnrDb = double.MaxValue;
             _contestedDb = double.MaxValue;
 
+            // **A TRACKER SWITCH IS A CLOCK-LOSS EVENT** (HM-DEC-096, phase 3).
+            // Operationally a pitch change and a speed change are the same thing:
+            // somebody else started transmitting. The settled pass has to forget
+            // its window, because that window is full of a different station.
+            _settled.Reset();
+            _settledStale = true;
+
             // **THE SPEED SURVIVES THE MOVE, AND THE ELEMENTS DO NOT.** Throwing
             // the speed away too was tried and it is what a retune costs that is
             // hardest to earn back: twelve marks, which on a slow fist is several
@@ -323,6 +403,22 @@ public sealed class CwDecoder
         // it would smear the edges off a fast fist, so it follows the speed
         // rather than being chosen once.
         _tracker.FollowSpeed(_speed.IsReady ? _speed.WordsPerMinute : 0);
+
+        // **THE SECOND PASS IS FED THE SAME ENVELOPE, DECIMATED** (HM-DEC-096,
+        // phase 1). Every second measurement is a ten millisecond grid, which is
+        // what the validated reference chain fits thresholds over, and half the
+        // points to sort.
+        if (++_settledPhase >= SettledDecimation)
+        {
+            _settledPhase = 0;
+            _settled.Observe(reading.PowerDb, reading.Blocked, reading.SampleIndex);
+
+            if (++_settledSinceRun >= SettledEveryPoints)
+            {
+                _settledSinceRun = 0;
+                RunSettledPass();
+            }
+        }
 
         // **HOW FAR THE TONE STANDS ABOVE THE BAND WHILE IT IS KEYED**, which is
         // not the same question as how far it stands above it on average, and
@@ -805,6 +901,138 @@ public sealed class CwDecoder
         }
     }
 
+    /// <summary>
+    /// Ask the second pass to read whatever is now far enough behind
+    /// (HM-DEC-096, phase 1).
+    /// </summary>
+    private void RunSettledPass(bool drain = false)
+    {
+        _settledOut.Clear();
+
+        var dit = _speed.IsReady
+            ? _speed.DitSamples / SampleRate * 1000
+            : 0;
+
+        _lastOutcome = _settled.Settle(dit, _settledOut, drain);
+
+        if (!_lastOutcome.Read)
+        {
+            // **THE PROVISIONAL TIP KEEPS RUNNING** (phase 4). The moment
+            // somebody answers is the worst possible moment for the live feed to
+            // go dark, so a refusal here marks the leading edge unstable rather
+            // than silencing it.
+            _settledStale = true;
+            return;
+        }
+
+        _settledStale = false;
+
+        // **NOTHING IS SETTLED WITHOUT SOMEBODY KEYING** (HM-DEC-095, §0.0). A
+        // window of band noise or of a steady carrier will eventually fit two
+        // levels and a plausible clock, and the settled pass is more dangerous
+        // than the provisional one when it does: settled text is what the
+        // transcript keeps. On the recording holding a carrier and no station it
+        // produced two hundred characters of confident nonsense before this gate
+        // went in.
+        //
+        // The gate is the survey's own keying verdict, which is the measurement
+        // that already decides whether anybody is sending at all.
+        if (!_tracker.KeyingRecently)
+        {
+            _settledStale = true;
+            return;
+        }
+
+        foreach (var settled in _settledOut)
+        {
+            Settle(settled);
+        }
+    }
+
+    /// <summary>
+    /// Turn one settled reading into a character, reconciled against whatever
+    /// the leading edge said about the same audio.
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE CONFIDENCE RULE IS RULED AND IS NOT A JUDGEMENT CALL**
+    /// (HM-DEC-096). Where the two passes agree on the character, the settled
+    /// score stands: two independent readings arriving at the same letter is
+    /// corroboration, not the decoder talking itself into something. Where they
+    /// disagree, the lower of the two scores stands, because disagreement is
+    /// itself evidence that the character was marginal and it has to cost
+    /// something.</para>
+    /// <para>Both scores are kept either way, which is what makes a wrong settled
+    /// reading diagnosable rather than arguable (§0.0.1).</para>
+    /// </remarks>
+    private void Settle(SettledCharacter settled)
+    {
+        var at = TimeSpan.FromSeconds((double)settled.LastSample / SampleRate);
+
+        // A truncated character may never be rendered as a letter, whatever its
+        // pattern spelled (HM-DEC-095).
+        var text = settled.Truncated ? MorseAlphabet.Unreadable : settled.Text;
+        var score = settled.Score;
+
+        var provisional = TakeProvisional(settled);
+        var agreed = provisional is not null
+            && string.Equals(provisional.Text, text, StringComparison.Ordinal);
+
+        if (provisional is not null && !agreed)
+        {
+            score = Math.Min(score, provisional.Score);
+        }
+
+        var resolved = text != MorseAlphabet.Unreadable && !settled.Truncated;
+
+        var character = new CwCharacter(
+            resolved ? text : MorseAlphabet.Unreadable,
+            CwConfidenceModel.Rate(score, resolved),
+            score,
+            settled.Pattern,
+            0,
+            settled.WordsPerMinute,
+            at)
+        {
+            Stage = CwReadingStage.Settled,
+        };
+
+        if (provisional is not null)
+        {
+            _revisions.Add(new CwRevision(provisional, character, agreed));
+        }
+
+        CharacterSettled?.Invoke(character);
+    }
+
+    /// <summary>
+    /// The provisional reading covering the same audio, removed from the queue.
+    /// </summary>
+    private CwCharacter? TakeProvisional(SettledCharacter settled)
+    {
+        var endedAt = (double)settled.LastSample / SampleRate;
+
+        for (var i = 0; i < _awaitingSettlement.Count; i++)
+        {
+            var candidate = _awaitingSettlement[i];
+            var difference = Math.Abs(candidate.At.TotalSeconds - endedAt);
+
+            // Within a quarter second of the same moment is the same character.
+            // The two passes measure an element's end from different thresholds,
+            // so they never land on exactly the same sample.
+            if (difference > 0.25)
+            {
+                continue;
+            }
+
+            _awaitingSettlement.RemoveRange(0, i + 1);
+            return candidate;
+        }
+
+        // Anything older than this settled reading will never be matched now.
+        _awaitingSettlement.RemoveAll(c => c.At.TotalSeconds < endedAt - 0.25);
+        return null;
+    }
+
     private void Emit(CwCharacter character)
     {
         // **NOTHING IS EMITTED WITHOUT A TONE TO EMIT IT FROM** (HM-DEC-090).
@@ -840,8 +1068,32 @@ public sealed class CwDecoder
             _elementsResolved += Math.Max(1, character.Pattern.Length);
         }
 
-        Watch.Observe(character);
-        CharacterDecoded?.Invoke(character);
+        // **MARKED UNSTABLE WHEN NOTHING IS COMING BEHIND IT** (HM-DEC-096,
+        // phase 4). While the settled pass is refusing or re-acquiring, the
+        // leading edge is all there is, and the reader has to be able to see that
+        // no second opinion is on its way (§0.0).
+        var tip = character with
+        {
+            Stage = SettledIsRefusing
+                ? CwReadingStage.Unstable
+                : CwReadingStage.Provisional,
+        };
+
+        if (!tip.IsWordGap)
+        {
+            _awaitingSettlement.Add(tip);
+
+            // The queue only ever holds what has not yet been overtaken. A
+            // decoder left running for an evening must not accumulate a
+            // transcript in a field nobody reads (§8).
+            if (_awaitingSettlement.Count > 256)
+            {
+                _awaitingSettlement.RemoveRange(0, 128);
+            }
+        }
+
+        Watch.Observe(tip);
+        CharacterDecoded?.Invoke(tip);
     }
 
     /// <summary>A measured run, waiting for something to be measured against.</summary>

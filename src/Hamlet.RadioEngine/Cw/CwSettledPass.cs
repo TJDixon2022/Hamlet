@@ -1,0 +1,778 @@
+using System.Text;
+
+namespace Hamlet.RadioEngine.Cw;
+
+/// <summary>
+/// One character as the settled pass read it, with the span it covers.
+/// </summary>
+/// <param name="Text">What it read.</param>
+/// <param name="Pattern">The dots and dashes it measured.</param>
+/// <param name="Score">How far it stands behind it, from 0 to 1.</param>
+/// <param name="FirstSample">Where the character began.</param>
+/// <param name="LastSample">Where it ended.</param>
+/// <param name="WordsPerMinute">The speed the settled clock was running at.</param>
+/// <param name="Truncated">
+/// True when the operator's own transmission cut part of it away, so it may
+/// never be rendered as a letter (HM-DEC-095).
+/// </param>
+public readonly record struct SettledCharacter(
+    string Text,
+    string Pattern,
+    double Score,
+    long FirstSample,
+    long LastSample,
+    int WordsPerMinute,
+    bool Truncated);
+
+/// <summary>
+/// Why the settled pass declined to read a stretch of audio.
+/// </summary>
+public enum SettledRefusal
+{
+    /// <summary>It read it.</summary>
+    None,
+
+    /// <summary>Not enough audio has arrived behind the cursor yet.</summary>
+    NotYet,
+
+    /// <summary>The two levels in the window were less than six decibels apart.</summary>
+    Contrast,
+
+    /// <summary>The mark lengths did not cluster into a clock anybody could send.</summary>
+    Clock,
+}
+
+/// <summary>
+/// What one settling attempt produced.
+/// </summary>
+/// <param name="Refusal">Why nothing was read, or <see cref="SettledRefusal.None"/>.</param>
+/// <param name="WindowSeconds">How much audio the threshold was fitted over.</param>
+/// <param name="WindowWasCapped">
+/// True when the window wanted to be longer and hit the ceiling, so the fit is
+/// weaker than the speed asked for.
+/// </param>
+/// <param name="ContrastDb">How far the two levels sat apart.</param>
+/// <param name="DitMilliseconds">The settled clock's dit, or zero.</param>
+/// <param name="SpeedChanged">
+/// True when this window's clock is a different speed from the last one, which
+/// on the air usually means a different station started sending.
+/// </param>
+public readonly record struct SettledOutcome(
+    SettledRefusal Refusal,
+    double WindowSeconds,
+    bool WindowWasCapped,
+    double ContrastDb,
+    double DitMilliseconds,
+    bool SpeedChanged)
+{
+    /// <summary>True when the pass read something.</summary>
+    public bool Read => Refusal == SettledRefusal.None;
+}
+
+/// <summary>
+/// Reads the audio a second time, a few seconds behind, with a threshold fitted
+/// to the stretch it is reading (HM-DEC-096, amendment phase 1).
+/// </summary>
+/// <remarks>
+/// <para>**HAMLET DECODES TWICE AND THE TWO PASSES ARE NOT RIVALS.** The
+/// streaming gate answers as each element ends, which is what the operator needs
+/// while somebody is calling him, and it has to decide where the threshold is
+/// before it has heard the stretch the threshold describes. This pass runs
+/// behind it and has the whole stretch, so it can fit the threshold to what
+/// actually arrived.</para>
+/// <para>The validated reference chain works this way and could not simply be
+/// ported: it fits a threshold to a block and applies it to that same block,
+/// which a decoder that must answer at the leading edge cannot do. Grafting its
+/// gate onto the streaming chain made a real recording measurably worse. Running
+/// both, and letting the settled reading firm up behind the provisional one, is
+/// what keeps the leading edge live without pretending it is final.</para>
+/// <para>**A TRAILING WINDOW PER CHARACTER, NOT BLOCKS.** Blocks have seams, and
+/// an element straddling a seam gets one threshold applied to its start and
+/// another to its end. A window that ends where the reading ends has no seam to
+/// reason about. Nothing is cached: "the audio has not changed materially" needs
+/// a definition, and a wrong one silently reintroduces a stale threshold, which
+/// is the shape of the faults this repository keeps finding.</para>
+/// <para>**THE WINDOW IS THE LONGER OF ABOUT TWO AND A HALF SECONDS AND ABOUT
+/// THIRTY ELEMENTS**, because both constraints are real and they bind at
+/// opposite ends of the speed range: the time is what spans a fade, and the
+/// element count is what makes fitting two clusters stable. Past four seconds it
+/// stops, whatever the speed asks for. A settled line exists to catch a callsign
+/// in a live contact, and a six-second lag makes it useless for the one thing it
+/// is for, so a weaker fit that arrives is worth more than a better one that
+/// does not. **When the ceiling binds, the outcome says so**, because a degraded
+/// measurement announced is honest and the same measurement concealed is not
+/// (§0.0).</para>
+/// </remarks>
+public sealed class CwSettledPass
+{
+    /// <summary>The shortest the fitting window may be, in seconds.</summary>
+    public const double ShortestWindowSeconds = 2.5;
+
+    /// <summary>The longest it may be, however slow the sending is.</summary>
+    public const double LongestWindowSeconds = 4.0;
+
+    /// <summary>How many elements the window tries to span.</summary>
+    public const int WindowElements = 30;
+
+    /// <summary>How far behind the leading edge the settled reading runs.</summary>
+    /// <remarks>
+    /// Half a second past the end of the window, so a character sitting on the
+    /// newest edge of the fit is not read from a window that only just contains
+    /// it.
+    /// </remarks>
+    public const double TrailSeconds = 0.5;
+
+    /// <summary>How far apart the two levels must sit before anything is read.</summary>
+    public const double MinimumContrastDb = 6.0;
+
+    /// <summary>How far apart the opening and closing decisions sit.</summary>
+    private const double HysteresisDb = 6.0;
+
+    /// <summary>How close to the operator's own transmission spoils a mark.</summary>
+    /// <remarks>Sixty milliseconds, from the validated reference chain.</remarks>
+    private const double TruncationBorderSeconds = 0.060;
+
+    /// <summary>The shortest dit anybody sends, in milliseconds.</summary>
+    public const double ShortestDitMs = 30;
+
+    /// <summary>The longest, in milliseconds.</summary>
+    public const double LongestDitMs = 350;
+
+    /// <summary>How much a clock has to move to count as a different speed.</summary>
+    /// <remarks>
+    /// A quarter. Real fists wander a few percent and a different operator is
+    /// usually a different speed entirely, so this sits well above the first and
+    /// well below the second.
+    /// </remarks>
+    public const double SpeedChangeFraction = 0.25;
+
+    private readonly int _sampleRate;
+    private readonly double _hopSeconds;
+    private readonly int _capacity;
+
+    private readonly float[] _db;
+    private readonly bool[] _blocked;
+    private readonly long[] _sample;
+
+    private readonly double[] _scratch;
+    private readonly bool[] _key;
+    private readonly bool[] _voted;
+    private readonly double[] _marks;
+    private readonly double[] _gaps;
+    private readonly bool[] _markTruncated;
+    private readonly long[] _markStart;
+    private readonly long[] _markEnd;
+
+    private readonly StringBuilder _pattern = new();
+
+    private int _write;
+    private int _fill;
+    private long _settledThrough = -1;
+    private double _lastDitMs;
+
+    /// <summary>Creates a settled pass.</summary>
+    /// <param name="sampleRate">Samples per second of the audio.</param>
+    /// <param name="hopSeconds">How long one envelope point covers.</param>
+    /// <param name="historySeconds">How much audio to keep.</param>
+    public CwSettledPass(int sampleRate, double hopSeconds, double historySeconds = 10.0)
+    {
+        _sampleRate = Math.Max(1_000, sampleRate);
+        _hopSeconds = hopSeconds > 0 ? hopSeconds : 0.01;
+        _capacity = Math.Max(256, (int)Math.Round(historySeconds / _hopSeconds));
+
+        _db = new float[_capacity];
+        _blocked = new bool[_capacity];
+        _sample = new long[_capacity];
+
+        _scratch = new double[_capacity];
+        _key = new bool[_capacity];
+        _voted = new bool[_capacity];
+        _marks = new double[_capacity];
+        _gaps = new double[_capacity];
+        _markTruncated = new bool[_capacity];
+        _markStart = new long[_capacity];
+        _markEnd = new long[_capacity];
+    }
+
+    /// <summary>How far the settled reading has got, as a sample index.</summary>
+    public long SettledThrough => _settledThrough;
+
+    /// <summary>
+    /// Record one point of the detection envelope.
+    /// </summary>
+    /// <param name="powerDb">Energy at the tracked pitch, in decibels.</param>
+    /// <param name="blocked">True when the operator was transmitting.</param>
+    /// <param name="sampleIndex">Where this point sits in the stream.</param>
+    public void Observe(double powerDb, bool blocked, long sampleIndex)
+    {
+        _db[_write] = (float)powerDb;
+        _blocked[_write] = blocked;
+        _sample[_write] = sampleIndex;
+        _write = (_write + 1) % _capacity;
+        _fill = Math.Min(_fill + 1, _capacity);
+    }
+
+    /// <summary>Forget everything, because the tracker moved.</summary>
+    public void Reset()
+    {
+        _write = 0;
+        _fill = 0;
+        _settledThrough = -1;
+        _lastDitMs = 0;
+    }
+
+    /// <summary>
+    /// Read whatever is now far enough behind the leading edge.
+    /// </summary>
+    /// <param name="ditMillisecondsHint">
+    /// What the streaming pass believes a dit is, used only to size the window.
+    /// The clock this pass decodes with is fitted here, not taken from there.
+    /// </param>
+    /// <param name="into">Characters are appended here, oldest first.</param>
+    /// <returns>What happened, including why nothing was read.</returns>
+    /// <param name="drain">
+    /// True when the audio has ended, so there is no leading edge left to keep
+    /// clear of and the last few seconds may be read.
+    /// </param>
+    public SettledOutcome Settle(
+        double ditMillisecondsHint, List<SettledCharacter> into, bool drain = false)
+    {
+        ArgumentNullException.ThrowIfNull(into);
+
+        if (_fill < 32)
+        {
+            return new SettledOutcome(SettledRefusal.NotYet, 0, false, 0, 0, false);
+        }
+
+        // **THE WINDOW SIZE IS A REQUIREMENT, NOT A TUNING KNOB.** Thirty elements
+        // at the speed being sent, or two and a half seconds, whichever is
+        // longer, and never past four.
+        var elementSeconds = ditMillisecondsHint > 0
+            ? WindowElements * 2 * ditMillisecondsHint / 1000.0
+            : 0;
+
+        var wanted = Math.Max(ShortestWindowSeconds, elementSeconds);
+        var capped = wanted > LongestWindowSeconds;
+        var windowSeconds = Math.Min(wanted, LongestWindowSeconds);
+
+        var points = (int)Math.Round(windowSeconds / _hopSeconds);
+
+        if (points > _fill)
+        {
+            return new SettledOutcome(
+                SettledRefusal.NotYet, windowSeconds, capped, 0, 0, false);
+        }
+
+        // The reading stops short of the leading edge, so a character on the very
+        // newest sample is not judged from a window that barely contains it.
+        //
+        // **EXCEPT WHEN THE AUDIO HAS ENDED.** A recording's last few seconds are
+        // exactly where a station finishes its callsign, and holding them back
+        // for a leading edge that will never arrive loses the part the operator
+        // most needed.
+        var trail = drain ? 0 : (int)Math.Round(TrailSeconds / _hopSeconds);
+
+        if (_fill < points + trail)
+        {
+            return new SettledOutcome(
+                SettledRefusal.NotYet, windowSeconds, capped, 0, 0, false);
+        }
+
+        var newest = _fill;
+        var last = newest - trail;
+        var first = last - points;
+
+        if (first < 0)
+        {
+            return new SettledOutcome(
+                SettledRefusal.NotYet, windowSeconds, capped, 0, 0, false);
+        }
+
+        if (!FitLevels(first, last, out var low, out var high))
+        {
+            return new SettledOutcome(
+                SettledRefusal.Contrast, windowSeconds, capped, 0, 0, false);
+        }
+
+        var contrast = high - low;
+
+        if (contrast < MinimumContrastDb)
+        {
+            return new SettledOutcome(
+                SettledRefusal.Contrast, windowSeconds, capped, contrast, 0, false);
+        }
+
+        Gate(first, last, (low + high) / 2);
+
+        // Twenty milliseconds before there is a clock to size it from.
+        Deglitch(first, last, 0.020);
+
+        var count = Runs(first, last);
+        var clock = FitClock(count);
+
+        if (clock is not var (ditMs, dahMs) || ditMs <= 0)
+        {
+            return new SettledOutcome(
+                SettledRefusal.Clock, windowSeconds, capped, contrast, 0, false);
+        }
+
+        // And four tenths of a dit once there is one, which is the reference
+        // chain's own figure and is what removes the chatter a marginal signal
+        // produces without touching a real element.
+        Deglitch(first, last, 0.4 * ditMs / 1000.0);
+        count = Runs(first, last);
+
+        var refit = FitClock(count);
+
+        if (refit is not var (ditFinal, dahFinal) || ditFinal <= 0)
+        {
+            return new SettledOutcome(
+                SettledRefusal.Clock, windowSeconds, capped, contrast, 0, false);
+        }
+
+        var speedChanged = _lastDitMs > 0
+            && Math.Abs(ditFinal - _lastDitMs) / _lastDitMs > SpeedChangeFraction;
+
+        _lastDitMs = ditFinal;
+
+        // **ONLY WHAT IS NEW SINCE LAST TIME** (HM-DEC-096, phase 1). The window
+        // is four seconds long and is read twice a second, so every character
+        // sits in about eight consecutive windows. Emitting the whole window each
+        // time repeated the callsign eight times over and looked exactly like a
+        // decoder hallucinating on noise.
+        Emit(count, ditFinal, dahFinal, contrast, _settledThrough, into);
+
+        _settledThrough = _sample[Index(last - 1)];
+
+        return new SettledOutcome(
+            SettledRefusal.None, windowSeconds, capped, contrast, ditFinal, speedChanged);
+    }
+
+    /// <summary>Where a logical position sits in the ring.</summary>
+    private int Index(int logical)
+    {
+        var start = _fill < _capacity ? 0 : _write;
+        return (start + logical) % _capacity;
+    }
+
+    /// <summary>
+    /// Two levels in this window, seeded from its own percentiles.
+    /// </summary>
+    private bool FitLevels(int first, int last, out double low, out double high)
+    {
+        low = high = 0;
+
+        var count = 0;
+
+        for (var i = first; i < last; i++)
+        {
+            var at = Index(i);
+
+            if (!_blocked[at])
+            {
+                _scratch[count++] = _db[at];
+            }
+        }
+
+        if (count < 20)
+        {
+            return false;
+        }
+
+        Array.Sort(_scratch, 0, count);
+
+        low = _scratch[(int)(count * 0.15)];
+        high = _scratch[(int)(count * 0.85)];
+
+        for (var pass = 0; pass < 15; pass++)
+        {
+            double lowSum = 0, highSum = 0;
+            int lowCount = 0, highCount = 0;
+
+            for (var i = 0; i < count; i++)
+            {
+                if (Math.Abs(_scratch[i] - low) <= Math.Abs(_scratch[i] - high))
+                {
+                    lowSum += _scratch[i];
+                    lowCount++;
+                }
+                else
+                {
+                    highSum += _scratch[i];
+                    highCount++;
+                }
+            }
+
+            if (lowCount > 0)
+            {
+                low = lowSum / lowCount;
+            }
+
+            if (highCount > 0)
+            {
+                high = highSum / highCount;
+            }
+        }
+
+        return true;
+    }
+
+    /// <summary>Decide the key state across the window, with hysteresis.</summary>
+    private void Gate(int first, int last, double middle)
+    {
+        var open = middle + (HysteresisDb / 2);
+        var shut = middle - (HysteresisDb / 2);
+        var on = false;
+
+        for (var i = first; i < last; i++)
+        {
+            var at = Index(i);
+
+            if (_blocked[at])
+            {
+                on = false;
+                _key[i - first] = false;
+                continue;
+            }
+
+            if (on && _db[at] < shut)
+            {
+                on = false;
+            }
+            else if (!on && _db[at] > open)
+            {
+                on = true;
+            }
+
+            _key[i - first] = on;
+        }
+    }
+
+    /// <summary>Remove anything too short to be an element.</summary>
+    private void Deglitch(int first, int last, double shortestSeconds)
+    {
+        var span = last - first;
+        var width = Math.Max(1, (int)Math.Round(shortestSeconds / _hopSeconds));
+
+        if (width % 2 == 0)
+        {
+            width++;
+        }
+
+        if (width < 3)
+        {
+            return;
+        }
+
+        var half = width / 2;
+
+        for (var i = 0; i < span; i++)
+        {
+            var down = 0;
+            var seen = 0;
+
+            for (var k = -half; k <= half; k++)
+            {
+                var at = i + k;
+
+                if (at < 0 || at >= span)
+                {
+                    continue;
+                }
+
+                seen++;
+
+                if (_key[at])
+                {
+                    down++;
+                }
+            }
+
+            _voted[i] = down * 2 > seen;
+        }
+
+        Array.Copy(_voted, _key, span);
+    }
+
+    /// <summary>Measure every mark and gap in the window.</summary>
+    private int Runs(int first, int last)
+    {
+        var span = last - first;
+        var count = 0;
+        var i = 0;
+        var border = Math.Max(1, (int)Math.Round(TruncationBorderSeconds / _hopSeconds));
+
+        while (i < span && count < _marks.Length)
+        {
+            if (!_key[i])
+            {
+                i++;
+                continue;
+            }
+
+            var start = i;
+
+            while (i < span && _key[i])
+            {
+                i++;
+            }
+
+            // **A MARK BORDERING THE OPERATOR'S OWN TRANSMISSION IS NOT A MARK**
+            // (HM-DEC-095). What is audible between his elements is a sliver of
+            // somebody else's, cut at both ends by him.
+            var truncated = start == 0 || i >= span;
+
+            for (var k = Math.Max(0, start - border); k < start && !truncated; k++)
+            {
+                truncated = _blocked[Index(first + k)];
+            }
+
+            for (var k = i; k < Math.Min(span, i + border) && !truncated; k++)
+            {
+                truncated = _blocked[Index(first + k)];
+            }
+
+            _marks[count] = (i - start) * _hopSeconds * 1000;
+            _markTruncated[count] = truncated;
+            _markStart[count] = _sample[Index(first + start)];
+            _markEnd[count] = _sample[Index(first + i - 1)];
+
+            _gaps[count] = 0;
+
+            if (count > 0)
+            {
+                var previousEnd = _markEnd[count - 1];
+                _gaps[count - 1] =
+                    (double)(_markStart[count] - previousEnd) / _sampleRate * 1000;
+            }
+
+            count++;
+        }
+
+        return count;
+    }
+
+    /// <summary>
+    /// The element clock, or nothing when the marks do not describe one.
+    /// </summary>
+    /// <remarks>
+    /// **A CLOCK THAT DOES NOT FIT IS A REFUSAL, NOT A BEST GUESS** (§0.0). Two
+    /// stations at different speeds in one window produce a two-means fit that
+    /// can land inside the legal ratio band while describing neither of them,
+    /// which is a confident wrong answer, and this project fears that output more
+    /// than silence.
+    /// </remarks>
+    private (double Dit, double Dah)? FitClock(int count)
+    {
+        var usable = 0;
+
+        for (var i = 0; i < count; i++)
+        {
+            if (!_markTruncated[i])
+            {
+                _scratch[usable++] = _marks[i];
+            }
+        }
+
+        if (usable < 8)
+        {
+            return null;
+        }
+
+        Array.Sort(_scratch, 0, usable);
+
+        var low = _scratch[(int)(usable * 0.15)];
+        var high = _scratch[(int)(usable * 0.85)];
+
+        for (var pass = 0; pass < 15; pass++)
+        {
+            double lowSum = 0, highSum = 0;
+            int lowCount = 0, highCount = 0;
+
+            for (var i = 0; i < usable; i++)
+            {
+                if (Math.Abs(_scratch[i] - low) <= Math.Abs(_scratch[i] - high))
+                {
+                    lowSum += _scratch[i];
+                    lowCount++;
+                }
+                else
+                {
+                    highSum += _scratch[i];
+                    highCount++;
+                }
+            }
+
+            if (lowCount == 0 || highCount == 0)
+            {
+                return null;
+            }
+
+            low = lowSum / lowCount;
+            high = highSum / highCount;
+        }
+
+        var ratio = high / Math.Max(low, 1e-9);
+
+        return ratio < CwToneSurvey.MinimumRatio || ratio > CwToneSurvey.MaximumRatio
+            || low < ShortestDitMs || low > LongestDitMs
+                ? null
+                : (low, high);
+    }
+
+    /// <summary>
+    /// Where this sender's gaps divide, taken from the gaps themselves.
+    /// </summary>
+    /// <remarks>
+    /// The two widest multiplicative steps in the sorted gaps, which is the
+    /// reference chain's method and handles a fist whose inter-element gaps are
+    /// shorter than its own dits. Fixed multiples of a dit read such a fist as one
+    /// unbroken run (HM-DEC-095).
+    /// </remarks>
+    private (double Element, double Character) GapCuts(int count, double ditMs)
+    {
+        var usable = 0;
+
+        for (var i = 0; i < count - 1; i++)
+        {
+            if (_gaps[i] > 0 && _gaps[i] < 12 * ditMs)
+            {
+                _scratch[usable++] = _gaps[i];
+            }
+        }
+
+        var element = 0.85 * ditMs;
+        var character = 3.0 * ditMs;
+
+        if (usable < 10)
+        {
+            return (element, character);
+        }
+
+        Array.Sort(_scratch, 0, usable);
+
+        double firstCut = 0, secondCut = 0;
+        double firstStep = 1.25, secondStep = 1.25;
+
+        for (var i = 0; i < usable - 1; i++)
+        {
+            var step = _scratch[i + 1] / Math.Max(_scratch[i], 1e-9);
+            var cut = Math.Sqrt(_scratch[i] * _scratch[i + 1]);
+
+            if (step > firstStep)
+            {
+                secondStep = firstStep;
+                secondCut = firstCut;
+                firstStep = step;
+                firstCut = cut;
+            }
+            else if (step > secondStep)
+            {
+                secondStep = step;
+                secondCut = cut;
+            }
+        }
+
+        if (firstCut > 0 && secondCut > 0)
+        {
+            return firstCut < secondCut ? (firstCut, secondCut) : (secondCut, firstCut);
+        }
+
+        if (firstCut > 0)
+        {
+            return (firstCut, character);
+        }
+
+        return (element, character);
+    }
+
+    /// <summary>Turn the measured runs into characters.</summary>
+    private void Emit(
+        int count, double ditMs, double dahMs, double contrastDb,
+        long after, List<SettledCharacter> into)
+    {
+        var (elementCut, characterCut) = GapCuts(count, ditMs);
+        var middle = Math.Sqrt(ditMs * dahMs);
+        var wpm = (int)Math.Round(1200.0 / ditMs);
+        var signal = Math.Clamp((contrastDb - 6.0) / 14.0, 0, 1);
+
+        _pattern.Clear();
+
+        var worstTiming = 1.0;
+        var tainted = false;
+        long began = 0;
+
+        for (var i = 0; i < count; i++)
+        {
+            if (_pattern.Length == 0)
+            {
+                began = _markStart[i];
+                tainted = false;
+                worstTiming = 1.0;
+            }
+
+            if (_markTruncated[i])
+            {
+                tainted = true;
+            }
+
+            _pattern.Append(_marks[i] < middle ? '.' : '-');
+
+            // How far this mark sat from the dit-or-dah boundary, on a scale
+            // where landing on the boundary is nothing and landing on either
+            // textbook length is everything.
+            var margin = Math.Min(
+                1.0,
+                Math.Abs(Math.Log(_marks[i] / middle)) / Math.Log(Math.Sqrt(dahMs / ditMs)));
+
+            worstTiming = Math.Min(worstTiming, margin);
+
+            var gap = i < count - 1 ? _gaps[i] : double.MaxValue;
+
+            if (gap <= elementCut)
+            {
+                continue;
+            }
+
+            Flush(_markEnd[i]);
+
+            if (gap > characterCut && gap < double.MaxValue && _markEnd[i] > after)
+            {
+                into.Add(new SettledCharacter(
+                    MorseAlphabet.WordGap, string.Empty, 1.0,
+                    _markEnd[i], _markEnd[i], wpm, false));
+            }
+        }
+
+        void Flush(long endedAt)
+        {
+            if (_pattern.Length == 0)
+            {
+                return;
+            }
+
+            var pattern = _pattern.ToString();
+            var text = MorseAlphabet.Lookup(pattern);
+            var score = tainted ? 0 : Math.Min(worstTiming, signal);
+
+            if (endedAt <= after)
+            {
+                // Already read from an earlier window. The windows overlap by
+                // design; the cursor is what stops them repeating themselves.
+                _pattern.Clear();
+                return;
+            }
+
+            into.Add(new SettledCharacter(
+                text ?? MorseAlphabet.Unreadable,
+                pattern,
+                text is null ? 0 : score,
+                began,
+                endedAt,
+                wpm,
+                tainted));
+
+            _pattern.Clear();
+        }
+    }
+}
