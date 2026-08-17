@@ -109,6 +109,35 @@ public sealed class CwSettledPassTests
     }
 
     /// <remarks>
+    /// <para>Proves HM-DEC-107 phase 5: **the settled pass now reaches the
+    /// callsign.** It read `MVRR` and stopped partway through it for three
+    /// sessions, while the reference read `MVRRVA3VRR` off the same audio at high
+    /// confidence.</para>
+    /// <para>Nothing was done about it directly. The brief's leading hypothesis
+    /// had already been killed — the corrected tightfist fixtures did not move it
+    /// — and phase 4 resolved it as a side effect, which is what phase 4 was told
+    /// to check for before anybody investigated separately. Both symptoms were
+    /// the settled pass stopping early, and both were the same cause: characters
+    /// touching the window's newest edge were being published as unread instead
+    /// of held for the next window, and the marks at that edge are exactly the
+    /// ones about to be emitted.</para>
+    /// <para>What is asserted is the callsign and not a transcript. Nobody knows
+    /// what that station sent beyond what can be read from the audio, and this
+    /// repository does not invent one (HM-DEC-091).</para>
+    /// </remarks>
+    [Fact]
+    public void TheSettledPassReachesTheCallsignItUsedToStopShortOf()
+    {
+        var run = Decode("cw-2026-08-17-013347");
+
+        _output.WriteLine($"settled: {run.Settled}");
+
+        var settled = run.Settled.Replace(" ", "", StringComparison.Ordinal);
+
+        Assert.Contains("VA3VRR", settled, StringComparison.Ordinal);
+    }
+
+    /// <remarks>
     /// <para>Proves HM-DEC-096 phase 1, the window rule. **The window is the
     /// longer of about two and a half seconds and about thirty elements, and
     /// never past four**, because both constraints are real and they bind at
