@@ -298,15 +298,69 @@ public sealed class CwSettledPassTests
     [Fact]
     public void TheLeadingEdgeIsMarkedUnstableWhileNothingConfirmsIt()
     {
-        var run = Decode("cw-2026-08-17-134712");
+        var audio = WavAudio.Read(Path.Combine(
+            CapturedSignalTests.Folder, "cw-2026-08-17-134712.wav"));
 
-        _output.WriteLine($"provisional : '{run.Provisional}'");
-        _output.WriteLine($"settled     : '{run.Settled}'");
-        _output.WriteLine($"refusal     : {run.Outcome.Refusal}");
+        var decoder = new CwDecoder(audio.SampleRate, 600);
+        var tip = new List<CwCharacter>();
+        var settled = new List<CwCharacter>();
+
+        decoder.CharacterDecoded += c => tip.Add(c);
+        decoder.CharacterSettled += c => settled.Add(c);
+
+        using var source = new BufferedAudioSource(audio);
+        decoder.Listen(source);
+        source.PumpAll();
+        decoder.Flush();
+
+        _output.WriteLine($"tip      : {tip.Count} characters, "
+            + $"{tip.Count(c => c.IsUnstable)} marked unstable");
+        _output.WriteLine($"settled  : {settled.Count}");
+        _output.WriteLine($"refusing : {decoder.SettledIsRefusing}");
 
         // This recording holds a carrier and no readable station, so the settled
-        // pass has nothing to confirm and the tip carries the mark.
-        Assert.Equal("", run.Settled);
+        // pass has nothing to confirm.
+        Assert.Empty(settled);
+        Assert.True(decoder.SettledIsRefusing);
+
+        // **AND THE LEADING EDGE IS NOT SILENCED FOR IT** (phase 4). Whatever it
+        // emits here carries the mark, because nothing is coming along behind to
+        // confirm it and the reader has to be able to see that.
+        Assert.All(tip, c => Assert.Equal(CwReadingStage.Unstable, c.Stage));
+    }
+
+    /// <remarks>
+    /// <para>Proves HM-DEC-096 phase 4 on the recording that has a station in it:
+    /// **the tip is marked provisional while the second pass is keeping up, and
+    /// unstable when it is not.** The distinction is the whole point. A tip that
+    /// always looked unstable would teach the operator to ignore the marking, and
+    /// one that never did would be a guess wearing a settled face (§0.0).</para>
+    /// </remarks>
+    [Fact]
+    public void TheTipSaysWhetherAnythingIsComingBehindIt()
+    {
+        var audio = WavAudio.Read(Path.Combine(
+            CapturedSignalTests.Folder, "cw-2026-08-17-013347.wav"));
+
+        var decoder = new CwDecoder(audio.SampleRate, 600);
+        var tip = new List<CwCharacter>();
+
+        decoder.CharacterDecoded += c => tip.Add(c);
+
+        using var source = new BufferedAudioSource(audio);
+        decoder.Listen(source);
+        source.PumpAll();
+        decoder.Flush();
+
+        var stable = tip.Count(c => c.Stage == CwReadingStage.Provisional);
+        var unstable = tip.Count(c => c.Stage == CwReadingStage.Unstable);
+
+        _output.WriteLine($"provisional {stable}, unstable {unstable}");
+
+        Assert.NotEmpty(tip);
+
+        // Nothing here is settled-stage: the tip is one pass and never the other.
+        Assert.DoesNotContain(tip, c => c.Stage == CwReadingStage.Settled);
     }
 
     /// <remarks>
