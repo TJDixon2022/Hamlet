@@ -2382,13 +2382,31 @@ public partial class MainWindowViewModel : ObservableObject
             return;
         }
 
-        DetectedWpm = _decoder.State.WordsPerMinute;
+        // ONE GUARDED ANSWER (HM-DEC-090). Zero means nothing has earned the
+        // right to name a speed, and every surface that shows one reads this.
+        DetectedWpm = _decoder.WordsPerMinute ?? 0;
         DecodeNote = _decoder.Watch.NoteText;
 
         // WHAT IS ARRIVING, WHETHER OR NOT ANYTHING DECODES (HM-DEC-088). A
         // strong signal that will not resolve and an empty band used to produce
         // the same screen, and they are different problems.
         DecodeReport = _decoder.Report;
+
+        // **A STALLED AUDIO PIPELINE USED TO LOOK EXACTLY LIKE A QUIET BAND**
+        // (HM-DEC-090). Nothing anywhere said the samples had stopped arriving,
+        // so the capture went on handing over the same thirty seconds and the
+        // decoder went on reporting what it made of them. Whatever stops the
+        // stream, this notices within a couple of seconds and says so (§0.0.1).
+        var seen = _decoder.Tap.SamplesSeen;
+
+        if (seen != _lastSamplesSeen)
+        {
+            _lastSamplesSeen = seen;
+            _audioLastMovedUtc = DateTime.UtcNow;
+        }
+
+        AudioHasStalled = seen > 0
+            && DateTime.UtcNow - _audioLastMovedUtc > AudioStallAfter;
         OnPropertyChanged(nameof(TerminalSummary));
         OnPropertyChanged(nameof(InputLevelText));
         OnPropertyChanged(nameof(InputLevelFraction));
@@ -2403,7 +2421,10 @@ public partial class MainWindowViewModel : ObservableObject
         // measured what the other station is sending at, so Hamlet may say so.
         // It has never asked what speed this operator can copy, so it may not
         // claim that this one suits them.
-        Transmit.HeardWpm = _decoder.State.HasSignal ? _decoder.State.WordsPerMinute : null;
+        // NO DECODE MEANS NO STATION, SO THE LINE IS ABSENT (HM-DEC-090). It
+        // read "they are sending at about 62 words a minute" with nobody
+        // sending, which is the phantom speed reaching a third surface.
+        Transmit.HeardWpm = _decoder.WordsPerMinute;
     }
 
     /// <summary>
@@ -2425,6 +2446,25 @@ public partial class MainWindowViewModel : ObservableObject
         }
     }
 
+    /// <summary>
+    /// True when audio has stopped arriving while the decoder is listening
+    /// (HM-DEC-090).
+    /// </summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(InputLevelText))]
+    private bool _audioHasStalled;
+
+    /// <summary>How long silence from the sound card counts as a stall.</summary>
+    /// <remarks>
+    /// Two seconds. Audio arrives in chunks many times a second, so nothing
+    /// legitimate is quiet for that long, and a shorter window would cry wolf
+    /// over ordinary scheduling.
+    /// </remarks>
+    private static readonly TimeSpan AudioStallAfter = TimeSpan.FromSeconds(2);
+
+    private long _lastSamplesSeen = -1;
+    private DateTime _audioLastMovedUtc = DateTime.UtcNow;
+
     /// <summary>What the decoder is hearing and making of it (HM-DEC-088).</summary>
     [ObservableProperty]
     private CwDecodeReport _decodeReport = CwDecodeReport.None;
@@ -2445,6 +2485,11 @@ public partial class MainWindowViewModel : ObservableObject
             if (!IsDecoding)
             {
                 return "";
+            }
+
+            if (AudioHasStalled)
+            {
+                return "audio has stopped arriving";
             }
 
             var level = DecodeReport.Level;
@@ -2557,11 +2602,31 @@ public partial class MainWindowViewModel : ObservableObject
     [RelayCommand]
     private void CaptureAudio()
     {
-        var audio = _decoder?.Tap.Snapshot();
+        var tap = _decoder?.Tap;
+        var audio = tap?.Snapshot();
 
-        if (audio is null)
+        if (tap is null || audio is null)
         {
             StatusText = "There is no audio to keep just now.";
+            AppEvents.AudioCaptured(_telemetry, 0, FrequencyHz, worked: false);
+            return;
+        }
+
+        // **A CAPTURE THAT CANNOT PROVE IT IS FRESH IS NOT WRITTEN**
+        // (HM-DEC-090). Three presses inside seventy seconds produced
+        // byte-identical files with identical analysis, beside rig state that
+        // differed on every one, and the operator reasoned from one recording
+        // presented as three. Evidence that looks specific and is not is worse
+        // than no evidence at all (§0.0.1).
+        var seen = tap.SamplesSeen;
+
+        if (seen == _lastCaptureSamples)
+        {
+            StatusText =
+                "No new audio has arrived since the last time you kept some, so "
+                + "there is nothing fresh to write. The recording would have been "
+                + "the same file over again.";
+
             AppEvents.AudioCaptured(_telemetry, 0, FrequencyHz, worked: false);
             return;
         }
@@ -2576,7 +2641,10 @@ public partial class MainWindowViewModel : ObservableObject
 
             WavAudio.Write(wav, audio);
             File.WriteAllText(
-                Path.Combine(folder, $"cw-{stamp}.txt"), CaptureNotes(audio));
+                Path.Combine(folder, $"cw-{stamp}.txt"),
+                CaptureNotes(audio, seen));
+
+            _lastCaptureSamples = seen;
 
             StatusText =
                 $"Kept the last {audio.Duration.TotalSeconds:0} seconds of what the "
@@ -2594,8 +2662,13 @@ public partial class MainWindowViewModel : ObservableObject
         }
     }
 
+    /// <summary>How much audio had arrived when the last capture was written.</summary>
+    private long _lastCaptureSamples = -1;
+
     /// <summary>Everything worth knowing about a capture, beside it.</summary>
-    private string CaptureNotes(MonoAudio audio)
+    /// <param name="audio">What was written.</param>
+    /// <param name="samplesSeen">How much audio has ever arrived.</param>
+    private string CaptureNotes(MonoAudio audio, long samplesSeen)
     {
         var state = RigState;
         var report = DecodeReport;
@@ -2603,6 +2676,13 @@ public partial class MainWindowViewModel : ObservableObject
         var lines = new List<string>
         {
             $"captured   {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC",
+
+            // TWO FIGURES THAT MAKE A FROZEN CAPTURE OBVIOUS (HM-DEC-090). The
+            // running total says whether any audio arrived since last time, and
+            // the fingerprint says whether this is the same recording, without
+            // anybody having to compare files by hand.
+            $"audioSeen  {samplesSeen} samples",
+            $"fingerprint {Fingerprint(audio)}",
             $"seconds    {audio.Duration.TotalSeconds:0.0}",
             $"sampleRate {audio.SampleRate}",
             $"frequency  {FrequencyHz} Hz",
@@ -2618,6 +2698,19 @@ public partial class MainWindowViewModel : ObservableObject
             "",
         };
 
+        // WHAT THE DECODER HAS DONE SINCE THE LAST CAPTURE, beside the totals.
+        // The totals are cumulative over the whole session, so two captures
+        // showing the same ones mean nothing was decoded in between, and a reader
+        // should not have to work that out by subtraction.
+        lines.Add(
+            $"sinceLast  {report.CharactersEmitted - _lastCaptureCharacters} characters, "
+            + $"{report.ElementsSeen - _lastCaptureElements} elements");
+
+        lines.Add("");
+
+        _lastCaptureCharacters = report.CharactersEmitted;
+        _lastCaptureElements = report.ElementsSeen;
+
         // EVERY FIELD WITH ITS PROVENANCE, and unread stays unread rather than
         // becoming a zero somebody later reasons from (HM-DEC-050).
         foreach (var value in state.All())
@@ -2630,6 +2723,27 @@ public partial class MainWindowViewModel : ObservableObject
         }
 
         return string.Join(Environment.NewLine, lines);
+    }
+
+    /// <summary>What the decoder had emitted at the last capture.</summary>
+    private int _lastCaptureCharacters;
+
+    /// <summary>What the decoder had measured at the last capture.</summary>
+    private int _lastCaptureElements;
+
+    /// <summary>
+    /// A short fingerprint of the audio, so two identical captures are visibly
+    /// identical (HM-DEC-090).
+    /// </summary>
+    /// <param name="audio">The recording.</param>
+    /// <returns>Twelve hexadecimal characters.</returns>
+    private static string Fingerprint(MonoAudio audio)
+    {
+        var bytes = new byte[audio.Samples.Length * sizeof(float)];
+        Buffer.BlockCopy(audio.Samples, 0, bytes, 0, bytes.Length);
+
+        return Convert.ToHexString(
+            System.Security.Cryptography.SHA256.HashData(bytes))[..12].ToLowerInvariant();
     }
 
     /// <summary>Stop listening to the radio's scope.</summary>

@@ -372,3 +372,33 @@ exactly as a spot with no grid gets none today.
 
 Severity `slows`: the panel works and says only true things, and it is doing half
 of what it exists for.
+
+---
+id: HM-OPEN-011
+status: open
+owner: tim
+raised: 2026-08-17
+severity: slows
+blocks: the real-signal regression corpus, and confirmation that HM-DEC-090 fixed the reported fault
+refs: HM-DEC-090, HM-DEC-088
+---
+
+The three real captures HM-DEC-090 was written from are not in the repository.
+
+The brief of 2026-08-17 described `cw-2026-08-16-225822`, `-225835` and
+`-233446`, with hashes, tone frequencies and measured levels, and asked for all
+of them to be committed as permanent regression fixtures. **They were never on
+the machine the session ran on.** `%AppData%\Hamlet\captures` did not exist and a
+search of the user profile and the repository found nothing.
+
+Everything in HM-DEC-090 was therefore measured against synthesized audio built
+to reproduce the one property those captures demonstrate: a strong narrow tone
+present for a small fraction of the recording. That is a faithful stand-in and it
+is not the evidence.
+
+What is needed: the three WAV files and their sidecars, copied into
+`tests/fixtures/cw/`. Once they are there, the decoder can be run against the
+real thing and the claim that it now finds a tone near 627 Hz and 595 Hz can be
+stated as a measurement rather than as a reasonable expectation. §2.1 makes an
+off-air recording Tim's to review before it ships in a public repository, which
+is the other reason this cannot be done without him.

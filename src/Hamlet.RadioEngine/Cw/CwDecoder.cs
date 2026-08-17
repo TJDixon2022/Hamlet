@@ -199,14 +199,16 @@ public sealed class CwDecoder
         Tap.Level,
         _tracker.ToneHz,
         _lastSnrDb,
-        HasTone: !double.IsNaN(_lastSnrDb)
-            && _lastSnrDb >= CwDecodeReport.ToneThresholdDb,
+        HasTone: _toneLatched,
         _elementsSeen,
         _elementsResolved,
         _charactersEmitted,
         _charactersUnsure);
 
     private double _lastSnrDb = double.NaN;
+
+    /// <summary>Whether a tone has been located and has not gone away.</summary>
+    private bool _toneLatched;
     private int _elementsSeen;
     private int _elementsResolved;
     private int _charactersEmitted;
@@ -260,17 +262,39 @@ public sealed class CwDecoder
         // and too long at sixty.
         _gate.FollowSpeed(_speed.DitSamples / _tracker.HopSamples);
 
-        // SMOOTHED, BECAUSE ONE MEASUREMENT OF A RATIO OF TWO NOISY THINGS IS
-        // NOISIER THAN EITHER. This is read by a screen rather than by the gate,
-        // and a figure that jumps ten decibels five times a second cannot be
-        // read by anybody (HM-DEC-088).
+        // **HOW FAR THE TONE STANDS ABOVE THE BAND WHILE IT IS KEYED**, which is
+        // not the same question as how far it stands above it on average, and
+        // the difference is why real stations were being missed (HM-DEC-090).
+        //
+        // A station answering a call keys for a second and a half in thirty
+        // seconds. Averaged across all of it, a signal fifty decibels out of the
+        // noise reported minus nought point six, because for ninety-six percent
+        // of the time the bin holds nothing but noise and the mean is the answer
+        // to a question nobody asked.
+        //
+        // So it is a held peak: up at once, down over about ten seconds. Three
+        // measurements have to agree before it counts, which is what stops one
+        // burst of static setting it.
         if (reading.HasNoise)
         {
-            var snr = reading.SnrDb;
+            _snrHistory[_snrWrite] = reading.SnrDb;
+            _snrWrite = (_snrWrite + 1) % _snrHistory.Length;
+            _snrFilled = Math.Min(_snrFilled + 1, _snrHistory.Length);
 
-            _lastSnrDb = double.IsNaN(_lastSnrDb)
-                ? snr
-                : _lastSnrDb + ((snr - _lastSnrDb) * SnrSmoothing);
+            if (_snrFilled == _snrHistory.Length)
+            {
+                var sustained = Median(_snrHistory);
+
+                _lastSnrDb = double.IsNaN(_lastSnrDb) || sustained > _lastSnrDb
+                    ? sustained
+                    : _lastSnrDb - SnrDecayDbPerHop;
+
+                // Opens high and closes low, so a marginal signal is not dropped
+                // in the quiet parts of its own message (HM-DEC-090).
+                _toneLatched = _lastSnrDb >= (_toneLatched
+                    ? CwDecodeReport.ToneReleaseDb
+                    : CwDecodeReport.ToneThresholdDb);
+            }
         }
 
         var gate = _gate.Judge(reading.PowerDb, reading.NoiseDb);
@@ -327,10 +351,36 @@ public sealed class CwDecoder
         CheckSilence();
     }
 
-    /// <summary>How fast the displayed signal-to-noise figure follows.</summary>
-    /// <remarks>About a second, which is slower than the eye needs and faster
-    /// than a band changes.</remarks>
-    private const double SnrSmoothing = 0.02;
+    /// <summary>
+    /// How fast the held signal-to-noise figure falls away, per measurement.
+    /// </summary>
+    /// <remarks>
+    /// Measurements arrive two hundred times a second, so this decays about ten
+    /// decibels in ten seconds: long enough to hold across the gaps inside a
+    /// message and short enough that a station going away is noticed.
+    /// </remarks>
+    private const double SnrDecayDbPerHop = 0.005;
+
+    /// <summary>
+    /// How many measurements have to agree before a level counts.
+    /// </summary>
+    /// <remarks>
+    /// Three, taken as a median. A held peak is defenseless against a single
+    /// spike, and noise in a narrow filter throws one every few seconds.
+    /// </remarks>
+    private readonly double[] _snrHistory = new double[5];
+
+    private int _snrWrite;
+    private int _snrFilled;
+
+    /// <summary>The middle of three, without allocating.</summary>
+    private static double Median(double[] values)
+    {
+        Span<double> copy = stackalloc double[values.Length];
+        values.CopyTo(copy);
+        copy.Sort();
+        return copy[copy.Length / 2];
+    }
 
     private void OnMarkEnded()
     {
@@ -575,8 +625,72 @@ public sealed class CwDecoder
             TimeSpan.FromSeconds((double)_lastSample / SampleRate)));
     }
 
+    /// <summary>
+    /// The slowest and fastest this radio's keyer can go (`14 0C`, p. 19-3).
+    /// </summary>
+    /// <remarks>
+    /// **A BACKSTOP AND NOT THE FIX.** Sixty-four words a minute was reported
+    /// with nothing on frequency, and this radio cannot send above forty-eight,
+    /// so the number could not have come from a station under any circumstances.
+    /// What produces it is arithmetic over noise-derived elements, which the tone
+    /// gate now prevents at source; this is the second line (HM-DEC-090).
+    /// </remarks>
+    public const int SlowestPlausibleWpm = 6;
+
+    /// <summary>The fastest the radio's own keyer sends.</summary>
+    public const int FastestPlausibleWpm = 48;
+
+    /// <summary>
+    /// The sending speed, or null when nothing has earned the right to name one
+    /// (HM-DEC-090).
+    /// </summary>
+    /// <remarks>
+    /// <para>**ONE GUARDED ANSWER, READ BY EVERY SURFACE.** The speed reached
+    /// three separate screens as a settled fact while nothing was being received:
+    /// a badge beside the filter width, the terminal's summary, and a sentence in
+    /// the send panel saying what "they" were sending at, with nobody sending.
+    /// Guarding each of them would have left the fourth.</para>
+    /// <para>Three conditions, all required. A tone has to have been located, or
+    /// the elements behind the estimate came out of noise. Characters have to be
+    /// resolving, because a speed is a fact about somebody's keying and without
+    /// letters there is no evidence any keying happened. And it has to be a speed
+    /// this radio could produce.</para>
+    /// </remarks>
+    public int? WordsPerMinute
+    {
+        get
+        {
+            var report = Report;
+
+            if (!report.HasTone || report.CharactersEmitted == 0)
+            {
+                return null;
+            }
+
+            var wpm = _speed.IsReady ? _speed.WordsPerMinute : 0;
+
+            return wpm >= SlowestPlausibleWpm && wpm <= FastestPlausibleWpm
+                ? wpm
+                : null;
+        }
+    }
+
     private void Emit(CwCharacter character)
     {
+        // **NOTHING IS EMITTED WITHOUT A TONE TO EMIT IT FROM** (HM-DEC-090).
+        // Seventeen hundred characters came out of half a minute of band noise,
+        // seventeen hundred of them marked unsure, and marking them was not
+        // enough: a screen full of blocks and dimmed letters reads as a signal
+        // being fought over rather than as nothing being there.
+        //
+        // This gate is safe only because the measurement under it was fixed
+        // first. Gating on the old figure would have suppressed a real decode,
+        // which is the same §0.0 failure wearing a quieter coat.
+        if (!Report.HasTone)
+        {
+            return;
+        }
+
         // COUNTED HERE, WHERE EVERY CHARACTER GOES PAST, so the metrics cannot
         // drift away from what actually reached the screen (HM-DEC-088). Word
         // gaps are spacing rather than copy and are not counted as either.

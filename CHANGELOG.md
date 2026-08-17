@@ -12,6 +12,32 @@ operator can see and use, patch fixes and polishes without adding one.
 
 ---
 
+## 1.7.0
+
+**Hamlet stops hearing things that are not there, and starts hearing things that
+are.**
+
+A station answering your call keys for a second or two in half a minute. Hamlet
+was measuring how strong it was by averaging across the whole half minute, most
+of which is silence, so a signal well out of the noise came out as nothing and
+the pitch it reported was wherever the noise happened to be loudest. It now
+measures while the station is actually sending.
+
+Nothing is put on screen unless there is a tone to put it there. Half a minute of
+band noise used to produce seventeen hundred characters, nearly all of them marked
+uncertain; it now produces nothing, which is what is actually there.
+
+No speed is shown unless letters are genuinely resolving, on any screen. The
+sending speed had been appearing beside the filter width, in the terminal summary
+and in the send panel while nothing at all was being received.
+
+"Keep this audio" now refuses rather than writing the same recording twice, and
+says so. If the sound card stops delivering, Hamlet notices within a couple of
+seconds and tells you, instead of going on quietly analysing the last thing it
+heard.
+
+Rulings HM-DEC-090.
+
 ## 1.6.1
 
 **Your layout comes back, and the send buttons know the law.**

@@ -4,6 +4,126 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-090
+date: 2026-08-17
+refs: src/Hamlet.RadioEngine/Cw/CwToneTracker.cs, src/Hamlet.RadioEngine/Cw/CwDecoder.cs, src/Hamlet.RadioEngine/Cw/CwDecodeReport.cs, src/Hamlet.RadioEngine/Audio/AudioTap.cs, tests/Hamlet.RadioEngine.Tests/Cw/CwLowDutyTests.cs, tests/Hamlet.RadioEngine.Tests/Cw/CwEmissionGateTests.cs, HM-DEC-048, HM-DEC-088
+---
+
+**A keyed signal is measured while it is keyed, nothing is emitted without a tone
+to emit it from, and a capture that cannot prove it is fresh is not written.**
+
+---
+
+**THE CAUSE WAS TIME, NOT FREQUENCY, AND THAT DISTINCTION IS THE WHOLE FIX.**
+
+The brief diagnosed the missed stations as signal-to-noise measured across the
+whole audio band, where a narrow note is swamped. That was the right instinct
+about the wrong axis. The decoder has been narrowband since HM-DEC-048: a bank of
+Goertzel filters at twenty-five hertz spacing, tracking one bin, with a noise
+bandwidth near seventy-five hertz. Widening the search would have changed
+nothing, and neither would narrowing it.
+
+**What was wrong is that both measurements were averages over time that contained
+no signal.** A station answering a call keys for about a second and a half in
+thirty seconds. Averaged across all thirty, a signal fifty decibels out of the
+noise reports minus nought point six, because for ninety-six percent of that time
+the bin holds nothing but noise. The same average decided which bin to track, so
+the tracker chose whichever bin the noise happened to favor and named a pitch
+twenty hertz from the real one.
+
+Two symptoms, one cause: the reported ratio and the located pitch were both
+answers to a question nobody asked.
+
+**So both become held peaks.** Up at once, down over about ten seconds, which is
+longer than any gap inside a message and shorter than a station going away. A
+level has to hold for five measurements, twenty-five milliseconds, before it
+counts, which is the shortest dit this radio can send and therefore the longest
+guard that cannot delete a real element.
+
+Measured on this repository's own signals: a burst at low duty that previously
+read near zero now reads thirty-two decibels, and the tone lands within one bin
+of where it was sent at every pitch tried.
+
+---
+
+**THE THRESHOLD IS CALIBRATED RATHER THAN CHOSEN.** Twelve decibels, and the
+number came from measuring both ends. Half a minute of band noise with nothing on
+it reports about seven, because a held peak eventually catches the loudest moment
+noise has. The decoder's own working limit, the weakest signal from which it
+still reads most of a message, reports about sixteen. Twelve sits between them
+with five decibels of margin either way, and it opens at twelve and closes at
+eight, because a marginal signal dips below any single line in the quiet parts of
+its own message.
+
+**Both margins matter and for the same reason. Phantom output and deafness are
+both §0.0 failures and the second is only quieter.**
+
+---
+
+**NOTHING IS EMITTED WITHOUT A TONE TO EMIT IT FROM.** Half a minute of band
+noise produced seventeen hundred and thirty-two characters, seventeen hundred and
+thirty of them marked unsure. **Marking them was not enough**: a screen filling
+with blocks and dimmed letters reads as a signal being fought over rather than as
+nothing being there, which is HM-DEC-048's confidence marking being asked to
+carry a load it was never meant to.
+
+The gate is safe **only because the measurement under it was fixed first**. An
+earlier brief asked for this gate on the old figure, and a later one correctly
+withdrew it: gating on a measurement that read minus nought point six on a real
+station would have suppressed a genuine decode. Order was the whole of it.
+
+**It costs a decibel of reach on the synthetic benchmark**, from minus five to
+minus four, measured. That cost falls entirely on signals at the very limit of
+what the decoder can read, where the held peak takes a moment to build; the real
+captures sat thirty-six to fifty-one decibels above the band and latch on the
+first element. **The number is stated rather than buried, because a trade nobody
+can see is a trade nobody agreed to.**
+
+---
+
+**NO NUMBER OUTLIVES ITS EVIDENCE.** The speed reached three separate surfaces as
+a settled fact while nothing was being received, including a sentence about what
+"they" were sending at with nobody sending. Guarding each surface would have left
+the fourth, so there is **one guarded answer and every surface reads it**: null
+unless a tone has been located, characters are resolving, and the figure is one
+this radio's keyer could produce at all. Sixty-four words a minute could not have
+come from a station under any circumstances, and the six to forty-eight bound
+(`14 0C`, p. 19-3) is the backstop rather than the fix.
+
+**Everything the decoder puts on screen is subject to §0.0, not only the
+letters.** A pitch, a ratio, a speed and a strength are all claims.
+
+---
+
+**A CAPTURE THAT CANNOT PROVE IT IS FRESH IS NOT WRITTEN.** Three presses inside
+seventy seconds produced byte-identical files with identical analysis, beside rig
+state that differed on every one, and the operator reasoned from one recording
+presented as three. **Evidence that looks specific and is not is worse than no
+evidence at all** (§0.0.1).
+
+The tap now counts every sample it has ever taken. A capture whose count has not
+moved since the last one is refused, in words, rather than written. The sidecar
+carries that count, a fingerprint of the audio, and what the decoder has done
+since the previous capture, so two identical recordings are visibly identical
+instead of silently so.
+
+**And the stall itself is now visible.** Nothing in the code caches a snapshot or
+returns a previous one; the ring simply was not being written, which means audio
+had stopped arriving and nothing anywhere said so. A watchdog on the sample count
+notices within two seconds and says it, because a stalled sound card and a quiet
+band looked identical on screen and are not remotely the same problem.
+
+---
+
+**WHAT THIS RULING DOES NOT REST ON.** The three real captures this brief
+describes were never on the machine this session ran on, and no search found
+them. Every figure above was measured against audio built to reproduce the
+property the captures demonstrate: a strong narrow tone present for a small
+fraction of the recording. **That is a faithful stand-in and it is not the
+evidence.** The real files remain the thing that would close this, and the
+regression corpus is not complete until they are in it.
+
+---
 id: HM-DEC-089
 date: 2026-08-16
 supersedes: HM-DEC-065

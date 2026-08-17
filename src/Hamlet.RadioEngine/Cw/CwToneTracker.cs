@@ -108,8 +108,24 @@ public sealed class CwToneTracker
     /// </summary>
     private const double StickinessDb = 1.0;
 
-    /// <summary>Smoothing on the per-bin averages the retune decision reads.</summary>
-    private const double BinAverageAlpha = 0.05;
+    /// <summary>
+    /// How fast a bin's held peak decays, per measurement.
+    /// </summary>
+    /// <remarks>
+    /// <para>**A HELD PEAK, NOT AN AVERAGE, AND THAT IS THE WHOLE OF WHY THE
+    /// TRACKER USED TO LAND ON THE WRONG NOTE** (HM-DEC-090). A station answering
+    /// a call keys for about a second and a half in thirty seconds. Averaged over
+    /// all thirty, the bin holding that station reads as its own noise floor,
+    /// because for ninety-six percent of the time that is exactly what is in it.
+    /// The tracker then chose whichever bin the noise happened to favor and
+    /// reported a pitch twenty hertz off the real one, on a signal fifty decibels
+    /// out of the noise.</para>
+    /// <para>Rising instantly and decaying over about ten seconds means a bin is
+    /// judged by the loudest thing that has recently been in it, which is what a
+    /// keyed signal actually is. Ten seconds is longer than any gap inside a
+    /// message and shorter than a station going away.</para>
+    /// </remarks>
+    private const double BinPeakDecay = 0.9975;
 
     /// <summary>
     /// How far from the tracked note another one has to be before it counts as
@@ -285,7 +301,11 @@ public sealed class CwToneTracker
         for (var b = 0; b < _binHz.Length; b++)
         {
             var power = Goertzel(_binCoefficient[b]);
-            _binAverage[b] += (power - _binAverage[b]) * BinAverageAlpha;
+
+            // Rise to anything louder at once; fall away slowly.
+            _binAverage[b] = power > _binAverage[b]
+                ? power
+                : _binAverage[b] * BinPeakDecay;
 
             if (b == _tracked)
             {
@@ -337,10 +357,12 @@ public sealed class CwToneTracker
     /// Reconsider which note to follow.
     /// </summary>
     /// <remarks>
-    /// Reads the smoothed per-bin averages rather than the instant powers,
-    /// because a decision taken during the gap between two dits would follow
-    /// whatever the noise happened to be doing. Ties inside the stickiness
-    /// margin go to the bin nearest where the tracker already is.
+    /// Reads the held per-bin peaks rather than the instant powers, because a
+    /// decision taken during the gap between two dits would follow whatever the
+    /// noise happened to be doing, and rather than their averages, because a
+    /// signal that is keyed a twentieth of the time disappears into its own
+    /// average (HM-DEC-090). Ties inside the stickiness margin go to the bin
+    /// nearest where the tracker already is.
     /// </remarks>
     private void Retune()
     {

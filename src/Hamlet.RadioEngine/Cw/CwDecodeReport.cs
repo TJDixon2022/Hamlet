@@ -31,11 +31,38 @@ public readonly record struct CwDecodeReport(
     /// How far above the band a tone has to stand before it is worth mentioning.
     /// </summary>
     /// <remarks>
-    /// Three decibels, which is twice the power of what is around it. Below that
-    /// what is in the bin is as likely to be the noise as anything else, and
-    /// naming it a tone would be exactly the guess §0.0 forbids.
+    /// <para>**TWELVE, AND THE NUMBER IS CALIBRATED RATHER THAN CHOSEN**
+    /// (HM-DEC-090). It used to be three, which was right for the figure it was
+    /// reading when it was written and wrong for the one it reads now: the SNR is
+    /// a held peak measured while the tone is keyed, not an average across the
+    /// silence, and the two live on completely different scales.</para>
+    /// <para>Measured against this repository's own signals: half a minute of
+    /// band noise with nothing on it reports about seven decibels, because a held
+    /// peak eventually catches the loudest moment noise has. The decoder's own
+    /// working limit, the weakest signal from which it still reads most of a
+    /// message, reports about sixteen. Twelve sits between them with five
+    /// decibels of margin on each side.</para>
+    /// <para>**BOTH MARGINS MATTER AND FOR THE SAME REASON.** Too low and noise
+    /// is announced as a station; too high and a real one is called silence.
+    /// Phantom output and deafness are both §0.0 failures, and the second is
+    /// only quieter (§0.0).</para>
     /// </remarks>
-    public const double ToneThresholdDb = 3;
+    public const double ToneThresholdDb = 12;
+
+    /// <summary>
+    /// How far the tone has to fall before it stops counting as one.
+    /// </summary>
+    /// <remarks>
+    /// <para>**HYSTERESIS, FOR THE SAME REASON THE KEYING GATE HAS IT.** It takes
+    /// more to decide a signal is there than to decide it is still there, because
+    /// a marginal one dips below any single line in the quiet stretches of its own
+    /// message. Without this the gate shut mid-message on weak signals and cost a
+    /// decibel of the decoder's reach, measured (HM-DEC-090).</para>
+    /// <para>Eight is still a decibel above what half a minute of empty band
+    /// reports, and nothing can fall to it without first having climbed past
+    /// twelve, so noise cannot open the gate and then hold it open.</para>
+    /// </remarks>
+    public const double ToneReleaseDb = 8;
 
     /// <summary>Nothing measured.</summary>
     public static CwDecodeReport None { get; } = new(
@@ -117,9 +144,12 @@ public static class CwDecodeStory
         var pitch = (int)Math.Round(report.ToneHz / 10) * 10;
         var over = report.SnrDb;
 
-        var strength = over >= 12
+        // ON THE HELD-PEAK SCALE (HM-DEC-090), where the decoder's own working
+        // limit reads about sixteen and an empty band about seven. The old
+        // numbers were right for an average that no longer exists.
+        var strength = over >= 28
             ? "well clear of"
-            : over >= 6 ? "comfortably above" : "only just above";
+            : over >= 18 ? "comfortably above" : "only just above";
 
         return $"There is a tone at about {pitch} hertz, {strength} the noise "
             + $"around it, and the timing is not resolving into Morse. That "

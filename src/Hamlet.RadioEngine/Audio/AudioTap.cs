@@ -111,6 +111,21 @@ public sealed class AudioTap
     /// <summary>Samples per second, or zero before anything has arrived.</summary>
     public int SampleRate => _sampleRate;
 
+    /// <summary>
+    /// How many samples have ever arrived (HM-DEC-090).
+    /// </summary>
+    /// <remarks>
+    /// <para>**WHAT MAKES A CAPTURE ABLE TO PROVE IT IS FRESH.** Three captures
+    /// taken within seventy seconds produced byte-identical files with identical
+    /// analysis, while the rig state beside them differed on every one, so the
+    /// radio was plainly being read while the audio was not moving at all. The
+    /// operator drew conclusions from one recording presented as three.</para>
+    /// <para>A ring buffer cannot tell whether it is holding thirty fresh seconds
+    /// or the same thirty seconds it held a minute ago. This counter can, and it
+    /// costs an addition per chunk.</para>
+    /// </remarks>
+    public long SamplesSeen { get; private set; }
+
     /// <summary>True once any audio at all has been seen.</summary>
     public bool HasAudio => _filled > 0;
 
@@ -140,6 +155,8 @@ public sealed class AudioTap
                 _filled = 0;
                 _levelWanted = Math.Max(1, (int)(sampleRate * LevelSeconds));
             }
+
+            SamplesSeen += samples.Length;
 
             for (var i = 0; i < samples.Length; i++)
             {
