@@ -291,6 +291,38 @@
                                               IsChecked="{Binding ModeFollowsTheMap}" />
                             </Grid>
                         </Border>
+
+                        <!-- WHERE A SCAN MAY MOVE THE DIAL, AND IT IS A FILE
+                             RATHER THAN A ROW OF BOXES (§0.2.1). A scan takes
+                             the tuning knob out of the hand of the person
+                             sitting at it, so the stretch it is allowed inside
+                             has to be his. Boxes in this window would be
+                             Hamlet's list with his numbers in it; the file is
+                             his list, and it carries the source of every
+                             stretch Hamlet generated, which a box cannot. -->
+                        <Border Background="White" CornerRadius="8" Padding="12,10"
+                                BorderBrush="{StaticResource HmGreenEdgeBrush}"
+                                BorderThickness="1">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <StackPanel Grid.Column="0" Spacing="2" Margin="0,0,10,0">
+                                    <TextBlock Text="Where the scanner may take your dial"
+                                               FontWeight="SemiBold" FontSize="13"
+                                               TextWrapping="Wrap" />
+                                    <ctl:GlossaryTextControl
+                                        Text="The scanner will not tune outside the stretches in this file, whatever else goes wrong, so it is worth a look before you first run one. Hamlet wrote it once from the Morse parts of its own band data and will never touch it again, and every stretch in it says where its numbers came from. Delete one and the scanner will not go there."
+                                        FontSize="12" LineSpacing="1.4"
+                                        Foreground="{StaticResource HmTextMutedBrush}" />
+
+                                    <TextBlock Text="{Binding ScanFilePath}"
+                                               FontFamily="Consolas,Menlo,monospace"
+                                               FontSize="11" TextWrapping="Wrap"
+                                               Foreground="{StaticResource HmTextMutedBrush}" />
+                                </StackPanel>
+                                <Button Grid.Column="1" VerticalAlignment="Center"
+                                        Content="Open it"
+                                        Command="{Binding OpenScanFileCommand}" />
+                            </Grid>
+                        </Border>
                     </StackPanel>
                 </Border>
 

@@ -72,7 +72,8 @@ public sealed record ScanDwellRow(
 /// </remarks>
 public sealed partial class ScanViewModel : ObservableObject
 {
-    private readonly AppSettings _settings;
+    private readonly string _segmentsPath;
+    private readonly string _homePath;
     private readonly ScopeBinSurvey _survey = new();
     private readonly Action<string> _say;
 
@@ -84,12 +85,19 @@ public sealed partial class ScanViewModel : ObservableObject
     private IScanHome? _home;
 
     /// <summary>Creates the scanner's face.</summary>
-    /// <param name="settings">Where the operator's own file lives.</param>
     /// <param name="say">How to put a line in the status bar.</param>
-    public ScanViewModel(AppSettings settings, Action<string> say)
+    /// <param name="segmentsPath">
+    /// The operator's own scan file. Defaults to the one beside his settings;
+    /// a parameter so the refusal can be proved against a real bad file rather
+    /// than argued about (§12.5).
+    /// </param>
+    /// <param name="homePath">Where the dial was when a scan started.</param>
+    public ScanViewModel(
+        Action<string> say, string? segmentsPath = null, string? homePath = null)
     {
-        _settings = settings;
         _say = say;
+        _segmentsPath = segmentsPath ?? SettingsStore.ScanSegmentsPath;
+        _homePath = homePath ?? SettingsStore.ScanHomePath;
     }
 
     /// <summary>True while a scan is moving the dial.</summary>
@@ -265,7 +273,7 @@ public sealed partial class ScanViewModel : ObservableObject
     [RelayCommand]
     private async Task StartAsync()
     {
-        if (_scanner is null || _decoder is null || IsScanning)
+        if (IsScanning)
         {
             return;
         }
@@ -275,11 +283,16 @@ public sealed partial class ScanViewModel : ObservableObject
         Dwells.Clear();
         OnPropertyChanged(nameof(HasDwells));
 
+        // **THE FILE IS CHECKED BEFORE THE RADIO IS, AND THE ORDER IS THE
+        // POINT.** Whether the operator's scan file can be read is a fact about
+        // his configuration and not about whether anything is plugged in, so a
+        // broken one is worth saying the moment he asks for a scan rather than
+        // after he has connected a radio and pressed again (§0.2.1).
         ScanSegments segments;
 
         try
         {
-            segments = ScanSegments.LoadOrDefault(SettingsStore.ScanSegmentsPath);
+            segments = ScanSegments.LoadOrDefault(_segmentsPath);
         }
         catch (InvalidDataException error)
         {
@@ -289,6 +302,14 @@ public sealed partial class ScanViewModel : ObservableObject
             // prevent.
             Refusal = "Hamlet will not scan until it can read your scan file. "
                 + error.Message;
+            _say(Refusal);
+            return;
+        }
+
+        if (_scanner is null || _decoder is null)
+        {
+            Refusal = "There is no radio for Hamlet to scan with, and no way to "
+                + "stop a scan that has nothing behind it.";
             _say(Refusal);
             return;
         }
@@ -452,5 +473,5 @@ public sealed partial class ScanViewModel : ObservableObject
         OnPropertyChanged(nameof(HasCandidates));
     }
 
-    private IScanHome Home() => _home ??= new FileScanHome(SettingsStore.ScanHomePath);
+    private IScanHome Home() => _home ??= new FileScanHome(_homePath);
 }

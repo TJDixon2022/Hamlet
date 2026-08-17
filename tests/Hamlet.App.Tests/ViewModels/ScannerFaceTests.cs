@@ -126,7 +126,7 @@ public sealed class ScannerFaceTests
     [Fact]
     public void TheCollapsedScannerStillSaysWhatIsHappening()
     {
-        var scan = new ScanViewModel(new AppSettings(), _ => { });
+        var scan = new ScanViewModel(_ => { });
 
         Assert.Equal("not scanning", scan.Summary);
 
@@ -148,7 +148,7 @@ public sealed class ScannerFaceTests
     [Fact]
     public void TheStopIsSafeWithNoRadioAndNoScan()
     {
-        var scan = new ScanViewModel(new AppSettings(), _ => { });
+        var scan = new ScanViewModel(_ => { });
 
         scan.StopNow();
         scan.StopCommand.Execute(null);
@@ -166,12 +166,60 @@ public sealed class ScannerFaceTests
     [Fact]
     public void NoScanIsOfferedWithoutARadio()
     {
-        var scan = new ScanViewModel(new AppSettings(), _ => { });
+        var scan = new ScanViewModel(_ => { });
 
         Assert.False(scan.CanStart);
 
         scan.Attach(null, null, null, null);
 
         Assert.False(scan.CanStart);
+    }
+
+    /// <remarks>
+    /// <para>Proves §0.2.1: **a scan file that cannot be read is refused where
+    /// the operator can see it, and never quietly replaced with Hamlet's own
+    /// list.** Substituting the default would run the scan over a stretch he did
+    /// not choose, which is the one thing the file exists to prevent, and it
+    /// would do it silently.</para>
+    /// <para>The engine already throws on a bad file. What this proves is that
+    /// the refusal reaches a surface rather than being swallowed on the way, and
+    /// it is proved against a real unreadable file rather than argued about
+    /// (§12.5).</para>
+    /// </remarks>
+    [Fact]
+    public async Task AScanFileThatCannotBeReadIsRefusedWhereHeCanSeeIt()
+    {
+        var folder = Path.Combine(
+            Path.GetTempPath(), "hamlet-face-" + Guid.NewGuid().ToString("N"));
+
+        Directory.CreateDirectory(folder);
+
+        var path = Path.Combine(folder, "scan-segments.json");
+
+        File.WriteAllText(path, "{ this is not json at all");
+
+        try
+        {
+            var said = new List<string>();
+            var scan = new ScanViewModel(said.Add, segmentsPath: path);
+
+            await scan.StartCommand.ExecuteAsync(null);
+
+            _output.WriteLine($"refusal : {scan.Refusal}");
+            _output.WriteLine($"status  : {string.Join(" | ", said)}");
+
+            // NOT SCANNING, and saying why in both places the operator looks.
+            Assert.False(scan.IsScanning);
+
+            // **AND IT NAMED THE FILE RATHER THAN CARRYING ON.** The engine's
+            // own default is twenty cited stretches, so a silent fallback would
+            // have looked like a working scan.
+            Assert.Contains("scan file", scan.Refusal, StringComparison.Ordinal);
+            Assert.Contains(scan.Refusal, said);
+        }
+        finally
+        {
+            Directory.Delete(folder, recursive: true);
+        }
     }
 }

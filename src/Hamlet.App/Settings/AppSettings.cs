@@ -507,6 +507,33 @@ public static class SettingsStore
             // Nothing to do if the shell refuses.
         }
     }
+
+    /// <summary>
+    /// Open the operator's scan file in whatever edits text here (§0.2.1).
+    /// </summary>
+    /// <remarks>
+    /// **THE FILE IS WRITTEN BEFORE IT IS OPENED, NEVER OVERWRITTEN.** §0.2.1
+    /// requires the scanned stretch to come from a file the operator edits, and
+    /// a menu entry that opens nothing is not a way to edit anything. Anything
+    /// already there is his and is left exactly as it is.
+    /// </remarks>
+    public static void OpenScanSegments()
+    {
+        try
+        {
+            Hamlet.RadioEngine.Scan.ScanSegments.WriteDefaultIfMissing(ScanSegmentsPath);
+
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+            {
+                FileName = ScanSegmentsPath,
+                UseShellExecute = true,
+            });
+        }
+        catch (Exception)
+        {
+            // Nothing to do if the shell refuses (§8).
+        }
+    }
 }
 
 /// <summary>One visited frequency, as settings.json holds it (HM-DEC-072).</summary>

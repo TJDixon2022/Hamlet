@@ -444,6 +444,23 @@ public partial class SettingsViewModel : ObservableObject
     [RelayCommand]
     private void OpenFolder() => SettingsStore.OpenDataFolder();
 
+    /// <summary>
+    /// Open the file that says where a scan may move the dial (§0.2.1).
+    /// </summary>
+    /// <remarks>
+    /// **THE ONE PLACE IN THE APP WHERE THE OPERATOR IS SENT TO A TEXT FILE**,
+    /// and it is deliberate. §0.2.1 requires the scanned stretch to be his,
+    /// configured in something he edits, and a set of frequency boxes in this
+    /// window would be Hamlet's list with his numbers in it rather than his
+    /// list. The file carries the source of every stretch Hamlet generated, and
+    /// a box cannot carry a citation.
+    /// </remarks>
+    [RelayCommand]
+    private void OpenScanFile() => SettingsStore.OpenScanSegments();
+
+    /// <summary>Where the scan file is, so the window can say so.</summary>
+    public string ScanFilePath => SettingsStore.ScanSegmentsPath;
+
     [RelayCommand]
     private void ClearTelemetry()
     {
