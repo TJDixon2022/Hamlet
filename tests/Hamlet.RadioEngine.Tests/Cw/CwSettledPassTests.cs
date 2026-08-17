@@ -223,8 +223,70 @@ public sealed class CwSettledPassTests
         var into = new List<SettledCharacter>();
         var outcome = pass.Settle(60, into);
 
-        Assert.Equal(SettledRefusal.Clock, outcome.Refusal);
+        Assert.True(
+            outcome.Refusal is SettledRefusal.Clock or SettledRefusal.ClockLost,
+            $"expected a clock refusal and got {outcome.Refusal}");
+
         Assert.Empty(into);
+    }
+
+    /// <remarks>
+    /// <para>Proves HM-DEC-096 phase 2: **the clock that was running gets a
+    /// hearing before it is thrown away.** A fade or a burst of somebody else's
+    /// keying breaks a window's fit without anything having changed about the
+    /// station being read, and a refusal that fires on every fade is worse than
+    /// no refusal at all.</para>
+    /// <para>Here the sending never changes, and a stretch of it is buried so the
+    /// fresh fit is poor. The clock carried forward still describes the marks, so
+    /// nothing is lost.</para>
+    /// </remarks>
+    [Fact]
+    public void AFadeDoesNotThrowAwayAWorkingClock()
+    {
+        var pass = new CwSettledPass(48_000, 0.010);
+        var at = 0;
+
+        void Send(int marks, double loudDb)
+        {
+            for (var i = 0; i < marks; i++)
+            {
+                // Ten points of mark, then thirty of gap: a dit at 100 ms with
+                // room between characters.
+                var length = i % 4 == 3 ? 30 : 10;
+
+                for (var k = 0; k < length; k++)
+                {
+                    pass.Observe(loudDb, false, at++ * 480);
+                }
+
+                for (var k = 0; k < 12; k++)
+                {
+                    pass.Observe(-60, false, at++ * 480);
+                }
+            }
+        }
+
+        Send(40, -20);
+
+        var into = new List<SettledCharacter>();
+        var settled = pass.Settle(100, into);
+
+        Assert.True(settled.Read, $"the clean stretch refused: {settled.Refusal}");
+
+        var established = settled.DitMilliseconds;
+
+        Assert.InRange(established, 60, 160);
+
+        // Now the same fist, ten decibels down. The contrast is thinner and the
+        // fit is worse, and it is still the same station.
+        Send(40, -34);
+
+        var faded = pass.Settle(100, new List<SettledCharacter>());
+
+        Assert.NotEqual(SettledRefusal.ClockLost, faded.Refusal);
+        Assert.False(
+            faded.SpeedChanged,
+            "a fade was reported as somebody else starting to send");
     }
 
     /// <remarks>

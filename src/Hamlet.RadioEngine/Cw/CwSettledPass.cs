@@ -40,6 +40,12 @@ public enum SettledRefusal
 
     /// <summary>The mark lengths did not cluster into a clock anybody could send.</summary>
     Clock,
+
+    /// <summary>
+    /// The marks arriving stopped fitting the clock that was running, and no new
+    /// one describes them either (HM-DEC-096, phase 2).
+    /// </summary>
+    ClockLost,
 }
 
 /// <summary>
@@ -138,6 +144,16 @@ public sealed class CwSettledPass
     /// <summary>The longest, in milliseconds.</summary>
     public const double LongestDitMs = 350;
 
+    /// <summary>
+    /// How far marks may sit from a clock before it stops describing them.
+    /// </summary>
+    /// <remarks>
+    /// About a third in log units, which is a mark landing roughly forty
+    /// percent away from the length it was called. Real sending wanders well
+    /// inside that; two stations at different speeds in one window do not.
+    /// </remarks>
+    private const double WorstAcceptableFit = 0.34;
+
     /// <summary>How much a clock has to move to count as a different speed.</summary>
     /// <remarks>
     /// A quarter. Real fists wander a few percent and a different operator is
@@ -169,6 +185,8 @@ public sealed class CwSettledPass
     private int _fill;
     private long _settledThrough = -1;
     private double _lastDitMs;
+    private double _previousDitMs;
+    private double _previousDahMs;
 
     /// <summary>Creates a settled pass.</summary>
     /// <param name="sampleRate">Samples per second of the audio.</param>
@@ -219,6 +237,8 @@ public sealed class CwSettledPass
         _fill = 0;
         _settledThrough = -1;
         _lastDitMs = 0;
+        _previousDitMs = 0;
+        _previousDahMs = 0;
     }
 
     /// <summary>
@@ -324,16 +344,45 @@ public sealed class CwSettledPass
 
         var refit = FitClock(count);
 
-        if (refit is not var (ditFinal, dahFinal) || ditFinal <= 0)
+        // **THE CLOCK THAT WAS RUNNING GETS A HEARING** (HM-DEC-096, phase 2). A
+        // fade or a burst of somebody else's keying can break a window's fit
+        // without anything having changed about the station being read, and a
+        // refusal that fires on every fade is worse than useless. So the fresh
+        // fit and the one already running are both measured against the marks
+        // that actually arrived, and whichever describes them better is used.
+        var fresh = refit is var (freshDit, freshDah) && freshDit > 0
+            ? ((double Dit, double Dah)?)(freshDit, freshDah)
+            : null;
+
+        var carried = _previousDitMs > 0
+            ? ((double Dit, double Dah)?)(_previousDitMs, _previousDahMs)
+            : null;
+
+        var chosen = Better(count, fresh, carried);
+
+        if (chosen is not var (ditFinal, dahFinal) || ditFinal <= 0)
         {
+            // Neither the new fit nor the old one describes what arrived. That is
+            // clock loss: emit nothing and re-acquire, because a two-means fit
+            // over a mixture of two stations lands inside the legal ratio band
+            // while describing neither of them, and that is a confident wrong
+            // answer (§0.0).
+            _previousDitMs = 0;
+            _previousDahMs = 0;
+
             return new SettledOutcome(
-                SettledRefusal.Clock, windowSeconds, capped, contrast, 0, false);
+                SettledRefusal.ClockLost, windowSeconds, capped, contrast, 0, false);
         }
 
+        // **A GENUINE SPEED CHANGE IS A FACT ABOUT THE AIR AND IS ANNOTATED.** In
+        // a contact it usually means a different station started transmitting,
+        // which is the earliest evidence there is that somebody answered.
         var speedChanged = _lastDitMs > 0
             && Math.Abs(ditFinal - _lastDitMs) / _lastDitMs > SpeedChangeFraction;
 
         _lastDitMs = ditFinal;
+        _previousDitMs = ditFinal;
+        _previousDahMs = dahFinal;
 
         // **ONLY WHAT IS NEW SINCE LAST TIME** (HM-DEC-096, phase 1). The window
         // is four seconds long and is read twice a second, so every character
@@ -550,6 +599,66 @@ public sealed class CwSettledPass
         }
 
         return count;
+    }
+
+    /// <summary>
+    /// Which of two clocks describes the marks that actually arrived
+    /// (HM-DEC-096, phase 2).
+    /// </summary>
+    /// <param name="count">How many marks were measured.</param>
+    /// <param name="fresh">The clock just fitted to this window, if any.</param>
+    /// <param name="carried">The clock that was already running, if any.</param>
+    /// <returns>The better fit, or null when neither describes them.</returns>
+    /// <remarks>
+    /// Scored by how far each mark sits from the nearer of that clock's two
+    /// lengths, in log units so a dit and a dah are weighed the same way. A
+    /// clock nothing sits near is not a clock, whatever its ratio was.
+    /// </remarks>
+    private (double Dit, double Dah)? Better(
+        int count, (double Dit, double Dah)? fresh, (double Dit, double Dah)? carried)
+    {
+        if (carried is null)
+        {
+            return fresh;
+        }
+
+        if (fresh is null)
+        {
+            return Fits(count, carried.Value) <= WorstAcceptableFit ? carried : null;
+        }
+
+        var freshError = Fits(count, fresh.Value);
+        var carriedError = Fits(count, carried.Value);
+
+        if (Math.Min(freshError, carriedError) > WorstAcceptableFit)
+        {
+            return null;
+        }
+
+        return freshError <= carriedError ? fresh : carried;
+    }
+
+    /// <summary>How far the marks sit from a clock's two lengths, on average.</summary>
+    private double Fits(int count, (double Dit, double Dah) clock)
+    {
+        var total = 0.0;
+        var used = 0;
+
+        for (var i = 0; i < count; i++)
+        {
+            if (_markTruncated[i] || _marks[i] <= 0)
+            {
+                continue;
+            }
+
+            var toDit = Math.Abs(Math.Log(_marks[i] / clock.Dit));
+            var toDah = Math.Abs(Math.Log(_marks[i] / clock.Dah));
+
+            total += Math.Min(toDit, toDah);
+            used++;
+        }
+
+        return used == 0 ? double.MaxValue : total / used;
     }
 
     /// <summary>

@@ -255,6 +255,9 @@ public sealed class CwToneTracker
     /// <summary>What is reported as the tone, which is not the instant winner.</summary>
     private double _reportedHz = double.NaN;
 
+    /// <summary>A move that is waiting for the character in progress to end.</summary>
+    private double _heldSwitchHz = double.NaN;
+
     /// <summary>
     /// How many more surveys the last keying finding may go on protecting its
     /// own frequency from being called interference.
@@ -347,6 +350,20 @@ public sealed class CwToneTracker
 
     /// <summary>Watches for the operator's own transmissions (HM-DEC-095).</summary>
     public CwTransmitGuard Guard { get; }
+
+    /// <summary>
+    /// True while a character is part-read, so the tracker may not move
+    /// (HM-DEC-096, phase 3).
+    /// </summary>
+    /// <remarks>
+    /// **NEVER SWITCH MID-CHARACTER.** Moving the filter part-way through a
+    /// character assembles the rest of it from a different station, and what
+    /// comes out is a letter nobody sent with clean timing and a healthy
+    /// margin. That is the same class of confident wrong reading the
+    /// truncated-evidence rule exists to prevent, and it costs at most one
+    /// character to avoid (§0.0).
+    /// </remarks>
+    public bool MidCharacter { get; set; }
 
     /// <summary>What the survey last found, keying and interference alike.</summary>
     public ToneVerdict Verdict { get; private set; } = ToneVerdict.Empty;
@@ -605,6 +622,13 @@ public sealed class CwToneTracker
     /// </remarks>
     private void ReadSurvey()
     {
+        // A move that was waiting for a character to finish goes now.
+        if (!double.IsNaN(_heldSwitchHz) && !MidCharacter)
+        {
+            Switch(_heldSwitchHz);
+            _heldSwitchHz = double.NaN;
+        }
+
         var coarse = _survey.Analyze();
         var previous = _previousKeyedHz;
 
@@ -636,7 +660,13 @@ public sealed class CwToneTracker
             // below owns every subsequent move, because being dragged off a
             // working decode by a loud carrier is the fault this whole survey
             // exists to prevent.
-            if (double.IsNaN(_lastKeyedHz)
+            //
+            // **AND NOT MID-CHARACTER EITHER** (phase 3). The rule is about
+            // moving the filter, not about why it is being moved: a character
+            // finished from a different part of the band is a letter nobody sent
+            // however the move came to be made.
+            if (!MidCharacter
+                && double.IsNaN(_lastKeyedHz)
                 && coarse.Strongest is { } loudest
                 && Math.Abs(loudest.ToneHz - _fineHz[_fineHz.Length / 2]) > FineReachHz)
             {
@@ -678,11 +708,17 @@ public sealed class CwToneTracker
         // history is about different pitches and cannot come with it.
         if (Math.Abs(keyed.ToneHz - _fineHz[_fineHz.Length / 2]) > FineReachHz)
         {
-            CenterFineBank(keyed.ToneHz);
-            _fineSurvey.Reset();
-            _tracked = _fineHz.Length / 2;
-            _reportedHz = keyed.ToneHz;
-            Retunes++;
+            if (MidCharacter)
+            {
+                // Held until the character in progress ends (phase 3). The
+                // candidate keeps being re-confirmed while it waits, so a switch
+                // deferred is not a switch abandoned.
+                _heldSwitchHz = keyed.ToneHz;
+                Verdict = new ToneVerdict(keyed, Filtered(coarse.Interference));
+                return;
+            }
+
+            Switch(keyed.ToneHz);
             Verdict = new ToneVerdict(keyed, Filtered(coarse.Interference));
             return;
         }
@@ -731,6 +767,26 @@ public sealed class CwToneTracker
         // Six surveys is three seconds, which is exactly how long the survey's
         // own history takes to forget a station that has stopped.
         _keyedProtects = 6;
+    }
+
+    /// <summary>
+    /// Move the fine bank to a different part of the band (HM-DEC-096, phase 3).
+    /// </summary>
+    /// <remarks>
+    /// **A SWITCH IS A CLOCK-LOSS EVENT.** Operationally a pitch change and a
+    /// speed change are the same thing: somebody else started transmitting.
+    /// Everything the decoder holds was measured through a filter pointed
+    /// somewhere else, and the settled pass's window is full of a station that
+    /// is no longer being read.
+    /// </remarks>
+    private void Switch(double toneHz)
+    {
+        CenterFineBank(toneHz);
+        _fineSurvey.Reset();
+        _tracked = _fineHz.Length / 2;
+        _reportedHz = toneHz;
+        KeyingFoundAt(toneHz);
+        Retunes++;
     }
 
     /// <summary>The fine bin nearest a pitch.</summary>

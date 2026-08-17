@@ -404,6 +404,13 @@ public sealed class CwDecoder
         // rather than being chosen once.
         _tracker.FollowSpeed(_speed.IsReady ? _speed.WordsPerMinute : 0);
 
+        // **THE TRACKER MAY NOT MOVE PART-WAY THROUGH A CHARACTER** (HM-DEC-096,
+        // phase 3). Only the decoder knows whether one is part-read, so it says
+        // so, and the tracker holds the move until the character closes. A held
+        // switch is not an abandoned one: the candidate keeps being re-confirmed
+        // while it waits.
+        _tracker.MidCharacter = _pattern.Length > 0 || _pending.Count > 0;
+
         // **THE SECOND PASS IS FED THE SAME ENVELOPE, DECIMATED** (HM-DEC-096,
         // phase 1). Every second measurement is a ten millisecond grid, which is
         // what the validated reference chain fits thresholds over, and half the
