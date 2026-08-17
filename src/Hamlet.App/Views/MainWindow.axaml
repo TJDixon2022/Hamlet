@@ -382,7 +382,16 @@
                         </StackPanel>
                     </Border>
 
+                    <!-- THE NUMBERS ARE ONE HOVER AWAY (HM-DEC-093). The row
+                         above hides while every stage is working, because a
+                         line that never changes is a line people stop reading
+                         and that is the line that has to be read on the evening
+                         a stage goes to zero. Hiding it may not mean losing the
+                         counters: they are what proved the scope path was
+                         discarding 2,740 parts. -->
                     <ctl:WaterfallControl MinHeight="260"
+                        ToolTip.Tip="{Binding ScopeCounts}"
+                        ToolTip.ShowDelay="600"
                         Source="{Binding SpectrumSource}"
                         FrequencyHz="{Binding FrequencyHz}"
                         BandLowHz="{Binding SelectedBand.Band.LowHz}"

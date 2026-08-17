@@ -1110,11 +1110,30 @@ public partial class MainWindowViewModel : ObservableObject
                 return $"no data has ever arrived · {SelectedBand.Band.Name}";
             }
 
-            return _rigSpectrum is { SweepCount: 0 }
-                ? $"parts arriving, no complete sweep · {SelectedBand.Band.Name}"
-                : $"receiving · {SelectedBand.Band.Name}";
+            if (_rigSpectrum is { SweepCount: 0 })
+            {
+                return $"parts arriving, no complete sweep · {SelectedBand.Band.Name}";
+            }
+
+            // **RECEIVING MEANS FRAMES ARE ARRIVING NOW, NOT THAT ONE ONCE DID.**
+            // This used to be the cumulative sweep count, so the first sweep of
+            // an evening bought the word for the rest of it: the cable could
+            // come out and the summary would go on saying "receiving" until the
+            // app was restarted. §0.0 is broken by a single word there, and it
+            // is the same word HM-DEC-093 was raised about.
+            return ScopeIsFlowing
+                ? $"receiving · {SelectedBand.Band.Name}"
+                : $"nothing arriving now · {SelectedBand.Band.Name}";
         }
     }
+
+    /// <summary>True when spectrum data is arriving right now.</summary>
+    /// <remarks>
+    /// A measurement of the last part's age rather than a count of parts ever
+    /// seen, because those two answer different questions and only one of them
+    /// is "is this working" (§0.0).
+    /// </remarks>
+    public bool ScopeIsFlowing => WhichScopeStage() == ScopeStage.Flowing;
 
     /// <summary>
     /// What the scope path has actually done, stage by stage (HM-DEC-093).
@@ -1139,29 +1158,62 @@ public partial class MainWindowViewModel : ObservableObject
                 return "";
             }
 
-            if (stream.PartsReceived == 0)
-            {
-                return "No spectrum data has ever arrived from the radio. This is "
-                    + "not a quiet band: nothing at all has come down the cable "
-                    + "since Hamlet connected.";
-            }
-
-            var since = stream.LastPartUtc is { } last
+            var quiet = stream.LastPartUtc is { } last
                 ? (int)(DateTime.UtcNow - last).TotalSeconds
-                : -1;
+                : 0;
+
+            // **THE DECIDING IS THE ENGINE'S AND THE DRAWING IS THIS FILE'S**
+            // (§0.1). A stage count is a radio fact, and the same fault this
+            // exists to catch was invisible for weeks because nothing measured
+            // it, so the measurement lives where a test can reach it.
+            return ScopeFlow.Say(WhichScopeStage(), stream.PartsReceived,
+                stream.PartsParsed, quiet);
+        }
+    }
+
+    /// <summary>Which stage of the scope path is wrong, or none.</summary>
+    private ScopeStage WhichScopeStage()
+        => _rigSpectrum is not { } stream
+            ? ScopeStage.NotAttached
+            : ScopeFlow.Check(
+                attached: true,
+                stream.PartsReceived,
+                stream.PartsParsed,
+                stream.SweepsDelivered,
+                stream.LastPartUtc,
+                DateTime.UtcNow);
+
+    /// <summary>
+    /// The stage counts, whether or not anything is wrong (§0.0.1).
+    /// </summary>
+    /// <remarks>
+    /// **HIDING THE ROW MAY NOT MEAN LOSING THE NUMBERS.** The counters are what
+    /// proved the scope path was discarding 2,740 parts, so they stay one hover
+    /// away rather than being deleted along with the row that shouted them.
+    /// </remarks>
+    public string ScopeCounts
+    {
+        get
+        {
+            if (_rigSpectrum is not { } stream)
+            {
+                return "Nothing is attached to the waterfall yet.";
+            }
 
             var rejected = stream.PartsRejected == 0
                 ? ""
                 : $", {stream.PartsRejected} thrown away";
 
-            var quiet = since > 3 ? $", nothing for {since} seconds" : "";
+            var since = stream.LastPartUtc is { } last
+                ? $", last one {(int)(DateTime.UtcNow - last).TotalSeconds} seconds ago"
+                : ", and none has ever arrived";
 
             return $"{stream.PartsReceived} parts in, {stream.PartsParsed} read"
-                + $"{rejected}, {stream.SweepsDelivered} sweeps drawn{quiet}.";
+                + $"{rejected}, {stream.SweepsDelivered} sweeps drawn{since}.";
         }
     }
 
-    /// <summary>True when there is anything to say about the stages.</summary>
+    /// <summary>True when a stage is wrong and the row has to be on screen.</summary>
     public bool HasScopeStages => ScopeStages.Length > 0;
 
     /// <summary>
@@ -2433,6 +2485,8 @@ public partial class MainWindowViewModel : ObservableObject
         OnPropertyChanged(nameof(HasScopeStages));
         OnPropertyChanged(nameof(ScopeRejection));
         OnPropertyChanged(nameof(HasScopeRejection));
+        OnPropertyChanged(nameof(ScopeCounts));
+        OnPropertyChanged(nameof(ScopeIsFlowing));
 
         // The break-in setting and the mode both live in here, and both decide
         // whether a send would reach the air. So the panel re-asks whenever the
