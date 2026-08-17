@@ -147,20 +147,35 @@ public sealed class CwFixtureCommitTests
     /// Hamlet (HM-OPEN-018 phase 4).
     /// </summary>
     /// <remarks>
-    /// <para>**EMPTY, AND IT HELD THREE UNTIL THE GENERATOR WAS FIXED**
-    /// (HM-DEC-101). The gate's whole purpose is that a fixture the reference
-    /// cannot decode proves nothing about the decoder, so anything in here is
-    /// held out of every assertion about Hamlet until somebody resolves why.
-    /// It is not a place to park a fixture that is inconvenient.</para>
-    /// <para>The three that were here — `tightfist-easy`, `tightfist-working`
-    /// and `qsk-preamble` — were not admitted by lowering the gate. The tight
-    /// fist had been generated from a fifty millisecond window's measurement of
-    /// a real station rather than from the station, so the measurement bias was
-    /// applied twice and the result fell under the reference's own ratio floor.
-    /// Generated at the station's true timing they score 100, 64 and 100.</para>
+    /// <para>**THE GATE'S WHOLE PURPOSE IS THAT A FIXTURE THE REFERENCE CANNOT
+    /// DECODE PROVES NOTHING ABOUT THE DECODER**, so anything named here is held
+    /// out of every assertion about Hamlet until somebody resolves why. It is not
+    /// a place to park a fixture that is inconvenient, and it has never been used
+    /// as one: three entries were cleared by fixing the generator and one by
+    /// fixing the reference, and none by lowering the bar.</para>
+    /// <para>`tightfist-easy`, `tightfist-working` and `qsk-preamble` were held
+    /// because the tight fist had been generated from a fifty millisecond
+    /// window's measurement of a real station rather than from the station, so
+    /// the measurement bias was applied twice (HM-DEC-101). At the station's true
+    /// timing they score 100, 64 and 100.</para>
+    /// <para>**THE ONE THAT REMAINS IS THE REFERENCE'S GAP CLASSIFIER RATHER
+    /// THAN THE FIXTURE** (HM-DEC-103). At twenty-five words a minute `fast-easy`
+    /// hands the reference a clock it fits correctly — dit 55, dah 152, ratio
+    /// 2.77 — and then comes apart classifying the gaps, returning every element
+    /// as its own character: `TETETTET TETETTET TEEE`.</para>
+    /// <para>`fast-working` is the same message at the same speed ten decibels
+    /// weaker and reads at 63 percent, which is what says the fixture is sound.
+    /// The classifier takes the two largest multiplicative steps in the sorted
+    /// gaps, and on a strong fast signal one stray short gap produces a step
+    /// larger than the real element-to-character one, so the boundary lands below
+    /// the element gaps and every one of them ends a character.</para>
+    /// <para>Recorded as a discovery rather than fixed, per the work order:
+    /// **fix only what is clearly a defect.** The reference not implementing its
+    /// own written bandwidth rule was clearly a defect and was fixed; a
+    /// classifier brittle at one corner is a finding about the control.</para>
     /// </remarks>
     public static IReadOnlySet<string> NotYetAdmissible { get; } =
-        new HashSet<string>(StringComparer.Ordinal);
+        new HashSet<string>(StringComparer.Ordinal) { "fast-easy" };
 
     /// <remarks>
     /// Proves HM-OPEN-018 phase 4: **the held-out list is small and named.** A
@@ -174,10 +189,6 @@ public sealed class CwFixtureCommitTests
             NotYetAdmissible.Count * 3 < CwFixtureCatalogue.All.Count,
             $"{NotYetAdmissible.Count} of {CwFixtureCatalogue.All.Count} fixtures "
             + "are held out, which is no longer a gate");
-
-        // Every fixture the reference has read may judge Hamlet, and right now
-        // that is all of them.
-        Assert.Empty(NotYetAdmissible);
 
         foreach (var name in NotYetAdmissible)
         {

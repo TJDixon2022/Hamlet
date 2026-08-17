@@ -150,6 +150,20 @@ public static class CwFixtureCatalogue
     /// </remarks>
     public const double OrdinaryWpm = 12;
 
+    /// <summary>The speed the fast messages are sent at (HM-DEC-103).</summary>
+    /// <remarks>
+    /// <para>**TWENTY-FIVE, AND THIRTY-FIVE WAS REJECTED AS SCOPE INVENTED AT A
+    /// TEST BENCH.** Nothing has yet been decoded above twenty on the air, so a
+    /// claim about thirty-five would be a number with no evidence under it, which
+    /// is the same defect as a decode with no signal under it.</para>
+    /// <para>A dit at this speed is forty-eight milliseconds, which is where the
+    /// settled pass's window stops being governed by its two-and-a-half second
+    /// floor and starts being governed by its thirty-element one. **No test has
+    /// ever exercised that path**, and new failures here are wanted rather than
+    /// feared.</para>
+    /// </remarks>
+    public const double FastWpm = 25;
+
     /// <summary>Every fixture this session builds.</summary>
     /// <remarks>
     /// Messages one to three are sent at <see cref="OrdinaryWpm"/> with textbook
@@ -177,6 +191,13 @@ public static class CwFixtureCatalogue
             ("prosigns", ProsignText, false),
             ("coverage", CoverageText, false),
             ("tightfist", TightFistText, true),
+        };
+
+        var fastTiers = new[]
+        {
+            ("easy", EasyDb, 0.0),
+            ("working", WorkingDb, QsbHz),
+            ("edge", EdgeDb, 0.0),
         };
 
         var seed = 20260817;
@@ -211,6 +232,24 @@ public static class CwFixtureCatalogue
                         QsbDepthDb: qsb > 0 ? QsbDepthDb : 0,
                         Seed: seed++));
             }
+        }
+
+        // Twenty-five words a minute, all three tiers, replacing the one old
+        // fixture that carries fast CW at all (HM-DEC-103).
+        foreach (var (tier, snr, qsb) in fastTiers)
+        {
+            recipes.Add(new CwFixtureRecipe(
+                $"fast-{tier}",
+                ExchangeText,
+                DitMilliseconds: 1200.0 / FastWpm,
+                DahMilliseconds: 3 * 1200.0 / FastWpm,
+                ElementGapMilliseconds: 1200.0 / FastWpm,
+                CharacterGapMilliseconds: 3 * 1200.0 / FastWpm,
+                WordGapMilliseconds: 7 * 1200.0 / FastWpm,
+                SignalToNoiseDb: snr,
+                QsbHz: qsb,
+                QsbDepthDb: qsb > 0 ? QsbDepthDb : 0,
+                Seed: seed++));
         }
 
         // The operator's own full-break-in transmission ahead of the answer, which

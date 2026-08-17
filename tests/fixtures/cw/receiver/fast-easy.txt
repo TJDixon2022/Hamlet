@@ -1,0 +1,26 @@
+name          fast-easy
+generated     tests/Hamlet.RadioEngine.Tests/Cw/Fixtures
+seed          20260829
+sampleRate    8000
+seconds       14.74
+
+text          CQ CQ DE N0CALL N0CALL K
+messageStart  1.00 s
+dit           48 ms
+dah           144 ms
+elementGap    48 ms
+characterGap  144 ms
+wordGap       336 ms
+wpm           25.0
+
+toneHz        615 Hz, drifting +/- 3 Hz
+snrDb         15.0 dB in the passband
+passband      350-870 Hz, skirt 30 dB down
+noiseRms      -34.0 dBFS
+toneAmplitude -16.0 dBFS peak
+qsb           none
+preamble      none
+
+peak          -12.5 dBFS
+reference    11% of the message  [TETETTET TETETTET TEEE TETTTTTTETEETETEEETEE TETTTTTTETEETETEEETEE TET TTEENET]
+scoredBytes  235884

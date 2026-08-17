@@ -1,0 +1,26 @@
+name          fast-edge
+generated     tests/Hamlet.RadioEngine.Tests/Cw/Fixtures
+seed          20260831
+sampleRate    8000
+seconds       14.74
+
+text          CQ CQ DE N0CALL N0CALL K
+messageStart  1.00 s
+dit           48 ms
+dah           144 ms
+elementGap    48 ms
+characterGap  144 ms
+wordGap       336 ms
+wpm           25.0
+
+toneHz        615 Hz, drifting +/- 3 Hz
+snrDb         0.0 dB in the passband
+passband      350-870 Hz, skirt 30 dB down
+noiseRms      -34.0 dBFS
+toneAmplitude -31.0 dBFS peak
+qsb           none
+preamble      none
+
+peak          -19.7 dBFS
+reference    26% of the message  [E N N T T E T T E T E T TET T T E T T T T T T E T E A E T E E E T E E T E T T T T T N E T E TE ET T TA E E N E E E ET I]
+scoredBytes  235884

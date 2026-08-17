@@ -74,8 +74,23 @@ def acquire_tone(x, fs, mask, frame_ms):
     return best_f
 
 # ---------------- 3. fine tracking + envelope ----------------
-def fine_envelope(x, fs, f_center, mask, frame_ms):
-    N = int(fs*0.050); hop = int(fs*0.010)          # 50 ms / 10 ms  -> ~20 Hz ENBW
+def fine_envelope(x, fs, f_center, mask, frame_ms, win_s=0.025):
+    """Detection envelope. Window length sets the bandwidth (see run()).
+
+    HM-DEC-103: this took a fixed 50 ms window, which is ~20 Hz ENBW, in flat
+    contradiction of this decoder's own specification -- "bandwidth follows the
+    decoded speed: ~40 Hz ENBW before clock lock or above ~18 WPM, ~20 Hz once
+    locked at slow speeds" (CW_RECEIVE_BRIEF.md 2.2). The rule was written and
+    never implemented.
+
+    It matters because a window that long smears each keyed edge, so the gate
+    opens early and shuts late and every mark measures about 26 ms long. Adding
+    a constant to a dit and a dah compresses their ratio, and this decoder
+    refuses any clock outside 2.5-3.8. At 25 WPM a dit is 48 ms, so a textbook
+    1:3 fist measures 74/172 = 2.33 and is refused: **no fixture above about 15
+    WPM could pass, whatever it contained.**
+    """
+    N = int(fs*win_s); hop = int(fs*0.010)
     offsets = np.arange(-15, 16, 5)
     powers = np.stack([goertzel_power(x, fs, f_center+o, N, hop) for o in offsets])
     k = np.argmax(powers, axis=0)
@@ -227,6 +242,24 @@ def run(path):
         print(f"  tone at ~{f_used:.0f} Hz but element timings do not cluster as Morse"
               f" -> emit nothing (this is the honest output)"); return
     dit, dah = clock
+
+    # Bandwidth follows the decoded speed, as specified. Acquisition ran at
+    # ~40 Hz; a slow fist is re-read at ~20 Hz, which is worth about 3 dB of
+    # sensitivity on a weak signal and is where the real 013347 capture lives.
+    # A fast fist keeps the wider bandwidth, because at 25 WPM a 50 ms window is
+    # longer than the dit it is trying to measure.
+    if 1200/dit <= 18:
+        t, edb, f_inst, active = fine_envelope(
+            x, fs, f0, mask, frame_ms, win_s=0.050)
+        f_used = np.median(f_inst[edb > np.percentile(edb[active], 85)])
+        key, contrast = gate(t, edb, active)
+        key = deglitch(key, t[1]-t[0], 20)
+        marks, spaces, starts, trunc = runs(key, t, active)
+        refit = fit_clock(marks[~trunc])
+        if refit is not None:
+            dit, dah = refit
+            clock = refit
+
     key = deglitch(key, t[1]-t[0], 0.4*dit)        # post-clock: 0.4 dit
     marks, spaces, starts, trunc = runs(key, t, active)
     cbar = np.median(contrast[contrast > 0]) if (contrast > 0).any() else 0
