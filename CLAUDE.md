@@ -24,6 +24,7 @@ on stale rules and will do so confidently.
 | Document | Holds |
 |---|---|
 | `SHACK_FACTS.md` | **Standing ground truth about the operator's own station.** Read before writing a word about the radio's menus; a fact here outranks any inference a session draws from its own reading (HM-DEC-093) |
+| `SESSION_PROTOCOL.md` | **How a work unit is scoped and how a session reports.** The four-part test for what a session may record itself, the three mandatory report headings, and the phase discipline (§12, HM-DEC-096) |
 | `OPEN_ISSUES.md` | Questions, with owner and severity |
 | `DECISIONS.md` | Rulings, newest first, never edited |
 | `FUTURE_GOALS.md` | Aspirations (`FG-###`) — direction, not scope; graduate only by ruling |
@@ -142,6 +143,18 @@ Raise a thing once, then stop. Committing, publishing and rulings are his.
 Never ask him to re-confirm a rule he has already given. Executing inside an
 approved plan is not deciding — building the files the plan names needs no
 per-file permission.
+
+**Tim does not edit files.** He downloads, extracts, runs and commits. A
+delivery that requires him to hand-edit a line, paste a block into a file, or
+patch anything by hand has failed §9.1 and is redone. Asking him to make an
+edit that Claude could have made is the same defect as asking him to run a
+script Claude could have avoided needing.
+
+**One narrow class of conclusion is now the session's to record, not Tim's**
+(§12.1, HM-DEC-096): an entry the governing principles decide one way, that
+supersedes nothing, that weighs no trade-off, and that the report reproduces in
+full. Everything else still comes back to him, and the attribution rule is
+untouched — no entry ever claims his authority for a ruling he did not make.
 
 ### 0.5 Panels collapse — standing design principle
 
@@ -274,6 +287,7 @@ this table is the index.
 
 | Date | Decision | Why | Ref |
 |---|---|---|---|
+| 2026-08-17 | **A work unit is five or six ordered phases, every report ends with `RECORDED` / `NEEDS A RULING` / `STATE`, and one narrow class of conclusion becomes the session's to record rather than Tim's** — decided one way by a governing principle, superseding nothing, weighing no trade-off, reproduced in full so it can be overridden. Anything touching §0.0, §0.1, §0.2, transmit or what the display asserts stays Tim's without exception, and the attribution rule is untouched. **Tim does not edit files**; a delivery requiring him to hand-patch anything has failed §9.1. Full text in `SESSION_PROTOCOL.md`, summary in §12. Measured on the parent project: the same model on the same repository went from a five-minute session producing three fixes to consecutive forty-seven and fifty-one minute sessions producing six phases, ninety-one tests and a live defect found and fixed. | A session's authority is exactly as wide as the plan it was given, and a queue that mixes the conclusions needing judgement with the ones that could not have gone another way buries the ones that need him. | HM-DEC-096 |
 | 2026-08-17 | **A note is chosen by how it is keyed and never by how loud it is, the operator's own transmission is not evidence about anybody else, and a sender's gaps are classified by clustering that sender's own gaps.** **On a branch and not merged**: the measurements hold and eleven synthetic-fixture tests regressed (HM-OPEN-016). The old detector was wrong on all three real recordings, including one answer that is neither the loudest thing nor the real one nor the configured pitch. **The brief's own hypothesis was tested and does not hold**: the keyed station is present more of the time than the carrier, so duty cycle separates nothing. What does is whether the mark lengths are two clusters or one smear. He is transmitting for eighteen of thirty seconds and what is audible between his own elements is not an element. A muted receiver is quiet and an empty file is zero, a hundred and fifty decibels apart. | Six years of copying by ear, and a station answering a call that produced one character. | HM-DEC-095 |
 | 2026-08-17 | **The scope frame is three header bytes, both counts are BCD, and nothing state-dependent runs before the radio has answered anything.** **Two stacked bugs and the first was not the suspected one**: field 1 is a fixed zero the parser read as the part order, so every order was nought and every part of every sweep was discarded. Then the base: `0x11` is eleven, and the arithmetic proves it without the manual, since 475 points cannot be carried in seventeen parts of fifty bytes. **The fixtures were built from the same misunderstanding as the parser**, which is why they all passed for months. One `Populated` gate now precedes anything state-dependent, after three separate faults raced the same poll sweep. Below the fold is not off the edge, and a meter and a recording answer different questions. | 2,740 parts in, 2,740 thrown away, and a suite that was green throughout. | HM-DEC-094 |
 | 2026-08-17 | **Every stage of the scope path is counted, and no session may report the waterfall working without a nonzero frame count from a connected radio.** It has been reported working three times and has never drawn a pixel from a radio; none of those claims was checkable because nothing counted. Received, parsed, rejected with its first reason, and delivered, **on the display and not only in a log**, because "band is quiet" and "nothing has ever arrived" paint the same picture. Reading eliminated two candidates: the composition root is right and the renderer marshals properly. **Closes HM-OPEN-013** with Tim's citation for `1A 05 0074`, read so a precondition becomes a measurement and never an errand (`SHACK_FACTS.md`). | No radio was connectable, so the measurement was built and nothing was fixed blind. | HM-DEC-093 |
@@ -866,7 +880,7 @@ Reads the tree directly, edits in place, builds, commits (§7 format) without
 per-file confirmation. **A decision that is not in `DECISIONS.md` is not
 made** — if code needs a ruling no record contains, the session stops and
 asks, exactly as it would for a missing file. Within an approved plan, act;
-report once at the end of a work unit.
+report once at the end of a work unit, in the format §12.3 requires.
 
 ---
 
@@ -915,3 +929,97 @@ tree — the listing or a file read — before it is acted on.
 4. Request the files the work needs, whole folders, via the template script.
 5. Do not begin work on the strength of a summary. If it is not in a file,
    it was not decided.
+
+
+---
+
+## 12. How work units are scoped and how sessions report
+
+Full text in `SESSION_PROTOCOL.md`. Ratified as HM-DEC-096. What follows is the
+part that must be true even if that file is not open.
+
+**Why it exists.** A session's authority to act is exactly as wide as the plan
+it was given. A prompt naming three defects produces a session that fixes three
+defects and stops, correctly — that is compliance, not underperformance. And a
+session with nowhere to put a conclusion hands everything back at one priority,
+so the conclusions needing Tim's judgement are buried among the ones that could
+not have gone another way. **When a session keeps stopping to ask about things
+the plan plainly covers, the plan was too thin, and that is Tim's to fix rather
+than the session's.**
+
+### 12.1 What a session may record itself — narrows §0.4
+
+A session may write to `DECISIONS.md` when, and only when, **all four** hold:
+
+1. A governing principle in this file decides it and **the reasoning runs one
+   way** — once the constraint is stated, no second answer survives.
+2. It supersedes no existing ruling and acts against none.
+3. **It is not a trade-off.** If it weighs two costs against each other, it is
+   Tim's.
+4. **The report reproduces the entry in full**, so Tim can override it.
+
+The test is not "is this obvious." Obvious is a feeling, and in the parent
+project it was wrong eleven times. The test is whether an alternative can be
+**stated** that survives the governing principle. **The practical tell:** an
+entry containing "on balance", "the cleaner option" or "we felt" has already
+failed, because each is the sound of two costs being weighed.
+
+**Anything touching §0.0, §0.0.1, §0.1, §0.2, transmit, or what the display
+asserts is Tim's without exception** — those are exactly the places where a
+one-way argument is most likely to be a blind spot rather than a proof.
+
+The attribution rule is not part of this relaxation and stays absolute. An
+entry written under this section says so on its face and cites the principle
+that decided it.
+
+### 12.2 Every report ends with three headings — MANDATORY
+
+No prose between them:
+
+| Heading | Contains |
+|---|---|
+| **`RECORDED`** | Entries written under §12.1, each with its id and **full text**, never a summary. Empty is a real answer |
+| **`NEEDS A RULING`** | Proposals, no id, in `DECISIONS.md`'s own format — ruling first, then reasoning, then what was rejected and why. Ordered with the one blocking the most work first |
+| **`STATE`** | Build status, tests passing and failing with the failing ones named, what was pushed and to which branch, and what remains unproven and why |
+
+An unlabelled mixture of the first two puts the triage back on Tim, which is
+the cost this exists to remove. A session on the development computer states
+in `STATE` that nothing in its report is evidence about the radio
+(`SHACK_FACTS.md`, HM-DEC-093).
+
+### 12.3 Work units are written wide, in ordered phases — Tim's side
+
+Five or six phases, each independently committable, ordered so each is
+buildable when reached. The plan **names the phase to drop** if the session
+runs out of room, and the session **says it dropped one** rather than
+half-building it. Every plan ends with what not to do next — "if you finish
+every phase, stop and report; do not start the next work unit" — because a
+session finishing early otherwise wanders into unscoped work. A phase that
+cannot be built without a ruling says so in the plan, so the session raises it
+first instead of discovering it at the phase boundary.
+
+### 12.4 Marked assumptions
+
+Where a value cannot be confirmed it goes in a data file under `/data` carrying
+`source: guess` or `source: extrapolated` and a named `confirm` owner — never
+omitted, never asserted. An unmarked wrong value is indistinguishable from a
+right one; **a marked one is a question with an owner.** This is §0.0 applied
+to the repository instead of the screen, and it is what makes proceeding
+without ratification affordable rather than reckless.
+
+### 12.5 A fixture built from the same misunderstanding as the code proves nothing
+
+Two faults in this repository survived months of green tests that way: the
+scope parser and the fixtures that certified it, and the CW noiseless fixtures
+whose digital silence between elements no receiver ever produces
+(HM-OPEN-018). **When a test passes and the instrument disagrees, suspect the
+fixture.** Rebuilt fixtures land under new names, the old failures are
+adjudicated one at a time with a recorded reason each, and a reference
+implementation must score well on a fixture before that fixture is allowed to
+judge Hamlet. A fixture the reference cannot decode is a bad fixture, not a
+Hamlet failure.
+
+### 12.6 Do not repair unrelated things on the way past
+
+Name them in `OPEN_ISSUES.md` and leave them. A session that fixes what it
+passed is a session whose diff nobody can review.
