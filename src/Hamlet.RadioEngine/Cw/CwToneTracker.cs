@@ -139,7 +139,12 @@ public sealed class CwToneTracker
     private const double FineSpacingHz = 5;
 
     /// <summary>How far either side of the survey's choice the fine bank reaches.</summary>
-    private const double FineReachHz = 30;
+    /// <remarks>
+    /// Fifteen, so seven bins five hertz apart. Taken from the validated
+    /// reference chain, and narrower than the thirty this started at because the
+    /// bank is now read all at once rather than one bin at a time.
+    /// </remarks>
+    private const double FineReachHz = 15;
 
     /// <summary>How often the survey is re-read, in hops.</summary>
     /// <remarks>
@@ -247,6 +252,9 @@ public sealed class CwToneTracker
     /// <summary>The last pitch keying was actually found at.</summary>
     private double _lastKeyedHz = double.NaN;
 
+    /// <summary>What is reported as the tone, which is not the instant winner.</summary>
+    private double _reportedHz = double.NaN;
+
     /// <summary>
     /// How many more surveys the last keying finding may go on protecting its
     /// own frequency from being called interference.
@@ -325,7 +333,17 @@ public sealed class CwToneTracker
     public TimeSpan HopDuration => TimeSpan.FromSeconds((double)HopSamples / SampleRate);
 
     /// <summary>The pitch currently being followed, in hertz.</summary>
-    public double ToneHz => _fineHz[_tracked];
+    /// <remarks>
+    /// **NOT THE BIN THAT WON THIS INSTANT.** The bank is read every measurement
+    /// and the loudest bin follows the signal's drift, which is what the gate
+    /// wants and is far too twitchy to put on a screen: between two elements the
+    /// winner is whichever bin the noise favored. What is reported is where the
+    /// survey found the keying, which is a measurement over three seconds, and
+    /// the middle of the bank until it has one.
+    /// </remarks>
+    public double ToneHz => double.IsNaN(_reportedHz)
+        ? _fineHz[_fineHz.Length / 2]
+        : _reportedHz;
 
     /// <summary>Watches for the operator's own transmissions (HM-DEC-095).</summary>
     public CwTransmitGuard Guard { get; }
@@ -479,7 +497,30 @@ public sealed class CwToneTracker
         var broadband = 20 * Math.Log10(Math.Sqrt(sumSquares / window) + 1e-12);
         var blocked = Guard.Observe(broadband);
 
-        var trackedPower = Goertzel(_fineCoefficient[_tracked], window);
+        // **THE LOUDEST OF THE WHOLE FINE BANK, NOT ONE BIN OF IT** (HM-DEC-095).
+        // The station in the recording drifts a few hertz across its own
+        // transmission, which is ordinary for a radio warming up, and a single bin
+        // watches it walk away. Reading the bank and taking whichever bin is
+        // loudest follows the drift for nothing, and the bin that won is also the
+        // best available reading of where the note actually is.
+        //
+        // Taken from the validated reference chain, where it is what makes the
+        // envelope usable at all on a signal at the edge of readability.
+        var trackedPower = 0.0;
+
+        for (var f = 0; f < _fineHz.Length; f++)
+        {
+            var power = Goertzel(_fineCoefficient[f], window);
+
+            _fineDb[f] = ToDb(power);
+
+            if (power > trackedPower)
+            {
+                trackedPower = power;
+                _tracked = f;
+            }
+        }
+
         var trackedHz = _fineHz[_tracked];
         var competitorPower = 0.0;
         var neighbors = 0;
@@ -525,13 +566,6 @@ public sealed class CwToneTracker
 
         if (surveying)
         {
-            for (var f = 0; f < _fineHz.Length; f++)
-            {
-                _fineDb[f] = f == _tracked
-                    ? ToDb(trackedPower)
-                    : ToDb(Goertzel(_fineCoefficient[f], window));
-            }
-
             _survey.Observe(_coarseDb, blocked);
             _fineSurvey.Observe(_fineDb, blocked);
         }
@@ -597,6 +631,7 @@ public sealed class CwToneTracker
                 CenterFineBank(loudest.ToneHz);
                 _fineSurvey.Reset();
                 _tracked = _fineHz.Length / 2;
+                _reportedHz = double.NaN;
                 Retunes++;
             }
 
@@ -634,6 +669,7 @@ public sealed class CwToneTracker
             CenterFineBank(keyed.ToneHz);
             _fineSurvey.Reset();
             _tracked = _fineHz.Length / 2;
+            _reportedHz = keyed.ToneHz;
             Retunes++;
             Verdict = new ToneVerdict(keyed, Filtered(coarse.Interference));
             return;
@@ -646,12 +682,14 @@ public sealed class CwToneTracker
         if (refined.Keyed is { } exact)
         {
             _tracked = NearestFine(exact.ToneHz);
+            _reportedHz = exact.ToneHz;
             KeyingFoundAt(exact.ToneHz);
             Verdict = new ToneVerdict(exact, Filtered(coarse.Interference));
             return;
         }
 
         _tracked = NearestFine(keyed.ToneHz);
+        _reportedHz = keyed.ToneHz;
         Verdict = new ToneVerdict(keyed, Filtered(coarse.Interference));
     }
 

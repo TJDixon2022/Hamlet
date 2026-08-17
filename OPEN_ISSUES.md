@@ -610,3 +610,120 @@ What must not be done to close this: loosening the separation limit, the
 confirmation rule, or the plausibility bounds. Those are what stop a carrier
 being announced as a station, and every one of them was set from a measurement
 with margin on both sides (HM-DEC-095).
+
+---
+id: HM-OPEN-017
+status: open
+owner: tim
+raised: 2026-08-17
+severity: hard
+blocks: finishing session 1 of the batch brief
+refs: HM-OPEN-016, HM-DEC-095, HM-DEC-048, CW_RECEIVE_BRIEF.md, cwdecoder.py
+---
+
+The validated reference decodes in two passes over a whole recording and
+Hamlet decodes in one pass as the audio arrives. Which of those Hamlet is
+supposed to be is a ruling nobody has made.
+
+`CW_RECEIVE_BRIEF.md` says to port the reference's behavior and not its
+structure. Three attempts at that this session each made the real recording
+worse, and the reason is that the behavior is not separable from the
+structure:
+
+**The reference fits the element clock and then goes back and re-reads the
+whole recording with it.** `run()` de-glitches at twenty milliseconds, extracts
+the runs, fits the clock from them, then de-glitches again at four tenths of a
+dit and extracts every run in the recording a second time before a single
+character is decoded. Its gate does the same thing at a coarser grain: it walks
+the entire envelope in overlapping three-second blocks and fits a threshold to
+each before any of them is used.
+
+**Hamlet's decoder cannot do that and still be Hamlet.** It measures one hop at
+a time, commits each element as it ends, and emits characters while the operator
+watches. There is no second pass available, because the second pass would have
+to run over audio that has already been shown to somebody. Everything Hamlet
+holds back is latency on a live screen.
+
+Measured this session, grafting the reference's pieces onto the streaming chain
+one at a time:
+
+| Change | Capture 1 (`013347`) |
+|---|---|
+| Start of session | `■ ■` — two characters |
+| Fine bank read whole, loudest bin per hop | `■   ■W■RR ■` — seven characters |
+| Plus the reference's clustering gate | `W■■` — three characters |
+| Reference decoder itself, batch | `▯ ▯ ▯ ▯ ▯ ▯ MVRRVA3VRR`, confidence 0.74 to 1.00 |
+
+The middle row is kept. The clustering gate is reverted, and it is not that the
+gate is wrong: it is the right gate for a decoder that can fit a threshold to a
+block and then apply it to that same block, and the wrong one for a decoder that
+has to answer before it has heard the block.
+
+**Three ways out, and the choice is not Claude's:**
+
+- **Decode twice.** Keep the streaming pass for what is on screen now, and run a
+  second, batch pass over the last half minute whenever the tap has it, revising
+  the transcript behind the cursor. Honest about what it is doing and the most
+  work; it also means characters change after they are displayed, which is its
+  own §0.0 question.
+- **Delay the display.** Hold everything for three seconds and decode the block
+  that has just closed. Simple, matches the reference exactly, and puts a
+  three-second lag on the one screen where the operator is trying to keep up with
+  a live contact.
+- **Accept the streaming approximation.** Take what a single pass can do, which
+  today is about seven characters out of eleven with the rest as placeholders,
+  and say so on screen. Nothing here breaks §0.0 — every character it will not
+  stand behind is already a placeholder — but it does not meet the brief's own
+  definition of done.
+
+**What is not in doubt** is that the reference is right about this audio and
+Hamlet is not yet. Its answer, `MVRRVA3VRR` at high confidence, matches the
+independent hand analysis, and it is what the operator needs on the evening he
+uses this.
+
+---
+id: HM-OPEN-018
+status: open
+owner: claude
+raised: 2026-08-17
+severity: slows
+refs: HM-OPEN-016, HM-DEC-095, HM-DEC-048
+---
+
+The synthesized fixtures have no noise floor, which makes them unrepresentative
+of every real receiver, and the reference decoder scores zero on all of them.
+
+Run `cwdecoder.py` against this repository's own fixtures and it decodes nothing
+at all:
+
+| Fixture | What the reference does |
+|---|---|
+| `clean-12wpm` | active 20%, no clock, emits nothing |
+| `clean-18wpm` | active 11%, no clock, emits nothing |
+| `clean-25wpm` | **active 0%**, no tone found at all |
+| `prosigns-18wpm` | active 10%, no clock, emits nothing |
+
+The cause is the same one that cost this session an afternoon. Those fixtures
+are tone-or-silence: between elements the samples are exact digital zero, which
+measures about minus two hundred and forty decibels. Any transmit-mute guard
+reading a level that low as "the receiver is muted" blocks the gaps between
+every element, and there is nothing left to decode. The reference has no lower
+bound and blocks all of them. Hamlet now has one at minus ninety, measured from
+the real captures where the mutes bottom out around minus eighty-two, and passes
+the ones the reference fails.
+
+**A real receiver never hands over digital silence.** There is always band noise,
+which is why `noisy-18wpm` and `fading-18wpm` are unaffected and why every
+failure in HM-OPEN-016 is against a noiseless fixture. The fixtures encode an
+assumption about the audio path that the audio path does not have.
+
+`CW_RECEIVE_BRIEF.md` §4 anticipates this and specifies a replacement recipe:
+noise shaped to a 500 Hz passband, 3 dB in-passband SNR, two-path QSB, an
+interfering carrier, and a preamble of QSK-style mutes **at minus ninety
+dBFS** rather than at zero. Building it is a session's work on its own and it
+would replace, not join, the noiseless fixtures.
+
+Recorded rather than acted on. Making failing tests pass by rewriting their
+fixtures is exactly the move that deserves suspicion, and the case for it here
+rests on a measurement anybody can repeat: run the reference against them.
+
