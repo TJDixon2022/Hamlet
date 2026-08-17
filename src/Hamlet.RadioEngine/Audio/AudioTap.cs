@@ -269,6 +269,43 @@ public sealed class AudioTap
         }
     }
 
+    /// <summary>
+    /// The loudest sample in a recording, in decibels below full scale
+    /// (HM-DEC-094).
+    /// </summary>
+    /// <param name="audio">The recording.</param>
+    /// <returns>The peak.</returns>
+    /// <remarks>
+    /// <para>**THE LIVE METER ANSWERS A DIFFERENT QUESTION AND THE SIDECAR USED
+    /// TO WRITE IT DOWN AS THIS ONE.** <see cref="Level"/> is the peak of the
+    /// last fifth of a second, which is what a moving bar should show. A capture
+    /// is thirty seconds long, and writing the meter's instantaneous reading
+    /// beside it reported minus ten where the file itself peaked at minus one
+    /// point six.</para>
+    /// <para>Eight decibels of under-reporting is not a rounding error on this
+    /// surface: it is the difference between "comfortable headroom" and "about to
+    /// clip", and clipping flattens the tone edges that Morse timing is made of.
+    /// </para>
+    /// </remarks>
+    public static double PeakOf(MonoAudio audio)
+    {
+        ArgumentNullException.ThrowIfNull(audio);
+
+        var peak = 0.0;
+
+        foreach (var sample in audio.Samples)
+        {
+            var magnitude = Math.Abs((double)sample);
+
+            if (magnitude > peak)
+            {
+                peak = magnitude;
+            }
+        }
+
+        return ToDb(peak);
+    }
+
     /// <summary>Amplitude in decibels below full scale, with a floor.</summary>
     private static double ToDb(double magnitude)
         => magnitude <= 0

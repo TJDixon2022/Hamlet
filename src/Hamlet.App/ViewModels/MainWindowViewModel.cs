@@ -2132,6 +2132,26 @@ public partial class MainWindowViewModel : ObservableObject
     /// </remarks>
     private async Task AskForTheSpectrumAsync(Ic7300Rig radio)
     {
+        // **READ BEFORE WRITE, WHICH MEANS WAITING FOR THE FIRST READ**
+        // (HM-DEC-094, HM-DEC-084). This fired eight tenths of a second after
+        // connect with all forty fields still unknown, so it had nothing to read
+        // before, could not know whether the setting already had the value it was
+        // about to write, and reported "refused" to the operator for a command the
+        // radio had not had time to answer.
+        if (_rigMonitor is { } monitor)
+        {
+            var ready = await Task.WhenAny(
+                monitor.Populated, Task.Delay(WaitForFirstRead)).ConfigureAwait(true);
+
+            if (ready != monitor.Populated)
+            {
+                // The radio has not answered anything at all. Writing into that
+                // silence would be the same fault one layer along.
+                _scopeWriteRefused = false;
+                return;
+            }
+        }
+
         var already = RigState[RigField.ScopeOutput];
 
         if (already is { IsKnown: true, Number: > 0 })
@@ -2172,6 +2192,16 @@ public partial class MainWindowViewModel : ObservableObject
             _scopeWriteRefused = true;
         }
     }
+
+    /// <summary>
+    /// How long to wait for the radio to answer anything before giving up.
+    /// </summary>
+    /// <remarks>
+    /// Five seconds, which is many times a poll sweep and far short of anybody's
+    /// patience. A radio that has said nothing in five seconds is not going to
+    /// accept a setting either (HM-DEC-094).
+    /// </remarks>
+    private static readonly TimeSpan WaitForFirstRead = TimeSpan.FromSeconds(5);
 
     /// <summary>What the scope output was before Hamlet asked, or null.</summary>
     private int? _scopeOutputWas;
@@ -2862,7 +2892,11 @@ public partial class MainWindowViewModel : ObservableObject
             $"frequency  {CapturedFrequency()}",
             $"band       {SelectedBand.Band.Name}",
             "",
-            $"inputPeak  {report.Level.PeakDb:0.0} dBFS",
+            // THE RECORDING'S OWN PEAK, not the meter's last fifth of a second
+            // (HM-DEC-094). Those differed by eight decibels on a file that was
+            // nearly clipping while the sidecar said there was headroom.
+            $"inputPeak  {AudioTap.PeakOf(audio):0.0} dBFS  (over the whole recording)",
+            $"meterPeak  {report.Level.PeakDb:0.0} dBFS  (the moment it was kept)",
             $"inputFloor {report.Level.FloorDb:0.0} dBFS",
             $"clipping   {report.Clipping}",
             $"toneHz     {(report.HasTone ? report.ToneHz.ToString("0") : "none")}",

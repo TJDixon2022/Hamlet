@@ -18,12 +18,23 @@ public sealed class ScopeStreamTests
     private const byte Radio = CivConstants.DefaultRadioAddress;
     private const byte Controller = CivConstants.DefaultControllerAddress;
 
-    /// <summary>A first part: sequence, total, mode, center, span, in-range.</summary>
+    /// <summary>A small number as the radio packs it: BCD, not hexadecimal.</summary>
+    /// <remarks>
+    /// **THE FIXTURES USED TO BE BUILT THE WAY THE PARSER READ**, which is why
+    /// they passed while the radio's own frames were discarded (HM-DEC-094).
+    /// </remarks>
+    private static byte Packed(int value)
+        => (byte)(((value / 10) << 4) | (value % 10));
+
+    /// <summary>A first part: fixed 00, order, maximum, mode, center, span, in-range.</summary>
     private static byte[] Header(
         int total = 11, bool fixedMode = false, bool outOfRange = false,
         long centerHz = 7_100_000, long spanHz = 200_000)
     {
-        var bytes = new List<byte> { 0x01, (byte)total, (byte)(fixedMode ? 1 : 0) };
+        var bytes = new List<byte>
+        {
+            0x00, Packed(1), Packed(total), (byte)(fixedMode ? 1 : 0),
+        };
 
         bytes.AddRange(Bcd.EncodeFrequencyHz(fixedMode ? centerHz - (spanHz / 2) : centerHz));
         bytes.AddRange(Bcd.EncodeFrequencyHz(fixedMode ? centerHz + (spanHz / 2) : spanHz));
@@ -35,7 +46,7 @@ public sealed class ScopeStreamTests
     /// <summary>A continuation part carrying amplitudes.</summary>
     private static byte[] Part(int sequence, int total, params byte[] waveform)
     {
-        var bytes = new List<byte> { (byte)sequence, (byte)total };
+        var bytes = new List<byte> { 0x00, Packed(sequence), Packed(total) };
         bytes.AddRange(waveform);
         return bytes.ToArray();
     }
@@ -94,9 +105,18 @@ public sealed class ScopeStreamTests
         Assert.Null(CivScope.ReadHeader(Array.Empty<byte>()));
         Assert.Null(CivScope.ReadHeader(new byte[] { 0x01, 0x0B }));
 
-        // A mode byte outside the two documented values.
+        // A part whose leading fixed field is not zero.
+        Assert.Null(CivScope.ReadHeader(new byte[] { 0x09, 0x01, 0x11 }));
+
+        // A division maximum that is not BCD at all.
+        var notBcd = Header();
+        notBcd[2] = 0xAF;
+        Assert.Null(CivScope.ReadHeader(notBcd));
+
+        // A mode byte outside the two documented values, which now sits after
+        // the three bytes every part carries (HM-DEC-094).
         var odd = Header();
-        odd[2] = 0x07;
+        odd[CivScope.PartHeaderLength] = 0x07;
         Assert.Null(CivScope.ReadHeader(odd));
 
         // A span of nothing, which would make every bin the same frequency.

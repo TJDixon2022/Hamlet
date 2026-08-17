@@ -22,10 +22,18 @@ public sealed class ScopeStageCountTests
     private const byte Radio = CivConstants.DefaultRadioAddress;
     private const byte Controller = CivConstants.DefaultControllerAddress;
 
+    /// <summary>A small number as the radio packs it: BCD, not hexadecimal.</summary>
+    /// <remarks>
+    /// **THE FIXTURES USED TO BE BUILT THE WAY THE PARSER READ**, which is why
+    /// they passed while the radio's own frames were discarded (HM-DEC-094).
+    /// </remarks>
+    private static byte Packed(int value)
+        => (byte)(((value / 10) << 4) | (value % 10));
+
     /// <summary>A first part: wave information, and no waveform data.</summary>
     private static byte[] Information(int total = 11)
     {
-        var bytes = new List<byte> { 0x01, (byte)total, 0x00 };
+        var bytes = new List<byte> { 0x00, Packed(1), Packed(total), 0x00 };
 
         bytes.AddRange(Bcd.EncodeFrequencyHz(7_100_000));
         bytes.AddRange(Bcd.EncodeFrequencyHz(200_000));
@@ -37,7 +45,7 @@ public sealed class ScopeStageCountTests
     /// <summary>A continuation part: minimal header, then amplitudes.</summary>
     private static byte[] Waveform(int sequence, int total = 11)
     {
-        var bytes = new List<byte> { (byte)sequence, (byte)total };
+        var bytes = new List<byte> { 0x00, Packed(sequence), Packed(total) };
 
         for (var i = 0; i < 48; i++)
         {
@@ -141,8 +149,8 @@ public sealed class ScopeStageCountTests
             source.Start();
 
             // Too short to carry even the order and maximum.
-            Deliver(port, new byte[] { 0x01 });
-            Deliver(port, new byte[] { 0x02 });
+            Deliver(port, new byte[] { 0x00 });
+            Deliver(port, new byte[] { 0x00, 0x01 });
 
             await WaitFor(() => source.PartsRejected >= 2); 
 

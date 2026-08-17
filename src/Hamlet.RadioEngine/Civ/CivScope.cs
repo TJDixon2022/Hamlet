@@ -49,16 +49,27 @@ public static class CivScope
     /// <summary>How many parts a sweep arrives in over USB (p. 19-12).</summary>
     public const int PartsOverUsb = 11;
 
+    /// <summary>
+    /// Bytes every part carries before anything else (HM-DEC-094).
+    /// </summary>
+    /// <remarks>
+    /// <para>**THREE, AND THE FIRST OF THEM IS WHY NOTHING EVER DREW.** Field 1
+    /// is a fixed `00`, field 2 is the order of this part and field 3 is the
+    /// division maximum. The parser read field 1 as the order, so the order was
+    /// always zero, which fails "a part number is at least one" on every part of
+    /// every sweep.</para>
+    /// <para>Two independent samples off the real wire, both 53 bytes:
+    /// `00 08 11 2A 2F 2B …` and `00 04 11 18 1B 17 …`. Three header bytes and
+    /// fifty of waveform, reading as part 8 of 11 and part 4 of 11.</para>
+    /// </remarks>
+    public const int PartHeaderLength = 3;
+
     /// <summary>Bytes of header before the waveform, in the first part.</summary>
     /// <remarks>
-    /// Fourteen: the division number, the division maximum, the center-or-fixed
-    /// flag, two five-byte frequencies and the out-of-range flag (p. 19-12).
-    /// Both modes are the same length, which is what makes a short frame
-    /// detectable rather than merely odd. It was thirteen at first, because the
-    /// manual's diagram opens with the command and sub-command bytes and those
-    /// are already stripped by the time this sees the payload.
+    /// The three every part carries, then the center-or-fixed flag, two
+    /// five-byte frequencies and the out-of-range flag.
     /// </remarks>
-    public const int FirstPartHeaderLength = 14;
+    public const int FirstPartHeaderLength = PartHeaderLength + 12;
 
     /// <summary>Read a scope frame's header, or null when it will not parse.</summary>
     /// <param name="payload">The data after the echoed sub-command.</param>
@@ -70,23 +81,23 @@ public static class CivScope
             return null;
         }
 
-        var sequence = payload[0];
-        var total = payload[1];
-
-        if (sequence != 1 || total is < 1 or > 32)
+        if (ReadPart(payload) is not { } part || part.Sequence != 1)
         {
             return null;
         }
 
-        var fixedMode = payload[2] == 1;
+        var fixedMode = payload[PartHeaderLength] == 1;
 
-        if (payload[2] > 1)
+        if (payload[PartHeaderLength] > 1)
         {
             return null;
         }
 
-        var first = Bcd.DecodeFrequencyHz(payload.Slice(3, Bcd.FrequencyByteCount));
-        var second = Bcd.DecodeFrequencyHz(payload.Slice(8, Bcd.FrequencyByteCount));
+        var first = Bcd.DecodeFrequencyHz(
+            payload.Slice(PartHeaderLength + 1, Bcd.FrequencyByteCount));
+
+        var second = Bcd.DecodeFrequencyHz(
+            payload.Slice(PartHeaderLength + 6, Bcd.FrequencyByteCount));
 
         // Center mode sends a center frequency and a span; fixed mode sends the
         // two edges. Both are five bytes of BCD, so the mode flag is the only
@@ -100,23 +111,38 @@ public static class CivScope
         }
 
         return new ScopeHeader(
-            sequence, total, fixedMode, low, high, payload[FirstPartHeaderLength - 1] == 1);
+            part.Sequence, part.Total, fixedMode, low, high,
+            payload[FirstPartHeaderLength - 1] == 1);
     }
 
     /// <summary>Which part of a sweep this frame is, or null.</summary>
     /// <param name="payload">The data after the echoed sub-command.</param>
     /// <returns>The sequence number and the total, or null.</returns>
+    /// <remarks>
+    /// <para>**BOTH NUMBERS ARE BCD, AND READING THEM AS HEXADECIMAL IS WHY THIS
+    /// FEATURE NEVER WORKED** (HM-DEC-094). The division maximum arrives as
+    /// `0x11`, which is eleven printed on the byte and seventeen if the byte is
+    /// taken at face value. The order is BCD for the same reason: parts ten and
+    /// eleven would otherwise read as sixteen and seventeen.</para>
+    /// <para>The arithmetic settles it without the manual. The waveform is 475
+    /// points and the first part carries none of it, so eleven parts means ten
+    /// carrying about fifty each, which is what the wire showed. Seventeen parts
+    /// would need eight hundred bytes to describe four hundred and seventy-five
+    /// points.</para>
+    /// <para>This is the `14 08` mistake in a different register: a value read in
+    /// the wrong base (§4).</para>
+    /// </remarks>
     public static (int Sequence, int Total)? ReadPart(ReadOnlySpan<byte> payload)
     {
-        if (payload.Length < 2)
+        if (payload.Length < PartHeaderLength || payload[0] != 0)
         {
             return null;
         }
 
-        var sequence = payload[0];
-        var total = payload[1];
+        var sequence = Bcd.DecodeByte(payload[1]);
+        var total = Bcd.DecodeByte(payload[2]);
 
-        return sequence is < 1 || total is < 1 or > 32 || sequence > total
+        return sequence < 1 || total is < 1 or > 32 || sequence > total
             ? null
             : (sequence, total);
     }
@@ -129,7 +155,9 @@ public static class CivScope
     /// later; the header fields are sent once, in the first part.
     /// </remarks>
     public static ReadOnlySpan<byte> Waveform(ReadOnlySpan<byte> payload)
-        => payload.Length <= 2 ? ReadOnlySpan<byte>.Empty : payload[2..];
+        => payload.Length <= PartHeaderLength
+            ? ReadOnlySpan<byte>.Empty
+            : payload[PartHeaderLength..];
 
     /// <summary>
     /// Scale a reported amplitude onto the waterfall's byte range.

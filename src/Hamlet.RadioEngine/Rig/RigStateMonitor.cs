@@ -79,6 +79,33 @@ public sealed class RigStateMonitor : IDisposable
     /// <remarks>Raised on the polling thread; the UI layer marshals.</remarks>
     public event EventHandler<RigStateChangedEventArgs>? StateChanged;
 
+    private readonly TaskCompletionSource _populated =
+        new(TaskCreationOptions.RunContinuationsAsynchronously);
+
+    /// <summary>
+    /// Completes once the radio has actually answered something (HM-DEC-094).
+    /// </summary>
+    /// <remarks>
+    /// <para>**ONE GATE, BECAUSE THREE SEPARATE THINGS HAVE NOW RACED THIS SWEEP.**
+    /// The transmit readiness froze evaluating four tenths of a second after
+    /// connect; the canvas commands bound before their view model resolved; and
+    /// the scope's wave output was written eight tenths of a second after connect,
+    /// with all forty fields still unknown, and reported to the operator as
+    /// refused.</para>
+    /// <para>The writes ruling says read before write and read back after
+    /// (HM-DEC-084). A write issued before anything has been read has nothing to
+    /// read before, so its own record of what it changed is fiction. Anything
+    /// state-dependent waits here rather than each caller guessing how long a
+    /// poll takes.</para>
+    /// <para>It completes on the first field the radio answers, not on a full
+    /// sweep: waiting for forty when one proves the link is alive would trade one
+    /// race for a stall.</para>
+    /// </remarks>
+    public Task Populated => _populated.Task;
+
+    /// <summary>True once the radio has answered anything at all.</summary>
+    public bool IsPopulated => _populated.Task.IsCompleted;
+
     /// <summary>How many commands the monitor has issued, for the record.</summary>
     /// <remarks>
     /// §0.0.1 wants the app's own behavior visible. "Is Hamlet flooding the
@@ -349,6 +376,11 @@ public sealed class RigStateMonitor : IDisposable
             }
 
             next = _state;
+        }
+
+        if (!_populated.Task.IsCompleted && next.All().Any(v => v.IsKnown))
+        {
+            _populated.TrySetResult();
         }
 
         StateChanged?.Invoke(this, new RigStateChangedEventArgs(next));

@@ -175,10 +175,34 @@ internal static class Program
     private static string FirstZero(
         RigValue usbPort, RigValue output, RigSpectrumSource spectrum, long delivered)
     {
+        // **A NONZERO MEASUREMENT DOWNSTREAM OUTRANKS AN UNKNOWN UPSTREAM**
+        // (HM-DEC-094). This used to open with "1A 05 0074 did not answer, so
+        // nothing below it means anything", which is wrong and nearly buried the
+        // most valuable measurement this project has produced: the radio accepted
+        // 27 11 and streamed hundreds of parts, which is far stronger evidence
+        // that Unlink and 115200 are in effect than any read of the setting.
+        if (spectrum.PartsReceived > 0)
+        {
+            return spectrum.PartsParsed == 0
+                ? "Parts are arriving and none parse, so the wave output is "
+                  + "plainly on whatever the settings read. The shape on the wire "
+                  + "is not what the parser expects: " + spectrum.FirstRejection
+                : spectrum.SweepCount == 0
+                    ? "Parts arrive and parse and no sweep completes. Reassembly "
+                      + $"is losing parts: {spectrum.DroppedCount} sweeps dropped."
+                    : delivered == 0
+                        ? "Sweeps complete and none are delivered. The event is "
+                          + "not reaching its subscriber."
+                        : "Nothing is zero. Frames arrive, parse, complete and are "
+                          + "delivered, so anything still wrong is in the drawing.";
+        }
+
         if (!usbPort.IsKnown)
         {
-            return "1A 05 0074 did not answer. The link is not carrying reads, "
-                + "so nothing below it means anything.";
+            return "1A 05 0074 did not answer, and nothing arrived either. That "
+                + "read is one command among several, so this says the link is "
+                + "not carrying that command rather than that the setting is "
+                + "wrong.";
         }
 
         if (usbPort.Number is not 1)

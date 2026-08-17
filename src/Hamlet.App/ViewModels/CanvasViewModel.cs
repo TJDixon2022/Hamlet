@@ -556,8 +556,20 @@ public sealed partial class CanvasViewModel : ObservableObject
             return false;
         }
 
+        // **BELOW THE FOLD IS NOT OFF THE EDGE** (HM-DEC-094). This compared
+        // every widget against the visible viewport, so on a smaller window it
+        // announced that half the arrangement had been off the edge and moved it,
+        // when the canvas scrolls and has bars for exactly that purpose. The
+        // operator's layout was scrambled on every restart and told it had been
+        // rescued.
+        //
+        // The canvas grows to contain whatever is placed on it, so nothing placed
+        // can be beyond its extent. What is genuinely unreachable is a negative
+        // coordinate, which no scrollbar reaches, or a number so large it can only
+        // have come from a corrupt file.
         var stranded = Placed
-            .Where(p => p.X >= width - EdgeGrace || p.Y >= height - EdgeGrace)
+            .Where(p => p.X < 0 || p.Y < 0 || p.X > FarthestReasonable
+                || p.Y > FarthestReasonable)
             .ToList();
 
         if (stranded.Count == 0)
@@ -568,43 +580,55 @@ public sealed partial class CanvasViewModel : ObservableObject
         var x = Gap;
         var y = Gap;
 
+        // A rescued widget lands somewhere predictable near the top left, which
+        // is one drag from anywhere. Somewhere clever cannot be found at all.
         foreach (var widget in stranded)
         {
-            widget.X = Math.Max(0, Math.Min(x, Math.Max(0, width - EdgeGrace)));
-            widget.Y = Math.Max(0, Math.Min(y, Math.Max(0, height - EdgeGrace)));
+            widget.X = x;
+            widget.Y = y;
 
             x += Cascade;
             y += Cascade;
 
-            if (y > height - EdgeGrace)
+            if (y > Math.Max(Gap, height - Cascade))
             {
                 y = Gap;
             }
 
-            if (x > width - EdgeGrace)
+            if (x > Math.Max(Gap, width - Cascade))
             {
                 x = Gap;
             }
         }
 
+        // **NAME WHAT MOVED** (HM-DEC-094). "Everything else is where you left
+        // it" was doing a great deal of work while several widgets had been
+        // shifted, and a layout saved on a large monitor and opened on a small one
+        // was scrambled with no way to tell how much had survived.
+        var moved = string.Join(", ", stranded.Select(w => w.Title));
+
         RestoreNote = stranded.Count == 1
-            ? $"{stranded[0].Title} was off the edge of a window this size, so it "
-              + "has been moved back into view. Everything else is where you left it."
-            : $"{stranded.Count} widgets were off the edge of a window this size, "
-              + "so they have been moved back into view. Everything else is where "
-              + "you left it.";
+            ? $"{moved} was at a position off the canvas altogether, so it has been "
+              + "moved back where you can reach it. Nothing else was touched."
+            : $"{stranded.Count} widgets were at positions off the canvas "
+              + $"altogether and have been moved back where you can reach them: "
+              + $"{moved}. Nothing else was touched.";
 
         Changed();
 
         return true;
     }
 
-    /// <summary>How much of a widget has to be on screen for it to count.</summary>
+    /// <summary>
+    /// Beyond this a coordinate cannot have come from anybody dragging.
+    /// </summary>
     /// <remarks>
-    /// Sixty pixels, which is about a header bar. Less than that and there is
-    /// nothing to take hold of.
+    /// Twenty thousand: wider than any monitor anybody will attach, and far short
+    /// of the numbers a corrupt or truncated file produces. A widget out there is
+    /// unreachable by any scrollbar and is the only case besides a negative
+    /// coordinate worth rescuing (HM-DEC-094).
     /// </remarks>
-    private const double EdgeGrace = 60;
+    private const double FarthestReasonable = 20_000;
 
     /// <summary>Where a rescued widget starts.</summary>
     private const double Gap = 12;
@@ -720,8 +744,12 @@ public sealed partial class CanvasViewModel : ObservableObject
     private static Placement Sane(Widget widget, Placement placement)
         => placement with
         {
-            X = double.IsFinite(placement.X) ? Math.Max(0, placement.X) : 0,
-            Y = double.IsFinite(placement.Y) ? Math.Max(0, placement.Y) : 0,
+            // **NOT CLAMPED HERE** (HM-DEC-094). Silently pulling a negative
+            // coordinate to zero rescued the widget and told nobody, which is the
+            // say-what-could-not-be-restored rule half-applied. One rescue path,
+            // in FitInto, which explains itself.
+            X = double.IsFinite(placement.X) ? placement.X : 0,
+            Y = double.IsFinite(placement.Y) ? placement.Y : 0,
             Width = placement.Width >= Smallest ? placement.Width : widget.Width,
             Height = placement.Height >= Smallest ? placement.Height : widget.Height,
         };

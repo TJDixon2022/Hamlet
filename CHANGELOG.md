@@ -12,6 +12,32 @@ operator can see and use, patch fixes and polishes without adding one.
 
 ---
 
+## 1.9.0
+
+**The waterfall parser reads what the radio actually sends.**
+
+Every spectrum frame the radio has ever sent was thrown away. Two faults on top
+of each other: the frame begins with a fixed byte that was being read as the part
+number, so every part looked like part zero and failed its own check, and the
+count of parts is written the way a person writes it rather than the way a
+computer does, so eleven was being read as seventeen.
+
+The test fixtures had been built from the same misunderstanding as the code,
+which is why they all passed while nothing worked. They now carry the bytes the
+radio really sent.
+
+Hamlet also waits for the radio to answer something before writing any setting to
+it. The spectrum request went out eight tenths of a second after connecting,
+before anything had been read, and you were told the radio refused.
+
+Two smaller things. A widget below the fold on the canvas is no longer treated as
+having fallen off the edge and moved, and when something genuinely is moved the
+notice says which. And a capture's level now describes the recording rather than
+the last fifth of a second before you pressed the button, which was under-reading
+by eight decibels on files that were close to clipping.
+
+Rulings HM-DEC-094.
+
 ## 1.8.1
 
 **The waterfall can now be diagnosed instead of guessed at.**

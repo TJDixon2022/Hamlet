@@ -523,3 +523,39 @@ Not urgent and not ignorable: it will flake in CI on a shared runner, and a
 guard that cries wolf is one somebody eventually reruns without reading. Worth
 either widening the ceiling with a stated margin or forcing the test onto its own
 xUnit collection so nothing runs beside it.
+
+---
+id: HM-OPEN-015
+status: open
+owner: tim
+raised: 2026-08-17
+severity: slows
+blocks: items 3, 3b and 4 of the 2026-08-17 work order
+refs: HM-DEC-094, HM-DEC-090
+---
+
+The decoder work in the 2026-08-17 brief cannot start: three of its five
+captures and both reference documents are absent from this machine.
+
+The brief cites `CW_RECEIVE_BRIEF.md` and `cwdecoder.py` for the validated
+receive chain, and names five captures. Present: `cw-2026-08-17-013347` and
+`cw-2026-08-17-013622`. **Absent: the 22:58 pair, the 13:47 interference
+capture, the 23:26 group, and both documents.**
+
+What is blocked, and why each needs what is missing:
+
+- **Item 3, the tone detector's frequency.** The comparison table covers four
+  captures and two of them are not here. A detector tuned against the two
+  present ones would be tuned against a quarter of the evidence.
+- **Item 3b, the two-stage Goertzel chain.** The reference implementation and
+  its measured parameters are in `cwdecoder.py` and `CW_RECEIVE_BRIEF.md`.
+  Reimplementing from the brief's summary would be guessing at the numbers that
+  matter, which is what the 20 Hz ENBW figure exists to prevent.
+- **Item 4, interference.** The 501 Hz carrier lives in the 13:47 capture. There
+  is nothing here to detect it in, and a detector for a thing nobody can
+  reproduce is untestable by construction.
+
+The brief's own warning applies and is worth repeating: the operator heard CW in
+the 13:47 capture that independent analysis could not find. Human copy at low
+signal-to-noise beats automatic detection, and an analysis finding nothing is not
+evidence that nothing is there.

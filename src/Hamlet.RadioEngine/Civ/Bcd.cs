@@ -15,7 +15,28 @@ public static class Bcd
     /// <summary>Maximum value representable in ten BCD digits.</summary>
     public const long MaxFrequencyHz = 9_999_999_999;
 
+    /// <summary>
+    /// One packed byte as the two decimal digits printed on it (HM-DEC-094).
+    /// </summary>
+    /// <param name="packed">The byte, high nibble the tens digit.</param>
+    /// <returns>The value 0 to 99, or -1 when either nibble is not a digit.</returns>
+    /// <remarks>
+    /// **THE SCOPE'S DIVISION COUNT IS BCD AND WAS READ AS HEXADECIMAL**, so
+    /// `0x11` came out as seventeen where the radio meant eleven. Every part of
+    /// every sweep failed its own sanity check and was discarded, for as long as
+    /// the feature has existed (HM-DEC-094).
+    /// </remarks>
+    public static int DecodeByte(byte packed)
+    {
+        var high = packed >> 4;
+        var low = packed & 0x0F;
+
+        return high > 9 || low > 9 ? -1 : (high * 10) + low;
+    }
+
     /// <summary>Encode a frequency in hertz into five BCD bytes.</summary>
+    /// <param name="frequencyHz">The frequency.</param>
+    /// <returns>Five bytes, least significant pair first.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Outside 0..<see cref="MaxFrequencyHz"/>.</exception>
     public static byte[] EncodeFrequencyHz(long frequencyHz)
     {

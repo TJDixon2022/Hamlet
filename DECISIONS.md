@@ -4,6 +4,124 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-094
+date: 2026-08-17
+refs: src/Hamlet.RadioEngine/Civ/CivScope.cs, src/Hamlet.RadioEngine/Civ/Bcd.cs, src/Hamlet.RadioEngine/Rig/RigStateMonitor.cs, src/Hamlet.App/ViewModels/CanvasViewModel.cs, tests/Hamlet.RadioEngine.Tests/Rig/ScopeWireShapeTests.cs, HM-DEC-093, HM-DEC-084, HM-DEC-050
+---
+
+**The scope frame is three header bytes, both counts are BCD, and the first part
+carries no waveform. Nothing state-dependent runs before the radio has answered
+anything.**
+
+---
+
+**TWO STACKED BUGS, AND THE FIRST IS NOT THE ONE THAT WAS SUSPECTED.**
+
+The brief's hypothesis was that `0x11` had been read as seventeen where the radio
+meant eleven. That is true and it is the second bug. **The first is an off-by-one
+byte**, and it alone accounts for every part of every sweep being discarded.
+
+The payload reaching the parser begins `00 08 11 2A 2F 2B`. The rig already
+strips the echoed sub-command, so that leading `00` is the manual's own field 1,
+a fixed zero. The parser read field 1 as the part's order, so **the order was
+always nought**, and "a part number is at least one" failed on every part the
+radio has ever sent. 2,740 parts in, 2,740 thrown away.
+
+**And then the base.** Field 3 is the division maximum, `0x11`, which is eleven
+printed on the byte and seventeen taken at face value. Had the first bug been
+fixed alone, every part would have parsed and no sweep would ever have completed,
+because reassembly would have waited for seventeen parts that never come. The
+order is BCD too, which only shows above nine: parts ten and eleven would read as
+sixteen and seventeen.
+
+**THE ARITHMETIC SETTLES THE BASE WITHOUT THE MANUAL OPEN.** The waveform is 475
+points and the first part carries none of it. Eleven parts means ten carrying
+about fifty each, which is exactly the 53-byte parts the wire produced: three
+header bytes and fifty of data. Seventeen parts would need eight hundred bytes to
+describe four hundred and seventy-five points. Both real samples read cleanly as
+part 8 of 11 and part 4 of 11.
+
+This is the `14 08` mistake in a different register: a value read in the wrong
+numeric base (§4).
+
+---
+
+**THE FIXTURES WERE BUILT FROM THE SAME MISUNDERSTANDING AS THE PARSER**, which
+is the durable finding here. Every scope test in this repository constructed its
+frames to the shape the parser expected, so all of them passed for months while
+the instrument discarded everything the radio said. **A fixture written from the
+same understanding as the code confirms the understanding and nothing else**
+(HM-DEC-048).
+
+The builders now emit the real shape, and `ScopeWireShapeTests` holds the two
+samples the wire actually produced. The first part's layout is built from the
+documented shape and **marked as not having been seen**, because both real
+samples are continuation parts and a fixture that claims more provenance than it
+has is the fault this ruling exists to correct.
+
+---
+
+**ONE GATE FOR "THE RADIO HAS ANSWERED SOMETHING".** The scope's wave output was
+written eight tenths of a second after connect, with all forty fields still
+unknown, and the refusal was reported to the operator as a fact about his radio.
+
+**That is the third thing to race this same poll sweep**: transmit readiness
+froze evaluating four tenths of a second in, the canvas commands bound before
+their view model resolved, and now this. Each caller was guessing how long a
+sweep takes.
+
+The writes ruling says read before write and read back after (HM-DEC-084). **A
+write issued before anything has been read has nothing to read before**, so its
+own record of what it changed is fiction. `RigStateMonitor.Populated` completes
+on the first field the radio answers, and anything state-dependent waits there.
+On the first field rather than a full sweep, because waiting for forty when one
+proves the link is alive trades a race for a stall.
+
+---
+
+**A NONZERO MEASUREMENT DOWNSTREAM OUTRANKS AN UNKNOWN UPSTREAM.** The diagnostic
+opened with "`1A 05 0074` did not answer, so nothing below it means anything",
+and that nearly buried the most valuable measurement this project has produced.
+The radio **accepted** `27 11 = 01` and streamed hundreds of parts, which is far
+stronger evidence that Unlink and 115200 are in effect than any read of the
+setting could be. An unread precondition beneath a working consequence is a gap
+in the record, not a fault in the radio.
+
+---
+
+**BELOW THE FOLD IS NOT OFF THE EDGE.** The layout rescue compared every widget
+against the visible viewport, so opening a saved arrangement on a smaller window
+announced that half of it had been off the edge and moved it. The canvas scrolls
+and has bars for exactly that purpose, and it grows to contain whatever is placed
+on it, so **nothing placed can be beyond its extent**. What is genuinely
+unreachable is a negative coordinate, which no scrollbar reaches, or a number so
+large it can only have come from a corrupt file.
+
+**And the notice names what moved.** "Everything else is where you left it" was
+doing a great deal of work while several widgets had been shifted. The silent
+clamp at load is gone too: one rescue path, and it explains itself.
+
+---
+
+**A LEVEL METER AND A RECORDING ANSWER DIFFERENT QUESTIONS.** The capture sidecar
+reported minus ten where the file itself peaked at minus one point six. Not
+averaging: `Level` is the peak of the **last fifth of a second**, which is what a
+moving bar should show, and writing it beside thirty seconds of audio describes
+the wrong thing. Eight decibels is the difference between "comfortable headroom"
+and "about to clip", and clipping flattens the tone edges Morse timing is made
+of. The sidecar now reports the recording's own peak, with the meter's reading
+beside it and labelled.
+
+---
+
+**WHAT THIS SESSION COULD NOT ESTABLISH.** It ran on the development computer:
+COM1 only, a simulator. **No claim here is evidence about the radio.** The parser
+now reads the two byte sequences the radio actually sent, which is a code fact
+and a strong one; whether sweeps complete, whether the axis is labelled from a
+real first part, and whether anything draws are all measurements that need COM3.
+HM-DEC-093 stands and is not weakened by any of this.
+
+---
 id: HM-DEC-093
 date: 2026-08-17
 closes: HM-OPEN-013
