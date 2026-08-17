@@ -22,3 +22,5 @@ qsb           0.7 Hz, 12 dB deep
 preamble      none
 
 peak          -15.3 dBFS
+reference    64% of the message  [TEEEETTEE TEEEETTA]
+scoredBytes  129772

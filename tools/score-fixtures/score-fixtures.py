@@ -152,13 +152,21 @@ def main():
             summary = 'reference    %.0f%% of the message  [%s]' % (
                 got * 100, decoded)
 
-        # Replace any previous score rather than stacking them up.
+        # Replace any previous score rather than stacking them up, and bind the
+        # new one to the bytes it was measured on.
+        #
+        # **A SCORE BELONGS TO A FILE.** A verdict that outlives the audio it was
+        # taken on is worse than no verdict, because it looks exactly like a
+        # current one. Regenerating a fixture carries its score across so the gate
+        # is not silently disarmed, and the size recorded here is what lets the
+        # commit test tell a carried-over score from a stale one.
         kept = '\n'.join(
             l for l in sidecar.split('\n')
-            if not l.startswith('reference'))
+            if not (l.startswith('reference') or l.startswith('scoredBytes')))
 
         io.open(notes, 'w', encoding='utf-8', newline='\n').write(
-            kept.rstrip() + '\n' + summary + '\n')
+            kept.rstrip() + '\n' + summary
+            + '\nscoredBytes  %d\n' % os.path.getsize(wav))
 
         edge = 'snrDb         0.0 dB' in sidecar
         verdict = 'edge tier, refusal is correct' if edge else (

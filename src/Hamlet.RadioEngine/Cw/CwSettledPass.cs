@@ -134,6 +134,17 @@ public sealed class CwSettledPass
     /// <summary>How far apart the opening and closing decisions sit.</summary>
     private const double HysteresisDb = 6.0;
 
+    /// <summary>
+    /// How far below the keyed level half its amplitude sits, in decibels.
+    /// </summary>
+    /// <remarks>
+    /// Six, because six decibels is a factor of two in amplitude and a shaped
+    /// element crosses half its own height at its true edge. See
+    /// <see cref="DecideAt"/> for why this is where the decision goes rather than
+    /// midway between the two levels found.
+    /// </remarks>
+    private const double HalfAmplitudeDb = 6.0;
+
     /// <summary>How close to the operator's own transmission spoils a mark.</summary>
     /// <remarks>Sixty milliseconds, from the validated reference chain.</remarks>
     private const double TruncationBorderSeconds = 0.060;
@@ -322,7 +333,7 @@ public sealed class CwSettledPass
                 SettledRefusal.Contrast, windowSeconds, capped, contrast, 0, false);
         }
 
-        Gate(first, last, (low + high) / 2);
+        Gate(first, last, DecideAt(low, high));
 
         // Twenty milliseconds before there is a clock to size it from.
         Deglitch(first, last, 0.020);
@@ -465,6 +476,39 @@ public sealed class CwSettledPass
 
         return true;
     }
+
+    /// <summary>
+    /// Where to put the decision, given the two levels found (HM-DEC-105).
+    /// </summary>
+    /// <param name="low">The band between elements.</param>
+    /// <param name="high">The level while the key is down.</param>
+    /// <returns>The level in decibels to decide against.</returns>
+    /// <remarks>
+    /// <para>**SIX DECIBELS BELOW THE KEYED LEVEL IS HALF AMPLITUDE, AND HALF
+    /// AMPLITUDE IS WHERE AN ELEMENT'S TRUE EDGE IS.** A keyed element is read
+    /// through a window fifty milliseconds long, so its envelope rises and falls
+    /// over about that; the level chosen to decide at is therefore what decides
+    /// how long the mark measures. Deciding halfway up the element's own height
+    /// puts the crossing at its real edge on both sides, and the mark measures
+    /// what it was.</para>
+    /// <para>**MIDWAY BETWEEN THE TWO CLUSTERS IS NOT THAT, AND THE ERROR GROWS
+    /// WITH THE SIGNAL.** On a strong signal the midpoint sits far down the
+    /// element's leading edge, so the gate opens early and shuts late and every
+    /// mark reads long by a constant. Adding a constant to a dit and a dah
+    /// compresses their ratio, which is how a fist sending at a true 2.9 came to
+    /// be measured at 2.35 and refused by a floor of 2.5 — while the same fist at
+    /// the same true timing, ten decibels weaker, measured 2.79 and was read.
+    /// **A decoder that reads a signal better as it gets worse has the wrong
+    /// question at the bottom of it.**</para>
+    /// <para>The floor stays at 2.5 and what the ratio is computed over is what
+    /// changed. Where the contrast is small the midpoint is already at or above
+    /// half amplitude and nothing moves, which is why the weak tiers that were
+    /// measuring correctly are untouched. This is the same reasoning
+    /// <see cref="CwGate"/> has carried since HM-DEC-088 and it had never reached
+    /// the passes that fit a threshold to a window.</para>
+    /// </remarks>
+    private static double DecideAt(double low, double high)
+        => high - Math.Min((high - low) / 2, HalfAmplitudeDb);
 
     /// <summary>Decide the key state across the window, with hysteresis.</summary>
     private void Gate(int first, int last, double middle)

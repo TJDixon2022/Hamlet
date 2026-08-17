@@ -98,6 +98,28 @@ public sealed class CwFixtureCommitTests
 
         _output.WriteLine($"{name}: {line.Trim()}");
 
+        // **AND THE SCORE HAS TO BE ABOUT THIS FILE.** Regenerating a fixture
+        // carries its score across, so that running the generator does not
+        // silently disarm the gate; the size the score was taken on is what
+        // separates a verdict that still applies from one about audio that no
+        // longer exists.
+        var stamp = sidecar
+            .Split('\n')
+            .FirstOrDefault(l => l.StartsWith("scoredBytes", StringComparison.Ordinal));
+
+        Assert.True(
+            stamp is not null,
+            $"{name}'s score is not bound to any file. Re-run tools/score-fixtures.");
+
+        var scored = long.Parse(stamp!.Split(' ', StringSplitOptions.RemoveEmptyEntries)[1]);
+        var actual = new FileInfo(
+            Path.Combine(CwFixtureCatalogue.Folder, name + ".wav")).Length;
+
+        Assert.True(
+            scored == actual,
+            $"{name} was scored at {scored} bytes and is now {actual}. The score "
+            + "describes audio that no longer exists; re-run tools/score-fixtures.");
+
         var recipe = CwFixtureCatalogue.All.Single(r => r.Name == name);
 
         // **THE EDGE TIER IS EXEMPT AND THAT IS THE POINT OF IT.** At zero

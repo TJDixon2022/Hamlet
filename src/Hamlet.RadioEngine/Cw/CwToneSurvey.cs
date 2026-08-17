@@ -170,6 +170,18 @@ public sealed class CwToneSurvey
     /// </remarks>
     public const double InterferenceLiftDb = 10;
 
+    /// <summary>
+    /// How far below the keyed level half its amplitude sits, in decibels
+    /// (HM-DEC-105).
+    /// </summary>
+    /// <remarks>
+    /// Six decibels is a factor of two in amplitude, and a shaped element crosses
+    /// half its own height at its true edge, so deciding there measures the mark
+    /// it actually was. Deciding midway between the two levels found measures it
+    /// long, by more the stronger the signal is.
+    /// </remarks>
+    private const double HalfAmplitudeDb = 6.0;
+
     /// <summary>Half the hysteresis span, in decibels.</summary>
     /// <remarks>
     /// Three either way, so six across, which is the figure the validated
@@ -457,8 +469,18 @@ public sealed class CwToneSurvey
 
         liftDb = double.IsNaN(bandDb) ? double.NaN : high - bandDb;
 
-        var up = midpoint + HysteresisDb;
-        var down = midpoint - HysteresisDb;
+        // **HALF AMPLITUDE BELOW THE KEYED LEVEL, NOT MIDWAY BETWEEN THE TWO**
+        // (HM-DEC-105). The level decided at is what decides how long a mark
+        // measures, because the element is read through a window that takes tens
+        // of milliseconds to rise. Midway down a strong signal's leading edge the
+        // gate opens early and shuts late, every mark reads long by a constant,
+        // and a constant added to both a dit and a dah compresses their ratio
+        // toward one. The ratio floor stays where it is; what it is computed over
+        // is what was wrong.
+        var decideAt = high - Math.Min((high - low) / 2, HalfAmplitudeDb);
+
+        var up = decideAt + HysteresisDb;
+        var down = decideAt - HysteresisDb;
         var on = false;
         var above = 0;
         var live = 0;

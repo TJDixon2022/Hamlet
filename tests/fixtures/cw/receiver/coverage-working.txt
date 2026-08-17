@@ -22,3 +22,5 @@ qsb           0.7 Hz, 12 dB deep
 preamble      none
 
 peak          -15.4 dBFS
+reference    52% of the message  [W TI M W V567 G 90 QA G ▯ TEE/N0 F TAEL E]
+scoredBytes  582444

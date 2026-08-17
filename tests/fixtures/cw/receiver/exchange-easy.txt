@@ -22,3 +22,5 @@ qsb           none
 preamble      none
 
 peak          -13.0 dBFS
+reference    100% of the message  [CQ CQ DE N0CALL N0CALL K]
+scoredBytes  448044

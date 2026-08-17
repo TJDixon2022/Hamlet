@@ -22,3 +22,5 @@ qsb           none
 preamble      none
 
 peak          -12.7 dBFS
+reference    100% of the message  [TEST DE TEST K]
+scoredBytes  129772

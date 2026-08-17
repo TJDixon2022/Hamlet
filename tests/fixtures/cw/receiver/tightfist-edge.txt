@@ -22,3 +22,5 @@ qsb           none
 preamble      none
 
 peak          -20.0 dBFS
+reference    64% of the message  [T E EEE T TEE E T E EI T NT]
+scoredBytes  129772
