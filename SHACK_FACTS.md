@@ -1,3 +1,5 @@
+**PROJECT: Hamlet**
+
 # Standing shack facts — read before advising anything at the radio
 
 Recorded 2026-08-17 at the operator's instruction, after three separate

@@ -1,3 +1,5 @@
+**PROJECT: Hamlet**
+
 # Work order: make Hamlet read CW the operator's ear cannot
 
 **Session scope.** Amend the receive chain in `src/Hamlet.RadioEngine/Cw` so it

@@ -318,6 +318,7 @@ this table is the index.
 
 | Date | Decision | Why | Ref |
 |---|---|---|---|
+| 2026-08-17 | **Chat deliveries are a single scaffolded zip and a pasteable Claude Code prompt, and nothing else** — restating §9.1 because this conversation broke it repeatedly, presenting loose documents one at a time and twice asking Tim to hand-edit a file. It covers governance and record files exactly as it covers source: a delivery is extracted over the repo root, never placed by hand. Snippets, fragments and "add this line" are not deliveries. | Tim extracts and commits; every file he has to place or patch himself is a step Claude was supposed to have taken, and a chance for the tree to diverge from what Claude believes it wrote. | HM-DEC-100 |
 | 2026-08-17 | **Every prompt and every work order opens with `PROJECT: Hamlet`, and a session's first action is verifying that gate against the tree rather than against the prompt's own claim.** No gate line, or a gate naming another project: the session says so and stops, without adapting or partially applying anything. Tim runs several projects and the failure this prevents is a session confidently editing a repository it was never written for — which no test catches, because the tests it runs are the wrong project's. Claude's deliveries carry the gate too; one written without it is defective and redone. | A misdirected prompt is the one class of error where being capable makes the damage worse. | HM-DEC-099 |
 | 2026-08-17 | **An automated transmit cycle is built and exercised into a dummy load only, and reaching an antenna is a separate ruling taken afterwards.** §0.2's first sentence stands unamended: nothing transmits unattended. Auto-CQ is automated repeating transmission and cannot be reconciled with that sentence by argument, so it is proved against a load first — every stop condition watched to fire, including the USB link pulled mid-cycle — and the on-air question is re-opened once there is something to reason from. HM-DEC-008 unchanged. Governance had already named the abort this needs: `0x17` with `0xFF`, which is also the keying method's documented stop code. | Reasoning about an interlock is not seeing it work, and the cost of being wrong lands on somebody else's band. | HM-DEC-098 |
 | 2026-08-17 | **The CW decoder refuses below 0 dB SNR rather than copying into the band where it is half wrong.** Measured on the sensitivity sweep: from 18 dB down to 0 dB the whole message returns with nothing wrong; at −1 dB one character in five is wrong; at −2 dB it emits a full message of which **44% is invented**; below −3 dB it already refuses. A trained ear copies to roughly 0 dB, so refusing there meets the stated goal — decode almost anything the operator can hear — rather than falling short of it. **A degraded label was rejected as a substitute**: marking a message does not make a plausible wrong callsign on screen any less actionable. | §0.0's practical test decides it one way — at −1 dB the operator can act and be wrong, and at −2 dB nearly half of what he acts on was never on the air. | HM-DEC-097 |
@@ -850,13 +851,20 @@ What holds on **both** surfaces, without exception:
 
 ### 9.1 Scaffolded delivery — ABSOLUTE, chat sessions
 
-**Every delivery ships fully scaffolded in repo path structure**, as a zip
-whose internal paths are relative to the repository root — even for a single
-file. Extract over `C:\Source\Hamlet` and files land where they belong.
-No loose files, no path instructions in prose.
+**Every delivery ships fully scaffolded in repo path structure**, as a **zip**
+whose internal paths are relative to the repository root — **even for a single
+file, and even for a governance or record file** (HM-DEC-100). Extract over
+`C:\Source\Hamlet` and files land where they belong. No loose files, no
+individually presented documents, no path instructions in prose. Tim extracts
+and commits; he does not place files by hand, and he does not edit them
+(§0.4).
+
+The only thing Claude delivers outside the zip is a **Claude Code prompt he can
+copy and paste**, gated per §0.3.1. Nothing else — no code snippets, no
+fragments, no "add this to that file".
 
 Files compile without modification. Too large for one response → split into
-multiple complete files. Ask for files by repo path, not by name.
+multiple complete files, still zipped. Ask for files by repo path, not by name.
 
 ### 9.2 Every delivery is presented as four lists and a check-in — ABSOLUTE
 
