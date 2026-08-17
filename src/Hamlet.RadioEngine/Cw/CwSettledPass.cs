@@ -187,6 +187,7 @@ public sealed class CwSettledPass
     private readonly double[] _marks;
     private readonly double[] _gaps;
     private readonly bool[] _markTruncated;
+    private readonly bool[] _markAtEdge;
     private readonly long[] _markStart;
     private readonly long[] _markEnd;
 
@@ -219,6 +220,7 @@ public sealed class CwSettledPass
         _marks = new double[_capacity];
         _gaps = new double[_capacity];
         _markTruncated = new bool[_capacity];
+        _markAtEdge = new bool[_capacity];
         _markStart = new long[_capacity];
         _markEnd = new long[_capacity];
     }
@@ -400,9 +402,17 @@ public sealed class CwSettledPass
         // sits in about eight consecutive windows. Emitting the whole window each
         // time repeated the callsign eight times over and looked exactly like a
         // decoder hallucinating on noise.
-        Emit(count, ditFinal, dahFinal, contrast, _settledThrough, into);
+        // **THE CURSOR FOLLOWS WHAT WAS ACTUALLY READ**, not the end of the
+        // window. Marks touching the window's newest edge are held for the next
+        // window rather than published unread, so advancing the cursor past them
+        // would lose them for good.
+        var readThrough = Emit(
+            count, ditFinal, dahFinal, contrast, _settledThrough, drain, into);
 
-        _settledThrough = _sample[Index(last - 1)];
+        if (readThrough > _settledThrough)
+        {
+            _settledThrough = readThrough;
+        }
 
         return new SettledOutcome(
             SettledRefusal.None, windowSeconds, capped, contrast, ditFinal, speedChanged);
@@ -613,7 +623,20 @@ public sealed class CwSettledPass
             // **A MARK BORDERING THE OPERATOR'S OWN TRANSMISSION IS NOT A MARK**
             // (HM-DEC-095). What is audible between his elements is a sliver of
             // somebody else's, cut at both ends by him.
-            var truncated = start == 0 || i >= span;
+            //
+            // **A MARK TOUCHING THE WINDOW'S EDGE IS A DIFFERENT THING ENTIRELY
+            // AND WAS BEING TREATED AS THE SAME ONE** (HM-DEC-107 phase 4). The
+            // window is a view onto a stream, not the stream: a mark at its edge
+            // is complete on the air and merely not wholly inside this view. It
+            // was being rendered as a placeholder, and because the window is read
+            // half a second behind the leading edge, **the marks at that edge are
+            // precisely the ones about to be emitted**. The settled pass was
+            // marking unreadable the characters it existed to settle.
+            //
+            // The remedy is to hold them for the next window, where the same
+            // marks sit in the interior, rather than to publish them as unread.
+            var truncated = false;
+            var atEdge = i >= span;
 
             for (var k = Math.Max(0, start - border); k < start && !truncated; k++)
             {
@@ -627,6 +650,7 @@ public sealed class CwSettledPass
 
             _marks[count] = (i - start) * _hopSeconds * 1000;
             _markTruncated[count] = truncated;
+            _markAtEdge[count] = atEdge;
             _markStart[count] = _sample[Index(first + start)];
             _markEnd[count] = _sample[Index(first + i - 1)];
 
@@ -794,8 +818,24 @@ public sealed class CwSettledPass
             }
         }
 
-        var element = 0.85 * ditMs;
-        var character = 3.0 * ditMs;
+        // **A BOUNDARY GOES BETWEEN TWO LENGTHS, NOT ON ONE OF THEM**
+        // (HM-DEC-107 phase 4). These fall back to the textbook spacing when
+        // there are too few gaps to cluster, and textbook spacing is one dit
+        // inside a character, three between characters and seven between words.
+        // The boundaries are therefore two and five.
+        //
+        // They were 0.85 and 3.0, which puts the first cut **just below the
+        // element gap it has to sit above**: a textbook element gap is exactly
+        // one dit, so every one of them exceeded the cut and ended a character.
+        // Each element then came out as its own letter, and a lone dah spells T.
+        // On `coverage-easy` eight of the nineteen settled characters were a T
+        // that is nowhere in the message, shown at full strength.
+        //
+        // The fallback matters more here than in the reference chain, which sees
+        // a whole recording and almost always has enough gaps to cluster. A
+        // trailing window of four seconds often does not.
+        var element = 2.0 * ditMs;
+        var character = 5.0 * ditMs;
 
         if (usable < 10)
         {
@@ -807,7 +847,20 @@ public sealed class CwSettledPass
         double firstCut = 0, secondCut = 0;
         double firstStep = 1.25, secondStep = 1.25;
 
-        for (var i = 0; i < usable - 1; i++)
+        // **A BOUNDARY SEPARATES TWO POPULATIONS; A JUMP AT THE EDGE OF THE DATA
+        // TRIMS AN OUTLIER** (HM-DEC-107 phase 4). Taking the widest steps
+        // anywhere in the sorted gaps let a single stray short gap decide a class
+        // boundary, and a cut placed below the element gaps ends a character at
+        // every element: the settled pass returned `TETE TTET TE T E` out of
+        // `CQ CQ DE N0CALL N0CALL K` while fitting the dit correctly at 100 ms.
+        //
+        // Three gaps either side is enough to reject a lone outlier and small
+        // enough to keep the word gaps, which are genuinely rare. The same defect
+        // was found and fixed in the reference chain's own classifier, which is
+        // where it was first seen.
+        const int Support = 3;
+
+        for (var i = Support - 1; i < usable - Support; i++)
         {
             var step = _scratch[i + 1] / Math.Max(_scratch[i], 1e-9);
             var cut = Math.Sqrt(_scratch[i] * _scratch[i + 1]);
@@ -840,9 +893,10 @@ public sealed class CwSettledPass
     }
 
     /// <summary>Turn the measured runs into characters.</summary>
-    private void Emit(
+    /// <returns>The sample the last emitted character ended on.</returns>
+    private long Emit(
         int count, double ditMs, double dahMs, double contrastDb,
-        long after, List<SettledCharacter> into)
+        long after, bool drain, List<SettledCharacter> into)
     {
         var (elementCut, characterCut) = GapCuts(count, ditMs);
         var middle = Math.Sqrt(ditMs * dahMs);
@@ -855,8 +909,24 @@ public sealed class CwSettledPass
         var tainted = false;
         long began = 0;
 
+        var readThrough = after;
+
         for (var i = 0; i < count; i++)
         {
+            // A character containing a mark that runs off the newest edge of the
+            // window is not finished being observed. It is left for the next
+            // window, where the same marks sit in the interior, and everything
+            // after it is left with it so the cursor stays in one piece.
+            //
+            // **UNLESS THE AUDIO HAS ENDED, WHEN THERE IS NO NEXT WINDOW.** The
+            // last few seconds of a recording are where a station finishes its
+            // callsign, and holding them for a window that will never arrive
+            // loses exactly the part the operator most needed.
+            if (_markAtEdge[i] && !drain)
+            {
+                break;
+            }
+
             if (_pattern.Length == 0)
             {
                 began = _markStart[i];
@@ -926,6 +996,9 @@ public sealed class CwSettledPass
                 tainted));
 
             _pattern.Clear();
+            readThrough = endedAt;
         }
+
+        return readThrough;
     }
 }
