@@ -22,5 +22,5 @@ qsb           none
 preamble      none
 
 peak          -12.5 dBFS
-reference    11% of the message  [TETETTET TETETTET TEEE TETTTTTTETEETETEEETEE TETTTTTTETEETETEEETEE TET TTEENET]
+reference    100% of the message  [CQ CQ DE N0CALL N0CALL K T/A]
 scoredBytes  235884

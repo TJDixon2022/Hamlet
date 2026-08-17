@@ -22,5 +22,5 @@ qsb           0.7 Hz, 12 dB deep
 preamble      none
 
 peak          -14.9 dBFS
-reference    63% of the message  [CMTCMTDER0CAE LT1NEALEIK]
+reference    58% of the message  [C M T C M T D E R ▯T C A E L T 1 N E A L E I K]
 scoredBytes  235884

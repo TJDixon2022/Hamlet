@@ -22,5 +22,5 @@ qsb           none
 preamble      12.0 s of own-transmit mutes, 44 spans, floor -82 dBFS
 
 peak          -12.3 dBFS
-reference    100% of the message  [▯ ▯ ▯ TESTDETESTKTESTDETESTK]
+reference    100% of the message  [▯ ▯ ▯ TEST DE TEST K TEST DE TEST K]
 scoredBytes  415740

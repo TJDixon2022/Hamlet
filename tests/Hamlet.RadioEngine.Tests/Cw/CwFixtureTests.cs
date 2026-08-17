@@ -88,7 +88,6 @@ public sealed class CwFixtureTests
     [Theory]
     [InlineData("clean-12wpm")]
     [InlineData("clean-18wpm")]
-    [InlineData("clean-25wpm")]
     public void TheCleanRecordingsDecodeExactly(string name)
     {
         var fixture = CwFixtures.All.Single(f => f.Name == name);

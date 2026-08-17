@@ -69,10 +69,24 @@ internal static class CwFixtures
             new CwSignalRequest(Call, WordsPerMinute: 18),
             Clean: true),
 
-        new CwFixture(
-            "clean-25wpm", Call, 25,
-            new CwSignalRequest(Call, WordsPerMinute: 25),
-            Clean: true),
+        // **`clean-25wpm` RETIRED 2026-08-17, AND THIS IS ITS REASON**
+        // (HM-DEC-103, HM-DEC-107 phase 3). It was the repository's only fast-CW
+        // coverage, which is why it was kept through two sessions of failing: a
+        // fixture deleted without a replacement is evidence destroyed, and
+        // retiring the one that fails while keeping the six that pass would have
+        // narrowed what Hamlet is claimed to handle without saying so.
+        //
+        // It is replaced by `fast-easy`, `fast-working` and `fast-edge` under
+        // `tests/fixtures/cw/receiver`, at the same twenty-five words a minute
+        // and at three signal-to-noise tiers rather than one. The replacement
+        // passes the reference gate at 100 percent, which was the condition set
+        // for this retirement and which it only met once the reference's own gap
+        // classifier was repaired.
+        //
+        // What it could never test is what it was made of: tone or exact digital
+        // silence between elements, which no receiver produces, so nothing in it
+        // exercised the transmit-mute guard, the threshold fit or any refusal
+        // (HM-OPEN-018).
 
         // Prosigns, written in the radio's own notation where "^" keys the
         // characters after it as one symbol (Full Manual p. 19-12).

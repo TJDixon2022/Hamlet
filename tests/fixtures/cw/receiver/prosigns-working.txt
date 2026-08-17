@@ -22,5 +22,5 @@ qsb           0.7 Hz, 12 dB deep
 preamble      none
 
 peak          -15.3 dBFS
-reference    75% of the message  [ES T0CALLIR<SK>]
+reference    75% of the message  [ES T 0CALL IR <SK>]
 scoredBytes  256044

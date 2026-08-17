@@ -158,11 +158,17 @@ public sealed class CwFixtureCommitTests
     /// window's measurement of a real station rather than from the station, so
     /// the measurement bias was applied twice (HM-DEC-101). At the station's true
     /// timing they score 100, 64 and 100.</para>
-    /// <para>**THE ONE THAT REMAINS IS THE REFERENCE'S GAP CLASSIFIER RATHER
-    /// THAN THE FIXTURE** (HM-DEC-103). At twenty-five words a minute `fast-easy`
-    /// hands the reference a clock it fits correctly — dit 55, dah 152, ratio
-    /// 2.77 — and then comes apart classifying the gaps, returning every element
-    /// as its own character: `TETETTET TETETTET TEEE`.</para>
+    /// <para>**THE LAST ONE OUT WAS THE REFERENCE'S GAP CLASSIFIER RATHER THAN
+    /// THE FIXTURE, AND IT WAS REPAIRED** (HM-DEC-107 phase 3). At twenty-five
+    /// words a minute `fast-easy` handed the reference a clock it fitted
+    /// correctly — dit 55, dah 152, ratio 2.77 — and it then came apart
+    /// classifying the gaps, returning every element as its own character:
+    /// `TETETTET TETETTET TEEE`. The classifier took the largest multiplicative
+    /// steps anywhere in the sorted gaps, so a lone 20 ms outlier at the bottom
+    /// outvoted the real element-to-character boundary and put the cut at 24 ms
+    /// against element gaps of 40. Requiring a few gaps either side of a cut
+    /// makes it a boundary between two populations rather than a trimmed
+    /// outlier, and `fast-easy` now reads at 100 percent.</para>
     /// <para>`fast-working` is the same message at the same speed ten decibels
     /// weaker and reads at 63 percent, which is what says the fixture is sound.
     /// The classifier takes the two largest multiplicative steps in the sorted
@@ -175,7 +181,7 @@ public sealed class CwFixtureCommitTests
     /// classifier brittle at one corner is a finding about the control.</para>
     /// </remarks>
     public static IReadOnlySet<string> NotYetAdmissible { get; } =
-        new HashSet<string>(StringComparer.Ordinal) { "fast-easy" };
+        new HashSet<string>(StringComparer.Ordinal);
 
     /// <remarks>
     /// Proves HM-OPEN-018 phase 4: **the held-out list is small and named.** A

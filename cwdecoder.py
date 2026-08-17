@@ -176,7 +176,25 @@ def classify_gaps(spaces, dit):
     if len(g) >= 10:
         # find the two largest multiplicative jumps in sorted gaps
         r = g[1:]/np.maximum(g[:-1], 1e-9)
-        j = np.argsort(r)[::-1][:2]
+
+        # **A BOUNDARY SEPARATES TWO POPULATIONS; A JUMP AT THE EDGE OF THE DATA
+        # TRIMS AN OUTLIER** (HM-DEC-107 phase 3). Taking the largest ratios
+        # anywhere in the sorted gaps let a single stray short gap decide a class
+        # boundary. At 25 WPM the gaps are 40, 130 and 330 ms, and the two
+        # largest ratios were the real character-to-word step at 150->270 and a
+        # lone 20->30 at the very bottom, which put the element cut at 24 ms.
+        # Every 40 ms element gap then exceeded it and **every element became its
+        # own character**: `TETETTET TETETTET TEEE` out of `CQ CQ DE N0CALL...`.
+        #
+        # Requiring a few gaps on each side is what makes a cut a boundary. Three
+        # is enough to reject a lone outlier and small enough to keep the word
+        # gaps, which are genuinely rare -- a message has many element gaps, some
+        # character gaps and two or three word gaps, and a floor set by fraction
+        # rather than count would throw the last of those away.
+        support = 3
+        j = [i for i in np.argsort(r)[::-1]
+             if i + 1 >= support and len(g) - (i + 1) >= support][:2]
+
         cuts = sorted(np.sqrt(g[i]*g[i+1]) for i in j if r[i] > 1.25)
         if len(cuts) == 2: intra_hi, char_hi = cuts
         elif len(cuts) == 1: intra_hi = cuts[0]
