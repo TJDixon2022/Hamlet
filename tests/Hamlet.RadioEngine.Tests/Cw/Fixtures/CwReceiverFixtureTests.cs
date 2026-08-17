@@ -99,7 +99,12 @@ public sealed class CwReceiverFixtureTests
         _output.WriteLine($"  provisional: {reading.Provisional}");
         _output.WriteLine($"  settled    : {reading.Settled}");
 
-        Assert.InRange(reading.ToneHz, 590, 645);
+        // Against the pitch this fixture was actually generated at, rather than
+        // against the one most of them happen to use. The answering station in
+        // the two-station pair sits at 730 Hz on purpose.
+        var recipe = CwFixtureCatalogue.All.Single(r => r.Name == name);
+
+        Assert.InRange(reading.ToneHz, recipe.ToneHz - 25, recipe.ToneHz + 25);
     }
 
     /// <remarks>

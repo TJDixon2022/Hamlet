@@ -122,6 +122,45 @@ public static class CwFixtureCatalogue
     /// </remarks>
     public const string TightFistText = "TEST DE TEST K";
 
+    /// <summary>The station that calls, in the two-station fixture.</summary>
+    /// <remarks>
+    /// About eleven words a minute at 615 Hz, which is the fist and the pitch
+    /// measured off capture 013347.
+    /// </remarks>
+    public static CwFixtureRecipe Caller { get; } = new(
+        "two-station-first",
+        "CQ CQ DE N0CALL K",
+        DitMilliseconds: 1200.0 / 11,
+        DahMilliseconds: 3 * 1200.0 / 11,
+        ElementGapMilliseconds: 1200.0 / 11,
+        CharacterGapMilliseconds: 3 * 1200.0 / 11,
+        WordGapMilliseconds: 7 * 1200.0 / 11,
+        SignalToNoiseDb: WorkingDb,
+        ToneHz: 615,
+        Seed: 7001);
+
+    /// <summary>The station that answers, at a different speed and pitch.</summary>
+    /// <remarks>
+    /// Twenty-two words a minute at 730 Hz. **Twice the speed and a hundred and
+    /// fifteen hertz away**, because that is what a different operator answering
+    /// actually sounds like, and because it is the only way to exercise clock
+    /// loss and tracker switching in one recording.
+    /// </remarks>
+    public static CwFixtureRecipe Answerer { get; } = new(
+        "two-station-second",
+        "N0CALL DE W1XYZ K",
+        DitMilliseconds: 1200.0 / 22,
+        DahMilliseconds: 3 * 1200.0 / 22,
+        ElementGapMilliseconds: 1200.0 / 22,
+        CharacterGapMilliseconds: 3 * 1200.0 / 22,
+        WordGapMilliseconds: 7 * 1200.0 / 22,
+        SignalToNoiseDb: WorkingDb,
+        ToneHz: 730,
+        Seed: 7002);
+
+    /// <summary>What the joined two-station recording is called.</summary>
+    public const string TwoStationName = "two-station";
+
     /// <summary>Where the rebuilt fixtures live.</summary>
     public static string Folder { get; } = Path.Combine(
         RepositoryRoot(), "tests", "fixtures", "cw", "receiver");
@@ -251,6 +290,16 @@ public static class CwFixtureCatalogue
                 QsbDepthDb: qsb > 0 ? QsbDepthDb : 0,
                 Seed: seed++));
         }
+
+        // **THE TWO-STATION FIXTURE IS GATED THROUGH ITS SEGMENTS** (HM-DEC-104).
+        // The reference is a single-pass batch decoder with no notion of a second
+        // station: handed the joined recording it acquires whichever one it
+        // prefers and reads the whole file with that one clock, which says
+        // nothing about either half. Each segment is therefore generated and
+        // gated on its own, and the joined file is those two proved halves with a
+        // stretch of band between them.
+        recipes.Add(Caller);
+        recipes.Add(Answerer);
 
         // The operator's own full-break-in transmission ahead of the answer, which
         // is the case that produced twelve hundred elements and one character on

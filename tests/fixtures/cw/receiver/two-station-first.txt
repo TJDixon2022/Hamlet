@@ -1,0 +1,26 @@
+name          two-station-first
+generated     tests/Hamlet.RadioEngine.Tests/Cw/Fixtures
+seed          7001
+sampleRate    8000
+seconds       21.59
+
+text          CQ CQ DE N0CALL K
+messageStart  1.00 s
+dit           109 ms
+dah           327 ms
+elementGap    109 ms
+characterGap  327 ms
+wordGap       764 ms
+wpm           11.0
+
+toneHz        615 Hz, drifting +/- 3 Hz
+snrDb         5.0 dB in the passband
+passband      350-870 Hz, skirt 30 dB down
+noiseRms      -34.0 dBFS
+toneAmplitude -26.0 dBFS peak
+qsb           none
+preamble      none
+
+peak          -17.8 dBFS
+reference    100% of the message  [CQ CQ DE N0CALL K]
+scoredBytes  345498

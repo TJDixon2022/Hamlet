@@ -170,18 +170,6 @@ public sealed class CwToneSurvey
     /// </remarks>
     public const double InterferenceLiftDb = 10;
 
-    /// <summary>
-    /// How far below the keyed level half its amplitude sits, in decibels
-    /// (HM-DEC-105).
-    /// </summary>
-    /// <remarks>
-    /// Six decibels is a factor of two in amplitude, and a shaped element crosses
-    /// half its own height at its true edge, so deciding there measures the mark
-    /// it actually was. Deciding midway between the two levels found measures it
-    /// long, by more the stronger the signal is.
-    /// </remarks>
-    private const double HalfAmplitudeDb = 6.0;
-
     /// <summary>Half the hysteresis span, in decibels.</summary>
     /// <remarks>
     /// Three either way, so six across, which is the figure the validated
@@ -469,18 +457,25 @@ public sealed class CwToneSurvey
 
         liftDb = double.IsNaN(bandDb) ? double.NaN : high - bandDb;
 
-        // **HALF AMPLITUDE BELOW THE KEYED LEVEL, NOT MIDWAY BETWEEN THE TWO**
-        // (HM-DEC-105). The level decided at is what decides how long a mark
-        // measures, because the element is read through a window that takes tens
-        // of milliseconds to rise. Midway down a strong signal's leading edge the
-        // gate opens early and shuts late, every mark reads long by a constant,
-        // and a constant added to both a dit and a dah compresses their ratio
-        // toward one. The ratio floor stays where it is; what it is computed over
-        // is what was wrong.
-        var decideAt = high - Math.Min((high - low) / 2, HalfAmplitudeDb);
-
-        var up = decideAt + HysteresisDb;
-        var down = decideAt - HysteresisDb;
+        // **THE HALF-AMPLITUDE CORRECTION IS NOT APPLIED HERE, AND THAT IS A
+        // MEASUREMENT RATHER THAN AN OVERSIGHT** (HM-DEC-105). Deciding at half
+        // amplitude is right where a mark's *length* is the answer, which is why
+        // the settled pass does it and gained a third fewer unresolved
+        // characters by it.
+        //
+        // This survey is not measuring lengths to report them; it is deciding
+        // whether a bin holds somebody keying at all, and it does that on the
+        // separation between two clusters of mark durations. Moving the decision
+        // up the leading edge shortens every mark and tightens that separation,
+        // and applied here it cost five noiseless fixtures and, decisively, the
+        // real 13:47 capture: the tone is no longer found in an off-air
+        // recording where it was found before.
+        //
+        // A correction that improves one measurement and breaks another is not
+        // one correction, and the second half is Tim's to rule on rather than
+        // Claude's to force through (§12.1).
+        var up = midpoint + HysteresisDb;
+        var down = midpoint - HysteresisDb;
         var on = false;
         var above = 0;
         var live = 0;

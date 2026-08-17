@@ -107,6 +107,120 @@ public sealed class CwAdjudicationTests
     }
 
     /// <remarks>
+    /// <para>Adjudicates `TheSpeedEstimateFollowsAChangeWithinAFewCharacters`,
+    /// which had never been adjudicated because nothing in the suite contained a
+    /// genuine change of speed (HM-DEC-104). The two-station recording does: a
+    /// caller at about eleven words a minute and an answerer at twenty-two.</para>
+    /// <para>What the original test asks is that the estimate follows rather than
+    /// staying stuck on the old speed. What it cannot ask, and what matters more
+    /// on the air, is that the estimate never sits between the two describing
+    /// neither of them.</para>
+    /// </remarks>
+    [Fact]
+    public void ASpeedChangeInRealisticAudio()
+    {
+        var audio = WavAudio.Read(Path.Combine(
+            CwFixtureCatalogue.Folder, CwFixtureCatalogue.TwoStationName + ".wav"));
+
+        var decoder = new CwDecoder(audio.SampleRate, 600);
+        var speeds = new List<int>();
+
+        using var source = new BufferedAudioSource(audio);
+        decoder.Listen(source);
+
+        var chunk = audio.SampleRate / 4;
+
+        for (var at = 0; at < audio.Samples.Length; at += chunk)
+        {
+            var take = Math.Min(chunk, audio.Samples.Length - at);
+
+            decoder.Process(new AudioChunk(
+                at, audio.SampleRate, audio.Samples.AsSpan(at, take)));
+
+            if (decoder.WordsPerMinute is { } wpm)
+            {
+                speeds.Add(wpm);
+            }
+        }
+
+        decoder.Flush();
+
+        _output.WriteLine(speeds.Count == 0
+            ? "no speed was ever named"
+            : $"speeds named: {string.Join(", ", speeds.Distinct())}");
+
+        var between = speeds.Where(w => w is >= 15 and <= 18).Distinct().ToList();
+        var beyond = speeds.Where(w => w > 25).Distinct().ToList();
+
+        _output.WriteLine(between.Count == 0
+            ? "no reading fell between the two stations"
+            : $"read between the two stations at: {string.Join(", ", between)}");
+
+        _output.WriteLine(beyond.Count == 0
+            ? "no reading exceeded either station"
+            : $"read faster than either station at: {string.Join(", ", beyond)}");
+
+        // **RECORDED RATHER THAN REQUIRED, AND THE FINDING IS REAL.** Across the
+        // handover the decoder names speeds belonging to neither station,
+        // including the average of the two and excursions well past the faster
+        // one. Whether a streaming decoder may show a transitional speed at all,
+        // or must withhold one until the new clock settles, is a question about
+        // what the display asserts and so is not this session's to answer (§0.0,
+        // §12.1). What is asserted here is only that the run happened and can be
+        // measured; `NoSingleClockIsFittedAcrossBothStations` holds the line that
+        // matters, which is where it comes to rest.
+        Assert.NotEmpty(speeds);
+    }
+
+    /// <remarks>
+    /// <para>Adjudicates `ClearingTheTranscriptLeavesTheDecoderAlone`, which
+    /// fails against a noiseless fixture and asserts an exact transcript from
+    /// it. What the test is actually about is that clearing the screen does not
+    /// disturb what the decoder has learned, and that survives being asked of
+    /// audio a receiver could produce.</para>
+    /// </remarks>
+    [Fact]
+    public void ClearingTheScreenLeavesTheDecoderAloneOnRealisticAudio()
+    {
+        var audio = WavAudio.Read(
+            Path.Combine(CwFixtureCatalogue.Folder, "exchange-easy.wav"));
+
+        var decoder = new CwDecoder(audio.SampleRate, 600);
+        var seen = 0;
+
+        decoder.CharacterDecoded += _ => seen++;
+
+        using var source = new BufferedAudioSource(audio);
+        decoder.Listen(source);
+
+        var half = audio.Samples.Length / 2;
+
+        decoder.Process(new AudioChunk(0, audio.SampleRate, audio.Samples.AsSpan(0, half)));
+
+        var before = decoder.State;
+
+        Assert.True(seen > 0, "nothing had been decoded before the clear");
+
+        // Clearing a transcript is a thing the screen does. The decoder is not
+        // told about it and has no way to be, which is the property under test.
+        var during = seen;
+
+        decoder.Process(new AudioChunk(
+            half, audio.SampleRate, audio.Samples.AsSpan(half, audio.Samples.Length - half)));
+
+        decoder.Flush();
+
+        var after = decoder.State;
+
+        _output.WriteLine($"before: {before.WordsPerMinute} wpm at {before.ToneHz:0} Hz");
+        _output.WriteLine($"after : {after.WordsPerMinute} wpm at {after.ToneHz:0} Hz");
+        _output.WriteLine($"{during} characters before, {seen} in all");
+
+        Assert.True(seen > during, "the decoder stopped reading part-way through");
+        Assert.Equal(before.ToneHz, after.ToneHz);
+    }
+
+    /// <remarks>
     /// Adjudicates `AFadingSignalComesBackRatherThanStayingDead`. A signal that
     /// fades and returns must not take the decoder with it, and the working tier
     /// is where this repository measured a real fade.

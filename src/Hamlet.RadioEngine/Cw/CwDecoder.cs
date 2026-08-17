@@ -213,6 +213,19 @@ public sealed class CwDecoder
     public SettledOutcome SettledState => _lastOutcome;
 
     /// <summary>
+    /// The note tracker, so what it decided can be read from outside (§0.0.1).
+    /// </summary>
+    /// <remarks>
+    /// **A DECISION NOBODY CAN OBSERVE CANNOT BE TESTED, AND FOUR OF THEM WERE
+    /// SHIPPED THAT WAY** (HM-DEC-104). Clock loss, the retained previous clock,
+    /// tracker switching and the speed-change annotation were all built on
+    /// rulings, and none had a committed test, partly because the state that
+    /// proves them was not reachable. Exposed read-only: there is no setter here
+    /// and nothing outside the engine can move the tracker.
+    /// </remarks>
+    public CwToneTracker Tracker => _tracker;
+
+    /// <summary>
     /// True when nothing is coming along behind the provisional tip to confirm
     /// it (HM-DEC-096, phase 4).
     /// </summary>

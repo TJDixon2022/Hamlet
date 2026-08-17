@@ -64,6 +64,36 @@ public static class CwFixtureWriter
             written.Add(recipe.Name);
         }
 
+        // The two-station recording is joined rather than generated from one
+        // recipe, so it is written alongside the rest (HM-DEC-104).
+        var (twoStation, twoNotes) = CwFixtureGenerator.Join(
+            CwFixtureCatalogue.TwoStationName,
+            CwFixtureCatalogue.Caller,
+            CwFixtureCatalogue.Answerer);
+
+        var twoWav = Path.Combine(into, CwFixtureCatalogue.TwoStationName + ".wav");
+        var twoTxt = Path.Combine(into, CwFixtureCatalogue.TwoStationName + ".txt");
+
+        var twoCarried = File.Exists(twoTxt)
+            ? File.ReadAllLines(twoTxt)
+                .Where(l => l.StartsWith("reference", StringComparison.Ordinal)
+                    || l.StartsWith("scoredBytes", StringComparison.Ordinal))
+                .ToList()
+            : new List<string>();
+
+        WavAudio.Write(twoWav, twoStation);
+
+        var twoText = twoNotes.Replace("\r\n", "\n", StringComparison.Ordinal);
+
+        if (twoCarried.Count > 0)
+        {
+            twoText = twoText.TrimEnd() + "\n"
+                + string.Join("\n", twoCarried) + "\n";
+        }
+
+        File.WriteAllText(twoTxt, twoText);
+        written.Add(CwFixtureCatalogue.TwoStationName);
+
         return written;
     }
 }

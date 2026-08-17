@@ -1,0 +1,24 @@
+name          two-station
+generated     tests/Hamlet.RadioEngine.Tests/Cw/Fixtures
+sampleRate    8000
+seconds       35.79
+
+text          CQ CQ DE N0CALL K N0CALL DE W1XYZ K
+stations      2, joined across 1.5 s of band
+handover      23.09 s
+
+first         CQ CQ DE N0CALL K
+  toneHz      615 Hz
+  wpm         11.0
+  dit         109 ms
+  snrDb       5.0 dB
+
+second        N0CALL DE W1XYZ K
+  toneHz      730 Hz
+  wpm         22.0
+  dit         55 ms
+  snrDb       5.0 dB
+
+peak          -17.8 dBFS
+reference    11% of the message  [GEEEEEMEEETNEE TETTTTTTETEETETEEETEE TEEE ETTETTTTTITTETTTTEE TETETETTT]
+scoredBytes  572698

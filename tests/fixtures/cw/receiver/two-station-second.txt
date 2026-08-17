@@ -1,0 +1,26 @@
+name          two-station-second
+generated     tests/Hamlet.RadioEngine.Tests/Cw/Fixtures
+seed          7002
+sampleRate    8000
+seconds       12.70
+
+text          N0CALL DE W1XYZ K
+messageStart  1.00 s
+dit           55 ms
+dah           164 ms
+elementGap    55 ms
+characterGap  164 ms
+wordGap       382 ms
+wpm           22.0
+
+toneHz        730 Hz, drifting +/- 3 Hz
+snrDb         5.0 dB in the passband
+passband      350-870 Hz, skirt 30 dB down
+noiseRms      -34.0 dBFS
+toneAmplitude -26.0 dBFS peak
+qsb           none
+preamble      none
+
+peak          -18.0 dBFS
+reference    100% of the message  [N0CALL DE W1XYZ K]
+scoredBytes  203244

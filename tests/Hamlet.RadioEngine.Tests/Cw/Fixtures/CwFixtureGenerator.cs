@@ -139,6 +139,79 @@ public static class CwFixtureGenerator
     /// <summary>How long the drift takes to go round once, in seconds.</summary>
     private const double DriftSeconds = 10;
 
+    /// <summary>
+    /// Join two stations into one recording, one after the other (HM-DEC-104).
+    /// </summary>
+    /// <param name="name">What to call the result.</param>
+    /// <param name="first">The station that starts.</param>
+    /// <param name="second">The station that answers.</param>
+    /// <param name="betweenSeconds">The silence between them.</param>
+    /// <returns>The audio and a sidecar describing both halves.</returns>
+    /// <remarks>
+    /// <para>**JOINED ACROSS A GAP AND NEVER MID-CHARACTER**, so the seam is a
+    /// signal rather than an artifact a decoder could learn. Each segment is
+    /// generated complete, with its own keying envelope and its own noise, and
+    /// the join is a stretch of band between them exactly as it would be on the
+    /// air when one station stops and another starts.</para>
+    /// <para>This is the situation an answered call actually produces, and it is
+    /// the first committed test of four capabilities that were built on rulings
+    /// alone: clock loss on a discontinuity, the previous clock kept as a
+    /// candidate, tracker switching on keying structure, and the speed-change
+    /// annotation.</para>
+    /// </remarks>
+    public static (MonoAudio Audio, string Sidecar) Join(
+        string name,
+        CwFixtureRecipe first,
+        CwFixtureRecipe second,
+        double betweenSeconds = 1.5)
+    {
+        var (one, _) = Generate(first);
+        var (two, _) = Generate(second);
+
+        var between = (int)Math.Round(betweenSeconds * SampleRate);
+        var joined = new float[one.Samples.Length + between + two.Samples.Length];
+
+        one.Samples.CopyTo(joined.AsSpan());
+
+        // The band carries on between them. Silence here would be a seam the
+        // decoder could find, and a receiver never delivers one.
+        var gapNoise = new float[between];
+        ShapedNoise(gapNoise, first.Seed ^ 0x51D3);
+        gapNoise.CopyTo(joined.AsSpan(one.Samples.Length));
+
+        two.Samples.CopyTo(joined.AsSpan(one.Samples.Length + between));
+
+        var audio = new MonoAudio(SampleRate, joined);
+        var handover = (double)(one.Samples.Length + between) / SampleRate;
+
+        var text = new StringBuilder();
+
+        text.AppendLine($"name          {name}");
+        text.AppendLine("generated     tests/Hamlet.RadioEngine.Tests/Cw/Fixtures");
+        text.AppendLine($"sampleRate    {SampleRate}");
+        text.AppendLine($"seconds       {audio.Duration.TotalSeconds:0.00}");
+        text.AppendLine();
+        text.AppendLine($"text          {first.Text} {second.Text}");
+        text.AppendLine($"stations      2, joined across {betweenSeconds:0.0} s of band");
+        text.AppendLine($"handover      {handover:0.00} s");
+        text.AppendLine();
+        text.AppendLine($"first         {first.Text}");
+        text.AppendLine($"  toneHz      {first.ToneHz:0} Hz");
+        text.AppendLine($"  wpm         {first.WordsPerMinute:0.0}");
+        text.AppendLine($"  dit         {first.DitMilliseconds:0} ms");
+        text.AppendLine($"  snrDb       {first.SignalToNoiseDb:0.0} dB");
+        text.AppendLine();
+        text.AppendLine($"second        {second.Text}");
+        text.AppendLine($"  toneHz      {second.ToneHz:0} Hz");
+        text.AppendLine($"  wpm         {second.WordsPerMinute:0.0}");
+        text.AppendLine($"  dit         {second.DitMilliseconds:0} ms");
+        text.AppendLine($"  snrDb       {second.SignalToNoiseDb:0.0} dB");
+        text.AppendLine();
+        text.AppendLine($"peak          {AudioTap.PeakOf(audio):0.0} dBFS");
+
+        return (audio, text.ToString());
+    }
+
     /// <summary>Generate one fixture.</summary>
     /// <param name="recipe">What to build.</param>
     /// <returns>The audio and the sidecar describing it.</returns>

@@ -169,10 +169,24 @@ def main():
             + '\nscoredBytes  %d\n' % os.path.getsize(wav))
 
         edge = 'snrDb         0.0 dB' in sidecar
-        verdict = 'edge tier, refusal is correct' if edge else (
-            'ok' if got >= 0.5 else 'BAD FIXTURE')
 
-        if not edge and got < 0.5:
+        # **A JOINED RECORDING IS GATED THROUGH ITS SEGMENTS.** The reference is
+        # a single-pass batch decoder with no notion of a second station: handed
+        # two stations at different speeds and pitches it acquires whichever one
+        # it prefers and reads the whole file with that one clock, which says
+        # nothing about either half. Each segment is generated and gated on its
+        # own instead, and the join is those two proved halves with a stretch of
+        # band between them.
+        joined = 'stations      2' in sidecar
+
+        if joined:
+            verdict = 'joined; gated through its segments'
+        elif edge:
+            verdict = 'edge tier, refusal is correct'
+        else:
+            verdict = 'ok' if got >= 0.5 else 'BAD FIXTURE'
+
+        if not edge and not joined and got < 0.5:
             failures += 1
 
         print('%-20s %5.0f%%  %s' % (name, got * 100, verdict))
