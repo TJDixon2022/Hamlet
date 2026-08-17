@@ -390,6 +390,10 @@ public sealed class CwDecoder
             _settled.Reset();
             _settledStale = true;
 
+            // The speed stays silent until the window holds only marks from the
+            // station now being read (HM-DEC-107, phase 1).
+            _marksAtDiscontinuity = _speed.MarksSeen;
+
             // **THE SPEED SURVIVES THE MOVE, AND THE ELEMENTS DO NOT.** Throwing
             // the speed away too was tried and it is what a retune costs that is
             // hardest to earn back: twelve marks, which on a slow fist is several
@@ -913,13 +917,66 @@ public sealed class CwDecoder
                 return null;
             }
 
-            var wpm = _speed.IsReady ? _speed.WordsPerMinute : 0;
+            // **NO NUMBER WHILE THE CLOCK IS BEING RE-ACQUIRED** (HM-DEC-107,
+            // phase 1). Across a change of station the estimate passes through
+            // speeds belonging to neither of them: measured on eleven words a
+            // minute handing over to twenty-two, it named sixteen and eighteen,
+            // which is their average and a fact about nobody, and wandered as far
+            // as forty-four before coming to rest correctly.
+            //
+            // Marking it unsettled was rejected, because an unsettled forty-four
+            // is still forty-four on the screen a beginner uses to decide whether
+            // he could have copied the exchange, and he concludes it was beyond
+            // him when it was not. Showing the last proved speed was rejected as
+            // asserting a stale fact as a current one.
+            if (SpeedIsReacquiring)
+            {
+                return null;
+            }
+
+            // **THE SPEED THAT REACHES A SURFACE IS THE ONE THE SETTLED PASS
+            // PROVED**, not the one the rolling estimator is currently tracking.
+            // The estimator has to keep moving to follow a fist; that is its job
+            // and it is why it wanders across a handover. The settled pass fits a
+            // clock and refuses it unless the dah-to-dit ratio and the element
+            // lengths are ones somebody could actually send, and it keeps the
+            // previous clock as a candidate so a fade does not count as a change.
+            // A number that has been through that is a fact about somebody's
+            // keying; the tracking estimate on its own is not.
+            var dit = _lastOutcome.Read ? _lastOutcome.DitMilliseconds : 0;
+
+            if (dit <= 0)
+            {
+                return null;
+            }
+
+            var wpm = (int)Math.Round(1200.0 / dit);
 
             return wpm >= SlowestPlausibleWpm && wpm <= FastestPlausibleWpm
                 ? wpm
                 : null;
         }
     }
+
+    /// <summary>
+    /// True while the speed estimate still rests partly on the previous station
+    /// (HM-DEC-107, phase 1).
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE TEST IS WHETHER ANY MARK FROM BEFORE THE DISCONTINUITY IS
+    /// STILL IN THE WINDOW**, which is exact rather than a settling delay picked
+    /// by hand. The estimate is drawn from a rolling window of twenty marks, so
+    /// it is trustworthy again precisely when twenty marks have arrived since the
+    /// tracker moved or the clock was lost, and not one mark sooner.</para>
+    /// <para>A surface showing the speed leaves the field blank while this holds,
+    /// or says it is re-acquiring. It does not carry a number.</para>
+    /// </remarks>
+    public bool SpeedIsReacquiring
+        => !_lastOutcome.Read
+           || _speed.MarksSeen - _marksAtDiscontinuity < CwSpeedEstimator.WindowSize;
+
+    /// <summary>How many marks had been seen when the clock was last lost.</summary>
+    private long _marksAtDiscontinuity;
 
     /// <summary>
     /// Ask the second pass to read whatever is now far enough behind
@@ -934,6 +991,14 @@ public sealed class CwDecoder
             : 0;
 
         _lastOutcome = _settled.Settle(dit, _settledOut, drain);
+
+        if (_lastOutcome.Refusal == SettledRefusal.ClockLost
+            || _lastOutcome.SpeedChanged)
+        {
+            // A clock lost, or a clock that has moved by a quarter, is a
+            // different station as far as the speed is concerned.
+            _marksAtDiscontinuity = _speed.MarksSeen;
+        }
 
         if (!_lastOutcome.Read)
         {

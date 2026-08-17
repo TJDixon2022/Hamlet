@@ -124,6 +124,18 @@ public sealed class CwSpeedEstimator
     /// <summary>How many marks the estimate currently rests on.</summary>
     public int MarkCount => _markCount;
 
+    /// <summary>
+    /// How many marks have ever been recorded, without a ceiling (HM-DEC-107).
+    /// </summary>
+    /// <remarks>
+    /// <see cref="MarkCount"/> stops at <see cref="WindowSize"/>, which is what
+    /// makes the estimate a rolling one and what makes it useless for asking
+    /// "has every mark from the previous station left the window yet". This
+    /// answers that, and answering it is how the speed knows to stay quiet while
+    /// a new clock is being acquired.
+    /// </remarks>
+    public long MarksSeen { get; private set; }
+
     /// <summary>True once there is enough evidence to classify anything.</summary>
     public bool IsReady => _markCount >= MinimumMarks;
 
@@ -193,6 +205,7 @@ public sealed class CwSpeedEstimator
         _marks[_markWrite] = samples;
         _markWrite = (_markWrite + 1) % WindowSize;
         _markCount = Math.Min(_markCount + 1, WindowSize);
+        MarksSeen++;
         Recompute();
     }
 
