@@ -1,0 +1,25 @@
+name          coverage-edge
+generated     tests/Hamlet.RadioEngine.Tests/Cw/Fixtures
+seed          20260825
+sampleRate    8000
+seconds       36.40
+
+text          1234567890 QRZ? DE/N0CALL
+messageStart  1.00 s
+dit           100 ms
+dah           300 ms
+elementGap    100 ms
+characterGap  300 ms
+wordGap       700 ms
+wpm           12.0
+
+toneHz        615 Hz, drifting +/- 3 Hz
+snrDb         0.0 dB in the passband
+passband      350-870 Hz, skirt 30 dB down
+noiseRms      -34.0 dBFS
+toneAmplitude -31.0 dBFS peak
+qsb           none
+preamble      none
+
+peak          -19.1 dBFS
+reference    96% of the message  [E 1234567890 QRZ▯ DE/N0CALL]

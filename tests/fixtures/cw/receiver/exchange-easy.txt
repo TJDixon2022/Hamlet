@@ -1,0 +1,25 @@
+name          exchange-easy
+generated     tests/Hamlet.RadioEngine.Tests/Cw/Fixtures
+seed          20260817
+sampleRate    8000
+seconds       28.00
+
+text          CQ CQ DE N0CALL N0CALL K
+messageStart  1.00 s
+dit           100 ms
+dah           300 ms
+elementGap    100 ms
+characterGap  300 ms
+wordGap       700 ms
+wpm           12.0
+
+toneHz        615 Hz, drifting +/- 3 Hz
+snrDb         15.0 dB in the passband
+passband      350-870 Hz, skirt 30 dB down
+noiseRms      -34.0 dBFS
+toneAmplitude -16.0 dBFS peak
+qsb           none
+preamble      none
+
+peak          -13.0 dBFS
+reference    100% of the message  [CQ CQ DE N0CALL N0CALL K]

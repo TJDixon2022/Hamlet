@@ -1,0 +1,25 @@
+name          prosigns-working
+generated     tests/Hamlet.RadioEngine.Tests/Cw/Fixtures
+seed          20260821
+sampleRate    8000
+seconds       16.00
+
+text          ^BT N0CALL ^AR ^SK
+messageStart  1.00 s
+dit           100 ms
+dah           300 ms
+elementGap    100 ms
+characterGap  300 ms
+wordGap       700 ms
+wpm           12.0
+
+toneHz        615 Hz, drifting +/- 3 Hz
+snrDb         5.0 dB in the passband
+passband      350-870 Hz, skirt 30 dB down
+noiseRms      -34.0 dBFS
+toneAmplitude -26.0 dBFS peak
+qsb           0.7 Hz, 12 dB deep
+preamble      none
+
+peak          -15.3 dBFS
+reference    75% of the message  [ES T0CALLIR<SK>]

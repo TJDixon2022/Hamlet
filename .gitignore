@@ -47,3 +47,7 @@ _graphify_analysis.json
 
 # Local-only audio scratch (committed fixtures live under tests/, reviewed)
 scratch-audio/
+
+# Python bytecode from the reference decoder and its tooling
+__pycache__/
+*.pyc
