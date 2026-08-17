@@ -3,10 +3,6 @@
 Recorded 2026-08-17 at the operator's instruction, after three separate
 sessions advised changing radio settings that were already correct.
 
-**Every session reads this before writing a word about the radio's own
-menus.** A fact here is ground truth and outranks any inference a session
-draws from its own reading.
-
 ---
 id: FACT-001
 status: standing
@@ -71,26 +67,3 @@ proceeds down-chain in this order, each step observable in telemetry:
 A session reporting "the waterfall works" without a nonzero received-
 frame count from a connected radio is making the claim §0.0 now
 forbids a display to make.
-
----
-id: FACT-004
-status: standing
-source: this session, 2026-08-17
-refs: HM-DEC-093
----
-
-**The tool that answers FACT-003 exists**: `tools/Hamlet.ScopeCheck`.
-
-```
-dotnet run --project tools/Hamlet.ScopeCheck -- COM3
-```
-
-It reads `1A 05 0074`, reports the host's own rate, asks for `27 11 = 01`,
-reads it back, listens for waveform parts, and prints the six numbers with
-the address of the first zero. It puts `27 11` back as it found it and
-keys nothing.
-
-**It advises nothing about the radio's menus**, per FACT-001. A CI-V USB
-port reading that contradicts FACT-001 is reported as a finding about the
-reading — either the sub-command is wrong or the link is answering for
-something else — and never as an errand.
