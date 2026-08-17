@@ -215,6 +215,7 @@
 
                                 <TextBlock Text="{Binding PrivilegeStatus.Citation}"
                                            FontSize="10" VerticalAlignment="Center"
+                                           TextWrapping="Wrap"
                                            Foreground="{StaticResource HmTextMutedBrush}"
                                            IsVisible="{Binding PrivilegeStatus.Citation,
                                                Converter={x:Static ctl:PrivilegeToneConverter.NotEmpty}}" />
@@ -315,6 +316,7 @@
                         TuneCommand="{Binding TuneToTapeMarkerCommand}" />
                     <TextBlock Text="{Binding ModeLineText}"
                                FontSize="12" HorizontalAlignment="Center"
+                               TextWrapping="Wrap" TextAlignment="Center"
                                Foreground="{Binding IsInsideCwSegment,
                                    Converter={x:Static ctl:ModeLineBrushConverter.Instance}}" />
 
@@ -330,7 +332,7 @@
                             BorderBrush="{StaticResource HmAmberEdgeBrush}"
                             BorderThickness="1">
                         <TextBlock Text="You are setting the mode, so Hamlet is not"
-                                   FontSize="11"
+                                   FontSize="11" TextWrapping="Wrap"
                                    Foreground="{StaticResource HmAmberDeepBrush}" />
                     </Border>
                 </StackPanel>
@@ -357,6 +359,7 @@
                             IsVisible="{Binding SignalsAreSimulated}">
                         <TextBlock Text="{Binding SpectrumNotice}"
                                    FontSize="12" FontWeight="SemiBold"
+                                   TextWrapping="Wrap"
                                    Foreground="{StaticResource HmAmberDeepBrush}" />
                     </Border>
 
@@ -581,6 +584,7 @@
                         <TextBlock
                                    Text="what the radio is hearing, as it arrives"
                                    FontSize="12" VerticalAlignment="Center"
+                                   TextWrapping="Wrap"
                                    Foreground="{StaticResource HmTextMutedBrush}" />
                         <StackPanel Grid.Column="1" Orientation="Horizontal"
                                     Spacing="6">
@@ -621,23 +625,38 @@
                          screen said so. If this bar is on the floor while a
                          signal is plainly audible, that is the whole diagnosis
                          and it takes one glance. -->
-                    <Grid ColumnDefinitions="Auto,*,Auto" Margin="0,2,0,0"
-                          IsVisible="{Binding IsDecoding}">
-                        <TextBlock Grid.Column="0" Text="input"
-                                   FontSize="11" VerticalAlignment="Center"
-                                   Margin="0,0,8,0"
-                                   Foreground="{StaticResource HmTextMutedBrush}" />
+                    <!-- THE SENTENCE SITS UNDER THE BAR RATHER THAN BESIDE IT,
+                         and that is the fix rather than a preference. It was in
+                         a third column sized to its own content, so "audio has
+                         stopped arriving" made the row wider than the widget and
+                         the widget clipped it. Half a sentence the operator
+                         cannot tell is half a sentence is §0.0 broken by the
+                         layout: this is the line that says the decoder is
+                         hearing nothing, and it is the one that was cut.
 
-                        <ProgressBar Grid.Column="1" Minimum="0" Maximum="1"
-                                     Height="6" VerticalAlignment="Center"
-                                     Value="{Binding InputLevelFraction}"
-                                     Foreground="{StaticResource HmGreenBrush}" />
+                         On its own row it wraps to whatever width there is and
+                         can never be cut, at whatever size the widget is dragged
+                         to. -->
+                    <StackPanel Margin="0,2,0,0" Spacing="2"
+                                IsVisible="{Binding IsDecoding}">
+                        <Grid ColumnDefinitions="Auto,*">
+                            <TextBlock Grid.Column="0" Text="input"
+                                       FontSize="11" VerticalAlignment="Center"
+                                       Margin="0,0,8,0"
+                                       Foreground="{StaticResource HmTextMutedBrush}" />
 
-                        <TextBlock Grid.Column="2" Text="{Binding InputLevelText}"
-                                   FontSize="11" VerticalAlignment="Center"
-                                   Margin="8,0,0,0"
+                            <ProgressBar Grid.Column="1" Minimum="0" Maximum="1"
+                                         Height="6" VerticalAlignment="Center"
+                                         Value="{Binding InputLevelFraction}"
+                                         Foreground="{StaticResource HmGreenBrush}" />
+                        </Grid>
+
+                        <TextBlock Text="{Binding InputLevelText}"
+                                   FontSize="11" TextWrapping="Wrap"
+                                   IsVisible="{Binding InputLevelText,
+                                       Converter={x:Static ctl:PrivilegeToneConverter.NotEmpty}}"
                                    Foreground="{StaticResource HmTextMutedBrush}" />
-                    </Grid>
+                    </StackPanel>
 
                     <Border CornerRadius="8" ClipToBounds="True"
                             BorderThickness="1"
@@ -843,7 +862,7 @@
                     <Grid ColumnDefinitions="*,Auto">
                         <TextBlock Grid.Column="0" Text="{Binding StageName}"
                                    FontSize="13" FontWeight="SemiBold"
-                                   VerticalAlignment="Center"
+                                   VerticalAlignment="Center" TextWrapping="Wrap"
                                    Foreground="{StaticResource HmAmberBrush}" />
 
                         <!-- OFF BY DEFAULT NOW (HM-DEC-079). The
@@ -1039,6 +1058,7 @@
                             <StackPanel Spacing="4">
                                 <TextBlock Text="{Binding Heading}"
                                            FontSize="13" FontWeight="SemiBold"
+                                           TextWrapping="Wrap"
                                            Foreground="{StaticResource HmGreenBrush}" />
 
                                 <!-- The column somebody needs and
@@ -1059,6 +1079,7 @@
                                                            Text="{Binding Sent}"
                                                            FontFamily="Consolas,Menlo,monospace"
                                                            FontSize="12"
+                                                           TextWrapping="Wrap"
                                                            Foreground="{StaticResource HmAmberDeepBrush}" />
                                                 <StackPanel Grid.Column="1" Spacing="0">
                                                     <TextBlock Text="{Binding Meaning}"
@@ -1188,6 +1209,7 @@
                                     <StackPanel Spacing="2">
                                         <TextBlock Text="{Binding ReceiverCall}"
                                                    FontSize="14" FontWeight="SemiBold"
+                                                   TextWrapping="Wrap"
                                                    Foreground="{StaticResource HmGreenBrush}" />
                                         <TextBlock Text="{Binding Signal}"
                                                    FontSize="12" TextWrapping="Wrap"
@@ -1916,6 +1938,7 @@
                  tooltip carries it from then on. -->
             <TextBlock Text="scroll wheel over a digit tunes that digit"
                        FontSize="11" HorizontalAlignment="Center"
+                       TextWrapping="Wrap" TextAlignment="Center"
                        IsVisible="{Binding !HasTunedByWheel}"
                        Foreground="{StaticResource HmAmberBrush}" />
         </StackPanel>
@@ -1968,10 +1991,24 @@
                  same kind of thing. Each is absent until it has
                  something in it, because an empty dropdown reads as a
                  control that is broken. -->
-            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+            <!-- EACH BOX KEEPS ITS NAME AFTER SOMETHING IS PICKED, and that is
+                 the whole of this fix. The two dropdowns said what they were
+                 only through their placeholder text, so the moment the operator
+                 landed somewhere the recent box replaced "recent" with the
+                 station and the pair read as one control with a stray
+                 "favorites" label beside it. Both were populated correctly and
+                 neither label had detached; what was missing was that a
+                 placeholder is not a label, because a label survives a
+                 selection. -->
+            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="6">
+                <TextBlock Text="recent" FontSize="11"
+                           VerticalAlignment="Center"
+                           IsVisible="{Binding HasRecent}"
+                           Foreground="{StaticResource HmTextMutedBrush}" />
+
                 <ComboBox ItemsSource="{Binding Recent}"
                           SelectedItem="{Binding SelectedRecent}"
-                          PlaceholderText="recent"
+                          PlaceholderText="places you have been"
                           MinWidth="180" FontSize="12"
                           IsVisible="{Binding HasRecent}">
                     <!-- PROVENANCE TRAVELS WITH THE NAME (HM-DEC-073).
@@ -1983,9 +2020,10 @@
                     <ComboBox.ItemTemplate>
                         <DataTemplate x:DataType="explore:RecentStation">
                             <StackPanel Spacing="0">
-                                <TextBlock Text="{Binding Label}" />
+                                <TextBlock Text="{Binding Label}"
+                                           TextWrapping="Wrap" />
                                 <TextBlock Text="{Binding Provenance}"
-                                           FontSize="10"
+                                           FontSize="10" TextWrapping="Wrap"
                                            IsVisible="{Binding IsIdentified}"
                                            Foreground="{StaticResource HmTextMutedBrush}" />
                             </StackPanel>
@@ -1993,9 +2031,14 @@
                     </ComboBox.ItemTemplate>
                 </ComboBox>
 
+                <TextBlock Text="favorites" FontSize="11"
+                           VerticalAlignment="Center" Margin="6,0,0,0"
+                           IsVisible="{Binding HasFavorites}"
+                           Foreground="{StaticResource HmTextMutedBrush}" />
+
                 <ComboBox ItemsSource="{Binding Favorites}"
                           SelectedItem="{Binding SelectedFavorite}"
-                          PlaceholderText="favorites"
+                          PlaceholderText="places you chose"
                           MinWidth="180" FontSize="12"
                           IsVisible="{Binding HasFavorites}">
                     <ComboBox.ItemTemplate>
@@ -2160,7 +2203,16 @@
 
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate x:DataType="vm:WidgetViewModel">
+                                    <!-- A FLOOR ON THE WIDTH, so reflow cannot
+                                         collapse a level bar into two pixels
+                                         (§0.5). Below this a widget is not
+                                         narrow, it is lost, and finding it again
+                                         means hunting for a few pixels. Same
+                                         number the resize grip already refused
+                                         to go under, named once and read by
+                                         both. -->
                                     <Border Width="{Binding Width}"
+                                            MinWidth="{x:Static ctl:WidgetCanvas.Smallest}"
                                             Height="{Binding DrawnHeight}"
                                             VerticalAlignment="Top"
                                             Background="White"
@@ -2192,8 +2244,18 @@
                                                 </Grid>
                                             </ctl:WidgetFrame>
 
+                                            <!-- NO HORIZONTAL SCROLLBAR, SAID
+                                                 OUT LOUD RATHER THAN LEFT TO A
+                                                 DEFAULT. A summary scrolled off
+                                                 the edge fails §0.5's test just
+                                                 as a clipped one does: the
+                                                 operator cannot tell there was
+                                                 more. Content is constrained to
+                                                 the widget's width and has to
+                                                 reflow inside it. -->
                                             <ScrollViewer Grid.Row="1"
                                                           Padding="10,0,10,0"
+                                                          HorizontalScrollBarVisibility="Disabled"
                                                           VerticalScrollBarVisibility="Auto">
                                                 <ctl:WidgetBody />
                                             </ScrollViewer>
