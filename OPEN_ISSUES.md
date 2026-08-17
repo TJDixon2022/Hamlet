@@ -816,3 +816,117 @@ which dominates the clock fit and collapses it. The reference read
 `K W BG EN` out of `N0CALL N0CALL`. The tight-fist message avoids digits for
 that reason and the case deserves a fixture of its own.
 
+---
+id: HM-OPEN-021
+status: open
+owner: tim
+raised: 2026-08-17
+severity: slows
+refs: HM-OPEN-019, HM-OPEN-020, HM-DEC-101, HM-DEC-103, HM-DEC-105, GENERATOR_BRIEF.md
+---
+
+The eleven re-adjudicated against the corrected fixtures. **Every entry decided
+last session against defective audio has been re-tested and only one verdict
+moved.**
+
+Phase 6 of the generator brief. The table in HM-OPEN-019 predates the generator
+fix and this supersedes it.
+
+| Test | Fails on realistic audio? | Fault |
+|---|---|---|
+| `ASignalAtTheWrongPitchIsStillFound` (400) | no — found at 400, reads `N0CALL K` | fixture |
+| `ASignalAtTheWrongPitchIsStillFound` (500) | no — found at 525, reads `■0CALL N0CALL K` | fixture |
+| `ASignalAtTheWrongPitchIsStillFound` (750) | no — found at 750, reads `CALL N0CALL K` | fixture |
+| `ASignalAtTheWrongPitchIsStillFound` (875) | no — found at 875, reads `DE N0CALL N0CALL K` | fixture |
+| `ACleanSignalDecodesExactly(25)` | partly — reads `■ALL N0CALL K E` against nothing on the noiseless one | mostly fixture |
+| `TheCleanRecordingsDecodeExactly(clean-25wpm)` | as above; **not retired**, its replacement `fast-easy` does not pass the gate | mostly fixture |
+| `EveryRecordingGivesBackTheShareItShould(clean-25wpm)` | as above | mostly fixture |
+| `AFadingSignalComesBackRatherThanStayingDead` | **yes** — on a twelve decibel fade it reads `■ ■ ■ S■ ■ F■ R D E` where the reference reads 53% | **Hamlet** |
+| `ItGoesQuietRatherThanInventingLettersInTheNoise` | no — nothing emitted at −3, −6 or −10 dB | fixture; bound predates HM-DEC-097 |
+| `TheSpeedEstimateFollowsAChangeWithinAFewCharacters` | **now adjudicated** — see below | **Hamlet**, and needs a ruling |
+| `ClearingTheTranscriptLeavesTheDecoderAlone` (app) | no — 12 wpm at 625 Hz before and after the clear, 8 characters then 23 | fixture |
+
+**Only the fade verdict was at risk and it survived.** It was attributed to
+Hamlet last session on audio carrying a twenty-five decibel fade that deleted
+most of the message rather than fading it. The fade is now twelve decibels, the
+reference reads 53 percent of the same file, and Hamlet still returns mostly
+placeholders. The attribution stands on better evidence than it was made on.
+
+**The two that had never been adjudicated now have been**, which was the point
+of HM-DEC-104. Clearing the transcript is a fixture fault. The speed estimate is
+not, and it found something nobody had looked for.
+
+---
+id: HM-OPEN-022
+status: open
+owner: tim
+raised: 2026-08-17
+severity: slows
+refs: HM-OPEN-021, HM-DEC-090, HM-DEC-104
+---
+
+Across a change of station the decoder names sending speeds belonging to
+neither of them.
+
+Measured on the two-station recording, a caller at eleven words a minute
+handing over to an answerer at twenty-two:
+
+- it names **16 and 18**, which is the average of the two and describes nobody;
+- it names **24, 26, 27, 28, 29, 30, 31, 34, 36, 37, 41, 42 and 44**, all faster
+  than either station;
+- it comes to rest correctly, naming no speed at all rather than a wrong one.
+
+Where it settles is already covered and asserted. What is not settled is whether
+a streaming decoder may put a transitional speed on screen at all while its
+clock re-acquires, or must withhold one until the new clock is proved.
+
+HM-DEC-090 already ruled **one guarded answer, read by every surface**, on the
+grounds that a speed is a fact about somebody's keying. A number that belongs to
+no station on the band is not that, and it appears on the one screen a beginner
+uses to judge whether they could have copied the exchange.
+
+This is a question about what the display asserts, so §12.1 reserves it. Two
+shapes it could take, neither of them Claude's to choose:
+
+- **withhold** — name no speed between clock loss and the next confirmed clock,
+  which costs nothing but a gap and matches the refusal machinery already in
+  place;
+- **mark it** — show the transitional reading as unsettled, the way the
+  provisional tip already distinguishes itself from settled text.
+
+---
+id: HM-OPEN-023
+status: open
+owner: tim
+raised: 2026-08-17
+severity: slows
+refs: HM-DEC-105, HM-OPEN-020
+---
+
+The half-amplitude correction is applied in the settled pass and deliberately
+not in the tone survey, and the second half is unresolved.
+
+HM-DEC-105 ruled that the dah-to-dit floor stays at 2.50 and what the ratio is
+computed over gets fixed. In the settled pass that lands cleanly: deciding six
+decibels below the keyed level rather than midway between the two clusters
+measures a mark at the length it was, and unresolved characters fell from 73 to
+50 percent on `exchange-easy` and from 75 to 33 on `coverage-easy`.
+
+Applied in `CwToneSurvey` as well it costs:
+
+- five noiseless fixtures, which is the class HM-OPEN-018 established encode a
+  physical impossibility and would be weak evidence on its own; and
+- **the real 13:47 off-air capture**, where the tone stops being found at all.
+  That is not a fixture argument.
+
+The reason is that the two are answering different questions. The settled pass
+measures how long a mark is, and half amplitude is where an element's true edge
+sits. The survey decides whether a bin holds anybody keying, judged on the
+separation between two clusters of mark durations; moving the decision up the
+leading edge shortens every mark and tightens that separation, which is exactly
+the measurement the survey exists to make.
+
+A correction that improves one measurement and breaks another is not one
+correction. Whether the survey should be corrected differently, or left alone,
+is Tim's.
+
