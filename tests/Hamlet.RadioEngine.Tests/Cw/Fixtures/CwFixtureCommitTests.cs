@@ -121,39 +121,24 @@ public sealed class CwFixtureCommitTests
     }
 
     /// <summary>
-    /// Fixtures the reference cannot yet read, and which therefore may not judge
+    /// Fixtures the reference cannot read, and which therefore may not judge
     /// Hamlet (HM-OPEN-018 phase 4).
     /// </summary>
     /// <remarks>
-    /// <para>**THESE ARE NOT DELETED AND THEY ARE NOT USED.** The gate's whole
-    /// purpose is that a fixture the reference cannot decode proves nothing about
-    /// the decoder, so these are held out of every assertion about Hamlet until
-    /// somebody resolves why.</para>
-    /// <para>All three share one measured cause. The reference measures every
-    /// mark about twenty-five milliseconds long, because the fifty millisecond
-    /// window a twenty hertz detection bandwidth needs smears each keyed edge and
-    /// the gate crosses its threshold early on the rise and late on the fall.
-    /// Adding a constant to both lengths compresses their ratio, and **the bias
-    /// grows with contrast**:</para>
-    /// <list type="bullet">
-    /// <item>10 dB contrast: measured 109 / 295, ratio 2.70, which is the truth</item>
-    /// <item>13 dB contrast: measured 112 / 294, ratio 2.63</item>
-    /// <item>22 dB contrast: measured 128 / 305, ratio **2.39**</item>
-    /// </list>
-    /// <para>The reference refuses any clock outside 2.5 to 3.8, so at the easy
-    /// tier it refuses a fist it reads perfectly well at the edge tier. The fist
-    /// itself is 105 and 283, a true ratio of 2.70, measured off the air — so
-    /// **the fixture is the measurement and the floor is what fails**, which is
-    /// the opposite of what phase 4 assumes and is why this is a held list rather
-    /// than a fixture edit.</para>
+    /// <para>**EMPTY, AND IT HELD THREE UNTIL THE GENERATOR WAS FIXED**
+    /// (HM-DEC-101). The gate's whole purpose is that a fixture the reference
+    /// cannot decode proves nothing about the decoder, so anything in here is
+    /// held out of every assertion about Hamlet until somebody resolves why.
+    /// It is not a place to park a fixture that is inconvenient.</para>
+    /// <para>The three that were here — `tightfist-easy`, `tightfist-working`
+    /// and `qsk-preamble` — were not admitted by lowering the gate. The tight
+    /// fist had been generated from a fifty millisecond window's measurement of
+    /// a real station rather than from the station, so the measurement bias was
+    /// applied twice and the result fell under the reference's own ratio floor.
+    /// Generated at the station's true timing they score 100, 64 and 100.</para>
     /// </remarks>
     public static IReadOnlySet<string> NotYetAdmissible { get; } =
-        new HashSet<string>(StringComparer.Ordinal)
-        {
-            "tightfist-easy",
-            "tightfist-working",
-            "qsk-preamble",
-        };
+        new HashSet<string>(StringComparer.Ordinal);
 
     /// <remarks>
     /// Proves HM-OPEN-018 phase 4: **the held-out list is small and named.** A
@@ -167,6 +152,10 @@ public sealed class CwFixtureCommitTests
             NotYetAdmissible.Count * 3 < CwFixtureCatalogue.All.Count,
             $"{NotYetAdmissible.Count} of {CwFixtureCatalogue.All.Count} fixtures "
             + "are held out, which is no longer a gate");
+
+        // Every fixture the reference has read may judge Hamlet, and right now
+        // that is all of them.
+        Assert.Empty(NotYetAdmissible);
 
         foreach (var name in NotYetAdmissible)
         {

@@ -22,4 +22,3 @@ qsb           0.7 Hz, 12 dB deep
 preamble      none
 
 peak          -16.0 dBFS
-reference    53% of the message  [K GE NIQ DE N▯ CALL T M M FAA R K]

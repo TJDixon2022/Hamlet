@@ -25,6 +25,16 @@ FIXTURES = os.path.join(ROOT, 'tests', 'fixtures', 'cw', 'receiver')
 REFERENCE = os.path.join(ROOT, 'cwdecoder.py')
 
 
+class ReferenceFailed(Exception):
+    """The reference could not be run at all, which is not a bad score.
+
+    Kept as its own exception so the two can never be conflated. A decoder that
+    read nothing is a statement about the fixture; a decoder that crashed is a
+    statement about the tooling, and last time the second was written into the
+    sidecars as the first.
+    """
+
+
 def expected_of(sidecar):
     """What the fixture says was sent, with prosign carets removed."""
     for line in sidecar.split('\n'):
@@ -73,6 +83,19 @@ def run_reference(wav):
         capture_output=True, timeout=600, env=environment)
 
     output = result.stdout.decode('utf-8', errors='replace')
+    errors = result.stderr.decode('utf-8', errors='replace').strip()
+
+    # **THE GATE MAY NOT FAIL SILENTLY.** It already did once, in the direction
+    # that destroys evidence: the reference prints a box for anything it could
+    # not resolve, that killed the child on a Windows console codepage, and
+    # fixtures it had decoded almost perfectly were written down as unreadable.
+    # A crash is now its own outcome and can never be mistaken for a decoder
+    # that read nothing, because those two say opposite things about a fixture.
+    if result.returncode != 0 or errors:
+        raise ReferenceFailed(
+            'the reference exited %d on %s%s' % (
+                result.returncode, os.path.basename(wav),
+                ': ' + errors.splitlines()[-1] if errors else ''))
 
     if 'DECODE' not in output:
         for phrase in ('no keyed tone found', 'do not cluster as Morse'):
@@ -97,6 +120,7 @@ def main():
         return 1
 
     failures = 0
+    crashes = 0
 
     for name in names:
         wav = os.path.join(FIXTURES, name + '.wav')
@@ -105,7 +129,20 @@ def main():
         sidecar = io.open(notes, encoding='utf-8').read()
         expected = expected_of(sidecar)
 
-        decoded, refusal = run_reference(wav)
+        try:
+            decoded, refusal = run_reference(wav)
+        except (ReferenceFailed, subprocess.TimeoutExpired) as failure:
+            # Written into the sidecar as what it is, and counted separately, so
+            # a broken gate cannot look like a set of bad fixtures.
+            summary = 'reference    COULD NOT BE RUN: %s' % failure
+            crashes += 1
+            kept = '\n'.join(
+                l for l in sidecar.split('\n')
+                if not l.startswith('reference'))
+            io.open(notes, 'w', encoding='utf-8', newline='\n').write(
+                kept.rstrip() + '\n' + summary + '\n')
+            print('%-20s   ----  GATE FAILED: %s' % (name, failure))
+            continue
 
         if decoded is None:
             summary = 'reference    read nothing (%s)' % refusal
@@ -136,7 +173,11 @@ def main():
     print('%d fixture(s) the reference could not read above the edge tier'
           % failures)
 
-    return 1 if failures else 0
+    if crashes:
+        print('%d fixture(s) the gate could not be run on at all -- this is a'
+              ' tooling failure and says nothing about those fixtures' % crashes)
+
+    return 1 if (failures or crashes) else 0
 
 
 if __name__ == '__main__':

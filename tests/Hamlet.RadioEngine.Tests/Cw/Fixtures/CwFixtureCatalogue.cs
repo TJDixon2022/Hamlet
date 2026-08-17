@@ -57,6 +57,56 @@ public static class CwFixtureCatalogue
     /// <summary>Letters, digits and the punctuation a contact actually uses.</summary>
     public const string CoverageText = "1234567890 QRZ? DE/N0CALL";
 
+    /// <summary>The tight fist's dit, in milliseconds.</summary>
+    /// <remarks>
+    /// <para>**NINETY-FOUR, AND A HUNDRED AND SIX WAS THE WINDOW'S ANSWER RATHER
+    /// THAN THE STATION'S** (HM-DEC-101). This fixture was built from the figures
+    /// published off capture 013347 — dit 106, dah 283 — and those figures are
+    /// themselves a fifty millisecond window's measurement of that station. A
+    /// window that long smears each keyed edge and the gate crosses its threshold
+    /// early on the rise and late on the fall, so every mark reads about
+    /// twenty-five milliseconds long and every gap about fifteen short.</para>
+    /// <para>Building the fixture from the measurement and then measuring the
+    /// fixture applies that bias **twice**, and the second application is what
+    /// pushed it under the reference's own 2.5 ratio floor. Swept against window
+    /// length, the real capture reads:</para>
+    /// <list type="bullet">
+    /// <item>50 ms window: dit 113, dah 287, ratio 2.54</item>
+    /// <item>30 ms window: dit 102, dah 280, ratio 2.75</item>
+    /// <item>10 ms window: dit **94**, dah **273**, ratio **2.92**</item>
+    /// </list>
+    /// <para>The generator was never wrong. It produced exactly what it was
+    /// asked for, which a ten millisecond window confirms to the millisecond.
+    /// **It was asked for the wrong numbers**, which is the same fault as a
+    /// fixture built from the same misunderstanding as the code it certifies
+    /// (§12.5), wearing different clothes.</para>
+    /// </remarks>
+    public const double TightFistDitMs = 94;
+
+    /// <summary>The tight fist's dah.</summary>
+    /// <remarks>A true ratio of 2.92, which survives the measurement bias at
+    /// about 2.54 where 2.70 did not.</remarks>
+    public const double TightFistDahMs = 273;
+
+    /// <summary>
+    /// The silence inside one of its characters, which is the whole point.
+    /// </summary>
+    /// <remarks>
+    /// Eighty milliseconds against a ninety-four millisecond dit: **still shorter
+    /// than its own dits**, which is the property this message exists to carry
+    /// and which no textbook spacing produces. Measured as the median of
+    /// thirty-two element gaps in the capture, range forty to a hundred.
+    /// </remarks>
+    public const double TightFistElementGapMs = 80;
+
+    /// <summary>The silence between its characters.</summary>
+    /// <remarks>Median of four, range a hundred and forty-five to two hundred
+    /// and thirty.</remarks>
+    public const double TightFistCharacterGapMs = 162;
+
+    /// <summary>The silence between its words.</summary>
+    public const double TightFistWordGapMs = 265;
+
     /// <summary>What the tight fist sends.</summary>
     /// <remarks>
     /// <para>**NO DIGITS, AND THAT IS A MEASUREMENT RATHER THAN A PREFERENCE.**
@@ -139,11 +189,11 @@ public static class CwFixtureCatalogue
                     ? new CwFixtureRecipe(
                         $"{slug}-{tier}",
                         text,
-                        DitMilliseconds: 105,
-                        DahMilliseconds: 283,
-                        ElementGapMilliseconds: 65,
-                        CharacterGapMilliseconds: 130,
-                        WordGapMilliseconds: 280,
+                        DitMilliseconds: TightFistDitMs,
+                        DahMilliseconds: TightFistDahMs,
+                        ElementGapMilliseconds: TightFistElementGapMs,
+                        CharacterGapMilliseconds: TightFistCharacterGapMs,
+                        WordGapMilliseconds: TightFistWordGapMs,
                         SignalToNoiseDb: snr,
                         QsbHz: qsb,
                         QsbDepthDb: qsb > 0 ? QsbDepthDb : 0,
@@ -166,14 +216,22 @@ public static class CwFixtureCatalogue
         // The operator's own full-break-in transmission ahead of the answer, which
         // is the case that produced twelve hundred elements and one character on
         // the real capture (HM-DEC-095).
+        // **THE MESSAGE HAS TO OUTWEIGH THE SLIVERS, AS IT DOES ON THE AIR.**
+        // Band noise audible between the operator's own elements crosses the gate
+        // now and then and arrives as a handful of short marks: the real capture
+        // shows exactly this, as the six placeholders standing in front of
+        // MVRRVA3VRR. It is harmless there because the answering station sends
+        // about thirty-three marks against those six. A message of nineteen marks
+        // behind the same preamble leaves four pieces of noise weighing a fifth of
+        // the clock fit, which dragged the ratio to 2.49 against a floor of 2.50.
         recipes.Add(new CwFixtureRecipe(
             "qsk-preamble",
-            TightFistText,
-            DitMilliseconds: 105,
-            DahMilliseconds: 283,
-            ElementGapMilliseconds: 65,
-            CharacterGapMilliseconds: 130,
-            WordGapMilliseconds: 280,
+            TightFistText + " " + TightFistText,
+            DitMilliseconds: TightFistDitMs,
+            DahMilliseconds: TightFistDahMs,
+            ElementGapMilliseconds: TightFistElementGapMs,
+            CharacterGapMilliseconds: TightFistCharacterGapMs,
+            WordGapMilliseconds: TightFistWordGapMs,
             SignalToNoiseDb: EasyDb,
             PreambleSeconds: 12,
             Seed: seed));

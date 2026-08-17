@@ -22,4 +22,3 @@ qsb           none
 preamble      none
 
 peak          -12.5 dBFS
-reference    75% of the message  [EV N0CALL IR <SK>]

@@ -22,4 +22,3 @@ qsb           none
 preamble      none
 
 peak          -19.1 dBFS
-reference    96% of the message  [E 1234567890 QRZ▯ DE/N0CALL]

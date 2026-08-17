@@ -2,16 +2,16 @@ name          tightfist-edge
 generated     tests/Hamlet.RadioEngine.Tests/Cw/Fixtures
 seed          20260828
 sampleRate    8000
-seconds       8.01
+seconds       8.11
 
 text          TEST DE TEST K
 messageStart  1.00 s
-dit           105 ms
-dah           283 ms
-elementGap    65 ms
-characterGap  130 ms
-wordGap       280 ms
-wpm           11.4
+dit           94 ms
+dah           273 ms
+elementGap    80 ms
+characterGap  162 ms
+wordGap       265 ms
+wpm           12.8
 
 toneHz        615 Hz, drifting +/- 3 Hz
 snrDb         0.0 dB in the passband
@@ -21,5 +21,4 @@ toneAmplitude -31.0 dBFS peak
 qsb           none
 preamble      none
 
-peak          -19.7 dBFS
-reference    73% of the message  [TESTME NST K]
+peak          -20.0 dBFS

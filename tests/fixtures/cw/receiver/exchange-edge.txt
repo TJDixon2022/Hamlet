@@ -22,4 +22,3 @@ qsb           none
 preamble      none
 
 peak          -18.5 dBFS
-reference    100% of the message  [CQ CQ DE N0CALL N0CALL K]
