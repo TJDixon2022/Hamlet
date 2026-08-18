@@ -125,21 +125,41 @@ public sealed class CwDecoderTests
     }
 
     /// <remarks>
-    /// Proves the pitch is hunted rather than assumed. Somebody who has never
-    /// tuned a CW signal lands a couple of hundred hertz off, and a decoder that
-    /// went silent about it would be teaching them that the equipment is beyond
-    /// them rather than that the dial is a bit out.
+    /// <para>Proves the pitch is hunted rather than assumed. Somebody who has
+    /// never tuned a CW signal lands a couple of hundred hertz off, and a decoder
+    /// that went silent about it would be teaching them that the equipment is
+    /// beyond them rather than that the dial is a bit out.</para>
+    /// <para>**THE BAND IN IT IS THE POINT OF THE NAME, AND IT IS NOT A BAR BEING
+    /// MOVED** (HM-DEC-127). This generated its audio with no noise at all, so
+    /// between the elements there was digital silence — a hundred and fifty
+    /// decibels from anything a receiver hands over (HM-DEC-095) — and the
+    /// station's own image in a distant bin arrived as a hard-limited replica
+    /// with nothing to bury it. Every fixture under `tests/fixtures/cw/receiver`
+    /// was rebuilt with a shaped band for exactly that reason (HM-OPEN-018) and
+    /// this one was missed.</para>
+    /// <para>**FIFTEEN DECIBELS IS THE EASY TIER'S OWN NUMBER**
+    /// (<see cref="Fixtures.CwFixtureCatalogue.EasyDb"/>), so this asserts what
+    /// the rest of the suite asserts at the same strength, and the assertion
+    /// itself is untouched: the whole message, and the pitch within half a filter
+    /// width.</para>
+    /// <para>**IT IS GREEN WITHOUT THE BAND.** HM-DEC-127's first half fixed the
+    /// decoder and this test passed on that alone, so what the band buys is that
+    /// the test stops resting on silence no radio produces. Asserting a station is
+    /// found in a band is the stronger claim as well as the truer one.</para>
     /// </remarks>
     [Theory]
     [InlineData(400)]
     [InlineData(500)]
     [InlineData(750)]
     [InlineData(875)]
-    public void ASignalAtTheWrongPitchIsStillFound(double actualToneHz)
+    public void ASignalAtTheWrongPitchIsStillFoundInABand(double actualToneHz)
     {
         var result = CwDecodeHarness.Decode(
             new CwSignalRequest(
-                PitchRunUp + Call, WordsPerMinute: 18, ToneHz: actualToneHz),
+                PitchRunUp + Call,
+                WordsPerMinute: 18,
+                ToneHz: actualToneHz,
+                NoiseAmplitude: CwSensitivity.NoiseFor(Fixtures.CwFixtureCatalogue.EasyDb)),
             expectedToneHz: 600);
 
         Assert.EndsWith(Call, result.Text, StringComparison.Ordinal);
