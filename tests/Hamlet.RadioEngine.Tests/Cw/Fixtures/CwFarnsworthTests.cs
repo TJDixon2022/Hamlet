@@ -197,9 +197,9 @@ public sealed class CwFarnsworthTests
     /// character-level, which belongs to the clock fit rather than to the
     /// spacing.</para>
     /// <para>**MEASURED AGAIN 2026-08-18 AFTER THE CLOCK WORK AND UNMOVED**, at
-    /// 36 characters against 45 and a match ratio of 0.72. Only part 3 of
-    /// HM-DEC-112 shipped and it is neutral by measurement, so nothing here
-    /// changed. Aligned against the key, what is wrong is:</para>
+    /// 36 characters against 47. Only part 3 of HM-DEC-112 shipped and it is
+    /// neutral by measurement, so nothing here changed. Aligned against the key,
+    /// what is wrong is:</para>
     /// <list type="bullet">
     /// <item>`JJ` extra and `TARRLD` lost at the start, which is acquisition
     /// and is the four characters the key already excuses plus a few more.</item>
@@ -214,6 +214,18 @@ public sealed class CwFarnsworthTests
     /// </list>
     /// <para>Every one of those is character-level. Nothing was tuned to this
     /// recording: a decoder fitted to one capture has learned one station.</para>
+    /// <para>**AND MEASURED A THIRD TIME 2026-08-18, AFTER THE CARET FIX AND
+    /// AGAINST A FIXTURE SET THE REFERENCE NOW READS WHOLE, STILL 36 OF 47**,
+    /// character for character: `JJ AOT NET ■I ECH STAAION HAND■ AHIS MESAGE P`.
+    /// The caret was a generator fault and touched no real audio, and HM-DEC-122
+    /// was held back (HM-OPEN-030), so nothing that shipped could have moved
+    /// this and nothing did. That is the finding the work order asked for.</para>
+    /// <para>**WHAT HM-DEC-122 WOULD HAVE DONE TO IT IS WORTH THE LINE**, since
+    /// it is the strongest evidence against that ruling as written: settling the
+    /// analysis window on the candidate that yields a clock takes this recording
+    /// to twenty milliseconds and reads `T■E ECH STAAION HAND■ AHIS MESAGE P`,
+    /// **29 of 47**. Only the short candidate yields a clock here, so the
+    /// ruling's tie-break is not even in play.</para>
     /// </remarks>
     [Fact]
     public void TheBulletinDecodesToItsAnswerKey()
