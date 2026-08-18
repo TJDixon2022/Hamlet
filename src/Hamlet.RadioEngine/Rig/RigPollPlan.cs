@@ -14,9 +14,10 @@ public enum RigPollRate
     /// Never polled. Either the radio volunteers it, or nothing does.
     /// </summary>
     /// <remarks>
-    /// The frequency is here. The radio broadcasts a change as the operator
-    /// makes it, and asking as well would be spending bus traffic on a fact
-    /// already in hand (HM-DEC-050).
+    /// The VFO selection is here. **The frequency used to be and is not any
+    /// more** (HM-DEC-109): the radio does broadcast a change, and a broadcast
+    /// missed while the app was starting left the model holding a frequency the
+    /// radio was not on with nothing to correct it.
     /// </remarks>
     Never,
 
@@ -82,26 +83,28 @@ public static class RigPollPlan
     /// <returns>Its rate.</returns>
     public static RigPollRate RateFor(RigField field) => field switch
     {
-        // **NEVER POLLED, BECAUSE THE RADIO VOLUNTEERS IT** (HM-DEC-050).
-        // Asking would spend bus traffic on a fact already in hand, and that
-        // ruling is explicit.
+        // **SWEPT WITH THE MODE AND THE FILTER, FOR THE REASON ALREADY WRITTEN
+        // BESIDE THEM** (HM-DEC-109, amending HM-DEC-050 for a third field).
+        // That ruling says nothing the radio volunteers is polled for, and the
+        // frequency was the last field it still covered. A broadcast missed
+        // while the app is starting leaves the model holding a frequency the
+        // radio is not on, with nothing to correct it until the dial is next
+        // turned, which is exactly why Mode and FilterSelection below are swept
+        // despite being broadcast too.
         //
-        // It has a cost, and the cost is worth writing down where somebody will
-        // meet it. A broadcast missed while the app is starting leaves the model
-        // holding a frequency the radio is not on, with nothing to correct it
-        // until the dial is next turned. Mode and FilterSelection are swept
-        // anyway for exactly that reason, as the comment below says. The band on
-        // screen is derived from this reading, and the band scopes what RBN is
-        // filtered to and what the skimmer watch listens for (HM-DEC-024,
-        // HM-DEC-075), so a wrong one makes "nobody heard you" a defect wearing
-        // the clothes of an answer.
+        // It is worth more than a tidier diagnostics screen. The band on screen
+        // derives from this reading, and the band scopes what RBN is filtered to
+        // and what the skimmer watch listens for (HM-DEC-024, HM-DEC-075), so a
+        // wrong one makes "nobody heard you" a defect wearing the clothes of an
+        // answer.
         //
-        // Sweeping it would act against HM-DEC-050 and is not a session's to
-        // decide. What is done instead is the on-demand read that ruling
-        // provides for, taken at the two moments the value is about to be
-        // reasoned from: writing a capture, and rebuilding the band-scoped spot
-        // sources.
-        RigField.Frequency => RigPollRate.Never,
+        // Its age also used to mean something different from every other
+        // field's: with nobody touching the dial the last broadcast receded
+        // without limit, reading as a link going quiet when it was a link with
+        // nothing to report. Swept, it means what everything else's means, which
+        // is part of why the sweep is the clean answer rather than a special
+        // staleness rule.
+        RigField.Frequency => RigPollRate.Session,
 
         // The needle, and whether the radio is keying. Both move constantly and
         // both are on screen while receiving.

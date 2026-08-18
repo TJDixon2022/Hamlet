@@ -5,23 +5,40 @@ namespace Hamlet.RadioEngine.Tests.Rig;
 
 /// <summary>
 /// The polling discipline: one command at a time, fast values only while
-/// somebody is looking, and nothing polled that the radio volunteers
-/// (HM-DEC-050).
+/// somebody is looking, and the broadcast fields swept anyway (HM-DEC-050,
+/// HM-DEC-109).
 /// </summary>
 public sealed class RigPollingTests
 {
     /// <remarks>
-    /// Proves the frequency is never polled for. The radio broadcasts a change
-    /// as the operator makes it, so asking as well would spend bus traffic on a
-    /// fact already in hand and could only ever be more stale than the
-    /// broadcast.
+    /// <para>**THE FREQUENCY IS SWEPT, AND THIS TEST USED TO PROVE THE
+    /// OPPOSITE** (HM-DEC-109, amending HM-DEC-050 for a third field). The old
+    /// reasoning was that the radio broadcasts a change, so asking as well
+    /// spends bus traffic on a fact already in hand. It is true and it is not
+    /// the whole story: **a broadcast missed while the app is starting leaves
+    /// the model holding a frequency the radio is not on**, with nothing to
+    /// correct it until the dial is next turned.</para>
+    /// <para>Mode and FilterSelection are broadcast too and have been swept for
+    /// exactly that reason all along. The frequency was the one left out, and it
+    /// is the one that matters most: the band on screen derives from it, and the
+    /// band scopes what RBN is filtered to and what the skimmer watch listens
+    /// for (HM-DEC-024, HM-DEC-075).</para>
     /// </remarks>
     [Fact]
-    public void WhatTheRadioVolunteersIsNotPolledFor()
+    public void TheBroadcastFieldsAreSweptAnyway()
     {
-        Assert.Equal(RigPollRate.Never, RigPollPlan.RateFor(RigField.Frequency));
+        Assert.Equal(RigPollRate.Session, RigPollPlan.RateFor(RigField.Frequency));
+        Assert.Contains(RigField.Frequency, RigPollPlan.At(RigPollRate.Session));
+
+        // The three that arrive by broadcast and are asked for anyway, together,
+        // so none of them can quietly drop out of the sweep on its own.
+        Assert.Equal(RigPollRate.Session, RigPollPlan.RateFor(RigField.Mode));
+        Assert.Equal(RigPollRate.Session, RigPollPlan.RateFor(RigField.FilterSelection));
+
+        // AND IT IS NOT ASKED FOR FOUR TIMES A SECOND. Half a minute is what a
+        // missed broadcast costs; the live rate would be spending the bus on a
+        // number that hardly ever changes.
         Assert.DoesNotContain(RigField.Frequency, RigPollPlan.At(RigPollRate.Live));
-        Assert.DoesNotContain(RigField.Frequency, RigPollPlan.At(RigPollRate.Session));
     }
 
     /// <remarks>

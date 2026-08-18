@@ -2548,6 +2548,25 @@ public partial class MainWindowViewModel : ObservableObject
         }
 
         NoticeOperatorModeChange(state);
+
+        // **THE SWEPT FREQUENCY CORRECTS THE DISPLAY** (HM-DEC-109). A broadcast
+        // missed at startup used to leave the band on screen wrong until
+        // somebody next turned the dial, and the band scopes what RBN is
+        // filtered to and what the skimmer watch listens for. Sweeping the model
+        // and leaving the screen alone would fix the half nobody looks at.
+        //
+        // **THE GUARD IS THE POINT.** A reading that arrived while the
+        // operator's own tune was still queued would drag the dial back to where
+        // the radio has not got to yet, which is the app taking the knob out of
+        // his hand (§0.2.1). A pending send wins, and the next sweep agrees with
+        // him thirty seconds later.
+        if (!_rigSendPending
+            && !_updatingFromRig
+            && state[RigField.Frequency] is { IsKnown: true, Number: { } swept }
+            && (long)swept != FrequencyHz)
+        {
+            ApplyRigFrequency((long)swept);
+        }
         RigModeText = state[RigField.Mode] is { IsKnown: true } mode ? mode.Text : "";
         RigFilterText = state[RigField.FilterSelection] is { IsKnown: true } filter
             ? filter.Text
@@ -4097,38 +4116,14 @@ public partial class MainWindowViewModel : ObservableObject
 
     private async Task ReloadSpotsAsync(string trigger)
     {
-        // **THE BAND THESE ARE SCOPED TO IS DERIVED FROM THE RADIO, SO THE RADIO
-        // IS ASKED BEFORE THEY ARE** (HM-DEC-107 phase 6 of the UI order). RBN
-        // is filtered to the band on screen (HM-DEC-024) and the skimmer watch
-        // listens for the operator's callsign on it (HM-DEC-075), so a band the
-        // model had wrong would make "nobody heard you" a defect wearing the
-        // clothes of an answer.
-        //
-        // The frequency is never polled, because the radio broadcasts changes
-        // (HM-DEC-050), and a broadcast missed at startup would otherwise leave
-        // the band wrong until somebody next turned the dial. This is the
-        // on-demand read that ruling provides for, at the one moment before the
-        // value is reasoned from, and it costs one command per refresh.
-        if (_rigMonitor is not null && IsConnected)
-        {
-            try
-            {
-                await _rigMonitor.RefreshAsync(RigField.Frequency);
-
-                if (RigState[RigField.Frequency] is { IsKnown: true, Number: { } hz }
-                    && !_rigSendPending
-                    && (long)hz != FrequencyHz)
-                {
-                    ApplyRigFrequency((long)hz);
-                }
-            }
-            catch (Exception)
-            {
-                // A radio that did not answer leaves the band as it was, which
-                // is the same thing that happens today and never worse (§8).
-            }
-        }
-
+        // **THE ON-DEMAND READ THAT USED TO BE HERE IS GONE** (HM-DEC-109).
+        // It was closing a consequence rather than the cause: the band these
+        // sources are scoped to derives from the frequency, and the frequency
+        // could be wrong because a broadcast was missed at startup. The sweep
+        // fixes that at the source, every thirty seconds, for everything that
+        // reads the frequency rather than only for the two callers somebody
+        // remembered. A spot refresh runs every one to fifteen minutes, so the
+        // sweep is always the fresher of the two anyway.
         _activitySource.SetContext(BuildContext());
 
         IReadOnlyList<ActivitySpot> spots;

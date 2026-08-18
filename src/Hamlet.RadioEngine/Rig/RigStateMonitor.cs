@@ -207,11 +207,16 @@ public sealed class RigStateMonitor : IDisposable
     /// <returns>A task that completes when the sweep is done.</returns>
     /// <remarks>
     /// <see cref="RigPollRate.Never"/> means "not asked for over and over",
-    /// not "never asked". The frequency is the case: the radio broadcasts
-    /// changes, so polling for it would be waste, but nothing broadcasts what it
-    /// was already sitting on when Hamlet connected. So it is read once here and
-    /// then left to the broadcasts, which is why this sweep runs on connect and
-    /// again whenever somebody opens the diagnostics screen.
+    /// not "never asked". Nothing broadcasts what the radio was already sitting
+    /// on when Hamlet connected, so the never-polled fields are read once here,
+    /// which is why this sweep runs on connect and again whenever somebody opens
+    /// the diagnostics screen.
+    ///
+    /// **THE FREQUENCY USED TO BE THE EXAMPLE HERE AND IS NOT ANY MORE**
+    /// (HM-DEC-109). It is swept with the mode and the filter now, because a
+    /// broadcast missed while the app was starting left the model holding a
+    /// frequency the radio was not on and nothing corrected it until the dial
+    /// was next turned.
     /// </remarks>
     public async Task RefreshAllAsync(CancellationToken cancellationToken = default)
     {
