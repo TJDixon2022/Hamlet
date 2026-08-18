@@ -1847,3 +1847,32 @@ share. It is in `OUTPUT.md` section 4.
 Neither bar failure was fixed here. Both are attributed, which is what the work
 order asked for where a fix is not clear, and the shared mechanism is named rather
 than repaired on the way past (§12.6).
+
+---
+id: HM-OPEN-034
+status: open
+owner: claude
+raised: 2026-08-18
+severity: none
+refs: HM-DEC-127, src/Hamlet.RadioEngine/Cw/CwToneSurvey.cs, tests/Hamlet.RadioEngine.Tests/Cw/CwDisplacementFloorTests.cs
+---
+
+A station at 350 hertz is not read, and was not read before HM-DEC-127 either.
+
+Found while writing the control for that ruling — the test that proves the new
+floor has not made the tracker deaf to a real move. Every pitch
+`ASignalAtTheWrongPitchIsStillFound` covers is found and read; 350 comes back as
+`■■ ■■■■ ■` after two moves. **Measured either side of the change and identical
+character for character**, so it is a pre-existing hole rather than one this
+ruling made, and it is recorded here rather than asserted in a test that would
+then be red for something nobody has decided to fix.
+
+Fifty hertz above `MinimumToneHz`, so the likeliest cause is the bank's own edge:
+the survey needs bins far enough from a candidate to sample the band beside it,
+and near the bottom of the range there are fewer of them on one side. That is a
+hypothesis and not a measurement.
+
+**Severity none.** The IC-7300's CW pitch range is 300 to 900 hertz (Full Manual
+p. 4-14) and the decoder's own default is 600, so a station at 350 is somebody
+who has tuned a long way from where anybody normally sits. Named and left
+(§12.6).

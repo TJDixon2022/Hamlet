@@ -252,6 +252,17 @@ public sealed class CwToneTracker
     /// <summary>The last pitch keying was actually found at.</summary>
     private double _lastKeyedHz = double.NaN;
 
+    /// <summary>
+    /// How loud the station being read is while it is keyed (HM-DEC-127).
+    /// </summary>
+    /// <remarks>
+    /// The level of the last candidate the tracker actually believed, which is
+    /// what a displacing candidate is measured against. Unknown until something
+    /// has been confirmed, and unknown is not a level: nothing is refused on the
+    /// strength of a number nobody has.
+    /// </remarks>
+    private double _readingDb = double.NaN;
+
     /// <summary>What is reported as the tone, which is not the instant winner.</summary>
     private double _reportedHz = double.NaN;
 
@@ -730,7 +741,46 @@ public sealed class CwToneTracker
             return;
         }
 
+        // **A CONFIRMED STATION IS NOT ABANDONED FOR A CANDIDATE FAR BELOW IT**
+        // (HM-DEC-127). The survey scores every bin for keying structure, and a
+        // station's own image in a distant bin has the station's dit, the
+        // station's dah and the station's timing, because it is the station. On
+        // the reads where the real bin happens not to score, that image is the
+        // only candidate left and it confirms itself twice over with nothing to
+        // argue against it: measured on a 400 hertz signal, the tracker left it
+        // for 575 and lost the `CQ` while it was away.
+        //
+        // **THIS IS NOT A PREFERENCE FOR LOUDNESS AND HM-DEC-095 IS NOT AMENDED.**
+        // That ruling settled which of several signals to read on an
+        // empty-handed survey, where loudness picked a carrier over a station.
+        // Nothing is being read then and there is nothing to abandon. Here there
+        // is, and the question is different: not "prefer the louder" but "do not
+        // abandon what you have for something far below it".
+        //
+        // **THE FLOOR IS THE FILTER'S OWN REJECTION AND IT IS ALREADY IN THIS
+        // FILE.** Past a hundred and twenty-five hertz of separation the window
+        // takes at least <see cref="FilterRejectionDb"/> off a rival, so anything
+        // that far below the station being read is inside what that station's own
+        // leakage could produce, and calling it a different station is a claim the
+        // measurement does not support (§0.0). Measured across every recording
+        // here, a candidate that legitimately displaces a confirmed station sits
+        // between nought point three decibels above it and one and a half below;
+        // the image sat thirty-five below. There is nothing in between.
+        if (!double.IsNaN(_readingDb)
+            && !double.IsNaN(keyed.KeyedDb)
+            && keyed.KeyedDb < _readingDb - FilterRejectionDb
+            && Math.Abs(keyed.ToneHz - _fineHz[_fineHz.Length / 2]) > FineReachHz)
+        {
+            // Refusing to follow it does not make it stop existing, and the
+            // station being read is still protected by its own countdown.
+            Verdict = new ToneVerdict(
+                null, Filtered(coarse.Interference ?? coarse.Strongest), coarse.Strongest);
+
+            return;
+        }
+
         KeyingFoundAt(keyed.ToneHz);
+        _readingDb = keyed.KeyedDb;
 
         // Outside what the fine bank can reach, so it has to move, and its
         // history is about different pitches and cannot come with it.
