@@ -1358,3 +1358,91 @@ is the same discipline phase 3 was held to and is not a tail on another work uni
 **`exchange-easy` is likely the same defect**, since its text ends in a caret-joined
 prosign, and it should be re-checked once this is fixed rather than investigated
 separately.
+
+---
+id: HM-OPEN-030
+status: open
+owner: tim
+raised: 2026-08-18
+severity: slows
+blocks: HM-DEC-122, which is built and measured and not live
+refs: HM-DEC-122, HM-DEC-091, HM-DEC-095, HM-DEC-097, HM-DEC-120, src/Hamlet.RadioEngine/Cw/CwToneTracker.cs, tests/Hamlet.RadioEngine.Tests/Cw/CwAcquisitionWindowTests.cs
+---
+
+HM-DEC-122 was built exactly as ruled and does not survive its own measurement.
+It is not live.
+
+**What was built.** The tracker runs two extra coarse surveys during acquisition,
+one over a twenty millisecond window and one over fifty, fed from the same ring
+buffer on the same ten millisecond survey grid. Each is asked the question the
+ruling names — two mark clusters inside the 2.5 to 3.8 ratio band, separated well
+enough to be two lengths rather than a smear, which is `CwToneSurvey.Analyze`
+unchanged. The shorter is preferred where both answer. The window it chooses
+becomes the reading window, and an unproved speed estimate is no longer allowed to
+lengthen the window, which is the death spiral the ruling names: runs merge, the
+merged runs read as a slow fist, the slow fist asks for the long window, and the
+long window merges the runs.
+
+**The first finding is that the candidates name flukes for several seconds.**
+Measured on a clean signal at 640 Hz, eighteen decibels over the noise, the short
+candidate's answer across the first ten survey reads runs 325, 325, 325, 550, 550,
+725, 725, 725, 650, 650 Hz. This is the fault the tracker's own two-agreeing-surveys
+rule exists to prevent (HM-DEC-095), and the candidates were not subject to it.
+
+**Settling on the first answer meets the ruling's acceptance and breaks §0.0.**
+Tuned onto mid-transmission with no run-up, the fast end goes from about two thirds
+of the message to about nine tenths:
+
+| wpm, bare, 18 dB | before | after |
+|---|---|---|
+| 25 | 0.67 | 0.79 |
+| 28 | 0.63 | 0.79 |
+| 30 | 0.70 | 0.95 |
+| 35 | 0.63 | 0.89 |
+
+And `NothingIsEmittedAnywhereBelowTheFloor` fails: 2.8% of what comes back below
+the refusal floor was never sent, where HM-DEC-120 measured zero at every level.
+`ASignalAtTheWrongPitchIsStillFound(875)` also fails outright. **So a short window
+taken early does not only cost sensitivity**, which is the premise the ruling's
+tie-break rests on. It costs correctness, which §0.0 does not trade.
+
+**Requiring the clock to belong to the confirmed station fixes both regressions
+and leaves nothing behind.** Gating the settle on the tracker having confirmed
+where the keying is — `_lastKeyedHz` known, and the candidate's answer within one
+coarse bin of it — restores the refusal floor and the 875 Hz signal exactly. It
+also arrives too late: on synthetic audio the confirmation takes about five and a
+half seconds, by which time the message is nearly over, and **every cell of the
+measurement matrix is then identical to the unmodified decoder**, at all nine
+speeds and all five ratios, with and without a run-up. The window cap on its own
+is likewise a no-op: it never binds.
+
+**And where the gate does fire in time, it costs the only real recording seven
+characters.** On `cw-2026-08-18-004507`, the ARRL bulletin at S4:
+
+| | window | settled text | correct |
+|---|---|---|---|
+| unmodified | 40 ms | `JJ AOT NET ■I ECH STAAION HAND■ AHIS MESAGE P` | 36 of 47 |
+| HM-DEC-122 | 20 ms | `T■E ECH STAAION HAND■ AHIS MESAGE P` | 29 of 47 |
+
+Isolated by disabling the settle alone, which returns the bulletin to 36 character
+for character. **Only the short candidate yields a clock there**, so the tie-break
+is not even in play: the fifty millisecond window smears a 57 ms dit badly enough
+to fail the cluster test while being the better window to read through, and the
+forty millisecond window the ruling removes from consideration is better than
+either. That is HM-DEC-095's measured table restated — 20 ms loses half a callsign
+the same recording gives up whole at 40.
+
+**What that leaves.** The ruling's diagnosis is sound and its remedy does not
+follow from it. The window that yields the cleanest clock is not the window that
+reads the signal best, and on the one real capture this repository holds those two
+are different windows. Three directions, all Tim's:
+
+- Keep the parallel run and change the selection to something that measures
+  reading rather than clustering — the two candidates' own speed estimators at the
+  tracked pitch, rather than the survey's per-bin scan.
+- Keep the forty millisecond window as a third candidate, so the choice includes
+  the one the evidence prefers.
+- Take the acceptance figures above as the target and leave the mechanism alone.
+
+Nothing was shipped. `CwAcquisitionWindowTests` pins the four fast-end figures and
+the slow end so the next attempt is judged against a number.

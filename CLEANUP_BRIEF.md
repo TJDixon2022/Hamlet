@@ -1,6 +1,6 @@
 **PROJECT: Hamlet**
 
-# Work order: characterise the edges, rebuild the short fixtures, set the floor
+# Work order: two windows, one caret, and the bulletin re-measured
 
 Five phases. Reported per §12.2: four sections, **written to `OUTPUT.md` at the
 repository root, overwriting it**, and printed to the session as well. **Name
@@ -9,139 +9,146 @@ the branch in section 1** (§9.5.1 — `main`, and nowhere else).
 **Read first:** `CLAUDE.md` (§0.0, §12, §12.5), `SESSION_PROTOCOL.md`, the
 previous `OUTPUT.md`, `OPEN_ISSUES.md`, `DECISIONS.md`.
 
-**New rulings: HM-DEC-119, 120, 121.** Two of them supersede or block work the
-last session was told to do, and the reason in both cases is a measurement it
-made. Read them before planning.
+**New rulings: HM-DEC-122, 123, 124.** All three answer questions the last
+session raised with measurements underneath them. **HM-DEC-123 is a separate
+work order and is not in this one** — do not begin it.
 
 ## Standing instruction
 
 A phase needing a ruling records the question in `OUTPUT.md` section 4 and
 continues. §12.1 unchanged. **No transmit work of any kind.**
 
+The suite stands at 1817 tests, five failing:
+`ASignalAtTheWrongPitchIsStillFound(400)`,
+`ClearingTheTranscriptLeavesTheDecoderAlone`,
+`TheBulletinDecodesToItsAnswerKey`, `TheEasyTierIsReadWhole(exchange-easy)`,
+`TheEasyTierIsReadWhole(prosigns-easy)`. **Three of the five should fall in this
+order.** The 400 Hz one belongs to HM-DEC-123 and stays red.
+
 ---
 
-## Phase 1 — the floor is 14 (HM-DEC-120)
+## Phase 1 — two analysis windows during acquisition (HM-DEC-122)
 
-One line. The floor parameter's default moves from 17 to 14, superseding the
-interim.
+**The edges are not the problem and no edge correction is applied.** Both edges
+are late by 30–36 ms, which is group delay: identical at both ends, so it
+cancels for a length. What survives is 3–7 ms, under one hop, and it does not
+grow as marks shorten.
 
-Swept last session: 17, 15, 14 and 13 never invent a character at any level; 12
-begins inventing at −2 dB, which is HM-DEC-097's named case at 0.44 invented.
-Fourteen and thirteen are identical on every measured number and both read the
-message perfectly down to 1 dB, so the further of the two from the cliff is
-taken.
+**The window is the fault.** The tracker picks it from the speed it currently
+believes:
 
-**This buys back the four decibels the interim gave away.** Re-run the sweep and
-confirm the table is what it was: nothing invented at any level, whole message
-to 1 dB.
+| Told | Window | At 30 wpm |
+|---|---|---|
+| 10 wpm | 50 ms | longer than the dit — runs merge, start error 30 ms → 170 ms |
+| 25 wpm or more | 20 ms | reads better than the 40 ms it acquires with |
 
-## Phase 2 — characterise the detector's edges (HM-DEC-119's commission)
+At 25 the dah reads 144.4 against a true 144; at 30 the dit reads 38.5 against a
+true 40. **A decoder that has not yet found the speed is running the window
+least able to find it.**
 
-**HM-DEC-112 is superseded and this is what replaces it.** The correction it
-prescribed was measured through an offline filter, not through Hamlet's
-Goertzel, and carrying one instrument's edge shape into another's clock takes
-the suite from 13 failures to 29 and silences 30 words a minute.
+Build it:
 
-What is wanted is one measurement, not a fix.
+- During acquisition, run **20 ms and 50 ms in parallel**.
+- **Keep whichever yields a valid clock** — a clean dit-or-dah cluster inside
+  the 2.5–3.8 ratio band, which is already the test and needs no new judgement.
+- If both yield one, prefer the shorter: the failure is asymmetric — too long
+  merges runs and destroys the signal, too short only costs sensitivity.
+- If neither does, emit nothing. §0.0 already prefers silence.
+- Once locked, the window follows the proved speed as it does now.
 
-For **synthesized dits and dahs of known length**, at **12, 25 and 30 words a
-minute**, through **Hamlet's own detector**, report:
+Acquiring short alone was **rejected**: it trades weak-and-slow reach, this
+project's best-proven capability, for speeds it cannot yet read. Iterating from
+the locked speed was **rejected** because at 30 wpm there is no lock to iterate
+from.
 
-- the envelope's actual shape across a mark's rising and falling edges, sampled
-  at the hop rate;
-- where the gate declares the mark begins and ends against the true edges;
-- the same for the gap that follows;
-- how all of it changes with the analysis window's length.
+Acceptance: 30 wpm decodes rather than collapsing, and **nothing at 10–12 wpm
+gets worse.** Measure the slow end explicitly and report it — that is the thing
+this ruling risks and the thing it was chosen to protect.
 
-The known numbers to reproduce and extend: the gate reads 100–110 ms for a true
-100, 45–50 for a true 48, 40–45 for a true 40 — accurate to within one hop
-throughout. Half amplitude reads 80–90, 30–35 and 25, wrong by 15, 30 and 37
-percent, and the shed is a fixed 15–20 ms at every speed, which is the window
-rather than the transmitter.
+## Phase 2 — the fixture generator's caret (HM-DEC-124)
 
-**Then say what the answer is**: a shorter edge window, sub-hop interpolation,
-or nothing at all. **Do not implement it.** The measurement is the deliverable
-and the choice is Tim's (§12.1), because it decides what the clock asserts.
+**Hamlet reads `IR` where `AR` was sent because the fixture sends `IR`.** §12.5's
+own pattern, with the decoder blamed for months.
 
-One clue worth carrying: with all three parts of HM-DEC-112 in, 25 wpm decoded
-*exactly* while 30 collapsed to nothing. **Something near the edges genuinely
-matters at 25 and the half-amplitude correction was fixing it by accident.**
-Whatever is actually wrong at 25 is still there and this measurement should
-find it.
+`KeyEdges` opens with a single unpaired edge at the message start. The caret's
+join branch begins by adding a gap edge, which assumes a mark is in progress to
+separate from; at the head of a word there is not, so that edge **closes a mark
+that never opened**. A phantom 100 ms dit, and every edge after it on the
+opposite parity — the dah that should open `BT` becomes a 300 ms gap and the
+element gaps become marks.
 
-## Phase 3 — rebuild the six short fixtures, as its own proper work (§12.5)
+`^SK` survives because six elements restore the parity that five break, so **an
+even-length prosign renders correctly and an odd-length one does not**, which is
+why this has looked intermittent.
 
-The last session dropped this and was right to: it needs the recipes changed,
-the WAVs regenerated, the reference scorer run to satisfy HM-DEC-101's gate, and
-**every held-out fixture adjudicated one at a time with a recorded reason**.
-That is not a phase tail. It is this phase.
+The model predicts all nine edges of `^BT` exactly. The reference implementation
+reads `EV` and `IR` too: two independent decoders agree and both are right.
 
-The finding it rests on, measured two sessions ago: all six failures are the
-signal being too short for a detector that wants about three seconds of keying
-before it moves. Given a run-up, each decodes `CQ DE W1AW K` exactly.
+- Fix the join branch so a caret at the head of a word does not emit an opening
+  gap edge.
+- Regenerate the affected fixtures.
+- **Re-run HM-DEC-101's gate after every regeneration.** A fixture the reference
+  cannot read is a bad fixture.
+- **Adjudicate every hold-out individually with its reason recorded** (§12.5).
+  No wholesale retirement. This is the discipline phase 3 of the last session
+  was held to and it held.
+- **Re-check `exchange-easy` after the fix rather than investigating it
+  separately** — it is very likely the same defect, and if it is, two of the
+  five failures clear in one move.
 
-- Add sufficient run-up to the six, regenerate, and re-score.
-- **HM-DEC-101's gate applies**: the reference must score a fixture well before
-  that fixture may judge Hamlet. A fixture the reference cannot read is a bad
-  fixture.
-- **Adjudicate every hold-out individually, with its reason recorded** (§12.5).
-  No wholesale retirement.
-- Three of the four `TheEasyTierIsReadWhole` failures lose only their opening
-  characters to acquisition and should clear with the same treatment. **The
-  fourth reads `IR` where `AR` was sent** — a wrong character rather than a
-  missing one, the only strangers case the bar catches for the right reason.
-  Chase that one separately and report it; do not let a run-up hide it.
+## Phase 3 — re-measure the bulletin against a known-good fixture set
 
-Expect the failure count to fall substantially. Report before and after by name.
+`cw-2026-08-18-004507` stands at **36 characters against 45**. Every remaining
+error is character-level: `JJ` extra and `TARRLD` lost to acquisition, `BT`
+unresolved, **`T` read as `A` twice** in `STATION` and `THIS`, and letters
+dropped from `EACH`, `MESSAGE` and `HANDLING`.
 
-## Phase 4 — trace the coupling behind HM-DEC-116 (HM-DEC-121)
+Re-measure after phases 1 and 2 and **report the number before touching
+anything.** The spaces have been right since the Farnsworth fix; what is left
+belongs to the clock, and phase 1 is the first thing to touch the clock since.
 
-**HM-DEC-116 is blocked, not withdrawn.** Built as ruled it meets its own
-acceptance and costs the callsign on `cw-2026-08-17-013347`, where the settled
-pass falls from `VA3VRR` to placeholders. Three narrowings were tried and none
-broke it; disabling adoption restores the callsign, which identifies the cause
-but not the path.
+`T` read as `A` is a dah read as a dit followed by a dah — a spurious leading
+dit, which is a mark boundary in the wrong place or an edge caught early. If
+phase 1 moves it, say by how much. If it does not, that is the finding.
 
-**Find the path.** Instrument both passes and trace what the settled pass reads
-back out of the estimator after adoption changes it. The standing hypothesis is
-that the settled pass takes exactly one thing — the dit hint — and if that is
-the whole coupling, the classes can be handed forward without touching anything
-the dit derives from.
+**Do not tune anything to this recording.** A decoder fitted to one capture has
+learned one station.
 
-**Report the path and stop.** Do not ship HM-DEC-116 on this session's
-judgement; a real off-air capture outranks a synthetic test (HM-DEC-091) and the
-ruling stays blocked until Tim lifts it.
+## Phase 4 — `ClearingTheTranscriptLeavesTheDecoderAlone`
+
+The app failure, unchanged across three sessions and untouched by any ruling.
+Diagnose it and say whether the fault is the app's, the decoder's, or the
+fixture's, in the manner of the phase 5 adjudications.
+
+Fix it only if the cause is unambiguous. If it is not, report the path.
 
 ## Phase 5 — DROP THIS ONE IF SHORT OF ROOM
 
-The 400 Hz tracker finds the pitch and will not hold it, breaking down and
-re-acquiring however long the signal — the only one of the four pitch failures a
-run-up does not fix, and the one genuine decoder fault with no ruling in front
-of it.
+Housekeeping the record has accumulated:
 
-Diagnose and report. Fix only if the cause is unambiguous.
+- **HM-OPEN-026**: `cw-2026-08-18-003758` is named in the fixture records and the
+  file is not on the machine, so anything asserted about it is unverifiable.
+  **Either it is supplied or the reference is removed** — the fixture set must
+  not name evidence that does not exist. Tim has not supplied it across three
+  sessions; recommend removal and say so, but do not decide it.
+- **HM-OPEN-025**: the `"save"` commits. Recorded, not chased. Confirm it is
+  still only cosmetic.
+- Confirm HM-OPEN-027 and HM-OPEN-028 are both recorded as belonging to
+  HM-DEC-123's separate work order, so the next session does not re-derive them.
 
 If dropped, say so.
 
 ---
 
-**If every phase completes, stop and report. Do not start any other work unit,
-and build nothing toward auto-CQ.**
+**If every phase completes, stop and report. Do not start HM-DEC-123's work
+order, and build nothing toward auto-CQ.**
 
 ## Definition of done
 
-The floor is 14 and the sweep confirms it. The detector's edge behavior is a
-table with a recommendation Tim can rule on. The six short fixtures are rebuilt,
-gated and adjudicated, with the failure count reported by name before and after.
-The HM-DEC-116 coupling has a named path.
-
-**Still outstanding and not in this order**: `cw-2026-08-18-003758` is not on
-the machine (HM-OPEN-026) and would be the suite's only regression test for a
-success. The bulletin `cw-2026-08-18-004507` stands at 36 characters against 45
-and every remaining error is character-level — `T` read as `A` twice, `BT`
-unresolved, letters dropped from `EACH`, `MESSAGE` and `HANDLING`. **Nothing is
-tuned to that recording**; a decoder fitted to one capture has learned one
-station.
+30 wpm decodes and the slow end is measured and unharmed. The caret is fixed,
+the fixtures regenerated, gated and adjudicated, and `prosigns-easy` and
+probably `exchange-easy` are green. The bulletin's distance from its answer key
+is a reported number taken against a fixture set that is finally known good.
 
 **Everything here is provable on the development computer against fixtures, and
 none of it is evidence about the radio** (HM-DEC-093).
