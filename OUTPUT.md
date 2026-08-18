@@ -4,242 +4,286 @@
 **Branch: `main`, and nowhere else** (§9.5.1). The prompt claimed `PROJECT: Hamlet`
 and the tree confirms it: `CLAUDE.md`'s header reads `Project: Hamlet`, the
 solution is `Hamlet.sln`, the namespaces are `Hamlet.*`. Gate passed. **Nothing in
-this report is evidence about the radio** (HM-DEC-093): every number comes from a
-fixture, a generated signal, or one of the off-air recordings decoded here. Phases
-4 and 5 are verified at the screen on COM3 and not here.
+this report is evidence about the radio** (HM-DEC-093), and **nothing in this
+session transmitted anything**: every keying call in every test lands on a fake
+that records what would have gone out.
 
-**Nothing was recorded under §12.1.** One question came up and it is in section 4.
+**Nothing was recorded under §12.1.** On this order that is the rule rather than a
+coincidence — almost all of it touches §0.2 — and two questions are in section 4.
 
-**All six phases completed. Nothing was dropped.** No transmit work of any kind,
-and nothing was built toward auto-CQ.
+**All six phases completed. Nothing was dropped.**
 
-## Phase 1 — a confirmed station is not abandoned for a candidate far below it (HM-DEC-127)
+## The resume premise, corrected
 
-**The criterion was measured across the corpus and it is the filter's own
-rejection, already in the file.** Every switch in every recording was traced with
-the candidate's level beside the level of the station being read:
+The prompt said phases 1 and 2 had committed. **They had not: nothing from this
+order was committed at all.** `git log` topped out at `44b93ed`, the previous
+session's report, and both new engine files were untracked. What was true is that
+`AutoCallAnswers.cs` had landed complete at 310 lines, brace-balanced, and
+`AutoCall.cs` at 729 — and that the engine did **not** compile, because
+`AutoCall.cs` named an event-args type that does not exist
+(`RigFrequencyChangedEventArgs`; it is `FrequencyChangedEventArgs`). That was the
+first thing fixed.
 
-| what it was | measured separation |
-|---|---|
-| the survey settling one bin over on `013347`, `004507`, `two-station` | **0.3 dB above to 1.5 dB below** |
-| the caller at 615 handing to the answerer at 730 | from cold, nothing being abandoned |
-| **the 400 Hz station's own image at 575** | **34.6 dB below** |
+**One correction to what had landed.** The second response tier constructed its
+verdict positionally as `Stop: false` and then overrode it with an object
+initializer setting `Stop = true`. It compiled and it read as a contradiction, so
+it is now written out with named arguments and a comment saying which half is which.
 
-There is nothing in between. The floor is `FilterRejectionDb`, which this file
-already carries with the right meaning: past 125 hertz of separation the window
-takes at least that much off a rival, so anything that far below the station being
-read is inside what that station's own leakage could produce, and calling it a
-different station is a claim the measurement does not support.
+## Phase 1 — the keyer, and the abort first
 
-**HM-DEC-095 is not amended and is not in tension.** It governs which of several
-signals to read on an empty-handed survey, where there is nothing to abandon.
+**Most of what this phase asks for already existed and is already proved**, which
+is worth saying rather than rebuilding: `KeyerCwSender` sends by command 17,
+`Abort()` is same-thread and awaits nothing, and four existing tests cover it —
+`TheAbortStopsASendAlreadyInFlight`, `TheAbortIsSafeWhenThereIsNothingToStop`,
+`TheStopFrameIsCommand17CarryingFf` and `TheTransmitterHasNoWayToKeyWithoutBeingAsked`.
+Break-in off and break-in unread are already separate refusals with separate
+sentences.
 
-**The whole corpus was re-decoded either side of the change** — twenty-four
-recordings, the four off-air captures included — and is **identical character for
-character except the one the ruling is about**:
+**What is new is validation at edit time.** `AutoCallSettings.Refusal` names the
+fault where the operator can see it: an over-long message says its own character
+count and the keyer's limit, an empty one says Hamlet does not write one for him, a
+round too short to fit the message says so, and a round count nobody would run
+unattended is refused at both ends.
 
-```
-gen-400-from-600   before  3 moves   '■■ ■■■ ■ K DE W1AW K'
-                   after   1 move    '■■ ■■■ CQ DE W1AW K'
-```
+**A longer call is refused rather than split, and that is the design question the
+order said to raise rather than decide.** It is section 4's second item.
+`CQ CQ DE KC3QIS KC3QIS K` is 24 characters against the keyer's 30, so it fits —
+but not by much.
 
-**`ASignalAtTheWrongPitchIsStillFound(400)` passes on phase 1 alone**, which the
-work order asked to be told.
+**Host-timed keying on DTR or RTS is not built and the reason is in the code**, so
+the next session does not re-open it: it makes a PC responsible for continuous
+control of a transmitter it cannot guarantee it will be alive to release.
 
-**One thing found while writing the control**: a station at 350 hertz is not read,
-and was not read before this change either — two moves and a row of placeholders,
-identical either side. Fifty hertz off the bottom of the survey's range. Recorded
-as HM-OPEN-034 at severity none rather than asserted in a test, because it is a
-pre-existing hole and nobody has decided to fix it.
+## Phase 2 — the cycle
 
-## Phase 2 — the fixture gets a band (HM-DEC-127, second half)
+`AutoCaller` in the engine. Thirty seconds and ten rounds are the ruled defaults
+and there is a test pinning them. **The message is the operator's own text, there
+is no default anywhere, and there is a test asserting the panel opens with none.**
 
-`ASignalAtTheWrongPitchIsStillFound` becomes
-**`ASignalAtTheWrongPitchIsStillFoundInABand`**, and the name carries it so nobody
-reads the change as a bar moving. Fifteen decibels, which is
-`CwFixtureCatalogue.EasyDb` — the easy tier's own number — so it now asserts what
-the rest of the suite asserts at the same strength. **The assertion is untouched**:
-the whole message, and the pitch within half a filter width.
+**The listen window does not run during transmit.** Command 17 returns as soon as
+the radio acknowledges — milliseconds — while the radio keys for as long as the
+message takes, so the cycle waits out `CwDuration.Of(message, keyerSpeed)` plus a
+quarter of a second of transmit-receive recovery before it listens. That is
+comfortably past the 24 ms of T/R hang and the guard's own 150 ms hold measured on
+this radio (HM-DEC-095). Listening earlier hears the operator's own transmission as
+a muted receiver and reads the slivers between his own elements as somebody
+answering.
 
-Done after phase 1 so the two are separable, and they are: **phase 1 alone turned
-it green**, so what the band buys is that the test stops resting on digital silence
-no receiver produces, which is the fault HM-OPEN-018 was opened for and which every
-fixture under `tests/fixtures/cw/receiver` was rebuilt to remove.
+**Every transmission is logged** with its timestamp, the frequency the radio was
+on, the message and the round number, and the panel draws it.
 
-## Phase 3 — HM-DEC-128 recorded, and what it closes
+## Phase 3 — response detection, two tiers plus the tracker
 
-**Confirmed by sweep: no `Adopt`, no `ForgetAdopted` and no adoption flag remains
-anywhere in the engine**, as was done for HM-DEC-122.
+**QSO-shaped text stops and claims an answer**, in order of what it establishes:
+his own callsign coming back, `DE` and a callsign-shaped token, a closing word, a
+repeat. **Confident text Hamlet cannot read stops and claims nothing.** Those are
+different claims and they carry different sentences (§0.0). Dim text does not stop
+it at all, because a window of letters the decoder would not stand behind happens
+all evening on a fading band.
 
-`HM-OPEN-027` and `HM-OPEN-032` closed against it with their reasons. The coupling
-HM-OPEN-027 traced is gone — with the refining distinction in place, adoption
-produces three moves and one follow on the real capture, identical to adoption off
-— and HM-OPEN-032's own finding is what superseded the ruling, by handing the
-streaming estimator the shared fitter and removing the choice HM-DEC-116 was
-making.
+**A callsign-shaped verdict names no callsign** (HM-DEC-073), and a placeholder
+splits a token rather than welding two fragments into one — there is a test that
+feeds it `W1■AW` and asserts it is not read as the operator's own callsign coming
+back.
 
-## Phase 4 — scan results are click-and-go
+**And the tracker's own move is used, which the order specifically asked for.** A
+follow means the survey found keying at a pitch that is not the one it was reading,
+decided on three seconds of mark-length structure rather than on a classifier
+having enough letters, and it arrives sooner than text can. **Evidence and never a
+verdict**: on its own it stops the cycle without claiming an answer, and beside two
+confident characters it means what four would have meant alone. **A follow and
+never a refinement** (HM-DEC-123) — counting refinements would stop the cycle every
+time the survey preferred its neighbouring bin.
 
-**A list of stations is a report; the operator now gets a destination.** Each
-result carries a control that says where it will send the dial — `listen at 7.029
-MHz` — and pressing it tunes there and stops the scan.
+## Phase 4 — arming, stopping, the dead man
 
-**The order is the whole of it.** It stops the scan first and **waits for the
-scanner to put the dial back where the operator left it**, and only then does the
-tune go out, through `TuneTo` — the same path a spot card or a map dot uses. So
-what moves the dial to a result is the operator tuning rather than the scanner
-writing, every §0.2.1 exit route still restores, and the crash-safe note on disk is
-cleared by the scanner's own restore rather than by anything reaching around it.
-Without that wait the tune lands first and the restore then drags the dial off the
-station he just chose, which is §0.2.1 failing by way of the feature meant to
-serve it.
+**Arm is a distinct step from start and start is not offered until it has
+happened.** What the operator consents to is a transmission repeating under his
+callsign while he may not be watching, so consent is an act against displayed
+facts: the message, the frequency, the rounds and how many minutes that is,
+break-in, the power as a percentage and never a wattage (HM-DEC-082), and whether
+the radio has finished saying what it is set to. **What Hamlet has not read, it
+says it has not read**, in each of those lines separately.
 
-- **The row carries the frequency the dwell listened at**, never the bin a
-  candidate was ranked in. A candidate is a place the waterfall saw something; a
-  dwell is a place the dial sat and the decoder listened.
-- **The sureness pill's colour now follows its words.** It was green whatever it
-  said. Amber is the default and green is earned, because this is a row the
-  operator acts on and a confident-looking maybe costs him an evening (§0.0,
-  §0.6 — the words still carry it too).
-- **A callsign-shaped stop still names no callsign** (HM-DEC-073), unchanged and
-  still tested.
+**The stop is in the pinned strip beside the scanner's**, because a stop for a
+transmitter inside a widget is a stop the operator can lose while his callsign goes
+on calling. **Escape does the same thing from anywhere**, handled in the window,
+because the one keystroke that stops a transmitter has to work whatever has focus.
+A green line in the same strip says it is transmitting.
 
-Four tests: the frequency is the one heard on, tapping tunes and stops, a row with
-nowhere to go moves nothing, and the dim-versus-solid check now covers the colour.
+**The dead man re-reads break-in and transmit status from the radio before every
+round.** `RigStateMonitor.RefreshAsync` writes `RigValue.Unknown` for a read that
+came back empty *and* for one that threw because the port is closed, so one test —
+is the field known — covers a quiet radio and a pulled cable alike.
 
-## Phase 5 — a favourite carries a note
+**Mutually exclusive with the scanner, checked from both sides.** Refusing in one
+direction only leaves whichever the operator pressed second to win. The two ask
+each other rather than tracking each other, so a stale copy cannot let Hamlet
+transmit mid-tune.
 
-**The name says where and Hamlet derives that from the map. Why is a thing only
-the operator knows**, so this is the one part of a favourite that nothing derives,
-suggests or fills in (§0.0).
+**Two real faults were found by testing rather than by reading, and both are worth
+naming:**
 
-- **In the strip beside the name** (HM-DEC-070), inside the flexible column, so
-  however long it is **it cannot push the dropdowns out of shape**. One line, 80
-  characters, no returns: a favourite is a signpost rather than a logbook entry.
-- **There from the moment the star lights**, because a box somebody has to go and
-  find in a management window never gets written, **and editable afterwards** both
-  there and in the manage window, because a box that only appears at save time
-  gets left blank by somebody in a hurry.
-- **An empty note is the ordinary state and renders as nothing at all.** Clearing
-  one is allowed, unlike clearing a name — a favourite with no name is one nobody
-  can pick out of a list, and a favourite with no note is most of them.
-- A favourite written before notes existed still loads and has none, so there is
-  nothing to migrate (§6.1), and there is a test that says so.
+- **The dead man rejected a live radio.** Its first form asked whether the
+  reading's timestamp had advanced. Two reads inside one clock tick then read as
+  silence and stopped a perfectly working cycle — and the check duplicated one the
+  monitor already makes properly. A guard that fires on a working radio is not a
+  safer guard, it is a broken one.
+- **The dial-touched baseline swallowed the move that matters.** Seeded from the
+  first frequency event, the operator reaching for the dial during the first
+  transmission arrived as that first event and was consumed as "where the dial is".
+  The cycle ran to its round limit with the radio somewhere nobody had checked. It
+  is now seeded at arm time from the reading the cycle already requires to be known
+  and fresh.
 
-## Phase 6 — `tightfist-easy`, fixed
+**And one reporting fault.** An internal guard tripping calls the same `Stop` the
+operator's button calls, so testing that flag first reported that *he* had stopped
+a cycle the dial actually stopped. The cycle halted correctly either way; what was
+wrong was the record, and a record that names the wrong reason is worth nothing on
+the evening it is needed. The specific cause now wins.
 
-**The boundary was right and the centre was not.** Traced with the fit's own
-numbers printed at the moment the character was judged. The fixture's element gaps
-are 80 milliseconds and its character gaps 162; the gate measured the two gaps
-inside the first `S` at 85 and 75, which is right; the boundary was 89, which
-classifies every one of them correctly; and the element class **centre was 49**.
+## Phase 5 — every interlock, proved by breaking it
 
-```
-Toward(85, cut 89, centre 49) = 4 / 40  = 0.10
-Toward(75, cut 94, centre 55) = 19 / 39 = 0.49
-```
+Seventeen tests, each breaking exactly one thing and asserting exactly its own
+stop: break-in off at arm; break-in going off mid-cycle; transmit status stuck on;
+the PTT pressed while listening; the dial moved; a stale reading; an unanswered
+dead-man read; **the serial link failing outright mid-cycle**; the send itself
+refused; the `Populated` gate; the scanner running; the operator stopping it; a
+response detected; the round limit; and that the stop code goes out on every exit
+including the ordinary one.
 
-Confidence is measured from the boundary toward the centre, so a character whose
-pattern was `...` and whose elements were clean came back as a placeholder at 28.6
-decibels over the noise — and four seconds later, with the window full of this
-fist's own gaps, the same pattern read as `S` at 0.98.
+**The one HM-DEC-098 names specifically is there**: the read throws, which is what
+a closed port does, the cycle stops, and the stop code goes out on the way past
+where it reaches nothing quietly — because an abort that could fail is not an abort.
 
-**What dragged the centre down was the detector rather than the sender**: the
-rolling window still held gaps of 15, 20, 30 and 35 milliseconds from before the
-signal was acquired. Twenty-five milliseconds is the shortest dit this radio can
-send — `CwToneSurvey.ShortestDitMs`, forty-eight words a minute, the fastest its
-own keyer goes — so nothing below it is a silence anybody left. They are dropped
-before the fit rather than trimmed after it, because they spoil the class centres
-and not merely their edges.
+**And the tripwire.** Every path above runs to completion and the test asserts the
+rig underneath never had `SendCwAsync` called on it at all, so no test in the suite
+can key anything even if the sender is later rewired.
 
-**The corpus was re-decoded around it.** Six of twenty-four recordings move: the
-easy-tier bar goes green, `fast-working` gets an opening character back, two edge
-tiers shuffle their move counts while decoding nothing either way, and two
-working-tier transcripts shuffle inside text unreadable either way. HM-DEC-114
-makes the easy tier pass-or-fail and the working tiers a statement about
-degradation, so nothing any test asserts moved except the one that was meant to.
+## Phase 6 — HM-DEC-129 recorded
+
+`prosigns-easy` is out of `TheEasyTierIsReadWhole`'s theory, **with the whole reason
+on the test's own face** so nobody reads it as a bar being lowered: the bar was
+ruled for a loud clean signal read wrongly, and a message whose opening is gone
+before the detector has found it is a different claim — one **no real station
+produces**, because a CQ repeats.
+
+**The fixture is not edited.** It still asserts `TheProsignsArriveAsProsigns` and
+its edge and working tiers, and it passes all of them. HM-OPEN-033 is marked
+scheduled rather than closed, with a paragraph saying that it now has **no red test
+behind it while remaining the largest single defect in the decoder** — which is the
+kind that stays unfixed for a year. HM-OPEN-034, the 350 hertz hole, is noted
+beside it.
 
 # 2. What Tim should expect
 
 - **Build succeeds, no warnings.**
-- **1845 tests, 3 failing.** 1423 of 1425 in the engine, 419 of 420 in the app.
-  Thirteen tests are new.
-- **Five failures become three.** `ASignalAtTheWrongPitchIsStillFound(400)` and
-  `TheEasyTierIsReadWhole(tightfist-easy)` are both green.
-- **The failing three, named:**
-  - `ClearingTheTranscriptLeavesTheDecoderAlone` — reads `■ DE W1AW K` against
-    `CQ DE W1AW K`. It would pass with HM-DEC-116 shipped, which HM-DEC-128 has
-    now settled it will not be.
-  - `TheBulletinDecodesToItsAnswerKey` — the long-standing bar on a real
-    recording, unmoved this session at `NL DOT NET ■I ECH STAAION HAND■ AHIS
-    MESAGE P`, 36 characters against 47.
-  - `TheEasyTierIsReadWhole(prosigns-easy)` — reads `CALLARSK` against
-    `BTN0CALLARSK`. The prosigns themselves are right and the opening four
-    characters are lost to acquisition on the one easy-tier fixture that cannot
-    carry a run-up.
-- **What will look wrong and is not.** `ASignalAtTheWrongPitchIsStillFound` has a
-  new name and a band in it; that is HM-DEC-127's second half and the assertion is
-  unchanged. The scan panel's sureness pill is amber more often than it was green
-  before — that is the confidence being drawn honestly rather than a new fault.
-- **What to look at on COM3.** Phases 4 and 5 are the two you verify at the
-  screen. Run a scan, let it list a few dwells, and press `listen at …` on one:
-  the dial should end on that frequency with the scan stopped and the status line
-  saying so. Then star a frequency and type a line in the box that appears under
-  the favourite's name; it should still be there next time you tune back, and in
-  Radio → Manage favourites.
-- **Nothing is tuned to any recording.** No decoder parameter was moved to suit
-  `cw-2026-08-17-013347` or `cw-2026-08-18-004507`.
-- **Seven commits, pushed to `main`.** Nothing local, no branches. The first
-  carries the uncommitted `CLAUDE.md` and `CLEANUP_BRIEF.md` that were in the
-  working tree when the session opened.
+- **1902 tests, 2 failing.** 1469 of 1470 in the engine, 431 of 432 in the app.
+  **Fifty-seven tests are new**, and thirty of those are the safety suite and the
+  answer classifier.
+- **Three failures become two**, and both that remain are the settled positions
+  the order named as not-work: `ClearingTheTranscriptLeavesTheDecoderAlone` and
+  `TheBulletinDecodesToItsAnswerKey`. **There is nothing red in the transmit path.**
+- **What will look wrong and is not.** A new widget appears in the tray, "Call CQ
+  on a cycle", and it opens with an empty message box and every fact unread until a
+  radio is connected — that is the design, not a broken panel. `prosigns-easy` no
+  longer appears in the easy-tier theory; that is HM-DEC-129 and the reason is on
+  the test.
+- **What to do on COM3, into a dummy load.** This is the part no test can stand in
+  for and HM-DEC-098 requires it before the antenna question is even asked:
+  1. Connect, put the radio in CW, **check the dummy load is on the antenna
+     socket**, and open the new panel.
+  2. Type your call and read the five fact lines. Turn break-in off and confirm the
+     panel says so and will not arm.
+  3. Break-in on, arm, start, and watch two or three rounds go out and the log fill.
+  4. Then break it: press Escape mid-cycle; touch the dial mid-cycle; press the
+     PTT during a listening window; turn break-in off between rounds; and **pull
+     the USB cable mid-cycle**. Each should stop, and each should say which of
+     those it was.
+- **Nothing reached an antenna and nothing in this session transmitted at all.**
+- **One flake sighting recorded honestly and incompletely.** A single combined run
+  reported five app failures where every run either side reported one; four
+  app-only runs and three further combined runs all gave the steady figure. **The
+  grep in use at that moment printed summary lines only, so which four they were is
+  not known** — recorded in HM-OPEN-024 as an unnamed sighting rather than guessed
+  at.
+- **Five commits, pushed to `main`.** Nothing local, no branches. The first carries
+  the uncommitted `CLAUDE.md` and `CLEANUP_BRIEF.md` that were in the working tree.
 
 # 3. What we should do next
 
-- The auto-CQ work order, which HM-DEC-098 has been waiting on and which this
-  order deliberately built nothing toward.
-- `prosigns-easy`, the last bar failure. It is acquisition on a fixture that
-  cannot take the ruled run-up, and section 4 has the shape of the question.
-- Re-measure the bulletin after either. It has moved on three of the last four
-  sessions and did not move on this one.
-- HM-OPEN-034, the 350 hertz hole, whenever the survey's edges are next opened.
+- **Watch the interlocks fire into the load**, which is section 2's list. Nothing
+  else in this feature should move until that has happened, because it is the
+  precondition HM-DEC-098 sets on the antenna question.
+- Rule on section 4 item one, the antenna question itself, but only afterwards.
+- Rule on section 4 item two, the two-message call, which is small and blocks
+  anybody whose callsign is longer than the test case.
+- HM-OPEN-033, the cold-start bin choice, as its own order. It has no red test
+  behind it now and it is still the largest defect in the decoder.
 
 # 4. What's blocking us
 
 ---
 date: 2026-08-18
-refs: CLAUDE.md §0.0, §12.1, §12.5; HM-DEC-103; HM-DEC-114; HM-OPEN-031; HM-OPEN-033
+refs: CLAUDE.md §0.2; HM-DEC-098; HM-DEC-008
 ---
 
-**`prosigns-easy` gets something to acquire on, or HM-DEC-114's bar stops applying
-to a fixture that cannot have one.**
+**Whether an attended automatic cycle may reach an antenna, taken after every
+interlock has been watched to fire into the dummy load.**
 
-It is the last easy-tier failure and it is not a decoder fault in the ordinary
-sense. Its first character arrives at 7.44 seconds on a message that runs about
-four and a half, so `<BT> N0` is gone before the detector has found the signal.
-The prosigns themselves read correctly — `CALLARSK` against `BTN0CALLARSK` — since
-HM-DEC-124 fixed the generator's caret.
+This is not a question this session may answer and it is not one this order
+answered. It is here because the work HM-DEC-098 made the precondition is now
+done and the precondition is therefore live: the cycle exists, every interlock in
+phase 4 has a test that breaks something and watches exactly that stop come back,
+and **the link-pulled-mid-cycle path exists and is tested before you pull the
+cable rather than after**.
 
-**Every other easy-tier fixture is given a `VVV` run-up for exactly this**
-(HM-DEC-103), and this one cannot take it: measured again this session, with the
-run-up in front the tracker makes two moves, **settles at 675 hertz on a fixture
-sitting at 615**, and emits nothing at all. That is HM-OPEN-033's third sighting of
-the survey choosing a bin that holds no station, and phase 1's floor does not touch
-it because nothing has been confirmed yet when it happens.
+What is still missing is the only evidence that counts. **Reasoning about an
+interlock is not seeing it work**, and seventeen passing tests against a fake that
+keys nothing are reasoning with better bookkeeping. §0.2's first sentence — no
+unattended transmission — stands unamended, and nothing in this order argues for
+amending it.
 
-Three directions, and the choice is yours:
+What the ruling would need, and what section 2 asks you to produce: each of Escape,
+the dial, the PTT, break-in going off, and the cable pulled, watched into the load,
+each producing its own sentence rather than a generic stop. If any of them does not,
+that is a finding about this code and not a reason to loosen anything.
 
-- **Give it a different run-up.** Something whose mark lengths do not smear
-  against a prosign's — a callsign, or `TEST`, rather than `VVV`. It is the
-  smallest change and it is still a fixture edit, which §12.5 says a session may
-  not make alone to turn a test green.
-- **Fix the cold-start bin choice**, which would close HM-OPEN-033 entirely and is
-  the largest of the three. The floor built this session protects a station
-  already being read; nothing protects the first choice.
-- **Say the bar does not apply here.** HM-DEC-114 made the easy tier pass-or-fail
-  on the reasoning that a loud clean signal read wrongly is a defect. A message
-  too short for the detector to acquire on is a different claim, and this is the
-  one fixture where the ruled remedy is unavailable.
+Rejected: recording anything about the antenna under §12.1. That section puts
+anything touching §0.2 with you without exception, and this is the centre of it.
 
-Rejected: editing the fixture on this session's authority, for the reason above.
-Rejected: leaving it unattributed, which is what "the last bar failure" has meant
-for two sessions.
+---
+date: 2026-08-18
+refs: Full Manual p. 19-11; HM-DEC-071; CLAUDE.md §4
+---
+
+**A callsign too long for one keyer message: two messages, a shorter call, or a
+refusal that stands.**
+
+The keyer takes thirty characters in one command 17 message. `CQ CQ DE KC3QIS
+KC3QIS K` is 24, so your own call fits — with six characters of headroom. A longer
+call, or a third `CQ`, or `PSE K` on the end, does not.
+
+**Today it is refused at edit time and says its own character count**, which is the
+safe answer and may not be the right one. The single-send path already splits a
+long message at the spaces (`CwMessage.Split`), so the machinery exists; what does
+not exist is an answer to what splitting means for a *repeating* call. Handing the
+keyer two messages back to back puts a gap of unknown length in the middle of every
+round — unknown because the second only goes out when the radio has taken the
+first, and Hamlet does not know how long the radio will hold it. A CQ with a
+ragged pause in the middle of it is a worse transmission than a refusal.
+
+Three ways, and the choice is yours:
+
+- **Refuse, as now.** Costs nothing, and puts a ceiling on the message that some
+  operators cannot get under.
+- **Split, and measure the seam into the dummy load** before believing anything
+  about it. It is the only one of the three that produces evidence.
+- **Send the second message only after the first has finished keying**, timed from
+  `CwDuration` as the cycle already times its listening window. Predictable, and it
+  makes Hamlet responsible for a gap in the middle of a transmission, which is a
+  smaller version of the reason host-timed keying is rejected outright.
+
+Rejected: choosing on this session's authority. It changes what goes out under a
+callsign, which §12.1 puts with you, and the safe answer is already in place so
+nothing is blocked meanwhile.
