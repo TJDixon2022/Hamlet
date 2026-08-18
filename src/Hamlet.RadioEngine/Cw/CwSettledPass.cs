@@ -188,6 +188,9 @@ public sealed class CwSettledPass
     private readonly double[] _gaps;
     private readonly bool[] _markTruncated;
     private readonly bool[] _markAtEdge;
+
+    /// <summary>How much silence the window saw after its last mark, in ms.</summary>
+    private double _tailSilenceMs;
     private readonly long[] _markStart;
     private readonly long[] _markEnd;
 
@@ -603,6 +606,7 @@ public sealed class CwSettledPass
         var span = last - first;
         var count = 0;
         var i = 0;
+        var lastMarkHop = 0;
         var border = Math.Max(1, (int)Math.Round(TruncationBorderSeconds / _hopSeconds));
 
         while (i < span && count < _marks.Length)
@@ -648,6 +652,7 @@ public sealed class CwSettledPass
                 truncated = _blocked[Index(first + k)];
             }
 
+            lastMarkHop = i;
             _marks[count] = (i - start) * _hopSeconds * 1000;
             _markTruncated[count] = truncated;
             _markAtEdge[count] = atEdge;
@@ -665,6 +670,13 @@ public sealed class CwSettledPass
 
             count++;
         }
+
+        // **HOW MUCH SILENCE THE WINDOW SAW AFTER ITS LAST MARK.** Without this
+        // the gap after the final mark was infinity, which is a claim that the
+        // character certainly ended there, and the window has no business making
+        // it: the window is a view onto a stream, so silence that has not been
+        // observed yet is silence nobody has measured (§0.0).
+        _tailSilenceMs = (span - lastMarkHop) * _hopSeconds * 1000;
 
         return count;
     }
@@ -894,6 +906,52 @@ public sealed class CwSettledPass
 
     /// <summary>Turn the measured runs into characters.</summary>
     /// <returns>The sample the last emitted character ended on.</returns>
+    /// <summary>
+    /// How far a gap sat from the boundary it was judged against (HM-DEC-108).
+    /// </summary>
+    /// <param name="gapMs">The gap, in the same units as the cut.</param>
+    /// <param name="elementCut">
+    /// The boundary between a gap inside a character and a gap between two.
+    /// </param>
+    /// <returns>
+    /// Nought where the gap landed on the boundary, one where it landed on
+    /// either textbook spacing, and in between for everything else.
+    /// </returns>
+    /// <remarks>
+    /// <para>**THE SAME SHAPE AS THE MARK MEASUREMENT, DELIBERATELY.** That one
+    /// asks how far a mark sat from the dit-or-dah decision, on a scale where
+    /// landing on the decision is nothing and landing on a textbook length is
+    /// everything. This asks the same question of the gap that divided one
+    /// character from the next.</para>
+    /// <para>The scale is the textbook one-to-three: a gap inside a character is
+    /// one dit and a gap between two is three, so their geometric midpoint sits
+    /// a factor of the square root of three from each, and that factor is what
+    /// full marks means here. The centre is the measured cut rather than the
+    /// textbook midpoint, for the same reason the mark measurement centres on
+    /// the measured dit and dah: the decision that was actually made is the one
+    /// worth scoring the distance from.</para>
+    /// <para>**A GAP NOBODY DECIDED ANYTHING ABOUT SCORES ONE.** The last
+    /// character in a window is closed by running out of audio rather than by a
+    /// judgement, and there is no evidence against it to record. Nothing here
+    /// may raise a score (§0.0); it can only find one more way to lower one.
+    /// </para>
+    /// </remarks>
+    public static double BoundaryMargin(double gapMs, double elementCut)
+    {
+        if (elementCut <= 0
+            || gapMs <= 0
+            || double.IsNaN(gapMs)
+            || double.IsInfinity(gapMs)
+            || gapMs >= double.MaxValue)
+        {
+            return 1.0;
+        }
+
+        var scale = Math.Log(Math.Sqrt(3.0));
+
+        return Math.Min(1.0, Math.Abs(Math.Log(gapMs / elementCut)) / scale);
+    }
+
     private long Emit(
         int count, double ditMs, double dahMs, double contrastDb,
         long after, bool drain, List<SettledCharacter> into)
@@ -908,6 +966,25 @@ public sealed class CwSettledPass
         var worstTiming = 1.0;
         var tainted = false;
         long began = 0;
+
+        // **THE THIRD MEASUREMENT** (HM-DEC-108). How far the gap that ended a
+        // character sat from the boundary it was judged against. The two
+        // existing scores are both about the elements, and the fault they could
+        // not see is not about the elements at all: where the pass divides
+        // characters in the wrong place a lone dah comes out as T and a lone dit
+        // as E, with every element clean and the timing margin of a dah that
+        // really is a dah equal to one.
+        //
+        // **BOTH BOUNDARIES OF A CHARACTER COUNT, NOT ONLY THE ONE THAT CLOSED
+        // IT**, and that is a reading of the ruling rather than its literal
+        // words. One gap misjudged produces two characters: the half in front of
+        // it and the half behind. Scoring only the closing gap marks the first
+        // half and leaves the second at full strength, and the second half is
+        // the lone dah — it is the stranger the ruling names. Measured both ways
+        // and the numbers are in OUTPUT.md.
+        var openingMargin = 1.0;
+        var pendingOpening = 1.0;
+        var closingMargin = 1.0;
 
         var readThrough = after;
 
@@ -932,6 +1009,8 @@ public sealed class CwSettledPass
                 began = _markStart[i];
                 tainted = false;
                 worstTiming = 1.0;
+                openingMargin = pendingOpening;
+                closingMargin = 1.0;
             }
 
             if (_markTruncated[i])
@@ -950,14 +1029,34 @@ public sealed class CwSettledPass
 
             worstTiming = Math.Min(worstTiming, margin);
 
-            var gap = i < count - 1 ? _gaps[i] : double.MaxValue;
+            var gap = i < count - 1 ? _gaps[i] : _tailSilenceMs;
 
             if (gap <= elementCut)
             {
                 continue;
             }
 
+            // **A CHARACTER THE WINDOW DID NOT SEE THE END OF IS NOT FINISHED
+            // BEING OBSERVED**, and this is the fault the boundary measurement
+            // was reaching for (HM-DEC-108). The gap after the last mark used to
+            // be infinity, so whatever pattern had accumulated was flushed as a
+            // whole character however little of it the window held. Every
+            // stranger measured on these fixtures is that: the leading dashes of
+            // the character that follows, emitted at full strength, with the
+            // real character arriving whole in the next window right behind it.
+            //
+            // The mark-at-the-edge rule already holds a mark the key was still
+            // down for. This is the same rule for the silence afterwards, which
+            // nothing was watching, and the remedy is phase 4's: hold it for the
+            // next window where it sits in the interior, rather than publish it.
+            if (i == count - 1 && !drain && gap <= characterCut)
+            {
+                break;
+            }
+
+            closingMargin = BoundaryMargin(gap, elementCut);
             Flush(_markEnd[i]);
+            pendingOpening = closingMargin;
 
             if (gap > characterCut && gap < double.MaxValue && _markEnd[i] > after)
             {
@@ -976,7 +1075,12 @@ public sealed class CwSettledPass
 
             var pattern = _pattern.ToString();
             var text = MorseAlphabet.Lookup(pattern);
-            var score = tainted ? 0 : Math.Min(worstTiming, signal);
+            // **THE WORST OF THE THREE, NEVER THE AVERAGE**, which is what the
+            // existing two already do and for the same reason: a character can
+            // fail any one of these on its own and passing the other two does
+            // not excuse it (HM-DEC-048, HM-DEC-108).
+            var boundary = Math.Min(openingMargin, closingMargin);
+            var score = tainted ? 0 : Math.Min(Math.Min(worstTiming, signal), boundary);
 
             if (endedAt <= after)
             {

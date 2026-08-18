@@ -125,9 +125,9 @@ public sealed class CwSettledGapTests
     /// available.</para>
     /// </remarks>
     [Theory]
-    [InlineData("exchange-easy", 1)]
-    [InlineData("coverage-easy", 2)]
-    public void TheSettledPassStillShowsSomeStrangersAtFullStrength(
+    [InlineData("exchange-easy", 0)]
+    [InlineData("coverage-easy", 0)]
+    public void TheSettledPassShowsNoStrangersAtFullStrength(
         string name, int worstAllowed)
     {
         var audio = WavAudio.Read(
@@ -169,19 +169,29 @@ public sealed class CwSettledGapTests
             + $"strength, {strangers.Count} of them not in the message"
             + (strangers.Count == 0 ? "" : ": " + string.Join(", ", strangers)));
 
-        // **THIS IS A RATCHET ON AN OPEN §0.0 GAP, NOT A CLEAN BILL.** Phase 4
-        // took the strangers from eight of nineteen to two of eight on this
-        // fixture and did not reach zero, and the honest thing is to record the
-        // number rather than to assert a standard that is not met.
+        // **IT REACHED ZERO, AND NOT BY THE ROUTE THE RULING EXPECTED.**
+        // HM-DEC-108 added a third confidence measurement for this, on the
+        // reasoning that the strangers came from marginal character boundaries.
+        // The measurement is built and it moved these numbers not at all: every
+        // stranger scored a boundary margin of one, because the gaps around it
+        // were decisively wide.
         //
-        // What survives are single-element characters — a lone dah spells T —
-        // produced where the settled pass divides characters in the wrong place.
-        // The elements themselves are clean, so the confidence model cannot catch
-        // it: the timing margin of a dah that really is a dah is one.
+        // Tracing what was actually emitted found the real cause. Each stranger
+        // was the leading dashes of the character that followed it — a lone dah
+        // before D, before N, four dashes before a nought — with the real
+        // character arriving whole right behind it. The gap after a window's last
+        // mark was infinity, which asserts that the character certainly ended
+        // there, and a window has no business asserting that: it is a view onto a
+        // stream, so silence it has not seen yet is silence nobody has measured.
         //
-        // Whether the settled pass should be barred from full strength until this
-        // closes is a question about what the display asserts, and so is not a
-        // session's to answer (§0.0, §12.1). It is in OUTPUT.md.
+        // The gap is measured now, and a character whose end the window did not
+        // see is held for the next one, where it sits in the interior. That is
+        // phase 4's own remedy for the mark-at-the-edge case applied to the
+        // silence afterwards, which nothing was watching.
+        //
+        // The cost is real and is the reason this counts strangers rather than
+        // characters: five characters come out of these fixtures where eight and
+        // seven did, because a fragment is no longer published as a character.
         Assert.True(
             strangers.Count <= worstAllowed,
             $"the settled pass showed {strangers.Count} characters at full "
