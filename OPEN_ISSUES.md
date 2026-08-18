@@ -1819,7 +1819,7 @@ status: open
 owner: tim
 raised: 2026-08-18
 severity: slows
-blocks: TheEasyTierIsReadWhole(prosigns-easy), TheEasyTierIsReadWhole(tightfist-easy), ASignalAtTheWrongPitchIsStillFound(400)
+blocks: nothing red any more, and it is still the largest thing left
 refs: HM-DEC-114, HM-DEC-095, HM-OPEN-028, HM-OPEN-031, src/Hamlet.RadioEngine/Cw/CwToneSurvey.cs
 ---
 
@@ -1876,6 +1876,25 @@ share. It is in `OUTPUT.md` section 4.
 Neither bar failure was fixed here. Both are attributed, which is what the work
 order asked for where a fix is not clear, and the shared mechanism is named rather
 than repaired on the way past (§12.6).
+
+---
+
+**SCHEDULED AS ITS OWN WORK ORDER, 2026-08-18, AND NOTHING IS RED FOR IT ANY
+MORE** (HM-DEC-129). `tightfist-easy` was fixed by HM-OPEN-035 — the fault there
+was the confidence scale rather than the survey — and `prosigns-easy` no longer
+asserts HM-DEC-114's bar, because a message whose opening is gone before the
+detector has found it is a different claim from a loud clean signal read wrongly,
+and **no real station produces it**, because a CQ repeats. The 400 hertz case was
+closed by HM-DEC-127's floor.
+
+**That leaves this entry with no red test behind it and it is still the largest
+single defect in the decoder.** Three sightings stand: the 400 hertz image, the
+prosigns fixture settling at 675 on a 615 signal, and the two-station recording
+taking three moves from cold. HM-DEC-127's floor protects a station already
+confirmed; **nothing protects the first choice.** A defect with nothing red
+pointing at it is the kind that stays unfixed for a year, which is the reason this
+paragraph exists.
+
 
 ---
 id: HM-OPEN-034
