@@ -2054,3 +2054,40 @@ is wrong here is not the severity but the `blocks:` line underneath it, which
 names work that has been done — and whether either item still has a live blocker
 under a different name is a reading of two long entries that deserves its own
 sitting rather than a paragraph at the end of an unrelated session.
+
+---
+id: HM-OPEN-038
+status: open
+owner: tim
+raised: 2026-08-18
+severity: none
+refs: CLAUDE.md §4, §13.4, §12.4; HM-DEC-074; HM-DEC-082; HM-DEC-133
+---
+
+The transmitter's power output is not stated anywhere in `CLAUDE.md`, and §13.4's
+hazard line does not supply it.
+
+Found while writing that line. §4's header calls the radio an "HF/50 MHz
+transceiver" and names no wattage; no row in its table cites a page for one; and
+`100 W` appears nowhere in the file. **The figure is genuinely absent rather than
+merely uncited.**
+
+**There is a good reason it never arrived.** HM-DEC-074 and HM-DEC-082 both rule
+that Hamlet reports power as a percentage of the radio's own range and **never as
+a wattage** — because it cannot know what a percentage means in watts at this
+frequency into this load. So no part of the application has ever needed the
+number, and §4 records what the application needs.
+
+**Why it is worth having now, and only now.** §0.2 is about what this software can
+do to the physical world, and "keys a transmitter" and "keys a hundred-watt
+transmitter" are different warnings to somebody who has just arrived. The hazard
+line currently says the first.
+
+What would close it: the page in Full Manual `A7292-4EX-6` that states the RF
+output, added to §4 as a cited row, after which §13.4 can name it. **Not filled in
+from general knowledge** — §4's whole discipline is that a figure comes with the
+page it was read from, and a hazard line is the worst place in this file to break
+that (§12.4).
+
+Severity **none**: nothing is blocked, no ruling depends on it, and the hazard is
+correctly stated without it.

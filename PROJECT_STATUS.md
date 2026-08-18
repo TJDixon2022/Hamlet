@@ -1,9 +1,9 @@
 STATE: COMPLETED
 PHASE: —
 BALL: tim
-NEXT_PASTE: none
-UPDATED: 2026-08-18T16:22:00-04:00
-NOTE: Annunciator reset done; auto-CQ waits on a dummy-load evening before the antenna question
+NEXT_PASTE: OUTPUT.md -> Claude Web
+UPDATED: 2026-08-18T16:31:30-04:00
+NOTE: HAZARD in §13.4; ratings stay in §4; power output uncited and marked HM-OPEN-038
 
 ---
 
