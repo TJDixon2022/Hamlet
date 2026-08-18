@@ -22,5 +22,5 @@ qsb           none
 preamble      none
 
 peak          -12.5 dBFS
-reference    75% of the message  [EV N0CALL IR <SK>]
+reference    100% of the message  [<BT> N0CALL <AR> <SK>]
 scoredBytes  256044

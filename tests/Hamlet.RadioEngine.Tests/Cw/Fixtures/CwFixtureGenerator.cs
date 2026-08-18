@@ -288,18 +288,36 @@ public static class CwFixtureGenerator
 
             var firstCharacter = true;
 
-            var join = false;
+            var joining = false;
 
             foreach (var character in word)
             {
-                // **A PROSIGN IS ONE CHARACTER SENT AS TWO LETTERS RUN
+                // **A PROSIGN IS ONE CHARACTER SENT AS SEVERAL LETTERS RUN
                 // TOGETHER**, which is what the caret means here and what `^`
                 // means to the radio's own keyer (Full Manual p. 19-11). Sending
                 // `AR` with a character gap in it is sending A and R, which is
                 // not the same thing at all.
+                //
+                // **SO THE CARET CHANGES ONE THING AND NOTHING ELSE: WHAT
+                // SEPARATES THE LETTERS** (HM-DEC-124). It used to have a branch
+                // of its own, and that branch opened by adding a gap edge on the
+                // assumption that there was a mark in progress to separate from.
+                // At the head of a word there is not — the word gap edge, or the
+                // message start, has already put the key down — so that edge
+                // closed a mark that never opened. A phantom element gap read as
+                // a dit, and **every edge after it on the opposite parity**, so
+                // the dah that should have opened `BT` became a three hundred
+                // millisecond gap and the element gaps became marks. `^BT` came
+                // out as `EV` and `^AR` as `IR`, which is what both this
+                // repository's decoder and the reference implementation read off
+                // the audio, because it is what the audio said.
+                //
+                // An even-length prosign survived it, because the branch's own
+                // trailing-gap removal restored the parity its opening edge
+                // broke, which is why it looked intermittent for months.
                 if (character == '^')
                 {
-                    join = true;
+                    joining = true;
                     continue;
                 }
 
@@ -310,33 +328,12 @@ public static class CwFixtureGenerator
                     continue;
                 }
 
-                if (join)
-                {
-                    join = false;
-                    at += recipe.ElementGapMilliseconds / 1000.0;
-                    edges.Add(at);
-
-                    foreach (var element in pattern)
-                    {
-                        var joined = element == '.'
-                            ? recipe.DitMilliseconds
-                            : recipe.DahMilliseconds;
-
-                        at += joined / 1000.0;
-                        edges.Add(at);
-                        at += recipe.ElementGapMilliseconds / 1000.0;
-                        edges.Add(at);
-                    }
-
-                    // The trailing gap belongs to whatever comes next.
-                    edges.RemoveAt(edges.Count - 1);
-                    at -= recipe.ElementGapMilliseconds / 1000.0;
-                    continue;
-                }
-
                 if (!firstCharacter)
                 {
-                    at += recipe.CharacterGapMilliseconds / 1000.0;
+                    at += (joining
+                        ? recipe.ElementGapMilliseconds
+                        : recipe.CharacterGapMilliseconds) / 1000.0;
+
                     edges.Add(at);
                 }
 

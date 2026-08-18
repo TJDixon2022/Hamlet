@@ -1306,13 +1306,29 @@ because a switch usually does mean a different station. Both are Tim's.
 
 ---
 id: HM-OPEN-029
-status: open
-owner: tim
+status: closed
+owner: claude
 raised: 2026-08-18
+closed: 2026-08-18
 severity: slows
 blocks: TheEasyTierIsReadWhole(prosigns-easy), TheEasyTierIsReadWhole(exchange-easy)
-refs: CLAUDE.md §12.5; HM-DEC-101; tests/Hamlet.RadioEngine.Tests/Cw/Fixtures/CwFixtureGenerator.cs
+refs: CLAUDE.md §12.5; HM-DEC-101; HM-DEC-124; HM-OPEN-031; tests/Hamlet.RadioEngine.Tests/Cw/Fixtures/CwFixtureGenerator.cs
 ---
+
+**Closed 2026-08-18 by HM-DEC-124.** The caret's separate branch is gone: the
+caret now changes one thing and nothing else, which gap separates the letters,
+so there is no opening edge to break the parity. The three prosign fixtures were
+regenerated and HM-DEC-101's gate re-run over the whole set — **`prosigns-easy`
+goes from 75% to 100% and the reference now reads `<BT> N0CALL <AR> <SK>` where
+it read `EV N0CALL IR <SK>`**, which is the confirmation rather than a
+coincidence. `prosigns-working` goes from 75% to 83%. Nothing else moved and no
+fixture is held out.
+
+**`exchange-easy` was re-checked after the fix and it is not the same defect.**
+That fixture contains no caret, the generator was measured to render it exactly,
+and the reference reads it at 100%. Hamlet reads `DE` as `B`, which is a
+character gap being read as an element gap: HM-OPEN-031.
+
 
 **Hamlet reads `IR` where `AR` was sent because the fixture generator sent `IR`.**
 The caret that runs two letters together emits an unpaired key edge when the
@@ -1446,3 +1462,53 @@ are different windows. Three directions, all Tim's:
 
 Nothing was shipped. `CwAcquisitionWindowTests` pins the four fast-end figures and
 the slow end so the next attempt is judged against a number.
+
+---
+id: HM-OPEN-031
+status: open
+owner: claude
+raised: 2026-08-18
+severity: slows
+blocks: TheEasyTierIsReadWhole(exchange-easy), TheEasyTierIsReadWhole(prosigns-easy)
+refs: HM-DEC-114, HM-DEC-115, HM-DEC-124, HM-OPEN-029, tests/fixtures/cw/receiver
+---
+
+Two easy-tier fixtures the reference reads whole, and Hamlet does not. Both are
+decoder faults with the fixture proved sound, which is what HM-DEC-114 exists to
+surface.
+
+**`exchange-easy`: Hamlet reads `DE` as `B`.** `D` is `-..` and `E` is `.`, so
+`-...` is the two of them with the character gap between them read as an element
+gap. The fixture is textbook spacing at twelve words a minute — element gap 100
+ms, character gap 300 — and the reference reads the whole message. Measured
+across a sweep of speeds and ratios it is not an edge case: **the same
+substitution appears at 10, 12, 15, 18, 20, 22, 25 and 30 words a minute and from
+eighteen decibels down to three**, which is the whole readable range. It is the
+one error standing between the easy tier and HM-DEC-114's bar.
+
+Two candidates, neither confirmed. `E` is a single dit, so `DE` is the shortest
+character in the alphabet arriving immediately after a four-element one, and a
+gap classifier fitted over a rolling window has very few character gaps to learn
+from that early in a message. Or the boundary itself is misplaced: HM-DEC-115
+fits the cuts by clustering the gaps, and where a message's gaps really are two
+clean heaps at 100 and 300 the cut should be trivial, so a cut that still lands
+above 300 says the fit is being pulled by something else.
+
+**`prosigns-easy`: the opening `BT N0` is lost to acquisition.** With the caret
+fixed the prosigns themselves read correctly — `CALLARSK` against `BTN0CALLARSK`
+— so what is left is the four characters before the detector has found the
+signal. Every other easy-tier fixture carries the ruled run-up for exactly this
+(HM-DEC-103) and this one may not.
+
+**And the run-up was re-tested after the caret fix rather than taken on trust.**
+The recorded reason for excluding it was that `VVV` in front of a prosign gives
+the mark-length clustering one smear rather than two groups, and that reason no
+longer holds: a correctly rendered `^BT` is `-...-`, whose marks are the same two
+lengths as `VVV`. Measured anyway, with the run-up in place: **the reference
+reads the fixture at 100% and Hamlet emits a single placeholder.** So the
+exclusion stands, and what stands behind it has changed from a fixture property
+to a decoder one — a loud clean signal the reference reads whole and Hamlet
+collapses on entirely.
+
+Not chased further, per the work order. Both are named here rather than repaired
+on the way past (§12.6).
