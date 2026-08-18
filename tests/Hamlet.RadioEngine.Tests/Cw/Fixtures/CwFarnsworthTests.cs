@@ -214,6 +214,17 @@ public sealed class CwFarnsworthTests
     /// </list>
     /// <para>Every one of those is character-level. Nothing was tuned to this
     /// recording: a decoder fitted to one capture has learned one station.</para>
+    /// <para>**MEASURED A FOURTH TIME 2026-08-18, AFTER THE RETUNE DISTINCTION,
+    /// AND IT MOVED AGAIN**: `NL DOT NET ■I ECH STAAION HAND■ AHIS MESAGE P`.
+    /// Aligned against the key rather than counted, **28 correct becomes 30**, of
+    /// 44 characters sent, with one invented either way and one more wrong. What
+    /// came back is the `D` of `DOT`, which had been lost since the recording was
+    /// committed, and what arrived with it is `NL` at the head where nothing was
+    /// sent. The cause is HM-DEC-123: two of this capture's three tracker moves
+    /// are the survey settling between 500 and 525 hertz on one station, and the
+    /// settled window is no longer thrown away for them.</para>
+    /// <para>**`T` IS STILL READ AS `A` IN `STATION` AND IN `THIS`**, unmoved by
+    /// any of the four measurements. Nothing here was tuned to this recording.</para>
     /// <para>**AND MEASURED A THIRD TIME 2026-08-18, AFTER THE CARET FIX AND
     /// AGAINST A FIXTURE SET THE REFERENCE NOW READS WHOLE, STILL 36 OF 47**,
     /// character for character: `JJ AOT NET ■I ECH STAAION HAND■ AHIS MESAGE P`.
