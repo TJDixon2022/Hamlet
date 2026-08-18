@@ -1118,6 +1118,14 @@ thread and no failure has been seen outside a parallel test run.
 **Not chased further on purpose** (§12.6). It surfaced while running the
 scanner end to end and is unrelated to that work.
 
+**A second one, seen once, 2026-08-18.** `TheStopFrameIsCommand17CarryingFf`
+failed in one full run and passed alone and in the two full runs either side of
+it. It shares nothing with the band list, so what these two have in common is
+only that both are intermittent and both appear under xunit's parallel
+collections. Named and left (§12.6): one occurrence is not a diagnosis, and a
+transmit test that fails intermittently is worth knowing about before it fails on
+an evening that matters.
+
 ---
 id: HM-OPEN-025
 status: open
