@@ -1342,10 +1342,45 @@ public partial class MainWindowViewModel : ObservableObject
 
     /// <summary>How many times the second pass disagreed, in words.</summary>
     public string RevisionsText
-        => RevisionCount == 0
-            ? ""
-            : $"the second pass has changed its mind about {RevisionCount} "
-              + $"character{(RevisionCount == 1 ? "" : "s")}";
+    {
+        get
+        {
+            if (RevisionCount == 0)
+            {
+                return "";
+            }
+
+            // **A COUNT WITH NO DENOMINATOR IS NOT A MEASUREMENT.** "The second
+            // pass has changed its mind about 27 characters" told nobody
+            // whether 27 was ordinary or alarming, which is the same fault as a
+            // meter with no scale on it: it looks like information and cannot be
+            // acted on (§0.0).
+            //
+            // Out of how many is the whole of it. A second pass that revises one
+            // reading in twenty is working; one revising half of them is reading
+            // different audio from the first.
+            if (SettledCount <= 0)
+            {
+                return $"the second pass has changed its mind about "
+                    + $"{RevisionCount} character{(RevisionCount == 1 ? "" : "s")}";
+            }
+
+            var share = (double)RevisionCount / SettledCount;
+
+            return $"the second pass has changed its mind about {RevisionCount} "
+                + $"of {SettledCount} characters, which is about "
+                + $"{share:P0} of what it has read";
+        }
+    }
+
+    /// <summary>How many characters the settled pass has read.</summary>
+    /// <remarks>
+    /// The denominator for the revision count, and it is kept beside it so the
+    /// two cannot drift into describing different stretches of audio.
+    /// </remarks>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(RevisionsText))]
+    private int _settledCount;
 
     /// <summary>What the terminal shows before anything has been decoded.</summary>
     public string TerminalIdleText
@@ -2815,6 +2850,7 @@ public partial class MainWindowViewModel : ObservableObject
                 : "";
 
         RevisionCount = _decoder.Revisions.Count;
+        SettledCount = Transcript.CharacterCount;
 
         // WHAT IS ARRIVING, WHETHER OR NOT ANYTHING DECODES (HM-DEC-088). A
         // strong signal that will not resolve and an empty band used to produce

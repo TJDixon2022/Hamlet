@@ -75,7 +75,7 @@ public sealed class CwTerminalControl : SelectableTextBlock
     private readonly DispatcherTimer _timer;
     private readonly List<CwCharacter> _drained = new();
 
-    private Run? _tipRun;
+    private readonly List<Run> _tipRuns = new();
     private Run? _run;
     private CwConfidence _runConfidence = CwConfidence.High;
     private int _runLength;
@@ -250,11 +250,12 @@ public sealed class CwTerminalControl : SelectableTextBlock
 
     private void RemoveTip()
     {
-        if (_tipRun is not null)
+        foreach (var run in _tipRuns)
         {
-            Inlines?.Remove(_tipRun);
-            _tipRun = null;
+            Inlines?.Remove(run);
         }
+
+        _tipRuns.Clear();
     }
 
     /// <summary>
@@ -286,16 +287,43 @@ public sealed class CwTerminalControl : SelectableTextBlock
         // yet; unstable means it has refused, so nothing is coming to confirm
         // it at all. Amber is the app's own color for a reading that could not
         // be resolved, and it is the right one here (§0.6).
-        _tipRun = new Run
-        {
-            Text = Tip,
-            FontStyle = Avalonia.Media.FontStyle.Italic,
-            Foreground = TipIsUnstable
-                ? InstrumentPalette.For(CwConfidence.Unreadable)
-                : InstrumentPalette.For(CwConfidence.Low),
-        };
+        var tipInk = TipIsUnstable
+            ? InstrumentPalette.For(CwConfidence.Unreadable)
+            : InstrumentPalette.For(CwConfidence.Low);
 
-        Inlines.Add(_tipRun);
+        // **A PLACEHOLDER KEEPS ITS OWN INK EVEN INSIDE THE TIP.** The whole tip
+        // used to be one run in one color, so an unreadable mark in the leading
+        // edge came out in the tip's green and read as a solid block of
+        // something rather than as the one glyph that means Hamlet could not
+        // tell you what was there. Amber is the app's color for that and it is
+        // the only carrier of the fact (§0.6, §0.0).
+        var at = 0;
+
+        while (at < Tip.Length)
+        {
+            var placeholder = Tip[at] == MorseAlphabet.Unreadable[0];
+            var run = at;
+
+            while (run < Tip.Length
+                   && (Tip[run] == MorseAlphabet.Unreadable[0]) == placeholder)
+            {
+                run++;
+            }
+
+            var piece = new Run
+            {
+                Text = Tip[at..run],
+                FontStyle = Avalonia.Media.FontStyle.Italic,
+                Foreground = placeholder
+                    ? InstrumentPalette.For(CwConfidence.Unreadable)
+                    : tipInk,
+            };
+
+            Inlines.Add(piece);
+            _tipRuns.Add(piece);
+
+            at = run;
+        }
     }
 
     /// <summary>
@@ -351,7 +379,7 @@ public sealed class CwTerminalControl : SelectableTextBlock
     private void Reset()
     {
         _run = null;
-        _tipRun = null;
+        _tipRuns.Clear();
         _runLength = 0;
         _characters = 0;
         ShowIdle();
@@ -372,6 +400,6 @@ public sealed class CwTerminalControl : SelectableTextBlock
 
         _showingIdle = true;
         _run = null;
-        _tipRun = null;
+        _tipRuns.Clear();
     }
 }
