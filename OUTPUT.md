@@ -4,319 +4,305 @@
 The prompt claimed `PROJECT: Hamlet` and the tree confirms it: `CLAUDE.md`'s
 header reads `Project: Hamlet`, the solution is `Hamlet.sln`, the namespaces are
 `Hamlet.*`. Gate passed. **Nothing in this report is evidence about the radio**
-(`SHACK_FACTS.md`, HM-DEC-093). This machine has COM1 only and COM1 is a
-simulator, so everything below is a fact about a fixture, a generated signal or
-a headless window, and none of it has been near an antenna. **Almost all of this
-order is verified by your eyes at the screen**, which is why it waited for you;
-what could be proved by test was proved by test anyway.
+(`SHACK_FACTS.md`, HM-DEC-093). COM1 is a simulator, so every number below comes
+from a fixture, a generated signal, the training radio, or the eCFR.
 
-**Nothing was recorded under §12.1.** Two phases reached a question and both
-turned out to touch a recorded ruling or a trade-off, which §12.1 puts outside a
-session's reach. They are in section 4.
+**Nothing was recorded under §12.1.** Two questions came up and both weigh costs
+against each other, so both are in section 4.
 
-**All seven phases were worked. Phase 7 was not dropped**, and it did not
-migrate anything either: it measured, found two thirds of the migration provable
-and one third needing your ruling, and stopped there because the brief says a
-half-migrated band plan is worse than two whole ones.
+**All six phases were worked. Phase 6 was not dropped.**
 
-## Phase 1, the scanner's face and the stop §0.2.1 requires
+**One thing you should know before the rest.** Something outside this session
+committed my phase 1 work as `20c8ae5 "save"` and the branch is
+`feature/honest-cw-detection`, not `main`. The last report said fourteen commits
+were sitting local on `main`; both halves were wrong. They are on the feature
+branch, they were already pushed, and **`main` does not contain the last three
+sessions at all** — it is still at `5bada83 "more waves"`. Everything this
+session did is now pushed to `origin/feature/honest-cw-detection`. Nothing was
+merged, which is right: HM-OPEN-016 blocks that branch at severity `hard`.
 
-`ScanViewModel`, a Scanner widget, and the stop control.
+## Phase 1, the third confidence measurement, and what it found instead
 
-**The stop lives in the pinned strip and that placement is the whole point.**
-The strip is outside the canvas, so the control cannot be scrolled away from,
-closed, or dragged off the edge. A stop inside a widget is a stop the operator
-can lose while the radio goes on being tuned. It appears only while a scan runs,
-because a control that stops something that is not happening teaches people to
-stop reading that part of the window.
+HM-DEC-108 is built. `CwSettledPass.BoundaryMargin` measures how far the gap
+that ended a character sat from the boundary it was judged against, on the same
+scale the mark measurement uses, and the worst of the three now wins. It is
+bounded at one so it can only ever lower a score. Both boundaries of a character
+count rather than only the closing one, which is a reading of the ruling rather
+than its literal words: one gap misjudged makes two characters, and scoring only
+the closing gap marks the half in front and leaves the half behind, and the half
+behind is the lone dah the ruling names.
 
-Beside it, in the same strip, Hamlet says plainly that it is moving the dial and
-which frequency it is listening at.
+**It moved the numbers not at all, and finding out why is the useful half.**
+Every stranger scored a boundary margin of exactly one. The gaps around them
+were decisively wide, so the ruling's stated cause does not hold on these
+fixtures.
 
-The panel carries what the waterfall proposed and everywhere the scan listened,
-**including the places it found nobody**. How sure Hamlet is comes from the
-engine's own verdict rather than being re-derived, so a call made of dim letters
-reads "not at all sure" and cannot be drawn like a solid one. A callsign-shaped
-stop still prints no callsign. Six tests.
+Tracing what was actually emitted found the real one. **Each stranger was the
+leading dashes of the character that followed it** — a lone dah before `D` and
+before `N`, four dashes before a nought — with the real character arriving whole
+right behind it. The gap after a window's last mark was infinity, which asserts
+the character certainly ended there, and a window has no business asserting it:
+a window is a view onto a stream, so silence it has not seen yet is silence
+nobody has measured.
 
-The scanner reads sweeps the waterfall is already receiving and issues no
-command of its own, so having it attached costs the bus nothing.
+It is measured now, and a character whose end the window did not see is held for
+the next window where it sits in the interior. That is phase 4's own remedy for
+the mark-at-the-edge case, applied to the silence afterwards that nothing was
+watching.
 
-## Phase 2, the file you are supposed to edit
+**Strangers went from two of eight to none on `coverage-easy`, and one of seven
+to none on `exchange-easy`.** The ratchets tighten to zero. The cost is real:
+five characters come out where eight and seven did, because a fragment is no
+longer published as a character. Both halves were checked by breaking them.
 
-Written on first run and never touched again, opened from a button in Settings,
-which also shows its path. It is a file rather than a row of boxes because boxes
-would be Hamlet's list with your numbers in it, and every stretch in the file
-carries the source its numbers came from, which a box cannot.
+## Phase 2, the frequency sweep
 
-**One finding changed the code.** The refusal for an unreadable file was
-unreachable: the radio was checked before the file, so an operator with a broken
-file and no radio got nothing, and with a radio he would only find out after
-pressing. Whether your scan file can be read is a fact about your configuration
-and not about what is plugged in, so it is checked first now. Proved against a
-real unreadable file rather than argued about.
+HM-DEC-109 is built. The frequency joins Mode and FilterSelection on the session
+poll; the test that pinned the old rule is replaced by one proving the sweep,
+and a new test moves a radio without announcing it and watches the model catch
+up.
 
-`RestoreHomeAsync` is called on connect. The note was being written before the
-first tune for exactly that case and nothing had ever read it.
+**The separate staleness rule went and there was nothing to delete.** Freshness
+is derived generically from the poll rate, so as a never-polled field the
+frequency was compared against a window nothing ever refreshed. Swept, its age
+means what everything else's means.
 
-## Phase 3, the counter row, and one word that was wrong
+**Of the two on-demand reads, one stays and one goes.** Before a capture stays:
+a sidecar is evidence read months later and one command at a button press makes
+the header exact. Before a spot refresh goes: it closed a consequence rather
+than a cause, and the sweep is always the fresher of the two anyway, since spots
+refresh every one to fifteen minutes against the sweep's thirty seconds.
 
-The row is silent while parts arrive, are read, and become sweeps. It appears
-when any of that stops being true, in the order the data travels, so the first
-zero is still the address of the fault. The numbers moved to the waterfall's
-tooltip rather than being deleted with the row: they are what proved the path
-was discarding 2,740 parts.
+**The downstream question is answered from your telemetry rather than assumed.**
+A wrong band did reach the spot sources: session `af471e84`, seven spot
+refreshes on the remembered band before the radio was asked, then the band
+moved. **It was the training radio, and no session with a real radio shows it.**
+That is the startup ordering rather than a dropped broadcast, and it
+self-corrects because a band change reloads spots. Defect report in section 4.
 
-HM-DEC-093's property survives, and is now a test: **a quiet band and a cable
-that never spoke still paint different pictures**, because the second is not
-healthy and therefore not silent.
+## Phase 3, `BandPlan` retired
 
-**The word `receiving` was wrong, and not in the way the brief expected.** It
-was not driven by connection state. It was driven by the cumulative sweep count,
-so the first sweep of an evening bought the word for the rest of it: the cable
-could come out and the summary would go on saying "receiving" until the app was
-restarted. It now measures how long ago the last part arrived and says "nothing
-arriving now" when that is what is true. Eleven tests, in the engine, because a
-stage count is a radio fact and this fault was invisible for weeks precisely
-because nothing measured it.
+`HfBands` replaces it and holds no frequency literal, which a test enforces by
+grepping its own source. Band edges from 97.301(b), CW segments from the union
+of the data-carrying ranges in 97.305(c), jump spots from the first "CW main
+street" block in the cited conventions. Every caller re-pointed, `BandPlan.cs`
+deleted, HM-OPEN-005 closed.
 
-## Phase 4, the clipping, and the favorites strip
+**The cited data was verified against the regulation itself first**, from the
+eCFR versioner API for title 47 as of 2026-08-01 rather than from the file that
+quotes it. All fourteen numbers matched. **Column-awareness earned its keep
+twice**: 97.301's tables carry ITU Regions 1, 2 and 3 side by side and the
+United States is Region 2, so reading Region 1 would have given 40 m as 7.000 to
+7.200 and 75 m as 3.600 to 3.800; and a naive search for paragraph (b) lands
+first on a footnote reference inside a table cell.
 
-**The clipping is widget-level, not the canvas**, which the brief asked to be
-established first. Each widget's body sits in a scroll viewer that constrains
-its content to the widget's width, inside a border with a corner radius that
-clips to it, so anything that cannot give way at that width is cut at the edge.
-The canvas scrolls both ways and clips nothing.
+Two dials moved and both are named in a test: 40 m from 7.030 to 7.028, and 30 m
+from 10.110 — which matched no cited source at all — to 10.103.
 
-The level meter's fix is structural. Its sentence sat in a third column sized to
-its own content, so "audio has stopped arriving" made the row wider than the
-widget. That is the line that says the decoder is hearing nothing, which is the
-line somebody stares at when the app looks broken. It is under the bar now and
-wraps to whatever width there is.
+HM-OPEN-005's own claim that the CW segments are convention rather than
+regulation is corrected in the record rather than dropped. They align to the
+hertz.
 
-Nine other sentences gained wrapping, the widget body says out loud that it
-never scrolls sideways, and a widget refuses to shrink below the same floor the
-resize grip already used. A sweep over the window fails on any sentence that can
-be silently cut, and **it was checked against an unwrapped line to be sure it
-fires**.
+## Phase 4, the scanner end to end, which found a real fault
 
-**On the favorites strip, neither hypothesis in the brief holds.** Both
-dropdowns are populated correctly and no label has detached. What you saw was
-the recent dropdown showing a station and the favorites dropdown beside it
-showing its placeholder. The two boxes said what they were only through
-placeholder text, so the moment you landed somewhere the recent one replaced
-"recent" with the station and the pair read as one control with a stray word
-next to it. A placeholder is not a label, because a label survives a selection.
-Both carry one now.
+**It found one, which is the answer the brief hoped for.**
 
-## Phase 5, the two-stage decode, which nothing rendered
+A radio announces a frequency change whoever caused it, including Hamlet. The
+scanner recorded where it had put the dial *after* issuing the tune, so the echo
+of its own command arrived while the write was still in flight, was compared
+against the previous stop, did not match, and was read as a hand on the knob.
+**Every scan aborted on its second tune saying the operator had touched the dial
+when nobody had**, and left the dial where the scan had got to rather than
+putting it back.
 
-The terminal is one line: settled text, which is what a transcript keeps, with
-the leading edge as an italic tail that is replaced as the second pass overtakes
-it.
+It survived a whole session of unit tests because the stub radio raised the
+event only when a person turned it, which is not how a radio behaves. That is
+§12.5 again: a stub better behaved than the thing it stands in for proves
+nothing. The stub now announces every change and fails alongside the end-to-end
+test when the ordering is put back.
 
-**Where the settled pass has refused, nothing is coming behind the leading edge
-and waiting would be waiting forever**, so that reading is committed at once
-carrying the mark saying nothing confirmed it. Losing the text would be worse
-than showing it marked, and the moment somebody answers a call is the worst
-possible moment for the live feed to go dark. The tip cannot grow without limit
-either.
+The harness itself answers the brief's four questions. The survey ranks sixteen
+candidates off the training radio's own synthesizer and no carrier outranks an
+operator. The dwell reaches the real decoder and its verdict carries a
+confidence out. The dial comes back on all three exit routes, including the app
+dying mid-scan with the note left on disk. A dwell that found nobody still says
+where it was.
 
-The speed field says why it is blank. A speed change and a lost clock are
-annotated, because both mean somebody else started transmitting. The window
-ceiling announces itself when it binds. The revision log has a way out: it stays
-in memory, is never written unasked, and a button beside the count writes every
-character the second pass changed its mind about. Six tests.
+## Phase 5, the nine failures attributed
 
-## Phase 6, the stale rig-state block
+Each was tested rather than reasoned about, by giving the decoder a run-up of
+Morse before the message and seeing whether the message then decoded.
 
-**Half of this was already done.** The capture header takes its frequency and
-its band from the rig model and says so when the radio was not read; a previous
-session fixed it. The sidecars showing 7.030 MHz over a rig block reading 14.055
-predate that fix.
+**Six are the fixtures**, all the same fault: the signal is too short for a
+detector that wants three seconds of keying before it moves.
 
-The other half stands and its root is one line of the poll plan. **The frequency
-is the only field marked never polled**, because the radio broadcasts changes.
-Two things follow. Its age means something different from every other field's,
-so with nobody touching the dial it recedes without limit and reads as a link
-going quiet when it is a link with nothing to report. And a broadcast missed
-while the app is starting leaves the model holding a frequency the radio is not
-on, with nothing to correct it until the dial is next turned. Mode and filter
-are swept anyway for exactly that reason; the frequency was the one left out.
+| Test | Bare | With a run-up |
+|---|---|---|
+| wrong pitch, 500 Hz | `■■EIW K` | `CQ DE W1AW K`, exactly |
+| wrong pitch, 750 Hz | `■ ■ ■ ■ AW K` | `CQ DE W1AW K`, exactly |
+| wrong pitch, 875 Hz | `■ DE W1AW K` | `CQ DE W1AW K`, exactly |
+| clean, 25 wpm | `CQ D■ W1AW K` | `CQ DE W1AW K`, exactly |
+| fade recovery | 0 letters in the last third | 7, against the 3 it asks for |
+| speed after a change | 10 characters, 24 wpm | 10 characters, 24 wpm |
 
-**The chain the brief asked about is real.** The band on screen is derived from
-this reading, and the band scopes what RBN is filtered to and what the skimmer
-watch listens for, so a wrong one would make "nobody heard you" a defect wearing
-the clothes of an answer.
+**The pitch is found to the hertz in every one, including the failures.** The
+test that fails is the text, not the pitch it is named for. And the speed one is
+not even that: its estimate lands at 24 wpm, inside the range demanded, and
+exactly ten characters arrive after the change, whereupon the test skips ten and
+asserts the remainder is not empty. It fails on an off-by-one in its own margin.
 
-**And a test found the boundary.** Sweeping the frequency would act against
-HM-DEC-050's own words, which say nothing the radio volunteers is polled for, so
-it is not a session's to overturn. What is done instead is the on-demand read
-that ruling explicitly provides for, taken at the two moments the value is about
-to be reasoned from: before a capture sidecar is written, and before the
-band-scoped spot sources are rebuilt. One command each, and neither is a poll.
-An operator's tune still in flight wins over both.
+**Three are Hamlet, and they are two faults.** At 400 Hz the tracker finds the
+pitch and will not hold it, breaking down and re-acquiring however long the
+signal — the only pitch a run-up does not fix. The app transcript test is the
+same thing from the other end: at 12 words a minute a longer signal decodes
+worse than a short one. And the sensitivity one is a ruling that was never
+built, covered in section 4.
 
-## Phase 7, the band plan, measured and stopped
+Nothing was loosened and no bound was moved.
 
-Measuring turned up a better answer than expected on two thirds of it.
+## Phase 6, pushed and measured
 
-- **Band edges derive exactly.** Every one is the Extra class's own range in the
-  cited privileges file, `97.301(b)`, with 80 m being the regulation's 80 m and
-  75 m rows joined.
-- **CW segments derive exactly, which corrects the record.** HM-OPEN-005 said
-  they are convention rather than regulation and do not align with the privilege
-  boundaries. They do: each is the union of the ranges carrying Data in the same
-  file, `97.305(c)`, to the hertz, with 40 m needing two rows joined because the
-  phone segment overlaps the first.
-- **The neighborhood file does not cover them**, which was the assumed source.
-  Its Morse rows fall short at the top of every band, by 10 kHz on 17 m up to
-  230 kHz on 10 m, and 40 m has a hole between 7.040 and 7.050. That is not a
-  defect in it: those rows are conventions somebody published and the space
-  between belongs to nobody. A CW segment is a regulatory boundary.
-- **Jump spots do not derive.** Five of seven are exactly a "CW main street"
-  block; 40 m is the QRP watering hole's instead; and 30 m matches nothing cited
-  at all, landing on 10.110 where the blocks are 10.103, 10.106 and 10.120.
-
-Choosing the rule changes where a band button lands on three to seven bands,
-which weighs cited data against your muscle memory. That is a trade-off, so it
-is yours. Nothing was migrated, the measurement is kept as nine tests so the
-answer cannot rot, and HM-OPEN-005 goes from `none` to `slows` and from
-unassigned to you.
-
-The source verification §4 asks for before re-pointing was not done, and did not
-need to be: nothing re-points.
+Four commits pushed to `origin/feature/honest-cw-detection`, then a fifth. Over
+a four-hour evening the frequency sweep costs **480 reads and about one second
+of wire time: 0.13 percent of the traffic and 0.007 percent of the bus.** The
+whole poll loop is 25 reads a second and 5 percent of the wire, nearly all of it
+the S-meter and the transmit line. Anybody worrying about what HM-DEC-109 cost
+is looking in the wrong place by three orders of magnitude.
 
 **No transmit work of any kind was done and nothing was built toward auto-CQ.**
 
 # 2. What Tim should expect
 
 - **Build succeeds, no warnings**, engine and app.
-- **1753 tests, 9 failing.** 1330 of 1338 pass in the engine, 414 of 415 in the
-  app. 45 tests were added this session.
-- **All 9 failures were already failing before this session's work** and are the
-  same 9 the last report named: `ASignalAtTheWrongPitchIsStillFound` at 400,
-  500, 750 and 875 Hz; `ACleanSignalDecodesExactly` at 25 words a minute;
-  `AFadingSignalComesBackRatherThanStayingDead`;
-  `ItGoesQuietRatherThanInventingLettersInTheNoise`;
-  `TheSpeedEstimateFollowsAChangeWithinAFewCharacters`; and, in the app,
-  `ClearingTheTranscriptLeavesTheDecoderAlone`. **Nothing regressed.**
-- **`BindingHealthTests` passes with every new panel**, so nothing added this
-  session has an unresolved binding. That is the check that catches a control
-  which renders and does nothing.
-- **What you will see that is new.** A Scanner panel on the canvas and on the
-  "Listening around" preset. A stop control and a line about the dial in the
-  pinned strip, both only while a scan runs. A "Where the scanner may take your
-  dial" row in Settings. An italic tail on the CW terminal's text.
-- **What will look wrong and is not.** The waterfall's counter row is now
-  **absent** while everything works. That is the ruling, not a regression: hover
-  the waterfall for the numbers. If it reappears, a stage has genuinely stopped
-  and the sentence says which.
-- **The scanner has not been run end to end by anything.** Every piece is
-  tested, and the phases have never been exercised together against a radio,
-  training or real. First run should be into the training radio.
-- `%AppData%\Hamlet\scan-segments.json` is created the first time you start the
-  app after this. Twenty stretches across seven bands, every one cited. It is
-  yours from then on and Hamlet will not touch it again.
-- **Nothing was pushed.** Seven commits on `main`, local.
+- **1787 tests, 9 failing.** 1364 of 1372 pass in the engine, 414 of 415 in the
+  app. 34 tests added.
+- **The same nine as the last three reports**, now each attributed. Nothing
+  regressed and nothing new appeared.
+- **What you will see that is different.** Band buttons for 40 m and 30 m land
+  on 7.028 and 10.103 rather than 7.030 and 10.110. That is HM-DEC-110 and it is
+  the only visible behavior change in this session.
+- **What will look wrong and is not.** The settled transcript now shows *fewer*
+  characters on the two gap fixtures, five where there were eight and seven.
+  That is the fix: a fragment of a character is no longer published as a
+  character. Fewer and right beats more and wrong.
+- **You are on `feature/honest-cw-detection`, not `main`.** Everything from the
+  last three sessions lives there and `main` has none of it. That branch is
+  blocked from merging by HM-OPEN-016 at severity `hard`, and phase 5 has now
+  attributed all nine of its remaining failures, so the merge question is a
+  ruling rather than a mystery.
+- **`HM-OPEN-024` is new and minor**: three band-card style tests failed once in
+  a combined run and have not failed in five runs since. Suspicion is the band
+  plan going lazy under parallel test collections. Recorded rather than chased.
+- **Everything is pushed.** Nothing is sitting on the machine.
 
 # 3. What we should do next
 
-- Run the scanner end to end against the training radio, which is the first
-  thing that exercises the survey, the dwell and the envelope together.
-- Rule on the settled pass's character boundaries, still the last §0.0 gap in
-  the decoder and still the thing blocking the transcript being trustworthy.
-- Rule on the jump spots so `BandPlan` can be retired and the tree stops holding
-  two band plans.
-- Take the eight pre-existing decoder failures in one pass. Four are the same
-  test at four pitches, so it is probably fewer faults than tests.
-- Watch what the on-demand frequency read does to the bus over an evening. It is
-  one command per spot refresh and one per capture, which should be invisible,
-  and "should be" is not a measurement.
+- Rule on merging `feature/honest-cw-detection`, which is now the thing blocking
+  the most. Six of its nine failures are fixture-length and one is a test's own
+  off-by-one; only two are decoder faults and neither is a regression in
+  behavior anybody would see on the air.
+- Rebuild the six short fixtures with enough run-up for the detector. It is
+  generator work, not decoder work, and it clears six of the nine in one pass.
+- Rule on the sensitivity floor, section 4 item one. It is the only §0.0 gap
+  left in the decoder.
+- Chase the 400 Hz tracker, which is the one genuine decoder fault with no
+  ruling in front of it.
+- Run the scanner from the app against the training radio. The engine path is
+  now exercised end to end, and the face built last session has still never been
+  driven by a person.
 
 # 4. What's blocking us
 
 ---
-date: 2026-08-17
-refs: CLAUDE.md §0.0, §12.1; HM-DEC-048; HM-DEC-107 phase 4
+date: 2026-08-18
+refs: CLAUDE.md §0.0, §12.1; HM-DEC-097; HM-DEC-088; HM-OPEN-016
 ---
 
-**The settled pass may show a character at full strength when the elements were
-clean and the boundary decision that produced it was marginal.**
+**The decoder refuses to emit a character when its own measured margin is below
+the value that corresponds to nought decibels broadband, and that value is
+stated here.**
 
-Unchanged from the last report and still the item blocking the most. It is the
-last thing standing between the settled pass and being a transcript, and phase 5
-of this order has now put that transcript on screen, so what it asserts matters
-more than it did a session ago.
+HM-DEC-097 already ruled the refusal: below 0 dB the decoder goes quiet rather
+than copying into the band where it is half wrong. **It was never built.** The
+sweep reproduces that ruling's own published figures exactly — perfect from
+18 dB down to 1 dB, and at minus two decibels a full message of which 0.44 is
+invented — because nothing in the decoder implements a floor. The streaming pass
+gates on coherence and a plausible speed; the settled pass on six decibels of
+contrast; neither is what the ruling describes.
 
-Two answers, and both are yours because both decide what the display asserts.
-The first is a third measurement, how far the gap that ended a character sat
-from the boundary it was judged against, worst-of-three winning as the existing
-two do; that changes HM-DEC-048's ruled design. The second is blunter: bar the
-settled pass from full strength until the stranger count reaches zero, which
-costs it the thing it was built for.
+**It cannot simply be added, because the ruling is stated in a unit the decoder
+cannot measure.** HM-DEC-097's decibels are the broadband ratio the fixture was
+generated at. The decoder measures inside a narrow tone filter and reads about
+seventeen decibels higher for the same audio: 17.2 to 19.0 where the fixture was
+generated at 0 dB, 15.3 to 17.1 at minus two, 7.6 to 14.4 at minus five.
 
-Rejected, and stated so it is not proposed again: leaving it because the numbers
-are small. Two wrong letters in eight at full strength is one in four, and on a
-callsign he is about to answer the operator could act on it.
+So the number wanted is: what does the decoder's own margin have to fall below
+before it stops emitting. Seventeen is the direct translation and would cut in
+at the ruling's own line. Fifteen would let the minus-two case through, which is
+the case the ruling names. Something near ten would only catch minus five, where
+the decoder is already ragged.
 
----
-date: 2026-08-17
-refs: CLAUDE.md §0, §0.2.1, §12.1; HM-OPEN-005; HM-DEC-054
----
+The measurement above is what there is to reason from and it does not choose for
+you, which is why this is here: the number decides what the display asserts, so
+§12.1 puts it with you without exception.
 
-**Where a band button lands is chosen by one of three rules, and the choice is
-not derivable from the data.**
-
-Retiring `BandPlan` needs this and nothing else. Band edges and CW segments were
-measured this session and both derive exactly from the cited privileges file, so
-two thirds of the migration is provable. Jump spots are the third.
-
-Three rules are defensible and they land in different places. **Take the first
-"CW main street" block**, which is what five of the seven current spots already
-are, and which moves 40 m from 7.030 to 7.028 and 30 m from 10.110 to 10.103.
-**Take the QRP watering hole**, which is what HM-OPEN-005 itself argues for on
-20 m against QRP ARCI's 14.060, and which moves all seven. **Keep the current
-numbers and mark them editorial**, citing them as Hamlet's own choice rather
-than anybody's published convention, which moves nothing and leaves one number,
-30 m's 10.110, matching no source at all.
-
-The trade-off is cited data against the operator's muscle memory, which is what
-makes it yours rather than a session's. Rejected: migrating the edges and the
-segments now and leaving the jump spots in code. That is the half-migrated band
-plan the brief names, and it would leave a file and a class each holding part of
-one answer.
+Rejected: moving `ItGoesQuietRatherThanInventingLettersInTheNoise`'s bound of
+0.35 to accommodate the 0.44. That is moving a bound to make a test pass, the
+brief forbade it, and the bound is the ruling written down.
 
 ---
-date: 2026-08-17
-refs: CLAUDE.md §0.0.1, §12.1; HM-DEC-050; HM-DEC-024; HM-DEC-075
+date: 2026-08-18
+refs: CLAUDE.md §0.0.1; HM-DEC-024; HM-DEC-075; HM-DEC-109
 ---
 
-**The frequency is swept on the session poll like the mode and the filter, for
-the reason already recorded beside them.**
+**The first spot refresh waits for the radio to be asked where it is, rather
+than running on the remembered band.**
 
-HM-DEC-050 says nothing the radio volunteers is polled for, and the frequency is
-the one field that rule still covers. A test pins it, so this session did not
-take it.
+A defect report rather than a fix, as the brief asked. **It has happened**:
+session `af471e84`, seven spot refreshes on the band left in settings before the
+radio was asked, and the band then moved. It was the training radio and no
+session with a real radio shows it, so nothing has yet cost you anything
+measurable.
 
-It has two costs and both were seen. A broadcast missed while the app is
-starting leaves the model holding a frequency the radio is not on, with nothing
-to correct it until the dial is next turned; the comment beside Mode and
-FilterSelection says exactly that and those two are swept anyway because of it.
-And the frequency's age means something different from every other field's, so
-a sidecar showed it stale at sixty seconds beside neighbours at twenty-seven,
-which reads as a link going quiet when it is a link with nothing to report.
+The mechanism is startup ordering, not a dropped broadcast, so HM-DEC-109's
+sweep does not close it. `ReloadSpotsAsync("startup")` runs from the view model's
+constructor; the radio is not connected until the window's `Opened` event fires.
+Until then the band is whatever `settings.LastBand` says, and the band scopes
+what RBN is filtered to and what the skimmer watch listens for.
 
-It is worth more than a tidier sidecar. The band on screen is derived from this
-reading, and the band scopes what RBN is filtered to and what the skimmer watch
-listens for, so a wrong one makes "nobody heard you" a defect wearing the
-clothes of an answer.
+It self-corrects, which is why this is `none` rather than urgent: a band change
+reloads spots, so the moment the radio answers, the wrong-band results are
+replaced. What it costs is a burst of pointless network calls to somebody else's
+service and a few seconds of a panel showing the wrong band's stations.
 
-Rejected: leaving it as it is. This session put on-demand reads at the two
-moments the value is reasoned from, a capture and a spot refresh, which closes
-the consequences that were seen and not the cause. Anything else that reads the
-frequency in future gets the old behaviour back, silently.
+The trade-off is between that and an empty panel for the second or two before
+the radio answers, which is why it is not a session's call. Rejected: asking the
+radio from the constructor, which would put a serial read on the path that
+builds the window.
 
-Also rejected: leaving the staleness display alone if the sweep is taken. Once
-it is swept its age means the same thing as everything else's, and no separate
-rule about it is needed, which is part of why the sweep is the clean answer.
+---
+date: 2026-08-18
+refs: CLAUDE.md §7; HM-OPEN-016
+---
+
+**Whether `feature/honest-cw-detection` merges to `main` now, and what happens
+to the fourteen commits sitting only on it.**
+
+Not a defect, a fact you need. `main` is at `5bada83 "more waves"` and has none
+of the last three sessions: the scanner, its face, the two-stage decode on
+screen, the frequency sweep, the band plan retirement. All of it is on the
+feature branch and all of it is pushed.
+
+HM-OPEN-016 blocks that branch at severity `hard` until its failures "pass or
+are shown to be wrong". Phase 5 has now shown six of the nine to be the
+fixtures' fault, with the message decoding exactly once given a run-up, and one
+more to be a test's own off-by-one. Two decoder faults remain and neither is
+something that would be visible on the air: a 400 Hz tracker that will not hold,
+and a degradation at 12 words a minute on a long repeated signal.
+
+Also worth deciding: something on this machine is committing as `"save"` while a
+session runs. It caught phase 1's work and threw away the commit message. It is
+harmless to the content and it makes the history hard to read.
+
+Rejected: merging on this session's own authority. HM-OPEN-016 is a `hard` block
+and lifting it is a ruling.
