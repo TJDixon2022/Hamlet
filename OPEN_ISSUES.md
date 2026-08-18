@@ -1303,3 +1303,58 @@ Not fixed, because the fix is not unambiguous. Making the tracker converge in
 one jump changes acquisition behaviour on real signals, and making a switch stop
 resetting the settled window acts against HM-DEC-096 phase 3, which exists
 because a switch usually does mean a different station. Both are Tim's.
+
+---
+id: HM-OPEN-029
+status: open
+owner: tim
+raised: 2026-08-18
+severity: slows
+blocks: TheEasyTierIsReadWhole(prosigns-easy), TheEasyTierIsReadWhole(exchange-easy)
+refs: CLAUDE.md §12.5; HM-DEC-101; tests/Hamlet.RadioEngine.Tests/Cw/Fixtures/CwFixtureGenerator.cs
+---
+
+**Hamlet reads `IR` where `AR` was sent because the fixture generator sent `IR`.**
+The caret that runs two letters together emits an unpaired key edge when the
+joined pair begins a word, which swaps every mark and gap after it.
+
+Chased on the instruction to chase it, and it is §12.5's exact pattern: the
+fixture was built from a misunderstanding and the decoder was being blamed.
+
+**The measurement.** Mark and gap lengths taken off `prosigns-easy.wav` itself by
+complex demodulation at its stated tone, against the intended `^BT N0CALL ^AR ^SK`:
+
+| word | intended | rendered as | reads |
+|---|---|---|---|
+| `^BT` | `-...-` | dit, **character gap**, dit dit dit dah | `EV` |
+| `^AR` | `.-.-.` | dit dit, **character gap**, dit dah dit | `IR` |
+| `^SK` | `...-.-` | correct | `SK` |
+
+`EV` and `IR` are exactly what the reference implementation reads, which is the
+confirmation: **two independent decoders agree, and they are both right.** The
+audio genuinely says `EV` and `IR`. Nothing was wrong with either decoder.
+
+**The path, and it is arithmetic rather than a hypothesis.** `KeyEdges` starts
+with `edges = { messageStart }`, an opening edge with no closing partner yet. The
+join branch's first act is `at += ElementGap; edges.Add(at);`, which assumes there
+is a mark in progress to separate from. At the head of a word there is not, so
+that edge closes a mark that never opened: **a phantom hundred-millisecond dit**,
+and every edge after it lands on the opposite parity, so the dah that should have
+opened `BT` becomes a three-hundred-millisecond gap and the element gaps become
+marks. Predicted against the measurement for `^BT`, the model is exact at every
+one of the nine edges.
+
+`^SK` survives because its two letters carry six elements between them rather than
+five, and the trailing-gap removal at the end of the branch restores the parity
+that the opening edge broke. **An even-length prosign renders correctly and an
+odd-length one does not**, which is why this has looked like a decoder fault on
+some prosigns and not others.
+
+**Not fixed, on the instruction to report it.** The fix is small, but it changes
+what three prosign fixtures assert, so it needs HM-DEC-101's gate re-run and each
+affected hold-out adjudicated individually with its reason recorded (§12.5), which
+is the same discipline phase 3 was held to and is not a tail on another work unit.
+
+**`exchange-easy` is likely the same defect**, since its text ends in a caret-joined
+prosign, and it should be re-checked once this is fixed rather than investigated
+separately.
