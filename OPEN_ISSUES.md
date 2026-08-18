@@ -2091,3 +2091,49 @@ that (§12.4).
 
 Severity **none**: nothing is blocked, no ruling depends on it, and the hazard is
 correctly stated without it.
+
+---
+id: HM-OPEN-040
+status: closed
+owner: claude
+raised: 2026-08-18
+closed: 2026-08-18
+severity: slows
+blocks: the operator finding the calling cycle at all
+refs: HM-DEC-098, HM-DEC-063, HM-DEC-072, HM-DEC-086, HM-DEC-113
+---
+
+"Repeat send every 30 seconds" cannot be done because **no control is called
+that**, the widget that does it is on no preset, and the version number cannot
+tell the operator whether his build has it.
+
+**It is not HM-DEC-113 and that was checked first.** The cycle is on `main`:
+`5d00bd4` built the engine at 13:34 and `d8f6ce9` the face at 13:44 on
+2026-08-18, with `29df4b2` after them. No branch is involved.
+
+Three separate faults, each on its own enough to produce the report:
+
+**The name.** Nothing in the application contains the string "repeat". The
+widget is `Call CQ on a cycle`, and its interval is a field inside it rather
+than part of its name. An operator hunting for the words he was told are the
+feature finds nothing.
+
+**No preset carries it.** `Widgets.AutoCall` was registered in the tray and
+placed on none of the three layouts — not "Getting started", not "Listening
+around", and not "Making contacts", which is the one with the terminal, the send
+controls and "did anybody hear me" on it. So it was reachable only by somebody
+who already knew to go to the tray and look, **which is HM-DEC-072's own shape:
+ruled, built, and never invoked.** Fixed by appending it to "Making contacts",
+appended rather than fitted in so nothing already there moves.
+
+**The version could not have told him.** `Directory.Build.props` last changed on
+2026-08-17 and still read `1.9.0` after a whole feature landed on the 18th, so
+today's telemetry reads `appVersion 1.9.0` on builds that both do and do not
+contain the cycle. HM-DEC-063 rules that a minor version "adds a capability the
+operator can see and use", and three landed since 1.9.0: the calling cycle, scan
+results that tune, and favourite notes. **The session that shipped them did not
+bump it, and that session was mine.** Now 1.10.0.
+
+Closed by the three fixes above. What it cost is recorded rather than tidied
+away: an operator was told a feature existed, could not find it, and nothing on
+his screen or in his telemetry could have told him whether he had it.

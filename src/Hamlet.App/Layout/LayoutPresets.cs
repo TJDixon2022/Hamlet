@@ -97,6 +97,17 @@ public static class LayoutPresets
             new Placement(Widgets.Send, Gap, 324, 620, 380),
             new Placement(Widgets.Heard, Gap, 716, 620, 230),
             new Placement(Widgets.Spots, 644, Gap, 420, 700),
+
+            // **CALLING ON A CYCLE BELONGS WHERE ANSWERING DOES**, and it was in
+            // no preset at all until now (HM-DEC-098 built it and nothing put it
+            // on a canvas). A widget reachable only from the tray is reachable
+            // only by somebody who already knows it exists, which is HM-DEC-072's
+            // own shape: ruled, built, and never invoked.
+            //
+            // Appended rather than fitted in, for the reason the scanner was:
+            // nothing already on this preset moves under somebody who has learned
+            // where it sits.
+            new Placement(Widgets.AutoCall, 644, 716, 420, 230),
         },
         Preset: true);
 
