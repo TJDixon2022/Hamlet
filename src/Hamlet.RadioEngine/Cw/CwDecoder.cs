@@ -137,7 +137,8 @@ public sealed class CwDecoder
     private bool _patternTruncated;
 
     /// <summary>How many times the tracker had moved, last time this looked.</summary>
-    private int _lastRetunes;
+    /// <summary>Moves to a different station, which are the costly ones.</summary>
+    private int _lastFollows;
 
     /// <summary>Every second measurement goes to the settled pass.</summary>
     private const int SettledDecimation = 2;
@@ -414,9 +415,16 @@ public sealed class CwDecoder
         // elements are real measurements of nothing, and carrying them into the
         // decode produced a row of placeholders in front of every message found
         // off-frequency.
-        if (_tracker.Retunes != _lastRetunes)
+        // **AND A REFINEMENT IS NOT A MOVE IN THAT SENSE** (HM-DEC-123). The
+        // tracker settling one bin over on the station it is already reading has
+        // not pointed the filter at empty band: the elements in flight were
+        // measured on the same signal through a filter a hundred hertz wide, and
+        // the settled pass's window is full of the station it is still reading.
+        // Throwing either away costs a callsign and buys nothing, which is what
+        // two twenty-five hertz moves on a thirty second capture were doing.
+        if (_tracker.Follows != _lastFollows)
         {
-            _lastRetunes = _tracker.Retunes;
+            _lastFollows = _tracker.Follows;
             _pending.Clear();
             _pattern.Clear();
             _clarities.Clear();

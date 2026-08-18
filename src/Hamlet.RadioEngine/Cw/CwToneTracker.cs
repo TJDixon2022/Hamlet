@@ -381,6 +381,33 @@ public sealed class CwToneTracker
     public int Retunes { get; private set; }
 
     /// <summary>
+    /// How many of those moves were to a different station (HM-DEC-123).
+    /// </summary>
+    /// <remarks>
+    /// <para>**A REFINEMENT AND A FOLLOW ARE NOT THE SAME EVENT, AND ONE LINE
+    /// TREATED THEM AS ONE.** Every move used to throw the settled pass's window
+    /// away, because HM-DEC-096 put it there and a move usually does mean
+    /// somebody else started transmitting. Sometimes it means the survey
+    /// preferred its neighbouring bin on the station already being read, and on
+    /// a thirty second capture two of those cost the callsign.</para>
+    /// <para>**THE CRITERION IS MEASURED AND IT IS THE SURVEY'S OWN GRID.** Across
+    /// every recording this repository holds, a move within one station is
+    /// exactly one coarse bin — twenty-five hertz — and the one genuine station
+    /// change, the caller at 615 handing over to the answerer at 730 in the
+    /// two-station fixture, is a hundred. There is nothing between them to choose
+    /// from. <see cref="ConfirmWithinHz"/> already carries this number with this
+    /// meaning for a different question: two consecutive surveys agreeing within
+    /// one bin are the same signal, "a station drifting or the survey preferring
+    /// its neighbor, rather than a different signal". The distinction did not
+    /// need inventing, only reading.</para>
+    /// <para>**AND IT ONLY APPLIES TO A TRACKER THAT WAS READING SOMETHING.**
+    /// Before a pitch has been reported there is nothing to refine and everything
+    /// held was measured through a filter pointed at empty band, so an
+    /// acquisition move is a follow.</para>
+    /// </remarks>
+    public int Follows { get; private set; }
+
+    /// <summary>
     /// True when something on the band is actually being keyed (HM-DEC-095).
     /// </summary>
     /// <remarks>
@@ -675,6 +702,7 @@ public sealed class CwToneTracker
                 _tracked = _fineHz.Length / 2;
                 _reportedHz = double.NaN;
                 Retunes++;
+                Follows++;
             }
 
             return;
@@ -781,12 +809,26 @@ public sealed class CwToneTracker
     /// </remarks>
     private void Switch(double toneHz)
     {
+        // Measured against the bank the tracker is listening through rather than
+        // against the pitch it last reported, because the reported pitch is the
+        // fine bank's answer and can sit a few hertz outside its own centre: on
+        // the two-station recording the answerer reports 730 through a bank
+        // centred at 725, and calling that a thirty hertz move would make the
+        // survey's own grid read as one and a bit bins.
+        var moved = Math.Abs(toneHz - _fineHz[_fineHz.Length / 2]);
+        var refining = !double.IsNaN(_reportedHz) && moved <= ConfirmWithinHz;
+
         CenterFineBank(toneHz);
         _fineSurvey.Reset();
         _tracked = _fineHz.Length / 2;
         _reportedHz = toneHz;
         KeyingFoundAt(toneHz);
         Retunes++;
+
+        if (!refining)
+        {
+            Follows++;
+        }
     }
 
     /// <summary>The fine bin nearest a pitch.</summary>

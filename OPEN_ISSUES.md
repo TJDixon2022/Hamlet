@@ -1222,6 +1222,28 @@ queued work. The same ruling answers HM-OPEN-028. Seen again 2026-08-18 from a
 third direction, HM-OPEN-032: any change to where the streaming pass divides
 characters moves `MidCharacter` and pays this cost.
 
+---
+
+**BUILT 2026-08-18 AND THIS HALF IS ANSWERED.** `CwToneTracker.Follows` counts the
+moves that go to a different station, the decoder acts only on those, and
+`TheSettledPassNoLongerStopsShortOfTheCallsign` is green: the settled pass reads
+`■■■ ■■VA3VRR` where it read `■■■ ■`.
+
+**The criterion was measured and it is the survey's own grid.** Every move within
+one station across every recording here is exactly one coarse bin — the capture's
+two moves are 625 to 600 and 600 back to 625, the bulletin's is 525 to 500 — and
+the one genuine station change, the caller at 615 handing to the answerer at 730,
+is a hundred. Nothing lies between them. `ConfirmWithinHz` already carried that
+number for the neighbouring question, whether two consecutive surveys are the same
+signal, and its own note already called it "a station drifting or the survey
+preferring its neighbor, rather than a different signal". A tracker that has not
+yet reported a pitch has nothing to refine, so its first move is a follow.
+
+The measurement is against the bank the tracker listens through rather than the
+pitch it last reported: the fine bank answers a few hertz outside its own centre —
+730 through a bank centred at 725 — and measuring from the report would make one
+bin read as one and a bit.
+
 The path behind HM-DEC-121 is found, and it is not the dit hint.
 
 **Traced 2026-08-18 on `cw-2026-08-17-013347`**, with the adoption applied and
@@ -1296,6 +1318,57 @@ refs: HM-OPEN-027, HM-DEC-096, HM-DEC-123, src/Hamlet.RadioEngine/Cw/CwToneTrack
 answers HM-OPEN-027. Recorded here so the next session reads it rather than
 re-deriving it: the 400 Hz failure is not about 400 Hz, the cause is already in
 this entry, and the fix belongs to that work order and to no other.
+
+---
+
+**BUILT 2026-08-18, AND THIS ENTRY'S OWN DIAGNOSIS WAS WRONG.** HM-DEC-123's
+distinction is in the tree and it does not touch this failure, because **the
+retunes never cost this case anything through the settled window at all.**
+Measured by disabling every reset outright: the decode is unchanged, still
+`■■ ■■■ ■ K DE W1AW K` with the `CQ` missing. This entry said "why the retunes
+cost so much is HM-OPEN-027's finding"; they do not.
+
+**What they cost is where the tracker went.** Traced with every survey verdict
+printed, the three moves on a 400 hertz signal started from 600 are: from cold to
+400, then **to 575, then back to 400**. The tracker spends about half a second
+listening at 575 while the station sends `CQ`, and the characters are lost because
+the filter was pointed away from the signal, not because anything was thrown away.
+
+**And 575 hertz is the station's own image, thirty-five decibels down.** The
+survey's verdicts either side of the move:
+
+```
+keyed 400  dit 77  dah 213  sep  8.7  lift 64.0  keyedDb -21.9
+keyed 575  dit 83  dah 220  sep 30.8  lift 26.3  keyedDb -56.5
+keyed 400  dit 80  dah 228  sep  5.6  lift 62.8  keyedDb -21.2
+```
+
+Same dit, same dah, same keying, thirty-five decibels quieter, and **clustering
+three times more cleanly than the station itself** — separation 30.8 against 8.7.
+On the reads where the 400 bin fails to score at all, that image is the only
+candidate left and it wins twice running, which is all the confirmation rule asks
+for.
+
+**It is an artifact of a fixture with no band in it** (§12.5, HM-OPEN-018). The
+same signal with noise in it:
+
+| noise amplitude | moves | decode |
+|---|---|---|
+| 0 | 3 | `■■ ■■■ ■ K DE W1AW K` |
+| 0.002 | 3 | `TT■ ■■■ ■Q DE W1AW K` |
+| 0.01 | **1** | `T■ ■■■ ■Q DE W1AW K` |
+| 0.03 | **1** | **`V VVV VVV CQ DE W1AW K`** |
+| 0.06 | **1** | **`V VVV VVV CQ DE W1AW K`** |
+
+`ASignalAtTheWrongPitchIsStillFound` generates its audio with no noise at all, so
+between the elements there is digital silence and the sidelobe is a hard-limited
+replica of the station with nothing to bury it. A receiver never hands that over,
+which is the finding HM-OPEN-018 was opened for and the reason every fixture under
+`tests/fixtures/cw/receiver` was rebuilt with a shaped band in it.
+
+**Not fixed here.** Giving the test a band would turn it green, and changing a
+fixture to turn a test green is the one move §12.5 exists to stop a session making
+on its own authority. It is in `OUTPUT.md` section 4.
 
 The 400 Hz pitch failure is not about 400 Hz, and it is the same root cause as
 HM-OPEN-027.

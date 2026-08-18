@@ -1,6 +1,6 @@
 **PROJECT: Hamlet**
 
-# Work order: two windows, one caret, and the bulletin re-measured
+# Work order: the retune distinction, and the last of the bar
 
 Five phases. Reported per §12.2: four sections, **written to `OUTPUT.md` at the
 repository root, overwriting it**, and printed to the session as well. **Name
@@ -9,146 +9,156 @@ the branch in section 1** (§9.5.1 — `main`, and nowhere else).
 **Read first:** `CLAUDE.md` (§0.0, §12, §12.5), `SESSION_PROTOCOL.md`, the
 previous `OUTPUT.md`, `OPEN_ISSUES.md`, `DECISIONS.md`.
 
-**New rulings: HM-DEC-122, 123, 124.** All three answer questions the last
-session raised with measurements underneath them. **HM-DEC-123 is a separate
-work order and is not in this one** — do not begin it.
+**New rulings: HM-DEC-125 and HM-DEC-126.** Both close things out rather than
+opening work: HM-DEC-122 is superseded and stays unbuilt, and HM-OPEN-026 is
+closed as unobtainable.
+
+**This order is HM-DEC-123's**, held back for two sessions and now blocking
+three separate things: `ASignalAtTheWrongPitchIsStillFound(400)`, HM-DEC-116,
+and the settled pass on `cw-2026-08-17-013347`.
 
 ## Standing instruction
 
 A phase needing a ruling records the question in `OUTPUT.md` section 4 and
 continues. §12.1 unchanged. **No transmit work of any kind.**
 
-The suite stands at 1817 tests, five failing:
+The suite stands at 1829 tests, six failing:
 `ASignalAtTheWrongPitchIsStillFound(400)`,
 `ClearingTheTranscriptLeavesTheDecoderAlone`,
-`TheBulletinDecodesToItsAnswerKey`, `TheEasyTierIsReadWhole(exchange-easy)`,
-`TheEasyTierIsReadWhole(prosigns-easy)`. **Three of the five should fall in this
-order.** The 400 Hz one belongs to HM-DEC-123 and stays red.
+`TheBulletinDecodesToItsAnswerKey`,
+`TheEasyTierIsReadWhole(prosigns-easy)`,
+`TheEasyTierIsReadWhole(tightfist-easy)`,
+`TheSettledPassNoLongerStopsShortOfTheCallsign`.
+
+**Three of the six belong to phase 1.**
 
 ---
 
-## Phase 1 — two analysis windows during acquisition (HM-DEC-122)
+## Phase 1 — a refining retune does not throw the settled window away (HM-DEC-123)
 
-**The edges are not the problem and no edge correction is applied.** Both edges
-are late by 30–36 ms, which is group delay: identical at both ends, so it
-cancels for a length. What survives is 3–7 ms, under one hop, and it does not
-grow as marks shorten.
+**The whole cost is paid in one line: `_settled.Reset()` on every tracker
+switch.** HM-DEC-096 put it there because a switch usually does mean somebody
+else started transmitting. Sometimes it means the tracker found the same station
+more precisely.
 
-**The window is the fault.** The tracker picks it from the speed it currently
-believes:
+Two unrelated investigations converged on one sentence — **one retune decodes
+and three does not**:
 
-| Told | Window | At 30 wpm |
-|---|---|---|
-| 10 wpm | 50 ms | longer than the dit — runs merge, start error 30 ms → 170 ms |
-| 25 wpm or more | 20 ms | reads better than the 40 ms it acquires with |
+- `cw-2026-08-17-013347`: adopting gap classes moved `MidCharacter`, one retune
+  became three, and the settled pass fell from `■■■ ■■VA3VRR` to `■■■ ■`. The
+  last session reproduced this exactly while fixing the gap classifier, and
+  recorded it as HM-OPEN-032 rather than tidying it away.
+- `ASignalAtTheWrongPitchIsStillFound(400)`: a signal found from 200 Hz away
+  takes three retunes and is unreadable. **Starting 300 Hz above decodes;
+  starting 100 Hz above does not.** So it is not about distance.
 
-At 25 the dah reads 144.4 against a true 144; at 30 the dit reads 38.5 against a
-true 40. **A decoder that has not yet found the speed is running the window
-least able to find it.**
+Build the distinction:
 
-Build it:
+- **A refining retune** — the tracker settling more precisely on the pitch it is
+  already reading — **keeps the settled window.**
+- **A following retune** — the tracker moving to a different station — **resets
+  it**, as now.
+- The tracker already knows how far it moved. A refinement within the current
+  bank and a jump to another operator are already different events in the data;
+  the distinction does not need inventing, it needs reading.
+- **Do not make this a distance threshold pulled from the air.** Measure what
+  separates the two cases on the recordings named above and state the criterion
+  in the report.
 
-- During acquisition, run **20 ms and 50 ms in parallel**.
-- **Keep whichever yields a valid clock** — a clean dit-or-dah cluster inside
-  the 2.5–3.8 ratio band, which is already the test and needs no new judgement.
-- If both yield one, prefer the shorter: the failure is asymmetric — too long
-  merges runs and destroys the signal, too short only costs sensitivity.
-- If neither does, emit nothing. §0.0 already prefers silence.
-- Once locked, the window follows the proved speed as it does now.
+**Held and not shipped, deliberately** (HM-DEC-123): stopping the streaming
+pass's segmentation from gating the tracker. It is right in principle — a
+provisional judgement governing a measurement is backwards — but it treats one
+symptom of this mechanism, and **if this phase is the whole story that change
+would be made for a reason that dissolved.** Do not build it. If the measurement
+shows it is still needed after phase 1, say so in section 4.
 
-Acquiring short alone was **rejected**: it trades weak-and-slow reach, this
-project's best-proven capability, for speeds it cannot yet read. Iterating from
-the locked speed was **rejected** because at 30 wpm there is no lock to iterate
-from.
+Acceptance: `ASignalAtTheWrongPitchIsStillFound(400)` and
+`TheSettledPassNoLongerStopsShortOfTheCallsign` both pass, and nothing that
+currently passes regresses.
 
-Acceptance: 30 wpm decodes rather than collapsing, and **nothing at 10–12 wpm
-gets worse.** Measure the slow end explicitly and report it — that is the thing
-this ruling risks and the thing it was chosen to protect.
+## Phase 2 — HM-DEC-116, unblocked or not
 
-## Phase 2 — the fixture generator's caret (HM-DEC-124)
+**HM-DEC-116 is blocked by HM-DEC-121, and phase 1 is the thing it was blocked
+on.** The streaming pass adopting the settled pass's fitted gap classes met its
+own acceptance and cost the callsign, and the path was traced: adoption changes
+where characters divide, which moves `MidCharacter`, which turns one retune into
+three, which resets the settled window.
 
-**Hamlet reads `IR` where `AR` was sent because the fixture sends `IR`.** §12.5's
-own pattern, with the decoder blamed for months.
+**If phase 1 lands, that chain is broken at the last link.** Re-attempt
+HM-DEC-116 on top of it and measure.
 
-`KeyEdges` opens with a single unpaired edge at the message start. The caret's
-join branch begins by adding a gap edge, which assumes a mark is in progress to
-separate from; at the head of a word there is not, so that edge **closes a mark
-that never opened**. A phantom 100 ms dit, and every edge after it on the
-opposite parity — the dah that should open `BT` becomes a 300 ms gap and the
-element gaps become marks.
+- If it now holds the callsign and keeps its own acceptance —
+  `NothingIsInventedAtTheHandover` and two-station tone-finding — ship it and
+  say so.
+- **If it still costs a real capture, do not ship it.** Report the new path.
+  HM-DEC-121 stands until Tim lifts it, and a real off-air capture outranks a
+  synthetic test (HM-DEC-091).
 
-`^SK` survives because six elements restore the parity that five break, so **an
-even-length prosign renders correctly and an odd-length one does not**, which is
-why this has looked intermittent.
+## Phase 3 — re-measure the bulletin
 
-The model predicts all nine edges of `^BT` exactly. The reference implementation
-reads `EV` and `IR` too: two independent decoders agree and both are right.
-
-- Fix the join branch so a caret at the head of a word does not emit an opening
-  gap edge.
-- Regenerate the affected fixtures.
-- **Re-run HM-DEC-101's gate after every regeneration.** A fixture the reference
-  cannot read is a bad fixture.
-- **Adjudicate every hold-out individually with its reason recorded** (§12.5).
-  No wholesale retirement. This is the discipline phase 3 of the last session
-  was held to and it held.
-- **Re-check `exchange-easy` after the fix rather than investigating it
-  separately** — it is very likely the same defect, and if it is, two of the
-  five failures clear in one move.
-
-## Phase 3 — re-measure the bulletin against a known-good fixture set
-
-`cw-2026-08-18-004507` stands at **36 characters against 45**. Every remaining
-error is character-level: `JJ` extra and `TARRLD` lost to acquisition, `BT`
-unresolved, **`T` read as `A` twice** in `STATION` and `THIS`, and letters
-dropped from `EACH`, `MESSAGE` and `HANDLING`.
+`cw-2026-08-18-004507` stands at **36 characters against 47**, and last session
+moved it for the first time in three: `OT NET ■I ECH STAAION HAND■ AHIS MESAGE
+P` — three characters shorter, the same number correct, the invented `JJ` gone
+and one wrong `A` with it.
 
 Re-measure after phases 1 and 2 and **report the number before touching
-anything.** The spaces have been right since the Farnsworth fix; what is left
-belongs to the clock, and phase 1 is the first thing to touch the clock since.
-
-`T` read as `A` is a dah read as a dit followed by a dah — a spurious leading
-dit, which is a mark boundary in the wrong place or an edge caught early. If
-phase 1 moves it, say by how much. If it does not, that is the finding.
+anything.** `T` still reads as `A` in `STATION` and in `THIS`, which is a
+spurious leading dit: a mark boundary in the wrong place or an edge caught
+early.
 
 **Do not tune anything to this recording.** A decoder fitted to one capture has
-learned one station.
+learned one station. The last three sessions each held that line and it is the
+reason the number means something.
 
-## Phase 4 — `ClearingTheTranscriptLeavesTheDecoderAlone`
+## Phase 4 — the last two bar failures
 
-The app failure, unchanged across three sessions and untouched by any ruling.
-Diagnose it and say whether the fault is the app's, the decoder's, or the
-fixture's, in the manner of the phase 5 adjudications.
+Both are HM-DEC-114's bar and both are small:
 
-Fix it only if the cause is unambiguous. If it is not, report the path.
+- **`tightfist-easy` gains one placeholder.** New last session, from the gap
+  classifier repair, and **not** the outlier trim — that was tested with the trim
+  disabled and was unchanged.
+- **`prosigns-easy` loses its four opening characters to acquisition.** A
+  different cause from the one it failed on for months: the prosigns themselves
+  now read correctly after the caret fix, and it is the one easy-tier fixture
+  that cannot carry a run-up.
+
+For `prosigns-easy`, HM-OPEN-031 stands behind it: the run-up exclusion was
+re-tested rather than taken on trust and the reference reads the run-up version
+at 100% while Hamlet emits a single placeholder. **That is a decoder finding, not
+a fixture one**, and it may be the same defect as `tightfist-easy`'s placeholder.
+Check before treating them separately.
 
 ## Phase 5 — DROP THIS ONE IF SHORT OF ROOM
 
-Housekeeping the record has accumulated:
-
-- **HM-OPEN-026**: `cw-2026-08-18-003758` is named in the fixture records and the
-  file is not on the machine, so anything asserted about it is unverifiable.
-  **Either it is supplied or the reference is removed** — the fixture set must
-  not name evidence that does not exist. Tim has not supplied it across three
-  sessions; recommend removal and say so, but do not decide it.
-- **HM-OPEN-025**: the `"save"` commits. Recorded, not chased. Confirm it is
-  still only cosmetic.
-- Confirm HM-OPEN-027 and HM-OPEN-028 are both recorded as belonging to
-  HM-DEC-123's separate work order, so the next session does not re-derive them.
+- **HM-OPEN-026 is closed** (HM-DEC-126). Mark it closed with the ruling's
+  reason: nothing in the fixture set names the file, and it reopens if it
+  appears. **Record alongside it that this suite still has no regression test
+  for a success** — every ratchet it holds is a ratchet on a failure getting
+  less bad, so nothing in it can tell a repair from a coincidence. That is a gap
+  worth naming even without a candidate to fill it.
+- **HM-DEC-122 is superseded by HM-DEC-125 and stays unbuilt.** Confirm nothing
+  of the two-candidate mechanism remains in the tree, and that
+  `CwAcquisitionWindowTests` — which is measurement and should survive — still
+  pins the bare fast end, the same fist with a run-up, and the slow end.
+- **HM-OPEN-024**: `TheStopFrameIsCommand17CarryingFf` failed once in a full run
+  and passed alone and in the runs either side. Recorded, not chased (§12.6).
+  Confirm it is still intermittent rather than becoming reliable.
 
 If dropped, say so.
 
 ---
 
-**If every phase completes, stop and report. Do not start HM-DEC-123's work
-order, and build nothing toward auto-CQ.**
+**If every phase completes, stop and report. Do not start any other work unit,
+and build nothing toward auto-CQ.**
 
 ## Definition of done
 
-30 wpm decodes and the slow end is measured and unharmed. The caret is fixed,
-the fixtures regenerated, gated and adjudicated, and `prosigns-easy` and
-probably `exchange-easy` are green. The bulletin's distance from its answer key
-is a reported number taken against a fixture set that is finally known good.
+The refining-versus-following distinction is built, its criterion stated as a
+measurement rather than a threshold pulled from the air, and both
+`ASignalAtTheWrongPitchIsStillFound(400)` and
+`TheSettledPassNoLongerStopsShortOfTheCallsign` are green. HM-DEC-116 is either
+shipped or reported with a new path. The bulletin's distance from its answer key
+is a reported number. The two bar failures are fixed or attributed.
 
 **Everything here is provable on the development computer against fixtures, and
 none of it is evidence about the radio** (HM-DEC-093).
