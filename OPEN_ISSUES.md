@@ -1750,3 +1750,67 @@ presented at full confidence, in the two commonest letters on the band, at every
 speed a beginner will meet. What replaces it is a placeholder in one pass on one
 recording, and a placeholder asserts nothing. §0.0 decides that one way.
 
+
+---
+id: HM-OPEN-033
+status: open
+owner: tim
+raised: 2026-08-18
+severity: slows
+blocks: TheEasyTierIsReadWhole(prosigns-easy), TheEasyTierIsReadWhole(tightfist-easy), ASignalAtTheWrongPitchIsStillFound(400)
+refs: HM-DEC-114, HM-DEC-095, HM-OPEN-028, HM-OPEN-031, src/Hamlet.RadioEngine/Cw/CwToneSurvey.cs
+---
+
+The last two bar failures are two different faults, and one of them is the same
+fault as the 400 hertz test. Checked before treating them separately, as the work
+order asked.
+
+**`tightfist-easy` is a timing veto on one gap and nothing else.** The character
+is the first `S` of the first `TEST`, its pattern is `...` — which is correct, and
+the same pattern reads as `S` four seconds later — and it is suppressed because
+its confidence comes back Unreadable:
+
+```
+'■' Unreadable score 0.11 snr 28.6 dB pat '...' at 5.31s
+clarities [0.97, 0.11, 0.92, 0.49, 0.89, 0.97]
+dit 93 ms, mark boundary 137 ms, element gap boundary 96 ms, 20 marks
+```
+
+**Twenty-eight decibels over the noise, so the signal is not the question**: one
+timing measurement inside the character scores 0.11 against an element-gap
+boundary of 96 milliseconds, on a fist whose element gaps are 80. Every other
+measurement in the same character is between 0.49 and 0.97. This is the tight
+fist's own shape — gaps shorter than its dits (HM-DEC-095) — meeting a boundary
+fitted while the estimator is still filling its window. **A placeholder here is
+honest and the character is genuinely marginal by the measurement**, which is why
+this is a question about the boundary rather than about the veto.
+
+**`prosigns-easy` loses its opening to acquisition, and the ruled remedy sends the
+survey to the wrong bin.** The first character it emits is at 7.44 seconds on a
+fixture whose message runs about four and a half, so `<BT> N0` is gone before the
+detector has found the signal. Every other easy-tier fixture is given a `VVV`
+run-up for exactly this (HM-DEC-103) and this one cannot take it: measured again
+after the caret fix and after HM-DEC-123, with the run-up in front the tracker
+makes two moves, **settles at 675 hertz on a fixture sitting at 615**, and emits
+nothing at all.
+
+**AND THAT IS THE THIRD SIGHTING OF ONE MECHANISM.** The coarse survey choosing a
+bin that holds no station is now behind three separate failures:
+
+| where | signal | survey chose | result |
+|---|---|---|---|
+| `ASignalAtTheWrongPitchIsStillFound(400)` | 400 Hz | 575 Hz, 35 dB down | `CQ` lost (HM-OPEN-028) |
+| `prosigns-easy` with a run-up | 615 Hz | 675 Hz | nothing decoded |
+| `two-station`, from cold | 615 Hz | 625, 600, 625 | three moves before it settles |
+
+In the first two the chosen bin carries the same keying as the station, far
+weaker, and clusters more cleanly than the station itself. HM-DEC-095 settled that
+a note is chosen by how it is keyed and never by how loud it is, and that ruling
+was about which of several signals to read on an empty-handed survey. **What is
+not settled is whether a candidate may displace a station already being read when
+it is thirty-five decibels quieter**, and that is the question all three of these
+share. It is in `OUTPUT.md` section 4.
+
+Neither bar failure was fixed here. Both are attributed, which is what the work
+order asked for where a fix is not clear, and the shared mechanism is named rather
+than repaired on the way past (§12.6).
