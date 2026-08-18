@@ -543,6 +543,8 @@ public sealed class CwSpeedEstimator
     /// </remarks>
     private const double GroupSeparation = 1.6;
 
+    private readonly double[] _gapsMs = new double[WindowSize];
+
     private readonly double[] _longGaps = new double[WindowSize];
 
     private double _elementGapCut;
@@ -553,8 +555,28 @@ public sealed class CwSpeedEstimator
     private bool _gapCutsKnown;
 
     /// <summary>
-    /// Find where this sender's own gaps divide (HM-DEC-095).
+    /// Find where this sender's own gaps divide (HM-DEC-115).
     /// </summary>
+    /// <remarks>
+    /// <para>**ONE CLASSIFIER, READ BY BOTH PASSES**, which is what HM-DEC-115
+    /// ruled and what <see cref="CwGapFit"/>'s own note has said since it was
+    /// written. This estimator had a second implementation of the same idea and
+    /// it was weaker in a way that showed: it split the gaps in two and then
+    /// split the long half again, and a two-way split of three heaps lands
+    /// wherever the window's mixture puts it.</para>
+    /// <para>**MEASURED ON `exchange-easy`, WHICH IS TEXTBOOK SPACING AT TWELVE
+    /// WORDS A MINUTE** and about as easy as gap classification gets: element
+    /// gaps of 100 milliseconds, character gaps of 295 and word gaps of 695,
+    /// three heaps a hand could separate. The first cut wandered from 189 to 414
+    /// across one message, and wherever a couple of word gaps crowded into the
+    /// twenty-gap window it converged on the split between *character and word*
+    /// rather than between *element and character*. Every character gap then
+    /// read as an element gap, so `DE` came back as `B` — one letter made out of
+    /// two, at every speed from ten to thirty words a minute and at every ratio
+    /// from eighteen decibels down to three.</para>
+    /// <para>Fitting three classes at once cannot make that mistake, because it
+    /// never has to decide which two heaps to put together.</para>
+    /// </remarks>
     private void RecomputeGapCuts()
     {
         _gapCutsKnown = false;
@@ -564,6 +586,66 @@ public sealed class CwSpeedEstimator
             return;
         }
 
+        // The fit works in milliseconds and reorders what it is given, so it gets
+        // a copy. Allocated once and reused, because this runs on the audio
+        // thread and per-gap allocation is what §8 forbids.
+        var perMs = SampleRate / 1000.0;
+
+        for (var i = 0; i < _gapCount; i++)
+        {
+            _gapsMs[i] = _gaps[i] / perMs;
+        }
+
+        // **AND OVER A ROLLING WINDOW THE ELEMENT CLASS HAS TO BE THE CROWDED
+        // ONE.** Every character with more than one element contributes an
+        // element gap and only its ending contributes a character gap, so on any
+        // ordinary sending the short class outnumbers the middle one — sixty-nine
+        // against twenty-eight on the bulletin.
+        //
+        // Where it does not, the three heaps found are not the three wanted.
+        // Measured on `exchange-easy`: the gate flaps at the onset of the very
+        // first mark and leaves gaps of 25, 35 and 65 milliseconds behind, and
+        // for as long as those sit in a twenty-gap window the fit gives them a
+        // class of their own, puts the element boundary at 53 milliseconds, and
+        // reads every real 100 millisecond element gap as a character gap.
+        // Twelve elements came back as twelve letters.
+        //
+        // **IT IS THE WINDOW THAT NEEDS THIS AND NOT THE FIT**, so it is here
+        // rather than inside `CwGapFit`. The settled pass fits over a long
+        // history it has heard all of, where those three gaps are three among
+        // hundreds; applying the same test there was measured and it costs the
+        // callsign on `cw-2026-08-17-013347`, which is a real capture (HM-DEC-091).
+        if (CwGapFit.Fit(_gapsMs, _gapCount) is not { } fit
+            || fit.ElementCount < fit.CharacterCount)
+        {
+            SplitGapsInTwo();
+            return;
+        }
+
+        _elementGapCut = fit.ElementCutMs * perMs;
+        _characterGapCut = fit.CharacterCutMs * perMs;
+        _elementGapMean = fit.ElementMs * perMs;
+        _characterGapMean = fit.CharacterMs * perMs;
+        _wordGapMean = fit.WordMs * perMs;
+        _gapCutsKnown = true;
+    }
+
+    /// <summary>
+    /// The older two-way split, kept for the gaps a three-class fit cannot see
+    /// (HM-DEC-115).
+    /// </summary>
+    /// <remarks>
+    /// **IT IS A FALLBACK RATHER THAN A CLASSIFIER NOW.** Where three heaps are
+    /// present it is the one that gets them wrong, which is why it no longer runs
+    /// first. Where there are only two — the opening of a message, a run-up with
+    /// no word gap in it yet, a caller who has not paused — it still separates
+    /// element gaps from the rest, and what it gives is a great deal better than
+    /// falling straight through to dit multiples with a dit that is itself still
+    /// being acquired. Removing it entirely was measured: the run-up came back as
+    /// a run of E and T, because every gap in it read as a character gap.
+    /// </remarks>
+    private void SplitGapsInTwo()
+    {
         var (low, high, elementCut) = SplitAtMean(_gaps, _gapCount);
 
         // One group of gaps means somebody sending without pausing, and there is

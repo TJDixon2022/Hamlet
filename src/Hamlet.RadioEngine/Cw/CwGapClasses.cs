@@ -8,6 +8,9 @@ namespace Hamlet.RadioEngine.Cw;
 /// <param name="WordMs">The middle of the gaps between words.</param>
 /// <param name="ElementCutMs">Where a gap stops being an element gap.</param>
 /// <param name="CharacterCutMs">Where a gap becomes a word gap.</param>
+/// <param name="ElementCount">How many gaps landed in the element class.</param>
+/// <param name="CharacterCount">How many landed in the character class.</param>
+/// <param name="WordCount">How many landed in the word class.</param>
 /// <remarks>
 /// The centers are carried as well as the boundaries because a Farnsworth sender
 /// should be visible rather than merely survived: a surface can say what this
@@ -19,7 +22,10 @@ public readonly record struct CwGapClasses(
     double CharacterMs,
     double WordMs,
     double ElementCutMs,
-    double CharacterCutMs)
+    double CharacterCutMs,
+    int ElementCount = 0,
+    int CharacterCount = 0,
+    int WordCount = 0)
 {
     /// <summary>
     /// How many element gaps long this sender's character gap is.
@@ -71,6 +77,22 @@ public static class CwGapFit
     /// and so does the bulletin at 40, 240 and 600 milliseconds.
     /// </remarks>
     public const double LeastSeparation = 0.405;
+
+    /// <summary>How far above the middle class a lone top member may sit.</summary>
+    /// <remarks>
+    /// Twice the separation two classes have to clear anyway, so a gap something
+    /// over twice as long as the class below it. A word gap at seven dits against
+    /// a character gap at three does not come near it; a two second silence
+    /// against a 680 millisecond word gap clears it easily.
+    /// </remarks>
+    public const double LoneOutlier = 2 * LeastSeparation;
+
+    /// <summary>How many lone outliers may be dropped before giving up.</summary>
+    /// <remarks>
+    /// Three. Each one costs a real measurement, and a window needing more than a
+    /// handful has nothing in it worth fitting.
+    /// </remarks>
+    public const int MostTrims = 3;
 
     /// <summary>How many refinement passes to make.</summary>
     /// <remarks>
@@ -131,49 +153,83 @@ public static class CwGapFit
         // A quarter, three quarters, nineteen twentieths. Element gaps are the
         // commonest by far, character gaps next, word gaps rarest, so those
         // three land one in each heap on any ordinary sending.
-        var a = gapsMs[usable / 4];
-        var b = gapsMs[usable * 3 / 4];
-        var c = gapsMs[Math.Min(usable - 1, usable * 19 / 20)];
+        double a = 0, b = 0, c = 0;
+        int na = 0, nb = 0, nc = 0;
 
-        for (var pass = 0; pass < Passes; pass++)
+        // **A LONE GAP FAR ABOVE EVERYTHING ELSE IS A PAUSE, NOT A CLASS.** An
+        // operator who stops for a couple of seconds between transmissions leaves
+        // one silence several times longer than any word gap he sends, and a
+        // three-class fit spends its whole top class on it: the word gaps then
+        // have to share a class with the character gaps, the boundary between
+        // them lands above both, and every space between words disappears.
+        // Measured on a looping training signal at twelve words a minute —
+        // element gaps 95, character 290, word 680, and one silence of 2000
+        // between repeats — the boundary went from 444 to 903 milliseconds and
+        // `CQ DE W1AW K` came back as `CQDEW1AW K`.
+        //
+        // So a top class of exactly one member sitting far clear of the middle
+        // one is dropped and the fit taken again without it. It is still a word
+        // gap when it is classified, by any boundary this can produce; what it
+        // may not do is decide where that boundary goes.
+        for (var trim = 0; ; trim++)
         {
-            double sa = 0, sb = 0, sc = 0;
-            int na = 0, nb = 0, nc = 0;
+            a = gapsMs[usable / 4];
+            b = gapsMs[usable * 3 / 4];
+            c = gapsMs[Math.Min(usable - 1, usable * 19 / 20)];
 
-            for (var i = 0; i < usable; i++)
+
+            for (var pass = 0; pass < Passes; pass++)
             {
-                var v = gapsMs[i];
-                var da = Math.Abs(v - a);
-                var db = Math.Abs(v - b);
-                var dc = Math.Abs(v - c);
+                double sa = 0, sb = 0, sc = 0;
+                na = nb = nc = 0;
 
-                if (da <= db && da <= dc)
+                for (var i = 0; i < usable; i++)
                 {
-                    sa += v;
-                    na++;
+                    var v = gapsMs[i];
+                    var da = Math.Abs(v - a);
+                    var db = Math.Abs(v - b);
+                    var dc = Math.Abs(v - c);
+
+                    if (da <= db && da <= dc)
+                    {
+                        sa += v;
+                        na++;
+                    }
+                    else if (db <= dc)
+                    {
+                        sb += v;
+                        nb++;
+                    }
+                    else
+                    {
+                        sc += v;
+                        nc++;
+                    }
                 }
-                else if (db <= dc)
+
+                // An empty class means there are not three heaps here, and inventing
+                // one would put spaces where nobody left any.
+                if (na == 0 || nb == 0 || nc == 0)
                 {
-                    sb += v;
-                    nb++;
+                    return null;
                 }
-                else
-                {
-                    sc += v;
-                    nc++;
-                }
+
+                a = sa / na;
+                b = sb / nb;
+                c = sc / nc;
             }
 
-            // An empty class means there are not three heaps here, and inventing
-            // one would put spaces where nobody left any.
-            if (na == 0 || nb == 0 || nc == 0)
+            if (nc > 1
+                || trim >= MostTrims
+                || usable - 1 < LeastGaps
+                || c - b <= LoneOutlier)
             {
-                return null;
+                break;
             }
 
-            a = sa / na;
-            b = sb / nb;
-            c = sc / nc;
+            // Sorted ascending, so the single member of the top class is the
+            // last value left.
+            usable--;
         }
 
         if (b - a < LeastSeparation || c - b < LeastSeparation)
@@ -188,6 +244,9 @@ public static class CwGapFit
             Math.Exp(b),
             Math.Exp(c),
             Math.Exp((a + b) / 2),
-            Math.Exp((b + c) / 2));
+            Math.Exp((b + c) / 2),
+            na,
+            nb,
+            nc);
     }
 }

@@ -133,6 +133,22 @@ public sealed class CwSettledPassTests
     /// <para>What is asserted here is a ratchet on reach and not a transcript.
     /// Nobody knows what that station sent beyond what can be read from the
     /// audio, and this repository does not invent one (HM-DEC-091).</para>
+    /// <para>**AND IT IS RED AS OF 2026-08-18, DELIBERATELY, WITH THE CALLSIGN IN
+    /// THE OTHER PASS** (HM-OPEN-032). The streaming estimator stopped carrying
+    /// its own gap classifier and now reads <see cref="CwGapFit"/> like the
+    /// settled pass does, which is what HM-DEC-115 ruled. That changes where the
+    /// streaming pass divides characters, which changes `MidCharacter`, which
+    /// changes when the tracker may release a held retune: one retune becomes
+    /// three, `_settled.Reset()` runs twice more, and this pass falls from
+    /// `■■■ ■■VA3VRR` to `■■■ ■`. It is HM-OPEN-027's coupling exactly, and
+    /// HM-DEC-123 is the ratified fix for it, in its own work order.</para>
+    /// <para>**THE CALLSIGN DID NOT DISAPPEAR; IT MOVED.** On the same capture
+    /// the streaming pass went from `■   ■<SK>3VRR` to `■    ■VA3VRR` — from a
+    /// confidently wrong prosign where `VA` was sent, to the callsign. So §0.0 is
+    /// better served on that recording than it was, and what is lost is which
+    /// pass carries it. The bar is left where it is rather than lowered to the
+    /// new reading (§12.5): a ratchet that follows the measurement down is not a
+    /// ratchet.</para>
     /// </remarks>
     [Fact]
     public void TheSettledPassNoLongerStopsShortOfTheCallsign()

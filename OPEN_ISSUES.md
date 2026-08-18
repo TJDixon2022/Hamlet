@@ -1465,13 +1465,18 @@ the slow end so the next attempt is judged against a number.
 
 ---
 id: HM-OPEN-031
-status: open
+status: answered
 owner: claude
 raised: 2026-08-18
 severity: slows
-blocks: TheEasyTierIsReadWhole(exchange-easy), TheEasyTierIsReadWhole(prosigns-easy)
-refs: HM-DEC-114, HM-DEC-115, HM-DEC-124, HM-OPEN-029, tests/fixtures/cw/receiver
+blocks: TheEasyTierIsReadWhole(prosigns-easy)
+refs: HM-DEC-114, HM-DEC-115, HM-DEC-124, HM-OPEN-029, HM-OPEN-032, tests/fixtures/cw/receiver
 ---
+
+**The `DE` half is fixed, 2026-08-18** (HM-OPEN-032). The streaming estimator was
+carrying a second gap classifier and it was the one getting three heaps wrong.
+`exchange-easy` and `coverage-easy` now read whole. The `prosigns-easy` half is
+untouched and is still the four opening characters.
 
 Two easy-tier fixtures the reference reads whole, and Hamlet does not. Both are
 decoder faults with the fixture proved sound, which is what HM-DEC-114 exists to
@@ -1512,3 +1517,83 @@ collapses on entirely.
 
 Not chased further, per the work order. Both are named here rather than repaired
 on the way past (§12.6).
+
+---
+id: HM-OPEN-032
+status: open
+owner: tim
+raised: 2026-08-18
+severity: slows
+blocks: TheSettledPassNoLongerStopsShortOfTheCallsign, TheEasyTierIsReadWhole(tightfist-easy)
+refs: HM-DEC-115, HM-DEC-123, HM-OPEN-027, HM-OPEN-028, HM-OPEN-031, src/Hamlet.RadioEngine/Cw/CwTiming.cs, src/Hamlet.RadioEngine/Cw/CwGapClasses.cs
+---
+
+The streaming estimator now reads the one gap classifier, and two tests went red
+in exchange for a substitution that was on every CQ call on the band.
+
+**What was wrong.** `CwGapFit` carries the note "one implementation, read by both
+passes, because two copies of a classifier is two classifiers", and there were
+two: the settled pass used it and the streaming estimator had its own, which
+split the gaps in two and then split the long half again. **A two-way split of
+three heaps lands wherever the window's mixture puts it.** Traced on
+`exchange-easy`, which is textbook spacing at twelve words a minute and about as
+easy as this gets — element gaps 100 ms, character 295, word 695 — the first cut
+wandered from 189 to 414 across one message, and wherever a couple of word gaps
+crowded into the twenty-gap window it converged on the split between *character
+and word* rather than between *element and character*. Every character gap then
+read as an element gap and `DE` came back as `B`: one letter made out of two, at
+every speed from ten to thirty words a minute and at every ratio from eighteen
+decibels down to three.
+
+**Two guards were needed and both were measured rather than reasoned.**
+
+- **The element class has to be the crowded one**, tested at the streaming call
+  site and not inside the fit. The gate flaps at the onset of the very first mark
+  and leaves gaps of 25, 35 and 65 milliseconds behind; while those sit in the
+  window the fit gives them a class of their own, puts the element boundary at 53
+  milliseconds, and reads every real 100 millisecond element gap as a character
+  gap — twelve elements came back as twelve letters. Applying the same test
+  inside `CwGapFit`, where the settled pass would see it, costs the callsign on
+  `cw-2026-08-17-013347`.
+- **A lone gap far above everything else is a pause and not a class**, tested
+  inside the fit because it is about the data. A looping training signal pauses
+  two seconds between repeats, and that one silence took the whole top class:
+  word gaps of 680 then had to share a class with character gaps of 290, the
+  boundary went from 444 to 903 milliseconds, and every space between words
+  disappeared.
+
+**What it bought, measured:**
+
+| | before | after |
+|---|---|---|
+| `exchange-easy` | `VVCQCQBN0CALL…` | reads whole |
+| `coverage-easy` | reads whole | reads whole |
+| bare fist at 25, 28, 30, 35 wpm | 0.67, 0.63, 0.70, 0.63 | 0.89, 0.89, 0.89, 0.88 |
+| slow end with a run-up | 0.89 | 0.95 to 1.00 |
+| `ClearingTheTranscript…` | `■ B■AW K` | `■ DE W1AW K` |
+| bulletin, settled | `JJ AOT NET…` | `OT NET…` — same correct count, three fewer invented |
+| `013347`, streaming | `■   ■<SK>3VRR` | `■    ■VA3VRR` |
+| `013347`, settled | `■■■ ■■VA3VRR` | `■■■ ■` |
+
+**And what it cost.** Two tests are red that were not:
+
+- **`TheSettledPassNoLongerStopsShortOfTheCallsign`.** Changing where the
+  streaming pass divides characters changes `MidCharacter`, which changes when
+  the tracker may release a held retune: one retune becomes three,
+  `_settled.Reset()` runs twice more, and the settled window is thrown away
+  before it reaches the callsign. **This is HM-OPEN-027's coupling exactly, and
+  HM-DEC-123 is the ratified fix for it**, in its own work order. The callsign
+  did not disappear from the screen; it moved to the other pass, and the reading
+  it moved from was `<SK>3VRR`, which is a confidently wrong prosign where `VA`
+  was sent. §0.0 is better served on that recording than it was.
+- **`tightfist-easy`** gains one placeholder, `TE■TDETESTK` against
+  `TESTDETESTK`. Not the outlier trim, which was tested with the trim disabled
+  and is unchanged; it is the fit itself on a fist whose element gaps are shorter
+  than its dits. A placeholder is honest and this is the tier HM-DEC-114 says
+  must be read whole, so it is a defect rather than a degradation.
+
+**Why it shipped with those two red.** `DE` read as `B` is a wrong character
+presented at full confidence, in the two commonest letters on the band, at every
+speed a beginner will meet. What replaces it is a placeholder in one pass on one
+recording, and a placeholder asserts nothing. §0.0 decides that one way.
+
