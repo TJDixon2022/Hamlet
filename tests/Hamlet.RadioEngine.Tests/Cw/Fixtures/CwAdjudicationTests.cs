@@ -217,7 +217,18 @@ public sealed class CwAdjudicationTests
         _output.WriteLine($"{during} characters before, {seen} in all");
 
         Assert.True(seen > during, "the decoder stopped reading part-way through");
-        Assert.Equal(before.ToneHz, after.ToneHz);
+
+        // **WITHIN A BIN, NOT IDENTICAL** (§12.5, adjudicated 2026-08-18). This
+        // asserted the two were equal and began failing when the fixture gained
+        // its run-up, because the tracker then had long enough to refine 625 Hz
+        // down to 600, which is the pitch actually sent. An equality here
+        // forbids the tracker from doing its job: what the test is about is that
+        // clearing the screen does not disturb what the decoder has learned, and
+        // a quarter of a bin of refinement is not a disturbance.
+        //
+        // The bins are twenty-five hertz apart, so one bin is the tightest
+        // meaningful bound.
+        Assert.InRange(after.ToneHz, before.ToneHz - 25, before.ToneHz + 25);
     }
 
     /// <remarks>

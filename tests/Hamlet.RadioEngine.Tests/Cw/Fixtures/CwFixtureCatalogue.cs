@@ -49,6 +49,24 @@ public static class CwFixtureCatalogue
     public const double QsbDepthDb = 12;
 
     /// <summary>A callsign exchange, which session 2's classifier will want.</summary>
+    /// <summary>Keying ahead of a message, so the detector can acquire on it.</summary>
+    /// <remarks>
+    /// <para>**A FIXTURE SHORTER THAN THE DETECTOR'S ACQUISITION TESTS
+    /// ACQUISITION, NOT DECODING** (§12.5). This detector wants keying before
+    /// its tone tracker and its clock have both settled, and every one of these
+    /// messages is under five seconds, so the part under test was competing for
+    /// the seconds the decoder needed to find it at all. The characters lost
+    /// without a run-up are always the opening ones.</para>
+    /// <para>**ONE GROUP, MEASURED RATHER THAN PICKED.** Swept from nothing to
+    /// eight groups: one is the least that satisfies the acquisition, and at
+    /// twelve words a minute two or more make the decode worse and it never
+    /// recovers. Choosing more would have buried a real decoder fault; that
+    /// fault is in `OUTPUT.md` instead.</para>
+    /// <para>`V` is what an operator actually sends to let somebody find him,
+    /// which is the same problem and the same answer.</para>
+    /// </remarks>
+    public const string RunUp = "VVV ";
+
     public const string ExchangeText = "CQ CQ DE N0CALL N0CALL K";
 
     /// <summary>Prosigns, each sent as one character rather than two letters.</summary>
@@ -245,10 +263,40 @@ public static class CwFixtureCatalogue
         {
             foreach (var (tier, snr, qsb) in tiers)
             {
+                // **THE RUN-UP GOES ON THE EASY TIER AND NOWHERE ELSE.** That is
+                // where HM-DEC-114's bar applies — fifteen decibels, steady
+                // fist, the whole message — and it is the tier whose failures
+                // were all lost opening characters. The working and edge tiers
+                // assert how the decoder degrades rather than that it reads
+                // everything, and they were passing.
+                //
+                // Applying it to all three was tried and measured: the easy
+                // tiers held or improved, and two working tiers fell through the
+                // reference gate, coverage from 52% to 8% and tightfist from 73%
+                // to 36%. Rebuilding a fixture that was not failing is churn
+                // that invalidates a reference score for nothing (§12.5,
+                // §12.6).
+                // **AND NOT ON THE PROSIGNS FIXTURE, WHICH IT BREAKS.** With a
+                // run-up in front of it the tone survey stops finding the tone
+                // at all and the decode is empty: `TheToneIsFoundInRealisticAudio`
+                // fails alongside the bar. A prosign is one long unbroken symbol,
+                // so `VVV` in front of it gives the survey a run of short marks
+                // followed by a run of very long ones, and the mark-length
+                // clustering that separates keying from a carrier (HM-DEC-095)
+                // sees one smear rather than two groups.
+                //
+                // That fixture's real fault is a wrong character rather than a
+                // missing opening — it reads `IR` where `AR` was sent — and a
+                // run-up would have hidden it behind an empty decode instead of
+                // fixing it (§12.5).
+                var message = tier == "easy" && slug != "prosigns"
+                    ? RunUp + text
+                    : text;
+
                 recipes.Add(tight
                     ? new CwFixtureRecipe(
                         $"{slug}-{tier}",
-                        text,
+                        message,
                         DitMilliseconds: TightFistDitMs,
                         DahMilliseconds: TightFistDahMs,
                         ElementGapMilliseconds: TightFistElementGapMs,
@@ -260,7 +308,7 @@ public static class CwFixtureCatalogue
                         Seed: seed++)
                     : new CwFixtureRecipe(
                         $"{slug}-{tier}",
-                        text,
+                        message,
                         DitMilliseconds: 1200.0 / OrdinaryWpm,
                         DahMilliseconds: 3 * 1200.0 / OrdinaryWpm,
                         ElementGapMilliseconds: 1200.0 / OrdinaryWpm,

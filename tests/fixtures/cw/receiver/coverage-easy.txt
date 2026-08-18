@@ -2,9 +2,9 @@ name          coverage-easy
 generated     tests/Hamlet.RadioEngine.Tests/Cw/Fixtures
 seed          20260823
 sampleRate    8000
-seconds       36.40
+seconds       40.40
 
-text          1234567890 QRZ? DE/N0CALL
+text          VVV 1234567890 QRZ? DE/N0CALL
 messageStart  1.00 s
 dit           100 ms
 dah           300 ms
@@ -21,6 +21,6 @@ toneAmplitude -16.0 dBFS peak
 qsb           none
 preamble      none
 
-peak          -12.4 dBFS
-reference    96% of the message  [1234567890 QRZ▯ DE/N0CALL]
-scoredBytes  582444
+peak          -12.5 dBFS
+reference    96% of the message  [VVV 1234567890 QRZ▯ DE/N0CALL]
+scoredBytes  646444

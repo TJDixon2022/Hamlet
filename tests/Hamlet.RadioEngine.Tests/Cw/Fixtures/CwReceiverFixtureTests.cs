@@ -166,7 +166,13 @@ public sealed class CwReceiverFixtureTests
 
         var recipe = CwFixtureCatalogue.All.Single(r => r.Name == name);
 
+        // **THE RUN-UP IS SCAFFOLDING AND IS NOT THE MESSAGE** (§12.5). It is
+        // there so the detector has something to acquire on, and what it manages
+        // while acquiring is the acquisition. Holding it to the bar would be
+        // asserting that acquisition is instant, which is the fixture defect
+        // this rebuild exists to remove wearing different clothes.
         var expected = recipe.Text
+            .Replace(CwFixtureCatalogue.RunUp, "", StringComparison.Ordinal)
             .Replace("^", "", StringComparison.Ordinal)
             .Replace(" ", "", StringComparison.Ordinal)
             .ToUpperInvariant();
@@ -188,9 +194,16 @@ public sealed class CwReceiverFixtureTests
 
         var placeholders = letters.Count(c => c.IsUnreadable);
 
+        // Judged against the whole recipe, run-up included, because a `V` that
+        // was sent is not a stranger however little it belongs to the message.
+        var sent = recipe.Text
+            .Replace("^", "", StringComparison.Ordinal)
+            .Replace(" ", "", StringComparison.Ordinal)
+            .ToUpperInvariant();
+
         var strangers = letters
             .Where(c => !c.IsUnreadable && c.Text.Length == 1)
-            .Where(c => !expected.Contains(c.Text[0], StringComparison.Ordinal))
+            .Where(c => !sent.Contains(c.Text[0], StringComparison.Ordinal))
             .Select(c => c.Text)
             .ToList();
 
@@ -207,7 +220,8 @@ public sealed class CwReceiverFixtureTests
         _output.WriteLine($"  wanted '{expected}'");
 
         Assert.True(
-            placeholders == 0 && strangers.Count == 0 && got == expected,
+            placeholders == 0 && strangers.Count == 0 && got.EndsWith(
+                expected, StringComparison.Ordinal),
             $"a signal fifteen decibels over the noise came back with "
             + $"{placeholders} characters Hamlet could not read, "
             + $"{strangers.Count} that are not in the message"

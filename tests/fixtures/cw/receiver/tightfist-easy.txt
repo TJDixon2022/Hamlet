@@ -2,9 +2,9 @@ name          tightfist-easy
 generated     tests/Hamlet.RadioEngine.Tests/Cw/Fixtures
 seed          20260826
 sampleRate    8000
-seconds       8.11
+seconds       11.08
 
-text          TEST DE TEST K
+text          VVV TEST DE TEST K
 messageStart  1.00 s
 dit           94 ms
 dah           273 ms
@@ -21,6 +21,6 @@ toneAmplitude -16.0 dBFS peak
 qsb           none
 preamble      none
 
-peak          -12.7 dBFS
-reference    100% of the message  [TEST DE TEST K]
-scoredBytes  129772
+peak          -12.6 dBFS
+reference    100% of the message  [VVV TEST DE TEST K T]
+scoredBytes  177356
