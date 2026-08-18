@@ -431,7 +431,7 @@ public sealed class GlossaryTests
     [Fact]
     public void TheAppsOwnCopySurvivesMarking()
     {
-        foreach (var band in RadioEngine.Bands.BandPlan.Bands)
+        foreach (var band in RadioEngine.Bands.HfBands.Bands)
         {
             var passage = BandCharacter.Describe(band.Name, RadioEngine.Solar.SolarSnapshot.Unknown, 8, 40);
 

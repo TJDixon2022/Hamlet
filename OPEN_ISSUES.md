@@ -120,12 +120,12 @@ Decide during phase 3 planning; nothing before then depends on it.
 
 ---
 id: HM-OPEN-005
-status: open
+status: closed
 owner: tim
 raised: 2026-08-12
 severity: slows
-blocks: retiring BandPlan, which leaves two band plans in the tree with only one of them cited
-refs: src/Hamlet.RadioEngine/Bands/BandPlan.cs, data/privileges/us-part97-privileges.json, data/bands/us-neighborhoods.json, CLAUDE.md §0, §0.2.1, HM-DEC-107
+closed: 2026-08-18
+refs: src/Hamlet.RadioEngine/Bands/HfBands.cs, data/privileges/us-part97-privileges.json, data/bands/us-neighborhoods.json, CLAUDE.md 0, 0.2.1, HM-DEC-107, HM-DEC-110
 ---
 
 Move the band plan out of code into a source-marked data file in /data, with
@@ -221,9 +221,31 @@ editorial. Whichever is taken changes where a band button lands on between
 three and seven bands, which is a trade-off between cited data and the
 operator's muscle memory, and §12.1 puts that with Tim.
 
-Nothing was migrated. §0 would be satisfied by moving the edges and the CW
-segments and leaving the jump spots in code, and a half-migrated band plan is
-worse than two whole ones.
+**CLOSED 2026-08-18 (HM-DEC-110).** `BandPlan` is deleted and `HfBands`
+replaces it, deriving every number from a citation. The migration ran exactly
+as the measurement above said it would.
+
+**AND THE CORRECTION ABOVE BELONGS IN THE RECORD RATHER THAN BEING QUIETLY
+DROPPED.** The 2026-08-14 entry said the CW segment boundaries are convention
+rather than regulation and do not align with the privilege boundaries. That was
+wrong. They are the union of the ranges carrying data in 47 CFR 97.305(c) and
+they align to the hertz on all seven bands. Two of those rows say "Entire band"
+rather than a range, 80 m and 30 m, and expanding them from 97.301's own edges
+is what makes them look like conventions when they are not.
+
+**The cited data was verified against the regulation itself before anything
+re-pointed to it** (CLAUDE.md 4), from the eCFR versioner API for title 47 as of
+2026-08-01 rather than from the file that quotes it. §97.301(b) gave every band
+edge and §97.305(c) every data range, and all fourteen numbers matched. The
+column-awareness that section insists on earned its keep twice: 97.301's tables
+carry ITU Regions 1, 2 and 3 side by side and the United States is Region 2, so
+reading Region 1 would have given 40 m as 7.000 to 7.200 and 75 m as 3.600 to
+3.800; and a naive search for paragraph (b) lands first on a footnote reference
+inside a table cell.
+
+What moved: 40 m's landing spot from 7.030 to 7.028, and 30 m's from 10.110 —
+which matched no cited source at all — to 10.103. The other five were already
+the "CW main street" block they now derive from.
 
 ---
 id: HM-OPEN-006

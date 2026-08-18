@@ -1402,7 +1402,7 @@ public partial class MainWindowViewModel : ObservableObject
         _telemetry = telemetry;
 
         Bands = new ObservableCollection<BandButtonViewModel>(
-            BandPlan.Bands.Select(b => new BandButtonViewModel(b)));
+            HfBands.Bands.Select(b => new BandButtonViewModel(b)));
 
         _selectedBand = Bands.FirstOrDefault(b => b.Band.Name == settings.LastBand)
                         ?? Bands.First(b => b.Band.Name == "40 m");
@@ -2060,7 +2060,7 @@ public partial class MainWindowViewModel : ObservableObject
     {
         AppEvents.TuneRequested(_telemetry, hz, "story_or_spot");
         var arrivedOn = MarkActedOn(hz);
-        var band = BandPlan.BandFor(hz);
+        var band = HfBands.BandFor(hz);
         if (band is not null && band.Name != SelectedBand.Band.Name)
         {
             SelectedBand = Bands.First(b => b.Band.Name == band.Name);
@@ -3290,7 +3290,7 @@ public partial class MainWindowViewModel : ObservableObject
 
         if (read is { IsKnown: true, Number: { } hz })
         {
-            return BandPlan.BandFor((long)hz) is { } band
+            return HfBands.BandFor((long)hz) is { } band
                 ? $"{band.Name}  (from the frequency the radio reported)"
                 : "outside every band Hamlet knows";
         }
@@ -4611,7 +4611,7 @@ public partial class MainWindowViewModel : ObservableObject
         _updatingFromRig = true;
         try
         {
-            var band = BandPlan.BandFor(hz) ?? AmateurSpectrum.Nearest(hz);
+            var band = HfBands.BandFor(hz) ?? AmateurSpectrum.Nearest(hz);
             if (band is not null && band.Name != SelectedBand.Band.Name)
             {
                 SelectedBand = Bands.First(b => b.Band.Name == band.Name);

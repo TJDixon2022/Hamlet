@@ -61,7 +61,7 @@ public static class Favorites
     public static Favorite From(
         long frequencyHz, string? mode, Neighborhood? here, DateTime nowUtc)
     {
-        var band = BandPlan.BandFor(frequencyHz)?.Name ?? "";
+        var band = HfBands.BandFor(frequencyHz)?.Name ?? "";
         var hood = here?.Name ?? "";
 
         return new Favorite(
@@ -89,7 +89,7 @@ public static class Favorites
 
         if (here is null || here.Name.Length == 0)
         {
-            var band = BandPlan.BandFor(frequencyHz)?.Name;
+            var band = HfBands.BandFor(frequencyHz)?.Name;
             return band is null ? label : $"{label} on {band}";
         }
 

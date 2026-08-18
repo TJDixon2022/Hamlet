@@ -19,12 +19,12 @@ public sealed class BestBetAgreementTests
     private static readonly DateTime Now = new(2026, 8, 14, 20, 0, 0, DateTimeKind.Utc);
 
     private static readonly string[] BandNames =
-        BandPlan.Bands.Select(b => b.Name).ToArray();
+        HfBands.Bands.Select(b => b.Name).ToArray();
 
     private static ActivitySpot On(
         string band, int agoMinutes, bool activation, int seed)
     {
-        var plan = BandPlan.Bands.Single(b => b.Name == band);
+        var plan = HfBands.Bands.Single(b => b.Name == band);
 
         return new ActivitySpot(
             $"W{seed}ABC is on the air",
@@ -68,7 +68,7 @@ public sealed class BestBetAgreementTests
     }
 
     private static BandRanking Rank(IReadOnlyList<ActivitySpot> spots, int hour = 3)
-        => BandOpportunities.Rank(BandPlan.Bands, spots, Now, hour);
+        => BandOpportunities.Rank(HfBands.Bands, spots, Now, hour);
 
     /// <remarks>
     /// THE BADGE LANDS WHERE THE RANKING SAYS. Proves the badge is never on a
@@ -209,7 +209,7 @@ public sealed class BestBetAgreementTests
             }
 
             var readings = BandActivity.Summarize(
-                BandPlan.Bands, spots, new[] { Ok("POTA") }, Now);
+                HfBands.Bands, spots, new[] { Ok("POTA") }, Now);
 
             var badged = readings.Single(r => r.BandName == ranking.BestBandName);
 

@@ -20,7 +20,7 @@ namespace Hamlet.App.Tests.Licensing;
 /// </remarks>
 public sealed class OutOfBandTests
 {
-    private static CwBand Twenty => BandPlan.Bands.First(b => b.Name == "20 m");
+    private static CwBand Twenty => HfBands.Bands.First(b => b.Name == "20 m");
 
     /// <remarks>
     /// Proves the fact itself: above the top of 20 m is not amateur spectrum,

@@ -18,7 +18,7 @@ namespace Hamlet.App.Tests.Licensing;
 /// </remarks>
 public sealed class PrivilegeStatusLineTests
 {
-    private static CwBand Forty => BandPlan.Bands.First(b => b.Name == "40 m");
+    private static CwBand Forty => HfBands.Bands.First(b => b.Name == "40 m");
 
     /// <remarks>
     /// Proves the status line says "yours to use" inside privileges, in the
@@ -119,7 +119,7 @@ public sealed class PrivilegeStatusLineTests
     [Fact]
     public void AtTheFt8WateringHoleTheCardStopsInvitingAMorseCall()
     {
-        var twenty = BandPlan.Bands.First(b => b.Name == "20 m");
+        var twenty = HfBands.Bands.First(b => b.Name == "20 m");
         var here = NeighborhoodPlan.ForBand(twenty).Single(n => n.Contains(14_075_000));
 
         var line = PrivilegeStatusLine.Build(
@@ -165,7 +165,7 @@ public sealed class PrivilegeStatusLineTests
     [Fact]
     public void TheCulturalLineOnlySpeaksAboutMorse()
     {
-        var twenty = BandPlan.Bands.First(b => b.Name == "20 m");
+        var twenty = HfBands.Bands.First(b => b.Name == "20 m");
         var here = NeighborhoodPlan.ForBand(twenty).Single(n => n.Contains(14_075_000));
 
         var line = PrivilegeStatusLine.Build(

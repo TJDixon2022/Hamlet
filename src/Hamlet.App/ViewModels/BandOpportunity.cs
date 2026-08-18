@@ -160,7 +160,7 @@ public static class BandOpportunities
         // that is left, and it is a guess: low bands at night, high bands by
         // day, from a table written before the app could hear anything. It is
         // allowed to stand in, and it has to say so (HM-DEC-009).
-        var order = BandPlan.BestBets(localHour);
+        var order = HfBands.BestBets(localHour);
 
         var guessed = summary
             .OrderBy(b => IndexOf(order, b.BandName))

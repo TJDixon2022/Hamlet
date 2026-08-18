@@ -52,7 +52,7 @@ public sealed class SimulationHonestyTests
     [Fact]
     public void TrainingSpectrumSource_IsAlwaysSimulated()
     {
-        var band = BandPlan.Bands.First(b => b.Name == "40 m");
+        var band = HfBands.Bands.First(b => b.Name == "40 m");
         using var source = new TrainingSpectrumSource(band);
 
         Assert.True(source.IsSimulated);

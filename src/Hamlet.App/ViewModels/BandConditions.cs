@@ -233,7 +233,7 @@ public static class BandConditions
     }
 
     private static string? BandPlanName(long hz)
-        => Hamlet.RadioEngine.Bands.BandPlan.BandFor(hz)?.Name;
+        => Hamlet.RadioEngine.Bands.HfBands.BandFor(hz)?.Name;
 
     private static string Count(int n, string noun)
         => n == 1

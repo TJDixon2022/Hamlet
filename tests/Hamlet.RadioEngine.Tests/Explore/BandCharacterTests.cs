@@ -15,7 +15,7 @@ public sealed class BandCharacterTests
     private const double PittsburghLon = -79.71;
 
     private static readonly IReadOnlyList<string> AllBands =
-        BandPlan.Bands.Select(b => b.Name).ToList();
+        HfBands.Bands.Select(b => b.Name).ToList();
 
     /// <summary>
     /// Claims about the ionosphere, which Hamlet cannot see (FG-007).

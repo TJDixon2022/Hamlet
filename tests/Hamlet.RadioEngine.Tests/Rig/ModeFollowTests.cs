@@ -20,7 +20,7 @@ public sealed class ModeFollowTests
     private const byte Radio = CivConstants.DefaultRadioAddress;
     private const byte Controller = CivConstants.DefaultControllerAddress;
 
-    private static CwBand Twenty => BandPlan.Bands.Single(b => b.Name == "20 m");
+    private static CwBand Twenty => HfBands.Bands.Single(b => b.Name == "20 m");
 
     private static Neighborhood At(long hz)
         => NeighborhoodPlan.WithEdges(Twenty).Single(n => n.Contains(hz));
@@ -72,7 +72,7 @@ public sealed class ModeFollowTests
     [Fact]
     public void VoiceTakesTheSidebandTheConventionGivesIt()
     {
-        var forty = BandPlan.Bands.Single(b => b.Name == "40 m");
+        var forty = HfBands.Bands.Single(b => b.Name == "40 m");
 
         var low = ModeFollowPlan.TargetFor(
             NeighborhoodPlan.WithEdges(forty).Single(n => n.Contains(7_200_000)));

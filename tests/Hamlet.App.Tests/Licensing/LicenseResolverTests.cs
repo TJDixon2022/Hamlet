@@ -15,7 +15,7 @@ public sealed class LicenseResolverTests
 {
     private static readonly DateTime Now = new(2026, 8, 13, 12, 0, 0, DateTimeKind.Utc);
 
-    private static CwBand Forty => BandPlan.Bands.First(b => b.Name == "40 m");
+    private static CwBand Forty => HfBands.Bands.First(b => b.Name == "40 m");
 
     /// <summary>A lookup that answers from a script, without a network.</summary>
     private sealed class StubLookup : ICallsignLookup

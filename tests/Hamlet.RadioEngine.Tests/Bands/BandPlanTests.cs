@@ -12,7 +12,7 @@ public sealed class BandPlanTests
     [Fact]
     public void EveryBand_CwSegmentAndJumpAreCoherent()
     {
-        foreach (var b in BandPlan.Bands)
+        foreach (var b in HfBands.Bands)
         {
             Assert.True(b.LowHz < b.HighHz, b.Name);
             Assert.InRange(b.CwLowHz, b.LowHz, b.HighHz);
@@ -26,9 +26,9 @@ public sealed class BandPlanTests
     [Fact]
     public void Bands_OrderedAndDisjoint()
     {
-        for (var i = 1; i < BandPlan.Bands.Count; i++)
+        for (var i = 1; i < HfBands.Bands.Count; i++)
         {
-            Assert.True(BandPlan.Bands[i - 1].HighHz < BandPlan.Bands[i].LowHz);
+            Assert.True(HfBands.Bands[i - 1].HighHz < HfBands.Bands[i].LowHz);
         }
     }
 
@@ -37,8 +37,8 @@ public sealed class BandPlanTests
     [Fact]
     public void BandFor_ResolvesAndRefuses()
     {
-        Assert.Equal("40 m", BandPlan.BandFor(7_030_000)?.Name);
-        Assert.Null(BandPlan.BandFor(5_000_000));
+        Assert.Equal("40 m", HfBands.BandFor(7_030_000)?.Name);
+        Assert.Null(HfBands.BandFor(5_000_000));
     }
 
     /// <remarks>Proves: the advisor is deterministic per hour (§5) and always
@@ -51,17 +51,17 @@ public sealed class BandPlanTests
     [InlineData(22)]
     public void BestBets_DeterministicAndValid(int hour)
     {
-        var first = BandPlan.BestBets(hour);
-        var second = BandPlan.BestBets(hour);
+        var first = HfBands.BestBets(hour);
+        var second = HfBands.BestBets(hour);
 
         Assert.Equal(first, second);
-        Assert.All(first, name => Assert.Contains(BandPlan.Bands, b => b.Name == name));
+        Assert.All(first, name => Assert.Contains(HfBands.Bands, b => b.Name == name));
     }
 
     /// <remarks>Proves: an out-of-range hour fails loud.</remarks>
     [Fact]
     public void BestBets_RejectsBadHour()
     {
-        Assert.Throws<ArgumentOutOfRangeException>(() => BandPlan.BestBets(24));
+        Assert.Throws<ArgumentOutOfRangeException>(() => HfBands.BestBets(24));
     }
 }

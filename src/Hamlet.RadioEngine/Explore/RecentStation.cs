@@ -227,7 +227,7 @@ public static class RecentStations
             frequencyHz,
             call,
             (mode ?? "").Trim(),
-            BandPlan.BandFor(frequencyHz)?.Name ?? "",
+            HfBands.BandFor(frequencyHz)?.Name ?? "",
             here?.Name ?? "",
             nowUtc,
             source);

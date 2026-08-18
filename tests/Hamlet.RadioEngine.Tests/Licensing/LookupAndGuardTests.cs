@@ -354,7 +354,7 @@ public sealed class LookupAndGuardTests
         var caps = new TrainingRig().Capabilities;
 
         Assert.All(
-            BandPlan.Bands,
+            HfBands.Bands,
             b => Assert.True(caps.Supports(b.Name), $"{b.Name} should be supported"));
     }
 }

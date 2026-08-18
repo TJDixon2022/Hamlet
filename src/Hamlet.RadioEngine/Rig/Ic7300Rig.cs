@@ -79,7 +79,7 @@ public sealed class Ic7300Rig : IRig, IDisposable
         HasBuiltInCwKeyer: true,
         HasUsbAudio: true,
         CanTransmit: true,
-        Bands.BandPlan.Bands.Select(b => b.Name).ToList());
+        Bands.HfBands.Bands.Select(b => b.Name).ToList());
 
     /// <inheritdoc/>
     public bool IsConnected { get; private set; }

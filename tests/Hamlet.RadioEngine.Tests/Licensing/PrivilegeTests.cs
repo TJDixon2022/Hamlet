@@ -18,7 +18,7 @@ public sealed class PrivilegeTests
     private static readonly PrivilegePlan Plan = new();
 
     private static CwBand Band(string name)
-        => BandPlan.Bands.First(b => b.Name == name);
+        => HfBands.Bands.First(b => b.Name == name);
 
     /// <remarks>
     /// Proves the shipped data file loads and carries its citations. If the

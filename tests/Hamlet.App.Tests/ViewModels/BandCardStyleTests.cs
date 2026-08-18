@@ -13,7 +13,7 @@ namespace Hamlet.App.Tests.ViewModels;
 public sealed class BandCardStyleTests
 {
     private static readonly IReadOnlyList<string> AllBands =
-        BandPlan.Bands.Select(b => b.Name).ToList();
+        HfBands.Bands.Select(b => b.Name).ToList();
 
     private static SolarSnapshot Day { get; } = new(
         SunState.Day,

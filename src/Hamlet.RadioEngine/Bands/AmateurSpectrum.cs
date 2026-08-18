@@ -132,7 +132,7 @@ public static class AmateurSpectrum
     /// happens to be widest.
     /// </remarks>
     public static CwBand? Nearest(long frequencyHz)
-        => BandPlan.Bands
+        => HfBands.Bands
             .OrderBy(b => Distance(b, frequencyHz))
             .FirstOrDefault();
 

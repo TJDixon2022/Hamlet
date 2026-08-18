@@ -236,7 +236,7 @@ public sealed class ScopeStreamTests
         using var owned = rig;
         using var live = new RigSpectrumSource(rig);
         using var training = new TrainingSpectrumSource(
-            BandPlan.Bands.First());
+            HfBands.Bands.First());
 
         Assert.False(live.IsSimulated);
         Assert.True(training.IsSimulated);

@@ -31,7 +31,7 @@ public sealed class NeighborhoodDataTests
         Assert.NotEmpty(Data.Sources);
         Assert.False(string.IsNullOrWhiteSpace(Data.RetrievedUtc));
 
-        foreach (var band in BandPlan.Bands)
+        foreach (var band in HfBands.Bands)
         {
             Assert.NotEmpty(Data.ForBand(band.Name));
         }
@@ -48,7 +48,7 @@ public sealed class NeighborhoodDataTests
     [InlineData(14_076_500)]
     public void TheFt8WateringHoleIsOnTheMapAsDigital(long hz)
     {
-        var twenty = BandPlan.Bands.Single(b => b.Name == "20 m");
+        var twenty = HfBands.Bands.Single(b => b.Name == "20 m");
         var here = NeighborhoodPlan.ForBand(twenty).Single(n => n.Contains(hz));
 
         Assert.Equal(ModeFamily.Digital, here.Family);
@@ -68,7 +68,7 @@ public sealed class NeighborhoodDataTests
     [InlineData(14_090_000, "RTTY")]
     public void TheDigitalNeighborhoodsAreAllOnTheMap(long hz, string label)
     {
-        var twenty = BandPlan.Bands.Single(b => b.Name == "20 m");
+        var twenty = HfBands.Bands.Single(b => b.Name == "20 m");
         var here = NeighborhoodPlan.ForBand(twenty).Single(n => n.Contains(hz));
 
         Assert.Equal(label, here.ShortName);
@@ -89,7 +89,7 @@ public sealed class NeighborhoodDataTests
 
         Assert.NotEmpty(known);
 
-        foreach (var band in BandPlan.Bands)
+        foreach (var band in HfBands.Bands)
         {
             foreach (var hood in Data.ForBand(band.Name))
             {
@@ -110,7 +110,7 @@ public sealed class NeighborhoodDataTests
     [Fact]
     public void EveryRowHasAFamilyAndSomethingToSay()
     {
-        foreach (var band in BandPlan.Bands)
+        foreach (var band in HfBands.Bands)
         {
             foreach (var hood in NeighborhoodPlan.ForBand(band))
             {
@@ -157,7 +157,7 @@ public sealed class NeighborhoodDataTests
     [Fact]
     public void TheMapStillTilesEveryBandWithoutGaps()
     {
-        foreach (var band in BandPlan.Bands)
+        foreach (var band in HfBands.Bands)
         {
             var hoods = NeighborhoodPlan.ForBand(band);
 
@@ -179,7 +179,7 @@ public sealed class NeighborhoodDataTests
     [Fact]
     public void ADigitalBlockSaysWhatAMorseCallThereWouldDo()
     {
-        var twenty = BandPlan.Bands.Single(b => b.Name == "20 m");
+        var twenty = HfBands.Bands.Single(b => b.Name == "20 m");
         var ft8 = NeighborhoodPlan.ForBand(twenty).Single(n => n.Contains(14_074_500));
 
         Assert.NotNull(ft8.Caution);
@@ -202,7 +202,7 @@ public sealed class NeighborhoodDataTests
     [Fact]
     public void FilledStretchesAreOpenGroundAndCarryNoCitation()
     {
-        var filled = BandPlan.Bands
+        var filled = HfBands.Bands
             .SelectMany(NeighborhoodPlan.ForBand)
             .Where(h => h.Cite.Length == 0)
             .ToList();

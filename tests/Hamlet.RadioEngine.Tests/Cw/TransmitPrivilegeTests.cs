@@ -110,7 +110,7 @@ public sealed class TransmitPrivilegeTests
                      LicenseClass.Technician, LicenseClass.General, LicenseClass.Extra,
                  })
         {
-            foreach (var band in Hamlet.RadioEngine.Bands.BandPlan.Bands)
+            foreach (var band in Hamlet.RadioEngine.Bands.HfBands.Bands)
             {
                 foreach (var span in plan.SpansFor(band, cls).Where(s => s.MayTransmit))
                 {

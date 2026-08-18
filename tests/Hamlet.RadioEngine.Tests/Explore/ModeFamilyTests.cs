@@ -20,7 +20,7 @@ public sealed class ModeFamilyTests
     {
         var known = Enum.GetValues<ModeFamily>();
 
-        foreach (var band in BandPlan.Bands)
+        foreach (var band in HfBands.Bands)
         {
             var hoods = NeighborhoodPlan.ForBand(band);
 
@@ -42,7 +42,7 @@ public sealed class ModeFamilyTests
     public void FamiliesMatchWhatLivesInTheNeighborhood()
     {
         var fortyMeters = NeighborhoodPlan.ForBand(
-            BandPlan.Bands.Single(b => b.Name == "40 m"));
+            HfBands.Bands.Single(b => b.Name == "40 m"));
 
         // First rather than Single: a band can have two stretches of the same
         // character with something else between them, and 40 m does.
@@ -69,7 +69,7 @@ public sealed class ModeFamilyTests
     [Fact]
     public void EveryRegionTheLegendNamesAppearsOnTheMap()
     {
-        var seen = BandPlan.Bands
+        var seen = HfBands.Bands
             .SelectMany(NeighborhoodPlan.WithEdges)
             .Select(h => h.Family)
             .Distinct()
@@ -83,7 +83,7 @@ public sealed class ModeFamilyTests
         // And the in-band map never claims a frequency is outside the band.
         Assert.DoesNotContain(
             ModeFamily.OutsideTheBand,
-            BandPlan.Bands.SelectMany(NeighborhoodPlan.ForBand).Select(h => h.Family));
+            HfBands.Bands.SelectMany(NeighborhoodPlan.ForBand).Select(h => h.Family));
     }
 
     /// <remarks>
@@ -118,7 +118,7 @@ public sealed class ModeFamilyTests
     public void UnclaimedSpaceIsMarkedOpen()
     {
         var open = NeighborhoodPlan
-            .ForBand(BandPlan.Bands.Single(b => b.Name == "40 m"))
+            .ForBand(HfBands.Bands.Single(b => b.Name == "40 m"))
             .Where(h => h.Name == "Open ground")
             .ToList();
 

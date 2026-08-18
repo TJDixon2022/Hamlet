@@ -27,7 +27,7 @@ public sealed class CaptureBandTests
     [Fact]
     public void TheFrequencyInThoseCapturesIsTwentyMeters()
     {
-        var band = BandPlan.BandFor(14_055_000);
+        var band = HfBands.BandFor(14_055_000);
 
         Assert.NotNull(band);
         Assert.Equal("20 m", band!.Name);
@@ -47,7 +47,7 @@ public sealed class CaptureBandTests
     [InlineData(3_550_000, "80 m")]
     public void EveryCapturedFrequencyNamesItsOwnBand(long hz, string expected)
     {
-        Assert.Equal(expected, BandPlan.BandFor(hz)?.Name);
+        Assert.Equal(expected, HfBands.BandFor(hz)?.Name);
     }
 
     /// <remarks>
@@ -62,6 +62,6 @@ public sealed class CaptureBandTests
     [InlineData(30_000_000)]
     public void AFrequencyOnNoBandIsNotGivenOne(long hz)
     {
-        Assert.Null(BandPlan.BandFor(hz));
+        Assert.Null(HfBands.BandFor(hz));
     }
 }

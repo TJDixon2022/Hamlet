@@ -14,7 +14,7 @@ public sealed class SynthesisTests
     private const int Seed = 20260813;
     private const int Bins = 512;
 
-    private static CwBand Forty => BandPlan.Bands.First(b => b.Name == "40 m");
+    private static CwBand Forty => HfBands.Bands.First(b => b.Name == "40 m");
 
     private static byte[] RenderAt(SignalSynthesizer synth, double seconds)
     {
@@ -312,7 +312,7 @@ public sealed class SynthesisTests
     [InlineData("80 m")]
     public void EverySignal_LandsInANeighborhoodThatHostsItsMode(string bandName)
     {
-        var band = BandPlan.Bands.First(b => b.Name == bandName);
+        var band = HfBands.Bands.First(b => b.Name == bandName);
         var hoods = NeighborhoodPlan.ForBand(band);
         var signals = TrainingBandPlan.ForBand(band, Seed);
 

@@ -18,7 +18,7 @@ public sealed class FavoriteTests
 
     private static Neighborhood At(long hz)
         => NeighborhoodPlan
-            .WithEdges(BandPlan.Bands.Single(b => b.Name == "20 m"))
+            .WithEdges(HfBands.Bands.Single(b => b.Name == "20 m"))
             .Single(n => n.Contains(hz));
 
     /// <remarks>
@@ -52,7 +52,7 @@ public sealed class FavoriteTests
     public void AStretchNobodyNamedGetsAFrequencyAndABandAndNoMore()
     {
         var open = NeighborhoodPlan
-            .WithEdges(BandPlan.Bands.Single(b => b.Name == "20 m"))
+            .WithEdges(HfBands.Bands.Single(b => b.Name == "20 m"))
             .First(n => n.Family == ModeFamily.Open);
 
         var named = Favorites.NameFor(open.JumpHz, open);

@@ -45,7 +45,7 @@ public sealed class TrainingRig : IRig
         HasBuiltInCwKeyer: false,
         HasUsbAudio: false,
         CanTransmit: false,
-        Bands.BandPlan.Bands.Select(b => b.Name).ToList());
+        Bands.HfBands.Bands.Select(b => b.Name).ToList());
 
     /// <inheritdoc/>
     public event EventHandler<FrequencyChangedEventArgs>? FrequencyChanged;

@@ -131,5 +131,5 @@ public static class ContactClosing
     /// <summary>The band a frequency is on, for the summary.</summary>
     /// <param name="hz">The frequency.</param>
     /// <returns>Its band name, or "the air" when it is on none.</returns>
-    public static string BandNameFor(long hz) => BandPlan.BandFor(hz)?.Name ?? "the air";
+    public static string BandNameFor(long hz) => HfBands.BandFor(hz)?.Name ?? "the air";
 }

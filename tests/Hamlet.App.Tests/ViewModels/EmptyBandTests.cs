@@ -36,7 +36,7 @@ public sealed class EmptyBandTests
 
     /// <summary>The shared ranking, at an hour the tiebreaker would not pick.</summary>
     private static BandRanking Elsewhere(params ActivitySpot[] spots)
-        => BandOpportunities.Rank(BandPlan.Bands, spots, Now, localHour: 3);
+        => BandOpportunities.Rank(HfBands.Bands, spots, Now, localHour: 3);
 
     /// <remarks>
     /// THE BUG, IN ONE TEST. Proves an empty band points at a busy one instead
@@ -157,7 +157,7 @@ public sealed class EmptyBandTests
     public void EachBandIsJudgedByItsOwnSpotsLifetimes()
     {
         var summary = BandOpportunities.Summarize(
-            BandPlan.Bands,
+            HfBands.Bands,
             new[]
             {
                 On("40 m", 45, activation: true, call: "W1AAA"),
@@ -186,7 +186,7 @@ public sealed class EmptyBandTests
     {
         var beacon = On("20 m", 2) with { CallType = SpotCallType.Beacon };
 
-        var summary = BandOpportunities.Summarize(BandPlan.Bands, new[] { beacon }, Now);
+        var summary = BandOpportunities.Summarize(HfBands.Bands, new[] { beacon }, Now);
 
         Assert.Equal(0, summary.Single(b => b.BandName == "20 m").Count);
     }

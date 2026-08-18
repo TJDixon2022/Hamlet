@@ -7,7 +7,7 @@ namespace Hamlet.RadioEngine.Rig;
 /// <param name="HasUsbAudio">True when it presents a USB audio codec.</param>
 /// <param name="CanTransmit">True when it can be made to transmit at all.</param>
 /// <param name="SupportedBandNames">
-/// Band names from <see cref="Bands.BandPlan"/> the radio covers.
+/// Band names from <see cref="Bands.HfBands"/> the radio covers.
 /// </param>
 /// <remarks>
 /// <para>HM-DEC-003 kept Hamlet to one radio behind an <c>IRig</c> interface,

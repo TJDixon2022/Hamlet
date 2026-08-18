@@ -17,7 +17,7 @@ public sealed class ExploreTests
     [Fact]
     public void FortyMeterNeighborhoods_TileTheBand()
     {
-        var band = BandPlan.Bands.First(b => b.Name == "40 m");
+        var band = HfBands.Bands.First(b => b.Name == "40 m");
         var hoods = NeighborhoodPlan.ForBand(band);
 
         Assert.Equal(band.LowHz, hoods[0].LowHz);
@@ -43,7 +43,7 @@ public sealed class ExploreTests
     [Fact]
     public void EveryBand_GetsAnHonestMap()
     {
-        foreach (var band in BandPlan.Bands)
+        foreach (var band in HfBands.Bands)
         {
             var hoods = NeighborhoodPlan.ForBand(band);
             Assert.NotEmpty(hoods);
@@ -62,7 +62,7 @@ public sealed class ExploreTests
     [Fact]
     public void ModeGuide_HomesAreReal()
     {
-        var band = BandPlan.Bands.First(b => b.Name == "40 m");
+        var band = HfBands.Bands.First(b => b.Name == "40 m");
         foreach (var mode in ModeGuide.Modes.Where(m => m.LivesAt40mHz is not null))
         {
             Assert.InRange(mode.LivesAt40mHz!.Value, band.LowHz, band.HighHz);
@@ -82,7 +82,7 @@ public sealed class ExploreTests
         {
             Assert.Equal("sample", s.Source);
             Assert.False(string.IsNullOrWhiteSpace(s.Story));
-            Assert.NotNull(BandPlan.BandFor(s.FrequencyHz));
+            Assert.NotNull(HfBands.BandFor(s.FrequencyHz));
             Assert.True(s.HeardAtUtc <= DateTime.UtcNow);
         });
     }
@@ -128,7 +128,7 @@ public sealed class ExploreTests
             Assert.All(spots, s =>
             {
                 Assert.Equal("sample", s.Source);
-                Assert.NotNull(BandPlan.BandFor(s.FrequencyHz));
+                Assert.NotNull(HfBands.BandFor(s.FrequencyHz));
             });
         }
     }

@@ -12,7 +12,7 @@ public sealed class BandActivityTests
 {
     private static readonly DateTime Now = new(2026, 8, 13, 15, 0, 0, DateTimeKind.Utc);
 
-    private static IReadOnlyList<CwBand> Bands => BandPlan.Bands;
+    private static IReadOnlyList<CwBand> Bands => HfBands.Bands;
 
     private static CwBand Band(string name) => Bands.First(b => b.Name == name);
 

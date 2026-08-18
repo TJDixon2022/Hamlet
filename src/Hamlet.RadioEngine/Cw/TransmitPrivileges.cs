@@ -109,7 +109,7 @@ public sealed record TransmitPrivileges(
     /// </remarks>
     private string Elsewhere(PrivilegePlan plan)
     {
-        var band = Bands.BandPlan.BandFor(FrequencyHz);
+        var band = Bands.HfBands.BandFor(FrequencyHz);
 
         if (band is null)
         {
