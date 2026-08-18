@@ -168,21 +168,25 @@ public sealed partial class FavoritesViewModel : ObservableObject
     private readonly ObservableCollection<Favorite> _target;
     private readonly Action _save;
     private readonly Action<RecentStation>? _star;
+    private readonly Action<RecentStation>? _forget;
 
     /// <summary>Opens the window over the live lists.</summary>
     /// <param name="favorites">The list the app is showing.</param>
     /// <param name="save">How to write it back.</param>
     /// <param name="recent">Where the operator has been, or null.</param>
     /// <param name="star">How to turn one of those into a favorite, or null.</param>
+    /// <param name="forget">How to take one out of the list, or null.</param>
     public FavoritesViewModel(
         ObservableCollection<Favorite> favorites,
         Action save,
         IEnumerable<RecentStation>? recent = null,
-        Action<RecentStation>? star = null)
+        Action<RecentStation>? star = null,
+        Action<RecentStation>? forget = null)
     {
         _target = favorites ?? throw new ArgumentNullException(nameof(favorites));
         _save = save ?? throw new ArgumentNullException(nameof(save));
         _star = star;
+        _forget = forget;
 
         Rows = new ObservableCollection<FavoriteRowViewModel>(
             favorites.Select(f => new FavoriteRowViewModel(f)));
@@ -223,6 +227,27 @@ public sealed partial class FavoritesViewModel : ObservableObject
 
         _star(row.Entry);
         row.IsSaved = IsSaved(row.Entry);
+    }
+
+    /// <summary>Take a place he has been out of the list (HM-DEC-134).</summary>
+    /// <param name="row">The row.</param>
+    /// <remarks>
+    /// THE SAME SHAPE AS THE STAR ABOVE IT. The app owns the list, so this hands
+    /// the act back rather than editing a copy, and the row goes from this
+    /// window because the window is showing the app's own list rather than a
+    /// snapshot of it.
+    /// </remarks>
+    [RelayCommand]
+    private void Forget(RecentRowViewModel? row)
+    {
+        if (row is null || _forget is null)
+        {
+            return;
+        }
+
+        _forget(row.Entry);
+        Recent.Remove(row);
+        OnPropertyChanged(nameof(HasRecent));
     }
 
     private bool IsSaved(RecentStation entry)

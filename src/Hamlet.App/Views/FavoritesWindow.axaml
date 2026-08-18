@@ -94,12 +94,25 @@
                                     <TextBlock Text="{Binding Provenance}" FontSize="11"
                                                Foreground="{StaticResource HmTextMutedBrush}" />
                                 </StackPanel>
-                                <Button Grid.Column="1" Padding="10,4" FontSize="12"
-                                        VerticalAlignment="Center"
-                                        Content="{Binding StarLabel}"
-                                        IsEnabled="{Binding !IsSaved}"
-                                        Command="{Binding $parent[Window].((vm:FavoritesViewModel)DataContext).StarCommand}"
-                                        CommandParameter="{Binding}" />
+                                <StackPanel Grid.Column="1" Orientation="Horizontal"
+                                            Spacing="6" VerticalAlignment="Center">
+                                    <Button Padding="10,4" FontSize="12"
+                                            Content="{Binding StarLabel}"
+                                            IsEnabled="{Binding !IsSaved}"
+                                            Command="{Binding $parent[Window].((vm:FavoritesViewModel)DataContext).StarCommand}"
+                                            CommandParameter="{Binding}" />
+
+                                    <!-- **THE SIBLING FINALLY INHERITS IT**
+                                         (HM-DEC-134). Favorites have had remove
+                                         since HM-DEC-060 and recent was built
+                                         beside them without it, which left the
+                                         one list the operator did not curate as
+                                         the one he could not prune. -->
+                                    <Button Padding="10,4" FontSize="12"
+                                            Content="forget"
+                                            Command="{Binding $parent[Window].((vm:FavoritesViewModel)DataContext).ForgetCommand}"
+                                            CommandParameter="{Binding}" />
+                                </StackPanel>
                             </Grid>
                         </DataTemplate>
                     </ListBox.ItemTemplate>

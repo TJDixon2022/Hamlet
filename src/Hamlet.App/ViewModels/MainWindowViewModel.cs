@@ -2073,7 +2073,7 @@ public partial class MainWindowViewModel : ObservableObject
         var window = new Views.FavoritesWindow
         {
             DataContext = new FavoritesViewModel(
-                Favorites, PersistFavorites, Recent, StarRecent),
+                Favorites, PersistFavorites, Recent, StarRecent, ForgetRecent),
         };
 
         if (Application.Current?.ApplicationLifetime
@@ -3780,7 +3780,21 @@ public partial class MainWindowViewModel : ObservableObject
         // (HM-DEC-072). A callsign the operator arrived on stops applying the
         // moment he is somewhere else, which is what keeps the recent list from
         // naming a station on a frequency nobody heard one on.
-        _dwell.Moved(clamped, DateTime.UtcNow);
+        // The near miss is recorded here as well as on the tick, because this is
+        // the path the operator's own hand takes and the tick only sees what is
+        // left over (HM-OPEN-039). Whichever notices the move first reports it;
+        // the other gets null, because a place is only abandoned once.
+        var left = _dwell.Moved(clamped, DateTime.UtcNow);
+
+        if (left is not null)
+        {
+            AppEvents.RecentDwellShort(
+                _telemetry, left.FrequencyHz, left.ShortBySeconds);
+        }
+
+        // The forget button belongs to where the dial is, so it comes and goes
+        // with the dial (HM-DEC-134).
+        OnPropertyChanged(nameof(IsSomewhereRemembered));
 
         if (_arrivedOnHz != clamped)
         {
@@ -4095,6 +4109,11 @@ public partial class MainWindowViewModel : ObservableObject
 
         SettingsStore.Save(_settings);
         RebuildMenus();
+
+        // Every route that changes the list comes through here, which is the
+        // only reason the offer to forget where you are cannot go stale
+        // (HM-DEC-134).
+        OnPropertyChanged(nameof(IsSomewhereRemembered));
     }
 
     /// <summary>Take one place out of the recent list (HM-DEC-134).</summary>
@@ -4131,6 +4150,23 @@ public partial class MainWindowViewModel : ObservableObject
 
         PersistRecent();
     }
+
+    /// <summary>True when where the dial is now is in the recent list.</summary>
+    /// <remarks>
+    /// **THE BUTTON IS ABSENT RATHER THAN GREY WHERE THERE IS NOTHING TO
+    /// FORGET** (§0.5.1). Grey is reserved for what genuinely cannot be used,
+    /// and a control offering to remove somewhere the operator has never been
+    /// is not disabled, it is meaningless.
+    /// </remarks>
+    public bool IsSomewhereRemembered
+        => Recent.Any(e => RecentStations.IsSamePlace(e.FrequencyHz, FrequencyHz));
+
+    /// <summary>Forget the place the dial is on now (HM-DEC-134).</summary>
+    [RelayCommand]
+    private void ForgetHere()
+        => ForgetRecent(
+            Recent.FirstOrDefault(
+                e => RecentStations.IsSamePlace(e.FrequencyHz, FrequencyHz)));
 
     /// <summary>Empty the recent list (HM-DEC-134).</summary>
     [RelayCommand]

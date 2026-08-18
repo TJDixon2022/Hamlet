@@ -2319,40 +2319,40 @@
                          authority. -->
                     <ComboBox.ItemTemplate>
                         <DataTemplate x:DataType="explore:RecentStation">
-                            <Grid ColumnDefinitions="*,Auto">
-                                <StackPanel Spacing="0">
-                                    <TextBlock Text="{Binding Label}"
-                                               TextWrapping="Wrap" />
-                                    <TextBlock Text="{Binding Provenance}"
-                                               FontSize="10" TextWrapping="Wrap"
-                                               IsVisible="{Binding IsIdentified}"
-                                               Foreground="{StaticResource HmTextMutedBrush}" />
-                                    <!-- THE RETURN IS SAID, NOT COUNTED
-                                         (HM-DEC-134, §0.7). A "3" beside a
-                                         frequency is a number somebody has to
-                                         interpret; the sentence is the thing
-                                         the number was standing for. -->
-                                    <TextBlock Text="{Binding ReturnNote}"
-                                               FontSize="10" TextWrapping="Wrap"
-                                               IsVisible="{Binding IsReturn}"
-                                               Foreground="{StaticResource HmTextMutedBrush}" />
-                                </StackPanel>
-
-                                <!-- HIS LIST, SO HE CAN TAKE THINGS OUT OF IT
-                                     (HM-DEC-134). A button inside the row
-                                     handles its own press, so this removes the
-                                     place rather than tuning to it. -->
-                                <Button Grid.Column="1" Content="✕"
-                                        FontSize="10" Padding="4,0" MinHeight="0"
-                                        VerticalAlignment="Center"
-                                        Background="Transparent"
-                                        ToolTip.Tip="Forget this place"
-                                        Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).ForgetRecentCommand}"
-                                        CommandParameter="{Binding}" />
-                            </Grid>
+                            <StackPanel Spacing="0">
+                                <TextBlock Text="{Binding Label}"
+                                           TextWrapping="Wrap" />
+                                <TextBlock Text="{Binding Provenance}"
+                                           FontSize="10" TextWrapping="Wrap"
+                                           IsVisible="{Binding IsIdentified}"
+                                           Foreground="{StaticResource HmTextMutedBrush}" />
+                                <!-- THE RETURN IS SAID, NOT COUNTED
+                                     (HM-DEC-134, §0.7). A "3" beside a
+                                     frequency is a number somebody has to
+                                     interpret; the sentence is the thing
+                                     the number was standing for. -->
+                                <TextBlock Text="{Binding ReturnNote}"
+                                           FontSize="10" TextWrapping="Wrap"
+                                           IsVisible="{Binding IsReturn}"
+                                           Foreground="{StaticResource HmTextMutedBrush}" />
+                            </StackPanel>
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
+
+                <!-- **BESIDE THE BOX AND NOT INSIDE IT** (HM-DEC-134). A
+                     dropdown's rows live in a popup with its own visual root,
+                     where a press competes with picking the row and where a
+                     test cannot reach the control to prove it is alive — which
+                     is HM-DEC-087's own fault wearing different clothes. So the
+                     one place he can forget is the place he is, said in those
+                     words, and the whole list goes from the Radio menu. -->
+                <Button Content="forget this place"
+                        FontSize="11" Padding="6,1" MinHeight="0"
+                        VerticalAlignment="Center"
+                        IsVisible="{Binding IsSomewhereRemembered}"
+                        Command="{Binding ForgetHereCommand}"
+                        ToolTip.Tip="Take where you are now out of the recent list" />
 
                 <TextBlock Text="favorites" FontSize="11"
                            VerticalAlignment="Center" Margin="6,0,0,0"
