@@ -121,10 +121,11 @@ Decide during phase 3 planning; nothing before then depends on it.
 ---
 id: HM-OPEN-005
 status: open
-owner: unassigned
+owner: tim
 raised: 2026-08-12
-severity: none
-refs: src/HamManager.RadioEngine/Bands/BandPlan.cs, CLAUDE.md §0
+severity: slows
+blocks: retiring BandPlan, which leaves two band plans in the tree with only one of them cited
+refs: src/Hamlet.RadioEngine/Bands/BandPlan.cs, data/privileges/us-part97-privileges.json, data/bands/us-neighborhoods.json, CLAUDE.md §0, §0.2.1, HM-DEC-107
 ---
 
 Move the band plan out of code into a source-marked data file in /data, with
@@ -175,6 +176,54 @@ What remains in `BandPlan.cs` and is still `[extrapolated]`:
   jumps to 14.030 and QRP ARCI puts the 20 m center of activity at 14.060. The
   neighborhood file has cited jump spots per block, so a band button could take
   its landing place from there instead of carrying its own number.
+
+**MEASURED 2026-08-17, AND THE SEVERITY GOES UP.** Raised from `none` to
+`slows` and the owner from `unassigned` to `tim`, because this is now load
+bearing for a feature that moves the operator's dial: §0.2.1 forbids
+frequencies asserted from a model's memory, so the scanner was built around
+`BandPlan` rather than on it and its segments come from
+`data/bands/us-neighborhoods.json` instead. Two band plans in one tree, one
+cited and one not, is the state §0 exists to prevent, and the uncited one has
+the friendlier name.
+
+**Two of the three kinds of number are provably derivable and the third is
+not.** Measured against the cited files rather than argued about:
+
+- **Band edges: all seven match exactly.** The union of the Extra class ranges
+  in `data/privileges/us-part97-privileges.json`, cited to `97.301(b)`, gives
+  `LowHz` and `HighHz` for every band. 80 m is the CFR's 80 m and 75 m rows
+  together, which is the only join needed.
+- **CW segments: all seven match exactly.** The union of the ranges carrying
+  `Data` in the same file, cited to `97.305(c)`, gives `CwLowHz` and
+  `CwHighHz` for every band, down to the hertz. 40 m needs two rows joined,
+  `(c)(3)(iv)` and `(c)(3)(vi)`, because the phone segment overlaps the first.
+  This corrects the note above: they were thought not to derive from the
+  privileges data, and they do.
+- **Jump spots do not derive, and the reason is that a rule has to be chosen.**
+  Five of the seven are exactly a "CW main street" block's `jumpHz` in the
+  neighborhood file; 40 m is the QRP watering hole's rather than main street's;
+  and **30 m matches nothing cited at all** — it lands on 10.110 where the
+  blocks are 10.103, 10.106 and 10.120.
+
+The neighborhood file on its own does **not** cover the CW segments and cannot
+be made to. Its Morse rows fall short at the top of every band, by 10 kHz on
+17 m up to 230 kHz on 10 m, and 40 m has a hole in the middle between 7.040
+and 7.050. That is not a defect in it: those rows are places somebody
+published a convention for, and the space between belongs to nobody
+(HM-DEC-054). The CW segment is a regulatory boundary and its source is the
+privileges file.
+
+**What is needed is one ruling, on the jump spots.** At least three rules are
+defensible and they land in different places: the first "CW main street"
+block, the QRP watering hole (which is what the note above argues for on 20 m,
+against QRP ARCI's 14.060), or keeping the current numbers and citing them as
+editorial. Whichever is taken changes where a band button lands on between
+three and seven bands, which is a trade-off between cited data and the
+operator's muscle memory, and §12.1 puts that with Tim.
+
+Nothing was migrated. §0 would be satisfied by moving the edges and the CW
+segments and leaving the jump spots in code, and a half-migrated band plan is
+worse than two whole ones.
 
 ---
 id: HM-OPEN-006
