@@ -1244,3 +1244,62 @@ directions are open and both are Tim's:
 
 Nothing was shipped. HM-DEC-121 keeps HM-DEC-116 blocked and this is the trace
 it asked for.
+
+---
+id: HM-OPEN-028
+status: open
+owner: tim
+raised: 2026-08-18
+severity: slows
+blocks: ASignalAtTheWrongPitchIsStillFound at 400 Hz
+refs: HM-OPEN-027, HM-DEC-096, src/Hamlet.RadioEngine/Cw/CwToneTracker.cs
+---
+
+The 400 Hz pitch failure is not about 400 Hz, and it is the same root cause as
+HM-OPEN-027.
+
+**The tracker always finds the pitch.** Told to start at 600 and given a signal
+at 400, it reports 400 at the end of every run. What differs is how many steps
+it takes to get there, and each step costs the settled window.
+
+Measured 2026-08-18, one signal at 400 Hz, varying only where the tracker was
+told to start:
+
+| told | retunes | decode |
+|---|---|---|
+| 300 Hz | 3 | broken |
+| 350 Hz | **1** | good |
+| 400 Hz | **1** | perfect |
+| 500 Hz | 3 | broken |
+| 550 Hz | 3 | broken |
+| 600 Hz | 3 | broken |
+| 700 Hz | **1** | good |
+| 900 Hz | **1** | good |
+
+**One retune decodes and three does not**, and it is not distance: starting 300
+hertz above works while starting 100 above does not.
+
+The shape suggests three regimes. Within a bin or two the tracker locks at once.
+Far enough away that the starting filter sees nothing of the signal, the coarse
+survey drives one decisive switch. **In between — roughly 100 to 200 hertz off —
+enough of the signal leaks through the starting filter to look like evidence
+where the tracker already is, and it converges in steps instead of in one jump.**
+
+The cliff the original test found at 400 Hz is an artifact of its 600 Hz start,
+not a property of 400 Hz. The same test at 425 passes because 425 is 175 hertz
+from 600 rather than 200.
+
+**Why the retunes cost so much is HM-OPEN-027's finding.** Every tracker switch
+calls `_settled.Reset()`, because a switch means somebody else started
+transmitting (HM-DEC-096 phase 3). On a signal that is one station throughout,
+two extra switches throw the settled window away twice for nothing.
+
+**Two investigations converged on one cause**, which is worth saying plainly:
+phase 4 traced a decode failure to extra retunes, and phase 5 traced a different
+decode failure to extra retunes. Whatever is done about one is likely to settle
+the other.
+
+Not fixed, because the fix is not unambiguous. Making the tracker converge in
+one jump changes acquisition behaviour on real signals, and making a switch stop
+resetting the settled window acts against HM-DEC-096 phase 3, which exists
+because a switch usually does mean a different station. Both are Tim's.
