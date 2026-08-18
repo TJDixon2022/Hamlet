@@ -196,6 +196,24 @@ public sealed class CwFarnsworthTests
     /// failure: the spaces are now right and the remaining errors are
     /// character-level, which belongs to the clock fit rather than to the
     /// spacing.</para>
+    /// <para>**MEASURED AGAIN 2026-08-18 AFTER THE CLOCK WORK AND UNMOVED**, at
+    /// 36 characters against 45 and a match ratio of 0.72. Only part 3 of
+    /// HM-DEC-112 shipped and it is neutral by measurement, so nothing here
+    /// changed. Aligned against the key, what is wrong is:</para>
+    /// <list type="bullet">
+    /// <item>`JJ` extra and `TARRLD` lost at the start, which is acquisition
+    /// and is the four characters the key already excuses plus a few more.</item>
+    /// <item>`BT` read as a placeholder and an `I` — the prosign is not
+    /// resolved.</item>
+    /// <item>**`T` read as `A` twice**, in `STATION` and in `THIS`. A dah read
+    /// as a dit followed by a dah is a spurious leading dit, which is the
+    /// signature of a mark boundary in the wrong place or an edge caught early.
+    /// </item>
+    /// <item>`A` dropped from `EACH`, `S` from `MESSAGE`, `LING` from
+    /// `HANDLING`.</item>
+    /// </list>
+    /// <para>Every one of those is character-level. Nothing was tuned to this
+    /// recording: a decoder fitted to one capture has learned one station.</para>
     /// </remarks>
     [Fact]
     public void TheBulletinDecodesToItsAnswerKey()
