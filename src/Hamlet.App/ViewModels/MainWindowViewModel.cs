@@ -2548,7 +2548,6 @@ public partial class MainWindowViewModel : ObservableObject
         }
 
         NoticeOperatorModeChange(state);
-
         RigModeText = state[RigField.Mode] is { IsKnown: true } mode ? mode.Text : "";
         RigFilterText = state[RigField.FilterSelection] is { IsKnown: true } filter
             ? filter.Text
@@ -3011,8 +3010,21 @@ public partial class MainWindowViewModel : ObservableObject
     /// to and cannot be reasoned about.</para>
     /// </remarks>
     [RelayCommand]
-    private void CaptureAudio()
+    private async Task CaptureAudioAsync()
     {
+        // **ASK THE RADIO WHERE IT IS BEFORE WRITING DOWN WHERE IT WAS**
+        // (HM-DEC-107 phase 6 of the UI order). The frequency is never polled,
+        // because the radio broadcasts a change and asking as well would spend
+        // bus traffic on a fact already in hand (HM-DEC-050). What that ruling
+        // provides for instead is the on-demand read, and this is exactly the
+        // moment for one: a sidecar is evidence somebody will reason from
+        // months later, and a broadcast missed at startup would otherwise put a
+        // frequency in it that the radio was never on.
+        if (_rigMonitor is not null)
+        {
+            await _rigMonitor.RefreshAsync(RigField.Frequency);
+        }
+
         var tap = _decoder?.Tap;
         var audio = tap?.Snapshot();
 
@@ -4085,6 +4097,38 @@ public partial class MainWindowViewModel : ObservableObject
 
     private async Task ReloadSpotsAsync(string trigger)
     {
+        // **THE BAND THESE ARE SCOPED TO IS DERIVED FROM THE RADIO, SO THE RADIO
+        // IS ASKED BEFORE THEY ARE** (HM-DEC-107 phase 6 of the UI order). RBN
+        // is filtered to the band on screen (HM-DEC-024) and the skimmer watch
+        // listens for the operator's callsign on it (HM-DEC-075), so a band the
+        // model had wrong would make "nobody heard you" a defect wearing the
+        // clothes of an answer.
+        //
+        // The frequency is never polled, because the radio broadcasts changes
+        // (HM-DEC-050), and a broadcast missed at startup would otherwise leave
+        // the band wrong until somebody next turned the dial. This is the
+        // on-demand read that ruling provides for, at the one moment before the
+        // value is reasoned from, and it costs one command per refresh.
+        if (_rigMonitor is not null && IsConnected)
+        {
+            try
+            {
+                await _rigMonitor.RefreshAsync(RigField.Frequency);
+
+                if (RigState[RigField.Frequency] is { IsKnown: true, Number: { } hz }
+                    && !_rigSendPending
+                    && (long)hz != FrequencyHz)
+                {
+                    ApplyRigFrequency((long)hz);
+                }
+            }
+            catch (Exception)
+            {
+                // A radio that did not answer leaves the band as it was, which
+                // is the same thing that happens today and never worse (§8).
+            }
+        }
+
         _activitySource.SetContext(BuildContext());
 
         IReadOnlyList<ActivitySpot> spots;

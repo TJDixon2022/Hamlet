@@ -82,8 +82,25 @@ public static class RigPollPlan
     /// <returns>Its rate.</returns>
     public static RigPollRate RateFor(RigField field) => field switch
     {
-        // The radio broadcasts these, so asking would be spending bus traffic
-        // on a fact already in hand.
+        // **NEVER POLLED, BECAUSE THE RADIO VOLUNTEERS IT** (HM-DEC-050).
+        // Asking would spend bus traffic on a fact already in hand, and that
+        // ruling is explicit.
+        //
+        // It has a cost, and the cost is worth writing down where somebody will
+        // meet it. A broadcast missed while the app is starting leaves the model
+        // holding a frequency the radio is not on, with nothing to correct it
+        // until the dial is next turned. Mode and FilterSelection are swept
+        // anyway for exactly that reason, as the comment below says. The band on
+        // screen is derived from this reading, and the band scopes what RBN is
+        // filtered to and what the skimmer watch listens for (HM-DEC-024,
+        // HM-DEC-075), so a wrong one makes "nobody heard you" a defect wearing
+        // the clothes of an answer.
+        //
+        // Sweeping it would act against HM-DEC-050 and is not a session's to
+        // decide. What is done instead is the on-demand read that ruling
+        // provides for, taken at the two moments the value is about to be
+        // reasoned from: writing a capture, and rebuilding the band-scoped spot
+        // sources.
         RigField.Frequency => RigPollRate.Never,
 
         // The needle, and whether the radio is keying. Both move constantly and
