@@ -125,10 +125,9 @@ public sealed class CwSettledGapTests
     /// available.</para>
     /// </remarks>
     [Theory]
-    [InlineData("exchange-easy", 0)]
-    [InlineData("coverage-easy", 0)]
-    public void TheSettledPassShowsNoStrangersAtFullStrength(
-        string name, int worstAllowed)
+    [InlineData("exchange-easy")]
+    [InlineData("coverage-easy")]
+    public void TheSettledPassShowsNoStrangersAtFullStrength(string name)
     {
         var audio = WavAudio.Read(
             Path.Combine(CwFixtureCatalogue.Folder, name + ".wav"));
@@ -192,10 +191,15 @@ public sealed class CwSettledGapTests
         // The cost is real and is the reason this counts strangers rather than
         // characters: five characters come out of these fixtures where eight and
         // seven did, because a fragment is no longer published as a character.
+        // **NONE, AND IT IS A BAR RATHER THAN A RATCHET** (HM-DEC-114). This
+        // carried a "worst allowed" figure while the audio was unproved, which
+        // was right then and is wrong now: a ratchet on a proved fixture records
+        // that the decoder is still wrong without ever requiring it to stop
+        // being wrong.
         Assert.True(
-            strangers.Count <= worstAllowed,
+            strangers.Count == 0,
             $"the settled pass showed {strangers.Count} characters at full "
-            + $"strength that are not in the message ({string.Join(", ", strangers)}), "
-            + $"against {worstAllowed} when this was last measured");
+            + $"strength that are not in the message "
+            + $"({string.Join(", ", strangers)})");
     }
 }

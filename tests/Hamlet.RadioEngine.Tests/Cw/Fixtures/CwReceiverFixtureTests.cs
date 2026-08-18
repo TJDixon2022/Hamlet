@@ -135,23 +135,84 @@ public sealed class CwReceiverFixtureTests
     }
 
     /// <remarks>
-    /// <para>Proves HM-OPEN-018 phase 5: **the easy tier is read.** Fifteen
-    /// decibels over the noise in the receiver's own passband is a comfortable
-    /// signal, and a decoder that cannot read one has nothing to offer somebody
-    /// who has never made a contact.</para>
+    /// <para>**PASS OR FAIL, NOT A RATCHET** (HM-DEC-114). At fifteen decibels
+    /// or better in the passband with a steady fist, the decoder emits the
+    /// message with no strangers and no placeholders, or it is a defect.</para>
+    /// <para>**A RATCHET WAS RIGHT WHILE THE AUDIO WAS UNPROVED AND IS WRONG NOW
+    /// THAT IT IS.** A ratchet on a proved fixture records that the decoder is
+    /// still wrong without ever requiring it to stop being wrong, and
+    /// `exchange-easy` sat at ten characters of eighteen for two sessions under
+    /// that arrangement while the reference read it whole.</para>
+    /// <para>**A BAR PHASED BY SPEED WAS REJECTED**, because it would licence
+    /// twenty-five words a minute to stay broken by design and that is the speed
+    /// on the air.</para>
+    /// <para>**EXPECT THIS RED AND LEAVE IT RED UNTIL THE BAR IS MET.** A test
+    /// saying *this signal is loud and clean and we cannot read it* is the
+    /// correct state of the world and the whole point of the ruling.</para>
     /// </remarks>
     [Theory]
     [InlineData("exchange-easy")]
     [InlineData("coverage-easy")]
-    public void TheEasyTierIsRead(string name)
+    [InlineData("tightfist-easy")]
+    [InlineData("prosigns-easy")]
+    public void TheEasyTierIsReadWhole(string name)
     {
-        var reading = Decode(name);
+        if (!CwFixtureCatalogue.All.Any(r => r.Name == name))
+        {
+            // A tier this build does not ship is not a failure; the catalogue is
+            // the one list and this reads it rather than assuming.
+            return;
+        }
 
-        _output.WriteLine($"{name}: {reading.Provisional}");
+        var recipe = CwFixtureCatalogue.All.Single(r => r.Name == name);
+
+        var expected = recipe.Text
+            .Replace("^", "", StringComparison.Ordinal)
+            .Replace(" ", "", StringComparison.Ordinal)
+            .ToUpperInvariant();
+
+        var audio = WavAudio.Read(
+            Path.Combine(CwFixtureCatalogue.Folder, name + ".wav"));
+
+        var decoder = new CwDecoder(audio.SampleRate, 600);
+        var read = new List<CwCharacter>();
+
+        decoder.CharacterDecoded += read.Add;
+
+        using var source = new BufferedAudioSource(audio);
+        decoder.Listen(source);
+        source.PumpAll();
+        decoder.Flush();
+
+        var letters = read.Where(c => !c.IsWordGap).ToList();
+
+        var placeholders = letters.Count(c => c.IsUnreadable);
+
+        var strangers = letters
+            .Where(c => !c.IsUnreadable && c.Text.Length == 1)
+            .Where(c => !expected.Contains(c.Text[0], StringComparison.Ordinal))
+            .Select(c => c.Text)
+            .ToList();
+
+        // **THE WHOLE MESSAGE, WHICH IS WHAT THE RULING SAYS.** Prosigns are
+        // compared as their letters, because `^AR` in the recipe and `<AR>` on
+        // screen are the same symbol written two ways.
+        var got = string.Concat(letters.Select(c => c.Text))
+            .Replace("<", "", StringComparison.Ordinal)
+            .Replace(">", "", StringComparison.Ordinal);
+
+        _output.WriteLine($"{name}: {letters.Count} characters, "
+            + $"{placeholders} unreadable, {strangers.Count} not in the message");
+        _output.WriteLine($"  got    '{got}'");
+        _output.WriteLine($"  wanted '{expected}'");
 
         Assert.True(
-            reading.Emitted > 5,
-            $"only {reading.Emitted} characters came out of a comfortable signal");
+            placeholders == 0 && strangers.Count == 0 && got == expected,
+            $"a signal fifteen decibels over the noise came back with "
+            + $"{placeholders} characters Hamlet could not read, "
+            + $"{strangers.Count} that are not in the message"
+            + (strangers.Count == 0 ? "" : $" ({string.Join(", ", strangers)})")
+            + $", and reads '{got}' against '{expected}'");
     }
 
     /// <remarks>
