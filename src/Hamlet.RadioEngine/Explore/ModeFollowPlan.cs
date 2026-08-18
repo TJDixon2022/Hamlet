@@ -19,12 +19,41 @@ public sealed record ModeTarget(CivMode Mode, bool DataMode, string Because)
 /// <param name="Suspended">
 /// True after the operator set a mode themselves, until the next band change.
 /// </param>
-public sealed record ModeFollowState(bool Enabled, bool Suspended)
+/// <param name="DoneAtHz">
+/// Where the last confirmed write was made, or null (HM-OPEN-041).
+/// </param>
+/// <param name="DoneMode">What that write set, or null.</param>
+/// <param name="DoneDataMode">Whether that write asked for the data variant.</param>
+public sealed record ModeFollowState(
+    bool Enabled,
+    bool Suspended,
+    long? DoneAtHz = null,
+    CivMode? DoneMode = null,
+    bool DoneDataMode = false)
 {
     /// <summary>The state a fresh session starts in.</summary>
     /// <param name="enabled">The operator's setting.</param>
     /// <returns>The state.</returns>
     public static ModeFollowState Armed(bool enabled) => new(enabled, false);
+
+    /// <summary>The radio confirmed a write, so it is not made again here.</summary>
+    /// <param name="hz">Where the dial was.</param>
+    /// <param name="mode">What was set.</param>
+    /// <param name="dataMode">Whether the data variant was asked for.</param>
+    /// <returns>The state carrying that memory.</returns>
+    /// <remarks>
+    /// **A CONFIRMED WRITE IS A FACT ABOUT WHAT HAMLET DID, AND IT IS NOT THE
+    /// SAME FACT AS WHAT THE RADIO REPORTS** (HM-OPEN-041). The old test for
+    /// "already there" read the rig's own state, so any field that came back
+    /// unknown, stale, or a variant the radio does not report separately made
+    /// every tick look like a fresh arrival: eighteen writes went out in one
+    /// evening with the dial standing still, ten of them with nothing the
+    /// operator did anywhere near them. Remembering the write closes that
+    /// whatever the rig says, and the rig test stays as well, because either one
+    /// alone would be a reason not to write.
+    /// </remarks>
+    public ModeFollowState Done(long hz, CivMode mode, bool dataMode)
+        => this with { DoneAtHz = hz, DoneMode = mode, DoneDataMode = dataMode };
 
     /// <summary>
     /// The operator turned the mode knob, so Hamlet stops turning it.
@@ -34,7 +63,8 @@ public sealed record ModeFollowState(bool Enabled, bool Suspended)
     /// mode on purpose has said something, and an app that changed it back two
     /// seconds later would be arguing with them about their own radio.
     /// </remarks>
-    public ModeFollowState SuspendedByOperator() => this with { Suspended = true };
+    public ModeFollowState SuspendedByOperator()
+        => this with { Suspended = true, DoneAtHz = null, DoneMode = null };
 
     /// <summary>A band change re-arms it.</summary>
     /// <remarks>
@@ -42,7 +72,8 @@ public sealed record ModeFollowState(bool Enabled, bool Suspended)
     /// somebody who suspended the automation on 40 m almost certainly did not
     /// mean to switch it off forever.
     /// </remarks>
-    public ModeFollowState Rearmed() => this with { Suspended = false };
+    public ModeFollowState Rearmed()
+        => this with { Suspended = false, DoneAtHz = null, DoneMode = null };
 }
 
 /// <summary>What to do about the mode, as a value.</summary>
@@ -153,12 +184,16 @@ public static class ModeFollowPlan
     /// reason to skip.
     /// </param>
     /// <param name="target">What the map calls for, or null.</param>
+    /// <param name="frequencyHz">
+    /// Where the dial is, or null where the caller cannot say (HM-OPEN-041).
+    /// </param>
     /// <returns>The decision.</returns>
     public static ModeFollowDecision Decide(
         ModeFollowState state,
         CivMode? currentMode,
         bool currentDataMode,
-        ModeTarget? target)
+        ModeTarget? target,
+        long? frequencyHz = null)
     {
         ArgumentNullException.ThrowIfNull(state);
 
@@ -172,6 +207,21 @@ public static class ModeFollowPlan
         // app unreliable, which is the hardest kind of defect to attribute
         // (HM-DEC-050).
         if (currentMode == target.Mode && currentDataMode == target.DataMode)
+        {
+            return ModeFollowDecision.Nothing;
+        }
+
+        // **AND ALREADY DONE, WHICH IS A DIFFERENT QUESTION** (HM-OPEN-041). The
+        // test above asks the radio and the test here asks the record of what
+        // Hamlet did. They usually agree; when they do not, the first one alone
+        // writes the same command over and over at a dial nobody is touching,
+        // because a field that reads back unknown looks exactly like a radio
+        // that has not been set yet. Nothing here writes where the other test
+        // would have refused, so this can only ever reduce what goes out.
+        if (frequencyHz is { } hz
+            && state.DoneAtHz == hz
+            && state.DoneMode == target.Mode
+            && state.DoneDataMode == target.DataMode)
         {
             return ModeFollowDecision.Nothing;
         }

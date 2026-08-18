@@ -1,9 +1,9 @@
 STATE: EXECUTING
-PHASE: 4 of 6
+PHASE: 5 of 6
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-18T17:22:56-04:00
-NOTE: Phases 2 and 3 pushed as 22fdf09; phase 4 - are the favorites controls reachable
+UPDATED: 2026-08-18T17:29:34-04:00
+NOTE: Phase 5 - mode-follow firing with nothing driving it, and the readiness reason that contradicts itself
 
 ---
 

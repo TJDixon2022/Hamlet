@@ -110,9 +110,17 @@ public sealed record CwReadiness(
     /// The stable machine token for this verdict (HM-DEC-077).
     /// </summary>
     /// <remarks>
-    /// A token rather than the sentence, because the sentence is written for a
-    /// person and gets reworded the next time somebody improves the copy, taking
-    /// every comparison across sessions with it.
+    /// <para>A token rather than the sentence, because the sentence is written
+    /// for a person and gets reworded the next time somebody improves the copy,
+    /// taking every comparison across sessions with it.</para>
+    /// <para>**AND EVERY STATE IS NAMED, BECAUSE A CATCH-ALL LIES.** Four states
+    /// used to fall through to `already_transmitting`, so a refusal on the
+    /// operator's license wrote a record saying the radio was busy — with the
+    /// state itself sitting in the same event saying `OutsidePrivileges`, one
+    /// field apart and contradicting it. The whole worth of a stable token is
+    /// that a session months from now can count refusals by cause (HM-DEC-077),
+    /// and a token that names the wrong cause is worse than no token, because it
+    /// will be believed.</para>
     /// </remarks>
     public string Reason => State switch
     {
@@ -123,6 +131,10 @@ public sealed record CwReadiness(
         CwReadyState.BreakInOff => "break_in_off",
         CwReadyState.BreakInUnknown => "break_in_unknown",
         CwReadyState.ModeUnknown => "mode_unknown",
+        CwReadyState.OutsidePrivileges => "outside_privileges",
+        CwReadyState.ListenOnly => "listen_only",
+        CwReadyState.LicenseClassUnknown => "license_class_unknown",
+        CwReadyState.FrequencyUnknown => "frequency_unknown",
         _ => "already_transmitting",
     };
 

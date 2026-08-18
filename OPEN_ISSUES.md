@@ -4,6 +4,54 @@ Questions with owner and severity. `owner` is who must act next. Format in
 `CLAUDE.md` §3.
 
 ---
+id: HM-OPEN-041
+status: open
+owner: claude
+raised: 2026-08-18
+severity: slows
+blocks: nothing; the writes have stopped, but what triggers them has not been seen
+refs: HM-DEC-056, HM-DEC-077, src/Hamlet.RadioEngine/Explore/ModeFollowPlan.cs, src/Hamlet.App/ViewModels/MainWindowViewModel.cs
+---
+
+Mode follow wrote to the radio eighteen times in one evening, ten of them with
+nothing the operator did anywhere near them, and the record cannot say what
+recomputed it.
+
+**What was measured.** Session `9f9d23eb`, app 1.9.0, 2026-08-18: eighteen
+`mode_followed` events, ten with no `tune_requested` inside three seconds,
+including an unbroken run at 20:30:39, :50, :51, :53, :56, :57, :59 and 20:31:02.
+
+**What is understood, and is fixed.** `ModeFollowPlan.Decide` asked one question
+before writing: is the radio already in this mode. That question is answered from
+`RigState`, where an unread field reads as not-in-that-mode by design
+(HM-DEC-056 wants an unknown data setting to be a reason to write). So any tick
+that found the mode unread looked like a fresh arrival at a neighborhood, and
+every trigger produced another write. The plan now also remembers the last write
+the radio **confirmed**, with the frequency it was made at, and refuses to repeat
+it. Nothing writes where the old test would have refused, so the memory can only
+reduce what goes out, and a band change or the operator's own hand clears it.
+
+**What is not understood.** `ScheduleModeFollow` has two callers, a band change
+and the frequency changing, and the frequency handler runs for values the radio
+reports as well as for the operator's own tuning. Something moved that value with
+the dial standing still — a poll disagreeing with a broadcast, or a value
+round-tripping through the clamp — and **that has not been seen**, because seeing
+it needs a connected radio and this session had none (HM-DEC-093). The suppression
+above means the symptom no longer reaches the transmitter, which also means the
+next evening will not show it. `recent_dwell_short` is the instrument to watch:
+a dial that is not moving files no near misses, so a run of them with nobody
+touching anything names the fault directly.
+
+**A refusal token that named the wrong branch, found beside it and fixed.** At
+00:29:23.700 `send_buttons_enabled` carried `reason: "already_transmitting"` with
+`readinessState: "OutsidePrivileges"` in the same event. Four states fell through
+a catch-all to that token, so a refusal on the operator's license recorded the
+radio as busy. Every state names its own branch now and a test proves no two
+share a token, which is the whole worth of a stable token under HM-DEC-077: a
+session months from now counting refusals by cause was going to be counting the
+wrong thing and would have had no way to tell.
+
+---
 id: HM-OPEN-039
 status: closed
 owner: claude

@@ -3881,10 +3881,14 @@ public partial class MainWindowViewModel : ObservableObject
             return;
         }
 
-        var here = Neighborhoods.FirstOrDefault(n => n.Contains(FrequencyHz));
+        // Read once and carried, because the dial can move while the write is
+        // in flight and the memory has to name the frequency it was made at.
+        var atHz = FrequencyHz;
+
+        var here = Neighborhoods.FirstOrDefault(n => n.Contains(atHz));
         var decision = ModeFollowPlan.Decide(
             _modeFollow, RigState.Mode, RigState.IsDataMode,
-            ModeFollowPlan.TargetFor(here));
+            ModeFollowPlan.TargetFor(here), atHz);
 
         if (!decision.Write)
         {
@@ -3897,6 +3901,15 @@ public partial class MainWindowViewModel : ObservableObject
             var result = await rig.SetModeAsync(decision.Mode, decision.DataMode);
 
             _lastKnownMode = result.Worked ? decision.Mode : null;
+
+            // The write is remembered only where the radio confirmed it, so a
+            // failed write is retried and a successful one is not repeated
+            // (HM-OPEN-041).
+            if (result.Worked)
+            {
+                _modeFollow = _modeFollow.Done(
+                    atHz, decision.Mode, decision.DataMode);
+            }
 
             // A radio that has no such mode says so by having nothing to say,
             // and blanking the status line over it would wipe whatever the
