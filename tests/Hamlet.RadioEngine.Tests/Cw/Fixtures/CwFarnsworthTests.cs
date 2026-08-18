@@ -136,6 +136,58 @@ public sealed class CwFarnsworthTests
     }
 
     /// <remarks>
+    /// <para>Proves the gate's own flapping is kept out of the fit (HM-DEC-114).
+    /// A silence shorter than the shortest dit this radio can send is not a
+    /// silence anybody left, and while such gaps sit in a rolling window they
+    /// drag the element class **centre** down without moving its boundary. The
+    /// boundary still classifies correctly and the confidence, which is measured
+    /// from the boundary toward the centre, collapses: on `tightfist-easy` a
+    /// clean `...` came back as a placeholder at nought point one one while the
+    /// same pattern four seconds later read as `S` at nought point nine
+    /// eight.</para>
+    /// <para>What is asserted here is that the short ones are dropped and the
+    /// real ones are not, at the two speeds either side of the floor.</para>
+    /// </remarks>
+    [Fact]
+    public void GapsShorterThanAnybodyCanSendAreNotPartOfTheFit()
+    {
+        var gaps = new List<double>();
+
+        // The detector flapping at the start of a signal, then a fist whose
+        // element gaps are 80 and character gaps 162, which is the tight fist
+        // this was measured on.
+        gaps.AddRange(new[] { 15.0, 20, 20, 30, 35 });
+
+        for (var i = 0; i < 24; i++)
+        {
+            gaps.Add(80);
+        }
+
+        for (var i = 0; i < 10; i++)
+        {
+            gaps.Add(162);
+        }
+
+        for (var i = 0; i < 4; i++)
+        {
+            gaps.Add(265);
+        }
+
+        var fit = CwGapFit.Fit(gaps.ToArray(), gaps.Count);
+
+        Assert.NotNull(fit);
+
+        _output.WriteLine($"element {fit!.Value.ElementMs:0} ms, "
+            + $"character {fit.Value.CharacterMs:0}, word {fit.Value.WordMs:0}");
+
+        // **THE CENTRE IS THIS FIST'S OWN ELEMENT GAP AND NOT AN AVERAGE OF IT
+        // WITH THE DETECTOR.** Everything under twenty-five is gone, so the
+        // element class is the eighties it is made of.
+        Assert.InRange(fit.Value.ElementMs, 70, 90);
+        Assert.InRange(fit.Value.CharacterMs, 150, 175);
+    }
+
+    /// <remarks>
     /// Proves the fit holds for a textbook sender too, so removing the dit
     /// multiples did not trade one assumption for another: one, three and seven
     /// dits separate cleanly and come back as themselves.

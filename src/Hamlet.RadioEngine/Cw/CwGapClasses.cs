@@ -61,6 +61,29 @@ public readonly record struct CwGapClasses(
 /// </remarks>
 public static class CwGapFit
 {
+    /// <summary>The shortest silence anybody could have left, in milliseconds.</summary>
+    /// <remarks>
+    /// <para>**TWENTY-FIVE, WHICH IS THE SHORTEST DIT THIS RADIO CAN SEND**
+    /// (<see cref="CwToneSurvey.ShortestDitMs"/>, forty-eight words a minute, the
+    /// fastest its own keyer will go). Nothing below that is a silence anybody
+    /// left; it is the gate flapping while the detector finds the signal.</para>
+    /// <para>**AND IT IS THE CENTRE THEY SPOIL RATHER THAN THE BOUNDARY.**
+    /// Measured on `tightfist-easy`, whose element gaps are 80 milliseconds and
+    /// whose character gaps are 162: at the first `S` the fit had the boundary at
+    /// 89, which classifies every one of those correctly, and the element class
+    /// **centre at 49**, because the window still held gaps of 15, 20, 30 and 35
+    /// from before the signal was acquired. Confidence is measured from the
+    /// boundary toward the centre, so a gap of 85 scored 4 milliseconds out of
+    /// 40 — nought point one — and a character whose pattern was `...` and whose
+    /// elements were clean came back as a placeholder. Four seconds later, with
+    /// the window full of this fist's own gaps, the same pattern read as `S` at
+    /// nought point nine eight.</para>
+    /// <para>The letters were never in doubt. What was wrong was the scale the
+    /// confidence was measured on, and a scale fitted partly to the detector's
+    /// own flapping describes the detector rather than the sender.</para>
+    /// </remarks>
+    public const double ShortestGapMs = 25;
+
     /// <summary>How many gaps are needed before they can be clustered.</summary>
     /// <remarks>
     /// Ten. Fewer than that and a single stray gap moves a center, and there is
@@ -123,9 +146,12 @@ public static class CwGapFit
 
         var usable = 0;
 
+        // Shorter than anybody can send is the gate flapping and not a silence
+        // (see ShortestGapMs). It is dropped before the fit rather than trimmed
+        // after it, because it spoils the class centres and not just their edges.
         for (var i = 0; i < count && i < gapsMs.Length; i++)
         {
-            if (gapsMs[i] > 0)
+            if (gapsMs[i] >= ShortestGapMs)
             {
                 gapsMs[usable++] = gapsMs[i];
             }

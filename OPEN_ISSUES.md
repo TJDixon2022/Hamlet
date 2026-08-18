@@ -1905,3 +1905,65 @@ hypothesis and not a measurement.
 p. 4-14) and the decoder's own default is 600, so a station at 350 is somebody
 who has tuned a long way from where anybody normally sits. Named and left
 (§12.6).
+
+---
+id: HM-OPEN-035
+status: closed
+owner: claude
+raised: 2026-08-18
+closed: 2026-08-18
+severity: slows
+blocks: TheEasyTierIsReadWhole(tightfist-easy)
+refs: HM-DEC-114, HM-DEC-115, HM-OPEN-033, src/Hamlet.RadioEngine/Cw/CwGapClasses.cs
+---
+
+`tightfist-easy`'s placeholder was the confidence scale rather than the boundary,
+and it is fixed.
+
+**The boundary was right and the centre was not.** Traced with the fit's own
+numbers printed at the moment the character was judged. The fixture's element gaps
+are 80 milliseconds and its character gaps 162; the gate measured the two gaps
+inside the first `S` at 85 and 75, which is right; the fit's boundary was 89,
+which classifies all of them correctly, and its element class **centre was 49**.
+Confidence is measured from the boundary toward the centre, so:
+
+```
+Toward(85, cut 89, centre 49) = 4 / 40  = 0.10
+Toward(75, cut 94, centre 55) = 19 / 39 = 0.49
+```
+
+A character whose pattern was `...` and whose elements were clean came back as a
+placeholder at 28.6 decibels over the noise. Four seconds later, with the window
+full of this fist's own gaps, the same pattern read as `S` at 0.98.
+
+**What dragged the centre down was the detector, not the sender.** The rolling
+window still held gaps of 15, 20, 30 and 35 milliseconds from before the signal
+was acquired. **Twenty-five is the shortest dit this radio can send** —
+`CwToneSurvey.ShortestDitMs`, forty-eight words a minute, the fastest its own
+keyer goes — so nothing below that is a silence anybody left. They are dropped
+before the fit rather than trimmed after it, because they spoil the class centres
+and not merely their edges.
+
+**The whole corpus was re-decoded either side of it.** Twenty-four recordings,
+six of which move:
+
+| recording | before | after |
+|---|---|---|
+| `tightfist-easy` | `TE■T DE TEST K` | **`TEST DE TEST K`** |
+| `fast-working` | `■ D ■E ■AEL T I■ ALEK` | `V D ■E ■AEL T I■ ALEK` |
+| `coverage-edge` | 7 moves | 5 moves, nothing decoded either way |
+| `fast-edge` | 1 move | 3 moves, nothing decoded either way |
+| `exchange-working` | `SE<AS> F EA R` | `ESE<AS> FEEA R` |
+| `two-station-second` | `LL DE W1XYZ K` | `D DE W1XYZ K` |
+
+One easy-tier bar goes green, one opening character comes back, two edge tiers
+move their move counts around while decoding nothing, and two working-tier
+transcripts shuffle within text that is unreadable either way. HM-DEC-114 makes
+the easy tier pass-or-fail and says the working tiers assert how the decoder
+degrades rather than that it reads everything, so nothing any test asserts moved
+except the one that was meant to.
+
+**Nothing here raises a confidence by adding a term to it** (HM-DEC-048). The
+worst measurement still wins and no term may lift a score; what changed is the
+population the scale is fitted to, and a scale fitted partly to the detector's own
+flapping describes the detector rather than the sender.
