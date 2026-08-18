@@ -1,298 +1,259 @@
 # 1. What Claude did
 
 **STATE.** Development computer, `C:\Source\HamLet`, Claude Code surface (§9.5).
-**Branch: `main`, and nowhere else** (§9.5.1, HM-DEC-113). The prompt claimed
+**Branch: `main`, and nowhere else** (§9.5.1). The prompt claimed
 `PROJECT: Hamlet` and the tree confirms it: `CLAUDE.md`'s header reads
 `Project: Hamlet`, the solution is `Hamlet.sln`, the namespaces are `Hamlet.*`.
-Gate passed. **Nothing in this report is evidence about the radio**
-(`SHACK_FACTS.md`, HM-DEC-093): every number below comes from a fixture, a
-generated signal, or one off-air recording decoded on this machine.
+`git branch -a` showed `main` alone. Gate passed. **Nothing in this report is
+evidence about the radio** (HM-DEC-093): every number comes from a fixture, a
+generated signal, or one off-air recording decoded here.
 
 **Nothing was recorded under §12.1.** Three questions came up and all three are
 in section 4.
 
-**All six phases were worked. Phase 6 was not dropped.**
+**All five phases were worked. Phase 5 was half dropped and I say which below.**
 
-## Phase 0, the tree
+**This session shipped less than it measured, and that is the honest summary.**
+Two of the five phases are ratified rulings whose implementations were built,
+measured, and reverted because they made things worse. The measurements are the
+deliverable in both cases and they are precise.
 
-Confirmed: `git branch -a` shows `main` alone, the feature branch is gone local
-and remote, HEAD was at `c1a76f8`. Every commit this session is on `main`.
+## Phase 1, the clock fit — one part of three shipped
 
-The `"save"` commits are recorded as **HM-OPEN-025** and not chased.
+**Part 3 shipped. Parts 1 and 2 do not, and the reason is a measurement.**
 
-## Phase 1, gap classes from the gaps, and Tim gets most of his transcript
+Part 3 is the fitted dit-or-dah boundary: `ClassifyMark` now cuts between the
+two measured mark clusters rather than at two dits, fitted per signal, seeded on
+percentiles, forgotten on a retune. A textbook fist cuts at 1.73 dits, the
+geometric mean of one and three; a tight fist sending dahs at two and a half
+dits cuts at 1.58 rather than being judged against a number its sender never
+used. **Exactly neutral on the suite: 13 failing before, the same 13 after.**
 
-The measurement holds. My own independent pass over the WAV finds exactly the
-heaps the brief describes: **69 element gaps near 40 ms, 30 character gaps
-between 190 and 300, 14 word gaps above 300**, dits near 50 and dahs near 160.
-Hamlet's own fit now reports **element 51 ms, character 241, word 590 — a
-character gap 4.7 element gaps long where the textbook says three.**
+Parts 1 and 2 were built exactly as the ruling specifies and then measured. **The
+premise does not hold for this detector.** Per-mark, against the true lengths:
 
-The settled pass fits three classes to the gaps in log space and **holds no dit
-multiple anywhere**. Where the gaps do not form three groups it returns nothing
-and the pass emits nothing, because a guessed boundary is a guess about where
-the words are.
-
-**Two things had to be right and both were found by measuring, not reasoning.**
-The classes are fitted **per signal, not per window**: a settled window is a few
-seconds, which holds plenty of element gaps and often no word gap at all, so
-three classes cannot be found inside one however cleanly they separate over the
-transmission. And the fit is **seeded on percentiles, not on the ends**: seeding
-on the smallest and largest gap puts the first centre on whatever the shortest
-stray was and leaves it there, merging the element and character heaps. That
-variant produced a transcript of nothing at all.
-
-The bulletin now reads
-
-```
-JJ AOT NET ■I ECH STAAION HAND■ AHIS MESAGE P
-```
-
-against a key of `AT ARRL DOT NET <BT> EACH STATION HANDLING THIS MESSAGE P`.
-**The spaces are in the right places for the first time.** `NET`, `ECH`,
-`STAAION`, `AHIS`, `MESAGE`, `P` are all correctly divided. What is left is
-character-level and belongs to the clock, which is phase 2.
-
-**Applying the same removal to the streaming estimator was tried and reverted on
-measurement.** It fixes three tests and breaks four, two of them prime-directive
-tests: `NothingIsInventedAtTheHandover` and finding a tone in real two-station
-audio. Refusing to accumulate a pattern while the classes are unknown was tried
-as well and took the suite from nine failures to eighteen. Resetting the gap
-history on a retune was tried and changed nothing. The streaming pass keeps its
-fallbacks; the question is in section 4.
-
-## Phase 2, half amplitude for the clock fit — attempted, measured, reverted
-
-**It does what HM-DEC-112 says it does, and it breaks something else.** Four
-variants were measured:
-
-| Variant | `ACleanSignalDecodesExactly(25)` | Speed readout at 25 | Suite |
+| Speed | True dit | Gate reads | Half amplitude reads |
 |---|---|---|---|
-| As committed | `CQ D■ W1AW K` | 24 wpm | 9 failing |
-| Both gate edges at 6 dB | **exact** | 25 | 11, breaks 18 wpm |
-| Mark at half amplitude, per-mark peak | **exact** | **29 wpm** | 10 |
-| Mark and gap both corrected | **exact** | 25 | **23** |
+| 12 wpm | 100 ms | 100–110 | 80–90 |
+| 25 wpm | 48 ms | 45–50 | 30–35 |
+| 30 wpm | 40 ms | 40–45 | 25 |
 
-The ruling's own target is met by every variant that touches the mark: **25
-words a minute decodes exactly.** But correcting the mark alone leaves the
-displayed speed 16 percent high, because a mark and the silence after it are
-complementary and the gate's fall time was taken out of one without being given
-back to the other. Correcting both fixes the speed and takes the suite to
-twenty-three failures, because the streaming pass still classifies marks by a
-dit multiple and the dit has moved under it.
+**The gate's own length is accurate to within a hop at every speed.** It is the
+half-amplitude measure that is wrong, and worse as marks shorten — 15 percent at
+12 words a minute, 30 at 25, 37 at 30. The shed is a roughly fixed 15–20
+milliseconds regardless of speed, which is the analysis window: the Goertzel
+window rounds the top of a short mark, so the width at 6 dB below its own apex is
+far less than its base.
 
-`fast-easy` reads `DE N0CALL N0CALL K` in every variant; only its reported speed
-moves, 25 to 30.
+With all three parts in, `ACleanSignalDecodesExactly(25)` decodes exactly and 25
+reads 25 — but 30 words a minute collapses to nothing at all, `fast-easy` reads
+empty at 40 wpm, and **the suite goes from 13 failures to 29**, including the
+sensitivity floor tests. The acceptance asked for the suite at or below where it
+started. It is not.
 
-**A wrong speed on screen is its own §0.0 problem, so nothing was shipped.** The
-question is in section 4. Bandwidth-following-speed was correctly deferred by
-the ruling and is not what is missing here.
+## Phase 2, the bulletin, re-measured and unmoved
 
-## Phase 3, the sensitivity floor exists
+**36 characters against 45, match ratio 0.72, unchanged.** Only part 3 shipped
+and part 3 is neutral, so nothing moved. Aligned against the key:
 
-Built at 17 in the decoder's own margin units, named once in
-`CwConfidenceModel.RefusalFloorDb`. **The property the ruling exists for now
-holds: the worst invented share across the whole sweep is zero, at every
-level.** `ItGoesQuietRatherThanInventingLettersInTheNoise` passes on the floor
-existing rather than on its bound moving. Nine failures became eight.
+- `JJ` extra and `TARRLD` lost at the start — acquisition.
+- `BT` read as a placeholder and an `I`. The prosign is not resolved.
+- **`T` read as `A` twice**, in `STATION` and in `THIS`. A dah read as a dit
+  followed by a dah is a spurious leading dit: a mark boundary in the wrong
+  place, or an edge caught early.
+- `A` dropped from `EACH`, `S` from `MESSAGE`, `LING` from `HANDLING`.
 
-**One thing did not come out as the acceptance predicted.** The sweep is not
-unchanged from 18 dB down to 1. It is untouched to 6, then reads 0.94 correct at
-5, 0.61 at 4, 0.11 at 3, and nothing at 2 and below. So seventeen bites at about
-five decibels broadband on this fixture rather than at nought: **four decibels
-of reach given up.** Nothing was adjusted to hide it.
+Every one is character-level, which is what phase 1 was for. Nothing was tuned
+to this recording.
 
-## Phase 4, the bar
+## Phase 3, the floor swept
 
-The easy tiers and `exchange-easy` are pass-or-fail. Written the looser way
-first — no strangers, no placeholders — three of four passed while dropping
-their opening characters, and "emits the message" is not satisfied by emitting
-most of it. The bar asserts the ruling's own words.
-
-**Four tests are red and are meant to be:**
+The floor is now a decoder parameter defaulting to the ruled value, so it can be
+measured rather than translated a second time. Nothing outside a measurement
+ever sees anything but 17.
 
 ```
-coverage-easy    34567890QRZ?DE/N0CALL      against 1234567890QRZ?DE/N0CALL
-exchange-easy    CQDEN0CALLN0CALLK          against CQCQDEN0CALLN0CALLK
-tightfist-easy   DETESTK                    against TESTDETESTK
-prosigns-easy    CALLIRSK                   against BTN0CALLARSK
+floor   invents from   correct at 5 dB   at 4 dB   at 3 dB   reads to
+   17          never              0.94      0.61      0.11     5.0 dB
+   16          never              1.00      0.94      0.67     4.0 dB
+   15          never              1.00      1.00      0.94     3.0 dB
+   14          never              1.00      1.00      1.00     1.0 dB
+   13          never              1.00      1.00      1.00     1.0 dB
+   12        -2.0 dB              1.00      1.00      1.00     0.0 dB
+   11        -2.0 dB              1.00      1.00      1.00    -1.0 dB
+   10        -2.0 dB              1.00      1.00      1.00    -1.0 dB
 ```
 
-Three lose only their opening, to acquisition. The fourth reads `IR` where `AR`
-was sent, which is a wrong character rather than a missing one and the only
-strangers case among them.
+**Fourteen and thirteen are the last floors that never invent a character at any
+level, and both read the whole message perfectly down to one decibel.** That is
+the four decibels seventeen gave away, recovered, with the property the ruling
+exists for intact. Twelve and below begin inventing at minus two, which is the
+case HM-DEC-097 names at 0.44 invented.
 
-## Phase 5, the captures
+**Reported and not chosen**, as the order required.
 
-**The rule permits them and it is not a permission question.** §2.1 says
-recorded off-air audio is public by nature and asks only that fixtures committed
-to the public repository are reviewed by Tim first, which he did when he
-committed `004507`.
+## Phase 4, the tip adopting the settled classes — built and reverted
 
-That one now carries an **answer key**, which this project has never had: every
-fixture until now was synthesized, and so proved only that the decoder agrees
-with the generator, or was a capture asserting what was measured because nobody
-knew what was sent. The key is asserted and it is red, at **36 characters
-against 47**.
+Built exactly as HM-DEC-116 describes: the estimator takes the settled pass's
+fitted classes for the current sender, keeps dit multiples until they arrive,
+and forgets them on a retune or a lost clock.
 
-**Three of the four are not on the machine.** Searched the repository,
-`tests/fixtures/cw/captured`, `%AppData%\Hamlet\captures` and Downloads.
-Recorded as **HM-OPEN-026**. `003758` is the one worth chasing: it would be a
-regression test for a success and the suite has none.
+**The acceptance's two named tests pass.** `NothingIsInventedAtTheHandover` and
+tone-finding on the two-station recording both survive. And it fixes the app's
+`ClearingTheTranscriptLeavesTheDecoderAlone`.
 
-The QN signals go to **FG-013** rather than being built here.
+**It costs the callsign on a real capture.** On `cw-2026-08-17-013347` the
+settled pass goes from `■■■ ■■VA3VRR` to `■■■ ■` — every character a
+placeholder, and `TheSettledPassNoLongerStopsShortOfTheCallsign` fails.
 
-## Phase 6, the three small things
+There is a feedback loop: the estimator adopting the settled pass's classes
+changes state the settled pass then depends on. Three narrowings were tried and
+none broke it — suppressing null adoption, removing the explicit drop on a lost
+clock, and confining adoption to the boundaries. Disabling adoption entirely
+restores the callsign, which is what identifies it as the cause.
 
-**The solid green block is not the tip failing to firm up.** It is the
-unreadable placeholder, drawn correctly and in the wrong colour: the whole tip
-was one run in one ink, so a mark Hamlet could not read came out in the tip's
-green and read as a block of something rather than as the glyph that means it
-could not tell you what was there. The tip is now split so a placeholder keeps
-its amber wherever it sits.
+**Net it is thirteen failures either way**, one synthetic app test swapped for
+one real-capture test. **A real capture outranks a synthetic one** — HM-DEC-091's
+own lesson, where two real recordings did in an afternoon what seven synthesized
+fixtures could not — so it was reverted.
 
-**The revision count has a denominator.** It says how many out of how many and
-what share, because a pass revising one reading in twenty is working and one
-revising half of them is reading different audio from the first.
+## Phase 5, half done and half dropped
 
-The spot-refresh ordering is a trade-off and is in section 4 with a
-recommendation, as the order asked.
+**Done: HM-DEC-118.** The first spot load runs from the reconnect rather than
+from the view model's constructor, in a `finally` so it happens whatever the
+radio did. One that answered has set the band from its dial; one that did not
+leaves the remembered band, which is the same guess as before and is now the
+only guess available rather than a guess made in preference to asking. Asking
+the radio from the constructor stays rejected.
+
+**Dropped: the fixture rebuild.** It needs the recipes changed, the WAVs
+regenerated, the reference scorer run to satisfy HM-DEC-101's gate, and every
+held-out fixture adjudicated one at a time with a recorded reason (§12.5). That
+is a work order rather than a phase tail, and half-doing it would leave the
+fixture set unadjudicated, which §12.5 forbids by name.
 
 **No transmit work of any kind was done and nothing was built toward auto-CQ.**
 
 # 2. What Tim should expect
 
-- **Build succeeds, no warnings**, engine and app.
-- **1800 tests, 13 failing.** 1373 of 1385 pass in the engine, 414 of 415 in the
-  app. 12 tests added.
-- **Four of the thirteen are the new bar and are supposed to be red**
-  (HM-DEC-114): the four `TheEasyTierIsReadWhole` rows above. Leave them.
-- **One more is the new answer key** and is also supposed to be red:
-  `TheBulletinDecodesToItsAnswerKey`, at 36 characters against 47. That is the
-  definition of done being reported as a number rather than a shrug.
-- **Eight are pre-existing** and unchanged in character:
-  `ACleanSignalDecodesExactly(25)`, `AFadingSignalComesBackRatherThanStayingDead`,
-  four `ASignalAtTheWrongPitchIsStillFound`, `TheSpeedEstimateFollowsAChange`,
-  and, in the app, `ClearingTheTranscriptLeavesTheDecoderAlone`.
-  **`ItGoesQuietRatherThanInventingLettersInTheNoise` is gone**, fixed by the
-  floor.
-- **What you will see that is different at the radio.** The transcript of a
-  traffic net should have its words divided correctly for the first time. The
-  decoder now says nothing at all below its floor rather than producing text
-  that is partly invented, and on a weak signal that means silence where there
-  used to be letters. A placeholder in the live tip is amber rather than green.
-- **`cw-2026-08-18-004507` still does not decode to its key**, and the reason is
-  in phase 2: the clock fit is biased and the fix for it makes the displayed
-  speed wrong. Section 4, item one.
+- **Build succeeds, no warnings.**
+- **1806 tests, 13 failing.** 1378 of 1390 pass in the engine, 415 of 416 in the
+  app. 6 tests added.
+- **The 13 are the same 13 the session started with.** Nothing regressed and
+  nothing was fixed. Five of them are supposed to be red: the four
+  `TheEasyTierIsReadWhole` rows and `TheBulletinDecodesToItsAnswerKey`.
+- **What is different at the radio.** Almost nothing, deliberately. The
+  dit-or-dah boundary is fitted rather than multiplied, which no fixture
+  notices, and the happening-now panel is empty for a second or two at startup
+  instead of showing the remembered band's stations.
+- **What did not change and was expected to.** `ACleanSignalDecodesExactly(25)`
+  is still red and the bulletin still reads 36 of 45. Both were phase 1's job
+  and phase 1 delivered a third of itself.
+- **The floor is still 17.** The sweep says 14 or 13 and the number is yours.
 - **Everything is committed and pushed to `main`.** Nothing local, no branches.
 
 # 3. What we should do next
 
-- Rule on phase 2, section 4 item one. It is the last thing between the bulletin
-  and its answer key, and it is one measurement away from being finishable.
-- Rebuild the six short fixtures with enough run-up for the detector, which is
-  generator work and would clear most of the pre-existing eight along with three
-  of the four new bar failures.
-- Get `cw-2026-08-18-003758` onto the machine. A suite with no regression test
-  for a success cannot tell a repair from a coincidence.
-- Look at `prosigns-easy` reading `IR` for `AR`, which is the only strangers
-  case left at fifteen decibels and so the only one the bar catches for the
-  right reason.
-- Rule on the streaming estimator, section 4 item two.
+- Rule on the clock, section 4 item one. It is the same blocker as last session
+  and it now has a measurement underneath it rather than a theory.
+- Rule on the floor, section 4 item two. It is a one-line change once chosen and
+  it buys back four decibels.
+- Rebuild the six short fixtures as its own work order. It clears most of the
+  pre-existing failures and three of the four bar failures, and it is too big to
+  be a phase tail.
+- Find the coupling behind phase 4 before attempting HM-DEC-116 again. The
+  measurement in section 4 item three narrows it to something the settled pass
+  reads out of the estimator.
+- Still outstanding and untouched: `cw-2026-08-18-003758` is not on the machine
+  (HM-OPEN-026), `prosigns-easy` reads `IR` for `AR`, and the 400 Hz tracker
+  will not hold a pitch it finds.
 
 # 4. What's blocking us
 
 ---
 date: 2026-08-18
-refs: CLAUDE.md §0.0, §12.1; HM-DEC-112; HM-DEC-048
+refs: CLAUDE.md §0.0, §12.1, §12.5; HM-DEC-112
 ---
 
-**Half amplitude is taken for the clock fit and the gap is given back what the
-mark sheds, and the streaming pass stops classifying marks by a dit multiple in
-the same change.**
+**The clock fit's bias is measured on this detector before any correction is
+applied to it, and HM-DEC-112's remaining two parts wait for that measurement.**
 
-HM-DEC-112 is right and half of it cannot ship alone. Taking the mark at half
-amplitude makes `ACleanSignalDecodesExactly(25)` decode exactly, which is the
-ruling's own named target, and leaves the displayed speed at 29 words a minute
-for a 25 word-a-minute signal, because the detector's fall time was taken out of
-the mark and not given back to the gap. **A wrong speed on screen is its own
-prime-directive problem**, so it was not shipped.
+HM-DEC-112 says the gate catches the rising and falling skirts, so every mark
+measures long and every gap short by the detector's own fall time. **Measured on
+this detector, that is not what happens.** The gate reads 100–110 ms for a true
+100, 45–50 for a true 48, and 40–45 for a true 40: accurate to within one hop at
+every speed. The half-amplitude correction reads 80–90, 30–35 and 25 for the same
+three, which is wrong by 15, 30 and 37 percent and worse the shorter the mark.
 
-Giving the gap back what the mark sheds fixes the speed exactly — 25 reads 25,
-18 reads 17 — and takes the suite from nine failures to twenty-three. The reason
-is visible in the code rather than guessed: `ClassifyMark` still splits dit from
-dah at two dits, and the dit has just moved under it. The marks want the same
-treatment the gaps got in phase 1, which is a boundary fitted between the two
-measured clusters rather than a multiple of one of them.
+The shed is a fixed 15–20 milliseconds whatever the speed, which is the analysis
+window rather than the transmitter's fall time. A Goertzel window rounds the top
+of a short mark, so the width at six decibels below its own apex is far less than
+its base. **The ruling's measurement was made with a different analysis window
+from the one Hamlet decodes through**, and the correction it prescribes is
+carrying that window's shape into the clock.
 
-So the change is three things at once, not one: mark at half amplitude, gap
-corrected by the same amount, and mark classification fitted rather than
-multiplied. Any two of the three make things worse than none.
+What is wanted before trying again is one number: for a synthesized dit of known
+length, what does this detector's envelope actually do at the edges, at 12, 25
+and 30 words a minute. That is a morning's work with the harness that already
+exists, and it would say whether the fix is a shorter edge window, sub-hop
+interpolation, or nothing at all.
 
-Rejected: shipping the mark correction alone and accepting a speed readout 16
-percent high. The speed is on screen, it is what a beginner uses to decide
-whether he could have copied something, and a wrong one teaches him the wrong
-thing about himself.
-
-Rejected: widening the detection bandwidth instead, which the ruling already
-rejected as costing sensitivity where it is most needed.
+Rejected: shipping the mark correction alone, which leaves the speed readout 16
+percent high, and the speed is what a beginner uses to decide whether he could
+have copied something. Rejected: shipping all three as ruled, which takes the
+suite from 13 failures to 29 and silences 30 words a minute entirely.
 
 ---
 date: 2026-08-18
-refs: CLAUDE.md §0.0; HM-DEC-115; HM-DEC-095
+refs: CLAUDE.md §0.0, §12.1; HM-DEC-097; HM-DEC-117
 ---
 
-**The streaming estimator keeps its dit-multiple fallbacks until the gap classes
-can be fitted without costing the handover tests.**
+**The refusal floor is 14.**
 
-HM-DEC-115 says remove every remaining dit-multiple fallback from gap
-classification. It is done in the settled pass, which is where the transcript
-comes from and where the ruling's evidence and acceptance both live. **In the
-streaming pass it was measured and is net-negative.**
+The sweep is in section 1 and it is unambiguous. Fourteen and thirteen are the
+last floors that never invent a character at any level, and both read the whole
+message perfectly down to one decibel — the four decibels seventeen gave away,
+recovered, with the property HM-DEC-097 exists for intact.
 
-Fitting three classes there needs a gap history long enough to hold word gaps,
-which are the rarest class by a wide margin. The estimator's window is twenty
-gaps and that is right for following a change of speed. Lengthening it to 256
-fixes three tests — the fade, the transcript clear, and the sensitivity one —
-and breaks four, of which two are prime-directive tests:
-`NothingIsInventedAtTheHandover` and `TheToneIsFoundInRealisticAudio` on the
-second station of a two-station recording.
+**Fourteen rather than thirteen** because it is the further of the two from the
+first floor that does invent, and they are otherwise identical on every number
+in the table. Twelve begins inventing at minus two decibels, which is the exact
+case HM-DEC-097 names at 0.44 of the message invented, so thirteen sits one step
+from the cliff and fourteen sits two.
 
-Resetting the history when the tracker retunes was tried, on the reasoning that
-the classes belong to a sender, and changed nothing. Refusing to accumulate a
-pattern while the classes are unknown was tried and took the suite to eighteen
-failures.
+Rejected: keeping seventeen. It costs four decibels of reach and buys nothing —
+every floor from seventeen down to thirteen has the same worst invented share,
+which is none.
 
-What that says is that the streaming pass wants a different arrangement rather
-than a longer buffer: the classes have to be attributable to a sender before
-they are useful, and a rolling window cannot tell one sender from two.
-
-Rejected: leaving the ruling half-applied and silent about it. Rejected:
-applying it anyway and accepting two prime-directive regressions, which trades
-the fault the ruling names for a worse one.
+Rejected: choosing it here. §12.1 puts a number that decides what the display
+asserts with you without exception, and this one has been guessed wrong once
+already, which is why it was measured this time.
 
 ---
 date: 2026-08-18
-refs: CLAUDE.md §0.0.1; HM-DEC-024; HM-DEC-075; HM-DEC-109
+refs: CLAUDE.md §0.0; HM-DEC-116; HM-DEC-091
 ---
 
-**The first spot refresh waits for the radio to be asked where it is.**
-Recommended, and it is a trade-off so it is yours.
+**HM-DEC-116 waits until the coupling between the two passes is identified.**
 
-Carried from the last report unchanged. `ReloadSpotsAsync("startup")` runs from
-the view model's constructor; the radio is not connected until the window's
-`Opened` event; until then the band is whatever `settings.LastBand` says, and
-the band scopes what RBN is filtered to and what the skimmer watch listens for.
+The implementation is straightforward and the ruling's own acceptance is met:
+`NothingIsInventedAtTheHandover` passes, tone-finding on the two-station
+recording passes, and the app's transcript test starts passing. **What it costs
+is the callsign on capture `cw-2026-08-17-013347`**, where the settled pass goes
+from `■■■ ■■VA3VRR` to `■■■ ■`.
 
-It has happened once, in session `af471e84`, on the training radio, and never
-with a real one. It self-corrects because a band change reloads spots.
+That is a feedback loop rather than a tuning problem: the estimator adopting the
+settled pass's classes changes state the settled pass then reads back. Three
+narrowings were tried and none broke it. Disabling adoption restores the
+callsign, which is what identifies the cause but not the path.
 
-**The recommendation is to wait.** What waiting costs is an empty happening-now
-panel for the second or two before the radio answers, on a screen the operator
-has only just opened. What not waiting costs is a burst of calls to somebody
-else's service on the wrong band and a panel briefly showing stations from a
-band he is not on, which is a display asserting something false rather than
-asserting nothing.
+The path is what is needed. The settled pass takes one thing from the estimator
+— the dit hint — and if that is the whole coupling then the fix is to hand the
+classes forward without letting them touch anything the dit is derived from.
+Finding out is an afternoon with a trace on both passes.
 
-Rejected: asking the radio from the constructor, which would put a serial read
-on the path that builds the window.
+Rejected: shipping it and accepting the swap. A real off-air capture outranks a
+synthesized app test, which is this project's own repeated lesson: two real
+recordings did in an afternoon what seven synthesized fixtures could not
+(HM-DEC-091). Rejected: leaving HM-DEC-116 unattempted and silent, which is why
+this is here with the measurement.
