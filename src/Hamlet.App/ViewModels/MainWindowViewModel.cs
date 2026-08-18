@@ -1479,7 +1479,7 @@ public partial class MainWindowViewModel : ObservableObject
         {
             Favorites.Add(new Favorite(
                 saved.FrequencyHz, saved.Name, saved.Mode, saved.BandName,
-                saved.Neighborhood, saved.SavedUtc));
+                saved.Neighborhood, saved.SavedUtc, saved.Note));
         }
 
         foreach (var saved in settings.Recent)
@@ -2069,6 +2069,7 @@ public partial class MainWindowViewModel : ObservableObject
                 BandName = f.BandName,
                 Neighborhood = f.Neighborhood,
                 SavedUtc = f.SavedUtc,
+                Note = f.Note,
             })
             .ToList();
 
@@ -2097,7 +2098,60 @@ public partial class MainWindowViewModel : ObservableObject
         IsFavorite = here is not null;
         FavoriteLabel = RadioEngine.Explore.Favorites.StarLabel(here);
         FavoriteHere = RadioEngine.Explore.Favorites.NameHere(here);
+
+        // **WRITTEN WITHOUT GOING BACK THROUGH THE SETTER**, which would save
+        // the file on every tune and, worse, write the previous frequency's note
+        // onto this one on the way past.
+        _favoriteNote = here?.Note ?? "";
+        OnPropertyChanged(nameof(FavoriteNote));
     }
+
+    /// <summary>
+    /// Why this favorite, in the operator's own words (HM-DEC-060).
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE NAME SAYS WHERE AND THIS SAYS WHY.** Hamlet can name the block
+    /// from the map and it cannot know that this is the net that meets on
+    /// Tuesdays. Nothing derives this, suggests it or fills it in: it is the one
+    /// part of a favorite that is entirely the operator's (§0.0).</para>
+    /// <para>It sits in the strip beside the name, which is where a favorite
+    /// already speaks (HM-DEC-070), and it is there from the moment the star
+    /// lights rather than behind a management window — a box somebody has to go
+    /// and find is a box that never gets written. Empty is the ordinary state and
+    /// stays empty.</para>
+    /// </remarks>
+    public string FavoriteNote
+    {
+        get => _favoriteNote;
+
+        set
+        {
+            var text = (value ?? "").Trim();
+
+            if (text == _favoriteNote)
+            {
+                return;
+            }
+
+            _favoriteNote = text;
+            OnPropertyChanged();
+
+            if (RadioEngine.Explore.Favorites.At(Favorites, FrequencyHz)
+                is not { } here)
+            {
+                // No favorite here to carry it. Nothing is saved and nothing is
+                // lost, because there is nothing yet for a note to belong to.
+                return;
+            }
+
+            var index = Favorites.IndexOf(here);
+            Favorites[index] = here with { Note = text };
+
+            PersistFavorites();
+        }
+    }
+
+    private string _favoriteNote = "";
 
     /// <summary>Tune the rig (and the whole UI) to a target — the payoff
     /// click on every story and spot.</summary>

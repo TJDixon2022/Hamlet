@@ -45,6 +45,19 @@
                                 <StackPanel Grid.Column="1" Spacing="1">
                                     <TextBox Text="{Binding Name, Mode=TwoWay}"
                                              FontSize="13" Padding="6,3" />
+
+                                    <!-- WHY THIS ONE, IN HIS OWN WORDS
+                                         (HM-DEC-060). The same line the strip
+                                         beside the name carries, editable here
+                                         because this is where somebody comes to
+                                         tidy up. Empty is the ordinary state and
+                                         nothing suggests one. -->
+                                    <TextBox Text="{Binding Note, Mode=TwoWay}"
+                                             Watermark="why this one"
+                                             AcceptsReturn="False" MaxLength="80"
+                                             FontSize="11" Padding="6,2"
+                                             Foreground="{StaticResource HmTextMutedBrush}" />
+
                                     <TextBlock Text="{Binding Provenance}" FontSize="11"
                                                Foreground="{StaticResource HmTextMutedBrush}" />
                                 </StackPanel>

@@ -286,6 +286,7 @@ public sealed class SettingsRoundTripTests : IDisposable
             BandName = "20 m",
             Neighborhood = "FT8 city",
             SavedUtc = new DateTime(2026, 8, 15, 12, 0, 0, DateTimeKind.Utc),
+            Note = "where I heard Japan that once",
         });
 
         SettingsStore.SaveTo(written, SettingsPath);
@@ -298,6 +299,32 @@ public sealed class SettingsRoundTripTests : IDisposable
         Assert.Equal("USB", back.Mode);
         Assert.Equal("20 m", back.BandName);
         Assert.Equal("FT8 city", back.Neighborhood);
+        Assert.Equal("where I heard Japan that once", back.Note);
+    }
+
+    /// <remarks>
+    /// <para>Proves a favorite written before notes existed still loads, and has
+    /// none. Nothing about the file changed for anybody who never writes one, so
+    /// there is nothing to migrate and this is the check that says so (§6.1).
+    /// </para>
+    /// </remarks>
+    [Fact]
+    public void AFavoriteWrittenBeforeNotesExistedStillLoads()
+    {
+        Directory.CreateDirectory(_folder);
+
+        File.WriteAllText(
+            SettingsPath,
+            "{ \"Favorites\": [ { \"FrequencyHz\": 7030000, "
+            + "\"Name\": \"7.030, Morse main street\", "
+            + "\"Mode\": \"CW\", \"BandName\": \"40 m\", "
+            + "\"Neighborhood\": \"Morse main street\", "
+            + "\"SavedUtc\": \"2026-08-15T12:00:00Z\" } ] }");
+
+        var back = Assert.Single(SettingsStore.LoadFrom(SettingsPath).Favorites);
+
+        Assert.Equal("7.030, Morse main street", back.Name);
+        Assert.Equal("", back.Note);
     }
 
     /// <remarks>Proves HM-DEC-018 still holds with the profile added: a

@@ -121,6 +121,41 @@ public sealed class FavoriteTests
     }
 
     /// <remarks>
+    /// <para>Proves the note is the operator's and nothing else fills it in
+    /// (HM-DEC-060). The name says where and Hamlet derives that from the map;
+    /// why is a thing only he knows, so a fresh favorite has no note and nothing
+    /// suggests one (§0.0).</para>
+    /// </remarks>
+    [Fact]
+    public void AFreshFavoriteHasNoNoteAndNothingInventsOne()
+    {
+        var favorite = Favorites.From(14_074_000, "USB", null, Now);
+
+        Assert.Equal("", favorite.Note);
+        Assert.False(favorite.HasNote);
+    }
+
+    /// <remarks>
+    /// <para>Proves an empty note is a real state that renders as nothing at all.
+    /// A row filling the gap with "no note", or with a greyed-out invitation,
+    /// would be putting furniture where the operator left silence, so every
+    /// surface asks this before drawing anything.</para>
+    /// </remarks>
+    [Fact]
+    public void AnEmptyNoteRendersAsNothingAndAWrittenOneSaysSo()
+    {
+        var bare = Favorites.From(7_030_000, "CW", null, Now);
+        var written = bare with { Note = "the Tuesday net" };
+
+        Assert.False(bare.HasNote);
+        Assert.True(written.HasNote);
+        Assert.Equal("the Tuesday net", written.Note);
+
+        // The name is untouched by it: the two answer different questions.
+        Assert.Equal(bare.Name, written.Name);
+    }
+
+    /// <remarks>
     /// Proves the frequency reads the way the app writes it everywhere else, so
     /// a favorite and a card and a status line all say "14.074" rather than
     /// three renderings of one number.

@@ -601,4 +601,12 @@ public sealed class SavedFavorite
 
     /// <summary>When it was saved.</summary>
     public DateTime SavedUtc { get; set; }
+
+    /// <summary>Why this one, in the operator's own words, or "".</summary>
+    /// <remarks>
+    /// Defaulted rather than required, so every favorite saved before notes
+    /// existed still loads and simply has none. That is what an empty note means
+    /// and there is nothing to migrate (§6.1).
+    /// </remarks>
+    public string Note { get; set; } = "";
 }

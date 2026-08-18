@@ -2087,11 +2087,29 @@
              made it, and the LCD has a mode badge at one end and a
              clock at the other. -->
         <Grid Grid.Column="1" ColumnDefinitions="*,Auto" Margin="14,0,0,0">
-            <TextBlock Grid.Column="0" Text="{Binding FavoriteHere}"
-                       FontSize="12" VerticalAlignment="Center"
-                       TextTrimming="CharacterEllipsis"
-                       Margin="2,0,10,0"
-                       Foreground="{StaticResource HmAmberBrush}" />
+            <!-- THE NAME SAYS WHERE AND THE LINE UNDER IT SAYS WHY
+                 (HM-DEC-060). It sits inside the flexible column, so
+                 however long the note is it cannot push the dropdowns
+                 out of shape, and it is a single line because a
+                 favorite is a signpost rather than a logbook entry.
+                 It appears the moment the star lights, because a box
+                 somebody has to go and find in a management window is
+                 a box that never gets written. -->
+            <StackPanel Grid.Column="0" VerticalAlignment="Center"
+                        Margin="2,0,10,0" Spacing="1">
+                <TextBlock Text="{Binding FavoriteHere}"
+                           FontSize="12"
+                           TextTrimming="CharacterEllipsis"
+                           Foreground="{StaticResource HmAmberBrush}" />
+
+                <TextBox Text="{Binding FavoriteNote, Mode=TwoWay}"
+                         IsVisible="{Binding IsFavorite}"
+                         Watermark="why this one"
+                         AcceptsReturn="False"
+                         MaxLength="80"
+                         FontSize="11" Padding="4,1" MinHeight="0"
+                         Foreground="{StaticResource HmTextMutedBrush}" />
+            </StackPanel>
 
             <!-- THE TWO SIT TOGETHER AND READ AS A PAIR (HM-DEC-072).
                  Favorites are places he chose and recent are places he

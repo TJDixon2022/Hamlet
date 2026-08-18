@@ -14,6 +14,7 @@ public sealed partial class FavoriteRowViewModel : ObservableObject
     {
         Favorite = favorite;
         _name = favorite.Name;
+        _note = favorite.Note;
     }
 
     /// <summary>The favorite as saved.</summary>
@@ -22,6 +23,15 @@ public sealed partial class FavoriteRowViewModel : ObservableObject
     /// <summary>What the operator calls it. Editable.</summary>
     [ObservableProperty]
     private string _name;
+
+    /// <summary>Why this one, in his own words. Editable, and usually empty.</summary>
+    /// <remarks>
+    /// The same line the strip beside the name carries, editable here because
+    /// this is where somebody comes to tidy up. Empty is ordinary and stays
+    /// empty: nothing suggests one.
+    /// </remarks>
+    [ObservableProperty]
+    private string _note;
 
     /// <summary>The frequency as the app writes it.</summary>
     public string FrequencyLabel => Favorite.FrequencyLabel;
@@ -67,9 +77,16 @@ public sealed partial class FavoriteRowViewModel : ObservableObject
         Favorite = Favorite with
         {
             Name = trimmed.Length == 0 ? Favorite.Name : trimmed,
+
+            // **AN EMPTY NOTE IS ALLOWED TO STAY EMPTY**, unlike the name. A
+            // favorite with no name is one nobody can pick out of a list; a
+            // favorite with no note is the ordinary case, and clearing one is a
+            // thing the operator is entitled to do.
+            Note = (Note ?? "").Trim(),
         };
 
         Name = Favorite.Name;
+        Note = Favorite.Note;
         return Favorite;
     }
 }

@@ -14,18 +14,32 @@ namespace Hamlet.RadioEngine.Explore;
 /// What lives there, as the map called it when it was saved, or "".
 /// </param>
 /// <param name="SavedUtc">When it was saved.</param>
+/// <param name="Note">
+/// Why this one, in the operator's own words, or "".
+/// </param>
 public sealed record Favorite(
     long FrequencyHz,
     string Name,
     string Mode,
     string BandName,
     string Neighborhood,
-    DateTime SavedUtc)
+    DateTime SavedUtc,
+    string Note = "")
 {
     /// <summary>The frequency as the app writes it, e.g. "14.074".</summary>
     public string FrequencyLabel
         => (FrequencyHz / 1_000_000.0).ToString(
             "0.000", System.Globalization.CultureInfo.InvariantCulture);
+
+    /// <summary>True where the operator wrote something.</summary>
+    /// <remarks>
+    /// **AN EMPTY NOTE IS A REAL STATE AND RENDERS AS NOTHING AT ALL.** Most
+    /// favorites will never have one, because the name Hamlet gives them already
+    /// says where they are, and a row that filled the gap with "no note" or a
+    /// greyed-out invitation would be putting furniture where the operator left
+    /// silence. Surfaces ask this before drawing anything.
+    /// </remarks>
+    public bool HasNote => Note.Length > 0;
 }
 
 /// <summary>
@@ -40,6 +54,14 @@ public sealed record Favorite(
 /// <para>SAVING CAPTURES CONTEXT AUTOMATICALLY. Frequency, mode, band and
 /// neighborhood, so a favorite reads "14.074, where the digital modes gather"
 /// with nothing typed. The operator may rename it and nobody has to.</para>
+/// <para>**AND THE NAME SAYS WHERE, WHICH LEAVES WHY.** The map can name the
+/// block and it cannot know that this is the net that meets on Tuesdays or the
+/// frequency somebody answered from. That is a line the operator writes, and it
+/// is his: nothing here derives it, suggests it or fills it in (§0.0). It is
+/// captured at the moment of saving, because a box that only appears in a
+/// management window somewhere else never gets written, and it stays editable
+/// afterwards, because a box that only appears at save time gets left blank by
+/// somebody in a hurry.</para>
 /// <para>Pure: a frequency and what the map says about it in, a favorite out.
 /// No clock is read here; the moment is passed in (§5).</para>
 /// </remarks>
