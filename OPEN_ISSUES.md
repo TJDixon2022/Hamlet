@@ -1244,6 +1244,44 @@ pitch it last reported: the fine bank answers a few hertz outside its own centre
 730 through a bank centred at 725 — and measuring from the report would make one
 bin read as one and a bit.
 
+---
+
+**AND HM-DEC-116 WAS RE-ATTEMPTED ON TOP OF IT AND IS STILL NOT SHIPPED, FOR A
+DIFFERENT REASON.** The chain this entry traced is genuinely broken: with the
+streaming pass adopting the settled classes, `cw-2026-08-17-013347` shows **three
+moves and one follow, identical to adoption off**, where the whole of HM-DEC-121's
+diagnosis was that adoption turned one retune into three. `MidCharacter` no longer
+costs anything, because a refinement no longer resets anything.
+
+**The new path is direct and it is about the classes themselves.** Adoption now
+changes only where the streaming pass divides characters, and on the two
+recordings where it fires the settled pass's classes are the worse of the two
+fits:
+
+| | adoption off | adoption on |
+|---|---|---|
+| `013347` settled | `■■■ ■■VA3VRR` | `■■■ ■■VA3VRR` |
+| **`013347` streamed** | **`■    ■VA3VRR`** | `■    ■■■■R` |
+| `004507` settled | `NL DOT NET ■I ECH STAAION HAND■ AHIS MESAGE P` | unchanged |
+| **`two-station` settled** | **`L DE W1XYZ K`** | `ATD■VTXYZ` |
+| `ClearingTheTranscript…` | fails at `■ DE W1AW K` | **passes** |
+
+Everything else in the corpus is unchanged, character for character. So the trade
+is one synthetic looping training signal against the streaming pass losing the
+callsign on the only real capture that carries one, and **a real capture outranks
+a synthetic one** (HM-DEC-091). The work order said not to ship it if it still
+costs a real capture. It does, so it is not shipped.
+
+**And the ruling's premise has dissolved underneath it.** HM-DEC-116 says the
+streaming pass "uses dit multiples only until those classes exist", which was true
+when it was ruled and is not true now: the streaming estimator reads `CwGapFit`
+like the settled pass does (HM-OPEN-032). Read literally against today's code —
+adopt only where the estimator has no fit of its own — it was measured and **it is
+a no-op on every recording here**, because wherever the settled pass has classes
+the streaming pass already has its own. The full form overrides a working local fit
+with a worse global one; the narrow form never fires. Whether that makes
+HM-DEC-116 superseded rather than blocked is in `OUTPUT.md` section 4.
+
 The path behind HM-DEC-121 is found, and it is not the dit hint.
 
 **Traced 2026-08-18 on `cw-2026-08-17-013347`**, with the adoption applied and
