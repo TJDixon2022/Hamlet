@@ -683,6 +683,89 @@ being announced as a station, and every one of them was set from a measurement
 with margin on both sides (HM-DEC-095).
 
 ---
+
+**ATTRIBUTED 2026-08-18, and the count is nine rather than eleven.** The two
+`clean-25wpm` rows retired with that fixture. Each remaining failure was tested
+rather than reasoned about, by giving the decoder a run-up of Morse before the
+message under test and seeing whether the message then decoded. The theory in
+the paragraph above says it should, and for six of the nine it does.
+
+**SIX ARE THE FIXTURE, and all six are the same fixture fault: the signal is
+too short for a detector that wants three seconds of keying before it moves.**
+
+| Test | Bare | With a run-up |
+|---|---|---|
+| wrong pitch, 500 Hz | `■■EIW K` | `CQ DE W1AW K`, exactly |
+| wrong pitch, 750 Hz | `■ ■ ■ ■ AW K` | `CQ DE W1AW K`, exactly |
+| wrong pitch, 875 Hz | `■ DE W1AW K` | `CQ DE W1AW K`, exactly |
+| clean, 25 wpm | `CQ D■ W1AW K` | `CQ DE W1AW K`, exactly |
+| fade recovery | 0 letters in the last third | 7, against the 3 it asks for |
+| speed after a change | 10 characters, final 24 wpm | 10 characters, final 24 wpm |
+
+**The pitch is found correctly in every one of those**, to the hertz: asked to
+start at 600 and given 400, 500, 750 or 875, the tracker lands on exactly the
+right number. The test that fails is the text, not the pitch it is named for,
+and what is lost is the characters that arrive while the detector is still
+gathering its evidence.
+
+**The speed one is not even that.** Its final estimate is 24 words a minute,
+inside the 23 to 27 the test demands, and exactly ten characters arrive after
+the change. The test then takes `Skip(10)` and asserts the remainder is not
+empty, so it fails on an off-by-one in its own margin rather than on anything
+the decoder did.
+
+**THREE ARE HAMLET, and they are two distinct faults.**
+
+- **`ASignalAtTheWrongPitchIsStillFound` at 400 Hz** is the only pitch that a
+  longer signal does not fix. With twelve groups of run-up it still returns
+  `■V VVV VVE ■ ■V VVV VVV VVV VVE ■ ■V ■ KB■ K`, breaking down and
+  re-acquiring over and over. The tracker reports 400 Hz correctly throughout,
+  so it finds the pitch and will not hold it.
+- **`ClearingTheTranscriptLeavesTheDecoderAlone`** is the same shape from the
+  other end. It runs at 12 words a minute at the expected pitch, where the bare
+  fixture decodes perfectly, and it feeds fourteen seconds of a repeating
+  message. Given a run-up, 12 wpm degrades from exact to `CQ D■ W1AW K`. **A
+  longer signal decoding worse than a short one** is the observation
+  HM-OPEN-016 already flagged as the interesting one, and this is a second
+  instance of it away from the sensitivity sweep.
+- **`ItGoesQuietRatherThanInventingLettersInTheNoise` is a ruling that was never
+  built**, and it needs one more ruling before it can be. See below.
+
+---
+
+**THE SENSITIVITY ONE IS A SEPARATE PROBLEM AND IS NOT A REGRESSION AT ALL.**
+
+The sweep reproduces HM-DEC-097's own published figures: perfect from 18 dB
+down to 1 dB, and at minus two decibels a full message of which 0.44 is
+invented. That ruling says the decoder **refuses below 0 dB** rather than
+copying into the band where it is half wrong. Nothing in the decoder does that.
+There is no SNR floor: the streaming pass gates on coherence and a plausible
+speed, and the settled pass on six decibels of contrast, and neither is the
+floor the ruling describes.
+
+**And it cannot simply be added, because the ruling is stated in a unit the
+decoder cannot measure.** HM-DEC-097's decibels are the broadband ratio the
+fixture was generated at. The decoder measures inside a narrow tone filter and
+reads about seventeen decibels higher for the same audio:
+
+| Generated | What the decoder calls its own margin |
+|---|---|
+| 12.0 dB | 28.8 to 31.0 |
+| 0.0 dB | 17.2 to 19.0 |
+| −2.0 dB | 15.3 to 17.1 |
+| −5.0 dB | 7.6 to 14.4 |
+
+So implementing the floor means choosing what the decoder's own margin
+corresponds to nought decibels broadband. That number decides what the display
+asserts and is not a session's to pick (§12.1). The proposal is in the
+2026-08-18 `OUTPUT.md`.
+
+**Nothing was loosened to make any of this pass**, and no bound was moved. The
+six fixture cases stay red until their fixtures are rebuilt long enough for the
+detector, which is generator work rather than decoder work.
+
+
+---
 id: HM-OPEN-017
 status: open
 owner: tim
