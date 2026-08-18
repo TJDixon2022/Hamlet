@@ -19,6 +19,22 @@ public enum RigWriteOutcome
     /// <summary>Nothing came back inside the timeout.</summary>
     NoAnswer,
 
+    /// <summary>
+    /// The radio acknowledged the frame and then read the setting back as
+    /// something else.
+    /// </summary>
+    /// <remarks>
+    /// **THIS USED TO BE `NoAnswer` AND THEY ARE NOT THE SAME FACT.** One says
+    /// the radio never spoke; the other says it spoke twice and disagreed with
+    /// itself. FACT-003's ladder asks them as its first two rungs — was the
+    /// command sent and what came back, then does the readback report the
+    /// setting on — and a record that answers both with one token cannot tell a
+    /// session which rung it is standing on. Six connects reported
+    /// `noanswer` on `27 11` and nobody could say which of the two it was
+    /// (§8.1: unknown, off, unsupported and stale stay different things).
+    /// </remarks>
+    ReadBackDisagreed,
+
     /// <summary>This radio does not do this (HM-DEC-030).</summary>
     NotSupported,
 }
@@ -66,4 +82,31 @@ public sealed record RigWriteResult(RigWriteOutcome Outcome, string Detail, stri
     /// <returns>The result.</returns>
     public static RigWriteResult NotSupported(string why)
         => new(RigWriteOutcome.NotSupported, "", why);
+
+    /// <summary>The radio took it and then reported something else.</summary>
+    /// <param name="source">The command sent.</param>
+    /// <returns>The result.</returns>
+    public static RigWriteResult ReadBackDisagreed(string source)
+        => new(
+            RigWriteOutcome.ReadBackDisagreed,
+            "The radio took that and read back something else, so Hamlet cannot "
+            + "say it took.",
+            source);
+
+    /// <summary>
+    /// The stable machine token for this outcome (HM-DEC-077).
+    /// </summary>
+    /// <remarks>
+    /// Written out rather than derived from the enum's own name, because a
+    /// rename would silently take every comparison across sessions with it,
+    /// which is the whole thing a stable token is for.
+    /// </remarks>
+    public string Reason => Outcome switch
+    {
+        RigWriteOutcome.Confirmed => "confirmed",
+        RigWriteOutcome.Refused => "refused",
+        RigWriteOutcome.NoAnswer => "no_answer",
+        RigWriteOutcome.ReadBackDisagreed => "read_back_disagreed",
+        _ => "not_supported",
+    };
 }

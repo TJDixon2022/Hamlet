@@ -4,6 +4,48 @@ Questions with owner and severity. `owner` is who must act next. Format in
 `CLAUDE.md` §3.
 
 ---
+id: HM-OPEN-042
+status: open
+owner: tim
+raised: 2026-08-18
+severity: slows
+blocks: FACT-003's ladder beyond rung two, which needs a connected radio
+refs: FACT-001, FACT-003, HM-DEC-092, HM-DEC-084, src/Hamlet.RadioEngine/Rig/Ic7300Rig.cs
+---
+
+The readback that confirms every setting write was waiting for an
+acknowledgement the radio does not send, so a write the radio took reported as
+unanswered.
+
+**What the code did.** `SetSettingAsync` writes, gets `FB`, then reads the
+setting back, because an acknowledgement says the radio understood the frame and
+not that the setting moved (HM-DEC-084). That readback was issued with no
+expected response command, and with none the dispatcher satisfies the request
+only on `FB` or `FA` — while a read is answered with the value frame. **So every
+readback timed out.** The write was reported as `NoAnswer`, and the setting had
+moved anyway.
+
+**HM-DEC-092 saw this from the other end and attributed it elsewhere.** Five
+settings written one evening, all five reported unanswered, at least two actually
+in effect: that was read as the link dropping commands, and the unanswered
+counters were built. The counters are right and worth having; they were not the
+fault.
+
+**What it means for `27 11`.** `scope_output_requested` failed `noanswer` on all
+six connects of session `9f9d23eb`. Under this code that is what a **successful**
+write looked like as well as a silent one, so **rung one of FACT-003's ladder
+was never actually answered** and rung two could not be reached. The readback now
+waits for the value frame, and the two outcomes are separate:
+`no_answer` is silence, `read_back_disagreed` is the radio saying yes and then
+reporting the setting still off.
+
+**What is still unknown, and needs the radio.** Whether `27 11` now confirms.
+Nothing in this session is evidence about that (HM-DEC-093), and no session may
+report the waterfall working without a nonzero received-frame count from a
+connected radio (HM-DEC-093, FACT-003). The next connect answers it in one line
+of the record.
+
+---
 id: HM-OPEN-041
 status: open
 owner: claude

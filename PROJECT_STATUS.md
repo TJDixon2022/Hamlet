@@ -1,9 +1,9 @@
 STATE: EXECUTING
-PHASE: 5 of 6
+PHASE: 6 of 6
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-18T17:29:34-04:00
-NOTE: Phase 5 - mode-follow firing with nothing driving it, and the readiness reason that contradicts itself
+UPDATED: 2026-08-18T17:34:43-04:00
+NOTE: Phase 6 - the scope output ladder, reading only; no radio here so nothing is evidence about it
 
 ---
 

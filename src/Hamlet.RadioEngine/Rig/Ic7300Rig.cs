@@ -1,4 +1,4 @@
-﻿using Hamlet.RadioEngine.Civ;
+using Hamlet.RadioEngine.Civ;
 using Hamlet.RadioEngine.Transport;
 
 namespace Hamlet.RadioEngine.Rig;
@@ -288,8 +288,19 @@ public sealed class Ic7300Rig : IRig, IDisposable
                 return RigWriteResult.Confirmed(write.Label);
             }
 
+            // **THE READBACK HAS TO SAY WHAT IT IS WAITING FOR, AND IT DID NOT.**
+            // With no expected command the dispatcher satisfies the request only
+            // on `FB` or `FA`, and a readback is answered with the value frame
+            // instead — so every readback timed out, every write that the radio
+            // took was reported as unanswered, and the setting had moved anyway.
+            // HM-DEC-092 saw the symptom from the other end: five settings
+            // written one evening, all five reported unanswered, at least two
+            // actually in effect. That was read as a link dropping commands. It
+            // was this. `27 11` is the same fault: six connects, six failures,
+            // and no way to tell them from silence (FACT-003).
             var back = await RequestAsync(
-                read.Command, read.SubCommand, null, null, cancellationToken)
+                read.Command, read.SubCommand, read.Command, read.SubCommand,
+                cancellationToken)
                 .ConfigureAwait(false);
 
             var values = Decode(read, back, null, null);
@@ -301,11 +312,7 @@ public sealed class Ic7300Rig : IRig, IDisposable
 
             return confirmed
                 ? RigWriteResult.Confirmed(write.Label)
-                : new RigWriteResult(
-                    RigWriteOutcome.NoAnswer,
-                    "The radio took that and read back something else, so Hamlet "
-                    + "cannot say it took.",
-                    write.Label);
+                : RigWriteResult.ReadBackDisagreed(write.Label);
         }
         catch (TimeoutException)
         {

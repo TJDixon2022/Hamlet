@@ -780,7 +780,12 @@ public static class AppEvents
                 ["outcome"] = string.Equals(outcome, "Confirmed", StringComparison.Ordinal)
                     ? "proceeded"
                     : "failed",
-                ["reason"] = outcome.ToLowerInvariant(),
+
+                // **THE REASON IS THE RUNG OF THE LADDER** (FACT-003). Silence
+                // and a readback that disagreed are different faults in
+                // different places, and they arrived under one word for six
+                // connects.
+                ["reason"] = outcome,
                 ["command"] = "27 11",
                 ["baudRate"] = baudRate,
                 ["unansweredCommands"] = unanswered,

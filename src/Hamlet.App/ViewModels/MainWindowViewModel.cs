@@ -2479,7 +2479,7 @@ public partial class MainWindowViewModel : ObservableObject
             _scopeWriteRefused = !result.Worked;
 
             AppEvents.ScopeOutputRequested(
-                _telemetry, result.Outcome.ToString(), radio.Link.BaudRate,
+                _telemetry, result.Reason, radio.Link.BaudRate,
                 radio.Link.Unanswered);
 
             Decisions.Note(
