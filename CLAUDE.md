@@ -23,6 +23,7 @@ on stale rules and will do so confidently.
 
 | Document | Holds |
 |---|---|
+| `ANNUNCIATOR.md` | **How status is reported to the panel** — the two files, the six status fields, and when a session writes them. Summarized inline in §13, because a companion file is read only if something points at it (HM-DEC-132) |
 | `PROJECT_CARD.md` | **Standing facts, measured and quoted rather than composed**: where the repository is, what it can do to the physical world, the ratings it may never infer, the commands, and the prime directive verbatim from §0.0 (HM-DEC-131) |
 | `PROJECT_STATUS.md` | **Volatile state, written at each state transition and at no other time**: who must act next, what is measured, and what is being assumed while nobody has ruled (HM-DEC-131) |
 | `SHACK_FACTS.md` | **Standing ground truth about the operator's own station.** Read before writing a word about the radio's menus; a fact here outranks any inference a session draws from its own reading (HM-DEC-093) |
@@ -345,6 +346,7 @@ this table is the index.
 
 | Date | Decision | Why | Ref |
 |---|---|---|---|
+| 2026-08-18 | **The project reports status to the panel per `ANNUNCIATOR.md`, and §13 carries the six status fields and the write triggers inline. Supersedes HM-DEC-131 on the triggers and on the shape of both files.** The panel reads `PROJECT_CARD.md` and `PROJECT_STATUS.md` from every repository and shows them on one screen, and **it only knows what a session last wrote** — a project whose sessions never write reads as dead while it is working. The card drops to five standing lines and the status file to six volatile ones, because a reader that takes the leading run of `KEY: value` lines cannot use fields it was not built for, and sixteen fields written for a protocol that never arrived are sixteen chances to disagree with a panel about what `STATE` means. **The ten-minute write while executing is the substantive change**: HM-DEC-131 said at each state transition and at no other time, which is right for a record and wrong for a panel, because a phase here can run an hour and **a long phase and a dead session look identical** without a heartbeat inside it. §13 sits in this file rather than only in the companion because this file is read automatically and a companion is read only if something points at it. | A session that ran an hour with tests going green behind a panel showing blocked, because nothing in that tree told it to write. | HM-DEC-132 |
 | 2026-08-18 | **The project maintains `PROJECT_CARD.md` and `PROJECT_STATUS.md` at the repository root, and every session writes the status file at each state transition and at no other time.** The card holds what is true between sessions — the repository path and remote, the trunk, the branch policy, the build, test and run commands, the ratings that may never be inferred, and what this software can do to the physical world; the status file holds what is true only right now — the state, whose ball it is, the measured counts, and what is being assumed while nobody has ruled. **Everything in both is measured from the tree or quoted from this file**, never composed: the prime directive and its practical test are taken verbatim from §0.0, because a quotation that has been tidied is no longer a quotation. **Writing the status file more often makes it a log**, which is what the telemetry record is for, **and writing it less often makes it a fiction**, which is worse than absent because it looks current. Both name `PROTOCOL: 2`, and that protocol — `STATUS_PROTOCOL.md` — **is not in this repository**: each file says so in its own prose, so the header is read as which protocol it is written against rather than as conformance nobody here can check. | A session's first minutes go on rediscovering what the last one already knew, and a header claiming conformance to an absent document is the same fault as a decode with no signal behind it. | HM-DEC-131 |
 | 2026-08-18 | **HM-DEC-116 is superseded: its premise dissolved when the streaming estimator began reading the shared gap fitter, and on the evidence the answer is no.** The ruling said the streaming pass adopts the settled pass's classes *and uses dit multiples only until those classes exist*; the second clause was true when ruled and stopped being true the session the estimator gave up its own two-way classifier for `CwGapFit`. **The choice it was making no longer exists** — not fitted classes against dit multiples, but the settled pass's global fit against the streaming pass's own local one, which nobody has ruled on. Measured on top of HM-DEC-123: **the full form costs a real capture**, streaming on `cw-2026-08-17-013347` falling from `VA3VRR` to placeholders and the two-station settled text from `L DE W1XYZ K` to `ATD■VTXYZ`, buying one synthetic looping training signal (HM-DEC-091 decides that); **the narrow form never fires**, leaving every recording unchanged character for character because wherever the settled pass has classes the streaming pass already has its own. HM-DEC-121's blocking condition was met and answered — adoption now produces three moves and one follow, identical to adoption off. **If the two fitters ever diverge, the live question is which fit is better, and today it is the streaming pass's own.** | A ratified ruling absent from the tree is the state the record likes least, and one waiting on a condition already met is how an unexamined convention survives. | HM-DEC-128 |
 | 2026-08-18 | **A message too long for one keyer send stays refused until the seam between two sends has been measured into the dummy load.** The keyer takes thirty characters in one command 17 message; `CQ CQ DE KC3QIS KC3QIS K` is twenty-four, so this operator's own call fits with six to spare and nothing is blocked meanwhile. `CwMessage.Split` already splits at the spaces, so the machinery exists — **what does not exist is a number.** The second send only goes out when the radio has taken the first, and Hamlet does not know how long the radio holds it, so **the gap in the middle of every round is of unknown length** and a CQ with a ragged pause in it is a worse transmission than a refusal. **Timing the second send from `CwDuration` was rejected for now** as making Hamlet responsible for a gap inside a transmission, which is a smaller version of why host-timed keying is rejected outright; **refusing permanently was rejected** as a ceiling some callsigns cannot get under. Measured at the bench with the load already connected, then ruled. | The choice between refusing and splitting should be made on a number, and the number costs five minutes of an evening that is happening anyway. | HM-DEC-130 |
@@ -1168,3 +1170,72 @@ Hamlet failure.
 
 Name them in `OPEN_ISSUES.md` and leave them. A session that fixes what it
 passed is a session whose diff nobody can review.
+
+---
+
+## 13. Reporting status to the panel — `ANNUNCIATOR.md`
+
+Tim runs several projects at once, in separate sessions and separate windows. A
+panel reads two small files from each repository and shows every project on one
+screen, so he can see which window a clipboard belongs in before he pastes.
+
+**The panel only knows what a session last wrote.** A project whose sessions never
+write reads as dead while it is working — that has already happened elsewhere, an
+hour of green tests behind a panel showing blocked, because nothing in that tree
+told the session to write.
+
+The full rules are in `ANNUNCIATOR.md` at the repository root. **The parts a
+session must not have to go and look up are here**, because this file is read
+automatically and a companion file is read only if something points at it.
+
+### 13.1 Two files at the repository root
+
+`PROJECT_CARD.md` — standing facts, five lines, **changed only by ruling**:
+`PROJECT`, `ONE_LINE`, `REPO_PATH`, `REMOTE`, `TRUNK`.
+
+`PROJECT_STATUS.md` — volatile state, **overwritten whole**, six lines:
+
+| Field | Values |
+|---|---|
+| `STATE` | `PREPARING_PROMPT` · `ANSWERING_QUESTIONS` · `EXECUTING` · `COMPLETED` · `BLOCKED` — **one of those five words and nothing else** |
+| `PHASE` | `n of m`, the phase reached and the total the prompt gave; `—` when no work order is running |
+| `BALL` | `code` · `web` · `tim` · `unassigned` — who must act next. **`unassigned` means nobody has taken it** and is not a polite way of saying it is Tim's |
+| `NEXT_PASTE` | `none`, or **what → where**: `OUTPUT.md -> Claude Web`. Name the destination even when it looks obvious; telling identical windows apart is the whole point |
+| `UPDATED` | ISO 8601 **with a UTC offset, read from the clock**, never typed. A typed one has already claimed to be five minutes in the future |
+| `NOTE` | One line, a caption rather than a record. Anything that must survive the session goes in the decision log and the report as usual |
+
+**Both files are read as the leading run of `KEY: value` lines, stopping at the
+first blank line, `---` or `#`.** So every value is one line and no value begins a
+line with `#`. Prose goes below a `---`; nothing reads it.
+
+**Never report branch, commit or working-tree state.** The panel reads those from
+`.git` itself. A measured fact stays true when a session goes quiet and a typed one
+does not.
+
+### 13.2 When a session writes — supersedes HM-DEC-131 on the triggers
+
+- when it starts work
+- at each phase boundary
+- when it stops for a ruling
+- when it finishes
+- **every ten minutes while `STATE: EXECUTING`**
+
+**The ten-minute rule is the one that matters, and it is why HM-DEC-131's "at each
+state transition and at no other time" no longer holds.** Phases here run an hour —
+a fixture rebuild, a corpus re-measurement — and **a long phase and a dead session
+look identical** without it. On that write, `NOTE` says what is happening *inside*
+the phase — `Phase 3 — rebuilding the AR/IR fixtures, 4 of 11 rebuilt` — so there
+is something moving to look at.
+
+Outside those triggers, do not rewrite the file to say the same thing again: a
+rewrite with an unchanged state is a heartbeat, and a heartbeat makes staleness
+meaningless.
+
+### 13.3 What is never written
+
+- **No invented state or `BALL`.** If neither fits, it goes in `NOTE` or it is a
+  decision ask.
+- **No count or timestamp that was not measured.** `none`, `—` and `not run` are
+  real answers; a plausible number is not (§12.4).
+- **The card is not edited during a work order.** It holds standing facts; if one
+  is wrong that is a ruling, not an edit.
