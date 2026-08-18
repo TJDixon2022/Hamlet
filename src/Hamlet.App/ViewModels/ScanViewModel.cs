@@ -102,6 +102,7 @@ public sealed partial class ScanViewModel : ObservableObject
     private readonly ScopeBinSurvey _survey = new();
     private readonly Action<string> _say;
     private readonly Action<long>? _tune;
+    private readonly Func<bool> _transmitting;
 
     private IRig? _rig;
     private RigStateMonitor? _monitor;
@@ -119,6 +120,11 @@ public sealed partial class ScanViewModel : ObservableObject
     /// than argued about (§12.5).
     /// </param>
     /// <param name="homePath">Where the dial was when a scan started.</param>
+    /// <param name="transmitting">
+    /// Whether an automatic calling cycle is on the air. Asked rather than
+    /// tracked, so the two cannot disagree about which of them is running
+    /// (HM-DEC-098).
+    /// </param>
     /// <param name="tune">
     /// How to send the dial somewhere the operator picked. The app hands over
     /// its own tuning path, the one a spot or a map dot uses, so a scan result
@@ -128,10 +134,12 @@ public sealed partial class ScanViewModel : ObservableObject
         Action<string> say,
         string? segmentsPath = null,
         string? homePath = null,
-        Action<long>? tune = null)
+        Action<long>? tune = null,
+        Func<bool>? transmitting = null)
     {
         _say = say;
         _tune = tune;
+        _transmitting = transmitting ?? (() => false);
         _segmentsPath = segmentsPath ?? SettingsStore.ScanSegmentsPath;
         _homePath = homePath ?? SettingsStore.ScanHomePath;
     }
@@ -364,6 +372,21 @@ public sealed partial class ScanViewModel : ObservableObject
     {
         if (IsScanning)
         {
+            return;
+        }
+
+        // **MUTUALLY EXCLUSIVE WITH THE CALLING CYCLE, AND CHECKED FROM BOTH
+        // SIDES** (HM-DEC-098). This moves the dial and that transmits on it, so
+        // running both means transmitting mid-tune on a frequency neither
+        // component believes it is on. Refusing in only one direction would leave
+        // whichever the operator pressed second to win.
+        if (_transmitting())
+        {
+            Refusal = "Hamlet is transmitting on a cycle. A scan moves the dial "
+                + "and that would tune the radio mid-transmission, so stop the "
+                + "calling first.";
+
+            _say(Refusal);
             return;
         }
 

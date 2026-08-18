@@ -390,6 +390,10 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty]
     private bool _scanExpanded = true;
 
+    /// <summary>Whether the calling panel is open (§0.5).</summary>
+    [ObservableProperty]
+    private bool _autoCallExpanded = true;
+
     [ObservableProperty]
     private bool _terminalExpanded = true;
 
@@ -1447,6 +1451,7 @@ public partial class MainWindowViewModel : ObservableObject
         _tapeExpanded = settings.IsPanelExpanded(PanelKeys.Tape);
         _waterfallExpanded = settings.IsPanelExpanded(PanelKeys.Waterfall);
         _scanExpanded = settings.IsPanelExpanded(PanelKeys.Scan);
+        _autoCallExpanded = settings.IsPanelExpanded(PanelKeys.AutoCall);
         _terminalExpanded = settings.IsPanelExpanded(PanelKeys.Terminal);
         _storyExpanded = settings.IsPanelExpanded(PanelKeys.Story);
         _guideExpanded = settings.IsPanelExpanded(PanelKeys.Guide);
@@ -1582,7 +1587,22 @@ public partial class MainWindowViewModel : ObservableObject
         // canvas because the canvas places it, and it stays detached from any
         // radio until one connects: a scanner that could move the dial with no
         // rig behind it would be a scanner with nothing to abort against.
-        Scan = new ScanViewModel(line => StatusText = line, tune: TuneTo);
+        // **THE PREDICATE OUTLIVES THE ORDER THEY ARE BUILT IN**, and the null
+        // is real rather than papered over: between these two statements there is
+        // no calling cycle to be running, so "not transmitting" is the true
+        // answer in that window and not a convenient one.
+        Scan = new ScanViewModel(
+            line => StatusText = line,
+            tune: TuneTo,
+            transmitting: () => _autoCall?.IsCalling ?? false);
+
+        // **THE TWO ASK EACH OTHER RATHER THAN TRACKING EACH OTHER**
+        // (HM-DEC-098). The scanner moves the dial and this transmits on
+        // it, so a stale copy of "is the other one running" is exactly the
+        // state that would let Hamlet transmit mid-tune on a frequency
+        // neither component believes it is on.
+        AutoCall = _autoCall = new AutoCallViewModel(
+            line => StatusText = line, () => Scan.IsScanning);
 
         // THE OPERATOR'S OWN SCAN FILE, WRITTEN ONCE (§0.2.1). It cannot be
         // edited until it exists, and nothing else in the app was going to
@@ -1644,6 +1664,7 @@ public partial class MainWindowViewModel : ObservableObject
             case Layout.Widgets.Tape: TapeExpanded = true; break;
             case Layout.Widgets.Waterfall: WaterfallExpanded = true; break;
             case Layout.Widgets.Scan: ScanExpanded = true; break;
+            case Layout.Widgets.AutoCall: AutoCallExpanded = true; break;
             case Layout.Widgets.Terminal: TerminalExpanded = true; break;
             case Layout.Widgets.Story: StoryExpanded = true; break;
             case Layout.Widgets.Guide: GuideExpanded = true; break;
@@ -1674,6 +1695,12 @@ public partial class MainWindowViewModel : ObservableObject
 
     /// <summary>The scanner, and the stop control §0.2.1 requires.</summary>
     public ScanViewModel Scan { get; }
+
+    /// <summary>Calling CQ on a cycle, into a dummy load (HM-DEC-098).</summary>
+    public AutoCallViewModel AutoCall { get; }
+
+    /// <summary>The same object, for the scanner's predicate to read safely.</summary>
+    private readonly AutoCallViewModel? _autoCall;
 
     /// <summary>
     /// Choose the line under the wordmark, avoiding last launch's
@@ -2248,6 +2275,9 @@ public partial class MainWindowViewModel : ObservableObject
         => PersistPanel(PanelKeys.Waterfall, value);
 
     partial void OnScanExpandedChanged(bool value) => PersistPanel(PanelKeys.Scan, value);
+
+    partial void OnAutoCallExpandedChanged(bool value)
+        => PersistPanel(PanelKeys.AutoCall, value);
 
     partial void OnTerminalExpandedChanged(bool value)
         => PersistPanel(PanelKeys.Terminal, value);
@@ -3612,6 +3642,7 @@ public partial class MainWindowViewModel : ObservableObject
         // exactly this case, and connecting is the only moment Hamlet can act
         // on it: until there is a radio there is nothing to put back.
         Scan.Attach(rig, _rigMonitor, _decoder, SpectrumSource);
+        AutoCall.Attach(rig, _rigMonitor, _decoder);
         await Scan.RestoreHomeAsync();
 
         var hz = await rig.GetFrequencyHzAsync();
@@ -5096,6 +5127,11 @@ public partial class MainWindowViewModel : ObservableObject
 
             // The scanner loses its radio first, so nothing can be mid-tune
             // while the port is closing (§0.2.1).
+            // **THE TRANSMITTER FIRST.** A disconnect while a cycle is running
+            // is the case with the most at stake, and the stop code goes out
+            // while there is still a port to send it on (§0.2).
+            AutoCall.StopNow();
+            AutoCall.Attach(null, null, null);
             Scan.StopNow();
             Scan.Attach(null, null, null, null);
 
@@ -5151,6 +5187,9 @@ public static class PanelKeys
 
     /// <summary>The band scanner (HM-DEC-107).</summary>
     public const string Scan = "scan";
+
+    /// <summary>The calling cycle (HM-DEC-098).</summary>
+    public const string AutoCall = "autocall";
 
     /// <summary>The CW terminal.</summary>
     public const string Terminal = "terminal";

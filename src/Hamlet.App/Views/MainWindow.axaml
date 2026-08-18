@@ -426,6 +426,141 @@
             </ctl:CollapsiblePanel>
         </DataTemplate>
 
+        <!-- Calling CQ on a cycle, into a dummy load (HM-DEC-098, §0.2) -->
+        <DataTemplate x:Key="widget.autocall" x:DataType="vm:MainWindowViewModel">
+            <ctl:CollapsiblePanel Family="Green"
+                                  Title="Call CQ on a cycle"
+                                  Summary="{Binding AutoCall.Summary}"
+                                  IsExpanded="{Binding AutoCallExpanded, Mode=TwoWay}">
+                <StackPanel Spacing="8">
+
+                    <ctl:GlossaryTextControl
+                        Text="Calling CQ over and over is most of what finding a contact is, and it is the part that wears you out before anybody answers. Hamlet will do the calling and listen between rounds, and it stops the moment it hears somebody. It sends into a dummy load while this is being proved, which is not caution for its own sake: an automatic transmitter that goes wrong goes wrong on a frequency somebody else is using."
+                        FontSize="12" LineSpacing="1.45"
+                        Foreground="{StaticResource HmTextMutedBrush}" />
+
+                    <!-- THE MESSAGE IS HIS AND HAMLET NEVER WRITES ONE. There is
+                         no default and no suggestion here: a plausible CQ Hamlet
+                         composed is somebody else's callsign on the air. -->
+                    <TextBlock Text="What to send" FontSize="11" FontWeight="SemiBold"
+                               Foreground="{StaticResource HmTextMutedBrush}" />
+
+                    <TextBox Text="{Binding AutoCall.Message, Mode=TwoWay}"
+                             Watermark="CQ CQ DE YOURCALL YOURCALL K"
+                             AcceptsReturn="False" MaxLength="60"
+                             IsEnabled="{Binding !AutoCall.IsCalling}"
+                             FontFamily="Consolas,Menlo,monospace" FontSize="13" />
+
+                    <!-- REFUSED WHERE HE CAN SEE IT AND CHANGE IT, never
+                         discovered on the air as a message that went out cut
+                         short (§0.0). -->
+                    <Border IsVisible="{Binding AutoCall.HasMessageRefusal}"
+                            Padding="9,6" CornerRadius="6"
+                            Background="{StaticResource HmAmberTintBrush}"
+                            BorderBrush="{StaticResource HmAmberEdgeBrush}"
+                            BorderThickness="1">
+                        <TextBlock Text="{Binding AutoCall.MessageRefusal}"
+                                   FontSize="11" TextWrapping="Wrap"
+                                   Foreground="{StaticResource HmAmberDeepBrush}" />
+                    </Border>
+
+                    <!-- WHAT CONSENT IS GIVEN AGAINST (phase 4). Arming is a
+                         separate act from starting, and these are the facts it is
+                         an act against: what goes out, where, how often, at what
+                         power, and whether keying would reach the air at all.
+                         Consent given by pressing a button whose state the
+                         operator is inferring is not consent. -->
+                    <Border Padding="10,8" CornerRadius="6"
+                            Background="{StaticResource HmSlateTintBrush}"
+                            BorderBrush="{StaticResource HmSlateEdgeBrush}"
+                            BorderThickness="1">
+                        <StackPanel Spacing="3">
+                            <TextBlock Text="{Binding AutoCall.WillSendLine}"
+                                       FontSize="12" FontWeight="SemiBold"
+                                       TextWrapping="Wrap"
+                                       Foreground="{StaticResource HmTextPrimaryBrush}" />
+
+                            <TextBlock Text="{Binding AutoCall.RoundsLine}"
+                                       FontSize="11" TextWrapping="Wrap"
+                                       Foreground="{StaticResource HmTextMutedBrush}" />
+
+                            <TextBlock Text="{Binding AutoCall.BreakInLine}"
+                                       FontSize="11" TextWrapping="Wrap"
+                                       Foreground="{StaticResource HmTextMutedBrush}" />
+
+                            <TextBlock Text="{Binding AutoCall.PowerLine}"
+                                       FontSize="11" TextWrapping="Wrap"
+                                       Foreground="{StaticResource HmTextMutedBrush}" />
+
+                            <TextBlock Text="{Binding AutoCall.ReadyLine}"
+                                       FontSize="11" TextWrapping="Wrap"
+                                       Foreground="{StaticResource HmTextMutedBrush}" />
+                        </StackPanel>
+                    </Border>
+
+                    <!-- ARM, THEN START. Two acts, and the second is not offered
+                         until the first has happened. -->
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <Button Classes="hm-send"
+                                Content="Arm"
+                                IsVisible="{Binding !AutoCall.IsArmed}"
+                                IsEnabled="{Binding AutoCall.CanArm}"
+                                Command="{Binding AutoCall.ArmCommand}" />
+
+                        <Button Classes="hm-send"
+                                Content="Start calling"
+                                FontWeight="Bold"
+                                IsVisible="{Binding AutoCall.CanStart}"
+                                Command="{Binding AutoCall.StartCommand}" />
+
+                        <Button Content="Disarm"
+                                IsVisible="{Binding AutoCall.CanStart}"
+                                Command="{Binding AutoCall.DisarmCommand}" />
+
+                        <Button Classes="hm-send"
+                                Content="STOP TRANSMITTING"
+                                FontWeight="Bold"
+                                IsVisible="{Binding AutoCall.IsCalling}"
+                                Command="{Binding AutoCall.StopCommand}" />
+                    </StackPanel>
+
+                    <!-- A REFUSAL ALWAYS PRINTS ITS REASON (HM-DEC-080). -->
+                    <Border IsVisible="{Binding AutoCall.Refusal, Converter={x:Static ctl:PrivilegeToneConverter.NotEmpty}}"
+                            Padding="9,6" CornerRadius="6"
+                            Background="{StaticResource HmAmberTintBrush}"
+                            BorderBrush="{StaticResource HmAmberEdgeBrush}"
+                            BorderThickness="1">
+                        <TextBlock Text="{Binding AutoCall.Refusal}"
+                                   FontSize="11" TextWrapping="Wrap"
+                                   Foreground="{StaticResource HmAmberDeepBrush}" />
+                    </Border>
+
+                    <TextBlock Text="{Binding AutoCall.OutcomeLine}"
+                               FontSize="11" TextWrapping="Wrap"
+                               Foreground="{StaticResource HmTextMutedBrush}" />
+
+                    <!-- THE AUDIT TRAIL. What the operator's callsign put on the
+                         air, with where and when, which is the least a feature
+                         that transmits unattended owes him. -->
+                    <TextBlock Text="What went out" FontSize="11" FontWeight="SemiBold"
+                               IsVisible="{Binding AutoCall.HasSent}"
+                               Foreground="{StaticResource HmTextMutedBrush}" />
+
+                    <ItemsControl ItemsSource="{Binding AutoCall.Sent}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="vm:AutoCallRow">
+                                <TextBlock Text="{Binding Line}"
+                                           FontFamily="Consolas,Menlo,monospace"
+                                           FontSize="11" TextWrapping="Wrap"
+                                           Margin="0,0,0,2"
+                                           Foreground="{StaticResource HmTextMutedBrush}" />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </ctl:CollapsiblePanel>
+        </DataTemplate>
+
         <!-- The scanner (HM-DEC-107) -->
         <DataTemplate x:Key="widget.scan" x:DataType="vm:MainWindowViewModel">
             <ctl:CollapsiblePanel Family="Blue"
@@ -1865,6 +2000,21 @@
                         IsVisible="{Binding Scan.IsScanning}"
                         Command="{Binding Scan.StopCommand}" />
 
+                <!-- THE STOP §0.2 REQUIRES, IN THE PINNED STRIP BESIDE THE
+                     SCANNER'S AND FOR THE SAME REASON: this strip cannot be
+                     scrolled away from, closed, or dragged off the edge. A stop
+                     for a transmitter that lived in a widget would be a stop the
+                     operator can lose while his callsign goes on calling.
+
+                     Escape does the same thing from anywhere, handled in the
+                     window itself, because the one keystroke that stops a
+                     transmitter has to work whatever has focus. -->
+                <Button Classes="hm-send"
+                        Content="STOP TRANSMITTING"
+                        FontWeight="Bold"
+                        IsVisible="{Binding AutoCall.IsCalling}"
+                        Command="{Binding AutoCall.StopCommand}" />
+
                 <ComboBox ItemsSource="{Binding AvailablePorts}"
                           SelectedItem="{Binding SelectedPort}"
                           IsEnabled="{Binding !IsConnected}"
@@ -1885,6 +2035,27 @@
                  sits in the pinned strip rather than in the scanner panel for
                  the same reason the stop does: the panel can be taken off the
                  canvas and the dial still moves. -->
+            <!-- HAMLET SAYS SO WHILE IT IS TRANSMITTING (§0.2). The operator
+                 must never have to work out whether his callsign is on the air,
+                 and this sits in the pinned strip for the same reason the stop
+                 does. -->
+            <Border IsVisible="{Binding AutoCall.IsCalling}"
+                    Margin="2,4,0,2" Padding="10,6" CornerRadius="6"
+                    Background="{StaticResource HmGreenTintBrush}"
+                    BorderBrush="{StaticResource HmGreenEdgeBrush}"
+                    BorderThickness="1">
+                <StackPanel Spacing="2">
+                    <TextBlock Text="{Binding AutoCall.CallingLine}"
+                               FontSize="12" FontWeight="SemiBold"
+                               TextWrapping="Wrap"
+                               Foreground="{StaticResource HmGreenBrush}" />
+
+                    <TextBlock Text="{Binding AutoCall.WhereNow}"
+                               FontSize="11" TextWrapping="Wrap"
+                               Foreground="{StaticResource HmGreenBrush}" />
+                </StackPanel>
+            </Border>
+
             <Border IsVisible="{Binding Scan.IsScanning}"
                     Margin="2,4,0,2" Padding="10,6" CornerRadius="6"
                     Background="{StaticResource HmAmberTintBrush}"

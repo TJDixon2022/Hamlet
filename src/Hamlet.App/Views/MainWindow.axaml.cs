@@ -122,6 +122,19 @@ public partial class MainWindow : Window
             return;
         }
 
+        // **ESCAPE STOPS THE TRANSMITTER, AND IT IS HANDLED HERE BECAUSE A KEY
+        // IS A VIEW FACT** (§0.2, phase 4). It is the one keystroke that has to
+        // work whatever has focus and whatever is scrolled where, so it is taken
+        // before anything else in this handler and it awaits nothing. Stopping a
+        // cycle that is not running costs a call to a method that returns.
+        if (e.Key == Key.Escape)
+        {
+            vm.AutoCall.StopNow();
+            vm.Scan.StopNow();
+            e.Handled = true;
+            return;
+        }
+
         var delta = e.Key switch
         {
             Key.Right or Key.Up => 10,

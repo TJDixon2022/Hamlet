@@ -88,6 +88,9 @@ public static class Widgets
     /// <summary>The band scanner (HM-DEC-107).</summary>
     public const string Scan = "scan";
 
+    /// <summary>Calling CQ on a cycle (HM-DEC-098).</summary>
+    public const string AutoCall = "autocall";
+
     /// <summary>Every widget, in the order the tray offers them.</summary>
     /// <remarks>
     /// Ordered by what a newcomer reaches for rather than alphabetically, which
@@ -150,6 +153,13 @@ public static class Widgets
             "Hamlet works down the band for you, stopping where somebody is "
             + "actually calling rather than wherever there is a tone.",
             460, 400),
+
+        new Widget(
+            AutoCall, "Call CQ on a cycle", "Green",
+            "Hamlet does the calling and listens between rounds, and it stops the "
+            + "moment somebody answers. Into a dummy load while this is being "
+            + "proved.",
+            460, 520),
 
         new Widget(
             Waterfall, "Waterfall", "Blue",
