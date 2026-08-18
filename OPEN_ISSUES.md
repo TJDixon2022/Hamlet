@@ -1995,3 +1995,62 @@ except the one that was meant to.
 worst measurement still wins and no term may lift a score; what changed is the
 population the scale is fitted to, and a scale fitted partly to the detector's own
 flapping describes the detector rather than the sender.
+
+---
+id: HM-OPEN-036
+status: open
+owner: tim
+raised: 2026-08-18
+severity: none
+refs: CLAUDE.md §1, HM-DEC-131
+---
+
+`CLAUDE.md` §1 is not strictly newest-first at its head.
+
+Read out in file order, the first five rows are HM-DEC-128, **HM-DEC-130**,
+HM-DEC-129, HM-DEC-127, HM-DEC-126. The table's own instruction is "every ruling,
+most recent first", and 130 sitting second means the newest ruling is not the one
+a reader's eye lands on.
+
+**The cause is known and is Tim's own**: insertions went in at a fixed anchor
+rather than at the true head, so each new row landed under whatever was already
+there rather than above it.
+
+**Reported and deliberately not corrected.** A ruling is never edited (§1), and
+while re-ordering rows is not editing their content, doing it in passing during a
+session that came to write two status files is exactly the kind of unrelated
+repair §12.6 exists to stop. It is one move, it should be one deliberate move, and
+whoever makes it should decide at the same time whether the anchor that caused it
+gets fixed or whether the table simply gets read from the top each time.
+
+Severity **none**: nothing is blocked and no ruling is lost. What it costs is that
+`RULES_AT` cannot be taken from row one, and this session took it from the highest
+id present instead.
+
+---
+id: HM-OPEN-037
+status: open
+owner: tim
+raised: 2026-08-18
+severity: none
+refs: CLAUDE.md §3, HM-OPEN-016, HM-OPEN-017
+---
+
+The two items marked `severity: hard` block work that no longer exists.
+
+`HM-OPEN-016` blocks "merging `feature/honest-cw-detection`", a branch HM-DEC-113
+brought back to `main` and whose whole practice that ruling ended.
+`HM-OPEN-017` blocks "finishing session 1 of the batch brief", which finished
+several work orders ago.
+
+So `TOP_SEVERITY` reads **hard** out of the record while nothing is actually
+stopped, and any status file counting severities out of `OPEN_ISSUES.md` will keep
+saying so.
+
+**Not softened, and that is the point.** §3 is explicit that a severity is never
+lowered to make the picture look better, and a session deciding on its own that
+somebody else's `hard` has gone stale is doing exactly that with extra steps. What
+is wrong here is not the severity but the `blocks:` line underneath it, which
+names work that has been done — and whether either item still has a live blocker
+under a different name is a reading of two long entries that deserves its own
+sitting rather than a paragraph at the end of an unrelated session.
