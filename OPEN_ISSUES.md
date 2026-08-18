@@ -1001,3 +1001,36 @@ A correction that improves one measurement and breaks another is not one
 correction. Whether the survey should be corrected differently, or left alone,
 is Tim's.
 
+---
+id: HM-OPEN-024
+status: open
+owner: claude
+raised: 2026-08-18
+severity: none
+refs: tests/Hamlet.App.Tests/ViewModels/BandCardStyleTests.cs, src/Hamlet.RadioEngine/Bands/HfBands.cs, HM-DEC-110
+---
+
+Three band-card style tests failed once in a combined run and have not failed
+since: `DimmingIsVisible`, `StylesAreDeterministic` and
+`WithoutALocation_NothingDimsAndNothingClaimsTheSun`.
+
+Seen once, on 2026-08-18, in a `dotnet test` across both projects. Not
+reproduced in the two combined runs and three app-only runs that followed, so
+it is recorded rather than chased.
+
+**The leading suspicion is the band plan going lazy** (HM-DEC-110). Those tests
+share a static `AllBands` initialized from `HfBands.Bands`, which is now a
+`Lazy` over two more lazies, `PrivilegeData.Current` and
+`NeighborhoodData.Current`, each of which reads an embedded resource. Before
+the retirement `BandPlan.Bands` was a plain array literal and could not be
+empty or late. An empty `AllBands` would make all three of those assertions
+fail together and leave every other test untouched, which is the shape that was
+seen.
+
+What would settle it: make the three tests state their own band list rather
+than deriving one, or prove the lazy is safe under xunit's parallel
+collections. It is `none` because the app builds the same list once on the UI
+thread and no failure has been seen outside a parallel test run.
+
+**Not chased further on purpose** (§12.6). It surfaced while running the
+scanner end to end and is unrelated to that work.

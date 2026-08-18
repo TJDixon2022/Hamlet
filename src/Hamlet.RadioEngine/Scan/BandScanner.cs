@@ -377,10 +377,24 @@ public sealed class BandScanner
 
                 try
                 {
-                    await _rig.SetFrequencyHzAsync(candidate, linked.Token).ConfigureAwait(false);
-
+                    // **WHERE THE DIAL IS ABOUT TO BE, WRITTEN DOWN BEFORE IT
+                    // IS PUT THERE**, and the order is the whole of it. A radio
+                    // announces a frequency change whoever caused it, including
+                    // Hamlet, so the echo of this very command arrives while
+                    // SetFrequencyHzAsync is still running. Recording the
+                    // destination afterwards meant that echo was compared
+                    // against the previous stop, did not match, and was read as
+                    // a hand on the knob: the scan aborted on its own second
+                    // tune, every time, saying the operator had touched the dial
+                    // when nobody had (HM-DEC-107 phase 4 of the cleanup order).
+                    //
+                    // It survived the unit tests because the stub radio there
+                    // raised the event only when a person turned it, which is
+                    // not how a radio behaves. The stub is fixed too (§12.5).
                     _placedAtHz = candidate;
                     _placed = true;
+
+                    await _rig.SetFrequencyHzAsync(candidate, linked.Token).ConfigureAwait(false);
 
                     dwell = await listen(candidate, ScanDwell.LongestSeconds, linked.Token)
                         .ConfigureAwait(false);

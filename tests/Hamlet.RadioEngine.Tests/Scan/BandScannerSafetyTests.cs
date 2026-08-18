@@ -512,6 +512,14 @@ public sealed class BandScannerSafetyTests
             _tuned.Add(frequencyHz);
             FrequencyHz = frequencyHz;
 
+            // **A RADIO ANNOUNCES A FREQUENCY CHANGE WHOEVER CAUSED IT**, and
+            // this stub used to announce only the ones a person caused. That
+            // politeness hid a real fault for a whole session: the scanner was
+            // aborting on the echo of its own tuning command and reporting that
+            // the operator had touched the dial. A stub that behaves better than
+            // the thing it stands in for proves nothing (§12.5).
+            FrequencyChanged?.Invoke(this, new FrequencyChangedEventArgs(frequencyHz));
+
             return Task.CompletedTask;
         }
 
