@@ -1597,7 +1597,18 @@ public partial class MainWindowViewModel : ObservableObject
             this, LayoutStore.Load(), () => LayoutStore.Save(Canvas!.Book()),
             OpenPanel);
 
-        _ = ReloadSpotsAsync("startup");
+        // **THE FIRST SPOT LOAD WAITS FOR THE RADIO** (HM-DEC-118). It used to
+        // run from here, before anything was connected, so RBN was filtered and
+        // the skimmer watch scoped to whatever band was last remembered
+        // (HM-DEC-024, HM-DEC-075). An empty panel asserts nothing and a
+        // wrong-band panel asserts something false, which is the distinction
+        // §0.0 exists to draw, and the cost of waiting is a second or two of
+        // empty on a screen just opened.
+        //
+        // It is kicked off by `ReconnectOnStartupAsync` instead, which runs from
+        // the window's Opened event and knows where the radio is. Asking the
+        // radio from here stays rejected: it would put a serial read on the path
+        // that builds the window.
         _ = ResolveProfileAsync();
         ApplyFeedTimers();
     }
@@ -3590,6 +3601,15 @@ public partial class MainWindowViewModel : ObservableObject
         catch (Exception)
         {
             StatusText = ReconnectPlan.CouldNotOpen();
+        }
+        finally
+        {
+            // **WHATEVER HAPPENED, THE BAND ON SCREEN IS NOW THE BEST ANSWER
+            // THERE IS** (HM-DEC-118). A radio that answered has set it from
+            // the dial; one that did not leaves the remembered band, which is
+            // the same guess as before and is now the only guess available
+            // rather than a guess made in preference to asking.
+            await ReloadSpotsAsync("startup").ConfigureAwait(true);
         }
     }
 
