@@ -1141,6 +1141,12 @@ identify. What matters here is that a session cannot rely on its own commit
 boundaries being the ones that end up in the log, and a report saying "committed
 as X" may not describe what is on disk afterwards.
 
+**Confirmed still cosmetic and still a single occurrence, 2026-08-18.** `20c8ae5`
+is the only one-word `save` in the whole log; its diff is five files and 430
+insertions, all of it the work that session did, so nothing was lost. This
+session made four commits and all four kept the messages they were written with.
+Whatever it is has not fired again, and nothing was found that would show it had.
+
 ---
 id: HM-OPEN-026
 status: open
@@ -1175,6 +1181,21 @@ he committed `004507`. They are simply not here.
 project has that Hamlet has ever read a real station correctly, and a suite with
 no regression test for a success cannot tell a repair from a coincidence.
 
+**Re-checked 2026-08-18, and the fixture set does not name it.** The work order
+asks whether the reference should be removed, because the fixture records must
+not name evidence that does not exist. Swept across the whole tree: `003758`
+appears in this entry, in `OUTPUT.md`, and in the work order that asked the
+question. **No test, no sidecar, no catalogue entry and no assertion refers to
+it**, so nothing in the fixture set rests on a file that is absent and the
+property the work order wanted is already true.
+
+What remains is only this question. **The recommendation is to close it**: it has
+been asked across four sessions, the file has not appeared, and an open issue
+nothing depends on is a question with no work behind it. Closing it costs the
+project the regression test for a success it has never had, which is a real loss
+and is why the recommendation is not a decision. If the file turns up it is
+committed and the entry is reopened.
+
 ---
 id: HM-OPEN-027
 status: open
@@ -1182,8 +1203,16 @@ owner: tim
 raised: 2026-08-18
 severity: slows
 blocks: HM-DEC-116, which stays blocked until this is closed
-refs: HM-DEC-116, HM-DEC-121, src/Hamlet.RadioEngine/Cw/CwDecoder.cs, src/Hamlet.RadioEngine/Cw/CwToneTracker.cs
+refs: HM-DEC-116, HM-DEC-121, HM-DEC-123, HM-OPEN-028, HM-OPEN-032, src/Hamlet.RadioEngine/Cw/CwDecoder.cs, src/Hamlet.RadioEngine/Cw/CwToneTracker.cs
 ---
+
+**RULED, AND THE WORK IS ITS OWN ORDER: HM-DEC-123.** A retune that refines the
+pitch of the station being read no longer resets the settled window; one that
+follows a different station does. No session begins that in passing. This entry
+stays open because the code is unchanged, and it is no longer a question — it is
+queued work. The same ruling answers HM-OPEN-028. Seen again 2026-08-18 from a
+third direction, HM-OPEN-032: any change to where the streaming pass divides
+characters moves `MidCharacter` and pays this cost.
 
 The path behind HM-DEC-121 is found, and it is not the dit hint.
 
@@ -1252,8 +1281,13 @@ owner: tim
 raised: 2026-08-18
 severity: slows
 blocks: ASignalAtTheWrongPitchIsStillFound at 400 Hz
-refs: HM-OPEN-027, HM-DEC-096, src/Hamlet.RadioEngine/Cw/CwToneTracker.cs
+refs: HM-OPEN-027, HM-DEC-096, HM-DEC-123, src/Hamlet.RadioEngine/Cw/CwToneTracker.cs
 ---
+
+**RULED, AND THE WORK IS ITS OWN ORDER: HM-DEC-123**, the same ruling that
+answers HM-OPEN-027. Recorded here so the next session reads it rather than
+re-deriving it: the 400 Hz failure is not about 400 Hz, the cause is already in
+this entry, and the fix belongs to that work order and to no other.
 
 The 400 Hz pitch failure is not about 400 Hz, and it is the same root cause as
 HM-OPEN-027.
