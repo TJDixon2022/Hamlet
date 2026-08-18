@@ -1,9 +1,9 @@
 STATE: EXECUTING
-PHASE: 3 of 6
+PHASE: 4 of 6
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-18T17:15:14-04:00
-NOTE: Phase 3 - HM-DEC-134, the recent list; visits fold onto the entry, removal next
+UPDATED: 2026-08-18T17:22:56-04:00
+NOTE: Phases 2 and 3 pushed as 22fdf09; phase 4 - are the favorites controls reachable
 
 ---
 
