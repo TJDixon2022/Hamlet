@@ -1126,6 +1126,15 @@ collections. Named and left (§12.6): one occurrence is not a diagnosis, and a
 transmit test that fails intermittently is worth knowing about before it fails on
 an evening that matters.
 
+**A THIRD, AND THE FIRST HAS NOT RECURRED, 2026-08-18.**
+`RigReadTests.EachSettingParsesToTheManualsOwnWords` failed once in a full run and
+passed alone and in every run either side; `TheStopFrameIsCommand17CarryingFf` did
+not fail once across six full runs this session. So all three are still
+intermittent rather than any of them becoming reliable, and they share nothing but
+running under xunit's parallel collections. Still named and left (§12.6): three
+single occurrences in three different subsystems is a property of the harness, and
+chasing it from inside any one of them would be chasing the wrong thing.
+
 ---
 id: HM-OPEN-025
 status: open
@@ -1157,13 +1166,29 @@ Whatever it is has not fired again, and nothing was found that would show it had
 
 ---
 id: HM-OPEN-026
-status: open
+status: closed
 owner: tim
 raised: 2026-08-18
+closed: 2026-08-18
 severity: slows
 blocks: three of the four off-air fixtures the cleanup order asked for
-refs: CLAUDE.md 2.1, HM-DEC-091, tests/fixtures/cw/captured
+refs: CLAUDE.md 2.1, HM-DEC-091, HM-DEC-126, tests/fixtures/cw/captured
 ---
+
+**CLOSED 2026-08-18 BY HM-DEC-126: unobtainable, and this entry reopens if the
+file appears.** Asked across four sessions without it arriving, and a sweep of the
+tree confirmed nothing in the fixture set names it, so no fixture rests on absent
+evidence.
+
+**AND THE GAP IT LEAVES IS RECORDED RATHER THAN CLOSED WITH IT.** This suite has
+**no regression test for a success at all.** Every ratchet in it is a ratchet on a
+failure getting less bad: the settled pass reaching further into a callsign, the
+bulletin's distance from its key shrinking, a tier coming back with fewer
+strangers. Nothing in it asserts that something Hamlet reads correctly today is
+still read correctly tomorrow, so **nothing in it can tell a repair from a
+coincidence**. `cw-2026-08-18-003758` would have been the first, because Hamlet
+read `DE AA4MP/4 QNIK` off it and somebody confirmed that independently. That is
+worth naming without a candidate to fill it.
 
 Three of the four 2026-08-18 off-air captures are not on the machine.
 
@@ -1206,7 +1231,7 @@ committed and the entry is reopened.
 
 ---
 id: HM-OPEN-027
-status: open
+status: answered
 owner: tim
 raised: 2026-08-18
 severity: slows
@@ -1344,7 +1369,7 @@ it asked for.
 
 ---
 id: HM-OPEN-028
-status: open
+status: answered
 owner: tim
 raised: 2026-08-18
 severity: slows
@@ -1530,9 +1555,10 @@ separately.
 
 ---
 id: HM-OPEN-030
-status: open
+status: closed
 owner: tim
 raised: 2026-08-18
+closed: 2026-08-18
 severity: slows
 blocks: HM-DEC-122, which is built and measured and not live
 refs: HM-DEC-122, HM-DEC-091, HM-DEC-095, HM-DEC-097, HM-DEC-120, src/Hamlet.RadioEngine/Cw/CwToneTracker.cs, tests/Hamlet.RadioEngine.Tests/Cw/CwAcquisitionWindowTests.cs
@@ -1615,6 +1641,13 @@ are different windows. Three directions, all Tim's:
 
 Nothing was shipped. `CwAcquisitionWindowTests` pins the four fast-end figures and
 the slow end so the next attempt is judged against a number.
+
+**CLOSED 2026-08-18 BY HM-DEC-125**, which supersedes HM-DEC-122 and leaves it
+unbuilt. Confirmed by sweep the same day: no candidate survey, no candidate window
+constant, no clock-proved flag and no window-change counter remains anywhere in
+`src`. `CwAcquisitionWindowTests` survives, because it is measurement rather than
+mechanism, and still pins all three figures — the bare fast end, the same fist
+with a run-up, and the slow end.
 
 ---
 id: HM-OPEN-031
