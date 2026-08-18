@@ -81,6 +81,114 @@ public sealed class CwTranscript
     /// <summary>True when nothing has been decoded yet.</summary>
     public bool IsEmpty => CharacterCount == 0;
 
+    /// <summary>How many characters the leading edge may run ahead by.</summary>
+    /// <remarks>
+    /// A hundred and twenty is about ten seconds at a middling speed, which is
+    /// far more than the settled pass ever runs behind by. It exists so that a
+    /// settled pass which never catches up cannot grow the tip without limit,
+    /// and reaching it is a fault rather than a working state.
+    /// </remarks>
+    public const int LongestTip = 120;
+
+    private readonly Queue<CwCharacter> _tip = new();
+
+    private DateTime _settledThrough = DateTime.MinValue;
+
+    /// <summary>
+    /// Offer a reading from the leading edge (HM-DEC-096).
+    /// </summary>
+    /// <param name="character">What the streaming pass read.</param>
+    /// <remarks>
+    /// <para>**THE TIP IS WHAT THE SETTLED PASS HAS NOT REACHED YET, AND IT IS
+    /// NOT THE TRANSCRIPT.** A provisional reading is right far more often than
+    /// not and it is never final, so showing one as though it were is §0.0
+    /// broken by omission however good a guess it usually is. It waits here
+    /// until the second pass overtakes it and then goes away, replaced by
+    /// whatever that pass made of the same audio.</para>
+    /// <para>**EXCEPT WHEN NOTHING IS COMING BEHIND IT.** Where the settled pass
+    /// has refused, the engine stamps the character
+    /// <see cref="CwReadingStage.Unstable"/>, and then waiting is waiting
+    /// forever: the reading is committed to the transcript at once and carries
+    /// the mark saying nothing confirmed it. Losing the text entirely would be
+    /// worse than showing it marked, and the moment somebody answers a call is
+    /// the worst possible moment for the live feed to go dark.</para>
+    /// </remarks>
+    public void Offer(CwCharacter character)
+    {
+        ArgumentNullException.ThrowIfNull(character);
+
+        if (character.IsUnstable)
+        {
+            Append(character);
+            return;
+        }
+
+        lock (_gate)
+        {
+            _tip.Enqueue(character);
+
+            while (_tip.Count > LongestTip)
+            {
+                _tip.Dequeue();
+            }
+        }
+    }
+
+    /// <summary>
+    /// Take a reading from the settled pass, which is what the transcript keeps.
+    /// </summary>
+    /// <param name="character">What the second pass read.</param>
+    /// <remarks>
+    /// Everything at or before this character's own moment leaves the tip,
+    /// because the second pass has now spoken about that audio and its answer is
+    /// the one that stands (HM-DEC-096).
+    /// </remarks>
+    public void Settle(CwCharacter character)
+    {
+        ArgumentNullException.ThrowIfNull(character);
+
+        Append(character);
+
+        lock (_gate)
+        {
+            _settledThrough = DateTime.UnixEpoch + character.At;
+
+            while (_tip.Count > 0
+                   && DateTime.UnixEpoch + _tip.Peek().At <= _settledThrough)
+            {
+                _tip.Dequeue();
+            }
+        }
+    }
+
+    /// <summary>
+    /// What the leading edge is reading that the settled pass has not reached.
+    /// </summary>
+    public string TipText
+    {
+        get
+        {
+            lock (_gate)
+            {
+                return _tip.Count == 0
+                    ? ""
+                    : string.Concat(_tip.Select(c => c.Text));
+            }
+        }
+    }
+
+    /// <summary>True when the leading edge is ahead of the settled pass.</summary>
+    public bool HasTip
+    {
+        get
+        {
+            lock (_gate)
+            {
+                return _tip.Count > 0;
+            }
+        }
+    }
+
     /// <summary>Add a character. Safe from any thread.</summary>
     /// <param name="character">The character.</param>
     public void Append(CwCharacter character)
@@ -151,6 +259,8 @@ public sealed class CwTranscript
             _pending.Clear();
             _recent.Clear();
             _text.Clear();
+            _tip.Clear();
+            _settledThrough = DateTime.MinValue;
             _version++;
         }
     }

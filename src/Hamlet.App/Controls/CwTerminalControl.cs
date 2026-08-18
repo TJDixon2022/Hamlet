@@ -64,9 +64,18 @@ public sealed class CwTerminalControl : SelectableTextBlock
         AvaloniaProperty.Register<CwTerminalControl, string>(
             nameof(IdleText), "waiting for a signal");
 
+    /// <summary>What the leading edge is reading ahead of the settled pass.</summary>
+    public static readonly StyledProperty<string> TipProperty =
+        AvaloniaProperty.Register<CwTerminalControl, string>(nameof(Tip), "");
+
+    /// <summary>True when nothing is coming behind the leading edge.</summary>
+    public static readonly StyledProperty<bool> TipIsUnstableProperty =
+        AvaloniaProperty.Register<CwTerminalControl, bool>(nameof(TipIsUnstable));
+
     private readonly DispatcherTimer _timer;
     private readonly List<CwCharacter> _drained = new();
 
+    private Run? _tipRun;
     private Run? _run;
     private CwConfidence _runConfidence = CwConfidence.High;
     private int _runLength;
@@ -101,6 +110,33 @@ public sealed class CwTerminalControl : SelectableTextBlock
         set => SetValue(IdleTextProperty, value);
     }
 
+    /// <summary>
+    /// The leading edge, running ahead of the settled text (HM-DEC-096).
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE TIP IS DRAWN DIFFERENTLY BECAUSE IT IS A DIFFERENT CLAIM.**
+    /// The settled text behind it is what a transcript keeps; this is what the
+    /// streaming pass read before anything confirmed it, and it is replaced as
+    /// the second pass overtakes it. Drawn the same, a provisional reading would
+    /// be a guess presented as a decode (§0.0).</para>
+    /// <para>It is a string rather than a stream of characters, and that is
+    /// deliberate: it is a handful of characters that is rewritten wholesale
+    /// several times a second, which is the opposite shape from the transcript
+    /// behind it and would be silly to push through a queue.</para>
+    /// </remarks>
+    public string Tip
+    {
+        get => GetValue(TipProperty);
+        set => SetValue(TipProperty, value);
+    }
+
+    /// <summary>True when nothing is coming behind the leading edge.</summary>
+    public bool TipIsUnstable
+    {
+        get => GetValue(TipIsUnstableProperty);
+        set => SetValue(TipIsUnstableProperty, value);
+    }
+
     /// <inheritdoc/>
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
@@ -124,6 +160,11 @@ public sealed class CwTerminalControl : SelectableTextBlock
         if (change.Property == TranscriptProperty)
         {
             Reset();
+        }
+        else if (change.Property == TipProperty
+                 || change.Property == TipIsUnstableProperty)
+        {
+            DrawTip();
         }
         else if (change.Property == IdleTextProperty && _showingIdle)
         {
@@ -152,8 +193,12 @@ public sealed class CwTerminalControl : SelectableTextBlock
         }
 
         _drained.Clear();
+
         if (transcript.Drain(_drained) == 0)
         {
+            // The tip moves even while the settled pass says nothing, which is
+            // most of the time: it runs a few seconds behind by design.
+            DrawTip();
             return;
         }
 
@@ -164,11 +209,16 @@ public sealed class CwTerminalControl : SelectableTextBlock
             _run = null;
         }
 
+        // THE TIP COMES OFF FIRST AND GOES BACK ON AT THE END, so the settled
+        // characters always land behind it rather than after it.
+        RemoveTip();
+
         foreach (var character in _drained)
         {
             AppendCharacter(character);
         }
 
+        DrawTip();
         TrimHistory();
         ScrollToEndIfFollowing();
     }
@@ -196,6 +246,56 @@ public sealed class CwTerminalControl : SelectableTextBlock
         _run.Text += character.Text;
         _runLength += character.Text.Length;
         _characters += character.Text.Length;
+    }
+
+    private void RemoveTip()
+    {
+        if (_tipRun is not null)
+        {
+            Inlines?.Remove(_tipRun);
+            _tipRun = null;
+        }
+    }
+
+    /// <summary>
+    /// Put the leading edge back on the end, drawn as what it is.
+    /// </summary>
+    private void DrawTip()
+    {
+        if (_showingIdle && Tip.Length == 0)
+        {
+            return;
+        }
+
+        RemoveTip();
+
+        if (Tip.Length == 0 || Inlines is null)
+        {
+            return;
+        }
+
+        if (_showingIdle)
+        {
+            Inlines.Clear();
+            _showingIdle = false;
+            _run = null;
+        }
+
+        // **UNSTABLE AND MERELY PROVISIONAL ARE DIFFERENT STATES AND ARE DRAWN
+        // DIFFERENTLY.** Provisional means the second pass has not reached this
+        // yet; unstable means it has refused, so nothing is coming to confirm
+        // it at all. Amber is the app's own color for a reading that could not
+        // be resolved, and it is the right one here (§0.6).
+        _tipRun = new Run
+        {
+            Text = Tip,
+            FontStyle = Avalonia.Media.FontStyle.Italic,
+            Foreground = TipIsUnstable
+                ? InstrumentPalette.For(CwConfidence.Unreadable)
+                : InstrumentPalette.For(CwConfidence.Low),
+        };
+
+        Inlines.Add(_tipRun);
     }
 
     /// <summary>
@@ -251,6 +351,7 @@ public sealed class CwTerminalControl : SelectableTextBlock
     private void Reset()
     {
         _run = null;
+        _tipRun = null;
         _runLength = 0;
         _characters = 0;
         ShowIdle();
@@ -271,5 +372,6 @@ public sealed class CwTerminalControl : SelectableTextBlock
 
         _showingIdle = true;
         _run = null;
+        _tipRun = null;
     }
 }

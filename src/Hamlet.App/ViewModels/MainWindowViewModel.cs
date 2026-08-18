@@ -1249,6 +1249,104 @@ public partial class MainWindowViewModel : ObservableObject
     public string TerminalSpeedText
         => DetectedWpm > 0 ? $"{DetectedWpm} WPM" : "";
 
+    /// <summary>
+    /// Why the speed field is empty, or empty itself (HM-OPEN-022).
+    /// </summary>
+    /// <remarks>
+    /// <para>**A BLANK BOX AND A BLANK BOX THAT SAYS WHY ARE DIFFERENT THINGS**
+    /// (§0.0.1). No speed is named until a clock has been proved, because a
+    /// number between two stations describes neither of them, and the field goes
+    /// quiet across a handover. Left as a bare gap it reads as something broken;
+    /// this is the sentence that makes it read as Hamlet working.</para>
+    /// </remarks>
+    public string SpeedReacquiringText
+        => SpeedIsReacquiring ? "working out the speed" : "";
+
+    /// <summary>True while no speed has been proved.</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(SpeedReacquiringText))]
+    private bool _speedIsReacquiring;
+
+    /// <summary>
+    /// What just changed about who is sending, or empty (HM-DEC-096).
+    /// </summary>
+    /// <remarks>
+    /// **A SPEED CHANGE AND A TRACKER SWITCH BOTH MEAN SOMEBODY ELSE STARTED
+    /// TRANSMITTING**, which is the single most useful thing the decoder knows
+    /// and the one it never said. Annotated rather than silently absorbed,
+    /// because the alternative is a transcript in which two stations run into
+    /// one another with nothing marking the seam.
+    /// </remarks>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasHandover))]
+    private string _handoverNote = "";
+
+    /// <summary>True when there is a handover worth marking.</summary>
+    public bool HasHandover => HandoverNote.Length > 0;
+
+    /// <summary>
+    /// What the leading edge is reading ahead of the settled pass.
+    /// </summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasTip))]
+    private string _tipText = "";
+
+    /// <summary>True when the leading edge is ahead of the settled pass.</summary>
+    public bool HasTip => TipText.Length > 0;
+
+    /// <summary>
+    /// True when nothing is coming along behind the leading edge.
+    /// </summary>
+    /// <remarks>
+    /// The settled pass refuses below its own working limit rather than copying
+    /// into the band where it is half wrong (HM-DEC-097), so this is an ordinary
+    /// state and not an error. What it may never be is invisible: text nothing
+    /// confirmed and text a second pass stood behind cannot look the same
+    /// (§0.0).
+    /// </remarks>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(TipMarkText))]
+    private bool _tipIsUnstable;
+
+    /// <summary>What to say about an unconfirmed leading edge, or empty.</summary>
+    public string TipMarkText
+        => TipIsUnstable
+            ? "nothing is coming along behind this to confirm it"
+            : "";
+
+    /// <summary>
+    /// Said when the settled window hits its ceiling, or empty (HM-DEC-096).
+    /// </summary>
+    /// <remarks>
+    /// **THE CEILING ANNOUNCES ITSELF RATHER THAN BEING CONCEALED.** At slow
+    /// speeds thirty elements want more audio than the window is allowed to
+    /// hold, so the fit is made over less than the speed asked for and is
+    /// weaker than it would otherwise be. Saying nothing would let a worse
+    /// reading pass for an ordinary one.
+    /// </remarks>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasCeilingNote))]
+    private string _ceilingNote = "";
+
+    /// <summary>True when the window ceiling is binding.</summary>
+    public bool HasCeilingNote => CeilingNote.Length > 0;
+
+    /// <summary>How many revisions the decoder has recorded.</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasRevisions))]
+    [NotifyPropertyChangedFor(nameof(RevisionsText))]
+    private int _revisionCount;
+
+    /// <summary>True when there is a revision log worth keeping.</summary>
+    public bool HasRevisions => RevisionCount > 0;
+
+    /// <summary>How many times the second pass disagreed, in words.</summary>
+    public string RevisionsText
+        => RevisionCount == 0
+            ? ""
+            : $"the second pass has changed its mind about {RevisionCount} "
+              + $"character{(RevisionCount == 1 ? "" : "s")}";
+
     /// <summary>What the terminal shows before anything has been decoded.</summary>
     public string TerminalIdleText
         => !IsDecoding
@@ -2582,7 +2680,15 @@ public partial class MainWindowViewModel : ObservableObject
         _capture = WasapiAudioDevices.Health(_settings.AudioInputDeviceId);
 
         _decoder = new CwDecoder(_audioInput.SampleRate, _settings.CwPitchHz);
-        _decoder.CharacterDecoded += Transcript.Append;
+        // **THE TWO PASSES BOTH REACH THE SCREEN NOW, AND THEY ARE NOT
+        // RIVALS** (HM-DEC-096). The leading edge answers while somebody is
+        // still sending and is never final; the settled pass runs a few seconds
+        // behind with the whole stretch in hand and is what the transcript
+        // keeps. Wiring only the first is the entire two-stage design being
+        // invisible, and showing a provisional reading as though it were final
+        // is §0.0 broken by omission.
+        _decoder.CharacterDecoded += Transcript.Offer;
+        _decoder.CharacterSettled += Transcript.Settle;
 
         // WHEN SOMETHING LAST CAME THROUGH, which is what the quiet offer waits
         // on (HM-DEC-084). Set here rather than polled, so an empty terminal is
@@ -2629,7 +2735,8 @@ public partial class MainWindowViewModel : ObservableObject
 
         if (_decoder is not null)
         {
-            _decoder.CharacterDecoded -= Transcript.Append;
+            _decoder.CharacterDecoded -= Transcript.Offer;
+            _decoder.CharacterSettled -= Transcript.Settle;
             _decoder.Listen(null);
             _decoder = null;
         }
@@ -2660,6 +2767,36 @@ public partial class MainWindowViewModel : ObservableObject
         // right to name a speed, and every surface that shows one reads this.
         DetectedWpm = _decoder.WordsPerMinute ?? 0;
         DecodeNote = _decoder.Watch.NoteText;
+
+        // **THE TWO-STAGE DECODE, ON SCREEN** (HM-DEC-096). All of this existed
+        // and was tested and none of it was rendered, so the design the decoder
+        // was rebuilt around was invisible to the person it was rebuilt for.
+        SpeedIsReacquiring = _decoder.SpeedIsReacquiring;
+        TipText = Transcript.TipText;
+        TipIsUnstable = _decoder.SettledIsRefusing;
+
+        var settled = _decoder.SettledState;
+
+        // The window wanted to be longer than it is allowed to be, so the fit is
+        // weaker than the speed asked for and the display says so rather than
+        // letting a worse reading pass for an ordinary one.
+        CeilingNote = settled.WindowWasCapped
+            ? "this is slow enough that Hamlet cannot listen to as much at once "
+              + "as it would like, so it is reading from a shorter stretch than "
+              + "usual"
+            : "";
+
+        // Both of these mean somebody else started transmitting, which is the
+        // most useful thing the decoder knows and the thing it never said.
+        HandoverNote = settled.SpeedChanged
+            ? "the speed changed here, which usually means somebody else has "
+              + "started sending"
+            : settled.Refusal == SettledRefusal.ClockLost
+                ? "the rhythm stopped fitting, which usually means somebody else "
+                  + "has started sending"
+                : "";
+
+        RevisionCount = _decoder.Revisions.Count;
 
         // WHAT IS ARRIVING, WHETHER OR NOT ANYTHING DECODES (HM-DEC-088). A
         // strong signal that will not resolve and an empty band used to produce
@@ -2933,6 +3070,75 @@ public partial class MainWindowViewModel : ObservableObject
             // else (§8).
             StatusText = "Hamlet could not write the recording.";
             AppEvents.AudioCaptured(_telemetry, 0, FrequencyHz, worked: false);
+        }
+    }
+
+    /// <summary>
+    /// Write out where the second pass disagreed with the first (HM-DEC-096).
+    /// </summary>
+    /// <remarks>
+    /// <para>**IN MEMORY AND EXPORTABLE, NEVER WRITTEN ON ITS OWN.** A log that
+    /// grew on disk unasked would need a retention policy nobody has designed,
+    /// and this is diagnostic rather than a record of the air. So it is kept for
+    /// the session and written only when somebody asks for it.</para>
+    /// <para>It is the most direct evidence there is about whether the second
+    /// pass is earning its place: every row is one character the leading edge
+    /// read one way and the settled pass read another, with the timing behind
+    /// both (§0.0.1).</para>
+    /// </remarks>
+    [RelayCommand]
+    private void ExportRevisions()
+    {
+        var revisions = _decoder?.Revisions;
+
+        if (revisions is null || revisions.Count == 0)
+        {
+            StatusText = "The second pass has not changed its mind about anything "
+                + "yet, so there is nothing to write.";
+            return;
+        }
+
+        try
+        {
+            var folder = Path.Combine(SettingsStore.DataFolder, "captures");
+            Directory.CreateDirectory(folder);
+
+            var stamp = DateTime.UtcNow.ToString("yyyy-MM-dd-HHmmss");
+            var path = Path.Combine(folder, $"revisions-{stamp}.txt");
+
+            var lines = new List<string>
+            {
+                "What the second pass changed its mind about.",
+                "",
+                "Each row is one character the leading edge read one way and the",
+                "settled pass read another, off the same audio. Nothing here is a",
+                "claim about what any station sent (CLAUDE.md 0.0).",
+                "",
+                "at        first  settled  agreed  first score  settled score",
+            };
+
+            foreach (var revision in revisions)
+            {
+                lines.Add(string.Format(
+                    CultureInfo.InvariantCulture,
+                    "{0,7:0.00}s  {1,-5}  {2,-7}  {3,-6}  {4,11:0.00}  {5,13:0.00}",
+                    revision.Settled.At.TotalSeconds,
+                    revision.Provisional.Text,
+                    revision.Settled.Text,
+                    revision.Agreed ? "yes" : "no",
+                    revision.Provisional.Score,
+                    revision.Settled.Score));
+            }
+
+            File.WriteAllLines(path, lines);
+
+            StatusText = $"Wrote {revisions.Count} revisions to {path}.";
+        }
+        catch (Exception)
+        {
+            // A log that cannot be written loses a diagnostic and nothing else
+            // (§8).
+            StatusText = "Hamlet could not write the revision log.";
         }
     }
 

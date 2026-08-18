@@ -613,6 +613,23 @@
                                            FontSize="12" FontWeight="SemiBold"
                                            Foreground="{StaticResource HmGreenBrush}" />
                             </Border>
+
+                            <!-- THE BLANK SPEED SAYS WHY IT IS BLANK
+                                 (HM-OPEN-022). No speed is named until a clock
+                                 has been proved, because a number between two
+                                 stations describes neither, so the field goes
+                                 quiet across a handover. A bare gap reads as
+                                 something broken; this is what makes it read as
+                                 Hamlet working. -->
+                            <Border Background="{StaticResource HmSlateTintBrush}"
+                                    BorderBrush="{StaticResource HmSlateEdgeBrush}"
+                                    BorderThickness="1" CornerRadius="6"
+                                    Padding="8,2"
+                                    IsVisible="{Binding SpeedIsReacquiring}">
+                                <TextBlock Text="{Binding SpeedReacquiringText}"
+                                           FontSize="12" TextWrapping="Wrap"
+                                           Foreground="{StaticResource HmTextMutedBrush}" />
+                            </Border>
                         </StackPanel>
                     </Grid>
 
@@ -664,12 +681,72 @@
                             BorderBrush="{x:Static ctl:InstrumentPalette.EdgeBrush}">
                         <ScrollViewer MaxHeight="260" MinHeight="150"
                                       VerticalScrollBarVisibility="Auto">
+                            <!-- ONE LINE, WITH THE LEADING EDGE ON THE END OF IT
+                                 (HM-DEC-096). Hamlet reads the same audio twice
+                                 and the reader has to be able to tell which one
+                                 is speaking: the settled text is what a
+                                 transcript keeps, and the italic tail is what
+                                 the streaming pass read before anything
+                                 confirmed it. It is replaced as the second pass
+                                 overtakes it. -->
                             <ctl:CwTerminalControl
                                 FontSize="14" LineHeight="22"
                                 Transcript="{Binding Transcript}"
+                                Tip="{Binding TipText}"
+                                TipIsUnstable="{Binding TipIsUnstable}"
                                 IdleText="{Binding TerminalIdleText}" />
                         </ScrollViewer>
                     </Border>
+
+                    <!-- NOTHING IS COMING BEHIND THE LEADING EDGE, WHICH IS AN
+                         ORDINARY STATE AND NOT AN ERROR. The settled pass
+                         refuses below its own working limit rather than copying
+                         into the band where it is half wrong (HM-DEC-097). What
+                         it may never be is invisible: text nothing confirmed and
+                         text a second pass stood behind cannot look the same. -->
+                    <TextBlock Text="{Binding TipMarkText}"
+                               IsVisible="{Binding TipIsUnstable}"
+                               FontSize="11" TextWrapping="Wrap"
+                               Foreground="{StaticResource HmAmberDeepBrush}" />
+
+                    <!-- BOTH OF THESE MEAN SOMEBODY ELSE STARTED TRANSMITTING,
+                         which is the most useful thing the decoder knows and the
+                         thing it never said (HM-DEC-096). -->
+                    <Border IsVisible="{Binding HasHandover}"
+                            Background="{StaticResource HmAmberTintBrush}"
+                            BorderBrush="{StaticResource HmAmberEdgeBrush}"
+                            BorderThickness="1" CornerRadius="6" Padding="9,5">
+                        <TextBlock Text="{Binding HandoverNote}"
+                                   FontSize="11" TextWrapping="Wrap"
+                                   Foreground="{StaticResource HmAmberDeepBrush}" />
+                    </Border>
+
+                    <!-- THE CEILING ANNOUNCES ITSELF RATHER THAN BEING
+                         CONCEALED. At slow speeds the settled fit is made over
+                         less audio than the speed asked for, so it is weaker
+                         than usual, and saying nothing would let a worse reading
+                         pass for an ordinary one (§0.0). -->
+                    <TextBlock Text="{Binding CeilingNote}"
+                               IsVisible="{Binding HasCeilingNote}"
+                               FontSize="11" TextWrapping="Wrap"
+                               Foreground="{StaticResource HmTextMutedBrush}" />
+
+                    <!-- WHERE THE SECOND PASS DISAGREED WITH THE FIRST. In
+                         memory and exportable, never written unasked: a log that
+                         grew on disk would need a retention policy nobody has
+                         designed, and this is diagnostic rather than a record of
+                         the air (§0.0.1). -->
+                    <Grid ColumnDefinitions="*,Auto" IsVisible="{Binding HasRevisions}">
+                        <TextBlock Grid.Column="0" Text="{Binding RevisionsText}"
+                                   FontSize="11" TextWrapping="Wrap"
+                                   VerticalAlignment="Center" Margin="0,0,8,0"
+                                   Foreground="{StaticResource HmTextMutedBrush}" />
+
+                        <Button Grid.Column="1" Content="keep the differences"
+                                FontSize="11" Padding="8,3"
+                                ToolTip.Tip="Writes every character the second pass changed its mind about, beside the captures."
+                                Command="{Binding ExportRevisionsCommand}" />
+                    </Grid>
 
                     <!-- WHAT IT CAN SEE WHEN IT IS PRODUCING NOTHING
                          (HM-DEC-088). A strong signal that will not resolve and
