@@ -1231,13 +1231,28 @@ committed and the entry is reopened.
 
 ---
 id: HM-OPEN-027
-status: answered
+status: closed
 owner: tim
 raised: 2026-08-18
+closed: 2026-08-18
 severity: slows
 blocks: HM-DEC-116, which stays blocked until this is closed
-refs: HM-DEC-116, HM-DEC-121, HM-DEC-123, HM-OPEN-028, HM-OPEN-032, src/Hamlet.RadioEngine/Cw/CwDecoder.cs, src/Hamlet.RadioEngine/Cw/CwToneTracker.cs
+refs: HM-DEC-116, HM-DEC-121, HM-DEC-123, HM-DEC-128, HM-OPEN-028, HM-OPEN-032, src/Hamlet.RadioEngine/Cw/CwDecoder.cs, src/Hamlet.RadioEngine/Cw/CwToneTracker.cs
 ---
+
+**CLOSED 2026-08-18 BY HM-DEC-128, WHICH SUPERSEDES THE RULING THIS ENTRY WAS
+BLOCKING.** Both halves are answered and neither is a question any more.
+
+The coupling this entry traced is gone: HM-DEC-123 built the refining-versus-
+following distinction, and with adoption applied on top of it
+`cw-2026-08-17-013347` produces **three moves and one follow, identical to
+adoption off**, where the whole diagnosis was that adoption turned one retune into
+three. `MidCharacter` costs nothing because a refinement resets nothing.
+
+And the ruling it was blocking is superseded rather than unblocked: HM-DEC-116's
+premise dissolved when the streaming estimator began reading `CwGapFit`, so the
+choice it was making no longer exists. **Confirmed by sweep 2026-08-18: no
+`Adopt`, no `ForgetAdopted` and no adoption flag remains anywhere in the engine.**
 
 **RULED, AND THE WORK IS ITS OWN ORDER: HM-DEC-123.** A retune that refines the
 pitch of the station being read no longer resets the settled window; one that
@@ -1706,13 +1721,27 @@ on the way past (§12.6).
 
 ---
 id: HM-OPEN-032
-status: open
+status: closed
 owner: tim
 raised: 2026-08-18
+closed: 2026-08-18
 severity: slows
 blocks: TheSettledPassNoLongerStopsShortOfTheCallsign, TheEasyTierIsReadWhole(tightfist-easy)
-refs: HM-DEC-115, HM-DEC-123, HM-OPEN-027, HM-OPEN-028, HM-OPEN-031, src/Hamlet.RadioEngine/Cw/CwTiming.cs, src/Hamlet.RadioEngine/Cw/CwGapClasses.cs
+refs: HM-DEC-115, HM-DEC-123, HM-DEC-128, HM-OPEN-027, HM-OPEN-028, HM-OPEN-031, HM-OPEN-033, src/Hamlet.RadioEngine/Cw/CwTiming.cs, src/Hamlet.RadioEngine/Cw/CwGapClasses.cs
 ---
+
+**CLOSED 2026-08-18 BY HM-DEC-128.** Both tests this blocked are settled.
+`TheSettledPassNoLongerStopsShortOfTheCallsign` went green under HM-DEC-123 and
+has stayed green. `tightfist-easy`'s placeholder is not this entry's to answer: it
+was traced to one timing measurement inside one character and belongs to
+HM-OPEN-033.
+
+**And this entry's own finding is what superseded HM-DEC-116.** Handing the
+streaming estimator the shared fitter is what removed the choice that ruling was
+making — fitted classes against dit multiples — and left the live question as the
+settled pass's global fit against the streaming pass's local one. On today's
+evidence the local one wins, and if the two ever diverge that is the question to
+ask rather than this one.
 
 The streaming estimator now reads the one gap classifier, and two tests went red
 in exchange for a substitution that was on every CQ call on the band.
