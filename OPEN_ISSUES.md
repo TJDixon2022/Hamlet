@@ -1174,3 +1174,73 @@ he committed `004507`. They are simply not here.
 `003758` is the one worth chasing first. Two of these are the only evidence the
 project has that Hamlet has ever read a real station correctly, and a suite with
 no regression test for a success cannot tell a repair from a coincidence.
+
+---
+id: HM-OPEN-027
+status: open
+owner: tim
+raised: 2026-08-18
+severity: slows
+blocks: HM-DEC-116, which stays blocked until this is closed
+refs: HM-DEC-116, HM-DEC-121, src/Hamlet.RadioEngine/Cw/CwDecoder.cs, src/Hamlet.RadioEngine/Cw/CwToneTracker.cs
+---
+
+The path behind HM-DEC-121 is found, and it is not the dit hint.
+
+**Traced 2026-08-18 on `cw-2026-08-17-013347`**, with the adoption applied and
+then reverted:
+
+| | without adoption | with adoption |
+|---|---|---|
+| tracker retunes | **1** | **3** |
+| final tone | 610 Hz | 625 Hz |
+| speed | 15 wpm | 14 wpm |
+| settled text | `■■■ ■■VA3VRR` | `■■■ ■` |
+
+The standing hypothesis was that the settled pass takes exactly one thing from
+the estimator, the dit hint, and that the classes could be handed forward
+without touching what the dit derives from. **That is wrong.** `Recompute`
+computes the dit from the mark clusters and the shortest gap and reads none of
+the gap cuts, so adoption cannot move it directly.
+
+**The path runs through the tone tracker.** In `CwDecoder`:
+
+```
+_tracker.MidCharacter = _pattern.Length > 0 || _pending.Count > 0;
+```
+
+`MidCharacter` is the streaming pass's own segmentation state, and the tracker
+uses it to decide when a held retune may be released:
+
+```
+if (!double.IsNaN(_heldSwitchHz) && !MidCharacter) { Switch(_heldSwitchHz); }
+```
+
+So: adopted gap classes change where the streaming pass divides characters,
+which changes when `_pattern` and `_pending` are empty, which changes when the
+tracker is allowed to retune. It retunes twice more and lands on a different
+pitch.
+
+**And every tracker switch calls `_settled.Reset()`**, which throws the settled
+window away, because a switch means somebody else started transmitting
+(HM-DEC-096 phase 3). Two extra resets on a thirty-second capture is enough to
+lose the callsign.
+
+The settled pass is also fed `reading.PowerDb` — the envelope measured at
+whatever pitch the tracker is currently on — so a different retune history is
+literally different audio arriving at the second pass.
+
+**What this means for HM-DEC-116.** It cannot be made safe by keeping the
+classes away from the dit, because the dit was never the coupling. Two
+directions are open and both are Tim's:
+
+- Stop the streaming segmentation steering the tracker. `MidCharacter` exists so
+  a retune does not land in the middle of a character, which is a real
+  protection; something that does not depend on the gap classification would
+  have to replace it.
+- Delay adoption until the tracker has settled, so the classes never move
+  `MidCharacter` while a retune is pending. Cheaper, and it leaves the loop in
+  place for whatever changes segmentation next.
+
+Nothing was shipped. HM-DEC-121 keeps HM-DEC-116 blocked and this is the trace
+it asked for.
