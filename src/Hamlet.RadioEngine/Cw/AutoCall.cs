@@ -376,9 +376,10 @@ public sealed class AutoCaller
     /// </summary>
     /// <param name="settings">What to send, how often, how many times.</param>
     /// <param name="listen">
-    /// Listen for this long and report what was decoded. The caller supplies it
-    /// so that nothing here owns a decoder or a clock (§5), and so a test can
-    /// hand back an answer without synthesizing audio.
+    /// Listen for this long and report what was decoded, and whether the tracker
+    /// followed a different station while it did. The caller supplies it so that
+    /// nothing here owns a decoder or a clock (§5), and so a test can hand back an
+    /// answer without synthesizing audio.
     /// </param>
     /// <param name="scannerRunning">
     /// True when the scanner has the dial. The two are mutually exclusive
@@ -388,7 +389,7 @@ public sealed class AutoCaller
     /// <returns>What the cycle came to. Never throws.</returns>
     public async Task<AutoCallOutcome> RunAsync(
         AutoCallSettings settings,
-        Func<TimeSpan, CancellationToken, Task<IReadOnlyList<CwCharacter>>> listen,
+        Func<TimeSpan, CancellationToken, Task<AutoCallWindow>> listen,
         bool scannerRunning = false,
         CancellationToken cancellationToken = default)
     {
@@ -543,7 +544,7 @@ public sealed class AutoCaller
                     window = TimeSpan.Zero;
                 }
 
-                IReadOnlyList<CwCharacter> heard;
+                AutoCallWindow heard;
 
                 try
                 {
@@ -558,7 +559,8 @@ public sealed class AutoCaller
                     return Leave(AutoCallStop.LinkFailed, sent);
                 }
 
-                var answer = AutoCallAnswers.Judge(heard, settings.Message);
+                var answer = AutoCallAnswers.Judge(
+                    heard.Heard, settings.Message, heard.StationChanged);
 
                 if (answer.Stop)
                 {

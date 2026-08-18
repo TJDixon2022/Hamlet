@@ -1126,6 +1126,15 @@ collections. Named and left (§12.6): one occurrence is not a diagnosis, and a
 transmit test that fails intermittently is worth knowing about before it fails on
 an evening that matters.
 
+**A FOURTH SIGHTING, 2026-08-18, AND ITS NAMES WERE NOT CAPTURED.** One combined
+run of both assemblies reported five app failures where every run either side of
+it reported one; four consecutive app-only runs and three further combined runs all
+gave the steady figure. The grep in use at that moment printed summary lines only,
+so **which four they were is not known**, which is worth less than a named sighting
+and is recorded rather than tidied away or guessed at. The pattern is the same as
+the other three: intermittent, under xunit's parallel collections, in no one
+subsystem.
+
 **A THIRD, AND THE FIRST HAS NOT RECURRED, 2026-08-18.**
 `RigReadTests.EachSettingParsesToTheManualsOwnWords` failed once in a full run and
 passed alone and in every run either side; `TheStopFrameIsCommand17CarryingFf` did

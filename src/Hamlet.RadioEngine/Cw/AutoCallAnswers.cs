@@ -3,6 +3,30 @@ using System.Text.RegularExpressions;
 
 namespace Hamlet.RadioEngine.Cw;
 
+/// <summary>One listening window's worth of evidence (phase 3).</summary>
+/// <param name="Heard">What the decoder settled on, in order.</param>
+/// <param name="StationChanged">
+/// True when the tracker followed a different station during the window.
+/// </param>
+/// <remarks>
+/// <para>**THE TRACKER'S OWN MOVE IS EVIDENCE AND IT ARRIVES SOONER THAN TEXT.**
+/// A follow means the survey found keying at a pitch that is not the one it was
+/// reading, which operationally means somebody else started transmitting — and it
+/// is decided on three seconds of mark-length structure rather than on a
+/// classifier having enough letters to work with (HM-DEC-095, HM-DEC-123).</para>
+/// <para>**IT IS A FOLLOW AND NEVER A REFINEMENT.** A refining retune is the same
+/// station found more precisely and says nothing about anybody arriving, which is
+/// exactly the distinction HM-DEC-123 built; counting those would stop the cycle
+/// every time the survey preferred its neighbouring bin.</para>
+/// </remarks>
+public readonly record struct AutoCallWindow(
+    IReadOnlyList<CwCharacter> Heard, bool StationChanged)
+{
+    /// <summary>A window in which nothing happened at all.</summary>
+    public static AutoCallWindow Empty { get; }
+        = new(Array.Empty<CwCharacter>(), false);
+}
+
 /// <summary>What was heard after a CQ went out (phase 3).</summary>
 /// <param name="Stop">Whether the cycle should stop.</param>
 /// <param name="IsAnswer">
@@ -66,6 +90,19 @@ public static class AutoCallAnswers
     /// </remarks>
     public const int LeastUnrecognized = 4;
 
+    /// <summary>
+    /// How many it needs where the tracker also followed a new station.
+    /// </summary>
+    /// <remarks>
+    /// **TWO, AND THE HALVING IS WHAT "EVIDENCE RATHER THAN A VERDICT" MEANS.**
+    /// The tracker moving does not decide anything on its own — it stops the cycle
+    /// without claiming an answer — but it makes a couple of confident letters mean
+    /// what four would have meant without it. Two independent signals agreeing is
+    /// worth more than either alone, which is the same reasoning that makes the
+    /// survey demand two agreeing reads before it believes anything.
+    /// </remarks>
+    public const int LeastWithAStationChange = 2;
+
     /// <summary>How long a repeat has to run to count as one.</summary>
     public const int LeastRepeatLength = 4;
 
@@ -92,6 +129,12 @@ public static class AutoCallAnswers
     /// What was transmitted, so the operator's own callsign can be recognized
     /// coming back.
     /// </param>
+    /// <param name="stationChanged">
+    /// True where the tracker followed a different station during the window.
+    /// **Evidence and never a verdict**: on its own it stops the cycle without
+    /// claiming an answer, and beside a couple of confident characters it means
+    /// what four would have meant alone.
+    /// </param>
     /// <returns>The verdict. Never throws; an empty window is not an answer.</returns>
     /// <remarks>
     /// <para>**THE ORDER IS THE ORDER OF WHAT THEY ESTABLISH.** The operator's
@@ -102,21 +145,47 @@ public static class AutoCallAnswers
     /// CQ just went out.</para>
     /// </remarks>
     public static AutoCallAnswer Judge(
-        IReadOnlyList<CwCharacter>? heard, string? ownMessage = null)
+        IReadOnlyList<CwCharacter>? heard,
+        string? ownMessage = null,
+        bool stationChanged = false)
     {
         if (heard is null || heard.Count == 0)
         {
-            return AutoCallAnswer.Nothing;
+            // **THE TRACKER MOVING WITH NOTHING READABLE STILL STOPS IT.**
+            // Somebody started transmitting near enough for the survey to find
+            // their keying and Hamlet could not read a word of it, which is every
+            // reason to stop calling and no reason at all to claim an answer
+            // (§0.0).
+            return stationChanged
+                ? new AutoCallAnswer(
+                    Stop: true,
+                    IsAnswer: false,
+                    Why: "the tracker followed a different station here, so "
+                        + "somebody started transmitting, and Hamlet could not "
+                        + "read what they sent",
+                    Evidence: "",
+                    Confidence: 0)
+                : AutoCallAnswer.Nothing;
         }
 
         var tokens = Tokenize(heard);
 
+        var mine = OwnCallsign(ownMessage);
+
         if (tokens.Count == 0)
         {
-            return AutoCallAnswer.Nothing;
+            return stationChanged
+                ? new AutoCallAnswer(
+                    Stop: true,
+                    IsAnswer: false,
+                    Why: "the tracker followed a different station here, so "
+                        + "somebody started transmitting, and Hamlet could not "
+                        + "read what they sent",
+                    Evidence: "",
+                    Confidence: 0)
+                : AutoCallAnswer.Nothing;
         }
 
-        var mine = OwnCallsign(ownMessage);
 
         if (mine.Length > 0)
         {
@@ -183,7 +252,9 @@ public static class AutoCallAnswers
             .Where(c => !c.IsWordGap && !c.IsUnreadable && c.Score >= ConfidentEnough)
             .ToList();
 
-        if (solid.Count >= LeastUnrecognized)
+        var enough = stationChanged ? LeastWithAStationChange : LeastUnrecognized;
+
+        if (solid.Count >= enough)
         {
             // **STOPS, AND IS NOT AN ANSWER.** Those are the two halves of this
             // tier and they are written out rather than inferred: somebody is
@@ -193,7 +264,11 @@ public static class AutoCallAnswers
                 Stop: true,
                 IsAnswer: false,
                 Why: $"it read {solid.Count} characters here it could not make "
-                    + "anything of",
+                    + "anything of"
+                    + (stationChanged
+                        ? ", and the tracker followed a different station while it "
+                          + "was listening"
+                        : ""),
                 Evidence: string.Concat(solid.Select(c => c.Text)),
                 Confidence: solid.Average(c => c.Score));
         }

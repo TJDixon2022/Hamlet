@@ -401,7 +401,7 @@ public sealed partial class AutoCallViewModel : ObservableObject
     /// (HM-DEC-095) — which is exactly the truncated-evidence garbage that would
     /// false-trigger a response.</para>
     /// </remarks>
-    private async Task<IReadOnlyList<CwCharacter>> ListenAsync(
+    private async Task<AutoCallWindow> ListenAsync(
         TimeSpan window, CancellationToken cancellationToken)
     {
         var decoder = _decoder;
@@ -411,9 +411,14 @@ public sealed partial class AutoCallViewModel : ObservableObject
 
         if (decoder is null || window <= TimeSpan.Zero)
         {
-            return Array.Empty<CwCharacter>();
+            return AutoCallWindow.Empty;
         }
 
+        // **A FOLLOW AND NEVER A REFINEMENT** (HM-DEC-123). The tracker settling
+        // one bin over on the station it is already reading says nothing about
+        // anybody arriving; going to a different station says somebody started
+        // transmitting, and it says it sooner than any classifier can.
+        var followsBefore = decoder.Tracker.Follows;
         var heard = new List<CwCharacter>();
 
         void Take(CwCharacter c) => heard.Add(c);
@@ -434,7 +439,7 @@ public sealed partial class AutoCallViewModel : ObservableObject
             decoder.CharacterSettled -= Take;
         }
 
-        return heard;
+        return new AutoCallWindow(heard, decoder.Tracker.Follows != followsBefore);
     }
 
     private void OnTransmitted(object? sender, AutoCallTransmission went)

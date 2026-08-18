@@ -208,6 +208,65 @@ public sealed class AutoCallAnswerTests
         Assert.Equal(expected, found);
     }
 
+    // ---- the tracker's own evidence --------------------------------------
+
+    /// <remarks>
+    /// <para>**THE TRACKER FOLLOWING A DIFFERENT STATION IS EVIDENCE AND NEVER A
+    /// VERDICT.** It means the survey found keying at a pitch that is not the one
+    /// it was reading, which operationally means somebody started transmitting,
+    /// and it is decided on three seconds of mark-length structure rather than on
+    /// a classifier having enough letters to work with. On its own it stops the
+    /// cycle — calling over a station that has just started is the failure this
+    /// feature exists to avoid — and it claims no answer.</para>
+    /// </remarks>
+    [Fact]
+    public void TheTrackerFollowingANewStationStopsItWithoutClaimingAnAnswer()
+    {
+        var answer = AutoCallAnswers.Judge(
+            Array.Empty<CwCharacter>(), MyCall, stationChanged: true);
+
+        _output.WriteLine($"stop {answer.Stop}, answer {answer.IsAnswer}: {answer.Why}");
+
+        Assert.True(answer.Stop);
+        Assert.False(answer.IsAnswer);
+        Assert.Contains("different station", answer.Why, StringComparison.Ordinal);
+    }
+
+    /// <remarks>
+    /// <para>**AND BESIDE A COUPLE OF CONFIDENT LETTERS IT MEANS WHAT FOUR WOULD
+    /// HAVE MEANT ALONE**, which is what using it as evidence rather than as a
+    /// verdict amounts to. Two independent signals agreeing is worth more than
+    /// either alone.</para>
+    /// </remarks>
+    [Fact]
+    public void TwoLettersAndAStationChangeIsEnoughWhereTwoLettersAloneIsNot()
+    {
+        var alone = AutoCallAnswers.Judge(Heard("MN"), MyCall);
+        var together = AutoCallAnswers.Judge(Heard("MN"), MyCall, stationChanged: true);
+
+        _output.WriteLine($"alone: stop {alone.Stop}");
+        _output.WriteLine($"with a station change: stop {together.Stop} — {together.Why}");
+
+        Assert.False(alone.Stop);
+        Assert.True(together.Stop);
+        Assert.False(together.IsAnswer);
+    }
+
+    /// <remarks>
+    /// And it does not turn dim letters into an answer either: the second tier is
+    /// still the second tier, and a station change does not promote anything into
+    /// a claim that somebody replied.
+    /// </remarks>
+    [Fact]
+    public void AStationChangeNeverPromotesAnythingIntoAnAnswer()
+    {
+        var answer = AutoCallAnswers.Judge(
+            Heard("MNQX WXYZ"), MyCall, stationChanged: true);
+
+        Assert.True(answer.Stop);
+        Assert.False(answer.IsAnswer);
+    }
+
     // ---- phase 1: what a message may be, at edit time --------------------
 
     /// <remarks>

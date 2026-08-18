@@ -43,15 +43,15 @@ public sealed class AutoCallSafetyTests
     private static readonly AutoCallSettings Settings =
         new(Call, IntervalSeconds: 10, MaxRounds: 3);
 
-    /// <summary>A window in which nothing was heard.</summary>
-    private static Task<IReadOnlyList<CwCharacter>> HeardNothing(
+    /// <summary>A window in which nothing was heard and nothing moved.</summary>
+    private static Task<AutoCallWindow> HeardNothing(
         TimeSpan window, CancellationToken token)
-        => Task.FromResult<IReadOnlyList<CwCharacter>>(Array.Empty<CwCharacter>());
+        => Task.FromResult(AutoCallWindow.Empty);
 
     /// <summary>A window holding somebody answering.</summary>
-    private static Task<IReadOnlyList<CwCharacter>> HeardAnAnswer(
+    private static Task<AutoCallWindow> HeardAnAnswer(
         TimeSpan window, CancellationToken token)
-        => Task.FromResult(Characters("W1AW DE K2ABC"));
+        => Task.FromResult(new AutoCallWindow(Characters("W1AW DE K2ABC"), false));
 
     private static IReadOnlyList<CwCharacter> Characters(string text, double score = 0.95)
         => text.Select(c => c == ' '
@@ -242,8 +242,7 @@ public sealed class AutoCallSafetyTests
             (_, _) =>
             {
                 rig.Transmitting = true;
-                return Task.FromResult<IReadOnlyList<CwCharacter>>(
-                    Array.Empty<CwCharacter>());
+                return Task.FromResult(AutoCallWindow.Empty);
             });
 
         Report(outcome, sender);
@@ -431,8 +430,7 @@ public sealed class AutoCallSafetyTests
             (_, _) =>
             {
                 caller.Stop();
-                return Task.FromResult<IReadOnlyList<CwCharacter>>(
-                    Array.Empty<CwCharacter>());
+                return Task.FromResult(AutoCallWindow.Empty);
             });
 
         Report(outcome, sender);
