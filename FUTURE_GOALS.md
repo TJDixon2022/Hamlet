@@ -348,3 +348,21 @@ The prime directive applies with particular force here. Propagation figures
 are predictions, and a prediction rendered as a fact is the exact failure
 HM-DEC-009 forbids. Anything derived from them carries its source, its age and
 its uncertainty, or it does not ship.
+
+## FG-013
+
+**Hamlet names the QN signals when it reads them.**
+
+`QNI`, `QNX` and `<AS>` appear in the 2026-08-18 off-air captures of a 40 m
+traffic net. They are ARRL QN signals — net check-in, net close, and wait — and
+Hamlet reads the characters and can say nothing about what they mean.
+
+That matters more than an ordinary abbreviation would. A beginner tuning across
+a traffic net meets these in the first minute and they are the vocabulary of the
+thing he is listening to: `QNI` is somebody joining, which is the single most
+useful thing to recognise if the goal is to join in one day. HM-DEC-041 already
+says that if Hamlet says it, Hamlet explains it, and these are said.
+
+Direction rather than scope. It is scanner-classifier work and belongs with
+whatever ruling covers naming what a transmission is, not with the decoder that
+produces the letters.

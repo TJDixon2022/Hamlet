@@ -1140,3 +1140,37 @@ plugin, a file watcher, a scheduled task — it is Tim's machine and Tim's to
 identify. What matters here is that a session cannot rely on its own commit
 boundaries being the ones that end up in the log, and a report saying "committed
 as X" may not describe what is on disk afterwards.
+
+---
+id: HM-OPEN-026
+status: open
+owner: tim
+raised: 2026-08-18
+severity: slows
+blocks: three of the four off-air fixtures the cleanup order asked for
+refs: CLAUDE.md 2.1, HM-DEC-091, tests/fixtures/cw/captured
+---
+
+Three of the four 2026-08-18 off-air captures are not on the machine.
+
+The work order names four and expects them "on `main` already or supplied
+alongside". Only `cw-2026-08-18-004507` is present, which is the ARRL bulletin
+that produced HM-DEC-115. Missing:
+
+| Capture | What it would prove |
+|---|---|
+| `cw-2026-08-18-003758` | **A regression test for a success**, which the suite has none of. Hamlet read `DE AA4MP/4 QNIK` off this on screen and it was independently confirmed correct |
+| `cw-2026-08-18-003126` | The half-amplitude evidence behind HM-DEC-112, and a key containing `<BT>`, `<AR>`, `VFB`, `MY`, `IT` |
+| `cw-2026-08-18-003016` | Tone tracking only; no full key |
+
+Searched for under `tests/fixtures/cw/captured`, the whole repository,
+`%AppData%\Hamlet\captures` and Downloads. Nothing.
+
+**The rule permits them and this is not a permission question.** §2.1 says
+recorded off-air audio is public by nature and asks only that fixtures
+committed to the public repository are reviewed by Tim first, which he did when
+he committed `004507`. They are simply not here.
+
+`003758` is the one worth chasing first. Two of these are the only evidence the
+project has that Hamlet has ever read a real station correctly, and a suite with
+no regression test for a success cannot tell a repair from a coincidence.

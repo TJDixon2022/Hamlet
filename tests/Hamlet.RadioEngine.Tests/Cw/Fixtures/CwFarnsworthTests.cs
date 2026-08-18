@@ -171,4 +171,52 @@ public sealed class CwFarnsworthTests
         Assert.InRange(fit.Value.CharacterMs, 140, 160);
         Assert.InRange(fit.Value.WordMs, 330, 370);
     }
+
+    /// <summary>What this recording actually carries, independently confirmed.</summary>
+    /// <remarks>
+    /// **AN ANSWER KEY FOR A REAL OFF-AIR RECORDING, WHICH THIS PROJECT HAS
+    /// NEVER HAD.** Every fixture until now was either synthesized, and so
+    /// proves only that the decoder agrees with the generator, or was a capture
+    /// asserting what was measured rather than what was sent, because nobody
+    /// knew what was sent (HM-DEC-091).
+    /// <para>This is an ARRL bulletin off a 40 m traffic net and the words are
+    /// known. The first four characters are acquisition and are not part of the
+    /// key.</para>
+    /// </remarks>
+    public const string BulletinKey =
+        "AT ARRL DOT NET <BT> EACH STATION HANDLING THIS MESSAGE P";
+
+    /// <remarks>
+    /// <para>**THE KEY, ASSERTED** (phase 5 of the cleanup order). Off-air audio
+    /// may be committed as a fixture: amateur transmissions are public by nature
+    /// and §2.1 asks only that Tim review what goes into the repository, which
+    /// he did when he committed this one.</para>
+    /// <para>**EXPECT THIS RED.** It is the definition of done for the work
+    /// order, and the distance from the key is the measurement rather than the
+    /// failure: the spaces are now right and the remaining errors are
+    /// character-level, which belongs to the clock fit rather than to the
+    /// spacing.</para>
+    /// </remarks>
+    [Fact]
+    public void TheBulletinDecodesToItsAnswerKey()
+    {
+        var (settled, _) = Decode(Bulletin);
+
+        var got = settled.Trim();
+
+        _output.WriteLine($"got    '{got}'");
+        _output.WriteLine($"wanted '{BulletinKey}'");
+
+        // Acquisition is excluded on both sides: the key begins where the
+        // decoder has had a chance to find the signal at all.
+        var wanted = BulletinKey.Replace(" ", "", StringComparison.Ordinal);
+        var mine = got.Replace(" ", "", StringComparison.Ordinal);
+
+        _output.WriteLine($"{mine.Length} characters against {wanted.Length}");
+
+        Assert.Contains(
+            wanted[4..],
+            mine,
+            StringComparison.Ordinal);
+    }
 }
