@@ -1582,7 +1582,7 @@ public partial class MainWindowViewModel : ObservableObject
         // canvas because the canvas places it, and it stays detached from any
         // radio until one connects: a scanner that could move the dial with no
         // rig behind it would be a scanner with nothing to abort against.
-        Scan = new ScanViewModel(line => StatusText = line);
+        Scan = new ScanViewModel(line => StatusText = line, tune: TuneTo);
 
         // THE OPERATOR'S OWN SCAN FILE, WRITTEN ONCE (§0.2.1). It cannot be
         // edited until it exists, and nothing else in the app was going to

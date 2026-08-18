@@ -530,22 +530,53 @@
                                                  RE-DERIVED. A call assembled
                                                  from dim letters may not be
                                                  drawn like a solid one (§0.0,
-                                                 HM-DEC-108). -->
+                                                 HM-DEC-108), and this is a row
+                                                 the operator acts on, so the
+                                                 colour follows the words rather
+                                                 than staying green whatever
+                                                 they say. Amber is the default
+                                                 and green is earned. -->
                                             <Border Grid.Column="2"
+                                                    Classes.solid="{Binding IsSolid}"
                                                     IsVisible="{Binding HasSureness}"
                                                     CornerRadius="4" Padding="6,1"
-                                                    Background="{StaticResource HmGreenTintBrush}"
-                                                    BorderBrush="{StaticResource HmGreenEdgeBrush}"
+                                                    Background="{StaticResource HmAmberTintBrush}"
+                                                    BorderBrush="{StaticResource HmAmberEdgeBrush}"
                                                     BorderThickness="1">
+                                                <Border.Styles>
+                                                    <Style Selector="Border.solid">
+                                                        <Setter Property="Background"
+                                                                Value="{StaticResource HmGreenTintBrush}" />
+                                                        <Setter Property="BorderBrush"
+                                                                Value="{StaticResource HmGreenEdgeBrush}" />
+                                                    </Style>
+                                                    <Style Selector="Border.solid > TextBlock">
+                                                        <Setter Property="Foreground"
+                                                                Value="{StaticResource HmGreenBrush}" />
+                                                    </Style>
+                                                </Border.Styles>
                                                 <TextBlock Text="{Binding SurenessText}"
                                                            FontSize="10"
-                                                           Foreground="{StaticResource HmGreenBrush}" />
+                                                           Foreground="{StaticResource HmAmberBrush}" />
                                             </Border>
                                         </Grid>
 
                                         <TextBlock Text="{Binding Sentence}"
                                                    FontSize="11" TextWrapping="Wrap"
                                                    Foreground="{StaticResource HmTextMutedBrush}" />
+
+                                        <!-- THE PAYOFF ON A SCAN (§0.2.1). A
+                                             list of stations is a report and
+                                             this is a destination. It stops the
+                                             scan on the way, because a dial
+                                             still hunting while he reads is
+                                             §0.2.1's own practical test
+                                             failing. -->
+                                        <Button Content="{Binding TuneLabel}"
+                                                HorizontalAlignment="Left"
+                                                FontSize="11" Padding="8,3" Margin="0,3,0,0"
+                                                Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).Scan.TuneToDwellCommand}"
+                                                CommandParameter="{Binding}" />
                                     </StackPanel>
                                 </Border>
                             </DataTemplate>

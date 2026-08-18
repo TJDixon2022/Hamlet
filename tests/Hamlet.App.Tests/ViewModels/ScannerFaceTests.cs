@@ -48,6 +48,7 @@ public sealed class ScannerFaceTests
         var stopped = dwell.Decide(dwell.Seconds) == DwellAction.Stay;
 
         return new ScanDwellRow(
+            dwell.FrequencyHz,
             $"{dwell.FrequencyHz / 1_000_000.0:0.000} MHz",
             dwell.Verdict.Sentence,
             stopped,
@@ -98,6 +99,83 @@ public sealed class ScannerFaceTests
 
         Assert.Equal("sure", solid.SurenessText);
         Assert.Equal("not at all sure", dim.SurenessText);
+
+        // **AND THE COLOUR FOLLOWS THE WORDS.** This is a row the operator taps
+        // to move his dial, so a maybe-CQ drawn in the same green as a clean one
+        // is a guess wearing a decode's clothes. The words carry it and the hue
+        // carries it too, which is §0.6's rule in the direction it is usually
+        // stated the other way round.
+        Assert.True(solid.IsSolid);
+        Assert.False(dim.IsSolid);
+    }
+
+    /// <remarks>
+    /// <para>Proves the row carries **the frequency the dwell listened at**, not
+    /// the bin a candidate was ranked in. A tap tunes to this number, so a row
+    /// that carried anything else would send the operator somewhere Hamlet never
+    /// heard.</para>
+    /// </remarks>
+    [Fact]
+    public void AResultCarriesTheFrequencyItWasHeardOn()
+    {
+        var row = Row(Dwell(7_028_500, "CQ CQ DE W1AW"));
+
+        _output.WriteLine($"{row.FrequencyHz} Hz, drawn as {row.Label}, "
+            + $"tune says '{row.TuneLabel}'");
+
+        Assert.Equal(7_028_500, row.FrequencyHz);
+        Assert.Contains("7.029", row.Label, StringComparison.Ordinal);
+        Assert.Contains(row.Label, row.TuneLabel, StringComparison.Ordinal);
+    }
+
+    /// <remarks>
+    /// <para>Proves the payoff and §0.2.1 together: **tapping a result tunes
+    /// there and stops the scan.** A scan that carried on moving the dial while
+    /// the operator listened to what he just found is that section's own
+    /// practical test failing — he could not tell where his radio had been left
+    /// or why.</para>
+    /// <para>There is no radio here, so what is proved is the face's own
+    /// contract: the frequency the operator picked reaches the app's tuning path,
+    /// and the scanner is asked to stop. What the dial does about it is
+    /// `BandScanner`'s and is proved against a rig elsewhere.</para>
+    /// </remarks>
+    [Fact]
+    public async Task TappingAResultTunesToItAndStopsTheScan()
+    {
+        long? tuned = null;
+        var said = "";
+
+        var scan = new ScanViewModel(
+            line => said = line,
+            tune: hz => tuned = hz);
+
+        await scan.TuneToDwellCommand.ExecuteAsync(
+            Row(Dwell(7_028_500, "CQ CQ DE W1AW")));
+
+        _output.WriteLine($"tuned to {tuned}, said '{said}'");
+
+        Assert.Equal(7_028_500, tuned);
+        Assert.False(scan.IsScanning);
+        Assert.Contains("7.029", said, StringComparison.Ordinal);
+    }
+
+    /// <remarks>
+    /// Proves the guard rather than an expectation: a row with nowhere to go
+    /// moves nothing. Silence is the right answer for a destination that is not
+    /// one, and moving the dial anyway would be the worst available reading of
+    /// §0.2.1.
+    /// </remarks>
+    [Fact]
+    public async Task ARowWithNowhereToGoMovesNothing()
+    {
+        long? tuned = null;
+        var scan = new ScanViewModel(_ => { }, tune: hz => tuned = hz);
+
+        await scan.TuneToDwellCommand.ExecuteAsync(null);
+        await scan.TuneToDwellCommand.ExecuteAsync(
+            new ScanDwellRow(0, "", "", Stopped: false, Sureness: null));
+
+        Assert.Null(tuned);
     }
 
     /// <remarks>

@@ -24,6 +24,9 @@ public sealed record ScanCandidateRow(
 /// <summary>
 /// What a dwell came to, as the screen shows it.
 /// </summary>
+/// <param name="FrequencyHz">
+/// The frequency it was heard on, which is what a tap tunes to.
+/// </param>
 /// <param name="Label">The frequency, written for a person.</param>
 /// <param name="Sentence">What was heard, or what was not.</param>
 /// <param name="Stopped">Whether the scan stayed here.</param>
@@ -32,13 +35,17 @@ public sealed record ScanCandidateRow(
 /// nothing to stand behind.
 /// </param>
 /// <remarks>
-/// **A DWELL THAT FOUND NOTHING IS IN THIS LIST TOO.** Silence about a place the
-/// scan visited is the collapsed-panel failure in §0.5: hiding detail is fine
-/// and hiding information is not, and the frequencies a scan passed over are
-/// half of what it measured.
+/// <para>**A DWELL THAT FOUND NOTHING IS IN THIS LIST TOO.** Silence about a
+/// place the scan visited is the collapsed-panel failure in §0.5: hiding detail
+/// is fine and hiding information is not, and the frequencies a scan passed over
+/// are half of what it measured.</para>
+/// <para>**THE FREQUENCY IS THE ONE THE DWELL LISTENED AT AND NEVER THE BIN IT
+/// WAS RANKED IN.** A candidate is a place the waterfall saw something; a dwell
+/// is a place the dial actually sat and the decoder actually listened, so tuning
+/// to anything else would send the operator somewhere Hamlet never heard.</para>
 /// </remarks>
 public sealed record ScanDwellRow(
-    string Label, string Sentence, bool Stopped, double? Sureness)
+    long FrequencyHz, string Label, string Sentence, bool Stopped, double? Sureness)
 {
     /// <summary>How sure, in words, or empty where nothing was found.</summary>
     /// <remarks>
@@ -56,6 +63,24 @@ public sealed record ScanDwellRow(
 
     /// <summary>True when there is a sureness worth drawing.</summary>
     public bool HasSureness => Sureness is not null;
+
+    /// <summary>True where Hamlet stands fully behind what it heard.</summary>
+    /// <remarks>
+    /// **A STOP ASSEMBLED FROM DIM LETTERS MAY NOT BE DRAWN LIKE A CLEAN ONE**
+    /// (§0.0). The words already differ and now the colour follows them, because
+    /// a row the operator is about to act on is exactly where a confident looking
+    /// maybe costs him an evening. Green is solid, amber says Hamlet heard
+    /// something and is telling him how little it would bet on it.
+    /// </remarks>
+    public bool IsSolid => Sureness >= 0.8;
+
+    /// <summary>What tapping this row does, said plainly.</summary>
+    /// <remarks>
+    /// It names the frequency rather than a bare verb, so the control says where
+    /// it is about to send the dial and the operator can disagree before pressing
+    /// it (§0.7, §0.2.1).
+    /// </remarks>
+    public string TuneLabel => $"listen at {Label}";
 }
 
 /// <summary>
@@ -76,6 +101,7 @@ public sealed partial class ScanViewModel : ObservableObject
     private readonly string _homePath;
     private readonly ScopeBinSurvey _survey = new();
     private readonly Action<string> _say;
+    private readonly Action<long>? _tune;
 
     private IRig? _rig;
     private RigStateMonitor? _monitor;
@@ -83,6 +109,7 @@ public sealed partial class ScanViewModel : ObservableObject
     private ISpectrumSource? _spectrum;
     private BandScanner? _scanner;
     private IScanHome? _home;
+    private Task? _running;
 
     /// <summary>Creates the scanner's face.</summary>
     /// <param name="say">How to put a line in the status bar.</param>
@@ -92,10 +119,19 @@ public sealed partial class ScanViewModel : ObservableObject
     /// than argued about (§12.5).
     /// </param>
     /// <param name="homePath">Where the dial was when a scan started.</param>
+    /// <param name="tune">
+    /// How to send the dial somewhere the operator picked. The app hands over
+    /// its own tuning path, the one a spot or a map dot uses, so a scan result
+    /// arrives at the radio the same way every other destination does.
+    /// </param>
     public ScanViewModel(
-        Action<string> say, string? segmentsPath = null, string? homePath = null)
+        Action<string> say,
+        string? segmentsPath = null,
+        string? homePath = null,
+        Action<long>? tune = null)
     {
         _say = say;
+        _tune = tune;
         _segmentsPath = segmentsPath ?? SettingsStore.ScanSegmentsPath;
         _homePath = homePath ?? SettingsStore.ScanHomePath;
     }
@@ -269,6 +305,59 @@ public sealed partial class ScanViewModel : ObservableObject
     /// </remarks>
     public void StopNow() => _scanner?.Stop();
 
+    /// <summary>
+    /// Go and listen to something the scan found (§0.2.1).
+    /// </summary>
+    /// <param name="row">The result the operator tapped.</param>
+    /// <remarks>
+    /// <para>**A LIST OF STATIONS IS A REPORT AND THE OPERATOR WANTS A
+    /// DESTINATION.** This is the payoff on a scan: the frequency it was heard
+    /// on, tuned to, with the scan stopped so nothing moves the dial out from
+    /// under him while he is listening. A scan that carried on hunting while he
+    /// read a station is §0.2.1's own practical test failing, because he could
+    /// not tell where his radio had been left or why.</para>
+    /// <para>**IT STOPS THE SCAN FIRST AND WAITS FOR IT TO PUT THE DIAL BACK.**
+    /// Every exit route restores where the operator was before the scan started
+    /// and this one is no exception. Only once that has happened does the tune go
+    /// out, and it goes out through the same path a spot or a map dot uses, so
+    /// what moves the dial to a result is the operator tuning rather than the
+    /// scanner writing, and the crash-safe note on disk is cleared by the
+    /// scanner's own restore rather than by anything here reaching around it.
+    /// </para>
+    /// <para>Nothing happens where there is nowhere to go, which is a guard
+    /// against a row arriving without a frequency rather than an expectation that
+    /// one will.</para>
+    /// </remarks>
+    [RelayCommand]
+    private async Task TuneToDwellAsync(ScanDwellRow? row)
+    {
+        if (row is null || row.FrequencyHz <= 0)
+        {
+            return;
+        }
+
+        StopNow();
+
+        if (_running is { } running)
+        {
+            try
+            {
+                await running.ConfigureAwait(true);
+            }
+            catch (Exception)
+            {
+                // Whatever went wrong with the scan is the scan's to report and
+                // it already has. The operator asked to go somewhere, and that is
+                // still worth doing.
+            }
+        }
+
+        _tune?.Invoke(row.FrequencyHz);
+
+        _say($"The scan has stopped and the dial has gone to {row.Label}, "
+            + "which is where you asked to listen.");
+    }
+
     /// <summary>Start a scan over what the waterfall has been watching.</summary>
     [RelayCommand]
     private async Task StartAsync()
@@ -338,12 +427,20 @@ public sealed partial class ScanViewModel : ObservableObject
 
         try
         {
-            outcome = await _scanner
-                .RunAsync(wanted, segments, ListenAsync)
-                .ConfigureAwait(true);
+            // **HELD SO A TAP CAN WAIT FOR IT** (§0.2.1). Stopping the scan asks
+            // it to stop; the dial does not get back to where the operator left
+            // it until the loop notices and finishes its own restore. A tune
+            // issued before that lands first and the restore then drags the dial
+            // off it, which is the operator being taken somewhere he did not
+            // choose by the one feature meant to take him where he did.
+            var run = _scanner.RunAsync(wanted, segments, ListenAsync);
+
+            _running = run;
+            outcome = await run.ConfigureAwait(true);
         }
         finally
         {
+            _running = null;
             _scanner.DwellFinished -= OnDwellFinished;
             IsScanning = false;
             MovingLine = "";
@@ -424,6 +521,7 @@ public sealed partial class ScanViewModel : ObservableObject
         var stopped = dwell.Decide(dwell.Seconds) == DwellAction.Stay;
 
         Dwells.Insert(0, new ScanDwellRow(
+            dwell.FrequencyHz,
             $"{dwell.FrequencyHz / 1_000_000.0:0.000} MHz",
             dwell.Verdict.Sentence,
             stopped,
