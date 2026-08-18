@@ -173,25 +173,28 @@ public static class CwConfidenceModel
     /// Below this margin the decoder emits nothing at all (HM-DEC-097).
     /// </summary>
     /// <remarks>
-    /// <para>**SEVENTEEN, AND IT IS HM-DEC-097 TRANSLATED RATHER THAN
-    /// RENEGOTIATED.** That ruling says the decoder refuses below nought
-    /// decibels signal to noise and copies nothing into the band where it is
-    /// half wrong. Its decibels are the broadband ratio a fixture is generated
-    /// at; the decoder measures inside a narrow tone filter and reads about
-    /// seventeen higher for the same audio — 17.2 to 19.0 where the fixture was
-    /// generated at nought, 15.3 to 17.1 at minus two, 7.6 to 14.4 at minus
-    /// five. So seventeen here cuts in at the ruling's own line.</para>
-    /// <para>**FIFTEEN WAS REJECTED** because it lets minus two through, which
-    /// is the case the ruling names at 0.44 of the message invented. **Ten was
-    /// rejected** as leaving open the whole band the ruling exists to silence.
-    /// </para>
-    /// <para>A trained ear copies to roughly nought decibels, so refusing there
-    /// meets the stated goal — decode almost anything the operator can hear —
-    /// rather than falling short of it. **A degraded label was rejected as a
-    /// substitute**: marking a message does not make a plausible wrong callsign
-    /// on screen any less actionable (§0.0).</para>
+    /// <para>**FOURTEEN, AND IT WAS MEASURED RATHER THAN REASONED**
+    /// (HM-DEC-120, superseding HM-DEC-117's interim of seventeen). HM-DEC-097
+    /// ruled the refusal: below nought decibels signal to noise the decoder goes
+    /// quiet rather than copying into the band where it is half wrong. Its
+    /// decibels are the broadband ratio a fixture is generated at, and this
+    /// decoder measures inside a narrow tone filter, so the ruling had to be
+    /// translated into these units.</para>
+    /// <para>**THE FIRST TRANSLATION WAS ARITHMETIC AND WAS FOUR DECIBELS OUT.**
+    /// Seventeen came from the offset between broadband and in-filter
+    /// measurement and was expected to bite at the ruling's own line. It bit at
+    /// about five, so four decibels of reach were given away for nothing.</para>
+    /// <para>The second was a sweep. Seventeen, fifteen, fourteen and thirteen
+    /// never invent a character at any level; twelve begins inventing at minus
+    /// two decibels, which is HM-DEC-097's named case at 0.44 of the message
+    /// invented. **Fourteen and thirteen are identical on every measured number
+    /// and both read the whole message perfectly down to one decibel**, so the
+    /// further of the two from the cliff is taken.</para>
+    /// <para>A degraded label was rejected as a substitute: marking a message
+    /// does not make a plausible wrong callsign on screen any less actionable
+    /// (§0.0).</para>
     /// </remarks>
-    public const double RefusalFloorDb = 17.0;
+    public const double RefusalFloorDb = 14.0;
 
     /// <summary>Signal margin at or above which the signal stops being the limit.</summary>
     public const double GoodSignalDb = 18.0;

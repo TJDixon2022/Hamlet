@@ -29,15 +29,19 @@ public sealed class CwRefusalFloorTests
     public CwRefusalFloorTests(ITestOutputHelper output) => _output = output;
 
     /// <remarks>
-    /// Proves the floor exists at the number Tim ruled. **Fifteen was rejected**
-    /// because it lets minus two decibels through, which is the case the ruling
-    /// names; **ten was rejected** as leaving open the whole band the ruling
-    /// exists to silence.
+    /// <para>**FOURTEEN, AND THIS TEST SAID SEVENTEEN UNTIL IT WAS MEASURED**
+    /// (HM-DEC-120, superseding HM-DEC-117's interim). Seventeen was arithmetic
+    /// from the offset between broadband and in-filter measurement and was four
+    /// decibels out; the sweep found that seventeen, fifteen, fourteen and
+    /// thirteen all invent nothing at any level while twelve begins inventing at
+    /// minus two, which is HM-DEC-097's named case.</para>
+    /// <para>Fourteen and thirteen are identical on every measured number, so
+    /// the further of the two from the cliff is taken.</para>
     /// </remarks>
     [Fact]
-    public void TheFloorIsSeventeenAndItIsNamedRatherThanScattered()
+    public void TheFloorIsFourteenAndItIsNamedRatherThanScattered()
     {
-        Assert.Equal(17.0, CwConfidenceModel.RefusalFloorDb);
+        Assert.Equal(14.0, CwConfidenceModel.RefusalFloorDb);
 
         // And it sits above the point where a character stops being worth
         // showing at full strength, or the floor would never bite first.
