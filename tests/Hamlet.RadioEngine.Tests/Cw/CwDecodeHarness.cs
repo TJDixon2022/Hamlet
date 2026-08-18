@@ -51,17 +51,21 @@ internal static class CwDecodeHarness
     /// <param name="expectedToneHz">Where to tell the decoder to start looking.</param>
     /// <returns>The result.</returns>
     public static CwDecodeResult Decode(
-        CwSignalRequest request, double expectedToneHz = CwSignal.DefaultToneHz)
-        => Decode(CwSignal.Generate(request), expectedToneHz);
+        CwSignalRequest request,
+        double expectedToneHz = CwSignal.DefaultToneHz,
+        double? refusalFloorDb = null)
+        => Decode(CwSignal.Generate(request), expectedToneHz, refusalFloorDb);
 
     /// <summary>Decode audio.</summary>
     /// <param name="audio">The audio.</param>
     /// <param name="expectedToneHz">Where to tell the decoder to start looking.</param>
     /// <returns>The result.</returns>
     public static CwDecodeResult Decode(
-        MonoAudio audio, double expectedToneHz = CwSignal.DefaultToneHz)
+        MonoAudio audio,
+        double expectedToneHz = CwSignal.DefaultToneHz,
+        double? refusalFloorDb = null)
     {
-        var decoder = new CwDecoder(audio.SampleRate, expectedToneHz);
+        var decoder = new CwDecoder(audio.SampleRate, expectedToneHz, refusalFloorDb);
         var characters = new List<CwCharacter>();
         decoder.CharacterDecoded += characters.Add;
 

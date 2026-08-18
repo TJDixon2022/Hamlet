@@ -166,8 +166,15 @@ public sealed class CwDecoder
     /// The operator's CW pitch, as a place to start looking. The tracker hunts
     /// either side of it, since nobody tunes exactly.
     /// </param>
-    public CwDecoder(int sampleRate, double expectedToneHz = 600)
+    /// <param name="refusalFloorDb">
+    /// The margin below which nothing is emitted, or null for the ruled floor
+    /// (HM-DEC-097, HM-DEC-117). A parameter so the number can be measured
+    /// rather than translated a second time.
+    /// </param>
+    public CwDecoder(
+        int sampleRate, double expectedToneHz = 600, double? refusalFloorDb = null)
     {
+        RefusalFloorDb = refusalFloorDb ?? CwConfidenceModel.RefusalFloorDb;
         SampleRate = Math.Max(1_000, sampleRate);
         _tracker = new CwToneTracker(SampleRate, expectedToneHz);
         _speed = new CwSpeedEstimator(SampleRate);
@@ -179,6 +186,19 @@ public sealed class CwDecoder
 
     /// <summary>Samples per second.</summary>
     public int SampleRate { get; }
+
+    /// <summary>
+    /// The margin below which this decoder emits nothing (HM-DEC-097).
+    /// </summary>
+    /// <remarks>
+    /// **A PARAMETER SO THE NUMBER CAN BE MEASURED RATHER THAN GUESSED AGAIN**
+    /// (HM-DEC-117). Seventeen was reasoned from the offset between broadband
+    /// and in-filter measurement and was four decibels out, and the way to
+    /// settle where it belongs is to sweep it rather than to translate it a
+    /// second time. Defaults to the ruled value, so nothing outside a
+    /// measurement ever sees anything else.
+    /// </remarks>
+    public double RefusalFloorDb { get; }
 
     /// <summary>Raised for every character, space and placeholder, in order.</summary>
     /// <remarks>
@@ -832,7 +852,7 @@ public sealed class CwDecoder
         //
         // Seventeen is that ruling's nought decibels in the units this decoder
         // can actually measure, which is inside its own tone filter.
-        if (snr < CwConfidenceModel.RefusalFloorDb)
+        if (snr < RefusalFloorDb)
         {
             return;
         }

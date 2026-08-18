@@ -72,8 +72,11 @@ internal static class CwSensitivity
 
     /// <summary>Run one level, averaged over the seeds.</summary>
     /// <param name="snrDb">The ratio to generate at.</param>
+    /// <param name="refusalFloorDb">
+    /// The floor to run against, or null for the ruled one (HM-DEC-117).
+    /// </param>
     /// <returns>What the decoder managed.</returns>
-    public static SensitivityPoint At(double snrDb)
+    public static SensitivityPoint At(double snrDb, double? refusalFloorDb = null)
     {
         var correct = 0.0;
         var wrong = 0.0;
@@ -89,7 +92,8 @@ internal static class CwSensitivity
                     ToneHz: ToneHz,
                     Amplitude: Amplitude,
                     NoiseAmplitude: NoiseFor(snrDb),
-                    Seed: seed * 7919));
+                    Seed: seed * 7919),
+                refusalFloorDb: refusalFloorDb);
 
             var matches = CwAlignment.Align(result.Characters, Message);
 
@@ -113,13 +117,16 @@ internal static class CwSensitivity
     /// <param name="stepDb">How big a step.</param>
     /// <returns>Every level, in order.</returns>
     public static IReadOnlyList<SensitivityPoint> Sweep(
-        double fromDb = 18, double toDb = -12, double stepDb = 1)
+        double fromDb = 18,
+        double toDb = -12,
+        double stepDb = 1,
+        double? refusalFloorDb = null)
     {
         var points = new List<SensitivityPoint>();
 
         for (var snr = fromDb; snr >= toDb - 1e-9; snr -= stepDb)
         {
-            points.Add(At(snr));
+            points.Add(At(snr, refusalFloorDb));
         }
 
         return points;
