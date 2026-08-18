@@ -100,6 +100,23 @@ public sealed class CwSpeedEstimator
     public const int FastestPlausibleWpm = 60;
 
     private readonly double[] _marks = new double[WindowSize];
+
+    /// <summary>Every mark this sender has produced, newest overwriting oldest.</summary>
+    /// <remarks>
+    /// **PER SIGNAL, NOT PER WINDOW** (HM-DEC-112 part 3). The twenty-mark
+    /// window is right for following a change of speed and too short to fit two
+    /// clusters against: a window holding a run of dits and one dah has nothing
+    /// to separate. Two hundred and fifty-six is about a minute of sending, long
+    /// enough to hold both in quantity and short enough that a different fist is
+    /// forgotten within an over. It goes with the sender, like the gap classes.
+    /// </remarks>
+    private readonly double[] _markHistory = new double[256];
+
+    private readonly double[] _markScratch = new double[256];
+
+    private int _markHistoryWrite;
+    private int _marksRemembered;
+    private double _markBoundary;
     private readonly double[] _gaps = new double[WindowSize];
 
     private int _markCount;
@@ -192,6 +209,12 @@ public sealed class CwSpeedEstimator
     {
         _markCount = 0;
         _markWrite = 0;
+
+        // The clusters belong to a sender and go with the sender, exactly as the
+        // gap classes do: two fists averaged together describe neither.
+        _marksRemembered = 0;
+        _markHistoryWrite = 0;
+        _markBoundary = 0;
         _gapCount = 0;
         _gapWrite = 0;
         _gapCutsKnown = false;
@@ -202,6 +225,10 @@ public sealed class CwSpeedEstimator
     /// <param name="samples">How long the key was down.</param>
     public void AddMark(double samples)
     {
+        _markHistory[_markHistoryWrite] = samples;
+        _markHistoryWrite = (_markHistoryWrite + 1) % _markHistory.Length;
+        _marksRemembered = Math.Min(_marksRemembered + 1, _markHistory.Length);
+
         _marks[_markWrite] = samples;
         _markWrite = (_markWrite + 1) % WindowSize;
         _markCount = Math.Min(_markCount + 1, WindowSize);
@@ -229,7 +256,25 @@ public sealed class CwSpeedEstimator
     /// <param name="samples">How long the key was down.</param>
     /// <returns>Dit or dah.</returns>
     public CwElement ClassifyMark(double samples)
-        => samples < 2 * DitSamples ? CwElement.Dit : CwElement.Dah;
+        => samples < MarkBoundary ? CwElement.Dit : CwElement.Dah;
+
+    /// <summary>
+    /// Where a mark stops being a dit, in samples (HM-DEC-112 part 3).
+    /// </summary>
+    /// <remarks>
+    /// <para>**FITTED BETWEEN THE TWO MEASURED CLUSTERS, NOT TAKEN AS A MULTIPLE
+    /// OF ONE OF THEM.** Splitting at two dits is the same fault HM-DEC-115
+    /// found in the gaps one level up: a boundary read off a multiple instead of
+    /// off the data. It matters as soon as the dit itself moves, and taking the
+    /// mark at half amplitude moves it — correcting the mark and the gap while
+    /// leaving this at two dits took the suite from nine failures to
+    /// twenty-three, because the dit moved under a multiple that did not move
+    /// with it.</para>
+    /// <para>Falls back to two dits only while there is no fit to be had, which
+    /// is the acquisition period and the one place a multiple is the honest
+    /// guess: there is nothing else to guess from.</para>
+    /// </remarks>
+    public double MarkBoundary => _markBoundary > 0 ? _markBoundary : 2 * DitSamples;
 
     /// <summary>Which gap a silence of this length is.</summary>
     /// <param name="samples">How long the key was up.</param>
@@ -411,6 +456,8 @@ public sealed class CwSpeedEstimator
         {
             return;
         }
+
+        RecomputeMarkBoundary();
 
         var (markLow, markHigh) = TwoMeans(_marks, _markCount);
         var shortestGap = ShortestGap();
@@ -738,6 +785,103 @@ public sealed class CwSpeedEstimator
     /// Deliberately allocation-free and deterministic: no random seeding, no
     /// sorting, and the same window always gives the same answer (§5).
     /// </remarks>
+    /// <summary>
+    /// Fit the dit and dah clusters and put the boundary between them
+    /// (HM-DEC-112 part 3).
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE SAME SHAPE AS THE GAP FIT, AND FOR THE SAME REASONS.** Log
+    /// space, because a mark twice as long as another is the same distance apart
+    /// whatever the sender's speed. Seeded on percentiles rather than on the
+    /// smallest and largest mark, because seeding on the extremes puts a centre
+    /// on whatever the shortest sliver of noise was and leaves it there — the
+    /// finding that made the gap fit work, and marks want it too. Dits outnumber
+    /// dahs in ordinary English, so a quarter and four fifths land one in each
+    /// cluster.</para>
+    /// <para>**AND IT REFUSES RATHER THAN INVENTING A BOUNDARY.** Two clusters
+    /// less than half as long again apart are one spread of marks being cut in
+    /// half, and a sender who has only sent dits so far has no dah to find. The
+    /// caller falls back to two dits, which is honest while there is nothing
+    /// else to go on (§0.0).</para>
+    /// </remarks>
+    private void RecomputeMarkBoundary()
+    {
+        _markBoundary = 0;
+
+        var usable = 0;
+
+        for (var i = 0; i < _marksRemembered; i++)
+        {
+            if (_markHistory[i] > 0)
+            {
+                _markScratch[usable++] = Math.Log(_markHistory[i]);
+            }
+        }
+
+        if (usable < MinimumMarksForBoundary)
+        {
+            return;
+        }
+
+        Array.Sort(_markScratch, 0, usable);
+
+        var low = _markScratch[usable / 4];
+        var high = _markScratch[Math.Min(usable - 1, usable * 4 / 5)];
+
+        for (var pass = 0; pass < 24; pass++)
+        {
+            double lowSum = 0, highSum = 0;
+            int lowCount = 0, highCount = 0;
+
+            for (var i = 0; i < usable; i++)
+            {
+                if (Math.Abs(_markScratch[i] - low) <= Math.Abs(_markScratch[i] - high))
+                {
+                    lowSum += _markScratch[i];
+                    lowCount++;
+                }
+                else
+                {
+                    highSum += _markScratch[i];
+                    highCount++;
+                }
+            }
+
+            if (lowCount == 0 || highCount == 0)
+            {
+                return;
+            }
+
+            low = lowSum / lowCount;
+            high = highSum / highCount;
+        }
+
+        if (high - low < MarkSeparation)
+        {
+            return;
+        }
+
+        // Halfway between the centres in log space, which on the wire is their
+        // geometric mean: the same place the settled pass already cuts.
+        _markBoundary = Math.Exp((low + high) / 2);
+    }
+
+    /// <summary>How many marks are needed before the clusters can be fitted.</summary>
+    /// <remarks>
+    /// Sixteen. Fewer and a handful of dits with one dah among them will fit two
+    /// clusters that are really one, and the fallback is the better answer until
+    /// there is something to measure.
+    /// </remarks>
+    private const int MinimumMarksForBoundary = 16;
+
+    /// <summary>How far apart the two mark clusters must sit, in log units.</summary>
+    /// <remarks>
+    /// About half as long again, the same separation the gap classes demand. A
+    /// textbook one to three clears it comfortably, and so does every fist this
+    /// project has measured: the tightest was 2.79.
+    /// </remarks>
+    private const double MarkSeparation = 0.405;
+
     private static (double Low, double High) TwoMeans(double[] values, int count)
     {
         var low = double.MaxValue;
