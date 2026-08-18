@@ -4,6 +4,63 @@ Questions with owner and severity. `owner` is who must act next. Format in
 `CLAUDE.md` §3.
 
 ---
+id: HM-OPEN-039
+status: closed
+owner: claude
+raised: 2026-08-18
+severity: slows
+closed: 2026-08-18
+blocks: nothing, but HM-DEC-072 and HM-DEC-134 cannot be shown to work
+refs: HM-DEC-072, HM-DEC-134, CLAUDE.md §0.0.1, src/Hamlet.RadioEngine/Explore/RecentStation.cs
+---
+
+Nothing the recent list does appears in the app's own record, so its rulings
+cannot be checked against a live session.
+
+`favorite_saved` is emitted; its sibling emits nothing. There is no event for an
+entry being added, for a visit folding into an existing entry under the two
+hundred hertz tolerance, for the dwell threshold being met or missed, or for an
+entry falling off the end of ten.
+
+**What that cost today.** Session `9f9d23eb`, app 1.9.0, 2026-08-18. Six visits
+met HM-DEC-072's twenty-second dwell:
+
+| Arrived (UTC) | Frequency | Dwell |
+|---|---|---|
+| 20:30:22 | 7.047.00 | 43.5 s |
+| 20:31:09 | 7.059.60 | 24.8 s |
+| 20:31:34 | 7.030.10 | 35.6 s |
+| 20:32:12 | 7.059.50 | 23.9 s |
+| 20:32:36 | 7.030.10 | 20.2 s |
+| 20:32:56 | 7.059.60 | 218.9 s |
+
+Under HM-DEC-072 those are three places. The operator reported seeing near
+duplicates. **Which of the two happened is not in the record, and the whole of
+this issue is that both readings survive the evidence.** Dwell times are derived
+from `tune_requested` timestamps, which is the arrival of a request and not a
+statement that the entry was written.
+
+Wanted, and each is one line: the entry written, with the frequency and whether
+it was named; the fold, with both frequencies and the gap, since that is the
+one that proves the tolerance; the dwell not met, with how long it fell short,
+because a list that stays empty while somebody sits still looks identical to a
+list that is broken; and the drop off the end of ten.
+
+§0.0.1 is the standard being applied. A ruling whose behavior leaves no trace
+cannot be told apart from its own absence, which is HM-DEC-072 and now
+HM-DEC-134 both resting on a claim nobody can check.
+
+**CLOSED 2026-08-18, and closed by measurement rather than by argument.** All
+four events are in `AppEvents` and emitted from `MainWindowViewModel.NoteDwell`:
+`recent_remembered` with the frequency and whether a station was named,
+`recent_folded` with both frequencies and the gap between them,
+`recent_dwell_short` with how far short the dial fell before it moved on, and
+`recent_dropped` naming the place that fell off the end of ten. `recent_removed`
+joins them for HM-DEC-134's own half. **The six dwells above are the test
+fixture**, and they now produce three entries and three folds in the record
+rather than a silence that reads the same either way.
+
+---
 id: HM-OPEN-001
 status: closed
 owner: tim

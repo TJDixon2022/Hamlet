@@ -1,9 +1,9 @@
-STATE: COMPLETED
-PHASE: —
-BALL: tim
-NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-18T16:31:30-04:00
-NOTE: HAZARD in §13.4; ratings stay in §4; power output uncited and marked HM-OPEN-038
+STATE: EXECUTING
+PHASE: 3 of 6
+BALL: code
+NEXT_PASTE: none
+UPDATED: 2026-08-18T17:15:14-04:00
+NOTE: Phase 3 - HM-DEC-134, the recent list; visits fold onto the entry, removal next
 
 ---
 

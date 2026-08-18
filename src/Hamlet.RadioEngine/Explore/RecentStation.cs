@@ -38,6 +38,10 @@ public enum StationSource
 /// How the station came to be known, or <see cref="StationSource.None"/>
 /// (HM-DEC-073).
 /// </param>
+/// <param name="Visits">
+/// How many times the operator has settled here, counting from one
+/// (HM-DEC-134).
+/// </param>
 public sealed record RecentStation(
     long FrequencyHz,
     string Station,
@@ -45,7 +49,8 @@ public sealed record RecentStation(
     string BandName,
     string Neighborhood,
     DateTime VisitedUtc,
-    StationSource Source = StationSource.None)
+    StationSource Source = StationSource.None,
+    int Visits = 1)
 {
     /// <summary>The frequency as the app writes it, e.g. "7.030".</summary>
     public string FrequencyLabel
@@ -115,6 +120,27 @@ public sealed record RecentStation(
                     : FrequencyLabel;
         }
     }
+
+    /// <summary>True once the operator has been back (HM-DEC-134).</summary>
+    public bool IsReturn => Visits > 1;
+
+    /// <summary>
+    /// That he keeps coming back here, said rather than counted (§0.7).
+    /// </summary>
+    /// <remarks>
+    /// <para>**A COUNTER IS NOT A SENTENCE.** "3" beside a frequency is a number
+    /// the operator has to interpret; "you keep coming back to this one" is the
+    /// thing the number was standing for. HM-DEC-134 rules the return is a fact
+    /// about the place, and a fact about a place is worth saying in words.</para>
+    /// <para>Empty until there has been a return, because "you have been here
+    /// once" is what every entry in the list already means.</para>
+    /// </remarks>
+    public string ReturnNote => Visits switch
+    {
+        <= 1 => "",
+        2 => "you have been back here",
+        _ => "you keep coming back to this one",
+    };
 
     private static string Lowercase(string name)
         => name.Length > 1 && char.IsUpper(name[0]) && !char.IsUpper(name[1])
@@ -255,12 +281,52 @@ public static class RecentStations
         ArgumentNullException.ThrowIfNull(existing);
         ArgumentNullException.ThrowIfNull(arriving);
 
-        var kept = new List<RecentStation> { arriving };
+        var was = existing.ToList();
+
+        // **A RETURN IS A FACT ABOUT THE ENTRY, NOT A SECOND ENTRY**
+        // (HM-DEC-134). The place already in the list carries the visit count
+        // forward, so coming back says this is somewhere the operator keeps
+        // coming back to. Replacing it silently throws that away and adding a
+        // second one is the near-duplicate list HM-DEC-072 exists to prevent.
+        //
+        // Everything else about the entry is the arriving one's, unchanged from
+        // 072: the newest visit's identification wins including when it is empty,
+        // because keeping a callsign nothing checked would assert a presence.
+        var here = was.FirstOrDefault(e => IsSamePlace(e.FrequencyHz, arriving.FrequencyHz));
+
+        var kept = new List<RecentStation>
+        {
+            here is null ? arriving : arriving with { Visits = here.Visits + 1 },
+        };
 
         kept.AddRange(
-            existing.Where(e => !IsSamePlace(e.FrequencyHz, arriving.FrequencyHz)));
+            was.Where(e => !IsSamePlace(e.FrequencyHz, arriving.FrequencyHz)));
 
         return kept.Count > Maximum ? kept.GetRange(0, Maximum) : kept;
+    }
+
+    /// <summary>
+    /// Take one entry out of the list by hand (HM-DEC-134).
+    /// </summary>
+    /// <param name="existing">The list.</param>
+    /// <param name="frequencyHz">Which entry, by where it is.</param>
+    /// <returns>The list without it.</returns>
+    /// <remarks>
+    /// <para>**REMOVAL IS NOT A CORRECTION TO THE RECORD.** A removed entry is
+    /// gone, and a place visited again afterward comes back as a new entry with
+    /// no memory of having been dismissed — the visit count starts again at one.
+    /// Anything cleverer would be Hamlet holding an opinion about somewhere the
+    /// operator has told it to forget.</para>
+    /// <para>Matched exactly rather than by the tolerance. The operator is
+    /// pointing at a row he can see, and a remove that also took a neighbour two
+    /// hundred hertz away would be doing something he did not ask for.</para>
+    /// </remarks>
+    public static IReadOnlyList<RecentStation> Remove(
+        IEnumerable<RecentStation> existing, long frequencyHz)
+    {
+        ArgumentNullException.ThrowIfNull(existing);
+
+        return existing.Where(e => e.FrequencyHz != frequencyHz).ToList();
     }
 
     /// <summary>
@@ -316,16 +382,33 @@ public sealed class DwellTracker
     /// surfaces can announce the same frequency in one gesture, and each one
     /// resetting the count would mean the dial never settles.
     /// </remarks>
-    public void Moved(long frequencyHz, DateTime nowUtc)
+    /// <returns>
+    /// The place just left and how far short of the dwell it fell, or null where
+    /// nothing was abandoned (HM-OPEN-039).
+    /// </returns>
+    public DwellLeft? Moved(long frequencyHz, DateTime nowUtc)
     {
         if (frequencyHz == _frequencyHz && _arrivedUtc != DateTime.MinValue)
         {
-            return;
+            return null;
         }
+
+        // **A LIST THAT STAYS EMPTY LOOKS THE SAME WHETHER NOBODY SAT STILL OR
+        // THE DWELL NEVER FIRED** (§0.0.1), so the near miss is handed back to be
+        // recorded. Null where there was nothing to leave, and null where the
+        // place was already remembered, because a place that made it into the
+        // list was not abandoned.
+        var left = _arrivedUtc != DateTime.MinValue && !_reported
+            ? new DwellLeft(
+                _frequencyHz,
+                (RecentStations.Dwell - (nowUtc - _arrivedUtc)).TotalSeconds)
+            : null;
 
         _frequencyHz = frequencyHz;
         _arrivedUtc = nowUtc;
         _reported = false;
+
+        return left;
     }
 
     /// <summary>
@@ -349,3 +432,11 @@ public sealed class DwellTracker
         return true;
     }
 }
+
+/// <summary>Somewhere the dial left before it had settled (HM-OPEN-039).</summary>
+/// <param name="FrequencyHz">Where it was.</param>
+/// <param name="ShortBySeconds">
+/// How much longer it would have had to stay. Never negative: a place that met
+/// the dwell is not abandoned, so nothing here reports one.
+/// </param>
+public sealed record DwellLeft(long FrequencyHz, double ShortBySeconds);

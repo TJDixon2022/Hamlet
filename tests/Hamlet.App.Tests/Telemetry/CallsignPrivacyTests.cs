@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using Hamlet.App.Settings;
 using Hamlet.App.Telemetry;
 using Hamlet.App.ViewModels;
@@ -16,7 +16,7 @@ public sealed class CallsignPrivacyTests : IDisposable
     /// <summary>Every public event-writing method on <see cref="AppEvents"/>.
     /// If this number moves, a new event was added and the walk below has to
     /// grow with it — that is the point.</summary>
-    private const int ExpectedEventMethodCount = 52;
+    private const int ExpectedEventMethodCount = 61;
 
     private const string Callsign = "KC3QIS";
     // "Timothy", not "Tim": a three-letter needle matches "timer", which is a
@@ -306,6 +306,19 @@ public sealed class CallsignPrivacyTests : IDisposable
         AppEvents.FavoriteSaved(telemetry, "40 m");
         AppEvents.FavoriteRemoved(telemetry, "40 m");
         AppEvents.FavoriteTuned(telemetry, "40 m");
+
+        // The calling cycle (HM-DEC-098) and the recent list (HM-OPEN-039,
+        // HM-DEC-134). The message goes in by its length and never its text,
+        // because it carries the operator's own callsign every time.
+        AppEvents.AutoCallArmed(telemetry, 10, 30.0, messageLength: 24);
+        AppEvents.AutoCallStarted(telemetry, 10);
+        AppEvents.AutoCallRound(telemetry, 1, 7_030_000);
+        AppEvents.AutoCallStopped(telemetry, "operator_stopped", 3, answered: false);
+        AppEvents.RecentRemembered(telemetry, 7_030_000, named: true);
+        AppEvents.RecentFolded(telemetry, 7_059_600, 7_059_500, 100, 2);
+        AppEvents.RecentDwellShort(telemetry, 7_047_000, 14.5);
+        AppEvents.RecentDropped(telemetry, 7_047_000);
+        AppEvents.RecentRemoved(telemetry, all: false, removed: 1);
     }
 
     private string[] ReadAllLines()

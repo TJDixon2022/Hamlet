@@ -4,6 +4,44 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-134
+date: 2026-08-18
+refs: src/Hamlet.RadioEngine/Explore/RecentStation.cs, src/Hamlet.App/ViewModels/FavoritesViewModel.cs, HM-DEC-072, HM-DEC-060, HM-OPEN-039
+---
+
+**A return to a place already in the recent list is noted on the entry that is
+there, and the operator can remove any entry by hand.** HM-DEC-072's two
+hundred hertz stands unamended.
+
+THE TOLERANCE WAS NOT THE PROBLEM. Two visits a hundred hertz apart looked like
+two entries, and a hundred hertz is well inside the two hundred HM-DEC-072
+already rules is one place. Widening the figure was considered and rejected:
+five hundred would have folded the same pair, and it would also have broken the
+link to `SpotIdentity.FrequencyBucketHz` that 072 built deliberately so two
+numbers meaning "near enough" could not drift apart. A number changed to hide a
+behavior nobody has measured is the wrong repair, and the measurement is
+HM-OPEN-039.
+
+A SECOND VISIT IS A FACT ABOUT THE ENTRY, NOT A SECOND ENTRY. 072 already has
+the newest visit's identification winning, including when it is empty, because
+keeping a callsign nothing checked would assert a presence. The return itself is
+the same shape: it belongs on the place, where it says this is somewhere the
+operator keeps coming back to. Silently replacing the entry throws that away,
+and adding a second one is the near-duplicate list 072 exists to prevent.
+
+AND IT IS REMOVABLE WHATEVER HAMLET THINKS. Ten places, kept automatically,
+chosen by a dwell threshold nobody set and nobody can see. That is a list the
+operator did not curate, so the one thing he must be able to do is take
+something out of it, per entry and for the whole list. Favorites already have
+this through Manage favorites (HM-DEC-060); recent was built as their sibling
+and did not inherit it.
+
+REMOVAL IS NOT A CORRECTION TO THE RECORD. A removed entry is gone, and a place
+visited again afterward comes back as a new entry with no memory of having been
+dismissed. Anything cleverer would be Hamlet holding an opinion about somewhere
+the operator has told it to forget.
+
+---
 id: HM-DEC-095
 date: 2026-08-17
 refs: src/Hamlet.RadioEngine/Cw/CwToneSurvey.cs, src/Hamlet.RadioEngine/Cw/CwTransmitGuard.cs, src/Hamlet.RadioEngine/Cw/CwToneTracker.cs, src/Hamlet.RadioEngine/Cw/CwTiming.cs, tests/Hamlet.RadioEngine.Tests/Cw/CwToneSurveyTests.cs, HM-OPEN-016, HM-DEC-090, HM-DEC-091

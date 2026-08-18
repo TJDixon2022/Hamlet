@@ -139,6 +139,134 @@ public static class AppEvents
         => telemetry?.Write(TelemetryCategory.Tuning, "favorite_saved",
             new Dictionary<string, object?> { ["band"] = bandName });
 
+    /// <summary>The calling cycle was armed (HM-DEC-098, §0.0.1).</summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="rounds">How many rounds it was armed for.</param>
+    /// <param name="intervalSeconds">How long each round is.</param>
+    /// <param name="messageLength">
+    /// How many characters the message is. **The length and never the text**: the
+    /// message carries the operator's callsign and HM-DEC-018 keeps that out of
+    /// the record without exception.
+    /// </param>
+    public static void AutoCallArmed(
+        ITelemetry? telemetry, int rounds, double intervalSeconds, int messageLength)
+        => telemetry?.Write(TelemetryCategory.Rig, "auto_call_armed",
+            new Dictionary<string, object?>
+            {
+                ["rounds"] = rounds,
+                ["intervalSeconds"] = intervalSeconds,
+                ["messageLength"] = messageLength,
+            });
+
+    /// <summary>The calling cycle started transmitting.</summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="rounds">How many rounds it will run at most.</param>
+    public static void AutoCallStarted(ITelemetry? telemetry, int rounds)
+        => telemetry?.Write(TelemetryCategory.Rig, "auto_call_started",
+            new Dictionary<string, object?> { ["rounds"] = rounds });
+
+    /// <summary>One round of the cycle went out.</summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="round">Which round, counting from one.</param>
+    /// <param name="hz">Where the radio was.</param>
+    /// <remarks>
+    /// **THIS IS WHAT TELLS A CYCLE ROUND FROM THREE MANUAL PRESSES.** Before it
+    /// existed the record carried the same three send events either way, so
+    /// nobody could say from a log whether the cycle had run at all (§0.0.1).
+    /// </remarks>
+    public static void AutoCallRound(ITelemetry? telemetry, int round, long hz)
+        => telemetry?.Write(TelemetryCategory.Rig, "auto_call_round",
+            new Dictionary<string, object?> { ["round"] = round, ["hz"] = hz });
+
+    /// <summary>The cycle stopped, and why.</summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="cause">The stop, as a stable token.</param>
+    /// <param name="rounds">How many rounds went out before it stopped.</param>
+    /// <param name="answered">
+    /// True only where what was heard was shaped like somebody answering.
+    /// </param>
+    /// <remarks>
+    /// **THE REASON IS THE POINT OF THE EVENT** (HM-DEC-077). Every interlock in
+    /// `BENCH_CARD.md` has a sentence it is supposed to give, and this carries the
+    /// same one as a stable token, so an evening at the dummy load produces
+    /// evidence rather than a notebook. A cause is never a display string.
+    /// </remarks>
+    public static void AutoCallStopped(
+        ITelemetry? telemetry, string cause, int rounds, bool answered)
+        => telemetry?.Write(TelemetryCategory.Rig, "auto_call_stopped",
+            new Dictionary<string, object?>
+            {
+                ["cause"] = cause,
+                ["rounds"] = rounds,
+                ["answered"] = answered,
+            });
+
+    /// <summary>A place was written into the recent list (HM-OPEN-039).</summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="hz">Where it was.</param>
+    /// <param name="named">
+    /// Whether a station was identified there. **Whether and never who**
+    /// (HM-DEC-073, HM-DEC-018).
+    /// </param>
+    public static void RecentRemembered(ITelemetry? telemetry, long hz, bool named)
+        => telemetry?.Write(TelemetryCategory.Tuning, "recent_remembered",
+            new Dictionary<string, object?> { ["hz"] = hz, ["named"] = named });
+
+    /// <summary>A return folded into an entry already in the list.</summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="hz">Where the operator arrived.</param>
+    /// <param name="existingHz">The entry it folded into.</param>
+    /// <param name="gapHz">How far apart they were.</param>
+    /// <param name="visits">How many visits that entry now carries.</param>
+    /// <remarks>
+    /// **THE ONE THAT PROVES THE TOLERANCE.** HM-DEC-072 rules two hundred hertz
+    /// is one place and HM-DEC-134 rests on it, and neither could be checked
+    /// against a live session while the fold left no trace: a list with no
+    /// duplicates and a list that never folded anything look identical.
+    /// </remarks>
+    public static void RecentFolded(
+        ITelemetry? telemetry, long hz, long existingHz, long gapHz, int visits)
+        => telemetry?.Write(TelemetryCategory.Tuning, "recent_folded",
+            new Dictionary<string, object?>
+            {
+                ["hz"] = hz,
+                ["existingHz"] = existingHz,
+                ["gapHz"] = gapHz,
+                ["visits"] = visits,
+            });
+
+    /// <summary>The dial moved on before the dwell was met.</summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="hz">Where it was.</param>
+    /// <param name="shortBySeconds">How far short of the dwell it fell.</param>
+    /// <remarks>
+    /// **A LIST THAT STAYS EMPTY WHILE SOMEBODY SITS STILL LOOKS IDENTICAL TO A
+    /// BROKEN ONE**, which is why the near miss is recorded and not only the hit.
+    /// </remarks>
+    public static void RecentDwellShort(
+        ITelemetry? telemetry, long hz, double shortBySeconds)
+        => telemetry?.Write(TelemetryCategory.Tuning, "recent_dwell_short",
+            new Dictionary<string, object?>
+            {
+                ["hz"] = hz,
+                ["shortBySeconds"] = shortBySeconds,
+            });
+
+    /// <summary>An entry fell off the end of the list.</summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="hz">Where it was.</param>
+    public static void RecentDropped(ITelemetry? telemetry, long hz)
+        => telemetry?.Write(TelemetryCategory.Tuning, "recent_dropped",
+            new Dictionary<string, object?> { ["hz"] = hz });
+
+    /// <summary>The operator removed a recent entry, or all of them (HM-DEC-134).</summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="all">True for a clear, false for one entry.</param>
+    /// <param name="removed">How many went.</param>
+    public static void RecentRemoved(ITelemetry? telemetry, bool all, int removed)
+        => telemetry?.Write(TelemetryCategory.Tuning, "recent_removed",
+            new Dictionary<string, object?> { ["all"] = all, ["removed"] = removed });
+
     /// <summary>A favorite was removed.</summary>
     /// <param name="telemetry">Sink, or null.</param>
     /// <param name="bandName">Which band it was on.</param>

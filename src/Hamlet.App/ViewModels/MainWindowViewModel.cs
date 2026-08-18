@@ -1501,7 +1501,11 @@ public partial class MainWindowViewModel : ObservableObject
 
             Recent.Add(new RecentStation(
                 saved.FrequencyHz, saved.Station, saved.Mode, saved.BandName,
-                saved.Neighborhood, saved.VisitedUtc, source));
+                saved.Neighborhood, saved.VisitedUtc, source,
+                // A profile written before HM-DEC-134 has no count and the
+                // property defaults to one, which is what an entry in this list
+                // has always meant. Nothing is migrated because nothing is lost.
+                Math.Max(1, saved.Visits)));
         }
 
         ReceiveHelp = new ReceiveHelpViewModel(
@@ -3997,7 +4001,13 @@ public partial class MainWindowViewModel : ObservableObject
         // remembered. A move to where the tracker already is costs nothing, so
         // asking every tick is both cheap and the only version that cannot be
         // defeated by a path that sets the frequency quietly.
-        _dwell.Moved(FrequencyHz, nowUtc);
+        var left = _dwell.Moved(FrequencyHz, nowUtc);
+
+        if (left is not null)
+        {
+            AppEvents.RecentDwellShort(
+                _telemetry, left.FrequencyHz, left.ShortBySeconds);
+        }
 
         if (!_dwell.Settled(nowUtc))
         {
@@ -4023,12 +4033,44 @@ public partial class MainWindowViewModel : ObservableObject
         var visit = RecentStations.From(
             FrequencyHz, station, RigModeText, here, nowUtc, source);
 
+        // Read before the list is rebuilt, because afterwards there is no way
+        // to tell a fold from a fresh entry: both leave one row (HM-OPEN-039).
+        var alreadyHere = Recent.FirstOrDefault(
+            e => RecentStations.IsSamePlace(e.FrequencyHz, visit.FrequencyHz));
+
+        var wasThere = Recent.Select(e => e.FrequencyHz).ToList();
+
         var kept = RecentStations.Remember(Recent, visit);
 
         Recent.Clear();
         foreach (var entry in kept)
         {
             Recent.Add(entry);
+        }
+
+        if (alreadyHere is not null)
+        {
+            AppEvents.RecentFolded(
+                _telemetry,
+                visit.FrequencyHz,
+                alreadyHere.FrequencyHz,
+                Math.Abs(visit.FrequencyHz - alreadyHere.FrequencyHz),
+                alreadyHere.Visits + 1);
+        }
+        else
+        {
+            AppEvents.RecentRemembered(
+                _telemetry, visit.FrequencyHz, visit.IsIdentified);
+        }
+
+        // The one that fell off the end, where one did. Named by where it was
+        // rather than counted, so the record says which place was lost.
+        foreach (var gone in wasThere.Where(hz => kept.All(k => k.FrequencyHz != hz)))
+        {
+            if (alreadyHere is null || gone != alreadyHere.FrequencyHz)
+            {
+                AppEvents.RecentDropped(_telemetry, gone);
+            }
         }
 
         PersistRecent();
@@ -4047,11 +4089,62 @@ public partial class MainWindowViewModel : ObservableObject
                 Neighborhood = r.Neighborhood,
                 VisitedUtc = r.VisitedUtc,
                 StationSource = r.Source.ToString(),
+                Visits = r.Visits,
             })
             .ToList();
 
         SettingsStore.Save(_settings);
         RebuildMenus();
+    }
+
+    /// <summary>Take one place out of the recent list (HM-DEC-134).</summary>
+    /// <param name="entry">The entry, or null.</param>
+    /// <remarks>
+    /// **THE LIST IS A RECORD OF WHERE HE WAS, AND HE IS ALLOWED TO SAY SOME OF
+    /// IT WAS NOT WORTH KEEPING.** Nothing here asks him to confirm: a removed
+    /// entry costs a visit to get back and the dwell that produced it was
+    /// twenty seconds, so a dialog would be guarding something cheaper than the
+    /// dialog.
+    /// </remarks>
+    [RelayCommand]
+    private void ForgetRecent(RecentStation? entry)
+    {
+        if (entry is null)
+        {
+            return;
+        }
+
+        var kept = RecentStations.Remove(Recent, entry.FrequencyHz);
+
+        if (kept.Count == Recent.Count)
+        {
+            return;
+        }
+
+        AppEvents.RecentRemoved(_telemetry, all: false, removed: 1);
+
+        Recent.Clear();
+        foreach (var row in kept)
+        {
+            Recent.Add(row);
+        }
+
+        PersistRecent();
+    }
+
+    /// <summary>Empty the recent list (HM-DEC-134).</summary>
+    [RelayCommand]
+    private void ForgetAllRecent()
+    {
+        if (Recent.Count == 0)
+        {
+            return;
+        }
+
+        AppEvents.RecentRemoved(_telemetry, all: true, removed: Recent.Count);
+
+        Recent.Clear();
+        PersistRecent();
     }
 
     /// <summary>Tune back to somewhere the operator has been.</summary>

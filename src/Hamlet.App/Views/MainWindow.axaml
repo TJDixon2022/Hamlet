@@ -1949,6 +1949,9 @@
                             </Style>
                         </MenuItem.Styles>
                     </MenuItem>
+                    <MenuItem Header="Forget where I have been"
+                              Command="{Binding ForgetAllRecentCommand}"
+                              IsEnabled="{Binding HasRecent}" />
                     <MenuItem Header="Manage favorites…"
                               Command="{Binding ManageFavoritesCommand}" />
                     <Separator />
@@ -2316,14 +2319,37 @@
                          authority. -->
                     <ComboBox.ItemTemplate>
                         <DataTemplate x:DataType="explore:RecentStation">
-                            <StackPanel Spacing="0">
-                                <TextBlock Text="{Binding Label}"
-                                           TextWrapping="Wrap" />
-                                <TextBlock Text="{Binding Provenance}"
-                                           FontSize="10" TextWrapping="Wrap"
-                                           IsVisible="{Binding IsIdentified}"
-                                           Foreground="{StaticResource HmTextMutedBrush}" />
-                            </StackPanel>
+                            <Grid ColumnDefinitions="*,Auto">
+                                <StackPanel Spacing="0">
+                                    <TextBlock Text="{Binding Label}"
+                                               TextWrapping="Wrap" />
+                                    <TextBlock Text="{Binding Provenance}"
+                                               FontSize="10" TextWrapping="Wrap"
+                                               IsVisible="{Binding IsIdentified}"
+                                               Foreground="{StaticResource HmTextMutedBrush}" />
+                                    <!-- THE RETURN IS SAID, NOT COUNTED
+                                         (HM-DEC-134, §0.7). A "3" beside a
+                                         frequency is a number somebody has to
+                                         interpret; the sentence is the thing
+                                         the number was standing for. -->
+                                    <TextBlock Text="{Binding ReturnNote}"
+                                               FontSize="10" TextWrapping="Wrap"
+                                               IsVisible="{Binding IsReturn}"
+                                               Foreground="{StaticResource HmTextMutedBrush}" />
+                                </StackPanel>
+
+                                <!-- HIS LIST, SO HE CAN TAKE THINGS OUT OF IT
+                                     (HM-DEC-134). A button inside the row
+                                     handles its own press, so this removes the
+                                     place rather than tuning to it. -->
+                                <Button Grid.Column="1" Content="✕"
+                                        FontSize="10" Padding="4,0" MinHeight="0"
+                                        VerticalAlignment="Center"
+                                        Background="Transparent"
+                                        ToolTip.Tip="Forget this place"
+                                        Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).ForgetRecentCommand}"
+                                        CommandParameter="{Binding}" />
+                            </Grid>
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>

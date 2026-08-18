@@ -563,6 +563,18 @@ public sealed class SavedRecentStation
     public DateTime VisitedUtc { get; set; }
 
     /// <summary>
+    /// How many times the operator has settled here (HM-DEC-134).
+    /// </summary>
+    /// <remarks>
+    /// **ABSENT IN EVERY PROFILE WRITTEN BEFORE HM-DEC-134**, and absent reads as
+    /// one rather than as zero, because an entry is in this list precisely
+    /// because somebody was there (§6.1). Nothing is migrated and nothing is
+    /// lost: an existing list keeps every place in it and starts counting
+    /// returns from the next one.
+    /// </remarks>
+    public int Visits { get; set; } = 1;
+
+    /// <summary>
     /// How the station came to be known (HM-DEC-073), as its name.
     /// </summary>
     /// <remarks>
