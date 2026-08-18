@@ -10,305 +10,322 @@ fixture, a generated signal, or one of the two off-air recordings decoded here.
 **Nothing was recorded under §12.1.** Two questions came up and both are in
 section 4.
 
-**All five phases completed. Nothing was dropped.** No transmit work of any kind,
-and nothing was built toward auto-CQ or toward HM-DEC-123's work order.
+**All five phases completed. Nothing was dropped.** No transmit work of any kind.
 
-## Phase 1, two analysis windows during acquisition (HM-DEC-122) — built, measured, **not live**
+## Phase 1 — a refining retune keeps the settled window (HM-DEC-123) — **built**
 
-Built exactly as ruled and it does not survive its own measurement, so it is not
-in the tree. The full trace is HM-OPEN-030; the short version is three
-measurements.
+**The criterion is measured and it is the survey's own grid.** Every tracker move
+in the corpus was traced with its from-and-to pitch:
 
-**The candidates name flukes for several seconds.** On a clean signal at 640 Hz,
-eighteen decibels over the noise, the twenty millisecond candidate's answer across
-the first ten survey reads runs 325, 325, 325, 550, 550, 725, 725, 725, 650, 650
-hertz. This is the fault the tracker's own two-agreeing-surveys rule exists to
-prevent (HM-DEC-095), and the candidates were not subject to it.
-
-**Settling on the first answer meets the ruling's acceptance and breaks §0.0.**
-Tuned onto mid-transmission with no run-up, 25, 28, 30 and 35 words a minute go
-from 0.67, 0.63, 0.70, 0.63 of the message to 0.79, 0.79, 0.95, 0.89 — and
-`NothingIsEmittedAnywhereBelowTheFloor` fails, with 2.8% of what comes back below
-the refusal floor never having been sent, where HM-DEC-120 measured zero at every
-level. `ASignalAtTheWrongPitchIsStillFound(875)` fails outright. **So a short
-window taken early does not only cost sensitivity**, which is the premise the
-ruling's tie-break rests on.
-
-**Requiring the clock to belong to the confirmed station fixes both regressions
-and leaves nothing behind.** With that gate, every cell of the matrix — nine
-speeds, five ratios, with and without a run-up — is identical to the unmodified
-decoder. The window cap on its own is likewise a no-op: it never binds.
-
-**And where the gate does fire in time, it costs the only real recording seven
-characters.** On the ARRL bulletin the analysis window settles at twenty
-milliseconds and the settled pass falls from `JJ AOT NET ■I ECH STAAION HAND■
-AHIS MESAGE P` to `T■E ECH STAAION HAND■ AHIS MESAGE P`, **36 of 47 to 29 of 47**.
-Isolated by disabling the settle alone, which returns it character for character.
-**Only the short candidate yields a clock there**, so the tie-break is not even in
-play: the fifty millisecond window smears a 57 ms dit badly enough to fail the
-cluster test while being the better window to read through, and the forty
-millisecond window the ruling removes from consideration is better than either.
-
-What shipped from this phase is the measurement. `CwAcquisitionWindowTests` pins
-the bare fast end, the same fist with a run-up, and the slow end.
-
-## Phase 2, the fixture generator's caret (HM-DEC-124) — fixed
-
-The caret had a branch of its own whose first act was to add a gap edge, assuming
-a mark was in progress to separate from. At the head of a word there is not, so
-that edge closed a mark that never opened. Modelled independently before the code
-was touched, and the model reproduces `EV N0CALL IR` exactly, which is what both
-Hamlet and the reference read off the audio.
-
-The caret now changes one thing and nothing else: which gap separates the letters.
-The separate branch is gone.
-
-**HM-DEC-101's gate was re-run over the whole set after every regeneration.**
-
-| fixture | reference before | after |
+| recording | the moves | what they are |
 |---|---|---|
-| prosigns-easy | 75% `EV N0CALL IR <SK>` | **100% `<BT> N0CALL <AR> <SK>`** |
-| prosigns-working | 75% | 83% |
-| prosigns-edge | 83% | 83% |
+| `cw-2026-08-17-013347` | cold to 625, then 625→600, 600→625 | one station at ~615, the survey settling between two bins |
+| `cw-2026-08-18-004507` | 500→525, 525→500 | one station at ~505, the same |
+| `two-station` | 625→**725**, then 725→700, 700→725 | the caller at 615 **handing over to the answerer at 730**, then settling |
 
-Everything else is unmoved and **no fixture is held out**. Three `.wav` files and
-three sidecars changed and nothing else did.
+**Every move within one station is exactly one coarse bin, twenty-five hertz, and
+the one genuine station change is a hundred. There is nothing in between to choose
+from.** `ConfirmWithinHz` already carried that number for the neighbouring
+question — whether two consecutive surveys are the same signal — and its own note
+already called it "a station drifting or the survey preferring its neighbor,
+rather than a different signal". The distinction did not need inventing, only
+reading.
 
-**Two things were re-tested rather than taken on trust, per §12.5.** The run-up
-exclusion on the prosigns fixture rested on a reason that no longer holds — a
-correctly rendered `^BT` is `-...-`, whose marks are the same two lengths as
-`VVV` — so it was measured again: the reference reads the run-up version at 100%
-and Hamlet emits a single placeholder, so the exclusion stands and what stands
-behind it is now a decoder finding (HM-OPEN-031). And `exchange-easy` was
-re-checked after the fix rather than investigated separately, as instructed: **it
-is not the same defect.** That fixture has no caret in it.
+`CwToneTracker.Follows` counts moves to a different station; the decoder acts on
+those and does nothing at all on a refinement. A tracker that has not yet reported
+a pitch has nothing to refine, so its first move is a follow. The measurement is
+against the bank the tracker listens through rather than the pitch it last
+reported: the fine bank answers a few hertz outside its own centre — 730 through a
+bank centred at 725 — and measuring from the report would make one bin read as one
+and a bit.
 
-## Phase 3, the bulletin re-measured — **unmoved at 36 of 47**
+**Acceptance, half met.**
+`TheSettledPassNoLongerStopsShortOfTheCallsign` **passes**: the settled pass reads
+`■■■ ■■VA3VRR` where it read `■■■ ■`. The bulletin gains `DOT` and the two-station
+fixture gains `W1XYZ K`. **Nothing that passed regressed.**
 
-Reported before anything else was touched, as required.
+**`ASignalAtTheWrongPitchIsStillFound(400)` does not pass, and the reason is that
+this entry's own diagnosis was wrong.** Measured by disabling every reset
+outright: the decode is unchanged, still `■■ ■■■ ■ K DE W1AW K` with the `CQ`
+missing. **The retunes never cost that case anything through the settled window.**
+What they cost is where the tracker went — to 575 hertz, for about half a second,
+straight through the `CQ`. And 575 is the station's own image:
 
 ```
-got    'JJ AOT NET ■I ECH STAAION HAND■ AHIS MESAGE P'
+keyed 400  dit 77  dah 213  sep  8.7  lift 64.0  keyedDb -21.9
+keyed 575  dit 83  dah 220  sep 30.8  lift 26.3  keyedDb -56.5
+```
+
+Same dit, same dah, **thirty-five decibels quieter, and clustering three times
+more cleanly than the station itself.** It is an artifact of a fixture with no band
+in it — that test generates its audio with no noise at all, so between the elements
+there is digital silence and the sidelobe is a hard-limited replica with nothing to
+bury it. With noise added it disappears:
+
+| noise | moves | decode |
+|---|---|---|
+| 0 | 3 | `■■ ■■■ ■ K DE W1AW K` |
+| 0.01 | **1** | `T■ ■■■ ■Q DE W1AW K` |
+| 0.03 | **1** | **`V VVV VVV CQ DE W1AW K`** |
+| 0.06 | **1** | **`V VVV VVV CQ DE W1AW K`** |
+
+**Not fixed.** Giving the test a band would turn it green, and changing a fixture
+to turn a test green is the one move §12.5 exists to stop a session making on its
+own authority. Section 4.
+
+**And the change held back was not needed.** HM-DEC-123 held back stopping the
+streaming segmentation from gating the tracker, on the ground that it might be a
+symptom that dissolves. It dissolved: see phase 2.
+
+## Phase 2 — HM-DEC-116, re-attempted and **not shipped**
+
+**The chain HM-DEC-121 traced is genuinely broken.** With adoption applied,
+`cw-2026-08-17-013347` shows **three moves and one follow, identical to adoption
+off**, where the whole of that diagnosis was that adoption turned one retune into
+three. `MidCharacter` no longer costs anything, because a refinement no longer
+resets anything. That is HM-DEC-123's own prediction confirmed, and it is why the
+held-back change should stay held back.
+
+**The new path is direct and it is about the classes themselves.** Adoption now
+changes only where the streaming pass divides characters, and on the two
+recordings where it fires the settled pass's classes are the worse of the two fits:
+
+| | adoption off | adoption on |
+|---|---|---|
+| `013347` settled | `■■■ ■■VA3VRR` | `■■■ ■■VA3VRR` |
+| **`013347` streamed** | **`■    ■VA3VRR`** | `■    ■■■■R` |
+| `004507` settled | `NL DOT NET ■I ECH STAAION HAND■ AHIS MESAGE P` | unchanged |
+| **`two-station` settled** | **`L DE W1XYZ K`** | `ATD■VTXYZ` |
+| `ClearingTheTranscript…` | fails at `■ DE W1AW K` | **passes** |
+
+Everything else in the corpus is unchanged, character for character. So the trade
+is one synthetic looping training signal against the streaming pass losing the
+callsign on the only real capture that carries one. **A real capture outranks a
+synthetic one** (HM-DEC-091) and the work order said not to ship it if it still
+costs one. It does. It is not shipped and nothing of it is left in the tree.
+
+**And the ruling's premise has dissolved underneath it.** HM-DEC-116 says the
+streaming pass "uses dit multiples only until those classes exist", which was true
+when it was ruled and stopped being true when the estimator got the real fitter
+last session. Read literally against today's code — adopt only where the estimator
+has no fit of its own — it was measured and **it is a no-op on every recording
+here**, because wherever the settled pass has classes the streaming pass already
+has its own. The full form overrides a working local fit with a worse global one;
+the narrow form never fires. Section 4.
+
+## Phase 3 — the bulletin, **28 correct becomes 30**
+
+Measured before anything in phase 4 was touched.
+
+```
+got    'NL DOT NET ■I ECH STAAION HAND■ AHIS MESAGE P'
 wanted 'AT ARRL DOT NET <BT> EACH STATION HANDLING THIS MESSAGE P'
 36 characters against 47
 ```
 
-Character for character what it read last session. The caret was a generator fault
-and touched no real audio, and phase 1 was held back, so nothing that shipped
-could have moved it and nothing did. **That is the finding the work order asked
-for.** `T` is still read as `A` in `STATION` and in `THIS`, unchanged.
+Aligned against the key rather than counted, which is the honest measure:
 
-Phase 4 then moved it, after the measurement was taken: `OT NET ■I ECH STAAION
-HAND■ AHIS MESAGE P`. **Three characters shorter and the same number correct** —
-what went was the invented `JJ` and one wrong `A`. Nothing was tuned to this
-recording.
-
-## Phase 4, `ClearingTheTranscriptLeavesTheDecoderAlone` — diagnosed and fixed
-
-**The test is not about clearing.** Every assertion about the decoder surviving a
-clear passes and always did. It fails on the decode afterwards, and the decode
-read `■ B■AW K` where `CQ DE W1AW K` was sent. `DE` read as `B` is `-..` and `.`
-run together: a character gap read as an element gap. The same substitution is
-what `exchange-easy` had been failing on for sessions.
-
-**The cause, traced to the line.** `CwGapFit` carries the note "one
-implementation, read by both passes, because two copies of a classifier is two
-classifiers", and there were two. The settled pass used it; the streaming
-estimator had its own, which split the gaps in two and then split the long half
-again. **A two-way split of three heaps lands wherever the window's mixture puts
-it.** On `exchange-easy` — textbook spacing at twelve words a minute, element gaps
-100 ms, character 295, word 695, three heaps a hand could separate — the first cut
-wandered from 189 to 414 milliseconds across one message, and wherever a couple of
-word gaps crowded into the twenty-gap window it converged on the split between
-*character and word* rather than between *element and character*.
-
-The streaming estimator now reads `CwGapFit`. Two guards were needed and both were
-measured rather than reasoned:
-
-- **The element class has to be the crowded one**, tested at the call site rather
-  than inside the fit. The gate flaps at the onset of the very first mark and
-  leaves gaps of 25, 35 and 65 milliseconds behind; while those sit in the window
-  the fit gives them a class of their own and reads every real element gap as a
-  character gap. Putting the same test inside `CwGapFit`, where the settled pass
-  would see it, costs the callsign on `cw-2026-08-17-013347`.
-- **A lone gap far above everything else is a pause and not a class**, tested
-  inside the fit because it is about the data. A looping signal pauses two seconds
-  between repeats and that one silence took the whole top class: word gaps of 680
-  then shared a class with character gaps of 290 and every space between words
-  disappeared.
-
-**What it bought:**
-
-| | before | after |
+| | before phase 1 | after |
 |---|---|---|
-| `exchange-easy` | `VVCQCQBN0CALLN0CALLK` | **reads whole** |
-| bare fist, 25 / 28 / 30 / 35 wpm | 0.67 / 0.63 / 0.70 / 0.63 | **0.89 / 0.89 / 0.89 / 0.88** |
-| slow end with a run-up | 0.89 | **0.95 to 1.00** |
-| `ClearingTheTranscript…` | `■ B■AW K` | `■ DE W1AW K` |
-| bulletin, settled | 36 correct, `JJ` invented | 36 correct, nothing invented |
-| `013347`, streaming | `■   ■<SK>3VRR` | `■    ■VA3VRR` |
-| `013347`, settled | `■■■ ■■VA3VRR` | `■■■ ■` |
+| settled | `OT NET ■I ECH STAAION HAND■ AHIS MESAGE P` | `NL DOT NET ■I ECH STAAION HAND■ AHIS MESAGE P` |
+| correct | 28 | **30** |
+| wrong | 4 | 5 |
+| invented | 1 | 1 |
 
-**And what it cost, both recorded and adjudicated individually** (HM-OPEN-032).
-`TheSettledPassNoLongerStopsShortOfTheCallsign` is red: changing where the
-streaming pass divides characters moves `MidCharacter`, one retune becomes three,
-`_settled.Reset()` runs twice more and the window is thrown away before it reaches
-the callsign. **That is HM-OPEN-027's coupling exactly and HM-DEC-123 is the
-ratified fix for it**, in its own work order, which this session did not begin.
-The callsign did not leave the screen; it moved to the other pass, and the reading
-it moved from was `<SK>` where `VA` was sent. `tightfist-easy` gains one
-placeholder, which is not the outlier trim — tested with the trim disabled and
-unchanged.
+Of 44 characters sent. **The `D` of `DOT` came back**, lost since the recording was
+committed, and `NL` arrived at the head where nothing was sent. The cause is phase
+1: two of this capture's three moves are the survey settling between 500 and 525
+hertz on one station, and the settled window is no longer thrown away for them.
 
-**Why it shipped with those two red.** `DE` read as `B` is a wrong character at
-full confidence, in the two commonest letters on the band, at every speed a
-beginner will meet and at every ratio down to three decibels. What replaces it is
-a placeholder in one pass on one recording, and a placeholder asserts nothing.
-§0.0 decides that one way.
+**`T` is still read as `A` in `STATION` and in `THIS`**, unmoved by any of the four
+measurements taken of this recording. Nothing was tuned to it.
 
-## Phase 5, the record housekeeping — done, not dropped
+## Phase 4 — the last two bar failures, **attributed, not fixed**
 
-**HM-OPEN-026.** Swept the whole tree for `cw-2026-08-18-003758`. It appears in
-its own open issue, in the previous `OUTPUT.md`, and in the work order that asked
-about it. **No test, no sidecar, no catalogue entry and no assertion refers to
-it**, so nothing in the fixture set rests on a file that is absent and the
-property the work order wanted is already true. **The recommendation is to close
-it** — four sessions, no file — and it is a recommendation rather than a decision,
-because closing it costs the project the regression test for a success it has
-never had.
+Checked whether they share a cause before treating them separately, as asked.
+**They do not, and one of them shares a cause with the 400 hertz test instead.**
 
-**HM-OPEN-025.** Confirmed still cosmetic. `20c8ae5` is the only one-word `save`
-in the whole log, its diff is five files and 430 insertions of that session's own
-work, and all of this session's commits kept the messages they were written with.
+**`tightfist-easy` is a timing veto on one gap.** The character is the first `S` of
+the first `TEST`; its pattern is `...`, which is correct, and the same pattern
+reads as `S` four seconds later.
 
-**HM-OPEN-027 and HM-OPEN-028** now say on their face that HM-DEC-123 rules them
-and that the work is its own order, so the next session reads it rather than
-deriving it a third time.
+```
+'■' Unreadable score 0.11 snr 28.6 dB pat '...' at 5.31s
+clarities [0.97, 0.11, 0.92, 0.49, 0.89, 0.97]
+dit 93 ms, mark boundary 137 ms, element gap boundary 96 ms, 20 marks
+```
+
+**Twenty-eight decibels over the noise, so the signal is not the question**: one
+timing measurement inside the character scores 0.11 against an element-gap
+boundary of 96 milliseconds, on a fist whose element gaps are 80. Every other
+measurement in the same character is between 0.49 and 0.97. A placeholder is the
+honest output for a measurement that marginal, which makes this a question about
+the boundary and not about the veto.
+
+**`prosigns-easy` loses its opening to acquisition, and the ruled remedy makes it
+worse.** Its first character arrives at 7.44 seconds on a message running about
+four and a half. Re-measured with a run-up after the caret fix and after phase 1
+rather than taken from the record: the tracker makes two moves, **settles at 675
+hertz on a fixture sitting at 615**, and emits nothing at all.
+
+**Which is the third sighting of one mechanism** — the coarse survey choosing a bin
+that holds no station. Section 4.
+
+## Phase 5 — the record housekeeping — done, not dropped
+
+**HM-OPEN-026 closed** (HM-DEC-126), with the gap it leaves recorded beside it:
+this suite has **no regression test for a success at all.** Every ratchet in it is
+a ratchet on a failure getting less bad, so nothing in it can tell a repair from a
+coincidence.
+
+**HM-OPEN-030 closed** (HM-DEC-125). Swept: no candidate survey, no candidate
+window constant, no clock-proved flag and no window-change counter remains
+anywhere in `src`. `CwAcquisitionWindowTests` survives — it is measurement rather
+than mechanism — and still pins all three figures, the bare fast end, the same fist
+with a run-up, and the slow end.
+
+**HM-OPEN-024**: `TheStopFrameIsCommand17CarryingFf` did not fail once across six
+full runs this session, and a third test flaked once instead. All three are still
+intermittent rather than any becoming reliable, and they share nothing but running
+under xunit's parallel collections.
 
 # 2. What Tim should expect
 
 - **Build succeeds, no warnings.**
-- **1829 tests, 6 failing.** 1408 of 1413 in the engine, 415 of 416 in the app.
-  Twelve tests are new, all of them measurement.
-- **The failing six, named:**
-  - `ASignalAtTheWrongPitchIsStillFound(400)` — unchanged, belongs to HM-DEC-123.
-  - `ClearingTheTranscriptLeavesTheDecoderAlone` — much improved and still red:
-    `■ DE W1AW K` against `CQ DE W1AW K`, where it read `■ B■AW K` before.
-  - `TheBulletinDecodesToItsAnswerKey` — the long-standing bar on a real recording.
-  - `TheEasyTierIsReadWhole(prosigns-easy)` — **the same test, a different cause**:
-    the prosigns now read correctly and the four opening characters are lost to
-    acquisition on the one easy-tier fixture that cannot carry a run-up.
-  - `TheSettledPassNoLongerStopsShortOfTheCallsign` — **new**, section 1 phase 4.
-  - `TheEasyTierIsReadWhole(tightfist-easy)` — **new**, one placeholder.
-- **`TheEasyTierIsReadWhole(exchange-easy)` is green** for the first time since
-  HM-DEC-114 turned it into a pass-or-fail.
-- **What will look wrong and is not.** Two red tests are new and the count went
-  from five to six; both are recorded with their reasons and neither was tidied
-  away by moving a bar. HM-DEC-122 is ratified and is not in the tree, which is
-  deliberate and is section 4's first item. The prosigns fixtures' `.wav` files
-  changed, which is the caret fix and is what took the reference from 75% to 100%.
-- **What is different at the radio.** `DE` no longer reads as `B`, which is the
-  one change an operator would notice immediately, and a station tuned onto
-  mid-transmission at twenty-five words a minute or faster now arrives at about
-  nine characters in ten rather than six.
-- **One intermittent seen once and recorded.** `TheStopFrameIsCommand17CarryingFf`
-  failed in one full run and passed alone and in the two runs either side. Named
-  in HM-OPEN-024 beside the other intermittent and not chased (§12.6).
+- **1832 tests, 5 failing.** 1412 of 1416 in the engine, 415 of 416 in the app.
+  Three tests are new, all of them pinning the retune distinction.
+- **`TheSettledPassNoLongerStopsShortOfTheCallsign` is green.** Six failures
+  become five and nothing regressed.
+- **The failing five, named:**
+  - `ASignalAtTheWrongPitchIsStillFound(400)` — **still red, and its cause has
+    changed**: it was never about the settled reset. Section 4.
+  - `ClearingTheTranscriptLeavesTheDecoderAlone` — reads `■ DE W1AW K` against
+    `CQ DE W1AW K`. It would pass with HM-DEC-116 shipped, which is why that is a
+    ruling and not a session's call.
+  - `TheBulletinDecodesToItsAnswerKey` — the long-standing bar, now 30 correct
+    of 44 where it was 28.
+  - `TheEasyTierIsReadWhole(prosigns-easy)` and `(tightfist-easy)` — both
+    attributed in phase 4.
+- **What will look wrong and is not.** The count went six to five, not six to
+  three: two of phase 1's three named failures are answered and the third turned
+  out not to belong to it. HM-DEC-116 is ratified and not in the tree, deliberately
+  and on the work order's own instruction. Nothing of HM-DEC-122 remains.
+- **What is different at the radio.** A station whose pitch the survey settles
+  between two bins — which is most of them, since nobody sits exactly on a
+  twenty-five hertz grid — no longer costs the settled transcript its window twice
+  while being found. On the one capture that carries a callsign, that is the
+  difference between four placeholders and `VA3VRR`.
 - **Nothing is tuned to any recording.** No decoder parameter was moved to suit
-  `cw-2026-08-18-004507` or `cw-2026-08-17-013347`.
-- **Six commits, pushed to `main`.** Nothing local, no branches. The first of them
-  carries the uncommitted `CLAUDE.md` and `CLEANUP_BRIEF.md` changes that were in
-  the working tree when the session opened.
+  `cw-2026-08-17-013347` or `cw-2026-08-18-004507`.
+- **Five commits, pushed to `main`.** Nothing local, no branches. The first carries
+  the uncommitted `CLAUDE.md` and `CLEANUP_BRIEF.md` that were in the working tree
+  when the session opened.
 
 # 3. What we should do next
 
-- Rule on HM-DEC-122, section 4 item one. It is ratified and not live, and that is
-  the one thing in the tree that does not match the record.
-- Run HM-DEC-123's work order. It is now blocking three separate things: the
-  400 Hz test, HM-DEC-116, and the settled pass on `cw-2026-08-17-013347`.
-- Then re-measure the bulletin again. Phase 4 moved it for the first time in three
-  sessions and HM-DEC-123 will move it again.
-- `tightfist-easy`'s placeholder and `prosigns-easy`'s four opening characters, in
-  that order. Both are small and both are HM-DEC-114's bar.
-- Decide HM-OPEN-026 either way, so the question stops being asked.
+- Rule on the survey's bin choice, section 4 item one. It is now behind three
+  separate failures and it is the largest single thing left.
+- Rule on HM-DEC-116, section 4 item two — supersede or keep blocked. It is
+  ratified and not in the tree, which is the state the record likes least.
+- Then `tightfist-easy`'s boundary, which is one gap and one number.
+- Re-measure the bulletin after either of the above; it has moved on three
+  consecutive sessions.
 
 # 4. What's blocking us
 
 ---
 date: 2026-08-18
-refs: CLAUDE.md §0.0, §12.1; HM-DEC-122; HM-DEC-091; HM-DEC-095; HM-DEC-120; HM-OPEN-030
+refs: CLAUDE.md §0.0, §12.1, §12.5; HM-DEC-095; HM-OPEN-028; HM-OPEN-033
 ---
 
-**HM-DEC-122 cannot be implemented as written without breaking either §0.0 or the
-only real recording this project can measure against, and it is not live.**
+**A keying candidate may not displace a station already being read when it is far
+weaker, and the fixture that exposed this gets a band in it.**
 
-Built as ruled: two coarse surveys during acquisition, one over twenty
-milliseconds and one over fifty, fed from the same ring buffer on the same survey
-grid, each asked the question the ruling names, the shorter preferred where both
-answer. The diagnosis behind the ruling is sound and the remedy does not follow
-from it.
+Two halves of one finding, and the second is the smaller.
 
-Three measurements, all in HM-OPEN-030 with their tables:
+**The survey's bin choice is now behind three separate failures:**
 
-- **Taking the first answer the candidates give meets the acceptance and invents
-  characters.** The fast end tuned onto mid-transmission goes from about two
-  thirds of the message to about nine tenths, and 2.8% of what comes back below
-  the refusal floor was never sent, where HM-DEC-120 measured zero at every level.
-  The candidates answer 325, 550 and 725 hertz for a signal at 640 across their
-  first several reads; the tracker's own rule against exactly that is two agreeing
-  surveys, and the candidates were not subject to it.
-- **Gating the settle on the tracker having confirmed where the keying is removes
-  both regressions and every gain with them.** Every cell of the matrix is then
-  identical to the unmodified decoder, at nine speeds and five ratios, with and
-  without a run-up.
-- **And where it does fire in time it costs the bulletin seven characters**, 36 of
-  47 down to 29, because the analysis window settles at twenty milliseconds.
-  **Only the short candidate yields a clock there**, so the tie-break never runs:
-  fifty milliseconds smears a 57 ms dit badly enough to fail the cluster test
-  while being the better window to read through, and forty, which the ruling
-  removes from consideration, is better than either. That is HM-DEC-095's own
-  table restated: twenty milliseconds loses half a callsign the same recording
-  gives up whole at forty.
+| where | signal | survey chose | result |
+|---|---|---|---|
+| `ASignalAtTheWrongPitchIsStillFound(400)` | 400 Hz | 575 Hz, **35 dB down** | the `CQ` is lost |
+| `prosigns-easy` with the ruled run-up | 615 Hz | 675 Hz | nothing decoded at all |
+| `two-station`, from cold | 615 Hz | 625, 600, 625 | three moves before it settles |
 
-So the window that yields the cleanest clock is not the window that reads the
-signal best, and on real audio those are different windows.
+In the first the chosen bin carries **the same dit and the same dah as the station
+being read, thirty-five decibels quieter, and clusters three times more cleanly**
+— separation 30.8 against 8.7. It is the station's own image. The survey ranks
+candidates by how far they stand over the band beside them and 400 wins that
+easily, so the move only happens on the reads where the 400 bin fails to score at
+all and the image is the only candidate left. It then satisfies the
+two-agreeing-surveys rule by itself.
 
-Three directions, and the choice is yours:
+HM-DEC-095 settled that **a note is chosen by how it is keyed and never by how
+loud it is**, and that ruling was about which of several signals to read on an
+empty-handed survey — where loudness picked a carrier over a station, which is the
+fault it exists to prevent. **What it did not settle is whether a candidate may
+take the tracker away from a station it is already reading and confirmed**, and
+that is a different question with a different answer available: not "prefer the
+louder" but "do not abandon what you have for something thirty-five decibels
+below it".
 
-- **Change what the candidates are judged on.** Score each candidate by its own
-  speed estimator at the tracked pitch rather than by the survey's per-bin scan.
-  That is a measurement of reading rather than of clustering, and a fluke at 725
-  hertz cannot fool it.
-- **Put forty milliseconds in as a third candidate**, so the choice includes the
-  window the evidence prefers.
-- **Take the figures as the target and leave the mechanism alone.** Phase 4 moved
-  the bare fast end from 0.63 to 0.70 up to 0.88 to 0.89 without touching
-  acquisition at all, which is most of what HM-DEC-122 was ruled to buy.
+That change decides what the display asserts, so it is yours (§12.1).
 
-Rejected: shipping it as ruled. HM-DEC-121 is three entries old and says a ruling
-that breaks a real decode is marked blocked rather than left live, and HM-DEC-113
-says you run `main` against your radio. Rejected: shipping the ungated form, which
-§0.0 forbids without a second opinion being needed.
+**And the second half is the fixture.** `ASignalAtTheWrongPitchIsStillFound`
+generates its audio with **no noise at all**, so between the elements there is
+digital silence and the image is a hard-limited replica with nothing to bury it.
+Every fixture under `tests/fixtures/cw/receiver` was rebuilt with a shaped band in
+it for exactly this reason (HM-OPEN-018), and this test never was. With any band
+in it the excursion disappears and the message reads whole at 0.03 and 0.06.
+
+Rejected: giving it a band on this session's authority. §12.5's own rule is that
+changing a fixture to turn a test green is the move a session may not make alone,
+and this one would also quietly change what the test asserts — from "found at 400
+hertz in silence" to "found at 400 hertz in a band". The second is the better
+test and it is still not a session's to swap in.
+
+Rejected: fixing the survey here. It is one line of judgement about what the
+tracker may abandon, and every recording in the repository would be re-measured
+against it.
 
 ---
 date: 2026-08-18
-refs: CLAUDE.md §12.5; HM-OPEN-026; HM-DEC-091
+refs: CLAUDE.md §0.0; HM-DEC-116; HM-DEC-121; HM-DEC-091; HM-OPEN-027; HM-OPEN-032
 ---
 
-**`cw-2026-08-18-003758` is closed as unobtainable, or it is supplied.**
+**HM-DEC-116 is superseded rather than blocked: its premise dissolved when the
+streaming pass got the real gap fitter.**
 
-Asked across four sessions and the file has not appeared. Re-checked this session
-against the concern the work order raised: **nothing in the fixture set names it.**
-No test, no sidecar, no catalogue entry, no assertion. It appears in its own open
-issue, in the previous report, and in the work order. So the fixture records are
-not naming evidence that does not exist, and what is left is a question with no
-work behind it.
+The ruling says the streaming pass "adopts the settled pass's fitted gap classes
+for the current sender, **and uses dit multiples only until those classes exist**".
+The second clause was true when it was ruled. It stopped being true last session,
+when the streaming estimator stopped carrying its own two-way classifier and
+started reading `CwGapFit` — the same fitter the settled pass uses (HM-OPEN-032).
+The choice the ruling was making is no longer available: it is not "fitted classes
+against dit multiples" but "the settled pass's fit against the streaming pass's
+own", which nobody has ruled on.
 
-The cost of closing is real and is why this is not a session's to decide: it is
-the recording on which Hamlet read `DE AA4MP/4 QNIK` correctly and somebody
-confirmed it independently, and **this suite has no regression test for a success
-at all.** Every ratchet it holds is a ratchet on a failure getting less bad. If
-the file turns up it is committed and the entry reopens.
+Measured both ways this session, on top of phase 1:
 
-Rejected: leaving it open a fifth time, which is what the last three sessions did
-and which produces one more paragraph a session and no decision.
+- **The full form costs a real capture.** The streaming pass on
+  `cw-2026-08-17-013347` falls from `■    ■VA3VRR` to `■    ■■■■R`, and the
+  two-station settled text falls from `L DE W1XYZ K` to `ATD■VTXYZ`. What it buys
+  is one synthetic looping training signal. HM-DEC-091 decides that.
+- **The narrow form, read literally, never fires.** Adopting only where the
+  estimator has no fit of its own leaves every recording in the corpus unchanged,
+  character for character, because wherever the settled pass has classes the
+  streaming pass already has its own.
+
+**And the reason HM-DEC-121 blocked it is gone.** That ruling blocked HM-DEC-116
+pending a trace of the coupling, and the coupling was adoption moving
+`MidCharacter`, turning one retune into three, and resetting the settled window.
+With phase 1 in place, adoption produces **three moves and one follow, exactly as
+without it**. The chain is broken at the last link, as HM-DEC-123 predicted. What
+remains is a straightforward question of which fit is better, and on this evidence
+it is the streaming pass's own.
+
+So the honest state is not "blocked pending phase 1" — phase 1 happened — but
+"answered, and the answer is no". Whether that is a supersede is yours.
+
+Rejected: shipping it. The work order forbade it by name if a real capture still
+paid, and one does. Rejected: leaving it recorded as blocked, which would keep a
+ratified ruling waiting on a condition that has already been met and answered.
