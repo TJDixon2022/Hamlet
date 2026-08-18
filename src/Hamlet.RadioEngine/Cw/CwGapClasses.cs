@@ -1,0 +1,193 @@
+namespace Hamlet.RadioEngine.Cw;
+
+/// <summary>
+/// Where one sender's gaps divide, measured from the gaps (HM-DEC-115).
+/// </summary>
+/// <param name="ElementMs">The middle of the gaps inside a character.</param>
+/// <param name="CharacterMs">The middle of the gaps between characters.</param>
+/// <param name="WordMs">The middle of the gaps between words.</param>
+/// <param name="ElementCutMs">Where a gap stops being an element gap.</param>
+/// <param name="CharacterCutMs">Where a gap becomes a word gap.</param>
+/// <remarks>
+/// The centers are carried as well as the boundaries because a Farnsworth sender
+/// should be visible rather than merely survived: a surface can say what this
+/// station's spacing actually is, and the confidence model can measure how far a
+/// gap sat from the center it was assigned to.
+/// </remarks>
+public readonly record struct CwGapClasses(
+    double ElementMs,
+    double CharacterMs,
+    double WordMs,
+    double ElementCutMs,
+    double CharacterCutMs)
+{
+    /// <summary>
+    /// How many element gaps long this sender's character gap is.
+    /// </summary>
+    /// <remarks>
+    /// Three on a textbook sender and six on the ARRL bulletin that produced
+    /// HM-DEC-115. **It is a description and never a warning**: a sender whose
+    /// character gap is a large multiple of the element gap is a normal operator
+    /// sending Farnsworth, which is how traffic nets and bulletins are sent.
+    /// </remarks>
+    public double FarnsworthRatio => ElementMs <= 0 ? 0 : CharacterMs / ElementMs;
+}
+
+/// <summary>
+/// Fits three gap classes to the gaps themselves (HM-DEC-115).
+/// </summary>
+/// <remarks>
+/// <para>**NO DIT MULTIPLE APPEARS ANYWHERE IN HERE, AND THAT IS THE POINT.**
+/// HM-DEC-048 ruled that gap classes are clustered from the gaps and never from
+/// multiples of the dit, and the code did not do it. Textbook Morse spaces
+/// elements one dit apart, characters three and words seven, and **real
+/// operators send Farnsworth**: the characters at full speed with the gaps
+/// stretched, which is how ARRL bulletins and NTS traffic nets go out and close
+/// to the likeliest thing a beginner tunes across.</para>
+/// <para>Measured on a strong off-air bulletin at S4, tone 501 Hz: dit 57 ms,
+/// element gaps 40, character gaps 190 to 300, word gaps 400 and up. **The
+/// element gap is shorter than the dit and the character gap is six times the
+/// element gap rather than three.** A decoder using dit multiples gets every
+/// character right and puts every space in the wrong place, which is not a
+/// transcript, and that is exactly what was on the operator's screen.</para>
+/// <para>One implementation, read by both passes, because two copies of a
+/// classifier is two classifiers (§0).</para>
+/// </remarks>
+public static class CwGapFit
+{
+    /// <summary>How many gaps are needed before they can be clustered.</summary>
+    /// <remarks>
+    /// Ten. Fewer than that and a single stray gap moves a center, and there is
+    /// no honest boundary to be had.
+    /// </remarks>
+    public const int LeastGaps = 10;
+
+    /// <summary>How far apart neighbouring classes must sit, in log units.</summary>
+    /// <remarks>
+    /// About half as long again, which is the separation the streaming estimator
+    /// already demanded of two classes and the same reasoning: below it, one
+    /// spread of gaps is being cut into pieces rather than three groups being
+    /// found. A textbook sender clears it easily at one, three and seven dits,
+    /// and so does the bulletin at 40, 240 and 600 milliseconds.
+    /// </remarks>
+    public const double LeastSeparation = 0.405;
+
+    /// <summary>How many refinement passes to make.</summary>
+    /// <remarks>
+    /// Twenty-four, which is far more than three well separated heaps need and
+    /// cheap enough to run whenever a window settles. Fixed rather than
+    /// convergence-tested so the cost is knowable (§8).
+    /// </remarks>
+    public const int Passes = 24;
+
+    /// <summary>
+    /// Fit three classes to these gaps, or answer that they do not have three.
+    /// </summary>
+    /// <param name="gapsMs">The gaps, in milliseconds. Reordered in place.</param>
+    /// <param name="count">How many of them to read.</param>
+    /// <returns>The classes, or null.</returns>
+    /// <remarks>
+    /// <para>**NULL IS A REAL ANSWER AND THE CALLER MUST EMIT NOTHING FOR IT.**
+    /// Where the gaps do not separate, nobody knows where this sender puts the
+    /// spaces, and a guessed boundary is a guess about where the words are. §0.0
+    /// prefers silence and already said so.</para>
+    /// <para>Fitted in log space, because a gap twice as long as another is the
+    /// same distance apart whatever the sender's speed, which is what lets one
+    /// rule serve a slow net and a fast contest alike.</para>
+    /// </remarks>
+    public static CwGapClasses? Fit(double[] gapsMs, int count)
+    {
+        ArgumentNullException.ThrowIfNull(gapsMs);
+
+        var usable = 0;
+
+        for (var i = 0; i < count && i < gapsMs.Length; i++)
+        {
+            if (gapsMs[i] > 0)
+            {
+                gapsMs[usable++] = gapsMs[i];
+            }
+        }
+
+        if (usable < LeastGaps)
+        {
+            return null;
+        }
+
+        Array.Sort(gapsMs, 0, usable);
+
+        for (var i = 0; i < usable; i++)
+        {
+            gapsMs[i] = Math.Log(gapsMs[i]);
+        }
+
+        // **SEEDED ON PERCENTILES, NOT ON THE ENDS**, and the difference is the
+        // whole fit. Seeding at the smallest, middle and largest gap puts the
+        // first center on whatever the shortest stray was and leaves it there:
+        // the element and character heaps merge into one class, the boundary
+        // between them lands inside the element gaps, and the transcript that
+        // produces is nothing at all. Measured, not reasoned.
+        //
+        // A quarter, three quarters, nineteen twentieths. Element gaps are the
+        // commonest by far, character gaps next, word gaps rarest, so those
+        // three land one in each heap on any ordinary sending.
+        var a = gapsMs[usable / 4];
+        var b = gapsMs[usable * 3 / 4];
+        var c = gapsMs[Math.Min(usable - 1, usable * 19 / 20)];
+
+        for (var pass = 0; pass < Passes; pass++)
+        {
+            double sa = 0, sb = 0, sc = 0;
+            int na = 0, nb = 0, nc = 0;
+
+            for (var i = 0; i < usable; i++)
+            {
+                var v = gapsMs[i];
+                var da = Math.Abs(v - a);
+                var db = Math.Abs(v - b);
+                var dc = Math.Abs(v - c);
+
+                if (da <= db && da <= dc)
+                {
+                    sa += v;
+                    na++;
+                }
+                else if (db <= dc)
+                {
+                    sb += v;
+                    nb++;
+                }
+                else
+                {
+                    sc += v;
+                    nc++;
+                }
+            }
+
+            // An empty class means there are not three heaps here, and inventing
+            // one would put spaces where nobody left any.
+            if (na == 0 || nb == 0 || nc == 0)
+            {
+                return null;
+            }
+
+            a = sa / na;
+            b = sb / nb;
+            c = sc / nc;
+        }
+
+        if (b - a < LeastSeparation || c - b < LeastSeparation)
+        {
+            return null;
+        }
+
+        // A boundary sits between two centers, which in log space is halfway and
+        // on the wire is their geometric mean.
+        return new CwGapClasses(
+            Math.Exp(a),
+            Math.Exp(b),
+            Math.Exp(c),
+            Math.Exp((a + b) / 2),
+            Math.Exp((b + c) / 2));
+    }
+}

@@ -1117,3 +1117,26 @@ thread and no failure has been seen outside a parallel test run.
 
 **Not chased further on purpose** (§12.6). It surfaced while running the
 scanner end to end and is unrelated to that work.
+
+---
+id: HM-OPEN-025
+status: open
+owner: tim
+raised: 2026-08-18
+severity: none
+refs: HM-DEC-113, CLAUDE.md 9.5.1
+---
+
+Something on the development machine commits as `"save"` while a session is
+running.
+
+It caught the 2026-08-17 session's phase 1 work at `20c8ae5` and discarded the
+commit message that session had written. Harmless to the content, which was
+committed whole, and corrosive to the history: a one-word message on a change
+that carried a measurement and its reasoning.
+
+Recorded rather than chased, per the work order. Whatever it is — an editor
+plugin, a file watcher, a scheduled task — it is Tim's machine and Tim's to
+identify. What matters here is that a session cannot rely on its own commit
+boundaries being the ones that end up in the log, and a report saying "committed
+as X" may not describe what is on disk afterwards.

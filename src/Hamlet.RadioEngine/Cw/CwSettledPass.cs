@@ -191,6 +191,29 @@ public sealed class CwSettledPass
 
     /// <summary>How much silence the window saw after its last mark, in ms.</summary>
     private double _tailSilenceMs;
+
+    /// <summary>Every gap this signal has produced, newest overwriting oldest.</summary>
+    /// <remarks>
+    /// Five hundred and twelve is about two minutes of a traffic net at
+    /// twenty-one words a minute, which is far more than the classes need and
+    /// short enough that a station handing over to a different fist is forgotten
+    /// within a couple of overs.
+    /// </remarks>
+    private readonly double[] _gapHistory = new double[512];
+
+    private int _gapWrite;
+    private int _gapsRemembered;
+    private long _gapsRememberedThrough = -1;
+
+    /// <summary>
+    /// What this sender's spacing actually is, or null (HM-DEC-115).
+    /// </summary>
+    /// <remarks>
+    /// Exposed so a surface can say it. A Farnsworth sender should be visible
+    /// rather than merely survived, and these numbers answer "why does this look
+    /// wrong" long before anybody thinks to ask the question.
+    /// </remarks>
+    public CwGapClasses? Classes { get; private set; }
     private readonly long[] _markStart;
     private readonly long[] _markEnd;
 
@@ -217,7 +240,7 @@ public sealed class CwSettledPass
         _blocked = new bool[_capacity];
         _sample = new long[_capacity];
 
-        _scratch = new double[_capacity];
+        _scratch = new double[Math.Max(_capacity, _gapHistory.Length)];
         _key = new bool[_capacity];
         _voted = new bool[_capacity];
         _marks = new double[_capacity];
@@ -255,6 +278,18 @@ public sealed class CwSettledPass
         _lastDitMs = 0;
         _previousDitMs = 0;
         _previousDahMs = 0;
+
+        // **THE GAP CLASSES BELONG TO A SENDER AND GO WITH THE SENDER**
+        // (HM-DEC-095, HM-DEC-115). Fitting them over a longer history is what
+        // lets word gaps be seen at all, and the cost is that the history can
+        // span a handover. Two operators' spacing averaged together describes
+        // neither, which is the fault this ruling exists to fix wearing
+        // different clothes. This runs when the tracker moves or the clock is
+        // lost, which is operationally somebody else starting to transmit.
+        _gapsRemembered = 0;
+        _gapWrite = 0;
+        _gapsRememberedThrough = -1;
+        Classes = null;
     }
 
     /// <summary>
@@ -666,6 +701,25 @@ public sealed class CwSettledPass
                 var previousEnd = _markEnd[count - 1];
                 _gaps[count - 1] =
                     (double)(_markStart[count] - previousEnd) / _sampleRate * 1000;
+
+                // **THE GAP CLASSES ARE FITTED PER SIGNAL, NOT PER WINDOW**
+                // (HM-DEC-115). A settled window is a few seconds, which holds
+                // plenty of element gaps, a handful of character gaps and
+                // often no word gap at all, so three classes cannot be found
+                // inside one however cleanly they separate over the whole
+                // transmission. The measurement that produced this ruling was
+                // over thirty seconds: 69 element gaps, 28 character and 11
+                // word.
+                //
+                // Windows overlap, so a gap is remembered once, the first time
+                // its own mark is seen.
+                if (_markStart[count] > _gapsRememberedThrough)
+                {
+                    _gapsRememberedThrough = _markStart[count];
+                    _gapHistory[_gapWrite] = _gaps[count - 1];
+                    _gapWrite = (_gapWrite + 1) % _gapHistory.Length;
+                    _gapsRemembered = Math.Min(_gapsRemembered + 1, _gapHistory.Length);
+                }
             }
 
             count++;
@@ -818,90 +872,35 @@ public sealed class CwSettledPass
     /// shorter than its own dits. Fixed multiples of a dit read such a fist as one
     /// unbroken run (HM-DEC-095).
     /// </remarks>
-    private (double Element, double Character) GapCuts(int count, double ditMs)
+    /// <summary>
+    /// Where this sender's own gaps divide, or null (HM-DEC-115).
+    /// </summary>
+    /// <returns>The classes, or null when the gaps do not form three groups.</returns>
+    /// <remarks>
+    /// <para>**FITTED PER SIGNAL RATHER THAN PER WINDOW**, which is what the
+    /// ruling asks for and what a window cannot do. A settled window is a few
+    /// seconds: plenty of element gaps, a handful of character gaps, and often
+    /// no word gap at all. The measurement behind HM-DEC-115 ran over thirty
+    /// seconds and found 69 element gaps, 28 character and 11 word, and three
+    /// classes cannot be found inside a window holding one of the third kind
+    /// however cleanly they separate over the whole transmission.</para>
+    /// <para>The fit itself is <see cref="CwGapFit"/>, shared with the streaming
+    /// estimator, because two copies of a classifier is two classifiers (§0).
+    /// </para>
+    /// </remarks>
+    private CwGapClasses? GapCuts()
     {
         var usable = 0;
 
-        for (var i = 0; i < count - 1; i++)
+        for (var i = 0; i < _gapsRemembered; i++)
         {
-            if (_gaps[i] > 0 && _gaps[i] < 12 * ditMs)
+            if (_gapHistory[i] > 0)
             {
-                _scratch[usable++] = _gaps[i];
+                _scratch[usable++] = _gapHistory[i];
             }
         }
 
-        // **A BOUNDARY GOES BETWEEN TWO LENGTHS, NOT ON ONE OF THEM**
-        // (HM-DEC-107 phase 4). These fall back to the textbook spacing when
-        // there are too few gaps to cluster, and textbook spacing is one dit
-        // inside a character, three between characters and seven between words.
-        // The boundaries are therefore two and five.
-        //
-        // They were 0.85 and 3.0, which puts the first cut **just below the
-        // element gap it has to sit above**: a textbook element gap is exactly
-        // one dit, so every one of them exceeded the cut and ended a character.
-        // Each element then came out as its own letter, and a lone dah spells T.
-        // On `coverage-easy` eight of the nineteen settled characters were a T
-        // that is nowhere in the message, shown at full strength.
-        //
-        // The fallback matters more here than in the reference chain, which sees
-        // a whole recording and almost always has enough gaps to cluster. A
-        // trailing window of four seconds often does not.
-        var element = 2.0 * ditMs;
-        var character = 5.0 * ditMs;
-
-        if (usable < 10)
-        {
-            return (element, character);
-        }
-
-        Array.Sort(_scratch, 0, usable);
-
-        double firstCut = 0, secondCut = 0;
-        double firstStep = 1.25, secondStep = 1.25;
-
-        // **A BOUNDARY SEPARATES TWO POPULATIONS; A JUMP AT THE EDGE OF THE DATA
-        // TRIMS AN OUTLIER** (HM-DEC-107 phase 4). Taking the widest steps
-        // anywhere in the sorted gaps let a single stray short gap decide a class
-        // boundary, and a cut placed below the element gaps ends a character at
-        // every element: the settled pass returned `TETE TTET TE T E` out of
-        // `CQ CQ DE N0CALL N0CALL K` while fitting the dit correctly at 100 ms.
-        //
-        // Three gaps either side is enough to reject a lone outlier and small
-        // enough to keep the word gaps, which are genuinely rare. The same defect
-        // was found and fixed in the reference chain's own classifier, which is
-        // where it was first seen.
-        const int Support = 3;
-
-        for (var i = Support - 1; i < usable - Support; i++)
-        {
-            var step = _scratch[i + 1] / Math.Max(_scratch[i], 1e-9);
-            var cut = Math.Sqrt(_scratch[i] * _scratch[i + 1]);
-
-            if (step > firstStep)
-            {
-                secondStep = firstStep;
-                secondCut = firstCut;
-                firstStep = step;
-                firstCut = cut;
-            }
-            else if (step > secondStep)
-            {
-                secondStep = step;
-                secondCut = cut;
-            }
-        }
-
-        if (firstCut > 0 && secondCut > 0)
-        {
-            return firstCut < secondCut ? (firstCut, secondCut) : (secondCut, firstCut);
-        }
-
-        if (firstCut > 0)
-        {
-            return (firstCut, character);
-        }
-
-        return (element, character);
+        return CwGapFit.Fit(_scratch, usable);
     }
 
     /// <summary>Turn the measured runs into characters.</summary>
@@ -956,7 +955,20 @@ public sealed class CwSettledPass
         int count, double ditMs, double dahMs, double contrastDb,
         long after, bool drain, List<SettledCharacter> into)
     {
-        var (elementCut, characterCut) = GapCuts(count, ditMs);
+        // **NO CUTS MEANS NO TRANSCRIPT, NOT A GUESSED ONE** (HM-DEC-115). The
+        // window has not seen enough gaps to say where this sender puts the
+        // spaces, and guessing puts them in the wrong place with full
+        // confidence. The marks stay for the next window, which is the same
+        // remedy the window edge already uses.
+        if (GapCuts() is not { } classes)
+        {
+            return after;
+        }
+
+        Classes = classes;
+
+        var elementCut = classes.ElementCutMs;
+        var characterCut = classes.CharacterCutMs;
         var middle = Math.Sqrt(ditMs * dahMs);
         var wpm = (int)Math.Round(1200.0 / ditMs);
         var signal = Math.Clamp((contrastDb - 6.0) / 14.0, 0, 1);

@@ -226,6 +226,27 @@ public sealed class CwDecoder
     public CwToneTracker Tracker => _tracker;
 
     /// <summary>
+    /// What the decoder has worked out about this sender's timing.
+    /// </summary>
+    /// <remarks>
+    /// Read-only, so a surface can say what the measured spacing is rather than
+    /// only acting on it (HM-DEC-115). A Farnsworth sender should be visible,
+    /// not merely survived.
+    /// </remarks>
+    public CwSpeedEstimator Timing => _speed;
+
+    /// <summary>
+    /// This sender's measured gap classes, or null (HM-DEC-115).
+    /// </summary>
+    /// <remarks>
+    /// From the settled pass, which fits them over the whole signal rather than
+    /// over a window: a window holds plenty of element gaps and often no word
+    /// gap at all, and three classes cannot be found in it however cleanly they
+    /// separate over the transmission.
+    /// </remarks>
+    public CwGapClasses? GapClasses => _settled.Classes;
+
+    /// <summary>
     /// True when nothing is coming along behind the provisional tip to confirm
     /// it (HM-DEC-096, phase 4).
     /// </summary>
