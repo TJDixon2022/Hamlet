@@ -169,6 +169,30 @@ public static class CwConfidenceModel
     /// <summary>Signal margin at or below which a character scores nothing.</summary>
     public const double PoorSignalDb = 5.0;
 
+    /// <summary>
+    /// Below this margin the decoder emits nothing at all (HM-DEC-097).
+    /// </summary>
+    /// <remarks>
+    /// <para>**SEVENTEEN, AND IT IS HM-DEC-097 TRANSLATED RATHER THAN
+    /// RENEGOTIATED.** That ruling says the decoder refuses below nought
+    /// decibels signal to noise and copies nothing into the band where it is
+    /// half wrong. Its decibels are the broadband ratio a fixture is generated
+    /// at; the decoder measures inside a narrow tone filter and reads about
+    /// seventeen higher for the same audio — 17.2 to 19.0 where the fixture was
+    /// generated at nought, 15.3 to 17.1 at minus two, 7.6 to 14.4 at minus
+    /// five. So seventeen here cuts in at the ruling's own line.</para>
+    /// <para>**FIFTEEN WAS REJECTED** because it lets minus two through, which
+    /// is the case the ruling names at 0.44 of the message invented. **Ten was
+    /// rejected** as leaving open the whole band the ruling exists to silence.
+    /// </para>
+    /// <para>A trained ear copies to roughly nought decibels, so refusing there
+    /// meets the stated goal — decode almost anything the operator can hear —
+    /// rather than falling short of it. **A degraded label was rejected as a
+    /// substitute**: marking a message does not make a plausible wrong callsign
+    /// on screen any less actionable (§0.0).</para>
+    /// </remarks>
+    public const double RefusalFloorDb = 17.0;
+
     /// <summary>Signal margin at or above which the signal stops being the limit.</summary>
     public const double GoodSignalDb = 18.0;
 

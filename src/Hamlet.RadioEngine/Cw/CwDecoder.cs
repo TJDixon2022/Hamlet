@@ -821,6 +821,22 @@ public sealed class CwDecoder
         _worstSnrDb = double.MaxValue;
         _contestedDb = double.MaxValue;
 
+        // **BELOW THE FLOOR THE DECODER SAYS NOTHING** (HM-DEC-097, built at
+        // last). That ruling was made on a sweep and never implemented: from
+        // 18 dB down to 1 the whole message came back with nothing wrong, at
+        // minus one a character in five was wrong, and at minus two it emitted a
+        // full message of which 44 percent was invented. A trained ear copies to
+        // about nought decibels, so refusing there meets the goal rather than
+        // falling short of it, and a plausible wrong callsign on screen is
+        // actionable however it is labelled.
+        //
+        // Seventeen is that ruling's nought decibels in the units this decoder
+        // can actually measure, which is inside its own tone filter.
+        if (snr < CwConfidenceModel.RefusalFloorDb)
+        {
+            return;
+        }
+
         // NOTHING IS CLAIMED WHEN THE TIMINGS DO NOT LOOK LIKE MORSE. Noise
         // makes runs of key-down and key-up too, and a gate will happily chop
         // an empty band into letters if nothing is watching for whether they
