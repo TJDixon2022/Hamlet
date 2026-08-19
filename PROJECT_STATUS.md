@@ -1,9 +1,9 @@
 STATE: EXECUTING
-PHASE: 3 of 5
+PHASE: 4 of 5
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-19T10:08:02-04:00
-NOTE: Phase 3 - making the de-glitch remove what it is asked to remove, and measuring every fixture
+UPDATED: 2026-08-19T10:16:00-04:00
+NOTE: Phase 4 - recording that HM-DEC-115's cited reading was never reproduced, without amending the ruling
 
 ---
 

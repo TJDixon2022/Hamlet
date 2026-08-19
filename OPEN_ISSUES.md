@@ -4,6 +4,50 @@ Questions with owner and severity. `owner` is who must act next. Format in
 `CLAUDE.md` §3.
 
 ---
+id: HM-OPEN-050
+status: open
+owner: tim
+raised: 2026-08-19
+severity: none
+blocks: nothing; the ruling stands on its own reasoning
+refs: HM-DEC-115, HM-OPEN-049, tests/Hamlet.RadioEngine.Tests/Cw/Fixtures/CwFarnsworthTests.cs
+---
+
+A fact cited inside HM-DEC-115 has never been reproduced, and the next session
+reading that ruling should not take it at face value.
+
+**The claim.** That ruling says that cutting on the measured heaps instead of dit
+multiples reads **`AT ARRL DOT NET <BT> EACH STATION HANDLING THIS MESSAGE P`**
+from the bulletin capture, *every character correct after acquisition*.
+
+**What the same audio has produced ever since**, on `cw-2026-08-18-004507`:
+
+| When | Reading | Correct |
+|---|---|---|
+| 2026-08-17, the day after the ruling, `2ec922f` | — | 36 of 47 |
+| 2026-08-17, `95de0a3` | — | 36, "unmoved" |
+| 2026-08-19, today | `NL DOT NET ■I ECH STAAION HAND■ AHIS MESAGE P` | 36 of 47 |
+
+**Three days, one number.** The reading in the ruling has not been seen since the
+ruling was written, and the errors are not marginal: `STAAION`, `AHIS`, a dropped
+`LING`, an unresolved prosign.
+
+**The ruling itself is not in question and its text is not amended.** *No cuts
+means no transcript rather than a guessed one* stands on its own reasoning, and
+HM-DEC-142 narrowed rather than overturned it. What is wrong is one measurement
+quoted inside it, and a ruling is never edited (§1). This entry is where that is
+recorded.
+
+**Why it matters.** It was cited again this week as evidence that the capture had
+*degraded*, which sent a session looking for a regression that does not exist
+(HM-OPEN-049). A number nobody can reproduce is worse than no number, because it
+becomes the baseline everything else is measured against.
+
+**What would close it**: either a session reproduces that reading and says how, or
+Tim rules that the claim is withdrawn and the 36 of 47 stands as the recorded
+figure for that capture.
+
+---
 id: HM-OPEN-049
 status: open
 owner: tim
