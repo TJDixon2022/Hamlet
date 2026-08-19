@@ -267,6 +267,9 @@ public sealed class CwDecoder
     /// </remarks>
     public CwGapClasses? GapClasses => _settled.Classes;
 
+    /// <summary>How many gaps the settled pass has to cluster (HM-DEC-115).</summary>
+    public int SettledGapsRemembered => _settled.GapsRemembered;
+
     /// <summary>
     /// True when nothing is coming along behind the provisional tip to confirm
     /// it (HM-DEC-096, phase 4).

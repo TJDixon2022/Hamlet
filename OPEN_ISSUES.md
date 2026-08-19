@@ -55,6 +55,47 @@ test is the correct state of the world rather than a ratchet to be tuned.
 fixtures perfectly and is what the terminal shows live; what is degraded is the
 transcript the settled pass keeps.
 
+**MECHANISM FOUND 2026-08-19, END TO END, AND THE REPAIR NEEDS A RULING.**
+
+Tallied across the whole of `coverage-easy`, window by window: **258 windows
+returned `None`** — read successfully — 63 said `NotYet` and 16 refused the clock.
+Not one character was emitted.
+
+The loss is in `Emit`, at its first line. It asks for the sender's gap classes and
+returns without producing anything when there are none, which is HM-DEC-115 doing
+exactly what it says: *no cuts means no transcript, not a guessed one.* There are
+**80 gaps** to cluster, far past the ten `CwGapFit` needs. **The fit refuses
+anyway, because it requires three non-empty heaps** — element, character and word
+— and this message leaves almost no word gaps, so the top class comes back empty
+and `Fit` returns null.
+
+So the settled pass is silent on any transmission that does not contain several
+word gaps. **That is not an exotic case**: a callsign, a contest exchange, a `V`
+test string, anything sent without spaces. The leading edge reads all of it
+perfectly.
+
+**And the brief's lead was already built.** It says Hamlet reads once and the
+reference de-glitches a second time at 0.4 of a dit and re-reads. `CwSettledPass`
+has done that second de-glitch and refit since HM-DEC-096. That is not the gap.
+
+**What a session may not decide.** Two honest answers exist and they assert
+different things about where the words are:
+
+- **Cluster two heaps when there is no third.** Element and character gaps are
+  still the sender's own, so this is not a return to dit multiples; what it costs
+  is that a genuine word gap, of which this fixture has two or three, is folded
+  into the character class and the spaces disappear.
+- **Say the transcript has no word boundaries here**, and render it without
+  spaces, which is true to what was measured and reads badly.
+
+Both change what a transcript asserts about where the words are, which §12.1 puts
+outside a session's authority without exception. HM-OPEN-017's labelled
+approximation is the third option and is likewise taken by ruling.
+
+`CwSettledGapTests` and `CwSettledSilenceTests` now record the gap count and
+whether classes were fitted, so whichever way it is ruled, the next session starts
+from the mechanism rather than from a percentage.
+
 ---
 id: HM-OPEN-047
 status: open

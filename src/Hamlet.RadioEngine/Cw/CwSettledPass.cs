@@ -888,6 +888,18 @@ public sealed class CwSettledPass
     /// estimator, because two copies of a classifier is two classifiers (§0).
     /// </para>
     /// </remarks>
+    /// <summary>
+    /// How many gaps this sender has contributed since the last reset.
+    /// </summary>
+    /// <remarks>
+    /// **THE NUMBER THAT DECIDES WHETHER ANYTHING IS EMITTED AT ALL**, and until
+    /// 2026-08-19 nothing could see it. Below `CwGapFit.LeastGaps` there are no
+    /// classes, and with no classes `Emit` returns without producing a character
+    /// however well the window read (HM-DEC-115). A pass that reports it read and
+    /// emits nothing is indistinguishable from a broken one without this (§0.0.1).
+    /// </remarks>
+    public int GapsRemembered => _gapsRemembered;
+
     private CwGapClasses? GapCuts()
     {
         var usable = 0;

@@ -1,9 +1,9 @@
 STATE: EXECUTING
-PHASE: 1 of 4
+PHASE: 2 of 4
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-19T09:21:51-04:00
-NOTE: Phase 1 - verifying the sidecar and the telemetry name the same frequency for one capture
+UPDATED: 2026-08-19T09:24:25-04:00
+NOTE: Phase 2 - coverage-easy reads a window and emits nothing; finding where the characters are lost
 
 ---
 
