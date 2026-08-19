@@ -867,6 +867,20 @@ public partial class MainWindowViewModel : ObservableObject
 
         AppEvents.RigHeartbeat(_telemetry, _lastHeartbeatState, state);
 
+        // **THIS EVENT WAS BUILT BY HM-DEC-092 AND NOTHING EVER CALLED IT.**
+        // The link's own health — sent, answered, unanswered, and now what
+        // arrived unasked — has never once reached the record, which is why two
+        // sessions argued about whether the radio broadcasts from a telemetry
+        // field that cannot express the answer. Ruled, built, never invoked, for
+        // the third time in this repository.
+        if (_rig is Ic7300Rig radio)
+        {
+            AppEvents.CivLink(
+                _telemetry, radio.Link,
+                _rigSpectrum?.SweepCount ?? 0,
+                _rigSpectrum?.DroppedCount ?? 0);
+        }
+
         _lastHeartbeatState = state;
     }
 

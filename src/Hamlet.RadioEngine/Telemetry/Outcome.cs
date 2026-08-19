@@ -38,8 +38,24 @@ public enum Outcome
 public sealed record DeterminedBy(
     string Field, string Provenance, double? Value, double? AgeSeconds)
 {
-    /// <summary>A value that was read.</summary>
+    /// <summary>A value that was read, because Hamlet asked for it.</summary>
     public const string Read = "read";
+
+    /// <summary>
+    /// A value the radio volunteered, which nobody asked for (HM-DEC-050).
+    /// </summary>
+    /// <remarks>
+    /// **THIS WORD DID NOT EXIST AND ITS ABSENCE WAS READ AS A MEASUREMENT.**
+    /// Every known value was recorded as `read`, whatever mechanism produced it,
+    /// so a frequency pushed by the operator's own dial and one polled thirty
+    /// seconds later were the same word in the file. Six sessions were then
+    /// counted, "broadcast by any label 0" came back, and that was taken as
+    /// evidence the broadcast path was dead — when it is what this vocabulary
+    /// returns for a working one. The same count comes back zero on **every**
+    /// telemetry file this project has ever written, including the builds that
+    /// tracked the dial perfectly.
+    /// </remarks>
+    public const string Broadcast = "broadcast";
 
     /// <summary>A value nobody has read yet, or whose read failed.</summary>
     public const string Unknown = "unknown";
@@ -82,6 +98,12 @@ public sealed record DeterminedBy(
         {
             RigValueState.Known when freshFor is { } fresh && value.IsStale(nowUtc, fresh)
                 => Stale,
+
+            // **HOW IT ARRIVED IS PART OF WHAT IT IS.** A value the radio
+            // volunteered cannot be stale by the poll's standard and cannot be
+            // late by anybody's, and telling it apart from a polled one is what
+            // makes "the dial is being tracked" checkable rather than arguable.
+            RigValueState.Known when value.IsBroadcast => Broadcast,
             RigValueState.Known => Read,
             RigValueState.Unsupported => Unsupported,
             RigValueState.Undocumented => Undocumented,

@@ -1,9 +1,9 @@
-STATE: COMPLETED
-PHASE: 6 of 6
-BALL: tim
-NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-18T17:46:01-04:00
-NOTE: All six phases done; two rulings wanted, and the next evening at the radio answers three open items
+STATE: EXECUTING
+PHASE: 1 of 1
+BALL: code
+NEXT_PASTE: none
+UPDATED: 2026-08-18T20:17:16-04:00
+NOTE: Repro passes at HEAD, so the wire path is intact; wire counters and broadcast provenance added, committing
 
 ---
 

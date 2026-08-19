@@ -12,6 +12,29 @@ namespace Hamlet.RadioEngine.Rig;
 /// The command byte of the most recent unanswered one, or null.
 /// </param>
 /// <param name="LastUnansweredUtc">When that was, or null.</param>
+/// <param name="Inbound">
+/// Every frame the reader completed, counted before anything filtered it.
+/// </param>
+/// <param name="InboundFromRadio">
+/// How many of those came from the radio's own address.
+/// </param>
+/// <param name="InboundBroadcast">
+/// How many were addressed to nobody in particular — destination `00`, which is
+/// what the radio uses to announce a change the operator made at the front panel.
+/// </param>
+/// <param name="InboundTransceive">
+/// How many carried a transceive command byte: `00` for the dial, `01` for the
+/// mode knob.
+/// </param>
+/// <param name="InboundScope">
+/// How many carried the scope's own command byte, `27`. **The one that can drown
+/// the others**: a waveform sweep is eleven frames of about fifty bytes and they
+/// arrive continuously once the radio is asked for them, on the same cable as
+/// everything else.
+/// </param>
+/// <param name="InboundBytes">How many bytes those frames carried in total.</param>
+/// <param name="LastInboundUtc">When the last frame of any kind arrived, or null.</param>
+/// <param name="LastBroadcastUtc">When the last broadcast arrived, or null.</param>
 /// <remarks>
 /// <para>**THE DIAGNOSTICS SCREEN READ FORTY VALUES AND SAID NOTHING ABOUT THE
 /// CONVERSATION CARRYING THEM.** Five settings were written one evening, all five
@@ -33,10 +56,53 @@ public readonly record struct CivLinkHealth(
     long Answered,
     long Unanswered,
     byte? LastUnansweredCommand,
-    DateTime? LastUnansweredUtc)
+    DateTime? LastUnansweredUtc,
+    long Inbound = 0,
+    long InboundFromRadio = 0,
+    long InboundBroadcast = 0,
+    long InboundTransceive = 0,
+    long InboundScope = 0,
+    long InboundBytes = 0,
+    DateTime? LastInboundUtc = null,
+    DateTime? LastBroadcastUtc = null)
 {
     /// <summary>Nothing known.</summary>
     public static CivLinkHealth Unknown { get; } = new("", 0, 0, 0, 0, null, null);
+
+    /// <summary>
+    /// True once the radio has volunteered at least one change.
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE QUESTION NOTHING IN THIS APPLICATION COULD ANSWER.** Whether
+    /// the radio pushes its own changes decides whether the frequency on screen
+    /// follows the dial in a hundred milliseconds or in thirty seconds, and the
+    /// only instrument pointed at it was a telemetry field that says "read" for
+    /// a broadcast and "read" for a poll. So a session counted zero broadcasts
+    /// and concluded the path was dead, on a vocabulary that returns zero for a
+    /// working one.</para>
+    /// <para>Counted at the reader, before the dispatcher, before any address or
+    /// command test, so a frame that arrives and is then discarded is still
+    /// visible here. **Null rather than false when nothing has arrived at all**:
+    /// a link that has had no traffic and a radio that is not broadcasting are
+    /// different facts (HM-DEC-050).</para>
+    /// </remarks>
+    public bool? IsRadioBroadcasting
+        => Inbound == 0 ? null : InboundTransceive > 0;
+
+    /// <summary>
+    /// What share of the traffic is the scope's, or null before anything came.
+    /// </summary>
+    /// <remarks>
+    /// **A CABLE CARRIES ONE CONVERSATION.** The scope's waveform output was
+    /// asked for automatically at connect from the build that introduced it
+    /// (HM-DEC-092), and the acknowledgement that would have said whether the
+    /// radio took it could not be read back (HM-OPEN-042) — so Hamlet has been
+    /// reporting that write as failed without knowing. If it succeeded, this is
+    /// where it shows: a flood of `27` frames between every other answer, on a
+    /// link the dial's own announcements share.
+    /// </remarks>
+    public double? ScopeShare
+        => Inbound == 0 ? null : (double)InboundScope / Inbound;
 
     /// <summary>The share of commands that came back, or null before any went.</summary>
     public double? AnsweredShare => Sent == 0 ? null : (double)Answered / Sent;

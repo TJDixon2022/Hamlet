@@ -79,6 +79,27 @@ public sealed record RigValue(
         RigField field, double? number, string text, DateTime atUtc, string source)
         => new(field, RigValueState.Known, number, text, atUtc, source);
 
+    /// <summary>
+    /// The mechanism prefix that names a value the radio volunteered.
+    /// </summary>
+    /// <remarks>
+    /// The sources are written by hand in `CivReads` and in the rig's own
+    /// dispatcher — "transceive 00" for the dial, "transceive 01" for the mode
+    /// knob — and the prefix is the thing they share. Matched here, once, rather
+    /// than by every reader of the string.
+    /// </remarks>
+    public const string BroadcastMechanism = "transceive";
+
+    /// <summary>True when the radio volunteered this rather than being asked.</summary>
+    /// <remarks>
+    /// **NOT A SECOND STATE.** A broadcast value is known exactly as a polled one
+    /// is; this says how it got here, which is what the record needed and did not
+    /// have. Unknown, unsupported and undocumented are untouched.
+    /// </remarks>
+    public bool IsBroadcast
+        => IsKnown
+           && Source.StartsWith(BroadcastMechanism, StringComparison.Ordinal);
+
     /// <summary>How old this reading is, or null when there is none.</summary>
     /// <param name="nowUtc">Reference time.</param>
     /// <returns>The age, or null.</returns>

@@ -826,6 +826,27 @@ public static class AppEvents
                     : null,
                 ["sweeps"] = sweeps,
                 ["sweepsDropped"] = dropped,
+
+                // **WHAT ARRIVED, BEFORE ANYTHING FILTERED IT.** Everything above
+                // is about commands Hamlet sent. Nothing was about what the radio
+                // says on its own, which is what decides whether the frequency on
+                // screen follows the dial in a tenth of a second or in thirty.
+                ["inbound"] = link.Inbound,
+                ["inboundFromRadio"] = link.InboundFromRadio,
+                ["inboundBroadcast"] = link.InboundBroadcast,
+                ["inboundTransceive"] = link.InboundTransceive,
+                ["inboundScope"] = link.InboundScope,
+                ["inboundBytes"] = link.InboundBytes,
+                ["scopeShare"] = link.ScopeShare is { } share
+                    ? Math.Round(share, 3)
+                    : null,
+
+                // Null before anything has arrived at all, because a quiet link
+                // and a radio that is not broadcasting are different facts.
+                ["radioIsBroadcasting"] = link.IsRadioBroadcasting,
+                ["secondsSinceBroadcast"] = link.LastBroadcastUtc is { } b
+                    ? Math.Round((DateTime.UtcNow - b).TotalSeconds, 1)
+                    : null,
             },
             link.IsHealthy ? TelemetryLevel.Info : TelemetryLevel.Warn);
 

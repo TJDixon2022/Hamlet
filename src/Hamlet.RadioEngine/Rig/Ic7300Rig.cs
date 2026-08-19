@@ -605,6 +605,20 @@ public sealed class Ic7300Rig : IRig, IDisposable
     private byte? _lastUnansweredCommand;
     private DateTime? _lastUnansweredUtc;
 
+    // **COUNTED WHERE THE FRAME ARRIVES, NOT WHERE IT IS USED.** Every test in
+    // HandleFrame below can discard a frame, and a count taken after any of them
+    // cannot tell "the radio said nothing" from "Hamlet threw it away". Four
+    // counters and two clocks, all interlocked, allocating nothing: this runs on
+    // the read loop and §8's never-throw discipline binds hardest here.
+    private long _inbound;
+    private long _inboundFromRadio;
+    private long _inboundBroadcast;
+    private long _inboundTransceive;
+    private long _inboundScope;
+    private long _inboundBytes;
+    private long _lastInboundTicks;
+    private long _lastBroadcastTicks;
+
     /// <summary>
     /// How the conversation with the radio is going (HM-DEC-092).
     /// </summary>
@@ -622,7 +636,18 @@ public sealed class Ic7300Rig : IRig, IDisposable
         Interlocked.Read(ref _answered),
         Interlocked.Read(ref _unanswered),
         _lastUnansweredCommand,
-        _lastUnansweredUtc);
+        _lastUnansweredUtc,
+        Interlocked.Read(ref _inbound),
+        Interlocked.Read(ref _inboundFromRadio),
+        Interlocked.Read(ref _inboundBroadcast),
+        Interlocked.Read(ref _inboundTransceive),
+        Interlocked.Read(ref _inboundScope),
+        Interlocked.Read(ref _inboundBytes),
+        Moment(Interlocked.Read(ref _lastInboundTicks)),
+        Moment(Interlocked.Read(ref _lastBroadcastTicks)));
+
+    private static DateTime? Moment(long ticks)
+        => ticks == 0 ? null : new DateTime(ticks, DateTimeKind.Utc);
 
     private async Task ReadLoopAsync(CancellationToken cancellationToken)
     {
@@ -658,6 +683,41 @@ public sealed class Ic7300Rig : IRig, IDisposable
     private void HandleFrame(CivFrame frame)
     {
         FrameTrace?.Invoke(false, frame);
+
+        // **BEFORE EVERY TEST BELOW.** The first of them drops our own echo, the
+        // next three claim frames for the transceive and scope paths, and the
+        // last one drops anything that does not answer the command in flight. A
+        // count taken after any of those answers a different question from the
+        // one that has been argued about for two sessions: did the radio say
+        // anything, and was any of it the operator's own dial.
+        Interlocked.Increment(ref _inbound);
+        Interlocked.Exchange(ref _lastInboundTicks, DateTime.UtcNow.Ticks);
+
+        if (frame.From == _radioAddress)
+        {
+            Interlocked.Increment(ref _inboundFromRadio);
+        }
+
+        if (frame.To == CivConstants.BroadcastAddress)
+        {
+            Interlocked.Increment(ref _inboundBroadcast);
+            Interlocked.Exchange(ref _lastBroadcastTicks, DateTime.UtcNow.Ticks);
+        }
+
+        if (frame.Command is CivConstants.CmdTransceiveFrequency
+            or CivConstants.CmdTransceiveMode)
+        {
+            Interlocked.Increment(ref _inboundTransceive);
+        }
+
+        if (frame.Command == CivConstants.CmdScope)
+        {
+            Interlocked.Increment(ref _inboundScope);
+        }
+
+        // Six bytes of framing and the data area, which is what actually
+        // occupies the cable.
+        Interlocked.Add(ref _inboundBytes, 6 + frame.Data.Length);
 
         // Our own transmission echoed back by the CI-V bus: ignore.
         if (frame.From == _controllerAddress)
