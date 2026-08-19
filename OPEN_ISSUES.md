@@ -5,9 +5,10 @@ Questions with owner and severity. `owner` is who must act next. Format in
 
 ---
 id: HM-OPEN-044
-status: open
+status: closed
 owner: tim
 raised: 2026-08-19
+closed: 2026-08-19
 severity: slows
 blocks: nothing today; the two known cases are now ruled
 refs: HM-DEC-138, HM-DEC-113, CLAUDE.md §9.5, §12.2
@@ -44,6 +45,13 @@ working display for two evenings.
 
 **Not a rule invented by a session.** It is Tim's to rule, which is why this is an
 open item rather than an entry in `DECISIONS.md`.
+
+**CLOSED 2026-08-19 by HM-DEC-139, which ruled the standing heading and ruled that
+it starts now.** Every report's section four ends with `Asks still outstanding`,
+present even when empty, carried verbatim until Tim rules and dropped by the report
+that records the ruling; every work order carries the same list inbound. The marker
+at the site was deferred rather than rejected, and refusing to ship without a ruling
+was rejected on a measured cost.
 
 ---
 id: HM-OPEN-043

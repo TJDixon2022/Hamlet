@@ -1,9 +1,9 @@
-STATE: COMPLETED
-PHASE: 2 of 2
-BALL: web
-NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-18T22:15:13-04:00
-NOTE: Three rulings recorded and two CLAUDE.md sections added; HM-OPEN-044 raised and wants a ruling
+STATE: EXECUTING
+PHASE: 1 of 1
+BALL: code
+NEXT_PASTE: none
+UPDATED: 2026-08-18T23:26:09-04:00
+NOTE: Starting HM-DEC-139 - the standing heading for outstanding asks, and seeding the queue
 
 ---
 

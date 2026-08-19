@@ -1,266 +1,162 @@
 PROJECT: Hamlet
-ISSUED: 2026-08-19
+ISSUED: 2026-08-18
 
-# Work order — three rulings the record is missing
+# Work order — outstanding asks get a standing heading
 
-**PHASES: 2.** That is your `m` for `PHASE: n of m`.
+## Asks still outstanding
 
-**Write `PROJECT_STATUS.md` now, before you read further** — `STATE: EXECUTING`,
-`PHASE: 1 of 2`, `BALL: code`, `UPDATED` from the clock, `NOTE` saying you are
-starting. Then again every ten minutes while a phase runs, with `NOTE` saying what
-you are doing *inside* it, and again at the phase boundary. §13.2 has carried this
-rule since HM-DEC-132; three consecutive sessions did not apply it, which is what
-phase 1 is partly about.
+Carried inbound per HM-DEC-139. Four, checked against `OPEN_ISSUES.md` and the
+recent reports rather than copied forward.
+
+| Ask | First made | Waiting on | Where it already sits in the tree |
+|---|---|---|---|
+| **Whether an attended automatic cycle may reach an antenna** (§0.2, HM-DEC-098) | 2026-08-17 | Every interlock watched to fire into the dummy load, per `BENCH_CARD.md`, including the link pulled mid-cycle | Built and armed: `AutoCaller`, `AutoCallAnswers`, the widget on the making-contacts preset. Dummy load only until this is ruled |
+| **A callsign too long for one keyer send** (HM-DEC-130) | 2026-08-18 | Five minutes at the bench measuring the gap between two sends into the load | Refused, not split. `CwMessage.Split` exists and is unused for this |
+| **Whether the star asks for a name at the moment of saving** (HM-DEC-060, HM-DEC-134) | 2026-08-18 | Nothing but the ruling; handed back under §12.1 clause 3 as a trade-off | Favorites are born unnamed from places the operator was. The manage window renames them afterwards |
+| **Whether Hamlet may ever ask the radio to send its spectrum, and if so when** (HM-DEC-062, HM-DEC-092, HM-OPEN-042) | 2026-08-18 | The ruling. Three ways were put: leave the switch to the operator, ask once on a button, or ask automatically once the counters show the stream is not eating the link | **Not asked at all.** The automatic `27 11` was removed on 2026-08-18 and HM-DEC-062 restored; the reads of `27 10` and `27 11` stay |
+
+**Dropped as ruled since they were asked**, and named here once so the queue is
+not silently shorter than the record: the frequency's cadence (HM-DEC-138), the
+record sweep for rulings resting on a write outcome (ruled B), and HM-OPEN-044
+itself (HM-DEC-139).
+
+---
+
+**One phase. Nothing else is in this order.** Finish it, report, stop.
 
 Gate first (HM-DEC-099): verify `PROJECT: Hamlet` against `PROJECT_CARD.md` in
 this tree and against the prompt you were pasted. Any disagreement, stop.
 
-**This is a records order, not a work unit.** §12.3's five-or-six phases governs
-work units; this is three rulings and two `CLAUDE.md` sections, and padding it to
-five phases would be inventing work. **No source file is changed by this order.**
-If you find yourself editing anything under `src/`, stop — something has gone
-wrong.
+**On the date, before you check it.** The last `OUTPUT.md` carries 2026-08-19,
+which came from a work order's text rather than from this machine's clock — the
+last session reported that discrepancy and it was mine. **This order is dated from
+your clock.** For HM-DEC-135's staleness check, compare `ISSUED` against the
+machine clock, not against that report's date, and do not stop on it. Say in your
+report if the two still disagree.
 
-Every ruling below is Tim's, reproduced verbatim. **None is recorded under §12.1
-and none is a session's to reword.** If a text below disagrees with something you
-find in the tree, say so and stop rather than reconciling it yourself (§12.4).
+**Write `PROJECT_STATUS.md` now, before reading further** (§13.2, §13.3.1,
+HM-DEC-137), then at the finish.
 
 ---
 
-## Phase 1 — HM-DEC-138 and HM-DEC-137
+## What Tim ruled
 
-### 1. HM-DEC-138 — the frequency's cadence, ruled 2026-08-19
+HM-OPEN-044 asked how a shipped change waiting on a ruling gets back in front of
+him. Three options were put; **he ruled the standing heading, and ruled that it
+happens now.**
 
-The last session found that the frequency is already on the live poll in the tree,
-shipped as `099de5a` in the session before it, with the ruling asked for and never
-given. **The code has been running ahead of the record.** Tim ruled to leave it
-live and record it.
+The marker-at-the-site option is not rejected on the merits and is wanted when the
+record is healthier. It is not this order.
 
-Write to `DECISIONS.md` at the head:
+## The one phase
+
+**1. Write this to `DECISIONS.md` at the head**, verbatim. Next free id is 139;
+136 is deliberately absent and is not to be filled.
 
 ```
 ---
-id: HM-DEC-138
+id: HM-DEC-139
 date: 2026-08-19
-refs: src/Hamlet.RadioEngine/Rig/RigPollPlan.cs, src/Hamlet.RadioEngine/Rig/RigStateMonitor.cs, HM-DEC-109, HM-DEC-050, HM-DEC-062
+refs: CLAUDE.md §12.2, HM-OPEN-044, HM-DEC-106, HM-DEC-137, HM-DEC-099, HM-DEC-138
 ---
 
-**The frequency is read on the live poll and stays there. Supersedes HM-DEC-109 on
-this field's cadence and sets aside HM-DEC-050's exemption for it.** The rest of
-HM-DEC-050 stands: rationing a slow shared line is right, and what is set aside is
-one exemption granted in favour of something that is not happening.
+**Every session report carries a heading for asks still outstanding, and every
+work order carries the same list inbound. A report or an order without it is
+defective and is redone.** Closes HM-OPEN-044. Supersedes nothing; HM-DEC-106's
+four sections are unchanged and this is a standing heading within the fourth.
 
-THE PREMISE WAS FALSE AND NOBODY HAD MEASURED IT. HM-DEC-050 exempted the
-frequency from polling because the radio broadcasts it, so asking could only ever
-be more stale. Measured on the operator's own radio on 2026-08-19, session
-`6630ee0f`: 5,499 inbound frames in sixty-one seconds, `inboundTransceive` zero,
-`inboundBroadcast` zero, `radioIsBroadcasting` false. **CI-V Transceive is off on
-this radio and Hamlet does not write the operator's settings.** Asking is not the
-more stale option. It is the only one.
+AN ASK NOBODY ANSWERED LOOKS EXACTLY LIKE AN ASK NOBODY MADE. `099de5a` changed
+the frequency's cadence and asked for the ruling in its own section four. The ask
+was correct, complete and properly placed. Three sessions then inherited the
+change as settled, and one of them — mine — withdrew a draft of that same ruling
+while the code was already in the tree. §9.5 says a decision not in the record is
+not made, and nothing in the project compared the tree against the record. What
+made it invisible was not carelessness. It was that a section four is read once,
+by one person, on one evening, and then the conversation moves.
 
-WHAT IT COSTS, MEASURED RATHER THAN FEARED. A frequency read is six bytes out and
-eleven back. The link already carried 1,380 commands in that minute and answered
-1,379. Four reads a second is under seventy bytes on a cable moving eleven
-thousand, for the field the operator looks at more than any other.
+SO THE QUEUE CARRIES ITSELF FORWARD RATHER THAN BEING REMEMBERED. The heading
+lists every ask still outstanding, each with the date it was first made, what it
+is waiting on, and where the change it concerns already sits in the tree. It is
+carried forward verbatim by every report until Tim rules, and dropped in the
+report that records the ruling. **The heading appears even when the queue is
+empty and says so**, because an absent heading and an empty queue are the same
+sight, and this project has now twice been caught by a silence that looked like
+a state.
 
-REVERTING TO THE SESSION SWEEP WAS REJECTED, and it is the option this ruling
-exists to close. The sweep is what turned the snap-back defect into thirty seconds
-of wrong display instead of one poll: once something put a stale value on screen,
-only the next reading could move it forward. The guard built on 2026-08-19 stops
-that particular write, but a cadence chosen so that the *next* such fault is
-thirty seconds long rather than a quarter of a second is choosing badly on
-purpose.
+AND THE WORK ORDER CARRIES IT INBOUND TOO, for HM-DEC-137's reason and no other.
+A rule that lives in one channel fails when that channel is written in a hurry,
+and both of this project's channels have now failed in the field. One of the two
+will catch.
 
-A CONDITIONAL CADENCE WAS ALSO REJECTED, though `SkipLiveRead` already implements
-it. On a radio that never announces it is the live poll with extra steps, and on
-one that does the broadcast wins the race anyway and costs nothing. What it adds
-is a second mechanism and a decision about which applies — and **push is the thing
-that proved unreliable here.** A display that always asks finds out immediately
-when the radio goes quiet; one that waits to be told finds out two builds later,
-which is what happened.
+IT IS DEFECTIVE RATHER THAN AN OVERSIGHT, which is HM-DEC-099's shape and
+HM-DEC-137's. The failure is one a session cannot detect from inside: a report
+that omits the heading looks complete, and the ask simply stops existing. Holding
+the artifact to it is the only thing that makes the requirement real rather than
+advisory.
 
-THE CODE SHIPPED BEFORE THE RULING AND THAT IS ITS OWN FAULT. `099de5a` changed
-the cadence with the ruling requested in that session's report and not given, and
-the next order withdrew a draft of the same ruling while the change was already in
-the tree. §9.5 says a decision not in the record is not made; this ruling makes it,
-and the gap between the two is worth an open item rather than a shrug.
+THE MARKER AT THE SITE WAS NOT REJECTED, only deferred. A marked assumption that
+a sweep test ages out is the stronger answer, because it survives a session
+forgetting and this one does not. It needs a marker convention and a test, and
+the queue needed to be visible tonight. When the record is healthier it is worth
+taking up.
+
+REFUSING TO SHIP WITHOUT THE RULING WAS REJECTED AND THE COST IS MEASURED, NOT
+FEARED: `099de5a` fixed the display the operator uses more than any other, and
+holding it at the door would have cost him two more evenings of a radio that did
+not track. A queue that is visible is worth more than a gate that is closed.
 ```
 
-**Also raise the gap as an open issue** if nothing in `OPEN_ISSUES.md` already
-holds it: a shipped change carrying an unanswered ruling request, inherited by the
-next session as settled. It is the same shape as HM-DEC-113's invented branch.
+Add the index row at the **true head** of `CLAUDE.md` §1. The head currently reads
+135, 138, 137, 134, with a 2026-08-18 row above two dated 2026-08-19; **leave that
+alone.** It is HM-OPEN-036's own specimen and tidying it in passing is what that
+item exists to prevent.
 
-### 2. HM-DEC-137 — the status instruction, ruled 2026-08-19
+**2. Amend `CLAUDE.md` §12.2** so a session that reads only `CLAUDE.md` finds it:
+the fourth section of `OUTPUT.md` carries a standing heading for asks still
+outstanding, present even when empty, carried forward verbatim until ruled. A
+report without it is defective. Cross-reference §9.6, since the work order carries
+the same list inbound.
 
-Write to `DECISIONS.md` at the head:
+**3. Seed the queue** in this session's own report, since it is the first one that
+must carry it. From the record as it stands, outstanding asks are:
 
-```
----
-id: HM-DEC-137
-date: 2026-08-19
-refs: CLAUDE.md §13, ANNUNCIATOR.md, HM-DEC-132, HM-DEC-131, HM-DEC-099, HM-DEC-135
----
+- **Whether an attended automatic cycle may reach an antenna** (§0.2, HM-DEC-098),
+  awaiting the interlocks watched into the dummy load per `BENCH_CARD.md`.
+- **A callsign too long for one keyer send** (HM-DEC-130), refused until the seam
+  between two sends is measured into the load.
+- **Whether the star asks for a name at the moment of saving** (HM-DEC-060,
+  HM-DEC-134), handed back by an earlier session as §12.1 clause 3 and unruled.
 
-**The status-write instruction lives in `CLAUDE.md` and in every Claude Code work
-order, and an order delivered without it is defective and is redone.** A session
-writes the status whether or not the order it was handed says so. Supersedes
-nothing; HM-DEC-132's triggers and fields are unchanged.
+Check that list against `OPEN_ISSUES.md` and the last three `OUTPUT.md` files
+rather than taking it from me, and add anything I have missed. **If an ask I have
+listed was in fact ruled, say so and leave it out** — a queue that carries settled
+questions forward is worse than none.
 
-THE RULE WAS NEVER THE PROBLEM. §13.2 has carried five triggers since HM-DEC-132,
-including every ten minutes while executing, and consecutive sessions did not
-apply them. One said so directly in its own report: §13 was read, and not applied;
-the order began without a write and crossed two phase boundaries without one. A
-correct rule that nothing carries is indistinguishable from no rule, and the panel
-it feeds showed a working project as dead, which is the exact failure HM-DEC-131
-was written to prevent.
+**4. Add the same list to the top of this file** — `WORK_INSTRUCTIONS.md` is
+committed (HM-DEC-135), so the inbound channel starts carrying it from here rather
+than from the next order.
 
-TWO CHANNELS BECAUSE NEITHER HAS HELD ALONE. A rule only in `CLAUDE.md` is read
-once at the start and forgotten across a phase that runs an hour, which is
-precisely the phase the ten-minute write exists for. A rule only in the prompt is
-lost whenever a prompt is written in a hurry, and every order delivered to this
-project had been missing the closing line `ANNUNCIATOR.md` already required of it.
-Both channels have now failed in the field. One of the two will catch.
+Then write `PROJECT_STATUS.md`, commit and push to `main` (HM-DEC-113), and
+report.
 
-AND A MISSING LINE IS A DEFECT, NOT AN OVERSIGHT. HM-DEC-099 already takes this
-shape: a prompt without its gate is defective and redone, because the failure it
-prevents is one the session cannot detect from inside. The chat side cannot write
-to disk (`ANNUNCIATOR.md`), so the only thing it can be held to is the instruction
-it hands over — and holding it to that is what makes the requirement real rather
-than advisory.
-```
+## Asks still outstanding, inbound
 
-Add a short numbered subsection to `CLAUDE.md` §13 stating both channels and that
-**a session writes the status regardless of what its order says**, so a session
-reading only `CLAUDE.md` is still covered when the order is the thing that failed.
-
-Add both index rows at the **true head** of `CLAUDE.md` §1 — HM-OPEN-036 records
-insertions landing at a fixed anchor instead, and it stays open. Say in your report
-where you placed them.
-
-Then commit and push to `main` (HM-DEC-113), and write `PROJECT_STATUS.md` with
-`PHASE: 2 of 2`.
-
-## Phase 2 — HM-DEC-135, dropped from three orders now
-
-The convention you are reading this under — that a work order is
-`WORK_INSTRUCTIONS.md` at the repository root and the pasted prompt is the gate
-line plus "read that file and execute it" — is unrecorded. It was delivered on
-2026-08-18 and on 2026-08-19 and lost both times. **Its text is reproduced here so
-that nothing has to be found in git history.**
-
-Write to `DECISIONS.md` at the head:
-
-```
----
-id: HM-DEC-135
-date: 2026-08-18
-refs: CLAUDE.md §9.6, WORK_INSTRUCTIONS.md, HM-DEC-100, HM-DEC-106, HM-DEC-099
----
-
-**A Claude Code work order is delivered as `WORK_INSTRUCTIONS.md` at the
-repository root, and the prompt Tim pastes says only which project it is and to
-read that file and execute it.** Amends HM-DEC-100 on what the pasteable prompt
-contains and supersedes nothing.
-
-THIS IS HM-DEC-106 POINTED THE OTHER WAY. That ruling moved the session's report
-out of the terminal and into `OUTPUT.md`, because reports were being read off
-photographs of a scrollback buffer and a report Tim has to photograph is a report
-he reads less carefully. The inbound half had the same defect and nobody had named
-it: a work order pasted into a prompt box is retyped, is truncated by whatever the
-buffer holds, cannot be diffed, cannot be committed, and is gone the moment the
-window closes. The two files are a pair. Work comes in through one and goes back
-out through the other, both at the root, both in the tree the session is about to
-change.
-
-WHAT THE PASTED PROMPT CONTAINS IS NOW TWO LINES: the gate, and the instruction to
-read and execute. HM-DEC-100 stands otherwise. A delivery is still a single
-scaffolded zip extracted over the root, still never a snippet, still never a file
-Tim places or patches by hand, and `WORK_INSTRUCTIONS.md` rides in that zip like
-everything else.
-
-THE GATE IS IN BOTH PLACES AND THAT IS NOT BELT AND BRACES. HM-DEC-099 requires
-`PROJECT: Hamlet` on every prompt and every work order, and a one-line prompt makes
-the failure it guards against worse rather than better: pasted into the wrong
-repository, "read `WORK_INSTRUCTIONS.md` and execute it" finds that project's file
-and executes somebody else's work order, with a gate that agrees with itself the
-whole way down. So the prompt carries the gate, the file carries the gate, and the
-session checks both against `PROJECT_CARD.md`. Any of the three disagreeing stops
-the session.
-
-AND IT CARRIES THE DATE IT WAS ISSUED, because a file at a fixed path is a file
-that can be read twice. `WORK_INSTRUCTIONS.md` is overwritten whole per work
-order, in the manner of `PROJECT_STATUS.md`, so a session opening one older than
-the last `OUTPUT.md` is looking at work already done and stops. A pasted prompt
-could not be stale; a file can.
-
-IT IS COMMITTED. The work order that produced a commit is worth having beside it,
-and a session that wants to know why the last one did something has the
-instruction it was given rather than an inference from the diff.
-```
-
-Add `§9.6` to `CLAUDE.md`, after §9.5:
-
-```
-### 9.6 The work order — ABSOLUTE, Claude Code sessions
-
-A work order is a file, never pasted text (HM-DEC-135). It is
-`WORK_INSTRUCTIONS.md` at the repository root, it arrives in the delivery zip like
-any other file (§9.1), and it is committed.
-
-The prompt Tim pastes is two lines and nothing else:
-
-    PROJECT: Hamlet
-
-    Read WORK_INSTRUCTIONS.md at the repository root and execute it.
-
-**Both carry the gate and the session verifies both against `PROJECT_CARD.md`**
-(§13, HM-DEC-099). A one-line prompt in the wrong repository would read that
-project's work order and find a gate that agrees with itself, which is the one
-failure §9's gate exists to prevent.
-
-The file opens with `PROJECT:` and `ISSUED:`. It is overwritten whole per work
-order, so a session opening one dated earlier than `OUTPUT.md` is holding work
-already done: it says so and stops.
-
-**Its phases are worked as numbered.** A phase is skipped only where the order
-names it droppable, and an item the order names and leaves (§12.6) is not worked
-instead. A session that departs from the numbering says so in section one.
-
-**Every order carries the status instruction of §13 and states its phase count**
-(HM-DEC-137). An order missing either is defective and is redone; the session
-writes the status regardless.
-
-`WORK_INSTRUCTIONS.md` in, `OUTPUT.md` out (HM-DEC-106). Both at the root, both
-committed, both in the tree the session is changing.
-```
-
-Add its index row at the true head of §1, dated 2026-08-18.
-
-Then commit and push to `main`, write `PROJECT_STATUS.md` with `STATE: COMPLETED`
-or `BLOCKED`, `BALL: web`, `NEXT_PASTE: OUTPUT.md -> Claude Web`, and report.
-
----
+Per HM-DEC-139 as written above, and the reason step 3 exists: the three items
+listed there are the queue as I hold it. This heading is the channel from now on.
 
 ## Named and left (§12.6)
 
+- `DECISIONS.md` missing entries for 096 to 133 — the largest hole in the record,
+  and next.
+- HM-OPEN-036, §1's head ordering, whenever it is opened deliberately.
+- The record sweep for rulings resting on a write outcome (Tim ruled B).
+- The automatic `27 11` at connect, half the cable, against HM-DEC-062.
 - HM-OPEN-042's remaining rungs.
-- The record sweep for rulings resting on a write outcome (Tim ruled option B).
-- `DECISIONS.md` missing entries for 096 to 133.
-- HM-OPEN-036, §1's head ordering.
 - Mode follow, favorites, the recent list.
-- **HM-DEC-136 does not exist and is not to be written.** It was drafted on
-  2026-08-18, withdrawn before delivery when the operator's manual tuning
-  disproved its premise, and named as withdrawn in that order. The gap in the
-  numbering is deliberate. HM-DEC-138 is what the question was eventually ruled.
 
 ## Reporting
 
-`OUTPUT.md`, four sections (HM-DEC-106). Section one carries each entry you wrote
-in full and says where in §1 you placed its row.
+`OUTPUT.md`, four sections (HM-DEC-106), with section four now carrying the
+standing heading this order creates.
 
 **Stop and report. Do not start anything else.**
-
----
-
-Update `PROJECT_STATUS.md` per `CLAUDE.md`'s status section at each transition and
-every ten minutes while executing. **This order contains 2 phases.**

@@ -4,6 +4,57 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-139
+date: 2026-08-19
+refs: CLAUDE.md §12.2, HM-OPEN-044, HM-DEC-106, HM-DEC-137, HM-DEC-099, HM-DEC-138
+---
+
+**Every session report carries a heading for asks still outstanding, and every
+work order carries the same list inbound. A report or an order without it is
+defective and is redone.** Closes HM-OPEN-044. Supersedes nothing; HM-DEC-106's
+four sections are unchanged and this is a standing heading within the fourth.
+
+AN ASK NOBODY ANSWERED LOOKS EXACTLY LIKE AN ASK NOBODY MADE. `099de5a` changed
+the frequency's cadence and asked for the ruling in its own section four. The ask
+was correct, complete and properly placed. Three sessions then inherited the
+change as settled, and one of them — mine — withdrew a draft of that same ruling
+while the code was already in the tree. §9.5 says a decision not in the record is
+not made, and nothing in the project compared the tree against the record. What
+made it invisible was not carelessness. It was that a section four is read once,
+by one person, on one evening, and then the conversation moves.
+
+SO THE QUEUE CARRIES ITSELF FORWARD RATHER THAN BEING REMEMBERED. The heading
+lists every ask still outstanding, each with the date it was first made, what it
+is waiting on, and where the change it concerns already sits in the tree. It is
+carried forward verbatim by every report until Tim rules, and dropped in the
+report that records the ruling. **The heading appears even when the queue is
+empty and says so**, because an absent heading and an empty queue are the same
+sight, and this project has now twice been caught by a silence that looked like
+a state.
+
+AND THE WORK ORDER CARRIES IT INBOUND TOO, for HM-DEC-137's reason and no other.
+A rule that lives in one channel fails when that channel is written in a hurry,
+and both of this project's channels have now failed in the field. One of the two
+will catch.
+
+IT IS DEFECTIVE RATHER THAN AN OVERSIGHT, which is HM-DEC-099's shape and
+HM-DEC-137's. The failure is one a session cannot detect from inside: a report
+that omits the heading looks complete, and the ask simply stops existing. Holding
+the artifact to it is the only thing that makes the requirement real rather than
+advisory.
+
+THE MARKER AT THE SITE WAS NOT REJECTED, only deferred. A marked assumption that
+a sweep test ages out is the stronger answer, because it survives a session
+forgetting and this one does not. It needs a marker convention and a test, and
+the queue needed to be visible tonight. When the record is healthier it is worth
+taking up.
+
+REFUSING TO SHIP WITHOUT THE RULING WAS REJECTED AND THE COST IS MEASURED, NOT
+FEARED: `099de5a` fixed the display the operator uses more than any other, and
+holding it at the door would have cost him two more evenings of a radio that did
+not track. A queue that is visible is worth more than a gate that is closed.
+
+---
 id: HM-DEC-135
 date: 2026-08-18
 refs: CLAUDE.md §9.6, WORK_INSTRUCTIONS.md, HM-DEC-100, HM-DEC-106, HM-DEC-099

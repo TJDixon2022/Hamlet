@@ -346,6 +346,7 @@ this table is the index.
 
 | Date | Decision | Why | Ref |
 |---|---|---|---|
+| 2026-08-19 | **Every session report carries a heading for asks still outstanding, and every work order carries the same list inbound; a report or an order without it is defective and is redone.** Closes HM-OPEN-044 and supersedes nothing — HM-DEC-106's four sections stand and this is a standing heading within the fourth. **An ask nobody answered looks exactly like an ask nobody made**: `099de5a` changed the frequency's cadence and asked for the ruling in its own section four, correctly and completely, and three sessions inherited the change as settled while one withdrew a draft of that same ruling with the code already in the tree. What made it invisible was not carelessness but that a section four is read once, on one evening, and then the conversation moves. **So the queue carries itself forward rather than being remembered**, each ask with the date it was first made, what it waits on and where its change already sits, carried verbatim until ruled and dropped by the report that records the ruling. **The heading appears even when the queue is empty and says so**, because an absent heading and an empty queue are the same sight. **The marker at the site was deferred rather than rejected** as the stronger answer that needs a convention and a test, and **refusing to ship without the ruling was rejected on a measured cost**: it would have held the display fix for two more evenings. | A queue that is visible is worth more than a gate that is closed. | HM-DEC-139 |
 | 2026-08-18 | **A Claude Code work order is delivered as `WORK_INSTRUCTIONS.md` at the repository root, and the pasted prompt says only which project it is and to read that file and execute it.** Amends HM-DEC-100 on what the prompt contains and supersedes nothing. **This is HM-DEC-106 pointed the other way**: that ruling moved the report into `OUTPUT.md` because a report read off a photograph is read less carefully, and the inbound half had the same defect unnamed — a pasted order is retyped, truncated by the buffer, cannot be diffed or committed, and is gone when the window closes. **The gate is in both places and that is not belt and braces**: a one-line prompt in the wrong repository would read that project's order and find a gate agreeing with itself all the way down, so prompt, file and `PROJECT_CARD.md` are all checked and any disagreement stops the session. **It carries its issue date** because a file at a fixed path can be read twice, and one older than `OUTPUT.md` is work already done. It is committed, so the order that produced a commit sits beside it. | Work comes in through one file and goes back out through the other, both at the root, both in the tree the session is changing. | HM-DEC-135 |
 | 2026-08-19 | **The frequency is read on the live poll and stays there, superseding HM-DEC-109 on this field's cadence and setting aside HM-DEC-050's exemption for it.** The rest of that ruling stands; what is set aside is one exemption granted in favour of something that is not happening. **The premise was false and nobody had measured it**: the frequency was exempt because the radio broadcasts it, and on the operator's own radio 5,499 frames arrived in sixty-one seconds with `inboundTransceive` zero, `radioIsBroadcasting` false. Asking is not the more stale option, it is the only one. **The cost was measured rather than feared** — six bytes out and eleven back, under seventy bytes a second on a cable moving eleven thousand. **Reverting to the session sweep was rejected**, because that sweep is what turned the snap-back into thirty seconds of wrong display instead of one poll, and a cadence chosen so the next such fault lasts thirty seconds is choosing badly on purpose; **a conditional cadence was rejected** as a second mechanism resting on the push that proved unreliable here. | The code shipped in `099de5a` with the ruling asked for and never given, and a decision not in the record is not made. | HM-DEC-138 |
 | 2026-08-19 | **The status-write instruction lives in `CLAUDE.md` and in every Claude Code work order, and an order delivered without it is defective and is redone. A session writes the status whether or not its order says so.** HM-DEC-132's triggers and fields are unchanged. **The rule was never the problem**: §13.2 has carried five triggers since that ruling and consecutive sessions did not apply them, one saying so in its own report — read, and not applied, with two phase boundaries crossed without a write. A correct rule that nothing carries is indistinguishable from no rule, and the panel showed a working project as dead. **Two channels because neither has held alone**: this file is read once and forgotten across the hour-long phase the ten-minute write exists for, and a prompt written in a hurry loses the line. **A missing line is a defect rather than an oversight**, on HM-DEC-099's precedent, because the chat side cannot write to disk and the instruction it hands over is the only thing it can be held to. | A rule nothing carries into the session is the same as no rule, and it had already failed three times running. | HM-DEC-137 |
@@ -1040,6 +1041,11 @@ instead. A session that departs from the numbering says so in section one.
 (HM-DEC-137). An order missing either is defective and is redone; the session
 writes the status regardless.
 
+**And every order carries `Asks still outstanding`**, the same queue the report
+carries back (§12.2, HM-DEC-139). An order without it is defective in the same
+way, and the session reconstructs the queue from `OPEN_ISSUES.md` and the recent
+reports rather than treating the omission as an empty queue.
+
 `WORK_INSTRUCTIONS.md` in, `OUTPUT.md` out (HM-DEC-106). Both at the root, both
 committed, both in the tree the session is changing.
 
@@ -1159,6 +1165,20 @@ necessary, in the order it should happen, one line each.
 question needing Tim's ruling** — each in `DECISIONS.md`'s own format, ruling
 first, then reasoning, then what was rejected and why, no id assigned. Ordered
 with the one blocking the most work first. Empty is a real answer.
+
+**Section four ends with a standing heading, `Asks still outstanding`, and it is
+present even when the queue is empty** (HM-DEC-139). It lists every ask from any
+earlier session that Tim has not yet ruled on, each with the date it was first
+made, what it is waiting on, and where the change it concerns already sits in the
+tree. It is carried forward **verbatim** until he rules, and dropped by the report
+that records the ruling. **A report without the heading is defective and is
+redone**, and an empty queue says so in words, because an absent heading and an
+empty queue are the same sight.
+
+The work order carries the same list inbound (§9.6), for HM-DEC-137's reason: both
+of this project's channels have failed in the field and one of the two will catch.
+**An ask that was answered is dropped rather than carried**, since a queue holding
+settled questions is worse than none.
 
 The first line of section 1 states the surface and the gate: which machine,
 which project name the prompt claimed, and what in the tree confirmed it
