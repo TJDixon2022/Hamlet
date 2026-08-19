@@ -1,118 +1,126 @@
 # What Claude did
 
-**Hamlet confirmed.** `Hamlet.sln` and `src\Hamlet.RadioEngine\Cw\CwCaseRoster.cs`
-exist; `CoreHMI.sln` and `src\CoreHMI` do not. Development machine, **no radio**
+**Hamlet confirmed.** `Hamlet.sln` and `src\Hamlet.RadioEngine\Cw\CwGate.cs` exist;
+`CoreHMI.sln` and `src\CoreHMI` do not. Development machine, **no radio**
 (HM-DEC-093) — nothing in this report is evidence about the radio. Branch `main`,
 **committed and not pushed**.
 
-**Both tasks done.**
+**Both tasks done. The defect was real.**
 
-## Task 1 — the row carries what Hamlet read
+## Task 1 — the file is named for the evening
 
-**Placement: the new `text` column goes ninth, immediately before `read`, and
-`read` stays last.** Two reasons, and the second is the one that decided it.
+**What it did before, checked rather than assumed.** `CwCaseRoster.FileName` read
+`$"cases-{atUtc:yyyy-MM-dd}.txt"` and `Append` handed it `one.AtUtc` — **the UTC
+date, throughout.** This machine is on EDT, UTC−4, so an evening starting at eight
+would have opened `cases-2026-08-19.txt` and silently begun `cases-2026-08-20.txt`
+at eight o'clock local. The instruction's premise holds.
 
-The readable one: every column to the left of `read` is something Hamlet measured,
-and `text` is the last and largest of those. Putting it after the verdict would
-split his column away from the right-hand edge, where it is found by eye without
-counting across.
+**What it does now.** The name takes the local date. Everything inside is
+untouched: the `time` column is still UTC, still in the same position, still
+formatted the same way.
 
-The load-bearing one: `read` being the **final** column is what makes an empty cell
-visibly empty. A row ending in a tab and nothing is unmistakable; a row with an
-empty cell in the middle of it is a column somebody forgot to fill in. The whole
-point of that column is that Hamlet never writes to it (HM-DEC-091), so it should
-be the one place on the row where blank is obviously deliberate.
+**The line each file opens with**, above the column header:
 
-**What the column contains.** `Transcript.Tail(120)` at the moment of the press —
-what he was looking at when he decided there was a station there. A hundred and
-twenty is `CwTranscript.LongestTip`'s own figure and carries several overs at any
-speed.
+```
+# Evening of Wednesday 19 August 2026 at the rig, local time UTC-04:00. Every time below is UTC.
+```
 
-**Nothing can split the row.** `CwCaseRoster.Readable` replaces tab, carriage
-return and newline with a single space and trims. The decoder emits none of those
-today; the file tomorrow is scored from should not depend on that staying true.
+Four choices in it, and each is doing work. The **day name and long month** so no
+reader has to decide whether `08-19` is August or the nineteenth. **"At the rig"**
+so it is plain the date is about where he was sitting rather than about the air.
+**The offset as it stood that night**, taken from the zone rather than a constant,
+so somebody reading a January file is not left working out whether daylight saving
+was in force. And a **leading `#`**, so a scorer can tell a note from a row without
+having to understand the note.
 
-**An empty transcript says `nothing read`, in words.** Not blank. A station heard
-and nothing read is the case the whole measure exists to count, and it must not
-look like an unfilled cell.
+**One clock names the file, the other stamps the rows, and the file says which is
+which on its own first line** (HM-DEC-091). That was the part worth getting right:
+two clocks on one sheet is exactly the fault that ruling exists for, and the
+convention now lives in the file rather than in anybody's memory.
 
-**The sidecar got it too, in full** rather than tailed — `Transcript.PlainText`,
-through the same `Readable`. It was not difficult, so it is done rather than
-skipped.
+## Task 2 — the crossing is proved
 
-**One thing I changed that the order did not name, and why.** The sidecar's new
-line is labelled **`text`**, not `read`. `read` is the name of the roster's
-operator column, and two fields one letter apart — one a machine's output, one a
-person's judgement — is a confusion waiting for the evening somebody scores thirty
-of them. If you want them both called `read`, say so and it is one word.
+**The seam is a `TimeZoneInfo` parameter on the roster and nowhere else.**
+`FileName`, `Evening` and `Append` each take an optional zone that defaults to the
+machine's. The application passes nothing, so it uses the shack's own clock; the
+test passes a fixed UTC−4 zone, so it depends on neither the machine's timezone nor
+the time of year. Nothing was added to the decoder, the tap or the view model.
 
-## Task 2 — proved on real audio, in the existing tests
+`AnEveningThatCrossesUtcMidnightIsStillOneFile` presses at 23:30 UTC on the 19th
+and 01:30 UTC on the 20th — half past seven and half past nine at the rig. It
+**asserts the two stamps fall on different UTC dates before asking the roster
+anything**, so the test cannot quietly stop crossing the boundary it is named for.
+Then: one path, one file, named `cases-2026-08-19.txt`, four lines, the evening line
+exact, and both rows still stamped in UTC and in the order they were pressed.
 
-The three task-4 tests were **extended**, not duplicated.
-`tests\fixtures\cw\captured\cw-2026-08-18-004507.wav` through `BufferedAudioSource`,
-as before. Two new cases were added beside them for the two conditions the end-to-end
-test cannot produce — an empty transcript and a transcript containing a tab.
+**Six tests in that file, all green. 2,008 tests, the same three red.**
 
-Five tests, all green. What they now assert:
+**A mismatch to report, since it is the one place two of your instructions
+collide.** Task 1 requires a line above the column header; task 2 says the existing
+five tests stay green and are not rewritten. Adding a line necessarily moves every
+line index below it, so **three assertions in two existing tests had to move** —
+`lines.Length` from 3 to 4, the header from `lines[0]` to `lines[1]`, the two rows
+from `lines[1]`/`lines[2]` to `lines[2]`/`lines[3]`, and the one-line-per-row sweep
+now skips the note. **No test's substance changed and none was rewritten**; they
+assert what they asserted before, one line further down, and they gained assertions
+about the new line rather than losing any.
 
-- a press after real decoding carries what the decoder emitted, and the cell is
-  **not** `nothing read`;
-- the row is **ten** columns, and the tenth is empty;
-- a press the freshness guard refused still lands a row **with the text column
-  filled** — he heard the station whether or not a recording was written;
-- an empty transcript renders `nothing read` and is not blank;
-- a transcript carrying `CQ\tDE\r\nW1AW K` still produces **one line with exactly
-  nine tabs**.
-
-**The gap from last session is unchanged and still stated**: this drives the
-decoder, the tap, the WAV writer and the roster, not `CaptureAudioAsync` itself.
-That command's decoder is fed by `OpenAudioInput()` and there is no seam to hand it
-a file.
+**A fragility I am naming and have not repaired** (§12.6).
+`TheRosterIsOneFilePerEvening` uses 22:00 UTC and expects `cases-2026-08-19.txt`.
+That is right on this machine and on any clock west of Greenwich, and it would fail
+on a build agent east of about UTC+2. Repairing it means passing it the fixed zone,
+which is rewriting a test the order says not to rewrite. **The new test is hermetic
+and that one is not.**
 
 **Nothing was recorded to `DECISIONS.md` this session.**
 
 # What Tim should expect
 
-- **The roster gains a column and the operator's column has not moved** — it is
-  still the last one and still empty.
-- **A roster from tonight will be wider.** It is still tab-separated and still
-  lines up in a text editor, but a row now runs to the width of the decoded text.
-  A spreadsheet handles it without comment.
-- **The sidecar beside each recording now ends with a `text` line** carrying the
-  whole transcript rather than only counts. That is the thing last session's report
-  said was missing.
-- **2,007 tests, 3 failing** — the same three, by name:
+- **Tonight is one file: `cases-2026-08-19.txt`**, and it stays that file when the
+  clock passes eight o'clock and UTC rolls over. Nothing new appears at 20:00.
+- **The file opens with a `#` line naming the evening**, then the column header,
+  then your rows. **A scorer skips two lines now, not one.**
+- **Every time in the rows is still UTC** — unchanged, deliberately. A row stamped
+  `01:30:00` in a file named for the 19th was sent at half past nine your time, and
+  the first line of the file says so.
+- **WAV and sidecar filenames are unchanged** and still stamped UTC, so a row still
+  matches its recording by name and yesterday's captures still line up.
+- **No columns moved and `read` is still last and still empty.**
+- **2,008 tests, 3 failing** — the same three, by name:
   `CwSettledSilenceTests.APassThatReadSomethingEmitsSomething`,
   `CwFarnsworthTests.TheBulletinDecodesToItsAnswerKey`,
-  `CwTerminalTests.ClearingTheTranscriptLeavesTheDecoderAlone`. Two more tests than
+  `CwTerminalTests.ClearingTheTranscriptLeavesTheDecoderAlone`. One test more than
   last session and the same three red.
 - **No decoder behaviour changed.** `CwGate`, `CwSettledPass`, `CwToneSurvey` and
-  `CwDecoder` are untouched, so tonight still measures the decoder you have been
-  running.
+  `CwDecoder` are untouched, so tonight measures the decoder you have been running.
 - **Committed, not pushed**, on `main`.
 
 # What you should see
 
-A real roster from the test run, on the real capture, printed by the test itself:
+The first three lines of tonight's file, as they will appear — the note, the header,
+and a row, printed by the test run rather than composed here:
 
 ```
-time      frequency  band   wav                                     toneHz  snrDb  wpm  chars                 text                                               read
-23:14:05  7.030      40 m   cw-2026-08-19-231405.wav                505     42.7   22   19 emitted, 6 unsure  N L D O T NET ■E ECH STATION HANDNG AHIS MESAGE P
-23:14:25  7.030      40 m   none (no new audio since the last one)  505     42.7   22   19 emitted, 6 unsure  N L D O T NET ■E ECH STATION HANDNG AHIS MESAGE P
+# Evening of Wednesday 19 August 2026 at the rig, local time UTC-04:00. Every time below is UTC.
+time      frequency  band   wav                       toneHz  snrDb  wpm  chars                 text                                               read
+23:14:05  7.030      40 m   cw-2026-08-19-231405.wav  505     42.7   22   19 emitted, 6 unsure  N L D O T NET ■E ECH STATION HANDNG AHIS MESAGE P
 ```
 
-**That is the whole change, and you can score both rows without opening a file.**
-The first is a case Hamlet half-read: `STATION` and `NET` are there, `HANDNG` and
-`MESAGE` are a letter short each, and the opening is gone. Whether that counts as
-read is your call, which is the point — but you can make it from the sheet.
+**And the crossing, which is the whole of this unit**, from the new test:
 
-The second row is the freshness guard refusing a duplicate. It kept no audio and it
-**still carries the text**, so a case with no recording is still scorable rather
-than being a row you have to skip.
+```
+# Evening of Wednesday 19 August 2026 at the rig, local time UTC-04:00. Every time below is UTC.
+time      frequency  band   wav                       toneHz  snrDb  wpm  chars                 text            read
+23:30:00  7.030      40 m   cw-2026-08-19-233000.wav  505     42.7   22   19 emitted, 6 unsure  CQ CQ DE W1AW
+01:30:00  7.030      40 m   cw-2026-08-20-013000.wav  505     38.1   22   4 emitted, 0 unsure   K3XYZ
+```
 
-**A station you hear that Hamlet reads nothing of** will read `nothing read` in
-that column. That row is the one the percentage turns on, and it will not look like
-a blank you forgot to fill in.
+Half past seven and half past nine, one evening, **one file** — and before this
+change the second of those two rows was in a file named for tomorrow, with nothing
+anywhere saying it existed.
+
+Tomorrow morning you open one file, and the count you take from it is the count for
+the whole evening.
 
 # What's blocking us
 

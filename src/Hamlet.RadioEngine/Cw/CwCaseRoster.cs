@@ -70,10 +70,60 @@ public static class CwCaseRoster
         "read");
 
     /// <summary>What a roster file is called for a given evening.</summary>
-    /// <param name="atUtc">Any moment in it.</param>
+    /// <param name="atUtc">Any moment in it, UTC.</param>
+    /// <param name="zone">The shack's own clock; the machine's when omitted.</param>
     /// <returns>The file name.</returns>
-    public static string FileName(DateTime atUtc)
-        => $"cases-{atUtc:yyyy-MM-dd}.txt";
+    /// <remarks>
+    /// <para>**THE NAME TAKES THE LOCAL DATE, AND THAT IS THE WHOLE POINT.** An
+    /// evening at the rig in Pennsylvania begins around eight and crosses midnight
+    /// UTC four hours later, so a file named for the UTC date **splits one evening
+    /// in two** and hides the second half in a file named for tomorrow. Scoring
+    /// the first file and taking its count would report a percentage whose
+    /// denominator had quietly lost part of itself, which is worse than no measure
+    /// at all because it comes with confidence attached (§0.0).</para>
+    /// <para>**THE ROWS INSIDE STAY UTC** and nothing here converts them. The two
+    /// clocks are deliberate: the name answers "which evening was this", which is a
+    /// question about a person, and the rows answer "when was this on the air",
+    /// which is not. **The file says which is which on its own first line**
+    /// (HM-DEC-091), because two clocks on one sheet is exactly the shape of fault
+    /// that ruling exists for and a convention held only in somebody's memory is
+    /// not a source.</para>
+    /// </remarks>
+    public static string FileName(DateTime atUtc, TimeZoneInfo? zone = null)
+        => $"cases-{Local(atUtc, zone):yyyy-MM-dd}.txt";
+
+    /// <summary>The line each roster opens with, above the column header.</summary>
+    /// <param name="atUtc">Any moment in the evening, UTC.</param>
+    /// <param name="zone">The shack's own clock; the machine's when omitted.</param>
+    /// <returns>The line, without its terminator.</returns>
+    /// <remarks>
+    /// **FOR SOMEBODY READING THIS FILE COLD IN SIX MONTHS.** It names the evening
+    /// in the clock the file is named for, says in the same breath that the times
+    /// below are in the other one, and gives the offset between them **as it stood
+    /// that night**, so a reader in a different part of the year is not left to
+    /// work out whether daylight saving was in force. It opens with a `#` so a
+    /// scorer can tell a note from a row without knowing what the note says.
+    /// </remarks>
+    public static string Evening(DateTime atUtc, TimeZoneInfo? zone = null)
+    {
+        var here = zone ?? TimeZoneInfo.Local;
+        var utc = DateTime.SpecifyKind(atUtc, DateTimeKind.Utc);
+        var offset = here.GetUtcOffset(utc);
+        var sign = offset < TimeSpan.Zero ? "-" : "+";
+
+        return string.Concat(
+            "# Evening of ",
+            Local(atUtc, here).ToString("dddd d MMMM yyyy", CultureInfo.InvariantCulture),
+            " at the rig, local time UTC",
+            sign,
+            offset.Duration().ToString(@"hh\:mm", CultureInfo.InvariantCulture),
+            ". Every time below is UTC.");
+    }
+
+    private static DateTime Local(DateTime atUtc, TimeZoneInfo? zone)
+        => TimeZoneInfo.ConvertTimeFromUtc(
+            DateTime.SpecifyKind(atUtc, DateTimeKind.Utc),
+            zone ?? TimeZoneInfo.Local);
 
     /// <summary>One row, as it is written.</summary>
     /// <param name="one">The case.</param>
@@ -158,18 +208,19 @@ public static class CwCaseRoster
     /// <summary>Append one case to the evening's roster, creating it if new.</summary>
     /// <param name="folder">Where captures are kept.</param>
     /// <param name="one">The case.</param>
+    /// <param name="zone">The shack's own clock; the machine's when omitted.</param>
     /// <returns>The path written to.</returns>
     /// <remarks>
     /// Never throws: a roster that takes the application down with it is worse
     /// than one that misses a row (§8), and the press has already kept the audio
     /// by the time this runs.
     /// </remarks>
-    public static string Append(string folder, CwCase one)
+    public static string Append(string folder, CwCase one, TimeZoneInfo? zone = null)
     {
         ArgumentNullException.ThrowIfNull(folder);
         ArgumentNullException.ThrowIfNull(one);
 
-        var path = Path.Combine(folder, FileName(one.AtUtc));
+        var path = Path.Combine(folder, FileName(one.AtUtc, zone));
 
         try
         {
@@ -180,6 +231,7 @@ public static class CwCaseRoster
 
             if (fresh)
             {
+                text.AppendLine(Evening(one.AtUtc, zone));
                 text.AppendLine(Header);
             }
 

@@ -153,11 +153,17 @@ public sealed class CaseRosterSurvivesAnEveningTests : IDisposable
             _output.WriteLine(line);
         }
 
-        Assert.Equal(3, lines.Length);
-        Assert.Equal(CwCaseRoster.Header, lines[0]);
+        // The evening line, then the column header, then the two presses. The
+        // first line names the local evening and says the times below are UTC; it
+        // sits above the header rather than in it because it describes the file
+        // rather than a column (HM-DEC-091).
+        Assert.Equal(4, lines.Length);
+        Assert.StartsWith("# Evening of ", lines[0], StringComparison.Ordinal);
+        Assert.Contains("Every time below is UTC", lines[0], StringComparison.Ordinal);
+        Assert.Equal(CwCaseRoster.Header, lines[1]);
 
-        var first = lines[1].Split('\t');
-        var second = lines[2].Split('\t');
+        var first = lines[2].Split('\t');
+        var second = lines[3].Split('\t');
 
         // The kept recording is named on the row, and the roster agrees with the
         // decoder that produced the sidecar's own numbers (HM-DEC-091: one source).
@@ -192,12 +198,16 @@ public sealed class CaseRosterSurvivesAnEveningTests : IDisposable
 
         // **ONE ROW IS ONE LINE**, or the columns after the text land under the
         // wrong headings and tomorrow's scoring is done against a shifted file.
-        foreach (var line in lines)
+        foreach (var line in lines.Skip(1))
         {
             Assert.DoesNotContain('\n', line);
             Assert.DoesNotContain('\r', line);
             Assert.Equal(9, line.Count(c => c == '\t'));
         }
+
+        // And the evening line carries no tabs at all, so a scorer splitting the
+        // file on them sees a note rather than a row of empty columns.
+        Assert.DoesNotContain('\t', lines[0]);
     }
 
     /// <remarks>
@@ -277,6 +287,86 @@ public sealed class CaseRosterSurvivesAnEveningTests : IDisposable
         Assert.Contains("CQ DE", row, StringComparison.Ordinal);
     }
 
+    /// <summary>The shack's own clock, so no test depends on the machine's.</summary>
+    /// <remarks>
+    /// Pennsylvania in August, fixed rather than looked up: a test that reads the
+    /// machine's zone passes here and fails on a build agent in London, and a test
+    /// that reads the real Eastern zone would change its answer in November. The
+    /// offset is the subject of this test, so it is stated.
+    /// </remarks>
+    private static readonly TimeZoneInfo Shack = TimeZoneInfo.CreateCustomTimeZone(
+        "shack", TimeSpan.FromHours(-4), "shack", "shack");
+
+    /// <remarks>
+    /// <para>**ONE EVENING AT THE RIG IS ONE FILE.** He starts around eight and
+    /// works past midnight UTC without moving, so a roster named for the UTC date
+    /// would put the first part of the evening in one file and everything after
+    /// eight o'clock local in another named for tomorrow. Scoring the first file
+    /// and taking its count reports a percentage whose denominator lost the second
+    /// half of the evening, and nothing on the sheet says the rest exists.</para>
+    /// <para>Both presses here are on the same local evening and **straddle
+    /// midnight UTC**, which the test states rather than assumes: the later press
+    /// is asserted to fall on the following UTC date before the roster is asked
+    /// anything.</para>
+    /// </remarks>
+    [Fact]
+    public void AnEveningThatCrossesUtcMidnightIsStillOneFile()
+    {
+        // Half past seven and half past nine, at the rig.
+        var early = new DateTime(2026, 8, 19, 23, 30, 0, DateTimeKind.Utc);
+        var late = new DateTime(2026, 8, 20, 1, 30, 0, DateTimeKind.Utc);
+
+        // The crossing is the point, so it is proved rather than trusted: the two
+        // presses are two hours apart on one evening and land on different UTC
+        // dates.
+        Assert.NotEqual(early.Date, late.Date);
+        Assert.Equal(TimeSpan.FromHours(2), late - early);
+
+        var first = CwCaseRoster.Append(
+            _folder,
+            new CwCase(early, 7_030_000, "40 m", "cw-2026-08-19-233000.wav", "",
+                505, 42.7, 22, 19, 6, "CQ CQ DE W1AW"),
+            Shack);
+
+        var second = CwCaseRoster.Append(
+            _folder,
+            new CwCase(late, 7_030_000, "40 m", "cw-2026-08-20-013000.wav", "",
+                505, 38.1, 22, 4, 0, "K3XYZ"),
+            Shack);
+
+        // One file, named for the evening he sat down in rather than for the UTC
+        // date the second press happened to fall on.
+        Assert.Equal(first, second);
+        Assert.Equal("cases-2026-08-19.txt", Path.GetFileName(first));
+        Assert.Single(Directory.GetFiles(_folder, "cases-*.txt"));
+
+        var lines = File.ReadAllLines(first);
+
+        foreach (var line in lines)
+        {
+            _output.WriteLine(line);
+        }
+
+        Assert.Equal(4, lines.Length);
+
+        // **AND THE FILE SAYS WHICH CLOCK IS WHICH**, so nobody reading it cold in
+        // six months has to work out why a row is stamped after midnight in a file
+        // named for the day before (HM-DEC-091).
+        Assert.Equal(
+            "# Evening of Wednesday 19 August 2026 at the rig, local time UTC-04:00."
+            + " Every time below is UTC.",
+            lines[0]);
+
+        Assert.Equal(CwCaseRoster.Header, lines[1]);
+
+        // The rows themselves are untouched: still UTC, still in the order they
+        // were pressed.
+        Assert.StartsWith("23:30:00\t", lines[2], StringComparison.Ordinal);
+        Assert.StartsWith("01:30:00\t", lines[3], StringComparison.Ordinal);
+        Assert.Contains("CQ CQ DE W1AW", lines[2], StringComparison.Ordinal);
+        Assert.Contains("K3XYZ", lines[3], StringComparison.Ordinal);
+    }
+
     /// <remarks>
     /// Proves the file is per evening and append-only: a second press on the same
     /// night lands in the same file under the same header rather than starting a
@@ -298,6 +388,8 @@ public sealed class CaseRosterSurvivesAnEveningTests : IDisposable
 
         Assert.Equal(first, later);
         Assert.Equal("cases-2026-08-19.txt", Path.GetFileName(first));
-        Assert.Equal(3, File.ReadAllLines(first).Length);
+
+        // The evening line, the header, and the two presses.
+        Assert.Equal(4, File.ReadAllLines(first).Length);
     }
 }
