@@ -1,9 +1,9 @@
 STATE: EXECUTING
-PHASE: 3 of 5
+PHASE: 4 of 5
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-19T09:44:49-04:00
-NOTE: Phase 3 - the gate: does a callsign run together, measured before phase 2 ships
+UPDATED: 2026-08-19T09:47:21-04:00
+NOTE: Phase 4 - when did the bulletin capture stop reading correctly, and by what mechanism
 
 ---
 

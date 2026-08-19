@@ -4,6 +4,53 @@ Questions with owner and severity. `owner` is who must act next. Format in
 `CLAUDE.md` §3.
 
 ---
+id: HM-OPEN-049
+status: open
+owner: tim
+raised: 2026-08-19
+severity: slows
+blocks: nothing; the test has been red since the day it was written
+refs: HM-DEC-115, HM-DEC-114, tests/Hamlet.RadioEngine.Tests/Cw/Fixtures/CwFarnsworthTests.cs
+---
+
+The ARRL bulletin capture has **not** degraded. It reads today exactly as it read
+the day the test was written, and the claim it is measured against comes from
+somewhere else.
+
+**Measured rather than bisected, because the history answers it directly.**
+
+| When | Recorded | Reading |
+|---|---|---|
+| 2026-08-17, `2ec922f` — the test is written | "36 characters against 47" | red from birth |
+| 2026-08-17, `95de0a3` | "unmoved: 36 characters against 45" | T read as A twice, dropped letters in EACH, MESSAGE, HANDLING |
+| 2026-08-18, `d033e7c` | "30 of 44 correct" | a different metric: aligned against the key rather than counted |
+| 2026-08-19, today | **36 characters against 47** | `NL DOT NET ■I ECH STAAION HAND■ AHIS MESAGE P` |
+
+**There is no regression to find.** The count today is the count on the day the
+test was introduced, and the intervening numbers moved in both directions because
+one of them was measured a different way. A `git bisect` would have spent an
+evening and landed nowhere.
+
+**What actually disagrees is HM-DEC-115 and the test.** That ruling's text says the
+same audio read `AT ARRL DOT NET <BT> EACH STATION HANDLING THIS MESSAGE P`, every
+character correct after acquisition. The test written the next day already showed
+36 of 47. One of the two is wrong about the same recording, and a day apart is not
+rot — it is a measurement that was never reproduced.
+
+**The errors are characterised and their mechanism is not spacing.** `STAAION` for
+`STATION` and `AHIS` for `THIS` are both T read as A: a lone dah gaining a leading
+dit. That is an element-level fault — a mark split in two, or a character boundary
+missed so a preceding dit joins the dah — and it is untouched by HM-DEC-142, which
+is about where the words are rather than what the letters are. The dropped letters
+in `EACH` and `MESSAGE` and the unresolved `■` for the `BT` prosign sit with it.
+
+**Naming the line needs the element-level investigation this order did not have
+room for**, and this project has twice been burned by a diagnosis that named a
+suspect without naming the mechanism. What is wanted is a ruling on which of the
+two readings of that capture is believed, and then one order aimed at the T-to-A
+substitution with the audio in front of it.
+
+---
 id: HM-OPEN-048
 status: open
 owner: claude
