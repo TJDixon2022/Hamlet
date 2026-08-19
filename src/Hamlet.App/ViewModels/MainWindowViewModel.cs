@@ -3195,7 +3195,7 @@ public partial class MainWindowViewModel : ObservableObject
         if (tap is null || audio is null)
         {
             StatusText = "There is no audio to keep just now.";
-            AppEvents.AudioCaptured(_telemetry, 0, FrequencyHz, worked: false);
+            AppEvents.AudioCaptured(_telemetry, 0, CapturedHz, worked: false);
             return;
         }
 
@@ -3214,7 +3214,7 @@ public partial class MainWindowViewModel : ObservableObject
                 + "there is nothing fresh to write. The recording would have been "
                 + "the same file over again.";
 
-            AppEvents.AudioCaptured(_telemetry, 0, FrequencyHz, worked: false);
+            AppEvents.AudioCaptured(_telemetry, 0, CapturedHz, worked: false);
             return;
         }
 
@@ -3238,14 +3238,14 @@ public partial class MainWindowViewModel : ObservableObject
                 + "decoder heard, with what the radio was doing beside it.";
 
             AppEvents.AudioCaptured(
-                _telemetry, audio.Duration.TotalSeconds, FrequencyHz, worked: true);
+                _telemetry, audio.Duration.TotalSeconds, CapturedHz, worked: true);
         }
         catch (Exception)
         {
             // A capture that cannot be written loses a recording and nothing
             // else (§8).
             StatusText = "Hamlet could not write the recording.";
-            AppEvents.AudioCaptured(_telemetry, 0, FrequencyHz, worked: false);
+            AppEvents.AudioCaptured(_telemetry, 0, CapturedHz, worked: false);
         }
     }
 
@@ -3413,13 +3413,29 @@ public partial class MainWindowViewModel : ObservableObject
     /// every one of them was two sources for one fact. The radio's own reading
     /// wins whenever there is one; Hamlet's own is labeled as Hamlet's.
     /// </remarks>
+    /// <summary>
+    /// The frequency a capture is labelled with, from one source.
+    /// </summary>
+    /// <remarks>
+    /// **ONE FILE HAD TWO PATHS TO ONE FACT AND ONLY ONE WAS RIGHT** (HM-DEC-111).
+    /// The sidecar read the radio and the telemetry event beside it was handed
+    /// `FrequencyHz`, which is Hamlet's own idea of where the dial is, so a
+    /// capture could carry `7025400` in one and `14028000` in the other. Fixing
+    /// the sidecar's wording without fixing this would have left the same defect
+    /// with better prose on one of its two halves.
+    /// </remarks>
+    private long CapturedHz
+        => RigState[RigField.Frequency] is { IsKnown: true, Number: { } hz }
+            ? (long)hz
+            : FrequencyHz;
+
     private string CapturedFrequency()
     {
         var read = RigState[RigField.Frequency];
 
-        if (read is not { IsKnown: true, Number: { } hz })
+        if (read is not { IsKnown: true, Number: not null })
         {
-            return $"{FrequencyHz} Hz  (Hamlet's own, the radio was not read)";
+            return $"{CapturedHz} Hz  (Hamlet's own, the radio was not read)";
         }
 
         // **A PROVENANCE LABEL CARRIES ITS AGE** (HM-DEC-111). That ruling came
@@ -3438,7 +3454,7 @@ public partial class MainWindowViewModel : ObservableObject
                 ? "read from the radio a moment ago"
                 : $"read from the radio {old.TotalSeconds:0} seconds before this capture";
 
-        return $"{(long)hz} Hz  ({when})";
+        return $"{CapturedHz} Hz  ({when})";
     }
 
     /// <summary>
