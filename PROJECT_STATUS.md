@@ -1,9 +1,9 @@
-STATE: COMPLETED
-PHASE: 2 of 2
-BALL: web
-NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-19T08:03:13-04:00
-NOTE: 096 to 133 were never written, not lost; HM-OPEN-045 raised with three repair shapes and none taken
+STATE: EXECUTING
+PHASE: 1 of 6
+BALL: code
+NEXT_PASTE: none
+UPDATED: 2026-08-19T08:09:02-04:00
+NOTE: Phase 1 - CLAUDE.md section 1 head ordering, finding why insertions land at a fixed anchor
 
 ---
 

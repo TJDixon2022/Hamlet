@@ -1,145 +1,161 @@
 PROJECT: Hamlet
-ISSUED: 2026-08-18
+ISSUED: 2026-08-19
 
 ## Asks still outstanding (inbound, per HM-DEC-139)
 
-Carried verbatim from the last report. Four, unchanged, none ruled since.
+Carried verbatim. Five. **HM-OPEN-045 is being repaired on the chat side, not
+here** — the reasoning survives in conversations only that surface can read.
 
 | Ask | First made | Waiting on |
 |---|---|---|
-| **Whether an attended automatic cycle may reach an antenna** (§0.2, HM-DEC-098) | 2026-08-17 | Every interlock watched to fire into the dummy load, per `BENCH_CARD.md` |
-| **A callsign too long for one keyer send** (HM-DEC-130) | 2026-08-18 | Five minutes at the bench measuring the gap between two sends into the load |
+| **Whether an attended automatic cycle may reach an antenna** (§0.2, HM-DEC-098) | 2026-08-17 | Every interlock watched into the dummy load. **Phase 5 below exists to make that evening possible** |
+| **A callsign too long for one keyer send** (HM-DEC-130) | 2026-08-18 | Five minutes at the bench measuring the seam between two sends |
 | **Whether the star asks for a name at the moment of saving** (HM-DEC-060, HM-DEC-134) | 2026-08-18 | Nothing but the ruling |
-| **Whether Hamlet may ever ask the radio to send its spectrum, and if so when** (HM-DEC-062, HM-DEC-092, HM-OPEN-042) | 2026-08-18 | The ruling. Three ways were put |
+| **Whether Hamlet may ever ask the radio to send its spectrum, and if so when** (HM-DEC-062, HM-DEC-092, HM-OPEN-042) | 2026-08-18 | The ruling. **This bounds phase 4** |
+| **What repair the 096-to-133 hole gets, and what happens to HM-DEC-105** (HM-OPEN-045) | 2026-08-19 | The ruling. Recovery from the chat transcripts is now proven possible |
 
 ---
 
-# Work order — the queue's boundary, and the hole at HM-DEC-096 to 133
+# Work order — clear the standing backlog
 
-**Two phases**, fewer than §12.3's five or six on purpose: phase 1 is a ruling to
-transcribe, and phase 2 is an investigation whose repair depends on what the
-history holds. Pre-scoping a repair nobody has seen yet is how the last week went
-wrong more than once.
+**Six phases, each independently committable. Phase 6 is the one to drop.**
 
-Gate first (HM-DEC-099): verify `PROJECT: Hamlet` against `PROJECT_CARD.md` and
-against the prompt you were pasted. Any disagreement, stop.
+Gate first (HM-DEC-099): `PROJECT: Hamlet` against `PROJECT_CARD.md` and against
+the pasted prompt. Any disagreement, stop.
 
-**On the date.** `ISSUED` is set from this machine's clock as it last reported,
-2026-08-18. If the clock has since rolled past midnight, this order is current and
-not stale — compare against the clock, not against the last report's text
-(HM-DEC-135).
+**Write `PROJECT_STATUS.md` now, at every phase boundary, and at the finish**
+(§13.2, §13.3.1, HM-DEC-137).
 
-**Write `PROJECT_STATUS.md` now, before reading further** (§13.2, §13.3.1,
-HM-DEC-137), then at the phase boundary, then at the finish.
+Every one of these has been named-and-left across four orders. They are worked
+now.
 
 ---
 
-## Phase 1 — Record the queue's boundary
+## Phase 1 — `CLAUDE.md` §1's head ordering (HM-OPEN-036)
 
-The last session drew a boundary and handed it back: the queue lists questions
-handed back for a ruling in a session report, and not every unruled question Tim
-owns. **He ruled the boundary as drawn.** Nothing changes in the tree; it is
-recorded so that the next session does not redraw it.
+The head reads 140, 139, 135, 138, 137, 134, with a 2026-08-18 row sitting above
+two dated 2026-08-19. Every previous order told you to leave it because tidying in
+passing is what HM-OPEN-036 exists to prevent. **This is the deliberate moment it
+was waiting for.**
 
-**Write this to `DECISIONS.md` at the head**, verbatim. Next free id is 140.
+- Find why insertions have been landing at a fixed anchor rather than at the true
+  head, and fix the cause, not just the symptom. If the anchor is a literal string
+  in a delivery script or a habit in the instructions, name it.
+- Reorder the head so the table is genuinely newest-first.
+- **Reconcile every row against `git log`.** The last session found HM-DEC-113's row
+  dated 2026-08-18 and added by `c1a76f8` on 2026-08-17 at 21:22, and reported it
+  without correcting. Sweep the rest. Where a date conflicts, **report it and change
+  nothing** — a row's date may be the ruling's date rather than the commit's, and
+  guessing which is which is how a record gets quietly falsified.
+- Leave a test if one is possible: §1's dates in descending order is checkable.
 
-```
----
-id: HM-DEC-140
-date: 2026-08-19
-refs: CLAUDE.md §12.2, §9.6, HM-DEC-139, HM-OPEN-007
----
+Close HM-OPEN-036 if the cause is fixed; narrow it with the date and reason if not.
 
-**The outstanding-asks queue lists questions handed back for a ruling in a session
-report, and nothing else.** Amends nothing; it settles the boundary HM-DEC-139 left
-open on its first use.
+## Phase 2 — The write-outcome record sweep (Tim ruled B on 2026-08-18)
 
-AN ASK IN A REPORT HAS NO OTHER HOME. That is the whole of it. `OUTPUT.md` is
-overwritten by the next session, so a question raised there and not answered that
-evening ceases to exist — which is the failure HM-DEC-139 was written for, and it
-is specific to that channel. An entry in `OPEN_ISSUES.md` already has an id, an
-owner, a status and a date, and is swept every time the file is opened. It is not
-invisible and does not need a second list to keep it alive.
+Every setting write in the application reported its outcome wrongly until
+HM-OPEN-042's readback fault was found: a read issued with no expected response
+command completed only on `FB` or `FA`, so a successful write and a silent one were
+indistinguishable. **Rulings were then reasoned from those counts.**
 
-AND THE QUEUE HAS TO STAY SHORT ENOUGH TO BE READ. `OPEN_ISSUES.md` holds twenty-odd
-items owned by Tim, most of them wanting a capture file, a manual page or a station
-fact rather than a judgment. Folding those in makes a list of ten in which the four
-real questions are harder to find than they were before. A queue nobody reads is
-the same failure by a longer route.
+HM-DEC-092 is the one already named — five writes reported unanswered, at least two
+in effect, read as the link dropping commands. **It is named because a session
+tripped over it, not because it is the only one.**
 
-EVERY UNRULED QUESTION TIM OWNS WAS REJECTED for that reason. Splitting the queue by
-what unblocks each item was also rejected, and it is the better shape if the queue
-ever grows: two of today's four wait on an evening at the dummy load rather than on
-Tim, and reading them as four things he is behind on is wrong. At four items a
-second heading is machinery for its own sake. **If the queue reaches a length where
-the distinction stops being obvious at a glance, this is the first thing to
-revisit.**
+- Sweep `DECISIONS.md`, `OPEN_ISSUES.md` and `CLAUDE.md` §1 for every ruling or item
+  whose reasoning rests on an unanswered-write count, a `NoAnswer`, a write reported
+  as failed, or a settings write believed not to have taken.
+- For each, state what it concluded and **whether the conclusion survives** now that
+  the measurement is known to have been wrong.
+- **Re-rule nothing.** This is a documents pass. It tells Tim how big the re-reading
+  is, which is the whole point of him ruling B over doing it at the radio.
+- Note that `CLAUDE.md` §1 rows 096–133 have no entries, so for that range the
+  summary is all there is. Say where that limits the sweep.
 
-WHAT WOULD REOPEN IT. This rests on `OPEN_ISSUES.md` being genuinely swept rather
-than nominally so. HM-OPEN-007's two favorites questions have sat unruled since
-2026-08-14, and one of them reached Tim only because a session handed it back in a
-report five days later. If that turns out to be the rule rather than the exception,
-the premise here is false and the boundary moves.
-```
+Output is a single open item listing the candidates, worst first.
 
-Index row at the **true head** of `CLAUDE.md` §1. The head currently reads 139,
-135, 138, 137, 134; **leave the out-of-order pair alone**, it is HM-OPEN-036's own
-specimen.
+## Phase 3 — What recomputes mode-follow (HM-OPEN-041)
 
-Amend `CLAUDE.md` §12.2 with one sentence stating the boundary, so a session
-reading only that file does not have to infer it.
+Session `9f9d23eb`, 2026-08-18: 18 `mode_followed` events, 10 with no
+`tune_requested` within three seconds, an unbroken run at 20:30:39, :50, :51, :53,
+:56, :57, :59 and 20:31:02 with nothing driving it. The last session fixed the
+decision — the plan now remembers the last write the radio confirmed and will not
+repeat it — but recorded that **what triggers the recomputation is still unseen.**
 
-Commit: `docs(docs): record HM-DEC-140, the queue's boundary`
+- Find it. The plan not repeating a write is a guard; something is still calling
+  `Decide` at a cadence nothing explains, and a guard in front of an unexplained
+  loop is a symptom treated.
+- HM-OPEN-041 names `recent_dwell_short` as the instrument: a dial that is not
+  moving files no near misses. That reasoning is available at the desk now — the
+  2026-08-19 telemetry has four of them in a session with two app-initiated tunes.
+- Fixture: nothing changes, exactly one follow, and **nothing recomputes.**
 
-## Phase 2 — Find out what happened to HM-DEC-096 to 133
+## Phase 4 — The scope path, as far as it goes without asking (HM-OPEN-042)
 
-**`DECISIONS.md` holds 001 to 095, then 134, 135, 137, 138, 139 and now 140.**
-Thirty-eight rulings between them exist only as one-line index rows in `CLAUDE.md`
-§1. Two of the four asks in the queue above cite rulings in that range. Every
-session for days has been reasoning from summaries, including the ones that got
-this bug wrong.
+**Bounded by an unruled ask.** Whether Hamlet may request the spectrum at all is in
+the queue above. **Do not add any request for scope output, automatic or
+otherwise.** HM-DEC-062 stands and the automatic `27 11` is correctly out of the
+tree.
 
-**Establish the fact before proposing anything.**
+What is reachable regardless:
 
-`git log -p -- DECISIONS.md`. The question is binary and the history answers it:
+- **The reporting lie.** `scope_output_requested` logged `outcome: failed` with
+  `reason: confirmed` and `unansweredCommands: 0` while 2,748 scope frames arrived.
+  Two fields contradicting each other, on a write that plainly succeeded. If the
+  readback repair already fixed this, prove it with a test rather than assuming.
+- **Rungs three to five, built against captured frames rather than a live radio.**
+  Frames received, parsed, drawn. The 2026-08-19 session carries 2,748 real scope
+  frames at `scopeShare` 0.50; if any capture of them exists, it is a fixture. If
+  none does, say so and build the parse and render tests against synthesized frames
+  matching p. 19-14's format, and mark them as synthesized (§12.4).
+- **`IsRadioBroadcasting` and the link counters belong where the operator can see
+  them**, not only in a file he has to upload. That was step 4 of the order that
+  fixed the tracking bug and I do not know whether it landed. Check; build it if
+  not.
 
-- **Were the entries written and later lost?** Then they are recoverable verbatim
-  and the repair is mechanical. Find the commit that lost them, say what it was
-  doing, and say whether anything else went with them.
-- **Were they never written?** Then thirty-eight sessions added an index row
-  without the entry it points at, and that is a process failure rather than a file
-  failure. Say when it started and whether anything in `CLAUDE.md` or
-  `SESSION_PROTOCOL.md` ever required the entry as well as the row.
+## Phase 5 — Make the bench evening possible (unblocks the oldest ask)
 
-**Report before repairing.** If they are recoverable, restore them in the same
-commit only if the restoration is genuinely mechanical — same text, right order,
-nothing reconstructed. **The moment you would be writing a ruling's reasoning
-rather than recovering it, stop.** A ruling reconstructed from its own one-line
-summary is a session claiming Tim's authority for words he never said, which §2.1
-forbids absolutely and which is worse than the hole.
+**Whether an attended automatic cycle may reach an antenna has been outstanding
+since 2026-08-17**, waiting on every interlock being watched to fire into the dummy
+load. That evening has not happened, and the longer it waits the more the cycle
+ages untested.
 
-If they were never written, propose the repair and hand it back. Do not begin
-drafting thirty-eight entries.
+- Walk `BENCH_CARD.md` against the code. **Every interlock it names must have a
+  path that can be provoked deliberately at the bench**, including the link pulled
+  mid-cycle. An interlock that only fires on a condition Tim cannot create is an
+  interlock he cannot watch.
+- Every stop reason emits its stable token and its operator sentence (HM-DEC-077).
+  Cross-check the card's list against what the code can actually emit; report any
+  the card names that the code cannot produce, or vice versa.
+- If anything on the card requires a step Tim would have to improvise on the night,
+  fix the card. It is the artifact the ask is waiting on.
+- **Do not key an antenna and do not change the dummy-load-only constraint.**
 
-**Check the index rows against the history while you are there.** If a row's date
-or id conflicts with what the commits show, say so; do not correct it in passing.
+## Phase 6 — The headless test flake (DROP THIS ONE IF SHORT)
 
-Commit as the finding warrants.
+An earlier report: running both suites at once, one pass reported five app failures;
+two runs immediately after reported the one standing failure. The extra four were
+headless window tests, which build a real window and lose races under load.
+
+A suite that reports four false failures under load is a suite whose red count
+nobody trusts, which is how the standing baseline of two became something people
+read past. Stabilize them or isolate them, and make the standing baseline
+unambiguous.
+
+**Drop this whole if short, and say you dropped it.**
 
 ## Named and left (§12.6)
 
-- HM-OPEN-036, §1's head ordering, whenever it is opened deliberately.
-- The record sweep for rulings resting on a write outcome (Tim ruled B).
-- HM-OPEN-042's remaining rungs.
-- Mode follow, favorites, the recent list.
+- HM-OPEN-045's repair. Chat side, not here.
+- The star-naming question, the spectrum question, the antenna question and the
+  callsign seam — all in the queue above, all unruled, none to be built around.
 
 ## Reporting
 
 `OUTPUT.md`, four sections (HM-DEC-106), section four carrying the standing
-`Asks still outstanding` heading (HM-DEC-139) — the four above, plus anything
-phase 2 raises, minus anything ruled.
+`Asks still outstanding` heading (HM-DEC-139), scoped by HM-DEC-140.
 
-**Section one leads with phase 2's finding**: written and lost, or never written,
-and the evidence either way.
+**Section one is ordered by phase.** Section two leads with anything Tim would see
+or notice on his own machine.
 
-**Stop and report. Do not start anything else.**
+**If you finish every phase, stop and report. Do not start the next work unit.**

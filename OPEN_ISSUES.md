@@ -4,6 +4,47 @@ Questions with owner and severity. `owner` is who must act next. Format in
 `CLAUDE.md` §3.
 
 ---
+id: HM-OPEN-046
+status: open
+owner: tim
+raised: 2026-08-19
+severity: slows
+blocks: nothing; both rulings are in force and both are indexed
+refs: CLAUDE.md §1, §2.1, HM-DEC-088, HM-OPEN-036, HM-OPEN-045
+---
+
+**Two different rulings both carry the id HM-DEC-088**, which §2.1 forbids
+absolutely: never reuse an id, never renumber.
+
+Both are dated 2026-08-16 and both are in `CLAUDE.md` §1, at what are now lines
+399 and 400:
+
+- **"The decoder measures the noise beside the tone, integrates over the element,
+  keeps what it heard, and says what it can see when it decodes nothing."** This
+  one has a full entry in `DECISIONS.md`.
+- **"The top strip becomes one row."** Bands beside the readout, the privilege
+  line and the way to your places on one line under them. This one exists only as
+  its index row, since it falls inside the 096-to-133 window's neighbourhood of
+  the same fault (HM-OPEN-045).
+
+**How it was found.** Not by reading. The ordering sweep written for HM-OPEN-036
+rebuilt the row block from a dictionary keyed by ruling id, and a dictionary keeps
+the last of a duplicate key — so the decoder ruling's row was written out of the
+file and six rows shifted to fill the space. The test written in the same phase
+caught it within a minute, the change was reverted, and the reorder was redone on
+positions rather than ids. **The duplicate had been sitting there since
+2026-08-16 and nothing had looked.**
+
+**Why no session should renumber it.** Every reference to HM-DEC-088 in the tree —
+in code comments, in other rulings, in open items — points at one of the two, and
+which one is not always readable from the citation. A renumber that guesses wrong
+breaks a citation silently, which is worse than a duplicate that is visible.
+Choosing the new id and re-pointing the references is Tim's.
+
+**What is in place meanwhile.** `DecisionLogOrderTests` names 88 as the one known
+reused id and fails on any other, so the defect stays visible and cannot spread.
+
+---
 id: HM-OPEN-045
 status: open
 owner: tim
@@ -2294,9 +2335,10 @@ flapping describes the detector rather than the sender.
 
 ---
 id: HM-OPEN-036
-status: open
+status: closed
 owner: tim
 raised: 2026-08-18
+closed: 2026-08-19
 severity: none
 refs: CLAUDE.md §1, HM-DEC-131
 ---
@@ -2322,6 +2364,27 @@ gets fixed or whether the table simply gets read from the top each time.
 Severity **none**: nothing is blocked and no ruling is lost. What it costs is that
 `RULES_AT` cannot be taken from row one, and this session took it from the highest
 id present instead.
+
+**CLOSED 2026-08-19. The table is newest-first, the cause is named, and a test
+holds it.**
+
+Six rows moved and none was edited: HM-DEC-135 down to its own day, and the
+same-date runs 130/129/128, 104/103/102/101 and 83/82 put in descending order.
+**The cause was two habits rather than one**, both visible in the history and
+neither a script in this repository: `5d00bd4` and `303c4f4` inserted a row
+immediately below the top row rather than above it, and `d263f95` pasted a block
+of four rulings in the order they were ruled, which is oldest-first inside a
+newest-first table. §1 now states the insertion point and the batch order in its
+own header, where the next delivery will be composed, and
+`DecisionLogOrderTests` fails on any inversion.
+
+**Two things were found doing it and neither is corrected here.** HM-DEC-051's row
+is dated 2026-08-14 and HM-DEC-050's is dated 2026-08-15, so their dates and their
+ids disagree about which is newer; a row's date may be the day the ruling was made
+rather than the day it was written down, and guessing which of the two is wrong
+would falsify the record. And **two different rulings carry the id HM-DEC-088**,
+which is HM-OPEN-046. Both are named in the test as known exceptions rather than
+sorted away.
 
 ---
 id: HM-OPEN-037
