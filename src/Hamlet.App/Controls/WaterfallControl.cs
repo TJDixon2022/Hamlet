@@ -276,6 +276,34 @@ public sealed class WaterfallControl : Control
     /// returns. Anything heavier here would land on the timer thread that
     /// feeds every other subscriber.
     /// </remarks>
+    /// <summary>True once a frame has actually reached the pixels.</summary>
+    /// <remarks>
+    /// **RUNG FIVE OF FACT-003, AND THE ONE NOTHING COULD SEE.** Frames received
+    /// and frames parsed are counted (HM-DEC-093); whether a parsed sweep becomes
+    /// pixels was the last step with no instrument on it, and "the band is quiet"
+    /// and "nothing was ever drawn" paint the same picture. Internal rather than
+    /// public: it exists so a test can assert the path, not so a screen can claim
+    /// anything from it.
+    /// </remarks>
+    internal bool EverDrawn
+    {
+        get { lock (_pixelLock) { return _everReceived; } }
+    }
+
+    /// <summary>The color written for one bin of the newest row.</summary>
+    /// <param name="x">Which bin.</param>
+    /// <returns>The palette entry, or the floor when nothing has arrived.</returns>
+    internal int NewestRowPixel(int x)
+    {
+        lock (_pixelLock)
+        {
+            return _width == 0 || x < 0 || x >= _width ? _palette[0] : _pixels[x];
+        }
+    }
+
+    /// <summary>The color a row of nothing is painted in.</summary>
+    internal int FloorPixel => _palette[0];
+
     private void OnFrameReady(in SpectrumFrame frame)
     {
         var bins = frame.Bins;

@@ -1,9 +1,9 @@
 STATE: EXECUTING
-PHASE: 3 of 6
+PHASE: 4 of 6
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-19T08:17:04-04:00
-NOTE: Phase 3 - finding what calls ScheduleModeFollow at a cadence nothing explains
+UPDATED: 2026-08-19T08:19:39-04:00
+NOTE: Phase 4 - the scope reporting lie, rungs three to five, and whether the link counters reached the screen
 
 ---
 
