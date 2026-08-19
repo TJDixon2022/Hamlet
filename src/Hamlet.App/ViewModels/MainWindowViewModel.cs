@@ -2641,7 +2641,7 @@ public partial class MainWindowViewModel : ObservableObject
     /// none of them substitutes a default. That is the whole point of the model
     /// underneath (HM-DEC-050).
     /// </remarks>
-    private void ApplyRigState(RigState state)
+    internal void ApplyRigState(RigState state)
     {
         // EVERYTHING BELOW TOUCHES BINDABLE STATE, so arriving here off the UI
         // thread would mean notifications the framework may silently drop
@@ -2661,16 +2661,46 @@ public partial class MainWindowViewModel : ObservableObject
         // filtered to and what the skimmer watch listens for. Sweeping the model
         // and leaving the screen alone would fix the half nobody looks at.
         //
-        // **THE GUARD IS THE POINT.** A reading that arrived while the
-        // operator's own tune was still queued would drag the dial back to where
-        // the radio has not got to yet, which is the app taking the knob out of
-        // his hand (§0.2.1). A pending send wins, and the next sweep agrees with
-        // him thirty seconds later.
+        // **THE GUARD IS THE POINT, AND IT HAD A HOLE THE WIDTH OF THE WRITE.**
+        // A reading that arrived while the operator's own tune was still queued
+        // would drag the dial back to where the radio has not got to yet, which
+        // is the app taking the knob out of his hand (§0.2.1).
+        //
+        // `_rigSendPending` covered the queue and stopped at the send: it is
+        // cleared before the write is awaited, so from that instant until a
+        // reading taken *after* the write comes back, the model still holds the
+        // frequency the radio was on before. This block then applied it, and the
+        // display snapped back to where the operator had just left. He watched it
+        // do that on every tune from the app, and hold for about thirty seconds,
+        // which is the session sweep that used to be the frequency's only
+        // refresh (ad93fb4).
+        //
+        // **SO THE TEST IS THE READING'S OWN AGE AGAINST THE WRITE, AND IT IS
+        // BOUNDED BY THE WRITE RATHER THAN BY A TIMER.** A reading taken before
+        // Hamlet moved the dial cannot say where the dial is now, whatever else
+        // is true. One taken after it may, including when it disagrees, because
+        // the radio is always right about its own frequency (§0.0).
         if (!_rigSendPending
+            && !_writeInFlight
             && !_updatingFromRig
             && state[RigField.Frequency] is { IsKnown: true, Number: { } swept }
-            && (long)swept != FrequencyHz)
+            && (long)swept != FrequencyHz
+            && IsAfterOurOwnTune(state[RigField.Frequency]))
         {
+            // **A FREQUENCY THAT GOES BACKWARDS IS THE SIGNATURE OF THIS BUG.**
+            // Returning to a value the display held moments ago, right after a
+            // tune, is not an ordinary observation, and nothing anywhere said so
+            // while it was happening on every click for two builds.
+            if (DialGuard.WouldGoBackwards((long)swept, _tunedFromHz, _tunedToHz))
+            {
+                AppEvents.FrequencyWentBackwards(
+                    _telemetry, (long)swept, _tunedToHz ?? 0,
+                    state[RigField.Frequency].Source,
+                    _tunedAtUtc is { } when
+                        ? (DateTime.UtcNow - when).TotalSeconds
+                        : null);
+            }
+
             ApplyRigFrequency((long)swept);
         }
         RigModeText = state[RigField.Mode] is { IsKnown: true } mode ? mode.Text : "";
@@ -3794,6 +3824,60 @@ public partial class MainWindowViewModel : ObservableObject
         }
     }
 
+    /// <summary>When Hamlet last moved the dial itself, or null.</summary>
+    /// <remarks>
+    /// **THE MOMENT, NOT A WINDOW.** What makes a reading unusable is that it was
+    /// taken before the radio was told to move, and that is a comparison rather
+    /// than a duration. A timer here would either be too short on a busy link or
+    /// leave the display frozen after it had already caught up, and both of those
+    /// are the app deciding it knows better than the radio (§0.0).
+    /// </remarks>
+    private DateTime? _tunedAtUtc;
+
+    /// <summary>Where the dial was before that tune, or null.</summary>
+    private long _tunedFromHz;
+
+    /// <summary>Where that tune was aiming, or null.</summary>
+    private long? _tunedToHz;
+
+    /// <summary>True while the frequency write is actually on the wire.</summary>
+    /// <remarks>
+    /// `_rigSendPending` covers the queue and is cleared the moment the send
+    /// starts, which left the whole round trip unguarded. They are two different
+    /// states and the display needs both.
+    /// </remarks>
+    private bool _writeInFlight;
+
+    /// <summary>
+    /// Whether a reading can speak about where the dial is now.
+    /// </summary>
+    /// <param name="value">The reading.</param>
+    /// <returns>True when it was taken after Hamlet's own last tune.</returns>
+    /// <remarks>
+    /// True when Hamlet has not tuned at all, which is every case of the operator
+    /// using the radio's own knob: nothing here slows down the path that was
+    /// always right.
+    /// </remarks>
+    private bool IsAfterOurOwnTune(RigValue value)
+        => DialGuard.MayFollow(value, _tunedAtUtc);
+
+    /// <summary>Record a tune the way the send tick does, for tests.</summary>
+    /// <param name="toHz">Where it was aimed.</param>
+    /// <param name="fromHz">Where the dial was.</param>
+    /// <param name="atUtc">When the command went out.</param>
+    /// <remarks>
+    /// The send tick needs a radio and a dispatcher timer; the rule it sets up is
+    /// three fields and a comparison, and that is what the display depends on. So
+    /// the fields are settable from the test project and the rule is exercised
+    /// exactly as the tick leaves it (§5: determinism below the UI).
+    /// </remarks>
+    internal void NoteTuneWritten(long toHz, long fromHz, DateTime atUtc)
+    {
+        _tunedAtUtc = atUtc;
+        _tunedFromHz = fromHz;
+        _tunedToHz = toHz;
+    }
+
     private async void OnRigSendTick(object? sender, EventArgs e)
     {
         if (!_rigSendPending || _rig is null || !IsConnected)
@@ -3803,14 +3887,42 @@ public partial class MainWindowViewModel : ObservableObject
         }
 
         _rigSendPending = false;
+
+        // **STAMPED BEFORE THE COMMAND GOES, NOT AFTER IT COMES BACK.** A reading
+        // that crossed the write on the wire is exactly the one that must not be
+        // believed, and it is in flight from this line onward.
+        var from = _tunedFromHz;
+        _tunedAtUtc = DateTime.UtcNow;
+        _tunedFromHz = RigState[RigField.Frequency] is { IsKnown: true, Number: { } was }
+            ? (long)was
+            : from;
+        _tunedToHz = FrequencyHz;
+        _writeInFlight = true;
+
+        var outcome = "proceeded";
+        var target = FrequencyHz;
+
         try
         {
-            await _rig.SetFrequencyHzAsync(FrequencyHz);
+            await _rig.SetFrequencyHzAsync(target);
         }
         catch (Exception ex)
         {
+            outcome = "failed";
             StatusText = $"Set frequency failed: {ex.Message}";
         }
+        finally
+        {
+            _writeInFlight = false;
+        }
+
+        // **THERE WAS NO EVENT FOR THIS AT ALL** (§0.0.1). The record carried the
+        // request to tune and nothing for the write that carried it out, so a
+        // display disagreeing with the radio could not be placed on either side
+        // of the one command in the middle.
+        AppEvents.TuneWritten(
+            _telemetry, target, outcome,
+            _tunedAtUtc is { } when ? (DateTime.UtcNow - when).TotalSeconds : null);
 
         if (!_rigSendPending)
         {

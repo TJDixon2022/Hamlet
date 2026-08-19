@@ -16,7 +16,7 @@ public sealed class CallsignPrivacyTests : IDisposable
     /// <summary>Every public event-writing method on <see cref="AppEvents"/>.
     /// If this number moves, a new event was added and the walk below has to
     /// grow with it — that is the point.</summary>
-    private const int ExpectedEventMethodCount = 61;
+    private const int ExpectedEventMethodCount = 63;
 
     private const string Callsign = "KC3QIS";
     // "Timothy", not "Tim": a three-letter needle matches "timer", which is a
@@ -319,6 +319,12 @@ public sealed class CallsignPrivacyTests : IDisposable
         AppEvents.RecentDwellShort(telemetry, 7_047_000, 14.5);
         AppEvents.RecentDropped(telemetry, 7_047_000);
         AppEvents.RecentRemoved(telemetry, all: false, removed: 1);
+
+        // The tune write and the signature of the snap-back it used to cause.
+        // A frequency is a place and not a person, so both carry theirs.
+        AppEvents.TuneWritten(telemetry, 7_030_000, "proceeded", 0.031);
+        AppEvents.FrequencyWentBackwards(
+            telemetry, 7_030_000, 7_061_000, "CI-V 03", 0.4);
     }
 
     private string[] ReadAllLines()

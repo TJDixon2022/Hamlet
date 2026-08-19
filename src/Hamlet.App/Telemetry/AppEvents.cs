@@ -267,6 +267,65 @@ public static class AppEvents
         => telemetry?.Write(TelemetryCategory.Tuning, "recent_removed",
             new Dictionary<string, object?> { ["all"] = all, ["removed"] = removed });
 
+    /// <summary>The frequency write itself, which had no event at all.</summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="hz">Where the radio was told to go.</param>
+    /// <param name="outcome">`proceeded` or `failed`.</param>
+    /// <param name="seconds">How long the command took, or null.</param>
+    /// <remarks>
+    /// **`tune_requested` SAID SOMEBODY ASKED AND NOTHING SAID WHAT HAPPENED.**
+    /// The one command in the middle of every tune left no trace, so a display
+    /// disagreeing with the radio could not be placed on either side of it: it
+    /// was impossible to tell a write that never went from one that went and was
+    /// then undone by a stale reading (§0.0.1).
+    /// </remarks>
+    public static void TuneWritten(
+        ITelemetry? telemetry, long hz, string outcome, double? seconds)
+        => telemetry?.Write(
+            TelemetryCategory.Tuning,
+            "tune_written",
+            new Dictionary<string, object?>
+            {
+                ["outcome"] = outcome,
+                ["reason"] = outcome == "proceeded" ? "radio_took_it" : "write_failed",
+                ["hz"] = hz,
+                ["seconds"] = seconds is { } t ? Math.Round(t, 3) : null,
+            },
+            outcome == "proceeded" ? TelemetryLevel.Info : TelemetryLevel.Warn);
+
+    /// <summary>The displayed frequency went back to where it had been.</summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="hz">The value it went back to.</param>
+    /// <param name="askedFor">Where the operator had just tuned.</param>
+    /// <param name="source">What produced the reading that did it.</param>
+    /// <param name="sinceTuneSeconds">How long after the tune, or null.</param>
+    /// <remarks>
+    /// **THIS IS THE SIGNATURE OF THE WHOLE DEFECT AND IT IS ONE LINE.** A
+    /// frequency returning to a value it held moments ago, right after a write,
+    /// is not an ordinary observation: the radio does not tune itself backwards.
+    /// The operator watched it happen on every tune from the app for two builds
+    /// and nothing in the record could have been searched for it, because nothing
+    /// emitted it.
+    /// </remarks>
+    public static void FrequencyWentBackwards(
+        ITelemetry? telemetry, long hz, long askedFor, string source,
+        double? sinceTuneSeconds)
+        => telemetry?.Write(
+            TelemetryCategory.Tuning,
+            "frequency_went_backwards",
+            new Dictionary<string, object?>
+            {
+                ["outcome"] = "degraded",
+                ["reason"] = "reading_older_than_the_tune",
+                ["hz"] = hz,
+                ["askedFor"] = askedFor,
+                ["determinedBy"] = source,
+                ["secondsSinceTune"] = sinceTuneSeconds is { } t
+                    ? Math.Round(t, 3)
+                    : null,
+            },
+            TelemetryLevel.Warn);
+
     /// <summary>A favorite was removed.</summary>
     /// <param name="telemetry">Sink, or null.</param>
     /// <param name="bandName">Which band it was on.</param>
@@ -777,7 +836,14 @@ public static class AppEvents
             "scope_output_requested",
             new Dictionary<string, object?>
             {
-                ["outcome"] = string.Equals(outcome, "Confirmed", StringComparison.Ordinal)
+                // **THE TWO FIELDS SAID OPPOSITE THINGS IN THE SAME EVENT.**
+                // It logged `outcome: failed` with `reason: confirmed` and no
+                // unanswered commands, while 2,748 scope frames were arriving:
+                // the write plainly worked and the record called it a failure.
+                // The caller was changed to pass the stable token and this line
+                // was still comparing against the enum's name, which is exactly
+                // what a stable token is for and exactly how it gets missed.
+                ["outcome"] = string.Equals(outcome, "confirmed", StringComparison.Ordinal)
                     ? "proceeded"
                     : "failed",
 
