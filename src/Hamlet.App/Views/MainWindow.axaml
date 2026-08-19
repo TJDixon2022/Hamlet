@@ -1175,6 +1175,22 @@
                                                            IsVisible="{Binding StateNote,
                                                                Converter={x:Static ctl:PrivilegeToneConverter.NotEmpty}}"
                                                            Foreground="{Binding EdgeBrush}" />
+
+                                                <!-- **BEFORE HE PRESSES, NOT
+                                                     AFTER** (HM-DEC-130). A real
+                                                     exchange carries two calls, a
+                                                     report and a name, so a reply
+                                                     that needs two keyer sends is
+                                                     ordinary. Nothing said so
+                                                     until the send went out, and
+                                                     the gap in the middle has
+                                                     never been measured. Silent
+                                                     while it fits. -->
+                                                <TextBlock Text="{Binding LengthNote}"
+                                                           FontSize="11"
+                                                           TextWrapping="Wrap"
+                                                           IsVisible="{Binding WillSplit}"
+                                                           Foreground="{StaticResource HmAmberBrush}" />
                                             </StackPanel>
                                             <Button Grid.Column="1"
                                                     Classes="hm-send"

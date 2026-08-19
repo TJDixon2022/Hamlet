@@ -1,9 +1,9 @@
 STATE: EXECUTING
-PHASE: 2 of 6
+PHASE: 3 of 6
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-19T08:49:46-04:00
-NOTE: Phase 2 - the settled pass reading worse than the tip on exchange-easy; checking the brief against the tree first
+UPDATED: 2026-08-19T08:54:45-04:00
+NOTE: Phase 3 - make the keyer length limit legible while he types, and walk the send path as a QSO
 
 ---
 

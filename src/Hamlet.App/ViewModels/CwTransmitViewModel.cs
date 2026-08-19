@@ -76,9 +76,79 @@ public sealed partial class SendButtonViewModel : ObservableObject
     public string Note { get; }
 
     /// <summary>
-    /// How many keyer messages it takes, so a long one is never a surprise.
+    /// How many keyer messages it took when Hamlet wrote it.
     /// </summary>
+    /// <remarks>
+    /// **AS WRITTEN, NOT AS EDITED.** `PiecesNow` is the live one and is what any
+    /// surface should read; this is kept because the offer itself is worth
+    /// knowing about.
+    /// </remarks>
     public int Pieces { get; }
+
+    /// <summary>The keyer speed the radio reported, or zero.</summary>
+    /// <remarks>
+    /// Set by the panel when the rig state moves. Zero means unread, and
+    /// <see cref="CwDuration"/> decides what to do about that rather than this
+    /// class inventing a number (§0.0).
+    /// </remarks>
+    internal int KeyerWpm { get; set; }
+
+    /// <summary>How many keyer sends this would take **as it stands now**.</summary>
+    public int PiecesNow => CwMessage.PieceCount(Message);
+
+    /// <summary>True once it no longer fits in one send.</summary>
+    public bool WillSplit => PiecesNow > 1;
+
+    /// <summary>
+    /// What the length means, in the operator's terms, while he is typing.
+    /// </summary>
+    /// <remarks>
+    /// <para>**HE SHOULD NOT COMPOSE A REPLY AND FIND OUT AFTERWARDS.** The
+    /// keyer takes thirty characters in one message and a real exchange carries
+    /// his call, the other station's, a report and a name, so a reply that goes
+    /// out in two sends is the ordinary case rather than the exception. What was
+    /// missing is that nothing said so until he pressed.</para>
+    /// <para>**AND THE SEAM IS NOT PRETENDED AWAY.** HM-DEC-130 refused to ship a
+    /// split until the gap between two sends has been measured at the load,
+    /// because a CQ with a ragged pause in the middle is a worse transmission
+    /// than a refusal. The single send does split, so what this line does is tell
+    /// him it will, and that nobody has measured what the pause sounds like
+    /// (§0.0).</para>
+    /// <para>Empty while it fits, because a caption on every message is a caption
+    /// nobody reads.</para>
+    /// </remarks>
+    /// <summary>Tell the surface the length line may have changed.</summary>
+    /// <remarks>
+    /// The keyer speed arrives from the radio rather than from typing, so the
+    /// notification cannot ride on the message's own change (HM-DEC-078: this is
+    /// called on the poll, so it is cheap and idempotent).
+    /// </remarks>
+    internal void NoteLengthChanged() => OnPropertyChanged(nameof(LengthNote));
+
+    /// <summary>
+    /// What the length means, in the operator's terms, while he is typing.
+    /// </summary>
+    public string LengthNote
+    {
+        get
+        {
+            if (!WillSplit)
+            {
+                return "";
+            }
+
+            var keying = CwDuration.Of(Message, KeyerWpm);
+            var seconds = (int)Math.Round(keying.TotalSeconds);
+
+            return $"That is {CwMessage.Clean(Message).Length} characters and the "
+                + $"keyer takes {CwMessage.MaximumLength} at a time, so it goes "
+                + $"out as {PiecesNow} sends with a gap in the middle. About "
+                + $"{seconds} seconds of keying either way, and nobody has "
+                + "measured yet how long that gap is.";
+        }
+    }
+
+
 
     /// <summary>
     /// True when the operator has written something Hamlet did not.
@@ -197,6 +267,12 @@ public sealed partial class SendButtonViewModel : ObservableObject
     partial void OnMessageChanged(string value)
     {
         OnPropertyChanged(nameof(IsEdited));
+
+        // The length says what it means while he is typing rather than after he
+        // presses, which is the whole of the change (HM-DEC-130).
+        OnPropertyChanged(nameof(PiecesNow));
+        OnPropertyChanged(nameof(WillSplit));
+        OnPropertyChanged(nameof(LengthNote));
 
         // EDITING BACK TO HAMLET'S WORDS DISARMS IT. The guard is about text
         // nobody has checked, and the original has been checked by definition.
@@ -730,6 +806,21 @@ public sealed partial class CwTransmitViewModel : ObservableObject
         LicenseUnresolved = _context().LicenseClass == LicenseClass.Unknown;
 
         var context = _context();
+
+        // **THE SPEED THE LENGTH NOTE IS SPOKEN IN.** Read from the radio and
+        // pushed to the buttons here, so a message that splits can say how many
+        // seconds of keying it is rather than only how many characters. Zero when
+        // the radio has not been read, which `CwDuration` handles in one place.
+        var wpm = KeyerWpm(context);
+
+        foreach (var button in Options)
+        {
+            if (button.KeyerWpm != wpm)
+            {
+                button.KeyerWpm = wpm;
+                button.NoteLengthChanged();
+            }
+        }
 
         Notes.Clear();
         foreach (var note in TransmitNotes.For(context.State))
