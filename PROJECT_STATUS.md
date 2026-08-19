@@ -1,9 +1,9 @@
-STATE: EXECUTING
-PHASE: 4 of 5
-BALL: code
-NEXT_PASTE: none
-UPDATED: 2026-08-19T10:16:00-04:00
-NOTE: Phase 4 - recording that HM-DEC-115's cited reading was never reproduced, without amending the ruling
+STATE: COMPLETED
+PHASE: 5 of 5
+BALL: web
+NEXT_PASTE: OUTPUT.md -> Claude Web
+UPDATED: 2026-08-19T10:17:50-04:00
+NOTE: Mechanism named with the line; the one-line repair is a measured trade and wants one ruling
 
 ---
 
