@@ -165,6 +165,7 @@ public sealed class CwSettledPass
     /// </remarks>
     private const double WorstAcceptableFit = 0.34;
 
+
     /// <summary>How much a clock has to move to count as a different speed.</summary>
     /// <remarks>
     /// A quarter. Real fists wander a few percent and a different operator is

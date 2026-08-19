@@ -4,6 +4,48 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-143
+date: 2026-08-19
+refs: src/Hamlet.RadioEngine/Cw/CwDecoder.cs, src/Hamlet.RadioEngine/Cw/CwToneTracker.cs, HM-OPEN-051, HM-DEC-095, §0.0
+---
+
+**The settled pass judges for itself whether somebody is keying, from the marks it
+has already extracted, rather than asking the tone survey.** Closes HM-OPEN-051.
+HM-DEC-095's guard is not weakened and its carrier case is the condition on this
+shipping at all.
+
+THE VERDICT WAS ANSWERING A DIFFERENT QUESTION AT THE WRONG CADENCE.
+`KeyingRecently` is a six-survey counter over half-second surveys, so it goes false
+three seconds after the survey last saw keying, and the survey needs enough marks
+inside three seconds to see two clusters. `exchange-easy` is twenty-seven
+characters across thirty-two seconds. **The protection expired while the station
+was still sending**, and everything the pass read afterwards was discarded — with
+0.7 s of trailing silence, identical to a fixture that stayed protected, so the
+ending is not the cause. **A slow sender leaving big gaps is exactly who a newcomer
+works, and the end of a message is where the callsign is.**
+
+THE PASS THAT READS THE MARKS IS THE ONE THAT KNOWS. The survey infers structure
+from a window of raw energy, which is why it looks for two clusters and why a
+sparse sender defeats it. The settled pass has already extracted the runs: it holds
+the structure directly rather than guessing at it from outside. A carrier has
+energy and no structure, and the pass can see that more clearly than the stage
+currently being asked.
+
+LENGTHENING THE PROTECTION WAS REJECTED. It trades against HM-DEC-095's guard by
+exactly the amount added, and that guard exists because a carrier produced two
+hundred characters of confident nonsense. Buying a slow sender's callsign by
+re-opening that door is paying in the same currency §0.0 is trying to protect.
+
+EXEMPTING THE FINAL DRAIN WAS REJECTED because it repairs the end of a recording
+and leaves a live contact stopping mid-exchange, which is the case that matters at
+the radio.
+
+AND IT DOES NOT SHIP UNPROVED. This is the option nobody had measured. **The
+carrier case must still produce silence**, demonstrated on the audio that produced
+the two hundred characters, before any of it lands. If it cannot, none of this
+ships and the finding comes back.
+
+---
 id: HM-DEC-142
 date: 2026-08-19
 refs: src/Hamlet.RadioEngine/Cw/CwGapFit.cs, src/Hamlet.RadioEngine/Cw/CwSettledPass.cs, HM-OPEN-048, HM-DEC-115, HM-DEC-114, HM-OPEN-017

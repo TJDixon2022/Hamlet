@@ -1100,11 +1100,20 @@ public sealed class CwDecoder
         // levels and a plausible clock, and the settled pass is more dangerous
         // than the provisional one when it does: settled text is what the
         // transcript keeps. On the recording holding a carrier and no station it
-        // produced two hundred characters of confident nonsense before this gate
+        // produced two hundred characters of confident nonsense before a gate
         // went in.
         //
         // The gate is the survey's own keying verdict, which is the measurement
         // that already decides whether anybody is sending at all.
+        //
+        // **HM-DEC-143 RULED THIS REPLACED AND IT DID NOT MEET ITS OWN
+        // CONDITION.** That ruling has the settled pass judge for itself from the
+        // marks it extracted, and makes the carrier recording the gate on
+        // shipping. Removing this test let that recording produce 33 characters
+        // where it produces none, and a tightness test on the mark clusters left
+        // it at 33 as well: a carrier chopped by noise fits two centres and sits
+        // near them. The ruling stands and is unbuilt, which is recorded in
+        // HM-OPEN-054 rather than worked around here.
         if (!_tracker.KeyingRecently)
         {
             _settledStale = true;

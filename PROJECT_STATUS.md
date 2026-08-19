@@ -1,9 +1,9 @@
 STATE: EXECUTING
-PHASE: 1 of 5
+PHASE: 4 of 5
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-19T10:55:41-04:00
-NOTE: Phase 1 - publishing the streaming path's mark widths before changing the vote window
+UPDATED: 2026-08-19T11:02:53-04:00
+NOTE: Phase 4 - HM-DEC-143 recorded, then built with the carrier case as the gate on shipping
 
 ---
 

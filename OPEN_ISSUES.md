@@ -4,6 +4,56 @@ Questions with owner and severity. `owner` is who must act next. Format in
 `CLAUDE.md` §3.
 
 ---
+id: HM-OPEN-054
+status: open
+owner: tim
+raised: 2026-08-19
+severity: slows
+blocks: HM-DEC-143, which is ruled and unbuilt
+refs: HM-DEC-143, HM-DEC-095, HM-OPEN-051, src/Hamlet.RadioEngine/Cw/CwSettledPass.cs
+---
+
+**HM-DEC-143 did not meet its own condition and is recorded unbuilt.**
+
+That ruling has the settled pass judge for itself whether somebody is keying, from
+the marks it has already extracted, and makes the carrier recording the gate:
+*the carrier case must still produce silence, before any of it lands. If it cannot,
+none of this ships and the finding comes back.*
+
+**It cannot, on two attempts.**
+
+| Attempt | Carrier recording `cw-2026-08-17-134712` |
+|---|---|
+| today, with the survey's verdict | **0 characters** |
+| the survey's verdict removed, leaving the pass's existing structure tests | **33 characters** |
+| plus a tightness test on the two mark clusters | **33 characters** |
+
+**The pass's existing tests are not the judgement the ruling assumed it already
+had.** `FitClock` requires eight marks, two populated clusters, a ratio inside the
+legal band and a dit in range — and the carrier passes all four. HM-DEC-095 said it
+would: *a window of band noise or of a steady carrier will eventually fit two levels
+and a plausible clock.*
+
+**And the obvious strengthening does not separate them either.** The test that
+follows from that ruling's own reasoning — two clusters or one smear — was measured
+as the average distance from each mark to its nearer centre against the distance
+between centres. **A carrier chopped by noise is not a smear by that measure**: its
+marks sit near two centres. Raising the requirement until the carrier goes quiet
+would be tuning a constant against one recording with every fixture unadjudicated,
+which is how the last two trades were made and reverted.
+
+**Reverted; the tree holds the survey's verdict exactly as before.** The ruling is
+in `DECISIONS.md` and its index row is in §1, unbuilt and saying so.
+
+**What would carry it.** The distinguishing feature has to be something a carrier
+cannot have. Candidates, none measured: the *gaps* rather than the marks — keying
+alternates mark and gap at related lengths, a chopped carrier does not; the number
+of distinct runs per second against the fitted speed; or requiring the mark clusters
+to be separated by an actual ratio near three rather than merely inside a legal
+band. Each is a decoder question with a measurable answer, and each needs the
+carrier recording as its gate exactly as the ruling says.
+
+---
 id: HM-OPEN-053
 status: open
 owner: tim
