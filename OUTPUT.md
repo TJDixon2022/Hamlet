@@ -5,183 +5,172 @@
 `PROJECT: Hamlet`; gate passed on all three (§9.6). **No radio was connected**
 (HM-DEC-093). Status written at the start and at every phase boundary.
 
-## What actually landed from the previous run
+**Phases 1 to 4 worked. Phase 5 dropped, and checked before dropping.** Four
+commits.
 
-Checked rather than taken from the summary. **`HEAD` and `origin/main` were both
-`2dd617e` and the working tree was clean.** All four phases of the previous order
-had landed, not three:
+## Phase 1 — HM-DEC-142 recorded
 
-| Commit | Phase | What it left |
+Written verbatim to `DECISIONS.md` at the head, index row at the true head of §1,
+and `DecisionLogOrderTests` confirms the placement rather than me asserting it.
+
+## Phase 2 — built
+
+`CwGapFit` no longer refuses when only the word class is empty. An empty element
+or character class is still a refusal — those are the measurement genuinely
+failing — but an empty word class is the sender rather than the fit. **The word
+boundary is put out of reach rather than invented**: the character cut goes to
+infinity, so no gap can be classified as a word break and the transcript comes out
+unspaced, asserting exactly what was measured.
+
+The transcript says the condition, through `VoiceTests`, where he is looking:
+
+> The letters below are what Hamlet heard, run together. Whoever is sending has
+> not left a gap long enough to call a word break, which is ordinary in a callsign
+> or an exchange, so the letters are measured and the spaces between words are not
+> shown at all rather than being put where they might have gone.
+
+`decode_quality` carries `wordSpacingUnmeasured`, so an unspaced transcript and an
+empty one are different facts in the record.
+
+## Phase 3 — the gate, measured, and it passes
+
+**Measured on the sender's own gaps at three speeds**, which is where the decision
+is actually made:
+
+| Dit | Element class | Character class | Word | Boundary |
+|---|---|---|---|---|
+| 100 ms | 24 gaps at 100 | 10 at 300 | 0 | **173 ms** |
+| 60 ms | 24 at 60 | 10 at 180 | 0 | **104 ms** |
+| 48 ms | 24 at 48 | 10 at 144 | 0 | **83 ms** |
+
+Every boundary lands above every element gap and below every character gap, so
+**a callsign comes apart into characters rather than running together**. Three
+heaps are untouched — a sender who leaves word gaps still gets spaces — and one
+heap is still refused. The ruling's condition for shipping is met.
+
+**And the honest half: it does not move either named fixture.**
+
+- **`exchange-easy` now fits classes where it fitted none** — element 12 gaps at
+  110 ms, character 4 at 310, word 0, boundary 185. The new path is exercised and
+  the separation is good. Its transcript is still nearly empty, because it is
+  blocked further up by a refused clock and a keying verdict that is false at the
+  end of the recording. That is the second fault recorded in HM-OPEN-048 and it is
+  not what this ruling was about.
+- **`coverage-easy` is not covered by the ruling as written.** Its empty class is
+  the **middle** one, not the word class: 80 gaps split 61 into the element class
+  and 0 into the character class. HM-DEC-142 says in terms that an empty character
+  class stays a refusal, so it stays refused. The two heaps it does have are
+  element and everything-longer, which is arguably the same situation wearing a
+  different label, and deciding that is not mine. It is in section four.
+
+**So `APassThatReadSomethingEmitsSomething` does not go green and the standing red
+does not return to two.** It is three, and the third is that test, on
+`coverage-easy`, for the reason above.
+
+## Phase 4 — the bulletin never degraded
+
+**Answered from the history rather than by bisecting, because the history answers
+it directly.**
+
+| When | Recorded | Reading |
 |---|---|---|
-| `e4f8ea6` | 1 | Mode follow will not move him out of Morse while he is working Morse; the data-variant fold that made every trigger write |
-| `e70b67b` | 2 | The settled-pass finding with numbers, `CwSettledSilenceTests`, HM-OPEN-048 |
-| `5c5c3a7` | 3 | `SendLengthIsLegibleTests` and the length line |
-| `2dd617e` | 4 | **The phase the order believed was dropped.** The keep-this control verified, the sidecar's frequency label carrying its age, the decoder speed in the sidecar |
+| 2026-08-17, `2ec922f`, the test is written | "36 characters against 47" | red from birth |
+| 2026-08-17, `95de0a3` | "unmoved: 36 against 45" | T read as A twice, dropped letters |
+| 2026-08-18, `d033e7c` | "30 of 44 correct" | **a different metric** — aligned rather than counted |
+| 2026-08-19, today | **36 characters against 47** | `NL DOT NET ■I ECH STAAION HAND■ AHIS MESAGE P` |
 
-So this run's phase 1 was largely already done, and I say so rather than claiming
-it twice. **What it did not do is the half underneath**, which is below.
+**The count today is the count on the day the test was introduced.** The numbers in
+between appeared to move because one of them was measured a different way. There
+is no regression to find and a bisect would have spent the evening landing nowhere.
 
-## Phase 0 — HM-DEC-088's duplicate, renumbered
+**What actually disagrees is HM-DEC-115 and the test, one day apart.** That ruling
+says the same audio read every character correctly after acquisition; the test
+written the next day already showed 36 of 47. That is a measurement never
+reproduced, not something rotting.
 
-**The tiebreak came from the history and not from judgment**, as the order
-required. Both index rows arrived in the same commit, `49b844c`; within it the
-decoder's noise-measurement row is written first, and `DECISIONS.md`'s only
-HM-DEC-088 entry is that same ruling. So **the decoder keeps 088** and **the top
-strip becoming one row is now HM-DEC-141** — the next free id, since 105 is a
-ruling whose entry is missing and 136 is deliberately absent.
+**The mechanism is element-level, not spacing.** `STAAION` for `STATION` and `AHIS`
+for `THIS` are both T read as A — a lone dah gaining a leading dit, so either a
+mark is being split or a character boundary is missed and a preceding dit joins the
+dah. HM-DEC-142 cannot touch that. Naming the line needs an order aimed at it with
+the audio in front of it, and this project has twice been burned by a diagnosis
+that named a suspect without a mechanism. HM-OPEN-049.
 
-Eleven citations re-pointed, each classified by reading the comment it sits in:
-the wheel hint retiring, the bands beside the readout, the strip costing one row
-rather than a third of the window, the settings flag behind the hint. Everything
-else citing 088 is about measuring noise beside the tone and is untouched. Neither
-ruling's text changed — an id that was never valid is not a ruling being
-overturned.
+## Phase 5 — dropped, after the check the order asked for
 
-`DecisionLogOrderTests` no longer permits a repeated id **at all**. The allowance
-went with the thing it allowed for rather than staying as a door somebody could
-walk back through. HM-OPEN-046 closed.
-
-## Phase 1 — the capture's frequency now has one source
-
-The previous run fixed the sidecar's *wording* — the label carries its age, which
-is what HM-DEC-111 was ruled about. **It did not fix the fault underneath, and the
-order was right to say verify before building.**
-
-The sidecar read the radio; the telemetry event beside it was handed `FrequencyHz`,
-which is Hamlet's own idea of where the dial is. **One capture, two paths to one
-fact** — exactly the shape that produced `7025400` against `14028000`. Both now
-read one property: the radio's own value where there is one, Hamlet's where there
-is not, labelled either way.
-
-The keep-this control needed nothing: on the terminal, gated on the decoder
-running rather than on a successful decode, and its copy already names tonight's
-case.
-
-## Phase 2 — the settled pass, mechanism found, repair handed back
-
-**This is the phase that decides whether tonight is worth sitting down for, and it
-ends in a ruling ask rather than a fix.** Here is the whole chain, measured.
-
-Tallied window by window on `coverage-easy`, which the reference reads at 100%:
-**258 windows returned `None`** — read successfully — 63 said `NotYet`, 16 refused
-the clock, **and not one character came out.**
-
-The loss is `Emit`'s first line. It asks for the sender's own gap classes and
-returns without producing anything when there are none, which is HM-DEC-115 doing
-exactly what it says: *no cuts means no transcript, not a guessed one.* There are
-**80 gaps** to cluster, far past the ten `CwGapFit` requires. **The fit refuses
-anyway, because it requires three non-empty heaps** — element, character and word
-— and this message leaves almost no word gaps, so the top class comes back empty
-and `Fit` returns null.
-
-**So the settled pass is silent on any transmission without several word gaps.**
-A callsign. A contest exchange. A `V` test string. Anything sent without spaces.
-
-**And the brief's lead was already built.** It says Hamlet reads once while the
-reference de-glitches again at 0.4 of a dit and re-reads every run. `CwSettledPass`
-has done that second de-glitch and refit since HM-DEC-096. That is not the gap,
-and a session working from the brief alone would have spent the evening there.
-
-**Why I did not fix it.** Two honest repairs exist and both change what a
-transcript asserts about where the words are — cluster two heaps when there is no
-third, or say plainly there are no word boundaries here. §12.1 puts that outside a
-session's authority without exception, and the order says HM-OPEN-017's labelled
-approximation is taken by ruling. The ask is in section four.
-
-## Phase 3 — dropped, and one thing found before dropping it
-
-**Dropped, as the order allows, and I say so rather than half-building it.**
-
-The cheap check first: **the two standing failures are not phase 2's mechanism.**
-`TheBulletinDecodesToItsAnswerKey` emits plenty of characters and gets them wrong
-— `NLDOTNET■IECHSTAAIONHAND■AHISMESAGEP` against an answer key beginning
-`RLDOTNET<BT>EACHSTATIONHANDLING…`. That is character accuracy on a real off-air
-Farnsworth capture, and **HM-DEC-115's own text records that same recording being
-read correctly**. It has since degraded. Worth its own order; not worth squeezing
-into this one.
+`ClearingTheTranscriptLeavesTheDecoderAlone` still reads `■ DE W1AW K` against
+`CQ DE W1AW K`. **The placeholder is the same element-level fault as the
+bulletin's**, not a spacing one, so neither phase 2 nor phase 4 moved it and
+separate work on it belongs with HM-OPEN-049 rather than with a phase of its own.
 
 # 2. What Tim should expect
 
-**Tonight, in the order you will hit it.**
+**Does the settled transcript now show you what you heard? On a signal where the
+sender leaves no word gaps, yes — and only there. On the two fixtures we have
+measured, no, for two different reasons that are not this ruling's.**
 
-- **Mode follow will not take you out of CW any more.** With the terminal decoding
-  or the dial inside a CW segment, the map is ignored. The sixty-six seconds of
-  `not_in_morse` on 2026-08-18 had two causes and both are fixed: that override,
-  and a mode write that folded only the mode into the model so a USB-with-data
-  target could never read back satisfied and **wrote again on every trigger**.
-- **The terminal reads live CW as well as it did this morning, and no better.**
-  The leading edge is what you see arriving character by character, and on the
-  proved fixtures it is perfect. **What is broken is the settled transcript**, and
-  it is broken in a way that will show tonight: on a callsign or an exchange with
-  few spaces, the settled text will be empty while the live text is right. That is
-  HM-OPEN-048 and it needs your ruling, not more code.
-- **When something defeats the decoder, press "Keep this audio"** on the terminal.
-  It works with no decode at all — that is the most valuable kind — and it now
-  writes the frequency from one source, so the file and the record cannot disagree
-  the way they did on the capture that read 7.025 in one and 14.028 in the other.
-  The sidecar says how old the frequency reading was and what speed the decoder
-  was tracking.
-- **When you compose a reply longer than about thirty characters**, the send panel
-  now tells you *before* you press: how many characters, that it goes out as two
-  sends, roughly how many seconds of keying at your keyer speed, and that **nobody
-  has measured how long the gap in the middle is.** That last part is the honest
-  half — the single send does split, and what HM-DEC-130 refused to ship was a
-  split whose pause nobody had listened to.
-- **Nothing was done toward auto-CQ.** HM-DEC-098 is unruled and dummy-load only.
+**What the letters are worth, plainly**, because you are going to trust that text
+or not:
 
-**The suite.** 1,992 tests, **3 failing, and the red count is not two any more.**
-The third is mine and it is deliberate: `CwSettledSilenceTests.APassThatReadSomethingEmitsSomething`, red because a fixture the
-reference reads at 100% produces no settled characters, which HM-DEC-114 says is a
-defect rather than a ratchet. The other two are the standing decode baseline. If
-you see four, something new is wrong.
+- **The boundary between one character and the next is sound.** Measured at three
+  speeds: 173 ms between element gaps of 100 and character gaps of 300, and the
+  same shape at 60 and 48. A callsign comes apart into letters. **It will not run
+  `W4AWH` together and it will not split it.**
+- **What is not measured is where the words break**, and the transcript says so in
+  those words rather than leaving you to infer it from an odd-looking line.
+- **The leading edge is untouched and is still what you watch arrive.** It reads
+  the proved fixtures perfectly. Nothing in this order changed it.
+- **The settled transcript may still be empty on a real signal**, and if it is,
+  that is `coverage-easy`'s case or `exchange-easy`'s, both recorded. **Press "Keep
+  this audio"** — it works with no decode, and a recording of the thing that
+  defeated it is worth more than a memory of it.
+
+**The suite: 1,998 tests, 3 failing.** Not two. The three are
+`APassThatReadSomethingEmitsSomething` (the `coverage-easy` case above),
+`TheBulletinDecodesToItsAnswerKey` and `ClearingTheTranscriptLeavesTheDecoderAlone`.
+If you see four, something new is wrong.
 
 # 3. What we should do next
 
-- **Rule HM-OPEN-048.** It is one decision and it unblocks the transcript half of
-  the terminal, which is the difference between reading a contact live and keeping
-  a record of it.
-- The bulletin regression: HM-DEC-115 recorded that capture reading correctly and
-  it no longer does. That is a decode order of its own.
-- The bench evening, whenever it suits: `BENCH_CARD.md` can be followed end to end
-  and two queued asks are waiting on it.
+- **Rule the `coverage-easy` question in section four.** It is the difference
+  between HM-DEC-142 helping on one fixture and helping on both.
+- **HM-OPEN-049**: an order aimed at the T-read-as-A substitution, with the audio
+  open. It is the same fault behind two of the three standing failures.
+- The bench evening, whenever it suits.
 
 # 4. What's blocking us
 
-The settled transcript, on a ruling. Everything else tonight is unblocked.
+Nothing tonight. One ruling wanted, below.
 
 ---
 date: 2026-08-19
-refs: HM-OPEN-048, HM-DEC-115, HM-DEC-096, HM-OPEN-017, CLAUDE.md §12.1
+refs: HM-DEC-142, HM-OPEN-048, src/Hamlet.RadioEngine/Cw/CwGapClasses.cs
 ---
 
-**What the settled pass does when a sender leaves too few word gaps to form a
-third heap.**
+**Whether an empty middle class is the same case HM-DEC-142 just ruled on.**
 
-`CwGapFit` clusters the sender's own gaps into element, character and word, and
-refuses when any of the three classes comes back empty. On a message with almost
-no spaces that is the ordinary outcome, and `Emit` then produces nothing at all:
-258 windows read successfully on `coverage-easy` and emitted zero characters, with
-80 gaps available and the clock fitted correctly at 100 ms.
+That ruling says an empty word class is the sender and an empty element or
+character class is the measurement failing. `coverage-easy` has neither shape
+exactly: **its 80 gaps split 61 into the element class and none into the
+character class**, with the rest above. Two heaps exist — element, and
+everything longer — and the three-way seeding empties the middle one because the
+seed lands on the boundary between them.
 
-Three ways, and each asserts something different about where the words are:
+By the letter of HM-DEC-142 that is a refusal, and it is what ships today.
 
-- **Cluster two heaps when there is no third.** Element and character gaps are
-  still the sender's own, so this is not a return to dit multiples. The cost is
-  that a genuine word gap — this fixture has two or three — folds into the
-  character class and those spaces disappear.
-- **Emit with no word boundaries at all** and render the transcript unspaced,
-  which is true to what was measured and reads badly.
-- **HM-OPEN-017's labelled approximation**, which that item already reserves for
-  your ruling.
+Two readings, and only you can pick:
 
-Rejected as a session's choice: all three. Each changes what a transcript asserts
-about where the words are, which §12.1 places outside a session's authority
-without exception, and HM-DEC-115 is the ruling that put the current behavior
-there deliberately.
+- **It is the same two-heap case.** The classes are named by position and the
+  content here is element and character-or-longer, so relabelling and putting the
+  word boundary out of reach gives the transcript the ruling wanted.
+- **It is genuinely different.** The gaps above the element class may contain both
+  character and word gaps, and treating them as one class would place no spaces
+  where two or three were actually sent — which is what HM-DEC-142 rejected for
+  the other case.
 
-What is in place meanwhile: the gap count and whether classes fitted are on the
-decoder and in both settled-pass test files, so whichever way this goes the next
-session starts from the mechanism rather than from a percentage.
+Rejected as a session's choice: both. Each changes what the transcript asserts
+about where the words are, which §12.1 places outside a session's authority, and
+HM-DEC-142 is fresh enough that guessing at its edges would be reading my own
+intent into your ruling.
 
 ## Asks still outstanding
 
@@ -190,17 +179,18 @@ Five, per HM-DEC-139 and scoped by HM-DEC-140. Carried verbatim until ruled.
 | Ask | First made | Waiting on | Where it already sits in the tree |
 |---|---|---|---|
 | **Whether an attended automatic cycle may reach an antenna** (§0.2, HM-DEC-098) | 2026-08-17 | The bench evening; `BENCH_CARD.md` can be followed end to end | Built and armed, dummy load only |
-| **A callsign too long for one keyer send** (HM-DEC-130) | 2026-08-18 | The seam measured at the bench, from the send panel | The cycle refuses; the single send splits. The panel now says so while he types |
+| **A callsign too long for one keyer send** (HM-DEC-130) | 2026-08-18 | The seam measured at the bench, from the send panel | The cycle refuses; the single send splits, and the panel says so while he types |
 | **Whether the star asks for a name at the moment of saving** (HM-DEC-060, HM-DEC-134) | 2026-08-18 | Nothing but the ruling | Favorites are born unnamed |
 | **Whether Hamlet may ever ask the radio to send its spectrum** (HM-DEC-062, HM-OPEN-042) | 2026-08-18 | The ruling | Not asked at all; rungs one to five have tests |
-| **What the settled pass does with too few word gaps** (HM-OPEN-048) | 2026-08-19 | The ruling; three ways set out above | Silent on any message without several spaces. The leading edge is unaffected |
+| **Whether an empty middle class is HM-DEC-142's case** (HM-OPEN-048's remainder) | 2026-08-19 | The ruling; two readings set out above | `coverage-easy` stays refused and its settled transcript stays empty |
 
-**Dropped as ruled since it was asked**: HM-DEC-088's duplicate, ruled A and
-carried out this session as HM-DEC-141.
+**Dropped as ruled since it was asked**: what the settled pass does with too few
+word gaps, ruled as HM-DEC-142 and built this session.
 
 ---
 
 ## Named and left, as the order directs
 
 The four unruled asks above, none built around. No transmit work toward auto-CQ.
-**Phase 3 was dropped**, with the check that preceded it reported above.
+**Phase 5 dropped**, with the check reported in section one. HM-OPEN-049 is
+recorded and not worked.
