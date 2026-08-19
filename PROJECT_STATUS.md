@@ -1,9 +1,9 @@
-STATE: COMPLETED
-PHASE: 4 of 4
-BALL: web
-NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-19T09:31:16-04:00
-NOTE: Phases 0 to 2 done, phase 3 dropped; the settled pass mechanism is found and needs a ruling
+STATE: EXECUTING
+PHASE: 1 of 5
+BALL: code
+NEXT_PASTE: none
+UPDATED: 2026-08-19T09:38:28-04:00
+NOTE: Phase 1 - recording HM-DEC-142, the settled pass speaking unspaced when there is no word class
 
 ---
 

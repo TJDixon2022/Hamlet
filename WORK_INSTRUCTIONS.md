@@ -5,133 +5,147 @@ ISSUED: 2026-08-19
 
 | Ask | First made | Waiting on |
 |---|---|---|
-| **Whether an attended automatic cycle may reach an antenna** (§0.2, HM-DEC-098) | 2026-08-17 | The bench evening. `BENCH_CARD.md` can now be followed end to end |
+| **Whether an attended automatic cycle may reach an antenna** (§0.2, HM-DEC-098) | 2026-08-17 | The bench evening; `BENCH_CARD.md` can be followed end to end |
 | **A callsign too long for one keyer send** (HM-DEC-130) | 2026-08-18 | The seam measured at the bench, from the send panel |
 | **Whether the star asks for a name at the moment of saving** (HM-DEC-060, HM-DEC-134) | 2026-08-18 | Nothing but the ruling |
 | **Whether Hamlet may ever ask the radio to send its spectrum** (HM-DEC-062, HM-OPEN-042) | 2026-08-18 | The ruling |
-| **What HM-DEC-088's duplicate becomes** (HM-OPEN-046) | 2026-08-19 | **Ruled A on 2026-08-19: the later ruling takes the next free id. Phase 0 below.** |
 
-HM-OPEN-045 is withdrawn — the reasoning lives in `CLAUDE.md` §1 where sessions
-actually read it, and recovering it was not worth the time.
+**HM-OPEN-048 is ruled and is this order.** Dropped from the queue.
 
 ---
 
-# Work order — resume: the previous session dropped mid-phase-4
+# Work order — the settled transcript speaks, and says what it did not measure
 
-**The previous run of this work order died on a connection drop while working
-phase 4.** Phases 1 to 3 completed and were pushed; commit `2dd617e` was on
-`main` with the push matching origin, and `SendLengthIsLegibleTests.cs` was
-written. `PROJECT_STATUS.md` was left reading `EXECUTING · phase 4 of 6` with a
-stale timestamp, which is the annunciator working, not a second fault.
+**Five phases. Phase 5 is the one to drop.**
 
-**Four phases**, fewer than §12.3's five or six because three are already done.
+Gate first (HM-DEC-099). Write `PROJECT_STATUS.md` now, at every phase boundary,
+and at the finish.
 
-Gate first (HM-DEC-099). Write `PROJECT_STATUS.md` now — it is currently lying —
-then at every phase boundary and at the finish.
-
-## Before anything: establish what actually landed
-
-`git log` since the previous report, and `git status`. **Do not trust the summary
-above.** State what phases 1 to 3 left behind, whether anything from phase 4
-reached a commit, and whether the working tree is clean. If phases 1 to 3 are
-*not* on `main`, say so and stop — that is a different problem from this one.
-
-## The test every phase is judged by
-
-**The operator is going to sit at his radio tonight, find live CW that Hamlet
-cannot currently read, and hold conversations.** Every phase serves one of three
-things: he can read it, he can answer it, or tonight's failures become tomorrow's
-fixtures. If a phase does not, say so rather than working it.
+**The operator is at his radio tonight**, finding live CW Hamlet cannot read and
+holding conversations. Phases 1 to 3 are what he needs. Phase 4 is a regression
+that will cost him accuracy on real off-air copy. Judge everything against
+whether he can read it, answer it, or keep it.
 
 ---
 
-## Phase 0 — HM-DEC-088's duplicate (ten minutes, do this first)
+## Phase 1 — Record the ruling
 
-Two different 2026-08-16 rulings share HM-DEC-088, which §2.1 forbids outright.
-**Tim ruled A: the later ruling takes the next free id.**
+Write to `DECISIONS.md` at the head, verbatim. Next free id is **142** — 141 was
+taken by the top-strip renumber this morning, 136 is deliberately absent, and 105
+is a ruling whose entry is missing.
 
-- **The tiebreak comes from `git log`, not from judgment.** Whichever row was
-  committed first keeps 088. Do not decide it by which has more citations — that
-  criterion is the one that tempts a session into leaving the collision alone.
-- Re-point every citation aimed at the renumbered one. `DecisionLogOrderTests`
-  names 88 as the known reuse; that allowance comes out once the reuse is gone.
-- **This is a clerical correction, not a supersession.** An id that was never valid
-  is not a ruling being overturned, so §12.1 clause 2 does not apply and this does
-  not need a further ruling. Record it as the correction it is.
+```
+---
+id: HM-DEC-142
+date: 2026-08-19
+refs: src/Hamlet.RadioEngine/Cw/CwGapFit.cs, src/Hamlet.RadioEngine/Cw/CwSettledPass.cs, HM-OPEN-048, HM-DEC-115, HM-DEC-114, HM-OPEN-017
+---
 
-## Phase 1 — Tonight's failures become tomorrow's fixtures (the dropped phase)
+**When the sender leaves too few word gaps to form a third class, the settled pass
+emits the characters it read, unspaced, and says on the transcript that word
+spacing was not measured.** Closes HM-OPEN-048. **Narrows HM-DEC-115 to the case it
+was ruled for** and overturns none of it.
 
-He is going hunting for CW that Hamlet cannot read. Every such signal is worth
-more as a recording than as a memory, and `FIXTURE_BRIEF.md` governs what a
-fixture needs.
+WHAT IS THERE IS NOT A GUESS. HM-DEC-115 says no cuts means no transcript rather
+than a guessed one, and that is right and stays. **This is not that case.** On
+`coverage-easy` there are eighty gaps, clustered from the sender's own keying, and
+the clock fits at a hundred milliseconds. Two of the three classes come back
+populated. What is missing is the word class, and it is missing because the
+operator sent a callsign without spaces — which is a fact about his sending and not
+a failure to measure it. A ruling written against having nothing was reaching into
+a case where we have almost everything.
 
-The previous session got as far as *checking the sidecar defect first*, which was
-the right instinct. Pick up there.
+AND THE CURRENT BEHAVIOUR IS THE ONE THAT FAILS §0.0. Two hundred and fifty-eight
+windows read successfully on a fixture the reference reads at a hundred per cent,
+and the transcript is empty. **An empty box says nothing was sent.** That is a
+belief formed from the screen that is not true, and it is today's behaviour rather
+than a risk of changing it. A ham reads `CQCQDEW4AWHK` without difficulty. Nobody
+reads a blank.
 
-- **Verify the sidecar frequency defect is fixed before building on it.** An
-  earlier report found the sidecar and the telemetry disagreeing on one capture —
-  `7025400` against `14028000`, one file, two paths, one wrong. HM-DEC-111 exists
-  because a sidecar asserted a freshness it had not measured. If tonight's fixtures
-  carry the wrong frequency they are worse than no fixtures.
-- **One control at the terminal: keep this one.** Audio and sidecar written
-  together, with the frequency, the mode, the measured speed if there is one, and
-  what Hamlet did or did not emit.
-- **A capture with no decode is the most valuable kind here.** Do not require a
-  successful decode to save one.
+THE SPACING IS NOT INVENTED, AND THE TRANSCRIPT SAYS SO. Emitting unspaced asserts
+no word boundary anywhere, which is exactly what was measured. **Clustering two
+heaps and calling the wider class a word gap was rejected**: this fixture has two
+or three genuine word gaps, and folding them into the character class would place
+spaces that were never measured, which is the guess HM-DEC-115 forbids. The
+sentence on screen is the load-bearing part and not a caveat — it is the
+difference between an odd-looking transcript and a stated condition.
 
-## Phase 2 — Read what he currently cannot (the settled pass gap)
+MEASURED BEFORE IT SHIPS. Two classes must still separate element gaps from
+character gaps reliably, or the transcript runs a callsign together and reads as
+confident nonsense, which is worse than the silence it replaces. **If the
+measurement says it does not separate them, none of this ships and the finding
+comes back.** HM-OPEN-017's labelled approximation stays reserved and unused.
 
-**This is the phase that decides whether tonight is worth sitting down for**, and
-the previous run never reached it.
+THE LEADING EDGE IS UNTOUCHED. It was always right on these fixtures and it is what
+the operator watches arrive. This ruling is about the record he keeps afterwards.
+```
 
-`DECODER_AND_SCANNER_BRIEF.md` phase 4 names it as the largest known gap and its
-most valuable work. **Check what of that brief is already built before starting.**
+Index row at the true head of `CLAUDE.md` §1 — which now reads newest-first and has
+a test on it, so put it at the top and let `DecisionLogOrderTests` confirm.
 
-On `exchange-easy`, which the reference reads at 100%: the provisional tip reads
-18 characters with 0% unresolved; the settled pass reads 15 with 73%, and 10 with
-50% after HM-DEC-105.
+## Phase 2 — Build it
 
-The lead is in the brief: the reference de-glitches at 20 ms, extracts runs, fits
-the clock, then **de-glitches again at 0.4·dit and re-reads every run.** Hamlet's
-settled pass has a per-character trailing window and no second read of the same
-evidence.
+- `CwGapFit` stops refusing when the word class is empty **and the other two are
+  not.** An empty element or character class is still a refusal; those are the
+  measurement genuinely failing.
+- `Emit` produces the characters it read, with no word boundaries.
+- **The transcript states the condition, in the operator's own terms, through
+  `VoiceTests`.** Not a log line, not a tooltip. He is reading the transcript; the
+  sentence belongs where he is looking. Something to the effect that the sender left
+  no spaces long enough to measure, so the letters are right and the word breaks are
+  not shown.
+- Distinguish this in the record from a genuine refusal, so `decode_quality` can
+  tell an unspaced emission from an empty one.
 
-**If it cannot be closed, say so with a number and stop.** HM-OPEN-017's
-labelled-approximation fallback is taken by ruling, not by a session's judgment.
+## Phase 3 — The gate: measure it before it ships
 
-## Phase 3 — The two standing decode failures (DROP THIS ONE IF SHORT)
+**This is not a test-writing phase. It is the condition on phase 2 shipping at
+all.**
 
-`ClearingTheTranscriptLeavesTheDecoderAlone` and
-`TheBulletinDecodesToItsAnswerKey`, left red deliberately by HM-DEC-114. Phase 2
-may move them on its own; check before doing separate work, and if phase 2 fixed
-them say so rather than claiming a phase.
+- `coverage-easy` and `exchange-easy` against the reference, which reads both at
+  100%. Report character accuracy, not a pass or fail.
+- **Specifically: does a callsign run together?** Two classes must separate element
+  from character gaps. Take a fixture with a callsign in it and read the output
+  character by character against the key.
+- `CwSettledSilenceTests.APassThatReadSomethingEmitsSomething` — the third red the
+  last session added deliberately — goes green. **Standing red returns to exactly
+  two**, and if it does not, say which and why.
+- **If accuracy is poor, revert phase 2 and report.** A transcript that reads
+  `W4AWH` as `W4AW H` or `WHAWH` is HM-DEC-114's defect, not an improvement, and the
+  ruling above says in terms that it does not ship.
+
+## Phase 4 — The bulletin regression
+
+`TheBulletinDecodesToItsAnswerKey` emits `NLDOTNET■IECHSTAAIONHAND■AHISMESAGEP`
+against a key beginning `RLDOTNET<BT>EACHSTATIONHANDLING…`. **HM-DEC-115's own text
+records that recording being read correctly.** It has since degraded, on a real
+off-air Farnsworth capture, which is exactly the kind of signal tonight is about.
+
+- Find when. `git bisect` against that test if it runs at older commits.
+- **Name the change and the mechanism**, not just the commit. This project has been
+  burned twice this week by a diagnosis that named a suspect without naming the
+  line.
+- Repair if the repair is clear. If it needs a ruling, hand it back.
+
+## Phase 5 — `ClearingTheTranscriptLeavesTheDecoderAlone` (DROP THIS ONE IF SHORT)
+
+The remaining standing failure, left red by HM-DEC-114. Phase 2 or 4 may move it;
+check before doing separate work.
 
 **Drop this whole if short and say you dropped it.**
 
-## Already done, do not redo
-
-- **Mode follow** — HM-OPEN-041 closed. The trigger was `ScheduleModeFollow` firing
-  on every `FrequencyHz` change, and the snap-back was changing it twice per tune.
-  `DialGuard` shipped; `ModeFollowReschedules` asserts the quiet case. **The
-  sixty-six-second `not_in_morse` refusal on 2026-08-18 was the tracking bug wearing
-  a different costume and should not recur.** Verify only.
-- **The long-message refusal made legible before send** — phase 3 of the previous
-  run, `SendLengthIsLegibleTests.cs`.
-- **The suite's flake** — HM-OPEN-024 closed, parallelization disabled for the app
-  assembly, standing red is exactly two.
-
 ## Named and left (§12.6)
 
-The four unruled asks above. Do not build around any of them. **No transmit work
-toward auto-CQ** — HM-DEC-098 is unruled and dummy-load only.
+The four unruled asks above. **No transmit work toward auto-CQ** — HM-DEC-098 is
+unruled and dummy-load only.
 
 ## Reporting
 
 `OUTPUT.md`, four sections (HM-DEC-106), section four carrying the asks queue.
 
-**Section two is written for a man about to sit down at his radio tonight**: what
-he can do that he could not this morning, in the order he will hit it, and what to
-press when something defeats the decoder. Nothing in it he cannot act on from the
-operating position.
+**Section two is written for a man at his radio tonight**, and leads with one
+sentence: whether the settled transcript now shows him what he heard. Then what
+the letters are worth — the accuracy number from phase 3, plainly, because he is
+going to trust that text or not based on it.
 
 **If you finish every phase, stop and report.**

@@ -4,6 +4,50 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-142
+date: 2026-08-19
+refs: src/Hamlet.RadioEngine/Cw/CwGapFit.cs, src/Hamlet.RadioEngine/Cw/CwSettledPass.cs, HM-OPEN-048, HM-DEC-115, HM-DEC-114, HM-OPEN-017
+---
+
+**When the sender leaves too few word gaps to form a third class, the settled pass
+emits the characters it read, unspaced, and says on the transcript that word
+spacing was not measured.** Closes HM-OPEN-048. **Narrows HM-DEC-115 to the case it
+was ruled for** and overturns none of it.
+
+WHAT IS THERE IS NOT A GUESS. HM-DEC-115 says no cuts means no transcript rather
+than a guessed one, and that is right and stays. **This is not that case.** On
+`coverage-easy` there are eighty gaps, clustered from the sender's own keying, and
+the clock fits at a hundred milliseconds. Two of the three classes come back
+populated. What is missing is the word class, and it is missing because the
+operator sent a callsign without spaces — which is a fact about his sending and not
+a failure to measure it. A ruling written against having nothing was reaching into
+a case where we have almost everything.
+
+AND THE CURRENT BEHAVIOUR IS THE ONE THAT FAILS §0.0. Two hundred and fifty-eight
+windows read successfully on a fixture the reference reads at a hundred per cent,
+and the transcript is empty. **An empty box says nothing was sent.** That is a
+belief formed from the screen that is not true, and it is today's behaviour rather
+than a risk of changing it. A ham reads `CQCQDEW4AWHK` without difficulty. Nobody
+reads a blank.
+
+THE SPACING IS NOT INVENTED, AND THE TRANSCRIPT SAYS SO. Emitting unspaced asserts
+no word boundary anywhere, which is exactly what was measured. **Clustering two
+heaps and calling the wider class a word gap was rejected**: this fixture has two
+or three genuine word gaps, and folding them into the character class would place
+spaces that were never measured, which is the guess HM-DEC-115 forbids. The
+sentence on screen is the load-bearing part and not a caveat — it is the
+difference between an odd-looking transcript and a stated condition.
+
+MEASURED BEFORE IT SHIPS. Two classes must still separate element gaps from
+character gaps reliably, or the transcript runs a callsign together and reads as
+confident nonsense, which is worse than the silence it replaces. **If the
+measurement says it does not separate them, none of this ships and the finding
+comes back.** HM-OPEN-017's labelled approximation stays reserved and unused.
+
+THE LEADING EDGE IS UNTOUCHED. It was always right on these fixtures and it is what
+the operator watches arrive. This ruling is about the record he keeps afterwards.
+
+---
 id: HM-DEC-140
 date: 2026-08-19
 refs: CLAUDE.md §12.2, §9.6, HM-DEC-139, HM-OPEN-007
