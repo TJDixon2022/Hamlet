@@ -1,9 +1,9 @@
-STATE: EXECUTING
+STATE: COMPLETED
 PHASE: 2 of 2
-BALL: code
-NEXT_PASTE: none
-UPDATED: 2026-08-18T22:11:25-04:00
-NOTE: Phase 2 - HM-DEC-135 and CLAUDE.md 9.6, the work-order convention dropped from three orders
+BALL: web
+NEXT_PASTE: OUTPUT.md -> Claude Web
+UPDATED: 2026-08-18T22:15:13-04:00
+NOTE: Three rulings recorded and two CLAUDE.md sections added; HM-OPEN-044 raised and wants a ruling
 
 ---
 
