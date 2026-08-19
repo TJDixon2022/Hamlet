@@ -14,7 +14,8 @@ internal sealed record CwDecodeResult(
     IReadOnlyList<CwCharacter> Characters,
     string Text,
     CwDecoderState State,
-    CwNote Note)
+    CwNote Note,
+    CwDecodeReport Report = default)
 {
     /// <summary>Characters only, dropping the word gaps.</summary>
     public IReadOnlyList<CwCharacter> Letters
@@ -81,6 +82,7 @@ internal static class CwDecodeHarness
         }
 
         return new CwDecodeResult(
-            characters, text.ToString().Trim(), decoder.State, decoder.Watch.Note);
+            characters, text.ToString().Trim(), decoder.State, decoder.Watch.Note,
+            decoder.Report);
     }
 }

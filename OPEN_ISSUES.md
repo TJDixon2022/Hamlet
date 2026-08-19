@@ -4,6 +4,66 @@ Questions with owner and severity. `owner` is who must act next. Format in
 `CLAUDE.md` §3.
 
 ---
+id: HM-OPEN-052
+status: open
+owner: tim
+raised: 2026-08-19
+severity: slows
+blocks: nothing; the behaviour HM-DEC-097 was written against does not reproduce
+refs: HM-DEC-097, HM-DEC-090, tests/Hamlet.RadioEngine.Tests/Cw/CwRefusalFloorTableTests.cs
+---
+
+HM-DEC-097's floor was never built, and **the behaviour it was written against no
+longer happens.** Both scales are now side by side so the floor can be ruled in one
+sentence, and the first thing the table says is that it may not be needed.
+
+**The sweep, four seeds a level, `CQ DE W1AW K` at eighteen words a minute:**
+
+| Generated (broadband) | Decoder's own margin | Correct | **Invented** | Emitted |
+|---|---|---|---|---|
+| +18 to +4 dB | 36.8 down to 23.2 dB | 100% | **0%** | 9 |
+| +2 dB | 21.5 dB | 97% | **0%** | 8 |
+| **0 dB** | **19.8 dB** | 14% | **0%** | 1 |
+| −2 dB | 19.5 dB | 3% | **0%** | 0 |
+| −4 dB | 17.2 dB | 0% | **0%** | 0 |
+| −6 dB | 16.8 dB | 0% | **0%** | 0 |
+
+**The two scales line up at 0 dB broadband ≈ 19.8 dB on the decoder's own
+measurement**, which is the number the ruling needed and never had. The seventeen
+decibel offset it was estimated at is close: the measured difference is nineteen
+point eight.
+
+**And the decoder invents nothing, anywhere in the sweep.** HM-DEC-097 says that at
+minus two decibels it emits a full message of which forty-four per cent is
+invented. Today at minus two it emits **nothing at all**, and the invented share is
+zero at every level. The coherence and speed gates already produce silence below
+nought decibels rather than confident nonsense — **which is what that ruling
+wanted, reached by other means.**
+
+**What a floor would cost, from the same table:**
+
+| Floor on the decoder's own scale | Levels it refuses | Best copy among them |
+|---|---|---|
+| 20 dB | 4 | 14% |
+| 18 dB | 2 | 0% |
+| 16 dB and below | 0 | — |
+
+A floor at twenty costs one level that was reading fourteen per cent. It also buys
+nothing measurable, because the invention it exists to stop is not occurring.
+
+**The invention that does exist is at good signal levels and has a different
+cause.** `STAAION` for `STATION` on the ARRL bulletin is a split mark surviving the
+de-glitch (HM-OPEN-049), at a signal strength far above any floor. **A noise floor
+would not have prevented it**, which is worth stating plainly because this ruling
+has been carried for two days as the largest outstanding §0.0 failure.
+
+**What is wanted from Tim**: whether HM-DEC-097 is satisfied by the silence the
+existing gates produce, or whether an explicit floor goes in anyway as a guard
+against a case this sweep does not cover. Either way the number is 19.8 on the
+decoder's own scale, and the sweep is a test that will say so again whenever
+somebody asks.
+
+---
 id: HM-OPEN-051
 status: open
 owner: tim

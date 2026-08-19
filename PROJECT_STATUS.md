@@ -1,9 +1,9 @@
 STATE: EXECUTING
-PHASE: 3 of 5
+PHASE: 4 of 5
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-19T10:34:54-04:00
-NOTE: Phase 3 - the false keying verdict on exchange-easy, then the refused clock
+UPDATED: 2026-08-19T10:37:25-04:00
+NOTE: Phase 4 - the sweep table: measured margin against generated SNR, and what a floor would refuse
 
 ---
 
