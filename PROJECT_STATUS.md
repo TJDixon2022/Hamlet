@@ -1,9 +1,9 @@
-STATE: EXECUTING
+STATE: BLOCKED
 PHASE: 1 of 1
-BALL: code
-NEXT_PASTE: none
-UPDATED: 2026-08-18T20:17:16-04:00
-NOTE: Repro passes at HEAD, so the wire path is intact; wire counters and broadcast provenance added, committing
+BALL: tim
+NEXT_PASTE: OUTPUT.md -> Claude Web
+UPDATED: 2026-08-18T20:20:37-04:00
+NOTE: Repro passes at HEAD; the telemetry the order rests on cannot express broadcast - one connect decides it
 
 ---
 
