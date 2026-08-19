@@ -4,6 +4,83 @@ Questions with owner and severity. `owner` is who must act next. Format in
 `CLAUDE.md` §3.
 
 ---
+id: HM-OPEN-047
+status: open
+owner: tim
+raised: 2026-08-19
+severity: slows
+blocks: nothing; this is the size of the re-reading, not the re-reading
+refs: HM-OPEN-042, HM-DEC-092, HM-DEC-084, HM-DEC-062, CLAUDE.md §1
+---
+
+The write-outcome sweep Tim ruled on 2026-08-18: which rulings reasoned from a
+measurement that was wrong, and which of them survive it.
+
+**The fault, in one sentence.** From HM-DEC-084 on 2026-08-15 until the repair on
+2026-08-19, `SetSettingAsync` wrote, took the radio's `FB`, then read the setting
+back to confirm it — and issued that read with no expected response command, so it
+completed only on another `FB` or an `FA`. A read is answered with a value frame.
+**Every readback timed out, so every setting write the radio took was reported as
+`NoAnswer`.** Reads were never affected: `ReadAsync` passes its own command and
+sub-command as the expected reply.
+
+**Nothing here is re-ruled.** This is a documents pass, which is what makes it
+cheap: it says how big the re-reading is so Tim can decide what deserves an
+evening.
+
+## Worst first
+
+**HM-DEC-092, 2026-08-17 — materially affected, and part of it is already in the
+queue.** It concluded two things. First, that the link should report commands
+sent, answered and unanswered, reasoned from *five settings written one evening,
+all five reported as unanswered, at least two actually in effect*, read as radio
+frequency energy knocking the link about. **The counters survive and are worth
+having** — they are what later proved the radio never broadcasts — but the
+diagnosis they were built on was the readback fault wearing the link's clothes,
+and the ruling's own text still attributes it to the link. Second, that `27 11`
+may be written because attempting it and reporting the answer replaces a guess
+with a measurement. **That reasoning does not survive**: the answer could not be
+read, so Hamlet reported the write refused without knowing. The automatic write
+was removed on 2026-08-18 restoring HM-DEC-062, and whether Hamlet may ever ask is
+the unruled question already in the outstanding-asks queue.
+
+**HM-DEC-084, 2026-08-15 — the rule survives; the evidence from its own window
+does not.** "An acknowledgement says the radio understood the frame, not that the
+setting moved… a write that cannot be confirmed by a read-back is reported as
+unconfirmed and never as done." **That is exactly right and the fault proves it**,
+since the mechanism it demanded was the one that broke. What does not survive is
+anything in the record between 2026-08-15 and 2026-08-19 about which settings
+took: every tier-one write in that window reported unconfirmed whatever the radio
+did. The exclusion of `16 65` for being unreadable stands on the manual rather
+than on any measurement, so it is untouched.
+
+**HM-OPEN-041, mode follow — checked and clear.** Its eighteen writes were
+reported as they happened: `SetModeAsync` does not read back at all, it folds the
+new mode into the model on the acknowledgement, so this fault never reached it.
+The repeats had their own cause and the last session named it.
+
+**HM-DEC-056, mode writes — unaffected**, for the same reason.
+
+**HM-DEC-107, the scanner — unaffected.** It aborts on an unanswered *read*, and
+reads always carried their expected command.
+
+**HM-DEC-093, the scope stage counts — unaffected.** It rests on frames received
+rather than on any write's outcome, and it is the ruling that made the frame count
+the thing nobody may report the waterfall working without.
+
+## Where the sweep is limited, and it is not a small limit
+
+**`CLAUDE.md` §1 rows 096 to 133 have no entries in `DECISIONS.md`**
+(HM-OPEN-045), so for thirty-eight rulings the one-line summary is the whole of
+what could be swept. I read every one of those rows for the fault's fingerprints —
+an unanswered count, a write reported failed, a setting believed not to have taken
+— and none carries them. **That is weaker than it sounds.** A summary is written to
+say what was ruled, not what the reasoning leaned on, so a ruling in that range
+could rest on a wrong write outcome without the row showing it. If the chat-side
+recovery of those entries succeeds, this sweep is worth ten minutes again with the
+full text.
+
+---
 id: HM-OPEN-046
 status: open
 owner: tim
