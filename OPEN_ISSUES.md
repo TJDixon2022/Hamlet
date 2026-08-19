@@ -143,6 +143,45 @@ approximation is the third option and is likewise taken by ruling.
 whether classes were fitted, so whichever way it is ruled, the next session starts
 from the mechanism rather than from a percentage.
 
+**MEASURED 2026-08-19: IT IS A DEFECT AND NOT A RULING, AND THE NUMBERS SAY SO.**
+
+The last session handed back the `coverage-easy` question as a ruling, on the
+reasoning that the classes are named by position and the content might be
+element and character-or-longer. **That reasoning was wrong and one measurement
+settles it.** The eighty gaps are:
+
+| Duration | How many | What it is |
+|---|---|---|
+| 110 ms | 61 | element gaps, one dit at twelve words a minute |
+| 310 ms | 17 | **character gaps**, three dits |
+| 710 ms | 2 | **word gaps**, seven dits |
+
+**All three heaps are present, textbook spaced.** There was never a question about
+what the transcript should assert. The fit refuses because the three seeds land on
+110, 110 and 310: the percentiles are the quarter, three-quarter and
+nineteen-twentieth marks, and with element gaps three quarters of everything a
+sender produces, **the middle seed starts inside the element heap**. Its cluster
+empties and the whole fit is refused.
+
+**Ordinary sending is what does this.** The commoner the element gaps, the further
+up the sorted list the three-quarter mark sits inside them. A fixture with short
+words hides it; a callsign does not.
+
+**Two repairs were tried and each traded one green test for another.** Moving a
+collapsed seed to the first value standing clear of the one below fixed
+`coverage-easy` — settled went from 0 characters to 14, with all three classes
+fitted and the word gaps found — **and cost the clean recordings their word
+space**: `CQDE W1AW K` for `CQ DE W1AW K`, on two fixtures, plus the training
+radio and sample-rate tests. Re-seeding the middle at the gap standing furthest
+from both neighbours fixed those and broke the two-class gate instead, because with
+genuinely two heaps it manufactures a third.
+
+**Both are reverted.** Nothing in the tree changed from this attempt. The
+requirement is one rule that rescues a collapsed middle seed **only where a third
+heap exists**, and telling those apart is the fit's own job rather than something
+to patch at the seeds. That is its own work, with every fixture adjudicated, and
+it is not a ruling ask.
+
 ---
 id: HM-OPEN-047
 status: open

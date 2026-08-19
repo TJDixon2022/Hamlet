@@ -222,7 +222,6 @@ public static class CwGapFit
             b = gapsMs[usable * 3 / 4];
             c = gapsMs[Math.Min(usable - 1, usable * 19 / 20)];
 
-
             for (var pass = 0; pass < Passes; pass++)
             {
                 double sa = 0, sb = 0, sc = 0;
@@ -343,4 +342,6 @@ public static class CwGapFit
             nb,
             nc);
     }
+
+
 }

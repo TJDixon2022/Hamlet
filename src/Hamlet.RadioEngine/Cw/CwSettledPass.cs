@@ -900,6 +900,10 @@ public sealed class CwSettledPass
     /// </remarks>
     public int GapsRemembered => _gapsRemembered;
 
+    /// <summary>Temporary diagnostic.</summary>
+    public IReadOnlyList<double> GapHistory
+        => _gapHistory.Take(_gapsRemembered).ToArray();
+
     private CwGapClasses? GapCuts()
     {
         var usable = 0;

@@ -1,9 +1,9 @@
-STATE: COMPLETED
-PHASE: 5 of 5
-BALL: web
-NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-19T09:50:19-04:00
-NOTE: HM-DEC-142 built and gated; the bulletin never degraded; one ruling wanted on the empty middle class
+STATE: EXECUTING
+PHASE: 1 of 5
+BALL: code
+NEXT_PASTE: none
+UPDATED: 2026-08-19T09:57:14-04:00
+NOTE: Phase 1 - measuring what coverage-easy's 19 long gaps actually are before asking for any ruling
 
 ---
 

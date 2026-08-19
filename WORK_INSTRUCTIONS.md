@@ -9,128 +9,103 @@ ISSUED: 2026-08-19
 | **A callsign too long for one keyer send** (HM-DEC-130) | 2026-08-18 | The seam measured at the bench, from the send panel |
 | **Whether the star asks for a name at the moment of saving** (HM-DEC-060, HM-DEC-134) | 2026-08-18 | Nothing but the ruling |
 | **Whether Hamlet may ever ask the radio to send its spectrum** (HM-DEC-062, HM-OPEN-042) | 2026-08-18 | The ruling |
-
-**HM-OPEN-048 is ruled and is this order.** Dropped from the queue.
+| **Whether an empty middle class is HM-DEC-142's case** (HM-OPEN-048's remainder) | 2026-08-19 | **Not ruled: phase 1 below measures whether it is a ruling at all** |
 
 ---
 
-# Work order — the settled transcript speaks, and says what it did not measure
+# Work order — the letter T is coming out as A, and it is costing real copy
 
 **Five phases. Phase 5 is the one to drop.**
 
 Gate first (HM-DEC-099). Write `PROJECT_STATUS.md` now, at every phase boundary,
 and at the finish.
 
-**The operator is at his radio tonight**, finding live CW Hamlet cannot read and
-holding conversations. Phases 1 to 3 are what he needs. Phase 4 is a regression
-that will cost him accuracy on real off-air copy. Judge everything against
-whether he can read it, answer it, or keep it.
+The operator reads live CW off the air. **Character accuracy on real off-air
+recordings is what decides whether he can follow a contact**, and one substitution
+is behind two of the three standing failures.
 
 ---
 
-## Phase 1 — Record the ruling
+## Phase 1 — Measure before asking for a ruling (minutes, not an evening)
 
-Write to `DECISIONS.md` at the head, verbatim. Next free id is **142** — 141 was
-taken by the top-strip renumber this morning, 136 is deliberately absent, and 105
-is a ruling whose entry is missing.
+**The `coverage-easy` question was handed back as a ruling and may not be one.**
+The report's own words: the classes are named by position, and the content here is
+element and character-or-longer.
 
-```
----
-id: HM-DEC-142
-date: 2026-08-19
-refs: src/Hamlet.RadioEngine/Cw/CwGapFit.cs, src/Hamlet.RadioEngine/Cw/CwSettledPass.cs, HM-OPEN-048, HM-DEC-115, HM-DEC-114, HM-OPEN-017
----
+80 gaps, 61 in the element class, 0 in the character class, 19 above.
 
-**When the sender leaves too few word gaps to form a third class, the settled pass
-emits the characters it read, unspaced, and says on the transcript that word
-spacing was not measured.** Closes HM-OPEN-048. **Narrows HM-DEC-115 to the case it
-was ruled for** and overturns none of it.
+**Measure what those 19 gaps actually are**, exactly as phase 3 of the last order
+measured the other fixture — the durations, and their ratio to the element class.
 
-WHAT IS THERE IS NOT A GUESS. HM-DEC-115 says no cuts means no transcript rather
-than a guessed one, and that is right and stays. **This is not that case.** On
-`coverage-easy` there are eighty gaps, clustered from the sender's own keying, and
-the clock fits at a hundred milliseconds. Two of the three classes come back
-populated. What is missing is the word class, and it is missing because the
-operator sent a callsign without spaces — which is a fact about his sending and not
-a failure to measure it. A ruling written against having nothing was reaching into
-a case where we have almost everything.
+- **At roughly three times the element gap they are character gaps**, the three-way
+  seeding has put them in the wrong slot, and this is HM-DEC-142's ruled case with
+  a mislabelled heap. **That is a defect. Fix it, and do not ask.** The fix is in
+  the seeding or the assignment, not in what the transcript asserts.
+- **At roughly seven times they are word gaps** and there genuinely are no
+  character gaps, which is unusual keying and is a different case from the one
+  ruled. **Stop and hand it back with the numbers.**
+- **If they are mixed** — some at three, some at seven — say so plainly with the
+  distribution, because that is the case where relabelling would place no spaces
+  where spaces were sent, which HM-DEC-142 rejected in terms.
 
-AND THE CURRENT BEHAVIOUR IS THE ONE THAT FAILS §0.0. Two hundred and fifty-eight
-windows read successfully on a fixture the reference reads at a hundred per cent,
-and the transcript is empty. **An empty box says nothing was sent.** That is a
-belief formed from the screen that is not true, and it is today's behaviour rather
-than a risk of changing it. A ham reads `CQCQDEW4AWHK` without difficulty. Nobody
-reads a blank.
+Report the table either way. `APassThatReadSomethingEmitsSomething` goes green only
+if the first case holds.
 
-THE SPACING IS NOT INVENTED, AND THE TRANSCRIPT SAYS SO. Emitting unspaced asserts
-no word boundary anywhere, which is exactly what was measured. **Clustering two
-heaps and calling the wider class a word gap was rejected**: this fixture has two
-or three genuine word gaps, and folding them into the character class would place
-spaces that were never measured, which is the guess HM-DEC-115 forbids. The
-sentence on screen is the load-bearing part and not a caveat — it is the
-difference between an odd-looking transcript and a stated condition.
+## Phase 2 — Name the mechanism behind T becoming A (HM-OPEN-049)
 
-MEASURED BEFORE IT SHIPS. Two classes must still separate element gaps from
-character gaps reliably, or the transcript runs a callsign together and reads as
-confident nonsense, which is worse than the silence it replaces. **If the
-measurement says it does not separate them, none of this ships and the finding
-comes back.** HM-OPEN-017's labelled approximation stays reserved and unused.
+**Do not repair anything in this phase.** This project has twice this week lost an
+evening to a diagnosis that named a suspect without naming a line, and both times
+the correction came from the operator rather than the code.
 
-THE LEADING EDGE IS UNTOUCHED. It was always right on these fixtures and it is what
-the operator watches arrive. This ruling is about the record he keeps afterwards.
-```
+`STAAION` for `STATION`. `AHIS` for `THIS`. `■ DE W1AW K` for `CQ DE W1AW K`. Every
+one is a lone dah acquiring a leading dit, or a character boundary landing inside
+one.
 
-Index row at the true head of `CLAUDE.md` §1 — which now reads newest-first and has
-a test on it, so put it at the top and let `DecisionLogOrderTests` confirm.
+- **Open the audio.** `cw-2026-08-18-003126` and whatever backs
+  `TheBulletinDecodesToItsAnswerKey` and
+  `ClearingTheTranscriptLeavesTheDecoderAlone`. Find the T that became an A and
+  look at the samples around it.
+- **Which is it**: a mark being split into two by a dropout, or a character
+  boundary missed so a preceding dit joins the dah? Those are different faults with
+  different repairs and the waveform says which.
+- **Check the de-glitch first.** The reference de-glitches at 20 ms and again at
+  0.4·dit. A short mark surviving the first pass and a real mark being cut by the
+  second are both consistent with what is on screen. State which threshold, at
+  which stage, on which sample.
+- HM-DEC-112 took element edges at half amplitude for the clock fit. Whether
+  element *extraction* uses the same rule, and what happens at a dah's leading
+  edge if it does not, is worth the look.
 
-## Phase 2 — Build it
+**The output of this phase is a mechanism and a line number**, not a repair.
 
-- `CwGapFit` stops refusing when the word class is empty **and the other two are
-  not.** An empty element or character class is still a refusal; those are the
-  measurement genuinely failing.
-- `Emit` produces the characters it read, with no word boundaries.
-- **The transcript states the condition, in the operator's own terms, through
-  `VoiceTests`.** Not a log line, not a tooltip. He is reading the transcript; the
-  sentence belongs where he is looking. Something to the effect that the sender left
-  no spaces long enough to measure, so the letters are right and the word breaks are
-  not shown.
-- Distinguish this in the record from a genuine refusal, so `decode_quality` can
-  tell an unspaced emission from an empty one.
+## Phase 3 — Repair it, and say what it bought
 
-## Phase 3 — The gate: measure it before it ships
+With the mechanism named. Report character accuracy before and after on every
+fixture that moves, and on every one that does not.
 
-**This is not a test-writing phase. It is the condition on phase 2 shipping at
-all.**
+**`TheBulletinDecodesToItsAnswerKey` is the honest yardstick**: 36 characters
+against 47 on the day it was written and 36 today. Any number you report against
+it is a number nobody has moved in three days.
 
-- `coverage-easy` and `exchange-easy` against the reference, which reads both at
-  100%. Report character accuracy, not a pass or fail.
-- **Specifically: does a callsign run together?** Two classes must separate element
-  from character gaps. Take a fixture with a callsign in it and read the output
-  character by character against the key.
-- `CwSettledSilenceTests.APassThatReadSomethingEmitsSomething` — the third red the
-  last session added deliberately — goes green. **Standing red returns to exactly
-  two**, and if it does not, say which and why.
-- **If accuracy is poor, revert phase 2 and report.** A transcript that reads
-  `W4AWH` as `W4AW H` or `WHAWH` is HM-DEC-114's defect, not an improvement, and the
-  ruling above says in terms that it does not ship.
+## Phase 4 — HM-DEC-115's premise
 
-## Phase 4 — The bulletin regression
+**Not a repair. A correction to the record, and it is small.**
 
-`TheBulletinDecodesToItsAnswerKey` emits `NLDOTNET■IECHSTAAIONHAND■AHISMESAGEP`
-against a key beginning `RLDOTNET<BT>EACHSTATIONHANDLING…`. **HM-DEC-115's own text
-records that recording being read correctly.** It has since degraded, on a real
-off-air Farnsworth capture, which is exactly the kind of signal tonight is about.
+HM-DEC-115 states that the same bulletin audio read every character correctly
+after acquisition. The test written the next day showed 36 of 47, and today shows
+36 of 47. **That measurement was never reproduced.**
 
-- Find when. `git bisect` against that test if it runs at older commits.
-- **Name the change and the mechanism**, not just the commit. This project has been
-  burned twice this week by a diagnosis that named a suspect without naming the
-  line.
-- Repair if the repair is clear. If it needs a ruling, hand it back.
+The ruling itself may still be right — no cuts means no transcript rather than a
+guessed one stands on its own reasoning. What is wrong is a fact cited inside it.
+Record that in `OPEN_ISSUES.md` against HM-DEC-115 with the numbers, so the next
+session reading that ruling does not take the claim at face value. **Do not amend
+the ruling's text** and do not treat this as a supersession.
 
 ## Phase 5 — `ClearingTheTranscriptLeavesTheDecoderAlone` (DROP THIS ONE IF SHORT)
 
-The remaining standing failure, left red by HM-DEC-114. Phase 2 or 4 may move it;
-check before doing separate work.
+`■ DE W1AW K` against `CQ DE W1AW K`. The last session judged this the same
+element-level fault as the bulletin's, so phase 3 may take it. Check before doing
+separate work, and if phase 3 fixed it say so rather than claiming a phase.
 
 **Drop this whole if short and say you dropped it.**
 
@@ -143,9 +118,8 @@ unruled and dummy-load only.
 
 `OUTPUT.md`, four sections (HM-DEC-106), section four carrying the asks queue.
 
-**Section two is written for a man at his radio tonight**, and leads with one
-sentence: whether the settled transcript now shows him what he heard. Then what
-the letters are worth — the accuracy number from phase 3, plainly, because he is
-going to trust that text or not based on it.
+**Section two opens with the accuracy number**, before and after, on the bulletin.
+He is going to trust the transcript or not based on that one figure, and everything
+else in the section is context for it.
 
 **If you finish every phase, stop and report.**
