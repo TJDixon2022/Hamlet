@@ -1,9 +1,9 @@
 STATE: EXECUTING
-PHASE: 1 of 6
+PHASE: 2 of 6
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-19T08:45:29-04:00
-NOTE: Phase 1 - stop mode follow taking him out of CW, and find what recomputes it
+UPDATED: 2026-08-19T08:49:46-04:00
+NOTE: Phase 2 - the settled pass reading worse than the tip on exchange-easy; checking the brief against the tree first
 
 ---
 

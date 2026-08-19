@@ -4,6 +4,58 @@ Questions with owner and severity. `owner` is who must act next. Format in
 `CLAUDE.md` §3.
 
 ---
+id: HM-OPEN-048
+status: open
+owner: claude
+raised: 2026-08-19
+severity: slows
+blocks: the transcript half of the CW terminal; the leading edge is unaffected
+refs: HM-DEC-102, HM-DEC-114, DECODER_AND_SCANNER_BRIEF.md phase 4, tests/Hamlet.RadioEngine.Tests/Cw/Fixtures/CwSettledSilenceTests.cs
+---
+
+The settled pass is not reading worse than the leading edge. On two of three
+proved fixtures it is barely reading at all, and **the two fail differently**.
+
+Measured 2026-08-19, on fixtures the reference reads at 96 to 100 percent:
+
+| Fixture | Leading edge | Settled | Last refusal | What it fitted |
+|---|---|---|---|---|
+| `exchange-easy` | 28 characters, `VV CQ CQ DE N0CALL N0CALL K` | **3** | `Clock`, keying verdict false | no clock, dit 0 |
+| `coverage-easy` | 28 characters, `V 1234567890 QRZ? DE/N0CALL` | **0** | **None** | dit 100 ms at 23.6 dB, keying true |
+| `tightfist-easy` | 11, correct | 10, garbled | — | — |
+
+`DECODER_AND_SCANNER_BRIEF.md` phase 4 records 15 characters with 73 percent
+unresolved on `exchange-easy`. It is three now. **Whatever moved between those two
+measurements moved it a long way**, and nothing in the suite could see it, because
+every existing measure was a share of what was emitted and a pass that emits
+nothing has no share.
+
+**The `coverage-easy` line is the one to start from.** The pass refused nothing,
+fitted a hundred millisecond dit — twelve words a minute, which is the fixture's
+own speed — measured 23.6 dB of contrast and passed the keying gate, **and handed
+back an empty window.** That is not a sensitivity problem. A pass that reports it
+read and produces no characters is contradicting itself, and the repair is in
+extracting runs from a window it says it read rather than in making it hear
+better.
+
+`exchange-easy` fails earlier and differently: the clock is refused outright and
+`KeyingRecently` is false at the end of the recording, so it never reaches the
+reading at all. Two faults, not one.
+
+**The lead the brief names is still the lead**: the reference de-glitches at 20 ms,
+extracts runs, fits the clock, then de-glitches again at 0.4 of a dit and re-reads
+every run. Hamlet's settled pass reads once.
+
+**`CwSettledSilenceTests.APassThatReadSomethingEmitsSomething` is red on purpose**
+and is the third standing failure. HM-DEC-114 is the precedent: a fixture the
+reference reads at 100 percent, read by Hamlet as nothing, is a defect and a red
+test is the correct state of the world rather than a ratchet to be tuned.
+
+**The operator's evening is not blocked by this.** The leading edge reads both
+fixtures perfectly and is what the terminal shows live; what is degraded is the
+transcript the settled pass keeps.
+
+---
 id: HM-OPEN-047
 status: open
 owner: tim
