@@ -37,6 +37,21 @@ public readonly record struct CwGapClasses(
     /// sending Farnsworth, which is how traffic nets and bulletins are sent.
     /// </remarks>
     public double FarnsworthRatio => ElementMs <= 0 ? 0 : CharacterMs / ElementMs;
+
+    /// <summary>
+    /// True when this sender left word gaps long enough to measure (HM-DEC-142).
+    /// </summary>
+    /// <remarks>
+    /// <para>**FALSE IS A MEASUREMENT AND NOT A FAILURE.** A callsign, a contest
+    /// exchange or a `V` string carries element gaps and character gaps and no
+    /// word gaps at all, so the third class is empty because of what he sent
+    /// rather than because the fit could not see it.</para>
+    /// <para>Where it is false the character cut is infinite, so no gap can be
+    /// classified as a word boundary and the transcript comes out unspaced. That
+    /// asserts exactly what was measured: no word boundary anywhere. **The
+    /// surface has to say so**, which is the load-bearing half of that ruling.</para>
+    /// </remarks>
+    public bool WordSpacingMeasured => WordCount > 0;
 }
 
 /// <summary>
@@ -182,6 +197,10 @@ public static class CwGapFit
         double a = 0, b = 0, c = 0;
         int na = 0, nb = 0, nc = 0;
 
+        // Set when the top class comes back empty, which is a sender who left no
+        // word gaps rather than a fit that failed (HM-DEC-142).
+        var noWordClass = false;
+
         // **A LONE GAP FAR ABOVE EVERYTHING ELSE IS A PAUSE, NOT A CLASS.** An
         // operator who stops for a couple of seconds between transmissions leaves
         // one silence several times longer than any word gap he sends, and a
@@ -233,11 +252,29 @@ public static class CwGapFit
                     }
                 }
 
-                // An empty class means there are not three heaps here, and inventing
-                // one would put spaces where nobody left any.
-                if (na == 0 || nb == 0 || nc == 0)
+                // **AN EMPTY ELEMENT OR CHARACTER CLASS IS THE MEASUREMENT
+                // FAILING, AND IT IS STILL A REFUSAL.** Without those two there is
+                // no way to tell one character from the next, and a transcript
+                // built on that would be confident nonsense.
+                if (na == 0 || nb == 0)
                 {
                     return null;
+                }
+
+                // **AN EMPTY WORD CLASS IS THE SENDER, NOT THE FIT** (HM-DEC-142).
+                // He sent a callsign without spaces. Refusing here is what left
+                // two hundred and fifty-eight successfully read windows producing
+                // an empty transcript on a fixture the reference reads perfectly,
+                // and an empty box says nothing was sent — which is a belief
+                // formed from the screen that is not true (§0.0).
+                //
+                // The centres carry on being fitted from the two heaps that do
+                // exist; the third is dealt with after the loop, where the word
+                // boundary is put out of reach rather than invented.
+                if (nc == 0)
+                {
+                    noWordClass = true;
+                    break;
                 }
 
                 a = sa / na;
@@ -245,7 +282,8 @@ public static class CwGapFit
                 c = sc / nc;
             }
 
-            if (nc > 1
+            if (noWordClass
+                || nc > 1
                 || trim >= MostTrims
                 || usable - 1 < LeastGaps
                 || c - b <= LoneOutlier)
@@ -258,7 +296,37 @@ public static class CwGapFit
             usable--;
         }
 
-        if (b - a < LeastSeparation || c - b < LeastSeparation)
+        // The two classes that decide where one character ends and the next
+        // begins have to stand apart whether or not there is a third. This is
+        // the check HM-DEC-142 makes the condition of shipping at all: without it
+        // a callsign runs together and reads as confident nonsense, which is
+        // worse than the silence it replaces.
+        if (b - a < LeastSeparation)
+        {
+            return null;
+        }
+
+        if (noWordClass)
+        {
+            // **THE WORD BOUNDARY IS PUT OUT OF REACH RATHER THAN INVENTED**
+            // (HM-DEC-142). No gap can exceed an infinite cut, so nothing is ever
+            // classified as a word gap and the transcript comes out unspaced,
+            // which asserts exactly what was measured: no word boundary anywhere.
+            // Folding the widest character gaps into a word class instead would
+            // place spaces nobody measured, which is the guess HM-DEC-115
+            // forbids.
+            return new CwGapClasses(
+                Math.Exp(a),
+                Math.Exp(b),
+                0,
+                Math.Exp((a + b) / 2),
+                double.PositiveInfinity,
+                na,
+                nb,
+                0);
+        }
+
+        if (c - b < LeastSeparation)
         {
             return null;
         }

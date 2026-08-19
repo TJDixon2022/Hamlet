@@ -1,9 +1,9 @@
 STATE: EXECUTING
-PHASE: 1 of 5
+PHASE: 3 of 5
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-19T09:38:28-04:00
-NOTE: Phase 1 - recording HM-DEC-142, the settled pass speaking unspaced when there is no word class
+UPDATED: 2026-08-19T09:44:49-04:00
+NOTE: Phase 3 - the gate: does a callsign run together, measured before phase 2 ships
 
 ---
 

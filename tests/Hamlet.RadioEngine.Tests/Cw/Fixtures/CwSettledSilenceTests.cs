@@ -74,7 +74,10 @@ public sealed class CwSettledSilenceTests
             + $"follows {reading.Follows}, last refusal {reading.Refusal}, "
             + $"dit {reading.DitMs:F0} ms, contrast {reading.ContrastDb:F1} dB, "
             + $"keying {reading.Keying}, gaps {reading.Gaps}, "
-            + $"classes {(reading.Classes ? "fitted" : "none")}");
+            + $"classes {(reading.Classes ? "fitted" : "none")}" +
+            (decoder.GapClasses is { } g
+                ? $" [element {g.ElementCount} at {g.ElementMs:F0} ms, character {g.CharacterCount} at {g.CharacterMs:F0}, word {g.WordCount}, cuts {g.ElementCutMs:F0}/{g.CharacterCutMs:F0}]"
+                : ""));
 
         return reading;
     }

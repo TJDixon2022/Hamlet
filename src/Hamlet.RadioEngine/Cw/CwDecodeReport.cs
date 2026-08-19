@@ -28,6 +28,11 @@ namespace Hamlet.RadioEngine.Cw;
 /// <param name="OwnTransmitSeconds">
 /// How much of what was heard was the operator's own transmitter (HM-DEC-095).
 /// </param>
+/// <param name="WordSpacingUnmeasured">
+/// True when this sender left no word gaps long enough to measure, so the
+/// transcript comes out unspaced (HM-DEC-142). Distinct from an empty
+/// transcript, which is the decoder producing nothing.
+/// </param>
 public readonly record struct CwDecodeReport(
     AudioLevel Level,
     double ToneHz,
@@ -39,7 +44,8 @@ public readonly record struct CwDecodeReport(
     int CharactersUnsure,
     bool HasKeying = false,
     ToneInterference? Interference = null,
-    double OwnTransmitSeconds = 0)
+    double OwnTransmitSeconds = 0,
+    bool WordSpacingUnmeasured = false)
 {
     /// <summary>
     /// How far above the band a tone has to stand before it is worth mentioning.
@@ -141,6 +147,22 @@ public static class CwDecodeStory
                 + "paths with two separate levels, so the radio can sound "
                 + "perfectly good in your headphones while the computer is being "
                 + "handed near-silence.";
+        }
+
+        // **THE LOAD-BEARING HALF OF HM-DEC-142, AND IT GOES WHERE HE IS
+        // LOOKING.** The transcript is coming out with no spaces in it, because
+        // this sender left no gap long enough to call a word break. The letters
+        // are measured and the word boundaries are not, and saying so is the
+        // difference between an odd-looking transcript and a stated condition
+        // (§0.0). Ahead of the "all is well" return, because characters are
+        // arriving and something still needs saying.
+        if (report.WordSpacingUnmeasured)
+        {
+            return "The letters below are what Hamlet heard, run together. "
+                + "Whoever is sending has not left a gap long enough to call a "
+                + "word break, which is ordinary in a callsign or an exchange, so "
+                + "the letters are measured and the spaces between words are not "
+                + "shown at all rather than being put where they might have gone.";
         }
 
         if (report.CharactersEmitted > 0)

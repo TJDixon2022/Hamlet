@@ -271,6 +271,20 @@ public sealed class CwDecoder
     public int SettledGapsRemembered => _settled.GapsRemembered;
 
     /// <summary>
+    /// True when the sender left no word gaps long enough to measure
+    /// (HM-DEC-142).
+    /// </summary>
+    /// <remarks>
+    /// **AN UNSPACED TRANSCRIPT AND AN EMPTY ONE ARE DIFFERENT FACTS**, and the
+    /// record has to be able to tell them apart: one is a callsign read
+    /// correctly, the other is the decoder producing nothing. False while no
+    /// classes have been fitted at all, because nothing has been measured either
+    /// way yet.
+    /// </remarks>
+    public bool WordSpacingUnmeasured
+        => _settled.Classes is { } classes && !classes.WordSpacingMeasured;
+
+    /// <summary>
     /// True when nothing is coming along behind the provisional tip to confirm
     /// it (HM-DEC-096, phase 4).
     /// </summary>
@@ -345,7 +359,8 @@ public sealed class CwDecoder
         _charactersUnsure,
         _tracker.HasKeying,
         _tracker.Verdict.Interference,
-        (double)_tracker.Guard.BlockedHops * _tracker.HopSamples / SampleRate);
+        (double)_tracker.Guard.BlockedHops * _tracker.HopSamples / SampleRate,
+        WordSpacingUnmeasured);
 
     private double _lastSnrDb = double.NaN;
 
