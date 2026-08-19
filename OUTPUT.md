@@ -5,224 +5,209 @@
 `PROJECT: Hamlet`; gate passed on all three (§9.6). **No radio was connected**
 (HM-DEC-093). Status written at the start and at every phase boundary.
 
-**Phases 1 to 4 worked. Phase 5 dropped.** Five commits.
+**Phases 1 to 4 worked, phase 5 dropped. Two commits, and no decoder behaviour
+changed** — both experiments were measured and reverted, and the one ruling did not
+meet its own gate.
 
-## Phase 1 — the de-glitch fix is shipped
+## Phases 1 to 3 — the streaming path, and the constant that doubles it
 
-`width = 2n + 1`. The bulletin goes **36 → 37 of 47** on the existing metric:
-`STAAION` becomes `STATION`, `HAND■` becomes `HANDNG`. `AHIS` survives, so that
-substitution has a second cause.
+**The mark table, published before anything was touched.** ARRL bulletin capture,
+ten-millisecond buckets, dit 60 ms and dah 160:
 
-**And the earlier report of its cost was wrong, which I should say plainly.** I
-wrote last session that four characters ahead of `VA3VRR` become placeholders.
-Measured properly this time, before and after the one line, on the same capture:
+| ms | 0 | **10** | 20 | 30 | 40 | 50 | **60** | 70–90 | 120–130 | **160** | 170–270 |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| marks | 2 | **21** | 13 | 6 | 1 | 3 | **60** | 5 | 3 | **35** | 8 |
 
-- before: `■■■ ■■VA3VRR`
-- after: `■■ ■■VA3VRR`
+**43 of 157 marks are under fifty milliseconds — twenty-seven per cent**, against
+seven per cent in the settled pass. The callsign capture is 20 of 72 with a dit of
+100.
 
-**Every letter is identical and one unreadable marker is gone.** Nothing was lost;
-the count fell below the ratchet because a placeholder stopped being emitted. I had
-inferred "four characters" from a failing length assertion instead of reading the
-two strings. The ratchet is re-baselined by that one glyph, with the reason
-recorded, and its substantive assertions — reaches the prefix, carries the whole
-callsign — are untouched.
+**The floor is what binds, not the fraction.** `CwGate.FollowSpeed` wants
+`round(ditHops / 3)`, which is two hops at twenty words a minute, so it clamps up to
+`ShortestVote` every time — **the constant is the setting and the fraction never
+decides anything at ordinary speeds.**
 
-## Phase 2 — the leading edge, measured for the first time, and it inverts the assumption
+**Swept:**
 
-**Every accuracy figure this project has published was the settled pass's.** On the
-ARRL bulletin capture, aligned against the answer key by longest common
-subsequence:
-
-| Pass | Before phase 1 | After phase 1 |
+| `ShortestVote` | bulletin, leading edge | bulletin, settled |
 |---|---|---|
-| **Leading edge** — what he watches arrive | **13 of 43**, 19 emitted | **13 of 43**, 19 emitted |
-| Settled — the record kept afterwards | 31 of 43, 36 emitted | **33 of 43**, 37 emitted |
+| **5 — today** | **13 of 43** | 33 |
+| 6 | 27 | 32 |
+| **7** | **27** | **34** |
+| 9 | 27 | 32 |
 
-The leading edge reads `O T ■T  T ■T ■ O   ■  ISE SSRG E ■`. The settled pass
-reads `N L D O T NET ■E ECH STATION HANDNG AHIS MESAGE P`.
+Seven is the best of both and removes runs under forty milliseconds, two thirds of
+a dit at that speed. I added a cap at the dit itself so a fast fist keeps its narrow
+window.
 
-**"The leading edge is already good" was true of synthesized fixtures and is false
-on real off-air audio.** Every report this week has repeated it, including mine.
+**And it breaks five green tests, all synthesized**, two of them about finding the
+station at all: `AStationElsewhereIsStillFound` at 400 Hz,
+`TheTrackerDoesNotLeaveAStationForItsOwnImage`, `prosigns-easy` tone finding,
+`coverage-easy` read whole, and the settled pass's callsign ratchet.
 
-**The streaming path does not have the same bug and does have the same exposure.**
-`CwGate.FollowSpeed` sizes its vote window in **hops**, not milliseconds —
-`ShortestVote` is 5 — so it is not halving anything. But five hops removes about
-twenty-five milliseconds, and the split fragments on that recording run to fifty,
-so the same marks survive there too. That is the likeliest reason the leading edge
-reads 13, and it is the highest-value thing left in the decoder.
+**Reverted.** HM-DEC-091 says a real capture outranks a synthetic one; §12.5 says a
+fixture the reference reads well is evidence. Both apply and they point opposite
+ways, so it is in section four.
 
-**My first metric was wrong and I caught it before publishing.** A greedy in-order
-walk reported 3 of 43 for a reading plainly carrying `DOT NET`, `STATION` and
-`MESSAGE`; it mis-anchors on a decode that starts mid-acquisition. Replaced with a
-proper alignment.
+**Phase 3's table now exists**, both passes on both captures, which it never had:
 
-## Phase 3 — the keying verdict expires while he is still sending
+| capture | pass | in order | emitted |
+|---|---|---|---|
+| bulletin | leading edge | 13 of 43 | 19 |
+| bulletin | settled | 33 of 43 | 37 |
+| `cw-2026-08-17-013347` | leading edge | callsign present | 8 |
+| `cw-2026-08-17-013347` | settled | callsign present | 10 |
 
-`CwDecoder.RunSettledPass` emits nothing unless `_tracker.KeyingRecently` is true.
-That gate is HM-DEC-095's and it is right — a carrier once produced two hundred
-characters of confident nonsense.
+The second capture has no answer key — HM-DEC-091 forbids inventing one — so it is
+scored on the callsign, the one thing independently confirmed about it.
 
-**`KeyingRecently` is a six-survey counter and a survey runs every half second, so
-it is false three seconds after the survey last saw keying.** Measured:
+## Phase 2 — the class of error, swept
 
-| | `exchange-easy` | `coverage-easy` |
+Both faults found this week are the same mistake in different clothes: **a threshold
+that does not mean what its name says.**
+
+| Threshold | Meant to remove | Actually removes |
 |---|---|---|
-| audio | 32.0 s | 40.4 s |
-| last character read by the leading edge | 31.3 s | 39.7 s |
-| trailing silence | **0.7 s** | 0.7 s |
-| keying protected when the pass drained | **false** | true |
+| `CwSettledPass.Deglitch(0.020)` | 20 ms | **10 ms** — a median filter removes half its window. Fixed this morning |
+| `CwSettledPass.Deglitch(0.4·dit)` | 24 ms at 20 wpm | **10 ms**, same cause, same fix |
+| `CwGate.ShortestVote = 5` | a floor under the vote window | **the whole setting** — the fraction of a dit is always smaller, so the clamp decides |
+| `CwGate.VoteShareOfDit = 1/3` | a third of a dit | **nothing at ordinary speeds**, for the same reason |
+| `KeyingRecently` — six surveys | "keying was found recently" | **keying was found within 3 s of the survey's last sighting**, which expires mid-message on a sparse fist |
 
-**The trailing silence is identical, so the ending is not the cause.** The
-protection expired *while the station was still sending*. The verdict comes from
-the keying-structure detector, which needs enough marks in three seconds to see two
-clusters; `exchange-easy` is twenty-seven characters over thirty-two seconds, so a
-three-second window often holds two or three. **A slow sender with big gaps is
-exactly who a newcomer works.**
+## Phase 4 — HM-DEC-143 is recorded and unbuilt, by its own condition
 
-Not repaired: every candidate changes what the display asserts about whether a
-signal is there (§0.0, §12.1). The clock refusal on the same fixture is recorded as
-measured — `Clock`, fitted dit of zero — and **explicitly not proved**, because
-sparsity is a plausible shared cause and this project has been burned by naming a
-suspect without a mechanism. HM-OPEN-051.
+Written verbatim to `DECISIONS.md`, index row at the true head of §1.
 
-## Phase 4 — the table, and HM-DEC-097's premise does not hold
+**It makes the carrier recording the gate**, and the gate failed:
 
-| Generated | Decoder's own margin | Correct | **Invented** | Emitted |
-|---|---|---|---|---|
-| +18 to +4 dB | 36.8 → 23.2 dB | 100% | **0%** | 9 |
-| +2 dB | 21.5 dB | 97% | **0%** | 8 |
-| **0 dB** | **19.8 dB** | 14% | **0%** | 1 |
-| −2 dB | 19.5 dB | 3% | **0%** | 0 |
-| −4, −6 dB | 17.2, 16.8 dB | 0% | **0%** | 0 |
+| | `cw-2026-08-17-134712`, the carrier |
+|---|---|
+| today, with the survey's verdict | **0 characters** |
+| verdict removed, leaving the pass's own structure tests | **33 characters** |
+| plus a tightness test on the mark clusters | **33 characters** |
 
-**Nought decibels broadband is 19.8 on the decoder's own scale** — the number that
-ruling needed and never had.
+**The pass's existing tests are not the judgement the ruling assumed it already
+had.** `FitClock` requires eight marks, two populated clusters, a legal ratio and a
+dit in range — and the carrier passes all four, exactly as HM-DEC-095 predicted it
+would. The strengthening that ruling's own reasoning implies, two clusters against
+one smear, does not separate them either: a carrier chopped by noise sits near two
+centres.
 
-**And the decoder invents nothing, at any level.** HM-DEC-097 says that at minus
-two decibels it emits a full message of which forty-four per cent is invented.
-Today it emits **nothing at all** there. The existing gates already produce silence
-rather than confident nonsense, which is what the ruling wanted, reached another
-way.
-
-Cost of a floor: at 20 it refuses four levels, the best reading 14%; at 18, two
-levels reading 0%; at 16 and below, none. **Nearly free, and it buys nothing
-measurable.** And the invention that does exist — `STAAION` — is at strong signal
-and is the split-mark fault, so a noise floor would not have prevented it.
-HM-OPEN-052.
+Raising a constant until the carrier goes quiet would be tuning against one
+recording with every fixture unadjudicated, which is how this week's other two
+trades were made and reverted. **So it does not ship**, exactly as the ruling
+instructs, and HM-OPEN-054 carries the numbers and three candidate distinguishers.
 
 ## Phase 5 — dropped
 
-The gap-fit seeding improves the record kept afterwards, not the text he watches
-arrive, and the order names it as the drop.
-
 # 2. What Tim should expect
 
-**13 of 43 before, 13 of 43 after.** That is the leading edge on the ARRL bulletin
-— the text that appears character by character while you listen — and it is
-unchanged by today's fix, because today's fix was in the settled pass.
+**13 of 43 before, 13 of 43 after.** The leading edge on the ARRL bulletin is
+exactly where it was this morning, because the change that doubles it is not in the
+build — it is waiting on your ruling.
 
-**The second number is 31 of 43 before, 33 after**, and that is the transcript kept
-afterwards.
+**What that means tonight:**
 
-**What that means at the radio tonight:**
+- **Nothing about the decoder changed today.** The transcript and the live text
+  read exactly as they did this morning. Two experiments were measured and both
+  were reverted.
+- **The one change that matters is one line and it is measured**: `ShortestVote`
+  from 5 to 7 takes the text you watch from 13 of 43 to 27 of 43 on real off-air
+  audio. It costs five synthesized tests. That is the decision in section four and
+  it is the largest single improvement measured this week.
+- **The transcript still stops early on a slow sender**, and HM-DEC-143 was meant
+  to fix it. It is recorded and unbuilt because the carrier recording still speaks
+  when the guard is removed, which is the condition you set.
+- **Keep the audio.** Everything above came from two captures. The carrier
+  recording is now doing real work as a gate, which is exactly what a kept file is
+  for.
 
-- **The live text is the weak half, and now we know by how much.** It reads a third
-  of what the transcript reads on real off-air audio. Nothing this week improved
-  it, and nobody had measured it, so every report has been calling it "already
-  good" on the strength of synthesized fixtures.
-- **The transcript is two characters better and reads `STATION` where it read
-  `STAAION`.** If you are keeping a record of a contact, it is better than this
-  morning.
-- **If the transcript stops mid-contact on a slow sender**, that is HM-OPEN-051 and
-  it is the keying verdict timing out three seconds after the last burst it
-  recognised. It is not you and it is not the radio.
-- **Keep the audio.** Everything in phases 2 to 4 came from two captures you kept.
-  The next thing worth fixing — the streaming path's own de-glitch — will be found
-  the same way.
-
-**The suite: 2,001 tests, 3 failing**, the same three as this morning. If you see
-four, something new is wrong.
+**The suite: 2,002 tests, 3 failing**, the same three as this morning.
 
 # 3. What we should do next
 
-- **The streaming de-glitch.** Phase 2 says the fragments survive there too and
-  that path is what he reads. It is the same class of change as phase 1 and the
-  measurement to judge it by now exists.
-- HM-OPEN-051, the keying verdict, which needs your ruling first.
-- HM-OPEN-052: whether HM-DEC-097 is satisfied by the silence the existing gates
-  produce.
+- **Rule the `ShortestVote` trade.** It is one line either way.
+- If it ships, the five synthesized failures want adjudicating one at a time — a
+  day's work, and the safer reading of §12.5.
+- HM-OPEN-054's three candidate distinguishers, whichever you prefer, each gated on
+  the carrier recording.
 
 # 4. What's blocking us
 
-Two rulings, below, and neither blocks tonight.
+Two rulings, and neither blocks tonight.
 
 ---
 date: 2026-08-19
-refs: HM-OPEN-051, HM-DEC-095, §0.0
+refs: HM-OPEN-053, HM-DEC-091, §12.5
 ---
 
-**Whether the settled pass may emit when the keying verdict has expired.**
+**Whether `CwGate.ShortestVote` goes from 5 to 7, doubling the leading edge on real
+audio and breaking five synthesized tests.**
 
-The verdict is false three seconds after the survey last saw keying, and on a
-sparse sender it expires mid-message: `exchange-easy` has its last character 0.7 s
-from the end and is already unprotected. Everything the pass reads from then on is
-discarded.
+Measured: the text he watches arrive goes from **13 of 43 to 27 of 43** on the ARRL
+bulletin, and the settled pass gains one. The callsign capture keeps its callsign in
+both passes.
 
-Three ways, each with a real cost:
+The cost is five green tests, all synthesized: two about finding a station at all,
+one tone-finding fixture, one read-whole fixture, and the settled pass's callsign
+ratchet.
 
-- **Lengthen the protection.** Weakens the carrier guard by exactly the amount it
-  is lengthened, and that guard exists because a carrier produced two hundred
-  characters of nonsense.
-- **Exempt the final drain.** Keeps the guard for live decoding, not for the end of
-  a recording, which is where a callsign usually is.
-- **Give the settled pass its own keying evidence** rather than the survey's.
-  Largest change, most principled, and it is a different measurement of the same
-  question.
+For it: HM-DEC-091 says a real capture outranks a synthetic one, and the gain is on
+the two recordings the operator actually made.
 
-Rejected as a session's choice: all three. Each changes what the display asserts
-about whether a signal is there.
+Against it: §12.5 says a fixture the reference reads well is evidence, and two of
+the five guard acquisition, which is upstream of everything.
+
+Rejected as a session's choice: both directions. This is a trade between two kinds
+of evidence the project ranks differently, on the number the whole week has been
+aimed at.
 
 ---
 date: 2026-08-19
-refs: HM-OPEN-052, HM-DEC-097
+refs: HM-OPEN-054, HM-DEC-143, HM-DEC-095
 ---
 
-**Whether HM-DEC-097 is satisfied by the silence the existing gates already
-produce.**
+**How the settled pass should tell keying from a carrier, given that its own marks
+cannot.**
 
-That ruling has been carried for two days as the largest outstanding §0.0 failure,
-on the strength of a measurement — 44% invented at −2 dB — that does not reproduce.
-The sweep now shows nothing invented at any level, and emission falling to nothing
-below 0 dB on its own.
+HM-DEC-143 is ruled and unbuilt. Removing the survey's verdict lets the carrier
+recording produce 33 characters; a tightness test on the mark clusters leaves it at
+33. The pass's structure tests pass a carrier because a carrier chopped by noise
+fits two centres with a legal ratio.
 
-Either the ruling is satisfied and the open item closes, or an explicit floor goes
-in anyway as a guard against a case this sweep does not cover. **If it goes in the
-number is 19.8** on the decoder's own scale, and the cost is one level that reads
-14%.
+Three candidates, none measured:
 
-Rejected as a session's choice: setting the number. It decides what the display
-asserts.
+- **The gaps rather than the marks.** Keying alternates mark and gap at related
+  lengths; a chopped carrier does not.
+- **Runs per second against the fitted speed.** A carrier produces far more or far
+  fewer transitions than the clock implies.
+- **Requiring the mark ratio near three** rather than merely inside a legal band.
+
+Rejected as a session's choice: picking one and tuning it against the single
+carrier recording, which is how two changes this week were made and reverted.
 
 ## Asks still outstanding
 
-Six, per HM-DEC-139 and scoped by HM-DEC-140.
+Seven, per HM-DEC-139 and scoped by HM-DEC-140.
 
-| Ask | First made | Waiting on | Where it sits |
-|---|---|---|---|
-| **Whether an attended automatic cycle may reach an antenna** (§0.2, HM-DEC-098) | 2026-08-17 | The bench evening | Built and armed, dummy load only |
-| **A callsign too long for one keyer send** (HM-DEC-130) | 2026-08-18 | The seam measured at the bench | The panel says it will split while he types |
-| **Whether the star asks for a name at the moment of saving** (HM-DEC-060, HM-DEC-134) | 2026-08-18 | Nothing but the ruling | Favorites are born unnamed |
-| **Whether Hamlet may ever ask the radio to send its spectrum** (HM-DEC-062, HM-OPEN-042) | 2026-08-18 | The ruling | Not asked at all |
-| **Whether the settled pass may emit with the keying verdict expired** (HM-OPEN-051) | 2026-08-19 | The ruling; three ways above | The transcript stops mid-contact on sparse sending |
-| **Whether HM-DEC-097 is satisfied by existing silence** (HM-OPEN-052) | 2026-08-19 | The ruling; the number is 19.8 if it goes in | No floor exists; nothing is invented in the sweep |
+| Ask | First made | Waiting on |
+|---|---|---|
+| **Whether an attended automatic cycle may reach an antenna** (§0.2, HM-DEC-098) | 2026-08-17 | The bench evening |
+| **A callsign too long for one keyer send** (HM-DEC-130) | 2026-08-18 | The seam measured at the bench |
+| **Whether the star asks for a name at the moment of saving** (HM-DEC-060, HM-DEC-134) | 2026-08-18 | Nothing but the ruling |
+| **Whether Hamlet may ever ask the radio to send its spectrum** (HM-DEC-062, HM-OPEN-042) | 2026-08-18 | The ruling |
+| **Whether HM-DEC-097 is satisfied by existing silence** (HM-OPEN-052) | 2026-08-19 | The ruling; a floor would be 19.8 |
+| **Whether `ShortestVote` goes 5 to 7** (HM-OPEN-053) | 2026-08-19 | The ruling; 13 → 27 against five synthesized tests |
+| **How the settled pass tells keying from a carrier** (HM-OPEN-054) | 2026-08-19 | The ruling; HM-DEC-143 is unbuilt until it has one |
 
-**Dropped since it was asked**: whether the de-glitch is widened — ruled A and
-shipped in phase 1.
+**Dropped since it was asked**: whether the settled pass may emit with the keying
+verdict expired — ruled C as HM-DEC-143, which is recorded and did not pass its own
+gate.
 
 ---
 
 ## Named and left, as the order directs
 
-The four older asks, none built around. No transmit work toward auto-CQ. **No
-records work**: nothing was tidied, swept or renumbered, and the only entries
-written are the three findings these phases produced. **Phase 5 dropped.**
+The settled pass in every other respect including the gap-fit seeding; HM-OPEN-052;
+the four older asks. No transmit work toward auto-CQ. **No records work** beyond
+HM-DEC-143 and the two findings these phases produced. **Phase 5 dropped.**
