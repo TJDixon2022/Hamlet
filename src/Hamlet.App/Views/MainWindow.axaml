@@ -949,16 +949,22 @@
                          runs for three sessions. -->
                     <Grid ColumnDefinitions="*,Auto" Margin="0,2,0,0">
                         <TextBlock Grid.Column="0"
-                                   Text="If you can hear Morse that is not arriving here, keep the last half minute and it becomes something anybody can look at."
+                                   Text="Press this whenever you can hear a station, whether or not anything appeared here. It keeps the last half minute and puts the station on tonight's list, and the list is the only place the ones Hamlet missed are counted at all."
                                    FontSize="11" TextWrapping="Wrap"
                                    VerticalAlignment="Center" Margin="0,0,10,0"
                                    Foreground="{StaticResource HmTextMutedBrush}" />
 
-                        <Button Grid.Column="1" Content="Keep this audio"
+                        <!-- **THE PRESS ASSERTS SOMETHING HAMLET CANNOT KNOW.**
+                             Every other number it holds is downstream of its own
+                             decoder, so a station it misses is a case it never
+                             counts. The operator's ear is the denominator, which
+                             is why the label says what he heard rather than what
+                             the button writes. -->
+                        <Button Grid.Column="1" Content="I hear a station"
                                 FontSize="11" Padding="10,4"
                                 VerticalAlignment="Center"
                                 IsEnabled="{Binding IsDecoding}"
-                                ToolTip.Tip="Writes a WAV of exactly what the decoder heard, with what the radio was doing beside it."
+                                ToolTip.Tip="Says you heard CW here, whether or not Hamlet read any of it. It keeps the last half minute of audio and adds a row to tonight's list, and you mark afterwards which ones it actually read."
                                 Command="{Binding CaptureAudioCommand}" />
                     </Grid>
 

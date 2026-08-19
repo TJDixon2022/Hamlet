@@ -3194,7 +3194,11 @@ public partial class MainWindowViewModel : ObservableObject
 
         if (tap is null || audio is null)
         {
-            StatusText = "There is no audio to keep just now.";
+            StatusText =
+                "There is no audio to keep just now, so the case is on the roster "
+                + "with nothing behind it.";
+
+            MarkCase(wav: "", refusal: "no audio was arriving");
             AppEvents.AudioCaptured(_telemetry, 0, CapturedHz, worked: false);
             return;
         }
@@ -3212,15 +3216,23 @@ public partial class MainWindowViewModel : ObservableObject
             StatusText =
                 "No new audio has arrived since the last time you kept some, so "
                 + "there is nothing fresh to write. The recording would have been "
-                + "the same file over again.";
+                + "the same file over again, and the case is on the roster saying "
+                + "so.";
 
+            // **THE GUARD IS NOT WEAKENED AND ITS REFUSAL STOPS BEING INVISIBLE**
+            // (HM-DEC-090). It exists because three presses inside seventy seconds
+            // once produced byte-identical files that were reasoned about as three
+            // pieces of evidence. What changes here is only that the refusal
+            // becomes a row: the case happened, the operator heard something, and
+            // a denominator that quietly dropped it would flatter the score.
+            MarkCase(wav: "", refusal: "no new audio since the last one");
             AppEvents.AudioCaptured(_telemetry, 0, CapturedHz, worked: false);
             return;
         }
 
         try
         {
-            var folder = Path.Combine(SettingsStore.DataFolder, "captures");
+            var folder = CaptureFolder;
             Directory.CreateDirectory(folder);
 
             var stamp = DateTime.UtcNow.ToString("yyyy-MM-dd-HHmmss");
@@ -3236,6 +3248,8 @@ public partial class MainWindowViewModel : ObservableObject
             StatusText =
                 $"Kept the last {audio.Duration.TotalSeconds:0} seconds of what the "
                 + "decoder heard, with what the radio was doing beside it.";
+
+            MarkCase(wav: Path.GetFileName(wav), refusal: "");
 
             AppEvents.AudioCaptured(
                 _telemetry, audio.Duration.TotalSeconds, CapturedHz, worked: true);
@@ -4261,6 +4275,59 @@ public partial class MainWindowViewModel : ObservableObject
 
         PersistRecent();
     }
+
+    /// <summary>Where captures and the roster are written.</summary>
+    /// <remarks>
+    /// Settable so a test can point the whole path at a temporary folder, in the
+    /// manner `LayoutStore.Path` already is. **The operator's own captures are not
+    /// a test's to write into**, and the adjudicated fixture folder is not either.
+    /// </remarks>
+    internal static string CaptureFolder { get; set; }
+        = Path.Combine(SettingsStore.DataFolder, "captures");
+
+    /// <summary>
+    /// Record that the operator heard a station here (the roster).
+    /// </summary>
+    /// <param name="wav">The recording written, or "" when none was.</param>
+    /// <param name="refusal">Why none was, or "" when one was.</param>
+    /// <remarks>
+    /// <para>**THE PRESS ASSERTS SOMETHING THE APPLICATION CANNOT KNOW**: that
+    /// there was a station there to hear. Every other number Hamlet holds is
+    /// downstream of its own decoder, so a station it misses is a case it never
+    /// counts, and a score built from them would come out at a hundred per cent
+    /// while the operator sat listening to somebody it could not read.</para>
+    /// <para>Called on every exit from the capture command, including both
+    /// refusals. **A case with no evidence is still a case** and belongs in the
+    /// denominator.</para>
+    /// </remarks>
+    private void MarkCase(string wav, string refusal)
+    {
+        var report = _decoder?.Report;
+
+        CwCaseRoster.Append(
+            CaptureFolder,
+            new CwCase(
+                DateTime.UtcNow,
+                CapturedHz,
+                CapturedBandName(),
+                wav,
+                refusal,
+                report is { HasTone: true } tone ? tone.ToneHz : null,
+                report is { } r && !double.IsNaN(r.SnrDb) ? r.SnrDb : null,
+                DetectedWpm > 0 ? DetectedWpm : null,
+                report?.CharactersEmitted ?? 0,
+                report?.CharactersUnsure ?? 0));
+    }
+
+    /// <summary>
+    /// The band the capture was made on, from the frequency that was read.
+    /// </summary>
+    /// <remarks>
+    /// The same reading the sidecar's own band line uses, so a roster row and the
+    /// sidecar beside it cannot disagree about where the radio was (HM-DEC-091).
+    /// </remarks>
+    private string CapturedBandName()
+        => HfBands.BandFor(CapturedHz)?.Name ?? "outside every band Hamlet knows";
 
     /// <summary>Write the recent list back to settings.json.</summary>
     private void PersistRecent()

@@ -1,9 +1,10 @@
-STATE: COMPLETED
+STATE: EXECUTING
 PHASE: 5 of 5
-BALL: web
-NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-19T11:08:24-04:00
-NOTE: One line doubles the leading edge and costs five synthesized tests; HM-DEC-143 failed its own gate
+TASK: 5 of 5
+BALL: code
+NEXT_PASTE: none
+UPDATED: 2026-08-19T11:56:31-04:00
+NOTE: Roster proved on the real capture including the refusal row; running the full suite before the report
 
 ---
 
