@@ -187,17 +187,45 @@ public static class ModeFollowPlan
     /// <param name="frequencyHz">
     /// Where the dial is, or null where the caller cannot say (HM-OPEN-041).
     /// </param>
+    /// <param name="workingCw">
+    /// True when the operator is visibly working Morse: the CW terminal is
+    /// decoding, or the dial is inside a CW segment of the band plan.
+    /// </param>
     /// <returns>The decision.</returns>
     public static ModeFollowDecision Decide(
         ModeFollowState state,
         CivMode? currentMode,
         bool currentDataMode,
         ModeTarget? target,
-        long? frequencyHz = null)
+        long? frequencyHz = null,
+        bool workingCw = false)
     {
         ArgumentNullException.ThrowIfNull(state);
 
         if (!state.Enabled || state.Suspended || target is null)
+        {
+            return ModeFollowDecision.Nothing;
+        }
+
+        // **NOTHING TAKES HIM OUT OF MORSE WHILE HE IS WORKING MORSE.**
+        //
+        // On 2026-08-18 this wrote USB with the data variant on, over and over,
+        // while the operator sat on CW main street with the terminal decoding a
+        // signal at 500 hertz. The send controls then refused `not_in_morse` for
+        // sixty-six seconds: **he could not answer a station because the app had
+        // moved his radio out from under him.**
+        //
+        // HM-DEC-056 already says the operator's own hand wins. A terminal that
+        // is decoding and a dial inside a CW segment are that hand, as plainly as
+        // turning the mode knob is. Following the map into a digital block is
+        // defensible when he arrives there and is doing nothing else; overriding
+        // what he is visibly doing is not, and the map is the weaker evidence of
+        // the two (§0.0).
+        //
+        // It is silence rather than a refusal with a sentence, because the
+        // operator has not asked for anything: this is the automation declining
+        // to interrupt, and saying so every time the dial moved would be noise.
+        if (workingCw && target.Mode != CivMode.Cw)
         {
             return ModeFollowDecision.Nothing;
         }

@@ -1,9 +1,9 @@
-STATE: COMPLETED
-PHASE: 6 of 6
-BALL: web
-NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-19T08:33:58-04:00
-NOTE: All six phases worked, none dropped; four open items closed, two raised, six asks in the queue
+STATE: EXECUTING
+PHASE: 1 of 6
+BALL: code
+NEXT_PASTE: none
+UPDATED: 2026-08-19T08:45:29-04:00
+NOTE: Phase 1 - stop mode follow taking him out of CW, and find what recomputes it
 
 ---
 

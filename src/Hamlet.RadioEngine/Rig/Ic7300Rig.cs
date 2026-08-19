@@ -369,10 +369,27 @@ public sealed class Ic7300Rig : IRig, IDisposable
             {
                 // Fold the new mode straight into the model, sourced to the
                 // write that made it true rather than waiting for a poll.
+                //
+                // **AND THE DATA VARIANT WITH IT, WHICH IS THE HALF THAT WAS
+                // MISSING** (HM-OPEN-041). Command `26` carries the mode and the
+                // data byte in one frame, so a radio that acknowledged it
+                // acknowledged both. Folding only the mode left `DataMode` reading
+                // as it had before, so a target of USB with data on could never
+                // read back as satisfied: **every trigger wrote again, for ever.**
+                // That is why one evening carried eighteen mode writes, and why
+                // the operator kept being moved out of the mode he was working in.
+                //
+                // Not a weaker claim than the mode's. It is the same frame, the
+                // same acknowledgement and the same provenance, and a value the
+                // radio never confirmed is still not written here.
                 var values = new[]
                 {
                     RigValue.Known(
                         RigField.Mode, (int)mode, CivValues.Name(mode),
+                        DateTime.UtcNow, write.Label),
+                    RigValue.Known(
+                        RigField.DataMode, dataMode ? 1 : 0,
+                        dataMode ? "on" : "off",
                         DateTime.UtcNow, write.Label),
                 };
 

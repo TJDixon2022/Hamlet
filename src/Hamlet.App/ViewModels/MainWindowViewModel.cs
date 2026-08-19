@@ -3997,9 +3997,16 @@ public partial class MainWindowViewModel : ObservableObject
         var atHz = FrequencyHz;
 
         var here = Neighborhoods.FirstOrDefault(n => n.Contains(atHz));
+
+        // **WHAT HE IS VISIBLY DOING BEATS WHAT THE MAP SAYS LIVES HERE.** The
+        // terminal decoding and the dial inside a CW segment are both the
+        // operator's own hand (HM-DEC-056), and on 2026-08-18 ignoring them cost
+        // him sixty-six seconds of not being able to answer a station.
+        var workingCw = IsDecoding || IsInsideCwSegment;
+
         var decision = ModeFollowPlan.Decide(
             _modeFollow, RigState.Mode, RigState.IsDataMode,
-            ModeFollowPlan.TargetFor(here), atHz);
+            ModeFollowPlan.TargetFor(here), atHz, workingCw);
 
         if (!decision.Write)
         {

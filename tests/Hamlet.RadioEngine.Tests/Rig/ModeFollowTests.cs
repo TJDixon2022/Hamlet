@@ -312,4 +312,48 @@ public sealed class ModeFollowTests
 
         Assert.All(CivWrites.All, w => Assert.False(string.IsNullOrWhiteSpace(w.Page)));
     }
+
+    /// <remarks>
+    /// **THE HALF THAT MADE EVERY TRIGGER WRITE** (HM-OPEN-041). Command `26`
+    /// carries the mode and the data byte in one frame, so a radio that
+    /// acknowledged it acknowledged both. Folding only the mode left `DataMode`
+    /// reading as it had before, so a target of USB with data on could never read
+    /// back as satisfied and the plan wrote again on every trigger.
+    /// </remarks>
+    [Fact]
+    public async Task AConfirmedModeWriteFoldsTheDataVariantTooAsync()
+    {
+        var port = new FakeSerialPort();
+        var rig = new Ic7300Rig(port);
+        using var _ = rig;
+
+        var connect = rig.ConnectAsync();
+        port.EnqueueIncoming(new CivFrame(
+            CivConstants.DefaultControllerAddress,
+            CivConstants.DefaultRadioAddress,
+            CivConstants.CmdReadFrequency,
+            new byte[] { 0x00, 0x30, 0x07, 0x07, 0x00 }).ToWireBytes());
+
+        Assert.True(await connect);
+
+        var reported = new List<RigValue>();
+        rig.ValuesReported += (_, e) => reported.AddRange(e.Values);
+
+        var write = rig.SetModeAsync(CivMode.Usb, dataMode: true);
+
+        port.EnqueueIncoming(new CivFrame(
+            CivConstants.DefaultControllerAddress,
+            CivConstants.DefaultRadioAddress,
+            CivConstants.ResultOk, Array.Empty<byte>()).ToWireBytes());
+
+        Assert.True((await write).Worked);
+
+        var mode = Assert.Single(reported, v => v.Field == RigField.Mode);
+        var data = Assert.Single(reported, v => v.Field == RigField.DataMode);
+
+        Assert.Equal((int)CivMode.Usb, mode.Number);
+        Assert.True(data.IsKnown);
+        Assert.Equal(1, data.Number);
+        Assert.Equal(mode.Source, data.Source);
+    }
 }
