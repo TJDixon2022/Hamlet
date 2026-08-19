@@ -3368,6 +3368,12 @@ public partial class MainWindowViewModel : ObservableObject
             $"snrDb      {(double.IsNaN(report.SnrDb) ? "unread" : report.SnrDb.ToString("0.0"))}",
             $"elements   {report.ElementsSeen} seen, {report.ElementsResolved} resolved",
             $"characters {report.CharactersEmitted} emitted, {report.CharactersUnsure} unsure",
+
+            // **THE SPEED THE DECODER WAS TRACKING**, which is the first thing
+            // anybody asks of a recording Hamlet could not read. Unread stays
+            // unread: a fixture labelled with a speed nobody measured is worse
+            // than one labelled with nothing (§0.0, HM-DEC-090).
+            $"decoderWpm {(DetectedWpm > 0 ? DetectedWpm.ToString() : "not tracking")}",
             "",
         };
 
@@ -3411,9 +3417,28 @@ public partial class MainWindowViewModel : ObservableObject
     {
         var read = RigState[RigField.Frequency];
 
-        return read is { IsKnown: true, Number: { } hz }
-            ? $"{(long)hz} Hz  (read from the radio)"
-            : $"{FrequencyHz} Hz  (Hamlet's own, the radio was not read)";
+        if (read is not { IsKnown: true, Number: { } hz })
+        {
+            return $"{FrequencyHz} Hz  (Hamlet's own, the radio was not read)";
+        }
+
+        // **A PROVENANCE LABEL CARRIES ITS AGE** (HM-DEC-111). That ruling came
+        // from this very line: it wrote "read from the radio" beside a value that
+        // had been read sixty seconds and two tunings earlier, and the label
+        // asserted a freshness it did not have. The frequency is polled at the
+        // live rate now (HM-DEC-138) and this command asks for it again before
+        // writing, so the number should be a fraction of a second old — **and
+        // saying so is what makes that checkable months later** rather than
+        // something a reader has to take on trust.
+        var age = read.Age(DateTime.UtcNow);
+
+        var when = age is not { } old
+            ? "read from the radio, age unknown"
+            : old < TimeSpan.FromSeconds(2)
+                ? "read from the radio a moment ago"
+                : $"read from the radio {old.TotalSeconds:0} seconds before this capture";
+
+        return $"{(long)hz} Hz  ({when})";
     }
 
     /// <summary>

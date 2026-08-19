@@ -1,9 +1,9 @@
 STATE: EXECUTING
-PHASE: 3 of 6
+PHASE: 4 of 6
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-19T08:54:45-04:00
-NOTE: Phase 3 - make the keyer length limit legible while he types, and walk the send path as a QSO
+UPDATED: 2026-08-19T09:00:22-04:00
+NOTE: Phase 4 - one keep-this control at the terminal, and verifying the sidecar frequency defect is fixed
 
 ---
 
