@@ -1,9 +1,9 @@
 STATE: EXECUTING
-PHASE: 1 of 2
+PHASE: 2 of 2
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-19T07:59:18-04:00
-NOTE: Phase 1 - recording HM-DEC-140, the queue's boundary; phase 2 is the hole at 096 to 133
+UPDATED: 2026-08-19T08:00:00-04:00
+NOTE: Phase 2 - reading git log -p on DECISIONS.md to settle whether 096 to 133 were written and lost or never written
 
 ---
 

@@ -4,6 +4,68 @@ Questions with owner and severity. `owner` is who must act next. Format in
 `CLAUDE.md` §3.
 
 ---
+id: HM-OPEN-045
+status: open
+owner: tim
+raised: 2026-08-19
+severity: slows
+blocks: nothing today; every affected ruling is in force and indexed
+refs: CLAUDE.md §1, §3, §5, §12.1, DECISIONS.md, HM-DEC-105, HM-DEC-112
+---
+
+Thirty-eight rulings between HM-DEC-096 and HM-DEC-133 have no entry in
+`DECISIONS.md`, and the history says they were **never written** rather than
+written and lost.
+
+**The evidence, and it is binary.** `git log -S "id: HM-DEC-096"` across all paths
+and all history returns nothing, and the same is true of 100, 113, 120, 129 and
+133: those strings have never existed in this repository. `DECISIONS.md` has only
+ever grown — 5,056 lines, then 5,174, then 5,331 at HM-DEC-095 on 2026-08-17, then
+5,369 at HM-DEC-134 on 2026-08-18 — and no commit has shortened it. Between those
+two the file was not touched at all.
+
+**Where it started, and what the commits were doing.** `d6b4ce2`, 2026-08-17 at
+16:26, added the §1 row for HM-DEC-096 along with `BATCH_BRIEF_AMENDMENT.md`,
+`CLAUDE.md` and `SESSION_PROTOCOL.md`, and **did not touch `DECISIONS.md`**.
+`83d58d1` and `c1a76f8` the same evening did the same for 097 and for the rulings
+around 113. All three are commits of chat deliveries, which write `CLAUDE.md` and
+brief files; the entry the row points at was simply not in the zip.
+
+**The rule was already there and nothing enforced it.** §1 has said "Detailed
+records live in `DECISIONS.md`; this table is the index" since before the first
+missing row, in that wording, unchanged. §3 requires the file to hold rulings with
+`id` and `date`, and §5's definition of done requires the records updated in the
+same delivery. Nothing compares the two, which is the same shape as HM-OPEN-044:
+a correct rule with no mechanism behind it.
+
+**One ruling is worse off than the other thirty-seven.** **HM-DEC-105 has neither
+an entry nor an index row.** It is cited by HM-DEC-112's row as having put the
+half-amplitude correction in the settled pass, twice by
+`DECODER_AND_SCANNER_BRIEF.md`, and by two entries in this file. It was ruled,
+acted on, and recorded nowhere. Everything anybody knows about it is a sentence
+inside another ruling's summary.
+
+**What a repair may not be.** A ruling reconstructed from its own one-line index
+row is a session writing Tim's reasoning for him and attributing it to him, which
+§2.1 and §12.1's attribution rule forbid absolutely. That is worse than the hole,
+because the hole is visible and a plausible forgery is not.
+
+**Three shapes, none of them ruled here.**
+
+- **Leave it and mark it.** `DECISIONS.md` gains a note at the 095/134 seam saying
+  what is missing and why, so nobody reads the gap as rulings that were withdrawn.
+  Cheapest and honest; the reasoning stays lost.
+- **Restore from the chat transcripts**, if Tim still has the conversations those
+  rulings were made in. That is recovery rather than reconstruction, and it is the
+  only route to the actual text.
+- **Promote the index rows as they stand**, each entry saying on its face that it
+  is the index row and that the full reasoning was never recorded. Honest about
+  what it is, and it makes the file complete without inventing a word.
+
+HM-DEC-105 needs an answer under any of the three, since there is no row to
+promote and nothing to point at.
+
+---
 id: HM-OPEN-044
 status: closed
 owner: tim
