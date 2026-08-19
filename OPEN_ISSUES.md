@@ -50,6 +50,62 @@ suspect without naming the mechanism. What is wanted is a ruling on which of the
 two readings of that capture is believed, and then one order aimed at the T-to-A
 substitution with the audio in front of it.
 
+**MECHANISM AND LINE, 2026-08-19. It is a split mark, and the de-glitch does not
+remove what it is asked to remove.**
+
+**The patterns say a dit is created, not moved.** Every settled character was
+dumped with its pattern from `cw-2026-08-18-004507`. `STATION` comes out
+`S T A A I O N`: the second T's pattern is literally `.-`, a dit **before** the
+dah. `THIS` the same. `<BT> EACH` comes out `■ I E C H` where the `■` is
+`.-...-`, the prosign with a leading dit. Counting elements: fifteen where
+fourteen were sent, seventeen where sixteen were sent. **Exactly one extra
+element each time and never a missing one**, so nothing is being moved across a
+boundary — a mark is being split.
+
+**The fragments are measured.** Every mark the settled pass took, across the whole
+recording, in ten millisecond buckets:
+
+| ms | 20 | 30 | 40 | 50 | **60** | 70 | 90–150 | **160** | 170 |
+|---|---|---|---|---|---|---|---|---|---|
+| count | 475 | 275 | 325 | 425 | **6,841** | 1,774 | ~175 | **4,199** | 574 |
+
+The dit is 60 ms and the dah 160. **1,075 marks sit between 20 and 50 ms** — a
+seventh of everything — and every one of them is classified as a dit, because
+`ClassifyMark` cuts at the geometric mean of dit and dah, about 98 ms.
+
+**The line.** `CwSettledPass.Deglitch` is a median filter, and its width comes
+straight from the duration it is handed:
+
+```
+var width = Math.Max(1, (int)Math.Round(shortestSeconds / _hopSeconds));
+```
+
+**A median filter removes runs shorter than half its window.** With a ten
+millisecond hop, twenty milliseconds gives a three-hop window and removes ten;
+four tenths of a dit — twenty-four milliseconds at twenty words a minute — also
+rounds to three hops and also removes ten. **Both passes remove ten milliseconds,
+whatever they are asked for**, so a 25 to 50 ms fragment survives both and becomes
+a dit.
+
+**The one-line repair was tried and measured, and it is a trade Tim has to make.**
+Widening the window to `2n+1` so the filter removes what it is asked to:
+
+| Capture | Before | After |
+|---|---|---|
+| ARRL bulletin | 36 of 47, `NL DOT NET ■I ECH STAAION HAND■ AHIS MESAGE P` | **37 of 47**, `NL DOT NET ■E ECH STATION HANDNG AHIS MESAGE P` |
+| `cw-2026-08-17-013347` | the callsign and more | `■■■■VA3VRR` — the callsign intact, four characters ahead of it turned into placeholders |
+
+**`STAAION` becomes `STATION` and `HAND■` becomes `HANDNG`.** `AHIS` survives, so
+one of the two substitutions has a second cause. The cost is four characters on
+another real capture becoming placeholders, which fails
+`TheSettledPassNoLongerStopsShortOfTheCallsign`, a ratchet an earlier phase set
+deliberately.
+
+**Reverted, and nothing from the attempt is in the tree.** Placeholders are honest
+where a wrong letter is not (§0.0), so this is not obviously a loss — but it is a
+trade between two real off-air captures, which is §12.1 clause 3 and not a
+session's to make.
+
 ---
 id: HM-OPEN-048
 status: open

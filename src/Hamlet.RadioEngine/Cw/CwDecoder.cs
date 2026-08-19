@@ -270,9 +270,6 @@ public sealed class CwDecoder
     /// <summary>How many gaps the settled pass has to cluster (HM-DEC-115).</summary>
     public int SettledGapsRemembered => _settled.GapsRemembered;
 
-    /// <summary>Temporary diagnostic.</summary>
-    public IReadOnlyList<double> SettledGapHistory => _settled.GapHistory;
-
     /// <summary>
     /// True when the sender left no word gaps long enough to measure
     /// (HM-DEC-142).

@@ -1,9 +1,9 @@
 STATE: EXECUTING
-PHASE: 1 of 5
+PHASE: 3 of 5
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-19T09:57:14-04:00
-NOTE: Phase 1 - measuring what coverage-easy's 19 long gaps actually are before asking for any ruling
+UPDATED: 2026-08-19T10:08:02-04:00
+NOTE: Phase 3 - making the de-glitch remove what it is asked to remove, and measuring every fixture
 
 ---
 
