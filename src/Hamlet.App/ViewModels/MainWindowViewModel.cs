@@ -3937,8 +3937,27 @@ public partial class MainWindowViewModel : ObservableObject
     /// Restarted on every move, so a drag across three neighborhoods produces
     /// one change and not three (HM-DEC-056).
     /// </remarks>
+    /// <summary>
+    /// How many times the mode decision has been rescheduled this session.
+    /// </summary>
+    /// <remarks>
+    /// **A GUARD IN FRONT OF AN UNEXPLAINED LOOP IS A SYMPTOM TREATED**
+    /// (HM-OPEN-041). The plan remembering its last confirmed write stops the
+    /// radio being written to over and over; it does not explain why the decision
+    /// was being recomputed eighteen times in an evening with the dial standing
+    /// still. This counts the reschedules so a test can assert that nothing
+    /// changing produces nothing recomputing, which is the thing that was never
+    /// checked.
+    /// </remarks>
+    internal int ModeFollowReschedules { get; private set; }
+
     private void ScheduleModeFollow()
     {
+        // **COUNTED BEFORE THE GUARD, BECAUSE THE QUESTION IS HOW OFTEN THIS IS
+        // ASKED.** Counting after it would measure how often a radio was attached,
+        // and the loop being chased happens whether or not one is.
+        ModeFollowReschedules++;
+
         if (!_modeFollow.Enabled || _modeFollow.Suspended || _rig is null || !IsConnected)
         {
             return;

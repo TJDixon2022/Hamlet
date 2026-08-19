@@ -314,9 +314,10 @@ of the record.
 
 ---
 id: HM-OPEN-041
-status: open
+status: closed
 owner: claude
 raised: 2026-08-18
+closed: 2026-08-19
 severity: slows
 blocks: nothing; the writes have stopped, but what triggers them has not been seen
 refs: HM-DEC-056, HM-DEC-077, src/Hamlet.RadioEngine/Explore/ModeFollowPlan.cs, src/Hamlet.App/ViewModels/MainWindowViewModel.cs
@@ -359,6 +360,29 @@ radio as busy. Every state names its own branch now and a test proves no two
 share a token, which is the whole worth of a stable token under HM-DEC-077: a
 session months from now counting refusals by cause was going to be counting the
 wrong thing and would have had no way to tell.
+
+**CLOSED 2026-08-19. What recomputed it was the frequency changing, and what was
+changing the frequency was the snap-back.**
+
+`ScheduleModeFollow` has exactly two callers: a band change, and `FrequencyHz`
+changing by any route, including a reading from the radio. In the build of that
+evening a reading older than the operator's own tune dragged the display back and
+the next poll moved it forward again, so the number changed twice per tune with
+nobody touching anything, and each change restarted the six hundred millisecond
+settle. **The one-to-eleven second gaps in the run are what a settle timer does
+when it is restarted by a value that will not sit still.**
+
+The instrument this issue named is the confirmation: `recent_dwell_short` fires
+from the same handler, so four of them in a session with two tunes is four
+frequency changes the operator did not make.
+
+**The repair was already shipped** as `DialGuard` on 2026-08-19: a reading taken
+before Hamlet's own tune cannot move the display, so the alternation stops at
+source. What was missing was anything asserting the quiet case, and
+`ModeFollowRecomputeTests` is that: forty polls reporting the frequency the
+display already holds, and nothing recomputes; a stale reading after a tune,
+nothing recomputes; a genuine move, exactly one. `ModeFollowReschedules` counts
+the asks so the assertion is on the loop rather than on its symptom.
 
 ---
 id: HM-OPEN-039

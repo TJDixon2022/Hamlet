@@ -1,9 +1,9 @@
 STATE: EXECUTING
-PHASE: 2 of 6
+PHASE: 3 of 6
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-19T08:15:19-04:00
-NOTE: Phase 2 - sweeping the record for rulings that reasoned from a write outcome, documents only
+UPDATED: 2026-08-19T08:17:04-04:00
+NOTE: Phase 3 - finding what calls ScheduleModeFollow at a cadence nothing explains
 
 ---
 
