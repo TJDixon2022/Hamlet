@@ -1,124 +1,185 @@
 # 1. What Claude did
 
-## Phase 2's finding: they were never written
+**STATE.** Development computer, `C:\Source\HamLet`, Claude Code surface (§9.5).
+**Branch: `main`** (§9.5.1). Prompt, `WORK_INSTRUCTIONS.md` and `PROJECT_CARD.md`
+all say `PROJECT: Hamlet`; gate passed on all three (§9.6). Status written at the
+start, at every phase boundary, and at the finish.
 
-**`git log -S "id: HM-DEC-096"` across all paths and all history returns nothing.**
-The same is true of 100, 113, 120, 129 and 133. Those strings have never existed in
-this repository, so there is nothing to recover and no commit to blame for losing
-them.
+**All six phases worked. Phase 6 was not dropped.** Six commits.
 
-Three independent readings of the history agree:
+## Phase 1 — §1's head ordering (HM-OPEN-036, closed)
 
-| Evidence | What it says |
-|---|---|
-| `git log -S "id: HM-DEC-…"`, all paths, all history | Zero commits for every id sampled across the range |
-| `DECISIONS.md` line count at each of its last touches: 5,056 → 5,174 → **5,331 (HM-DEC-095, 08-17)** → **5,369 (HM-DEC-134, 08-18)** → 5,448 → 5,494 → 5,545 → 5,582 | The file has only ever grown. Nothing was deleted |
-| Commits touching `DECISIONS.md` | Between `e6d97d2` on 08-17 and `22fdf09` on 08-18 the file was **not touched at all**, and those are exactly the commits carrying 095 and 134 |
+**The cause was two habits, not one, and both are in the history.** `5d00bd4` and
+`303c4f4` inserted a row immediately *below* the top row rather than above it —
+the fixed anchor that open item names. `d263f95` pasted a block of four rulings in
+the order they were ruled, which is oldest-first inside a newest-first table.
+Neither is a script in this repository; both are how a delivery gets composed. So
+**§1's own header now states the insertion point and the batch order**, where the
+next delivery will be written, and `DecisionLogOrderTests` fails on any inversion.
 
-**Where it starts, and what those commits were doing.** `d6b4ce2`, 2026-08-17 at
-16:26, added the §1 row for HM-DEC-096 alongside `BATCH_BRIEF_AMENDMENT.md`,
-`CLAUDE.md` and `SESSION_PROTOCOL.md` — and did not touch `DECISIONS.md`.
-`83d58d1` at 16:57 and `c1a76f8` at 21:22 did the same for the rulings around 097
-and 113. All three are your commits of chat deliveries, and a chat delivery writes
-`CLAUDE.md` and its brief files. **The entry the row pointed at was never in the
-zip.** Every ruling from 096 to 133 followed that pattern.
+Six rows moved, none edited: HM-DEC-135 down to its own day, and the same-date
+runs 130/129/128, 104/103/102/101 and 83/82 into descending order. The row
+multiset before and after is byte-identical.
 
-**The rule was already there, in that wording, and nothing enforced it.** I checked
-`CLAUDE.md` as it stood immediately before `d6b4ce2`: §1 already said "Detailed
-records live in `DECISIONS.md`; this table is the index." §3 already required the
-file to hold rulings with `id` and `date`, and §5's definition of done already
-required the records updated in the same delivery. So this is not a rule that was
-missing. It is **HM-OPEN-044's shape one more time**: a correct rule with nothing
-comparing the two artifacts.
+**Two findings, neither corrected, both as instructed:**
 
-**Nothing was repaired, and no ruling text was drafted.** The order's condition for
-mechanical restoration was not met, so I stopped exactly there.
+- **HM-DEC-051's row is dated 2026-08-14 and HM-DEC-050's 2026-08-15**, so dates
+  and ids disagree about which is newer. A row's date may be the ruling's day
+  rather than the writing's, and guessing which is wrong would falsify the record.
+- **Two different rulings carry HM-DEC-088** — the decoder's noise measurement and
+  the top strip becoming one row — which §2.1 forbids absolutely. **HM-OPEN-046.**
+  Renumbering would silently break whichever citations point at the other one.
 
-## One ruling is worse off than the other thirty-seven
+**And I have to report how the duplicate was found, because it was my defect.** My
+first reorder rebuilt the row block from a dictionary keyed by ruling id. A
+dictionary keeps the last of a duplicate key, so the decoder ruling's row was
+written out of the file and six rows shifted to fill the gap. The test I was
+writing in the same phase caught it within a minute, I reverted, and redid the
+reorder on positions. Nothing reached a commit — but the safe version and the
+destructive one looked identical, and only the test told them apart.
 
-Reconciling every id in `CLAUDE.md` §1 against `DECISIONS.md`:
+## Phase 2 — the write-outcome sweep (HM-OPEN-047, nothing re-ruled)
 
-- **37 ids have a row and no entry**: 096–104 and 106–133.
-- **HM-DEC-105 has neither.** No row, no entry, nothing.
-- **No entry lacks a row**, and **136 is correctly absent** by your ruling.
+Candidates worst first, each with what it concluded and whether it survives:
 
-HM-DEC-105 was real and was acted on. It is cited by **HM-DEC-112's own row** ("HM-DEC-105 already put half amplitude in the settled pass"), twice by
-`DECODER_AND_SCANNER_BRIEF.md`, and by two entries in `OPEN_ISSUES.md`. Everything
-anybody knows about it is a clause inside another ruling's summary. Under any of
-the three repair shapes it needs its own answer, because there is no row to promote.
+- **HM-DEC-092 — materially affected, both halves.** The link counters survive and
+  are worth having; the diagnosis they were reasoned from (five writes unanswered,
+  two in effect, read as the link dropping commands) was the readback fault wearing
+  the link's clothes, and the ruling's text still says otherwise. Its second half,
+  that `27 11` may be written because attempting it and reporting the answer beats
+  guessing, **does not survive**: the answer could not be read. That is the
+  spectrum question already in the queue.
+- **HM-DEC-084 — the rule survives and the fault vindicates it.** "An
+  acknowledgement says the radio understood the frame, not that the setting moved."
+  What does not survive is any record between 2026-08-15 and 2026-08-19 of which
+  settings took.
+- **HM-OPEN-041, HM-DEC-056, HM-DEC-107, HM-DEC-093 — checked and clear**, each
+  with the reason. Mode writes never read back; the scanner aborts on an unanswered
+  *read* and reads always carried their expected command.
 
-## One index row conflicts with the history
+**The limit is stated rather than glossed:** rows 096–133 have no entries, so for
+thirty-eight rulings only the summary could be swept, and a summary says what was
+ruled rather than what the reasoning leaned on.
 
-**HM-DEC-113's row is dated 2026-08-18 and was added by `c1a76f8` on 2026-08-17 at
-21:22.** Every other row I sampled — 096, 097, 098, 104, 129, 133 — agrees with its
-commit. Reported and not corrected, as the order directs. It may simply be a
-ruling made late in the evening and dated for the next day, which is the same thing
-that produced the 08-18/08-19 wobble in the last two orders.
+## Phase 3 — what recomputes mode-follow (HM-OPEN-041, closed)
 
-## HM-OPEN-045, and phase 1
+**It is the frequency changing, and the snap-back was changing it.**
+`ScheduleModeFollow` has two callers: a band change, and `FrequencyHz` changing by
+any route including a reading from the radio. In that evening's build a reading
+older than the operator's tune dragged the display back and the next poll moved it
+forward, so **the number changed twice per tune with nobody touching anything**,
+and each change restarted the 600 ms settle. The one-to-eleven second gaps in the
+run are what a settle timer does when restarted by a value that will not sit still.
 
-**HM-OPEN-045** records the finding with the evidence above and sets out three
-repair shapes, ruling none: mark the seam and leave it; recover from the chat
-transcripts if you still have those conversations, which is the only route to the
-actual text; or promote the index rows as entries that say on their face that they
-are index rows and that the reasoning was never recorded. **What a repair may not
-be** is a ruling reconstructed from its own one-line summary, which would be a
-session writing your reasoning and signing your name to it.
+The instrument HM-OPEN-041 named confirms it: `recent_dwell_short` fires from the
+same handler, so four near misses in a session with two tunes is four frequency
+changes the operator did not make. **The repair shipped yesterday as `DialGuard`**;
+what was missing was anything asserting the quiet case. `ModeFollowReschedules`
+counts the asks, and the fixture is forty polls of an unchanging frequency with
+nothing recomputing, a stale reading with nothing recomputing, and a genuine move
+with exactly one.
 
-**Phase 1: HM-DEC-140 written verbatim** to `DECISIONS.md` at the head, its index
-row at the true head of §1 (the head now reads 140, 139, 135, 138, 137, 134, and
-the out-of-order pair is untouched), and `CLAUDE.md` §12.2 gained one sentence
-stating the boundary so a session reading only that file does not have to infer it.
+## Phase 4 — the scope path, bounded by the unruled ask
 
-**On the date:** `ISSUED: 2026-08-18` against a clock now reading 2026-08-19. The
-order is current, nothing is stale, and nothing stopped.
+**Nothing asks the radio for anything.** HM-DEC-062 stands, the automatic `27 11`
+is out of the tree, and the spectrum question stays in the queue.
+
+- **The reporting lie is proved fixed, not assumed.** The sweep walks every write
+  outcome and refuses to let `outcome` and `reason` disagree. **That contradiction
+  was mine**: I moved the caller to the stable token two sessions ago and left the
+  comparison on the enum's name.
+- **Rung five had no instrument at all.** Received and parsed are counted
+  (HM-DEC-093); whether a parsed sweep becomes pixels was covered by nothing, and a
+  waterfall drawing none of them looks exactly like a quiet band. Four tests now:
+  a sweep reaches the pixels, an empty bin stays the floor, a sweep with no bins
+  draws nothing, the newest sweep is on top.
+- **The frames are synthesized and say so** (§12.4). **No capture of the 2,748 real
+  scope frames exists here** — `tests/fixtures` holds `cw` and nothing else — so
+  these prove the path and not the radio.
+- **The link counters had already reached the operator** on 2026-08-19: the check
+  line under the readout, the counts on the diagnostics screen. Checked, not
+  rebuilt.
+
+## Phase 5 — making the bench evening possible
+
+Every stop reason the card names **is** produced by the code; I checked each. The
+cross-check the other way found what was missing:
+
+- **`RoundLimit` was on neither list.** It is the only stop nothing external
+  causes, and it is the one the antenna question most needs watched. The card now
+  runs a short cycle to its own end.
+- **Three cheap refusals added**: empty message, over-thirty-character message,
+  arming before the rig facts fill in.
+- **Three stops this bench cannot provoke are named as such** — heard an answer,
+  heard something else, radio stuck in transmit — so their absence is not read as
+  an interlock that failed.
+- **HM-DEC-130's measurement could not have been taken as written.** The cycle
+  refuses a long message at edit time; `KeyerCwSender` splits at the spaces on the
+  manual path. The card said the split "may not be wired into the cycle" and left
+  him to find out at the bench. It now sends him to the send panel with a message
+  that actually splits.
+
+## Phase 6 — the flake (HM-OPEN-024, closed)
+
+**An Avalonia headless test runs on one process-wide dispatcher and xUnit runs
+test classes in parallel.** Several tests take turns on a thing there is only one
+of; under load one loses. Two classes also set `LayoutStore.Path`, a mutable
+static. Parallelization is disabled for the app assembly: it costs two seconds,
+and three consecutive full runs afterwards each reported the same two failures.
+HM-OPEN-024's recorded suspicion (a lazy band plan) was wrong and is corrected in
+its closing note. **HM-OPEN-014 is engine-side and is not covered by this.**
 
 # 2. What Tim should expect
 
-- **The hole is not recoverable from this repository.** If those chat conversations
-  still exist, that is the only place the reasoning survives.
-- **Nothing is broken by it.** All 38 rulings are in force and indexed; what is
-  missing is the reasoning, which is exactly what a session two months from now
-  will want when it is deciding whether one still applies.
-- **Two commits, pushed to `main`. No source file changed** — `git status` on
-  `src/` and `tests/` was empty at both.
-- **The suite is untouched**: 1,969 tests, 2 failing, the standing decode baseline.
-- **`DECISIONS.md` still reads 001–095 then 134 onwards.** I did not put a marker at
-  the seam, because which marker is one of the three shapes and that is yours.
-- **The queue is five now.** HM-OPEN-045 joins it.
+- **The red count is trustworthy now.** 1,981 tests, **2 failing, always the same
+  two**: `ClearingTheTranscriptLeavesTheDecoderAlone` and
+  `TheBulletinDecodesToItsAnswerKey`, both the standing decode baseline. Anything
+  above two is real.
+- **The app suite takes four seconds instead of two.** That is the price of the
+  above and it is deliberate.
+- **Nothing on screen changed.** No behavior changed in phases 1, 2, 4 or 6; phase
+  3 added a counter; phase 5 changed a checklist.
+- **`BENCH_CARD.md` is longer and the measurement step now points at the send
+  panel rather than the calling cycle.** If you go to the bench with the old card
+  printed, that step will not work.
+- **`CLAUDE.md` §1 reads newest-first**, and one row deep in the table is still out
+  of order on purpose: HM-DEC-051/050 disagree with themselves about dates.
+- **Six commits, pushed to `main`.** Nothing local, no branches.
+- **No radio was connected** (HM-DEC-093).
 
 # 3. What we should do next
 
-- Rule HM-OPEN-045, and say in particular what happens to HM-DEC-105.
-- If the answer is recovery, the chat transcripts for 2026-08-17 and 2026-08-18 are
-  the only source; if it is promotion, it is mechanical and I can do it in one pass
-  without writing a word of reasoning.
-- HM-OPEN-036 whenever §1 is opened deliberately, which the promotion option would
-  be a natural moment for.
+- The bench evening. The card can now be followed end to end, and it is the only
+  thing two of the five queued asks are waiting on.
+- HM-OPEN-046: choose HM-DEC-088's new number and re-point its citations. It is
+  small and it gets smaller the sooner it is done.
+- HM-OPEN-047 tells you the size of the write-outcome re-reading; whether any of it
+  is worth an evening is yours.
 
 # 4. What's blocking us
 
-Nothing is blocked; every affected ruling is in force. One new ask, in the queue
-below.
+Nothing is blocked. Two new questions, both in the queue.
 
 ## Asks still outstanding
 
-Five, per HM-DEC-139 and scoped by HM-DEC-140. Carried verbatim until ruled.
+Six, per HM-DEC-139 and scoped by HM-DEC-140. Carried verbatim until ruled.
 
 | Ask | First made | Waiting on | Where it already sits in the tree |
 |---|---|---|---|
-| **Whether an attended automatic cycle may reach an antenna** (§0.2, HM-DEC-098) | 2026-08-17 | Every interlock watched to fire into the dummy load, per `BENCH_CARD.md`, including the link pulled mid-cycle | Built and armed: `AutoCaller`, `AutoCallAnswers`, the widget on the making-contacts preset. Dummy load only until this is ruled |
-| **A callsign too long for one keyer send** (HM-DEC-130) | 2026-08-18 | Five minutes at the bench measuring the gap between two sends into the load | Refused, not split. `CwMessage.Split` exists and is unused for this |
-| **Whether the star asks for a name at the moment of saving** (HM-DEC-060, HM-DEC-134) | 2026-08-18 | Nothing but the ruling; handed back under §12.1 clause 3 as a trade-off | Favorites are born unnamed from places the operator was. The manage window renames them afterwards |
-| **Whether Hamlet may ever ask the radio to send its spectrum, and if so when** (HM-DEC-062, HM-DEC-092, HM-OPEN-042) | 2026-08-18 | The ruling. Three ways were put: leave the switch to the operator, ask once on a button, or ask automatically once the counters show the stream is not eating the link | **Not asked at all.** The automatic `27 11` was removed on 2026-08-18 and HM-DEC-062 restored; the reads stay |
-| **What repair the 096-to-133 hole gets, and what happens to HM-DEC-105** (HM-OPEN-045) | 2026-08-19 | The ruling, and whether the 2026-08-17 and 2026-08-18 chat transcripts still exist | `DECISIONS.md` runs 001–095 then 134 onwards, with no marker at the seam. 37 ids have an index row and no entry; HM-DEC-105 has neither |
+| **Whether an attended automatic cycle may reach an antenna** (§0.2, HM-DEC-098) | 2026-08-17 | Every interlock watched into the dummy load. **The card can now be followed end to end** | Built and armed. Dummy load only until this is ruled |
+| **A callsign too long for one keyer send** (HM-DEC-130) | 2026-08-18 | The seam measured at the bench. **The card now says where**: the send panel, since the cycle refuses and the single send splits | Refused in the cycle, split by `KeyerCwSender` on the manual path |
+| **Whether the star asks for a name at the moment of saving** (HM-DEC-060, HM-DEC-134) | 2026-08-18 | Nothing but the ruling | Favorites are born unnamed; the manage window renames them |
+| **Whether Hamlet may ever ask the radio to send its spectrum, and if so when** (HM-DEC-062, HM-DEC-092, HM-OPEN-042) | 2026-08-18 | The ruling. Three ways were put | **Not asked at all.** Rungs one to five now have tests; the request does not exist |
+| **What repair the 096-to-133 hole gets, and what happens to HM-DEC-105** (HM-OPEN-045) | 2026-08-19 | The ruling; recovery is proceeding on the chat side | `DECISIONS.md` runs 001–095 then 134 onwards |
+| **What HM-DEC-088's duplicate becomes** (HM-OPEN-046) | 2026-08-19 | The new id, and who re-points the citations | Two different 2026-08-16 rulings share the id. `DecisionLogOrderTests` names 88 as the one known reuse so it cannot spread |
 
-Nothing was dropped this session: no ask in the queue was ruled since the last
-report.
+Nothing was dropped: no ask in the queue was ruled since the last report.
 
 ---
 
 ## Named and left, as the order directs
 
-Not started: HM-OPEN-036; the record sweep for rulings resting on a write outcome;
-HM-OPEN-042's remaining rungs; mode follow, favorites and the recent list.
+Not started: HM-OPEN-045's repair, which is chat-side; and the four queued
+questions, none of which was built around. **HM-OPEN-014**, the engine-side
+allocation ceiling that flakes under a second busy process, is named here because
+phase 6 did not cover it.
