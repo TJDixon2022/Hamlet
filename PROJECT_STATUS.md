@@ -1,9 +1,9 @@
-STATE: EXECUTING
-PHASE: 2 of 4
-BALL: code
-NEXT_PASTE: none
-UPDATED: 2026-08-19T09:24:25-04:00
-NOTE: Phase 2 - coverage-easy reads a window and emits nothing; finding where the characters are lost
+STATE: COMPLETED
+PHASE: 4 of 4
+BALL: web
+NEXT_PASTE: OUTPUT.md -> Claude Web
+UPDATED: 2026-08-19T09:31:16-04:00
+NOTE: Phases 0 to 2 done, phase 3 dropped; the settled pass mechanism is found and needs a ruling
 
 ---
 

@@ -1,185 +1,206 @@
 # 1. What Claude did
 
 **STATE.** Development computer, `C:\Source\HamLet`, Claude Code surface (§9.5).
-**Branch: `main`** (§9.5.1). Prompt, `WORK_INSTRUCTIONS.md` and `PROJECT_CARD.md`
-all say `PROJECT: Hamlet`; gate passed on all three (§9.6). Status written at the
-start, at every phase boundary, and at the finish.
+**Branch: `main`.** Prompt, `WORK_INSTRUCTIONS.md` and `PROJECT_CARD.md` all say
+`PROJECT: Hamlet`; gate passed on all three (§9.6). **No radio was connected**
+(HM-DEC-093). Status written at the start and at every phase boundary.
 
-**All six phases worked. Phase 6 was not dropped.** Six commits.
+## What actually landed from the previous run
 
-## Phase 1 — §1's head ordering (HM-OPEN-036, closed)
+Checked rather than taken from the summary. **`HEAD` and `origin/main` were both
+`2dd617e` and the working tree was clean.** All four phases of the previous order
+had landed, not three:
 
-**The cause was two habits, not one, and both are in the history.** `5d00bd4` and
-`303c4f4` inserted a row immediately *below* the top row rather than above it —
-the fixed anchor that open item names. `d263f95` pasted a block of four rulings in
-the order they were ruled, which is oldest-first inside a newest-first table.
-Neither is a script in this repository; both are how a delivery gets composed. So
-**§1's own header now states the insertion point and the batch order**, where the
-next delivery will be written, and `DecisionLogOrderTests` fails on any inversion.
+| Commit | Phase | What it left |
+|---|---|---|
+| `e4f8ea6` | 1 | Mode follow will not move him out of Morse while he is working Morse; the data-variant fold that made every trigger write |
+| `e70b67b` | 2 | The settled-pass finding with numbers, `CwSettledSilenceTests`, HM-OPEN-048 |
+| `5c5c3a7` | 3 | `SendLengthIsLegibleTests` and the length line |
+| `2dd617e` | 4 | **The phase the order believed was dropped.** The keep-this control verified, the sidecar's frequency label carrying its age, the decoder speed in the sidecar |
 
-Six rows moved, none edited: HM-DEC-135 down to its own day, and the same-date
-runs 130/129/128, 104/103/102/101 and 83/82 into descending order. The row
-multiset before and after is byte-identical.
+So this run's phase 1 was largely already done, and I say so rather than claiming
+it twice. **What it did not do is the half underneath**, which is below.
 
-**Two findings, neither corrected, both as instructed:**
+## Phase 0 — HM-DEC-088's duplicate, renumbered
 
-- **HM-DEC-051's row is dated 2026-08-14 and HM-DEC-050's 2026-08-15**, so dates
-  and ids disagree about which is newer. A row's date may be the ruling's day
-  rather than the writing's, and guessing which is wrong would falsify the record.
-- **Two different rulings carry HM-DEC-088** — the decoder's noise measurement and
-  the top strip becoming one row — which §2.1 forbids absolutely. **HM-OPEN-046.**
-  Renumbering would silently break whichever citations point at the other one.
+**The tiebreak came from the history and not from judgment**, as the order
+required. Both index rows arrived in the same commit, `49b844c`; within it the
+decoder's noise-measurement row is written first, and `DECISIONS.md`'s only
+HM-DEC-088 entry is that same ruling. So **the decoder keeps 088** and **the top
+strip becoming one row is now HM-DEC-141** — the next free id, since 105 is a
+ruling whose entry is missing and 136 is deliberately absent.
 
-**And I have to report how the duplicate was found, because it was my defect.** My
-first reorder rebuilt the row block from a dictionary keyed by ruling id. A
-dictionary keeps the last of a duplicate key, so the decoder ruling's row was
-written out of the file and six rows shifted to fill the gap. The test I was
-writing in the same phase caught it within a minute, I reverted, and redid the
-reorder on positions. Nothing reached a commit — but the safe version and the
-destructive one looked identical, and only the test told them apart.
+Eleven citations re-pointed, each classified by reading the comment it sits in:
+the wheel hint retiring, the bands beside the readout, the strip costing one row
+rather than a third of the window, the settings flag behind the hint. Everything
+else citing 088 is about measuring noise beside the tone and is untouched. Neither
+ruling's text changed — an id that was never valid is not a ruling being
+overturned.
 
-## Phase 2 — the write-outcome sweep (HM-OPEN-047, nothing re-ruled)
+`DecisionLogOrderTests` no longer permits a repeated id **at all**. The allowance
+went with the thing it allowed for rather than staying as a door somebody could
+walk back through. HM-OPEN-046 closed.
 
-Candidates worst first, each with what it concluded and whether it survives:
+## Phase 1 — the capture's frequency now has one source
 
-- **HM-DEC-092 — materially affected, both halves.** The link counters survive and
-  are worth having; the diagnosis they were reasoned from (five writes unanswered,
-  two in effect, read as the link dropping commands) was the readback fault wearing
-  the link's clothes, and the ruling's text still says otherwise. Its second half,
-  that `27 11` may be written because attempting it and reporting the answer beats
-  guessing, **does not survive**: the answer could not be read. That is the
-  spectrum question already in the queue.
-- **HM-DEC-084 — the rule survives and the fault vindicates it.** "An
-  acknowledgement says the radio understood the frame, not that the setting moved."
-  What does not survive is any record between 2026-08-15 and 2026-08-19 of which
-  settings took.
-- **HM-OPEN-041, HM-DEC-056, HM-DEC-107, HM-DEC-093 — checked and clear**, each
-  with the reason. Mode writes never read back; the scanner aborts on an unanswered
-  *read* and reads always carried their expected command.
+The previous run fixed the sidecar's *wording* — the label carries its age, which
+is what HM-DEC-111 was ruled about. **It did not fix the fault underneath, and the
+order was right to say verify before building.**
 
-**The limit is stated rather than glossed:** rows 096–133 have no entries, so for
-thirty-eight rulings only the summary could be swept, and a summary says what was
-ruled rather than what the reasoning leaned on.
+The sidecar read the radio; the telemetry event beside it was handed `FrequencyHz`,
+which is Hamlet's own idea of where the dial is. **One capture, two paths to one
+fact** — exactly the shape that produced `7025400` against `14028000`. Both now
+read one property: the radio's own value where there is one, Hamlet's where there
+is not, labelled either way.
 
-## Phase 3 — what recomputes mode-follow (HM-OPEN-041, closed)
+The keep-this control needed nothing: on the terminal, gated on the decoder
+running rather than on a successful decode, and its copy already names tonight's
+case.
 
-**It is the frequency changing, and the snap-back was changing it.**
-`ScheduleModeFollow` has two callers: a band change, and `FrequencyHz` changing by
-any route including a reading from the radio. In that evening's build a reading
-older than the operator's tune dragged the display back and the next poll moved it
-forward, so **the number changed twice per tune with nobody touching anything**,
-and each change restarted the 600 ms settle. The one-to-eleven second gaps in the
-run are what a settle timer does when restarted by a value that will not sit still.
+## Phase 2 — the settled pass, mechanism found, repair handed back
 
-The instrument HM-OPEN-041 named confirms it: `recent_dwell_short` fires from the
-same handler, so four near misses in a session with two tunes is four frequency
-changes the operator did not make. **The repair shipped yesterday as `DialGuard`**;
-what was missing was anything asserting the quiet case. `ModeFollowReschedules`
-counts the asks, and the fixture is forty polls of an unchanging frequency with
-nothing recomputing, a stale reading with nothing recomputing, and a genuine move
-with exactly one.
+**This is the phase that decides whether tonight is worth sitting down for, and it
+ends in a ruling ask rather than a fix.** Here is the whole chain, measured.
 
-## Phase 4 — the scope path, bounded by the unruled ask
+Tallied window by window on `coverage-easy`, which the reference reads at 100%:
+**258 windows returned `None`** — read successfully — 63 said `NotYet`, 16 refused
+the clock, **and not one character came out.**
 
-**Nothing asks the radio for anything.** HM-DEC-062 stands, the automatic `27 11`
-is out of the tree, and the spectrum question stays in the queue.
+The loss is `Emit`'s first line. It asks for the sender's own gap classes and
+returns without producing anything when there are none, which is HM-DEC-115 doing
+exactly what it says: *no cuts means no transcript, not a guessed one.* There are
+**80 gaps** to cluster, far past the ten `CwGapFit` requires. **The fit refuses
+anyway, because it requires three non-empty heaps** — element, character and word
+— and this message leaves almost no word gaps, so the top class comes back empty
+and `Fit` returns null.
 
-- **The reporting lie is proved fixed, not assumed.** The sweep walks every write
-  outcome and refuses to let `outcome` and `reason` disagree. **That contradiction
-  was mine**: I moved the caller to the stable token two sessions ago and left the
-  comparison on the enum's name.
-- **Rung five had no instrument at all.** Received and parsed are counted
-  (HM-DEC-093); whether a parsed sweep becomes pixels was covered by nothing, and a
-  waterfall drawing none of them looks exactly like a quiet band. Four tests now:
-  a sweep reaches the pixels, an empty bin stays the floor, a sweep with no bins
-  draws nothing, the newest sweep is on top.
-- **The frames are synthesized and say so** (§12.4). **No capture of the 2,748 real
-  scope frames exists here** — `tests/fixtures` holds `cw` and nothing else — so
-  these prove the path and not the radio.
-- **The link counters had already reached the operator** on 2026-08-19: the check
-  line under the readout, the counts on the diagnostics screen. Checked, not
-  rebuilt.
+**So the settled pass is silent on any transmission without several word gaps.**
+A callsign. A contest exchange. A `V` test string. Anything sent without spaces.
 
-## Phase 5 — making the bench evening possible
+**And the brief's lead was already built.** It says Hamlet reads once while the
+reference de-glitches again at 0.4 of a dit and re-reads every run. `CwSettledPass`
+has done that second de-glitch and refit since HM-DEC-096. That is not the gap,
+and a session working from the brief alone would have spent the evening there.
 
-Every stop reason the card names **is** produced by the code; I checked each. The
-cross-check the other way found what was missing:
+**Why I did not fix it.** Two honest repairs exist and both change what a
+transcript asserts about where the words are — cluster two heaps when there is no
+third, or say plainly there are no word boundaries here. §12.1 puts that outside a
+session's authority without exception, and the order says HM-OPEN-017's labelled
+approximation is taken by ruling. The ask is in section four.
 
-- **`RoundLimit` was on neither list.** It is the only stop nothing external
-  causes, and it is the one the antenna question most needs watched. The card now
-  runs a short cycle to its own end.
-- **Three cheap refusals added**: empty message, over-thirty-character message,
-  arming before the rig facts fill in.
-- **Three stops this bench cannot provoke are named as such** — heard an answer,
-  heard something else, radio stuck in transmit — so their absence is not read as
-  an interlock that failed.
-- **HM-DEC-130's measurement could not have been taken as written.** The cycle
-  refuses a long message at edit time; `KeyerCwSender` splits at the spaces on the
-  manual path. The card said the split "may not be wired into the cycle" and left
-  him to find out at the bench. It now sends him to the send panel with a message
-  that actually splits.
+## Phase 3 — dropped, and one thing found before dropping it
 
-## Phase 6 — the flake (HM-OPEN-024, closed)
+**Dropped, as the order allows, and I say so rather than half-building it.**
 
-**An Avalonia headless test runs on one process-wide dispatcher and xUnit runs
-test classes in parallel.** Several tests take turns on a thing there is only one
-of; under load one loses. Two classes also set `LayoutStore.Path`, a mutable
-static. Parallelization is disabled for the app assembly: it costs two seconds,
-and three consecutive full runs afterwards each reported the same two failures.
-HM-OPEN-024's recorded suspicion (a lazy band plan) was wrong and is corrected in
-its closing note. **HM-OPEN-014 is engine-side and is not covered by this.**
+The cheap check first: **the two standing failures are not phase 2's mechanism.**
+`TheBulletinDecodesToItsAnswerKey` emits plenty of characters and gets them wrong
+— `NLDOTNET■IECHSTAAIONHAND■AHISMESAGEP` against an answer key beginning
+`RLDOTNET<BT>EACHSTATIONHANDLING…`. That is character accuracy on a real off-air
+Farnsworth capture, and **HM-DEC-115's own text records that same recording being
+read correctly**. It has since degraded. Worth its own order; not worth squeezing
+into this one.
 
 # 2. What Tim should expect
 
-- **The red count is trustworthy now.** 1,981 tests, **2 failing, always the same
-  two**: `ClearingTheTranscriptLeavesTheDecoderAlone` and
-  `TheBulletinDecodesToItsAnswerKey`, both the standing decode baseline. Anything
-  above two is real.
-- **The app suite takes four seconds instead of two.** That is the price of the
-  above and it is deliberate.
-- **Nothing on screen changed.** No behavior changed in phases 1, 2, 4 or 6; phase
-  3 added a counter; phase 5 changed a checklist.
-- **`BENCH_CARD.md` is longer and the measurement step now points at the send
-  panel rather than the calling cycle.** If you go to the bench with the old card
-  printed, that step will not work.
-- **`CLAUDE.md` §1 reads newest-first**, and one row deep in the table is still out
-  of order on purpose: HM-DEC-051/050 disagree with themselves about dates.
-- **Six commits, pushed to `main`.** Nothing local, no branches.
-- **No radio was connected** (HM-DEC-093).
+**Tonight, in the order you will hit it.**
+
+- **Mode follow will not take you out of CW any more.** With the terminal decoding
+  or the dial inside a CW segment, the map is ignored. The sixty-six seconds of
+  `not_in_morse` on 2026-08-18 had two causes and both are fixed: that override,
+  and a mode write that folded only the mode into the model so a USB-with-data
+  target could never read back satisfied and **wrote again on every trigger**.
+- **The terminal reads live CW as well as it did this morning, and no better.**
+  The leading edge is what you see arriving character by character, and on the
+  proved fixtures it is perfect. **What is broken is the settled transcript**, and
+  it is broken in a way that will show tonight: on a callsign or an exchange with
+  few spaces, the settled text will be empty while the live text is right. That is
+  HM-OPEN-048 and it needs your ruling, not more code.
+- **When something defeats the decoder, press "Keep this audio"** on the terminal.
+  It works with no decode at all — that is the most valuable kind — and it now
+  writes the frequency from one source, so the file and the record cannot disagree
+  the way they did on the capture that read 7.025 in one and 14.028 in the other.
+  The sidecar says how old the frequency reading was and what speed the decoder
+  was tracking.
+- **When you compose a reply longer than about thirty characters**, the send panel
+  now tells you *before* you press: how many characters, that it goes out as two
+  sends, roughly how many seconds of keying at your keyer speed, and that **nobody
+  has measured how long the gap in the middle is.** That last part is the honest
+  half — the single send does split, and what HM-DEC-130 refused to ship was a
+  split whose pause nobody had listened to.
+- **Nothing was done toward auto-CQ.** HM-DEC-098 is unruled and dummy-load only.
+
+**The suite.** 1,992 tests, **3 failing, and the red count is not two any more.**
+The third is mine and it is deliberate: `CwSettledSilenceTests.APassThatReadSomethingEmitsSomething`, red because a fixture the
+reference reads at 100% produces no settled characters, which HM-DEC-114 says is a
+defect rather than a ratchet. The other two are the standing decode baseline. If
+you see four, something new is wrong.
 
 # 3. What we should do next
 
-- The bench evening. The card can now be followed end to end, and it is the only
-  thing two of the five queued asks are waiting on.
-- HM-OPEN-046: choose HM-DEC-088's new number and re-point its citations. It is
-  small and it gets smaller the sooner it is done.
-- HM-OPEN-047 tells you the size of the write-outcome re-reading; whether any of it
-  is worth an evening is yours.
+- **Rule HM-OPEN-048.** It is one decision and it unblocks the transcript half of
+  the terminal, which is the difference between reading a contact live and keeping
+  a record of it.
+- The bulletin regression: HM-DEC-115 recorded that capture reading correctly and
+  it no longer does. That is a decode order of its own.
+- The bench evening, whenever it suits: `BENCH_CARD.md` can be followed end to end
+  and two queued asks are waiting on it.
 
 # 4. What's blocking us
 
-Nothing is blocked. Two new questions, both in the queue.
+The settled transcript, on a ruling. Everything else tonight is unblocked.
+
+---
+date: 2026-08-19
+refs: HM-OPEN-048, HM-DEC-115, HM-DEC-096, HM-OPEN-017, CLAUDE.md §12.1
+---
+
+**What the settled pass does when a sender leaves too few word gaps to form a
+third heap.**
+
+`CwGapFit` clusters the sender's own gaps into element, character and word, and
+refuses when any of the three classes comes back empty. On a message with almost
+no spaces that is the ordinary outcome, and `Emit` then produces nothing at all:
+258 windows read successfully on `coverage-easy` and emitted zero characters, with
+80 gaps available and the clock fitted correctly at 100 ms.
+
+Three ways, and each asserts something different about where the words are:
+
+- **Cluster two heaps when there is no third.** Element and character gaps are
+  still the sender's own, so this is not a return to dit multiples. The cost is
+  that a genuine word gap — this fixture has two or three — folds into the
+  character class and those spaces disappear.
+- **Emit with no word boundaries at all** and render the transcript unspaced,
+  which is true to what was measured and reads badly.
+- **HM-OPEN-017's labelled approximation**, which that item already reserves for
+  your ruling.
+
+Rejected as a session's choice: all three. Each changes what a transcript asserts
+about where the words are, which §12.1 places outside a session's authority
+without exception, and HM-DEC-115 is the ruling that put the current behavior
+there deliberately.
+
+What is in place meanwhile: the gap count and whether classes fitted are on the
+decoder and in both settled-pass test files, so whichever way this goes the next
+session starts from the mechanism rather than from a percentage.
 
 ## Asks still outstanding
 
-Six, per HM-DEC-139 and scoped by HM-DEC-140. Carried verbatim until ruled.
+Five, per HM-DEC-139 and scoped by HM-DEC-140. Carried verbatim until ruled.
 
 | Ask | First made | Waiting on | Where it already sits in the tree |
 |---|---|---|---|
-| **Whether an attended automatic cycle may reach an antenna** (§0.2, HM-DEC-098) | 2026-08-17 | Every interlock watched into the dummy load. **The card can now be followed end to end** | Built and armed. Dummy load only until this is ruled |
-| **A callsign too long for one keyer send** (HM-DEC-130) | 2026-08-18 | The seam measured at the bench. **The card now says where**: the send panel, since the cycle refuses and the single send splits | Refused in the cycle, split by `KeyerCwSender` on the manual path |
-| **Whether the star asks for a name at the moment of saving** (HM-DEC-060, HM-DEC-134) | 2026-08-18 | Nothing but the ruling | Favorites are born unnamed; the manage window renames them |
-| **Whether Hamlet may ever ask the radio to send its spectrum, and if so when** (HM-DEC-062, HM-DEC-092, HM-OPEN-042) | 2026-08-18 | The ruling. Three ways were put | **Not asked at all.** Rungs one to five now have tests; the request does not exist |
-| **What repair the 096-to-133 hole gets, and what happens to HM-DEC-105** (HM-OPEN-045) | 2026-08-19 | The ruling; recovery is proceeding on the chat side | `DECISIONS.md` runs 001–095 then 134 onwards |
-| **What HM-DEC-088's duplicate becomes** (HM-OPEN-046) | 2026-08-19 | The new id, and who re-points the citations | Two different 2026-08-16 rulings share the id. `DecisionLogOrderTests` names 88 as the one known reuse so it cannot spread |
+| **Whether an attended automatic cycle may reach an antenna** (§0.2, HM-DEC-098) | 2026-08-17 | The bench evening; `BENCH_CARD.md` can be followed end to end | Built and armed, dummy load only |
+| **A callsign too long for one keyer send** (HM-DEC-130) | 2026-08-18 | The seam measured at the bench, from the send panel | The cycle refuses; the single send splits. The panel now says so while he types |
+| **Whether the star asks for a name at the moment of saving** (HM-DEC-060, HM-DEC-134) | 2026-08-18 | Nothing but the ruling | Favorites are born unnamed |
+| **Whether Hamlet may ever ask the radio to send its spectrum** (HM-DEC-062, HM-OPEN-042) | 2026-08-18 | The ruling | Not asked at all; rungs one to five have tests |
+| **What the settled pass does with too few word gaps** (HM-OPEN-048) | 2026-08-19 | The ruling; three ways set out above | Silent on any message without several spaces. The leading edge is unaffected |
 
-Nothing was dropped: no ask in the queue was ruled since the last report.
+**Dropped as ruled since it was asked**: HM-DEC-088's duplicate, ruled A and
+carried out this session as HM-DEC-141.
 
 ---
 
 ## Named and left, as the order directs
 
-Not started: HM-OPEN-045's repair, which is chat-side; and the four queued
-questions, none of which was built around. **HM-OPEN-014**, the engine-side
-allocation ceiling that flakes under a second busy process, is named here because
-phase 6 did not cover it.
+The four unruled asks above, none built around. No transmit work toward auto-CQ.
+**Phase 3 was dropped**, with the check that preceded it reported above.
