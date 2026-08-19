@@ -346,6 +346,8 @@ this table is the index.
 
 | Date | Decision | Why | Ref |
 |---|---|---|---|
+| 2026-08-19 | **The frequency is read on the live poll and stays there, superseding HM-DEC-109 on this field's cadence and setting aside HM-DEC-050's exemption for it.** The rest of that ruling stands; what is set aside is one exemption granted in favour of something that is not happening. **The premise was false and nobody had measured it**: the frequency was exempt because the radio broadcasts it, and on the operator's own radio 5,499 frames arrived in sixty-one seconds with `inboundTransceive` zero, `radioIsBroadcasting` false. Asking is not the more stale option, it is the only one. **The cost was measured rather than feared** — six bytes out and eleven back, under seventy bytes a second on a cable moving eleven thousand. **Reverting to the session sweep was rejected**, because that sweep is what turned the snap-back into thirty seconds of wrong display instead of one poll, and a cadence chosen so the next such fault lasts thirty seconds is choosing badly on purpose; **a conditional cadence was rejected** as a second mechanism resting on the push that proved unreliable here. | The code shipped in `099de5a` with the ruling asked for and never given, and a decision not in the record is not made. | HM-DEC-138 |
+| 2026-08-19 | **The status-write instruction lives in `CLAUDE.md` and in every Claude Code work order, and an order delivered without it is defective and is redone. A session writes the status whether or not its order says so.** HM-DEC-132's triggers and fields are unchanged. **The rule was never the problem**: §13.2 has carried five triggers since that ruling and consecutive sessions did not apply them, one saying so in its own report — read, and not applied, with two phase boundaries crossed without a write. A correct rule that nothing carries is indistinguishable from no rule, and the panel showed a working project as dead. **Two channels because neither has held alone**: this file is read once and forgotten across the hour-long phase the ten-minute write exists for, and a prompt written in a hurry loses the line. **A missing line is a defect rather than an oversight**, on HM-DEC-099's precedent, because the chat side cannot write to disk and the instruction it hands over is the only thing it can be held to. | A rule nothing carries into the session is the same as no rule, and it had already failed three times running. | HM-DEC-137 |
 | 2026-08-18 | **A return to a place already in the recent list is noted on the entry that is there, and the operator can remove any entry by hand. HM-DEC-072's two hundred hertz stands unamended.** Two visits a hundred hertz apart read as two entries, and a hundred hertz is well inside the two hundred that ruling already calls one place, so **widening the figure was rejected**: five hundred would fold the same pair and would break the deliberate link to `SpotIdentity.FrequencyBucketHz` that keeps two numbers meaning near enough from drifting apart. A second visit is a fact about the entry, which is the same shape as 072's rule that the newest visit's identification wins including when it is empty. **And a list the operator did not curate is one he must be able to take things out of** — ten places kept automatically on a dwell nobody set and nobody can see — per entry and whole. Removal is not a correction: a place visited again afterward returns as a new entry counting from one. | The near duplicates were never the tolerance, and a number changed to hide a behavior nobody has measured is the wrong repair. | HM-DEC-134 |
 | 2026-08-18 | **§13 gains a HAZARD line, and the ratings stay in §4 rather than being copied beside it.** The annunciator's card is five standing lines with no room for either (HM-DEC-132), and **a session that learned where the repository is without learning that it can put a hundred watts on somebody else's frequency has learned the wrong half** — so the hazard is restated in the file every session reads automatically, ruling nothing that §0.2 and §0.2.1 do not already rule. **The ratings are deliberately not restated**: §4 carries the thirty-character keyer message, the 300–900 Hz pitch range, the `94h` address and the filter index, each page-cited to Full Manual `A7292-4EX-6`, and a second copy is a second thing to drift (§0) — this table already spanned three printings once and that seam produced two defects. **And the power output is the one rating this file does not carry, so it is marked rather than supplied** (HM-OPEN-038): §4 names no wattage and cites no page for one, because HM-DEC-074 and HM-DEC-082 have Hamlet report power as a percentage of range and never as a wattage, so the application never needed the figure. | A hazard line is the worst possible place to introduce this project's first uncited number. | HM-DEC-133 |
 | 2026-08-18 | **The project reports status to the panel per `ANNUNCIATOR.md`, and §13 carries the six status fields and the write triggers inline. Supersedes HM-DEC-131 on the triggers and on the shape of both files.** The panel reads `PROJECT_CARD.md` and `PROJECT_STATUS.md` from every repository and shows them on one screen, and **it only knows what a session last wrote** — a project whose sessions never write reads as dead while it is working. The card drops to five standing lines and the status file to six volatile ones, because a reader that takes the leading run of `KEY: value` lines cannot use fields it was not built for, and sixteen fields written for a protocol that never arrived are sixteen chances to disagree with a panel about what `STATE` means. **The ten-minute write while executing is the substantive change**: HM-DEC-131 said at each state transition and at no other time, which is right for a record and wrong for a panel, because a phase here can run an hour and **a long phase and a dead session look identical** without a heartbeat inside it. §13 sits in this file rather than only in the companion because this file is read automatically and a companion is read only if something points at it. | A session that ran an hour with tests going green behind a panel showing blocked, because nothing in that tree told it to write. | HM-DEC-132 |
@@ -1241,6 +1243,30 @@ meaningless.
   real answers; a plausible number is not (§12.4).
 - **The card is not edited during a work order.** It holds standing facts; if one
   is wrong that is a ruling, not an edit.
+
+### 13.3.1 Where this instruction lives, and who is bound by it — HM-DEC-137
+
+**The status-write instruction is carried twice: here, and in every Claude Code
+work order. A session writes the status whether or not the order it was handed
+says so.**
+
+Neither channel has held alone, and both have now failed in the field. A rule only
+in this file is read once at the start and forgotten across a phase that runs an
+hour, **which is precisely the phase the ten-minute write exists for**: three
+consecutive sessions did not apply §13.2, and one of them said so in its own report
+— §13 was read, and not applied. A rule only in the prompt is lost whenever a
+prompt is written in a hurry, and every order delivered to this project had been
+missing the closing line `ANNUNCIATOR.md` already required of it.
+
+- **An order that does not carry the status instruction, or does not state its
+  phase count, is defective and is redone** (§9.6). That is HM-DEC-099's shape: a
+  prompt without its gate is defective too, because the failure it prevents is one
+  the session cannot detect from inside.
+- **A defective order does not excuse the session.** It writes the status on
+  §13.2's triggers regardless, reports the missing line in section one, and gets
+  on with the work.
+- Nothing here changes what is written. HM-DEC-132's five triggers and six fields
+  stand exactly as §13.1 and §13.2 have them.
 
 ### 13.4 What this software can do to the physical world
 

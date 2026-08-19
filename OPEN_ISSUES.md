@@ -4,6 +4,48 @@ Questions with owner and severity. `owner` is who must act next. Format in
 `CLAUDE.md` §3.
 
 ---
+id: HM-OPEN-044
+status: open
+owner: tim
+raised: 2026-08-19
+severity: slows
+blocks: nothing today; the two known cases are now ruled
+refs: HM-DEC-138, HM-DEC-113, CLAUDE.md §9.5, §12.2
+---
+
+A change ships carrying a ruling request, the request goes unanswered, and the
+next session inherits the change as settled.
+
+**The case that names it.** `099de5a` moved the frequency to the live poll. The
+report that shipped it put the ruling ask in section 4, as §12.2 requires, and no
+ruling came back. The next work order then withdrew a draft of that same ruling on
+the grounds that its premise was disproved, while the change itself was already in
+the tree and running. Two sessions later it was still unruled and still live, and
+it took a third to notice. HM-DEC-138 has now ruled it, in favour of the code.
+
+**It is HM-DEC-113's shape.** There, a session invented a branch and every session
+after it inherited the invention as settled, four reports naming it without one
+treating it as a question. Here a session built a thing it correctly asked about,
+and the asking is what makes it invisible: section 4 was written properly, so
+nothing looked wrong from inside any single session.
+
+**What §9.5 already says, and what it lacks.** "A decision that is not in
+`DECISIONS.md` is not made." The rule is right and it has no mechanism: nothing
+compares the tree against the record, and a session reading `CLAUDE.md` §1 sees
+only rulings that were made, never behavior that is waiting on one.
+
+**Ways it could be closed, none of them ruled here.** A standing section in the
+report for asks still outstanding from earlier sessions, so an unanswered question
+is re-raised rather than aged out. A marker in the source at the site itself, in
+the manner of §12.4's marked assumptions, that a test could sweep for and fail on
+after some number of days. Or a rule that a change needing a ruling is not shipped
+until it has one, which is the strictest and would have cost the operator a
+working display for two evenings.
+
+**Not a rule invented by a session.** It is Tim's to rule, which is why this is an
+open item rather than an entry in `DECISIONS.md`.
+
+---
 id: HM-OPEN-043
 status: open
 owner: tim

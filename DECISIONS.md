@@ -4,6 +4,85 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-138
+date: 2026-08-19
+refs: src/Hamlet.RadioEngine/Rig/RigPollPlan.cs, src/Hamlet.RadioEngine/Rig/RigStateMonitor.cs, HM-DEC-109, HM-DEC-050, HM-DEC-062
+---
+
+**The frequency is read on the live poll and stays there. Supersedes HM-DEC-109 on
+this field's cadence and sets aside HM-DEC-050's exemption for it.** The rest of
+HM-DEC-050 stands: rationing a slow shared line is right, and what is set aside is
+one exemption granted in favour of something that is not happening.
+
+THE PREMISE WAS FALSE AND NOBODY HAD MEASURED IT. HM-DEC-050 exempted the
+frequency from polling because the radio broadcasts it, so asking could only ever
+be more stale. Measured on the operator's own radio on 2026-08-19, session
+`6630ee0f`: 5,499 inbound frames in sixty-one seconds, `inboundTransceive` zero,
+`inboundBroadcast` zero, `radioIsBroadcasting` false. **CI-V Transceive is off on
+this radio and Hamlet does not write the operator's settings.** Asking is not the
+more stale option. It is the only one.
+
+WHAT IT COSTS, MEASURED RATHER THAN FEARED. A frequency read is six bytes out and
+eleven back. The link already carried 1,380 commands in that minute and answered
+1,379. Four reads a second is under seventy bytes on a cable moving eleven
+thousand, for the field the operator looks at more than any other.
+
+REVERTING TO THE SESSION SWEEP WAS REJECTED, and it is the option this ruling
+exists to close. The sweep is what turned the snap-back defect into thirty seconds
+of wrong display instead of one poll: once something put a stale value on screen,
+only the next reading could move it forward. The guard built on 2026-08-19 stops
+that particular write, but a cadence chosen so that the *next* such fault is
+thirty seconds long rather than a quarter of a second is choosing badly on
+purpose.
+
+A CONDITIONAL CADENCE WAS ALSO REJECTED, though `SkipLiveRead` already implements
+it. On a radio that never announces it is the live poll with extra steps, and on
+one that does the broadcast wins the race anyway and costs nothing. What it adds
+is a second mechanism and a decision about which applies — and **push is the thing
+that proved unreliable here.** A display that always asks finds out immediately
+when the radio goes quiet; one that waits to be told finds out two builds later,
+which is what happened.
+
+THE CODE SHIPPED BEFORE THE RULING AND THAT IS ITS OWN FAULT. `099de5a` changed
+the cadence with the ruling requested in that session's report and not given, and
+the next order withdrew a draft of the same ruling while the change was already in
+the tree. §9.5 says a decision not in the record is not made; this ruling makes it,
+and the gap between the two is worth an open item rather than a shrug.
+
+---
+id: HM-DEC-137
+date: 2026-08-19
+refs: CLAUDE.md §13, ANNUNCIATOR.md, HM-DEC-132, HM-DEC-131, HM-DEC-099, HM-DEC-135
+---
+
+**The status-write instruction lives in `CLAUDE.md` and in every Claude Code work
+order, and an order delivered without it is defective and is redone.** A session
+writes the status whether or not the order it was handed says so. Supersedes
+nothing; HM-DEC-132's triggers and fields are unchanged.
+
+THE RULE WAS NEVER THE PROBLEM. §13.2 has carried five triggers since HM-DEC-132,
+including every ten minutes while executing, and consecutive sessions did not
+apply them. One said so directly in its own report: §13 was read, and not applied;
+the order began without a write and crossed two phase boundaries without one. A
+correct rule that nothing carries is indistinguishable from no rule, and the panel
+it feeds showed a working project as dead, which is the exact failure HM-DEC-131
+was written to prevent.
+
+TWO CHANNELS BECAUSE NEITHER HAS HELD ALONE. A rule only in `CLAUDE.md` is read
+once at the start and forgotten across a phase that runs an hour, which is
+precisely the phase the ten-minute write exists for. A rule only in the prompt is
+lost whenever a prompt is written in a hurry, and every order delivered to this
+project had been missing the closing line `ANNUNCIATOR.md` already required of it.
+Both channels have now failed in the field. One of the two will catch.
+
+AND A MISSING LINE IS A DEFECT, NOT AN OVERSIGHT. HM-DEC-099 already takes this
+shape: a prompt without its gate is defective and redone, because the failure it
+prevents is one the session cannot detect from inside. The chat side cannot write
+to disk (`ANNUNCIATOR.md`), so the only thing it can be held to is the instruction
+it hands over — and holding it to that is what makes the requirement real rather
+than advisory.
+
+---
 id: HM-DEC-134
 date: 2026-08-18
 refs: src/Hamlet.RadioEngine/Explore/RecentStation.cs, src/Hamlet.App/ViewModels/FavoritesViewModel.cs, HM-DEC-072, HM-DEC-060, HM-OPEN-039

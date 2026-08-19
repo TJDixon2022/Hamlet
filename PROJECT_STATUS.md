@@ -1,9 +1,9 @@
-STATE: COMPLETED
-PHASE: 1 of 1
-BALL: tim
-NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-18T21:14:21-04:00
-NOTE: Snap-back fixed at its cause; the named suspect was tested and cleared; one ruling wanted on the poll cadence
+STATE: EXECUTING
+PHASE: 1 of 2
+BALL: code
+NEXT_PASTE: none
+UPDATED: 2026-08-18T22:09:23-04:00
+NOTE: Starting the records order - HM-DEC-138 and HM-DEC-137 first, no source file is touched
 
 ---
 
