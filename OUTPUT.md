@@ -1,173 +1,151 @@
 # 1. What Claude did
 
-## The commit that made `27 11` automatic
+## The mechanism
 
-**`8c2abf3`, version 1.8.0**, "ask the radio for its spectrum instead of advising
-about it". It put `_ = AskForTheSpectrumAsync(radio)` in the connect path, and
-from that build Hamlet wrote the scope's data output on at every connect.
+**Which frame completed which read: none. The suspect is wrong, and I tested it
+before building anything on it.**
 
-**HM-DEC-062 forbids it in terms**: *nothing turns the scope on, that is a write,
-and this ruling is reads only.* Taking it out restores a standing ruling rather
-than departing from one, so it needed no new authority. The read of `27 10` and
-`27 11` to say what is on stays, which is the half that ruling allows.
+`ReadAsync` passes its own command and sub-command as the expected reply
+(`Ic7300Rig.cs:222`), so an acknowledgement cannot complete a read; and the
+command gate serializes commands, so a read and a tune write cannot be on the
+wire together in the first place. `AReadIsAnsweredOnlyByItsAnswerTests` asserts
+both at the seam: an `FB` arrives while a frequency read is outstanding, the read
+does not take it, and the value that lands is the one the radio actually sent.
+**Those pass at `HEAD`.** HM-OPEN-042 is real and it bites writes, which do expect
+an acknowledgement; it does not reach reads.
 
-The arithmetic is why it matters rather than being tidy. A sweep is 475 points in
-eleven parts, on the order of six hundred bytes; 115200 8N1 carries about eleven
-and a half thousand bytes a second. Nineteen sweeps a second is the whole cable,
-and the dial's own announcements share it. HM-OPEN-042 then found the readback
-could not confirm that write, so **Hamlet has been reporting it refused since
-1.8.0 without being able to tell whether it succeeded.**
+**Which code path held the stale value: `ApplyRigState`, the display-correction
+block, `MainWindowViewModel.cs:2680`.**
 
-## What the diagnostics show that they could not show yesterday
+```
+if (!_rigSendPending && !_updatingFromRig && state[Frequency] is { IsKnown: true } ...)
+    ApplyRigFrequency(swept);
+```
 
-- **One sentence under the readout, in his terms**: whether the radio announces
-  the moment he touches the dial, or whether Hamlet is asking it several times a
-  second instead, or whether nothing has been heard yet. Three worlds, three
-  sentences, through `VoiceTests` like everything else he reads.
-- **The frequency says when it is old.** Older than a second and a half, on a
-  connected radio, and the readout carries "where the radio was a moment ago, not
-  where it is now" instead of being drawn as though it were now (HM-DEC-111). It
-  says nothing while the reading is fresh.
-- **The numbers behind it on the diagnostics screen**: frames in, how many were
-  the radio announcing itself, how the frequency was last confirmed and how long
-  ago, and what share of everything arriving is the spectrum picture. That screen
-  showed forty values with their ages and never one line about the conversation
-  carrying them.
+`_rigSendPending` is set when the operator tunes and **cleared in `OnRigSendTick`
+before the write is awaited**. So from the instant the command goes out until a
+reading taken *after* it comes back, the guard is down and the model still holds
+the frequency the radio was on before. This block then applies it, and the display
+returns to where he had just been. **It is only ever reachable through a write**,
+which is exactly the dividing line he describes: the radio's own knob has no write
+and was perfect throughout.
+
+It landed in **`ad93fb4`**, HM-DEC-109's "the swept frequency corrects the
+display". Before that commit the swept value went into the model and never onto
+the screen, so there was nothing to snap back.
+
+**The thirty seconds is the second half, and it is `RigPollPlan.SessionInterval`.**
+Once the display had been dragged back, only the next frequency reading could move
+it forward, and in the build he ran the frequency was on the session sweep — the
+same `ad93fb4`. Thirty seconds is that sweep. It is the only thirty second window
+anywhere near the display: I swept the tree for constants in the twenty-five to
+thirty-nine second range and the other three are a spot tag's lifetime, a spot
+source's backoff and the decoder's reporting interval, none of which touch the
+frequency.
 
 ## The fix
 
-**The frequency comes off session cadence and is asked for at the live rate.**
-HM-DEC-109 put it there as a backstop for a broadcast missed at startup; with the
-broadcast not arriving, the backstop was carrying the whole load at half-minute
-cadence, while `RigStateMonitor` repainted four times a second holding it
-(HM-DEC-078). The display was current about a value that was not.
+**`DialGuard`, pure and in the engine.** A reading may move the display when it
+was taken after Hamlet's own last tune, or when Hamlet has not tuned at all —
+which is every case of the radio's own knob, so the path that always worked is
+untouched. Bounded by the write and never by a timer: a window would be too short
+on a busy link and would freeze the display after it had already caught up on a
+quiet one, and both are the app deciding it knows better than the radio.
 
-**And the radio announcing still wins.** `RigPollPlan.SkipLiveRead` keeps Hamlet
-quiet while the model holds a frequency the radio volunteered less than a second
-and a half ago, so on a rig with transceive on nothing goes on the bus at all,
-which is the behavior HM-DEC-050 wanted. When the announcements stop, the poll
-takes over inside that window. It is not a setting, because a preference would be
-a way to configure the app back into this failure.
+`_writeInFlight` closes the round trip that `_rigSendPending` left open, and the
+guard is strict at the boundary — a reading stamped at the instant of the write
+crossed it on the wire, so the knife-edge goes the way that leaves the operator's
+own action standing (§0.2.1).
 
-**`1A 05 0071` is read at connect**, never written, so Hamlet can say plainly when
-the radio is not announcing rather than tracking at poll speed and looking broken.
-**Its page is not cited and that is said on its face**: §4 has no row for this
-sub-command, it came from this work order, and the row reads `uncited
-(HM-OPEN-043)`. `CitationTests` accepts exactly that shape and **proves it names a
-live open issue**, so the marker cannot become a way around the citation sweep.
+## The diagnostics, which did not catch this either
 
-## The six tests that failed, adjudicated one at a time
-
-Each was a belief this work overturns, and each carries its reason where it sits.
-
-| Test | Why it failed, and what it says now |
-|---|---|
-| `RigPollingTests.TheBroadcastFieldsAreSweptAnyway` | Asserted the frequency is *not* asked for four times a second, on the reasoning that it "hardly ever changes". The evening disproved that sentence. |
-| `FrequencySweepTests.ItsFreshnessWindowIsTheOrdinaryOne` | Two minutes was the ordinary window for a field swept twice a minute. A thirty second lag would have counted as current. |
-| `DialTrackingTests.TheFrequencyIsNeverLeftToThePollAlone` | Mine, from last session, pinning `Session`. |
-| `ScopeStreamTests.TheWaterfallSaysWhichSettingIsMissing` | Expected "Hamlet is asking it to", which was only true while the write existed. |
-| `CitationTests` and `RigStateModelTests` page sweeps | Met the first uncited row in the file. Both now accept the marked shape, and one new test proves the marker names a live open item. |
+- **`tune_written`** — the one command in the middle of every tune had no event at
+  all. `tune_requested` said somebody asked and nothing said what happened, so a
+  display disagreeing with the radio could not be placed on either side of it.
+- **`frequency_went_backwards`** — the signature of the whole defect, in one line.
+  A frequency returning to the value the tune started from, when the tune asked
+  for somewhere else, is not an ordinary observation: the radio does not tune
+  itself backwards. It is emitted even now that the guard stops it reaching the
+  screen, because the day it fires again somebody should be able to search for it.
+- **Step 6, fixed**: `scope_output_requested` logged `outcome: failed` with
+  `reason: confirmed`. Last session moved the caller to the stable token and left
+  this comparison on the enum's name, so a write that plainly succeeded was
+  recorded as a failure. **That is my defect from two sessions ago and it is the
+  same family**: a token exists so comparisons survive rewording, and it only
+  works if the comparison uses it.
+- The link's answer reached the operator last session and is in this build: the
+  line under the readout, and the counts on the diagnostics screen.
 
 ## Recorded under §12.1
 
-**Nothing.** The cadence change weighs bus traffic against freshness, which is a
-trade-off and therefore yours (clause 3). It is built, as the order directs, and
-the ruling ask is in section 4.
+**Nothing.** HM-DEC-136 was not written, as the order directs.
 
 # 2. What Tim should expect
 
-**Yes: the frequency on screen now follows the dial in under a second, and it
-does so whether or not your radio announces anything.** It is read four times a
-second, 250 milliseconds, the same beat as the S-meter, so the worst case between
-your hand moving and the screen agreeing is a quarter of a second plus the radio's
-own answer. The thirty seconds is gone because the thirty second sweep is no
-longer what maintains it.
+**Yes: clicking a dot now moves the display and leaves it moved.** The reading
+that used to drag it back is refused by name — it was taken before the tune, so it
+cannot speak about where the dial is now — and the refusal ends the moment a
+reading from after the write arrives, which is the next poll rather than the next
+sweep.
 
-**What makes that a fix rather than a hope:** it does not depend on the broadcast
-arriving. If your radio is announcing, Hamlet stays quiet and the announcement is
-faster still. If it is not, the poll carries it. Either way the number is under
-1.5 seconds old, and if it ever is not, the readout now says so instead of drawing
-it confidently.
+**Why it holds rather than being a hope:** the reproduction fails without the fix
+and passes with it. I disabled just the new condition and re-ran: three assertions
+went red, including the operator's exact case. That is the whole of the report's
+claim, and it is the mechanism rather than a symptom.
 
-- **The waterfall will stay dark and will now say why in your terms.** Hamlet no
-  longer asks the radio to send its spectrum, because HM-DEC-062 says it may not.
-  If you want it, the switch is on the radio.
-- **You will see a new line under the frequency readout.** On a radio with
-  transceive on it says so. With it off it says Hamlet is asking instead, and that
-  turning CI-V Transceive on would be quicker and quieter and is yours to change.
-- **Radio → What the radio is doing now carries the link counts**, including what
-  share of the cable is spectrum data.
-- **Build succeeds, no warnings. 1,956 tests, 2 failing, both the standing decode
+- **What it does not fix:** if your radio's answer to the tune is slow, the display
+  will hold *your* new frequency during that window rather than reverting. That is
+  the intended behavior. It never shows an older value as though it were current.
+- **The two seam tests are `[AvaloniaFact]` now.** They started as plain tests,
+  passed alone and failed in the full run, because that seam marshals to the user
+  interface thread and a test without a dispatcher depends on what runs beside it.
+  A flaky test about a display bug is worse than none.
+- **Build succeeds, no warnings. 1,969 tests, 2 failing, both the standing decode
   baseline** — `ClearingTheTranscriptLeavesTheDecoderAlone` and
-  `TheBulletinDecodesToItsAnswerKey`. Neither is touched by this work.
+  `TheBulletinDecodesToItsAnswerKey`. I ran the suite four times to be sure the
+  count is stable; one run showed a third failure and the next three did not, and
+  it was not one of mine.
 - **One commit, pushed to `main`. Nothing local, no branches.**
-- **No radio was connected** (HM-DEC-093). Everything above is what the code now
-  does, proved by 1,522 engine tests including eleven written for this failure. It
-  is not a measurement of your station, and I have not made a connect a condition
-  of anything.
+- **No radio was connected** (HM-DEC-093).
 
 # 3. What we should do next
 
-- Run it. If the line under the readout says your radio is not announcing, CI-V
-  Transceive is one menu away and would take the poll off the bus entirely.
-- HM-OPEN-043: one column-aware read of `A7292-4EX-6` around 19-4 and 19-5 to cite
-  `1A 05 0071`, after which that row looks like every other.
-- The waterfall, whenever you want it: it needs the ruling in section 4 or the
-  switch on the radio.
+- Run it and click a dot.
+- If it ever snaps back again, `frequency_went_backwards` names it directly and
+  `tune_written` puts it either side of the command.
+- The automatic `27 11`, named and left in this order, is already out of the tree:
+  I removed it last session under HM-DEC-062 and reported it. `scopeShare` 0.50
+  was measured on a build that still had it.
 
 # 4. What's blocking us
 
-Nothing is blocked. Two rulings wanted, and the standing pair unchanged.
+Nothing is blocked. One thing you should know about the tree, and the standing
+pair unchanged.
 
 ---
-date: 2026-08-18
-refs: HM-DEC-050, HM-DEC-109, HM-DEC-078, src/Hamlet.RadioEngine/Rig/RigPollPlan.cs
+date: 2026-08-19
+refs: HM-DEC-109, HM-DEC-050, WORK_INSTRUCTIONS.md 2026-08-19
 ---
 
-**The frequency is read at the live rate whenever the radio has not announced it
-within a second and a half, superseding HM-DEC-109 on the cadence and nothing
-else.**
+**The frequency is on the live poll in the tree right now, and that is the change
+HM-DEC-136 would have ruled.**
 
-HM-DEC-050 rations the bus and says nothing the radio volunteers is polled for.
-HM-DEC-109 amended it to sweep the frequency every thirty seconds as a backstop.
-Neither anticipated the backstop being the only mechanism, which is the state the
-app has been in: the operator turned his dial and watched a thirty second lag,
-repeatedly.
+This order withdrew that ruling and says nothing supersedes HM-DEC-109 or
+HM-DEC-050. Nothing in *this* order does. But the change itself shipped in the
+session before, as `099de5a`, with the ruling asked for in that report and not yet
+given, so the code is running ahead of the record.
 
-Weighed, which is why it is yours: a frequency read is six bytes out and eleven
-back, so four times a second is under seventy bytes on a cable carrying eleven
-thousand, against a bus HM-DEC-050 deliberately protected. What tips it is that
-this is the number every other surface trusts, and a wrong band scopes RBN and the
-skimmer watch (HM-DEC-024, HM-DEC-075).
+You are right that it was not the fix: the snap-back is the defect and it happens
+at any cadence. What the live poll does change is how long the wrong value stays
+on screen once something else puts it there, which is why the two got confused.
 
-Rejected: an unconditional fast read, which would spend the bus on a radio that is
-already announcing; and a setting, which would be a way to configure the app back
-into the failure.
+Three ways: leave it and rule on it; revert it to the session sweep, which puts
+the thirty second recovery back if any path ever writes a stale value again; or
+rule that the frequency's cadence follows whether the radio announces, which is
+what `SkipLiveRead` already implements underneath it.
 
-Built, per the order. Overturn it and the thirty seconds comes back.
-
----
-date: 2026-08-18
-refs: HM-DEC-062, HM-DEC-092, HM-OPEN-042
----
-
-**Whether Hamlet may ever ask the radio to send its spectrum, and if so, when.**
-
-`27 11` was written automatically from 1.8.0 against HM-DEC-062's reads-only rule.
-That has been removed and the ruling restored, so the waterfall stays dark until
-the operator switches the output on at the radio.
-
-HM-DEC-092 ruled the write in, on the reasoning that attempting it and reporting
-the answer beats guessing which setting is at fault. **The part of that reasoning
-which has since failed is the reporting**: HM-OPEN-042 found the answer could not
-be read back, so the write has been reporting refused without knowing.
-
-Three ways: leave it off and let the switch be his; ask once, on a button, with
-the answer now readable; or ask automatically again once the frame counters show
-the stream is not eating the link.
-
-Rejected: leaving it automatic while the ruling forbidding it stands, and while
-its cost on a shared cable is a real number rather than a worry.
+I did not revert it in this order, because reverting a shipped change in an order
+scoped to one defect is exactly the kind of unasked repair §12.6 exists to stop.
 
 ---
 
@@ -180,7 +158,7 @@ watched into the load; and **a callsign too long for one keyer send**
 
 ## Named and left, as the order directs
 
-Not started, and none of them belongs in this order: HM-OPEN-042's remaining
-rungs; the record sweep for rulings resting on a write outcome; `DECISIONS.md`
-missing 096 to 133; HM-DEC-135 and §9.6; mode follow, favorites and the recent
-list.
+Not started: HM-OPEN-042's remaining rungs beyond step 6; the record sweep for
+rulings resting on a write outcome; `DECISIONS.md` missing 096 to 133; HM-DEC-135
+and §9.6; mode follow, favorites and the recent list. The automatic `27 11` is on
+that list and is already gone, which is noted above rather than acted on again.
