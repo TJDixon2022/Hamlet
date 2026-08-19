@@ -1,9 +1,9 @@
-STATE: EXECUTING
-PHASE: 4 of 5
-BALL: code
-NEXT_PASTE: none
-UPDATED: 2026-08-19T10:37:25-04:00
-NOTE: Phase 4 - the sweep table: measured margin against generated SNR, and what a floor would refuse
+STATE: COMPLETED
+PHASE: 5 of 5
+BALL: web
+NEXT_PASTE: OUTPUT.md -> Claude Web
+UPDATED: 2026-08-19T10:42:48-04:00
+NOTE: Leading edge measured at 13 of 43 on real audio against the transcript's 33; two rulings wanted
 
 ---
 
