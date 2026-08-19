@@ -108,6 +108,47 @@ public sealed class CwLeadingEdgeAccuracyTests
     }
 
     /// <remarks>
+    /// **BOTH PASSES ON BOTH CAPTURES, IN ONE TABLE.** It has never existed, and
+    /// every decode order will want it: one recording is not a measurement, and
+    /// two pointing opposite ways is a finding rather than something to average.
+    /// </remarks>
+    [Fact]
+    public void BothPassesOnBothCaptures()
+    {
+        var key = CwFarnsworthTests.BulletinKey
+            .Replace(" ", "", StringComparison.Ordinal)
+            .Replace("<BT>", "", StringComparison.Ordinal);
+
+        var (bulletinTip, bulletinSettled) = Read(CwFarnsworthTests.Bulletin);
+        var (callsignTip, callsignSettled) = Read("cw-2026-08-17-013347");
+
+        string Flat(string t) => t.Replace(" ", "", StringComparison.Ordinal);
+
+        _output.WriteLine("capture              | pass    | in order | emitted");
+        _output.WriteLine(
+            $"bulletin             | tip     | {InOrder(Flat(bulletinTip), key),8} | "
+            + $"{Flat(bulletinTip).Length}");
+        _output.WriteLine(
+            $"bulletin             | settled | {InOrder(Flat(bulletinSettled), key),8} | "
+            + $"{Flat(bulletinSettled).Length}");
+
+        // **NO ANSWER KEY EXISTS FOR THE SECOND CAPTURE** (HM-DEC-091: a real
+        // recording asserts what was measured and never a transcript nobody can
+        // verify). So it is scored on the one thing independently confirmed about
+        // it — the callsign — and on how much it emits.
+        _output.WriteLine(
+            $"cw-2026-08-17-013347 | tip     | VA3VRR "
+            + $"{callsignTip.Contains("VA3VRR", StringComparison.Ordinal)} | "
+            + $"{Flat(callsignTip).Length}");
+        _output.WriteLine(
+            $"cw-2026-08-17-013347 | settled | VA3VRR "
+            + $"{callsignSettled.Contains("VA3VRR", StringComparison.Ordinal)} | "
+            + $"{Flat(callsignSettled).Length}");
+
+        Assert.True(key.Length > 0);
+    }
+
+    /// <remarks>
     /// The second real capture, the one carrying `VA3VRR`. A callsign is the
     /// hardest thing on the air to read and the most costly to get wrong, so it is
     /// worth its own line.

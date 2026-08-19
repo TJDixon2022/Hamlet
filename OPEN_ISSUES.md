@@ -4,6 +4,68 @@ Questions with owner and severity. `owner` is who must act next. Format in
 `CLAUDE.md` §3.
 
 ---
+id: HM-OPEN-053
+status: open
+owner: tim
+raised: 2026-08-19
+severity: slows
+blocks: the text the operator watches arrive, which reads a third of the transcript
+refs: HM-OPEN-049, HM-DEC-091, §12.5, src/Hamlet.RadioEngine/Cw/CwGate.cs
+---
+
+**The leading edge doubles on real off-air audio if one constant is raised, and
+five synthesized fixtures break.**
+
+**The streaming path's marks, published before anything was changed.** Ten
+millisecond buckets, ARRL bulletin capture, dit 60 ms and dah 160:
+
+| ms | 0 | 10 | 20 | 30 | 40 | 50 | **60** | 70–90 | 120–130 | **160** | 170–270 |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| marks | 2 | **21** | 13 | 6 | 1 | 3 | **60** | 5 | 3 | **35** | 8 |
+
+**43 of 157 marks are under fifty milliseconds** — twenty-seven per cent, against
+seven per cent in the settled pass. `cw-2026-08-17-013347` is 20 of 72 with a dit
+of 100.
+
+**The floor is what binds, not the fraction.** `CwGate.FollowSpeed` wants
+`round(ditHops / 3)`, which at twenty words a minute is two hops, so it clamps up
+to `ShortestVote` every time. The fraction never decides anything at ordinary
+speeds; the constant does.
+
+**Measured, sweeping that constant, leading edge and settled pass in order against
+the answer key:**
+
+| `ShortestVote` | bulletin tip | bulletin settled |
+|---|---|---|
+| **5 (today)** | **13 of 43** | 33 |
+| 6 | 27 | 32 |
+| **7** | **27** | **34** |
+| 9 | 27 | 32 |
+
+**Seven is the best of both**, and it removes runs under forty milliseconds, two
+thirds of a dit at that speed. A cap at the dit itself was added with it, because a
+seven-hop median at forty words a minute would delete real elements.
+
+**And it breaks five green tests**, all synthesized: `AStationElsewhereIsStillFound`
+at 400 Hz, `TheTrackerDoesNotLeaveAStationForItsOwnImage`, `prosigns-easy` tone
+finding, `coverage-easy` read whole, and the settled pass's callsign ratchet. Two of
+those are about **finding the station at all**, which is upstream of everything.
+
+**Reverted; nothing from the attempt is in the tree.**
+
+**This is the trade, and it is a big one in both directions.** HM-DEC-091 says a
+real capture outranks a synthetic one and §12.5 says a fixture the reference reads
+well is evidence. Both apply here and they point opposite ways: the gain is on the
+two recordings the operator actually made, and the cost is on fixtures that guard
+the tone survey. **Doubling the accuracy of the text he watches arrive is the
+largest single improvement measured this week**, and five red tests including two
+about acquisition is the largest single cost.
+
+What is wanted is a ruling on whether it ships as it stands, or whether the five
+are adjudicated one at a time first — which is a day's work and is the safer
+reading of §12.5.
+
+---
 id: HM-OPEN-052
 status: open
 owner: tim
