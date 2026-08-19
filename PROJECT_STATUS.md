@@ -1,9 +1,9 @@
 STATE: EXECUTING
-PHASE: 2 of 5
+PHASE: 3 of 5
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-19T10:31:05-04:00
-NOTE: Phase 2 - does the streaming path have the same halved de-glitch, and what is its accuracy
+UPDATED: 2026-08-19T10:34:54-04:00
+NOTE: Phase 3 - the false keying verdict on exchange-easy, then the refused clock
 
 ---
 

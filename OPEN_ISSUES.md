@@ -4,6 +4,68 @@ Questions with owner and severity. `owner` is who must act next. Format in
 `CLAUDE.md` §3.
 
 ---
+id: HM-OPEN-051
+status: open
+owner: tim
+raised: 2026-08-19
+severity: slows
+blocks: the settled transcript on sparse or slow sending
+refs: HM-DEC-095, HM-DEC-096, src/Hamlet.RadioEngine/Cw/CwToneTracker.cs, src/Hamlet.RadioEngine/Cw/CwDecoder.cs
+---
+
+The keying verdict expires while the operator is still sending, and everything the
+settled pass has read is then discarded.
+
+**The gate.** `CwDecoder.RunSettledPass` refuses to emit anything unless
+`_tracker.KeyingRecently` is true. That gate is HM-DEC-095's and it is right: a
+window of band noise or a steady carrier will eventually fit two levels and a
+plausible clock, and on one recording that produced two hundred characters of
+confident nonsense.
+
+**The mechanism.** `KeyingRecently` is `_keyedProtects > 0`. The counter is set to
+**6** whenever the survey finds keying and decremented once per survey, and a
+survey runs every half second — **so the verdict is false three seconds after the
+survey last saw keying.**
+
+**Measured on `exchange-easy`, which the reference reads at 100%:**
+
+| | `exchange-easy` | `coverage-easy` |
+|---|---|---|
+| audio | 32.0 s | 40.4 s |
+| last character read by the leading edge | 31.3 s | 39.7 s |
+| trailing silence | **0.7 s** | 0.7 s |
+| keying protected when the pass drained | **false** | true |
+| settled characters emitted | 3 | 0, for an unrelated reason |
+
+**The trailing silence is not the cause** — it is the same on both. The protection
+expired **while the station was still sending**, with the last character only
+seven tenths of a second from the end.
+
+**Why it expires.** The verdict comes from the survey's keying-structure detector,
+which needs enough marks inside its three-second window to see two clusters rather
+than one smear (HM-DEC-095). `exchange-easy` is twenty-seven characters spread over
+thirty-two seconds — a slow, sparse fist with long gaps — so a three-second window
+frequently holds two or three characters, too few to cluster. The survey reports no
+keying, the counter runs down, and the settled pass throws away every window it
+reads from then on.
+
+**This is the one that matters for a beginner.** A slow sender with big gaps is
+exactly who a newcomer works, and it is the case where the transcript silently
+stops.
+
+**Not repaired here, because the repair changes what the display asserts about
+whether a signal is there** (§0.0, §12.1). The obvious candidates each have a real
+cost: lengthening the protection weakens the carrier guard by the same amount;
+exempting the final drain leaves the guard intact for live decoding but not for the
+end of a recording; feeding the settled pass its own keying evidence rather than
+the survey's is the largest change and the most principled.
+
+**The clock refusal on the same fixture is recorded and not proved.** The settled
+pass's last refusal there is `Clock` with a fitted dit of zero. Sparsity is the
+obvious shared cause — too few marks in a window to fit a clock — but it was not
+measured, and this project has been burned by naming a suspect without a mechanism.
+
+---
 id: HM-OPEN-050
 status: open
 owner: tim
