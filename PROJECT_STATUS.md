@@ -1,9 +1,9 @@
 STATE: EXECUTING
-PHASE: 1 of 5
+PHASE: 2 of 5
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-19T10:27:56-04:00
-NOTE: Phase 1 - shipping the de-glitch width fix ruled A, and re-baselining the ratchet it moves
+UPDATED: 2026-08-19T10:31:05-04:00
+NOTE: Phase 2 - does the streaming path have the same halved de-glitch, and what is its accuracy
 
 ---
 
