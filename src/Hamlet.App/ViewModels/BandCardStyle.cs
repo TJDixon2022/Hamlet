@@ -50,7 +50,7 @@ public static class BandCardStyles
     /// wavelength so that eighty meters is visibly a longer wave than ten, and
     /// that survives the whole set being scaled. Both ends came down by a
     /// quarter when the bands moved beside the frequency readout rather than
-    /// above it (HM-DEC-088), which keeps the row and the readout on one line at
+    /// above it (HM-DEC-141), which keeps the row and the readout on one line at
     /// the width a laptop actually has.
     /// </remarks>
     /// <remarks>

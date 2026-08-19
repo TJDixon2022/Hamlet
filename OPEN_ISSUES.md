@@ -134,9 +134,10 @@ full text.
 
 ---
 id: HM-OPEN-046
-status: open
+status: closed
 owner: tim
 raised: 2026-08-19
+closed: 2026-08-19
 severity: slows
 blocks: nothing; both rulings are in force and both are indexed
 refs: CLAUDE.md §1, §2.1, HM-DEC-088, HM-OPEN-036, HM-OPEN-045
@@ -172,6 +173,31 @@ Choosing the new id and re-pointing the references is Tim's.
 
 **What is in place meanwhile.** `DecisionLogOrderTests` names 88 as the one known
 reused id and fails on any other, so the defect stays visible and cannot spread.
+
+**CLOSED 2026-08-19. Tim ruled A: the later ruling takes the next free id, and
+the tiebreak comes from the history rather than from judgment.**
+
+Both index rows arrived in the same commit, `49b844c`. Within it the decoder's
+noise-measurement row is written first, and `DECISIONS.md`'s only HM-DEC-088 entry
+is that same ruling. **So the decoder keeps 088** and **the top strip becoming one
+row is now HM-DEC-141**, the next free id — 105 and 136 are not free, one being a
+ruling whose entry is missing and the other deliberately absent.
+
+Eleven citations were re-pointed, each classified by reading the comment it sits
+in: the wheel hint retiring, the bands sitting beside the readout, the strip
+costing one row rather than a third of the window, and the settings flag behind
+the hint. Everything else citing 088 is about measuring noise beside the tone and
+is untouched.
+
+**This was a clerical correction and not a supersession.** An id that was never
+valid is not a ruling being overturned, so nothing here needs a further ruling and
+neither ruling's text changed.
+
+`DecisionLogOrderTests` no longer allows a repeated id at all — the allowance went
+with the thing it allowed for, rather than staying as a door somebody could walk
+back through. What it names instead is that HM-DEC-141 is a 2026-08-16 ruling
+carrying a later id, so the same-date id ordering cannot speak about it while the
+date ordering still does.
 
 ---
 id: HM-OPEN-045

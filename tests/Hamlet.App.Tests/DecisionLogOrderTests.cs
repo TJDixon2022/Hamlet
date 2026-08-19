@@ -99,6 +99,13 @@ public sealed class DecisionLogOrderTests
                     $"line {line}: HM-DEC-{aboveId:000} ({aboveDate}) sits above "
                     + $"HM-DEC-{belowId:000} ({belowDate})");
             }
+            else if (aboveId == RenumberedRuling.Id || belowId == RenumberedRuling.Id)
+            {
+                // Its id no longer says when it was ruled, so the id ordering
+                // rule cannot speak about it. Its date still can, and the date
+                // check above still applies to it.
+                continue;
+            }
             else if (aboveDate == belowDate && aboveId < belowId)
             {
                 wrong.Add(
@@ -117,18 +124,18 @@ public sealed class DecisionLogOrderTests
     }
 
     /// <summary>
-    /// The one id carrying two different rulings, left exactly as it is.
+    /// A ruling whose id is later than its date, by clerical correction.
     /// </summary>
     /// <remarks>
-    /// **§2.1 SAYS AN ID IS NEVER REUSED, AND ONE WAS.** HM-DEC-088 heads the
-    /// decoder's noise-measurement ruling and also the one that made the top strip
-    /// a single row, two different rulings from 2026-08-16. `DECISIONS.md` holds
-    /// the first; the second exists only as its index row. **Renumbering is not a
-    /// session's to do**: every reference to 088 anywhere in the tree points at one
-    /// of the two and a session cannot tell which without asking, and a wrong
-    /// renumber breaks citations silently. HM-OPEN-046 holds it.
+    /// **THE REUSE IS GONE AND THIS IS WHAT IT LEFT BEHIND.** HM-DEC-088 carried
+    /// two different 2026-08-16 rulings, which §2.1 forbids outright. Tim ruled on
+    /// 2026-08-19 that the later one takes the next free id, and the tiebreak came
+    /// from the history rather than from judgment: both index rows arrived in
+    /// `49b844c`, the decoder's noise-measurement row is first in that commit, and
+    /// `DECISIONS.md`'s only 088 entry is the decoder's. So the top-strip ruling
+    /// became HM-DEC-141 and every citation aimed at it was re-pointed.
     /// </remarks>
-    private const int KnownReusedId = 88;
+    private static readonly (int Id, string Date) RenumberedRuling = (141, "2026-08-16");
 
     /// <remarks>
     /// Proves the index is complete in the direction that matters: no id appears
@@ -148,7 +155,17 @@ public sealed class DecisionLogOrderTests
             .OrderBy(i => i)
             .ToList();
 
-        Assert.Equal(new[] { KnownReusedId }, repeated);
+        // **NO ALLOWANCE ANY MORE.** There was one, for HM-DEC-088 carrying two
+        // rulings; the renumber removed the thing it was allowing for, so the
+        // allowance goes with it rather than staying as a door somebody can walk
+        // back through.
+        Assert.Empty(repeated);
+
+        // And the renumbered ruling is where it should be: one row, dated the day
+        // it was ruled rather than the day it was renumbered.
+        Assert.Contains(
+            Rows(),
+            r => r.Id == RenumberedRuling.Id && r.Date == RenumberedRuling.Date);
 
         var missing = Enumerable.Range(1, ids.Max())
             .Where(i => !ids.Contains(i))

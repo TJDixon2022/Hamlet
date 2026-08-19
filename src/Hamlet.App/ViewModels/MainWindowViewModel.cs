@@ -3002,7 +3002,7 @@ public partial class MainWindowViewModel : ObservableObject
     }
 
     /// <summary>
-    /// True once the operator has tuned with the wheel (HM-DEC-088).
+    /// True once the operator has tuned with the wheel (HM-DEC-141).
     /// </summary>
     /// <remarks>
     /// Persisted, because a hint that came back every launch would not have

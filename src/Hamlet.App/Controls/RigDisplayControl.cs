@@ -57,7 +57,7 @@ public sealed class RigDisplayControl : Control
     private const double PadBottom = 10;
 
     /// <summary>
-    /// True once the operator has tuned with the wheel (HM-DEC-088).
+    /// True once the operator has tuned with the wheel (HM-DEC-141).
     /// </summary>
     /// <remarks>
     /// Two-way, so the view model can remember it across launches. The hint that
@@ -507,7 +507,7 @@ public sealed class RigDisplayControl : Control
         SetCurrentValue(FrequencyHzProperty,
             Math.Min(BandHighHz, Math.Max(BandLowHz, next)));
 
-        // THE HINT HAS DONE ITS JOB (HM-DEC-088). A line telling somebody how to
+        // THE HINT HAS DONE ITS JOB (HM-DEC-141). A line telling somebody how to
         // do a thing they have just done is a line that teaches them to stop
         // reading that part of the window.
         SetCurrentValue(HasTunedByWheelProperty, true);

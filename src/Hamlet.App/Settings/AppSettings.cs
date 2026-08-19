@@ -193,7 +193,7 @@ public sealed class AppSettings
     public string? AudioInputDeviceId { get; set; }
 
     /// <summary>
-    /// True once the operator has tuned with the scroll wheel (HM-DEC-088).
+    /// True once the operator has tuned with the scroll wheel (HM-DEC-141).
     /// </summary>
     /// <remarks>
     /// What retires the hint under the frequency readout. A line explaining how

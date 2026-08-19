@@ -2125,13 +2125,13 @@
                  widens HM-DEC-021's exemption for the rig display to the whole
                  strip it sits in. -->
             <!-- ONE ROW: where you are, what you are on, and whether you may
-                 use it (HM-DEC-088). It is context rather than a tool, so it
+                 use it (HM-DEC-141). It is context rather than a tool, so it
                  stays fixed and outside the canvas, and it now costs a strip
                  rather than a third of the window. -->
             <Grid Grid.Row="0" ColumnDefinitions="*,Auto"
                   RowDefinitions="Auto,Auto" Margin="0,0,0,10">
 
-    <!-- THE BANDS SIT BESIDE THE READOUT NOW (HM-DEC-088), not above it. As
+    <!-- THE BANDS SIT BESIDE THE READOUT NOW (HM-DEC-141), not above it. As
          two stacked blocks they took about a third of the window height to
          convey a band, a frequency, a mode and a hint, and the canvas below
          them is what the operator actually works in. -->
@@ -2228,7 +2228,7 @@
                 FavoriteLabel="{Binding FavoriteLabel}"
                 ToggleFavoriteCommand="{Binding ToggleFavoriteCommand}" />
 
-            <!-- THE HINT RETIRES ONCE IT HAS BEEN USED (HM-DEC-088). It is a
+            <!-- THE HINT RETIRES ONCE IT HAS BEEN USED (HM-DEC-141). It is a
                  line somebody needs exactly once, and a line that stays on
                  screen forever after it has been learned is a line that teaches
                  people to stop reading that part of the window. Once the
@@ -2264,11 +2264,11 @@
     </Border>
 
     <!-- WHERE YOU ARE AND WHETHER YOU MAY TRANSMIT, which is not decoration
-         and does not get dropped for space (HM-DEC-029, HM-DEC-088). It moves
+         and does not get dropped for space (HM-DEC-029, HM-DEC-141). It moves
          to the end of the row rather than under the readout, where it has the
          width to say the whole sentence. -->
     <!-- WHERE YOU ARE AND WHERE YOU HAVE BEEN, on one line under the bands
-         (HM-DEC-088). Both used to have a row to themselves. -->
+         (HM-DEC-141). Both used to have a row to themselves. -->
     <Grid Grid.Row="1" Grid.Column="0" ColumnDefinitions="Auto,*"
           Margin="0,8,14,0" VerticalAlignment="Center">
 

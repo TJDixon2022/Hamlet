@@ -1,9 +1,9 @@
 STATE: EXECUTING
-PHASE: 4 of 6
+PHASE: 0 of 4
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-19T09:00:22-04:00
-NOTE: Phase 4 - one keep-this control at the terminal, and verifying the sidecar frequency defect is fixed
+UPDATED: 2026-08-19T09:18:40-04:00
+NOTE: Resuming; establishing what landed before phase 0, the HM-DEC-088 renumber
 
 ---
 
