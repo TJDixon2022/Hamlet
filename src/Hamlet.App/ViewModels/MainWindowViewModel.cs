@@ -3388,6 +3388,18 @@ public partial class MainWindowViewModel : ObservableObject
             // unread: a fixture labelled with a speed nobody measured is worse
             // than one labelled with nothing (§0.0, HM-DEC-090).
             $"decoderWpm {(DetectedWpm > 0 ? DetectedWpm.ToString() : "not tracking")}",
+
+            // **THE SIDECAR RECORDED COUNTS AND NEVER A CHARACTER OF TEXT**, so
+            // nothing beside a kept recording said what Hamlet had made of it.
+            // The whole transcript goes here rather than the roster's tail,
+            // because a file read by a person has no one-line constraint.
+            //
+            // It is called `text` and not `read` deliberately: `read` is the name
+            // of the roster's own column, which is the operator's verdict and is
+            // never written by Hamlet. Two fields one letter apart, one a machine's
+            // output and one a person's judgement, is a confusion waiting for the
+            // evening somebody scores thirty of them.
+            $"text       {CwCaseRoster.Readable(Transcript.PlainText)}",
             "",
         };
 
@@ -4276,6 +4288,14 @@ public partial class MainWindowViewModel : ObservableObject
         PersistRecent();
     }
 
+    /// <summary>How much of the transcript goes in a roster row.</summary>
+    /// <remarks>
+    /// A hundred and twenty characters, which is `CwTranscript.LongestTip`'s own
+    /// figure and carries several overs at any speed. The whole transcript goes in
+    /// the sidecar, which is not constrained to one line.
+    /// </remarks>
+    private const int RosterTextLength = 120;
+
     /// <summary>Where captures and the roster are written.</summary>
     /// <remarks>
     /// Settable so a test can point the whole path at a temporary folder, in the
@@ -4316,7 +4336,13 @@ public partial class MainWindowViewModel : ObservableObject
                 report is { } r && !double.IsNaN(r.SnrDb) ? r.SnrDb : null,
                 DetectedWpm > 0 ? DetectedWpm : null,
                 report?.CharactersEmitted ?? 0,
-                report?.CharactersUnsure ?? 0));
+                report?.CharactersUnsure ?? 0,
+
+                // **THE TAIL AT THE MOMENT OF THE PRESS**, which is what he was
+                // looking at when he decided there was a station there. A hundred
+                // and twenty characters carries several overs at any speed and
+                // still leaves the row one line in a text editor.
+                Transcript.Tail(RosterTextLength)));
     }
 
     /// <summary>

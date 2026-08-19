@@ -82,6 +82,9 @@ public sealed class CaseRosterSurvivesAnEveningTests : IDisposable
         var audio = WavAudio.Read(Fixture());
         var decoder = new CwDecoder(audio.SampleRate, 600);
 
+        var settled = new List<CwCharacter>();
+        decoder.CharacterSettled += settled.Add;
+
         using (var source = new BufferedAudioSource(audio))
         {
             decoder.Listen(source);
@@ -105,6 +108,11 @@ public sealed class CaseRosterSurvivesAnEveningTests : IDisposable
         var report = decoder.Report;
         var seen = tap.SamplesSeen;
 
+        // What the operator was looking at when he decided there was a station
+        // there. The application takes `Transcript.Tail(120)`; here the same
+        // characters come from the decode that just ran.
+        var read = string.Concat(settled.Select(c => c.Text)).Trim();
+
         var path = CwCaseRoster.Append(
             _folder,
             new CwCase(
@@ -113,7 +121,8 @@ public sealed class CaseRosterSurvivesAnEveningTests : IDisposable
                 double.IsNaN(report.SnrDb) ? null : report.SnrDb,
                 decoder.State.WordsPerMinute > 0 ? decoder.State.WordsPerMinute : null,
                 report.CharactersEmitted,
-                report.CharactersUnsure));
+                report.CharactersUnsure,
+                read));
 
         Assert.True(File.Exists(wav), "the recording was not written");
         Assert.True(File.Exists(path), "the roster was not written");
@@ -134,7 +143,8 @@ public sealed class CaseRosterSurvivesAnEveningTests : IDisposable
                 double.IsNaN(report.SnrDb) ? null : report.SnrDb,
                 decoder.State.WordsPerMinute > 0 ? decoder.State.WordsPerMinute : null,
                 report.CharactersEmitted,
-                report.CharactersUnsure));
+                report.CharactersUnsure,
+                read));
 
         var lines = File.ReadAllLines(path);
 
@@ -163,6 +173,31 @@ public sealed class CaseRosterSurvivesAnEveningTests : IDisposable
 
         // Exactly one recording exists: the second press wrote none.
         Assert.Single(Directory.GetFiles(_folder, "*.wav"));
+
+        // **THE ROW CARRIES WHAT HAMLET READ, NOT ONLY HOW MUCH.** A count is a
+        // pointer to evidence; scoring thirty cases from counts alone means
+        // opening thirty recordings.
+        Assert.Equal(10, first.Length);
+        Assert.NotEqual("nothing read", first[8]);
+        Assert.Equal(CwCaseRoster.Readable(read), first[8]);
+
+        // **AND THE REFUSED PRESS CARRIES IT TOO** (HM-DEC-090). He heard the
+        // station whether or not a recording was written, so the row that records
+        // the refusal is scored the same way as any other.
+        Assert.Equal(CwCaseRoster.Readable(read), second[8]);
+
+        // The operator's column is still last and still empty.
+        Assert.Equal(string.Empty, first[9]);
+        Assert.Equal(string.Empty, second[9]);
+
+        // **ONE ROW IS ONE LINE**, or the columns after the text land under the
+        // wrong headings and tomorrow's scoring is done against a shifted file.
+        foreach (var line in lines)
+        {
+            Assert.DoesNotContain('\n', line);
+            Assert.DoesNotContain('\r', line);
+            Assert.Equal(9, line.Count(c => c == '\t'));
+        }
     }
 
     /// <remarks>
@@ -185,8 +220,8 @@ public sealed class CaseRosterSurvivesAnEveningTests : IDisposable
         {
             var columns = CwCaseRoster.Row(one).Split('\t');
 
-            Assert.Equal(9, columns.Length);
-            Assert.Equal(string.Empty, columns[8]);
+            Assert.Equal(10, columns.Length);
+            Assert.Equal(string.Empty, columns[9]);
         }
 
         // And a decoder that read nothing says so in its own columns rather than
@@ -196,6 +231,50 @@ public sealed class CaseRosterSurvivesAnEveningTests : IDisposable
         Assert.Equal("none", quiet[4]);
         Assert.Equal("unread", quiet[5]);
         Assert.Equal("not tracking", quiet[6]);
+    }
+
+    /// <remarks>
+    /// **THE MOST IMPORTANT ROW ON THE SHEET.** A station heard and nothing read
+    /// is the case the whole measure exists to count, and an empty cell would look
+    /// like a column somebody forgot to fill in rather than a decoder that
+    /// produced nothing (HM-DEC-091).
+    /// </remarks>
+    [Fact]
+    public void AnEmptyTranscriptSaysSoRatherThanLeavingItBlank()
+    {
+        var heard = new CwCase(
+            new DateTime(2026, 8, 19, 23, 30, 0, DateTimeKind.Utc),
+            7_030_000, "40 m", "cw-2026-08-19-233000.wav", "",
+            ToneHz: null, SnrDb: null, Wpm: null, Emitted: 0, Unsure: 0,
+            Text: "");
+
+        var columns = CwCaseRoster.Row(heard).Split('\t');
+
+        Assert.Equal("nothing read", columns[8]);
+        Assert.NotEqual(string.Empty, columns[8]);
+        Assert.Equal(string.Empty, columns[9]);
+    }
+
+    /// <remarks>
+    /// Proves a tab or a newline in the transcript cannot split a row, which would
+    /// put the operator's own column under a different heading. The decoder emits
+    /// neither today; the file everything is scored from should not depend on that
+    /// staying true.
+    /// </remarks>
+    [Fact]
+    public void NothingInTheTextCanBreakTheRow()
+    {
+        var awkward = new CwCase(
+            new DateTime(2026, 8, 19, 23, 40, 0, DateTimeKind.Utc),
+            7_030_000, "40 m", "a.wav", "", 640, 28.4, 20, 12, 1,
+            Text: "CQ\tDE\r\nW1AW K");
+
+        var row = CwCaseRoster.Row(awkward);
+
+        Assert.DoesNotContain('\n', row);
+        Assert.DoesNotContain('\r', row);
+        Assert.Equal(9, row.Count(c => c == '\t'));
+        Assert.Contains("CQ DE", row, StringComparison.Ordinal);
     }
 
     /// <remarks>

@@ -15,6 +15,10 @@ namespace Hamlet.RadioEngine.Cw;
 /// <param name="Wpm">The speed being tracked, or null when not tracking.</param>
 /// <param name="Emitted">Characters the decoder emitted this session.</param>
 /// <param name="Unsure">How many of those it was unsure of.</param>
+/// <param name="Text">
+/// What the decoder had actually read at the moment of the press, or "" when it
+/// had read nothing.
+/// </param>
 public sealed record CwCase(
     DateTime AtUtc,
     long FrequencyHz,
@@ -25,7 +29,8 @@ public sealed record CwCase(
     double? SnrDb,
     int? Wpm,
     int Emitted,
-    int Unsure);
+    int Unsure,
+    string Text = "");
 
 /// <summary>
 /// The roster of cases: one row per press, appended as it happens.
@@ -61,6 +66,7 @@ public static class CwCaseRoster
         "snrDb",
         "wpm",
         "chars",
+        "text",
         "read");
 
     /// <summary>What a roster file is called for a given evening.</summary>
@@ -108,10 +114,45 @@ public static class CwCaseRoster
                 : "not tracking",
             $"{one.Emitted} emitted, {one.Unsure} unsure",
 
+            // **A COUNT IS A POINTER TO EVIDENCE; THE TEXT IS EVIDENCE.** With
+            // `19 emitted, 6 unsure` and nothing else, scoring a case means
+            // opening the recording and listening to it, and thirty cases is an
+            // evening that does not get spent. With what the decoder read sitting
+            // in the row, most cases are decided by reading the file and the audio
+            // is only needed for the ambiguous ones.
+            //
+            // **AND HAVING READ NOTHING IS THE MOST IMPORTANT ROW ON THE SHEET**
+            // (HM-DEC-091), so it says so in words rather than leaving a cell that
+            // looks like a column somebody forgot to fill in.
+            Readable(one.Text),
+
             // **LEFT EMPTY, AND THAT IS THE POINT.** Tim fills it in afterwards
             // from the roster and the audio. Nothing in this file may ever put a
-            // value here.
+            // value here — and a column of decoded text sitting beside it makes
+            // deriving a verdict newly tempting, which is exactly why it does not
+            // happen.
             string.Empty);
+    }
+
+    /// <summary>What Hamlet had read, as one line of a tab-separated file.</summary>
+    /// <param name="text">The transcript's tail, or "".</param>
+    /// <returns>The cell.</returns>
+    /// <remarks>
+    /// A tab or a newline in this cell would split the row and put the operator's
+    /// own `read` column under a different heading, so both become a single space.
+    /// The decoder can emit neither, but the transcript carries word gaps as
+    /// spaces and a future change to either is one line away from breaking the
+    /// file everything tomorrow is scored from.
+    /// </remarks>
+    public static string Readable(string? text)
+    {
+        var clean = (text ?? string.Empty)
+            .Replace('\t', ' ')
+            .Replace('\r', ' ')
+            .Replace('\n', ' ')
+            .Trim();
+
+        return clean.Length == 0 ? "nothing read" : clean;
     }
 
     /// <summary>Append one case to the evening's roster, creating it if new.</summary>

@@ -1,10 +1,9 @@
 STATE: COMPLETED
-PHASE: 5 of 5
-TASK: 5 of 5
+PHASE: 2 of 2
 BALL: tim
 NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-19T11:59:20-04:00
-NOTE: Roster ready for tonight; scorer dropped whole; committed on main and not pushed
+UPDATED: 2026-08-19T13:38:25-04:00
+NOTE: Roster row carries the decoded text; 2,007 tests, the same 3 red; committed, not pushed
 
 ---
 
