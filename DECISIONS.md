@@ -4,6 +4,52 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-135
+date: 2026-08-18
+refs: CLAUDE.md §9.6, WORK_INSTRUCTIONS.md, HM-DEC-100, HM-DEC-106, HM-DEC-099
+---
+
+**A Claude Code work order is delivered as `WORK_INSTRUCTIONS.md` at the
+repository root, and the prompt Tim pastes says only which project it is and to
+read that file and execute it.** Amends HM-DEC-100 on what the pasteable prompt
+contains and supersedes nothing.
+
+THIS IS HM-DEC-106 POINTED THE OTHER WAY. That ruling moved the session's report
+out of the terminal and into `OUTPUT.md`, because reports were being read off
+photographs of a scrollback buffer and a report Tim has to photograph is a report
+he reads less carefully. The inbound half had the same defect and nobody had named
+it: a work order pasted into a prompt box is retyped, is truncated by whatever the
+buffer holds, cannot be diffed, cannot be committed, and is gone the moment the
+window closes. The two files are a pair. Work comes in through one and goes back
+out through the other, both at the root, both in the tree the session is about to
+change.
+
+WHAT THE PASTED PROMPT CONTAINS IS NOW TWO LINES: the gate, and the instruction to
+read and execute. HM-DEC-100 stands otherwise. A delivery is still a single
+scaffolded zip extracted over the root, still never a snippet, still never a file
+Tim places or patches by hand, and `WORK_INSTRUCTIONS.md` rides in that zip like
+everything else.
+
+THE GATE IS IN BOTH PLACES AND THAT IS NOT BELT AND BRACES. HM-DEC-099 requires
+`PROJECT: Hamlet` on every prompt and every work order, and a one-line prompt makes
+the failure it guards against worse rather than better: pasted into the wrong
+repository, "read `WORK_INSTRUCTIONS.md` and execute it" finds that project's file
+and executes somebody else's work order, with a gate that agrees with itself the
+whole way down. So the prompt carries the gate, the file carries the gate, and the
+session checks both against `PROJECT_CARD.md`. Any of the three disagreeing stops
+the session.
+
+AND IT CARRIES THE DATE IT WAS ISSUED, because a file at a fixed path is a file
+that can be read twice. `WORK_INSTRUCTIONS.md` is overwritten whole per work
+order, in the manner of `PROJECT_STATUS.md`, so a session opening one older than
+the last `OUTPUT.md` is looking at work already done and stops. A pasted prompt
+could not be stale; a file can.
+
+IT IS COMMITTED. The work order that produced a commit is worth having beside it,
+and a session that wants to know why the last one did something has the
+instruction it was given rather than an inference from the diff.
+
+---
 id: HM-DEC-138
 date: 2026-08-19
 refs: src/Hamlet.RadioEngine/Rig/RigPollPlan.cs, src/Hamlet.RadioEngine/Rig/RigStateMonitor.cs, HM-DEC-109, HM-DEC-050, HM-DEC-062

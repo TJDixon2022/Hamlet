@@ -346,6 +346,7 @@ this table is the index.
 
 | Date | Decision | Why | Ref |
 |---|---|---|---|
+| 2026-08-18 | **A Claude Code work order is delivered as `WORK_INSTRUCTIONS.md` at the repository root, and the pasted prompt says only which project it is and to read that file and execute it.** Amends HM-DEC-100 on what the prompt contains and supersedes nothing. **This is HM-DEC-106 pointed the other way**: that ruling moved the report into `OUTPUT.md` because a report read off a photograph is read less carefully, and the inbound half had the same defect unnamed — a pasted order is retyped, truncated by the buffer, cannot be diffed or committed, and is gone when the window closes. **The gate is in both places and that is not belt and braces**: a one-line prompt in the wrong repository would read that project's order and find a gate agreeing with itself all the way down, so prompt, file and `PROJECT_CARD.md` are all checked and any disagreement stops the session. **It carries its issue date** because a file at a fixed path can be read twice, and one older than `OUTPUT.md` is work already done. It is committed, so the order that produced a commit sits beside it. | Work comes in through one file and goes back out through the other, both at the root, both in the tree the session is changing. | HM-DEC-135 |
 | 2026-08-19 | **The frequency is read on the live poll and stays there, superseding HM-DEC-109 on this field's cadence and setting aside HM-DEC-050's exemption for it.** The rest of that ruling stands; what is set aside is one exemption granted in favour of something that is not happening. **The premise was false and nobody had measured it**: the frequency was exempt because the radio broadcasts it, and on the operator's own radio 5,499 frames arrived in sixty-one seconds with `inboundTransceive` zero, `radioIsBroadcasting` false. Asking is not the more stale option, it is the only one. **The cost was measured rather than feared** — six bytes out and eleven back, under seventy bytes a second on a cable moving eleven thousand. **Reverting to the session sweep was rejected**, because that sweep is what turned the snap-back into thirty seconds of wrong display instead of one poll, and a cadence chosen so the next such fault lasts thirty seconds is choosing badly on purpose; **a conditional cadence was rejected** as a second mechanism resting on the push that proved unreliable here. | The code shipped in `099de5a` with the ruling asked for and never given, and a decision not in the record is not made. | HM-DEC-138 |
 | 2026-08-19 | **The status-write instruction lives in `CLAUDE.md` and in every Claude Code work order, and an order delivered without it is defective and is redone. A session writes the status whether or not its order says so.** HM-DEC-132's triggers and fields are unchanged. **The rule was never the problem**: §13.2 has carried five triggers since that ruling and consecutive sessions did not apply them, one saying so in its own report — read, and not applied, with two phase boundaries crossed without a write. A correct rule that nothing carries is indistinguishable from no rule, and the panel showed a working project as dead. **Two channels because neither has held alone**: this file is read once and forgotten across the hour-long phase the ten-minute write exists for, and a prompt written in a hurry loses the line. **A missing line is a defect rather than an oversight**, on HM-DEC-099's precedent, because the chat side cannot write to disk and the instruction it hands over is the only thing it can be held to. | A rule nothing carries into the session is the same as no rule, and it had already failed three times running. | HM-DEC-137 |
 | 2026-08-18 | **A return to a place already in the recent list is noted on the entry that is there, and the operator can remove any entry by hand. HM-DEC-072's two hundred hertz stands unamended.** Two visits a hundred hertz apart read as two entries, and a hundred hertz is well inside the two hundred that ruling already calls one place, so **widening the figure was rejected**: five hundred would fold the same pair and would break the deliberate link to `SpotIdentity.FrequencyBucketHz` that keeps two numbers meaning near enough from drifting apart. A second visit is a fact about the entry, which is the same shape as 072's rule that the newest visit's identification wins including when it is empty. **And a list the operator did not curate is one he must be able to take things out of** — ten places kept automatically on a dwell nobody set and nobody can see — per entry and whole. Removal is not a correction: a place visited again afterward returns as a new entry counting from one. | The near duplicates were never the tolerance, and a number changed to hide a behavior nobody has measured is the wrong repair. | HM-DEC-134 |
@@ -1009,6 +1010,38 @@ per-file confirmation. **A decision that is not in `DECISIONS.md` is not
 made** — if code needs a ruling no record contains, the session stops and
 asks, exactly as it would for a missing file. Within an approved plan, act;
 report once at the end of a work unit, in the format §12.3 requires.
+
+### 9.6 The work order — ABSOLUTE, Claude Code sessions
+
+A work order is a file, never pasted text (HM-DEC-135). It is
+`WORK_INSTRUCTIONS.md` at the repository root, it arrives in the delivery zip like
+any other file (§9.1), and it is committed.
+
+The prompt Tim pastes is two lines and nothing else:
+
+    PROJECT: Hamlet
+
+    Read WORK_INSTRUCTIONS.md at the repository root and execute it.
+
+**Both carry the gate and the session verifies both against `PROJECT_CARD.md`**
+(§13, HM-DEC-099). A one-line prompt in the wrong repository would read that
+project's work order and find a gate that agrees with itself, which is the one
+failure §9's gate exists to prevent.
+
+The file opens with `PROJECT:` and `ISSUED:`. It is overwritten whole per work
+order, so a session opening one dated earlier than `OUTPUT.md` is holding work
+already done: it says so and stops.
+
+**Its phases are worked as numbered.** A phase is skipped only where the order
+names it droppable, and an item the order names and leaves (§12.6) is not worked
+instead. A session that departs from the numbering says so in section one.
+
+**Every order carries the status instruction of §13 and states its phase count**
+(HM-DEC-137). An order missing either is defective and is redone; the session
+writes the status regardless.
+
+`WORK_INSTRUCTIONS.md` in, `OUTPUT.md` out (HM-DEC-106). Both at the root, both
+committed, both in the tree the session is changing.
 
 ---
 
