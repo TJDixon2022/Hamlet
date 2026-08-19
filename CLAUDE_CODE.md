@@ -1,6 +1,6 @@
 # CLAUDE_CODE.md
 
-**Version 1.1. This file is byte-identical in every project.**
+**Version 1.2. This file is byte-identical in every project.**
 
 It governs how a Claude Code prompt is built, delivered, executed and reported.
 It does not govern the work itself.
@@ -299,8 +299,10 @@ the report filling with things the owner already knows about.
 Split in two.
 
 **Standing prohibitions** live in `CLAUDE.md` and are cited, not retyped. Do not
-push. Do not run interactive or destructive git. Do not edit another person's
-files. Do not invent a ruling id. Do not touch the coverage thresholds.
+run interactive or destructive git. Do not edit another person's files. Do not
+invent a ruling id. Do not touch the coverage thresholds.
+
+**Not "do not push."** See §4.9.
 
 **Unit-specific prohibitions** live here, because they only apply now — *do not
 re-vendor, `3c1ac48` stands until Tim says otherwise.*
@@ -312,7 +314,31 @@ three or four land. Fifteen prohibitions of equal weight are read as none.
 `-KBP` reads what the air is doing and is the machine's answer.* A rule with its
 reason can be applied to a case nobody anticipated.
 
-### §4.9 Reporting
+### §4.9 Committing and pushing
+
+**A session commits and pushes its work before it reports.** Every task, every
+unit, without being told.
+
+Work that is committed and not pushed exists on one machine. It is invisible to
+the panel's push check, invisible to a peer project, and lost with the disk. The
+owner has had to run `git push` by hand for another session's finished work while
+the panel showed `UNPUSHED` — that is the owner doing a session's job.
+
+An earlier version of this file carried *do not push* in the standing
+prohibitions above. It was copied from two projects that each had a specific
+reason — one where `main` sits behind a pull request and an approval, one where a
+single run's commits were deliberately held — and generalised into a rule that
+fitted neither. **That was wrong and is struck.**
+
+Where a project genuinely cannot push to trunk, `CLAUDE.md` says so and says what
+to do instead, and it wins under §0's specificity floor. **Silence in `CLAUDE.md`
+means push.**
+
+The report names the branch and states whether the push succeeded. **A push that
+was refused is reported as refused**, with the reason, and is not left to be
+discovered by the panel.
+
+### §4.10 Reporting
 
 Names the four sections, and **what leads section 3** — the answer to the question
 this unit was commissioned to ask.
@@ -361,6 +387,8 @@ CLAUDE.md — STATE, TASK: n of m, BALL, UPDATED from the clock, and
 NOTE saying what is moving inside the task, not restating the task name.
 
 Do the same every ten minutes while a task is running.
+
+Commit and push each task before starting the next.
 ```
 
 Everything else is in the file. The prompt names the project, names the file, and
@@ -475,6 +503,10 @@ Each has happened. Each is cheap to avoid and expensive to find.
   in one afternoon.
 - **A listing is a view of the working tree, not of the repository.** A file
   absent from a listing may be committed on another branch.
+- **Work committed and never pushed.** A session that stops at the commit leaves
+  its work on one machine, invisible to every check and to every peer. The owner
+  has pushed a finished session's commits by hand. This file caused it, by
+  generalising two projects' specific reasons into a standing prohibition.
 - **A rule that names an outcome instead of an artifact.** A peer project lost
   four rounds to *collect the files*; a session satisfied it by inventing a
   script. This document did the same thing in its own §1 on its first day. Name
