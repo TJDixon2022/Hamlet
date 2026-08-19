@@ -1,190 +1,143 @@
-# 1. What Claude did
+# What Claude did
 
-**STATE.** Development computer, `C:\Source\HamLet`, Claude Code surface (§9.5).
-**Branch: `main`.** Prompt, `WORK_INSTRUCTIONS.md` and `PROJECT_CARD.md` all say
-`PROJECT: Hamlet`; gate passed on all three (§9.6). **No radio was connected**
-(HM-DEC-093). Status written at the start and at every phase boundary.
+**Hamlet confirmed.** `Hamlet.sln` and `src\Hamlet.RadioEngine\Cw\CwGate.cs` exist;
+`CoreHMI.sln` and `src\CoreHMI` do not. Development machine, **no radio**
+(HM-DEC-093), branch `main`, **committed and not pushed**.
 
-**Phases 1 to 4 worked, phase 5 dropped. Two commits, and no decoder behaviour
-changed** — both experiments were measured and reverted, and the one ruling did not
-meet its own gate.
+**Tasks 1 to 4 done. Task 5 dropped**, whole, as the order allows.
 
-## Phases 1 to 3 — the streaming path, and the constant that doubles it
+## Task 1 — the trace, and what the instruction got wrong
 
-**The mark table, published before anything was touched.** ARRL bulletin capture,
-ten-millisecond buckets, dit 60 ms and dah 160:
+**1. What one press writes today.** `CaptureAudioAsync` at line 3177 —
+`[RelayCommand]`, as described. It refreshes the frequency, takes
+`_decoder.Tap.Snapshot()`, and on success writes two files into
+`%AppData%\Hamlet\captures`: `cw-<yyyy-MM-dd-HHmmss>.wav` and the same stamp
+`.txt`.
 
-| ms | 0 | **10** | 20 | 30 | 40 | 50 | **60** | 70–90 | 120–130 | **160** | 170–270 |
-|---|---|---|---|---|---|---|---|---|---|---|---|
-| marks | 2 | **21** | 13 | 6 | 1 | 3 | **60** | 5 | 3 | **35** | 8 |
+**2. Is the button available when nothing is being read? Yes, confirmed, and this
+is the load-bearing fact.** `IsEnabled="{Binding IsDecoding}"` at
+`MainWindow.axaml:960`, and `IsDecoding = true` is set at
+`MainWindowViewModel.cs:2864` **when the decoder starts listening** — beside
+`_decoder.Listen(_audioInput)` — not when it produces text. So the press is live on
+a station Hamlet reads nothing of, which is the case the measure exists for.
 
-**43 of 157 marks are under fifty milliseconds — twenty-seven per cent**, against
-seven per cent in the settled pass. The callsign capture is 20 of 72 with a dit of
-100.
+**3. No roster, index or per-evening file exists anywhere.** Grepped across `src`
+and `tests`. This unit is not smaller than it looks.
 
-**The floor is what binds, not the fraction.** `CwGate.FollowSpeed` wants
-`round(ditHops / 3)`, which is two hops at twenty words a minute, so it clamps up to
-`ShortestVote` every time — **the constant is the setting and the fraction never
-decides anything at ordinary speeds.**
+**4. What the sidecar says about whether a station was found.** `toneHz`, `snrDb`,
+`elements` (seen and resolved), `characters` (emitted and unsure), `decoderWpm`,
+and `sinceLast`. **A human cannot decide "Hamlet got this one" from the sidecar
+alone**, because it records no decoded text at all — only counts. That is worth
+knowing before the scoring evening.
 
-**Swept:**
+**5. `SettingsStore.DataFolder`** is `C:\Users\TimDi\AppData\Roaming\Hamlet`, so
+captures go to `…\Hamlet\captures`. **That folder does not exist on this machine** —
+no capture has ever been written here, which is consistent with the dev machine
+having no radio.
 
-| `ShortestVote` | bulletin, leading edge | bulletin, settled |
-|---|---|---|
-| **5 — today** | **13 of 43** | 33 |
-| 6 | 27 | 32 |
-| **7** | **27** | **34** |
-| 9 | 27 | 32 |
+**Mismatches between the instruction and the tree, reported and not repaired:**
 
-Seven is the best of both and removes runs under forty milliseconds, two thirds of
-a dit at that speed. I added a cap at the dit itself so a fast fist keeps its narrow
-window.
+- The sidecar list omits **`sinceLast`**, which is present, and omits the rig block
+  written after the header.
+- `SettingsStore.DataFolder` is declared on `AppSettings.cs:401`, not in a
+  `SettingsStore.cs`; `SettingsStore` is a static class in that same file. Every
+  path in the instruction is otherwise correct, including both line numbers.
+- **The status cadence asks for `TASK: n of m`, and `CLAUDE.md` §13.1 defines the
+  field as `PHASE`.** The panel reads the leading run of `KEY: value` lines and was
+  built for the six fields §13 names. I wrote **both** — `PHASE` for the panel and
+  `TASK` as instructed — rather than pick one silently. If `TASK` is meant to
+  replace `PHASE`, that is a change to §13 and is yours.
 
-**And it breaks five green tests, all synthesized**, two of them about finding the
-station at all: `AStationElsewhereIsStillFound` at 400 Hz,
-`TheTrackerDoesNotLeaveAStationForItsOwnImage`, `prosigns-easy` tone finding,
-`coverage-easy` read whole, and the settled pass's callsign ratchet.
+## Task 2 — the press marks a case
 
-**Reverted.** HM-DEC-091 says a real capture outranks a synthetic one; §12.5 says a
-fixture the reference reads well is evidence. Both apply and they point opposite
-ways, so it is in section four.
+The button reads **I hear a station**, and its line above reads: *press this
+whenever you can hear a station, whether or not anything appeared here.* The
+tooltip says it asserts you heard CW here whether or not Hamlet read any of it, and
+that you mark afterwards which ones it read.
 
-**Phase 3's table now exists**, both passes on both captures, which it never had:
+**Its behaviour is unchanged** — same WAV, same sidecar, same freshness guard.
 
-| capture | pass | in order | emitted |
-|---|---|---|---|
-| bulletin | leading edge | 13 of 43 | 19 |
-| bulletin | settled | 33 of 43 | 37 |
-| `cw-2026-08-17-013347` | leading edge | callsign present | 8 |
-| `cw-2026-08-17-013347` | settled | callsign present | 10 |
+**Both refusal paths now mark the case**: no audio arriving, and the freshness
+guard declining a duplicate. **HM-DEC-090 is untouched**; what changed is that its
+refusal becomes a row with its reason instead of a status line nobody keeps.
 
-The second capture has no answer key — HM-DEC-091 forbids inventing one — so it is
-scored on the callsign, the one thing independently confirmed about it.
+## Task 3 — the roster
 
-## Phase 2 — the class of error, swept
+`CwCaseRoster` appends one tab-separated row per press to
+`cases-<yyyy-MM-dd>.txt` in the captures folder, header on the first row of each
+evening. Real output, from task 4's run:
 
-Both faults found this week are the same mistake in different clothes: **a threshold
-that does not mean what its name says.**
+```
+time      frequency  band   wav                                     toneHz  snrDb  wpm  chars                 read
+23:14:05  7.030      40 m   cw-2026-08-19-231405.wav                505     42.7   22   19 emitted, 6 unsure
+23:14:25  7.030      40 m   none (no new audio since the last one)  505     42.7   22   19 emitted, 6 unsure
+```
 
-| Threshold | Meant to remove | Actually removes |
-|---|---|---|
-| `CwSettledPass.Deglitch(0.020)` | 20 ms | **10 ms** — a median filter removes half its window. Fixed this morning |
-| `CwSettledPass.Deglitch(0.4·dit)` | 24 ms at 20 wpm | **10 ms**, same cause, same fix |
-| `CwGate.ShortestVote = 5` | a floor under the vote window | **the whole setting** — the fraction of a dit is always smaller, so the clamp decides |
-| `CwGate.VoteShareOfDit = 1/3` | a third of a dit | **nothing at ordinary speeds**, for the same reason |
-| `KeyingRecently` — six surveys | "keying was found recently" | **keying was found within 3 s of the survey's last sighting**, which expires mid-message on a sparse fist |
+Every column comes from a reading that already exists, or says it does not:
+`none`, `unread`, `not tracking` (HM-DEC-091). **`read` is empty and nothing
+writes to it** — not derived, not defaulted, not guessed from the character count.
 
-## Phase 4 — HM-DEC-143 is recorded and unbuilt, by its own condition
+## Task 4 — proved without a radio
 
-Written verbatim to `DECISIONS.md`, index row at the true head of §1.
+`tests\fixtures\cw\captured\cw-2026-08-18-004507.wav` played through
+`BufferedAudioSource`, the same replay source the application uses. Three tests,
+all green, writing only to a temporary folder.
 
-**It makes the carrier recording the gate**, and the gate failed:
+**What it does not cover, stated rather than implied:** it drives the decoder, the
+tap, the WAV writer and the roster, **not `CaptureAudioAsync` itself**. That
+command's decoder is fed by `OpenAudioInput()` and there is no seam to hand it a
+file; adding one changes the decode start path, which this unit does not touch. So
+the components are proved on real audio and the view model's own wiring of them is
+not.
 
-| | `cw-2026-08-17-134712`, the carrier |
-|---|---|
-| today, with the survey's verdict | **0 characters** |
-| verdict removed, leaving the pass's own structure tests | **33 characters** |
-| plus a tightness test on the mark clusters | **33 characters** |
+## Task 5 — dropped
 
-**The pass's existing tests are not the judgement the ruling assumed it already
-had.** `FitClock` requires eight marks, two populated clusters, a legal ratio and a
-dit in range — and the carrier passes all four, exactly as HM-DEC-095 predicted it
-would. The strengthening that ruling's own reasoning implies, two clusters against
-one smear, does not separate them either: a carrier chopped by noise sits near two
-centres.
+The scorer, dropped whole rather than half-built. Rows can be counted in a text
+editor tomorrow; a case cannot be marked tonight without tasks 2 to 4.
 
-Raising a constant until the carrier goes quiet would be tuning against one
-recording with every fixture unadjudicated, which is how this week's other two
-trades were made and reverted. **So it does not ship**, exactly as the ruling
-instructs, and HM-OPEN-054 carries the numbers and three candidate distinguishers.
+# What Tim should expect
 
-## Phase 5 — dropped
+- **The button is renamed and says what it now means.** Same press, same files.
+- **A new file appears in `%AppData%\Hamlet\captures`** the first time you press
+  tonight: `cases-2026-08-19.txt`. It is tab-separated, so it will line up in a
+  text editor and open cleanly in a spreadsheet if you want to sort it.
+- **The last column is blank on purpose.** That is your verdict and nothing in
+  Hamlet will ever put anything in it.
+- **A press that writes no recording still lands a row**, saying `none` and why.
+  Those are the cases the old behaviour lost silently, and they are the ones that
+  matter most to the percentage.
+- **2,005 tests, 3 failing** — the three named in the order and nothing else.
+- **Committed, not pushed**, on `main`.
+- **No decoder behaviour changed.** `CwGate`, `CwSettledPass`, `CwToneSurvey` and
+  `CwDecoder` are untouched, so tonight's roster measures the decoder you have been
+  running.
 
-# 2. What Tim should expect
+# What you should see
 
-**13 of 43 before, 13 of 43 after.** The leading edge on the ARRL bulletin is
-exactly where it was this morning, because the change that doubles it is not in the
-build — it is waiting on your ruling.
+**Yes — you can mark a case tonight in one press, and it will survive the evening.**
+The evidence is task 4, run on a real capture rather than asserted:
 
-**What that means tonight:**
+- a WAV appeared;
+- a roster row appeared carrying the decoder's own numbers at that moment — 505 Hz,
+  42.7 dB, 22 wpm, 19 emitted and 6 unsure;
+- a second press with no new audio wrote **no** recording and still landed a row
+  reading `none (no new audio since the last one)`;
+- exactly one WAV existed afterwards, so the guard held.
 
-- **Nothing about the decoder changed today.** The transcript and the live text
-  read exactly as they did this morning. Two experiments were measured and both
-  were reverted.
-- **The one change that matters is one line and it is measured**: `ShortestVote`
-  from 5 to 7 takes the text you watch from 13 of 43 to 27 of 43 on real off-air
-  audio. It costs five synthesized tests. That is the decision in section four and
-  it is the largest single improvement measured this week.
-- **The transcript still stops early on a slow sender**, and HM-DEC-143 was meant
-  to fix it. It is recorded and unbuilt because the carrier recording still speaks
-  when the guard is removed, which is the condition you set.
-- **Keep the audio.** Everything above came from two captures. The carrier
-  recording is now doing real work as a gate, which is exactly what a kept file is
-  for.
+**What that gives you tonight.** Every station you hear gets one press. At the end
+you have a list of cases with the audio beside them, and you mark the last column
+for the ones Hamlet actually read. The percentage is a division you do afterwards,
+on your judgement, from evidence that includes the stations it missed — which is
+the only way the number can mean anything.
 
-**The suite: 2,002 tests, 3 failing**, the same three as this morning.
+**One thing to know before you start**: the sidecar records counts and never the
+decoded text, so when you score a row you will want the transcript from the screen
+or the audio itself. If you want the text kept alongside, say so and it is a small
+change.
 
-# 3. What we should do next
+# What's blocking us
 
-- **Rule the `ShortestVote` trade.** It is one line either way.
-- If it ships, the five synthesized failures want adjudicating one at a time — a
-  day's work, and the safer reading of §12.5.
-- HM-OPEN-054's three candidate distinguishers, whichever you prefer, each gated on
-  the carrier recording.
-
-# 4. What's blocking us
-
-Two rulings, and neither blocks tonight.
-
----
-date: 2026-08-19
-refs: HM-OPEN-053, HM-DEC-091, §12.5
----
-
-**Whether `CwGate.ShortestVote` goes from 5 to 7, doubling the leading edge on real
-audio and breaking five synthesized tests.**
-
-Measured: the text he watches arrive goes from **13 of 43 to 27 of 43** on the ARRL
-bulletin, and the settled pass gains one. The callsign capture keeps its callsign in
-both passes.
-
-The cost is five green tests, all synthesized: two about finding a station at all,
-one tone-finding fixture, one read-whole fixture, and the settled pass's callsign
-ratchet.
-
-For it: HM-DEC-091 says a real capture outranks a synthetic one, and the gain is on
-the two recordings the operator actually made.
-
-Against it: §12.5 says a fixture the reference reads well is evidence, and two of
-the five guard acquisition, which is upstream of everything.
-
-Rejected as a session's choice: both directions. This is a trade between two kinds
-of evidence the project ranks differently, on the number the whole week has been
-aimed at.
-
----
-date: 2026-08-19
-refs: HM-OPEN-054, HM-DEC-143, HM-DEC-095
----
-
-**How the settled pass should tell keying from a carrier, given that its own marks
-cannot.**
-
-HM-DEC-143 is ruled and unbuilt. Removing the survey's verdict lets the carrier
-recording produce 33 characters; a tightness test on the mark clusters leaves it at
-33. The pass's structure tests pass a carrier because a carrier chopped by noise
-fits two centres with a legal ratio.
-
-Three candidates, none measured:
-
-- **The gaps rather than the marks.** Keying alternates mark and gap at related
-  lengths; a chopped carrier does not.
-- **Runs per second against the fitted speed.** A carrier produces far more or far
-  fewer transitions than the clock implies.
-- **Requiring the mark ratio near three** rather than merely inside a legal band.
-
-Rejected as a session's choice: picking one and tuning it against the single
-carrier recording, which is how two changes this week were made and reverted.
+Nothing blocks tonight.
 
 ## Asks still outstanding
 
@@ -197,17 +150,7 @@ Seven, per HM-DEC-139 and scoped by HM-DEC-140.
 | **Whether the star asks for a name at the moment of saving** (HM-DEC-060, HM-DEC-134) | 2026-08-18 | Nothing but the ruling |
 | **Whether Hamlet may ever ask the radio to send its spectrum** (HM-DEC-062, HM-OPEN-042) | 2026-08-18 | The ruling |
 | **Whether HM-DEC-097 is satisfied by existing silence** (HM-OPEN-052) | 2026-08-19 | The ruling; a floor would be 19.8 |
-| **Whether `ShortestVote` goes 5 to 7** (HM-OPEN-053) | 2026-08-19 | The ruling; 13 → 27 against five synthesized tests |
-| **How the settled pass tells keying from a carrier** (HM-OPEN-054) | 2026-08-19 | The ruling; HM-DEC-143 is unbuilt until it has one |
+| **Whether `ShortestVote` goes 5 to 7** (HM-OPEN-053) | 2026-08-19 | The ruling. **Carried forward unchanged**: 13 → 27 of 43 on the bulletin's leading edge against five synthesized tests, two on acquisition. Held out of tonight so the instrument and the subject do not move together |
+| **How the settled pass tells keying from a carrier** (HM-OPEN-054) | 2026-08-19 | The ruling; HM-DEC-143 is recorded and unbuilt until it has one |
 
-**Dropped since it was asked**: whether the settled pass may emit with the keying
-verdict expired — ruled C as HM-DEC-143, which is recorded and did not pass its own
-gate.
-
----
-
-## Named and left, as the order directs
-
-The settled pass in every other respect including the gap-fit seeding; HM-OPEN-052;
-the four older asks. No transmit work toward auto-CQ. **No records work** beyond
-HM-DEC-143 and the two findings these phases produced. **Phase 5 dropped.**
+Nothing was dropped from the queue this session.

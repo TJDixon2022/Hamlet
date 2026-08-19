@@ -1,10 +1,10 @@
-STATE: EXECUTING
+STATE: COMPLETED
 PHASE: 5 of 5
 TASK: 5 of 5
-BALL: code
-NEXT_PASTE: none
-UPDATED: 2026-08-19T11:56:31-04:00
-NOTE: Roster proved on the real capture including the refusal row; running the full suite before the report
+BALL: tim
+NEXT_PASTE: OUTPUT.md -> Claude Web
+UPDATED: 2026-08-19T11:59:20-04:00
+NOTE: Roster ready for tonight; scorer dropped whole; committed on main and not pushed
 
 ---
 
