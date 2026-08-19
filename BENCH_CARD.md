@@ -33,6 +33,15 @@ evening when several things could have caused it.
 - [ ] **Turn break-in off at the radio.** The panel should say so and **refuse to
       arm**. Write down its sentence.
 - [ ] Break-in back on. Confirm the refusal clears.
+- [ ] **Empty the message box and try to arm.** It refuses, and the sentence says
+      Hamlet does not write one for you.
+- [ ] **Paste something over 30 characters** — a third `CQ` on the end. The cycle
+      **refuses it at edit time and does not split it**, which is deliberate: a
+      message cut short would go out under your callsign. Write the sentence down;
+      the seam gets measured further down this card, and not here.
+- [ ] **Arm the cycle before the rig facts have filled in**, if you can get there
+      quickly enough after connecting. It refuses until the radio has answered
+      something. If the facts fill too fast to catch, skip it and say so.
 
 ## One clean cycle
 
@@ -43,6 +52,11 @@ evening when several things could have caused it.
 - [ ] The **log fills**: timestamp, frequency, message, round number.
 - [ ] Confirm the listen window does not open until the radio has finished
       keying — it waits the message's own duration plus about a quarter second.
+- [ ] **Let one cycle run all the way to its round limit and stop by itself.**
+      Set the rounds low, two or three, so it is a minute rather than ten. **This
+      is the only stop on the card that nothing external causes**, and it is the
+      one that says the cycle ends on its own rather than because somebody caught
+      it. Write its sentence down with the rest.
 
 ## Then break it, one at a time
 
@@ -65,17 +79,30 @@ Restart the cycle before each. **Write the sentence each one gives.**
 - [ ] **Start the scanner while armed**, and try to arm while the scanner runs.
       Both directions should refuse and say why.
 
+**Three stops exist that this bench cannot provoke, and their absence is not a
+finding.** Hamlet can end a cycle because it heard an answer, because it heard
+something that was not an answer, or because the radio reports it is still keying
+when it should not be. The first two need a second station transmitting at you
+and the third needs a fault. **Do not go looking for them**, and do not read their
+absence as an interlock that failed.
+
 ## The measurement (HM-DEC-130)
 
-While the load is connected, one number is wanted that no fixture can give:
+While the load is connected, one number is wanted that no fixture can give.
 
-- [ ] Enter a message **longer than 30 characters** so it splits — a third `CQ`,
-      or `PSE K` on the end.
+**Do this in the ordinary send panel, not in the calling cycle.** They behave
+differently on purpose and it was checked in the code rather than guessed: the
+cycle refuses a message over thirty characters at edit time, and a single send
+splits it at the spaces and sends the pieces one after another. So the seam
+exists on the manual path and only there.
+
+- [ ] Open the **send panel** and enter a message **longer than 30 characters** —
+      `CQ CQ CQ DE KC3QIS KC3QIS KC3QIS PSE K` is about 38 and splits into two.
 - [ ] Send it and **listen to the seam**. How long is the gap between the two
-      sends? Is it steady round to round, or ragged?
-- [ ] If Hamlet refuses it at edit time rather than splitting, note that instead
-      — the split path exists for single sends and may not be wired into the
-      cycle.
+      sends? Is it steady send to send, or ragged?
+- [ ] Send it two or three more times. **The question is whether the gap is the
+      same every time**, because a ragged pause in the middle of a call is what
+      HM-DEC-130 refused to ship.
 
 The choice between refusing a long call permanently, splitting it, or timing the
 second send from `CwDuration` gets made on that number.

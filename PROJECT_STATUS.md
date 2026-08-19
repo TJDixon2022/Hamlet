@@ -1,9 +1,9 @@
 STATE: EXECUTING
-PHASE: 4 of 6
+PHASE: 5 of 6
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-19T08:19:39-04:00
-NOTE: Phase 4 - the scope reporting lie, rungs three to five, and whether the link counters reached the screen
+UPDATED: 2026-08-19T08:22:34-04:00
+NOTE: Phase 5 - walking BENCH_CARD.md against the code so every interlock can be provoked deliberately
 
 ---
 
