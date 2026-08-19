@@ -295,6 +295,16 @@ public sealed class RigStateMonitor : IDisposable
                         return;
                     }
 
+                    // **ASKING IS THE FALLBACK, NOT THE MECHANISM.** Where the
+                    // radio announces the dial, its own pushes keep the value
+                    // fresher than any poll could and this puts nothing on the
+                    // bus. Where it does not, the read happens and the screen
+                    // follows the dial rather than the sweep (HM-DEC-050).
+                    if (RigPollPlan.SkipLiveRead(field, State[field], DateTime.UtcNow))
+                    {
+                        continue;
+                    }
+
                     await ReadIntoStateAsync(field, cancellationToken).ConfigureAwait(false);
                 }
 

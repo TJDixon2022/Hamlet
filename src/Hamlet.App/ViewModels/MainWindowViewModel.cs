@@ -2427,138 +2427,95 @@ public partial class MainWindowViewModel : ObservableObject
         AppEvents.SpectrumSourceChanged(
             _telemetry, "rig", SelectedBand.Band.Name, simulated: false);
 
-        _ = AskForTheSpectrumAsync(radio);
+        // **NOTHING HERE TURNS THE SCOPE ON, WHICH IS WHAT HM-DEC-062 ALREADY
+        // SAID.** `_ = AskForTheSpectrumAsync(radio)` stood on this line from
+        // 8c2abf3, version 1.8.0, and wrote `27 11` at every connect against a
+        // standing ruling that this path is reads only. Taking it out restores
+        // that ruling rather than departing from one.
+        //
+        // The arithmetic is why it matters rather than being tidy. A waveform
+        // sweep is 475 points in 11 parts, on the order of six hundred bytes,
+        // and 115200 8N1 carries about eleven and a half thousand bytes a
+        // second. Nineteen sweeps a second is the whole cable, and the dial's own
+        // announcements share it. HM-OPEN-042 then found the readback could not
+        // confirm this write, so Hamlet has been reporting it refused without
+        // knowing, and it may have been succeeding at every connect since 1.8.0.
+        //
+        // Reading `27 10` and `27 11` to say what is on stays. That is the read
+        // HM-DEC-062 allows, and it is what the panel needs to explain itself.
     }
 
     /// <summary>
-    /// Ask the radio to send its spectrum down the cable (HM-DEC-092).
+    /// How the conversation with the radio is going, in one sentence (§0.0.1).
     /// </summary>
-    /// <param name="radio">The connected radio.</param>
-    /// <returns>A task.</returns>
     /// <remarks>
-    /// <para>**THE APPLICATION READ THIS SETTING FOR MONTHS AND NEVER ONCE TRIED
-    /// TO SET IT.** It found the output off, printed a paragraph naming two menu
-    /// settings it had never read, and stopped. Both were already correct and the
-    /// operator walked to the radio for nothing.</para>
-    /// <para>`27 11` is send/read and tier one: it decides whether the picture
-    /// the radio is already drawing on its own screen is also sent to the
-    /// computer, and nothing about it can key anything (HM-DEC-084). The
-    /// preconditions in footnote 4 are real and are not grounds to decline in
-    /// advance, because one of them Hamlet cannot read at all: attempting it and
-    /// reporting the answer replaces a guess with a measurement (§0.0).</para>
-    /// <para>Not awaited, for the same reason the startup reconnect is not: a
-    /// window that will not paint until the radio answers looks broken to
-    /// anybody whose radio is busy.</para>
+    /// **THIS IS THE LINE THAT WOULD HAVE SAVED TWO BUILDS.** The operator turned
+    /// his dial and watched Hamlet follow thirty seconds later, and the
+    /// application said nothing about it: the frequency was drawn confidently
+    /// four times a second while being a minute old. Everything needed to say so
+    /// was already in the app and nothing assembled it.
     /// </remarks>
-    private async Task AskForTheSpectrumAsync(Ic7300Rig radio)
-    {
-        // **READ BEFORE WRITE, WHICH MEANS WAITING FOR THE FIRST READ**
-        // (HM-DEC-094, HM-DEC-084). This fired eight tenths of a second after
-        // connect with all forty fields still unknown, so it had nothing to read
-        // before, could not know whether the setting already had the value it was
-        // about to write, and reported "refused" to the operator for a command the
-        // radio had not had time to answer.
-        if (_rigMonitor is { } monitor)
-        {
-            var ready = await Task.WhenAny(
-                monitor.Populated, Task.Delay(WaitForFirstRead)).ConfigureAwait(true);
+    public string LinkCheckLine => LinkSelfCheck
+        .Describe((_rig as Ic7300Rig)?.Link, RigState, DateTime.UtcNow, IsConnected)
+        .Headline;
 
-            if (ready != monitor.Populated)
+    /// <summary>The numbers behind that sentence, for the diagnostics screen.</summary>
+    public string LinkCheckDetail => LinkSelfCheck
+        .Describe((_rig as Ic7300Rig)?.Link, RigState, DateTime.UtcNow, IsConnected)
+        .Detail;
+
+    /// <summary>True while there is a link check worth showing.</summary>
+    public bool HasLinkCheck => LinkCheckLine.Length > 0;
+
+    /// <summary>
+    /// How old the frequency on screen is, said rather than counted, or "".
+    /// </summary>
+    /// <remarks>
+    /// **A PROVENANCE LABEL CARRIES ITS AGE** (HM-DEC-111). That ruling came from
+    /// a capture sidecar asserting a freshness it did not have, and the rig
+    /// display has been doing the same thing to the one number every other
+    /// surface trusts. Empty while the reading is current, because a fresh value
+    /// needs no apology and a caption on every screen is a caption nobody reads.
+    /// </remarks>
+    public string FrequencyAgeNote
+    {
+        get
+        {
+            if (!IsConnected)
             {
-                // The radio has not answered anything at all. Writing into that
-                // silence would be the same fault one layer along.
-                _scopeWriteRefused = false;
-                return;
+                return "";
             }
-        }
 
-        var already = RigState[RigField.ScopeOutput];
+            var value = RigState[RigField.Frequency];
 
-        if (already is { IsKnown: true, Number: > 0 })
-        {
-            return;
-        }
+            if (!value.IsKnown)
+            {
+                return "";
+            }
 
-        // WHAT IT WAS BEFORE, SO IT CAN BE PUT BACK. Unknown stays unknown and
-        // the restore is simply not offered, rather than a plausible value being
-        // written back under the name of restoring (HM-DEC-084).
-        _scopeOutputWas = already.IsKnown ? (int?)already.Number : null;
-
-        try
-        {
-            var result = await radio
-                .SetSettingAsync(CivWrites.ScopeOutput, 1)
-                .ConfigureAwait(true);
-
-            _scopeWriteRefused = !result.Worked;
-
-            AppEvents.ScopeOutputRequested(
-                _telemetry, result.Reason, radio.Link.BaudRate,
-                radio.Link.Unanswered);
-
-            Decisions.Note(
-                "Scope output",
-                result.Worked ? "asked and granted" : "asked and refused",
-                result.Worked ? Outcome.Proceeded : Outcome.Failed,
-                result.Worked
-                    ? "The radio is sending its spectrum to the computer now."
-                    : "The radio would not send its spectrum. Hamlet asked rather "
-                      + "than assuming which setting was in the way.",
-                DateTime.UtcNow);
-        }
-        catch (Exception)
-        {
-            // A radio that will not answer is a condition, never a crash (§8).
-            _scopeWriteRefused = true;
+            return value.Age(DateTime.UtcNow) is { } age
+                   && age >= LinkSelfCheck.FrequencyIsOldAfter
+                ? "where the radio was a moment ago, not where it is now"
+                : "";
         }
     }
 
-    /// <summary>
-    /// How long to wait for the radio to answer anything before giving up.
-    /// </summary>
-    /// <remarks>
-    /// Five seconds, which is many times a poll sweep and far short of anybody's
-    /// patience. A radio that has said nothing in five seconds is not going to
-    /// accept a setting either (HM-DEC-094).
-    /// </remarks>
-    private static readonly TimeSpan WaitForFirstRead = TimeSpan.FromSeconds(5);
-
-    /// <summary>What the scope output was before Hamlet asked, or null.</summary>
-    private int? _scopeOutputWas;
-
-    /// <summary>True once the radio has refused to send its spectrum.</summary>
-    private bool _scopeWriteRefused;
+    /// <summary>True while that note has something to say.</summary>
+    public bool HasFrequencyAgeNote => FrequencyAgeNote.Length > 0;
 
     /// <summary>
-    /// Put the scope output back if Hamlet turned it on (HM-DEC-092).
+    /// What became of the scope's data output, as far as Hamlet knows.
     /// </summary>
-    /// <returns>A task.</returns>
     /// <remarks>
-    /// Every write is undoable (HM-DEC-084), and an operator who had this off had
-    /// it off for a reason even if the reason was only that they never turned it
-    /// on. Where the previous value was never read, nothing is restored, because
-    /// writing a plausible number back would be a guess wearing the most
-    /// reassuring word in the application.
+    /// **FALSE FOREVER NOW, AND KEPT RATHER THAN THREADED OUT.** Hamlet does not
+    /// ask the radio to send its spectrum any more, so it cannot be refused one:
+    /// `AskForTheSpectrumAsync`, the five second wait it needed before writing,
+    /// and the undo that put the setting back all went with the write. The
+    /// readiness check still takes the flag, and passing a false it can rely on
+    /// is cheaper to read than a signature change that would have to be undone
+    /// the day the write is ruled back in (HM-DEC-062, HM-DEC-092).
     /// </remarks>
-    private async Task ReleaseTheSpectrumAsync()
-    {
-        if (_rig is not Ic7300Rig radio || _scopeOutputWas is not { } was)
-        {
-            return;
-        }
-
-        _scopeOutputWas = null;
-
-        try
-        {
-            await radio.SetSettingAsync(CivWrites.ScopeOutput, was)
-                .ConfigureAwait(true);
-        }
-        catch (Exception)
-        {
-            // Leaving a receive-side setting on is not worth a crash (§8).
-        }
-    }
+    private const bool ScopeWriteRefused = false;
 
     private void StartTrainingSpectrum()
     {
@@ -2616,7 +2573,8 @@ public partial class MainWindowViewModel : ObservableObject
 
         var window = new Views.RigDiagnosticsWindow
         {
-            DataContext = new RigDiagnosticsViewModel(_rigMonitor, RigState),
+            DataContext = new RigDiagnosticsViewModel(
+                _rigMonitor, RigState, (_rig as Ic7300Rig)?.Link),
         };
 
         AppEvents.RigDiagnosticsOpened(_telemetry, RigState.KnownCount);
@@ -2729,6 +2687,14 @@ public partial class MainWindowViewModel : ObservableObject
         OnPropertyChanged(nameof(RigState));
         OnPropertyChanged(nameof(TerminalSummary));
 
+        // The link check and the age caption both read the clock, so they are
+        // re-asked on the same beat as everything else here (HM-DEC-078).
+        OnPropertyChanged(nameof(LinkCheckLine));
+        OnPropertyChanged(nameof(LinkCheckDetail));
+        OnPropertyChanged(nameof(HasLinkCheck));
+        OnPropertyChanged(nameof(FrequencyAgeNote));
+        OnPropertyChanged(nameof(HasFrequencyAgeNote));
+
         // A waterfall that sat empty without saying why would be the app looking
         // broken while the answer was four menu screens away (HM-DEC-062). The
         // sweep count goes in because settings that read as on and a waterfall
@@ -2736,7 +2702,7 @@ public partial class MainWindowViewModel : ObservableObject
         // (HM-DEC-067).
         var scope = ScopeReadiness.Check(
             _rig?.Capabilities, state, _rigSpectrum?.SweepCount ?? -1,
-            (_rig as Ic7300Rig)?.Link, _scopeWriteRefused);
+            (_rig as Ic7300Rig)?.Link, ScopeWriteRefused);
 
         ScopeNote = _rig is null || _rig.IsSimulated || scope.IsReady
             ? ""

@@ -4,6 +4,43 @@ Questions with owner and severity. `owner` is who must act next. Format in
 `CLAUDE.md` §3.
 
 ---
+id: HM-OPEN-043
+status: open
+owner: tim
+raised: 2026-08-18
+severity: slows
+blocks: nothing; the read works or reports unknown, and either way it is marked
+refs: CLAUDE.md §4, §12.4, HM-DEC-071, src/Hamlet.RadioEngine/Civ/CivReads.cs
+---
+
+`1A 05 0071` is read as the radio's transceive setting on the strength of a work
+order rather than a page in `A7292-4EX-6`.
+
+**Why it was built anyway.** Whether the radio announces its own changes decides
+whether the frequency on screen follows the dial in a tenth of a second or by
+Hamlet asking four times a second, and Hamlet had never asked. An app tracking at
+poll speed and an app with a dead broadcast path look identical from the inside,
+and §0.0 wants the condition stated rather than inferred.
+
+**Why it is marked rather than cited.** §4's table carries `1A 05` rows for the
+ACC/USB settings (19-4, 19-5) and for the CI-V USB port (19-5), and no row for
+this one. The sub-command came from the work order of 2026-08-18. Writing a page
+number nobody had read would be the fault HM-DEC-071 exists to prevent, on a table
+whose whole worth is that a figure arrives with the page it was read from. So the
+row's page reads `uncited (HM-OPEN-043)`, `CitationTests` accepts that shape and
+**proves it names a live open item**, and nothing else in the file can quietly
+join it.
+
+**What a wrong sub-command would do.** Read a neighboring setting and report a
+confident number about the wrong thing, which is why the read is the only thing
+built on it: nothing is written, and the value only ever makes Hamlet say whether
+the radio is announcing. If it is wrong, the sentence is wrong and no byte on the
+radio moved.
+
+**To close it:** one column-aware read of `A7292-4EX-6` around p. 19-4 and 19-5,
+confirming the sub-command and its page, and the row cites it like every other.
+
+---
 id: HM-OPEN-042
 status: open
 owner: tim

@@ -57,6 +57,45 @@ public sealed class CitationTests
     }
 
     /// <remarks>
+    /// Proves §12.4: a row that says its page is not yet verified names an open
+    /// issue, and that issue is in the record and open. Without this the marker
+    /// would be a way around the sweep above rather than a question with an
+    /// owner, which is exactly the difference the ruling is about.
+    /// </remarks>
+    [Fact]
+    public void EveryUncitedRowNamesAnOpenIssueThatExists()
+    {
+        var here = new DirectoryInfo(AppContext.BaseDirectory);
+
+        while (here is not null
+               && !File.Exists(Path.Combine(here.FullName, "OPEN_ISSUES.md")))
+        {
+            here = here.Parent;
+        }
+
+        Assert.NotNull(here);
+
+        var record = File.ReadAllText(
+            Path.Combine(here!.FullName, "OPEN_ISSUES.md"));
+
+        var uncited = CivReads.All
+            .Select(r => (Row: r.Field.ToString(), r.Page))
+            .Concat(CivWrites.All.Select(w => (Row: w.Field.ToString(), w.Page)))
+            .Where(x => MarkedUncited.IsMatch(x.Page))
+            .ToList();
+
+        foreach (var (row, page) in uncited)
+        {
+            var id = page[9..^1];
+
+            Assert.True(
+                record.Contains($"id: {id}", StringComparison.Ordinal),
+                $"{row} is marked uncited against {id}, and {id} is not in "
+                + "OPEN_ISSUES.md");
+        }
+    }
+
+    /// <remarks>
     /// Proves HM-DEC-071: the pages behind the scope preconditions exist too.
     /// These are prose rather than table rows, so they are swept separately and
     /// the same rule applies.
@@ -77,8 +116,31 @@ public sealed class CitationTests
             StringComparison.Ordinal);
     }
 
+    /// <summary>
+    /// What a row looks like when the figure is real and the page is not yet
+    /// verified (§12.4).
+    /// </summary>
+    /// <remarks>
+    /// **AN UNCITED VALUE IS A QUESTION WITH AN OWNER, AND AN UNMARKED ONE IS
+    /// INDISTINGUISHABLE FROM A VERIFIED ONE.** Every row in this file names a
+    /// page in `A7292-4EX-6` read column-aware, and one does not: the transceive
+    /// setting Hamlet reads to say whether the radio announces its own changes,
+    /// whose sub-command came from a work order rather than from the manual. The
+    /// honest options were to leave the read unbuilt, to write a page number
+    /// nobody had read, or to say plainly which it is. The third is what §12.4
+    /// exists for, and the test below proves the marker names a live open item
+    /// rather than becoming a way around this sweep.
+    /// </remarks>
+    private static readonly System.Text.RegularExpressions.Regex MarkedUncited =
+        new(@"^uncited \(HM-OPEN-\d{3}\)$");
+
     private static void AssertPageExists(string citation, string what)
     {
+        if (MarkedUncited.IsMatch(citation))
+        {
+            return;
+        }
+
         // A row may cite two pages, e.g. the command table and the data content.
         if (citation.Contains(',', StringComparison.Ordinal))
         {

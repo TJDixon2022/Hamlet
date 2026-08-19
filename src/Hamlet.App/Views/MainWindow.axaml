@@ -2223,6 +2223,27 @@
                        TextWrapping="Wrap" TextAlignment="Center"
                        IsVisible="{Binding !HasTunedByWheel}"
                        Foreground="{StaticResource HmAmberBrush}" />
+
+            <!-- **THE NUMBER SAYS HOW OLD IT IS WHEN IT IS OLD** (HM-DEC-111,
+                 §0.0). The readout was drawn four times a second holding a
+                 frequency the poll had last confirmed a minute earlier, which is
+                 a display being current about a value that is not. It says
+                 nothing while the reading is fresh, because a caption on every
+                 screen is a caption nobody reads. -->
+            <TextBlock Text="{Binding FrequencyAgeNote}"
+                       FontSize="11" HorizontalAlignment="Center"
+                       TextWrapping="Wrap" TextAlignment="Center"
+                       IsVisible="{Binding HasFrequencyAgeNote}"
+                       Foreground="{StaticResource HmAmberBrush}" />
+
+            <!-- How the conversation itself is going, which lived only in a
+                 telemetry file the operator had to upload (§0.0.1). -->
+            <TextBlock Text="{Binding LinkCheckLine}"
+                       FontSize="11" HorizontalAlignment="Center"
+                       TextWrapping="Wrap" TextAlignment="Center"
+                       MaxWidth="420"
+                       IsVisible="{Binding HasLinkCheck}"
+                       Foreground="{StaticResource HmTextMutedBrush}" />
         </StackPanel>
     </Border>
 

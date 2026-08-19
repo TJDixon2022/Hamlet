@@ -63,20 +63,26 @@ public sealed class FrequencySweepTests
     }
 
     /// <remarks>
-    /// Proves HM-DEC-109's second half: **once swept, its age means what every
-    /// other field's age means.** It used to recede without limit whenever
-    /// nobody touched the dial, so a sidecar showed it stale at sixty seconds
-    /// beside neighbours at twenty-seven, which reads as a link going quiet when
-    /// it is a link with nothing to report.
+    /// <para>Proves HM-DEC-109's second half, on the terms that ruling wanted and
+    /// with the number the evening corrected. Its age used to recede without
+    /// limit whenever nobody touched the dial, so a sidecar showed it stale at
+    /// sixty seconds beside neighbors at twenty-seven, which reads as a link
+    /// going quiet when it is a link with nothing to report.</para>
+    /// <para>**IT IS A LIVE FIELD'S WINDOW NOW AND NOT A SETTING'S.** Two minutes
+    /// was the ordinary window while the frequency was swept twice a minute; the
+    /// operator then watched a thirty second lag on his own radio, which that
+    /// window would have called current. A second and a half is what a value
+    /// asked for four times a second is worth, and it is the same number the
+    /// screen uses to decide whether to say the reading is old.</para>
     /// </remarks>
     [Fact]
     public void ItsFreshnessWindowIsTheOrdinaryOne()
     {
         Assert.Equal(
-            RigPollPlan.FreshFor(RigField.Mode),
+            RigPollPlan.FreshFor(RigField.SMeter),
             RigPollPlan.FreshFor(RigField.Frequency));
 
-        Assert.Equal(RigPollPlan.SessionFreshFor, RigPollPlan.FreshFor(RigField.Frequency));
+        Assert.Equal(RigPollPlan.LiveFreshFor, RigPollPlan.FreshFor(RigField.Frequency));
     }
 
     private static async Task WaitFor(Func<bool> until)

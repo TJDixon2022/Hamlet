@@ -86,6 +86,7 @@ public static class CivDecode
 
             case RigField.ScopeOn:
             case RigField.ScopeOutput:
+            case RigField.CivTransceive:
             case RigField.Split:
             case RigField.NoiseBlanker:
             case RigField.NoiseReduction:

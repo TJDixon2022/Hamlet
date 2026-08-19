@@ -229,8 +229,11 @@ public static class ScopeReadiness
             // nothing.
             return new ScopeStatus(
                 ScopeReadyState.OutputOff, false,
-                "The radio is not sending its spectrum to the computer yet. "
-                + "Hamlet is asking it to.", Citation);
+                "The radio is not sending its spectrum to the computer, so there "
+                + "is nothing here to draw. That switch is on the radio and it is "
+                + "yours to throw, because turning it on changes what you see on "
+                + "the radio's own screen and Hamlet will not do that behind you.",
+                Citation);
         }
 
         // EVERYTHING READS AS ON AND NOTHING HAS ARRIVED, which is the case

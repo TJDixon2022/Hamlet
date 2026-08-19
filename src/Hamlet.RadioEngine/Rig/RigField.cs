@@ -195,6 +195,28 @@ public enum RigField
     /// </remarks>
     CivUsbPort,
 
+    /// <summary>
+    /// Whether the radio announces its own changes (`1A 05 0071`).
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE SETTING BEHIND THIRTY SECONDS.** With this on, turning the
+    /// dial pushes a frame Hamlet hears at once; with it off, nothing is
+    /// announced and the only way to know where the radio is, is to keep asking.
+    /// Hamlet had never read it, so an app tracking at poll speed and an app with
+    /// a broken broadcast path looked identical from the inside.</para>
+    /// <para>**READ, NEVER WRITTEN.** It changes how the radio behaves toward
+    /// every other device on the bus, which makes it the operator's exactly as
+    /// the scope is (HM-DEC-062, HM-DEC-084).</para>
+    /// <para>**THE SUB-COMMAND IS NOT YET PAGE-CITED** (HM-OPEN-043). §4's table
+    /// carries `1A 05` rows for the ACC/USB settings and for the CI-V USB port,
+    /// and not for this one. `0071` came from the work order of 2026-08-18 rather
+    /// than from a column-aware read of `A7292-4EX-6`, and it is marked here
+    /// rather than dressed as a citation (§4, §12.4). A wrong sub-command reads a
+    /// neighboring setting and reports a confident number about the wrong thing,
+    /// which is why what the read is worth is stated where the read lives.</para>
+    /// </remarks>
+    CivTransceive,
+
     /// <summary>Which VFO is selected, A or B.</summary>
     Vfo,
 }

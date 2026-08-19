@@ -330,6 +330,30 @@ public static class CivReads
     public static CivRead ScopeOutput { get; } = new(
         RigField.ScopeOutput, 0x27, new byte[] { 0x11 }, "19-7", "00=off, 01=on");
 
+    /// <summary>
+    /// Read whether the radio announces its own changes (`1A 05 0071`).
+    /// </summary>
+    /// <remarks>
+    /// <para>**HAMLET HAS NEVER ASKED THIS AND IT DECIDES HOW THE APPLICATION
+    /// FEELS.** On, the dial pushes a frame and the screen follows in a tenth of
+    /// a second. Off, nothing is announced, and every reading of where the radio
+    /// is has to be asked for. The operator watched Hamlet take thirty seconds to
+    /// follow his own hand and there was nothing in the app that could say which
+    /// of those two worlds it was in.</para>
+    /// <para>**THE PAGE IS NOT CITED AND THAT IS SAID RATHER THAN PAPERED OVER**
+    /// (HM-OPEN-043, §12.4). The sub-command came from the work order of
+    /// 2026-08-18; §4's table has no row for it. Every other row in this file
+    /// names a page in `A7292-4EX-6` read column-aware, and this one names the
+    /// order it came from, so the next session can tell a verified figure from an
+    /// unverified one without going and looking.</para>
+    /// <para>Read only. Turning transceive on changes how the radio behaves
+    /// toward everything else on the bus, which makes it the operator's
+    /// (HM-DEC-084).</para>
+    /// </remarks>
+    public static CivRead CivTransceive { get; } = new(
+        RigField.CivTransceive, 0x1A, new byte[] { 0x05, 0x00, 0x71 },
+        "uncited (HM-OPEN-043)", "00=off, 01=on");
+
     /// <summary>Read whether split is on.</summary>
     public static CivRead Split { get; } = new(
         RigField.Split, 0x0F, Array.Empty<byte>(), "19-3", "00=off, 01=on");
@@ -343,7 +367,7 @@ public static class CivReads
         NoiseBlanker, NoiseBlankerLevel, NoiseReduction, NoiseReductionLevel,
         AutoNotch, ManualNotch, BreakIn, KeyerSpeed, CwPitch,
         AccUsbOutputSelect, AccUsbAfLevel, AccUsbSquelch, Split,
-        ScopeOn, ScopeOutput, CivUsbPort,
+        ScopeOn, ScopeOutput, CivUsbPort, CivTransceive,
     };
 
     /// <summary>

@@ -1,9 +1,9 @@
-STATE: BLOCKED
+STATE: EXECUTING
 PHASE: 1 of 1
-BALL: tim
-NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-18T20:20:37-04:00
-NOTE: Repro passes at HEAD; the telemetry the order rests on cannot express broadcast - one connect decides it
+BALL: code
+NEXT_PASTE: none
+UPDATED: 2026-08-18T20:46:45-04:00
+NOTE: Live-rate frequency, automatic 27 11 removed, transceive read, link check on screen; committing
 
 ---
 

@@ -152,8 +152,11 @@ public sealed class DialTrackingTests
     [Fact]
     public async Task TheFrequencyIsNeverLeftToThePollAlone()
     {
-        // The backstop, exactly as HM-DEC-109 ruled it.
-        Assert.Equal(RigPollRate.Session, RigPollPlan.RateFor(RigField.Frequency));
+        // **THE BACKSTOP IS AT LIVE RATE NOW, AND THAT IS THE REPAIR.** HM-DEC-109
+        // put the frequency on the session sweep, and the operator then watched
+        // Hamlet take thirty seconds to follow his own hand: a backstop carrying
+        // the whole load at half-minute cadence is the failure, not the cure.
+        Assert.Equal(RigPollRate.Live, RigPollPlan.RateFor(RigField.Frequency));
 
         // And the thing it backs up: a broadcast for the frequency is a
         // mechanism this engine knows by name.

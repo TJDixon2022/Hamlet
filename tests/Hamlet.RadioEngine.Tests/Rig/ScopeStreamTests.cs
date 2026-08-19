@@ -351,13 +351,17 @@ public sealed class ScopeStreamTests
 
         var status = ScopeReadiness.Check(radio, outputOff);
 
-        // **IT IS A THING TO DO, NOT A THING TO REPORT** (HM-DEC-092). This used
-        // to name two menu settings as the cause. Neither was among the forty
-        // fields Hamlet reads, both were already correct, and the operator walked
-        // to the radio for nothing.
+        // **AND IT IS A THING TO SAY AGAIN, BECAUSE HAMLET NO LONGER DOES IT**
+        // (HM-DEC-062). "Hamlet is asking it to" was true only while the connect
+        // path wrote `27 11`, which stood against a standing reads-only ruling
+        // from 1.8.0 and is gone. What replaces it names no menu Hamlet has not
+        // read, which is HM-DEC-092's correction and still holds: it says the
+        // output is off, that the switch is the operator's, and why Hamlet will
+        // not throw it for him.
         Assert.Equal(ScopeReadyState.OutputOff, status.State);
         Assert.Equal("", status.WhereToLook);
-        Assert.Contains("asking it to", status.Detail, StringComparison.Ordinal);
+        Assert.DoesNotContain("asking it to", status.Detail, StringComparison.Ordinal);
+        Assert.Contains("yours to throw", status.Detail, StringComparison.Ordinal);
         Assert.Contains("19-7", status.Citation, StringComparison.Ordinal);
 
         var ready = RigState.Empty.With(new[]

@@ -101,10 +101,22 @@ public static class RigPollPlan
         // Its age also used to mean something different from every other
         // field's: with nobody touching the dial the last broadcast receded
         // without limit, reading as a link going quiet when it was a link with
-        // nothing to report. Swept, it means what everything else's means, which
-        // is part of why the sweep is the clean answer rather than a special
-        // staleness rule.
-        RigField.Frequency => RigPollRate.Session,
+        // nothing to report. Polled, it means what everything else's means.
+        //
+        // **AND SESSION CADENCE WAS THE WRONG ONE, MEASURED ON THE OPERATOR'S OWN
+        // RADIO.** He turned the dial by hand and Hamlet took thirty seconds to
+        // follow, repeatedly, because the sweep runs every thirty seconds and the
+        // broadcast that was supposed to make it instant is not arriving. The
+        // screen repaints four times a second holding a value a minute old, which
+        // is the display being current about a number that is not (§0.0).
+        //
+        // A frequency read is six bytes out and eleven back. Four times a second
+        // that is under seventy bytes on a cable carrying eleven thousand, so
+        // this is not what HM-DEC-050 was rationing the bus against: a frequency
+        // a minute old is the failure that ruling exists to prevent rather than
+        // an acceptable cost of it. And it is asked for only when the radio is
+        // not announcing, per SkipLiveRead below.
+        RigField.Frequency => RigPollRate.Live,
 
         // The needle, and whether the radio is keying. Both move constantly and
         // both are on screen while receiving.
@@ -140,6 +152,14 @@ public static class RigPollPlan
         RigField.ScopeOn => RigPollRate.OnDemand,
         RigField.ScopeOutput => RigPollRate.OnDemand,
 
+        // **ON CONNECT AND WHEN SOMEBODY ASKS, WHICH IS ENOUGH FOR A SETTING
+        // NOBODY CHANGES MID-EVENING** (HM-OPEN-043). Whether the radio announces
+        // its own changes decides whether the dial is followed in a tenth of a
+        // second or by asking four times a second, and Hamlet has to know which
+        // world it is in before it can say so. It never changes without a hand on
+        // the radio, so the connect read is the one that matters.
+        RigField.CivTransceive => RigPollRate.OnDemand,
+
         // Nothing here changes without somebody's hand on the radio.
         RigField.Vfo => RigPollRate.Never,
 
@@ -151,6 +171,47 @@ public static class RigPollPlan
     /// <returns>The window past which the UI must say it is stale.</returns>
     public static TimeSpan FreshFor(RigField field)
         => RateFor(field) == RigPollRate.Live ? LiveFreshFor : SessionFreshFor;
+
+    /// <summary>
+    /// How recently the radio must have announced a field for Hamlet to stay
+    /// quiet about it.
+    /// </summary>
+    /// <remarks>
+    /// A second and a half, which is <see cref="LiveFreshFor"/> and deliberately
+    /// the same number: the window in which a reading is still current is exactly
+    /// the window in which asking again would be waste. Six live intervals, so an
+    /// ordinary dropped frame does not start a poll.
+    /// </remarks>
+    public static TimeSpan BroadcastCoversFor => LiveFreshFor;
+
+    /// <summary>
+    /// Whether a live read can be skipped because the radio just volunteered it.
+    /// </summary>
+    /// <param name="field">The field about to be asked for.</param>
+    /// <param name="current">What the model holds, from
+    /// <see cref="RigState"/>.</param>
+    /// <param name="nowUtc">The moment.</param>
+    /// <returns>True to stay quiet.</returns>
+    /// <remarks>
+    /// <para>**THE RADIO ANNOUNCING IS BETTER THAN HAMLET ASKING, AND SILENCE IS
+    /// NOT A REASON TO WAIT** (HM-DEC-050, HM-DEC-109). Where transceive is on,
+    /// the dial's own pushes keep this value younger than the window and nothing
+    /// goes on the bus at all — the behavior that ruling wanted. Where it is off,
+    /// or the announcements stop, the poll takes over within a second and a half
+    /// and the screen follows the dial four times a second.</para>
+    /// <para>It is deliberately not a switch or a setting. Hamlet cannot ask the
+    /// operator whether his radio announces, and a preference would be a way to
+    /// configure the app into the failure it just spent two builds in.</para>
+    /// </remarks>
+    public static bool SkipLiveRead(RigField field, RigValue? current, DateTime nowUtc)
+    {
+        if (field != RigField.Frequency || current is null || !current.IsBroadcast)
+        {
+            return false;
+        }
+
+        return current.Age(nowUtc) is { } age && age < BroadcastCoversFor;
+    }
 
     /// <summary>The fields polled at a given rate, in read order.</summary>
     /// <param name="rate">The rate.</param>

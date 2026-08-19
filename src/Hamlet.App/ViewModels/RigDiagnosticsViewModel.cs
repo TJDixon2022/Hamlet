@@ -60,12 +60,35 @@ public partial class RigDiagnosticsViewModel : ObservableObject
     /// <summary>Runtime constructor.</summary>
     /// <param name="monitor">The monitor to refresh from, or null.</param>
     /// <param name="state">The state to show.</param>
-    public RigDiagnosticsViewModel(RigStateMonitor? monitor, RigState state)
+    /// <param name="link">What the link says about itself, or null.</param>
+    public RigDiagnosticsViewModel(
+        RigStateMonitor? monitor, RigState state, CivLinkHealth? link = null)
     {
         _monitor = monitor;
         Rows = new ObservableCollection<RigDiagnosticRow>();
+
+        // **THE SCREEN BUILT TO PROVE WHAT HAMLET HOLDS SAID NOTHING ABOUT THE
+        // CONVERSATION HOLDING IT** (§0.0.1). Forty values, every one with its
+        // age and provenance, and no line anywhere for whether the radio
+        // announces its own changes or what share of the cable the spectrum
+        // picture is taking. Both were knowable and neither was shown.
+        var check = LinkSelfCheck.Describe(
+            link, state, DateTime.UtcNow, isConnected: monitor is not null);
+
+        LinkLine = check.Headline;
+        LinkDetail = check.Detail;
+
         Show(state);
     }
+
+    /// <summary>How the conversation with the radio is going, in a sentence.</summary>
+    public string LinkLine { get; } = "";
+
+    /// <summary>The counts behind it, or "".</summary>
+    public string LinkDetail { get; } = "";
+
+    /// <summary>True while there is something to show.</summary>
+    public bool HasLinkLine => LinkLine.Length > 0;
 
     /// <summary>Every field, known or not.</summary>
     public ObservableCollection<RigDiagnosticRow> Rows { get; }

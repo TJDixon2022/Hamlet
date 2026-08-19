@@ -141,7 +141,17 @@ public sealed class RigStateModelTests
 
         Assert.All(CivReads.All, read =>
         {
-            Assert.Matches(@"^\d+-\d+(, \d+-\d+)*$", read.Page);
+            // **OR IT SAYS IN SO MANY WORDS THAT IT IS NOT CITED YET** (§12.4).
+            // One row is in that state and it names the open issue that holds the
+            // question: the transceive setting, whose sub-command came from a work
+            // order rather than from a column-aware read of `A7292-4EX-6`. A page
+            // number nobody had read would be worse than a marker, because it
+            // would be indistinguishable from the thirty rows that were.
+            // `CitationTests` proves the marker names a live open item, so this
+            // shape cannot become the easy way out of a citation.
+            Assert.Matches(
+                @"^(\d+-\d+(, \d+-\d+)*|uncited \(HM-OPEN-\d{3}\))$",
+                read.Page);
             Assert.NotEmpty(read.Note);
             Assert.NotEmpty(read.Label);
         });

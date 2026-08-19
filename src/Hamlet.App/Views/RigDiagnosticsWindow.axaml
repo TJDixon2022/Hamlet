@@ -20,6 +20,19 @@
                        Foreground="{StaticResource HmTextPrimaryBrush}" />
             <TextBlock Text="{Binding Summary}" FontSize="12"
                        Foreground="{StaticResource HmTextMutedBrush}" />
+
+            <!-- **HOW THE CONVERSATION IS GOING, WHICH THIS SCREEN NEVER SAID.**
+                 Forty values with their ages and provenance, and nothing about
+                 whether the radio announces its own changes or what share of the
+                 cable the spectrum picture is taking (§0.0.1). -->
+            <TextBlock Text="{Binding LinkLine}" FontSize="12"
+                       TextWrapping="Wrap" Margin="0,6,0,0"
+                       IsVisible="{Binding HasLinkLine}" />
+
+            <TextBlock Text="{Binding LinkDetail}" FontSize="11"
+                       TextWrapping="Wrap"
+                       IsVisible="{Binding HasLinkLine}"
+                       Foreground="{StaticResource HmTextMutedBrush}" />
             <TextBlock Text="Everything Hamlet has asked the radio, with what each answer was and when it arrived. A row that says unknown is one nobody has managed to read, which is not the same as a radio that does not have it."
                        FontSize="12" TextWrapping="Wrap" Margin="0,4,0,0"
                        Foreground="{StaticResource HmTextMutedBrush}" />

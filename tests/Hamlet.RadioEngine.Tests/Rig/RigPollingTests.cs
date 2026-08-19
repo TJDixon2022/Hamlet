@@ -27,18 +27,23 @@ public sealed class RigPollingTests
     [Fact]
     public void TheBroadcastFieldsAreSweptAnyway()
     {
-        Assert.Equal(RigPollRate.Session, RigPollPlan.RateFor(RigField.Frequency));
-        Assert.Contains(RigField.Frequency, RigPollPlan.At(RigPollRate.Session));
+        // **THE FREQUENCY IS ASKED FOR FOUR TIMES A SECOND NOW, AND THE SENTENCE
+        // THAT USED TO BE HERE WAS MEASURED WRONG.** It said half a minute is what
+        // a missed broadcast costs and that the live rate would spend the bus on a
+        // number that hardly ever changes. The operator turned his dial by hand and
+        // watched Hamlet follow thirty seconds later, repeatedly: the number does
+        // change, constantly, and it is the one every other surface trusts.
+        //
+        // A frequency read is six bytes out and eleven back. At four times a second
+        // that is under seventy bytes on a cable carrying eleven thousand, and it
+        // is asked for only while the radio is not announcing (SkipLiveRead).
+        Assert.Equal(RigPollRate.Live, RigPollPlan.RateFor(RigField.Frequency));
+        Assert.Contains(RigField.Frequency, RigPollPlan.At(RigPollRate.Live));
 
-        // The three that arrive by broadcast and are asked for anyway, together,
-        // so none of them can quietly drop out of the sweep on its own.
+        // The two that arrive by broadcast and are swept anyway, together, so
+        // neither can quietly drop out of the sweep on its own.
         Assert.Equal(RigPollRate.Session, RigPollPlan.RateFor(RigField.Mode));
         Assert.Equal(RigPollRate.Session, RigPollPlan.RateFor(RigField.FilterSelection));
-
-        // AND IT IS NOT ASKED FOR FOUR TIMES A SECOND. Half a minute is what a
-        // missed broadcast costs; the live rate would be spending the bus on a
-        // number that hardly ever changes.
-        Assert.DoesNotContain(RigField.Frequency, RigPollPlan.At(RigPollRate.Live));
     }
 
     /// <remarks>
