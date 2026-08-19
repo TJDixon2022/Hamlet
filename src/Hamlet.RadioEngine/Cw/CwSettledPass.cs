@@ -593,7 +593,21 @@ public sealed class CwSettledPass
     private void Deglitch(int first, int last, double shortestSeconds)
     {
         var span = last - first;
-        var width = Math.Max(1, (int)Math.Round(shortestSeconds / _hopSeconds));
+
+        // **A MEDIAN FILTER REMOVES RUNS SHORTER THAN HALF ITS WINDOW, NOT
+        // SHORTER THAN ITS WINDOW** (HM-OPEN-049, ruled 2026-08-19). Sized
+        // straight from the duration, asking for twenty milliseconds removed ten,
+        // and asking for four tenths of a dit — twenty-four milliseconds at
+        // twenty words a minute — also rounded to a three-hop window and also
+        // removed ten.
+        //
+        // Measured on the ARRL bulletin capture: 1,075 marks between 20 and 50 ms
+        // in a signal whose dit is 60 and dah 160, a seventh of every mark,
+        // surviving both passes and then classified as dits because the mark
+        // boundary is their geometric mean at about 98. That is a dah coming out
+        // as `.-`, which is T read as A in STATION and in THIS.
+        var wanted = Math.Max(1, (int)Math.Round(shortestSeconds / _hopSeconds));
+        var width = (2 * wanted) + 1;
 
         if (width % 2 == 0)
         {

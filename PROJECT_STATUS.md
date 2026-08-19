@@ -1,9 +1,9 @@
-STATE: COMPLETED
-PHASE: 5 of 5
-BALL: web
-NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-19T10:17:50-04:00
-NOTE: Mechanism named with the line; the one-line repair is a measured trade and wants one ruling
+STATE: EXECUTING
+PHASE: 1 of 5
+BALL: code
+NEXT_PASTE: none
+UPDATED: 2026-08-19T10:27:56-04:00
+NOTE: Phase 1 - shipping the de-glitch width fix ruled A, and re-baselining the ratchet it moves
 
 ---
 

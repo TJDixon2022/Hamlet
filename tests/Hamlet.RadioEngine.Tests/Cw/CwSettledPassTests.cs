@@ -161,8 +161,23 @@ public sealed class CwSettledPassTests
 
         // IT USED TO STOP AT FOUR CHARACTERS. Reaching the callsign at all is
         // what phase 4 bought, and it is the half that is done.
+        //
+        // **RE-BASELINED 2026-08-19, AND WHAT MOVED WAS A PLACEHOLDER RATHER THAN
+        // A LETTER** (HM-OPEN-049, ruled A). The de-glitch was sizing a median
+        // filter so that it removed half of what it was asked to remove; widening
+        // it took this capture from `■■■ ■■VA3VRR` to `■■ ■■VA3VRR`. **Every
+        // letter is the same and one unreadable marker is gone**, so the bar drops
+        // by exactly the one glyph that stopped being emitted, and the assertions
+        // that matter — reaching the prefix, carrying the whole callsign — are
+        // untouched.
+        //
+        // A ratchet is a regression guard rather than a statement of what is
+        // correct (HM-DEC-114), and re-baselining it against a measured
+        // improvement is not lowering it to fit a worse reading (§12.5): the
+        // reading is better and the count is smaller because a placeholder is not
+        // a character anybody wanted.
         Assert.True(
-            settled.Length > 10,
+            settled.Length >= 10,
             $"the settled pass emitted '{settled}', which is no further than the "
             + "four characters it stopped at before phase 4");
 
