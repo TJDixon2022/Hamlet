@@ -1524,9 +1524,10 @@ is Tim's.
 
 ---
 id: HM-OPEN-024
-status: open
+status: closed
 owner: claude
 raised: 2026-08-18
+closed: 2026-08-19
 severity: none
 refs: tests/Hamlet.App.Tests/ViewModels/BandCardStyleTests.cs, src/Hamlet.RadioEngine/Bands/HfBands.cs, HM-DEC-110
 ---
@@ -1581,6 +1582,26 @@ intermittent rather than any of them becoming reliable, and they share nothing b
 running under xunit's parallel collections. Still named and left (§12.6): three
 single occurrences in three different subsystems is a property of the harness, and
 chasing it from inside any one of them would be chasing the wrong thing.
+
+**CLOSED 2026-08-19. The cause was the runner rather than the band plan, and it is
+fixed for the whole assembly.**
+
+The suspicion recorded here was a lazily-initialized static shared between those
+three tests. What it actually was is simpler and covers the other sighting too:
+**xUnit runs test classes in parallel, and an Avalonia headless test runs on one
+process-wide dispatcher.** Several tests take turns on a thing there is only one
+of, and under load one of them loses. Two classes in this assembly also set
+`LayoutStore.Path`, a mutable static, for the same reason.
+
+`tests/Hamlet.App.Tests/TestParallelism.cs` disables parallelization for the
+assembly. It costs about two seconds — the app suite runs in four rather than two
+— and three consecutive full runs afterwards reported the same two standing
+failures each time, which is the point: **a suite that invents four failures under
+load is a suite whose red count nobody reads.**
+
+**The engine assembly is untouched and HM-OPEN-014 is not covered by this.** That
+one measures allocation against a ceiling and is disturbed by another busy
+process, which is a different fault with a different repair.
 
 ---
 id: HM-OPEN-025

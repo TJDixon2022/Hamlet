@@ -1,9 +1,9 @@
 STATE: EXECUTING
-PHASE: 5 of 6
+PHASE: 6 of 6
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-19T08:22:34-04:00
-NOTE: Phase 5 - walking BENCH_CARD.md against the code so every interlock can be provoked deliberately
+UPDATED: 2026-08-19T08:27:26-04:00
+NOTE: Phase 6 - the headless test flake, trying to reproduce it under load before changing anything
 
 ---
 
