@@ -1,9 +1,9 @@
-STATE: EXECUTING
+STATE: COMPLETED
 PHASE: 2 of 2
-BALL: code
-NEXT_PASTE: none
-UPDATED: 2026-08-19T08:00:00-04:00
-NOTE: Phase 2 - reading git log -p on DECISIONS.md to settle whether 096 to 133 were written and lost or never written
+BALL: web
+NEXT_PASTE: OUTPUT.md -> Claude Web
+UPDATED: 2026-08-19T08:03:13-04:00
+NOTE: 096 to 133 were never written, not lost; HM-OPEN-045 raised with three repair shapes and none taken
 
 ---
 
