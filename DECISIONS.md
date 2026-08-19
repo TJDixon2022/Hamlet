@@ -4,6 +4,43 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-140
+date: 2026-08-19
+refs: CLAUDE.md §12.2, §9.6, HM-DEC-139, HM-OPEN-007
+---
+
+**The outstanding-asks queue lists questions handed back for a ruling in a session
+report, and nothing else.** Amends nothing; it settles the boundary HM-DEC-139 left
+open on its first use.
+
+AN ASK IN A REPORT HAS NO OTHER HOME. That is the whole of it. `OUTPUT.md` is
+overwritten by the next session, so a question raised there and not answered that
+evening ceases to exist — which is the failure HM-DEC-139 was written for, and it
+is specific to that channel. An entry in `OPEN_ISSUES.md` already has an id, an
+owner, a status and a date, and is swept every time the file is opened. It is not
+invisible and does not need a second list to keep it alive.
+
+AND THE QUEUE HAS TO STAY SHORT ENOUGH TO BE READ. `OPEN_ISSUES.md` holds twenty-odd
+items owned by Tim, most of them wanting a capture file, a manual page or a station
+fact rather than a judgment. Folding those in makes a list of ten in which the four
+real questions are harder to find than they were before. A queue nobody reads is
+the same failure by a longer route.
+
+EVERY UNRULED QUESTION TIM OWNS WAS REJECTED for that reason. Splitting the queue by
+what unblocks each item was also rejected, and it is the better shape if the queue
+ever grows: two of today's four wait on an evening at the dummy load rather than on
+Tim, and reading them as four things he is behind on is wrong. At four items a
+second heading is machinery for its own sake. **If the queue reaches a length where
+the distinction stops being obvious at a glance, this is the first thing to
+revisit.**
+
+WHAT WOULD REOPEN IT. This rests on `OPEN_ISSUES.md` being genuinely swept rather
+than nominally so. HM-OPEN-007's two favorites questions have sat unruled since
+2026-08-14, and one of them reached Tim only because a session handed it back in a
+report five days later. If that turns out to be the rule rather than the exception,
+the premise here is false and the boundary moves.
+
+---
 id: HM-DEC-139
 date: 2026-08-19
 refs: CLAUDE.md §12.2, HM-OPEN-044, HM-DEC-106, HM-DEC-137, HM-DEC-099, HM-DEC-138

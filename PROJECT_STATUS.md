@@ -1,9 +1,9 @@
-STATE: COMPLETED
-PHASE: 1 of 1
-BALL: web
-NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-18T23:29:11-04:00
-NOTE: HM-DEC-139 recorded and the queue seeded in both channels; four asks outstanding, one more than listed
+STATE: EXECUTING
+PHASE: 1 of 2
+BALL: code
+NEXT_PASTE: none
+UPDATED: 2026-08-19T07:59:18-04:00
+NOTE: Phase 1 - recording HM-DEC-140, the queue's boundary; phase 2 is the hole at 096 to 133
 
 ---
 
