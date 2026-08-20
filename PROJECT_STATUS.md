@@ -1,9 +1,9 @@
-STATE: COMPLETED
-PHASE: 3 of 3
+STATE: BLOCKED
+PHASE: 4 of 4
 BALL: tim
 NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-20T17:00:00-04:00
-NOTE: VA3VRR recorded and the smear test shipped; two floors missed by one, waiting on a ruling
+UPDATED: 2026-08-20T17:26:00-04:00
+NOTE: One cause found; blocked on whether the fixtures should send Farnsworth like real operators do
 
 ---
 

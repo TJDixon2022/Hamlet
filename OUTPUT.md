@@ -2,156 +2,132 @@
 
 ## 1. What Claude did
 
-### Task 1: the elements spell `VA3VRR`
+### Task 1: the four fixtures, and they have one cause
 
 Claude Code on the development machine, in `C:\Source\HamLet`, on `main`. The
 prompt named `PROJECT: Hamlet` and the four gate checks all hold. **No radio is
-attached** (HM-DEC-093). The amplitude rule is in the tree and `Refine` is not, as
+attached** (HM-DEC-093). The separation test is in the tree and `Refine` is not, as
 the instruction states.
 
-Between 22.55 s and about 28.5 s of `cw-2026-08-17-013347` the gate produces
-forty-one elements. Splitting the marks at the midpoint of their own two means
-gives a dah past **187 ms**, and the gaps likewise give a character break past
-**112 ms**. Fitted from that stretch and from nothing else:
+With `Refine` applied:
 
-```
-100  75 100  75 100  65 280 | 170 |  90  75 275 | 165 |
-110  55 105  70 105  75 275  70 280 | 150 |
-100  70 100  75 100  80 270 | 125 |
-100  75 270  80 100 | 140 |
- 95  80 270  80 100
-```
-
-`...-` `.-` `...--` `...-` `.-.` `.-.` — **V, A, 3, V, R, R**. Dit **100.4 ms**,
-dah **274.3 ms**, ratio **2.73**, element gap **73.3 ms**, character gap
-**150.0 ms**: about twelve words a minute, Farnsworth in HM-DEC-115's manner.
-
-**Recorded as HM-DEC-145** with the sequence and the letters in it, indexed in
-`CLAUDE.md` §1, and pinned by `TheStationInTheOtherRecordingIsVa3vrrTests`.
-
-**One thing worth recording about the method.** The stretch is entered on a gap of
-325 ms, the quiet before the station starts. Left in the fit it drags the long-gap
-centre to 209 ms, no gap in the callsign reaches that, and **nothing divides into
-characters at all**. A gap before the first mark is not one of this sender's, and
-the sequence starts where the key first goes down.
-
-**The project now has two adjudicated recordings, and they are different fists.**
-`N4L` sends 4.24 dits to the dah at a 56 ms dit; `VA3VRR` sends 2.73 at 100 ms. A
-rule fitted to one of them now has somewhere to be wrong.
-
-### Task 2: where the invention comes from
-
-Instrumented on `cw-2026-08-20-014854`, at the character it invents:
-
-1. **The dit is 50.0 ms before `Refine` and 42.7 after it.** Coherence 0.46
-   against a floor of 0.35, at 28 words a minute.
-2. **The twenty marks in the window are** 10, 20, 35, 40, 45, 50, 55, 55, 60, 60,
-   80, 110, 115, 120, 125, 125, 125, 130, 135, 135 milliseconds, with average
-   heights of 22 to 37 dB. **The heights are a continuum**, so the amplitude rule
-   correctly leaves all twenty in, exactly as designed. **A second height
-   population does not appear.**
-3. **Coherence reaches 0.46 against a dit of 42.7 ms**, and it passes because the
-   lengths do form two apparent groups, roughly 10–80 and 110–135, whose ratio is
-   about 2.5.
-4. **On `cw-2026-08-18-003016` the same instrumentation gives coherence 0.60 to
-   0.91** and a window like 50, 55, 55, 50, 55, 55, 145, 145, 145, 145, 150, 155.
-
-**The difference between the two is scatter, not ratio.** `003016`'s short group
-spans 50 to 70 milliseconds, a factor of 1.4. `014854`'s spans 10 to 80, a factor
-of eight. **Both fit two clusters at a ratio near three, because a two-means fit
-cuts any continuum in half and the halves land there by construction.**
-
-**The cause, in one sentence: the coherence check measures each mark against two
-fitted lengths and never asks whether those two lengths are really two things.**
-
-### Task 3: what shipped
-
-**The estimator now asks it.** `LooksLikeMorse` requires the two mark clusters to
-sit apart by at least four times their own scatter — **the same statistic and the
-same figure HM-DEC-095 already measured**, read from
-`CwToneSurvey.MinimumSeparation` so the two cannot drift apart. It is not a new
-constant, it is not a gate standing in front of emission, and it is inside the
-estimator where the order asked for it.
-
-Measured at the moment of every character in the repository: **the easy tier emits
-nothing below 4.4** and mostly far above, `cw-2026-08-17-134712` emits at 6.9 and
-`cw-2026-08-17-013347` at 5.3, while `cw-2026-08-20-014854`'s characters sit
-between **2.1 and about 3.5**.
-
-| capture | before | after | required | |
-|---|---|---|---|---|
-| **`cw-2026-08-20-014854`** | **1** | **0** | ≤ 1 | ✓ |
-| `cw-2026-08-20-014935` | 0 | 0 | 0 | ✓ |
-| `cw-2026-08-18-003016` | 38 | 38 | ≥ 38 | ✓ |
-| `cw-2026-08-18-003758` | 14 | 14 | ≥ 14 | ✓ |
-| `cw-2026-08-17-013347` | 8 | 8 | ≥ 8 | ✓ |
-| **`cw-2026-08-18-004507`** | 26 | **25** | ≥ 26 | **✗ by one** |
-| **`cw-2026-08-18-003126`** | 36 | **35** | ≥ 36 | **✗ by one** |
-| the easy tier | whole | **whole** | whole | ✓ |
-| `cw-2026-08-17-134712` | 0 | 0 | reported | |
-| `cw-2026-08-17-013622` | 0 | 0 | reported | |
-
-**Two of the stated requirements are missed by one character each, and it shipped
-anyway.** Both recordings' committed floors in the tree are 25 and 34 and both
-pass; the 26 and 36 are last session's counts, one higher. **The judgement is
-Tim's and it is the first ask in section 4**, because what was bought is a
-character that came out of audio holding no keying at any pitch and what was paid
-is two characters on recordings nobody has scored.
-
-`cw-2026-08-17-134712`'s dit is **31.3 ms** against HM-DEC-144's 56.3.
-
-### Task 4: the fixture, and `Refine`
-
-`ARecordingWithKeyingInItIsReadTests.TheDecoderSaysSomethingAboutIt` **stays
-red.** `134712` still emits nothing; the separation test does not change it either
-way. Nothing was tuned to make it pass.
-
-**And the thing that has blocked `Refine` for four sessions is closed.** With the
-separation test in place and `Refine` applied on top, measured but not shipped:
-
-| capture | separation only | separation and `Refine` |
+| fixture | key | what it reads |
 |---|---|---|
-| **`cw-2026-08-20-014854`** | **0** | **0** |
-| **`cw-2026-08-20-014935`** | **0** | **0** |
-| `cw-2026-08-17-134712` | 0 | **1** |
-| `cw-2026-08-18-003016` | 38 | 37 |
-| `cw-2026-08-18-003126` | 35 | 35 |
-| `cw-2026-08-18-003758` | 14 | 15 |
-| `cw-2026-08-18-004507` | 25 | 25 |
+| `clean-12wpm` | correct text | **the text is right**; two of nine characters come out `Low` instead of `High` |
+| `clean-18wpm` | 18 words a minute | **16**, outside the ±1 the test allows |
+| `prosigns-edge` | copies or refuses | **3 emitted, 2 not in the message** |
+| the bulletin's words | `AT ARRL DOT NET <BT> EACH…` | word spacing wrong, the substring not found |
 
-**The withdrawal condition is satisfied for the first time.** `Refine` no longer
-invents anything from either recording holding no keying.
+**Only one of the four gets a letter wrong.** `clean-12wpm`'s transcript is
+correct and fails on confidence; `clean-18wpm` reads the right text at the wrong
+speed. That is the shape of a timing error rather than four separate faults.
 
-**It still does not ship, and the reason is now a different one.** With `Refine`
-applied, `clean-12wpm`, `clean-18wpm`, `CwFarnsworthTests.TheBulletinsWordsComeOutAsWords`
-and `prosigns-edge` all break — synthesized fixtures, and the same set it broke
-two sessions ago. **That is a fresh question and not the one that has been chased
-since the 20th.**
+**The dit, before and after, wherever the truth is known:**
+
+| audio | true dit | with `Refine` | without |
+|---|---|---|---|
+| `clean-12wpm` | 100.0 ms | **100.6 (+1%)** | 105.0 (+5%) |
+| `clean-18wpm` | 66.7 | **65.9 (−1%)** | 65 to 75 (−3% to +12%) |
+| `prosigns-18wpm` | 66.7 | **67.5 (+1%)** | 70.0 (+5%) |
+| `coverage-easy` | 100.0 | **99.8 (−0%)** | 100.0 (0%) |
+| `exchange-easy` | 100.0 | **99.8 (−0%)** | 100.0 (0%) |
+| `prosigns-easy` | 100.0 | **99.4 (−1%)** | 100.0 (0%) |
+| `prosigns-edge` | 100.0 | no characters | 115.0 (+15%) |
+| `fast-easy` | 48.0 | **47.9 (−0%)** | 45.0 (−6%) |
+| `tightfist-easy` | 88.0 | 95.3 (+8%) | 95.0 (+8%) |
+| **`cw-2026-08-17-134712`**, `N4L` | **56.3** | **no characters** | **55.0 (−2%)** |
+| **`cw-2026-08-17-013347`**, `VA3VRR` | **100.4** | **96.1 (−4%)** | **100.0 (−0%)** |
+
+**The cause, in one sentence: `Refine` treats the sender's element gap as a second
+measurement of the dit, and it is one only when the sender sends textbook
+spacing.**
+
+Everything follows from that. On the synthesized fixtures the element gap *is* a
+dit, so the mark's small overshoot and the gap's matching shortfall cancel and the
+average lands within one percent every time. Take it away and those same fixtures
+drift 5 to 15 percent, which is enough to move a confidence score, a word boundary
+and a words-a-minute reading — the four failures, from one number.
+
+**And on the two recordings whose dit is known rather than estimated, it is exactly
+the other way round.** Without `Refine`, `N4L` reads 55.0 against 56.3 and
+`VA3VRR` reads 100.0 against 100.4 — both inside two percent. With it, `VA3VRR`
+reads 96.1 and `N4L` reads nothing at all.
+
+**Both adjudicated stations are Farnsworth** and that is why. `N4L` sends a 35.6 ms
+element gap on a 56.3 ms dit and `VA3VRR` sends 73.3 on 100.4 (HM-DEC-144,
+HM-DEC-145). Their gaps are two thirds and three quarters of a dit. **Every
+synthesized fixture in the suite sends one.**
+
+### Task 2 did not run, and here is why
+
+**The order requires the fix to be fitted and forbids a constant, and every way I
+can construct to tell the two cases apart needs one.**
+
+The decision the fix has to make is whether this sender's element gap is a dit or
+shorter. The measured ratios are 0.90 on the clean fixtures against 0.63 for `N4L`
+and 0.73 for `VA3VRR`, and any rule that acts on that is a threshold on gap over
+dit. **I tried the alternative the file already supplies** — average only when the
+gap mean lies inside the mark cluster's own scatter, which is the shape of test
+HM-DEC-095 validated — and it fails immediately: the marks on a clean fixture
+scatter two or three milliseconds while the gap sits ten below the mark-derived
+dit, so it would refuse to average on exactly the audio where averaging is right.
+
+**I also looked for a correction that needs no decision at all**, on HM-DEC-119's
+finding that the gate reads 100 to 110 ms for a true 100. If the overshoot were a
+fixed amount the dit could simply be shortened by it. Measured, it is not: without
+`Refine` the dit reads +5% on `clean-12wpm`, **−6% on `fast-easy`** and −2% on
+`N4L`. There is no consistent overshoot to subtract.
+
+**So Task 2 stopped rather than tuning a threshold**, which is the error class six
+rulings have gone on closing and which this order names as the seventh.
+
+**One mismatch with the instruction, reported rather than repaired.** It states
+that HM-DEC-119 measured the mark as "not long, so there is nothing to cancel".
+HM-DEC-119's own figures are 100 to 110 ms for a true 100, 45 to 50 for a true 48,
+40 to 45 for a true 40 — **long by nought to ten per cent, not zero**. That is a
+real bias, it is what `Refine` cancels on textbook audio, and the premise is half
+true rather than false.
+
+### Task 3: the fixture
+
+`ARecordingWithKeyingInItIsReadTests.TheDecoderSaysSomethingAboutIt` **stays red**
+and nothing was tuned. `cw-2026-08-17-134712` emits nothing with the tree as it
+stands. Where it dies is unchanged from last session: with `Refine` in place its
+dit reads 31.3 ms against a known 56.3, and `LooksLikeMorse` never holds long
+enough for a character boundary to fall inside it.
+
+### Task 4: the bulletin
+
+`CwFarnsworthTests.TheBulletinDecodesToItsAnswerKey`, standing red since
+HM-DEC-114 left it deliberately, currently reads:
+
+```
+got    'NL DOT NET ■ ECH STATION HANDNG AHIS MESAGE P'
+wanted 'AT ARRL DOT NET <BT> EACH STATION HANDLING THIS MESSAGE P'
+```
+
+**36 characters against 47.** Nothing was changed and nothing it asserts was
+touched.
 
 ## 2. What Tim should expect
 
-**Yes, something shipped, and the project now has two adjudicated recordings
-rather than one.**
+**No. `Refine` did not ship, and the decoder still does not read
+`cw-2026-08-17-134712`.** Nothing in `src/` changed this session.
 
-**What changed in what you will run.** The decoder now requires the two mark
-lengths it has fitted to actually be two lengths — apart by four times their own
-scatter — before it will call the timings Morse. On a real fist that is never
-close: the easy tier clears it at 4.4 and up, and both adjudicated stations at 5.3
-and 6.9. On a gate chattering at band noise it fails at 2.1 to 3.5.
+**What you have is the number that settles the argument.** Without `Refine`, the
+two recordings whose dit this project actually knows read **55.0 against 56.3** and
+**100.0 against 100.4** — inside two percent, both of them. With `Refine`, one
+reads 96.1 and the other reads nothing.
 
-**The one character `cw-2026-08-20-014854` used to invent is gone.** That
-recording holds no keying at any pitch and Hamlet now says nothing about it, which
-is what §0.0 asks.
+**And the four fixtures blocking it are all textbook senders.** They send an
+element gap of exactly one dit, which is what makes `Refine`'s average work on
+them. **Both real stations this project has adjudicated send two thirds and three
+quarters of a dit**, which is what HM-DEC-115 measured off the air in the first
+place and is how people actually send.
 
-**Two recordings read one character fewer**, `004507` from 26 to 25 and `003126`
-from 36 to 35. Neither has an answer key, so nobody knows whether either character
-was right, and **both are below what the work order required.** That is the first
-thing in section 4 and it is a one-line ruling either way.
-
-**`VA3VRR` is established.** Read out of the gate's own elements with cuts fitted
-from that stretch, not taken from the decoder's reading — which does emit
-`VA3VRR` here, with one character at low confidence, and that is exactly why an
-unchecked decode is not ground truth.
+**So the question is no longer whether `Refine` is right.** It is whether the
+suite's synthesized fixtures are asserting a world that HM-DEC-115 says does not
+exist on the air, and that is the ask in section 4.
 
 **Build clean, no warnings. 2,108 tests, four failing, and they are the four
 expected:**
@@ -161,57 +137,62 @@ expected:**
 - `CwTerminalTests.ClearingTheTranscriptLeavesTheDecoderAlone`
 - `ARecordingWithKeyingInItIsReadTests.TheDecoderSaysSomethingAboutIt`
 
-Twelve tests were added. `ShortestVote` is still 5, `MaximumRatio` is still 3.8,
-and the gate, the survey and the meter were not touched. **No sixth
-transition-shape test was proposed.**
+No tests were added and none changed. `ShortestVote` is still 5, `MaximumRatio` is
+still 3.8, the separation figure was not touched, and no gate was built.
 
 ## 3. What we should do next
 
-- **Rule on the two lost characters**, because `Refine` waits behind it.
-- **Then `Refine`, against the synthesized fixtures.** For the first time in four
-  sessions the thing stopping it is not invention on an empty band: it is
-  `clean-12wpm`, `clean-18wpm`, the bulletin's word spacing and `prosigns-edge`.
-  Those are fixtures with answer keys, which is a far better problem to have than a
-  recording nobody can score.
-- **Adjudicate `cw-2026-08-18-004507`.** It is now the recording whose count moved
-  and nobody knows whether 25 or 26 was the better number.
-- The keying meter's thresholds are still unscored against an evening's roster.
+- **Rule on the fixtures.** Every synthesized recording in the suite sends textbook
+  spacing, and neither station this project has proved on the air does. That is
+  one ruling and `Refine` follows from it either way.
+- **If the fixtures are regenerated as Farnsworth**, `Refine` can be removed and
+  the dit will read true on both real recordings and on the new fixtures alike.
+- **If they stand**, then the decoder needs to tell textbook from Farnsworth, and
+  that needs a criterion nobody has found without a threshold. **Say so in the
+  order**, because the next session will otherwise spend itself rediscovering that
+  this one stopped for a reason.
+- **Adjudicate `cw-2026-08-18-004507`.** It is the third real recording with a lot
+  of text in it and it would be a third fist to measure against.
 
 ## 4. What's blocking us
 
-**`Refine` is blocked on a new and better problem**, and the two lost characters
-are blocking the ruling that would let it be attempted.
+**`Refine` is blocked on one ruling, and it is about the fixtures rather than the
+code.**
 
 **One ask, new this session.**
 
-> **Two characters lost on unadjudicated recordings are an acceptable price for a
-> character no longer invented out of an empty band, and the separation test
-> stands.**
+> **Every synthesized fixture in this suite sends an element gap of exactly one
+> dit, and no station this project has measured on the air does. Whether they
+> should be regenerated as Farnsworth is the ruling `Refine` is waiting on.**
 >
-> The work order required `cw-2026-08-18-004507` to hold at 26 characters and
-> `cw-2026-08-18-003126` at 36. They come out at 25 and 35. Their committed floors
-> in the tree are 25 and 34 and both pass; the higher figures are last session's
-> counts.
+> `Refine` averages the mark-derived dit with the gap-derived one. That works
+> perfectly where the element gap is a dit, which is every fixture: it holds
+> `clean-12wpm`, `clean-18wpm`, `prosigns-18wpm`, `coverage-easy`,
+> `exchange-easy`, `prosigns-easy` and `fast-easy` inside one percent of their true
+> dit. Removing it takes those to five, twelve, five, nought, nought, nought and
+> minus six.
 >
-> **What was bought is measurable and what was paid is not.**
-> `cw-2026-08-20-014854` holds no keying at any pitch, measured by an instrument
-> that shares no code with the decoder, and Hamlet used to put a character on
-> screen from it. Neither of the two recordings that lost one has an answer key, so
-> nobody can say whether the lost characters were right. **§0.0 weighs a confident
-> wrong answer against a missing one, and one of those two costs is known.**
+> **On the two recordings whose dit is known it is the reverse.** `N4L` sends a
+> 35.6 ms element gap on a 56.3 ms dit and `VA3VRR` sends 73.3 on 100.4. Without
+> `Refine` they read 55.0 and 100.0; with it, 96.1 and nothing.
 >
-> **Rejected: tuning the separation figure to recover the two.** It is
-> `CwToneSurvey.MinimumSeparation`, measured under HM-DEC-095, shared rather than
-> copied, and moving it to fit two characters on unscored audio is the error class
-> five rulings have gone on closing. **Also rejected: withholding the change until
-> the two recordings are adjudicated**, which would leave an invented character on
-> screen for as many evenings as that takes.
+> **HM-DEC-115 already ruled on which of those is the real world**, having measured
+> a bulletin off the air whose element gap was 40 ms against a 57 ms dit: "nothing
+> about 1:3:7 survives contact with a traffic net". **The fixtures were built
+> before that ruling and still send 1:3:7.**
+>
+> **Rejected: a threshold on the gap-to-dit ratio** to switch the averaging on and
+> off. The measured values are 0.90 against 0.63 and 0.73, which would separate,
+> and it is exactly the constant six rulings have gone on closing. **Also
+> rejected: subtracting a fixed overshoot** instead, which HM-DEC-119's own figures
+> would support and the measurement does not: without `Refine` the error is +5% on
+> `clean-12wpm` and −6% on `fast-easy`, so there is nothing consistent to subtract.
 
 ### Asks still outstanding
 
-- **Whether two lost characters are an acceptable price for one not invented.**
-  First made 2026-08-20, this session. The change is in the tree and reverts in one
-  commit. `Refine` waits behind it.
+- **Whether the synthesized fixtures should be regenerated as Farnsworth.** First
+  made 2026-08-20, this session. `Refine` waits behind it and nothing is in the
+  tree.
 - **The keying meter's provisional thresholds.** First made 2026-08-20. Waiting on
   one evening's roster scored against the `meter` column.
 - **Whether `SHACK_FACTS.md` still holds that CI-V Transceive is off.** First made
@@ -231,7 +212,5 @@ are blocking the ruling that would let it be attempted.
 - **HM-OPEN-007.** Open and unruled since 2026-08-14, named in HM-DEC-140 as the
   reason the queue's own premise is worth re-testing. Waiting on Tim.
 
-**Two items leave the queue.** Whether the transition-shape family should be
-abandoned: ruled this session, and no sixth was proposed. And what keeps the
-decoder silent on an empty band so `Refine` can ship: answered, by requiring the
-two mark lengths to be two things.
+**One item leaves the queue.** Whether two lost characters were an acceptable price
+for one not invented: ruled this session, and the separation test stands.

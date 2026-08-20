@@ -27,42 +27,54 @@ If all four hold, say "Hamlet confirmed" and continue.
 
 ## Why this unit exists
 
-**Five sessions have been spent looking for a gate to stand in front of `Refine`.
-The premise was wrong and it was the work orders' premise, not a session's.**
+**`Refine` is unblocked for the first time in four sessions, and what stops it now
+is a better problem.**
 
-Five candidates for HM-OPEN-054 have been measured and eliminated: the survey's
-verdict, the ratio band, the transition clock on the decoder's window, the peak's
-prominence, and the clock on a window the transitions chose. Last session showed
-they are one family — **all five ask whether a pattern of on and off times looks
-like a person sending, and band noise through a narrow filter looks like a person
-sending.** `cw-2026-08-20-014935` holds no keying at any pitch and produces
-twenty-four bursts, the best fitting a clock at 0.736; `cw-2026-08-17-013347`
-decodes a real callsign and manages 0.393.
+Last session found the cause of the invention and closed it: **a two-means fit cuts
+any continuum in half and the halves land near three to one by construction.**
+`cw-2026-08-18-003016`'s short marks span 50–70 ms, a factor of 1.4;
+`cw-2026-08-20-014854`'s span 10–80, a factor of eight. Both fit two clusters at a
+ratio near three. The coherence check never asked whether its two fitted lengths
+were really two things. It does now, using `CwToneSurvey.MinimumSeparation` shared
+rather than copied.
 
-**Tim's ruling, this session: attack the invention at its source instead.**
+**Tim's ruling, this session: the separation test stands.** Two characters lost on
+`cw-2026-08-18-004507` and `cw-2026-08-18-003126` are an acceptable price for one
+no longer invented out of `cw-2026-08-20-014854`. **One of those two costs is
+measured and the other is a guess**, and §0.0 weighs a confident wrong answer above
+a missing one. Both recordings still clear their committed floors of 25 and 34.
 
-`Refine` invents because removing the gap average lengthens the dit until gate
-chatter passes the coherence check. **That is arithmetic inside `Refine` and the
-estimator around it. It has never been attacked there** — every session so far has
-tried to catch the output afterwards.
+*Rejected: tuning the separation figure to recover the two, which would be the
+error class six rulings have now gone on closing. Also rejected: withholding the
+change until those recordings are adjudicated, which would leave an invented
+character on screen meanwhile.*
 
-**The family of transition-shape tests is abandoned. Do not propose a sixth.**
+**With the separation test in place, `Refine` no longer invents anything from
+either empty recording.** It breaks four synthesized fixtures instead:
+`clean-12wpm`, `clean-18wpm`, `CwFarnsworthTests.TheBulletinsWordsComeOutAsWords`
+and `prosigns-edge`.
+
+**Those have answer keys.** That is the difference between this session and the
+last four: the thing standing in the way can now be read against a known-correct
+transcript rather than argued about.
 
 ---
 
-## Also this session: a second callsign
+## What `Refine` is and why it is wanted
 
-Last session's report states, in passing, that **`cw-2026-08-17-013347` decodes
-`VA3VRR`**. Nobody has recorded it.
+It averages a mark-derived dit with a gap-derived one. Its premise — that a mark
+reads long by the same amount the following gap reads short, so the mean of the two
+is the truth — **was measured false in this repository by HM-DEC-119**: the gate
+reads 100 to 110 ms for a true 100 at every speed, so the mark is not long and
+there is nothing to cancel. HM-DEC-115 measured the other half, that a real fist's
+element gap is genuinely shorter than its dit.
 
-`N4L` in `cw-2026-08-17-134712` has been the only adjudicated ground truth in nine
-real recordings for five sessions, and every argument in that time has rested on
-it. **A second one doubles the evidence base.**
+Averaging therefore shortens the dit by about a fifth on any Farnsworth sender,
+**which both adjudicated stations are**: `N4L` at 4.24 dits to the dah on a 56.3 ms
+dit, `VA3VRR` at 2.73 on 100.4.
 
-**Task 1 establishes it or reports that it cannot be established.** It is not a
-formality: `013347` emits 8 characters at the decoder's current settings and 14 in
-last session's measurement, so what it reads and what is true are not the same
-thing, and a callsign asserted from a decode nobody checked is worth nothing.
+`TheDitComesOutShortWhenTheGapIsShorterThanIt` records the bias and asserts the
+measurement rather than that the behaviour is right.
 
 ---
 
@@ -76,8 +88,8 @@ not repair the instruction silently.
   `CwFarnsworthTests.TheBulletinDecodesToItsAnswerKey`,
   `CwTerminalTests.ClearingTheTranscriptLeavesTheDecoderAlone`,
   `ARecordingWithKeyingInItIsReadTests.TheDecoderSaysSomethingAboutIt`.
-  **2,100 tests, four failing. Anything above four is new.**
-- The amplitude rule is in the tree. **`Refine` is not.**
+  **2,108 tests, four failing. Anything above four is new.**
+- The separation test shipped last session. **`Refine` is not in the tree.**
 
 ---
 
@@ -85,17 +97,20 @@ not repair the instruction silently.
 
 **§9.5.1 — one branch, `main`, commit *and push*.**
 
-**HM-DEC-144 — `cw-2026-08-17-134712` holds `N4L`, dit 56.3 ms, dah 238.3 ms.**
+**HM-DEC-144 — `cw-2026-08-17-134712` holds `N4L`, dit 56.3 ms, ratio 4.24.**
 
-**HM-DEC-090 — marking is not a substitute for silence.** Seventeen hundred
-characters once came out of half a minute of band noise, every one marked.
-**`Refine` shipping with the invention marked low is not an option.**
+**HM-DEC-145 — `cw-2026-08-17-013347` holds `VA3VRR`, dit 100.4 ms, ratio 2.73.**
+*Two adjudicated fists, and they are different. A rule fitted to one now has
+somewhere to be wrong — use both.*
 
 **HM-DEC-114 — the easy tier passes or fails.**
 
+**HM-DEC-090 — marking is not a substitute for silence.**
+
 **HM-DEC-048 — nothing raises a confidence score.**
 
-**HM-OPEN-054 stays open and no sixth transition-shape test may be proposed.**
+**HM-OPEN-054 stays open. No sixth transition-shape test. No gate standing in front
+of emission.**
 
 **The keying meter is not read by the decoder.**
 
@@ -113,92 +128,95 @@ is moving inside the task. Also every ten minutes while a task runs.
 
 ---
 
-## Task 1 — `VA3VRR`, established or not
+## Task 1 — What the four fixtures read, and what they should. **CHANGE NOTHING.**
 
-Do for `cw-2026-08-17-013347` what was done for `N4L`: take the gate's own
-elements across the stretch where the callsign is decoded, cut them by their own
-fitted means, and read the letters out.
+With `Refine` applied, for each of `clean-12wpm`, `clean-18wpm`, `prosigns-edge`
+and the bulletin's word spacing:
 
-- **Cuts fitted from that stretch and nothing else** (§12.5). Do not ask the
-  decoder what a dit is; that is what is under investigation.
-- Report the element sequence, the letters it gives, the times, the dit, the dah
-  and the ratio, exactly as HM-DEC-144 records them for `N4L`.
-- **If it does not spell `VA3VRR`, say what it does spell and record nothing.** A
-  callsign taken from an unchecked decode is not ground truth and would poison
-  every measurement that later rests on it.
-- If it does, record it as a decision entry with the sequence and the letters in
-  it, indexed in `CLAUDE.md` §1, and pin it with a test in the manner of
-  `TheStationInTheRecordingIsN4LTests`.
+- **the answer key, and what the decoder reads instead** — the actual strings, side
+  by side,
+- the dit before and after `Refine`, and the sender's true dit,
+- and **whether the failure is the same in all four or different in each.**
 
-**This is worth the session on its own even if task 3 fails.**
+**This is the whole question and it must be answered before anything changes.**
+Four fixtures breaking from one cause is a defect. Four breaking from four causes
+means `Refine` is wrong and the previous sessions were right to withdraw it.
+
+**If the four have one cause, name it and the line.** If they do not, **stop and
+report** — do not repair four things at once.
 
 ---
 
-## Task 2 — Where the invention comes from. **CHANGE NOTHING.**
+## Task 2 — Fix it, only if task 1 named one cause
 
-Instrument `Refine` and the estimator around it on `cw-2026-08-20-014854` and
-answer, from the run:
-
-1. **What is the dit before `Refine` and after it, at each of the nine moments a
-   character is invented?** Last session's figures: `U EE ■ ■` at the amplitude
-   rule's settings, up to nine characters with `Refine` on.
-2. **Which marks are in the window at those moments, and what are their lengths and
-   heights?** The amplitude rule leaves this recording alone because it holds one
-   height population — **say whether that is still true at the moment of each
-   invention, or whether a second population appears.**
-3. **What does coherence reach, and against what dit?** A dit fitted from chatter
-   makes chatter look coherent; say by how much.
-4. **On `cw-2026-08-18-003016`, which gains 38 to 43 characters with `Refine`, run
-   the same instrumentation.** *The difference between the two is the whole
-   question: same change, one recording improved and one invented.*
-
-**Report all four before touching anything.**
-
----
-
-## Task 3 — Fix it inside, only if task 2 named a cause
-
-**If task 2 did not produce a single measured cause, stop and report.** Five
-sessions have been lost to plausible stories; a sixth on a guess is not affordable.
-
-If it did:
-
-- The change must be **inside `Refine` or the estimator it feeds** — not a test
-  standing in front of emission. *A gate is what was ruled against.*
-- **Fitted, not a constant.** *Seventh instance of the error class five rulings
-  have gone on closing.*
+- **Fitted, not a constant.** *Seventh instance of the error class six rulings have
+  gone on closing.*
+- **Inside the estimator.** *No gate.*
 - It may make the decoder measure better. **It may not make it more willing to
   emit** (HM-DEC-048).
+- **`Refine`'s own premise is false and may be replaced rather than defended.** The
+  goal is a dit that matches the sender, not the preservation of an average whose
+  justification HM-DEC-119 already disproved.
 
 | | required |
 |---|---|
-| `cw-2026-08-20-014854` | **no more than 1** |
+| `cw-2026-08-20-014854` | **0** |
 | `cw-2026-08-20-014935` | **0** |
-| `004507` | ≥ 26 |
+| `004507` | ≥ 25 |
 | `003016` | ≥ 38 |
-| `003126` | ≥ 36 |
+| `003126` | ≥ 35 |
 | `003758` | ≥ 14 |
-| `013347` | ≥ 8 |
+| `013347` | ≥ 8, **and `VA3VRR` still readable in it** |
 | the easy tier | **whole** |
+| `clean-12wpm`, `clean-18wpm`, `prosigns-edge`, the bulletin | **whole** |
 
-Report `134712`'s dit against HM-DEC-144's **56.3 ms**, and re-run
-`ARecordingWithKeyingInItIsReadTests.TheDecoderSaysSomethingAboutIt`. **If green,
-print what it read and say whether `N4L` is in it, in the right place. Do not tune
-anything to make it pass.**
+**Report the dit for both adjudicated recordings against their known figures**:
+`134712` against 56.3 ms, `013347` against 100.4 ms. *Those two numbers are the
+only ones in this project that are known rather than estimated, and a change that
+moves either away from its truth is wrong however the counts read.*
+
+---
+
+## Task 3 — The fixture
+
+Re-run `ARecordingWithKeyingInItIsReadTests.TheDecoderSaysSomethingAboutIt`.
+
+Last session `134712` emitted nothing with the separation test, and **one
+character** with `Refine` on top.
+
+- **If green, print what it read and say whether `N4L` is in it, in the right
+  place.**
+- **If red, say precisely where it dies.**
+- **Do not tune anything to make it pass.**
+
+---
+
+## Task 4 — The bulletin. **DROP CANDIDATE.**
+
+`CwFarnsworthTests.TheBulletinDecodesToItsAnswerKey` has been standing red since
+HM-DEC-114 left it deliberately. Report what it reads now and how far from its key
+it is.
+
+**Do not fix it and do not change what it asserts.** *It is a long-standing red
+with a ruling behind it; this unit only reports the number so its movement is
+visible.*
+
+**Drop it whole if the session runs long.**
 
 ---
 
 ## Parked — do not touch, do not raise
 
-- **A sixth transition-shape test.** *Ruled out this session.*
+- **A sixth transition-shape test, or any gate in front of emission.**
 - **Character structure**, and the keying meter as something the decoder reads.
 - **`MaximumRatio`**, the three-way length fit, the speed-tracker rewrite.
+- **The separation figure**, `CwToneSurvey.MinimumSeparation`. *Ruled this session.
+  Do not move it to recover a character.*
 - **Why the 19th's stations are missing from the audio.** Five theories dead.
 - **The 69 and 233.**
-- **Adjudicating by ear.** Tim's. *Task 1 is arithmetic on elements, not
-  listening.*
-- **HM-OPEN-052**, the five synthesized tests, rulings 096–133, the scorer,
-  `CaptureAudioAsync` end to end, `TheRosterIsOneFilePerEvening`.
+- **Adjudicating by ear.** Tim's.
+- **HM-OPEN-052**, rulings 096–133, the scorer, `CaptureAudioAsync` end to end,
+  `TheRosterIsOneFilePerEvening`.
 
 ---
 
@@ -210,13 +228,12 @@ not touch coverage thresholds.
 
 Unit-specific:
 
-- **Do not build a gate.** *Whatever shape it takes, a test standing between the
-  decoder and emission is the family that has failed five times.*
-- **Do not relax the withdrawal condition.** HM-DEC-090.
-- **Do not record `VA3VRR` unless the elements spell it.** *Ground truth taken on
-  trust is worse than none, because everything after it inherits the error.*
-- **Do not tune to `014854` or to `134712`.** *The nine-capture table and the easy
-  tier are the guards.*
+- **Do not weaken the separation test to make `Refine` fit.** *It is what stopped
+  the invention and it was ruled this session.*
+- **Do not ship anything producing text from `014854` or `014935`.**
+- **Do not tune to any one fixture.** *Two adjudicated recordings and the fixture
+  suite are the guards, and they now disagree with each other enough to be useful.*
+- **Do not touch the gate, the survey or the meter.**
 
 ---
 
@@ -225,11 +242,12 @@ Unit-specific:
 `OUTPUT.md` at the repository root, overwritten and printed. Four sections, no
 other headings, per §13: **What Claude did**, **What Tim should expect**, **What we
 should do next**, **What's blocking us** — the last carrying **Asks still
-outstanding** per HM-DEC-139.
+outstanding** per HM-DEC-139. **The two-lost-characters ask leaves the queue; it
+was ruled.**
 
-**Section 1 opens with task 1**: whether `013347`'s elements spell `VA3VRR`.
+**Section 1 opens with task 1's four fixtures, their keys beside what was read.**
 
-**Section 2 says plainly whether anything shipped, and whether the project now has
-two adjudicated recordings or one.**
+**Section 2 says plainly whether `Refine` shipped, and whether the decoder now
+reads `cw-2026-08-17-134712`.**
 
 **Stop and report.**
