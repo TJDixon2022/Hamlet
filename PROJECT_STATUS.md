@@ -1,9 +1,9 @@
-STATE: COMPLETED
-PHASE: 4 of 4
+STATE: BLOCKED
+PHASE: 5 of 5
 BALL: tim
 NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-20T12:40:00-04:00
-NOTE: Half the cause fixed and measured, half named in Refine; 2,069 tests, 3 standing red plus the held failure
+UPDATED: 2026-08-20T13:26:00-04:00
+NOTE: Both changes withdrawn on measurement; blocked on whether 134712 holds a station or a carrier
 
 ---
 
