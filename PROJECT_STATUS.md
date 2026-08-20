@@ -1,9 +1,9 @@
-STATE: BLOCKED
+STATE: COMPLETED
 PHASE: 4 of 4
 BALL: tim
 NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-20T17:26:00-04:00
-NOTE: One cause found; blocked on whether the fixtures should send Farnsworth like real operators do
+UPDATED: 2026-08-20T18:00:00-04:00
+NOTE: First Farnsworth failure with an answer key: 9 of 12 on the light fist, 3 on the heavy one
 
 ---
 

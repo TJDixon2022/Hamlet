@@ -75,6 +75,68 @@ public static class CwFixtureCatalogue
     /// <summary>Letters, digits and the punctuation a contact actually uses.</summary>
     public const string CoverageText = "1234567890 QRZ? DE/N0CALL";
 
+    /// <summary>What the two Farnsworth fixtures send.</summary>
+    /// <remarks>
+    /// An ordinary exchange with four words in it, because the point of these two
+    /// is the spacing and a message with one word would exercise no word gap at
+    /// all. The text is this session's; **the timing is not, and that is the whole
+    /// difference** (HM-DEC-144, HM-DEC-145).
+    /// </remarks>
+    public const string FarnsworthText = "CQ DE N0CALL K";
+
+    /// <summary>`N4L`'s dit, measured (HM-DEC-144).</summary>
+    public const double HeavyFistDitMs = 56;
+
+    /// <summary>`N4L`'s dah, measured: 4.24 dits (HM-DEC-144).</summary>
+    public const double HeavyFistDahMs = 238;
+
+    /// <summary>
+    /// `N4L`'s element gap, measured at 36 ms against a 56 ms dit (HM-DEC-144).
+    /// </summary>
+    /// <remarks>
+    /// **SHORTER THAN ITS OWN DIT**, which is the shape HM-DEC-115 measured off
+    /// the air and the shape this pair of fixtures exists to put into the suite.
+    /// </remarks>
+    public const double HeavyFistElementGapMs = 36;
+
+    /// <summary>`N4L`'s character gap, measured (HM-DEC-144).</summary>
+    public const double HeavyFistCharacterGapMs = 165;
+
+    /// <summary>
+    /// What `N4L`'s word gap is taken to be, and it is the one figure here that
+    /// was not measured.
+    /// </summary>
+    /// <remarks>
+    /// **NEITHER ADJUDICATION CAUGHT A WORD GAP**, because both callsigns were
+    /// read out of a single unbroken run of characters. Rather than invent one,
+    /// this takes the ratio the generator's own default recipe already carries,
+    /// 280 against 130, which was itself modelled on a real recording: 2.15 times
+    /// the measured character gap. **It is an assumption and it says so here**,
+    /// and a later adjudication that catches a word gap replaces it (§12.4).
+    /// </remarks>
+    public const double HeavyFistWordGapMs = 355;
+
+    /// <summary>`VA3VRR`'s dit, measured (HM-DEC-145).</summary>
+    public const double LightFistDitMs = 100;
+
+    /// <summary>`VA3VRR`'s dah, measured: 2.73 dits (HM-DEC-145).</summary>
+    public const double LightFistDahMs = 274;
+
+    /// <summary>
+    /// `VA3VRR`'s element gap, measured at 73 ms against a 100 ms dit
+    /// (HM-DEC-145).
+    /// </summary>
+    public const double LightFistElementGapMs = 73;
+
+    /// <summary>`VA3VRR`'s character gap, measured (HM-DEC-145).</summary>
+    public const double LightFistCharacterGapMs = 150;
+
+    /// <summary>
+    /// What `VA3VRR`'s word gap is taken to be, on the same assumption as
+    /// <see cref="HeavyFistWordGapMs"/> and for the same reason.
+    /// </summary>
+    public const double LightFistWordGapMs = 323;
+
     /// <summary>The tight fist's dit, in milliseconds.</summary>
     /// <remarks>
     /// <para>**NINETY-FOUR, AND A HUNDRED AND SIX WAS THE WINDOW'S ANSWER RATHER
@@ -371,6 +433,36 @@ public static class CwFixtureCatalogue
             SignalToNoiseDb: EasyDb,
             PreambleSeconds: 12,
             Seed: seed));
+
+        // **TWO FISTS THIS PROJECT HAS PROVED ON THE AIR, SENT BY THE
+        // GENERATOR** (HM-DEC-144, HM-DEC-145). Every other message above is
+        // either textbook or the one tight fist, and until now the suite could
+        // not catch a decoder that handled only one style of spacing. These two
+        // are cut to the millisecond from the only two recordings whose timing is
+        // adjudicated rather than estimated, and they are deliberately far apart:
+        // `N4L` sends a dah of 4.24 dits at twenty-one words a minute, `VA3VRR`
+        // 2.73 at twelve.
+        recipes.Add(new CwFixtureRecipe(
+            "farnsworth-heavy",
+            FarnsworthText,
+            DitMilliseconds: HeavyFistDitMs,
+            DahMilliseconds: HeavyFistDahMs,
+            ElementGapMilliseconds: HeavyFistElementGapMs,
+            CharacterGapMilliseconds: HeavyFistCharacterGapMs,
+            WordGapMilliseconds: HeavyFistWordGapMs,
+            SignalToNoiseDb: EasyDb,
+            Seed: seed + 1));
+
+        recipes.Add(new CwFixtureRecipe(
+            "farnsworth-light",
+            FarnsworthText,
+            DitMilliseconds: LightFistDitMs,
+            DahMilliseconds: LightFistDahMs,
+            ElementGapMilliseconds: LightFistElementGapMs,
+            CharacterGapMilliseconds: LightFistCharacterGapMs,
+            WordGapMilliseconds: LightFistWordGapMs,
+            SignalToNoiseDb: EasyDb,
+            Seed: seed + 2));
 
         return recipes;
     }

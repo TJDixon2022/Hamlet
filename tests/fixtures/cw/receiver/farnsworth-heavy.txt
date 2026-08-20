@@ -1,0 +1,26 @@
+name          farnsworth-heavy
+generated     tests/Hamlet.RadioEngine.Tests/Cw/Fixtures
+seed          20260833
+sampleRate    8000
+seconds       11.09
+
+text          CQ DE N0CALL K
+messageStart  1.00 s
+dit           56 ms
+dah           238 ms
+elementGap    36 ms
+characterGap  165 ms
+wordGap       355 ms
+wpm           21.4
+
+toneHz        615 Hz, drifting +/- 3 Hz
+snrDb         15.0 dB in the passband
+passband      350-870 Hz, skirt 30 dB down
+noiseRms      -34.0 dBFS
+toneAmplitude -16.0 dBFS peak
+qsb           none
+preamble      none
+
+peak          -12.8 dBFS
+reference    read nothing (do not cluster as Morse)
+scoredBytes  177548

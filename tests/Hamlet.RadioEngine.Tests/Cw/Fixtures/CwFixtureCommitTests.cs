@@ -181,7 +181,27 @@ public sealed class CwFixtureCommitTests
     /// classifier brittle at one corner is a finding about the control.</para>
     /// </remarks>
     public static IReadOnlySet<string> NotYetAdmissible { get; } =
-        new HashSet<string>(StringComparer.Ordinal);
+        new HashSet<string>(StringComparer.Ordinal)
+        {
+            // **THE REFERENCE CANNOT READ A FIST THIS PROJECT HAS PROVED ON THE
+            // AIR.** `farnsworth-heavy` is cut to `N4L`'s measured timing
+            // (HM-DEC-144): a 56 ms dit, a 238 ms dah, a 36 ms element gap. The
+            // reference reads nothing from it and says why in its own words, "do
+            // not cluster as Morse", which is a dah of 4.25 dits failing a check
+            // that expects three.
+            //
+            // **THAT IS THE ERROR CLASS SIX RULINGS HAVE GONE ON CLOSING IN
+            // HAMLET, ALIVE IN THE REFERENCE.** So this entry is not a fixture
+            // parked for being inconvenient: the timing is adjudicated to the
+            // millisecond from a recording whose callsign was read out of the
+            // gate's own elements, and it is the reference that is wrong about
+            // it. HM-DEC-101 records that one earlier entry was cleared exactly
+            // this way, by fixing the reference rather than the fixture.
+            //
+            // Held out until somebody rules on the reference, because until then
+            // it may not judge Hamlet (HM-DEC-101, HM-DEC-102).
+            "farnsworth-heavy",
+        };
 
     /// <remarks>
     /// Proves HM-OPEN-018 phase 4: **the held-out list is small and named.** A

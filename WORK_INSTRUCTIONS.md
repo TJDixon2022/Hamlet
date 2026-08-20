@@ -27,54 +27,40 @@ If all four hold, say "Hamlet confirmed" and continue.
 
 ## Why this unit exists
 
-**`Refine` is unblocked for the first time in four sessions, and what stops it now
-is a better problem.**
+**Every synthesized fixture in this repository sends textbook 1:3:7 spacing, and
+neither station proved on the air does.**
 
-Last session found the cause of the invention and closed it: **a two-means fit cuts
-any continuum in half and the halves land near three to one by construction.**
-`cw-2026-08-18-003016`'s short marks span 50–70 ms, a factor of 1.4;
-`cw-2026-08-20-014854`'s span 10–80, a factor of eight. Both fit two clusters at a
-ratio near three. The coherence check never asked whether its two fitted lengths
-were really two things. It does now, using `CwToneSurvey.MinimumSeparation` shared
-rather than copied.
+Last session found `Refine`'s one cause: it treats the sender's element gap as a
+second measurement of the dit, and it is one only when the spacing is textbook.
+Every fixture sends exactly one dit of gap, which is what makes the average work on
+them. Both adjudicated stations are Farnsworth — **35.6 ms of gap on a 56.3 ms dit
+for `N4L`, 73.3 on 100.4 for `VA3VRR`** — which is what HM-DEC-115 measured off the
+air as how people actually send.
 
-**Tim's ruling, this session: the separation test stands.** Two characters lost on
-`cw-2026-08-18-004507` and `cw-2026-08-18-003126` are an acceptable price for one
-no longer invented out of `cw-2026-08-20-014854`. **One of those two costs is
-measured and the other is a guess**, and §0.0 weighs a confident wrong answer above
-a missing one. Both recordings still clear their committed floors of 25 and 34.
+**Tim's ruling, this session, and it has two halves.**
 
-*Rejected: tuning the separation figure to recover the two, which would be the
-error class six rulings have now gone on closing. Also rejected: withholding the
-change until those recordings are adjudicated, which would leave an invented
-character on screen meanwhile.*
+**`Refine` is dropped.** Last session's own table settles it: without `Refine` the
+dit reads **55.0 against a true 56.3 on `N4L`** and **100.0 against 100.4 on
+`VA3VRR`**, both inside one per cent. **It buys nothing on either recording whose
+truth is known.** Four sessions were spent unblocking a change that was not needed.
+It is not to be revived without new evidence.
 
-**With the separation test in place, `Refine` no longer invents anything from
-either empty recording.** It breaks four synthesized fixtures instead:
-`clean-12wpm`, `clean-18wpm`, `CwFarnsworthTests.TheBulletinsWordsComeOutAsWords`
-and `prosigns-edge`.
+**The fixture suite gains Farnsworth senders.** The gap is not in the decoder, it is
+in what the suite knows about. A suite that only ever sends one style cannot catch
+a decoder that only handles one style, and that is the shape of every surprise this
+week.
 
-**Those have answer keys.** That is the difference between this session and the
-last four: the thing standing in the way can now be read against a known-correct
-transcript rather than argued about.
+*Rejected: re-cutting the existing fixtures to Farnsworth, which would retire
+answer keys the project has leaned on all week. Also rejected: keeping `Refine`
+and threshold-ing gap-over-dit at 0.90 against 0.63 and 0.73, which last session
+correctly named as the seventh instance of the error class six rulings have gone on
+closing.*
 
----
-
-## What `Refine` is and why it is wanted
-
-It averages a mark-derived dit with a gap-derived one. Its premise — that a mark
-reads long by the same amount the following gap reads short, so the mean of the two
-is the truth — **was measured false in this repository by HM-DEC-119**: the gate
-reads 100 to 110 ms for a true 100 at every speed, so the mark is not long and
-there is nothing to cancel. HM-DEC-115 measured the other half, that a real fist's
-element gap is genuinely shorter than its dit.
-
-Averaging therefore shortens the dit by about a fifth on any Farnsworth sender,
-**which both adjudicated stations are**: `N4L` at 4.24 dits to the dah on a 56.3 ms
-dit, `VA3VRR` at 2.73 on 100.4.
-
-`TheDitComesOutShortWhenTheGapIsShorterThanIt` records the bias and asserts the
-measurement rather than that the behaviour is right.
+**One correction to the previous order, made by the session and recorded here.**
+It said HM-DEC-119 measured the mark as "not long, so there is nothing to cancel."
+HM-DEC-119's figures are 100–110 ms for a true 100 — long by nought to ten per
+cent. **The premise is half true, not false, and that half is exactly what `Refine`
+cancels.** The order overstated it.
 
 ---
 
@@ -89,7 +75,9 @@ not repair the instruction silently.
   `CwTerminalTests.ClearingTheTranscriptLeavesTheDecoderAlone`,
   `ARecordingWithKeyingInItIsReadTests.TheDecoderSaysSomethingAboutIt`.
   **2,108 tests, four failing. Anything above four is new.**
-- The separation test shipped last session. **`Refine` is not in the tree.**
+- The separation test shipped two sessions ago. **`Refine` is not in the tree and
+  is not to be added.**
+- The bulletin currently reads 36 characters against a key of 47.
 
 ---
 
@@ -97,20 +85,27 @@ not repair the instruction silently.
 
 **§9.5.1 — one branch, `main`, commit *and push*.**
 
-**HM-DEC-144 — `cw-2026-08-17-134712` holds `N4L`, dit 56.3 ms, ratio 4.24.**
+**HM-DEC-144 — `cw-2026-08-17-134712` holds `N4L`, dit 56.3 ms, dah 238.3 ms,
+element gap 35.6 ms, ratio 4.24.**
 
-**HM-DEC-145 — `cw-2026-08-17-013347` holds `VA3VRR`, dit 100.4 ms, ratio 2.73.**
-*Two adjudicated fists, and they are different. A rule fitted to one now has
-somewhere to be wrong — use both.*
+**HM-DEC-145 — `cw-2026-08-17-013347` holds `VA3VRR`, dit 100.4 ms, dah 274.3 ms,
+element gap 73.3 ms, ratio 2.73.**
 
-**HM-DEC-114 — the easy tier passes or fails.**
+*Those two are the only measurements in this project that are known rather than
+estimated, and they are the model for what a Farnsworth fixture should sound like.*
 
-**HM-DEC-090 — marking is not a substitute for silence.**
+**HM-DEC-115 — a real fist's element gap is genuinely shorter than its dit.** The
+finding this unit is bringing into the suite.
+
+**HM-DEC-114 — the easy tier passes or fails.** *New fixtures do not join the easy
+tier without Tim's ruling. Say what tier you propose and why.*
+
+**HM-DEC-091 — one source, and it says which.** *A synthesized fixture is weaker
+evidence than a real capture and its answer key must say it was generated.*
 
 **HM-DEC-048 — nothing raises a confidence score.**
 
-**HM-OPEN-054 stays open. No sixth transition-shape test. No gate standing in front
-of emission.**
+**HM-OPEN-054 stays open. No transition-shape test, no gate in front of emission.**
 
 **The keying meter is not read by the decoder.**
 
@@ -128,91 +123,75 @@ is moving inside the task. Also every ten minutes while a task runs.
 
 ---
 
-## Task 1 — What the four fixtures read, and what they should. **CHANGE NOTHING.**
+## Task 1 — What the generator can already do. **CHANGE NOTHING.**
 
-With `Refine` applied, for each of `clean-12wpm`, `clean-18wpm`, `prosigns-edge`
-and the bulletin's word spacing:
+Read the generator and report **whether it can send an element gap other than one
+dit**, and a character gap other than three, and a word gap other than seven.
 
-- **the answer key, and what the decoder reads instead** — the actual strings, side
-  by side,
-- the dit before and after `Refine`, and the sender's true dit,
-- and **whether the failure is the same in all four or different in each.**
-
-**This is the whole question and it must be answered before anything changes.**
-Four fixtures breaking from one cause is a defect. Four breaking from four causes
-means `Refine` is wrong and the previous sessions were right to withdraw it.
-
-**If the four have one cause, name it and the line.** If they do not, **stop and
-report** — do not repair four things at once.
+- If it can, say how, and task 2 is a matter of new fixtures rather than new code.
+- **If it cannot, say so and say what would have to change.** *The generator is
+  `GENERATOR_BRIEF.md`'s subject and changing it is a larger thing than adding
+  fixtures.*
+- Report what the existing fixtures declare about their spacing, and whether any of
+  them already departs from 1:3:7.
 
 ---
 
-## Task 2 — Fix it, only if task 1 named one cause
+## Task 2 — Two Farnsworth fixtures, cut to the two known fists
 
-- **Fitted, not a constant.** *Seventh instance of the error class six rulings have
-  gone on closing.*
-- **Inside the estimator.** *No gate.*
-- It may make the decoder measure better. **It may not make it more willing to
-  emit** (HM-DEC-048).
-- **`Refine`'s own premise is false and may be replaced rather than defended.** The
-  goal is a dit that matches the sender, not the preservation of an average whose
-  justification HM-DEC-119 already disproved.
+Generate two, each with an answer key, each modelled on a measurement rather than
+on a guess:
 
-| | required |
-|---|---|
-| `cw-2026-08-20-014854` | **0** |
-| `cw-2026-08-20-014935` | **0** |
-| `004507` | ≥ 25 |
-| `003016` | ≥ 38 |
-| `003126` | ≥ 35 |
-| `003758` | ≥ 14 |
-| `013347` | ≥ 8, **and `VA3VRR` still readable in it** |
-| the easy tier | **whole** |
-| `clean-12wpm`, `clean-18wpm`, `prosigns-edge`, the bulletin | **whole** |
+| fixture | dit | element gap | dah | after |
+|---|---|---|---|---|
+| `farnsworth-heavy` | 56 ms | 36 ms | 238 ms | `N4L`, HM-DEC-144 |
+| `farnsworth-light` | 100 ms | 73 ms | 274 ms | `VA3VRR`, HM-DEC-145 |
 
-**Report the dit for both adjudicated recordings against their known figures**:
-`134712` against 56.3 ms, `013347` against 100.4 ms. *Those two numbers are the
-only ones in this project that are known rather than estimated, and a change that
-moves either away from its truth is wrong however the counts read.*
+- **The text is yours; the timing is not.** Use ordinary amateur exchange content,
+  long enough to exercise word spacing.
+- **The answer key says the fixture was generated**, and from which decision entry
+  its timing comes (HM-DEC-091).
+- Character and word gaps: **use the adjudicated recordings' own figures where they
+  exist** — `N4L`'s character gap is 165 ms, `VA3VRR`'s 150 — and say what you did
+  for the word gap, which neither adjudication measured.
+- **Propose a tier and say why. Do not add them to the easy tier.** HM-DEC-114.
 
 ---
 
-## Task 3 — The fixture
+## Task 3 — What the decoder does with them
 
-Re-run `ARecordingWithKeyingInItIsReadTests.TheDecoderSaysSomethingAboutIt`.
+Run both. Report the read text against the key, character by character where they
+differ, and the fitted dit against the fixture's true dit.
 
-Last session `134712` emitted nothing with the separation test, and **one
-character** with `Refine` on top.
+**This is the point of the unit.** If the decoder reads them whole, the suite has
+gained coverage and nothing else is wrong. **If it does not, that is the first
+reproducible Farnsworth failure with an answer key in this project**, and it is
+worth more than the fixtures themselves.
 
-- **If green, print what it read and say whether `N4L` is in it, in the right
-  place.**
-- **If red, say precisely where it dies.**
-- **Do not tune anything to make it pass.**
+- Report what fails and where. **Do not fix it.**
+- Run the whole suite. **Nothing existing may break.**
 
 ---
 
-## Task 4 — The bulletin. **DROP CANDIDATE.**
+## Task 4 — The two adjudicated recordings, unchanged
 
-`CwFarnsworthTests.TheBulletinDecodesToItsAnswerKey` has been standing red since
-HM-DEC-114 left it deliberately. Report what it reads now and how far from its key
-it is.
+Confirm `134712` and `013347` still read as they did, and report their fitted dits
+against 56.3 and 100.4.
 
-**Do not fix it and do not change what it asserts.** *It is a long-standing red
-with a ruling behind it; this unit only reports the number so its movement is
-visible.*
-
-**Drop it whole if the session runs long.**
+*This unit touches no decoder code, so both should be identical. If either moved,
+something is wrong and it is the finding.*
 
 ---
 
 ## Parked — do not touch, do not raise
 
-- **A sixth transition-shape test, or any gate in front of emission.**
+- **`Refine`.** Dropped by ruling. *Not to be revived, re-measured or proposed.*
+- **A transition-shape test, or any gate in front of emission.**
 - **Character structure**, and the keying meter as something the decoder reads.
-- **`MaximumRatio`**, the three-way length fit, the speed-tracker rewrite.
-- **The separation figure**, `CwToneSurvey.MinimumSeparation`. *Ruled this session.
-  Do not move it to recover a character.*
-- **Why the 19th's stations are missing from the audio.** Five theories dead.
+- **`MaximumRatio`**, `MinimumSeparation`, the three-way length fit, the
+  speed-tracker rewrite.
+- **The bulletin's standing red.** HM-DEC-114 left it deliberately.
+- **Why the 19th's stations are missing from the audio.**
 - **The 69 and 233.**
 - **Adjudicating by ear.** Tim's.
 - **HM-OPEN-052**, rulings 096–133, the scorer, `CaptureAudioAsync` end to end,
@@ -228,12 +207,13 @@ not touch coverage thresholds.
 
 Unit-specific:
 
-- **Do not weaken the separation test to make `Refine` fit.** *It is what stopped
-  the invention and it was ruled this session.*
-- **Do not ship anything producing text from `014854` or `014935`.**
-- **Do not tune to any one fixture.** *Two adjudicated recordings and the fixture
-  suite are the guards, and they now disagree with each other enough to be useful.*
-- **Do not touch the gate, the survey or the meter.**
+- **Do not change the decoder.** *This unit changes what the suite knows about, not
+  what the decoder does. A fixture and a fix in one session cannot be read apart.*
+- **Do not re-cut the existing fixtures.** *Their answer keys are load-bearing.*
+- **Do not add anything to the easy tier.** HM-DEC-114.
+- **Do not invent timings.** *Both fixtures come from adjudicated measurements; a
+  third fist made up to fill a gap would be exactly the weak evidence this unit
+  exists to reduce.*
 
 ---
 
@@ -242,12 +222,12 @@ Unit-specific:
 `OUTPUT.md` at the repository root, overwritten and printed. Four sections, no
 other headings, per §13: **What Claude did**, **What Tim should expect**, **What we
 should do next**, **What's blocking us** — the last carrying **Asks still
-outstanding** per HM-DEC-139. **The two-lost-characters ask leaves the queue; it
-was ruled.**
+outstanding** per HM-DEC-139. **The fixture-spacing ask leaves the queue; it was
+ruled.**
 
-**Section 1 opens with task 1's four fixtures, their keys beside what was read.**
+**Section 1 opens with task 3**: what the decoder read against the keys.
 
-**Section 2 says plainly whether `Refine` shipped, and whether the decoder now
-reads `cw-2026-08-17-134712`.**
+**Section 2 says plainly whether the decoder handles a Farnsworth sender it has
+never seen before.**
 
 **Stop and report.**
