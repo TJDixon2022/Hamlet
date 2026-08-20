@@ -1,9 +1,9 @@
-STATE: BLOCKED
-PHASE: 1 of 4
+STATE: COMPLETED
+PHASE: 3 of 4
 BALL: tim
 NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-20T19:20:00-04:00
-NOTE: Two steps, not one: the gate loses seven of the twelve milliseconds before the fit sees them
+UPDATED: 2026-08-20T19:34:00-04:00
+NOTE: De-glitch cleared and 119 corrected as 146; the heavy fist has no named mechanism left
 
 ---
 

@@ -2,105 +2,92 @@
 
 ## 1. What Claude did
 
-### Task 1: the light and heavy fists lose the dit at different steps, so task 2 did not run
+### Task 1: the de-glitch is not the cause, and bypassing it makes things worse
 
 Claude Code on the development machine, in `C:\Source\HamLet`, on `main`. The
 prompt named `PROJECT: Hamlet` and the four gate checks all hold. **No radio is
-attached** (HM-DEC-093). **Nothing changed anywhere: not `src/`, not the tests, not
-the reference.**
+attached** (HM-DEC-093). **Nothing in `src/`, the tests or the reference changed.**
 
-Every mark and gap the gate reports on generated audio with no noise in it, against
-what was generated:
+The gate's mark lengths on generated audio, with the vote window clamped to a
+single measurement so no median runs at all:
 
-| fixture | true dit | **gate reads** | true dah | gate reads | true element gap | gate reads | fitted dit |
-|---|---|---|---|---|---|---|---|
-| `coverage-easy` | 100.0 | **101.4 (+1%)** | 300 | 303.0 (+1%) | 100 | 96.7 (−3%) | 99.5 |
-| `exchange-easy` | 100.0 | **102.8 (+3%)** | 300 | — | 100 | 96.8 (−3%) | 99.5 |
-| `farnsworth-light` | 100.0 | **102.6 (+3%)** | 274 | 280.2 (+2%) | 73 | 67.1 (−8%) | **95.0** |
-| `fast-easy` | 48.0 | **45.3 (−6%)** | 144 | 145.9 (+1%) | 48 | 48.5 (+1%) | 48.0 |
-| `farnsworth-heavy` | 56.0 | **48.9 (−13%)** | 238 | 243.1 (+2%) | 36 | 36.3 (+1%) | **47.0** |
+| fixture | true dit | **with de-glitch** | **without** | true dah | with | without |
+|---|---|---|---|---|---|---|
+| `exchange-easy` | 100.0 | 102.8 (+3%) | **88.3 (−12%)** | 300.0 | 300.2 | 301.7 |
+| `coverage-easy` | 100.0 | 101.4 (+1%) | 100.8 (+1%) | 300.0 | 303.0 | 301.0 |
+| `farnsworth-light` | 100.0 | 102.6 (+3%) | 100.5 (0%) | 274.0 | 280.2 | 279.8 |
+| **`fast-easy`** | 48.0 | 45.3 (−6%) | **42.3 (−12%)** | 144.0 | 145.9 | 145.6 |
+| **`farnsworth-heavy`** | 56.0 | 48.9 (−13%) | **45.3 (−19%)** | 238.0 | 243.1 | 234.5 |
 
-**They lose it in different places, and that is the finding.**
+**The de-glitch is holding short marks together, not eating them.** Take it away
+and `farnsworth-heavy` goes from thirteen per cent short to nineteen, `fast-easy`
+from six to twelve, and `exchange-easy` from three per cent long to twelve short.
 
-**`farnsworth-light` loses it all in the estimator.** The gate hands over 102.6 for
-a true 100 — long, as expected — and the fit takes it to **95.0**. Seven and a half
-milliseconds go between the gate and `DitSamples`. `Refine` averages the
-mark-derived dit with the mean of every gap under twice it, and twice 100 is 200,
-so this sender's **150 ms character gaps are inside that window along with its 73 ms
-element gaps**. The average lands low.
+**So `ShortestVote` is not the mechanism.** It was unparked on the strength of a
+suspicion, the suspicion was testable, and it is wrong. **It stays at 5, now on
+measured evidence rather than on a park**, and task 2 did not run.
 
-**`farnsworth-heavy` loses most of it before the estimator sees anything.** The
-gate hands over **48.9 for a true 56** — short by thirteen per cent — and the fit
-takes it only to 47.0. Seven of the twelve milliseconds are gone at the gate, and
-`Refine` costs about two more; its window is twice 48.9, so this sender's 165 ms
-character gaps are outside it and only the 36 ms element gaps are averaged in.
+**The widths, as numbers rather than as an argument:**
 
-**One sentence each, since that is what was asked.** The light fist's dit is short
-because `Refine` averages the sender's character gaps into it. The heavy fist's dit
-is short because the gate reports its dits thirteen per cent short before anything
-is fitted at all.
+| fixture | dit in hops | dah in hops | analysis window |
+|---|---|---|---|
+| `exchange-easy`, `coverage-easy`, `farnsworth-light` | 20.0 | 54.8–60.0 | **50 ms** |
+| `farnsworth-heavy` | **11.2** | 47.6 | **20 ms** |
+| `fast-easy` | **9.6** | 28.8 | **20 ms** |
 
-**So the order's instruction applies: stop and report.** Task 2 did not run.
+**And that kills the obvious follow-on suspect too.** HM-DEC-119's own record
+offers a rounded-top explanation — "a Goertzel window rounds the top of a short
+mark, so its width six decibels below its own apex is far less than its base". But
+the tracker runs a **20 ms** window on the two fixtures that read short and a
+**50 ms** window on the three that do not. **The window is narrower where the error
+is worse**, which is the wrong way round for that story.
 
-### The ruling this unit was built on does not hold at short dits
+**What the error is not**, from the same table: not a fixed number of
+milliseconds, since a true 56 loses 7.1 and a true 48 loses 2.7; not a general
+mark bias, since the dahs are within two per cent everywhere; and not the median
+filter, since removing it doubles the loss.
 
-The order carries HM-DEC-119 forward as a ruling in force: *the gate reads 100–110
-ms for a true 100 at every speed; a mark is long by nought to ten per cent, not
-short.* It asked for that to be confirmed on this audio or reported as not holding.
+### Task 3: HM-DEC-119 is corrected, and that is the finding worth keeping
 
-**It holds at 100 milliseconds and it does not hold below.**
+Recorded as **HM-DEC-146**, superseding HM-DEC-119 on this point and nothing else,
+with the table in the entry and indexed in `CLAUDE.md` §1.
 
-| true dit | what the gate reads |
-|---|---|
-| 100 ms | 101.4, 102.8, 102.6 — **long by 1 to 3%**, as ruled |
-| 48 ms | **45.3 — short by 6%** |
-| 56 ms | **48.9 — short by 13%** |
+That ruling says the gate is "accurate to within one hop at every speed" and that a
+mark reads long by nought to ten per cent. **It is true at a hundred milliseconds
+and false at fifty-six.**
 
-**The dahs are long by 1 to 2% at every length**, so this is not the gate being
-wrong about marks in general. It is short marks specifically. The analysis hop is
-5 ms and `CwGate.ShortestVote` is five measurements, so a 56 ms dit is eleven hops
-being median-filtered by a window of five, while a 300 ms dah is sixty. **Naming
-the exact gate mechanism would mean touching the gate, and `ShortestVote` is parked
-at 5**, so it is measured here and left.
+**It matters more than the figure does.** HM-DEC-119 was measured at one speed and
+generalised to every speed, and the generalisation became the premise of four
+sessions of work: if a mark reads long and the next gap reads short by the same
+amount, averaging them cancels the error, which is the entire argument for
+`Refine`'s averaging. **On a fifty-six millisecond dit the mark reads short and the
+gap reads true, so there is nothing to cancel.** A ruling that is right about the
+audio it was taken from and wrong about the rest is the most expensive kind,
+because everything downstream cites it rather than re-measuring.
 
-**That matters beyond this unit**, because "the mark reads long, never short" has
-been load-bearing in four sessions of reasoning about `Refine`.
+### The naming correction, carried forward as instructed
 
-### Two rows in that table are not clean, and are marked
-
-`prosigns-easy` and `tightfist-easy` were measured too and are left out of the
-table above. Both send prosigns or run their elements together, so a bucket split
-at the midpoint of dit and dah catches merged pairs as well as dits and the numbers
-are not comparable. `prosigns-easy` reads its "dits" at 92.2 for a true 100 and
-`tightfist-easy` at 101.6 for a true 94; **neither figure means what the others
-mean** and neither is used above.
-
-### A naming mismatch worth recording once
-
-The order states that **`Refine` is not in the tree**. The method `Refine` is at
-`CwTiming.cs:1151` and is called at line 649; it has been there throughout and it
-is the mark-and-gap average. What has been proposed and withdrawn four times is its
-**removal**, and the orders have been using the name `Refine` for that removal.
-
-It matters here because task 1's answer is partly about `Refine` itself: on the
-light fist it is the whole of the loss.
+`Refine` is the method at `CwTiming.cs:1151`, called at line 649, and it is in the
+tree and always has been. **What has been proposed and withdrawn four times is its
+removal.** This report says "`Refine`'s removal" where that is meant.
 
 ## 2. What Tim should expect
 
-### Task 4: whether the callsign survives, and the numbers have not moved
+### Task 4: the callsign, and the numbers have not moved
 
-**Nothing shipped, so both answers are last session's.** On the lighter fist the
-callsign survives: it loses `CQ ` and starts reading at the fourth character, so
-`CQ CQ DE N4L K` comes through from `CQ DE` onward. **On the heavier fist it does
-not**: nine characters go, and reading begins somewhere inside the callsign.
+**Nothing shipped, so both answers stand from last session.** On the lighter fist
+the callsign survives: `farnsworth-light` loses `CQ ` and starts at the fourth
+character, so `CQ CQ DE N4L K` comes through from `CQ DE` onward. **On the heavier
+fist it does not**: nine characters go and reading begins inside the callsign.
 
-`farnsworth-light` is still 9 of 12 and `farnsworth-heavy` still 3 of 12.
+`farnsworth-light` is still **9 of 12**, `farnsworth-heavy` still **3 of 12**, and
+**`cw-2026-08-17-134712` still emits nothing.**
 
-**What you have instead is the reason the heavy fist is different**, and it is not
-where this week's reasoning has been looking. Its dit is not dragged down by the
-estimator. **It arrives at the estimator already thirteen per cent short**, from a
-gate whose measurement of a 56 ms mark is not the same quality as its measurement
-of a 100 ms one.
+**What you have instead is a suspect eliminated and a ruling corrected.** The
+de-glitch has been the named suspect for two sessions and it is not the cause —
+it is the only thing keeping the heavy fist's dit from reading nineteen per cent
+short instead of thirteen. `ShortestVote` can go back on the shelf with a
+measurement behind it rather than a park.
 
 **Build clean, no warnings. 2,117 tests, five failing, and they are the five
 expected:**
@@ -111,71 +98,58 @@ expected:**
 - `ARecordingWithKeyingInItIsReadTests.TheDecoderSaysSomethingAboutIt`
 - `TheToneIsFoundInRealisticAudio(farnsworth-heavy)`
 
-### Task 3: the two threads, reported and not worked on
-
-**The tone still settles at 575 Hz on a fixture generated at 615**, unchanged,
-because nothing shipped. The order anticipated this correctly: even with the dit
-right, a 4.25 fist is still past `MaximumRatio`'s 3.8, so the survey would still
-never confirm it and the tracker would still follow loudness.
-
-**The light fist's warm-up is unchanged too**: `LooksLikeMorse` first goes true at
-**mark 16** on `farnsworth-light` and **mark 12** on `cw-2026-08-17-013347`.
+No test was added or changed and the bulletin's count is untouched.
 
 ## 3. What we should do next
 
-- **The gate's measurement of a short mark**, because that is where the heavy
-  fist's twelve milliseconds actually go. It needs a ruling first: `ShortestVote`
-  has been held at 5 for eight units and this is the first measurement that points
-  at it rather than past it.
-- **`Refine`'s window, separately**, because it is the light fist's whole problem
-  and a different fix. Twice the mark-derived dit is an arbitrary span, and whether
-  it admits a sender's character gaps depends on that sender's ratio: 150 against
-  200 for the light fist, 165 against 112 for the heavy one. **The gap classes are
-  already fitted a few lines away.**
-- **Do not do both in one unit.** They are two mechanisms and one session of
-  evidence apiece is what has made this week's findings readable.
-- Adjudicate `cw-2026-08-18-004507` when there is an evening for it.
+- **Find what actually shortens a short mark**, with the two suspects that have
+  been eliminated written down so the next session does not re-try them: the
+  de-glitch makes it worse, and the analysis window is narrower where the error is
+  worse. **What is left is the envelope's own shape between the hop grid and the
+  threshold**, and `farnsworth-heavy` is fifteen seconds of noise-free audio with
+  every edge known, so it is fully observable.
+- **The light fist's estimator window is still the other mechanism** and it is
+  cheap: `Refine` averages every gap under twice the mark-derived dit, and whether
+  a sender's character gaps fall inside that span depends on the sender's own
+  ratio. On `farnsworth-light` that is 150 against 200 and it costs seven and a
+  half milliseconds. **The gap classes are already fitted a few lines away.**
+- **Consider taking the light fist first.** It is one line, the mechanism is
+  understood, and it would put a second fixture inside five per cent — where the
+  heavy fist now needs a mechanism nobody has named.
 
 ## 4. What's blocking us
 
-**The heavy fist is blocked on a ruling about the gate**, which every order this
-week has parked.
+Nothing blocks the next unit. **The heavy fist has no named mechanism left.**
 
 **One ask, new this session.**
 
-> **HM-DEC-119 is narrowed: the gate reads a mark long by nought to three per cent
-> at a hundred milliseconds and short by six to thirteen at forty-eight and
-> fifty-six. It is not "long at every speed", and the heavy fist's short dit is the
-> gate's rather than the estimator's.**
+> **The short-mark error is not the de-glitch and not the analysis window, and the
+> next unit should be told both rather than re-testing them.**
 >
-> Measured on generated audio with no noise in it and a dit known to the
-> millisecond. A true 100 reads 101.4, 102.8 and 102.6 across three fixtures. A
-> true 48 reads 45.3 and a true 56 reads 48.9. **The dahs are long by one to two
-> per cent at every length**, so this is short marks specifically rather than the
-> gate being wrong about marks.
+> Bypassing the de-glitch entirely takes `farnsworth-heavy` from thirteen per cent
+> short to **nineteen**, `fast-easy` from six to **twelve**, and `exchange-easy`
+> from three per cent long to twelve short. It is holding short marks together.
+> `ShortestVote` stays at 5 and can be re-parked with a measurement behind it.
 >
-> **That relocates the heavy fist's defect.** Of the twelve milliseconds between a
-> true 56 and a fitted 47, seven are gone before the estimator is handed anything.
-> Four sessions have looked for it in the fit.
+> The rounded-top explanation HM-DEC-119 offers does not fit either: the tracker
+> runs a **20 ms** analysis window on the two fixtures that read short and **50 ms**
+> on the three that do not, so **the window is narrower where the error is worse**.
 >
-> **The obvious suspect is parked and this session did not touch it.** The hop is
-> 5 ms and `CwGate.ShortestVote` is five measurements, so a 56 ms dit is eleven
-> hops through a five-wide median while a 300 ms dah is sixty. **HM-OPEN-053 has
-> held `ShortestVote` at 5 for eight units and every order has restated it**, so
-> this is handed back rather than tried.
+> **What is left is between the hop grid and the threshold**: a 56 ms mark is 11.2
+> hops and a 300 ms dah is 60, and the error is neither a fixed fraction nor a fixed
+> number of milliseconds — a true 56 loses 7.1 ms and a true 48 loses 2.7.
 >
-> **Rejected: correcting the estimator for the gate's short reading.** That is a
-> constant applied downstream of the measurement that produced it, which is the
-> error class six rulings have gone on closing, and it would leave the gate still
-> reporting a length the audio does not contain. **Also rejected: fixing `Refine`
-> and calling the heavy fist done**, because `Refine` accounts for two of its twelve
-> milliseconds and the fitted dah would still sit past five dits.
+> **Rejected: moving `ShortestVote` anyway** because it changes the number in the
+> right direction. It changes it by making the gate slower to notice a mark, which
+> is not the same as measuring one correctly, and it would bury a mechanism nobody
+> has found. **Also rejected: correcting the estimator for the gate's short
+> reading**, which is a constant applied downstream of the measurement that produced
+> it and leaves the gate still reporting a length the audio does not contain.
 
 ### Asks still outstanding
 
-- **Whether the gate's measurement of a short mark may be opened**, and
-  HM-DEC-119 narrowed to the length it was measured at. First made 2026-08-20,
-  this session. Nothing is in the tree.
+- **What shortens a short mark**, with the de-glitch and the analysis window both
+  eliminated. First made 2026-08-20, this session.
 - **The keying meter's provisional thresholds.** First made 2026-08-20. Waiting on
   one evening's roster scored against the `meter` column.
 - **Whether `SHACK_FACTS.md` still holds that CI-V Transceive is off.** First made
@@ -195,6 +169,6 @@ week has parked.
 - **HM-OPEN-007.** Open and unruled since 2026-08-14, named in HM-DEC-140 as the
   reason the queue's own premise is worth re-testing. Waiting on Tim.
 
-**One item leaves the queue.** How a heavy fist escapes the circle between a short
-dit and an out-of-band dah: measured this session, and the answer is that most of
-the short dit is the gate's rather than the fit's.
+**One item leaves the queue.** Whether the gate's measurement of a short mark may
+be opened: it was, `ShortestVote` was tested and cleared, and HM-DEC-119 is
+corrected as HM-DEC-146.

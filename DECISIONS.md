@@ -4,6 +4,61 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-146
+date: 2026-08-20
+supersedes: HM-DEC-119
+refs: src/Hamlet.RadioEngine/Cw/CwGate.cs, tests/fixtures/cw/receiver/farnsworth-heavy.wav, HM-DEC-144, HM-DEC-145, HM-OPEN-053
+---
+
+**HM-DEC-119's mark-length figures hold at a hundred milliseconds and do not hold
+below it.** That ruling says the gate reads 100 to 110 ms for a true 100, 45 to 50
+for a true 48 and 40 to 45 for a true 40, "accurate to within one hop at every
+speed", and four sessions have cited it as measured fact that a mark reads long by
+nought to ten per cent and never short. **It is true at a hundred and false at
+fifty-six.**
+
+MEASURED ON GENERATED AUDIO WITH NO NOISE IN IT and a dit known to the millisecond,
+which is what the two Farnsworth fixtures were built for:
+
+| fixture | true dit | gate reads | true dah | gate reads |
+|---|---|---|---|---|
+| `exchange-easy` | 100.0 ms | 102.8 (+3%) | 300.0 | 300.2 (0%) |
+| `coverage-easy` | 100.0 | 101.4 (+1%) | 300.0 | 303.0 (+1%) |
+| `farnsworth-light` | 100.0 | 102.6 (+3%) | 274.0 | 280.2 (+2%) |
+| `fast-easy` | 48.0 | **45.3 (-6%)** | 144.0 | 145.9 (+1%) |
+| `farnsworth-heavy` | 56.0 | **48.9 (-13%)** | 238.0 | 243.1 (+2%) |
+
+**THE DAHS ARE LONG BY NOUGHT TO TWO PER CENT AT EVERY LENGTH**, so this is not the
+gate being wrong about marks in general. It is short marks specifically, and the
+error is not a fixed number of milliseconds either: a true 56 loses 7.1 ms and a
+true 48 loses 2.7.
+
+WHAT IT IS NOT. The de-glitch was the named suspect and it is cleared. Bypassed
+entirely, by clamping the vote window to a single measurement, **the error gets
+worse rather than better**: `farnsworth-heavy` goes from -13% to **-19%**,
+`fast-easy` from -6% to **-12%**, and `exchange-easy` from +3% to -12%. The median
+filter is holding short marks together, not eating them. `CwGate.ShortestVote`
+stays at 5 on measured evidence rather than on a park.
+
+WHY THE CORRECTION MATTERS MORE THAN THE FIGURE. HM-DEC-119 was measured at one
+speed and generalised to every speed, and the generalisation became the premise of
+four sessions of work on `Refine`: if a mark reads long and the following gap reads
+short by the same amount, averaging them cancels the error, and that is the whole
+argument for the averaging. **On a fifty-six millisecond dit the mark reads short
+and the gap reads true**, so there is nothing to cancel and the average is simply
+wrong. A ruling that is right about the audio it was taken from and wrong about the
+rest is the most expensive kind, because everything downstream cites it rather than
+re-measuring.
+
+WHAT DOES NOT FOLLOW. This does not name the mechanism. The tracker's analysis
+window is 50 ms on the hundred-millisecond fixtures and 20 on the two short ones,
+so the window is **narrower** where the error is worse and a rounded-top
+explanation does not fit either. That is the next question and it is not settled
+here.
+
+Measured before anything was built on it, and nothing was built on it.
+
+---
 id: HM-DEC-145
 date: 2026-08-20
 refs: tests/fixtures/cw/captured/cw-2026-08-17-013347.wav, tests/Hamlet.RadioEngine.Tests/Cw/TheStationInTheOtherRecordingIsVa3vrrTests.cs, HM-DEC-144, HM-DEC-115, §12.5
