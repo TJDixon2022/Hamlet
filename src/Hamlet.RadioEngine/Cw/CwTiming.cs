@@ -140,6 +140,22 @@ public sealed class CwSpeedEstimator
     private double _markBoundary;
     private readonly double[] _gaps = new double[WindowSize];
 
+    /// <summary>How loud each mark in the window was, on average, in decibels.</summary>
+    private readonly double[] _markMeanDb = new double[WindowSize];
+
+    /// <summary>How loud each mark got at its loudest, in decibels.</summary>
+    private readonly double[] _markPeakDb = new double[WindowSize];
+
+    /// <summary>The marks the amplitude rule kept, oldest first.</summary>
+    private readonly double[] _kept = new double[WindowSize];
+
+    /// <summary>Where each kept mark sits in the window.</summary>
+    private readonly int[] _keptIndex = new int[WindowSize];
+
+    /// <summary>Scratch for fitting the two height clusters.</summary>
+    private readonly double[] _heights = new double[WindowSize];
+
+    private int _keptCount;
     private int _markCount;
     private int _markWrite;
     private int _gapCount;
@@ -161,6 +177,18 @@ public sealed class CwSpeedEstimator
 
     /// <summary>How many marks the estimate currently rests on.</summary>
     public int MarkCount => _markCount;
+
+    /// <summary>
+    /// How many of those the amplitude rule judged loud enough to be this
+    /// sender's (HM-DEC-144).
+    /// </summary>
+    /// <remarks>
+    /// Equal to <see cref="MarkCount"/> wherever the heights do not separate or
+    /// are not known, which is every clean signal and every empty band. Exposed
+    /// because a decode that goes wrong needs the rule's own count beside it
+    /// (§0.0.1).
+    /// </remarks>
+    public int KeptMarks => _keptCount;
 
     /// <summary>
     /// How many marks have ever been recorded, without a ceiling (HM-DEC-107).
@@ -244,13 +272,28 @@ public sealed class CwSpeedEstimator
 
     /// <summary>Record a mark and re-derive the speed.</summary>
     /// <param name="samples">How long the key was down.</param>
+    /// <remarks>
+    /// **HOW LOUD IT WAS IS UNKNOWN AND STAYS UNKNOWN** (HM-DEC-091). A caller
+    /// with no amplitude to give does not get a plausible one invented for it,
+    /// and the amplitude rule below does nothing at all where the heights are
+    /// not known.
+    /// </remarks>
     public void AddMark(double samples)
+        => AddMark(samples, double.NaN, double.NaN);
+
+    /// <summary>Record a mark, with how loud it was.</summary>
+    /// <param name="samples">How long the key was down.</param>
+    /// <param name="meanDb">Its average height above the noise, in decibels.</param>
+    /// <param name="peakDb">Its loudest moment, in decibels.</param>
+    public void AddMark(double samples, double meanDb, double peakDb)
     {
         _markHistory[_markHistoryWrite] = samples;
         _markHistoryWrite = (_markHistoryWrite + 1) % _markHistory.Length;
         _marksRemembered = Math.Min(_marksRemembered + 1, _markHistory.Length);
 
         _marks[_markWrite] = samples;
+        _markMeanDb[_markWrite] = meanDb;
+        _markPeakDb[_markWrite] = peakDb;
         _markWrite = (_markWrite + 1) % WindowSize;
         _markCount = Math.Min(_markCount + 1, WindowSize);
         MarksSeen++;
@@ -479,8 +522,9 @@ public sealed class CwSpeedEstimator
         }
 
         RecomputeMarkBoundary();
+        KeepWhatIsLoudEnoughToBeAnElement();
 
-        var (markLow, markHigh) = TwoMeans(_marks, _markCount);
+        var (markLow, markHigh) = TwoMeans(_kept, _keptCount);
         var shortestGap = ShortestGap();
 
         double markDit;
@@ -499,6 +543,17 @@ public sealed class CwSpeedEstimator
             // every element look long, drives the coherence check below its own
             // limit, and the decoder discards a message it has correctly heard
             // because it no longer believes the timings are Morse.
+            // **AND IT LOOKS ONLY AT WHAT SURVIVED THE DROP.** This takes the
+            // middle of every mark below the dit-and-dah cut, which on
+            // `cw-2026-08-17-134712` is 145 ms, so before the amplitude rule it
+            // put all nine of the gate's chatter slivers straight back into the
+            // estimate that had just excluded them: the fit found the dit
+            // cluster at 51.2 ms and this returned 35 to 40 against a
+            // hand-verified 56.3 (HM-DEC-144). **The protection it was written
+            // for is still needed and is unchanged** — a handful of very short
+            // marks survive the gate on any real signal and an average is
+            // defenceless against them — it simply no longer reaches past the
+            // drop to recover them.
             markDit = MedianOfShortCluster((markLow + markHigh) / 2);
         }
         else if (shortestGap > 0 && markLow >= 2 * shortestGap)
@@ -525,6 +580,140 @@ public sealed class CwSpeedEstimator
     }
 
     /// <summary>
+    /// Set aside the marks in the window that are too quiet to be this sender's
+    /// (HM-DEC-144).
+    /// </summary>
+    /// <remarks>
+    /// <para>**LENGTH CANNOT TELL A MERGED ELEMENT FROM A SLIVER OF NOISE AND
+    /// HEIGHT CAN.** A mark of about two dits is either a dah from a fist that
+    /// runs its elements together or two elements the gate joined, and no
+    /// measurement of how long it ran will say which. Measured on
+    /// `cw-2026-08-17-134712`, where HM-DEC-144 settles which marks belong to the
+    /// station: its eleven elements stand 24.4 to 24.7 dB above the envelope
+    /// floor and its nine chatter slivers stand at 8.1 to 14.2. On
+    /// `tightfist-easy`, where every mark is real, there is one height population
+    /// and no low group at all.</para>
+    /// <para>**THE RULE IS RELATIVE AND NEVER A LEVEL.** Across ten decibels of
+    /// added noise the station falls from 24.6 dB above the floor to 19.7 and the
+    /// chatter from 14.5 to 12.8: the gap holds at about seven decibels and
+    /// neither figure stays put, so any fixed height would be wrong at one end of
+    /// that range. What is asked instead is whether the marks in this window fall
+    /// into two height groups at all, by the same test and the same figure
+    /// <see cref="CwToneSurvey.MinimumSeparation"/> applies to mark lengths: how
+    /// far the two centres sit apart, counted in their own scatter. A ratio
+    /// rather than a level is what makes it survive a fade (HM-DEC-095).</para>
+    /// <para>**IT IS A NO-OP WHEREVER THERE IS ONE POPULATION**, which is the
+    /// case on every clean fixture and on an empty band. A window that is
+    /// entirely chatter has one height group too, so nothing is dropped and the
+    /// estimator behaves exactly as it always did: this rule cannot rescue an
+    /// empty band and does not try (§0.0).</para>
+    /// <para>**A MARK IS ONLY QUIET IF BOTH ITS AVERAGE AND ITS LOUDEST MOMENT
+    /// ARE.** On `cw-2026-08-18-004507` there are real elements of 90 to 275 ms
+    /// whose average height sags to 11 to 15 dB because the gate held them open
+    /// across a dip, while their loudest moment stays with the plateau at 18 to
+    /// 26. Reading the average alone would discard them. Reading the loudest
+    /// alone separates the callsign window by only 4.4 dB against 10.1 for the
+    /// average, so it is the weaker statistic on its own. Both together keep the
+    /// stretched marks and drop the slivers.</para>
+    /// </remarks>
+    private void KeepWhatIsLoudEnoughToBeAnElement()
+    {
+        var known = true;
+
+        for (var i = 0; i < _markCount; i++)
+        {
+            _kept[i] = _marks[i];
+            _keptIndex[i] = i;
+            _heights[i] = _markMeanDb[i];
+
+            known &= !double.IsNaN(_markMeanDb[i]) && !double.IsNaN(_markPeakDb[i]);
+        }
+
+        _keptCount = _markCount;
+
+        // Heights unknown, so there is nothing to judge and nothing is judged
+        // (HM-DEC-091). Everything stays.
+        if (!known || _markCount < MinimumHeightMarks)
+        {
+            return;
+        }
+
+        var (low, high) = TwoMeans(_heights, _markCount);
+        var gap = high - low;
+
+        if (gap <= 1e-6)
+        {
+            // One height population: every mark is as loud as every other, which
+            // is what a clean signal and an empty band both look like.
+            return;
+        }
+
+        // **SCATTER OF NOUGHT IS THE MOST SEPARATED CASE AND NOT THE LEAST.**
+        // Reading it as no separation had that exactly backwards, and it showed
+        // up on synthesized marks of identical height where the two groups are as
+        // far apart as two groups can be. The floor is a thousandth of the gap
+        // rather than a level, so it stays a ratio.
+        var spread = Scatter(low, true) + Scatter(high, false);
+        var separation = gap / Math.Max(spread, gap / 1000);
+
+        if (separation < CwToneSurvey.MinimumSeparation)
+        {
+            return;
+        }
+
+        var cut = (low + high) / 2;
+        var kept = 0;
+
+        for (var i = 0; i < _markCount; i++)
+        {
+            if (_markMeanDb[i] < cut && _markPeakDb[i] < cut)
+            {
+                continue;
+            }
+
+            _kept[kept] = _marks[i];
+            _keptIndex[kept] = i;
+            kept++;
+        }
+
+        // Too few survivors to fit anything against. Better the old answer over
+        // everything than a new one over three marks.
+        if (kept >= MinimumHeightMarks / 2)
+        {
+            _keptCount = kept;
+        }
+    }
+
+    /// <summary>How far one height cluster's members sit from its own middle.</summary>
+    private double Scatter(double center, bool below)
+    {
+        var cut = center;
+        var sum = 0.0;
+        var members = 0;
+
+        for (var i = 0; i < _markCount; i++)
+        {
+            if (below ? _heights[i] > cut : _heights[i] < cut)
+            {
+                continue;
+            }
+
+            sum += Math.Abs(_heights[i] - center);
+            members++;
+        }
+
+        return members == 0 ? 0 : sum / members;
+    }
+
+    /// <summary>How many marks the height fit needs before it is worth running.</summary>
+    /// <remarks>
+    /// Eight, which is the figure <see cref="CwToneSurvey.MinimumMarks"/> uses for
+    /// the same question one level up: fewer and two clusters can be fitted to
+    /// anything.
+    /// </remarks>
+    private const int MinimumHeightMarks = CwToneSurvey.MinimumMarks;
+
+    /// <summary>
     /// The middle mark of those shorter than a threshold.
     /// </summary>
     /// <param name="threshold">Where the dits stop and the dahs begin.</param>
@@ -533,11 +722,11 @@ public sealed class CwSpeedEstimator
     {
         var count = 0;
 
-        for (var i = 0; i < _markCount; i++)
+        for (var i = 0; i < _keptCount; i++)
         {
-            if (_marks[i] < threshold)
+            if (_kept[i] < threshold)
             {
-                _sorted[count++] = _marks[i];
+                _sorted[count++] = _kept[i];
             }
         }
 
@@ -841,7 +1030,7 @@ public sealed class CwSpeedEstimator
     /// </remarks>
     private double MeasureCoherence(double markHigh)
     {
-        if (_markCount == 0 || DitSamples <= 0)
+        if (_keptCount == 0 || DitSamples <= 0)
         {
             return 0;
         }
@@ -854,13 +1043,18 @@ public sealed class CwSpeedEstimator
         var cut = (1 + dah) / 2;
         var error = 0.0;
 
-        for (var i = 0; i < _markCount; i++)
+        // **AND ONLY OVER THE MARKS THE AMPLITUDE RULE KEPT.** A sliver the gate
+        // chopped out of band noise is not the sender's, so scoring it against
+        // the sender's own two lengths measures nothing about the sender. Where
+        // the heights do not separate, or are not known at all, every mark is
+        // kept and this is exactly the sum it always was.
+        for (var i = 0; i < _keptCount; i++)
         {
-            var units = _marks[i] / DitSamples;
+            var units = _kept[i] / DitSamples;
             error += Math.Abs(units - (units < cut ? 1.0 : dah));
         }
 
-        return Math.Clamp(1 - (error / _markCount / IncoherentErrorDits), 0, 1);
+        return Math.Clamp(1 - (error / _keptCount / IncoherentErrorDits), 0, 1);
     }
 
     /// <summary>

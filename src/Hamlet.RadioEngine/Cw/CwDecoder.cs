@@ -109,6 +109,9 @@ public sealed class CwDecoder
     private bool _keyDown;
     private double _runSamples;
     private double _runSnrSum;
+
+    /// <summary>The loudest this mark got, in decibels over the noise.</summary>
+    private double _runSnrMax = double.MinValue;
     private int _runHops;
     private double _worstSnrDb = double.MaxValue;
     private double _runContestedDb = double.MinValue;
@@ -571,6 +574,7 @@ public sealed class CwDecoder
             _keyDown = gate.KeyDown;
             _runSamples = 0;
             _runSnrSum = 0;
+            _runSnrMax = double.MinValue;
             _runHops = 0;
             _runContestedDb = double.MinValue;
 
@@ -596,8 +600,11 @@ public sealed class CwDecoder
             // beautiful signal while quietly merging somebody else's dits into
             // the character. Taking the worse of the two margins is what turns
             // that from a confident wrong letter into an honest uncertain one.
-            _runSnrSum += Math.Min(
+            var height = Math.Min(
                 gate.SignalToNoiseDb, reading.MarginOverCompetitorDb);
+
+            _runSnrSum += height;
+            _runSnrMax = Math.Max(_runSnrMax, height);
 
             // THE STRONGEST MOMENT OF THE MARK, not the weakest. A keyed
             // element's rising and falling edges are amplitude transients, and a
@@ -660,9 +667,20 @@ public sealed class CwDecoder
         // decides whether anything else works. A speed estimator fed the lengths
         // of somebody's own keying gaps settles on a speed nobody is sending at,
         // and every character after it is measured against that.
+        //
+        // **AND IT GOES IN WITH HOW LOUD IT WAS** (HM-DEC-144). Length alone
+        // cannot tell a merged element from a sliver the gate chopped out of
+        // band noise, and height can: on `cw-2026-08-17-134712` the station's
+        // elements stand about ten decibels above its chatter. The average and
+        // the loudest moment are both carried, because a real mark the gate held
+        // open across a dip has an average that sags and a loudest moment that
+        // does not.
         if (!truncated)
         {
-            _speed.AddMark(_runSamples);
+            _speed.AddMark(
+                _runSamples,
+                snr,
+                _runHops > 0 ? _runSnrMax : double.NaN);
         }
 
         _pending.Add(new PendingElement(
