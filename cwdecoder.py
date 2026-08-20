@@ -160,13 +160,54 @@ def runs(key, t, active=None, border_ms=60):
     return marks, spaces, starts, trunc
 
 # ---------------- 5+6. clock and gap classification ----------------
-def fit_clock(marks):
+def fit_clock(marks, acquiring=True):
+    """Fit a dit and a dah, refusing a smear rather than a heavy fist.
+
+    **THE RATIO BAND WAS 2.5 TO 3.8 AND IT REFUSED A REAL STATION.** Hamlet's own
+    recording cw-2026-08-17-134712 holds a fist sending a dah of 4.24 dits, read
+    out of the gate's elements and adjudicated as HM-DEC-144, and this decoder
+    scored the fixture cut from it at 0% saying the timings do not cluster as
+    Morse. A judge that cannot read a fist the radio has heard is not
+    independent, it is wrong.
+
+    **WHAT REPLACES IT IS FITTED FROM THE MARKS RATHER THAN ASSUMED ABOUT THEM.**
+    The question a clock fit has to answer is whether these are two lengths or one
+    smear, and the statistic for that is how far the two centres sit apart counted
+    in their own scatter (HM-DEC-095). A fist sends its dits within a few per cent
+    of each other whatever ratio it chooses; a gate chattering on noise produces a
+    continuum that two-means cuts in half wherever it likes.
+
+    The dit sanity range stays, because 4 to 40 words a minute is a fact about
+    people rather than an assumption about their spacing.
+
+    `acquiring` is false on the slow-fist re-read further down, where this is a
+    refinement rather than a first answer and must not replace a working clock.
+    """
     if len(marks) < 8: return None
     c1, c2 = two_means(marks)
-    ratio = c2/max(c1, 1e-9)
-    if not (2.5 <= ratio <= 3.8): return None
     if c1 < 30 or c1 > 350: return None            # 4-40 WPM sanity
-    return c1, c2
+    if 2.5 <= c2/max(c1, 1e-9) <= 3.8: return c1, c2
+    if not acquiring: return None
+    return (c1, c2) if well_separated(marks, c1, c2) else None
+
+def well_separated(marks, c1, c2):
+    """Whether these are two lengths rather than one spread cut in half.
+
+    **THE ONLY WAY INTO THE CLOCK FOR A FIST OUTSIDE THE TEXTBOOK BAND**, and it
+    is a widening that can only accept: anything the ratio band already took is
+    taken before this is asked, so no reading that worked before can change.
+
+    Tried first as a replacement for the band rather than an addition to it, and
+    measured: at five decibels the marks scatter enough that fast-working fell
+    from 58% to nothing at all. The scatter test is right about shape and wrong
+    about noise, and the band is the other way round, so the reference keeps both.
+    """
+    if c2 <= c1: return False
+    lo = marks[np.abs(marks-c1) <= np.abs(marks-c2)]
+    hi = marks[np.abs(marks-c1) > np.abs(marks-c2)]
+    if len(lo) < 3 or len(hi) < 3: return False
+    spread = np.abs(lo-c1).mean() + np.abs(hi-c2).mean()
+    return spread <= 1e-9 or (c2-c1)/spread >= 4.0
 
 def classify_gaps(spaces, dit):
     """Cluster gaps into intra/char/word. Falls back to dit multiples if too few."""
@@ -273,7 +314,13 @@ def run(path):
         key, contrast = gate(t, edb, active)
         key = deglitch(key, t[1]-t[0], 20)
         marks, spaces, starts, trunc = runs(key, t, active)
-        refit = fit_clock(marks[~trunc])
+        # **THE REFIT IS A REFINEMENT AND A REFINEMENT THAT CHANGES THE
+        # ANSWER IS NOT ONE.** The widened acceptance below exists so a heavy
+        # fist can be acquired at all; letting it also apply here took
+        # farnsworth-light from 100% to 73%, because the narrower re-read
+        # produced a clock the old band would have rejected and the original
+        # was better.
+        refit = fit_clock(marks[~trunc], acquiring=False)
         if refit is not None:
             dit, dah = refit
             clock = refit

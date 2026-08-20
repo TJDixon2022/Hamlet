@@ -27,40 +27,50 @@ If all four hold, say "Hamlet confirmed" and continue.
 
 ## Why this unit exists
 
-**Every synthesized fixture in this repository sends textbook 1:3:7 spacing, and
-neither station proved on the air does.**
+**Hamlet loses the front of every message and keeps the end, and on the air the
+front is the callsign.**
 
-Last session found `Refine`'s one cause: it treats the sender's element gap as a
-second measurement of the dit, and it is one only when the spacing is textbook.
-Every fixture sends exactly one dit of gap, which is what makes the average work on
-them. Both adjudicated stations are Farnsworth — **35.6 ms of gap on a 56.3 ms dit
-for `N4L`, 73.3 on 100.4 for `VA3VRR`** — which is what HM-DEC-115 measured off the
-air as how people actually send.
+Last session produced the first Farnsworth failure with a written-down answer:
 
-**Tim's ruling, this session, and it has two halves.**
+| audio | key | Hamlet reads | of 12 |
+|---|---|---|---|
+| `farnsworth-light` | `CQ DE N0CALL K` | `DE N0CALL K` | 9 |
+| `farnsworth-heavy` | `CQ DE N0CALL K` | `AL K` | 3 |
 
-**`Refine` is dropped.** Last session's own table settles it: without `Refine` the
-dit reads **55.0 against a true 56.3 on `N4L`** and **100.0 against 100.4 on
-`VA3VRR`**, both inside one per cent. **It buys nothing on either recording whose
-truth is known.** Four sessions were spent unblocking a change that was not needed.
-It is not to be revived without new evidence.
+**Nothing is invented in either.** Every character produced is correct and in the
+right place. What is missing is the opening — `CQ ` on the lighter fist and
+`CQ DE N0C` on the heavier one. The same shape appears on both adjudicated
+recordings, and the fitted dit is short in all four: 95.0 against 100 on the light
+fixture, 47.0 against 56 on the heavy, 87.0 against 100.4 on `VA3VRR`, 31.3 against
+56.3 on `N4L`.
 
-**The fixture suite gains Farnsworth senders.** The gap is not in the decoder, it is
-in what the suite knows about. A suite that only ever sends one style cannot catch
-a decoder that only handles one style, and that is the shape of every surprise this
-week.
+**This is a warm-up problem, not an accuracy problem**, and it is the one that costs
+Tim contacts. A call is short: `CQ CQ DE N4L K` is fourteen characters, and losing
+the first nine loses the callsign, which is the only part that matters. It is also
+the likeliest reason `cw-2026-08-17-134712` reads nothing at all — the fist is about
+six seconds inside a thirty-second recording, so the clock never gets its warm-up
+before the sender stops.
 
-*Rejected: re-cutting the existing fixtures to Farnsworth, which would retire
-answer keys the project has leaned on all week. Also rejected: keeping `Refine`
-and threshold-ing gap-over-dit at 0.90 against 0.63 and 0.73, which last session
-correctly named as the seventh instance of the error class six rulings have gone on
-closing.*
+**The numbers to move: 9 of 12 and 3 of 12.**
 
-**One correction to the previous order, made by the session and recorded here.**
-It said HM-DEC-119 measured the mark as "not long, so there is nothing to cancel."
-HM-DEC-119's figures are 100–110 ms for a true 100 — long by nought to ten per
-cent. **The premise is half true, not false, and that half is exactly what `Refine`
-cancels.** The order overstated it.
+---
+
+## Rulings carried in, both Tim's, this session
+
+**The reference decoder is to be fixed to read a 4.25-dit fist.** It scores
+`farnsworth-heavy` at 0% saying `read nothing (do not cluster as Morse)`, because it
+expects a dah near three dits. That fixture's timing is adjudicated to the
+millisecond from HM-DEC-144, read out of the gate's own elements. **A judge that
+cannot read a fist the radio has heard is not independent, it is wrong**, and
+HM-DEC-101 records that one earlier entry was cleared exactly this way.
+
+*Rejected: softening the fixture toward three dits, which would be generating a
+fist nobody has measured in order to pass a check. Also rejected: admitting the
+fixture without fixing the reference, because HM-DEC-101's gate exists to stop a
+session deciding its own fixture is good enough.*
+
+**The reference fix is task 1 and is bookkeeping.** *Do not let it consume the
+session. The rest of this unit is the point.*
 
 ---
 
@@ -74,10 +84,10 @@ not repair the instruction silently.
   `CwFarnsworthTests.TheBulletinDecodesToItsAnswerKey`,
   `CwTerminalTests.ClearingTheTranscriptLeavesTheDecoderAlone`,
   `ARecordingWithKeyingInItIsReadTests.TheDecoderSaysSomethingAboutIt`.
-  **2,108 tests, four failing. Anything above four is new.**
-- The separation test shipped two sessions ago. **`Refine` is not in the tree and
-  is not to be added.**
-- The bulletin currently reads 36 characters against a key of 47.
+  **2,117 tests, four failing. Anything above four is new.**
+- `farnsworth-light` and `farnsworth-heavy` shipped last session;
+  `farnsworth-heavy` is in `NotYetAdmissible`. **`Refine` is not in the tree and is
+  not to be revived.**
 
 ---
 
@@ -85,31 +95,27 @@ not repair the instruction silently.
 
 **§9.5.1 — one branch, `main`, commit *and push*.**
 
-**HM-DEC-144 — `cw-2026-08-17-134712` holds `N4L`, dit 56.3 ms, dah 238.3 ms,
-element gap 35.6 ms, ratio 4.24.**
+**HM-DEC-144 — `N4L`, dit 56.3 ms, dah 238.3, element gap 35.6, character gap 165,
+ratio 4.24.**
 
-**HM-DEC-145 — `cw-2026-08-17-013347` holds `VA3VRR`, dit 100.4 ms, dah 274.3 ms,
-element gap 73.3 ms, ratio 2.73.**
+**HM-DEC-145 — `VA3VRR`, dit 100.4 ms, dah 274.3, element gap 73.3, character gap
+150, ratio 2.73.**
 
-*Those two are the only measurements in this project that are known rather than
-estimated, and they are the model for what a Farnsworth fixture should sound like.*
+**HM-DEC-114 — the easy tier passes or fails.**
 
-**HM-DEC-115 — a real fist's element gap is genuinely shorter than its dit.** The
-finding this unit is bringing into the suite.
+**HM-DEC-101 — a fixture the reference cannot read is a bad fixture.**
 
-**HM-DEC-114 — the easy tier passes or fails.** *New fixtures do not join the easy
-tier without Tim's ruling. Say what tier you propose and why.*
+**HM-DEC-090 — marking is not a substitute for silence.**
 
-**HM-DEC-091 — one source, and it says which.** *A synthesized fixture is weaker
-evidence than a real capture and its answer key must say it was generated.*
-
-**HM-DEC-048 — nothing raises a confidence score.**
+**HM-DEC-048 — nothing raises a confidence score.** *A decoder that emits the
+opening by guessing at it has not solved this.*
 
 **HM-OPEN-054 stays open. No transition-shape test, no gate in front of emission.**
 
 **The keying meter is not read by the decoder.**
 
-**HM-OPEN-053 — `ShortestVote` stays at 5. `MaximumRatio` stays at 3.8.**
+**HM-OPEN-053 — `ShortestVote` stays at 5. `MaximumRatio` stays at 3.8.
+`MinimumSeparation` is not to be moved.**
 
 **HM-DEC-093 — no radio.**
 
@@ -123,74 +129,92 @@ is moving inside the task. Also every ten minutes while a task runs.
 
 ---
 
-## Task 1 — What the generator can already do. **CHANGE NOTHING.**
+## Task 1 — The reference. Bookkeeping, done quickly.
 
-Read the generator and report **whether it can send an element gap other than one
-dit**, and a character gap other than three, and a word gap other than seven.
+Fix the reference so it reads a 4.25-dit fist, re-score `farnsworth-heavy`, and
+admit it if it passes.
 
-- If it can, say how, and task 2 is a matter of new fixtures rather than new code.
-- **If it cannot, say so and say what would have to change.** *The generator is
-  `GENERATOR_BRIEF.md`'s subject and changing it is a larger thing than adding
-  fixtures.*
-- Report what the existing fixtures declare about their spacing, and whether any of
-  them already departs from 1:3:7.
-
----
-
-## Task 2 — Two Farnsworth fixtures, cut to the two known fists
-
-Generate two, each with an answer key, each modelled on a measurement rather than
-on a guess:
-
-| fixture | dit | element gap | dah | after |
-|---|---|---|---|---|
-| `farnsworth-heavy` | 56 ms | 36 ms | 238 ms | `N4L`, HM-DEC-144 |
-| `farnsworth-light` | 100 ms | 73 ms | 274 ms | `VA3VRR`, HM-DEC-145 |
-
-- **The text is yours; the timing is not.** Use ordinary amateur exchange content,
-  long enough to exercise word spacing.
-- **The answer key says the fixture was generated**, and from which decision entry
-  its timing comes (HM-DEC-091).
-- Character and word gaps: **use the adjudicated recordings' own figures where they
-  exist** — `N4L`'s character gap is 165 ms, `VA3VRR`'s 150 — and say what you did
-  for the word gap, which neither adjudication measured.
-- **Propose a tier and say why. Do not add them to the easy tier.** HM-DEC-114.
+- **Fitted, not a widened constant** where the reference allows it. *Seventh
+  instance of the error class six rulings have gone on closing.*
+- Report the score before and after, and confirm no other fixture's score moved.
+- **If this cannot be done in a small change, stop and report** rather than
+  rebuilding the reference. `farnsworth-light` alone is enough to work against.
 
 ---
 
-## Task 3 — What the decoder does with them
+## Task 2 — Why the opening is lost. **CHANGE NOTHING.**
 
-Run both. Report the read text against the key, character by character where they
-differ, and the fitted dit against the fixture's true dit.
+The measurement this unit turns on.
 
-**This is the point of the unit.** If the decoder reads them whole, the suite has
-gained coverage and nothing else is wrong. **If it does not, that is the first
-reproducible Farnsworth failure with an answer key in this project**, and it is
-worth more than the fixtures themselves.
+On `farnsworth-light`, `farnsworth-heavy` and both adjudicated recordings, report
+**character by character from the first mark**:
 
-- Report what fails and where. **Do not fix it.**
-- Run the whole suite. **Nothing existing may break.**
+1. **What the fitted dit is at each character**, against the true dit — so the
+   warm-up curve is visible rather than inferred.
+2. **At which character does the estimate first come within five per cent of
+   truth**, and how many characters were emitted before that point.
+3. **Which check rejects each lost character** — coherence, the separation test,
+   `LooksLikeMorse`, or something else. *Name the line for each one.*
+4. **What is in the window at the first character**, and how it differs from what
+   is there at the tenth.
+
+**Then say what the mechanism is, in one sentence.** *Not a suspect. A mechanism
+and a line.*
+
+**If the four differ in mechanism, stop and report.** Four openings lost four ways
+is a different unit.
 
 ---
 
-## Task 4 — The two adjudicated recordings, unchanged
+## Task 3 — Fix it, only if task 2 named one mechanism
 
-Confirm `134712` and `013347` still read as they did, and report their fitted dits
-against 56.3 and 100.4.
+- **Fitted, not a constant.**
+- **Inside the estimator.** No gate.
+- It may make the decoder measure sooner. **It may not make it emit a character it
+  has not resolved** (HM-DEC-048).
 
-*This unit touches no decoder code, so both should be identical. If either moved,
-something is wrong and it is the finding.*
+| | required |
+|---|---|
+| **`farnsworth-light`** | **> 9 of 12** |
+| **`farnsworth-heavy`** | **> 3 of 12** |
+| `cw-2026-08-20-014854` | **0** |
+| `cw-2026-08-20-014935` | **0** |
+| `004507` | ≥ 25 |
+| `003016` | ≥ 38 |
+| `003126` | ≥ 35 |
+| `003758` | ≥ 14 |
+| `013347` | ≥ 8, **and `VA3VRR` still readable** |
+| the easy tier | **whole** |
+| every other fixture | **whole** |
+
+**Report the fitted dit for all four against their true figures**, and say whether
+`134712` now emits anything.
+
+**A change that lifts the fixtures and drops a real recording is not a fix.**
+
+---
+
+## Task 4 — What it means on the air
+
+One paragraph, and it is what Tim reads first.
+
+**On a fourteen-character call, how many characters does Hamlet now need before it
+is reading?** Say it as a number, on both fists, and say what that means for
+someone calling `CQ CQ DE <callsign> K` — whether the callsign now survives.
+
+*Every other measure in this project is a character count on a recording. This one
+is the phase goal.*
 
 ---
 
 ## Parked — do not touch, do not raise
 
-- **`Refine`.** Dropped by ruling. *Not to be revived, re-measured or proposed.*
+- **`Refine`.** Dropped by ruling. Not to be revived, re-measured or proposed.
 - **A transition-shape test, or any gate in front of emission.**
 - **Character structure**, and the keying meter as something the decoder reads.
-- **`MaximumRatio`**, `MinimumSeparation`, the three-way length fit, the
-  speed-tracker rewrite.
-- **The bulletin's standing red.** HM-DEC-114 left it deliberately.
+- **`MaximumRatio`**, `MinimumSeparation`, the three-way length fit.
+- **The bulletin's standing red.** HM-DEC-114 left it deliberately. *Report its
+  count if it moves; do not work on it.*
 - **Why the 19th's stations are missing from the audio.**
 - **The 69 and 233.**
 - **Adjudicating by ear.** Tim's.
@@ -207,13 +231,13 @@ not touch coverage thresholds.
 
 Unit-specific:
 
-- **Do not change the decoder.** *This unit changes what the suite knows about, not
-  what the decoder does. A fixture and a fix in one session cannot be read apart.*
-- **Do not re-cut the existing fixtures.** *Their answer keys are load-bearing.*
-- **Do not add anything to the easy tier.** HM-DEC-114.
-- **Do not invent timings.** *Both fixtures come from adjudicated measurements; a
-  third fist made up to fill a gap would be exactly the weak evidence this unit
-  exists to reduce.*
+- **Do not re-cut or soften any fixture.** *Their timings are adjudicated and their
+  bytes are load-bearing. Appending to the catalogue shifted the seed counter once
+  already and silently re-cut `qsk-preamble`.*
+- **Do not spend the session on the reference.** *Task 1 is bookkeeping.*
+- **Do not emit an unresolved character to recover the opening.** HM-DEC-048.
+- **Do not tune to one fixture.** *Two generated fists, two adjudicated recordings
+  and the whole suite are the guards, and they disagree enough to be useful.*
 
 ---
 
@@ -222,12 +246,12 @@ Unit-specific:
 `OUTPUT.md` at the repository root, overwritten and printed. Four sections, no
 other headings, per §13: **What Claude did**, **What Tim should expect**, **What we
 should do next**, **What's blocking us** — the last carrying **Asks still
-outstanding** per HM-DEC-139. **The fixture-spacing ask leaves the queue; it was
-ruled.**
+outstanding** per HM-DEC-139. **The reference ask leaves the queue; it was ruled.**
 
-**Section 1 opens with task 3**: what the decoder read against the keys.
+**Section 1 opens with task 3's table**, or with task 2's mechanism if nothing
+shipped.
 
-**Section 2 says plainly whether the decoder handles a Farnsworth sender it has
-never seen before.**
+**Section 2 opens with task 4** — whether a callsign at the front of a call now
+survives.
 
 **Stop and report.**

@@ -22,5 +22,5 @@ qsb           none
 preamble      none
 
 peak          -12.8 dBFS
-reference    read nothing (do not cluster as Morse)
+reference    100% of the message  [CQ DE N0CALL K]
 scoredBytes  177548

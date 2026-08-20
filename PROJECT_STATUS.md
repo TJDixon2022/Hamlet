@@ -2,8 +2,8 @@ STATE: COMPLETED
 PHASE: 4 of 4
 BALL: tim
 NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-20T18:00:00-04:00
-NOTE: First Farnsworth failure with an answer key: 9 of 12 on the light fist, 3 on the heavy one
+UPDATED: 2026-08-20T18:52:00-04:00
+NOTE: Two mechanisms, not one, so no fix was built; reference now reads the heavy fist at 100
 
 ---
 
