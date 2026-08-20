@@ -2,161 +2,118 @@
 
 ## 1. What Claude did
 
-### Task 1: the rule, stated before it was built
+### Task 1: the separation figures, and they do not separate
 
-**A mark is set aside as not this sender's when the heights of the marks in the
-window fall into two groups and it is in the low one.** Whether there are two
-groups at all is asked by fitting two centres to the heights and measuring how far
-apart they sit **counted in their own scatter**, which is the same test and the
-same figure `CwToneSurvey.MinimumSeparation` already applies to mark lengths, and a
-ratio rather than a level so it survives a fade. **It reads both statistics: a mark
-is quiet only when its average height and its loudest moment are both on the low
-side.** That is what answers `cw-2026-08-18-004507`'s stretched marks, real
-elements of 90 to 275 ms that the gate held open across a dip, whose average sags
-to 11–15 dB while their loudest moment stays with the plateau at 18–26; reading the
-average alone discards them, and reading the loudest alone separates the callsign
-window by only 4.4 dB against 10.1 for the average. **Where every mark is real
-there is one height group and nothing is dropped**, which is `tightfist-easy` and
-every clean fixture in the suite. **A window that is entirely chatter also has one
-height group**, so an empty band is left exactly as it was: this rule cannot rescue
-one and does not try (§0.0). Where the heights are not known at all, nothing is
-judged (HM-DEC-091).
+Claude Code on the development machine, in `C:\Source\HamLet`, on `main`. The
+prompt named `PROJECT: Hamlet` and the four gate checks all hold. **No radio is
+attached** (HM-DEC-093). The amplitude rule from last session is in the tree and
+`Refine` is not, as the instruction states.
 
-### Task 3: the nine captures and the easy tier
+**What was fitted.** For a candidate interval, every transition is turned into an
+angle by how far through the interval it falls, and the length of the mean of those
+angles is taken. One means every edge lands at the same point in the cycle; nought
+means they are spread evenly around it. The interval is swept from 15 to 250
+milliseconds in half-millisecond steps and the best kept. **Nothing is taken from
+the speed estimator, no interval is assumed, and nothing is asked about
+characters** — only the times the signal turned on and off.
 
-| capture | before | after | required | |
-|---|---|---|---|---|
-| `cw-2026-08-18-004507` | 25 | **26** | ≥ 25 | ✓ |
-| `cw-2026-08-18-003016` | 38 | 38 | ≥ 38 | ✓ |
-| `cw-2026-08-18-003126` | 34 | **36** | ≥ 34 | ✓ |
-| `cw-2026-08-18-003758` | 14 | 14 | ≥ 14 | ✓ |
-| `cw-2026-08-17-013347` | 8 | 8 | ≥ 8 | ✓ |
-| `cw-2026-08-20-014854` | 1 | 1 | no more than 1 | ✓ |
-| `cw-2026-08-20-014935` | 0 | 0 | 0 | ✓ |
-| **the easy tier** | whole | **whole** | whole | ✓ |
-| `cw-2026-08-17-134712` | 0 | **0** | reported | |
-| `cw-2026-08-17-013622` | 0 | 0 | reported | |
+**On synthesized audio it works beautifully.** Every easy-tier fixture finds its
+own dit to within a millisecond:
 
-**The easy tier is whole. Every fixture passes**, including `exchange-easy` and
-`tightfist-easy`, which is where the previous attempt at this line failed.
+| fixture | agreement | interval found | true dit |
+|---|---|---|---|
+| `coverage-easy` | 0.954 | 100 ms | 100 |
+| `exchange-easy` | 0.938 | 100 | 100 |
+| `fast-easy` | 0.832 | 48 | 48 |
+| `prosigns-easy` | 0.754 | 100 | 100 |
+| `tightfist-easy` | 0.702 | 88 | 88 |
 
-**The dit, before and after:**
+**On real audio, across a whole recording, it says nothing at all.**
 
-| capture | before | after |
-|---|---|---|
-| `cw-2026-08-17-013347` | 87.0 ms | 87.0 |
-| `cw-2026-08-17-013622` | 21.6 | 21.6 |
-| **`cw-2026-08-17-134712`** | **24.5** | **31.3** |
-| `cw-2026-08-18-004507` | 54.2 | 54.2 |
-| `cw-2026-08-18-003016` | 47.9 | 47.9 |
-| `cw-2026-08-18-003126` | 49.8 | 49.8 |
-| `cw-2026-08-18-003758` | 34.3 | 34.3 |
-| `cw-2026-08-20-014854` | 42.7 | 42.7 |
-| `cw-2026-08-20-014935` | 40.9 | 40.9 |
+| capture | whole-file agreement | best window | window median |
+|---|---|---|---|
+| `cw-2026-08-17-013347` | 0.254 | 0.660 | 0.483 |
+| `cw-2026-08-17-013622` | 0.110 | 0.485 | 0.344 |
+| **`cw-2026-08-17-134712`** (holds `N4L`) | **0.177** | 0.471 | 0.364 |
+| `cw-2026-08-18-004507` | 0.242 | 0.597 | 0.450 |
+| `cw-2026-08-18-003016` | 0.148 | 0.618 | 0.457 |
+| `cw-2026-08-18-003126` | 0.160 | 0.677 | 0.471 |
+| `cw-2026-08-18-003758` | 0.166 | 0.731 | 0.360 |
+| **`cw-2026-08-20-014854`** (holds nothing) | **0.122** | 0.437 | 0.335 |
+| **`cw-2026-08-20-014935`** (holds nothing) | **0.116** | 0.471 | 0.336 |
+| **`134712`'s callsign window**, 21.45–23.01 s | **0.677 at 48 ms** | 0.773 | 0.760 |
 
-**These are end-of-file figures and only one moves, which is the point.** By the
-last sample of every recording but `134712` the window holds one height population
-and the rule does nothing, exactly as designed. **The number that matters is inside
-the callsign**, where the rule sets aside eight to twelve of the twenty marks and
-the dit rises from **35–40 ms to 46.5–51.0** against HM-DEC-144's hand-verified
-**56.3**. Coherence reaches 0.49 there against a floor of 0.35, and
-`LooksLikeMorse` goes true for the first time on that recording.
+**The recording with a proved station in it scores 0.177 and the recording with
+nothing in it scores 0.116.** A recording holding a station is mostly band noise
+too, so a figure taken over the whole of one measures the noise.
 
-### Task 2: what shipped
+**The callsign window itself scores 0.677 at 48 ms**, which is the candidate
+working exactly as hoped on the four seconds where the answer is known, and it is
+not enough, because a gate does not get to choose its window.
 
-Two changes, and they are one mechanism.
+**At the moment of emission, which is where a gate would stand, the two overlap.**
 
-**`CwDecoder` carries each mark's height into the estimator.** `OnMarkEnded`
-already had the mark's average signal-to-noise figure; a running maximum is kept
-beside it, four instructions per hop, and both go in with the length.
+| | lowest | tenth percentile | median |
+|---|---|---|---|
+| `cw-2026-08-18-003016`, real | **0.389** | 0.542 | 0.673 |
+| `cw-2026-08-18-004507`, real | 0.488 | 0.515 | 0.600 |
+| `cw-2026-08-18-003758`, real | 0.534 | 0.565 | 0.704 |
+| `cw-2026-08-17-013347`, real | 0.597 | 0.633 | 0.688 |
+| **`cw-2026-08-20-014854`, invented** | **0.470** | — | 0.470 |
 
-**`CwSpeedEstimator` applies the rule before it fits anything**, and everything
-downstream reads the survivors: the two-way length fit, `MedianOfShortCluster`, and
-`MeasureCoherence`.
+**A real character comes out at 0.389 and an invented one at 0.470.** No line
+drawn on this statistic keeps the first and rejects the second.
 
-**`MedianOfShortCluster` is not deleted and its reason is unchanged.** It exists
-because a handful of very short marks survive the gate on any real signal and an
-average is defenceless against them (HM-DEC-095), and that is still true. What
-changed is that it no longer reaches past the drop: it took the median of every
-mark below the dit-and-dah cut, which on `134712` is 145 ms, so it put all nine
-chatter slivers straight back into the estimate that had just excluded them.
+**And in the configuration the gate exists to enable it is worse.** With `Refine`
+applied — the change this gate was commissioned to unblock — `cw-2026-08-20-014854`
+invents **nine** characters at agreements from **0.456 to 0.533**, while
+`prosigns-easy` emits a real one at **0.493** and `tightfist-easy` at **0.497**.
+HM-DEC-114 makes those pass or fail. **A gate low enough to keep the easy tier
+whole admits everything the empty band invents.**
 
-**The three-way length fit was not needed and is not in the tree.** With the
-chatter removed by height, the existing two-way fit on the survivors gives the dit
-directly. That is why the easy tier survives this time: the previous attempt
-separated the populations by length, which cannot tell a merged element from a
-sliver, and dropped `tightfist-easy`'s real dits.
+**So the candidate is dead, and tasks 2, 3 and 4 did not run**, as Task 1
+instructs. Nothing was built on it.
 
-**One thing was got wrong and found by a test.** The separation test read a scatter
-of nought as *no* separation, which is exactly backwards: two groups of identical
-height are as far apart as two groups can be. It showed up on synthesized marks and
-never on real audio, which always has scatter, and the floor is now a thousandth of
-the gap rather than a level, so it stays a ratio.
+**One prediction of the instruction confirmed and one refined.** Keying is periodic
+and noise is not, and that is true: it is why the easy tier scores 0.70 to 0.95 and
+synthesized noise produces no transitions to fit at all. What the instruction did
+not anticipate is that **a real off-air recording is not the keyed case**. It is
+noise with a station in it, and the gate has to run over both at once.
 
-### Task 4: the fixture
+**A second candidate was tried and rejected on the same evidence.** Rather than
+the agreement itself, how far the best interval's peak stands above the background
+of all the intervals tried — a keyed signal should give a tall isolated peak and
+noise a flat curve, and it is relative rather than a level. Measured, it separates
+worse: `134712`'s callsign window reaches a prominence of 4.22 against 4.08 for
+`014854` and 4.34 for `013622`, and every real capture sits between 2.7 and 8.9
+alongside them.
 
-`ARecordingWithKeyingInItIsReadTests.TheDecoderSaysSomethingAboutIt` **stays red.**
-Nothing was tuned to make it pass.
+### What is in the tree
 
-**Where it dies now, and it is much further along than it was.**
-`LooksLikeMorse` is true for the first time on this recording, from **22.55 s to
-22.86 s**, with coherence at 0.42 to 0.49. **No character boundary falls inside
-that window.** The gap before it, at 22.49 s, is 150 ms and ends the `4`; the gaps
-inside are 25 to 40 ms element gaps; the next character ends after 23.01 s, by which
-time coherence has fallen back. So the decoder believes it is hearing Morse for
-about three hundred milliseconds in the middle of the final letter and releases
-nothing during it.
-
-**The remaining gap is `Refine`,** which holds the dit at 46.5–51.0 against 56.3 by
-averaging in the sender's 35 ms element gaps. That is a fifth short, and a fifth is
-the difference between coherence flickering and coherence holding.
-
-### Task 5: `Refine`, measured and withdrawn again
-
-Measured on top of everything above. **It does not ship.**
-
-| capture | with the rule | with the rule and `Refine` |
-|---|---|---|
-| `cw-2026-08-17-134712` | 0 | **1** |
-| `cw-2026-08-18-004507` | 26 | 26 |
-| `cw-2026-08-18-003016` | 38 | **43** |
-| `cw-2026-08-18-003126` | 36 | 36 |
-| `cw-2026-08-18-003758` | 14 | **15** |
-| **`cw-2026-08-20-014854`** | **1** | **5** |
-| `cw-2026-08-20-014935` | 0 | 0 |
-
-**`cw-2026-08-20-014854` reads `U EE ■ ■`** out of a recording the keying meter
-finds no keying in at any pitch. The withdrawal condition is unchanged and
-non-negotiable, so it is out.
-
-**And the amplitude rule does not save it, for a reason worth stating.** That
-recording is entirely chatter, so it has one height population, so the rule
-correctly does nothing — which is the behaviour that keeps every clean fixture
-safe. `Refine`'s removal then lengthens the dit until noise passes the coherence
-check. **The rule protects a window with a station in it and cannot protect a
-window without one.**
+`ACarrierClockDoesNotSeparateTests` keeps the measurement, so the finding is
+reproducible rather than remembered. It asserts what was measured: that the fit
+works on clean audio, that it says nothing over a whole real recording, and that a
+real character and an invented one come out on the wrong side of each other.
+**Nothing in `src` reads it and no `src` file changed this session.**
 
 ## 2. What Tim should expect
 
-**Yes, something shipped, and no, it does not yet read
-`cw-2026-08-17-134712`.**
+**Nothing shipped, and no, the decoder still does not read
+`cw-2026-08-17-134712`.** What you are running tonight is exactly what you were
+running after the last session: the amplitude rule, and no `Refine`.
 
-What changed in what you will run tonight: the decoder now sets aside marks that
-are too quiet to be the station's before it works out the speed. On every clean
-signal and every empty band **that does nothing at all** — one height group, no
-drop, identical behaviour. On a recording where a real station is buried in a gate
-chattering on band noise, it keeps the station's marks and throws the chatter out
-of the speed estimate.
+**What you have instead is a candidate eliminated with numbers.** Three ideas have
+now been measured against HM-OPEN-054 and all three are gone: the tone survey's
+verdict, which let a carrier recording produce 33 characters; the ratio band, which
+would discard `N4L`; and now the transition clock, which cannot be set anywhere
+that keeps the easy tier and rejects an empty band.
 
-**Two captures read more and none reads less**: `004507` from 25 characters to 26
-and `003126` from 34 to 36. Neither has an adjudicated answer key, so **more
-characters is not the same as more correct characters**, and you are looking at
-`004507` this afternoon, which will say more about that than any count.
+**The one encouraging number.** `134712`'s callsign window fits a clock at 48 ms
+with an agreement of 0.677, the highest of any real window measured. **The
+information is in the audio.** What is missing is a way to ask for it that does not
+also have to survive the twenty-six seconds of band noise either side.
 
-**The easy tier is whole**, which is the guard the last two attempts at this line
-failed.
-
-**Build clean, no warnings. 2,089 tests, four failing, and they are the four
+**Build clean, no warnings. 2,096 tests, four failing, and they are the four
 expected:**
 
 - `CwSettledSilenceTests.APassThatReadSomethingEmitsSomething`
@@ -164,59 +121,66 @@ expected:**
 - `CwTerminalTests.ClearingTheTranscriptLeavesTheDecoderAlone`
 - `ARecordingWithKeyingInItIsReadTests.TheDecoderSaysSomethingAboutIt`
 
-Six tests were added. `ShortestVote` is still 5, `MaximumRatio` is still 3.8, and
-the gate, the survey and the meter were not touched.
+Seven tests were added, all measurement, all passing. The easy tier is whole.
+`ShortestVote` is still 5, `MaximumRatio` is still 3.8, and the gate, the survey
+and the meter were not touched.
 
-**One caveat that belongs in front of all of it.** `N4L` is the only adjudicated
-ground truth in nine real recordings, and every number above about which marks are
-the station's rests on that one station. A second recording with a readable
-callsign would double the evidence this whole chain stands on.
+**The boundary was not crossed.** Nothing here fitted anything to characters, asked
+which character a mark belonged to, or distinguished element gaps from character
+gaps. The clock was fitted to the on and off times and nothing else.
 
 ## 3. What we should do next
 
-- **`Refine`, with something that keeps an empty band silent.** It is now the only
-  thing between the decoder and `134712`, it has been measured three times, and
-  each time the same recording has stopped it. What it needs is not a better dit
-  but a reason for the decoder to stay quiet where there is no station, and that is
-  a different question from this one.
-- **Adjudicate `cw-2026-08-18-004507`.** It went from 25 to 26 characters tonight
-  and nobody knows whether either number is any good. It is the recording with the
-  most text in it and the one you are already listening to.
-- Keep a second recording with a readable callsign when one is heard.
-- The keying meter's thresholds are still unscored against an evening's roster.
+- **Look at where the question is being asked, not at what is being asked.** Every
+  candidate so far has been a test applied to a rolling window that spans both the
+  station and the noise around it. `134712`'s callsign window scores 0.677 and its
+  whole recording scores 0.177, and that difference is not about the statistic.
+- **The obvious remaining idea is the one already ruled out, and it may deserve
+  re-examining on new terms.** The keying meter separates these recordings
+  cleanly, is in the tree, and is forbidden to the decoder for a good reason. What
+  is not forbidden is asking whether the *principle* it uses — a window chosen for
+  the measurement rather than inherited from the decoder's own state — is what the
+  other candidates have been missing.
+- **Adjudicate `cw-2026-08-18-004507`.** It went 25 to 26 characters last session
+  and nobody knows whether either number is any good.
+- Keep a second recording with a readable callsign when one is heard. `N4L` is
+  still the only ground truth in nine real recordings.
 
 ## 4. What's blocking us
 
-Nothing blocks the next unit.
+**`Refine` is still blocked and HM-OPEN-054 is still open.** Three candidates are
+gone and the ruling that closed it this session has not survived measurement.
 
 **One ask, new this session.**
 
-> **The decoder needs a reason to stay silent on a band with no station on it, and
-> it is not the amplitude rule's job.**
+> **The transition clock is rejected as a keying test, and the reason is where the
+> question is asked rather than what is asked.**
 >
-> `Refine` has now been measured three times. Alone it read five characters out of
-> `cw-2026-08-20-014854`; with the mark sample corrected by the three-way length
-> fit it read one; with the sample corrected by the amplitude rule it reads five
-> again. Each time the fault is the same shape: removing the gap average lengthens
-> the dit until gate chatter passes the coherence check.
+> Fitted to `cw-2026-08-17-134712`'s callsign window the clock finds 48 ms and the
+> edges agree at 0.677, the strongest figure of any real window measured, and
+> HM-DEC-144 puts the true dit at 56.3. **The idea works on the audio it was
+> designed for.** Fitted across the whole of that recording it scores 0.177 against
+> 0.116 for a recording holding nothing, because twenty-six of its thirty seconds
+> are band noise and the statistic measures them.
 >
-> **The amplitude rule cannot close it and should not be asked to.** That recording
-> holds no station at any pitch, so its marks are one height population, so the
-> rule correctly does nothing. **The behaviour that makes it safe on every clean
-> fixture is the same behaviour that leaves it powerless here**, and bending it to
-> catch this case is how it would start discarding the quiet end of real signals.
+> **A gate has to run where the decoder runs**, on a rolling window that contains
+> whatever is passing at the time. At the moment of emission a real character comes
+> out at 0.389 and an invented one at 0.470, and with `Refine` applied the easy
+> tier emits at 0.493 while an empty band invents up to 0.533. There is nowhere to
+> draw the line.
 >
-> **Rejected: shipping `Refine` anyway because the invented characters are marked.**
-> HM-DEC-090 settled that: seventeen hundred characters once came out of half a
-> minute of band noise, every one marked, and marking was not enough. **Also
-> rejected: a floor on how short a dit may be**, which would be the seventh
-> instance of the error class five rulings have gone on closing.
+> **Rejected: gating on the best window rather than the current one.** That is a
+> decoder deciding it may speak because it heard something well several seconds
+> ago, which is the shape of claim §0.0 exists to prevent. **Also rejected: the
+> peak's prominence**, which was measured on the same recordings and separates
+> worse, putting `134712`'s own callsign window at 4.22 against 4.08 for a
+> recording with nothing in it.
 
 ### Asks still outstanding
 
 - **What keeps the decoder silent on an empty band, so `Refine` can ship.** First
-  made 2026-08-20, this session. Waiting on Tim or on a unit scoped to it.
-  `Refine` is not in the tree.
+  made 2026-08-20. Three candidates measured and rejected: the survey's verdict,
+  the ratio band, and now the transition clock. `Refine` is not in the tree.
 - **The keying meter's provisional thresholds.** First made 2026-08-20. Waiting on
   one evening's roster scored against the `meter` column.
 - **Whether `SHACK_FACTS.md` still holds that CI-V Transceive is off.** First made
@@ -236,6 +200,4 @@ Nothing blocks the next unit.
 - **HM-OPEN-007.** Open and unruled since 2026-08-14, named in HM-DEC-140 as the
   reason the queue's own premise is worth re-testing. Waiting on Tim.
 
-**One item leaves the queue.** Amplitude as a relative discriminator, and which
-statistic it reads: ruled last session, built this one, and it reads both, with the
-loudest moment rescuing what the average would have discarded.
+**Nothing leaves the queue this session.**

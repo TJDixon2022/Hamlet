@@ -1,9 +1,9 @@
 STATE: COMPLETED
-PHASE: 5 of 5
+PHASE: 1 of 4
 BALL: tim
 NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-20T15:14:00-04:00
-NOTE: Quiet marks now left out of the speed fit; easy tier whole, 2,089 tests, the same 4 red
+UPDATED: 2026-08-20T16:10:00-04:00
+NOTE: Clock candidate dead: a real character emits at 0.389 and an invented one at 0.470; nothing built
 
 ---
 
