@@ -25,6 +25,13 @@ namespace Hamlet.RadioEngine.Cw;
 /// What the decoder had actually read at the moment of the press, or "" when it
 /// had read nothing.
 /// </param>
+/// <param name="Meter">
+/// What the keying meter said at the moment of the press, or "" when there was
+/// nothing to say. **This is the column that makes an evening worth something
+/// even when the fault does not fall out** (HM-DEC-091): a row where the operator
+/// heard a station and the meter heard no keying says the signal was lost before
+/// the decoder ever saw it, and no row has ever been able to say that.
+/// </param>
 public sealed record CwCase(
     DateTime AtUtc,
     long FrequencyHz,
@@ -37,7 +44,8 @@ public sealed record CwCase(
     int Emitted,
     int Unsure,
     string Text = "",
-    CwCountsCover Covers = CwCountsCover.Session);
+    CwCountsCover Covers = CwCountsCover.Session,
+    string Meter = "");
 
 /// <summary>What a pair of counts on a roster row is counting.</summary>
 public enum CwCountsCover
@@ -89,6 +97,7 @@ public static class CwCaseRoster
         "snrDb",
         "wpm",
         "chars",
+        "meter",
         "text",
         "read");
 
@@ -211,6 +220,13 @@ public static class CwCaseRoster
             // in the row, most cases are decided by reading the file and the audio
             // is only needed for the ambiguous ones.
             //
+            // **WHETHER HAMLET COULD HEAR KEYING AT ALL**, which is a different
+            // question from whether it read anything and has never been on a row.
+            // The pair that matters is a case the operator marked and a meter that
+            // found nothing being keyed: that is the signal going missing before
+            // the decoder, and it is what an evening of these rows is for.
+            Readable(one.Meter, "not measured"),
+
             // **AND HAVING READ NOTHING IS THE MOST IMPORTANT ROW ON THE SHEET**
             // (HM-DEC-091), so it says so in words rather than leaving a cell that
             // looks like a column somebody forgot to fill in.
@@ -234,7 +250,18 @@ public static class CwCaseRoster
     /// spaces and a future change to either is one line away from breaking the
     /// file everything tomorrow is scored from.
     /// </remarks>
-    public static string Readable(string? text)
+    public static string Readable(string? text) => Readable(text, "nothing read");
+
+    /// <summary>One cell of a tab-separated file, with its own empty answer.</summary>
+    /// <param name="text">The value, or "".</param>
+    /// <param name="whenEmpty">
+    /// What an empty one says. **An empty cell is not a real answer** and reads as
+    /// a column somebody forgot to fill in, so every column says its own version
+    /// in words: a transcript says nothing was read and a meter says it was not
+    /// measured, which are different facts (§0.0).
+    /// </param>
+    /// <returns>The cell.</returns>
+    public static string Readable(string? text, string whenEmpty)
     {
         var clean = (text ?? string.Empty)
             .Replace('\t', ' ')
@@ -242,7 +269,7 @@ public static class CwCaseRoster
             .Replace('\n', ' ')
             .Trim();
 
-        return clean.Length == 0 ? "nothing read" : clean;
+        return clean.Length == 0 ? whenEmpty : clean;
     }
 
     /// <summary>Append one case to the evening's roster, creating it if new.</summary>

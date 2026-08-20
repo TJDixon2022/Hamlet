@@ -98,6 +98,6 @@ public sealed class CwCaseCountsSayWhatTheyCountTests
             Case("cw-2026-08-20-014854.wav", "", covers)).Split('\t');
 
         Assert.Equal(CwCaseRoster.Header.Split('\t').Length, columns.Length);
-        Assert.Equal(string.Empty, columns[9]);
+        Assert.Equal(string.Empty, columns[10]);
     }
 }

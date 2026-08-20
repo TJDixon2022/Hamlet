@@ -204,18 +204,18 @@ public sealed class CaseRosterSurvivesAnEveningTests : IDisposable
         // **THE ROW CARRIES WHAT HAMLET READ, NOT ONLY HOW MUCH.** A count is a
         // pointer to evidence; scoring thirty cases from counts alone means
         // opening thirty recordings.
-        Assert.Equal(10, first.Length);
-        Assert.NotEqual("nothing read", first[8]);
-        Assert.Equal(CwCaseRoster.Readable(read), first[8]);
+        Assert.Equal(11, first.Length);
+        Assert.NotEqual("nothing read", first[9]);
+        Assert.Equal(CwCaseRoster.Readable(read), first[9]);
 
         // **AND THE REFUSED PRESS CARRIES IT TOO** (HM-DEC-090). He heard the
         // station whether or not a recording was written, so the row that records
         // the refusal is scored the same way as any other.
-        Assert.Equal(CwCaseRoster.Readable(read), second[8]);
+        Assert.Equal(CwCaseRoster.Readable(read), second[9]);
 
         // The operator's column is still last and still empty.
-        Assert.Equal(string.Empty, first[9]);
-        Assert.Equal(string.Empty, second[9]);
+        Assert.Equal(string.Empty, first[10]);
+        Assert.Equal(string.Empty, second[10]);
 
         // **ONE ROW IS ONE LINE**, or the columns after the text land under the
         // wrong headings and tomorrow's scoring is done against a shifted file.
@@ -223,7 +223,7 @@ public sealed class CaseRosterSurvivesAnEveningTests : IDisposable
         {
             Assert.DoesNotContain('\n', line);
             Assert.DoesNotContain('\r', line);
-            Assert.Equal(9, line.Count(c => c == '\t'));
+            Assert.Equal(10, line.Count(c => c == '\t'));
         }
 
         // And the evening line carries no tabs at all, so a scorer splitting the
@@ -251,8 +251,8 @@ public sealed class CaseRosterSurvivesAnEveningTests : IDisposable
         {
             var columns = CwCaseRoster.Row(one).Split('\t');
 
-            Assert.Equal(10, columns.Length);
-            Assert.Equal(string.Empty, columns[9]);
+            Assert.Equal(11, columns.Length);
+            Assert.Equal(string.Empty, columns[10]);
         }
 
         // And a decoder that read nothing says so in its own columns rather than
@@ -281,9 +281,9 @@ public sealed class CaseRosterSurvivesAnEveningTests : IDisposable
 
         var columns = CwCaseRoster.Row(heard).Split('\t');
 
-        Assert.Equal("nothing read", columns[8]);
-        Assert.NotEqual(string.Empty, columns[8]);
-        Assert.Equal(string.Empty, columns[9]);
+        Assert.Equal("nothing read", columns[9]);
+        Assert.NotEqual(string.Empty, columns[9]);
+        Assert.Equal(string.Empty, columns[10]);
     }
 
     /// <remarks>
@@ -304,7 +304,7 @@ public sealed class CaseRosterSurvivesAnEveningTests : IDisposable
 
         Assert.DoesNotContain('\n', row);
         Assert.DoesNotContain('\r', row);
-        Assert.Equal(9, row.Count(c => c == '\t'));
+        Assert.Equal(10, row.Count(c => c == '\t'));
         Assert.Contains("CQ DE", row, StringComparison.Ordinal);
     }
 

@@ -131,6 +131,17 @@ public partial class MainWindowViewModel : ObservableObject
     /// <summary>Where the decoder's counters stood, recently, on the audio clock.</summary>
     private CwCounterTrail? _counters;
 
+    /// <summary>
+    /// Whether Hamlet can hear keying at all, said independently of the decoder.
+    /// </summary>
+    private CwKeyingMeter? _keyingMeter;
+
+    /// <summary>The meter's work, off the interface thread.</summary>
+    private Task<KeyingReading>? _meterWork;
+
+    /// <summary>When the meter last looked.</summary>
+    private DateTime _meterLastUtc = DateTime.MinValue;
+
     /// <summary>When the current decoder began listening, or null when none is.</summary>
     private DateTime? _decoderStartedUtc;
     private readonly Audio.ModeAudioPlayer _audio = new();
@@ -2858,6 +2869,17 @@ public partial class MainWindowViewModel : ObservableObject
         _decoderStartedUtc = DateTime.UtcNow;
         _counters = new CwCounterTrail(
             (long)_audioInput.SampleRate * AudioTap.SecondsKept * 2);
+
+        // **THE INSTRUMENT FOR THE FAULT NOBODY HAS FOUND YET** (HM-DEC-091).
+        // The operator hears stations Hamlet does not, and finds out the next
+        // morning from a roster. This says so while he is sitting at the radio,
+        // so he can turn the gain, change the filter or retune and watch the
+        // number answer. It reads the same tap the decoder reads and shares
+        // nothing else with it.
+        _keyingMeter = new CwKeyingMeter();
+        _meterWork = null;
+        _meterLastUtc = DateTime.MinValue;
+        PublishKeying(KeyingReading.None);
         // **THE TWO PASSES BOTH REACH THE SCREEN NOW, AND THEY ARE NOT
         // RIVALS** (HM-DEC-096). The leading edge answers while somebody is
         // still sending and is never final; the settled pass runs a few seconds
@@ -2924,6 +2946,9 @@ public partial class MainWindowViewModel : ObservableObject
         // a window straddle two of them.
         _counters = null;
         _decoderStartedUtc = null;
+        _keyingMeter = null;
+        _meterWork = null;
+        PublishKeying(KeyingReading.None);
 
         _audioInput?.Stop();
         _audioInput?.Dispose();
@@ -2987,6 +3012,8 @@ public partial class MainWindowViewModel : ObservableObject
         // strong signal that will not resolve and an empty band used to produce
         // the same screen, and they are different problems.
         DecodeReport = _decoder.Report;
+
+        RunKeyingMeter();
 
         // Sampled here, on the same tick as the readouts, so the two ends of any
         // window a capture asks about are each accurate to one tick.
@@ -3468,6 +3495,15 @@ public partial class MainWindowViewModel : ObservableObject
             // listening started, not what was read from this recording, and a
             // reader who takes it for the second has been misled by the layout.
             $"textCovers everything read {CountsCover()}",
+
+            // **WHETHER HAMLET COULD HEAR KEYING AT ALL, BESIDE WHAT IT READ**
+            // (HM-DEC-091). The two answer different questions and only one of
+            // them has ever been on a sheet. A capture where the operator heard a
+            // station and this line says no keying is the signal going missing
+            // before the decoder saw it, which is a fault nothing else here can
+            // point at. Measured by sweeping this recording's own pitches and
+            // sharing nothing with the decoder.
+            $"keying     {KeyingLine(_keyingReading)}",
             "",
         };
 
@@ -3594,6 +3630,137 @@ public partial class MainWindowViewModel : ObservableObject
 
     /// <summary>Whether any capture has already been written this session.</summary>
     private bool _hasPreviousCapture;
+
+    /// <summary>How often the keying meter looks.</summary>
+    /// <remarks>
+    /// Once a second, which is fast enough to feel like an answer when the
+    /// operator turns a knob and slow enough that one update's work, about
+    /// seventy milliseconds of it, is a small share of a core.
+    /// </remarks>
+    private static readonly TimeSpan KeyingMeterEvery = TimeSpan.FromSeconds(1);
+
+    /// <summary>What the keying meter is willing to say, in one word.</summary>
+    [ObservableProperty]
+    private string _keyingWord = "";
+
+    /// <summary>The measurements behind that word.</summary>
+    [ObservableProperty]
+    private string _keyingDetail = "";
+
+    /// <summary>Whether the meter is holding a verdict through a quiet stretch.</summary>
+    [ObservableProperty]
+    private bool _keyingIsHeld;
+
+    /// <summary>Whether the meter can hear somebody keying.</summary>
+    [ObservableProperty]
+    private bool _keyingIsPresent;
+
+    /// <summary>Whether the meter has settled on nothing being keyed.</summary>
+    [ObservableProperty]
+    private bool _keyingIsAbsent;
+
+    /// <summary>Whether the meter has not seen enough to say (HM-DEC-091).</summary>
+    [ObservableProperty]
+    private bool _keyingIsUndecided;
+
+    /// <summary>What the meter said, for the sidecar and the roster.</summary>
+    private KeyingReading _keyingReading = KeyingReading.None;
+
+    /// <summary>
+    /// Let the keying meter look, off the interface thread (HM-DEC-091).
+    /// </summary>
+    /// <remarks>
+    /// <para>**SEVENTY MILLISECONDS IS A VISIBLE HITCH ON THE INTERFACE THREAD**,
+    /// and this runs every second for as long as the terminal is open, so it runs
+    /// on a worker. **THE SEAM IS HERE AND NOWHERE ELSE**: the meter's own state
+    /// is touched only by that worker, one at a time, and is read back here only
+    /// after the task has completed, so the completion is what orders the two.
+    /// </para>
+    /// <para>A window is taken on this thread rather than inside the worker,
+    /// because the tap's lock is held by the audio thread and a worker queueing
+    /// behind it would drift out of step with the second it is meant to be
+    /// keeping.</para>
+    /// </remarks>
+    private void RunKeyingMeter()
+    {
+        if (_meterWork is { IsCompleted: true })
+        {
+            if (_meterWork.IsCompletedSuccessfully)
+            {
+                PublishKeying(_meterWork.Result);
+            }
+
+            _meterWork = null;
+        }
+
+        if (_keyingMeter is null || _decoder is null || _meterWork is not null)
+        {
+            return;
+        }
+
+        if (DateTime.UtcNow - _meterLastUtc < KeyingMeterEvery)
+        {
+            return;
+        }
+
+        _meterLastUtc = DateTime.UtcNow;
+
+        var meter = _keyingMeter;
+        var window = _decoder.Tap.Tail(CwKeyingThresholds.Window);
+
+        _meterWork = Task.Run(() => meter.Update(window));
+    }
+
+    /// <summary>Put a reading on the screen.</summary>
+    /// <param name="reading">What the meter said.</param>
+    /// <remarks>
+    /// **THE NUMBERS ARE THE POINT AND THE WORD IS THE SUMMARY** (§0.0). He is
+    /// going to chase a fault by turning a knob, and a figure that moves is worth
+    /// more to him than a word that changes.
+    /// </remarks>
+    private void PublishKeying(KeyingReading reading)
+    {
+        _keyingReading = reading;
+
+        KeyingWord = reading.Verdict switch
+        {
+            KeyingVerdict.Keying => "somebody is keying",
+            KeyingVerdict.NoKeying => "no keying here",
+            _ => "listening",
+        };
+
+        KeyingIsPresent = reading.Verdict == KeyingVerdict.Keying;
+        KeyingIsAbsent = reading.Verdict == KeyingVerdict.NoKeying;
+        KeyingIsUndecided = reading.Verdict == KeyingVerdict.Listening;
+        KeyingIsHeld = reading.Held;
+
+        KeyingDetail = reading.ToneHz <= 0
+            ? "nothing measured yet"
+            : $"{reading.ToneHz:0} Hz, key down {reading.MedianMs:0} ms, "
+              + $"{reading.SwingDb:0} dB between quiet and loud, "
+              + $"{reading.Runs} key-downs";
+    }
+
+    /// <summary>What the meter said, as one line for a record.</summary>
+    /// <param name="reading">The reading.</param>
+    /// <returns>The line.</returns>
+    internal static string KeyingLine(KeyingReading reading)
+        => reading.ToneHz <= 0
+            ? "not measured"
+            : string.Format(
+                CultureInfo.InvariantCulture,
+                "{0}{1} at {2:0} Hz, {3:0} ms key down, {4:0} dB swing, {5} key-downs",
+                reading.Verdict switch
+                {
+                    KeyingVerdict.Keying => "keying",
+                    KeyingVerdict.NoKeying => "no keying",
+                    _ => "listening",
+                },
+                reading.Held ? " (held through a quiet stretch)" : "",
+                reading.ToneHz,
+                reading.MedianMs,
+                reading.SwingDb,
+                reading.Runs);
 
     /// <summary>
     /// What the decoder made of the audio in this file, and nothing else
@@ -4556,7 +4723,8 @@ public partial class MainWindowViewModel : ObservableObject
                 // and twenty characters carries several overs at any speed and
                 // still leaves the row one line in a text editor.
                 Transcript.Tail(RosterTextLength),
-                covers));
+                covers,
+                KeyingLine(_keyingReading)));
     }
 
     /// <summary>

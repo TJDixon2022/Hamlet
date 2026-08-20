@@ -1,4 +1,5 @@
 using Hamlet.RadioEngine.Audio;
+using Hamlet.RadioEngine.Cw;
 using Xunit;
 using Xunit.Abstractions;
 

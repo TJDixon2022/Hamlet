@@ -27,88 +27,96 @@ If all four hold, say "Hamlet confirmed" and continue.
 
 ## Why this unit exists
 
-**The capture record describes the session, not the capture, and a work order was
-written from it as though it described the capture.**
+**Tim can hear stations Hamlet cannot, and he finds out the next morning.**
 
-Tim operated on the 19th. Two presses, two stations he heard, two recordings, and
-both rows read `nothing read`. A diagnosis was then produced from those rows —
-that the speed tracker cannot lock on a sloppy human fist — and it is wrong. The
-measurement below was taken from the recordings themselves, outside this
-repository, and must be reproduced inside it before anything here is trusted.
+On the 19th he heard two stations, pressed twice, and both rows read `nothing
+read`. Measurement of the recordings — three independent ways, one of them now
+inside this repository — says the audio contains **no keyed signal at any pitch**.
+The decoder was correct. Something between the antenna and the WAV is losing the
+station, and four theories for what have each been killed by measurement: a sloppy
+fist, the wrong capture device, no audio arriving at all, and the signal sitting on
+the filter skirt. The last died on the 20th: `cw-2026-08-20-014854.wav` has its
+dominant narrow content at 608 Hz against a 600 Hz pitch, dead centre.
 
-### What the audio actually contains
+**Nobody knows what the fault is.** This unit does not guess at a fifth theory.
+It builds the instrument that lets Tim find it himself, at the rig, in minutes —
+by telling him *while he is sitting there* whether Hamlet can hear keying in what
+he is listening to. He turns the AF gain, changes the filter, retunes, switches the
+preamp, and watches the indicator answer.
 
-Envelope by quadrature Goertzel at the detected tone, 100 Hz smoothing, sampled at
-1 ms, threshold midway between the 10th and 90th percentile of the envelope:
+**This is the same move as the case roster and it is the reason that worked.** The
+roster made the denominator visible and found this fault in one evening. This makes
+the audio visible.
 
-| capture | key-down runs in 30 s | median key-down | envelope swing |
+---
+
+## The measurement, and it is already validated on his own recordings
+
+Taken with `KeyingEnvelope`, built last session for exactly this and sharing no
+code with the decoder (§12.5): quadrature mixdown at a candidate tone, 10 ms
+boxcar, 1 ms sampling, threshold midway in amplitude between the 10th and 90th
+percentile of the envelope. Key-down run lengths, then the **median**.
+
+| source | median key-down | runs / 30 s | envelope swing |
 |---|---|---|---|
-| `cw-2026-08-18-003016.wav` (decoded acceptably) | 231 | **48 ms** | 21.8 dB |
-| `cw-2026-08-20-014854.wav` (read nothing) | 1,559 | **6 ms** | 14.1 dB |
-| `cw-2026-08-20-014935.wav` (read nothing) | 1,329 | **5 ms** | 13.7 dB |
+| four captures that decoded (both bands, two nights) | 44–57 ms | 172–234 | 21.8–28.7 dB |
+| the two that read nothing | 7 ms | 1,393–1,563 | 13.7–15.6 dB |
+| pure noise, last session's own control | 2 ms | 3,025 | 13.4 dB |
 
-Fifteen hundred key-downs at a six-millisecond median is a threshold being crossed
-by noise. A sweep from 300 to 1600 Hz in 25 Hz steps found no pitch in either
-recording with keying structure. **The decoder read nothing because there was
-nothing in the audio to read.** It behaved correctly.
+**No overlap anywhere, and the gap is a factor of six.**
 
-### Why the record made it look like a decoder fault
+It also survives being cut into live-sized windows, which is what makes an
+indicator possible. Sweeping 400–1200 Hz in 25 Hz steps, taking the best tone in
+each window:
 
-The 18th's sidecar: `elements 752 seen, 233 resolved`, `characters 69 emitted`.
-The 20th's sidecar: `elements 359837 seen, 233 resolved`, `characters 69 emitted`.
+| window | four that decoded, median of windows | two that did not |
+|---|---|---|
+| 10 s | 44.0, 48.5, 49.0, 57.0 ms | 7.0, 7.5 ms |
+| 6 s | 44.5, 48.0, 48.5, 56.8 ms | 7.0, 7.0 ms |
+| 4 s | 45.0, 48.5, 49.0, 57.0 ms | 7.0, 8.0 ms |
 
-**Two different nights, two different bands, the same 69 and the same 233.** And
-`audioSeen` on the 20th is 1,254,549,120 samples — the application had been running
-seven hours. `ElementsSeen` is cumulative since the decoder started;
-`CharactersEmitted` and `ElementsResolved` appear to be stuck at values from an
-earlier run entirely.
+At six seconds every window of every keyed recording lands between 44 and 58 ms
+and every window of the unkeyed ones lands at 7. At four seconds two windows of
+keyed audio dropped to 5 and 8 ms — silence between overs, which is honest and is
+why the indicator must hold rather than flicker.
 
-`sinceLast` already computes a difference and is the only field on the sheet that
-was about the capture — and it read `0 characters` on the second press, which was
-the truth nobody read.
-
-**This is HM-DEC-091 exactly**: a field presenting something in the shape of a
-measurement that is not a measurement of what it sits beside. A roster row that
-cannot be trusted is worse than a missing one, because the percentage gets computed
-from it anyway.
-
-### A third thing, found in the same diff
-
-`cw-2026-08-18-003016.txt` reads `frequency 14028000 Hz` and `band 40 m`.
-**14.028 MHz is 20 metres.** The roster now carries that band column into the
-evening's evidence.
+**These numbers were measured outside this repository, on six recordings, four of
+which are now in `tests\fixtures\cw\captured\unadjudicated\`. Reproduce them
+inside before relying on them.**
 
 ---
 
 ## Verify this instruction against the tree
 
-**Nothing here describes the tree.** Line numbers and field names came from a copy
-of the source read in a chat session. Check every claim.
+**Nothing here describes the tree.** Check every claim; report mismatches and do
+not repair the instruction silently.
 
-- **Report mismatches; do not repair the instruction silently.**
-- **Expected red, do not rediscover:** `CwSettledSilenceTests.APassThatReadSomethingEmitsSomething`,
+- **Expected red, do not rediscover:**
+  `CwSettledSilenceTests.APassThatReadSomethingEmitsSomething`,
   `CwFarnsworthTests.TheBulletinDecodesToItsAnswerKey`,
   `CwTerminalTests.ClearingTheTranscriptLeavesTheDecoderAlone`. Last session
-  reported 2,008 tests with those three failing. **Anything above three is new.**
-
-Believed, to be checked: `CaptureNotes` writes `elements` and `characters` from
-`report.ElementsSeen`, `ElementsResolved`, `CharactersEmitted`, `CharactersUnsure`
-around `MainWindowViewModel.cs:3369`; `sinceLast` is computed at 3385 against
-`_lastCaptureCharacters` and `_lastCaptureElements`.
+  reported 2,026 tests with those three failing. **Anything above three is new.**
+- Believed present: `KeyingEnvelope` and `KeyingIsInTheAudioTests` from last
+  session; `AudioTap.Snapshot()`; `CwCounterTrail`; the case roster and its
+  `I hear a station` button.
 
 ---
 
 ## Rulings in force
 
-**HM-DEC-091 — one source, and it says which.** The whole of this unit. A field
-that cannot say what interval it covers must say so rather than print a number.
+**§9.5.1 — one branch, `main`, and every session commits *and pushes* to `main`.**
+Four previous orders in this series misquoted this section as a prohibition on
+pushing. **That was an error in the orders, not a ruling.** Commit and push.
 
-**HM-OPEN-053 — `CwGate.ShortestVote` stays at 5.** Fourth unit running. **Do not
-touch `CwGate`, `CwSettledPass`, `CwToneSurvey` or `CwDecoder`.** *This unit fixes
-the instrument that measures the decoder. Moving both at once is how the last four
-days' evidence became unreadable.*
+**HM-OPEN-053 — `CwGate.ShortestVote` stays at 5.** Fifth unit running. **Do not
+touch `CwGate`, `CwSettledPass`, `CwToneSurvey` or `CwDecoder`.** *The indicator
+must be independent of the decoder or it cannot tell Tim anything the decoder was
+not already telling him.*
 
-**HM-DEC-093 — no radio on this machine.**
+**HM-DEC-091 — one source, and it says which.** The indicator reports what it
+measured. It does not report a verdict it cannot support.
+
+**HM-DEC-093 — no radio on this machine.** Everything verifiable without one.
 
 ---
 
@@ -120,122 +128,133 @@ is moving inside the task. Also every ten minutes while a task runs.
 
 ---
 
-## Task 1 — Find out what the counters actually count
+## Task 1 — Reproduce the table before building on it
 
-**Report before changing anything.**
+Run `KeyingEnvelope` over the four unadjudicated captures and the two from the
+20th, in 6-second windows, sweeping 400–1200 Hz in 25 Hz steps, and **report the
+median-of-windows for each**.
 
-For each of `ElementsSeen`, `ElementsResolved`, `CharactersEmitted` and
-`CharactersUnsure`: where is it incremented, what resets it, and over what interval
-does it accumulate? **Explain how the 18th and the 20th both came to read 69 and
-233.** If a counter is stuck rather than cumulative, that is a different defect
-from the one this instruction assumes and it must be named.
-
-If the counters turn out to be correct and the sidecar is reading them wrongly, say
-so — the fix is then in `CaptureNotes` and not in the decoder.
+**If the separation above does not reproduce, stop and report.** Everything below
+depends on it and a fifth dead theory is cheaper found here than at the rig.
 
 ---
 
-## Task 2 — The record describes the capture
+## Task 2 — A live keying meter
 
-Every count in the sidecar and in the roster's `chars` column must cover **the
-audio in the recording beside it**, not the session.
+A component that runs the same measurement continuously on the audio already
+flowing through `AudioTap`, independent of the decoder.
 
-- Where a per-capture figure can be derived, derive it.
-- **Where it cannot, the field says what interval it covers, in words, in the
-  file.** `since the decoder started` is an honest field. A bare number is not.
-- `sinceLast` stays. It was the only honest field on the sheet and it is now the
-  model for the others.
-- **Do not delete a field to avoid the problem.** A missing count and a wrong count
-  are both worse than a labelled one.
-
----
-
-## Task 3 — The band label
-
-`14.028 MHz` must not read `40 m`. Find the lookup, report what it does, fix it,
-and cover it with a test across the amateur HF bands including the boundaries.
-
-**If the wrong label came from somewhere other than a band lookup, say so and stop
-before changing anything** — a band that is right in one place and wrong in another
-is a different fault.
+- **Six-second rolling window, recomputed about once a second.** Both numbers come
+  from task 1's table: six seconds is the shortest window where every keyed
+  recording stayed above 44 ms, and one second is fast enough to feel like a
+  response when Tim turns a knob.
+- Report, every update: the **best candidate tone**, the **median key-down in
+  milliseconds**, the **envelope swing in dB**, and the **run count**.
+- **It must run whether or not the decoder has latched a tone.** That is the whole
+  point — the case it exists for is the one where the decoder has nothing.
+- **Do not reuse the decoder's tone.** Sweep independently. The decoder chose
+  800 Hz on a recording whose content was at 608.
+- Cost matters: this runs every second beside a live decoder. Say in the report
+  what one update costs.
 
 ---
 
-## Task 4 — Record whether the radio was broadcasting
+## Task 3 — Put it on the screen, and make it hold
 
-`SHACK_FACTS.md` states CI-V Transceive is **off**, measured — 5,499 inbound frames
-in sixty-one seconds, zero broadcast. **Both of last night's sidecars read
-`CivTransceive on`.**
+On the CW terminal, near the **I hear a station** button, in three states:
 
-**Do not change any setting, do not advise Tim to check it, and do not write to the
-radio.** That fact is his and the contradiction is his to rule.
+- **keying** — median key-down in the CW range
+- **no keying** — median far below it
+- **listening** — not enough evidence yet, or between overs
 
-What this unit does is make the next capture carry the evidence: alongside the
-setting as read, record **whether any unsolicited frame arrived during the
-capture** — the measured behaviour, not the setting's name. `radioIsBroadcasting`
-already exists as a concept in this project; find it and use it if it is there.
+**It must hold rather than flicker.** At four seconds, two windows of genuinely
+keyed audio read 5 and 8 ms because the operator had stopped sending. A meter that
+drops to *no keying* between overs is worse than none, because Tim will stop
+trusting it in the first ten minutes and then it cannot help him.
 
-*This matters because a setting reported as `on` and a link observed to be silent
-are different facts, and only the second one is evidence.*
+Hold the last confident state through quiet, and only fall back to **no keying**
+after it has been unambiguous for several consecutive windows. **Say in the report
+exactly what rule you chose and what it does across a gap between overs.**
+
+Show the measured numbers beside the word — tone, median, swing. *Tim is going to
+use this to chase a fault by turning knobs; the number moving is worth more than
+the word changing.*
+
+**Thresholds are provisional and must be named as such in the report.** They come
+from six recordings on two nights. Put them somewhere a later session can change
+in one place.
 
 ---
 
-## Task 5 — Prove it. **THIS IS THE DROP CANDIDATE.**
+## Task 4 — The roster carries the verdict
 
-Reproduce the envelope histogram inside the repository: a test that takes
-`tests\fixtures\cw\captured\cw-2026-08-18-004507.wav`, computes key-down run
-lengths as described above, and asserts the distribution is bimodal with a unit
-near 48 ms.
+The sidecar and the roster gain what the meter said at the moment of the press —
+the state and the three numbers.
 
-**Drop it whole if the session is running long, and say so.** Tasks 1 to 4 make
-tomorrow's evidence trustworthy; this one makes the analysis repeatable.
+*This is what makes tonight worth something even if the fault does not fall out.
+Tomorrow every row says whether Hamlet could hear keying, which no row has ever
+said, and the ones where he heard a station and the meter said no are the evidence
+that finds this.*
+
+Columns and order otherwise unchanged. `read` stays last and stays empty.
+
+---
+
+## Task 5 — Prove it without a radio. **DROP CANDIDATE.**
+
+Drive the meter from the captures through `BufferedAudioSource` and assert it
+reaches **keying** on the four that decoded and **no keying** on the two from the
+20th, and that a gap between overs does not knock it out of **keying**.
+
+**Drop it whole if the session runs long and say so.** Tasks 1 to 4 are what he
+needs at the rig tonight.
 
 ---
 
 ## Parked — do not touch, do not raise
 
-- **The speed-tracker rewrite** — deriving the unit from key-down durations, the
-  2-and-5 gap tolerance, the `ETO 91B` fixture. The diagnosis was drawn from a
-  recording that decoded acceptably and applied to two that contain no keying.
-  **It may still be a real improvement. It is not this unit and it is not yet
-  supported by the evidence offered for it.**
-- **`cw-2026-08-18-003016.wav` as a fixture.** It is not in the repository and a
-  session cannot fetch it.
+- **The speed-tracker rewrite.** Still parked, still unsupported by evidence.
+- **Why the station is missing from the audio.** Four theories are dead. **Do not
+  offer a fifth in the report.** This unit is the instrument for finding out.
 - **HM-OPEN-052, HM-OPEN-053, HM-OPEN-054**, the five synthesized tests, the three
-  expected failures, rulings 096–133, the scorer, and the non-hermetic
-  `TheRosterIsOneFilePerEvening`.
-- **`CaptureAudioAsync` end to end.** Still no seam, still declined.
+  expected failures, rulings 096–133, the scorer, `CaptureAudioAsync` end to end,
+  and the non-hermetic `TheRosterIsOneFilePerEvening`.
+- **Adjudicating the unadjudicated captures.** Tim's ear, not a session's.
 
 ---
 
 ## What not to do
 
-Standing prohibitions are in `CLAUDE.md`. Cited, not restated: §9.5.1 one branch,
-`main`; **do not push**; no interactive or destructive git; do not invent a ruling
-id; do not touch coverage thresholds.
+Standing prohibitions are in `CLAUDE.md`. Cited, not restated: §9.5.1 one branch
+and it is `main`; no interactive or destructive git; do not invent a ruling id; do
+not touch coverage thresholds.
 
 Unit-specific:
 
-- **Do not change the decoder.** *It was right. It read nothing because there was
-  nothing there.*
-- **Do not change the roster's columns or their order, and do not touch `read`.**
-  *Only what goes into `chars` changes.*
-- **Do not write to the radio or change a rig setting.** *Task 4 observes.*
-- **Do not "improve" the tone detector because it reported 800 Hz against a 600 Hz
-  pitch.** *That number came from noise filling the filter; changing the detector
-  on the strength of it repeats the error this unit exists to correct.*
+- **Do not change the decoder, the gate, the tone survey or the settled pass.**
+  *An indicator that shares the decoder's opinion cannot contradict it, and
+  contradicting it is the job.*
+- **Do not make the meter drive anything.** It does not retune, does not switch the
+  decoder on or off, does not gate the capture. *It reports.*
+- **Do not write to the radio.**
+- **Do not tune the thresholds to make a recording pass.** *Six recordings is a
+  small sample and the gap is a factor of six; if something does not separate, that
+  is a finding.*
 
 ---
 
 ## Reporting
 
 `OUTPUT.md` at the repository root, overwritten and printed. Four sections, no
-other headings: **What Claude did**, **What Tim should expect**, **What you should
-see**, **What's blocking us** — the last carrying **Asks still outstanding** per
-HM-DEC-139. **The queue grows by one**: whether `SHACK_FACTS.md` still holds that
-CI-V Transceive is off, given both of last night's captures reported it on.
+other headings, per §13: **What Claude did**, **What Tim should expect**, **What we
+should do next**, **What's blocking us** — the last carrying **Asks still
+outstanding** per HM-DEC-139.
 
-**Section 1 opens with the answer to task 1** — how two nights came to report the
-same 69 and 233 — because everything else in this unit depends on it.
+**Section 1 opens with task 1's table**, reproduced in the repository, beside the
+one above.
+
+**Section 2 says what the meter will show him when he tunes across a band with no
+station on it, and what it will show on a station he can hear.** He is going to
+be sitting in front of it tonight with no other instrument.
 
 **Stop and report.**

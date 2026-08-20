@@ -942,6 +942,57 @@
                                                  Foreground="{StaticResource HmTextPrimaryBrush}" />
                     </Border>
 
+                    <!-- CAN HAMLET HEAR KEYING AT ALL (HM-DEC-091). The
+                         operator hears stations Hamlet does not and finds out
+                         the next morning from a roster. This says so while he is
+                         sitting at the radio, so he can turn the gain, change
+                         the filter or retune and watch the numbers answer. It
+                         shares nothing with the decoder, which is the point: an
+                         indicator that agreed with the decoder by construction
+                         could never contradict it, and contradicting it is the
+                         job.
+
+                         THE WORD CARRIES THE MEANING AND THE COLOR ONLY AGREES
+                         WITH IT (0.6), and the numbers are what he will actually
+                         use, because a figure that moves when he turns something
+                         is worth more than a word that changes. -->
+                    <Border IsVisible="{Binding IsDecoding}"
+                            BorderThickness="1" CornerRadius="6"
+                            Padding="10,7" Margin="0,2,0,0"
+                            Background="{StaticResource HmSlateTintBrush}"
+                            BorderBrush="{StaticResource HmSlateEdgeBrush}">
+                        <StackPanel Spacing="3">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <TextBlock Text="{Binding KeyingWord}"
+                                           FontSize="12" FontWeight="SemiBold"
+                                           IsVisible="{Binding KeyingIsPresent}"
+                                           Foreground="{StaticResource HmGreenBrush}" />
+                                <TextBlock Text="{Binding KeyingWord}"
+                                           FontSize="12" FontWeight="SemiBold"
+                                           IsVisible="{Binding KeyingIsAbsent}"
+                                           Foreground="{StaticResource HmAmberDeepBrush}" />
+                                <TextBlock Text="{Binding KeyingWord}"
+                                           FontSize="12" FontWeight="SemiBold"
+                                           IsVisible="{Binding KeyingIsUndecided}"
+                                           Foreground="{StaticResource HmTextMutedBrush}" />
+
+                                <TextBlock Text="{Binding KeyingDetail}"
+                                           FontSize="12"
+                                           VerticalAlignment="Center"
+                                           Foreground="{StaticResource HmTextPrimaryBrush}" />
+                            </StackPanel>
+
+                            <TextBlock Text="the last few seconds went quiet, so this is the last thing it was sure of rather than what it is hearing now"
+                                       FontSize="11" TextWrapping="Wrap"
+                                       IsVisible="{Binding KeyingIsHeld}"
+                                       Foreground="{StaticResource HmTextMutedBrush}" />
+
+                            <TextBlock Text="This listens for keying on its own, without asking the decoder anything, so it can tell you a station is there even when nothing appears above. If you can hear one and this says there is nothing, the signal is being lost somewhere between the antenna and Hamlet, and the gain, the filter and the tuning are the things to try."
+                                       FontSize="11" TextWrapping="Wrap"
+                                       Foreground="{StaticResource HmTextMutedBrush}" />
+                        </StackPanel>
+                    </Border>
+
                     <!-- KEEP WHAT IT HEARD (HM-DEC-088). Everything about the
                          faint-signal problem is a hypothesis until one of these
                          exists: a wrong decode with its input attached is a

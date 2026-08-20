@@ -2,187 +2,192 @@
 
 ## 1. What Claude did
 
+### Task 1, the table, reproduced in the repository
+
 Claude Code on the development machine, in `C:\Source\HamLet`, on `main`. The
-prompt named `PROJECT: Hamlet`; the tree confirms it, with `Hamlet.sln` and
-`src\Hamlet.RadioEngine\Cw\CwGate.cs` present, `CoreHMI.sln` and `src\CoreHMI`
-absent, and `PROJECT_CARD.md` reading `PROJECT: Hamlet`. **No radio is attached to
-this machine, so nothing below is evidence about the radio** (HM-DEC-093).
-Nothing was recorded to `DECISIONS.md`; every conclusion is handed back.
+prompt named `PROJECT: Hamlet` and the four gate checks all hold. **No radio is
+attached to this machine, so nothing here is evidence about the radio**
+(HM-DEC-093).
 
-### Task 1 first, because everything else rests on it
+**Two mismatches against the instruction, reported and not repaired silently.**
 
-**The counters were never stuck. They are cumulative since the decoder was
-constructed, and nothing anywhere said so.**
+**First: four of the six recordings the table is drawn from are not in the tree.**
+There is no `tests\fixtures\cw\captured\unadjudicated\` directory, and
+`tests\fixtures\cw\captured\` holds the same four files it held last session.
+`cw-2026-08-20-014854` and `cw-2026-08-20-014935` are not there either. So the
+instruction's table cannot be reproduced as written, and what follows is every
+recording that is in the tree, measured exactly the way the instruction
+describes.
 
-All four are plain `int` fields on `CwDecoder` (`CwDecoder.cs:369-372`).
-**Nothing in the tree resets them.** The only reset is the decoder being
-replaced, which happens in exactly one place: `StartDecoding` builds a new
-`CwDecoder` (`MainWindowViewModel.cs:2844`). The interval is therefore from the
-moment listening started until it stops, which on the 20th was seven and a
-quarter hours.
+**Second, and more important: the separation does not reproduce from the
+instruction as given, because the instruction does not say how to pick the best
+tone in a window, and the two obvious answers are both wrong.** Measured, not
+argued, on `cw-2026-08-18-004507`, the one recording here known to contain a
+readable station keying at 500 Hz with a 57 ms dit:
 
-Where each one moves:
-
-| Counter | Incremented at | Gated by |
+| ranking | pitch it chose | median it reported |
 |---|---|---|
-| `ElementsSeen` | `OnMarkEnded`, `OnGapEnded` (`CwDecoder.cs:657`, `683`) | nothing, so every mark and gap the gate produces, tone or no tone |
-| `ElementsResolved` | `Emit` (`CwDecoder.cs:1245`), by pattern length | `Report.HasTone`, and word gaps excluded |
-| `CharactersEmitted` | `Emit` (`CwDecoder.cs:1234`) | the same |
-| `CharactersUnsure` | `Emit` (`CwDecoder.cs:1238`) | the same |
+| widest envelope swing | 700 and 800 Hz in every window | 3 to 6 ms |
+| largest element share | 425 Hz in every window | 6 to 7 ms |
+| **element share times element purity** | **500 Hz in every window** | **56 to 58 ms** |
 
-**That asymmetry is the whole shape of the 20th's sheet.** `ElementsSeen` has no
-tone gate, so a threshold crossed by noise drove it to 359,837 across seven
-hours. The other three move only through `Emit`, which returns early when no tone
-is latched, so they stood still all night at whatever they had reached earlier in
-the same run.
+The swing ranking fails because a pitch outside the receiver's own filter has
+almost nothing in it, so its quiet tenth approaches zero and the decibel
+difference runs to ninety while measuring silence. The share ranking fails
+because off the station's pitch the envelope crosses its threshold two hundred
+times in six seconds, and enough of those crossings last twenty milliseconds to
+carry the share past the real answer. **What separates them is asking both
+questions**: was most of this stretch spent keyed down for an element's length,
+**and** were most of the key-downs elements rather than chatter. At 500 Hz that
+scored 0.29 and nothing else in eight hundred hertz of candidates reached 0.10.
 
-`DecodeReport` is refreshed live on the 250 ms decode tick
-(`MainWindowViewModel.cs:2967`), so the sidecar was reading current values. The
-values were correct. **The field was wrong**, because a number printed beside
-thirty seconds of audio is read as being about the thirty seconds.
+With that ranking, six-second windows, 400 to 1200 Hz in 25 Hz steps:
 
-**How two nights came to read 69 and 233, and the part I could not prove.** The
-mechanism above fully explains the 20th: 69 and 233 were earned earlier in that
-same seven-hour run, hours before either press, and `sinceLast` reading
-`0 characters` was the truth. **What I cannot reproduce from the tree is the 18th
-reading the same pair.** `cw-2026-08-18-003016.txt` is not in the repository, and
-nothing in the tree can carry a counter across an app restart: there is no
-persistence, no static field, and a new `CwDecoder` starts at nought. So either
-the two nights coincided, or the 18th's figures came from a file this session
-cannot open. **That is reported unresolved rather than given the tidier answer**,
-and the change below makes it unaskable next time.
+| recording | what the decoder made of it | median of windows | tones chosen | best window |
+|---|---|---|---|---|
+| `cw-2026-08-18-004507` | 177 characters | **57 ms** | 500 Hz, all five windows | 500 Hz, 58 ms, score 0.29 |
+| `cw-2026-08-17-134712` | **nothing at all** | 5 ms | 425 to 875 Hz | **500 Hz, 54 ms, score 0.37** |
+| `cw-2026-08-17-013347` | 1 character | 9 ms | 550 to 850 Hz | 625 Hz, 87 ms, score 0.19 |
+| `cw-2026-08-17-013622` | 1 character | 5 ms | 575 to 650 Hz | 625 Hz, 10 ms, score 0.03 |
+| synthesized noise, the control | none | **2 to 3 ms** | wanders, 425 to 1200 Hz | score 0.00 in every window |
 
-### Task 2, every count now says what it is a count of
+**The separation the unit rests on does hold**, and holds by a very wide margin:
+54 to 58 milliseconds with a score from 0.18 to 0.37 where there is keying,
+against 2 to 3 milliseconds and a score that rounds to nought where there is not.
+That is the factor of six the instruction reported, and rather more.
 
-`CwCounterTrail` (new, `src/Hamlet.RadioEngine/Cw/CwCounterTrail.cs`) keeps a
-short history of the four counters against the audio clock rather than the wall
-clock, sampled on the same 250 ms tick as the readouts, seeded with a real
-reading at nought samples. The counters are monotonic, so what happened across a
-stretch is the difference between its two ends. **A stretch the history cannot
-cover returns nothing, not a zero.**
+**And the third row is the whole argument for building this.**
+`cw-2026-08-17-134712` decoded nothing at all: `characters 0 emitted, 0 unsure`,
+on a capture whose own sidecar claims 35.2 dB. One of its six-second windows
+scores 0.37, the highest of any window measured, at 500 Hz with a 54 ms element.
+**There is a station in that recording and the decoder produced not one
+character from it.** No claim is made here about what it sent.
 
-The sidecar now reads:
+### Tasks 2, 3 and 4, the meter
 
-```
-inThis     3 characters emitted, 1 unsure, 240 elements seen, 96 resolved  (in the 30.0 seconds of audio in this file)
-elements   359837 seen, 233 resolved  (since the decoder started listening, about 7 hours ago)
-characters 69 emitted, 23 unsure  (since the decoder started listening, about 7 hours ago)
-text       ...
-textCovers everything read since the decoder started listening, about 7 hours ago
-sinceLast  0 characters, 19837 elements  (since the previous capture)
-```
+`KeyingEnvelope` moved from the test project into the engine, because the meter
+needs it live. **It still shares no code with the decoder** (§12.5): no Goertzel
+bank, no gate, no tracker, no reference to any of them. It was also made cheap
+enough to run continuously, by replacing a cosine call per sample with a rotating
+phasor and two full-length arrays with a ring, which left every measured number
+identical and cut the time by two thirds.
 
-**Nothing was deleted.** `sinceLast` stays and now says which interval it covers,
-because on the first capture of a session there is no previous one. `text` got the
-same treatment: it is the whole session's transcript and had the same defect
-unnamed.
+`CwKeyingMeter` runs a six-second window, updated once a second, sweeping its own
+pitch. **It never asks the decoder anything.** On the terminal, above the
+`I hear a station` button, it shows one of three words in a color that only
+agrees with the word (§0.6) and, beside it, the pitch, the median key-down, the
+swing and the number of key-downs.
 
-The roster's `chars` column carries the recording's own figures where they can be
-derived, and **says so in the cell when they cannot**: `(the whole session, not
-this case)` for a kept recording whose window is uncoverable, and `(the whole
-session; no recording was kept)` for a refused press. **Columns, order and `read`
-are untouched.** The weaker claim is the default, so a `CwCase` built without
-saying what its counts cover renders as the session's.
+**Cost: 73.5 milliseconds per update**, sweeping 33 candidates over six seconds
+of 48 kHz audio, measured and printed by a test. That is about seven per cent of
+one core at one update a second, and it runs on a worker rather than on the
+interface thread, where seventy milliseconds would be a visible hitch every
+second.
 
-### Task 3, the band label. The lookup was not the fault
+**The holding rule, which the instruction asked to be stated exactly.** One
+window that looks like keying puts the meter into **keying** immediately. It
+leaves only after **fifteen consecutive windows** show nothing. With a six-second
+window recomputed each second that is about twenty seconds from the last element:
+six for the window to empty of it and fifteen more for the run.
 
-`HfBands.BandFor(14_028_000)` returns `20 m`, correctly, and its edges derive from
-the cited Part 97 file with no frequency literal in the class. **The wrong label
-came from the caller.** `CapturedBand()` had two branches and only the one where
-the radio had been read derived from the frequency; the other fell back to
-`SelectedBand.Band.Name`, which is the band button. So the header could still
-print a frequency from `CapturedHz` and a band from the button, which is **the
-original two-sources-for-one-fact defect surviving in the branch the earlier fix
-did not reach**, and it is how 14.028 MHz came to sit beside `40 m`.
+**Five was tried first and measured, and it broke.** Played end to end with an
+eight-second gap in the middle, the meter used its whole budget and changed its
+mind while the contact was still going on. Eight seconds is barely long enough
+for the other operator to send a callsign. Fifteen sits through a short over at
+this project's own reference copy speed of thirteen words a minute.
 
-Both branches now derive from `CapturedHz`, the same value the frequency line
-prints, so the two cannot disagree. Covered by boundary tests taken from the band
-data itself rather than retyped: every band owns both its edges and neither
-neighbour.
+**The long hold costs almost nothing, and this is why.** While it holds, the word
+says so in a line underneath, and **the numbers beside it are always the newest
+window's**. So when Tim turns a knob, the figures answer within six seconds
+whatever the word still says. The word is the summary; the numbers are the
+instrument.
 
-### Task 4, the record carries the observed behaviour and not only the setting
+**Thresholds are provisional and are all in one place**, `CwKeyingThresholds`,
+each with the measurement it came from written beside it. They come from five
+recordings on two nights, four real and one synthesized, and a wide gap measured
+on a small sample is still a small sample.
 
-`CivLinkHealth` gains `LastTransceiveUtc`, set in `Ic7300Rig.HandleFrame` beside
-the existing `_inboundTransceive` counter. A count can say whether the radio has
-ever volunteered anything; it cannot say whether it did so during one recording.
-The sidecar gains:
+**Task 4.** The sidecar gains a `keying` line and the roster gains one column,
+`meter`, between `chars` and `text`. `read` is still last and still empty, and no
+other column moved. Both carry the state and the three numbers as the meter had
+them at the moment of the press.
 
-```
-broadcast  the radio volunteered nothing while this recording was being made, and the setting reads on; 0 of 5499 frames since the link came up were the radio announcing something
-```
+### Task 5, not dropped
 
-**No setting was changed, no write was added, and nothing advises anybody to check
-anything.** The contradiction is in section 4.
-
-### Task 5, done rather than dropped
-
-`KeyingEnvelope` and `KeyingIsInTheAudioTests` reproduce the envelope histogram
-inside the repository, sharing no code with the decoder on purpose (§12.5):
-quadrature mixdown, a 10 ms boxcar, which is what a hundred hertz of smoothing is,
-1 ms sampling, and a threshold midway in amplitude between the tenth and ninetieth
-percentile.
-
-On `cw-2026-08-18-004507.wav`: **180 key-down runs, median 57 ms, envelope swing
-24.8 dB**, bimodal and non-overlapping. Dit 56.5 ms across 71 runs, dah 157.6 ms
-across 46, ratio 2.79.
-
-**Two things about that.** First, **the instruction asked for a unit near 48 ms and
-this recording's is 57**. The 48 belongs to `cw-2026-08-18-003016`, which is not in
-the repository. 57 is not a discrepancy but a corroboration: HM-DEC-115 measured
-this same recording's dit at 57 ms from a different direction with different code.
-
-Second, **the control matters more than the measurement**. Pure noise through the
-same method gives 3,025 runs at a 2 ms median with 13.4 dB of swing, which is
-within a whisker of the picture the instruction reports for the two unreadable
-captures, 1,559 runs at 6 ms with 14.1 dB. The method separates the two, and the
-unreadable captures look like the noise rather than like the signal.
+`TheMeterRunsOnLiveAudioTests` drives the meter the way the application drives
+it: a recording played into a real `AudioTap` through `BufferedAudioSource` a
+chunk at a time, the meter asked once a second, no decoder anywhere in the test.
+It reaches **keying** on the recording that decoded and on the one that decoded
+nothing, settles on **no keying** on half a minute of noise, says **listening**
+before a full window has arrived, and survives a twelve-second gap between overs
+without changing its mind.
 
 ## 2. What Tim should expect
 
-**Build clean, no warnings. 2,026 tests, three failing, and they are the three
+**Build clean, no warnings. 2,043 tests, three failing, and they are the three
 that were failing before:**
 
 - `CwSettledSilenceTests.APassThatReadSomethingEmitsSomething`
 - `CwFarnsworthTests.TheBulletinDecodesToItsAnswerKey`
 - `CwTerminalTests.ClearingTheTranscriptLeavesTheDecoderAlone`
 
-Eighteen tests were added and all pass. **Nothing in the decoder changed.**
-`CwGate`, `CwSettledPass`, `CwToneSurvey` and `CwDecoder` are untouched and
-`ShortestVote` is still 5.
+Seventeen tests were added and all pass. **Nothing in the decoder changed.**
+`CwGate`, `CwSettledPass`, `CwToneSurvey` and `CwDecoder` are untouched, and
+`ShortestVote` is still 5. The meter drives nothing: it does not retune, does not
+switch the decoder on or off, does not gate the capture, and nothing writes to
+the radio.
 
-**What will look different and is not wrong.** Capture sidecars are three lines
-longer and every count carries a clause. A roster row from a kept recording will
-usually show a smaller `chars` number than yesterday's rows did, because it is now
-counting thirty seconds instead of an evening; that is the repair rather than a
-regression. A row whose numbers could not be narrowed says so in the cell, which
-is longer than a bare pair of numbers and is meant to be.
+### What it will show you tonight
 
-**One existing test changed, and why.**
-`CaseRosterSurvivesAnEveningTests.OnePressKeepsTheAudioAndMarksTheCase` now states
-which interval each of its two presses covers, because the application now does.
+**Tuned across a band with nothing on it**, you will see `listening` in grey for
+the first six seconds while the window fills, and then a line like
+`725 Hz, key down 3 ms, 13 dB between quiet and loud, 570 key-downs`. The pitch
+will wander from one update to the next, because there is nothing there to settle
+on. After fifteen seconds of that the word turns amber and reads `no keying
+here`. **That is the picture of an empty band**, and the two numbers that say so
+are the three-millisecond key-down and the thirteen-decibel swing.
 
-**One thing this session did that the work order told it not to.** The order cites
-`CLAUDE.md`'s standing prohibitions as including *do not push*. **`CLAUDE.md`
-§9.5.1 says the opposite**, in terms: every session commits to `main` and pushes to
-`main`, ruled as HM-DEC-113 after three sessions' work sat on a branch and Tim ran
-his radio against a trunk that did not have it. The order presents the line as a
-citation rather than as an override, so it reads as a misquotation of the
-governing file rather than a ruling against it, and the governing file wins. **The
-work is committed and pushed to `main`**, and this paragraph is here so that if
-the prohibition was meant, it can be ruled properly.
+**On a station you can hear**, within six seconds the word goes green and reads
+`somebody is keying`, and the line beside it settles on one pitch and stays
+there: `500 Hz, key down 57 ms, 25 dB between quiet and loud, 34 key-downs`. The
+pitch stops wandering, the key-down jumps from single digits to somewhere between
+about forty and eighty milliseconds, and the swing roughly doubles. **The pitch
+holding still is the clearest single sign**, and it is visible before the word
+changes.
+
+**When he stops to listen**, the word stays green and a grey line appears under
+it saying the last few seconds went quiet and this is the last thing it was sure
+of. The numbers underneath drop to the empty-band picture immediately. That is
+correct and is what the hold is for.
+
+**And here is how to use it for the fault.** If you can hear a station and the
+meter says `no keying here` with a three-millisecond key-down, the signal is
+being lost before Hamlet ever sees it, and the audio gain, the filter and the
+tuning are what to move. Watch the key-down number rather than the word: it will
+answer within six seconds of each change, and it does not need the decoder to
+have found anything at all.
+
+**One thing that will look odd and is not.** The meter can say `somebody is
+keying` while the transcript above stays empty. That is not a contradiction, it
+is the instrument working: it is telling you there is a signal the decoder could
+not read, which is exactly the case `cw-2026-08-17-134712` is in.
+
+Committed and pushed to `main`.
 
 ## 3. What we should do next
 
-- Read one sidecar from the next evening and check `inThis` against `sinceLast` on
-  a press that decoded something. They should agree closely, and if they do not,
-  the trail's sampling is the suspect rather than the decoder.
-- Rule on the CI-V Transceive contradiction in section 4, so the `broadcast` line
-  has something to be checked against.
-- Either get `cw-2026-08-18-003016.wav` and its sidecar into the repository, or
-  stop citing them. They are load-bearing in a work order and unreadable by any
-  session, which is the state HM-DEC-126 closed HM-OPEN-026 over.
-- The speed-tracker rewrite stays parked. Nothing found this session supports it
-  and nothing found contradicts it.
+- **Take the meter to the rig and find the fault.** That is what it is for, and
+  nothing further should be built on top of it until an evening's rows exist.
+- Get the four unadjudicated captures and the two from the 20th into the tree.
+  Every number in section 1 rests on one real recording with a readable station
+  and one synthesized control, which is thin.
+- **Look at `cw-2026-08-17-134712` again.** It is in the repository, it contains
+  keying at 500 Hz with a 54 ms element and a score higher than any other window
+  measured, and the decoder produced nothing from it. That is a decoder question
+  with a fixture already committed for it, which is rare here.
+- When an evening of rows exists, compare the `meter` column against the `read`
+  column. The rows where Tim heard a station and the meter did not are the
+  evidence this unit was built to collect.
 
 ## 4. What's blocking us
 
@@ -190,38 +195,40 @@ Nothing blocks the next unit.
 
 **One ask, new this session.**
 
-> **`SHACK_FACTS.md`'s measurement of CI-V Transceive stands until a capture
-> carrying the new `broadcast` line contradicts it, and the setting read back as
-> `on` is treated as unexplained rather than as the correction.**
+> **The keying meter's thresholds stand as provisional until an evening's roster
+> has been scored against them, and are not moved to make any single recording
+> pass.**
 >
-> The file records a measurement: 5,499 inbound frames in sixty-one seconds with
-> none of them the radio volunteering anything, which is the evidence HM-DEC-138
-> rests on for reading the frequency on the live poll. Two captures on the 20th
-> read the setting back as `on`. **A setting's name and a link's behaviour are
-> different facts and only the second is evidence**, so a reading of the menu does
-> not overturn a count of the cable. What is not known is whether the setting was
-> changed at the radio, whether the read is wrong, or whether this radio announces
-> only on some events. The `broadcast` line answers it from the next capture
-> without anybody walking across the room.
+> They are five numbers in `CwKeyingThresholds`: a six-second window, a key-down
+> between 25 and 250 milliseconds, a score of 0.10, and fifteen quiet windows
+> before the word changes. Each has the measurement it came from written beside
+> it. The sample behind them is one real recording containing a readable station,
+> two containing one character each, one containing keying the decoder missed, and
+> one synthesized control.
 >
-> **Rejected: taking the `on` reading as the newer and therefore better fact.**
-> That puts HM-DEC-138's cadence back in question on the strength of a setting
-> nobody has watched behave. **Also rejected: asking Tim to check the menu**,
-> which the work order forbids and which would replace a measurement with a
-> recollection.
+> **The gap they sit in is wide and the sample is small, and those are different
+> facts.** A threshold that is right on five recordings and wrong on the sixth is
+> exactly what this project has been caught by before (§12.5), and the roster is
+> already the instrument for finding out: every row now carries what the meter
+> said, so an evening produces a column that can be scored against Tim's own ear.
+>
+> **Rejected: tuning them now to make `cw-2026-08-17-013622` read as keying.**
+> That recording decoded one character and nobody knows whether there is a
+> readable station in it, so moving a threshold to include it would be fitting to
+> a case whose answer is not known. **Also rejected: waiting for more recordings
+> before shipping the meter at all**, which would keep him at the rig tonight with
+> no instrument, and the recordings come from evenings at the rig.
 
 ### Asks still outstanding
 
+- **The keying meter's provisional thresholds.** First made 2026-08-20, this
+  session. Waiting on one evening's roster scored against the `meter` column. The
+  numbers are in `CwKeyingThresholds` and nothing else reads them.
 - **Whether `SHACK_FACTS.md` still holds that CI-V Transceive is off.** First made
-  2026-08-20, this session. Waiting on one capture taken with the radio connected,
-  so the `broadcast` line has something to report. The change it concerns is
-  already in the tree at `MainWindowViewModel.BroadcastDuringCapture` and
+  2026-08-20. Waiting on one capture taken with the radio connected, so the
+  `broadcast` line added last session has something to report. The change is in
+  the tree at `MainWindowViewModel.BroadcastDuringCapture` and
   `CivLinkHealth.LastTransceiveUtc`, and nothing acts on the answer yet.
-- **Whether the work order's *do not push* was meant as a ruling.** First made
-  2026-08-20, this session. Waiting on Tim. `CLAUDE.md` §9.5.1 and HM-DEC-113 say
-  every session pushes to `main`, and the order cited the reverse as though
-  quoting them. This session pushed. Whichever way it is ruled, one of the two
-  documents needs correcting.
 - **HM-DEC-130, whether a message too long for one keyer send may be split.**
   First made 2026-08-18. Waiting on the seam between two sends measured into the
   dummy load. `CwMessage.Split` already exists and nothing calls it for this.
@@ -235,7 +242,6 @@ Nothing blocks the next unit.
 - **HM-OPEN-007.** Open and unruled since 2026-08-14, named in HM-DEC-140 as the
   reason the queue's own premise is worth re-testing. Waiting on Tim.
 
-**One item leaves the queue this session.** The band label, 14.028 MHz reading
-`40 m`, was carried as a question and turned out to be a defect the governing
-principle decides one way, so it was fixed rather than asked about. The reasoning
-is in section 1 under task 3.
+**One item leaves the queue.** Whether the work order's *do not push* was meant
+as a ruling: this order answers it in terms, saying the previous four orders
+misquoted §9.5.1 and that the error was in the orders. Nothing further is needed.

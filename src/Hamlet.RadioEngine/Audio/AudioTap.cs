@@ -259,6 +259,48 @@ public sealed class AudioTap
         }
     }
 
+    /// <summary>
+    /// The most recent stretch of what the tap is holding, oldest first.
+    /// </summary>
+    /// <param name="wanted">How much to take.</param>
+    /// <returns>
+    /// The audio, or null when nothing has arrived or less than <paramref
+    /// name="wanted"/> is held. **Short is not padded**: a meter that measures
+    /// six seconds must not be handed four and told they are six.
+    /// </returns>
+    /// <remarks>
+    /// Snapshot copies the whole ring, which is half a minute, and something that
+    /// wants six seconds of it once a second would copy five times what it reads.
+    /// Taken under the same lock and for the same reason.
+    /// </remarks>
+    public MonoAudio? Tail(TimeSpan wanted)
+    {
+        lock (_lock)
+        {
+            if (_filled == 0 || _sampleRate <= 0)
+            {
+                return null;
+            }
+
+            var count = (int)Math.Round(wanted.TotalSeconds * _sampleRate);
+
+            if (count <= 0 || count > _filled)
+            {
+                return null;
+            }
+
+            var samples = new float[count];
+            var start = _filled < _ring.Length ? _filled - count : _write + (_filled - count);
+
+            for (var i = 0; i < count; i++)
+            {
+                samples[i] = _ring[((start + i) % _ring.Length + _ring.Length) % _ring.Length];
+            }
+
+            return new MonoAudio(_sampleRate, samples);
+        }
+    }
+
     /// <summary>Throw away what is held, so the next capture starts fresh.</summary>
     public void Forget()
     {
