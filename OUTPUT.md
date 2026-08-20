@@ -2,204 +2,166 @@
 
 ## 1. What Claude did
 
-### Task 3's table, which is what this unit is judged on
+### Task 1: the elements spell `N4L`, reproduced inside the repository
 
 Claude Code on the development machine, in `C:\Source\HamLet`, on `main`. The
 prompt named `PROJECT: Hamlet` and the four gate checks all hold. **No radio is
 attached, and nothing here needed one** (HM-DEC-093).
 
-Both changes were built and measured four ways. Characters emitted, every capture:
-
-| capture | today | `Refine` only | ratio only | both |
-|---|---|---|---|---|
-| `cw-2026-08-17-013347` | 8 | 8 | 8 | 8 |
-| `cw-2026-08-17-013622` | 0 | 0 | 0 | 0 |
-| **`cw-2026-08-17-134712`** | **0** | **0** | **0** | **0** |
-| `cw-2026-08-18-004507` | 25 | 25 | 25 | 25 |
-| `cw-2026-08-18-003016` | 38 | **43** | 38 | **42** |
-| `cw-2026-08-18-003126` | 34 | **35** | 34 | **35** |
-| `cw-2026-08-18-003758` | 14 | 14 | 14 | 14 |
-| **`cw-2026-08-20-014854`** | 1 | **5** | 1 | **5** |
-| **`cw-2026-08-20-014935`** | **0** | 0 | 0 | **3** |
-
-**Which change did what.**
-
-**The ratio change moves no character count anywhere.** Not one capture, in either
-direction. What it moves is the survey's keyed-hop count: on `134712` from 0 to
-200, on `004507` from 2,294 to 2,494, on `003016` from 3,294 to 3,694. It changes
-what the survey is willing to call keying and changes nothing that reaches a
-screen.
-
-**`Refine` buys five characters on `003016` and one on `003126`, and costs four on
-a recording with no keying in it.** The two together put three placeholders on
-`cw-2026-08-20-014935`, which has never produced a character in this project's
-history.
-
-**Neither change, nor both, produces anything from the recording this whole line
-of work is about.**
-
-### Both changes are withdrawn, and here is the measurement that withdrew them
-
-**Neither is in the tree.** This session ships no change to the decoder. The work
-order's own preconditions are what withdrew them, and both failures are measured
-rather than argued.
-
-**`Refine` fails HM-DEC-048 as the order states it: "Neither may make it more
-willing to guess."** Taking the dit from the marks alone is right, and the
-reasoning holds up: `Refine` averaged an accurate mark-derived dit with the
-sender's element gaps, HM-DEC-119 measured that the mark carries no error to
-cancel, and HM-DEC-115 measured that a real fist's element gap is genuinely
-shorter than its dit. On the synthetic fist the change does exactly what it should,
-taking the estimated dit from 45 ms to 55 and the fitted dah from 5.2 dits to 4.27.
-
-**And on the air it makes the decoder read `U EE ■ ■` out of a recording an
-independent instrument says contains no keying at any pitch.** `cw-2026-08-20-014854`
-goes from one character to five, all five marked unsure, and the hops on which
-`LooksLikeMorse` is true go from 8 to 469. Its estimated dit goes from 42.7 ms to
-90.0, and a longer dit makes gate-chopped noise land nearer the two fitted centers.
-**HM-DEC-090 already ruled on marking as a substitute for silence**: seventeen
-hundred characters once came out of half a minute of band noise, every one marked,
-and marking them was not enough.
-
-**The ratio change fails on its own premise, and the instruction's account of it
-is wrong.** Widening `MaximumRatio` from 3.8 to 5.0 does **not** let the survey
-find the fist on `134712`. With the bound widened, the two candidates it accepts on
-that recording are:
+`TheStationInTheRecordingIsN4LTests` reads `cw-2026-08-17-134712.wav`, takes the
+gate's own elements, and finds twenty-one of them between **21.45 s and 23.01 s**,
+exactly the stretch the instruction named. **The boundaries scanned are 21.30 s to
+23.10 s**, a little wider either side so a small change in the gate moves what
+falls inside them rather than clipping an end off; the elements themselves land
+where the instruction said.
 
 ```
-625 Hz  dit 31.3 ms  dah 150.0 ms  ratio 4.80  separation 6.4
-600 Hz  dit 37.0 ms  dah 160.0 ms  ratio 4.32  separation 4.2
+  21.45s mark 225   21.48s gap  30   21.54s mark  55   21.72s gap 180
+  21.77s mark  55   21.81s gap  40   21.87s mark  55   21.91s gap  40
+  21.97s mark  60   22.01s gap  40   22.06s mark  55   22.09s gap  30
+  22.34s mark 245   22.49s gap 150   22.55s mark  60   22.57s gap  25
+  22.82s mark 245   22.86s gap  40   22.91s mark  55   22.95s gap  40
+  23.01s mark  55
 ```
 
-**Neither is the station.** The gate and the keying meter both put the fist at
-500 Hz with a 55 ms dit and a 235 ms dah. The 500 Hz bin is still rejected with the
-bound at five, so **`MaximumRatio` was never what rejected it** — something else in
-the survey did, and finding out which is HM-OPEN-054's ground.
+**The cuts are fitted from this stretch and from nothing else** (§12.5): the marks
+are split at the midpoint of their own two means, at 147 ms, and the gaps at
+theirs, at 100 ms. Nothing asks the decoder what a dit is, what a dah is or where a
+character ends, because the decoder's answer to all three is what is under
+investigation. That gives `-.` `....-` `.-..` — **N, 4, L**.
 
-**What the widened bound does admit is a phantom.** On `cw-2026-08-20-014935`, the
-recording with no keying in it, the survey accepts `875 Hz dit 58.4 dah 263.3 ratio
-4.51 separation 6.0` and claims keying on 200 hops.
+Dit **56.3 ms**, dah **238.3 ms**, ratio **4.24**, element gap **35.6 ms**,
+character gap **165.0 ms**. About twenty-two words a minute, a heavy fist, and the
+Farnsworth spacing HM-DEC-115 measured on a different station.
 
-**And it breaks eight tests, one of which is written on this very recording.**
-`CwToneSurveyTests.ACarrierNeverConvincesTheTrackerItIsAStation` reads
-`cw-2026-08-17-134712.wav` and asserts the tracker never claims keying in it,
-because **HM-DEC-095 characterised the strong signal in that recording as a
-carrier**. Also failing: `NoKeyingIsClaimedWhereNoneWasFound`,
-`FindingTheToneIsNotClaimingSomebodyIsSending`, and tone-finding on
-`prosigns-easy`, `prosigns-edge` and `tightfist-easy`.
+**HM-DEC-095's carrier finding is overturned and recorded as HM-DEC-144**, with the
+element sequence and the callsign in the entry, indexed in `CLAUDE.md` §1.
+Everything else in HM-DEC-095 stands.
 
-**So Task 2 lands on parked ground after all, by a route the order did not
-anticipate.** The order separated "how wide a fist counts as Morse" from "how the
-survey tells keying from a carrier" and permitted the first. **On this recording
-they are the same question**: the ruling in the tree says that signal is a carrier,
-the keying meter and the gate say there is a 55 ms fist in it, and widening the
-fist band is precisely the act of overturning the first with the second. The order
-says to stop if the work reaches for the distinguisher. It reached.
+`ACarrierNeverConvincesTheTrackerItIsAStation` is retired rather than deleted. It
+read this file by name and required the tracker never to claim keying in it, which
+made every change that let Hamlet notice the station fail the suite. **No recording
+in this repository is established as a carrier**, so the property is now asserted
+on audio whose truth is known by construction: a tone that never stops, in a
+shaped band. **A synthesized fixture is the weaker evidence** (HM-DEC-091) and it
+is what there is until a real carrier is recorded and kept. `TheStrongSignalThatIsNotKeyingIsReportedAsInterference`
+keeps its measurements and carries a note saying its name is now wrong, because
+what the survey should call that signal is HM-OPEN-054's question and is parked.
 
-### Task 1, what `Refine` was changed to and why
+### Tasks 2 and 3: both built, both measured, neither shipped
 
-`Refine` averaged the mark-derived dit with the mean of the sender's short gaps, on
-the premise that a mark measured at a threshold reads long by the same amount the
-gap after it reads short, so the two errors cancel. **Both halves of that premise
-have already been measured false in this repository**: HM-DEC-119 put marks of
-known length through Hamlet's own detector and found the gate reads 100 to 110 ms
-for a true 100 at every speed, so the mark carries nothing to cancel, and
-HM-DEC-115 measured a real fist off the air whose element gap is genuinely shorter
-than its dit, 40 ms against 57, because that is how people send. The average was
-therefore an accurate number blended with a short one and it came out short. The
-replacement takes the dit from the marks alone, which is the estimate HM-DEC-119
-measured as accurate, and it is fitted from the signal rather than being another
-constant: it is the median of the fitted short-mark cluster, the same fit
-`ClassifyMark` already cuts on.
+**Nothing in `src/` changed this session.** The decoder is byte-identical to where
+it started.
 
-**The dit, before and after, for all nine captures:**
+**Task 2, what was changed and why.** The rolling window holds three populations
+and was being fitted with two. Inside the callsign the twenty most recent marks are
+eleven of the station's, at 55 and 235 milliseconds, and nine slivers between 5 and
+45 that the gate chopped out of band noise. A two-way fit puts the slivers in with
+the dits and returns 45 for a dit of 56; seeded on percentiles in log space, which
+is what HM-DEC-119 already does for the mark boundary, it does **worse** and returns
+14, because the slivers are numerous enough to own a centre of their own. So the fit
+was given a third cluster to put them in, fitted from the marks themselves with no
+length declared too short to be an element, and the lowest set aside only when the
+marks say it is a separate population, **by the same separation the mark boundary
+already demands of its two**. The test is two-sided: the top two must be separated
+as well, so a fit that has merely cut the dahs in half falls back to what it always
+returned.
 
-| capture | dit today | dit with `Refine` changed |
-|---|---|---|
-| `cw-2026-08-17-013347` | 87.0 ms | 100.0 ms |
-| `cw-2026-08-17-013622` | 21.6 | 25.0 |
-| `cw-2026-08-17-134712` | 24.5 | 25.0 |
-| `cw-2026-08-18-004507` | 54.2 | 60.0 |
-| `cw-2026-08-18-003016` | 47.9 | 55.0 |
-| `cw-2026-08-18-003126` | 49.8 | 50.0 |
-| `cw-2026-08-18-003758` | 34.3 | 40.0 |
-| `cw-2026-08-20-014854` | 42.7 | 90.0 |
-| `cw-2026-08-20-014935` | 40.9 | 105.0 |
+**It does exactly what it was built to do.** Instrumented inside the callsign, the
+three centres come out at **14.3, 51.2 and 238.1 ms** and the drop fires. The dit
+cluster is found.
 
-**A mismatch against the instruction, reported rather than filled in.** It asks for
-the fitted dah in dits for all nine as well. That figure is an internal of the mark
-fit with no reader on it, and building one for a change that was then withdrawn was
-not worth the session. **The one place it was measured is the synthetic fist**,
-where it goes from 5.2 dits to 4.27, which is the whole mechanism the change exists
-to correct. The dit column above is the same quantity one step earlier and it is
-measured for all nine.
+**Task 3, `Refine` measured again on top of it.** Last session `Refine` alone read
+five characters out of `cw-2026-08-20-014854`, a recording holding no keying at any
+pitch, and was withdrawn. **The instruction's guess was right: the invention was the
+poisoned dit, not `Refine`.** With the sample corrected first, `014854` returns to
+**one** character, which is what it produces today, and `014935` stays at **zero**.
 
-`TheDitComesOutShortWhenTheGapIsShorterThanIt` **still asserts 40 to 50 ms and still
-records 45**, because the change that would have moved it is not in the tree. It was
-not deleted and it was not weakened.
+**The nine captures, three ways:**
 
-### Task 4, the fixture
+| capture | today | task 2 | task 2 + `Refine` |
+|---|---|---|---|
+| `cw-2026-08-17-013347` | 8 | 8 | 8 |
+| `cw-2026-08-17-013622` | 0 | 0 | 0 |
+| **`cw-2026-08-17-134712`** | **0** | **0** | **0** |
+| `cw-2026-08-18-004507` | 25 | 25 | 25 |
+| `cw-2026-08-18-003016` | 38 | 38 | **43** |
+| `cw-2026-08-18-003126` | 34 | 35 | **35** |
+| `cw-2026-08-18-003758` | 14 | 14 | 14 |
+| `cw-2026-08-20-014854` | 1 | 1 | **1** |
+| `cw-2026-08-20-014935` | 0 | 0 | **0** |
 
-`ARecordingWithKeyingInItIsReadTests.TheDecoderSaysSomethingAboutIt` **stays red**,
-in all four columns. Neither change was adjusted to make it pass.
+Every floor holds and the two from the 19th produce no more than they do today.
 
-**Where it dies now is where it died before, and the third cause is now visible.**
-It still dies at `LooksLikeMorse`, which is false on every hop in every column. But
-with `Refine` changed, `134712`'s estimated dit reads **25.0 ms** while the fist in
-it sends 55, and the tracked pitch moves to 525 Hz. The reason is arithmetic rather
-than mysterious: **the fist occupies about six seconds of a thirty-second
-recording**, and the speed estimator's window is the last twenty marks. The other
-twenty-four seconds are gate-chopped noise, they supply most of those twenty marks,
-and so neither the dit nor the two mark clusters ever describe the station. Last
-session showed the same audio cut to the four cleanest seconds produces a character.
+**And both break the suite.** Task 2 alone breaks two easy-tier fixtures:
+`exchange-easy` reads `VQCQDEN0CALLN0CALLK` and `tightfist-easy` reads `TEDETESTK`,
+where both were whole. HM-DEC-114 makes an easy tier pass or fail, so that is a
+hard failure and not a ratchet. Task 2 plus `Refine` additionally breaks
+`clean-12wpm`, `clean-18wpm` and `TheBulletinsWordsComeOutAsWords`. Eleven failures
+against the expected four.
 
-**A decoder that reads a station occupying a fifth of its window is a different
-piece of work from either change measured tonight**, and it is the honest next
-question.
+**Why task 2 breaks them, and it is the finding worth keeping.** A tight fist runs
+its elements together, so a merged pair lands at about two dits and a merged run at
+about four. **That is a genuine third population of marks, and it is not chatter.**
+By length alone the fit cannot tell a merged element from a sliver of noise: on
+`134712` the three centres sit at 14, 51 and 238, and on `tightfist-easy` they sit
+at a dit, a dah and a merge, and both look identical to a clustering that only
+knows how long things are. What separates them is that the chatter is not part of
+any character, which is structure, and structure is HM-OPEN-054's ground.
 
-### Task 5, the two from the 19th
+### The dit and the dah, before and after
 
-Run in all four columns. **Today: 1 and 0. With `Refine`: 5 and 0. With the ratio:
-1 and 0. With both: 5 and 3.** The five read `U EE ■ ■` and the three read `■■■`.
+| capture | dit today | dit task 2 | dit task 2 + `Refine` |
+|---|---|---|---|
+| `cw-2026-08-17-013347` | 87.0 ms | 87.0 | 100.0 |
+| `cw-2026-08-17-013622` | 21.6 | 21.6 | 25.0 |
+| `cw-2026-08-17-134712` | 24.5 | 24.5 | 25.0 |
+| `cw-2026-08-18-004507` | 54.2 | 54.2 | 60.0 |
+| `cw-2026-08-18-003016` | 47.9 | 47.9 | 55.0 |
+| `cw-2026-08-18-003126` | 49.8 | 49.8 | 50.0 |
+| `cw-2026-08-18-003758` | 34.3 | 19.3 | 19.7 |
+| `cw-2026-08-20-014854` | 42.7 | 42.7 | 50.0 |
+| `cw-2026-08-20-014935` | 40.9 | 38.4 | 90.0 |
 
-**That is invention and it is reported as invention.** The keying meter sweeps both
-recordings 400 to 1200 Hz and finds medians of five and seven milliseconds in every
-window, against 44 to 57 on the four that decoded. There is nothing being keyed in
-them, so the honest output is silence.
+**These are end-of-file figures and that is why most of them barely move.** By the
+last sample of `134712` the window is entirely noise again, so the interesting
+number is not here but inside the callsign, where the fitted dah goes from **5.2
+dits to 4.66** against a hand-decoded truth of 4.24.
 
-`NothingIsReadFromAudioWithNoKeyingTests` is added and pins it: neither press may
-produce more than it does today, and the same independent instrument re-measures
-both recordings in the tree rather than being quoted. **The single character on
-`-014854` predates all of tonight and is allowed for rather than approved of**, and
-the test says so on its face.
+**A mismatch reported rather than filled in, and it is the second time.** The
+instruction asks for the fitted dah in dits for all nine, before and after. It is
+an internal of the mark fit with no reader on it. It was measured inside the
+callsign on `134712` and on `cw-2026-08-18-004507`, where the three centres settle
+at 18, 60 and 154 ms, and **the other seven were not read out**, because building a
+reader for two changes that were then withdrawn was not the best use of the
+session. The dit column above is the same quantity one step earlier and is measured
+for all nine.
 
 ## 2. What Tim should expect
 
-**No. The decoder does not read `cw-2026-08-17-134712`, and nothing shipped
-tonight.** Both candidate changes were built, measured four ways and withdrawn, and
-the tree is where it was this morning apart from four new tests.
+**No. The decoder still does not read `cw-2026-08-17-134712`**, and there is no
+text to check against `N4L`.
 
-**What you have instead is the measurement**, and it is worth more than either
-change would have been:
+**But the callsign is now proved in the tree**, and that is the thing this
+recording has never had. `N4L` is the first adjudicated ground truth in it, and
+every future change can be scored against a known-correct fragment rather than
+against a feeling.
 
-- **The ratio change was aimed at the wrong thing.** `MaximumRatio` is not what
-  rejects that station. Widened, the survey finds two other candidates at 600 and
-  625 Hz and still not the 500 Hz fist, and it manufactures a station on a
-  recording with nothing in it.
-- **`Refine` is right in principle and cannot ship as it stands.** It reads five
-  characters out of an empty band.
-- **A third cause is now named.** The fist is about six seconds of a thirty-second
-  recording and the speed estimator looks at the last twenty marks, so the
-  twenty-four seconds of noise own the estimate.
-- **There is a contradiction in the tree that has to be settled by a person.**
-  `CwToneSurveyTests.ACarrierNeverConvincesTheTrackerItIsAStation` is written on
-  this exact recording and asserts, on HM-DEC-095's authority, that the strong
-  signal in it is a carrier. The keying meter and the decoder's own gate both read
-  a 55 ms dit and a 235 ms dah in it. **Those cannot both be right**, and which one
-  is wrong decides whether the last three sessions were chasing a defect or a
-  ghost.
+**Where it dies now, precisely.** With both changes in, through the whole callsign
+the dit reads **35 to 40 ms** against a true 56.3 and coherence is **0.00**, so
+`LooksLikeMorse` is false and nothing is emitted. The three-way fit **does** find
+the dit cluster at 51.2 ms. What loses it is the next line:
+`MedianOfShortCluster` takes the median of every mark below the dit-and-dah cut,
+which is 145 ms here, and that **puts all nine chatter slivers straight back in**.
+The cluster fit excludes them and the median re-admits them.
 
-**Build clean, no warnings. 2,073 tests, four failing, and they are the four
+**That is one line, and it is the next step.** `MedianOfShortCluster` exists for
+HM-DEC-095's reason, that a handful of very short marks survive the gate on any
+real signal and an average is defenceless against them. Where a chatter cluster has
+already been identified and set aside, the protection is doing the harm it was
+written to prevent.
+
+**Build clean, no warnings. 2,076 tests, four failing, and they are the four
 expected:**
 
 - `CwSettledSilenceTests.APassThatReadSomethingEmitsSomething`
@@ -207,61 +169,65 @@ expected:**
 - `CwTerminalTests.ClearingTheTranscriptLeavesTheDecoderAlone`
 - `ARecordingWithKeyingInItIsReadTests.TheDecoderSaysSomethingAboutIt`
 
-Four tests were added and all pass. Nothing in the gate, the settled pass or the
-keying meter was touched, and `ShortestVote` is still 5.
+Two tests were added, one was replaced, and `src/` is untouched. `ShortestVote` is
+still 5, `MaximumRatio` is still 3.8, and the gate, the settled pass and the keying
+meter were not touched.
 
 Committed and pushed to `main`.
 
 ## 3. What we should do next
 
-- **Settle the carrier question first.** It is the one thing everything else waits
-  on, it needs your ear rather than another session's measurement, and three
-  sessions have now been spent on a recording the repository's own ruling says
-  holds no station.
-- If it is a station: `Refine` with a guard that keeps empty bands silent, and the
-  short-window problem, in that order. Both are named and measured.
-- If it is a carrier: `ARecordingWithKeyingInItIsReadTests` is asserting the wrong
-  thing and should be reversed, and the keying meter's thresholds need looking at,
-  because it scored this recording higher than the four that decoded.
-- The ratio band stays at 3.8 either way. Nothing measured tonight supports moving
-  it and one measurement says it is holding a carrier out.
+- **`MedianOfShortCluster`, with the three-way fit, in one unit.** It is the line
+  the callsign dies on and both halves are measured. The easy-tier breakage has to
+  be solved in the same unit, because the three-way fit alone causes it.
+- **The merged-element problem is the real design question** and it deserves being
+  stated as one: a mark twice the length of a dit is either a dah in a fist that
+  runs its elements together or two elements the gate joined, and no measurement of
+  length alone will say which.
+- Record `cw-2026-08-17-134712` in the capture set as an adjudicated fixture whose
+  known content is `N4L` at 21.45 to 23.01 seconds. It is the only capture with any
+  ground truth in it.
+- Keep a real carrier when one is heard. The retired test is now standing on
+  synthesized audio, which is the weaker evidence.
 
 ## 4. What's blocking us
 
-**One thing blocks the next unit, and it is the ask below.**
+Nothing blocks the next unit.
 
-> **Whether `cw-2026-08-17-134712` contains a station or a carrier is Tim's ear,
-> and no further work on it happens until he has listened to it.**
+**One ask, new this session.**
+
+> **Whether a mark of about two dits is a dah from a fist that runs its elements
+> together, or two elements the gate joined, is not decidable from the mark's
+> length, and the next unit must not be written as though it were.**
 >
-> The repository holds both answers and they are incompatible. HM-DEC-095
-> characterised the strong signal in this recording as a carrier and
-> `ACarrierNeverConvincesTheTrackerItIsAStation` asserts it, reading this file by
-> name. Two sessions later the keying meter, which shares no code with the decoder,
-> scored one of its six-second windows 0.37 at 500 Hz with a 54 ms element, the
-> highest score it has measured on any recording here, higher than the four that
-> decoded. Last session the decoder's own gate read that same stretch as dits of
-> 55 ms, dahs of 235 and element gaps of 35, and the two instruments agreed on the
-> element length to within a millisecond.
+> The three-way fit built this session finds `134712`'s three mark populations
+> exactly, at 14, 51 and 238 milliseconds, and setting the lowest aside is right
+> there. It is wrong on `tightfist-easy`, whose three populations are a dit, a dah
+> and a merged pair, and dropping the lowest drops the dits. **Both look identical
+> to a fit that only knows how long things are**, which is why task 2 helped one
+> recording and broke two fixtures.
 >
-> **Two instruments agreeing is strong and it is not a person hearing Morse.** The
-> file is thirty seconds long and the stretch in question is four of them.
+> **What separates them is whether the mark took part in a character**, and that is
+> structure rather than length. It is adjacent to HM-OPEN-054, which is parked, and
+> a unit written to "make the dit come from plausible elements" will walk into it
+> without noticing.
 >
-> **Rejected: settling it by measurement.** Three sessions have tried and produced
-> two instruments that agree with each other and disagree with a ruling. A fourth
-> would produce a third instrument. **Also rejected: proceeding on the meter's
-> word** and reversing the carrier test, because that is a session overturning a
-> ruling on §0.0 ground, which §12.1 puts outside what a session may record.
+> **Rejected: a length threshold below which a mark is chatter.** That is the sixth
+> instance of the error class four rulings have now been spent closing.
+> **Also rejected: dropping the lowest cluster only when it is a minority of the
+> window**, which was measured against the numbers: the chatter is nine marks of
+> twenty inside the callsign, so a minority test would refuse exactly the case the
+> fit exists for.
 
 ### Asks still outstanding
 
-- **Whether `cw-2026-08-17-134712` holds a station or a carrier.** First made
-  2026-08-20, this session. Waiting on Tim listening to four seconds of a WAV in
-  the tree. **It blocks the coherence work, the `Refine` work and the fixture
-  test.**
+- **How to tell a merged element from chatter.** First made 2026-08-20, this
+  session. Waiting on Tim, or on a unit scoped to know it is the question. Nothing
+  is in the tree.
 - **The keying meter's provisional thresholds.** First made 2026-08-20. Waiting on
-  one evening's roster scored against the `meter` column. **The ask above bears on
-  this one**: if that recording is a carrier, the meter scored a carrier higher
-  than four real stations.
+  one evening's roster scored against the `meter` column. **HM-DEC-144 settles the
+  half of this that was in doubt**: the meter scored a real station, not a carrier,
+  and scored it higher than four recordings that decoded.
 - **Whether `SHACK_FACTS.md` still holds that CI-V Transceive is off.** First made
   2026-08-20. Waiting on one capture taken with the radio connected, so the
   `broadcast` line has something to report. The change is in the tree at
@@ -279,7 +245,6 @@ Committed and pushed to `main`.
 - **HM-OPEN-007.** Open and unruled since 2026-08-14, named in HM-DEC-140 as the
   reason the queue's own premise is worth re-testing. Waiting on Tim.
 
-**One item leaves the queue.** `CwToneSurvey.MaximumRatio` was ruled workable this
-session and has been worked: it was widened, measured, found not to be the cause,
-found to admit a phantom on an empty recording, and reverted. It needs no further
-ruling.
+**One item leaves the queue.** Whether `cw-2026-08-17-134712` holds a station or a
+carrier: ruled this session and recorded as HM-DEC-144. It is a station and its
+callsign is `N4L`.

@@ -1,9 +1,9 @@
-STATE: BLOCKED
+STATE: COMPLETED
 PHASE: 5 of 5
 BALL: tim
 NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-20T13:26:00-04:00
-NOTE: Both changes withdrawn on measurement; blocked on whether 134712 holds a station or a carrier
+UPDATED: 2026-08-20T15:02:00-04:00
+NOTE: N4L proved and HM-DEC-095 overturned; both decoder changes measured and withdrawn on the easy tiers
 
 ---
 

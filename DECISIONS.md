@@ -4,6 +4,59 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-144
+date: 2026-08-20
+supersedes: HM-DEC-095
+refs: tests/fixtures/cw/captured/cw-2026-08-17-134712.wav, tests/Hamlet.RadioEngine.Tests/Cw/TheStationInTheRecordingIsN4LTests.cs, HM-OPEN-054, §0.0
+---
+
+**`cw-2026-08-17-134712` holds a station, not a carrier, and its callsign is
+`N4L`.** HM-DEC-095's finding that this recording's strong signal is unkeyed is
+overturned. Everything else in that ruling stands: a note is still chosen by how it
+is keyed and never by how loud it is, the operator's own transmission is still not
+evidence about anybody else, and a sender's gaps are still classified by clustering
+that sender's own gaps.
+
+THE EVIDENCE IS THE DECODER'S OWN ELEMENTS, READ BY HAND. Between 21.45 s and
+23.01 s the gate produces, in order:
+
+    mark 225  gap  30  mark  55  gap 180
+    mark  55  gap  40  mark  55  gap  40  mark  60  gap  40  mark  55  gap  30  mark 245  gap 150
+    mark  60  gap  25  mark 245  gap  40  mark  55  gap  40  mark  55
+
+Cutting the marks and the gaps at the midpoint of their own two means, fitted from
+this stretch and from nothing else, that is `-.` then `....-` then `.-..`: **N, 4,
+L**. A United States amateur callsign prefix, sent by hand. Dit 56.3 ms, dah
+238.3 ms, ratio 4.24, element gap 35.6 ms, character gap 165.0 ms — about
+twenty-two words a minute with a heavy fist and Farnsworth spacing of the kind
+HM-DEC-115 measured on a different station.
+
+**A CARRIER CANNOT PRODUCE THAT.** It cannot produce a dah and a dit, then four
+dits and a dah, then a dit, a dah and two dits, with character gaps in the two
+places that make the letters divide. The three instruments in this repository now
+agree: the keying meter, which shares no code with the decoder, scored this
+recording 0.37 at 500 Hz with a 54 ms element, higher than any window of the four
+captures that decoded; the gate reads a 55 ms dit and a 235 ms dah in the same
+stretch, agreeing with the meter to within a millisecond; and the elements spell a
+callsign.
+
+WHAT IT COST TO HAVE THIS WRONG. Three sessions chased a real decode failure while
+a ruling in the tree said the audio held no station. One of them was blocked
+outright: a test written on HM-DEC-095, `ACarrierNeverConvincesTheTrackerItIsAStation`,
+reads this file by name and asserts the tracker never claims keying in it, so any
+change that let Hamlet notice the station failed the suite. **A ruling that is wrong
+about a fixture is worse than no ruling, because the tests built on it turn the
+error into a wall.**
+
+WHAT DOES NOT FOLLOW. This settles what is in the recording and settles nothing
+about how the survey should tell keying from a carrier, which is HM-OPEN-054 and
+remains parked and unbuilt. It also does not adjudicate the rest of the recording:
+`N4L` is established and the remainder of the transcript is the operator's ear.
+
+Ruled by Tim in the work order of 2026-08-20, on the hand decode above; reproduced
+inside the repository before anything was built on it.
+
+---
 id: HM-DEC-143
 date: 2026-08-19
 refs: src/Hamlet.RadioEngine/Cw/CwDecoder.cs, src/Hamlet.RadioEngine/Cw/CwToneTracker.cs, HM-OPEN-051, HM-DEC-095, §0.0

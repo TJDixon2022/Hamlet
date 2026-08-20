@@ -188,28 +188,58 @@ public sealed class CwToneSurveyTests
     }
 
     /// <remarks>
-    /// <para>Proves HM-DEC-095, and it records a real limit of the survey rather
-    /// than hiding it. **Sweep three-second windows across the recording with the
-    /// carrier in it and one of them does cluster convincingly**, at a separation
-    /// of about eight against the four this survey asks for. Half a minute of a
-    /// fluctuating signal will eventually produce three seconds that look like
-    /// somebody sending.</para>
-    /// <para>Which is why one survey is not the whole guard. **The claim is made
-    /// by the tracker and it takes two agreeing surveys**, and across this entire
-    /// recording the carrier never manages that twice running. The test is at the
-    /// level where the claim reaches the operator, because that is the level §0.0
-    /// is about.</para>
+    /// <para>**THIS REPLACES `ACarrierNeverConvincesTheTrackerItIsAStation`,
+    /// WHICH ASSERTED A FALSEHOOD FOR THREE DAYS** (HM-DEC-144). That test read
+    /// `cw-2026-08-17-134712.wav` by name and required the tracker never to claim
+    /// keying in it, on HM-DEC-095's finding that the strong signal there is a
+    /// carrier. It is a station: the gate's own elements across a second and a
+    /// half of that recording spell the callsign `N4L`, which is proved in
+    /// `TheStationInTheRecordingIsN4LTests`. So the retired test required Hamlet
+    /// never to notice a real station, and every change that let it do so failed
+    /// the suite.</para>
+    /// <para>**NO RECORDING IN THIS REPOSITORY IS ESTABLISHED AS A CARRIER**, so
+    /// the property is asserted on audio whose truth is known by construction
+    /// instead: a steady tone that never stops, in a shaped band, which is what a
+    /// carrier is. **A synthesized fixture is the weaker evidence** (§12.5,
+    /// HM-DEC-091) and it is what there is until a real carrier is recorded off
+    /// the air and kept.</para>
+    /// <para>The claim is made by the tracker rather than by one survey, and it
+    /// takes two agreeing surveys, which is the level §0.0 is about because it is
+    /// the level that reaches the operator.</para>
     /// </remarks>
     [Fact]
     public void ACarrierNeverConvincesTheTrackerItIsAStation()
     {
-        var audio = WavAudio.Read(Path.Combine(
-            CapturedSignalTests.Folder, "cw-2026-08-17-134712.wav"));
+        const int rate = 48_000;
+        const double toneHz = 620;
 
-        var tracker = new CwToneTracker(audio.SampleRate, 600);
+        var random = new Random(7300);
+        var samples = new float[rate * 30];
+        var band = 0.0;
+
+        for (var i = 0; i < samples.Length; i++)
+        {
+            // A tone that never stops, and a band of noise under it. Nothing here
+            // is ever keyed, so nothing here is ever Morse.
+            //
+            // **THE NOISE IS SHAPED AND WHITE NOISE WOULD NOT DO** (HM-OPEN-018).
+            // A receiver hands the decoder what got through its own filter, so
+            // energy outside the passband is not there to be chattered on. Fed
+            // flat noise instead, the survey claimed keying at 875 Hz beside a
+            // 620 Hz carrier, which is a fact about the fixture rather than about
+            // this radio.
+            var white = (random.NextDouble() - 0.5) * 0.4;
+
+            band = (0.965 * band) + (0.035 * white);
+
+            samples[i] = (float)(
+                (0.30 * Math.Sin(2 * Math.PI * toneHz * i / rate)) + (band * 3));
+        }
+
+        var tracker = new CwToneTracker(rate, 600);
         var claimed = 0;
 
-        tracker.Process(audio.Samples, 0, _ =>
+        tracker.Process(samples, 0, _ =>
         {
             if (tracker.Verdict.Keyed is not null)
             {
@@ -225,15 +255,18 @@ public sealed class CwToneSurveyTests
     }
 
     /// <remarks>
-    /// <para>Proves HM-DEC-095 on the recording it was written from. **The
-    /// loudest thing in this half minute is at 500 Hz and nobody is keying it.**
-    /// The old detector answered 375 Hz here, which is neither the strong signal,
-    /// nor a station, nor the operator's own pitch setting, and there is no
-    /// reading of the audio that produces it.</para>
-    /// <para>What is asserted is what was measured: a frequency and a strength.
-    /// Nothing here says what the signal is or whose it is, because Hamlet has no
-    /// way to know and the operator has a receiver and forty years of ears
-    /// (§0.0).</para>
+    /// <para>Proves HM-DEC-095's surviving half on the recording it was written
+    /// from: **the loudest thing in this half minute is at 500 Hz**, and the old
+    /// detector answered 375, which is neither the strong signal nor a station nor
+    /// the operator's own pitch setting, and no reading of the audio produces
+    /// it.</para>
+    /// <para>**THE NAME OF THIS TEST IS NOW WRONG AND ITS ASSERTIONS ARE NOT**
+    /// (HM-DEC-144). That 500 Hz signal is a station sending `N4L`, so calling it
+    /// interference is calling somebody's transmission noise. What is asserted
+    /// here is only what was measured, a frequency and a strength, and both are
+    /// still true. **What the survey should call it is HM-OPEN-054's question**
+    /// and is parked, so the test keeps its measurements and this note carries the
+    /// correction rather than a rename hiding it.</para>
     /// </remarks>
     [Fact]
     public void TheStrongSignalThatIsNotKeyingIsReportedAsInterference()
