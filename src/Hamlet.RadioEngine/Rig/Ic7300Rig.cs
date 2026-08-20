@@ -635,6 +635,7 @@ public sealed class Ic7300Rig : IRig, IDisposable
     private long _inboundBytes;
     private long _lastInboundTicks;
     private long _lastBroadcastTicks;
+    private long _lastTransceiveTicks;
 
     /// <summary>
     /// How the conversation with the radio is going (HM-DEC-092).
@@ -661,7 +662,8 @@ public sealed class Ic7300Rig : IRig, IDisposable
         Interlocked.Read(ref _inboundScope),
         Interlocked.Read(ref _inboundBytes),
         Moment(Interlocked.Read(ref _lastInboundTicks)),
-        Moment(Interlocked.Read(ref _lastBroadcastTicks)));
+        Moment(Interlocked.Read(ref _lastBroadcastTicks)),
+        Moment(Interlocked.Read(ref _lastTransceiveTicks)));
 
     private static DateTime? Moment(long ticks)
         => ticks == 0 ? null : new DateTime(ticks, DateTimeKind.Utc);
@@ -725,6 +727,12 @@ public sealed class Ic7300Rig : IRig, IDisposable
             or CivConstants.CmdTransceiveMode)
         {
             Interlocked.Increment(ref _inboundTransceive);
+
+            // **WHEN, AND NOT ONLY HOW MANY** (HM-DEC-091). A running count says
+            // whether the radio has ever volunteered anything; it cannot say
+            // whether it did so during the half minute in some particular
+            // recording, which is the question a capture sidecar has to answer.
+            Interlocked.Exchange(ref _lastTransceiveTicks, DateTime.UtcNow.Ticks);
         }
 
         if (frame.Command == CivConstants.CmdScope)

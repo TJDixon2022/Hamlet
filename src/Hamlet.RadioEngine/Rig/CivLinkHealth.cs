@@ -35,6 +35,14 @@ namespace Hamlet.RadioEngine.Rig;
 /// <param name="InboundBytes">How many bytes those frames carried in total.</param>
 /// <param name="LastInboundUtc">When the last frame of any kind arrived, or null.</param>
 /// <param name="LastBroadcastUtc">When the last broadcast arrived, or null.</param>
+/// <param name="LastTransceiveUtc">
+/// When the radio last volunteered a change of its own, or null if it never has.
+/// **This is the measured half of a question the setting only answers by name**
+/// (HM-DEC-091): `CivTransceive` says what the menu is set to, and this says what
+/// the cable actually carried, which is the only one of the two that is evidence.
+/// A count alone cannot say whether anything arrived during some particular
+/// stretch, so the moment is kept beside it.
+/// </param>
 /// <remarks>
 /// <para>**THE DIAGNOSTICS SCREEN READ FORTY VALUES AND SAID NOTHING ABOUT THE
 /// CONVERSATION CARRYING THEM.** Five settings were written one evening, all five
@@ -64,7 +72,8 @@ public readonly record struct CivLinkHealth(
     long InboundScope = 0,
     long InboundBytes = 0,
     DateTime? LastInboundUtc = null,
-    DateTime? LastBroadcastUtc = null)
+    DateTime? LastBroadcastUtc = null,
+    DateTime? LastTransceiveUtc = null)
 {
     /// <summary>Nothing known.</summary>
     public static CivLinkHealth Unknown { get; } = new("", 0, 0, 0, 0, null, null);

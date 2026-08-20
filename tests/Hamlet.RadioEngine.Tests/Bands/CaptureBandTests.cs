@@ -64,4 +64,53 @@ public sealed class CaptureBandTests
     {
         Assert.Null(HfBands.BandFor(hz));
     }
+
+    /// <remarks>
+    /// <para>Proves HM-DEC-091: **14.028 MHz is 20 metres and a capture header
+    /// labelled it 40 m.** The lookup was never the fault, which is why this is
+    /// pinned here and the repair is in the caller: the sidecar derived its
+    /// frequency from one source and its band from another, so the two could
+    /// disagree without either being wrong on its own terms.</para>
+    /// </remarks>
+    [Fact]
+    public void TheFrequencyThatWasLabelledFortyMetresIsTwentyMetres()
+    {
+        Assert.Equal("20 m", HfBands.BandFor(14_028_000)?.Name);
+    }
+
+    /// <remarks>
+    /// <para>Proves HM-DEC-091 and §0: **every edge, taken from the band data
+    /// itself rather than typed in again.** A test that retypes the boundaries
+    /// is a second copy of them, and a second copy drifts. Both edges belong to
+    /// their band and both neighbours of those edges do not, which is the pair of
+    /// claims an off-by-one in the lookup would break.</para>
+    /// </remarks>
+    [Fact]
+    public void EveryBandOwnsBothItsEdgesAndNeitherNeighbour()
+    {
+        Assert.NotEmpty(HfBands.Bands);
+
+        foreach (var band in HfBands.Bands)
+        {
+            Assert.Equal(band.Name, HfBands.BandFor(band.LowHz)?.Name);
+            Assert.Equal(band.Name, HfBands.BandFor(band.HighHz)?.Name);
+            Assert.NotEqual(band.Name, HfBands.BandFor(band.LowHz - 1)?.Name);
+            Assert.NotEqual(band.Name, HfBands.BandFor(band.HighHz + 1)?.Name);
+        }
+    }
+
+    /// <remarks>
+    /// Proves HM-DEC-091: the middle of every band Hamlet offers names that band,
+    /// so the sweep above cannot pass by finding nothing anywhere.
+    /// </remarks>
+    [Fact]
+    public void TheMiddleOfEveryBandNamesItsOwnBand()
+    {
+        foreach (var band in HfBands.Bands)
+        {
+            var middle = band.LowHz + ((band.HighHz - band.LowHz) / 2);
+
+            Assert.Equal(band.Name, HfBands.BandFor(middle)?.Name);
+        }
+    }
 }

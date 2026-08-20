@@ -127,6 +127,12 @@ public partial class MainWindowViewModel : ObservableObject
     private RigStateMonitor? _rigMonitor;
     private IAudioSource? _audioInput;
     private CwDecoder? _decoder;
+
+    /// <summary>Where the decoder's counters stood, recently, on the audio clock.</summary>
+    private CwCounterTrail? _counters;
+
+    /// <summary>When the current decoder began listening, or null when none is.</summary>
+    private DateTime? _decoderStartedUtc;
     private readonly Audio.ModeAudioPlayer _audio = new();
     private readonly PrivilegePlan _privileges = new();
     private CancellationTokenSource? _licenseLookup;
@@ -2842,6 +2848,16 @@ public partial class MainWindowViewModel : ObservableObject
         _capture = WasapiAudioDevices.Health(_settings.AudioInputDeviceId);
 
         _decoder = new CwDecoder(_audioInput.SampleRate, _settings.CwPitchHz);
+
+        // **A COUNT WRITTEN BESIDE A RECORDING IS READ AS BEING ABOUT THE
+        // RECORDING** (HM-DEC-091). The decoder's counters run from here until
+        // listening stops, so a capture taken seven hours in carried a character
+        // count earned hours earlier on another band. This keeps a short history
+        // of them against the audio clock, so a figure can be quoted for the
+        // thirty seconds in the file rather than for the evening.
+        _decoderStartedUtc = DateTime.UtcNow;
+        _counters = new CwCounterTrail(
+            (long)_audioInput.SampleRate * AudioTap.SecondsKept * 2);
         // **THE TWO PASSES BOTH REACH THE SCREEN NOW, AND THEY ARE NOT
         // RIVALS** (HM-DEC-096). The leading edge answers while somebody is
         // still sending and is never final; the settled pass runs a few seconds
@@ -2902,6 +2918,12 @@ public partial class MainWindowViewModel : ObservableObject
             _decoder.Listen(null);
             _decoder = null;
         }
+
+        // The trail belongs to one decoder. A new one starts at nought samples
+        // with nought counted, and a history carried across the seam would make
+        // a window straddle two of them.
+        _counters = null;
+        _decoderStartedUtc = null;
 
         _audioInput?.Stop();
         _audioInput?.Dispose();
@@ -2965,6 +2987,15 @@ public partial class MainWindowViewModel : ObservableObject
         // strong signal that will not resolve and an empty band used to produce
         // the same screen, and they are different problems.
         DecodeReport = _decoder.Report;
+
+        // Sampled here, on the same tick as the readouts, so the two ends of any
+        // window a capture asks about are each accurate to one tick.
+        _counters?.Note(new CwCounterSample(
+            _decoder.Tap.SamplesSeen,
+            DecodeReport.ElementsSeen,
+            DecodeReport.ElementsResolved,
+            DecodeReport.CharactersEmitted,
+            DecodeReport.CharactersUnsure));
 
         // **A STALLED AUDIO PIPELINE USED TO LOOK EXACTLY LIKE A QUIET BAND**
         // (HM-DEC-090). Nothing anywhere said the samples had stopped arriving,
@@ -3249,7 +3280,10 @@ public partial class MainWindowViewModel : ObservableObject
                 $"Kept the last {audio.Duration.TotalSeconds:0} seconds of what the "
                 + "decoder heard, with what the radio was doing beside it.";
 
-            MarkCase(wav: Path.GetFileName(wav), refusal: "");
+            MarkCase(
+                wav: Path.GetFileName(wav),
+                refusal: "",
+                inRecording: _counters?.Over(seen, audio.Samples.Length));
 
             AppEvents.AudioCaptured(
                 _telemetry, audio.Duration.TotalSeconds, CapturedHz, worked: true);
@@ -3369,7 +3403,20 @@ public partial class MainWindowViewModel : ObservableObject
             // the radio's, and it is how three captures came to say 40 m in a
             // header whose own rig block read 14.055 MHz. Two fields describing
             // one fact from two sources is the fault, not the wrong value.
+            // That fix reached only the branch where the radio had been read;
+            // the other one still fell back to the button, which is how
+            // 14.028 MHz came to be labelled 40 m afterwards (HM-DEC-091).
             $"band       {CapturedBand()}",
+
+            // **THE SETTING SAYS ONE THING AND THE CABLE SAYS ANOTHER**
+            // (HM-DEC-091). `SHACK_FACTS.md` records CI-V Transceive measured
+            // off, five and a half thousand frames in a minute with none of them
+            // the radio volunteering anything, and captures the same week carried
+            // the setting read back as on. A setting's name and a link's observed
+            // behaviour are different facts and only the second is evidence, so a
+            // capture now carries both and nobody has to reason from one alone.
+            // Nothing here writes to the radio or advises anybody to change it.
+            $"broadcast  {BroadcastDuringCapture(audio)}",
             "",
             // THE RECORDING'S OWN PEAK, not the meter's last fifth of a second
             // (HM-DEC-094). Those differed by eight decibels on a file that was
@@ -3380,8 +3427,23 @@ public partial class MainWindowViewModel : ObservableObject
             $"clipping   {report.Clipping}",
             $"toneHz     {(report.HasTone ? report.ToneHz.ToString("0") : "none")}",
             $"snrDb      {(double.IsNaN(report.SnrDb) ? "unread" : report.SnrDb.ToString("0.0"))}",
-            $"elements   {report.ElementsSeen} seen, {report.ElementsResolved} resolved",
-            $"characters {report.CharactersEmitted} emitted, {report.CharactersUnsure} unsure",
+
+            // **THE FIGURE FOR THIS RECORDING, WHICH IS WHAT EVERY NUMBER ON THIS
+            // SHEET IS READ AS BEING** (HM-DEC-091). Derived, by taking the
+            // decoder's own counters at the two ends of the audio in this file.
+            // A count that cannot be derived says so and does not print a number.
+            $"inThis     {InThisRecording(audio, samplesSeen)}",
+
+            // **AND THE RUNNING TOTALS, WHICH NOW SAY WHAT THEY COVER.** They
+            // were always cumulative from the moment listening started; what they
+            // never did was admit it. A capture written seven hours into an
+            // evening carried a character count earned hours earlier on another
+            // band, and nothing beside it said the number was not about the
+            // thirty seconds it sat next to.
+            $"elements   {report.ElementsSeen} seen, {report.ElementsResolved} resolved"
+                + $"  ({CountsCover()})",
+            $"characters {report.CharactersEmitted} emitted, "
+                + $"{report.CharactersUnsure} unsure  ({CountsCover()})",
 
             // **THE SPEED THE DECODER WAS TRACKING**, which is the first thing
             // anybody asks of a recording Hamlet could not read. Unread stays
@@ -3400,6 +3462,12 @@ public partial class MainWindowViewModel : ObservableObject
             // output and one a person's judgement, is a confusion waiting for the
             // evening somebody scores thirty of them.
             $"text       {CwCaseRoster.Readable(Transcript.PlainText)}",
+
+            // **AND THE TRANSCRIPT HAS THE SAME SHAPE OF PROBLEM AS THE COUNTS**,
+            // so it gets the same treatment. It is everything read since
+            // listening started, not what was read from this recording, and a
+            // reader who takes it for the second has been misled by the layout.
+            $"textCovers everything read {CountsCover()}",
             "",
         };
 
@@ -3407,14 +3475,24 @@ public partial class MainWindowViewModel : ObservableObject
         // The totals are cumulative over the whole session, so two captures
         // showing the same ones mean nothing was decoded in between, and a reader
         // should not have to work that out by subtraction.
+        // **THE ONE FIELD ON THE OLD SHEET THAT WAS ABOUT THE CAPTURE**, and
+        // it is why it stays: it read `0 characters` on the press that mattered,
+        // which was the truth nobody read because three bare totals beside it
+        // looked more like measurements. It now says which interval it covers
+        // too, because on the first capture of a session there is no previous one
+        // and the difference is the whole session.
         lines.Add(
             $"sinceLast  {report.CharactersEmitted - _lastCaptureCharacters} characters, "
-            + $"{report.ElementsSeen - _lastCaptureElements} elements");
+            + $"{report.ElementsSeen - _lastCaptureElements} elements  "
+            + (_hasPreviousCapture
+                ? "(since the previous capture)"
+                : $"({CountsCover()}; this is the first capture of the session)"));
 
         lines.Add("");
 
         _lastCaptureCharacters = report.CharactersEmitted;
         _lastCaptureElements = report.ElementsSeen;
+        _hasPreviousCapture = true;
 
         // EVERY FIELD WITH ITS PROVENANCE, and unread stays unread rather than
         // becoming a zero somebody later reasons from (HM-DEC-050).
@@ -3498,16 +3576,132 @@ public partial class MainWindowViewModel : ObservableObject
     /// </remarks>
     private string CapturedBand()
     {
+        // **BOTH BRANCHES DERIVE FROM THE FREQUENCY THIS FILE ALSO PRINTS**
+        // (HM-DEC-091). The first version of this fixed the read case and left
+        // the unread one falling back to the band button, so a header could still
+        // carry a frequency from one source and a band from another: 14.028 MHz
+        // labelled 40 m, which is the original defect surviving in the branch
+        // nobody looked at. The band is a fact about the frequency, and there is
+        // exactly one frequency on this sheet.
         var read = RigState[RigField.Frequency];
+        var name = HfBands.BandFor(CapturedHz)?.Name
+                   ?? "outside every band Hamlet knows";
 
-        if (read is { IsKnown: true, Number: { } hz })
+        return read is { IsKnown: true, Number: not null }
+            ? $"{name}  (from the frequency the radio reported)"
+            : $"{name}  (from Hamlet's own frequency, the radio was not read)";
+    }
+
+    /// <summary>Whether any capture has already been written this session.</summary>
+    private bool _hasPreviousCapture;
+
+    /// <summary>
+    /// What the decoder made of the audio in this file, and nothing else
+    /// (HM-DEC-091).
+    /// </summary>
+    /// <param name="audio">The recording being written.</param>
+    /// <param name="samplesSeen">Where the audio clock stood when it was taken.</param>
+    /// <returns>The figures, or why they could not be derived.</returns>
+    private string InThisRecording(MonoAudio audio, long samplesSeen)
+    {
+        var window = _counters?.Over(samplesSeen, audio.Samples.Length);
+
+        if (window is not { } inIt)
         {
-            return HfBands.BandFor((long)hz) is { } band
-                ? $"{band.Name}  (from the frequency the radio reported)"
-                : "outside every band Hamlet knows";
+            return "not derived (the decoder's own history does not reach back "
+                   + $"over these {audio.Duration.TotalSeconds:0.0} seconds)";
         }
 
-        return $"{SelectedBand.Band.Name}  (Hamlet's own, the radio was not read)";
+        return $"{inIt.CharactersEmitted} characters emitted, "
+               + $"{inIt.CharactersUnsure} unsure, "
+               + $"{inIt.ElementsSeen} elements seen, "
+               + $"{inIt.ElementsResolved} resolved  "
+               + $"(in the {audio.Duration.TotalSeconds:0.0} seconds of audio in this file)";
+    }
+
+    /// <summary>What the decoder's running totals cover, in words.</summary>
+    /// <returns>The interval, as a clause.</returns>
+    /// <remarks>
+    /// **A BARE NUMBER BESIDE A RECORDING CLAIMS TO BE ABOUT THE RECORDING**
+    /// (HM-DEC-091). These are honest fields once they say what they count, and
+    /// the age is spoken rather than counted out, because a reader wants to know
+    /// whether this is a fresh figure or one from hours ago (§0.7).
+    /// </remarks>
+    private string CountsCover()
+    {
+        if (_decoderStartedUtc is not { } started)
+        {
+            return "since the decoder started listening";
+        }
+
+        return "since the decoder started listening, "
+               + SpokenAge(DateTime.UtcNow - started);
+    }
+
+    /// <summary>How long ago something was, said rather than counted.</summary>
+    /// <param name="age">How long.</param>
+    /// <returns>The phrase.</returns>
+    private static string SpokenAge(TimeSpan age)
+    {
+        if (age < TimeSpan.FromMinutes(1))
+        {
+            return "less than a minute ago";
+        }
+
+        if (age < TimeSpan.FromMinutes(2))
+        {
+            return "about a minute ago";
+        }
+
+        if (age < TimeSpan.FromMinutes(90))
+        {
+            return $"about {age.TotalMinutes:0} minutes ago";
+        }
+
+        var hours = age.TotalHours;
+
+        return hours < 2.25
+            ? "about two hours ago"
+            : $"about {hours:0} hours ago";
+    }
+
+    /// <summary>
+    /// Whether the radio volunteered anything while this recording was made.
+    /// </summary>
+    /// <param name="audio">The recording, whose length is the window asked about.</param>
+    /// <returns>The observation, beside the setting as it was read.</returns>
+    /// <remarks>
+    /// <para>**THE SETTING AND THE BEHAVIOUR ARE DIFFERENT FACTS** (HM-DEC-091).
+    /// `SHACK_FACTS.md` records CI-V Transceive measured off, and captures the
+    /// same week carried it read back as on. Which of those is true is the
+    /// operator's to rule; what a capture can do is carry the measurement beside
+    /// the name, so the next argument about it starts from evidence.</para>
+    /// <para>**THIS OBSERVES AND NOTHING MORE.** It writes nothing to the radio
+    /// and advises nobody to change anything (§0.2).</para>
+    /// </remarks>
+    private string BroadcastDuringCapture(MonoAudio audio)
+    {
+        var setting = RigState[RigField.CivTransceive];
+        var said = setting.IsKnown
+            ? setting.Text
+            : setting.State.ToString().ToLowerInvariant();
+
+        if ((_rig as Ic7300Rig)?.Link is not { } health || health.Inbound == 0)
+        {
+            return $"the setting reads {said}, and no frame has arrived on the "
+                   + "link to check it against";
+        }
+
+        var opened = DateTime.UtcNow - audio.Duration;
+        var during = health.LastTransceiveUtc is { } last && last >= opened;
+
+        return during
+            ? $"the radio volunteered a change of its own while this recording "
+              + $"was being made, and the setting reads {said}"
+            : $"the radio volunteered nothing while this recording was being "
+              + $"made, and the setting reads {said}; {health.InboundTransceive} "
+              + $"of {health.Inbound} frames since the link came up were the "
+              + "radio announcing something";
     }
 
     /// <summary>What the decoder had emitted at the last capture.</summary>
@@ -4310,6 +4504,10 @@ public partial class MainWindowViewModel : ObservableObject
     /// </summary>
     /// <param name="wav">The recording written, or "" when none was.</param>
     /// <param name="refusal">Why none was, or "" when one was.</param>
+    /// <param name="inRecording">
+    /// What the decoder did over the audio that was kept, or null when there is
+    /// no recording or its figures could not be derived.
+    /// </param>
     /// <remarks>
     /// <para>**THE PRESS ASSERTS SOMETHING THE APPLICATION CANNOT KNOW**: that
     /// there was a station there to hear. Every other number Hamlet holds is
@@ -4320,9 +4518,24 @@ public partial class MainWindowViewModel : ObservableObject
     /// refusals. **A case with no evidence is still a case** and belongs in the
     /// denominator.</para>
     /// </remarks>
-    private void MarkCase(string wav, string refusal)
+    private void MarkCase(
+        string wav, string refusal, CwCounterDelta? inRecording = null)
     {
         var report = _decoder?.Report;
+
+        // **THE ROW IS SCORED, SO ITS COUNT HAS TO BE ABOUT THE CASE**
+        // (HM-DEC-091). Where the recording's own figures could be derived they
+        // go in; where there is no recording, or the decoder's history does not
+        // reach back over it, the session totals go in **and the cell says so**
+        // rather than passing for an answer about this station.
+        var emitted = inRecording?.CharactersEmitted ?? report?.CharactersEmitted ?? 0;
+        var unsure = inRecording?.CharactersUnsure ?? report?.CharactersUnsure ?? 0;
+
+        var covers = inRecording is not null
+            ? CwCountsCover.Recording
+            : wav.Length == 0
+                ? CwCountsCover.NoRecording
+                : CwCountsCover.Session;
 
         CwCaseRoster.Append(
             CaptureFolder,
@@ -4335,14 +4548,15 @@ public partial class MainWindowViewModel : ObservableObject
                 report is { HasTone: true } tone ? tone.ToneHz : null,
                 report is { } r && !double.IsNaN(r.SnrDb) ? r.SnrDb : null,
                 DetectedWpm > 0 ? DetectedWpm : null,
-                report?.CharactersEmitted ?? 0,
-                report?.CharactersUnsure ?? 0,
+                emitted,
+                unsure,
 
                 // **THE TAIL AT THE MOMENT OF THE PRESS**, which is what he was
                 // looking at when he decided there was a station there. A hundred
                 // and twenty characters carries several overs at any speed and
                 // still leaves the row one line in a text editor.
-                Transcript.Tail(RosterTextLength)));
+                Transcript.Tail(RosterTextLength),
+                covers));
     }
 
     /// <summary>

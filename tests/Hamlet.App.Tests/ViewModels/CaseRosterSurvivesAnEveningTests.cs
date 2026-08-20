@@ -122,7 +122,14 @@ public sealed class CaseRosterSurvivesAnEveningTests : IDisposable
                 decoder.State.WordsPerMinute > 0 ? decoder.State.WordsPerMinute : null,
                 report.CharactersEmitted,
                 report.CharactersUnsure,
-                read));
+                read,
+
+                // **THIS PRESS KEPT A RECORDING, SO ITS COUNTS ARE ABOUT THE
+                // RECORDING** (HM-DEC-091). The decoder was fed the fixture and
+                // nothing else, so its totals and the recording's figures are the
+                // same numbers here; on the air they are not, which is the whole
+                // reason the cell now says which it is.
+                CwCountsCover.Recording));
 
         Assert.True(File.Exists(wav), "the recording was not written");
         Assert.True(File.Exists(path), "the roster was not written");
@@ -144,7 +151,13 @@ public sealed class CaseRosterSurvivesAnEveningTests : IDisposable
                 decoder.State.WordsPerMinute > 0 ? decoder.State.WordsPerMinute : null,
                 report.CharactersEmitted,
                 report.CharactersUnsure,
-                read));
+                read,
+
+                // **AND THIS ONE KEPT NOTHING, SO THE COUNTS CANNOT BE ABOUT A
+                // RECORDING THERE IS NONE OF.** The row still carries them,
+                // because a case with no evidence is still a case, and the cell
+                // says what they are counts of instead of passing for an answer.
+                CwCountsCover.NoRecording));
 
         var lines = File.ReadAllLines(path);
 
@@ -170,7 +183,15 @@ public sealed class CaseRosterSurvivesAnEveningTests : IDisposable
         Assert.Equal(Path.GetFileName(wav), first[3]);
         Assert.Equal("7.030", first[1]);
         Assert.Equal("40 m", first[2]);
-        Assert.Equal($"{report.CharactersEmitted} emitted, {report.CharactersUnsure} unsure", first[7]);
+        Assert.Equal(
+            $"{report.CharactersEmitted} emitted, {report.CharactersUnsure} unsure",
+            first[7]);
+
+        // **AND THE REFUSED PRESS SAYS ITS COUNTS ARE NOT ABOUT A RECORDING**
+        // (HM-DEC-091). No file was written, so there is no audio for them to be
+        // a count of, and a bare pair of numbers in this column would be read as
+        // one anyway.
+        Assert.Contains("no recording was kept", second[7], StringComparison.Ordinal);
 
         // **THE REFUSAL IS A ROW WITH A REASON, NOT A SILENCE.** A case with no
         // evidence is still a case and belongs in the denominator.

@@ -13,8 +13,14 @@ namespace Hamlet.RadioEngine.Cw;
 /// <param name="ToneHz">The tone the decoder had, or null for none.</param>
 /// <param name="SnrDb">How far it stood out, or null when unread.</param>
 /// <param name="Wpm">The speed being tracked, or null when not tracking.</param>
-/// <param name="Emitted">Characters the decoder emitted this session.</param>
+/// <param name="Emitted">Characters the decoder emitted over <paramref name="Covers"/>.</param>
 /// <param name="Unsure">How many of those it was unsure of.</param>
+/// <param name="Covers">
+/// What the two counts are counts of. **`Recording` is the only one of these
+/// that answers the question the roster is scored on** (HM-DEC-091), and it is
+/// not the default: a row built without saying so gets the weaker claim and says
+/// on its face that the numbers are the evening's rather than this station's.
+/// </param>
 /// <param name="Text">
 /// What the decoder had actually read at the moment of the press, or "" when it
 /// had read nothing.
@@ -30,7 +36,24 @@ public sealed record CwCase(
     int? Wpm,
     int Emitted,
     int Unsure,
-    string Text = "");
+    string Text = "",
+    CwCountsCover Covers = CwCountsCover.Session);
+
+/// <summary>What a pair of counts on a roster row is counting.</summary>
+public enum CwCountsCover
+{
+    /// <summary>
+    /// Everything since the decoder started listening, which may be hours and
+    /// several bands. Honest, and not an answer about this case.
+    /// </summary>
+    Session,
+
+    /// <summary>The audio in the recording named on this row, and nothing else.</summary>
+    Recording,
+
+    /// <summary>There is no recording, because no file was written.</summary>
+    NoRecording,
+}
 
 /// <summary>
 /// The roster of cases: one row per press, appended as it happens.
@@ -162,7 +185,24 @@ public static class CwCaseRoster
             one.Wpm is { } wpm && wpm > 0
                 ? wpm.ToString(CultureInfo.InvariantCulture)
                 : "not tracking",
-            $"{one.Emitted} emitted, {one.Unsure} unsure",
+            // **A COUNT SAYS WHAT IT IS A COUNT OF** (HM-DEC-091). This column
+            // held the decoder's running totals, which start when listening
+            // starts and stop when it stops: a press seven hours into an evening
+            // put a character count earned hours earlier on another band into a
+            // row about a station heard just now. The number was never wrong; the
+            // column was, because a figure beside a recording is read as being
+            // about the recording, and the percentage gets computed from it
+            // either way.
+            one.Covers switch
+            {
+                CwCountsCover.Recording
+                    => $"{one.Emitted} emitted, {one.Unsure} unsure",
+                CwCountsCover.NoRecording
+                    => $"{one.Emitted} emitted, {one.Unsure} unsure "
+                       + "(the whole session; no recording was kept)",
+                _ => $"{one.Emitted} emitted, {one.Unsure} unsure "
+                     + "(the whole session, not this case)",
+            },
 
             // **A COUNT IS A POINTER TO EVIDENCE; THE TEXT IS EVIDENCE.** With
             // `19 emitted, 6 unsure` and nothing else, scoring a case means
