@@ -1,0 +1,60 @@
+captured   2026-08-18 00:30:16 UTC
+audioSeen  4823040 samples
+fingerprint 0f05b51b3268
+seconds    30.0
+sampleRate 48000
+frequency  14028000 Hz  (read from the radio)
+band       40 m
+
+inputPeak  -13.0 dBFS  (over the whole recording)
+meterPeak  -13.4 dBFS  (the moment it was kept)
+inputFloor -21.1 dBFS
+clipping   False
+toneHz     675
+snrDb      36.6
+elements   752 seen, 233 resolved
+characters 69 emitted, 33 unsure
+
+sinceLast  69 characters, 752 elements
+
+Frequency            14.028000 MHz
+Mode                 CW
+DataMode             off
+FilterSelection      FIL2
+FilterBandwidth      500 Hz
+SMeter               S5
+TransmitStatus       receiving
+Overflow             not overloading
+Swr                  unknown
+PowerOut             unknown
+RfPower              30%
+RfGain               100%
+Squelch              9%
+SquelchStatus        open
+Agc                  FAST
+Preamp               off
+Attenuator           off
+NoiseBlanker         off
+NoiseBlankerLevel    50%
+NoiseReduction       off
+NoiseReductionLevel  28%
+AutoNotch            off
+ManualNotch          off
+BreakIn              full
+KeyerSpeed           20 WPM
+CwPitch              600 Hz
+AccUsbOutputSelect   AF
+AccUsbAfLevel        80%
+NotchPosition        unknown
+FilterShape          unknown
+AfLevel              unknown
+RfSqlFunction        unknown
+BreakInDelay         unknown
+AntennaTuner         unknown
+Alc                  unknown
+AccUsbSquelch        open regardless of squelch
+Split                off
+ScopeOn              on
+ScopeOutput          on
+CivUsbPort           unknown
+Vfo                  undocumented

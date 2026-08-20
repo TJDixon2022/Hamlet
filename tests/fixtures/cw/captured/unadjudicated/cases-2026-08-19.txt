@@ -1,0 +1,4 @@
+# Evening of Wednesday 19 August 2026 at the rig, local time UTC-04:00. Every time below is UTC.
+time	frequency	band	wav	toneHz	snrDb	wpm	chars	text	read
+01:48:54	7.028	40 m	cw-2026-08-20-014854.wav	800	42.7	not tracking	69 emitted, 23 unsure	nothing read	
+01:49:35	7.027	40 m	cw-2026-08-20-014935.wav	800	45.1	not tracking	69 emitted, 23 unsure	nothing read	
