@@ -81,6 +81,27 @@ public sealed class CwSpeedEstimator
     /// <summary>Below this coherence nothing is claimed to have been heard.</summary>
     public const double MinimumCoherence = 0.35;
 
+    /// <summary>The dah every textbook prescribes, in dits.</summary>
+    private const double TextbookDahDits = 3.0;
+
+    /// <summary>The shortest long mark that is still somebody's dah, in dits.</summary>
+    /// <remarks>
+    /// Two, which is where <see cref="ClassifyMark"/>'s own unfitted boundary
+    /// sits. Below it the two clusters are not far enough apart to be a dit and a
+    /// dah at all.
+    /// </remarks>
+    private const double ShortestDahDits = 2.0;
+
+    /// <summary>The longest long mark that is still somebody's dah, in dits.</summary>
+    /// <remarks>
+    /// Five. The heaviest fist measured in this repository sends 4.3, on
+    /// `cw-2026-08-17-134712`, and the lightest 2.5 (HM-DEC-119). Past five the
+    /// long cluster is a carrier, a fade or somebody holding the key down to
+    /// tune, none of which is a dah, and the textbook three is used instead so
+    /// the check behaves exactly as it always did.
+    /// </remarks>
+    private const double LongestDahDits = 5.0;
+
     /// <summary>The slowest sending anybody does, in words a minute.</summary>
     /// <remarks>
     /// Below about five words a minute a person is not sending Morse, they are
@@ -499,7 +520,7 @@ public sealed class CwSpeedEstimator
         }
 
         DitSamples = Refine(markDit);
-        Coherence = MeasureCoherence();
+        Coherence = MeasureCoherence(markHigh);
         RecomputeGapCuts();
     }
 
@@ -784,23 +805,59 @@ public sealed class CwSpeedEstimator
     }
 
     /// <summary>
-    /// How far the recent marks sit, on average, from the nearest textbook
-    /// length.
+    /// How far the recent marks sit, on average, from the nearest length **this
+    /// sender** actually uses.
     /// </summary>
-    private double MeasureCoherence()
+    /// <param name="markHigh">The fitted center of the long marks, in samples.</param>
+    /// <returns>Nought to one.</returns>
+    /// <remarks>
+    /// <para>**THIS MEASURED EVERY FIST AGAINST ONE DIT AND THREE, AND A REAL
+    /// STATION AT 35 dB WAS DISCARDED FOR SENDING DAHS AT FOUR.** On
+    /// `cw-2026-08-17-134712` the fist is steady and ordinary: dits of 55 ms,
+    /// element gaps of 35, and dahs of 235, which is a dah of 4.3 dits. Scored
+    /// against a hardcoded three, every one of those dahs is 1.3 dits out, the
+    /// average error passes half a dit, and <see cref="LooksLikeMorse"/> is false
+    /// on every hop of the recording. The decoder measured 197 elements, latched
+    /// the tone for 5,904 hops out of 6,000, and emitted nothing.</para>
+    /// <para>**IT IS THE THIRD PLACE IN THIS DECODER TO ASSUME TEXTBOOK TIMING
+    /// AND THE OTHER TWO ARE ALREADY FIXED.** HM-DEC-115 stopped deriving word
+    /// and character gaps from multiples of the dit and clustered the sender's
+    /// own gaps instead, because real operators send Farnsworth. HM-DEC-119 made
+    /// <see cref="ClassifyMark"/> cut between the two measured mark clusters
+    /// rather than at two dits, "fitted per signal", after measuring one fist
+    /// sending dahs at two and a half. The coherence check was left behind, and
+    /// it is the one with a veto over the whole message.</para>
+    /// <para>**NOTHING HERE MAKES THE DECODER WILLING TO EMIT ANYTHING IT WAS NOT
+    /// WILLING TO EMIT BEFORE** (HM-DEC-048). The question being asked is
+    /// unchanged, and it is the question that tells Morse from an empty band: do
+    /// the marks land on two lengths over and over. What changes is that the two
+    /// lengths are the ones this sender uses rather than the ones a textbook
+    /// prescribes. Noise has no two lengths to land on and scores no better than
+    /// it did.</para>
+    /// <para>**AND A FITTED DAH OUTSIDE WHAT A DAH CAN BE IS NOT USED.** Past
+    /// five dits the long cluster is a carrier, a fade or a tuning note rather
+    /// than somebody's dah, and the textbook three is taken instead, which is
+    /// exactly the behavior this had before.</para>
+    /// </remarks>
+    private double MeasureCoherence(double markHigh)
     {
         if (_markCount == 0 || DitSamples <= 0)
         {
             return 0;
         }
 
+        var fitted = markHigh / DitSamples;
+        var dah = fitted is >= ShortestDahDits and <= LongestDahDits
+            ? fitted
+            : TextbookDahDits;
+
+        var cut = (1 + dah) / 2;
         var error = 0.0;
 
         for (var i = 0; i < _markCount; i++)
         {
             var units = _marks[i] / DitSamples;
-            var ideal = units < 2 ? 1.0 : 3.0;
-            error += Math.Abs(units - ideal);
+            error += Math.Abs(units - (units < cut ? 1.0 : dah));
         }
 
         return Math.Clamp(1 - (error / _markCount / IncoherentErrorDits), 0, 1);

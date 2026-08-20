@@ -1,9 +1,9 @@
 STATE: COMPLETED
-PHASE: 5 of 5
+PHASE: 4 of 4
 BALL: tim
 NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-20T11:56:00-04:00
-NOTE: 44-57 ms keyed against 5-7 ms not; meter live at 73 ms an update; 2,053 tests, same 3 red
+UPDATED: 2026-08-20T12:40:00-04:00
+NOTE: Half the cause fixed and measured, half named in Refine; 2,069 tests, 3 standing red plus the held failure
 
 ---
 
