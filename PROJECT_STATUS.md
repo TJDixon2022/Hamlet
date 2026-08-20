@@ -1,9 +1,9 @@
 STATE: COMPLETED
-PHASE: 4 of 4
+PHASE: 3 of 3
 BALL: tim
 NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-20T16:02:00-04:00
-NOTE: Choosing the window makes it worse; fifth candidate eliminated, nothing built
+UPDATED: 2026-08-20T17:00:00-04:00
+NOTE: VA3VRR recorded and the smear test shipped; two floors missed by one, waiting on a ruling
 
 ---
 

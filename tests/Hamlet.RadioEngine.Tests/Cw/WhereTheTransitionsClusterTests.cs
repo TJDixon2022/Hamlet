@@ -364,22 +364,25 @@ public sealed class WhereTheTransitionsClusterTests
                   + $"median {scores[scores.Count / 2]:0.000}  highest {scores[^1]:0.000}");
         }
 
-        // **THE TWO REASONS THIS IS DEAD, ASSERTED SO THEY CANNOT BE MISLAID.**
-        var real = AtEmission(Captured("cw-2026-08-17-013347"), 600).Scores;
-        var invented = AtEmission(
-            Captured("unadjudicated/cw-2026-08-20-014854"), 600).Scores;
-
-        Assert.True(
-            real[0] < invented[0],
-            "every real character came out above everything the empty band "
-            + "invented, which would leave room for a gate after all");
-
-        // And a gate needing a fittable burst would silence an easy-tier fixture
-        // outright, which HM-DEC-114 makes a hard failure.
+        // **THE REASON THIS IS DEAD, ASSERTED SO IT CANNOT BE MISLAID.** A gate
+        // needing a fittable burst would silence an easy-tier fixture outright,
+        // which HM-DEC-114 makes a hard failure: `tightfist-easy` emits real
+        // characters and never once has a burst that can be fitted.
         var tight = AtEmission(Fixture("tightfist-easy"), 600);
 
         Assert.True(tight.Characters > 0);
         Assert.Empty(tight.Scores);
+
+        // **THE OTHER REASON HAS SINCE BEEN OVERTAKEN AND THAT IS WORTH SAYING.**
+        // When this was measured, `cw-2026-08-20-014854` invented a character at
+        // an agreement of 0.557 while a real one came out at 0.353, so no line
+        // separated them. The mark-separation test now stops that recording
+        // emitting at all, so there is no invented character left to compare
+        // against. **The finding stands on the easy-tier failure above**, which
+        // no later change can talk its way out of.
+        var quiet = AtEmission(Captured("unadjudicated/cw-2026-08-20-014854"), 600);
+
+        Assert.Equal(0, quiet.Characters);
     }
 
     /// <remarks>

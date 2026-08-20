@@ -230,8 +230,80 @@ public sealed class CwSpeedEstimator
     public bool LooksLikeMorse
         => IsReady
            && Coherence >= MinimumCoherence
+           && MarkSeparationInScatter >= CwToneSurvey.MinimumSeparation
            && WordsPerMinute >= SlowestPlausibleWpm
            && WordsPerMinute <= FastestPlausibleWpm;
+
+    /// <summary>
+    /// How far the two mark lengths sit apart, counted in their own scatter.
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE COHERENCE CHECK MEASURES EACH MARK AGAINST THE TWO FITTED
+    /// LENGTHS AND NEVER ASKS WHETHER THOSE TWO LENGTHS ARE REALLY TWO THINGS.**
+    /// A gate chattering on band noise produces a continuum, a two-means fit cuts
+    /// any continuum in half, and the halves land near one and three of each other
+    /// by construction. Measured on `cw-2026-08-20-014854`, which holds no keying
+    /// at any pitch, the twenty marks in the window at the moment a character is
+    /// invented run 10, 20, 35, 40, 45, 50, 55, 55, 60, 60, 80, 110, 115, 120,
+    /// 125, 125, 125, 130, 135, 135 milliseconds. That is a smear. It scores 0.46
+    /// on coherence, comfortably past the floor.</para>
+    /// <para>**WHAT A REAL FIST HAS THAT A SMEAR DOES NOT IS A GAP BETWEEN THE
+    /// TWO GROUPS**, and HM-DEC-095 already settled that this is the statistic
+    /// that tells them apart: "how far the two lengths sit apart, counted in their
+    /// own scatter... the only statistic tried that tells them apart on all three
+    /// recordings". <see cref="CwToneSurvey"/> has asked it of a candidate pitch
+    /// since that ruling. **The speed estimator never asked it at all.**</para>
+    /// <para>Measured at the moment of every character in this repository: the
+    /// easy tier emits nothing below 4.4 and mostly far above, `cw-2026-08-17-134712`
+    /// emits at 6.9 and `cw-2026-08-17-013347` at 5.3, while the nine characters
+    /// `cw-2026-08-20-014854` invents sit between 2.1 and about 3.5.</para>
+    /// <para>**IT IS THE SAME FIGURE AND NOT A SECOND COPY OF IT** (§0). The
+    /// number lives in <see cref="CwToneSurvey.MinimumSeparation"/>, was measured
+    /// there, and is read from there, so the two cannot drift apart.</para>
+    /// </remarks>
+    public double MarkSeparationInScatter
+    {
+        get
+        {
+            if (_keptCount < 4)
+            {
+                return 0;
+            }
+
+            var (low, high) = TwoMeans(_kept, _keptCount);
+            var cut = (low + high) / 2;
+            double lowSum = 0, highSum = 0;
+            int lowCount = 0, highCount = 0;
+
+            for (var i = 0; i < _keptCount; i++)
+            {
+                if (_kept[i] < cut)
+                {
+                    lowSum += Math.Abs(_kept[i] - low);
+                    lowCount++;
+                }
+                else
+                {
+                    highSum += Math.Abs(_kept[i] - high);
+                    highCount++;
+                }
+            }
+
+            if (lowCount == 0 || highCount == 0)
+            {
+                // Everything is one length so far, which is what a run of dits
+                // looks like before the first dah arrives. Nothing is claimed
+                // either way and the coherence check still has to pass.
+                return CwToneSurvey.MinimumSeparation;
+            }
+
+            var spread = (lowSum / lowCount) + (highSum / highCount);
+
+            return spread <= 1e-9
+                ? CwToneSurvey.MinimumSeparation
+                : (high - low) / spread;
+        }
+    }
 
     /// <summary>The sending speed in words a minute, PARIS standard.</summary>
     public int WordsPerMinute

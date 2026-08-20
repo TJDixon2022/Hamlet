@@ -27,50 +27,42 @@ If all four hold, say "Hamlet confirmed" and continue.
 
 ## Why this unit exists
 
-**This unit measures one hypothesis and ships nothing.** If it ends with a table
-and no code in `src/`, it has succeeded. The last three units that shipped
-something were each preceded by a measurement-only session; the two that guessed
-came back empty.
+**Five sessions have been spent looking for a gate to stand in front of `Refine`.
+The premise was wrong and it was the work orders' premise, not a session's.**
 
-Last session killed the transition clock and, in killing it, found something better
-than the candidate it was testing:
+Five candidates for HM-OPEN-054 have been measured and eliminated: the survey's
+verdict, the ratio band, the transition clock on the decoder's window, the peak's
+prominence, and the clock on a window the transitions chose. Last session showed
+they are one family — **all five ask whether a pattern of on and off times looks
+like a person sending, and band noise through a narrow filter looks like a person
+sending.** `cw-2026-08-20-014935` holds no keying at any pitch and produces
+twenty-four bursts, the best fitting a clock at 0.736; `cw-2026-08-17-013347`
+decodes a real callsign and manages 0.393.
 
-> `cw-2026-08-17-134712`'s callsign window fits a clock at 48 ms with the edges
-> agreeing at **0.677** — the strongest figure of any real window measured. The
-> same recording taken whole scores **0.177**, against **0.116** for a recording
-> holding nothing at all.
+**Tim's ruling, this session: attack the invention at its source instead.**
 
-**The statistic was never the problem. The window was.**
+`Refine` invents because removing the gap average lengthens the dit until gate
+chatter passes the coherence check. **That is arithmetic inside `Refine` and the
+estimator around it. It has never been attacked there** — every session so far has
+tried to catch the output afterwards.
 
-Four candidates have now been measured and rejected for HM-OPEN-054: the survey's
-verdict, the ratio band, the transition clock, and the peak's prominence. **All
-four were different tests applied to the same inherited window** — a rolling span
-of the decoder's own state that contains the station and twenty-six seconds of band
-noise at once, and therefore measures the noise.
-
-The keying meter separates these same recordings cleanly. It differs from all four
-candidates in one respect that has been invisible because nobody was looking at it:
-**it chooses its own window.** Six seconds, swept independently, recomputed each
-second, owing nothing to the decoder's state.
-
-**The hypothesis under test: does the transition clock separate a real character
-from an invented one when it is allowed to choose where it looks?**
-
-**Tim's ruling: measure this before any ruling is made about whether the decoder
-may choose its window.** Nothing is being permitted here — only measured.
+**The family of transition-shape tests is abandoned. Do not propose a sixth.**
 
 ---
 
-## What this unit is not
+## Also this session: a second callsign
 
-**It is not permission for the decoder to speak about a moment other than now.**
-§0.0 exists to prevent exactly that, and last session correctly rejected gating on
-the best window rather than the current one: a decoder that may speak because it
-heard something well several seconds ago is asserting something it does not know.
+Last session's report states, in passing, that **`cw-2026-08-17-013347` decodes
+`VA3VRR`**. Nobody has recorded it.
 
-**This unit does not build a gate, does not change emission, and does not decide
-where any window should be.** It answers whether the separation exists at all. If
-it does not, the idea is dead and that is the deliverable.
+`N4L` in `cw-2026-08-17-134712` has been the only adjudicated ground truth in nine
+real recordings for five sessions, and every argument in that time has rested on
+it. **A second one doubles the evidence base.**
+
+**Task 1 establishes it or reports that it cannot be established.** It is not a
+formality: `013347` emits 8 characters at the decoder's current settings and 14 in
+last session's measurement, so what it reads and what is true are not the same
+thing, and a callsign asserted from a decode nobody checked is worth nothing.
 
 ---
 
@@ -84,9 +76,7 @@ not repair the instruction silently.
   `CwFarnsworthTests.TheBulletinDecodesToItsAnswerKey`,
   `CwTerminalTests.ClearingTheTranscriptLeavesTheDecoderAlone`,
   `ARecordingWithKeyingInItIsReadTests.TheDecoderSaysSomethingAboutIt`.
-  **2,096 tests, four failing. Anything above four is new.**
-- `ACarrierClockDoesNotSeparateTests` holds last session's measurement and the
-  clock fit itself. **Reuse it. Do not rewrite the fit.**
+  **2,100 tests, four failing. Anything above four is new.**
 - The amplitude rule is in the tree. **`Refine` is not.**
 
 ---
@@ -95,23 +85,19 @@ not repair the instruction silently.
 
 **§9.5.1 — one branch, `main`, commit *and push*.**
 
-**HM-DEC-144 — `cw-2026-08-17-134712` holds a station, callsign `N4L`, elements
-ending 21.45–23.01 s, dit 56.3 ms.** The only adjudicated ground truth in nine real
-recordings, and everything here rests on it.
+**HM-DEC-144 — `cw-2026-08-17-134712` holds `N4L`, dit 56.3 ms, dah 238.3 ms.**
 
-**HM-DEC-090 — marking is not a substitute for silence.**
+**HM-DEC-090 — marking is not a substitute for silence.** Seventeen hundred
+characters once came out of half a minute of band noise, every one marked.
+**`Refine` shipping with the invention marked low is not an option.**
 
-**HM-DEC-091 — one source, and it says which.**
+**HM-DEC-114 — the easy tier passes or fails.**
 
-**§0.0 — the display asserts only what is known now.** *Named because this unit
-sits next to it. Measuring where a window would have to be is fine. Concluding the
-decoder may speak from an old one is not, and is not this unit's to conclude.*
+**HM-DEC-048 — nothing raises a confidence score.**
 
-**HM-OPEN-054 and HM-DEC-143 remain open.** Nothing here settles them.
+**HM-OPEN-054 stays open and no sixth transition-shape test may be proposed.**
 
-**The keying meter is not to be read by the decoder.** *Its value is that it can
-contradict the decoder. This unit may study its principle; nothing may reference
-`CwKeyingMeter` or `CwKeyingThresholds` from the decoder.*
+**The keying meter is not read by the decoder.**
 
 **HM-OPEN-053 — `ShortestVote` stays at 5. `MaximumRatio` stays at 3.8.**
 
@@ -127,82 +113,90 @@ is moving inside the task. Also every ten minutes while a task runs.
 
 ---
 
-## Task 1 — Where do the transitions cluster?
+## Task 1 — `VA3VRR`, established or not
 
-Before choosing any window, say where there is anything to look at.
+Do for `cw-2026-08-17-013347` what was done for `N4L`: take the gate's own
+elements across the stretch where the callsign is decoded, cut them by their own
+fitted means, and read the letters out.
 
-For each of the nine real captures, report **where in the recording the transitions
-are dense enough to be a sender** — from the transitions alone, not from the
-decoder, the meter, or any figure in this instruction.
+- **Cuts fitted from that stretch and nothing else** (§12.5). Do not ask the
+  decoder what a dit is; that is what is under investigation.
+- Report the element sequence, the letters it gives, the times, the dit, the dah
+  and the ratio, exactly as HM-DEC-144 records them for `N4L`.
+- **If it does not spell `VA3VRR`, say what it does spell and record nothing.** A
+  callsign taken from an unchecked decode is not ground truth and would poison
+  every measurement that later rests on it.
+- If it does, record it as a decision entry with the sequence and the letters in
+  it, indexed in `CLAUDE.md` §1, and pin it with a test in the manner of
+  `TheStationInTheRecordingIsN4LTests`.
 
-- Say how you decided that, in one paragraph, before the numbers.
-- **On `134712` the answer is known**: the callsign runs 21.45–23.01 s. Say whether
-  your method finds it, and say so plainly if it does not.
-- **On `014854` and `014935` the answer is that there is nothing to find.** Say
-  what your method returns there. *If it confidently proposes a window in a
-  recording holding no keying, that is the finding and it is worth more than a
-  clean result elsewhere.*
-
----
-
-## Task 2 — The clock, on windows chosen that way
-
-Re-run last session's clock fit on the windows task 1 identified rather than on
-whole recordings or on the decoder's rolling state.
-
-Report, for every real capture and every easy-tier fixture:
-
-- the window chosen, the interval found, and the agreement,
-- **and, on `134712`, the interval against HM-DEC-144's 56.3 ms.**
-
-**Then the comparison this unit exists for, in one table:** the agreement on
-windows from recordings holding a station, beside the agreement on windows from
-`014854`, `014935` and synthesized noise.
-
-**Say whether they separate, and by how much. A number, not an impression.**
+**This is worth the session on its own even if task 3 fails.**
 
 ---
 
-## Task 3 — The case that killed the last candidate
+## Task 2 — Where the invention comes from. **CHANGE NOTHING.**
 
-Last session's fatal figures: at the moment of emission a real character came out
-at **0.389** and an invented one at **0.470**, and with `Refine` applied an empty
-band invented characters at **0.456 to 0.533** while `tightfist-easy` emitted a
-real one at **0.497**.
+Instrument `Refine` and the estimator around it on `cw-2026-08-20-014854` and
+answer, from the run:
 
-**Re-measure exactly those, with windows chosen by task 1's method.** Same
-recordings, same characters, same question.
+1. **What is the dit before `Refine` and after it, at each of the nine moments a
+   character is invented?** Last session's figures: `U EE ■ ■` at the amplitude
+   rule's settings, up to nine characters with `Refine` on.
+2. **Which marks are in the window at those moments, and what are their lengths and
+   heights?** The amplitude rule leaves this recording alone because it holds one
+   height population — **say whether that is still true at the moment of each
+   invention, or whether a second population appears.**
+3. **What does coherence reach, and against what dit?** A dit fitted from chatter
+   makes chatter look coherent; say by how much.
+4. **On `cw-2026-08-18-003016`, which gains 38 to 43 characters with `Refine`, run
+   the same instrumentation.** *The difference between the two is the whole
+   question: same change, one recording improved and one invented.*
 
-- **If a real character still comes out below an invented one, the idea is dead.**
-  Say so, and this unit is finished having eliminated a fifth candidate for the
-  price of one session.
-- If they separate, report the margin and the overlap, **and say what would have
-  to be true for it to hold on a station ten decibels weaker** — using numbers, as
-  the amplitude unit did.
+**Report all four before touching anything.**
 
 ---
 
-## Task 4 — Say what it means, and build nothing
+## Task 3 — Fix it inside, only if task 2 named a cause
 
-One paragraph. If the separation is real, say what a gate built on it would need
-and **what it would have to assert about the present moment to satisfy §0.0**, since
-that is the objection that killed gating on the best window.
+**If task 2 did not produce a single measured cause, stop and report.** Five
+sessions have been lost to plausible stories; a sixth on a guess is not affordable.
 
-**Do not build it. Do not change `src/`.** *A measurement that arrives with a
-change attached cannot be read on its own.*
+If it did:
+
+- The change must be **inside `Refine` or the estimator it feeds** — not a test
+  standing in front of emission. *A gate is what was ruled against.*
+- **Fitted, not a constant.** *Seventh instance of the error class five rulings
+  have gone on closing.*
+- It may make the decoder measure better. **It may not make it more willing to
+  emit** (HM-DEC-048).
+
+| | required |
+|---|---|
+| `cw-2026-08-20-014854` | **no more than 1** |
+| `cw-2026-08-20-014935` | **0** |
+| `004507` | ≥ 26 |
+| `003016` | ≥ 38 |
+| `003126` | ≥ 36 |
+| `003758` | ≥ 14 |
+| `013347` | ≥ 8 |
+| the easy tier | **whole** |
+
+Report `134712`'s dit against HM-DEC-144's **56.3 ms**, and re-run
+`ARecordingWithKeyingInItIsReadTests.TheDecoderSaysSomethingAboutIt`. **If green,
+print what it read and say whether `N4L` is in it, in the right place. Do not tune
+anything to make it pass.**
 
 ---
 
 ## Parked — do not touch, do not raise
 
-- **Character structure.** *The boundary. Element versus character versus word
-  gaps, letter boundaries, anything needing to know a character occurred.*
-- **The keying meter, as a thing the decoder reads.**
-- **`Refine`**, `MaximumRatio`, the three-way length fit, the speed-tracker
-  rewrite.
+- **A sixth transition-shape test.** *Ruled out this session.*
+- **Character structure**, and the keying meter as something the decoder reads.
+- **`MaximumRatio`**, the three-way length fit, the speed-tracker rewrite.
 - **Why the 19th's stations are missing from the audio.** Five theories dead.
 - **The 69 and 233.**
-- **Adjudicating any recording.** Tim's ear.
+- **Adjudicating by ear.** Tim's. *Task 1 is arithmetic on elements, not
+  listening.*
 - **HM-OPEN-052**, the five synthesized tests, rulings 096–133, the scorer,
   `CaptureAudioAsync` end to end, `TheRosterIsOneFilePerEvening`.
 
@@ -216,14 +210,13 @@ not touch coverage thresholds.
 
 Unit-specific:
 
-- **Do not change `src/`.** *The whole point.*
-- **Do not choose a window using a constant.** *Seventh instance of the error class
-  five rulings have gone on closing. Fitted from the transitions or not at all.*
-- **Do not use the known callsign window to choose a window.** *`134712` is the
-  test of the method, not an input to it. Using HM-DEC-144's boundaries to find
-  HM-DEC-144's boundaries proves nothing.*
-- **Do not make the answer prettier than it is.** *A fifth candidate eliminated in
-  one session is a good outcome and should be reported as one.*
+- **Do not build a gate.** *Whatever shape it takes, a test standing between the
+  decoder and emission is the family that has failed five times.*
+- **Do not relax the withdrawal condition.** HM-DEC-090.
+- **Do not record `VA3VRR` unless the elements spell it.** *Ground truth taken on
+  trust is worse than none, because everything after it inherits the error.*
+- **Do not tune to `014854` or to `134712`.** *The nine-capture table and the easy
+  tier are the guards.*
 
 ---
 
@@ -234,10 +227,9 @@ other headings, per §13: **What Claude did**, **What Tim should expect**, **Wha
 should do next**, **What's blocking us** — the last carrying **Asks still
 outstanding** per HM-DEC-139.
 
-**Section 1 opens with task 3**, because it is the question, and tasks 1 and 2
-follow as how it was reached.
+**Section 1 opens with task 1**: whether `013347`'s elements spell `VA3VRR`.
 
-**Section 2 says in one sentence whether choosing the window rescues the clock** —
-and says so even when the answer is no.
+**Section 2 says plainly whether anything shipped, and whether the project now has
+two adjudicated recordings or one.**
 
 **Stop and report.**

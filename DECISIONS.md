@@ -4,6 +4,51 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-145
+date: 2026-08-20
+refs: tests/fixtures/cw/captured/cw-2026-08-17-013347.wav, tests/Hamlet.RadioEngine.Tests/Cw/TheStationInTheOtherRecordingIsVa3vrrTests.cs, HM-DEC-144, HM-DEC-115, §12.5
+---
+
+**`cw-2026-08-17-013347` holds a station and its callsign is `VA3VRR`.** The second
+adjudicated ground truth in this repository, and the first that is not `N4L`.
+
+THE EVIDENCE IS THE GATE'S OWN ELEMENTS, CUT BY THEIR OWN MEANS. Between 22.55 s
+and about 28.5 s the gate produces forty-one elements. Splitting the marks at the
+midpoint of their own two means gives a dah past 187 ms, and the gaps likewise give
+a character break past 112 ms. Fitted from that stretch and from nothing else, the
+sequence reads:
+
+    100  75 100  75 100  65 280 | 170 |  90  75 275 | 165 |
+    110  55 105  70 105  75 275  70 280 | 150 |
+    100  70 100  75 100  80 270 | 125 |
+    100  75 270  80 100 | 140 |
+     95  80 270  80 100
+
+`...-` `.-` `...--` `...-` `.-.` `.-.` — **V, A, 3, V, R, R**. A Canadian amateur
+callsign. Dit 100.4 ms, dah 274.3 ms, ratio 2.73, element gap 73.3 ms, character
+gap 150.0 ms: about twelve words a minute, and Farnsworth in the manner HM-DEC-115
+measured, with the gap inside a character shorter than the dit.
+
+**IT IS NOT TAKEN FROM THE DECODER'S READING.** The decoder does emit `VA3VRR`
+here, and one of those characters comes out at low confidence, which is exactly why
+a callsign asserted from an unchecked decode is worth nothing. Nothing above asks
+the decoder what a dit is, what a dah is, or where a character ends; those are the
+judgements under investigation.
+
+**THE LEADING SILENCE IS EXCLUDED AND IT MATTERS.** The stretch is entered on a gap
+of 325 ms, the quiet before the station starts. Left in the fit it drags the
+long-gap centre to 209 ms, no gap in the callsign reaches that, and nothing divides
+into characters at all. A gap before the first mark is not one of this sender's.
+
+**WHY A SECOND ONE IS WORTH A SESSION.** `N4L` has been the only adjudicated
+recording for five sessions and every argument in that time has rested on it. This
+is a different fist at a different speed: **2.73 dits to the dah where `N4L` sends
+4.24**, 100 ms to the dit where `N4L` sends 56. A rule fitted to one of them now has
+somewhere to be wrong, which is the only thing that makes a rule falsifiable.
+
+Established by measurement inside the repository before anything was built on it.
+
+---
 id: HM-DEC-144
 date: 2026-08-20
 supersedes: HM-DEC-095
