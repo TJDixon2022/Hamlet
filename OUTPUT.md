@@ -2,166 +2,139 @@
 
 ## 1. What Claude did
 
-### Task 1: the elements spell `N4L`, reproduced inside the repository
+### Task 1: the twenty marks ending with `N4L`
 
 Claude Code on the development machine, in `C:\Source\HamLet`, on `main`. The
 prompt named `PROJECT: Hamlet` and the four gate checks all hold. **No radio is
-attached, and nothing here needed one** (HM-DEC-093).
+attached, and nothing here needed one** (HM-DEC-093). **Nothing in `src/`
+changed**, which is this unit's whole point. Last session's three-way fit and
+`Refine` change are confirmed absent from the tree.
 
-`TheStationInTheRecordingIsN4LTests` reads `cw-2026-08-17-134712.wav`, takes the
-gate's own elements, and finds twenty-one of them between **21.45 s and 23.01 s**,
-exactly the stretch the instruction named. **The boundaries scanned are 21.30 s to
-23.10 s**, a little wider either side so a small change in the gate moves what
-falls inside them rather than clipping an end off; the elements themselves land
-where the instruction said.
+`cw-2026-08-17-134712`, pitch **500 Hz** chosen by sweeping rather than taken from
+the decoder, envelope floor **−44.6 dB**. Heights are above that floor.
 
-```
-  21.45s mark 225   21.48s gap  30   21.54s mark  55   21.72s gap 180
-  21.77s mark  55   21.81s gap  40   21.87s mark  55   21.91s gap  40
-  21.97s mark  60   22.01s gap  40   22.06s mark  55   22.09s gap  30
-  22.34s mark 245   22.49s gap 150   22.55s mark  60   22.57s gap  25
-  22.82s mark 245   22.86s gap  40   22.91s mark  55   22.95s gap  40
-  23.01s mark  55
-```
+| start | length | median | peak | one of `N4L`? |
+|---|---|---|---|---|
+| 20.21 s | 35 ms | 13.3 dB | 17.2 dB | no |
+| 20.30 | 15 | 9.2 | 13.5 | no |
+| 20.37 | 20 | 12.8 | 18.5 | no |
+| 20.54 | 5 | 13.8 | 13.8 | no |
+| 20.57 | 40 | 13.4 | 18.9 | no |
+| 20.73 | 15 | 8.1 | 13.5 | no |
+| 20.80 | 15 | 8.2 | 12.5 | no |
+| 20.84 | 25 | 13.7 | 16.8 | no |
+| 21.06 | 45 | 14.2 | 20.5 | no |
+| **21.23** | **225** | **24.7** | **25.0** | **yes** |
+| 21.48 | 55 | 24.6 | 24.9 | yes |
+| 21.72 | 55 | 24.6 | 24.9 | yes |
+| 21.81 | 55 | 24.4 | 24.9 | yes |
+| 21.91 | 60 | 24.6 | 24.9 | yes |
+| 22.01 | 55 | 24.7 | 25.0 | yes |
+| 22.09 | 245 | 24.7 | 25.0 | yes |
+| 22.49 | 60 | 24.4 | 25.0 | yes |
+| 22.57 | 245 | 24.6 | 24.9 | yes |
+| 22.86 | 55 | 24.6 | 24.9 | yes |
+| 22.95 | 55 | 24.4 | 24.9 | yes |
 
-**The cuts are fitted from this stretch and from nothing else** (§12.5): the marks
-are split at the midpoint of their own two means, at 147 ms, and the gaps at
-theirs, at 100 ms. Nothing asks the decoder what a dit is, what a dah is or where a
-character ends, because the decoder's answer to all three is what is under
-investigation. That gives `-.` `....-` `.-..` — **N, 4, L**.
+**The statistic is the median of the envelope inside the mark, with the peak
+beside it.** A keyed mark has a plateau, and the median is that plateau's own
+height, defended against the rising and falling edges the smoother rounds off. The
+peak is reported too because a mark shorter than the smoother's ten-millisecond
+window never reaches its plateau at all, so a median alone depresses every short
+mark whatever it is. That confound is real and the two columns are what let it be
+read.
 
-Dit **56.3 ms**, dah **238.3 ms**, ratio **4.24**, element gap **35.6 ms**,
-character gap **165.0 ms**. About twenty-two words a minute, a heavy fist, and the
-Farnsworth spacing HM-DEC-115 measured on a different station.
+**The envelope shares no code with the gate** (§12.5). The gate's own threshold
+decision is what put these marks where they are, so measuring their height with the
+gate's machinery would be asking the instrument to grade itself. Quadrature
+mixdown, a 10 ms boxcar, sampled every millisecond.
 
-**HM-DEC-095's carrier finding is overturned and recorded as HM-DEC-144**, with the
-element sequence and the callsign in the entry, indexed in `CLAUDE.md` §1.
-Everything else in HM-DEC-095 stands.
+**They separate, and by a lot.**
 
-`ACarrierNeverConvincesTheTrackerItIsAStation` is retired rather than deleted. It
-read this file by name and required the tracker never to claim keying in it, which
-made every change that let Hamlet notice the station fail the suite. **No recording
-in this repository is established as a carrier**, so the property is now asserted
-on audio whose truth is known by construction: a tone that never stops, in a
-shaped band. **A synthesized fixture is the weaker evidence** (HM-DEC-091) and it
-is what there is until a real carrier is recorded and kept. `TheStrongSignalThatIsNotKeyingIsReportedAsInterference`
-keeps its measurements and carries a note saying its name is now wrong, because
-what the survey should call that signal is HM-OPEN-054's question and is parked.
+- Station: 11 marks, 55 to 245 ms, heights **24.4 to 24.7 dB** on the median.
+- Not the station: 9 marks, 5 to 45 ms, heights **8.1 to 14.2 dB**.
+- **Gap on the median: 10.1 dB. Gap on the peak: 4.4 dB.**
 
-### Tasks 2 and 3: both built, both measured, neither shipped
+**One correction to how the window was labelled, because it nearly reversed the
+answer.** HM-DEC-144 records the elements as running 21.45 s to 23.01 s, and those
+are the moments each element *ended*. `N4L`'s opening dah is 225 ms long and
+*begins* at 21.23. Labelled by its start it came out as not the station's, sitting
+at 24.7 dB among the chatter, and the separation read as an overlap of −0.3 dB. It
+is the station's, and the table above is keyed on the end time.
 
-**Nothing in `src/` changed this session.** The decoder is byte-identical to where
-it started.
+### Task 2: the same measurement where it should fail
 
-**Task 2, what was changed and why.** The rolling window holds three populations
-and was being fitted with two. Inside the callsign the twenty most recent marks are
-eleven of the station's, at 55 and 235 milliseconds, and nine slivers between 5 and
-45 that the gate chopped out of band noise. A two-way fit puts the slivers in with
-the dits and returns 45 for a dit of 56; seeded on percentiles in log space, which
-is what HM-DEC-119 already does for the mark boundary, it does **worse** and returns
-14, because the slivers are numerous enough to own a centre of their own. So the fit
-was given a third cluster to put them in, fitted from the marks themselves with no
-length declared too short to be an element, and the lowest set aside only when the
-marks say it is a separate population, **by the same separation the mark boundary
-already demands of its two**. The test is two-sided: the top two must be separated
-as well, so a fit that has merely cut the dahs in half falls back to what it always
-returned.
+**`tightfist-easy`**, pitch 675 Hz swept, floor −51.3 dB, 38 marks.
 
-**It does exactly what it was built to do.** Instrumented inside the callsign, the
-three centres come out at **14.3, 51.2 and 238.1 ms** and the drop fires. The dit
-cluster is found.
+**From 0.97 s onward there is one amplitude population and nothing else.** Every
+mark from there to the end, dits of 90 to 100 ms and dahs of 270 to 275, sits
+between **21.9 and 24.0 dB** above the floor. **The short marks are at full signal
+exactly as predicted**, and there is no low group for a height-based rule to catch.
+The seven marks before 0.97 s sit at −0.2 to 6.6 dB; those are the fixture's
+opening, before the station starts.
 
-**Task 3, `Refine` measured again on top of it.** Last session `Refine` alone read
-five characters out of `cw-2026-08-20-014854`, a recording holding no keying at any
-pitch, and was withdrawn. **The instruction's guess was right: the invention was the
-poisoned dit, not `Refine`.** With the sample corrected first, `014854` returns to
-**one** character, which is what it produces today, and `014935` stays at **zero**.
+**A mismatch with the instruction, reported rather than repaired.** It describes
+this fixture's short population as *merged elements*. It is not: the short marks
+here are the dits, at 90 to 100 ms, and the merged pairs are the long ones at 270
+to 275. Last session's report said the same thing. **The prediction under test is
+unaffected** and is confirmed either way, because what was being asked is whether
+real keyed marks sit on the plateau, and they do.
 
-**The nine captures, three ways:**
+**`cw-2026-08-18-004507`**, the control, pitch 500 Hz swept, floor −45.6 dB, 49
+marks in the first ten seconds. Its real elements sit at **25.8 to 26.1 dB**, and
+two things in it matter:
 
-| capture | today | task 2 | task 2 + `Refine` |
+- **Length and amplitude are genuinely independent.** There are 15 and 20
+  millisecond marks at 25.8 to 26.0 dB, which is full signal. A short mark is not
+  automatically chatter, and amplitude is carrying information that length does
+  not.
+- **Some long marks have low medians and high peaks**: 90, 160, 180, 205 and 275
+  millisecond marks with medians of 11 to 15 dB and peaks of 18 to 26. Those are
+  marks the gate held open across a dip. **A rule reading the median alone would
+  throw them away**, and that is the first thing a discriminator would have to
+  answer for.
+- One genuine sliver, 15 ms at 2.80 s, median −2.1 dB, peak 9.7 — far below
+  everything else.
+
+### Task 3: whether it survives a weaker station, measured
+
+The separation above is one recording at one signal-to-noise ratio, and a margin
+quoted from a single strong recording is the shape of claim this project has been
+caught by before. So the recording was buried in band-shaped noise, a few decibels
+at a time, and the same two groups measured again at each step across the same
+span.
+
+| noise added | quietest station mark | loudest other | gap |
 |---|---|---|---|
-| `cw-2026-08-17-013347` | 8 | 8 | 8 |
-| `cw-2026-08-17-013622` | 0 | 0 | 0 |
-| **`cw-2026-08-17-134712`** | **0** | **0** | **0** |
-| `cw-2026-08-18-004507` | 25 | 25 | 25 |
-| `cw-2026-08-18-003016` | 38 | 38 | **43** |
-| `cw-2026-08-18-003126` | 34 | 35 | **35** |
-| `cw-2026-08-18-003758` | 14 | 14 | 14 |
-| `cw-2026-08-20-014854` | 1 | 1 | **1** |
-| `cw-2026-08-20-014935` | 0 | 0 | **0** |
+| none | 24.6 dB | 14.5 dB | **10.1 dB** |
+| −20 dB | 23.5 | 14.2 | **9.3** |
+| −14 dB | 21.8 | 13.0 | **8.7** |
+| −10 dB | 19.7 | 12.8 | **6.9** |
+| −6 dB | 16.9 | 10.5 | **6.5** |
 
-Every floor holds and the two from the 19th produce no more than they do today.
+**The gap narrows and never closes.** Across that sweep the station's own marks
+fall 7.7 dB and the chatter falls 4.0 dB, so the two come together slowly rather
+than crossing. **The naive extrapolation was wrong**: subtracting ten decibels from
+the station alone predicts the gap vanishing, and it does not, because the gate's
+threshold follows the signal down and the noise it then admits is drawn from lower
+amplitudes too.
 
-**And both break the suite.** Task 2 alone breaks two easy-tier fixtures:
-`exchange-easy` reads `VQCQDEN0CALLN0CALLK` and `tightfist-easy` reads `TEDETESTK`,
-where both were whole. HM-DEC-114 makes an easy tier pass or fail, so that is a
-hard failure and not a ratchet. Task 2 plus `Refine` additionally breaks
-`clean-12wpm`, `clean-18wpm` and `TheBulletinsWordsComeOutAsWords`. Eleven failures
-against the expected four.
-
-**Why task 2 breaks them, and it is the finding worth keeping.** A tight fist runs
-its elements together, so a merged pair lands at about two dits and a merged run at
-about four. **That is a genuine third population of marks, and it is not chatter.**
-By length alone the fit cannot tell a merged element from a sliver of noise: on
-`134712` the three centres sit at 14, 51 and 238, and on `tightfist-easy` they sit
-at a dit, a dah and a merge, and both look identical to a clustering that only
-knows how long things are. What separates them is that the chatter is not part of
-any character, which is structure, and structure is HM-OPEN-054's ground.
-
-### The dit and the dah, before and after
-
-| capture | dit today | dit task 2 | dit task 2 + `Refine` |
-|---|---|---|---|
-| `cw-2026-08-17-013347` | 87.0 ms | 87.0 | 100.0 |
-| `cw-2026-08-17-013622` | 21.6 | 21.6 | 25.0 |
-| `cw-2026-08-17-134712` | 24.5 | 24.5 | 25.0 |
-| `cw-2026-08-18-004507` | 54.2 | 54.2 | 60.0 |
-| `cw-2026-08-18-003016` | 47.9 | 47.9 | 55.0 |
-| `cw-2026-08-18-003126` | 49.8 | 49.8 | 50.0 |
-| `cw-2026-08-18-003758` | 34.3 | 19.3 | 19.7 |
-| `cw-2026-08-20-014854` | 42.7 | 42.7 | 50.0 |
-| `cw-2026-08-20-014935` | 40.9 | 38.4 | 90.0 |
-
-**These are end-of-file figures and that is why most of them barely move.** By the
-last sample of `134712` the window is entirely noise again, so the interesting
-number is not here but inside the callsign, where the fitted dah goes from **5.2
-dits to 4.66** against a hand-decoded truth of 4.24.
-
-**A mismatch reported rather than filled in, and it is the second time.** The
-instruction asks for the fitted dah in dits for all nine, before and after. It is
-an internal of the mark fit with no reader on it. It was measured inside the
-callsign on `134712` and on `cw-2026-08-18-004507`, where the three centres settle
-at 18, 60 and 154 ms, and **the other seven were not read out**, because building a
-reader for two changes that were then withdrawn was not the best use of the
-session. The dit column above is the same quantity one step earlier and is measured
-for all nine.
+**So it survives a station ten decibels weaker**, with about seven decibels of
+margin left, on this recording.
 
 ## 2. What Tim should expect
 
-**No. The decoder still does not read `cw-2026-08-17-134712`**, and there is no
-text to check against `N4L`.
+**Yes. Amplitude separates chatter from real elements, by about ten decibels on
+the recording where the answer is known, and the gap is still about seven decibels
+after ten decibels of added noise.**
 
-**But the callsign is now proved in the tree**, and that is the thing this
-recording has never had. `N4L` is the first adjudicated ground truth in it, and
-every future change can be scored against a known-correct fragment rather than
-against a feeling.
+**Nothing was built and nothing in `src/` changed.** What is in the tree is the
+measurement itself, `MarkAmplitudeTests`, so the numbers above can be re-run rather
+than quoted. It asserts almost nothing on purpose: it reports heights and
+classifies no mark, because a threshold is what four rulings have been spent
+closing and this unit is not the place for a fifth.
 
-**Where it dies now, precisely.** With both changes in, through the whole callsign
-the dit reads **35 to 40 ms** against a true 56.3 and coherence is **0.00**, so
-`LooksLikeMorse` is false and nothing is emitted. The three-way fit **does** find
-the dit cluster at 51.2 ms. What loses it is the next line:
-`MedianOfShortCluster` takes the median of every mark below the dit-and-dah cut,
-which is 145 ms here, and that **puts all nine chatter slivers straight back in**.
-The cluster fit excludes them and the median re-admits them.
-
-**That is one line, and it is the next step.** `MedianOfShortCluster` exists for
-HM-DEC-095's reason, that a handful of very short marks survive the gate on any
-real signal and an average is defenceless against them. Where a chatter cluster has
-already been identified and set aside, the protection is doing the harm it was
-written to prevent.
-
-**Build clean, no warnings. 2,076 tests, four failing, and they are the four
+**Build clean, no warnings. 2,083 tests, four failing, and they are the four
 expected:**
 
 - `CwSettledSilenceTests.APassThatReadSomethingEmitsSomething`
@@ -169,26 +142,30 @@ expected:**
 - `CwTerminalTests.ClearingTheTranscriptLeavesTheDecoderAlone`
 - `ARecordingWithKeyingInItIsReadTests.TheDecoderSaysSomethingAboutIt`
 
-Two tests were added, one was replaced, and `src/` is untouched. `ShortestVote` is
-still 5, `MaximumRatio` is still 3.8, and the gate, the settled pass and the keying
-meter were not touched.
+Seven tests were added, all measurement, all passing.
 
-Committed and pushed to `main`.
+**What a discriminator on this would look like, and it is not built.** It would
+compare each mark's height against the heights of the marks around it rather than
+against any fixed level: the fitted plateau of a window of marks is a quantity the
+signal supplies, and a mark sitting many decibels below its own neighbours is not
+one of them. **Two things would have to be answered before it could be trusted.**
+The first is `004507`'s long marks with low medians and high peaks, which are real
+elements the gate stretched across a dip and which a median-only rule would
+discard. The second is that this rests on one station with a known callsign: a
+second recording with adjudicated ground truth would double the evidence, and there
+is exactly one.
 
 ## 3. What we should do next
 
-- **`MedianOfShortCluster`, with the three-way fit, in one unit.** It is the line
-  the callsign dies on and both halves are measured. The easy-tier breakage has to
-  be solved in the same unit, because the three-way fit alone causes it.
-- **The merged-element problem is the real design question** and it deserves being
-  stated as one: a mark twice the length of a dit is either a dah in a fist that
-  runs its elements together or two elements the gate joined, and no measurement of
-  length alone will say which.
-- Record `cw-2026-08-17-134712` in the capture set as an adjudicated fixture whose
-  known content is `N4L` at 21.45 to 23.01 seconds. It is the only capture with any
-  ground truth in it.
-- Keep a real carrier when one is heard. The retired test is now standing on
-  synthesized audio, which is the weaker evidence.
+- **`MedianOfShortCluster`, with the three-way fit, in one unit.** It was named two
+  sessions ago as the line the callsign dies on, and this measurement says the
+  information needed to fix it exists. That is the next unit and it now has a
+  candidate behind it rather than a hope.
+- Decide whether the discriminator reads the median, the peak or both. `004507`'s
+  stretched marks are the case that decides it and they are already in the tree.
+- Keep a second recording with a readable callsign when one is heard. All of this
+  rests on `N4L`.
+- The keying meter's thresholds are still unscored against an evening's roster.
 
 ## 4. What's blocking us
 
@@ -196,38 +173,40 @@ Nothing blocks the next unit.
 
 **One ask, new this session.**
 
-> **Whether a mark of about two dits is a dah from a fist that runs its elements
-> together, or two elements the gate joined, is not decidable from the mark's
-> length, and the next unit must not be written as though it were.**
+> **Amplitude is admitted as a candidate discriminator and a rule built on it must
+> be relative rather than absolute, comparing each mark to the marks around it and
+> never to a fixed number of decibels.**
 >
-> The three-way fit built this session finds `134712`'s three mark populations
-> exactly, at 14, 51 and 238 milliseconds, and setting the lowest aside is right
-> there. It is wrong on `tightfist-easy`, whose three populations are a dit, a dah
-> and a merged pair, and dropping the lowest drops the dits. **Both look identical
-> to a fit that only knows how long things are**, which is why task 2 helped one
-> recording and broke two fixtures.
+> Measured on `cw-2026-08-17-134712`, where HM-DEC-144 settles which marks are the
+> station's: its eleven elements sit 24.4 to 24.7 dB above the envelope floor and
+> the nine chatter slivers sit at 8.1 to 14.2, a gap of 10.1 dB. On
+> `tightfist-easy`, where every mark is real, there is one population at 21.9 to
+> 24.0 dB and no low group at all. **The two recordings look different, which is
+> what the candidate needed to show.**
 >
-> **What separates them is whether the mark took part in a character**, and that is
-> structure rather than length. It is adjacent to HM-OPEN-054, which is parked, and
-> a unit written to "make the dit come from plausible elements" will walk into it
-> without noticing.
+> **The rule must be relative because the floor moves.** Across ten decibels of
+> added noise the station falls from 24.6 to 19.7 dB above the floor while the
+> chatter falls from 14.5 to 12.8; the gap holds at about seven decibels but
+> neither figure stays put, so any fixed height would be wrong at one end of that
+> range or the other. **That is the sixth instance of the error class four rulings
+> have gone on closing**, and it is worth naming before the unit that builds this
+> rather than after.
 >
-> **Rejected: a length threshold below which a mark is chatter.** That is the sixth
-> instance of the error class four rulings have now been spent closing.
-> **Also rejected: dropping the lowest cluster only when it is a minority of the
-> window**, which was measured against the numbers: the chatter is nine marks of
-> twenty inside the callsign, so a minority test would refuse exactly the case the
-> fit exists for.
+> **Rejected: treating this as settled enough to build on without the second
+> question answered.** On `cw-2026-08-18-004507` there are real elements of 90 to
+> 275 ms whose envelope median sits at 11 to 15 dB because the gate held them open
+> across a dip, and their peaks are 18 to 26. A rule reading the median alone
+> discards them. **Also rejected: reading the peak alone**, which on the callsign
+> window gives a gap of 4.4 dB rather than 10.1 and is the weaker of the two
+> statistics.
 
 ### Asks still outstanding
 
-- **How to tell a merged element from chatter.** First made 2026-08-20, this
-  session. Waiting on Tim, or on a unit scoped to know it is the question. Nothing
-  is in the tree.
+- **Amplitude as a relative discriminator, and which statistic it reads.** First
+  made 2026-08-20, this session. Waiting on Tim, or on the unit that builds
+  `MedianOfShortCluster`. Nothing is in the tree but the measurement.
 - **The keying meter's provisional thresholds.** First made 2026-08-20. Waiting on
-  one evening's roster scored against the `meter` column. **HM-DEC-144 settles the
-  half of this that was in doubt**: the meter scored a real station, not a carrier,
-  and scored it higher than four recordings that decoded.
+  one evening's roster scored against the `meter` column.
 - **Whether `SHACK_FACTS.md` still holds that CI-V Transceive is off.** First made
   2026-08-20. Waiting on one capture taken with the radio connected, so the
   `broadcast` line has something to report. The change is in the tree at
@@ -245,6 +224,6 @@ Nothing blocks the next unit.
 - **HM-OPEN-007.** Open and unruled since 2026-08-14, named in HM-DEC-140 as the
   reason the queue's own premise is worth re-testing. Waiting on Tim.
 
-**One item leaves the queue.** Whether `cw-2026-08-17-134712` holds a station or a
-carrier: ruled this session and recorded as HM-DEC-144. It is a station and its
-callsign is `N4L`.
+**One item leaves the queue.** How to tell a merged element from chatter, asked
+last session: amplitude does it on the evidence available, which is what this unit
+was commissioned to find out.

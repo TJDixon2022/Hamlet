@@ -1,9 +1,9 @@
 STATE: COMPLETED
-PHASE: 5 of 5
+PHASE: 3 of 3
 BALL: tim
 NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-20T15:02:00-04:00
-NOTE: N4L proved and HM-DEC-095 overturned; both decoder changes measured and withdrawn on the easy tiers
+UPDATED: 2026-08-20T14:32:00-04:00
+NOTE: Amplitude separates by 10 dB and holds 7 dB under noise; nothing built, src untouched
 
 ---
 

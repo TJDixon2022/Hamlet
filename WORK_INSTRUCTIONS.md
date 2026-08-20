@@ -27,51 +27,42 @@ If all four hold, say "Hamlet confirmed" and continue.
 
 ## Why this unit exists
 
-**`cw-2026-08-17-134712` is not a carrier. It is a station, and its callsign is
-`N4L`.**
+**This unit measures one thing and ships nothing.** That is the whole scope. If it
+ends with a table and no code in `src/`, it has succeeded.
 
-Last session printed the gate's own element sequence from 21.45 s to 23.01 s of
-that recording. Decoded by hand:
+Last session named the question that blocks everything else: **a mark of about two
+dits is either a dah from a fist that runs its elements together, or two elements
+the gate joined, and no measurement of its length will say which.** On
+`cw-2026-08-17-134712` the three mark populations sit at 14, 51 and 238 ms and
+dropping the lowest is correct. On `tightfist-easy` they sit at a dit, a dah and a
+merged pair, and dropping the lowest drops the dits. To a fit that knows only
+length, the two cases are identical.
 
-```
-225  30  55 │ 180 │ 55 40 55 40 60 40 55 30 245 │ 150 │ 60 25 245 40 55 40 55
-dah     dit │     │ dit dit dit dit dah         │     │ dit dah dit dit
-     N      │     │             4               │     │        L
-```
+**Tim's ruling: measure amplitude before building anything on it.**
 
-Marks cluster at 55 and 235–245. Gaps cluster at 25–40 between elements and
-150–180 between characters. `-.` `....-` `.-..` — **N, 4, L**, a United States
-amateur callsign prefix, sent by hand at about 22 words a minute.
+The reasoning is that chatter and merged elements differ physically even where they
+do not differ in length. A sliver the gate chopped out of band noise is a threshold
+crossing — it should sit near the detection floor. A merged element is a real
+keyed mark at the sender's full signal — it should sit on the plateau. **That is a
+different quantity from length, it is not a constant, and it is not
+HM-OPEN-054's ground.**
 
-**A carrier cannot produce that.** HM-DEC-095 ruled this recording's strong signal
-to be a carrier and it has been wrong since the 17th. Three sessions have been
-chasing a real defect while a ruling said they were chasing a ghost, and last
-session's ratio work was blocked by a test written on that ruling.
-
-**Tim's ruling, this session: HM-DEC-095 is overturned on the evidence above.**
+**It may well be wrong.** On a weak station the plateau may not stand far enough
+above the floor to separate anything. That is why this unit measures and does not
+build: one task spent eliminating a candidate honestly is how the last three
+findings in this project arrived.
 
 ---
 
-## The cause this unit is actually aiming at
+## What makes this measurable now
 
-Last session named a third cause and it is now the leading one:
+`cw-2026-08-17-134712` has adjudicated ground truth, recorded last session as
+**HM-DEC-144**: the station is `N4L`, its elements run 21.45 s to 23.01 s, dit
+56.3 ms, dah 238.3 ms, ratio 4.24.
 
-**The fist is about six seconds of a thirty-second recording. The speed estimator
-looks at the last twenty marks. So twenty-four seconds of noise own the estimate,
-and with `Refine` changed the dit reads 25 ms against a true 55.**
-
-That arithmetic explains everything downstream. The fitted dah is 235 ms. Against
-a true 55 ms dit that is **4.3**, which is a heavy but ordinary fist. Against the
-noise-poisoned 25 ms dit it is **9.4**, which no ratio band would ever accept and
-no coherence check would ever call Morse.
-
-**So the ratio band may not need touching at all.** Last session widened it to 5.0
-and moved no character count anywhere, which is consistent with the ratio never
-having been the binding constraint.
-
-This is the fifth instance of one error class, and it is a different flavour from
-the other four. Those compared measured elements against textbook constants.
-**This one measures the right thing against the wrong sample.**
+So for every mark inside that window it is already known which are the station's
+and which are not. **The answer exists before the measurement, which is what makes
+the measurement worth anything.**
 
 ---
 
@@ -85,29 +76,27 @@ not repair the instruction silently.
   `CwFarnsworthTests.TheBulletinDecodesToItsAnswerKey`,
   `CwTerminalTests.ClearingTheTranscriptLeavesTheDecoderAlone`,
   `ARecordingWithKeyingInItIsReadTests.TheDecoderSaysSomethingAboutIt`.
-  **2,073 tests, four failing. Anything above four is new.**
-- Last session committed `01491d3` and withdrew both `Refine` and the ratio
-  change. **Neither is in the tree.** Confirm that before task 3.
+  **2,076 tests, four failing. Anything above four is new.**
+- Last session shipped nothing to `src/`. The three-way fit and the `Refine` change
+  were built, measured and withdrawn. **Confirm they are not in the tree.**
 
 ---
 
 ## Rulings in force
 
-**HM-DEC-095 is overturned.** Its finding that this recording's strong signal is a
-carrier is contradicted by a hand decode of the decoder's own elements. **Record
-the overturn in `DECISIONS.md` with the element sequence and the callsign**, so no
-later session rediscovers it from the audio.
-
 **§9.5.1 — one branch, `main`, commit *and push*.**
 
-**HM-DEC-048 — nothing raises a confidence score.** *Everything in this unit makes
-the decoder better at measuring. None of it may make it more willing to guess.*
+**HM-DEC-144 — `cw-2026-08-17-134712` holds a station and its callsign is `N4L`.**
+The ground truth this unit measures against.
 
-**HM-OPEN-054 and HM-DEC-143 remain parked.** Overturning HM-DEC-095 removes a
-false premise; it does not settle how the survey tells keying from a carrier. **Do
-not build the distinguisher.**
+**HM-OPEN-054 and HM-DEC-143 remain parked.** Amplitude is a property of a single
+mark. **Whether a mark took part in a character is structure and is parked ground.
+If the work reaches for it, stop.**
 
-**HM-OPEN-053 — `ShortestVote` stays at 5.**
+**HM-DEC-091 — one source, and it says which.** A mark whose amplitude cannot be
+recovered is reported as such and is not given a plausible number.
+
+**HM-OPEN-053 — `ShortestVote` stays at 5. `MaximumRatio` stays at 3.8.**
 
 **HM-DEC-093 — no radio. Nothing here needs one.**
 
@@ -121,92 +110,71 @@ is moving inside the task. Also every ten minutes while a task runs.
 
 ---
 
-## Task 1 — Pin the callsign, so this cannot be relitigated
+## Task 1 — The amplitude of every mark, on the recording where the answer is known
 
-A test that reads `cw-2026-08-17-134712.wav`, takes the gate's elements across the
-clean stretch, and asserts they spell **N4L**.
+For `cw-2026-08-17-134712`, across the twenty most recent marks at the moment the
+callsign is being sent, report for each mark:
 
-- Assert the element sequence and the letters, **not** that the decoder as a whole
-  emits them. The decoder does not, yet, and that is the point.
-- If the stretch boundaries differ from 21.45–23.01 s in your run, **report the
-  boundaries you used and why**.
-- **If it does not spell N4L, stop and report before anything else.** Everything in
-  this unit rests on it and the hand decode was done outside the repository.
+- its start time and its length in milliseconds,
+- **its envelope amplitude** — state which statistic you chose, peak or median or
+  otherwise, and why,
+- the envelope floor at that moment, so the amplitude can be read as a height above
+  it rather than as a bare number,
+- and **whether it is one of `N4L`'s elements**, which HM-DEC-144 settles.
 
-Then retire `ACarrierNeverConvincesTheTrackerItIsAStation`. It asserts a
-falsehood. **Do not delete it silently** — replace it with a test on a recording
-that genuinely is a carrier if one exists, and if none exists say so.
+**Then say whether the two groups separate, and by how much.** A number, not an
+impression. If they overlap, say by how much and on which marks.
 
----
-
-## Task 2 — The speed estimator's sample
-
-Make the dit estimate come from marks that are plausibly elements rather than from
-whatever the last twenty were.
-
-- **Report what you changed and why in one paragraph before the numbers.**
-- It must be **fitted from the signal**, not a new constant, and not a longer
-  window chosen because it happens to help this file.
-- Report, for all nine captures: the dit before and after, the fitted dah in dits
-  before and after.
-- **On `134712` the target is a dit near 55 ms and a ratio near 4.3.** If you reach
-  that, say so. If you reach it by a route that moves the other eight captures'
-  dits, **report the movement even where the character counts improve**.
+**Report this before anything else and do not proceed past task 2 if it does not
+separate.**
 
 ---
 
-## Task 3 — Then, and only then, reconsider `Refine`
+## Task 2 — The same measurement where it should fail
 
-`Refine`'s premise was measured false by HM-DEC-119 and last session's fix to it
-was withdrawn because it manufactured five characters from `cw-2026-08-20-014854`,
-a recording the keying meter reads as holding no keying at any pitch.
+Repeat on `tightfist-easy`, where the short population is *merged elements* rather
+than chatter.
 
-- **Measure `Refine` again with task 2 in place.** The invention may have been the
-  poisoned dit rather than `Refine` itself.
-- **The withdrawal condition stands and is not negotiable**: if the change produces
-  characters from `014854` or `014935`, it is inventing them and it does not ship.
-  HM-DEC-090 already ruled that marking is not a substitute for silence.
-- If it ships, four columns as before: today, task 2 only, task 2 plus `Refine`,
-  and the floors held.
+**The prediction under test: there, the short marks should sit at full signal, not
+near the floor**, because they are real keyed marks. If amplitude is a real
+discriminator, this fixture must look different from `134712` — and if it looks the
+same, **amplitude does not work and this unit ends here with that finding.**
+
+Also report it on `cw-2026-08-18-004507`, which decodes, as a control.
 
 ---
 
-## Task 4 — The nine captures
+## Task 3 — Say what it means, and build nothing
 
-Characters emitted for every capture in `captured` and `captured\unadjudicated`,
-before and after everything in this unit.
+One paragraph, and it is the deliverable:
 
-Floors nothing may fall below: `004507` 25, `003016` 38, `003126` 34, `003758` 14.
+- **If the groups separate on `134712` and the fixtures look different**, say what
+  a discriminator built on it would look like and what would have to be true for it
+  to hold on a weak station. **Do not build it.**
+- **If they do not separate**, say so plainly. That is a good outcome for one
+  task's work and it removes a candidate.
+- Either way, say whether the separation is large enough to survive a station ten
+  decibels weaker, using the numbers rather than a judgement.
 
-**`014854` and `014935` must produce no more than they do today.** They contain no
-keying; new text there is invention and is a failure of this unit, not a success.
-
----
-
-## Task 5 — The fixture
-
-Re-run `ARecordingWithKeyingInItIsReadTests.TheDecoderSaysSomethingAboutIt`.
-
-- **If it goes green, print what the decoder read and check it against `N4L`.**
-  The callsign is now a known-correct fragment — the first adjudicated ground truth
-  this recording has ever had. Say whether the decoder found it.
-- **If it stays red, say precisely where it dies now.**
-- **Do not tune anything to make it pass.**
+**Do not change `src/`. Do not touch `MedianOfShortCluster`, the three-way fit,
+`Refine`, the gate, the survey or the meter.** *A measurement that arrives with a
+change attached cannot be read on its own, and reading this on its own is the
+entire point.*
 
 ---
 
 ## Parked — do not touch, do not raise
 
-- **HM-DEC-143 and the keying-versus-carrier distinguisher.**
-- **`CwToneSurvey.MaximumRatio`.** Last session widened it to 5.0 and it moved no
-  character count anywhere. **Leave it at 3.8 and let task 2 tell us whether the
-  ratio was ever the binding constraint.**
-- **The keying meter and `CwKeyingThresholds`.** *It agreed with the gate to within
-  a millisecond on this fist and is the reason we know it is a station.*
-- **Why the 19th's stations are missing from the audio.** Five theories dead.
-- **The 69 and 233.** Its own unit.
-- **Adjudicating the rest of `134712`.** `N4L` is established. The remainder of the
-  transcript is Tim's ear.
+- **HM-OPEN-054 and HM-DEC-143**, and anything about whether a mark took part in a
+  character. **The nearest boundary in this unit. If a measurement needs to know
+  what character a mark belongs to, stop.**
+- **`MedianOfShortCluster`.** Named last session as the line the callsign dies on.
+  Its unit comes after this one.
+- **The three-way fit and `Refine`.** Both measured, both withdrawn, both waiting
+  on this answer.
+- **The keying meter and `CwKeyingThresholds`.**
+- **Why the 19th's stations are missing from the audio.**
+- **The 69 and 233.**
 - **HM-OPEN-052**, the five synthesized tests, rulings 096–133, the scorer,
   `CaptureAudioAsync` end to end, `TheRosterIsOneFilePerEvening`.
 
@@ -220,13 +188,13 @@ not touch coverage thresholds.
 
 Unit-specific:
 
-- **Do not replace one constant with another constant.** *Fifth instance of this
-  class; a sixth would be avoidable.*
-- **Do not ship anything that produces text from `014854` or `014935`.** *The
-  meter says there is no keying in them. A decoder that reads them is guessing, and
-  a guessing decoder is worse than a silent one.*
-- **Do not touch the gate or the keying meter.**
-- **Do not tune to `134712`.** *The nine-capture table is the guard.*
+- **Do not introduce an amplitude threshold.** *Sixth instance of the error class
+  four rulings have gone on closing. This unit reports heights; it does not decide
+  a cut.*
+- **Do not make the answer prettier than it is.** *A candidate eliminated in one
+  task is worth more than a candidate that looks promising and costs three.*
+- **Do not adjudicate any recording.** *`N4L` is established. Everything else is
+  Tim's ear.*
 
 ---
 
@@ -237,9 +205,9 @@ other headings, per §13: **What Claude did**, **What Tim should expect**, **Wha
 should do next**, **What's blocking us** — the last carrying **Asks still
 outstanding** per HM-DEC-139.
 
-**Section 1 opens with task 1**: whether the elements spell `N4L`.
+**Section 1 opens with task 1's table.**
 
-**Section 2 says plainly whether the decoder now reads that recording, and whether
-what it read contains the callsign.**
+**Section 2 says, in one sentence, whether amplitude separates chatter from
+elements** — and it says so even when the answer is no.
 
 **Stop and report.**
