@@ -101,7 +101,10 @@ public sealed class ACarrierClockDoesNotSeparateTests
     }
 
     /// <summary>Every moment the gate turned the key on or off, in seconds.</summary>
-    private static List<double> Transitions(MonoAudio audio, double startHz)
+    /// <param name="audio">The recording.</param>
+    /// <param name="startHz">Where the tracker starts looking.</param>
+    /// <returns>The edge times, in order.</returns>
+    public static List<double> Transitions(MonoAudio audio, double startHz)
     {
         var decoder = new CwDecoder(audio.SampleRate, startHz);
         var hop = decoder.Tracker.HopSamples;

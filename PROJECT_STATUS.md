@@ -1,9 +1,9 @@
 STATE: COMPLETED
-PHASE: 1 of 4
+PHASE: 4 of 4
 BALL: tim
 NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-20T16:10:00-04:00
-NOTE: Clock candidate dead: a real character emits at 0.389 and an invented one at 0.470; nothing built
+UPDATED: 2026-08-20T16:02:00-04:00
+NOTE: Choosing the window makes it worse; fifth candidate eliminated, nothing built
 
 ---
 
