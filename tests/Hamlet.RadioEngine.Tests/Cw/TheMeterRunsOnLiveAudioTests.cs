@@ -75,6 +75,29 @@ public sealed class TheMeterRunsOnLiveAudioTests
     private static MonoAudio Captured(string name) => WavAudio.Read(
         Path.Combine(CapturedSignalTests.Folder, name + ".wav"));
 
+    /// <summary>
+    /// The four recordings from which Hamlet produced a transcript.
+    /// </summary>
+    /// <remarks>
+    /// Their own sidecars say so: 69, 168, 41 and 177 characters emitted. That is
+    /// a fact about what the decoder did and needs nobody's verdict, which is why
+    /// it can be used here while adjudicating the recordings stays Tim's.
+    /// </remarks>
+    public static TheoryData<string> Decoded { get; } = new()
+    {
+        "unadjudicated/cw-2026-08-18-003016",
+        "unadjudicated/cw-2026-08-18-003126",
+        "unadjudicated/cw-2026-08-18-003758",
+        "cw-2026-08-18-004507",
+    };
+
+    /// <summary>The two presses on the 19th that produced nothing at all.</summary>
+    public static TheoryData<string> ReadNothing { get; } = new()
+    {
+        "unadjudicated/cw-2026-08-20-014854",
+        "unadjudicated/cw-2026-08-20-014935",
+    };
+
     private static MonoAudio Noise(int seconds, int seed)
     {
         var random = new Random(seed);
@@ -97,17 +120,40 @@ public sealed class TheMeterRunsOnLiveAudioTests
 
     /// <remarks>
     /// Proves HM-DEC-091: played through a tap at the cadence the application
-    /// uses, the meter reaches **keying** on the recording that decoded and stays
-    /// there, having chosen the pitch itself from a sweep.
+    /// uses, the meter reaches **keying** on every recording Hamlet produced a
+    /// transcript from, having chosen the pitch itself from a sweep.
     /// </remarks>
-    [Fact]
-    public void ItReachesKeyingOnTheRecordingThatDecoded()
+    /// <param name="name">The recording.</param>
+    [Theory]
+    [MemberData(nameof(Decoded))]
+    public void ItReachesKeyingOnEveryRecordingThatDecoded(string name)
     {
-        var readings = Play(Captured("cw-2026-08-18-004507"), new CwKeyingMeter());
+        var readings = Play(Captured(name), new CwKeyingMeter());
 
         Assert.NotEmpty(readings);
+        Assert.Contains(readings, r => r.Verdict == KeyingVerdict.Keying);
         Assert.Equal(KeyingVerdict.Keying, readings[^1].Verdict);
-        Assert.DoesNotContain(readings, r => r.Verdict == KeyingVerdict.NoKeying);
+    }
+
+    /// <remarks>
+    /// <para>Proves HM-DEC-091: **the two presses on the 19th, which are the
+    /// reason this exists.** He heard a station, pressed, and both rows read
+    /// nothing. The meter says no keying, which agrees with the decoder and with
+    /// the measurement, and is the answer he needed at the time rather than the
+    /// next morning.</para>
+    /// <para>It asserts nothing about why the station is missing from the audio.
+    /// That is not known and this instrument does not claim to know it (§0.0).
+    /// </para>
+    /// </remarks>
+    /// <param name="name">The recording.</param>
+    [Theory]
+    [MemberData(nameof(ReadNothing))]
+    public void ItSaysNoKeyingOnThePressesThatProducedNothing(string name)
+    {
+        var readings = Play(Captured(name), new CwKeyingMeter());
+
+        Assert.DoesNotContain(readings, r => r.Verdict == KeyingVerdict.Keying);
+        Assert.Equal(KeyingVerdict.NoKeying, readings[^1].Verdict);
     }
 
     /// <remarks>

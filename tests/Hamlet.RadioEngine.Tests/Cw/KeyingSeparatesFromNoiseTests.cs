@@ -32,17 +32,27 @@ public sealed class KeyingSeparatesFromNoiseTests
     /// <summary>How long a window the meter gets, in seconds.</summary>
     public const double WindowSeconds = 6;
 
-    /// <summary>Every recording in the repository, swept window by window.</summary>
+    /// <summary>
+    /// Every recording in the repository, adjudicated or not, swept window by
+    /// window.
+    /// </summary>
+    /// <remarks>
+    /// **THE UNADJUDICATED ONES ARE INCLUDED AND ARE NOT JUDGED HERE.** Whether
+    /// there was a readable station in any of them is Tim's ear and not a
+    /// session's (§12.5). What is measured is what the envelope did, which is a
+    /// fact about the audio and needs nobody's verdict.
+    /// </remarks>
     public static TheoryData<string> Recordings
     {
         get
         {
             var data = new TheoryData<string>();
 
-            foreach (var wav in Directory.GetFiles(CapturedSignalTests.Folder, "*.wav")
+            foreach (var wav in Directory
+                         .GetFiles(CapturedSignalTests.Folder, "*.wav", SearchOption.AllDirectories)
                          .OrderBy(p => p, StringComparer.Ordinal))
             {
-                data.Add(Path.GetFileNameWithoutExtension(wav));
+                data.Add(Path.GetRelativePath(CapturedSignalTests.Folder, wav));
             }
 
             return data;
@@ -62,8 +72,7 @@ public sealed class KeyingSeparatesFromNoiseTests
     [MemberData(nameof(Recordings))]
     public void EveryRecordingIsSweptWindowByWindow(string name)
     {
-        var audio = WavAudio.Read(
-            Path.Combine(CapturedSignalTests.Folder, name + ".wav"));
+        var audio = WavAudio.Read(Path.Combine(CapturedSignalTests.Folder, name));
 
         var windows = Sweep(audio).ToList();
 
