@@ -1,9 +1,9 @@
-STATE: COMPLETED
-PHASE: 4 of 4
+STATE: BLOCKED
+PHASE: 1 of 4
 BALL: tim
 NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-20T18:52:00-04:00
-NOTE: Two mechanisms, not one, so no fix was built; reference now reads the heavy fist at 100
+UPDATED: 2026-08-20T19:20:00-04:00
+NOTE: Two steps, not one: the gate loses seven of the twelve milliseconds before the fit sees them
 
 ---
 
