@@ -76,7 +76,8 @@ internal static class CwSensitivity
     /// The floor to run against, or null for the ruled one (HM-DEC-117).
     /// </param>
     /// <returns>What the decoder managed.</returns>
-    public static SensitivityPoint At(double snrDb, double? refusalFloorDb = null)
+    public static SensitivityPoint At(
+        double snrDb, double? refusalFloorDb = null, int? gateWindowHops = null)
     {
         var correct = 0.0;
         var wrong = 0.0;
@@ -93,7 +94,8 @@ internal static class CwSensitivity
                     Amplitude: Amplitude,
                     NoiseAmplitude: NoiseFor(snrDb),
                     Seed: seed * 7919),
-                refusalFloorDb: refusalFloorDb);
+                refusalFloorDb: refusalFloorDb,
+                gateWindowHops: gateWindowHops);
 
             var matches = CwAlignment.Align(result.Characters, Message);
 
@@ -120,13 +122,14 @@ internal static class CwSensitivity
         double fromDb = 18,
         double toDb = -12,
         double stepDb = 1,
-        double? refusalFloorDb = null)
+        double? refusalFloorDb = null,
+        int? gateWindowHops = null)
     {
         var points = new List<SensitivityPoint>();
 
         for (var snr = fromDb; snr >= toDb - 1e-9; snr -= stepDb)
         {
-            points.Add(At(snr, refusalFloorDb));
+            points.Add(At(snr, refusalFloorDb, gateWindowHops));
         }
 
         return points;

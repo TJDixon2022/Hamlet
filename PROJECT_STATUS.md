@@ -2,8 +2,8 @@ STATE: COMPLETED
 PHASE: 4 of 4
 BALL: tim
 NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-20T23:56:00-04:00
-NOTE: The 100 Hz is the meter, not the decoder; a held 50 ms window reads the bulletin but no constant delivers it
+UPDATED: 2026-08-21T11:00:00-04:00
+NOTE: Windows separated and proved a no-op; 35 ms reads 143 against 120 and costs the easy tier, so the width goes back
 
 ---
 

@@ -27,188 +27,141 @@ If all four hold, say "Hamlet confirmed" and continue.
 
 ## Why this unit exists
 
-**Hamlet listens to CW through a filter about 100 Hz wide. The signal occupies
-about 40. Every hertz beyond what the signal needs admits noise for nothing.**
+**The detection filter widens on the strength of a speed its own width helped get
+wrong.** Chatter shortens the fitted dit; a short dit reads as a fast fist; a fast
+fist selects the 20 ms window; that window is 75 Hz instead of 30; more noise
+crosses the gate; more chatter. Eight of nine recordings sit at 75 Hz on senders
+working near fourteen words a minute.
 
-This is a receiver design error, not a decoder logic error, and it sits upstream of
-everything four sessions have spent this week chasing. Narrowing the detection
-bandwidth throws away noise power and keeps all the signal. Measured, on real
-off-air recordings:
+Last session held the detection window at 50 ms in a harness, changing nothing
+else:
 
-| recording | swing at 100 Hz | swing at 40 Hz | runs under 25 ms, 100 Hz | at 40 Hz |
-|---|---|---|---|---|
-| `cw-2026-08-21-015834` | 21.5 dB | **24.9 dB** | 27 | **1** |
-| `cw-2026-08-21-020033` | 20.4 dB | **23.7 dB** | 1029 | **517** |
-| `cw-2026-08-21-015432` | 19.2 dB | **22.5 dB** | 841 | **424** |
-| `cw-2026-08-18-003016` | - | - | 1328 at 200 Hz | **272 at 40 Hz** |
+| recording | today | window held at 50 ms |
+|---|---|---|
+| `cw-2026-08-18-004507` | 25 chars, fragments | **32 — `NET  EAC5 STATION HANDLING HIS ESSAGEP`** |
+| `cw-2026-08-18-003016` | 38 chars | **43 — `STILL HVE MY E TO 91B ETT USTFB TUBELI`** |
+| `cw-2026-08-20-014854` (no keying) | 0 | **0** |
+| `cw-2026-08-20-014935` (no keying) | 0 | **0** |
 
-**Three to three and a half decibels on every recording, consistently, for free.**
+**Both recordings holding no keying stay silent at 50 ms.** At 40 ms one of them
+emits four characters. Fifty reads more and invents nothing; forty is one notch
+from breaking §0.0.
 
-**And the sub-25 ms runs largely vanish.** Those runs are the thing two work orders
-and two sessions have tried to exclude after the fact, with rulings sought about
-element floors and vote windows. **They are not elements and they are not a decoder
-defect. They are noise the filter is admitting, and a narrower filter deletes them
-at the source.**
+**It cannot be had by changing a constant, because the coarse survey shares the
+analysis window.** A longer taper is a narrower search, so narrowing detection also
+narrows acquisition and every station-finding test goes red.
 
-### The decode this produced
+**Ruled by Tim: the survey and the detection filter may stop sharing a window.**
+They ask different questions. The survey searches frequency; the gate measures
+time. There is no reason they must share a taper.
 
-`cw-2026-08-18-003016.wav`, 40 Hz detection bandwidth, threshold at the 55th
-percentile of the log envelope, marks shorter than 0.4 of the fitted dit dropped:
+*Rejected: fixing the speed fit first.* Real, measured, and still worth doing — but
+the loop is self-reinforcing, so a corrected fit can be dragged back round by a
+noisy patch of band. Remove the feedback path first.
 
-```
-E= HADA KPA15TT ITWAS #K = STILL HVE MY ETO 91B TT JUST VFB TUBELIN
-```
-
-`ETO 91B` is an Alpha 91B amplifier, `VFB` is very fine business, `TUBE LIN` is a
-tube linear. **That is a legible exchange out of a recording Hamlet reads as
-fragments.**
-
-### The other two things that decode needed
-
-Both were measured on the same recording and both are smaller than the bandwidth.
-
-**The threshold percentile matters enormously.** On identical audio: the 45th
-percentile gives gibberish, the 50th gives partial words, the 55th gives the line
-above. Hamlet's threshold sits midway between the 10th and 90th percentile, which
-is the 50th. **One notch from working.**
-
-**Mark rejection must scale with the fitted dit, not a fixed millisecond figure.**
-0.4 dits was used above. A previous session measured the same thing from a
-different direction: `cw-2026-08-17-013347` fits at ratio 4.08 with a fixed 20 ms
-floor and 3.06 with a floor at half the fitted unit, against a hand-read 2.73
-(HM-DEC-145).
-
-### What this unit does and does not claim
-
-**It claims the bandwidth is too wide and narrowing it improves the measured
-signal-to-noise on every recording tried.** That is four for four and the mechanism
-is elementary.
-
-**It does not claim this makes Hamlet read the band.** The decode above came from a
-script outside this repository with three settings tuned together. **Reproduce it
-inside the tree before believing it.**
-
-**An error recorded so it is not repeated.** Earlier tonight the poor copy was
-attributed to AGC pumping, on a measurement showing the whole passband ducking 8 dB
-in sympathy with the keying. The ducking is real. It is also present at -9.7 dB in
-`cw-2026-08-18-003016`, which decodes well, **so it cannot be what separates good
-copy from bad and the theory was withdrawn.** Do not build on it.
+*Rejected: doing both in one unit.*
 
 ---
 
 ## Verify this instruction against the tree
 
-**Nothing here describes the tree.** Reproduce every figure before relying on it.
+**Nothing here describes the tree.** Every figure above came from last session's
+harness. Reproduce before relying on it.
 
 - **Report mismatches; do not repair the instruction silently.**
-- **The expected-red list in the last two orders was wrong.** The tree has been at
-  five failing for some time: the three long-standing ones plus
-  `ARecordingWithKeyingInItIsReadTests.TheDecoderSaysSomethingAboutIt` and
-  `TheToneIsFoundInRealisticAudio(farnsworth-heavy)`. **Report the count you find
-  and treat anything above it as new.**
-- `KeyingEnvelope` exists and computes the envelope. **Use it.**
+- **Expected red: five.** `CwSettledSilenceTests.APassThatReadSomethingEmitsSomething`,
+  `CwFarnsworthTests.TheBulletinDecodesToItsAnswerKey`,
+  `CwTerminalTests.ClearingTheTranscriptLeavesTheDecoderAlone`,
+  `ARecordingWithKeyingInItIsReadTests.TheDecoderSaysSomethingAboutIt`,
+  `TheToneIsFoundInRealisticAudio(farnsworth-heavy)`. **Anything above five is
+  new.**
+- `WhatBandwidthTheDecoderListensThroughTests` holds last session's measurements.
+  **Read it first. It is the specification for this unit.**
 
 ---
 
 ## Rulings in force
 
-**HM-DEC-120 - the decoder invents nothing on audio holding no signal.** This is
-the property every previous attempt at short-mark exclusion broke, and it is the
-one that must survive. **A change that raises character counts and also makes the
-sensitivity sweep invent text is a failed change, however good the counts look.**
+**HM-DEC-120 — the decoder invents nothing on audio holding no signal.** Three
+attempts at narrowing have failed here. **A change that raises character counts and
+also makes the sensitivity sweep invent text is a failed change.** This is the gate
+on the whole unit.
 
-**HM-DEC-090 - a capture that cannot prove it is fresh is not written.**
+**HM-DEC-048 — nothing raises a confidence score.**
 
-**HM-DEC-091 - one source, and it says which.**
+**HM-DEC-091 — one source, and it says which.**
 
-**HM-DEC-048 - nothing raises a confidence score.**
+**HM-DEC-093 — no radio on the development machine.**
 
-**HM-DEC-093 - no radio on the development machine.**
-
-**HM-OPEN-053 - `ShortestVote` stays at 5.** A previous session established it is
-not the mechanism behind the short runs. **Do not touch it.**
+**HM-OPEN-053 — `ShortestVote` stays at 5.** Established as not the mechanism.
+**Do not touch it.**
 
 ---
 
 ## Status cadence
 
-After each task, before the next, update `PROJECT_STATUS.md` per `CLAUDE.md` 13 -
+After each task, before the next, update `PROJECT_STATUS.md` per `CLAUDE.md` 13 —
 the six fields 13 names, **`PHASE`**, `UPDATED` from the clock, `NOTE` saying what
 is moving inside the task. Also every ten minutes while a task runs.
 
 ---
 
-## Task 1 - Find the detection bandwidth and report it
+## Task 1 — Report the seam
 
-**Report before changing anything.**
+Where do the survey and the gate share a window today? Name the type, the field and
+the call sites.
 
-Find every place the audio is reduced to an envelope for CW detection - the
-decoder's own path and `KeyingEnvelope` both - and for each report:
-
-1. The effective bandwidth in hertz, and how it is arrived at.
-2. Whether it is fixed or varies with the fitted speed.
-3. What noise bandwidth the tone tracker sees.
-
-**If the decoder is already at 40 Hz or narrower, say so and stop.** The premise of
-this unit would then be wrong and everything after it is aimed at nothing.
+**If they are already separable without a design change, say so and go straight to
+task 2.** If separating them touches something this instruction has not anticipated,
+**report and stop.**
 
 ---
 
-## Task 2 - Narrow it, and measure what that alone does
+## Task 2 — Separate them
 
-**Change the bandwidth and nothing else.** No threshold change, no exclusion rule,
-no clock change. One variable.
+The survey keeps the window it has. The gate gets its own.
 
-- Report swing, short-run count and fitted ratio at the current bandwidth and at
-  the narrower one, for every real recording in
-  `tests\fixtures\cw\captured\` and `\unadjudicated\`.
-- **Report the effect on the two recordings holding no keying.** If narrowing makes
-  the decoder emit anything on those, that is HM-DEC-120 and the change fails.
-- **The bandwidth should follow the fitted speed if it can.** CW occupies roughly
-  four times the element rate; at 15 WPM that is about 40 Hz and at 30 WPM about 80.
-  A fixed 40 Hz would penalise a fast sender. **If tying it to the clock is not
-  straightforward, use a fixed value, say so, and say what it costs.**
+- **Station-finding must not regress.** The survey's behaviour is unchanged by
+  definition; prove it with the existing tests rather than asserting it.
+- The gate's window may then be chosen on its own merits.
+- **One variable at a time, measured between.**
 
 ---
 
-## Task 3 - The threshold
+## Task 3 — Choose the gate's window on evidence
 
-**Gated on task 2 landing.** The midpoint between the 10th and 90th percentile is
-the 50th. Sweep it and report what each value does to the character count and to
-the invention rate on empty audio.
+Sweep it. For every real recording in `tests\fixtures\cw\captured\` and
+`\unadjudicated\`, report characters read. For both recordings holding no keying,
+report characters invented.
 
-**Do not pick a value that raises copy at the cost of HM-DEC-120.** Report the
-sweep and, if the best value is a judgement between two costs, **say so and stop** -
-that is Tim's.
+- **Any width that emits anything on empty audio is disqualified, whatever it reads
+  elsewhere.**
+- Report the margin: which widths are silent, which are not, and by how much.
+- **If the best width is a judgement between two costs, say so and stop.** That is
+  Tim's.
 
 ---
 
-## Task 4 - Reproduce the decode. **THIS IS THE DROP CANDIDATE.**
+## Task 4 — Does the loop still close? **THIS IS THE DROP CANDIDATE.**
 
-A test that takes `cw-2026-08-18-003016.wav`, runs the decoder at the new
-bandwidth, and records what it reads. `ETO 91B`, `VFB` and `STILL HVE MY` are real
-anchors from the exchange.
-
-**This recording has no adjudicated answer key** and must not be given one by a
-session. **Assert only that the output contains those anchors**, or report what it
-does contain and assert nothing.
+With the windows separated, report the fitted speed and the selected width per
+recording, as last session's table did. **Eight of nine were at 75 Hz on
+fourteen-words-a-minute senders. Say what it is now.**
 
 **Drop it whole if the session is running long, and say so.**
 
 ---
 
-## Parked - do not touch, do not raise
+## Parked — do not touch, do not raise
 
-- **The AGC ducking.** Withdrawn above. Do not build on it.
-- **`Refine` averaging the unit with key-up gaps.** Real, measured, and Tim's
-  ruling - removing it turns thirteen tests red.
-- **The element floor as a share of the unit, inside the decoder.** Tim's ruling.
-  **Note for the report: if task 2 removes the short runs at source, that ask may
-  no longer be worth answering. Say so if you find it.**
-- **`RfGain` reading 100% with the knob at noon**, and stations reading 375 to 825
-  Hz against a 600 Hz pitch. Real, unexplained, not this unit.
-- **The lock being lost at 25 to 27 seconds of every 30 second capture.** Noticed
-  twice, never chased. Not this unit.
+- **`Refine` averaging the unit with key-up gaps.** Tim's ruling. Thirteen red
+  tests.
+- **The element floor as a share of the unit.** Tim's ruling.
+- **The AGC ducking.** Withdrawn — present in a recording that decodes well.
+- **`RfGain` reading 100% with the knob at noon**; stations reading 375 to 825 Hz
+  against a 600 Hz pitch. Real, not this unit.
+- **The lock lost at 25 to 27 seconds of every 30 second capture.** Noticed twice,
+  never chased.
 - **HM-OPEN-052, HM-OPEN-054**, the five synthesized tests, rulings 096-133, the
   scorer, `CaptureAudioAsync` end to end.
 
@@ -222,14 +175,14 @@ destructive git; do not invent a ruling id; do not touch coverage thresholds.
 
 Unit-specific:
 
-- **Change one thing at a time and measure between.** *The decode above came from
-  three settings tuned together and that is exactly why it is not evidence about
-  any one of them.*
-- **Do not break HM-DEC-120 to raise a character count.** *Every previous attempt
-  at this failed that way.*
+- **Do not break HM-DEC-120 to raise a character count.** *Three attempts have
+  already failed that way.*
+- **Do not change the survey's behaviour.** *Station-finding is the one thing
+  working.*
 - **Do not adjudicate any capture or write an answer key.** *Tim has not listened
   to them.*
-- **Do not touch `ShortestVote`.**
+- **Do not touch `ShortestVote`, `Refine`, or the element floor.** *All three are
+  Tim's, all three are outstanding.*
 
 ---
 
@@ -237,12 +190,9 @@ Unit-specific:
 
 `OUTPUT.md` at the repository root, overwritten and printed. Four sections, no
 other headings: **What Claude did**, **What Tim should expect**, **What we should
-do next**, **What's blocking us** - the last carrying **Asks still outstanding**
+do next**, **What's blocking us** — the last carrying **Asks still outstanding**
 per HM-DEC-139.
 
-**Section 1 opens with the bandwidth the decoder actually uses.**
-
-**Section 2 states in one sentence whether narrowing it, on its own, improved what
-Hamlet reads from a real recording - and by how much.**
+**Section 2 opens with what the bulletin recording reads now, verbatim.**
 
 **Stop and report.**

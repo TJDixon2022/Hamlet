@@ -54,8 +54,10 @@ internal static class CwDecodeHarness
     public static CwDecodeResult Decode(
         CwSignalRequest request,
         double expectedToneHz = CwSignal.DefaultToneHz,
-        double? refusalFloorDb = null)
-        => Decode(CwSignal.Generate(request), expectedToneHz, refusalFloorDb);
+        double? refusalFloorDb = null,
+        int? gateWindowHops = null)
+        => Decode(
+            CwSignal.Generate(request), expectedToneHz, refusalFloorDb, gateWindowHops);
 
     /// <summary>Decode audio.</summary>
     /// <param name="audio">The audio.</param>
@@ -64,9 +66,12 @@ internal static class CwDecodeHarness
     public static CwDecodeResult Decode(
         MonoAudio audio,
         double expectedToneHz = CwSignal.DefaultToneHz,
-        double? refusalFloorDb = null)
+        double? refusalFloorDb = null,
+        int? gateWindowHops = null)
     {
         var decoder = new CwDecoder(audio.SampleRate, expectedToneHz, refusalFloorDb);
+
+        decoder.Tracker.GateWindowHops = gateWindowHops;
         var characters = new List<CwCharacter>();
         decoder.CharacterDecoded += characters.Add;
 

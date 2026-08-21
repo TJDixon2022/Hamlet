@@ -233,6 +233,29 @@ public sealed class CwToneTracker
     private readonly float[] _hann;
     private readonly double[] _neighbors;
 
+    /// <summary>The gate's own tapered buffer, when it wants a different width.</summary>
+    /// <remarks>
+    /// <para>**THE SURVEY AND THE GATE ASKED ONE QUESTION THROUGH ONE FILTER AND
+    /// THEY ARE NOT ONE QUESTION.** The survey searches frequency: it wants a
+    /// taper that separates one bin from its neighbours across the whole sweep
+    /// from three hundred to nine hundred hertz. The gate measures time: it wants
+    /// a taper short enough to keep an element's edges and narrow enough to leave
+    /// the noise outside. Sharing one buffer meant a width chosen for one was
+    /// imposed on the other, and because that width is chosen from the fitted
+    /// speed, **the search was being narrowed by an estimate the search itself
+    /// produced.**</para>
+    /// <para>**IT IS ALLOCATED AND UNUSED UNTIL THE TWO WIDTHS DIFFER.** With
+    /// <see cref="GateWindowHops"/> unset the gate takes the survey's window, both
+    /// passes are the same arithmetic over the same samples, and nothing is
+    /// tapered twice.</para>
+    /// </remarks>
+    private readonly float[] _gateScratch;
+
+    private readonly float[] _gateHann;
+
+    /// <summary>The fine bank as the gate reads it, through the gate's window.</summary>
+    private readonly double[] _gateFineDb;
+
     private readonly CwToneSurvey _survey;
     private readonly CwToneSurvey _fineSurvey;
 
@@ -245,6 +268,7 @@ public sealed class CwToneTracker
     private int _tracked;
     private int _windowHops;
     private int _hannHops;
+    private int _gateHannHops;
 
     /// <summary>What the previous survey said, so a fluke has to happen twice.</summary>
     private double _previousKeyedHz = double.NaN;
@@ -312,6 +336,9 @@ public sealed class CwToneTracker
         _ring = new float[MaximumWindowSamples];
         _scratch = new float[MaximumWindowSamples];
         _hann = new float[MaximumWindowSamples];
+        _gateScratch = new float[MaximumWindowSamples];
+        _gateHann = new float[MaximumWindowSamples];
+        _gateFineDb = new double[fine];
 
         var surveyHop = (double)HopSamples * SurveyDecimation / SampleRate;
 
@@ -342,6 +369,37 @@ public sealed class CwToneTracker
 
     /// <summary>How many samples the current measurement looks at.</summary>
     public int WindowSamples => HopSamples * _windowHops;
+
+    /// <summary>
+    /// How many hops the gate looks through, or null to take the survey's.
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE ONE KNOB THAT SEPARATING THE TWO EXISTS TO PROVIDE.** Unset,
+    /// this tracker behaves exactly as it always has: the gate measures through
+    /// whichever window the fitted speed selected, which is the loop that opens
+    /// the filter to seventy-five hertz on a sender working at fourteen words a
+    /// minute. Set, the gate's width stops depending on a number the gate's own
+    /// width helped produce, and **the survey is untouched either way** — which
+    /// is the whole of what this separation delivers and the reason it was worth
+    /// building before anybody chose a width.</para>
+    /// <para>**IT IS UNSET IN `src`, DELIBERATELY.** Every width was swept and no
+    /// single fixed one is right: thirty reads most of the widths that invent
+    /// nothing, and it costs the easy tier, which sends at twelve words a minute
+    /// and had a fifty millisecond window before. The choice is a judgement
+    /// between real captures and synthesized fixtures and it is Tim's.</para>
+    /// <para>Bounded by <see cref="MaximumWindowSamples"/>, which is what the ring
+    /// holds. A gate asking for more audio than has been kept would be reading
+    /// whatever was in the buffer before, so the request is clamped rather than
+    /// honoured (§0.0).</para>
+    /// </remarks>
+    public int? GateWindowHops { get; set; }
+
+    /// <summary>How many samples the gate actually looks through.</summary>
+    public int GateWindowSamples => HopSamples * GateHops;
+
+    private int GateHops => GateWindowHops is { } hops
+        ? Math.Clamp(hops, 1, MaximumWindowSamples / HopSamples)
+        : _windowHops;
 
     /// <summary>How long one hop lasts.</summary>
     public TimeSpan HopDuration => TimeSpan.FromSeconds((double)HopSamples / SampleRate);
@@ -522,6 +580,18 @@ public sealed class CwToneTracker
         }
     }
 
+    /// <summary>Build the gate's taper for a width of its own.</summary>
+    /// <param name="length">How many samples it spans.</param>
+    private void BuildGateHann(int length)
+    {
+        for (var i = 0; i < length; i++)
+        {
+            _gateHann[i] = (float)(0.5 - (0.5 * Math.Cos(2 * Math.PI * i / (length - 1))));
+        }
+
+        _gateHannHops = length;
+    }
+
     /// <summary>Rebuild the taper for the current window length.</summary>
     private void BuildHann()
     {
@@ -546,15 +616,24 @@ public sealed class CwToneTracker
         }
 
         var window = WindowSamples;
-        var start = (_ringWrite - window + MaximumWindowSamples) % MaximumWindowSamples;
+        var sumSquares = Taper(_scratch, _hann, window);
 
-        var sumSquares = 0.0;
+        // **THE GATE'S OWN BUFFER, WHEN IT WANTS A DIFFERENT WIDTH.** Unset, this
+        // is the survey's buffer and every figure below is the arithmetic this
+        // tracker has always done. Set, the gate reads its own taper and the
+        // survey keeps the one the fitted speed gave it.
+        var gateWindow = GateWindowSamples;
+        var gateScratch = _scratch;
 
-        for (var i = 0; i < window; i++)
+        if (gateWindow != window)
         {
-            var raw = _ring[(start + i) % MaximumWindowSamples];
-            sumSquares += (double)raw * raw;
-            _scratch[i] = raw * _hann[i];
+            if (_gateHannHops != gateWindow)
+            {
+                BuildGateHann(gateWindow);
+            }
+
+            Taper(_gateScratch, _gateHann, gateWindow);
+            gateScratch = _gateScratch;
         }
 
         // **BROADBAND, NOT AT THE TONE.** A receiver muting takes the whole audio
@@ -573,20 +652,33 @@ public sealed class CwToneTracker
         //
         // Taken from the validated reference chain, where it is what makes the
         // envelope usable at all on a signal at the edge of readability.
-        var trackedPower = 0.0;
+        // **WHICH BIN WINS IS THE SURVEY'S QUESTION AND NOT THE GATE'S.** Where
+        // the station sits is a fact about frequency, and reading it through a
+        // taper chosen for its length in time was measured and it costs the
+        // tracker its aim: station-finding goes red across the whole displacement
+        // suite. So the bank is read through the survey's window, exactly as it
+        // always was, and the gate is told which bin to measure.
+        var strongest = 0.0;
 
         for (var f = 0; f < _fineHz.Length; f++)
         {
-            var power = Goertzel(_fineCoefficient[f], window);
+            var power = Goertzel(_scratch, _fineCoefficient[f], window);
 
             _fineDb[f] = ToDb(power);
 
-            if (power > trackedPower)
+            if (power > strongest)
             {
-                trackedPower = power;
+                strongest = power;
                 _tracked = f;
             }
         }
+
+        // **AND HOW LOUD IT IS RIGHT NOW IS THE GATE'S.** That is a fact about
+        // this instant, and it is the one measurement the whole separation exists
+        // to free from a window chosen by the fitted speed.
+        var trackedPower = gateWindow == window
+            ? strongest
+            : Goertzel(gateScratch, _fineCoefficient[_tracked], gateWindow);
 
         var trackedHz = _fineHz[_tracked];
         var competitorPower = 0.0;
@@ -603,32 +695,45 @@ public sealed class CwToneTracker
 
         for (var b = 0; b < _coarseHz.Length; b++)
         {
-            if (!surveying
-                && Math.Abs(_coarseHz[b] - trackedHz) < CompetitorSeparationHz)
+            var near = Math.Abs(_coarseHz[b] - trackedHz) < CompetitorSeparationHz;
+
+            if (!surveying && near)
             {
                 continue;
             }
 
-            var power = Goertzel(_coarseCoefficient[b], window);
+            // **THE SURVEY'S BINS COME FROM THE SURVEY'S WINDOW**, so what it is
+            // handed is exactly what it was handed before this separation
+            // existed.
+            var power = Goertzel(_scratch, _coarseCoefficient[b], window);
 
             if (surveying)
             {
                 _coarseDb[b] = ToDb(power);
             }
 
-            if (Math.Abs(_coarseHz[b] - trackedHz) < CompetitorSeparationHz)
+            if (near)
             {
                 continue;
             }
 
-            if (power > competitorPower)
+            // **AND THE NOISE BESIDE THE TONE COMES FROM THE GATE'S**, because
+            // the two sides of `SnrDb` have to be measured through one filter.
+            // Taking the tone at one bandwidth and the noise at another gives a
+            // difference that is a fact about the two filters rather than about
+            // the band, and it would read as signal where there is none (§0.0).
+            var gatePower = gateWindow == window
+                ? power
+                : Goertzel(gateScratch, _coarseCoefficient[b], gateWindow);
+
+            if (gatePower > competitorPower)
             {
-                competitorPower = power;
+                competitorPower = gatePower;
             }
 
             // Far enough out that the tone itself does not reach, which is what
             // makes these a sample of the band rather than of the signal.
-            _neighbors[neighbors++] = power;
+            _neighbors[neighbors++] = gatePower;
         }
 
         if (surveying)
@@ -897,15 +1002,46 @@ public sealed class CwToneTracker
         return best;
     }
 
+    /// <summary>
+    /// Copy the newest samples into a buffer through a taper.
+    /// </summary>
+    /// <param name="scratch">Where the tapered samples go.</param>
+    /// <param name="hann">The taper, already the right length.</param>
+    /// <param name="window">How many samples to take.</param>
+    /// <returns>The sum of the squares of the untapered samples.</returns>
+    private double Taper(float[] scratch, float[] hann, int window)
+    {
+        var start = (_ringWrite - window + MaximumWindowSamples) % MaximumWindowSamples;
+        var sumSquares = 0.0;
+
+        for (var i = 0; i < window; i++)
+        {
+            var raw = _ring[(start + i) % MaximumWindowSamples];
+
+            sumSquares += (double)raw * raw;
+            scratch[i] = raw * hann[i];
+        }
+
+        return sumSquares;
+    }
+
     /// <summary>Goertzel power over the scratch buffer at one coefficient.</summary>
     private double Goertzel(double coefficient, int length)
+        => Goertzel(_scratch, coefficient, length);
+
+    /// <summary>Goertzel power over one tapered buffer at one coefficient.</summary>
+    /// <param name="scratch">The tapered samples.</param>
+    /// <param name="coefficient">The bin.</param>
+    /// <param name="length">How many of them to read.</param>
+    /// <returns>Power, normalised by the window length.</returns>
+    private static double Goertzel(float[] scratch, double coefficient, int length)
     {
         var s1 = 0.0;
         var s2 = 0.0;
 
         for (var i = 0; i < length; i++)
         {
-            var s0 = _scratch[i] + (coefficient * s1) - s2;
+            var s0 = scratch[i] + (coefficient * s1) - s2;
             s2 = s1;
             s1 = s0;
         }
