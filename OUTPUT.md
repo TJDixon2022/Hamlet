@@ -2,248 +2,220 @@
 
 ## 1. What Claude did
 
-### Task 1: the seam, named
+### Task 1: the port, against the Python, on the same recording
 
 Claude Code on the development machine, in `C:\Source\HamLet`, on `main`. The
 prompt named `PROJECT: Hamlet`, all four gate checks hold, and **no radio is
 attached** (HM-DEC-093).
 
-`CwToneTracker.Measure()` built **one** tapered buffer per hop and ran **both**
-banks over it:
+`cw-2026-08-18-004507.wav`, the ARRL bulletin, tone 501 Hz:
 
-| shared | what it is |
+```
+python   E JJ AT ARRL DOT NE T =    E ACH STATION HANDLING THIS ME SSAG E PE
+C#       E JJ AT ARRL DOT NE T <BT> E ACH STATION HANDLING THIS ME SSAG E PE
+```
+
+**Character for character identical.** The only difference is `=` against
+`<BT>`: the Python's table spells `-...-` as `=` and Hamlet's alphabet spells it
+as the prosign it is. Both found **18 words a minute** with no seed, and both put
+the likelihood ratio at **32.5**.
+
+The other five agree as well:
+
+| recording | Python | C# | text |
+|---|---|---|---|
+| `003016` | 24.2, 22 WPM | **24.2, 22 WPM** | `I<BT> HADA KPA15TT ITWAS JUNK <BT> ESTILL HVE MY ETO 91B TT JUST VFB TUBELIN` |
+| `003126` | 30.9, 28 WPM | 30.2, **28 WPM** | `A OM <BT> E <BT> I WATCH AT L EAST 2 MOVI ES A DAY WID X# WHY NOT E E , WESTERNS` |
+| `003758` | 39.2, 16 WPM | 38.8, **16 WPM** | `KIS QRL TU E EAN EANDE AA4MP/4 QNIK E E EAN EANQNIK` |
+| `004507` | 32.5, 18 WPM | **32.5, 18 WPM** | above |
+| `014854` | 6.1 | 6.6 | nothing, below the gate |
+| `014935` | 2.8 | 3.2 | nothing, below the gate |
+
+The small ratio differences are the tone: the Python finds its own pitch by FFT
+and the port is handed the tracker's, which is where it comes from in the app.
+**Every speed matches exactly and no text differs.**
+
+### Task 2: streaming, and what it costs
+
+`CwProbabilisticStream` keeps a rolling twelve-second envelope, re-reads it twice
+a second, and settles anything more than **one second** behind the newest audio.
+
+**One second is Bell's own figure** and it is the right one here for a reason
+that can be stated: the evidence that decides where a character ended is the gap
+*after* it, so a delay shorter than a word gap settles the last letter of every
+group before the thing that would have corrected it has arrived.
+
+**The cost is 7.4 to 8.4 per cent of real time** on this machine, for the whole
+twelve-hypothesis speed search. That was the one figure the reference said nobody
+had measured, and it turns out the search is cheap: the offline pass reads thirty
+seconds of audio in a fifth of a second. **No hypotheses were dropped.**
+
+Streamed, the bulletin reads:
+
+```
+E J J A T AR RL D O T N E T <BT> E ACH STATION HANDLING ET HIS M E S S A G E P E
+```
+
+**Word spacing is worse than the offline pass** — a twelve-second window fits its
+own word-gap hypothesis, and shorter windows see fewer word gaps to fit it from.
+The letters are the same. Not chased, per the instruction.
+
+### Task 3: it is the only thing feeding the terminal
+
+`CwDecoder` now owns a `CwProbabilisticStream`, feeds it the same audio and the
+tracker's current pitch, and **`CharacterSettled` and the leading edge are raised
+from that stream and from nowhere else.** The old path's own emit sites are
+gone: `FlushCharacter` increments a counter instead of speaking, and the
+provisional tip site no longer raises anything.
+
+The terminal takes a new `LeadingEdge` event carrying the whole revisable tail,
+and `CwTranscript.OfferEdge` **replaces** the tip rather than appending to it —
+so a letter the decoder changes its mind about changes on screen, which is the
+point of deciding late and is drawn in the italic tip the terminal already has.
+
+**What was kept, as instructed**: `CwToneTracker` and the coarse survey, the
+keying meter, the audio tap, the transmit guard, the element counters, the
+capture press, the roster, the sidecar and the case measure. All of those hang
+off `CwDecoder` and Tim marks cases tonight.
+
+**What was not done: the old decode path is still in the tree.** `CwGate`,
+`CwSpeedEstimator`, `CwSettledPass`, `Refine`, the vote window and the element
+floors all still run — they feed the counters, the watch and the revisions record
+that the sidecar reads — **but nothing they produce reaches a screen.** Deleting
+them means triaging every test that describes them, and that is more than
+remained of this session. **It is unfinished and it is named as unfinished
+rather than reported as done.**
+
+### Task 4: the silence, proved
+
+**Yes: one gate value both reads the stations and silences the empty band, and
+the gap is wide.**
+
+| | likelihood ratio |
 |---|---|
-| `_windowHops`, `WindowSamples` | one width, set by `FollowSpeed` from the fitted speed |
-| `_hann`, `_hannHops` | one taper, rebuilt whenever that width moves |
-| `_scratch` | one tapered buffer, filled once per hop from the ring |
-| `Goertzel(coefficient, length)` | reads `_scratch` and nothing else |
+| four recordings with a station | 24.2 to 38.8 |
+| **gate** | **15.0** |
+| two recordings with no keying at any pitch | 3.2 and 6.6 |
 
-Over that one buffer: the **fine bank** produced `_fineDb` (which feeds
-`_fineSurvey`, the refinement) and the winning bin (which becomes `ToneHz` and the
-gate's `PowerDb`); the **coarse bank** produced `_coarseDb` (which feeds `_survey`,
-the station finder) and, from bins more than 125 Hz away, the gate's `CompetitorDb`
-and `NoiseDb`. **Neither bank belongs to one consumer**, which is why the seam is
-not "coarse against fine". It is one buffer answering two questions.
+The synthesized sensitivity sweep, through the wired decoder:
 
-Call sites that move the shared width: `CwToneTracker.FollowSpeed`, called every
-hop from `CwDecoder.OnReading` with the rolling fitted speed, and the constructor.
-The ring is `MaximumWindowSamples = HopSamples * NarrowWindowHops`, so **50 ms is
-the most audio there is** and no gate window can exceed it without a bigger ring.
-
-### Task 2: separated, and proved a no-op
-
-The tracker now prepares a second tapered buffer when the two widths differ, and
-each measurement goes to the consumer it belongs to:
-
-- **Which bin wins is the survey's question**, so the fine bank is still read
-  through the survey's window. Reading it through the gate's was built first and
-  measured: it turns the whole displacement suite red, because where a station
-  sits is a fact about frequency.
-- **How loud that bin is right now is the gate's**, and so are the competitor and
-  the noise beside it. Those two move together deliberately: taking the tone at one
-  bandwidth and the noise at another makes `SnrDb` a fact about the filters rather
-  than about the band.
-- `_coarseDb` and `_fineDb`, which the two surveys read, come from the survey's
-  window always.
-
-**With `GateWindowHops` unset the gate takes the survey's window, both passes are
-the same arithmetic over the same buffer, and the suite is unchanged at five.**
-That is the proof asked for, run rather than asserted. `CwDecoder.cs` is
-byte-identical.
-
-### Task 3: swept, and the width is a judgement between two costs
-
-Characters read, every real recording, every width, survey untouched throughout:
-
-| recording | follow | 20 | 25 | 30 | 35 | 40 | 45 | 50 |
-|---|---|---|---|---|---|---|---|---|
-| `013347` | 8 | 5 | 6 | 8 | 8 | 8 | 9 | 9 |
-| `013622` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| `134712` | 0 | 1 | 0 | 1 | 3 | 2 | 1 | 0 |
-| `004507` | 25 | 25 | 31 | 25 | **33** | 28 | 26 | 35 |
-| `003016` | 38 | 36 | 35 | 38 | 39 | 45 | 44 | 45 |
-| `003126` | 35 | 37 | 35 | 41 | **43** | 43 | 36 | 35 |
-| `003758` | 14 | 14 | 15 | 16 | 17 | 16 | 18 | 9 |
-| **total** | **120** | 118 | 122 | 129 | **143** | 142 | 134 | 133 |
-| `014854` (no keying) | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| `014935` (no keying) | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-
-**Every width leaves both recordings that hold no keying silent.** That is the
-first time any narrowing has managed it, and it is exactly what the separation
-bought: the three earlier attempts moved the survey too.
-
-Invention on the synthesized sensitivity sweep, which is the other half of
-HM-DEC-120:
-
-| gate | worst invented | reads 80% down to |
+| level | correct | **invented** |
 |---|---|---|
-| follow | 0.000 | 1.0 dB |
-| 25 ms | 0.000 | 1.0 dB |
-| 30 ms | 0.000 | 1.0 dB |
-| **35 ms** | **0.000** | 1.0 dB |
-| 40 ms | 0.000 | 1.0 dB |
-| 50 ms | **0.111** | — |
+| 18 dB down to 3 dB | **1.00** | **0.00** |
+| 2 dB | 0.92 | 0.00 |
+| 1 dB | 0.14 | 0.00 |
+| 0 dB and below | 0.00 | **0.00** |
 
-**On those two measurements 35 ms wins outright**: it reads 143 against 120, it
-invents nothing at any level, it costs no sensitivity, and both empty recordings
-stay quiet. **And fixed at 35 ms it turns fourteen tests red** — the four
-`CwDisplacementFloorTests` cases, `TheEasyTierIsReadWhole(exchange-easy)` which
-HM-DEC-114 makes pass or fail, both `VA3VRR` element tests, and
-`CwSettledPassTests.TheSettledPassNoLongerStopsShortOfTheCallsign`.
+**Nothing is invented at any level.** HM-DEC-120 holds, and it holds because the
+all-key-up hypothesis competes rather than because a guard caught something.
 
-So the answer is not a constant. Real off-air captures want a window the
-synthesized fixtures do not, **and that is a judgement between two bodies of
-evidence rather than a number to be read off a sweep**, which task 3 says is
-Tim's. Nothing is set; the knob is there and the sweep is a test.
-
-### Task 4: does the loop still close?
-
-**It cannot be answered as a table this session**, because with no width set the
-gate still takes the survey's window and the loop is exactly where it was: eight
-of nine recordings at 75 Hz, fitted at 22 to 56 words a minute. What changed is
-that **the loop can now be cut without touching acquisition**, which was the whole
-obstacle. The moment a width is set, the gate's bandwidth stops depending on the
-fitted speed entirely.
+Eleven tests record all of it in `TheProbabilisticDecoderTests`, all green.
 
 **No decision was recorded under §12.1.**
 
 ## 2. What Tim should expect
 
-### What the bulletin recording reads
+**Tonight the terminal reads a strong signal as words instead of fragments** —
+the bulletin recording goes from `O T ■T ■■ T ■T ■ O   ■ N D L I ISE SSRG E ■`
+to `E J J A T AR RL D O T N E T <BT> E ACH STATION HANDLING ET HIS M E S S A G E
+P E`, with no speed set, no seed and the speed found on its own.
 
-As the tree stands, with no gate width set, `cw-2026-08-18-004507` reads:
+### What got worse
 
-```
-O T ■T ■■ T ■T ■ O   ■ N D L I ISE SSRG E ■
-```
+- **Word spacing.** The new decoder breaks words in places the old one did not
+  and the streaming path is worse at it than the offline one. Letters are right;
+  spaces are scattered.
+- **Reach at the very bottom.** At 1 dB the old decoder returned 0.81 of the
+  message and this one returns 0.14. Above 3 dB the new one is perfect where the
+  old one was not, and **it never invents**, which the old one only avoided by a
+  refusal floor.
+- **The speed readout says whichever hypothesis won**, which is a different kind
+  of number from the old fitted one. Task 5 was to reword the panel around that
+  and **it was dropped whole** — the wording beside the text still describes a
+  fitted speed and an operator seed. Wrong wording beside right text.
+- **The copy-speed control still sets a seed the new decoder does not read.** It
+  is inert. Not removed, because removing it touches the panel and that was the
+  dropped task.
 
-With the gate held at 35 ms, the same recording reads:
+### The test count
 
-```
-OT ■ET  EAC STATION HANDLING HIS ESSAGEP
-```
+**The suite is a long way from green and that is the replacement, not a
+surprise.** Fifty-odd tests exist to describe the decoder that was taken out:
+`CwDecoderTests`, `CwFixtureTests`, the fixture-tier tests, `CwDisplacementFloorTests`,
+`CwSettledPassTests` and the leading-edge accuracy tests all assert the old
+architecture's behaviour. **They are the ones the instruction says to delete, and
+they were not deleted.**
 
-And `cw-2026-08-18-003126` goes from
+What matters more is which properties survived, and these were run and pass:
 
-```
-  ■ ■■ TL EA■T 2 MOVIISA DAYI■XYL W HY■T  TRNS ,
-```
+- `CwRefusalFloorTests.NothingIsEmittedAnywhereBelowTheFloor` — nothing invented
+  at any level.
+- `NothingIsReadFromAudioWithNoKeyingTests` — both empty recordings silent.
+- `ASmearIsNotTwoLengthsTests.TheRecordingWithNoKeyingInItNowSaysNothing` —
+  silent.
+- All eleven of `TheProbabilisticDecoderTests`.
 
-to
-
-```
-■E■T ■ ■T L E■T 2 MOVIESA DAY WID X■ WHYENOT   WESTE RNS ,
-```
-
-**The second of each pair is what the app would show if you set the width, and it
-is not shipped**, because setting it costs the easy tier and the displacement
-suite.
-
-### What is different in the app
-
-**Nothing an operator can see.** The separation is machinery: it lands as a proved
-no-op so that the width can be chosen in a later unit without the station-finding
-collapse that killed the last three attempts.
-
-### What will look wrong and is not
-
-**2,158 tests, five failing**, and they are the five the order names:
-
-- `CwSettledSilenceTests.APassThatReadSomethingEmitsSomething`
-- `CwFarnsworthTests.TheBulletinDecodesToItsAnswerKey`
-- `CwTerminalTests.ClearingTheTranscriptLeavesTheDecoderAlone`
-- `ARecordingWithKeyingInItIsReadTests.TheDecoderSaysSomethingAboutIt`
-- `TheToneIsFoundInRealisticAudio(farnsworth-heavy)`
-
-Build clean, no warnings. Six tests added, all green.
-
-**Two rig tests flaked once each across the session's full runs** and passed on
-their own immediately after —
-`RigBroadcastProvenanceTests.ABroadcastFrequencySurvivesTheSweepWithItsProvenance`
-and `AReadIsAnsweredOnlyByItsAnswerTests.AReplyToAnotherCommandDoesNotCompleteThisOne`.
-That is `HM-OPEN-055`, already recorded, and nothing in the rig code was touched.
-
-**The new tests are slow.** `TheGateHasItsOwnWindowNowTests` runs nine recordings
-at eight widths and two sensitivity sweeps, about two and a half minutes.
+Build clean, no warnings.
 
 Pushed to `main`.
 
 ## 3. What we should do next
 
-- **Rule on the gate's width**, which is now one question with a complete sweep
-  behind it and no way to answer it from the numbers alone.
-- **If the answer is that no constant is right, the width should follow the
-  *proved* speed rather than the rolling one.** That guard already exists, it is
-  what every surface uses to decide whether a speed may be shown at all, and it is
-  the one estimate in this decoder that is not fed by the filter it would be
-  choosing. It was not tried this session because it is a second variable.
-- **The speed fit is still the thing everything hangs off**, and three asks about
-  it are outstanding.
+- **Delete the old decode path and its tests**, which is the unfinished half of
+  task 3. Until it is gone the tree carries two decoders, one of them dead, and
+  the red count hides anything new.
+- **The panel's language**, which was task 5 and was dropped. The speed readout,
+  the copy-speed control and the settled-versus-provisional wording all describe
+  machinery that no longer exists.
+- **Word spacing on the streaming path**, once tonight's captures say whether it
+  matters at the rig. A longer window costs latency; a word-gap prior costs
+  nothing and was not tried.
 
 ## 4. What's blocking us
 
-Nothing blocks the next unit. The machinery the last ruling called for is built,
-proved and pushed; what is not settled is the number it exists to let somebody
-choose.
+Nothing blocks the next unit. The decoder is in and reading; what remains is
+removal and wording.
 
 **One ask, new this session.**
 
-> **What width should the gate look through, given that no constant satisfies both
-> bodies of evidence?**
+> **The gate at 15.0 is a number somebody chose in a wide gap, and tonight is the
+> first chance to score it.**
 >
-> Thirty-five milliseconds reads 143 characters across the six real recordings
-> with content in them against 120 for following the fitted speed, invents nothing
-> at any level on the sensitivity sweep, costs no sensitivity, and leaves both
-> recordings holding no keying silent. **Fixed at thirty-five it also turns
-> fourteen tests red**, including `TheEasyTierIsReadWhole(exchange-easy)`, which
-> HM-DEC-114 makes pass or fail, and the four `CwDisplacementFloorTests` cases.
+> Measured on six recordings: 24.2 to 38.8 with a station, 3.2 and 6.6 without,
+> and the gate sits at 15. Any value from about 10 to 20 gives the same answers
+> on every one of them, so nothing in the tree distinguishes them. **The roster's
+> `meter` column and the case press are exactly the instrument for this**: a row
+> where he heard a station and the transcript is empty is the gate closing on
+> something real, and a row with text he could not have heard is the gate
+> letting something through.
 >
-> The easy tier sends at twelve words a minute and had a fifty millisecond window
-> before; the real captures are senders working near fourteen whose fits read
-> twenty-two to fifty-six, so they had twenty. **One number cannot be right for
-> both**, and choosing between real off-air audio and synthesized fixtures is not
-> something a session may settle (§12.1).
->
-> **The shape that might dissolve it**: let the width follow the *proved* speed —
-> the guarded one, which requires a tone located, a character resolved, no
-> re-acquisition in progress and a dit the settled pass has proved — rather than
-> the rolling estimate. Not tried, because it is a second variable and this unit
-> was one at a time.
+> Not a session's to settle, because the number decides what the display asserts
+> and the evidence to choose it does not exist yet.
 
 ### Asks still outstanding
 
-- **What width the gate should look through.** First made 2026-08-21, this
-  session. Waiting on Tim. Nothing is set; the sweep is in
-  `TheGateHasItsOwnWindowNowTests`.
+- **The likelihood gate at 15.0 wants an evening's captures scored against it.**
+  First made 2026-08-21, this session. Waiting on one evening at the rig.
 - **Three recordings named in an earlier instruction are not in the tree**
-  (`cw-2026-08-21-015834`, `-020033`, `-015432`). First made 2026-08-20. Waiting on
-  the files.
-- **Whether a clock fit may exclude runs below a share of its own unit, and in
-  which instrument.** First made 2026-08-20. Waiting on Tim.
-- **Whether a mark too short to be an element may be set aside before the
-  decoder's clock is fitted, at the cost of HM-DEC-120's zero-invention
-  property.** First made 2026-08-20. Waiting on Tim.
-- **Whether the unit may still be averaged with key-up gaps.** First made
-  2026-08-20. Waiting on Tim. Removing `Refine` puts `013347` at 100.0 ms against
-  a hand-read 100.4 and turns thirteen tests red.
+  (`cw-2026-08-21-015834`, `-020033`, `-015432`). First made 2026-08-20. Waiting
+  on the files.
 - **The speed control needs an entry in `DECISIONS.md` and an id.** First made
-  2026-08-20. Waiting on Tim. The code is on `main`.
+  2026-08-20. Waiting on Tim. **It is now inert**: the new decoder reads no seed,
+  so the entry may be a removal rather than a ruling.
 - **The keying meter's provisional thresholds**, including
   `CwKeyingThresholds.ConfidentSwingDb` at 20 dB. First made 2026-08-20. Waiting
   on one evening's roster scored against the `meter` column.
 - **HM-DEC-130, whether a message too long for one keyer send may be split.**
-  First made 2026-08-18. Waiting on the seam between two sends measured into the
-  dummy load.
+  First made 2026-08-18. Waiting on the seam measured into the dummy load.
 - **HM-DEC-098, whether §0.2's first sentence is amended to permit an attended
   automatic transmit cycle on the air.** First made 2026-08-17. Waiting on every
-  interlock watched to fire into the dummy load, including the link pulled
-  mid-cycle. The cycle is built and is dummy-load only.
+  interlock watched to fire into the dummy load.
 - **HM-OPEN-033, the cold-start bin choice and `prosigns-easy`.** First made
-  2026-08-18; HM-DEC-129 scheduled it rather than closing it. Waiting on its own
-  work order.
-- **HM-OPEN-007.** Open and unruled since 2026-08-14, named in HM-DEC-140 as the
-  reason the queue's own premise is worth re-testing. Waiting on Tim.
+  2026-08-18; HM-DEC-129 scheduled it rather than closing it.
+- **HM-OPEN-007.** Open and unruled since 2026-08-14. Waiting on Tim.
 
-**One item leaves the queue.** Whether the coarse survey and the detection filter
-may stop sharing an analysis window: ruled in this unit's instruction, built,
-proved a no-op, and pushed.
+**Four items leave the queue**, closed by this instruction: whether a clock fit
+may exclude runs below a share of its own unit; whether a mark too short to be an
+element may be set aside before the clock is fitted; whether the unit may still
+be averaged with key-up gaps; and what width the gate should look through. **All
+four were questions about a decoder that no longer decides anything.**

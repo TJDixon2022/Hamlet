@@ -98,6 +98,7 @@ public sealed class CwDecoder
     private readonly CwToneTracker _tracker;
     private readonly CwGate _gate = new();
     private readonly CwSpeedEstimator _speed;
+    private readonly CwProbabilisticStream _probabilistic;
     private readonly Action<ToneReading> _onReading;
 
     private readonly StringBuilder _pattern = new();
@@ -181,6 +182,27 @@ public sealed class CwDecoder
         RefusalFloorDb = refusalFloorDb ?? CwConfidenceModel.RefusalFloorDb;
         SampleRate = Math.Max(1_000, sampleRate);
         _tracker = new CwToneTracker(SampleRate, expectedToneHz);
+
+        // **THE ONLY THING THAT READS CHARACTERS NOW.** The old path still runs
+        // its gate and its clock fit, because the tone tracker, the transmit
+        // guard, the element counters and the audio tap all hang off it and the
+        // capture press depends on every one of them. What it no longer does is
+        // put a character on a screen: `CharacterDecoded` and `CharacterSettled`
+        // are raised from here and from nowhere else.
+        _probabilistic = new CwProbabilisticStream(SampleRate);
+        _probabilistic.CharacterSettled += c => CharacterSettled?.Invoke(c);
+        _probabilistic.LeadingEdgeChanged += e =>
+        {
+            LeadingEdge?.Invoke(e);
+
+            // **AND THE OLD EVENT NOW CARRIES THE NEW DECODER'S TIP.** Everything
+            // that used to subscribe to the provisional reading still gets one;
+            // what it gets is this decoder's, because there is no other.
+            foreach (var character in e)
+            {
+                CharacterDecoded?.Invoke(character);
+            }
+        };
         _speed = new CwSpeedEstimator(SampleRate);
         _onReading = OnReading;
         _settled = new CwSettledPass(
@@ -224,12 +246,25 @@ public sealed class CwDecoder
 
     /// <summary>Raised for every character, space and placeholder, in order.</summary>
     /// <remarks>
-    /// **THIS IS THE PROVISIONAL TIP** (HM-DEC-096, phase 1). It arrives as each
-    /// element completes, which is what makes the line live while somebody is
-    /// calling, and it is never the last word. What the transcript keeps comes
-    /// from <see cref="CharacterSettled"/> a few seconds behind.
+    /// **IT IS THE NEW DECODER'S LEADING EDGE, ONE CHARACTER AT A TIME.** It used
+    /// to be the old path's provisional tip, arriving as each element completed.
+    /// Nothing on the old path raises it now. A consumer that wants to replace
+    /// the edge rather than append to it should take <see cref="LeadingEdge"/>
+    /// instead, because the whole tail can change when the next character
+    /// arrives.
     /// </remarks>
     public event Action<CwCharacter>? CharacterDecoded;
+
+    /// <summary>
+    /// Everything inside the decision delay, handed over whole on every read.
+    /// </summary>
+    /// <remarks>
+    /// **IT IS REPLACED, NOT APPENDED TO.** The whole point of deciding late is
+    /// that a letter can be read differently once the next one arrives, so a
+    /// consumer takes this list as the current state of the leading edge rather
+    /// than as news.
+    /// </remarks>
+    public event Action<IReadOnlyList<CwCharacter>>? LeadingEdge;
 
     /// <summary>
     /// Raised for each character the second pass has read and stands behind.
@@ -398,10 +433,18 @@ public sealed class CwDecoder
     {
         Tap.Take(chunk.Samples, chunk.SampleRate);
         _tracker.Process(chunk.Samples, chunk.FirstSampleIndex, _onReading);
+
+        // **AND THE SAME AUDIO GOES TO THE DECODER THAT READS IT** (HM-DEC-091:
+        // one source). The tracker has already moved to wherever the station is
+        // for this chunk, so the pitch handed over is the current one rather than
+        // the one before it.
+        _probabilistic.ToneHz = _tracker.ToneHz;
+        _probabilistic.Process(chunk.Samples);
     }
 
     /// <summary>
-    /// Finish: decode anything still held and emit it.
+    /// Finish: settle anything the new decoder is still holding inside its
+    /// decision delay, and let the old path run its counters out.
     /// </summary>
     /// <remarks>
     /// Called at the end of a fixture, so the last character of a recording is
@@ -410,6 +453,11 @@ public sealed class CwDecoder
     /// </remarks>
     public void Flush()
     {
+        // **THE NEW DECODER FIRST**, because it is the one whose output anybody
+        // reads: everything still inside its decision delay is settled, since
+        // nothing more is coming to revise it.
+        _probabilistic.Flush();
+
         Drain(force: true);
 
         // The recording simply ran out. Whatever silence it ended on is the
@@ -1214,8 +1262,23 @@ public sealed class CwDecoder
             _revisions.Add(new CwRevision(provisional, character, agreed));
         }
 
-        CharacterSettled?.Invoke(character);
+        // **THE OLD PATH NO LONGER PUTS A CHARACTER ON A SCREEN.** Everything
+        // above still runs, because the counters, the revisions record and the
+        // watch all hang off it and the capture sidecar reads all three. What it
+        // does not do is speak: `CharacterSettled` is raised by
+        // `CwProbabilisticStream` and by nothing else.
+        _oldPathSettled++;
     }
+
+    /// <summary>How many characters the old path would have settled.</summary>
+    /// <remarks>
+    /// Kept as a number rather than a transcript, so a session comparing the two
+    /// architectures has something to compare and no operator ever sees the old
+    /// one's reading (§0.0.1).
+    /// </remarks>
+    public int OldPathCharacters => _oldPathSettled;
+
+    private int _oldPathSettled;
 
     /// <summary>
     /// The provisional reading covering the same audio, removed from the queue.
@@ -1306,7 +1369,6 @@ public sealed class CwDecoder
         }
 
         Watch.Observe(tip);
-        CharacterDecoded?.Invoke(tip);
     }
 
     /// <summary>A measured run, waiting for something to be measured against.</summary>

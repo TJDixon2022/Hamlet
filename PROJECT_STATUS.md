@@ -1,9 +1,9 @@
-STATE: COMPLETED
-PHASE: 4 of 4
-BALL: tim
-NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-21T11:00:00-04:00
-NOTE: Windows separated and proved a no-op; 35 ms reads 143 against 120 and costs the easy tier, so the width goes back
+STATE: EXECUTING
+PHASE: 5 of 5
+BALL: code
+NEXT_PASTE: none
+UPDATED: 2026-08-21T12:26:00-04:00
+NOTE: New decoder proven silent and affordable; counting what the replacement left red before reporting
 
 ---
 

@@ -95,6 +95,38 @@ public sealed class CwTranscript
     private DateTime _settledThrough = DateTime.MinValue;
 
     /// <summary>
+    /// Replace the whole leading edge with what the decoder now reads there.
+    /// </summary>
+    /// <param name="characters">Everything inside the decision delay.</param>
+    /// <remarks>
+    /// **THE EDGE IS REVISED, NOT APPENDED TO**, which is the whole point of a
+    /// decoder that decides late: a letter read one way can be read another when
+    /// the next character arrives, because all the boundaries are chosen
+    /// together. So the tip is cleared and rewritten rather than added to, and
+    /// what the operator sees change in front of him is the decoder changing its
+    /// mind rather than a duplicate.
+    /// </remarks>
+    public void OfferEdge(IReadOnlyList<CwCharacter> characters)
+    {
+        ArgumentNullException.ThrowIfNull(characters);
+
+        lock (_gate)
+        {
+            _tip.Clear();
+
+            foreach (var character in characters)
+            {
+                _tip.Enqueue(character);
+
+                while (_tip.Count > LongestTip)
+                {
+                    _tip.Dequeue();
+                }
+            }
+        }
+    }
+
+    /// <summary>
     /// Offer a reading from the leading edge (HM-DEC-096).
     /// </summary>
     /// <param name="character">What the streaming pass read.</param>

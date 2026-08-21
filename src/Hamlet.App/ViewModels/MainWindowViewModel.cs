@@ -3026,7 +3026,11 @@ public partial class MainWindowViewModel : ObservableObject
         // keeps. Wiring only the first is the entire two-stage design being
         // invisible, and showing a provisional reading as though it were final
         // is §0.0 broken by omission.
-        _decoder.CharacterDecoded += Transcript.Offer;
+        // **THE LEADING EDGE IS REPLACED, NOT APPENDED TO.** The decoder decides
+        // late on purpose, so the tail of what it has read can change when the
+        // next character arrives, and the terminal shows that rather than
+        // stacking up every version of it.
+        _decoder.LeadingEdge += Transcript.OfferEdge;
         _decoder.CharacterSettled += Transcript.Settle;
 
         // WHEN SOMETHING LAST CAME THROUGH, which is what the quiet offer waits
