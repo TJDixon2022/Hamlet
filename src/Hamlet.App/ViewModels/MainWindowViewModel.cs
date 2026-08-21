@@ -324,6 +324,12 @@ public partial class MainWindowViewModel : ObservableObject
     private IEnumerable<string> Advisories()
     {
         yield return SuspendedNote;
+
+        // **SECOND ONLY TO HIM SENDING**, because it is the one condition that
+        // stops the band being readable at all and it is one press away from
+        // being fixed.
+        yield return OverflowAdvice;
+
         yield return HandoverNote;
         yield return TipMarkText;
         yield return DecodeNote;
@@ -1481,6 +1487,100 @@ public partial class MainWindowViewModel : ObservableObject
 
     /// <summary>True when there is something worth saying about the signal.</summary>
     public bool HasDecodeNote => DecodeNote.Length > 0;
+
+    /// <summary>
+    /// The receiver's front end, in one chip beside the filter width.
+    /// </summary>
+    /// <remarks>
+    /// <para>**HE WAS LOOKING AT THIS SCREEN WHILE IT HAPPENED.** On 20 metres in
+    /// daylight at S9 with nothing readable, the radio was reporting
+    /// `Overflow: overloading` with preamp 1 on, and Hamlet was reading it every
+    /// quarter of a second and saying nothing. Overload compresses the whole
+    /// passband together, so there is no tone standing above anything and the
+    /// decoder measures amplitude: the ear can still take rhythm out of a
+    /// compressed mess and the decoder cannot.</para>
+    /// <para>**A VALUE NEVER READ SAYS SO** (HM-DEC-009). Not a blank and not a
+    /// default: a panel asserting the preamp is off when the read failed is worse
+    /// than one saying it does not know.</para>
+    /// <para>**AND `RfGain` IS NOT HERE.** The operator has seen it report
+    /// 100 per cent with the knob at noon, and a figure he has already watched
+    /// contradict his own radio does not go on a panel (§0.0).</para>
+    /// </remarks>
+    [ObservableProperty]
+    private string _frontEndText = "preamp unknown · attenuator unknown";
+
+    /// <summary>The preamplifier setting in the radio's own words, or unknown.</summary>
+    [ObservableProperty]
+    private string _preampText = "preamp unknown";
+
+    /// <summary>The attenuator setting in the radio's own words, or unknown.</summary>
+    [ObservableProperty]
+    private string _attenuatorText = "attenuator unknown";
+
+    /// <summary>True while the preamplifier is switched on.</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(OverflowAdvice))]
+    private bool _preampIsOn;
+
+    /// <summary>True while the radio reports its front end overloading.</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(OverflowAdvice))]
+    [NotifyPropertyChangedFor(nameof(AdvisoryNote))]
+    private bool _frontEndIsOverloading;
+
+    /// <summary>What to do about an overloading front end, in terms of a knob.</summary>
+    /// <remarks>
+    /// <para>**"YOUR RECEIVER IS OVERLOADING" IS A DIAGNOSIS AND NOT HELP.** The
+    /// operator this application is for has never thought about front-end
+    /// overload, and what he needs is the name of the button. On the IC-7300 the
+    /// preamp and the attenuator share **P.AMP/ATT**, and each press cycles
+    /// preamp 1, preamp 2 and off (§4, Full Manual `A7292-4EX-6`).</para>
+    /// <para>**THE ATTENUATOR IS MENTIONED ONLY ONCE THE PREAMP IS ALREADY
+    /// OFF**, because advice about a knob already in the right position is noise.
+    /// And nothing here mentions RF gain: Hamlet's read of it is not trusted, so
+    /// it advises on nothing it cannot see.</para>
+    /// <para>**IT SAYS IT ONCE AND LETS IT STAND.** The sentence does not change
+    /// while the condition holds, so nothing blinks or re-announces itself at him
+    /// four times a second.</para>
+    /// </remarks>
+    public string OverflowAdvice => OverflowAdviceFor(FrontEndIsOverloading, PreampIsOn);
+
+    /// <summary>The rule itself, so the test reads it rather than a copy (§0).</summary>
+    /// <param name="overloading">Whether the radio says its front end is overloading.</param>
+    /// <param name="preampIsOn">Whether the preamplifier is switched on.</param>
+    /// <returns>What to say, or "" when there is nothing to say.</returns>
+    internal static string OverflowAdviceFor(bool overloading, bool preampIsOn)
+    {
+        if (!overloading)
+        {
+            return "";
+        }
+
+        return preampIsOn
+            ? "The radio says its front end is overloading, which means the signal "
+              + "coming in is stronger than the receiver can handle and everything "
+              + "in the passband is being squashed together. Nothing will decode "
+              + "until that stops. Press P.AMP/ATT on the front of the radio until "
+              + "the preamp reads off."
+            : "The radio says its front end is overloading, and the preamp is "
+              + "already off, so the next thing to try is the attenuator. Hold "
+              + "P.AMP/ATT for a moment to bring it in. A strong band in daylight "
+              + "can do this on its own.";
+    }
+
+    /// <summary>What the chip beside the filter width reads.</summary>
+    /// <param name="overloading">Whether the radio says its front end is overloading.</param>
+    /// <param name="preamp">The preamplifier in the radio's words, or unknown.</param>
+    /// <param name="attenuator">The attenuator in the radio's words, or unknown.</param>
+    /// <returns>The chip's text.</returns>
+    /// <remarks>
+    /// While it is overloading the chip leads with that and keeps the preamp
+    /// beside it, because the preamp is the thing he is about to change and the
+    /// attenuator is one step further on.
+    /// </remarks>
+    internal static string FrontEndTextFor(
+        bool overloading, string preamp, string attenuator)
+        => overloading ? $"overloading · {preamp}" : $"{preamp} · {attenuator}";
 
     /// <summary>True once the filter width has been read from the radio.</summary>
     public bool HasFilterBandwidth => FilterBandwidthText.Length > 0;
@@ -2941,6 +3041,29 @@ public partial class MainWindowViewModel : ObservableObject
         FilterBandwidthText = state[RigField.FilterBandwidth] is { IsKnown: true } width
             ? width.Text
             : "";
+
+        // **THE RECEIVER'S FRONT END, WHERE HE IS ALREADY LOOKING** (HM-DEC-091).
+        // Hamlet read all three of these from the radio on the evening it could
+        // not hear anything and showed him none of them: he found `Overflow:
+        // overloading` in a text file the next day. A setting standing between
+        // the operator and a contact, which the app already knows about and does
+        // not mention, is squarely in the way of what this application is for.
+        var overflow = state[RigField.Overflow];
+        var preamp = state[RigField.Preamp];
+        var attenuator = state[RigField.Attenuator];
+
+        FrontEndIsOverloading = overflow is { IsKnown: true, Number: 1 };
+
+        PreampText = preamp.IsKnown ? preamp.Text : "preamp unknown";
+        AttenuatorText = attenuator.IsKnown ? attenuator.Text : "attenuator unknown";
+
+        FrontEndText = FrontEndTextFor(
+            FrontEndIsOverloading, PreampText, AttenuatorText);
+
+        // The preamp is the control to reach for first, and the attenuator only
+        // once it is already off: advice about a knob that is already in the
+        // right position is noise.
+        PreampIsOn = preamp is { IsKnown: true } && preamp.Number is 1 or 2;
 
         OnPropertyChanged(nameof(RigState));
         OnPropertyChanged(nameof(TerminalSummary));

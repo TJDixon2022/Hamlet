@@ -754,6 +754,41 @@
                                    Foreground="{StaticResource HmTextMutedBrush}" />
                         <StackPanel Grid.Column="1" Orientation="Horizontal"
                                     Spacing="6">
+                            <!-- THE RECEIVER'S FRONT END, WHERE HE IS ALREADY
+                                 LOOKING WHILE TUNING (HM-DEC-091). On 20 metres
+                                 in daylight at S9 with nothing readable, the
+                                 radio was reporting its front end overloading
+                                 with the preamp on, Hamlet was reading it every
+                                 quarter of a second, and he found out from a text
+                                 file the next day.
+
+                                 Always present, so it appearing cannot move
+                                 anything, and it says "unknown" rather than
+                                 going blank when a read has never been answered.
+                                 The tint carries the same meaning the words do
+                                 and never carries it alone (0.6). -->
+                            <Border BorderThickness="1" CornerRadius="6"
+                                    Padding="8,2"
+                                    ToolTip.Tip="What the radio's own front end is set to. The preamp makes weak signals louder and a strong band can overload it, at which point everything in the passband is squashed together and nothing decodes."
+                                    Background="{StaticResource HmSlateTintBrush}"
+                                    BorderBrush="{StaticResource HmSlateEdgeBrush}"
+                                    IsVisible="{Binding !FrontEndIsOverloading}">
+                                <TextBlock Text="{Binding FrontEndText}"
+                                           FontSize="12"
+                                           Foreground="{StaticResource HmTextMutedBrush}" />
+                            </Border>
+
+                            <Border BorderThickness="1" CornerRadius="6"
+                                    Padding="8,2"
+                                    ToolTip.Tip="The radio says its front end is overloading. Nothing will decode until that stops, and the message under the transcript says which button to press."
+                                    Background="{StaticResource HmAmberTintBrush}"
+                                    BorderBrush="{StaticResource HmAmberEdgeBrush}"
+                                    IsVisible="{Binding FrontEndIsOverloading}">
+                                <TextBlock Text="{Binding FrontEndText}"
+                                           FontSize="12" FontWeight="SemiBold"
+                                           Foreground="{StaticResource HmAmberDeepBrush}" />
+                            </Border>
+
                             <!-- The filter width, because it is the
                                  number that explains a bad decode:
                                  a passband wide open at 3 kHz puts

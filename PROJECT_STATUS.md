@@ -1,9 +1,9 @@
 STATE: COMPLETED
-PHASE: 8 of 8
+PHASE: 5 of 5
 BALL: tim
 NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-21T14:44:00-04:00
-NOTE: Decoding stands down while he sends and says so; the failing set is identical, 55 before and after
+UPDATED: 2026-08-21T15:42:00-04:00
+NOTE: Overflow now says which button to press; RfGain left off the panel until its reading is explained
 
 ---
 

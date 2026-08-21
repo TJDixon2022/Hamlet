@@ -4,6 +4,72 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-148
+date: 2026-08-21
+refs: src/Hamlet.App/ViewModels/MainWindowViewModel.cs, src/Hamlet.App/Views/MainWindow.axaml, tests/Hamlet.App.Tests/ViewModels/TheFrontEndIsOnThePanelTests.cs, HM-DEC-009, HM-DEC-091, HM-DEC-056
+---
+
+**Hamlet shows the receive path's own settings and says what they mean, and does
+not write them. Where it can name the control standing between the operator and a
+readable signal, it does.**
+
+**IT KNEW AND IT DID NOT SAY.** On 20 metres in daylight at S9 with nothing
+readable, the capture sidecar carried `Overflow: overloading`, `Preamp: preamp 1`
+and `RfGain: 100%`. Hamlet was reading the overflow flag from the radio **four
+times a second** and showing him none of it; he found the answer in a text file
+the next day. Measured on that recording, the front end was compressing the whole
+passband together: 16 to 17 dB of envelope swing at **every** pitch from 450 to
+700 Hz with 300 to 900 spurious sub-20 ms runs at all of them, where a real
+station gives 22 to 24 at one pitch and noise elsewhere.
+
+**THE EAR AND THE DECODER DO NOT FAIL THE SAME WAY.** He could hear dits and dahs,
+because a person takes pitch and rhythm out of a compressed mess. The decoder
+measures amplitude, and amplitude is what overload destroys. Both Hamlet and an
+independent decoder read nothing from that file, correctly. **The decoder was not
+the fault and the audio was not the fault; a switch on the front of the radio
+was.**
+
+**THE POINT OF THIS APPLICATION IS TO FIND CW THE OPERATOR CANNOT YET READ AND GET
+HIM TALKING TO IT.** A receiver setting standing in the way of that, which the app
+already reads and does not mention, is the same defect as a decode with no signal
+behind it: something Hamlet knows and does not say.
+
+**A DIAGNOSIS IS NOT HELP.** "Your receiver is overloading" tells an operator who
+has never thought about front-end overload nothing he can act on. The name of the
+button does. On the IC-7300 the preamp and the attenuator share **P.AMP/ATT**, and
+each press cycles preamp 1, preamp 2 and off (§4). **The attenuator is mentioned
+only once the preamp is already off**, because advice about a knob already in the
+right position is noise.
+
+**READ ONLY, AND THAT IS THE RULING RATHER THAN A LIMITATION.** Receive-path
+settings radiate nothing, so a write would be safe in the narrow sense §0.2 cares
+about. It would still be the application changing his radio underneath him, and
+HM-DEC-056's mode-follow writing unprompted cost an evening. **A later unit may
+offer a button he presses. This one does not write.**
+
+**A VALUE NEVER READ SAYS SO** (HM-DEC-009). Not a blank and not a default: a
+panel asserting the preamp is off when the read failed is worse than one saying it
+does not know.
+
+**AND `RfGain` IS NOT ON THE PANEL.** The operator has watched it report 100 per
+cent with the knob at noon. Until that is explained the figure is not shown and
+nothing advises on it, because a number he has already seen contradict his own
+radio is worth less than silence. **The leading explanation is not a fault at
+all**: the IC-7300's RF/SQL knob can be configured as squelch only
+(`1A 05 0025`, §4), and in that position the RF gain really is held at maximum.
+Hamlet has a write for that setting and no read, so it cannot currently tell.
+
+**Rejected: Hamlet turning the preamp off itself.** Tim's, and the reason is
+HM-DEC-056's: the app changing the radio without being asked.
+
+**Rejected: putting this on the diagnostics screen.** He would have to go and find
+it, and the moment it matters is the moment he is tuning across a band wondering
+why nothing decodes.
+
+**Rejected: inferring overload from the audio.** The radio reports it (HM-DEC-091),
+and a second source for one fact is the fault that ruling exists for.
+
+---
 id: HM-DEC-147
 date: 2026-08-21
 refs: src/Hamlet.RadioEngine/Cw/CwDecoder.cs, src/Hamlet.App/ViewModels/MainWindowViewModel.cs, tests/Hamlet.RadioEngine.Tests/Cw/HamletDoesNotDecodeYourOwnSendingTests.cs, HM-DEC-009, HM-DEC-091
