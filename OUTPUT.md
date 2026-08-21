@@ -139,12 +139,14 @@ P E`, with no speed set, no seed and the speed found on its own.
 
 ### The test count
 
-**The suite is a long way from green and that is the replacement, not a
-surprise.** Fifty-odd tests exist to describe the decoder that was taken out:
-`CwDecoderTests`, `CwFixtureTests`, the fixture-tier tests, `CwDisplacementFloorTests`,
-`CwSettledPassTests` and the leading-edge accuracy tests all assert the old
-architecture's behaviour. **They are the ones the instruction says to delete, and
-they were not deleted.**
+**2,169 tests, 55 failing**, against five before the session started. That is
+the replacement, not a surprise: fifty of the fifty-five exist to describe the
+decoder that was taken out. `CwDecoderTests` accounts for twenty-three,
+`CwFixtureTests` nine, the fixture-tier tests seven, `CwDisplacementFloorTests`
+six and `CwSettledPassTests` two, and all of them assert the old architecture's
+behaviour. **They are the ones the instruction says to delete, and they were not
+deleted.** Three of the rest are the rig tests of `HM-OPEN-055`, which flake and
+pass on a rerun.
 
 What matters more is which properties survived, and these were run and pass:
 

@@ -1,9 +1,9 @@
-STATE: EXECUTING
+STATE: COMPLETED
 PHASE: 5 of 5
-BALL: code
-NEXT_PASTE: none
-UPDATED: 2026-08-21T12:26:00-04:00
-NOTE: New decoder proven silent and affordable; counting what the replacement left red before reporting
+BALL: tim
+NEXT_PASTE: OUTPUT.md -> Claude Web
+UPDATED: 2026-08-21T13:06:00-04:00
+NOTE: New decoder reads the bulletin as words and stays silent on an empty band; the old path's tests are still red
 
 ---
 
