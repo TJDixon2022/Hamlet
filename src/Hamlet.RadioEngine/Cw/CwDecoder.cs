@@ -386,32 +386,29 @@ public sealed class CwDecoder
             _hasFollowed = true;
         }
 
-        // **THE OLD DECODER FED THE TRACKER TWO THINGS AND NEITHER HAS AN
-        // HONEST SUPPLIER NOW.** Both are recorded here rather than filled with
-        // something plausible, because a survey quietly driven by a made-up
-        // number is worse than one driven by nothing (§0.0).
+        // **STOPGAP, AND IT IS COMING OUT.** `MidCharacter` is HM-DEC-096 phase
+        // 3's interlock: the tracker may not jump to another part of the band
+        // while a character is part-read, because the rest of that character is
+        // then assembled from a different station and comes out as a letter
+        // nobody sent with clean timing. The removed gate set it from the
+        // elements it had in flight, and with nothing setting it the decoder
+        // invented 0.11 of the message at eighteen decibels where it had invented
+        // none — HM-DEC-120 broken, on the air, tonight.
         //
-        // `MidCharacter` is HM-DEC-096 phase 3's interlock: the tracker may not
-        // jump to another part of the band while a character is part-read,
-        // because the rest of that character is then assembled from a different
-        // station. It was set from the elements the gate had in flight. The
-        // working decoder reads a twelve second window retrospectively and has no
-        // live notion of a character in progress, and the tracker's own keying
-        // verdict takes three seconds to form, which is exactly the stretch where
-        // the damage happens. **Measured, not guessed**: with it unset the
-        // sensitivity sweep returns 0.81 of the message right and 0.11 wrong at
-        // eighteen decibels, where it returned all of it and nothing wrong.
-        //
-        // `FollowSpeed` chose the survey's analysis window from the fitted speed.
-        // Feeding it the working decoder's own speed was built and measured and
-        // is not obviously right either: that speed is slower than the old clock
-        // fit's, so the window comes out longer, and it cost the tone on a low
-        // duty cycle fixture and two retune classifications while fixing a
-        // similar number elsewhere. Left uncalled, the survey stays at its
-        // acquiring width.
-        //
-        // What replaces either is a decision about what the display asserts, and
-        // those are Tim's without exception (§12.1). Both are in the report.
+        // **A CONSTANT HOLDS EVERY MOVE, NOT ONLY THE ONES INSIDE A CHARACTER**,
+        // so it costs every legitimate retune and cannot stay. It is here because
+        // an evening of hand tuning with a decoder that does not invent is worth
+        // more than one that retunes and does, and the honest answer is the next
+        // task in the same unit.
+        _tracker.MidCharacter = true;
+
+        // `FollowSpeed` chose the survey's analysis window from the fitted speed
+        // and went with the same decoder. Feeding it the working decoder's own
+        // speed was built and measured and is not obviously right either: that
+        // speed is slower than the old clock fit's, so the window comes out
+        // longer, and it cost the tone on a low duty cycle fixture and two retune
+        // classifications while fixing a similar number elsewhere. Left uncalled,
+        // the survey stays at its acquiring width. It is not this unit's (§12.6).
 
         // **HOW FAR THE TONE STANDS ABOVE THE BAND WHILE IT IS KEYED**, which is
         // not the same question as how far it stands above it on average, and the
