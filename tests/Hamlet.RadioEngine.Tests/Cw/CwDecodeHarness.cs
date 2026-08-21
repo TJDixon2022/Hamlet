@@ -8,13 +8,10 @@ namespace Hamlet.RadioEngine.Tests.Cw;
 /// <summary>What a decode run produced, with everything needed to judge it.</summary>
 /// <param name="Characters">Every character in order, word gaps included.</param>
 /// <param name="Text">The transcript as the operator would read it.</param>
-/// <param name="State">What the decoder was working from when it finished.</param>
-/// <param name="Note">What the decoder noticed about the signal.</param>
+/// <param name="Report">What was arriving while it ran.</param>
 internal sealed record CwDecodeResult(
     IReadOnlyList<CwCharacter> Characters,
     string Text,
-    CwDecoderState State,
-    CwNote Note,
     CwDecodeReport Report = default)
 {
     /// <summary>Characters only, dropping the word gaps.</summary>
@@ -31,8 +28,12 @@ internal sealed record CwDecodeResult(
             ? 0
             : (double)Letters.Count(c => c.IsUnreadable) / Letters.Count;
 
-    /// <summary>The speed the decoder settled on.</summary>
-    public int WordsPerMinute => State.WordsPerMinute;
+    /// <summary>The speed the decoder settled on, or nought.</summary>
+    /// <remarks>
+    /// **NAMED BY THE ONE DECODER THERE IS.** It used to come from the run-length
+    /// estimator's own state record, which went with that decoder.
+    /// </remarks>
+    public int WordsPerMinute { get; init; }
 }
 
 /// <summary>
@@ -53,11 +54,8 @@ internal static class CwDecodeHarness
     /// <returns>The result.</returns>
     public static CwDecodeResult Decode(
         CwSignalRequest request,
-        double expectedToneHz = CwSignal.DefaultToneHz,
-        double? refusalFloorDb = null,
-        int? gateWindowHops = null)
-        => Decode(
-            CwSignal.Generate(request), expectedToneHz, refusalFloorDb, gateWindowHops);
+        double expectedToneHz = CwSignal.DefaultToneHz)
+        => Decode(CwSignal.Generate(request), expectedToneHz);
 
     /// <summary>Decode audio.</summary>
     /// <param name="audio">The audio.</param>
@@ -65,13 +63,10 @@ internal static class CwDecodeHarness
     /// <returns>The result.</returns>
     public static CwDecodeResult Decode(
         MonoAudio audio,
-        double expectedToneHz = CwSignal.DefaultToneHz,
-        double? refusalFloorDb = null,
-        int? gateWindowHops = null)
+        double expectedToneHz = CwSignal.DefaultToneHz)
     {
-        var decoder = new CwDecoder(audio.SampleRate, expectedToneHz, refusalFloorDb);
+        var decoder = new CwDecoder(audio.SampleRate, expectedToneHz);
 
-        decoder.Tracker.GateWindowHops = gateWindowHops;
         var characters = new List<CwCharacter>();
         decoder.CharacterDecoded += characters.Add;
 
@@ -87,7 +82,9 @@ internal static class CwDecodeHarness
         }
 
         return new CwDecodeResult(
-            characters, text.ToString().Trim(), decoder.State, decoder.Watch.Note,
-            decoder.Report);
+            characters, text.ToString().Trim(), decoder.Report)
+        {
+            WordsPerMinute = (int)Math.Round(decoder.Reading.WordsPerMinute),
+        };
     }
 }

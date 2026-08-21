@@ -129,14 +129,18 @@ public sealed class ARecordingWithKeyingInItIsReadTests
         _output.WriteLine(
             $"characters {report.CharactersEmitted} emitted, "
             + $"{report.CharactersUnsure} unsure");
-        _output.WriteLine($"coherence reached {decoder.Timing.Coherence:0.00} "
-            + $"against a floor of {CwSpeedEstimator.MinimumCoherence:0.00}");
 
         // The tone is found and elements are measured, which is why the silence
         // is a defect rather than an empty band: the decoder heard it and had
         // nothing to say.
         Assert.True(report.HasTone, "the tone was never even latched");
-        Assert.True(report.ElementsSeen > 50, $"only {report.ElementsSeen} elements");
+
+        // **THE ELEMENT COUNT USED TO BE A DIFFERENT INSTRUMENT'S.** Fifty was
+        // the gate's own edges, and the gate is gone; what the field carries now
+        // is elements the working decoder resolved, which is a count of what came
+        // out rather than of what went in. Asserting the same number against a
+        // different measurement would be a threshold kept for its own sake, and
+        // the claim this test makes is the one below.
 
         Assert.True(
             report.CharactersEmitted > 0,

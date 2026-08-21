@@ -197,7 +197,7 @@ public sealed class CwAdjudicationTests
 
         decoder.Process(new AudioChunk(0, audio.SampleRate, audio.Samples.AsSpan(0, half)));
 
-        var before = decoder.State;
+        var before = decoder.Reading;
 
         Assert.True(seen > 0, "nothing had been decoded before the clear");
 
@@ -210,10 +210,10 @@ public sealed class CwAdjudicationTests
 
         decoder.Flush();
 
-        var after = decoder.State;
+        var after = decoder.Reading;
 
-        _output.WriteLine($"before: {before.WordsPerMinute} wpm at {before.ToneHz:0} Hz");
-        _output.WriteLine($"after : {after.WordsPerMinute} wpm at {after.ToneHz:0} Hz");
+        _output.WriteLine($"before: {before.WordsPerMinute:0} wpm at {before.ToneHz:0} Hz");
+        _output.WriteLine($"after : {after.WordsPerMinute:0} wpm at {after.ToneHz:0} Hz");
         _output.WriteLine($"{during} characters before, {seen} in all");
 
         Assert.True(seen > during, "the decoder stopped reading part-way through");

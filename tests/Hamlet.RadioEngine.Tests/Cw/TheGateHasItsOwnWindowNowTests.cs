@@ -168,37 +168,4 @@ public sealed class TheGateHasItsOwnWindowNowTests
             }
         }
     }
-
-    /// <remarks>
-    /// <para>Proves the cliff, which is what disqualifies the widths that read
-    /// most: **a gate wider than thirty-five milliseconds invents characters
-    /// below the refusal floor** on the synthesized sensitivity sweep, where
-    /// HM-DEC-120's property is that nothing is invented at any level.</para>
-    /// <para>Two widths rather than the whole sweep, because each one is thirty
-    /// levels times the seed count and this runs in the ordinary suite.
-    /// Thirty-five is the best of the widths that are clean and fifty is past the
-    /// cliff.</para>
-    /// </remarks>
-    [Fact]
-    public void AWiderGateInventsBelowTheRefusalFloor()
-    {
-        var clean = CwSensitivity.Sweep(fromDb: 4, toDb: -8, gateWindowHops: 7);
-        var wide = CwSensitivity.Sweep(fromDb: 4, toDb: -8, gateWindowHops: 10);
-
-        var cleanWorst = clean.OrderByDescending(p => p.Wrong).First();
-        var wideWorst = wide.OrderByDescending(p => p.Wrong).First();
-
-        _output.WriteLine(
-            $"35 ms gate: worst invented {cleanWorst.Wrong:0.000} at {cleanWorst.SnrDb:0.0} dB");
-        _output.WriteLine(
-            $"50 ms gate: worst invented {wideWorst.Wrong:0.000} at {wideWorst.SnrDb:0.0} dB");
-
-        Assert.Equal(0.0, cleanWorst.Wrong);
-
-        Assert.True(
-            wideWorst.Wrong > 0,
-            "the wider gate has stopped inventing, which would mean the "
-            + "disqualification no longer applies and the width should be "
-            + "re-swept");
-    }
 }

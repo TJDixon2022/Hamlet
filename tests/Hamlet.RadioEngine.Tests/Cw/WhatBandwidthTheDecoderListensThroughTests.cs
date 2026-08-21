@@ -178,7 +178,7 @@ public sealed class WhatBandwidthTheDecoderListensThroughTests
 
             _output.WriteLine(
                 $"{Path.GetFileNameWithoutExtension(path),-28} "
-                + $"fitted {decoder.Timing.WordsPerMinute,3} wpm, mostly "
+                + $"fitted {decoder.Reading.WordsPerMinute,3:0} wpm, mostly "
                 + $"{widestMs:0} ms ({1500 / widestMs:0} Hz), "
                 + $"{hops[widest] * 100.0 / count:0}% of the time");
 

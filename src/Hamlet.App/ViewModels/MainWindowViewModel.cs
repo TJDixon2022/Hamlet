@@ -330,12 +330,8 @@ public partial class MainWindowViewModel : ObservableObject
         // being fixed.
         yield return OverflowAdvice;
 
-        yield return HandoverNote;
-        yield return TipMarkText;
-        yield return DecodeNote;
         yield return CaptureNote;
         yield return DecoderStory;
-        yield return CeilingNote;
     }
 
     /// <summary>What the terminal says while the operator is sending.</summary>
@@ -359,14 +355,6 @@ public partial class MainWindowViewModel : ObservableObject
     [NotifyPropertyChangedFor(nameof(TerminalSpeedText))]
     [NotifyPropertyChangedFor(nameof(HasDetectedSpeed))]
     private int _detectedWpm;
-
-    /// <summary>
-    /// What the decoder has noticed about the signal, in plain words, or empty.
-    /// </summary>
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(HasDecodeNote))]
-    [NotifyPropertyChangedFor(nameof(TerminalSummary))]
-    private string _decodeNote = "";
 
     /// <summary>Whether the decoder is listening to anything.</summary>
     [ObservableProperty]
@@ -1393,9 +1381,6 @@ public partial class MainWindowViewModel : ObservableObject
     /// </remarks>
     public CwTranscript Transcript { get; } = new();
 
-    /// <summary>True when there is something worth saying about the signal.</summary>
-    public bool HasDecodeNote => DecodeNote.Length > 0;
-
     /// <summary>
     /// The receiver's front end, in one chip beside the filter width.
     /// </summary>
@@ -1576,93 +1561,13 @@ public partial class MainWindowViewModel : ObservableObject
     /// <summary>True when the leading edge is ahead of the settled pass.</summary>
     public bool HasTip => TipText.Length > 0;
 
-    /// <summary>
-    /// True when nothing is coming along behind the leading edge.
-    /// </summary>
-    /// <remarks>
-    /// The settled pass refuses below its own working limit rather than copying
-    /// into the band where it is half wrong (HM-DEC-097), so this is an ordinary
-    /// state and not an error. What it may never be is invisible: text nothing
-    /// confirmed and text a second pass stood behind cannot look the same
-    /// (§0.0).
-    /// </remarks>
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(TipMarkText))]
-    private bool _tipIsUnstable;
-
-    /// <summary>What to say about an unconfirmed leading edge, or empty.</summary>
-    public string TipMarkText
-        => TipIsUnstable
-            ? "nothing is coming along behind this to confirm it"
-            : "";
-
-    /// <summary>
-    /// Said when the settled window hits its ceiling, or empty (HM-DEC-096).
-    /// </summary>
-    /// <remarks>
-    /// **THE CEILING ANNOUNCES ITSELF RATHER THAN BEING CONCEALED.** At slow
-    /// speeds thirty elements want more audio than the window is allowed to
-    /// hold, so the fit is made over less than the speed asked for and is
-    /// weaker than it would otherwise be. Saying nothing would let a worse
-    /// reading pass for an ordinary one.
-    /// </remarks>
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(HasCeilingNote))]
-    private string _ceilingNote = "";
-
-    /// <summary>True when the window ceiling is binding.</summary>
-    public bool HasCeilingNote => CeilingNote.Length > 0;
-
-    /// <summary>How many revisions the decoder has recorded.</summary>
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(HasRevisions))]
-    [NotifyPropertyChangedFor(nameof(RevisionsText))]
-    private int _revisionCount;
-
-    /// <summary>True when there is a revision log worth keeping.</summary>
-    public bool HasRevisions => RevisionCount > 0;
-
-    /// <summary>How many times the second pass disagreed, in words.</summary>
-    public string RevisionsText
-    {
-        get
-        {
-            if (RevisionCount == 0)
-            {
-                return "";
-            }
-
-            // **A COUNT WITH NO DENOMINATOR IS NOT A MEASUREMENT.** "The second
-            // pass has changed its mind about 27 characters" told nobody
-            // whether 27 was ordinary or alarming, which is the same fault as a
-            // meter with no scale on it: it looks like information and cannot be
-            // acted on (§0.0).
-            //
-            // Out of how many is the whole of it. A second pass that revises one
-            // reading in twenty is working; one revising half of them is reading
-            // different audio from the first.
-            if (SettledCount <= 0)
-            {
-                return $"the second pass has changed its mind about "
-                    + $"{RevisionCount} character{(RevisionCount == 1 ? "" : "s")}";
-            }
-
-            var share = (double)RevisionCount / SettledCount;
-
-            return $"the second pass has changed its mind about {RevisionCount} "
-                + $"of {SettledCount} characters, which is about "
-                + $"{share:P0} of what it has read";
-        }
-    }
-
-    /// <summary>How many characters the settled pass has read.</summary>
-    /// <remarks>
-    /// The denominator for the revision count, and it is kept beside it so the
-    /// two cannot drift into describing different stretches of audio.
-    /// </remarks>
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(RevisionsText))]
-    private int _settledCount;
+    // **THE SETTLED PASS'S OWN READOUTS WENT WITH IT.** The tip mark, the
+    // ceiling note and the revision count were all one pass reporting on
+    // another: whether the second was refusing behind the leading edge, whether
+    // its window had hit the ceiling thirty elements wanted, and how often it
+    // changed the first one's mind. There is one pass now, and a line describing
+    // a decoder that is gone is the fault this removal exists to end
+    // (HM-DEC-091).
 
     /// <summary>What the terminal shows before anything has been decoded.</summary>
     public string TerminalIdleText
@@ -1690,15 +1595,13 @@ public partial class MainWindowViewModel : ObservableObject
 
             if (Transcript.IsEmpty)
             {
-                return HasDecodeNote ? "nothing decoded yet" : "listening";
+                return "listening";
             }
 
             var speed = DetectedWpm > 0 ? $"{DetectedWpm} WPM · " : "";
             var tail = Transcript.Tail(28);
 
-            return HasDecodeNote
-                ? $"{speed}{tail} · signal is hard going"
-                : $"{speed}{tail}";
+            return $"{speed}{tail}";
         }
     }
 
@@ -3245,7 +3148,6 @@ public partial class MainWindowViewModel : ObservableObject
 
         IsDecoding = false;
         DetectedWpm = 0;
-        DecodeNote = "";
         AudioInputName = "";
         Transcript.Clear();
         OnPropertyChanged(nameof(TerminalSummary));
@@ -3264,11 +3166,7 @@ public partial class MainWindowViewModel : ObservableObject
         // ONE GUARDED ANSWER (HM-DEC-090). Zero means nothing has earned the
         // right to name a speed, and every surface that shows one reads this.
         DetectedWpm = _decoder.WordsPerMinute ?? 0;
-        DecodeNote = _decoder.Watch.NoteText;
 
-        // **THE TWO-STAGE DECODE, ON SCREEN** (HM-DEC-096). All of this existed
-        // and was tested and none of it was rendered, so the design the decoder
-        // was rebuilt around was invisible to the person it was rebuilt for.
         // **THE RADIO SAYS WHETHER IT IS TRANSMITTING, AND THE DECODER IS TOLD**
         // (HM-DEC-091). Hamlet has read `1C 00` for months, the diagnostics
         // screen has shown it correctly for months, and nothing consumed it: the
@@ -3285,33 +3183,17 @@ public partial class MainWindowViewModel : ObservableObject
 
         DecodingIsSuspended = _decoder.DecodingSuspended;
 
+        // **THE SETTLED-PASS READOUTS WENT WITH THE SETTLED PASS.** The tip
+        // mark, the ceiling note, the handover note and the revisions count all
+        // described a second pass overtaking a first, and there is one pass now.
+        // A readout describing a decoder that no longer exists is the defect
+        // removing it was meant to end (HM-DEC-091).
+        //
+        // What survives of them is the one fact that is still true and still
+        // useful: the decoder will not name a speed while its window straddles
+        // two stations, and the panel says so rather than going quietly blank.
         SpeedIsReacquiring = _decoder.SpeedIsReacquiring;
         TipText = Transcript.TipText;
-        TipIsUnstable = _decoder.SettledIsRefusing;
-
-        var settled = _decoder.SettledState;
-
-        // The window wanted to be longer than it is allowed to be, so the fit is
-        // weaker than the speed asked for and the display says so rather than
-        // letting a worse reading pass for an ordinary one.
-        CeilingNote = settled.WindowWasCapped
-            ? "this is slow enough that Hamlet cannot listen to as much at once "
-              + "as it would like, so it is reading from a shorter stretch than "
-              + "usual"
-            : "";
-
-        // Both of these mean somebody else started transmitting, which is the
-        // most useful thing the decoder knows and the thing it never said.
-        HandoverNote = settled.SpeedChanged
-            ? "the speed changed here, which usually means somebody else has "
-              + "started sending"
-            : settled.Refusal == SettledRefusal.ClockLost
-                ? "the rhythm stopped fitting, which usually means somebody else "
-                  + "has started sending"
-                : "";
-
-        RevisionCount = _decoder.Revisions.Count;
-        SettledCount = Transcript.CharacterCount;
 
         // WHAT IS ARRIVING, WHETHER OR NOT ANYTHING DECODES (HM-DEC-088). A
         // strong signal that will not resolve and an empty band used to produce
@@ -3636,76 +3518,6 @@ public partial class MainWindowViewModel : ObservableObject
             AppEvents.AudioCaptured(_telemetry, 0, CapturedHz, worked: false);
         }
     }
-
-    /// <summary>
-    /// Write out where the second pass disagreed with the first (HM-DEC-096).
-    /// </summary>
-    /// <remarks>
-    /// <para>**IN MEMORY AND EXPORTABLE, NEVER WRITTEN ON ITS OWN.** A log that
-    /// grew on disk unasked would need a retention policy nobody has designed,
-    /// and this is diagnostic rather than a record of the air. So it is kept for
-    /// the session and written only when somebody asks for it.</para>
-    /// <para>It is the most direct evidence there is about whether the second
-    /// pass is earning its place: every row is one character the leading edge
-    /// read one way and the settled pass read another, with the timing behind
-    /// both (§0.0.1).</para>
-    /// </remarks>
-    [RelayCommand]
-    private void ExportRevisions()
-    {
-        var revisions = _decoder?.Revisions;
-
-        if (revisions is null || revisions.Count == 0)
-        {
-            StatusText = "The second pass has not changed its mind about anything "
-                + "yet, so there is nothing to write.";
-            return;
-        }
-
-        try
-        {
-            var folder = Path.Combine(SettingsStore.DataFolder, "captures");
-            Directory.CreateDirectory(folder);
-
-            var stamp = DateTime.UtcNow.ToString("yyyy-MM-dd-HHmmss");
-            var path = Path.Combine(folder, $"revisions-{stamp}.txt");
-
-            var lines = new List<string>
-            {
-                "What the second pass changed its mind about.",
-                "",
-                "Each row is one character the leading edge read one way and the",
-                "settled pass read another, off the same audio. Nothing here is a",
-                "claim about what any station sent (CLAUDE.md 0.0).",
-                "",
-                "at        first  settled  agreed  first score  settled score",
-            };
-
-            foreach (var revision in revisions)
-            {
-                lines.Add(string.Format(
-                    CultureInfo.InvariantCulture,
-                    "{0,7:0.00}s  {1,-5}  {2,-7}  {3,-6}  {4,11:0.00}  {5,13:0.00}",
-                    revision.Settled.At.TotalSeconds,
-                    revision.Provisional.Text,
-                    revision.Settled.Text,
-                    revision.Agreed ? "yes" : "no",
-                    revision.Provisional.Score,
-                    revision.Settled.Score));
-            }
-
-            File.WriteAllLines(path, lines);
-
-            StatusText = $"Wrote {revisions.Count} revisions to {path}.";
-        }
-        catch (Exception)
-        {
-            // A log that cannot be written loses a diagnostic and nothing else
-            // (§8).
-            StatusText = "Hamlet could not write the revision log.";
-        }
-    }
-
     /// <summary>How much audio had arrived when the last capture was written.</summary>
     private long _lastCaptureSamples = -1;
 
@@ -4165,9 +3977,10 @@ public partial class MainWindowViewModel : ObservableObject
         }
 
         var report = decoder.Report;
-        var rolling = decoder.Timing.IsReady
-            ? $"the rolling estimate was {decoder.Timing.WordsPerMinute} WPM"
-            : "the rolling estimate had too few marks to give one";
+        var rolling = decoder.Reading.WordsPerMinute > 0
+            ? $"the decoder's own best hypothesis was "
+              + $"{decoder.Reading.WordsPerMinute:0} WPM"
+            : "the decoder had no hypothesis worth naming";
 
         if (!report.HasTone)
         {

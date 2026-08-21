@@ -51,7 +51,6 @@ public sealed class CwTwoStationTests
         var speedChanges = 0;
         var clockLosses = 0;
         var lastRetunes = 0;
-        var wasRead = true;
 
         decoder.CharacterDecoded += c => tip.Add(c);
 
@@ -61,6 +60,7 @@ public sealed class CwTwoStationTests
         // Fed in quarter-second bites so the transitions can be watched as they
         // happen rather than inferred from the end state.
         var chunk = audio.SampleRate / 4;
+        var lastWpm = 0.0;
 
         for (var at = 0; at < audio.Samples.Length; at += chunk)
         {
@@ -77,19 +77,22 @@ public sealed class CwTwoStationTests
                 lastRetunes = decoder.Tracker.Retunes;
             }
 
-            var settled = decoder.SettledState;
+            // **THE SETTLED PASS'S OWN SIGNALS WENT WITH IT.** A speed change
+            // and a lost clock were how the second pass said somebody else had
+            // started sending; there is one pass now and the tracker's own move
+            // is the signal that survives. The counts stay in the shape of the
+            // run so the tests that read the tracker still read it.
+            var reading = decoder.Reading;
 
-            if (settled.SpeedChanged)
+            if (lastWpm > 0 && Math.Abs(reading.WordsPerMinute - lastWpm) >= 4)
             {
                 speedChanges++;
             }
 
-            if (wasRead && settled.Refusal == SettledRefusal.ClockLost)
+            if (reading.WordsPerMinute > 0)
             {
-                clockLosses++;
+                lastWpm = reading.WordsPerMinute;
             }
-
-            wasRead = settled.Refusal != SettledRefusal.ClockLost;
         }
 
         decoder.Flush();
@@ -218,7 +221,7 @@ public sealed class CwTwoStationTests
         var wpm = run.Decoder.WordsPerMinute;
 
         _output.WriteLine($"final speed {wpm?.ToString() ?? "none"} wpm, "
-            + $"settled dit {run.Decoder.SettledState.DitMilliseconds:0} ms");
+            + $"reading {run.Decoder.Reading.WordsPerMinute:0} wpm");
 
         if (wpm is null)
         {
