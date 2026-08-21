@@ -103,6 +103,26 @@ public sealed class CwProbabilisticStream
     /// <summary>What the last read made of the window.</summary>
     public CwProbabilisticResult Last { get; private set; } = CwProbabilisticResult.None;
 
+    /// <summary>
+    /// True when the last read left the winning path inside a character.
+    /// </summary>
+    /// <remarks>
+    /// **THE INTERLOCK'S QUESTION, ANSWERED BY THE PATH ITSELF** (HM-DEC-096
+    /// phase 3). The decoder chooses where every element and every character
+    /// begins and ends, over the whole window up to the newest audio it has, so
+    /// the last segment of that choice says what the newest audio is inside of.
+    /// Nothing is inferred and no threshold is formed.
+    /// <para>**IT IS AS OLD AS THE LAST READ AND NO OLDER**, which is half a
+    /// second, and the tracker asks the question on the same half second, so the
+    /// answer is never more than one survey behind the question. The one second
+    /// decision delay does not apply: that governs which characters are settled
+    /// enough to emit, not how far the path reaches.</para>
+    /// </remarks>
+    public bool InsideCharacter => Last.EndsInsideCharacter;
+
+    /// <summary>How many hops have gone by since that answer was worked out.</summary>
+    public int HopsSinceAnswer => _hopsSinceRead;
+
     /// <summary>How many characters have been settled.</summary>
     public long SettledCharacters => _settledCount;
 

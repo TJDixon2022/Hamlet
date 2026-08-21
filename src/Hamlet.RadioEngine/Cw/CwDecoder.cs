@@ -323,6 +323,14 @@ public sealed class CwDecoder
         // for this chunk, so the pitch handed over is the current one.
         _probabilistic.ToneHz = _tracker.ToneHz;
         _probabilistic.Process(chunk.Samples);
+
+        // **ASKED AFTER THE DECODER HAS READ THIS AUDIO, NOT BEFORE.** The
+        // tracker consults the interlock when it reads its survey, and both it
+        // and the decoder work on the same half second, so setting it here rather
+        // than while the tracker is still working through the chunk is the
+        // difference between an answer about now and an answer about the previous
+        // half second — a whole character at eighteen words a minute.
+        _tracker.MidCharacter = _probabilistic.InsideCharacter;
     }
 
     /// <summary>
@@ -386,21 +394,26 @@ public sealed class CwDecoder
             _hasFollowed = true;
         }
 
-        // **STOPGAP, AND IT IS COMING OUT.** `MidCharacter` is HM-DEC-096 phase
-        // 3's interlock: the tracker may not jump to another part of the band
-        // while a character is part-read, because the rest of that character is
-        // then assembled from a different station and comes out as a letter
-        // nobody sent with clean timing. The removed gate set it from the
-        // elements it had in flight, and with nothing setting it the decoder
-        // invented 0.11 of the message at eighteen decibels where it had invented
-        // none — HM-DEC-120 broken, on the air, tonight.
+        // **THE INTERLOCK IS FED BY THE DECODER THAT READS THE TEXT**
+        // (HM-DEC-096 phase 3, HM-DEC-091). The tracker may not jump to another
+        // part of the band while a character is part-read, because the rest of
+        // that character is then assembled from a different station and comes out
+        // as a letter nobody sent with clean timing.
         //
-        // **A CONSTANT HOLDS EVERY MOVE, NOT ONLY THE ONES INSIDE A CHARACTER**,
-        // so it costs every legitimate retune and cannot stay. It is here because
-        // an evening of hand tuning with a decoder that does not invent is worth
-        // more than one that retunes and does, and the honest answer is the next
-        // task in the same unit.
-        _tracker.MidCharacter = true;
+        // The removed gate answered this from the elements it had in flight, by
+        // thresholding. The working decoder answers it better: it has already
+        // chosen where every element and every character begins and ends, over
+        // the whole window up to the newest audio, and the last segment of that
+        // choice is what the newest audio is inside of. A mark or the gap between
+        // two marks of one character holds the tracker; the gap between
+        // characters or between words lets it go.
+        //
+        // **WITH NOTHING FEEDING IT THE DECODER INVENTED TEXT**: 0.11 of the
+        // message at eighteen decibels where it had invented none, which is
+        // HM-DEC-120 broken. **With a constant it went deaf**: a constant holds
+        // every move, not only the ones inside a character, so the tracker never
+        // reached a station that was not already at the operator's own pitch and
+        // all four station recordings emitted nothing.
 
         // `FollowSpeed` chose the survey's analysis window from the fitted speed
         // and went with the same decoder. Feeding it the working decoder's own

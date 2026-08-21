@@ -16,6 +16,16 @@ namespace Hamlet.RadioEngine.Cw;
 /// </param>
 /// <param name="Text">What it read, or "" when the ratio is below the gate.</param>
 /// <param name="ToneHz">The pitch it was given.</param>
+/// <param name="EndsInsideCharacter">
+/// True when the winning path's last segment is a mark or the gap between two
+/// marks of one character, rather than the gap between characters or between
+/// words. **This is the question HM-DEC-096 phase 3's interlock asks**, answered
+/// by the path itself rather than inferred from anything: the decoder already
+/// chose where every element and every character begins and ends, and the last
+/// segment of that choice is what the newest audio is inside of. It is false
+/// whenever the gate is closed, because nothing is being read and there is no
+/// character to be part of the way through.
+/// </param>
 /// <param name="Characters">
 /// The same reading, one entry per character, each carrying the hop it ended at.
 /// Empty when the gate is closed. **The streaming path needs the times**: a
@@ -27,7 +37,8 @@ public readonly record struct CwProbabilisticResult(
     double WordsPerMinute,
     string Text,
     double ToneHz,
-    IReadOnlyList<CwProbabilisticCharacter> Characters)
+    IReadOnlyList<CwProbabilisticCharacter> Characters,
+    bool EndsInsideCharacter = false)
 {
     /// <summary>Nothing measured.</summary>
     public static CwProbabilisticResult None { get; }
@@ -194,20 +205,29 @@ public static class CwProbabilisticDecoder
 
         var bestScore = double.NegativeInfinity;
         var bestWpm = 0.0;
+        var bestLastKind = -1;
         IReadOnlyList<CwProbabilisticCharacter> bestCharacters =
             Array.Empty<CwProbabilisticCharacter>();
 
         for (var wpm = SlowestWpm; wpm <= FastestWpm + 1e-9; wpm += WpmStep)
         {
-            var (score, characters) = DecodeAt(envelope.Count, wpm, keyDown, keyUp);
+            var (score, characters, lastKind) =
+                DecodeAt(envelope.Count, wpm, keyDown, keyUp);
 
             if (score > bestScore)
             {
                 bestScore = score;
                 bestWpm = wpm;
                 bestCharacters = characters;
+                bestLastKind = lastKind;
             }
         }
+
+        // **WHERE THE PATH ENDS IS WHERE THE AUDIO IS.** Kinds 0 and 1 are the
+        // mark, kind 2 is the gap inside a character; 3 and 4 are the gaps
+        // between characters and between words, which is where the tracker is
+        // free to move.
+        var insideCharacter = bestLastKind is >= 0 and <= 2;
 
         var ratio = (bestScore - nothingAtAll) / envelope.Count;
 
@@ -224,7 +244,8 @@ public static class CwProbabilisticDecoder
             bestWpm,
             string.Concat(bestCharacters.Select(c => c.Text)),
             toneHz,
-            bestCharacters);
+            bestCharacters,
+            insideCharacter);
     }
 
     /// <summary>
@@ -357,7 +378,10 @@ public static class CwProbabilisticDecoder
     /// subtractions, so the whole thing is one pass over hops times durations
     /// times kinds.
     /// </remarks>
-    private static (double Score, IReadOnlyList<CwProbabilisticCharacter> Characters)
+    private static (
+        double Score,
+        IReadOnlyList<CwProbabilisticCharacter> Characters,
+        int LastKind)
         DecodeAt(
         int count, double wpm, double[] keyDown, double[] keyUp)
     {
@@ -424,7 +448,7 @@ public static class CwProbabilisticDecoder
             }
         }
 
-        return (best[count], Spell(count, fromHop, kindAt));
+        return (best[count], Spell(count, fromHop, kindAt), kindAt[count]);
     }
 
     /// <summary>Walk the winning path back and turn it into letters.</summary>

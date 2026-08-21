@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
-PHASE: 2 of 5
-BALL: code
-NEXT_PASTE: none
-UPDATED: 2026-08-21T18:47:06-04:00
-NOTE: the constant restores the sweep exactly and silences all six real recordings, because it blocks the move to the station
+STATE: COMPLETED
+PHASE: 5 of 5
+BALL: tim
+NEXT_PASTE: OUTPUT.md -> Claude Web
+UPDATED: 2026-08-21T19:13:48-04:00
+NOTE: interlock fed from the decoder's own path; clean to 12 dB, and the residue is a window holding two pitches after a retune
 
 ---
 
