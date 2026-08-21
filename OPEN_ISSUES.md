@@ -4,6 +4,35 @@ Questions with owner and severity. `owner` is who must act next. Format in
 `CLAUDE.md` §3.
 
 ---
+id: HM-OPEN-055
+status: open
+owner: claude
+raised: 2026-08-20
+severity: none
+refs: tests/Hamlet.RadioEngine.Tests/Rig/ModeFollowTests.cs, tests/Hamlet.RadioEngine.Tests/Rig/RigReadTests.cs
+---
+
+**Two rig tests fail intermittently under a full-solution run and pass on their
+own.**
+
+Seen twice in four full runs on the development machine, and never the same test
+twice: `RigReadTests.EachSettingParsesToTheManualsOwnWords` with the squelch row
+on one run, `ModeFollowTests.ARefusedWriteLeavesTheModeUnknown` on another. Both
+were re-run on their own immediately afterwards and both passed, thirty-one and
+fourteen tests green.
+
+Named and left, per §12.6. Nothing was changed in the rig code this session and
+neither test touches anything that was. What makes it worth writing down rather
+than shrugging at is that this project's own expected-red baseline is counted
+exactly: a suite whose failure count moves by one for reasons nobody can name
+makes "anything above five is new" a weaker instrument than it reads as.
+
+The likely shape is a wall-clock timeout in a test racing a loaded machine, since
+both are rig tests with a poll or a write behind them. What would settle it is
+running the solution's tests a dozen times and seeing whether the set of
+offenders stays inside the rig folder.
+
+---
 id: HM-OPEN-054
 status: open
 owner: tim

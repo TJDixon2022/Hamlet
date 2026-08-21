@@ -1,9 +1,9 @@
 STATE: COMPLETED
-PHASE: 3 of 4
+PHASE: 5 of 5
 BALL: tim
 NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-20T19:34:00-04:00
-NOTE: De-glitch cleared and 119 corrected as 146; the heavy fist has no named mechanism left
+UPDATED: 2026-08-20T21:02:00-04:00
+NOTE: Speed control shipped; the heavy fist goes 3 to 10 of 11 and the callsign survives
 
 ---
 

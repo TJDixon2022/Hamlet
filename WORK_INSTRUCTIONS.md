@@ -27,57 +27,43 @@ If all four hold, say "Hamlet confirmed" and continue.
 
 ## Why this unit exists
 
-**The gate reads short marks short, and the de-glitch window is the named suspect.**
+**Tim is at the radio in about an hour. This unit is for tonight.**
 
-Last session measured what the gate hands over against what was generated:
+Every failure of the last three days runs back to one number: **the fitted dit is
+wrong, and everything downstream collapses from it.** The dah's ratio leaves the
+band, coherence pins at nought, the opening of the message is lost. Two suspects
+were eliminated today — the de-glitch makes it worse, and the analysis window is
+narrower where the error is worse — and **the heavy fist now has no named mechanism
+left.** That could take days.
 
-| fixture | true dit | gate reads | fitted |
-|---|---|---|---|
-| `coverage-easy` | 100 | 101.4 (+1%) | 99.5 |
-| `exchange-easy` | 100 | 102.8 (+3%) | 99.5 |
-| `farnsworth-light` | 100 | 102.6 (+3%) | 95.0 |
-| `fast-easy` | 48 | **45.3 (−6%)** | 48.0 |
-| `farnsworth-heavy` | 56 | **48.9 (−13%)** | 47.0 |
+**But Tim knows the speed by ear.** He can hear that a man is sending around twenty
+words a minute. **It is the one number the machine keeps getting wrong and the one
+number the operator can supply for free.**
 
-**Dahs are long by 1–2% at every length. It is short marks specifically that read
-short**, and the shorter they are the worse it gets.
+**Tim's ruling: give him a speed control and seed the estimator from it.** Break the
+circle from outside rather than from within.
 
-**HM-DEC-119 does not hold at short dits.** It says a mark reads long by nought to
-ten per cent at every speed, and it is true at 100 ms and false below. **Four
-sessions of reasoning about `Refine` cited it as measured fact. It was measured at
-one speed.** *That is a finding in its own right and belongs in the report.*
+*Rejected: waiting for the short-mark mechanism to be found. It is the right
+long-term work and it has no candidate; an evening at the rig is worth more than a
+sixth theory. Also rejected: correcting the estimator by a constant for the gate's
+short reading, which was rejected this morning for the same reason it would be
+rejected now — it leaves the gate reporting a length the audio does not contain.*
 
-The suspect the last session named and correctly did not touch: **the hop is 5 ms
-and `ShortestVote` is five measurements, so a 56 ms dit is eleven hops through a
-five-wide median while a 300 ms dah is sixty.** A median filter removes runs
-shorter than half its window, and the shorter the mark the larger the fraction of
-it that is at risk.
-
-**Tim's ruling, this session: `ShortestVote` comes off the park.**
-
-It was parked on 08-19 because that was the wrong evening to move the instrument
-and the subject together, with a measured improvement of 13 to 27 of 43 on the
-bulletin's leading edge and five synthesized tests broken, two of them about
-acquisition. **That reason has expired.** Since then the project has gained two
-adjudicated fists (`N4L` at 56.3 ms, `VA3VRR` at 100.4), two generated fixtures with
-written answer keys at both extremes, and a reference that reads both. **The
-acquisition tests it breaks can now be examined against evidence rather than
-argued about.**
-
-*Also carried: the light fist loses its dit in the estimator instead — the
-averaging window is twice the mark-derived dit, so on a 100 ms sender the window is
-200 ms and this sender's 150 ms character gaps fall inside it alongside its 73 ms
-element gaps. **That is a separate mechanism and it is not this unit.***
+**This does not replace the estimator and does not make it right.** It hands it a
+starting point. The estimator still fits, still tracks, still owns the answer.
 
 ---
 
-## A naming correction, recorded once
+## Task 2 is separate and understood
 
-The previous orders said "`Refine` is not in the tree". The method is at
-`CwTiming.cs:1151` and is called at 649. **What has been proposed and withdrawn
-four times is its *removal*, and the orders have been calling the removal by the
-method's own name.** On the light fist, removing it is the whole loss. *Say
-`Refine`'s removal where that is meant.*
+`Refine` averages every gap under **twice the mark-derived dit**. On
+`farnsworth-light` that window is 200 ms, and this sender's **150 ms character
+gaps fall inside it** alongside its 73 ms element gaps, costing seven and a half
+milliseconds. **The gap classes are already fitted a few lines away.**
+
+That is one line, the mechanism is understood, and it puts a second fixture inside
+five per cent. **It is in this unit because it is cheap and independent, not
+because it is related.**
 
 ---
 
@@ -93,36 +79,37 @@ not repair the instruction silently.
   `ARecordingWithKeyingInItIsReadTests.TheDecoderSaysSomethingAboutIt`,
   `TheToneIsFoundInRealisticAudio(farnsworth-heavy)`.
   **2,117 tests, five failing. Anything above five is new.**
-- `prosigns-easy` and `tightfist-easy` were excluded from last session's gate table
-  as not comparable: they run elements together, so a midpoint split catches merged
-  pairs.
+- `Refine` is the method at `CwTiming.cs:1151`, called at 649, **and it is in the
+  tree.** What was withdrawn four times is its removal. This unit does not remove
+  it.
 
 ---
 
 ## Rulings in force
 
-**§9.5.1 — one branch, `main`, commit *and push*.**
+**§9.5.1 — one branch, `main`, commit *and push*.** *He needs this on the ham
+machine tonight.*
 
-**HM-DEC-144 — `N4L`, dit 56.3 ms, dah 238.3, element gap 35.6, ratio 4.24.**
-
-**HM-DEC-145 — `VA3VRR`, dit 100.4 ms, dah 274.3, element gap 73.3, ratio 2.73.**
-
-**HM-DEC-119 — now known not to hold below 100 ms.** *Do not cite it for short
-marks. Task 3 records the correction.*
+**HM-DEC-144 — `N4L`, dit 56.3 ms, ratio 4.24.**
+**HM-DEC-145 — `VA3VRR`, dit 100.4 ms, ratio 2.73.**
+**HM-DEC-146 — the gate reads short marks short; HM-DEC-119 holds at 100 ms and
+fails at 56.**
 
 **HM-DEC-114 — the easy tier passes or fails.**
 
-**HM-DEC-101 — a fixture the reference cannot read is a bad fixture.**
+**HM-DEC-048 — nothing raises a confidence score.** *A seeded speed may not make
+the decoder emit a character it has not resolved. It changes where the estimate
+starts, not what counts as resolved.*
 
-**HM-DEC-048 — nothing raises a confidence score.**
+**§0.0 — the display asserts only what is known.** *If the operator's figure is
+being used, the terminal says so.*
 
 **HM-OPEN-054 stays open. No transition-shape test, no gate in front of emission.**
-
 **The keying meter is not read by the decoder.**
+**`ShortestVote` stays at 5, `MaximumRatio` at 3.8, `MinimumSeparation` and the
+five-dit bound stay put.**
 
-**`MaximumRatio`, `MinimumSeparation` and the five-dit bound stay put.**
-
-**HM-DEC-093 — no radio.**
+**HM-DEC-093 — no radio on the dev machine.**
 
 ---
 
@@ -134,38 +121,60 @@ is moving inside the task. Also every ten minutes while a task runs.
 
 ---
 
-## Task 1 — Is the de-glitch the cause? **CHANGE NOTHING.**
+## Task 1 — Prove it works before building any of it. **CHANGE NOTHING.**
 
-Measure the gate's mark lengths with the de-glitch bypassed entirely, on
-`farnsworth-heavy`, `fast-easy`, `farnsworth-light` and `coverage-easy`.
+Hand the estimator the true dit as its starting point and run the four:
 
-- **If the −13% and −6% disappear, the de-glitch is the cause and task 2 follows.**
-- **If they do not, `ShortestVote` is not the mechanism** — say so, say what the
-  lengths are without it, and **stop.** *Unparking it was justified by this
-  suspicion and the suspicion is testable.*
-- Report the width in hops for each fixture's dit and dah, so the asymmetry is
-  visible as a number rather than an argument.
+| audio | true dit | today | seeded |
+|---|---|---|---|
+| `farnsworth-heavy` | 56 ms | 3 of 12 | ? |
+| `farnsworth-light` | 100 ms | 9 of 12 | ? |
+| `cw-2026-08-17-134712` (`N4L`) | 56.3 ms | 0 | ? |
+| `cw-2026-08-17-013347` (`VA3VRR`) | 100.4 ms | 8 | ? |
+
+**If `farnsworth-heavy` does not improve, stop and report.** That would mean the
+dit is not the cause, three days of reasoning is wrong, and **that is worth more
+than any fix.** Say it plainly if so.
+
+Also report what the estimator does with the seed afterwards: does it hold near it,
+drift back to the short value, or wander.
 
 ---
 
-## Task 2 — Fit the window, only if task 1 confirmed it
+## Task 2 — The light fist's window. One line.
 
-**Do not simply set `ShortestVote` to 7.** That was the 08-19 proposal and it is
-still a constant; **the window should be fitted to the shortest mark the signal
-actually contains.** *Seventh instance of the error class six rulings have gone on
-closing — and this one is the error class appearing inside the de-glitch itself.*
+Confine `Refine`'s averaging to gaps that are element gaps, using the gap classes
+already fitted nearby rather than a multiple of the dit.
 
-If a fitted window cannot be made to work, **5 → 7 measured and reported is an
-acceptable fallback**, but say plainly that it is a constant and what it would cost
-at speeds outside those tested.
+- **Fitted, not a constant.**
+- Required: `farnsworth-light`'s fitted dit **within 5% of 100 ms**, its count
+  **≥ 9 of 12**, and **every other fixture and the easy tier whole**.
+
+---
+
+## Task 3 — The control, only if task 1 showed a gain
+
+On the CW terminal, near the transcript: a speed the operator can set in words per
+minute, **off by default**.
+
+- **Off by default and clearly off.** *Nothing about tonight may change what he
+  sees until he asks for it.*
+- When set, it seeds the estimator's starting dit. **The estimator still fits and
+  still owns the answer** — this moves where it starts, not what it may conclude.
+- **The terminal says when the operator's figure is in use** (§0.0). He must never
+  be looking at a transcript without knowing which of the two produced it.
+- Coarse is fine. Whole words per minute, a sensible range, and easy to change with
+  one hand while the other is on the dial. *He will be adjusting this while a
+  station is sending.*
+- **The sidecar and the roster record the seed if one was set**, so tomorrow's rows
+  say whether he was helping.
+
+---
+
+## Task 4 — Everything else holds
 
 | | required |
 |---|---|
-| **`farnsworth-heavy` gate reads** | **within 5% of 56 ms** |
-| **`fast-easy` gate reads** | **within 5% of 48 ms** |
-| `coverage-easy`, `exchange-easy` gate reads | **within 5%** |
-| **`farnsworth-heavy`** | **> 3 of 12** |
-| `farnsworth-light` | ≥ 9 of 12 |
 | `cw-2026-08-20-014854` | **0** |
 | `cw-2026-08-20-014935` | **0** |
 | `004507` | ≥ 25 |
@@ -175,50 +184,32 @@ at speeds outside those tested.
 | `013347` | ≥ 8, **and `VA3VRR` still readable** |
 | the easy tier and every other fixture | **whole** |
 
-**The five tests it broke on 08-19, two of them about acquisition: name each one,
-say whether it still breaks, and if it does, say what it asserts and against what
-audio.** *They are the reason it was parked and they now have adjudicated fists to
-be examined against. A test that breaks because it encodes the old wrong
-measurement is a different thing from one that breaks because the change is wrong,
-and the report must say which.*
-
-**If an acquisition test breaks and the change is right, stop and report rather
-than editing the test.** That is Tim's ruling to make.
+**With no seed set, every number above must be identical to today.** *The control
+is additive. If anything moves with it off, that is a defect and it does not ship.*
 
 ---
 
-## Task 3 — Record the HM-DEC-119 correction
+## Task 5 — What to do at the rig. **DROP CANDIDATE, but valuable.**
 
-Whatever else happens, record that HM-DEC-119's figures hold at 100 ms and fail
-below — with last session's table in the entry, indexed in `CLAUDE.md` §1.
+Three sentences in section 2 telling Tim how to use it tonight: what to set, what
+he should see when the figure is right, and what he should see when it is wrong.
 
-*Four sessions cited it as measured fact about every speed. The next one should
-not.*
-
----
-
-## Task 4 — What it means on the air
-
-One paragraph, and it is what Tim reads first.
-
-**On `CQ CQ DE <callsign> K`, does the callsign survive on each fist?** Last
-session: light yes, heavy no, losing nine characters. **Say the number now, on
-both**, and say whether `cw-2026-08-17-134712` emits anything.
+*He will be operating alone in a short window with no other instrument but the
+keying meter.*
 
 ---
 
 ## Parked — do not touch, do not raise
 
-- **The light fist's estimator window.** *Named, separate, next.*
-- **`Refine`'s removal.** Not to be revived in this unit.
-- **A transition-shape test, or any gate in front of emission.**
-- **Character structure**, and the keying meter as something the decoder reads.
-- **The bulletin's standing red.** *Report its count if it moves.*
+- **What shortens a short mark.** *The de-glitch and the analysis window are both
+  eliminated. Do not re-test them and do not offer a third theory in this unit.*
+- **`Refine`'s removal**, a transition-shape test, any gate in front of emission.
+- **Character structure**, the keying meter as something the decoder reads.
+- **The bulletin's standing red.**
 - **Why the 19th's stations are missing from the audio.**
 - **The 69 and 233.**
 - **Adjudicating by ear.** Tim's.
-- **HM-OPEN-052**, rulings 096–133, the scorer, `CaptureAudioAsync` end to end,
-  `TheRosterIsOneFilePerEvening`.
+- **HM-OPEN-052**, rulings 096–133, the scorer, `CaptureAudioAsync` end to end.
 
 ---
 
@@ -228,12 +219,11 @@ Standing prohibitions are in `CLAUDE.md`. Cited, not restated: §9.5.1 one branc
 and it is `main`; no interactive or destructive git; do not invent a ruling id; do
 not touch coverage thresholds.
 
-- **Do not re-cut or soften any fixture.**
-- **Do not edit a failing acquisition test to make the change fit.** *Stop and
-  report.*
-- **Do not work the light fist's mechanism.** *One at a time.*
-- **Do not tune to one fixture.** *Two generated fists, two adjudicated recordings
-  and the whole suite are the guards.*
+- **Do not change anything the operator sees when the control is off.**
+- **Do not let the seed force an emission.** HM-DEC-048.
+- **Do not re-cut a fixture.**
+- **Do not spend the session on task 5.** *Tasks 1 and 3 are what he needs.*
+- **Do not report a third theory of the short mark.** *Two were eliminated today.*
 
 ---
 
@@ -242,12 +232,12 @@ not touch coverage thresholds.
 `OUTPUT.md` at the repository root, overwritten and printed. Four sections, no
 other headings, per §13: **What Claude did**, **What Tim should expect**, **What we
 should do next**, **What's blocking us** — the last carrying **Asks still
-outstanding** per HM-DEC-139. **HM-OPEN-053 leaves the queue; it was unparked and
-ruled.**
+outstanding** per HM-DEC-139.
 
-**Section 1 opens with task 1**: whether bypassing the de-glitch removes the error.
+**Section 1 opens with task 1's table**, because if seeding the dit does not help,
+nothing else in this unit matters.
 
-**Section 2 opens with task 4** — whether a callsign at the front of a call now
-survives on each fist.
+**Section 2 opens with how to use it at the rig tonight**, and says plainly whether
+a callsign at the front of a call survives with the speed set.
 
-**Stop and report.**
+**Stop and report. He is going to the radio.**
