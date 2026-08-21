@@ -2,8 +2,8 @@ STATE: COMPLETED
 PHASE: 4 of 4
 BALL: tim
 NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-20T22:56:00-04:00
-NOTE: A ratio of four is a contaminated dit cluster, proved on 013347; the six captures are still absent
+UPDATED: 2026-08-20T23:56:00-04:00
+NOTE: The 100 Hz is the meter, not the decoder; a held 50 ms window reads the bulletin but no constant delivers it
 
 ---
 

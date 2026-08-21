@@ -27,101 +27,106 @@ If all four hold, say "Hamlet confirmed" and continue.
 
 ## Why this unit exists
 
-**Tim operated the evening of the 20th and Hamlet read fragments of stations he
-could hear clearly.** Six captures, several senders, signals to S9+10. `UR RST`,
-`QSB`, `DX` and `AUR` came through as real words. Most of what sat between them
-did not.
+**Hamlet listens to CW through a filter about 100 Hz wide. The signal occupies
+about 40. Every hertz beyond what the signal needs admits noise for nothing.**
 
-The speed tracker behaved three different ways across the evening, and that
-variety is the evidence this unit is built on.
+This is a receiver design error, not a decoder logic error, and it sits upstream of
+everything four sessions have spent this week chasing. Narrowing the detection
+bandwidth throws away noise power and keeps all the signal. Measured, on real
+off-air recordings:
 
-### What the recordings measure
+| recording | swing at 100 Hz | swing at 40 Hz | runs under 25 ms, 100 Hz | at 40 Hz |
+|---|---|---|---|---|
+| `cw-2026-08-21-015834` | 21.5 dB | **24.9 dB** | 27 | **1** |
+| `cw-2026-08-21-020033` | 20.4 dB | **23.7 dB** | 1029 | **517** |
+| `cw-2026-08-21-015432` | 19.2 dB | **22.5 dB** | 841 | **424** |
+| `cw-2026-08-18-003016` | - | - | 1328 at 200 Hz | **272 at 40 Hz** |
 
-Envelope by quadrature mixdown at the tone the keying detector reported, 10 ms
-boxcar, sampled at 1 ms, threshold midway in amplitude between the 10th and 90th
-percentile of the envelope. Runs shorter than 20 ms excluded from the fit and
-counted separately. Measured outside this repository, from files now committed
-under `tests\fixtures\cw\captured\unadjudicated\`:
+**Three to three and a half decibels on every recording, consistently, for free.**
 
-| capture | elements >=20 ms | runs <20 ms | dit | dah | ratio | derived | `decoderWpm` |
-|---|---|---|---|---|---|---|---|
-| `005902` | 71 | 28 | 83.5 | 237 | 2.84 | 14.8 WPM | not tracking |
-| `010133` | 72 | 50 | 84.7 | 251 | 2.96 | 14.3 WPM | not tracking |
-| `010244` | 83 | 22 | 83.4 | 261 | 3.13 | 14.1 WPM | not tracking |
-| `010336` | 83 | **19** | 91.5 | 269 | 2.94 | 13.3 WPM | **12** |
-| `015834` | 106 | 34 | 71.1 | 255 | **3.58** | 15.4 WPM | not tracking |
-| `020033` | 84 | **145** | 40.3 | 159 | **3.94** | 25.7 WPM | panel showed **29** |
+**And the sub-25 ms runs largely vanish.** Those runs are the thing two work orders
+and two sessions have tried to exclude after the fact, with rulings sought about
+element floors and vote windows. **They are not elements and they are not a decoder
+defect. They are noise the filter is admitting, and a narrower filter deletes them
+at the source.**
 
-Milliseconds throughout. The first four are one QSO, one fist.
+### The decode this produced
 
-**Three behaviours, and a session must explain all three:**
+`cw-2026-08-18-003016.wav`, 40 Hz detection bandwidth, threshold at the 55th
+percentile of the log envelope, marks shorter than 0.4 of the fitted dit dropped:
 
-1. **Four captures of a clean 14 WPM fist, and it never locked.** Every one is
-   bimodal with a ratio near three. There is nothing hard about them.
-2. **One where it locked, at 12 against a measured 13.3.** That capture has the
-   fewest spurious short runs of any: 19.
-3. **One where it locked at 29 and the independent measurement also gives 25.7 -
-   so the tracker was not wrong about what it was fitting.** But that capture's
-   ratio is 3.94 where Morse is 3.0, and it carries 145 sub-20 ms runs against 19
-   to 50 everywhere else. The text was almost entirely `T`, `D`, `N` and `M` - the
-   shortest characters there are.
+```
+E= HADA KPA15TT ITWAS #K = STILL HVE MY ETO 91B TT JUST VFB TUBELIN
+```
 
-**The correlation across all six is the short runs, not the speed and not the
-signal strength.** 19 short runs and it locked correctly; 145 and it fitted a
-distorted ratio; 22 to 50 and it did not lock at all. **That is a correlation over
-six points and it is not a mechanism.** Confirm or kill it. Do not assume it.
+`ETO 91B` is an Alpha 91B amplifier, `VFB` is very fine business, `TUBE LIN` is a
+tube linear. **That is a legible exchange out of a recording Hamlet reads as
+fragments.**
 
-**An error this instruction made and corrected, recorded so it is not repeated:**
-the 29 WPM reading was first called "roughly double the true speed" on the strength
-of the T/D/N/M text, before anything was measured. It is not double. Both methods
-agree at 26 to 29. **The mechanism was named from the shape of the output rather
-than from the audio, which is the trap this project has already written down.**
+### The other two things that decode needed
 
-### Ruled by Tim
+Both were measured on the same recording and both are smaller than the bandwidth.
 
-**The tracker wins once it is confident, and the operator's setting is the seed it
-starts from.** He set 20 against a 14 WPM station and Hamlet emitted 2 characters
-in thirty seconds. He dropped the seed to 13 by hand and the next captures emitted
-11, 12 and 14. **A seed wrong by six words a minute cost five sixths of the copy.**
+**The threshold percentile matters enormously.** On identical audio: the 45th
+percentile gives gibberish, the 50th gives partial words, the 55th gives the line
+above. Hamlet's threshold sits midway between the 10th and 90th percentile, which
+is the 50th. **One notch from working.**
 
-*Rejected: the operator's setting always winning.* It leaves that failure possible.
+**Mark rejection must scale with the fitted dit, not a fixed millisecond figure.**
+0.4 dits was used above. A previous session measured the same thing from a
+different direction: `cw-2026-08-17-013347` fits at ratio 4.08 with a fixed 20 ms
+floor and 3.06 with a floor at half the fitted unit, against a hand-read 2.73
+(HM-DEC-145).
 
-*Rejected: proposing a speed and waiting for him to accept it.* A prompt while
-operating, which this project deliberately designed out of the capture press.
+### What this unit does and does not claim
+
+**It claims the bandwidth is too wide and narrowing it improves the measured
+signal-to-noise on every recording tried.** That is four for four and the mechanism
+is elementary.
+
+**It does not claim this makes Hamlet read the band.** The decode above came from a
+script outside this repository with three settings tuned together. **Reproduce it
+inside the tree before believing it.**
+
+**An error recorded so it is not repeated.** Earlier tonight the poor copy was
+attributed to AGC pumping, on a measurement showing the whole passband ducking 8 dB
+in sympathy with the keying. The ducking is real. It is also present at -9.7 dB in
+`cw-2026-08-18-003016`, which decodes well, **so it cannot be what separates good
+copy from bad and the theory was withdrawn.** Do not build on it.
 
 ---
 
 ## Verify this instruction against the tree
 
-**Nothing here describes the tree.** Reproduce every figure above inside the
-repository before relying on it.
+**Nothing here describes the tree.** Reproduce every figure before relying on it.
 
 - **Report mismatches; do not repair the instruction silently.**
-- **Expected red, do not rediscover:**
-  `CwSettledSilenceTests.APassThatReadSomethingEmitsSomething`,
-  `CwFarnsworthTests.TheBulletinDecodesToItsAnswerKey`,
-  `CwTerminalTests.ClearingTheTranscriptLeavesTheDecoderAlone`. **Anything above
-  three is new.**
-- `KeyingEnvelope` already exists and computes exactly this envelope. **Use it. Do
-  not write a second one.**
+- **The expected-red list in the last two orders was wrong.** The tree has been at
+  five failing for some time: the three long-standing ones plus
+  `ARecordingWithKeyingInItIsReadTests.TheDecoderSaysSomethingAboutIt` and
+  `TheToneIsFoundInRealisticAudio(farnsworth-heavy)`. **Report the count you find
+  and treat anything above it as new.**
+- `KeyingEnvelope` exists and computes the envelope. **Use it.**
 
 ---
 
 ## Rulings in force
 
-**HM-DEC-048 - speed is re-derived from a rolling window, and nothing raises a
-confidence score.** Wider tolerance lowers confidence. Unresolved renders as a
-placeholder, never as a guessed letter.
+**HM-DEC-120 - the decoder invents nothing on audio holding no signal.** This is
+the property every previous attempt at short-mark exclusion broke, and it is the
+one that must survive. **A change that raises character counts and also makes the
+sensitivity sweep invent text is a failed change, however good the counts look.**
+
+**HM-DEC-090 - a capture that cannot prove it is fresh is not written.**
 
 **HM-DEC-091 - one source, and it says which.**
 
-**HM-OPEN-053 - `ShortestVote` stays at 5 unless task 1 shows it is the
-mechanism.** The sub-20 ms runs are the lead in this unit and the vote window is
-one candidate for where they come from. **If the trace finds that, say so and stop
-before changing it.** It is Tim's ruling, outstanding since the 19th, and this
-would be the first real evidence for it.
+**HM-DEC-048 - nothing raises a confidence score.**
 
 **HM-DEC-093 - no radio on the development machine.**
+
+**HM-OPEN-053 - `ShortestVote` stays at 5.** A previous session established it is
+not the mechanism behind the short runs. **Do not touch it.**
 
 ---
 
@@ -133,73 +138,60 @@ is moving inside the task. Also every ten minutes while a task runs.
 
 ---
 
-## Task 1 - Explain all three behaviours
+## Task 1 - Find the detection bandwidth and report it
 
 **Report before changing anything.**
 
-HM-DEC-048 says speed is re-derived from a rolling window. **Find what that window
-measures.** Then run all six captures through the decoder, unchanged, and report:
+Find every place the audio is reduced to an envelope for CW detection - the
+decoder's own path and `KeyingEnvelope` both - and for each report:
 
-1. What the tracker computed on each, and the moment it locked or gave up.
-2. Whether the derivation uses key-up intervals, key-down durations, or both.
-3. Whether it assumes a 1:3:7 relationship holds in the received signal.
-4. What `010336` had that the four failures did not.
-5. Where the sub-20 ms runs come from - the gate, the de-glitch, the envelope - and
-   whether they reach the tracker.
-6. **Why `020033` fitted a 3.94 ratio.** A dah is three dits. A fit returning 3.94
-   is fitting something that is not dits and dahs, and that is the clearest single
-   symptom in the evidence.
+1. The effective bandwidth in hertz, and how it is arrived at.
+2. Whether it is fixed or varies with the fitted speed.
+3. What noise bandwidth the tone tracker sees.
 
-**If the trace contradicts the table, say so and stop.** The table was measured
-outside this repository and the tree governs.
+**If the decoder is already at 40 Hz or narrower, say so and stop.** The premise of
+this unit would then be wrong and everything after it is aimed at nothing.
 
 ---
 
-## Task 2 - Derive the unit from key-down durations
+## Task 2 - Narrow it, and measure what that alone does
 
-**Gated on task 1.** If task 1 finds the tracker already derives from key-down and
-fails another way, **build what task 1 found and say why.**
+**Change the bandwidth and nothing else.** No threshold change, no exclusion rule,
+no clock change. One variable.
 
-Otherwise: two-means clustering over key-down run lengths gives dot and dash; the
-unit is `(dot + dash/3) / 2`. **Never derive the unit from key-up.** The evening's
-key-up distribution has no usable 3-unit or 7-unit structure; the longest gap in
-one capture is 636 ms where the standard wants about 1,200.
-
-- **Exclude runs too short to be an element before fitting.** Twenty milliseconds
-  is where this evidence separates; derive the exclusion from the fitted unit
-  rather than hard-coding a figure if you can.
-- **Report the excluded count and the fitted ratio, every time.** 19 against 145,
-  and 2.94 against 3.94, are the two numbers that distinguish a good fit from a bad
-  one in this evidence.
-- **A fit whose ratio is far from three is not to be trusted, and must lower
-  confidence rather than be corrected into shape.** HM-DEC-048.
-- Use gaps only to split, once the unit is known, and be generous: a character
-  break near 2 units, a word break near 5, not 3 and 7.
+- Report swing, short-run count and fitted ratio at the current bandwidth and at
+  the narrower one, for every real recording in
+  `tests\fixtures\cw\captured\` and `\unadjudicated\`.
+- **Report the effect on the two recordings holding no keying.** If narrowing makes
+  the decoder emit anything on those, that is HM-DEC-120 and the change fails.
+- **The bandwidth should follow the fitted speed if it can.** CW occupies roughly
+  four times the element rate; at 15 WPM that is about 40 Hz and at 30 WPM about 80.
+  A fixed 40 Hz would penalise a fast sender. **If tying it to the clock is not
+  straightforward, use a fixed value, say so, and say what it costs.**
 
 ---
 
-## Task 3 - The tracker's figure supersedes the seed, gated on keying
+## Task 3 - The threshold
 
-`copySpeed` becomes the seed. Once the tracker is confident, its figure governs and
-the panel says which is in use - it already has language for this and the wording
-should follow it.
+**Gated on task 2 landing.** The midpoint between the 10th and 90th percentile is
+the 50th. Sweep it and report what each value does to the character count and to
+the invention rate on empty audio.
 
-**Confidence is gated on the keying detector's swing figure, not the tracker's own
-opinion.** Tonight: 19 to 24 dB on every capture containing a station, 13 to 14 dB
-on every capture containing none. **The swing was the only figure that held steady
-all evening.**
-
-**The panel and the sidecar must not disagree about the speed in the same moment.**
-On `020033` the header showed 29 while `decoderWpm` in the file read `not tracking`.
-Two readouts of one fact, differing. HM-DEC-091.
+**Do not pick a value that raises copy at the cost of HM-DEC-120.** Report the
+sweep and, if the best value is a judgement between two costs, **say so and stop** -
+that is Tim's.
 
 ---
 
-## Task 4 - The tone estimates disagree. **THIS IS THE DROP CANDIDATE.**
+## Task 4 - Reproduce the decode. **THIS IS THE DROP CANDIDATE.**
 
-Every capture carries two tone figures and they differ: `toneHz 375` beside
-`keying at 400 Hz`, `toneHz 625` beside `500 Hz` on screen, `toneHz 750` beside
-`825`. Report which is which, and make the sidecar say what each one is measuring.
+A test that takes `cw-2026-08-18-003016.wav`, runs the decoder at the new
+bandwidth, and records what it reads. `ETO 91B`, `VFB` and `STILL HVE MY` are real
+anchors from the exchange.
+
+**This recording has no adjudicated answer key** and must not be given one by a
+session. **Assert only that the output contains those anchors**, or report what it
+does contain and assert nothing.
 
 **Drop it whole if the session is running long, and say so.**
 
@@ -207,16 +199,18 @@ Every capture carries two tone figures and they differ: `toneHz 375` beside
 
 ## Parked - do not touch, do not raise
 
-- **`RfGain` reads 100% with the knob at noon.** Observed by Tim. Not this unit.
-- **Stations reading 375 to 825 Hz against a `CwPitch` of 600.** Real, unexplained,
-  and possibly a fourth wrong rig readout. Not this unit.
-- **The second pass changing its mind about 57% of characters on `015834`.** Real,
-  large, and HM-OPEN-053's territory. Not this unit.
-- **`SHACK_FACTS.md` on CI-V Transceive.** Now measured: 1,284 of 28,113 frames
-  were the radio announcing something. Tim's ruling.
-- **HM-OPEN-052, HM-OPEN-054**, the five synthesized tests, the three expected
-  failures, rulings 096-133, the scorer, `CaptureAudioAsync` end to end, and the
-  non-hermetic `TheRosterIsOneFilePerEvening`.
+- **The AGC ducking.** Withdrawn above. Do not build on it.
+- **`Refine` averaging the unit with key-up gaps.** Real, measured, and Tim's
+  ruling - removing it turns thirteen tests red.
+- **The element floor as a share of the unit, inside the decoder.** Tim's ruling.
+  **Note for the report: if task 2 removes the short runs at source, that ask may
+  no longer be worth answering. Say so if you find it.**
+- **`RfGain` reading 100% with the knob at noon**, and stations reading 375 to 825
+  Hz against a 600 Hz pitch. Real, unexplained, not this unit.
+- **The lock being lost at 25 to 27 seconds of every 30 second capture.** Noticed
+  twice, never chased. Not this unit.
+- **HM-OPEN-052, HM-OPEN-054**, the five synthesized tests, rulings 096-133, the
+  scorer, `CaptureAudioAsync` end to end.
 
 ---
 
@@ -228,14 +222,14 @@ destructive git; do not invent a ruling id; do not touch coverage thresholds.
 
 Unit-specific:
 
-- **Do not change `ShortestVote`.** *Unruled. If task 1 finds it is the mechanism,
-  report and stop.*
-- **Do not name a mechanism you have not measured.** *This instruction did it once
-  tonight and the correction is recorded above.*
-- **Do not adjudicate the unadjudicated captures or move them into `captured\`.**
-  *No answer key, and Tim has not listened to them.*
-- **Do not add a fixture.** *Six real recordings are already in the tree.*
-- **Do not raise a confidence score anywhere.** *HM-DEC-048.*
+- **Change one thing at a time and measure between.** *The decode above came from
+  three settings tuned together and that is exactly why it is not evidence about
+  any one of them.*
+- **Do not break HM-DEC-120 to raise a character count.** *Every previous attempt
+  at this failed that way.*
+- **Do not adjudicate any capture or write an answer key.** *Tim has not listened
+  to them.*
+- **Do not touch `ShortestVote`.**
 
 ---
 
@@ -246,10 +240,9 @@ other headings: **What Claude did**, **What Tim should expect**, **What we shoul
 do next**, **What's blocking us** - the last carrying **Asks still outstanding**
 per HM-DEC-139.
 
-**Section 1 opens with task 1's answer to all three behaviours** - never locking,
-locking correctly, and fitting a 3.94 ratio.
+**Section 1 opens with the bandwidth the decoder actually uses.**
 
-**Section 2 states in one sentence whether a station sending at 14 words a minute
-now reads at a speed the operator did not have to set.**
+**Section 2 states in one sentence whether narrowing it, on its own, improved what
+Hamlet reads from a real recording - and by how much.**
 
 **Stop and report.**
