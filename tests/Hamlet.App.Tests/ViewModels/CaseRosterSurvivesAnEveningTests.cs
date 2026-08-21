@@ -220,12 +220,23 @@ public sealed class CaseRosterSurvivesAnEveningTests : IDisposable
         // opening thirty recordings.
         Assert.Equal(CwCaseRoster.Header.Split('	').Length, first.Length);
         Assert.NotEqual("nothing read", Cell(first, "text"));
-        Assert.Equal(CwCaseRoster.Readable(read), Cell(first, "text"));
+        Assert.StartsWith(
+            CwCaseRoster.Readable(read), Cell(first, "text"), StringComparison.Ordinal);
+
+        // **AND THE CELL SAYS WHAT INTERVAL IT COVERS**, in the same words the
+        // count beside it uses. The transcript is everything read since the
+        // decoder started listening, which on a row beside thirty seconds of
+        // audio is not a claim about that audio.
+        Assert.Contains(
+            "the whole session, not this case",
+            Cell(first, "text"),
+            StringComparison.Ordinal);
 
         // **AND THE REFUSED PRESS CARRIES IT TOO** (HM-DEC-090). He heard the
         // station whether or not a recording was written, so the row that records
         // the refusal is scored the same way as any other.
-        Assert.Equal(CwCaseRoster.Readable(read), Cell(second, "text"));
+        Assert.StartsWith(
+            CwCaseRoster.Readable(read), Cell(second, "text"), StringComparison.Ordinal);
 
         // The operator's column is still last and still empty.
         Assert.Equal(string.Empty, Cell(first, "read"));
@@ -276,7 +287,7 @@ public sealed class CaseRosterSurvivesAnEveningTests : IDisposable
         var quiet = CwCaseRoster.Row(empty).Split('\t');
 
         Assert.Equal("none", Cell(quiet, "toneHz"));
-        Assert.Equal("unread", Cell(quiet, "snrDb"));
+        Assert.Equal("unread", Cell(quiet, "tonePeakDb"));
         Assert.Equal("not tracking", Cell(quiet, "wpm"));
     }
 

@@ -97,6 +97,31 @@ public static class CwKeyingThresholds
     public const double KeyingScore = 0.10;
 
     /// <summary>
+    /// How far a pitch must move between quiet and loud before the tracker's own
+    /// figure is trusted over the operator's.
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE SWING IS THE FIGURE THAT HELD STEADY ALL EVENING AND THE
+    /// TIMING IS NOT.** On the evening of 2026-08-20 the four captures holding a
+    /// real station measured 20 to 24 decibels of swing and every capture with
+    /// nothing in it measured 13 to 14, while this meter's own key-down timing
+    /// wandered to nine milliseconds on a station sending ninety. Anything
+    /// deciding whether there is a station to track has to rest on the steady
+    /// figure.</para>
+    /// <para>**AND IT SEPARATES ON THIS REPOSITORY'S OWN RECORDINGS TOO**, which
+    /// is the check that matters because the evening's captures are not in the
+    /// tree. Measured through <see cref="KeyingEnvelope.Best"/>: the seven
+    /// recordings holding a station swing 21.8 to 91.5 decibels, and the two that
+    /// hold no keying at any pitch swing 14.1 and 17.7. Twenty sits in the gap on
+    /// both sets of evidence.</para>
+    /// <para>**IT IS NOT A SECOND OPINION ABOUT WHETHER TO DECODE.** Nothing in
+    /// the decoder reads it and it can silence nothing: all it decides is which
+    /// of two speed estimates the decoder starts from, and the decoder's own
+    /// refusals are untouched (§0.0).</para>
+    /// </remarks>
+    public const double ConfidentSwingDb = 20;
+
+    /// <summary>
     /// How many windows in a row must show nothing before the meter says so.
     /// </summary>
     /// <remarks>

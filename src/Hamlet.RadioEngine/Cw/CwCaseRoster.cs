@@ -11,7 +11,15 @@ namespace Hamlet.RadioEngine.Cw;
 /// <param name="Wav">The file written, or "" when none was.</param>
 /// <param name="Refusal">Why no file was written, or "" when one was.</param>
 /// <param name="ToneHz">The tone the decoder had, or null for none.</param>
-/// <param name="SnrDb">How far it stood out, or null when unread.</param>
+/// <param name="SnrDb">
+/// The highest the tracked tone ever stood above the noise beside it, or null.
+/// **Not a figure about the recording on the row**: it is a held peak that rises
+/// at once and falls about a decibel a second, so on thirty seconds of audio it
+/// is mostly a memory of the loudest moment (HM-DEC-090). The column is called
+/// `tonePeakDb` for that reason. Measured on this repository's own recordings it
+/// rates two that hold no keying at any pitch, at 41.7 and 38.4, above the one
+/// this decoder reads a callsign from, at 34.7.
+/// </param>
 /// <param name="Wpm">The speed being tracked, or null when not tracking.</param>
 /// <param name="Emitted">Characters the decoder emitted over <paramref name="Covers"/>.</param>
 /// <param name="Unsure">How many of those it was unsure of.</param>
@@ -100,7 +108,7 @@ public static class CwCaseRoster
         "band",
         "wav",
         "toneHz",
-        "snrDb",
+        "tonePeakDb",
         "wpm",
         "seed",
         "chars",
@@ -245,7 +253,15 @@ public static class CwCaseRoster
             // **AND HAVING READ NOTHING IS THE MOST IMPORTANT ROW ON THE SHEET**
             // (HM-DEC-091), so it says so in words rather than leaving a cell that
             // looks like a column somebody forgot to fill in.
-            Readable(one.Text),
+            // **AND IT SAYS WHAT IT COVERS, EXACTLY AS `chars` DOES.** This is
+            // the tail of the whole transcript, so on a row beside a thirty
+            // second recording it is text read at any point since the decoder
+            // started listening, possibly hours earlier and on another band. The
+            // sidecar has labelled it since HM-DEC-091 and this cell did not, so
+            // the row read as though Hamlet had read that text out of that
+            // capture. **The count beside it carries the same clause in the same
+            // words**, so a reader learns the phrase once.
+            Whole(one.Text),
 
             // **LEFT EMPTY, AND THAT IS THE POINT.** Tim fills it in afterwards
             // from the roster and the audio. Nothing in this file may ever put a
@@ -254,6 +270,18 @@ public static class CwCaseRoster
             // happen.
             string.Empty);
     }
+
+    /// <summary>What Hamlet had read, with the interval it covers.</summary>
+    /// <param name="text">The transcript's tail, or "".</param>
+    /// <returns>The cell.</returns>
+    /// <remarks>
+    /// Having read nothing needs no clause: there is no interval to qualify, and
+    /// the sentence already says the decoder produced nothing (HM-DEC-091).
+    /// </remarks>
+    private static string Whole(string? text)
+        => string.IsNullOrWhiteSpace(text)
+            ? Readable(text)
+            : Readable(text) + "  (the whole session, not this case)";
 
     /// <summary>What Hamlet had read, as one line of a tab-separated file.</summary>
     /// <param name="text">The transcript's tail, or "".</param>

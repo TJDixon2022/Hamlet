@@ -307,6 +307,13 @@ public partial class MainWindowViewModel : ObservableObject
     private bool _copySpeedInUse;
 
     /// <summary>
+    /// True while the tracker has a station and his figure has stepped aside.
+    /// </summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(CopySpeedNote))]
+    private bool _copySpeedIsSuperseded;
+
+    /// <summary>
     /// What the decoder has noticed about the signal, in plain words, or empty.
     /// </summary>
     [ObservableProperty]
@@ -1129,6 +1136,25 @@ public partial class MainWindowViewModel : ObservableObject
     partial void OnCopySpeedWpmChanged(int value) => ApplyCopySpeed();
 
     /// <summary>Hand the decoder the operator's figure, or take it back.</summary>
+    /// <remarks>
+    /// <para>**THE TRACKER'S FIGURE SUPERSEDES THE OPERATOR'S ONCE THERE IS A
+    /// STATION TO TRACK.** He set twenty, the station was sending fourteen, and
+    /// thirty seconds produced two characters; he turned the figure down to
+    /// thirteen by hand and the next three captures produced eleven, twelve and
+    /// fourteen. **A seed wrong by six words a minute cost five sixths of the
+    /// copy**, and he should not have to find that by turning a knob.</para>
+    /// <para>**THE EVIDENCE IS THE KEYING METER'S SWING AND NOT THE TRACKER'S
+    /// OPINION OF ITSELF.** A tracker that has fitted a clock to noise is
+    /// confident in exactly the same way as one that has fitted it to a station,
+    /// so asking it is asking the wrong instrument. The swing between quiet and
+    /// loud at the keyed pitch is the figure that held steady across a whole
+    /// evening (<see cref="CwKeyingThresholds.ConfidentSwingDb"/>).</para>
+    /// <para>**AND IT IS NOT PERMANENT.** The moment the meter stops seeing a
+    /// station the figure he set comes back, because that is when a decoder with
+    /// nothing to go on needs it most. Nothing here silences anything or raises
+    /// any confidence: it decides which of two numbers the estimator starts from
+    /// and nothing else (HM-DEC-048).</para>
+    /// </remarks>
     private void ApplyCopySpeed()
     {
         if (_decoder is null)
@@ -1136,9 +1162,25 @@ public partial class MainWindowViewModel : ObservableObject
             return;
         }
 
-        _decoder.SeededWordsPerMinute = CopySpeedOn ? CopySpeedWpm : null;
+        var trackerGoverns = CopySpeedSuperseded;
+
+        _decoder.SeededWordsPerMinute =
+            CopySpeedOn && !trackerGoverns ? CopySpeedWpm : null;
+
         CopySpeedInUse = _decoder.UsingSeededSpeed;
+        CopySpeedIsSuperseded = CopySpeedOn && trackerGoverns;
     }
+
+    /// <summary>
+    /// True when there is a station being keyed and the decoder has fitted a
+    /// clock to it.
+    /// </summary>
+    private bool CopySpeedSuperseded
+        => _decoder is { } decoder
+           && decoder.Timing.IsReady
+           && _keyingReading.Verdict == KeyingVerdict.Keying
+           && !_keyingReading.Held
+           && _keyingReading.SwingDb >= CwKeyingThresholds.ConfidentSwingDb;
 
     /// <summary>The figure, as it reads beside the control.</summary>
     public string CopySpeedText => $"{CopySpeedWpm} WPM";
@@ -1170,6 +1212,14 @@ public partial class MainWindowViewModel : ObservableObject
             if (!CopySpeedOn)
             {
                 return "";
+            }
+
+            if (CopySpeedIsSuperseded)
+            {
+                return "Hamlet can hear somebody keying and has worked the speed "
+                       + $"out for itself, so it is reading at {DetectedWpm} rather "
+                       + $"than the {CopySpeedWpm} you set. Yours comes back the "
+                       + "moment the station does not.";
             }
 
             return CopySpeedInUse
@@ -3543,7 +3593,29 @@ public partial class MainWindowViewModel : ObservableObject
             $"inputFloor {report.Level.FloorDb:0.0} dBFS",
             $"clipping   {report.Clipping}",
             $"toneHz     {(report.HasTone ? report.ToneHz.ToString("0") : "none")}",
-            $"snrDb      {(double.IsNaN(report.SnrDb) ? "unread" : report.SnrDb.ToString("0.0"))}",
+            // **THIS FIELD WAS CALLED `snrDb` AND IT IS NOT ONE** (HM-DEC-091:
+            // one source, and it says which). It is a held peak of how far the
+            // tracked bin stood above the noise beside it, rising at once and
+            // falling about a decibel a second, which is what HM-DEC-090 built it
+            // to be so that a station keying for a second and a half inside
+            // thirty would not average away to nothing. What it is not is a
+            // figure about this recording, and read as one it is badly wrong:
+            // measured across this repository's captures it rates
+            // `cw-2026-08-20-014854` at 41.7 and `cw-2026-08-20-014935` at 38.4,
+            // neither of which holds keying at any pitch, above
+            // `cw-2026-08-17-013347` at 34.7, which is the one this decoder reads
+            // a callsign out of. **A work order was written from that reading.**
+            //
+            // The number is not deleted and not changed, because it measures
+            // something real and something else was built on it. It says what it
+            // measures instead, and the two figures on this sheet that do
+            // separate a station from an empty band sit beside it: the
+            // `inputPeak` and `inputFloor` pair the terminal shows, and the swing
+            // on the `keying` line.
+            $"tonePeak   {(double.IsNaN(report.SnrDb) ? "unread" : report.SnrDb.ToString("0.0"))}"
+                + "  (the highest the tracked tone ever stood above the noise "
+                + "beside it, held and decaying; not a figure about this "
+                + "recording)",
 
             // **THE FIGURE FOR THIS RECORDING, WHICH IS WHAT EVERY NUMBER ON THIS
             // SHEET IS READ AS BEING** (HM-DEC-091). Derived, by taking the
@@ -3831,7 +3903,37 @@ public partial class MainWindowViewModel : ObservableObject
         KeyingIsUndecided = reading.Verdict == KeyingVerdict.Listening;
         KeyingIsHeld = reading.Held;
 
-        KeyingDetail = reading.ToneHz <= 0
+        KeyingDetail = KeyingDetailFor(reading);
+
+        // **AND THE SPEED THE OPERATOR SET STEPS ASIDE ONCE THERE IS A STATION
+        // TO TRACK.** The swing is the evidence for that, not this meter's own
+        // timing and not the tracker's opinion of itself.
+        ApplyCopySpeed();
+    }
+
+    /// <summary>What the meter measured, or why there is nothing to show.</summary>
+    /// <param name="reading">The reading.</param>
+    /// <returns>The detail line.</returns>
+    /// <remarks>
+    /// **A HELD VERDICT PRINTS THE VERDICT AND NO MEASUREMENTS.** While the meter
+    /// is coasting through a gap between overs, the newest window it has is the
+    /// gap, so the figures beside the word are measurements of silence wearing
+    /// the station's label. On the evening of 2026-08-20 that put `9 ms key down`
+    /// on screen and in a capture sidecar for a station the other recordings of
+    /// the same operator measure at about ninety, and a work order was written
+    /// from it. The verdict is the thing being held and it is still worth
+    /// printing; the numbers are not, because they are not about what the word
+    /// says.
+    /// </remarks>
+    private static string KeyingDetailFor(KeyingReading reading)
+    {
+        if (reading.Held)
+        {
+            return "holding through a quiet stretch, so there is nothing fresh "
+                   + "to measure";
+        }
+
+        return reading.ToneHz <= 0
             ? "nothing measured yet"
             : $"{reading.ToneHz:0} Hz, key down {reading.MedianMs:0} ms, "
               + $"{reading.SwingDb:0} dB between quiet and loud, "
@@ -3842,22 +3944,33 @@ public partial class MainWindowViewModel : ObservableObject
     /// <param name="reading">The reading.</param>
     /// <returns>The line.</returns>
     internal static string KeyingLine(KeyingReading reading)
-        => reading.ToneHz <= 0
-            ? "not measured"
+    {
+        var word = reading.Verdict switch
+        {
+            KeyingVerdict.Keying => "keying",
+            KeyingVerdict.NoKeying => "no keying",
+            _ => "listening",
+        };
+
+        if (reading.ToneHz <= 0)
+        {
+            return "not measured";
+        }
+
+        // **A HELD VERDICT CARRIES NO MEASUREMENTS INTO THE RECORD EITHER.** The
+        // sidecar is the more dangerous of the two places, because a figure
+        // written beside a recording is read months later as a fact about it.
+        return reading.Held
+            ? word + " (held through a quiet stretch, so nothing was measured)"
             : string.Format(
                 CultureInfo.InvariantCulture,
-                "{0}{1} at {2:0} Hz, {3:0} ms key down, {4:0} dB swing, {5} key-downs",
-                reading.Verdict switch
-                {
-                    KeyingVerdict.Keying => "keying",
-                    KeyingVerdict.NoKeying => "no keying",
-                    _ => "listening",
-                },
-                reading.Held ? " (held through a quiet stretch)" : "",
+                "{0} at {1:0} Hz, {2:0} ms key down, {3:0} dB swing, {4} key-downs",
+                word,
                 reading.ToneHz,
                 reading.MedianMs,
                 reading.SwingDb,
                 reading.Runs);
+    }
 
     /// <summary>
     /// What the decoder made of the audio in this file, and nothing else
