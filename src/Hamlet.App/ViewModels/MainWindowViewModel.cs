@@ -272,6 +272,82 @@ public partial class MainWindowViewModel : ObservableObject
     [NotifyPropertyChangedFor(nameof(HasFilterBandwidth))]
     private string _filterBandwidthText = "";
 
+    /// <summary>
+    /// True while the radio is transmitting and the decoder is standing down.
+    /// </summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(SuspendedNote))]
+    [NotifyPropertyChangedFor(nameof(AdvisoryNote))]
+    private bool _decodingIsSuspended;
+
+    /// <summary>
+    /// The one advisory the terminal is showing, by priority.
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE TRANSCRIPT MUST NOT MOVE UNDER HIM.** Below it sat a stack of
+    /// boxes that each appeared and vanished on their own, and every one of them
+    /// reflowed everything around it. He watches that screen for half an hour at
+    /// a time while tuning across a band, and the thing he is reading moved.</para>
+    /// <para>**SO THERE IS ONE REGION OF FIXED HEIGHT AND ITS CONTENT SWAPS.**
+    /// The messages are genuinely alternatives: several of them were saying
+    /// versions of the same thing at the same time, that nothing is being read.
+    /// Nothing was removed; what changed is that only the most useful one is on
+    /// screen, and the region occupies its space whether or not it has anything
+    /// to say.</para>
+    /// <para>**THE ORDER IS BY HOW WRONG THE OPERATOR WOULD BE WITHOUT IT.**
+    /// Suspension first, because a terminal that has stopped without saying why
+    /// reads as a quiet band. Then the two that mean somebody else started
+    /// sending, then what Hamlet can see when it is producing nothing, then the
+    /// notes about its own limits, and last the ones about the settings.</para>
+    /// <para>**TO ADD A MESSAGE**, put it in this list at the place its urgency
+    /// earns and give it a tone. Do not add a panel below the transcript, and do
+    /// not make an existing one conditional: either of those brings the jump
+    /// back.</para>
+    /// </remarks>
+    public string AdvisoryNote
+    {
+        get
+        {
+            foreach (var text in Advisories())
+            {
+                if (!string.IsNullOrWhiteSpace(text))
+                {
+                    return text;
+                }
+            }
+
+            return "";
+        }
+    }
+
+    /// <summary>Every advisory the terminal can show, most urgent first.</summary>
+    private IEnumerable<string> Advisories()
+    {
+        yield return SuspendedNote;
+        yield return HandoverNote;
+        yield return TipMarkText;
+        yield return DecodeNote;
+        yield return CaptureNote;
+        yield return DecoderStory;
+        yield return CeilingNote;
+        yield return CopySpeedOn ? CopySpeedNote : "";
+    }
+
+    /// <summary>What the terminal says while the operator is sending.</summary>
+    /// <remarks>
+    /// **A TERMINAL THAT HAS STOPPED WITHOUT SAYING WHY IS ITS OWN CONFIDENT
+    /// WRONG ANSWER.** An empty screen reads as a quiet band, and the one moment
+    /// it is guaranteed not to be quiet is while the operator has his hand on the
+    /// key.
+    /// </remarks>
+    public string SuspendedNote
+        => DecodingIsSuspended
+            ? "You are sending, so Hamlet is listening to you rather than to the "
+              + "band. Whatever you key is yours and never appears here as "
+              + "somebody else's. It picks the band up again a moment after you "
+              + "stop."
+            : "";
+
     /// <summary>The sending speed the decoder is tracking, or 0.</summary>
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(TerminalSummary))]
@@ -3078,7 +3154,7 @@ public partial class MainWindowViewModel : ObservableObject
 
         if (_decoder is not null)
         {
-            _decoder.CharacterDecoded -= Transcript.Offer;
+            _decoder.LeadingEdge -= Transcript.OfferEdge;
             _decoder.CharacterSettled -= Transcript.Settle;
             _decoder.Listen(null);
             _decoder = null;
@@ -3124,6 +3200,22 @@ public partial class MainWindowViewModel : ObservableObject
         // **THE TWO-STAGE DECODE, ON SCREEN** (HM-DEC-096). All of this existed
         // and was tested and none of it was rendered, so the design the decoder
         // was rebuilt around was invisible to the person it was rebuilt for.
+        // **THE RADIO SAYS WHETHER IT IS TRANSMITTING, AND THE DECODER IS TOLD**
+        // (HM-DEC-091). Hamlet has read `1C 00` for months, the diagnostics
+        // screen has shown it correctly for months, and nothing consumed it: the
+        // terminal decoded the operator's own sending and showed it as somebody
+        // else's, which is HM-DEC-009 in the one place nobody guarded.
+        //
+        // Unknown leaves decoding running. A link that has gone quiet must not
+        // silence the band, because a screen that stops without a reason reads as
+        // an empty band (§0.0).
+        var keyed = RigState[RigField.TransmitStatus];
+
+        _decoder.RadioIsTransmitting(
+            keyed.IsKnown ? keyed.Number == 1 : null, DateTime.UtcNow);
+
+        DecodingIsSuspended = _decoder.DecodingSuspended;
+
         SpeedIsReacquiring = _decoder.SpeedIsReacquiring;
         TipText = Transcript.TipText;
         TipIsUnstable = _decoder.SettledIsRefusing;

@@ -99,6 +99,86 @@ public sealed class CwDecoder
     private readonly CwGate _gate = new();
     private readonly CwSpeedEstimator _speed;
     private readonly CwProbabilisticStream _probabilistic;
+
+    private bool _transmitting;
+    private DateTime _transmitEndedUtc = DateTime.MinValue;
+    private long _suspendedChunks;
+
+    /// <summary>
+    /// How long decoding stays suspended after the radio stops transmitting.
+    /// </summary>
+    /// <remarks>
+    /// <para>**HALF A SECOND, AND THE EVIDENCE FOR IT IS THE POLL AND NOT THE
+    /// KEYING.** Transmit status is a live field, asked for four times a second
+    /// (<see cref="Rig.RigPollPlan.LiveInterval"/>), so the state Hamlet holds
+    /// can be a quarter of a second old before the reply is even parsed. Full
+    /// break-in switches between elements, which is tens of milliseconds: **the
+    /// poll cannot see that at all**, and nothing in this hold-off is measured
+    /// against it because nothing here can measure it.</para>
+    /// <para>What the figure is measured against is two things that are known.
+    /// Two poll intervals, so one dropped reply cannot resume decoding in the
+    /// middle of a transmission. And the receiver's own recovery, which
+    /// <see cref="CwTransmitGuard"/> measured at about twenty-four milliseconds
+    /// of transmit-receive hang with a ramp behind it, and holds a hundred and
+    /// fifty milliseconds for.</para>
+    /// <para>**IT IS ASYMMETRIC ON PURPOSE.** Suspension is immediate, because a
+    /// late suspension puts the operator's own sending on the screen as somebody
+    /// else's; resumption waits, because an early resumption does the same thing
+    /// with the tail of it.</para>
+    /// </remarks>
+    public static TimeSpan ResumeAfter { get; } = TimeSpan.FromMilliseconds(500);
+
+    /// <summary>True while the radio is transmitting or has just stopped.</summary>
+    public bool DecodingSuspended { get; private set; }
+
+    /// <summary>How many chunks of audio were dropped rather than decoded.</summary>
+    /// <remarks>
+    /// Diagnostic, and nothing reads it to decide anything (§0.0.1). A terminal
+    /// that went quiet and a terminal that was told to stop listening are
+    /// different facts and only one of them is a fault.
+    /// </remarks>
+    public long SuspendedChunks => _suspendedChunks;
+
+    /// <summary>
+    /// Tell the decoder what the radio says about its own transmitter.
+    /// </summary>
+    /// <param name="transmitting">
+    /// True when the radio reports the transmitter keyed, false when it reports
+    /// it not, and null when nobody knows.
+    /// </param>
+    /// <param name="nowUtc">The clock.</param>
+    /// <remarks>
+    /// <para>**THE RADIO SAYS SO AND THE AUDIO NEVER DOES** (HM-DEC-091). Not the
+    /// level, not the sidetone's pitch, not a change in the noise floor: every
+    /// one of those is a guess about the transmitter made from the thing the
+    /// transmitter is drowning out. `CwTransmitGuard` does read the audio, and it
+    /// answers a different question — whether the receiver is muted — which is a
+    /// fact about the receiver and is used to stop the gate's trackers learning
+    /// from silence.</para>
+    /// <para>**AND NOT KNOWING IS NOT TRANSMITTING.** An unknown transmit state
+    /// leaves decoding running, because a decoder silenced by a link that has
+    /// gone quiet is a band that reads as empty (§0.0). The cost of being wrong
+    /// that way is text the operator can see is his own; the cost the other way
+    /// is a screen that stops without a reason.</para>
+    /// </remarks>
+    public void RadioIsTransmitting(bool? transmitting, DateTime nowUtc)
+    {
+        if (transmitting == true)
+        {
+            _transmitting = true;
+            DecodingSuspended = true;
+            return;
+        }
+
+        if (_transmitting)
+        {
+            _transmitting = false;
+            _transmitEndedUtc = nowUtc;
+        }
+
+        DecodingSuspended = _transmitEndedUtc != DateTime.MinValue
+            && nowUtc - _transmitEndedUtc < ResumeAfter;
+    }
     private readonly Action<ToneReading> _onReading;
 
     private readonly StringBuilder _pattern = new();
@@ -431,7 +511,32 @@ public sealed class CwDecoder
     /// <param name="chunk">The samples.</param>
     public void Process(in AudioChunk chunk)
     {
+        // **THE TAP STILL TAKES IT.** A capture is the raw evidence of what
+        // arrived at the sound card, and audio the operator made himself is part
+        // of that: a recording that quietly omitted his own sending would be
+        // worth less, not more (§0.0.1). What it does not do is reach a decoder.
         Tap.Take(chunk.Samples, chunk.SampleRate);
+
+        if (DecodingSuspended)
+        {
+            // **NOT DECODED, NOT HELD, NOT RELEASED LATER.** The sidetone of the
+            // operator's own transmission is not something anybody sent to him,
+            // and presenting it as received text is HM-DEC-009 in its purest
+            // form: on full break-in it decodes as a page of isolated letters
+            // that look exactly like a weak station being read.
+            //
+            // The tracker is skipped along with everything else, so the survey
+            // cannot retune to a sidetone and the pitch that was being read is
+            // still there when the operator stops.
+            _suspendedChunks++;
+
+            // **BUT THE AUDIO CLOCK KEEPS RUNNING.** Dropping the samples without
+            // letting time pass would stamp every character read afterwards as
+            // though the transmission had never happened.
+            _probabilistic.Skip(chunk.Samples.Length);
+            return;
+        }
+
         _tracker.Process(chunk.Samples, chunk.FirstSampleIndex, _onReading);
 
         // **AND THE SAME AUDIO GOES TO THE DECODER THAT READS IT** (HM-DEC-091:

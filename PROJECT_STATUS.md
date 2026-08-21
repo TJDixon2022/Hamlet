@@ -1,9 +1,9 @@
 STATE: COMPLETED
-PHASE: 5 of 5
+PHASE: 8 of 8
 BALL: tim
 NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-21T13:06:00-04:00
-NOTE: New decoder reads the bulletin as words and stays silent on an empty band; the old path's tests are still red
+UPDATED: 2026-08-21T14:44:00-04:00
+NOTE: Decoding stands down while he sends and says so; the failing set is identical, 55 before and after
 
 ---
 

@@ -4,6 +4,77 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-147
+date: 2026-08-21
+refs: src/Hamlet.RadioEngine/Cw/CwDecoder.cs, src/Hamlet.App/ViewModels/MainWindowViewModel.cs, tests/Hamlet.RadioEngine.Tests/Cw/HamletDoesNotDecodeYourOwnSendingTests.cs, HM-DEC-009, HM-DEC-091
+---
+
+**Hamlet suspends decoding while the radio is transmitting, takes that state from
+the radio and never from the audio, and never lets sent text enter the received
+stream.**
+
+**THE OPERATOR KEYED THE RADIO BY HAND AND THE TERMINAL FILLED WITH HIS OWN
+SENDING.** Nothing on screen distinguished it from a station. Break-in is `full`,
+so the receiver opens between elements and the sidetone arrives chopped by
+transmit-receive switching, decoding as a page of isolated letters that looks
+exactly like a weak station being read. **The decoder was behaving correctly on
+input it should never have been given**, which is why no amount of work on the
+decoder would have found it.
+
+**THE SUBTLER HALF IS WORSE AND IS WHAT MAKES THIS A RULING RATHER THAN A FIX.**
+When CW transmit lands, Hamlet will decode its own sent text back and present it
+as received. An operator could read his own callsign returning and believe
+somebody answered. That is HM-DEC-009 with the operator's own hand on the key, and
+it is the one place in this application where a confident wrong answer is
+guaranteed rather than merely possible.
+
+**THE STATE COMES FROM THE RADIO** (HM-DEC-091). CI-V `1C 00`, which Hamlet has
+read four times a second for months, which the diagnostics screen has displayed
+correctly for months, and which **nothing consumed**. Never from the audio: not
+the level, not the sidetone's pitch, not a change in the noise floor, because each
+of those is a guess about the transmitter made from the thing the transmitter is
+drowning out. `CwTransmitGuard` does read the audio and answers a different
+question — whether the receiver is muted — which is a fact about the receiver.
+
+**SUSPENSION IS IMMEDIATE AND RESUMPTION WAITS HALF A SECOND.** Asymmetric on
+purpose: a late suspension puts his sending on the screen as somebody else's, and
+an early resumption does the same with the tail of it. **The evidence for the
+figure is the poll and not the keying.** Transmit status is a live field asked for
+every 250 ms, so the state can be a quarter of a second old before the reply is
+parsed; full break-in switches in tens of milliseconds and **the poll cannot see
+that at all**. What the half second is measured against is two poll intervals, so
+one dropped reply cannot resume mid-transmission, and `CwTransmitGuard`'s own
+measurement of about twenty-four milliseconds of transmit-receive hang with a ramp
+behind it.
+
+**NOT KNOWING IS NOT TRANSMITTING.** An unknown state leaves decoding running,
+because a decoder silenced by a link that has gone quiet is a band that reads as
+empty (§0.0). The cost of being wrong that way is text the operator can see is his
+own; the cost the other way is a screen that stops without a reason.
+
+**NOTHING IS HELD AND RELEASED LATER.** The audio is dropped before any decoder
+sees it, so there is nothing to release. Presenting it afterwards would be the same
+misattribution with a delay.
+
+**AND SUSPENSION MUST NOT COST THE STATION.** The window of envelope either side of
+a transmission is kept, so an operator sending a few characters mid-contact comes
+back to a decoder still reading whoever he was reading. What does keep running is
+the audio clock: a character stamped as though the transmission never happened is a
+moment nobody can point at (§0.0.1).
+
+**Rejected: inferring transmit from the audio.** The radio reports it, Hamlet
+already had it, and a second source for one fact is the fault HM-DEC-091 exists
+for.
+
+**Rejected: holding what was decoded during transmit and releasing it when the
+transmitter drops.** It was never received.
+
+**Rejected: going silently blank.** A terminal that has stopped without saying why
+is its own confident wrong answer, because an empty screen reads as a quiet band
+and the one moment it is guaranteed not to be quiet is while his hand is on the
+key.
+
+---
 id: HM-DEC-146
 date: 2026-08-20
 supersedes: HM-DEC-119

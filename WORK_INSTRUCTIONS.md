@@ -27,113 +27,71 @@ If all four hold, say "Hamlet confirmed" and continue.
 
 ## Why this unit exists
 
-**Tim operates tonight. The decoder he has produces garbage on strong, clean
-signals and he is replacing it.**
+Two faults, both found by Tim at the rig, both in the CW terminal. **The first is
+a prime-directive violation and comes first.**
 
-`010244`: S9+10, 24 dB envelope swing, dah/dit ratio 2.94 — textbook — and it read
-`■V UR RST ■ 1■21T■`. That is not a noise problem and no amount of tuning has
-touched it. A week of work on thresholds, floors, vote windows and analysis widths
-has bought a few characters at a time and cost red tests each time.
+### One: Hamlet decodes the operator's own sending and shows it as received
 
-**The architecture is the fault.** The decoder thresholds the envelope into hard
-key-down/key-up runs, fits speed by clustering those run lengths, and picks its
-analysis width from the fitted speed. Every stage depends on the one before and
-the evidence is discarded at the first step, so nothing downstream can recover
-from a wrong commit. Worse, it is a loop with positive feedback: chatter shortens
-the fitted dit, a short dit reads as a fast fist, a fast fist widens the gate's
-bandwidth, more noise crosses the threshold. Eight of nine recordings sat at 75 Hz
-on senders working near fourteen words a minute.
+Tim keyed the radio by hand and the terminal filled with fragments of his own
+transmission. **Nothing on screen distinguished it from a station.** That is the
+confident wrong answer HM-DEC-009 forbids, in a place nobody thought to guard.
 
-**No serious Morse decoder thresholds.** Bell 1977, VE3NEA's CW Skimmer and
-AG1LE's implementations all carry a probability of key state forward, hold several
-speed hypotheses at once, and delay the decision so later evidence can revise an
-earlier letter. That is why Skimmer changes a word after one more character
-arrives and Hamlet cannot.
+**The subtler half is worse.** When CW transmit lands, the app will decode its own
+sent text back and present it as received. An operator could read their own
+callsign returning and believe somebody answered.
 
-### The replacement, already written and measured
+**The fragmentation is a symptom, not the bug.** Break-in is `full`, so the
+receiver opens between elements and the sidetone arrives chopped by
+transmit-receive switching, decoding as a page of isolated `E` characters. **The
+decoder is behaving correctly on input it should never have been given.**
 
-`tools\reference-decoder\reference_decoder.py` is in the tree. **Read it first. It
-is the specification.** About 120 lines of Python, and on the repository's own
-captures:
+**Ruled by Tim.** Suspend decoding while the radio is transmitting; resume when it
+drops. Transmit state is a fact the radio reports over CI-V `1C 00`, Hamlet
+already reads it, the diagnostics screen already displays it correctly, and
+**nothing consumes it**. Say what is happening rather than going silently blank.
+And whatever Hamlet sends must never appear in the received-text stream.
 
-| recording | ratio | speed found | text |
-|---|---|---|---|
-| `003016` | 24.2 | 22 WPM | `I= HADA KPA15TT ITWAS JUNK = ESTILL HVE MY ETO 91B TT JUST VFB TUBELIN` |
-| `003126` | 30.9 | 28 WPM | `A OM = I WATCH AT LEAST 2 MOVIES A DAY WID X# WHY NOT ... WESTERNS` |
-| `003758` | 39.2 | 16 WPM | `KIS QRL TU ... AA4MP/4 QNIK` |
-| `004507` | 32.5 | 18 WPM | `E JJ AT ARRL DOT NET = EACH STATION HANDLING THIS MESSAGE PE` |
-| `014854` | 6.1 | — | nothing |
-| `014935` | 2.8 | — | nothing |
+### Two: the advisory boxes appear and disappear, and the screen jumps
 
-Against the current decoder's 38, 35, 14 and 25 characters of fragments on those
-same four files. **No seed. No operator speed. It found 22, 28, 16 and 18 words a
-minute on its own.**
+Below the terminal sit a stack of panels that come and go independently — the
+tone advisory, the keying meter, the case-press prompt, the nothing-coming-through
+note, the have-a-look offer, the dimmed-character legend. **Each one appearing or
+vanishing reflows everything around it.**
 
-### Ruled by Tim, tonight
-
-**The old decoder comes out. There is no toggle, no fallback and no parallel
-path.** He has weighed a decoder that has never touched a radio against one that
-is useless on a radio, and chosen. **He is not asking for perfection on the first
-pass. He is asking for something with value that he can test at the rig.**
-
-*Rejected: keeping the old decoder alongside.* Two decoders means an evening where
-he cannot tell which produced a bad line.
-
-*Rejected: staging this across three units.* He operates tonight.
-
----
-
-## The three ideas, which are the whole of it
-
-1. **Never threshold.** Every hop produces two numbers — the log-likelihood the
-   key is down and the log-likelihood it is up — against a noise model. Nothing
-   commits.
-2. **Speed is a hypothesis, not a measurement.** A dozen speeds run in parallel
-   and the accumulated likelihood picks. **The loop cannot exist**, because
-   nothing measures speed from run lengths and nothing selects a bandwidth from a
-   measured speed.
-3. **Elements and characters are decided together, and late.** Dynamic programming
-   over whole elements chooses all the boundaries at once against each speed
-   hypothesis, instead of comparing one gap at a time to a threshold.
-
-**Silence falls out of this rather than being bolted on.** "The whole stretch is
-noise" is an explicit competing hypothesis. On the two recordings holding no
-station it wins: ratios of 3 to 6 against 24 to 39 with a station, no overlap.
-That is HM-DEC-120 satisfied by construction, not by a guard.
+**Tim's words: he hates it.** He is watching that screen for half an hour at a
+time while tuning across a band, and the thing he is reading moves under him.
 
 ---
 
 ## Verify this instruction against the tree
 
 - **Report mismatches; do not repair the instruction silently.**
-- **Expected red before you start: five.**
-  `CwSettledSilenceTests.APassThatReadSomethingEmitsSomething`,
-  `CwFarnsworthTests.TheBulletinDecodesToItsAnswerKey`,
-  `CwTerminalTests.ClearingTheTranscriptLeavesTheDecoderAlone`,
-  `ARecordingWithKeyingInItIsReadTests.TheDecoderSaysSomethingAboutIt`,
-  `TheToneIsFoundInRealisticAudio(farnsworth-heavy)`.
-  **Several will be deleted by this unit. Report what the count is at the end and
-  what each survivor is.**
-- `HM-OPEN-055`: two rig tests flake intermittently and pass on a rerun. Not this
-  unit. Do not chase them.
+- **The tree is at 55 failing tests**, fifty of which describe the decoder removed
+  two units ago and were not deleted. **That count blinds this unit** — a
+  regression here would be invisible in the noise. **Record the exact set before
+  you start and the exact set at the end, and name every difference.** Do not
+  delete the fifty here; that is its own unit.
+- Three of the 55 are `HM-OPEN-055`, rig tests that flake and pass on a rerun.
+  **Not this unit.**
 
 ---
 
 ## Rulings in force
 
-**HM-DEC-120 — nothing is emitted on audio holding no signal.** The one property
-that must survive. **The likelihood-ratio gate is how, and it must be tested, not
-assumed.**
+**HM-DEC-009 — Hamlet does not give a confident wrong answer.** Text presented as
+received that the operator sent himself is the purest form of it.
 
-**HM-DEC-091 — one source, and it says which.** Every number the new decoder puts
-on a panel or in a sidecar says what it is a measurement of.
+**HM-DEC-091 — one source, and it says which.** Transmit state comes from the
+radio, never from the audio.
 
-**HM-DEC-048 — nothing raises a confidence score.**
+**HM-DEC-093 — no radio on the development machine.** Transmit state cannot be
+exercised live here. **Every test must drive the state directly.**
 
-**HM-DEC-090 — the freshness guard on captures is untouched.**
+**HM-DEC-098 — an attended automatic transmit cycle reaching an antenna is
+unruled and stays unruled.** This unit does not transmit, does not enable
+transmitting, and does not touch the interlocks. It observes.
 
-**HM-DEC-093 — no radio on the development machine.** Everything here is verified
-against recordings.
+**HM-DEC-120 — nothing is emitted on audio holding no signal.** Must still hold.
 
 ---
 
@@ -145,101 +103,145 @@ is moving inside the task. Also every ten minutes while a task runs.
 
 ---
 
-## Task 1 — Build it, and check it against the Python
+## Task 1 — Report what already exists
 
-`CwProbabilisticDecoder`, new, in `src\Hamlet.RadioEngine\Cw\`. Port
-`reference_decoder.py` faithfully:
+**Report before changing anything.**
 
-- Quadrature mixdown at the tracked tone, envelope at roughly 5 ms hops.
-- Per-hop log-likelihoods of key-down and key-up from a noise scale and a signal
-  amplitude. **No threshold is formed anywhere.**
-- A segmental Viterbi over element kinds — dit, dah, inter-element gap, character
-  gap, word gap — with a Gaussian penalty on how far a segment's length sits from
-  the 1, 3 or 7 units the hypothesis expects, and elements forced to alternate.
-- An outer loop over speed hypotheses; the best total likelihood wins.
-- The likelihood ratio against the all-key-up hypothesis, per hop.
-
-**The check that matters: run the Python on `cw-2026-08-18-004507.wav` and run
-your C# on the same file, and report both strings side by side.** Three orders in
-a row this week were written from measurements no session could reproduce. **If
-the two do not substantially agree, the port is wrong — say so and stop rather
-than shipping something plausible.**
+1. Where transmit status arrives from CI-V `1C 00`, what type carries it, how
+   often it is polled or whether it is broadcast, and how stale it can be.
+2. What the diagnostics screen reads to display it correctly.
+3. What the "transmit guard" kept in an earlier unit actually guards, and whether
+   it is the same fact or a different one.
+4. Every consumer of transmit state today, if any.
+5. **How quickly the state is known to change.** Full break-in switches between
+   elements — tens of milliseconds. **Say what the poll cadence is and whether it
+   can see that at all.** If it cannot, the hysteresis in task 2 is doing more work
+   than it looks, and that must be stated rather than assumed.
 
 ---
 
-## Task 2 — Make it stream
+## Task 2 — Suspend decoding while transmitting
 
-The reference runs offline over whole files. The terminal needs it live.
-
-- A sliding window with a decision delay. Bell used about a second; **choose one,
-  say what you chose and why.**
-- Text already committed does not change under the operator. Text inside the delay
-  may be revised — **that is the point of the architecture and the panel should
-  show the difference**, in whatever way the terminal already distinguishes
-  settled text from provisional.
-- **Report the cost per second of audio.** The speed search is an outer loop over
-  a dozen hypotheses and nobody has measured it live. **If it will not keep up,
-  reduce the hypothesis count and say what you reduced it to** rather than
-  shipping something that stalls at 9pm.
+- Decoding suspends when transmit is asserted and resumes when it drops.
+- **Hysteresis, so full break-in does not flap the decoder on and off between
+  elements.** Choose the hold-off, **say what you chose and what evidence you have
+  for it.** If the evidence is only the poll cadence from task 1, say that.
+- **Suspension must not cost the decoder its state.** The speed hypotheses and the
+  noise floor tracking survive a transmit cycle. An operator sending a few
+  characters mid-contact must not return to a decoder that has forgotten the
+  station it was reading.
+- **Nothing decoded during suspension reaches the terminal, the transcript, the
+  sidecar or the roster.** Not held and released later — not decoded at all.
 
 ---
 
-## Task 3 — Wire it to the terminal and take the old one out
+## Task 3 — Say so on screen
 
-**The new decoder is the only thing feeding the CW terminal.** No setting, no
-fallback, no parallel path.
+The terminal header states that decoding is suspended and why, in the project
+voice, while it is suspended — something along the lines of *you're sending, so
+Hamlet is listening to you rather than the band*. The wording is yours.
 
-Then delete the old decode path and every test that exists only to describe its
-behaviour — the thresholding gate, the run-length clock fit, `Refine`, the
-speed-selected analysis width, the vote window, the element floors.
-
-- **`CwToneTracker` and the coarse survey stay.** Finding a station is the one
-  thing that works and this unit does not touch it.
-- **The keying meter stays.** It is the independent witness and it shares no code
-  with the decoder on purpose.
-- **The capture press, the roster, the sidecar and the case measure stay
-  untouched.** Tim marks cases tonight and that machinery is the only instrument
-  the project has.
-- **A test that fails only because the old decoder is gone is deleted with it.
-  A test that asserts something still true is kept and made to pass.** Say which
-  you did for each, in a list.
+**A terminal that has stopped without saying why is its own confident wrong
+answer**: the operator reads an empty screen as a quiet band.
 
 ---
 
-## Task 4 — Prove the silence
+## Task 4 — Sent text and received text are different things
 
-The gate is `GATE = 15.0` in the reference, sitting in a measured gap between 6
-and 24 on six recordings. **It is provisional and the README says so.**
+Whatever Hamlet sends must never enter the received-text stream, by any path.
+**This holds independently of task 2** — it must be true even if the transmit
+state is late, wrong, or missing entirely, because it is a fact about where text
+came from rather than about what the radio was doing.
 
-- Assert the two recordings holding no keying emit nothing.
-- Run the synthesized sensitivity sweep and report the worst invention at every
-  level.
-- **If no single gate value both reads the stations and silences the empty band,
-  say so and stop.** That is Tim's, and it is the one place this architecture
-  could still fail him.
+Report how the two are kept apart and what would have to go wrong for them to
+merge.
 
 ---
 
-## Task 5 — What the operator sees. **THIS IS THE DROP CANDIDATE.**
+## Task 5 — The transmit tests Tim named
 
-The panel's existing language assumes a fitted speed and an operator seed. The new
-decoder has neither — it reports the hypothesis that won. Update what the terminal
-says about speed so it is not describing machinery that no longer exists.
+All four, driving transmit state directly (HM-DEC-093):
 
-**Drop it whole if the session is running long and say so.** Wrong wording beside
-right text is survivable tonight. Wrong text is not.
+1. Decoding is suspended while transmit is asserted.
+2. Decoding resumes when transmit drops.
+3. **Full break-in cycling does not cost the decoder its speed estimate or its
+   noise floor tracking.**
+4. **No text decoded during transmit reaches the terminal.**
+
+Then confirm and report that **HM-DEC-120 still holds** — both recordings holding
+no keying stay silent, and the sensitivity sweep still invents nothing.
+
+---
+
+## Task 6 — Record the ruling
+
+**Find the next free `HM-DEC` id. Do not assume one and do not invent one.**
+`DECISIONS.md` holds 001-095 then 134 onward, and further ids exist as index rows
+in `CLAUDE.md` §1. **Check both.** Report the id you used and how you established
+it was free.
+
+The ruling records that Hamlet suspends decoding while the radio is transmitting,
+that transmit state comes from the radio and never from the audio, and that sent
+text never enters the received stream.
+
+---
+
+## Task 7 — The screen must not move under him
+
+**The governing rule: the transcript never moves.** Nothing appearing or
+disappearing below it may reflow it, and nothing appearing or disappearing may
+shift its siblings either.
+
+The shape is yours, but the constraint is not. Two approaches that satisfy it:
+
+- **One advisory region of fixed height**, showing the most useful message at any
+  moment by priority, its content swapping in place rather than panels stacking
+  and unstacking.
+- **Every panel always present**, occupying its space whether or not it has
+  something to say, so appearing is a change of content rather than a change of
+  layout.
+
+**Prefer the first if the messages are genuinely alternatives.** Look at what is
+on screen at once in the capture that prompted this: a tone advisory, a keying
+meter, a case-press prompt, a nothing-coming-through note, a have-a-look offer and
+a dimmed-character legend. **Several of those are saying versions of the same
+thing at the same time** — that nothing is being read. That is worth reporting
+even if you do not act on it.
+
+- **Do not remove any message.** Each is there for a reason and this unit is about
+  where they sit, not whether they are said.
+- **The keying meter's own text may not change**, only where it lives. It is the
+  independent witness and its wording was ruled.
+- **A message that must be seen immediately — transmit suspension from task 3 —
+  outranks the rest.**
+
+Report what you chose, what the priority order is, and what a session reading this
+later would need to know to add a message without reintroducing the jump.
+
+---
+
+## Task 8 — The panel's stale language. **THIS IS THE DROP CANDIDATE.**
+
+The copy-speed control still sets a seed **the new decoder does not read**. It is
+inert. The wording beside it still describes a fitted speed and an operator seed —
+machinery that no longer exists.
+
+Either make the control do something the decoder honours, or remove it and the
+wording with it. **If that is a judgement between two costs, say so and stop** —
+a control that looks live and does nothing is its own confident wrong answer, but
+which way to resolve it is Tim's.
+
+**Drop it whole if the session is running long and say so.**
 
 ---
 
 ## Parked — do not touch, do not raise
 
-- **The gate width sweep and the 35 ms question.** Moot: there is no gate.
-- **`Refine`, the element floor, the clock fit, `ShortestVote`.** All deleted with
-  the old decoder. The asks about them close.
-- **`RfGain` reading 100% with the knob at noon**; stations reading 375 to 825 Hz
-  against a 600 Hz pitch; the lock lost at 25 to 27 seconds. Real, not this unit.
-- **HM-OPEN-055**, the two flaking rig tests.
-- **HM-DEC-098, HM-DEC-130, HM-OPEN-033, HM-OPEN-007.**
+- **The fifty dead tests** describing the removed decoder. Their own unit.
+- **Word spacing** on the streaming path.
+- **The likelihood gate at 15.0.** Waiting on an evening at the rig.
+- **HM-OPEN-055**, the flaking rig tests.
+- **HM-DEC-130, HM-OPEN-033, HM-OPEN-007.**
 
 ---
 
@@ -247,21 +249,19 @@ right text is survivable tonight. Wrong text is not.
 
 Standing prohibitions are in `CLAUDE.md`. Cited, not restated: 9.5.1 one branch
 and it is `main`, **and every session commits and pushes to it**; no interactive
-or destructive git; do not invent a ruling id; do not touch coverage thresholds.
+or destructive git; do not touch coverage thresholds.
 
 Unit-specific:
 
-- **Do not leave a way to run the old decoder.** *Tim ruled it out explicitly. Two
-  decoders means an evening where he cannot tell which produced a bad line.*
-- **Do not form a threshold anywhere in the new decoder.** *That is the defect
-  being removed. If a port step seems to need one, it is a mistranslation.*
-- **Do not touch the survey, the keying meter, the capture press or the roster.*
-  *He marks cases tonight.*
-- **Do not adjudicate any capture or write an answer key.** *The reference
-  decoder's output is what it emitted, not truth (§12.5).*
-- **Do not spend the session perfecting word spacing.** *Every decoder in the
-  field runs words together, including the best. `HADA` and `ITWAS` are readable.
-  Wrong letters are not.*
+- **Do not infer transmit from the audio.** *Not from level, not from the
+  sidetone's pitch, not from a change in the noise floor. The radio reports it and
+  Hamlet already has it.*
+- **Do not transmit, and do not touch the interlocks.** *HM-DEC-098 is unruled.*
+- **Do not let suspension reset the decoder.** *A guard that costs the station is
+  a worse bug than the one being fixed.*
+- **Do not hold decoded text during transmit and release it afterwards.** *It was
+  never received. Presenting it late is the same misattribution with a delay.*
+- **Do not silence any advisory to stop the jump.** *Task 7 is about layout.*
 
 ---
 
@@ -272,10 +272,13 @@ other headings: **What Claude did**, **What Tim should expect**, **What we shoul
 do next**, **What's blocking us** — the last carrying **Asks still outstanding**
 per HM-DEC-139.
 
-**Section 1 opens with the two strings from task 1 side by side** — the Python's
-and the C#'s on the same recording.
+**Section 1 opens with task 1's answer to how quickly transmit state is known**,
+because the hysteresis rests on it.
 
-**Section 2 states in one sentence what he will see on the terminal tonight that
-he did not see last night**, and lists anything that got worse.
+**Section 2 states in one sentence what the terminal shows while he is sending,
+and in one more whether the screen still moves.**
+
+**Report the failing-test set exactly, before and after, and name every
+difference.**
 
 **Stop and report.**

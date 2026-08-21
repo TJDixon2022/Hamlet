@@ -834,10 +834,12 @@
                                          Foreground="{StaticResource HmGreenBrush}" />
                         </Grid>
 
+                        <!-- RESERVED SPACE, NOT A ROW THAT APPEARS (HM-DEC-080).
+                             This sits above the transcript, so it appearing
+                             pushed the thing he is reading down the screen. -->
                         <TextBlock Text="{Binding InputLevelText}"
-                                   FontSize="11" TextWrapping="Wrap"
-                                   IsVisible="{Binding InputLevelText,
-                                       Converter={x:Static ctl:PrivilegeToneConverter.NotEmpty}}"
+                                   FontSize="11" Height="15"
+                                   TextTrimming="CharacterEllipsis"
                                    Foreground="{StaticResource HmTextMutedBrush}" />
                     </StackPanel>
 
@@ -897,92 +899,51 @@
                                 ToolTip.Tip="A word a minute faster." />
                     </Grid>
 
-                    <!-- WHICH OF THE TWO PRODUCED WHAT IS ON THE SCREEN (§0.0).
-                         Set and in use, set and not needed, and off are three
-                         different states, and he must never be reading a
-                         transcript without knowing which one he is in. -->
-                    <TextBlock Text="{Binding CopySpeedNote}"
-                               IsVisible="{Binding CopySpeedOn}"
-                               FontSize="11" TextWrapping="Wrap"
-                               Foreground="{StaticResource HmTextMutedBrush}" />
+                    <!-- ONE ADVISORY REGION, AND IT NEVER CHANGES HEIGHT.
+                         Below the transcript sat a stack of boxes that each
+                         appeared and vanished on their own, and every one of
+                         them reflowed everything around it. He watches this
+                         screen for half an hour at a time while tuning across a
+                         band, and the thing he is reading moved under him.
 
-                    <!-- NOTHING IS COMING BEHIND THE LEADING EDGE, WHICH IS AN
-                         ORDINARY STATE AND NOT AN ERROR. The settled pass
-                         refuses below its own working limit rather than copying
-                         into the band where it is half wrong (HM-DEC-097). What
-                         it may never be is invisible: text nothing confirmed and
-                         text a second pass stood behind cannot look the same. -->
-                    <TextBlock Text="{Binding TipMarkText}"
-                               IsVisible="{Binding TipIsUnstable}"
-                               FontSize="11" TextWrapping="Wrap"
-                               Foreground="{StaticResource HmAmberDeepBrush}" />
+                         The messages are alternatives rather than a list:
+                         several of them were saying versions of the same thing
+                         at the same moment, that nothing is being read. Nothing
+                         was removed. What changed is that the most useful one is
+                         shown and the region holds its space whether or not it
+                         has anything to say.
 
-                    <!-- BOTH OF THESE MEAN SOMEBODY ELSE STARTED TRANSMITTING,
-                         which is the most useful thing the decoder knows and the
-                         thing it never said (HM-DEC-096). -->
-                    <Border IsVisible="{Binding HasHandover}"
-                            Background="{StaticResource HmAmberTintBrush}"
-                            BorderBrush="{StaticResource HmAmberEdgeBrush}"
-                            BorderThickness="1" CornerRadius="6" Padding="9,5">
-                        <TextBlock Text="{Binding HandoverNote}"
-                                   FontSize="11" TextWrapping="Wrap"
-                                   Foreground="{StaticResource HmAmberDeepBrush}" />
+                         The order is in MainWindowViewModel.Advisories, and a
+                         message is added there rather than as another panel
+                         here. -->
+                    <Border Height="72" Margin="0,2,0,0"
+                            CornerRadius="6" BorderThickness="1"
+                            Background="{StaticResource HmSlateTintBrush}"
+                            BorderBrush="{StaticResource HmSlateEdgeBrush}"
+                            Padding="10,7">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <ctl:GlossaryTextControl Text="{Binding AdvisoryNote}"
+                                                     FontSize="12" LineSpacing="1.4"
+                                                     Foreground="{StaticResource HmTextPrimaryBrush}" />
+                        </ScrollViewer>
                     </Border>
 
-                    <!-- THE CEILING ANNOUNCES ITSELF RATHER THAN BEING
-                         CONCEALED. At slow speeds the settled fit is made over
-                         less audio than the speed asked for, so it is weaker
-                         than usual, and saying nothing would let a worse reading
-                         pass for an ordinary one (§0.0). -->
-                    <TextBlock Text="{Binding CeilingNote}"
-                               IsVisible="{Binding HasCeilingNote}"
-                               FontSize="11" TextWrapping="Wrap"
-                               Foreground="{StaticResource HmTextMutedBrush}" />
-
                     <!-- WHERE THE SECOND PASS DISAGREED WITH THE FIRST. In
-                         memory and exportable, never written unasked: a log that
-                         grew on disk would need a retention policy nobody has
-                         designed, and this is diagnostic rather than a record of
-                         the air (§0.0.1). -->
-                    <Grid ColumnDefinitions="*,Auto" IsVisible="{Binding HasRevisions}">
+                         memory and exportable, never written unasked (§0.0.1).
+                         The row is always here and the button is what changes,
+                         so the count arriving does not move anything. -->
+                    <Grid ColumnDefinitions="*,Auto" Height="26">
                         <TextBlock Grid.Column="0" Text="{Binding RevisionsText}"
-                                   FontSize="11" TextWrapping="Wrap"
+                                   FontSize="11" TextTrimming="CharacterEllipsis"
                                    VerticalAlignment="Center" Margin="0,0,8,0"
                                    Foreground="{StaticResource HmTextMutedBrush}" />
 
                         <Button Grid.Column="1" Content="keep the differences"
                                 FontSize="11" Padding="8,3"
+                                IsVisible="{Binding HasRevisions}"
                                 ToolTip.Tip="Writes every character the second pass changed its mind about, beside the captures."
                                 Command="{Binding ExportRevisionsCommand}" />
                     </Grid>
-
-                    <!-- WHAT IT CAN SEE WHEN IT IS PRODUCING NOTHING
-                         (HM-DEC-088). A strong signal that will not resolve and
-                         an empty band used to produce the same screen, and they
-                         are completely different problems. Everything in here is
-                         a measurement of the audio and never a claim about
-                         whoever is sending. -->
-                    <Border IsVisible="{Binding HasDecoderStory}"
-                            Background="{StaticResource HmBlueTintBrush}"
-                            BorderBrush="{StaticResource HmBlueEdgeBrush}"
-                            BorderThickness="1" CornerRadius="6"
-                            Padding="10,7" Margin="0,2,0,0">
-                        <ctl:GlossaryTextControl Text="{Binding DecoderStory}"
-                                                 FontSize="12" LineSpacing="1.45"
-                                                 Foreground="{StaticResource HmTextPrimaryBrush}" />
-                    </Border>
-
-                    <!-- What Windows is doing to the input, where it could be
-                         read, and the enhancements it could not. -->
-                    <Border IsVisible="{Binding HasCaptureNote}"
-                            Background="{StaticResource HmAmberTintBrush}"
-                            BorderBrush="{StaticResource HmAmberEdgeBrush}"
-                            BorderThickness="1" CornerRadius="6"
-                            Padding="10,7" Margin="0,2,0,0">
-                        <ctl:GlossaryTextControl Text="{Binding CaptureNote}"
-                                                 FontSize="12" LineSpacing="1.45"
-                                                 Foreground="{StaticResource HmTextPrimaryBrush}" />
-                    </Border>
 
                     <!-- CAN HAMLET HEAR KEYING AT ALL (HM-DEC-091). The
                          operator hears stations Hamlet does not and finds out
@@ -1061,29 +1022,13 @@
                                 Command="{Binding CaptureAudioCommand}" />
                     </Grid>
 
-                    <!-- The plain-language note, present only when
-                         there is something to say. An explanation
-                         that was always on screen would be read as
-                         decoration and stop being read at all. -->
-                    <Border Background="{StaticResource HmAmberTintBrush}"
-                            BorderBrush="{StaticResource HmAmberEdgeBrush}"
-                            BorderThickness="1" CornerRadius="6"
-                            Padding="10,7"
-                            IsVisible="{Binding HasDecodeNote}">
-                        <ctl:GlossaryTextControl
-                            Text="{Binding DecodeNote}"
-                            FontSize="12" LineSpacing="1.4"
-                            Foreground="{StaticResource HmAmberDeepBrush}" />
-                    </Border>
-
-                    <!-- THE OFFER WHERE THE PROBLEM SHOWS
-                         (HM-DEC-084). A popup somebody has to know
-                         to open is a popup they will not open when
-                         they are frustrated, which is exactly when
-                         it is needed. One line, not a banner, and
-                         it goes away when waved off. -->
-                    <Grid ColumnDefinitions="*,Auto,Auto"
-                          IsVisible="{Binding HasReceiveOffer}">
+                    <!-- THE OFFER WHERE THE PROBLEM SHOWS (HM-DEC-084). A
+                         popup somebody has to know to open is one they will not
+                         open when they are frustrated, which is exactly when it
+                         is needed. The row is always here and its contents
+                         change, so the offer arriving does not move the screen.
+                         The note itself is in the advisory region above. -->
+                    <Grid ColumnDefinitions="*,Auto,Auto" Height="26">
                         <ctl:GlossaryTextControl Grid.Column="0"
                             Text="{Binding ReceiveOffer}"
                             FontSize="11" LineSpacing="1.4"
@@ -1091,9 +1036,11 @@
                             Foreground="{StaticResource HmBlueBrush}" />
                         <Button Grid.Column="1" Content="Have a look"
                                 FontSize="11" Padding="8,3" Margin="0,0,6,0"
+                                IsVisible="{Binding HasReceiveOffer}"
                                 Command="{Binding OpenReceiveHelpCommand}" />
                         <Button Grid.Column="2" Content="No thanks"
                                 FontSize="11" Padding="8,3"
+                                IsVisible="{Binding HasReceiveOffer}"
                                 Command="{Binding DismissReceiveOfferCommand}" />
                     </Grid>
 

@@ -157,6 +157,32 @@ public sealed class CwProbabilisticStream
         }
     }
 
+    /// <summary>
+    /// Let audio time pass without decoding any of it.
+    /// </summary>
+    /// <param name="samples">How many samples went by.</param>
+    /// <remarks>
+    /// **THE CLOCK IS THE AUDIO'S AND IT MUST NOT STOP WHEN THE DECODER DOES.**
+    /// While the operator is transmitting his own sending is dropped rather than
+    /// decoded, and if the hop count stopped with it, every character read
+    /// afterwards would be stamped as though the transmission had never
+    /// happened. A moment somebody could point at has to be a moment (§0.0.1).
+    /// **The envelope is untouched**, so the evidence either side of a
+    /// transmission is still there when it ends and the station being read is not
+    /// lost to a few seconds of keying.
+    /// </remarks>
+    public void Skip(int samples)
+    {
+        _samplesSeen += samples;
+        _sampleInHop += samples;
+
+        var hops = _sampleInHop / _hopSamples;
+
+        _sampleInHop -= hops * _hopSamples;
+        _hopsSeen += hops;
+        _settledThrough += hops;
+    }
+
     /// <summary>Settle everything still inside the delay, because nothing else is coming.</summary>
     public void Flush()
     {
