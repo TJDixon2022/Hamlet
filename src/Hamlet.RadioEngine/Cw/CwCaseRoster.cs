@@ -40,6 +40,14 @@ namespace Hamlet.RadioEngine.Cw;
 /// heard a station and the meter heard no keying says the signal was lost before
 /// the decoder ever saw it, and no row has ever been able to say that.
 /// </param>
+/// <param name="Fit">
+/// What the clock fit looked like at the moment of the press, or "" when there
+/// was none. The dah in fitted dits and how far the two mark clusters stood
+/// apart in their own scatter: a speed is one number out of a fit, and a fit that
+/// is not a fist produces one just as readily as a fit that is. **Neither figure
+/// is a verdict** — `N4L` sends a dah of 4.24 dits and is a real station read by
+/// hand (HM-DEC-144) — and nothing in the decoder reads either of them.
+/// </param>
 /// <param name="SeedWpm">
 /// The speed the operator told Hamlet he was hearing, or null when he did not
 /// A case read at a speed he supplied and one read at a speed
@@ -59,7 +67,8 @@ public sealed record CwCase(
     string Text = "",
     CwCountsCover Covers = CwCountsCover.Session,
     string Meter = "",
-    int? SeedWpm = null);
+    int? SeedWpm = null,
+    string Fit = "");
 
 /// <summary>What a pair of counts on a roster row is counting.</summary>
 public enum CwCountsCover
@@ -111,6 +120,7 @@ public static class CwCaseRoster
         "tonePeakDb",
         "wpm",
         "seed",
+        "fit",
         "chars",
         "meter",
         "text",
@@ -217,6 +227,13 @@ public static class CwCaseRoster
             one.SeedWpm is { } seed
                 ? seed.ToString(CultureInfo.InvariantCulture)
                 : "not set",
+            // **HOW GOOD THE FIT BEHIND THE SPEED WAS**, which no row has ever
+            // carried. On the evening this column was added, four captures of one
+            // clean fist produced no speed at all and a fifth produced one from a
+            // fit whose dah measured nearly four dits, and nothing on the sheet
+            // distinguished them.
+            Readable(one.Fit, "not fitted"),
+
             // **A COUNT SAYS WHAT IT IS A COUNT OF** (HM-DEC-091). This column
             // held the decoder's running totals, which start when listening
             // starts and stop when it stops: a press seven hours into an evening

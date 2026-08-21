@@ -3592,7 +3592,20 @@ public partial class MainWindowViewModel : ObservableObject
             $"meterPeak  {report.Level.PeakDb:0.0} dBFS  (the moment it was kept)",
             $"inputFloor {report.Level.FloorDb:0.0} dBFS",
             $"clipping   {report.Clipping}",
-            $"toneHz     {(report.HasTone ? report.ToneHz.ToString("0") : "none")}",
+            // **TWO PITCHES ON ONE SHEET, AND THEY ARE NOT THE SAME
+            // MEASUREMENT** (HM-DEC-091). This one and the `keying` line below
+            // differ by up to 250 Hz on the same file, which reads as two
+            // instruments contradicting each other and is not: this is the bin
+            // the decoder is following right now, moved to continuously from
+            // wherever it started and confirmed by two agreeing surveys
+            // (HM-DEC-095), and the other is a fresh sweep of the whole range in
+            // 25 Hz steps over the last six seconds that shares nothing with the
+            // decoder. Where they disagree, the decoder is reading one pitch
+            // while something louder or better keyed sits at another, and that is
+            // worth knowing rather than worth hiding.
+            $"toneHz     {(report.HasTone ? report.ToneHz.ToString("0") : "none")}"
+                + "  (the pitch the decoder is following, refined from where it "
+                + "started)",
             // **THIS FIELD WAS CALLED `snrDb` AND IT IS NOT ONE** (HM-DEC-091:
             // one source, and it says which). It is a held peak of how far the
             // tracked bin stood above the noise beside it, rising at once and
@@ -3638,7 +3651,20 @@ public partial class MainWindowViewModel : ObservableObject
             // anybody asks of a recording Hamlet could not read. Unread stays
             // unread: a fixture labelled with a speed nobody measured is worse
             // than one labelled with nothing (§0.0, HM-DEC-090).
-            $"decoderWpm {(DetectedWpm > 0 ? DetectedWpm.ToString() : "not tracking")}",
+            // **`not tracking` AND `the number was withdrawn` ARE DIFFERENT
+            // FACTS AND THIS FIELD SAID THE FIRST FOR BOTH** (HM-DEC-091). The
+            // panel showed 29 words a minute and the file written moments later
+            // said the decoder was not tracking, which reads as two instruments
+            // disagreeing and is not: the guard on the speed had withdrawn the
+            // number between the two, and nothing on the sheet could say so.
+            //
+            // The reading is taken here, at the press, from the same decoder the
+            // rest of this sheet comes from, rather than from the polled snapshot
+            // the header happens to be holding. And where there is no number it
+            // says which of the guard's conditions was not met, because that is
+            // the difference between nothing being on the air and a station being
+            // heard whose speed had not yet been proved.
+            $"decoderWpm {SpeedForTheRecord()}",
 
             // **AND WHETHER THE OPERATOR SUPPLIED A SPEED**, which changes what
             // every figure above it is evidence about. A recording
@@ -3672,7 +3698,16 @@ public partial class MainWindowViewModel : ObservableObject
             // before the decoder saw it, which is a fault nothing else here can
             // point at. Measured by sweeping this recording's own pitches and
             // sharing nothing with the decoder.
-            $"keying     {KeyingLine(_keyingReading)}",
+            // **HOW GOOD THE CLOCK FIT WAS, WHICH HAS NEVER BEEN ON A SHEET.**
+            // A speed is one number out of a fit, and a fit that is not a fist
+            // produces one just as readily as a fit that is. These are the three
+            // figures that tell them apart, and every one of them is measured
+            // rather than judged: nothing in the decoder reads them (§0.0.1).
+            $"clockFit   {FitLine()}",
+
+            $"keying     {KeyingLine(_keyingReading)}"
+                + "  (an independent sweep of 400 to 1200 Hz in 25 Hz steps over "
+                + "the last six seconds, sharing nothing with the decoder)",
             "",
         };
 
@@ -3938,6 +3973,75 @@ public partial class MainWindowViewModel : ObservableObject
             : $"{reading.ToneHz:0} Hz, key down {reading.MedianMs:0} ms, "
               + $"{reading.SwingDb:0} dB between quiet and loud, "
               + $"{reading.Runs} key-downs";
+    }
+
+    /// <summary>
+    /// The speed at the moment of the press, or why there is not one.
+    /// </summary>
+    /// <remarks>
+    /// The guard on <see cref="CwDecoder.WordsPerMinute"/> withholds a number
+    /// until a tone has been located, a character has resolved, the clock is not
+    /// being re-acquired, and the settled pass has proved a dit. All four
+    /// failures used to print the same three words (HM-DEC-091).
+    /// </remarks>
+    private string SpeedForTheRecord()
+    {
+        if (_decoder is not { } decoder)
+        {
+            return "not tracking (nothing is listening)";
+        }
+
+        if (decoder.WordsPerMinute is { } wpm)
+        {
+            return $"{wpm}";
+        }
+
+        var report = decoder.Report;
+        var rolling = decoder.Timing.IsReady
+            ? $"the rolling estimate was {decoder.Timing.WordsPerMinute} WPM"
+            : "the rolling estimate had too few marks to give one";
+
+        if (!report.HasTone)
+        {
+            return $"not tracking (no tone was located; {rolling})";
+        }
+
+        if (report.CharactersEmitted == 0)
+        {
+            return $"not proved (a tone but no resolved character; {rolling})";
+        }
+
+        return decoder.SpeedIsReacquiring
+            ? $"withdrawn (the clock is being re-acquired; {rolling})"
+            : $"not proved (the settled pass has no clock; {rolling})";
+    }
+
+    /// <summary>What the clock fit looked like, as one line.</summary>
+    /// <remarks>
+    /// **THE RATIO IS NOT A VERDICT.** A dah of four and a quarter dits is a real
+    /// fist somebody sent on the air and this project read by hand (HM-DEC-144),
+    /// so a number far from three is a thing to look at rather than a fault. What
+    /// it sits beside is the separation, which is what HM-DEC-095 measured as the
+    /// statistic that tells a fist from a smear.
+    /// </remarks>
+    private string FitLine()
+    {
+        if (_decoder is not { } decoder || !decoder.Timing.IsReady)
+        {
+            return "not fitted";
+        }
+
+        var timing = decoder.Timing;
+
+        return string.Format(
+            CultureInfo.InvariantCulture,
+            "dah {0:0.00} dits, clusters {1:0.0} apart in their own scatter, "
+            + "{2} of {3} marks under half a dit, {4} set aside as too quiet",
+            timing.FittedDahDits,
+            timing.MarkSeparationInScatter,
+            timing.MarksBelowHalfADit,
+            timing.MarkCount,
+            timing.MarkCount - timing.KeptMarks);
     }
 
     /// <summary>What the meter said, as one line for a record.</summary>
@@ -4924,7 +5028,10 @@ public partial class MainWindowViewModel : ObservableObject
                 refusal,
                 report is { HasTone: true } tone ? tone.ToneHz : null,
                 report is { } r && !double.IsNaN(r.SnrDb) ? r.SnrDb : null,
-                DetectedWpm > 0 ? DetectedWpm : null,
+                // **ONE SOURCE, TAKEN HERE** (HM-DEC-091). This was the polled
+                // snapshot the header happens to be holding, which is a different
+                // instant from every other figure on the row.
+                _decoder?.WordsPerMinute,
                 emitted,
                 unsure,
 
@@ -4938,7 +5045,12 @@ public partial class MainWindowViewModel : ObservableObject
 
                 // **WHETHER HE WAS HELPING**, so tomorrow's rows say which of the
                 // two speeds produced the text beside them.
-                CopySpeedOn ? CopySpeedWpm : null));
+                CopySpeedOn ? CopySpeedWpm : null,
+
+                // And what the fit behind the speed looked like, so a row with no
+                // speed on it can be told from a row whose speed came out of a
+                // fit that was not a fist.
+                FitLine()));
     }
 
     /// <summary>

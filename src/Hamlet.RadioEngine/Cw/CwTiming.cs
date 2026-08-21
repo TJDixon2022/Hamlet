@@ -259,6 +259,41 @@ public sealed class CwSpeedEstimator
     public int KeptMarks => _keptCount;
 
     /// <summary>
+    /// This sender's dah, measured in this sender's own fitted dits, or nought.
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE SINGLE CLEAREST TELL THAT A FIT IS NOT A FIST.** Two clusters
+    /// are always found, because a two-means fit cuts anything in half, and the
+    /// halves land near one and three of each other by construction. What a real
+    /// fist has is a ratio somebody could send and clusters that stand apart:
+    /// measured through the same envelope the keying meter uses, the recording
+    /// this decoder reads a callsign out of fits at 4.08 when its floor is a
+    /// fixed twenty milliseconds and at 3.06 when the floor is derived from the
+    /// unit, against a hand-read 2.73 (HM-DEC-145).</para>
+    /// <para>**IT IS A DIAGNOSTIC AND NOTHING READS IT TO DECIDE ANYTHING**
+    /// (§0.0.1). A ratio far from three is not by itself a bad fist: `N4L` sends
+    /// a dah of 4.24 dits and is a real station read by hand (HM-DEC-144). What
+    /// it is is a number that belongs beside a decode that went wrong, and this
+    /// project has never had it on a sheet.</para>
+    /// </remarks>
+    public double FittedDahDits { get; private set; }
+
+    /// <summary>
+    /// How many marks in the window are under half this sender's fitted dit.
+    /// </summary>
+    /// <remarks>
+    /// **COUNTED AND NOT EXCLUDED.** Nothing between the gate and this estimator
+    /// asks how long a mark is, and whether it should is a ruling that has not
+    /// been made. What can be said without ruling anything is how many there
+    /// were, because it is the number that separates a recording this decoder
+    /// reads from one it does not: measured across every recording in this
+    /// repository, the two holding a station that will not read carry 29 and 40
+    /// per cent of their marks under twenty milliseconds where every one it does
+    /// read carries between 3 and 21.
+    /// </remarks>
+    public int MarksBelowHalfADit { get; private set; }
+
+    /// <summary>
     /// How many marks have ever been recorded, without a ceiling (HM-DEC-107).
     /// </summary>
     /// <remarks>
@@ -408,6 +443,8 @@ public sealed class CwSpeedEstimator
         _gapWrite = 0;
         _gapCutsKnown = false;
         Coherence = 0;
+        FittedDahDits = 0;
+        MarksBelowHalfADit = 0;
 
         // **THE SEED BELONGS TO THE OPERATOR AND NOT TO THE SENDER.** Everything
         // else here was measured through a filter pointed somewhere else and goes
@@ -760,6 +797,20 @@ public sealed class CwSpeedEstimator
         // whose fit is sound the ratio never leaves the band and the seed never
         // engages at all.
         var fittedDah = DitSamples > 0 ? markHigh / DitSamples : 0;
+
+        FittedDahDits = fittedDah;
+        MarksBelowHalfADit = 0;
+
+        if (DitSamples > 0)
+        {
+            for (var i = 0; i < _markCount; i++)
+            {
+                if (_marks[i] < DitSamples / 2)
+                {
+                    MarksBelowHalfADit++;
+                }
+            }
+        }
 
         if (_seedSamples > 0
             && fittedDah is < ShortestDahDits or > LongestDahDits)

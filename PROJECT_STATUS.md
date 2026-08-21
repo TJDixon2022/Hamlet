@@ -1,9 +1,9 @@
 STATE: COMPLETED
-PHASE: 5 of 5
+PHASE: 4 of 4
 BALL: tim
 NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-20T23:05:00-04:00
-NOTE: The evening's five captures are absent; task 2 measured three ways and handed back, tasks 3 to 5 shipped
+UPDATED: 2026-08-20T22:56:00-04:00
+NOTE: A ratio of four is a contaminated dit cluster, proved on 013347; the six captures are still absent
 
 ---
 
