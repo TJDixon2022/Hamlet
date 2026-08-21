@@ -4,6 +4,65 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-149
+date: 2026-08-21
+refs: src/Hamlet.App/ViewModels/MainWindowViewModel.cs, src/Hamlet.RadioEngine/Explore/ModeFollowPlan.cs, tests/Hamlet.App.Tests/ViewModels/ModeFollowsTheMapAgainTests.cs, HM-DEC-056, HM-DEC-148, HM-OPEN-041
+---
+
+**Mode-follow writes the mode and nothing else and says so on screen, and the
+evidence that the operator is working Morse is a character actually read or a dial
+inside a CW segment, never the decoder merely being switched on.**
+
+**IT HAD BEEN DEAD SINCE 2026-08-18 AND NOTHING SAID SO.** Tuning to 14.243 MHz,
+which is the phone portion of 20 metres, left the radio in CW. The read side was
+sound throughout: the diagnostics screen showed `Mode CW CI-V 04 31 seconds ago`,
+so the radio was reporting and Hamlet had it. Both tuning paths reached
+`ScheduleModeFollow`, the settle timer fired, and `ModeFollowPlan.Decide`
+**refused** — so the write was attempted and declined rather than never
+attempted.
+
+**THE CONDITION WAS ONE WORD OF EVIDENCE.** The guard added on the 18th says
+nothing takes the operator out of Morse while he is working Morse, and it asked
+`IsDecoding || IsInsideCwSegment`. `IsDecoding` is true from the moment the decoder
+starts listening until it stops — **the whole session** — so `workingCw` was
+permanently true and **every target that was not CW was refused, forever**.
+
+**THE GUARD IS RIGHT AND STAYS.** On the 18th mode-follow wrote USB with the data
+variant on, over and over, while the operator sat on CW main street with a signal
+decoding, and the send controls refused `not_in_morse` for sixty-six seconds: he
+could not answer a station because the app had moved his radio out from under him.
+HM-DEC-056 already says the operator's own hand wins, and a dial inside a CW
+segment is that hand. **What was wrong was the evidence, not the rule.**
+
+**SO THE EVIDENCE BECOMES TWO THINGS THAT ARE ACTUALLY ABOUT MORSE**: the dial
+sitting inside a CW segment, or a character having come through in the last half
+minute. Half a minute because an exchange has gaps of several seconds between
+overs and a slow sender leaves long ones inside a message, and because a station
+that finished five minutes ago should not still be pinning the mode. **The clock
+for it is not seeded when listening starts**, since a decoder that has just been
+switched on has read nothing and treating that as somebody working Morse is the
+defect itself.
+
+**THE SNAP-BACK GUARD IS UNTOUCHED.** HM-OPEN-041's memory of the last confirmed
+write — where it was made and what it set — is what stopped eighteen writes going
+out in one evening with the dial standing still, and nothing here weakens it.
+
+**ONLY THE MODE IS WRITTEN.** Not the frequency, not the filter, not the power,
+not the gain, not the preamp or the attenuator, not as a side effect and not as a
+convenience. A sweep of the follow path asserts it.
+
+**AND IT SAYS SO** (HM-DEC-056). A radio that changes mode with no explanation is
+the "is it broken" confusion relocated rather than removed.
+
+**Rejected: removing the guard to make mode-follow fire.** It exists because
+Hamlet took him out of CW for sixty-six seconds, and a fix that reopens that is
+not a fix.
+
+**Rejected: treating `IsDecoding` as a weaker signal rather than replacing it.**
+It carries no information about whether anybody is sending, so weighting it would
+be weighting nothing.
+
+---
 id: HM-DEC-148
 date: 2026-08-21
 refs: src/Hamlet.App/ViewModels/MainWindowViewModel.cs, src/Hamlet.App/Views/MainWindow.axaml, tests/Hamlet.App.Tests/ViewModels/TheFrontEndIsOnThePanelTests.cs, HM-DEC-009, HM-DEC-091, HM-DEC-056

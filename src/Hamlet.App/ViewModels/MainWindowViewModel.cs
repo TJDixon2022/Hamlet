@@ -836,6 +836,50 @@ public partial class MainWindowViewModel : ObservableObject
     /// <summary>When the decoder last produced a character.</summary>
     private DateTime _lastDecodeUtc = DateTime.MinValue;
 
+    /// <summary>
+    /// When a character was last actually read, for the mode-follow guard.
+    /// </summary>
+    /// <remarks>
+    /// **SEPARATE FROM `_lastDecodeUtc` BECAUSE THAT ONE IS SEEDED AT THE START
+    /// OF LISTENING** and this one must not be: a decoder that has just been
+    /// switched on has read nothing, and treating that as somebody working Morse
+    /// is the whole defect being fixed here.
+    /// </remarks>
+    private DateTime _lastCharacterUtc = DateTime.MinValue;
+
+    /// <summary>
+    /// How long after a character the operator still counts as working Morse.
+    /// </summary>
+    /// <remarks>
+    /// Half a minute. An exchange has gaps of several seconds between overs and a
+    /// slow sender leaves long ones inside a message, so anything much shorter
+    /// would call him idle in the middle of a contact. Much longer and a station
+    /// that finished five minutes ago would still be pinning the mode.
+    /// </remarks>
+    private static readonly TimeSpan CopyingMorseFor = TimeSpan.FromSeconds(30);
+
+    /// <summary>
+    /// True while somebody's Morse is actually coming through.
+    /// </summary>
+    /// <remarks>
+    /// <para>**THIS IS WHAT `IsDecoding` WAS BEING ASKED TO MEAN AND DOES NOT.**
+    /// That property is true from the moment the decoder starts listening until
+    /// it stops, which is the whole session: it says the decoder is switched on
+    /// and nothing about whether anybody is sending. Mode-follow read it as
+    /// evidence the operator was working Morse, so **every target that was not CW
+    /// was refused, permanently**, and the radio stayed in CW at 14.243 MHz where
+    /// the map says upper sideband.</para>
+    /// <para>The guard it feeds is right and stays. On 2026-08-18 mode-follow
+    /// wrote USB with the data variant on, over and over, while the operator sat
+    /// on CW main street with a signal decoding, and the send controls refused
+    /// `not_in_morse` for sixty-six seconds: **he could not answer a station
+    /// because the app had moved his radio out from under him.** What was wrong
+    /// was the evidence, not the rule.</para>
+    /// </remarks>
+    private bool IsCopyingMorse
+        => _lastCharacterUtc != DateTime.MinValue
+           && DateTime.UtcNow - _lastCharacterUtc < CopyingMorseFor;
+
     /// <summary>Whether the operator has waved the offer away.</summary>
     private bool _receiveOfferDismissed;
 
@@ -1581,6 +1625,34 @@ public partial class MainWindowViewModel : ObservableObject
     internal static string FrontEndTextFor(
         bool overloading, string preamp, string attenuator)
         => overloading ? $"overloading · {preamp}" : $"{preamp} · {attenuator}";
+
+    /// <summary>The preamplifier, named rather than just valued.</summary>
+    /// <param name="setting">0, 1 or 2, or null when it has never been read.</param>
+    /// <returns>The label.</returns>
+    /// <remarks>
+    /// **"on" WOULD NOT DO.** Preamp 1 and preamp 2 are different settings on this
+    /// radio and an operator deciding whether his front end is overloading needs
+    /// to know which one is in. And a setting never read says so rather than
+    /// defaulting to off (HM-DEC-009).
+    /// </remarks>
+    internal static string PreampLabel(int? setting) => setting switch
+    {
+        0 => "preamp off",
+        1 => "preamp 1",
+        2 => "preamp 2",
+        null => "preamp unknown",
+        _ => $"preamp {setting}",
+    };
+
+    /// <summary>The attenuator, named rather than just valued.</summary>
+    /// <param name="decibels">The attenuation, or null when never read.</param>
+    /// <returns>The label.</returns>
+    internal static string AttenuatorLabel(int? decibels) => decibels switch
+    {
+        null => "att unknown",
+        0 => "att off",
+        _ => $"att {decibels} dB",
+    };
 
     /// <summary>True once the filter width has been read from the radio.</summary>
     public bool HasFilterBandwidth => FilterBandwidthText.Length > 0;
@@ -3054,8 +3126,14 @@ public partial class MainWindowViewModel : ObservableObject
 
         FrontEndIsOverloading = overflow is { IsKnown: true, Number: 1 };
 
-        PreampText = preamp.IsKnown ? preamp.Text : "preamp unknown";
-        AttenuatorText = attenuator.IsKnown ? attenuator.Text : "attenuator unknown";
+        // **THE RADIO'S OWN WORD FOR BOTH OF THESE IS "off"**, so the chip read
+        // `off · off` and said that two things were off without saying which two.
+        // A reading nobody can interpret is the same failure as a reading nobody
+        // can find, so the label is composed here from the number rather than
+        // taken from the radio's text.
+        PreampText = PreampLabel(preamp.IsKnown ? (int?)preamp.Number : null);
+        AttenuatorText = AttenuatorLabel(
+            attenuator.IsKnown ? (int?)attenuator.Number : null);
 
         FrontEndText = FrontEndTextFor(
             FrontEndIsOverloading, PreampText, AttenuatorText);
@@ -3235,7 +3313,16 @@ public partial class MainWindowViewModel : ObservableObject
         // WHEN SOMETHING LAST CAME THROUGH, which is what the quiet offer waits
         // on (HM-DEC-084). Set here rather than polled, so an empty terminal is
         // measured from the last real character rather than from a timer.
-        _decoder.CharacterDecoded += _ => _lastDecodeUtc = DateTime.UtcNow;
+        _decoder.CharacterDecoded += _ =>
+        {
+            _lastDecodeUtc = DateTime.UtcNow;
+            _lastCharacterUtc = DateTime.UtcNow;
+        };
+
+        // **NOT SEEDED.** A decoder that has just started listening has read
+        // nothing, and the mode-follow guard must not read that as somebody
+        // working Morse.
+        _lastCharacterUtc = DateTime.MinValue;
         _lastDecodeUtc = DateTime.UtcNow;
         _decoder.Listen(_audioInput);
         _audioInput.Start();
@@ -4963,7 +5050,7 @@ public partial class MainWindowViewModel : ObservableObject
         // terminal decoding and the dial inside a CW segment are both the
         // operator's own hand (HM-DEC-056), and on 2026-08-18 ignoring them cost
         // him sixty-six seconds of not being able to answer a station.
-        var workingCw = IsDecoding || IsInsideCwSegment;
+        var workingCw = IsInsideCwSegment || IsCopyingMorse;
 
         var decision = ModeFollowPlan.Decide(
             _modeFollow, RigState.Mode, RigState.IsDataMode,

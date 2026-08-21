@@ -27,38 +27,39 @@ If all four hold, say "Hamlet confirmed" and continue.
 
 ## Why this unit exists
 
-**Hamlet knew why it could not read the band and did not say.**
+**Two bugs, both found by Tim at the rig. The first is the major one.**
 
-`cw-2026-08-21-183848`, 20 metres in daylight, S9, and nothing readable. The
-sidecar carried the answer: `Overflow: overloading`, `Preamp: preamp 1`,
-`RfGain: 100%`. The receiver's front end was being overdriven. Measured on the
-recording: 16 to 17 dB of envelope swing at **every** pitch from 450 to 700 Hz,
-with 300 to 900 spurious sub-20 ms runs at all of them. A real station gives 22 to
-24 dB at one pitch and noise elsewhere. Overload compresses the whole passband
-together, so there is no tone standing above anything.
+### One: mode-follow is dead
 
-Tim could hear dits and dahs — the ear takes pitch and rhythm out of a compressed
-mess. **The decoder measures amplitude, and amplitude is what overload destroys.**
-Both Hamlet and an independent decoder read nothing from that file, correctly.
+Tim tuned to **14.243 MHz**, which is the SSB portion of 20 metres. **The radio
+stayed in CW.** Hamlet used to switch the rig into the mode for the part of the
+band it was sitting in, and it no longer does.
 
-**The app was reading `Overflow` and `Preamp` from the radio every capture and
-showing him neither.** He found it in a text file afterwards. That is the gap this
-unit closes.
+The read side is proved sound. His diagnostics screen shows `Mode  CW  CI-V 04
+31 seconds ago` — **the radio is reporting its mode correctly and Hamlet has it.**
+So the fault is on the write side: either nothing decides to write, or the decision
+does not reach the radio.
 
-**The point of this application is to find CW on the air that the operator cannot
-yet read and hold conversations with it.** A receiver setting standing between him
-and a contact, which the app already knows about and does not mention, is squarely
-in the way of that.
+**This has history and the history is the strongest lead in the unit.** On the 18th
+the frequency snap-back bug manifested as `ScheduleModeFollow` firing on every
+`FrequencyHz` change, writing unprompted and taking him out of CW for 66 seconds.
+That was closed. **Find out what closing it did to the firing condition.** A guard
+added then may now be suppressing the legitimate case.
 
-### Ruled by Tim
+**Do not assume which path he tuned by.** The band-map click and the dial are
+different call sites and both must be traced. The dial case is known to reach the
+app — the diagnostics screen says the radio tells Hamlet the moment he touches it.
 
-**Read only.** Hamlet displays these settings and says what they mean. **It does
-not write them.**
+### Two: the preamp is still not on the panel
 
-*Rejected: Hamlet turning the preamp off itself.* Receive-only settings radiate
-nothing, so a write would be safe in that narrow sense — but it is still the app
-changing his radio underneath him, and mode-follow writing unprompted cost an
-evening and a ruling. **A later unit may offer a button he presses. Not this one.**
+The previous unit was to put `Preamp`, `Attenuator` and `Overflow` where he is
+already looking. **There is no preamp indicator on screen.** The values are in the
+diagnostics dialog — `Preamp off`, `Front end overload not overloading`, both read
+correctly — and that dialog is a thing he has to go and open.
+
+**Report what the previous unit actually did** before building anything: whether
+the panel work was done and did not render, was done somewhere he would not look,
+or was not done. Say which.
 
 ---
 
@@ -66,27 +67,28 @@ evening and a ruling. **A later unit may offer a button he presses. Not this one
 
 - **Report mismatches; do not repair the instruction silently.**
 - **Record the exact failing-test set before you start and after you finish, and
-  name every difference.** The tree carries a large red count from the decoder
-  replacement; that count blinds this unit unless the set is compared exactly.
+  name every difference.** The red count from the decoder replacement blinds this
+  unit unless the sets are compared exactly.
 - `HM-OPEN-055`: rig tests that flake and pass on a rerun. **Not this unit.**
 
 ---
 
 ## Rulings in force
 
-**HM-DEC-091 — one source, and it says which.** Every one of these facts comes
-from the radio. Where a read is stale or has never been answered, the display says
-so rather than showing a value that looks current.
+**HM-DEC-091 — one source, and it says which.**
 
 **HM-DEC-009 — Hamlet does not give a confident wrong answer.** A panel asserting
-the preamp is off when the read failed is worse than a panel saying it does not
-know.
+a setting it has not read is worse than one saying it does not know.
 
 **HM-DEC-093 — no radio on the development machine.** Every test drives rig state
 directly.
 
-**HM-DEC-120 — nothing is emitted on audio holding no signal.** Untouched by this
-unit; confirm it still holds.
+**Mode-follow may write the mode. It may write nothing else.** Frequency, filter,
+power, gain, preamp, attenuator: **not this unit, not as a side effect, not as a
+convenience.**
+
+**HM-DEC-098 — attended automatic transmit reaching an antenna is unruled.** This
+unit does not transmit and does not touch the interlocks.
 
 ---
 
@@ -98,83 +100,90 @@ is moving inside the task. Also every ten minutes while a task runs.
 
 ---
 
-## Task 1 — Report what is already read
+## Task 1 — Find out why mode-follow stopped
 
 **Report before changing anything.**
 
-For `Overflow`, `Preamp`, `Attenuator` and `RfGain`: the CI-V command each comes
-from, how often it is read, how stale each can be, and what happens to the value
-when a read has never been answered.
+1. Where mode-follow lives, what triggers it, and what it writes.
+2. **What guards it.** Every condition that can stop it firing, and when each was
+   added. **Name the one that is stopping it now.**
+3. What the 18th's fix to the snap-back bug changed about that firing condition.
+4. Trace **both** tuning paths — the band-map click and the dial — and say for each
+   whether it reaches mode-follow at all.
+5. Whether the write is attempted and refused, or never attempted.
 
-**Two of these are known to be untrustworthy and must be reported honestly:**
-
-- **`RfGain` reads 100% with the knob at noon.** Tim observed this directly. If
-  the read is wrong, **`RfGain` must not go on the panel as a number** — say so
-  and leave it off rather than displaying a figure he has already seen contradict
-  his own radio.
-- **`Overflow` has been seen reading `overloading` exactly once.** Nothing
-  establishes how it behaves normally. **Say what is known about it and what is
-  not.**
+**If the cause is not in mode-follow, say so and say where it is.** Do not build
+around a guess.
 
 ---
 
-## Task 2 — Put the front end on the panel
+## Task 2 — Make it follow again
 
-`Preamp`, `Attenuator` and `Overflow` where he is already looking while tuning —
-alongside mode, filter and the S-meter, not in a diagnostics screen he would have
-to go and find.
+The rig ends up in the mode for the part of the band it is sitting in.
 
-- **A value that has never been read says so.** Not a blank, not a default.
-- **`Overflow: overloading` is the loud one.** It is a condition that stops the
-  band being readable and it should be visible without hunting.
-- **The transcript does not move when it appears.** The layout rule from the
-  previous unit governs: nothing appearing or disappearing may reflow the terminal
-  or its siblings.
+- **Only the mode is written.**
+- **It must not fire on a snap-back.** The 18th's bug was a stale read putting the
+  old frequency back and mode-follow reacting twice per tune. Whatever guard was
+  added for that stays; **the fix is to stop it catching the real case, not to
+  remove it.**
+- **It must not fight the operator.** If he sets a mode by hand, Hamlet does not
+  immediately overwrite it.
+- **Say on screen when Hamlet changes the mode**, in the project voice. A rig that
+  changes mode with no explanation is its own confident wrong answer.
 
 ---
 
-## Task 3 — Say what to do about it, in terms of a knob
+## Task 3 — Put the preamp where he is looking
 
-When overflow is asserted, Hamlet says so in the project voice and names the
-control, not the concept. **"Your receiver is overloading" is a diagnosis. "Your
-receiver is overloading — try the preamp off" is help.**
+`Preamp`, `Attenuator` and `Overflow` on the CW terminal panel, beside mode,
+filter and the S-meter. **Not in the diagnostics dialog. He has that already and
+it is not where he looks while tuning.**
 
-- Name the front-panel control. On the IC-7300 the preamp and attenuator share the
-  **P.AMP/ATT** button; each press cycles preamp 1, preamp 2, off.
-- **Mention the attenuator only if the preamp is already off.** Advice for a knob
-  already in the right position is noise.
-- **Do not advise on `RfGain` unless task 1 finds its read is trustworthy.**
-- **Say it once and let it stand while the condition holds.** Do not repeat, blink
-  or re-announce.
-
-**Wording is yours.** The requirement is that an operator who has never thought
-about front-end overload knows which button to press.
+- **Every value is labelled with what it is.** The terminal currently shows
+  `off . off`, which says two things are off and nothing about which two. It must
+  read `preamp off . att off`, and when the preamp is on it must say **which**
+  preamp — `preamp 1` and `preamp 2` are different settings on this radio and
+  `on` does not distinguish them. *A reading nobody can interpret is the same
+  failure as a reading nobody can find.*
+- **A value never read says so.** Not a blank, not a default.
+- **`Overflow: overloading` is the loud one** and must be visible without hunting.
+- When overflow is asserted, name the control: on the IC-7300 the preamp and
+  attenuator share the **P.AMP/ATT** button, each press cycling preamp 1, preamp 2,
+  off. **Mention the attenuator only when the preamp is already off.**
+- **Do not display `RfGain` as a number.**
+- **Do not show a bare value with no name.** *`off . off` is what is on screen
+  now and Tim cannot tell which setting is which.* It reads 100% with the knob at noon.
+- **The transcript does not move when any of this appears.**
 
 ---
 
 ## Task 4 — Tests
 
-1. Overflow asserted puts the message on screen; overflow clearing removes it.
-2. The preamp advice appears when the preamp is on, and the attenuator advice only
-   when the preamp is off.
-3. A setting never read displays as unknown rather than as a value.
-4. **Nothing in this unit writes to the radio.** Assert it — no CI-V write is
-   issued by any path this unit adds.
+1. Tuning into a mode's portion of a band writes that mode. **Both tuning paths.**
+2. A snap-back does not trigger a write.
+3. A mode the operator set by hand is not immediately overwritten.
+4. **Nothing but the mode is ever written by mode-follow.**
+5. Preamp, attenuator and overflow render on the terminal panel.
+6. A setting never read displays as unknown rather than as a value.
+7. The overflow advice names the preamp when the preamp is on, and the attenuator
+   only when it is off.
+8. **Every front-end reading on the panel carries its own name**, and the preamp
+   shows which of preamp 1 or preamp 2 is selected rather than `on`.
 
 Then confirm and report that **HM-DEC-120 still holds**.
 
 ---
 
-## Task 5 — Record the ruling. **THIS IS THE DROP CANDIDATE.**
+## Task 5 — Record the rulings. **THIS IS THE DROP CANDIDATE.**
 
 **Find the next free `HM-DEC` id. Do not assume one and do not invent one.**
 `DECISIONS.md` holds 001-095 then 134 onward, and further ids exist as index rows
 in `CLAUDE.md` §1. **Check both.** Report the id and how you established it was
 free.
 
-The ruling records that Hamlet displays receive-path settings and advises on them,
-and does not write them; and that where the app can name the control standing
-between the operator and a readable signal, it does.
+Record that mode-follow writes the mode and nothing else and says so on screen,
+and that Hamlet displays receive-path settings and advises on them without writing
+them.
 
 **Drop it whole if the session is running long and say so.**
 
@@ -182,12 +191,10 @@ between the operator and a readable signal, it does.
 
 ## Parked — do not touch, do not raise
 
-- **The mode-follow regression** — the app no longer switching to USB in the voice
-  portion of a band. Real, reported, and its own unit.
 - **The fifty dead tests** describing the removed decoder.
 - **The inert copy-speed control and the stale panel wording.**
 - **Word spacing** on the streaming path.
-- **The likelihood gate at 15.0.** Waiting on an evening at the rig.
+- **The likelihood gate at 15.0.**
 - **HM-OPEN-055, HM-DEC-098, HM-DEC-130, HM-OPEN-033, HM-OPEN-007.**
 
 ---
@@ -200,14 +207,13 @@ or destructive git; do not touch coverage thresholds.
 
 Unit-specific:
 
-- **Do not write any setting to the radio.** *Ruled. Not the preamp, not the
-  attenuator, not RF gain, not as a fallback, not behind a flag.*
-- **Do not display `RfGain` as a number unless task 1 finds the read is sound.**
-  *He has seen it report 100% with the knob at noon.*
-- **Do not infer overload from the audio.** *The radio reports it. HM-DEC-091.*
-- **Do not move the transcript.** *The layout rule stands.*
-- **Do not touch the decoder.** *It read that recording correctly and so did an
-  independent one.*
+- **Do not write any setting except the mode.** *Ruled.*
+- **Do not remove the snap-back guard to make mode-follow fire.** *That guard
+  exists because Hamlet took him out of CW for 66 seconds.*
+- **Do not put the front-end readings only in the diagnostics dialog.** *That is
+  what the last unit effectively did and it is the bug being fixed.*
+- **Do not display `RfGain` as a number.**
+- **Do not touch the decoder.**
 
 ---
 
@@ -218,11 +224,11 @@ other headings: **What Claude did**, **What Tim should expect**, **What we shoul
 do next**, **What's blocking us** — the last carrying **Asks still outstanding**
 per HM-DEC-139.
 
-**Section 1 opens with task 1's answer on `Overflow` and `RfGain`** — what is
-trustworthy and what is not.
+**Section 1 opens with the named cause of mode-follow not firing** — the specific
+condition and when it was added.
 
-**Section 2 states in one sentence what he will see next time the front end
-overloads.**
+**Section 2 states in one sentence what happens when he tunes to 14.243 now, and
+in one more the exact text the terminal shows for the front end, verbatim.**
 
 **Report the failing-test set exactly, before and after.**
 

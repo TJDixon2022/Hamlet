@@ -2,8 +2,8 @@ STATE: COMPLETED
 PHASE: 5 of 5
 BALL: tim
 NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-21T15:42:00-04:00
-NOTE: Overflow now says which button to press; RfGain left off the panel until its reading is explained
+UPDATED: 2026-08-21T16:22:00-04:00
+NOTE: Mode-follow was refused by a guard fed evidence that is always true; front-end readings now carry their names
 
 ---
 
