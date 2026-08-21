@@ -32,6 +32,11 @@ namespace Hamlet.RadioEngine.Cw;
 /// heard a station and the meter heard no keying says the signal was lost before
 /// the decoder ever saw it, and no row has ever been able to say that.
 /// </param>
+/// <param name="SeedWpm">
+/// The speed the operator told Hamlet he was hearing, or null when he did not
+/// A case read at a speed he supplied and one read at a speed
+/// Hamlet fitted for itself are evidence about two different things.
+/// </param>
 public sealed record CwCase(
     DateTime AtUtc,
     long FrequencyHz,
@@ -45,7 +50,8 @@ public sealed record CwCase(
     int Unsure,
     string Text = "",
     CwCountsCover Covers = CwCountsCover.Session,
-    string Meter = "");
+    string Meter = "",
+    int? SeedWpm = null);
 
 /// <summary>What a pair of counts on a roster row is counting.</summary>
 public enum CwCountsCover
@@ -96,6 +102,7 @@ public static class CwCaseRoster
         "toneHz",
         "snrDb",
         "wpm",
+        "seed",
         "chars",
         "meter",
         "text",
@@ -194,6 +201,14 @@ public static class CwCaseRoster
             one.Wpm is { } wpm && wpm > 0
                 ? wpm.ToString(CultureInfo.InvariantCulture)
                 : "not tracking",
+
+            // **WHETHER THE OPERATOR WAS HELPING**, which changes what the row
+            // beside it means. A case read at a speed he typed in and a case read
+            // at a speed Hamlet fitted are evidence about two different things,
+            // and a sheet that does not distinguish them scores them together.
+            one.SeedWpm is { } seed
+                ? seed.ToString(CultureInfo.InvariantCulture)
+                : "not set",
             // **A COUNT SAYS WHAT IT IS A COUNT OF** (HM-DEC-091). This column
             // held the decoder's running totals, which start when listening
             // starts and stop when it stops: a press seven hours into an evening

@@ -192,6 +192,24 @@ public sealed class CwDecoder
     public int SampleRate { get; }
 
     /// <summary>
+    /// The sending speed the operator says he is hearing, or null.
+    /// </summary>
+    /// <remarks>
+    /// Off unless he sets it. See <see cref="CwSpeedEstimator.Seed"/> for what
+    /// it does and, more importantly, for what it does not: it moves where the
+    /// estimate starts and never what counts as a resolved character
+    /// (HM-DEC-048).
+    /// </remarks>
+    public int? SeededWordsPerMinute
+    {
+        get => _speed.SeededWordsPerMinute;
+        set => _speed.Seed(value);
+    }
+
+    /// <summary>True while the operator's figure is the one in use.</summary>
+    public bool UsingSeededSpeed => _speed.UsingSeededSpeed;
+
+    /// <summary>
     /// The margin below which this decoder emits nothing (HM-DEC-097).
     /// </summary>
     /// <remarks>

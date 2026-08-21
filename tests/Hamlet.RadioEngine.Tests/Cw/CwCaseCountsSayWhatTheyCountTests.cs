@@ -23,6 +23,17 @@ public sealed class CwCaseCountsSayWhatTheyCountTests
     private static CwCase Case(string wav, string refusal, CwCountsCover covers)
         => new(When, 14_028_000, "20 m", wav, refusal, 800, 14.1, 18, 69, 23, "", covers);
 
+    /// <summary>Where a named column sits in the row.</summary>
+    /// <remarks>
+    /// **BY NAME AND NOT BY POSITION.** These were written against literal
+    /// indexes, so the row's shape was pinned by four tests that all broke the
+    /// first time a column was added between two others, saying nothing about
+    /// the column they were actually about. The header is where the order lives
+    /// and it is the header that is asked (§0).
+    /// </remarks>
+    private static int Column(string name)
+        => Array.IndexOf(CwCaseRoster.Header.Split('	'), name);
+
     /// <remarks>
     /// Proves HM-DEC-091: where the figures cover the audio on the row, the cell
     /// is the plain pair of numbers, because that is what the column has always
@@ -32,7 +43,7 @@ public sealed class CwCaseCountsSayWhatTheyCountTests
     public void CountsAboutTheRecordingAreStatedPlainly()
     {
         var cell = CwCaseRoster.Row(
-            Case("cw-2026-08-20-014854.wav", "", CwCountsCover.Recording)).Split('\t')[7];
+            Case("cw-2026-08-20-014854.wav", "", CwCountsCover.Recording)).Split('\t')[Column("chars")];
 
         Assert.Equal("69 emitted, 23 unsure", cell);
     }
@@ -46,7 +57,7 @@ public sealed class CwCaseCountsSayWhatTheyCountTests
     public void CountsAboutTheEveningSayThatOnTheRow()
     {
         var cell = CwCaseRoster.Row(
-            Case("cw-2026-08-20-014854.wav", "", CwCountsCover.Session)).Split('\t')[7];
+            Case("cw-2026-08-20-014854.wav", "", CwCountsCover.Session)).Split('\t')[Column("chars")];
 
         Assert.StartsWith("69 emitted, 23 unsure", cell, StringComparison.Ordinal);
         Assert.Contains("not this case", cell, StringComparison.Ordinal);
@@ -62,7 +73,7 @@ public sealed class CwCaseCountsSayWhatTheyCountTests
     {
         var cell = CwCaseRoster.Row(
             Case("", "no new audio since the last one", CwCountsCover.NoRecording))
-            .Split('\t')[7];
+            .Split('\t')[Column("chars")];
 
         Assert.StartsWith("69 emitted, 23 unsure", cell, StringComparison.Ordinal);
         Assert.Contains("no recording was kept", cell, StringComparison.Ordinal);
@@ -81,7 +92,9 @@ public sealed class CwCaseCountsSayWhatTheyCountTests
             800, 14.1, 18, 69, 23);
 
         Assert.Contains(
-            "not this case", CwCaseRoster.Row(quiet).Split('\t')[7], StringComparison.Ordinal);
+            "not this case",
+            CwCaseRoster.Row(quiet).Split('\t')[Column("chars")],
+            StringComparison.Ordinal);
     }
 
     /// <remarks>
@@ -98,6 +111,6 @@ public sealed class CwCaseCountsSayWhatTheyCountTests
             Case("cw-2026-08-20-014854.wav", "", covers)).Split('\t');
 
         Assert.Equal(CwCaseRoster.Header.Split('\t').Length, columns.Length);
-        Assert.Equal(string.Empty, columns[10]);
+        Assert.Equal(string.Empty, columns[Column("read")]);
     }
 }

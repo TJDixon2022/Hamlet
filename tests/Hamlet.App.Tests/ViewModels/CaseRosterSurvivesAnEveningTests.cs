@@ -27,6 +27,20 @@ namespace Hamlet.App.Tests.ViewModels;
 /// </remarks>
 public sealed class CaseRosterSurvivesAnEveningTests : IDisposable
 {
+    /// <summary>One named cell of a split row.</summary>
+    /// <remarks>
+    /// **BY NAME AND NOT BY POSITION.** These assertions were written against
+    /// literal indexes, so four of them broke the first time a column was added
+    /// between two others and none of them was about the column that moved. The
+    /// header is where the order lives, so the header is what is asked (§0).
+    /// </remarks>
+    private static string Cell(string[] columns, string column)
+        => columns[Array.IndexOf(CwCaseRoster.Header.Split('	'), column)];
+
+    /// <summary>One named cell of a row.</summary>
+    private static string Cell(CwCase one, string column)
+        => Cell(CwCaseRoster.Row(one).Split('	'), column);
+
     private readonly ITestOutputHelper _output;
 
     private readonly string _folder = Path.Combine(
@@ -180,23 +194,23 @@ public sealed class CaseRosterSurvivesAnEveningTests : IDisposable
 
         // The kept recording is named on the row, and the roster agrees with the
         // decoder that produced the sidecar's own numbers (HM-DEC-091: one source).
-        Assert.Equal(Path.GetFileName(wav), first[3]);
-        Assert.Equal("7.030", first[1]);
-        Assert.Equal("40 m", first[2]);
+        Assert.Equal(Path.GetFileName(wav), Cell(first, "wav"));
+        Assert.Equal("7.030", Cell(first, "frequency"));
+        Assert.Equal("40 m", Cell(first, "band"));
         Assert.Equal(
             $"{report.CharactersEmitted} emitted, {report.CharactersUnsure} unsure",
-            first[7]);
+            Cell(first, "chars"));
 
         // **AND THE REFUSED PRESS SAYS ITS COUNTS ARE NOT ABOUT A RECORDING**
         // (HM-DEC-091). No file was written, so there is no audio for them to be
         // a count of, and a bare pair of numbers in this column would be read as
         // one anyway.
-        Assert.Contains("no recording was kept", second[7], StringComparison.Ordinal);
+        Assert.Contains("no recording was kept", Cell(second, "chars"), StringComparison.Ordinal);
 
         // **THE REFUSAL IS A ROW WITH A REASON, NOT A SILENCE.** A case with no
         // evidence is still a case and belongs in the denominator.
-        Assert.StartsWith("none (", second[3], StringComparison.Ordinal);
-        Assert.Contains("no new audio", second[3], StringComparison.Ordinal);
+        Assert.StartsWith("none (", Cell(second, "wav"), StringComparison.Ordinal);
+        Assert.Contains("no new audio", Cell(second, "wav"), StringComparison.Ordinal);
 
         // Exactly one recording exists: the second press wrote none.
         Assert.Single(Directory.GetFiles(_folder, "*.wav"));
@@ -204,18 +218,18 @@ public sealed class CaseRosterSurvivesAnEveningTests : IDisposable
         // **THE ROW CARRIES WHAT HAMLET READ, NOT ONLY HOW MUCH.** A count is a
         // pointer to evidence; scoring thirty cases from counts alone means
         // opening thirty recordings.
-        Assert.Equal(11, first.Length);
-        Assert.NotEqual("nothing read", first[9]);
-        Assert.Equal(CwCaseRoster.Readable(read), first[9]);
+        Assert.Equal(CwCaseRoster.Header.Split('	').Length, first.Length);
+        Assert.NotEqual("nothing read", Cell(first, "text"));
+        Assert.Equal(CwCaseRoster.Readable(read), Cell(first, "text"));
 
         // **AND THE REFUSED PRESS CARRIES IT TOO** (HM-DEC-090). He heard the
         // station whether or not a recording was written, so the row that records
         // the refusal is scored the same way as any other.
-        Assert.Equal(CwCaseRoster.Readable(read), second[9]);
+        Assert.Equal(CwCaseRoster.Readable(read), Cell(second, "text"));
 
         // The operator's column is still last and still empty.
-        Assert.Equal(string.Empty, first[10]);
-        Assert.Equal(string.Empty, second[10]);
+        Assert.Equal(string.Empty, Cell(first, "read"));
+        Assert.Equal(string.Empty, Cell(second, "read"));
 
         // **ONE ROW IS ONE LINE**, or the columns after the text land under the
         // wrong headings and tomorrow's scoring is done against a shifted file.
@@ -223,7 +237,9 @@ public sealed class CaseRosterSurvivesAnEveningTests : IDisposable
         {
             Assert.DoesNotContain('\n', line);
             Assert.DoesNotContain('\r', line);
-            Assert.Equal(10, line.Count(c => c == '\t'));
+            Assert.Equal(
+                CwCaseRoster.Header.Count(c => c == '\t'),
+                line.Count(c => c == '\t'));
         }
 
         // And the evening line carries no tabs at all, so a scorer splitting the
@@ -251,17 +267,17 @@ public sealed class CaseRosterSurvivesAnEveningTests : IDisposable
         {
             var columns = CwCaseRoster.Row(one).Split('\t');
 
-            Assert.Equal(11, columns.Length);
-            Assert.Equal(string.Empty, columns[10]);
+            Assert.Equal(CwCaseRoster.Header.Split('	').Length, columns.Length);
+            Assert.Equal(string.Empty, Cell(columns, "read"));
         }
 
         // And a decoder that read nothing says so in its own columns rather than
         // being left blank or given a plausible number (HM-DEC-091).
         var quiet = CwCaseRoster.Row(empty).Split('\t');
 
-        Assert.Equal("none", quiet[4]);
-        Assert.Equal("unread", quiet[5]);
-        Assert.Equal("not tracking", quiet[6]);
+        Assert.Equal("none", Cell(quiet, "toneHz"));
+        Assert.Equal("unread", Cell(quiet, "snrDb"));
+        Assert.Equal("not tracking", Cell(quiet, "wpm"));
     }
 
     /// <remarks>
@@ -281,9 +297,9 @@ public sealed class CaseRosterSurvivesAnEveningTests : IDisposable
 
         var columns = CwCaseRoster.Row(heard).Split('\t');
 
-        Assert.Equal("nothing read", columns[9]);
-        Assert.NotEqual(string.Empty, columns[9]);
-        Assert.Equal(string.Empty, columns[10]);
+        Assert.Equal("nothing read", Cell(columns, "text"));
+        Assert.NotEqual(string.Empty, Cell(columns, "text"));
+        Assert.Equal(string.Empty, Cell(columns, "read"));
     }
 
     /// <remarks>
@@ -304,7 +320,9 @@ public sealed class CaseRosterSurvivesAnEveningTests : IDisposable
 
         Assert.DoesNotContain('\n', row);
         Assert.DoesNotContain('\r', row);
-        Assert.Equal(10, row.Count(c => c == '\t'));
+        Assert.Equal(
+            CwCaseRoster.Header.Count(c => c == '\t'),
+            row.Count(c => c == '\t'));
         Assert.Contains("CQ DE", row, StringComparison.Ordinal);
     }
 

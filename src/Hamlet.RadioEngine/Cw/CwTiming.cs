@@ -175,6 +175,74 @@ public sealed class CwSpeedEstimator
     /// <summary>The current dit length, in samples.</summary>
     public double DitSamples { get; private set; }
 
+    /// <summary>
+    /// The speed the operator says he is hearing, or null if he has not said.
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE OPERATOR CAN HEAR THE SPEED AND THIS ESTIMATOR SOMETIMES
+    /// CANNOT.** The fitted dit is measured through a gate that reads a short
+    /// mark short (HM-DEC-146), and when it comes out far enough below the truth
+    /// the dah's ratio leaves the plausible band, the coherence check is scored
+    /// against a length nobody sent, and the decoder falls silent on a signal it
+    /// heard perfectly well. Nothing inside the loop can break that circle,
+    /// because every number in it is derived from the one that is wrong.</para>
+    /// <para>**IT IS A STARTING POINT AND NEVER AN ANSWER.** The estimator still
+    /// fits, still tracks and still owns the number: the seed is used only while
+    /// the fit does not look like Morse, which is exactly the stretch during
+    /// which the decoder emits nothing anyway. The moment the fit is coherent the
+    /// seed steps aside, so a figure the operator got wrong costs him the
+    /// acquisition and not the reading.</para>
+    /// <para>**IT RAISES NO CONFIDENCE** (HM-DEC-048). Every clarity and every
+    /// boundary is still measured against a dit, and the seed changes which dit
+    /// rather than what counts as resolved. A character whose elements do not
+    /// resolve does not resolve because a speed was typed in.</para>
+    /// </remarks>
+    public int? SeededWordsPerMinute { get; private set; }
+
+    /// <summary>
+    /// True when the number above is the one being used right now.
+    /// </summary>
+    /// <remarks>
+    /// The terminal says so where the operator can see it (§0.0). He must never
+    /// be reading a transcript without knowing which of the two produced it.
+    /// </remarks>
+    public bool UsingSeededSpeed { get; private set; }
+
+    private double _seedSamples;
+
+    /// <summary>Take the operator's own figure, or drop it.</summary>
+    /// <param name="wordsPerMinute">
+    /// What he says he is hearing, or null to go back to fitting alone.
+    /// </param>
+    /// <remarks>
+    /// Out-of-range figures are refused rather than clamped: a speed outside
+    /// what anybody sends is a typing slip, and clamping it would hand the
+    /// estimator a number the operator did not mean (§0.0).
+    /// </remarks>
+    public void Seed(int? wordsPerMinute)
+    {
+        if (wordsPerMinute is not int wpm
+            || wpm < SlowestPlausibleWpm
+            || wpm > FastestPlausibleWpm)
+        {
+            SeededWordsPerMinute = null;
+            UsingSeededSpeed = false;
+            _seedSamples = 0;
+            return;
+        }
+
+        SeededWordsPerMinute = wpm;
+        _seedSamples = SampleRate * MorseCodeTiming.DitSeconds(wpm);
+
+        if (MarksSeen == 0)
+        {
+            // Nothing has been measured yet, so there is nothing to overrule.
+            // This is the fallback speed being replaced by a better one.
+            DitSamples = _seedSamples;
+            UsingSeededSpeed = true;
+        }
+    }
+
     /// <summary>How many marks the estimate currently rests on.</summary>
     public int MarkCount => _markCount;
 
@@ -340,6 +408,17 @@ public sealed class CwSpeedEstimator
         _gapWrite = 0;
         _gapCutsKnown = false;
         Coherence = 0;
+
+        // **THE SEED BELONGS TO THE OPERATOR AND NOT TO THE SENDER.** Everything
+        // else here was measured through a filter pointed somewhere else and goes
+        // with the move; what he told us he is hearing is still what he is
+        // hearing, and the new station starts from it rather than from the
+        // fallback.
+        if (_seedSamples > 0)
+        {
+            DitSamples = _seedSamples;
+            UsingSeededSpeed = true;
+        }
     }
 
     /// <summary>Record a mark and re-derive the speed.</summary>
@@ -648,6 +727,52 @@ public sealed class CwSpeedEstimator
 
         DitSamples = Refine(markDit);
         Coherence = MeasureCoherence(markHigh);
+
+        // **THE SEED IS USED WHERE THE FIT DESCRIBES A FIST NOBODY HAS.** Not
+        // wherever the coherence dips, which was measured and is worse: on a
+        // sender the estimator reads perfectly well, coherence sags for a window
+        // or two in the ordinary course of a message, and a dit flipping between
+        // the fitted value and a round number the operator typed is the jitter
+        // HM-DEC-095 built hysteresis to stop. Measured that way,
+        // `farnsworth-light` put `ETE TTET` in front of a message it had been
+        // silent about, which is the direction §0.0 forbids.
+        //
+        // **AND THE SEED STOPS AT THIS NUMBER.** Letting the tracker pick its
+        // analysis window from the seeded speed before there is a fit was tried,
+        // on the reasoning that the operator's figure beats no figure at all: it
+        // added nothing to `farnsworth-heavy`, which was already whole, and cost
+        // `cw-2026-08-17-013347` its callsign, `VA3VRR` coming apart into
+        // `VRR A3VRR`. What the operator supplies is a dit, and it is used as a
+        // dit and nowhere else.
+        //
+        // **THE CONDITION IS THE SENDER'S OWN DAH.** Everything downstream of a
+        // short dit collapses in one identifiable way: the dah's ratio leaves the
+        // band of fists anybody sends, <see cref="MeasureCoherence"/> falls back
+        // to a textbook three that this sender demonstrably does not send, every
+        // mark is then scored against a length nobody keyed, and the decoder goes
+        // silent on a signal it heard perfectly. Measured on `farnsworth-heavy`,
+        // whose dah is 238 ms: the fit reads the dit at 46.6 and calls the dah
+        // 5.1 dits, which is off the end of the band, while the operator's 21
+        // words a minute puts it at 4.17 and inside it.
+        //
+        // So the fit is asked whether it has produced a plausible fist, and only
+        // where it has not does the operator's figure stand in. On the two audios
+        // whose fit is sound the ratio never leaves the band and the seed never
+        // engages at all.
+        var fittedDah = DitSamples > 0 ? markHigh / DitSamples : 0;
+
+        if (_seedSamples > 0
+            && fittedDah is < ShortestDahDits or > LongestDahDits)
+        {
+            DitSamples = _seedSamples;
+            Coherence = MeasureCoherence(markHigh);
+            UsingSeededSpeed = true;
+        }
+        else
+        {
+            UsingSeededSpeed = false;
+        }
+
         RecomputeGapCuts();
     }
 

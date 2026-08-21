@@ -280,6 +280,33 @@ public partial class MainWindowViewModel : ObservableObject
     private int _detectedWpm;
 
     /// <summary>
+    /// True when the operator is telling Hamlet how fast the station is sending.
+    /// </summary>
+    /// <remarks>
+    /// <para>**OFF UNTIL HE TURNS IT ON, AND OFF AGAIN NEXT TIME HAMLET
+    /// OPENS.** It is not persisted, deliberately. A speed is a fact about one
+    /// station on one evening, and a figure that came back by itself a week later
+    /// would be helping with somebody else's sending.</para>
+    /// <para>What it does is in <see cref="CwSpeedEstimator.Seed"/>: it moves
+    /// where the estimate starts and never what counts as a resolved character
+    /// (HM-DEC-048).</para>
+    /// </remarks>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(CopySpeedNote))]
+    private bool _copySpeedOn;
+
+    /// <summary>What he says he is hearing, in words a minute.</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(CopySpeedNote))]
+    [NotifyPropertyChangedFor(nameof(CopySpeedText))]
+    private int _copySpeedWpm = 20;
+
+    /// <summary>True while his figure is the one the estimator is using.</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(CopySpeedNote))]
+    private bool _copySpeedInUse;
+
+    /// <summary>
     /// What the decoder has noticed about the signal, in plain words, or empty.
     /// </summary>
     [ObservableProperty]
@@ -1096,6 +1123,64 @@ public partial class MainWindowViewModel : ObservableObject
     public bool HasByline => Byline.Length > 0;
 
     partial void OnBylineChanged(string value) => OnPropertyChanged(nameof(HasByline));
+
+    partial void OnCopySpeedOnChanged(bool value) => ApplyCopySpeed();
+
+    partial void OnCopySpeedWpmChanged(int value) => ApplyCopySpeed();
+
+    /// <summary>Hand the decoder the operator's figure, or take it back.</summary>
+    private void ApplyCopySpeed()
+    {
+        if (_decoder is null)
+        {
+            return;
+        }
+
+        _decoder.SeededWordsPerMinute = CopySpeedOn ? CopySpeedWpm : null;
+        CopySpeedInUse = _decoder.UsingSeededSpeed;
+    }
+
+    /// <summary>The figure, as it reads beside the control.</summary>
+    public string CopySpeedText => $"{CopySpeedWpm} WPM";
+
+    /// <summary>Slow the figure down by one word a minute.</summary>
+    [RelayCommand]
+    private void CopySpeedDown()
+        => CopySpeedWpm = Math.Max(
+            CwSpeedEstimator.SlowestPlausibleWpm, CopySpeedWpm - 1);
+
+    /// <summary>Speed the figure up by one word a minute.</summary>
+    [RelayCommand]
+    private void CopySpeedUp()
+        => CopySpeedWpm = Math.Min(
+            CwSpeedEstimator.FastestPlausibleWpm, CopySpeedWpm + 1);
+
+    /// <summary>
+    /// What the terminal says about whose speed produced what is on it (§0.0).
+    /// </summary>
+    /// <remarks>
+    /// **THE OPERATOR MUST NEVER BE READING A TRANSCRIPT WITHOUT KNOWING WHICH
+    /// OF THE TWO PRODUCED IT.** Set and in use, set and not needed, and off are
+    /// three different states and they get three different sentences.
+    /// </remarks>
+    public string CopySpeedNote
+    {
+        get
+        {
+            if (!CopySpeedOn)
+            {
+                return "";
+            }
+
+            return CopySpeedInUse
+                ? $"Reading at the {CopySpeedWpm} words a minute you set, because "
+                  + "what Hamlet fitted for itself did not look like anybody's "
+                  + "sending."
+                : $"Your {CopySpeedWpm} words a minute is set and waiting. Hamlet's "
+                  + "own fit looks like a real fist at the moment, so the reading "
+                  + "on screen is its own.";
+        }
+    }
 
     /// <summary>Collapsed-header line for the neighborhood map (HM-DEC-021).</summary>
     public string MapSummary => string.Create(CultureInfo.InvariantCulture,
@@ -2860,6 +2945,10 @@ public partial class MainWindowViewModel : ObservableObject
 
         _decoder = new CwDecoder(_audioInput.SampleRate, _settings.CwPitchHz);
 
+        // **AND WHAT THE OPERATOR SAID HE WAS HEARING SURVIVES A RECONNECT.**
+        // Off unless he turned it on, which is every fresh start.
+        ApplyCopySpeed();
+
         // **A COUNT WRITTEN BESIDE A RECORDING IS READ AS BEING ABOUT THE
         // RECORDING** (HM-DEC-091). The decoder's counters run from here until
         // listening stops, so a capture taken seven hours in carried a character
@@ -2975,6 +3064,7 @@ public partial class MainWindowViewModel : ObservableObject
         // ONE GUARDED ANSWER (HM-DEC-090). Zero means nothing has earned the
         // right to name a speed, and every surface that shows one reads this.
         DetectedWpm = _decoder.WordsPerMinute ?? 0;
+        CopySpeedInUse = _decoder.UsingSeededSpeed;
         DecodeNote = _decoder.Watch.NoteText;
 
         // **THE TWO-STAGE DECODE, ON SCREEN** (HM-DEC-096). All of this existed
@@ -3477,6 +3567,13 @@ public partial class MainWindowViewModel : ObservableObject
             // unread: a fixture labelled with a speed nobody measured is worse
             // than one labelled with nothing (§0.0, HM-DEC-090).
             $"decoderWpm {(DetectedWpm > 0 ? DetectedWpm.ToString() : "not tracking")}",
+
+            // **AND WHETHER THE OPERATOR SUPPLIED A SPEED**, which changes what
+            // every figure above it is evidence about. A recording
+            // read at a speed he typed in and one read at a speed Hamlet fitted
+            // are two different measurements, and a sheet that does not say which
+            // invites them to be scored together.
+            $"copySpeed  {(CopySpeedOn ? $"{CopySpeedWpm} set by the operator" : "not set")}",
 
             // **THE SIDECAR RECORDED COUNTS AND NEVER A CHARACTER OF TEXT**, so
             // nothing beside a kept recording said what Hamlet had made of it.
@@ -4724,7 +4821,11 @@ public partial class MainWindowViewModel : ObservableObject
                 // still leaves the row one line in a text editor.
                 Transcript.Tail(RosterTextLength),
                 covers,
-                KeyingLine(_keyingReading)));
+                KeyingLine(_keyingReading),
+
+                // **WHETHER HE WAS HELPING**, so tomorrow's rows say which of the
+                // two speeds produced the text beside them.
+                CopySpeedOn ? CopySpeedWpm : null));
     }
 
     /// <summary>
