@@ -97,9 +97,24 @@ public static class CwProbabilisticDecoder
     public const double HopMilliseconds = 5.0;
 
     /// <summary>The slowest speed hypothesis tried.</summary>
-    public const double SlowestWpm = 10;
+    /// <remarks>
+    /// **EIGHT, BECAUSE A GRID THAT STOPS AT TEN CANNOT FIT A TEN.** A hypothesis
+    /// at the very edge of the range wins by default rather than on evidence:
+    /// there is nothing below it to lose to, so a sender slower than the floor is
+    /// fitted at the floor whatever he is actually doing. The operator this
+    /// application is for works people sending eight to twelve on a straight key,
+    /// which is the slowest thing on the band and the easiest to copy by ear.
+    /// </remarks>
+    public const double SlowestWpm = 8;
 
     /// <summary>The fastest speed hypothesis tried.</summary>
+    /// <remarks>
+    /// **FORTY, BECAUSE A MACHINE SENDER IS THE EASIEST THING ON THE BAND AND
+    /// HAMLET COULD NOT FIT ONE.** A station running thirty-five or forty is
+    /// almost always a program sending perfect timing, which is the least
+    /// demanding audio a decoder ever sees, and the old ceiling of thirty-two put
+    /// it outside the grid.
+    /// </remarks>
     public const double FastestWpm = 32;
 
     /// <summary>How far apart the speed hypotheses sit.</summary>

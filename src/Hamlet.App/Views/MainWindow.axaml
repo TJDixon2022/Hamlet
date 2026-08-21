@@ -901,39 +901,6 @@
                         </ScrollViewer>
                     </Border>
 
-                    <!-- THE SPEED HE CAN HEAR AND HAMLET SOMETIMES CANNOT
-                         Off until he asks for it, and the row says
-                         so plainly rather than leaving him to work out from a
-                         number whether it is doing anything. The two arrows step
-                         a word a minute at a time, because he will be reaching
-                         for them with a station already sending and his other
-                         hand on the dial. -->
-                    <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,*" Margin="0,2,0,0">
-                        <CheckBox Grid.Column="0" IsChecked="{Binding CopySpeedOn}"
-                                  VerticalAlignment="Center"
-                                  Content="I can hear the speed"
-                                  FontSize="11"
-                                  ToolTip.Tip="Tell Hamlet roughly how fast this station is sending, and it starts its own estimate from your figure instead of from scratch. It still works the speed out for itself and still decides what it can read." />
-
-                        <Button Grid.Column="1" Content="&#x2212;" FontSize="14"
-                                Padding="10,1" Margin="10,0,0,0"
-                                IsEnabled="{Binding CopySpeedOn}"
-                                Command="{Binding CopySpeedDownCommand}"
-                                ToolTip.Tip="A word a minute slower." />
-
-                        <TextBlock Grid.Column="2" Text="{Binding CopySpeedText}"
-                                   FontSize="12" MinWidth="58"
-                                   HorizontalAlignment="Center"
-                                   TextAlignment="Center"
-                                   VerticalAlignment="Center" />
-
-                        <Button Grid.Column="3" Content="+" FontSize="14"
-                                Padding="10,1"
-                                IsEnabled="{Binding CopySpeedOn}"
-                                Command="{Binding CopySpeedUpCommand}"
-                                ToolTip.Tip="A word a minute faster." />
-                    </Grid>
-
                     <!-- ONE ADVISORY REGION, AND IT NEVER CHANGES HEIGHT.
                          Below the transcript sat a stack of boxes that each
                          appeared and vanished on their own, and every one of

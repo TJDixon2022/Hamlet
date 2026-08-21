@@ -270,7 +270,29 @@ public sealed class CwDecoder
         // put a character on a screen: `CharacterDecoded` and `CharacterSettled`
         // are raised from here and from nowhere else.
         _probabilistic = new CwProbabilisticStream(SampleRate);
-        _probabilistic.CharacterSettled += c => CharacterSettled?.Invoke(c);
+        _probabilistic.CharacterSettled += c =>
+        {
+            // **THE COUNTERS COUNT WHAT REACHED THE SCREEN** (HM-DEC-091). They
+            // were incremented on the old path's own emit, which has raised
+            // nothing since the decoder was replaced, so a capture sidecar said
+            // `0 characters emitted` and `nothing read` about an instant when the
+            // terminal was showing text. **Two readouts of one instant giving two
+            // answers is the fault that ruling exists for**, and it made the
+            // evening's roster unusable for scoring.
+            if (!c.IsWordGap)
+            {
+                _charactersEmitted++;
+
+                if (c.IsUnreadable || c.Confidence != CwConfidence.High)
+                {
+                    _charactersUnsure++;
+                }
+
+                _elementsResolved += Math.Max(1, c.Pattern.Length);
+            }
+
+            CharacterSettled?.Invoke(c);
+        };
         _probabilistic.LeadingEdgeChanged += e =>
         {
             LeadingEdge?.Invoke(e);
@@ -293,23 +315,15 @@ public sealed class CwDecoder
     /// <summary>Samples per second.</summary>
     public int SampleRate { get; }
 
-    /// <summary>
-    /// The sending speed the operator says he is hearing, or null.
-    /// </summary>
+    /// <summary>What the working decoder last made of the audio.</summary>
     /// <remarks>
-    /// Off unless he sets it. See <see cref="CwSpeedEstimator.Seed"/> for what
-    /// it does and, more importantly, for what it does not: it moves where the
-    /// estimate starts and never what counts as a resolved character
-    /// (HM-DEC-048).
+    /// **THE ONE SOURCE FOR EVERY NUMBER ABOUT THE READING** (HM-DEC-091). The
+    /// sidecar and the panel were quoting `CwSpeedEstimator`, which fits a clock
+    /// from run lengths and has decoded nothing since the decoder was replaced.
+    /// That is how a sheet came to report a dah of 15.7 dits beside text a
+    /// completely different decoder had produced.
     /// </remarks>
-    public int? SeededWordsPerMinute
-    {
-        get => _speed.SeededWordsPerMinute;
-        set => _speed.Seed(value);
-    }
-
-    /// <summary>True while the operator's figure is the one in use.</summary>
-    public bool UsingSeededSpeed => _speed.UsingSeededSpeed;
+    public CwProbabilisticResult Reading => _probabilistic.Last;
 
     /// <summary>
     /// The margin below which this decoder emits nothing (HM-DEC-097).
@@ -1215,6 +1229,18 @@ public sealed class CwDecoder
             // previous clock as a candidate so a fade does not count as a change.
             // A number that has been through that is a fact about somebody's
             // keying; the tracking estimate on its own is not.
+            // **AND THE GUARD IN FRONT OF IT IS WHY THIS IS NOT THE WORKING
+            // DECODER'S NUMBER.** Pointing this at the probabilistic pass was
+            // built and measured and it breaks a §0.0 protection: that pass reads
+            // a twelve second window, so across a handover it names a speed
+            // between the two stations, and `NoSpeedBetweenTwoStationsIsEverNamed`
+            // caught it naming 18 where one sends 16 and the other something
+            // else. A number describing neither station is worse than no number.
+            //
+            // So the badge keeps this guard, and **the working decoder's own
+            // speed is reported separately and says what it is** — the `reading`
+            // line on the capture sidecar carries it with the grid it won out of
+            // (HM-DEC-091: one source, and it says which).
             var dit = _lastOutcome.Read ? _lastOutcome.DitMilliseconds : 0;
 
             if (dit <= 0)
@@ -1433,21 +1459,11 @@ public sealed class CwDecoder
         // COUNTED HERE, WHERE EVERY CHARACTER GOES PAST, so the metrics cannot
         // drift away from what actually reached the screen (HM-DEC-088). Word
         // gaps are spacing rather than copy and are not counted as either.
-        if (!character.IsWordGap)
-        {
-            _charactersEmitted++;
-
-            if (character.IsUnreadable || character.Confidence != CwConfidence.High)
-            {
-                _charactersUnsure++;
-            }
-
-            // A character that resolved consumed the elements behind it, which
-            // is what makes the resolved count mean something next to the seen
-            // one: the gap between them is what the decoder measured and could
-            // not turn into letters.
-            _elementsResolved += Math.Max(1, character.Pattern.Length);
-        }
+        // **NOT COUNTED HERE ANY MORE.** This path has raised nothing since the
+        // decoder was replaced, and counting what it would have said produced a
+        // sidecar describing a decoder nobody can see the output of. The counters
+        // are incremented where the characters actually leave, beside
+        // `CwProbabilisticStream`.
 
         // **MARKED UNSTABLE WHEN NOTHING IS COMING BEHIND IT** (HM-DEC-096,
         // phase 4). While the settled pass is refusing or re-acquiring, the

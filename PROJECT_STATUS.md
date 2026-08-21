@@ -1,9 +1,9 @@
 STATE: COMPLETED
-PHASE: 5 of 5
+PHASE: 6 of 6
 BALL: tim
 NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-21T16:22:00-04:00
-NOTE: Mode-follow was refused by a guard fed evidence that is always true; front-end readings now carry their names
+UPDATED: 2026-08-21T17:52:00-04:00
+NOTE: clockFit and decoderWpm were describing the removed decoder; every number now comes from the one that decodes
 
 ---
 

@@ -336,7 +336,6 @@ public partial class MainWindowViewModel : ObservableObject
         yield return CaptureNote;
         yield return DecoderStory;
         yield return CeilingNote;
-        yield return CopySpeedOn ? CopySpeedNote : "";
     }
 
     /// <summary>What the terminal says while the operator is sending.</summary>
@@ -360,40 +359,6 @@ public partial class MainWindowViewModel : ObservableObject
     [NotifyPropertyChangedFor(nameof(TerminalSpeedText))]
     [NotifyPropertyChangedFor(nameof(HasDetectedSpeed))]
     private int _detectedWpm;
-
-    /// <summary>
-    /// True when the operator is telling Hamlet how fast the station is sending.
-    /// </summary>
-    /// <remarks>
-    /// <para>**OFF UNTIL HE TURNS IT ON, AND OFF AGAIN NEXT TIME HAMLET
-    /// OPENS.** It is not persisted, deliberately. A speed is a fact about one
-    /// station on one evening, and a figure that came back by itself a week later
-    /// would be helping with somebody else's sending.</para>
-    /// <para>What it does is in <see cref="CwSpeedEstimator.Seed"/>: it moves
-    /// where the estimate starts and never what counts as a resolved character
-    /// (HM-DEC-048).</para>
-    /// </remarks>
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(CopySpeedNote))]
-    private bool _copySpeedOn;
-
-    /// <summary>What he says he is hearing, in words a minute.</summary>
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(CopySpeedNote))]
-    [NotifyPropertyChangedFor(nameof(CopySpeedText))]
-    private int _copySpeedWpm = 20;
-
-    /// <summary>True while his figure is the one the estimator is using.</summary>
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(CopySpeedNote))]
-    private bool _copySpeedInUse;
-
-    /// <summary>
-    /// True while the tracker has a station and his figure has stepped aside.
-    /// </summary>
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(CopySpeedNote))]
-    private bool _copySpeedIsSuperseded;
 
     /// <summary>
     /// What the decoder has noticed about the signal, in plain words, or empty.
@@ -1256,107 +1221,6 @@ public partial class MainWindowViewModel : ObservableObject
     public bool HasByline => Byline.Length > 0;
 
     partial void OnBylineChanged(string value) => OnPropertyChanged(nameof(HasByline));
-
-    partial void OnCopySpeedOnChanged(bool value) => ApplyCopySpeed();
-
-    partial void OnCopySpeedWpmChanged(int value) => ApplyCopySpeed();
-
-    /// <summary>Hand the decoder the operator's figure, or take it back.</summary>
-    /// <remarks>
-    /// <para>**THE TRACKER'S FIGURE SUPERSEDES THE OPERATOR'S ONCE THERE IS A
-    /// STATION TO TRACK.** He set twenty, the station was sending fourteen, and
-    /// thirty seconds produced two characters; he turned the figure down to
-    /// thirteen by hand and the next three captures produced eleven, twelve and
-    /// fourteen. **A seed wrong by six words a minute cost five sixths of the
-    /// copy**, and he should not have to find that by turning a knob.</para>
-    /// <para>**THE EVIDENCE IS THE KEYING METER'S SWING AND NOT THE TRACKER'S
-    /// OPINION OF ITSELF.** A tracker that has fitted a clock to noise is
-    /// confident in exactly the same way as one that has fitted it to a station,
-    /// so asking it is asking the wrong instrument. The swing between quiet and
-    /// loud at the keyed pitch is the figure that held steady across a whole
-    /// evening (<see cref="CwKeyingThresholds.ConfidentSwingDb"/>).</para>
-    /// <para>**AND IT IS NOT PERMANENT.** The moment the meter stops seeing a
-    /// station the figure he set comes back, because that is when a decoder with
-    /// nothing to go on needs it most. Nothing here silences anything or raises
-    /// any confidence: it decides which of two numbers the estimator starts from
-    /// and nothing else (HM-DEC-048).</para>
-    /// </remarks>
-    private void ApplyCopySpeed()
-    {
-        if (_decoder is null)
-        {
-            return;
-        }
-
-        var trackerGoverns = CopySpeedSuperseded;
-
-        _decoder.SeededWordsPerMinute =
-            CopySpeedOn && !trackerGoverns ? CopySpeedWpm : null;
-
-        CopySpeedInUse = _decoder.UsingSeededSpeed;
-        CopySpeedIsSuperseded = CopySpeedOn && trackerGoverns;
-    }
-
-    /// <summary>
-    /// True when there is a station being keyed and the decoder has fitted a
-    /// clock to it.
-    /// </summary>
-    private bool CopySpeedSuperseded
-        => _decoder is { } decoder
-           && decoder.Timing.IsReady
-           && _keyingReading.Verdict == KeyingVerdict.Keying
-           && !_keyingReading.Held
-           && _keyingReading.SwingDb >= CwKeyingThresholds.ConfidentSwingDb;
-
-    /// <summary>The figure, as it reads beside the control.</summary>
-    public string CopySpeedText => $"{CopySpeedWpm} WPM";
-
-    /// <summary>Slow the figure down by one word a minute.</summary>
-    [RelayCommand]
-    private void CopySpeedDown()
-        => CopySpeedWpm = Math.Max(
-            CwSpeedEstimator.SlowestPlausibleWpm, CopySpeedWpm - 1);
-
-    /// <summary>Speed the figure up by one word a minute.</summary>
-    [RelayCommand]
-    private void CopySpeedUp()
-        => CopySpeedWpm = Math.Min(
-            CwSpeedEstimator.FastestPlausibleWpm, CopySpeedWpm + 1);
-
-    /// <summary>
-    /// What the terminal says about whose speed produced what is on it (§0.0).
-    /// </summary>
-    /// <remarks>
-    /// **THE OPERATOR MUST NEVER BE READING A TRANSCRIPT WITHOUT KNOWING WHICH
-    /// OF THE TWO PRODUCED IT.** Set and in use, set and not needed, and off are
-    /// three different states and they get three different sentences.
-    /// </remarks>
-    public string CopySpeedNote
-    {
-        get
-        {
-            if (!CopySpeedOn)
-            {
-                return "";
-            }
-
-            if (CopySpeedIsSuperseded)
-            {
-                return "Hamlet can hear somebody keying and has worked the speed "
-                       + $"out for itself, so it is reading at {DetectedWpm} rather "
-                       + $"than the {CopySpeedWpm} you set. Yours comes back the "
-                       + "moment the station does not.";
-            }
-
-            return CopySpeedInUse
-                ? $"Reading at the {CopySpeedWpm} words a minute you set, because "
-                  + "what Hamlet fitted for itself did not look like anybody's "
-                  + "sending."
-                : $"Your {CopySpeedWpm} words a minute is set and waiting. Hamlet's "
-                  + "own fit looks like a real fist at the moment, so the reading "
-                  + "on screen is its own.";
-        }
-    }
 
     /// <summary>Collapsed-header line for the neighborhood map (HM-DEC-021).</summary>
     public string MapSummary => string.Create(CultureInfo.InvariantCulture,
@@ -3272,10 +3136,6 @@ public partial class MainWindowViewModel : ObservableObject
 
         _decoder = new CwDecoder(_audioInput.SampleRate, _settings.CwPitchHz);
 
-        // **AND WHAT THE OPERATOR SAID HE WAS HEARING SURVIVES A RECONNECT.**
-        // Off unless he turned it on, which is every fresh start.
-        ApplyCopySpeed();
-
         // **A COUNT WRITTEN BESIDE A RECORDING IS READ AS BEING ABOUT THE
         // RECORDING** (HM-DEC-091). The decoder's counters run from here until
         // listening stops, so a capture taken seven hours in carried a character
@@ -3404,7 +3264,6 @@ public partial class MainWindowViewModel : ObservableObject
         // ONE GUARDED ANSWER (HM-DEC-090). Zero means nothing has earned the
         // right to name a speed, and every surface that shows one reads this.
         DetectedWpm = _decoder.WordsPerMinute ?? 0;
-        CopySpeedInUse = _decoder.UsingSeededSpeed;
         DecodeNote = _decoder.Watch.NoteText;
 
         // **THE TWO-STAGE DECODE, ON SCREEN** (HM-DEC-096). All of this existed
@@ -3680,6 +3539,14 @@ public partial class MainWindowViewModel : ObservableObject
     [RelayCommand]
     private async Task CaptureAudioAsync()
     {
+        // **ONE SNAPSHOT, TAKEN AT THE PRESS** (HM-DEC-091, HM-DEC-111). The
+        // sidecar used to read the live report again after awaiting the radio,
+        // and the decode poll runs four times a second in between: the terminal
+        // said a tone at 500 hertz and the file written moments later said 400,
+        // from **the same property at two instants**, with nothing on the sheet
+        // saying which instant either belonged to.
+        var pressed = DecodeReport;
+
         // **ASK THE RADIO WHERE IT IS BEFORE WRITING DOWN WHERE IT WAS**
         // (HM-DEC-107 phase 6 of the UI order). The frequency is never polled,
         // because the radio broadcasts a change and asking as well would spend
@@ -3745,7 +3612,7 @@ public partial class MainWindowViewModel : ObservableObject
             WavAudio.Write(wav, audio);
             File.WriteAllText(
                 Path.Combine(folder, $"cw-{stamp}.txt"),
-                CaptureNotes(audio, seen));
+                CaptureNotes(audio, seen, pressed));
 
             _lastCaptureSamples = seen;
 
@@ -3845,10 +3712,14 @@ public partial class MainWindowViewModel : ObservableObject
     /// <summary>Everything worth knowing about a capture, beside it.</summary>
     /// <param name="audio">What was written.</param>
     /// <param name="samplesSeen">How much audio has ever arrived.</param>
-    private string CaptureNotes(MonoAudio audio, long samplesSeen)
+    /// <param name="report">
+    /// What the decoder was reporting at the moment of the press, taken once so
+    /// every figure on the sheet belongs to one instant (HM-DEC-091).
+    /// </param>
+    private string CaptureNotes(
+        MonoAudio audio, long samplesSeen, CwDecodeReport report)
     {
         var state = RigState;
-        var report = DecodeReport;
 
         var lines = new List<string>
         {
@@ -3910,8 +3781,8 @@ public partial class MainWindowViewModel : ObservableObject
             // while something louder or better keyed sits at another, and that is
             // worth knowing rather than worth hiding.
             $"toneHz     {(report.HasTone ? report.ToneHz.ToString("0") : "none")}"
-                + "  (the pitch the decoder is following, refined from where it "
-                + "started)",
+                + "  (the pitch the decoder was following at the moment of the "
+                + "press, refined from where it started)",
             // **THIS FIELD WAS CALLED `snrDb` AND IT IS NOT ONE** (HM-DEC-091:
             // one source, and it says which). It is a held peak of how far the
             // tracked bin stood above the noise beside it, rising at once and
@@ -3972,13 +3843,6 @@ public partial class MainWindowViewModel : ObservableObject
             // heard whose speed had not yet been proved.
             $"decoderWpm {SpeedForTheRecord()}",
 
-            // **AND WHETHER THE OPERATOR SUPPLIED A SPEED**, which changes what
-            // every figure above it is evidence about. A recording
-            // read at a speed he typed in and one read at a speed Hamlet fitted
-            // are two different measurements, and a sheet that does not say which
-            // invites them to be scored together.
-            $"copySpeed  {(CopySpeedOn ? $"{CopySpeedWpm} set by the operator" : "not set")}",
-
             // **THE SIDECAR RECORDED COUNTS AND NEVER A CHARACTER OF TEXT**, so
             // nothing beside a kept recording said what Hamlet had made of it.
             // The whole transcript goes here rather than the roster's tail,
@@ -4009,7 +3873,10 @@ public partial class MainWindowViewModel : ObservableObject
             // produces one just as readily as a fit that is. These are the three
             // figures that tell them apart, and every one of them is measured
             // rather than judged: nothing in the decoder reads them (§0.0.1).
-            $"clockFit   {FitLine()}",
+            // **WHAT THE WORKING DECODER DID**, and it says so rather than
+            // carrying a fitted dah-to-dit ratio that belongs to a decoder whose
+            // output nobody sees (HM-DEC-091).
+            $"reading    {FitLine()}",
 
             $"keying     {KeyingLine(_keyingReading)}"
                 + "  (an independent sweep of 400 to 1200 Hz in 25 Hz steps over "
@@ -4245,11 +4112,6 @@ public partial class MainWindowViewModel : ObservableObject
         KeyingIsHeld = reading.Held;
 
         KeyingDetail = KeyingDetailFor(reading);
-
-        // **AND THE SPEED THE OPERATOR SET STEPS ASIDE ONCE THERE IS A STATION
-        // TO TRACK.** The swing is the evidence for that, not this meter's own
-        // timing and not the tracker's opinion of itself.
-        ApplyCopySpeed();
     }
 
     /// <summary>What the meter measured, or why there is nothing to show.</summary>
@@ -4332,22 +4194,39 @@ public partial class MainWindowViewModel : ObservableObject
     /// </remarks>
     private string FitLine()
     {
-        if (_decoder is not { } decoder || !decoder.Timing.IsReady)
+        if (_decoder is not { } decoder)
         {
             return "not fitted";
         }
 
-        var timing = decoder.Timing;
+        var reading = decoder.Reading;
 
+        if (reading.WordsPerMinute <= 0)
+        {
+            return "nothing fitted yet";
+        }
+
+        // **THIS LINE USED TO QUOTE A DECODER NOBODY CAN SEE THE OUTPUT OF.** It
+        // read `CwSpeedEstimator`, which fits a clock by clustering run lengths
+        // and has decoded nothing since the decoder was replaced, so a sheet
+        // reported a dah of 15.7 dits beside text produced by something else
+        // entirely — and four evenings of captures were read as evidence about
+        // the clock behind the words. They were not.
+        //
+        // **THE WORKING DECODER HAS NO FITTED RATIO TO REPORT**, and that is not
+        // a gap: it never measures one. A dah is three dits in its model, the
+        // speed is whichever hypothesis explained the audio best, and how well
+        // that explanation did is the likelihood ratio against silence. Those are
+        // the numbers behind the text and they are what this line carries now.
         return string.Format(
             CultureInfo.InvariantCulture,
-            "dah {0:0.00} dits, clusters {1:0.0} apart in their own scatter, "
-            + "{2} of {3} marks under half a dit, {4} set aside as too quiet",
-            timing.FittedDahDits,
-            timing.MarkSeparationInScatter,
-            timing.MarksBelowHalfADit,
-            timing.MarkCount,
-            timing.MarkCount - timing.KeptMarks);
+            "{0:0} WPM won out of {1} to {2}, {3:0.0} better than silence per hop "
+            + "against a gate of {4:0}",
+            reading.WordsPerMinute,
+            CwProbabilisticDecoder.SlowestWpm,
+            CwProbabilisticDecoder.FastestWpm,
+            reading.LikelihoodRatio,
+            CwProbabilisticDecoder.Gate);
     }
 
     /// <summary>What the meter said, as one line for a record.</summary>
@@ -5349,9 +5228,11 @@ public partial class MainWindowViewModel : ObservableObject
                 covers,
                 KeyingLine(_keyingReading),
 
-                // **WHETHER HE WAS HELPING**, so tomorrow's rows say which of the
-                // two speeds produced the text beside them.
-                CopySpeedOn ? CopySpeedWpm : null,
+                // **THE SEED COLUMN IS ALWAYS EMPTY NOW.** The control that
+                // filled it was inert and came out; the column stays so a roster
+                // started before this build and one started after it are the same
+                // shape, and a later ruling can retire it.
+                null,
 
                 // And what the fit behind the speed looked like, so a row with no
                 // speed on it can be told from a row whose speed came out of a
