@@ -2,23 +2,17 @@
 
 ## 1. What Claude did
 
-**The trigger fired three times across the corpus, not nought.** Every recording
-and both fixtures give nought. **The sensitivity sweep gives three**, out of a
-hundred and twenty-four runs of it: once at fifteen decibels, where the tracker
-went 650 to 575 hertz at 7.5 seconds on one seed of four, and once each at nine
-and eight decibels, where it went 600 to 675 at 6.0 seconds on another seed.
+**Turning the clear off restored the sweep exactly.** Fifteen decibels is back to
+**0.94 right and 0.00 invented**, which is the figure the order predicted, and
+nine and eight decibels came back with it, to 0.94/0.03 and 0.92/0.06.
+Every level from eighteen down to twelve is 1.00 right and 0.00 invented. **All
+six recordings are character for character what they were**, and the trigger fired
+nought times on every one of them.
 
-Those are true instances of the ruled line — a move of at least the decoder's own
-bandwidth, made while somebody was being read — and what the tracker moved to is
-noise rather than a second sender. **One of the three costs something**: fifteen
-decibels went from 0.94 right and 0.00 invented to **0.92 right and 0.08
-invented**. The other two cost nothing measurable. Every other level is unchanged.
-
-**So the order's premise, that it fires on nothing in the current corpus and
-shipping it therefore cannot make things worse, is false at one level.** The
-ruling is Tim's and the order rejected leaving the machinery dormant, so it is
-switched on and this is the first thing in the report rather than a footnote. It
-is one line to reverse.
+**Then task 2 measured the three fires and two of them are not what anybody
+thought.** They are one station being reported at two bins seventy-five hertz
+apart, and the third is a genuine noise bin. **So this stops at the end of task 2,
+under task 2's own clause**, and task 3 is not built.
 
 Claude Code on the development computer, `C:\Source\HamLet`, on `main`. Gate
 verified against the tree: `Hamlet.sln` and `CwProbabilisticStream.cs` present, no
@@ -26,179 +20,236 @@ verified against the tree: `Hamlet.sln` and `CwProbabilisticStream.cs` present, 
 connected and nothing here is evidence about the radio** (HM-DEC-093). Nothing was
 recorded under §12.1.
 
-### Task 1 — the trigger, on the ruled line
+### Two mismatches in the order, reported and not repaired
 
-`CwDecoder.ShouldClearWindow(fromHz, toHz, reading)`, read once per tracker
-reading against the pitch at the previous reading.
+- **`ANALYSIS-cw-2026-08-22-014113.md` is not in the tree.** Nothing by that name
+  exists anywhere in the repository.
+- **`cw-2026-08-22-014113.wav` is not in the tree either.** The captured folder
+  ends at `cw-2026-08-20-014935`. So the second half of task 2, questions 4 and 5
+  about that file, could not be measured. **What could be answered from the code
+  is answered below.**
 
-- **Where the bandwidth comes from.** `CwProbabilisticDecoder.BandwidthHz`, the
-  constant the stream's own quadrature filter is built from — the same field the
-  mixdown uses to size its boxcar. No literal appears in the comparison, so if
-  that filter ever widens the line widens with it.
-- **What "while something was being read" resolves to.** `_probabilistic.Last
-  .Text.Length > 0`, the decoder's own current reading. That is the thing being
-  protected rather than a proxy for it: a keying verdict takes three seconds to
-  form, and a signal margin says a tone is present rather than that anybody is
-  reading it.
-- **A move is one step, not an accumulation.** The reference is the pitch at the
-  previous reading, five milliseconds earlier, so a jump crosses the line and a
-  walk does not. That is what keeps the two-step settle onto one station off it:
-  600 to 650 on the sweep's fixture and 475 to 525 on `004507` are 50 hertz each.
-- **`StationChanges` is left exactly as it was and nothing reads it.** Its meaning
-  is unchanged, so nothing depends on a meaning that moved. It is not the trigger,
-  because measured last session it fires twice on `004507` with nothing read and
-  not once on the two-station fixture.
+### Task 1 — the clear is off
 
-### Task 2 — what it changes in the corpus
+One line: `CwDecoder.ClearOnAStationChange`, a constant, false. The line, the
+emptying, what survives the emptying and the sentence are all still in the tree
+and all still tested.
 
-**Every recording is character for character last session's string**, and the
-trigger fired on none of them:
+| dB | 18 | 15 | 12 | 11 | 10 | 9 | 8 | 3 | 0 | −5 | −6 |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| with the clear on | 1.00/0.00 | **0.92/0.08** | 1.00/0.00 | 0.92/0.06 | 0.94/0.03 | 0.86/0.08 | 0.83/0.11 | 0.72/0.19 | 0.56/0.33 | 0.03/0.14 | 0.00/0.00 |
+| off, now | 1.00/0.00 | **0.94/0.00** | 1.00/0.00 | 0.92/0.06 | 0.94/0.03 | 0.94/0.03 | 0.92/0.06 | 0.72/0.19 | 0.56/0.33 | 0.03/0.14 | 0.00/0.00 |
 
-| recording | window clears | text |
-|---|---|---|
-| `004507` | 0 | `E AT ARRL DOT NET <BT> E ACH STATION HANDLING ET HIS M E S S A G E P E` |
-| `003016` | 0 | `E ■I KPA1■IS<HH> ■NK <BT> STILLHVEMY ETO 91B E TT JETST VFB TUBE LIN` |
-| `003126` | 0 | `E S 5 IWATTCH ATL E<AS>T 2 IOVI ES A DAY WID X■ WHY N■TT E E , WESTERNS , E` |
-| `003758` | 0 | `E ■HES EHEHSE AA■IH/5■IS E E E EAN EANQNI<HH>SK  E E E E E E EIIE` |
-| `014854`, `014935` | 0 | silent, offline and streamed |
-| two-station fixture | 0 | unchanged |
+Every recording, clears nought on each: `004507` `E AT ARRL DOT NET <BT> E ACH
+STATION HANDLING ET HIS M E S S A G E P E`; `003016` `E ■I KPA1■IS<HH> ■NK <BT>
+STILLHVEMY ETO 91B E TT JETST VFB TUBE LIN`; `003126` `E S 5 IWATTCH ATL E<AS>T 2
+IOVI ES A DAY WID X■ WHY N■TT E E , WESTERNS , E`; `003758` `E ■HES EHEHSE
+AA■IH/5■IS E E E EAN EANQNI<HH>SK  E E E E E E EIIE`; `014854` and `014935`
+silent.
 
-**The sweep, against last session's, every level:**
+**`RefillSeconds` also stopped being a settable static** in the same commit. It
+was mutable so a sweep could measure what each length was worth, the answer was
+nothing at any length from half a second to twelve, and **a mutable static the
+whole suite shares is a way for one test to change another test's numbers without
+either of them saying so.** That is the likeliest explanation for nine and eight
+decibels reading 0.86 and 0.83 in the last two reports and 0.94 and 0.92 today.
 
-| dB | 18 | 17 | 16 | **15** | 14 | 13 | 12 | 11 | 10 | 9 | 8 | 3 | 0 | −5 | −6 |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| was, right/wrong | 1.00/0.00 | 1.00/0.00 | 1.00/0.00 | **0.94/0.00** | 1.00/0.00 | 1.00/0.00 | 1.00/0.00 | 0.92/0.06 | 0.94/0.03 | 0.86/0.08 | 0.83/0.11 | 0.72/0.19 | 0.56/0.33 | 0.03/0.14 | 0.00/0.00 |
-| now | 1.00/0.00 | 1.00/0.00 | 1.00/0.00 | **0.92/0.08** | 1.00/0.00 | 1.00/0.00 | 1.00/0.00 | 0.92/0.06 | 0.94/0.03 | 0.86/0.08 | 0.83/0.11 | 0.72/0.19 | 0.56/0.33 | 0.03/0.14 | 0.00/0.00 |
+### Task 2 — why a noise bin beat a station
 
-**Fifteen decibels is the only level that moved**, and it is one of the three
-firings. **It is not short-window guessing**: the refill guard was swept at 3, 4,
-6, 8 and 12 seconds and every length gives the same 0.92 and 0.08 at that level,
-so the invention is the decoder reading at 575 hertz after the tracker was dragged
-there, rather than the window being briefly thin. Without the clear, the held good
-audio was outvoting the noise; with it, what the tracker moved to is all there is.
+**1. What the tracker scores a bin by.** Admitted bins are ranked by `LiftDb`,
+which is how far that bin's key-down level stands above the band beside it. Not
+clustering. Clustering is an admission test rather than a ranking: a bin is
+admitted only if it shows at least eight marks, a dit between 25 and 200 ms, a
+dah-to-dit ratio between 2.5 and 3.8, and a separation between its two mark
+clusters of at least 4.0 measured in the marks' own scatter.
 
-### Task 3 — proving it fires when it should
+**The three fires, with every bin the survey admitted at that instant.** Nothing
+here is the tracker's summary; it is the same examination the survey runs, handed
+back through a diagnostic added for this (`CwToneSurvey.Candidates`,
+`CwToneTracker.CoarseCandidates`). The fixture sends at **640 Hz**.
 
-`WhenTheWindowIsEmptiedTests`, four of them, and no audio fixture was synthesized
-for any of them.
+**Nine and eight decibels, the move to 675:**
 
-- **A move of at least the filter width while reading empties it** — at the width
-  exactly, in both directions, and far beyond it.
-- **A smaller move does not**, including the two real settles this corpus makes,
-  600 to 650 and 475 to 525, and one hertz under the line.
-- **A long move with nobody being read does not**, including `004507`'s 600 to 475
-  in its first two seconds, and the first reading of all, where there is no
-  previous pitch to have moved from.
-- **Emptying drops the held audio and the leading edge and keeps what was
-  settled.** Real audio goes through the stream until characters settle, then
-  `Restart` is called directly: the envelope is empty afterwards, the last reading
-  is empty, the leading edge was raised empty, and the settled count and the
-  settled text are exactly what they were. Nothing already said is taken back or
-  said twice.
+| bin | lift | keyed | separation | marks | dit | dah |
+|---|---|---|---|---|---|---|
+| what it was reading, 650 | 27.6 | −20.8 | 5.3 | 11 | 70 | 214 |
+| 600 | 13.1 | −35.3 | 4.9 | 11 | 72 | 225 |
+| **675, taken** | 17.7 | −30.6 | **37.1** | 10 | 80 | 218 |
 
-### Task 4 — the sentence, proved on the real window
+**The station's own bin was not admitted at all on that survey.** The only two
+candidates were 600 and 675, and **both of them are the station**: 72/225 and
+80/218 against the 70/214 it had been reading. They are the skirts of one signal
+either side of a bin that dropped out, and the tracker took the louder skirt. **It
+was right both times.** What crossed sixty hertz was 600 to 675, one move between
+two bins holding one station.
 
-`TheFollowedSentenceReachesTheScreenTests` builds the actual window headless, puts
-the terminal on the canvas the way the operator does, and reads the text out of
-the visual tree. It asserts the sentence is drawn while the window is refilling
-and gone once it is not. **No property is consulted for the proof** — a property
-returning the right string and an element that is not on the screen look identical
-to a test that reads a view model, which is exactly how the capture press
-disappeared.
+**Fifteen decibels, the move to 575:**
 
-To make that possible the state is carried as `ListeningAfresh` on the view model,
-the way `DecodingIsSuspended` already is, and set from the decoder on the poll.
-The sentence itself sits in `Advisories()` above the capture note, so it lands in
-the fixed-height region and **the transcript does not move** (HM-DEC-080).
+| bin | lift | keyed | separation | marks | dit | dah |
+|---|---|---|---|---|---|---|
+| 575, what it went to | 11.7 | −42.8 | 4.3 | **21** | **31** | 98 |
+| 725, the only bin admitted at the moment of the move | 7.4 | −47.4 | 6.4 | **20** | **37** | 100 |
+| 650, one survey later | 34.1 | −20.6 | 4.7 | 9 | 60 | 217 |
+
+**This one is noise.** A dit of 31 ms where the fixture sends 67, twenty-one marks
+in three seconds where the station gives nine, and a separation of 4.3 against a
+floor of 4.0. **It is HM-DEC-095's own case**: noise routinely produces
+twenty-five-millisecond marks, and here it also produced a cluster separation over
+the floor. One survey later the station was back at 34.1 dB of lift and the
+tracker returned to it.
+
+**2. What is actually in each bin**, measured by the other instrument rather than
+by the tracker's opinion. `KeyingEnvelope`, the independent witness, scores every
+bin across the whole range at 0.46 to 0.48 element share with purity 1.00:
+
+| 575 | 600 | 640 | 650 | 675 |
+|---|---|---|---|---|
+| 0.480 | 0.468 | 0.462 | 0.463 | 0.467 |
+
+**It ranks 575 highest and the true 640 lowest.** Its hundred-hertz boxcar is
+wider than the spacing being judged, so on this fixture it cannot separate the
+station from its neighbours at all, and where it does have an opinion the opinion
+is wrong.
+
+**3. Why the noise bin won.** Not because loudness beat clustering. Two different
+mechanisms:
+
+- **Twice, the station's centre bin failed admission and its skirts did not.** A
+  real fist gives nine to eleven marks in a three-second window, which is close to
+  the floor of eight, so the centre bin drops in and out between surveys while the
+  skirts stay in. **The choice was then between two bins that both held the
+  station** and loudness picked correctly between them.
+- **Once, a noise bin passed admission.** Noise gives twenty-one short marks in
+  the same three seconds, so it clears the mark count easily, its dit of 31 ms is
+  legal at forty-eight words a minute, and its cluster separation landed at 4.3
+  against a floor of 4.0. **Nothing separated it from the station except loudness,
+  and at that moment the station's bin was not a candidate.**
+
+**4. What the keying sweep ranks bins by.** `KeyingEnvelope.Best` walks 400 to
+1200 hertz in 25 hertz steps and keeps the highest `Score`, which is
+`ElementShare × ElementPurity` — how much of the window sits inside plausible
+element lengths, times how cleanly those lengths cluster. **Loudness is not in
+it.** Whether that explains 625 winning on `cw-2026-08-22-014113.wav` cannot be
+said, because **the file is not in the tree**.
+
+**5. Are they the same metric?** No. The survey chooses on `LiftDb`, loudness over
+the band beside the bin, having admitted on clustering. The sweep chooses on
+`ElementShare × ElementPurity`, clustering only. **They disagree on the fixture
+measured here**: the survey's lift varies by twenty-two decibels across 575 to 675
+and picks 650, while the sweep's score varies by 0.018 across the same bins and
+picks 575.
+
+**And task 2's stop clause applies.** Two of the three fires are the tracker
+moving between two bins that both hold the station it is reading, seventy-five
+hertz apart, because a station on a twenty-five hertz grid is present in several
+bins at once. **The tracker was right, and what crossed the clear's line was a
+legitimate move inside one station.** So the clear's premise — that a move wider
+than the decoder's filter means a different sender — is false for a reason no
+threshold fixes, which is the finding rather than a defect to repair.
+
+### Task 3 — not built, and why
+
+Gated on task 2, and task 2 found that the tracker was substantially right. The
+one genuine noise admission is HM-DEC-095's standing case, and the only knobs that
+would exclude it are the mark-count floor, the dit floor and the separation floor:
+**the noise bin sat at 4.3 against a floor of 4.0 while the station sat at 4.7 to
+5.3, so there is no daylight to cut in** and any cut is the threshold-tuning this
+order forbids. With the clear off, that admission costs nothing measurable.
+
+### Task 4 — the corpus
+
+Unchanged, and quoted under task 1. **28 failing, the same 28 by name as when this
+unit started.** Both recordings holding no keying are silent offline and streamed.
 
 ### Task 5 — the version
 
-**`Directory.Build.props` moved 1.10.4 to 1.10.5.**
+**`Directory.Build.props` moved 1.10.5 to 1.10.6.**
 
-### The order, checked against the rulings it cites
+### The rulings, checked
 
-Every ruling cited says what the order says it says: HM-DEC-120 the emission
-property, HM-DEC-009 no confident wrong answer, HM-DEC-096 phase 3 the interlock,
-HM-DEC-091 one source, HM-DEC-080 the fixed-height region, HM-DEC-150 the version
-scheme, HM-DEC-093 with `SHACK_FACTS.md` the no-radio rule. **No mismatch.**
-
-**One premise in the order is contradicted by measurement**, and it is the safety
-argument rather than a ruling: "It fires on nothing in the current corpus." It
-fires three times on the sensitivity sweep. Reported rather than repaired.
+Every ruling this order cites says what the order says it says. **HM-DEC-095 in
+particular**: it rules that a note is chosen by how it is keyed and never by how
+loud it is, and that a sender's gaps are classified by clustering that sender's own
+gaps. **The survey honours it in admission and not in ranking**, where loudness
+decides between admitted bins. That is worth knowing and it is not what caused any
+of the three fires, because in two of them both candidates were the same station
+and in the third the station was not a candidate at all.
 
 ### The inbound asks queue
 
-Every id it names is `status: open` in `OPEN_ISSUES.md`. Nothing on it is closed,
+Every id it names is `status: open` in `OPEN_ISSUES.md`. Nothing on it is closed
 and nothing open and relevant is missing.
 
 ## 2. What Tim should expect
 
-**The first time somebody answers his call on a different pitch, the terminal will
-stop, say that Hamlet has moved across to them and let go of what it was holding,
-and pick up again a few seconds later with the new station's text.**
+**The app invents nothing from eighteen decibels down to twelve, and what it
+invents below that is exactly what it invented two days ago.**
 
-Build clean, no warnings, version 1.10.5. **28 failing, the same 28 by name as
-when this unit started.** The engine suite gained four tests and the app suite one,
-all green.
+Build clean, no warnings, version 1.10.6. **28 failing, the same 28 by name.** The
+suite is otherwise unchanged: nothing was added this session except a diagnostic
+that hands back every bin the survey admitted, which changes nothing the survey
+decides.
 
-**What will look wrong and is not:** nothing in the app looks different until a
-move that big happens, and on everything in this repository except three runs of
-one synthetic fixture, it never does.
-
-**What is genuinely worse:** the sensitivity sweep at fifteen decibels now returns
-0.08 of the message as wrong characters where it returned none. That is the clear
-firing on a tracker move onto noise. It is one level of one fixture, the four real
-recordings are untouched, and the line above tells him what it buys.
+**What will look wrong and is not:** the window clear is in the tree, fully
+tested, and does nothing. That is Tim's ruling and the constant that switches it is
+one line.
 
 ## 3. What we should do next
 
-- **Ask the decoder whether a new sender is speaking**, which the order parks and
-  which is the answer that does not depend on the tracker being right about a
-  pitch. All three firings this unit measured were the tracker moving onto noise
-  while a station was being read, and a speed-and-fist test would not have been
-  fooled by any of them.
-- **Look at why the tracker leaves a station it is reading for a bin 75 hertz
-  away**, which is what those three firings are. HM-DEC-127 already forbids
-  abandoning a confirmed station for a candidate far below it, and this looks like
-  the same fault surviving in a different form.
+- **A station is in several bins at once, and nothing downstream knows it.** That
+  is the finding under this unit, and it is what makes a distance test unusable for
+  deciding whether the sender changed. It also means the tracker's reported pitch
+  can jump seventy-five hertz while reading one station.
+- **The station's centre bin drops out of admission between surveys** because a
+  real fist gives nine to eleven marks in three seconds against a floor of eight.
+  That is worth measuring across the recordings before anybody touches it.
 - **`003758` and `003016` are still short of their pre-removal strings.**
 - **`FollowSpeed` still has no supplier.**
 
 ## 4. What's blocking us
 
-Nothing blocks the next unit. One ask.
+Nothing blocks the next unit. One ask, and one thing needed before the rest of
+this order can be executed.
 
-> **The window clear stays on, or it comes off until the decoder can say who is
-> sending.**
+> **The evidence for the second half of task 2 is not in the repository.**
 >
-> It is built exactly as ruled and it is switched on. What the ruling assumed, and
-> the order stated, is that it fires on nothing here; it fires three times on the
-> sensitivity sweep, and one of those three costs fifteen decibels 0.08 of the
-> message as invented characters where it invented none.
+> `cw-2026-08-22-014113.wav` and `ANALYSIS-cw-2026-08-22-014113.md` are both
+> absent. Questions 4 and 5 of that task, about why the keying sweep ranked 625
+> above 600 and 608 on that capture, cannot be answered from the code alone: what
+> the sweep ranks by is answered above, and whether that explains the choice needs
+> the audio.
+
+> **Deciding that a different person is sending cannot be done by how far the
+> pitch moved.**
 >
-> **All three firings are the tracker leaving a station it is reading for a bin
-> seventy-five hertz away that holds noise.** The ruled line is doing what it says
-> and the thing feeding it is wrong, which is the same shape as the previous
-> unit's finding about `StationChanges` in a different place.
+> Measured this session: on a fixture sending at 640 hertz, the survey admitted 600
+> and 675 as candidates while the station's own bin dropped out, and both of those
+> bins carry the station's own fist — 72 and 225 milliseconds, 80 and 218, against
+> the 70 and 214 it had been reading. **A station on a twenty-five hertz grid is
+> present in several bins at once**, so the tracker's reported pitch can move
+> seventy-five hertz without anybody else transmitting.
 >
-> **The choice is between two costs**: leave it on and accept invented characters
-> where the tracker is dragged onto noise, in exchange for the protection when
-> somebody really does answer; or take it off until the decoder itself can say a
-> different sender is speaking, and accept that a real handover keeps being
-> decoded as one station until then.
+> **That is why the clear fired three times where the order expected nought**, and
+> it is not something a threshold repairs: the moves are real, the bins are real,
+> and only the meaning attached to them was wrong.
 >
-> **Rejected: tuning the bandwidth line so the three firings fall below it.** The
-> line is 60 hertz because that is the decoder's filter and the argument is
-> physical; a number chosen to make a test green is a different ruling wearing the
-> same clothes.
+> **The remaining candidate is the one already parked**: ask the decoder whether
+> the speed and the fist changed, which is what an operator notices and what does
+> not depend on the tracker being right about a pitch. **That is a measurement
+> nothing here makes yet.**
 >
-> **Rejected: a longer refill guard.** Swept at 3, 4, 6, 8 and 12 seconds and it
-> changes nothing at the level that moved, so the invention is not a thin window.
+> **Rejected: raising the separation floor to keep noise out.** The noise bin sat
+> at 4.3 and the station at 4.7 to 5.3; there is no daylight between them, and a
+> number chosen to make three fires stop is the tuning this order forbids.
 
 ### Asks still outstanding
 
 Carried per HM-DEC-139, verbatim until ruled.
 
+- Whether the window clear comes back on once the tracker is right.
+- Elements per character, 1.54 against 3, and gap promotion.
+- The advice line asserting a cause the app can disprove.
+- The sidecar asserting two incompatible things about one span.
 - Whether the sidecar's `text` should include the leading edge.
 - The captures from the evenings of the 20th and 21st are not in the tree.
 - Thirty seconds since the last character, for mode-follow's guard.
@@ -209,4 +260,7 @@ Carried per HM-DEC-139, verbatim until ruled.
 - The mark-and-gap witness behind HM-DEC-144 and HM-DEC-145.
 - HM-OPEN-052, HM-OPEN-053, HM-OPEN-054, HM-DEC-130, HM-DEC-098, HM-OPEN-033,
   HM-OPEN-007.
-- **Whether the window clear stays on**, first made today, above.
+- **`cw-2026-08-22-014113.wav` and its analysis are not in the tree**, first made
+  today, above.
+- **Whether a sender change can be decided by pitch distance at all**, first made
+  today, above.

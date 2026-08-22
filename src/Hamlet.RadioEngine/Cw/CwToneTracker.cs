@@ -438,6 +438,13 @@ public sealed class CwToneTracker
     public ToneVerdict Verdict { get; private set; } = ToneVerdict.Empty;
 
     /// <summary>
+    /// Every bin the coarse survey would admit as keying right now, for
+    /// diagnosis only.
+    /// </summary>
+    /// <returns>One entry per admitted bin.</returns>
+    public IReadOnlyList<KeyingCandidate> CoarseCandidates() => _survey.Candidates();
+
+    /// <summary>
     /// How many times the tracker has moved to a different part of the band.
     /// </summary>
     /// <remarks>

@@ -334,6 +334,39 @@ public sealed class CwToneSurvey
     }
 
     /// <summary>
+    /// Every bin the survey would admit as keying, for diagnosis only.
+    /// </summary>
+    /// <returns>One entry per admitted bin, in bin order.</returns>
+    /// <remarks>
+    /// **THE VERDICT SAYS WHICH BIN WON AND NEVER WHAT IT BEAT** (§0.0.1). Three
+    /// times on the sensitivity sweep the tracker left a station it was reading
+    /// for a bin holding noise, and there was no way to see what the losing bins
+    /// scored without adding one. This changes nothing the survey decides; it
+    /// runs the same examination and hands back what it found.
+    /// </remarks>
+    public IReadOnlyList<KeyingCandidate> Candidates()
+    {
+        if (!IsReady)
+        {
+            return Array.Empty<KeyingCandidate>();
+        }
+
+        MeasureBandNoise();
+
+        var found = new List<KeyingCandidate>();
+
+        for (var b = 0; b < _bins; b++)
+        {
+            if (Examine(b, _bandNoise[b], out _, out _) is { } candidate)
+            {
+                found.Add(candidate);
+            }
+        }
+
+        return found;
+    }
+
+    /// <summary>
     /// Is this candidate better than the best so far?
     /// </summary>
     /// <remarks>
