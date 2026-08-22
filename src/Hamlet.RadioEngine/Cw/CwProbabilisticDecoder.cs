@@ -256,6 +256,33 @@ public static class CwProbabilisticDecoder
     /// </remarks>
     public static CwProbabilisticResult Decode(
         IReadOnlyList<double> envelope, double toneHz, double? atWordsPerMinute)
+        => Decode(envelope, toneHz, atWordsPerMinute, gapMilliseconds: null);
+
+    /// <summary>Read an envelope, at one speed and with this sender's own gaps.</summary>
+    /// <param name="envelope">Envelope magnitudes, one every hop.</param>
+    /// <param name="toneHz">The pitch it was taken at.</param>
+    /// <param name="atWordsPerMinute">One speed to read at, or null to search.</param>
+    /// <param name="gapMilliseconds">
+    /// How long this sender's gap inside a character, between characters and
+    /// between words actually are, or null to take them as one, three and seven
+    /// units.
+    /// </param>
+    /// <returns>What it read.</returns>
+    /// <remarks>
+    /// **THE GAP LENGTHS COME FROM THE GAPS OR THEY COME FROM THE UNIT, AND THE
+    /// SECOND COUPLES TWO FAILURES INTO ONE.** With the expected lengths taken as
+    /// multiples of the unit, the cost of reading a gap as a letter break crosses
+    /// the cost of reading it as an element gap at the geometric mean of one and
+    /// three units, so **a unit that is wrong moves every letter boundary with
+    /// it**. Handing the measured lengths in puts that crossing at the geometric
+    /// mean of two things the sender actually did, which on every capture here
+    /// lands in an empty stretch of that sender's own gap distribution.
+    /// </remarks>
+    public static CwProbabilisticResult Decode(
+        IReadOnlyList<double> envelope,
+        double toneHz,
+        double? atWordsPerMinute,
+        IReadOnlyList<double>? gapMilliseconds)
     {
         ArgumentNullException.ThrowIfNull(envelope);
 
@@ -284,7 +311,7 @@ public static class CwProbabilisticDecoder
         for (var wpm = from; wpm <= to + 1e-9; wpm += WpmStep)
         {
             var (score, characters, lastKind) =
-                DecodeAt(envelope.Count, wpm, keyDown, keyUp);
+                DecodeAt(envelope.Count, wpm, keyDown, keyUp, gapMilliseconds);
 
             if (score > bestScore)
             {
@@ -441,6 +468,10 @@ public static class CwProbabilisticDecoder
     /// <param name="wpm">The speed being tried.</param>
     /// <param name="keyDown">Per-hop log-likelihood the key is down.</param>
     /// <param name="keyUp">Per-hop log-likelihood the key is up.</param>
+    /// <param name="gapMilliseconds">
+    /// This sender's own three gap lengths, or null to expect one, three and
+    /// seven units.
+    /// </param>
     /// <returns>The best total score and what it spells.</returns>
     /// <remarks>
     /// **EVERY PATH IS A CHAIN OF WHOLE ELEMENTS THAT MUST ALTERNATE.** A
@@ -455,9 +486,25 @@ public static class CwProbabilisticDecoder
         IReadOnlyList<CwProbabilisticCharacter> Characters,
         int LastKind)
         DecodeAt(
-        int count, double wpm, double[] keyDown, double[] keyUp)
+        int count,
+        double wpm,
+        double[] keyDown,
+        double[] keyUp,
+        IReadOnlyList<double>? gapMilliseconds = null)
     {
         var unit = 1200.0 / wpm / HopMilliseconds;
+
+        // **THIS SENDER'S OWN GAPS, IN HOPS**, when they were measured. The kinds
+        // keep their order — the gap inside a character, then between characters,
+        // then between words — and only what each one expects to last changes.
+        var gapHops = gapMilliseconds is { Count: 3 }
+            ? new[]
+            {
+                gapMilliseconds[0] / HopMilliseconds,
+                gapMilliseconds[1] / HopMilliseconds,
+                gapMilliseconds[2] / HopMilliseconds,
+            }
+            : null;
 
         var downTo = new double[count + 1];
         var upTo = new double[count + 1];
@@ -482,7 +529,9 @@ public static class CwProbabilisticDecoder
             for (var k = 0; k < Kinds.Length; k++)
             {
                 var kind = Kinds[k];
-                var want = kind.Units * unit;
+                var want = gapHops is not null && !kind.IsKeyDown
+                    ? gapHops[k - 2]
+                    : kind.Units * unit;
                 var shortest = Math.Max(1, (int)(want * ShortestShare));
                 var longest = Math.Max(shortest + 1, (int)(want * LongestShare));
                 var ceiling = Math.Min(longest, i);

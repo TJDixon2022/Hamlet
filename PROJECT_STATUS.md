@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
-PHASE: 2 of 6
+PHASE: 10
 BALL: tim
 NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-22T17:20:56-04:00
-NOTE: the unit is measured from the audio now; the sweep invents nothing from 18 dB to 5 and one capture fragments, which stops the unit at task 2
+UPDATED: 2026-08-22T17:59:51-04:00
+NOTE: the gap clustering repairs 004507 and costs two adjudicated callsigns, so it is measured and left off; all three read right without it
 
 ---
 

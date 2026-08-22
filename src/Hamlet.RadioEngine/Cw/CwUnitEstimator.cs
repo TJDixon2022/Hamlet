@@ -105,6 +105,213 @@ public static class CwUnitEstimator
             (shortMark + shortGap) / 2, shortMark, shortGap, marks.Count);
     }
 
+    /// <summary>
+    /// Where this sender's three gap lengths actually sit, in milliseconds.
+    /// </summary>
+    /// <param name="ElementMilliseconds">The gap inside a character.</param>
+    /// <param name="CharacterMilliseconds">The gap between two characters.</param>
+    /// <param name="WordMilliseconds">The gap between two words.</param>
+    /// <param name="Separated">
+    /// True when the three heaps are far enough apart to be three heaps.
+    /// </param>
+    public readonly record struct CwGapLengths(
+        double ElementMilliseconds,
+        double CharacterMilliseconds,
+        double WordMilliseconds,
+        bool Separated)
+    {
+        /// <summary>The length that divides an element gap from a character gap.</summary>
+        /// <remarks>
+        /// The geometric mean of the two, which is where the decoder's own ratio
+        /// penalty makes the two readings cost the same, so it is the boundary
+        /// whether or not anybody computes it.
+        /// </remarks>
+        public double CharacterBoundaryMilliseconds
+            => Math.Sqrt(ElementMilliseconds * CharacterMilliseconds);
+
+        /// <summary>The length that divides a character gap from a word gap.</summary>
+        public double WordBoundaryMilliseconds
+            => Math.Sqrt(CharacterMilliseconds * WordMilliseconds);
+    }
+
+    /// <summary>
+    /// The three gap lengths this sender is actually using, clustered from the
+    /// gaps rather than derived from the unit.
+    /// </summary>
+    /// <param name="envelope">Envelope magnitudes, one every hop.</param>
+    /// <param name="hopMilliseconds">How long one hop lasts.</param>
+    /// <param name="unitMilliseconds">The dit, used only as a sanity clip.</param>
+    /// <param name="hysteresisDb">How deep the trigger is.</param>
+    /// <returns>The three lengths, and whether they separated.</returns>
+    /// <remarks>
+    /// <para>**THE GAP DISTRIBUTION DOES NOT NEED THE SPEED.** A boundary placed at
+    /// a multiple of the estimated unit couples two independent failures: get the
+    /// unit wrong and the letter spacing dies with it. Measured on
+    /// `cw-2026-08-18-004507`, whose unit came out fifty milliseconds on a sender
+    /// working near sixty-seven, a boundary at twice the unit lands at a hundred,
+    /// **inside that sender's own element-gap cluster**, and every gap becomes a
+    /// letter break. The gaps themselves have two empty regions in them and a
+    /// boundary in dead space cannot misclassify anything.</para>
+    /// <para>**CLUSTERED ON THE LOGARITHMS**, because a word gap is seven times a
+    /// dit rather than six units longer than one.</para>
+    /// <para>**THE UNIT SURVIVES AS A CLIP AND NOT AS THE ESTIMATE.** Word gaps
+    /// are rare enough in thirty seconds that their cluster cannot be trusted on
+    /// its own, so the boundary between a character gap and a word gap is held
+    /// inside three and a half to six and a half dits, and the boundary below it
+    /// inside one and three tenths to two and six tenths. **Those two ranges are
+    /// constants and they are the only ones here.**</para>
+    /// </remarks>
+    public static CwGapLengths MeasureGaps(
+        IReadOnlyList<double> envelope,
+        double hopMilliseconds,
+        double unitMilliseconds,
+        double hysteresisDb = HysteresisDb)
+    {
+        ArgumentNullException.ThrowIfNull(envelope);
+
+        var textbook = new CwGapLengths(
+            unitMilliseconds, unitMilliseconds * 3, unitMilliseconds * 7, false);
+
+        if (unitMilliseconds <= 0)
+        {
+            return textbook;
+        }
+
+        var (_, gaps) = Elements(envelope, hopMilliseconds, hysteresisDb);
+
+        if (gaps.Count < 12)
+        {
+            return textbook;
+        }
+
+        var centroids = ThreeMeansOnLogs(gaps);
+
+        // Three heaps or two: a sender who never leaves a word gap has no third
+        // cluster to find, and inventing one is the guess HM-DEC-142 forbids.
+        var separated = centroids[1] / centroids[0] >= 1.5
+            && centroids[2] / centroids[1] >= 1.5;
+
+        if (!separated)
+        {
+            return textbook;
+        }
+
+        // **AND THE BOUNDARY HAS TO LAND WHERE NOTHING IS.** Three centroids can
+        // always be found; what makes them worth using is a trough between them,
+        // because a boundary in the middle of a heap misclassifies whatever is
+        // standing there. So each boundary is checked for being emptier than the
+        // two clusters it divides, which needs no threshold: it is a comparison
+        // of this sender's own counts.
+        if (!IsTrough(gaps, centroids[0], centroids[1])
+            || !IsTrough(gaps, centroids[1], centroids[2]))
+        {
+            return textbook;
+        }
+
+        var element = centroids[0];
+        var character = centroids[1];
+        var word = centroids[2];
+
+        // The clip, applied to the boundary and carried back into the centroid
+        // that sets it, so the boundary is the thing held inside the range.
+        var characterBoundary = Math.Clamp(
+            Math.Sqrt(element * character),
+            1.3 * unitMilliseconds,
+            2.6 * unitMilliseconds);
+
+        character = characterBoundary * characterBoundary / element;
+
+        var wordBoundary = Math.Clamp(
+            Math.Sqrt(character * word),
+            3.5 * unitMilliseconds,
+            6.5 * unitMilliseconds);
+
+        word = wordBoundary * wordBoundary / character;
+
+        return new CwGapLengths(element, character, word, true);
+    }
+
+    /// <summary>
+    /// True when the geometric mean of two centroids is emptier than either of
+    /// them.
+    /// </summary>
+    /// <remarks>
+    /// **THE EVIDENCE THAT A BOUNDARY IS WORTH HAVING IS THAT NOTHING IS
+    /// STANDING ON IT.** Counted in equal windows on the logarithm, so the
+    /// comparison is between equal ratios rather than equal milliseconds, and
+    /// nothing has to be chosen.
+    /// </remarks>
+    private static bool IsTrough(
+        IReadOnlyList<double> values, double low, double high)
+    {
+        var boundary = Math.Sqrt(low * high);
+        var width = Math.Pow(high / low, 0.15);
+
+        int Near(double centre)
+            => values.Count(v => v >= centre / width && v <= centre * width);
+
+        var atBoundary = Near(boundary);
+
+        return atBoundary < Near(low) && atBoundary < Near(high);
+    }
+
+    /// <summary>Three clusters on the logarithm of the durations, shortest first.</summary>
+    private static double[] ThreeMeansOnLogs(IReadOnlyList<double> values)
+    {
+        var logs = values.Select(v => Math.Log(Math.Max(v, 1e-6))).ToArray();
+
+        Array.Sort(logs);
+
+        // **SEEDED ACROSS THE RANGE, NOT ACROSS THE COUNT.** Most of a sender's
+        // gaps are inside characters, so seeding at the sixth, the half and the
+        // five-sixths of the sorted list puts two of the three centres inside the
+        // element heap and the other two heaps are never found. Spreading the
+        // seeds evenly across the span in the log domain gives each heap
+        // somewhere to attract from, which on textbook spacing recovers one,
+        // three and seven.
+        var span = logs[^1] - logs[0];
+        var centres = new[]
+        {
+            logs[0] + (span / 6),
+            logs[0] + (span / 2),
+            logs[0] + (span * 5 / 6),
+        };
+
+        for (var pass = 0; pass < 30; pass++)
+        {
+            var sums = new double[3];
+            var counts = new int[3];
+
+            foreach (var value in logs)
+            {
+                var best = 0;
+
+                for (var c = 1; c < 3; c++)
+                {
+                    if (Math.Abs(value - centres[c]) < Math.Abs(value - centres[best]))
+                    {
+                        best = c;
+                    }
+                }
+
+                sums[best] += value;
+                counts[best]++;
+            }
+
+            for (var c = 0; c < 3; c++)
+            {
+                if (counts[c] > 0)
+                {
+                    centres[c] = sums[c] / counts[c];
+                }
+            }
+        }
+
+        Array.Sort(centres);
+
+        return centres.Select(Math.Exp).ToArray();
+    }
+
     /// <summary>Every mark and every gap the trigger produces.</summary>
     /// <param name="envelope">Envelope magnitudes.</param>
     /// <param name="hopMilliseconds">How long one hop lasts.</param>

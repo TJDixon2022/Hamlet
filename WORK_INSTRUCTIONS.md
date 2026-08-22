@@ -1,5 +1,13 @@
 # WORK_INSTRUCTIONS.md
 
+**Phase 10 — unit 11. Build 1.10.10 → 1.10.11.**
+
+> **How moving the unit moves the phase:** the phase is 80% correct translation on
+> a single clear CW signal; this unit removes the one mechanism that turns a
+> correct element stream into wrong characters when the estimated unit is off,
+> which is what `cw-2026-08-18-004507` is doing right now at 24 words a minute
+> against a true 18.
+
 ```
 STOP. Verify the project before reading any further.
 
@@ -27,99 +35,37 @@ If all four hold, say "Hamlet confirmed" and continue.
 
 ## Why this unit exists
 
-**A pipeline measured on Hamlet's own captures reads the bulletin. Hamlet, on the
-identical audio, does not.**
+**Ruled by Tim: the measured unit ships, and this is the change that repairs what
+it broke.**
 
-| | on `cw-2026-08-22-032113` |
-|---|---|
-| the measured pipeline | `NACKETY ANDIINTERNET VERSIONSE O 20J6 PROPAGATION FOI` |
-| Hamlet | `EG EMTEM TMOEM TPETT O5ZG RTEG T W ORR TT` |
+The previous unit replaced the speed search with a direct measurement and it
+bought a great deal: **nothing invented on the sweep from eighteen decibels down
+to five**, where it invented from ten down; `VA3VRR` in full on the capture
+HM-DEC-145 adjudicated as exactly that; `AA4MP/4 QNIK` back, which HM-DEC-126
+records as independently confirmed; `IT WAS JUNK`, `STILL HVE MY ETO 91B`,
+`AT L EAST 2 MOVI ES A DAY WID X WHY NOT`. **Failing set 32 → 28.**
 
-**Same WAV. Same information. One reads a bulletin, the other does not.** This
-unit implements the three changes that carry nearly all of that distance, plus one
-cheap fourth. They are about sixty lines between them.
+**And `cw-2026-08-18-004507` came apart**, from
 
-**Every number below was measured on the seven W1AW captures and the two crowded
-40 m captures. Reproduce what you rely on.** If those files are not in the tree,
-**say so and measure on whatever real captures are**, naming what went unchecked.
+    E AT ARRL DOT NET <BT> EACH STATION HANDLING ET HIS
+
+to
+
+    E E E U T EA R R L D O T N E T <BT> E E A C H S TA TI O N HAN D L I NG
+
+**The mechanism is named, not a mystery.** That file's measured unit came out
+**50 ms — 24 words a minute — on a source sending 18.** The boundary between an
+element gap and a character gap is derived from the unit, so **a wrong unit shreds
+the spacing**, and every letter breaks into single elements.
+
+**This unit removes the coupling.** The gap boundary stops being a multiple of the
+estimated unit and comes from the gaps themselves.
 
 ---
 
-## The four changes, in the order they pay
+## The change
 
-### 1. Hysteresis, not a threshold — and about 6 dB deep
-
-**The single largest lever. Nothing else here is worth doing first**, because §2
-and §3 both compute statistics on the mark stream this produces.
-
-A single threshold makes the envelope cross back and forth on every rise, every
-fall, and through every shallow fade inside a mark. **A Schmitt trigger — on at
-`threshold + h`, off at `threshold - h` — fixes it with no time constant at all**,
-and because both edges are delayed by roughly the same amount, mark lengths
-survive. The usual repair, a minimum-run despeckle, is a millisecond constant that
-must be retuned for every speed. **This is not.**
-
-Measured, on a source whose true mark count is ~125 per 30 s:
-
-| hysteresis | dah/dit | marks per 30 s | letters kept vs the 6 dB run |
-|---|---|---|---|
-| ±1 dB | 2.92 | **213** | 24 % |
-| ±2 dB | 2.84 | 184 | 33 % |
-| ±3 dB | 2.72 | 159 | 47 % |
-| ±4 dB | 2.73 | 141 | 75 % |
-| ±5 dB | 2.64 | 130 | 90 % |
-| **±6 dB** | **2.61** | **125** | **100 %** |
-| ±8 dB | 2.64 | 120 | 90 % |
-| ±10 dB | 2.73 | 115 | 82 % |
-| ±12 dB | — | — | signal lost |
-
-**At ±1 dB, seventy per cent of the "elements" are edge chatter** and every
-downstream statistic is computed on them. **The optimum is broad and flat from 5
-to 8 dB and collapses below 4 and above 10.**
-
-- **Ship 6 dB.** **Test that the 5–8 dB plateau holds** — that is the evidence the
-  value is a mechanism and not a tuned constant.
-- **This is the one constant in the whole pipeline not derived from the audio.**
-  Say so where it lives.
-- **It is also a candidate explanation for the 95-then-202 element counts** on
-  `032050` and `032113` against a flat independent 118–127. A counter fed by a bare
-  threshold swings like that; a hysteretic one does not. **Report whether it
-  stops.**
-
-### 2. The unit comes from a mark AND a gap, never from either alone
-
-**This replaces the speed search entirely and explains why the likelihood is
-flat.**
-
-**Any amplitude threshold biases marks and gaps in opposite directions by the same
-amount**: a mark reads *b* too long and the gap beside it *b* too short. Measured
-on `031838`: dit marks at 82 ms, element gaps at 54 ms. **From marks alone, 14.6
-WPM. From gaps alone, 22 WPM. Both wrong, neither knows it.** The average is
-68 ms — **18 WPM, and the bias has cancelled exactly.**
-
-    u = (median dit mark + median element gap) / 2
-
-**Across the seven files this returns 62.5–65.7 ms — a 5 % spread, mean 18.7 WPM
-against a true 18.0.** One line. No grid, no scoring function, no hypothesis
-search.
-
-**The information a 33-wide likelihood sweep could not resolve to better than 0.05
-is sitting in the ratio of two medians.**
-
-- **Both clusters come from k-means on `log` durations**, because dit:dah is a
-  ratio, not a difference.
-- **This needs §1 first.** A chattery mark stream has no dit cluster to take a
-  median of.
-- **Report what happens to the existing speed grid.** If it becomes dead code, say
-  so; if something else still reads it, name what.
-
-### 3. Gap boundaries from the observed gaps, not from multiples of u
-
-Hamlet places the character-gap boundary at a multiple of its speed estimate.
-**That couples two independent failures: get the speed wrong and the letter
-spacing dies with it.**
-
-**The gap distribution does not need the speed.** Measured on `031838`:
+**The gap distribution does not need the speed.** Measured on the W1AW captures:
 
     element gaps    52, 55, 55, 55 ... 60, 65     (72 of them, spread 13 ms)
        [ empty from 65 to 125 ]
@@ -127,119 +73,130 @@ spacing dies with it.**
        [ empty from 235 to 405 ]
     word gaps       405, 410, 412 ... 437, 442
 
-**Two empty regions, 60 ms and 170 ms wide.** Put the boundaries at the geometric
-means of the k-means centroids and they land in dead space **where no observation
-can be misclassified.**
+**Two empty regions, 60 ms and 170 ms wide.** Boundaries placed at the geometric
+means of the k-means centroids land in dead space **where no observation can be
+misclassified.**
 
-**Compare a boundary at 2u**: with u derived correctly it lands at 133 ms, which is
-**above** the shortest real character gaps at 125, **and those letters silently
-merge.**
+**Compare a boundary at 2u.** With u derived correctly it lands at 133 ms, which is
+**above the shortest real character gaps at 125** — and those letters silently
+merge. With u wrong, as on `004507` at 50 ms, it lands at 100 ms, **inside the
+element-gap cluster**, and every gap becomes a letter break. **That is exactly the
+observed failure.**
 
-Measured effect: this alone turned `MENTIMETER` into `CENTIMETER`, and produced
-`PROPAGATION FORECAST` where the u-derived boundary gave `P<.-.--->PAGATION`.
+Measured effect of taking the boundary from the gaps: `MENTIMETER` became
+`CENTIMETER`, and `P<.-.--->PAGATION` became `PROPAGATION FORECAST`.
 
-- **3-means on `log(gap)`.**
+**Build it:**
+
+- **3-means on `log(gap)`**, because a word gap is seven times a dit rather than
+  six units longer.
+- **Boundaries at the geometric means of adjacent centroids.**
 - **Keep u as a sanity clip only** — `[1.3u, 2.6u]` and `[3.5u, 6.5u]` — **not as
-  the estimate.** Word gaps are too rare in thirty seconds for the cluster to be
-  trustworthy and the clip carries that one.
+  the estimate.** Word gaps are too rare in thirty seconds for that cluster to be
+  trustworthy and the clip carries it.
+- **When there are too few gaps to cluster, say so and fall back to the clip.**
+  A window of noise has no gap structure and must not be given one.
 
-### 4. Find the tone finely, and re-find it
+**Report, per capture:** the boundaries found, in milliseconds and in units, and
+**whether each landed in an empty region of that capture's own gap distribution.**
+That last is the evidence the mechanism is working rather than the number looking
+plausible.
 
-The carrier measures **499.9 Hz in all seven files, stable to ±0.1 Hz over four
-minutes.** A 25 Hz search grid cannot express that.
+---
 
-On the 01:41 capture the signal sits at **608 Hz**, the grid offered 600 and 625,
-**and the sweep took 625 — 17 Hz off, measuring the signal 4 dB weaker than 600
-would have.**
+## Then, if the first change lands cleanly
+
+**Fine tone tracking.** Independent of the above and cheap.
+
+The carrier on the W1AW captures measures **499.9 Hz, stable to ±0.1 Hz over four
+minutes.** A 25 Hz search grid cannot express that. On the 01:41 capture the signal
+sits at **608 Hz**, the grid offered 600 and 625, **and the sweep took 625 — 17 Hz
+off, measuring the signal 4 dB weaker than 600 would have.**
 
 **A full-length FFT peak costs one transform and resolves to a fraction of a
-hertz.** Track the peak continuously and do not quantise the answer to 25 Hz
-afterwards.
+hertz.** Track it continuously; do not quantise to 25 Hz afterwards.
 
-**This also repairs the keying sweep**, which is the independent witness — **but
-the witness's own wording does not change.**
+**This also repairs the keying sweep**, which is the independent witness — **its
+own wording does not change.**
 
----
-
-## The reference pipeline, for comparison
-
-Every parameter derived from the audio except the hysteresis depth:
-
-    tone       full-length FFT peak, 300-1300 Hz            -> 499.9 Hz
-    envelope   30 ms Hann Goertzel at that tone,
-               2.5 ms hop, 10 ms power-domain smoothing
-    threshold  Otsu two-class split of the envelope histogram -> about -37 dB
-    keying     Schmitt trigger at threshold +/- 6 dB          -> ~125 marks / 30 s
-    unit       2-means on log(mark), 2-means on log(gap),
-               u = (dit + element_gap) / 2                    -> 63-67 ms
-    marks      dit/dah split at sqrt(dit * dah)
-    gaps       3-means on log(gap); boundaries at the geometric
-               means of adjacent centroids, clipped into
-               [1.3u, 2.6u] and [3.5u, 6.5u]
-
-**Result: tone 499.9 Hz every time, speed 18.0–19.1 WPM against a true 18.0.**
+**Report the tone per capture**, and what the keying sweep picks on the 01:41
+capture against a true 608 Hz.
 
 ---
 
-## Acceptance — the signature, not a character count
+## Acceptance
 
-**A character count is not the measure and must not be reported in place of
-this.** Hamlet's signature is **every mark read as a dit and every gap read as a
-character break** — `EE EE E E E E EE`.
+**`cw-2026-08-18-004507` reads at least as well as it did before the measured
+unit** — that is the regression this unit exists to repair — **and nothing else
+gets worse.**
 
-A forced-unit sweep proved **no single unit produces both symptoms**:
+Then the signature, every real capture, before and after:
 
-| forced WPM | % letters that are E | % letters that are T | % single-character words |
-|---|---|---|---|
-| 10 | 23 | 0 | **0** |
-| 14 | 15 | 4 | **0** |
-| 18 | 11 | 9 | **0** |
-| 22 | 11 | 9 | **0** |
-| 26 | 15 | 9 | 67 |
-| 30 | 13 | **67** | 33 |
-| 32 | 8 | **76** | 29 |
-| 44 | 10 | **80** | 23 |
+| | target |
+|---|---|
+| per cent of letters that are E | single figures |
+| per cent of letters that are T | single figures |
+| per cent single-character words | **zero** |
 
-**Where letters fragment, the letters are T, not E.** Where E dominates, nothing
-fragments.
+**Report those three on every capture. A character count is not the measure and
+must not be reported in its place** — more single-element letters is more
+characters and worse reading.
 
-**Report those three percentages on every real capture, before and after.** The
-target is the 10–22 WPM rows: single-character words at zero, and E and T both
-in single figures.
+**And the three adjudicated readings**, by name:
+
+- `N4L` on `134712` — **currently reading `R4L` and that is a regression from the
+  previous unit. Report it.**
+- `VA3VRR` on `013347` — currently full and correct.
+- `AA4MP/4 QNIK` on `003758` — currently correct.
+
+**All three should be right. Say plainly if they are not.**
 
 ---
 
 ## Verify this instruction against the tree
 
 - **Report mismatches; do not repair the instruction silently.**
-- **Record the failing-test set exactly before and after, and name every
-  difference.** Two synthetic 30 WPM tests are already red from the ratio penalty
-  and are **not this unit's to fix.**
-- **Report on the sweep AND every real capture together, every time.**
-- **The overfitting guard.** Everything above was measured on **one station, one
-  speed, one pitch, one machine keyer.** The hysteresis and the log-domain
-  clustering are mechanisms and should generalise; **the specific plateau width
-  must be re-measured against the synthetic corpus and the older captures before
-  any of these numbers become constants.** **State for each change whether it was a
-  mechanism found or a parameter tuned.**
+- **The previous session found change 1 of the analysis had no site as written**,
+  because the decoder forms no threshold at all — every hop is scored against two
+  Gaussians and nothing commits. **It built the Schmitt trigger inside the new
+  estimator instead, which was right.** Expect the same here: **the analysis
+  describes a decoder Hamlet no longer is, in places. Build the mechanism where it
+  can exist and say where that was.**
+- **Record the failing-test set exactly before and after and name every
+  difference.** It is 28. Three are known and named: `ItKeepsUpWithLiveAudio`,
+  which fails on letters and not timing at 1.3 % of real time;
+  `HoldingTheWindowLongInTimeReadsMore` on `004507`; and
+  `TheSlowEndReadsTheMessage(12 wpm, 18 dB)`.
+- **The seven W1AW captures, `2026-08-22.jsonl` and both analysis documents are
+  not in the tree.** Every figure quoted from them goes unchecked. **Say so once
+  and measure on what is here.**
+- **The overfitting guard.** The gap figures came from one station, one speed, one
+  pitch, one machine keyer. **The clustering is a mechanism and should generalise;
+  the clip bounds are constants and must be re-measured against the synthetic
+  corpus and the older captures. State for each change whether it was a mechanism
+  found or a parameter tuned.**
 
 ---
 
 ## Rulings in force
 
-- **HM-DEC-120.** Nothing emitted on audio holding no signal. **The ratio penalty
-  improved it to 1.00 right and 0.00 invented at eleven and nine decibels. Do not
-  give that back.**
+- **HM-DEC-120.** Nothing emitted on audio holding no signal. **It is further ahead
+  than it has ever been — nothing invented from eighteen decibels down to five. Do
+  not give any of that back.**
 - **HM-DEC-095.** **Do not loosen its separation limit, confirmation rule or
-  plausibility bounds** to make anything here pass.
+  plausibility bounds.**
 - **HM-DEC-048** and **HM-DEC-108**, on confidence.
 - **HM-DEC-091.** The captures are permanent read-only fixtures. **Nothing edits a
   WAV or a sidecar.**
-- **HM-DEC-103**, which records this same fragmenting signature in the *reference*
-  decoder with a hardcoded window suspected underneath. **Named here so it is not
-  rediscovered. Chasing it is the next unit, not this one.**
+- **HM-DEC-063** and **HM-DEC-150**, the version scheme. **HM-DEC-150 rules that
+  the minor is the phase and the patch is the work unit, in
+  `Directory.Build.props` alone.** `CLAUDE_CODE.md` §4.11 says the same and defers
+  to a project ruling; **they agree, and HM-DEC-150 is the governing text. Report
+  that as a collision resolved rather than a conflict.**
+- **HM-DEC-103**, the same fragmenting signature in the reference decoder with a
+  hardcoded window suspected underneath. **Named so it is not rediscovered. Not
+  this unit.**
 - **HM-DEC-009**, **§0.0**, **§0.0.1**.
-- **HM-DEC-150**, the version scheme.
 - **HM-DEC-093** and `SHACK_FACTS.md` — no radio on the development machine.
 
 ---
@@ -248,49 +205,36 @@ in single figures.
 
 After each task, before the next, update `PROJECT_STATUS.md` per `CLAUDE.md`
 **§13**, which names that file's fields — `STATE`, `PHASE`, `BALL`, `NEXT_PASTE`,
-`UPDATED`, `NOTE`. `UPDATED` from the clock; `NOTE` says what is moving inside the
-task. Also every ten minutes while a task runs.
+`UPDATED`, `NOTE`. **`PHASE` is 10.** `UPDATED` from the clock; `NOTE` says what is
+moving inside the task. Also every ten minutes while a task runs.
 
 ---
 
-## Task order
+## The build number
 
-**One change at a time, measured between. §1 first, always.**
+**Read `Directory.Build.props`. It should say 1.10.10 — measured from the About
+box on 2026-08-22 21:27 UTC. Bump the patch to 1.10.11 and report the move.** If it
+does not say 1.10.10, **say what it says** rather than assuming.
 
-1. **Hysteresis at 6 dB.** Report mark counts per capture, before and after, and
-   whether the 95/202 instability stops. **Report the 5–8 dB plateau.**
-2. **`u = (dit + element_gap) / 2`.** Report the unit and the speed per capture
-   against 62.5–65.7 ms and 18.0–19.1 WPM. Report what became of the speed grid.
-3. **Gap boundaries from clustered gaps**, u as a clip only. Report the boundaries
-   found per capture, in milliseconds and in units, and whether they landed in
-   dead space.
-4. **Fine tone tracking.** Report the tone per capture against 499.9 ± 0.1, and
-   what the keying sweep now picks on the 01:41 capture against 608 Hz.
-5. **The signature table**, every real capture, before and after.
-6. **Bump the version.** Read `Directory.Build.props`, bump the patch, report the
-   move.
-
-**If a change makes something worse, stop and report at that task** rather than
-continuing to the next.
+`PHASE_GOAL.md` arrives with this order and states the phase goal: **80% correct
+translation on a single clear CW signal.**
 
 ---
 
 ## Parked — do not touch, do not raise
 
-- **§5 of the analysis: why the mark classifier and the gap classifier disagree
-  about the unit.** **A structural fault, not a tuning error, and fixing the speed
-  will not touch it.** Its own unit, with HM-DEC-103 checked alongside.
+- **§5 of the analysis: why the mark and gap classifiers disagree about the unit.**
+  Structural. Its own unit, with HM-DEC-103 alongside.
 - **§6: the narrow decoder-side filter**, ENBW 50–100 Hz around the tracked tone.
-  **The crowded-passband case is a different problem** — at 01:43 four or five
-  stations shared the 500 Hz passband and the 606 Hz signal led by only 1–11 dB,
-  losing outright in three of fifteen two-second windows. **No segmenter recovers a
-  gap somebody else is transmitting in.** Separate work, separate tests, **and it
-  must not be judged by this unit's measurements.**
-- The two 30 WPM synthetic tests. The W1AW captures as fixtures and the ARLP034
-  harness — **ARLP034 is not published; the archive stops at ARLP033, 14 August.**
+  **The crowded passband is a different problem** — at 01:43 four or five stations
+  shared the 500 Hz passband, the 606 Hz signal led by only 1–11 dB and lost
+  outright in three of fifteen windows. **No segmenter recovers a gap somebody else
+  is transmitting in.** Separate work, separate tests.
+- **HM-OPEN-056**, `tonePeak`/`snrDb` as a held peak of an instantaneous ratio,
+  which reports 54.7 dB on a capture holding no station.
 - The window clear; pitch distance as a sender-change test; the survey ranking by
   loudness; the advice line; the sidecar contradiction; `FollowSpeed`;
-  `HM-OPEN-051`; **HM-OPEN-056**, the held-peak SNR.
+  `HM-OPEN-051`; `HM-OPEN-055`.
 - **HM-OPEN-012, HM-OPEN-052, HM-OPEN-053, HM-OPEN-054, HM-DEC-130, HM-DEC-098,
   HM-OPEN-033, HM-OPEN-007.**
 
@@ -301,12 +245,12 @@ continuing to the next.
 Carried inbound per HM-DEC-139, verbatim until ruled. **Verify against
 `OPEN_ISSUES.md` and report anything here that is closed, or open and missing.**
 
-- Why the mark and gap classifiers disagree about the unit — §5, structural.
-- The narrow decoder-side filter for a crowded passband — §6.
-- HM-OPEN-056, `tonePeak`/`snrDb` as a held peak of an instantaneous ratio.
-- The two 30 WPM synthetic tests, red since the ratio penalty.
-- The seven W1AW captures and `2026-08-22.jsonl` are not in the tree; **ARLP034 is
-  not published.**
+- **No capture has an answer key, so the phase's own number cannot be stated.**
+  Three adjudicated fragments exist; ARLP034 was never published.
+- Why the mark and gap classifiers disagree about the unit — structural.
+- The narrow decoder-side filter for a crowded passband.
+- HM-OPEN-056, the held-peak SNR.
+- The seven W1AW captures and `2026-08-22.jsonl` are not in the tree.
 - Whether a sender change can be decided by pitch distance at all — measured dead.
 - Whether the window clear comes back on.
 - The advice line asserting a cause the app can disprove.
@@ -320,6 +264,9 @@ Carried inbound per HM-DEC-139, verbatim until ruled. **Verify against
 - HM-OPEN-052, HM-OPEN-053, HM-OPEN-054, HM-DEC-130, HM-DEC-098, HM-OPEN-033,
   HM-OPEN-007.
 
+**Whether the measured unit ships while `004507` reads worse leaves this queue** —
+ruled: it ships, and this unit repairs it.
+
 ---
 
 ## What not to do
@@ -328,33 +275,38 @@ Standing prohibitions are in `CLAUDE.md`. Cited, not restated: 9.5.1 one branch 
 it is `main`, **and every session commits and pushes to it**; no interactive or
 destructive git; do not invent a ruling id; do not touch coverage thresholds.
 
-- **Do not report a character count in place of the signature table.** *More
-  single-element letters is more characters and worse reading.*
-- **Do not derive a gap boundary from a multiple of u.** *That is the coupling §3
-  removes.*
-- **Do not cluster on raw durations.** *dit:dah is a ratio. Cluster on logs.*
-- **Do not add a minimum-run despeckle.** *A millisecond constant retuned per
-  speed is what the hysteresis replaces.*
-- **Do not chase §5 or §6 here.** *Both are named, both are parked, both are their
-  own units.*
+- **Do not derive a gap boundary from a multiple of the unit.** *That coupling is
+  the whole of what this unit removes.*
+- **Do not cluster on raw durations.** *A word gap is seven times a dit, not six
+  units longer. Cluster on logs.*
+- **Do not report a character count in place of the signature table.**
+- **Do not revert the measured unit.** *Ruled. It ships.*
 - **Do not trade HM-DEC-120, and do not loosen HM-DEC-095.**
-- **Do not claim the bulletin reads perfectly.** *The measured pipeline still gives
-  `NACKETY` for `PACKET` and `TELEWRINTER` for `TELEPRINTER`. Some residual errors
-  are segmentation and some are the air.*
+- **Do not chase the structural fault or the narrow filter here.** *Both parked,
+  both their own units.*
+- **Do not claim a clear signal reads perfectly.** *The measured pipeline still
+  gives `NACKETY` for `PACKET`.*
 
 ---
 
 ## Reporting
 
-`OUTPUT.md` at the repository root, overwritten and printed. **§12.2 names the four
-headings** — **What Claude did**, **What Tim should expect**, **What we should do
-next**, **What's blocking us** — the last carrying **Asks still outstanding** per
-HM-DEC-139. No other headings.
+`OUTPUT.md` at the repository root, overwritten and printed. **`CLAUDE_CODE.md` §8
+now names FIVE sections** — **What Claude did**, **What Tim should expect**, **What
+we should do next**, **What's blocking us**, and **Where the phase stands**.
+**§12.2 of `CLAUDE.md` names four.** *Report that collision.* Under §0 the
+project's own file wins on the four it names; **section 5 is additive and is
+written.**
 
-**Section 1 opens with the signature table** — per cent E, per cent T, per cent
-single-character words — **on every real capture, before and after.**
+**Section 5, "Where the phase stands", is measurement only** — the phase number
+now, what it was before this unit, and the build number this unit produced. **No
+proposal and no what-next.**
 
-**Section 2 quotes every real capture before and after**, and says in one sentence
-whether the operator will see readable words.
+**Section 1 opens with `cw-2026-08-18-004507` quoted before and after**, because
+repairing it is what this unit is for.
+
+**Section 2 quotes every real capture before and after, and the three adjudicated
+readings by name**, and says in one sentence whether the operator will see more
+correct characters on a clear signal.
 
 **Stop and report.**

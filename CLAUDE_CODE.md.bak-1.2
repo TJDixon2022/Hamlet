@@ -1,6 +1,6 @@
 # CLAUDE_CODE.md
 
-**Version 1.2. This file is byte-identical in every project.**
+**Version 1.3. This file is byte-identical in every project.**
 
 It governs how a Claude Code prompt is built, delivered, executed and reported.
 It does not govern the work itself.
@@ -94,7 +94,7 @@ The session then:
 
 > The last conversation completed [phase]. What is the overall goal for this phase?
 
-**Not a status dump.** No four sections, no summary of what was read. The harvest
+**Not a status dump.** No report sections, no summary of what was read. The harvest
 is held, not recited, and surfaces only when something in it contradicts what the
 owner is about to do.
 
@@ -197,7 +197,7 @@ A name gate is a string a session can interpret. Filesystem checks are not.
 
 ### §4.2 Why this unit exists
 
-A short block before the tasks, **leading with the number the unit is aimed at.**
+A short block before the tasks, **leading with the numbers the unit is aimed at.**
 
 > The leading edge reads 13 of 43 on the ARRL bulletin. The settled pass reads 33.
 
@@ -209,6 +209,26 @@ next session trusting the old figure.
 
 **Where there is no number**, one sentence naming the specific consequence: *after
 an Emergency Stop, an operator at the panel cannot bring the machine back.*
+
+**Two numbers, not one.** The unit number above, and **the phase number** — the
+number the phase itself is aimed at, from `PHASE_GOAL.md` or `PROJECT_CARD.md`.
+Then one sentence saying how moving the first moves the second.
+
+> Phase: the decoder never invents text. Settled pass reads 33 of 43.
+> This unit: the leading edge reads 13 of 43.
+> Moving the leading edge to about 30 is most of the remaining gap to 33.
+
+**A unit whose connecting sentence cannot be written is not aimed at the phase.**
+That is a finding, and it goes to the owner **before the unit is written**, not
+after it runs. This costs a minute at authoring time and is the only check that
+happens before the spend.
+
+**The sentence is the owner's.** §3 — the web session does not decide what comes
+next, and an argument for why a unit matters is deciding what comes next. Where a
+session drafts it, it is marked as a proposal, per §4.4.
+
+This is what §8's section 5 is measured against. **No phase number in, no phase
+number out** — a unit that omits it makes the phase unmeasurable for that round.
 
 ### §4.3 Verify this instruction against the tree
 
@@ -340,10 +360,43 @@ discovered by the panel.
 
 ### §4.10 Reporting
 
-Names the four sections, and **what leads section 3** — the answer to the question
-this unit was commissioned to ask.
+Names the five sections, and **what leads section 3** — the answer to the question
+this unit was commissioned to ask. **Section 5 is named explicitly**, with the
+phase number from §4.2 that it will be measured against, and the build number this
+unit is to produce.
 
 Ends: **if you finish every task, stop and report.** Do not start the next unit.
+
+### §4.11 The build number
+
+**`x.y.z`. `y` is the phase. `z` is the work unit.**
+
+- **A new phase increments `y` and resets `z`.** Phase 11's first unit is `1.11.1`.
+- **Every work unit increments `z`.** One unit, one increment, whether or not it
+  shipped anything visible.
+- **`x` is the project's own**, unchanged by this rule.
+
+**The work instruction names the build number it is producing**, in §4.2's block
+alongside the two numbers. **The report confirms what was actually written**, in
+section 5. The two are checked against each other — an instruction that says
+`1.10.7` and a report that says `1.10.6` means a unit did not bump, and that is a
+finding.
+
+**Where the version is written is the project's**, and `CLAUDE.md` names it — a
+props file, a manifest, a constant. This file names the scheme and nothing else.
+**Where a project already has a ruling on its version scheme, that ruling wins**
+under §0's specificity floor, and the session reports the collision so one or the
+other gets fixed rather than being quietly ignored.
+
+**Starting it.** The current build number is measured, not remembered — read from
+wherever the project keeps it. Where it cannot be read, the session asks the owner
+rather than inventing a starting point. A version number guessed once is wrong
+forever afterwards.
+
+The point is not the number. It is that **`y` makes the phase visible in the
+build**, so a run of units carrying the same `y` and no movement in the phase
+number is legible at a glance, in the tree and in the log, without reading a
+report.
 
 ---
 
@@ -421,7 +474,7 @@ still do not move, the cause is elsewhere.
 ## §8 The report
 
 `output.md` at the repository root, overwritten, and printed to the session.
-**Four sections, in this order, no other headings.**
+**Five sections, in this order, no other headings.**
 
 1. **What Claude did.** Surface, machine, project claimed, what in the tree
    confirmed it, branch. Then what was traced, built and measured, with the
@@ -432,6 +485,9 @@ still do not move, the cause is elsewhere.
 4. **What's blocking us.** Every question needing a ruling, in the decision log's
    format — ruling, reasoning, what was rejected and why, no id. Most-blocking
    first. **Empty is a real answer.**
+5. **Where the phase stands.** The phase number as it now stands, measured, and
+   what it was before this unit. Then the build number this unit produced. See
+   §8.1.
 
 Plus, when a unit affects a peer project, a named cross-project section —
 `FOR <PROJECT>` — leading with whatever changes a shared interface.
@@ -441,6 +497,35 @@ ask**, with its evidence. Not a summary. The number, or the yes/no.
 
 That closes the loop with §4.2: the unit opens with the number it is aimed at, and
 the report opens with what that number became.
+
+### §8.1 Section 5 — where the phase stands
+
+Three things, in this order, and nothing else.
+
+1. **The phase number now**, measured this session, with how it was measured.
+2. **What it was** at the start of this unit, from §4.2.
+3. **The build number** this unit produced, per §4.11.
+
+> Phase: never invents text — 0.00 invented at fifteen decibels, was 0.00. Held.
+> Leading edge 31 of 43, was 13.
+> Build 1.10.6.
+
+**Measurement only. No proposal.** Not what to do next, not what the phase needs,
+not whether the phase is achievable. §3: the owner drives, and a section that
+recommends is the session deciding what comes next.
+
+That prohibition is the whole reason this is a separate section. A delivered report
+has already retitled section 3 to *what we should do next* — the session wrote the
+owner an agenda, and the agenda was framed entirely by what the session had just
+touched. **This is the drift this section exists to catch, so it must not become
+another carrier of it.**
+
+**Where the phase number did not move, say so plainly.** *Unchanged, 16 of 25.*
+Two consecutive units where it does not move is the signal the owner is watching
+for; it only works if a flat unit reports flat rather than reporting activity.
+
+**Where §4.2 gave no phase number, section 5 says that** — *no phase number in the
+instruction, phase unmeasurable this unit* — and does not invent one.
 
 ---
 
@@ -469,7 +554,9 @@ What the web session writes around the zip and the prompt. **A purchase decision
 not a report** — the owner is deciding whether to spend 45 to 60 minutes of tokens
 before he spends them.
 
-Four sections, same names as §8.
+Four sections, named as in §8's first four. **Section 5 has no counterpart
+here** — the phase is measured after a unit runs, not promised before it. What the
+unit is aimed at belongs in section 1, per §4.2.
 
 1. **What Claude did** — the analysis behind this work instruction. What was
    examined, what was found, what it means. This justifies the spend.

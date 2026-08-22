@@ -343,6 +343,21 @@ public sealed class CwProbabilisticStream
                 ? measured.WordsPerMinute
                 : (double?)null;
 
+        // **THE SENDER'S OWN GAP LENGTHS ARE MEASURED AND NOT USED, AND THE
+        // REASON IS A LEDGER RATHER THAN AN OPINION.** `CwUnitEstimator
+        // .MeasureGaps` clusters the gaps and puts each boundary at the geometric
+        // mean of two things the sender actually did, rather than at a multiple of
+        // the estimated unit, and it refuses unless there is an empty stretch to
+        // put the boundary in. That removes a real coupling: on
+        // `cw-2026-08-18-004507`, whose unit measures fifty milliseconds, twice
+        // the unit lands inside that sender's own element-gap cluster.
+        //
+        // Wired in, it repairs that file — `ACH STATION HANDLING` and `MESSAGE`
+        // come back whole — and it costs `VA3VRR` on the capture HM-DEC-145
+        // adjudicated and breaks `AA4MP/4 QNIK` on the one HM-DEC-126 confirmed,
+        // because a twelve second window can show a trough the whole recording
+        // does not. **Two adjudicated readings for one file**, so it is measured
+        // and left off, with the numbers in the report.
         var result = CwProbabilisticDecoder.Decode(window, ToneHz, speed);
 
         Last = result;
