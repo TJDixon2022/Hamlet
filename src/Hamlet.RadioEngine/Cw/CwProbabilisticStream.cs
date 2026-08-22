@@ -44,6 +44,20 @@ public sealed class CwProbabilisticStream
     /// </remarks>
     public const double DecisionDelaySeconds = 1.0;
 
+    /// <summary>
+    /// How much audio the window has to hold again after being emptied before
+    /// anything is read from it.
+    /// </summary>
+    /// <remarks>
+    /// **LESS EVIDENCE HAS TO MEAN SILENCE RATHER THAN GUESSES** (HM-DEC-120).
+    /// The per-hop likelihood ratio is an average, and the noise scale and the
+    /// signal amplitude behind it are taken from the window's own lower quartile
+    /// and upper tail. On two seconds of audio those estimates rest on a handful
+    /// of elements and can be badly wrong in either direction, so a short window
+    /// does not merely read less: it reads confidently and incorrectly.
+    /// </remarks>
+    public static double RefillSeconds { get; set; } = 3.0;
+
     private readonly int _sampleRate;
     private readonly int _hopSamples;
     private readonly int _windowSamples;
@@ -62,6 +76,7 @@ public sealed class CwProbabilisticStream
     private long _samplesSeen;
     private long _hopsSeen;
     private int _hopsSinceRead;
+    private int _refillHops;
     private double _phase;
 
     /// <summary>How many characters have been settled since this stream started.</summary>
@@ -203,6 +218,43 @@ public sealed class CwProbabilisticStream
         _settledThrough += hops;
     }
 
+    /// <summary>
+    /// Drop the held audio and start listening afresh at the new pitch.
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE WINDOW HELD TWELVE SECONDS MIXED DOWN AT WHATEVER PITCH THE
+    /// TRACKER WAS ON AT THE TIME.** When the tracker follows somebody else, the
+    /// earlier hops were taken at the old pitch and the later ones at the new,
+    /// and the decode is made over the mixture. Measured on the sensitivity
+    /// sweep: one such move at every level, and from eleven decibels down it
+    /// costs characters and produces wrong ones — 0.06 of the message wrong at
+    /// eleven, 0.19 at three, 0.64 at minus four. A confident wrong character at
+    /// the moment somebody answers a call is exactly what HM-DEC-009 exists to
+    /// prevent.</para>
+    /// <para>**NOTHING ALREADY SETTLED IS RETRACTED.** The audio clock and the
+    /// settled mark both keep running, so characters read before the move stand
+    /// and are not read again; what goes is the envelope, and the leading edge
+    /// with it, because the tip was read through a filter pointed somewhere
+    /// else.</para>
+    /// <para>The cost is up to twelve seconds of reach every time Hamlet follows
+    /// somebody, and it is said on screen rather than hidden.</para>
+    /// </remarks>
+    public void Restart()
+    {
+        _envelopeCount = 0;
+        _mixWrite = 0;
+        _mixFilled = 0;
+        _hopsSinceRead = 0;
+        _phase = 0;
+        _refillHops = Math.Max(
+            1, (int)(RefillSeconds * 1000.0 / CwProbabilisticDecoder.HopMilliseconds));
+
+        Last = CwProbabilisticResult.None;
+
+        // The tip belonged to the station that is no longer being read.
+        LeadingEdgeChanged?.Invoke(Array.Empty<CwCharacter>());
+    }
+
     /// <summary>Settle everything still inside the delay, because nothing else is coming.</summary>
     public void Flush()
     {
@@ -245,6 +297,16 @@ public sealed class CwProbabilisticStream
         }
 
         _hopsSinceRead = 0;
+
+        // **NOTHING IS READ FROM A WINDOW THAT HAS NOT REFILLED.** Emptying it on
+        // a station change is what stops two pitches being decoded as one, and
+        // reading the first two seconds back would trade that for a different
+        // wrong answer (HM-DEC-120).
+        if (_envelopeCount < _refillHops)
+        {
+            return;
+        }
+
         Read(settleEverything: false);
     }
 

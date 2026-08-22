@@ -450,6 +450,23 @@ public sealed class CwToneTracker
     public int Retunes { get; private set; }
 
     /// <summary>
+    /// How many times the tracker left a station it had found for another one.
+    /// </summary>
+    /// <remarks>
+    /// **NOT THE SAME AS A FOLLOW, AND THE DIFFERENCE IS ACQUISITION.** The first
+    /// jump off the operator's configured pitch counts as a follow, correctly:
+    /// the filter moved to a different part of the band. But nothing had been
+    /// found yet, so nobody was abandoned. This counts only the moves made after
+    /// keying has been confirmed somewhere, which are the ones that mean somebody
+    /// else has started sending.
+    /// <para>The decoder empties its window on this and not on a follow, because
+    /// emptying it on acquisition throws away the opening of the message it has
+    /// just found (HM-DEC-009 cuts both ways: the callsign at the front of a call
+    /// is exactly what the operator needs).</para>
+    /// </remarks>
+    public int StationChanges { get; private set; }
+
+    /// <summary>
     /// How many of those moves were to a different station (HM-DEC-123).
     /// </summary>
     /// <remarks>
@@ -983,6 +1000,7 @@ public sealed class CwToneTracker
         if (!refining)
         {
             Follows++;
+            StationChanges++;
         }
     }
 

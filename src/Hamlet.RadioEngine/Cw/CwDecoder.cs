@@ -34,6 +34,15 @@ public sealed class CwDecoder
     private long _samplesAtDiscontinuity;
 
     /// <summary>
+    /// Where the window was last emptied for a station change, or long.MinValue.
+    /// </summary>
+    private long _followedAt = long.MinValue;
+
+    /// <summary>The station-change count the window was last emptied for.</summary>
+    private int _lastStationChanges;
+
+
+    /// <summary>
     /// True once the tracker has moved to a different station at least once.
     /// </summary>
     /// <remarks>
@@ -209,6 +218,24 @@ public sealed class CwDecoder
 
     /// <summary>The fastest the radio's own keyer sends.</summary>
     public const int FastestPlausibleWpm = 48;
+
+    /// <summary>
+    /// True while the decoder is refilling an emptied window after following
+    /// somebody else.
+    /// </summary>
+    /// <remarks>
+    /// **A TERMINAL THAT GOES QUIET WITHOUT SAYING WHY IS ITS OWN CONFIDENT
+    /// WRONG ANSWER** (§0.0). Emptying the window costs up to twelve seconds of
+    /// reading, and it happens at the exact moment somebody answers a call, which
+    /// is when an unexplained silence reads as nobody being there. So the state
+    /// is published rather than left to be inferred from an empty screen, and it
+    /// ends the moment text comes back.
+    /// </remarks>
+    public bool ListeningAfresh
+        => _followedAt != long.MinValue
+           && _probabilistic.Last.Text.Length == 0
+           && _lastSample - _followedAt
+              < (long)(CwProbabilisticStream.WindowSeconds * SampleRate);
 
     /// <summary>
     /// True while the decoder's window still holds the station before this one.
@@ -392,6 +419,28 @@ public sealed class CwDecoder
             _lastFollows = _tracker.Follows;
             _samplesAtDiscontinuity = reading.SampleIndex;
             _hasFollowed = true;
+
+            // **THE WINDOW IS NOT CLEARED HERE, AND THE REASON IS EVIDENCE.**
+            // Clearing it on a station change is ruled and the machinery for it
+            // is built: `CwToneTracker.StationChanges`, `CwProbabilisticStream
+            // .Restart`, the refill guard that stops a short window guessing, and
+            // the sentence the terminal shows while it fills again. What is
+            // missing is a move worth triggering it on.
+            //
+            // **THE TRACKER NEVER DECLARES A STATION CHANGE ON THE ONE FIXTURE
+            // BUILT TO CONTAIN ONE.** The two-station recording makes six retunes
+            // and four follows and no station change at all, because the
+            // answering station is reached through the acquiring branch rather
+            // than through `Switch`. **And it declares one where there is a
+            // single sender**: clearing on it cost a twelve words a minute
+            // message 0.63 of itself at eighteen decibels, and cost `004507` its
+            // opening.
+            //
+            // So the trigger would fire where there is nobody to leave and stay
+            // silent where somebody answers, which is the wrong subset in both
+            // directions, and a window emptied for no reason is twelve seconds of
+            // silence bought with nothing (§0.0). It is in the report.
+            _lastStationChanges = _tracker.StationChanges;
         }
 
         // **THE INTERLOCK IS FED BY THE DECODER THAT READS THE TEXT**

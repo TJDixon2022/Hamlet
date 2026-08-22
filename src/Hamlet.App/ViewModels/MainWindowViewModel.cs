@@ -330,9 +330,30 @@ public partial class MainWindowViewModel : ObservableObject
         // being fixed.
         yield return OverflowAdvice;
 
+        // **WHY THE SCREEN JUST WENT QUIET.** Following somebody empties the
+        // decoder's window, and twelve seconds of nothing with no explanation
+        // reads as a dead band at the one moment it certainly is not one.
+        yield return FollowedNote;
+
         yield return CaptureNote;
         yield return DecoderStory;
     }
+
+    /// <summary>What the terminal says while it refills after following somebody.</summary>
+    /// <remarks>
+    /// The window holds twelve seconds and all of it was listened to at the other
+    /// station's pitch, so it is thrown away rather than decoded as a mixture
+    /// (HM-DEC-009). The cost is real and is stated rather than hidden.
+    /// </remarks>
+    public string FollowedNote
+        => _decoder is { ListeningAfresh: true }
+            ? "somebody else has started sending and Hamlet has moved across to "
+              + "them, so it has let go of what it was holding, because those "
+              + "twelve seconds were listened to at the other station's pitch and "
+              + "reading them now would put one operator's letters in the other's "
+              + "mouth. Give it a few seconds to fill up again and the text picks "
+              + "up where the new station is."
+            : "";
 
     /// <summary>What the terminal says while the operator is sending.</summary>
     /// <remarks>
