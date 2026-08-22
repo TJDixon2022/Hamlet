@@ -56,7 +56,12 @@ public sealed class CwProbabilisticStream
     /// of elements and can be badly wrong in either direction, so a short window
     /// does not merely read less: it reads confidently and incorrectly.
     /// </remarks>
-    public static double RefillSeconds { get; set; } = 3.0;
+    /// <para>**AND IT IS A CONSTANT AGAIN.** It was briefly settable so a sweep
+    /// could measure what each length was worth; the answer was nothing at any
+    /// length from half a second to twelve, and a mutable static that the whole
+    /// suite shares is a way for one test to change another test's numbers
+    /// without either of them saying so.</para>
+    public const double RefillSeconds = 3.0;
 
     private readonly int _sampleRate;
     private readonly int _hopSamples;

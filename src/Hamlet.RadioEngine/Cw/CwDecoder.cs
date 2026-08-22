@@ -131,6 +131,18 @@ public sealed class CwDecoder
     /// <summary>Samples per second.</summary>
     public int SampleRate { get; }
 
+    /// <summary>
+    /// Whether the held window is emptied when the tracker crosses to somebody
+    /// else.
+    /// </summary>
+    /// <remarks>
+    /// **OFF BY RULING, WITH THE MACHINERY KEPT.** Everything behind it is built
+    /// and tested: the line, the emptying, what survives the emptying, and the
+    /// sentence the terminal shows while it refills. What is missing is a tracker
+    /// whose moves mean what the line assumes they mean.
+    /// </remarks>
+    public const bool ClearOnAStationChange = false;
+
     /// <summary>How many times the held window has been emptied for a move.</summary>
     /// <remarks>
     /// Counted so the corpus can be swept and the answer stated rather than
@@ -462,7 +474,16 @@ public sealed class CwDecoder
         // moment somebody answers a call.
         var pitch = _tracker.ToneHz;
 
-        if (ShouldClearWindow(_lastPitchHz, pitch, _probabilistic.Last.Text.Length > 0))
+        // **RULED OFF, AND THE MACHINERY STAYS.** It fired three times across
+        // the corpus where the order that shipped it predicted nought, and every
+        // one of the three was the tracker leaving a station it was reading for a
+        // bin holding noise. The clear was right to fire on moves that should
+        // never have been made; what is wrong is upstream of it. Fifteen decibels
+        // paid 0.08 of the message in invented characters for a feature that
+        // fires only on a bug, and HM-DEC-120 is the one property that has not
+        // bent in four days. It comes back on when the tracker is right.
+        if (ClearOnAStationChange
+            && ShouldClearWindow(_lastPitchHz, pitch, _probabilistic.Last.Text.Length > 0))
         {
             _probabilistic.Restart();
             _followedAt = reading.SampleIndex;
