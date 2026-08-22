@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: BLOCKED
-PHASE: 0 of 6
+PHASE: 4 of 6
 BALL: tim
 NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-22T00:29:02-04:00
-NOTE: the ratio penalty is shipped and reads more words; phases 1 to 6 dropped because none of the W1AW evidence is in the tree
+UPDATED: 2026-08-22T00:44:35-04:00
+NOTE: the seven captures and the log are on neither drive and ARLP034 is not published; the clock and the SNR were measured on files that are here
 
 ---
 

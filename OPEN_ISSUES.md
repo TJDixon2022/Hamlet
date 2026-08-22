@@ -4,6 +4,55 @@ Questions with owner and severity. `owner` is who must act next. Format in
 `CLAUDE.md` §3.
 
 ---
+id: HM-OPEN-056
+status: open
+owner: tim
+raised: 2026-08-22
+severity: slows
+blocks: any judgement made from a reported signal-to-noise figure
+refs: src/Hamlet.RadioEngine/Cw/CwToneTracker.cs, HM-DEC-090, HM-DEC-091, §0.0
+---
+
+**The reported signal-to-noise figure is three or four times what an honest
+narrowband measurement gives, and a recording holding no station at all reports
+54.7 dB with the tone latched.**
+
+Measured on the captures that are in the tree, with the decoder's own sixty hertz
+quadrature filter used as the independent instrument and the median taken over the
+whole file at each pitch:
+
+| recording | Hamlet reports | median tone over median band noise |
+|---|---|---|
+| `cw-2026-08-18-004507` | 47.8 dB | 11.7 dB |
+| `cw-2026-08-18-003016` | 42.4 dB | 14.7 dB |
+| `cw-2026-08-20-014854`, **no station** | **54.7 dB, tone latched** | 14.9 dB, or 5.1 within 250 Hz |
+
+**It is not the filter skirt.** An independent analysis of a capture that is not in
+this repository attributed the inflation to the noise reference being sampled
+outside the receiver's passband, about thirty decibels low. That mechanism does not
+reproduce here: across the tracker's whole 300 to 900 hertz bank the bins at either
+end sit within a few decibels of the middle on all three files, and confining the
+reference to within 250 hertz of the station changes the answer by 1.1 dB on
+`004507` and 2.4 dB on `003016`.
+
+**What it is instead**: `SnrDb` is an instantaneous key-down power over a median
+band noise, and the figure on the panel is a held peak of that ratio which decays
+at 0.005 dB a hop. Three maxima stacked. HM-DEC-090 ruled the held peak
+deliberately, because a station answering a call keys for a second and a half in
+thirty seconds and an average is the answer to a question nobody asked. **The
+ruling is not in question; what the peak is taken over is.**
+
+**The empty-band case is the one that matters.** `cw-2026-08-20-014854` holds no
+keying, the decoder correctly emits nothing from it, and the panel would say 54.7
+dB. Noise has peaks too, so a held peak of noise over median noise is large, and
+nothing in the chain says the signal was ever keyed.
+
+The tracker already knows: its survey finds no keying candidate on that file. Both
+candidate answers — latch the peak only while keying is found, or report the figure
+as unknown when it is not — change what the display asserts, which is Tim's without
+exception (§12.1).
+
+---
 id: HM-OPEN-055
 status: open
 owner: claude
