@@ -129,6 +129,25 @@ public static class CwProbabilisticDecoder
     public const double FastestWpm = 32;
 
     /// <summary>How far apart the speed hypotheses sit.</summary>
+    /// <remarks>
+    /// <para>**ONE, BECAUSE HALF THE SPEEDS PEOPLE SEND AT WERE NOT ON THE
+    /// GRID.** Ordinary operators work at thirteen, fifteen, seventeen, nineteen
+    /// and twenty-one words a minute, and a step of two reached none of the odd
+    /// ones. A hypothesis a quarter short of the truth stretches every gap
+    /// measured against it.</para>
+    /// <para>**IT IS NOT WHY CHARACTERS BREAK, AND THAT WAS MEASURED**: on
+    /// `cw-2026-08-18-004507` the likelihood is 32.3 to 32.4 at every speed from
+    /// eleven to thirty-two, so the objective is flat in speed and which
+    /// hypothesis wins is nearly arbitrary; elements per character stays between
+    /// 2.33 and 2.50 across that whole range.</para>
+    /// <para>**AND A STEP OF ONE WAS BUILT AND MEASURED AND DOES NOT SHIP.** With
+    /// a flat objective, more hypotheses is more ways to be wrong: the sensitivity
+    /// fixture, which sends at eighteen, was won by nine words a minute and the
+    /// sweep began inventing 0.22 of the message at eighteen decibels where it had
+    /// invented nothing. It also costs 22.7 per cent of real time against 13.5.
+    /// **HM-DEC-120 is not traded for reaching the odd speeds**, so the step stays
+    /// at two until the objective can tell speeds apart.</para>
+    /// </remarks>
     public const double WpmStep = 2;
 
     /// <summary>One element kind the model knows about.</summary>
@@ -162,6 +181,26 @@ public static class CwProbabilisticDecoder
     private const double LongestShare = 2.2;
 
     /// <summary>How wide the penalty on a segment's length is, as a share.</summary>
+    /// <remarks>
+    /// <para>**IT IS A SHARE OF THE SEGMENT'S OWN EXPECTED LENGTH, AND THAT PUTS
+    /// THE CROSSOVER IN THE WRONG PLACE.** A character gap expects three units and
+    /// gets three times the room an element gap gets, so the two costs cross at
+    /// **one and a half units rather than at two**: any gap longer than one and a
+    /// half dits is called a character gap, and characters break apart. The same
+    /// asymmetry puts the dit-or-dah crossover at one and a half units, where it
+    /// happens to help, because a real fist's dahs run long.</para>
+    /// <para>**TWO REPLACEMENTS WERE BUILT AND MEASURED AND NEITHER SHIPPED**, and
+    /// both are written up in the report for 2026-08-21. Scaling the scatter by
+    /// the dit instead moves both crossovers to two units and costs five of seven
+    /// recordings their text, because the dahs of a real fist then read as dits.
+    /// Scoring the ratio instead of the difference puts both crossovers at the
+    /// geometric mean, one and three quarter units, which reads better in places
+    /// and **breaks the port's agreement with `reference_decoder.py`**, which is
+    /// the only thing anchoring this decoder to an implementation somebody else
+    /// checked.</para>
+    /// <para>Neither moved elements per character toward three. Changing it is
+    /// Tim's (§12.1).</para>
+    /// </remarks>
     private const double LengthToleranceShare = 0.35;
 
     /// <summary>Read a stretch of audio at a known pitch.</summary>
@@ -187,6 +226,23 @@ public static class CwProbabilisticDecoder
     /// </remarks>
     public static CwProbabilisticResult Decode(
         IReadOnlyList<double> envelope, double toneHz)
+        => Decode(envelope, toneHz, atWordsPerMinute: null);
+
+    /// <summary>Read an envelope, optionally at one imposed speed.</summary>
+    /// <param name="envelope">Envelope magnitudes, one every hop.</param>
+    /// <param name="toneHz">The pitch it was taken at.</param>
+    /// <param name="atWordsPerMinute">
+    /// One speed to read at, or null to search the grid.
+    /// </param>
+    /// <returns>What it read.</returns>
+    /// <remarks>
+    /// **THE IMPOSED SPEED IS FOR ASKING QUESTIONS, NOT FOR DECODING.** Nothing
+    /// in the application passes it. It exists so a measurement can separate two
+    /// faults that look alike: a speed the grid cannot reach, and a gap model that
+    /// breaks characters wherever the speed lands.
+    /// </remarks>
+    public static CwProbabilisticResult Decode(
+        IReadOnlyList<double> envelope, double toneHz, double? atWordsPerMinute)
     {
         ArgumentNullException.ThrowIfNull(envelope);
 
@@ -209,7 +265,10 @@ public static class CwProbabilisticDecoder
         IReadOnlyList<CwProbabilisticCharacter> bestCharacters =
             Array.Empty<CwProbabilisticCharacter>();
 
-        for (var wpm = SlowestWpm; wpm <= FastestWpm + 1e-9; wpm += WpmStep)
+        var from = atWordsPerMinute ?? SlowestWpm;
+        var to = atWordsPerMinute ?? FastestWpm;
+
+        for (var wpm = from; wpm <= to + 1e-9; wpm += WpmStep)
         {
             var (score, characters, lastKind) =
                 DecodeAt(envelope.Count, wpm, keyDown, keyUp);

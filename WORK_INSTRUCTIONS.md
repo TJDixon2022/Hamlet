@@ -27,85 +27,75 @@ If all four hold, say "Hamlet confirmed" and continue.
 
 ## Why this unit exists
 
-**The window clear is off, by Tim's ruling, and the fault it exposed is the
-subject of this unit.**
+**The operator hears CW clearly and Hamlet shows him a page of E, T and I.**
+This unit exists to change what is on that screen and nothing else.
 
-The clear shipped last session built exactly as ruled — width from
-`CwProbabilisticDecoder.BandwidthHz` rather than a literal, "while something was
-being read" from the decoder's own current text rather than a proxy. **The
-construction was right and the previous order's safety argument was wrong.** It
-fired three times across the corpus where the order predicted nought: 650→575 Hz
-at fifteen decibels, and 600→675 at nine and at eight.
+### The measurement this is built on
 
-**All three were the tracker leaving a station it was reading for a bin holding
-noise.** Fifteen decibels went from 0.94 right and 0.00 invented to 0.92 and
-**0.08**.
+`ANALYSIS-cw-2026-08-22-014113.md` measured a real capture independently of
+Hamlet's decoder, with its own Goertzel chain, and states its method so it can be
+disagreed with. **Read it. It is the specification.** It should arrive with this
+order; **if it and `cw-2026-08-22-014113.wav` are absent, say so and work from the
+recordings that are present** — but say which figures went unchecked.
 
-**So the clear was correct to fire on moves that should never have happened.** The
-defect is upstream of it, in what the tracker chooses.
+Its finding, and the target of this unit:
 
-### And a second measurement points at the same thing
+> **`20 elements seen, 20 resolved` against `13 characters emitted`. That is
+> 1.54 elements per character. English Morse averages near 3. Twenty elements
+> becoming thirteen characters means the character gap is being called about
+> twice as often as it should be — which on its own would turn readable Morse
+> into unreadable single-element letters.**
 
-`ANALYSIS-cw-2026-08-22-014113.md`, an independent analysis of a real capture,
-found Hamlet's keying sweep reporting `no keying at 625 Hz` on a file holding a
-steady station at **608 Hz**, measured over the same six-second window:
+**That is the fault.** `E` is one element. `T` is one. `I` is two. A screen full of
+them is what a decoder produces when it breaks between elements that belong to the
+same letter. **Every character the operator has failed to read this week is
+consistent with it.**
 
-| bin | swing |
-|---|---|
-| 600 Hz | 21.2 dB |
-| **608 Hz** | **21.3 dB** |
-| **625 Hz** | **17.2 dB** — the one it chose |
+### And the speed points the same way
 
-**600 Hz was on the grid and 625 won anyway**, four decibels weaker, seventeen
-hertz off. The sweep's own report — `5 ms key down, 142 key-downs` — is 0.71 s of
-key-down in six seconds, **twelve per cent duty in five-millisecond fragments,
-against a measured forty-three per cent in seventy-to-two-hundred-millisecond
-elements.** That number describes noise crossing a threshold.
+The analysis measured that sender at **≈ 62 ms, about 19 WPM**, with dah, character
+gap and word gap all within a few milliseconds of 3, 3 and 7 units. **Hamlet chose
+24 WPM.** The hypothesis grid runs 8 to 32 **in steps of two**, so **19 is not on
+it.** A unit a quarter short promotes ordinary inter-element gaps into character
+gaps, systematically, everywhere.
 
-**Two instruments, two recordings, one fault: bins holding noise are winning over
-bins holding stations.**
+**Two observations, one fault seen twice.** The unit is a quarter short and the
+gaps break too often — and the second may be entirely a consequence of the first.
 
-### Ruled by Tim
+---
 
-**The clear goes off.** One line, reversing what shipped.
+## What this unit is for
 
-*Rejected: leaving it on and accepting 0.08 invention at fifteen decibels.*
-HM-DEC-120 has been held through four days of pressure and nothing has been traded
-for a character count. **A feature that fires only on a bug is not worth the one
-property that has never bent.**
+**One number decides whether it worked: elements per character.**
 
-*Rejected: gating the clear on the destination having keying.* The keying verdict
-takes three seconds to form and the damage happens inside them. **Untested, and
-this unit is about the tracker rather than about the clear.**
-
-**The machinery stays in the tree, off, ready for when the tracker is right.**
+Not a character count, not a sweep percentage, not a test tally. **Near three or it
+has not worked.** Report it first, report it last, report it for every station
+recording in the tree.
 
 ---
 
 ## Verify this instruction against the tree
 
 - **Report mismatches; do not repair the instruction silently.**
-- **The previous order asserted the trigger would fire on nothing and it fired
-  three times.** Assume nothing in this order about what a measurement will show.
-- **The failing set is 28.** Record it exactly before and after, name every
+- Every figure above came from outside this repository. **Reproduce what you rely
+  on.**
+- **The failing set is 28.** Record it exactly before and after and name every
   difference.
-- **Report on the sweep AND every real recording together, every time.**
-- **A binding that resolves and an element not on screen look the same to a test
-  that reads the log.**
+- **Report on the sweep AND every real recording together, every time.** A change
+  that looked perfect on the sensitivity fixture once silenced all six recordings.
 
 ---
 
 ## Rulings in force
 
-- **HM-DEC-120.** Nothing emitted on audio holding no signal. **Task 1 restores
-  it.**
-- **HM-DEC-095**, which ruled that a note is chosen by how it is keyed and never by
-  how loud it is. **Read it before task 2. It is the ruling this unit is testing
-  against reality.**
+- **HM-DEC-120.** Nothing emitted on audio holding no signal. **This is the one
+  property that does not bend, and it has not bent all week.**
+- **HM-DEC-048** and **HM-DEC-108**, on confidence. Nothing raises a score; a
+  doubtful fit lowers it.
 - **HM-DEC-009** and **§0.0.**
 - **HM-DEC-091.**
 - **HM-DEC-096** phase 3, the mid-character interlock. **Untouched.**
-- **HM-DEC-150**, the version scheme. Task 5.
+- **HM-DEC-150**, the version scheme. Task 6.
 - **HM-DEC-093** and `SHACK_FACTS.md` — no radio on the development machine.
 - **§12.5** — no answer key for a recording nobody has adjudicated.
 
@@ -120,75 +110,99 @@ task. Also every ten minutes while a task runs.
 
 ---
 
-## Task 1 — The clear goes off, on its own, first
+## Task 1 — Measure elements per character, everywhere
 
-One line. **The machinery stays in the tree.**
+**Report before changing anything. No code changes in this task.**
 
-**Report the sweep and every real recording immediately.** The expectation is
-fifteen decibels back to 0.94 right and 0.00 invented, and every recording
-character for character as it was.
+For **every** station recording in `tests\fixtures\cw\captured\` and
+`\unadjudicated\`, and for the sensitivity fixture at 18, 15 and 12 decibels:
 
-**Commit this on its own** so it can be reached without the rest of the unit.
+**elements resolved, characters emitted, and elements per character.**
 
-**If the sweep does not come back, stop and report.**
+Then say which are near three and which are not. **This table is the baseline the
+whole unit is measured against and it must exist before anything is built.**
 
 ---
 
-## Task 2 — Why a noise bin beat a station
+## Task 2 — Where a character gap is decided
 
 **Report before changing anything.**
 
-Three fires are named and reproducible: **650→575 Hz at fifteen decibels, 600→675
-at nine, 600→675 at eight.** For each:
+In the segmental Viterbi:
 
-1. **What did the tracker score the bin it left, and the bin it took?** Name the
-   metric and give both numbers.
-2. **What is actually in each bin** — measure the audio, not the tracker's opinion
-   of it.
-3. **Why did the noise bin win?** Not "it scored higher" — what property of noise
-   made it score higher than a station.
+1. **What decides between an inter-element gap and a character gap?** Name the
+   scoring, the durations each expects, the penalty on straying, and the file and
+   line.
+2. **What does a hand-sent fist actually give?** The analysis measured this
+   sender's gaps clustering at **50 ms, 120–180 ms, and 410/495 ms** against a
+   62 ms unit — so roughly 0.8, 2–3 and 6.6–8 units. **Compare that with what the
+   model expects.** Say where the model and the operator disagree.
+3. **Run the decoder at the measured 19 WPM** — impose the unit rather than letting
+   the grid choose — and report elements per character. **This is the question the
+   unit turns on**: if imposing the right speed brings it to three, the gap model
+   is fine and the grid is the fault. If it does not, the gap model is the fault.
 
-Then the same question from the other instrument: **on `cw-2026-08-22-014113.wav`,
-why did the keying sweep rank 625 Hz above 600 and 608?**
-
-4. **What does the sweep rank bins by?** The analysis says it does not know and
-   calls this a question rather than a defect claim. **Answer it.**
-5. Are these the same metric or two different ones? **If two, say whether they
-   disagree anywhere else.**
-
-**If the tracker and the sweep are both right and something else moved the
-pitch, say so and stop.**
+**Say which it is. If it is both, say that.**
 
 ---
 
-## Task 3 — Fix what task 2 found
+## Task 3 — Put the right speeds on the grid
 
-Gated on task 2. **Build what it found, not what this order guessed.**
+Gated on task 2 only if task 2 finds the grid innocent — **otherwise do this
+anyway, because 19 WPM not being on the grid is a defect on its own.**
 
-HM-DEC-095's finding is the standing one: **noise routinely produces
-twenty-five-millisecond marks, which is a legal dit at forty-eight words a
-minute, and what noise has never got is a gap between the two mark-length
-clusters.** Whether that separation is being computed, and whether it is being
-used where these choices are made, is task 2's to establish.
+The grid runs 8 to 32 in steps of two. **Ordinary operators send at 13, 15, 17,
+19, 21.** Half of the common speeds are unreachable.
 
-- **Nothing raises a confidence score.**
-- **Report the three fires after the change.** They should not happen.
-- **Report the sweep's choice on `014113` after the change.** 608 or 600, not 625.
-
----
-
-## Task 4 — Prove the corpus is unharmed
-
-- The sweep, every level, against the numbers task 1 restored.
-- Every real recording, character for character, quoted.
-- Both recordings holding no keying silent, offline and streamed.
-- **The failing set exactly, every survivor named.**
-
-**If any recording reads worse, stop and report.**
+- **Make the step fine enough to reach them.** One word a minute, or finer near the
+  slow end where a step is a larger fraction of the unit.
+- **Report the cost per second of audio.** The last measurement had the whole
+  twelve-hypothesis search at 7.4 to 8.4 per cent of real time, so there is room —
+  **but measure it, do not assume it.** If a finer grid will not keep up, say what
+  you chose and what it costs.
+- **Report elements per character on every recording afterwards**, against task 1's
+  table.
 
 ---
 
-## Task 5 — Bump the version
+## Task 4 — Fix the gap model, if task 2 says it is the fault
+
+Gated on task 2.
+
+- **A hand-sent fist compresses character gaps and stretches nothing.** The
+  evening of the 19th measured the key-up distribution as smeared with no usable
+  3-unit or 7-unit structure. **The model must fit what operators send, not the
+  textbook.**
+- **A gap that could be either is a doubtful call and lowers confidence**
+  (HM-DEC-048, HM-DEC-108). **It does not get resolved by preferring the shorter
+  reading.**
+- **Do not clamp, do not tune a constant to make one recording read better.** If
+  the change cannot be stated as a property of how people send Morse, it is the
+  wrong change.
+
+---
+
+## Task 5 — Prove it on everything, together
+
+**The table from task 1, recomputed.** Elements per character, every recording,
+before and after, side by side.
+
+Then:
+
+- **All station recordings, quoted verbatim, before and after.** The operator reads
+  these strings; they are the point.
+- **Both recordings holding no keying: silent, offline and streamed.**
+- **The sweep, every level, right and invented.** **If anything is invented above
+  twelve decibels where nothing was, stop and report.** HM-DEC-120 is not traded
+  for this.
+- **The failing set, exactly, every survivor named.**
+
+**If elements per character has not moved toward three, say so plainly in the
+first line of the report rather than reporting a character count instead.**
+
+---
+
+## Task 6 — Bump the version
 
 Read the current version from `Directory.Build.props`, bump the patch, report what
 it moved from and to. **HM-DEC-150.** One work unit, one patch.
@@ -197,19 +211,20 @@ it moved from and to. **HM-DEC-150.** One work unit, one patch.
 
 ## Parked — do not touch, do not raise
 
-- **The window clear itself.** Off, machinery kept. **Do not remove it and do not
-  turn it back on.**
-- **Elements per character and gap promotion** — 1.54 against a textbook 3 on
-  `014113`. Real, its own unit, and the analysis document holds the measurement.
-- **The advice line pointing at the antenna** on a capture holding a strong
-  signal. Real, §0.0, its own unit.
+- **The window clear.** Off by ruling, machinery kept, does nothing.
+- **How Hamlet decides a different person is sending.** Tim's, and the pitch-
+  distance approach was measured dead.
+- **The survey ranking admitted bins by loudness**, which sits against HM-DEC-095.
+  Real, named, not this unit.
+- **The advice line asserting a cause the app can disprove.**
 - **The sidecar asserting `13 emitted` beside `text nothing read`.**
-- **`014113` becoming a fixture.** Its own unit. **No transcript is ever asserted
-  for it.**
-- **Asking the decoder whether a new sender is speaking.**
-- **`FollowSpeed` has no supplier**; the reacquiring guard; the mark-and-gap
-  witness behind HM-DEC-144 and HM-DEC-145; `HM-OPEN-051`.
-- **The twenty-two failures predating the decoder removal.**
+- **`014113` becoming a fixture.** **No transcript is ever asserted for it**, and
+  **do not build a validity scorer** — one was built during the analysis, reached
+  thirty valid Morse characters out of thirty, and returned
+  `ETTT TOGATMETTEMTTEEEATEEEMN`.
+- **`FollowSpeed` has no supplier**; the reacquiring guard; `HM-OPEN-051`; the
+  mark-and-gap witness behind HM-DEC-144 and HM-DEC-145.
+- **The twenty-eight failing tests**, except any this unit moves.
 - **HM-OPEN-012, HM-OPEN-052, HM-OPEN-053, HM-OPEN-054, HM-DEC-130, HM-DEC-098,
   HM-OPEN-033, HM-OPEN-007.**
 
@@ -220,11 +235,12 @@ it moved from and to. **HM-DEC-150.** One work unit, one patch.
 Carried inbound per HM-DEC-139, verbatim until ruled. **Verify against
 `OPEN_ISSUES.md` and report anything here that is closed, or open and missing.**
 
-- Whether the window clear comes back on once the tracker is right.
-- Elements per character, 1.54 against 3, and gap promotion.
+- Whether a sender change can be decided by pitch distance at all — measured dead.
+- Whether the window clear comes back on.
 - The advice line asserting a cause the app can disprove.
 - The sidecar asserting two incompatible things about one span.
 - Whether the sidecar's `text` should include the leading edge.
+- `cw-2026-08-22-014113.wav` and its analysis are not in the tree.
 - The captures from the evenings of the 20th and 21st are not in the tree.
 - Thirty seconds since the last character, for mode-follow's guard.
 - Whether `RfGain`'s hundred per cent is a defect or the right answer.
@@ -245,13 +261,16 @@ destructive git; do not invent a ruling id; do not touch coverage thresholds.
 
 Unit-specific:
 
-- **Do not tune a threshold to make the three fires stop.** *They stop because the
-  tracker stops choosing noise, or they do not stop.*
-- **Do not turn the clear back on.** *Ruled off until the tracker is right.*
-- **Do not assert a transcript for `014113`**, and **do not build a validity
-  scorer** — one was built during the analysis, reached thirty valid Morse
-  characters out of thirty, and returned `ETTT TOGATMETTEMTTEEEATEEEMN`.
-- **Do not touch the mid-character interlock or the keying meter's wording.**
+- **Do not report a character count in place of elements per character.** *A
+  decoder emitting more single-element letters emits more characters and reads
+  worse.*
+- **Do not trade HM-DEC-120 for any of this.**
+- **Do not tune a constant to make one recording read better.** *State the change
+  as a property of how people send Morse or do not make it.*
+- **Do not touch the mid-character interlock, the tracker, the survey or the
+  keying meter.** *None of them is the fault here.*
+- **Do not assert a transcript for any capture, and do not build a validity
+  scorer.**
 
 ---
 
@@ -262,9 +281,10 @@ headings** — **What Claude did**, **What Tim should expect**, **What we should
 next**, **What's blocking us** — the last carrying **Asks still outstanding** per
 HM-DEC-139. No other headings.
 
-**Section 1 opens with the sweep after task 1** — whether turning the clear off
-restored 0.00 invented.
+**Section 1 opens with elements per character on every station recording, before
+and after, as a table.**
 
-**Section 2 states in one sentence whether the app invents anything now.**
+**Section 2 quotes what each recording reads now against what it read before, and
+says in one sentence whether the operator will see more CW.**
 
 **Stop and report.**

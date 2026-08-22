@@ -2,17 +2,35 @@
 
 ## 1. What Claude did
 
-**Turning the clear off restored the sweep exactly.** Fifteen decibels is back to
-**0.94 right and 0.00 invented**, which is the figure the order predicted, and
-nine and eight decibels came back with it, to 0.94/0.03 and 0.92/0.06.
-Every level from eighteen down to twelve is 1.00 right and 0.00 invented. **All
-six recordings are character for character what they were**, and the trigger fired
-nought times on every one of them.
+**Elements per character has not moved. Nothing shipped that changes what is on
+the screen, and this is that sentence in the first line rather than a character
+count instead.**
 
-**Then task 2 measured the three fires and two of them are not what anybody
-thought.** They are one station being reported at two bins seventy-five hertz
-apart, and the third is a genuine noise bin. **So this stops at the end of task 2,
-under task 2's own clause**, and task 3 is not built.
+| recording | elements | characters | **per character** | speed chosen |
+|---|---|---|---|---|
+| `cw-2026-08-17-013347` | 134 | 94 | **1.43** | 8 |
+| `cw-2026-08-17-013622` | 135 | 75 | **1.80** | 30 |
+| `cw-2026-08-17-134712` | 39 | 25 | **1.56** | 16 |
+| `cw-2026-08-18-004507` | 110 | 47 | 2.34 | 24 |
+| `cw-2026-08-18-003016` | 163 | 49 | 3.33 | 28 |
+| `cw-2026-08-18-003126` | 143 | 52 | 2.75 | 30 |
+| `cw-2026-08-18-003758` | 117 | 46 | 2.54 | 12 |
+| `cw-2026-08-20-014854`, `-014935` | 0 | 0 | — silent | — |
+| sensitivity fixture, 18 / 15 / 12 dB | 24 | 9 | 2.67 | **12**, on a fixture sending at 18 |
+
+**Before and after are the same table**, because all three candidate changes were
+measured and all three failed on evidence. The three are set out below with their
+numbers.
+
+**Three near three, three well under it.** The worst are the two oldest captures
+and `134712`, at 1.43, 1.56 and 1.80 — and those are the recordings the operator
+describes as a page of E, T and I. The order's figure of 1.54 could not be
+checked, because **`cw-2026-08-22-014113.wav` and `ANALYSIS-cw-2026-08-22-014113.md`
+are still not in the tree.** Nothing by either name exists anywhere in the
+repository, so every figure in the order taken from that analysis — the 62 ms
+unit, the 19 words a minute, the gap clusters at 50, 120–180 and 410/495 ms, the
+`20 elements, 13 characters` — **went unchecked.** The table above is measured
+here instead.
 
 Claude Code on the development computer, `C:\Source\HamLet`, on `main`. Gate
 verified against the tree: `Hamlet.sln` and `CwProbabilisticStream.cs` present, no
@@ -20,160 +38,122 @@ verified against the tree: `Hamlet.sln` and `CwProbabilisticStream.cs` present, 
 connected and nothing here is evidence about the radio** (HM-DEC-093). Nothing was
 recorded under §12.1.
 
-### Two mismatches in the order, reported and not repaired
+### Task 2 — where a character gap is decided
 
-- **`ANALYSIS-cw-2026-08-22-014113.md` is not in the tree.** Nothing by that name
-  exists anywhere in the repository.
-- **`cw-2026-08-22-014113.wav` is not in the tree either.** The captured folder
-  ends at `cw-2026-08-20-014935`. So the second half of task 2, questions 4 and 5
-  about that file, could not be measured. **What could be answered from the code
-  is answered below.**
+**1. What decides it.** `CwProbabilisticDecoder.DecodeAt`, in
+`src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs`. Five kinds are tried over
+every span: a dit at one unit, a dah at three, the gap inside a character at one,
+the gap between characters at three, the gap between words at seven. Each span
+scores the audio's own key-down or key-up log-likelihood over it, minus a Gaussian
+penalty on how far the span sits from the kind's expected length:
 
-### Task 1 — the clear is off
+    off = (span − want) / max(want × 0.35, 1)      score = evidence − 0.5 × off²
 
-One line: `CwDecoder.ClearOnAStationChange`, a constant, false. The line, the
-emptying, what survives the emptying and the sentence are all still in the tree
-and all still tested.
+**The penalty's width is a share of the kind's own expected length.** So the gap
+inside a character is allowed 0.35 units of scatter and the gap between characters
+is allowed 1.05, three times as much, because it expects three times as long.
 
-| dB | 18 | 15 | 12 | 11 | 10 | 9 | 8 | 3 | 0 | −5 | −6 |
-|---|---|---|---|---|---|---|---|---|---|---|---|
-| with the clear on | 1.00/0.00 | **0.92/0.08** | 1.00/0.00 | 0.92/0.06 | 0.94/0.03 | 0.86/0.08 | 0.83/0.11 | 0.72/0.19 | 0.56/0.33 | 0.03/0.14 | 0.00/0.00 |
-| off, now | 1.00/0.00 | **0.94/0.00** | 1.00/0.00 | 0.92/0.06 | 0.94/0.03 | 0.94/0.03 | 0.92/0.06 | 0.72/0.19 | 0.56/0.33 | 0.03/0.14 | 0.00/0.00 |
+**That puts the crossover in the wrong place, and it is arithmetic rather than an
+opinion.** A gap of two units — exactly between the two — costs 4.08 as an element
+gap and 0.45 as a character gap. The two costs are equal at **one and a half
+units**, not at two. **Every gap longer than one and a half dits is called a
+character gap**, and the evidence term is identical for both readings, so nothing
+argues back. That is the mechanism behind characters breaking into single
+elements.
 
-Every recording, clears nought on each: `004507` `E AT ARRL DOT NET <BT> E ACH
-STATION HANDLING ET HIS M E S S A G E P E`; `003016` `E ■I KPA1■IS<HH> ■NK <BT>
-STILLHVEMY ETO 91B E TT JETST VFB TUBE LIN`; `003126` `E S 5 IWATTCH ATL E<AS>T 2
-IOVI ES A DAY WID X■ WHY N■TT E E , WESTERNS , E`; `003758` `E ■HES EHEHSE
-AA■IH/5■IS E E E EAN EANQNI<HH>SK  E E E E E E EIIE`; `014854` and `014935`
-silent.
+The same asymmetry sets the dit-or-dah crossover at one and a half units, where it
+happens to help, because a real fist's dahs run long (HM-DEC-144 measured 2.73
+dits to the dah, HM-DEC-145 4.24).
 
-**`RefillSeconds` also stopped being a settable static** in the same commit. It
-was mutable so a sweep could measure what each length was worth, the answer was
-nothing at any length from half a second to twelve, and **a mutable static the
-whole suite shares is a way for one test to change another test's numbers without
-either of them saying so.** That is the likeliest explanation for nine and eight
-decibels reading 0.86 and 0.83 in the last two reports and 0.94 and 0.92 today.
+**2. What a hand-sent fist gives.** The analysis's gap clusters could not be
+checked without its audio. What is in the tree says the same thing from the other
+side: the two adjudicated captures were measured at **2.73 and 4.24 dits to the
+dah** (HM-DEC-144, HM-DEC-145) rather than the model's three, and HM-DEC-115
+measured a real bulletin's gaps at 40, 240 and 500 ms against a 57 ms dit — **0.7,
+4.2 and 8.8 units against a model expecting 1, 3 and 7.** The model expects a
+textbook fist and operators do not send one.
 
-### Task 2 — why a noise bin beat a station
+**3. Imposing the measured speed.** A seam was added so a recording can be read at
+one imposed speed rather than searching the grid. On `cw-2026-08-18-004507`, whole
+recording, offline:
 
-**1. What the tracker scores a bin by.** Admitted bins are ranked by `LiftDb`,
-which is how far that bin's key-down level stands above the band beside it. Not
-clustering. Clustering is an admission test rather than a ranking: a bin is
-admitted only if it shows at least eight marks, a dit between 25 and 200 ms, a
-dah-to-dit ratio between 2.5 and 3.8, and a separation between its two mark
-clusters of at least 4.0 measured in the marks' own scatter.
+| imposed | 8 | 10 | 13 | 16 | 19 | 22 | 25 | 28 | 32 |
+|---|---|---|---|---|---|---|---|---|---|
+| likelihood | 27.5 | 32.0 | 32.4 | 32.4 | 32.4 | 32.4 | 32.4 | 32.4 | 32.3 |
+| per character | 3.13 | 2.44 | 2.44 | 2.44 | 2.46 | 2.38 | 2.38 | 2.33 | 2.37 |
 
-**The three fires, with every bin the survey admitted at that instant.** Nothing
-here is the tracker's summary; it is the same examination the survey runs, handed
-back through a diagnostic added for this (`CwToneSurvey.Candidates`,
-`CwToneTracker.CoarseCandidates`). The fixture sends at **640 Hz**.
+**The objective is flat from eleven words a minute to thirty-two**, 32.3 to 32.4,
+and elements per character sits between 2.33 and 2.50 across the whole of it.
+**Imposing the right speed does not bring it to three.**
 
-**Nine and eight decibels, the move to 675:**
+**So the answer to the question this unit turns on is: the gap model, not the
+grid.** The grid is not innocent of everything — a flat objective means the speed
+Hamlet reports is nearly arbitrary, which is its own defect — but it is not what
+breaks the characters.
 
-| bin | lift | keyed | separation | marks | dit | dah |
-|---|---|---|---|---|---|---|
-| what it was reading, 650 | 27.6 | −20.8 | 5.3 | 11 | 70 | 214 |
-| 600 | 13.1 | −35.3 | 4.9 | 11 | 72 | 225 |
-| **675, taken** | 17.7 | −30.6 | **37.1** | 10 | 80 | 218 |
+### Tasks 3 and 4 — three changes built, measured, and none shipped
 
-**The station's own bin was not admitted at all on that survey.** The only two
-candidates were 600 and 675, and **both of them are the station**: 72/225 and
-80/218 against the 70/214 it had been reading. They are the skirts of one signal
-either side of a bin that dropped out, and the tracker took the louder skirt. **It
-was right both times.** What crossed sixty hertz was 600 to 675, one move between
-two bins holding one station.
+**A step of one word a minute.** Built. **It reads worse and it breaks
+HM-DEC-120.** With a flat objective, more hypotheses is more ways to be wrong: the
+sensitivity fixture, which sends at eighteen, was won by **nine**, and the sweep
+began inventing **0.22 of the message at eighteen decibels where it had invented
+nothing**. Cost 22.7 per cent of real time against 13.5 for the current grid, so
+CPU was never the obstacle. **The order's own stop condition applies and the step
+stays at two.**
 
-**Fifteen decibels, the move to 575:**
+**Scatter as a share of the dit rather than of the segment.** Built. It moves both
+crossovers to two units, where the durations actually cross. **It costs five of the
+seven recordings their text**, because a real fist's dahs arrive at two to two and
+a half units and then read as dits: `AT ARRL DOT NET` became `IE ISSHSSE`, and
+`003016` fell from 49 characters to 18 at 8.67 elements per character.
 
-| bin | lift | keyed | separation | marks | dit | dah |
-|---|---|---|---|---|---|---|
-| 575, what it went to | 11.7 | −42.8 | 4.3 | **21** | **31** | 98 |
-| 725, the only bin admitted at the moment of the move | 7.4 | −47.4 | 6.4 | **20** | **37** | 100 |
-| 650, one survey later | 34.1 | −20.6 | 4.7 | 9 | 60 | 217 |
+**Scoring the ratio rather than the difference** — `off = ln(span/want) / 0.35` —
+which puts both crossovers at the geometric mean, 1.73 units, and rests on timing
+error being multiplicative, which is what a hand does. **This one reads better in
+several places**: `2 MOVIES A DAY` where it read `2 IOVI ES`, `EACH` as one word,
+`N4LQ K` kept intact on the capture HM-DEC-144 adjudicated as `N4L`, and `VRR VA`
+appearing on the capture HM-DEC-145 adjudicated as `VA3VRR`. Elements per
+character did not move in aggregate — 1.42, 1.88, 1.63, 2.34, 3.55, 2.71, 3.10 —
+and **it breaks `TheProbabilisticDecoderTests.ItReadsWhatTheReferenceReads`**,
+which is the only thing anchoring this decoder to `reference_decoder.py`, an
+implementation somebody else can check.
 
-**This one is noise.** A dit of 31 ms where the fixture sends 67, twenty-one marks
-in three seconds where the station gives nine, and a separation of 4.3 against a
-floor of 4.0. **It is HM-DEC-095's own case**: noise routinely produces
-twenty-five-millisecond marks, and here it also produced a cluster separation over
-the floor. One survey later the station was back at 34.1 dB of lift and the
-tracker returned to it.
+**That last one is the ask.** It is the change most likely to be right and it
+cannot be made without deciding to diverge from the reference, which is a decision
+about what the display asserts (§12.1).
 
-**2. What is actually in each bin**, measured by the other instrument rather than
-by the tracker's opinion. `KeyingEnvelope`, the independent witness, scores every
-bin across the whole range at 0.46 to 0.48 element share with purity 1.00:
+### Task 5 — the corpus
 
-| 575 | 600 | 640 | 650 | 675 |
-|---|---|---|---|---|
-| 0.480 | 0.468 | 0.462 | 0.463 | 0.467 |
+**Unchanged, every recording character for character**, since nothing shipped:
+`004507` `E AT ARRL DOT NET <BT> E ACH STATION HANDLING ET HIS M E S S A G E P E`;
+`003016` `E ■I KPA1■IS<HH> ■NK <BT> STILLHVEMY ETO 91B E TT JETST VFB TUBE LIN`;
+`003126` `E S 5 IWATTCH ATL E<AS>T 2 IOVI ES A DAY WID X■ WHY N■TT E E , WESTERNS
+, E`; `003758` `E ■HES EHEHSE AA■IH/5■IS E E E EAN EANQNI<HH>SK  E E E E E E EIIE`;
+`013347`, `013622` and `134712` as in the table above; `014854` and `014935`
+silent, offline and streamed.
 
-**It ranks 575 highest and the true 640 lowest.** Its hundred-hertz boxcar is
-wider than the spacing being judged, so on this fixture it cannot separate the
-station from its neighbours at all, and where it does have an opinion the opinion
-is wrong.
+The sweep is unchanged at every level: 1.00 right and 0.00 invented from eighteen
+decibels down to twelve, 0.06 wrong at eleven, 0.19 at three, 0.33 at zero,
+silence below minus five. **28 failing, the same 28 by name.**
 
-**3. Why the noise bin won.** Not because loudness beat clustering. Two different
-mechanisms:
+### Task 6 — the version
 
-- **Twice, the station's centre bin failed admission and its skirts did not.** A
-  real fist gives nine to eleven marks in a three-second window, which is close to
-  the floor of eight, so the centre bin drops in and out between surveys while the
-  skirts stay in. **The choice was then between two bins that both held the
-  station** and loudness picked correctly between them.
-- **Once, a noise bin passed admission.** Noise gives twenty-one short marks in
-  the same three seconds, so it clears the mark count easily, its dit of 31 ms is
-  legal at forty-eight words a minute, and its cluster separation landed at 4.3
-  against a floor of 4.0. **Nothing separated it from the station except loudness,
-  and at that moment the station's bin was not a candidate.**
+**`Directory.Build.props` moved 1.10.6 to 1.10.7.**
 
-**4. What the keying sweep ranks bins by.** `KeyingEnvelope.Best` walks 400 to
-1200 hertz in 25 hertz steps and keeps the highest `Score`, which is
-`ElementShare × ElementPurity` — how much of the window sits inside plausible
-element lengths, times how cleanly those lengths cluster. **Loudness is not in
-it.** Whether that explains 625 winning on `cw-2026-08-22-014113.wav` cannot be
-said, because **the file is not in the tree**.
+### What is in the tree from this unit
 
-**5. Are they the same metric?** No. The survey chooses on `LiftDb`, loudness over
-the band beside the bin, having admitted on clustering. The sweep chooses on
-`ElementShare × ElementPurity`, clustering only. **They disagree on the fixture
-measured here**: the survey's lift varies by twenty-two decibels across 575 to 675
-and picks 650, while the sweep's score varies by 0.018 across the same bins and
-picks 575.
-
-**And task 2's stop clause applies.** Two of the three fires are the tracker
-moving between two bins that both hold the station it is reading, seventy-five
-hertz apart, because a station on a twenty-five hertz grid is present in several
-bins at once. **The tracker was right, and what crossed the clear's line was a
-legitimate move inside one station.** So the clear's premise — that a move wider
-than the decoder's filter means a different sender — is false for a reason no
-threshold fixes, which is the finding rather than a defect to repair.
-
-### Task 3 — not built, and why
-
-Gated on task 2, and task 2 found that the tracker was substantially right. The
-one genuine noise admission is HM-DEC-095's standing case, and the only knobs that
-would exclude it are the mark-count floor, the dit floor and the separation floor:
-**the noise bin sat at 4.3 against a floor of 4.0 while the station sat at 4.7 to
-5.3, so there is no daylight to cut in** and any cut is the threshold-tuning this
-order forbids. With the clear off, that admission costs nothing measurable.
-
-### Task 4 — the corpus
-
-Unchanged, and quoted under task 1. **28 failing, the same 28 by name as when this
-unit started.** Both recordings holding no keying are silent offline and streamed.
-
-### Task 5 — the version
-
-**`Directory.Build.props` moved 1.10.5 to 1.10.6.**
+One diagnostic seam: `CwProbabilisticDecoder.Decode` takes an optional imposed
+speed, which nothing in the application passes, so that a measurement can separate
+a speed the grid cannot reach from a gap model that breaks characters wherever the
+speed lands. And the two rejected models are written into the comments beside the
+constant they would have changed, with what each cost.
 
 ### The rulings, checked
 
-Every ruling this order cites says what the order says it says. **HM-DEC-095 in
-particular**: it rules that a note is chosen by how it is keyed and never by how
-loud it is, and that a sender's gaps are classified by clustering that sender's own
-gaps. **The survey honours it in admission and not in ranking**, where loudness
-decides between admitted bins. That is worth knowing and it is not what caused any
-of the three fires, because in two of them both candidates were the same station
-and in the third the station was not a candidate at all.
+Every ruling this order cites says what the order says it says. **HM-DEC-048 and
+HM-DEC-108 are the ones that bear on the answer**: a doubtful call lowers
+confidence and nothing raises it, and a gap of two units is precisely the doubtful
+call this model resolves silently toward the longer reading.
 
 ### The inbound asks queue
 
@@ -182,75 +162,85 @@ and nothing open and relevant is missing.
 
 ## 2. What Tim should expect
 
-**The app invents nothing from eighteen decibels down to twelve, and what it
-invents below that is exactly what it invented two days ago.**
+**Every recording reads exactly what it read this morning, so he will not see more
+CW tonight.**
 
-Build clean, no warnings, version 1.10.6. **28 failing, the same 28 by name.** The
-suite is otherwise unchanged: nothing was added this session except a diagnostic
-that hands back every bin the survey admitted, which changes nothing the survey
-decides.
+Build clean, no warnings, version 1.10.7, **28 failing, the same 28 by name.**
 
-**What will look wrong and is not:** the window clear is in the tree, fully
-tested, and does nothing. That is Tim's ruling and the constant that switches it is
-one line.
+**What will look wrong and is not:** nothing changed in the app at all. The three
+things that would have changed it are measured above and each one fails on
+evidence the operator would notice first — one silences most of the corpus, one
+starts inventing at eighteen decibels, and one breaks the decoder's agreement with
+the reference implementation it was ported from.
 
 ## 3. What we should do next
 
-- **A station is in several bins at once, and nothing downstream knows it.** That
-  is the finding under this unit, and it is what makes a distance test unusable for
-  deciding whether the sender changed. It also means the tracker's reported pitch
-  can jump seventy-five hertz while reading one station.
-- **The station's centre bin drops out of admission between surveys** because a
-  real fist gives nine to eleven marks in three seconds against a floor of eight.
-  That is worth measuring across the recordings before anybody touches it.
+- **Rule on the ratio model**, in section 4. It is the one candidate that reads
+  better on real captures, including two whose callsigns are adjudicated, and the
+  question is whether Hamlet may stop matching `reference_decoder.py`.
+- **The reference itself may be worth re-reading on this point.** If the reference
+  scores the difference rather than the ratio, then the crossover at one and a half
+  units is inherited rather than chosen, and that is worth knowing before anybody
+  diverges from it.
+- **The likelihood is flat in speed from eleven words a minute upward**, which
+  means the speed on screen is nearly arbitrary on real audio. That is its own
+  defect and it is not the one this unit was aimed at.
 - **`003758` and `003016` are still short of their pre-removal strings.**
-- **`FollowSpeed` still has no supplier.**
 
 ## 4. What's blocking us
 
-Nothing blocks the next unit. One ask, and one thing needed before the rest of
-this order can be executed.
+Nothing blocks the next unit. One ask, and one thing that is needed before this
+order can be executed as written.
 
-> **The evidence for the second half of task 2 is not in the repository.**
+> **The decoder scores how far a segment strays from its expected length as a
+> ratio rather than as a difference, and stops matching `reference_decoder.py`.**
+>
+> The penalty is currently `(span − want) / (want × 0.35)`, so a character gap gets
+> three times the scatter of an element gap and a word gap seven times. **The two
+> costs cross at one and a half units instead of two**, which calls every gap
+> longer than one and a half dits a character gap and breaks letters into single
+> elements. That is arithmetic, not a hypothesis: at two units the element gap
+> costs 4.08 and the character gap 0.45.
+>
+> **Scoring `ln(span / want) / 0.35` puts both crossovers at 1.73 units** and rests
+> on a property of hands rather than of textbooks: timing error is multiplicative,
+> so a sender who runs a fifth long runs a fifth long on dits, dahs and gaps alike.
+> **Measured, it reads better on real captures** — `2 MOVIES A DAY`, `EACH`, `N4LQ
+> K` on the capture adjudicated as `N4L`, `VRR VA` on the one adjudicated as
+> `VA3VRR` — **and it leaves elements per character where it was**, which is the
+> honest half of the report.
+>
+> **The cost is the anchor.** `ItReadsWhatTheReferenceReads` proves this decoder
+> reads what the Python reference reads, character for character, and that is the
+> only external check on a port of somebody else's algorithm. Changing the penalty
+> ends it.
+>
+> **Rejected: the dit-scaled scatter**, which moves the crossovers to two units and
+> costs five of seven recordings their text, because a real fist's dahs then read
+> as dits. **Rejected: a finer speed grid**, which invents 0.22 of the message at
+> eighteen decibels where nothing was invented, because the objective is flat in
+> speed and more candidates is more ways to be wrong.
+
+> **The evidence this order is built on is not in the repository.**
 >
 > `cw-2026-08-22-014113.wav` and `ANALYSIS-cw-2026-08-22-014113.md` are both
-> absent. Questions 4 and 5 of that task, about why the keying sweep ranked 625
-> above 600 and 608 on that capture, cannot be answered from the code alone: what
-> the sweep ranks by is answered above, and whether that explains the choice needs
-> the audio.
-
-> **Deciding that a different person is sending cannot be done by how far the
-> pitch moved.**
->
-> Measured this session: on a fixture sending at 640 hertz, the survey admitted 600
-> and 675 as candidates while the station's own bin dropped out, and both of those
-> bins carry the station's own fist — 72 and 225 milliseconds, 80 and 218, against
-> the 70 and 214 it had been reading. **A station on a twenty-five hertz grid is
-> present in several bins at once**, so the tracker's reported pitch can move
-> seventy-five hertz without anybody else transmitting.
->
-> **That is why the clear fired three times where the order expected nought**, and
-> it is not something a threshold repairs: the moves are real, the bins are real,
-> and only the meaning attached to them was wrong.
->
-> **The remaining candidate is the one already parked**: ask the decoder whether
-> the speed and the fist changed, which is what an operator notices and what does
-> not depend on the tracker being right about a pitch. **That is a measurement
-> nothing here makes yet.**
->
-> **Rejected: raising the separation floor to keep noise out.** The noise bin sat
-> at 4.3 and the station at 4.7 to 5.3; there is no daylight between them, and a
-> number chosen to make three fires stop is the tuning this order forbids.
+> absent, for the second unit running. Every figure quoted from that analysis went
+> unchecked: the 62 ms unit, the nineteen words a minute, the gap clusters, and the
+> `20 elements, 13 characters` the unit was named after. **The table in section 1
+> is measured from what is here instead**, and it agrees with the order's direction
+> — three of seven recordings sit between 1.43 and 1.80 elements per character —
+> without confirming any of its numbers.
 
 ### Asks still outstanding
 
 Carried per HM-DEC-139, verbatim until ruled.
 
-- Whether the window clear comes back on once the tracker is right.
-- Elements per character, 1.54 against 3, and gap promotion.
+- Whether a sender change can be decided by pitch distance at all — measured dead.
+- Whether the window clear comes back on.
 - The advice line asserting a cause the app can disprove.
 - The sidecar asserting two incompatible things about one span.
 - Whether the sidecar's `text` should include the leading edge.
+- `cw-2026-08-22-014113.wav` and its analysis are not in the tree.
 - The captures from the evenings of the 20th and 21st are not in the tree.
 - Thirty seconds since the last character, for mode-follow's guard.
 - Whether `RfGain`'s hundred per cent is a defect or the right answer.
@@ -260,7 +250,6 @@ Carried per HM-DEC-139, verbatim until ruled.
 - The mark-and-gap witness behind HM-DEC-144 and HM-DEC-145.
 - HM-OPEN-052, HM-OPEN-053, HM-OPEN-054, HM-DEC-130, HM-DEC-098, HM-OPEN-033,
   HM-OPEN-007.
-- **`cw-2026-08-22-014113.wav` and its analysis are not in the tree**, first made
-  today, above.
-- **Whether a sender change can be decided by pitch distance at all**, first made
-  today, above.
+- **Whether the length penalty becomes a ratio**, first made today, above.
+- **The likelihood is flat in speed above eleven words a minute**, first made
+  today, so the speed Hamlet reports on real audio is nearly arbitrary.
