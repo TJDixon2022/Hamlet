@@ -41,6 +41,9 @@ public sealed class CwDecoder
     /// <summary>The station-change count the window was last emptied for.</summary>
     private int _lastStationChanges;
 
+    /// <summary>Where the tracker was listening at the previous reading.</summary>
+    private double _lastPitchHz = double.NaN;
+
 
     /// <summary>
     /// True once the tracker has moved to a different station at least once.
@@ -127,6 +130,48 @@ public sealed class CwDecoder
 
     /// <summary>Samples per second.</summary>
     public int SampleRate { get; }
+
+    /// <summary>How many times the held window has been emptied for a move.</summary>
+    /// <remarks>
+    /// Counted so the corpus can be swept and the answer stated rather than
+    /// assumed: across every recording and fixture in this repository it is
+    /// nought, because none of them holds a second sender the tracker reaches.
+    /// </remarks>
+    public int WindowClears { get; private set; }
+
+    /// <summary>
+    /// Whether a move from one pitch to another empties the held window.
+    /// </summary>
+    /// <param name="fromHz">Where the tracker was listening.</param>
+    /// <param name="toHz">Where it is listening now.</param>
+    /// <param name="reading">True when the decoder currently has text.</param>
+    /// <returns>True when the window is no longer about the station being read.</returns>
+    /// <remarks>
+    /// <para>**THE LINE IS THE DECODER'S OWN FILTER, NOT A NUMBER CHOSEN FOR
+    /// IT.** The stream mixes down to the tracked pitch through a filter
+    /// <see cref="CwProbabilisticDecoder.BandwidthHz"/> wide, so a move shorter
+    /// than that lands inside the passband the held audio was already taken
+    /// through and cannot have put a different sender in it. **It is read from
+    /// the decoder** rather than written here, so if that filter ever widens the
+    /// line widens with it.</para>
+    /// <para>**AND ONLY WHILE SOMEBODY WAS BEING READ.** Hamlet hunting for a
+    /// station it has not found yet moves a long way and leaves nobody behind:
+    /// on `cw-2026-08-18-004507` it goes 600 to 475 hertz in the first two
+    /// seconds with nothing read, and emptying the window there throws away the
+    /// opening of the message it is about to read, which is where the callsign
+    /// lives. The test for "was being read" is the decoder's own text, because
+    /// that is the thing being protected; a keying verdict or a signal margin
+    /// would be a proxy for it and each has its own way of being wrong.</para>
+    /// <para>**MEASURED ON EVERY RECORDING AND FIXTURE HERE AND IT FIRES ON
+    /// NONE**, because four hold single senders and the one two-station fixture
+    /// reaches its second station through the acquiring branch. Its first real
+    /// test is an evening at the radio, and the failure mode is that it never
+    /// fires, which is where the tree already was.</para>
+    /// </remarks>
+    public static bool ShouldClearWindow(double fromHz, double toHz, bool reading)
+        => reading
+           && !double.IsNaN(fromHz)
+           && Math.Abs(toHz - fromHz) >= CwProbabilisticDecoder.BandwidthHz;
 
     /// <summary>What the decoder last made of the audio.</summary>
     /// <remarks>
@@ -408,6 +453,24 @@ public sealed class CwDecoder
     {
         _lastSample = reading.SampleIndex;
 
+        // **THE WINDOW STOPS HOLDING ONE SENDER'S AUDIO WHILE IT READS
+        // ANOTHER'S** (HM-DEC-009). The stream keeps twelve seconds of envelope
+        // and the decoder fits one speed and one stream of characters across all
+        // of it, so when the tracker crosses to somebody else part-way through,
+        // the reading afterwards is made over two people at once and comes out as
+        // clean-looking letters neither of them sent. That happens at the exact
+        // moment somebody answers a call.
+        var pitch = _tracker.ToneHz;
+
+        if (ShouldClearWindow(_lastPitchHz, pitch, _probabilistic.Last.Text.Length > 0))
+        {
+            _probabilistic.Restart();
+            _followedAt = reading.SampleIndex;
+            WindowClears++;
+        }
+
+        _lastPitchHz = pitch;
+
         // **THE TRACKER MOVED, SO THE WINDOW HOLDS SOMEBODY ELSE** (HM-DEC-095).
         // Nobody tunes exactly, and a signal found two or three hundred hertz
         // from where Hamlet started listening spends its first seconds being
@@ -420,26 +483,13 @@ public sealed class CwDecoder
             _samplesAtDiscontinuity = reading.SampleIndex;
             _hasFollowed = true;
 
-            // **THE WINDOW IS NOT CLEARED HERE, AND THE REASON IS EVIDENCE.**
-            // Clearing it on a station change is ruled and the machinery for it
-            // is built: `CwToneTracker.StationChanges`, `CwProbabilisticStream
-            // .Restart`, the refill guard that stops a short window guessing, and
-            // the sentence the terminal shows while it fills again. What is
-            // missing is a move worth triggering it on.
-            //
-            // **THE TRACKER NEVER DECLARES A STATION CHANGE ON THE ONE FIXTURE
-            // BUILT TO CONTAIN ONE.** The two-station recording makes six retunes
-            // and four follows and no station change at all, because the
-            // answering station is reached through the acquiring branch rather
-            // than through `Switch`. **And it declares one where there is a
-            // single sender**: clearing on it cost a twelve words a minute
-            // message 0.63 of itself at eighteen decibels, and cost `004507` its
-            // opening.
-            //
-            // So the trigger would fire where there is nobody to leave and stay
-            // silent where somebody answers, which is the wrong subset in both
-            // directions, and a window emptied for no reason is twelve seconds of
-            // silence bought with nothing (§0.0). It is in the report.
+            // **THE TRACKER'S OWN CLASSIFICATION IS NOT WHAT DECIDES THE
+            // CLEAR.** `StationChanges` is left exactly as it was and nothing
+            // reads it: measured last session, it fires twice on `004507` in the
+            // first three seconds with nothing read and not once on the
+            // two-station fixture, so it is the wrong subset in both directions.
+            // What decides is the size of the move and whether anybody was being
+            // read, which is the line Tim ruled and is applied below.
             _lastStationChanges = _tracker.StationChanges;
         }
 

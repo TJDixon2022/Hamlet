@@ -281,6 +281,21 @@ public partial class MainWindowViewModel : ObservableObject
     private bool _decodingIsSuspended;
 
     /// <summary>
+    /// True while the decoder is refilling a window it emptied to follow
+    /// somebody else.
+    /// </summary>
+    /// <remarks>
+    /// Carried as a property of its own, the way the suspended state is, so the
+    /// sentence below is reachable from the screen rather than only from the
+    /// decoder: the region that shows it is the thing that has gone missing
+    /// before, and a test can only prove it by driving this.
+    /// </remarks>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(FollowedNote))]
+    [NotifyPropertyChangedFor(nameof(AdvisoryNote))]
+    private bool _listeningAfresh;
+
+    /// <summary>
     /// The one advisory the terminal is showing, by priority.
     /// </summary>
     /// <remarks>
@@ -346,7 +361,7 @@ public partial class MainWindowViewModel : ObservableObject
     /// (HM-DEC-009). The cost is real and is stated rather than hidden.
     /// </remarks>
     public string FollowedNote
-        => _decoder is { ListeningAfresh: true }
+        => ListeningAfresh
             ? "somebody else has started sending and Hamlet has moved across to "
               + "them, so it has let go of what it was holding, because those "
               + "twelve seconds were listened to at the other station's pitch and "
@@ -3203,6 +3218,7 @@ public partial class MainWindowViewModel : ObservableObject
             keyed.IsKnown ? keyed.Number == 1 : null, DateTime.UtcNow);
 
         DecodingIsSuspended = _decoder.DecodingSuspended;
+        ListeningAfresh = _decoder.ListeningAfresh;
 
         // **THE SETTLED-PASS READOUTS WENT WITH THE SETTLED PASS.** The tip
         // mark, the ceiling note, the handover note and the revisions count all

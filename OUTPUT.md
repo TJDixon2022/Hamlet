@@ -2,31 +2,23 @@
 
 ## 1. What Claude did
 
-**The strip was empty because the commit that removed the old decoder cut the
-capture press and the keying meter out of the window, and the press is back.**
+**The trigger fired three times across the corpus, not nought.** Every recording
+and both fixtures give nought. **The sensitivity sweep gives three**, out of a
+hundred and twenty-four runs of it: once at fifteen decibels, where the tracker
+went 650 to 575 hertz at 7.5 seconds on one seed of four, and once each at nine
+and eight decibels, where it went 600 to 675 at 6.0 seconds on another seed.
 
-That commit meant to remove one thing below the transcript, the revisions row,
-and it cut one contiguous block from there down to the offer row. The keying
-meter and the press that marks a case were in between. **Nothing failed**: every
-property and command behind them is still on the view model and every binding
-still resolves, so `BindingHealthTests` had nothing to complain about. **A binding
-that resolves and an element that is not there look the same to a test that only
-reads the log.**
+Those are true instances of the ruled line — a move of at least the decoder's own
+bandwidth, made while somebody was being read — and what the tracker moved to is
+noise rather than a second sender. **One of the three costs something**: fifteen
+decibels went from 0.94 right and 0.00 invented to **0.92 right and 0.08
+invented**. The other two cost nothing measurable. Every other level is unchanged.
 
-**The layout unit is not the fault.** It consolidated the conditional notes below
-the transcript into the fixed-height advisory region on purpose (HM-DEC-080), and
-those notes still reach it: `AdvisoryNote` takes the first non-empty of the
-suspended note, the overflow advice, the capture note and the decoder story. An
-empty grey box means none of them had anything to say at that moment, which is the
-region working. **The blank gap under it was the two deleted blocks.**
-
-Nothing else was missing. Comparing what the region is meant to hold against what
-it holds, the only other binding that commit removed was `TipIsUnstable`, which
-went deliberately with the settled pass that fed it.
-
-**Where the line falls between a refinement and a station change: the tracker
-draws one, and it is in the wrong place in both directions.** Section 4 carries
-the ask; the evidence is under task 3 below.
+**So the order's premise, that it fires on nothing in the current corpus and
+shipping it therefore cannot make things worse, is false at one level.** The
+ruling is Tim's and the order rejected leaving the machinery dormant, so it is
+switched on and this is the first thing in the report rather than a footnote. It
+is one line to reverse.
 
 Claude Code on the development computer, `C:\Source\HamLet`, on `main`. Gate
 verified against the tree: `Hamlet.sln` and `CwProbabilisticStream.cs` present, no
@@ -34,204 +26,174 @@ verified against the tree: `Hamlet.sln` and `CwProbabilisticStream.cs` present, 
 connected and nothing here is evidence about the radio** (HM-DEC-093). Nothing was
 recorded under §12.1.
 
-### Task 1 — why the strip was empty
+### Task 1 — the trigger, on the ruled line
 
-1. **What renders it.** A fixed-height `Border` below the transcript bound to
-   `MainWindowViewModel.AdvisoryNote`, which walks `Advisories()` and shows the
-   first message with anything in it.
-2. **Why it was empty.** Nothing is placed into it when every advisory is silent,
-   which is the design. The **large blank gap beneath** it was not the region at
-   all: it was the space the two deleted blocks used to occupy.
-3. **Where the press went.** `CaptureAudioCommand` is still on the view model and
-   still does exactly what it did. The `Button` bound to it was deleted from the
-   window in `4bc3bce`, along with the keying meter's whole `Border`. Absent, not
-   disabled, exactly as reported.
-4. **Anything else.** No. `TipIsUnstable` also went in that commit and was meant
-   to.
+`CwDecoder.ShouldClearWindow(fromHz, toHz, reading)`, read once per tracker
+reading against the pitch at the previous reading.
 
-### Task 2 — the press is back, and committed on its own
+- **Where the bandwidth comes from.** `CwProbabilisticDecoder.BandwidthHz`, the
+  constant the stream's own quadrature filter is built from — the same field the
+  mixdown uses to size its boxcar. No literal appears in the comparison, so if
+  that filter ever widens the line widens with it.
+- **What "while something was being read" resolves to.** `_probabilistic.Last
+  .Text.Length > 0`, the decoder's own current reading. That is the thing being
+  protected rather than a proxy for it: a keying verdict takes three seconds to
+  form, and a signal margin says a tone is present rather than that anybody is
+  reading it.
+- **A move is one step, not an accumulation.** The reference is the pitch at the
+  previous reading, five milliseconds earlier, so a jump crosses the line and a
+  walk does not. That is what keeps the two-step settle onto one station off it:
+  600 to 650 on the sweep's fixture and 475 to 525 on `004507` are 50 hertz each.
+- **`StationChanges` is left exactly as it was and nothing reads it.** Its meaning
+  is unchanged, so nothing depends on a meaning that moved. It is not the trigger,
+  because measured last session it fires twice on `004507` with nothing read and
+  not once on the two-station fixture.
 
-Both blocks are restored byte for byte from the commit that removed them, with a
-note above them saying what happened. **Nothing about the press changed**: same
-command, same tooltip, same enabling on `IsDecoding`. The keying meter came back
-with it, because it is the independent witness and the whole point of it is that
-it can contradict the decoder while the operator is at the radio.
+### Task 2 — what it changes in the corpus
 
-**The transcript does not move.** Both blocks sit below it, and the fixed-height
-advisory region is untouched.
+**Every recording is character for character last session's string**, and the
+trigger fired on none of them:
 
-**`TheCapturePressIsOnTheScreenTests`** builds the real window headless, puts the
-terminal on the canvas the way the operator does, and fails unless the button is
-there, has a command, and the meter's own explanation is on the screen beside it.
-It fails on the tree as it was this morning.
-
-### Task 3 — what counts as a move
-
-The tracker changes where it listens in four ways.
-
-| What | Where | Was the held audio mixed at a different pitch afterwards? |
+| recording | window clears | text |
 |---|---|---|
-| **Refinement inside the fine bank** | `ReadSurvey`, "inside reach" | Yes, by a few hertz. The bank does not move and nothing is counted; the reported pitch shifts within the same station |
-| **Acquiring jump from cold** | `ReadSurvey`, while no keying has ever been confirmed | Yes, by any distance. Counts a retune and a follow |
-| **`Switch` within `ConfirmWithinHz` of the bank centre** | `Switch`, `refining` true | Yes, by up to the coarse spacing. Counts a retune only |
-| **`Switch` beyond it** | `Switch`, `refining` false | Yes, by any distance. Counts a retune and a follow, and now a **station change** |
+| `004507` | 0 | `E AT ARRL DOT NET <BT> E ACH STATION HANDLING ET HIS M E S S A G E P E` |
+| `003016` | 0 | `E ■I KPA1■IS<HH> ■NK <BT> STILLHVEMY ETO 91B E TT JETST VFB TUBE LIN` |
+| `003126` | 0 | `E S 5 IWATTCH ATL E<AS>T 2 IOVI ES A DAY WID X■ WHY N■TT E E , WESTERNS , E` |
+| `003758` | 0 | `E ■HES EHEHSE AA■IH/5■IS E E E EAN EANQNI<HH>SK  E E E E E E EIIE` |
+| `014854`, `014935` | 0 | silent, offline and streamed |
+| two-station fixture | 0 | unchanged |
 
-**The tracker did not distinguish leaving a station from finding one, so that was
-built**: `CwToneTracker.StationChanges` counts only the fourth row, the moves made
-after keying has been confirmed somewhere. `Follows` is untouched, because the
-speed guard and a test both depend on its present meaning.
+**The sweep, against last session's, every level:**
 
-**And it is still the wrong line, measured in both directions.**
+| dB | 18 | 17 | 16 | **15** | 14 | 13 | 12 | 11 | 10 | 9 | 8 | 3 | 0 | −5 | −6 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| was, right/wrong | 1.00/0.00 | 1.00/0.00 | 1.00/0.00 | **0.94/0.00** | 1.00/0.00 | 1.00/0.00 | 1.00/0.00 | 0.92/0.06 | 0.94/0.03 | 0.86/0.08 | 0.83/0.11 | 0.72/0.19 | 0.56/0.33 | 0.03/0.14 | 0.00/0.00 |
+| now | 1.00/0.00 | 1.00/0.00 | 1.00/0.00 | **0.92/0.08** | 1.00/0.00 | 1.00/0.00 | 1.00/0.00 | 0.92/0.06 | 0.94/0.03 | 0.86/0.08 | 0.83/0.11 | 0.72/0.19 | 0.56/0.33 | 0.03/0.14 | 0.00/0.00 |
 
-- **The two-station fixture, the one thing in this repository built to contain a
-  station change, produces none.** Six retunes, four follows, zero station
-  changes: the answering station is reached through the acquiring branch rather
-  than through `Switch`.
-- **Fixtures holding one sender produce them.** `004507` declares two in its first
-  three seconds, 600 to 475 and 475 to 525, both while nothing has been read yet.
-  A twelve words a minute fixture declares one mid-message.
+**Fifteen decibels is the only level that moved**, and it is one of the three
+firings. **It is not short-window guessing**: the refill guard was swept at 3, 4,
+6, 8 and 12 seconds and every length gives the same 0.92 and 0.08 at that level,
+so the invention is the decoder reading at 575 hertz after the tracker was dragged
+there, rather than the window being briefly thin. Without the clear, the held good
+audio was outvoting the noise; with it, what the tracker moved to is all there is.
 
-So a trigger hung on it fires where there is nobody to leave and stays silent
-where somebody answers.
+### Task 3 — proving it fires when it should
 
-### Task 4 — the window is not cleared, and why not
+`WhenTheWindowIsEmptiedTests`, four of them, and no audio fixture was synthesized
+for any of them.
 
-**The machinery is built and it is not switched on.** `CwProbabilisticStream
-.Restart()` drops the held envelope and the leading edge with it, keeps the audio
-clock and the settled mark so **nothing already settled is retracted**, and sets a
-refill guard so a short window says nothing rather than guessing. `ListeningAfresh`
-and the terminal sentence for task 5 are built on top of it.
+- **A move of at least the filter width while reading empties it** — at the width
+  exactly, in both directions, and far beyond it.
+- **A smaller move does not**, including the two real settles this corpus makes,
+  600 to 650 and 475 to 525, and one hertz under the line.
+- **A long move with nobody being read does not**, including `004507`'s 600 to 475
+  in its first two seconds, and the first reading of all, where there is no
+  previous pitch to have moved from.
+- **Emptying drops the held audio and the leading edge and keeps what was
+  settled.** Real audio goes through the stream until characters settle, then
+  `Restart` is called directly: the envelope is empty afterwards, the last reading
+  is empty, the leading edge was raised empty, and the settled count and the
+  settled text are exactly what they were. Nothing already said is taken back or
+  said twice.
 
-**What clearing costs, measured on both, which is why it is not on:**
+### Task 4 — the sentence, proved on the real window
 
-| triggered on | the sweep at 18 dB | `004507` |
-|---|---|---|
-| any follow | 0.67 right, 0.22 wrong | `T SM G JL D O T N E T <BT> E ACH STAT ION…` |
-| a station change | 0.67 right, 0.22 wrong | same |
-| a station change of at least the decoder's own 60 Hz bandwidth | 1.00 right, 0.00 wrong | `E A T SM G JL D O T N E T…` |
-| that, and only while something was being read | 1.00 right, 0.00 wrong | `E AT ARRL DOT NET…`, unchanged |
+`TheFollowedSentenceReachesTheScreenTests` builds the actual window headless, puts
+the terminal on the canvas the way the operator does, and reads the text out of
+the visual tree. It asserts the sentence is drawn while the window is refilling
+and gone once it is not. **No property is consulted for the proof** — a property
+returning the right string and an element that is not on the screen look identical
+to a test that reads a view model, which is exactly how the capture press
+disappeared.
 
-The last row is the honest line and it never fires on anything in the corpus, so
-the clear is not exercised by a single fixture. **And with the first three it cost
-a real decode**: a twelve words a minute message fell to 0.63 of itself at
-eighteen decibels, on a fixture holding one sender.
+To make that possible the state is carried as `ListeningAfresh` on the view model,
+the way `DecodingIsSuspended` already is, and set from the decoder on the poll.
+The sentence itself sits in `Advisories()` above the capture note, so it lands in
+the fixed-height region and **the transcript does not move** (HM-DEC-080).
 
-**What the likelihood ratio does while the window is short**, which the order
-asked for: the refill length makes no difference to it. Swept at 0.5, 2, 3, 4, 6
-and 8 seconds, the worst invented share across the sweep is 0.22 at every one of
-them, and the eighteen decibel reading is 0.67 right and 0.22 wrong at every one.
-**The invention after a clear is not the short window; it is the audio that was
-thrown away.**
+### Task 5 — the version
 
-### Task 5 — what the terminal says
-
-The advisory is written and sits in `Advisories()` above the capture note:
-
-> somebody else has started sending and Hamlet has moved across to them, so it has
-> let go of what it was holding, because those twelve seconds were listened to at
-> the other station's pitch and reading them now would put one operator's letters
-> in the other's mouth. Give it a few seconds to fill up again and the text picks
-> up where the new station is.
-
-It clears the moment text resumes, and it cannot show while the clear is off.
-
-### Task 6 — the sweep and all six recordings, together
-
-**Every recording is character for character what it was last session**, because
-nothing now fires on any of them:
-
-| recording | last session | now |
-|---|---|---|
-| `004507` | `E AT ARRL DOT NET <BT> E ACH STATION HANDLING ET HIS M E S S A G E P E` | identical |
-| `003016` | `E ■I KPA1■IS<HH> ■NK <BT> STILLHVEMY ETO 91B E TT JETST VFB TUBE LIN` | identical |
-| `003126` | `E S 5 IWATTCH ATL E<AS>T 2 IOVI ES A DAY WID X■ WHY N■TT E E , WESTERNS , E` | identical |
-| `003758` | `E ■HES EHEHSE AA■IH/5■IS E E E EAN EANQNI<HH>SK  E E E E E E EIIE` | identical |
-| `014854`, `014935` | silent | silent, offline and streamed |
-
-**`003758` and `003016` have not come back** to their pre-removal strings, and
-nothing in this unit moved them either way.
-
-The sweep is unchanged at every level: 1.00 right and 0.00 invented from eighteen
-decibels down to twelve, 0.06 wrong at eleven, 0.19 at three, 0.33 at zero, and
-silence below minus five.
-
-### Task 7 — the version
-
-**`Directory.Build.props` moved 1.10.3 to 1.10.4.**
+**`Directory.Build.props` moved 1.10.4 to 1.10.5.**
 
 ### The order, checked against the rulings it cites
 
-Every ruling this order cites says what the order says it says: HM-DEC-120 the
-emission property, HM-DEC-009 the prime directive, HM-DEC-096's phase 3 the
-mid-character interlock, HM-DEC-091 one source, HM-DEC-150 the version scheme,
-HM-DEC-093 with `SHACK_FACTS.md` the no-radio rule. **No mismatch.**
+Every ruling cited says what the order says it says: HM-DEC-120 the emission
+property, HM-DEC-009 no confident wrong answer, HM-DEC-096 phase 3 the interlock,
+HM-DEC-091 one source, HM-DEC-080 the fixed-height region, HM-DEC-150 the version
+scheme, HM-DEC-093 with `SHACK_FACTS.md` the no-radio rule. **No mismatch.**
+
+**One premise in the order is contradicted by measurement**, and it is the safety
+argument rather than a ruling: "It fires on nothing in the current corpus." It
+fires three times on the sensitivity sweep. Reported rather than repaired.
 
 ### The inbound asks queue
 
-Every id it names is `status: open` in `OPEN_ISSUES.md`. Nothing on it is closed
+Every id it names is `status: open` in `OPEN_ISSUES.md`. Nothing on it is closed,
 and nothing open and relevant is missing.
 
 ## 2. What Tim should expect
 
-**He can mark a case again: the press is on the screen, wired to the same command,
-with the keying meter back above it.**
+**The first time somebody answers his call on a different pitch, the terminal will
+stop, say that Hamlet has moved across to them and let go of what it was holding,
+and pick up again a few seconds later with the new station's text.**
 
-**And when Hamlet follows somebody mid-contact he sees exactly what he saw
-yesterday, because the window is not being cleared** — the sentence explaining it
-is written and cannot appear until there is a move worth firing it on.
+Build clean, no warnings, version 1.10.5. **28 failing, the same 28 by name as
+when this unit started.** The engine suite gained four tests and the app suite one,
+all green.
 
-Build clean, no warnings, version 1.10.4. **28 failing, the same 28 by name as
-when this unit started.** The app suite is 477 green, one more than yesterday,
-which is the new capture-press test.
+**What will look wrong and is not:** nothing in the app looks different until a
+move that big happens, and on everything in this repository except three runs of
+one synthetic fixture, it never does.
 
-**What will look wrong and is not:** `CwProbabilisticStream.Restart`,
-`RefillSeconds`, `CwToneTracker.StationChanges`, `CwDecoder.ListeningAfresh` and
-`FollowedNote` are all built and none of them runs. That is deliberate and it is
-the ask below.
+**What is genuinely worse:** the sensitivity sweep at fifteen decibels now returns
+0.08 of the message as wrong characters where it returned none. That is the clear
+firing on a tracker move onto noise. It is one level of one fixture, the four real
+recordings are untouched, and the line above tells him what it buys.
 
 ## 3. What we should do next
 
-- **Rule on what a station change is**, in section 4. Everything else here waits
-  on it.
-- **The two-station fixture may not contain what it says it does.** The tracker
-  reaches the answering station through the acquiring branch, which is what it
-  does when it has not found anybody, and that is worth looking at on its own.
-- **`003758` and `003016` are still short of their pre-removal strings**, and
-  neither the interlock nor this unit moved them.
+- **Ask the decoder whether a new sender is speaking**, which the order parks and
+  which is the answer that does not depend on the tracker being right about a
+  pitch. All three firings this unit measured were the tracker moving onto noise
+  while a station was being read, and a speed-and-fist test would not have been
+  fooled by any of them.
+- **Look at why the tracker leaves a station it is reading for a bin 75 hertz
+  away**, which is what those three firings are. HM-DEC-127 already forbids
+  abandoning a confirmed station for a candidate far below it, and this looks like
+  the same fault surviving in a different form.
+- **`003758` and `003016` are still short of their pre-removal strings.**
 - **`FollowSpeed` still has no supplier.**
 
 ## 4. What's blocking us
 
 Nothing blocks the next unit. One ask.
 
-> **A station change is declared by evidence that somebody else is sending, not by
-> how far the filter moved.**
+> **The window clear stays on, or it comes off until the decoder can say who is
+> sending.**
 >
-> The window-clearing Tim ruled for is built and cannot be switched on, because
-> the only signal available for triggering it is wrong in both directions. The
-> tracker declares a station change **twice on `004507` in its first three
-> seconds while nothing has been read**, and **not once on the two-station fixture
-> built to contain one**, where the answering station is reached through the
-> acquiring branch instead.
+> It is built exactly as ruled and it is switched on. What the ruling assumed, and
+> the order stated, is that it fires on nothing here; it fires three times on the
+> sensitivity sweep, and one of those three costs fifteen decibels 0.08 of the
+> message as invented characters where it invented none.
 >
-> **Two candidate answers, and both need a fixture that actually exercises them.**
-> The first is distance measured against the decoder's own filter: a move of less
-> than `CwProbabilisticDecoder.BandwidthHz`, which is 60 Hz, lands inside the
-> passband the held audio was taken through, so it cannot have made that audio
-> incoherent, and everything measured here settles onto a station in 40 to 50 Hz
-> steps. That plus "only while something was being read" leaves every recording
-> untouched and the sweep clean, and fires on nothing at all. The second is to
-> stop asking the tracker and ask the decoder: a new sender is a speed or a fist
-> that does not fit what has been read, which is what the operator notices, and it
-> is a measurement nothing here makes yet.
+> **All three firings are the tracker leaving a station it is reading for a bin
+> seventy-five hertz away that holds noise.** The ruled line is doing what it says
+> and the thing feeding it is wrong, which is the same shape as the previous
+> unit's finding about `StationChanges` in a different place.
 >
-> **Rejected: shipping the clear on the tracker's own classification.** It cost a
-> twelve words a minute message 0.63 of itself at eighteen decibels and `004507`
-> its opening, on fixtures holding one sender, which is the disease rather than
-> the cure.
+> **The choice is between two costs**: leave it on and accept invented characters
+> where the tracker is dragged onto noise, in exchange for the protection when
+> somebody really does answer; or take it off until the decoder itself can say a
+> different sender is speaking, and accept that a real handover keeps being
+> decoded as one station until then.
 >
-> **Rejected: leaving it on and calling those fixtures unrepresentative.** They
-> are the corpus; there is nothing else to be right about.
+> **Rejected: tuning the bandwidth line so the three firings fall below it.** The
+> line is 60 hertz because that is the decoder's filter and the argument is
+> physical; a number chosen to make a test green is a different ruling wearing the
+> same clothes.
+>
+> **Rejected: a longer refill guard.** Swept at 3, 4, 6, 8 and 12 seconds and it
+> changes nothing at the level that moved, so the invention is not a thin window.
 
 ### Asks still outstanding
 
@@ -247,4 +209,4 @@ Carried per HM-DEC-139, verbatim until ruled.
 - The mark-and-gap witness behind HM-DEC-144 and HM-DEC-145.
 - HM-OPEN-052, HM-OPEN-053, HM-OPEN-054, HM-DEC-130, HM-DEC-098, HM-OPEN-033,
   HM-OPEN-007.
-- **What a station change is**, first made today, above.
+- **Whether the window clear stays on**, first made today, above.

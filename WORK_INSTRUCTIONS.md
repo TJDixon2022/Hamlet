@@ -27,86 +27,85 @@ If all four hold, say "Hamlet confirmed" and continue.
 
 ## Why this unit exists
 
-**Two things. The first is a regression that has taken the project's only
-measuring instrument off the screen, and it comes first.**
+**`cw-2026-08-22-014113.wav` carries a strong, steady, high-duty station and
+Hamlet read nothing from it. Every excuse outside the decoder is gone.**
 
-### One: the advisory region is empty and the capture press is gone
+`ANALYSIS-cw-2026-08-22-014113.md` measured the file independently of Hamlet's
+decoder, with a separate Goertzel chain, and states its method so it can be
+disagreed with. **Read that document before starting. It is the specification for
+this unit.** Its findings:
 
-Below the transcript there is now **an empty grey box and then a large blank gap**,
-and then the dimmed-character legend. Everything that used to sit between them has
-vanished from the screen: **the "I hear a station" capture press**, the keying
-meter, the tone advisory, the nothing-coming-through note and the speed row.
+- A keyed signal at **608 Hz from 15.7 s to 27.4 s**, continuously present,
+  standing **30 to 53 dB** above the band median and never once out of first place.
+  **18.9 dB of narrowband swing, roughly 45 % duty across the active span.**
+- **The tone does not drift** — fifty consecutive windows put it between 596 and
+  612 Hz.
+- Marks cluster at **70–80 ms and ~200 ms**, a ratio near three. Corrected for
+  threshold edge bias the unit is **≈ 62 ms, about 19 WPM**, with dah, character
+  gap and word gap all within a few milliseconds of 3, 3 and 7 units.
+- **Peak −12.9 dBFS, no clipping, no DC offset, the 500 Hz filter behaving.**
+  The antenna, the radio, the filter, the USB device, the gain chain and the
+  tuning are all exonerated **by the app's own capture**.
 
-**The button is not greyed. It is absent**, and so is the whole strip, which points
-at the fixed-height advisory region shipped by the layout unit rendering with
-nothing placed into it rather than at anything in the decoder.
+**This is not HM-OPEN-012.** That is about a low-duty station whose tracked peak
+decays between bursts. This is 45 % duty across twelve unbroken seconds.
 
-**The decoder is not the fault.** The terminal in the same screenshot is reading
-and emitting.
+### The lead, and it is a mechanism rather than a symptom
 
-**This is the highest-priority item in the unit.** The capture press is how Tim
-marks a case; the roster is the only instrument this project has for scoring
-whether he can read the band; and **without the press an evening at the rig
-produces no evidence at all.** It was on the keep list of every removal order for
-exactly this reason.
+The sidecar reports **20 elements seen, 20 resolved, 13 characters emitted**. That
+is **1.54 elements per character.** English Morse averages near three.
 
-### Two: the decoder's window after a retune
+**The character-gap hypothesis is winning about twice as often as it should**,
+which shatters letters into single elements and produces the E, T and I soup seen
+all week.
 
-**The decoder's window holds twelve seconds of envelope mixed down at whatever
-pitch the tracker held at each moment. When the tracker moves to another station
-part-way through, the window holds two pitches at once and the decode is made over
-the mixture.**
+**And the speed points the same way.** Hamlet's `reading` chose **24 WPM** against
+a measured **19**. A unit a quarter short promotes ordinary inter-element gaps into
+character gaps, systematically, everywhere. **The two observations are one fault
+seen twice.**
 
-Measured last session on the sensitivity sweep: exactly one retune at every level,
-600 Hz to 650 on a fixture sending at 640, happening legitimately between
-characters. What it costs, from eleven decibels down: **0.06 of the message wrong
-at eleven, 0.19 at three, 0.64 at minus four.**
+### What must not be done to this file
 
-**This is not the mid-character interlock and cannot be fixed by it.** That
-interlock now holds the tracker inside every character it reads, which is what it
-is for. The move that costs the characters is between characters and is correct.
+The analysis swept threshold and unit across the plausible range and **got no
+readable transcript either.** It also built a scorer ranking candidate decodes by
+the fraction of valid Morse characters, reached 30/30 valid, and returned
+`ETTT TOGATMETTEMTTEEEATEEEMN`. **A validity score is gameable into E/T soup and
+any confidence built on one will be confidently wrong.**
 
-### Ruled by Tim
+There are also continuous marks of **325–430 ms** in the active span — five to
+seven units at the measured speed, which no single operator sends. At least three
+other signals share the passband (712.7, 437.9, 767.1 Hz). **This capture may hold
+two or more stations at once.**
 
-**The window is cleared when the tracker moves to a different station.** The
-decode is always made over one pitch.
-
-*Rejected: re-mixing the held envelope to the new pitch.* Better if it works, and
-worth doing later, but it is new arithmetic in the one path that is currently
-reading and clearing is provably correct today.
-
-*Rejected: leaving it and living with a known-bad window after each move.* The
-retune happens exactly when somebody answers a call. **Twelve seconds of nothing
-is recoverable; twelve seconds of confident wrong characters is what HM-DEC-009
-exists to prevent, at the worst possible moment.**
-
-**The cost is accepted and must be stated on screen, not hidden.** Clearing loses
-up to twelve seconds of reach every time Hamlet follows somebody.
+**So no transcript is asserted for this file, by anybody, in this unit or later.**
 
 ---
 
 ## Verify this instruction against the tree
 
 - **Report mismatches; do not repair the instruction silently.**
-- **Rulings below are cited by number only. Read each and apply what it says.**
-  **If a ruling does not support what this order needs, report it and stop.**
-- **The failing set is 28.** Record the exact set before and after and name every
+- Every figure above came from outside this repository. **Reproduce what you rely
+  on.**
+- **The failing set is 28.** Record it exactly before and after and name every
   difference.
-- **Beware the synthetic sweep.** Last session found that a change looking perfect
-  on the sensitivity fixture had silenced all six real recordings, because the
-  fixture never exercised what broke. **Every measurement in this unit is reported
-  on the sweep AND on all six recordings, together, every time.**
+- **Report on the sweep AND all six existing recordings together, every time.** A
+  change that looked perfect on the sensitivity fixture once silenced all six.
+- **A binding that resolves and an element that is not on screen look the same to a
+  test that reads the log.** Anything on screen is proved by a test that builds the
+  real window.
 
 ---
 
 ## Rulings in force
 
-- **HM-DEC-120.** Nothing is emitted on audio holding no signal.
-- **HM-DEC-009.** No confident wrong answer. The whole reason for this ruling.
-- **HM-DEC-096**, whose phase 3 is the mid-character interlock. **Untouched here.**
+- **HM-DEC-120.** Nothing emitted on audio holding no signal.
+- **HM-DEC-009** and **§0.0.** Tasks 1 and 4 are both this.
+- **§0.0.1**, which the sidecar currently breaches — see task 4.
 - **HM-DEC-091.**
-- **HM-DEC-150**, the version scheme. Task 5.
+- **HM-DEC-096** phase 3, the mid-character interlock. **Untouched.**
+- **HM-DEC-150**, the version scheme. Task 6.
 - **HM-DEC-093** and `SHACK_FACTS.md` — no radio on the development machine.
+- **§12.5** — no answer key is written for a recording nobody has adjudicated.
 
 ---
 
@@ -119,99 +118,114 @@ task. Also every ten minutes while a task runs.
 
 ---
 
-## Task 1 — Find out why the strip is empty
+## Task 1 — The advice line is asserting a cause the app can disprove
+
+The panel says:
+
+> the signal is being lost somewhere between the antenna and Hamlet, and the gain,
+> the filter and the tuning are the things to try
+
+**Hamlet's own capture contains a 19 dB signal.** The sentence sends the operator
+to check things the app has the evidence to rule out.
+
+- **Say what the app already knows at the moment that line is shown** — the input
+  peak, the floor, the keying meter's swing, the tone's standing above the band.
+- The line may only claim the signal is being lost upstream **when what Hamlet
+  captured actually shows that.** Otherwise it says something true about not being
+  able to read what is plainly there.
+- **Wording is yours.** The requirement is that it never again points at the
+  antenna when the WAV holds a strong station.
+
+**Fix this first.** It is on screen now and it is wrong now.
+
+---
+
+## Task 2 — Why 1.54 elements per character
 
 **Report before changing anything.**
 
-1. What renders the advisory region, and what is supposed to place messages into
-   it.
-2. **Why is it empty?** Is nothing being placed, is something placed and not
-   drawn, or was the placement lost when the panels were consolidated?
-3. **Where did the capture press go?** Name the element, whether it still exists
-   in the view, and what decides that it renders.
-4. **Is anything else missing that this order has not noticed?** Compare what the
-   region is meant to hold against what it holds.
+1. **Reproduce the count** on `cw-2026-08-22-014113.wav`, and on the four existing
+   station recordings. **Report elements per character for each.** Say which are
+   near three and which are not.
+2. **In the segmental Viterbi, what decides between an inter-element gap and a
+   character gap?** Name the scoring, the durations expected, and the penalty.
+3. **What speed does the decoder choose on this file, and what does it choose if
+   the correct unit near 62 ms is imposed?** Report the elements per character at
+   both.
+4. **Say whether the gap promotion is a consequence of the speed being a quarter
+   short, or a fault in the gap model independent of it.** These need different
+   fixes and this is the question the unit turns on.
 
-**If the cause is not in the layout work, say so and say where it is.**
-
----
-
-## Task 2 — Put the capture press back, first
-
-**The press returns to the screen before anything else in this unit is built, and
-is committed on its own** so it can be reached without the rest.
-
-- It marks a case and keeps the audio exactly as it did. **Nothing about its
-  behaviour changes.**
-- **Every other message that belongs in that region returns with it** — the keying
-  meter, the tone advisory, the nothing-coming-through note. The layout unit was
-  about where they sit, not whether they are said.
-- **The layout rule still stands: the transcript does not move.** Fixing the
-  emptiness must not bring back the jump.
-- **Add a test that the capture press renders**, so this cannot happen silently
-  again.
+**If the answer is that the fault is elsewhere, say so and stop.**
 
 ---
 
-## Task 3 — What counts as a move
+## Task 3 — Fix what task 2 found
 
-**Report before changing anything.**
+Gated on task 2. Build what it found, not what this order guessed.
 
-The tracker retunes for more than one reason. **Name every one**, and for each say
-whether the audio already in the window was mixed at a different pitch afterwards.
+- **If the speed is the cause:** why did 24 win over 19? The grid runs 8 to 32 in
+  steps of 2, so 19 is not on it — **report whether the step is the problem** and
+  what a finer grid costs in time per second of audio.
+- **If the gap model is the cause:** a hand-sent fist compresses character gaps,
+  and the analysis measured this sender's gaps clustering at 50, 120–180 and
+  410/495 ms against a 62 ms unit. **The model must fit that, not the textbook.**
+- **Nothing raises a confidence score.** A doubtful fit lowers it.
 
-- A refinement of a few hertz around the same station is not a station change and
-  **must not clear the window** — the envelope is still substantially coherent and
-  clearing on every small correction would empty the window constantly.
-- A move to a different station is.
-- **Say where the line falls and what evidence you have for it.** If the tracker
-  does not currently distinguish them, say so — that is the first thing to build.
-
-**If clearing cannot be triggered on the right subset of moves, stop and report.**
-Task 2 is already committed by then, so the press is safe either way.
-Clearing on all of them is a different ruling from the one Tim made.
+**Report elements per character on all five station recordings after the change.**
+Near three is the target. **If it is not near three, say so plainly rather than
+reporting a character count instead.**
 
 ---
 
-## Task 4 — Clear the window on a station change
+## Task 4 — The sidecar contradicts itself
 
-The held envelope is dropped and refilled from the new pitch.
+`13 emitted, 0 unsure` beside `text nothing read`, both covering the same span.
 
-- **The decoder must not invent while the window refills.** A short window is less
-  evidence, and less evidence must mean silence rather than guesses (HM-DEC-120).
-  **Report what the likelihood ratio does while the window is short.**
-- **Nothing already settled is retracted.** Characters read before the move stand;
-  this is about what is decoded after it.
+Two candidates, and **the analysis names both**: the transcript was cleared while
+the counter was not — `CwTerminalTests.ClearingTheTranscriptLeavesTheDecoderAlone`
+is a known red that would produce exactly this — or thirteen unreadable blocks are
+rendering as "nothing read".
 
----
-
-## Task 5 — Say so on screen
-
-**The operator must know why the terminal went quiet.** Twelve seconds of silence
-with no explanation reads as a dead band, and this will happen at the exact moment
-somebody answers his call.
-
-The terminal says, in the project voice, that Hamlet has moved to another station
-and is listening afresh. It clears when text resumes.
-
-**Wording is yours. The layout rule stands: the transcript does not move.**
+**Find out which, say so, and make the sheet stop asserting two incompatible
+things about one span.** A wrong decode with a self-contradicting sidecar is not a
+regression test, and the roster is the only instrument this project has.
 
 ---
 
-## Task 6 — Measure it, on both
+## Task 5 — The keying sweep picked the weaker bin
 
-**The sweep and all six recordings, every level, together.**
+The sweep reported `no keying at 625 Hz`. Re-measured over the same window:
+600 Hz gives 21.2 dB, **608 gives 21.3**, and **625 gives 17.2** — four decibels
+low, seventeen hertz off a signal at 608. **600 Hz was on the grid and 625 won
+anyway.**
 
-| what | expected |
-|---|---|
-| the sweep, 18 dB down to −6 | **invention at or below what it is now**, and ideally nothing above 12 dB |
-| `004507`, `003016`, `003126`, `003758` | **at or better than last session's strings**, quoted verbatim against them |
-| `014854`, `014935` | silent, offline and streamed |
+- **Report what the sweep ranks bins by.** The analysis says it does not know, and
+  calls this a question rather than a defect claim.
+- The reported `5 ms key down, 142 key-downs` is 0.71 s of key-down in six seconds
+  — **12 % duty in 5 ms fragments, against a measured 43 % in 70–200 ms elements.**
+  That number describes noise crossing a threshold. **The verdict was honest about
+  what it measured; the problem is what it measured.**
+- **The keying meter's wording may not change.** It is the independent witness.
 
-**`003758` and `003016` are the two that have not come back** to their
-pre-removal strings. Say plainly whether they have.
+---
 
-**If any recording reads worse than last session's string, stop and report.**
+## Task 6 — The capture becomes a fixture, and asserts no transcript
+
+`cw-2026-08-22-014113.wav` and its sidecar into `tests\fixtures\cw\captured\`.
+
+**Assert only what was measured**, per §12.5:
+
+- the tone is found at **608 ± 4 Hz**
+- it stands at least **18 dB** out of the band across **15.7–27.4 s**
+- the element structure fits a **unit near 62 ms**
+
+**No transcript. No answer key. Not now and not later.** Nobody knows what it says,
+the analysis could not read it either, and it may hold more than one station.
+
+**Do not build a validity scorer.** One was built during the analysis, reached
+30/30 valid Morse characters, and returned `ETTT TOGATMETTEMTTEEEATEEEMN`.
+**Recorded here so nobody builds it twice.**
 
 ---
 
@@ -224,18 +238,20 @@ it moved from and to. **HM-DEC-150.** One work unit, one patch.
 
 ## Parked — do not touch, do not raise
 
-- **Re-mixing the held envelope to the new pitch.** Rejected for now, worth doing
-  later. **Do not build it as an optimisation.**
-- **`FollowSpeed` has no supplier**, and `MostRealRecordingsSitInTheWidestWindow`
-  asserts a window nothing sets. Its own unit.
-- **The reacquiring guard** and `NoSpeedIsNamedWithoutCharactersToNameItFrom`.
-- **The mark-and-gap witness behind HM-DEC-144 and HM-DEC-145.**
-- **`HM-OPEN-051`** recorded open while HM-DEC-143 closes it.
-- **The twenty-two failures that predate the removal.**
-- The sidecar's `text` and the leading edge; the missing captures; mode-follow's
-  guard; `RfGain`; the likelihood gate at 15.0; the keying meter's thresholds.
-- **HM-OPEN-052, HM-OPEN-053, HM-OPEN-054, HM-DEC-130, HM-DEC-098, HM-OPEN-033,
-  HM-OPEN-007.**
+- **The station-change trigger**, ruled and unbuilt: a move of at least the
+  decoder's bandwidth while something was being read. Its own unit.
+- **Asking the decoder whether a new sender is speaking.**
+- **The two-station fixture reaching the answering station through the acquiring
+  branch.**
+- **`FollowSpeed` has no supplier**; the reacquiring guard; the mark-and-gap
+  witness behind HM-DEC-144 and HM-DEC-145; `HM-OPEN-051` recorded open while
+  HM-DEC-143 closes it.
+- **The twenty-two failures predating the removal.**
+- The sidecar's `text` and the leading edge; the missing captures from the 20th and
+  21st; mode-follow's guard; `RfGain`; the likelihood gate at 15.0; the keying
+  meter's thresholds.
+- **HM-OPEN-012, HM-OPEN-052, HM-OPEN-053, HM-OPEN-054, HM-DEC-130, HM-DEC-098,
+  HM-OPEN-033, HM-OPEN-007.**
 
 ---
 
@@ -244,6 +260,7 @@ it moved from and to. **HM-DEC-150.** One work unit, one patch.
 Carried inbound per HM-DEC-139, verbatim until ruled. **Verify against
 `OPEN_ISSUES.md` and report anything here that is closed, or open and missing.**
 
+- What a station change is — ruled, unbuilt.
 - Whether the sidecar's `text` should include the leading edge.
 - The captures from the evenings of the 20th and 21st are not in the tree.
 - Thirty seconds since the last character, for mode-follow's guard.
@@ -255,8 +272,6 @@ Carried inbound per HM-DEC-139, verbatim until ruled. **Verify against
 - HM-OPEN-052, HM-OPEN-053, HM-OPEN-054, HM-DEC-130, HM-DEC-098, HM-OPEN-033,
   HM-OPEN-007.
 
-**The window after a retune leaves this queue** with this unit.
-
 ---
 
 ## What not to do
@@ -267,16 +282,12 @@ destructive git; do not invent a ruling id; do not touch coverage thresholds.
 
 Unit-specific:
 
-- **Do not clear on a small refinement.** *The window would empty constantly and
-  the cure would cost more than the disease.*
-- **Do not let a short window guess.** *Less evidence means silence.*
-- **Do not touch the mid-character interlock.** *It was measured and is right.*
-- **Do not report a result on the sweep alone.** *A change that looked perfect on
-  that fixture silenced all six recordings last session.*
-- **Do not build the re-mix.** *Parked.*
-- **Do not remove any advisory to tidy the region.** *They went missing once
-  already. Task 2 is restoration.*
-- **Do not change what the capture press does.** *Only whether it is on screen.*
+- **Do not assert a transcript for `014113`.** *Nobody knows what it says.*
+- **Do not build a validity scorer.** *Gameable into E/T soup. Already proved.*
+- **Do not tune the gap model until task 2 says which fault it is.** *Speed and gap
+  promotion need different fixes and look the same from the output.*
+- **Do not touch the mid-character interlock or the keying meter's wording.**
+- **Do not prove a screen element with a property test.**
 
 ---
 
@@ -287,11 +298,10 @@ headings** — **What Claude did**, **What Tim should expect**, **What we should
 next**, **What's blocking us** — the last carrying **Asks still outstanding** per
 HM-DEC-139. No other headings.
 
-**Section 1 opens with why the advisory strip was empty and whether the capture
-press is back**, because an evening without it produces no evidence. **Then**
-where the line falls between a refinement and a station change.
+**Section 1 opens with elements per character on all five station recordings,
+before and after.**
 
-**Section 2 states in one sentence whether he can mark a case again, and in one
-more what he sees when Hamlet follows somebody mid-contact.**
+**Section 2 states in one sentence whether a strong steady station now produces
+characters, and what the advice line says when it does not.**
 
 **Stop and report.**
