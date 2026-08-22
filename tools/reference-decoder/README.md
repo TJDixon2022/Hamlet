@@ -43,6 +43,32 @@ to 6 without. Any gate between 10 and 20 reads every station and stays silent on
 every empty band. HM-DEC-120 is not traded for the character counts; silence
 falls out of modelling the null hypothesis explicitly, so it competes.
 
+## The length penalty is scored as a ratio (2026-08-22)
+
+Originally the penalty on a segment straying from its expected length was
+`(span - want) / (want * 0.35)` — a difference, scaled by the kind's own expected
+length. **That gives a character gap three times an element gap's slack and a word
+gap seven times**, so the two costs cross at **1.5 units instead of 2**. Every gap
+longer than one and a half dits was called a character gap, and the evidence term
+is identical for both readings, so nothing argued back. **That is what shattered
+letters into single elements.**
+
+At a gap of exactly two units the element reading cost 4.08 and the character
+reading 0.45 — nine to one for the wrong answer.
+
+It is now `ln(span / want) / 0.35`, which puts both crossovers at the geometric
+mean, **1.73 units**, and rests on a property of hands rather than of textbooks:
+timing error is multiplicative, so a sender who runs a fifth long runs a fifth
+long on dits, dahs and gaps alike.
+
+Measured in the app with the same change: `2 MOVIES A DAY` where it read
+`2 IOVI ES`, `EACH` as one word, **`N4LQ K` on the capture HM-DEC-144 adjudicated
+as `N4L`**, and **`VRR VA` on the one HM-DEC-145 adjudicated as `VA3VRR`**. Here:
+`EACH STATION HANDLING THIS MESSAG E PE` where it read `E ACH ... ME SSAG E PE`.
+
+**Elements per character did not move in aggregate.** It reads better in specific
+measurable places and the headline number stayed put. Both halves are true.
+
 ## Where this comes from
 
 E. L. Bell, 1977, *Optimal Bayesian estimation of the state of a probabilistically

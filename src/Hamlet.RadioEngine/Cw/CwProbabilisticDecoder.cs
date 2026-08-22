@@ -180,26 +180,39 @@ public static class CwProbabilisticDecoder
 
     private const double LongestShare = 2.2;
 
-    /// <summary>How wide the penalty on a segment's length is, as a share.</summary>
+    /// <summary>
+    /// How wide the penalty on a segment's length is, as a share of the log
+    /// ratio between what arrived and what was expected.
+    /// </summary>
     /// <remarks>
-    /// <para>**IT IS A SHARE OF THE SEGMENT'S OWN EXPECTED LENGTH, AND THAT PUTS
-    /// THE CROSSOVER IN THE WRONG PLACE.** A character gap expects three units and
-    /// gets three times the room an element gap gets, so the two costs cross at
-    /// **one and a half units rather than at two**: any gap longer than one and a
-    /// half dits is called a character gap, and characters break apart. The same
-    /// asymmetry puts the dit-or-dah crossover at one and a half units, where it
-    /// happens to help, because a real fist's dahs run long.</para>
-    /// <para>**TWO REPLACEMENTS WERE BUILT AND MEASURED AND NEITHER SHIPPED**, and
-    /// both are written up in the report for 2026-08-21. Scaling the scatter by
-    /// the dit instead moves both crossovers to two units and costs five of seven
-    /// recordings their text, because the dahs of a real fist then read as dits.
-    /// Scoring the ratio instead of the difference puts both crossovers at the
-    /// geometric mean, one and three quarter units, which reads better in places
-    /// and **breaks the port's agreement with `reference_decoder.py`**, which is
-    /// the only thing anchoring this decoder to an implementation somebody else
-    /// checked.</para>
-    /// <para>Neither moved elements per character toward three. Changing it is
-    /// Tim's (§12.1).</para>
+    /// <para>**THE SCATTER IS SCORED AS A RATIO AND NOT AS A DIFFERENCE**, ruled
+    /// by Tim on 2026-08-22. Timing error in a hand-sent fist is multiplicative:
+    /// a sender who runs a fifth long runs a fifth long on dits, dahs and gaps
+    /// alike, which is a property of hands rather than of textbooks. So the cost
+    /// is `ln(span / want) / 0.35`, and **both crossovers land at the geometric
+    /// mean, 1.73 units** — between a dit and a dah, and between the gap inside a
+    /// character and the gap between two.</para>
+    /// <para>**WHAT IT REPLACED, AND WHY THAT WAS WRONG.** The cost used to be
+    /// `(span − want) / (want × 0.35)`, a share of each kind's own expected
+    /// length, so the gap between characters was allowed three times the scatter
+    /// of the gap inside one and the word gap seven times. **The two costs
+    /// crossed at one and a half units rather than at two**: at a gap of exactly
+    /// two units the element reading cost 4.08 and the character reading 0.45,
+    /// with an identical evidence term, so nothing argued back. Every gap longer
+    /// than one and a half dits was called a character gap, and a decoder that
+    /// breaks between the elements of one letter emits E, T and I.</para>
+    /// <para>**MEASURED, AND BOTH HALVES ARE TRUE.** It reads `2 MOVIES A DAY`
+    /// where it read `2 IOVI ES`, `EACH` as one word, keeps `N4LQ K` on the
+    /// capture HM-DEC-144 adjudicated as `N4L` and brings `VRR VA` out of the one
+    /// HM-DEC-145 adjudicated as `VA3VRR`. **And elements per character is
+    /// unmoved in aggregate.**</para>
+    /// <para>**ONE OTHER MODEL WAS BUILT AND MEASURED AND REJECTED**: scaling the
+    /// scatter by the dit rather than by the segment, which moves both crossovers
+    /// to two units and costs five of seven recordings their text, because the
+    /// dahs of a real fist arrive at two to two and a half units and then read as
+    /// dits.</para>
+    /// <para>`tools/reference-decoder/reference_decoder.py` carries the same
+    /// change, so `ItReadsWhatTheReferenceReads` still means what it meant.</para>
     /// </remarks>
     private const double LengthToleranceShare = 0.35;
 
@@ -493,7 +506,11 @@ public static class CwProbabilisticDecoder
                         ? downTo[i] - downTo[j]
                         : upTo[i] - upTo[j];
 
-                    var off = (span - want) / Math.Max(want * LengthToleranceShare, 1.0);
+                    // Guarded against a zero span, which the shortest-span floor
+                    // already makes impossible and which would be an infinity if
+                    // it ever were not.
+                    var off = Math.Log(Math.Max(span, 1e-9) / want)
+                        / LengthToleranceShare;
                     var score = best[j] + evidence - (0.5 * off * off);
 
                     if (score > best[i])

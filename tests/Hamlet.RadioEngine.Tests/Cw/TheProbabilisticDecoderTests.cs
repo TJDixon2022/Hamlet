@@ -52,7 +52,15 @@ public sealed class TheProbabilisticDecoderTests
     /// <para>Proves the port: **the same string the Python produces**, on the one
     /// recording whose content is an ARRL bulletin and therefore recognisable
     /// without anybody adjudicating it. The Python reads
-    /// `E JJ AT ARRL DOT NE T = E ACH STATION HANDLING THIS ME SSAG E PE`.</para>
+    /// `E JJ AT ARRL DOT NET = EACH STATION HANDLING THIS MESSAG E PE`, and the
+    /// only difference below is how a prosign is written: the reference prints
+    /// `=` where Hamlet prints `<BT>`.</para>
+    /// <para>**RE-RECORDED 2026-08-22 WHEN THE LENGTH PENALTY BECAME A RATIO.**
+    /// The expectation is what the reference says, so it moves when the reference
+    /// moves and never when only Hamlet does. Both were re-run against this
+    /// recording and both now read `NET` and `EACH` where they read `NE T` and
+    /// `E ACH`, which is the promotion of element gaps into character gaps going
+    /// away.</para>
     /// </remarks>
     [Fact]
     public void ItReadsWhatTheReferenceReads()
@@ -66,7 +74,7 @@ public sealed class TheProbabilisticDecoderTests
         _output.WriteLine($"'{result.Text}'");
 
         Assert.Equal(
-            "E JJ AT ARRL DOT NE T <BT> E ACH STATION HANDLING THIS ME SSAG E PE",
+            "E JJ AT ARRL DOT NET <BT> EACH STATION HANDLING THIS MESSAG E PE",
             result.Text);
 
         // And it found the speed on its own, with no seed and nothing measured

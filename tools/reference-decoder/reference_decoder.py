@@ -63,6 +63,7 @@ WHAT IS NOT DEMONSTRATED HERE
 
 Requires numpy. Run:  python reference_decoder.py <wavfile> [more wavfiles]
 """
+import math
 import sys, wave
 import numpy as np
 
@@ -150,7 +151,16 @@ def decode_at(e, hop_ms, wpm, on_ll, off_ll):
                 if j > 0 and was_on[j] == is_on:      # elements must alternate
                     continue
                 span = (con[i] - con[j]) if is_on else (cof[i] - cof[j])
-                z = (d - want) / max(want * 0.35, 1.0)
+                # Ratio, not difference. Timing error in a hand-sent fist is
+                # multiplicative: a sender who runs a fifth long runs a fifth
+                # long on dits, dahs and gaps alike. Scoring the difference
+                # gives each kind scatter proportional to its own length, so a
+                # character gap (3 units) gets three times an element gap's
+                # slack and the two costs cross at 1.5 units instead of 2 --
+                # which calls every gap over 1.5 dits a character gap and
+                # shatters letters into single elements. ln(span/want) puts
+                # both crossovers at the geometric mean, 1.73 units.
+                z = math.log(max(d, 1e-9) / want) / 0.35
                 sc = best[j] + span - 0.5 * z * z
                 if sc > best[i]:
                     best[i] = sc; back[i] = (j, ki); was_on[i] = is_on

@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-PHASE: 6 of 6
+STATE: BLOCKED
+PHASE: 0 of 6
 BALL: tim
 NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-21T22:59:10-04:00
-NOTE: elements per character did not move; the gap model's crossover sits at 1.5 units and all three candidate fixes failed on measurement
+UPDATED: 2026-08-22T00:29:02-04:00
+NOTE: the ratio penalty is shipped and reads more words; phases 1 to 6 dropped because none of the W1AW evidence is in the tree
 
 ---
 
