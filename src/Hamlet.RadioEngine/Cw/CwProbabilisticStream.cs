@@ -321,7 +321,29 @@ public sealed class CwProbabilisticStream
 
         Array.Copy(_envelope, window, _envelopeCount);
 
-        var result = CwProbabilisticDecoder.Decode(window, ToneHz);
+        // **THE UNIT IS MEASURED FROM THE WINDOW RATHER THAN SEARCHED FOR.**
+        // The speed grid was scored 0.05 apart out of 33 across its whole range
+        // on a real capture, so which hypothesis won was decided in the fourth
+        // significant figure. The same information is sitting in two medians:
+        // any level the envelope is cut at makes a mark read long and the gap
+        // beside it read short by the same amount, so the average of the two
+        // short clusters is the dit with the bias cancelled. Measured against
+        // generated audio of known speed it returns 12.0, 18.0 and 25.0 for
+        // true 12, 18 and 25.
+        //
+        // **THE GRID IS STILL THERE FOR WHEN THE WINDOW HOLDS TOO LITTLE
+        // KEYING** to cluster, which is what a window holding noise looks like,
+        // and it is what decides in that case.
+        var measured = CwUnitEstimator.Measure(
+            window, CwProbabilisticDecoder.HopMilliseconds);
+
+        var speed = measured.IsReady
+            && measured.WordsPerMinute >= CwProbabilisticDecoder.SlowestWpm
+            && measured.WordsPerMinute <= CwProbabilisticDecoder.FastestWpm
+                ? measured.WordsPerMinute
+                : (double?)null;
+
+        var result = CwProbabilisticDecoder.Decode(window, ToneHz, speed);
 
         Last = result;
 

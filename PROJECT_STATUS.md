@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: BLOCKED
-PHASE: 4 of 6
+STATE: COMPLETED
+PHASE: 2 of 6
 BALL: tim
 NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-22T00:44:35-04:00
-NOTE: the seven captures and the log are on neither drive and ARLP034 is not published; the clock and the SNR were measured on files that are here
+UPDATED: 2026-08-22T17:20:56-04:00
+NOTE: the unit is measured from the audio now; the sweep invents nothing from 18 dB to 5 and one capture fragments, which stops the unit at task 2
 
 ---
 
