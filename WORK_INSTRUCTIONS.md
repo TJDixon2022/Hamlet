@@ -27,69 +27,83 @@ If all four hold, say "Hamlet confirmed" and continue.
 
 ## Why this unit exists
 
-**Removing the old decoder broke HM-DEC-120. The app invents text right now.**
+**Two things. The first is a regression that has taken the project's only
+measuring instrument off the screen, and it comes first.**
 
-The sweep went from 0.00 invented at every level to 0.11 at eighteen decibels and
-0.25 at zero. Three of the four recordings read worse. `003758` went from
-`KIS QRL TU ... AA4MP/4 QNIK` to `E URL TS EHEIISEIA■IH/5■IS`.
+### One: the advisory region is empty and the capture press is gone
 
-**The cause is diagnosed and the previous session's diagnosis is trusted.**
-`CwToneTracker.MidCharacter` is HM-DEC-096 phase 3's interlock: the tracker may not
-jump elsewhere in the band while a character is part-read, because the rest of that
-character then gets assembled from a different station. **The removed gate fed it
-from the elements it had in flight. Nothing feeds it now.** Setting it to a
-constant `true` reproduces the old table exactly — 1.00 and 0.00 at eighteen
-decibels — which is the proof that this and nothing else is the difference.
+Below the transcript there is now **an empty grey box and then a large blank gap**,
+and then the dimmed-character legend. Everything that used to sit between them has
+vanished from the screen: **the "I hear a station" capture press**, the keying
+meter, the tone advisory, the nothing-coming-through note and the speed row.
 
-**The previous session was right not to invent a replacement**, and right that
-`_tracker.HasKeying` is the wrong instrument — its verdict takes three seconds to
-form and the damage happens inside them.
+**The button is not greyed. It is absent**, and so is the whole strip, which points
+at the fixed-height advisory region shipped by the layout unit rendering with
+nothing placed into it rather than at anything in the decoder.
+
+**The decoder is not the fault.** The terminal in the same screenshot is reading
+and emitting.
+
+**This is the highest-priority item in the unit.** The capture press is how Tim
+marks a case; the roster is the only instrument this project has for scoring
+whether he can read the band; and **without the press an evening at the rig
+produces no evidence at all.** It was on the keep list of every removal order for
+exactly this reason.
+
+### Two: the decoder's window after a retune
+
+**The decoder's window holds twelve seconds of envelope mixed down at whatever
+pitch the tracker held at each moment. When the tracker moves to another station
+part-way through, the window holds two pitches at once and the decode is made over
+the mixture.**
+
+Measured last session on the sensitivity sweep: exactly one retune at every level,
+600 Hz to 650 on a fixture sending at 640, happening legitimately between
+characters. What it costs, from eleven decibels down: **0.06 of the message wrong
+at eleven, 0.19 at three, 0.64 at minus four.**
+
+**This is not the mid-character interlock and cannot be fixed by it.** That
+interlock now holds the tracker inside every character it reads, which is what it
+is for. The move that costs the characters is between characters and is correct.
 
 ### Ruled by Tim
 
-**The probabilistic decoder supplies it.** It has a Viterbi path with element
-state, and whether the current position sits inside a key-down, an inter-element
-gap or a word gap **is** the question the interlock asks. That is a truer signal
-than the removed gate's elements-in-flight ever was.
+**The window is cleared when the tracker moves to a different station.** The
+decode is always made over one pitch.
 
-**And a constant `true` ships first, tonight, as a stopgap.** It reproduces
-yesterday's numbers exactly and costs every retune, which is tolerable for an
-evening of hand tuning and not tolerable permanently. **It comes out in task 3 and
-does not survive this unit.**
+*Rejected: re-mixing the held envelope to the new pitch.* Better if it works, and
+worth doing later, but it is new arithmetic in the one path that is currently
+reading and clearing is provably correct today.
 
-*Rejected: reverting the removal.* It puts back the two-decoder trap that cost a
-day.
+*Rejected: leaving it and living with a known-bad window after each move.* The
+retune happens exactly when somebody answers a call. **Twelve seconds of nothing
+is recoverable; twelve seconds of confident wrong characters is what HM-DEC-009
+exists to prevent, at the worst possible moment.**
 
-*Rejected: leaving the interlock unfed while the answer is designed.* The app
-invents text in the meantime.
+**The cost is accepted and must be stated on screen, not hidden.** Clearing loses
+up to twelve seconds of reach every time Hamlet follows somebody.
 
 ---
 
 ## Verify this instruction against the tree
 
 - **Report mismatches; do not repair the instruction silently.**
-- **Rulings below are cited by number only. Read each and apply what it says, not
-  what this order says it says.** The previous order got two wrong — HM-DEC-146
-  named as `ShortestVote` when it is HM-DEC-119's mark-length figures, and §12.2
-  named as the no-radio rule when it is the report's four headings. **If a ruling
-  does not support what this order needs, report it and stop.**
-- **The failing set is 30.** Twenty-two predate the removal; eight are new and the
-  previous report attributes six of them to this interlock and two to the
-  reacquiring guard. **Record the exact set before and after and name every
-  difference.**
-- **A revert during the previous session took `CwDecoder.cs` back to the old
-  decoder and it was reconstructed from that session's own record.** **Before
-  anything else, confirm the file on `main` is the probabilistic host and not a
-  reconstruction with something missing.** Say what you checked.
+- **Rulings below are cited by number only. Read each and apply what it says.**
+  **If a ruling does not support what this order needs, report it and stop.**
+- **The failing set is 28.** Record the exact set before and after and name every
+  difference.
+- **Beware the synthetic sweep.** Last session found that a change looking perfect
+  on the sensitivity fixture had silenced all six real recordings, because the
+  fixture never exercised what broke. **Every measurement in this unit is reported
+  on the sweep AND on all six recordings, together, every time.**
 
 ---
 
 ## Rulings in force
 
-- **HM-DEC-120.** Nothing is emitted on audio holding no signal. **This unit
-  exists because it is currently broken. It is the pass/fail.**
-- **HM-DEC-096**, whose phase 3 the interlock belongs to. **Read it before
-  building; it says what the interlock is for.**
+- **HM-DEC-120.** Nothing is emitted on audio holding no signal.
+- **HM-DEC-009.** No confident wrong answer. The whole reason for this ruling.
+- **HM-DEC-096**, whose phase 3 is the mid-character interlock. **Untouched here.**
 - **HM-DEC-091.**
 - **HM-DEC-150**, the version scheme. Task 5.
 - **HM-DEC-093** and `SHACK_FACTS.md` — no radio on the development machine.
@@ -105,65 +119,103 @@ task. Also every ten minutes while a task runs.
 
 ---
 
-## Task 1 — The stopgap, first, and on its own
+## Task 1 — Find out why the strip is empty
 
-`MidCharacter` returns `true`. One line.
+**Report before changing anything.**
 
-**Report the sweep and all six recordings immediately.** The expectation, from the
-previous session's measurement, is the old table exactly: 0.00 invented at every
-level, both empty recordings silent, and the four station recordings back to their
-previous text.
+1. What renders the advisory region, and what is supposed to place messages into
+   it.
+2. **Why is it empty?** Is nothing being placed, is something placed and not
+   drawn, or was the placement lost when the panels were consolidated?
+3. **Where did the capture press go?** Name the element, whether it still exists
+   in the view, and what decides that it renders.
+4. **Is anything else missing that this order has not noticed?** Compare what the
+   region is meant to hold against what it holds.
 
-**If that is not what happens, stop and report.** The diagnosis would then be
-incomplete and the rest of this unit is aimed at the wrong thing.
-
-**Commit this on its own** so it can be reached without the rest of the unit.
-
----
-
-## Task 2 — Ask the decoder where it is
-
-`CwProbabilisticStream` reports whether the most likely path currently sits inside
-a character — a key-down or an inter-element gap — rather than between characters.
-
-- **Report what state the path actually carries** and how far behind the newest
-  audio it is known. The stream settles a second late; **the interlock needs an
-  answer about now, not about a second ago.** If the settled path cannot answer
-  for the present moment, say what can — the provisional tip is still a path.
-- **If the decoder genuinely cannot answer for the present moment, stop and
-  report.** Do not substitute something that nearly answers it.
+**If the cause is not in the layout work, say so and say where it is.**
 
 ---
 
-## Task 3 — Feed the interlock from it, and take the constant out
+## Task 2 — Put the capture press back, first
 
-The tracker's interlock reads the decoder's answer. **The constant from task 1 is
-removed in this task and does not survive the unit.**
+**The press returns to the screen before anything else in this unit is built, and
+is committed on its own** so it can be reached without the rest.
 
-- **Prove the sweep is still clean** — 0.00 invented at every level.
-- **Prove a legitimate retune still happens.** The whole reason a constant `true`
-  is not the answer is that it blocks every move to another station. **Name the
-  test that shows a retune between characters still works.**
-- The six tests the previous report attributes to this interlock —
-  `CwSensitivityTests` ×2, `CwAcquisitionWindowTests` ×3,
-  `CwAdjudicationTests.ClearingTheScreen…`, `MostRealRecordingsSitInTheWidestWindow`
-  — **should go green. Report each by name and say whether it did.**
-
----
-
-## Task 4 — Prove nothing else moved
-
-- All four station recordings at or above their previous text, quoted verbatim
-  against the previous report's strings.
-- Both empty recordings silent, offline and streamed.
-- The sweep, every level.
-- **The failing set, exactly, with every survivor named.**
-
-**If any recording reads worse than the strings in this order, stop and report.**
+- It marks a case and keeps the audio exactly as it did. **Nothing about its
+  behaviour changes.**
+- **Every other message that belongs in that region returns with it** — the keying
+  meter, the tone advisory, the nothing-coming-through note. The layout unit was
+  about where they sit, not whether they are said.
+- **The layout rule still stands: the transcript does not move.** Fixing the
+  emptiness must not bring back the jump.
+- **Add a test that the capture press renders**, so this cannot happen silently
+  again.
 
 ---
 
-## Task 5 — Bump the version
+## Task 3 — What counts as a move
+
+**Report before changing anything.**
+
+The tracker retunes for more than one reason. **Name every one**, and for each say
+whether the audio already in the window was mixed at a different pitch afterwards.
+
+- A refinement of a few hertz around the same station is not a station change and
+  **must not clear the window** — the envelope is still substantially coherent and
+  clearing on every small correction would empty the window constantly.
+- A move to a different station is.
+- **Say where the line falls and what evidence you have for it.** If the tracker
+  does not currently distinguish them, say so — that is the first thing to build.
+
+**If clearing cannot be triggered on the right subset of moves, stop and report.**
+Task 2 is already committed by then, so the press is safe either way.
+Clearing on all of them is a different ruling from the one Tim made.
+
+---
+
+## Task 4 — Clear the window on a station change
+
+The held envelope is dropped and refilled from the new pitch.
+
+- **The decoder must not invent while the window refills.** A short window is less
+  evidence, and less evidence must mean silence rather than guesses (HM-DEC-120).
+  **Report what the likelihood ratio does while the window is short.**
+- **Nothing already settled is retracted.** Characters read before the move stand;
+  this is about what is decoded after it.
+
+---
+
+## Task 5 — Say so on screen
+
+**The operator must know why the terminal went quiet.** Twelve seconds of silence
+with no explanation reads as a dead band, and this will happen at the exact moment
+somebody answers his call.
+
+The terminal says, in the project voice, that Hamlet has moved to another station
+and is listening afresh. It clears when text resumes.
+
+**Wording is yours. The layout rule stands: the transcript does not move.**
+
+---
+
+## Task 6 — Measure it, on both
+
+**The sweep and all six recordings, every level, together.**
+
+| what | expected |
+|---|---|
+| the sweep, 18 dB down to −6 | **invention at or below what it is now**, and ideally nothing above 12 dB |
+| `004507`, `003016`, `003126`, `003758` | **at or better than last session's strings**, quoted verbatim against them |
+| `014854`, `014935` | silent, offline and streamed |
+
+**`003758` and `003016` are the two that have not come back** to their
+pre-removal strings. Say plainly whether they have.
+
+**If any recording reads worse than last session's string, stop and report.**
+
+---
+
+## Task 7 — Bump the version
 
 Read the current version from `Directory.Build.props`, bump the patch, report what
 it moved from and to. **HM-DEC-150.** One work unit, one patch.
@@ -172,15 +224,16 @@ it moved from and to. **HM-DEC-150.** One work unit, one patch.
 
 ## Parked — do not touch, do not raise
 
-- **The reacquiring guard**, the two remaining new failures. Real, on the safe side
-  — a speed withheld rather than a wrong one shown — and its own unit.
+- **Re-mixing the held envelope to the new pitch.** Rejected for now, worth doing
+  later. **Do not build it as an optimisation.**
+- **`FollowSpeed` has no supplier**, and `MostRealRecordingsSitInTheWidestWindow`
+  asserts a window nothing sets. Its own unit.
+- **The reacquiring guard** and `NoSpeedIsNamedWithoutCharactersToNameItFrom`.
+- **The mark-and-gap witness behind HM-DEC-144 and HM-DEC-145.**
+- **`HM-OPEN-051`** recorded open while HM-DEC-143 closes it.
 - **The twenty-two failures that predate the removal.**
-- **`HM-OPEN-051` recorded open while HM-DEC-143 says it closes it.** Named by the
-  previous session, left per §12.6.
-- **The sidecar's `text` excluding the leading edge.** Tim's.
-- **The captures from the 20th and 21st are not in the tree.**
-- **Mode-follow's thirty-second guard**, `RfGain`, the likelihood gate at 15.0, the
-  keying meter's thresholds.
+- The sidecar's `text` and the leading edge; the missing captures; mode-follow's
+  guard; `RfGain`; the likelihood gate at 15.0; the keying meter's thresholds.
 - **HM-OPEN-052, HM-OPEN-053, HM-OPEN-054, HM-DEC-130, HM-DEC-098, HM-OPEN-033,
   HM-OPEN-007.**
 
@@ -188,8 +241,8 @@ it moved from and to. **HM-DEC-150.** One work unit, one patch.
 
 ## Asks still outstanding
 
-Carried inbound per HM-DEC-139. **Verify against `OPEN_ISSUES.md` and report any
-ask here that is closed, or open and missing.**
+Carried inbound per HM-DEC-139, verbatim until ruled. **Verify against
+`OPEN_ISSUES.md` and report anything here that is closed, or open and missing.**
 
 - Whether the sidecar's `text` should include the leading edge.
 - The captures from the evenings of the 20th and 21st are not in the tree.
@@ -197,8 +250,12 @@ ask here that is closed, or open and missing.**
 - Whether `RfGain`'s hundred per cent is a defect or the right answer.
 - The likelihood gate at 15.0.
 - The keying meter's provisional thresholds.
+- `FollowSpeed` has no supplier.
+- The mark-and-gap witness behind HM-DEC-144 and HM-DEC-145.
 - HM-OPEN-052, HM-OPEN-053, HM-OPEN-054, HM-DEC-130, HM-DEC-098, HM-OPEN-033,
   HM-OPEN-007.
+
+**The window after a retune leaves this queue** with this unit.
 
 ---
 
@@ -210,15 +267,16 @@ destructive git; do not invent a ruling id; do not touch coverage thresholds.
 
 Unit-specific:
 
-- **Do not leave the constant in.** *It blocks every retune and that is why it is
-  a stopgap and not an answer.*
-- **Do not use `HasKeying` or any three-second verdict.** *Measured, does not help,
-  the damage happens inside the delay.*
-- **Do not weaken a test to make it pass.** *Delete it if its subject is gone and
-  say so; otherwise make it pass honestly.*
-- **Do not touch the tone tracker's own following, the survey, or the keying
-  meter.** *Only what feeds the interlock.*
-- **Do not improve the decoder.** *This unit restores a property.*
+- **Do not clear on a small refinement.** *The window would empty constantly and
+  the cure would cost more than the disease.*
+- **Do not let a short window guess.** *Less evidence means silence.*
+- **Do not touch the mid-character interlock.** *It was measured and is right.*
+- **Do not report a result on the sweep alone.** *A change that looked perfect on
+  that fixture silenced all six recordings last session.*
+- **Do not build the re-mix.** *Parked.*
+- **Do not remove any advisory to tidy the region.** *They went missing once
+  already. Task 2 is restoration.*
+- **Do not change what the capture press does.** *Only whether it is on screen.*
 
 ---
 
@@ -229,9 +287,11 @@ headings** — **What Claude did**, **What Tim should expect**, **What we should
 next**, **What's blocking us** — the last carrying **Asks still outstanding** per
 HM-DEC-139. No other headings.
 
-**Section 1 opens with the sweep after task 1** — whether the constant reproduced
-the old table.
+**Section 1 opens with why the advisory strip was empty and whether the capture
+press is back**, because an evening without it produces no evidence. **Then**
+where the line falls between a refinement and a station change.
 
-**Section 2 states in one sentence whether the app still invents text.**
+**Section 2 states in one sentence whether he can mark a case again, and in one
+more what he sees when Hamlet follows somebody mid-contact.**
 
 **Stop and report.**
