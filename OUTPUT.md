@@ -2,276 +2,238 @@
 
 ## 1. What Claude did
 
-**The three adjudicated readings, by name, after the change:**
+**Task 1's answer: the two classifiers use the same number. The inference this
+unit was built on does not hold, and the dual signature has another cause, which
+is measured below.**
 
-| what | where | reads | right? |
+Logged window by window on every capture — the unit the marks are scored against,
+and the unit the gaps are scored against:
+
+| capture | windows with one unit | with two | worst ratio |
 |---|---|---|---|
-| `N4L` (HM-DEC-144) | `cw-2026-08-17-134712` | `… E K E EN4LQ EK …` | **right** |
-| `VA3VRR` (HM-DEC-145) | `cw-2026-08-17-013347` | `… E HA E WVRR VA3VRR E E` | **right** |
-| `AA4MP/4 QNIK` (HM-DEC-126) | `cw-2026-08-18-003758` | `… 55H AA4MP/4 QNIK E E E …` | **right** |
+| `013347` | **55** | **0** | 1.00 |
+| `013622` | **54** | **0** | 1.00 |
+| `134712` | **59** | **0** | 1.00 |
+| `004507` | 23 | 34 | 1.42 |
+| `003016` | **58** | **0** | 1.00 |
+| `003126` | **57** | **0** | 1.00 |
+| `003758` | **59** | **0** | 1.00 |
+| `014854`, holding no station | 53 | 5 | 2.01 |
+| `014935`, holding no station | **59** | **0** | 1.00 |
 
-**All three, and the gap mechanism is switched on.**
+**Every capture carrying an adjudicated reading scores its marks and its gaps
+against one number in every window.** The only capture that diverges while
+producing text is `004507`, and it diverges **deliberately**: its gap structure
+holds for twelve consecutive reads, so the sender's own lengths are used, which is
+what unit 12 shipped. `014854` holds no station and emits nothing whatever its
+windows do.
 
-### Task 1 — the structure has to survive six seconds of new audio
+**So the order says stop, and this stops.** Task 2 is not built.
 
-**Counted read by read before choosing anything.** A read is half a second; the
-figure is the longest run of consecutive reads that found a trough:
+**And the gap classifier is unit-derived except where it is measured.** In
+`CwProbabilisticDecoder.DecodeAt` every kind's expected length is `kind.Units *
+unit`, marks and gaps alike; the one exception is the measured gap lengths handed
+in from `CwProbabilisticStream`, and they are a measurement of that sender rather
+than a constant. **Nothing in the gap path is scaled by a window length, a hop
+count or anything else.**
 
-| | longest run |
-|---|---|
-| generated Morse, 12 wpm | **52** |
-| generated Morse, 18 wpm | **30** |
-| generated Morse, 25 wpm | **23** |
-| **`004507`**, the file the coupling breaks | **36** |
-| `014854`, holding no station | 16 |
-| `003016` | 10 |
-| `134712` | 6 |
-| `003758` | 4 |
-| `013622`, `014935` | 3 |
-| `013347`, `003126` | 1 |
+### What the signature is actually measuring
 
-**Nothing measured sits between ten and twenty-three.** The requirement is
-**twelve consecutive reads**, in the middle of that empty stretch, and it is a
-mechanism rather than a threshold: **twelve reads is six seconds of audio the
-first read never saw**, which is longer than any single gap at any speed the
-decoder considers — a word gap at eight words a minute is about a second — so it
-is evidence from many characters rather than from one stretch of quiet.
+Splitting every settled character by whether the tracker's keying verdict was true
+when it settled:
 
-**What must persist is the structure and not the number.** Each read re-measures;
-what is required to hold is that a trough exists between the same two clusters,
-and the lengths handed to the decoder are the most recent read's. A sender's gaps
-wander; the empty region between them does not.
+| capture | while keying | while not |
+|---|---|---|
+| `013347` | 6 letters, E 0% | **51 letters, E 43%** |
+| `013622` | **0 letters** | **44 letters, E 50%** |
+| `134712` | **0 letters** | **25 letters, E 76%** |
+| `003758` | 19 letters, E 11% | **28 letters, E 64%** |
+| `004507` | 18, E 28% | 33, E 15% |
+| `003016` | 35, E 6% | 23, E 17% |
+| `003126` | 34, E 18% | 15, E 13% |
 
-**Established and abandoned on the same evidence.** Twelve consecutive reads
-without a trough returns to one, three and seven units. That symmetry is
-deliberate: a sender's spacing is a fact about the sender, and one window that
-happened to catch a pause is not evidence that it changed. On `004507` the run
-breaks once near the end and the structure survives it, which is the whole reason
-for not abandoning on a single miss.
+**The three captures with the worst signature emitted every letter outside the
+keying verdict**, and on those the E share outside it is 43, 50, 76 and 64 per cent
+against 0, 0, 11 and 28 inside it.
 
-**When the structure is not established the decoder gets one, three and seven
-units**, which is today's behaviour and remains the fallback. **Reset on the
-window being emptied**, so a station change starts the evidence again.
+**That changes what three units of work have been aiming at.** The fragmenting
+signature has been read as a decoder shredding a signal it heard; on this corpus it
+is mostly a decoder emitting letters on stretches its own independent witness says
+hold no keying. **Filed as `HM-OPEN-057`**, with the caveat recorded there: the
+keying verdict is slow by construction — two agreeing surveys, about three seconds,
+expiring three seconds after keying stops (HM-DEC-095) — so a short transmission can
+fall entirely outside it, which is the likely case on `134712`.
 
-**Where it was built.** In `CwProbabilisticStream`, which owns the reads —
-`CwUnitEstimator` is a measurement and has no memory. That is the third time a
-change from the analysis has had no site as written and been built where it can
-exist, and it is reported rather than repaired.
+**Mechanism found, nothing tuned.** Nothing in `src` changed this unit except the
+version.
 
-### Task 2 — measured against the adjudicated readings
+### HM-DEC-103, checked as the order asked
 
-**All three right, and `004507` repaired in part:**
+`tools/reference-decoder/reference_decoder.py` carries the same segmental Viterbi
+Hamlet does, with the same ratio penalty, and **it has no hardcoded window**: its
+envelope step and smoothing come from the file's own rate. The fragmenting
+signature HM-DEC-103 records is therefore **not an inherited constant**, and the
+port is not carrying one either.
 
-| | |
-|---|---|
-| the target | `ACH STATION HANDLING ET HIS MESSAGE PE` |
-| before this unit | `EE AC H STA TI O N HAN D L I NG ET H IS M E S S A G E PE` |
-| **now** | `EE AC H STA TI O N HANDLING ET HIS MESSAGE PE` |
+### Task 3 — the sample-rate defect, grepped and answered
 
-**`HANDLING`, `ET HIS` and `MESSAGE` are whole**, where they were `HAN D L I NG`,
-`ET H IS` and `M E S S A G E`. `AC H` and `STA TI O N` are still broken. Its
-one-letter-word share fell from 64% to 48%.
+**The known-text fixture `cw-2026-08-23-001520` is not in the tree**, so nothing is
+asserted against `CQ CQ DE KC3QIS KC3QIS K`. The grep was done anyway.
 
-**And `003016` gained more than `004507` did**: one-letter words 22% → **8%**,
-`ITWASJUNK` and `STIL<AS>HVEMY` now running together rather than apart.
+**There is no hardcoded sample count anywhere in the decode chain, the estimator,
+the tracker or the keying meter.** Every window, hop and smoother is expressed in
+milliseconds or hertz and converted with the stream's own rate:
 
-**No adjudicated reading was traded for it**, which was the gate.
+| what | where | scaled by |
+|---|---|---|
+| tracker hop | `CwToneTracker` line 315 | `SampleRate / 200`, five milliseconds |
+| tracker windows | line 316, 371, 398 | multiples of that hop |
+| decoder envelope smoother | `CwProbabilisticDecoder` line ~368 | `sampleRate / BandwidthHz`, 60 Hz |
+| decoder envelope step | line 369 | `sampleRate * HopMilliseconds / 1000` |
+| stream hop, window, delay, refill | `CwProbabilisticStream` lines 131–140 | seconds ÷ `HopMilliseconds` |
+| keying meter step | `KeyingEnvelope` line 251 | `rate * StepMs / 1000` |
+| keying meter smoother | line 259 | `rate / SmoothingHz`, 100 Hz |
 
-### Task 3 — the clips, and which of them is deciding
+**And the corpus already exercises both rates.** `CwSignal.DefaultSampleRate` is
+**8000**, so every synthetic fixture — the sensitivity sweep included — is 8 kHz,
+while every capture is 48 kHz. **Both have been decoding side by side the whole
+time**, which is stronger evidence than the grep.
 
-**Counted per capture, over the reads that found a trough:**
+**The one floor worth naming**: `Math.Max(4, SampleRate / 200)` binds below an
+800 Hz sample rate, which nothing produces.
 
-| capture | reads with a trough | character clip bound | word clip bound |
-|---|---|---|---|
-| generated, 12 / 18 / 25 wpm | 52 / 37 / 26 | **0** | **0** |
-| `004507` | 45 | 2 | **43** |
-| `134712` | 15 | 2 | **15** |
-| `003016` | 16 | 1 | 12 |
-| `003758` | 18 | **13** | 3 |
-| `014854` | 24 | **22** | 6 |
-| `013347` | 6 | 5 | 3 |
-| `013622` | 4 | 3 | 3 |
-| `003126`, `014935` | 4, 3 | 0, 3 | 1, 0 |
+### Task 4 — the narrow filter, not built
 
-**The word clip carries almost every real case and never binds on generated
-Morse.** On `004507` it bound in 43 of 45 reads, so **the clip and not the
-measurement decided that boundary**, exactly as the order suspected.
-
-**That is the clip doing the job it was given** — the previous session's note was
-that word gaps are too rare in thirty seconds for their cluster to be trustworthy —
-**but a bound that never releases is not a measurement.** It is not widened here.
-**What would establish it**: a capture whose word boundaries are known, which is
-the same adjudicated transcript this phase has been missing all week. Until then
-the honest statement is that Hamlet's word spacing on real audio comes from a
-constant derived from one machine keyer.
-
-### Task 4 — fine tone tracking, measured and not built
-
-**The premise does not hold as written.** Hamlet's reported pitch does not come
-from a 25 Hz grid: the coarse survey is on 25 Hz spacing, and the fine bank the
-tracker reports from is not.
-
-| capture | tracker | a Goertzel peak over the whole recording, to 0.1 Hz | off by |
-|---|---|---|---|
-| `004507` | 500.0 | 500.8 | **−0.8** |
-| `003758` | 500.0 | 501.2 | **−1.2** |
-| `134712` | 500.0 | 501.4 | **−1.4** |
-| `003016` | 670.0 | 668.7 | **+1.3** |
-| `003126` | 665.0 | 669.3 | −4.3 |
-| `013347` | 625.0 | 613.7 | +11.3 |
-| `013622` | 600.0 | 612.4 | −12.4 |
-| `014854`, no station | 600.0 | 609.0 | −9.0 |
-| `014935`, no station | 825.0 | 616.5 | +208.5 |
-
-**On every capture holding a clear station the tracker is within 1.5 Hz**, and it
-reports 665 and 670, which a 25 Hz grid cannot express. The two 11–12 Hz errors are
-the two oldest and weakest captures. **Against the decoder's own 60 Hz bandwidth,
-11 Hz costs very little**, so nothing was built: the change would buy accuracy the
-measurement says is already there.
-
-**What would establish the need** is the W1AW capture the claim came from, where
-the sweep was reported 17 Hz off and 4 dB down. It is not in the tree.
-
-### The signature, every capture, before and after
-
-| capture | E | T | one-letter words |
-|---|---|---|---|
-| `013347` | 39% → 39% | 5% → 5% | 60% → 60% |
-| `013622` | 50% → 50% | 7% → 7% | 33% → 33% |
-| `134712` | 76% → 76% | 0% → 0% | 84% → 84% |
-| **`004507`** | 20% → 20% | 14% → 14% | **64% → 48%** |
-| **`003016`** | 13% → **10%** | 18% → 19% | **22% → 8%** |
-| `003126` | 16% → 16% | 12% → 12% | 48% → 53% |
-| `003758` | 43% → 43% | 0% → 0% | 65% → 65% |
-| `014854`, `014935` | silent | silent | silent |
-
-**Two captures moved and the rest are untouched**, which is the persistence rule
-working: it fires on the two whose structure survives and refuses the others.
-**Nothing is at the target.**
-
-### HM-DEC-120
-
-**Further ahead than it has ever been.** Both recordings holding no keying are
-silent. The sweep now invents nothing from eighteen decibels down to **three**,
-where last night it was clean to five:
-
-| dB | 18 | 12 | 10 | 8 | 6 | 5 | 4 | 3 |
-|---|---|---|---|---|---|---|---|---|
-| right / wrong | 1.00/0.00 | 1.00/0.00 | 1.00/0.00 | 1.00/0.00 | 1.00/0.00 | 0.97/0.00 | 0.94/0.00 | 0.97/0.00 |
+**The captures it must be judged by are not in the tree.** The order names 01:41,
+01:43 and 00:19 on 2026-08-23 and says explicitly not to judge the filter by the
+single-station captures, which are all this repository has. **Building it and
+measuring it on files that cannot exercise it would produce a number that means
+nothing**, so it is not built and the reason is the missing evidence rather than the
+merit.
 
 ### The failing set
 
-**28 before, 28 after**, and one moved: `HoldingTheWindowLongInTimeReadsMore` on
-`003016` went green. Nothing went red. One of the 28 is the app flake
-`TheFollowedSentenceReachesTheScreenTests`, which **passes when run alone** —
-`HM-OPEN-055`.
+**28 before, 29 after, and none of the difference is this unit's.** The app flake
+`TheFollowedSentenceReachesTheScreenTests` passed this time; two `RigReadTests`
+failed in the full run and **pass when their class runs alone** — the rig flake
+filed as `HM-OPEN-055`. **Nothing in `src` changed**, so nothing could have moved.
 
-### Mismatches and collisions
+### Mismatches
 
-- **The seven W1AW captures, `2026-08-22.jsonl` and both analysis documents are
-  still not in the tree.** Every figure quoted from them went unchecked. Everything
-  above is measured here.
-- **`Directory.Build.props` said 1.10.11**, as the order expected.
+- **The seven W1AW captures, `2026-08-22.jsonl`, both analysis documents, the
+  known-text fixture and the three crowded captures are not in the tree.** Every
+  figure quoted from them went unchecked. Everything above is measured here.
+- **`Directory.Build.props` said 1.10.12**, as the order expected.
+- **`PROJECT_STATUS.md` was present**, so the copy shipped with the order was not
+  needed.
 - **`CLAUDE_CODE.md` §8 names five report sections and `CLAUDE.md` §12.2 names
   four.** Under §0 the project's file wins on the four it names; section 5 is
   additive and is written. Reported, not repaired.
-- **Mechanism or tuning:** the persistence rule is a mechanism with a measured
-  empty stretch on both sides of it. The two clip ranges remain constants from one
-  machine keyer, and task 3 says which is carrying.
+- **Units 11 and 12 are in the tree as described** — the ±6 dB Schmitt trigger with
+  the 5–8 dB plateau pinned by test, the median-of-mark-and-gap unit, and the
+  3-means gap boundaries with the trough test and the twelve-read persistence rule.
+  Nothing was rebuilt.
 
 ## 2. What Tim should expect
 
-**He will see more whole words on the clearest signals and no change at all on the
-rest**, because the rule fires only where the sender's own spacing holds still for
-six seconds.
+**No change on screen at all: the operator will see exactly what he saw at
+1.10.12, because this unit measured and did not build.**
 
-| capture | before | now |
+| capture | before | after |
 |---|---|---|
-| `004507` | `EE AC H STA TI O N HAN D L I NG ET H IS M E S S A G E PE` | `EE AC H STA TI O N HANDLING ET HIS MESSAGE PE` |
-| `003016` | `E IADA KPA15TT IT WAS JUNK ■ E STILL HVE MY E TO 91B ETT JETST VFB TUBELIN` | `E IADA KPA15TT ITWASJUNK <BT> STIL<AS>HVEMY ETO 91B ETT JETST VFB TUBELIN` |
 | `013347` | `… E HA E WVRR VA3VRR E E` | unchanged |
 | `013622` | `E I5 SHE II 5EIEIE EEUE TE ISE …` | unchanged |
 | `134712` | `… E K E EN4LQ EK …` | unchanged |
-| `003126` | `E S 5 IWATTCH AT L E<AS>T 2 MOVI ESA DAY WID X■ WHY NOT …` | `… 2 MOVIESADAY WID X■ WHY NOT …` |
-| `003758` | `… 55H AA4MP/4 QNIK …` | unchanged |
+| `004507` | `EE AC H STA TI O N HANDLING ET HIS MESSAGE PE` | unchanged |
+| `003016` | `E IADA KPA15TT ITWASJUNK <BT> STIL<AS>HVEMY ETO 91B …` | unchanged |
+| `003126` | `E S 5 IWATTCH AT L E<AS>T 2 MOVIESADAY WID X■ WHY NOT …` | unchanged |
+| `003758` | `… 55H AA4MP/4 QNIK E E E EE EAN EANQNI■K …` | unchanged |
 | `014854`, `014935` | silent | silent |
 
-Build clean, no warnings. **28 failing, one of them the known flake, and one test
-went green.**
+**The three adjudicated readings are all right**: `N4L`, `VA3VRR` and
+`AA4MP/4 QNIK`. The signature is unchanged on every capture, and HM-DEC-120 is
+where 1.10.12 left it — nothing invented from eighteen decibels down to three,
+both silent recordings silent.
 
-**What will look wrong and is not:** `003016` now runs `ITWASJUNK` together where
-it read `IT WAS JUNK`. Its word spacing comes from the word clip, which bound in 12
-of its 16 reads — the same finding as task 3.
+Build clean, no warnings.
 
 ## 3. What we should do next
 
-- **The word clip is deciding the word spacing on real audio**, in 43 of 45 reads
-  on `004507` and 15 of 15 on `134712`. It cannot be established without a capture
-  whose word boundaries are known.
-- **`AC H` and `STA TI O N` on `004507` are still broken** while `HANDLING` and
-  `MESSAGE` are whole, which says the remaining fault on that file is not the gap
-  boundary.
-- **Fine tone tracking is measured and unbuilt**, and the measurement says it would
-  buy about a hertz on the captures that read.
-- **Get the seven W1AW captures across.** Three units have now been designed around
-  figures nobody here can check.
+- **`HM-OPEN-057` is the finding**: nearly every single-element letter is emitted
+  outside the keying verdict. Whether the decoder's own gate and the survey's
+  verdict should agree is the question, and it decides what the display asserts.
+- **The signature may be the wrong instrument for this corpus.** It cannot tell a
+  shredded signal from letters read out of noise, and on these captures it is
+  mostly measuring the second.
+- **The narrow filter needs its three captures.** So does the known-text fixture,
+  which is the only thing that would let the phase be scored.
+- **`AC H` and `STA TI O N` on `004507`** are still broken while `HANDLING` and
+  `MESSAGE` are whole, which is a segmentation fault inside a stretch that is being
+  read.
 
 ## 4. What's blocking us
 
-Nothing blocks the next unit.
+**The evidence, again.** Four of the files this order names are not in the tree,
+and two of its four tasks depend on them.
 
 ### RECORDED
 
-Nothing was recorded to `DECISIONS.md`.
+Nothing was recorded to `DECISIONS.md`. One open issue was filed: **`HM-OPEN-057`**,
+with the table above.
 
 ### NEEDS A RULING
 
-Nothing needs a ruling to proceed. The one thing worth a decision when there is
-evidence for it:
+Nothing needs a ruling to proceed.
 
-> **The word-gap clip is a constant from one machine keyer and it is deciding
-> Hamlet's word spacing on real audio.**
+> **Whether Hamlet may emit a character while its own keying verdict says nobody is
+> sending.**
 >
-> `[3.5u, 6.5u]` bound in 43 of 45 reads on `004507` and in every read on
-> `134712`, and never binds on generated Morse. It is doing what it was given to
-> do — word gaps are too rare in twelve seconds for their cluster to be trusted —
-> **but a bound that never releases is a constant wearing a measurement's
-> clothes.**
+> On the three worst captures every letter was emitted outside that verdict, and
+> the E shares outside it are 43, 50, 76 and 64 per cent against 0, 0, 11 and 28
+> inside it. **Two instruments disagree about whether anybody is there**, and the
+> decoder is the one putting letters on screen.
 >
-> **It is not widened here**, because widening it to stop it binding is tuning to
-> this corpus. **What would establish it is a capture whose word boundaries are
-> known**, which is the adjudicated transcript this phase has been missing all
-> week.
+> **It is not acted on here** because gating emission on the verdict decides what
+> the display asserts (§12.1) and cuts against HM-DEC-120 from the other side: the
+> verdict takes about three seconds to form, so gating on it would silence a real
+> station's opening. **The honest first step is to say which instrument is right on
+> a capture where the answer is known**, and no such capture is in the tree.
 
 ### STATE
 
-Gate verified against the tree: `Hamlet.sln` and `CwUnitEstimator.cs` present, no
-`CoreHMI.sln`, no `src\CoreHMI`, `PROJECT_CARD.md` says Hamlet. **This session ran
-on the development computer with no radio connected, so nothing in this report is
-evidence about the radio** (`SHACK_FACTS.md`, HM-DEC-093).
+Gate verified against the tree: `Hamlet.sln` and `CwProbabilisticDecoder.cs`
+present, no `CoreHMI.sln`, no `src\CoreHMI`, `PROJECT_CARD.md` says Hamlet. **This
+session ran on the development computer with no radio connected, so nothing in this
+report is evidence about the radio** (`SHACK_FACTS.md`, HM-DEC-093).
 
-Tasks 1, 2 and 3 done. **Task 4 was measured and deliberately not built**, with the
-measurement above; it was not half-built.
+**Task 1 done and it stopped the unit at its own instruction.** Task 2 not built,
+gated on task 1. **Task 3's grep done and answered; its fixture is absent.** Task 4
+not built, for the missing captures. None was half-built.
 
 ## 5. Where the phase stands
 
 **Phase 10. The goal is 80% correct translation on a single clear CW signal.**
 
 **The phase number cannot be stated, and that is unchanged from before this unit.**
-No capture in this repository has an answer key; ARLP034 was never published; the
-three adjudicated items are fragments rather than transcripts. **All three are read
-correctly at this build, as they were at the last one.**
+No capture in this repository has an answer key. The known-text fixture that would
+have provided one — `cw-2026-08-23-001520`, `CQ CQ DE KC3QIS KC3QIS K` — is not in
+the tree. The three adjudicated fragments are read correctly at this build, as they
+were at the last.
 
-**Build: 1.10.11 → 1.10.12.**
+**Build: 1.10.12 → 1.10.13.**
 
 ### Asks still outstanding
 
 Carried per HM-DEC-139, verbatim until ruled.
 
-- **The word-gap clip is carrying every real case**, first made today, above.
-- No capture has an answer key, so the phase's own number cannot be stated.
-- Why the mark and gap classifiers disagree about the unit — structural.
-- The narrow decoder-side filter for a crowded passband.
+- **`HM-OPEN-057`, letters emitted outside the keying verdict**, first made today.
+- **Why the mark and gap classifiers disagree about the unit** — **answered today:
+  they do not.** It leaves the queue.
+- The word-gap clip is carrying every real case.
+- No capture has an answer key — the fixture that would end this is not in the
+  tree.
+- The narrow decoder-side filter for a crowded passband — its captures are not in
+  the tree.
 - HM-OPEN-056, the held-peak SNR.
 - The seven W1AW captures and `2026-08-22.jsonl` are not in the tree.
 - Whether a sender change can be decided by pitch distance at all — measured dead.

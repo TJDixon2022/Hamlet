@@ -4,8 +4,8 @@ STATE: COMPLETED
 PHASE: 10
 BALL: tim
 NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-22T20:10:19-04:00
-NOTE: the gap mechanism is on behind twelve consecutive reads; all three adjudicated callsigns hold and 004507 reads HANDLING and MESSAGE whole
+UPDATED: 2026-08-22T22:16:49-04:00
+NOTE: the two classifiers share a unit, so the structural inference is dead; the E-dominance sits outside the keying verdict and is filed as HM-OPEN-057
 
 ---
 

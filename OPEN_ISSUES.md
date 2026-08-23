@@ -4,6 +4,56 @@ Questions with owner and severity. `owner` is who must act next. Format in
 `CLAUDE.md` §3.
 
 ---
+id: HM-OPEN-057
+status: open
+owner: tim
+raised: 2026-08-22
+severity: slows
+blocks: any reading of the fragmenting signature, and the phase's own measurement
+refs: HM-DEC-095, HM-DEC-120, §0.0, src/Hamlet.RadioEngine/Cw/CwProbabilisticStream.cs
+---
+
+**Almost every single-element letter Hamlet emits on the real captures is emitted
+while its own keying verdict says nobody is sending.**
+
+Measured on all nine captures, splitting the settled characters by whether
+`CwToneTracker.HasKeying` was true at the moment each one settled:
+
+| capture | while keying | while not |
+|---|---|---|
+| `cw-2026-08-17-013347` | 6 letters, E 0% | **51 letters, E 43%** |
+| `cw-2026-08-17-013622` | **0 letters** | **44 letters, E 50%** |
+| `cw-2026-08-17-134712` | **0 letters** | **25 letters, E 76%** |
+| `cw-2026-08-18-003758` | 19 letters, E 11% | **28 letters, E 64%** |
+| `cw-2026-08-18-004507` | 18 letters, E 28% | 33 letters, E 15% |
+| `cw-2026-08-18-003016` | 35 letters, E 6% | 23 letters, E 17% |
+| `cw-2026-08-18-003126` | 34 letters, E 18% | 15 letters, E 13% |
+
+**The three captures with the worst signature emitted every letter outside the
+keying verdict**, and their E shares outside it are 43, 50, 76 and 64 per cent
+against 0, 0, 11 and 28 inside it.
+
+**This changes what the signature measures.** The fragmenting signature — E and T
+dominating, words falling to single characters — has been read for three units as
+a decoder shredding a signal it heard correctly. On this corpus it is mostly a
+decoder emitting letters on stretches its own independent witness says hold no
+keying. Those are different faults with different repairs.
+
+**What this does not prove.** The keying verdict is slow by construction: it needs
+two agreeing surveys, about three seconds, and it expires about three seconds
+after keying stops (HM-DEC-095). A short transmission can fall entirely outside it,
+which is the likely case on `134712`, where the station sends a callsign and
+little else. So the measurement shows where the letters are, not that the audio
+under them is empty.
+
+**Why it is not acted on here.** Gating emission on the keying verdict decides what
+the display asserts and is Tim's (§12.1), and it cuts against HM-DEC-120 from the
+other side: a verdict that has not formed yet would silence a real station's
+opening. The decoder's own gate is a likelihood ratio against silence, which is a
+different instrument from the survey's, and whether they should agree is the
+question.
+
+---
 id: HM-OPEN-056
 status: open
 owner: tim
