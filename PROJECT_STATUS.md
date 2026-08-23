@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-PHASE: 10
-BALL: tim
-NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-22T22:16:49-04:00
-NOTE: the two classifiers share a unit, so the structural inference is dead; the E-dominance sits outside the keying verdict and is filed as HM-OPEN-057
+STATE: EXECUTING
+TASK: 1 of 5
+BALL: code
+NEXT_PASTE: none
+UPDATED: 2026-08-23T19:41:12-04:00
+NOTE: four claims traced and all four hold; DECISIONS.md is missing 096-133, 136, 141 and 150 entirely, so HM-DEC-120's wording could not be verified against the tree
 
 ---
 
