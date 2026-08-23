@@ -3710,6 +3710,21 @@ public partial class MainWindowViewModel : ObservableObject
             // reader who takes it for the second has been misled by the layout.
             $"textCovers everything read {CountsCover()}",
 
+            // **AND EVERY CHARACTER'S OWN EVIDENCE BESIDE IT, WHICH NOTHING ON
+            // THIS SHEET HAS EVER CARRIED.** `reading` gives the window's
+            // likelihood ratio, which is one number for everything read out of
+            // that window, so a letter lifted out of a clean fade and a letter
+            // assembled from the gaps between two other stations arrive here
+            // looking identical. The per-character figure is measured over that
+            // character's own marks against the key having been up throughout
+            // them, so a wrong decode now comes with the evidence that produced
+            // it and can be argued about with numbers (§0.0.1, HM-DEC-007).
+            //
+            // Large and positive is a character with a signal behind it. Near
+            // zero is one that all-key-up explains just as well. `unmeasured` is
+            // a pass that does not compute it, which is not the same as nought.
+            $"spanLlr    {SpanRatiosForTheRecord()}",
+
             // **WHETHER HAMLET COULD HEAR KEYING AT ALL, BESIDE WHAT IT READ**
             // (HM-DEC-091). The two answer different questions and only one of
             // them has ever been on a sheet. A capture where the operator heard a
@@ -3990,6 +4005,64 @@ public partial class MainWindowViewModel : ObservableObject
             : $"{reading.ToneHz:0} Hz, key down {reading.MedianMs:0} ms, "
               + $"{reading.SwingDb:0} dB between quiet and loud, "
               + $"{reading.Runs} key-downs";
+    }
+
+    /// <summary>
+    /// Each recent character with the evidence for its own span, for the sidecar.
+    /// </summary>
+    /// <remarks>
+    /// <para>**A WRONG DECODE WITH ITS EVIDENCE ATTACHED IS A REGRESSION TEST**
+    /// (HM-DEC-007). Until this line the sheet said what was read and how loud
+    /// the window was, and those two together cannot tell a character read out
+    /// of a signal from one the path assembled out of noise. This can, because it
+    /// is measured over that character's marks and nothing else.</para>
+    /// <para>**IT COVERS WHAT THE TRANSCRIPT'S RECENT TAIL COVERS AND SAYS SO.**
+    /// The same caveat `textCovers` carries applies here, and the count is
+    /// printed so a reader can see when the tail is shorter than the recording
+    /// rather than inferring it.</para>
+    /// <para>A word gap is not a character and carries no marks, so it is left
+    /// out rather than printed as a nought somebody later reasons from.</para>
+    /// </remarks>
+    /// <returns>The characters and their span ratios, or why there are none.</returns>
+    private string SpanRatiosForTheRecord()
+        => SpanRatioLine(Transcript.Recent(), CountsCover());
+
+    /// <summary>The span-ratio line itself, from the characters it describes.</summary>
+    /// <param name="recent">The transcript's recent tail, word gaps included.</param>
+    /// <param name="covers">What the tail covers, in the sheet's own words.</param>
+    /// <returns>The characters and their span ratios, or why there are none.</returns>
+    /// <remarks>
+    /// Static and separate from the view model for the reason
+    /// <see cref="KeyingLine"/> is: what a record a person reads months later
+    /// says is worth a test of its own, and a test that has to build a window to
+    /// read one line will not be written.
+    /// </remarks>
+    public static string SpanRatioLine(
+        IReadOnlyList<CwCharacter> recent, string covers)
+    {
+        var measured = recent
+            .Where(character => !character.IsWordGap
+                && !double.IsNaN(character.SpanLogLikelihoodRatio))
+            .ToArray();
+
+        if (measured.Length == 0)
+        {
+            return recent.Count == 0
+                ? "nothing read yet"
+                : "unmeasured (no character carried a span ratio)";
+        }
+
+        var body = string.Join(
+            " ",
+            measured.Select(character =>
+                $"{CwCaseRoster.Readable(character.Text)}"
+                + $":{character.SpanLogLikelihoodRatio:0.0}"));
+
+        return $"{measured.Length} of the last {recent.Count} characters read, "
+               + "each against the key having been up throughout its own span "
+               + $"({covers})"
+               + Environment.NewLine
+               + "           " + body;
     }
 
     /// <summary>

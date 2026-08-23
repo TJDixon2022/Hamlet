@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 1 of 5
+TASK: 2 of 5
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-23T19:41:12-04:00
-NOTE: four claims traced and all four hold; DECISIONS.md is missing 096-133, 136, 141 and 150 entirely, so HM-DEC-120's wording could not be verified against the tree
+UPDATED: 2026-08-23T20:04:31-04:00
+NOTE: span log-likelihood computed in Spell, threaded to CwCharacter and onto the capture sheet; six new tests green, re-running the full suite against the 28-failure baseline
 
 ---
 

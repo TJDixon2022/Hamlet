@@ -49,8 +49,32 @@ public readonly record struct CwProbabilisticResult(
 /// <param name="Text">The letter, or a space for a word gap.</param>
 /// <param name="Pattern">The dits and dahs behind it, or "" for a word gap.</param>
 /// <param name="EndHop">Which hop of the window it ended at.</param>
+/// <param name="SpanLogLikelihoodRatio">
+/// How much better this character's own span is explained by the keying the path
+/// chose than by the key having been up throughout it.
+/// </param>
+/// <remarks>
+/// <para>**A CHARACTER READ FROM A SIGNAL AND A CHARACTER MINTED FROM NOISE ARE
+/// SEPARABLE BY THIS NUMBER, AND UNTIL NOW NOTHING RECORDED IT.** The window's
+/// own likelihood ratio is an average over the whole window, so one letter read
+/// out of a fade and one letter assembled out of the gaps between two other
+/// stations carry the same figure, and the sidecar beside a wrong decode could
+/// not say which it was holding.</para>
+/// <para>**IT IS THE DATA TERM ONLY, AND THE GAPS INSIDE THE CHARACTER CANCEL
+/// EXACTLY.** Both hypotheses say the key is up during an element gap, so those
+/// hops contribute nothing to the difference and the whole quantity reduces to
+/// the marks: for each one, the summed per-hop log-likelihood that the key was
+/// down, less the summed log-likelihood that it was up. The Gaussian length
+/// penalty is deliberately left out — it scores how well a segment's duration
+/// matched the speed hypothesis, which is a statement about the clock rather
+/// than about whether there was a signal there at all.</para>
+/// <para>**LARGE AND POSITIVE MEANS THE MARKS STOOD ABOVE THE NOISE.** Near
+/// zero, or negative, means the path found a letter in audio that all-key-up
+/// explains as well or better, which is exactly HM-DEC-007's case: a wrong
+/// decode with the evidence attached is a regression test.</para>
+/// </remarks>
 public readonly record struct CwProbabilisticCharacter(
-    string Text, string Pattern, int EndHop);
+    string Text, string Pattern, int EndHop, double SpanLogLikelihoodRatio = 0);
 
 /// <summary>
 /// A segmental Viterbi CW decoder that never forms a threshold.
@@ -573,16 +597,28 @@ public static class CwProbabilisticDecoder
             }
         }
 
-        return (best[count], Spell(count, fromHop, kindAt), kindAt[count]);
+        return (
+            best[count],
+            Spell(count, fromHop, kindAt, downTo, upTo),
+            kindAt[count]);
     }
 
     /// <summary>Walk the winning path back and turn it into letters.</summary>
     /// <param name="count">How many hops there were.</param>
     /// <param name="fromHop">Where each hop's best segment started.</param>
     /// <param name="kindAt">Which kind that segment was.</param>
+    /// <param name="downTo">Cumulative key-down log-likelihood, hop by hop.</param>
+    /// <param name="upTo">Cumulative key-up log-likelihood, hop by hop.</param>
     /// <returns>The text.</returns>
+    /// <remarks>
+    /// **EACH CHARACTER'S OWN SPAN IS SCORED AGAINST ALL-KEY-UP ON THE WAY
+    /// PAST**, which the cumulative sums make two subtractions per mark. See
+    /// <see cref="CwProbabilisticCharacter.SpanLogLikelihoodRatio"/> for why the
+    /// element gaps inside a character contribute nothing and why the length
+    /// penalty is left out.
+    /// </remarks>
     private static IReadOnlyList<CwProbabilisticCharacter> Spell(
-        int count, int[] fromHop, int[] kindAt)
+        int count, int[] fromHop, int[] kindAt, double[] downTo, double[] upTo)
     {
         var path = new List<(int Kind, int StartHop, int EndHop)>();
         var at = count;
@@ -598,6 +634,9 @@ public static class CwProbabilisticDecoder
         var pattern = new System.Text.StringBuilder();
         var characters = new List<CwProbabilisticCharacter>();
 
+        // The running total for the character being spelled, marks only.
+        var spanRatio = 0.0;
+
         foreach (var (k, startHop, endHop) in path)
         {
             var kind = Kinds[k];
@@ -605,6 +644,10 @@ public static class CwProbabilisticDecoder
             if (kind.IsKeyDown)
             {
                 pattern.Append(kind.Token);
+
+                spanRatio += downTo[endHop] - downTo[startHop]
+                    - (upTo[endHop] - upTo[startHop]);
+
                 continue;
             }
 
@@ -622,9 +665,11 @@ public static class CwProbabilisticDecoder
                 var spelled = pattern.ToString();
 
                 characters.Add(new CwProbabilisticCharacter(
-                    MorseAlphabet.Lookup(spelled) ?? "#", spelled, startHop));
+                    MorseAlphabet.Lookup(spelled) ?? "#", spelled, startHop,
+                    spanRatio));
 
                 pattern.Clear();
+                spanRatio = 0;
             }
 
             if (kind.Token == " ")
@@ -638,7 +683,7 @@ public static class CwProbabilisticDecoder
             var spelled = pattern.ToString();
 
             characters.Add(new CwProbabilisticCharacter(
-                MorseAlphabet.Lookup(spelled) ?? "#", spelled, count));
+                MorseAlphabet.Lookup(spelled) ?? "#", spelled, count, spanRatio));
         }
 
         return characters;

@@ -506,6 +506,9 @@ public sealed class CwProbabilisticStream
             character.Pattern,
             double.NaN,
             (int)Math.Round(result.WordsPerMinute),
-            at);
+            at)
+        {
+            SpanLogLikelihoodRatio = character.SpanLogLikelihoodRatio,
+        };
     }
 }

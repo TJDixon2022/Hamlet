@@ -105,4 +105,25 @@ public sealed record CwCharacter(
 
     /// <summary>True when nothing is coming along behind to confirm this.</summary>
     public bool IsUnstable => Stage == CwReadingStage.Unstable;
+
+    /// <summary>
+    /// How much better this character's own span is explained by keying than by
+    /// the key having been up throughout it.
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE EVIDENCE FOR THIS CHARACTER, RATHER THAN FOR THE WINDOW IT
+    /// SAT IN** (§0.0.1, HM-DEC-007). <see cref="Score"/> is the whole window's
+    /// likelihood ratio, so every character read out of one window carries the
+    /// same number and nothing beside a wrong letter said whether that letter
+    /// had a signal behind it. This one is measured over the character's own
+    /// marks and nothing else.</para>
+    /// <para>It is written to the capture sidecar and to nothing else. What the
+    /// screen asserts does not change on the strength of a field added to make
+    /// later work measurable (§0.0), and a number a reader cannot calibrate is
+    /// worse on a display than absent.</para>
+    /// <para><see cref="double.NaN"/> where the pass that produced this
+    /// character does not measure it, which is not the same as zero: zero is a
+    /// character all-key-up explains exactly as well.</para>
+    /// </remarks>
+    public double SpanLogLikelihoodRatio { get; init; } = double.NaN;
 }
