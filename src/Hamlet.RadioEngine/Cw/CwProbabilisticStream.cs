@@ -45,6 +45,29 @@ public sealed class CwProbabilisticStream
     public const double DecisionDelaySeconds = 1.0;
 
     /// <summary>
+    /// How many consecutive reads must find a trough between a sender's gap
+    /// clusters before their measured lengths are used.
+    /// </summary>
+    /// <remarks>
+    /// <para>**TWELVE, WHICH IS SIX SECONDS OF NEW AUDIO.** Reads are half a
+    /// second apart, so twelve of them is the structure holding while six seconds
+    /// of audio the first read never saw enters the window. That is longer than
+    /// any single gap at any speed this decoder considers — a word gap at eight
+    /// words a minute is a second — so it is evidence from many characters rather
+    /// than from one stretch of quiet.</para>
+    /// <para>**AND THE MEASUREMENT LEAVES ROOM ON BOTH SIDES.** Counted read by
+    /// read: `cw-2026-08-18-004507` holds a trough for 36 consecutive reads and
+    /// generated Morse for 23 to 52, while the captures that must not change hold
+    /// one, three, four and six. Nothing measured here sits between ten and
+    /// twenty-three.</para>
+    /// <para>**IT IS USED BOTH WAYS.** The same count of consecutive reads
+    /// without a trough abandons the structure, because a sender's spacing is a
+    /// fact about the sender and a single window that caught a pause is not
+    /// evidence that it changed.</para>
+    /// </remarks>
+    public const int ReadsToEstablishStructure = 12;
+
+    /// <summary>
     /// How much audio the window has to hold again after being emptied before
     /// anything is read from it.
     /// </summary>
@@ -82,6 +105,18 @@ public sealed class CwProbabilisticStream
     private long _hopsSeen;
     private int _hopsSinceRead;
     private int _refillHops;
+
+    /// <summary>How many consecutive reads have found a trough between the gaps.</summary>
+    private int _troughRun;
+
+    /// <summary>How many consecutive reads have not.</summary>
+    private int _troughMisses;
+
+    /// <summary>True once the sender's own spacing is established.</summary>
+    private bool _structureHeld;
+
+    /// <summary>The last spacing a read was willing to stand behind.</summary>
+    private CwUnitEstimator.CwGapLengths _heldGaps;
     private double _phase;
 
     /// <summary>How many characters have been settled since this stream started.</summary>
@@ -251,6 +286,10 @@ public sealed class CwProbabilisticStream
         _mixFilled = 0;
         _hopsSinceRead = 0;
         _phase = 0;
+        _troughRun = 0;
+        _troughMisses = 0;
+        _structureHeld = false;
+        _heldGaps = default;
         _refillHops = Math.Max(
             1, (int)(RefillSeconds * 1000.0 / CwProbabilisticDecoder.HopMilliseconds));
 
@@ -343,22 +382,64 @@ public sealed class CwProbabilisticStream
                 ? measured.WordsPerMinute
                 : (double?)null;
 
-        // **THE SENDER'S OWN GAP LENGTHS ARE MEASURED AND NOT USED, AND THE
-        // REASON IS A LEDGER RATHER THAN AN OPINION.** `CwUnitEstimator
-        // .MeasureGaps` clusters the gaps and puts each boundary at the geometric
-        // mean of two things the sender actually did, rather than at a multiple of
-        // the estimated unit, and it refuses unless there is an empty stretch to
-        // put the boundary in. That removes a real coupling: on
-        // `cw-2026-08-18-004507`, whose unit measures fifty milliseconds, twice
-        // the unit lands inside that sender's own element-gap cluster.
+        // **THE SENDER'S OWN GAP LENGTHS, ONCE THE STRUCTURE HAS SURVIVED SIX
+        // SECONDS OF NEW AUDIO.** A boundary at a multiple of the estimated unit
+        // ties the letter spacing to the speed, so one wrong number breaks both:
+        // on `cw-2026-08-18-004507`, whose unit measures fifty milliseconds,
+        // twice the unit lands inside that sender's own element-gap cluster and
+        // every letter comes apart.
         //
-        // Wired in, it repairs that file — `ACH STATION HANDLING` and `MESSAGE`
-        // come back whole — and it costs `VA3VRR` on the capture HM-DEC-145
-        // adjudicated and breaks `AA4MP/4 QNIK` on the one HM-DEC-126 confirmed,
-        // because a twelve second window can show a trough the whole recording
-        // does not. **Two adjudicated readings for one file**, so it is measured
-        // and left off, with the numbers in the report.
-        var result = CwProbabilisticDecoder.Decode(window, ToneHz, speed);
+        // **ONE WINDOW IS NOT ENOUGH EVIDENCE AND THAT WAS MEASURED.** Taking a
+        // single window's trough cost `VA3VRR` and broke `AA4MP/4 QNIK`, two of
+        // the three adjudicated readings, because twelve seconds can show
+        // structure the recording does not. Counted read by read across every
+        // capture, the longest run of consecutive troughs is 36 on `004507` and
+        // 23 to 52 on generated Morse, against 1 on `013347`, 4 on `003758` and 6
+        // on `134712`. **There is a wide empty stretch between those two groups
+        // and the requirement sits in it.**
+        var gaps = measured.IsReady
+            ? CwUnitEstimator.MeasureGaps(
+                window,
+                CwProbabilisticDecoder.HopMilliseconds,
+                measured.UnitMilliseconds)
+            : default;
+
+        if (gaps.Separated)
+        {
+            _troughRun++;
+            _troughMisses = 0;
+            _heldGaps = gaps;
+        }
+        else
+        {
+            _troughMisses++;
+            _troughRun = 0;
+        }
+
+        // Established and abandoned on the same weight of evidence, because a
+        // sender's spacing is a fact about the sender and one window that caught
+        // a pause is not evidence that it changed.
+        if (_troughRun >= ReadsToEstablishStructure)
+        {
+            _structureHeld = true;
+        }
+        else if (_troughMisses >= ReadsToEstablishStructure)
+        {
+            _structureHeld = false;
+        }
+
+        var result = CwProbabilisticDecoder.Decode(
+            window,
+            ToneHz,
+            speed,
+            _structureHeld
+                ? new[]
+                {
+                    _heldGaps.ElementMilliseconds,
+                    _heldGaps.CharacterMilliseconds,
+                    _heldGaps.WordMilliseconds,
+                }
+                : null);
 
         Last = result;
 

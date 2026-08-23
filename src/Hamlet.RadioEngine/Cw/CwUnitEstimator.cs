@@ -114,11 +114,21 @@ public static class CwUnitEstimator
     /// <param name="Separated">
     /// True when the three heaps are far enough apart to be three heaps.
     /// </param>
+    /// <param name="CharacterBoundaryClipped">
+    /// True when the unit's sanity clip, rather than the gaps, decided where an
+    /// element gap stops being one.
+    /// </param>
+    /// <param name="WordBoundaryClipped">
+    /// True when the clip decided the boundary between a character gap and a
+    /// word gap.
+    /// </param>
     public readonly record struct CwGapLengths(
         double ElementMilliseconds,
         double CharacterMilliseconds,
         double WordMilliseconds,
-        bool Separated)
+        bool Separated,
+        bool CharacterBoundaryClipped = false,
+        bool WordBoundaryClipped = false)
     {
         /// <summary>The length that divides an element gap from a character gap.</summary>
         /// <remarks>
@@ -214,21 +224,25 @@ public static class CwUnitEstimator
 
         // The clip, applied to the boundary and carried back into the centroid
         // that sets it, so the boundary is the thing held inside the range.
+        var wantedCharacter = Math.Sqrt(element * character);
         var characterBoundary = Math.Clamp(
-            Math.Sqrt(element * character),
-            1.3 * unitMilliseconds,
-            2.6 * unitMilliseconds);
+            wantedCharacter, 1.3 * unitMilliseconds, 2.6 * unitMilliseconds);
 
         character = characterBoundary * characterBoundary / element;
 
+        var wantedWord = Math.Sqrt(character * word);
         var wordBoundary = Math.Clamp(
-            Math.Sqrt(character * word),
-            3.5 * unitMilliseconds,
-            6.5 * unitMilliseconds);
+            wantedWord, 3.5 * unitMilliseconds, 6.5 * unitMilliseconds);
 
         word = wordBoundary * wordBoundary / character;
 
-        return new CwGapLengths(element, character, word, true);
+        return new CwGapLengths(
+            element,
+            character,
+            word,
+            true,
+            Math.Abs(characterBoundary - wantedCharacter) > 1e-6,
+            Math.Abs(wordBoundary - wantedWord) > 1e-6);
     }
 
     /// <summary>

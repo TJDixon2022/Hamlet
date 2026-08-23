@@ -99,6 +99,92 @@ public sealed class WhereTheGapsActuallySitTests
     }
 
     /// <remarks>
+    /// <para>Proves the number the persistence rule rests on: **on the capture
+    /// the coupling breaks the trough survives thirty-six consecutive reads, and
+    /// on the three that carry adjudicated callsigns it survives one, four and
+    /// six.** Nothing measured here sits between ten and twenty-three, and
+    /// `CwProbabilisticStream.ReadsToEstablishStructure` is twelve, in the middle
+    /// of that empty stretch.</para>
+    /// <para>A read is half a second, so twelve of them is six seconds of audio
+    /// the first read never saw.</para>
+    /// </remarks>
+    [Fact]
+    public void TheStructureLastsLongEnoughToTellTheCasesApart()
+    {
+        var runs = new Dictionary<string, int>();
+
+        foreach (var path in Captures())
+        {
+            var audio = WavAudio.Read(path);
+            var decoder = new CwDecoder(audio.SampleRate, 600);
+            var hop = decoder.Tracker.HopSamples;
+
+            for (var at = 0L; at + hop <= audio.Samples.Length; at += hop)
+            {
+                decoder.Process(new AudioChunk(
+                    at, audio.SampleRate, audio.Samples.AsSpan((int)at, hop)));
+            }
+
+            decoder.Flush();
+
+            var envelope = CwProbabilisticDecoder.Envelope(
+                audio.Samples, audio.SampleRate, decoder.Tracker.ToneHz);
+
+            var hopsPerSecond = 1000.0 / CwProbabilisticDecoder.HopMilliseconds;
+            var windowHops = (int)(CwProbabilisticStream.WindowSeconds * hopsPerSecond);
+            var everyHops = (int)(CwProbabilisticStream.ReadEverySeconds * hopsPerSecond);
+            var run = 0;
+            var longest = 0;
+
+            for (var end = everyHops; end <= envelope.Length; end += everyHops)
+            {
+                var from = Math.Max(0, end - windowHops);
+                var slice = new double[end - from];
+
+                Array.Copy(envelope, from, slice, 0, slice.Length);
+
+                var unit = CwUnitEstimator.Measure(
+                    slice, CwProbabilisticDecoder.HopMilliseconds);
+
+                var gaps = CwUnitEstimator.MeasureGaps(
+                    slice, CwProbabilisticDecoder.HopMilliseconds, unit.UnitMilliseconds);
+
+                run = gaps.Separated ? run + 1 : 0;
+                longest = Math.Max(longest, run);
+            }
+
+            runs[Path.GetFileNameWithoutExtension(path)] = longest;
+
+            _output.WriteLine(
+                $"{Path.GetFileNameWithoutExtension(path),-24} longest run {longest,3}");
+        }
+
+        var needed = CwProbabilisticStream.ReadsToEstablishStructure;
+
+        // The file the coupling breaks is well above the requirement.
+        Assert.True(
+            runs["cw-2026-08-18-004507"] >= needed * 2,
+            $"the capture this exists for holds a trough for only "
+            + $"{runs["cw-2026-08-18-004507"]} reads against a requirement of {needed}");
+
+        // And the three carrying adjudicated callsigns are well below it, which
+        // is why they are untouched.
+        foreach (var name in new[]
+                 {
+                     "cw-2026-08-17-013347",
+                     "cw-2026-08-17-134712",
+                     "cw-2026-08-18-003758",
+                 })
+        {
+            Assert.True(
+                runs[name] < needed,
+                $"{name} now holds a trough for {runs[name]} reads, which reaches "
+                + $"the requirement of {needed}, so its spacing would be taken "
+                + "from a window and its adjudicated callsign is at risk");
+        }
+    }
+
+    /// <remarks>
     /// <para>Proves the mechanism on audio that does have the structure, so the
     /// refusal above is a fact about the captures rather than about the code.
     /// Generated Morse has textbook spacing, three clean heaps, and the clustering

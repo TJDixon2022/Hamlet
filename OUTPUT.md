@@ -2,178 +2,219 @@
 
 ## 1. What Claude did
 
-**`cw-2026-08-18-004507`, which repairing is what this unit is for:**
+**The three adjudicated readings, by name, after the change:**
+
+| what | where | reads | right? |
+|---|---|---|---|
+| `N4L` (HM-DEC-144) | `cw-2026-08-17-134712` | `… E K E EN4LQ EK …` | **right** |
+| `VA3VRR` (HM-DEC-145) | `cw-2026-08-17-013347` | `… E HA E WVRR VA3VRR E E` | **right** |
+| `AA4MP/4 QNIK` (HM-DEC-126) | `cw-2026-08-18-003758` | `… 55H AA4MP/4 QNIK E E E …` | **right** |
+
+**All three, and the gap mechanism is switched on.**
+
+### Task 1 — the structure has to survive six seconds of new audio
+
+**Counted read by read before choosing anything.** A read is half a second; the
+figure is the longest run of consecutive reads that found a trough:
+
+| | longest run |
+|---|---|
+| generated Morse, 12 wpm | **52** |
+| generated Morse, 18 wpm | **30** |
+| generated Morse, 25 wpm | **23** |
+| **`004507`**, the file the coupling breaks | **36** |
+| `014854`, holding no station | 16 |
+| `003016` | 10 |
+| `134712` | 6 |
+| `003758` | 4 |
+| `013622`, `014935` | 3 |
+| `013347`, `003126` | 1 |
+
+**Nothing measured sits between ten and twenty-three.** The requirement is
+**twelve consecutive reads**, in the middle of that empty stretch, and it is a
+mechanism rather than a threshold: **twelve reads is six seconds of audio the
+first read never saw**, which is longer than any single gap at any speed the
+decoder considers — a word gap at eight words a minute is about a second — so it
+is evidence from many characters rather than from one stretch of quiet.
+
+**What must persist is the structure and not the number.** Each read re-measures;
+what is required to hold is that a trough exists between the same two clusters,
+and the lengths handed to the decoder are the most recent read's. A sender's gaps
+wander; the empty region between them does not.
+
+**Established and abandoned on the same evidence.** Twelve consecutive reads
+without a trough returns to one, three and seven units. That symmetry is
+deliberate: a sender's spacing is a fact about the sender, and one window that
+happened to catch a pause is not evidence that it changed. On `004507` the run
+breaks once near the end and the structure survives it, which is the whole reason
+for not abandoning on a single miss.
+
+**When the structure is not established the decoder gets one, three and seven
+units**, which is today's behaviour and remains the fallback. **Reset on the
+window being emptied**, so a station change starts the evidence again.
+
+**Where it was built.** In `CwProbabilisticStream`, which owns the reads —
+`CwUnitEstimator` is a measurement and has no memory. That is the third time a
+change from the analysis has had no site as written and been built where it can
+exist, and it is reported rather than repaired.
+
+### Task 2 — measured against the adjudicated readings
+
+**All three right, and `004507` repaired in part:**
 
 | | |
 |---|---|
-| before the measured unit | `E AT ARRL DOT NET <BT> EACH STATION HANDLING ET HIS M E S S A G E P E` |
-| at the start of this unit | `E E E U T EA R R L D O T N E T <BT> E E A C H S TA TI O N HAN D L I NG ET HIS…` |
-| **now** | `E E EA T AR RL D O T N E T <BT> EE AC H STA TI O N HAN D L I NG ET H IS M E S S A G E PE` |
-| **with the change wired in** | `E E EA T AR RL D O T N E T <BT> EE ACH STATION HANDLING ET HIS MESSAGE PE` |
+| the target | `ACH STATION HANDLING ET HIS MESSAGE PE` |
+| before this unit | `EE AC H STA TI O N HAN D L I NG ET H IS M E S S A G E PE` |
+| **now** | `EE AC H STA TI O N HANDLING ET HIS MESSAGE PE` |
 
-**The change repairs it, and it is not shipped.** Wired in it costs `VA3VRR` and
-breaks `AA4MP/4 QNIK`, two of the three adjudicated readings, to repair one file.
-The ledger is below and the decision is section 4's ask.
+**`HANDLING`, `ET HIS` and `MESSAGE` are whole**, where they were `HAN D L I NG`,
+`ET H IS` and `M E S S A G E`. `AC H` and `STA TI O N` are still broken. Its
+one-letter-word share fell from 64% to 48%.
 
-**What moved without it**: `004507` reads a little better than it did at the start
-of this unit — `M E S S A G E PE` where it read `HAN D L I NG` and stopped — and
-**all three adjudicated readings are now right**, which they were not this morning.
-That came from the short-cluster median that shipped in the last commit of the
-previous unit.
+**And `003016` gained more than `004507` did**: one-letter words 22% → **8%**,
+`ITWASJUNK` and `STIL<AS>HVEMY` now running together rather than apart.
 
-### The three adjudicated readings, by name
+**No adjudicated reading was traded for it**, which was the gate.
 
-| what | where | now |
-|---|---|---|
-| `N4L` (HM-DEC-144) | `134712` | **right** — reads `EN4LQ EK`, and it read `R4LQ` this morning |
-| `VA3VRR` (HM-DEC-145) | `013347` | **right** — reads `WVRR VA3VRR` |
-| `AA4MP/4 QNIK` (HM-DEC-126) | `003758` | **right** — reads `AA4MP/4 QNIK`, and without the stray spaces it had this morning |
+### Task 3 — the clips, and which of them is deciding
 
-**All three are right.** Wiring the gap change in makes two of them wrong.
+**Counted per capture, over the reads that found a trough:**
 
-### What was built, and where it could exist
+| capture | reads with a trough | character clip bound | word clip bound |
+|---|---|---|---|
+| generated, 12 / 18 / 25 wpm | 52 / 37 / 26 | **0** | **0** |
+| `004507` | 45 | 2 | **43** |
+| `134712` | 15 | 2 | **15** |
+| `003016` | 16 | 1 | 12 |
+| `003758` | 18 | **13** | 3 |
+| `014854` | 24 | **22** | 6 |
+| `013347` | 6 | 5 | 3 |
+| `013622` | 4 | 3 | 3 |
+| `003126`, `014935` | 4, 3 | 0, 3 | 1, 0 |
 
-**The mechanism the order describes is real and it is built**:
-`CwUnitEstimator.MeasureGaps` clusters this sender's gaps with 3-means **on the
-logarithms**, puts each boundary at the geometric mean of adjacent centroids, and
-holds the two boundaries inside `[1.3u, 2.6u]` and `[3.5u, 6.5u]` as a clip
-rather than as the estimate.
+**The word clip carries almost every real case and never binds on generated
+Morse.** On `004507` it bound in 43 of 45 reads, so **the clip and not the
+measurement decided that boundary**, exactly as the order suspected.
 
-**It is handed to the decoder rather than applied to a boundary**, because Hamlet
-has no boundary to move: the Viterbi decides element and character boundaries
-together, and the ratio penalty already crosses at the geometric mean of whatever
-two lengths it is given. **So passing the measured lengths in as what each gap kind
-expects places the boundary at the geometric mean of two things the sender actually
-did, automatically.** That is the same change expressed where it can exist, which
-is what the order asked be reported.
+**That is the clip doing the job it was given** — the previous session's note was
+that word gaps are too rare in thirty seconds for their cluster to be trustworthy —
+**but a bound that never releases is not a measurement.** It is not widened here.
+**What would establish it**: a capture whose word boundaries are known, which is
+the same adjudicated transcript this phase has been missing all week. Until then
+the honest statement is that Hamlet's word spacing on real audio comes from a
+constant derived from one machine keyer.
 
-**One addition the order did not ask for, and it is the load-bearing one.** Three
-centroids can always be found; what makes them worth using is a trough. **Each
-boundary is accepted only if fewer gaps stand near it than near either cluster it
-divides** — counted in equal windows on the logarithm, so nothing is chosen. It is
-parameter-free.
+### Task 4 — fine tone tracking, measured and not built
 
-### The boundaries, per capture, and whether they landed in dead space
+**The premise does not hold as written.** Hamlet's reported pitch does not come
+from a 25 Hz grid: the coarse survey is on 25 Hz spacing, and the fine bank the
+tracker reports from is not.
 
-| capture | u | boundaries | in units | from the gaps? |
-|---|---|---|---|---|
-| `013347` | 62.5 ms | 108.3 / 286.4 | 1.73u / 4.58u | no |
-| `013622` | 62.5 | 108.3 / 286.4 | 1.73u / 4.58u | no |
-| `134712` | 30.0 | 52.0 / 137.5 | 1.73u / 4.58u | no |
-| **`004507`** | **50.0** | **92.6 / 325.0** | **1.85u / 6.50u** | **yes** |
-| `003016` | 47.5 | 82.3 / 217.7 | 1.73u / 4.58u | no |
-| `003126` | 45.0 | 77.9 / 206.2 | 1.73u / 4.58u | no |
-| `003758` | 47.5 | 82.3 / 217.7 | 1.73u / 4.58u | no |
-| `014854`, `014935` | 40.0, 20.0 | 69.3 / 183.3, 34.6 / 91.7 | 1.73u / 4.58u | no |
-| **generated Morse, 18 wpm** | 65.0 | **103.8 / 292.3** | 1.60u / 4.50u | **yes** |
+| capture | tracker | a Goertzel peak over the whole recording, to 0.1 Hz | off by |
+|---|---|---|---|
+| `004507` | 500.0 | 500.8 | **−0.8** |
+| `003758` | 500.0 | 501.2 | **−1.2** |
+| `134712` | 500.0 | 501.4 | **−1.4** |
+| `003016` | 670.0 | 668.7 | **+1.3** |
+| `003126` | 665.0 | 669.3 | −4.3 |
+| `013347` | 625.0 | 613.7 | +11.3 |
+| `013622` | 600.0 | 612.4 | −12.4 |
+| `014854`, no station | 600.0 | 609.0 | −9.0 |
+| `014935`, no station | 825.0 | 616.5 | +208.5 |
 
-**One capture in nine has the structure, and it is the one the coupling is
-breaking.** The other eight fall back to one, three and seven units, so nothing
-about them changes. **Generated Morse does have it**, which is what says the eight
-refusals are a fact about those recordings rather than about this code — the
-control that makes the measurement mean anything.
+**On every capture holding a clear station the tracker is within 1.5 Hz**, and it
+reports 665 and 670, which a 25 Hz grid cannot express. The two 11–12 Hz errors are
+the two oldest and weakest captures. **Against the decoder's own 60 Hz bandwidth,
+11 Hz costs very little**, so nothing was built: the change would buy accuracy the
+measurement says is already there.
 
-**Mechanism found, not a parameter tuned**, for the clustering, the log domain and
-the trough test. **The two clip ranges are constants** and they came from one
-station on one machine keyer; on the one capture that used them the word boundary
-was clipped, landing at exactly 6.50u.
-
-### The ledger: what wiring it in does
-
-| | with it | without it |
-|---|---|---|
-| `004507` | `EE ACH STATION HANDLING ET HIS MESSAGE PE` | `EE AC H STA TI O N HAN D L I NG ET H IS M E S S A G E PE` |
-| `003126` | `I WATCHATLE<AS>T2 MOVI ES` | `IWATTCH AT L E<AS>T 2 MOVI ES` |
-| `003016` | `IADAKPA15TTITWASJUNK` — words run together | `IADA KPA15TT IT WAS JUNK` |
-| **`VA3VRR`** | **lost** — `RR EEAA3VETER` | **right** |
-| **`AA4MP/4 QNIK`** | **broken** — `AA4M E T T E/4 QNIK` | **right** |
-| `N4L` | right | right |
-
-**Two adjudicated readings for one repaired file.** The order's acceptance is that
-`004507` reads at least as well **and nothing else gets worse**, so it does not
-ship. The whole-file measurement accepts only `004507`, but a twelve-second window
-can show a trough the whole recording does not, which is how the other two are
-lost.
+**What would establish the need** is the W1AW capture the claim came from, where
+the sweep was reported 17 Hz off and 4 dB down. It is not in the tree.
 
 ### The signature, every capture, before and after
 
-Before is this morning's tree; after is what shipped tonight.
-
 | capture | E | T | one-letter words |
 |---|---|---|---|
-| `013347` | 53% → **39%** | 7% → 5% | 73% → **60%** |
-| `013622` | 48% → 50% | 7% → 7% | 33% → 33% |
-| `134712` | 65% → 76% | 0% → 0% | 93% → 84% |
-| `004507` | 21% → 20% | 13% → 14% | 69% → **64%** |
-| `003016` | 13% → 13% | 18% → 18% | 22% → 22% |
-| `003126` | 22% → **16%** | 13% → 12% | 52% → **48%** |
-| `003758` | 59% → **43%** | 25% → **0%** | 65% → 65% |
+| `013347` | 39% → 39% | 5% → 5% | 60% → 60% |
+| `013622` | 50% → 50% | 7% → 7% | 33% → 33% |
+| `134712` | 76% → 76% | 0% → 0% | 84% → 84% |
+| **`004507`** | 20% → 20% | 14% → 14% | **64% → 48%** |
+| **`003016`** | 13% → **10%** | 18% → 19% | **22% → 8%** |
+| `003126` | 16% → 16% | 12% → 12% | 48% → 53% |
+| `003758` | 43% → 43% | 0% → 0% | 65% → 65% |
 | `014854`, `014935` | silent | silent | silent |
 
-**Nothing is at the target** — single figures for E and T, zero one-letter words —
-and four captures moved toward it.
+**Two captures moved and the rest are untouched**, which is the persistence rule
+working: it fires on the two whose structure survives and refuses the others.
+**Nothing is at the target.**
 
-### Fine tone tracking
+### HM-DEC-120
 
-**Not attempted.** The order gates it on the first change landing cleanly and it
-did not land. It is untouched and independent, and it is the first item in section
-3.
+**Further ahead than it has ever been.** Both recordings holding no keying are
+silent. The sweep now invents nothing from eighteen decibels down to **three**,
+where last night it was clean to five:
+
+| dB | 18 | 12 | 10 | 8 | 6 | 5 | 4 | 3 |
+|---|---|---|---|---|---|---|---|---|
+| right / wrong | 1.00/0.00 | 1.00/0.00 | 1.00/0.00 | 1.00/0.00 | 1.00/0.00 | 0.97/0.00 | 0.94/0.00 | 0.97/0.00 |
 
 ### The failing set
 
-**28 before, 28 after, the same 28 by name.** One app test,
-`TheFollowedSentenceReachesTheScreenTests`, failed in the full run and **passes
-when its class is run alone** — the flake already filed as `HM-OPEN-055`.
+**28 before, 28 after**, and one moved: `HoldingTheWindowLongInTimeReadsMore` on
+`003016` went green. Nothing went red. One of the 28 is the app flake
+`TheFollowedSentenceReachesTheScreenTests`, which **passes when run alone** —
+`HM-OPEN-055`.
 
 ### Mismatches and collisions
 
 - **The seven W1AW captures, `2026-08-22.jsonl` and both analysis documents are
-  still not in the tree**, so every figure quoted from them went unchecked,
-  including the 52/55/65 and 125/192 and 405/442 gap clusters this unit's change
-  was designed around. **Everything above is measured here.**
-- **`Directory.Build.props` said 1.10.10**, as the order expected.
-- **HM-DEC-063, HM-DEC-150 and `CLAUDE_CODE.md` §4.11 agree**: the minor is the
-  phase, the patch is the work unit, the number lives in `Directory.Build.props`
-  alone. **A collision resolved, not a conflict**, and HM-DEC-150 is the governing
-  text.
+  still not in the tree.** Every figure quoted from them went unchecked. Everything
+  above is measured here.
+- **`Directory.Build.props` said 1.10.11**, as the order expected.
 - **`CLAUDE_CODE.md` §8 names five report sections and `CLAUDE.md` §12.2 names
-  four.** Under §0 the project's own file wins on the four it names, and section 5
-  is written as additive. **Reported, not repaired.**
+  four.** Under §0 the project's file wins on the four it names; section 5 is
+  additive and is written. Reported, not repaired.
+- **Mechanism or tuning:** the persistence rule is a mechanism with a measured
+  empty stretch on both sides of it. The two clip ranges remain constants from one
+  machine keyer, and task 3 says which is carrying.
 
 ## 2. What Tim should expect
 
-**He will see slightly more correct characters on a clear signal than he did this
-morning, and the file this unit was aimed at is still the worst of them.**
+**He will see more whole words on the clearest signals and no change at all on the
+rest**, because the rule fires only where the sender's own spacing holds still for
+six seconds.
 
-| capture | this morning | now |
+| capture | before | now |
 |---|---|---|
-| `013347` | `… E HEA E WVRR VA3VRR E E` | `… E HA E WVRR VA3VRR E E` |
-| `013622` | `E I5 ■E II 5EIEIE EEUE TE ISE …` | `E I5 SHE II 5EIEIE EEUE TE ISE …` |
-| `134712` | `… E K E R4LQ EK …` | `… E K E EN4LQ EK …` — **`N4L` restored** |
-| `004507` | `E E E U T EA R R L D O T N E T <BT> E E A C H S TA TI O N HAN D L I NG` | `E E EA T AR RL D O T N E T <BT> EE AC H STA TI O N HAN D L I NG ET H IS M E S S A G E PE` |
-| `003016` | `E E IADA KPA15TT IT WAS JUNK ■ E STILL HVE MY E TO 91B …` | `E IADA KPA15TT IT WAS JUNK ■ E STILL HVE MY E TO 91B …` |
-| `003126` | `E E E U E E <BT> IWATTCH AT L E<AS>T 2 MOVI ESA DAY …` | `E S 5 IWATTCH AT L E<AS>T 2 MOVI ESA DAY WID X■ WHY NOT …` |
-| `003758` | ` EET T E T E T EE T E ETE E TTEEEIIIE T T EE …` | `E E EQR■HH 55H AA4MP/4 QNIK E E E EE EAN EANQNI■K …` — **the confirmed callsign back** |
+| `004507` | `EE AC H STA TI O N HAN D L I NG ET H IS M E S S A G E PE` | `EE AC H STA TI O N HANDLING ET HIS MESSAGE PE` |
+| `003016` | `E IADA KPA15TT IT WAS JUNK ■ E STILL HVE MY E TO 91B ETT JETST VFB TUBELIN` | `E IADA KPA15TT ITWASJUNK <BT> STIL<AS>HVEMY ETO 91B ETT JETST VFB TUBELIN` |
+| `013347` | `… E HA E WVRR VA3VRR E E` | unchanged |
+| `013622` | `E I5 SHE II 5EIEIE EEUE TE ISE …` | unchanged |
+| `134712` | `… E K E EN4LQ EK …` | unchanged |
+| `003126` | `E S 5 IWATTCH AT L E<AS>T 2 MOVI ESA DAY WID X■ WHY NOT …` | `… 2 MOVIESADAY WID X■ WHY NOT …` |
+| `003758` | `… 55H AA4MP/4 QNIK …` | unchanged |
 | `014854`, `014935` | silent | silent |
 
-Build clean, no warnings. **28 failing, the same 28 by name.**
+Build clean, no warnings. **28 failing, one of them the known flake, and one test
+went green.**
 
-**What will look wrong and is not:** `CwUnitEstimator.MeasureGaps` and the
-decoder's ability to take a sender's own gap lengths are both in the tree and
-nothing passes them. That is deliberate and it is section 4's ask.
+**What will look wrong and is not:** `003016` now runs `ITWASJUNK` together where
+it read `IT WAS JUNK`. Its word spacing comes from the word clip, which bound in 12
+of its 16 reads — the same finding as task 3.
 
 ## 3. What we should do next
 
-- **Rule on the gap lengths**, section 4. The mechanism works where the structure
-  exists; the question is whether a window may use it when the whole recording
-  does not show it.
-- **Fine tone tracking**, untouched and independent of all of this.
-- **The clip ranges are the only constants in the estimator** and they came from
-  one machine keyer. On the one capture that used them the word boundary was
-  clipped hard, at exactly 6.50u, which means the clip and not the measurement
-  decided it.
-- **Get the seven W1AW captures across.** Every figure this unit was designed
-  around is still unchecked.
+- **The word clip is deciding the word spacing on real audio**, in 43 of 45 reads
+  on `004507` and 15 of 15 on `134712`. It cannot be established without a capture
+  whose word boundaries are known.
+- **`AC H` and `STA TI O N` on `004507` are still broken** while `HANDLING` and
+  `MESSAGE` are whole, which says the remaining fault on that file is not the gap
+  boundary.
+- **Fine tone tracking is measured and unbuilt**, and the measurement says it would
+  buy about a hertz on the captures that read.
+- **Get the seven W1AW captures across.** Three units have now been designed around
+  figures nobody here can check.
 
 ## 4. What's blocking us
 
@@ -185,63 +226,49 @@ Nothing was recorded to `DECISIONS.md`.
 
 ### NEEDS A RULING
 
-> **Whether a twelve-second window may take the gap lengths from its own gaps when
-> the whole recording does not show the structure.**
+Nothing needs a ruling to proceed. The one thing worth a decision when there is
+evidence for it:
+
+> **The word-gap clip is a constant from one machine keyer and it is deciding
+> Hamlet's word spacing on real audio.**
 >
-> The mechanism is built and measured. It refuses where there is no trough to put
-> a boundary in, which on a whole-recording measurement accepts one capture in nine
-> — **`004507`, the file the coupling is breaking** — and refuses the other eight.
-> Generated Morse passes, which is the control.
+> `[3.5u, 6.5u]` bound in 43 of 45 reads on `004507` and in every read on
+> `134712`, and never binds on generated Morse. It is doing what it was given to
+> do — word gaps are too rare in twelve seconds for their cluster to be trusted —
+> **but a bound that never releases is a constant wearing a measurement's
+> clothes.**
 >
-> **Wired in, it repairs that file**: `ACH STATION HANDLING` and `MESSAGE` come
-> back whole. **And it costs `VA3VRR` and breaks `AA4MP/4 QNIK`**, because the
-> decoder reads twelve seconds at a time and a window can show a trough the
-> recording does not.
->
-> | | ship it | leave it measured and off | require more evidence per window |
-> |---|---|---|---|
-> | `004507` | repaired | as it is, the worst capture here | unmeasured |
-> | adjudicated readings | one of three right | **three of three right** | the point of it |
-> | what it rests on | a trough in this window | nothing changes | a trough that survives more gaps than one window holds |
->
-> **The industry-standard answer is the third**, and it is not built: require the
-> structure to be found over more evidence than a single window — the estimator
-> already runs on every read and the trough could be required to hold across
-> several of them. That is a mechanism rather than a threshold, and it is the shape
-> that would keep all three adjudicated readings and repair `004507` as well.
-> **Leaving it off is the honest state until then**, because three adjudicated
-> readings are the only ground truth this repository has.
+> **It is not widened here**, because widening it to stop it binding is tuning to
+> this corpus. **What would establish it is a capture whose word boundaries are
+> known**, which is the adjudicated transcript this phase has been missing all
+> week.
 
 ### STATE
 
-Gate verified against the tree: `Hamlet.sln` and `CwProbabilisticDecoder.cs`
-present, no `CoreHMI.sln`, no `src\CoreHMI`, `PROJECT_CARD.md` says Hamlet. **This
-session ran on the development computer with no radio connected, so nothing in this
-report is evidence about the radio** (`SHACK_FACTS.md`, HM-DEC-093).
+Gate verified against the tree: `Hamlet.sln` and `CwUnitEstimator.cs` present, no
+`CoreHMI.sln`, no `src\CoreHMI`, `PROJECT_CARD.md` says Hamlet. **This session ran
+on the development computer with no radio connected, so nothing in this report is
+evidence about the radio** (`SHACK_FACTS.md`, HM-DEC-093).
 
-The gap change was built, measured and left off. **Fine tone tracking was not
-started**, under the order's own gate, and was not half-built.
+Tasks 1, 2 and 3 done. **Task 4 was measured and deliberately not built**, with the
+measurement above; it was not half-built.
 
 ## 5. Where the phase stands
 
-**Phase 10. The phase goal is 80% correct translation on a single clear CW
-signal.**
+**Phase 10. The goal is 80% correct translation on a single clear CW signal.**
 
 **The phase number cannot be stated, and that is unchanged from before this unit.**
-`PHASE_GOAL.md` says it itself: no capture in this repository has an answer key,
-ARLP034 was never published, and the three adjudicated fragments — `N4L`,
-`VA3VRR`, `AA4MP/4 QNIK` — are fragments rather than a transcript. **What can be
-said is that all three are read correctly as of this build, which was not true this
-morning.**
+No capture in this repository has an answer key; ARLP034 was never published; the
+three adjudicated items are fragments rather than transcripts. **All three are read
+correctly at this build, as they were at the last one.**
 
-**Build: 1.10.10 → 1.10.11.**
+**Build: 1.10.11 → 1.10.12.**
 
 ### Asks still outstanding
 
 Carried per HM-DEC-139, verbatim until ruled.
 
-- **Whether a window may take its gap lengths from its own gaps**, first made
-  today, above.
+- **The word-gap clip is carrying every real case**, first made today, above.
 - No capture has an answer key, so the phase's own number cannot be stated.
 - Why the mark and gap classifiers disagree about the unit — structural.
 - The narrow decoder-side filter for a crowded passband.
