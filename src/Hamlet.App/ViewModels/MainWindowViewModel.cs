@@ -345,6 +345,13 @@ public partial class MainWindowViewModel : ObservableObject
         // being fixed.
         yield return OverflowAdvice;
 
+        // **AND WHAT ELSE ON THE RECEIVE SIDE IS IN THE WAY**, which sits below
+        // an overloading front end because that one stops the band being
+        // readable at all while these degrade it. Read-only, and each names the
+        // control on the front of the radio rather than stopping at the
+        // diagnosis (HM-DEC-148).
+        yield return ReceiveObstructionText;
+
         // **WHY THE SCREEN JUST WENT QUIET.** Following somebody empties the
         // decoder's window, and twelve seconds of nothing with no explanation
         // reads as a dead band at the one moment it certainly is not one.
@@ -1473,6 +1480,25 @@ public partial class MainWindowViewModel : ObservableObject
     /// four times a second.</para>
     /// </remarks>
     public string OverflowAdvice => OverflowAdviceFor(FrontEndIsOverloading, PreampIsOn);
+
+    /// <summary>
+    /// What else on the receive side is standing in the way, in one line.
+    /// </summary>
+    /// <remarks>
+    /// <para>**HM-DEC-148 DID THIS FOR THE PREAMP AND STOPPED THERE**, and the
+    /// noise blanker, the noise reduction and the filter width are the same class
+    /// of fault: Hamlet reads all three from the radio, writes them into the
+    /// capture sidecar, and has never mentioned one of them on the screen the
+    /// operator is looking at. A thing Hamlet knows and does not say is the same
+    /// defect as a decode with no signal behind it.</para>
+    /// <para>**READ-ONLY.** Nothing here writes to the radio; the rule it comes
+    /// from has nowhere to put a command. A later unit may offer a button he
+    /// presses.</para>
+    /// <para>The rule itself is in the engine, because it is radio knowledge
+    /// (§0.1), and this is the seam that shows it.</para>
+    /// </remarks>
+    [ObservableProperty]
+    private string _receiveObstructionText = "";
 
     /// <summary>The rule itself, so the test reads it rather than a copy (§0).</summary>
     /// <param name="overloading">Whether the radio says its front end is overloading.</param>
@@ -2945,6 +2971,19 @@ public partial class MainWindowViewModel : ObservableObject
         // once it is already off: advice about a knob that is already in the
         // right position is noise.
         PreampIsOn = preamp is { IsKnown: true } && preamp.Number is 1 or 2;
+
+        // **THE THREE THE RULING NAMED, AND ONLY WHEN THEY ARE IN THE WAY.** The
+        // filter is mentioned on a measurement rather than on a width: a
+        // competing station the survey actually found is a fact, and asserting
+        // that some width is too wide for a signal Hamlet has not measured would
+        // be a judgement nobody has ruled (§0.0).
+        ReceiveObstructionText = string.Join(
+            " ",
+            ReceiveObstructions.For(
+                state,
+                state.Mode is { } inMode && CivValues.IsCw(inMode),
+                _decoder?.Report.Competitor is not null)
+                .Select(one => one.Says));
 
         OnPropertyChanged(nameof(RigState));
         OnPropertyChanged(nameof(TerminalSummary));

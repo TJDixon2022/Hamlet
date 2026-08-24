@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 5 of 6
+TASK: 6 of 6
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-23T23:34:07-04:00
-NOTE: the competing station now reaches the report and the sidecar with the control named; the separation had to move from 50 to 125 Hz because a lone station found its own image and reported it as somebody else
+UPDATED: 2026-08-23T23:51:11-04:00
+NOTE: the three settings the ruling named now reach the panel read-only; the filter is mentioned on a measured competitor rather than on a width nobody ruled
 
 ---
 
