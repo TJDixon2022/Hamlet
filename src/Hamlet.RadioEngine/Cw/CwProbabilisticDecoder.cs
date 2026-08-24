@@ -260,6 +260,38 @@ public static class CwProbabilisticDecoder
     /// </remarks>
     public const string IntegratorName = "Hann";
 
+    /// <summary>
+    /// The quarter point of a Rayleigh envelope, in units of its own scale.
+    /// </summary>
+    /// <remarks>
+    /// **AN IDENTITY, NOT A FACTOR**, and it is 0.758528. The scale this
+    /// replaced was the quarter point times six tenths, which works out at
+    /// **0.455 sigma**: two and a fifth times too small, so every quadratic term
+    /// was inflated about four and eight tenths times. Nothing here is to be
+    /// re-tuned. If it is wrong then the derivation is wrong.
+    /// </remarks>
+    public const double RayleighQuarterPoint = 0.758527616440932;
+
+    /// <summary>
+    /// How much audio the noise scale and the keyed level are estimated over,
+    /// in seconds.
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE SAME SPAN ON BOTH PATHS, WHICH IS THE WHOLE POINT.** The
+    /// offline read handed <c>LogLikelihoods</c> a whole recording and the
+    /// streaming path handed it a twelve second window, so one character was
+    /// scored against two different noise floors and a margin measured on one
+    /// path was not a fact about the other. Unit 1.11.3 found a clean gap at 46
+    /// on whole files that cost `VA3VRR` in streaming, which is that fault
+    /// exactly (HM-DEC-119's own lesson).</para>
+    /// <para>**PROVISIONAL, AND MEASURED RATHER THAN ASSUMED.** Two and a half
+    /// seconds holds roughly twenty elements at eighteen words a minute, which
+    /// is enough for a quarter point to mean something and short enough to
+    /// follow a fade. What one and a half and four seconds do to the same corpus
+    /// is reported beside it.</para>
+    /// </remarks>
+    public const double NoiseSpanSeconds = 2.5;
+
     /// <summary>How often the envelope is sampled, in milliseconds.</summary>
     public const double HopMilliseconds = 5.0;
 
@@ -709,27 +741,125 @@ public static class CwProbabilisticDecoder
     {
         ArgumentNullException.ThrowIfNull(envelope);
 
-        var sorted = envelope.ToArray();
+        var count = envelope.Count;
+        var keyDown = new double[count];
+        var keyUp = new double[count];
 
-        Array.Sort(sorted);
-
-        var noise = Math.Max(Percentile(sorted, 25) * 0.6, 1e-6);
-        var amplitude = Math.Max(Percentile(sorted, 97), noise * 1.05);
-
-        var keyDown = new double[envelope.Count];
-        var keyUp = new double[envelope.Count];
-        var logNoise = Math.Log(noise);
-
-        for (var i = 0; i < envelope.Count; i++)
+        if (count == 0)
         {
-            var up = envelope[i] / noise;
-            var down = (envelope[i] - amplitude) / noise;
+            return (keyDown, keyUp);
+        }
 
-            keyUp[i] = (-0.5 * up * up) - logNoise;
-            keyDown[i] = (-0.5 * down * down) - logNoise;
+        var span = Math.Max(
+            8, (int)(NoiseSpanSeconds * 1000.0 / HopMilliseconds));
+
+        // How often the estimate is re-taken: an eighth of the span, so it
+        // follows a fade without being re-sorted at every hop.
+        var step = Math.Max(1, span / 8);
+
+        var scratch = new double[Math.Min(span, count)];
+
+        var sigma = 0.0;
+        var amplitude = 0.0;
+        var estimatedAt = int.MinValue;
+
+        for (var i = 0; i < count; i++)
+        {
+            if (estimatedAt == int.MinValue || i - estimatedAt >= step)
+            {
+                Estimate(envelope, i, span, scratch, out sigma, out amplitude);
+                estimatedAt = i;
+            }
+
+            var e = Math.Max(envelope[i], 1e-12);
+            var logSigma = Math.Log(sigma);
+            var variance = 2 * sigma * sigma;
+
+            // **KEY UP IS RAYLEIGH, NOT GAUSSIAN.** An envelope magnitude taken
+            // from a quadrature pair of Gaussian noise is Rayleigh distributed,
+            // and its log density carries a log-of-the-magnitude term. Leaving
+            // that out is what let noise score as evidence: without it the
+            // key-up hypothesis is under-credited in the upper tail, which is
+            // exactly where noise peaks live, so a loud noise peak looked more
+            // like a mark than like noise.
+            keyUp[i] = Math.Log(e) - (2 * logSigma) - (e * e / variance);
+
+            // Key down is the Gaussian approximation to a Rician envelope, which
+            // is what it always was. What changes is that it is now a proper log
+            // density, so the difference between the two is a log-likelihood
+            // ratio rather than a difference between two differently normalised
+            // numbers.
+            var off = e - amplitude;
+
+            keyDown[i] = -HalfLogTwoPi - logSigma - (off * off / variance);
         }
 
         return (keyDown, keyUp);
+    }
+
+    private static readonly double HalfLogTwoPi = 0.5 * Math.Log(2 * Math.PI);
+
+    /// <summary>
+    /// The noise scale and the keyed level, over the span around one hop.
+    /// </summary>
+    /// <param name="envelope">The envelope.</param>
+    /// <param name="at">Which hop the span is centred on.</param>
+    /// <param name="span">How many hops it covers.</param>
+    /// <param name="scratch">Working room, reused so nothing allocates per hop.</param>
+    /// <param name="sigma">The Rayleigh scale.</param>
+    /// <param name="amplitude">The keyed level.</param>
+    /// <remarks>
+    /// **SIGMA COMES FROM THE QUARTER POINT BY AN IDENTITY.** For a Rayleigh
+    /// envelope the cumulative distribution is one minus the exponential of
+    /// minus e squared over two sigma squared, so at the quarter point that
+    /// exponential is three quarters and the magnitude is sigma times the root
+    /// of twice the natural log of four thirds. See
+    /// <see cref="RayleighQuarterPoint"/>. There is nothing in it to tune.
+    /// </remarks>
+    private static void Estimate(
+        IReadOnlyList<double> envelope,
+        int at,
+        int span,
+        double[] scratch,
+        out double sigma,
+        out double amplitude)
+    {
+        var count = envelope.Count;
+        var half = span / 2;
+        var from = Math.Clamp(at - half, 0, Math.Max(0, count - scratch.Length));
+        var take = Math.Min(scratch.Length, count - from);
+
+        for (var n = 0; n < take; n++)
+        {
+            scratch[n] = envelope[from + n];
+        }
+
+        Array.Sort(scratch, 0, take);
+
+        var quarter = PercentileOf(scratch, take, 25);
+
+        sigma = Math.Max(quarter / RayleighQuarterPoint, 1e-9);
+        amplitude = Math.Max(PercentileOf(scratch, take, 97), sigma * 1.05);
+    }
+
+    /// <summary>One value out of the first N of a sorted buffer.</summary>
+    /// <param name="sorted">The buffer, sorted over its first entries.</param>
+    /// <param name="count">How many of them are real.</param>
+    /// <param name="percent">Which percentile.</param>
+    /// <returns>The value.</returns>
+    private static double PercentileOf(double[] sorted, int count, double percent)
+    {
+        if (count <= 0)
+        {
+            return 0;
+        }
+
+        var at = (percent / 100.0) * (count - 1);
+        var below = (int)at;
+        var above = Math.Min(below + 1, count - 1);
+        var share = at - below;
+
+        return (sorted[below] * (1 - share)) + (sorted[above] * share);
     }
 
     /// <summary>One value out of a sorted set, interpolating between neighbours.</summary>

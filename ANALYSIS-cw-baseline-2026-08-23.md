@@ -333,6 +333,102 @@ shipped: (nothing)
 grid:    (nothing)
 ```
 
+### `cw-2026-08-22-031905`
+
+30.0 s at 48000 Hz, read at 600 Hz.
+
+| | shipped | grid |
+|---|---|---|
+| characters emitted | 96 | 67 |
+| E-share | 9 % | 37 % |
+| single-character words | 76 % | 62 % |
+| words per minute read | 23 | 28.0 |
+
+The witness split, over the shipped decode:
+
+**Three rows and not two.** `listening` is the meter before it has
+formed a verdict at all, which is its first six seconds and any
+stretch where it has not yet seen enough, and folding that into
+`no keying` would report an absence of evidence as evidence of
+absence (§0.0).
+
+| witness | characters | E-share | single-char words | span LLR P10 / median / P90 |
+|---|---|---|---|---|
+| said keying | 64 | 3 % | 81 % | -3179.8 / 9925.4 / 35480.4 |
+| said no keying | 7 | 0 % | 60 % | 11756.4 / 31282.6 / 75097.3 |
+| had not decided | 25 | 28 % | 33 % | 2111.8 / 6990.0 / 24637.0 |
+
+What each read:
+
+```
+shipped: <AS>. W PEPRERENEDIDINICCTETENED D R ■1T1O00R■.T.O■ ■  ■  ■  ■ ■  ■  ■ ■ ■ ■ ■  ■ D FEFLLAATAXX E III S S O 10 S0 ■2 I255M■, ,  ■ ■  ■ ■ ■  ■ ■ ■
+grid:    D EEIE HE E IE <HH>E ET EES I TE I EH # E E T # I #E E EE# H# E SEI TI II H E EE A #5 S V # S # S E # EH # # # T T 
+```
+
+### `cw-2026-08-23-001520`
+
+30.0 s at 8000 Hz, read at 600 Hz.
+
+| | shipped | grid |
+|---|---|---|
+| characters emitted | 92 | 22 |
+| E-share | 5 % | 5 % |
+| single-character words | 30 % | 14 % |
+| words per minute read | 26 | 8.0 |
+
+The witness split, over the shipped decode:
+
+**Three rows and not two.** `listening` is the meter before it has
+formed a verdict at all, which is its first six seconds and any
+stretch where it has not yet seen enough, and folding that into
+`no keying` would report an absence of evidence as evidence of
+absence (§0.0).
+
+| witness | characters | E-share | single-char words | span LLR P10 / median / P90 |
+|---|---|---|---|---|
+| said keying | 80 | 5 % | 30 % | 530346081121.5 / 1780389687144.9 / 4621471536533.0 |
+| said no keying | 0 | no characters | no characters | nothing measured |
+| had not decided | 12 | 8 % | 0 % | 1060692162243.0 / 4579736709965.3 / 5871515142557.2 |
+
+What each read:
+
+```
+shipped: CH33E3MZQQIIISS T DKK    T DCCTGQQ T KCCNGQQ  N DDEE E DKKNKCECSTTTTT33N TTTTTTQIII TTT TT T TTKT TKTTT TT TTT TTTT
+grid:    AC3QIS K CQ CQ DE KC3QIS KCV
+```
+
+### `cw-2026-08-24-012403`
+
+30.0 s at 48000 Hz, read at 600 Hz.
+
+| | shipped | grid |
+|---|---|---|
+| characters emitted | 0 | 0 |
+| E-share | no characters | no characters |
+| single-character words | no characters | no characters |
+| words per minute read | 21 | 28.0 |
+
+The witness split, over the shipped decode:
+
+**Three rows and not two.** `listening` is the meter before it has
+formed a verdict at all, which is its first six seconds and any
+stretch where it has not yet seen enough, and folding that into
+`no keying` would report an absence of evidence as evidence of
+absence (§0.0).
+
+| witness | characters | E-share | single-char words | span LLR P10 / median / P90 |
+|---|---|---|---|---|
+| said keying | 0 | no characters | no characters | nothing measured |
+| said no keying | 0 | no characters | no characters | nothing measured |
+| had not decided | 0 | no characters | no characters | nothing measured |
+
+What each read:
+
+```
+shipped: (nothing)
+grid:    (nothing)
+```
+
 ## The sensitivity sweep
 
 `CQ DE W1AW K` at 18 words a minute, 640 Hz, averaged over 4 noise draws at each level.
@@ -411,6 +507,18 @@ gate never gets to see a whole file.
 | | said keying | 0 | nothing measured |
 | | said no keying | 35 | 3.0 / 3.7 / 4.2 |
 | | had not decided | 21 | 3.2 / 3.5 / 3.7 |
+| `cw-2026-08-22-031905` | | | |
+| | said keying | 42 | 23.9 / 28.5 / 32.2 |
+| | said no keying | 4 | 20.8 / 21.2 / 22.8 |
+| | had not decided | 10 | 10.1 / 14.8 / 18.4 |
+| `cw-2026-08-23-001520` | | | |
+| | said keying | 49 | 12391793823.6 / 13612218711.0 / 14750207662.0 |
+| | said no keying | 0 | nothing measured |
+| | had not decided | 7 | 15019761337.9 / 16310383275.5 / 16642275185.7 |
+| `cw-2026-08-24-012403` | | | |
+| | said keying | 0 | nothing measured |
+| | said no keying | 35 | 5.3 / 6.5 / 9.8 |
+| | had not decided | 21 | 2.6 / 3.0 / 3.8 |
 
 **A read repeats most of its window twice a second**, so these are not
 independent samples and a median describes the recording rather than a
