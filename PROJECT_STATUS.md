@@ -4,7 +4,7 @@ STATE: COMPLETED
 TASK: 5 of 5
 BALL: tim
 NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-23T20:52:07-04:00
+UPDATED: 2026-08-23T20:34:25-04:00
 NOTE: baseline taken; the sweep's invented column counts substitutions and not invention, so 60% of what is read at 18 dB was never sent and scored nought
 
 ---
