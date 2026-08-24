@@ -11,7 +11,7 @@ shaped to the receiver's own passband. The competing station sends
 second later so its marks land inside the wanted station's rather than
 beside them. Both key throughout.
 
-**Integrator: boxcar.**
+**Integrator: Hann.**
 
 Regenerate with:
 
@@ -30,12 +30,12 @@ rather than to the whole path.
 | whole file, fixed pitch | 11 | 0 | 0 | 11 | 9 % | ` CQ DE N0CALL K ` |
 | whole file, forced to 18 wpm | 11 | 0 | 1 | 12 | 17 % | ` CQ DE N0CALL K E ` |
 | streaming window, pitch nailed to 600 Hz | 11 | 0 | 1 | 12 | 17 % | ` CQ DE N0CALL K E ` |
-| the production path, tracker and all | 10 | 1 | 22 | 33 | 24 % | `QQ T DEDE EE NNM■0E0KCECAEALLALLL T KK  E` |
+| the production path, tracker and all | 9 | 2 | 20 | 31 | 19 % | `QQ T DEDE E NNM■00B6E6AEALLILLL T KK  E` |
 
 **How hard the two-station fixture actually is**, at 40 Hz and equal
 level, measured through the decoder's own front end pointed at each
-station in turn: **0.76 s with both keys down at once**, 
-3.19 s of the wanted station alone and 1.01 s of the other alone. A fixture where the
+station in turn: **0.94 s with both keys down at once**, 
+3.38 s of the wanted station alone and 1.05 s of the other alone. A fixture where the
 two never collide proves nothing about rejection and looks exactly
 like one that does (§12.5).
 
@@ -77,19 +77,19 @@ of nought.
 
 | offset | level | correct | wrong | invented | emitted | E-share | read |
 |---|---|---|---|---|---|---|---|
-| 40 Hz | +0 dB | 9 | 1 | 22 | 32 | 25 % | `QQ T DEDE E NNM■0E0DCECAEALLALLL T T  E E ` |
-| 40 Hz | -6 dB | 9 | 1 | 22 | 32 | 25 % | `QQ T DEDE EE NNM■0E0KCECAEALLALLL T T   E ` |
-| 40 Hz | -12 dB | 10 | 1 | 22 | 33 | 24 % | `QQ T DEDE EE NNM■0E0KCECAEALLALLL T KK  E` |
-| 80 Hz | +0 dB | 9 | 1 | 22 | 32 | 25 % | `QQ T DEDE EE NNM■0E0KCECAEALLALLL T T   E ` |
-| 80 Hz | -6 dB | 9 | 1 | 22 | 32 | 25 % | `QQ T DEDE EE NNM■0E0KCECAEALLALLL T T   E ` |
-| 80 Hz | -12 dB | 10 | 1 | 22 | 33 | 24 % | `QQ T DEDE EE NNM■0E0KCECAEALLALLL T KK  E` |
-| 120 Hz | +0 dB | 9 | 1 | 22 | 32 | 25 % | `QQ T DEDE EE NNM■0E0KCECAEALLALLL T T   E ` |
-| 120 Hz | -6 dB | 9 | 1 | 22 | 32 | 25 % | `QQ T DEDE EE NNM■0E0KCECAEALLALLL T T   E ` |
-| 120 Hz | -12 dB | 10 | 1 | 22 | 33 | 24 % | `QQ T DEDE EE NNM■0E0KCECAEALLALLL T KK  E` |
-| 200 Hz | +0 dB | 10 | 1 | 22 | 33 | 24 % | `QQ T DEDE EE NNM■0E0KCECAEALLALLL T KK  E` |
-| 200 Hz | -6 dB | 9 | 1 | 22 | 32 | 25 % | `QQ T DEDE EE NNM■0E0KCECAEALLALLL T T   E ` |
-| 200 Hz | -12 dB | 9 | 1 | 22 | 32 | 25 % | `QQ T DEDE EE NNM■0E0KCECAEALLALLL T T   E ` |
-| 300 Hz | +0 dB | 10 | 1 | 22 | 33 | 24 % | `QQ T DEDE EE NNM■0E0KCECAEALLALLL T KK  E` |
-| 300 Hz | -6 dB | 10 | 1 | 22 | 33 | 24 % | `QQ T DEDE EE NNM■0E0KCECAEALLALLL T KK  E` |
-| 300 Hz | -12 dB | 9 | 1 | 22 | 32 | 25 % | `QQ T DEDE EE NNM■0E0KCECAEALLALLL T T   E ` |
+| 40 Hz | +0 dB | 9 | 1 | 23 | 33 | 27 % | `QQ T DEDE EE NNM■0E0KCECAEALLALLL T T  E E ` |
+| 40 Hz | -6 dB | 8 | 2 | 21 | 31 | 29 % | `QQ T DEDE E NN E E  TE TDCECAEARLILLL T T   E ` |
+| 40 Hz | -12 dB | 10 | 1 | 21 | 32 | 22 % | `QQ T DEDE E NNM■0E0DCECAEALLILLL T KK  E` |
+| 80 Hz | +0 dB | 8 | 3 | 18 | 29 | 24 % | `QQ T DEDE E NN U URUPP  E E E LLALLL T KK  E` |
+| 80 Hz | -6 dB | 8 | 2 | 26 | 36 | 39 % | `QQ T DEDE E NN EE EEE E TE TKCECAEALLILLL T T  E E ` |
+| 80 Hz | -12 dB | 9 | 2 | 20 | 31 | 19 % | `QQ T DEDE E NNM■00B6E6AEALLILLL T KK  E` |
+| 120 Hz | +0 dB | 7 | 4 | 18 | 29 | 24 % | `QQ T DEDE E NN U URUPP  E E E LLILLL T KK  E` |
+| 120 Hz | -6 dB | 9 | 1 | 22 | 32 | 25 % | `QQ T DEDE E NNM■0E0DCECAEALLILLL T T  E E ` |
+| 120 Hz | -12 dB | 9 | 2 | 20 | 31 | 19 % | `QQ T DEDE E NNM■00B6E6AEALLILLL T KK  E` |
+| 200 Hz | +0 dB | 9 | 2 | 20 | 31 | 19 % | `QQ T DEDE E NNM■00B6E6AEALLILLL T KK  E` |
+| 200 Hz | -6 dB | 8 | 3 | 16 | 27 | 19 % | `QQ T DEDE E NNM■00DD  E LLILLL T KK  E` |
+| 200 Hz | -12 dB | 8 | 3 | 16 | 27 | 19 % | `QQ T DEDE E NNM■00DD  E LLILLL T KK  E` |
+| 300 Hz | +0 dB | 9 | 2 | 20 | 31 | 19 % | `QQ T DEDE E NNM■00B6E6AEALLILLL T KK  E` |
+| 300 Hz | -6 dB | 9 | 2 | 20 | 31 | 19 % | `QQ T DEDE E NNM■00B6E6AEALLILLL T KK  E` |
+| 300 Hz | -12 dB | 8 | 3 | 16 | 27 | 19 % | `QQ T DEDE E NNM■00DD  E LLILLL T KK  E` |
 

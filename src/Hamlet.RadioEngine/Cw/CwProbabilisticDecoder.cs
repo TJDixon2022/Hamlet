@@ -128,6 +128,33 @@ public static class CwProbabilisticDecoder
     /// </remarks>
     public const double BandwidthHz = 60.0;
 
+    /// <summary>
+    /// How wide the envelope's integrator is, in hertz of equivalent noise
+    /// bandwidth.
+    /// </summary>
+    /// <remarks>
+    /// <para>**FORTY-FIVE, AND IT IS WHAT A HANN OF THE BOXCAR'S OWN MAIN-LOBE
+    /// WIDTH COMES TO.** The number is not chosen from a speed and nothing about
+    /// a fist decides it, which is the same reasoning
+    /// <see cref="BandwidthHz"/> carried: the old decoder took its bandwidth
+    /// from its own fitted speed and that was the loop this architecture exists
+    /// to break.</para>
+    /// <para>**WHY IT IS NARROWER THAN THE SIXTY IT REPLACES, WITHOUT ANYBODY
+    /// CHOOSING TO NARROW IT.** A Hann taper has a main lobe twice the width of
+    /// a boxcar of the same length, so matching the boxcar's main lobe means
+    /// doubling the length, and a Hann of length N has an equivalent noise
+    /// bandwidth of 1.5 fs/N against the boxcar's fs/N. Doubling the length and
+    /// multiplying by one and a half lands on three quarters of sixty. **The
+    /// main lobe is what carries the wanted station**, so it is the figure held
+    /// constant and the noise bandwidth is what follows.</para>
+    /// <para>**MEASURED RATHER THAN ARGUED** (unit 002, task 4). The trade at 60,
+    /// 45, 30 and 20 hertz is in
+    /// `ANALYSIS-cw-integrator-bandwidth-2026-08-23.md`, taken over the
+    /// two-station table, the sensitivity sweep and a fast fist, and the value
+    /// here is the one that table chose.</para>
+    /// </remarks>
+    public const double IntegratorBandwidthHz = 45.0;
+
     /// <summary>What shape the envelope's integrator is, for the record.</summary>
     /// <remarks>
     /// **A TABLE THAT NAMES ITS OWN INSTRUMENT CANNOT BE MISFILED** (§0.0.1). The
@@ -135,7 +162,7 @@ public static class CwProbabilisticDecoder
     /// tables that look alike and were taken through different filters are worth
     /// less than one table, because nobody can tell afterwards which was which.
     /// </remarks>
-    public const string IntegratorName = "boxcar";
+    public const string IntegratorName = "Hann";
 
     /// <summary>How often the envelope is sampled, in milliseconds.</summary>
     public const double HopMilliseconds = 5.0;
@@ -248,6 +275,61 @@ public static class CwProbabilisticDecoder
     /// change, so `ItReadsWhatTheReferenceReads` still means what it meant.</para>
     /// </remarks>
     private const double LengthToleranceShare = 0.35;
+
+    /// <summary>How many samples a Hann integrator of a given width spans.</summary>
+    /// <param name="sampleRate">Samples per second.</param>
+    /// <param name="bandwidthHz">The wanted equivalent noise bandwidth.</param>
+    /// <returns>The window length in samples, always odd.</returns>
+    /// <remarks>
+    /// **A HANN OF LENGTH N HAS AN EQUIVALENT NOISE BANDWIDTH OF 1.5 fs/N**, so
+    /// the length follows from the width rather than the other way round. Odd, so
+    /// the taper has a single centre sample and the centred and trailing forms
+    /// differ by exactly half a window rather than by half a window and a half a
+    /// sample.
+    /// </remarks>
+    public static int IntegratorWindow(int sampleRate, double bandwidthHz)
+    {
+        var length = Math.Max(3, (int)Math.Round(1.5 * sampleRate / bandwidthHz));
+
+        return length % 2 == 0 ? length + 1 : length;
+    }
+
+    /// <summary>The integrator's taper, one weight per sample.</summary>
+    /// <param name="length">How many samples it spans.</param>
+    /// <returns>The weights.</returns>
+    /// <remarks>
+    /// <para>**A BOXCAR'S FIRST SIDELOBE IS THIRTEEN DECIBELS DOWN AND A HANN'S
+    /// IS THIRTY-ONE**, for one multiply per sample. A station a hundred hertz
+    /// away entered the boxcar's envelope at minus sixteen decibels, which is
+    /// attenuated rather than rejected; through this it enters at minus
+    /// forty-two.</para>
+    /// <para>**THE COST IS TIME AND IT IS REAL.** Matching the main lobe doubles
+    /// the window, so the integrator spans thirty-three milliseconds where the
+    /// boxcar spanned seventeen. At thirty words a minute a dit is forty
+    /// milliseconds, and an integrator most of a dit long rounds the top of every
+    /// short mark. That is measured rather than argued (task 4).</para>
+    /// <para>The weights are not normalised here; the caller divides by their
+    /// sum, which is what makes a magnitude comparable between two window
+    /// shapes.</para>
+    /// </remarks>
+    public static double[] IntegratorTaper(int length)
+    {
+        var taper = new double[Math.Max(1, length)];
+
+        if (taper.Length == 1)
+        {
+            taper[0] = 1;
+
+            return taper;
+        }
+
+        for (var n = 0; n < taper.Length; n++)
+        {
+            taper[n] = 0.5 * (1 - Math.Cos(2 * Math.PI * n / (taper.Length - 1)));
+        }
+
+        return taper;
+    }
 
     /// <summary>Read a stretch of audio at a known pitch.</summary>
     /// <param name="audio">The recording.</param>
@@ -394,43 +476,81 @@ public static class CwProbabilisticDecoder
     /// </remarks>
     public static double[] Envelope(
         IReadOnlyList<float> samples, int sampleRate, double toneHz)
+        => Envelope(samples, sampleRate, toneHz, IntegratorBandwidthHz);
+
+    /// <summary>Read a stretch of audio at a known pitch and a stated width.</summary>
+    /// <param name="samples">The audio.</param>
+    /// <param name="sampleRate">Samples per second.</param>
+    /// <param name="toneHz">The pitch.</param>
+    /// <param name="bandwidthHz">The integrator's equivalent noise bandwidth.</param>
+    /// <returns>One magnitude per hop.</returns>
+    /// <remarks>
+    /// <para>**THE WIDTH IS A PARAMETER HERE AND A CONSTANT IN PRODUCTION.** It
+    /// is open so the trade between rejecting a competing station and rounding
+    /// the top of a fast dit can be swept and tabulated; nothing in the
+    /// application passes anything but
+    /// <see cref="IntegratorBandwidthHz"/>.</para>
+    /// <para>**NO PREFIX SUMS, BECAUSE A TAPER IS NOT A RUNNING SUM.** The
+    /// boxcar this replaced could be two subtractions per hop; a weighted window
+    /// is a multiply-accumulate over its own length. It runs once per hop rather
+    /// than once per sample, so the cost is the window length times the hop
+    /// count and not the sample count squared.</para>
+    /// </remarks>
+    public static double[] Envelope(
+        IReadOnlyList<float> samples,
+        int sampleRate,
+        double toneHz,
+        double bandwidthHz)
     {
         ArgumentNullException.ThrowIfNull(samples);
 
         var count = samples.Count;
-        var window = Math.Max(1, (int)(sampleRate / BandwidthHz));
+        var window = IntegratorWindow(sampleRate, bandwidthHz);
+        var taper = IntegratorTaper(window);
+        var weight = taper.Sum();
         var step = Math.Max(1, (int)(sampleRate * HopMilliseconds / 1000.0));
 
-        // Prefix sums of the mixed signal, so any window is two subtractions.
-        var sumI = new double[count + 1];
-        var sumQ = new double[count + 1];
+        var mixedI = new double[count];
+        var mixedQ = new double[count];
         var omega = -2 * Math.PI * toneHz / sampleRate;
 
         for (var i = 0; i < count; i++)
         {
             var angle = omega * i;
 
-            sumI[i + 1] = sumI[i] + (samples[i] * Math.Cos(angle));
-            sumQ[i + 1] = sumQ[i] + (samples[i] * Math.Sin(angle));
+            mixedI[i] = samples[i] * Math.Cos(angle);
+            mixedQ[i] = samples[i] * Math.Sin(angle);
         }
 
-        // **THE SAME CENTRING THE REFERENCE USES.** A boxcar of `window` samples
-        // laid over the sample at the centre, zero outside the recording, which
-        // is what numpy's `same` convolution does and what the port has to match
-        // for its output to be comparable at all.
+        // **THE SAME CENTRING THE REFERENCE USES.** The window is laid over the
+        // sample at the centre, zero outside the recording, which is what numpy's
+        // `same` convolution does and what the port has to match for its output
+        // to be comparable at all. The taper's own centre sits on that sample.
         var lead = (window - 1) / 2;
         var envelope = new double[(count + step - 1) / step];
 
         for (var out_ = 0; out_ < envelope.Length; out_++)
         {
             var centre = out_ * step;
-            var from = Math.Clamp(centre - (window - 1) + lead, 0, count);
-            var to = Math.Clamp(centre + lead + 1, 0, count);
+            var first = centre - lead;
 
-            var i = (sumI[to] - sumI[from]) / window;
-            var q = (sumQ[to] - sumQ[from]) / window;
+            double i = 0;
+            double q = 0;
 
-            envelope[out_] = Math.Sqrt((i * i) + (q * q));
+            for (var n = 0; n < window; n++)
+            {
+                var at = first + n;
+
+                if (at < 0 || at >= count)
+                {
+                    continue;
+                }
+
+                i += mixedI[at] * taper[n];
+                q += mixedQ[at] * taper[n];
+            }
+
+            envelope[out_] = Math.Sqrt((i * i) + (q * q)) / weight;
         }
 
         return envelope;

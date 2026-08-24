@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 2 of 6
+TASK: 3 of 6
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-23T21:04:09-04:00
-NOTE: the before-table is in, and the control overturns the unit's premise — one station alone through the tracker gives the same soup as two, while a fixed pitch reads the message whole at every offset
+UPDATED: 2026-08-23T23:25:06-04:00
+NOTE: Hann in both paths, both empty captures still silent, fixed-pitch two-station table unchanged at every cell; it fixes three tests and breaks four, and the gate's own margin is the one that narrowed
 
 ---
 

@@ -96,6 +96,8 @@ public sealed class CwProbabilisticStream
     private readonly float[] _mixedI;
     private readonly float[] _mixedQ;
     private readonly double[] _envelope;
+    private readonly double[] _taper;
+    private readonly double _taperWeight;
 
     private int _mixWrite;
     private int _mixFilled;
@@ -130,8 +132,15 @@ public sealed class CwProbabilisticStream
         _hopSamples = Math.Max(
             1, (int)(_sampleRate * CwProbabilisticDecoder.HopMilliseconds / 1000.0));
 
-        _windowSamples = Math.Max(
-            1, (int)(_sampleRate / CwProbabilisticDecoder.BandwidthHz));
+        // **THE SAME INTEGRATOR THE OFFLINE PATH USES, DERIVED THE SAME WAY.**
+        // Two envelope paths that disagree about their own filter is how the
+        // centred-versus-trailing difference survived unnoticed; the length and
+        // the taper both come from one place now.
+        _windowSamples = CwProbabilisticDecoder.IntegratorWindow(
+            _sampleRate, CwProbabilisticDecoder.IntegratorBandwidthHz);
+
+        _taper = CwProbabilisticDecoder.IntegratorTaper(_windowSamples);
+        _taperWeight = _taper.Sum();
 
         _windowHops = Math.Max(64, (int)(WindowSeconds * 1000.0
             / CwProbabilisticDecoder.HopMilliseconds));
@@ -200,6 +209,17 @@ public sealed class CwProbabilisticStream
 
     /// <summary>How many hops of envelope the window is holding.</summary>
     public int EnvelopeHops => _envelopeCount;
+
+    /// <summary>The newest envelope magnitude this stream produced.</summary>
+    /// <remarks>
+    /// **SO THE TWO ENVELOPE PATHS CAN BE COMPARED AT ALL** (§0.0.1). The
+    /// streaming path keeps only its own rolling window, so without this the
+    /// filter it actually runs cannot be read from outside and a change to it can
+    /// only be judged by what the decoder made of the result. It reads state and
+    /// changes none.
+    /// </remarks>
+    public double NewestEnvelope
+        => _envelopeCount == 0 ? 0 : _envelope[_envelopeCount - 1];
 
     /// <summary>A character that is final and will not be revised.</summary>
     public event Action<CwCharacter>? CharacterSettled;
@@ -332,13 +352,28 @@ public sealed class CwProbabilisticStream
         double i = 0;
         double q = 0;
 
+        // **THE TAPER HAS TO FOLLOW THE AUDIO AND NOT THE ARRAY.** The mixed
+        // arms live in a ring buffer, so the oldest sample is wherever the write
+        // pointer is about to overwrite and the newest is just behind it. A
+        // boxcar could be summed in any order and this cannot: weighting by array
+        // index would rotate the window against the signal once per fill and put
+        // the taper's peak somewhere different every hop.
+        var oldest = _mixFilled < _windowSamples ? 0 : _mixWrite;
+
+        // While the buffer is still filling there is less audio than window, and
+        // the taper's newest weights are the ones that have samples under them.
+        var from = _windowSamples - _mixFilled;
+
         for (var n = 0; n < _mixFilled; n++)
         {
-            i += _mixedI[n];
-            q += _mixedQ[n];
+            var at = (oldest + n) % _windowSamples;
+            var w = _taper[from + n];
+
+            i += _mixedI[at] * w;
+            q += _mixedQ[at] * w;
         }
 
-        var magnitude = Math.Sqrt((i * i) + (q * q)) / _windowSamples;
+        var magnitude = Math.Sqrt((i * i) + (q * q)) / _taperWeight;
 
         if (_envelopeCount < _windowHops)
         {
