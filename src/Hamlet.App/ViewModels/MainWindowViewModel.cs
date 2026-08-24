@@ -3751,9 +3751,15 @@ public partial class MainWindowViewModel : ObservableObject
             // decoder. Where they disagree, the decoder is reading one pitch
             // while something louder or better keyed sits at another, and that is
             // worth knowing rather than worth hiding.
-            $"toneHz     {(report.HasTone ? report.ToneHz.ToString("0") : "none")}"
-                + "  (the pitch the decoder was following at the moment of the "
-                + "press, refined from where it started)",
+            // **A BANK CENTRE IS NOT A MEASUREMENT AND THIS SHEET USED TO PRINT
+            // IT AS ONE** (§0.0, HM-DEC-009). Until the survey admits a keying
+            // candidate the tracker answers with the middle of whatever bank it
+            // is pointed at, and that number went out here to a tenth of nothing:
+            // measured across the corpus it read 300 Hz on a station at 499.8 and
+            // 825 Hz on a recording holding nothing at all. The pitch is now
+            // written to a tenth of a hertz because that is what it is measured
+            // to, and an unmeasured one says which bank it came from instead.
+            $"toneHz     {ToneForTheRecord(report)}",
             // **THIS FIELD WAS CALLED `snrDb` AND IT IS NOT ONE** (HM-DEC-091:
             // one source, and it says which). It is a held peak of how far the
             // tracked bin stood above the noise beside it, rising at once and
@@ -4219,6 +4225,29 @@ public partial class MainWindowViewModel : ObservableObject
               + $"{other.RelativeDb:+0.0;-0.0} dB relative "
               + $"({other.ToneHz:0} Hz)"
             : "none found (which is not the same as the frequency being clear)";
+
+    /// <summary>The pitch the decoder was following, and whether it measured it.</summary>
+    /// <param name="report">The decoder's reading at the moment of the press.</param>
+    /// <returns>The pitch, or where the unmeasured number came from.</returns>
+    /// <remarks>
+    /// **UNREAD IS NOT NOUGHT AND A STARTING POINT IS NOT A READING.** The three
+    /// states a reader has to be able to tell apart are a measured pitch, a bank
+    /// centre nobody keyed at, and no tone at all.
+    /// </remarks>
+    private static string ToneForTheRecord(CwDecodeReport report)
+    {
+        if (!report.HasTone)
+        {
+            return "none";
+        }
+
+        return report.PitchWasMeasured
+            ? $"{report.ToneHz:0.0} Hz  (measured from the keying the survey "
+              + "admitted, interpolated between bins)"
+            : $"{report.ToneHz:0.0} Hz  (NOT MEASURED: the survey has admitted "
+              + "no keying, so this is the middle of the bank the decoder is "
+              + "pointed at rather than a station)";
+    }
 
     /// <summary>
     /// The speed at the moment of the press, or why there is not one.

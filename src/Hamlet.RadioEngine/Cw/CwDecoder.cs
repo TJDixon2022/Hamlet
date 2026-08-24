@@ -239,7 +239,8 @@ public sealed class CwDecoder
         _tracker.HasKeying,
         _tracker.Verdict.Interference,
         (double)_tracker.Guard.BlockedHops * _tracker.HopSamples / SampleRate,
-        Competitor: _tracker.Competitor);
+        Competitor: _tracker.Competitor,
+        PitchWasMeasured: _tracker.HasMeasuredPitch);
 
     /// <summary>Everything inside the decision delay, handed over whole.</summary>
     /// <remarks>
@@ -469,6 +470,14 @@ public sealed class CwDecoder
         // for this chunk, so the pitch handed over is the current one — unless
         // the operator has locked it, in which case the tracker carries on
         // measuring and reporting and stops steering.
+        // **WHETHER A PITCH HAS BEEN MEASURED IS NOW ASKABLE, AND NOTHING HERE
+        // ACTS ON IT YET.** Refusing to decode until the survey admits a
+        // candidate was built and measured, and it costs `N4L` on
+        // `cw-2026-08-17-134712` along with six other captures' text. The reason
+        // is worth keeping: that recording's fallback bank centre is 500.0 and
+        // its station sits at 500.09, so the callsign was only ever read because
+        // an unmeasured number happened to land on it. Honesty and that callsign
+        // are in tension and the ruling is Tim's (§0.0, HM-DEC-009).
         _probabilistic.ToneHz = double.IsNaN(_lockedToneHz)
             ? _tracker.ToneHz
             : _lockedToneHz;

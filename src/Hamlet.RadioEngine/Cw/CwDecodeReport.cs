@@ -33,6 +33,12 @@ namespace Hamlet.RadioEngine.Cw;
 /// transcript comes out unspaced (HM-DEC-142). Distinct from an empty
 /// transcript, which is the decoder producing nothing.
 /// </param>
+/// <param name="PitchWasMeasured">
+/// True when <see cref="ToneHz"/> came from keying the survey admitted, false
+/// when it is the middle of whatever bank the tracker is pointed at. **The two
+/// are different facts and a sheet that prints one number for both is asserting
+/// a measurement nobody took** (§0.0, HM-DEC-009).
+/// </param>
 /// <param name="Competitor">
 /// Somebody else keying inside the same passband, where the survey found one.
 /// **Null says the survey did not find one and never that the frequency is
@@ -51,7 +57,8 @@ public readonly record struct CwDecodeReport(
     ToneInterference? Interference = null,
     double OwnTransmitSeconds = 0,
     bool WordSpacingUnmeasured = false,
-    CwCompetitor? Competitor = null)
+    CwCompetitor? Competitor = null,
+    bool PitchWasMeasured = false)
 {
     /// <summary>
     /// How far above the band a tone has to stand before it is worth mentioning.

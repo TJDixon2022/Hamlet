@@ -444,6 +444,22 @@ public sealed class CwToneTracker
         ? _fineHz[_fineHz.Length / 2]
         : _reportedHz;
 
+    /// <summary>True once a pitch has actually been measured from keying.</summary>
+    /// <remarks>
+    /// <para>**A BANK CENTRE IS NOT A MEASUREMENT AND MUST NOT BE READ AS ONE**
+    /// (§0.0, HM-DEC-009). Until a candidate has been admitted,
+    /// <see cref="ToneHz"/> answers with the middle of the fine bank, which is
+    /// wherever the bank happens to be pointed — the operator's configured pitch
+    /// at first, and then wherever a cold-start move left it. Measured across the
+    /// corpus that produced 300 Hz on a station at 499.79 and 825 Hz on a
+    /// recording holding nothing.</para>
+    /// <para>**`ToneHz` KEEPS ANSWERING, BECAUSE SOMETHING HAS TO POINT THE
+    /// FILTER.** What changes is that callers can tell a measurement from a
+    /// starting point, and the two that matter — what the decoder mixes down at,
+    /// and what the sidecar reports — now ask.</para>
+    /// </remarks>
+    public bool HasMeasuredPitch => !double.IsNaN(_reportedHz);
+
     /// <summary>Watches for the operator's own transmissions (HM-DEC-095).</summary>
     public CwTransmitGuard Guard { get; }
 
