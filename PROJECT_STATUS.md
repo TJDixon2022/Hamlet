@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 1 of 6
+TASK: 2 of 6
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-23T20:51:47-04:00
-NOTE: boxcar ENBW computes to exactly 60 Hz with nulls every 60 Hz, so two of task 2's five offsets sit on nulls; CoarseCandidates already exposes the second station and nothing reads it
+UPDATED: 2026-08-23T21:04:09-04:00
+NOTE: the before-table is in, and the control overturns the unit's premise — one station alone through the tracker gives the same soup as two, while a fixed pitch reads the message whole at every offset
 
 ---
 

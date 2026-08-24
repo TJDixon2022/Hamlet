@@ -212,6 +212,99 @@ public static class CwFixtureGenerator
         return (audio, text.ToString());
     }
 
+    /// <summary>
+    /// Two senders in one passband, both keying, over one band of noise.
+    /// </summary>
+    /// <param name="wanted">The station whose text is the answer key.</param>
+    /// <param name="other">
+    /// The competing station. Its own <c>SignalToNoiseDb</c> is ignored; its
+    /// level comes from <paramref name="levelDb"/> instead, so the two stations
+    /// are set relative to each other rather than each to the band.
+    /// </param>
+    /// <param name="levelDb">
+    /// How loud the competing station is relative to the wanted one. Nought is
+    /// equal, negative is quieter.
+    /// </param>
+    /// <returns>The audio and the sidecar describing it.</returns>
+    /// <remarks>
+    /// <para>**NOTHING IN THIS REPOSITORY HAS EVER MEASURED TWO STATIONS IN ONE
+    /// PASSBAND.** Every fixture holds one sender and all nine captures were
+    /// analysed as though one station were present, so the front end's rejection
+    /// of a competing signal is unmeasured. This is the fixture that measures
+    /// it.</para>
+    /// <para>**THE BAND IS RENDERED ONCE AND BOTH STATIONS GO ON TOP OF IT.**
+    /// <see cref="Join"/> concatenates two recordings and this overlaps them,
+    /// which is the whole difference and the reason a separate method exists:
+    /// summing two finished fixtures would sum two independent noise floors and
+    /// put the band three decibels up without saying so.</para>
+    /// <para>**BOTH SENDERS KEY AT ONCE, DELIBERATELY.** Two stations taking
+    /// turns is the easy case and the decoder already survives it; what beats a
+    /// filter is a mark from one arriving inside a mark from the other, because
+    /// two tones in one envelope beat at their difference frequency and the
+    /// result is amplitude modulation the integrator was never asked to
+    /// smooth.</para>
+    /// <para>The competing station is given its own text, its own speed and a
+    /// different lead-in, so the two are not accidentally keying in step.</para>
+    /// </remarks>
+    public static (MonoAudio Audio, string Sidecar) Together(
+        CwFixtureRecipe wanted, CwFixtureRecipe other, double levelDb)
+    {
+        var wantedEdges = KeyEdges(wanted, out var messageStart);
+        var otherEdges = KeyEdges(other, out _);
+
+        var totalSeconds = Math.Max(
+            wantedEdges.Length > 0 ? wantedEdges[^1] : messageStart,
+            otherEdges.Length > 0 ? otherEdges[^1] : messageStart) + TailSeconds;
+
+        var count = Math.Max(1, (int)Math.Round(totalSeconds * SampleRate));
+        var samples = new float[count];
+
+        // The band first, then both stations on top of it, which is the order
+        // Generate uses and the order that makes the signal-to-noise figure mean
+        // what it says.
+        var noiseRms = ShapedNoise(samples, wanted.Seed);
+
+        var wantedAmplitude =
+            Math.Sqrt(2) * noiseRms * Math.Pow(10, wanted.SignalToNoiseDb / 20);
+
+        var otherAmplitude = wantedAmplitude * Math.Pow(10, levelDb / 20);
+
+        RenderKeying(samples, wantedEdges, wanted, wantedAmplitude);
+        RenderKeying(samples, otherEdges, other, otherAmplitude);
+
+        for (var i = 0; i < samples.Length; i++)
+        {
+            samples[i] = Math.Clamp(samples[i], -1f, 1f);
+        }
+
+        var audio = new MonoAudio(SampleRate, samples);
+        var offset = other.ToneHz - wanted.ToneHz;
+
+        var text = new StringBuilder();
+
+        text.AppendLine($"name          {wanted.Name}");
+        text.AppendLine("generated     tests/Hamlet.RadioEngine.Tests/Cw/Fixtures");
+        text.AppendLine($"sampleRate    {SampleRate}");
+        text.AppendLine($"seconds       {audio.Duration.TotalSeconds:0.00}");
+        text.AppendLine();
+        text.AppendLine("stations      2, keying at the same time in one passband");
+        text.AppendLine($"offset        {offset:+0;-0} Hz");
+        text.AppendLine($"levelDb       {levelDb:+0.0;-0.0} dB, the second against the first");
+        text.AppendLine();
+        text.AppendLine($"wanted        {wanted.Text}");
+        text.AppendLine($"  toneHz      {wanted.ToneHz:0} Hz");
+        text.AppendLine($"  wpm         {wanted.WordsPerMinute:0.0}");
+        text.AppendLine($"  snrDb       {wanted.SignalToNoiseDb:0.0} dB over the band");
+        text.AppendLine();
+        text.AppendLine($"other         {other.Text}");
+        text.AppendLine($"  toneHz      {other.ToneHz:0} Hz");
+        text.AppendLine($"  wpm         {other.WordsPerMinute:0.0}");
+        text.AppendLine();
+        text.AppendLine($"peak          {AudioTap.PeakOf(audio):0.0} dBFS");
+
+        return (audio, text.ToString());
+    }
+
     /// <summary>Generate one fixture.</summary>
     /// <param name="recipe">What to build.</param>
     /// <returns>The audio and the sidecar describing it.</returns>

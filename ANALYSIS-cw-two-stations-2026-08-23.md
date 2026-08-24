@@ -1,0 +1,95 @@
+# Two senders in one passband, 2026-08-23
+
+Nothing in this repository had measured what the decoder does with two
+stations in one passband. Every fixture held one sender and all nine
+captures were analysed as though one station were present.
+
+The wanted station sends `CQ DE N0CALL K` at 18 words a
+minute, 600 Hz, 15 dB over a band of noise
+shaped to the receiver's own passband. The competing station sends
+`DE N0AAA UP` at 24 words a minute, starting a third of a
+second later so its marks land inside the wanted station's rather than
+beside them. Both key throughout.
+
+**Integrator: boxcar.**
+
+Regenerate with:
+
+```
+dotnet test tests/Hamlet.RadioEngine.Tests --filter FullyQualifiedName~TheTwoStationTable
+```
+
+## The control: one station, alone
+
+Same recipe, same seed, same band, with the competing station left
+out. Read four ways, so a difference can be attributed to a stage
+rather than to the whole path.
+
+| read how | correct | wrong | invented | emitted | E-share | read |
+|---|---|---|---|---|---|---|
+| whole file, fixed pitch | 11 | 0 | 0 | 11 | 9 % | ` CQ DE N0CALL K ` |
+| whole file, forced to 18 wpm | 11 | 0 | 1 | 12 | 17 % | ` CQ DE N0CALL K E ` |
+| streaming window, pitch nailed to 600 Hz | 11 | 0 | 1 | 12 | 17 % | ` CQ DE N0CALL K E ` |
+| the production path, tracker and all | 10 | 1 | 22 | 33 | 24 % | `QQ T DEDE EE NNM■0E0KCECAEALLALLL T KK  E` |
+
+**How hard the two-station fixture actually is**, at 40 Hz and equal
+level, measured through the decoder's own front end pointed at each
+station in turn: **0.76 s with both keys down at once**, 
+3.19 s of the wanted station alone and 1.01 s of the other alone. A fixture where the
+two never collide proves nothing about rejection and looks exactly
+like one that does (§12.5).
+
+**`levelDb` is a ratio of keyed amplitudes, not of averages.** The two
+stations send different text at different speeds, so their key-down
+fractions differ and a whole-recording average of the competing
+station sits about six decibels below the wanted one at a stated level
+of nought.
+
+## At a fixed pitch, with no tracker
+
+**This is the one a front-end change is judged on.** Nothing moves the filter, so the only thing standing between the competing station and the envelope is the integrator.
+
+`correct` counts characters read as sent, of nine. `invented` counts characters read where nothing was sent at all, which is `CwMatchKind.Invented` and not the `Wrong` the sensitivity sweep prints under that name.
+
+| offset | level | correct | wrong | invented | emitted | E-share | read |
+|---|---|---|---|---|---|---|---|
+| 40 Hz | +0 dB | 11 | 0 | 0 | 11 | 9 % | ` CQ DE N0CALL K ` |
+| 40 Hz | -6 dB | 11 | 0 | 0 | 11 | 9 % | ` CQ DE N0CALL K ` |
+| 40 Hz | -12 dB | 11 | 0 | 0 | 11 | 9 % | ` CQ DE N0CALL K ` |
+| 80 Hz | +0 dB | 11 | 0 | 0 | 11 | 9 % | ` CQ DE N0CALL K ` |
+| 80 Hz | -6 dB | 11 | 0 | 0 | 11 | 9 % | ` CQ DE N0CALL K ` |
+| 80 Hz | -12 dB | 11 | 0 | 0 | 11 | 9 % | ` CQ DE N0CALL K ` |
+| 120 Hz | +0 dB | 11 | 0 | 0 | 11 | 9 % | ` CQ DE N0CALL K ` |
+| 120 Hz | -6 dB | 11 | 0 | 0 | 11 | 9 % | ` CQ DE N0CALL K ` |
+| 120 Hz | -12 dB | 11 | 0 | 0 | 11 | 9 % | ` CQ DE N0CALL K ` |
+| 200 Hz | +0 dB | 11 | 0 | 0 | 11 | 9 % | ` CQ DE N0CALL K ` |
+| 200 Hz | -6 dB | 11 | 0 | 0 | 11 | 9 % | ` CQ DE N0CALL K ` |
+| 200 Hz | -12 dB | 11 | 0 | 0 | 11 | 9 % | ` CQ DE N0CALL K ` |
+| 300 Hz | +0 dB | 11 | 0 | 0 | 11 | 9 % | ` CQ DE N0CALL K ` |
+| 300 Hz | -6 dB | 11 | 0 | 0 | 11 | 9 % | ` CQ DE N0CALL K ` |
+| 300 Hz | -12 dB | 11 | 0 | 0 | 11 | 9 % | ` CQ DE N0CALL K ` |
+
+## Through the production path, tracker and all
+
+**This is what the operator would get.** The tracker can walk off to the competing station, and where it does the text collapses for a reason that has nothing to do with the filter.
+
+`correct` counts characters read as sent, of nine. `invented` counts characters read where nothing was sent at all, which is `CwMatchKind.Invented` and not the `Wrong` the sensitivity sweep prints under that name.
+
+| offset | level | correct | wrong | invented | emitted | E-share | read |
+|---|---|---|---|---|---|---|---|
+| 40 Hz | +0 dB | 9 | 1 | 22 | 32 | 25 % | `QQ T DEDE E NNM■0E0DCECAEALLALLL T T  E E ` |
+| 40 Hz | -6 dB | 9 | 1 | 22 | 32 | 25 % | `QQ T DEDE EE NNM■0E0KCECAEALLALLL T T   E ` |
+| 40 Hz | -12 dB | 10 | 1 | 22 | 33 | 24 % | `QQ T DEDE EE NNM■0E0KCECAEALLALLL T KK  E` |
+| 80 Hz | +0 dB | 9 | 1 | 22 | 32 | 25 % | `QQ T DEDE EE NNM■0E0KCECAEALLALLL T T   E ` |
+| 80 Hz | -6 dB | 9 | 1 | 22 | 32 | 25 % | `QQ T DEDE EE NNM■0E0KCECAEALLALLL T T   E ` |
+| 80 Hz | -12 dB | 10 | 1 | 22 | 33 | 24 % | `QQ T DEDE EE NNM■0E0KCECAEALLALLL T KK  E` |
+| 120 Hz | +0 dB | 9 | 1 | 22 | 32 | 25 % | `QQ T DEDE EE NNM■0E0KCECAEALLALLL T T   E ` |
+| 120 Hz | -6 dB | 9 | 1 | 22 | 32 | 25 % | `QQ T DEDE EE NNM■0E0KCECAEALLALLL T T   E ` |
+| 120 Hz | -12 dB | 10 | 1 | 22 | 33 | 24 % | `QQ T DEDE EE NNM■0E0KCECAEALLALLL T KK  E` |
+| 200 Hz | +0 dB | 10 | 1 | 22 | 33 | 24 % | `QQ T DEDE EE NNM■0E0KCECAEALLALLL T KK  E` |
+| 200 Hz | -6 dB | 9 | 1 | 22 | 32 | 25 % | `QQ T DEDE EE NNM■0E0KCECAEALLALLL T T   E ` |
+| 200 Hz | -12 dB | 9 | 1 | 22 | 32 | 25 % | `QQ T DEDE EE NNM■0E0KCECAEALLALLL T T   E ` |
+| 300 Hz | +0 dB | 10 | 1 | 22 | 33 | 24 % | `QQ T DEDE EE NNM■0E0KCECAEALLALLL T KK  E` |
+| 300 Hz | -6 dB | 10 | 1 | 22 | 33 | 24 % | `QQ T DEDE EE NNM■0E0KCECAEALLALLL T KK  E` |
+| 300 Hz | -12 dB | 9 | 1 | 22 | 32 | 25 % | `QQ T DEDE EE NNM■0E0KCECAEALLALLL T T   E ` |
+

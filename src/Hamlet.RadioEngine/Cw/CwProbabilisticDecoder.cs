@@ -128,6 +128,15 @@ public static class CwProbabilisticDecoder
     /// </remarks>
     public const double BandwidthHz = 60.0;
 
+    /// <summary>What shape the envelope's integrator is, for the record.</summary>
+    /// <remarks>
+    /// **A TABLE THAT NAMES ITS OWN INSTRUMENT CANNOT BE MISFILED** (§0.0.1). The
+    /// front end is being measured before and after a change to it, and two
+    /// tables that look alike and were taken through different filters are worth
+    /// less than one table, because nobody can tell afterwards which was which.
+    /// </remarks>
+    public const string IntegratorName = "boxcar";
+
     /// <summary>How often the envelope is sampled, in milliseconds.</summary>
     public const double HopMilliseconds = 5.0;
 
