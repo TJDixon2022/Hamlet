@@ -937,13 +937,24 @@ public static class CwProbabilisticDecoder
 
         var quarter = PercentileOf(scratch, take, 25);
 
-        // **NO ESTIMATE RATHER THAN A CLAMPED ONE.** A quarter point of exactly
-        // nought means at least a quarter of this span is digital silence, which
-        // a receiver never delivers: it is a muted codec, a gap spliced into a
-        // recording, or a fixture built without a noise floor (HM-OPEN-018).
-        // There is no noise to estimate, so no estimate is returned and the
-        // caller reads nothing from the span. Returning a floor instead is what
-        // put `cw-2026-08-23-001520` at ten to the sixteenth.
+        // **NO ESTIMATE RATHER THAN A CLAMPED ONE, AND ONLY WHERE THERE IS
+        // NOTHING AT ALL.** A span whose largest magnitude is nought is entirely
+        // digital silence, which a receiver never delivers: it is a muted codec,
+        // a gap spliced into a recording, or a fixture built without a noise
+        // floor (HM-OPEN-018). There is no noise to estimate, so no estimate is
+        // returned and the caller reads nothing from the span. Returning a floor
+        // instead is what put `cw-2026-08-23-001520` at ten to the sixteenth and
+        // let three seconds of an all-zero buffer emit characters.
+        //
+        // **THE TEST IS THE QUARTER POINT, AND THE SPECIFICATION'S LITERAL FORM
+        // WAS TRIED AND IS WORSE.** Refusing only where the whole span is silent
+        // takes `clean-12wpm`, `clean-18wpm` and `prosigns-18wpm` from nine, nine
+        // and sixteen to **nought**: over a wholly silent span both hypotheses
+        // score the same, so a mark costs no more than a gap and the length
+        // penalty alone decides, which on fixtures made of tone and exact silence
+        // is most of the recording. The quarter point costs those two fixtures
+        // two and three characters instead, and they are the ones HM-OPEN-018
+        // already records as encoding a physical impossibility.
         if (quarter <= 0)
         {
             sigma = double.NaN;

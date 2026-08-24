@@ -30,7 +30,7 @@ be measured at all. `window` is what the guard would have seen.
 | `cw-2026-08-18-003758` | 10.77 | 60 | -25.85 / 21.95 / 54.04 | `K I S QR L TU E EE AN E AN D E AA4MP /4 QNI K E EEEE E E E E AN E ANQNI K E EE E E E H I E E RN E` |
 | `cw-2026-08-24-012403` | 1.10 | 46 | -1.06 / 1.38 / 8.33 | ` I E E E EE E E E E EEE E ADM UUT UD0 TN DEQ 6Q E SQ DE KD0UN KD0UN K ` |
 | `cw-2026-08-22-031905` | 4.93 | 39 | 0.39 / 8.09 / 18.88 | `TO . PREDICTED 10.7 K NTIMETER FLUX IS 125, 125N` |
-| `cw-2026-08-23-001520` | 13950103585681500.00 | 7 | 15436807382267600.00 / 16842028496714300.00 / 22894144462244400.00 | `#S <HH><HH>H##` |
+| `cw-2026-08-23-001520` | 0.00 | 1 | 0.00 / 0.00 / 0.00 | `#` |
 | `cw-2026-08-20-014854` | 0.65 | 77 | -8.31 / 0.99 / 4.50 | ` E E EE 5EE E EEE N IEIE E E II E TE IE T E E N EEI E MING I ETM N ERQ GRE CTIE EE RID PET ES SE G T EEIGIE # S OP 6` |
 | `cw-2026-08-20-014935` | 0.11 | 109 | -2.11 / 0.72 / 3.22 | `EE E EEII I EE IE E INEE E I E I E E E EEI EE IE EE UE EEE EI ES S E S EI E EE I E E E EE EES E E I EEE IE EEE I EEE E IEE EE EE E EE IEEEE EE E EE E I ES I E EEEEE E E E` |
 
@@ -73,7 +73,7 @@ the provisional span arrives with its own sensitivity measured.
 | `cw-2026-08-18-003758` | 11.2, 54 chars, AA4MP/4QNIK kept | 10.8, 60 chars, AA4MP/4QNIK kept | 10.4, 51 chars, AA4MP/4QNIK kept |
 | `cw-2026-08-24-012403` | 1.1, 49 chars, KD0UNKD0UNK LOST | 1.1, 46 chars, KD0UNKD0UNK kept | 1.2, 42 chars, KD0UNKD0UNK kept |
 | `cw-2026-08-22-031905` | 5.1, 40 chars | 4.9, 39 chars | 4.8, 40 chars |
-| `cw-2026-08-23-001520` | 13610741242254900.0, 8 chars | 13950103585681500.0, 7 chars | 13950103585681500.0, 7 chars |
+| `cw-2026-08-23-001520` | 8048633.8, 12 chars | 0.0, 1 chars | 0.0, 1 chars |
 | `cw-2026-08-20-014854` | 0.6, 79 chars | 0.6, 77 chars | 0.7, 80 chars |
 | `cw-2026-08-20-014935` | 0.1, 111 chars | 0.1, 109 chars | 0.1, 112 chars |
 

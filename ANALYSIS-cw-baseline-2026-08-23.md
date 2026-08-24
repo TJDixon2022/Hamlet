@@ -371,10 +371,10 @@ grid:    N E IE EIE E EE #E EN EES E T #I ES F E E T I E SEEI S S E E# EENES E S
 
 | | shipped | grid |
 |---|---|---|
-| characters emitted | 58 | 7 |
-| E-share | 9 % | 0 % |
-| single-character words | 40 % | 0 % |
-| words per minute read | 22 | 8.0 |
+| characters emitted | 3 | 0 |
+| E-share | 0 % | no characters |
+| single-character words | 0 % | no characters |
+| words per minute read | 8 | 8.0 |
 
 The witness split, over the shipped decode:
 
@@ -386,15 +386,15 @@ absence (§0.0).
 
 | witness | characters | E-share | single-char words | span LLR P10 / median / P90 |
 |---|---|---|---|---|
-| said keying | 52 | 10 % | 40 % | 1591038243364530000.0 / 4621471536533110000.0 / 19016232227254800000.0 |
+| said keying | 3 | 0 % | 0 % | 0.0 / 0.0 / 0.0 |
 | said no keying | 0 | no characters | no characters | nothing measured |
-| had not decided | 6 | 0 % | 0 % | 9011856802717820000.0 / 12572636177008100000.0 / 16663761632419900000.0 |
+| had not decided | 0 | no characters | no characters | nothing measured |
 
 What each read:
 
 ```
-shipped: ■■■■■■■■■■ESSS   E SH5■<HH><HH>ESH■■<HH><HH>ISHHESS5■<HH>■■■■GQ■■SS E NSKT■CCSV
-grid:    #S <HH><HH>H##
+shipped: ■■■
+grid:    (nothing)
 ```
 
 ### `cw-2026-08-24-012403`
@@ -512,9 +512,9 @@ gate never gets to see a whole file.
 | | said no keying | 4 | 2.9 / 3.2 / 3.3 |
 | | had not decided | 10 | 1.6 / 2.8 / 4.0 |
 | `cw-2026-08-23-001520` | | | |
-| | said keying | 49 | 12349197963015500.0 / 13498653774167700.0 / 14750207661984800.0 |
+| | said keying | 6 | 0.0 / 0.0 / 11402.5 |
 | | said no keying | 0 | nothing measured |
-| | had not decided | 7 | 15019761337863000.0 / 16310383275535400.0 / 16642275185739000.0 |
+| | had not decided | 1 | 0.0 / 0.0 / 0.0 |
 | `cw-2026-08-24-012403` | | | |
 | | said keying | 0 | nothing measured |
 | | said no keying | 35 | 0.5 / 0.8 / 1.6 |
