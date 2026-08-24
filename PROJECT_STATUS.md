@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 3 of 6
+TASK: 4 of 6
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-23T23:25:06-04:00
-NOTE: Hann in both paths, both empty captures still silent, fixed-pitch two-station table unchanged at every cell; it fixes three tests and breaks four, and the gate's own margin is the one that narrowed
+UPDATED: 2026-08-23T23:28:56-04:00
+NOTE: the swept grid returns a tie at every width, so rejection chose nothing; the gate's margin halves as the filter narrows and that is the cost that binds
 
 ---
 

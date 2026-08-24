@@ -218,9 +218,32 @@ internal static class CwTwoInOnePassband
     /// envelope is the integrator.
     /// </remarks>
     public static CwTwoStationReading Fixed(double offsetHz, double levelDb)
+        => Fixed(
+            offsetHz, levelDb, CwProbabilisticDecoder.IntegratorBandwidthHz);
+
+    /// <summary>Read one combination at a fixed pitch through a stated filter.</summary>
+    /// <param name="offsetHz">The offset.</param>
+    /// <param name="levelDb">The level.</param>
+    /// <param name="bandwidthHz">The integrator's equivalent noise bandwidth.</param>
+    /// <returns>What survived.</returns>
+    /// <remarks>
+    /// **THE ONLY PATH THE WIDTH CAN BE SWEPT THROUGH.** The production constant
+    /// is a constant, deliberately: it was briefly settable once so a sweep could
+    /// read it, and a mutable static the whole suite shares is a way for one test
+    /// to change another test's numbers without either saying so
+    /// (<see cref="CwProbabilisticStream.RefillSeconds"/>). So the trade is
+    /// measured offline and the production default is moved by a ruling, not by a
+    /// sweep.
+    /// </remarks>
+    public static CwTwoStationReading Fixed(
+        double offsetHz, double levelDb, double bandwidthHz)
     {
+        var audio = Audio(offsetHz, levelDb);
+
         var result = CwProbabilisticDecoder.Decode(
-            Audio(offsetHz, levelDb), WantedToneHz);
+            CwProbabilisticDecoder.Envelope(
+                audio.Samples, audio.SampleRate, WantedToneHz, bandwidthHz),
+            WantedToneHz);
 
         return Score(offsetHz, levelDb, AsCharacters(result));
     }

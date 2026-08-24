@@ -147,11 +147,30 @@ public static class CwProbabilisticDecoder
     /// multiplying by one and a half lands on three quarters of sixty. **The
     /// main lobe is what carries the wanted station**, so it is the figure held
     /// constant and the noise bandwidth is what follows.</para>
-    /// <para>**MEASURED RATHER THAN ARGUED** (unit 002, task 4). The trade at 60,
-    /// 45, 30 and 20 hertz is in
-    /// `ANALYSIS-cw-integrator-bandwidth-2026-08-23.md`, taken over the
-    /// two-station table, the sensitivity sweep and a fast fist, and the value
-    /// here is the one that table chose.</para>
+    /// <para>**MEASURED RATHER THAN ARGUED, AND THE ORDERED MEASUREMENT RETURNED
+    /// A TIE.** The trade at 60, 45, 30 and 20 hertz is in
+    /// `ANALYSIS-cw-integrator-bandwidth-2026-08-23.md`. Across the whole swept
+    /// grid — five offsets from 40 hertz out, three levels down from equal —
+    /// **every width reads the wanted station whole**, so rejection did not
+    /// choose this number and nothing about the two-station case did.</para>
+    /// <para>**WHAT NARROWING COSTS, ALSO MEASURED.** Sensitivity: nothing, down
+    /// to nought decibels at every width. A fast fist: nothing, to thirty-five
+    /// words a minute at every width, including a seventy-five millisecond
+    /// integrator on a thirty-four millisecond dit, because a segmental decoder
+    /// scores a span rather than thresholding a level and a smeared envelope
+    /// keeps its timing. **The gate's own margin: real, and the binding one.**
+    /// The empty band on `cw-2026-08-20-014854` climbs 6.6, 8.0, 9.3, 10.0
+    /// against a gate of fifteen. Silence holds at every width, so HM-DEC-120 is
+    /// not traded, but the room under the gate halves. And the corpus: 013347
+    /// falls from eighty-three characters to forty-nine at twenty hertz with its
+    /// E-share rising, which is plainly worse.</para>
+    /// <para>**THIRTY IS THE LIVE ALTERNATIVE AND IT IS A TRADE RATHER THAN A
+    /// DEDUCTION** (§12.1). Below about thirty hertz of separation the narrower
+    /// filters win outright, and thirty would buy that at no measured cost to a
+    /// fast fist. Those rows are not in the swept grid; they were added by the
+    /// session that wrote them, and fitting a production constant to a fixture
+    /// the same session invented is the shape of the failure §12.5 exists to
+    /// stop. So the principled figure stands and the trade is handed back.</para>
     /// </remarks>
     public const double IntegratorBandwidthHz = 45.0;
 
