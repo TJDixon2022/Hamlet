@@ -1102,16 +1102,14 @@ public sealed class CwToneTracker
         {
             _tracked = NearestFine(exact.ToneHz);
 
-            // The survey chose this note by its keying; this only says where it
-            // is (HM-DEC-095).
-            _reportedHz = Refined(exact.ToneHz);
+            _reportedHz = exact.ToneHz;
             KeyingFoundAt(exact.ToneHz);
             Verdict = new ToneVerdict(exact, Filtered(coarse.Interference));
             return;
         }
 
         _tracked = NearestFine(keyed.ToneHz);
-        _reportedHz = Refined(keyed.ToneHz);
+        _reportedHz = keyed.ToneHz;
         Verdict = new ToneVerdict(keyed, Filtered(coarse.Interference));
     }
 
@@ -1168,9 +1166,7 @@ public sealed class CwToneTracker
         _fineSurvey.Reset();
         _tracked = _fineHz.Length / 2;
 
-        // The survey chose this station by its keying; the reported pitch is
-        // where it actually sits rather than which bin found it (HM-DEC-095).
-        _reportedHz = Refined(toneHz);
+        _reportedHz = toneHz;
         KeyingFoundAt(toneHz);
         Retunes++;
 
@@ -1227,6 +1223,22 @@ public sealed class CwToneTracker
     /// <summary>
     /// Where the admitted candidate actually sits, between the bins.
     /// </summary>
+    /// <remarks>
+    /// **BUILT, MEASURED, AND NOT APPLIED.** On the corpus it improved
+    /// `cw-2026-08-18-004507` and `cw-2026-08-18-003126` by a hertz or three and
+    /// moved `cw-2026-08-18-003016` five hertz the wrong way — but none of those
+    /// recordings has a known pitch, so none of them can settle it. On the one
+    /// signal whose pitch is known because it was generated, 613.7 Hz, this
+    /// answers **619.45** while <see cref="MeasuredPeakHz"/> answers **613.64**.
+    /// A refinement that is five hertz worse than what was already there is not
+    /// a refinement, and it is not shipped on the strength of captures where
+    /// nobody can check it (§12.5).
+    /// <para>The two read different instruments: this sweeps the tracker's ring
+    /// buffer through the gate's Hann taper, and `MeasuredPeakHz` interpolates
+    /// the fine bank read through the survey's own window. Which window a pitch
+    /// is measured through changes the answer, which is HM-DEC-119's lesson
+    /// again.</para>
+    /// </remarks>
     /// <param name="aroundHz">The pitch the survey admitted.</param>
     /// <returns>The refined pitch, or the same one if it cannot be improved.</returns>
     /// <remarks>

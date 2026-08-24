@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 3 of 5
+TASK: 4 of 5
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-24T16:19:41-04:00
-NOTE: an unmeasured pitch now says so on the sheet; refusing to decode at one was built, measured to cost N4L, and withdrawn for Tim to rule on
+UPDATED: 2026-08-24T16:38:59-04:00
+NOTE: task 2's refinement withdrawn — on the one signal with a known pitch it is 5.75 Hz worse than the peak finder already in the tree; the auto-hold stays
 
 ---
 

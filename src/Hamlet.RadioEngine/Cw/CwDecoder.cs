@@ -64,6 +64,18 @@ public sealed class CwDecoder
     /// <summary>The pitch the mixdown is held at, or NaN when it follows.</summary>
     private double _lockedToneHz = double.NaN;
 
+    /// <summary>The last pitch the survey actually measured, or NaN.</summary>
+    /// <remarks>
+    /// **A MEASURED PITCH IS HELD UNTIL A BETTER ONE ARRIVES, WITHOUT ANYBODY
+    /// PRESSING ANYTHING.** The tracker answers with the middle of its bank
+    /// whenever the survey has nothing admitted, which is every gap between
+    /// overs and the whole of a slow sender's spacing. Following that answer
+    /// swings the mixdown off a station that is still there and back again, and
+    /// unit 002 measured what that costs: twenty-two invented characters against
+    /// none with the pitch held still.
+    /// </remarks>
+    private double _lastMeasuredToneHz = double.NaN;
+
     private int _charactersEmitted;
     private int _charactersUnsure;
     private int _elementsResolved;
@@ -291,7 +303,13 @@ public sealed class CwDecoder
     /// </remarks>
     public double Lock()
     {
-        var peak = _tracker.MeasuredPeakHz;
+        // **THE MEASURED PITCH IF THERE IS ONE.** The tracker's interpolated
+        // peak is a reading of whatever bin the bank is on, and where the survey
+        // has admitted a station the refined pitch it reported is the better
+        // number. A lock fed a bank centre locks onto the error.
+        var peak = _tracker.HasMeasuredPitch
+            ? _tracker.ToneHz
+            : _tracker.MeasuredPeakHz;
 
         if (double.IsNaN(peak))
         {
@@ -478,8 +496,27 @@ public sealed class CwDecoder
         // its station sits at 500.09, so the callsign was only ever read because
         // an unmeasured number happened to land on it. Honesty and that callsign
         // are in tension and the ruling is Tim's (§0.0, HM-DEC-009).
+        if (_tracker.HasMeasuredPitch)
+        {
+            _lastMeasuredToneHz = _tracker.ToneHz;
+        }
+
+        // **THE OPERATOR'S LOCK FIRST, THEN THE LAST MEASURED PITCH, THEN THE
+        // BANK.** The middle rung is new and it is what stops the mixdown
+        // swinging back to a bank centre every time the survey's three seconds
+        // of history run dry — which on a slow sender is most of the time
+        // between characters.
+        //
+        // **IT HOLDS AND IT DOES NOT CHOOSE.** Where the survey admits a
+        // candidate the tracker's own rules decide which one and this follows
+        // whatever they decided (HM-DEC-095, HM-DEC-127, both untouched). What
+        // it changes is only what happens when nothing is admitted at all, which
+        // is task 3's scope: the answer is the last thing actually measured
+        // rather than the middle of a bank.
         _probabilistic.ToneHz = double.IsNaN(_lockedToneHz)
-            ? _tracker.ToneHz
+            ? double.IsNaN(_lastMeasuredToneHz)
+                ? _tracker.ToneHz
+                : _lastMeasuredToneHz
             : _lockedToneHz;
         _probabilistic.Process(chunk.Samples);
 
