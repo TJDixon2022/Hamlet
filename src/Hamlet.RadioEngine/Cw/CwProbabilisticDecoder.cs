@@ -142,17 +142,50 @@ public readonly record struct CwProbabilisticCharacter(
 public static class CwProbabilisticDecoder
 {
     /// <summary>
-    /// The log-likelihood ratio per hop below which nothing is emitted.
+    /// The log-likelihood ratio per hop below which nothing is emitted from a
+    /// window at all.
     /// </summary>
     /// <remarks>
-    /// **PROVISIONAL, AND THE MEASURED GAP IT SITS IN IS WIDE.** On this
-    /// repository's six real recordings the ratio is 24 to 39 where a station is
-    /// sending and 3 to 6 where none is, with no overlap, so any value between
-    /// ten and twenty reads every station and silences both empty bands. Fifteen
-    /// is the middle of that. It wants an evening's captures scored against it
-    /// before it stops being a number somebody chose.
+    /// <para>**RE-EXPRESSED 2026-08-24, IN THE UNITS OF THE CORRECTED SCALE.**
+    /// Fifteen was calibrated when the noise scale was 0.455 sigma, which
+    /// inflated every quadratic term about four and eight tenths times. Unit
+    /// 1.11.4 corrected the scale by identity and the model got better at
+    /// reading while this number stayed where it was, so a bar meant for one set
+    /// of units was applied to another: four recordings that read the day before
+    /// read nothing.</para>
+    /// <para>**IT IS THE OUTER SILENCE GUARD AND NOT THE EMIT DECISION.** That
+    /// belongs to the character and has since unit 1.11.3
+    /// (<see cref="CharacterMargin"/>). This asks only whether there is anything
+    /// in this window at all.</para>
+    /// <para>**WHERE THE NUMBER COMES FROM.** Every window ratio the streaming
+    /// path produces across the corpus, measured 2026-08-24 on the instrument
+    /// that actually gates. The guard is applied per window, so a whole-file
+    /// figure is the wrong measurement for it — unit 1.11.4's published table
+    /// was whole-file and is not what a recording meets.</para>
+    /// <list type="table">
+    /// <item><description>`cw-2026-08-20-014854`, holding nothing: 55 windows,
+    /// **highest 0.840**</description></item>
+    /// <item><description>`cw-2026-08-20-014935`, holding nothing: 55 windows,
+    /// highest 0.115</description></item>
+    /// <item><description>`cw-2026-08-24-012403`, holding `DE KD0UN KD0UN K`:
+    /// **highest 1.684**, three quarters of its windows under 1.156</description></item>
+    /// <item><description>`cw-2026-08-18-004507`, the ARRL bulletin: lowest
+    /// 4.271</description></item>
+    /// <item><description>`cw-2026-08-17-134712`, holding `N4L`: highest
+    /// 13.226</description></item>
+    /// </list>
+    /// <para>**THE GAP IS 0.840 TO 1.684 AND THIS SITS IN THE MIDDLE OF IT.**
+    /// Above every window either empty capture produces, so the property
+    /// HM-DEC-120 protects is held with room; below the best windows of the
+    /// weakest recording that holds a station, so the signal this work was
+    /// commissioned to recover is admitted.</para>
+    /// <para>**THE GAP IS NARROW AND THAT IS SAID RATHER THAN HIDDEN.** Two to
+    /// one, against the five hundred to one the old units flattered. A recording
+    /// holding no station whose noise ran a little hotter than
+    /// `cw-2026-08-20-014854`'s would cross it. What stands behind the guard is
+    /// the per-character margin, which is where the emit decision lives.</para>
     /// </remarks>
-    public const double Gate = 15.0;
+    public const double Gate = 1.25;
 
     /// <summary>How wide the envelope's own filter is, in hertz.</summary>
     /// <remarks>
