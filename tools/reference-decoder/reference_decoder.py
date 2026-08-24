@@ -79,7 +79,12 @@ MORSE = {
 # Element kinds: (duration in units, is key-down, token)
 KINDS = [(1,True,'.'), (3,True,'-'), (1,False,''), (3,False,'|'), (7,False,' ')]
 
-GATE = 15.0          # log-likelihood ratio per sample below which nothing is emitted.
+GATE = 1.25          # log-likelihood ratio per sample below which nothing is emitted.
+                     # Re-expressed 2026-08-24 with the corrected Rayleigh scale,
+                     # from the corpus's own window ratios: the gap runs 0.840,
+                     # the highest an empty capture reaches, to 1.684, the
+                     # highest cw-2026-08-24-012403 reaches. Fifteen belonged to
+                     # a scale that was 0.455 sigma.
                      # Measured separation is 3-6 (no station) against 24-39 (station).
                      # Provisional. Wants an evening's captures scored against it.
 
@@ -107,18 +112,63 @@ def envelope(path, tone, bw_hz=60.0, hop_ms=5.0):
     return e[::int(sr * hop_ms / 1000.0)], hop_ms
 
 
-def loglik_streams(e):
+RAYLEIGH_QUARTER_POINT = 0.758527616440932
+NOISE_SPAN_SECONDS = 2.5
+
+
+def loglik_streams(e, hop_ms=5.0, span_seconds=NOISE_SPAN_SECONDS):
     """Per-sample log-likelihood of key-down and key-up. No threshold is formed.
 
-    Noise scale from the lower quartile, signal amplitude from the upper tail.
-    Bell does this properly with a tracked noise power estimate feeding Kalman
-    recursions; this is the cheap version and it is where a port should improve.
+    The noise scale is the Rayleigh sigma, taken from the quarter point by
+    identity: for a Rayleigh envelope the CDF is 1 - exp(-e**2 / 2 sigma**2), so
+    at the quarter point that exponential is 3/4 and the magnitude is
+    sigma * sqrt(2 ln(4/3)).  That root is 0.758528.  This replaced a factor of
+    0.6, which is 0.455 sigma: 2.2x too small, inflating every quadratic term
+    about 4.8x.  It is an identity and there is nothing in it to tune.
+
+    Key-up is a proper Rayleigh density and carries its log-of-the-magnitude
+    term.  Leaving that out under-credits the noise hypothesis in the upper tail,
+    which is exactly where noise peaks live, so a loud noise peak looked more
+    like a mark than like noise.
+
+    Key-down is the Gaussian approximation to a Rician envelope, as before, now
+    properly normalised so the difference between the two is a log-likelihood
+    ratio rather than a difference of two differently scaled numbers.
+
+    Both are estimated over a rolling span rather than once over the recording,
+    so a figure measured here means the same thing the streaming path means.
     """
-    sd = max(np.percentile(e, 25) * 0.6, 1e-6)
-    amp = max(np.percentile(e, 97), sd * 1.05)
-    key_up   = -0.5 * (e / sd) ** 2 - np.log(sd)
-    key_down = -0.5 * ((e - amp) / sd) ** 2 - np.log(sd)
-    return key_down, key_up, amp / sd
+    n = len(e)
+    key_up = np.empty(n)
+    key_down = np.empty(n)
+
+    if n == 0:
+        return key_down, key_up, 0.0
+
+    span = max(8, int(span_seconds * 1000.0 / hop_ms))
+    step = max(1, span // 8)
+
+    worst = 0.0
+    sigma = amp = None
+    estimated_at = None
+
+    for i in range(n):
+        if estimated_at is None or i - estimated_at >= step:
+            lo = min(max(i - span // 2, 0), max(0, n - span))
+            w = e[lo:lo + span]
+            sigma = max(np.percentile(w, 25) / RAYLEIGH_QUARTER_POINT, 1e-9)
+            amp = max(np.percentile(w, 97), sigma * 1.05)
+            estimated_at = i
+            worst = max(worst, amp / sigma)
+
+        ei = max(e[i], 1e-12)
+        var = 2.0 * sigma * sigma
+
+        key_up[i] = np.log(ei) - 2.0 * np.log(sigma) - ei * ei / var
+        key_down[i] = (-0.5 * np.log(2.0 * np.pi) - np.log(sigma)
+                       - (ei - amp) ** 2 / var)
+
+    return key_down, key_up, worst
 
 
 def decode_at(e, hop_ms, wpm, on_ll, off_ll):
@@ -193,7 +243,7 @@ def decode(path, speeds=np.arange(10, 34, 2.0)):
     """
     tone = find_tone(path)
     e, hop = envelope(path, tone)
-    on_ll, off_ll, _snr = loglik_streams(e)
+    on_ll, off_ll, _snr = loglik_streams(e, hop)
     null = off_ll.sum()
 
     best = None
