@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 3 of 5
+TASK: 4 of 5
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-23T20:08:13-04:00
-NOTE: the refill guard now runs on the first fill and it moved three tests; the pre-refill soup it suppresses was carrying the message's own opening C, and the sweep's invented column turns out to count substitutions only
+UPDATED: 2026-08-23T20:23:40-04:00
+NOTE: baseline table runs over all nine captures and the sweep; the witness split is now three rows because the meter's first six seconds are undecided rather than quiet, re-running to take the figures
 
 ---
 
