@@ -542,12 +542,32 @@ public static class CwProbabilisticDecoder
         IReadOnlyList<double> envelope, double toneHz)
         => Decode(envelope, toneHz, null, null, ungated: true);
 
+    /// <summary>Read an envelope, with the gate and the estimation span open.</summary>
+    /// <param name="envelope">Envelope magnitudes, one every hop.</param>
+    /// <param name="toneHz">The pitch it was taken at.</param>
+    /// <param name="ungated">True to return what the path spelled whatever it scored.</param>
+    /// <param name="noiseSpanSeconds">What the noise scale is estimated over.</param>
+    /// <returns>What it read.</returns>
+    /// <remarks>
+    /// **FOR MEASUREMENT, AND NOTHING IN THE APPLICATION CALLS IT.** Two
+    /// questions this unit has to answer cannot be asked any other way: what an
+    /// empty band's characters would score if the guard let them through, and
+    /// how much every figure moves when the estimation span moves.
+    /// </remarks>
+    public static CwProbabilisticResult DecodeForMeasurement(
+        IReadOnlyList<double> envelope,
+        double toneHz,
+        bool ungated,
+        double noiseSpanSeconds)
+        => Decode(envelope, toneHz, null, null, ungated, noiseSpanSeconds);
+
     private static CwProbabilisticResult Decode(
         IReadOnlyList<double> envelope,
         double toneHz,
         double? atWordsPerMinute,
         IReadOnlyList<double>? gapMilliseconds,
-        bool ungated)
+        bool ungated,
+        double noiseSpanSeconds = NoiseSpanSeconds)
     {
         ArgumentNullException.ThrowIfNull(envelope);
 
@@ -556,7 +576,7 @@ public static class CwProbabilisticDecoder
             return CwProbabilisticResult.None;
         }
 
-        var (keyDown, keyUp) = LogLikelihoods(envelope);
+        var (keyDown, keyUp) = LogLikelihoods(envelope, noiseSpanSeconds);
         var nothingAtAll = 0.0;
 
         foreach (var value in keyUp)
@@ -738,6 +758,22 @@ public static class CwProbabilisticDecoder
     /// </remarks>
     public static (double[] KeyDown, double[] KeyUp) LogLikelihoods(
         IReadOnlyList<double> envelope)
+        => LogLikelihoods(envelope, NoiseSpanSeconds);
+
+    /// <summary>Per-hop log-likelihoods, over a stated estimation span.</summary>
+    /// <param name="envelope">The envelope.</param>
+    /// <param name="noiseSpanSeconds">
+    /// How much audio the noise scale and the keyed level are taken over.
+    /// </param>
+    /// <returns>The two streams.</returns>
+    /// <remarks>
+    /// **THE SPAN IS OPEN HERE AND A CONSTANT IN PRODUCTION.** It is a parameter
+    /// so the sensitivity of every number in this unit to it can be measured and
+    /// reported rather than assumed; nothing in the application passes anything
+    /// but <see cref="NoiseSpanSeconds"/>.
+    /// </remarks>
+    public static (double[] KeyDown, double[] KeyUp) LogLikelihoods(
+        IReadOnlyList<double> envelope, double noiseSpanSeconds)
     {
         ArgumentNullException.ThrowIfNull(envelope);
 
@@ -751,7 +787,7 @@ public static class CwProbabilisticDecoder
         }
 
         var span = Math.Max(
-            8, (int)(NoiseSpanSeconds * 1000.0 / HopMilliseconds));
+            8, (int)(noiseSpanSeconds * 1000.0 / HopMilliseconds));
 
         // How often the estimate is re-taken: an eighth of the span, so it
         // follows a fade without being re-sorted at every hop.

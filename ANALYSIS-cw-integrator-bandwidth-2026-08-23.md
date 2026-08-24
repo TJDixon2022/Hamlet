@@ -40,8 +40,8 @@ table where every cell is perfect measures nothing about the filter.
 
 | offset | level | 60 Hz | 45 Hz | 30 Hz | 20 Hz |
 |---|---|---|---|---|---|
-| 40 Hz | +0 dB | 11/11, 0 made up | 11/11, 0 made up | 11/11, 0 made up | 11/11, 0 made up |
-| 40 Hz | -6 dB | 11/11, 0 made up | 11/11, 0 made up | 11/11, 0 made up | 11/11, 0 made up |
+| 40 Hz | +0 dB | 0/11, 0 made up | 11/11, 0 made up | 11/11, 0 made up | 11/11, 0 made up |
+| 40 Hz | -6 dB | 0/11, 0 made up | 11/11, 0 made up | 11/11, 0 made up | 11/11, 0 made up |
 | 40 Hz | -12 dB | 11/11, 0 made up | 11/11, 0 made up | 11/11, 0 made up | 11/11, 0 made up |
 | 80 Hz | +0 dB | 11/11, 0 made up | 11/11, 0 made up | 11/11, 0 made up | 11/11, 0 made up |
 | 80 Hz | -6 dB | 11/11, 0 made up | 11/11, 0 made up | 11/11, 0 made up | 11/11, 0 made up |
@@ -55,12 +55,12 @@ table where every cell is perfect measures nothing about the filter.
 | 300 Hz | +0 dB | 11/11, 0 made up | 11/11, 0 made up | 11/11, 0 made up | 11/11, 0 made up |
 | 300 Hz | -6 dB | 11/11, 0 made up | 11/11, 0 made up | 11/11, 0 made up | 11/11, 0 made up |
 | 300 Hz | -12 dB | 11/11, 0 made up | 11/11, 0 made up | 11/11, 0 made up | 11/11, 0 made up |
-| 30 Hz | +0 dB | 9/11, 0 made up | 11/11, 0 made up | 11/11, 0 made up | 11/11, 0 made up |
-| 30 Hz | +6 dB | 2/11, 23 made up | 1/11, 23 made up | 11/11, 0 made up | 11/11, 0 made up |
-| 20 Hz | +0 dB | 1/11, 25 made up | 1/11, 26 made up | 11/11, 0 made up | 11/11, 0 made up |
-| 20 Hz | +6 dB | 2/11, 20 made up | 2/11, 21 made up | 1/11, 21 made up | 10/11, 0 made up |
-| 15 Hz | +0 dB | 1/11, 25 made up | 5/11, 1 made up | 2/11, 24 made up | 11/11, 0 made up |
-| 10 Hz | +0 dB | 5/11, 1 made up | 5/11, 1 made up | 5/11, 1 made up | 10/11, 0 made up |
+| 30 Hz | +0 dB | 0/11, 0 made up | 9/11, 0 made up | 10/11, 0 made up | 11/11, 0 made up |
+| 30 Hz | +6 dB | 0/11, 0 made up | 0/11, 0 made up | 9/11, 0 made up | 10/11, 0 made up |
+| 20 Hz | +0 dB | 0/11, 0 made up | 9/11, 0 made up | 9/11, 0 made up | 10/11, 0 made up |
+| 20 Hz | +6 dB | 4/11, 2 made up | 5/11, 2 made up | 5/11, 1 made up | 9/11, 0 made up |
+| 15 Hz | +0 dB | 0/11, 0 made up | 5/11, 1 made up | 6/11, 0 made up | 7/11, 0 made up |
+| 10 Hz | +0 dB | 0/11, 0 made up | 5/11, 0 made up | 5/11, 2 made up | 6/11, 0 made up |
 
 ## The cost in sensitivity
 
@@ -73,7 +73,7 @@ is `CwMatchKind.Invented`.
 | 18 dB | 9/9, 0 made up | 9/9, 0 made up | 9/9, 0 made up | 9/9, 0 made up |
 | 11 dB | 9/9, 0 made up | 9/9, 0 made up | 9/9, 0 made up | 9/9, 0 made up |
 | 3 dB | 9/9, 0 made up | 9/9, 0 made up | 9/9, 0 made up | 9/9, 0 made up |
-| 0 dB | 9/9, 0 made up | 9/9, 0 made up | 9/9, 0 made up | 9/9, 0 made up |
+| 0 dB | 0/9, 0 made up | 0/9, 0 made up | 9/9, 0 made up | 9/9, 0 made up |
 
 ## The cost to a fast fist
 
@@ -98,10 +98,10 @@ that has never been traded (HM-DEC-120).
 
 | recording | holds | 60 Hz | 45 Hz | 30 Hz | 20 Hz |
 |---|---|---|---|---|---|
-| `cw-2026-08-20-014854` | nothing | 6.6 | 8.0 | 9.3 | 10.0 |
-| `cw-2026-08-20-014935` | nothing | 2.9 | 3.0 | 3.3 | 3.4 |
-| `cw-2026-08-18-004507` | a station | 34.2 | 38.1 | 43.7 | 44.0 |
-| `cw-2026-08-17-013347` | a station | 181959041.9 | 148708377.8 | 414201.9 | 5617.4 |
+| `cw-2026-08-20-014854` | nothing | 0.5 | 0.6 | 0.8 | 0.7 |
+| `cw-2026-08-20-014935` | nothing | 0.1 | 0.1 | 0.1 | 0.2 |
+| `cw-2026-08-18-004507` | a station | 6.1 | 7.0 | 8.2 | 8.6 |
+| `cw-2026-08-17-013347` | a station | 19010365.9 | 17235760.0 | 10694850.9 | 1700091.2 |
 
 The gate is **15**. A row holding
 nothing must stay well under it and a row holding a station well over.
@@ -114,10 +114,10 @@ much comes out and how much of it is the letter `E`.
 
 | recording | 60 Hz | 45 Hz | 30 Hz | 20 Hz |
 |---|---|---|---|---|
-| `cw-2026-08-17-013347` | 82 chars, E 28 % | 83 chars, E 25 % | 79 chars, E 29 % | 49 chars, E 33 % |
+| `cw-2026-08-17-013347` | 101 chars, E 44 % | 81 chars, E 63 % | 86 chars, E 59 % | 98 chars, E 46 % |
 | `cw-2026-08-17-134712` | 0 chars, E 0 % | 0 chars, E 0 % | 0 chars, E 0 % | 0 chars, E 0 % |
-| `cw-2026-08-18-004507` | 48 chars, E 13 % | 48 chars, E 13 % | 48 chars, E 13 % | 48 chars, E 13 % |
-| `cw-2026-08-18-003758` | 45 chars, E 16 % | 46 chars, E 15 % | 46 chars, E 15 % | 50 chars, E 14 % |
+| `cw-2026-08-18-004507` | 0 chars, E 0 % | 0 chars, E 0 % | 0 chars, E 0 % | 0 chars, E 0 % |
+| `cw-2026-08-18-003758` | 0 chars, E 0 % | 0 chars, E 0 % | 0 chars, E 0 % | 0 chars, E 0 % |
 
 ## What was chosen, and why
 

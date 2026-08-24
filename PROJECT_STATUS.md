@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 2 of 4
+TASK: 3 of 4
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-24T11:43:58-04:00
-NOTE: sigma now comes from the quarter point by the Rayleigh identity and key-up is a proper density; 031905 reads as English and 001520 turns out to be the operator's own callsign
+UPDATED: 2026-08-24T11:55:35-04:00
+NOTE: the guard cannot go — a margin above the empty bands' 4.50 cuts KD0UN at 1.75, and VA3VRR and N4L are not read at all once the scale is corrected
 
 ---
 
