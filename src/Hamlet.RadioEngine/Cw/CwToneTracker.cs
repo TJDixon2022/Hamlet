@@ -168,7 +168,13 @@ public sealed class CwToneTracker
     /// How far from the tracked note another one has to be before it counts as
     /// a different station rather than the same one leaking sideways.
     /// </summary>
-    private const double CompetitorSeparationHz = 125;
+    /// <remarks>
+    /// **ONE COPY, AND IT LIVES ON <see cref="CwCompetitor"/>.** The same
+    /// question is asked in three places — here, by the survey's own noise
+    /// separation, and by what the operator is told — and three copies of a
+    /// number drift silently (§0).
+    /// </remarks>
+    private const double CompetitorSeparationHz = CwCompetitor.SeparationHz;
 
     /// <summary>
     /// How much of a rival station this far off the tracked note the filter
@@ -443,6 +449,64 @@ public sealed class CwToneTracker
     /// </summary>
     /// <returns>One entry per admitted bin.</returns>
     public IReadOnlyList<KeyingCandidate> CoarseCandidates() => _survey.Candidates();
+
+    /// <summary>
+    /// Somebody else keying inside the same passband, if the survey found one.
+    /// </summary>
+    /// <remarks>
+    /// <para>**PLUMBING, NOT DETECTION.** The survey has admitted every keyed bin
+    /// for as long as it has existed and <see cref="CoarseCandidates"/> has handed
+    /// them out; what was missing was any caller. This picks the loudest admitted
+    /// bin that is far enough from the tracked station to be somebody else, and
+    /// says how far away and how loud, relative to what is being read.</para>
+    /// <para>**NULL MEANS THE SURVEY DID NOT FIND ONE AND NOTHING MORE**
+    /// (HM-DEC-009). It is not a report that the frequency is clear: the survey
+    /// needs three seconds of history and eight clean marks before it admits
+    /// anything at all, so a station that has just started, or one sending too
+    /// little to cluster, is absent here and present on the air.</para>
+    /// <para>**AND IT IS SILENT WHILE NOTHING IS BEING READ.** A competitor is
+    /// defined against the station Hamlet is reading, so with no keyed verdict
+    /// there is nothing for an offset to be an offset from, and the loudest bin
+    /// on an empty band would otherwise be announced as somebody in the way.</para>
+    /// </remarks>
+    public CwCompetitor? Competitor
+    {
+        get
+        {
+            if (Verdict.Keyed is not { } reading)
+            {
+                return null;
+            }
+
+            CwCompetitor? worst = null;
+
+            foreach (var candidate in _survey.Candidates())
+            {
+                var offset = candidate.ToneHz - reading.ToneHz;
+
+                if (Math.Abs(offset) < CwCompetitor.SeparationHz
+                    || double.IsNaN(candidate.LiftDb)
+                    || double.IsNaN(reading.LiftDb))
+                {
+                    continue;
+                }
+
+                var relative = candidate.LiftDb - reading.LiftDb;
+
+                if (relative < CwCompetitor.QuietestWorthSayingDb)
+                {
+                    continue;
+                }
+
+                if (worst is not { } loudest || relative > loudest.RelativeDb)
+                {
+                    worst = new CwCompetitor(offset, relative, candidate.ToneHz);
+                }
+            }
+
+            return worst;
+        }
+    }
 
     /// <summary>
     /// How many times the tracker has moved to a different part of the band.

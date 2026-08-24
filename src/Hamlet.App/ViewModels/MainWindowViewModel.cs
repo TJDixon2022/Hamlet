@@ -3725,6 +3725,20 @@ public partial class MainWindowViewModel : ObservableObject
             // a pass that does not compute it, which is not the same as nought.
             $"spanLlr    {SpanRatiosForTheRecord()}",
 
+            // **WHETHER SOMEBODY ELSE WAS KEYING IN THE SAME PASSBAND**, which
+            // the survey has always known and no sheet has ever carried. Two
+            // stations inside one filter arrive in one envelope, and amplitude is
+            // what the decoder measures, so a recording that reads badly with a
+            // competitor in it and a recording that reads badly on its own are
+            // different faults that have looked identical on every sheet written
+            // so far.
+            //
+            // **`none found` IS NOT `THE FREQUENCY WAS CLEAR`** (HM-DEC-009). The
+            // survey wants three seconds and eight clean marks before it admits
+            // anything, so a station that had just started is absent here and was
+            // present on the air.
+            $"competing  {CompetitorForTheRecord(report)}",
+
             // **WHETHER HAMLET COULD HEAR KEYING AT ALL, BESIDE WHAT IT READ**
             // (HM-DEC-091). The two answer different questions and only one of
             // them has ever been on a sheet. A capture where the operator heard a
@@ -4064,6 +4078,25 @@ public partial class MainWindowViewModel : ObservableObject
                + Environment.NewLine
                + "           " + body;
     }
+
+    /// <summary>
+    /// Somebody else keying in the same passband, for the sheet.
+    /// </summary>
+    /// <param name="report">The decoder's reading at the moment of the press.</param>
+    /// <returns>What was found, or that nothing was.</returns>
+    /// <remarks>
+    /// **THE FACT AND ITS CONSEQUENCE, NOT THE ADVICE.** The sentence naming the
+    /// filter and the passband controls belongs on the screen, where the operator
+    /// is sitting in front of the radio; a file read the next morning wants the
+    /// measurement (HM-DEC-148 is the ruling that a diagnosis in a text file is
+    /// not help).
+    /// </remarks>
+    private static string CompetitorForTheRecord(CwDecodeReport report)
+        => report.Competitor is { } other
+            ? $"{Math.Abs(other.OffsetHz):0} Hz {other.Side} at "
+              + $"{other.RelativeDb:+0.0;-0.0} dB relative "
+              + $"({other.ToneHz:0} Hz)"
+            : "none found (which is not the same as the frequency being clear)";
 
     /// <summary>
     /// The speed at the moment of the press, or why there is not one.

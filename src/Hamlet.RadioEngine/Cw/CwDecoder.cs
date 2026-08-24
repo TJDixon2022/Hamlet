@@ -226,7 +226,8 @@ public sealed class CwDecoder
         _charactersUnsure,
         _tracker.HasKeying,
         _tracker.Verdict.Interference,
-        (double)_tracker.Guard.BlockedHops * _tracker.HopSamples / SampleRate);
+        (double)_tracker.Guard.BlockedHops * _tracker.HopSamples / SampleRate,
+        Competitor: _tracker.Competitor);
 
     /// <summary>Everything inside the decision delay, handed over whole.</summary>
     /// <remarks>

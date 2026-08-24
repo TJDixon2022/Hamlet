@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 4 of 6
+TASK: 5 of 6
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-23T23:28:56-04:00
-NOTE: the swept grid returns a tie at every width, so rejection chose nothing; the gate's margin halves as the filter narrows and that is the cost that binds
+UPDATED: 2026-08-23T23:34:07-04:00
+NOTE: the competing station now reaches the report and the sidecar with the control named; the separation had to move from 50 to 125 Hz because a lone station found its own image and reported it as somebody else
 
 ---
 

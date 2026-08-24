@@ -33,6 +33,11 @@ namespace Hamlet.RadioEngine.Cw;
 /// transcript comes out unspaced (HM-DEC-142). Distinct from an empty
 /// transcript, which is the decoder producing nothing.
 /// </param>
+/// <param name="Competitor">
+/// Somebody else keying inside the same passband, where the survey found one.
+/// **Null says the survey did not find one and never that the frequency is
+/// clear** (HM-DEC-009).
+/// </param>
 public readonly record struct CwDecodeReport(
     AudioLevel Level,
     double ToneHz,
@@ -45,7 +50,8 @@ public readonly record struct CwDecodeReport(
     bool HasKeying = false,
     ToneInterference? Interference = null,
     double OwnTransmitSeconds = 0,
-    bool WordSpacingUnmeasured = false)
+    bool WordSpacingUnmeasured = false,
+    CwCompetitor? Competitor = null)
 {
     /// <summary>
     /// How far above the band a tone has to stand before it is worth mentioning.
