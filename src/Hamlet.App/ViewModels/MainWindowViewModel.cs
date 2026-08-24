@@ -352,6 +352,11 @@ public partial class MainWindowViewModel : ObservableObject
         // diagnosis (HM-DEC-148).
         yield return ReceiveObstructionText;
 
+        // **WHAT THE DECODER IS LISTENING TO, WHEN IT IS BEING HELD THERE.** It
+        // sits below what is in the way because it is a state the operator chose
+        // rather than a fault he needs to fix.
+        yield return PitchLockText;
+
         // **WHY THE SCREEN JUST WENT QUIET.** Following somebody empties the
         // decoder's window, and twelve seconds of nothing with no explanation
         // reads as a dead band at the one moment it certainly is not one.
@@ -1499,6 +1504,76 @@ public partial class MainWindowViewModel : ObservableObject
     /// </remarks>
     [ObservableProperty]
     private string _receiveObstructionText = "";
+
+    /// <summary>
+    /// Whether the decoder's pitch is held, and what it is held at.
+    /// </summary>
+    /// <remarks>
+    /// <para>**A LOCK THE OPERATOR CANNOT SEE IS A LOCK HE CANNOT TRUST.** A
+    /// wandering decode and a held one look identical on screen, so without this
+    /// the operator has no way to tell whether the thing he pressed did
+    /// anything, and no way to tell later that it is still holding.</para>
+    /// <para>It says the pitch to a tenth of a hertz because that is what the
+    /// lock actually holds — an interpolated peak, not a bin — and rounding it to
+    /// a whole number on the panel would make two different locks look like the
+    /// same one.</para>
+    /// <para>Empty while the tracker is steering, so nothing is said when there
+    /// is nothing to say (HM-DEC-148's precedent for the advisory area).</para>
+    /// </remarks>
+    [ObservableProperty]
+    private string _pitchLockText = "";
+
+    /// <summary>What the lock control reads right now.</summary>
+    [ObservableProperty]
+    private string _pitchLockLabel = "Hold this pitch";
+
+    /// <summary>
+    /// Hold the decoder's pitch where the station is, or let it follow again.
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE TRACKER IS MEASURABLY THE LARGEST SOURCE OF SOUP IN THIS
+    /// DECODER**, and until now the operator had no way to take it out of the
+    /// path. Unit 002 put a clean generated station through the production path
+    /// and got twenty-two characters that were never sent, and through the same
+    /// window with the pitch nailed it got none.</para>
+    /// <para>**IT LOCKS TO THE MEASURED PEAK AND NOT TO THE RADIO'S CW PITCH.**
+    /// A capture from 2026-08-24 carries `CwPitch 600 Hz` while the station in it
+    /// sat at 439.81, so a lock to the radio's setting would have pointed the
+    /// filter at empty spectrum and held it there.</para>
+    /// <para>Where nothing can be measured it refuses and says so, rather than
+    /// holding a pitch nobody found (§0.0).</para>
+    /// </remarks>
+    [RelayCommand]
+    private void TogglePitchLock()
+    {
+        if (_decoder is not { } decoder)
+        {
+            return;
+        }
+
+        if (decoder.IsLocked)
+        {
+            decoder.Unlock();
+            PitchLockLabel = "Hold this pitch";
+            PitchLockText = "";
+
+            return;
+        }
+
+        var locked = decoder.Lock();
+
+        if (double.IsNaN(locked))
+        {
+            PitchLockText =
+                "There is not enough measured yet to hold a pitch, so nothing "
+                + "was locked and the decoder is still following. Give it a few "
+                + "seconds of a station and press again.";
+
+            return;
+        }
+
+        PitchLockLabel = "Follow again";
+    }
 
     /// <summary>The rule itself, so the test reads it rather than a copy (§0).</summary>
     /// <param name="overloading">Whether the radio says its front end is overloading.</param>
@@ -3275,6 +3350,14 @@ public partial class MainWindowViewModel : ObservableObject
         // strong signal that will not resolve and an empty band used to produce
         // the same screen, and they are different problems.
         DecodeReport = _decoder.Report;
+
+        // **THE LOCK'S STATE, ON THE SAME TICK AS EVERYTHING ELSE.** It reads
+        // the decoder rather than remembering what was pressed, so a lock that
+        // refused to engage cannot leave the panel claiming one is held.
+        PitchLockText = _decoder.IsLocked
+            ? $"The decoder is holding {_decoder.LockedToneHz:0.0} hertz and is "
+              + "not following the tracker. Press the lock again to let it follow."
+            : "";
 
         RunKeyingMeter();
 

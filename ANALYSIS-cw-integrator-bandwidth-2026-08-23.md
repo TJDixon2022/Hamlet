@@ -56,11 +56,11 @@ table where every cell is perfect measures nothing about the filter.
 | 300 Hz | -6 dB | 11/11, 0 made up | 11/11, 0 made up | 11/11, 0 made up | 11/11, 0 made up |
 | 300 Hz | -12 dB | 11/11, 0 made up | 11/11, 0 made up | 11/11, 0 made up | 11/11, 0 made up |
 | 30 Hz | +0 dB | 9/11, 0 made up | 11/11, 0 made up | 11/11, 0 made up | 11/11, 0 made up |
-| 30 Hz | +6 dB | 2/11, 23 made up | 2/11, 25 made up | 11/11, 0 made up | 11/11, 0 made up |
-| 20 Hz | +0 dB | 2/11, 27 made up | 2/11, 28 made up | 11/11, 0 made up | 11/11, 0 made up |
-| 20 Hz | +6 dB | 2/11, 20 made up | 2/11, 21 made up | 2/11, 23 made up | 10/11, 0 made up |
-| 15 Hz | +0 dB | 2/11, 27 made up | 6/11, 2 made up | 2/11, 24 made up | 11/11, 0 made up |
-| 10 Hz | +0 dB | 6/11, 2 made up | 6/11, 2 made up | 6/11, 2 made up | 10/11, 0 made up |
+| 30 Hz | +6 dB | 2/11, 23 made up | 1/11, 23 made up | 11/11, 0 made up | 11/11, 0 made up |
+| 20 Hz | +0 dB | 1/11, 25 made up | 1/11, 26 made up | 11/11, 0 made up | 11/11, 0 made up |
+| 20 Hz | +6 dB | 2/11, 20 made up | 2/11, 21 made up | 1/11, 21 made up | 10/11, 0 made up |
+| 15 Hz | +0 dB | 1/11, 25 made up | 5/11, 1 made up | 2/11, 24 made up | 11/11, 0 made up |
+| 10 Hz | +0 dB | 5/11, 1 made up | 5/11, 1 made up | 5/11, 1 made up | 10/11, 0 made up |
 
 ## The cost in sensitivity
 
@@ -114,10 +114,10 @@ much comes out and how much of it is the letter `E`.
 
 | recording | 60 Hz | 45 Hz | 30 Hz | 20 Hz |
 |---|---|---|---|---|
-| `cw-2026-08-17-013347` | 82 chars, E 45 % | 83 chars, E 45 % | 79 chars, E 48 % | 49 chars, E 53 % |
+| `cw-2026-08-17-013347` | 82 chars, E 28 % | 83 chars, E 25 % | 79 chars, E 29 % | 49 chars, E 33 % |
 | `cw-2026-08-17-134712` | 0 chars, E 0 % | 0 chars, E 0 % | 0 chars, E 0 % | 0 chars, E 0 % |
 | `cw-2026-08-18-004507` | 48 chars, E 13 % | 48 chars, E 13 % | 48 chars, E 13 % | 48 chars, E 13 % |
-| `cw-2026-08-18-003758` | 45 chars, E 29 % | 46 chars, E 28 % | 46 chars, E 28 % | 50 chars, E 32 % |
+| `cw-2026-08-18-003758` | 45 chars, E 16 % | 46 chars, E 15 % | 46 chars, E 15 % | 50 chars, E 14 % |
 
 ## What was chosen, and why
 

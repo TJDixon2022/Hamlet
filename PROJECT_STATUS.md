@@ -4,8 +4,8 @@ STATE: EXECUTING
 TASK: 3 of 5
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-24T10:28:58-04:00
-NOTE: margin 46 was derived on whole files and cost VA3VRR on the streaming path, so it is nought — the point where silence explains the span as well as the letter does
+UPDATED: 2026-08-24T10:43:49-04:00
+NOTE: the lock holds an interpolated peak and the tracker stops steering; proved by moving the tracker 113 Hz and watching the decoder stay put
 
 ---
 

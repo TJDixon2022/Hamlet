@@ -46,7 +46,7 @@ the next unit is scoped to look at.
 | | shipped | grid |
 |---|---|---|
 | characters emitted | 130 | 83 |
-| E-share | 44 % | 45 % |
+| E-share | 42 % | 25 % |
 | single-character words | 63 % | 67 % |
 | words per minute read | 8 | 28.0 |
 
@@ -60,15 +60,15 @@ absence (§0.0).
 
 | witness | characters | E-share | single-char words | span LLR P10 / median / P90 |
 |---|---|---|---|---|
-| said keying | 15 | 20 % | 75 % | -81.2 / 10754.6 / 102656.2 |
+| said keying | 15 | 7 % | 75 % | -81.2 / 10754.6 / 102656.2 |
 | said no keying | 50 | 34 % | 50 % | 1927827233.3 / 32512988061.6 / 131131982513.3 |
 | had not decided | 65 | 57 % | 68 % | 772695313.1 / 2759309529.6 / 27505920432.8 |
 
 What each read:
 
 ```
-shipped: DIAAEEEISIHEHEEEIEEA EA E E EEEEE I IEEEEEEIIEEEE II IRERUI E T E T ET E E I I E E E  E I IEEEEII  TE TEEEEI TI T T E I E HEHAA EE ERWEWHVEVRRAR R S VVAAS■3E3HVIVRRAR R  E  E
-grid:     E E EE E E E E E E E E E E AE ET E T E EE T E TET ETT E TE ETE T E EEEEET E TTT TTTTTTTTTT TTTNTTTTTTTTTTTTTTTTT E E E 
+shipped: DIAAEEEISIHEHEEEIEEA EA E E EEEEE I IEEEEEEIIEEEE II IRERUI E T E T ET E E I I E E E  E I IEEEEII  TE TEEEEI TI T T E I E HEHAA EE ERWEWHVEVRRAR R S VVAAS■3E3HVIVRRAR R  ■  ■
+grid:     # # EE # # # # # # # # # # AE ET E T E EE T E TET ETT # TE ETE T E EEEEET E TTT TTTTTTTTTT TTTNTTTTTTTTTTTTTTTTT # # # 
 ```
 
 ### `cw-2026-08-17-013622`
@@ -78,7 +78,7 @@ grid:     E E EE E E E E E E E E E E AE ET E T E EE T E TET ETT E TE ETE T E EEE
 | | shipped | grid |
 |---|---|---|
 | characters emitted | 101 | 97 |
-| E-share | 47 % | 51 % |
+| E-share | 47 % | 47 % |
 | single-character words | 29 % | 51 % |
 | words per minute read | 30 | 32.0 |
 
@@ -100,7 +100,7 @@ What each read:
 
 ```
 shipped: HE EE IIII I 55EIEIEIEIEEE IE EEUUE E TE TE E ESSEIEI E E E 5II U U EU ESEEETST■■AAHAHEEEEEEEENN EE EHIHI ET ET ET IEEIES ES ■■I
-grid:     EE EIE E E EE EE E EEE E I E E I E E E# E T E E EEE E E EET IU E IET# EET#LE I INE E5EI ITI#V #H IIREIEIS#5EHK5E#IE5#EI#EEEHE ESIHI
+grid:     EE EIE E E EE #E # EEE E I E E I E E E# E T E E EEE # E EET IU E IET# EET#LE I INE E5EI ITI#V #H IIREIEIS#5EHK5E#IE5#EI#EEEHE ESIHI
 ```
 
 ### `cw-2026-08-17-134712`
@@ -112,7 +112,7 @@ grid:     EE EIE E E EE EE E EEE E I E E I E E E# E T E E EEE E E EET IU E IET# 
 | | shipped | grid |
 |---|---|---|
 | characters emitted | 25 | 0 |
-| E-share | 56 % | no characters |
+| E-share | 8 % | no characters |
 | single-character words | 86 % | no characters |
 | words per minute read | 25 | 32.0 |
 
@@ -126,14 +126,14 @@ absence (§0.0).
 
 | witness | characters | E-share | single-char words | span LLR P10 / median / P90 |
 |---|---|---|---|---|
-| said keying | 25 | 56 % | 86 % | -564.1 / 436.9 / 16049.0 |
+| said keying | 25 | 8 % | 86 % | -564.1 / 436.9 / 16049.0 |
 | said no keying | 0 | no characters | no characters | nothing measured |
 | had not decided | 0 | no characters | no characters | nothing measured |
 
 What each read:
 
 ```
-shipped: N4E4LLMLQQ  E EKK  E  E E E  E  E E E  E  E E
+shipped: N4E4LLMLQQ  E ■KK  ■  ■ ■ ■  ■  ■ ■ ■  ■  ■ ■
 grid:    (nothing)
 ```
 
@@ -144,7 +144,7 @@ grid:    (nothing)
 | | shipped | grid |
 |---|---|---|
 | characters emitted | 113 | 48 |
-| E-share | 15 % | 12 % |
+| E-share | 13 % | 12 % |
 | single-character words | 70 % | 14 % |
 | words per minute read | 24 | 18.0 |
 
@@ -158,14 +158,14 @@ absence (§0.0).
 
 | witness | characters | E-share | single-char words | span LLR P10 / median / P90 |
 |---|---|---|---|---|
-| said keying | 101 | 15 % | 67 % | 1100.3 / 3486.2 / 7243.2 |
+| said keying | 101 | 13 % | 67 % | 1100.3 / 3486.2 / 7243.2 |
 | said no keying | 0 | no characters | no characters | nothing measured |
 | had not decided | 12 | 17 % | 88 % | 280.2 / 1393.9 / 1688.2 |
 
 What each read:
 
 ```
-shipped: A A T  T E AEARR R RRL L D D M O O T  T N N E  E T  T N <BT><BT>  EE EE A ANACC H H E SESTATA TA TII GOTON N I HEHATANTNDDLLIINNGG  T THHIEISS T MEMESSSSSASANAGG E  E A PE
+shipped: A A T  T E AEARR R RRL L D D M O O T  T N N E  E T  T N <BT><BT>  ■E ■E A ANACC H H E SESTATA TA TII GOTON N I HEHATANTNDDLLIINNGG  T THHIEISS T MEMESSSSSASANAGG E  E A PE
 grid:    E JJ AT ARRL DOT NET <BT> EACH STATION HANDLING THIS MESSAG E PE
 ```
 
@@ -176,7 +176,7 @@ grid:    E JJ AT ARRL DOT NET <BT> EACH STATION HANDLING THIS MESSAG E PE
 | | shipped | grid |
 |---|---|---|
 | characters emitted | 137 | 54 |
-| E-share | 15 % | 7 % |
+| E-share | 12 % | 6 % |
 | single-character words | 46 % | 0 % |
 | words per minute read | 27 | 22.0 |
 
@@ -190,15 +190,15 @@ absence (§0.0).
 
 | witness | characters | E-share | single-char words | span LLR P10 / median / P90 |
 |---|---|---|---|---|
-| said keying | 120 | 17 % | 46 % | 496.3 / 2284.1 / 5364.1 |
+| said keying | 120 | 13 % | 46 % | 496.3 / 2284.1 / 5364.1 |
 | said no keying | 0 | no characters | no characters | nothing measured |
 | had not decided | 17 | 0 % | 33 % | 1116.8 / 2455.0 / 5708.7 |
 
 What each read:
 
 ```
-shipped: ADAA D KRKPIPAAA11H15TE5TT IT ITIT W WAEAS ES J■JUNTNK K E <AS> ■ ■ E E S STITIRLRLL IL HIHVEVE M MKY Y E T E TMO EO O9E9J1T1BB  ETE ETT T W JEEJETSTST T V VFFBFB TB TUUBBEIELELIN
-grid:    I<BT> HADA KPA15TT ITWAS #K <BT> ESTILLHVEMY ETO 91B TT JUST VFB TUBELIN
+shipped: ADAA D KRKPIPAAA11H15TE5TT IT ITIT W WAEAS ES J■JUNTNK K ■ <AS> ■ ■ ■ ■ S STITIRLRLL IL HIHVEVE M MKY Y E T E TMO EO O9E9J1T1BB  ■TE ■TT T W JEEJETSTST T V VFFBFB TB TUUBBEIELELIN
+grid:    I<BT> HADA KPA15TT ITWAS #K <BT> #STILLHVEMY ETO 91B TT JUST VFB TUBELIN
 ```
 
 ### `cw-2026-08-18-003126`
@@ -208,7 +208,7 @@ grid:    I<BT> HADA KPA15TT ITWAS #K <BT> ESTILLHVEMY ETO 91B TT JUST VFB TUBELI
 | | shipped | grid |
 |---|---|---|
 | characters emitted | 127 | 54 |
-| E-share | 15 % | 15 % |
+| E-share | 10 % | 9 % |
 | single-character words | 46 % | 44 % |
 | words per minute read | 25 | 28.0 |
 
@@ -222,15 +222,15 @@ absence (§0.0).
 
 | witness | characters | E-share | single-char words | span LLR P10 / median / P90 |
 |---|---|---|---|---|
-| said keying | 115 | 15 % | 43 % | 640.2 / 2637.1 / 7049.3 |
+| said keying | 115 | 11 % | 43 % | 640.2 / 2637.1 / 7049.3 |
 | said no keying | 0 | no characters | no characters | nothing measured |
-| had not decided | 12 | 17 % | 57 % | -316.6 / 3846.8 / 8390.7 |
+| had not decided | 12 | 0 % | 57 % | -316.6 / 3846.8 / 8390.7 |
 
 What each read:
 
 ```
-shipped: <BT>  E  E N <BT><BT> I IRWAWATTTCCHH AE AT AT L EL EAEEASTST S 22 T MTMOOVVII ES ESAA D DAEDACY AY WIWIDID N XTXY■■ A WIWHNHYY N NGOTOT  E  E E  E M ■, , W WEIESTESTERRNINS TS ■, E
-grid:    A OM <BT> E <BT> I WATCH AT L EAST 2 MOVI ES A DAY WID X# WHY NOT E E , WESTERNS , E
+shipped: <BT>  ■  ■ N <BT><BT> I IRWAWATTTCCHH AE AT AT L EL EAEEASTST S 22 T MTMOOVVII ES ESAA D DAEDACY AY WIWIDID N XTXY■■ A WIWHNHYY N NGOTOT  ■  ■ ■  ■ M ■, , W WEIESTESTERRNINS TS ■, E
+grid:    A OM <BT> # <BT> I WATCH AT L EAST 2 MOVI ES A DAY WID X# WHY NOT # # , WESTERNS , E
 ```
 
 ### `cw-2026-08-18-003758`
@@ -240,7 +240,7 @@ grid:    A OM <BT> E <BT> I WATCH AT L EAST 2 MOVI ES A DAY WID X# WHY NOT E E ,
 | | shipped | grid |
 |---|---|---|
 | characters emitted | 112 | 46 |
-| E-share | 33 % | 28 % |
+| E-share | 15 % | 15 % |
 | single-character words | 64 % | 43 % |
 | words per minute read | 24 | 16.0 |
 
@@ -254,15 +254,15 @@ absence (§0.0).
 
 | witness | characters | E-share | single-char words | span LLR P10 / median / P90 |
 |---|---|---|---|---|
-| said keying | 98 | 35 % | 64 % | -544.9 / 5274.6 / 12428.7 |
+| said keying | 98 | 16 % | 64 % | -544.9 / 5274.6 / 12428.7 |
 | said no keying | 0 | no characters | no characters | nothing measured |
-| had not decided | 14 | 21 % | 62 % | -501.7 / 7711.9 / 12178.6 |
+| had not decided | 14 | 7 % | 62 % | -501.7 / 7711.9 / 12178.6 |
 
 What each read:
 
 ```
-shipped: QRR R L EL TSTU U E E  EE EATAN EN EAANNDDE E A AAEA44MMRPTPX/S/4 4 G QTQNINIDK K E E  E  E E E  EE EE AE ANN E EATANTNQQNNITIKK  E  E E E  E  E E E  E E  EA ERNRN E
-grid:    KIS QRLTU EEAN EANDE AA4MP/4QNIK E E EAN EPQNIK E E E EIN E
+shipped: QRR R L EL TSTU U ■ ■  EE EATAN EN EAANNDDE E A AAEA44MMRPTPX/S/4 4 G QTQNINIDK K ■ ■  ■  ■ ■ ■  ■E ■E AE ANN E EATANTNQQNNITIKK  ■  ■ ■ ■  ■  ■ ■ ■  ■ ■  EA ERNRN E
+grid:    KIS QRLTU #EAN EANDE AA4MP/4QNIK # # EAN EPQNIK # # # EIN E
 ```
 
 ### `cw-2026-08-20-014854`

@@ -61,6 +61,9 @@ public sealed class CwDecoder
 
     private double _lastSnrDb = double.NaN;
     private bool _toneLatched;
+    /// <summary>The pitch the mixdown is held at, or NaN when it follows.</summary>
+    private double _lockedToneHz = double.NaN;
+
     private int _charactersEmitted;
     private int _charactersUnsure;
     private int _elementsResolved;
@@ -196,6 +199,15 @@ public sealed class CwDecoder
     /// <summary>The tone tracker, which is what finds a station.</summary>
     public CwToneTracker Tracker => _tracker;
 
+    /// <summary>The pass that reads the audio, so its pitch can be checked.</summary>
+    /// <remarks>
+    /// **A LOCK THAT CANNOT BE OBSERVED CANNOT BE TESTED.** Whether the mixdown
+    /// followed the tracker or held where it was put is the whole claim of the
+    /// lock, and it is invisible from outside without this. It reads state and
+    /// changes none.
+    /// </remarks>
+    public CwProbabilisticStream Stream => _probabilistic;
+
     /// <summary>
     /// The last half minute of exactly what the decoder was fed (HM-DEC-088).
     /// </summary>
@@ -243,6 +255,55 @@ public sealed class CwDecoder
 
     /// <summary>A character that is final and will not be revised.</summary>
     public event Action<CwCharacter>? CharacterSettled;
+
+    /// <summary>The pitch the mixdown is held at, or NaN when it is following.</summary>
+    /// <remarks>
+    /// <para>**A LOCK THE OPERATOR CANNOT SEE IS A LOCK HE CANNOT TRUST**, and a
+    /// wandering decode and a held one look identical on the screen today. This
+    /// is what the panel reads to say which it is (HM-DEC-148's precedent: the
+    /// state and the control, in the advisory area).</para>
+    /// </remarks>
+    public double LockedToneHz => _lockedToneHz;
+
+    /// <summary>True while the mixdown is held at a fixed pitch.</summary>
+    public bool IsLocked => !double.IsNaN(_lockedToneHz);
+
+    /// <summary>
+    /// Hold the mixdown at the strongest tone measured right now.
+    /// </summary>
+    /// <returns>The pitch it locked to, or NaN if there was nothing to lock to.</returns>
+    /// <remarks>
+    /// <para>**FROM THE INTERPOLATED PEAK AND NOT FROM A BIN, AND NEVER FROM THE
+    /// RADIO'S OWN CW PITCH.** A capture taken on 2026-08-24 carries `CwPitch
+    /// 600 Hz` in its sidecar while the station it holds sat at 439.81, so a lock
+    /// to the radio's setting would have pointed the filter at empty spectrum and
+    /// held it there. That is measured, not supposed.</para>
+    /// <para>**IT REFUSES RATHER THAN GUESSING.** Where no peak can be measured —
+    /// too little audio, or a peak at the edge of the bank where interpolating
+    /// would be extrapolating — nothing is locked and the tracker keeps
+    /// steering. A lock to a pitch nobody measured is worse than no lock,
+    /// because the operator would be told the decoder is held on a station
+    /// (§0.0).</para>
+    /// <para>The tracker is not stopped. It goes on measuring, surveying and
+    /// reporting, so the panel can still say where it thinks the station is and
+    /// the operator can see the lock disagreeing with it.</para>
+    /// </remarks>
+    public double Lock()
+    {
+        var peak = _tracker.MeasuredPeakHz;
+
+        if (double.IsNaN(peak))
+        {
+            return double.NaN;
+        }
+
+        _lockedToneHz = peak;
+
+        return peak;
+    }
+
+    /// <summary>Let the tracker steer the mixdown again.</summary>
+    public void Unlock() => _lockedToneHz = double.NaN;
 
     /// <summary>
     /// How long decoding stays suspended after the radio stops transmitting.
@@ -405,8 +466,12 @@ public sealed class CwDecoder
 
         // **AND THE SAME AUDIO GOES TO THE DECODER THAT READS IT** (HM-DEC-091:
         // one source). The tracker has already moved to wherever the station is
-        // for this chunk, so the pitch handed over is the current one.
-        _probabilistic.ToneHz = _tracker.ToneHz;
+        // for this chunk, so the pitch handed over is the current one — unless
+        // the operator has locked it, in which case the tracker carries on
+        // measuring and reporting and stops steering.
+        _probabilistic.ToneHz = double.IsNaN(_lockedToneHz)
+            ? _tracker.ToneHz
+            : _lockedToneHz;
         _probabilistic.Process(chunk.Samples);
 
         // **ASKED AFTER THE DECODER HAS READ THIS AUDIO, NOT BEFORE.** The

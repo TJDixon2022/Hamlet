@@ -451,6 +451,69 @@ public sealed class CwToneTracker
     public IReadOnlyList<KeyingCandidate> CoarseCandidates() => _survey.Candidates();
 
     /// <summary>
+    /// Where the strongest tone in the fine bank actually sits, between the bins.
+    /// </summary>
+    /// <remarks>
+    /// <para>**A BIN IS NOT A MEASUREMENT OF A PITCH, IT IS A MEASUREMENT OF A
+    /// BIN.** The fine bank is five hertz apart and the coarse bank
+    /// twenty-five, so the best either can say on its own is "somewhere within
+    /// half a spacing". A quadratic through the strongest bin and its two
+    /// neighbours, in decibels, puts the peak where the three levels say it is,
+    /// which is the standard reading of a transform peak and costs three
+    /// numbers.</para>
+    /// <para>**IT MATTERS BECAUSE A LOCK IS ONLY AS GOOD AS THE PITCH IT
+    /// HOLDS.** Holding a bin centre means holding a filter pointed up to two
+    /// and a half hertz off, for as long as the lock lasts, with nothing left to
+    /// correct it.</para>
+    /// <para>Returns <see cref="double.NaN"/> where the bank has not been filled
+    /// or the peak sits at its edge, because an edge peak has no neighbour on one
+    /// side and the interpolation would be an extrapolation (§0.0).</para>
+    /// </remarks>
+    public double MeasuredPeakHz
+    {
+        get
+        {
+            if (_ringFill < _windowHops * HopSamples)
+            {
+                return double.NaN;
+            }
+
+            var best = 0;
+
+            for (var f = 1; f < _fineDb.Length; f++)
+            {
+                if (_fineDb[f] > _fineDb[best])
+                {
+                    best = f;
+                }
+            }
+
+            if (best == 0 || best == _fineDb.Length - 1)
+            {
+                return double.NaN;
+            }
+
+            var left = _fineDb[best - 1];
+            var here = _fineDb[best];
+            var right = _fineDb[best + 1];
+
+            var curvature = left - (2 * here) + right;
+
+            if (Math.Abs(curvature) < 1e-9)
+            {
+                return _fineHz[best];
+            }
+
+            // The vertex of the parabola through the three, in bins, clamped to
+            // half a bin either way: a larger offset means the three levels do
+            // not describe a peak and the reading is not to be trusted.
+            var offset = Math.Clamp(0.5 * (left - right) / curvature, -0.5, 0.5);
+
+            return _fineHz[best] + (offset * FineSpacingHz);
+        }
+    }
+
+    /// <summary>
     /// Somebody else keying inside the same passband, if the survey found one.
     /// </summary>
     /// <remarks>

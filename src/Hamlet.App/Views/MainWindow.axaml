@@ -951,6 +951,22 @@
                          WITH IT (0.6), and the numbers are what he will actually
                          use, because a figure that moves when he turns something
                          is worth more than a word that changes. -->
+                    <!-- HOLD THE PITCH WHERE THE STATION IS. The tone tracker
+                         is measurably the largest source of soup in this
+                         decoder: a clean generated station through the whole
+                         path produced twenty-two characters that were never
+                         sent, and the same window with the pitch nailed produced
+                         none. This is the operator's way to take it out of the
+                         path.
+
+                         The state it produces goes into the advisory area above
+                         with everything else, rather than becoming another
+                         panel. -->
+                    <Button IsVisible="{Binding IsDecoding}"
+                            Content="{Binding PitchLockLabel}"
+                            Command="{Binding TogglePitchLockCommand}"
+                            Margin="0,2,0,0" Padding="10,5" FontSize="12" />
+
                     <Border IsVisible="{Binding IsDecoding}"
                             BorderThickness="1" CornerRadius="6"
                             Padding="10,7" Margin="0,2,0,0"
