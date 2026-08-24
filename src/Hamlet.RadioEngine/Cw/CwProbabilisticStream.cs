@@ -145,6 +145,23 @@ public sealed class CwProbabilisticStream
         _mixedI = new float[_windowSamples];
         _mixedQ = new float[_windowSamples];
         _envelope = new double[_windowHops];
+
+        // **A GUARD SET ONLY IN A METHOD NOTHING CALLS IS A GUARD THAT DOES NOT
+        // EXIST.** This was assigned in `Restart()` alone, and `Restart()` is
+        // reachable only behind `CwDecoder.ClearOnAStationChange`, which has been
+        // `const false` since the window clear was ruled off. So a stream built
+        // fresh carried nought here, `_envelopeCount < 0` is never true, and the
+        // refill guard has never run on a first fill in production — which is the
+        // one fill every session begins with.
+        //
+        // What that guard is for is `RefillSeconds`' own remarks: on two seconds
+        // of audio the noise scale and the signal amplitude rest on a handful of
+        // elements, so a short window does not merely read less, it reads
+        // confidently and incorrectly. **Less evidence has to mean silence rather
+        // than guesses** (HM-DEC-120), and that has been the stated intent while
+        // the code did not do it.
+        _refillHops = Math.Max(
+            1, (int)(RefillSeconds * 1000.0 / CwProbabilisticDecoder.HopMilliseconds));
     }
 
     /// <summary>Where the station is, from the tone tracker.</summary>

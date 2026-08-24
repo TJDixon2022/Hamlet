@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 2 of 5
+TASK: 3 of 5
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-23T20:04:31-04:00
-NOTE: span log-likelihood computed in Spell, threaded to CwCharacter and onto the capture sheet; six new tests green, re-running the full suite against the 28-failure baseline
+UPDATED: 2026-08-23T20:08:13-04:00
+NOTE: the refill guard now runs on the first fill and it moved three tests; the pre-refill soup it suppresses was carrying the message's own opening C, and the sweep's invented column turns out to count substitutions only
 
 ---
 
