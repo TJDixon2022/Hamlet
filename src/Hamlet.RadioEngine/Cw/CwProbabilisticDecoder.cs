@@ -164,6 +164,48 @@ public static class CwProbabilisticDecoder
     public const double BandwidthHz = 60.0;
 
     /// <summary>
+    /// How much evidence per hop a character must carry, over the key never
+    /// having gone down across its own span, before it prints as a letter.
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE EMIT DECISION IS PER CHARACTER, AND THE WINDOW RATIO IS ONLY
+    /// AN OUTER SILENCE GUARD.** <see cref="Gate"/> asks whether a whole window
+    /// averaged better than silence, which is a question about a stretch of band
+    /// and not about a letter. Measured on this repository's own corpus it is
+    /// **anti-correlated with correctness**: `cw-2026-08-17-134712`, which
+    /// carries an adjudicated `N4L`, scores 4.64, while `cw-2026-08-20-014854`,
+    /// which an independent sweep says holds no keying at all, scores 7.98. The
+    /// empty band beats the station.</para>
+    /// <para>**NOUGHT, AND IT IS THE ONE VALUE THAT IS NOT A TUNED THRESHOLD.**
+    /// The quantity is a character's own evidence measured against the key never
+    /// having gone down across its span, so nought is the point where the two
+    /// explanations are equally good. Below it, silence explains that stretch of
+    /// audio *better* than the letter the path chose, and printing a letter there
+    /// is a guess presented as a decode (§0.0). It needs no calibration because
+    /// it is the meaning of the number rather than a place on it.</para>
+    /// <para>**A HIGHER MARGIN WAS DERIVED, TRIED, AND MEASURED WRONG.** Read on
+    /// whole files there is a clean gap: `cw-2026-08-18-004507` reads with its
+    /// weakest character at 49.8 while `cw-2026-08-20-014854`, which holds no
+    /// keying at all, tops out at 42.5. Forty-six sits in that gap and silences
+    /// both empty captures on their own characters. **It does not survive the
+    /// streaming path**, which is what production runs: there the same capture's
+    /// weakest real character is **3.1**, and forty-six marks letters of
+    /// `HANDLING` and costs `VA3VRR` on `cw-2026-08-17-013347`, an adjudicated
+    /// reading. A margin taken through one instrument is not a fact about
+    /// another (HM-DEC-119's own lesson).</para>
+    /// <para>**WHY THE TWO DISAGREE**: the whole-file read estimates its noise
+    /// scale once over the entire recording, and the streaming path re-estimates
+    /// it every window from twelve seconds of audio, so the same character is
+    /// scored against two different noise floors.</para>
+    /// <para>**AND ON THE STREAMING PATH THERE IS NO GAP TO DERIVE FROM**, because
+    /// both empty captures emit nothing there at all: the window guard refuses
+    /// every one of their windows, so they contribute no characters to compare
+    /// against. That is this unit's finding for task 5 and is reported rather
+    /// than papered over with a number.</para>
+    /// </remarks>
+    public const double CharacterMargin = 0.0;
+
+    /// <summary>
     /// How wide the envelope's integrator is, in hertz of equivalent noise
     /// bandwidth.
     /// </summary>
@@ -530,18 +572,29 @@ public static class CwProbabilisticDecoder
 
         if (ratio < Gate)
         {
-            // **THE NULL HYPOTHESIS WON.** Nothing here is worth saying and there
-            // is no partial answer to give (§0.0, HM-DEC-120).
+            // **THE NULL HYPOTHESIS WON FOR THE WHOLE STRETCH.** This is now the
+            // outer silence guard and nothing else: it asks whether there is
+            // anything here at all, and the decision about each letter is made
+            // below, on that letter's own evidence (§0.0, HM-DEC-120).
             return new CwProbabilisticResult(
                 ratio, bestWpm, "", toneHz, Array.Empty<CwProbabilisticCharacter>());
         }
 
+        // **AND NOW EACH CHARACTER ANSWERS FOR ITSELF.** A window that averaged
+        // well can still contain letters the path assembled out of the gaps, and
+        // the window ratio cannot tell them apart because every character in a
+        // window carries the same one. A character that cannot clear its own
+        // margin is marked rather than dropped: something was heard there and
+        // could not be resolved, which is exactly what the placeholder is for
+        // (§0.0, HM-DEC-048).
+        var judged = Marked(bestCharacters);
+
         return new CwProbabilisticResult(
             ratio,
             bestWpm,
-            string.Concat(bestCharacters.Select(c => c.Text)),
+            string.Concat(judged.Select(c => c.Text)),
             toneHz,
-            bestCharacters,
+            judged,
             insideCharacter);
     }
 
@@ -813,6 +866,39 @@ public static class CwProbabilisticDecoder
             best[count],
             Spell(count, fromHop, kindAt, downTo, upTo),
             kindAt[count]);
+    }
+
+    /// <summary>
+    /// Replace every character that cannot clear its own margin with the
+    /// unresolved placeholder.
+    /// </summary>
+    /// <param name="characters">What the path spelled.</param>
+    /// <returns>The same list, with the weak ones marked.</returns>
+    /// <remarks>
+    /// <para>**MARKED, NOT DROPPED.** Dropping it would close the gap and hand
+    /// the reader a shorter word that looks like a clean decode; the whole point
+    /// of the third confidence state is that the operator can see Hamlet
+    /// struggling at a particular letter rather than being handed a tidied
+    /// result (HM-DEC-048).</para>
+    /// <para>A word gap carries no marks and has no evidence of its own to
+    /// clear, so it is left alone. Its own span ratio is nought by construction
+    /// and testing it would delete every space.</para>
+    /// </remarks>
+    private static IReadOnlyList<CwProbabilisticCharacter> Marked(
+        IReadOnlyList<CwProbabilisticCharacter> characters)
+    {
+        var marked = new List<CwProbabilisticCharacter>(characters.Count);
+
+        foreach (var character in characters)
+        {
+            var isWordGap = character.Pattern.Length == 0;
+
+            marked.Add(isWordGap || character.SpanMargin >= CharacterMargin
+                ? character
+                : character with { Text = "#" });
+        }
+
+        return marked;
     }
 
     /// <summary>Walk the winning path back and turn it into letters.</summary>

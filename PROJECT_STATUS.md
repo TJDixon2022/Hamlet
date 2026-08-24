@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 1 of 5
+TASK: 3 of 5
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-24T10:16:08-04:00
-NOTE: elements are counted after the gate so that mystery dissolves; the three captures this order rests on are not in the tree, and 134712's adjudicated station scores 4.64 against an empty band's 7.98
+UPDATED: 2026-08-24T10:28:58-04:00
+NOTE: margin 46 was derived on whole files and cost VA3VRR on the streaming path, so it is nought — the point where silence explains the span as well as the letter does
 
 ---
 

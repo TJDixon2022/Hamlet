@@ -126,4 +126,20 @@ public sealed record CwCharacter(
     /// character all-key-up explains exactly as well.</para>
     /// </remarks>
     public double SpanLogLikelihoodRatio { get; init; } = double.NaN;
+
+    /// <summary>How many hops this character spans, or nought where unmeasured.</summary>
+    public int SpanHops { get; init; }
+
+    /// <summary>
+    /// The character's own evidence per hop, in the units the window ratio uses.
+    /// </summary>
+    /// <remarks>
+    /// **THE ONLY FORM OF THIS QUANTITY THAT MEANS THE SAME THING ON TWO
+    /// RECORDINGS.** The raw sum scales with the recording's own noise estimate,
+    /// so a correct character on one capture scores three thousand and one on
+    /// another scores eleven billion. Divided by its own span it is the same
+    /// arithmetic the window ratio is, over one character instead of a window.
+    /// </remarks>
+    public double SpanMarginForRecord
+        => SpanHops <= 0 ? 0 : SpanLogLikelihoodRatio / SpanHops;
 }
