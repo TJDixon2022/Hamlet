@@ -142,6 +142,8 @@ public sealed class TheEmitDecisionTable
 
         page.AppendLine();
 
+        Distributions(page);
+
         var path = Path.Combine(
             RepositoryRoot(), $"ANALYSIS-cw-emit-decision-{TakenOn}.md");
 
@@ -155,6 +157,114 @@ public sealed class TheEmitDecisionTable
             silent.Count == 0,
             "audio holding no station emitted characters: "
             + string.Join(", ", silent));
+    }
+
+    /// <summary>
+    /// Where the margins of the characters we can adjudicate actually sit.
+    /// </summary>
+    /// <remarks>
+    /// **THE MARGIN CANNOT BE DERIVED FROM A GAP THAT IS NOT THERE.** Task 5 asks
+    /// for the span margins of correct characters against invented ones, with the
+    /// margin placed in the measured gap. On the streaming path this corpus does
+    /// not offer that comparison: both captures holding no station emit nothing
+    /// at all, so there are no characters minted from noise to compare against.
+    /// What can be shown is where the characters of the three adjudicated
+    /// callsigns sit against everything else those same recordings produced, and
+    /// whether the two separate.
+    /// </remarks>
+    private static void Distributions(StringBuilder page)
+    {
+        page.AppendLine("## Where the margins sit, and why no margin was derived");
+        page.AppendLine();
+        page.AppendLine(
+            "Task 5 asks for correct characters against invented ones with a");
+        page.AppendLine(
+            "margin in the gap. **On the path production runs there is no such");
+        page.AppendLine(
+            "comparison to make**: both captures holding no station emit nothing");
+        page.AppendLine(
+            "at all, so they contribute no characters minted from noise. The");
+        page.AppendLine(
+            "window guard refuses every one of their windows before any character");
+        page.AppendLine("is judged.");
+        page.AppendLine();
+        page.AppendLine(
+            "What can be measured is where the characters of the three adjudicated");
+        page.AppendLine(
+            "callsigns sit against everything else the same recordings produced.");
+        page.AppendLine();
+        page.AppendLine(
+            "| capture | callsign | its characters | everything else |");
+        page.AppendLine("|---|---|---|---|");
+
+        var adjudicated = new (string Name, double Tone, string Call)[]
+        {
+            ("cw-2026-08-17-013347", 600, "VA3VRR"),
+            ("cw-2026-08-17-134712", 600, "N4L"),
+            ("unadjudicated/cw-2026-08-18-003758", 501, "AA4MP/4QNIK"),
+        };
+
+        foreach (var (name, tone, call) in adjudicated)
+        {
+            var audio = Read(name);
+            var decoder = new CwDecoder(audio.SampleRate, tone);
+            var settled = new List<CwCharacter>();
+
+            decoder.CharacterSettled += settled.Add;
+
+            Pump(decoder, audio, lockAfterSeconds: double.NaN);
+
+            var letters = settled
+                .Where(c => !c.IsWordGap && !double.IsNaN(c.SpanLogLikelihoodRatio))
+                .ToList();
+
+            var text = string.Concat(letters.Select(c => c.Text));
+            var at = text.IndexOf(call, StringComparison.Ordinal);
+
+            var inCall = at < 0
+                ? new List<CwCharacter>()
+                : letters.Skip(at).Take(call.Length).ToList();
+
+            var rest = at < 0
+                ? letters
+                : letters.Take(at).Concat(letters.Skip(at + call.Length)).ToList();
+
+            page.AppendLine(
+                $"| `{Path.GetFileName(name)}` | `{call}` "
+                + $"| {Spread(inCall)} | {Spread(rest)} |");
+        }
+
+        page.AppendLine();
+        page.AppendLine(
+            "**They overlap, and that is the finding.** The characters of an");
+        page.AppendLine(
+            "adjudicated callsign are not separable by this quantity from the");
+        page.AppendLine(
+            "characters around them that nobody can read. So no margin above");
+        page.AppendLine(
+            "nought could be set from this corpus without cutting a callsign, and");
+        page.AppendLine(
+            "the value ships at the one point that needs no calibration: a");
+        page.AppendLine(
+            "character must not be better explained by the key never having gone");
+        page.AppendLine("down.");
+        page.AppendLine();
+    }
+
+    private static string Spread(IReadOnlyList<CwCharacter> characters)
+    {
+        if (characters.Count == 0)
+        {
+            return "none found";
+        }
+
+        var m = characters
+            .Select(c => c.SpanMarginForRecord)
+            .OrderBy(x => x)
+            .ToArray();
+
+        return $"{m.Length} chars, {Num(m[0], "0.0")} to {Num(m[^1], "0.0")}, "
+            + $"median {Num(m[m.Length / 2], "0.0")}";
     }
 
     private static (double Window, int Emitted, int Blocks, string Text) Tracked(

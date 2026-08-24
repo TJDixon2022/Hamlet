@@ -50,3 +50,29 @@ peak said then, and the tracker stopped steering from that moment.
 | `cw-2026-08-20-014854` | refused | 0 | 0 | `(nothing)` |
 | `cw-2026-08-20-014935` | 622.6 Hz | 0 | 0 | `(nothing)` |
 
+## Where the margins sit, and why no margin was derived
+
+Task 5 asks for correct characters against invented ones with a
+margin in the gap. **On the path production runs there is no such
+comparison to make**: both captures holding no station emit nothing
+at all, so they contribute no characters minted from noise. The
+window guard refuses every one of their windows before any character
+is judged.
+
+What can be measured is where the characters of the three adjudicated
+callsigns sit against everything else the same recordings produced.
+
+| capture | callsign | its characters | everything else |
+|---|---|---|---|
+| `cw-2026-08-17-013347` | `VA3VRR` | 6 chars, 46.2 to 159336.3, median 146.3 | 53 chars, -49.8 to 1721056274.7, median 356341446.6 |
+| `cw-2026-08-17-134712` | `N4L` | 3 chars, 122.0 to 157.8, median 131.8 | 25 chars, -156.1 to 143.2, median -124.8 |
+| `cw-2026-08-18-003758` | `AA4MP/4QNIK` | 11 chars, 95.0 to 154.5, median 131.9 | 42 chars, -179.1 to 173.8, median 120.2 |
+
+**They overlap, and that is the finding.** The characters of an
+adjudicated callsign are not separable by this quantity from the
+characters around them that nobody can read. So no margin above
+nought could be set from this corpus without cutting a callsign, and
+the value ships at the one point that needs no calibration: a
+character must not be better explained by the key never having gone
+down.
+

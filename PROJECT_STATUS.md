@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
-TASK: 4 of 5
-BALL: code
-NEXT_PASTE: none
-UPDATED: 2026-08-24T10:45:21-04:00
-NOTE: all three adjudicated callsigns now appear on the production path and two more captures read as plain English; the locked column is worse on 004507 because the lock caught a wrong peak
+STATE: COMPLETED
+TASK: 5 of 5
+BALL: tim
+NEXT_PASTE: OUTPUT.md -> Claude Web
+UPDATED: 2026-08-24T10:55:18-04:00
+NOTE: all three adjudicated callsigns read on the production path; the three captures this order was built on are not in the tree, so a signal at 11.31 is still refused by the outer guard
 
 ---
 

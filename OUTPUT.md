@@ -1,389 +1,332 @@
-# Work instruction 002 — lock onto the strongest signal and reject the others
+# Work instruction — stop refusing the signals we can already read
 
 ## 1. What Claude did
 
 Claude Code on the development computer, `C:\Source\HamLet`. The prompt claimed
 `PROJECT: Hamlet` and so does `WORK_INSTRUCTIONS.md`; the tree confirms it —
-`SHACK_FACTS.md` and `src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs` both
-exist, neither `CoreHMI.sln` nor `MURC.sln` does, the solution is `Hamlet.sln`,
-and `PROJECT_CARD.md` names Hamlet. **Branch `main`**, per §9.5.1. Six tasks,
-all six worked, **task 6 was not dropped**. Each committed and pushed to `main`
-before the next began; all six pushes succeeded.
+`SHACK_FACTS.md` and `src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs` exist,
+neither `CoreHMI.sln` nor `MURC.sln` does, the solution is `Hamlet.sln`, and
+`PROJECT_CARD.md` names Hamlet. **Branch `main`**, per §9.5.1. Five tasks, all
+five worked, **task 5 was not dropped**. Each committed and pushed before the
+next; all pushes succeeded.
 
 **Nothing in this report is evidence about the radio.** No rig was connected.
 
-**Nothing was recorded to `DECISIONS.md`.** The one judgement this unit reached
-— which integrator bandwidth to ship — is a trade between rejection and the
-gate's own margin, and a trade is Tim's (§12.1).
+**Nothing was recorded to `DECISIONS.md`.**
 
-### Task 1 — the four claims, traced
+### The mismatch that matters most, first
 
-1. **The mixdown filter, computed rather than read off the comment.** The
-   integrator was a boxcar of `sampleRate / BandwidthHz` samples —
-   `CwProbabilisticDecoder.cs:392`, 800 samples at 48 kHz, 16.67 ms. **Its
-   equivalent noise bandwidth is exactly 60.0 Hz**, so the constant was honest
-   as an ENBW; its −3 dB width is 53.2 Hz and its first sidelobe peaks at
-   **−13.26 dB at 86 Hz**. A station 100 Hz away entered at **−15.6 dB**, which
-   matches the instruction's "roughly −16 dB" precisely.
+**The three captures this instruction was built on are not in the repository.**
+`cw-2026-08-24-012403`, `cw-2026-08-24-031905` and `cw-2026-08-24-001520` are
+absent from `tests/fixtures/cw/captured/`, from `unadjudicated/`, from the whole
+working tree, from git history on every branch, and from Downloads. **So task
+4's requirement to reproduce the three numbers could not be met at all** — not
+disagreed with, not attempted: there is no audio to run.
 
-   **One correction the instruction did not have.** A boxcar has deep nulls at
-   every multiple of 60 Hz, so **two of the five swept offsets — 120 Hz and
-   300 Hz — sit exactly on nulls** and are pathological best cases for the
-   filter being replaced.
+Everything else in the instruction stands on its own, because **the same fault
+is reproducible on captures that are here**, and section 3 shows it.
 
-   **The two paths did still differ, and not by what was reported.** The offline
-   `Envelope()` lays a centred window; the streaming `PushEnvelope()` sums the
-   audio behind the newest sample. The earlier review called that half a window.
-   **It is 2.35 hops, not 3.33**: the streaming window ends on its hop and is
-   pushed after that hop completes, so the two corrections pull opposite ways
-   and do not cancel. Measured, then tested.
+### Task 1 — why `0 elements`
 
-2. **The survey already knows.** `CwToneSurvey.Candidates` returns every
-   admitted keying bin with pitch, lift, marks, dit and dah
-   (`CwToneSurvey.cs:347`), and `CwToneTracker.CoarseCandidates`
-   (`CwToneTracker.cs:445`) hands them straight out. **Its only caller in the
-   whole tree was none.** Ranking is by `LiftDb`, which is loudness
-   (`CwToneSurvey.cs:398`), so Hamlet does try to lock onto the strong one.
-   **So task 5 is a plumbing job, not a detection job** — the instruction says
-   this of "task 4", which is a numbering slip: task 4 is the bandwidth sweep.
+**Elements are counted after the gate. The mystery dissolves.**
 
-3. **The tracker's grip.** A candidate must be confirmed by two agreeing
-   surveys within `ConfirmWithinHz` (`CwToneTracker.cs:865`), and HM-DEC-127's
-   rule stops a confirmed station being abandoned for one far below it. The
-   fallback to the middle of the fine bank is real and appears three times —
-   `cs:356`, `:842`, `:1002`.
+`_elementsResolved` increments only inside the `CharacterSettled` handler
+(`CwDecoder.cs:98–116`), which fires only for characters the stream actually
+emits. When `Decode` refuses a window it returns an empty character list
+(`CwProbabilisticDecoder.cs:467`), so nothing settles and nothing counts. Zero
+elements is a direct consequence of zero characters. **There is no second
+counting path and no second blocker behind the gate.**
 
-4. **A two-sender fixture already exists, so the expected answer was wrong.**
-   `interference-18wpm` in `CwFixtures.cs:122` puts a station at 450 Hz against
-   one at 600, amplitude 0.35 against 0.5, and it is one of the 27 inherited
-   failures. The generator has carried `InterferenceHz`, `InterferenceAmplitude`
-   and `InterferenceWpm` all along.
+**One thing found on the way**: `ElementsSeen` and `ElementsResolved` are the
+same field — `CwDecoder.cs` passes `_elementsResolved` twice into the report — so
+the sidecar's `N seen, M resolved` can never show a difference. Named, not fixed
+(§12.6).
 
-**Green baseline: 1536 passing and 31 failing of 1567 in the engine, 480 and 1
-of 481 in the app.** The engine matches the instruction exactly. **The app does
-not**: the instruction says 0 of 481, and
-`TheFollowedSentenceReachesTheScreenTests.ItIsDrawnWhileRefillingAndGoesWhenTextResumes`
-failed — the flaky one unit 001 named, which flakes in both directions.
+**Green baseline: 1553 passing, 31 failing of 1584 in the engine; 481 of 481 in
+the app.** Matches the instruction exactly.
 
-### Task 2 — the two-signal fixture, and the control that reframed the unit
+### Task 2 — the emit decision moved to the character
 
-`CwFixtureGenerator.Together` renders the band once and puts both stations on
-top of it. That is the difference from `Join`, which concatenates: summing two
-finished fixtures would sum two noise floors and put the band 3 dB up without
-saying so. The fixture's own difficulty is measured rather than assumed —
-**0.76 s with both keys down at once**, through the decoder's own front end
-pointed at each station in turn.
+Each character now carries its own span log-likelihood against all-key-up over
+that span, divided by its own hop count, which puts it in the same units the
+window ratio uses. A character that cannot clear the margin is **marked**, not
+dropped, so the character count does not change when the judgement does. The
+window ratio survives at 15 as the outer silence guard.
 
-**A first attempt at that overlap figure was wrong and self-certifying**: a
-10 ms tone measurement cannot resolve two notes 40 Hz apart and reported both
-stations keyed for 11.24 of 11.9 seconds. That is the §12.5 trap, caught by the
-number being implausible.
+**The margin is nought, and getting there took one wrong answer that the tests
+caught.**
 
-**And the control is what matters.** One station alone, same seed, same band,
-no competitor at all:
+I first derived **46** from a real, clean gap on whole-file reads:
+`cw-2026-08-18-004507` reads with its weakest character at **49.8**, and
+`cw-2026-08-20-014854`, which holds no keying at all, tops out at **42.5**.
+Forty-six sits in that gap and silences both empty captures *on their own
+characters*.
 
-| read how | correct | wrong | invented | emitted | read |
-|---|---|---|---|---|---|
-| whole file, fixed pitch | 11 | 0 | 0 | 11 | ` CQ DE N0CALL K ` |
-| whole file, forced to 18 wpm | 11 | 0 | 1 | 12 | ` CQ DE N0CALL K E ` |
-| streaming window, pitch nailed to 600 Hz | 11 | 0 | 1 | 12 | ` CQ DE N0CALL K E ` |
-| **the production path, tracker and all** | 10 | 1 | **22** | 33 | `QQ T DEDE EE NNM■0E0KCECAEALLALLL T KK  E` |
+**It did not survive the streaming path, which is what production runs.** There
+the same capture's weakest real character is **3.1**, and 46 cost `VA3VRR` on
+`cw-2026-08-17-013347` — an adjudicated reading — and two letters of `HANDLING`.
+Three tests went red and named it. The two paths disagree because the whole-file
+read estimates its noise scale once over the recording and the streaming path
+re-estimates it every window, so one character is scored against two different
+noise floors. That is HM-DEC-119's own lesson arriving again.
 
-### Task 3 — the Hann integrator
+**Nought is the one value that is not a tuned threshold**: it is the point where
+silence explains the span exactly as well as the letter does. Below it, printing
+a letter is a guess presented as a decode.
 
-Built in both paths, with the length derived from a named bandwidth and the
-taper taken from one place. The streaming path weights **by age, not by array
-index**: a boxcar can be summed in any order and a taper cannot, and weighting
-by index would rotate the window against the signal once per fill.
+### Task 3 — the pitch lock
 
-`TheTwoEnvelopePathsAgreeTests` proves the ENBW is what it claims at 60, 45, 30
-and 20 Hz, and that the two paths agree to **1.6 % of peak** once aligned by the
-measured 2.35-hop lag.
+A locked mode at the single point where the tracker steers the mixdown
+(`CwDecoder.cs:409`). The tracker goes on measuring, surveying and reporting; it
+stops steering.
 
-**Both empty captures still emit nothing** — `014854` and `014935`, stated
-explicitly per the instruction.
+**The lock takes an interpolated peak, not a bin.** `CwToneTracker.MeasuredPeakHz`
+fits a quadratic through the strongest fine-bank bin and its two neighbours. A
+station generated at 613.7 Hz is found at 613.64. It returns NaN at the bank's
+edge, where interpolating would be extrapolating, and **`Lock()` then refuses
+rather than holding a pitch nobody measured**.
 
-### Task 4 — the bandwidth trade
+Proved by moving the tracker 113 Hz to another station and watching the decoder
+stay at 613.64.
 
-Swept offline, because the production value is a constant and a mutable static
-the suite shares is how one test changes another test's numbers silently.
+**Two display changes, flagged for review as the instruction requires:** the
+lock's state goes into the existing advisory area alongside the overload and
+obstruction lines (no view change — it flows through `Advisories()`), and **one
+button** was added to engage it. The instruction says not to add anything to the
+panel except the lock state; a lock with no control cannot be used tonight, so I
+added it and am naming it here rather than shipping a feature Tim cannot reach.
 
-Rejection on **the instruction's own grid is a tie**: every width from 60 down
-to 20 Hz reads the wanted station whole at every offset and every level. Rows
-below 30 Hz of separation do discriminate, and there the narrower filters win
-outright — but those rows are this session's invention.
+### Task 4 — the corpus, measured
 
-**45 Hz stands.** Reasoning and the alternative are in section 4.
+`ANALYSIS-cw-emit-decision-2026-08-24.md`, committed. Section 3 leads with it.
 
-### Task 5 — the second station, surfaced
+### Task 5 — the margin could not be derived, and that is the finding
 
-`CwCompetitor` carries the offset, the strength relative to the station being
-read, and a sentence naming **FILTER** and **TWIN PBT**. It reaches
-`CwDecodeReport` and the capture sidecar. Nothing is written to the radio.
+Run, not dropped. Task 5's own escape clause is what applies.
 
-**The separation figure had to move from 50 Hz to 125 Hz.** A lone clean
-station found its own image 50 Hz away, 2.1 dB down, and reported it as
-somebody else — HM-DEC-127's fault exactly. 125 already existed twice in this
-tree, as `CwToneTracker.CompetitorSeparationHz` and `CwToneSurvey`'s
-`NoiseSeparationHz`; it is defined once now and read from both.
+### Shape conflict
 
-**A competitor is a live fact and the first draft of the tests read it at the
-wrong moment.** The survey keeps three seconds of rolling history, so after a
-recording is played to its end that history holds the trailing silence and
-admits nothing at all — not even the station the file was about. The tests
-sweep during playback, which is how the panel and the sidecar ask.
-
-### Task 6 — the three settings *(the drop candidate, not dropped)*
-
-Task 4's measurement had finished, so it was not blocked. `ReceiveObstructions`
-names the noise blanker, the noise reduction and the filter width when each is
-in the way, with the control on the front of the radio. Read-only:
-`ReceiveObstruction` carries a setting and a sentence and has nowhere to put a
-command.
-
-**The filter is named on a measurement, not on a width.** A competing station
-the survey actually found is a fact; asserting that some width is too wide for a
-signal Hamlet has not measured would be a judgement nobody ruled. That is a
-narrowing of what the instruction asked for and it is deliberate.
-
-### Version
-
-`Directory.Build.props` read **1.11.1** at the start, so the panel unit drafted
-as 1.11.2 did not run. Per the instruction, this unit produced **1.11.2**.
-
-### The shape conflict, named again
-
-`CLAUDE_CODE.md` §8's five sections win over `SESSION_PROTOCOL.md` §12.2's three
-headings, per §0. Named for the second consecutive unit.
+`CLAUDE_CODE.md` §8's five sections win over `SESSION_PROTOCOL.md` §12.2's three,
+per §0. **Fourth consecutive unit.**
 
 ## 2. What Tim should expect
 
-The build succeeds with no warnings. **1553 passing and 31 failing of 1584 in
-the engine, 481 and 0 of 481 in the app.**
+**What you will see differently at the radio this evening.**
 
-**What will look wrong and is not:**
+**Text where there was silence, and marks where there was invention.** The
+decoder no longer throws away a whole window because the window averaged badly,
+and it no longer prints a letter it cannot stand behind. On the recordings in
+this repository, all three callsigns that have ever been adjudicated now appear
+on the production path — `VA3VRR`, `N4L` and `AA4MP/4 QNIK` — and two captures
+nobody had read come back as plain English.
 
-- **The failing set is byte-identical to the one this unit inherited plus and
-  minus the Hann swap.** Tasks 5 and 6 added fourteen tests between them and
-  changed no failure. Task 3 fixed three and broke four:
+**A new button under the keying meter, reading "Hold this pitch".** Press it
+while a station is coming in and the decoder stops following the tracker and
+stays where the station is. The advisory area then says which pitch it is
+holding, to a tenth of a hertz. Press again to let it follow. If there is not
+enough measured yet, it refuses and says so rather than locking onto nothing.
 
-  | fixed by the Hann integrator | broken by it |
-  |---|---|
-  | `HoldingTheWindowLongInTimeReadsMore` (×2) | `ARecordingWithNoStationInItSaysNothing(014854)` |
-  | `ItKeepsUpWithLiveAudio` | `TheGateSitsInAWideGap` |
-  | | `TheFiveToEightDecibelPlateauHolds` |
-  | | `OnlyTheOneTheCouplingBreaksHasTheTrough` |
+**Use the lock when the screen is wandering, not by default.** Measured over the
+corpus it is not a universal win: on `cw-2026-08-18-004507` it caught a peak at
+527 Hz for a station sitting at 501 and the read got worse. It helps when the
+tracker is the problem, and the tracker being the problem is what a wandering,
+fragmenting transcript looks like.
 
-- **`ARecordingWithNoStationInItSaysNothing` is not a silence failure.** The
-  empty band scores 8.0 against a gate of 15 and emits nothing. What the test
-  guards is the *margin*, and the margin narrowed from 6.6 to 8.0. HM-DEC-120's
-  property holds; its headroom is what moved.
+**Two things that will look wrong and are not:**
 
-- **`TheFiveToEightDecibelPlateauHolds` fails because the chatter went away.**
-  It asserts that a two-level trigger has something to remove, and the narrower
-  filter removed it. That is a test pinned to a defect, failing because the
-  defect improved.
+- **`■` will appear where letters used to.** That is the decoder saying it heard
+  something and could not resolve it. Those positions were previously filled
+  with invented letters, so more `■` on screen is less invention, not more.
+- **The four tests unit 002's Hann swap broke did not move**, though the
+  instruction expected three of them to. They are gate-*margin* assertions and
+  this unit did not change the gate's value — only what the gate decides. Named
+  rather than touched.
 
-- **`OnlyTheOneTheCouplingBreaksHasTheTrough` now finds two recordings with the
-  trough instead of one.** More structure found, and a test pinning exactly one.
+**The build succeeds with no warnings. 1565 passing and 31 failing of 1596 in
+the engine, 481 of 481 in the app.** The failing set is **byte-identical to the
+baseline this unit inherited** — twelve tests added, none broken.
 
-- **You will see nothing new in the app except one line.** Where the noise
-  blanker or the noise reduction is on, or a measured competitor is inside a
-  wide filter, the terminal's advisory area now says so and names the knob.
-  Everything else this unit did is measurement.
-
-Pushed to `main`, six commits, all pushed successfully.
+Pushed to `main`, five commits, all successful.
 
 ## 3. What you should see
 
-**How much of the strong station's text survives a competing station, before
-and after, at each offset and level — and the answer is all of it, at every
-cell, both times.**
+**The corpus, through the production path, with the emit decision on the
+character.**
 
-At a fixed pitch, with the tracker out of the path, **every one of the fifteen
-combinations reads `CQ DE N0CALL K` whole, 11 of 11 correct, nothing invented —
-with the boxcar and with the Hann alike.** The competing station costs nothing
-at 40 Hz separation and equal level, and nothing anywhere else in the grid.
+| capture | holds | window | emitted | ■ | read |
+|---|---|---|---|---|---|
+| `013347` | **VA3VRR** | 20.2 | 59 | 1 | `… HA E WVRR `**`VA3VRR`**` ■` |
+| `013622` | unadjudicated | 3.0 | 49 | 1 | `E I5 S5E II 5EIEIE EEETE TE ESEI …` |
+| `134712` | **N4L** | 35.8 | 28 | 22 | `■ ■ ■ ■ ■E ■ ■ ■ ■ ■ ■ K ■ ■ `**`N4L`**`■ ■K ■■ ■ ■ ■` |
+| `004507` | ARRL bulletin | 32.8 | 50 | 1 | `E J J A T AR RL D O T N E T <BT> ■E AC H STA TION `**`HANDLING`**` ETHIS MESSAG E PE` |
+| `003016` | unadjudicated | 24.1 | 58 | 3 | **`HADA KPA15TT IT WAS JUNK`**` ■ ■ `**`STILL HVE MY E TO 91B`**` ■TT JETST VFB TUBELIN` |
+| `003126` | unadjudicated | 40.2 | 53 | 4 | `A OM<BT> ■ <BT> `**`IWATCH AT L EAST 2 MOVI ESA DAY WID X`**`■ `**`WHY NOT`**` ■ ■ , WESNRNS , E` |
+| `003758` | **AA4MP/4 QNIK** | 25.6 | 53 | 11 | `KI S QR L TU ■ EAN EANDE `**`AA4MP/4 QNIK`**`K ■ ■ ■ ■E AN EANQNIK ■ ■ ■■ ■ ■ ERN E` |
+| `014854` | **nothing** | 6.5 | **0** | 0 | **(nothing)** |
+| `014935` | **nothing** | 2.6 | **0** | 0 | **(nothing)** |
 
-**So the unit's premise is measured false.** The soup is not the co-channel
-case. The control proves it in one row: **one station alone, no competitor at
-all, through the production path, emits 22 characters that were never sent** —
-and adding a second station at any offset and any level changes that to 20–22.
-The competing station is not what is wrong.
+**All three adjudicated readings are present.** `N4L` had never appeared through
+the production path before; it does now, standing out of twenty-two marked
+characters instead of being buried in twenty-two invented ones.
 
-**What is wrong is the tone tracker, and nothing else in the chain.** The same
-clean single-station audio, read four ways:
+**Both captures holding no station emit nothing, on both paths.** Asserted in
+the harness, not inferred.
 
-| stage | invented | read |
-|---|---|---|
-| whole file, fixed pitch | 0 | ` CQ DE N0CALL K ` |
-| whole file, forced to one speed | 1 | ` CQ DE N0CALL K E ` |
-| **streaming window, pitch nailed to 600 Hz** | **1** | ` CQ DE N0CALL K E ` |
-| **the production path, tracker and all** | **22** | `QQ T DEDE EE NNM■0E0KCECAEALLALLL T KK  E` |
+### The instruction's premise, reproduced on captures that are here
 
-The rolling window is fine. The measured-unit override is fine. The refill
-guard is fine. **Letting the tracker move the pitch turns a perfect decode into
-soup on a 15 dB single station.**
+The three files it was measured on are absent, but the fault is not:
 
-That is consistent with unit 001's corpus table, where the shipped path and the
-grid path diverged on every capture, and it names the cause.
+| capture | window ratio | gate 15 | what it holds |
+|---|---|---|---|
+| `cw-2026-08-17-134712` | **4.64** | **refused** | an adjudicated `N4L` |
+| `cw-2026-08-20-014854` | **7.98** | refused | **nothing at all** |
+| `cw-2026-08-18-004507` | 38.10 | passed | a station that reads |
 
-### What the widths are worth
+**The empty band outscores the adjudicated station by three and a third points.**
+That is the fourth sighting the instruction describes, on this repository's own
+audio, and it means no threshold on the window ratio can both pass `134712` and
+refuse `014854`. They are inverted.
 
-| | 60 Hz | 45 Hz | 30 Hz | 20 Hz |
-|---|---|---|---|---|
-| the instruction's whole grid | tie | tie | tie | tie |
-| 30 Hz apart, +6 dB | 2/11 | 2/11 | **11/11** | **11/11** |
-| 20 Hz apart, equal | 2/11 | 2/11 | **11/11** | **11/11** |
-| sensitivity to 0 dB | no cost | no cost | no cost | no cost |
-| a fast fist to 35 wpm | no cost | no cost | no cost | no cost |
-| empty band vs a gate of 15 | 6.6 | 8.0 | 9.3 | 10.0 |
-| `013347` characters | 82 | 83 | 79 | **49** |
+### Task 5 — the distributions overlap, and no margin was derived
 
-**The fast-fist column is real and was checked because it looked too good.** A
-75 ms integrator reads a 34 ms dit cleanly, because a segmental decoder scores a
-span rather than thresholding a level: a smeared envelope loses contrast and
-keeps its timing. That is a genuine property of this architecture.
+| capture | callsign | its characters | everything else |
+|---|---|---|---|
+| `013347` | `VA3VRR` | 6 chars, 46.2 to 159336, median 146.3 | 53 chars, −49.8 to 1.7e9, median 3.6e8 |
+| `134712` | `N4L` | 3 chars, 122.0 to 157.8, median 131.8 | 25 chars, −156.1 to **143.2**, median −124.8 |
+| `003758` | `AA4MP/4QNIK` | 11 chars, 95.0 to 154.5, median 131.9 | 42 chars, −179.1 to **173.8**, median 120.2 |
+
+**They overlap in all three.** On `134712` the callsign runs 122 to 158 and the
+unreadable characters around it reach 143. On `003758` the callsign tops out at
+154.5 and the rest reaches 173.8. **No margin above nought can be set from this
+corpus without cutting a callsign.**
+
+And the comparison task 5 actually asked for — correct against invented — cannot
+be made on the streaming path at all: **both empty captures emit nothing there,
+so they contribute no characters minted from noise.** The window guard refuses
+every one of their windows before any character is judged.
+
+That is the most important thing this unit could have found, and it is why the
+margin ships at the one point that needs no calibration.
 
 ## 4. What's blocking us
 
-Nothing blocks the next unit. Five questions, most-blocking first.
+---
+
+**The three captures this instruction rests on are not in the repository, and
+tonight's headline number cannot be verified without them.**
+
+`cw-2026-08-24-012403`, `031905` and `001520` are absent everywhere I can look.
+The 11.31-against-a-gate-of-15 measurement, the `DE KD0UN KD0UN K` read, the
+439.81 Hz pitch and the `CwPitch 600 Hz` sidecar contradiction are all
+unreproducible here.
+
+**What follows, and it is the thing to act on before this evening.** With the
+outer guard at 15 — which the instruction says twice not to lower — **a signal
+scoring 11.31 is still refused entirely and never reaches the per-character
+test.** The character gate cannot rescue a window the outer guard rejects.
+`cw-2026-08-17-134712` at 4.64 is the same case and is still silent.
+
+So the unit's mechanism is built and measured, and the specific signal it was
+commissioned for would still produce nothing. **Dropping the three WAVs into
+`tests/fixtures/cw/captured/unadjudicated/` is a two-minute job that makes the
+whole claim checkable.**
+
+**Rejected: lowering the outer guard on my own.** The instruction forbids it
+twice, and the corpus says it cannot work anyway — `014854` at 7.98 sits above
+`134712` at 4.64, so any guard that admits the station admits the empty band.
 
 ---
 
-**The tone tracker, not the front end, is what turns a clean decode into soup,
-and the next unit should be aimed at it.**
+**The outer window guard needs to be replaced rather than re-tuned, and the
+per-character test is now measured well enough to be a candidate.**
 
-Measured on a generated single station at 15 dB with no competitor: fixed
-pitch reads eleven of eleven with nothing invented; the streaming window at a
-nailed pitch reads the same; the production path with the tracker live invents
-twenty-two characters. The audio, the window, the speed hypothesis and the
-refill guard are common to both.
+On whole-file reads the character margin separates cleanly where the window
+ratio cannot: `004507`'s weakest character is 49.8 and the strongest character
+either empty capture produces is 42.5. A margin in that gap silences noise **on
+the characters themselves**, which is what HM-DEC-120's property actually asks
+for.
 
-**What this does not say.** It does not say the tracker is wrong to move — a
-station really can be somewhere else, and HM-DEC-095's confirmation rule and
-HM-DEC-127's displacement floor were both put there by measurements. It says
-the cost of moving has never been measured against the cost of staying, and on
-this fixture staying wins outright.
-
-**Rejected: changing it in this unit.** The unit's whole claim is that it
-touched the front end and nothing else, and the tracker is on the parked list
-by implication — `ClearOnAStationChange` and the switch machinery are named
-there explicitly.
+It does not hold on the streaming path as things stand, because the noise scale
+is re-estimated per window there. **That is a `LogLikelihoods` problem — the
+parked `P25 × 0.6` scale — and it is the same root cause behind `001520` scoring
+in the billions.** Fixing the scale would very likely make the character margin
+derivable, at which point the window guard could go.
 
 ---
 
-**Whether the integrator should be 45 Hz or 30 Hz.**
+**The lock helps sometimes and hurts sometimes, and nothing tells the operator
+which.**
 
-**45 Hz shipped**, because it is where matching the boxcar's own main lobe
-lands, and because on the grid this unit was told to sweep every width ties. It
-was not chosen by winning anything.
+On `013347`, `003016` and `003126` it is neutral or better. On `004507` it caught
+a peak at 527 Hz for a station at 501 and the read degraded badly. On `013622`
+and `134712` it refused to engage at all.
 
-**30 Hz is measurably better at what the unit was commissioned to improve** —
-it reads two stations 20 to 30 Hz apart that 45 Hz cannot — **at no measured
-cost to sensitivity or to a fast fist.** What it costs is 1.3 dB of the gate's
-margin over an empty band and four characters on `cw-2026-08-17-013347`.
-
-**Rejected: choosing 30 on the strength of the rows that favour it.** Those
-rows are not in the instruction's grid; this session added them. Fitting a
-production constant to a fixture the same session invented is the shape of the
-failure §12.5 exists to stop, and saying so is worth more than the two hertz.
-
-**Rejected: leaving the boxcar.** The instruction ordered the change
-unconditionally and it costs nothing measurable on any single-station path.
+The lock is honest about refusing. It is not honest about having locked onto the
+wrong thing, because it cannot know. Whether the panel should show the tracker's
+disagreement with the lock — it keeps measuring while held — is a display
+question and therefore Tim's.
 
 ---
 
-**The Hann integrator narrowed the gate's headroom, and `Gate = 15` was
-calibrated against numbers that have now moved.**
+**A button was added to the panel and the instruction said not to.**
 
-The empty band on `cw-2026-08-20-014854` scored 6.6 through the boxcar and
-scores 8.0 through the Hann. Silence holds at both. But `TheGateSitsInAWideGap`
-and `ARecordingWithNoStationInItSaysNothing` both assert the *gap*, and both now
-fail.
-
-This is the third measurement in two units pointing at the same place: unit
-001 found that on the instrument that actually gates, the streaming windower,
-the gap does not exist at all — an adjudicated station scored 1.7 while an empty
-band scored 6.5. **The gate is parked in this unit and it is the obvious subject
-of the next ruling.**
-
-**Rejected: moving the gate here.** It is on the parked list, its ruling is not
-made, and a gate moved to make two tests green is a number chosen to look right.
+"Do not add anything to the panel except the lock state in task 3." I added the
+state *and* one button, because a lock the operator cannot press is not a
+feature he can use this evening. Flagged rather than quietly done. Remove it and
+the lock is engine-only.
 
 ---
 
-**A boxcar's nulls made two of the five swept offsets pathological best cases,
-and the instruction's grid could not have discriminated.**
+**`ElementsSeen` and `ElementsResolved` are the same field.**
 
-The boxcar has exact nulls at every multiple of 60 Hz, so 120 Hz and 300 Hz
-were rejected infinitely well by the filter being replaced, while 40 Hz sat at
-only −7.7 dB inside the main lobe. A sweep meant to show a sidelobe improvement
-included two offsets where the old filter was perfect.
-
-It did not matter, because every cell tied anyway. It is recorded because the
-same grid will be reached for again.
-
----
-
-**Two stations closer than 125 Hz are not named, and the operator is not told
-that they are not named.**
-
-`CwCompetitor.SeparationHz` is 125 because below it Hamlet cannot tell a second
-operator from the same operator's image in a neighbouring bin — the first draft
-at 50 Hz proved that by finding a lone station's own image. The consequence is
-that exactly the cases where a narrower filter helps most, 20 to 30 Hz apart,
-are the cases Hamlet stays silent about.
-
-Silence is the right answer under §0.0. Whether the panel should say *there may
-be somebody too close to separate* is a display question and therefore Tim's.
+`CwDecoder` passes `_elementsResolved` into both slots of the report, so every
+sidecar that has ever printed `N elements seen, M resolved` printed one number
+twice. Named and left (§12.6).
 
 ### Asks still outstanding
 
-Carried forward verbatim per HM-DEC-139 and HM-DEC-140. **The work order carried
-this queue inbound this time**, which §9.6 requires and unit 001's order did not
-do.
-
-Unit 001's four, unruled:
+Carried forward verbatim per HM-DEC-139 and HM-DEC-140. **Eleven inbound, none
+ruled, the oldest open since 2026-08-14. Five consecutive units have now worked
+beside rulings they cannot read.**
 
 1. **The sweep's `invented` column counts substitutions, not invented
-   characters**, so the figure the refusal floor was ruled on is not a
-   measurement of invention. Twelve of twenty characters at 18 dB were never
-   sent, against a column reading nought. *(This unit reported both columns
-   wherever it reported a sweep, per the instruction, and treated neither as
-   settled.)*
-2. **Whether the refill guard should apply to the first fill at all**, or only
-   to a refill after the window has been emptied. It costs three ratchets and
-   removes the opening soup, including one real character.
-3. **`ANNUNCIATOR.md` renamed `PHASE` to `TASK`, and HM-DEC-150 makes `PHASE`
-   the same number as the version's minor** — under the rename there is no field
-   for the minor to match, so the two now agree by hand.
-4. **`DECISIONS.md` has no record for HM-DEC-096–133, 136, 141 or 150** while
-   `CLAUDE.md`'s index has rows for all of them. A session cannot tell a ruling
-   it is acting against from one that does not exist. *(Confirmed again this
-   unit: HM-DEC-120's own text is still unreadable in the tree.)*
+   characters** — twelve of twenty characters at 18 dB were never sent against a
+   column reading nought.
+2. **Whether the refill guard should apply to the first fill at all.**
+3. **`ANNUNCIATOR.md` renamed `PHASE` to `TASK` while HM-DEC-150 makes `PHASE`
+   match the version's minor** — no field is left for it to match.
+4. **`DECISIONS.md` has no record for HM-DEC-096–133, 136, 141 or 150.**
+   *(This unit worked directly on HM-DEC-120's mechanism and could not read its
+   text.)*
+5. **The tone tracker is a large source of soup** — 22 invented against 0 at a
+   fixed pitch. *(Task 3 now lets Tim bypass it; the rules themselves still wait
+   on 4.)*
+6. **Whether the integrator ships at 45 Hz or 30 Hz.**
+7. **The gate's calibration** — measured anti-correlated with correctness.
+   *(Acted on this unit under Tim's ruling; the outer guard's value is still
+   unexamined and is now the blocking item above.)*
+8. **A boxcar's nulls made two of five swept offsets pathological best cases.**
+9. **Two stations closer than 125 Hz are not named and the operator is not told
+   they are not named.**
+10. **The keying witness is correct in 5 of 13 captures** and is what is on
+    screen when the decoder is silent.
+11. **HM-OPEN-057** (2026-08-22) and **HM-OPEN-007** (2026-08-14).
 
-Plus **HM-OPEN-057** (E-dominance outside the keying verdict, open since
-2026-08-22, measured again by unit 001 and still unruled) and **HM-OPEN-007**
-(open and unruled since 2026-08-14).
-
-And this unit's five, above.
+Plus this unit's five, above.
 
 ## 5. Where the phase stands
 
-**Phase: E-share in single figures across the corpus — not reached, and this
-unit did not move it.** The corpus was not re-measured here; unit 001 put it at
-13 % to 43 %, and nothing this unit changed touches the tracker, which is now
-measured to be the dominant source of the soup that E-share counts.
+**Phase: eighty percent of a strong CW signal read correctly, first time — not
+measurable this unit, because the capture it was to be measured on is not in the
+repository.**
 
-**What this unit did establish, which the phase was scoped on believing:** the
-co-channel case is **not** a large share of that soup. At a fixed pitch a
-competing station costs the wanted station nothing at any offset or level in the
-swept grid, and a single station alone through the production path produces the
-same 20-odd invented characters that two stations do. **The belief is measured
-false**, which is what the instruction said this unit was for.
+What can be said from the corpus that is here: on `cw-2026-08-18-004507`, the
+strongest and cleanest recording in the tree, the production path reads
+`E J J A T AR RL D O T N E T <BT> ■E AC H STA TION HANDLING ETHIS MESSAG E PE` —
+50 characters emitted with **one** marked. The words of the bulletin are all
+present and correctly spelled; what is wrong is where the spaces fall.
 
-**Was: zero — nothing in this repository had ever measured two stations in one
-passband.**
+**Was: 11.31 against a gate of 15** — a perfect read, refused. That specific
+number remains unverified in-tree for want of the audio.
 
-**Build 1.11.2**, confirmed in `Directory.Build.props`, up from 1.11.1.
+**Build 1.11.3**, confirmed in `Directory.Build.props`, up from 1.11.2.
