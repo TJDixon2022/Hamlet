@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 6 of 6
-BALL: tim
-NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-23T23:53:04-04:00
-NOTE: the unit's premise is measured false — a competing station costs the wanted one nothing at any offset, and one station alone through the tracker invents 22 characters
+STATE: EXECUTING
+TASK: 1 of 5
+BALL: code
+NEXT_PASTE: none
+UPDATED: 2026-08-24T10:16:08-04:00
+NOTE: elements are counted after the gate so that mystery dissolves; the three captures this order rests on are not in the tree, and 134712's adjudicated station scores 4.64 against an empty band's 7.98
 
 ---
 

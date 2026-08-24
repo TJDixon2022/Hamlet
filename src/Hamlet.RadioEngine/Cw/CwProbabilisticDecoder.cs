@@ -49,6 +49,10 @@ public readonly record struct CwProbabilisticResult(
 /// <param name="Text">The letter, or a space for a word gap.</param>
 /// <param name="Pattern">The dits and dahs behind it, or "" for a word gap.</param>
 /// <param name="EndHop">Which hop of the window it ended at.</param>
+/// <param name="SpanHops">
+/// How many hops the character spans, from the start of its first mark to the
+/// end of its last, so the ratio can be read per hop.
+/// </param>
 /// <param name="SpanLogLikelihoodRatio">
 /// How much better this character's own span is explained by the keying the path
 /// chose than by the key having been up throughout it.
@@ -74,7 +78,38 @@ public readonly record struct CwProbabilisticResult(
 /// decode with the evidence attached is a regression test.</para>
 /// </remarks>
 public readonly record struct CwProbabilisticCharacter(
-    string Text, string Pattern, int EndHop, double SpanLogLikelihoodRatio = 0);
+    string Text,
+    string Pattern,
+    int EndHop,
+    double SpanLogLikelihoodRatio = 0,
+    int SpanHops = 0)
+{
+    /// <summary>
+    /// The character's own evidence per hop, in the units
+    /// <see cref="CwProbabilisticResult.LikelihoodRatio"/> is measured in.
+    /// </summary>
+    /// <remarks>
+    /// <para>**AN ABSOLUTE SPAN RATIO IS MEANINGLESS ACROSS RECORDINGS AND THE
+    /// CORPUS SAYS SO LOUDLY.** Unit 001 measured the medians: a character read
+    /// correctly on `cw-2026-08-18-004507` scores about three thousand, and a
+    /// character on `cw-2026-08-17-013347` scores eleven **billion**. The
+    /// quantity is a sum of per-hop log-likelihoods and the per-hop difference
+    /// scales with the squared ratio of signal amplitude to the noise estimate,
+    /// which is taken from each recording's own envelope. A threshold in these
+    /// units would be a threshold on how quiet the band was.</para>
+    /// <para>**DIVIDING BY THE SPAN PUTS IT IN THE GATE'S OWN UNITS.** The window
+    /// ratio is the whole window's margin over all-key-up divided by its hop
+    /// count; this is one character's margin over all-key-up divided by its hop
+    /// count. Same reference, same arithmetic, one character instead of a
+    /// window, so the outer guard and the inner test can be read against each
+    /// other rather than against two different scales.</para>
+    /// <para>The whole span is the divisor and not just the marks. A character
+    /// whose element gaps are long relative to its marks really does carry less
+    /// evidence per hop, and the window ratio divides by its silence too.</para>
+    /// </remarks>
+    public double SpanMargin
+        => SpanHops <= 0 ? 0 : SpanLogLikelihoodRatio / SpanHops;
+}
 
 /// <summary>
 /// A segmental Viterbi CW decoder that never forms a threshold.
@@ -417,6 +452,28 @@ public static class CwProbabilisticDecoder
         double toneHz,
         double? atWordsPerMinute,
         IReadOnlyList<double>? gapMilliseconds)
+        => Decode(envelope, toneHz, atWordsPerMinute, gapMilliseconds, ungated: false);
+
+    /// <summary>Read an envelope, returning what the path spelled whatever it scored.</summary>
+    /// <param name="envelope">Envelope magnitudes, one every hop.</param>
+    /// <param name="toneHz">The pitch it was taken at.</param>
+    /// <returns>What the path spelled, with no window gate applied.</returns>
+    /// <remarks>
+    /// **FOR MEASUREMENT, AND NOTHING IN THE APPLICATION CALLS IT.** The question
+    /// "what would this audio have emitted if the gate had let it through" cannot
+    /// be asked of a decoder that returns an empty list when the gate refuses, and
+    /// it is exactly the question a gate's calibration turns on (§0.0.1).
+    /// </remarks>
+    public static CwProbabilisticResult DecodeUngated(
+        IReadOnlyList<double> envelope, double toneHz)
+        => Decode(envelope, toneHz, null, null, ungated: true);
+
+    private static CwProbabilisticResult Decode(
+        IReadOnlyList<double> envelope,
+        double toneHz,
+        double? atWordsPerMinute,
+        IReadOnlyList<double>? gapMilliseconds,
+        bool ungated)
     {
         ArgumentNullException.ThrowIfNull(envelope);
 
@@ -463,6 +520,13 @@ public static class CwProbabilisticDecoder
         var insideCharacter = bestLastKind is >= 0 and <= 2;
 
         var ratio = (bestScore - nothingAtAll) / envelope.Count;
+
+        if (ungated)
+        {
+            return new CwProbabilisticResult(
+                ratio, bestWpm, string.Concat(bestCharacters.Select(c => c.Text)),
+                toneHz, bestCharacters, insideCharacter);
+        }
 
         if (ratio < Gate)
         {
@@ -785,6 +849,9 @@ public static class CwProbabilisticDecoder
         // The running total for the character being spelled, marks only.
         var spanRatio = 0.0;
 
+        // Where its first mark began, so the span can be divided by its length.
+        var spanFrom = -1;
+
         foreach (var (k, startHop, endHop) in path)
         {
             var kind = Kinds[k];
@@ -792,6 +859,11 @@ public static class CwProbabilisticDecoder
             if (kind.IsKeyDown)
             {
                 pattern.Append(kind.Token);
+
+                if (spanFrom < 0)
+                {
+                    spanFrom = startHop;
+                }
 
                 spanRatio += downTo[endHop] - downTo[startHop]
                     - (upTo[endHop] - upTo[startHop]);
@@ -814,10 +886,12 @@ public static class CwProbabilisticDecoder
 
                 characters.Add(new CwProbabilisticCharacter(
                     MorseAlphabet.Lookup(spelled) ?? "#", spelled, startHop,
-                    spanRatio));
+                    spanRatio,
+                    spanFrom < 0 ? 0 : startHop - spanFrom));
 
                 pattern.Clear();
                 spanRatio = 0;
+                spanFrom = -1;
             }
 
             if (kind.Token == " ")
@@ -831,7 +905,8 @@ public static class CwProbabilisticDecoder
             var spelled = pattern.ToString();
 
             characters.Add(new CwProbabilisticCharacter(
-                MorseAlphabet.Lookup(spelled) ?? "#", spelled, count, spanRatio));
+                MorseAlphabet.Lookup(spelled) ?? "#", spelled, count, spanRatio,
+                spanFrom < 0 ? 0 : count - spanFrom));
         }
 
         return characters;
