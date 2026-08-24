@@ -18,211 +18,215 @@ If all four hold, say "Hamlet confirmed" and continue.
 
 ---
 
-# Work instruction 006 — the noise scale, and the guard that can go once it is fixed
+# Work instruction 008 — the guard in the units it is measured in
+
+**This unit has a deadline.** Tim is at the radio this evening and the target is
+**eighty percent of a strong CW signal read correctly, first time.** Task 4
+states whether that target is met, as a number.
 
 ## Why this unit exists
 
-**The unit's number: 7.98 against 4.64.** On this repository's own audio, the
-empty capture `cw-2026-08-20-014854` scores 7.98 on the outer window guard while
-`cw-2026-08-17-134712`, which holds the adjudicated `N4L`, scores 4.64. **The
-empty band outscores the real station, so no value of the guard both admits the
-station and refuses the noise.** Unit 1.11.3 measured that and correctly refused
-to tune it.
+**The unit's number: 1.10 against a guard of 15.**
 
-The guard is what stands between a strong signal and the screen. A window scoring
-below it is thrown away before any character is judged, so the per-character
-decision that unit 1.11.3 built never runs on the signals that most need it.
+Unit 1.11.4 corrected the noise scale and the decoder got better at reading.
+With the guard bypassed, the corpus reads the best this repository has recorded —
+**`WESTERNS` where the old scale read `WESNRNS`, `FLUX` where it read `FLAX`** —
+and `cw-2026-08-24-012403` produces **`DE KD0UN KD0UN K`**, the exact text this
+work was commissioned to recover, at a window ratio of **1.10**.
 
-**Why the guard cannot simply be deleted today.** Unit 1.11.3 found a clean
-character-level separation on whole-file reads — `cw-2026-08-18-004507`'s weakest
-real character scores 49.8, and the best character either empty capture produces
-is 42.5 — and found it collapses on the streaming path, where the same capture's
-weakest real character scores 3.1. **The two paths disagree because the noise
-scale is estimated once over a whole recording and re-estimated every window in
-streaming, so one character is scored against two different noise floors.**
+`Gate = 15` was calibrated when the scale was 2.2× too small. In the corrected
+units the captures that read score between **1.10 and 10.77**, so the guard now
+refuses nearly all of them: four recordings that read yesterday read nothing
+today. **The model improved and the threshold did not follow it.**
 
-That scale is `Percentile(sorted, 25) * 0.6` in
-`CwProbabilisticDecoder.LogLikelihoods`. For a Rayleigh envelope the identity is
-`σ = P25 / 0.759`, so the scale is **0.455 σ rather than σ, 2.2× too small**, and
-every quadratic term is inflated about 4.8×. It is the same fault behind
-`cw-2026-08-23-001520` scoring in the billions — measured outside Hamlet at
-**11,584,537,864** on a capture that is 54.1 % exact zeros.
+Unit 1.11.4 was forbidden to touch the guard and was right to stop. **Setting a
+constant from numbers a session measured itself is fitting; setting it from
+numbers already published in a prior unit's report is re-expression.** This unit
+does the second, and says which published line each number came from.
 
-**Fix the scale, and the character margin becomes derivable on the path
-production actually runs. Then the guard can go rather than be tuned.**
-
-**Three captures this unit needs are in this zip**, at
-`tests/fixtures/cw/captured/unadjudicated/`. Unit 1.11.3 could not verify its
-own premise because they were absent; that was the delivering session's fault,
-not the tree's.
+**Two adjudicated callsigns were lost by the same change and nobody knows why.**
+`VA3VRR` on `cw-2026-08-17-013347` and `N4L` on `cw-2026-08-17-134712` both read
+under the old scale and neither reads now. `013347` still scores 1.7 × 10⁷,
+which is not a guard problem. **If the guard explains them, task 1 closes in
+minutes. If the estimator explains them, that is the more important finding and
+task 3 exists for it.**
 
 ## Verify this instruction against the tree
 
-**Nothing here describes the tree.** Check every claim against the files and
-report any mismatch, including where the work succeeded anyway. Do not repair
-this instruction silently.
+**Nothing here describes the tree.** Check every claim and report mismatches,
+including where the work succeeded anyway. Do not repair this instruction
+silently. Unit 1.11.4 found three of its instruction's claims out of date and
+said so; do the same.
 
-**A contradiction in unit 1.11.3's own report, to resolve before task 2.** Its
-section 3 corpus table shows `134712` at window 35.8 emitting 28 characters with
-`N4L` visible; its premise table shows `134712` at 4.64, refused. Both cannot
-describe the same measurement. **Say which is which and which is right** — it
-changes how much of the corpus the guard is actually suppressing.
+**Known red: 49 failing of 1600 in the engine, 481 of 481 in the app**, against
+a 32 baseline. Nineteen moved when the scale changed, three went green.
+**Eleven are ordinary decode assertions failing because the guard silences those
+recordings** — expect them to move back as task 2 lands.
 
-**Known red:** 31 failing of 1596 in the engine, 481 of 481 in the app, the
-failing set byte-identical to what unit 002 left. Four of those are unit 002's
-Hann swap — `ARecordingWithNoStationInItSaysNothing(014854)`,
-`TheGateSitsInAWideGap`, `TheFiveToEightDecibelPlateauHolds`,
-`OnlyTheOneTheCouplingBreaksHasTheTrough`. **Three are gate-margin assertions and
-this unit changes both the units they are expressed in and possibly the guard's
-existence, so they will move.** Report what they do; do not tune to restore them.
+**`ARecordingWithNoStationInItSaysNothing(014854)` went green for the first time
+since unit 002 and must stay green.**
 
-**`ElementsSeen` and `ElementsResolved` are the same field** — `CwDecoder` passes
-`_elementsResolved` into both slots. Named by unit 1.11.3, still not fixed, and
-it will make this unit's element counts read identically. Do not fix it here;
-just do not trust the pair.
+**`ItReadsWhatTheReferenceReads` is failing because
+`tools/reference-decoder/reference_decoder.py` still carries `P25 × 0.6` and the
+Gaussian key-up.** Task 5 addresses it. **Do not touch it before then, and never
+in the same commit as a decoder change**, which would make the check agree with
+itself by construction.
 
 **`DECISIONS.md` still has no record for HM-DEC-096–133, 136, 141 or 150.** This
-unit works directly on HM-DEC-120's mechanism and cannot read its text. It also
-touches HM-DEC-119's lesson about scales estimated over different spans, cited by
-unit 1.11.3 and likewise unreadable.
+unit sets the constant HM-DEC-120's floor is expressed in and cannot read its
+text.
+
+**`CLAUDE_CODE.md` changed from five report sections to four on 2026-08-24
+without its version line moving** — both copies read 1.3. **Read the file's own
+section count and follow that.**
 
 ## Rulings in force
 
 **HM-DEC-120.** `CLAUDE.md`'s index row reads *"The refusal floor is 14 in the
 decoder's own margin units, superseding the 17 of HM-DEC-117's interim."*
 **The property is that nothing is emitted on audio holding no signal.** Both
-captures holding no station must emit nothing, checked and stated explicitly at
-every task that touches the signal path. **A change that reads better and breaks
-the silence property is a failed change and is reverted, not tuned.**
+empty captures must emit nothing, checked and stated explicitly at every task
+that touches the signal path. **A change that reads better and breaks the silence
+property is a failed change and is reverted, not tuned.**
 
-**Rejected already, do not revisit:** tuning the outer guard to a different
-number — the corpus proves no number works, 7.98 against 4.64; fitting a
-threshold to a fixture invented in the same session, which unit 002 was asked to
-do and correctly refused; carrying a threshold across a change that alters the
-units it is expressed in.
+**Tim's ruling on the character margin, standing from unit 1.11.3:** the margin
+is nought, the point where silence explains the span exactly as well as the
+letter does. It survived the rescaling untouched. **Not changed here.**
 
-**Tim's ruling on the character margin, from unit 1.11.3 and standing:** the
-margin is nought, because nought is the point where silence explains the span
-exactly as well as the letter does, and it is the one value that is not a tuned
-threshold. **If this unit's corrected scale produces a clean measured gap, a
-margin inside that gap is a proposal for Tim, not a change to make.**
+**Rejected already, do not revisit:**
 
-**PROPOSAL, not ruled — §4.4.** Unit 1.11.3 added a "Hold this pitch" button to
-the panel and flagged it. Tim has not ruled it. **Leave it exactly as it is.
-Do not extend it, do not remove it, do not add to it.**
+- **Reverting the corrected scale.** It reads better character for character
+  wherever it reads; the fault is the threshold.
+- **Replacing the guard with a character margin.** Unit 1.11.4 measured it: the
+  best noise character scores 4.50 and `KD0UN`'s weakest scores 1.75.
+- **Setting the guard from numbers this session invents.**
+- **Improving the `1e-9` σ floor.** The floor is the symptom.
 
-**Shape conflict:** `CLAUDE_CODE.md` moved to version 1.3 on 2026-08-24 and the
-report is now **four** sections, not five. `SESSION_PROTOCOL.md` §12.2 still says
-three headings. §0 gives `CLAUDE_CODE.md` the win. **Read the version line at the
-top of the file and follow what is there rather than what this instruction says.**
-Every unit since 001 has named this — name it again.
+**PROPOSAL, not ruled — §4.4.** The "Hold this pitch" button from unit 1.11.3 is
+still unruled. **Leave it exactly as it is. Do not extend, remove, or add to the
+panel.**
 
 ## Status cadence
 
 Named here as well as in the prompt, per §4.5. After each task, before starting
 the next, update `PROJECT_STATUS.md` per `CLAUDE.md` — `STATE`, `TASK: n of m`,
 `BALL`, `UPDATED` read from the clock, and `NOTE` saying what is moving inside
-the task. The same every ten minutes while a task runs.
+the task. The same every ten minutes while a task runs. **This unit is against a
+clock; if a task overruns, say so in the note.**
 
 ## The tasks
 
-### Task 1 — the three captures, and the premise at last
+### Task 1 — why `VA3VRR` and `N4L` vanished
 
-The zip places `cw-2026-08-24-012403`, `cw-2026-08-22-031905` and
-`cw-2026-08-23-001520` with their sidecars in
-`tests/fixtures/cw/captured/unadjudicated/`. Commit them.
+Both read under the old scale. Neither reads now.
 
-**Then reproduce, in-tree, the three figures unit 1.11.3 could not:**
+Answer one question first, because it decides the size of this unit: **are they
+refused by the guard, or are they never decoded at all?**
 
-| capture | pitch | expected | source |
-|---|---|---|---|
-| `012403`, 20–30 s, 20 WPM | 439.81 Hz | ratio ≈ 11.3, text `DE KD0UN KD0UN K` | outside Hamlet |
-| `031905` | 499.9 Hz | ratio ≈ 17.5, soup | outside Hamlet |
-| `001520` | 600.0 Hz | ratio in the billions | outside Hamlet |
-
-**These came from an independent implementation of Hamlet's documented model, not
-from Hamlet. Where Hamlet disagrees, Hamlet is the truth about Hamlet** — report
-the disagreement and carry on; the unit does not depend on them matching.
-
-`012403`'s own sidecar records `20 WPM won out of 8 to 32, 11.2 better than
-silence per hop against a gate of 15` and `CwPitch 600 Hz` against a station
-measured at 439.81 — **note whether the tree agrees that the radio's CW pitch and
-the station's pitch are unrelated**, because a later unit may be tempted to lock
-to `CwPitch`.
-
-Then trace, with file and line: where the noise scale and the amplitude are
-formed, over what span on each path, and every caller that depends on their
-present scaling. **If any threshold elsewhere is expressed in these units, name
-it** — task 2 moves the ground under all of them.
+- **If the guard refuses them**, report the window ratios they score and say so
+  in one line. Task 2 fixes them and task 3 is not needed.
+- **If they are not decoded even with the guard bypassed**, report what the
+  estimator does on those recordings — the proportion of exact zeros, the longest
+  run, what σ and the amplitude evaluate to in the worst window, whether the
+  `1e-9` clamp is reached — and **whether it is the same fault as
+  `cw-2026-08-23-001520`**, which scores 1.4 × 10¹⁶.
 
 Build and run the suite; record counts as the green baseline.
 
-### Task 2 — a scale that means the same thing on every capture and every path
+### Task 2 — the guard, re-expressed
 
-In `CwProbabilisticDecoder.LogLikelihoods`:
+**Set `Gate` from unit 1.11.4's published ungated table**, naming the line each
+figure came from. That table gives, in the corrected units:
 
-- **σ from `P25 / 0.759`**, which is `1 / √(2·ln(4/3))`. Put the derivation in
-  the doc-comment so nobody re-tunes it as if it were a fudge factor.
-- **Key-up as a Rayleigh density**, `ln e − 2 ln σ − e²/2σ²`. The missing `ln e`
-  term is what keeps the noise hypothesis competitive in the upper tail, and its
-  absence is why noise scores as evidence.
-- **σ and the amplitude taken over a rolling two-to-three-second span on both
-  paths.** This is the part that makes whole-file and streaming agree, which is
-  the whole point: unit 1.11.3's margin of 46 held on one path and cost `VA3VRR`
-  on the other. The span length is provisional and marked so; **report what 1.5 s
-  and 4 s do to the same table** so it arrives with its own sensitivity measured.
+| capture | window ratio | holds |
+|---|---|---|
+| `003758` | 10.77 | `AA4MP/4 QNIK` |
+| `004507` | 6.96 | the ARRL bulletin |
+| `003126` | 5.96 | readable English |
+| `031905` | 4.93 | a propagation bulletin |
+| `003016` | 4.55 | readable English |
+| `012403` | **1.10** | `DE KD0UN KD0UN K` |
+| `014854` | **0.65** | **nothing** |
+| `013622` | **0.20** | 55 characters, no station adjudicated |
 
-**Both empty captures emit nothing** — `014854` and `014935` — checked and stated.
+**Re-measure every line before using it** — task 1 or task 3 may have moved them —
+and set the guard in the gap the current figures show, **stating the gap and both
+of its edges.**
 
-### Task 3 — measure whether the guard can go
+**If no gap admits `012403` and refuses `014854`, say so plainly and leave `Gate`
+where it is.** A guard that cannot separate is the finding of this unit, and a
+fitted number would hide it.
 
-With the corrected scale, over every capture including the three added in task 1:
+**The doc-comment carries the derivation, the source of each number, and the
+date**, so the next session can tell a measured constant from an inherited one.
 
-- the span log-likelihood of every emitted character, on **both** paths;
-- the separation between characters in adjudicated callsigns and everything else;
-- what either empty capture's characters would score **with the outer guard
-  removed entirely**, which is the only way to see them at all — unit 1.11.3 found
-  the guard refuses every empty window before any character is judged, so the
-  corpus has never produced a single noise-minted character to measure against.
+Re-run the corpus, the sensitivity sweep, and both empty captures. **The silence
+property is asserted, not inferred.**
 
-**Then answer one question: with the guard removed, does a character margin exist
-that silences both empty captures and keeps all three adjudicated callsigns?**
+### Task 3 — the estimator on digital silence *(only if task 1 implicates it)*
 
-- **If yes**, report the gap and the value inside it. **Do not remove the guard
-  and do not set the margin** — that is a proposal for Tim, in section 4, in the
-  decision log's format.
-- **If no**, report the overlap and which callsign a silencing margin would cut.
-  That is equally the answer and it is section 3's headline either way.
+**Skip this task and say it was skipped if task 1 found the guard responsible for
+the two lost callsigns.**
 
-### Task 4 — the corpus table *(the drop candidate)*
+Otherwise: replace the percentile-based noise scale with one that survives audio
+containing exact zeros and long silences. **The specification, not the method:**
 
-Re-run the four-way harness across every capture and both empty ones: correct,
-wrong, invented, emitted, `■` count, window ratio, per-character margins, read
-through the production path and with the pitch locked. Same shape as unit
-1.11.3's so the two can be laid side by side.
+- On a window that is entirely digital silence it returns **no estimate**, and
+  the decoder reads nothing from that window rather than reading noise against a
+  clamped σ. Silence is an absence of measurement, and HM-DEC-009 says an unread
+  value says so.
+- On a window holding keying it lands within a few per cent of the true noise σ
+  on the generated fixtures, where the truth is known.
+- No capture in the corpus reaches an arbitrary floor.
+
+**Report what was chosen and what was rejected, with the numbers.** If this task
+runs, task 2's guard is re-derived after it and the report says so.
+
+### Task 4 — does `012403` clear eighty percent, end to end
+
+**Through the production path, with the guard in place** — not bypassed, not
+whole-file, not forced — decode `cw-2026-08-24-012403` and report:
+
+- the text emitted;
+- **the percentage of the sent text read correctly**, against
+  `CQ CQ CQ DE KD0UN KD0UN K`, stated as a number;
+- the same for the strong stretch alone, 20–30 s, where the station stands 20 dB
+  above everything more than 40 Hz away;
+- the window ratios across the run, and how many windows cleared the guard.
+
+**This is the number the day was spent on. It leads section 3 whether it is
+eighty percent or nine.**
+
+Report the same percentage for `004507`, the cleanest recording in the tree, so
+one figure is not the whole basis.
+
+### Task 5 — the reference implementation *(the drop candidate)*
+
+`tools/reference-decoder/reference_decoder.py` still carries the old model, so
+`ItReadsWhatTheReferenceReads` compares a corrected port against an uncorrected
+reference.
+
+Port the corrected key-up density and, if task 3 ran, its estimator — **as a
+separate commit from any decoder change.** Report what the test does. **If the
+two still disagree, report the disagreement rather than closing it**; a reference
+edited until it agrees is worth nothing.
 
 **This is the drop candidate. Dropped whole, and the report says it was dropped.**
-Tasks 2 and 3 each measure the corpus already; this exists to put one comparable
-table in one place, and a partial version is worse than none.
 
 ## Parked — do not touch, do not raise
 
-Built from unit 1.11.3's sections 3 and 4:
-
-- **The outer guard's removal and the margin's value.** Measured here, ruled by
-  Tim, changed in a later unit.
-- **The "Hold this pitch" button and anything else on the panel.** Unruled.
-- **Whether the panel should show the tracker disagreeing with an engaged lock.**
-  Display, therefore Tim's.
-- **`ElementsSeen` / `ElementsResolved` being one field.**
+- **The character margin at nought.** Ruled, and it survived the rescaling.
+- **The panel, the "Hold this pitch" button, and whether the panel should show
+  the tracker disagreeing with an engaged lock.** Unruled, Tim's.
+- **`ElementsSeen` and `ElementsResolved` being one field.**
 - **The tone tracker's movement rules** (HM-DEC-095, HM-DEC-127), unreadable here.
 - **The integrator at 45 Hz against 30 Hz.**
 - **The keying sweep's 5-of-13 verdicts.**
 - **`ClearOnAStationChange`, `Restart()`, the `Skip()` splice wall.**
-- **`CwUnitEstimator.Runs`** — if task 2 moves the measured unit, report it and
-  leave the estimator alone.
-- **`tonePeak` inflation** — but if task 2's local scale makes the honest figure
-  free, say so.
+- **`CwUnitEstimator.Runs`** — if anything here moves the measured unit, report
+  it and leave the estimator alone.
+- **The rolling span length**, measured at 2.5 s with 1.5 s losing `KD0UN`. If
+  task 3 changes that sensitivity, report it; do not re-tune the span.
 - **HM-OPEN-057, HM-OPEN-058, HM-OPEN-059.**
 
 A parked item that turns out to block a task is raised once, and says it was
@@ -232,16 +236,14 @@ parked.
 
 Standing prohibitions are `CLAUDE.md`'s and are not retyped. Unit-specific:
 
-- **Do not remove the outer guard in this unit, and do not tune it.** Task 3
-  measures whether it can go; removing it on the strength of that measurement in
-  the same session is fitting the change to the fixture that justified it.
-- **Do not carry any threshold across task 2.** Every one of them is expressed in
-  units this task changes; a threshold whose scale moved underneath it reads as a
-  working gate while gating nothing.
-- **Do not trade the silence property.** It is the one thing never traded, and
-  both empty captures are the test.
-- **Do not touch the panel.** What the display asserts is Tim's without exception,
-  and there is an unruled button on it already.
+- **Do not revert the corrected scale.**
+- **Do not set the guard from numbers this session invented**, and do not set it
+  at all if no gap separates `012403` from `014854`.
+- **Do not run task 3 if task 1 did not implicate the estimator.**
+- **Do not edit the reference decoder in the same commit as a decoder change.**
+- **Do not trade the silence property**, and do not let
+  `ARecordingWithNoStationInItSaysNothing(014854)` go red again.
+- **Do not touch the panel.**
 
 ## Committing, pushing, reporting
 
@@ -249,42 +251,43 @@ Commit and push each task before starting the next. The report names the branch
 and states whether each push succeeded; a refused push is reported as refused,
 with the reason.
 
-Report per `CLAUDE_CODE.md` §8 — **check the version line; as of 1.3 it is four
-sections** — to `output.md` at the repository root, overwritten and printed.
-**Section 3 leads with task 3's answer: whether a character margin exists that
-holds silence on both empty captures and keeps all three adjudicated callsigns,
-with the numbers.** Section 2 says plainly what Tim will see differently at the
-radio.
+Report per `CLAUDE_CODE.md` §8 — **read the file's own section count rather than
+trusting its version line** — to `output.md` at the repository root, overwritten
+and printed. **Section 3 leads with task 4's percentage on `012403` through the
+production path.** Section 2 says plainly what Tim will see differently at the
+radio this evening, including whether `VA3VRR` and `N4L` are read again, because
+he is going to the radio on the strength of it.
 
 ### Asks still outstanding
 
 Carried forward verbatim per HM-DEC-139 and HM-DEC-140. **Eleven inbound, none
-ruled, the oldest open since 2026-08-14. Six consecutive units have now worked
+ruled, the oldest open since 2026-08-14. Eight consecutive units have now worked
 beside rulings they cannot read.**
 
 1. **The sweep's `invented` column counts substitutions, not invented
-   characters** — twelve of twenty characters at 18 dB were never sent against a
-   column reading nought.
+   characters.**
 2. **Whether the refill guard should apply to the first fill at all.**
 3. **`ANNUNCIATOR.md` renamed `PHASE` to `TASK` while HM-DEC-150 makes `PHASE`
-   match the version's minor** — no field is left for it to match.
+   match the version's minor.**
 4. **`DECISIONS.md` has no record for HM-DEC-096–133, 136, 141 or 150.**
 5. **The tone tracker is a large source of soup** — 22 invented against 0 at a
    fixed pitch.
 6. **Whether the integrator ships at 45 Hz or 30 Hz.**
-7. **The gate's calibration** — measured anti-correlated with correctness; this
-   unit measures whether it can be removed rather than re-tuned.
+7. **The gate's calibration** — this unit re-expresses it if a gap exists.
 8. **A boxcar's nulls made two of five swept offsets pathological best cases.**
 9. **Two stations closer than 125 Hz are not named and the operator is not told
    they are not named.**
-10. **The keying witness is correct in 5 of 13 captures** and is what is on screen
-    when the decoder is silent.
+10. **The keying witness is correct in 5 of 13 captures.**
 11. **HM-OPEN-057** (2026-08-22) and **HM-OPEN-007** (2026-08-14).
 
-Unit 1.11.3's five, still unruled: **the missing captures** *(fixed by this
-unit's task 1)*; **the outer guard needing replacement rather than re-tuning**;
-**the lock helping sometimes and hurting sometimes with nothing telling the
-operator which**; **the button added against instruction**; **`ElementsSeen` and
-`ElementsResolved` being one field.**
+Unit 1.11.3's, still open: **the lock helping sometimes and hurting sometimes
+with nothing telling the operator which**; **the button added against
+instruction**; **`ElementsSeen` and `ElementsResolved` being one field**.
+
+Unit 1.11.4's five: **the guard blocking everything** *(task 2)*; **two
+adjudicated callsigns lost** *(task 1)*; **percentile estimation failing on
+audio with exact zeros** *(task 3, conditionally)*; **the port and its reference
+diverged** *(task 5)*; **`CLAUDE_CODE.md` changing its report contract without
+moving its version line** — outside this tree, belongs to whoever maintains it.
 
 **If you finish every task, stop and report. Do not start the next unit.**
