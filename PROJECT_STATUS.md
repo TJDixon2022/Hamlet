@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 1 of 5
+TASK: 2 of 5
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-24T16:04:12-04:00
-NOTE: pitch measured across all fourteen; Hamlet is within a hertz on six, not two, and the two unread captures do not read at their true pitch either
+UPDATED: 2026-08-24T16:13:38-04:00
+NOTE: pitch refined off the grid where a candidate is admitted; the remaining errors turn out to be the bank-centre fallback, which is task 3 rather than task 2
 
 ---
 

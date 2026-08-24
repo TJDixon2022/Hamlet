@@ -177,6 +177,27 @@ public sealed class CwToneTracker
     private const double CompetitorSeparationHz = CwCompetitor.SeparationHz;
 
     /// <summary>
+    /// How far either side of an admitted candidate its true pitch is looked for.
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE FINE BANK'S OWN REACH.** That bank already treats everything
+    /// within this distance of its centre as the same station, so searching the
+    /// same neighbourhood cannot turn a refinement into a choice between two
+    /// candidates (HM-DEC-095). Tied to <see cref="FineReachHz"/> rather than
+    /// written down again, so the two cannot drift apart.</para>
+    /// <para>**TWELVE WAS TRIED FIRST AND WAS EXACTLY TOO NARROW.** The two
+    /// recordings with the largest measured pitch error, `cw-2026-08-17-013347`
+    /// and `cw-2026-08-17-013622`, are both out by 11.9 hertz, which put the
+    /// peak on the boundary — and a peak at the boundary is refused, because
+    /// interpolating there would be extrapolating. The guard was right and the
+    /// reach was wrong.</para>
+    /// </remarks>
+    private const double RefineReachHz = FineReachHz;
+
+    /// <summary>How finely the refinement searches, before interpolating.</summary>
+    private const double RefineStepHz = 1;
+
+    /// <summary>
     /// How much of a rival station this far off the tracked note the filter
     /// takes off, in decibels.
     /// </summary>
@@ -1064,14 +1085,17 @@ public sealed class CwToneTracker
         if (refined.Keyed is { } exact)
         {
             _tracked = NearestFine(exact.ToneHz);
-            _reportedHz = exact.ToneHz;
+
+            // The survey chose this note by its keying; this only says where it
+            // is (HM-DEC-095).
+            _reportedHz = Refined(exact.ToneHz);
             KeyingFoundAt(exact.ToneHz);
             Verdict = new ToneVerdict(exact, Filtered(coarse.Interference));
             return;
         }
 
         _tracked = NearestFine(keyed.ToneHz);
-        _reportedHz = keyed.ToneHz;
+        _reportedHz = Refined(keyed.ToneHz);
         Verdict = new ToneVerdict(keyed, Filtered(coarse.Interference));
     }
 
@@ -1127,7 +1151,10 @@ public sealed class CwToneTracker
         CenterFineBank(toneHz);
         _fineSurvey.Reset();
         _tracked = _fineHz.Length / 2;
-        _reportedHz = toneHz;
+
+        // The survey chose this station by its keying; the reported pitch is
+        // where it actually sits rather than which bin found it (HM-DEC-095).
+        _reportedHz = Refined(toneHz);
         KeyingFoundAt(toneHz);
         Retunes++;
 
@@ -1180,6 +1207,87 @@ public sealed class CwToneTracker
     /// <summary>Goertzel power over the scratch buffer at one coefficient.</summary>
     private double Goertzel(double coefficient, int length)
         => Goertzel(_scratch, coefficient, length);
+
+    /// <summary>
+    /// Where the admitted candidate actually sits, between the bins.
+    /// </summary>
+    /// <param name="aroundHz">The pitch the survey admitted.</param>
+    /// <returns>The refined pitch, or the same one if it cannot be improved.</returns>
+    /// <remarks>
+    /// <para>**THIS REFINES A CHOICE ALREADY MADE AND NEVER MAKES ONE**
+    /// (HM-DEC-095). That ruling settles that a note is chosen by how it is keyed
+    /// and never by how loud it is, and a transform peak is a loudness
+    /// measurement. So it is not allowed to pick a candidate: the survey has
+    /// already admitted one on its keying structure, and this only asks where
+    /// that candidate is, more precisely than a bank five hertz apart can say.
+    /// It searches a neighbourhood narrower than the coarse spacing for the same
+    /// reason — far enough to find the station the survey admitted, not far
+    /// enough to reach a different one.</para>
+    /// <para>**A BIN CENTRE IS A MEASUREMENT OF A BIN.** The coarse bank is
+    /// twenty-five hertz apart and the fine bank five, so before this the
+    /// reported pitch was quantised to a grid nobody transmits on. Measured
+    /// across the corpus, the reported pitch was out by up to twelve hertz on
+    /// recordings whose station the survey had found perfectly well.</para>
+    /// <para>**IT REPORTS WHAT IT MEASURED OR IT LEAVES THE PITCH ALONE.** Where
+    /// the peak lands at the edge of the neighbourhood the quadratic would be an
+    /// extrapolation, and an extrapolated pitch is a number nobody measured
+    /// (§0.0).</para>
+    /// </remarks>
+    private double Refined(double aroundHz)
+    {
+        var window = Math.Min(_ringFill, _windowHops * HopSamples);
+
+        if (window < HopSamples * 8)
+        {
+            return aroundHz;
+        }
+
+        Taper(_scratch, _hann, window);
+
+        var best = aroundHz;
+        var bestPower = -1.0;
+        var below = 0.0;
+        var above = 0.0;
+
+        for (var offset = -RefineReachHz; offset <= RefineReachHz; offset += RefineStepHz)
+        {
+            var hz = aroundHz + offset;
+
+            if (hz < MinimumToneHz || hz > MaximumToneHz)
+            {
+                continue;
+            }
+
+            var power = Goertzel(_scratch, Coefficient(hz), window);
+
+            if (power > bestPower)
+            {
+                bestPower = power;
+                best = hz;
+            }
+        }
+
+        if (best <= aroundHz - RefineReachHz || best >= aroundHz + RefineReachHz)
+        {
+            return aroundHz;
+        }
+
+        below = Goertzel(_scratch, Coefficient(best - RefineStepHz), window);
+        above = Goertzel(_scratch, Coefficient(best + RefineStepHz), window);
+
+        var l = Math.Log(Math.Max(below, 1e-30));
+        var c = Math.Log(Math.Max(bestPower, 1e-30));
+        var r = Math.Log(Math.Max(above, 1e-30));
+
+        var curve = l - (2 * c) + r;
+
+        if (Math.Abs(curve) < 1e-12)
+        {
+            return best;
+        }
+
+        return best + (Math.Clamp(0.5 * (l - r) / curve, -0.5, 0.5) * RefineStepHz);
+    }
 
     /// <summary>Goertzel power over one tapered buffer at one coefficient.</summary>
     /// <param name="scratch">The tapered samples.</param>
