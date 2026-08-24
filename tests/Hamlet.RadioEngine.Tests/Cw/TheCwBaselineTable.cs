@@ -391,10 +391,23 @@ public sealed class TheCwBaselineTable
         page.AppendLine(
             "measured.** These are its own per-read likelihood ratios, taken from");
         page.AppendLine(
-            "`CwProbabilisticStream.Last` after every read, split by whether the");
-        page.AppendLine("recording holds a station at all.");
+            "`CwProbabilisticStream.Last` after every read, split by whether");
+        page.AppendLine(
+            "somebody was keying at that read's own moment.");
         page.AppendLine();
-        page.AppendLine("| recording | station | reads | ratio P10 / median / P90 |");
+        page.AppendLine(
+            "**The split is by the same independent witness the corpus table");
+        page.AppendLine(
+            "uses**, asked at the moment of each read rather than once per file,");
+        page.AppendLine(
+            "because the question the gate has to answer is whether *this window*");
+        page.AppendLine(
+            "holds keying. A whole-file split would compare recordings, and the");
+        page.AppendLine(
+            "gate never gets to see a whole file.");
+        page.AppendLine();
+        page.AppendLine(
+            "| recording | witness | reads | ratio P10 / median / P90 |");
         page.AppendLine("|---|---|---|---|");
 
         foreach (var path in Captures())
@@ -407,7 +420,14 @@ public sealed class TheCwBaselineTable
                 ToneHz = Tone(name),
             };
 
-            var ratios = new List<double>();
+            var witness = Witness(audio);
+            var byVerdict = new Dictionary<KeyingVerdict, List<double>>
+            {
+                [KeyingVerdict.Keying] = new(),
+                [KeyingVerdict.NoKeying] = new(),
+                [KeyingVerdict.Listening] = new(),
+            };
+
             var last = double.NaN;
 
             var hop = Math.Max(
@@ -430,12 +450,30 @@ public sealed class TheCwBaselineTable
                 }
 
                 last = ratio;
-                ratios.Add(ratio);
+
+                byVerdict[witness(
+                    TimeSpan.FromSeconds((double)(at + hop) / audio.SampleRate))]
+                    .Add(ratio);
             }
 
-            page.AppendLine(
-                $"| `{name}` | {(HoldsNoStation(name) ? "none" : "yes")} "
-                + $"| {ratios.Count} | {SpreadOf(ratios)} |");
+            var station = HoldsNoStation(name)
+                ? " (an independent sweep says this holds no keying at all)"
+                : string.Empty;
+
+            page.AppendLine($"| `{name}`{station} | | | |");
+
+            foreach (var verdict in new[]
+            {
+                KeyingVerdict.Keying,
+                KeyingVerdict.NoKeying,
+                KeyingVerdict.Listening,
+            })
+            {
+                var ratios = byVerdict[verdict];
+
+                page.AppendLine(
+                    $"| | {Name(verdict)} | {ratios.Count} | {SpreadOf(ratios)} |");
+            }
         }
 
         page.AppendLine();
@@ -446,6 +484,18 @@ public sealed class TheCwBaselineTable
         page.AppendLine(
             "decision. What the next unit needs from them is whether the two groups");
         page.AppendLine("separate at all on the instrument that actually gates.");
+        page.AppendLine();
+        page.AppendLine(
+            "**And the ratio's scale is the same one the span LLR's is**: it rests");
+        page.AppendLine(
+            "on the window's own noise estimate, so a window holding nothing can");
+        page.AppendLine(
+            "score higher than a window holding a station, because the estimate");
+        page.AppendLine(
+            "collapses when there is nothing to estimate from. A gate derived from");
+        page.AppendLine(
+            "these numbers without that being fixed first would be a gate on how");
+        page.AppendLine("quiet the band was.");
         page.AppendLine();
     }
 

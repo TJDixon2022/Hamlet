@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 4 of 5
+TASK: 5 of 5
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-23T20:23:40-04:00
-NOTE: baseline table runs over all nine captures and the sweep; the witness split is now three rows because the meter's first six seconds are undecided rather than quiet, re-running to take the figures
+UPDATED: 2026-08-23T20:38:11-04:00
+NOTE: the gate's per-read ratios now split by what the witness said at that read's own moment, which is the question the gate has to answer; regenerating the table
 
 ---
 

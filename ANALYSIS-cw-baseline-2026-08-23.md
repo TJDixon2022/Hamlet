@@ -364,23 +364,63 @@ everything. The message holds 9 characters.
 offline reference measured on whole files. **The instrument that
 actually gates is the streaming windower, and it has never been
 measured.** These are its own per-read likelihood ratios, taken from
-`CwProbabilisticStream.Last` after every read, split by whether the
-recording holds a station at all.
+`CwProbabilisticStream.Last` after every read, split by whether
+somebody was keying at that read's own moment.
 
-| recording | station | reads | ratio P10 / median / P90 |
+**The split is by the same independent witness the corpus table
+uses**, asked at the moment of each read rather than once per file,
+because the question the gate has to answer is whether *this window*
+holds keying. A whole-file split would compare recordings, and the
+gate never gets to see a whole file.
+
+| recording | witness | reads | ratio P10 / median / P90 |
 |---|---|---|---|
-| `cw-2026-08-17-013347` | yes | 56 | 34.1 / 27939825.2 / 97602462.3 |
-| `cw-2026-08-17-013622` | yes | 56 | 3.2 / 5358791.0 / 29896464.5 |
-| `cw-2026-08-17-134712` | yes | 56 | 1.7 / 2.2 / 2.3 |
-| `cw-2026-08-18-004507` | yes | 56 | 29.3 / 34.9 / 41.6 |
-| `cw-2026-08-18-003016` | yes | 56 | 20.3 / 25.3 / 28.9 |
-| `cw-2026-08-18-003126` | yes | 56 | 23.8 / 28.0 / 35.2 |
-| `cw-2026-08-18-003758` | yes | 56 | 21.3 / 50.8 / 63.8 |
-| `cw-2026-08-20-014854` | none | 56 | 2.8 / 6.0 / 7.2 |
-| `cw-2026-08-20-014935` | none | 56 | 2.7 / 3.2 / 3.8 |
+| `cw-2026-08-17-013347` | | | |
+| | said keying | 11 | 17.7 / 34.1 / 251.6 |
+| | said no keying | 24 | 6016991.7 / 62856952.7 / 105135621.7 |
+| | had not decided | 21 | 24702165.5 / 27849679.6 / 38207438.4 |
+| `cw-2026-08-17-013622` | | | |
+| | said keying | 0 | nothing measured |
+| | said no keying | 35 | 3.0 / 6.2 / 28539917.0 |
+| | had not decided | 21 | 21459316.1 / 25207278.6 / 30279696.0 |
+| `cw-2026-08-17-134712` | | | |
+| | said keying | 18 | 1.7 / 1.8 / 2.1 |
+| | said no keying | 17 | 2.2 / 2.3 / 2.4 |
+| | had not decided | 21 | 2.2 / 2.2 / 2.3 |
+| `cw-2026-08-18-004507` | | | |
+| | said keying | 49 | 29.3 / 33.5 / 41.3 |
+| | said no keying | 0 | nothing measured |
+| | had not decided | 7 | 36.7 / 38.7 / 42.0 |
+| `cw-2026-08-18-003016` | | | |
+| | said keying | 49 | 21.0 / 26.2 / 28.9 |
+| | said no keying | 0 | nothing measured |
+| | had not decided | 7 | 18.3 / 19.1 / 23.7 |
+| `cw-2026-08-18-003126` | | | |
+| | said keying | 49 | 23.8 / 27.8 / 35.2 |
+| | said no keying | 0 | nothing measured |
+| | had not decided | 7 | 27.3 / 29.3 / 31.1 |
+| `cw-2026-08-18-003758` | | | |
+| | said keying | 49 | 21.3 / 50.0 / 61.7 |
+| | said no keying | 0 | nothing measured |
+| | had not decided | 7 | 57.1 / 93.1 / 101.4 |
+| `cw-2026-08-20-014854` (an independent sweep says this holds no keying at all) | | | |
+| | said keying | 0 | nothing measured |
+| | said no keying | 35 | 5.5 / 6.5 / 7.3 |
+| | had not decided | 21 | 2.7 / 2.8 / 2.9 |
+| `cw-2026-08-20-014935` (an independent sweep says this holds no keying at all) | | | |
+| | said keying | 0 | nothing measured |
+| | said no keying | 35 | 2.7 / 3.3 / 3.8 |
+| | had not decided | 21 | 3.1 / 3.2 / 3.4 |
 
 **A read repeats most of its window twice a second**, so these are not
 independent samples and a median describes the recording rather than a
 decision. What the next unit needs from them is whether the two groups
 separate at all on the instrument that actually gates.
+
+**And the ratio's scale is the same one the span LLR's is**: it rests
+on the window's own noise estimate, so a window holding nothing can
+score higher than a window holding a station, because the estimate
+collapses when there is nothing to estimate from. A gate derived from
+these numbers without that being fixed first would be a gate on how
+quiet the band was.
 
