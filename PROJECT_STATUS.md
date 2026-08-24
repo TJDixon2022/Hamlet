@@ -4,8 +4,8 @@ STATE: EXECUTING
 TASK: 1 of 5
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-24T15:50:41-04:00
-NOTE: against a clock; two captures committed and the pitch error being measured across the corpus before anything is changed
+UPDATED: 2026-08-24T16:04:12-04:00
+NOTE: pitch measured across all fourteen; Hamlet is within a hertz on six, not two, and the two unread captures do not read at their true pitch either
 
 ---
 

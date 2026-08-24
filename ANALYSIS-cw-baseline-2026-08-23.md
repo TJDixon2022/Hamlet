@@ -333,6 +333,70 @@ shipped: (nothing)
 grid:    (nothing)
 ```
 
+### `cw-2026-08-22-014113`
+
+30.0 s at 48000 Hz, read at 600 Hz.
+
+| | shipped | grid |
+|---|---|---|
+| characters emitted | 0 | 0 |
+| E-share | no characters | no characters |
+| single-character words | no characters | no characters |
+| words per minute read | 20 | 24.0 |
+
+The witness split, over the shipped decode:
+
+**Three rows and not two.** `listening` is the meter before it has
+formed a verdict at all, which is its first six seconds and any
+stretch where it has not yet seen enough, and folding that into
+`no keying` would report an absence of evidence as evidence of
+absence (§0.0).
+
+| witness | characters | E-share | single-char words | span LLR P10 / median / P90 |
+|---|---|---|---|---|
+| said keying | 0 | no characters | no characters | nothing measured |
+| said no keying | 0 | no characters | no characters | nothing measured |
+| had not decided | 0 | no characters | no characters | nothing measured |
+
+What each read:
+
+```
+shipped: (nothing)
+grid:    (nothing)
+```
+
+### `cw-2026-08-22-014308`
+
+30.0 s at 48000 Hz, read at 600 Hz.
+
+| | shipped | grid |
+|---|---|---|
+| characters emitted | 0 | 0 |
+| E-share | no characters | no characters |
+| single-character words | no characters | no characters |
+| words per minute read | 32 | 24.0 |
+
+The witness split, over the shipped decode:
+
+**Three rows and not two.** `listening` is the meter before it has
+formed a verdict at all, which is its first six seconds and any
+stretch where it has not yet seen enough, and folding that into
+`no keying` would report an absence of evidence as evidence of
+absence (§0.0).
+
+| witness | characters | E-share | single-char words | span LLR P10 / median / P90 |
+|---|---|---|---|---|
+| said keying | 0 | no characters | no characters | nothing measured |
+| said no keying | 0 | no characters | no characters | nothing measured |
+| had not decided | 0 | no characters | no characters | nothing measured |
+
+What each read:
+
+```
+shipped: (nothing)
+grid:    (nothing)
+```
+
 ### `cw-2026-08-22-031905`
 
 30.0 s at 48000 Hz, read at 600 Hz.
@@ -507,6 +571,14 @@ gate never gets to see a whole file.
 | | said keying | 0 | nothing measured |
 | | said no keying | 35 | 0.1 / 0.2 / 0.2 |
 | | had not decided | 21 | 0.2 / 0.2 / 0.3 |
+| `cw-2026-08-22-014113` | | | |
+| | said keying | 0 | nothing measured |
+| | said no keying | 35 | 0.2 / 0.5 / 0.8 |
+| | had not decided | 21 | 0.1 / 0.2 / 0.2 |
+| `cw-2026-08-22-014308` | | | |
+| | said keying | 0 | nothing measured |
+| | said no keying | 35 | 0.3 / 0.4 / 0.5 |
+| | had not decided | 21 | 0.3 / 0.4 / 0.5 |
 | `cw-2026-08-22-031905` | | | |
 | | said keying | 42 | 3.6 / 5.1 / 5.9 |
 | | said no keying | 4 | 2.9 / 3.2 / 3.3 |
