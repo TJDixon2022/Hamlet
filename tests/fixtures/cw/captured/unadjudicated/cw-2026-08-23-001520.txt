@@ -1,0 +1,68 @@
+captured   2026-08-23 00:15:20 UTC
+audioSeen  380000 samples
+fingerprint f228ce441004
+seconds    30.0
+sampleRate 8000
+frequency  7028000 Hz  (read from the radio a moment ago)
+band       40 m  (from the frequency the radio reported)
+broadcast  the setting reads unsupported, and no frame has arrived on the link to check it against
+
+inputPeak  -6.0 dBFS  (over the whole recording)
+meterPeak  -6.0 dBFS  (the moment it was kept)
+inputFloor -78.8 dBFS
+clipping   False
+toneHz     600  (the pitch the decoder was following at the moment of the press, refined from where it started)
+tonePeak   86.2  (the highest the tracked tone ever stood above the noise beside it, held and decaying; not a figure about this recording)
+inThis     21 characters emitted, 0 unsure, 71 elements seen, 71 resolved  (in the 30.0 seconds of audio in this file)
+elements   109 seen, 109 resolved  (since the decoder started listening, less than a minute ago)
+characters 32 emitted, 0 unsure  (since the decoder started listening, less than a minute ago)
+decoderWpm 12
+text       CQ CQ DE KC3QIS KC3QIS K CQ CQ DE KC3QIS KC
+textCovers everything read since the decoder started listening, less than a minute ago
+reading    12 WPM won out of 8 to 32, 14774028201.6 better than silence per hop against a gate of 15
+keying     keying at 400 Hz, 109 ms key down, 0 dB swing, 17 key-downs  (an independent sweep of 400 to 1200 Hz in 25 Hz steps over the last six seconds, sharing nothing with the decoder)
+
+sinceLast  32 characters, 109 elements  (since the decoder started listening, less than a minute ago; this is the first capture of the session)
+
+Frequency            7.028000 MHz
+Mode                 CW
+DataMode             unsupported
+FilterSelection      unsupported
+FilterBandwidth      unsupported
+SMeter               unsupported
+TransmitStatus       unsupported
+Overflow             unsupported
+Swr                  unsupported
+PowerOut             unsupported
+RfPower              unsupported
+RfGain               unsupported
+Squelch              unsupported
+SquelchStatus        unsupported
+Agc                  unsupported
+Preamp               unsupported
+Attenuator           unsupported
+NoiseBlanker         unsupported
+NoiseBlankerLevel    unsupported
+NoiseReduction       unsupported
+NoiseReductionLevel  unsupported
+AutoNotch            unsupported
+ManualNotch          unsupported
+BreakIn              unsupported
+KeyerSpeed           unsupported
+CwPitch              unsupported
+AccUsbOutputSelect   unsupported
+AccUsbAfLevel        unsupported
+NotchPosition        unsupported
+FilterShape          unsupported
+AfLevel              unsupported
+RfSqlFunction        unsupported
+BreakInDelay         unsupported
+AntennaTuner         unsupported
+Alc                  unsupported
+AccUsbSquelch        unsupported
+Split                unsupported
+ScopeOn              unsupported
+ScopeOutput          unsupported
+CivUsbPort           unsupported
+CivTransceive        unsupported
+Vfo                  unsupported
