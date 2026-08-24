@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 5 of 5
-BALL: tim
-NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-24T14:24:28-04:00
-NOTE: 012403 reads 84.2 percent through the production path, so the eighty percent target is met; VA3VRR was never lost and N4L is back
+STATE: EXECUTING
+TASK: 1 of 5
+BALL: code
+NEXT_PASTE: none
+UPDATED: 2026-08-24T15:50:41-04:00
+NOTE: against a clock; two captures committed and the pitch error being measured across the corpus before anything is changed
 
 ---
 

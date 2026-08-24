@@ -1,0 +1,68 @@
+captured   2026-08-22 01:41:13 UTC
+audioSeen  2598240 samples
+fingerprint bee28875d3ad
+seconds    30.0
+sampleRate 48000
+frequency  7035000 Hz  (read from the radio a moment ago)
+band       40 m  (from the frequency the radio reported)
+broadcast  the radio volunteered nothing while this recording was being made, and the setting reads on; 0 of 5734 frames since the link came up were the radio announcing something
+
+inputPeak  -12.9 dBFS  (over the whole recording)
+meterPeak  -13.4 dBFS  (the moment it was kept)
+inputFloor -21.5 dBFS
+clipping   False
+toneHz     600  (the pitch the decoder was following at the moment of the press, refined from where it started)
+tonePeak   24.7  (the highest the tracked tone ever stood above the noise beside it, held and decaying; not a figure about this recording)
+inThis     0 characters emitted, 0 unsure, 0 elements seen, 0 resolved  (in the 30.0 seconds of audio in this file)
+elements   20 seen, 20 resolved  (since the decoder started listening, less than a minute ago)
+characters 13 emitted, 0 unsure  (since the decoder started listening, less than a minute ago)
+decoderWpm withdrawn (the clock is being re-acquired; the decoder's own best hypothesis was 24 WPM)
+text       nothing read
+textCovers everything read since the decoder started listening, less than a minute ago
+reading    24 WPM won out of 8 to 32, 7.5 better than silence per hop against a gate of 15
+keying     no keying at 625 Hz, 5 ms key down, 16 dB swing, 142 key-downs  (an independent sweep of 400 to 1200 Hz in 25 Hz steps over the last six seconds, sharing nothing with the decoder)
+
+sinceLast  13 characters, 20 elements  (since the decoder started listening, less than a minute ago; this is the first capture of the session)
+
+Frequency            7.035000 MHz
+Mode                 CW
+DataMode             off
+FilterSelection      FIL2
+FilterBandwidth      500 Hz
+SMeter               S6
+TransmitStatus       receiving
+Overflow             not overloading
+Swr                  unknown
+PowerOut             unknown
+RfPower              30%
+RfGain               100%
+Squelch              18%
+SquelchStatus        open
+Agc                  FAST
+Preamp               off
+Attenuator           off
+NoiseBlanker         off
+NoiseBlankerLevel    50%
+NoiseReduction       off
+NoiseReductionLevel  28%
+AutoNotch            off
+ManualNotch          off
+BreakIn              full
+KeyerSpeed           20 WPM
+CwPitch              600 Hz
+AccUsbOutputSelect   AF
+AccUsbAfLevel        80%
+NotchPosition        unknown
+FilterShape          unknown
+AfLevel              unknown
+RfSqlFunction        unknown
+BreakInDelay         unknown
+AntennaTuner         unknown
+Alc                  unknown
+AccUsbSquelch        open regardless of squelch
+Split                off
+ScopeOn              on
+ScopeOutput          on
+CivUsbPort           unknown
+CivTransceive        on
+Vfo                  undocumented
