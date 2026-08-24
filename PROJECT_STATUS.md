@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 4 of 5
+TASK: 5 of 5
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-24T13:48:05-04:00
-NOTE: guard re-expressed at 1.25 in the gap 0.840 to 1.684; 012403 reads 84.2 percent through the production path and both empty captures stay silent
+UPDATED: 2026-08-24T14:06:52-04:00
+NOTE: lowering the guard exposed an estimator fault Gate 15 had been masking — three seconds of digital silence emitted characters; task 3 ran after all, narrowly
 
 ---
 

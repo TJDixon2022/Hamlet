@@ -40,8 +40,8 @@ table where every cell is perfect measures nothing about the filter.
 
 | offset | level | 60 Hz | 45 Hz | 30 Hz | 20 Hz |
 |---|---|---|---|---|---|
-| 40 Hz | +0 dB | 0/11, 0 made up | 11/11, 0 made up | 11/11, 0 made up | 11/11, 0 made up |
-| 40 Hz | -6 dB | 0/11, 0 made up | 11/11, 0 made up | 11/11, 0 made up | 11/11, 0 made up |
+| 40 Hz | +0 dB | 11/11, 0 made up | 11/11, 0 made up | 11/11, 0 made up | 11/11, 0 made up |
+| 40 Hz | -6 dB | 11/11, 0 made up | 11/11, 0 made up | 11/11, 0 made up | 11/11, 0 made up |
 | 40 Hz | -12 dB | 11/11, 0 made up | 11/11, 0 made up | 11/11, 0 made up | 11/11, 0 made up |
 | 80 Hz | +0 dB | 11/11, 0 made up | 11/11, 0 made up | 11/11, 0 made up | 11/11, 0 made up |
 | 80 Hz | -6 dB | 11/11, 0 made up | 11/11, 0 made up | 11/11, 0 made up | 11/11, 0 made up |
@@ -55,12 +55,12 @@ table where every cell is perfect measures nothing about the filter.
 | 300 Hz | +0 dB | 11/11, 0 made up | 11/11, 0 made up | 11/11, 0 made up | 11/11, 0 made up |
 | 300 Hz | -6 dB | 11/11, 0 made up | 11/11, 0 made up | 11/11, 0 made up | 11/11, 0 made up |
 | 300 Hz | -12 dB | 11/11, 0 made up | 11/11, 0 made up | 11/11, 0 made up | 11/11, 0 made up |
-| 30 Hz | +0 dB | 0/11, 0 made up | 9/11, 0 made up | 10/11, 0 made up | 11/11, 0 made up |
-| 30 Hz | +6 dB | 0/11, 0 made up | 0/11, 0 made up | 9/11, 0 made up | 10/11, 0 made up |
-| 20 Hz | +0 dB | 0/11, 0 made up | 9/11, 0 made up | 9/11, 0 made up | 10/11, 0 made up |
+| 30 Hz | +0 dB | 9/11, 0 made up | 9/11, 0 made up | 10/11, 0 made up | 11/11, 0 made up |
+| 30 Hz | +6 dB | 2/11, 29 made up | 1/11, 26 made up | 9/11, 0 made up | 10/11, 0 made up |
+| 20 Hz | +0 dB | 2/11, 27 made up | 9/11, 0 made up | 9/11, 0 made up | 10/11, 0 made up |
 | 20 Hz | +6 dB | 4/11, 2 made up | 5/11, 2 made up | 5/11, 1 made up | 9/11, 0 made up |
-| 15 Hz | +0 dB | 0/11, 0 made up | 5/11, 1 made up | 6/11, 0 made up | 7/11, 0 made up |
-| 10 Hz | +0 dB | 0/11, 0 made up | 5/11, 0 made up | 5/11, 2 made up | 6/11, 0 made up |
+| 15 Hz | +0 dB | 6/11, 6 made up | 5/11, 1 made up | 6/11, 0 made up | 7/11, 0 made up |
+| 10 Hz | +0 dB | 6/11, 4 made up | 5/11, 0 made up | 5/11, 2 made up | 6/11, 0 made up |
 
 ## The cost in sensitivity
 
@@ -73,7 +73,7 @@ is `CwMatchKind.Invented`.
 | 18 dB | 9/9, 0 made up | 9/9, 0 made up | 9/9, 0 made up | 9/9, 0 made up |
 | 11 dB | 9/9, 0 made up | 9/9, 0 made up | 9/9, 0 made up | 9/9, 0 made up |
 | 3 dB | 9/9, 0 made up | 9/9, 0 made up | 9/9, 0 made up | 9/9, 0 made up |
-| 0 dB | 0/9, 0 made up | 0/9, 0 made up | 9/9, 0 made up | 9/9, 0 made up |
+| 0 dB | 9/9, 0 made up | 9/9, 0 made up | 9/9, 0 made up | 9/9, 0 made up |
 
 ## The cost to a fast fist
 
@@ -103,7 +103,7 @@ that has never been traded (HM-DEC-120).
 | `cw-2026-08-18-004507` | a station | 6.1 | 7.0 | 8.2 | 8.6 |
 | `cw-2026-08-17-013347` | a station | 19010365.9 | 17235760.0 | 10694850.9 | 1700091.2 |
 
-The gate is **15**. A row holding
+The gate is **1**. A row holding
 nothing must stay well under it and a row holding a station well over.
 
 ## The corpus
@@ -115,9 +115,9 @@ much comes out and how much of it is the letter `E`.
 | recording | 60 Hz | 45 Hz | 30 Hz | 20 Hz |
 |---|---|---|---|---|
 | `cw-2026-08-17-013347` | 101 chars, E 44 % | 81 chars, E 63 % | 86 chars, E 59 % | 98 chars, E 46 % |
-| `cw-2026-08-17-134712` | 0 chars, E 0 % | 0 chars, E 0 % | 0 chars, E 0 % | 0 chars, E 0 % |
-| `cw-2026-08-18-004507` | 0 chars, E 0 % | 0 chars, E 0 % | 0 chars, E 0 % | 0 chars, E 0 % |
-| `cw-2026-08-18-003758` | 0 chars, E 0 % | 0 chars, E 0 % | 0 chars, E 0 % | 0 chars, E 0 % |
+| `cw-2026-08-17-134712` | 0 chars, E 0 % | 0 chars, E 0 % | 90 chars, E 68 % | 58 chars, E 66 % |
+| `cw-2026-08-18-004507` | 49 chars, E 12 % | 48 chars, E 13 % | 48 chars, E 13 % | 48 chars, E 13 % |
+| `cw-2026-08-18-003758` | 58 chars, E 22 % | 60 chars, E 27 % | 38 chars, E 34 % | 43 chars, E 28 % |
 
 ## What was chosen, and why
 

@@ -850,6 +850,26 @@ public static class CwProbabilisticDecoder
                 estimatedAt = i;
             }
 
+            // **DIGITAL SILENCE IS AN ABSENCE OF MEASUREMENT, NOT A QUIET BAND**
+            // (§0.0, HM-DEC-009). Where a quarter of the span is exactly nought
+            // the quarter point is nought, sigma falls to its floor, and every
+            // log-likelihood is then a ratio of two arbitrary numbers: the model
+            // is being asked what the noise looks like in audio that has no
+            // noise. Scored that way, three seconds of an all-zero buffer
+            // produced characters.
+            //
+            // Both hypotheses are given the same score over such a span, so
+            // neither can win it and the window contributes nothing either way.
+            // Nothing is read from it rather than noise being read against a
+            // clamped scale.
+            if (double.IsNaN(sigma))
+            {
+                keyUp[i] = 0;
+                keyDown[i] = 0;
+
+                continue;
+            }
+
             var e = Math.Max(envelope[i], 1e-12);
             var logSigma = Math.Log(sigma);
             var variance = 2 * sigma * sigma;
@@ -917,7 +937,22 @@ public static class CwProbabilisticDecoder
 
         var quarter = PercentileOf(scratch, take, 25);
 
-        sigma = Math.Max(quarter / RayleighQuarterPoint, 1e-9);
+        // **NO ESTIMATE RATHER THAN A CLAMPED ONE.** A quarter point of exactly
+        // nought means at least a quarter of this span is digital silence, which
+        // a receiver never delivers: it is a muted codec, a gap spliced into a
+        // recording, or a fixture built without a noise floor (HM-OPEN-018).
+        // There is no noise to estimate, so no estimate is returned and the
+        // caller reads nothing from the span. Returning a floor instead is what
+        // put `cw-2026-08-23-001520` at ten to the sixteenth.
+        if (quarter <= 0)
+        {
+            sigma = double.NaN;
+            amplitude = double.NaN;
+
+            return;
+        }
+
+        sigma = quarter / RayleighQuarterPoint;
         amplitude = Math.Max(PercentileOf(scratch, take, 97), sigma * 1.05);
     }
 
