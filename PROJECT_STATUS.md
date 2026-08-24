@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
+STATE: COMPLETED
 TASK: 5 of 5
-BALL: code
-NEXT_PASTE: none
-UPDATED: 2026-08-23T20:38:11-04:00
-NOTE: the gate's per-read ratios now split by what the witness said at that read's own moment, which is the question the gate has to answer; regenerating the table
+BALL: tim
+NEXT_PASTE: OUTPUT.md -> Claude Web
+UPDATED: 2026-08-23T20:52:07-04:00
+NOTE: baseline taken; the sweep's invented column counts substitutions and not invention, so 60% of what is read at 18 dB was never sent and scored nought
 
 ---
 

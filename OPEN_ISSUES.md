@@ -4,6 +4,51 @@ Questions with owner and severity. `owner` is who must act next. Format in
 `CLAUDE.md` §3.
 
 ---
+id: HM-OPEN-059
+status: open
+owner: claude
+raised: 2026-08-23
+severity: none
+refs: HM-DEC-063, HM-DEC-150, Directory.Build.props, CHANGELOG.md
+---
+
+**Two files still describe the superseded meaning of the version number, and the
+changelog stopped four minors ago.**
+
+HM-DEC-150 made the minor the phase and the patch the work unit within it.
+`Directory.Build.props`'s own comment still says minor adds a capability the
+operator can see and patch fixes and polishes, and `CHANGELOG.md`'s opening
+paragraph says the same thing and cites HM-DEC-063 for it. Both were true when
+written and are not now.
+
+The changelog's newest entry is `1.9.0` and the tree is at `1.11.1`, so the index
+HM-DEC-063 created has not been kept for two minors and thirteen patches.
+
+Named at packaging and left rather than fixed on the way past (§12.6). Neither is
+a defect in anything that runs, and rewriting the changelog for releases nobody
+recorded at the time would be composing a record rather than keeping one.
+
+---
+id: HM-OPEN-058
+status: open
+owner: claude
+raised: 2026-08-23
+severity: none
+refs: src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs
+---
+
+**`FastestWpm`'s own remarks argue for forty words a minute and the constant is
+thirty-two.**
+
+One of the two is stale and nothing says which. It matters because the constant
+is the top of the speed grid and the ceiling on the measured-unit override, so a
+sender above it is read at the wrong speed rather than refused.
+
+Named at packaging and left rather than changed (§12.6): moving the ceiling is a
+measurement, not an edit, and the evidence for what the fast end is worth is the
+next unit's.
+
+---
 id: HM-OPEN-057
 status: open
 owner: tim
