@@ -46,7 +46,7 @@ the next unit is scoped to look at.
 | | shipped | grid |
 |---|---|---|
 | characters emitted | 129 | 81 |
-| E-share | 44 % | 63 % |
+| E-share | 45 % | 63 % |
 | single-character words | 62 % | 55 % |
 | words per minute read | 16 | 24.0 |
 
@@ -60,14 +60,14 @@ absence (§0.0).
 
 | witness | characters | E-share | single-char words | span LLR P10 / median / P90 |
 |---|---|---|---|---|
-| said keying | 15 | 7 % | 75 % | -40.3 / 472.4 / 1096.1 |
-| said no keying | 50 | 36 % | 50 % | 342.0 / 982820776.1 / 8744467815.7 |
+| said keying | 15 | 13 % | 75 % | -29.1 / 335.5 / 769.6 |
+| said no keying | 50 | 36 % | 50 % | 256.7 / 982820776.1 / 8744467815.7 |
 | had not decided | 64 | 59 % | 65 % | 155001981.3 / 717495878.4 / 5913441603.5 |
 
 What each read:
 
 ```
-shipped: HIAAEEEISIHEHEEEIEEA EA E E EEEEE S HEEHEEIIEEEE II NE IEEE E T E T ET E E I I E E E  E I IEEEEII  TE TEEEEI TI T T E E E HEHAA EE ERWEWHVEVRRAR R S VVAAS■3E3HVIVRRAR R  ■  ■
+shipped: HIAAEEEISIHEHEEEIEEA EA E E EEEEE S HEEHEEIIEEEE II NE IEEE E T E T ET E E I I E E E  E I IEEEEII  TE TEEEEI TI T T E E E HEHAA EE ERWEWHVEVRRAR R S VVAAS■3E3HVEVRRAR R  ■  ■
 grid:     E EI EE 5EEETEEE V EEEA E E EE IEEEE I EE IEET E T E EE E E EETEM E TEEEE T E IEEET E O EEETETTW EEMAEAMJOW # # 
 ```
 
@@ -158,7 +158,7 @@ absence (§0.0).
 
 | witness | characters | E-share | single-char words | span LLR P10 / median / P90 |
 |---|---|---|---|---|
-| said keying | 101 | 13 % | 74 % | 187.3 / 601.2 / 1102.8 |
+| said keying | 101 | 13 % | 74 % | 174.0 / 594.4 / 1102.8 |
 | said no keying | 0 | no characters | no characters | nothing measured |
 | had not decided | 12 | 17 % | 88 % | 66.6 / 266.1 / 369.5 |
 
@@ -175,10 +175,10 @@ grid:    E JJ AT ARRL DOT NET <BT> EACH STATION HANDLING THIS MESSAG E PE
 
 | | shipped | grid |
 |---|---|---|
-| characters emitted | 135 | 53 |
+| characters emitted | 136 | 53 |
 | E-share | 11 % | 4 % |
 | single-character words | 44 % | 0 % |
-| words per minute read | 25 | 22.0 |
+| words per minute read | 27 | 22.0 |
 
 The witness split, over the shipped decode:
 
@@ -190,14 +190,14 @@ absence (§0.0).
 
 | witness | characters | E-share | single-char words | span LLR P10 / median / P90 |
 |---|---|---|---|---|
-| said keying | 118 | 12 % | 46 % | 91.1 / 307.2 / 871.6 |
+| said keying | 119 | 12 % | 46 % | 88.1 / 337.8 / 883.7 |
 | said no keying | 0 | no characters | no characters | nothing measured |
 | had not decided | 17 | 6 % | 20 % | 145.5 / 329.1 / 480.5 |
 
 What each read:
 
 ```
-shipped: ADAA D KAKP EP TAT11H15TE5TT IT ITIT W WAEAS ES JJUJUNTNK K ■ <AS> ■ ■ ■ ■ S STITIRLALL IL HIHVEVE M MKY Y E T E TMO EO O9E9J1T1BB  AE AT T W JSJETSUST T V VFFBFB TB TUUBBEIELELIN
+shipped: ADAA D KAKP EP TAT11H15TE5TT IT ITIT W WAEAS ES JJUJUNTNK K ■ <AS> ■ ■ ■ ■ S STITIRLALL IL HIHVEVE M MKY Y E T E TMO EO O9E9J1T1BB  ■TE ■TT T W JEEJETSTST T V VFFBFB TB TUUBB I LELIN
 grid:    I<BT> HADA KPT15TT ITWAS #K <BT> #STILL HVE MY ETO 91B TT JUST VFB TUB LIN
 ```
 
@@ -222,9 +222,9 @@ absence (§0.0).
 
 | witness | characters | E-share | single-char words | span LLR P10 / median / P90 |
 |---|---|---|---|---|
-| said keying | 115 | 11 % | 43 % | 109.0 / 420.8 / 1308.6 |
+| said keying | 115 | 11 % | 43 % | 113.2 / 412.4 / 1335.3 |
 | said no keying | 0 | no characters | no characters | nothing measured |
-| had not decided | 12 | 0 % | 67 % | -79.3 / 790.8 / 1842.0 |
+| had not decided | 12 | 0 % | 67 % | -79.3 / 751.8 / 1842.0 |
 
 What each read:
 
@@ -240,7 +240,7 @@ grid:    A OM <BT> # <BT> I WATCH AT L EAST 2 MOVI ES A DAY WID X# WHY NOT # # ,
 | | shipped | grid |
 |---|---|---|
 | characters emitted | 122 | 60 |
-| E-share | 23 % | 27 % |
+| E-share | 24 % | 27 % |
 | single-character words | 64 % | 66 % |
 | words per minute read | 24 | 28.0 |
 
@@ -254,14 +254,14 @@ absence (§0.0).
 
 | witness | characters | E-share | single-char words | span LLR P10 / median / P90 |
 |---|---|---|---|---|
-| said keying | 108 | 25 % | 64 % | -11.8 / 792.5 / 2765.0 |
+| said keying | 108 | 26 % | 64 % | -2.8 / 870.9 / 2894.5 |
 | said no keying | 0 | no characters | no characters | nothing measured |
-| had not decided | 14 | 7 % | 62 % | -81.1 / 1177.3 / 2232.6 |
+| had not decided | 14 | 7 % | 62 % | -82.3 / 1240.0 / 2422.1 |
 
 What each read:
 
 ```
-shipped: QRR R L EL TSTU U ■ ■  EE EATAN EN EAANNDDE E A AAEA44MMRPTPX/S/4 4 G QTQNINIDK K ■ ■  ■  ■ ■ E E EE EE I ■E AE ANN E EATANTNQQNNITIKK  ■  ■ ■ ■  ■E EE H H I E E  E ■ ■ EAEANAN E
+shipped: QRR R L EL TSTU U ■ ■  EE EATAN EN EAANNDDE E A AAEA44MMRPTPX/S/4 4 G QTQNINIDK K ■ ■  ■  ■ ■ E E EE EE I ■E AE ANN E EATANTNQQNNITIKK  ■  ■ ■ ■  EE EE H H I E E  E ■ ■ EAEANAN E
 grid:    K I S QR L TU # #E AN E AN D E AA4MP /4 QNI K # #EEE E E # E AN E ANQNI K # #E E E E H I # E RN E
 ```
 
@@ -405,7 +405,7 @@ grid:    (nothing)
 |---|---|---|
 | characters emitted | 103 | 78 |
 | E-share | 14 % | 45 % |
-| single-character words | 65 % | 64 % |
+| single-character words | 67 % | 64 % |
 | words per minute read | 22 | 30.0 |
 
 The witness split, over the shipped decode:
@@ -418,14 +418,14 @@ absence (§0.0).
 
 | witness | characters | E-share | single-char words | span LLR P10 / median / P90 |
 |---|---|---|---|---|
-| said keying | 71 | 10 % | 69 % | 12.6 / 600.4 / 8956.0 |
-| said no keying | 7 | 0 % | 50 % | 532.0 / 1418.1 / 2450.3 |
-| had not decided | 25 | 28 % | 0 % | 97.7 / 534.5 / 1543.2 |
+| said keying | 71 | 10 % | 69 % | 12.6 / 600.4 / 8969.7 |
+| said no keying | 7 | 0 % | 50 % | 531.3 / 1405.7 / 2437.2 |
+| had not decided | 25 | 28 % | 0 % | 97.7 / 534.5 / 1532.0 |
 
 What each read:
 
 ```
-shipped: <AS><AS>S PEPRERENEDIDINICCTETENED D R ■1T1O00R■.T.Z7 7  ■  ■  ■AIEEEI E EAETAIINI I ■  S ■LA U TAXX E IIIS S W 11S0 ■2I255M■, ,  ■ ■  ■ T ■T T T
+shipped: <AS><AS>S PEPRERENEDIDINICCTETENED D R ■1T1O00R■.T.Z7 7  ■  ■  ■AIEEEI E EAETAIINI I ■  S ■LA U TAXX E IIIS S W 11S1■2I255M■, ,  ■ ■  ■ T ■T T T
 grid:    N E IE EIE E EE #E EN EES E T #I ES F E E T I E SEEI S S E E# EENES E S I TI I E EI E EE A #ES S V # IIE E HEE R # # #E I # T A 
 ```
 
@@ -483,7 +483,7 @@ absence (§0.0).
 | witness | characters | E-share | single-char words | span LLR P10 / median / P90 |
 |---|---|---|---|---|
 | said keying | 0 | no characters | no characters | nothing measured |
-| said no keying | 19 | 5 % | 50 % | 113.5 / 235.5 / 448.0 |
+| said no keying | 19 | 5 % | 50 % | 104.2 / 235.5 / 458.3 |
 | had not decided | 0 | no characters | no characters | nothing measured |
 
 What each read:

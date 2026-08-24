@@ -96,11 +96,25 @@ public sealed class ThePitchCanBeHeldTests
 
         var locked = decoder.Lock();
 
-        _output.WriteLine($"locked to {locked:0.00} Hz");
+        _output.WriteLine(
+            $"locked to {locked:0.00} Hz; the tracker measured "
+            + $"{(decoder.Tracker.HasMeasuredPitch ? decoder.Tracker.ToneHz.ToString("0.00") : "nothing")} "
+            + $"and its peak reads {decoder.Tracker.MeasuredPeakHz:0.00}");
 
         Assert.True(decoder.IsLocked);
         Assert.Equal(locked, decoder.LockedToneHz);
-        Assert.Equal(decoder.Tracker.MeasuredPeakHz, locked, 6);
+
+        // **THE MEASURED PITCH WHERE THERE IS ONE** (unit 1.11.6, task 4). The
+        // lock used to take the interpolated peak unconditionally, which is a
+        // reading of whatever bin the bank happens to be on; where the survey
+        // has admitted a station, the pitch it reported is the better number and
+        // a lock fed a bank centre locks onto the error.
+        Assert.Equal(
+            decoder.Tracker.HasMeasuredPitch
+                ? decoder.Tracker.ToneHz
+                : decoder.Tracker.MeasuredPeakHz,
+            locked,
+            6);
     }
 
     /// <remarks>

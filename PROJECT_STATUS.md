@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
-TASK: 4 of 5
-BALL: code
-NEXT_PASTE: none
-UPDATED: 2026-08-24T16:38:59-04:00
-NOTE: task 2's refinement withdrawn — on the one signal with a known pitch it is 5.75 Hz worse than the peak finder already in the tree; the auto-hold stays
+STATE: COMPLETED
+TASK: 5 of 5
+BALL: tim
+NEXT_PASTE: OUTPUT.md -> Claude Web
+UPDATED: 2026-08-24T16:58:16-04:00
+NOTE: pitch is right on six of fourteen and was already; the two unread captures refuse at their measured pitch, so a second mechanism exists and it is in the envelope
 
 ---
 
