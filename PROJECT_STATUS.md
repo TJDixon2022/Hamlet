@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
-TASK: 3 of 4
-BALL: code
-NEXT_PASTE: none
-UPDATED: 2026-08-24T11:55:35-04:00
-NOTE: the guard cannot go — a margin above the empty bands' 4.50 cuts KD0UN at 1.75, and VA3VRR and N4L are not read at all once the scale is corrected
+STATE: COMPLETED
+TASK: 4 of 4
+BALL: tim
+NEXT_PASTE: OUTPUT.md -> Claude Web
+UPDATED: 2026-08-24T12:04:42-04:00
+NOTE: the scale is corrected and reads better where it reads, but Gate 15 is now in dead units and silences most of the corpus; a one-line revert restores tonight's radio
 
 ---
 
