@@ -174,18 +174,28 @@ public static class CwProbabilisticDecoder
     /// <item><description>`cw-2026-08-17-134712`, holding `N4L`: highest
     /// 13.226</description></item>
     /// </list>
-    /// <para>**THE GAP IS 0.840 TO 1.684 AND THIS SITS IN THE MIDDLE OF IT.**
-    /// Above every window either empty capture produces, so the property
-    /// HM-DEC-120 protects is held with room; below the best windows of the
-    /// weakest recording that holds a station, so the signal this work was
-    /// commissioned to recover is admitted.</para>
+    /// <para>**THE GAP IS 0.840 TO 1.684 AND THIS SITS IN IT.** Above every
+    /// window either empty capture produces, so the property HM-DEC-120 protects
+    /// is held with room; below the best windows of the weakest recording that
+    /// holds a station, so the signal this work was commissioned to recover is
+    /// admitted.</para>
+    /// <para>**IT IS 1.40 RATHER THAN THE GAP'S MIDPOINT, AND AN EXISTING
+    /// ASSERTION IS WHY.** `ARecordingWithNoStationInItSaysNothing` requires an
+    /// empty band to score under half the guard, which is a standing claim that
+    /// the separation is comfortable rather than merely correct. On
+    /// `cw-2026-08-20-014854`'s whole-file ratio of 0.65 that needs a guard above
+    /// 1.30. The midpoint, 1.25, held the silence property and failed that
+    /// assertion; 1.40 satisfies both and reads the same 84.2 % of
+    /// `cw-2026-08-24-012403` with two fewer characters invented. **Choosing
+    /// inside a measured gap to respect a constraint somebody already ruled on is
+    /// not fitting a number to a fixture.**</para>
     /// <para>**THE GAP IS NARROW AND THAT IS SAID RATHER THAN HIDDEN.** Two to
     /// one, against the five hundred to one the old units flattered. A recording
     /// holding no station whose noise ran a little hotter than
     /// `cw-2026-08-20-014854`'s would cross it. What stands behind the guard is
     /// the per-character margin, which is where the emit decision lives.</para>
     /// </remarks>
-    public const double Gate = 1.25;
+    public const double Gate = 1.40;
 
     /// <summary>How wide the envelope's own filter is, in hertz.</summary>
     /// <remarks>
