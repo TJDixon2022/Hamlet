@@ -20,12 +20,38 @@ namespace Hamlet.RadioEngine.Cw;
 /// <param name="ElementPurity">
 /// What fraction of the key-downs were element length rather than chatter.
 /// </param>
+/// <param name="Duty">
+/// What fraction of the stretch was spent with the key down at all, between
+/// nought and one.
+/// </param>
+/// <remarks>
+/// <para>**THE DUTY PREDICTED EVERY OUTCOME OF THE SHACK EVENING OF 2026-08-25
+/// AND NOTHING WAS RECORDING IT.** Thirteen captures, all on 40 m, all at the
+/// same input level, tone locked within a few hertz on twelve of the thirteen.
+/// Sorted by this one number the results sort themselves: ten captures between
+/// 38 and 47 per cent read back with nought to eight characters unsure; one at
+/// 24 per cent buried its real content in forty-eight characters of noise; one
+/// at 18 per cent gave eight seconds of station and twenty-two of invented
+/// text.</para>
+/// <para>**IT IS THE SHARE OF ALL KEY-DOWN AND NOT OF ELEMENT-LENGTH KEY-DOWN**,
+/// which is what <see cref="KeyingProfile.ElementShare"/> already measures and is
+/// a different question. That one asks how much of the stretch looked like
+/// Morse; this asks how much of it was loud, whatever shape it was. On a rag
+/// chew the two are close; on a calling frequency full of chatter they are not,
+/// and it is the second that says how much of the file is silence.</para>
+/// <para>**IT SAYS NOTHING ABOUT WHETHER A FIST IS A FIST.** Measured on this
+/// repository's own W1AW bulletin captures, the station's own bin runs 47 to 70
+/// per cent, because a bulletin is continuous traffic and a call is not. Duty is
+/// a fact about what somebody is sending, not about whether they are sending
+/// well.</para>
+/// </remarks>
 public readonly record struct KeyingProfile(
     IReadOnlyList<double> RunsMs,
     double MedianMs,
     double SwingDb,
     double ElementShare,
-    double ElementPurity)
+    double ElementPurity,
+    double Duty = 0)
 {
     /// <summary>How much this pitch looks like somebody keying, from nought to one.</summary>
     /// <remarks>
@@ -181,7 +207,7 @@ public static class KeyingEnvelope
 
         if (envelope.Count == 0)
         {
-            return new KeyingProfile(Array.Empty<double>(), 0, 0, 0, 0);
+            return new KeyingProfile(Array.Empty<double>(), 0, 0, 0, 0, 0);
         }
 
         var sorted = envelope.OrderBy(v => v).ToArray();
@@ -234,12 +260,15 @@ public static class KeyingEnvelope
             .Where(r => r is >= ShortestElementMs and <= LongestElementMs)
             .ToList();
 
+        var span = envelope.Count * StepMs;
+
         return new KeyingProfile(
             runs,
             median,
             Decibels(high) - Decibels(low),
-            elements.Sum() / (envelope.Count * StepMs),
-            runs.Count == 0 ? 0 : (double)elements.Count / runs.Count);
+            elements.Sum() / span,
+            runs.Count == 0 ? 0 : (double)elements.Count / runs.Count,
+            runs.Sum() / span);
     }
 
     private static double Decibels(double magnitude)

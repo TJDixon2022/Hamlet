@@ -3919,6 +3919,24 @@ public partial class MainWindowViewModel : ObservableObject
             $"keying     {KeyingLine(_keyingReading)}"
                 + "  (an independent sweep of 400 to 1200 Hz in 25 Hz steps over "
                 + "the last six seconds, sharing nothing with the decoder)",
+
+            // **THE ONE NUMBER THAT SORTED THE EVENING OF 2026-08-25 AND WAS
+            // NOWHERE ON THIS SHEET.** Thirteen captures, one band, one input
+            // level, the tone locked within a few hertz on twelve of them; sorted
+            // by how much of the recording had the key down, the outcomes sort
+            // themselves. Ten between 38 and 47 per cent read back with nought to
+            // eight characters unsure. One at 24 per cent buried its real content
+            // in forty-eight characters of noise. One at 18 per cent gave eight
+            // seconds of station and twenty-two of invented text.
+            //
+            // **IT IS MEASURED OVER THE AUDIO IN THIS FILE**, at the pitch the
+            // decoder was following, which is what every other figure on this
+            // sheet is read as being and what the `keying` line above is not.
+            // **And it is not written at all where the pitch was never measured**
+            // (§0.0): the duty at the middle of whatever bank the decoder happens
+            // to be pointed at is a fact about a bank rather than about a station,
+            // and this sheet has printed one of those before.
+            $"duty       {DutyForTheRecord(audio, report)}",
             "",
         };
 
@@ -4257,6 +4275,33 @@ public partial class MainWindowViewModel : ObservableObject
               + $"{other.RelativeDb:+0.0;-0.0} dB relative "
               + $"({other.ToneHz:0} Hz)"
             : "none found (which is not the same as the frequency being clear)";
+
+    /// <summary>
+    /// How much of this recording had the key down, at the pitch the decoder was
+    /// following, or why there is no figure.
+    /// </summary>
+    /// <param name="audio">The audio in this file, and nothing else.</param>
+    /// <param name="report">What the decoder believed at the press.</param>
+    /// <returns>The line for the sheet.</returns>
+    /// <remarks>
+    /// **A TENTH OF A PER CENT, BECAUSE THAT IS WHAT SEPARATES THE OUTCOMES.**
+    /// The evening this was written for spread from 18 to 47 per cent across
+    /// thirteen recordings and the boundary between readable and mostly invented
+    /// sat around a quarter.
+    /// </remarks>
+    private static string DutyForTheRecord(MonoAudio audio, CwDecodeReport report)
+    {
+        if (!report.HasTone || !report.PitchWasMeasured)
+        {
+            return "not measured  (no pitch was measured, so there is no station "
+                + "to measure the keying of)";
+        }
+
+        var profile = KeyingEnvelope.Measure(audio, report.ToneHz);
+
+        return $"{profile.Duty * 100:0.0}%  (of the {audio.Duration.TotalSeconds:0.0} seconds in "
+            + $"this file, the key was down at {report.ToneHz:0.0} Hz)";
+    }
 
     /// <summary>The pitch the decoder was following, and whether it measured it.</summary>
     /// <param name="report">The decoder's reading at the moment of the press.</param>
