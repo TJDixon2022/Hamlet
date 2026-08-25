@@ -56,10 +56,10 @@ table where every cell is perfect measures nothing about the filter.
 | 300 Hz | -6 dB | 11/11, 0 made up | 11/11, 0 made up | 11/11, 0 made up | 11/11, 0 made up |
 | 300 Hz | -12 dB | 11/11, 0 made up | 11/11, 0 made up | 11/11, 0 made up | 11/11, 0 made up |
 | 30 Hz | +0 dB | 9/11, 0 made up | 9/11, 0 made up | 10/11, 0 made up | 11/11, 0 made up |
-| 30 Hz | +6 dB | 2/11, 31 made up | 2/11, 31 made up | 9/11, 0 made up | 10/11, 0 made up |
+| 30 Hz | +6 dB | 2/11, 31 made up | 2/11, 32 made up | 9/11, 0 made up | 10/11, 0 made up |
 | 20 Hz | +0 dB | 2/11, 28 made up | 9/11, 0 made up | 9/11, 0 made up | 10/11, 0 made up |
 | 20 Hz | +6 dB | 4/11, 2 made up | 5/11, 2 made up | 5/11, 1 made up | 9/11, 0 made up |
-| 15 Hz | +0 dB | 6/11, 6 made up | 5/11, 1 made up | 6/11, 0 made up | 7/11, 0 made up |
+| 15 Hz | +0 dB | 5/11, 6 made up | 5/11, 1 made up | 6/11, 0 made up | 6/11, 0 made up |
 | 10 Hz | +0 dB | 6/11, 4 made up | 5/11, 0 made up | 5/11, 2 made up | 6/11, 0 made up |
 
 ## The cost in sensitivity
@@ -114,10 +114,10 @@ much comes out and how much of it is the letter `E`.
 
 | recording | 60 Hz | 45 Hz | 30 Hz | 20 Hz |
 |---|---|---|---|---|
-| `cw-2026-08-17-013347` | 101 chars, E 44 % | 81 chars, E 63 % | 86 chars, E 59 % | 98 chars, E 46 % |
-| `cw-2026-08-17-134712` | 0 chars, E 0 % | 0 chars, E 0 % | 90 chars, E 68 % | 58 chars, E 66 % |
+| `cw-2026-08-17-013347` | 101 chars, E 44 % | 81 chars, E 63 % | 86 chars, E 59 % | 98 chars, E 39 % |
+| `cw-2026-08-17-134712` | 0 chars, E 0 % | 0 chars, E 0 % | 90 chars, E 20 % | 58 chars, E 29 % |
 | `cw-2026-08-18-004507` | 49 chars, E 12 % | 48 chars, E 13 % | 48 chars, E 13 % | 48 chars, E 13 % |
-| `cw-2026-08-18-003758` | 58 chars, E 22 % | 60 chars, E 27 % | 38 chars, E 34 % | 43 chars, E 28 % |
+| `cw-2026-08-18-003758` | 58 chars, E 12 % | 60 chars, E 13 % | 38 chars, E 21 % | 43 chars, E 21 % |
 
 ## What was chosen, and why
 

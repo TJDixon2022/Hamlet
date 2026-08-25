@@ -78,7 +78,7 @@ of nought.
 | offset | level | correct | wrong | invented | emitted | E-share | read |
 |---|---|---|---|---|---|---|---|
 | 40 Hz | +0 dB | 7 | 3 | 22 | 32 | 22 % | `TTET ET T DEDE EE NNM■00DD  E RLILLL T KK  ■` |
-| 40 Hz | -6 dB | 8 | 2 | 20 | 30 | 23 % | `QQ T DEDE E NN  E  TE TDCECAEARLILLL T T   ■ ` |
+| 40 Hz | -6 dB | 8 | 2 | 20 | 30 | 20 % | `QQ T DEDE E NN  ■  TE TDCECAEARLILLL T T   ■ ` |
 | 40 Hz | -12 dB | 10 | 1 | 20 | 31 | 16 % | `QQ T DEDE E NNM■00DCECAEARLILLL T KK  ■` |
 | 80 Hz | +0 dB | 8 | 3 | 18 | 29 | 14 % | `QQ T DEDE E NN U URUPP  ■ ■ E LLALLL T KK  ■` |
 | 80 Hz | -6 dB | 8 | 2 | 26 | 36 | 33 % | `QQ T DEDE E NN EE EEE E TE TKCECAEARLILLL T T  ■ ■ ` |

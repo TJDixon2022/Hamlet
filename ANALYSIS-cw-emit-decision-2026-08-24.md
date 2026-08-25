@@ -5,7 +5,7 @@ window. The window ratio survives as an outer silence guard at its
 existing value of 1, and each
 character must additionally carry more evidence than the key never
 having gone down across its own span. That margin is
-**0** — the point
+**1** — the point
 where the two explanations are equally good, rather than a place on
 the scale that had to be chosen.
 
@@ -24,12 +24,12 @@ dotnet test tests/Hamlet.RadioEngine.Tests --filter FullyQualifiedName~TheEmitDe
 | capture | holds | window | emitted | ■ | read |
 |---|---|---|---|---|---|
 | `cw-2026-08-17-013347` | VA3VRR (HM-DEC-145) | 4.0 | 59 | 2 | ` E EI I HIAEIHEEEA E EEE HEEIEE IEE E T E I E E IEEI TEEI T E HA E WVRR VA3VRRT ■ ■ ` |
-| `cw-2026-08-17-013622` | unadjudicated | 0.2 | 55 | 0 | `E I5 SHE II 5EIEIE EEETE TE ESE E IE U EEE TSET TEEEE A EE ET EEEE EII EI E` |
-| `cw-2026-08-17-134712` | N4L (HM-DEC-144) | 12.6 | 63 | 10 | `EE E E E EI E I I E E EE E ■E E I E I E ■ E E I E E E E EE E I EII■5 ■ ■ NT ■ ■ ■ N4 L ZT ■K ■ HEEE E EE E E` |
+| `cw-2026-08-17-013622` | unadjudicated | 0.2 | 55 | 4 | `E I5 SHE II 5EIEIE EEETE TE ESE E IE U EEE TSET TEEEE A E■ ET EEE■ ■II ■I E` |
+| `cw-2026-08-17-134712` | N4L (HM-DEC-144) | 12.6 | 63 | 42 | `■■ ■ ■ ■ ■■ ■ ■ ■ ■ ■ E■ ■ ■■ ■ ■ ■ ■ ■ ■ ■ ■ I ■ E E E EE E ■ ■■I■5 ■ ■ NT ■ ■ ■ N4 L ZT ■K ■ ■EE■ E ■■ ■ ■` |
 | `cw-2026-08-18-004507` | an ARRL bulletin | 5.7 | 49 | 1 | `E J J A T AR RL D O T N E T <BT> ■ E AC H STA TION HANDLING THIS MESSAG E PE` |
 | `cw-2026-08-18-003016` | unadjudicated | 3.6 | 57 | 3 | `E <BT> HADA KP T15TT IT WAS JUNK ■ ■ STILL HVE MY E TO 91B ■TT JETST VFB TUB LIN` |
 | `cw-2026-08-18-003126` | unadjudicated | 7.2 | 55 | 4 | `A OM<BT> ■ <BT> I WATCH AT L EAST 2 MOVI ESA DAY WID X■ WHY NNOTT ■ ■ , WESNRNS , E` |
-| `cw-2026-08-18-003758` | AA4MP/4 QNIK (HM-DEC-126) | 6.3 | 58 | 6 | `KI S QR L TU ■ EAN EANDE AA4MP/4 QNIKK ■ ■EE EE E AN EANQNIK ■ ■ E EE H I E ■ EAN E` |
+| `cw-2026-08-18-003758` | AA4MP/4 QNIK (HM-DEC-126) | 6.3 | 58 | 15 | `KI S QR L TU ■ EAN EANDE AA4MP/4 QNIKK ■ ■■■ ■■ E AN EANQNIK ■ ■ ■ ■E ■ ■ ■ ■ EAN E` |
 | `cw-2026-08-20-014854` | nothing | 0.8 | 0 | 0 | `(nothing)` |
 | `cw-2026-08-20-014935` | nothing | 0.1 | 0 | 0 | `(nothing)` |
 
@@ -41,12 +41,12 @@ peak said then, and the tracker stopped steering from that moment.
 | capture | locked to | emitted | ■ | read |
 |---|---|---|---|---|
 | `cw-2026-08-17-013347` | 609.3 Hz | 57 | 2 | ` E EI I HIAEIHEEEA E EEE HEEIE SEE E T E I E E IEEI TEEI T E HA EWVRR VA3VRR ■ ■ ` |
-| `cw-2026-08-17-013622` | refused | 55 | 0 | `E I5 SHE II 5EIEIE EEETE TE ESE E IE U EEE TSET TEEEE A EE ET EEEE EII EI E` |
-| `cw-2026-08-17-134712` | refused | 63 | 10 | `EE E E E EI E I I E E EE E ■E E I E I E ■ E E I E E E E EE E I EII■5 ■ ■ NT ■ ■ ■ N4 L ZT ■K ■ HEEE E EE E E` |
+| `cw-2026-08-17-013622` | refused | 55 | 4 | `E I5 SHE II 5EIEIE EEETE TE ESE E IE U EEE TSET TEEEE A E■ ET EEE■ ■II ■I E` |
+| `cw-2026-08-17-134712` | refused | 63 | 42 | `■■ ■ ■ ■ ■■ ■ ■ ■ ■ ■ E■ ■ ■■ ■ ■ ■ ■ ■ ■ ■ ■ I ■ E E E EE E ■ ■■I■5 ■ ■ NT ■ ■ ■ N4 L ZT ■K ■ ■EE■ E ■■ ■ ■` |
 | `cw-2026-08-18-004507` | 525.0 Hz | 50 | 2 | `E J J A T AR RL D O T N E T <BT> ■ E ACH STA TI O N H A N D L I NG T H IS M E S S A G E ■P E` |
 | `cw-2026-08-18-003016` | 669.0 Hz | 56 | 2 | `E <BT> HADA KP T15TT IT WAS JUNK ■ ■ STILAE HVE MY E TO 91B AT JUST VFB TUB LIN` |
 | `cw-2026-08-18-003126` | 675.0 Hz | 54 | 4 | `A OM<BT> ■ <BT> I WATCH AT L EAST 2 MOVI ESA DAY WID X■ WHY NOT ■ ■ , WESTERNS , E` |
-| `cw-2026-08-18-003758` | 501.0 Hz | 59 | 5 | `KI S QR L TU ■ EAN EANDE AA4MP/4 QNIKK ■ EEEE EE E AN EANQNIK ■ ■ E EE H I E ■ EAN E` |
+| `cw-2026-08-18-003758` | 501.0 Hz | 59 | 16 | `KI S QR L TU ■ EAN EANDE AA4MP/4 QNIKK ■ ■■■■ ■■ E AN EANQNIK ■ ■ ■ ■E ■ ■ ■ ■ EAN E` |
 | `cw-2026-08-20-014854` | refused | 0 | 0 | `(nothing)` |
 | `cw-2026-08-20-014935` | 622.6 Hz | 0 | 0 | `(nothing)` |
 
