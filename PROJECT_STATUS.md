@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
-TASK: 7 of 7
+TASK: 6 of 6
 BALL: tim
 NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-25T11:38:00-04:00
-NOTE: seven tasks worked, none dropped; three shipped, two built and reverted on their own measurements, one diagnosed, one options table
+UPDATED: 2026-08-25T13:46:15-04:00
+NOTE: four tasks shipped, one built and reverted on its own acceptance, one void for want of the audio; twelve adjudicated readings now guarded
 
 ---
 
