@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 2 of 7
+TASK: 3 of 7
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-24T21:54:55-04:00
-NOTE: it was the badge, not a stale-band handler; the badge overhung narrow cards and took their clicks, and a second obstruction of the same shape turned up on the last card
+UPDATED: 2026-08-24T21:56:49-04:00
+NOTE: the gate is wired and the block glyph is it working, not failing; neither normalisation makes one-element characters comparable, so nothing was shipped against a ruled constant
 
 ---
 
