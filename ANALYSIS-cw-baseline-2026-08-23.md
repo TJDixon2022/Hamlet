@@ -60,8 +60,8 @@ absence (§0.0).
 
 | witness | characters | E-share | single-char words | span LLR P10 / median / P90 |
 |---|---|---|---|---|
-| said keying | 16 | 12 % | 80 % | -9.0 / 335.5 / 769.6 |
-| said no keying | 50 | 36 % | 50 % | 256.7 / 982820776.1 / 8744467815.7 |
+| said keying | 31 | 10 % | 75 % | 42.3 / 320.9 / 769.6 |
+| said no keying | 35 | 49 % | 46 % | 279056191.1 / 5633987115.4 / 10609858917.7 |
 | had not decided | 64 | 59 % | 65 % | 155001981.3 / 717495878.4 / 5913441603.5 |
 
 What each read:
@@ -111,9 +111,9 @@ grid:    E EE # EUE# E H EE SEEE E H E EE T EN E E # E T E EE EEE E II E EE EEN 
 
 | | shipped | grid |
 |---|---|---|
-| characters emitted | 49 | 0 |
-| E-share | 14 % | no characters |
-| single-character words | 73 % | no characters |
+| characters emitted | 47 | 0 |
+| E-share | 15 % | no characters |
+| single-character words | 70 % | no characters |
 | words per minute read | 25 | 40.0 |
 
 The witness split, over the shipped decode:
@@ -126,14 +126,14 @@ absence (§0.0).
 
 | witness | characters | E-share | single-char words | span LLR P10 / median / P90 |
 |---|---|---|---|---|
-| said keying | 39 | 18 % | 64 % | -54.8 / 9.7 / 1299.0 |
-| said no keying | 10 | 0 % | 86 % | -672.5 / -56.0 / 12947.4 |
+| said keying | 37 | 19 % | 62 % | -54.8 / 9.7 / 1419.5 |
+| said no keying | 10 | 0 % | 75 % | -706.2 / -59.5 / 13011.9 |
 | had not decided | 0 | no characters | no characters | nothing measured |
 
 What each read:
 
 ```
-shipped: ■ NTNT T ■  ■ ■  ■ R R SD ' E4LLML ZTZT ■ ■ T ■KK  ■  ■ ■ ■ ■EE■ E■ E E ■ ■ E■ ■ ■
+shipped: ■ RT NT T ■  ■ ■  ■ R R SD ' E4LLM<AS> ZTQ  ■ T ■KK  ■  ■ ■ ■ ■EE■ E■ E E ■ ■ E■ ■ ■
 grid:    (nothing)
 ```
 
@@ -158,9 +158,9 @@ absence (§0.0).
 
 | witness | characters | E-share | single-char words | span LLR P10 / median / P90 |
 |---|---|---|---|---|
-| said keying | 101 | 13 % | 74 % | 174.0 / 594.4 / 1102.8 |
+| said keying | 101 | 13 % | 74 % | 174.0 / 595.8 / 1102.8 |
 | said no keying | 0 | no characters | no characters | nothing measured |
-| had not decided | 12 | 17 % | 88 % | 66.6 / 266.1 / 369.5 |
+| had not decided | 12 | 17 % | 88 % | 64.5 / 266.1 / 344.7 |
 
 What each read:
 
@@ -190,7 +190,7 @@ absence (§0.0).
 
 | witness | characters | E-share | single-char words | span LLR P10 / median / P90 |
 |---|---|---|---|---|
-| said keying | 119 | 12 % | 46 % | 88.1 / 337.8 / 883.7 |
+| said keying | 119 | 12 % | 46 % | 88.1 / 338.2 / 883.7 |
 | said no keying | 0 | no characters | no characters | nothing measured |
 | had not decided | 17 | 6 % | 20 % | 145.5 / 329.1 / 480.5 |
 
@@ -254,9 +254,9 @@ absence (§0.0).
 
 | witness | characters | E-share | single-char words | span LLR P10 / median / P90 |
 |---|---|---|---|---|
-| said keying | 108 | 17 % | 64 % | -2.8 / 870.9 / 2894.5 |
+| said keying | 108 | 17 % | 64 % | -2.8 / 870.9 / 2895.4 |
 | said no keying | 0 | no characters | no characters | nothing measured |
-| had not decided | 14 | 7 % | 62 % | -82.3 / 1240.0 / 2422.1 |
+| had not decided | 14 | 7 % | 62 % | -82.3 / 1235.4 / 2422.1 |
 
 What each read:
 
@@ -403,9 +403,9 @@ grid:    (nothing)
 
 | | shipped | grid |
 |---|---|---|
-| characters emitted | 125 | 71 |
-| E-share | 7 % | 52 % |
-| single-character words | 32 % | 62 % |
+| characters emitted | 124 | 71 |
+| E-share | 6 % | 52 % |
+| single-character words | 28 % | 62 % |
 | words per minute read | 20 | 30.0 |
 
 The witness split, over the shipped decode:
@@ -418,14 +418,14 @@ absence (§0.0).
 
 | witness | characters | E-share | single-char words | span LLR P10 / median / P90 |
 |---|---|---|---|---|
-| said keying | 97 | 9 % | 31 % | 7.7 / 99.1 / 379.4 |
-| said no keying | 15 | 0 % | 25 % | 41.2 / 181.6 / 560.0 |
-| had not decided | 13 | 0 % | 50 % | 100.1 / 726.7 / 14448.9 |
+| said keying | 111 | 7 % | 28 % | 11.5 / 109.6 / 480.6 |
+| said no keying | 0 | no characters | no characters | nothing measured |
+| had not decided | 13 | 0 % | 50 % | 100.1 / 731.8 / 15927.4 |
 
 What each read:
 
 ```
-shipped: 33T3Z,, I ■ATM TM TTM,OT E ETMTMT2T■T■■■■■ ■ ■ 22N27MTAT, I ATANTNDD H ■■ E■ WTM TET TEAE■T TTTTH EI■A A TT MEIEATANN N OTT TTTF F U22R■TT■ ■■■■  ■■ ■ ■■■ ■ ■■
+shipped: 33T3Z,, I ■ATM TM TTM,OT E ■TMT2T■T■■■■■ ■ ■■ 21 N1 7MTAT, I ATANTNDD H ■■ E■ WTM TET TEAE■T TTTTH EI■A A TT MEIEATANN N OTT TTTF F U22R■TT■ ■■■■  ■■ ■ ■■■ ■ ■■
 grid:     I E # # EE E S E E <HH> #I # 8EE E E EEE #E E E S # <AS> T E W # # SEE E <HH> 5 NI # R # E 6E # AE E EE N E IE EIE E EE #E EN EES 
 ```
 
@@ -435,10 +435,10 @@ grid:     I E # # EE E S E E <HH> #I # 8EE E E EEE #E E E S # <AS> T E W # # SEE
 
 | | shipped | grid |
 |---|---|---|
-| characters emitted | 106 | 78 |
+| characters emitted | 107 | 78 |
 | E-share | 12 % | 45 % |
-| single-character words | 63 % | 64 % |
-| words per minute read | 22 | 30.0 |
+| single-character words | 61 % | 64 % |
+| words per minute read | 23 | 30.0 |
 
 The witness split, over the shipped decode:
 
@@ -450,14 +450,14 @@ absence (§0.0).
 
 | witness | characters | E-share | single-char words | span LLR P10 / median / P90 |
 |---|---|---|---|---|
-| said keying | 74 | 9 % | 65 % | 12.6 / 628.0 / 9029.6 |
-| said no keying | 7 | 0 % | 50 % | 531.3 / 1405.7 / 2437.2 |
-| had not decided | 25 | 24 % | 0 % | 97.7 / 534.5 / 1532.0 |
+| said keying | 90 | 11 % | 63 % | 25.3 / 628.0 / 8948.1 |
+| said no keying | 0 | no characters | no characters | nothing measured |
+| had not decided | 17 | 18 % | 0 % | 97.7 / 426.2 / 1129.5 |
 
 What each read:
 
 ```
-shipped: <AS><AS>S PEPR■RENEDIDINICCTETENED D R ■1T1O■0R■.T.Z7 7  ■  ■  ■AIEEEI E EAETAIINI I ■  WTW■■ TM U TAXX E IIIS S W 11S1■2I255M■, ,  ■ ■  ■ T ■T T T
+shipped: <AS><AS>S PEPR■RENEDIDINICCTETENED D R ■1T1O■0R■.T.Z7 7  ■  ■  ■SIEEEI E EAETAIINI I ■  ■MTM■■ TM U TAXX E IIIS S W 10 S1■2I255M■, ,  ■ ■  ■ T ■T T T
 grid:    N E IE EIE E EE #E EN EES E T #I ES F E E T I E SEEI S S E E# EENES E S I TI I E EI E EE A #ES S V # IIE E HEE R # # #E I # T A 
 ```
 
@@ -482,9 +482,9 @@ absence (§0.0).
 
 | witness | characters | E-share | single-char words | span LLR P10 / median / P90 |
 |---|---|---|---|---|
-| said keying | 87 | 14 % | 41 % | 88.9 / 579.9 / 1313.6 |
-| said no keying | 5 | 0 % | 0 % | 121.4 / 593.7 / 694.9 |
-| had not decided | 12 | 8 % | 0 % | 195.2 / 721.6 / 11740.6 |
+| said keying | 92 | 13 % | 41 % | 88.9 / 585.2 / 1313.6 |
+| said no keying | 0 | no characters | no characters | nothing measured |
+| had not decided | 12 | 8 % | 0 % | 226.4 / 721.6 / 12354.0 |
 
 What each read:
 
@@ -499,9 +499,9 @@ grid:     # # # E T E E E E T # 5 # E E E E NE E E EUE # 5 S I L # TII ES # GE I
 
 | | shipped | grid |
 |---|---|---|
-| characters emitted | 120 | 86 |
-| E-share | 18 % | 36 % |
-| single-character words | 58 % | 69 % |
+| characters emitted | 117 | 86 |
+| E-share | 19 % | 36 % |
+| single-character words | 61 % | 69 % |
 | words per minute read | 18 | 38.0 |
 
 The witness split, over the shipped decode:
@@ -516,12 +516,12 @@ absence (§0.0).
 |---|---|---|---|---|
 | said keying | 106 | 19 % | 61 % | 205.9 / 667.5 / 1443.6 |
 | said no keying | 0 | no characters | no characters | nothing measured |
-| had not decided | 14 | 14 % | 0 % | 399.5 / 1346.4 / 7633.3 |
+| had not decided | 11 | 18 % | 33 % | 399.5 / 1364.2 / 8962.6 |
 
 What each read:
 
 ```
-shipped: TETT TF O11AJ1E1G7E7■..A■1I1■..  R LILININNKEKS S T TMO O A ARRTR T I E I KC IC L L E I E SSMO EO R RNO OTETHHEIER R A WEWENBEBSESITITEEES S M MEEMENENTI
+shipped: F EF O11AJ1E1G7E7■..A■1I1■..  R LILININNKEKS S T TMO O A ARRTR T I E I KC IC L L E I E SSMO EO R RNO OTETHHEIER R A WEWENBEBSESITITEEES S M MEEMENENTI
 grid:     H EIF # EEE # E # IE E I I S E EETE # T E # HE # I4T E I E E E E # I 5T S E EJ SE E A EI # S #HEE # # A RS # E T UEE # #TS #S EE I HS # SR E I N 
 ```
 
@@ -533,7 +533,7 @@ grid:     H EIF # EEE # E # IE E I I S E EETE # T E # HE # I4T E I E E E E # I 5
 |---|---|---|
 | characters emitted | 119 | 74 |
 | E-share | 16 % | 34 % |
-| single-character words | 71 % | 71 % |
+| single-character words | 70 % | 71 % |
 | words per minute read | 28 | 28.0 |
 
 The witness split, over the shipped decode:
@@ -546,14 +546,14 @@ absence (§0.0).
 
 | witness | characters | E-share | single-char words | span LLR P10 / median / P90 |
 |---|---|---|---|---|
-| said keying | 79 | 15 % | 73 % | 86.5 / 475.4 / 5211.2 |
-| said no keying | 23 | 22 % | 0 % | 145.2 / 680.6 / 1447.2 |
-| had not decided | 17 | 12 % | 0 % | 386.1 / 1456.0 / 5540.7 |
+| said keying | 102 | 17 % | 72 % | 90.8 / 507.1 / 4476.1 |
+| said no keying | 0 | no characters | no characters | nothing measured |
+| had not decided | 17 | 12 % | 0 % | 386.1 / 1407.8 / 5556.9 |
 
 What each read:
 
 ```
-shipped: MOURLILLLETETIINN N CCAANN T BBE E U FTFOOUUNUNNM TTT D IE INN T TEAELELEAEWWRRIRITTTETERRNR7,,  R PEPATAKCTCKK E E  ■ ■ ■ ■ ■ B E  I I E I ■■ T E E S H I  SI I
+shipped: MOURLILLLETETIINN N CCAANN T BBE E U FTFOOUUNK M NM TTT D IE INN T TEAELELEAEWWRRIRITTTETERRNR7,,  R PEPATAKCTCKK E E  ■ ■ ■ ■ ■ B E  I I E I ■■ T E E S H I  SI I
 grid:    EEESEIE# I I EE E II S I EHE 5 I 5 E E EEIE I H I E E HE#I E N II IN #E I S N TS IE # I# #I I E I II I # H E E # I I I E I
 ```
 
@@ -563,10 +563,10 @@ grid:    EEESEIE# I I EE E II S I EHE 5 I 5 E E EEIE I H I E E HE#I E N II IN #E
 
 | | shipped | grid |
 |---|---|---|
-| characters emitted | 118 | 77 |
-| E-share | 25 % | 19 % |
-| single-character words | 66 % | 86 % |
-| words per minute read | 32 | 38.0 |
+| characters emitted | 115 | 77 |
+| E-share | 26 % | 19 % |
+| single-character words | 69 % | 86 % |
+| words per minute read | 40 | 38.0 |
 
 The witness split, over the shipped decode:
 
@@ -578,14 +578,14 @@ absence (§0.0).
 
 | witness | characters | E-share | single-char words | span LLR P10 / median / P90 |
 |---|---|---|---|---|
-| said keying | 102 | 27 % | 66 % | 21.5 / 707.8 / 2053.2 |
+| said keying | 101 | 29 % | 66 % | 34.1 / 796.7 / 1950.1 |
 | said no keying | 0 | no characters | no characters | nothing measured |
-| had not decided | 16 | 12 % | 50 % | 275.5 / 1042.6 / 6094.0 |
+| had not decided | 14 | 7 % | 75 % | 246.6 / 1109.9 / 6617.8 |
 
 What each read:
 
 ```
-shipped: KET E T TTK■■ A ANINNN D D IT INTNTEETERRNNETET E ■■ E I E RTRSESITI OONNSS E GOIOFF S ■2T2O00APJNJ66  ■ ■  ■ ■E E E N  ■SE I E  T E E E I E E  ■  ■ ■ ■EEEEE EI ES E■ T I
+shipped: O T T E T TTK■■ A AN■N D D IT MMTNTEETERRNNE TE T E ■■ E I E RTRDEDI TA OONNSS E GOIOFF S ■2T2O00APJNJ66  ■ ■  ■ ■E E E N  ■SE I E  T E E E I E E  ■  ■ ■ ■EEEEE I ES EE E I
 grid:    E IE I E S #AI S # # <AS> N T E # I I I I EI S A # #IS I I T # N E I I# E S # # # E N E I # NEE # N # A TS # E H # N # S T # E I I I E H #E I # H
 ```
 
@@ -659,9 +659,9 @@ grid:    (nothing)
 
 | | shipped | grid |
 |---|---|---|
-| characters emitted | 127 | 0 |
-| E-share | 9 % | no characters |
-| single-character words | 60 % | no characters |
+| characters emitted | 126 | 0 |
+| E-share | 10 % | no characters |
+| single-character words | 57 % | no characters |
 | words per minute read | 27 | 40.0 |
 
 The witness split, over the shipped decode:
@@ -674,14 +674,14 @@ absence (§0.0).
 
 | witness | characters | E-share | single-char words | span LLR P10 / median / P90 |
 |---|---|---|---|---|
-| said keying | 47 | 9 % | 50 % | 4.4 / 125.8 / 363.3 |
-| said no keying | 27 | 7 % | 0 % | 67.1 / 211.6 / 528.0 |
-| had not decided | 53 | 11 % | 69 % | -23.9 / 65.0 / 526.1 |
+| said keying | 43 | 9 % | 50 % | 4.2 / 139.8 / 396.1 |
+| said no keying | 31 | 6 % | 0 % | 58.6 / 189.2 / 528.0 |
+| had not decided | 52 | 12 % | 64 % | -22.4 / 69.3 / 526.1 |
 
 What each read:
 
 ```
-shipped: ■ K K ■ ■  ■ T TATA INEFYTTT ■ ■T TTTT A ■ ■ ■ ■ T Q■ G Q Q ■ T ■ NN NN EEE SMGEGEGQ  KIK5T5QQZQ IQ 5T5NNNNDDERELALA  R RARR ER ■ES■ESNSNNNN T TAETAGO O ■ ■ T TUUKKVV■■T■■Q
+shipped: E K K  ■  ■ ■T TAK INT<KN>YTTT ■ ■T TTTT A ■ ■ ■ ■ T Q■ G Q Q ■ T ■ NN NN EEE SMGEGEGQ  KIK5T5QQZQ IQ 5T5NNNNDDERELALA  R RARR ER ■ES■ESNSNNNN T TAETAGO O ■ ■ T TUUKKVV■■T■■Q
 grid:    (nothing)
 ```
 
@@ -691,9 +691,9 @@ grid:    (nothing)
 
 | | shipped | grid |
 |---|---|---|
-| characters emitted | 133 | 105 |
-| E-share | 26 % | 38 % |
-| single-character words | 58 % | 62 % |
+| characters emitted | 135 | 105 |
+| E-share | 27 % | 38 % |
+| single-character words | 56 % | 62 % |
 | words per minute read | 32 | 38.0 |
 
 The witness split, over the shipped decode:
@@ -706,14 +706,14 @@ absence (§0.0).
 
 | witness | characters | E-share | single-char words | span LLR P10 / median / P90 |
 |---|---|---|---|---|
-| said keying | 39 | 15 % | 61 % | -28.8 / 258.8 / 1307.7 |
-| said no keying | 55 | 40 % | 59 % | 1.2 / 15.5 / 315.5 |
-| had not decided | 39 | 18 % | 53 % | 17.6 / 784.2 / 3881.8 |
+| said keying | 98 | 32 % | 54 % | -2.4 / 41.7 / 729.8 |
+| said no keying | 7 | 0 % | 75 % | -19.4 / 1596.6 / 4248.4 |
+| had not decided | 30 | 17 % | 50 % | 16.1 / 784.2 / 3970.7 |
 
 What each read:
 
 ```
-shipped: ■I ■ AS A I EEI ■E E  E  V ■S3FNFN S 5I5ININ A WEWEFFUU ■ ■ ■E ■ 5EENE MTNNNNOEON M ■T E ■T A A KKG9 TOI T T ■ ■  ■ E E  IE ■ ■■ E H ER EE  EE I  I ■E■ ■E ■ I E  II EE■E EE■E S EE E  ■ ■■ E M MN N S  BO00  ■  ■
+shipped: ■I ■ AS A I EEI ■E E  E  V■S■FNFN S 5I5ININ A WEWEFFUU ■ ■ ■E ■ 5EENE MT MTENTEO TON M ■T E ■T A A KKG9 TOI T T ■ ■  ■ E E  IE ■ ■■ E H ER EE  EE I  I ■E■ ■E ■ I E  II EE■E EE■E S EE E  ■ ■■ E M MN N S  BO00  ■  ■
 grid:     ETBEE 5 # # #T # # T E E EE EE#E E H EE E TEEE EE 5 # #EL S I E I EE # E#I E H I #EI NNE E # # ## ## EE E## E #5 E # # #T#EE #T # E E## A # I# EAEDT # I T # <SK>E55I I
 ```
 
@@ -723,9 +723,9 @@ grid:     ETBEE 5 # # #T # # T E E EE EE#E E H EE E TEEE EE 5 # #EL S I E I EE #
 
 | | shipped | grid |
 |---|---|---|
-| characters emitted | 104 | 0 |
-| E-share | 23 % | no characters |
-| single-character words | 60 % | no characters |
+| characters emitted | 102 | 0 |
+| E-share | 24 % | no characters |
+| single-character words | 63 % | no characters |
 | words per minute read | 25 | 40.0 |
 
 The witness split, over the shipped decode:
@@ -738,14 +738,14 @@ absence (§0.0).
 
 | witness | characters | E-share | single-char words | span LLR P10 / median / P90 |
 |---|---|---|---|---|
-| said keying | 4 | 0 % | 50 % | -66.7 / 758.4 / 921.0 |
-| said no keying | 66 | 23 % | 50 % | -13.7 / 203.1 / 811.2 |
-| had not decided | 34 | 26 % | 70 % | -20.2 / 18.1 / 1902.5 |
+| said keying | 42 | 21 % | 63 % | -18.1 / 226.3 / 921.0 |
+| said no keying | 28 | 21 % | 22 % | 46.1 / 210.2 / 704.7 |
+| had not decided | 32 | 28 % | 76 % | -20.2 / 20.0 / 1889.3 |
 
 What each read:
 
 ```
-shipped: B BG 0■  ■ ■  ■ ■ ■■■■E E E E ■ E ■  E EE■S■■E I■ ■ T VEKBTNA■■T I■T S IEU IT EET EEZZ ■  ■ ■ ■ ■  ■ ■  ■ O ■ DK B ME ■T■T TEE NH H V VNENN EN JJEEJEENTNGG  ■
+shipped: B BG 0■  ■ ■  ■ ■ ■■■■E E E E ■ E ■  E E E ■■■E■ ■ T VEKBTNA■■T I■T S IEU IT EET EEZZ ■  ■ ■ ■ ■  ■ ■  ■ O ■ DK B ME ■T■T TEE NH H V VNENN EN JJEEJEENTNGG  ■
 grid:    (nothing)
 ```
 
@@ -771,7 +771,7 @@ absence (§0.0).
 | witness | characters | E-share | single-char words | span LLR P10 / median / P90 |
 |---|---|---|---|---|
 | said keying | 0 | no characters | no characters | nothing measured |
-| said no keying | 19 | 5 % | 50 % | 104.2 / 235.5 / 458.3 |
+| said no keying | 19 | 5 % | 50 % | 102.0 / 235.5 / 458.3 |
 | had not decided | 0 | no characters | no characters | nothing measured |
 
 What each read:
@@ -824,8 +824,8 @@ gate never gets to see a whole file.
 | recording | witness | reads | ratio P10 / median / P90 |
 |---|---|---|---|
 | `cw-2026-08-17-013347` | | | |
-| | said keying | 11 | 1039.2 / 13552759.6 / 18639627.9 |
-| | said no keying | 24 | 23381935.9 / 29846067.0 / 37206257.2 |
+| | said keying | 20 | 3018435.3 / 20041902.4 / 34796909.3 |
+| | said no keying | 15 | 23381935.9 / 28782869.2 / 38732515.2 |
 | | had not decided | 21 | 7872321.2 / 8888366.1 / 16242796.5 |
 | `cw-2026-08-17-013622` | | | |
 | | said keying | 0 | nothing measured |
@@ -868,24 +868,24 @@ gate never gets to see a whole file.
 | | said no keying | 35 | 0.3 / 0.4 / 0.5 |
 | | had not decided | 21 | 0.3 / 0.4 / 0.5 |
 | `cw-2026-08-22-031838` | | | |
-| | said keying | 42 | 4.2 / 5.6 / 7.3 |
-| | said no keying | 7 | 6.5 / 6.6 / 6.8 |
+| | said keying | 49 | 4.3 / 5.9 / 7.3 |
+| | said no keying | 0 | nothing measured |
 | | had not decided | 7 | 4.4 / 4.8 / 5.5 |
 | `cw-2026-08-22-031905` | | | |
-| | said keying | 42 | 3.6 / 5.1 / 5.9 |
-| | said no keying | 4 | 2.9 / 3.1 / 3.2 |
-| | had not decided | 10 | 1.6 / 2.8 / 3.9 |
+| | said keying | 49 | 3.4 / 5.0 / 5.8 |
+| | said no keying | 0 | nothing measured |
+| | had not decided | 7 | 1.6 / 2.4 / 3.3 |
 | `cw-2026-08-22-031948` | | | |
-| | said keying | 46 | 4.8 / 8.1 / 9.3 |
-| | said no keying | 3 | 5.0 / 5.0 / 5.3 |
+| | said keying | 49 | 5.0 / 8.0 / 9.3 |
+| | said no keying | 0 | nothing measured |
 | | had not decided | 7 | 8.4 / 9.3 / 10.1 |
 | `cw-2026-08-22-032012` | | | |
 | | said keying | 49 | 4.8 / 5.5 / 7.1 |
 | | said no keying | 0 | nothing measured |
 | | had not decided | 7 | 4.7 / 5.6 / 6.0 |
 | `cw-2026-08-22-032050` | | | |
-| | said keying | 40 | 3.3 / 4.3 / 6.5 |
-| | said no keying | 9 | 3.8 / 3.9 / 4.2 |
+| | said keying | 49 | 3.3 / 4.2 / 6.5 |
+| | said no keying | 0 | nothing measured |
 | | had not decided | 7 | 1.6 / 1.8 / 2.2 |
 | `cw-2026-08-22-032113` | | | |
 | | said keying | 49 | 6.7 / 7.5 / 8.3 |
@@ -900,16 +900,16 @@ gate never gets to see a whole file.
 | | said no keying | 0 | nothing measured |
 | | had not decided | 1 | 0.0 / 0.0 / 0.0 |
 | `cw-2026-08-23-001831` | | | |
-| | said keying | 19 | 0.6 / 0.7 / 0.7 |
-| | said no keying | 16 | 0.5 / 0.5 / 0.6 |
+| | said keying | 18 | 0.6 / 0.7 / 0.7 |
+| | said no keying | 17 | 0.5 / 0.5 / 0.6 |
 | | had not decided | 21 | 1.0 / 1.4 / 2.0 |
 | `cw-2026-08-23-001952` | | | |
-| | said keying | 15 | 1.2 / 1.8 / 6.3 |
-| | said no keying | 26 | 0.3 / 0.9 / 1.2 |
-| | had not decided | 15 | 6.7 / 9.4 / 24.5 |
+| | said keying | 33 | 0.9 / 1.3 / 6.3 |
+| | said no keying | 11 | 0.3 / 0.4 / 1.0 |
+| | had not decided | 12 | 7.7 / 11.2 / 24.5 |
 | `cw-2026-08-23-002016` | | | |
-| | said keying | 4 | 0.7 / 0.7 / 0.8 |
-| | said no keying | 31 | 0.6 / 0.7 / 1.0 |
+| | said keying | 27 | 0.6 / 0.7 / 0.9 |
+| | said no keying | 8 | 0.7 / 0.8 / 0.9 |
 | | had not decided | 21 | 0.2 / 0.7 / 1.1 |
 | `cw-2026-08-24-012403` | | | |
 | | said keying | 0 | nothing measured |

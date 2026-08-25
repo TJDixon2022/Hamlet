@@ -30,7 +30,7 @@ rather than to the whole path.
 | whole file, fixed pitch | 11 | 0 | 0 | 11 | 9 % | ` CQ DE N0CALL K ` |
 | whole file, forced to 18 wpm | 11 | 0 | 1 | 12 | 8 % | ` CQ DE N0CALL K # ` |
 | streaming window, pitch nailed to 600 Hz | 11 | 0 | 1 | 12 | 8 % | ` CQ DE N0CALL K ■ ` |
-| the production path, tracker and all | 9 | 2 | 20 | 31 | 16 % | `QQ T DEDE E NNM■00B6E6AEARLILLL T KK  ■` |
+| the production path, tracker and all | 10 | 1 | 20 | 31 | 16 % | `QQ T DEDE E NNM■00DCECAEARLILLL T KK  ■` |
 
 **How hard the two-station fixture actually is**, at 40 Hz and equal
 level, measured through the decoder's own front end pointed at each
@@ -77,19 +77,19 @@ of nought.
 
 | offset | level | correct | wrong | invented | emitted | E-share | read |
 |---|---|---|---|---|---|---|---|
-| 40 Hz | +0 dB | 7 | 3 | 22 | 32 | 22 % | `TTET ET T DEDE EE NNM■00DD  E RLILLL T KK  ■` |
-| 40 Hz | -6 dB | 8 | 2 | 20 | 30 | 20 % | `QQ T DEDE E NN  ■  TE TDCECAEARLILLL T T   ■ ` |
+| 40 Hz | +0 dB | 7 | 2 | 26 | 35 | 23 % | `TTET ET T DEDE EE NNEUEURUP P  ■  ■  D DADLL T KK  ■` |
+| 40 Hz | -6 dB | 8 | 3 | 22 | 33 | 27 % | `QQ T DEDE E NNEEE■  TE TDCECAEARLILLL  ■ ■  ■` |
 | 40 Hz | -12 dB | 10 | 1 | 20 | 31 | 16 % | `QQ T DEDE E NNM■00DCECAEARLILLL T KK  ■` |
-| 80 Hz | +0 dB | 8 | 3 | 18 | 29 | 14 % | `QQ T DEDE E NN U URUPP  ■ ■ E LLALLL T KK  ■` |
-| 80 Hz | -6 dB | 8 | 2 | 26 | 36 | 33 % | `QQ T DEDE E NN EE EEE E TE TKCECAEARLILLL T T  ■ ■ ` |
-| 80 Hz | -12 dB | 9 | 2 | 20 | 31 | 16 % | `QQ T DEDE E NNM■00B6E6AEARLILLL T KK  ■` |
-| 120 Hz | +0 dB | 7 | 4 | 18 | 29 | 14 % | `QQ T DEDE E NN U URUPP  ■ ■ E LLILLL T KK  ■` |
-| 120 Hz | -6 dB | 9 | 1 | 22 | 32 | 19 % | `QQ T DEDE E NNM■0E0DCECAEARLILLL T T  ■ ■ ` |
-| 120 Hz | -12 dB | 9 | 2 | 20 | 31 | 16 % | `QQ T DEDE E NNM■00B6E6AEARLILLL T KK  ■` |
-| 200 Hz | +0 dB | 9 | 2 | 20 | 31 | 16 % | `QQ T DEDE E NNM■00B6E6AEARLILLL T KK  ■` |
-| 200 Hz | -6 dB | 8 | 3 | 16 | 27 | 15 % | `QQ T DEDE E NNM■00DD  E LLILLL T KK  ■` |
-| 200 Hz | -12 dB | 8 | 3 | 16 | 27 | 15 % | `QQ T DEDE E NNM■00DD  E LLILLL T KK  ■` |
-| 300 Hz | +0 dB | 9 | 2 | 20 | 31 | 16 % | `QQ T DEDE E NNM■00B6E6AEARLILLL T KK  ■` |
-| 300 Hz | -6 dB | 9 | 2 | 20 | 31 | 16 % | `QQ T DEDE E NNM■00B6E6AEARLILLL T KK  ■` |
-| 300 Hz | -12 dB | 8 | 3 | 16 | 27 | 15 % | `QQ T DEDE E NNM■00DD  E LLILLL T KK  ■` |
+| 80 Hz | +0 dB | 7 | 3 | 18 | 28 | 11 % | `QQ T DEDE E UU U URUP P  ■  ■  D DADLL T KK  ■` |
+| 80 Hz | -6 dB | 8 | 3 | 25 | 36 | 36 % | `QQ T DEDE E NNEEEEEE E TE TKCECAEALLALLL  ■ ■  ■` |
+| 80 Hz | -12 dB | 10 | 1 | 20 | 31 | 16 % | `QQ T DEDE E NNM■0■DCECAEARLILLL T KK  ■` |
+| 120 Hz | +0 dB | 8 | 3 | 23 | 34 | 21 % | `QQ T DEDE E NNEUEURUPP K CECAEALLALLL  ■ ■  ■` |
+| 120 Hz | -6 dB | 9 | 2 | 20 | 31 | 19 % | `QQ T DEDE E NNM■0E0DCECAEARLILLL  ■ ■  ■` |
+| 120 Hz | -12 dB | 10 | 1 | 20 | 31 | 16 % | `QQ T DEDE E NNM■0■DCECAEARLILLL T KK  ■` |
+| 200 Hz | +0 dB | 10 | 1 | 20 | 31 | 16 % | `QQ T DEDE E NNM■0■DCECAEARLILLL T KK  ■` |
+| 200 Hz | -6 dB | 9 | 2 | 19 | 30 | 17 % | `QQ T DEDE E NNM■00DCECAEARLILLL  ■ ■  ■` |
+| 200 Hz | -12 dB | 9 | 2 | 19 | 30 | 17 % | `QQ T DEDE E NNM■00DCECAEARLILLL  ■ ■  ■` |
+| 300 Hz | +0 dB | 10 | 1 | 20 | 31 | 16 % | `QQ T DEDE E NNM■00DCECAEARLILLL T KK  ■` |
+| 300 Hz | -6 dB | 10 | 1 | 20 | 31 | 16 % | `QQ T DEDE E NNM■00DCECAEARLILLL T KK  ■` |
+| 300 Hz | -12 dB | 9 | 2 | 19 | 30 | 17 % | `QQ T DEDE E NNM■00DCECAEARLILLL  ■ ■  ■` |
 
