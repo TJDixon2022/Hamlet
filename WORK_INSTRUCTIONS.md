@@ -18,97 +18,79 @@ If all four hold, say "Hamlet confirmed" and continue.
 
 ---
 
-# Work instruction 012 — ready for tonight: adjudicate, align the two paths, fix the witness, shift the band row
+# Work instruction 013 — bank the evening at last, then read it again at the note it was sent on
 
-**Tim operates tonight and air time for CW is rare. Six tasks; task 6 is the
-drop.** Everything here either protects what works or fixes what he will see at
-the radio.
+**Four tasks; task 4 is the drop.**
 
 ## Why this unit exists
 
-**The unit's number: seven captures of known text, adjudicated today.**
+**The unit's number: 4 becomes 22.**
 
-Tim ruled this morning — *"I think we can do them all. Why not? … Night's
-coming. I wanna be prepared."* — approving the outstanding asks put to him,
-including the W1AW adjudication. **The seven W1AW captures are adjudicated per
-`W1AW-ARLP034-PROPOSED-TRUTH.md` as it stands in the tree.** That multiplies
-the project's answer keys from three callsigns to three callsigns plus seven
-lines of known machine-keyed text with numbers and punctuation, and it
-unblocks two things by name: the suite's **first regression tests on
-successes** (every existing ratchet guards a failure getting less bad — unit
-1.11.8's own finding), and the **joint cutter**, whose options table named
-this adjudication as its blocking dependency.
+Unit 1.11.9 measured, by accident, the largest single lever in the tree: started
+at each station's own note instead of the operator's 600 Hz, `032113` reads 22
+characters of its adjudicated line instead of 4, `032012` 43 instead of 22,
+`032050` 24 instead of 17. Hamlet cannot know the note in advance — **but it
+knows it a few seconds in, once the tracker settles. Nothing re-reads the audio
+it already holds at the pitch it now knows.** The decoder lives forever with
+whatever its first seconds were mixed at, and its first seconds are mixed at a
+guess.
 
-The rest of the batch: the keying witness is wrong on 13 of 23 recordings and
-its repair is measured and withheld pending a ruling Tim has now given with a
-condition; **two drive paths decode the same audio differently** — different
-counts on nine captures, and on `032113` a different tracked note entirely,
-650 Hz against 500 — which sits under every floor in the suite; and the band
-display is cut off at the operator's own window size, which he will be
-looking at tonight.
+The corpus stands at **153 of 384 adjudicated characters, 40 %**, against a
+target of eighty. The re-read attacks exactly the deficit the measurement
+found.
+
+**And the thirteen captures of 2026-08-25 are in this zip** — absent from four
+consecutive units, delivered at last: the 59-characters-1-unsure reference, the
+capture where Hamlet first beat the independent chain, and the negative control
+that tells a real improvement from a trade. Task 1 banks them before anything
+else is touched, along with `ANALYSIS-2026-08-25-session.md`, which unit 1.11.8
+implemented from quotation because the file itself was never in the tree.
 
 ## Verify this instruction against the tree
 
 **Nothing here describes the tree.** Check every claim and report mismatches,
 including where the work succeeded anyway.
 
-**Known state after unit 1.11.8: 29 failing of 1661 in the engine; 484 of 484
-in the app.** Three engine failures are accepted cost (`clean-12wpm`,
-`clean-18wpm`, `prosigns-18wpm` — exact digital silence, HM-OPEN-018); the
-flaky rig test flakes. **`ARecordingWithNoStationInItSaysNothing(014854)` is
-green and must stay green.**
+**Known state after unit 1.11.9: 30 failing of 1674 in the engine** (three
+accepted-cost silence fixtures, two timing-flaky rig tests among them), **483 of
+483 in the app. Twelve success tests guard the adjudicated readings and every
+one is green. `ARecordingWithNoStationInItSaysNothing(014854)` is green and
+must stay green.**
 
-**The thirteen captures of 2026-08-25 may or may not be in the tree.** Tim was
-asked again to copy them to `tests/fixtures/cw/captured/unadjudicated/`. Task 1
-checks; every dependent step names its fallback.
+**A new invariant stands from unit 1.11.9's task 4 and must survive this unit:
+every capture reads identically at 240, 480, 960, 1920 and 4800 samples a
+chunk, and identically through `Listen` and `Process`, in text and tracked
+pitch.** The re-read must preserve chunk-size invariance — a re-read that fires
+at different moments for different chunk sizes reintroduces the two-decoders
+fault that unit just closed.
 
-**`DECISIONS.md` still has no record for HM-DEC-096–133, 136, 141 or 150.**
+**`DECISIONS.md` has no record for HM-DEC-096–133, 136, 141 or 150, nor for
+Tim's three rulings of 2026-08-25** — the W1AW adjudication among them, on which
+the twelve success tests rest.
 
 **`CLAUDE_CODE.md` says four report sections; its version line reads 1.3.**
 Read the file's own section count.
 
 ## Rulings in force
 
-**Tim's adjudication, 2026-08-25:** the seven W1AW captures carry the text in
-`W1AW-ARLP034-PROPOSED-TRUTH.md`. Only the quoted words are adjudicated; `…`
-spans are not, and `—` marks a word cut by a capture edge. **The file's status
-header changes from PROPOSAL to ADJUDICATED, citing this instruction and the
-date. Section 4 asks Tim to enter it in the decision log with an id** — the
-session does not mint ids.
+**Tim's adjudication of the seven W1AW captures stands** as written in the
+truth file, header ADJUDICATED. Only quoted words are adjudicated.
 
-**Tim's ruling on the band display, 2026-08-25, quoted:** *"the band's display
-is cut off. It needs to be shifted down."* Task 2 implements it. **The
-narrowest reading: the band row must be fully visible at the application's own
-default and the operator's working window sizes; Tim's stated remedy is moving
-the row down.** HM-DEC-141's wavelength-proportioned card widths are meaning,
-not size, and are untouched.
-
-**Tim's ruling on the keying witness, with the condition this instruction
-attaches on his behalf and flags for veto:** the verdict moves onto the element
-median — the repair measured at 17 right of 23 against 10 — **only alongside an
-evidence-quantity requirement that keeps the silence property on the live
-path.** HM-DEC-120 is the one thing this project has never traded, and "do them
-all" is not read as trading it. If no requirement holds both, **the verdict
-stays where it is and the measured overlap is the report's finding.**
-
-**HM-DEC-120.** Nothing is emitted on audio holding no signal — and the meter
-does not announce Keying on it either. Both empty captures checked and stated
-at every task touching the signal path or the meter. `Gate` stays 1.40;
-`CharacterMargin` stays 1.
-
-**HM-DEC-126's own reopening condition is met** — it closed HM-OPEN-026 as
-"unobtainable … reopens if the file appears" and `003758` has been in the tree
-since 2026-08-20. Task 1 acts on the part that needs no new ruling: the
-corroborated readings named in existing rulings become success tests.
+**HM-DEC-120.** Nothing is emitted on audio holding no signal, and the meter
+does not claim Keying on it — **zero empty windows, absolute**, held by unit
+1.11.9 and re-verified here at every task touching the signal path. `Gate`
+stays 1.40; `CharacterMargin` stays 1; the meter's element-median-plus-swing
+verdict stays as shipped.
 
 **Rejected already, do not revisit:** the clock's span-restricted diet and the
-fist-quality band (both built, measured, reverted in unit 1.11.8 — the
-measurements stand in that report); locking to `CwPitch`; widening the guard;
-tuning any threshold to green a test; gap-cluster tuning; treating duty as a
-station test (a bulletin runs 47–70 %).
+fist-quality band (built, measured, reverted — 1.11.8); the validity term at
+any weight (built, measured flat-until-harmful — 1.11.9; its untried half is
+task 4, not a revisit); locking to `CwPitch`; widening the guard; tuning any
+threshold to green a test; treating duty as a station test.
 
-**PROPOSAL, not ruled:** everything else on the panel — the "Hold this pitch"
-button, the sweep's visibility, lock-disagreement display. **Untouched.**
+**PROPOSAL, not ruled:** everything on the panel. **Untouched — including any
+indication that a re-read occurred.** If the re-read wants to say so on screen,
+that is a display ask for section 4, not a change.
 
 ## Status cadence
 
@@ -118,94 +100,89 @@ is moving. Same every ten minutes while a task runs.
 
 ## The tasks
 
-### Task 1 — harden the ground truth
+### Task 1 — bank the thirteen, and the two measurements waiting on them
 
-1. **Flip the W1AW truth file to ADJUDICATED** per the ruling above.
-2. **Check for the thirteen 2026-08-25 captures.** Present: commit, bank with
-   floors, name `013520`, `013303`, `012823` as reference, beat-the-chain, and
-   negative control. Absent: section 4 leads with it, fourth consecutive time.
-3. **Build the suite's first success tests.** For each adjudicated reading —
-   `VA3VRR` (HM-DEC-145), `N4L` (HM-DEC-144), `AA4MP/4 QNIK` (HM-DEC-126), the
-   seven W1AW lines — a test asserting the adjudicated text is present in the
-   decode, character for character, prosigns and numbers included. These are
-   the first tests in the tree that fail when a *repair breaks a success*.
-   Punctuation the decoder cannot yet produce is asserted as far as it reads
-   today and the shortfall reported, not papered.
+1. Commit the thirteen captures with sidecars from
+   `tests/fixtures/cw/captured/unadjudicated/`, and
+   `ANALYSIS-2026-08-25-session.md` to the repository root beside its siblings;
+   the manifest and cases file beside the captures.
+2. Floors for all thirteen. **`013520`** (59 characters, 1 unsure, 157
+   elements) is the reference; **`013303`** the beat-the-chain case;
+   **`012823`** the negative control — **the harness must say so if a change
+   improves `013520` while regressing `012823`.**
+3. **Re-run the two reverted fixes' target measurements, now that their
+   evidence exists**: does the shipped decoder still hypothesise 32 WPM on the
+   22.5 WPM `012823` and 10 on the 17.9 `021825`? Does the shipped pitch
+   chooser still miss `012823` by 50 Hz? **Measure only, change nothing** —
+   these numbers are the starting line for any future attempt, recorded so the
+   next session does not begin from quotation.
 
 Build and run; record the green baseline.
 
-### Task 2 — the band display *(Tim's ruling above)*
+### Task 2 — re-read on settle
 
-Implement the shift. Verify by hit-testing every band card at the default
-width, the operator's working width, and one narrower — all seven cards answer
-their own centre, and nothing newly occludes the readout. **HM-OPEN-060 closes
-if the narrow-window occlusion is gone; say either way.**
+When the tracker settles on a **measured** pitch that differs from the pitch
+the window's early audio was mixed at by more than a threshold the task
+derives, the decoder re-mixes and re-decodes the audio it still holds at the
+settled pitch **before those characters settle and emit.**
 
-### Task 3 — the witness's verdict, under the condition
+Design constraints, each with its reason:
 
-Move the verdict onto the element median **with an evidence-quantity
-requirement**: a live window asserts Keying only when it holds enough
-element-length evidence for the median to mean something — the un-attempted
-shape unit 1.11.8 named (window-length or run-count floor, to be measured, not
-guessed).
+- **Only backward, only within the buffer the stream already holds.** No new
+  audio retention beyond what exists; the feature re-reads what it has, it does
+  not grow memory unboundedly.
+- **Only on a measured pitch** (`HasMeasuredPitch`). A re-read at a bank centre
+  is decoding at a number nobody keyed at, which is the fault unit 1.11.6
+  removed.
+- **Chunk-size invariant.** The settle decision and the re-read boundary are
+  functions of hops, not of arriving chunk shape. The five-chunk-size identity
+  is asserted after, on all thirty-six captures.
+- **Settled text never changes.** Characters already emitted are never
+  retracted — §0.0: the display does not un-say things. The re-read exists to
+  make the *first* emission right, which is why it must complete before the
+  settle delay expires. If the delay is too short for a re-read on some
+  captures, report which and by how much rather than silently extending the
+  delay — the delay is a ruled-adjacent constant.
+- **Empty captures never re-read** — no pitch settles on them; assert zero
+  re-reads and unchanged silence on `014854` and `014935`.
 
-- Sweep the requirement against: the 17-of-23 gain (how much survives) and the
-  live-path silence on `014854`/`014935` sliced into six-second windows (must
-  be **absolute** — zero windows asserting Keying).
-- **If no requirement keeps both, the verdict stays on the old figure**, the
-  overlap is reported with numbers, and that is the task's answer.
+**Acceptance, from the measurement that commissioned this:** adjudicated
+characters rise from 153 of 384, with `032113`, `032012` and `032050`
+individually improved (their whole-file-at-station-note readings were 22, 43
+and 24 — the re-read need not reach them but must move toward them, reported
+per capture); `031905` and `032129` hold their floors; every success test
+green; every floor intact; the 2026-08-25 thirteen at or above their new
+floors; both flaky rig tests excluded from judgement either way.
 
-### Task 4 — one decoder, not two
+### Task 3 — the six recordings the meter still calls empty
 
-Diagnose why `Process` (hop by hop) and `Listen` (buffered) disagree — nine
-captures' counts, and `032113` tracking 650 Hz against 500. Find the divergence
-point with file and line; fix it if the fix is contained; **if the fix is
-larger than this task, report the mechanism and stop** — a named mechanism
-beats a rushed change. Acceptance when fixed: both paths return identical
-text and identical tracked pitch on all twenty-three captures, floors intact,
-success tests green.
+All six now fail on the **keying score**, not the element median. Diagnose what
+the score measures on each and why a recording holding a station scores below
+the bar, with file and line. **Fix only if the fix is contained and costs zero
+empty Keying windows — absolute, live path, window by window.** Otherwise
+report the mechanism and the overlap, which is the answer.
 
-### Task 5 — the joint cutter, now that it has a judge
+### Task 4 — the cutter's untried half *(the drop candidate)*
 
-Option A from unit 1.11.8's table, buildable now the W1AW seven are
-adjudicated: fold **character validity** into the path score over a short
-window against the fitted clock — a segmentation spelling letters the alphabet
-knows outscores one that does not.
+Unit 1.11.9 named it: validity scored **against the fitted clock as a second
+term**, not the length penalty alone — and measured against `N4L`, whose
+failure is a cut inside a character. Build it behind the same discipline: swept
+weight, success tests as the judge, **ship nothing if the largest safe weight
+buys nothing**, and say so with the table.
 
-**The two named threats are the acceptance tests, not afterthoughts:**
-
-- **Prosigns and callsigns must survive.** `AA4MP/4 QNIK`, `<BT>`, `/`, and
-  every digit in the W1AW lines — the validity weight is chosen at the largest
-  value that leaves all success tests green, and if that value is nought,
-  **ship nothing and report that the term cannot be safely weighted yet.**
-- **Cut errors measured before and after** on the adjudicated corpus: the
-  bulletin's known spacing is the judge. Improvement is claimed only against
-  adjudicated text.
-- §0.0's failure mode is named in code: the term biases *segmentation*, never
-  substitutes a plausible letter for a measured one — `Lookup` misses still
-  print `#`/`■`, never a nearest neighbour.
-
-### Task 6 — floors for the thirteen *(the drop candidate)*
-
-If task 1 found the 2026-08-25 captures: full harness treatment — floors,
-reference cases, and the two reverted fixes' target measurements re-run
-against them (the clock's 32-on-22.5 and 10-on-17.9, the fist band's `012823`)
-so the next attempt at either starts from evidence. **If the captures are
-absent, this task is void and says so. Dropped whole either way if time runs
-out.**
+**Dropped whole if time runs out, and the report says so.**
 
 ## Parked — do not touch, do not raise
 
-- **The clock's diet and the fist band** — reverted with measurements; next
-  attempt waits for the thirteen.
-- **`competing`** — diagnosed (the survey almost never holds two candidates);
-  its fix touches the unruled 125 Hz ask.
-- **The panel beyond task 2.** **The guard, the margin, the integrator width,
-  `001520`'s quadrillions, the reference/port integrator difference,
-  `014113`/`014308`'s smear, the six-hertz window disagreement, the
-  unmeasured-pitch-costs-`N4L` ruling, HM-OPEN-057, HM-OPEN-059,
-  `CHANGELOG.md` at 1.9.0, six survey candidates admitted below the
-  neighbouring band.**
+- **The panel** — including re-read indication (section 4 ask if wanted) and
+  the "Hold this pitch" button.
+- **The starting-pitch question as a *setting*** — ruled out by its own
+  mechanism; the re-read is the actionable form.
+- **`competing`**, the 125 Hz ask, the integrator width,
+  `014113`/`014308`'s smear, `001520`'s quadrillions, the reference/port
+  integrator difference, the six-hertz window disagreement, the
+  unmeasured-pitch-costs-`N4L` ruling, the short-character bias, the Avalonia
+  hit-test geometry offset, `CHANGELOG.md`, HM-OPEN-057, HM-OPEN-059.
 
 A parked item that blocks a task is raised once, and says it was parked.
 
@@ -213,13 +190,14 @@ A parked item that blocks a task is raised once, and says it was parked.
 
 Standing prohibitions are `CLAUDE.md`'s and are not retyped. Unit-specific:
 
-- **Do not let any success test written in task 1 go red in tasks 3–5.** They
-  exist to make that failure loud.
-- **Do not trade the silence property in any form** — emission or meter
-  verdict. Absolute, both empty captures, live path included.
-- **Do not let the validity term substitute letters.** Segmentation only.
-- **Do not touch the panel beyond task 2's ruling.**
-- **Do not lower a floor.**
+- **Do not retract settled text.** The re-read improves first emission; it
+  never edits history.
+- **Do not break chunk-size invariance.** Asserted, all captures, all five
+  sizes.
+- **Do not let any success test or floor go red**, and do not lower a floor.
+- **Do not trade the silence property in any form** — emission, meter, or
+  re-read.
+- **Do not touch the panel.**
 
 ## Committing, pushing, reporting
 
@@ -229,43 +207,42 @@ push is reported as refused, with the reason.
 Report per `CLAUDE_CODE.md` §8 — read the file's own section count — to
 `output.md` at the repository root, overwritten and printed.
 
-**Section 3 leads with the success tests: how many adjudicated readings are now
-guarded, and whether every one survived tasks 3–5 untouched.** Section 2 says
-plainly what Tim will see at the radio tonight — the band row where he can
-reach it, the meter's verdict where it is honest, and what the cutter does to
-spacing on a real fist.
+**Section 3 leads with the adjudicated-character count, before and after the
+re-read — 153 of 384 is the before — and the per-capture movement on `032113`,
+`032012`, `032050`.** Section 2 says plainly what Tim will see at the radio:
+the first seconds of a station no longer wearing the wrong pitch for the rest
+of the contact.
 
 ### Asks still outstanding
 
-Carried forward verbatim per HM-DEC-139 and HM-DEC-140. **Thirteen inbound;
-the adjudication and the witness verdict are acted on this unit under Tim's
-rulings above; the oldest of the rest is open since 2026-08-14.**
+Carried forward verbatim per HM-DEC-139 and HM-DEC-140. **Thirteen inbound.
+The oldest is open since 2026-08-14.**
 
 1. **The sweep's `invented` column counts substitutions, not invented
    characters.**
 2. **Whether the refill guard should apply to the first fill at all.**
 3. **`ANNUNCIATOR.md` renamed `PHASE` to `TASK` while HM-DEC-150 makes
    `PHASE` match the version's minor.**
-4. **`DECISIONS.md` has no record for HM-DEC-096–133, 136, 141 or 150** — and
-   section 4 now also asks Tim to enter today's two rulings and the
-   adjudication with ids.
+4. **`DECISIONS.md` has no record for HM-DEC-096–133, 136, 141 or 150 — nor
+   for Tim's three rulings of 2026-08-25, one of which twelve tests rest on.**
 5. **The tone tracker** — narrowed by the hold, not closed.
 6. **The integrator width** — bears on `014113`/`014308`.
 7. **The guard's gap is two to one**, calibrated on two empty captures.
 8. **A boxcar's nulls made two of five swept offsets pathological best
    cases.**
-9. **Two stations closer than 125 Hz are not named** — and `competing`'s
-   diagnosis shows the 125 Hz floor is not what blocks it.
-10. **The keying witness** — task 3 acts under the conditioned ruling.
+9. **Two stations closer than 125 Hz are not named.**
+10. **The keying meter's remaining six** — task 3 acts on it.
 11. **HM-OPEN-057** (2026-08-22) and **HM-OPEN-007** (2026-08-14).
 
-Still open: **the lock's mixed help with nothing telling the operator which**;
-**the "Hold this pitch" button**; **three fixtures at accepted cost**;
-**`001520`'s quadrillions**; **the reference/port integrator difference**;
-**`CLAUDE_CODE.md`'s version line**; **an unmeasured pitch costs `N4L`**;
-**`014113`/`014308`'s second mechanism**; **the six-hertz window
-disagreement**; **HM-OPEN-060** (task 2 may close it); **the short-character
-bias needs a per-character expectation**; **the two drive paths** (task 4 acts
-on it); **HM-DEC-126's reopening** (task 1 acts on the ruling-free part).
+Still open: **the lock's mixed help**; **the "Hold this pitch" button**;
+**three fixtures at accepted cost**; **`001520`'s quadrillions**; **the
+reference/port integrator difference**; **`CLAUDE_CODE.md`'s version line**;
+**an unmeasured pitch costs `N4L`**; **`014113`/`014308`'s second mechanism**;
+**the six-hertz window disagreement**; **the short-character bias**; **the
+Avalonia geometry offset**; **the joint cutter's flat-until-harmful validity
+term** (task 4 tries its untried half); **a second rig test flakes**.
+
+Closed by delivery: **the thirteen captures of 2026-08-25 are in this zip** —
+task 1 closes the ask that led four units.
 
 **If you finish every task, stop and report. Do not start the next unit.**

@@ -1,4 +1,4 @@
-# Work instruction 012 — ready for tonight
+# Work instruction 013 — bank the evening, then read it again at its own note
 
 ## 1. What Claude did
 
@@ -6,346 +6,320 @@ Claude Code, on the development computer, in `C:\Source\HamLet`. The prompt
 claimed `PROJECT: Hamlet`; the tree confirmed it — `SHACK_FACTS.md` and
 `src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs` exist, neither
 `CoreHMI.sln` nor `MURC.sln` does, `CLAUDE.md`'s header says Hamlet and the
-solution is `Hamlet.sln`. Branch `main` throughout, six commits, all pushed,
-none refused. Version 1.11.8 to 1.11.9 per HM-DEC-150.
+solution is `Hamlet.sln`. Branch `main` throughout, three commits, all pushed,
+none refused. Version 1.11.9 to 1.11.10 per HM-DEC-150.
 
 **Nothing here is evidence about the radio.** No rig was connected; every number
-comes from recordings already in the tree.
+comes from recordings in the tree.
 
 **No decision was recorded under §12.1.** Everything needing a ruling is in
 section 4.
 
 ### Where the instruction and the tree disagree
 
-- **The thirteen captures of 2026-08-25 are still absent** — nothing matching
-  that date exists under `tests/`. Fourth consecutive unit. Task 6 is void.
-- **The engine baseline was 30 failing of 1674, not 29 of 1661.** The extra
-  failure is `RigDisconnectTests.TheStateMonitorDoesNotHoldUpADisconnect`, which
-  passes alone: **a second timing-flaky rig test**, alongside the known one.
-- **The app suite was 483 of 483 green**, as stated.
+- **The engine baseline was 29 failing of 1674, not 30.** Both flaky rig tests
+  passed on the baseline run.
+- **The delivery held one file the instruction does not mention**:
+  `docs/evidence/band-row-clipped-2026-08-25-1753utc.png`, the screenshot unit
+  1.11.9's band-row ruling rests on. Banked with the rest.
+- **`013520`'s counts are not the manifest's.** The manifest says 59 characters,
+  1 unsure, 157 elements; replayed through the harness it is **60 characters, 5
+  unsure, 153 elements**. The manifest's numbers were taken live at the radio's
+  own pitch and the sound card's own chunking; these are a fixture replayed from
+  600 Hz. Both are true of different instruments and only one can be a floor.
+- **`012748`'s "Bug A" reads differently too**: the manifest says 2 characters
+  from 113 marks; the replay gives 4 characters from 16 elements seen.
+- **Task 3's "six" is now sixteen** — see below. The six was counted before the
+  thirteen were banked.
 - `CLAUDE_CODE.md` §8 says four sections; its version line still reads 1.3.
-- `DECISIONS.md` still has no record for HM-DEC-096–133, 136, 141 or 150.
+- `DECISIONS.md` still has no record for HM-DEC-096–133, 136, 141 or 150, nor
+  for Tim's three rulings of 2026-08-25.
 
-### Task 1 — the ground truth, hardened
+### Task 1 — banked, and the two waiting measurements taken
 
-The W1AW truth file's header now reads ADJUDICATED, citing this instruction and
-the date. **The filename and the folder were left alone**: renaming would break
-the references in unit 1.11.8's committed report and in the commit messages that
-carry it, which is a worse record than a stale name. The file says so on its face.
+Thirteen captures with sidecars, the manifest, the evening's case list,
+`ANALYSIS-2026-08-25-session.md` itself — implemented from quotation by unit
+1.11.8 because the document was never in the tree — and the band-row screenshot.
+Floors for all thirteen, measured through the harness rather than copied.
 
-**Twelve success tests, the first in this repository that fail when a repair
-breaks a success.** Every other ratchet here guards a failure getting less bad,
-so nothing in the suite could tell a repair from a coincidence — HM-OPEN-026
-named that gap and had no candidate to fill it.
+**The thirteen pass every sweeping test in the suite unchanged**: chunk-size
+invariance across five buffer sizes and both entry points, no impossible
+key-down length, no window of an empty band claiming keying. The failure set is
+identical to unit 1.11.9's, 29 either side of 115 new theory rows.
 
-**What they assert is a run, not a line, because not one of the seven bulletin
-lines is read whole.** Each carries the longest unbroken run of its own
-adjudicated text the decoder gives back, and the shortfall is printed rather
-than papered: **153 of 384 adjudicated characters, 40 %**.
+**The two reverted fixes' targets, re-measured now that their evidence exists.**
+Both faults the analysis named have already been fixed by other work, and a
+third is worse than it was described:
 
-**The starting pitch matters more than anything else measured, and the anchors
-are pinned to what the operator's radio actually does.** Every one of these
-captures records `CwPitch 600 Hz`, and `MainWindowViewModel` hands the decoder
-`_settings.CwPitchHz`. Started instead at each station's own recorded note,
-`032113` reads 22 characters of its line rather than 4, `032012` 43 rather than
-22, `032050` 24 rather than 17 — while `031905` falls from 12 to 7 and `032129`
-from 10 to 7. **`ANALYSIS-cw-emit-decision-2026-08-24.md` is written at the
-station's note and therefore reads better than the operator does**, which is
-worth knowing before quoting it.
+| claim | today |
+|---|---|
+| 10 WPM hypothesised on the 17.9 WPM `021825` | **18 WPM.** Gone. The tone settles at 400.0 Hz against a true 394.0 — six hertz, well inside a bin |
+| 32 WPM hypothesised on the 22.5 WPM `012823` | **Withheld.** The guard reports no speed at all rather than a wrong one. Gone in its stated form |
+| the pitch chooser misses `012823` by 50 Hz | **Real, and worse than described.** The tracker holds the correct 500 Hz for the first half of the recording and then moves to 450 and stays there, ending 49.8 Hz below the true 499.8. It finds the station and abandons it |
 
-### Task 2 — the band display
+That last row is the live one, and it is HM-DEC-127's territory rather than a
+selection fault: a confirmed station is not supposed to be abandoned.
 
-The band row has a row of its own beneath the strip, so it has the whole window
-width and nothing to collide with. It is still outside the canvas and still
-cannot be closed or moved; the wavelength-proportioned widths are untouched.
+### Task 2 — built, measured, reverted
 
-**Measured at four widths rather than the one the test was pinned to.** Before:
-every card reachable at 1400 and 1200, `15 m` and `10 m` unreachable at 1000,
-three cards unreachable at 820. After: all seven at all four. **HM-OPEN-060 is
-closed**, and the closure was verified by reverting the layout and watching the
-same test name the same cards again.
+`AudioTap` already keeps thirty seconds of raw audio, so the re-read needed no
+new retention at all. The stream gained a record of the pitch each held hop was
+demodulated at; on a **confirmed** measured pitch differing from any held hop's
+by more than one coarse survey bin, and only while nothing had settled, the
+stream rewound its own clock and re-mixed everything it held.
 
-**The hit test had to be rebuilt before it could say anything trustworthy.** The
-headless renderer draws these cards about thirteen pixels above where every
-geometry API reports them and about two thirds as tall — `TranslatePoint`,
-`TransformedBounds` and a hand-summed layout chain all agree with each other and
-all disagree with the hit test. A probe at a computed centre therefore lands past
-the bottom of the card and reports an occlusion that is not there. It now walks
-down the card's own rectangle and takes the first point that reaches anything,
-which is immune to the offset and still answers the question exactly.
+**Two false starts are worth recording because each looked right.** Comparing
+the measured pitch against the *newest* hop's mix pitch makes the re-read never
+fire on any capture in the tree — the tracker's bank has usually already walked
+there, while the front of the same window is still at 600. And firing on the
+first measured pitch rather than a confirmed one costs `031905` and `032129`,
+because the first answer is often about to be corrected.
 
-### Task 3 — the witness's verdict, under Tim's condition
+**It works, and it is larger than expected.** The adjudicated corpus moves from
+**158 characters of 384 to 167**, and `cw-2026-08-18-003758` gives back
+`AA4MP/4 QNIK` **whole** — twelve of twelve, the first time this fixture has
+ever produced HM-DEC-126's callsign complete.
 
-The verdict moves onto the element median **and the swing keeps it honest**. The
-requirement was already in the tree.
+**It is blocked by four floors, and every one falls for the same reason: the
+decoder emits fewer, better characters.**
 
-| | meter right, of 23 | empty six-second windows claiming Keying |
-|---|---|---|
-| the old all-runs median | 10 | 0 |
-| element median alone | 17 | **11** |
-| **element median + swing ≥ 20** | **16** | **0** |
-
-**A count of elements was the obvious guard and it is measured backwards.** In
-six seconds an empty band gives 26 to 40 element-length runs and a real station
-gives 11 to 38, median 26 — the empty windows sit at the *top* of the range, so
-any count that silences them silences all nineteen real captures with it.
-
-**The swing separates with room**: those eleven empty windows run 14.7 to 17.7 dB
-while the real windows reach 218 with a tenth percentile of 18.9.
-`ConfidentSwingDb` is already 20, already calibrated against this same question
-on two independent sets of evidence, and until now decided only which speed
-estimate the decoder started from. Eighteen would keep one more capture and
-eighteen is the empty windows' own maximum rounded up, which is fitting a
-constant to a fixture.
-
-**What it costs, named**: `cw-2026-08-23-001831`, a pileup with nothing
-adjudicated in it, swinging 19.3 against a bar of 20. **What it holds**: all four
-recordings that emit nothing give **nought** Keying windows out of twenty-five
-each, and a test drives the meter a window at a time to keep that at nought
-rather than at few.
-
-### Task 4 — one decoder, not two
-
-**The divergence is not two code paths. `Listen` calls `Process`; the only
-difference is chunk size.** `Process` set the mixer's pitch once per chunk from
-the tracker's state *after* the tracker had consumed that whole chunk, then mixed
-the whole chunk at that one pitch — so with a chunk four hops long the first
-three hops were mixed at a pitch the tracker only reached at the end of the
-fourth.
-
-`CwDecoder.cs`, the line that read `_tracker.Process(chunk.Samples, …)` followed
-by `_probabilistic.Process(chunk.Samples)`. The application feeds 960 samples and
-the floors harness feeds 240, so **the suite and the operator were reading two
-different decoders**. Measured on `cw-2026-08-22-032113` before the repair: fed
-240 it tracks 650 Hz, fed 960 it tracks 500, and the text moves with it.
-
-The fix was contained — the decoder walks the audio a hop at a time whatever size
-it arrives in. **Acceptance met in full**: every capture in the tree now reads
-identically at 240, 480, 960, 1920 and 4800 samples a chunk, and identically
-through `Listen` and `Process`, in both text and tracked pitch. The 240-sample
-answer is unchanged, so nothing measured through the harness moved. Floors
-intact, success tests green.
-
-### Task 5 — the joint cutter: built, measured, not shipped
-
-Option A built as specified: character validity folded into the path score, as a
-bonus when a candidate cut completes a letter the alphabet knows, in the length
-penalty's own dimensionless units — the only scale here that means the same thing
-on two recordings. It biases segmentation only; a character the alphabet does not
-know still prints as the placeholder.
-
-Swept against the success tests and the floors:
-
-| weight | success tests + floors | adjudicated characters read | better | worse |
+| capture | characters | elements | unsure | adjudicated run |
 |---|---|---|---|---|
-| 0 | 36 of 36 | 158 of 384 | — | — |
-| **0.5** | **36 of 36** | **158** | **none** | none |
-| 1.0 | 34 of 36 | 158 | none | none |
-| 2.0 | 32 of 36 | 156 | the ARRL bulletin | **`VA3VRR`** |
-| 4.0 | 25 of 36 | — | — | — |
+| `cw-2026-08-18-003758` | 63 → **58** | 121 → **124** | 10 → 15 | 9 → **12**, the callsign whole |
+| `cw-2026-08-18-004507` | 50 → **49** | 118 → 118 | 1 → 1 | 22 → **28** |
+| `unadjudicated/cw-2026-08-22-031948` | 34 → **31** | 114 → **119** | 3 → **0** | 32 → 32 |
+| `unadjudicated/cw-2026-08-25-012748` | 4 → **2** | 16 → **4** | 2 → 0 | — |
 
-**The largest safe weight is 0.5 and at 0.5 it buys nothing.** It changes seven
-of twelve transcripts and improves not one adjudicated reading. At 2.0, the only
-weight where it measurably helps anything, the single gain is paid for with an
-adjudicated callsign — which is the threat the instruction named as an acceptance
-test rather than an afterthought.
+Three of the four **gain elements while losing characters**, and `031948` drops
+its unsure count from three to nought. Only `012748` genuinely regresses.
 
-So: nothing shipped, and nothing left behind. The bit-coded alphabet lookup the
-term needed was reverted with it rather than left as machinery nothing uses.
+**And the three captures this unit was commissioned around did not move at all.**
+`032113`, `032012` and `032050` read 4, 22 and 17 characters of their adjudicated
+lines before and after. Their first measured pitch lands at 21, 12 and 24 seconds
+with 48, 14 and 50 characters already settled, so the re-read never fires on
+them. The 4-becomes-22 measurement came from decoding a **whole file** at the
+station's note; the re-read can only reach audio still held when the pitch is
+first measured, and on those three that moment is far too late.
 
-### Task 6 — void
+Reverted whole, because the instruction forbids lowering a floor without
+qualification. The ruling ask is section 4's first item.
 
-The thirteen captures of 2026-08-25 are not in the tree, so there was nothing to
-floor. Stated rather than silently skipped.
+### Task 3 — the meter's remaining failures, diagnosed
+
+**Sixteen recordings hold a station and read no keying, not six**, and they fail
+two different ways — neither of which is the element median:
+
+- **Eleven fail on the keying score.** `Score = ElementShare × ElementPurity`
+  (`KeyingEnvelope.cs`, the `Score` property; the purity is computed in
+  `Measure` as `elements.Count / runs.Count`). **The denominator is every
+  threshold crossing regardless of length.** `cw-2026-08-17-013622` produces
+  1171 runs and scores a purity of 0.107; `cw-2026-08-25-021825` produces 1553
+  and 0.099 — while their element *share* is 0.21 and 0.24, meaning the real
+  elements are all present and simply outvoted in the count. **Purity measures
+  how tidy the gate is, not how much Morse is there.**
+- **Five fail on the swing** that unit 1.11.9 added as the guard keeping the
+  silence property, with a score already above the bar: `001831` 19.3,
+  `013303` 18.5, `013150` 18.1, `013010` 18.0, `012748` 16.1.
+
+**And the decisive finding: on the full corpus neither quantity separates at
+all.** The four recordings holding nothing reach a score of 0.0594 and a swing
+of 17.7. Six recordings holding a station score below 0.0594, and
+`cw-2026-08-25-021825` — a real station with an eight-second call in it — swings
+**12.6 dB, below every empty capture in the tree**. Unit 1.11.9's swing bar of 20
+was calibrated on twenty-three captures and now sits inside the overlap.
+
+No contained fix exists that costs zero empty Keying windows. A time-weighted
+purity — elements' *duration* over all key-down duration rather than counts —
+was measured and moves one capture of thirty-two. **The overlap is the answer**,
+as the instruction allowed, and nothing was changed.
+
+### Task 4 — built, measured, not shipped
+
+Validity scored against the fitted clock as a second term: the bonus for
+completing a letter the alphabet knows, multiplied by `exp(-off²/2)` on that
+gap's own normalised length error, so it pays only where the letter and the clock
+agree. It biases segmentation only; a pattern the alphabet does not know still
+prints as the placeholder.
+
+| weight | adjudicated characters | success tests + floors |
+|---|---|---|
+| 0 | 158 | **49 of 49** |
+| 1.0 | 158 | 45 of 49 |
+| 2.0 | 158 | 42 of 49 |
+| 4.0 | 158 | 37 of 49 |
+
+**The count never moves at any weight while the failures climb.** The largest
+safe weight is nought, which is the instruction's own exit condition. This form
+is in fact worse than unit 1.11.9's flat one, which at least moved the count at
+weight 2.0 — by buying four characters of the bulletin with six of `VA3VRR`.
+Nothing shipped and nothing left behind.
 
 ### The suite
 
 | | baseline | end |
 |---|---|---|
-| engine | 30 failing of 1674 | **29 failing of 1724** |
+| engine | 29 failing of 1674 | **29 failing of 1789** |
 | app | 483 passing, 0 failing | **487 passing, 0 failing** |
 
-**Not one test broke across the five tasks that shipped.** The single difference
-against the baseline is the flaky rig test, which passed this time.
+The failure set is **byte-identical** to the baseline. One app run showed a
+single failure that a re-run did not reproduce and the detailed logger did not
+name — a third intermittent, recorded rather than diagnosed.
 
-## 2. What Tim should expect at the radio tonight
+## 2. What Tim should expect at the radio
 
-**The band row is where he can reach it.** It sits below the readout across the
-full width, and every card takes a click at every window size — including the
-narrow one where `15 m` and `10 m` were unreachable last night.
+**Nothing changed in the decoder.** Everything this unit measured about the
+re-read, the meter and the cutter is measurement; none of it is in the tree. The
+transcript, the meter and the band row behave exactly as they did last night.
 
-**The keying meter tells the truth more often than not, for the first time.** It
-was right about ten of the twenty-three recordings in the tree and is now right
-about sixteen. On a band with a station on it, it says keying; on an empty one it
-still says nothing, and that half was checked window by window rather than over
-whole files, because the whole-file reading is not the one he gets.
-
-**The decoder reads the same way the tests read it.** Until now the application
-fed it audio in a size that made it track a different note from the one the suite
-measured — on one capture, 500 Hz against 650. That is gone, so a number in a
-report is now a number about his radio.
-
-**Nothing about the transcript itself changed.** The adjudicated readings come
-back exactly as they did: `VA3VRR`, `AA4MP/4 QNIK`, the ARRL bulletin and
-`DE KD0UN KD0UN K`.
+**What did change is what the repository can prove.** The evening of 2026-08-25
+is banked — thirteen captures, their sidecars, and the analysis document itself —
+so the numbers the last three units worked from are now checkable rather than
+quoted. Thirty-six recordings now carry floors and twelve carry adjudicated
+anchors.
 
 **What will look wrong and is not:**
 
-- **The bulletin still reads badly.** 40 % of the adjudicated text, and the
-  worst line gives back 5 characters of 35. That number is now on the record
-  instead of being absent, which is the change — the reading itself is no better.
-- **`N4L` is guarded at `N4`, two characters of three.** The decoder puts a word
-  gap inside the callsign. That is the joint cutter's fault and the joint cutter
-  did not ship.
-- **The keying meter is still wrong about six recordings.** They fail on the
-  keying score, not on the element length, which is a separate question.
-- **Nothing from task 5 is in the tree**, and task 6 produced nothing.
+- **The suite grew by 115 tests and the failures did not move.** The thirteen new
+  captures pass everything that sweeps the corpus.
+- **`013520` is floored at 60 characters, not the manifest's 59.** The manifest
+  measured the radio; the floor measures the fixture. They are different
+  instruments and the report says so rather than reconciling them.
+- **Three units running have now ended with the headline feature measured and
+  not shipped.** Each was blocked by a different guard doing its job: the floors
+  here, the success tests in 1.11.9, the silence property in 1.11.8.
 
 ## 3. What you should see
 
-**Twelve adjudicated readings are now guarded, and every one survived tasks 3, 4
-and 5 untouched.**
+**Adjudicated characters, before and after the re-read: 158 of 384 becomes 167
+of 384** — and the anchors the twelve success tests guard sum to 153, which is
+the number the instruction quotes. Those are three different figures and the
+distinction matters: 153 is what is *guarded*, 158 is what is *achieved*, 167 is
+what the re-read achieves.
 
-| reading | ruling | guarded run | of |
+**The three captures the unit was commissioned around did not move:**
+
+| capture | before | after | why |
 |---|---|---|---|
-| `VA3VRR` | HM-DEC-145 | **6** | 6 |
-| `DE KD0UN KD0UN K` | work instruction 011 | **16** | 16 |
-| `AA4MP/4 QNIK` | HM-DEC-126 | 9 | 12 |
-| `N4L` | HM-DEC-144 | 2 | 3 |
-| the ARRL bulletin | HM-DEC-115 | 22 | 57 |
-| `110, 110, AND 110 WITH A MEAN OF 117` | Tim 2026-08-25 | **31** | 36 |
-| `N OF 117. LINKS TO ARTICLES OR OTHER WEBSITES MENTI` | Tim 2026-08-25 | 22 | 51 |
-| `THIS BULLETIN CAN BE FOUND IN TELEPRINTER, PACKET, AND INTE` | Tim 2026-08-25 | 17 | 59 |
-| `DICTED 10.7 CENTIMETER FLUX IS 125, 125` | Tim 2026-08-25 | 11 | 39 |
-| `2026 PROPAGATION FORECAST BULLETIN ARLP034` | Tim 2026-08-25 | 9 | 42 |
-| `2, 2, AND 2 WITH A MEAN OF 2.9. PRE` | Tim 2026-08-25 | 5 | 35 |
-| `ACKET, AND INTERNET VERSIONS` | Tim 2026-08-25 | 3 | 28 |
+| `cw-2026-08-22-032113` | 4 | **4** | first measured pitch at 21.0 s, 48 characters already settled |
+| `cw-2026-08-22-032012` | 22 | **22** | first measured pitch at 12.0 s, 14 already settled |
+| `cw-2026-08-22-032050` | 17 | **17** | first measured pitch at 24.0 s, 50 already settled |
 
-**153 of 384 characters, 40 %.** Two readings are whole. The two weakest anchors,
-three and five characters, are weak guards and are marked as such in the test
-rather than dressed up.
+**Where the nine characters actually came from:**
 
-They were checked after every shipped change, and they are what stopped task 5:
-the validity term went red on two of them at weight 1.0 and took `VA3VRR` at 2.0.
-**That is the mechanism working on its first use** — before this unit, that term
-would have shipped on a whole-corpus character count that improved.
+| capture | before | after |
+|---|---|---|
+| `cw-2026-08-18-003758` — `AA4MP/4 QNIK` | 9 of 12 | **12 of 12, whole** |
+| `cw-2026-08-18-004507` — the ARRL bulletin | 22 of 57 | **28 of 57** |
+
+The re-read helps captures whose pitch is measured early and hurts none, and it
+is structurally unable to reach the ones whose pitch is measured late. That is
+the honest shape of the lever the last unit found by accident: it is real, and
+it is not where the 4-becomes-22 measurement pointed.
 
 ## 4. What's blocking us
 
-**Three rulings from today have no ids, and the adjudication is one of them.**
+**May a character-count floor fall where an adjudicated-correctness anchor
+rises?**
 
-Today's adjudication of the seven W1AW captures, today's ruling on the band
-display, and today's conditioned ruling on the keying witness are all in force,
-all implemented, and none is in `DECISIONS.md`. The session does not mint ids
-(§12.1). The truth file and this report are currently the whole record of the
-adjudication, and twelve tests now rest on it.
+This is the ruling the re-read waits on, and the numbers are in section 1. On
+`cw-2026-08-18-003758` the decoder emits five fewer characters, sees **three more
+elements**, and gives back `AA4MP/4 QNIK` whole for the first time. On
+`cw-2026-08-22-031948` it emits three fewer, sees five more elements, and drops
+its unsure count from three to nought. On `cw-2026-08-18-004507` it emits one
+fewer and six more of the bulletin is right.
 
-This sits on top of the standing gap: `DECISIONS.md` has no record for
-HM-DEC-096–133, 136, 141 or 150. **Fourteen consecutive units have worked beside
-rulings they cannot read**, and this is the first one where a *test* depends on a
-ruling that exists only in prose.
+The floors were built when nothing in the suite could score correctness. Twelve
+success tests now can, and on these captures the two guards disagree: the count
+says worse and the correctness says better. **A floor on raw character count is
+measuring something the project no longer needs it to measure**, wherever an
+adjudicated anchor covers the same recording.
 
-*Rejected: minting ids in the session.* §12.1 is explicit and this is exactly the
-class it protects — an adjudication of what a station sent is the strongest form
-of "what the display asserts".
+*Rejected: shipping anyway.* The instruction forbids lowering a floor without
+qualification and §0.4 makes this yours.
 
----
+*Rejected: tuning the trigger until no floor moves.* Four gates were tried — the
+newest hop's pitch, the first measured pitch, a confirmed pitch, and a cap of one
+replay. The last two are in the numbers above; capping at one made `012748` worse
+still, two characters to nought. Continuing would be fitting the mechanism to the
+fixtures, which §12.5 forbids.
 
-**The joint cutter cannot be safely weighted, and the reason is sharper than
-"not yet".**
-
-Option A is built and measured and the numbers are in section 1. The shape of the
-result matters more than the values: **the term's effect on adjudicated text is
-flat until it is strong enough to break something.** From weight 0 to 1.0 it
-rewrites seven of twelve transcripts and moves the adjudicated character count not
-at all — 158 either way. The first weight that moves it, 2.0, moves it *down*,
-buying four characters of the ARRL bulletin with six of `VA3VRR`.
-
-That is not a weight waiting to be tuned. It says validity is pulling cuts toward
-letters that are not the ones sent, which is §0.0's own failure mode wearing a
-better score, and the success tests caught it on their first outing.
-
-*Rejected: shipping at 0.5 because it is safe.* A term that changes seven
-transcripts and improves none of them is churn nobody can review.
-
-*Not attempted: validity scored against the fitted clock as well as the
-alphabet* — the instruction's phrase "against the fitted clock" was implemented
-as the existing length penalty rather than as a second term. If the cutter is
-worth another attempt, that is the untried half, and it should be measured
-against `N4L`, whose failure mode is exactly a cut inside a character.
+*Not rejected: `cw-2026-08-25-012748` is a genuine regression and would need its
+own answer* — sixteen elements to four. It is the manifest's "Bug A" capture and
+the only one where the re-read destroys rather than trades.
 
 ---
 
-**The starting pitch is worth more than anything the cutter could buy, and it is
-unruled.**
+**The keying meter's calibration no longer separates, and that is new evidence
+against a decision taken two units ago.**
 
-Task 1 measured it by accident. Starting the decoder at each station's own
-recorded note rather than at the operator's 600 Hz changes the adjudicated
-reading of five captures, three of them substantially: `032113` from 4 characters
-to 22, `032012` from 22 to 43, `032050` from 17 to 24. It costs two: `031905`
-from 12 to 7, `032129` from 10 to 7.
+Unit 1.11.9 moved the meter's verdict onto the element median and added the swing
+at 20 dB as the guard that keeps the silence property, on the measurement that
+the two empty captures swung 14.1 and 17.7 while every recording holding a
+station cleared 18.9. **With the thirteen banked that is no longer true.**
+`cw-2026-08-25-021825` holds a station and swings 12.6 dB — below all four empty
+captures. Four more real captures sit between 16.1 and 17.9, inside the empties'
+range.
 
-Hamlet cannot know the station's note before it finds it, so this is not a
-setting. What it suggests is that **the decoder should re-read a window once the
-tracker has settled**, rather than living with whatever it started from — which
-is a real feature and a large one, and outside anything ruled.
+So the meter is right about twenty of thirty-six and the bar that makes it safe
+is now known to sit inside the overlap rather than in a gap. Nothing was changed:
+every candidate that admits the sixteen also admits an empty band, and HM-DEC-120
+is absolute.
 
-*Rejected: acting on it in this unit.* It is not in the instruction, and §12.6.
+*Rejected: lowering the swing bar.* It would cost empty Keying windows, which
+nothing in this project trades.
+
+*Not attempted: a purity that counts time rather than crossings.* It was measured
+— it moves one capture of thirty-two — and it changes the meaning of a calibrated
+constant, which is a ruling rather than a tuning.
 
 ---
 
-**The band card's own geometry is not what any API says it is.**
+**The pitch chooser abandons a station it has already found.**
 
-Every geometry API in Avalonia agrees with every other and all of them disagree
-with the hit test by thirteen pixels vertically and a third of the height. The
-test now works around it and says so. Whether this is the headless renderer only,
-or something the operator's window does too, is unmeasured — and it bears on every
-future test that asks where something is drawn.
+Task 1's re-measurement of `cw-2026-08-25-012823` shows the tracker holding the
+correct 500 Hz for the first half of the recording and then moving to 450 and
+staying there. The analysis called this "a 50 Hz miss" and it is not a miss: it
+is a confirmed station being left, which HM-DEC-127 rules against. Whatever
+displaces it is upstream of everything this unit touched.
 
-*Rejected: chasing it in this unit.* The workaround is honest and the band row is
-reachable; the question is a day's work with no defect behind it yet.
+*Rejected: acting on it here.* The instruction scopes this unit to the re-read,
+the meter and the cutter, and §12.6.
 
 ### Asks still outstanding
 
 Carried forward verbatim per HM-DEC-139 and HM-DEC-140. **Thirteen inbound. The
-adjudication and the witness verdict were acted on this unit under Tim's rulings;
-both now need ids, which is item 4.** The oldest of the rest is open since
-2026-08-14.
+oldest is open since 2026-08-14.**
 
 1. **The sweep's `invented` column counts substitutions, not invented
    characters.**
 2. **Whether the refill guard should apply to the first fill at all.**
 3. **`ANNUNCIATOR.md` renamed `PHASE` to `TASK` while HM-DEC-150 makes `PHASE`
    match the version's minor.**
-4. **`DECISIONS.md` has no record for HM-DEC-096–133, 136, 141 or 150** — and now
-   also none for today's three rulings, one of which twelve tests rest on.
-5. **The tone tracker** — narrowed by the hold, not closed.
+4. **`DECISIONS.md` has no record for HM-DEC-096–133, 136, 141 or 150 — nor for
+   Tim's three rulings of 2026-08-25, one of which twelve tests rest on.**
+5. **The tone tracker** — narrowed by the hold, not closed, and task 1's
+   re-measurement sharpens it: on `012823` the tracker leaves a station it had.
 6. **The integrator width** — bears on `014113`/`014308`.
 7. **The guard's gap is two to one**, calibrated on two empty captures.
 8. **A boxcar's nulls made two of five swept offsets pathological best cases.**
-9. **Two stations closer than 125 Hz are not named** — and `competing`'s
-   diagnosis shows the 125 Hz floor is not what blocks it.
-10. **The keying witness** — acted on; it is now right about sixteen of
-    twenty-three and the remaining six fail on the score.
+9. **Two stations closer than 125 Hz are not named.**
+10. **The keying meter** — task 3 acted on it and found the calibration inside an
+    overlap rather than a gap.
 11. **HM-OPEN-057** (2026-08-22) and **HM-OPEN-007** (2026-08-14).
 
-New this unit: **the joint cutter cannot be safely weighted**, above; **the
-starting pitch is worth more than the cutter**, above; **the band card's geometry
-disagrees with its own hit test**, above.
+New this unit: **may a count floor fall where a correctness anchor rises**,
+above; **the meter's swing bar sits inside the overlap**, above; **the pitch
+chooser abandons a confirmed station on `012823`**, above.
 
-Still open: **the lock's mixed help with nothing telling the operator which**;
-**the "Hold this pitch" button**; **three fixtures at accepted cost**;
-**`001520`'s quadrillions**; **the reference/port integrator difference**;
-**`CLAUDE_CODE.md`'s version line**; **an unmeasured pitch costs `N4L`**;
-**`014113`/`014308`'s second mechanism**; **the six-hertz window disagreement**;
-**the short-character bias needs a per-character expectation**; **the thirteen
-captures of 2026-08-25, absent for a fourth unit**.
+Still open: **the lock's mixed help**; **the "Hold this pitch" button**; **three
+fixtures at accepted cost**; **`001520`'s quadrillions**; **the reference/port
+integrator difference**; **`CLAUDE_CODE.md`'s version line**; **an unmeasured
+pitch costs `N4L`**; **`014113`/`014308`'s second mechanism**; **the six-hertz
+window disagreement**; **the short-character bias**; **the Avalonia geometry
+offset**; **`CHANGELOG.md` at 1.9.0 against a version of 1.11.10**; **two flaky
+rig tests, and now a third intermittent in the app suite that a re-run did not
+reproduce**.
 
-Closed this unit: **HM-OPEN-060**, by task 2. **The two drive paths**, by task 4.
-**HM-DEC-126's reopening**, by task 1 building the success test its entry called
-for.
-
-Also noted and not acted on (§12.6): **`CHANGELOG.md` stops at 1.9.0** while the
-version is now 1.11.9, and its convention paragraph still describes HM-DEC-063's
-meaning of minor and patch, which HM-DEC-150 superseded. **A second rig test
-flakes**, `RigDisconnectTests.TheStateMonitorDoesNotHoldUpADisconnect`.
+Closed by delivery: **the thirteen captures of 2026-08-25** — the ask that led
+four units. Closed by measurement: **the joint cutter's untried half**, which the
+table in section 1 settles at a safe weight of nought.

@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
-TASK: 6 of 6
+TASK: 4 of 4
 BALL: tim
 NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-25T13:46:15-04:00
-NOTE: four tasks shipped, one built and reverted on its own acceptance, one void for want of the audio; twelve adjudicated readings now guarded
+UPDATED: 2026-08-25T16:56:21-04:00
+NOTE: the evening is banked and floored; the re-read reads AA4MP/4 QNIK whole and waits on a floors ruling; the meter's bar sits inside an overlap
 
 ---
 
