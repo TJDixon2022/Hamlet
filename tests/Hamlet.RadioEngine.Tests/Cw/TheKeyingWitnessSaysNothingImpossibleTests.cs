@@ -139,4 +139,65 @@ public sealed class TheKeyingWitnessSaysNothingImpossibleTests
             profile.Score < CwKeyingThresholds.KeyingScore,
             $"{name} holds no keying at any pitch and scores {profile.Score:0.000}");
     }
+
+    /// <remarks>
+    /// <para>**THE WHOLE-FILE READING IS NOT THE ONE THE OPERATOR GETS, AND THE
+    /// DIFFERENCE IS WHERE THE SILENCE PROPERTY NEARLY WENT** (HM-DEC-119's own
+    /// lesson: a measurement taken through one instrument is not a fact about
+    /// another). Read whole, `cw-2026-08-20-014854` scores 0.059 against a bar of
+    /// a tenth and is safe by a wide margin. Sliced into the six-second windows
+    /// the meter actually runs on, eleven of its windows and
+    /// `cw-2026-08-20-014935`'s clear the score and land inside the element
+    /// range, and with the element median alone deciding, the meter would have
+    /// announced Keying on a band holding nothing.</para>
+    /// <para>So this drives the meter the way the application drives it, a window
+    /// at a time, and the bar is **nought windows**. Not few, not rare: a meter
+    /// that says a station is there on an empty band once in twenty-five is a
+    /// meter the operator cannot use (HM-DEC-120).</para>
+    /// </remarks>
+    /// <param name="name">A recording that holds nothing.</param>
+    [Theory]
+    [InlineData("unadjudicated/cw-2026-08-20-014854")]
+    [InlineData("unadjudicated/cw-2026-08-20-014935")]
+    [InlineData("unadjudicated/cw-2026-08-22-014113")]
+    [InlineData("unadjudicated/cw-2026-08-22-014308")]
+    public void NoWindowOfAnEmptyBandEverSaysKeying(string name)
+    {
+        var audio = WavAudio.Read(
+            Path.Combine(CapturedSignalTests.Folder, name + ".wav"));
+
+        var rate = audio.SampleRate;
+        var span = (int)(CwKeyingThresholds.Window.TotalSeconds * rate);
+        var meter = new CwKeyingMeter();
+        var windows = 0;
+        var claimed = new List<string>();
+
+        for (var at = 0; at + span <= audio.Samples.Length; at += rate)
+        {
+            var slice = new float[span];
+
+            Array.Copy(audio.Samples, at, slice, 0, span);
+
+            var reading = meter.Update(new MonoAudio(rate, slice));
+
+            windows++;
+
+            if (reading.Verdict == KeyingVerdict.Keying)
+            {
+                claimed.Add(
+                    $"the window at {at / rate}s ({reading.ToneHz:0} Hz, "
+                    + $"{reading.ElementMedianMs:0} ms, {reading.SwingDb:0.0} dB "
+                    + $"swing, score {reading.Score:0.000})");
+            }
+        }
+
+        _output.WriteLine(
+            $"{name}: {windows} windows, {claimed.Count} of them claiming keying");
+
+        Assert.True(
+            claimed.Count == 0,
+            $"{name} holds no station and the meter announced keying on "
+            + $"{claimed.Count} of its {windows} windows: "
+            + string.Join("; ", claimed));
+    }
 }

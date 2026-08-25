@@ -216,9 +216,54 @@ public sealed class CwKeyingMeter
             return Reading;
         }
 
+        // **THE VERDICT RESTS ON THE ELEMENT MEDIAN NOW, AND ON THE SWING TO
+        // KEEP IT HONEST.** Tim ruled the move on 2026-08-25, on the condition
+        // that the silence property survives it (HM-DEC-120).
+        //
+        // **WHY THE OLD FIGURE HAD TO GO.** `MedianMs` is the middle of every
+        // threshold crossing, and noise crosses a threshold hundreds of times,
+        // so on a recording holding a real station the chatter outnumbers the
+        // elements several to one and the median lands among the chatter: four
+        // milliseconds beside an adjudicated `VA3VRR`, three beside an
+        // adjudicated `N4L`, and this test then said there was no keying in
+        // either. Measured over the twenty-three recordings in the tree, the
+        // meter was right about ten of them.
+        //
+        // **WHY THE ELEMENT MEDIAN ALONE COULD NOT SHIP.** It takes the meter to
+        // seventeen of twenty-three, and on the live path it costs the silence:
+        // sliced into the six-second windows the meter actually runs on,
+        // `cw-2026-08-20-014854` and `cw-2026-08-20-014935` produce **eleven
+        // windows** that clear the score and land inside the element range, and
+        // the meter would announce Keying on a band holding nothing.
+        //
+        // **AND WHY THE REQUIREMENT IS THE SWING RATHER THAN A COUNT OF
+        // ELEMENTS.** A count was the obvious candidate and it is measured
+        // backwards: in six seconds an empty band produces 26 to 40 element
+        // length runs and a real station produces 11 to 38, median 26, so the
+        // empty windows sit at the *top* of the range and any count that
+        // silences them silences every real window with it — nineteen captures
+        // to nought. The swing does separate, and it separates with room: those
+        // eleven empty windows run 14.7 to 17.7 decibels while the real windows
+        // run to 218 with a tenth percentile of 18.9.
+        //
+        // **THE NUMBER IS NOT NEW AND IS NOT FITTED HERE.**
+        // <see cref="CwKeyingThresholds.ConfidentSwingDb"/> is already twenty,
+        // already calibrated against this same question on two independent sets
+        // of evidence, and until now decided only which speed estimate the
+        // decoder started from. Eighteen would keep one more capture and
+        // eighteen is the empty windows' own maximum rounded up, which is
+        // fitting a constant to a fixture.
+        //
+        // **WHAT IT COSTS, NAMED.** Sixteen of twenty-three rather than
+        // seventeen. The capture given up is `cw-2026-08-23-001831`, a pileup
+        // with nothing adjudicated in it, swinging 19.3 decibels against a bar
+        // of twenty. **What it holds**: all four recordings that emit nothing
+        // produce nought Keying windows out of twenty-five each, and their
+        // whole-file swings are 14.1, 15.7, 16.7 and 17.7.
         var looksKeyed = best.Profile.Score >= CwKeyingThresholds.KeyingScore
-                         && best.Profile.MedianMs >= CwKeyingThresholds.SlowestChatterMs
-                         && best.Profile.MedianMs <= CwKeyingThresholds.LongestElementMs;
+                         && best.Profile.ElementMedianMs >= CwKeyingThresholds.SlowestChatterMs
+                         && best.Profile.ElementMedianMs <= CwKeyingThresholds.LongestElementMs
+                         && best.Profile.SwingDb >= CwKeyingThresholds.ConfidentSwingDb;
 
         if (looksKeyed)
         {
