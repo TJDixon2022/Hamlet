@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
-TASK: 4 of 4
+TASK: 3 of 3
 BALL: tim
 NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-25T16:56:21-04:00
-NOTE: the evening is banked and floored; the re-read reads AA4MP/4 QNIK whole and waits on a floors ruling; the meter's bar sits inside an overlap
+UPDATED: 2026-08-25T19:25:51-04:00
+NOTE: the re-read is shipped and reads AA4MP/4 QNIK whole; the station-leaving guard turns out never to have been armed on 012823
 
 ---
 
