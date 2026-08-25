@@ -1,0 +1,71 @@
+captured   2026-08-25 01:27:48 UTC
+audioSeen  42317760 samples
+fingerprint c8b5f5cb5d48
+seconds    30.0
+sampleRate 48000
+frequency  7025800 Hz  (read from the radio a moment ago)
+band       40 m  (from the frequency the radio reported)
+broadcast  the radio volunteered nothing while this recording was being made, and the setting reads on; 391 of 49149 frames since the link came up were the radio announcing something
+
+inputPeak  -13.3 dBFS  (over the whole recording)
+meterPeak  -13.5 dBFS  (the moment it was kept)
+inputFloor -20.8 dBFS
+clipping   False
+toneHz     395.0 Hz  (measured from the keying the survey admitted, interpolated between bins)
+tonePeak   67.5  (the highest the tracked tone ever stood above the noise beside it, held and decaying; not a figure about this recording)
+inThis     2 characters emitted, 0 unsure, 6 elements seen, 6 resolved  (in the 30.0 seconds of audio in this file)
+elements   1127 seen, 1127 resolved  (since the decoder started listening, about 16 minutes ago)
+characters 557 emitted, 109 unsure  (since the decoder started listening, about 16 minutes ago)
+decoderWpm not proved (the settled pass has no clock; the decoder's own best hypothesis was 22 WPM)
+text       ■EENE X FI
+textCovers everything read since the decoder started listening, about 16 minutes ago
+spanLlr    8 of the last 11 characters read, each against the key having been up throughout its own span (since the decoder started listening, about 16 minutes ago)
+           ■:92.9 E:11.9 E:19.5 N:72.7 E:33.5 X:399.6 F:210.8 I:93.8
+competing  none found (which is not the same as the frequency being clear)
+reading    22 WPM won out of 8 to 32, 1.1 better than silence per hop against a gate of 1
+keying     no keying at 400 Hz, 6 ms key down, 16 dB swing, 94 key-downs  (an independent sweep of 400 to 1200 Hz in 25 Hz steps over the last six seconds, sharing nothing with the decoder)
+
+sinceLast  531 characters, 1046 elements  (since the previous capture)
+
+Frequency            7.025800 MHz
+Mode                 CW
+DataMode             off
+FilterSelection      FIL2
+FilterBandwidth      500 Hz
+SMeter               S5
+TransmitStatus       receiving
+Overflow             not overloading
+Swr                  unknown
+PowerOut             unknown
+RfPower              30%
+RfGain               100%
+Squelch              7%
+SquelchStatus        open
+Agc                  FAST
+Preamp               off
+Attenuator           off
+NoiseBlanker         off
+NoiseBlankerLevel    50%
+NoiseReduction       off
+NoiseReductionLevel  28%
+AutoNotch            off
+ManualNotch          off
+BreakIn              full
+KeyerSpeed           20 WPM
+CwPitch              600 Hz
+AccUsbOutputSelect   AF
+AccUsbAfLevel        80%
+NotchPosition        unknown
+FilterShape          unknown
+AfLevel              unknown
+RfSqlFunction        unknown
+BreakInDelay         unknown
+AntennaTuner         unknown
+Alc                  unknown
+AccUsbSquelch        open regardless of squelch
+Split                off
+ScopeOn              on
+ScopeOutput          off
+CivUsbPort           unknown
+CivTransceive        on
+Vfo                  undocumented

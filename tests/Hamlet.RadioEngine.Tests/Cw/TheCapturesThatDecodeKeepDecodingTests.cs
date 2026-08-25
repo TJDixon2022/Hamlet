@@ -83,6 +83,25 @@ public sealed class TheCapturesThatDecodeKeepDecodingTests
         { "unadjudicated/cw-2026-08-23-001952", 75, 142, 13 },
         { "unadjudicated/cw-2026-08-23-002016", 75, 136, 17 },
 
+
+        // **THE EVENING OF 2026-08-25**, banked after four units of asking.
+        // Counts measured through this harness on the day the floors were set;
+        // where they differ from `MANIFEST.md` the tree is what is asserted and
+        // the difference is in that unit's report.
+        { "unadjudicated/cw-2026-08-25-011552", 30, 89, 8 },   // K1ZJA call, early lock
+        { "unadjudicated/cw-2026-08-25-012748", 4, 16, 2 },   // **Bug A**: 113 marks per the manifest, 16 elements seen here, 4 characters out
+        { "unadjudicated/cw-2026-08-25-012823", 41, 62, 15 },   // **the negative control** — the tone lands 50 Hz off and the reading is soup
+        { "unadjudicated/cw-2026-08-25-012922", 50, 112, 5 },   // lock recovering
+        { "unadjudicated/cw-2026-08-25-013010", 54, 131, 6 },   // a whole contact; the gate must not damage it
+        { "unadjudicated/cw-2026-08-25-013150", 58, 139, 7 },   // `CQ CQ CQ DE ND4K`
+        { "unadjudicated/cw-2026-08-25-013303", 54, 146, 10 },   // **the beat-the-chain case**
+        { "unadjudicated/cw-2026-08-25-013402", 61, 161, 5 },   // nought unsure at the old grid ceiling
+        { "unadjudicated/cw-2026-08-25-013520", 60, 153, 5 },   // **the reference case**
+        { "unadjudicated/cw-2026-08-25-013637", 63, 164, 3 },   // gap clusters merge at speed, the joint-cutter fixture
+        { "unadjudicated/cw-2026-08-25-021410", 47, 99, 11 },   // a machine fist with separable gaps, still miscut
+        { "unadjudicated/cw-2026-08-25-021629", 47, 96, 20 },   // 24 % duty: `559 559 IN MI MI` buried
+        { "unadjudicated/cw-2026-08-25-021825", 41, 74, 16 },   // 18 % duty: an eight-second call in thirty seconds
+
         // Recordings that emit nothing today. A floor of nought asserts nothing
         // and records the state; what holds the silence property is
         // `ARecordingWithNoStationInItSaysNothing` (HM-DEC-120), not this.

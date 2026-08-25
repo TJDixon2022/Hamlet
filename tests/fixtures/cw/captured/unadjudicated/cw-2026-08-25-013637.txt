@@ -1,0 +1,71 @@
+captured   2026-08-25 01:36:37 UTC
+audioSeen  67368480 samples
+fingerprint cf40e857f499
+seconds    30.0
+sampleRate 48000
+frequency  7025900 Hz  (read from the radio a moment ago)
+band       40 m  (from the frequency the radio reported)
+broadcast  the radio volunteered nothing while this recording was being made, and the setting reads on; 392 of 76320 frames since the link came up were the radio announcing something
+
+inputPeak  -13.3 dBFS  (over the whole recording)
+meterPeak  -13.3 dBFS  (the moment it was kept)
+inputFloor -21.5 dBFS
+clipping   False
+toneHz     525.0 Hz  (measured from the keying the survey admitted, interpolated between bins)
+tonePeak   64.0  (the highest the tracked tone ever stood above the noise beside it, held and decaying; not a figure about this recording)
+inThis     65 characters emitted, 0 unsure, 171 elements seen, 171 resolved  (in the 30.0 seconds of audio in this file)
+elements   3376 seen, 3376 resolved  (since the decoder started listening, about 25 minutes ago)
+characters 1454 emitted, 149 unsure  (since the decoder started listening, about 25 minutes ago)
+decoderWpm 30
+text       BT■ CONGRATS ON CHE CKING ALL BOXES FOR FOC ES ■ SIE ■ HPE YOU IN J OY UR LONG WAIT 5 EE ■ ■ ■E E EEE E SE5 E ■EU ID E DAVI NN ■EAT HR U ES YES B EEN TO O L ONG AHINK LAST TIME WAS WHEN MAYBE U WERE IN Q SO WITH WB H4 ET ES S S CAME IN TO J OIN? NOT SURE - BUT ANY WAY VY NICE HRING U ES UR RST 5 9 9 5NN QRN QRN HIGH TONITE BI T BVT BUT UR SIG DOOING FINE <BT> WL TNX VY MUCH FER THE COE CONGRATH ES YES HAVE TO WAIT 5 ■ MONTHS OR SO I GUESS BUT ALL GUD ES CAN KE E G KI KE EP MY S ELF O C C UPI ED RAG CHEWING UNTEL TS EN ■EN ■ 4 SRI CLUMMSY TONITE I GUESS <BT> WL RIG HR M TONITE TEN TE C ES 1 T TW TTO ■ ■4 0 M L O OP - GREAT DAY HN HR TODAY TEMP NEVEN T NEVER G OT AB OVE 7 5F ES CLEAR SKY LITE BREE Z E ALL DAYY JUST AWE
+textCovers everything read since the decoder started listening, about 25 minutes ago
+spanLlr    174 of the last 240 characters read, each against the key having been up throughout its own span (since the decoder started listening, about 25 minutes ago)
+           E:58.7 L:424.5 F:390.5 O:502.8 C:607.0 C:535.6 U:465.1 P:857.2 I:188.7 E:75.7 D:444.9 R:441.7 A:251.3 G:436.5 C:680.9 H:336.0 E:79.7 W:571.2 I:246.9 N:463.1 G:792.6 U:519.4 N:411.7 T:429.9 E:118.9 L:846.4 T:493.1 S:350.6 E:107.6 N:549.4 ■:940.7 E:120.2 N:519.6 ■:-7.5 4:702.2 S:260.9 R:408.2 I:141.7 C:949.5 L:615.8 U:482.7 M:441.2 M:458.8 S:288.4 Y:945.5 T:328.4 O:963.8 N:453.9 I:205.9 T:414.6 E:127.8 I:264.4 G:1032.8 U:828.6 E:161.6 S:443.0 S:476.8 <BT>:1472.7 W:769.9 L:513.3 R:392.2 I:137.6 G:497.4 H:201.2 R:298.5 M:339.0 T:196.7 O:686.4 N:302.0 I:168.0 T:263.5 E:86.6 T:282.7 E:82.5 N:282.4 T:175.2 E:55.5 C:564.2 E:54.4 S:162.4 1:947.8 T:219.7 T:294.8 W:598.8 T:288.7 T:305.3 O:912.3 ■:-34.7 ■:-35.5 4:539.8 0:993.0 M:362.1 L:408.6 O:586.5 O:571.6 P:359.9 -:692.6 G:688.6 R:712.6 E:106.8 A:440.6 T:441.1 D:364.3 A:235.6 Y:502.6 H:181.4 N:175.4 H:255.3 R:327.0 T:198.9 O:485.3 D:207.0 A:207.7 Y:563.5 T:159.9 E:46.5 M:356.1 P:492.4 N:359.2 E:107.2 V:549.6 E:77.5 N:365.2 T:286.4 N:449.0 E:74.4 V:773.5 E:112.4 R:618.7 G:760.3 O:931.6 T:280.1 A:387.4 B:722.2 O:951.7 V:461.3 E:80.7 7:949.5 5:508.8 F:848.6 E:124.3 S:258.7 C:895.3 L:655.0 E:107.3 A:505.6 R:611.9 S:335.0 K:641.2 Y:983.8 L:823.5 I:242.1 T:402.5 E:162.7 B:1104.1 R:890.7 E:143.1 E:141.3 Z:1361.7 E:188.8 A:613.2 L:699.3 L:690.1 D:369.0 A:424.6 Y:952.9 Y:861.0 J:1095.3 U:991.3 S:541.4 T:505.0 A:836.7 W:1082.0 E:184.9
+competing  none found (which is not the same as the frequency being clear)
+reading    30 WPM won out of 8 to 32, 7.2 better than silence per hop against a gate of 1
+keying     keying at 550 Hz, 43 ms key down, 23 dB swing, 60 key-downs  (an independent sweep of 400 to 1200 Hz in 25 Hz steps over the last six seconds, sharing nothing with the decoder)
+
+sinceLast  164 characters, 419 elements  (since the previous capture)
+
+Frequency            7.025900 MHz
+Mode                 CW
+DataMode             off
+FilterSelection      FIL2
+FilterBandwidth      500 Hz
+SMeter               S9+10
+TransmitStatus       receiving
+Overflow             not overloading
+Swr                  unknown
+PowerOut             unknown
+RfPower              30%
+RfGain               100%
+Squelch              7%
+SquelchStatus        open
+Agc                  FAST
+Preamp               off
+Attenuator           off
+NoiseBlanker         off
+NoiseBlankerLevel    50%
+NoiseReduction       off
+NoiseReductionLevel  28%
+AutoNotch            off
+ManualNotch          off
+BreakIn              full
+KeyerSpeed           20 WPM
+CwPitch              600 Hz
+AccUsbOutputSelect   AF
+AccUsbAfLevel        80%
+NotchPosition        unknown
+FilterShape          unknown
+AfLevel              unknown
+RfSqlFunction        unknown
+BreakInDelay         unknown
+AntennaTuner         unknown
+Alc                  unknown
+AccUsbSquelch        open regardless of squelch
+Split                off
+ScopeOn              on
+ScopeOutput          off
+CivUsbPort           unknown
+CivTransceive        on
+Vfo                  undocumented

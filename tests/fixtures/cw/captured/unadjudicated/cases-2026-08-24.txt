@@ -1,0 +1,3 @@
+# Evening of Monday 24 August 2026 at the rig, local time UTC-04:00. Every time below is UTC.
+time	frequency	band	wav	toneHz	tonePeakDb	wpm	seed	fit	chars	meter	text	read
+02:18:25	7.043	40 m	cw-2026-08-25-021825.wav	395	62.3	not tracking	not set	10 WPM won out of 8 to 40, 6.7 better than silence per hop against a gate of 1	63 emitted, 8 unsure	no keying at 600 Hz, 5 ms key down, 19 dB swing, 306 key-downs	E EE II■ ES IEE EEEI EE5EES E E IIE E E ■EEII EU EE SS■ EE ■ ■ ■EE ■ TT TTT E TTT K ■ E I EE E  (the whole session, not this case)	

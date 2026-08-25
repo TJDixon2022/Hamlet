@@ -1,0 +1,71 @@
+captured   2026-08-25 01:30:10 UTC
+audioSeen  48891840 samples
+fingerprint fa1e66b37bd1
+seconds    30.0
+sampleRate 48000
+frequency  7025900 Hz  (read from the radio a moment ago)
+band       40 m  (from the frequency the radio reported)
+broadcast  the radio volunteered nothing while this recording was being made, and the setting reads on; 392 of 56448 frames since the link came up were the radio announcing something
+
+inputPeak  -13.4 dBFS  (over the whole recording)
+meterPeak  -13.5 dBFS  (the moment it was kept)
+inputFloor -21.1 dBFS
+clipping   False
+toneHz     495.0 Hz  (measured from the keying the survey admitted, interpolated between bins)
+tonePeak   57.7  (the highest the tracked tone ever stood above the noise beside it, held and decaying; not a figure about this recording)
+inThis     55 characters emitted, 1 unsure, 143 elements seen, 143 resolved  (in the 30.0 seconds of audio in this file)
+elements   1531 seen, 1531 resolved  (since the decoder started listening, about 18 minutes ago)
+characters 740 emitted, 119 unsure  (since the decoder started listening, about 18 minutes ago)
+decoderWpm 27
+text       E ■E E ■ E R I E E E ET ED E ■ ■ N N L W M ■ EE EE E 1 N N ■WA T T S WI LL SAY73 E S T K S T K S 73 TI ND4 N T DEN3W M K ■ E E E E E ■ RR OK BIILL TNX FER CALL ES NICE TO WOR K U <BT> LAS EEE SRII ■ ALSO NICE TO MEET YOU 73ES GE E
+textCovers everything read since the decoder started listening, about 18 minutes ago
+spanLlr    146 of the last 227 characters read, each against the key having been up throughout its own span (since the decoder started listening, about 18 minutes ago)
+           E:2.4 ■:-3.7 E:1.2 E:1.7 ■:-15.5 E:48.7 R:201.0 I:64.6 E:13.7 E:6.9 E:4.0 E:15.3 T:40.8 E:28.4 D:311.2 E:79.8 ■:-24.9 ■:910.6 N:264.4 N:209.6 L:762.2 W:695.2 M:715.3 ■:-44.4 E:10.2 E:2.1 E:3.3 E:6.3 E:137.2 1:1477.8 N:354.3 N:404.3 ■:-25.0 W:702.2 A:406.2 T:286.0 T:327.8 S:332.5 W:917.4 I:232.0 L:1086.6 L:1066.0 S:540.7 A:443.3 Y:1043.1 7:1213.7 3:1545.2 E:206.2 S:538.3 T:536.7 K:1278.8 S:355.2 T:404.7 K:948.4 S:244.6 7:877.4 3:761.7 T:332.4 I:192.7 N:442.5 D:549.0 4:692.5 N:411.1 T:299.6 D:435.3 E:75.7 N:430.6 3:861.8 W:603.2 M:370.7 K:620.6 ■:-44.2 E:4.4 E:7.9 E:13.2 E:13.3 E:57.9 ■:429.1 R:174.4 R:185.7 O:371.9 K:352.1 B:379.3 I:136.9 I:146.9 L:568.6 L:526.9 T:176.0 N:207.8 X:397.1 F:202.5 E:18.1 R:138.7 C:309.7 A:116.7 L:258.6 L:333.4 E:53.6 S:161.4 N:200.0 I:103.2 C:485.5 E:44.5 T:131.0 O:211.2 W:79.0 O:110.9 R:81.1 K:266.6 U:249.5 <BT>:484.1 L:207.4 A:203.4 S:129.8 E:45.8 E:40.4 E:43.8 S:141.3 R:254.0 I:141.8 I:137.9 ■:-21.6 A:228.4 L:283.8 S:133.0 O:484.0 N:225.4 I:101.9 C:518.2 E:39.1 T:134.0 O:408.5 M:273.3 E:33.4 E:28.7 T:134.4 Y:446.4 O:319.9 U:127.5 7:367.0 3:588.7 E:62.3 S:196.6 G:414.1 E:33.7 E:10.7
+competing  none found (which is not the same as the frequency being clear)
+reading    27 WPM won out of 8 to 32, 2.0 better than silence per hop against a gate of 1
+keying     no keying at 500 Hz, 7 ms key down, 19 dB swing, 80 key-downs  (an independent sweep of 400 to 1200 Hz in 25 Hz steps over the last six seconds, sharing nothing with the decoder)
+
+sinceLast  85 characters, 216 elements  (since the previous capture)
+
+Frequency            7.025900 MHz
+Mode                 CW
+DataMode             off
+FilterSelection      FIL2
+FilterBandwidth      500 Hz
+SMeter               S4
+TransmitStatus       receiving
+Overflow             not overloading
+Swr                  unknown
+PowerOut             unknown
+RfPower              30%
+RfGain               100%
+Squelch              7%
+SquelchStatus        open
+Agc                  FAST
+Preamp               off
+Attenuator           off
+NoiseBlanker         off
+NoiseBlankerLevel    50%
+NoiseReduction       off
+NoiseReductionLevel  28%
+AutoNotch            off
+ManualNotch          off
+BreakIn              full
+KeyerSpeed           20 WPM
+CwPitch              600 Hz
+AccUsbOutputSelect   AF
+AccUsbAfLevel        80%
+NotchPosition        unknown
+FilterShape          unknown
+AfLevel              unknown
+RfSqlFunction        unknown
+BreakInDelay         unknown
+AntennaTuner         unknown
+Alc                  unknown
+AccUsbSquelch        open regardless of squelch
+Split                off
+ScopeOn              on
+ScopeOutput          off
+CivUsbPort           unknown
+CivTransceive        on
+Vfo                  undocumented

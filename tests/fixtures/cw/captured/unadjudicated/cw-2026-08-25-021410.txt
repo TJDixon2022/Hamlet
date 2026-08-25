@@ -1,0 +1,71 @@
+captured   2026-08-25 02:14:10 UTC
+audioSeen  4996320 samples
+fingerprint 6e9e8d96ae90
+seconds    30.0
+sampleRate 48000
+frequency  7029700 Hz  (read from the radio a moment ago)
+band       40 m  (from the frequency the radio reported)
+broadcast  the radio volunteered nothing while this recording was being made, and the setting reads on; 66 of 5599 frames since the link came up were the radio announcing something
+
+inputPeak  -13.2 dBFS  (over the whole recording)
+meterPeak  -13.6 dBFS  (the moment it was kept)
+inputFloor -21.0 dBFS
+clipping   False
+toneHz     540.0 Hz  (measured from the keying the survey admitted, interpolated between bins)
+tonePeak   58.8  (the highest the tracked tone ever stood above the noise beside it, held and decaying; not a figure about this recording)
+inThis     37 characters emitted, 3 unsure, 98 elements seen, 98 resolved  (in the 30.0 seconds of audio in this file)
+elements   212 seen, 212 resolved  (since the decoder started listening, about a minute ago)
+characters 90 emitted, 3 unsure  (since the decoder started listening, about a minute ago)
+decoderWpm 18
+text       LAEE UAE HAM FEST THIS EAST ATEEKEND ES E IAM TTHINKING ABT HOME BREW NG  A ■ AUBE XMT R HIHI DT ■RIGHR IS ■ FLENX 66O
+textCovers everything read since the decoder started listening, about a minute ago
+spanLlr    91 of the last 119 characters read, each against the key having been up throughout its own span (since the decoder started listening, about a minute ago)
+           L:441.2 A:439.5 E:165.2 E:146.6 U:148.1 A:69.9 E:28.5 H:83.6 A:163.8 M:339.1 F:438.5 E:84.1 S:239.4 T:256.9 T:153.5 H:167.6 I:91.9 S:140.9 E:25.3 A:183.8 S:84.6 T:187.0 A:297.0 T:236.0 E:67.7 E:72.0 K:475.7 E:59.2 N:267.4 D:433.7 E:122.3 S:305.2 E:122.2 I:207.1 A:259.8 M:365.1 T:81.6 T:85.9 H:158.3 I:87.1 N:223.7 K:452.9 I:85.4 N:63.2 G:390.3 A:429.3 B:551.5 T:265.5 H:207.4 O:432.7 M:268.1 E:46.4 B:298.5 R:212.9 E:81.0 W:287.3 N:145.7 G:417.8 A:266.8 ■:-54.8 A:348.7 U:647.3 B:923.3 E:138.4 X:947.8 M:413.2 T:198.4 R:404.0 H:215.4 I:217.8 H:539.5 I:245.7 D:461.9 T:252.7 ■:-41.7 R:615.4 I:194.9 G:625.9 H:370.3 R:821.1 I:292.4 S:609.9 ■:-27.3 F:861.9 L:530.6 E:48.0 N:119.9 X:388.3 6:598.8 6:275.3 O:326.8
+competing  none found (which is not the same as the frequency being clear)
+reading    18 WPM won out of 8 to 40, 2.3 better than silence per hop against a gate of 1
+keying     no keying at 550 Hz, 7 ms key down, 17 dB swing, 71 key-downs  (an independent sweep of 400 to 1200 Hz in 25 Hz steps over the last six seconds, sharing nothing with the decoder)
+
+sinceLast  90 characters, 212 elements  (since the decoder started listening, about a minute ago; this is the first capture of the session)
+
+Frequency            7.029700 MHz
+Mode                 CW
+DataMode             off
+FilterSelection      FIL2
+FilterBandwidth      500 Hz
+SMeter               S8
+TransmitStatus       receiving
+Overflow             not overloading
+Swr                  unknown
+PowerOut             unknown
+RfPower              30%
+RfGain               100%
+Squelch              7%
+SquelchStatus        open
+Agc                  FAST
+Preamp               off
+Attenuator           off
+NoiseBlanker         off
+NoiseBlankerLevel    50%
+NoiseReduction       off
+NoiseReductionLevel  28%
+AutoNotch            off
+ManualNotch          off
+BreakIn              full
+KeyerSpeed           20 WPM
+CwPitch              600 Hz
+AccUsbOutputSelect   AF
+AccUsbAfLevel        80%
+NotchPosition        unknown
+FilterShape          unknown
+AfLevel              unknown
+RfSqlFunction        unknown
+BreakInDelay         unknown
+AntennaTuner         unknown
+Alc                  unknown
+AccUsbSquelch        open regardless of squelch
+Split                off
+ScopeOn              on
+ScopeOutput          off
+CivUsbPort           unknown
+CivTransceive        on
+Vfo                  undocumented

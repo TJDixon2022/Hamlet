@@ -1,0 +1,71 @@
+captured   2026-08-25 01:35:20 UTC
+audioSeen  63687360 samples
+fingerprint 47773c308161
+seconds    30.0
+sampleRate 48000
+frequency  7025900 Hz  (read from the radio a moment ago)
+band       40 m  (from the frequency the radio reported)
+broadcast  the radio volunteered nothing while this recording was being made, and the setting reads on; 392 of 72364 frames since the link came up were the radio announcing something
+
+inputPeak  -13.4 dBFS  (over the whole recording)
+meterPeak  -13.4 dBFS  (the moment it was kept)
+inputFloor -21.4 dBFS
+clipping   False
+toneHz     540.0 Hz  (measured from the keying the survey admitted, interpolated between bins)
+tonePeak   62.6  (the highest the tracked tone ever stood above the noise beside it, held and decaying; not a figure about this recording)
+inThis     59 characters emitted, 1 unsure, 157 elements seen, 157 resolved  (in the 30.0 seconds of audio in this file)
+elements   2957 seen, 2957 resolved  (since the decoder started listening, about 23 minutes ago)
+characters 1290 emitted, 145 unsure  (since the decoder started listening, about 23 minutes ago)
+decoderWpm 32
+text       BT■ CONGRATS ON CHE CKING ALL BOXES FOR FOC ES ■ SIE ■ HPE YOU IN J OY UR LONG WAIT 5 EE ■ ■ ■E E EEE E SE5 E ■EU ID E DAVI NN ■EAT HR U ES YES B EEN TO O L ONG AHINK LAST TIME WAS WHEN MAYBE U WERE IN Q SO WITH WB H4 ET ES S S CAME IN TO J OIN? NOT SURE - BUT ANY WAY VY NICE HRING U ES UR RST 5 9 9 5NN QRN QRN HIGH TONITE BI T BVT BUT UR SIG DOOING FINE <BT> WL TNX VY MUCH FER THE COE CONGRATH ES YES HAVE TO WAIT 5 ■ MONTHS OR SO I GUESS BUT ALL GUD ES CAN KE E G KI KE EP MY S ELF O C C UP
+textCovers everything read since the decoder started listening, about 23 minutes ago
+spanLlr    174 of the last 240 characters read, each against the key having been up throughout its own span (since the decoder started listening, about 23 minutes ago)
+           R:424.9 E:82.9 -:762.4 B:251.4 U:284.4 T:209.2 A:161.3 N:216.4 Y:481.9 W:297.6 A:130.9 Y:295.7 V:193.3 Y:390.6 N:203.9 I:97.7 C:555.6 E:65.9 H:274.8 R:359.7 I:124.3 N:215.0 G:393.0 U:368.4 E:62.3 S:157.7 U:229.0 R:293.7 R:392.6 S:168.1 T:219.5 5:323.9 9:541.6 9:423.6 5:285.3 N:228.0 N:228.4 Q:568.0 R:318.0 N:190.3 Q:441.5 R:204.6 N:174.6 H:241.0 I:142.2 G:490.9 H:242.2 T:212.1 O:750.9 N:377.2 I:146.6 T:309.5 E:103.1 B:675.3 I:168.8 T:299.7 B:686.6 V:612.5 T:356.7 B:808.3 U:611.2 T:370.4 U:640.1 R:506.3 S:215.8 I:105.0 G:581.3 D:331.6 O:638.1 O:550.3 I:152.4 N:254.3 G:490.2 F:403.9 I:97.7 N:188.2 E:68.1 <BT>:414.3 W:393.2 L:334.1 T:201.7 N:276.8 X:530.8 V:292.8 Y:495.0 M:227.0 U:226.9 C:483.5 H:313.6 F:536.9 E:101.5 R:504.7 T:408.7 H:304.5 E:41.5 C:643.7 O:626.0 E:39.0 C:557.6 O:486.0 N:142.6 G:196.7 R:137.3 A:234.1 T:222.9 H:296.4 E:70.9 S:193.2 Y:906.6 E:67.4 S:174.6 H:245.5 A:307.7 V:389.5 E:55.9 T:193.0 O:511.0 W:378.6 A:244.0 I:111.6 T:274.7 5:374.4 ■:-16.8 M:363.7 O:485.7 N:211.7 T:173.4 H:242.2 S:237.3 O:942.3 R:440.3 S:179.2 O:697.2 I:134.5 G:364.2 U:313.7 E:74.6 S:178.7 S:211.7 B:669.0 U:448.8 T:236.5 A:312.7 L:461.3 L:329.2 G:546.3 U:527.8 D:475.6 E:81.5 S:285.3 C:710.2 A:223.1 N:218.1 K:703.3 E:70.7 E:79.5 G:567.4 K:451.4 I:80.5 K:382.6 E:51.8 E:44.3 P:491.6 M:396.6 Y:702.3 S:175.6 E:58.7 L:424.5 F:390.5 O:502.8 C:607.0 C:535.6 U:465.1 P:857.2
+competing  none found (which is not the same as the frequency being clear)
+reading    32 WPM won out of 8 to 32, 3.5 better than silence per hop against a gate of 1
+keying     keying at 550 Hz, 44 ms key down, 22 dB swing, 57 key-downs  (an independent sweep of 400 to 1200 Hz in 25 Hz steps over the last six seconds, sharing nothing with the decoder)
+
+sinceLast  158 characters, 431 elements  (since the previous capture)
+
+Frequency            7.025900 MHz
+Mode                 CW
+DataMode             off
+FilterSelection      FIL2
+FilterBandwidth      500 Hz
+SMeter               S9+10
+TransmitStatus       receiving
+Overflow             not overloading
+Swr                  unknown
+PowerOut             unknown
+RfPower              30%
+RfGain               100%
+Squelch              7%
+SquelchStatus        open
+Agc                  FAST
+Preamp               off
+Attenuator           off
+NoiseBlanker         off
+NoiseBlankerLevel    50%
+NoiseReduction       off
+NoiseReductionLevel  28%
+AutoNotch            off
+ManualNotch          off
+BreakIn              full
+KeyerSpeed           20 WPM
+CwPitch              600 Hz
+AccUsbOutputSelect   AF
+AccUsbAfLevel        80%
+NotchPosition        unknown
+FilterShape          unknown
+AfLevel              unknown
+RfSqlFunction        unknown
+BreakInDelay         unknown
+AntennaTuner         unknown
+Alc                  unknown
+AccUsbSquelch        open regardless of squelch
+Split                off
+ScopeOn              on
+ScopeOutput          off
+CivUsbPort           unknown
+CivTransceive        on
+Vfo                  undocumented
