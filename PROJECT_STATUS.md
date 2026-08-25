@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 5 of 5
-BALL: tim
-NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-24T16:58:16-04:00
-NOTE: pitch is right on six of fourteen and was already; the two unread captures refuse at their measured pitch, so a second mechanism exists and it is in the envelope
+STATE: EXECUTING
+TASK: 1 of 7
+BALL: code
+NEXT_PASTE: none
+UPDATED: 2026-08-24T21:43:04-04:00
+NOTE: the nine captures of 2026-08-25 are not in the tree, so the evening cannot be banked; tasks 2 to 7 run and the gap leads section 4
 
 ---
 
