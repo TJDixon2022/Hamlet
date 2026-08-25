@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 1 of 7
+TASK: 2 of 7
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-24T21:43:04-04:00
-NOTE: the nine captures of 2026-08-25 are not in the tree, so the evening cannot be banked; tasks 2 to 7 run and the gap leads section 4
+UPDATED: 2026-08-24T21:54:55-04:00
+NOTE: it was the badge, not a stale-band handler; the badge overhung narrow cards and took their clicks, and a second obstruction of the same shape turned up on the last card
 
 ---
 

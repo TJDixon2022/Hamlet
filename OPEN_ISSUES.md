@@ -4,6 +4,31 @@ Questions with owner and severity. `owner` is who must act next. Format in
 `CLAUDE.md` §3.
 
 ---
+id: HM-OPEN-060
+status: open
+owner: tim
+raised: 2026-08-25
+severity: slows
+refs: src/Hamlet.App/Views/MainWindow.axaml, HM-DEC-141
+---
+
+**On a narrow window the rig readout covers the last band card, and it cannot be
+clicked.**
+
+Measured headless at the default window size: `10 m` sits at x 547 and a hit test
+at its own centre reaches a `Border` belonging to the strip rather than the card.
+At 1400 wide all seven cards answer their own clicks.
+
+The band row is in a star column and the readout in an auto column beside it, and
+the cards do not shrink because their widths carry the wavelength ratio, which is
+the meaning rather than the size (HM-DEC-141). So at some width the row overflows
+into the readout and the readout is drawn on top.
+
+Found while fixing a different obstruction of the same shape — the best-bet badge
+overhanging its neighbours — and left because that fix was ruled and this is not.
+What the row should do when it runs out of room is a display question.
+
+---
 id: HM-OPEN-059
 status: open
 owner: claude

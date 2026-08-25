@@ -2198,14 +2198,35 @@
         </ItemsControl.ItemsPanel>
         <ItemsControl.ItemTemplate>
             <DataTemplate x:DataType="vm:BandButtonViewModel">
-                <Grid RowDefinitions="Auto,Auto">
-                    <Border Grid.Row="0" HorizontalAlignment="Center"
+                <!-- ONE CELL, AND THE BADGE IS DRAWN OVER IT.
+
+                     THE BADGE USED TO BE A ROW OF ITS OWN, ABOVE THE CARD, AND
+                     IT COST THE OPERATOR THE ABILITY TO TUNE. Two faults came
+                     out of that one line. A band carrying the badge had its card
+                     pushed down by the badge's height while every other card
+                     stayed at the top, so the row no longer lined up. And the
+                     badge is centred on a card whose width follows the
+                     wavelength (HM-DEC-141), so on a narrow card the badge is
+                     wider than the thing it labels and overhangs its
+                     neighbours — where it sat in front of them and took their
+                     clicks. On the evening this was found, `40 m` could not be
+                     clicked at all and the only way to tune was through
+                     favourites.
+
+                     So the badge shares the card's cell, is aligned to the top
+                     of it, and is `IsHitTestVisible="False"`. It cannot move a
+                     card, and it cannot take a click from one — including its
+                     own, which is the point: the badge is a label and the card
+                     underneath it is the control. -->
+                <Grid>
+                    <Border ZIndex="1"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Top"
+                            IsHitTestVisible="False"
                             Background="{StaticResource HmGreenTintBrush}"
                             BorderBrush="{StaticResource HmGreenEdgeBrush}"
                             BorderThickness="1" CornerRadius="8"
-                            Padding="6,0" Margin="0,0,0,2"
-                            ToolTip.Tip="{Binding BestBetTooltip}"
-                            ToolTip.ShowDelay="250"
+                            Padding="6,0" Margin="0,-9,0,0"
                             IsVisible="{Binding IsBestBet}">
                         <!-- The label travels with the ranking, so a clock
                              guess can never wear the same words as an
@@ -2219,7 +2240,7 @@
                          whether the band is in its element, and the card
                          dims when it is not — three carriers for one fact,
                          so color is never doing the work alone. -->
-                    <Button Grid.Row="1" Classes="hm-band"
+                    <Button Classes="hm-band"
                             Width="{Binding CardWidth}"
                             Opacity="{Binding CardOpacity}"
                             Padding="8,6"

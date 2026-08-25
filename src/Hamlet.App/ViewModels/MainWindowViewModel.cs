@@ -6712,9 +6712,26 @@ public partial class BandButtonViewModel : ObservableObject
     /// Hamlet can actually vouch for (HM-DEC-031, HM-DEC-033).
     /// </remarks>
     public string ActivityTooltip
-        => Character.Length == 0
-            ? Activity.Tooltip
-            : Character + TooltipParagraphBreak + Activity.Tooltip;
+    {
+        get
+        {
+            var text = Character.Length == 0
+                ? Activity.Tooltip
+                : Character + TooltipParagraphBreak + Activity.Tooltip;
+
+            // **THE BADGE'S OWN REASON MOVED HERE WHEN THE BADGE STOPPED TAKING
+            // CLICKS.** It used to carry this tooltip itself; it is now drawn
+            // over the card and hit-tested out of the way, because in the
+            // layout flow it was pushing badged cards down and overhanging its
+            // neighbours, and on 2026-08-25 that cost the operator the ability
+            // to click `40 m` at all. A thing that cannot be hovered cannot
+            // explain itself, and dropping the explanation would be hiding
+            // information rather than a control (§0.5).
+            return IsBestBet && BestBetTooltip.Length > 0
+                ? text + TooltipParagraphBreak + BestBetTooltip
+                : text;
+        }
+    }
 
     /// <summary>Blank line between the character passage and the evidence.</summary>
     private const string TooltipParagraphBreak = "\n\n";
