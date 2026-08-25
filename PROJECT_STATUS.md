@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 5 of 7
+TASK: 6 of 7
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-24T21:59:09-04:00
-NOTE: the keying block now waits while the advisory speaks, so the two cannot contradict each other on screen; the meter itself is untouched
+UPDATED: 2026-08-24T22:08:53-04:00
+NOTE: ceiling raised to forty and a winner at either end now says so; it also turned a fast-fist test green that had been red since unit 002
 
 ---
 

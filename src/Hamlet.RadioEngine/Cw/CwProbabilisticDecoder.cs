@@ -40,6 +40,22 @@ public readonly record struct CwProbabilisticResult(
     IReadOnlyList<CwProbabilisticCharacter> Characters,
     bool EndsInsideCharacter = false)
 {
+    /// <summary>
+    /// True when the winning speed sits at either end of the search, so it may
+    /// be a limit rather than a measurement.
+    /// </summary>
+    /// <remarks>
+    /// **A HYPOTHESIS AT THE EDGE OF A RANGE WINS BY DEFAULT RATHER THAN ON
+    /// EVIDENCE** — there is nothing beyond it to lose to. On 2026-08-25 two
+    /// operators measured 30.9 and 30.8 words a minute and Hamlet reported 32 for
+    /// both, which was the top of its grid, and nothing on the sheet said so. A
+    /// number that cannot be told from a ceiling is not a measurement (§0.0).
+    /// </remarks>
+    public bool SpeedIsAtTheEdge
+        => Characters.Count > 0
+           && (WordsPerMinute <= CwProbabilisticDecoder.SlowestWpm + 1e-9
+               || WordsPerMinute >= CwProbabilisticDecoder.FastestWpm - 1e-9);
+
     /// <summary>Nothing measured.</summary>
     public static CwProbabilisticResult None { get; }
         = new(0, 0, "", 0, Array.Empty<CwProbabilisticCharacter>());
@@ -351,13 +367,24 @@ public static class CwProbabilisticDecoder
 
     /// <summary>The fastest speed hypothesis tried.</summary>
     /// <remarks>
-    /// **FORTY, BECAUSE A MACHINE SENDER IS THE EASIEST THING ON THE BAND AND
-    /// HAMLET COULD NOT FIT ONE.** A station running thirty-five or forty is
+    /// <para>**FORTY, BECAUSE A MACHINE SENDER IS THE EASIEST THING ON THE BAND
+    /// AND HAMLET COULD NOT FIT ONE.** A station running thirty-five or forty is
     /// almost always a program sending perfect timing, which is the least
     /// demanding audio a decoder ever sees, and the old ceiling of thirty-two put
-    /// it outside the grid.
+    /// it outside the grid.</para>
+    /// <para>**THE REMARKS SAID FORTY AND THE CONSTANT SAID THIRTY-TWO FOR TWO
+    /// DAYS** (HM-OPEN-058, logged 2026-08-23 and parked in every unit since).
+    /// What settled it is a pair of live captures rather than the contradiction:
+    /// on the evening of 2026-08-25 two First Class CW Operators' Club members
+    /// measured 30.9 and 30.8 words a minute and Hamlet reported **32 for both**,
+    /// which is the top of its own search. One notch faster and the grid could
+    /// not have followed them, and the failure would have looked like a decoder
+    /// fault rather than a range limit.</para>
+    /// <para>**AND A WINNER AT EITHER END IS NOW SAID OUT LOUD**, so a range
+    /// limit is never again mistaken for a measurement
+    /// (<see cref="CwProbabilisticResult.SpeedIsAtTheEdge"/>).</para>
     /// </remarks>
-    public const double FastestWpm = 32;
+    public const double FastestWpm = 40;
 
     /// <summary>How far apart the speed hypotheses sit.</summary>
     /// <remarks>

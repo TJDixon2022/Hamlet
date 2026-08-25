@@ -4357,15 +4357,31 @@ public partial class MainWindowViewModel : ObservableObject
         // speed is whichever hypothesis explained the audio best, and how well
         // that explanation did is the likelihood ratio against silence. Those are
         // the numbers behind the text and they are what this line carries now.
+        // **A WINNER AT EITHER END OF THE SEARCH SAYS SO** (§0.0). A hypothesis
+        // at the edge of a range wins by default rather than on evidence,
+        // because there is nothing beyond it to lose to. On 2026-08-25 two
+        // operators measured 30.9 and 30.8 words a minute and this line said 32
+        // for both, which was the top of the grid, and nothing on the sheet
+        // could tell a ceiling from a measurement.
+        var atEdge =
+            reading.WordsPerMinute >= CwProbabilisticDecoder.FastestWpm - 1e-9
+                ? "  (AT THE TOP OF THE SEARCH: the sender may be faster than "
+                  + "Hamlet can look)"
+                : reading.WordsPerMinute <= CwProbabilisticDecoder.SlowestWpm + 1e-9
+                    ? "  (AT THE BOTTOM OF THE SEARCH: the sender may be slower "
+                      + "than Hamlet can look)"
+                    : "";
+
         return string.Format(
             CultureInfo.InvariantCulture,
             "{0:0} WPM won out of {1} to {2}, {3:0.0} better than silence per hop "
-            + "against a gate of {4:0}",
+            + "against a gate of {4:0}{5}",
             reading.WordsPerMinute,
             CwProbabilisticDecoder.SlowestWpm,
             CwProbabilisticDecoder.FastestWpm,
             reading.LikelihoodRatio,
-            CwProbabilisticDecoder.Gate);
+            CwProbabilisticDecoder.Gate,
+            atEdge);
     }
 
     /// <summary>What the meter said, as one line for a record.</summary>

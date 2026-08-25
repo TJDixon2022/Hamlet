@@ -56,8 +56,8 @@ table where every cell is perfect measures nothing about the filter.
 | 300 Hz | -6 dB | 11/11, 0 made up | 11/11, 0 made up | 11/11, 0 made up | 11/11, 0 made up |
 | 300 Hz | -12 dB | 11/11, 0 made up | 11/11, 0 made up | 11/11, 0 made up | 11/11, 0 made up |
 | 30 Hz | +0 dB | 9/11, 0 made up | 9/11, 0 made up | 10/11, 0 made up | 11/11, 0 made up |
-| 30 Hz | +6 dB | 2/11, 29 made up | 1/11, 26 made up | 9/11, 0 made up | 10/11, 0 made up |
-| 20 Hz | +0 dB | 2/11, 27 made up | 9/11, 0 made up | 9/11, 0 made up | 10/11, 0 made up |
+| 30 Hz | +6 dB | 2/11, 31 made up | 2/11, 31 made up | 9/11, 0 made up | 10/11, 0 made up |
+| 20 Hz | +0 dB | 2/11, 28 made up | 9/11, 0 made up | 9/11, 0 made up | 10/11, 0 made up |
 | 20 Hz | +6 dB | 4/11, 2 made up | 5/11, 2 made up | 5/11, 1 made up | 9/11, 0 made up |
 | 15 Hz | +0 dB | 6/11, 6 made up | 5/11, 1 made up | 6/11, 0 made up | 7/11, 0 made up |
 | 10 Hz | +0 dB | 6/11, 4 made up | 5/11, 0 made up | 5/11, 2 made up | 6/11, 0 made up |
