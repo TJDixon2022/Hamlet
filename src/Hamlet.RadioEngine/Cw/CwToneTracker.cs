@@ -128,7 +128,14 @@ public sealed class CwToneTracker
     public const double MaximumToneHz = 900;
 
     /// <summary>Spacing of the survey bank, in hertz.</summary>
-    private const double CoarseSpacingHz = 25;
+    /// <summary>How far apart the survey's coarse bins sit, in hertz.</summary>
+    /// <remarks>
+    /// **PUBLIC BECAUSE IT IS THE RESOLUTION OF EVERY PITCH THIS TRACKER
+    /// REPORTS.** A difference smaller than one bin is below what the survey
+    /// could have told anybody, so it is the natural bar for deciding whether a
+    /// pitch has really changed — which is what `CwDecoder`'s re-read asks.
+    /// </remarks>
+    public const double CoarseSpacingHz = 25;
 
     /// <summary>Spacing of the reading bank, in hertz.</summary>
     /// <remarks>

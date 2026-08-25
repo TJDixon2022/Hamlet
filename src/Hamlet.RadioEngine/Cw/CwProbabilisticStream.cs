@@ -96,6 +96,9 @@ public sealed class CwProbabilisticStream
     private readonly float[] _mixedI;
     private readonly float[] _mixedQ;
     private readonly double[] _envelope;
+
+    /// <summary>What each held hop was demodulated at, beside the envelope itself.</summary>
+    private readonly double[] _mixedAt;
     private readonly double[] _taper;
     private readonly double _taperWeight;
 
@@ -154,6 +157,7 @@ public sealed class CwProbabilisticStream
         _mixedI = new float[_windowSamples];
         _mixedQ = new float[_windowSamples];
         _envelope = new double[_windowHops];
+        _mixedAt = new double[_windowHops];
 
         // **A GUARD SET ONLY IN A METHOD NOTHING CALLS IS A GUARD THAT DOES NOT
         // EXIST.** This was assigned in `Restart()` alone, and `Restart()` is
@@ -239,6 +243,13 @@ public sealed class CwProbabilisticStream
     public void Process(ReadOnlySpan<float> samples)
     {
         var step = 2 * Math.PI * ToneHz / _sampleRate;
+
+        // What the audio now going into the window is being demodulated at, so a
+        // re-read can tell whether the window is stale (<see cref="MixedAtHz"/>).
+        if (samples.Length > 0)
+        {
+            MixedAtHz = ToneHz;
+        }
 
         foreach (var sample in samples)
         {
@@ -336,6 +347,142 @@ public sealed class CwProbabilisticStream
         LeadingEdgeChanged?.Invoke(Array.Empty<CwCharacter>());
     }
 
+    /// <summary>How many hops of audio this stream is currently holding.</summary>
+    /// <remarks>
+    /// What a re-read has to replay to put the window back where it was. It is a
+    /// count of hops rather than of seconds so that the replay is hop-aligned by
+    /// construction and cannot depend on the shape of arriving chunks.
+    /// </remarks>
+    public int HeldHops => _envelopeCount;
+
+    /// <summary>How many samples this stream has taken in.</summary>
+    /// <remarks>
+    /// The stream's own place on the audio clock, which is behind the tap's
+    /// whenever a chunk holds more than one hop. A re-read has to ask the tap for
+    /// the audio *the stream* has seen, not the audio that has arrived, or the
+    /// replay would depend on the shape of the chunk it happened to fire inside.
+    /// </remarks>
+    public long SamplesSeen => _samplesSeen;
+
+    /// <summary>The pitch the newest hop in the window was mixed at.</summary>
+    public double MixedAtHz { get; private set; } = double.NaN;
+
+    /// <summary>
+    /// How far the pitch a held hop was mixed at can be from a given pitch,
+    /// across everything the window is holding.
+    /// </summary>
+    /// <param name="pitchHz">The pitch to compare against.</param>
+    /// <returns>The largest difference in hertz, or nought where nothing is held.</returns>
+    /// <remarks>
+    /// <para>**THE NEWEST HOP'S PITCH IS THE WRONG QUESTION, AND ASKING IT MADE
+    /// THE RE-READ NEVER FIRE ON ANY CAPTURE IN THE TREE.** The tracker walks its
+    /// bank long before its survey admits a candidate, so by the time a pitch is
+    /// *measured* the newest audio is usually already being mixed at something
+    /// close to it — while the front of the same window is still at the bank
+    /// centre the decoder started from. Comparing against the newest hop said
+    /// "already close enough" every time.</para>
+    /// <para>What decides whether a window is worth reading again is whether
+    /// **any** of the audio in it was demodulated somewhere else, so that is what
+    /// this measures.</para>
+    /// </remarks>
+    public double MixedSpreadFrom(double pitchHz)
+    {
+        var worst = 0.0;
+
+        for (var i = 0; i < _envelopeCount; i++)
+        {
+            var gap = Math.Abs(_mixedAt[i] - pitchHz);
+
+            if (gap > worst)
+            {
+                worst = gap;
+            }
+        }
+
+        return worst;
+    }
+
+    /// <summary>
+    /// How many times this stream has re-read audio it already held, at a pitch
+    /// it learned afterwards.
+    /// </summary>
+    public int ReReads { get; private set; }
+
+    /// <summary>
+    /// Read audio the stream has already seen again, at a pitch it has since
+    /// measured.
+    /// </summary>
+    /// <param name="audio">
+    /// Exactly the samples the window is holding, oldest first, from the tap.
+    /// </param>
+    /// <param name="toneHz">The measured pitch to read them at.</param>
+    /// <remarks>
+    /// <para>**THE FIRST SECONDS OF EVERY STATION ARE DEMODULATED AT A GUESS,
+    /// AND UNTIL NOW THEY STAYED THAT WAY FOR THE REST OF THE CONTACT.** The
+    /// stream mixes each sample as it arrives, at whatever pitch the tracker
+    /// believed at that moment, and the tracker believes the middle of a bank
+    /// until its survey admits a candidate. Measured across this repository's
+    /// captures, that first measurement lands two to seven seconds in on half of
+    /// them, and the window is still holding every sample from the start when it
+    /// does.</para>
+    /// <para>**WHAT IT COSTS IN MEMORY IS NOTHING, BECAUSE THE AUDIO IS ALREADY
+    /// KEPT.** `AudioTap` holds thirty seconds of raw samples for the capture
+    /// button and the keying meter, so a re-read reads what the decoder already
+    /// has rather than retaining anything new.</para>
+    /// <para>**NOTHING ALREADY SAID IS SAID AGAIN OR TAKEN BACK** (§0.0). The
+    /// settled mark and the settled count are carried across untouched, so the
+    /// replay re-derives characters that have already been announced and drops
+    /// them on the same test that stops a window being re-read twice a second
+    /// from repeating itself. What the re-read is for is the characters that have
+    /// *not* settled yet: it makes the first emission right rather than editing
+    /// history.</para>
+    /// <para>**AND THE AUDIO CLOCK IS REWOUND BEFORE THE REPLAY AND LANDS BACK
+    /// WHERE IT WAS.** Every character's moment, and the settled mark itself, are
+    /// counted in hops since the stream started; replaying without rewinding
+    /// would stamp the replayed audio as though it were new and put every
+    /// character after it in the wrong place.</para>
+    /// </remarks>
+    public void ReadAgain(ReadOnlySpan<float> audio, double toneHz)
+    {
+        var hops = audio.Length / _hopSamples;
+
+        if (hops <= 0 || hops != _envelopeCount)
+        {
+            // The tap could not give back exactly what the window is holding, so
+            // there is nothing to re-read against. Saying nothing is right here:
+            // a partial replay would be a window built from two pitches.
+            return;
+        }
+
+        _envelopeCount = 0;
+        _mixWrite = 0;
+        _mixFilled = 0;
+        _hopsSinceRead = 0;
+        _sampleInHop = 0;
+        _phase = 0;
+        _troughRun = 0;
+        _troughMisses = 0;
+        _structureHeld = false;
+        _heldGaps = default;
+
+        // **THE REFILL GUARD IS STOOD DOWN FOR THE REPLAY AND ONLY FOR IT.** It
+        // exists to stop a window that was emptied on a station change being read
+        // back before it holds one sender's audio, and this window is being
+        // refilled with the same sender's audio it already held.
+        _refillHops = 1;
+
+        _hopsSeen -= hops;
+        _samplesSeen -= audio.Length;
+
+        ToneHz = toneHz;
+        ReReads++;
+
+        Process(audio);
+
+        _refillHops = Math.Max(
+            1, (int)(RefillSeconds * 1000.0 / CwProbabilisticDecoder.HopMilliseconds));
+    }
+
     /// <summary>Settle everything still inside the delay, because nothing else is coming.</summary>
     public void Flush()
     {
@@ -377,12 +524,15 @@ public sealed class CwProbabilisticStream
 
         if (_envelopeCount < _windowHops)
         {
+            _mixedAt[_envelopeCount] = ToneHz;
             _envelope[_envelopeCount++] = magnitude;
         }
         else
         {
             Array.Copy(_envelope, 1, _envelope, 0, _windowHops - 1);
+            Array.Copy(_mixedAt, 1, _mixedAt, 0, _windowHops - 1);
             _envelope[_windowHops - 1] = magnitude;
+            _mixedAt[_windowHops - 1] = ToneHz;
         }
 
         _hopsSeen++;

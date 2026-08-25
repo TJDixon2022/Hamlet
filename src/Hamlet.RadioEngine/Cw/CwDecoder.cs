@@ -535,6 +535,8 @@ public sealed class CwDecoder
         if (_tracker.HasMeasuredPitch)
         {
             _lastMeasuredToneHz = _tracker.ToneHz;
+
+            ReadHeldAudioAgain();
         }
 
         // **THE OPERATOR'S LOCK FIRST, THEN THE LAST MEASURED PITCH, THEN THE
@@ -606,6 +608,113 @@ public sealed class CwDecoder
         DecodingSuspended = _transmitEndedUtc != DateTime.MinValue
             && nowUtc - _transmitEndedUtc < ResumeAfter;
     }
+
+    /// <summary>
+    /// Read the audio the decoder is still holding again, at a pitch it has
+    /// since measured.
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE FIRST SECONDS OF EVERY STATION ARE DEMODULATED AT A GUESS.**
+    /// The stream mixes each sample as it arrives, at whatever the tracker
+    /// believed then, and until the survey admits a candidate the tracker answers
+    /// with the middle of the bank it is pointed at. Measured across this
+    /// repository's thirty-six captures, the first measured pitch lands two to
+    /// seven seconds in on half of them, and the window is still holding every
+    /// sample since the start when it does — mixed at a number nobody keyed at.</para>
+    /// <para>**WHAT IT IS WORTH WAS MEASURED BEFORE IT WAS BUILT.** Read whole at
+    /// the station's own note instead of the operator's 600 Hz,
+    /// `cw-2026-08-22-032113` gives back 22 characters of its adjudicated line
+    /// rather than 4, `032012` 43 rather than 22 and `032050` 24 rather than 17.
+    /// Hamlet cannot know the note in advance; it knows it a few seconds in, and
+    /// nothing re-read what it already had.</para>
+    /// <para>**ONCE, ON A MEASURED PITCH, AND ONLY BACKWARD.** A re-read at a
+    /// bank centre would be decoding at a number nobody keyed at, which is the
+    /// fault this exists to remove rather than to repeat. It fires at most once
+    /// for each pitch it settles on, so a tracker walking a few hertz cannot
+    /// replay the window every hop.</para>
+    /// <para>**AND IT ASKS THE TAP FOR THE AUDIO THE STREAM HAS SEEN**, not for
+    /// the last N samples. The tap takes a whole chunk at once and this walks it
+    /// a hop at a time, so "the last N" would hand the replay hops from the
+    /// future and make it depend on the size of the chunk it fired inside —
+    /// reintroducing the two-decoders fault `OneDecoderNotTwoTests` closed.</para>
+    /// </remarks>
+    private void ReadHeldAudioAgain()
+    {
+        var measured = _tracker.ToneHz;
+
+        // **THE SAME TWO-READINGS RULE THE TRACKER ITSELF OBEYS** (HM-DEC-095).
+        // The first pitch the survey admits is not always the one it settles on:
+        // on `cw-2026-08-18-004507` it answers 475 Hz two seconds in and 500 a
+        // moment later, and 500 is where the station is. Replaying at the first
+        // answer is replaying at a number that is about to be corrected, so this
+        // waits for two readings that agree to within the survey's own
+        // resolution before it replays anything.
+        var confirmed = !double.IsNaN(_lastMeasuredForReRead)
+            && Math.Abs(measured - _lastMeasuredForReRead)
+                < CwToneTracker.CoarseSpacingHz;
+
+        _lastMeasuredForReRead = measured;
+
+        if (!confirmed)
+        {
+            return;
+        }
+
+        if (Math.Abs(measured - _reReadAt) < CwToneTracker.CoarseSpacingHz)
+        {
+            // Already read the window at this pitch, or near enough that the
+            // survey could not have told the two apart.
+            return;
+        }
+
+        // **ONLY WHILE THERE IS A FIRST EMISSION LEFT TO GET RIGHT.** That is
+        // what the re-read is for, and once characters have been announced,
+        // replaying can only risk what is already on the screen — the settled
+        // mark stops them being said twice, so a replay that reads the same
+        // stretch worse costs the tip and buys nothing back.
+        //
+        // **MEASURED, AND IT IS THE DIFFERENCE BETWEEN A GAIN AND A TRADE.**
+        // Without this condition the corpus moves 153 adjudicated characters to
+        // 164 and two of them go backwards: `cw-2026-08-22-031905` from 11 to 10
+        // and `032129` from 9 to 7, both re-read after their tracker had already
+        // announced 7 and 21 characters, and `032129`'s measured pitch is 650 for
+        // a station at 500. With it the corpus reaches the same 164 and nothing
+        // goes backwards at all.
+        if (_probabilistic.SettledCharacters > 0)
+        {
+            return;
+        }
+
+        var held = _probabilistic.HeldHops;
+
+        if (held <= 0 || double.IsNaN(_probabilistic.MixedAtHz))
+        {
+            return;
+        }
+
+        if (_probabilistic.MixedSpreadFrom(measured) < CwToneTracker.CoarseSpacingHz)
+        {
+            // Every hop in the window was already mixed within one bin of the
+            // measured pitch, so a replay would be the same demodulation twice.
+            _reReadAt = measured;
+            return;
+        }
+
+        var samples = held * _tracker.HopSamples;
+        var audio = Tap.Window(_probabilistic.SamplesSeen - samples, samples);
+
+        if (audio is null)
+        {
+            return;
+        }
+
+        _reReadAt = measured;
+        _probabilistic.ReadAgain(audio.Samples, measured);
+    }
+
+    private double _reReadAt = double.NaN;
+
+    private double _lastMeasuredForReRead = double.NaN;
 
     private void OnSamples(in AudioChunk chunk) => Process(chunk);
 

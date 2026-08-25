@@ -259,6 +259,47 @@ public sealed class AudioTap
         }
     }
 
+    /// <summary>The samples between two places on the audio clock.</summary>
+    /// <param name="firstSample">Where to start, counted from the first sample ever taken.</param>
+    /// <param name="count">How many to give back.</param>
+    /// <returns>The samples, or null where the tap no longer holds all of them.</returns>
+    /// <remarks>
+    /// **ADDRESSED BY THE CLOCK RATHER THAN BY "THE LAST N"**, because the thing
+    /// asking may be behind the tap. The tap takes a whole chunk at once and the
+    /// decoder walks it a hop at a time, so a re-read firing inside that walk
+    /// wants the audio the decoder has seen and not the audio that has arrived —
+    /// and asking for the last N would hand it hops from the future, which would
+    /// make the replay depend on the size of the chunk it fired inside.
+    /// </remarks>
+    public MonoAudio? Window(long firstSample, int count)
+    {
+        lock (_lock)
+        {
+            if (count <= 0 || _filled == 0 || _sampleRate <= 0)
+            {
+                return null;
+            }
+
+            var oldest = SamplesSeen - _filled;
+
+            if (firstSample < oldest || firstSample + count > SamplesSeen)
+            {
+                return null;
+            }
+
+            var samples = new float[count];
+            var start = firstSample - oldest;
+            var from = _filled < _ring.Length ? 0 : _write;
+
+            for (var i = 0; i < count; i++)
+            {
+                samples[i] = _ring[(int)((from + start + i) % _ring.Length)];
+            }
+
+            return new MonoAudio(_sampleRate, samples);
+        }
+    }
+
     /// <summary>
     /// The most recent stretch of what the tap is holding, oldest first.
     /// </summary>
