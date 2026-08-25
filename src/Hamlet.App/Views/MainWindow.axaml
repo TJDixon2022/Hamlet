@@ -2176,7 +2176,7 @@
 
              So: the strip above stays put, a bar of starting points sits under
              it, and everything else is theirs to arrange. -->
-        <Grid Grid.Row="1" RowDefinitions="Auto,Auto,*">
+        <Grid Grid.Row="1" RowDefinitions="Auto,Auto,Auto,*">
 
             <!-- THE STRIP IS NOT PART OF THE CANVAS and cannot be closed or
                  moved. Band, frequency, mode, where you are and whether you may
@@ -2191,93 +2191,6 @@
             <Grid Grid.Row="0" ColumnDefinitions="*,Auto"
                   RowDefinitions="Auto,Auto" Margin="0,0,0,10">
 
-    <!-- THE BANDS SIT BESIDE THE READOUT NOW (HM-DEC-141), not above it. As
-         two stacked blocks they took about a third of the window height to
-         convey a band, a frequency, a mode and a hint, and the canvas below
-         them is what the operator actually works in. -->
-    <ItemsControl Grid.Row="0" Grid.Column="0" VerticalAlignment="Top"
-                  ItemsSource="{Binding Bands}" Margin="0,0,14,0">
-        <ItemsControl.ItemsPanel>
-            <ItemsPanelTemplate>
-                <StackPanel Orientation="Horizontal" Spacing="8" />
-            </ItemsPanelTemplate>
-        </ItemsControl.ItemsPanel>
-        <ItemsControl.ItemTemplate>
-            <DataTemplate x:DataType="vm:BandButtonViewModel">
-                <!-- ONE CELL, AND THE BADGE IS DRAWN OVER IT.
-
-                     THE BADGE USED TO BE A ROW OF ITS OWN, ABOVE THE CARD, AND
-                     IT COST THE OPERATOR THE ABILITY TO TUNE. Two faults came
-                     out of that one line. A band carrying the badge had its card
-                     pushed down by the badge's height while every other card
-                     stayed at the top, so the row no longer lined up. And the
-                     badge is centred on a card whose width follows the
-                     wavelength (HM-DEC-141), so on a narrow card the badge is
-                     wider than the thing it labels and overhangs its
-                     neighbours — where it sat in front of them and took their
-                     clicks. On the evening this was found, `40 m` could not be
-                     clicked at all and the only way to tune was through
-                     favourites.
-
-                     So the badge shares the card's cell, is aligned to the top
-                     of it, and is `IsHitTestVisible="False"`. It cannot move a
-                     card, and it cannot take a click from one — including its
-                     own, which is the point: the badge is a label and the card
-                     underneath it is the control. -->
-                <Grid>
-                    <Border ZIndex="1"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Top"
-                            IsHitTestVisible="False"
-                            Background="{StaticResource HmGreenTintBrush}"
-                            BorderBrush="{StaticResource HmGreenEdgeBrush}"
-                            BorderThickness="1" CornerRadius="8"
-                            Padding="6,0" Margin="0,-9,0,0"
-                            IsVisible="{Binding IsBestBet}">
-                        <!-- The label travels with the ranking, so a clock
-                             guess can never wear the same words as an
-                             observation (HM-DEC-046). -->
-                        <TextBlock Text="{Binding BestBetLabel}" FontSize="11"
-                                   Foreground="{StaticResource HmGreenBrush}" />
-                    </Border>
-
-                    <!-- A character card, not a plain button (HM-DEC-033).
-                         Width follows wavelength, the icon and the bar say
-                         whether the band is in its element, and the card
-                         dims when it is not — three carriers for one fact,
-                         so color is never doing the work alone. -->
-                    <Button Classes="hm-band"
-                            Width="{Binding CardWidth}"
-                            Opacity="{Binding CardOpacity}"
-                            Padding="8,6"
-                            ToolTip.Tip="{Binding ActivityTooltip}"
-                            ToolTip.ShowDelay="250"
-                            Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).SelectBandCommand}"
-                            CommandParameter="{Binding}">
-                        <StackPanel Spacing="4">
-                            <Grid ColumnDefinitions="*,Auto">
-                                <TextBlock Grid.Column="0"
-                                           Text="{Binding Band.Name}"
-                                           VerticalAlignment="Center" />
-                                <ctl:DayNightIconControl Grid.Column="1"
-                                                         VerticalAlignment="Center"
-                                                         Icon="{Binding CardIcon}"
-                                                         Tint="{Binding CardIconTint}" />
-                            </Grid>
-
-                            <Border Height="3" CornerRadius="2"
-                                    Background="{Binding CardBar}" />
-
-                            <ctl:ActivityPipsControl
-                                HorizontalAlignment="Center"
-                                Filled="{Binding ActivityPips}"
-                                IsUnknown="{Binding ActivityUnknown}" />
-                        </StackPanel>
-                    </Button>
-                </Grid>
-            </DataTemplate>
-        </ItemsControl.ItemTemplate>
-    </ItemsControl>
 
     <!-- Frequency face: the rig's own LCD on the console. Deliberately
          NOT collapsible (HM-DEC-021), and the whole strip it sits in is
@@ -2493,6 +2406,114 @@
     </Grid>
             </Grid>
 
+    <!-- **THE BAND ROW IS BELOW THE READOUT NOW, NOT BESIDE IT** — Tim's
+         ruling of 2026-08-25, in his words: "the band's display is cut off. It
+         needs to be shifted down."
+
+         HM-DEC-141 had put the bands beside the readout to get the strip's
+         height back, and that part still holds: this row is one card tall and
+         the two-stacked-blocks layout it replaced cost about a third of the
+         window. What it did not survive is a narrow window. The cards sit in a
+         star column and the readout in an auto column beside it, and the cards
+         cannot shrink, because their widths carry the wavelength ratio and that
+         is the meaning rather than the size. So past some width the row runs
+         under the readout, which is drawn over it, and the last card stops
+         answering a click.
+
+         **MEASURED, AND IT REACHED THE OPERATOR'S OWN WINDOW.** Hit-tested
+         headless at four widths: at 1400 and 1200 every card answers its own
+         centre, and at 1000 and 820 none of them does. HM-OPEN-060 recorded the
+         1000-pixel case and the test was pinned at 1400, so the suite was green
+         while the row was unreachable.
+
+         The row now has a row of its own beneath the strip, so it has the whole
+         window width and nothing to collide with. It is still outside the canvas
+         and still cannot be closed or moved (HM-DEC-086), and nothing about the
+         cards changes — the ratio that carries the meaning is untouched. -->
+    <ItemsControl Grid.Row="1" VerticalAlignment="Top"
+                  ItemsSource="{Binding Bands}" Margin="0,0,0,10">
+        <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+                <StackPanel Orientation="Horizontal" Spacing="8" />
+            </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+        <ItemsControl.ItemTemplate>
+            <DataTemplate x:DataType="vm:BandButtonViewModel">
+                <!-- ONE CELL, AND THE BADGE IS DRAWN OVER IT.
+
+                     THE BADGE USED TO BE A ROW OF ITS OWN, ABOVE THE CARD, AND
+                     IT COST THE OPERATOR THE ABILITY TO TUNE. Two faults came
+                     out of that one line. A band carrying the badge had its card
+                     pushed down by the badge's height while every other card
+                     stayed at the top, so the row no longer lined up. And the
+                     badge is centred on a card whose width follows the
+                     wavelength (HM-DEC-141), so on a narrow card the badge is
+                     wider than the thing it labels and overhangs its
+                     neighbours — where it sat in front of them and took their
+                     clicks. On the evening this was found, `40 m` could not be
+                     clicked at all and the only way to tune was through
+                     favourites.
+
+                     So the badge shares the card's cell, is aligned to the top
+                     of it, and is `IsHitTestVisible="False"`. It cannot move a
+                     card, and it cannot take a click from one — including its
+                     own, which is the point: the badge is a label and the card
+                     underneath it is the control. -->
+                <Grid>
+                    <Border ZIndex="1"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Top"
+                            IsHitTestVisible="False"
+                            Background="{StaticResource HmGreenTintBrush}"
+                            BorderBrush="{StaticResource HmGreenEdgeBrush}"
+                            BorderThickness="1" CornerRadius="8"
+                            Padding="6,0" Margin="0,-9,0,0"
+                            IsVisible="{Binding IsBestBet}">
+                        <!-- The label travels with the ranking, so a clock
+                             guess can never wear the same words as an
+                             observation (HM-DEC-046). -->
+                        <TextBlock Text="{Binding BestBetLabel}" FontSize="11"
+                                   Foreground="{StaticResource HmGreenBrush}" />
+                    </Border>
+
+                    <!-- A character card, not a plain button (HM-DEC-033).
+                         Width follows wavelength, the icon and the bar say
+                         whether the band is in its element, and the card
+                         dims when it is not — three carriers for one fact,
+                         so color is never doing the work alone. -->
+                    <Button Classes="hm-band"
+                            Width="{Binding CardWidth}"
+                            Opacity="{Binding CardOpacity}"
+                            Padding="8,6"
+                            ToolTip.Tip="{Binding ActivityTooltip}"
+                            ToolTip.ShowDelay="250"
+                            Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).SelectBandCommand}"
+                            CommandParameter="{Binding}">
+                        <StackPanel Spacing="4">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <TextBlock Grid.Column="0"
+                                           Text="{Binding Band.Name}"
+                                           VerticalAlignment="Center" />
+                                <ctl:DayNightIconControl Grid.Column="1"
+                                                         VerticalAlignment="Center"
+                                                         Icon="{Binding CardIcon}"
+                                                         Tint="{Binding CardIconTint}" />
+                            </Grid>
+
+                            <Border Height="3" CornerRadius="2"
+                                    Background="{Binding CardBar}" />
+
+                            <ctl:ActivityPipsControl
+                                HorizontalAlignment="Center"
+                                Filled="{Binding ActivityPips}"
+                                IsUnknown="{Binding ActivityUnknown}" />
+                        </StackPanel>
+                    </Button>
+                </Grid>
+            </DataTemplate>
+        </ItemsControl.ItemTemplate>
+    </ItemsControl>
+
             <!-- PRESETS SIT ABOVE THE CANVAS, NOT IN A MENU. An arrangement
                  buried two levels into a menu is an arrangement nobody finds,
                  and these are the fastest way out of a canvas that has got away
@@ -2501,7 +2522,7 @@
                  A PRESET IS A STARTING POINT AND NEVER A DOCUMENT: pressing one
                  loads a fresh copy every time, and dragging things about
                  afterward does not change it. -->
-            <Border Grid.Row="1" Margin="0,0,0,10" Padding="10,7"
+            <Border Grid.Row="2" Margin="0,0,0,10" Padding="10,7"
                     CornerRadius="8"
                     Background="{StaticResource HmSlateTintBrush}"
                     BorderBrush="{StaticResource HmSlateEdgeBrush}"
@@ -2573,7 +2594,7 @@
                 </Grid>
             </Border>
 
-            <Grid Grid.Row="2" ColumnDefinitions="Auto,*">
+            <Grid Grid.Row="3" ColumnDefinitions="Auto,*">
 
                 <!-- THE TRAY, DOWN THE LEFT EDGE. Every widget that is not out,
                      with a line saying what it is for, because a list of names

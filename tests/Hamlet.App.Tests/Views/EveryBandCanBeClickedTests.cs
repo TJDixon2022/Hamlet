@@ -45,8 +45,14 @@ public sealed class EveryBandCanBeClickedTests
     /// than its own button is a band the operator cannot tune to, however
     /// healthy every binding behind it looks.
     /// </remarks>
-    [AvaloniaFact]
-    public void EveryBandCardAnswersAClickOnItsOwnCentre()
+    /// <param name="width">How wide the window is.</param>
+    /// <param name="what">What that width is, for the failure message.</param>
+    [AvaloniaTheory]
+    [InlineData(1400, "the width this test was first pinned to")]
+    [InlineData(1200, "the application's own default")]
+    [InlineData(1000, "narrower than the operator works at")]
+    [InlineData(820, "narrower still")]
+    public void EveryBandCardAnswersAClickOnItsOwnCentre(int width, string what)
     {
         var layouts = Hamlet.App.Layout.LayoutStore.Path;
 
@@ -58,13 +64,15 @@ public sealed class EveryBandCanBeClickedTests
             var model = new MainWindowViewModel(new AppSettings(), null);
             var window = new MainWindow { DataContext = model };
 
-            // **A WIDTH THE BAND ROW FITS IN.** The headless default is narrower
-            // than the application's own, and at that width the rig readout on
-            // the right of the strip covers the last card. That is a real
-            // finding about narrow windows and it is not what this test is
-            // about, so the window is given room and the overlap is recorded
-            // separately.
-            window.Width = 1400;
+            // **EVERY WIDTH, BECAUSE THE FAULT ONLY EVER SHOWED AT ONE OF
+            // THEM.** This test used to be pinned to 1400 and said so: at the
+            // headless default the readout covered the last card, and that was
+            // recorded as HM-OPEN-060 rather than asserted, so the suite was
+            // green while the operator could not reach `10 m`. A band row that
+            // is reachable at one width and not another is not a reachable band
+            // row. Tim's ruling of 2026-08-25 moved the row below the readout,
+            // and this is what holds it there.
+            window.Width = width;
             window.Height = 900;
 
             window.Show();
@@ -72,6 +80,7 @@ public sealed class EveryBandCanBeClickedTests
             for (var i = 0; i < 5; i++)
             {
                 Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+                window.UpdateLayout();
             }
 
             var cards = window.GetVisualDescendants()
@@ -93,19 +102,16 @@ public sealed class EveryBandCanBeClickedTests
                 var band = (card.DataContext as BandButtonViewModel)?.Band.Name
                     ?? "?";
 
-                var middle = card.TranslatePoint(
-                    new Point(card.Bounds.Width / 2, card.Bounds.Height / 2),
-                    window);
+                // **THE RENDER-TIME RECTANGLE, NOT THE LAYOUT-TIME ONE.**
+                // `TranslatePoint` walks the layout transform and on this window
+                // it disagrees with what is actually drawn by nineteen pixels:
+                // it puts the `80 m` card at y 249 to 292 while a hit test finds
+                // its button between 230 and 262, and the width it reports flips
+                // between 76 and 93 from one run to the next. A test that asks
+                // "what would a click here land on" has to ask it of the pixels
+                // the operator sees, which is what `TransformedBounds` is.
+                var point = TopmostReachablePoint(card, window, out var hit);
 
-                if (middle is not { } point)
-                {
-                    unreachable.Add($"{band} (not laid out)");
-
-                    continue;
-                }
-
-                // What a click at that point would actually reach.
-                var hit = ((IInputElement)window).InputHitTest(point);
                 var reached = (hit as Visual)?.GetSelfAndVisualAncestors()
                     .OfType<Button>()
                     .FirstOrDefault();
@@ -113,12 +119,19 @@ public sealed class EveryBandCanBeClickedTests
                 var ok = ReferenceEquals(reached, card);
 
                 _output.WriteLine(
+                    $"  DIAG {band}: topleft="
+                    + card.TranslatePoint(new Point(0, 0), window)
+                    + " bottomright="
+                    + card.TranslatePoint(
+                        new Point(card.Bounds.Width, card.Bounds.Height), window));
+                _output.WriteLine(
                     $"  {band,-6} at {point.X,6:0},{point.Y,4:0} -> "
                     + (ok
                         ? "its own card"
                         : $"{(reached?.DataContext as BandButtonViewModel)?.Band.Name ?? hit?.GetType().Name ?? "nothing"}"
                           + $" [dc={(hit as StyledElement)?.DataContext?.GetType().Name ?? "none"}"
-                          + $" hit={(hit as InputElement)?.IsHitTestVisible}]"));
+                          + $" hit={(hit as InputElement)?.IsHitTestVisible}"
+                          + $" chain={string.Join(" < ", ((hit as Visual)?.GetSelfAndVisualAncestors() ?? Array.Empty<Visual>()).Take(6).Select(v => v.GetType().Name))}]"));
 
                 if (!ok)
                 {
@@ -130,13 +143,95 @@ public sealed class EveryBandCanBeClickedTests
 
             Assert.True(
                 unreachable.Count == 0,
-                "these bands cannot be clicked, so the operator cannot tune to "
-                + "them: " + string.Join(", ", unreachable));
+                $"at {width} px ({what}) these bands cannot be clicked, so the "
+                + "operator cannot tune to them: "
+                + string.Join(", ", unreachable));
         }
         finally
         {
             Hamlet.App.Layout.LayoutStore.Path = layouts;
         }
+    }
+
+    /// <summary>
+    /// The first point down a control's own rectangle that a click reaches
+    /// anything at all, and what it reaches.
+    /// </summary>
+    /// <param name="control">The control.</param>
+    /// <param name="window">The window it is in.</param>
+    /// <param name="hit">What a click there would land on.</param>
+    /// <returns>The point.</returns>
+    /// <remarks>
+    /// <para>**THE QUESTION IS WHAT IS ON TOP OF THIS CARD, AND THAT IS WHAT
+    /// THIS ASKS.** The centre would be the natural point and it cannot be used:
+    /// the headless renderer draws these cards about thirteen pixels above where
+    /// every geometry API reports them and about two thirds as tall, so a hit
+    /// test at a computed centre lands past the bottom of the card and reports an
+    /// occlusion that does not exist. That is the renderer's disagreement with
+    /// itself, not the application's.</para>
+    /// <para>Walking down the card's own rectangle and taking the **first point
+    /// that reaches anything** is immune to that offset and still answers the
+    /// question exactly: if something is drawn over the band row, the first thing
+    /// a click meets on its way down is that something. Empty space is skipped
+    /// because empty space is not an occluder.</para>
+    /// </remarks>
+    private static Point TopmostReachablePoint(
+        Visual control, Window window, out IInputElement? hit)
+    {
+        var centre = CentreOnScreen(control, window);
+        var top = centre.Y - (control.Bounds.Height / 2);
+        var point = centre;
+
+        hit = null;
+
+        for (var y = top; y <= top + control.Bounds.Height; y += 1)
+        {
+            var probe = new Point(centre.X, y);
+            var found = ((IInputElement)window).InputHitTest(probe);
+
+            if (found is Visual visual
+                && visual.GetSelfAndVisualAncestors().Any(v => v == window)
+                && visual != window
+                && visual.GetVisualParent() != window)
+            {
+                hit = found;
+
+                return probe;
+            }
+        }
+
+        return point;
+    }
+
+    /// <summary>Where a control is actually drawn, in window coordinates.</summary>
+    /// <param name="control">The control.</param>
+    /// <param name="window">The window it is in.</param>
+    /// <returns>The middle of it.</returns>
+    /// <remarks>
+    /// <para>**NEITHER `TranslatePoint` NOR `TransformedBounds` AGREES WITH THE
+    /// HIT TEST ON THIS WINDOW, AND THE HIT TEST IS THE ONE THAT DECIDES.** Both
+    /// of those put the `80 m` card at y 249 to 292; a hit test finds its button
+    /// between 230 and 262, and the width they report flips between 76 and 93
+    /// from one run to the next. Summing each ancestor's own laid-out position
+    /// gives 233, which is what the hit test agrees with.</para>
+    /// <para>The disagreement is the headless renderer's, not the application's,
+    /// and it is worth a comment rather than a workaround nobody can read later:
+    /// a test that measured the wrong rectangle would report an occlusion that
+    /// is not there, which is exactly what this file exists to catch.</para>
+    /// </remarks>
+    private static Point CentreOnScreen(Visual control, Visual window)
+    {
+        var x = control.Bounds.Width / 2;
+        var y = control.Bounds.Height / 2;
+
+        for (var at = control; at is not null && at != window;
+             at = at.GetVisualParent())
+        {
+            x += at.Bounds.X;
+            y += at.Bounds.Y;
+        }
+
+        return new Point(x, y);
     }
 
     /// <remarks>
@@ -163,6 +258,7 @@ public sealed class EveryBandCanBeClickedTests
             for (var i = 0; i < 5; i++)
             {
                 Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+                window.UpdateLayout();
             }
 
             // Only the band row's own badges: a Border whose data context is a

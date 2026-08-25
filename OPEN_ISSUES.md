@@ -5,12 +5,22 @@ Questions with owner and severity. `owner` is who must act next. Format in
 
 ---
 id: HM-OPEN-060
-status: open
+status: closed
 owner: tim
 raised: 2026-08-25
+closed: 2026-08-25
 severity: slows
 refs: src/Hamlet.App/Views/MainWindow.axaml, HM-DEC-141
 ---
+
+**CLOSED 2026-08-25 by Tim's ruling that the band display "needs to be shifted
+down".** The row has a row of its own beneath the strip now, so it has the whole
+window width and nothing to collide with. Hit-tested headless at 1400, 1200, 1000
+and 820 pixels: every card answers its own rectangle at every width. Before the
+move the same test named `15 m` and `10 m` unreachable at 1000 and three cards at
+820, so it is the fix that closed this rather than the measurement changing.
+
+**The original entry follows, unedited.**
 
 **On a narrow window the rig readout covers the last band card, and it cannot be
 clicked.**
