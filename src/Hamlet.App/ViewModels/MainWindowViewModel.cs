@@ -278,6 +278,7 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(SuspendedNote))]
     [NotifyPropertyChangedFor(nameof(AdvisoryNote))]
+    [NotifyPropertyChangedFor(nameof(ShowKeyingMeter))]
     private bool _decodingIsSuspended;
 
     /// <summary>
@@ -293,6 +294,7 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(FollowedNote))]
     [NotifyPropertyChangedFor(nameof(AdvisoryNote))]
+    [NotifyPropertyChangedFor(nameof(ShowKeyingMeter))]
     private bool _listeningAfresh;
 
     /// <summary>
@@ -334,6 +336,29 @@ public partial class MainWindowViewModel : ObservableObject
             return "";
         }
     }
+
+    /// <summary>
+    /// Whether the keying meter's own block is shown beneath the advisory.
+    /// </summary>
+    /// <remarks>
+    /// <para>**TWO VOICES SAYING DIFFERENT THINGS AT THE SAME TIME IS WORSE THAN
+    /// EITHER OF THEM.** On the evening of 2026-08-25 the advisory said a clear
+    /// tone was present and the meter's block underneath it said there was no
+    /// keying, the two disagreeing about the pitch by fifty hertz — and the
+    /// block's advice sends the operator across the room to change a setting on
+    /// the radio for what is a decoder problem.</para>
+    /// <para>**THE METER IS NOT RETIRED AND MUST NOT BE.** It is the one
+    /// instrument that shares nothing with the decoder, and its whole value is
+    /// that it can contradict it (HM-DEC-091). On `cw-2026-08-22-012823` it found
+    /// the right frequency while the decoder took the wrong one. What is
+    /// suppressed is only its block *while the advisory has something to say*,
+    /// which is the case where a second, quieter, less reliable voice can only
+    /// confuse: agreed with independent measurement six times and contradicted it
+    /// eleven, across everything analysed from 2026-08-22 to 2026-08-25.</para>
+    /// <para>When the advisory is silent the meter speaks, exactly as before.</para>
+    /// </remarks>
+    public bool ShowKeyingMeter
+        => IsDecoding && string.IsNullOrWhiteSpace(AdvisoryNote);
 
     /// <summary>Every advisory the terminal can show, most urgent first.</summary>
     private IEnumerable<string> Advisories()
@@ -408,6 +433,7 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(TerminalSummary))]
     [NotifyPropertyChangedFor(nameof(TerminalIdleText))]
+    [NotifyPropertyChangedFor(nameof(ShowKeyingMeter))]
     private bool _isDecoding;
 
     /// <summary>What the decoder is listening to, in words.</summary>
@@ -1467,6 +1493,7 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(OverflowAdvice))]
     [NotifyPropertyChangedFor(nameof(AdvisoryNote))]
+    [NotifyPropertyChangedFor(nameof(ShowKeyingMeter))]
     private bool _frontEndIsOverloading;
 
     /// <summary>What to do about an overloading front end, in terms of a knob.</summary>
@@ -3354,6 +3381,11 @@ public partial class MainWindowViewModel : ObservableObject
         // **THE LOCK'S STATE, ON THE SAME TICK AS EVERYTHING ELSE.** It reads
         // the decoder rather than remembering what was pressed, so a lock that
         // refused to engage cannot leave the panel claiming one is held.
+        // The advisory is recomputed from several of these on every tick, and
+        // the keying meter's block follows it (task 5): one voice at a time.
+        OnPropertyChanged(nameof(AdvisoryNote));
+        OnPropertyChanged(nameof(ShowKeyingMeter));
+
         PitchLockText = _decoder.IsLocked
             ? $"The decoder is holding {_decoder.LockedToneHz:0.0} hertz and is "
               + "not following the tracker. Press the lock again to let it follow."

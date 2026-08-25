@@ -967,7 +967,13 @@
                             Command="{Binding TogglePitchLockCommand}"
                             Margin="0,2,0,0" Padding="10,5" FontSize="12" />
 
-                    <Border IsVisible="{Binding IsDecoding}"
+                    <!-- ONE VOICE. The advisory above and this block used to
+                         speak at the same time and disagree: a clear tone
+                         present up there and no keying down here, fifty hertz
+                         apart, with this block's advice sending the operator to
+                         the radio for a decoder problem. Where the advisory has
+                         something to say, this waits. -->
+                    <Border IsVisible="{Binding ShowKeyingMeter}"
                             BorderThickness="1" CornerRadius="6"
                             Padding="10,7" Margin="0,2,0,0"
                             Background="{StaticResource HmSlateTintBrush}"
