@@ -1,0 +1,68 @@
+captured   2026-08-22 03:21:13 UTC
+audioSeen  11915520 samples
+fingerprint 4093ecce8533
+seconds    30.0
+sampleRate 48000
+frequency  7047400 Hz  (read from the radio a moment ago)
+band       40 m  (from the frequency the radio reported)
+broadcast  the radio volunteered nothing while this recording was being made, and the setting reads on; 21 of 26091 frames since the link came up were the radio announcing something
+
+inputPeak  -13.2 dBFS  (over the whole recording)
+meterPeak  -13.4 dBFS  (the moment it was kept)
+inputFloor -20.7 dBFS
+clipping   False
+toneHz     475  (the pitch the decoder was following at the moment of the press, refined from where it started)
+tonePeak   74.5  (the highest the tracked tone ever stood above the noise beside it, held and decaying; not a figure about this recording)
+inThis     78 characters emitted, 11 unsure, 202 elements seen, 202 resolved  (in the 30.0 seconds of audio in this file)
+elements   800 seen, 800 resolved  (since the decoder started listening, about 5 minutes ago)
+characters 296 emitted, 20 unsure  (since the decoder started listening, about 5 minutes ago)
+decoderWpm 28
+text       EEN■G ES E IELSEN■EN PLANET TT RY K INDEXSIS 4, 4, ■, 3, 2, 2, AND 2 WITH A MEAN OOT 2.■. PREDICTED 00.■ UAI E N TM MT T T W YMN O TTTT ET NT 0 NT2 A5, 105EE EE E E E E EE E E E E E E ■ T■ MOEMMT TT, TM1ET■0, AND 11 M0 WINH A MEAN OF 117.1. LINKS TO ARTICLES OR OTHYE O J TQ O ■ EG EMTEM TMOEM TPETT O5ZG RTEG T W ORR TT OE■EEE ■ME■ OUA ■ EM M OIIMWT TG MT TEE■A■JEA OENH EO■ ■ 0 ■ ■EI■OJ2 MJMTA2M E
+textCovers everything read since the decoder started listening, about 5 minutes ago
+reading    28 WPM won out of 8 to 32, 15.7 better than silence per hop against a gate of 15
+keying     keying (held through a quiet stretch, so nothing was measured)  (an independent sweep of 400 to 1200 Hz in 25 Hz steps over the last six seconds, sharing nothing with the decoder)
+
+sinceLast  39 characters, 107 elements  (since the previous capture)
+
+Frequency            7.047400 MHz
+Mode                 CW
+DataMode             off
+FilterSelection      FIL2
+FilterBandwidth      500 Hz
+SMeter               S9+10
+TransmitStatus       receiving
+Overflow             not overloading
+Swr                  unknown
+PowerOut             unknown
+RfPower              30%
+RfGain               100%
+Squelch              7%
+SquelchStatus        open
+Agc                  FAST
+Preamp               off
+Attenuator           off
+NoiseBlanker         off
+NoiseBlankerLevel    50%
+NoiseReduction       off
+NoiseReductionLevel  28%
+AutoNotch            off
+ManualNotch          off
+BreakIn              full
+KeyerSpeed           20 WPM
+CwPitch              600 Hz
+AccUsbOutputSelect   AF
+AccUsbAfLevel        80%
+NotchPosition        unknown
+FilterShape          unknown
+AfLevel              unknown
+RfSqlFunction        unknown
+BreakInDelay         unknown
+AntennaTuner         unknown
+Alc                  unknown
+AccUsbSquelch        open regardless of squelch
+Split                off
+ScopeOn              on
+ScopeOutput          on
+CivUsbPort           unknown
+CivTransceive        on
+Vfo                  undocumented
