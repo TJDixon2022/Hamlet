@@ -481,7 +481,43 @@ public sealed class CwDecoder
             return;
         }
 
-        _tracker.Process(chunk.Samples, chunk.FirstSampleIndex, _onReading);
+        // **THE AUDIO IS WALKED A HOP AT A TIME, WHATEVER SIZE IT ARRIVED IN.**
+        // What follows sets the mixer's pitch from the tracker and then mixes the
+        // whole chunk down at that one pitch, so with a chunk four hops long the
+        // first three hops are mixed at a pitch the tracker only reached at the
+        // end of the fourth. **The decode was a function of the sound card's
+        // buffer size**, which is not a fact about the audio.
+        //
+        // Measured on `cw-2026-08-22-032113`: fed 240 samples at a time the
+        // decoder tracks 650 Hz, fed 960 it tracks 500, and the text differs with
+        // it. The application feeds 960 through `BufferedAudioSource` and the
+        // floors harness feeds 240, so the suite and the operator were reading
+        // two different decoders (§12.5, HM-DEC-119).
+        //
+        // Stepping at the tracker's own hop makes the two agree by construction:
+        // the pitch handed to the mixer is the pitch that was in force for the
+        // audio being mixed. A chunk that is not a whole number of hops leaves a
+        // remainder, which is handed over as it is — both the tracker and the
+        // mixer buffer internally, so alignment is theirs to keep and this only
+        // decides how often the pitch is refreshed.
+        var hop = _tracker.HopSamples;
+
+        for (var offset = 0; offset < chunk.Samples.Length; offset += hop)
+        {
+            var take = Math.Min(hop, chunk.Samples.Length - offset);
+
+            Step(
+                chunk.Samples.Slice(offset, take),
+                chunk.FirstSampleIndex + offset);
+        }
+    }
+
+    /// <summary>One hop of audio, through the tracker and then the decoder.</summary>
+    /// <param name="samples">The hop.</param>
+    /// <param name="firstSampleIndex">Where it sits on the audio clock.</param>
+    private void Step(ReadOnlySpan<float> samples, long firstSampleIndex)
+    {
+        _tracker.Process(samples, firstSampleIndex, _onReading);
 
         // **AND THE SAME AUDIO GOES TO THE DECODER THAT READS IT** (HM-DEC-091:
         // one source). The tracker has already moved to wherever the station is
@@ -518,7 +554,7 @@ public sealed class CwDecoder
                 ? _tracker.ToneHz
                 : _lastMeasuredToneHz
             : _lockedToneHz;
-        _probabilistic.Process(chunk.Samples);
+        _probabilistic.Process(samples);
 
         // **ASKED AFTER THE DECODER HAS READ THIS AUDIO, NOT BEFORE.** The
         // tracker consults the interlock when it reads its survey, and both it

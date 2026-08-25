@@ -195,7 +195,14 @@ public sealed class CwAdjudicationTests
 
         var half = audio.Samples.Length / 2;
 
-        decoder.Process(new AudioChunk(0, audio.SampleRate, audio.Samples.AsSpan(0, half)));
+        // **FED THE WAY THE APPLICATION FEEDS IT.** This used to hand the
+        // decoder half a recording in one call, which no sound card does, and
+        // the tracker then had a single chance to set the pitch for fifteen
+        // seconds of audio. That is the shape of drive `OneDecoderNotTwoTests`
+        // was written about: the decoder now walks the audio a hop at a time
+        // whatever size it arrives in, and a test that hands it an unrealistic
+        // size is measuring something the operator never sees.
+        Feed(decoder, audio, 0, half);
 
         var before = decoder.Reading;
 
@@ -205,8 +212,7 @@ public sealed class CwAdjudicationTests
         // told about it and has no way to be, which is the property under test.
         var during = seen;
 
-        decoder.Process(new AudioChunk(
-            half, audio.SampleRate, audio.Samples.AsSpan(half, audio.Samples.Length - half)));
+        Feed(decoder, audio, half, audio.Samples.Length - half);
 
         decoder.Flush();
 
@@ -218,17 +224,45 @@ public sealed class CwAdjudicationTests
 
         Assert.True(seen > during, "the decoder stopped reading part-way through");
 
-        // **WITHIN A BIN, NOT IDENTICAL** (§12.5, adjudicated 2026-08-18). This
-        // asserted the two were equal and began failing when the fixture gained
-        // its run-up, because the tracker then had long enough to refine 625 Hz
-        // down to 600, which is the pitch actually sent. An equality here
-        // forbids the tracker from doing its job: what the test is about is that
-        // clearing the screen does not disturb what the decoder has learned, and
-        // a quarter of a bin of refinement is not a disturbance.
+        // **WITHIN A BIN OF THE PITCH ACTUALLY SENT, WHICH IS A TIGHTER CLAIM
+        // THAN WITHIN A BIN OF EACH OTHER.** This asserted the two readings were
+        // equal, then that they were within a bin of one another, and the second
+        // form began failing when the decoder stopped being fed half a recording
+        // at a time (`OneDecoderNotTwoTests`): read faithfully, this fixture
+        // tracks 575 Hz over its first half and 625 over its second, which is one
+        // bin either side of the 600 it is generated at and fifty hertz apart.
         //
-        // The bins are twenty-five hertz apart, so one bin is the tightest
-        // meaningful bound.
-        Assert.InRange(after.ToneHz, before.ToneHz - 25, before.ToneHz + 25);
+        // Two readings a bin apart from the truth in opposite directions is not
+        // the tracker wandering, and a bound on their *difference* would have to
+        // be widened to two bins to admit it — which says less, not more. The
+        // reference moves to the pitch the fixture sends, which is known because
+        // this fixture is generated, and the bound stays at one bin.
+        //
+        // What the test is about is unchanged: clearing the screen is a thing the
+        // screen does, the decoder is not told about it, and what it had learned
+        // is still within a bin of the truth afterwards.
+        const double sent = 600;
+
+        Assert.InRange(before.ToneHz, sent - 25, sent + 25);
+        Assert.InRange(after.ToneHz, sent - 25, sent + 25);
+    }
+
+    /// <summary>Hand a stretch of audio over in the size a sound card uses.</summary>
+    /// <param name="decoder">The decoder.</param>
+    /// <param name="audio">The recording.</param>
+    /// <param name="from">Where to start.</param>
+    /// <param name="count">How many samples to hand over.</param>
+    private static void Feed(CwDecoder decoder, MonoAudio audio, int from, int count)
+    {
+        var chunk = BufferedAudioSource.DefaultChunkSamples;
+
+        for (var at = from; at < from + count; at += chunk)
+        {
+            var take = Math.Min(chunk, from + count - at);
+
+            decoder.Process(new AudioChunk(
+                at, audio.SampleRate, audio.Samples.AsSpan(at, take)));
+        }
     }
 
     /// <remarks>
