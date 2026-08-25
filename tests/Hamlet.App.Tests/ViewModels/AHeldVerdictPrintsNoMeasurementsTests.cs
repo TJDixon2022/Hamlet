@@ -59,7 +59,8 @@ public sealed class AHeldVerdictPrintsNoMeasurementsTests
     public void AFreshReadingStillCarriesEveryFigure()
     {
         var fresh = new KeyingReading(
-            KeyingVerdict.Keying, 825, 91, 22, 40, 0.3, Held: false);
+            KeyingVerdict.Keying, 825, 6, 22, 40, 0.3, Held: false,
+            ElementMedianMs: 91);
 
         var line = MainWindowViewModel.KeyingLine(fresh);
 
@@ -69,6 +70,35 @@ public sealed class AHeldVerdictPrintsNoMeasurementsTests
         Assert.Contains("91 ms key down", line, StringComparison.Ordinal);
         Assert.Contains("22 dB swing", line, StringComparison.Ordinal);
         Assert.Contains("40 key-downs", line, StringComparison.Ordinal);
+
+        // **AND THE SIX MILLISECONDS IT WAS ALSO HANDED IS NOWHERE ON THE LINE.**
+        // That figure is the middle of every threshold crossing, which the
+        // verdict is calibrated against and which nobody can send: a dit at sixty
+        // words a minute is twenty milliseconds and sixty is faster than a hand
+        // goes. It stays in the reading because the verdict rests on it, and it
+        // stays out of the record because a reader takes what is written beside a
+        // recording for a fact about the station (§0.0).
+        Assert.DoesNotContain("6 ms", line, StringComparison.Ordinal);
+    }
+
+    /// <remarks>
+    /// Proves §0.0 where the meter has nothing usable to say: a sweep that found
+    /// no key-down long enough to be an element says that, rather than printing
+    /// the middle of its own chatter as though somebody had keyed it.
+    /// </remarks>
+    [Fact]
+    public void APitchWithNoElementLengthKeyDownSaysSoRatherThanPrintingChatter()
+    {
+        var chatter = new KeyingReading(
+            KeyingVerdict.Keying, 575, 4, 17, 449, 0.2, Held: false,
+            ElementMedianMs: 0);
+
+        var line = MainWindowViewModel.KeyingLine(chatter);
+
+        _output.WriteLine(line);
+
+        Assert.Contains("no key-down was element length", line, StringComparison.Ordinal);
+        Assert.DoesNotContain("4 ms", line, StringComparison.Ordinal);
     }
 
     /// <remarks>

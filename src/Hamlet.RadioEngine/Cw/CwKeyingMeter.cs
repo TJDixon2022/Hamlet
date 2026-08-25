@@ -24,10 +24,18 @@ public enum KeyingVerdict
 /// </summary>
 /// <param name="Verdict">What it is willing to say.</param>
 /// <param name="ToneHz">The pitch it swept to, or 0 when it has read nothing.</param>
-/// <param name="MedianMs">The middle key-down length it found there.</param>
+/// <param name="MedianMs">
+/// The middle of every threshold crossing it counted there, which is what the
+/// verdict is calibrated against and is **not** a key-down length anybody sent.
+/// </param>
 /// <param name="SwingDb">How far that pitch moved between quiet and loud.</param>
 /// <param name="Runs">How many key-downs it counted.</param>
 /// <param name="Score">How much the pitch looked like keying, nought to one.</param>
+/// <param name="ElementMedianMs">
+/// The middle key-down length among those that could be an element at all, or
+/// nought where none could. **This is the figure a reader can use** and
+/// <see cref="KeyingReading.MedianMs"/> is not.
+/// </param>
 /// <param name="Held">
 /// True when the verdict is older than the window under it: the last window did
 /// not look like keying and the meter is holding through a gap. **The numbers
@@ -41,7 +49,8 @@ public readonly record struct KeyingReading(
     double SwingDb,
     int Runs,
     double Score,
-    bool Held)
+    bool Held,
+    double ElementMedianMs = 0)
 {
     /// <summary>Nothing measured.</summary>
     public static KeyingReading None { get; }
@@ -231,7 +240,8 @@ public sealed class CwKeyingMeter
             best.Profile.SwingDb,
             best.Profile.RunsMs.Count,
             best.Profile.Score,
-            Held: !looksKeyed && _verdict == KeyingVerdict.Keying);
+            Held: !looksKeyed && _verdict == KeyingVerdict.Keying,
+            ElementMedianMs: best.Profile.ElementMedianMs);
 
         return Reading;
     }

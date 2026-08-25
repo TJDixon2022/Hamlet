@@ -4449,16 +4449,43 @@ public partial class MainWindowViewModel : ObservableObject
         // **A HELD VERDICT CARRIES NO MEASUREMENTS INTO THE RECORD EITHER.** The
         // sidecar is the more dangerous of the two places, because a figure
         // written beside a recording is read months later as a fact about it.
-        return reading.Held
-            ? word + " (held through a quiet stretch, so nothing was measured)"
-            : string.Format(
+        // **THE KEY-DOWN LENGTH PRINTED HERE USED TO BE ONE NOBODY COULD SEND**
+        // (§0.0). It was the middle of every threshold crossing, and a threshold
+        // is crossed by noise hundreds of times, so on a recording holding a real
+        // station the chatter outnumbered the elements several to one and the
+        // number landed among the chatter: four milliseconds beside an
+        // adjudicated `VA3VRR`, three beside an adjudicated `N4L`. A dit at sixty
+        // words a minute is twenty and sixty is faster than a hand sends, so
+        // those were not measurements that had gone wrong. They were
+        // measurements of something that is not Morse, printed where a reader
+        // takes them for a fist.
+        //
+        // **THE VERDICT IS STILL CALIBRATED ON THE OLD FIGURE AND IS UNCHANGED
+        // HERE.** Moving the verdict onto this one was built and measured: it
+        // takes the meter from ten recordings right of twenty-three to seventeen,
+        // and it costs the silence property, because in single six-second windows
+        // `cw-2026-08-20-014854` scores above the bar and would then read as
+        // keying. That trade is not this session's to make.
+        if (reading.Held)
+        {
+            return word + " (held through a quiet stretch, so nothing was measured)";
+        }
+
+        var length = reading.ElementMedianMs > 0
+            ? string.Format(
                 CultureInfo.InvariantCulture,
-                "{0} at {1:0} Hz, {2:0} ms key down, {3:0} dB swing, {4} key-downs",
-                word,
-                reading.ToneHz,
-                reading.MedianMs,
-                reading.SwingDb,
-                reading.Runs);
+                "{0:0} ms key down",
+                reading.ElementMedianMs)
+            : "no key-down was element length";
+
+        return string.Format(
+            CultureInfo.InvariantCulture,
+            "{0} at {1:0} Hz, {2}, {3:0} dB swing, {4} key-downs",
+            word,
+            reading.ToneHz,
+            length,
+            reading.SwingDb,
+            reading.Runs);
     }
 
     /// <summary>

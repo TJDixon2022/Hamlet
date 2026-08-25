@@ -24,6 +24,10 @@ namespace Hamlet.RadioEngine.Cw;
 /// What fraction of the stretch was spent with the key down at all, between
 /// nought and one.
 /// </param>
+/// <param name="ElementMedianMs">
+/// The middle key-down length among those that could be an element at all, or
+/// nought where none could.
+/// </param>
 /// <remarks>
 /// <para>**THE DUTY PREDICTED EVERY OUTCOME OF THE SHACK EVENING OF 2026-08-25
 /// AND NOTHING WAS RECORDING IT.** Thirteen captures, all on 40 m, all at the
@@ -51,7 +55,8 @@ public readonly record struct KeyingProfile(
     double SwingDb,
     double ElementShare,
     double ElementPurity,
-    double Duty = 0)
+    double Duty = 0,
+    double ElementMedianMs = 0)
 {
     /// <summary>How much this pitch looks like somebody keying, from nought to one.</summary>
     /// <remarks>
@@ -102,15 +107,32 @@ public static class KeyingEnvelope
 {
     /// <summary>The lowest pitch a sweep looks at, in hertz.</summary>
     /// <remarks>
-    /// Wider than the radio's own CW pitch range of 300 to 900 Hz at the top and
-    /// narrower at the bottom (§4). **A sweep is not a claim about where the
-    /// station is**, and a candidate below four hundred sits where this receiver's
-    /// own low-frequency rumble lives.
+    /// <para>**THE SAME RANGE THE TRACKER WORKS IN, TAKEN FROM IT RATHER THAN
+    /// WRITTEN DOWN AGAIN** (§0). It used to run 400 to 1200 while the tracker
+    /// runs 300 to 900, which is the radio's own CW pitch range (§4), and the
+    /// mismatch cost this meter the only job it has. **It exists to tell the
+    /// operator when the decoder is looking in the wrong place**, and a meter
+    /// that cannot look where the decoder is looking cannot do that: on
+    /// `cw-2026-08-22-031905` the decoder tracks 300 Hz and this sweep could not
+    /// examine that pitch at all, and on `cw-2026-08-22-032050` it tracks 325.</para>
+    /// <para>**THE OLD FLOOR WAS SET AGAINST THIS RECEIVER'S LOW-FREQUENCY
+    /// RUMBLE, AND THAT CONCERN IS NOT DISMISSED, IT IS UNEXERCISED.** Measured
+    /// across every capture in the tree with the floor at three hundred, no
+    /// candidate below four hundred wins on any of them, so nothing here shows
+    /// the rumble beating a station. Nothing here shows it cannot, either: the
+    /// corpus holds no recording of a station down there. It is said rather than
+    /// claimed settled.</para>
+    /// <para>**THE CEILING COMING DOWN IS THE HALF THAT IS MEASURED.** At 1200
+    /// the sweep answered 1000 Hz on `cw-2026-08-23-001520`, three hundred hertz
+    /// above anything the decoder will ever track, which is an answer no reader
+    /// can act on. At 900 it answers 525.</para>
     /// </remarks>
-    public const double LowestToneHz = 400;
+    public const double LowestToneHz = CwToneTracker.MinimumToneHz;
 
     /// <summary>The highest pitch a sweep looks at, in hertz.</summary>
-    public const double HighestToneHz = 1200;
+    /// <remarks>See <see cref="LowestToneHz"/>: one range, taken from the
+    /// tracker's own.</remarks>
+    public const double HighestToneHz = CwToneTracker.MaximumToneHz;
 
     /// <summary>How far apart the candidates are, in hertz.</summary>
     public const double ToneStepHz = 25;
@@ -207,7 +229,7 @@ public static class KeyingEnvelope
 
         if (envelope.Count == 0)
         {
-            return new KeyingProfile(Array.Empty<double>(), 0, 0, 0, 0, 0);
+            return new KeyingProfile(Array.Empty<double>(), 0, 0, 0, 0, 0, 0);
         }
 
         var sorted = envelope.OrderBy(v => v).ToArray();
@@ -262,13 +284,33 @@ public static class KeyingEnvelope
 
         var span = envelope.Count * StepMs;
 
+        // **THE MIDDLE OF THE KEY-DOWNS THAT COULD BE ELEMENTS, WHICH IS A
+        // DIFFERENT NUMBER FROM THE MIDDLE OF ALL OF THEM AND THE ONLY ONE OF
+        // THE TWO A READER CAN USE.** A threshold crossed by noise is crossed
+        // hundreds of times, so on a recording holding a real station the chatter
+        // runs outnumber the elements several to one and the plain median lands
+        // among them. Measured across this repository's captures: on
+        // `cw-2026-08-17-013347`, which carries an adjudicated `VA3VRR`, 331 runs
+        // of which 69 are element length, plain median 4 milliseconds and element
+        // median 88; on `cw-2026-08-17-134712`, which carries an adjudicated
+        // `N4L`, 176 runs of which 27, plain median 3 and element median 55.
+        //
+        // **FOUR MILLISECONDS IS NOT A KEY-DOWN LENGTH ANYBODY CAN SEND.** A dit
+        // at sixty words a minute is twenty, and sixty is faster than anybody
+        // sends by hand, so a sheet printing 4 as this pitch's key-down length is
+        // printing a number that cannot be true of Morse (§0.0).
+        var elementMedian = elements.Count == 0
+            ? 0
+            : elements.OrderBy(v => v).ElementAt(elements.Count / 2);
+
         return new KeyingProfile(
             runs,
             median,
             Decibels(high) - Decibels(low),
             elements.Sum() / span,
             runs.Count == 0 ? 0 : (double)elements.Count / runs.Count,
-            runs.Sum() / span);
+            runs.Sum() / span,
+            elementMedian);
     }
 
     private static double Decibels(double magnitude)
