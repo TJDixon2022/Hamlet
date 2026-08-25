@@ -235,13 +235,50 @@ public static class CwProbabilisticDecoder
     /// carries an adjudicated `N4L`, scores 4.64, while `cw-2026-08-20-014854`,
     /// which an independent sweep says holds no keying at all, scores 7.98. The
     /// empty band beats the station.</para>
-    /// <para>**NOUGHT, AND IT IS THE ONE VALUE THAT IS NOT A TUNED THRESHOLD.**
-    /// The quantity is a character's own evidence measured against the key never
-    /// having gone down across its span, so nought is the point where the two
-    /// explanations are equally good. Below it, silence explains that stretch of
-    /// audio *better* than the letter the path chose, and printing a letter there
-    /// is a guess presented as a decode (§0.0). It needs no calibration because
-    /// it is the meaning of the number rather than a place on it.</para>
+    /// <para>**NOUGHT WAS THE ONE VALUE THAT WAS NOT A TUNED THRESHOLD, AND
+    /// NOUGHT WAS NOT ENOUGH.** The quantity is a character's own evidence
+    /// measured against the key never having gone down across its span, so nought
+    /// is the point where the two explanations are equally good, and below it
+    /// silence explains that stretch of audio *better* than the letter the path
+    /// chose. That reasoning still holds and it is why nought was ruled. What it
+    /// misses is that a letter which beats silence by a whisker is not thereby a
+    /// letter somebody sent: on a calling frequency most of the file is silence,
+    /// and characters scoring nine tenths and one and eight tenths were reaching
+    /// the screen as `E` beside real characters scoring in the thousands.</para>
+    /// <para>**ONE, MEASURED AGAINST THE ONLY CONSTRAINT THAT BINDS IT**
+    /// (<see cref="WeakestAdjudicatedCharacterMargin"/>). The weakest character on
+    /// any recording holding words anybody has adjudicated or corroborated is
+    /// 1.083, on `cw-2026-08-24-012403`. One sits below it with eight per cent of
+    /// room and is the largest round number that does. Measured over the whole
+    /// corpus it removes eighty characters, **and every one of them comes from a
+    /// recording holding no adjudicated words**: the pileups, the low-duty
+    /// captures, and the trailing run of `E`s on `cw-2026-08-17-134712` that
+    /// follows the `N4L` rather than belonging to it. The four recordings holding
+    /// content anybody has checked lose nothing.</para>
+    /// <para>**A HIGHER FLOOR IS NOT AVAILABLE ON THIS QUANTITY IN ANY
+    /// NORMALISATION, AND THE REASON IS WORTH MORE THAN THE NUMBER.** On
+    /// `cw-2026-08-17-013347` the adjudicated `VA3VRR` scores between 1.5 and 6.5
+    /// while the ninety-six characters of soup preceding it score between ten
+    /// million and three hundred million. **The soup outranks the callsign by
+    /// seven to eight orders of magnitude on the very quantity a gate would sort
+    /// by**, so on that recording every threshold removes the station before it
+    /// removes a single stranger. Dividing by the window's own likelihood ratio
+    /// was measured and makes it worse rather than better: it cuts `VA3VRR` whole
+    /// at a normalised floor of 0.1 and keeps every character of the soup.
+    /// Dividing by a per-element-count median was measured and moves the binding
+    /// constraint not at all, `cw-2026-08-24-012403`'s weakest character being
+    /// binding in that form too at 0.1008. **Span evidence is not monotone in
+    /// correctness across recordings**, which is the same anti-correlation the
+    /// paragraph below records between recordings, found again inside one.</para>
+    /// <para>**WHAT THE FLOOR THEREFORE IS AND IS NOT.** It is a floor under the
+    /// weakest thing anybody has confirmed, and it removes characters that even a
+    /// generous reading cannot separate from silence. It is not a soup filter, and
+    /// nothing here claims that what survives it was sent.</para>
+    /// <para>**AND IT MARKS RATHER THAN DELETES.** A character below the floor
+    /// renders as HM-DEC-048's placeholder, because something did sound there and
+    /// a shorter tidy word is a worse lie than a visible gap. What changes on a
+    /// quiet frequency is that the operator sees the decoder failing to read
+    /// rather than a page of confident `E`s.</para>
     /// <para>**A HIGHER MARGIN WAS DERIVED, TRIED, AND MEASURED WRONG.** Read on
     /// whole files there is a clean gap: `cw-2026-08-18-004507` reads with its
     /// weakest character at 49.8 while `cw-2026-08-20-014854`, which holds no
@@ -262,7 +299,42 @@ public static class CwProbabilisticDecoder
     /// against. That is this unit's finding for task 5 and is reported rather
     /// than papered over with a number.</para>
     /// </remarks>
-    public const double CharacterMargin = 0.0;
+    public const double CharacterMargin = 1.0;
+
+    /// <summary>
+    /// The weakest character on any recording holding words somebody has
+    /// adjudicated or corroborated, in the units <see cref="CharacterMargin"/>
+    /// is measured in.
+    /// </summary>
+    /// <remarks>
+    /// <para>**IT IS 1.047, AND IT IS THE ONLY THING THAT DECIDES HOW HIGH THE
+    /// CHARACTER FLOOR MAY GO.** Measured 2026-08-25 over every capture in the
+    /// tree: `cw-2026-08-24-012403`, which holds `DE KD0UN KD0UN K`, produces
+    /// nineteen characters and its weakest carries 1.047. Its whole window sits
+    /// at 1.43 to 1.69 against a <see cref="Gate"/> of 1.40, so the recording
+    /// barely clears the outer silence guard at all and every character in it is
+    /// weak. Next weakest across the protected set is `cw-2026-08-17-013347`'s
+    /// `VA3VRR` at 1.480, then `cw-2026-08-18-004507`'s bulletin at 1.635.</para>
+    /// <para>**THE TWO DRIVE PATHS DISAGREE ABOUT THAT CHARACTER BY THREE AND A
+    /// HALF PER CENT, AND THE LOWER READING IS THE ONE RECORDED.** Fed the
+    /// recording hop by hop it scores 1.047; fed the same recording through
+    /// `Listen` and a buffered source it scores 1.083. A constant has to be safe
+    /// on whichever path production takes, so the number here is the smaller.
+    /// **That the two disagree at all is a finding rather than a rounding**, and
+    /// it is not confined to a margin: on `cw-2026-08-22-032113` the two paths
+    /// track different notes, 650 Hz against 500 Hz.</para>
+    /// <para>**THE CHARACTER THAT BINDS IT IS PROBABLY NOT A REAL ONE, AND THAT
+    /// IS SAID RATHER THAN USED.** It is a lone `E` sitting between the second
+    /// `KD0UN` and the closing `K`, where the reading `DE KD0UN KD0UN K` has no
+    /// letter at all. Nobody has adjudicated it, so it is treated as real and
+    /// the floor stays under it (§12.5). If it is ever ruled a stranger, the
+    /// binding constraint becomes `VA3VRR` at 1.480 and this floor can rise.</para>
+    /// <para>A floor above this number costs a real word, which is the one thing
+    /// a gate against soup may not do. It is recorded rather than left implicit
+    /// so that the next session raising the floor has to argue with a
+    /// measurement rather than with a comment.</para>
+    /// </remarks>
+    public const double WeakestAdjudicatedCharacterMargin = 1.047;
 
     /// <summary>
     /// How wide the envelope's integrator is, in hertz of equivalent noise
