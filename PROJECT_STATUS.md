@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
-TASK: 3 of 3
+TASK: 6 of 6
 BALL: tim
 NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-25T19:25:51-04:00
-NOTE: the re-read is shipped and reads AA4MP/4 QNIK whole; the station-leaving guard turns out never to have been armed on 012823
+UPDATED: 2026-08-25T22:50:37-04:00
+NOTE: the sweep is off the terminal and the advice no longer sends him to the radio; the squelch failed its own measurement on both axes
 
 ---
 

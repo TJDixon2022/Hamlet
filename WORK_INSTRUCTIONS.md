@@ -18,91 +18,111 @@ If all four hold, say "Hamlet confirmed" and continue.
 
 ---
 
-# Work instruction 014 — ship the re-read, and stop leaving stations
+# Work instruction 015 — the squelch, the screen, and the margin worth logging
 
-**Tim operates in a couple of hours. Three tasks; task 3 is the drop. Tasks 1
-and 2 are both expected to finish — this unit is sized small on purpose.**
+**One session. Success is readable CW on the operator's screen tonight.** This
+unit implements the shack-side build plan `BUILD_SESSION_2026-08-25.md` at
+Tim's direction, reconciled below against what this tree has measured since.
+Six tasks; task 6 is the drop.
 
 ## Why this unit exists
 
-**The unit's number: 167 of 384, already measured, sitting reverted in the
-tree.**
+**The unit's number: one axis, sixteen captures.**
 
-Unit 1.11.10 built the re-read-on-settle, measured it — adjudicated characters
-158 to **167**, `cw-2026-08-18-003758` giving back **`AA4MP/4 QNIK` whole,
-twelve of twelve, for the first time ever**, the ARRL bulletin 22 to 28 — and
-reverted it because four character-count floors fell. Every falling floor fell
-the same way: **fewer, better characters** — more elements seen, unsure counts
-down. The floors predate the success tests and measure a quantity the project
-no longer needs them to measure where an adjudicated anchor covers the same
-recording.
+Measured across sixteen captures at identical input level with the tone locked,
+every failure of the last two nights sorts on keying duty at the tracked pitch:
 
-**Tim has ruled** (2026-08-25, on being shown the numbers): correctness anchors
-outrank count floors — a count floor retires wherever an adjudicated anchor
-covers the recording — and **`cw-2026-08-25-012748`'s regression (sixteen
-elements to four) is accepted and logged** rather than blocking the ship; it is
-the drop-candidate task's subject, not a gate.
+```
+duty 18–24 %  ->  invented text     (021825: 8 s of a call in 30 s of soup)
+duty 36–47 %  ->  readable          (ten rag chews, 0–8 unsure)
+duty 55 %+    ->  more than one station -> soup   (004808)
+```
 
-The second fault is live-operating poison and has a reproducible fixture as of
-unit 1.11.10's task 1: on `cw-2026-08-25-012823` **the tracker holds the
-correct 500 Hz for the first half of the recording, then leaves a confirmed
-station for 450 and stays** — ending 49.8 Hz off a true 499.8, turning the
-second half to soup. HM-DEC-127's index row (transcribed by unit 1.11.6) rules
-*"a confirmed station is not abandoned for a candidate far below it."* This is
-that ruling being violated by something upstream. **Fixing it enforces a ruling
-already in force; it does not need a new one.**
+Plain-text Morse cannot exceed about 44 % key-down (PARIS arithmetic), and a
+station actually sending rarely sits under about 30 %. **The decoder currently
+decodes everything — silence and pile-ups both — and the output for both is
+soup.** Nothing stands between "the recent element stream does not look like
+one station sending Morse" and the screen.
+
+And the screen itself is why tonight felt hopeless: the transcript's first
+hundred characters were soup decoded two minutes earlier, sitting bright above
+three correctly-read callsign tokens. **The decoder read `WB8SC`, `SKSK`,
+`KE8P` tonight and the operator couldn't see it.**
+
+**Where this instruction corrects its source, with the tree's evidence:**
+
+- The plan's phase 2 (fist-quality pitch *selection*) was **built, measured and
+  reverted by unit 1.11.8**: its duty band was anti-correlated on the W1AW
+  captures, because a bulletin runs 47–70 % duty. It is task 6, the drop, and
+  its constants must come from the anchored corpus, not the plan's band.
+- The same exposure applies to the squelch's upper bound: **55 % is a
+  hypothesis, and the W1AW anchors are the test.** Task 2 derives the bound;
+  it does not copy it.
+- The plan's spanLlr warning is confirmed by this tree's own finding
+  (unit 1.11.10: the short-character bias needs a per-character expectation) —
+  **the squelch is not built on `spanLlr`**, and task 4 logs the quantity that
+  should eventually replace it.
 
 ## Verify this instruction against the tree
 
 **Nothing here describes the tree.** Check every claim and report mismatches,
 including where the work succeeded anyway.
 
-**Known state after unit 1.11.10: 29 failing of 1789 in the engine, app green
-but for the known flaky tests.** Three accepted-cost silence fixtures; two flaky
-rig tests; one unreproduced app intermittent. **Twelve success tests and
-thirty-six floors; `ARecordingWithNoStationInItSaysNothing(014854)` green and
-staying green.**
+**Known state after unit 1.11.11: 28 failing of 1831 in the engine, 487 of 487
+in the app** (three accepted-cost silence fixtures; four known intermittents).
+**Twelve success tests; anchors govern where they cover (Tim's ruling,
+2026-08-25); count floors stand elsewhere; element floors stand everywhere.
+`ARecordingWithNoStationInItSaysNothing(014854)` green and staying green.
+Chunk-size invariance across five sizes and both entry points is asserted
+corpus-wide and survives every task here.**
 
-**The re-read exists complete in a reverted commit of unit 1.11.10's task 2** —
-find it in history rather than rebuilding; its two recorded false starts (newest-
-hop comparison; firing on first rather than confirmed pitch) are already
-measured, do not retry them.
+**Three captures this unit wants may not be in the tree**:
+`cw-2026-08-26-004808`, `-004900`, `-004952`. Tim was asked to copy them to
+`tests/fixtures/cw/captured/unadjudicated/`. Task 1 checks; every dependent
+step names its fallback.
 
 **`DECISIONS.md` has no record for HM-DEC-096–133, 136, 141, 150, nor Tim's
-rulings of 2026-08-25 — now five including today's two.** Section 4 carries the
-ask again.
+five rulings of 2026-08-25.** Read HM-DEC-095/127's index-row transcriptions in
+unit 1.11.6's report.
 
-**`CLAUDE_CODE.md` says four report sections; version line reads 1.3.** Read
-the file's own section count.
+**`CLAUDE_CODE.md` says four report sections; its version line reads 1.3.**
+Read the file's own section count.
 
 ## Rulings in force
 
-**Tim's ruling, 2026-08-25 (today): anchors outrank count floors.** Where an
-adjudicated anchor covers a recording, its count floor retires — the anchor is
-the guard. Count floors stand everywhere no anchor covers. **`012748`'s
-regression under the re-read is accepted and recorded in the report, not
-traded silently.**
+**Tim's direction, tonight, quoted:** *"Use it to develop a single work unit
+that has a shot at giving the significant improvement in CW."* The shack plan's
+phases 1, 3, 4 and 5 are tasks 2–5 under it; its phase 2 is task 6.
 
-**HM-DEC-127** (index row, per unit 1.11.6's transcription): a confirmed
-station is not abandoned for a candidate far below it. **Task 2 enforces it.
-The full record is unreadable in this tree — if anything found in code
-contradicts the index row's plain sense, stop that task and put the conflict
-in section 4 rather than guessing which way the full ruling cuts.**
+**Scope supersession, named so it is not silently contradicted:** earlier units
+recorded *"rejected: treating duty as a station test"* from 1.11.8's revert.
+That rejection was about **pitch selection** and its constants. Tonight's
+direction adopts duty for **emission holding**, with the constants derived
+against the anchors — the W1AW bulletins at 47–70 % duty must keep reading, or
+the bound is wrong and widens rather than ships.
 
-**HM-DEC-120.** Nothing emitted on audio holding no signal; the meter claims no
-Keying window on it — absolute, both empty captures, live path, checked and
-stated at every task.
+**Tim's display ruling, via the adopted plan (§0.0 makes the screen his; the
+plan is his side's and he directed its use):** the three terminal changes of
+task 3 and the debug-flag hiding of task 5, **narrowest reading, nothing else
+on the panel**. The "Hold this pitch" button stays exactly as it is.
 
-**Chunk-size invariance stands** (unit 1.11.9 task 4): identical text and pitch
-at 240/480/960/1920/4800 and through both entry points, asserted after every
-task here — the re-read's trigger is a function of hops, not chunk shape.
+**HM-DEC-120.** Nothing emitted on audio holding no signal; no Keying window
+claimed on it — absolute, all four empty captures, live path. The squelch may
+only *strengthen* this: below-band duty holds emission entirely.
 
-**Rejected already, do not revisit:** the four re-read trigger variants unit
-1.11.10 measured; the validity term at any weight (both halves now measured to
-a safe weight of nought); lowering the meter's swing bar; the clock diet; the
-fist band; locking to `CwPitch`.
+**Floors and anchors are the judge of every task**: `013520`, `013303` and (if
+present) `004900`'s three tokens byte-identical; all twelve success tests
+green; `004952`'s honest 58-of-106 unsure floored as honest, not "improved" by
+squelching it silent — a capture the gate holds closed emits *less*, and its
+floor is re-expressed as the gate's documented effect with before/after
+recorded, per the anchors-outrank-counts ruling where an anchor covers and
+with the loss on the record where none does.
 
-**PROPOSAL, not ruled:** the panel. **Untouched.**
+**Rejected already, do not revisit:** gating on silence-nulled `spanLlr`
+(measured inverted 100:1 on 004808); the joint character cutter (settled at a
+safe weight of nought); gap-cluster retuning (clusters merge at 30 WPM); the
+four re-read trigger variants; lowering the meter's swing bar; locking to
+`CwPitch`.
 
 ## Status cadence
 
@@ -112,67 +132,100 @@ is moving. Same every ten minutes while a task runs.
 
 ## The tasks
 
-### Task 1 — ship the re-read under the ruling
+### Task 1 — bank tonight's three, and their roles
 
-1. Re-apply unit 1.11.10's reverted re-read commit.
-2. Retire the count floors on recordings an adjudicated anchor covers, citing
-   the ruling in each retirement; **floors on unanchored recordings stand.**
-3. Record `012748`'s regression in the report and in the floors file as
-   accepted under today's ruling, with its numbers.
-4. Re-verify the whole measured result: adjudicated characters **167 of 384 or
-   better**, `AA4MP/4 QNIK` twelve of twelve, the bulletin at 28, `031948`
-   unsure at nought, every success test green, silence absolute, chunk
-   invariance across all five sizes and both entry points, empty captures with
-   zero re-reads.
+If present, commit `004808`, `004900`, `004952` with sidecars and floor them:
+**004808** is the overlap fixture and the spanLlr-inversion proof; **004900**
+is the control — `WB8SC`, `SKSK`, `KE8P` must survive everything below;
+**004952** is honest behaviour (58 of 106 unsure at S2, 40 WPM at the top of
+the search) that must stay honest. **If absent, say so first in section 4 and
+fall back**: overlap side from `004808`-absent means the upper bound is derived
+from the W1AW anchors alone and marked provisional-on-weaker-evidence; the
+control role falls to `013520`/`013303` and the twelve anchors.
 
-If any number lands short of unit 1.11.10's measurement, **stop and report the
-difference** — the reverted commit was measured once and the tree has moved.
+Build and run; record the green baseline.
 
-### Task 2 — a confirmed station is not abandoned
+### Task 2 — the emission squelch
 
-On `cw-2026-08-25-012823`, find what displaces the tracker from a confirmed
-500 Hz at mid-recording, with file and line. Unit 1.11.6 transcribed the
-displacement question as *never settled* for candidates against a station
-already confirmed — the code has some rule there; name it, and fix the case the
-index row plainly forbids: **whatever is at 450 on this recording is not better
-evidence than the station being read, or the tracker would have been right to
-go.** Expected shapes worth checking first: the station's own image or sideband
-scored as a fresh candidate; a confirmation counter that decays during the
-station's own inter-word silence; the hold (1.11.6 task 4) releasing on a
-survey verdict the meter section shows is unreliable.
+A rolling test over the last ~3 s at the tracked pitch, from quantities the
+decoder already computes. **Emission holds when the recent stream does not look
+like one station sending Morse; it resumes when it does.** Forward-acting only:
+characters resolved before the gate closed stay.
 
-**Acceptance:** the tracker holds 500 Hz across `012823` end to end; its decode
-improves and the improvement is reported (it is the negative-control capture —
-improving it genuinely is the point; the harness still watches for trades
-against `013520`); **no other capture's tracked pitch changes** — the fix is to
-stop unjustified leaving, not to make leaving harder in general, and a capture
-where the tracker *rightly* moves between two real stations must still move.
-All floors and anchors green; silence absolute.
+1. **Local duty in a band.** Lower bound near 25 % (below: silence — hold, emit
+   nothing). **Upper bound derived, not copied**: it must sit above every W1AW
+   anchor capture's measured duty and below `004808`'s (or, absent that file,
+   above the anchors with the margin reported). Above it: overlap — hold, and
+   mark the stretch with a single `■`.
+2. **Fist sanity** on the last ~12 resolved marks: dah/dit ratio in [2.2, 4.0],
+   dit in [25, 160] ms. Real fists measured 2.6–3.4 all week; the mush measured
+   4.6–5.8 and 12.9.
+3. **~2 s of passing before resuming** — a word gap at 20 WPM is 420 ms and
+   cannot false-trigger it. Trigger arithmetic in hops, so chunk invariance
+   holds.
 
-If the mechanism is found and the fix is not contained, **report the mechanism
-with file and line and stop the task** — tonight a named fault beats a rushed
-change.
+**Proof before merging, from the plan verbatim**: `021825` shrinks from 63
+characters to roughly its 8-second call window; `021629`'s `559 559 IN MI MI`
+survives; the control tokens survive; `013520`/`013303` byte-identical — those
+files never leave the pass band, so **if any floor case changes, the window is
+wrong: widen it, don't ship.** Empty captures: still nothing, now doubly held.
 
-### Task 3 — why the re-read destroys `012748` *(the drop candidate)*
+### Task 3 — the screen stops burying good copy *(display, under the ruling)*
 
-Sixteen elements to four on the one capture the re-read hurts. Diagnose which
-replay decision goes wrong — the pitch it re-mixes at, the moment it fires, or
-what the second read does to marks the first read had. **Diagnose; fix only if
-contained and only if every task-1 number holds.** Dropped whole if time runs
-out, and the report says so.
+1. When the squelch has held ~10 s, insert a **timestamped separator rule**
+   into the transcript instead of nothing.
+2. Everything before the most recent separator renders **dimmed** — selectable,
+   nothing deleted; the eye lands on current copy.
+3. **The `no keying here` advice block retires whenever the tone panel is
+   showing** — two panels currently assert a clear tone and nothing-there
+   simultaneously, 50 Hz apart, and send the operator to the radio for a
+   decoder condition.
+
+Nothing else on the panel changes.
+
+### Task 4 — log the margin that will replace the silence null; change nothing
+
+For every emitted character, compute and log
+`marginLlr = LLR(best) − LLR(second-best)` over the same span, beside
+`spanLlr`, sidecar and jsonl only. **Clamp both to sane bounds** — the
+`6:27306879.3` family is the overflow again. The inversion this exists to fix,
+for the record: on `004808` the E-soup scored 8003–29261 against silence while
+the plausible tail scored 41–437; against a second-best null, an E carved from
+continuous tone scores near nought. **No behaviour change; tomorrow sets
+thresholds from real distributions.**
+
+### Task 5 — the keying sweep goes behind a debug flag *(display, under the ruling)*
+
+Wrong on 14 of 20 against independent measurement, and this tree has since
+measured its calibration inside an overlap (unit 1.11.10). **Hide the panel
+behind a debug flag; keep computing to the sidecar.** Removing a lying
+instrument is one line; rebuilding it is not tonight's work.
+
+### Task 6 — fist-quality pitch selection *(the drop candidate)*
+
+The plan's phase 2, previously built and reverted by 1.11.8 — **the revert's
+measurement governs**: constants from the anchored corpus, never the plan's
+band. A candidate bin passing task 2's derived window beats any bin failing it
+regardless of energy (HM-DEC-095's own principle — keying, not loudness);
+among passers, the strongest; ±1-bin hysteresis so a steady station does not
+hop (013402→013637 drifted 525↔540); the chosen bin's (ratio, dit, duty)
+logged beside `toneHz`. **Acceptance:** `004952` chooses 510 over the 6 WPM
+noise at 400 (if present); no anchored capture's chosen pitch regresses; the
+1.11.11 lead is measured — `031905` toward 499.8 instead of 300, `032113`
+toward 499.8 instead of 650. **Any anchor red: revert whole, keep the table.**
+Dropped whole if time runs out, and the report says so.
 
 ## Parked — do not touch, do not raise
 
-- **The meter** — measured into an overlap; needs a different quantity, not a
-  bar; its own future unit.
-- **The panel**, the "Hold this pitch" button, re-read indication on screen.
-- **`032113`/`032012`/`032050`** — structurally beyond the live re-read;
-  whole-file second pass is a different feature and unruled.
-- **The integrator width, `014113`/`014308`'s smear, `001520`'s quadrillions,
-  the reference/port integrator difference, the six-hertz window disagreement,
-  the unmeasured-pitch-costs-`N4L` ruling, the short-character bias, the
-  Avalonia geometry offset, `CHANGELOG.md`, HM-OPEN-057, HM-OPEN-059, the
-  three flaky tests.**
+- **The confirmation rule** (consecutive-surveys; the intermittent-station
+  finding) — its ruling ask stands from 1.11.11; task 6 may relieve it and must
+  not modify it.
+- **The meter's rebuild**, the joint cutter, the whole-file second pass for
+  late-pitch captures, the integrator width, `014113`/`014308`'s smear,
+  `001520`'s quadrillions, the reference/port integrator difference, the
+  six-hertz window disagreement, the unmeasured-pitch-costs-`N4L` ruling, the
+  Avalonia geometry offset, `CHANGELOG.md`, HM-OPEN-057, HM-OPEN-059, the four
+  intermittents.
 
 A parked item that blocks a task is raised once, and says it was parked.
 
@@ -180,12 +233,14 @@ A parked item that blocks a task is raised once, and says it was parked.
 
 Standing prohibitions are `CLAUDE.md`'s and are not retyped. Unit-specific:
 
-- **Do not retire a floor on any recording no anchor covers.**
-- **Do not retry the four measured re-read triggers.**
-- **Do not make the tracker sticky in general** — task 2 removes one
-  unjustified move, with the not-changed-elsewhere assertion as proof.
-- **Do not retract settled text, break chunk invariance, or trade silence.**
-- **Do not touch the panel.**
+- **Do not gate on `spanLlr`.** Measured inverted 100:1.
+- **Do not copy the 55 % bound.** Derive it against the W1AW anchors.
+- **Do not let the squelch touch anything already resolved.** Forward only.
+- **Do not change the panel beyond tasks 3 and 5's narrowest reading.**
+- **Do not redesign the cutter, retune clusters, or touch the tone
+  interpolation** beyond task 6's selection logic.
+- **Floors only rise; anchors stay green; silence is absolute; chunk
+  invariance holds.**
 
 ## Committing, pushing, reporting
 
@@ -195,10 +250,11 @@ push is reported as refused, with the reason.
 Report per `CLAUDE_CODE.md` §8 — read the file's own section count — to
 `output.md` at the repository root, overwritten and printed.
 
-**Section 3 leads with two numbers: adjudicated characters with the re-read
-shipped (167 of 384 is the bar), and `012823`'s tracked pitch across the whole
-recording.** Section 2 says plainly what Tim will see at the radio tonight:
-openings repaired, and stations no longer walked away from mid-contact.
+**Section 3 leads with the squelch's before/after on `021825` and the survival
+list — the control tokens, `021629`'s exchange, the byte-identical floors.**
+Section 2 says plainly what Tim sees at the radio tonight: a quiet frequency
+that stays quiet on screen, current copy bright over dimmed history, one
+instrument that no longer argues with another.
 
 ### Asks still outstanding
 
@@ -211,24 +267,25 @@ The oldest is open since 2026-08-14.**
 3. **`ANNUNCIATOR.md` renamed `PHASE` to `TASK` while HM-DEC-150 makes
    `PHASE` match the version's minor.**
 4. **`DECISIONS.md` has no record for HM-DEC-096–133, 136, 141 or 150 — nor
-   for Tim's five rulings of 2026-08-25, two of which this unit acts under.**
-5. **The tone tracker** — task 2 acts on its sharpest known fault.
+   for Tim's five rulings of 2026-08-25, plus tonight's adoption of the build
+   plan.**
+5. **The tone tracker** — the confirmation rule's ruling ask stands; task 6
+   measures the selection half.
 6. **The integrator width** — bears on `014113`/`014308`.
 7. **The guard's gap is two to one**, calibrated on two empty captures.
 8. **A boxcar's nulls made two of five swept offsets pathological best
    cases.**
 9. **Two stations closer than 125 Hz are not named.**
-10. **The keying meter** — calibration measured inside an overlap; needs a new
-    quantity, its own unit.
+10. **The keying meter** — task 5 hides it; the rebuild is its own unit.
 11. **HM-OPEN-057** (2026-08-22) and **HM-OPEN-007** (2026-08-14).
 
 Still open: **the lock's mixed help**; **the "Hold this pitch" button**;
 **three fixtures at accepted cost**; **`001520`'s quadrillions**; **the
 reference/port integrator difference**; **`CLAUDE_CODE.md`'s version line**;
 **an unmeasured pitch costs `N4L`**; **`014113`/`014308`'s second mechanism**;
-**the six-hertz window disagreement**; **the short-character bias**; **the
-Avalonia geometry offset**; **`CHANGELOG.md` at 1.9.0**; **three intermittent
-tests**; **the whole-file second pass for late-pitch captures** (new — the
-form of the lever the live re-read cannot reach).
+**the six-hertz window disagreement**; **the short-character bias** (task 4
+logs its replacement quantity); **the Avalonia geometry offset**;
+**`CHANGELOG.md` at 1.9.0**; **four intermittents**; **the whole-file second
+pass**; **the confirmation rule cannot admit an intermittent station**.
 
 **If you finish every task, stop and report. Do not start the next unit.**
