@@ -180,6 +180,27 @@ wrong: widen it, don't ship.** Empty captures: still nothing, now doubly held.
    showing** — two panels currently assert a clear tone and nothing-there
    simultaneously, 50 Hz apart, and send the operator to the radio for a
    decoder condition.
+4. **The band row, per Tim's ruling of 2026-08-26, in his words:** the order
+   from the top is the Hamlet title, the dad-humor-of-the-day block, **then the
+   band row** — and today the row sits far below that. Restore the ruled order.
+   Two clipping faults ride with it, observed on the real window tonight:
+   **`10 m` is cut on its right** — the operator sees `10 n` and not the whole
+   `m` — and **the `best bet now` badge shows only its bottom five percent**,
+   which is the shape of an overlay extending above its host's top edge inside
+   a parent that clips. All seven cards fully visible including `10 m`'s whole
+   label, and the badge fully visible, at the application's default width and
+   the operator's working width. HM-DEC-141's wavelength-proportioned card
+   widths are meaning and are not shrunk to make room — make room around them,
+   and if some width genuinely cannot fit all seven, report what width and
+   stop rather than inventing policy.
+
+   **Unit 1.11.9 verified this same area green by headless hit-testing while
+   logging an unexplained headless-versus-real geometry offset — and the real
+   window shows the faults anyway. Do not verify by headless hit-tests alone
+   this time**: assert the visual-tree order (title, humor, band row), assert
+   `10 m`'s right render-edge inside the window bounds and the badge's top
+   inside its clipping ancestor's bounds, at both widths, and say which
+   ancestor was clipping the badge.
 
 Nothing else on the panel changes.
 
@@ -254,7 +275,8 @@ Report per `CLAUDE_CODE.md` §8 — read the file's own section count — to
 list — the control tokens, `021629`'s exchange, the byte-identical floors.**
 Section 2 says plainly what Tim sees at the radio tonight: a quiet frequency
 that stays quiet on screen, current copy bright over dimmed history, one
-instrument that no longer argues with another.
+instrument that no longer argues with another, and the band row back in its
+ruled place — title, humor, bands — with `10 m` whole and the badge whole.
 
 ### Asks still outstanding
 
@@ -284,7 +306,7 @@ Still open: **the lock's mixed help**; **the "Hold this pitch" button**;
 reference/port integrator difference**; **`CLAUDE_CODE.md`'s version line**;
 **an unmeasured pitch costs `N4L`**; **`014113`/`014308`'s second mechanism**;
 **the six-hertz window disagreement**; **the short-character bias** (task 4
-logs its replacement quantity); **the Avalonia geometry offset**;
+logs its replacement quantity); **the Avalonia geometry offset** — task 3 works around it and its cause is still unfound;
 **`CHANGELOG.md` at 1.9.0**; **four intermittents**; **the whole-file second
 pass**; **the confirmation rule cannot admit an intermittent station**.
 

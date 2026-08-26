@@ -4,8 +4,8 @@ STATE: COMPLETED
 TASK: 6 of 6
 BALL: tim
 NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-25T22:50:37-04:00
-NOTE: the sweep is off the terminal and the advice no longer sends him to the radio; the squelch failed its own measurement on both axes
+UPDATED: 2026-08-25T23:43:42-04:00
+NOTE: band row back under the byline with every label whole and the badge unclipped; the squelch is still the thing that did not survive its measurement
 
 ---
 
