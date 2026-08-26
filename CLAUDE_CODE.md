@@ -1,6 +1,6 @@
 # CLAUDE_CODE.md
 
-**Version 1.3. This file is byte-identical in every project.**
+**Version 1.4. This file is byte-identical in every project.**
 
 It governs how a Claude Code prompt is built, delivered, executed and reported.
 It does not govern the work itself.
@@ -345,6 +345,12 @@ this unit was commissioned to ask.
 
 Ends: **if you finish every task, stop and report.** Do not start the next unit.
 
+**And if you cannot finish, report anyway.** §8's report is written on the way out
+of every session, not only a successful one. A unit that blocks, refuses or fails
+says so in `output.md` — everything done, everything blocking, every question
+wanting an answer — because that file is the only thing that reaches the owner and
+the next unit.
+
 ---
 
 ## §5 Delivery
@@ -445,9 +451,21 @@ still do not move, the cause is elsewhere.
 `output.md` at the repository root, overwritten, and printed to the session.
 **Four sections, in this order, no other headings.**
 
-1. **What Claude did.** Surface, machine, project claimed, what in the tree
-   confirmed it, branch. Then what was traced, built and measured, with the
-   numbers. Any decision the session made for itself, reproduced in full.
+**Writing it is the only way out.** Complete, blocked or failed, a session writes
+`output.md` before it stops. **There is no exit that leaves the file unwritten** —
+a session that blocks on task 1 writes it, a session that cannot do the work at
+all writes it, and a session that is about to ask the owner a question writes the
+question into section 4 rather than into the terminal. What is in the terminal is
+gone when the window closes, and what is not in the file did not happen as far as
+every reader downstream is concerned. **The panel reads the file, the next unit is
+written from the file, and the owner is holding neither.**
+
+1. **What Claude did.** **Leading with the exit state** — complete, blocked or
+   failed, and at which task of how many. That is the fact every reader needs
+   first and the one currently inferred from a told `STATE`. Then surface,
+   machine, project claimed, what in the tree confirmed it, branch. Then what was
+   traced, built and measured, with the numbers. Any decision the session made for
+   itself, reproduced in full.
 2. **What the owner should expect.** What is now true, and **what will look wrong
    but is not.**
 3. **What you should see.** See §9.
@@ -541,6 +559,12 @@ Each has happened. Each is cheap to avoid and expensive to find.
   numbers and its paths rested on measurements that did not exist. The owner was
   left holding two zips and no way to tell which was current, and the session then
   invented withdrawal language *inside* the file he had not extracted.
+- **A session that stopped without writing the report.** A unit that blocks, refuses
+  or fails leaves its findings, its questions and its partial work in a terminal
+  window that closes. The owner is then holding a card, a commit and nothing to
+  read; the next unit is written blind against a tree the last session measured and
+  did not record. **The report is the only exit**, and §4.10 said *if you finish*
+  for long enough that not finishing read as exempt.
 - **A filename without its sequence number.** `-tonight-` and `-456-` shipped in one
   evening. The number was in §5's example and in none of its prose — the same
   failure as naming an outcome instead of an artifact, one level down, and in the

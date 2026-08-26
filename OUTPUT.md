@@ -171,8 +171,11 @@ byte-identical set.
   bin in every recording has two levels to find, which is the same finding as the
   gate-opens-everywhere table above, seen from the other end.
 - **The baseline was 28 of 1841**, exactly as the order states.
-- **`CLAUDE_CODE.md` §8 does say four sections**; its version line still reads
-  1.3.
+- **`CLAUDE_CODE.md` §8 does say four sections, and its version line reads 1.4,
+  not the 1.3 the order states.** It arrived updated in the same delivery as the
+  order and was uncommitted in the tree; committed here. Among its changes is a
+  new clause requiring the report to be written on the way out of a session that
+  blocks or fails, not only a successful one.
 - **`DECISIONS.md` still has no record for HM-DEC-096–133, 136, 141, 150**, nor
   Tim's rulings of 2026-08-25/26 including the one this unit acted under. This
   unit worked directly on HM-DEC-095's own tests and could not read its record.
@@ -339,7 +342,7 @@ unchanged, grounds corrected.
 
 Still open: **the lock's mixed help**; **the "Hold this pitch" button**; **three
 fixtures at accepted cost**; **`001520`'s quadrillions**; **the reference and
-port integrator difference**; **`CLAUDE_CODE.md`'s version line, still 1.3**;
+port integrator difference**; **`CLAUDE_CODE.md`'s version line — now 1.4, closed**;
 **an unmeasured pitch costs `N4L`**; **the six-hertz window disagreement**; **the
 short-character bias**; **the Avalonia geometry offset, still unexplained**;
 **`CHANGELOG.md` at 1.9.0 against 1.11.17**; **the whole-file second pass**;
