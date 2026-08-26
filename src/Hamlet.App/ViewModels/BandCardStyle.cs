@@ -60,10 +60,32 @@ public static class BandCardStyles
     /// ratio kept close to the one asked for; shrinking the type instead would
     /// have made the band names smaller than everything around them.
     /// </remarks>
-    public const double MinWidth = 58;
+    /// <remarks>
+    /// **WIDENED 2026-08-26 BECAUSE THE NARROWEST CARD WAS CUTTING ITS OWN
+    /// LABEL.** The operator read `10 n` off the screen where `10 m` was
+    /// written. Measured headless: the label wants forty pixels and was given
+    /// twenty-seven, because the card was fifty-eight wide and the padding and
+    /// the day-night icon beside the label take thirty-one of it. `15 m`, `17 m`
+    /// and `20 m` were short by six, four and one.
+    /// **THE RATIO IS THE MEANING AND IT IS NOT TOUCHED** (HM-DEC-033,
+    /// HM-DEC-141): both ends are scaled by the same factor, so every card
+    /// stands in the same proportion to every other as before, and the row is
+    /// simply bigger. Shrinking the cards to make room was ruled out by the
+    /// instruction that asked for this, and shrinking the type would make the
+    /// band names smaller than everything around them.
+    /// **SEVENTY-ONE IS MEASURED RATHER THAN CHOSEN**: forty for the label,
+    /// thirty-one for what shares the line with it. The whole row then measures
+    /// about six hundred and seventy-five pixels against eleven hundred and
+    /// sixty-eight available at the application's default width.
+    /// </remarks>
+    public const double MinWidth = 71;
 
     /// <summary>Widest card, for the longest wavelength.</summary>
-    public const double MaxWidth = 93;
+    /// <remarks>
+    /// Ninety-three scaled by the same factor as <see cref="MinWidth"/>, so the
+    /// span keeps the proportion HM-DEC-033 gave it.
+    /// </remarks>
+    public const double MaxWidth = 114;
 
     /// <summary>How much a card dims when its band is out of its element.</summary>
     public const double DimmedOpacity = 0.62;

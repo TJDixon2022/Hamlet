@@ -2198,7 +2198,12 @@
                  use it (HM-DEC-141). It is context rather than a tool, so it
                  stays fixed and outside the canvas, and it now costs a strip
                  rather than a third of the window. -->
-            <Grid Grid.Row="0" ColumnDefinitions="*,Auto"
+            <!-- **THE BAND ROW COMES FIRST, THEN THIS** — Tim's ruling of
+                 2026-08-26: from the top it is the Hamlet title, the line of
+                 Shakespeare, then the bands. The row had drifted below the
+                 readout, about two hundred pixels down the window, so the first
+                 control anybody reaches for was the last thing they found. -->
+            <Grid Grid.Row="1" ColumnDefinitions="*,Auto"
                   RowDefinitions="Auto,Auto" Margin="0,0,0,10">
 
 
@@ -2440,8 +2445,18 @@
          window width and nothing to collide with. It is still outside the canvas
          and still cannot be closed or moved (HM-DEC-086), and nothing about the
          cards changes — the ratio that carries the meaning is untouched. -->
-    <ItemsControl Grid.Row="1" VerticalAlignment="Top"
-                  ItemsSource="{Binding Bands}" Margin="0,0,0,10">
+    <!-- **THE BADGE HANGS ABOVE THE CARDS AND THIS USED TO CLIP IT OFF**
+         (Tim, 2026-08-26: the badge showed only its bottom sliver). The
+         best-bet badge is drawn over its card with a negative top margin so it
+         does not cost the row a line of its own, and this control's bounds are
+         exactly one card tall — so everything above the card's top edge was
+         outside the clip. Measured headless: the clipping ancestor is this
+         `ItemsControl`, bounds 43 pixels tall, with the badge nine pixels above
+         its top. The row keeps its height and stops clipping what deliberately
+         overhangs it. -->
+    <ItemsControl Grid.Row="0" VerticalAlignment="Top"
+                  ClipToBounds="False"
+                  ItemsSource="{Binding Bands}" Margin="0,14,0,10">
         <ItemsControl.ItemsPanel>
             <ItemsPanelTemplate>
                 <StackPanel Orientation="Horizontal" Spacing="8" />
