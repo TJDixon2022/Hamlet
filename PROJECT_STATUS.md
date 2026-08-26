@@ -4,8 +4,8 @@ STATE: COMPLETED
 TASK: 4 of 4
 BALL: tim
 NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-26T14:33:03-04:00
-NOTE: the gate opens on noise in every bin; that is why every admission test sees a continuum, and it needs a ruling
+UPDATED: 2026-08-26T16:25:31-04:00
+NOTE: the reference signature does not exist; both ruled candidates measured and neither ships, and the acceptance metric needs restating
 
 ---
 

@@ -1,308 +1,324 @@
-# Work instruction 020 — the survey never admits the station
+# Work instruction 021 — the gate cuts noise in half and calls it Morse
 
 ## 1. What Claude did
 
 Claude Code, on the development computer, in `C:\Source\HamLet`. The prompt
 claimed `PROJECT: Hamlet`; the tree confirmed all four checks — `SHACK_FACTS.md`
 and `src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs` exist, neither
-`CoreHMI.sln` nor `MURC.sln` does. Branch `main` throughout, three commits, all
-pushed, none refused. Version 1.11.16 to 1.11.17 per HM-DEC-150.
+`CoreHMI.sln` nor `MURC.sln` does. Branch `main` throughout, four commits, all
+pushed, none refused. Version 1.11.17 to 1.11.18 per HM-DEC-150.
 
 **Nothing here is evidence about the radio.** No rig was connected.
 
 **No decision was recorded under §12.1.** Section 4 carries what needs a ruling.
 
-**All four tasks ran. Nothing was dropped.** Task 1 shipped the instrument. Task
-2 took the second branch the order allows and ships nothing. Task 3 corrects a
-shipped verdict's grounds without changing it. Task 4 measured.
+**All four tasks ran. Nothing was dropped.** Task 2 ships nothing, on the order's
+own permitted outcome. Task 4, the drop candidate, was measured.
 
-### Task 1's sentence, which is the unit's whole purpose
+**The session dropped mid-task-2** and resumed. The apparatus was committed
+before continuing, and no work was lost.
 
-> **Separation refuses all four stations, short by 1.8 to 2.3 against a bar of
-> four — and it refuses the two recordings that hold nothing by the same amount,
-> at 1.72 and 1.65.**
+### The unit's premise is false, and finding that out is the unit's result
 
-Measured per bin, per pass, with every test's value recorded:
+**A count of zero marks does not mean the gate was shut.** A run touching either
+end of the history is truncated rather than counted, and a run spanning the whole
+history touches both — so **a gate that never closes reports exactly what a gate
+that never opens reports.** Nothing in this tree had ever distinguished them.
 
-| capture | holds | refusing test at the station's pitch | median | short by |
+Re-measured with the two counted apart:
+
+| | zero-mark % | **genuinely shut** | stuck wide open | truncated runs |
 |---|---|---|---|---|
-| `cw-2026-08-25-012823` at 500 Hz | a station | **separation**, 32 of 57 passes | 2.32 | **1.77** |
-| `cw-2026-08-22-014113` at 600 Hz | a station | **separation**, 28 of 57 | 1.75 | **2.30** |
-| `cw-2026-08-22-014308` at 625 Hz | a station | **ratio**, 23 of 57 | 4.24 | 0.44 |
-| `cw-2026-08-26-125941` at 400 Hz | a station | **separation**, 38 of 57 | 1.81 | **2.19** |
-| **`cw-2026-08-20-014854` at 600 Hz** | **nothing** | **separation**, 25 of 57 | **1.72** | **2.28** |
-| **`cw-2026-08-20-014935` at 825 Hz** | **nothing** | **separation**, 26 of 57 | **1.68** | **2.35** |
+| **`cw-2026-08-17-013347`, the order's reference** | 65.0% | **0.0%** | **17.5%** | 47.5% |
+| `cw-2026-08-17-013622` | 43.3% | **0.0%** | 3.8% | 39.5% |
+| every other capture in the corpus | 0.0% | 0.0% | 0.0% | 0.0% |
 
-**The station and the empty band produce the same number.** 1.75 at a station
-the operator can hear; 1.72 on a recording of nothing at all.
+**Not one of the 926 bins is shut.** And across all thirty-seven captures,
+**zero have a gate genuinely shut on half their bins or more.**
 
-### Task 2 — the second branch, and nothing ships
+There is no healthy reference signature in this corpus. The unit was built to
+make the silence controls resemble `013347`, and `013347` does not have the
+property it was chosen for.
 
-The order allows two outcomes: a threshold a real station misses narrowly, or a
-test measuring the wrong quantity. **The numbers gave a third, and it points the
-same way as the second.**
+### Task 1 — the signature across the whole corpus
 
-**No bound on separation admits the stations and refuses the noise.** Swept:
+Measured first with the order's own metric, before the confound was found:
 
-| bound | failing stations admitted at their pitch | silence controls leaking |
-|---|---|---|
-| **4.0 (today)** | 2 of 4 | `014935` — **1 bin** |
-| 3.5 | 3 of 4 | `014854` 1 bin, `014935` 3 bins |
-| 3.0 | **4 of 4** | `014854` **9 bins**, `014935` **8 bins** |
-| 2.5 | 4 of 4 | 23 and 31 bins |
-| 2.0 | 4 of 4 | 116 and 111 bins |
+- **1 capture of 37** reaches 50% or more zero-mark bins: `013347` at 65.0%.
+- `013622` is next at 43.3%. `cw-2026-08-23-002016` is third at **0.1%**.
+- **34 of 37 sit at exactly 0.0%** — not one bin in the band produces zero marks.
+- **Ten of the twelve adjudicated anchors sit at 0.0%** while reading their
+  callsigns. The seven ARRL bulletin captures all read anchors with every bin
+  producing about fifteen marks a pass.
 
-The four stations' **best** separation at their own pitches is 3.82, 3.03, 5.87
-and 7.02. The two recordings holding nothing reach **3.58 and 4.92** somewhere in
-the band — **higher than three of those four stations.** The distributions
-interleave; there is no line to draw.
+**So a mostly-shut gate is not a property of captures that read.** It is a
+property of `013347` alone, and section 1 above shows it is not even that.
 
-**The statistic is not the fault. What it is fed is.** Counting what the gate
-hands the tests:
+Baseline recorded by diffing which tests fail, per the order: **29 of 1841, being
+the stable 28 plus one intermittent** — and a *different* intermittent from unit
+1.11.17's. `ASweepIsAssembledFromItsPartsAndPublishedOnce` fired here where
+`KnobTurn_TransceiveFrame_RaisesFrequencyChanged` fired last unit. The stable set
+of 28 was taken as the intersection and used for the closing diff.
 
-| capture | bins producing 0 marks | producing 8+ | median where the gate opened |
+### Task 2 — both derivations built, both measured, neither ships
+
+**Before either was tuned, the two quantities they key off were measured.**
+Both interleave:
+
+| capture | holds | spread at the pitch | lift at the pitch |
 |---|---|---|---|
-| **`cw-2026-08-17-013347`, reads `VA3VRR`** | **926 of 1,425** | 442 | 13 |
-| `cw-2026-08-17-134712`, reads `N4L` | 0 | 1,176 | 16 |
-| `cw-2026-08-25-012823` | 0 | 1,417 | 19 |
-| `cw-2026-08-22-014113` | 0 | 1,419 | 19 |
-| `cw-2026-08-22-014308` | 0 | 1,366 | 19 |
-| `cw-2026-08-26-125941` | 0 | 1,420 | 20 |
-| **`cw-2026-08-20-014854`, nothing** | **0** | 1,399 | 19 |
-| **`cw-2026-08-20-014935`, nothing** | **0** | 1,409 | 20 |
+| `cw-2026-08-17-134712` | **`N4L`, reads** | **10.4 dB** | **3.0 dB** |
+| `cw-2026-08-20-014854` | **nothing** | **12.0 dB** | **35.3 dB** |
+| `cw-2026-08-20-014935` | **nothing** | 9.8 dB | 32.3 dB |
+| `cw-2026-08-25-012823` | a station | 12.8 dB | 41.5 dB |
+| `cw-2026-08-22-014113` | a station | 10.9 dB | 6.0 dB |
+| `cw-2026-08-22-014308` | a station | 12.4 dB | 5.4 dB |
+| `cw-2026-08-26-125941` | a station | 10.3 dB | 34.7 dB |
+| `cw-2026-08-17-013347` | `VA3VRR`, reads | 53.6 dB | 10.9 dB |
+| `cw-2026-08-18-004507` | the bulletin, reads | 18.3 dB | 25.9 dB |
 
-**On seven of eight captures, every single bin in the band produces marks** —
-about nineteen a pass, in bins holding nothing but noise. The gate's threshold
-comes from each bin's own two levels, so a bin of pure noise has its noise cut in
-half and yields a stream of structureless marks. Separation then correctly
-reports a continuum, about 1.7, for the noise **and for the station**, because on
-those captures it is looking at the same thing in both.
+**`N4L` reads a callsign at spread 10.4 while `014854`'s noise sits at 12.0** — a
+minimum-spread bound anywhere near there shuts the station and admits the noise.
+**And on lift the pair is inverted**: the noise stands 35.3 dB over its band floor
+where the station that reads stands 3.0. The band floor is a median over distant
+bins, so a uniformly noisy recording gives every bin a low lift and a quiet
+recording gives everything a high one.
 
-**`013347` is the exception and it is the one that reads a callsign.** Its gate
-stays shut on 926 bins, and where it opens at 600 Hz it yields 12 marks with dit
-92 ms, dah 275 ms and separation 5.92 — clean, first time, admitted 12 passes of
-57.
+**Candidate A — the threshold above the band floor.** Swept at 3, 6, 10, 15 and
+20 dB:
 
-**So nothing ships, on the order's own instruction.** Moving `MinimumSeparation`
-to admit `014113` at 1.75 admits `014854`'s noise at 1.72, which is HM-DEC-120
-broken on the order's own control. The measurement is written into the constant's
-doc so the number cannot be re-opened without re-opening the threshold the marks
-are cut at.
+| floor | anchors held | `014854` shut / stuck | `014935` shut / stuck | stations with marks at pitch |
+|---|---|---|---|---|
+| **today** | **12/12** | 0.0% / 0.0% | 0.0% / 0.0% | **4 of 4** (15, 17, 10, 19) |
+| 3 | 9/12 | 44.0% / **44.8%** | 45.1% / **45.5%** | 2 of 4 |
+| 6 | — | 44.7% / 42.9% | 45.8% / 43.8% | 2 of 4 |
+| 10 | **8/12** | 47.5% / 37.3% | 47.9% / 41.9% | 1 of 4 |
+| 15 | — | 49.5% / 20.1% | 50.3% / 34.9% | 0 of 4 |
+| 20 | 9/12 | 52.6% / 5.5% | 53.2% / 11.0% | 0 of 4 |
 
-**One improvement to the instrument shipped with it**: separation is now computed
-on the ratio-refusal path too, when a caller is watching. A refusal there used to
-return before the scatter was computed, so the one statistic that decides keying
-from noise was absent from exactly the rows a reader most wants to compare. It
-costs nothing in production, where the sink is null.
+**It costs anchors at every setting, and half its quiet is a jammed gate.** At 3
+dB the controls look 88.8% and 90.6% silent, of which nearly half is the gate
+stuck wide open. It jams open on the stations too: `012823` and `125941` reach
+**duty 1.00 at their own pitches** at every floor tried.
 
-### Task 3 — the valve verdict stands, and its stated grounds were partly wrong
+**Candidate B — two levels must be two things.** Swept at 12, 15, 20 and 25 dB:
 
-Unit 1.11.15 rejected its admission valve reporting that it *"admits noise more
-often than it admits the station"*, citing 6, 9, 13 and 6 admissions on four
-captures it had been told were empty. **Two of those four hold stations.**
-Re-run with them treated as what they are:
+| spread | anchors held | `014854` shut | `014935` shut | stuck-open | stations with marks |
+|---|---|---|---|---|---|
+| **today** | **12/12** | 0.0% | 0.0% | 0.0% | **4 of 4** |
+| **12** | **11/12** | **49.6%** | **56.9%** | **0.0%** | 2 of 4 |
+| 15 | 10/12 | 65.2% | 77.5% | 0.0% | 0–1 of 4 |
+| 20 | **2/12** | 97.6% | 100.0% | 0.0% | 0 of 4 |
+| 25 | — | 100.0% | 100.0% | 0.0% | 0 of 4 |
 
-| capture | holds | valve admissions | at the station's own bins |
+**B is the better mechanism and still fails.** It shuts bins outright with **no
+stuck-open bins at any setting**, which is exactly the half A could not deliver.
+At 12 dB it takes the silence controls to genuinely shut on half their bins,
+emitting nothing, with eleven anchors surviving. **It loses the twelfth** —
+`cw-2026-08-24-012403` drops `DE KD0UN KD0UN K` at every setting — and the
+acceptance admits no shortfall.
+
+**What the distance would have to be, and what it costs.** For B to leave every
+anchor standing the bound must sit below 12 dB, and below 12 it shuts almost
+nothing. For it to shut the controls to the 90%-plus the order asks for, the
+bound must reach 20, which costs ten anchors of twelve. There is no window.
+
+**And the finding that outlives both sweeps**: today's gate **already produces
+marks at all four stations' own pitches** — 15, 17, 10 and 19. Neither candidate
+improves on that at any setting; both reduce marks everywhere, on stations and
+noise alike. **The gate is not failing to find the stations. It is finding
+everything.**
+
+### Task 3 — the corpus re-measured, because the instrument moved
+
+Nothing shipped, so no decode changed. What did change is the measurement, and
+re-running the corpus with shut, stuck-open and truncated counted apart gives the
+table in section 1: **zero of thirty-seven captures have a genuinely shut gate on
+half their bins.**
+
+The four target captures, unchanged from unit 1.11.17: `012823` 41 characters at
+450 Hz measured; `014113`, `014308` and `125941` **zero characters and no
+measured pitch**.
+
+**Is the fault now downstream for any of them? No — and that is the honest
+answer.** The order asked this to be said for each. Nothing was fixed, so nothing
+moved downstream; all four are exactly where they were, and the gate that was
+supposed to be repaired turns out not to have the defect the unit named.
+
+### Task 4 — the survey's history hop
+
+| | |
+|---|---|
+| tracker hop | 240 samples = **5.00 ms** |
+| survey hop | decimated by 2 = **10.00 ms** |
+| de-glitch median | 3 hops = 30.0 ms window |
+| shortest mark that survives it | **20.0 ms**, which is a dit at 60 WPM |
+
+**So unit 1.11.15's claim needs narrowing.** A 31 ms dit is not lost — it
+survives the de-glitch with room to spare. What it lacks is *resolution*: at 3.1
+hops it is measured to ±10 ms, which is ±32%, and that is enough to smear a
+dah/dit ratio of 3.3 into the 5.85 the survey reported.
+
+**Five captures send at under four hops a dit:**
+
+| capture | WPM | dit ms | hops per dit |
 |---|---|---|---|
-| `cw-2026-08-26-125941` | a station | 6 | 1 |
-| `cw-2026-08-22-014113` | a station | 13 | 5 |
-| `cw-2026-08-22-014308` | a station | 6 | 2 |
-| **`cw-2026-08-17-013347`** | **anchored, reads `VA3VRR`** | **3** | **0** |
-| `cw-2026-08-17-134712` | anchored, reads `N4L` | 32 | 7 |
-| **`cw-2026-08-20-014854`** | **nothing** | **5** | 1 |
-| **`cw-2026-08-20-014935`** | **nothing** | **8** | 2 |
+| `cw-2026-08-22-014308` | 31.6 | 38.0 | 3.8 |
+| `cw-2026-08-17-013622` | 36.4 | 33.0 | 3.3 |
+| `cw-2026-08-25-021825` | 38.7 | 31.0 | 3.1 |
+| `cw-2026-08-26-125941` | 40.0 | 30.0 | 3.0 |
+| **`cw-2026-08-20-014935`** | **44.4** | **27.0** | **2.7** |
 
-**The verdict does not change: the valve admits 5 and 8 candidates on recordings
-holding nothing, and HM-DEC-120 is absolute.** What changes is the sentence
-around it. On correct evidence the valve admits noise *comparably* to stations
-rather than more often, and 1.11.15's claim that 13 and 6 were noise admissions
-was wrong — those were stations, and 5 of the 13 were at the station's own bins.
-
-**And a fact that unit could not have seen**: the valve gives `013347` — the one
-capture in this corpus that reads an adjudicated callsign — three admissions and
-**none at the station's own pitch**. It would not have helped the case that
-already works, while admitting 5 to 8 noise bins per silence control.
-
-The rejection was right. The reasoning is now correct as well as the conclusion.
-
-### Task 4 — what the four read, with nothing shipped
-
-| capture | floor | characters | unsure | elements | pitch | measured |
-|---|---|---|---|---|---|---|
-| `cw-2026-08-25-012823` | 0 | 41 | 15 | 62 | 450.0 Hz | yes |
-| `cw-2026-08-22-014113` | 0 | **0** | 0 | 0 | 600.0 Hz | **no** |
-| `cw-2026-08-22-014308` | 0 | **0** | 0 | 0 | 575.0 Hz | **no** |
-| `cw-2026-08-26-125941` | 0 | **0** | 0 | 0 | 400.0 Hz | **no** |
-
-Unchanged, because nothing shipped. Three of the four still never obtain a
-measured pitch at all; `012823` obtains one and it is the wrong station, at 450
-rather than 500.
+**The last row is a silence control.** `KeyingEnvelope` reads "44 words a minute"
+off a recording of nothing, which is its own comment on how much of this
+measurement chain is describing noise.
 
 ### The suite
 
 | | baseline | end |
 |---|---|---|
-| engine | 28 failing of 1841 | **29 failing of 1841** |
+| engine | 29 of 1841 (stable 28 + one intermittent) | **28 of 1841** |
 | app | 503 passing | **503 passing, 0 failing** |
 
-**The extra is a sixth intermittent and it is not this unit's.**
-`Rig.CivRigTests.KnobTurn_TransceiveFrame_RaisesFrequencyChanged` failed once in
-a full run and **passed three times out of three alone**. It is in the rig path;
-this unit touched `CwToneSurvey` and `CwToneTracker` and nothing else. The
-mid-unit baseline, taken with the instrument already in, was 28 of 1841 with a
-byte-identical set.
+**Byte-identical to the stable 28 — nothing moved, and no intermittent fired this
+run.** Diffed rather than totalled, per the order.
 
 ### Where the instruction and the tree disagree
 
-- **`cw-2026-08-22-014308`'s refusing test is the ratio, not separation.** The
-  order predicted one wall; at that capture's own claimed pitch the ratio refuses
-  23 passes at a median 4.24 against a ceiling of 3.8, with separation second at
-  20 passes. Separation is still the dominant refuser across the whole recording
-  (566 against 633 for the ratio), so the unit's premise holds in aggregate.
-- **`cw-2026-08-26-125941` is admitted twice**, at 400 Hz with separation 7.02.
-  The order describes it as never admitted. Two passes in 57 is not enough to
-  confirm and the recording still reads nothing, but the claim of zero is wrong.
-- **`cw-2026-08-25-012823` is admitted once at 500 Hz** — the real station — in
-  57 passes. Unit 1.11.16 reported zero from the tracker's filtered verdict; the
-  per-bin instrument sees one. **It does not change that unit's conclusion**,
-  since one admission cannot confirm and confirmation needs two.
-- **The `Clusters` test never refuses anything**, on any of the eight captures.
-  It is the first of the seven and fired zero times in 11,400 bin readings. Every
-  bin in every recording has two levels to find, which is the same finding as the
-  gate-opens-everywhere table above, seen from the other end.
-- **The baseline was 28 of 1841**, exactly as the order states.
-- **`CLAUDE_CODE.md` §8 does say four sections, and its version line reads 1.4,
-  not the 1.3 the order states.** It arrived updated in the same delivery as the
-  order and was uncommitted in the tree; committed here. Among its changes is a
-  new clause requiring the report to be written on the way out of a session that
-  blocks or fails, not only a successful one.
+- **The reference signature does not exist.** Section 1. This is the unit's
+  central mismatch and it invalidates the acceptance as written.
+- **Ten of twelve anchors sit at 0.0% zero-mark while reading their callsigns**,
+  so "most bins producing no marks" was never a property of a healthy capture.
+- **The baseline was 29, not 28**, and the intermittent that fired was a
+  different one from last unit's. The stable set is 28.
+- **`CLAUDE_CODE.md` is at 1.4** and §8 does specify four sections, as stated.
 - **`DECISIONS.md` still has no record for HM-DEC-096–133, 136, 141, 150**, nor
-  Tim's rulings of 2026-08-25/26 including the one this unit acted under. This
-  unit worked directly on HM-DEC-095's own tests and could not read its record.
+  Tim's rulings of 2026-08-25/26 including the one this unit acted under.
 
 ## 2. What Tim sees at the radio
 
-**A station he can hear still does not reach the decoder, and this unit says for
-the first time exactly why.**
+**Nothing changed, and a station he can hear still does not reach the decoder.**
 
-Nothing changed at the radio. What changed is that the refusal is no longer
-invisible: every bin the survey looks at now records what each of its seven tests
-measured and which one said no. Four days of work were spent building mechanisms
-downstream of a decision nobody could see, and that is over.
+Two candidate repairs were built exactly as ruled and both were measured against
+the anchors and the silence controls rather than against the captures that
+motivated them. Neither passed. Under the ruling's own terms, neither ships.
 
-**The answer is not a threshold that needs nudging.** On a recording holding
-nothing but noise, every bin in the band produces about nineteen marks a pass,
-because the gate's threshold is derived from each bin's own levels and cheerfully
-cuts noise in half. The test that is supposed to tell keying from noise then sees
-a structureless continuum in both, and says so — correctly — with the same number.
+**But the unit did not come back empty.** It found that the measurement the whole
+plan rested on cannot tell a shut gate from one jammed wide open, and that the
+capture chosen as the healthy example does not have the property it was chosen
+for. Four days of work were aimed at making noisy captures resemble a reference
+that was never measured correctly.
 
-**Loosening it would let noise through.** Measured: the bound that admits all
-four stations lets nine and eight noise bins through on the two recordings that
-hold nothing. That is the one property this project has never traded.
+**The real shape of the problem is now visible**: the gate opens on essentially
+every bin of every recording in this corpus, including two that hold nothing at
+all, and it already opens on all four stations the operator can hear. It is not
+missing them. It is finding them and everything else equally, and no threshold
+placed on either quantity tried can tell those apart.
 
 **What will look wrong and is not:**
 
-- **A commit that changes no behaviour, and a constant with a long new comment.**
-  That is what a measured negative looks like in the tree.
-- **The engine shows 29 red where it has shown 28 for six units.** The extra is a
-  rig timing test that passes alone; it is named above and is not this unit's.
-- **`cw-2026-08-25-012823` still shows 41 characters of soup.** Nothing shipped,
-  so nothing moved.
+- **Two commits that change no behaviour.** Both derivations ship switched off,
+  and nothing in the application sets either. The suite is byte-identical.
+- **The engine shows 28 where the last two units showed 29.** No intermittent
+  fired this run. The stable set is unchanged.
+- **`cw-2026-08-25-012823` still shows 41 characters of soup**, and the other
+  three still show nothing.
 
 ## 3. What you should see
 
-**Which test refuses a real station, and by how much: separation, short by 1.8 to
-2.3 against a bar of four — and it refuses pure noise by the same amount, 1.72
-and 1.68.**
+**Zero marks on the two silence controls, before and after: 0.0% and 0.0%, and
+after — nothing shipped — 0.0% and 0.0%.** The candidate that came closest, B at
+12 dB, would have made them 49.6% and 56.9% genuinely shut at the cost of one
+adjudicated anchor.
 
-**Does a station the operator can hear reach the decoder? No.** Three of the four
-never obtain a measured pitch at all. The fourth obtains one and it is the wrong
-station, 450 Hz where the sender is at 500.
+**How many of the four stations the operator can hear produce marks at their own
+pitches: all four, today, and all four before this unit began** — 15, 17, 10 and
+19 marks. Neither candidate raised that number at any setting; both lowered it.
 
-**The bound sweep, which is why nothing shipped:**
+**And the number that undoes the unit's premise:**
 
-| bound | stations taken | noise bins leaked |
-|---|---|---|
-| **4.0** | 2 of 4 | **1** |
-| 3.0 | **4 of 4** | **17** |
-| 2.0 | 4 of 4 | **227** |
+| | zero-mark | **genuinely shut** | stuck open |
+|---|---|---|---|
+| `cw-2026-08-17-013347`, the reference | 926 of 1,425 | **0** | 249 |
+| the whole corpus, captures with ≥50% shut | — | **0 of 37** | — |
 
-**The gate, which is the actual fault:**
-
-| | bins producing no marks |
-|---|---|
-| `cw-2026-08-17-013347`, reads `VA3VRR` | **926 of 1,425** |
-| every other capture measured, stations and noise alike | **0** |
-
-**The valve, on correct evidence**: still rejected, at 5 and 8 admissions on
-recordings holding nothing — and it gives the one capture that reads a callsign
-three admissions, none at its station's pitch.
-
-**The suite**: engine 29 failing of 1841 with the extra named and shown to pass
-alone; app 503 of 503.
+**The suite**: engine 28 of 1841, byte-identical to the stable set; app 503 of
+503.
 
 ## 4. What's blocking us
 
-**The fault is located, it is one level above every test that has been examined,
-and fixing it is a ruling rather than a session's change.**
+**The acceptance metric was wrong, and it should be restated before another unit
+is written against it.**
 
 Ruling asked for:
 
-> **The gate's threshold is derived from each bin's own two levels, and in a bin
-> holding only noise that splits the noise in half and manufactures marks. The
-> threshold must be derived from something that knows the difference — the band's
-> own noise floor, which `_bandNoise` already computes for the lift, or a
-> requirement that a bin's two levels be far enough apart to be two things. Every
-> admission test downstream is reasoning about marks cut out of nothing.**
+> **"Bins producing zero marks" is not the measurement. A run touching either end
+> of the history is truncated rather than counted, so a gate that never closes
+> and a gate that never opens both report nought marks. The acceptance is
+> **`Shut`** — no marks *and* the gate held open under 5% of the history, or no
+> gate ran at all — reported beside **`StuckOpen`** and **`Truncated`** so the
+> three can never be added together again. On that measurement no capture in this
+> corpus is healthy, and `cw-2026-08-17-013347` is 0.0% shut rather than 65%.**
 
-The evidence is in section 1. On seven of eight captures **not one bin in the
-band produces zero marks**, including both recordings that hold nothing, and the
-median is nineteen a pass. On `cw-2026-08-17-013347`, the one capture that reads
-an adjudicated callsign, **926 of 1,425 bin readings produce no marks at all** —
-and that capture is also the only one whose station is admitted repeatedly, 12
-passes of 57, first time, separation 5.92.
+The three predicates are in the tree and every table in this report uses them.
+The evidence is in section 1: `013347`'s 926 no-mark bins are 0 shut, 249 stuck
+wide open and 677 truncated.
 
-*Rejected: moving `MinimumSeparation`.* Measured across eight captures and swept
-across six bounds. There is no value that admits the four stations and refuses
-the two controls, because the controls' best bins reach 3.58 and 4.92 while three
-of the four stations' best reach only 3.82, 3.03 and 5.87.
+*Rejected: candidate A as ruled.* Costs anchors at every setting — 9, 8 and 9 of
+12 — and nearly half of the quiet it buys is the gate jammed open, including on
+the stations it was meant to rescue.
 
-*Rejected: moving the ratio band.* The order forbade it and the numbers do not
-ask for it. The ratio is the dominant refuser on only one of the four
-(`014308`, by 0.44), and separation refuses that capture 20 further passes.
-
-*Not proposed, because it needs a ruling:* the two candidate derivations above,
-and unit 1.11.15's finding that the survey's ten-millisecond history hop cannot
-resolve a 31 ms dit. **All three touch the instrument this project measures
-everything else with, and HM-DEC-119 is explicit about that.** It is a work unit
-with a corpus re-measurement in it.
+*Rejected: candidate B as ruled.* The better mechanism, and it still loses
+`cw-2026-08-24-012403` at every setting while shutting `cw-2026-08-22-014113`'s
+own station to 90.5%. No bound leaves twelve anchors standing and shuts the
+controls.
 
 ---
 
-**A sixth intermittent, and the count in the orders is stale again.**
+**Neither quantity separates a station from noise, measured before either was
+tuned, and this is the finding to carry forward.**
 
-`Rig.CivRigTests.KnobTurn_TransceiveFrame_RaisesFrequencyChanged` joins the five
-already known. It failed once in a full run and passed three of three alone, in a
-path this unit never touched. **Six tests that fail on timing rather than on
-behaviour means a full-run count of 28 is no longer a number anyone can read
-without diffing which tests moved**, which this report had to do. Worth its own
-small unit.
+`N4L` reads a callsign at spread **10.4 dB** and lift **3.0 dB**. The silence
+control `cw-2026-08-20-014854` sits at spread **12.0 dB** and lift **35.3 dB** —
+above it on both axes, and on lift by thirty-two decibels. Any bound on either
+quantity that keeps `N4L` admits that noise, and any bound that refuses the noise
+refuses `N4L`.
+
+That is now the third pair of axes measured and rejected: separation and the
+dah/dit ratio in unit 1.11.17, and the bin's level spread and its lift over the
+band floor here.
 
 ---
 
-**Three claims in the order were slightly wrong and one of them matters.**
+**The gate opens on everything, and the next question is why it opens on
+recordings holding nothing.**
 
-`cw-2026-08-26-125941` is admitted twice, not never; `cw-2026-08-25-012823` is
-admitted once at 500 Hz, not never; and `cw-2026-08-22-014308` is refused by the
-ratio at its own pitch rather than by separation. **None changes the unit's
-conclusion** — one or two admissions in 57 passes cannot confirm a station, and
-confirmation needs two agreeing surveys. Recorded because the order asked, and
-because "zero admissions in thirty seconds" was the unit's own headline number
-and it is not exactly true.
+Not a threshold question. On two recordings of an empty band, every bin produces
+about nineteen marks a pass, and those marks survive a de-glitch median designed
+to remove chatter. Something is producing structured-looking runs out of noise
+before any threshold is consulted, and it is not the threshold's placement,
+because moving it does not selectively remove them.
+
+*Not proposed, because it needs a ruling:* the de-glitch median is 3 hops, which
+at a 10 ms survey hop removes only runs of 10 ms or less. Noise crossing a
+threshold produces runs of 20 and 30 ms freely, and those become marks. Whether
+the de-glitch should scale with the speed being tracked, or whether the history
+should be longer than three seconds so a run has somewhere to be short relative
+to, are both changes to the instrument (HM-DEC-119).
+
+---
+
+**Task 4's finding narrows unit 1.11.15's claim rather than confirming it.**
+
+A 31 ms dit is not lost to the 10 ms hop — it survives the de-glitch, whose floor
+is 20 ms. What it lacks is resolution: 3.1 hops means ±32% on every mark length,
+which is enough to turn a true 3.3 dah/dit ratio into the 5.85 the survey
+reported. **The hop is a precision problem, not a detection problem**, and a
+repair aimed at detection would miss.
 
 ### Asks still outstanding
 
-Carried forward verbatim per HM-DEC-139 and HM-DEC-140. **Fourteen inbound. The
+Carried forward verbatim per HM-DEC-139 and HM-DEC-140. **Fifteen inbound. The
 oldest is open since 2026-08-14.**
 
 1. **The sweep's `invented` column counts substitutions, not invented
@@ -311,40 +327,36 @@ oldest is open since 2026-08-14.**
 3. **`ANNUNCIATOR.md` renamed `PHASE` to `TASK` while HM-DEC-150 makes `PHASE`
    match the version's minor.**
 4. **`DECISIONS.md` has no record for HM-DEC-096–133, 136, 141 or 150 — nor for
-   Tim's rulings of 2026-08-25/26, including the one this unit acted under.**
-5. **The tone tracker** — admission is now diagnosed and the ask is the gate
-   threshold, above; confirmation, displacement and selection stay measured inert
-   until it works.
-6. **The integrator width** — settled at 45 Hz, with the caveat that the peak is
-   sharp and may reflect what the decoder was fitted around.
+   Tim's rulings of 2026-08-25/26, including the one this unit acts under.**
+5. **The tone tracker** — the gate is measured and neither candidate ships;
+   confirmation, displacement and selection stay measured inert.
+6. **The integrator width** — settled at 45 Hz, with the sharp-peak caveat.
 7. **The guard's gap is two to one**, calibrated on two empty captures; the
    operator's noise session crossed it live on 2026-08-26.
 8. **A boxcar's nulls made two of five swept offsets pathological best cases.**
 9. **Two stations closer than 125 Hz are not named** — the operator's own item
    five, and the last of his list not yet attempted.
-10. **The keying meter** — its measurement found a station its verdict denied.
+10. **The keying meter** — its measurement found a station its verdict denied,
+    and on `cw-2026-08-20-014935` it reads 44 words a minute off silence.
 11. **HM-OPEN-057** (2026-08-22) and **HM-OPEN-007** (2026-08-14).
-12. **The gate opens on noise in every bin** — this unit's headline, above.
-13. **A sixth intermittent**, above. The five-count in the orders is stale.
-14. **`014113`/`014308` were mislabelled as silence controls in a shipped
-    order** — **closed this unit**: the verdict that rested on it is re-measured
-    and unchanged, with its grounds corrected.
+12. **The acceptance metric restatement**, above — the headline ask.
+13. **Neither spread nor lift separates a station from noise**, above.
+14. **The gate opens on everything, including two empty recordings**, above.
+15. **The de-glitch removes only 10 ms runs at a 10 ms hop**, above.
 
-New this unit: **the gate opens on noise in every bin, and that is why every
-admission test sees a continuum**, above; **no bound on separation separates
-stations from silence**, above; **a sixth intermittent**, above; **three small
-factual corrections to the order**, above.
+New this unit: **the reference signature does not exist — `013347` is 0.0% shut,
+not 65%**, above; **both ruled candidates measured and neither ships**, above;
+**the hop is a precision problem rather than a detection one**, above.
 
-Closed this unit: **which test refuses a real station and by how much** — the
-instrument exists and the answer is separation, by 1.8 to 2.3, with noise at the
-same value. **Unit 1.11.15's valve verdict** — re-measured on correct evidence,
-unchanged, grounds corrected.
+Closed this unit: **the gate's threshold as the fault** — both derivations Tim
+ruled were built and measured, and neither is it. **Unit 1.11.15's hop claim**,
+narrowed to precision with the arithmetic behind it.
 
 Still open: **the lock's mixed help**; **the "Hold this pitch" button**; **three
 fixtures at accepted cost**; **`001520`'s quadrillions**; **the reference and
-port integrator difference**; **`CLAUDE_CODE.md`'s version line — now 1.4, closed**;
-**an unmeasured pitch costs `N4L`**; **the six-hertz window disagreement**; **the
-short-character bias**; **the Avalonia geometry offset, still unexplained**;
-**`CHANGELOG.md` at 1.9.0 against 1.11.17**; **the whole-file second pass**;
-**the squelch has no axis**; **the three morning captures of 2026-08-26**; **the
-speed ceiling may be short for a 36–43 WPM station**.
+port integrator difference**; **an unmeasured pitch costs `N4L`**; **the
+six-hertz window disagreement**; **the short-character bias**; **the Avalonia
+geometry offset**; **`CHANGELOG.md` at 1.9.0 against 1.11.18**; **the whole-file
+second pass**; **the squelch has no axis**; **the three morning captures of
+2026-08-26**; **six timing intermittents, two of which fired in the last three
+runs**.
