@@ -109,6 +109,12 @@ public sealed class TheCapturesThatDecodeKeepDecodingTests
         { "unadjudicated/cw-2026-08-25-021629", 47, 96, 20 },   // 24 % duty: `559 559 IN MI MI` buried
         { "unadjudicated/cw-2026-08-25-021825", 41, 74, 16 },   // 18 % duty: an eight-second call in thirty seconds
 
+        // **THE MISS OF 2026-08-26.** The operator sat on 14.0275 MHz hearing
+        // fast CW while the terminal said nothing decoded yet. Floored at its
+        // current truth, which is nothing at all — a floor this unit exists to
+        // raise and has not raised.
+        { "unadjudicated/cw-2026-08-26-125941", 0, 0, 0 },
+
         // Recordings that emit nothing today. A floor of nought asserts nothing
         // and records the state; what holds the silence property is
         // `ARecordingWithNoStationInItSaysNothing` (HM-DEC-120), not this.
