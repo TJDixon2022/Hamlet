@@ -18,92 +18,100 @@ If all four hold, say "Hamlet confirmed" and continue.
 
 ---
 
-# Work instruction 021 — the gate cuts noise in half and calls it Morse
+# Work instruction 022 — Morse is quantised and noise is not
 
 **ISSUED: 2026-08-26. A fresh order, not an amendment.**
 
-**Four tasks; task 4 is the drop.** The operator's standing goal governs every
-part: **he hears CW, Hamlet must decode it.** This unit closes items one, three
-and four of his list if it lands, because unit 1.11.17 proved they are one
-fault.
+**Four tasks; task 4 is the drop. Task 1 decides whether tasks 2 and 3 are
+built at all.**
+
+The operator's standing goal governs every part of this unit: **he hears CW,
+Hamlet must decode it, eighty percent of the time.** This unit exists because
+that goal currently fails at one step — a station he can hear is never admitted
+— and unit 1.11.18 narrowed the reason to a single unanswered question.
 
 ## Why this unit exists
 
-**The unit's number: 926 against nought.**
+**The unit's number: fifteen, seventeen, ten and nineteen.**
 
-`cw-2026-08-17-013347` reads the adjudicated `VA3VRR`. Its gate stays **shut on
-926 of 1,425 bin readings** — most of the band produces no marks at all — and
-where it opens at 600 Hz it yields twelve marks, dit 92 ms, dah 275 ms,
-separation 5.92, admitted twelve passes of fifty-seven, first time.
+Those are the marks today's gate already produces at the own pitches of the four
+stations the operator can hear and Hamlet cannot read. **The gate is not missing
+them.** Unit 1.11.18 measured that it produces about nineteen marks a pass in
+*every* bin of *every* recording, including two holding nothing at all.
 
-**On every other capture measured — four holding stations the operator can hear,
-and two holding nothing whatsoever — not one bin in the band produces zero
-marks.** The median is about nineteen a pass, in bins carrying only noise.
+**So the whole failure reduces to one question: can a station's marks be told
+from noise's marks?** Four answers have been measured and all four failed,
+because all four are amplitude measures:
 
-The cause, from unit 1.11.17's instrument: **the gate's threshold is derived
-from each bin's own two levels.** A bin of pure noise has its noise split in
-half and yields a stream of structureless marks. Every admission test
-downstream then reasons about marks cut out of nothing — which is why
-separation reports the same continuum, about 1.7, for a station the operator
-can hear *and* for a recording of silence, and why **no bound separates them**:
-the two silence controls' best bins reach 3.58 and 4.92 while three of the four
-stations reach only 3.82, 3.03 and 5.87.
+| axis | unit | result |
+|---|---|---|
+| cluster separation | 1.11.17 | station 1.75, silence 1.72 |
+| dah/dit ratio | 1.11.17 | dominant refuser on one capture only |
+| bin level spread | 1.11.18 | `N4L` reads at 10.4, silence sits at 12.0 |
+| lift over band floor | 1.11.18 | `N4L` reads at 3.0, silence sits at 35.3 |
 
-**This is why four consecutive units measured dead.** The admission valve, the
-integrator sweep, the confirmation window, fist-quality selection — all
-reasoning about a mark stream that is noise on most captures.
+**`N4L` is an adjudicated callsign that reads, and an empty band outscores it on
+both of the last two.** Amplitude cannot separate Morse from noise here.
+
+**The untried family is structure.** Morse is quantised: marks fall at one unit
+and three, gaps at one, three and seven. Noise crossing a threshold produces
+runs at whatever length it likes — unit 1.11.18 measured them at 20 to 30 ms,
+surviving a de-glitch whose floor is 20 ms. A statistic asking *"is this run
+stream consistent with a single Morse unit?"* is **dimensionless by
+construction**, which is the property unit 1.11.14 concluded any usable axis must
+have after `marginLlr` failed for want of it.
+
+**This tree already contains a working implementation of the idea.**
+`tools/reference-decoder/` and `cwdecoder.py` refuse to emit without a clock
+whose marks cluster as Morse — `fit_clock`, and the `well_separated` escape it
+grew after a real 4.24-ratio station was refused. That history is the precedent,
+not a new invention.
+
+**Honest risk, stated up front: this is the fifth axis family.** If it fails,
+the conclusion is that per-bin admission cannot work and the design must be
+reconsidered a level above. **Task 1 finds that out before anything is built.**
 
 ## Verify this instruction against the tree
 
 **Nothing here describes the tree.** Check every claim and report mismatches,
-including where the work succeeded anyway.
+including where the work succeeded anyway. Unit 1.11.18 disproved its own
+order's central premise and was right to; do the same.
 
-**This unit changes the instrument this project measures everything else with.
-HM-DEC-119 is explicit about that**, and it is the reason task 3 exists: every
-anchor, every floor and both silence controls are re-measured after the change,
-and the change is judged on them rather than on the four captures it was built
-for.
+**Adopt unit 1.11.18's restated measurement.** `Shut` — no marks and the gate
+held open under 5% of the history, or no gate ran — reported beside `StuckOpen`
+and `Truncated`, never summed. It is in the tree and every table here uses it.
+**No task in this unit polishes that metric; it is only the ruler.**
 
-**Expected state after unit 1.11.17: 29 failing of 1841 in the engine — 28 plus
-a sixth intermittent in the rig path that passes alone — and 503 of 503 in the
-app.** Six timing intermittents now exist. **Do not chase any of them**; when
-counting, diff which tests moved rather than trusting the total.
+**Expected state: 28 failing of 1841 in the engine, byte-identical to the stable
+set; 503 of 503 in the app.** Six timing intermittents exist and two fired in
+the last three runs. **Do not chase any of them.** Diff which tests moved rather
+than trusting a total.
 
 **`DECISIONS.md` still has no record for HM-DEC-096–133, 136, 141, 150, nor
-Tim's rulings of 2026-08-25/26.** HM-DEC-095's index row is transcribed in unit
-1.11.6's report. **Its principle — a note is chosen by how it is keyed, never by
-how loud it is — is not questioned here.** The gate is not a loudness ranking;
-it is the step that decides what counts as a mark at all, and it currently says
-"mark" to noise.
+Tim's rulings of 2026-08-25/26.**
 
-**`CLAUDE_CODE.md` is at version 1.4.** Read its own section count for the
-report shape.
+**`CLAUDE_CODE.md` is at version 1.4.** Read its own section count.
 
 ## Rulings in force
 
 **Tim's ruling, 2026-08-26, by adopting this unit (flagged for veto in the
-delivery), in the words unit 1.11.17 asked for it:**
+delivery): admission may be decided by whether a bin's run stream fits a single
+Morse unit, rather than by how loud or how separated it is.** This is
+HM-DEC-095's own principle — *a note is chosen by how it is keyed and never by
+how loud it is* — carried further than the current tests carry it. **The
+existing tests are not removed; the fit is measured first and added only if
+task 1 shows it separates.**
 
-> **The gate's threshold is derived from each bin's own two levels, and in a bin
-> holding only noise that splits the noise in half and manufactures marks. The
-> threshold must be derived from something that knows the difference — the
-> band's own noise floor, which `_bandNoise` already computes for the lift, or a
-> requirement that a bin's two levels be far enough apart to be two things.**
+**HM-DEC-120 is the acceptance test, in unit 1.11.18's stricter form:** both
+silence controls emit nothing **and** their bins are `Shut` rather than
+`StuckOpen`.
 
-**Both candidate derivations are built and measured; whichever meets task 2's
-acceptance ships. If neither does, nothing ships and the measurement is the
-answer** — that outcome names the next ruling and is worth as much as a fix.
-
-**HM-DEC-120 is absolute and is the acceptance test, not a caveat.** Both
-silence controls emit nothing, and — new, and stricter — **their bins must
-mostly produce no marks at all**, which is what the healthy capture does.
-
-**Rejected already, do not revisit:** moving `MinimumSeparation` (swept six
-bounds across eight captures — no value separates); moving the ratio band; the
-admission valve (rejected twice, grounds now corrected); the integrator width
-(swept 20–120 Hz, settled 45); the confirmation window (swept 2–8 surveys);
-Q75/P97 as a readable-station test; the four dead squelch axes; locking to
-`CwPitch`.
+**Rejected already, do not revisit:** `MinimumSeparation`'s bound; the ratio
+band; the admission valve; the threshold above the band floor (candidate A —
+costs anchors at every setting and jams the gate open); the two-levels-apart
+spread (candidate B — loses `cw-2026-08-24-012403` at every setting); the
+integrator width; the confirmation window; the four dead squelch axes; locking
+to `CwPitch`.
 
 ## Status cadence
 
@@ -113,75 +121,82 @@ moving. Same every ten minutes while a task runs.
 
 ## The tasks
 
-### Task 1 — the signature, measured before anything changes
+### Task 1 — does structure separate? Measure before building.
 
-Unit 1.11.17's instrument already reports marks per bin per pass. Extend it into
-the unit's acceptance metric and record the baseline for **every capture in the
-corpus, not only the eight already measured**:
+**This task decides the unit.** For each capture below, at the pitch named,
+take the run stream today's gate already produces and report:
 
-- bins producing **zero** marks, against bins producing eight or more;
-- the median marks per pass;
-- the same figures for both silence controls and for all twelve anchored
-  captures.
+- the **run-length histogram** — marks and gaps separately, in milliseconds;
+- the best-fitting single Morse unit and the **residual** of that fit —
+  how far the runs sit from the nearest integer multiple of it, normalised by
+  the unit so the figure is dimensionless;
+- the same for **every bin in the band**, so the station's own bin can be
+  compared with its neighbours on the same recording.
 
-**`cw-2026-08-17-013347` is the reference signature: 926 of 1,425 shut.** State
-plainly how many captures resemble it today and how many resemble noise.
+Measure on: the four stations the operator can hear — `cw-2026-08-25-012823` at
+500, `cw-2026-08-22-014113` at 600, `cw-2026-08-22-014308` at 625,
+`cw-2026-08-26-125941` at 400; the two silence controls `cw-2026-08-20-014854`
+and `-014935`; and at least four adjudicated anchors including
+`cw-2026-08-17-134712` (`N4L`, which every amplitude axis got wrong) and
+`cw-2026-08-24-012403` (`DE KD0UN KD0UN K`, which candidate B kept losing).
 
-Build and run; record the green baseline by diffing which tests fail, not by
-the total.
+**Then answer in one sentence: does the fit residual separate recordings holding
+a station from recordings holding nothing, and by how much?**
 
-### Task 2 — a threshold that knows noise from keying
+- **If it separates**, tasks 2 and 3 are built.
+- **If it does not, stop. Report the overlap, build nothing, and say plainly
+  that five axis families have now failed and per-bin admission needs a ruling
+  at a level above this unit.** That outcome is this unit's honest result and is
+  reported as such, not as a failure.
 
-Build **both** derivations named in the ruling:
+Build and run; record the baseline by diffing which tests fail.
 
-**A — from the band's noise floor.** `_bandNoise` already computes it for the
-lift. A bin's mark threshold sits a stated distance above the band floor rather
-than halfway between the bin's own two levels.
+### Task 2 — the fit as an admission test *(only if task 1 separates)*
 
-**B — two levels must be two things.** A bin whose two levels are not separated
-by a stated minimum produces **no marks at all**, rather than marks cut from a
-continuum.
+Add the fit residual to `CwToneSurvey`'s admission, **additively**: a bin the
+current tests already admit is still admitted; a bin they refuse may be admitted
+if its run stream fits a single unit well enough. Sweep the bound and report it.
 
-Measure both, and both together, against this acceptance:
+**Acceptance, all of it:**
 
-- **the silence controls go quiet at the source** — most bins producing zero
-  marks, approaching the reference signature; emission still nothing;
-- **the four stations produce marks at their own pitches** — `012823` at 500,
-  `014113` at 600, `014308` at 625, `125941` at 400 — and their separation is
-  then measured and reported against the bar of four;
-- **all twelve anchors green, character for character**;
-- **every floor held**; chunk invariance intact.
+- **all four stations admitted at their own pitches**, and the pitch reported as
+  measured;
+- **both silence controls: nothing admitted, nothing emitted, bins `Shut` not
+  `StuckOpen`**;
+- **all twelve adjudicated anchors green, character for character** — including
+  `012403`, which is where candidate B died;
+- every floor held; chunk invariance intact.
 
-**Ship whichever meets it. If both fail, ship nothing and report both sweeps** —
-including, for each candidate, what the stated distance would have to be to
-admit the stations and what it costs in noise bins.
+**If no bound meets all of it, ship nothing and report the sweep**, naming
+exactly which acceptance line each bound breaks.
 
-### Task 3 — re-measure the corpus, because the instrument moved
+### Task 3 — what they then read *(only if task 2 ships)*
 
-With whatever task 2 shipped: re-run every capture and report, against unit
-1.11.17's figures, the marks-per-bin signature, admission counts at each
-station's pitch, and the decode — characters, unsure, pitch, whether the pitch
-was measured — for all four target captures and all twelve anchors.
+Decode the four end to end and report characters, unsure, pitch, whether the
+pitch was measured, and speed, against their floors of 41, 0, 0 and 0.
 
-**A capture whose gate is now healthy and still does not read is a finding, not
-a failure**: it means the fault has moved downstream, and it names where the
-next unit goes. Say so explicitly for each of the four.
+**A capture now admitted that still reads nothing is a finding, not a failure**
+— it means the fault has moved downstream for the first time in this phase, and
+it names where the next unit goes. Say so for each.
 
-### Task 4 — the survey's history hop *(the drop candidate)*
+### Task 4 — the de-glitch against the speed being tracked *(the drop candidate)*
 
-Unit 1.11.15 found the survey's ten-millisecond history hop cannot resolve a
-31 ms dit. **Measure only**: what the hop is, what dit lengths it can and cannot
-resolve, and which captures in the corpus send faster than it can follow.
-No change. Dropped whole if time runs out, and the report says so.
+Unit 1.11.18 measured the de-glitch floor at 20 ms — a dit at 60 WPM — so noise
+runs of 20 to 30 ms all survive. `cwdecoder.py` scales its de-glitch to the
+clock it has fitted, at about 0.4 of a dit.
+
+**Measure only**: what a speed-scaled de-glitch would remove on the two silence
+controls and on the four stations, at 0.3 and 0.4 of the tracked dit. **No
+change.** Dropped whole if time runs out, and the report says so.
 
 ## Parked — do not touch, do not raise
 
-Admission tests other than the gate's threshold; the ratio band; separation's
-bound; confirmation; displacement; the hold; fist-quality selection; the meter;
-the squelch's successor; the integrator width; the whole-file second pass;
+The restated metric itself; the six intermittents; the hop's precision problem;
+confirmation; displacement; the hold; fist-quality selection; the meter; the
+squelch's successor; the integrator width; the whole-file second pass;
 `001520`'s quadrillions; the reference and port integrator difference; the
-short-character bias; the Avalonia offset; `CHANGELOG.md`; **all six
-intermittents**; HM-OPEN-057; HM-OPEN-059; **the panel, entirely.**
+short-character bias; the Avalonia offset; `CHANGELOG.md`; HM-OPEN-057;
+HM-OPEN-059; **the panel, entirely.**
 
 A parked item that blocks a task is raised once, and says it was parked.
 
@@ -189,10 +204,11 @@ A parked item that blocks a task is raised once, and says it was parked.
 
 Standing prohibitions are `CLAUDE.md`'s and are not retyped. Unit-specific:
 
-- **Do not trade the silence property.** It is this unit's acceptance test in a
-  stricter form than ever before.
-- **Do not touch any admission test other than the gate's threshold.**
-- **Do not fit the threshold to the four target captures.** The anchors and the
+- **Do not build tasks 2 or 3 if task 1 does not separate.** Report and stop.
+- **Do not remove or loosen an existing admission test.** The fit is additive.
+- **Do not trade the silence property**, in either its emission form or unit
+  1.11.18's stricter `Shut` form.
+- **Do not fit the bound to the four target captures.** The anchors and the
   silence controls are the judge; the four are the motivation.
 - **Do not chase an intermittent.**
 - **Floors only rise; anchors stay green; chunk invariance holds; no panel
@@ -206,14 +222,14 @@ push is reported as refused, with the reason.
 Report per `CLAUDE_CODE.md` §8 — read the file's own section count — to
 `output.md` at the repository root, overwritten and printed.
 
-**Section 3 leads with two numbers: how many bins produce zero marks on the two
-silence controls, before and after; and how many of the four stations the
-operator can hear now produce marks at their own pitches.** Section 2 says
-plainly whether a station he can hear now reaches the decoder.
+**Section 3 leads with task 1's sentence: whether the fit residual separates a
+station from silence, with the numbers for `N4L` and both silence controls side
+by side.** Section 2 says plainly whether a station the operator can hear now
+reaches the decoder.
 
 ### Asks still outstanding
 
-Carried forward verbatim per HM-DEC-139 and HM-DEC-140. **Fourteen inbound. The
+Carried forward verbatim per HM-DEC-139 and HM-DEC-140. **Fifteen inbound. The
 oldest is open since 2026-08-14.**
 
 1. **The sweep's `invented` column counts substitutions, not invented
@@ -223,28 +239,30 @@ oldest is open since 2026-08-14.**
    match the version's minor.**
 4. **`DECISIONS.md` has no record for HM-DEC-096–133, 136, 141 or 150 — nor for
    Tim's rulings of 2026-08-25/26, including the one this unit acts under.**
-5. **The tone tracker** — the gate is this unit; confirmation, displacement and
-   selection stay measured inert until admission works.
+5. **The tone tracker** — admission is this unit; confirmation, displacement and
+   selection stay measured inert until it works.
 6. **The integrator width** — settled at 45 Hz, with the sharp-peak caveat.
 7. **The guard's gap is two to one**, calibrated on two empty captures; the
    operator's noise session crossed it live on 2026-08-26.
 8. **A boxcar's nulls made two of five swept offsets pathological best cases.**
 9. **Two stations closer than 125 Hz are not named** — the operator's item five,
    the last of his list not yet attempted.
-10. **The keying meter** — its measurement found a station its verdict denied.
+10. **The keying meter** — its measurement found a station its verdict denied,
+    and it reads 44 words a minute off silence.
 11. **HM-OPEN-057** (2026-08-22) and **HM-OPEN-007** (2026-08-14).
-12. **The gate opens on noise in every bin** — **this unit acts on it.**
-13. **Six intermittents.** A full-run count can no longer be read without
-    diffing which tests moved. Worth its own small unit.
-14. **The survey's ten-millisecond history hop cannot resolve a 31 ms dit** —
-    task 4 measures it.
+12. **The acceptance metric restatement** — adopted here as the ruler.
+13. **Neither spread nor lift separates a station from noise.**
+14. **The gate opens on everything, including two empty recordings** — this
+    unit tests the one remaining family.
+15. **The de-glitch removes only 10 ms runs at a 10 ms hop** — task 4 measures
+    the speed-scaled alternative.
 
 Still open: **the lock's mixed help**; **the "Hold this pitch" button**; **three
 fixtures at accepted cost**; **`001520`'s quadrillions**; **the reference and
 port integrator difference**; **an unmeasured pitch costs `N4L`**; **the
 six-hertz window disagreement**; **the short-character bias**; **the Avalonia
-geometry offset**; **`CHANGELOG.md` at 1.9.0 against 1.11.17**; **the whole-file
+geometry offset**; **`CHANGELOG.md` at 1.9.0 against 1.11.18**; **the whole-file
 second pass**; **the squelch has no axis**; **the three morning captures of
-2026-08-26**; **the speed ceiling may be short for a 36–43 WPM station**.
+2026-08-26**; **six timing intermittents**.
 
 **If you finish every task, stop and report. Do not start the next unit.**
