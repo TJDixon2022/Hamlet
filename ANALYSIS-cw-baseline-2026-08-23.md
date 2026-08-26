@@ -1197,6 +1197,38 @@ shipped: K CC IE MTEWM1 S U EU E TE KK  T KK  ■ ■  ■ ■■ ■ ■■ ■
 grid:     # ##E # # # #E EEE#E### # # I E ## #E ##E ## # E IE # # #E ##### # # #S # E # T# # # E7I## TI E # ESEE SE I # #7AN EE S # ESE E T E E H INIA E ## # I#SS## # #E# # # ###E ## # E# #
 ```
 
+### `cw-2026-08-26-125941`
+
+30.0 s at 48000 Hz, read at 600 Hz.
+
+| | shipped | grid |
+|---|---|---|
+| characters emitted | 0 | 0 |
+| E-share | no characters | no characters |
+| single-character words | no characters | no characters |
+| words per minute read | 34 | 40.0 |
+
+The witness split, over the shipped decode:
+
+**Three rows and not two.** `listening` is the meter before it has
+formed a verdict at all, which is its first six seconds and any
+stretch where it has not yet seen enough, and folding that into
+`no keying` would report an absence of evidence as evidence of
+absence (§0.0).
+
+| witness | characters | E-share | single-char words | span LLR P10 / median / P90 |
+|---|---|---|---|---|
+| said keying | 0 | no characters | no characters | nothing measured |
+| said no keying | 0 | no characters | no characters | nothing measured |
+| had not decided | 0 | no characters | no characters | nothing measured |
+
+What each read:
+
+```
+shipped: (nothing)
+grid:    (nothing)
+```
+
 ## The sensitivity sweep
 
 `CQ DE W1AW K` at 18 words a minute, 640 Hz, averaged over 4 noise draws at each level.
@@ -1383,6 +1415,10 @@ gate never gets to see a whole file.
 | | said keying | 16 | 3.3 / 3.6 / 4.3 |
 | | said no keying | 19 | 0.2 / 0.8 / 1.5 |
 | | had not decided | 21 | 0.1 / 0.1 / 0.1 |
+| `cw-2026-08-26-125941` | | | |
+| | said keying | 0 | nothing measured |
+| | said no keying | 35 | 0.1 / 0.3 / 0.4 |
+| | had not decided | 21 | 0.1 / 0.1 / 0.2 |
 
 **A read repeats most of its window twice a second**, so these are not
 independent samples and a median describes the recording rather than a
