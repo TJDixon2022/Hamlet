@@ -208,6 +208,33 @@ public sealed class CwToneSurvey
     /// Four sits between them with room on both sides, and it is a ratio rather
     /// than a level, so it does not move when a signal fades.
     /// </remarks>
+    /// <remarks>
+    /// <para>**AND THE ROOM ON BOTH SIDES IS GONE ON THE WIDER CORPUS.** Measured
+    /// on 2026-08-26 with the per-bin instrument, at each capture's own claimed
+    /// pitch, against the two recordings HM-DEC-120 protects:</para>
+    /// <para>The four stations Hamlet cannot read reach a best separation of
+    /// 3.82, 3.03, 5.87 and 7.02 at their own pitches, with medians of 1.70 to
+    /// 2.32. **The two recordings holding nothing reach 3.58 and 4.92 somewhere
+    /// in the band** — higher than three of those four stations. Swept as a
+    /// bound: at 4.0 it takes two of the four and `cw-2026-08-20-014935` already
+    /// leaks a bin; at 3.0 it takes all four and the two controls leak nine and
+    /// eight; at 2.0, a hundred and sixteen and a hundred and eleven. **No bound
+    /// on this axis admits the stations and refuses the noise.**</para>
+    /// <para>**THE STATISTIC IS NOT THE FAULT — WHAT IT IS FED IS.** The gate's
+    /// threshold comes from each bin's own two levels, so a bin holding only
+    /// noise has its noise cut in half and yields a stream of structureless
+    /// marks. Counted: on `cw-2026-08-17-013347`, which reads `VA3VRR`, **926 of
+    /// 1,425 bin readings produce no marks at all** and the gate stays shut where
+    /// nothing is keyed. On every other capture measured — the failing stations
+    /// and both silence controls alike — **not one bin produces zero marks**, and
+    /// the median where the gate opens is nineteen or twenty. Separation then
+    /// correctly reports a continuum, about 1.7, for the noise and for the
+    /// station, because on those captures it is looking at the same thing in
+    /// both.</para>
+    /// <para>**SO THIS NUMBER MUST NOT BE MOVED**, and moving it was measured
+    /// rather than argued about. What needs fixing is the threshold the marks are
+    /// cut at, which is a ruling and not a session's change.</para>
+    /// </remarks>
     public const double MinimumSeparation = 4.0;
 
     /// <summary>The smallest dah-to-dit ratio that is still Morse.</summary>
@@ -897,11 +924,18 @@ public sealed class CwToneSurvey
             // test the band was written for and the dit bound is a sanity check
             // around it. A reader wants the reason, not the first line that
             // happened to be false.
+            //
+            // **AND THE SEPARATION IS MEASURED ANYWAY WHEN SOMEBODY IS
+            // WATCHING.** A refusal here normally returns before the scatter is
+            // computed, which left the one statistic that decides keying from
+            // noise absent from exactly the rows a reader most wants to compare.
+            // It costs nothing in production, where `Readings` is null.
             Record(
                 bin,
                 ratio < MinimumRatio || ratio > MaximumRatio ? "ratio" : "dit",
                 count, dits, dahs, dit, dah, ratio,
-                liftDb: liftDb, keyedDb: keyedDb);
+                Readings is null ? double.NaN : Spread(count, split, dit, dah),
+                liftDb, keyedDb);
 
             return null;
         }
@@ -910,8 +944,7 @@ public sealed class CwToneSurvey
         // sit apart, counted in their own scatter. Morse sends two lengths and
         // noise sends a continuum, and this is the only statistic tried that
         // tells them apart on all three recordings.
-        var spread = Scatter(count, split, dit, true) + Scatter(count, split, dah, false);
-        var separation = spread > 1e-6 ? (dah - dit) / spread : 0;
+        var separation = Spread(count, split, dit, dah);
 
         Record(
             bin, separation < MinimumSeparation ? "separation" : null,
@@ -921,6 +954,22 @@ public sealed class CwToneSurvey
             ? null
             : new KeyingCandidate(
                 _binHz[bin], dit, dah, ratio, separation, liftDb, count, keyedDb);
+    }
+
+    /// <summary>
+    /// How far the two mark lengths sit apart, counted in their own scatter.
+    /// </summary>
+    /// <param name="count">How many marks were collected.</param>
+    /// <param name="split">Where the two clusters were cut apart.</param>
+    /// <param name="dit">The short cluster's mean.</param>
+    /// <param name="dah">The long cluster's mean.</param>
+    /// <returns>The separation, or nought where there is no scatter to divide by.</returns>
+    private double Spread(int count, double split, double dit, double dah)
+    {
+        var spread = Scatter(count, split, dit, true)
+            + Scatter(count, split, dah, false);
+
+        return spread > 1e-6 ? (dah - dit) / spread : 0;
     }
 
     /// <summary>How far one cluster's members sit from its own middle.</summary>
