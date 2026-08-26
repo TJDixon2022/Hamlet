@@ -560,6 +560,22 @@ public sealed class CwToneTracker
     public IReadOnlyList<KeyingCandidate> CoarseCandidates() => _survey.Candidates();
 
     /// <summary>
+    /// Where the survey should write what every admission test said, or null to
+    /// measure nothing.
+    /// </summary>
+    /// <remarks>
+    /// **NOTHING IN THE APPLICATION SETS THIS.** It exists because for four days
+    /// the survey reported a verdict and no instrument could say which of its
+    /// seven tests refused a bin or by how much, and three units were spent
+    /// building mechanisms downstream of a decision nobody could see.
+    /// </remarks>
+    public List<BinReading>? SurveyReadings
+    {
+        get => _survey.Readings;
+        set => _survey.Readings = value;
+    }
+
+    /// <summary>
     /// Where the strongest tone in the fine bank actually sits, between the bins.
     /// </summary>
     /// <remarks>
