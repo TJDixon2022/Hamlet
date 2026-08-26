@@ -4240,6 +4240,33 @@ public partial class MainWindowViewModel : ObservableObject
     /// out rather than printed as a nought somebody later reasons from.</para>
     /// </remarks>
     /// <returns>The characters and their span ratios, or why there are none.</returns>
+    /// <summary>One likelihood figure, inside the range the record can carry.</summary>
+    /// <param name="value">The figure.</param>
+    /// <returns>The figure, or a marked bound where it ran past one.</returns>
+    /// <remarks>
+    /// **THE SHEET HAS PRINTED QUADRILLIONS AND NOBODY READS THE REST OF SUCH A
+    /// SHEET.** The `6:27306879.3` family is a per-hop log-likelihood on a
+    /// recording whose noise estimate went to nothing. A clamp is a statement
+    /// about what the record can carry rather than about the measurement, so it
+    /// says it clamped rather than quietly writing a smaller number.
+    /// </remarks>
+    internal static string Clamped(double value)
+    {
+        if (double.IsNaN(value))
+        {
+            return "unmeasured";
+        }
+
+        var widest = CwCharacter.WidestRecordedLlr;
+
+        if (value > widest)
+        {
+            return $">{widest:0}";
+        }
+
+        return value < -widest ? $"<-{widest:0}" : $"{value:0.0}";
+    }
+
     private string SpanRatiosForTheRecord()
         => SpanRatioLine(Transcript.Recent(), CountsCover());
 
@@ -4272,7 +4299,8 @@ public partial class MainWindowViewModel : ObservableObject
             " ",
             measured.Select(character =>
                 $"{CwCaseRoster.Readable(character.Text)}"
-                + $":{character.SpanLogLikelihoodRatio:0.0}"));
+                + $":{Clamped(character.SpanLogLikelihoodRatio)}"
+                + $"/{Clamped(character.MarginLlr)}"));
 
         return $"{measured.Length} of the last {recent.Count} characters read, "
                + "each against the key having been up throughout its own span "
