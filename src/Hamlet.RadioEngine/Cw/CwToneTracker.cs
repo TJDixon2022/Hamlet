@@ -575,6 +575,13 @@ public sealed class CwToneTracker
         set => _survey.Readings = value;
     }
 
+    /// <summary>Where to collect every bin's raw run stream, or null.</summary>
+    public List<BinRuns>? SurveyRunStreams
+    {
+        get => _survey.RunStreams;
+        set => _survey.RunStreams = value;
+    }
+
     /// <summary>Candidate A: place the gate above the band floor (2026-08-26).</summary>
     public double? GateAboveBandFloorDb
     {
