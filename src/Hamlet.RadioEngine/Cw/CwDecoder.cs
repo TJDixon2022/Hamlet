@@ -105,11 +105,42 @@ public sealed class CwDecoder
     /// either side of it, since nobody tunes exactly.
     /// </param>
     public CwDecoder(int sampleRate, double expectedToneHz = 600)
+        : this(sampleRate, expectedToneHz, null, null)
+    {
+    }
+
+    /// <summary>Listen, with the two constants a sweep needs to vary.</summary>
+    /// <param name="sampleRate">Samples per second.</param>
+    /// <param name="expectedToneHz">Where to point the bank before anything is measured.</param>
+    /// <param name="integratorHz">
+    /// The integrator's equivalent noise bandwidth, or null for
+    /// <see cref="CwProbabilisticDecoder.IntegratorBandwidthHz"/>.
+    /// </param>
+    /// <param name="confirmWithinSurveys">
+    /// How far back a candidate may look for its second agreeing survey, or null
+    /// for <see cref="CwToneTracker.ConfirmWithinSurveys"/>.
+    /// </param>
+    /// <remarks>
+    /// **NOTHING IN THE APPLICATION PASSES EITHER OF THESE.** They exist so a
+    /// constant can be swept through the whole decoder and judged by the
+    /// characters it produces, which is the only judge this project accepts for
+    /// a number that decides what the display asserts (§0.0). A width measured
+    /// through the offline envelope alone is a fact about that envelope
+    /// (HM-DEC-119).
+    /// </remarks>
+    public CwDecoder(
+        int sampleRate,
+        double expectedToneHz,
+        double? integratorHz,
+        int? confirmWithinSurveys)
     {
         SampleRate = Math.Max(1_000, sampleRate);
-        _tracker = new CwToneTracker(SampleRate, expectedToneHz);
+        _tracker = new CwToneTracker(
+            SampleRate, expectedToneHz, confirmWithinSurveys);
         _onReading = OnReading;
-        _probabilistic = new CwProbabilisticStream(SampleRate);
+        _probabilistic = new CwProbabilisticStream(
+            SampleRate,
+            integratorHz ?? CwProbabilisticDecoder.IntegratorBandwidthHz);
 
         _probabilistic.CharacterSettled += c =>
         {

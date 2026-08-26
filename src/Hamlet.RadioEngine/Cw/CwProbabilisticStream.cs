@@ -130,6 +130,23 @@ public sealed class CwProbabilisticStream
     /// <summary>Creates a stream.</summary>
     /// <param name="sampleRate">Samples per second.</param>
     public CwProbabilisticStream(int sampleRate)
+        : this(sampleRate, CwProbabilisticDecoder.IntegratorBandwidthHz)
+    {
+    }
+
+    /// <summary>Listen at a stated integrator width.</summary>
+    /// <param name="sampleRate">Samples per second.</param>
+    /// <param name="integratorHz">The integrator's equivalent noise bandwidth.</param>
+    /// <remarks>
+    /// **THE WIDTH IS A PARAMETER HERE AND A CONSTANT IN PRODUCTION**, exactly as
+    /// it already is on <see cref="CwProbabilisticDecoder.Envelope(
+    /// IReadOnlyList{float}, int, double, double)"/>. It is open so the trade
+    /// between rejecting a competing station and rounding the top of a fast dit
+    /// can be swept through the whole decoder rather than through the offline
+    /// envelope alone, which is the only form of the sweep that can say what a
+    /// width does to a character.
+    /// </remarks>
+    public CwProbabilisticStream(int sampleRate, double integratorHz)
     {
         _sampleRate = Math.Max(1_000, sampleRate);
         _hopSamples = Math.Max(
@@ -140,7 +157,7 @@ public sealed class CwProbabilisticStream
         // centred-versus-trailing difference survived unnoticed; the length and
         // the taper both come from one place now.
         _windowSamples = CwProbabilisticDecoder.IntegratorWindow(
-            _sampleRate, CwProbabilisticDecoder.IntegratorBandwidthHz);
+            _sampleRate, integratorHz);
 
         _taper = CwProbabilisticDecoder.IntegratorTaper(_windowSamples);
         _taperWeight = _taper.Sum();

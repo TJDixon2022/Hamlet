@@ -254,6 +254,18 @@ public sealed class CwToneTracker
     /// survey preferring its neighbor, rather than a different signal.</remarks>
     private const double ConfirmWithinHz = CoarseSpacingHz;
 
+    /// <summary>
+    /// How far back a candidate may look for its second agreeing survey.
+    /// </summary>
+    /// <remarks>
+    /// <para>**TWO IS BACK TO BACK, WHICH IS WHERE THIS STARTED.** A survey runs
+    /// every <see cref="SurveyEveryHops"/> hops, half a second apart, so a window
+    /// of two means this survey and the one immediately before it.</para>
+    /// <para>The number is a parameter on the constructor so it can be swept, and
+    /// this constant is what the application uses.</para>
+    /// </remarks>
+    public const int ConfirmWithinSurveys = 2;
+
     private readonly double[] _coarseHz;
     private readonly double[] _coarseCoefficient;
     private readonly double[] _coarseDb;
@@ -304,8 +316,23 @@ public sealed class CwToneTracker
     private int _hannHops;
     private int _gateHannHops;
 
-    /// <summary>What the previous survey said, so a fluke has to happen twice.</summary>
-    private double _previousKeyedHz = double.NaN;
+    /// <summary>
+    /// What the last few surveys said, so a fluke has to happen twice.
+    /// </summary>
+    /// <remarks>
+    /// <para>**IT USED TO BE ONE SLOT AND THAT IS WHY AN INTERMITTENT STATION
+    /// COULD NEVER CONFIRM.** Every survey overwrote it, including the surveys
+    /// that found nothing keyed anywhere, so a station admitted every other
+    /// survey met a `NaN` on each of its own turns and confirmed on none of
+    /// them. On `cw-2026-08-25-012823` the tracker rode the correct 500 Hz for
+    /// eleven seconds on the unconfirmed cold-start path and the first pitch it
+    /// ever confirmed was a rival fifty hertz away.</para>
+    /// <para>A ring of the last few findings asks the same question over a short
+    /// window instead of strictly back to back. Two independent agreements still
+    /// stand between a candidate and the tracker, which is what HM-DEC-095
+    /// requires; what changes is that they need not be consecutive.</para>
+    /// </remarks>
+    private readonly double[] _recentKeyedHz;
 
     /// <summary>The last pitch keying was actually found at.</summary>
     private double _lastKeyedHz = double.NaN;
@@ -344,7 +371,25 @@ public sealed class CwToneTracker
     /// <param name="sampleRate">Samples per second.</param>
     /// <param name="startingToneHz">Where to begin looking, from the operator's setting.</param>
     public CwToneTracker(int sampleRate, double startingToneHz)
+        : this(sampleRate, startingToneHz, null)
     {
+    }
+
+    /// <summary>Track, with the confirmation window a sweep needs to vary.</summary>
+    /// <param name="sampleRate">Samples per second.</param>
+    /// <param name="startingToneHz">Where to point the bank before anything is measured.</param>
+    /// <param name="confirmWithinSurveys">
+    /// How far back a candidate may look for its second agreeing survey, or null
+    /// for <see cref="ConfirmWithinSurveys"/>.
+    /// </param>
+    public CwToneTracker(
+        int sampleRate, double startingToneHz, int? confirmWithinSurveys)
+    {
+        var window = Math.Max(2, confirmWithinSurveys ?? ConfirmWithinSurveys);
+
+        _recentKeyedHz = new double[window - 1];
+        Array.Fill(_recentKeyedHz, double.NaN);
+
         SampleRate = Math.Max(1_000, sampleRate);
         HopSamples = Math.Max(4, SampleRate / 200);
         MaximumWindowSamples = HopSamples * NarrowWindowHops;
@@ -1001,9 +1046,17 @@ public sealed class CwToneTracker
         }
 
         var coarse = _survey.Analyze();
-        var previous = _previousKeyedHz;
 
-        _previousKeyedHz = coarse.Keyed?.ToneHz ?? double.NaN;
+        // The ring holds what the previous surveys found, oldest first, and this
+        // survey's finding is pushed in after the question has been asked of it.
+        var recent = _recentKeyedHz.ToArray();
+
+        for (var i = 0; i < _recentKeyedHz.Length - 1; i++)
+        {
+            _recentKeyedHz[i] = _recentKeyedHz[i + 1];
+        }
+
+        _recentKeyedHz[^1] = coarse.Keyed?.ToneHz ?? double.NaN;
 
         if (_keyedProtects > 0)
         {
@@ -1066,7 +1119,23 @@ public sealed class CwToneTracker
         // estimator has learned. Measured across the suite it fixed four tests and
         // broke ten, including decodes that had nothing wrong with them. The delay
         // is the price of not being dragged around by noise.
-        if (double.IsNaN(previous) || Math.Abs(previous - keyed.ToneHz) > ConfirmWithinHz)
+        // **WITHIN A SHORT WINDOW RATHER THAN STRICTLY BACK TO BACK** (Tim's
+        // ruling of 2026-08-26). A station admitted every other survey used to be
+        // barred from ever confirming, because the surveys in between overwrote
+        // the only slot the rule had to remember with `NaN`.
+        var agrees = false;
+
+        foreach (var earlier in recent)
+        {
+            if (!double.IsNaN(earlier)
+                && Math.Abs(earlier - keyed.ToneHz) <= ConfirmWithinHz)
+            {
+                agrees = true;
+                break;
+            }
+        }
+
+        if (!agrees)
         {
             // Refusing to believe it is keying does not make it stop existing.
             Verdict = new ToneVerdict(
