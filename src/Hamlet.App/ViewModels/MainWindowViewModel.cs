@@ -5012,6 +5012,21 @@ public partial class MainWindowViewModel : ObservableObject
         // with the dial (HM-DEC-134).
         OnPropertyChanged(nameof(IsSomewhereRemembered));
 
+        // **AND THE DECODER LETS GO OF THE PITCH IT MEASURED SOMEWHERE ELSE.**
+        // The tracker holds its last measured pitch through the gaps in a slow
+        // sender's keying, which is what makes a slow fist readable at all and
+        // is untouched while the dial stays put. What it could not do was let
+        // go: on 2026-08-26 the operator tuned here from twenty-four minutes and
+        // one QSY away, and the decoder went on mixing at the 300 Hz it had
+        // measured there while the station in front of him keyed above 400. It
+        // refused everything, correctly, because nothing was keyed at 300.
+        //
+        // It hangs on the frequency rather than on a clock because that is when
+        // the evidence stops existing. A station is entitled to pause for as
+        // long as it likes; it is not entitled to be heard on a frequency the
+        // receiver has left.
+        _decoder?.Retuned();
+
         if (_arrivedOnHz != clamped)
         {
             _arrivedOnStation = "";

@@ -645,6 +645,39 @@ public sealed class CwToneTracker
     public int StationChanges { get; private set; }
 
     /// <summary>
+    /// The radio is somewhere else now, so everything measured about where it
+    /// used to be is discarded.
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE HOLD IS RIGHT AND IT COULD NOT LET GO.** The tracker keeps
+    /// the pitch it last measured and keeps pointing the filter at it whenever
+    /// the survey's three seconds of history hold nothing — that is what carries
+    /// a slow sender across his own gaps, and it is untouched while the dial
+    /// stays put. The evidence for it is audio from a frequency the receiver is
+    /// no longer on, and a QSY destroys that evidence outright.</para>
+    /// <para>On 2026-08-26 the operator tuned to 14.0275 MHz and the sidecar
+    /// there reported a pitch of 300 Hz measured twenty-four minutes and one QSY
+    /// earlier. The decoder mixed at 300 while the station keyed above 400, and
+    /// refused everything — correctly, because nothing was being keyed at
+    /// 300.</para>
+    /// <para>**IT DOES NOT RESET THE WHOLE TRACKER.** The bank stays where it is
+    /// pointed and the speed the tracker has learned survives, because a fist is
+    /// a fact about the operator's ear and his habits rather than about a
+    /// frequency. What goes is what was measured from the old audio: the
+    /// reported pitch, the keyed pitch the cold-start path gates on, the level
+    /// the displacement guard compares against, and the survey history whose
+    /// samples came from the old frequency.</para>
+    /// </remarks>
+    public void Forget()
+    {
+        _reportedHz = double.NaN;
+        _lastKeyedHz = double.NaN;
+        _readingDb = double.NaN;
+        _survey.Reset();
+        _fineSurvey.Reset();
+    }
+
+    /// <summary>
     /// How many of those moves were to a different station (HM-DEC-123).
     /// </summary>
     /// <remarks>
