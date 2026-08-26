@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
-TASK: 6 of 6
+TASK: 3 of 3
 BALL: tim
 NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-25T23:43:42-04:00
-NOTE: band row back under the byline with every label whole and the badge unclipped; the squelch is still the thing that did not survive its measurement
+UPDATED: 2026-08-26T08:51:48-04:00
+NOTE: current copy stands forward and history recedes; the margin was read and does not separate correct copy from soup
 
 ---
 
