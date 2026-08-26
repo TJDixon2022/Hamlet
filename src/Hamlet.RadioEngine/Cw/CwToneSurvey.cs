@@ -20,6 +20,9 @@ namespace Hamlet.RadioEngine.Cw;
 /// How far the bin's own two level-means sit apart, which is the quantity the
 /// gate's threshold is currently placed halfway between.
 /// </param>
+/// <param name="Duty">
+/// What share of this bin's history the gate held open, from nought to one.
+/// </param>
 /// <remarks>
 /// <para>**A VERDICT IS NOT A MEASUREMENT, AND FOR FOUR DAYS ONLY THE VERDICT
 /// EXISTED.** The survey applies seven tests to each bin and reported one
@@ -48,8 +51,47 @@ public readonly record struct BinReading(
     double Separation,
     double LiftDb,
     double KeyedDb,
-    double SpreadDb = double.NaN)
+    double SpreadDb = double.NaN,
+    double Duty = double.NaN)
 {
+    /// <summary>
+    /// True where the gate produced no marks because it never opened.
+    /// </summary>
+    /// <remarks>
+    /// **A GATE THAT NEVER CLOSES ALSO PRODUCES NO MARKS**, because a run
+    /// touching either end of the history is truncated rather than counted, and
+    /// a run that spans the whole history touches both. So a count of nought
+    /// marks says nothing on its own about whether a bin was quiet — measured on
+    /// 2026-08-26, a candidate threshold placed three decibels over the band
+    /// floor drove `cw-2026-08-25-012823` to 95% of bins producing no marks
+    /// while the gate at its station's own pitch was open essentially all the
+    /// time. Reading that as silence would have been exactly backwards.
+    /// </remarks>
+    /// <remarks>
+    /// **A BIN WITH NO GATE AT ALL COUNTS AS SHUT**, and that is the strongest
+    /// form of it: where the two-level test or the spread test refuses, no gate
+    /// is ever built, so there is no duty to read and the field is `NaN`. Reading
+    /// `NaN` as "not shut" would score the one mechanism that genuinely stops a
+    /// bin at nought.
+    /// </remarks>
+    public bool Shut
+        => Marks == 0 && (double.IsNaN(Duty) || Duty < 0.05);
+
+    /// <summary>
+    /// True where the gate produced no marks because it never closed.
+    /// </summary>
+    public bool StuckOpen => Marks == 0 && Duty > 0.95;
+
+    /// <summary>
+    /// True where the gate opened and closed but no run survived being counted.
+    /// </summary>
+    /// <remarks>
+    /// A run touching either end of the history is truncated rather than counted,
+    /// so a bin can toggle and still yield nothing. This is the case that made
+    /// `cw-2026-08-17-013347` look like a quiet gate when it is not one.
+    /// </remarks>
+    public bool Truncated => Marks == 0 && !Shut && !StuckOpen;
+
     /// <summary>True where every test passed.</summary>
     public bool Admitted => Refused is null;
 
@@ -319,9 +361,31 @@ public sealed class CwToneSurvey
     /// thousand bin readings on 2026-08-26, the two-level test refused nothing at
     /// all, on any capture.
     /// </remarks>
+    /// <remarks>
+    /// <para>**MEASURED 2026-08-26 AND NOT SHIPPED, THOUGH IT CAME CLOSE.** Swept
+    /// at 12, 15, 20 and 25 decibels. The mechanism works as intended: it shuts
+    /// bins outright, with **no stuck-open bins at any setting**, which is the
+    /// half candidate A could not deliver. At twelve decibels the two silence
+    /// controls go 49.6% and 56.9% genuinely shut, emitting nothing, and
+    /// **eleven of the twelve anchors survive**.</para>
+    /// <para>**IT FAILS ON THE TWELFTH ANCHOR AND ON THE STATIONS.**
+    /// `cw-2026-08-24-012403` loses `DE KD0UN KD0UN K` at every setting, and the
+    /// acceptance admits no shortfall. At fifteen it also costs
+    /// `cw-2026-08-18-004507`; at twenty it costs ten of twelve. And it shuts the
+    /// stations it was built to rescue — `cw-2026-08-22-014113` goes 90.5% shut
+    /// at twelve and 99.7% at fifteen, with no marks at all at its own
+    /// pitch.</para>
+    /// <para>**THE COMMON FINDING IS WORTH MORE THAN EITHER SWEEP.** Today's gate
+    /// already produces marks at all four stations' own pitches — 15, 17, 10 and
+    /// 19. Neither candidate improves on that at any setting; both reduce marks
+    /// everywhere rather than selectively, on stations and noise alike. The gate
+    /// is not failing to find the stations. It is finding everything.</para>
+    /// </remarks>
     public double? MinimumLevelSpreadDb { get; set; }
 
     private double _spreadDb = double.NaN;
+
+    private double _duty = double.NaN;
 
     private void Record(
         int bin,
@@ -337,7 +401,7 @@ public sealed class CwToneSurvey
         double keyedDb = double.NaN)
         => Readings?.Add(new BinReading(
             _binHz[bin], refused, marks, dits, dahs,
-            dit, dah, ratio, separation, liftDb, keyedDb, _spreadDb));
+            dit, dah, ratio, separation, liftDb, keyedDb, _spreadDb, _duty));
 
     /// <summary>How far away a bin has to be to count as "the band" rather than
     /// this signal leaking sideways.</summary>
@@ -645,6 +709,7 @@ public sealed class CwToneSurvey
         // Two clusters in the bin's own levels give the threshold, which is what
         // makes this follow a fade instead of being stranded above one.
         _spreadDb = double.NaN;
+        _duty = double.NaN;
 
         if (!Clusters(bin, out var low, out var high, out var midpoint))
         {
@@ -727,6 +792,7 @@ public sealed class CwToneSurvey
         }
 
         presentFraction = live > 0 ? (double)above / live : 0;
+        _duty = presentFraction;
 
         Deglitch();
 
