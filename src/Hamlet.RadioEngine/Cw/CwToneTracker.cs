@@ -263,6 +263,26 @@ public sealed class CwToneTracker
     /// of two means this survey and the one immediately before it.</para>
     /// <para>The number is a parameter on the constructor so it can be swept, and
     /// this constant is what the application uses.</para>
+    /// <para>**IT STAYS AT TWO, AND THAT IS MEASURED RATHER THAN INHERITED.**
+    /// Tim ruled on 2026-08-26 that a station may confirm on non-consecutive
+    /// evidence if a window could be found that confirmed `cw-2026-08-25-012823`
+    /// and left every other capture's acquisition untouched. Swept at 3, 4, 6 and
+    /// 8 surveys, which is one and a half to four seconds:</para>
+    /// <para>Every longer window **moved acquisition on 16 to 20 of the 37
+    /// captures** where the condition allows none, and **cost adjudicated
+    /// anchors** — 11 of 12 at three surveys, 10 at four, 9 at six and eight.
+    /// Silence held on both empty captures at every length (HM-DEC-120).</para>
+    /// <para>**AND IT DID NOT FIX THE CAPTURE IT WAS RULED FOR.** At no window
+    /// does `012823` confirm the 500 Hz its station sits on. The ruling's premise
+    /// was that an intermittently-admitted station alternates 500, 450, 500, 450
+    /// and so never finds a consecutive pair. Measured survey by survey, **500 Hz
+    /// is never admitted as keying even once** in thirty seconds, while the
+    /// survey names it `Strongest` repeatedly. There is no alternation, and a
+    /// window cannot help a candidate that is never nominated.</para>
+    /// <para>The obstacle is <see cref="CwToneSurvey"/>'s admission, which is the
+    /// same wall that stops `cw-2026-08-22-014113` (no bin admitted at all, in
+    /// any survey, in thirty seconds) and `cw-2026-08-26-125941`. Do not re-open
+    /// this number without re-opening that.</para>
     /// </remarks>
     public const int ConfirmWithinSurveys = 2;
 
