@@ -4,8 +4,8 @@ STATE: COMPLETED
 TASK: 4 of 4
 BALL: tim
 NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-26T13:09:19-04:00
-NOTE: both mechanisms measured dead; the survey's admission is the wall and needs a unit of its own
+UPDATED: 2026-08-26T14:33:03-04:00
+NOTE: the gate opens on noise in every bin; that is why every admission test sees a continuum, and it needs a ruling
 
 ---
 
