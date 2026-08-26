@@ -1,323 +1,348 @@
-# Work instruction 018 — admit the station the operator can hear
+# Work instruction 019 — the audible station that reads nothing, and the station left mid-contact
 
 ## 1. What Claude did
 
 Claude Code, on the development computer, in `C:\Source\HamLet`. The prompt
-claimed `PROJECT: Hamlet`; the tree confirmed it — `SHACK_FACTS.md` and
-`src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs` exist, neither
-`CoreHMI.sln` nor `MURC.sln` does, `CLAUDE.md`'s header says Hamlet and the
-solution is `Hamlet.sln`. Branch `main` throughout, three commits, all pushed,
-none refused. Version 1.11.14 to 1.11.15 per HM-DEC-150.
+claimed `PROJECT: Hamlet`; the tree confirmed all four checks — `SHACK_FACTS.md`
+and `src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs` exist, neither
+`CoreHMI.sln` nor `MURC.sln` does. Branch `main` throughout, three commits, all
+pushed, none refused. Version 1.11.15 to 1.11.16 per HM-DEC-150.
 
 **Nothing here is evidence about the radio.** No rig was connected.
 
 **No decision was recorded under §12.1.** Section 4 carries what needs a ruling.
 
-**Tasks 1, 3 and 4 shipped. Task 2 was measured and deliberately not built**, on
-the order's own prohibition. Nothing was dropped for room.
+**All four tasks ran. Nothing was dropped.** Task 2 and task 3 both ship
+nothing, each on the ruling's own stated condition. Task 4 is void.
 
-### The order pre-authorised what happened in task 2
+### The headline: two questions, one wall
 
-> *"where Hamlet's instruments disagree, Hamlet's numbers are the truth about
-> Hamlet and the premise is re-examined, not defended."*
+The unit was written as two independent investigations. **They are one.** Both
+mechanisms were built, both were swept, and neither reaches the fault — because
+in both cases `CwToneSurvey` never admits the station as keying in the first
+place, so nothing downstream ever runs.
 
-It was needed. The premise did not reproduce, and the valve built on it admits
-noise more often than it admits the station.
+- On `cw-2026-08-22-014113`, **no bin is admitted as keying at all**, in any
+  survey, in thirty seconds.
+- On `cw-2026-08-25-012823`, **500 Hz is never admitted even once**, while the
+  survey names it the strongest thing in the band over and over.
 
-### Task 1 — the capture is banked, and the premise does not reproduce
+This is the third consecutive unit to arrive here from a different direction:
+1.11.15 found it on `cw-2026-08-26-125941`, task 2 found it through the
+integrator, task 3 found it through confirmation.
 
-`cw-2026-08-26-125941.wav`, its sidecar and `cases-2026-08-26.txt` are
-committed, floored at their current truth: **zero characters, zero elements**.
+### Where the instruction and the tree disagree
 
-The sidecar confirms the order's account of the evening exactly:
+- **`014113` and `014308` are described here as carrying a station, and unit
+  018's order listed them among "the empty captures"** used as noise controls.
+  Both cannot be right. **The tree sides with this order**: the only two
+  recordings any silence test names are `cw-2026-08-20-014854` and `-014935`,
+  and neither `014113` nor `014308` appears in `NothingIsReadFromAudioWithNoKeying`
+  or anywhere else as a silence control. Worth a ruling, because unit 018
+  reported a valve as unsafe partly on their evidence.
+- **The dates are wrong in the order**: they are `cw-2026-08-22-014113` and
+  `-014308`, not `08-20`. Minor, but the order names them repeatedly.
+- **The keying is 16.7 and 15.7 dB of swing, not nineteen**, at 600 and 625 Hz
+  rather than 607. Measured with `KeyingEnvelope.Best`. Close enough that the
+  premise stands; recorded because the work turned on those pitches.
+- **The baseline was 28 failing of 1841, not 1831** — unit 1.11.15 added ten
+  tests and did not move the failure count. Byte-identical set.
+- **A sweep harness already existed**: `TheIntegratorBandwidthTable` carries the
+  exact four widths this order names. It measures likelihood ratios through the
+  offline envelope, not characters through the decoder, which is why task 2
+  needed a new seam rather than a new table.
+- **`CLAUDE_CODE.md` §8 does say four sections**; its version line still reads
+  1.3.
+- **`DECISIONS.md` still has no record for HM-DEC-096–133, 136, 141, 150** nor
+  Tim's rulings of 2026-08-25/26. Task 3 worked directly beside HM-DEC-095's
+  confirmation constant and could not read its full record.
 
-```
-frequency  14027500 Hz  (read from the radio a moment ago)
-toneHz     300.0 Hz  (measured from the keying the survey admitted, ...)
-tonePeak   50.2
-inThis     0 characters emitted, 0 unsure, 0 elements seen, 0 resolved
-keying     no keying at 400 Hz, 37 ms key down, 16 dB swing, 206 key-downs
-```
+### Task 1 — the one-smear finding is refuted
 
-**The external measurements reproduce in-tree, except the one the whole unit
-rests on.** Run through `KeyingEnvelope` at the interpolated peak:
+Unit 1.11.6's finding was that on a recording that reads, the envelope's upper
+quartile sits near its 97th percentile, and on these two it sits at a third of
+it. **Measured in the tree today, with two anchored captures added as controls
+that unit did not have:**
 
-| | the order | in the tree | |
+| capture | Q75/P97 | reads? |
+|---|---|---|
+| `cw-2026-08-22-014113` | 0.423 | **no** |
+| `cw-2026-08-22-014308` | 0.577 | **no** |
+| `cw-2026-08-18-004507` | 0.937 | yes |
+| **`cw-2026-08-17-013347`** | **0.448** | **yes — `VA3VRR`, adjudicated** |
+| **`cw-2026-08-17-134712`** | **0.238** | **yes — `N4L`, adjudicated** |
+
+**Two recordings that read adjudicated callsigns sit at or below the two that
+read nothing.** `N4L` reads at 0.238, well under both. So Q75/P97 does not
+separate a readable station from an unreadable one, and the finding held only
+because `004507` was its single control. The figure is real; it is not a
+diagnosis.
+
+**And it moved nothing.** Unit 1.11.15 shipped the release-on-QSY, which fires
+only when the dial moves, and no capture test moves a dial. `014113`, `014308`
+and `012823` are character-for-character what they were. The tasks below were
+not re-aimed.
+
+### Task 2 — the width is not the cause, and nothing ships
+
+**The arithmetic, so the trade is legible:**
+
+| width | integrator span | 18 WPM | 24 WPM | 30 WPM | 36 WPM |
+|---|---|---|---|---|---|
+| 20 Hz | 75.0 ms | 113% of a dit | 150% | 188% | 225% |
+| 30 Hz | 50.0 ms | 75% | 100% | 125% | 150% |
+| **45 Hz** | **33.4 ms** | **50%** | **67%** | **83%** | **100%** |
+| 60 Hz | 25.0 ms | 38% | 50% | 63% | 75% |
+| 90 Hz | 16.7 ms | 25% | 33% | 42% | 50% |
+| 120 Hz | 12.5 ms | 19% | 25% | 31% | 38% |
+
+The arithmetic does say a 24 WPM dit needs more than 60 Hz, so the sweep went to
+90 and 120 as the order allows.
+
+**Both captures emit zero characters at every width, at both the measured pitch
+and the order's own 607 Hz.**
+
+| | 20 | 30 | 45 | 60 | 90 | 120 Hz |
+|---|---|---|---|---|---|---|
+| `014113` characters | 0 | 0 | 0 | 0 | 0 | 0 |
+| `014113` Q75/P97 | 0.403 | 0.395 | 0.423 | 0.460 | 0.527 | 0.574 |
+| `014308` characters | 0 | 0 | 0 | 0 | 0 | 0 |
+| `014308` Q75/P97 | 0.408 | 0.531 | 0.577 | 0.602 | 0.614 | 0.630 |
+
+Widening does improve the two-state shape, monotonically and by a lot — 0.40 to
+0.63. **It does not recover one character**, and the shape never approaches the
+control's 0.83 to 0.95.
+
+**The decisive test bypassed the tracker entirely** and handed the offline
+decoder a pitch outright, at 500, 575, 600, 607, 625 and 825 Hz across three
+widths. Every reading on both captures is **below the gate of 1.40** — the best
+is 1.2, at 625 Hz and 45 Hz width. The one exception is `014308` at 825 Hz,
+which returns 196 to 223 characters of `E## ## E ## E # #EE E AT E IEEN` — soup
+from a bin nobody claims holds a station, and exactly what the gate exists to
+refuse.
+
+**So the smear is not the filter's doing.** The candidate cause named on
+2026-08-24 is retired.
+
+**And the sweep settled the width itself, which had been live since 1.11.7:**
+
+| width | anchors held | anchored characters |
+|---|---|---|
+| 20 Hz | 3/12 | 14 |
+| 30 Hz | 6/12 | 96 |
+| **45 Hz** | **12/12** | **153** |
+| 60 Hz | 2/12 | 24 |
+| 90 Hz | 5/12 | 63 |
+| 120 Hz | 4/12 | 32 |
+
+**45 Hz is the only width that holds all twelve.** One step away, 60 Hz loses
+ten of twelve. Silence held on both empty captures at every width.
+
+**That peak is suspiciously sharp and the report should say so.** A smoothing
+parameter whose neighbours cost ten of twelve anchors is not obviously a
+physical optimum. The gate at 1.40, the character margin at 1.0 and the clock
+fit were all measured with 45 Hz in place, so 45 Hz plausibly wins partly
+because everything downstream was fitted around it. **What the sweep proves is
+that 45 Hz is the width this decoder was built for, not that it is the best
+width available to a decoder built differently.**
+
+### Task 3 — the confirmation window, built, swept, and shipped as nothing
+
+Confirmation now asks whether any of the last *n* surveys agrees within
+`ConfirmWithinHz`, rather than the immediately previous one alone. At `n = 2` it
+is byte-identical to what was there. Swept at 3, 4, 6 and 8 surveys, which is
+one and a half to four seconds:
+
+| window | captures whose acquisition moved | anchors held | `012823` ends at |
 |---|---|---|---|
-| pitch | 403.5 Hz | **405.0 Hz** | reproduces |
-| dah | about 105 ms | **103.4 ms** | reproduces |
-| dit | about 28 ms | **31.3 ms** | close |
-| speed | 36–43 WPM | **38.4 WPM** | reproduces |
-| **dah/dit ratio** | **3.82** | **3.31** | **does not** |
+| 2 (today) | — | **12/12** | 450 Hz |
+| 3 (1.5 s) | **16 of 37** | 11/12 | **625 Hz** |
+| 4 (2.0 s) | **20 of 37** | 10/12 | 625 Hz |
+| 6 (3.0 s) | **20 of 37** | 9/12 | 625 Hz |
+| 8 (4.0 s) | **20 of 37** | 9/12 | 625 Hz |
 
-**3.31 is inside the 2.5–3.8 band, not outside it.** The band is not what
-refuses this station. What refuses it is the survey's own reading of the same
-audio, which at 400 Hz measures `r5.85, dit 45 ms, separation 2.3, n 6/3` and at
-425 Hz `r4.05, dit 42 ms, separation 3.5, n 5/3`.
+The order allows **none** to move and requires all twelve anchors. Silence held
+on both empty captures at every length.
 
-**The mechanism is the survey's time resolution.** Its history hop is
-`HopSamples` (240 samples, 5 ms) times `SurveyDecimation` (2), so **ten
-milliseconds**. A 31 ms dit is three hops. The gate opens and closes on a 6 dB
-hysteresis band, which eats about a hop off each end of a mark, and it eats the
-same absolute amount off a dah ten hops long. So the dit reads short by a third
-and the dah by a tenth, and a true 3.3 measures as 5.9.
+**And it did not fix the capture it was ruled for.** At no window does `012823`
+confirm 500 Hz — it moves *further* away, ending at 625 rather than 450, with
+the decode character-for-character unchanged at 41.
 
-**This is HM-DEC-146's finding again, one instrument further out.** That ruling
-established that mark lengths read short below a hundred milliseconds and worse
-the shorter they get, measured on generated audio with a dit known to the
-millisecond. The band is fine. **The measurement feeding it cannot resolve a
-fast fist.**
+**The premise was wrong, and measuring why is the unit's most useful result.**
+The ruling supposed an intermittently-admitted station alternates 500, 450, 500,
+450 and so never finds a consecutive pair. Logged survey by survey:
 
-**The three morning captures are absent a fifth time** — `004808`, `004900` and
-`004952` are nowhere in the tree. Checked by name across every folder.
+```
+ 3.03s  keyed  none  strongest   500  tracked 500
+13.53s  keyed   450  strongest  none  tracked 500
+14.03s  keyed  none  strongest   500  tracked 500
+14.53s  keyed  none  strongest   500  tracked 450*
+```
 
-### Task 2 — the valve was measured before it was built, and must not ship
+**450 Hz is the only bin ever admitted. 500 Hz is admitted zero times in thirty
+seconds**, while the survey names it `Strongest` at 3.03, 14.03 and 14.53
+seconds. There is no alternation. **A window cannot help a candidate that is
+never nominated.**
 
-The order specifies: where the dah/dit band refuses, admit a candidate whose
-mark lengths form two well-separated clusters — **separation at or above 4 in
-the clusters' own units, at least 3 members each** — and *"do not let the valve
-admit anything on the empty captures."*
+The tracker rides 500 for eleven seconds on the cold-start "point at the loudest
+thing" path, which is why it looks confirmed and is not — and is why
+HM-DEC-127's displacement guard is inert, exactly as unit 1.11.11 diagnosed.
 
-Applied to the survey's own refusals, bin by bin:
+**What the window does to the two W1AW captures**, which the order asked about
+either way: `cw-2026-08-22-031905` is **identical at every window** — it still
+wanders 500, 300, 500, 300 and ends at 300. `cw-2026-08-22-032113` gains eight
+characters but **loses its anchor** at every window past 2, and its text goes
+from `A KET■ A N O INT ERNE T` to `A KET, ■ E ■ I I I E EI II H TI`, which is
+more soup rather than less. Neither is recovered.
 
-| capture | holds | admissions |
-|---|---|---|
-| `cw-2026-08-26-125941` | **a station** | **6** |
-| `cw-2026-08-20-014854` | nothing | **6** |
-| `cw-2026-08-20-014935` | nothing | **9** |
-| `cw-2026-08-22-014113` | nothing | **13** |
-| `cw-2026-08-22-014308` | nothing | **6** |
+The measurement is written into `ConfirmWithinSurveys`' own doc comment so the
+number cannot be re-opened without re-opening the admission it depends on.
 
-And on the one capture that holds a station, **only 1 of the 86 refusals at the
-station's own bins (375–450 Hz) passes the test.** The other five admissions are
-elsewhere in the band.
+### Task 4 — void
 
-**It admits noise more often than it admits the station.** That is HM-DEC-120's
-line, silence is absolute, and it is the order's own acceptance condition,
-failed on the order's own control fixtures. Not built.
-
-The reason it fails is the reason the premise failed: separation is measured in
-the clusters' own units, computed by the same survey whose hop cannot resolve a
-31 ms dit. **A valve fed a broken measurement is not a valve.**
-
-### Task 3 — the held pitch lets go when the dial moves, shipped
-
-`CwDecoder.Retuned()` releases what was measured on the old frequency:
-`_lastMeasuredToneHz`, the held peak `_lastSnrDb`, and through
-`CwToneTracker.Forget()` the reported pitch, the keyed pitch the cold-start path
-gates on, the level the displacement guard compares against, and both surveys'
-history. It is called from `OnFrequencyHzChanged`.
-
-**The hold itself is untouched and that is the load-bearing part.** The tracker
-keeps its last measured pitch through a sender's gaps, and the survey holds only
-three seconds, so a slow fist would otherwise lose its pitch between characters.
-What it could not do was let go. It hangs on the frequency rather than on a
-clock, because that is when the evidence stops existing. A station is entitled
-to pause for as long as it likes.
-
-**The release keeps what is not about the frequency**: the bank stays pointed
-where it is and the learned speed survives, because a fist is a fact about the
-operator's habits rather than about a dial reading.
-
-Four tests, on real audio rather than synthetic. Synthesized keying was tried
-first and the survey refused it, which is the survey behaving correctly, and
-HM-OPEN-018 has that class of fixture on record.
-
-**And the re-decode of `125941` end to end**, which is what the operator would
-have seen with the pitch released:
-
-| | |
-|---|---|
-| toneHz | **400.0 Hz, `measured=False`** |
-| characters | **0**, 0 unsure |
-| elements | **0** seen, 0 resolved |
-| transcript | empty |
-
-**The ghost is gone and the station is not found.** With no held 300 Hz, the
-cold-start path centres the bank at **400 Hz, which is where the station
-actually is**, and the sheet says `NOT MEASURED: the survey has admitted no
-keying, so this is the middle of the bank the decoder is pointed at rather than
-a station`. That is the honest sentence. The filter is in the right place. The
-survey still refuses to admit what is under it.
-
-The four empty captures behave identically: 575, 600, 825 and 600 Hz, all
-`measured=False`, all zero characters. **The release changes nothing on a
-capture that stays on one frequency**, which the suite confirms below.
-
-### Task 4 — the margin's share of the span, logged and measured
-
-`CwCharacter.MarginShareForRecord` is on the capture sheet as a third field per
-character. **The distribution across 1,583 characters** (3 carried a span at
-nought and are excluded), split by whether the recording carries an adjudicated
-anchor:
-
-| | n | P10 | P25 | median | P75 | P90 | min | max |
-|---|---|---|---|---|---|---|---|---|
-| **anchored recording** | 599 | 0.000 | 0.001 | **0.004** | 0.023 | 0.119 | −20.09 | **1.00** |
-| **everything else** | 981 | −0.042 | 0.002 | **0.005** | 0.013 | 0.057 | −1.30 | **2.45** |
-
-Swept as a floor:
-
-| floor | anchor kept | everything else kept |
-|---|---|---|
-| at or above 0.01 | 34 % | 30 % |
-| at or above 0.02 | 27 % | 20 % |
-| at or above 0.05 | 18 % | 11 % |
-| at or above 0.10 | 12 % | 7 % |
-| at or above 0.20 | 8 % | 4 % |
-| at or above 0.50 | 3 % | 1 % |
-
-**The scale problem is genuinely gone, which is the real finding.** Unit
-1.11.14 measured the raw margin reaching 2.98 × 10⁸ on one capture and 1.8 on
-another. **The quotient's entire observed range is −20.1 to +2.45**, and 999 of
-1,580 characters sit between 0 and 0.05. The noise estimate cancels exactly as
-that unit proposed it would.
-
-**It still does not separate.** Medians 0.004 and 0.005. Every floor cuts
-correct copy about as fast as soup.
-
-**But it says something worth having.** A median of 0.004 means the runner-up
-path finishes within four thousandths of the winner. **The decoder's second
-choice fits about as well as its first, essentially always**, which is why the
-hypothesis that a letter carved out of continuous tone has a collapsing margin
-cannot be tested this way. Every character looks like that by this measure.
-
-**Read the split with care: it is coarser than unit 1.11.14's.** That unit
-bucketed by whether each *character* falls inside its recording's anchor text
-(n = 131). This one buckets by whether the *recording* carries an anchor at all
-(n = 599), because the anchor's character positions are not recoverable from a
-re-decode whose text differs. It is a weaker test of separation and a sound one
-of scale, which is the question task 4 was asked to settle.
-
-**It is on the sheet rather than left to a reader's arithmetic** because both
-inputs are clamped at a million before printing, and on precisely the captures
-where the scale problem is worst that clamp fires and the quotient is gone.
-Nothing reads it. It is not a threshold.
+Unit 1.11.15 logged `marginLlr / spanLlr` as `CwCharacter.MarginShareForRecord`
+and reported its first distribution: 1,583 characters, whole range −20.1 to
++2.45 against the raw margin's 2.98 × 10⁸, medians 0.004 anchored and 0.005
+everything else. The task says it is void in that case, and it is.
 
 ### The suite
 
 | | baseline | end |
 |---|---|---|
-| engine | 28 failing of 1831 | **28 failing of 1841** |
-| app | 501 passing | **503 passing, 0 failing** |
+| engine | 28 failing of 1841 | **28 failing of 1841** |
+| app | 503 passing | **503 passing, 0 failing** |
 
-**Ten tests added and the failure count did not move.** The four release tests,
-five re-decode rows folded into one floor, the capture's own floor, and two
-sheet tests. An intermediate run showed 30, and that was the two release tests
-before their fixture was moved from synthetic keying to real audio.
+Byte-identical failure set for a fifth unit. The mid-unit baseline read 28 of
+1847; the six extra were scratch probes, since removed.
 
 ## 2. What Tim sees at the radio
 
-**The decoder no longer claims a pitch it measured somewhere else.** Tune away
-from a station and the held pitch goes with the frequency, so the next sheet
-says what it actually knows about where the dial is now. The night of 2026-08-26
-would have read `NOT MEASURED` instead of `300.0 Hz (measured from the keying
-the survey admitted)`.
+**Nothing changes at the radio, and that is the correct outcome of this unit.**
 
-**But he would still have read nothing on 14.0275 MHz.** The release removes a
-false claim; it does not deliver the station. That is not a partial win dressed
-up: the decoder now points its filter at 400 Hz, which is where the station is,
-and the survey still refuses to admit it.
+Two mechanisms were built and both were measured before shipping. Neither
+recovered a character on the captures they were built for, and both cost
+something real elsewhere. Under the rulings' own conditions, neither ships.
 
-**Nothing about any other capture changed.** Same failure set, same counts, and
-the release only fires when the frequency changes.
+**Fast senders that used to produce nothing still produce nothing.** The
+integrator is not why. Widening it from 33 ms to 12.5 ms — a quarter of a 24 WPM
+dit — does not recover one character on either capture, at any pitch, including
+with the tracker taken out of the loop entirely.
+
+**Contacts that rot halfway through still rot.** `cw-2026-08-25-012823` still
+leaves the right station at fourteen seconds. The confirmation rule was not what
+stopped it: the survey never nominated 500 Hz at all.
+
+**What did change is that two long-open questions are now closed with numbers.**
+The integrator width has been live since 2026-08-24 and is settled at 45 Hz on
+measurement rather than inheritance. The confirmation window is settled at two
+with the whole sweep recorded at the constant.
 
 **What will look wrong and is not:**
 
-- **The capture sheet has a third number per character now**,
-  `text:span/margin/share`. Nothing reads it. It is there so the next question
-  can be asked from a record rather than from a rebuild.
-- **`cw-2026-08-26-125941` is in the suite floored at zero.** A floor of nothing
-  is still a floor: it stops the recording quietly getting worse while the real
-  fix is found.
-- **The keying sweep still says `no keying at 400 Hz`** on that sidecar while
-  finding 37 ms of key-down and 16 dB of swing there. That contradiction is the
-  whole of section 4.
+- **Two commits that change no behaviour.** The constructor now takes two
+  optional knobs nothing in the application passes, and a constant gained a long
+  comment. That is what a measured negative looks like in the tree.
+- **`ConfirmWithinSurveys` exists and is set to its old value.** The mechanism is
+  real and its default is deliberate; the doc says why.
+- **The engine still shows 28 red.** Same set as the last five units.
 
 ## 3. What you should see
 
-**The miss, re-decoded end to end** (`cw-2026-08-26-125941`, fresh decoder):
+**Do `cw-2026-08-22-014113` and `-014308` read? No — and not because of the
+filter.** Zero characters at 20, 30, 45, 60, 90 and 120 Hz, at 600, 607 and 625
+Hz, and zero with the tracker bypassed and the pitch handed over outright, where
+every likelihood ratio lands under the gate of 1.40. `014113` has **no bin
+admitted as keying at all** in thirty seconds.
 
-| | before | after |
-|---|---|---|
-| pitch claimed | **300.0 Hz, called a measurement** | **400.0 Hz, called NOT MEASURED** |
-| held peak | 50.2, measured elsewhere | released on the QSY |
-| characters | 0 | **0** |
-| elements | 0 | **0** |
+**Does `cw-2026-08-25-012823` hold its station end to end? No.** It reaches 500
+Hz at three seconds, rides it unconfirmed for eleven and a half, and leaves at
+fourteen and a half. No confirmation window changes that, because **500 Hz is
+never admitted as keying even once** while being named the strongest signal in
+the band repeatedly.
 
-**The station, measured three ways on the same audio:**
+**The two sweeps:**
 
-| instrument | dah/dit ratio | dit |
-|---|---|---|
-| the external analysis | 3.82 | 28 ms |
-| `KeyingEnvelope` at 405 Hz | **3.31** | 31.3 ms |
-| **the survey at 400 Hz** | **5.85** | **45 ms** |
+| integrator | 20 | 30 | **45** | 60 | 90 | 120 Hz |
+|---|---|---|---|---|---|---|
+| anchors held | 3/12 | 6/12 | **12/12** | 2/12 | 5/12 | 4/12 |
+| `014113` characters | 0 | 0 | **0** | 0 | 0 | 0 |
 
-**The valve as ruled, on the order's own controls**: 6 admissions on the capture
-that holds a station, and 6, 9, 13 and 6 on the four that hold nothing.
+| window | **2** | 3 | 4 | 6 | 8 |
+|---|---|---|---|---|---|
+| acquisitions moved of 37 | **0** | 16 | 20 | 20 | 20 |
+| anchors held | **12/12** | 11 | 10 | 9 | 9 |
 
-**The suite**: engine 28 failing of 1841 against a baseline of 28 of 1831; app
-503 passing of 503.
+**The refuted control:** `N4L` reads at Q75/P97 = 0.238 and `VA3VRR` at 0.448,
+both at or below the two captures that read nothing.
+
+**The suite**: engine 28 failing of 1841, unchanged; app 503 of 503.
 
 ## 4. What's blocking us
 
-**The unit's premise was wrong about which instrument refuses the station, and
-the correction points at a mechanism rather than a constant.**
+**Three units have now converged on one component from three directions, and it
+has never been the subject of a work order.**
 
 Ruling asked for:
 
-> **The survey's time resolution is the fault, and the dah/dit band is not
-> touched. Where the survey's history hop cannot resolve a sender's dit, it
-> measures a ratio no band could accept, and no valve downstream of that
-> measurement can be made safe.**
+> **The next unit is `CwToneSurvey.Judge` and nothing else. Admission is the
+> wall: on `cw-2026-08-22-014113` no bin is admitted as keying in thirty
+> seconds, on `cw-2026-08-25-012823` the station's own pitch is admitted zero
+> times while being named the strongest signal repeatedly, and on
+> `cw-2026-08-26-125941` a 31 ms dit is measured as 45. Everything downstream —
+> the integrator, the confirmation rule, the gate, the displacement guard — is
+> reasoning about a candidate that was never nominated.**
 
-The evidence is in section 1. On `cw-2026-08-26-125941` the same audio measures
-3.31 through `KeyingEnvelope` and 5.85 through the survey; the survey's hop is
-10 ms and the dit is 31 ms. HM-DEC-146 already established that marks read short
-below a hundred milliseconds and worse the shorter they get, on generated audio
-with a dit known to the millisecond. **This is that finding in a second
-instrument, at a speed nothing in the corpus has ever read.**
+The evidence is in section 1. Three separate mechanisms were proposed by three
+consecutive orders, all built, all measured, and none reaches the fault:
 
-*Rejected: widening the dah/dit band.* The order forbade touching its constants
-and was right to. The band would have to reach past 5.85 to admit this station,
-which is well into where a carrier's smeared single cluster lives, and it would
-be a constant widened to accommodate a measurement error rather than a fist.
+| unit | mechanism | result |
+|---|---|---|
+| 1.11.15 | the admission valve | admits noise more often than the station |
+| 1.11.16 | the integrator width | zero characters at every width |
+| 1.11.16 | the confirmation window | the pitch is never nominated to confirm |
 
-*Rejected: the admission valve as ruled.* Measured before building, per section
-1: it admits noise on all four empty captures more often than it admits the
-station on the one that has one. Its separation figure is computed by the same
-survey whose hop is the fault.
+*Rejected: another downstream mechanism.* The pattern is now three for three and
+the reason is structural rather than a coincidence of tuning.
 
-*Not proposed, because it needs a ruling first:* the survey could run its
-history at the tracker's own 5 ms hop rather than at 10, or extract mark lengths
-by interpolating the gate's crossings rather than counting hops. Both are
-changes to the instrument this project measures everything else with, and
-HM-DEC-119 is explicit that a measurement taken through one instrument is not a
-fact about another. **That is a work unit with a corpus re-measurement in it,
-not a line.**
+*Not proposed, because it needs a ruling first:* unit 1.11.15 measured that the
+survey's history hop is ten milliseconds and cannot resolve a 31 ms dit, and
+that its 6 dB hysteresis eats a fixed amount off every mark regardless of
+length. Both are changes to the instrument this project measures everything else
+with, and HM-DEC-119 is explicit about that. **It is a work unit with a corpus
+re-measurement in it.**
 
 ---
 
-**The release is shipped and its limit should be said plainly.**
+**Two orders disagree about what `014113` and `014308` hold, and one of them was
+used as evidence.**
 
-Task 3 removes a false claim and finds no station. On the evening in question
-the operator would have gone from a confident wrong pitch to an honest absence.
-That is the right direction under §0.0 and it is not the thing he asked for. The
-station is still unread, and the reason is above.
+Unit 018's order named them among "the empty captures" and required silence on
+them; this order says they carry a station at 607 Hz. **The tree sides with this
+order** — no silence test names either file, and the only two it names are
+`014854` and `014935`. But unit 018 reported the admission valve as unsafe
+partly because it "admitted noise" on `014113` and `014308`, and if those hold a
+station then thirteen and six admissions there were **not** noise admissions.
+
+**The valve's refusal stands on the other two captures alone**, which is 6 and 9
+admissions against 6 on the capture that holds a station — still a refusal, and
+a much narrower one than reported. Worth a ruling on what those two files hold,
+because it changes what unit 018 measured.
 
 ---
 
-**Three captures have now been asked for five times.**
+**The 45 Hz optimum is sharp enough to be suspicious, and the report should not
+launder that.**
 
-`cw-2026-08-26-004808`, `-004900` and `-004952`. Nothing in the tree names them:
-no test, no sidecar, no catalogue entry. HM-DEC-126 closed an identical case on
-that exact evidence after four asks. **This is the fifth**, and the same
-reasoning applies, since a question nobody can act on is furniture. Recommend
-closing it the same way, reopening if the files appear.
+45 Hz holds 12 of 12 anchors and 60 Hz holds 2. A smoothing parameter does not
+usually have a cliff one step wide. The likely explanation is that the gate, the
+character margin and the clock fit were all measured with 45 Hz in place, so the
+sweep is measuring how well each width suits constants fitted around one of
+them. **The width is settled for this decoder and is not established as
+optimal**, and a future change to the gate or the margin re-opens it.
 
 ### Asks still outstanding
 
-Carried forward verbatim per HM-DEC-139 and HM-DEC-140. **Fifteen inbound. The
+Carried forward verbatim per HM-DEC-139 and HM-DEC-140. **Sixteen inbound. The
 oldest is open since 2026-08-14.**
 
 1. **The sweep's `invented` column counts substitutions, not invented
@@ -327,9 +352,10 @@ oldest is open since 2026-08-14.**
    match the version's minor.**
 4. **`DECISIONS.md` has no record for HM-DEC-096–133, 136, 141 or 150, nor for
    Tim's rulings of 2026-08-25 and 2026-08-26.**
-5. **The tone tracker** — the confirmation-rule ask stands; fist-quality
-   selection is unmeasured.
-6. **The integrator width** — bears on `014113`/`014308`.
+5. **The tone tracker** — the confirmation-rule ask is now answered by task 3
+   and replaced by the admission ask above; fist-quality selection is unmeasured.
+6. **The integrator width** — **closed this unit.** Settled at 45 Hz by
+   measurement, with the caveat above.
 7. **The guard's gap is two to one**, calibrated on two empty captures.
 8. **A boxcar's nulls made two of five swept offsets pathological best cases.**
 9. **Two stations closer than 125 Hz are not named.**
@@ -337,25 +363,30 @@ oldest is open since 2026-08-14.**
 11. **HM-OPEN-057** (2026-08-22) and **HM-OPEN-007** (2026-08-14).
 12. **The margin does not separate and the reason rules out differences of
     log-likelihoods generally** (2026-08-26, unit 1.11.14). Answered in part by
-    task 4: the *quotient* escapes the scale problem and still does not
+    1.11.15's quotient, which escapes the scale problem and still does not
     separate.
 13. **A fifth intermittent**,
-    `Rig.ScopeOutputWriteTests.ConfirmedNeedsTheReadbackToAgree` (2026-08-26,
-    unit 1.11.14).
-14. **The three captures of 2026-08-26**, asked a fifth time, above.
-15. **The survey's time resolution**, above. The headline ask of this unit.
+    `Rig.ScopeOutputWriteTests.ConfirmedNeedsTheReadbackToAgree` (2026-08-26).
+14. **The three captures of 2026-08-26** — `004808`, `004900`, `004952` — asked
+    a fifth time in unit 1.11.15 and still absent. HM-DEC-126 closed an identical
+    case after four asks.
+15. **The survey's time resolution** (2026-08-26, unit 1.11.15). Now the
+    headline ask above, with two more captures behind it.
+16. **What `014113` and `014308` hold**, above. New this unit.
 
-New this unit: **the survey's hop cannot resolve a fast fist**, above; **the
-valve as ruled admits noise more often than the station**, above.
+New this unit: **the survey's admission is the wall, from three directions**,
+above; **two orders disagree about two captures**, above; **the 45 Hz optimum is
+sharp enough to be an artifact of what was fitted around it**, above.
 
-Closed this unit: **the held pitch outliving its evidence**, shipped; **the
-first distribution of `marginLlr / spanLlr`**, measured and logged.
+Closed this unit: **the one-smear finding**, refuted with two anchored controls
+it never had. **The integrator width**, settled at 45 Hz by measurement, open
+since 2026-08-24. **The confirmation window**, settled at two with the whole
+sweep recorded at the constant.
 
 Still open: **the lock's mixed help**; **the "Hold this pitch" button**; **three
 fixtures at accepted cost**; **`001520`'s quadrillions**; **the reference and
-port integrator difference**; **`CLAUDE_CODE.md`'s version line**; **an
-unmeasured pitch costs `N4L`**; **`014113`/`014308`'s second mechanism**; **the
-six-hertz window disagreement**; **the short-character bias**; **the Avalonia
-geometry offset, still unexplained**; **`CHANGELOG.md` at 1.9.0 against
-1.11.15**; **the whole-file second pass**; **the confirmation rule cannot admit
-an intermittent station**; **the squelch has no axis**.
+port integrator difference**; **`CLAUDE_CODE.md`'s version line, still 1.3**;
+**an unmeasured pitch costs `N4L`**; **the six-hertz window disagreement**;
+**the short-character bias**; **the Avalonia geometry offset, still
+unexplained**; **`CHANGELOG.md` at 1.9.0 against 1.11.16**; **the whole-file
+second pass**; **the squelch has no axis**.

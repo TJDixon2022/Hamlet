@@ -4,8 +4,8 @@ STATE: COMPLETED
 TASK: 4 of 4
 BALL: tim
 NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-26T11:39:40-04:00
-NOTE: task 2 measured and not built; the survey's ten-millisecond hop is the fault and needs a ruling
+UPDATED: 2026-08-26T13:09:19-04:00
+NOTE: both mechanisms measured dead; the survey's admission is the wall and needs a unit of its own
 
 ---
 
