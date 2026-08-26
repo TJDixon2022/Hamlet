@@ -183,6 +183,51 @@ public static class InstrumentPalette
     /// <summary>The quiet text an idle instrument shows.</summary>
     public static IBrush IdleBrush { get; } = new SolidColorBrush(Idle);
 
+    /// <summary>
+    /// How much of an ink survives once its characters are no longer the
+    /// current copy.
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE SCREEN WAS BURYING GOOD COPY UNDER OLD SOUP** — the night of
+    /// 2026-08-25 ended with a transcript whose first hundred characters were
+    /// decoded two minutes earlier, at full strength, sitting above three
+    /// correctly-read callsign tokens. Everything on the instrument was equally
+    /// bright, so the eye had nothing to land on.</para>
+    /// <para>**IT IS A BLEND TOWARD THE SURFACE AND NOT AN OPACITY.** Each ink
+    /// keeps its own hue, so a placeholder is still amber and an uncertain
+    /// character is still the dimmer green: what changes is how far forward the
+    /// text sits, and the three confidence states stay as distinguishable from
+    /// each other as they were (§0.6 — colour may never be the only carrier, and
+    /// history must not become a fourth confidence).</para>
+    /// <para>**FORTY-FIVE PER CENT, WHICH IS FAR ENOUGH TO RECEDE AND NOT SO FAR
+    /// AS TO HIDE.** Nothing is deleted and nothing becomes unreadable: the
+    /// operator can still read and select every character of it, which is the
+    /// whole difference between dimming history and trimming it.</para>
+    /// </remarks>
+    public const double HistoryShare = 0.45;
+
+    private static readonly Dictionary<CwConfidence, IBrush> HistoryInks =
+        new()
+        {
+            [CwConfidence.High] = Receded(Confident),
+            [CwConfidence.Low] = Receded(Uncertain),
+            [CwConfidence.Unreadable] = Receded(Unreadable),
+        };
+
+    private static IBrush Receded(Color ink)
+        => new SolidColorBrush(Color.FromRgb(
+            (byte)Math.Round((ink.R * HistoryShare) + (Surface.R * (1 - HistoryShare))),
+            (byte)Math.Round((ink.G * HistoryShare) + (Surface.G * (1 - HistoryShare))),
+            (byte)Math.Round((ink.B * HistoryShare) + (Surface.B * (1 - HistoryShare)))));
+
+    /// <summary>The ink for a character that is no longer current copy.</summary>
+    /// <param name="confidence">How much the decoder stands behind it.</param>
+    /// <returns>The brush, receded toward the surface.</returns>
+    public static IBrush HistoryFor(CwConfidence confidence)
+        => HistoryInks.TryGetValue(confidence, out var ink)
+            ? ink
+            : HistoryInks[CwConfidence.Unreadable];
+
     /// <summary>The ink for a decoded character.</summary>
     /// <param name="confidence">How much the decoder stands behind it.</param>
     /// <returns>The brush.</returns>

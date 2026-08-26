@@ -76,6 +76,14 @@ public sealed class CwTerminalControl : SelectableTextBlock
     private readonly List<CwCharacter> _drained = new();
 
     private readonly List<Run> _tipRuns = new();
+
+    /// <summary>What each settled run is, so its ink can be chosen twice.</summary>
+    /// <remarks>
+    /// A run's colour is decided once when it is written and again whenever the
+    /// boundary between history and current copy moves past it, so the
+    /// confidence it was drawn for has to outlive the first decision.
+    /// </remarks>
+    private readonly List<(Run Run, CwConfidence Confidence)> _settledRuns = new();
     private Run? _run;
     private CwConfidence _runConfidence = CwConfidence.High;
     private int _runLength;
@@ -176,7 +184,18 @@ public sealed class CwTerminalControl : SelectableTextBlock
     /// Take whatever the decoder has produced since the last tick and put it on
     /// screen.
     /// </summary>
-    private void OnDrainTick(object? sender, EventArgs e)
+    private void OnDrainTick(object? sender, EventArgs e) => Draw();
+
+    /// <summary>
+    /// Take whatever the decoder has produced and put it on screen, now.
+    /// </summary>
+    /// <remarks>
+    /// **THE TIMER CALLS THIS AND SO DOES A TEST**, because what the terminal
+    /// draws is the thing worth asserting and a test that has to wait for a
+    /// timer to tick will either be slow or flaky. It does exactly what the tick
+    /// does and nothing else.
+    /// </remarks>
+    internal void Draw()
     {
         var transcript = Transcript;
         if (transcript is null)
@@ -205,6 +224,7 @@ public sealed class CwTerminalControl : SelectableTextBlock
         if (_showingIdle)
         {
             Inlines?.Clear();
+            _settledRuns.Clear();
             _showingIdle = false;
             _run = null;
         }
@@ -220,6 +240,7 @@ public sealed class CwTerminalControl : SelectableTextBlock
 
         DrawTip();
         TrimHistory();
+        RecedeHistory();
         ScrollToEndIfFollowing();
     }
 
@@ -240,6 +261,7 @@ public sealed class CwTerminalControl : SelectableTextBlock
 
             _runConfidence = character.Confidence;
             _runLength = 0;
+            _settledRuns.Add((_run, character.Confidence));
             Inlines?.Add(_run);
         }
 
@@ -278,6 +300,7 @@ public sealed class CwTerminalControl : SelectableTextBlock
         if (_showingIdle)
         {
             Inlines.Clear();
+            _settledRuns.Clear();
             _showingIdle = false;
             _run = null;
         }
@@ -330,6 +353,48 @@ public sealed class CwTerminalControl : SelectableTextBlock
     /// Drop the oldest runs once the transcript is longer than anybody scrolls
     /// back.
     /// </summary>
+    /// <summary>
+    /// Push everything but the most recent stretch back into the surface.
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE EYE HAD NOTHING TO LAND ON.** The night of 2026-08-25 ended
+    /// with a transcript whose first hundred characters were soup decoded two
+    /// minutes earlier, at full strength, sitting above three correctly-read
+    /// callsign tokens. Everything was equally bright, so the operator could not
+    /// see that Hamlet had read `WB8SC`, `SKSK` and `KE8P` for him.</para>
+    /// <para>**RECENT IS THE ONE THIS TREE ALREADY HAS.**
+    /// <see cref="CwTranscript.RecentCharacters"/> is two hundred and forty, and
+    /// it is there because a couple of hundred characters is several overs at
+    /// any speed. Inventing a second notion of recent beside it would be two
+    /// answers to one question (§0).</para>
+    /// <para>**NOTHING IS DELETED AND EVERYTHING STAYS SELECTABLE.** History
+    /// recedes toward the surface and keeps its own hue, so a placeholder is
+    /// still amber and an uncertain character still the dimmer green; what
+    /// changes is how far forward the text sits. Trimming is a different thing
+    /// and <see cref="TrimHistory"/> still does it at four thousand characters.</para>
+    /// <para>**THE BOUNDARY IS DRAWN AT A RUN AND NOT INSIDE ONE.** A run that
+    /// straddles it stays bright, so a little more than the last two hundred and
+    /// forty characters are current. Splitting a run to be exact would mean
+    /// rewriting text the operator may be part-way through selecting, for a
+    /// boundary nobody can see anyway.</para>
+    /// </remarks>
+    private void RecedeHistory()
+    {
+        var behind = 0;
+
+        for (var i = _settledRuns.Count - 1; i >= 0; i--)
+        {
+            var (run, confidence) = _settledRuns[i];
+            var length = run.Text?.Length ?? 0;
+
+            run.Foreground = behind >= CwTranscript.RecentCharacters
+                ? InstrumentPalette.HistoryFor(confidence)
+                : InstrumentPalette.For(confidence);
+
+            behind += length;
+        }
+    }
+
     private void TrimHistory()
     {
         if (_characters <= CwTranscript.MaximumCharacters || Inlines is null)
@@ -345,6 +410,7 @@ public sealed class CwTerminalControl : SelectableTextBlock
             if (oldest is Run run)
             {
                 _characters -= run.Text?.Length ?? 0;
+                _settledRuns.RemoveAll(kept => ReferenceEquals(kept.Run, run));
             }
         }
     }
@@ -392,6 +458,7 @@ public sealed class CwTerminalControl : SelectableTextBlock
     private void ShowIdle()
     {
         Inlines?.Clear();
+        _settledRuns.Clear();
         Inlines?.Add(new Run
         {
             Text = IdleText,
