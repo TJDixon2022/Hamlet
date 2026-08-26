@@ -1004,8 +1004,18 @@
                                        IsVisible="{Binding KeyingIsHeld}"
                                        Foreground="{StaticResource HmTextMutedBrush}" />
 
+                            <!-- **IT RETIRES WHERE THE DECODER HAS A TONE.**
+                                 This paragraph and the line above the transcript
+                                 used to speak at once and disagree: a clear tone
+                                 up there, no keying down here fifty hertz away,
+                                 and this telling him the signal was being lost
+                                 between the antenna and Hamlet. He went and
+                                 checked the radio and nothing was wrong with it.
+                                 Where something has found a tone, the sweep
+                                 disagreeing is a fault in the sweep. -->
                             <TextBlock Text="This listens for keying on its own, without asking the decoder anything, so it can tell you a station is there even when nothing appears above. If you can hear one and this says there is nothing, the signal is being lost somewhere between the antenna and Hamlet, and the gain, the filter and the tuning are the things to try."
                                        FontSize="11" TextWrapping="Wrap"
+                                       IsVisible="{Binding KeyingAdviceIsUseful}"
                                        Foreground="{StaticResource HmTextMutedBrush}" />
                         </StackPanel>
                     </Border>

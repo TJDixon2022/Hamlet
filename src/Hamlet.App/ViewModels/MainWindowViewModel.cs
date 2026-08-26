@@ -358,7 +358,9 @@ public partial class MainWindowViewModel : ObservableObject
     /// <para>When the advisory is silent the meter speaks, exactly as before.</para>
     /// </remarks>
     public bool ShowKeyingMeter
-        => IsDecoding && string.IsNullOrWhiteSpace(AdvisoryNote);
+        => _settings.ShowKeyingSweep
+            && IsDecoding
+            && string.IsNullOrWhiteSpace(AdvisoryNote);
 
     /// <summary>Every advisory the terminal can show, most urgent first.</summary>
     private IEnumerable<string> Advisories()
@@ -3422,6 +3424,7 @@ public partial class MainWindowViewModel : ObservableObject
         OnPropertyChanged(nameof(InputLevelFraction));
         OnPropertyChanged(nameof(DecoderStory));
         OnPropertyChanged(nameof(HasDecoderStory));
+        OnPropertyChanged(nameof(KeyingAdviceIsUseful));
         OnPropertyChanged(nameof(CaptureNote));
         OnPropertyChanged(nameof(HasCaptureNote));
 
@@ -3538,6 +3541,27 @@ public partial class MainWindowViewModel : ObservableObject
 
     /// <summary>True when there is something to say about it.</summary>
     public bool HasDecoderStory => DecoderStory.Length > 0;
+
+    /// <summary>
+    /// Whether the keying sweep's advice about the antenna is worth showing.
+    /// </summary>
+    /// <remarks>
+    /// <para>**TWO PANELS ASSERTED OPPOSITE THINGS ABOUT THE SAME BAND AND THE
+    /// ADVICE SENT HIM TO THE RADIO FOR A DECODER CONDITION.** The line above
+    /// said a clear tone was present; this block said no keying here, fifty hertz
+    /// away; and its paragraph told him the signal was being lost between the
+    /// antenna and Hamlet and to try the gain, the filter and the tuning. On the
+    /// evening of 2026-08-25 he went and did that, and nothing was wrong with the
+    /// radio.</para>
+    /// <para>**THE ADVICE IS ONLY EVER TRUE WHERE NOTHING FOUND A TONE.** Where
+    /// the decoder has one, the sweep disagreeing with it is a fault in the
+    /// sweep — measured on this tree's own corpus, its calibration sits inside an
+    /// overlap rather than in a gap — and telling him to go and turn knobs is
+    /// acting on the wrong one of two instruments (§0.0).</para>
+    /// <para>The word and the numbers stay where the sweep is shown at all; what
+    /// retires is the instruction to go to the radio.</para>
+    /// </remarks>
+    public bool KeyingAdviceIsUseful => !DecodeReport.HasTone;
 
     /// <summary>What Windows is doing to the input, where it could be read.</summary>
     public string CaptureNote => CaptureAdvice.Describe(_capture);

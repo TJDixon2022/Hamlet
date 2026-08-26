@@ -203,6 +203,28 @@ public sealed class AppSettings
     public bool HasTunedByWheel { get; set; }
 
     /// <summary>
+    /// Whether the independent keying sweep is drawn on the terminal.
+    /// </summary>
+    /// <remarks>
+    /// <para>**OFF, BECAUSE THE INSTRUMENT IS WRONG MORE OFTEN THAN IT IS
+    /// RIGHT.** The sweep was built to tell the operator when the decoder is
+    /// looking in the wrong place, and measured against independent readings it
+    /// disagreed with the truth on fourteen of twenty recordings. Unit 1.11.10
+    /// then measured its calibration **inside an overlap** rather than in a gap:
+    /// the four recordings holding nothing swing 14.1 to 17.7 decibels while
+    /// `cw-2026-08-25-021825`, which holds a station, swings 12.6 — below all of
+    /// them. There is no bar that separates them.</para>
+    /// <para>**IT KEEPS COMPUTING AND IT KEEPS WRITING TO THE SIDECAR.** What is
+    /// wrong with it is that it asserts on screen, where a second panel
+    /// contradicting the first sends the operator to the radio for a decoder
+    /// condition. The measurements are still worth having beside a recording, and
+    /// rebuilding the instrument is its own unit rather than tonight's work.</para>
+    /// <para>A setting rather than a deletion, so the person diagnosing it can
+    /// still see it.</para>
+    /// </remarks>
+    public bool ShowKeyingSweep { get; set; }
+
+    /// <summary>
     /// The pitch the operator hears a CW signal at, in hertz.
     /// </summary>
     /// <remarks>
