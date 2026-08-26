@@ -575,6 +575,20 @@ public sealed class CwToneTracker
         set => _survey.Readings = value;
     }
 
+    /// <summary>Candidate A: place the gate above the band floor (2026-08-26).</summary>
+    public double? GateAboveBandFloorDb
+    {
+        get => _survey.GateAboveBandFloorDb;
+        set => _survey.GateAboveBandFloorDb = value;
+    }
+
+    /// <summary>Candidate B: a bin's two levels must be two things (2026-08-26).</summary>
+    public double? MinimumLevelSpreadDb
+    {
+        get => _survey.MinimumLevelSpreadDb;
+        set => _survey.MinimumLevelSpreadDb = value;
+    }
+
     /// <summary>
     /// Where the strongest tone in the fine bank actually sits, between the bins.
     /// </summary>

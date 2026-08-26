@@ -16,6 +16,10 @@ namespace Hamlet.RadioEngine.Cw;
 /// <param name="Separation">How far apart they sit in their own scatter.</param>
 /// <param name="LiftDb">How far the bin stands over the band.</param>
 /// <param name="KeyedDb">The level the marks were measured at.</param>
+/// <param name="SpreadDb">
+/// How far the bin's own two level-means sit apart, which is the quantity the
+/// gate's threshold is currently placed halfway between.
+/// </param>
 /// <remarks>
 /// <para>**A VERDICT IS NOT A MEASUREMENT, AND FOR FOUR DAYS ONLY THE VERDICT
 /// EXISTED.** The survey applies seven tests to each bin and reported one
@@ -43,7 +47,8 @@ public readonly record struct BinReading(
     double Ratio,
     double Separation,
     double LiftDb,
-    double KeyedDb)
+    double KeyedDb,
+    double SpreadDb = double.NaN)
 {
     /// <summary>True where every test passed.</summary>
     public bool Admitted => Refused is null;
@@ -289,6 +294,35 @@ public sealed class CwToneSurvey
     /// </remarks>
     public List<BinReading>? Readings { get; set; }
 
+    /// <summary>
+    /// Place the gate this far above the band's own noise floor, instead of
+    /// halfway between the bin's own two levels. Null keeps the old placement.
+    /// </summary>
+    /// <remarks>
+    /// **CANDIDATE A OF TIM'S RULING OF 2026-08-26.** A bin holding only noise
+    /// has no two levels to be halfway between, so the old placement splits the
+    /// noise and manufactures marks. The band floor is a fact about the band
+    /// rather than about the bin, so a quiet bin cannot argue itself up to it.
+    /// Falls back to the old placement where the band floor could not be worked
+    /// out, because a threshold from an unread number is worse than one from the
+    /// wrong number (§0.0).
+    /// </remarks>
+    public double? GateAboveBandFloorDb { get; set; }
+
+    /// <summary>
+    /// A bin whose two levels sit closer than this produces no marks at all.
+    /// Null admits any spread, which is what the old gate did.
+    /// </summary>
+    /// <remarks>
+    /// **CANDIDATE B OF THE SAME RULING.** Two levels fitted to a continuum are
+    /// not two things, and the fit always succeeds — measured across eleven
+    /// thousand bin readings on 2026-08-26, the two-level test refused nothing at
+    /// all, on any capture.
+    /// </remarks>
+    public double? MinimumLevelSpreadDb { get; set; }
+
+    private double _spreadDb = double.NaN;
+
     private void Record(
         int bin,
         string? refused,
@@ -303,7 +337,7 @@ public sealed class CwToneSurvey
         double keyedDb = double.NaN)
         => Readings?.Add(new BinReading(
             _binHz[bin], refused, marks, dits, dahs,
-            dit, dah, ratio, separation, liftDb, keyedDb));
+            dit, dah, ratio, separation, liftDb, keyedDb, _spreadDb));
 
     /// <summary>How far away a bin has to be to count as "the band" rather than
     /// this signal leaking sideways.</summary>
@@ -610,9 +644,21 @@ public sealed class CwToneSurvey
 
         // Two clusters in the bin's own levels give the threshold, which is what
         // makes this follow a fade instead of being stranded above one.
+        _spreadDb = double.NaN;
+
         if (!Clusters(bin, out var low, out var high, out var midpoint))
         {
             Record(bin, "clusters");
+
+            return null;
+        }
+
+        _spreadDb = high - low;
+
+        // **CANDIDATE B: TWO LEVELS THAT ARE NOT TWO THINGS ARE NOT A GATE.**
+        if (MinimumLevelSpreadDb is { } least && high - low < least)
+        {
+            Record(bin, "spread", liftDb: double.IsNaN(bandDb) ? double.NaN : high - bandDb, keyedDb: high);
 
             return null;
         }
@@ -636,6 +682,15 @@ public sealed class CwToneSurvey
         // A correction that improves one measurement and breaks another is not
         // one correction, and the second half is Tim's to rule on rather than
         // Claude's to force through (§12.1).
+        // **CANDIDATE A: THE THRESHOLD COMES FROM THE BAND, NOT FROM THE BIN.**
+        // Where the band floor could not be worked out the old placement stands,
+        // because a threshold derived from an unread number asserts more than a
+        // threshold derived from the wrong one (§0.0).
+        if (GateAboveBandFloorDb is { } over && !double.IsNaN(bandDb))
+        {
+            midpoint = bandDb + over;
+        }
+
         var up = midpoint + HysteresisDb;
         var down = midpoint - HysteresisDb;
         var on = false;
