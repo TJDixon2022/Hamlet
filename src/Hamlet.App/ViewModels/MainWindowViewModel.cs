@@ -4267,6 +4267,18 @@ public partial class MainWindowViewModel : ObservableObject
         return value < -widest ? $"<-{widest:0}" : $"{value:0.0}";
     }
 
+    /// <summary>The margin's share of the span, for the sheet.</summary>
+    /// <param name="value">The quotient, or NaN where there was none.</param>
+    /// <returns>Three decimals, or why there is no figure.</returns>
+    /// <remarks>
+    /// Three decimals rather than one, because the whole distribution measured
+    /// across this repository's captures sits between −0.05 and +0.12 at the
+    /// tenth and ninetieth percentiles; at one decimal almost every character
+    /// would print `0.0`.
+    /// </remarks>
+    internal static string Share(double value)
+        => double.IsNaN(value) ? "unmeasured" : $"{value:0.000}";
+
     private string SpanRatiosForTheRecord()
         => SpanRatioLine(Transcript.Recent(), CountsCover());
 
@@ -4300,7 +4312,14 @@ public partial class MainWindowViewModel : ObservableObject
             measured.Select(character =>
                 $"{CwCaseRoster.Readable(character.Text)}"
                 + $":{Clamped(character.SpanLogLikelihoodRatio)}"
-                + $"/{Clamped(character.MarginLlr)}"));
+                + $"/{Clamped(character.MarginLlr)}"
+                // **AND THE QUOTIENT, BECAUSE THE CLAMP DESTROYS IT.** Both
+                // figures above are clamped at a million before they are
+                // printed, and on the captures where the raw margin runs to
+                // hundreds of millions that is exactly what happens — so the
+                // one form of this quantity that means the same thing on two
+                // recordings cannot be recovered from the two beside it.
+                + $"/{Share(character.MarginShareForRecord)}"));
 
         return $"{measured.Length} of the last {recent.Count} characters read, "
                + "each against the key having been up throughout its own span "

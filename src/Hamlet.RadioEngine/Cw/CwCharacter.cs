@@ -166,4 +166,38 @@ public sealed record CwCharacter(
     /// </remarks>
     public double SpanMarginForRecord
         => SpanHops <= 0 ? 0 : SpanLogLikelihoodRatio / SpanHops;
+
+    /// <summary>
+    /// How far ahead the winning reading finished, as a share of the evidence
+    /// the character carried at all.
+    /// </summary>
+    /// <remarks>
+    /// <para>**DIMENSIONLESS BY CONSTRUCTION, WHICH IS THE POINT.** Both figures
+    /// are sums of log-likelihoods computed through the same noise estimate, so
+    /// the estimate cancels in the quotient. Unit 1.11.14 measured the raw
+    /// <see cref="MarginLlr"/> across this repository's captures and found it
+    /// reaching 2.98 × 10⁸ on one recording and 1.8 on another, which is the
+    /// same incomparability <see cref="SpanMarginForRecord"/> exists to escape.
+    /// Measured across the same 1,580 characters, this quotient's entire
+    /// observed range is −20.1 to +2.45.</para>
+    /// <para>**IT IS NOT A SECOND COPY OF WHAT THE SHEET ALREADY PRINTS.** Both
+    /// inputs are clamped at <see cref="WidestRecordedLlr"/> before they reach a
+    /// record, so on precisely the recordings where the raw margin runs to
+    /// hundreds of millions the printed figure is `>1000000` and the quotient
+    /// cannot be recovered from it.</para>
+    /// <para>**AND IT DOES NOT SEPARATE A GOOD CHARACTER FROM A BAD ONE.**
+    /// Split by whether the recording carries an adjudicated anchor, the medians
+    /// are 0.004 and 0.005. What it says instead is worth reading on its own: the
+    /// runner-up path is almost always within a few thousandths of the winner,
+    /// so a character's second-best reading fitting nearly as well is the normal
+    /// case rather than the suspicious one.</para>
+    /// <para>Nought where the character carried no span to measure against,
+    /// which is not the same as a margin of nought (§0.0).</para>
+    /// </remarks>
+    public double MarginShareForRecord
+        => double.IsNaN(SpanLogLikelihoodRatio)
+            || double.IsNaN(MarginLlr)
+            || Math.Abs(SpanLogLikelihoodRatio) < 1e-6
+            ? double.NaN
+            : MarginLlr / SpanLogLikelihoodRatio;
 }
