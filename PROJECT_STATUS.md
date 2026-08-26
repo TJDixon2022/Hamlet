@@ -4,8 +4,8 @@ STATE: COMPLETED
 TASK: 4 of 4
 BALL: tim
 NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-26T17:20:56-04:00
-NOTE: structure fails too, and the null control shows the gate's run stream is worse than random on every capture including the ones that read
+UPDATED: 2026-08-26T19:58:23-04:00
+NOTE: the envelope is not the fix, and the last two units' conclusion was an artifact of pooling over the silence
 
 ---
 
