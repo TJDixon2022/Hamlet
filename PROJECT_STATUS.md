@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 1 of 5
+TASK: 3 of 5
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-27T16:29:52-04:00
-NOTE: cost answered at 16 to 18 candidates; a second sweep shows an empty band clears the gate at every window length once 25 bins are maximised over
+UPDATED: 2026-08-27T16:34:19-04:00
+NOTE: both scoring statistics choose 775 to 900 Hz on all four captures and the empty recordings outscore the real stations; adding the strongest-bin comparison the operator's assertion uses
 
 ---
 
