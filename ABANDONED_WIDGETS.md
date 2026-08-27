@@ -106,3 +106,78 @@ arranged wrongly, and a panel that is also a widget can appear twice. **The thre
 workspaces have permanent panels instead**, and HM-DEC-086's "nobody ever starts
 on an empty canvas" is superseded for them — CW opens on two working panels, and
 Digital and Voice are empty because they have nothing to do yet.
+
+## Which of these are capabilities and which are pictures
+
+**Read on 2026-08-27, after the send button came back.** The button was removed
+by three orders that each said not to wire Send to the transmitter, and the
+transmit path had been finished, ruled and used for months. **Removing a surface
+is not removing a capability, and the two had stopped being told apart.** So the
+other fourteen were read the same way, against the tree rather than against the
+catalogue.
+
+**Report only. Nothing here was restored, and nothing here proposes a schedule.**
+
+### Two are working capabilities with a radio attached and no control anywhere
+
+**These are the same shape as Send was.** Both view models are constructed in
+`MainWindowViewModel`, both are handed the live rig on connect at
+`MainWindowViewModel.cs:5041-5042` — the two lines directly below the transmit
+attach — and both are detached on disconnect. **What is missing is only the
+markup.**
+
+| widget | view model | engine | tests |
+|---|---|---|---|
+| **Scanner** | `ScanViewModel`, 598 lines | `BandScanner` 621 lines, plus `ScanDwell`, `ScanSegments`, `ScanStop`, `ScopeBinSurvey` | `BandScannerSafetyTests`, `ScannerEndToEndTests`, `ScanDwellTests`, `ScanSegmentsTests`, `ScanStopClassifierTests`, `ScannerFaceTests` |
+| **Call CQ on a cycle** | `AutoCallViewModel`, 461 lines | `AutoCall` 759 lines, plus `AutoCallAnswers` | `AutoCallSafetyTests`, `AutoCallAnswerTests`, `AutoCallFaceTests`, `CallsignPrivacyTests` |
+
+**Both carry the interlocks their rulings demand, and both interlocks are live
+right now with nothing on screen to trip them.** The scanner refuses to start
+before rig state is populated and restores the starting frequency by any exit
+route (§0.2.1, HM-DEC-107); the calling cycle is dummy load only until §0.2's
+first sentence is amended (HM-DEC-098). **They also ask each other**: the scanner
+will not tune while the cycle is transmitting and the cycle will not key while
+the scanner is moving, wired as two predicates at
+`MainWindowViewModel.cs:2054-2065` so that neither holds a stale copy of the
+other's state.
+
+**The calling cycle is the one to be careful about.** It is the only thing in
+this application that transmits without a hand on it, and it is the one feature
+whose ruling says the interlocks are watched firing into a dummy load before it
+reaches an antenna. **A surface for it is a separate decision from a surface for
+the scanner**, and neither follows from the send button coming back.
+
+### Three do real work whose only output was the deleted picture
+
+| widget | what still runs | what is gone |
+|---|---|---|
+| **Waterfall** | `RigSpectrumSource` is attached with the rig and asks the radio for CI-V `27 00` | Every pixel. The frame counters of HM-DEC-093 have nowhere to appear, so "nothing has ever arrived" and "the band is quiet" are once again the same sight |
+| **Did anybody hear me** | `HeardWatch` filters the spot feed for the operator's own callsign and `MainWindowViewModel` keeps the reports | The answer. It is computed and nothing displays it |
+| **Dial tape** | `DialTapeControl` exists and tunes by dragging | The control's only placement |
+
+**The waterfall and the heard watch are the two that cost something while they
+sit like this**, because both call out — one to the radio four times a second,
+one to somebody else's spot network — and neither can be seen. **A feed running
+with no surface is the shape HM-DEC-024's politeness rule exists to prevent**,
+and it is worth a measurement before it is worth an opinion.
+
+### Nine were pictures over data, and the data is all still there
+
+Where to start, Happening now, Phrasebook, Neighborhood map, I can hear it and
+Hamlet can't, Field guide, Field notes, What a contact sounds like, and the
+receive help. **Each was a rendering of something the engine still computes**,
+and rebuilding one is markup and layout rather than machinery. The neighborhood
+map is not really on this list at all: its template is one of the two still
+instantiated, and it is on the CW screen now.
+
+### What the count actually is
+
+**Fifteen templates are still defined in `MainWindow.axaml` and two are still
+used** — `widget.map` and `widget.terminal`, at lines 2308 and 2708.
+`widget.send` joined the orphans this unit, because the send panel was rebuilt
+permanently rather than restored from its template. **Thirteen `DataTemplate`
+blocks are dead markup**, roughly 1,700 lines of it, and no test can see them:
+`BindingHealthTests` and `EveryResourceKeyResolvesTests` both walk the live
+window, and a template nothing instantiates is never built. **Deleting them is
+not this unit's to do**, and it is named here so that the next reader knows the
+markup is dead rather than dormant.

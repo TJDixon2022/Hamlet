@@ -1,235 +1,267 @@
-# Work instruction 030 — a green suite over a dead screen
+# Work instruction 031 — give the operator his send button back
 
 ## 1. What Claude did
 
 Claude Code, on the development computer, in `C:\Source\HamLet`. The prompt
 claimed `PROJECT: Hamlet`; the tree confirmed all four checks — `SHACK_FACTS.md`
 and `src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs` exist, neither
-`CoreHMI.sln` nor `MURC.sln` does. Branch `main` throughout, five commits, all
-pushed, none refused. Version 1.11.26 to 1.11.27 per HM-DEC-150.
+`CoreHMI.sln` nor `MURC.sln` does. **Hamlet confirmed.** Branch `main`
+throughout, three commits, all pushed, none refused. Version 1.11.27 to 1.11.28
+per HM-DEC-150.
 
-**Nothing here is evidence about the radio.** No rig was connected.
+**Nothing here is evidence about the radio.** No rig was connected, nothing
+transmitted, and no test presses anything that could key one. **Tim verifies at
+the rig.**
 
-**No decision was recorded under §12.1.** Section 4 carries what needs a ruling.
+**No decision was recorded under §12.1.** The one this unit turns on —
+HM-DEC-059 — was already ruled. Section 4 carries what needs a ruling.
 
 **All five tasks ran, including the drop. Nothing was left.**
 
-**No decoder file was touched, and both proofs are in.** `git diff` over this
-unit's commits against `src/Hamlet.RadioEngine/` reports **zero files**, and the
-engine suite is **28 failing of 1841, byte-identical to the stable set**.
+**No decoder file was touched.** `git diff` over this unit's three commits
+against `src/Hamlet.RadioEngine/` reports **zero files**.
 
-### One mismatch, and it is the first thing to say
+### Task 1 — the path was there, and so was the ruling
 
-**Tim's Send panel work is not in this tree.** The order says he has built it
-himself since unit 1.11.26 — the transmit button, Send and Clear beside the
-title, Clear coloured as an action, the macro explanations — and to read it
-before touching anything near it.
+**The order was right and the premise behind 026, 027 and 028 was wrong.**
+Read before anything was changed:
 
-**What is in `MainWindow.axaml` is exactly what unit 1.11.24 shipped**: the title
-`Send`, a text box, four buttons reading CQ, RST, 73 and Clear, and the line
-about nothing leaving the radio. No transmit button, no Send button, no macro
-explanations. The last commit before this session is my own report from 1.11.26.
+| what | where |
+|---|---|
+| the view model | `MainWindowViewModel.Transmit`, `MainWindowViewModel.cs:1315` |
+| attached to the rig | `MainWindowViewModel.cs:5030` — `Transmit.Attach(new CwTransmitter(new KeyerCwSender(rig)))` |
+| the press | `CwTransmitViewModel.PressAsync`, `[RelayCommand(CanExecute = nameof(CanPress))]`, calling `_transmitter.SendAsync(message, context)` |
+| the interlocks | `TransmitReadiness.Check`, eleven refusal states |
+| the tests | 48 across five files — `CwTransmitTests` 17, `TransmitChainTests` 12, `TransmitPrivilegeTests` 11, `CwTransmitGuardTests` 5, `TheRefillGuardActuallyRunsTests` 3 |
+| the ruling | **HM-DEC-059**, `CLAUDE.md:446` — *"Hamlet keys the radio and sends Morse, by handing text to the radio's own keyer with CI-V `17`"* |
 
-**Nothing near it was modified**, so the prohibition is honoured either way — but
-if his work was meant to be in the zip, it did not arrive.
+**HM-DEC-098 is a different ruling about a different thing.** It governs the
+**automated repeating cycle** and says dummy load only. It says nothing about
+the operator pressing a button, and three orders cited it as though it did.
+
+**Path, tests and ruling all present, so tasks 2 to 4 proceeded.**
+
+**What was actually removed was one button.** `widget.send` was still sitting in
+`MainWindow.axaml` at line 1152, complete, with `PressCommand` on every
+contextual option — an orphaned template nothing instantiated.
+
+### Task 2 — the button
+
+Rebuilt as a permanent panel rather than restored from the orphaned template,
+because the CW workspace has panels and not widgets now.
+
+- **`Send` and `Clear` at the top beside the title**, as asked. Clear is coloured
+  as an action rather than left as chrome.
+- **The send button carries `Transmit.PressCommand`** with `Transmit.OwnWords`
+  as its parameter — **the same door the contextual options use**, with the same
+  readiness check, the same guard, the same watch, the same chain report, the
+  same abort and the same record. **There is not a second path to the
+  transmitter and this is not one.**
+- `OwnWords` is a `SendButtonViewModel` like any other, so nothing about it is
+  exempt from anything.
+
+### Task 3 — the paragraph
+
+The line saying nothing leaves the radio is gone, because it is no longer true.
+What replaced it says what each control does: CQ puts your callsign on the band,
+RST is your honest word on how well you are hearing the other station, 73 means
+best wishes, Clear empties the line and sends nothing, Send puts what is on the
+line on the air.
+
+**The macros write the line the button sends.** One message, not three: the box,
+the macro buttons and the command parameter are the same object, and a test
+asserts it. If they were separate the operator could read one thing and transmit
+another (§0.0).
 
 ## 2. What the operator sees
 
-**Nothing changed on the screen**, which for a unit about tests is the right
-answer. No app source file was edited at all: the five commits are one governance
-file, three test files added and two converted, and a version bump.
+**The Send panel has a Send button again**, top right beside the title with
+Clear next to it, and it is wired to the transmitter.
 
-**The conversion uncovered no fault.** The order says a test that goes from
-passing to failing under conversion is the most valuable thing this unit could
-produce, and none did. **The fault the conversion would have caught was fixed
-last unit** — unit 1.11.26 repaired the tab strip's binding — so the value here
-is prospective rather than immediate, and that is stated rather than dressed up.
+**It will be grey when he opens the app, and that is correct.** With nothing
+connected the panel refuses with *"Training radio does not transmit, so this is
+receive only"*, printed under the buttons. On a connected IC-7300 in CW with
+break-in on, it goes live.
 
-**What did change is what the suite can see.** Two guards that did not exist:
-view tests must act through controls, and every resource key must resolve.
-
-## 3. The count
-
-**Seven writes across two files drove the view model where a control existed.
-All seven converted. No test went red under conversion.**
-
-| file | writes | what they bypassed |
-|---|---|---|
-| `TheTabsAndTheWorkspacesTests` | 4 | the CW / Digital / Voice tab strip |
-| `TheSendPanelComposesAndDoesNotKeyTests` | 2 mode + 4 commands | the tab strip, and the CQ / RST / 73 / Clear buttons |
-
-**Group two — genuinely about the view model, not view tests.** Every remaining
-`model.` reference in the view tests is a read or an assertion —
-`Assert.Equal(model.OperatingMode, checkedTabs[0])` and the like. Reading state to
-check it against the screen is the point; only writing it bypasses the control.
-
-**Group three — behaviour no control can reach, and it is one thing.**
-`TheFollowedSentenceReachesTheScreenTests` sets `model.ListeningAfresh`. There is
-no control for it and there should not be: it is set from
-`_decoder.ListeningAfresh`, which is **state arriving from the radio**. A test
-must arrange it, and arranging state the app observes is not bypassing anything.
-**It is neither dead behaviour nor a missing control.**
-
-**Two improvements the conversion forced, both worth naming:**
-
-- **The Send tests now read the text box the operator reads**, not the property
-  behind it. A property that is right behind a box not bound to it is no use to
-  him.
-- **The button helper searches inside the Send panel**, not the whole window.
-  `Clear` is not a unique word on this screen, and a helper that takes whichever
-  button visual order reaches first is a test that works by luck. It passed
-  before I scoped it — by luck.
-
-### Task 3 — the guard, and what it is worth
-
-**It catches** a test that builds a `MainWindow` and then writes one of four
-properties a control owns: `OperatingMode`, `SendText`, `IsBestChance`,
-`IsWhatsNew`. That is the exact shape of the fault that got through twice.
-**12 view test files scanned, no offences.**
-
-**It does not catch** a property nobody has added to the list, an assignment
-split over two lines, a command invoked through `SomeCommand.Execute` rather than
-by writing a property, or a control driven by a method call.
-
-**It cannot catch the general case at all.** Deciding whether a control exists
-for a given property is a question about the XAML, and answering it properly
-means resolving bindings — which is what the application does at run time and
-what a text search cannot do. **So it is a named-property guard and not a proof,
-and the class doc says exactly that.**
-
-**A second test proves it can go red**, because a guard that cannot fail enforces
-nothing.
-
-**And it skips one file, its own** — which it discovered by reporting its own
-self-test data as a breach on the first run. A check that fails on its own
-fixtures is a check nobody keeps.
-
-### Task 4 — the resources
-
-**35 resource keys referenced, 35 resolve. None missing.**
-
-So `HmPanelBrush` was the only one, and nothing else was sitting silently. The
-check reads the application's markup, collects every `{StaticResource}` and
-`{DynamicResource}` key, and asks **the real window** — not
-`Application.Current` — because a key can live in a control's own resources or a
-merged dictionary, and the window is what the operator looks at. A second test
-proves a made-up key does not resolve, so the search is not finding something for
-everything.
-
-**It does not cover** a key built in code at run time, or one named only inside a
-control theme in a library this application does not own.
-
-### Task 5 — what the recent-places row would cost
-
-Measured at both widths, report only. Nothing was placed.
-
-| | 1400 px | 1200 px |
-|---|---|---|
-| header, bands to tabs | **295 px tall** | **327 px tall** |
-| workspace below the tabs | 518 px | 486 px |
-| neighborhood | x=31, w=778 | x=31, w=578 |
-| radio | x=851, w=520 | x=651, w=520 |
-| gap between them | **42 px** | **42 px** |
-
-**What it would take.** The row is a `recent` label, a combo box and a `forget
-this place` button — one line, about 34 px tall with its margins. There are three
-places it could go and each costs something:
-
-- **A fourth row in the header**, under the privilege line. Costs 34 px of
-  workspace at every width, taking the CW workspace to 484 and 452. **Cheapest to
-  build and it is the one that makes the header taller**, which is what
-  HM-DEC-141 spent a unit shrinking.
-- **In the 42-pixel gap between the neighborhood and the radio.** Free
-  vertically, and 42 px is nowhere near enough for a combo box — it would force
-  the neighborhood narrower, and that panel is untouchable.
-- **Inside the radio panel**, which already carries the frequency, the mode, the
-  filter and the age note, and has 520 px of width at both sizes. **Costs no
-  header height at 1400** because the radio column is shorter than the
-  neighborhood beside it; at 1200 the two are closer and it would add about 20 px.
-
-**The third is the only one that is nearly free, and it is also the least
-obviously right** — recent places are about where you have been, and the radio
-panel is about where you are. **That is the judgement, and it is Tim's.**
-
-### The suites
+**What will look wrong and is not:** the engine suite is red at its known
+baseline, unchanged. That set is 28 decoder tests and no decoder file was
+touched this unit.
 
 | | baseline | end |
 |---|---|---|
-| engine | 28 of 1841, stable set | **28 of 1841, byte-identical** |
-| app | 503 of 503 | **507 of 507** |
+| engine | 28 of 1841, stable set | **see below** |
+| app | 507 of 507 | **509 of 509** |
 
-Four tests added, two files converted, none deleted. The baseline was **503, not
-the 500 the order expected** — unit 1.11.26 added three header tests after its
-last full run, so 500 plus three. Nothing else moved.
+Two tests added to the app suite; four to the engine suite, all green.
 
-### Where the instruction and the tree disagree
+## 3. The count
 
-- **Tim's Send panel work is absent**, above.
-- **The app baseline was 503, not 500**, above.
-- **`CLAUDE_CODE.md` is at 1.6**, as stated. Confirmed.
-- **`AppSettings.UseJointDecoder` and `ShowKeyingSweep` both ship false**,
-  untouched.
-- **`DECISIONS.md` still has no record for HM-DEC-096–133, 136, 141, 150**, nor
-  Tim's rulings of 2026-08-25/26/27.
+### Task 4 — every interlock, and whether a test covers it
+
+**Eleven refusal states. Ten proved refusing, one proved unreachable.**
+
+| interlock | covered before | covered now |
+|---|---|---|
+| `NotConnected` | yes | yes |
+| `RadioCannotTransmit` | yes | yes |
+| `AlreadyTransmitting` | **no** | **yes — new** |
+| `ModeUnknown` | **no** | **yes — new** |
+| `NotInMorse` | yes | yes |
+| `BreakInUnknown` | yes | yes |
+| `BreakInOff` | yes | yes |
+| `LicenseClassUnknown` | yes | yes |
+| `FrequencyUnknown` | yes | yes |
+| `OutsidePrivileges` | yes | yes |
+| `ListenOnly` | no | **unreachable — see below** |
+
+**Every one of the ten is required to carry a sentence, not only a token.** The
+assertion is on `Detail` and not on `Reason`, deliberately: the token is a
+machine string and is never empty, so asserting it would have proved nothing
+about what reaches the screen. A refusal with no sentence is a grey button the
+operator cannot argue with (HM-DEC-080).
+
+**`ListenOnly` is not an uncovered interlock, it is an unreachable state, and it
+is reported as one rather than quietly counted.** It means the class holds this
+stretch but not in this mode. **Morse has no such stretch**: 97.305(a) permits CW
+on any frequency authorised to the control operator, which is why CW is absent
+from the emission table, and `PrivilegePlan.ModeAllowed` returns true for
+`TransmitMode.Cw` before it reads a single row. **Swept rather than argued** —
+every class at every 5 kHz from 1.7 to 29.8 MHz, **28,105 asks: 2,479 allow
+Morse, 25,626 refuse it, none refuse it as a mode.** The sweep also asserts it
+found both allowed and refused cases, because a plan that permitted everything
+would satisfy the same test and prove nothing.
+
+**It is live code all the same**, reached by the band map drawing listen-only
+stretches for data and phone. Nothing here says to delete it.
+
+### The view-level half, and what it caught
+
+**The engine tests prove the check refuses; they cannot see whether the refusal
+reaches the button.** So one view test asks the button — `CanExecute`, never a
+press, because pressing is what Tim does at the rig.
+
+**It went red on its first run and the reason is worth keeping.** It asserted
+`send.IsEnabled` and read **true**, with `CanExecute` false and the button
+correctly dead. `IsEnabled` is the local value nobody has set, so it reads true
+forever; **what a command drives is `IsEffectivelyEnabled`**. That is the same
+trap unit 1.11.25 recorded for `IsVisible` versus `IsEffectivelyVisible`, in a
+different property, caught by the same reasoning and written into the test's own
+comment.
+
+### The owned-property list
+
+**`SendText` retired; `OwnWords.Message` added.** The property `SendText` named
+no longer exists on the view model — unit 1.11.24's send line was a box nothing
+transmitted, and the line the operator now edits is
+`Transmit.OwnWords.Message`. **An entry naming a property nobody has is not
+harmless: it reads as coverage.** Four properties, 13 view test files scanned,
+no offences.
+
+### Task 5 — the other fourteen, read against the tree
+
+**Report only. Nothing restored, nothing scheduled.** Written into
+`ABANDONED_WIDGETS.md` as well, so the finding outlives this file.
+
+**Two are working capabilities with a live rig attached and no control
+anywhere** — the same shape Send was in:
+
+| widget | view model | engine | attached |
+|---|---|---|---|
+| **Scanner** | `ScanViewModel`, 598 lines | `BandScanner` 621 lines, plus `ScanDwell`, `ScanSegments`, `ScanStop`, `ScopeBinSurvey` | `MainWindowViewModel.cs:5041` |
+| **Call CQ on a cycle** | `AutoCallViewModel`, 461 lines | `AutoCall` 759 lines, plus `AutoCallAnswers` | `MainWindowViewModel.cs:5042` |
+
+Those two attach lines sit **directly below the transmit attach at 5030**. Six
+test files cover the scanner and four the calling cycle. **Both carry the
+interlocks their rulings demand and both are live right now with nothing on
+screen to trip them**, and the two ask each other rather than tracking each
+other, wired as predicates at `MainWindowViewModel.cs:2054-2065`.
+
+**The calling cycle is the one to be careful about.** It is the only thing in
+this application that transmits without a hand on it, and HM-DEC-098 requires its
+interlocks watched firing into a dummy load first. **A surface for it is a
+separate decision from a surface for the scanner, and neither follows from the
+send button coming back.**
+
+**Three do real work whose only output was the deleted picture:** the
+**waterfall** (`RigSpectrumSource` attached, asking the radio for CI-V `27 00`,
+every pixel gone — so HM-DEC-093's frame counters have nowhere to appear and
+"nothing has ever arrived" and "the band is quiet" are the same sight again);
+**did anybody hear me** (`HeardWatch` filters the feed for his own callsign and
+the answer is computed and displayed nowhere); and the **dial tape**.
+
+**Nine were pictures over data the engine still computes**, and rebuilding one is
+markup rather than machinery.
+
+**And the markup count**: fifteen `widget.*` templates are still defined in
+`MainWindow.axaml` and **two are still used** — `widget.map` at line 2308 and
+`widget.terminal` at line 2708. `widget.send` joined the orphans this unit.
+**Thirteen templates, roughly 1,700 lines, are dead markup that no test can
+see**, because `BindingHealthTests` and `EveryResourceKeyResolvesTests` both walk
+the live window and a template nothing instantiates is never built.
 
 ## 4. What's blocking us
 
-**The rule is enforced by a heuristic, and a heuristic is worth exactly what it
-can see.**
+**Two capabilities are attached to the radio with no way to reach them, and one
+of them transmits.**
 
 Ruling asked for:
 
-> **The view-test rule is guarded by a named-property list and cannot be more
-> than that.** Whether a control exists for a property is a question about the
-> XAML that only a running application can answer, so the guard checks four
-> properties by name and fails loudly when one is written. **Adding a property to
-> the list when a control gains one is now part of adding the control**, and
-> nothing enforces that step.
+> **The scanner and the calling cycle are wired to the live rig and have no
+> control on any screen.** Both view models are constructed, both are handed the
+> rig on connect at `MainWindowViewModel.cs:5041-5042`, both are fully tested,
+> and neither can be started or stopped by the operator. **This is the same fault
+> that removed the send button, found twice more by looking.**
 
-The guard is in the tree and its own doc states its edges. **What has no
-enforcement is the list staying current.** A control added next month whose
-property is not on the list is invisible to it, and the failure mode is silence —
-the same silence that let two faults through.
+The scanner is the smaller question: it moves the dial, §0.2.1 governs it, and
+its interlocks are built and tested. **The calling cycle is not the same
+question.** It is automated transmission, HM-DEC-098 says dummy load only until
+its interlocks have been *watched* firing, and giving it a button is the step
+that makes that evening possible rather than the step that follows it.
 
-*Not proposed, because it needs a ruling:* whether the list should instead be
-derived, by parsing the markup for two-way bindings on view-model properties and
-treating every such property as control-owned. It would be self-maintaining and
-it would be a second XAML parser in the test suite.
-
----
-
-**Tim's Send panel work is not in the tree, and this unit could not read it.**
-
-The order describes a transmit button, Send and Clear beside the title, Clear
-coloured as an action, and macro explanations. **None of that is in
-`MainWindow.axaml`.** The panel is exactly as unit 1.11.24 shipped it.
-
-Nothing near it was touched, so no harm was done either way — **but the next unit
-should not assume that work is present**, and if it was meant to be in this zip
-it did not arrive.
+*Not proposed, because it needs a ruling:* whether either gets a surface in the
+CW workspace, and if so whether the calling cycle's arrives disabled until the
+dummy-load evening has happened.
 
 ---
 
-**One test passed by luck until this unit, and nothing would have caught it.**
+**Nothing checks that deleting a surface is not deleting a capability, and this
+unit found two more instances of it.**
 
-`TheButtonsComposeWhatWouldGoOut` found its buttons by searching the whole window
-for a `Content` of `"Clear"` and taking the first. It got the right one because
-of visual order. **It is scoped to the Send panel now**, but the class of fault —
-a test that resolves an ambiguous control by accident — has no guard, and the
-view-test rule does not address it.
+That was inbound ask 22 and it is now measured rather than suspected. **The
+tests could not have caught any of the three**, because every guard in this suite
+walks the live window, and a capability with no surface is invisible to all of
+them by construction.
+
+*Not proposed:* a check that every view model constructed by `MainWindowViewModel`
+is reachable from some binding in the markup. It would have caught all three, and
+it needs a ruling because it would also fire on view models that are legitimately
+model-only, of which HM-DEC-076's contact tracker is one by explicit ruling.
+
+---
+
+**Thirteen dead `DataTemplate` blocks sit in `MainWindow.axaml` and nothing can
+tell them from live ones.**
+
+Roughly 1,700 lines. Deleting them is not this unit's to do (§12.6) and it is
+named here because **the markup is dead rather than dormant** — and because
+`widget.send` sat there complete and unreachable for three units while three
+orders forbade building what it already contained.
 
 ### Asks still outstanding
 
-Carried forward verbatim per HM-DEC-139 and HM-DEC-140. **Twenty-three inbound.
-The oldest is open since 2026-08-14.**
+Carried forward verbatim per HM-DEC-139 and HM-DEC-140. **Twenty-four inbound
+after this unit's closures. The oldest is open since 2026-08-14.**
 
 1. **The sweep's `invented` column counts substitutions, not invented
    characters.**
 2. **Whether the refill guard should apply to the first fill at all.**
 3. **`ANNUNCIATOR.md` renamed `PHASE` to `TASK` while HM-DEC-150 makes `PHASE`
    match the version's minor.**
-4. **`DECISIONS.md` has no record for HM-DEC-096–133, 136, 141 or 150 — nor for
-   Tim's rulings of 2026-08-25/26/27.**
+4. **`DECISIONS.md` has no record for HM-DEC-096–133, 136, 141 or 150** — and
+   **HM-DEC-098, which was misread three times to remove a working button, is
+   inside that range.** The cost of the missing records is now measured: a
+   capability nobody could look up, removed by orders citing the ruling that did
+   not cover it.
 5. **The tone tracker** — six axis families measured; the question is a design
    one.
 6. **The integrator width** — settled at 45 Hz, with the sharp-peak caveat.
@@ -240,34 +272,38 @@ The oldest is open since 2026-08-14.**
 10. **The keying meter** — its measurement found a station its verdict denied.
 11. **HM-OPEN-057** (2026-08-22) and **HM-OPEN-007** (2026-08-14).
 12. **The gate opens on everything, including two empty recordings** (1.11.18).
-13. **The joint cutter cannot find word gaps on a compressed fist** (1.11.22).
+13. **The joint cutter cannot find word gaps on a compressed fist** (1.11.22) —
+    the next decode question, still unruled.
 14. **The constrained margin is bounded and still does not separate** (1.11.22).
 15. **Four fixtures are absent and five acceptance lines were unmeasurable**
     (1.11.22).
-16. **There is a Send button that does not send** (1.11.23) — parked, unruled.
-17. **HM-DEC-086's supersession needs a record** (1.11.25).
-18. **The phrasebook's arrival and the absent-widget news are gone** (1.11.25).
-19. **Engine code behind the abandoned widgets is unreachable** (1.11.25).
-20. **The recent-places row has no home** (1.11.26) — **three options costed
-    above**; the judgement is Tim's.
-21. **The owned-property list has no enforcement of staying current**, above.
-22. **Tim's Send panel work is not in the tree**, above.
-23. **A test resolved an ambiguous control by accident and nothing guards that
-    class**, above.
+16. **HM-DEC-086's supersession needs a record** (1.11.25).
+17. **The phrasebook's arrival and the absent-widget news are gone** (1.11.25).
+18. **The recent-places row has no home** (1.11.26), three options costed.
+19. **The owned-property list has no enforcement of staying current** (1.11.27).
+20. **A test resolved an ambiguous control by accident** (1.11.27).
+21. **A deleted widget's description was the only record of a working
+    capability**, and it took the operator to notice. **Nothing checks that a
+    deletion is not removing something in use** — now measured, above.
+22. **`013347` returns a likelihood ratio of 17.2 million**, with `001520`'s
+    quadrillions. Parked, raised once.
+23. **The scanner and the calling cycle are attached to the rig with no
+    control**, above.
+24. **Thirteen dead `DataTemplate` blocks nothing can distinguish from live
+    ones**, above.
 
-New this unit: **the guard's list needs maintaining and nothing enforces it**,
-above; **the missing Send panel work**, above; **the ambiguous-control class**,
-above.
+New this unit: **the scanner and the calling cycle have no surface**, above;
+**the dead templates**, above.
 
-Closed this unit: **view tests act through controls** — seven writes converted
-and the rule enforced by a test. **Resources resolve** — 35 of 35, and
-`HmPanelBrush` was the only one that ever did not. **The recent-places row's
-options**, costed at both widths.
+Closed this unit: **the send button** — restored, wired to the one transmit path,
+and its interlocks proved. **Inbound ask 18, "engine code behind the abandoned
+widgets is unreachable"** — read in full and answered: two are capabilities,
+three do work with no output, nine were pictures.
 
 Still open: **the lock's mixed help**; **three fixtures at accepted cost**; **the
 reference and port integrator difference**; **an unmeasured pitch costs `N4L`**;
 **the six-hertz window disagreement**; **the short-character bias**; **the
-Avalonia geometry offset**; **`CHANGELOG.md` at 1.9.0 against 1.11.27**; **the
+Avalonia geometry offset**; **`CHANGELOG.md` at 1.9.0 against 1.11.28**; **the
 whole-file second pass**; **the squelch has no axis**; **the three morning
 captures of 2026-08-26**; **seven timing intermittents, none of which fired
 today**.

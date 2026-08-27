@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 4 of 5
+TASK: 5 of 5
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-27T15:46:24-04:00
-NOTE: eleven interlocks accounted for: ten refusals proved, one shown unreachable for Morse across 28,105 frequencies, and the button asked through CanExecute rather than pressed
+UPDATED: 2026-08-27T15:47:53-04:00
+NOTE: reading the fourteen other abandoned widgets, sorting the ones that describe a working capability from the ones that were only a display
 
 ---
 
