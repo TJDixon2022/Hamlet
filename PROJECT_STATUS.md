@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 3 of 8
+TASK: 6 of 8
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-27T18:20:44-04:00
-NOTE: dilution is disproved and the deeper finding is worse: at its own best pitch a station he can hear scores 0.84 where an empty recording scores 1.05, so tasks 3 and 4 do not get built
+UPDATED: 2026-08-27T18:22:15-04:00
+NOTE: task 6 written with its own disproof at the top: the adjudicated anchor 012403 ranks as empty on every axis the evidence has
 
 ---
 
