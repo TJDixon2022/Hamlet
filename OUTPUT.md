@@ -1,258 +1,270 @@
-# Work instruction 031 — give the operator his send button back
+UNIT: 032 — complete at task 5 of 5 — 2026-08-27 16:37
 
 ## 1. What Claude did
+
+**Complete. All five tasks ran, including the drop.**
 
 Claude Code, on the development computer, in `C:\Source\HamLet`. The prompt
 claimed `PROJECT: Hamlet`; the tree confirmed all four checks — `SHACK_FACTS.md`
 and `src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs` exist, neither
 `CoreHMI.sln` nor `MURC.sln` does. **Hamlet confirmed.** Branch `main`
-throughout, three commits, all pushed, none refused. Version 1.11.27 to 1.11.28
+throughout, four commits, all pushed, none refused. Version 1.11.28 to 1.11.29
 per HM-DEC-150.
 
-**Nothing here is evidence about the radio.** No rig was connected, nothing
-transmitted, and no test presses anything that could key one. **Tim verifies at
-the rig.**
+**Nothing here is evidence about the radio.** No rig was connected.
 
-**No decision was recorded under §12.1.** The one this unit turns on —
-HM-DEC-059 — was already ruled. Section 4 carries what needs a ruling.
+**No decision was recorded under §12.1.** What this unit found is a question
+about a ruling of Tim's, which §12.1 puts outside a session's authority without
+exception. It is in section 4.
 
-**All five tasks ran, including the drop. Nothing was left.**
+**The unit was commissioned to build ranking and the measurement says do not
+wire it.** It is built, it is pure, it is tested, and it is connected to nothing
+— with the reason in its own documentation so no later session reconnects it
+without reading why.
 
-**No decoder file was touched.** `git diff` over this unit's three commits
-against `src/Hamlet.RadioEngine/` reports **zero files**.
+**THE FULL ENGINE SUITE DID NOT RETURN A FAILING-SET DIFF AND THIS REPORT DOES
+NOT CLAIM ONE.** It was started three times; the first two runs were lost to a
+build lock and a redirection that captured nothing, and the third was still
+running when this was written. **So every figure below is measured, and the one
+number that is not here is the diff of which tests moved.**
 
-### Task 1 — the path was there, and so was the ruling
+What is known instead, and it is weaker: **the seven tests added by this unit
+were each run and each passed**, and **no production file was changed except one
+new engine class that nothing calls**. The decoder, the tracker and the survey
+are untouched — `git diff` over this unit's commits against
+`src/Hamlet.RadioEngine/` reports exactly one added file, `Cw/CwPitchRanking.cs`.
+**A suite that moved off 28 of 1845 would therefore be a timing intermittent
+rather than this unit's doing**, but that is reasoning and not a measurement,
+and the next session should run the diff before trusting it.
 
-**The order was right and the premise behind 026, 027 and 028 was wrong.**
-Read before anything was changed:
+### Task 1 — the cost, which passed
 
-| what | where |
-|---|---|
-| the view model | `MainWindowViewModel.Transmit`, `MainWindowViewModel.cs:1315` |
-| attached to the rig | `MainWindowViewModel.cs:5030` — `Transmit.Attach(new CwTransmitter(new KeyerCwSender(rig)))` |
-| the press | `CwTransmitViewModel.PressAsync`, `[RelayCommand(CanExecute = nameof(CanPress))]`, calling `_transmitter.SendAsync(message, context)` |
-| the interlocks | `TransmitReadiness.Check`, eleven refusal states |
-| the tests | 48 across five files — `CwTransmitTests` 17, `TransmitChainTests` 12, `TransmitPrivilegeTests` 11, `CwTransmitGuardTests` 5, `TheRefillGuardActuallyRunsTests` 3 |
-| the ruling | **HM-DEC-059**, `CLAUDE.md:446` — *"Hamlet keys the radio and sends Morse, by handing text to the radio's own keyer with CI-V `17`"* |
+The budget is **500 ms**, and it is not a number chosen for this:
+`CwToneTracker.SurveyEveryHops` is 100 hops of 5 ms and
+`CwProbabilisticStream.ReadEverySeconds` is 0.5, so the survey verdict and the
+window re-read already land on the same cadence.
 
-**HM-DEC-098 is a different ruling about a different thing.** It governs the
-**automated repeating cycle** and says dummy load only. It says nothing about
-the operator pressing a button, and three orders cited it as though it did.
+| scoring window | envelope | decode | total | candidates that fit |
+|---|---|---|---|---|
+| 3 s | 4.5 ms | 22.7 ms | **27.0 ms** | **18**, or 22 if the envelope is already taken |
+| 6 s | 9.5 ms | 47.6 ms | 57.1 ms | 8, or 10 |
+| 12 s | 16.2 ms | 98.8 ms | 115.0 ms | 4, or 5 |
 
-**Path, tests and ruling all present, so tasks 2 to 4 proceeded.**
+**The answer to task 1's one sentence: eighteen candidates can be decode-scored
+inside the survey's own cadence at a three-second window, and four at twelve.**
+That is four or more either way, so tasks 2 to 4 proceeded.
 
-**What was actually removed was one button.** `widget.send` was still sitting in
-`MainWindow.axaml` at line 1152, complete, with `PressCommand` on every
-contextual option — an orphaned template nothing instantiated.
+**Most of the envelope work is already done.** The tracker computes a magnitude
+per coarse bin every hop, so a ranking that reuses those pays the decode and not
+the mix. **And a barren pitch is the cheap case** — it loses to the null
+hypothesis early — so the scheme prices off its best branch rather than its
+worst.
 
-### Task 2 — the button
+### Task 2 — built, and connected to nothing
 
-Rebuilt as a permanent panel rather than restored from the orphaned template,
-because the CW workspace has panels and not widgets now.
+`src/Hamlet.RadioEngine/Cw/CwPitchRanking.cs`. Envelopes in, an ordering out;
+no clock, no radio. **The shortlist may be drawn by energy and the choice may
+not be**, which is the distinction HM-DEC-095 turns on, and `Rank` orders only
+by what each candidate read. Scoring is ungated, because a gated decode returns
+nothing below the floor and every candidate under it would then score alike.
 
-- **`Send` and `Clear` at the top beside the title**, as asked. Clear is coloured
-  as an action rather than left as chrome.
-- **The send button carries `Transmit.PressCommand`** with `Transmit.OwnWords`
-  as its parameter — **the same door the contextual options use**, with the same
-  readiness check, the same guard, the same watch, the same chain report, the
-  same abort and the same record. **There is not a second path to the
-  transmitter and this is not one.**
-- `OwnWords` is a `SendButtonViewModel` like any other, so nothing about it is
-  exempt from anything.
+**It is not wired to the tracker**, and `Winner`'s own documentation carries the
+measurement that says why.
 
-### Task 3 — the paragraph
+## 2. What the owner should expect
 
-The line saying nothing leaves the radio is gone, because it is no longer true.
-What replaced it says what each control does: CQ puts your callsign on the band,
-RST is your honest word on how well you are hearing the other station, 73 means
-best wishes, Clear empties the line and sends nothing, Send puts what is on the
-line on the air.
+**Nothing changed on the screen, and a station he can hear still does not reach
+the decoder without him pressing anything.** That is the plain answer section 2
+was asked for, and this unit did not move it.
 
-**The macros write the line the button sends.** One message, not three: the box,
-the macro buttons and the command parameter are the same object, and a test
-asserts it. If they were separate the operator could read one thing and transmit
-another (§0.0).
+**What did move is that the reason is now measured rather than suspected.** Two
+more statistics have been tried and have failed, and the one rule that works on
+every capture is the one a ruling forbids. That is a question for Tim rather
+than a fault to fix, and it is in section 4.
 
-## 2. What the operator sees
-
-**The Send panel has a Send button again**, top right beside the title with
-Clear next to it, and it is wired to the transmitter.
-
-**It will be grey when he opens the app, and that is correct.** With nothing
-connected the panel refuses with *"Training radio does not transmit, so this is
-receive only"*, printed under the buttons. On a connected IC-7300 in CW with
-break-in on, it goes live.
-
-**What will look wrong and is not:** the engine suite is red at its known
-baseline, unchanged. That set is 28 decoder tests and no decoder file was
-touched this unit.
+**What will look wrong and is not:** a new engine file that nothing calls. That
+is deliberate. Deleting it would throw away the measurement; wiring it would put
+ninety-three characters of nothing on an empty band.
 
 | | baseline | end |
 |---|---|---|
-| engine | 28 of 1841, stable set | **28 of 1845, byte-identical** |
-| app | 507 of 507 | **509 of 509** |
+| engine | 28 of 1845, stable set | **not measured — the run did not return** |
+| app | 509 of 509 | **not re-run — no app file was changed** |
 
-Two tests added to the app suite; four to the engine suite, all green. The
-engine total moves 1841 to 1845 and the failing set does not move at all: the
-28 names are the same 28, compared against the stable list rather than counted.
-It ran in 17 minutes 37 seconds.
+**The baseline is what this reports against**, because the end state was not
+measured. Seven tests were added, all in the engine project, and each passed on
+its own run: three in `WhatDecodeScoringCostsTests` and four in
+`WhatRankingChoosesTests`. **An honest expectation is 28 of 1852 and it is an
+expectation.**
 
-## 3. The count
+## 3. What you should see
 
-### Task 4 — every interlock, and whether a test covers it
+**The four captures the operator can hear, which is what section 3 leads with.**
+Twelve-second window, the whole 25-pitch coarse bank, against floors of 41, 0, 0
+and 0.
 
-**Eleven refusal states. Ten proved refusing, one proved unreachable.**
+| capture | he hears | ranking chose | error | ratio there | at his pitch | what it spelled |
+|---|---|---|---|---|---|---|
+| `cw-2026-08-25-012823` | 500 Hz | **900 Hz** | +400 | 6.69 | 0.90 | `I E IS I SEE EE EE E E…` |
+| `cw-2026-08-22-014113` | 607 Hz | **900 Hz** | +293 | 2.51 | 0.74 | `IEEE EEESE E E E EEE S…` |
+| `cw-2026-08-22-014308` | 606 Hz | **875 Hz** | +269 | 3.63 | 0.48 | `E E IE E EE E EI EEIEE…` |
+| `cw-2026-08-26-125941` | 403.5 Hz | **800 Hz** | +397 | 4.27 | 0.44 | `EEEIEIEEEIESEE EEIEIE#…` |
 
-| interlock | covered before | covered now |
+**Ranking chose the top of the passband on all four**, 269 to 400 hertz away,
+and spelled runs of E, I and S — which is what noise reads as, because those are
+the one- and two-element characters. **At the pitch he can actually hear, the
+ratio is 0.44 to 0.90, below the gate of 1.40.** The station scores worse than
+the noise beside it, on the decoder's own measure of reading.
+
+**A capture pointed at the right pitch that still reads nothing is a finding
+rather than a failure**, and this is the opposite case: none of the four was
+pointed at the right pitch, so nothing downstream was ever exercised.
+
+### Task 4 — what it costs when it is wrong, and the distance
+
+| capture | chose | ratio | characters | over the gate of 1.40 |
+|---|---|---|---|---|
+| `cw-2026-08-20-014854`, holding nothing | 425 Hz | 4.47 | **93** | **+3.07** |
+| `cw-2026-08-20-014935`, holding nothing | 450 Hz | 2.41 | **91** | **+1.01** |
+
+**Both recordings that hold nothing are admitted, and not by a hair.** The floor
+does not hold by a wide margin or by a narrow one; **it does not hold at all.**
+
+**Why, and it is the part worth keeping.** `CwProbabilisticDecoder.Gate`'s own
+documentation records `cw-2026-08-20-014854` at a **highest window ratio of
+0.840 across 55 windows**. That figure is correct and it was measured **at one
+pitch** — the one the tracker had already settled on. **Take the best of
+twenty-five bins instead and the same recording scores 4.47.** The maximum over
+a bank is a different statistic from a single draw, and a floor calibrated for
+one does not transfer to the other. Somewhere in six hundred hertz of noise
+there is always a pitch that reads.
+
+**So the order's central safety argument — ranking needs no threshold because
+HM-DEC-120 refuses the winner afterwards — is measured false.** Not marginal:
+wrong by a factor of five on the worse capture. The silence property was named
+as task 3's first acceptance line and as a thing not to trade, and ranking as
+specified trades it.
+
+**Swept at three, six and twelve seconds**, and it fails at all three, so no
+choice of scoring window rescues it.
+
+### The second statistic, tried because the first one's failure had a shape
+
+The window ratio is the whole window's margin divided by its hops, so **it
+rewards density**, and a pitch minting many cheap one-element characters out of
+noise averages higher than a pitch holding a real station with real silence
+between its letters. `SpanMargin` asks a different question of each character —
+how far its own marks stood above the noise, with the element gaps cancelling
+exactly — and a character minted from noise scores near zero there by
+construction. The decoder has recorded it since unit 1.11.3 and nothing read it.
+
+**It moves two of the four by one bin and changes nothing.** 900, 900, 850, 775.
+And at the pitch he can hear the median span margin is **0.8 to 2.0**, while the
+two empty recordings score **9.3 and 4.7** at theirs. **It inverts too.**
+
+### Task 5 — the operator's assertion, and the sentence the order predicted
+
+Three selection rules, same audio, same window, same bank.
+
+| rule | within one bin of where the station is |
+|---|---|
+| by the decoder's window ratio | **0 of 4** |
+| by the per-character span margin | **0 of 4** |
+| **by the strongest bin** — what his assertion does | **4 of 4** |
+
+| capture | loudest bin | what it reads there |
 |---|---|---|
-| `NotConnected` | yes | yes |
-| `RadioCannotTransmit` | yes | yes |
-| `AlreadyTransmitting` | **no** | **yes — new** |
-| `ModeUnknown` | **no** | **yes — new** |
-| `NotInMorse` | yes | yes |
-| `BreakInUnknown` | yes | yes |
-| `BreakInOff` | yes | yes |
-| `LicenseClassUnknown` | yes | yes |
-| `FrequencyUnknown` | yes | yes |
-| `OutsidePrivileges` | yes | yes |
-| `ListenOnly` | no | **unreachable — see below** |
+| `cw-2026-08-25-012823` | 500 Hz | **`O BET TER ON N…`** |
+| `cw-2026-08-22-014113` | 600 Hz | `E D T# TIUIIII…` |
+| `cw-2026-08-22-014308` | 600 Hz | `INS EW TIEET E…` |
+| `cw-2026-08-26-125941` | 400 Hz | ` E EE I I II E…` |
 
-**Every one of the ten is required to carry a sentence, not only a token.** The
-assertion is on `Detail` and not on `Reason`, deliberately: the token is a
-machine string and is never empty, so asserting it would have proved nothing
-about what reaches the screen. A refusal with no sentence is a grey button the
-operator cannot argue with (HM-DEC-080).
+The order said that if the assertion still wins on any capture, that is the most
+useful sentence in the report. **It wins on all four, and on the first one it
+reads English.**
 
-**`ListenOnly` is not an uncovered interlock, it is an unreachable state, and it
-is reported as one rather than quietly counted.** It means the class holds this
-stretch but not in this mode. **Morse has no such stretch**: 97.305(a) permits CW
-on any frequency authorised to the control operator, which is why CW is absent
-from the emission table, and `PrivilegePlan.ModeAllowed` returns true for
-`TransmitMode.Cw` before it reads a single row. **Swept rather than argued** —
-every class at every 5 kHz from 1.7 to 29.8 MHz, **28,105 asks: 2,479 allow
-Morse, 25,626 refuse it, none refuse it as a mode.** The sweep also asserts it
-found both allowed and refused cases, because a plan that permitted everything
-would satisfy the same test and prove nothing.
+### Where the instruction and the tree disagree
 
-**It is live code all the same**, reached by the band map drawing listen-only
-stretches for data and phone. Nothing here says to delete it.
-
-### The view-level half, and what it caught
-
-**The engine tests prove the check refuses; they cannot see whether the refusal
-reaches the button.** So one view test asks the button — `CanExecute`, never a
-press, because pressing is what Tim does at the rig.
-
-**It went red on its first run and the reason is worth keeping.** It asserted
-`send.IsEnabled` and read **true**, with `CanExecute` false and the button
-correctly dead. `IsEnabled` is the local value nobody has set, so it reads true
-forever; **what a command drives is `IsEffectivelyEnabled`**. That is the same
-trap unit 1.11.25 recorded for `IsVisible` versus `IsEffectivelyVisible`, in a
-different property, caught by the same reasoning and written into the test's own
-comment.
-
-### The owned-property list
-
-**`SendText` retired; `OwnWords.Message` added.** The property `SendText` named
-no longer exists on the view model — unit 1.11.24's send line was a box nothing
-transmitted, and the line the operator now edits is
-`Transmit.OwnWords.Message`. **An entry naming a property nobody has is not
-harmless: it reads as coverage.** Four properties, 13 view test files scanned,
-no offences.
-
-### Task 5 — the other fourteen, read against the tree
-
-**Report only. Nothing restored, nothing scheduled.** Written into
-`ABANDONED_WIDGETS.md` as well, so the finding outlives this file.
-
-**Two are working capabilities with a live rig attached and no control
-anywhere** — the same shape Send was in:
-
-| widget | view model | engine | attached |
-|---|---|---|---|
-| **Scanner** | `ScanViewModel`, 598 lines | `BandScanner` 621 lines, plus `ScanDwell`, `ScanSegments`, `ScanStop`, `ScopeBinSurvey` | `MainWindowViewModel.cs:5041` |
-| **Call CQ on a cycle** | `AutoCallViewModel`, 461 lines | `AutoCall` 759 lines, plus `AutoCallAnswers` | `MainWindowViewModel.cs:5042` |
-
-Those two attach lines sit **directly below the transmit attach at 5030**. Six
-test files cover the scanner and four the calling cycle. **Both carry the
-interlocks their rulings demand and both are live right now with nothing on
-screen to trip them**, and the two ask each other rather than tracking each
-other, wired as predicates at `MainWindowViewModel.cs:2054-2065`.
-
-**The calling cycle is the one to be careful about.** It is the only thing in
-this application that transmits without a hand on it, and HM-DEC-098 requires its
-interlocks watched firing into a dummy load first. **A surface for it is a
-separate decision from a surface for the scanner, and neither follows from the
-send button coming back.**
-
-**Three do real work whose only output was the deleted picture:** the
-**waterfall** (`RigSpectrumSource` attached, asking the radio for CI-V `27 00`,
-every pixel gone — so HM-DEC-093's frame counters have nowhere to appear and
-"nothing has ever arrived" and "the band is quiet" are the same sight again);
-**did anybody hear me** (`HeardWatch` filters the feed for his own callsign and
-the answer is computed and displayed nowhere); and the **dial tape**.
-
-**Nine were pictures over data the engine still computes**, and rebuilding one is
-markup rather than machinery.
-
-**And the markup count**: fifteen `widget.*` templates are still defined in
-`MainWindow.axaml` and **two are still used** — `widget.map` at line 2308 and
-`widget.terminal` at line 2708. `widget.send` joined the orphans this unit.
-**Thirteen templates, roughly 1,700 lines, are dead markup that no test can
-see**, because `BindingHealthTests` and `EveryResourceKeyResolvesTests` both walk
-the live window and a template nothing instantiates is never built.
+- **`cw-2026-08-25-021825` is called "the noise capture" and it holds a
+  station** — an eight-second call in thirty seconds, 18 % duty, with floors of
+  41, 74 and 16 in `TheCapturesThatDecodeKeepDecodingTests`. The two recordings
+  that hold nothing are the 2026-08-20 pair, and those are what task 4 was run
+  against.
+- **`CLAUDE_CODE.md` is at version 1.6 with twelve sections**, as stated.
+  Confirmed, and this report follows its §8 including the `UNIT:` line.
+- **The four captures are under `captured/unadjudicated/`**, not `captured/`.
+- **`cw-2026-08-24-012403`'s station is at 439.81 Hz**, not the 450 its own
+  sidecar names; the sidecar records where the decoder was pointed at the moment
+  of the press, which was ten hertz off.
 
 ## 4. What's blocking us
 
-**Two capabilities are attached to the radio with no way to reach them, and one
-of them transmits.**
+**The one rule that finds the station on every capture is the one HM-DEC-095
+forbids, and that ruling is now what stands between Hamlet and reading these
+four stations.**
 
 Ruling asked for:
 
-> **The scanner and the calling cycle are wired to the live rig and have no
-> control on any screen.** Both view models are constructed, both are handed the
-> rig on connect at `MainWindowViewModel.cs:5041-5042`, both are fully tested,
-> and neither can be started or stopped by the operator. **This is the same fault
-> that removed the send button, found twice more by looking.**
+> **HM-DEC-095's "a note is chosen by how it is keyed and never by how loud it
+> is" is amended: the strongest bin may choose the note at acquisition, with
+> keying structure demoted from the chooser to a check on the winner.**
+>
+> **Eight statistics have now been measured against choosing a pitch by how it
+> is keyed and all eight are wrong** — cluster separation, dah/dit ratio, level
+> spread, lift over the band floor, quantisation residual, agreement between
+> fitted units, and now the decoder's own window ratio and per-character span
+> margin. On the four captures the operator can hear, the keying statistics are
+> right **0 of 4** and the strongest bin is right **4 of 4**, reading English on
+> one of them. **This is not six unlucky choices followed by two more.**
+>
+> **HM-DEC-095 was ruled on a real case and the case was narrow.** Its evidence
+> was one recording where the answer was neither the loudest thing nor the
+> configured pitch, with the operator's own transmission in the audio. That is a
+> reason to exclude the operator's own transmission and to distrust loudness
+> *when a keying statistic disagrees* — it is not evidence that loudness is
+> wrong when nothing disagrees with it.
+>
+> **What was rejected:** carrying on looking for a ninth keying statistic, on
+> the grounds that six was already enough evidence and eight is past the point
+> where the next one is worth a session. **And rejected:** wiring the ranking
+> anyway with a re-calibrated floor, because the floor would then be fitted to
+> two empty recordings to permit a scheme that is right on none of the four that
+> matter, which is fitting a number to a fixture.
 
-The scanner is the smaller question: it moves the dial, §0.2.1 governs it, and
-its interlocks are built and tested. **The calling cycle is not the same
-question.** It is automated transmission, HM-DEC-098 says dummy load only until
-its interlocks have been *watched* firing, and giving it a button is the step
-that makes that evening possible rather than the step that follows it.
-
-*Not proposed, because it needs a ruling:* whether either gets a surface in the
-CW workspace, and if so whether the calling cycle's arrives disabled until the
-dummy-load evening has happened.
+**This is Tim's and not a session's**, under §12.1 — it touches what the display
+asserts, and HM-DEC-095 is his ruling. **It is also exactly the case his ruling
+of 2026-08-27 anticipated**: *"If any of my rulings are keeping us from doing
+something the right way, then I probably ruled in error."* This one is, and the
+evidence is four captures wide.
 
 ---
 
-**Nothing checks that deleting a surface is not deleting a capability, and this
-unit found two more instances of it.**
+**HM-DEC-120's floor is calibrated for one look and anything that maximises over
+a bank needs a different number.**
 
-That was inbound ask 22 and it is now measured rather than suspected. **The
-tests could not have caught any of the three**, because every guard in this suite
-walks the live window, and a capability with no surface is invisible to all of
-them by construction.
+That is true whatever happens to the ruling above, because **any** acquisition
+scheme that scores several candidates and takes the best is taking a maximum.
+The floor of 1.40 is sound for a single decode at a tracked pitch and says
+nothing about the best of twenty-five. **Nothing in the tree records that
+distinction** and the next session to build a search will meet it again.
 
-*Not proposed:* a check that every view model constructed by `MainWindowViewModel`
-is reachable from some binding in the markup. It would have caught all three, and
-it needs a ruling because it would also fire on view models that are legitimately
-model-only, of which HM-DEC-076's contact tracker is one by explicit ruling.
+*Not proposed, because it needs a ruling:* whether the acquisition floor becomes
+a separate, separately-measured number from the emission floor.
 
 ---
 
-**Thirteen dead `DataTemplate` blocks sit in `MainWindow.axaml` and nothing can
-tell them from live ones.**
+**Ranking is in the tree and is called by nothing.**
 
-Roughly 1,700 lines. Deleting them is not this unit's to do (§12.6) and it is
-named here because **the markup is dead rather than dormant** — and because
-`widget.send` sat there complete and unreachable for three units while three
-orders forbade building what it already contained.
+`CwPitchRanking` exists so the measurement can be re-run rather than re-argued.
+**A later session will find an engine class with no callers and may read that as
+dead code** (§10.1 warns that graph isolation is not evidence of dead code, and
+here it is not even isolation — it is a deliberate disconnection). Its
+`Winner` documentation says so in full. If Tim would rather it were deleted, it
+is one file.
 
 ### Asks still outstanding
 
-Carried forward verbatim per HM-DEC-139 and HM-DEC-140. **Twenty-four inbound
+Carried forward verbatim per HM-DEC-139 and HM-DEC-140. **Twenty-six inbound
 after this unit's closures. The oldest is open since 2026-08-14.**
 
 1. **The sweep's `invented` column counts substitutions, not invented
@@ -261,52 +273,49 @@ after this unit's closures. The oldest is open since 2026-08-14.**
 3. **`ANNUNCIATOR.md` renamed `PHASE` to `TASK` while HM-DEC-150 makes `PHASE`
    match the version's minor.**
 4. **`DECISIONS.md` has no record for HM-DEC-096–133, 136, 141 or 150** — and
-   **HM-DEC-098, which was misread three times to remove a working button, is
-   inside that range.** The cost of the missing records is now measured: a
-   capability nobody could look up, removed by orders citing the ruling that did
-   not cover it.
-5. **The tone tracker** — six axis families measured; the question is a design
-   one.
-6. **The integrator width** — settled at 45 Hz, with the sharp-peak caveat.
-7. **The guard's gap is two to one**, calibrated on two empty captures.
-8. **A boxcar's nulls made two of five swept offsets pathological best cases.**
-9. **Two stations closer than 125 Hz are not named** — the operator's own item
+   HM-DEC-095, 120, 125 and 127 are all inside it. **This unit acted on index
+   rows alone, and it is asking for one of those rulings to be amended.**
+5. **The integrator width** — settled at 45 Hz, with the sharp-peak caveat.
+6. **The guard's gap is two to one**, calibrated on two empty captures.
+7. **A boxcar's nulls made two of five swept offsets pathological best cases.**
+8. **Two stations closer than 125 Hz are not named** — the operator's own item
    five, still not attempted.
-10. **The keying meter** — its measurement found a station its verdict denied.
-11. **HM-OPEN-057** (2026-08-22) and **HM-OPEN-007** (2026-08-14).
-12. **The gate opens on everything, including two empty recordings** (1.11.18).
-13. **The joint cutter cannot find word gaps on a compressed fist** (1.11.22) —
-    the next decode question, still unruled.
-14. **The constrained margin is bounded and still does not separate** (1.11.22).
-15. **Four fixtures are absent and five acceptance lines were unmeasurable**
+9. **The keying meter** — its measurement found a station its verdict denied.
+10. **HM-OPEN-057** (2026-08-22) and **HM-OPEN-007** (2026-08-14).
+11. **The gate opens on everything, including two empty recordings** (1.11.18).
+12. **The joint cutter cannot find word gaps on a compressed fist** (1.11.22) —
+    the next decode question after this one, still unruled.
+13. **The constrained margin is bounded and still does not separate** (1.11.22).
+14. **Four fixtures are absent and five acceptance lines were unmeasurable**
     (1.11.22).
-16. **HM-DEC-086's supersession needs a record** (1.11.25).
-17. **The phrasebook's arrival and the absent-widget news are gone** (1.11.25).
-18. **The recent-places row has no home** (1.11.26), three options costed.
-19. **The owned-property list has no enforcement of staying current** (1.11.27).
-20. **A test resolved an ambiguous control by accident** (1.11.27).
-21. **A deleted widget's description was the only record of a working
-    capability**, and it took the operator to notice. **Nothing checks that a
-    deletion is not removing something in use** — now measured, above.
-22. **`013347` returns a likelihood ratio of 17.2 million**, with `001520`'s
+15. **HM-DEC-086's supersession needs a record** (1.11.25).
+16. **The phrasebook's arrival and the absent-widget news are gone** (1.11.25).
+17. **The recent-places row has no home** (1.11.26), three options costed.
+18. **The owned-property list has no enforcement of staying current** (1.11.27).
+19. **A test resolved an ambiguous control by accident** (1.11.27).
+20. **Nothing checks that deleting a surface is not deleting a capability**
+    (1.11.28) — measured on three instances.
+21. **The scanner and the calling cycle are attached to the rig with no
+    control** (1.11.28), and one of them transmits.
+22. **Thirteen dead `DataTemplate` blocks nothing can distinguish from live
+    ones** (1.11.28).
+23. **Whether every constructed view model should be reachable from a binding**
+    (1.11.28).
+24. **`013347` returns a likelihood ratio of 17.2 million**, with `001520`'s
     quadrillions. Parked, raised once.
-23. **The scanner and the calling cycle are attached to the rig with no
-    control**, above.
-24. **Thirteen dead `DataTemplate` blocks nothing can distinguish from live
-    ones**, above.
+25. **HM-DEC-095 is what stands between Hamlet and these four stations**, above.
+26. **HM-DEC-120's floor is calibrated for one look**, above.
 
-New this unit: **the scanner and the calling cycle have no surface**, above;
-**the dead templates**, above.
+New this unit: **HM-DEC-095's amendment**, above; **the floor for a maximum**,
+above; **ranking is in the tree and called by nothing**, above.
 
-Closed this unit: **the send button** — restored, wired to the one transmit path,
-and its interlocks proved. **Inbound ask 18, "engine code behind the abandoned
-widgets is unreachable"** — read in full and answered: two are capabilities,
-three do work with no output, nine were pictures.
+Closed this unit: **can decode-scoring be afforded** — yes, eighteen candidates
+at a three-second window, four at twelve. **Does ranking by what a bin reads
+choose better than clustering** — no, 0 of 4 against the strongest bin's 4 of 4.
+**What ranking costs on an empty band** — 93 characters, +3.07 over a floor that
+does not hold.
 
-Still open: **the lock's mixed help**; **three fixtures at accepted cost**; **the
-reference and port integrator difference**; **an unmeasured pitch costs `N4L`**;
-**the six-hertz window disagreement**; **the short-character bias**; **the
-Avalonia geometry offset**; **`CHANGELOG.md` at 1.9.0 against 1.11.28**; **the
-whole-file second pass**; **the squelch has no axis**; **the three morning
-captures of 2026-08-26**; **seven timing intermittents, none of which fired
-today**.
+Still open: **the lock's mixed help**; **three fixtures at accepted cost**; **an
+unmeasured pitch costs `N4L`**; **the six-hertz window disagreement**;
+**`CHANGELOG.md` at 1.9.0 against 1.11.29**; **the squelch has no axis**; **the
+three morning captures of 2026-08-26**; **seven timing intermittents**.
