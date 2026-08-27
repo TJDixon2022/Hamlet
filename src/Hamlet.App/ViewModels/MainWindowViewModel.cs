@@ -178,6 +178,13 @@ public partial class MainWindowViewModel : ObservableObject
     public IReadOnlyList<string> OperatingModes { get; } =
         new[] { "CW", "Digital", "Voice" };
 
+    /// <summary>The three tabs, each knowing whether it is the one showing.</summary>
+    /// <remarks>
+    /// See <see cref="ModeTabViewModel"/> for why selection is state on the tab
+    /// rather than a comparison done in a converter at render time.
+    /// </remarks>
+    public IReadOnlyList<ModeTabViewModel> ModeTabs { get; }
+
     /// <summary>True while the CW tab is the one showing.</summary>
     public bool IsCwMode => OperatingMode == "CW";
 
@@ -192,6 +199,13 @@ public partial class MainWindowViewModel : ObservableObject
         OnPropertyChanged(nameof(IsCwMode));
         OnPropertyChanged(nameof(IsDigitalMode));
         OnPropertyChanged(nameof(IsVoiceMode));
+
+        // The mode can be set from either end — a tab press, or code — and the
+        // tabs follow it either way.
+        foreach (var tab in ModeTabs)
+        {
+            tab.Follow(tab.Name == value);
+        }
     }
 
 
@@ -1868,6 +1882,14 @@ public partial class MainWindowViewModel : ObservableObject
     {
         _settings = settings;
         _telemetry = telemetry;
+
+        // **THE TABS BEFORE ANYTHING THAT COULD CHANGE THE MODE**, because the
+        // mode's own change handler walks them.
+        ModeTabs = OperatingModes
+            .Select(m => new ModeTabViewModel(m, name => OperatingMode = name))
+            .ToList();
+
+        ModeTabs[0].Follow(true);
 
         Bands = new ObservableCollection<BandButtonViewModel>(
             HfBands.Bands.Select(b => new BandButtonViewModel(b)));

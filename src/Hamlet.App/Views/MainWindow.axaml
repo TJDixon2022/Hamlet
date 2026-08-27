@@ -2645,23 +2645,27 @@
                      now the window's, because the tray that used to occupy a
                      column to their left is gone. -->
                 <ItemsControl Grid.Row="0" x:Name="ModeTabs"
-                              ItemsSource="{Binding OperatingModes}"
-                              Margin="0,0,0,8">
+                              ItemsSource="{Binding ModeTabs}"
+                              Margin="0,0,0,0">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <StackPanel Orientation="Horizontal" Spacing="4" />
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
-                        <DataTemplate x:DataType="x:String">
+                        <DataTemplate x:DataType="vm:ModeTabViewModel">
+                            <!-- **BOUND STRAIGHT TO THE TAB'S OWN FLAG.** It
+                                 used to go through a converter with the tab's
+                                 name passed as `ConverterParameter={Binding}`,
+                                 and a converter parameter cannot be a binding —
+                                 so it resolved to nothing, every tab read as
+                                 unchecked, and the first press wrote an empty
+                                 mode that no workspace matched. The screen went
+                                 blank and stayed blank. -->
                             <RadioButton Classes="hm-tab"
                                          GroupName="OperatingMode"
-                                         Content="{Binding}"
-                                         IsChecked="{Binding
-                                             $parent[Window].((vm:MainWindowViewModel)DataContext).OperatingMode,
-                                             Converter={x:Static ctl:ModeTabConverter.Instance},
-                                             ConverterParameter={Binding},
-                                             Mode=TwoWay}" />
+                                         Content="{Binding Name}"
+                                         IsChecked="{Binding IsSelected, Mode=TwoWay}" />
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
