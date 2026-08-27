@@ -4,8 +4,8 @@ STATE: COMPLETED
 TASK: 4 of 4
 BALL: tim
 NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-26T22:40:31-04:00
-NOTE: joint cutter ships off: it repairs ABOVE and BREEZE and loses every word space, which one anchor needs
+UPDATED: 2026-08-27T11:13:38-04:00
+NOTE: screen laid out as ruled, pitch controls off, send composes and keys nothing; engine byte-identical
 
 ---
 
