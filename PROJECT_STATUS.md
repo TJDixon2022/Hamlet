@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 6 of 8
-BALL: tim
-NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-27T18:26:28-04:00
-NOTE: tasks 3, 4 and 7 barred by task 2 disconfirming its hypothesis; the stations sit below the decoder's sensitivity at their own best pitch
+STATE: EXECUTING
+TASK: 2 of 6
+BALL: code
+NEXT_PASTE: none
+UPDATED: 2026-08-27T19:03:49-04:00
+NOTE: task 1 closed at 1852 tests and 28 failing byte-identical; running the key-up measurement that gates the rest
 
 ---
 
