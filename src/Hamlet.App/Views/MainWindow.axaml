@@ -95,6 +95,37 @@
             <Setter Property="BorderBrush" Value="{StaticResource HmAmberEdgeBrush}" />
         </Style>
 
+        <!-- **A TAB LOOKS PRESSABLE AND THE CHOSEN ONE LOOKS CHOSEN** (§0.5.1).
+             Grey is reserved for what genuinely cannot be used, so an unselected
+             tab is drawn at full strength and the selected one is filled. -->
+        <Style Selector="RadioButton.hm-tab">
+            <Setter Property="Padding" Value="16,7" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Background" Value="{StaticResource HmSlateTintBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource HmSlateEdgeBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="8,8,0,0" />
+            <Setter Property="Foreground" Value="{StaticResource HmTextPrimaryBrush}" />
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{TemplateBinding CornerRadius}"
+                            Padding="{TemplateBinding Padding}">
+                        <ContentPresenter Content="{TemplateBinding Content}"
+                                          HorizontalAlignment="Center" />
+                    </Border>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+
+        <Style Selector="RadioButton.hm-tab:checked">
+            <Setter Property="Background" Value="{StaticResource HmAmberTintBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource HmAmberEdgeBrush}" />
+        </Style>
+
         <Style Selector="Button.hm-band">
             <Setter Property="Background" Value="White" />
             <Setter Property="Foreground" Value="{StaticResource HmTextPrimaryBrush}" />
@@ -2703,7 +2734,43 @@
                     </ScrollViewer>
                 </Border>
 
-                <Panel Grid.Column="1">
+                <!-- **THE TABS BEGIN AT THE LEFT EDGE OF THE OPERATING AREA**
+                     (Tim, 2026-08-27), which is this column. Putting the strip
+                     inside it rather than across the whole row is what makes
+                     that alignment structural instead of a margin somebody has
+                     to keep in step — the tray is column nought, the operating
+                     area is column one, and the strip starts where the area
+                     starts because it is in it.
+
+                     **AND THE HEADER IS NOT IN HERE**, which is the other half.
+                     Everything above the divider sits outside this grid
+                     entirely, so a mode change cannot re-create it. That is the
+                     point of the divider and a test holds it. -->
+                <Grid Grid.Column="1" RowDefinitions="Auto,*">
+
+                    <ItemsControl Grid.Row="0" x:Name="ModeTabs"
+                                  ItemsSource="{Binding OperatingModes}"
+                                  Margin="0,0,0,8">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal" Spacing="4" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="x:String">
+                                <RadioButton Classes="hm-tab"
+                                             GroupName="OperatingMode"
+                                             Content="{Binding}"
+                                             IsChecked="{Binding
+                                                 $parent[Window].((vm:MainWindowViewModel)DataContext).OperatingMode,
+                                                 Converter={x:Static ctl:ModeTabConverter.Instance},
+                                                 ConverterParameter={Binding},
+                                                 Mode=TwoWay}" />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <Panel Grid.Row="1">
 
                     <ScrollViewer x:Name="CanvasView"
                                   VerticalScrollBarVisibility="Visible"
@@ -2884,6 +2951,7 @@
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
                 </Panel>
+                </Grid>
             </Grid>
         </Grid>
 

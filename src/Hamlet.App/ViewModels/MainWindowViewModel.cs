@@ -159,6 +159,26 @@ public partial class MainWindowViewModel : ObservableObject
     private RigSpectrumSource? _rigSpectrum;
     private int _lastNewSpotCount;
 
+    /// <summary>
+    /// Which mode the operating area is showing — CW, Digital or Voice.
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE HEADER DOES NOT READ THIS AND THAT IS THE POINT** (Tim's
+    /// ruling of 2026-08-27). The band plan, the neighborhood and the radio are
+    /// the same in every mode and sit above the divider, so they are outside the
+    /// tab region entirely and cannot be re-created when this changes. A test
+    /// holds that, because it is the kind of thing a later layout edit undoes
+    /// without anybody noticing.</para>
+    /// <para>The tray is outside the tab region too: the widgets are shared
+    /// across modes and are dragged onto whichever panel is showing.</para>
+    /// </remarks>
+    [ObservableProperty]
+    private string _operatingMode = "CW";
+
+    /// <summary>The three modes the operating area offers.</summary>
+    public IReadOnlyList<string> OperatingModes { get; } =
+        new[] { "CW", "Digital", "Voice" };
+
     /// <summary>True when "Best chance" is the lens in use.</summary>
     [ObservableProperty]
     private bool _isBestChance = true;
