@@ -36,6 +36,19 @@
         <Color x:Key="HmSlateEdge">#D5CFC0</Color>
 
         <SolidColorBrush x:Key="HmBackgroundBrush" Color="{StaticResource HmBackground}" />
+
+        <!-- **PANEL BODIES ARE WHITE ON WARM PAPER** (HM-DEC-012), and until now
+             that colour existed only as the literal `White` inside
+             `CollapsiblePanel`'s theme. Unit 1.11.24 wrote
+             `{StaticResource HmPanelBrush}` for the Receive panel and unit
+             1.11.26 for the workspace boundary, and **neither resolved**:
+             Avalonia leaves an unfound `StaticResource` as no brush at all
+             rather than failing, so both surfaces have been drawing with no
+             background and nothing said so.
+
+             Named here so there is one panel surface rather than a literal in
+             one control theme and two dangling references. -->
+        <SolidColorBrush x:Key="HmPanelBrush" Color="White" />
         <SolidColorBrush x:Key="HmTextPrimaryBrush" Color="{StaticResource HmTextPrimary}" />
         <SolidColorBrush x:Key="HmTextMutedBrush" Color="{StaticResource HmTextMuted}" />
 

@@ -106,6 +106,7 @@
             <Setter Property="BorderBrush" Value="{StaticResource HmSlateEdgeBrush}" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="CornerRadius" Value="8,8,0,0" />
+            <Setter Property="Margin" Value="0,3,0,0" />
             <Setter Property="Foreground" Value="{StaticResource HmTextPrimaryBrush}" />
             <Setter Property="Template">
                 <ControlTemplate>
@@ -121,9 +122,16 @@
             </Setter>
         </Style>
 
+        <!-- **THE SELECTED TAB MERGES INTO THE SPACE IT CONTROLS** (Tim,
+             2026-08-27). Same fill and same edge as the boundary below it, and
+             no bottom border, so the two read as one shape rather than as a
+             button sitting above a box. It overlaps the boundary's top edge by
+             one pixel so no hairline shows through between them. -->
         <Style Selector="RadioButton.hm-tab:checked">
-            <Setter Property="Background" Value="{StaticResource HmAmberTintBrush}" />
-            <Setter Property="BorderBrush" Value="{StaticResource HmAmberEdgeBrush}" />
+            <Setter Property="Background" Value="{StaticResource HmPanelBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource HmSlateEdgeBrush}" />
+            <Setter Property="BorderThickness" Value="1,1,1,0" />
+            <Setter Property="Margin" Value="0,0,0,-1" />
         </Style>
 
         <Style Selector="Button.hm-band">
@@ -2670,12 +2678,35 @@
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
 
+                <!-- **THE TAB OWNS THE SPACE BELOW IT, AND IT HAS TO LOOK
+                     LIKE IT** (Tim's ruling of 2026-08-27: *"Everything below
+                     the CW Digital and Voice is the workspace canvas. That space
+                     is bounded by the controlling tab. It needs to be obvious to
+                     the user."*).
+
+                     The tabs sit on the top edge of this border and the selected
+                     one merges into it: same fill, same edge colour, and its
+                     bottom border removed so the two are one shape. An
+                     unselected tab keeps all four edges and reads as a separate
+                     thing you could press.
+
+                     **THE REGION IS THE SAME WHICHEVER TAB IS SELECTED**, which
+                     is what makes it read as a space rather than as three
+                     panels. What changes is only what is inside it. -->
+                <Border Grid.Row="1" x:Name="WorkspaceBoundary"
+                        Background="{StaticResource HmPanelBrush}"
+                        BorderBrush="{StaticResource HmSlateEdgeBrush}"
+                        BorderThickness="1"
+                        CornerRadius="0,8,8,8"
+                        Padding="12">
+                    <Panel>
+
                 <!-- **THE CW WORKSPACE IS ONE PIECE**: Send on the left,
                      Receive on the right, nothing else in it. Neither is a
                      widget: not removable, not draggable, not closable, and in
                      no catalogue. Tim: *"Makes no sense to have a CW workspace
                      without at least those two elements."* -->
-                <Grid Grid.Row="1" x:Name="CwWorkspace"
+                <Grid x:Name="CwWorkspace"
                       ColumnDefinitions="Auto,*"
                       IsVisible="{Binding IsCwMode}">
 
@@ -2730,11 +2761,13 @@
                      each a line naming what would live there, and a line that
                      changes nothing is decoration: a tab that does not change
                      the screen is not a tab. -->
-                <Grid Grid.Row="1" x:Name="DigitalWorkspace"
+                <Grid x:Name="DigitalWorkspace"
                       IsVisible="{Binding IsDigitalMode}" />
 
-                <Grid Grid.Row="1" x:Name="VoiceWorkspace"
+                <Grid x:Name="VoiceWorkspace"
                       IsVisible="{Binding IsVoiceMode}" />
+                    </Panel>
+                </Border>
             </Grid>
         </Grid>
 
