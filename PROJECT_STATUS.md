@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 2 of 9
-BALL: tim
-NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-27T17:33:07-04:00
-NOTE: stopped at task two of nine; three observations agree the unit regressed nothing, and no full run completed to print a total
+STATE: EXECUTING
+TASK: 2 of 8
+BALL: code
+NEXT_PASTE: none
+UPDATED: 2026-08-27T18:18:07-04:00
+NOTE: the completed run is in at 1854 total and 28 failing byte-identical; building the dilution measurement that decides tasks 3 and 4
 
 ---
 

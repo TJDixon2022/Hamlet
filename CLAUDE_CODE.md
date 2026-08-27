@@ -1,6 +1,6 @@
 # CLAUDE_CODE.md
 
-**Version 1.6. This file is byte-identical in every project.**
+**Version 1.7. This file is byte-identical in every project.**
 
 It governs how a Claude Code prompt is built, delivered, executed and reported.
 It does not govern the work itself.
@@ -81,6 +81,27 @@ mechanism, not the `XD` exclusion list. **The README records why each of those
 cost a round to get right**, including the exclusion parity with the listing
 script — change one and the arrival check compares two different views of the
 tree and reports differences that are not real.
+
+### Where the templates live
+
+**Both templates — `get-files.template.bat` and §5's
+`extract-gate.template.bat` — are in project knowledge, and that is the copy the
+session reads.** It is the only one available at turn one, before any harvest has
+run, and it is what generates the script that fetches everything else.
+
+**A copy of each also lives at `tools\templates\` in every repository**, pushed
+by the standards distribution script and verified byte-identical across all
+roots. That copy is not what the session reads. It exists because project
+knowledge is five separate stores that nothing on the owner's machine can write
+to or compare, so **a template corrected in one project is corrected in one
+project and nowhere else, silently.** The repository copy is the one a machine
+can check.
+
+**Where the harvested copy and project knowledge disagree, the session says so**
+and uses project knowledge, because that is the copy it was handed. Drift then
+surfaces on the first turn of the next conversation instead of never. **A
+template is not distributed until both are updated** — the file-list block for a
+conversation start includes `tools\templates\` for this reason.
 
 For a conversation start the block is the root `.md` files. The project's own
 `CLAUDE.md` may name more; where it does, it wins under §0's specificity floor.
@@ -399,6 +420,15 @@ The owner puts it in Downloads beside the zip and double-clicks it; it resolves
 §4.1's four checks against the root by filesystem, refuses without touching the
 zip if they do not all hold, and extracts only if they do.
 
+**It then stamps every extracted file with the receiving machine's clock.** Zip
+entries carry the timestamps of the machine that built them, and a delivery built
+on a machine running ahead lands with a future mtime. A `WORK_INSTRUCTIONS.md`
+dated tomorrow is permanently newer than any report beside it — which left a
+panel showing a delivered card whose review control never came alive, on two
+projects at once. **The clock is read on the machine that owns the tree**, never
+composed and never taken from the zip. The stamping step is part of the canonical
+script and is not one of the three edits above.
+
 The four checks are the work instruction's, unchanged. **The same gate runs
 twice** — once against Tim's hands before extraction, once against the session's
 attention after — and the second is worth nothing without the first, because
@@ -649,6 +679,23 @@ Each has happened. Each is cheap to avoid and expensive to find.
   two machines, and §5's answer was a naming convention — the thing §4.1 rejects in
   its own last line. **The gate now runs before the extraction, from outside the
   zip.**
+- **A delivery landing with a future timestamp.** Zip entries carry the clock of
+  the machine that built them, not the one receiving them. A `WORK_INSTRUCTIONS.md`
+  dated tomorrow is permanently newer than any report beside it, and a panel
+  comparing the two showed a delivered card whose review control never came alive —
+  on two projects at once, for a day, with no error anywhere. **The gate stamps
+  what it extracts.**
+- **A template corrected in one project and nowhere else.** Project knowledge is
+  one store per project, unreachable and uncomparable from the owner's machine, so
+  a fix to a canonical script is a fix in one of five. Nothing detects the other
+  four. **The repository copy exists to be checked**, and a session that reads a
+  harvested template different from the one it was handed says so.
+- **A standard edited from a stale copy.** A session read `CLAUDE_CODE.md` at the
+  start of a conversation, the owner advanced it four versions during that
+  conversation, and the session then generated two new versions from the copy it
+  had first read — each of which would have overwritten the newer file in all five
+  roots on distribution. **The version line is the handle and it only works if it
+  is re-read**, not remembered from the top of a conversation.
 - **A filename without its sequence number.** `-tonight-` and `-456-` shipped in one
   evening. The number was in §5's example and in none of its prose — the same
   failure as naming an outcome instead of an artifact, one level down, and in the
