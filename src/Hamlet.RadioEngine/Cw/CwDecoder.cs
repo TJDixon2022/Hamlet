@@ -286,7 +286,10 @@ public sealed class CwDecoder
         (double)_tracker.Guard.BlockedHops * _tracker.HopSamples / SampleRate,
         Competitor: _tracker.Competitor,
         PitchWasMeasured: _tracker.HasMeasuredPitch,
-        PitchWasAsserted: _asserted);
+        PitchWasAsserted: _asserted,
+        PitchChoice: _asserted
+            ? CwPitchChoice.OperatorAssertion
+            : _tracker.PitchChoice);
 
     /// <summary>Everything inside the decision delay, handed over whole.</summary>
     /// <remarks>

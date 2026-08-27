@@ -50,6 +50,17 @@ namespace Hamlet.RadioEngine.Cw;
 /// **Null says the survey did not find one and never that the frequency is
 /// clear** (HM-DEC-009).
 /// </param>
+/// <param name="PitchChoice">
+/// How <see cref="ToneHz"/> came to be chosen — from keying, from the strongest
+/// bin, from the operator, or not at all.
+/// </param>
+/// <remarks>
+/// **`PitchWasMeasured` AND `PitchChoice` ANSWER DIFFERENT QUESTIONS AND BOTH
+/// ARE KEPT.** The first says whether keying was found, which is the claim
+/// §0.0 cares about; the second says which of four things supplied the number.
+/// A pitch chosen because its bin was loudest is not measured and is also not
+/// nothing, and before this there was no way to say so.
+/// </remarks>
 public readonly record struct CwDecodeReport(
     AudioLevel Level,
     double ToneHz,
@@ -65,7 +76,8 @@ public readonly record struct CwDecodeReport(
     bool WordSpacingUnmeasured = false,
     CwCompetitor? Competitor = null,
     bool PitchWasMeasured = false,
-    bool PitchWasAsserted = false)
+    bool PitchWasAsserted = false,
+    CwPitchChoice PitchChoice = CwPitchChoice.NotChosen)
 {
     /// <summary>
     /// How far above the band a tone has to stand before it is worth mentioning.

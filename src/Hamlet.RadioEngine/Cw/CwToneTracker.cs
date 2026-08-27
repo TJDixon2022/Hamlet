@@ -371,6 +371,17 @@ public sealed class CwToneTracker
     /// <summary>What is reported as the tone, which is not the instant winner.</summary>
     private double _reportedHz = double.NaN;
 
+    /// <summary>
+    /// The pitch the strongest bin chose at acquisition, or NaN.
+    /// </summary>
+    /// <remarks>
+    /// **KEPT APART FROM `_reportedHz` ON PURPOSE.** That one means keying the
+    /// survey admitted and it is what `HasMeasuredPitch` answers from; this one
+    /// means the loudest bin in the band and nothing more. Folding them together
+    /// would make the sheet claim a measurement nobody took (§0.0).
+    /// </remarks>
+    private double _chosenHz = double.NaN;
+
     /// <summary>A move that is waiting for the character in progress to end.</summary>
     private double _heldSwitchHz = double.NaN;
 
@@ -512,9 +523,27 @@ public sealed class CwToneTracker
     /// survey found the keying, which is a measurement over three seconds, and
     /// the middle of the bank until it has one.
     /// </remarks>
-    public double ToneHz => double.IsNaN(_reportedHz)
-        ? _fineHz[_fineHz.Length / 2]
-        : _reportedHz;
+    /// <remarks>
+    /// **THREE RUNGS SINCE 2026-08-27, AND THE MIDDLE ONE IS NEW.** Keying the
+    /// survey admitted still wins. Below it now sits the bin the strongest-bin
+    /// rule chose, by Tim's ruling of that date; below that, the bank centre,
+    /// which is a starting point and not a finding.
+    /// </remarks>
+    public double ToneHz => !double.IsNaN(_reportedHz)
+        ? _reportedHz
+        : !double.IsNaN(_chosenHz)
+            ? _chosenHz
+            : _fineHz[_fineHz.Length / 2];
+
+    /// <summary>How the pitch being reported came to be chosen.</summary>
+    /// <remarks>
+    /// **THE SHEET RECORDS THE PROVENANCE AND NOT ONLY THE NUMBER** (§0.0.1,
+    /// work instruction 033 task 8). A pitch found from keying, a pitch chosen
+    /// because its bin was loudest, and a pitch the operator supplied are three
+    /// different claims, and until this existed the sheet could only tell the
+    /// first from the rest.
+    /// </remarks>
+    public CwPitchChoice PitchChoice { get; private set; } = CwPitchChoice.NotChosen;
 
     /// <summary>True once a pitch has actually been measured from keying.</summary>
     /// <remarks>
@@ -773,6 +802,8 @@ public sealed class CwToneTracker
     public void Forget()
     {
         _reportedHz = double.NaN;
+        _chosenHz = double.NaN;
+        PitchChoice = CwPitchChoice.NotChosen;
         _lastKeyedHz = double.NaN;
         _readingDb = double.NaN;
         _survey.Reset();
@@ -1146,17 +1177,39 @@ public sealed class CwToneTracker
             // moving the filter, not about why it is being moved: a character
             // finished from a different part of the band is a letter nobody sent
             // however the move came to be made.
+            // **AND THE STRONGEST BIN NOW CHOOSES, NOT ONLY POINTS** (Tim's
+            // ruling of 2026-08-27, amending HM-DEC-095). Eight statistics were
+            // measured against choosing a pitch by how it is keyed and all eight
+            // were wrong on the four captures he can hear, while the strongest
+            // bin was right on all four. So keying structure is demoted from the
+            // chooser to a check on the winner.
+            //
+            // **THE CHOICE IS RECORDED AS A CHOICE AND NOT AS A MEASUREMENT.**
+            // `HasMeasuredPitch` still means keying the survey admitted and it
+            // stays false here, because a loud bin is where to point the filter
+            // and is not evidence that anybody is sending (§0.0). What the sheet
+            // gains is `PitchChoice`, which says which of the two it was.
             if (!MidCharacter
                 && double.IsNaN(_lastKeyedHz)
-                && coarse.Strongest is { } loudest
-                && Math.Abs(loudest.ToneHz - _fineHz[_fineHz.Length / 2]) > FineReachHz)
+                && coarse.Strongest is { } loudest)
             {
-                CenterFineBank(loudest.ToneHz);
-                _fineSurvey.Reset();
-                _tracked = _fineHz.Length / 2;
-                _reportedHz = double.NaN;
-                Retunes++;
-                Follows++;
+                if (Math.Abs(loudest.ToneHz - _fineHz[_fineHz.Length / 2]) > FineReachHz)
+                {
+                    CenterFineBank(loudest.ToneHz);
+                    _fineSurvey.Reset();
+                    _tracked = _fineHz.Length / 2;
+                    _reportedHz = double.NaN;
+                    Retunes++;
+                    Follows++;
+                }
+
+                // **POINT AT THE LOUDEST BIN, NOT AT WHATEVER THE BANK IS
+                // CENTRED ON.** Before the ruling the centre was taken and the
+                // bin structure inside the bank was ignored, which is how a
+                // station sitting fifty hertz off a bank centre was decoded at
+                // the centre and read as noise.
+                _chosenHz = loudest.ToneHz;
+                PitchChoice = CwPitchChoice.StrongestBin;
             }
 
             return;
@@ -1269,6 +1322,7 @@ public sealed class CwToneTracker
             _tracked = NearestFine(exact.ToneHz);
 
             _reportedHz = exact.ToneHz;
+            PitchChoice = CwPitchChoice.Keying;
             KeyingFoundAt(exact.ToneHz);
             Verdict = new ToneVerdict(exact, Filtered(coarse.Interference));
             return;
@@ -1276,6 +1330,7 @@ public sealed class CwToneTracker
 
         _tracked = NearestFine(keyed.ToneHz);
         _reportedHz = keyed.ToneHz;
+        PitchChoice = CwPitchChoice.Keying;
         Verdict = new ToneVerdict(keyed, Filtered(coarse.Interference));
     }
 
@@ -1333,6 +1388,7 @@ public sealed class CwToneTracker
         _tracked = _fineHz.Length / 2;
 
         _reportedHz = toneHz;
+        PitchChoice = CwPitchChoice.Keying;
         KeyingFoundAt(toneHz);
         Retunes++;
 
