@@ -57,7 +57,14 @@ public sealed class ViewTestsActThroughControlsTests
     private static readonly (string Property, string Control)[] Owned =
     {
         ("OperatingMode", "the CW / Digital / Voice tab strip"),
-        ("SendText", "the send line's text box"),
+
+        // **`SendText` RETIRED HERE ON 2026-08-27**, because the property it
+        // named no longer exists. Unit 1.11.24's send line was a box nothing
+        // transmitted; the send button that came back carries the operator's
+        // own line, and that line is what the text box now edits. An entry
+        // naming a property nobody has is not harmless — it reads as coverage.
+        ("OwnWords.Message", "the send line's text box"),
+
         ("IsBestChance", "the best-chance lens button"),
         ("IsWhatsNew", "the what's-new lens button"),
     };

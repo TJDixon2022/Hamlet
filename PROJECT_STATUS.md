@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 5 of 5
-BALL: tim
-NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-27T15:18:46-04:00
-NOTE: seven writes converted, two guards shipped with their limits stated; Tim's Send panel work is not in this tree
+STATE: EXECUTING
+TASK: 4 of 5
+BALL: code
+NEXT_PASTE: none
+UPDATED: 2026-08-27T15:46:24-04:00
+NOTE: eleven interlocks accounted for: ten refusals proved, one shown unreachable for Morse across 28,105 frequencies, and the button asked through CanExecute rather than pressed
 
 ---
 

@@ -329,4 +329,75 @@ public sealed class TheSendPanelComposesAndDoesNotKeyTests
             Assert.Same(model.Transmit.OwnWords, send.CommandParameter);
         });
     }
+
+    /// <remarks>
+    /// <para>**PROVES THE INTERLOCKS REACH THE CONTROL**, which is the half of
+    /// the guard the engine tests cannot see. `EveryInterlockStillRefusesTests`
+    /// proves the readiness check refuses; this proves a refusal arrives at the
+    /// button the operator's hand is on.</para>
+    /// <para>No radio is connected on this machine, so the first interlock —
+    /// nothing to send with — is the live one, and it is the honest case to
+    /// assert here rather than a contrived one.</para>
+    /// <para>**THE BUTTON IS ASKED, NEVER PRESSED.** `CanExecute` is what decides
+    /// whether a press does anything, so asking it is asking the interlock.
+    /// Pressing is what Tim does at the rig (§0.2).</para>
+    /// </remarks>
+    [AvaloniaFact]
+    public void ARefusedSendReachesTheButtonAndSaysWhy()
+    {
+        With((window, model) =>
+        {
+            // Arranging state that arrives from the radio, which has no control
+            // behind it: the operator cannot press a radio into being absent.
+            model.Transmit.Refresh();
+
+            Settle(window);
+
+            var send = Send(window)!
+                .GetVisualDescendants()
+                .OfType<Button>()
+                .First(b => b.Name == "TransmitButton");
+
+            _output.WriteLine(
+                $"canSend={model.Transmit.CanSend}, "
+                + $"isRefusal={model.Transmit.IsRefusal}, "
+                + $"enabled={send.IsEnabled}, "
+                + $"effectively={send.IsEffectivelyEnabled}");
+            _output.WriteLine($"says: {model.Transmit.Status}");
+
+            Assert.False(
+                model.Transmit.CanSend,
+                "nothing is connected and the panel thinks it may send");
+
+            Assert.False(
+                send.Command?.CanExecute(send.CommandParameter) ?? false,
+                "the send button would act with no radio behind it");
+
+            // **`IsEffectivelyEnabled` AND NOT `IsEnabled`**, which is the same
+            // trap unit 1.11.25 recorded for visibility and it caught this test
+            // on its first run. `IsEnabled` is the local value nobody has set,
+            // so it reads true forever; what a command's `CanExecute` drives is
+            // the effective one, and the effective one is what the operator's
+            // hand meets.
+            Assert.False(
+                send.IsEffectivelyEnabled,
+                "the send button is live while the interlock refuses");
+
+            // **AND THE REFUSAL PRINTS ITS REASON** (HM-DEC-080). A grey button
+            // with nothing beside it is the fault Tim reported three times.
+            Assert.True(
+                model.Transmit.IsRefusal,
+                "the send is refused and the panel does not call it a refusal");
+
+            var said = string.Join(" ", Send(window)!
+                .GetVisualDescendants()
+                .OfType<TextBlock>()
+                .Where(t => t.IsEffectivelyVisible)
+                .Select(t => t.Text)
+                .Where(t => t is not null));
+
+            Assert.Contains(
+                model.Transmit.Status, said, StringComparison.Ordinal);
+        });
+    }
 }
