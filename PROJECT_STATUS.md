@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
-TASK: 3 of 4
-BALL: code
-NEXT_PASTE: none
-UPDATED: 2026-08-26T22:16:29-04:00
-NOTE: measuring the constrained margin the cutter produces, correct characters against pileup
+STATE: COMPLETED
+TASK: 4 of 4
+BALL: tim
+NEXT_PASTE: OUTPUT.md -> Claude Web
+UPDATED: 2026-08-26T22:40:31-04:00
+NOTE: joint cutter ships off: it repairs ABOVE and BREEZE and loses every word space, which one anchor needs
 
 ---
 
