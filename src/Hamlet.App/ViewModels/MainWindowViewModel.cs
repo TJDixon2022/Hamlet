@@ -229,7 +229,11 @@ public partial class MainWindowViewModel : ObservableObject
     {
         var mine = _settings.Operator.Callsign?.Trim();
 
-        SendText = string.IsNullOrWhiteSpace(mine)
+        // **THE MACROS FILL THE LINE THE SEND BUTTON SENDS** (Tim, 2026-08-27).
+        // `SendText` used to be a box of its own that nothing transmitted; the
+        // line is `Transmit.OwnWords.Message` now, which is what `PressCommand`
+        // puts on the air.
+        Transmit.OwnWords.Message = string.IsNullOrWhiteSpace(mine)
             ? "CQ CQ DE ... ... K"
             : $"CQ CQ DE {mine} {mine} K";
     }
@@ -242,11 +246,12 @@ public partial class MainWindowViewModel : ObservableObject
     /// than as a measurement of anything.
     /// </remarks>
     [RelayCommand]
-    private void ComposeRst() => SendText = "RST 599 599";
+    private void ComposeRst() => Transmit.OwnWords.Message = "RST 599 599";
 
     /// <summary>Put a sign-off in the send line.</summary>
     [RelayCommand]
-    private void ComposeSeventyThree() => SendText = "73 TU E E";
+    private void ComposeSeventyThree()
+        => Transmit.OwnWords.Message = "73 TU E E";
 
     /// <summary>Clear the send line.</summary>
     /// <remarks>
@@ -256,7 +261,7 @@ public partial class MainWindowViewModel : ObservableObject
     /// button, so it clears the line and the panel states plainly what it does.
     /// </remarks>
     [RelayCommand]
-    private void ComposeClear() => SendText = "";
+    private void ComposeClear() => Transmit.OwnWords.Message = "";
 
     /// <summary>True when "Best chance" is the lens in use.</summary>
     [ObservableProperty]

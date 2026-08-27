@@ -452,6 +452,36 @@ public sealed partial class CwTransmitViewModel : ObservableObject
     /// <summary>What Hamlet is offering to send, right now.</summary>
     public ObservableCollection<SendButtonViewModel> Options { get; }
 
+    /// <summary>
+    /// The operator's own line, sent through the same route the options use.
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE SEND BUTTON CAME BACK AND THIS IS WHAT IT PRESSES** (Tim's
+    /// ruling of 2026-08-27: *"I've sent with it hundreds of times. It worked
+    /// great."*). Work instructions 026, 027 and 028 each forbade wiring Send to
+    /// the transmitter, citing §0.2 and HM-DEC-098 as though the interlock work
+    /// were still ahead of the project. **HM-DEC-098 governs the automated
+    /// cycle** — unattended repeating transmission, dummy load only.
+    /// **HM-DEC-059 authorises the operator keying by hand**, and always did:
+    /// *"Hamlet keys the radio and sends Morse, by handing text to the radio's
+    /// own keyer with CI-V 17."*</para>
+    /// <para>**IT IS A `SendButtonViewModel` AND NOT A SECOND PATH**, which is
+    /// the whole point. Everything an option gets — the readiness check, the
+    /// guard, the transmit watch, the chain report, the abort, the telemetry —
+    /// this gets, because it goes through `PressCommand` exactly as an option
+    /// does. There is one door to the transmitter and this is not another one
+    /// (HM-DEC-059).</para>
+    /// <para>Its stage is `Calling`, which is what the operator is doing when he
+    /// writes his own line, and its label is the button's own face.</para>
+    /// </remarks>
+    public SendButtonViewModel OwnWords { get; } = new(
+        new SendOption(
+            ContactStage.Calling,
+            "Send",
+            "",
+            "Whatever you have written on the line.",
+            ""));
+
     /// <summary>Where the contact has got to.</summary>
     [ObservableProperty]
     private ContactStage _stage = ContactStage.Calling;

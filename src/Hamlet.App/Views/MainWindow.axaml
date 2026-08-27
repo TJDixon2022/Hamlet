@@ -95,6 +95,33 @@
             <Setter Property="BorderBrush" Value="{StaticResource HmAmberEdgeBrush}" />
         </Style>
 
+        <!-- **THE ONE THAT KEYS THE RADIO LOOKS DIFFERENT FROM THE ONES THAT
+             DO NOT** (Tim's ruling of 2026-08-27, and §0.5.1). Send is filled
+             amber, which is this application's colour for Morse and for the
+             transmitter; Clear is an action rather than a message and is drawn
+             apart from the macros beside it; and the macros are ordinary buttons
+             because filling a line is an ordinary thing.
+
+             **GREY IS RESERVED FOR REFUSED** (HM-DEC-080), so neither of these
+             is dimmed for any other reason, and a refusal always prints why. -->
+        <Style Selector="Button.hm-send">
+            <Setter Property="Background" Value="{StaticResource HmAmberBrush}" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+        </Style>
+
+        <Style Selector="Button.hm-send:disabled">
+            <Setter Property="Background" Value="{StaticResource HmSlateTintBrush}" />
+            <Setter Property="Foreground" Value="{StaticResource HmTextMutedBrush}" />
+        </Style>
+
+        <Style Selector="Button.hm-clear">
+            <Setter Property="Background" Value="{StaticResource HmSlateTintBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource HmSlateEdgeBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Foreground" Value="{StaticResource HmTextMutedBrush}" />
+        </Style>
+
         <!-- **A TAB LOOKS PRESSABLE AND THE CHOSEN ONE LOOKS CHOSEN** (§0.5.1).
              Grey is reserved for what genuinely cannot be used, so an unselected
              tab is drawn at full strength and the selected one is filled. -->
@@ -2600,22 +2627,50 @@
                       IsVisible="{Binding IsCwMode}">
 
                     <Border Grid.Column="0" x:Name="SendPanel"
-                            Width="300" Margin="0,0,10,0"
+                            Width="320" Margin="0,0,10,0"
                             VerticalAlignment="Top"
                             Padding="12" CornerRadius="8"
                             Background="{StaticResource HmSlateTintBrush}"
                             BorderBrush="{StaticResource HmSlateEdgeBrush}"
                             BorderThickness="1">
                         <StackPanel Spacing="8">
-                            <TextBlock Text="Send" FontSize="13"
-                                       FontWeight="SemiBold"
-                                       Foreground="{StaticResource HmTextPrimaryBrush}" />
 
-                            <TextBox Text="{Binding SendText, Mode=TwoWay}"
+                            <!-- **SEND AND CLEAR SIT BESIDE THE TITLE** (Tim's
+                                 ruling of 2026-08-27), so what transmits is
+                                 visually apart from what composes. Clear is an
+                                 action rather than a message and is coloured as
+                                 one. -->
+                            <Grid ColumnDefinitions="*,Auto,Auto">
+                                <TextBlock Grid.Column="0" Text="Send"
+                                           FontSize="13" FontWeight="SemiBold"
+                                           VerticalAlignment="Center"
+                                           Foreground="{StaticResource HmTextPrimaryBrush}" />
+
+                                <!-- **THIS KEYS THE RADIO** (HM-DEC-059), through
+                                     `PressCommand` — the same door the contextual
+                                     options use, with the same readiness check,
+                                     the same guard, the same abort and the same
+                                     record. There is not a second path to the
+                                     transmitter and this is not one. -->
+                                <Button Grid.Column="1" x:Name="TransmitButton"
+                                        Classes="hm-send"
+                                        Content="Send" FontSize="12"
+                                        Padding="16,5" Margin="0,0,6,0"
+                                        Command="{Binding Transmit.PressCommand}"
+                                        CommandParameter="{Binding Transmit.OwnWords}" />
+
+                                <Button Grid.Column="2" Classes="hm-clear"
+                                        Content="Clear" FontSize="12"
+                                        Padding="12,5"
+                                        Command="{Binding ComposeClearCommand}" />
+                            </Grid>
+
+                            <TextBox Text="{Binding Transmit.OwnWords.Message, Mode=TwoWay}"
                                      AcceptsReturn="False"
                                      Watermark="what you would send"
                                      FontSize="13" />
 
+                            <!-- The macros fill the line; they do not send. -->
                             <StackPanel Orientation="Horizontal" Spacing="6">
                                 <Button Content="CQ" FontSize="12" Padding="12,5"
                                         Command="{Binding ComposeCqCommand}" />
@@ -2623,15 +2678,24 @@
                                         Command="{Binding ComposeRstCommand}" />
                                 <Button Content="73" FontSize="12" Padding="12,5"
                                         Command="{Binding ComposeSeventyThreeCommand}" />
-                                <Button Content="Clear" FontSize="12" Padding="12,5"
-                                        Command="{Binding ComposeClearCommand}" />
                             </StackPanel>
 
-                            <!-- **A BUTTON THAT LOOKS LIVE AND IS NOT IS WORSE
-                                 THAN NO BUTTON** (§0.5.1, §0.0). -->
+                            <!-- **WHY IT WILL NOT SEND, WHEN IT WILL NOT** — the
+                                 readiness reason, in the operator's words rather
+                                 than a greyed button with nothing to say
+                                 (§0.5.1, HM-DEC-080). -->
+                            <TextBlock Text="{Binding Transmit.Status}"
+                                       IsVisible="{Binding Transmit.IsRefusal}"
+                                       TextWrapping="Wrap" FontSize="11"
+                                       Foreground="{StaticResource HmAmberBrush}" />
+
+                            <!-- **WHAT EACH ONE DOES**, in the application's own
+                                 voice (§0.7). The paragraph that used to sit here
+                                 said nothing leaves the radio, which stopped
+                                 being true the moment the button came back. -->
                             <TextBlock TextWrapping="Wrap" FontSize="11"
-                                       Text="This composes what you would send and nothing leaves the radio. Keying is a separate ruling, taken once every interlock has been watched to fire into a dummy load."
-                                       Foreground="{StaticResource HmTextMutedBrush}" />
+                                       Foreground="{StaticResource HmTextMutedBrush}"
+                                       Text="CQ tells the band you are looking for a conversation and puts your callsign on it. RST is the signal report, which is your honest word on how well you are hearing the other station. 73 is how a contact ends, and it means best wishes. Clear empties the line and sends nothing. Send puts what is on the line on the air." />
                         </StackPanel>
                     </Border>
 
