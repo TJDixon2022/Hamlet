@@ -3000,6 +3000,18 @@
                 </Panel>
                     </Grid>
 
+                    <!-- **THE OTHER TWO TABS SAY WHAT WILL LIVE THERE**
+                         (Tim, 2026-08-27). They were blank, which reads as
+                         broken rather than as unbuilt. One line each and no
+                         controls: a placeholder panel would be a promise the
+                         screen cannot keep (§0.0). -->
+                    <TextBlock Grid.Column="0" x:Name="ComingHere"
+                               IsVisible="{Binding !IsCwMode}"
+                               VerticalAlignment="Top" Margin="4,8,0,0"
+                               FontSize="13" TextWrapping="Wrap"
+                               Text="{Binding ModeIsComing}"
+                               Foreground="{StaticResource HmTextMutedBrush}" />
+
                     <Border Grid.Column="1" x:Name="SendPanel"
                             Width="280" Margin="10,0,0,0"
                             VerticalAlignment="Top"

@@ -183,7 +183,28 @@ public partial class MainWindowViewModel : ObservableObject
     public bool IsCwMode => OperatingMode == "CW";
 
     partial void OnOperatingModeChanged(string value)
-        => OnPropertyChanged(nameof(IsCwMode));
+    {
+        OnPropertyChanged(nameof(IsCwMode));
+        OnPropertyChanged(nameof(ModeIsComing));
+    }
+
+    /// <summary>
+    /// What will live on this tab, on the two that have nothing yet.
+    /// </summary>
+    /// <remarks>
+    /// **A BLANK TAB READS AS BROKEN RATHER THAN AS UNBUILT** (Tim, 2026-08-27).
+    /// One sentence and no controls: a placeholder panel would be a promise the
+    /// screen cannot keep, and this application does not put shapes on a page to
+    /// stand in for work that has not been done (§0.0).
+    /// </remarks>
+    public string ModeIsComing => OperatingMode switch
+    {
+        "Digital" => "FT8, RTTY, PSK31 and JS8 will be read here, with the "
+            + "waterfall showing you where they are sitting. Phase 3.",
+        "Voice" => "SSB, AM and FM will live here, with the things worth having "
+            + "on a voice contact rather than a Morse one. Phase 4.",
+        _ => "",
+    };
 
     /// <summary>What the operator has composed to send.</summary>
     /// <remarks>
