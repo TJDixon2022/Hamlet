@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 5 of 5
-BALL: tim
-NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-27T16:10:15-04:00
-NOTE: send button restored and its interlocks proved; two more live capabilities found with no control on any screen
+STATE: EXECUTING
+TASK: 1 of 5
+BALL: code
+NEXT_PASTE: none
+UPDATED: 2026-08-27T16:29:52-04:00
+NOTE: cost answered at 16 to 18 candidates; a second sweep shows an empty band clears the gate at every window length once 25 bins are maximised over
 
 ---
 

@@ -18,188 +18,213 @@ If all four hold, say "Hamlet confirmed" and continue.
 
 ---
 
-# Work instruction 031 — give the operator his send button back
+# Work instruction 032 — pick the pitch that reads
 
 **ISSUED: 2026-08-27. A fresh order, not an amendment.**
 
-**Five tasks; task 5 is the drop. This unit restores a capability that this
-project removed by mistake.**
+**Five tasks; task 5 is the drop. Task 1 decides whether tasks 2 to 4 are built
+at all.**
 
 ## Why this unit exists
 
-**The unit's number: hundreds of transmissions, and no button.**
+**The unit's number: six families, all of them clustering, all dead.**
 
-**Tim has sent with Hamlet hundreds of times.** The send button worked. It keyed
-the radio. It has been in the application for dozens of builds.
+The decoder works. Pointed at the right pitch it reads `DE KD0UN KD0UN K` at
+84.2 %, fifty-nine characters at 32 words a minute with one unsure, and the ARRL
+bulletins. **Every failure of the last two weeks is the survey choosing the wrong
+pitch**, and every attempt to fix that has asked the same question: *is a station
+keying in this bin?*
 
-**It was removed by a chain of orders written from a wrong premise, all mine.**
-Instructions 026, 027 and 028 each carried *"do not wire Send to the
-transmitter"*, citing §0.2 and HM-DEC-098 as though the interlock work were still
-ahead of the project — when it had been done, ruled and used. Unit 1.11.25 then
-deleted the Send widget from the catalogue on that same order, and preserved its
-own description in `ABANDONED_WIDGETS.md`:
-**"What you could say next, written out in full, with a button that sends it."**
+Six statistics have now been measured against that question:
 
-**The button was in that sentence and the sentence was the record.** Nothing in
-those three orders checked whether the capability already existed before
-forbidding it.
+| statistic | unit | result |
+|---|---|---|
+| cluster separation | 1.11.17 | station 1.75, silence 1.72 |
+| dah/dit ratio | 1.11.17 | dominant refuser on one capture only |
+| bin level spread | 1.11.18 | `N4L` reads at 10.4, silence sits at 12.0 |
+| lift over the band floor | 1.11.18 | `N4L` reads at 3.0, silence sits at 35.3 |
+| quantisation residual | 1.11.19 | every capture at or worse than random |
+| agreement between fitted units | 1.11.21 | **inverted** — silence 0.028, `VA3VRR` 0.400 |
 
-**What is in the tree today** is what unit 1.11.24 shipped: a title, a text box,
-four buttons reading CQ, RST, 73 and Clear, and a paragraph saying nothing leaves
-the radio. **The transmit path itself is almost certainly still present and
-still tested** — unit 1.11.25 reported the engine behind every abandoned widget
-compiles and runs, unreachable only from the screen.
+**`N4L` and `VA3VRR` are adjudicated callsigns that Hamlet reads, and an empty
+band outscores them.** Six is not six unlucky choices. **Every one of the six is
+a measurement of clustering**, and the question has no answer at bin level from
+nineteen marks and three seconds.
 
-**This is reconnection, not construction.**
+**This project already named the way out, and its condition is now met.**
+HM-DEC-125, 2026-08-18: *"Scoring candidates by their own speed estimator at the
+tracked pitch is the direction if a measurement later shows a gap; **it is a
+measurement of reading rather than of clustering**, and a fluke at 725 hertz
+cannot fool it."* **The measurement showing the gap is the table above.**
+
+**And HM-DEC-095 asks for exactly this.** *"A note is chosen by how it is keyed
+and never by how loud it is."* **Ranking bins by how well each one decodes is
+that rule taken literally** — judged wholly on keying, and the furthest thing
+from loudness in the tree.
+
+**So the question changes from a threshold to a ranking.** Not *is a station
+here*, which nothing can answer, but *which of these bins reads best* — which
+needs no threshold at all. **The refusal stays exactly where HM-DEC-120 put it**:
+the decoder's own margin floor of 14, swept and measured, which already holds
+both empty captures silent.
 
 ## Verify this instruction against the tree
 
 **Nothing here describes the tree.** Check every claim against the files and
-report any mismatch, including where the work succeeded anyway. **This order was
-written from an operator's memory and from a deleted widget's description, not
-from the code. Task 1 exists because of that.**
+report any mismatch, including where the work succeeded anyway. Every unit since
+1.11.17 disproved part of its own order's premise and was right to.
 
-**Expected state: 28 failing of 1841 in the engine as the stable set; 507 of 507
+**HM-DEC-125 built parallel acquisition candidates once and they failed** — they
+named 325, 550 and 725 hertz for a signal at 640, because they took the first
+answer and were never subject to the two-agreeing-surveys rule. **Read that
+ruling in `CLAUDE.md` before task 2.** What failed was taking a candidate's word
+early. What is proposed here is scoring a candidate by what it reads.
+
+**Expected state: 28 failing of 1845 in the engine as the stable set; 509 of 509
 in the app.** Seven timing intermittents exist. Do not chase any; diff which
 tests moved and never trust a total.
 
-**The view-test rule is in force** (Tim's ruling, 2026-08-27, unit 1.11.27): a
-view-level test acts through the control — it presses the button, it does not
-set the property the button would have set. **The guard's named-property list
-gains any property this unit gives a control**, and the report says which.
+**The view-test rule is in force** (unit 1.11.27): a view-level test acts through
+the control.
 
 **`CLAUDE_CODE.md` is at version 1.6.** Read its own section count.
 
-**`DECISIONS.md` still has no record for HM-DEC-096–133, 136, 141, 150, nor
-Tim's rulings of 2026-08-25/26/27.** **HM-DEC-098 is inside that unreadable
-range and this unit turns on it** — see task 1.
+**`DECISIONS.md` has no record for HM-DEC-096–133, 136, 141, 150.** HM-DEC-120,
+125 and 127 are all inside that range; **their index rows in `CLAUDE.md` are what
+this order quotes and all this unit has.**
 
 ## Rulings in force
 
-**Tim's ruling, 2026-08-27, in his words:** *"I've sent with it hundreds of
-times. It worked great."* **The send button is restored.** It keys the radio, as
-it did before this project removed it.
+**Tim's ruling, 2026-08-27, in his words:** *"If any of my rulings are keeping us
+from doing something the right way, then I probably ruled in error. I want to get
+CW working. I want the next unit to be a massive step forward."*
 
-**HM-DEC-098 and §0.2 are not being overridden — they are being read
-correctly.** They govern *bringing a transmit path into existence*: every
-interlock watched firing into a dummy load, including the link pulled mid-cycle.
-**That work was done and ruled before these three orders were written.** A path
-already built, ruled and used for hundreds of transmissions is not brought into
-existence again by reconnecting a button to it.
+**Acquisition becomes a ranking rather than a classification.** Candidate pitches
+are scored by **what the decoder reads at each of them**, and the best-reading
+candidate is taken. **No bin is required to prove it holds a station before it is
+decoded.**
 
-**But this unit does not assume that on my word.** Task 1 finds the ruling and
-the interlocks in the tree and reports them. **If the transmit path is not there,
-or is there without a ruling authorising it, this unit stops at task 1 and says
-so** — see below.
+**HM-DEC-120 is not traded and is not touched.** Its floor of 14 in the decoder's
+own margin units is the refusal, and it does the refusing after the decode rather
+than before it. **Both empty captures emit nothing, and that is this unit's first
+acceptance line, not its last.**
 
-**Untouched:** the workspace boundary and tab strip as unit 1.11.26 left them;
-the band plan, neighborhood, radio and divider; every decoder behaviour; the
-view-test rule and the resource check unit 1.11.27 added.
+**HM-DEC-095 is honoured rather than overruled.** A note chosen by what it reads
+is a note chosen by how it is keyed. **Loudness may still not choose a note** —
+if the shortlist is drawn by energy, that is a shortlist and not a choice, and
+the report says how many candidates it carried.
 
-**Rejected already, do not revisit:** bringing back the canvas, the tray or the
-preset bar; placeholder text in Digital or Voice; asserting a control's own
-`IsVisible` where effective visibility is what the operator sees.
+**HM-DEC-127 is untouched.** A confirmed station is not abandoned for a candidate
+far below it. **Ranking chooses among candidates at acquisition; it does not
+displace a station being read.**
+
+**Rejected already, do not revisit:** the six clustering statistics above;
+taking a parallel candidate's first answer (HM-DEC-125's own measured failure);
+locking to `CwPitch`; the four dead squelch axes; widening the 2.5–3.8 admission
+band by moving its constants.
 
 ## Status cadence
 
 Per §4.5: after each task, before the next, update `PROJECT_STATUS.md` —
 `STATE`, `TASK: n of m`, `BALL`, `UPDATED` from the clock, `NOTE` saying what is
-moving. Same every ten minutes while a task runs.
+moving. Same every ten minutes while a task runs. **This is the largest change to
+acquisition in the project's history and the cadence is how Tim knows it is
+moving rather than stuck.**
 
 ## The tasks
 
-### Task 1 — find the transmit path and the ruling that authorised it
+### Task 1 — can it be afforded? Measure before building.
 
-**Before changing anything**, report with file and line:
+**This task decides the unit.** Ranking means decoding at several pitches instead
+of one, so the cost is the whole question.
 
-1. **The transmit path.** What keys the radio — the view model command, the
-   service, the CAT or keying call at the bottom of it. Whether it compiles,
-   whether it is tested, and what those tests assert.
-2. **The interlocks.** What refuses to transmit and on what condition. **Name
-   each one**, and say whether a test covers it.
-3. **The ruling.** Find HM-DEC-098 and any decision authorising the transmit
-   path, in `DECISIONS.md` or in `CLAUDE.md`'s index rows. **Transcribe what you
-   find.** The full records for HM-DEC-096–133 are missing from this tree, so an
-   index row may be all there is — say which you had.
-4. **What the button used to be.** Search the history for the Send widget's own
-   button and report what it called, so the reconnection restores the same route
-   rather than inventing a new one.
+Measure and report:
 
-**Then decide, and say which:**
+- **what one decode of a short window costs** at a single pitch — the window
+  length the decoder already uses to reach a margin, and the wall time to run it;
+- **how many candidate pitches the band would carry** at the survey's existing
+  step, and how many a shortlist would carry at, say, four, eight and sixteen;
+- **the total per acquisition pass**, against the cadence the survey runs at
+  today.
 
-- **The path exists, is tested, and a ruling authorises it** → tasks 2 to 4
-  proceed.
-- **The path exists but no ruling can be found** → **build tasks 2 and 3, and
-  leave the button disabled with a line saying the ruling could not be located.**
-  Report exactly what you searched. **Do not key the radio on an unlocatable
-  ruling.**
-- **The path is not there** → **stop. Report what is missing.** The unit becomes
-  the interlock work, which is a different unit done at the rig.
+**Then answer in one sentence: how many candidate pitches can be decode-scored
+inside the survey's own cadence?**
+
+- **If the answer is four or more**, tasks 2 to 4 proceed at that number.
+- **If it is fewer than four, stop and report.** A ranking over two candidates is
+  barely a ranking, and the honest answer is that this needs a cheaper scoring
+  window or a slower cadence — **which is a ruling, not a session's choice.**
 
 Build and run; record the baseline by diffing which tests fail.
 
-### Task 2 — the button
+### Task 2 — score candidates by what they read
 
-**A send button in the Send panel, wired to the transmit path task 1 found.**
-Same route the old one used.
+Shortlist candidate pitches — **by energy is acceptable and is a shortlist, not a
+choice** — then **decode a short window at each and score it by the decoder's own
+margin**, the same quantity HM-DEC-120's floor is expressed in.
 
-**It is a permanent part of the Send panel**, like Send and Receive are permanent
-parts of the CW workspace — not a widget, not removable, not closable.
+**Take the best-scoring candidate.** Nothing is required to pass a keying test
+first.
 
-**Clear is an action, not a message, and is coloured differently from the
-macros** — Tim's ruling of 2026-08-27. **Send and Clear sit at the top beside the
-title**, so what transmits is visually separate from what composes.
+**Then apply HM-DEC-120's floor to the winner.** Above it, that pitch is
+tracked and the decode proceeds. Below it, **nothing is emitted and no pitch is
+reported as measured** — the state unit 1.11.22 built for an unmeasured pitch.
 
-### Task 3 — the panel says what it means
+**HM-DEC-125's failure is the thing to avoid here**: do not take a candidate's
+first answer. The winner is the best over the scoring window, and the report says
+whether one pass is enough or whether the existing confirmation applies to the
+ranking's output as it does today.
 
-Replace the paragraph about nothing leaving the radio — which will no longer be
-true — with **what each control actually does**, in the plain terms Tim asked
-for:
+### Task 3 — the corpus, because the instrument moved
 
-- **CQ** — says you are looking for a conversation, and sends your callsign.
-- **RST** — sends a signal report: how well you are hearing the other station.
-- **73** — signs off. It means best wishes and it is how a contact ends.
-- **Clear** — empties the line. Nothing is transmitted.
-- **Send** — transmits what is on the line.
+Re-run every capture and report against unit 1.11.21's figures:
 
-**Write them in the application's own voice**, as the neighborhood map's own
-lines are written. The wording above is the meaning, not the copy.
+- **the four stations the operator can hear** — `cw-2026-08-25-012823` at 500,
+  `cw-2026-08-22-014113` at 607, `cw-2026-08-22-014308` at 606,
+  `cw-2026-08-26-125941` at 403.5 — **the pitch chosen for each, and the
+  decode**, against floors of 41, 0, 0 and 0;
+- **both silence controls: nothing emitted.** Absolute, and stated;
+- **all twelve adjudicated anchors, character for character**;
+- every floor held; chunk invariance intact.
 
-### Task 4 — the interlocks are proven, not assumed
+**A capture now pointed at the right pitch that still reads nothing is a finding,
+not a failure** — it means the fault has moved downstream, and it names where the
+next unit goes. Say so for each.
 
-**Tests, acting through the button per the view-test rule**, that each interlock
-task 1 named still refuses.
+### Task 4 — what it costs when it is wrong
 
-**Report every interlock and whether a test now covers it.** An interlock with no
-test is named in section 4 as one, not quietly counted as covered.
+Ranking has no refusal at the bin, so on an empty band it will pick **something**
+and hand it to the gate.
 
-**Nothing in this unit is verified by transmitting.** No rig is connected on the
-development computer, and the tests assert the refusals, not the emission.
-**Tim verifies at the rig.**
+**Measure what the gate then does**, on both silence controls and on the noise
+capture `cw-2026-08-25-021825`: what pitch was chosen, what margin the winner
+scored, and how far below the floor of 14 it sat. **Report the distance.** A floor
+that holds by a wide margin and a floor that holds by a hair are different
+answers, and Tim needs to know which he has.
 
-### Task 5 — what else the deletion took *(the drop candidate)*
+### Task 5 — the operator's assertion, measured against it *(the drop candidate)*
 
-`ABANDONED_WIDGETS.md` lists fifteen widgets deleted by unit 1.11.25 on my
-orders. **The Send button was inside one of those descriptions and nobody noticed
-until Tim did.**
+Unit 1.11.21 gave the operator a way to assert a station and take the strongest
+bin. On `014308` that read thirty-five characters where automatic acquisition read
+none.
 
-**Read the other fourteen and report any that describe a working capability
-rather than a display** — "Call CQ on a cycle" calls and listens between rounds;
-the scanner works down the band and stops where somebody is calling. **Report
-only. Restore nothing.** Which come back, and in what order, is Tim's.
+**Report what ranking chooses on those same four captures against what the
+assertion chose.** If ranking matches or beats it, say so. If the assertion still
+wins on any capture, **that is the most useful sentence in the report** — it says
+the ear is still ahead and names where.
 
 **Dropped whole if time runs out, and the report says so.**
 
 ## Parked — do not touch, do not raise
 
-Every decoder question: admission, the six axis families, the gate, the squelch,
-the joint decoder, the constrained margin, the tracker, the meter, the integrator
-width, the whole-file second pass, `001520`'s quadrillions, `013347`'s 17.2
-million. Also: the recent-places row's home; HM-DEC-086's supersession record;
-the owned-property list's maintenance; the ambiguous-control test class;
-`CHANGELOG.md`; the seven intermittents; the Avalonia geometry offset;
-HM-OPEN-057; HM-OPEN-059; **the band plan, the neighborhood map, the radio panel
-and the divider.**
+Displacement (HM-DEC-127); the confirmation rule's consecutive-surveys
+requirement; the joint cutter and its word gaps; the constrained margin; the
+meter's rebuild; the integrator width; the whole-file second pass; the
+short-character bias; `001520`'s quadrillions and `013347`'s 17.2 million; the
+reference and port integrator difference. Also: **the entire screen** — the
+scanner and calling cycle having no surface, the dead templates, the
+recent-places row, the owned-property list, HM-DEC-086's record; `CHANGELOG.md`;
+the seven intermittents; HM-OPEN-057; HM-OPEN-059.
 
 A parked item that blocks a task is raised once, and says it was parked.
 
@@ -207,13 +232,14 @@ A parked item that blocks a task is raised once, and says it was parked.
 
 Standing prohibitions are `CLAUDE.md`'s and are not retyped. Unit-specific:
 
-- **Do not touch any decoder file.** The byte-identical failing set is the claim.
-- **Do not key the radio from a test**, and do not add a code path that could.
-- **Do not proceed past task 1 if the transmit path is absent.**
-- **Do not enable the button if no ruling authorising the path can be located** —
-  build it disabled and say so.
-- **Do not restore any other widget.** Task 5 reports.
-- **Do not set a view-model property in a view test where a control exists.**
+- **Do not build tasks 2 to 4 if task 1 says fewer than four candidates fit.**
+  Report and stop.
+- **Do not move HM-DEC-120's floor.** It is the refusal and it is measured.
+- **Do not let loudness choose a note.** A shortlist is not a choice, and the
+  report says how many it carried.
+- **Do not touch displacement or confirmation.**
+- **Do not trade the silence property**, which is task 3's first acceptance line.
+- **Do not touch the screen.**
 
 ## Committing, pushing, reporting
 
@@ -223,13 +249,14 @@ push is reported as refused, with the reason.
 Report per `CLAUDE_CODE.md` §8 — read the file's own section count — to
 `output.md` at the repository root, overwritten and printed.
 
-**Section 2 leads with whether Tim has his send button back, and what he should
-check at the rig before trusting it.** **Section 3 leads with task 1's findings:
-the transmit path, every interlock, and the ruling — with file and line.**
+**Section 3 leads with the four captures the operator can hear: the pitch chosen
+for each and what it read, against zero, zero, zero and forty-one.** **Section 2
+says plainly whether a station he can hear now reaches the decoder without him
+pressing anything.**
 
 ### Asks still outstanding
 
-Carried forward verbatim per HM-DEC-139 and HM-DEC-140. **Twenty-three inbound.
+Carried forward verbatim per HM-DEC-139 and HM-DEC-140. **Twenty-four inbound.
 The oldest is open since 2026-08-14.**
 
 1. **The sweep's `invented` column counts substitutions, not invented
@@ -238,42 +265,41 @@ The oldest is open since 2026-08-14.**
 3. **`ANNUNCIATOR.md` renamed `PHASE` to `TASK` while HM-DEC-150 makes `PHASE`
    match the version's minor.**
 4. **`DECISIONS.md` has no record for HM-DEC-096–133, 136, 141 or 150** — and
-   **HM-DEC-098, which authorises the transmit path this unit reconnects, is
-   inside that range.** The cost of the missing records is now a capability
-   nobody can look up.
-5. **The tone tracker** — six axis families measured; the question is a design
-   one.
-6. **The integrator width** — settled at 45 Hz, with the sharp-peak caveat.
-7. **The guard's gap is two to one**, calibrated on two empty captures.
-8. **A boxcar's nulls made two of five swept offsets pathological best cases.**
-9. **Two stations closer than 125 Hz are not named** — the operator's own item
+   HM-DEC-120, 125 and 127 are all inside it. **This unit acts on index rows
+   alone.**
+5. **The integrator width** — settled at 45 Hz, with the sharp-peak caveat.
+6. **The guard's gap is two to one**, calibrated on two empty captures.
+7. **A boxcar's nulls made two of five swept offsets pathological best cases.**
+8. **Two stations closer than 125 Hz are not named** — the operator's own item
    five, still not attempted.
-10. **The keying meter** — its measurement found a station its verdict denied.
-11. **HM-OPEN-057** (2026-08-22) and **HM-OPEN-007** (2026-08-14).
-12. **The gate opens on everything, including two empty recordings** (1.11.18).
-13. **The joint cutter cannot find word gaps on a compressed fist** (1.11.22) —
-    the next decode question, still unruled.
-14. **The constrained margin is bounded and still does not separate** (1.11.22).
-15. **Four fixtures are absent and five acceptance lines were unmeasurable**
+9. **The keying meter** — its measurement found a station its verdict denied.
+10. **HM-OPEN-057** (2026-08-22) and **HM-OPEN-007** (2026-08-14).
+11. **The gate opens on everything, including two empty recordings** (1.11.18) —
+    **this unit stops depending on it deciding.**
+12. **The joint cutter cannot find word gaps on a compressed fist** (1.11.22) —
+    the next decode question after this one, still unruled.
+13. **The constrained margin is bounded and still does not separate** (1.11.22).
+14. **Four fixtures are absent and five acceptance lines were unmeasurable**
     (1.11.22).
-16. **HM-DEC-086's supersession needs a record** (1.11.25).
-17. **The phrasebook's arrival and the absent-widget news are gone** (1.11.25).
-18. **Engine code behind the abandoned widgets is unreachable** (1.11.25) —
-    **this unit reconnects one of them and reports which others matter.**
-19. **The recent-places row has no home** (1.11.26), three options costed.
-20. **The owned-property list has no enforcement of staying current** (1.11.27).
-21. **A test resolved an ambiguous control by accident** (1.11.27).
-22. **A deleted widget's description was the only record of a working
-    capability**, and it took the operator to notice. **Nothing checks that a
-    deletion is not removing something in use.**
-23. **`013347` returns a likelihood ratio of 17.2 million**, with `001520`'s
+15. **HM-DEC-086's supersession needs a record** (1.11.25).
+16. **The phrasebook's arrival and the absent-widget news are gone** (1.11.25).
+17. **The recent-places row has no home** (1.11.26), three options costed.
+18. **The owned-property list has no enforcement of staying current** (1.11.27).
+19. **A test resolved an ambiguous control by accident** (1.11.27).
+20. **Nothing checks that deleting a surface is not deleting a capability**
+    (1.11.28) — measured on three instances.
+21. **The scanner and the calling cycle are attached to the rig with no
+    control** (1.11.28), and one of them transmits.
+22. **Thirteen dead `DataTemplate` blocks nothing can distinguish from live
+    ones** (1.11.28).
+23. **Whether every constructed view model should be reachable from a binding**
+    (1.11.28).
+24. **`013347` returns a likelihood ratio of 17.2 million**, with `001520`'s
     quadrillions. Parked, raised once.
 
-Still open: **three fixtures at accepted cost**; **the reference and port
-integrator difference**; **an unmeasured pitch costs `N4L`**; **the six-hertz
-window disagreement**; **the short-character bias**; **the Avalonia geometry
-offset**; **`CHANGELOG.md` at 1.9.0 against 1.11.27**; **the whole-file second
-pass**; **the squelch has no axis**; **the three morning captures of
-2026-08-26**.
+Still open: **the lock's mixed help**; **three fixtures at accepted cost**; **an
+unmeasured pitch costs `N4L`**; **the six-hertz window disagreement**;
+**`CHANGELOG.md` at 1.9.0 against 1.11.28**; **the squelch has no axis**; **the
+three morning captures of 2026-08-26**.
 
 **If you finish every task, stop and report. Do not start the next unit.**
