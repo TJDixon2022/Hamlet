@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 2 of 6
+TASK: 3 of 6
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-27T19:03:49-04:00
-NOTE: task 1 closed at 1852 tests and 28 failing byte-identical; running the key-up measurement that gates the rest
+UPDATED: 2026-08-27T19:05:15-04:00
+NOTE: premise holds: key-up sits 15 to 37 dB over the band floor on every capture; but the model's own separation is flat at 3.3 to 3.7 sigma including the one that reads
 
 ---
 

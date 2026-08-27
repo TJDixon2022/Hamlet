@@ -267,21 +267,37 @@ public sealed class WhereTheKeyUpStateSitsTests
             var bestLag = 0;
             var best = double.NegativeInfinity;
 
-            var from = (int)(30.0 / hopMs);
+            // **NORMALISED BY THE OVERLAP, AND THE FIRST RUN OF THIS TEST
+            // PROVED IT HAS TO BE.** An unnormalised autocorrelation falls away
+            // with lag simply because fewer terms overlap, so the maximum lands
+            // on the shortest lag searched and reports the search floor rather
+            // than the signal. It read 30 ms on four captures of five, which is
+            // exactly where the search started.
+            //
+            // **AND THE SEARCH STARTS ABOVE THE INTEGRATOR'S OWN SMOOTHING.**
+            // The envelope is taken through a filter of
+            // `IntegratorBandwidthHz`, which correlates neighbouring hops by
+            // construction; a peak inside that width is the instrument, not the
+            // station.
+            var from = (int)(60.0 / hopMs);
             var to = Math.Min((int)(400.0 / hopMs), centred.Length / 2);
 
             for (var lag = from; lag < to; lag++)
             {
                 var sum = 0.0;
+                var n = 0;
 
                 for (var i = 0; i + lag < centred.Length; i++)
                 {
                     sum += centred[i] * centred[i + lag];
+                    n++;
                 }
 
-                if (sum > best)
+                var normalised = n > 0 ? sum / n : 0;
+
+                if (normalised > best)
                 {
-                    best = sum;
+                    best = normalised;
                     bestLag = lag;
                 }
             }
