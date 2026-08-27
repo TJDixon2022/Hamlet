@@ -2881,6 +2881,8 @@ public partial class MainWindowViewModel : ObservableObject
     [RelayCommand]
     private void ClearTerminal()
     {
+        _clearedUtc = DateTime.UtcNow;
+
         Transcript.Clear();
         OnPropertyChanged(nameof(TerminalSummary));
     }
@@ -4381,11 +4383,37 @@ public partial class MainWindowViewModel : ObservableObject
     /// not help).
     /// </remarks>
     private static string CompetitorForTheRecord(CwDecodeReport report)
-        => report.Competitor is { } other
-            ? $"{Math.Abs(other.OffsetHz):0} Hz {other.Side} at "
-              + $"{other.RelativeDb:+0.0;-0.0} dB relative "
-              + $"({other.ToneHz:0} Hz)"
-            : "none found (which is not the same as the frequency being clear)";
+    {
+        if (report.Competitor is { } other)
+        {
+            return $"{Math.Abs(other.OffsetHz):0} Hz {other.Side} at "
+                + $"{other.RelativeDb:+0.0;-0.0} dB relative "
+                + $"({other.ToneHz:0} Hz)";
+        }
+
+        // **A FIELD THAT ALWAYS SAYS THE SAME THING IS WORSE THAN NO FIELD.**
+        // Every sidecar written this week said `none found`, including files with
+        // eight admitted tones and a station 2.4 dB from the tracked one, because
+        // the competitor search only looks at candidates the survey admitted and
+        // the survey admits almost nothing. The absence was real and the sentence
+        // was useless.
+        //
+        // So it now says what the survey did see. The strongest thing in the band
+        // is not a competitor — nobody has judged it to be keying — and saying so
+        // is the difference between "the frequency is clear" and "nothing here
+        // passed the bar that would have made it a competitor" (§0.0).
+        if (report.Interference is { } loudest)
+        {
+            return "none admitted, and the survey is not silent: the loudest "
+                + $"thing in the band is at {loudest.ToneHz:0} Hz, "
+                + $"{loudest.LiftDb:+0.0;-0.0} dB over the band floor, keyed "
+                + $"{loudest.PresentFraction * 100:0}% of the time. Nothing has "
+                + "judged it to be a station";
+        }
+
+        return "none found, and the survey found nothing else either — which is "
+            + "not the same as the frequency being clear";
+    }
 
     /// <summary>
     /// How much of this recording had the key down, at the pitch the decoder was
@@ -4644,6 +4672,18 @@ public partial class MainWindowViewModel : ObservableObject
     /// </remarks>
     private string CountsCover()
     {
+        // **AFTER A CLEAR, THE TEXT DOES NOT START WHERE THE COUNTS DO.** The
+        // sheet said "everything read since the decoder started listening" beside
+        // a transcript that began at the clear, which is a caption describing
+        // audio the reader cannot see (§0.0). The counters are cumulative and
+        // stay so; what changes is that the sentence names the moment the text
+        // actually starts from.
+        if (_clearedUtc is { } cleared)
+        {
+            return $"since the transcript was cleared at {cleared:HH:mm:ss} UTC, "
+                + SpokenAge(DateTime.UtcNow - cleared);
+        }
+
         if (_decoderStartedUtc is not { } started)
         {
             return "since the decoder started listening";
@@ -4652,6 +4692,9 @@ public partial class MainWindowViewModel : ObservableObject
         return "since the decoder started listening, "
                + SpokenAge(DateTime.UtcNow - started);
     }
+
+    /// <summary>When the operator last cleared the transcript, if he has.</summary>
+    private DateTime? _clearedUtc;
 
     /// <summary>How long ago something was, said rather than counted.</summary>
     /// <param name="age">How long.</param>
