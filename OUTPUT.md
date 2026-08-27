@@ -89,10 +89,13 @@ touched this unit.
 
 | | baseline | end |
 |---|---|---|
-| engine | 28 of 1841, stable set | **see below** |
+| engine | 28 of 1841, stable set | **28 of 1845, byte-identical** |
 | app | 507 of 507 | **509 of 509** |
 
-Two tests added to the app suite; four to the engine suite, all green.
+Two tests added to the app suite; four to the engine suite, all green. The
+engine total moves 1841 to 1845 and the failing set does not move at all: the
+28 names are the same 28, compared against the stable list rather than counted.
+It ran in 17 minutes 37 seconds.
 
 ## 3. The count
 
