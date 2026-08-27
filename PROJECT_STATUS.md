@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
-TASK: 4 of 4
+TASK: 3 of 3
 BALL: tim
 NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-27T11:13:38-04:00
-NOTE: screen laid out as ruled, pitch controls off, send composes and keys nothing; engine byte-identical
+UPDATED: 2026-08-27T12:11:03-04:00
+NOTE: CW tab is Receive and Send at 61 and 81 characters a line; engine untouched and byte-identical
 
 ---
 
