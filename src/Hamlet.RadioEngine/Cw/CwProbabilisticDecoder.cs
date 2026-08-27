@@ -1050,6 +1050,207 @@ public static class CwProbabilisticDecoder
         return (keyDown, keyUp);
     }
 
+    /// <summary>
+    /// Per-hop log-likelihoods with the key-up state fitted from the observed
+    /// inter-mark level rather than pinned to the noise scale.
+    /// </summary>
+    /// <param name="envelope">The envelope.</param>
+    /// <param name="noiseSpanSeconds">What the estimates are taken over.</param>
+    /// <returns>The two streams.</returns>
+    /// <remarks>
+    /// <para>**WHAT THIS CHANGES AND WHY** (work instruction 035, task 3). The
+    /// shipped model scores key-up as a Rayleigh at the noise scale. On the
+    /// captures the operator can hear, the observed key-up state sits 15 to 37
+    /// decibels above the band beside the station — it is not noise, and the
+    /// model is being asked to explain it as noise.</para>
+    /// <para>**BOTH STATES ARE FITTED, WHICH IS THE PUBLISHED SHAPE.**
+    /// `cwdecoder.py` in this repository fits two means to the decibel envelope
+    /// per window; RSCW places its threshold where the mean distance to the
+    /// samples above equals the mean distance to those below. Neither assumes
+    /// either state.</para>
+    /// <para>**HOW IT BEHAVES WHEN THERE IS NO STATION, WHICH IS THE CASE THAT
+    /// PROTECTS HM-DEC-120.** On audio holding nothing the two fitted locations
+    /// collapse toward each other, so every hop scores nearly alike under both
+    /// hypotheses and their difference — the likelihood ratio — goes toward
+    /// **zero**, which is further below the gate rather than above it. The
+    /// collapse makes the model *less* willing to read, not more, and that is a
+    /// property of fitting both states rather than a guard bolted on.</para>
+    /// <para>**THE SPREAD IS FLOORED AT THE NOISE SCALE.** Two locations fitted
+    /// to a handful of hops can land arbitrarily close together, and a vanishing
+    /// width would then make every hop infinitely surprising under one of them.
+    /// The noise scale is a physical lower bound on how tightly either state can
+    /// really be known, so neither width goes below it.</para>
+    /// </remarks>
+    public static (double[] KeyDown, double[] KeyUp) FittedLogLikelihoods(
+        IReadOnlyList<double> envelope, double noiseSpanSeconds)
+    {
+        ArgumentNullException.ThrowIfNull(envelope);
+
+        var count = envelope.Count;
+        var keyDown = new double[count];
+        var keyUp = new double[count];
+
+        if (count == 0)
+        {
+            return (keyDown, keyUp);
+        }
+
+        var span = Math.Max(8, (int)(noiseSpanSeconds * 1000.0 / HopMilliseconds));
+        var step = Math.Max(1, span / 8);
+        var scratch = new double[Math.Min(span, count)];
+
+        var sigma = 0.0;
+        var amplitude = 0.0;
+        var estimatedAt = int.MinValue;
+
+        var upLevel = 0.0;
+        var upWidth = 0.0;
+        var downWidth = 0.0;
+
+        for (var i = 0; i < count; i++)
+        {
+            if (estimatedAt == int.MinValue || i - estimatedAt >= step)
+            {
+                Estimate(envelope, i, span, scratch, out sigma, out amplitude);
+
+                if (!double.IsNaN(sigma))
+                {
+                    FitTwoStates(
+                        envelope, i, span, sigma,
+                        out upLevel, out upWidth, out downWidth);
+                }
+
+                estimatedAt = i;
+            }
+
+            if (double.IsNaN(sigma))
+            {
+                keyUp[i] = 0;
+                keyDown[i] = 0;
+
+                continue;
+            }
+
+            var e = Math.Max(envelope[i], 1e-12);
+
+            var offUp = e - upLevel;
+            keyUp[i] = -HalfLogTwoPi - Math.Log(upWidth)
+                - (offUp * offUp / (2 * upWidth * upWidth));
+
+            var offDown = e - amplitude;
+            keyDown[i] = -HalfLogTwoPi - Math.Log(downWidth)
+                - (offDown * offDown / (2 * downWidth * downWidth));
+        }
+
+        return (keyDown, keyUp);
+    }
+
+    /// <summary>Two levels fitted to the envelope around one hop.</summary>
+    /// <param name="envelope">The envelope.</param>
+    /// <param name="at">Which hop the span is centred on.</param>
+    /// <param name="span">How many hops it covers.</param>
+    /// <param name="sigma">The noise scale, which floors both widths.</param>
+    /// <param name="upLevel">Where the inter-mark state actually sits.</param>
+    /// <param name="upWidth">How tightly, never below the noise scale.</param>
+    /// <param name="downWidth">The same for the keyed state.</param>
+    /// <remarks>
+    /// **LOCAL IN TIME, ON THE SPAN THE NOISE SCALE ALREADY USES.** A key-up
+    /// level averaged over a whole recording is HM-DEC-090's own fault arriving
+    /// again: that ruling turned two whole-file averages into held peaks because
+    /// a figure taken across a station's silence is not a figure about the
+    /// station.
+    /// </remarks>
+    private static void FitTwoStates(
+        IReadOnlyList<double> envelope,
+        int at,
+        int span,
+        double sigma,
+        out double upLevel,
+        out double upWidth,
+        out double downWidth)
+    {
+        var count = envelope.Count;
+        var half = span / 2;
+        var from = Math.Clamp(at - half, 0, Math.Max(0, count - span));
+        var take = Math.Min(span, count - from);
+
+        var low = double.MaxValue;
+        var high = double.MinValue;
+
+        for (var n = 0; n < take; n++)
+        {
+            var v = envelope[from + n];
+            low = Math.Min(low, v);
+            high = Math.Max(high, v);
+        }
+
+        var cut = (low + high) / 2;
+        var upMean = low;
+        var downMean = high;
+
+        for (var pass = 0; pass < 12; pass++)
+        {
+            double lo = 0, hi = 0;
+            int loN = 0, hiN = 0;
+
+            for (var n = 0; n < take; n++)
+            {
+                var v = envelope[from + n];
+
+                if (v >= cut)
+                {
+                    hi += v;
+                    hiN++;
+                }
+                else
+                {
+                    lo += v;
+                    loN++;
+                }
+            }
+
+            if (loN == 0 || hiN == 0)
+            {
+                break;
+            }
+
+            upMean = lo / loN;
+            downMean = hi / hiN;
+
+            var next = (upMean + downMean) / 2;
+
+            if (Math.Abs(next - cut) < 1e-12)
+            {
+                break;
+            }
+
+            cut = next;
+        }
+
+        double upVar = 0, downVar = 0;
+        int upN = 0, downN = 0;
+
+        for (var n = 0; n < take; n++)
+        {
+            var v = envelope[from + n];
+
+            if (v >= cut)
+            {
+                downVar += (v - downMean) * (v - downMean);
+                downN++;
+            }
+            else
+            {
+                upVar += (v - upMean) * (v - upMean);
+                upN++;
+            }
+        }
+
+        upLevel = upMean;
+        upWidth = Math.Max(upN > 1 ? Math.Sqrt(upVar / upN) : sigma, sigma);
+        downWidth = Math.Max(downN > 1 ? Math.Sqrt(downVar / downN) : sigma, sigma);
+    }
+
     private static readonly double HalfLogTwoPi = 0.5 * Math.Log(2 * Math.PI);
 
     /// <summary>

@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 3 of 6
+TASK: 5 of 6
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-27T19:05:15-04:00
-NOTE: premise holds: key-up sits 15 to 37 dB over the band floor on every capture; but the model's own separation is flat at 3.3 to 3.7 sigma including the one that reads
+UPDATED: 2026-08-27T19:08:49-04:00
+NOTE: fitting key-up lowers every capture rather than lifting the unread three, because a better-fitting null explains more; nothing ships and the reason is arithmetic
 
 ---
 
