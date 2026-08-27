@@ -51,3 +51,4 @@ scratch-audio/
 # Python bytecode from the reference decoder and its tooling
 __pycache__/
 *.pyc
+CLAUDE_CODE.md.bak-*
