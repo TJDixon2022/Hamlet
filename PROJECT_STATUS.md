@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
+STATE: COMPLETED
 TASK: 2 of 9
-BALL: code
-NEXT_PASTE: none
-UPDATED: 2026-08-27T17:12:36-04:00
-NOTE: strongest bin chooses where nothing is confirmed and the provenance is recorded; running the full suite to check for regressions before going further
+BALL: tim
+NEXT_PASTE: OUTPUT.md -> Claude Web
+UPDATED: 2026-08-27T17:16:06-04:00
+NOTE: stopped at task two of nine: the empty captures already emit nothing, so tasks three to seven target a fault the tree does not reproduce
 
 ---
 
