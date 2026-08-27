@@ -3689,11 +3689,18 @@ public partial class MainWindowViewModel : ObservableObject
         // reads twenty-five pitches across half a minute of audio, which is the
         // same work the keying meter already does on a background task rather
         // than in front of the operator.
-        var decoding = _decoder;
+        // **THE PRESS BANKS THE AUDIO AND NO LONGER SETS THE PITCH** (Tim's
+        // ruling of 2026-08-27). Unit 1.11.21 gave it the pitch behaviour
+        // because six families of admission statistic could not find a station
+        // he could plainly hear, and that was a workaround dressed as a feature:
+        // it asked him to press a button whose meaning was never explained and
+        // called his judgement a setting.
+        //
+        // **THE ENGINE KEEPS THE CAPABILITY.** `CwDecoder.AssertStation` and
+        // `AssertAt` are untouched and still reachable by tests, so the
+        // measurement that unit produced is not lost. What has gone is the panel
+        // using it behind his back.
 
-        var asserted = decoding is null
-            ? double.NaN
-            : await Task.Run(decoding.AssertStation);
 
         // **ASK THE RADIO WHERE IT IS BEFORE WRITING DOWN WHERE IT WAS**
         // (HM-DEC-107 phase 6 of the UI order). The frequency is never polled,
@@ -3768,16 +3775,9 @@ public partial class MainWindowViewModel : ObservableObject
             // two things and the second one is the one he pressed it for. The
             // sentence says the pitch is the loudest bin rather than a station
             // Hamlet found, so nothing here implies more than happened (§0.0).
-            StatusText = double.IsNaN(asserted)
-                ? $"Kept the last {audio.Duration.TotalSeconds:0} seconds of what "
-                  + "the decoder heard. Nothing has been surveyed yet, so there "
-                  + "was no loudest bin to point at; give it a few seconds and "
-                  + "press again."
-                : $"Kept the last {audio.Duration.TotalSeconds:0} seconds, and "
-                  + $"took your word for it: reading at {asserted:0} Hz, the "
-                  + "loudest thing in the band just now. Hamlet did not find "
-                  + "keying there, you did. Press Hold this pitch to let go "
-                  + "again, or move the dial.";
+            StatusText =
+                $"Kept the last {audio.Duration.TotalSeconds:0} seconds of what the "
+                + "decoder heard, with what the radio was doing beside it.";
 
             MarkCase(
                 wav: Path.GetFileName(wav),

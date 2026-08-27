@@ -993,10 +993,17 @@
                          The state it produces goes into the advisory area above
                          with everything else, rather than becoming another
                          panel. -->
-                    <Button IsVisible="{Binding IsDecoding}"
-                            Content="{Binding PitchLockLabel}"
-                            Command="{Binding TogglePitchLockCommand}"
-                            Margin="0,2,0,0" Padding="10,5" FontSize="12" />
+                    <!-- **"HOLD THIS PITCH" IS GONE FROM THE PANEL** (Tim's
+                         ruling of 2026-08-27, in his words: "It shouldn't
+                         involve me randomly clicking on a button I don't
+                         understand.").
+
+                         It existed because acquisition does not work, which put
+                         a decoder problem in the operator's hands and asked him
+                         to press a button whose meaning was never explained.
+                         Decoding is Hamlet's job. The engine can still hold a
+                         pitch and tests still reach it; what has gone is the
+                         panel asking him to decide. -->
 
                     <!-- ONE VOICE. The advisory above and this block used to
                          speak at the same time and disagree: a clear tone
