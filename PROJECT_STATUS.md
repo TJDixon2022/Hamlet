@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 2 of 8
+TASK: 3 of 8
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-27T18:18:07-04:00
-NOTE: the completed run is in at 1854 total and 28 failing byte-identical; building the dilution measurement that decides tasks 3 and 4
+UPDATED: 2026-08-27T18:20:44-04:00
+NOTE: dilution is disproved and the deeper finding is worse: at its own best pitch a station he can hear scores 0.84 where an empty recording scores 1.05, so tasks 3 and 4 do not get built
 
 ---
 

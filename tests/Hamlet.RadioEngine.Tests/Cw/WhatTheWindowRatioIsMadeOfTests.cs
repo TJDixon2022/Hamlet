@@ -111,9 +111,53 @@ public sealed class WhatTheWindowRatioIsMadeOfTests
             db[i] = 20 * Math.Log10(Math.Max(envelope[i], 1e-12));
         }
 
-        var low = db.Min();
-        var high = db.Max();
-        var cut = low + ((high - low) / 2);
+        // **THE MIDPOINT OF THE RANGE IS THE WRONG CUT AND THE FIRST RUN OF
+        // THIS TEST PROVED IT.** One unusually quiet hop drags the minimum far
+        // below the noise floor, the midpoint goes with it, and every capture
+        // reports a duty near one — which would have rejected the dilution
+        // hypothesis on an artifact of the cut rather than on the audio.
+        //
+        // **SO THE CUT IS FITTED TO THE TWO HEAPS**, the same shape the rest of
+        // this repository uses on an envelope: start at the midpoint, take the
+        // mean of each side, cut halfway between those means, repeat. Two
+        // iterations settle it on every capture here.
+        var cut = db.Min() + ((db.Max() - db.Min()) / 2);
+
+        for (var pass = 0; pass < 8; pass++)
+        {
+            var hi = 0.0;
+            var hiCount = 0;
+            var lo = 0.0;
+            var loCount = 0;
+
+            foreach (var value in db)
+            {
+                if (value >= cut)
+                {
+                    hi += value;
+                    hiCount++;
+                }
+                else
+                {
+                    lo += value;
+                    loCount++;
+                }
+            }
+
+            if (hiCount == 0 || loCount == 0)
+            {
+                break;
+            }
+
+            var next = ((hi / hiCount) + (lo / loCount)) / 2;
+
+            if (Math.Abs(next - cut) < 1e-9)
+            {
+                break;
+            }
+
+            cut = next;
+        }
 
         var keyed = 0;
         var keyedSum = 0.0;
@@ -193,6 +237,61 @@ public sealed class WhatTheWindowRatioIsMadeOfTests
             + "on a");
         _output.WriteLine(
             "  published quantity, not a second decoder.");
+
+        Assert.Equal(5, Cases.Length);
+    }
+
+    /// <remarks>
+    /// <para>**IS THE FILTER REALLY ON THE STATION?** The whole diagnosis rests
+    /// on "pointed within seven hertz and silent anyway", and seven hertz is a
+    /// claim about where the station is, taken from what the operator hears.
+    /// If the ratio peaks sharply somewhere else, the station is not where the
+    /// order says and every conclusion built on that sentence is wrong.</para>
+    /// <para>Swept one hertz at a time across sixty, which is the integrator's
+    /// own width, so a peak inside the passband would show.</para>
+    /// </remarks>
+    [Fact]
+    public void TheRatioAcrossThePitchesEitherSideOfTheStation()
+    {
+        foreach (var (name, centreHz, what) in Cases)
+        {
+            var slice = Tail(Capture(name), CwProbabilisticStream.WindowSeconds);
+
+            var bestHz = 0.0;
+            var best = double.NegativeInfinity;
+            var atCentre = 0.0;
+
+            for (var hz = centreHz - 30; hz <= centreHz + 30; hz += 1.0)
+            {
+                var envelope = CwProbabilisticDecoder.Envelope(
+                    slice.Samples, slice.SampleRate, hz);
+
+                var ratio = CwProbabilisticDecoder
+                    .DecodeUngated(envelope, hz).LikelihoodRatio;
+
+                if (Math.Abs(hz - centreHz) < 0.5)
+                {
+                    atCentre = ratio;
+                }
+
+                if (ratio > best)
+                {
+                    best = ratio;
+                    bestHz = hz;
+                }
+            }
+
+            _output.WriteLine(
+                $"  {name,-22} centre {centreHz,6:0.0} -> {atCentre,5:0.00}   "
+                + $"best {bestHz,6:0.0} -> {best,5:0.00}   "
+                + $"gain {best - atCentre,5:0.00}   {what}");
+        }
+
+        _output.WriteLine("");
+        _output.WriteLine(
+            $"  gate {CwProbabilisticDecoder.Gate:0.00}; a station whose best "
+            + "pitch still sits under it is not");
+        _output.WriteLine("  being refused for being mistuned");
 
         Assert.Equal(5, Cases.Length);
     }
