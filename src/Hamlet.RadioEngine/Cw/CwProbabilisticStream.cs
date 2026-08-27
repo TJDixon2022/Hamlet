@@ -127,6 +127,18 @@ public sealed class CwProbabilisticStream
     /// <summary>How many characters have been settled since this stream started.</summary>
     private long _settledCount;
 
+    /// <summary>
+    /// Whether <see cref="CwJointCutter"/> decides where the characters are cut.
+    /// </summary>
+    /// <remarks>
+    /// **AN INSTANCE FLAG AND NEVER A STATIC.** The first build of this was a
+    /// mutable static on the decoder, and xUnit runs test classes in parallel, so
+    /// the decode path read whichever value another test had left behind — which
+    /// is how the offline route measured itself as having changed nothing while
+    /// the streaming route plainly had.
+    /// </remarks>
+    public bool UseJointCutter { get; set; }
+
     /// <summary>Creates a stream.</summary>
     /// <param name="sampleRate">Samples per second.</param>
     public CwProbabilisticStream(int sampleRate)
@@ -148,6 +160,7 @@ public sealed class CwProbabilisticStream
     /// </remarks>
     public CwProbabilisticStream(int sampleRate, double integratorHz)
     {
+
         _sampleRate = Math.Max(1_000, sampleRate);
         _hopSamples = Math.Max(
             1, (int)(_sampleRate * CwProbabilisticDecoder.HopMilliseconds / 1000.0));
@@ -658,7 +671,8 @@ public sealed class CwProbabilisticStream
                     _heldGaps.CharacterMilliseconds,
                     _heldGaps.WordMilliseconds,
                 }
-                : null);
+                : null,
+            UseJointCutter);
 
         Last = result;
 

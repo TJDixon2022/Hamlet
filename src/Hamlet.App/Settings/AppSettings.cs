@@ -225,6 +225,28 @@ public sealed class AppSettings
     public bool ShowKeyingSweep { get; set; }
 
     /// <summary>
+    /// Whether the joint cutter decides where characters are cut.
+    /// </summary>
+    /// <remarks>
+    /// <para>**SHIPS OFF, AND THE RULING SAYS WHEN IT MAY SHIP ON** (Tim,
+    /// 2026-08-27): default on if every floor and every anchor is green, default
+    /// off and shipped anyway with the measurement reported if they are not. They
+    /// are not.</para>
+    /// <para>**WHAT IT DOES AND WHAT IT COSTS, MEASURED 2026-08-27.** It repairs
+    /// the cuts it was built for — `AB OV E` becomes `ABOVE`, `BR EE Z E` becomes
+    /// `BREEZE`, `REV■R` becomes `REVER` — and it loses every word space. On a
+    /// compressed fist at thirty words a minute the word gap runs well under one
+    /// unit, so scored against three and seven it reads as a character gap every
+    /// time, and `cw-2026-08-18-004507`'s anchor `N HANDLING THIS MESSAG` needs
+    /// those spaces.</para>
+    /// <para>That is HM-DEC-115's finding arriving a second time: gaps have to be
+    /// clustered from the sender's own keying and never taken as multiples of the
+    /// dit. The cutter accepts this sender's three fitted classes and the
+    /// streaming path does not always have them to give.</para>
+    /// </remarks>
+    public bool UseJointDecoder { get; set; }
+
+    /// <summary>
     /// The pitch the operator hears a CW signal at, in hertz.
     /// </summary>
     /// <remarks>

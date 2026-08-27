@@ -423,6 +423,20 @@ public sealed class CwDecoder
     public bool PitchWasAsserted => _asserted;
 
     /// <summary>
+    /// Whether <see cref="CwJointCutter"/> decides where characters are cut.
+    /// </summary>
+    /// <remarks>
+    /// Behind `AppSettings.UseJointDecoder` in the application, by Tim's ruling
+    /// of 2026-08-27: the operator is at the radio and a switch he can throw is
+    /// worth more than a change he cannot compare against.
+    /// </remarks>
+    public bool UseJointCutter
+    {
+        get => _probabilistic.UseJointCutter;
+        set => _probabilistic.UseJointCutter = value;
+    }
+
+    /// <summary>
     /// The operator says he can hear a station; decode at the loudest bin in the
     /// band and hold it.
     /// </summary>

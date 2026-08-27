@@ -3216,7 +3216,11 @@ public partial class MainWindowViewModel : ObservableObject
         // speaker level and its quite separate USB output level.
         _capture = WasapiAudioDevices.Health(_settings.AudioInputDeviceId);
 
-        _decoder = new CwDecoder(_audioInput.SampleRate, _settings.CwPitchHz);
+        _decoder = new CwDecoder(_audioInput.SampleRate, _settings.CwPitchHz)
+        {
+            // His switch, off unless he throws it (Tim's ruling of 2026-08-27).
+            UseJointCutter = _settings.UseJointDecoder,
+        };
 
         // **A COUNT WRITTEN BESIDE A RECORDING IS READ AS BEING ABOUT THE
         // RECORDING** (HM-DEC-091). The decoder's counters run from here until
