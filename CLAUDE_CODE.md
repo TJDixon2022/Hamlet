@@ -1,6 +1,6 @@
 # CLAUDE_CODE.md
 
-**Version 1.5. This file is byte-identical in every project.**
+**Version 1.6. This file is byte-identical in every project.**
 
 It governs how a Claude Code prompt is built, delivered, executed and reported.
 It does not govern the work itself.
@@ -381,13 +381,37 @@ named `-456-` tells him nothing. It was in the example above and in none of this
 prose until a session shipped both in an evening — §11's *name the artifact*, one
 level down.
 
-**A delivery is exactly two things: one zip, and one prompt in its own code
-block.** Nothing else is delivered outside the zip. **Missing either is a failed
-delivery**, and it is not complete until both are in the same message. A prompt
-referred to but not reproduced has not been delivered.
+**A delivery is exactly three things: one zip, one prompt in its own code block,
+and the extraction gate.** Nothing else is delivered outside the zip. **Missing
+any of the three is a failed delivery**, and it is not complete until all three
+are in the same message. A prompt referred to but not reproduced has not been
+delivered.
+
+### The extraction gate
+
+**Generated from `extract-gate.template.bat`, which is in project knowledge and
+is copied verbatim.** Only the four checks, the repository root and the
+`Generated` line change — the same three edits, and the same reason, as §1's
+harvest script.
+
+It ships **outside the zip** because it runs before there is anything extracted.
+The owner puts it in Downloads beside the zip and double-clicks it; it resolves
+§4.1's four checks against the root by filesystem, refuses without touching the
+zip if they do not all hold, and extracts only if they do.
+
+The four checks are the work instruction's, unchanged. **The same gate runs
+twice** — once against Tim's hands before extraction, once against the session's
+attention after — and the second is worth nothing without the first, because
+§4.1's gate lives inside the file that landed in the wrong place.
+
+This clause replaces the sentence above it. **The filename was the only thing
+protecting the extraction**, and §4.1 says in as many words that a name is a
+string a reader interprets while filesystem checks are not. The same argument
+applies to an owner with eight repositories and two machines open.
 
 **A delivery that cannot be scaffolded says so and names the deviation** — one
 spanning several repositories has no single root and must not pretend otherwise.
+A delivery with no single root has no gate either, and says that too.
 
 **One writer at a time.** No zip is extracted while a Code session is running. A
 Code session verifies `HEAD` is where it was when it read the tree before its
@@ -619,6 +643,12 @@ Each has happened. Each is cheap to avoid and expensive to find.
   exit state and is named as one**, and the requirement now sits in §6's prompt
   rather than only in a file read at minute zero — §7's argument, applied to the
   one rule that has to survive to the end of a run.
+- **A zip extracted over the wrong repository root.** The gate in §4.1 does not
+  catch it: the gate lives inside the file that just landed in the wrong place, and
+  by the time a session reads it the write has happened. Eight repositories across
+  two machines, and §5's answer was a naming convention — the thing §4.1 rejects in
+  its own last line. **The gate now runs before the extraction, from outside the
+  zip.**
 - **A filename without its sequence number.** `-tonight-` and `-456-` shipped in one
   evening. The number was in §5's example and in none of its prose — the same
   failure as naming an outcome instead of an artifact, one level down, and in the
