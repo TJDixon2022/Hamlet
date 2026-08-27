@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
-TASK: 8 of 8
-BALL: code
-NEXT_PASTE: none
-UPDATED: 2026-08-27T18:24:33-04:00
-NOTE: sidecar now names the conjunction that makes the junk capturable and stops claiming a bank centre where a bin was chosen; app suite green at 509
+STATE: COMPLETED
+TASK: 6 of 8
+BALL: tim
+NEXT_PASTE: OUTPUT.md -> Claude Web
+UPDATED: 2026-08-27T18:26:28-04:00
+NOTE: tasks 3, 4 and 7 barred by task 2 disconfirming its hypothesis; the stations sit below the decoder's sensitivity at their own best pitch
 
 ---
 

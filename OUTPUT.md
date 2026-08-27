@@ -1,228 +1,224 @@
-UNIT: 033 — stopped at task 2 of 9 — 2026-08-27 17:13
+UNIT: 034 — stopped at task 6 of 8 — 2026-08-27 18:24
 
 ## 1. What Claude did
 
-**Stopped, at task 2 of 9. Tasks 3 to 9 were not done and the reason is below.**
+**Stopped. Tasks 1, 2, 5, 6 and 8 done; tasks 3, 4 and 7 not done, because task
+2 barred them.**
 
 Claude Code, on the development computer, in `C:\Source\HamLet`. The prompt
 claimed `PROJECT: Hamlet`; the tree confirmed all four checks — `SHACK_FACTS.md`
 and `src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs` exist, neither
 `CoreHMI.sln` nor `MURC.sln` does. **Hamlet confirmed.** Branch `main`
-throughout, three commits, all pushed, none refused. Version 1.11.29 to 1.11.30
+throughout, five commits, all pushed, none refused. Version 1.11.30 to 1.11.31
 per HM-DEC-150.
 
 **Nothing here is evidence about the radio.** No rig was connected.
 
 **No decision was recorded under §12.1.** Section 4 carries what needs a ruling.
 
-### Why it stopped, and what the next unit inherits
+**Tasks 3 and 4 were not dropped for time. The order forbids them:** *"Do not
+build tasks 3 or 4 on a hypothesis task 2 did not confirm"*, and task 2
+disconfirmed it. Task 7 is the corpus re-run that would have measured tasks 3 and
+4, so it has nothing to measure. **Task 8, the named drop, was done.**
 
-**Task 1's baseline contradicted the order's diagnosis, and tasks 3 to 7 are
-built on that diagnosis.** Continuing into them would have been building a
-mechanism for a fault the measurement says is not there. **The stop is a sizing
-decision I made and the owner did not** — the order named task 9 as its drop and
-I dropped seven — so §8 requires it reported as one, and this is it.
+### Task 1 — the completed run, and what had been killing it
 
-**What the order expected:** an empty band filling with `E space E space I`,
-caused by acquisition picking the wrong pitch, cured by the strongest bin
-choosing and a channel hold squelching the rest.
+**1854 tests, 1826 passed, 28 failed, 18.5 minutes**, and the failing set is
+**byte-identical by name** to the stable 28.
 
-**What the tree measures:**
+**What killed the previous three attempts was my own check, not the
+environment.** At `-v n` the runner's summary reads `Total tests: / Passed: /
+Failed:`; my monitor was waiting for `Passed!`, which that verbosity never
+prints. **Two of the runs unit 1.11.30 reported as killed had very likely
+finished**, and that report's caution about them was built on my own bad grep.
+The count now comes from the summary the runner actually writes.
 
-| capture | pointed at | emits |
-|---|---|---|
-| `cw-2026-08-20-014854`, holds nothing | 600 Hz | **0 characters** |
-| `cw-2026-08-20-014935`, holds nothing | 825 Hz | **0 characters** |
+### Task 2 — the hypothesis is false, and what replaces it is worse
 
-**Both recordings that hold nothing already emit nothing through the real
-chain.** Task 7's target of nought is met on all the empty audio that exists, and
-was met before this unit touched anything. **The 93 characters unit 1.11.29
-reported were `CwPitchRanking` sweeping the bank offline** — a component built
-deliberately disconnected, which the application does not run. That figure is
-correct about the component and was carried into this order as though it
-described the app.
+This is section 3's lead and is set out there.
 
-**And the four the operator can hear are mostly pointed correctly already:**
+### Task 5 — the junk is now capturable
 
-| capture | he hears | pointed at | error | emits |
-|---|---|---|---|---|
-| `cw-2026-08-25-012823` | 500 Hz | 450.0 | **−50** | 41 characters of `E TTE TTN TN T IT K` |
-| `cw-2026-08-22-014113` | 607 Hz | 600.0 | −7 | **0** |
-| `cw-2026-08-22-014308` | 606 Hz | 575.0 | −31 | **0** |
-| `cw-2026-08-26-125941` | 403.5 Hz | 400.0 | −4 | **0** |
+The capture sheet gains `unkeyed`, which states **the conjunction nothing on it
+could state**: characters reached the screen from a pitch the survey never
+admitted keying at. Both halves were already recorded; the pair never was.
 
-**Three of the four are within 31 Hz, two within 7, and they emit nothing
-anyway.** So what refuses them is not acquisition — it is the emission floor,
-which this unit is forbidden to move and rightly so. Unit 1.11.29 measured those
-same three at window ratios of 0.44 to 0.90 against a floor of 1.40.
+**And it corrects a sentence that stopped being true yesterday.**
+`ToneForTheRecord` told every unmeasured pitch it was *the middle of the bank*.
+Since unit 1.11.30 let the strongest bin choose, an unmeasured pitch is sometimes
+a bin picked for being loudest and sometimes still a centre nobody chose. **Those
+are different claims** and the field exists to keep them apart (§0.0).
 
-**Tasks 3, 4, 5 and 7 are aimed at a channel that is not leaking**, and task 6's
-first acceptance line is already satisfied. Building a two-threshold hold and
-calibrating an acquisition floor against a two-recording corpus, to cure junk the
-measured chain does not produce, is work whose result nobody could interpret.
+### Task 6 — the list, with its own disproof at the top
 
-### Task 1 — done, and it is the most useful thing here
+Written into `CAPTURE_INVENTORY.md`. **Nothing was adjudicated.**
 
-**The engine baseline is measured rather than expected for the first time in two
-units: 28 failing of 1852, and the failing set is byte-identical by name to the
-stable list.** Nothing outside the known 28 is red, so this unit began on a known
-tree.
+**The caveat leads, because it decides what the table is worth.**
+`cw-2026-08-24-012403` is an **adjudicated anchor holding `DE KD0UN KD0UN K`**,
+and its own sidecar reads `no keying, 6 ms key down, 17 dB swing`, `inThis 0
+characters`, `text nothing read`. **On every axis the evidence has, a recording
+with a ruled-on callsign in it is indistinguishable from one holding nothing.**
 
-**The capture inventory the order asked for is written to
-`CAPTURE_INVENTORY.md`**: 12 recordings hold an adjudicated station, 19 hold a
-station nobody has ruled on, and **2 hold nothing**.
+The axis that does separate, where it exists, is **how long the key was down**:
+the meter's `no keying` verdicts sit at **4 to 7 ms** against a 60 ms dit at
+twenty words a minute. **Both known-empty recordings predate the keying meter and
+carry no `keying` line at all**, so they cannot be compared on the one axis that
+would matter.
 
-**Two is the whole third list, and that is a finding rather than an omission.**
-The order asks for the acquisition floor to be measured against every capture
-holding no adjudicated station, on the grounds that everything since has rested
-on the 2026-08-20 pair. **The grounds are right and the corpus does not exist.**
-Deciding a recording holds nothing is adjudication and it is Tim's; doing it from
-the decoder's own output would be circular, because the four captures he can hear
-read as runs of `E` and `I` too. **Three recordings were left unclassified for
-exactly that reason rather than guessed into the empty list.**
+**One real candidate: `cw-2026-08-25-012748`** — two characters in thirty
+seconds, no plausible element length, nobody claiming a station. **That is one
+candidate and not a corpus.**
 
-### Task 2 — built, and it moved two of four
+### Task 8 — `CwPitchRanking`'s fate
 
-Where nothing has ever been confirmed, the tracker now commits to the loudest bin
-in the band rather than to whatever the fine bank is centred on. `ToneHz` gained
-a middle rung: keying still wins, the chosen bin sits under it, the bank centre
-stays the bottom.
+**Task 3's check-on-the-winner was never built, so nothing needs it, and its own
+scoring is measured not to choose pitches — 0 of 4 in unit 1.11.29.** Task 2's
+harness scored candidates inline with `DecodeUngated` and `LikelihoodRatio` in
+about ten lines, which is what the class wraps.
 
-**The choice is recorded as a choice.** `CwPitchChoice` names four provenances —
-not chosen, keying, strongest bin, operator assertion — and `HasMeasuredPitch`
-keeps its old meaning, because a loud bin is where to point the filter and is not
-evidence that anybody is sending (§0.0). The report carries it, **which is task
-8's ask arriving early because the diagnosis needed it.**
+**Recommendation: delete it.** It has no caller, no prospect of one, and a
+measured record of choosing wrongly. **It is not deleted here** — that is one
+line and it is Tim's, as the order says.
 
-**The acceptance is 2 of 4, not 4 of 4, and the mechanism is not what fell
-short:**
-
-- `cw-2026-08-25-012823` confirms **keying at 450 Hz** and emits 41 characters
-  while the station sits at 500. Keying is still the chooser there, because a
-  confirmed pitch outranks a chosen one and HM-DEC-127 protects it.
-- `cw-2026-08-22-014308` is chosen by the strongest bin at **575**, one coarse
-  bin below the 600 unit 1.11.29 measured over a twelve-second tail. The survey's
-  strongest is taken over its own three-second rolling history, so the two
-  numbers are measurements of different things — worth knowing before anybody
-  treats 1.11.29's table as what the tracker sees.
-
-**An inversion letting the strongest bin outrank a confirmed keying candidate was
-written, measured, found inert, and removed** rather than left looking live.
-Making it bite means re-ordering acquisition against HM-DEC-127, which is a
-ruling and not a session's to take.
+**One argument for keeping it, stated because it is the honest counterweight:**
+it produced the 93-character figure that sent two units chasing a leak the
+application does not have. Kept, with `Winner`'s warning intact, it is a standing
+reminder that an offline sweep is not what the app runs.
 
 ## 2. What the owner should expect
 
-**A station he can hear still does not reach the decoder without him pressing
-anything.** Two of the four are now pointed within 25 Hz and all four still emit
-nothing or nonsense. **This unit did not move that.**
+**A station he can hear still does not reach the screen, and this unit found out
+why — it is not what three orders assumed.**
 
-**A dead frequency does stay quiet — and it did before this unit too.** Both
-recordings holding nothing emit zero characters through the real decoder. **If he
-is watching an empty frequency fill with `E space E space I` tonight, nothing in
-this repository reproduces it**, and closing that gap is the single most useful
-thing the next unit could do. Section 4 asks for the capture.
+**The two he can hear are not refused for being mistuned.** Swept a hertz at a
+time across the integrator's own width, the best score `cw-2026-08-22-014113`
+reaches anywhere is **0.84**, at 606 Hz — his own stated pitch — and
+`cw-2026-08-26-125941` reaches **0.46**. The floor is 1.40. **A recording holding
+nothing scores 1.05 on the same measure.**
 
-**What will look wrong and is not:** the capture sheet can now say
-`StrongestBin` where the pitch was never measured. That is the honest answer and
-it is new; it does not mean a station was found.
+**So at their own best pitch these stations are weaker evidence than an empty
+band, and the gate is refusing them correctly on what it can measure.** The fault
+is upstream of the gate, in what the envelope recovers, not in acquisition and
+not in the floor.
+
+**A dead frequency still stays quiet.** Both recordings holding nothing emit
+nought, unchanged.
+
+**What will look wrong and is not:** the capture sheet has a new `unkeyed` line
+that usually says `nothing emitted`. It is meant to be dull; it is loud only on
+the evening it matters.
 
 | | baseline | end |
 |---|---|---|
-| engine | 28 of 1852, byte-identical by name | **the 28, plus one timing intermittent** |
-| app | 509 of 509 | **not re-run — no app file was changed** |
+| engine | 28 of 1854, byte-identical by name | **a confirming run was started at 18:24 and had not returned** |
+| app | 509 of 509 | **509 of 509** |
 
-**One test moved and it is not this unit's:**
-`TheStateMonitorDoesNotHoldUpADisconnect`, which **passes three runs out of three
-in isolation**. It is a rig-disconnect timing test and the three files this unit
-changed are the tracker's acquisition rung, a new enum and one field on the
-report — nothing on that path. It is one of the seven intermittents the order
-says to diff and not chase, and this is the diff.
-
-**Neither full run printed a total, because both were killed by the environment
-rather than by anything in the suite** — so the figure above is a failing set by
-name and not a count. **The second run corroborates the first**: 19 failures
-before it was stopped, **every one of them inside the stable 28**, with no
-unknown name and with `TheStateMonitorDoesNotHoldUpADisconnect` not among them.
-
-**So three separate observations agree that this unit regressed nothing** — the
-first run's diff, the second run's clean partial, and the intermittent passing
-three times out of three on its own. **What is still not in hand is a completed
-run with a total**, and the next unit should take one before trusting 28 of
-1852 as this tree's number.
-
-No decoder file and no app file was touched.
+**Only app code and tests changed after the completed engine run**, so the engine
+figure is expected to hold at 28 with the total rising to 1856 for two added
+tests. **That is an expectation and it is labelled one.**
 
 ## 3. What you should see
 
-**The two numbers section 3 was told to lead with.**
+**Task 2's answer: what the window ratio is made of on a station pointed at its
+own pitch.** Twelve-second window, floor 1.40.
 
-**The pitch chosen on each of the four**, against 500, 607, 606 and 403.5:
-**450.0, 600.0, 575.0, 400.0** — errors of −50, −7, −31 and −4. **Two of four
-inside 25 Hz**, against the 4 of 4 the order set.
+| capture | ratio | duty | keyed/quiet | pooled over keyed hops | what |
+|---|---|---|---|---|---|
+| `cw-2026-08-22-014113` | 0.74 | 0.531 | 3.94 | 1.39 | pointed within 7 Hz, silent |
+| `cw-2026-08-26-125941` | 0.44 | 0.598 | 3.33 | 0.73 | pointed within 4 Hz, silent |
+| `cw-2026-08-24-012403` | 1.69 | 0.590 | 4.79 | 2.86 | reads — the control |
+| `cw-2026-08-20-014854` | 0.91 | 0.561 | 3.66 | **1.62** | **holds nothing** |
+| `cw-2026-08-20-014935` | 0.07 | 0.699 | 2.78 | 0.10 | holds nothing |
 
-**Characters emitted from audio holding no station: nought.** Both recordings,
-before this unit and after. That is the whole empty corpus that exists.
+**The dilution hypothesis is false, on two counts.**
 
-**Nothing else changed on screen.** No app file was altered.
+**Duty is 0.53 to 0.70 on every recording, including both that hold nothing.** A
+noise envelope has hops above and below its own fitted cut exactly as a keyed one
+does, so **duty does not distinguish a sending station from an empty band** and
+removing it removes nothing selective. There is no four-fifths of silence being
+averaged in.
 
-**Tasks 3, 4, 5, 6, 7 and 9 were not done.** Task 8 was done incidentally,
-because the diagnosis needed the provenance on the sheet.
+**And the proposed fix is worse than what it replaces.** Pooling over the keyed
+hops lifts `cw-2026-08-20-014854` — which holds nothing — from 0.91 to **1.62,
+over the floor**, while `cw-2026-08-26-125941` reaches only 0.73. **It admits an
+empty recording and still refuses a real station**, which trades the one property
+that may not be traded.
+
+**A measurement error was caught on the way and is worth recording.** The first
+cut tried was the midpoint of the envelope's decibel range, which reported duty
+near 1.0 on every capture — one unusually quiet hop drags the minimum down and
+the midpoint with it. **That would have rejected the hypothesis on an artifact of
+the cut rather than on the audio.** The cut is fitted to the two heaps instead.
+
+### And the deeper finding, which is why tasks 3 and 4 stopped
+
+| capture | at the order's pitch | best pitch found | best score |
+|---|---|---|---|
+| `cw-2026-08-22-014113` | 0.74 at 600 Hz | **606 Hz** | **0.84** |
+| `cw-2026-08-26-125941` | 0.44 at 400 Hz | 405 Hz | **0.46** |
+| `cw-2026-08-24-012403` | 1.69 at 439.8 Hz | 440.8 Hz | 1.71 |
+| `cw-2026-08-20-014854`, empty | 0.91 at 600 Hz | 586 Hz | **1.05** |
+
+**Nothing in ±30 Hz rescues either station.** The best `014113` can do is 0.84 —
+below the 1.05 an empty recording reaches. **The premise that these stations are
+"pointed at and refused" is true, and the reason is that the decoder cannot see
+them at all**, not that a threshold is misplaced.
+
+**What the four captures emit after task 3: nothing, because task 3 was not
+built.** No change satisfied the four acceptance lines, so per the order nothing
+shipped.
 
 ## 4. What's blocking us
 
-**The junk the operator is watching is not reproduced by anything in this
-repository, and until it is, no unit can fix it.**
+**The stations the operator can hear are below this decoder's sensitivity, and
+that is a different problem from every one this project has been solving.**
 
-Ruling asked for — this unblocks the most:
+Ruling asked for:
 
-> **A capture is taken of the empty frequency that is filling with characters.**
-> Every recording in the tree that a record says holds nothing emits **zero**
-> characters through the real decoder, before and after this unit. The 93- and
-> 91-character figures that motivated work instruction 033 came from
-> `CwPitchRanking` sweeping the coarse bank offline — a component built
-> disconnected, which the application does not run.
+> **The next unit measures the envelope, not the gate.** At its own best pitch a
+> station he can hear scores 0.84 where a recording holding nothing scores 1.05.
+> No threshold placed anywhere separates those two, and no acquisition change
+> reaches them — **three units have now been aimed at acquisition and a fourth
+> at the gate, and the signal was never getting through the envelope.**
 >
-> **So either the fault lives in a state no capture holds** — a tracker that has
-> confirmed and lost a station, a QSY, a long session — **or it is on a band
-> quieter or noisier than the two recordings of 2026-08-20.** Both are testable
-> and neither can be guessed at.
+> **What to measure:** what `CwProbabilisticDecoder.Envelope` recovers from
+> these two recordings against what a matched filter at the same pitch would,
+> and against what the operator's ear does. The integrator is 60 Hz wide and
+> parked (HM-OPEN, integrator width); **at 12 words a minute a 60 Hz filter is
+> far wider than the signal**, so it passes noise the station is competing with.
 >
-> **What was rejected:** building the channel hold anyway. It is a sound
-> mechanism and I could not have told whether it worked, because there is no
-> audio in the tree on which the current code misbehaves.
+> **What was rejected:** moving the floor, which would admit the empty
+> recordings first; and any further acquisition work, which cannot help a
+> station the envelope does not recover.
+
+**This supersedes the framing of the last three orders**, and it is the one thing
+that would change the answer.
 
 ---
 
-**The empty-capture corpus is two recordings and cannot honestly be widened.**
+**The empty corpus cannot be built from recorded evidence, and now there is proof
+rather than an argument.**
 
-Task 5 asks for an acquisition floor measured against every capture holding no
-adjudicated station. **That corpus does not exist, and building it is
-adjudication.** Synthesized noise is known-empty by construction and is a
-legitimate lower bound, but it is weaker evidence than a recording (HM-DEC-091):
-real band noise carries carriers and splatter that white noise does not.
+An adjudicated anchor holding a ruled-on callsign reads `no keying, 6 ms key
+down, nothing read, 0 characters` — identical to a recording holding nothing.
+**Ask 8 in the standing list, "the keying meter found a station its verdict
+denied", is now confirmed on a second capture and it is not a curiosity: it is
+what stops the corpus being built.**
 
-*Not proposed, because it needs a ruling:* whether Tim adjudicates a handful of
-the nineteen unadjudicated recordings as holding nothing, which would give the
-floor something to be measured against.
+*Not proposed, because it needs a ruling:* whether Tim listens to
+`cw-2026-08-25-012748` and the two 2026-08-20 recordings and rules on them. That
+is three minutes of listening and it unblocks the acquisition floor.
 
 ---
 
-**Letting the strongest bin outrank a confirmed keying candidate is a ruling.**
+**`CwPitchRanking` should be deleted and I have not deleted it.**
 
-Tim's ruling demotes keying from chooser to check. On `cw-2026-08-25-012823`
-keying confirms at 450 and emits 41 characters of junk while the station is at
-500 — **exactly the case the demotion is aimed at** — and the demotion does not
-reach it, because a confirmed pitch outranks a chosen one.
-
-*Not proposed:* inverting that priority at acquisition. It is one condition, it
-was written and measured inert where it sits, and making it bite means deciding
-how the amendment interacts with HM-DEC-127. That is the interaction §12.1 keeps
-away from a session.
+No caller, no prospect of one now task 3 is barred, and a measured record of
+choosing wrongly on all four captures. One line, and it is Tim's.
 
 ### Asks still outstanding
 
-Carried forward verbatim per HM-DEC-139 and HM-DEC-140. **Twenty-seven inbound
+Carried forward verbatim per HM-DEC-139 and HM-DEC-140. **Twenty-six inbound
 after this unit. The oldest is open since 2026-08-14.**
 
 1. **The sweep's `invented` column counts substitutions, not invented
@@ -231,13 +227,14 @@ after this unit. The oldest is open since 2026-08-14.**
 3. **`ANNUNCIATOR.md` renamed `PHASE` to `TASK` while HM-DEC-150 makes `PHASE`
    match the version's minor.**
 4. **`DECISIONS.md` has no record for HM-DEC-096–133, 136, 141 or 150** — and
-   HM-DEC-095, 120, 125 and 127 are all inside it. **This unit amended one of
-   them from an index row alone.**
+   HM-DEC-090, 095, 120, 125 and 127 are all inside it.
 5. **The integrator width** — settled at 45 Hz, with the sharp-peak caveat.
+   **Section 4 now points at this as the next thing to measure.**
 6. **A boxcar's nulls made two of five swept offsets pathological best cases.**
-7. **Two stations closer than 125 Hz are not named** — the operator's own item
-   five, still not attempted.
+7. **Two stations closer than 125 Hz are not named** — the operator's item five.
 8. **The keying meter** — its measurement found a station its verdict denied.
+   **Confirmed on a second capture this unit, and it is what blocks the empty
+   corpus.**
 9. **HM-OPEN-057** (2026-08-22) and **HM-OPEN-007** (2026-08-14).
 10. **The joint cutter cannot find word gaps on a compressed fist** (1.11.22).
 11. **The constrained margin is bounded and still does not separate** (1.11.22).
@@ -258,26 +255,22 @@ after this unit. The oldest is open since 2026-08-14.**
     (1.11.28).
 22. **`013347` returns a likelihood ratio of 17.2 million**, with `001520`'s
     quadrillions. Parked, raised once.
-23. **HM-DEC-095 is what stands between Hamlet and these four stations**
-    (1.11.29) — **amended by Tim 2026-08-27 and implemented this unit; it moved
-    two of four, and the fourth needs the HM-DEC-127 interaction ruled.**
-24. **HM-DEC-120's floor is calibrated for one look** (1.11.29) — **now ruled: a
-    separate acquisition floor. Not built, because there is nothing to measure it
-    against.**
-25. **`CwPitchRanking` is in the tree and called by nothing** (1.11.29) — **task
-    3 was to decide its fate and task 3 was not reached. It stays.**
-26. **No capture reproduces the junk the operator is watching**, above.
-27. **The empty-capture corpus cannot honestly be widened**, above.
+23. **No capture reproduces the junk the operator is watching** (1.11.30) —
+    **task 5 makes the next one carry the state that produced it.**
+24. **The stations he can hear are below the decoder's sensitivity**, above.
+25. **The empty corpus is blocked by the keying meter, with proof**, above.
+26. **`CwPitchRanking` should be deleted**, above.
 
-New this unit: **the missing capture**, above; **the empty corpus**, above; **the
-HM-DEC-127 interaction**, above.
+New this unit: **the sensitivity finding**, above; **the meter's second
+disproof**, above; **the ranking's deletion**, above.
 
-Closed this unit: **the engine baseline** — 28 of 1852, measured and
-byte-identical by name, after two units of expectation. **What each recording
-holds** — written to `CAPTURE_INVENTORY.md`. **Whether the application puts junk
-on an empty band** — it does not, on all the empty audio that exists.
+Closed this unit: **the completed engine run** — 1854, 28 failing,
+byte-identical, and what had been killing it was my own grep. **Whether dilution
+explains the refusal** — it does not, and the fix for it would admit an empty
+recording. **Whether the stations are mistuned** — they are not; nothing within
+30 Hz reaches the floor. **`CwPitchRanking`'s fate** — recommended for deletion.
 
 Still open: **the lock's mixed help**; **three fixtures at accepted cost**; **an
 unmeasured pitch costs `N4L`**; **the six-hertz window disagreement**;
-**`CHANGELOG.md` at 1.9.0 against 1.11.30**; **the squelch has no axis**; **the
+**`CHANGELOG.md` at 1.9.0 against 1.11.31**; **the squelch has no axis**; **the
 three morning captures of 2026-08-26**; **seven timing intermittents**.
