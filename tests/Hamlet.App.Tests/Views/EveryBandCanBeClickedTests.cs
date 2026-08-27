@@ -54,103 +54,91 @@ public sealed class EveryBandCanBeClickedTests
     [InlineData(820, "narrower still")]
     public void EveryBandCardAnswersAClickOnItsOwnCentre(int width, string what)
     {
-        var layouts = Hamlet.App.Layout.LayoutStore.Path;
+        var model = new MainWindowViewModel(new AppSettings(), null);
+        var window = new MainWindow { DataContext = model };
 
-        Hamlet.App.Layout.LayoutStore.Path =
-            Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".json");
+        // **EVERY WIDTH, BECAUSE THE FAULT ONLY EVER SHOWED AT ONE OF
+        // THEM.** This test used to be pinned to 1400 and said so: at the
+        // headless default the readout covered the last card, and that was
+        // recorded as HM-OPEN-060 rather than asserted, so the suite was
+        // green while the operator could not reach `10 m`. A band row that
+        // is reachable at one width and not another is not a reachable band
+        // row. Tim's ruling of 2026-08-25 moved the row below the readout,
+        // and this is what holds it there.
+        window.Width = width;
+        window.Height = 900;
 
-        try
+        window.Show();
+
+        for (var i = 0; i < 5; i++)
         {
-            var model = new MainWindowViewModel(new AppSettings(), null);
-            var window = new MainWindow { DataContext = model };
+            Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+            window.UpdateLayout();
+        }
 
-            // **EVERY WIDTH, BECAUSE THE FAULT ONLY EVER SHOWED AT ONE OF
-            // THEM.** This test used to be pinned to 1400 and said so: at the
-            // headless default the readout covered the last card, and that was
-            // recorded as HM-OPEN-060 rather than asserted, so the suite was
-            // green while the operator could not reach `10 m`. A band row that
-            // is reachable at one width and not another is not a reachable band
-            // row. Tim's ruling of 2026-08-25 moved the row below the readout,
-            // and this is what holds it there.
-            window.Width = width;
-            window.Height = 900;
+        var cards = window.GetVisualDescendants()
+            .OfType<Button>()
+            .Where(b => b.Classes.Contains("hm-band"))
+            .ToList();
 
-            window.Show();
+        _output.WriteLine($"{cards.Count} band cards on the screen");
 
-            for (var i = 0; i < 5; i++)
-            {
-                Avalonia.Threading.Dispatcher.UIThread.RunJobs();
-                window.UpdateLayout();
-            }
+        Assert.True(
+            cards.Count >= 5,
+            $"only {cards.Count} band cards were found, so this test is not "
+            + "looking at the band row at all");
 
-            var cards = window.GetVisualDescendants()
+        var unreachable = new List<string>();
+
+        foreach (var card in cards)
+        {
+            var band = (card.DataContext as BandButtonViewModel)?.Band.Name
+                ?? "?";
+
+            // **THE RENDER-TIME RECTANGLE, NOT THE LAYOUT-TIME ONE.**
+            // `TranslatePoint` walks the layout transform and on this window
+            // it disagrees with what is actually drawn by nineteen pixels:
+            // it puts the `80 m` card at y 249 to 292 while a hit test finds
+            // its button between 230 and 262, and the width it reports flips
+            // between 76 and 93 from one run to the next. A test that asks
+            // "what would a click here land on" has to ask it of the pixels
+            // the operator sees, which is what `TransformedBounds` is.
+            var point = TopmostReachablePoint(card, window, out var hit);
+
+            var reached = (hit as Visual)?.GetSelfAndVisualAncestors()
                 .OfType<Button>()
-                .Where(b => b.Classes.Contains("hm-band"))
-                .ToList();
+                .FirstOrDefault();
 
-            _output.WriteLine($"{cards.Count} band cards on the screen");
+            var ok = ReferenceEquals(reached, card);
 
-            Assert.True(
-                cards.Count >= 5,
-                $"only {cards.Count} band cards were found, so this test is not "
-                + "looking at the band row at all");
+            _output.WriteLine(
+                $"  DIAG {band}: topleft="
+                + card.TranslatePoint(new Point(0, 0), window)
+                + " bottomright="
+                + card.TranslatePoint(
+                    new Point(card.Bounds.Width, card.Bounds.Height), window));
+            _output.WriteLine(
+                $"  {band,-6} at {point.X,6:0},{point.Y,4:0} -> "
+                + (ok
+                    ? "its own card"
+                    : $"{(reached?.DataContext as BandButtonViewModel)?.Band.Name ?? hit?.GetType().Name ?? "nothing"}"
+                      + $" [dc={(hit as StyledElement)?.DataContext?.GetType().Name ?? "none"}"
+                      + $" hit={(hit as InputElement)?.IsHitTestVisible}"
+                      + $" chain={string.Join(" < ", ((hit as Visual)?.GetSelfAndVisualAncestors() ?? Array.Empty<Visual>()).Take(6).Select(v => v.GetType().Name))}]"));
 
-            var unreachable = new List<string>();
-
-            foreach (var card in cards)
+            if (!ok)
             {
-                var band = (card.DataContext as BandButtonViewModel)?.Band.Name
-                    ?? "?";
-
-                // **THE RENDER-TIME RECTANGLE, NOT THE LAYOUT-TIME ONE.**
-                // `TranslatePoint` walks the layout transform and on this window
-                // it disagrees with what is actually drawn by nineteen pixels:
-                // it puts the `80 m` card at y 249 to 292 while a hit test finds
-                // its button between 230 and 262, and the width it reports flips
-                // between 76 and 93 from one run to the next. A test that asks
-                // "what would a click here land on" has to ask it of the pixels
-                // the operator sees, which is what `TransformedBounds` is.
-                var point = TopmostReachablePoint(card, window, out var hit);
-
-                var reached = (hit as Visual)?.GetSelfAndVisualAncestors()
-                    .OfType<Button>()
-                    .FirstOrDefault();
-
-                var ok = ReferenceEquals(reached, card);
-
-                _output.WriteLine(
-                    $"  DIAG {band}: topleft="
-                    + card.TranslatePoint(new Point(0, 0), window)
-                    + " bottomright="
-                    + card.TranslatePoint(
-                        new Point(card.Bounds.Width, card.Bounds.Height), window));
-                _output.WriteLine(
-                    $"  {band,-6} at {point.X,6:0},{point.Y,4:0} -> "
-                    + (ok
-                        ? "its own card"
-                        : $"{(reached?.DataContext as BandButtonViewModel)?.Band.Name ?? hit?.GetType().Name ?? "nothing"}"
-                          + $" [dc={(hit as StyledElement)?.DataContext?.GetType().Name ?? "none"}"
-                          + $" hit={(hit as InputElement)?.IsHitTestVisible}"
-                          + $" chain={string.Join(" < ", ((hit as Visual)?.GetSelfAndVisualAncestors() ?? Array.Empty<Visual>()).Take(6).Select(v => v.GetType().Name))}]"));
-
-                if (!ok)
-                {
-                    unreachable.Add(band);
-                }
+                unreachable.Add(band);
             }
-
-            window.Close();
-
-            Assert.True(
-                unreachable.Count == 0,
-                $"at {width} px ({what}) these bands cannot be clicked, so the "
-                + "operator cannot tune to them: "
-                + string.Join(", ", unreachable));
         }
-        finally
-        {
-            Hamlet.App.Layout.LayoutStore.Path = layouts;
-        }
+
+        window.Close();
+
+        Assert.True(
+            unreachable.Count == 0,
+            $"at {width} px ({what}) these bands cannot be clicked, so the "
+            + "operator cannot tune to them: "
+            + string.Join(", ", unreachable));
     }
 
     /// <summary>
@@ -243,62 +231,50 @@ public sealed class EveryBandCanBeClickedTests
     [AvaloniaFact]
     public void TheBestBetBadgeTakesNoClicksAtAll()
     {
-        var layouts = Hamlet.App.Layout.LayoutStore.Path;
+        var model = new MainWindowViewModel(new AppSettings(), null);
+        var window = new MainWindow { DataContext = model };
 
-        Hamlet.App.Layout.LayoutStore.Path =
-            Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".json");
+        window.Show();
 
-        try
+        for (var i = 0; i < 5; i++)
         {
-            var model = new MainWindowViewModel(new AppSettings(), null);
-            var window = new MainWindow { DataContext = model };
-
-            window.Show();
-
-            for (var i = 0; i < 5; i++)
-            {
-                Avalonia.Threading.Dispatcher.UIThread.RunJobs();
-                window.UpdateLayout();
-            }
-
-            // Only the band row's own badges: a Border whose data context is a
-            // band. Searching by text alone also finds the prose that explains
-            // what a best bet is, which is not a badge and takes no clicks from
-            // anything.
-            var badges = window.GetVisualDescendants()
-                .OfType<Border>()
-                .Where(b => b.DataContext is BandButtonViewModel
-                    && b.GetVisualDescendants()
-                        .OfType<TextBlock>()
-                        .Any(t => t.Text is not null
-                            && t.Text.Contains(
-                                "best bet", StringComparison.OrdinalIgnoreCase)))
-                .ToList();
-
-            _output.WriteLine($"{badges.Count} best-bet badges on the screen");
-
-            // **A HEADLESS RUN OFTEN HAS NO BEST BET**, because the ranking
-            // needs spots and there are none. That makes the loop below vacuous
-            // rather than passing on evidence, and a vacuous pass that looks
-            // like a green test is worse than no test — so the count is printed
-            // and the real guarantee is the hit test in the other case, which
-            // asks what a click at each card's centre actually reaches.
-            foreach (var badge in badges)
-            {
-                _output.WriteLine(
-                    $"  hit test visible: {badge.IsHitTestVisible}");
-
-                Assert.False(
-                    badge.IsHitTestVisible,
-                    "the best-bet badge takes clicks, and it is drawn over the "
-                    + "band cards, so it takes them from the control underneath");
-            }
-
-            window.Close();
+            Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+            window.UpdateLayout();
         }
-        finally
+
+        // Only the band row's own badges: a Border whose data context is a
+        // band. Searching by text alone also finds the prose that explains
+        // what a best bet is, which is not a badge and takes no clicks from
+        // anything.
+        var badges = window.GetVisualDescendants()
+            .OfType<Border>()
+            .Where(b => b.DataContext is BandButtonViewModel
+                && b.GetVisualDescendants()
+                    .OfType<TextBlock>()
+                    .Any(t => t.Text is not null
+                        && t.Text.Contains(
+                            "best bet", StringComparison.OrdinalIgnoreCase)))
+            .ToList();
+
+        _output.WriteLine($"{badges.Count} best-bet badges on the screen");
+
+        // **A HEADLESS RUN OFTEN HAS NO BEST BET**, because the ranking
+        // needs spots and there are none. That makes the loop below vacuous
+        // rather than passing on evidence, and a vacuous pass that looks
+        // like a green test is worse than no test — so the count is printed
+        // and the real guarantee is the hit test in the other case, which
+        // asks what a click at each card's centre actually reaches.
+        foreach (var badge in badges)
         {
-            Hamlet.App.Layout.LayoutStore.Path = layouts;
+            _output.WriteLine(
+                $"  hit test visible: {badge.IsHitTestVisible}");
+
+            Assert.False(
+                badge.IsHitTestVisible,
+                "the best-bet badge takes clicks, and it is drawn over the "
+                + "band cards, so it takes them from the control underneath");
         }
+
+        window.Close();
     }
 }

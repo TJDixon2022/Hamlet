@@ -41,12 +41,8 @@ public sealed class TheCapturePressIsOnTheScreenTests
     [AvaloniaFact]
     public void ThePressIsThereAndItIsWiredToTheCommandThatKeepsTheAudio()
     {
-        var layouts = Hamlet.App.Layout.LayoutStore.Path;
-        Hamlet.App.Layout.LayoutStore.Path =
-            Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".json");
+        // There is no layout store to protect any more (Tim, 2026-08-27).
 
-        try
-        {
             var model = new MainWindowViewModel(new AppSettings(), null);
             var window = new MainWindow { DataContext = model };
 
@@ -102,19 +98,5 @@ public sealed class TheCapturePressIsOnTheScreenTests
                 "the keying meter is not on the screen, and it is the one "
                 + "instrument that can tell him a station is there when the "
                 + "decoder says nothing");
-        }
-        finally
-        {
-            try
-            {
-                File.Delete(Hamlet.App.Layout.LayoutStore.Path);
-            }
-            catch (IOException)
-            {
-                // A leftover temporary file is not a failing test.
-            }
-
-            Hamlet.App.Layout.LayoutStore.Path = layouts;
-        }
     }
 }

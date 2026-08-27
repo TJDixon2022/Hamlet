@@ -27,8 +27,7 @@ public partial class MainWindow : Window
         {
             PushVisibility();
             StartReconnect();
-            WatchTheCanvasSize();
-        };
+            };
 
         // A LAST SAVE ON THE WAY OUT (HM-DEC-089). Every change to the canvas
         // already saves as it happens, so this is a backstop rather than the
@@ -43,42 +42,6 @@ public partial class MainWindow : Window
         };
     }
 
-    /// <summary>
-    /// Tell the canvas how much of it can actually be seen (HM-DEC-089).
-    /// </summary>
-    /// <remarks>
-    /// <para>**HOW BIG THE VIEWPORT IS, IS A VIEW FACT**, and this is the same
-    /// division the key handler and the visibility push already live by: the view
-    /// knows the size, the view model decides what to do about it.</para>
-    /// <para>It fires on every layout pass, and the view model only acts when
-    /// something is genuinely out of reach, so the common case costs a
-    /// comparison.</para>
-    /// </remarks>
-    private void WatchTheCanvasSize()
-    {
-        if (this.FindControl<ScrollViewer>("CanvasView") is not { } view)
-        {
-            return;
-        }
-
-        void Fit()
-        {
-            if (DataContext is MainWindowViewModel vm)
-            {
-                vm.Canvas.FitInto(view.Viewport.Width, view.Viewport.Height);
-            }
-        }
-
-        view.PropertyChanged += (_, e) =>
-        {
-            if (e.Property == ScrollViewer.ViewportProperty)
-            {
-                Fit();
-            }
-        };
-
-        Fit();
-    }
 
     /// <summary>
     /// Kicks off the startup reconnect without waiting for it (HM-DEC-052).

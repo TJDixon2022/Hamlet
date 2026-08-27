@@ -36,38 +36,26 @@ public sealed class ThePitchControlsAreOffThePanelTests
 
     private static void With(Action<MainWindow, MainWindowViewModel> check)
     {
-        var layouts = Hamlet.App.Layout.LayoutStore.Path;
+        var model = new MainWindowViewModel(new AppSettings(), null);
 
-        Hamlet.App.Layout.LayoutStore.Path =
-            Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".json");
-
-        try
+        var window = new MainWindow
         {
-            var model = new MainWindowViewModel(new AppSettings(), null);
+            DataContext = model,
+            Width = 1400,
+            Height = 900,
+        };
 
-            var window = new MainWindow
-            {
-                DataContext = model,
-                Width = 1400,
-                Height = 900,
-            };
+        window.Show();
 
-            window.Show();
-
-            for (var i = 0; i < 6; i++)
-            {
-                Avalonia.Threading.Dispatcher.UIThread.RunJobs();
-                window.UpdateLayout();
-            }
-
-            check(window, model);
-
-            window.Close();
-        }
-        finally
+        for (var i = 0; i < 6; i++)
         {
-            Hamlet.App.Layout.LayoutStore.Path = layouts;
+            Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+            window.UpdateLayout();
         }
+
+        check(window, model);
+
+        window.Close();
     }
 
     /// <remarks>

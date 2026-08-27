@@ -111,16 +111,6 @@ public sealed class ClippingTests
     /// exactly the way a clipped one does. The widget body says so explicitly
     /// rather than leaving it to a framework default that a version bump could
     /// change under it.</para>
-    /// </remarks>
-    [Fact]
-    public void AWidgetsBodyNeverScrollsSideways()
-    {
-        var path = Path.Combine(Root(), "src", "Hamlet.App", "Views", "MainWindow.axaml");
-        var xaml = File.ReadAllText(path);
-
-        Assert.Contains(
-            "HorizontalScrollBarVisibility=\"Disabled\"", xaml, StringComparison.Ordinal);
-    }
 
     /// <remarks>
     /// <para>Proves §0.5: **a widget refuses to shrink past a floor**, so reflow
@@ -129,21 +119,6 @@ public sealed class ClippingTests
     /// The resize grip already refused to go under this number and the drawn
     /// frame did not, so the two are now the same number read from one
     /// place.</para>
-    /// </remarks>
-    [Fact]
-    public void AWidgetRefusesToShrinkBelowTheSameFloorTheGripUses()
-    {
-        var path = Path.Combine(Root(), "src", "Hamlet.App", "Views", "MainWindow.axaml");
-        var xaml = File.ReadAllText(path);
-
-        Assert.Contains(
-            "MinWidth=\"{x:Static ctl:WidgetCanvas.Smallest}\"",
-            xaml,
-            StringComparison.Ordinal);
-
-        // And the floor is a real number rather than nothing.
-        Assert.True(Hamlet.App.Controls.WidgetCanvas.Smallest > 0);
-    }
 
     /// <summary>The repository root, found by walking up from the test binary.</summary>
     private static string Root()

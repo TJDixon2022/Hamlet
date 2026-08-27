@@ -6,7 +6,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Avalonia.Controls.ApplicationLifetimes;
 using Hamlet.App.Licensing;
-using Hamlet.App.Layout;
 using Hamlet.App.Settings;
 using Hamlet.App.Startup;
 using Hamlet.App.Telemetry;
@@ -182,29 +181,19 @@ public partial class MainWindowViewModel : ObservableObject
     /// <summary>True while the CW tab is the one showing.</summary>
     public bool IsCwMode => OperatingMode == "CW";
 
+    /// <summary>True while the Digital tab is the one showing.</summary>
+    public bool IsDigitalMode => OperatingMode == "Digital";
+
+    /// <summary>True while the Voice tab is the one showing.</summary>
+    public bool IsVoiceMode => OperatingMode == "Voice";
+
     partial void OnOperatingModeChanged(string value)
     {
         OnPropertyChanged(nameof(IsCwMode));
-        OnPropertyChanged(nameof(ModeIsComing));
+        OnPropertyChanged(nameof(IsDigitalMode));
+        OnPropertyChanged(nameof(IsVoiceMode));
     }
 
-    /// <summary>
-    /// What will live on this tab, on the two that have nothing yet.
-    /// </summary>
-    /// <remarks>
-    /// **A BLANK TAB READS AS BROKEN RATHER THAN AS UNBUILT** (Tim, 2026-08-27).
-    /// One sentence and no controls: a placeholder panel would be a promise the
-    /// screen cannot keep, and this application does not put shapes on a page to
-    /// stand in for work that has not been done (§0.0).
-    /// </remarks>
-    public string ModeIsComing => OperatingMode switch
-    {
-        "Digital" => "FT8, RTTY, PSK31 and JS8 will be read here, with the "
-            + "waterfall showing you where they are sitting. Phase 3.",
-        "Voice" => "SSB, AM and FM will live here, with the things worth having "
-            + "on a voice contact rather than a Morse one. Phase 4.",
-        _ => "",
-    };
 
     /// <summary>What the operator has composed to send.</summary>
     /// <remarks>
@@ -1130,14 +1119,11 @@ public partial class MainWindowViewModel : ObservableObject
         //
         // If the operator has moved it in the meantime it is theirs, and Hamlet
         // stops taking it away.
-        if (option.Stage == ContactStage.SigningOff)
-        {
-            Canvas.Dismiss(Layout.Widgets.Phrasebook);
-        }
-        else
-        {
-            Canvas.Summon(Layout.Widgets.Phrasebook);
-        }
+        // **THE PHRASEBOOK NO LONGER ARRIVES OR LEAVES ON ITS OWN**, because
+        // there is nowhere for it to arrive (Tim, 2026-08-27: the canvas is
+        // gone). It is on `ABANDONED_WIDGETS.md` with the rest, and if it comes
+        // back it comes back as a panel somebody put there on purpose.
+        _ = option;
     }
 
     /// <summary>When the last rig heartbeat went into the record.</summary>
@@ -2056,13 +2042,6 @@ public partial class MainWindowViewModel : ObservableObject
         // create it. Never overwritten afterwards: what he wrote is his.
         ScanSegments.WriteDefaultIfMissing(SettingsStore.ScanSegmentsPath);
 
-        // THE CANVAS, LAST, because everything it places has to exist first
-        // (HM-DEC-086). Nobody ever starts on an empty one: a first run, or a
-        // layouts file that could not be read, lands on Getting started with
-        // widgets already on it.
-        Canvas = new CanvasViewModel(
-            this, LayoutStore.Load(), () => LayoutStore.Save(Canvas!.Book()),
-            OpenPanel);
 
         // **THE FIRST SPOT LOAD WAITS FOR THE RADIO** (HM-DEC-118). It used to
         // run from here, before anything was connected, so RBN was filtered and
@@ -2088,57 +2067,19 @@ public partial class MainWindowViewModel : ObservableObject
     /// the braces: called as the window closes, because rebuilding a workspace by
     /// hand is the one loss the operator would actually feel.
     /// </remarks>
-    public void KeepTheCanvas() => LayoutStore.Save(Canvas.Book());
-
-    /// <summary>
-    /// Open a panel that has just arrived on the canvas (HM-DEC-087).
-    /// </summary>
-    /// <param name="widgetId">Which widget.</param>
-    /// <remarks>
-    /// <para>**A WIDGET SOMEBODY REACHED FOR ARRIVES SHOWING ITS CONTENTS.**
-    /// They all used to arrive shut, so pulling three things out of the tray
-    /// gave three title bars and an empty canvas.</para>
-    /// <para>The panel still owns whether it is open and goes on persisting that
-    /// (HM-DEC-021), so this sets the same property the header would. The widget
-    /// ids and the panel keys are the same words on purpose, and the two that
-    /// differ are named here rather than assumed.</para>
-    /// </remarks>
-    private void OpenPanel(string widgetId)
+    public void KeepTheCanvas()
     {
-        switch (widgetId)
-        {
-            case Layout.Widgets.Map: MapExpanded = true; break;
-            case Layout.Widgets.Tape: TapeExpanded = true; break;
-            case Layout.Widgets.Waterfall: WaterfallExpanded = true; break;
-            case Layout.Widgets.Scan: ScanExpanded = true; break;
-            case Layout.Widgets.AutoCall: AutoCallExpanded = true; break;
-            case Layout.Widgets.Terminal: TerminalExpanded = true; break;
-            case Layout.Widgets.Story: StoryExpanded = true; break;
-            case Layout.Widgets.Guide: GuideExpanded = true; break;
-            case Layout.Widgets.Spots: SpotsExpanded = true; break;
-            case Layout.Widgets.Lead: LeadExpanded = true; break;
-            case Layout.Widgets.Contact: ContactExpanded = true; break;
-            case Layout.Widgets.Heard: HeardExpanded = true; break;
-            case Layout.Widgets.ReceiveHelp: ReceiveHelpExpanded = true; break;
-            case Layout.Widgets.Phrasebook: PhrasebookExpanded = true; break;
-
-            // The send panel's widget is called "send" and its stored key is
-            // "transmit", which is the one place the two lists disagree. Renaming
-            // either would change a settings key, so it is written down instead
-            // (§6.1).
-            case Layout.Widgets.Send: TransmitExpanded = true; break;
-        }
+        // **THERE IS NOTHING LEFT TO KEEP** (Tim, 2026-08-27: "I don't care when
+        // it destroys. We're abandoning all of that."). The three workspaces hold
+        // permanent panels, so a workspace cannot be rebuilt by hand and there is
+        // no arrangement to save on the way out.
+        //
+        // The method survives its own body because `MainWindow` calls it as the
+        // window closes, and a shutdown path is a poor place to discover a
+        // rename.
     }
 
-    /// <summary>
-    /// What is on the canvas, and what could be (HM-DEC-086).
-    /// </summary>
-    /// <remarks>
-    /// The widgets all bind against this view model, exactly as the panels they
-    /// used to be did, so the canvas holds their arrangement and nothing about
-    /// their contents.
-    /// </remarks>
-    public CanvasViewModel Canvas { get; }
+
 
     /// <summary>The scanner, and the stop control §0.2.1 requires.</summary>
     public ScanViewModel Scan { get; }
@@ -5516,40 +5457,21 @@ public partial class MainWindowViewModel : ObservableObject
     }
 
     /// <summary>
-    /// What is happening on widgets that are not out (HM-DEC-086).
+    /// Nothing is missing, because nothing can be away any more.
     /// </summary>
     /// <remarks>
-    /// <para>**NOTHING IS SWALLOWED AND NOTHING IS FLUNG ONTO THE CANVAS.** Morse
-    /// arriving while the terminal is in the tray is a thing the operator would
-    /// want to know, and it is not a reason for Hamlet to rearrange their
-    /// screen.</para>
-    /// <para>So it says so, once, in a line with the widget's name on a button
-    /// beside it. It is §0.5 one level up: a collapsed panel still carries its
-    /// summary, and a widget that is not out still carries its news. **The work
-    /// never stopped** — the decoder ran, the spots came in, the reports were
-    /// counted, all of it into the same view model. Bringing the widget out shows
-    /// the history rather than starting from the moment it appeared.</para>
+    /// **HM-DEC-086'S "A WIDGET THAT IS NOT OUT STILL CARRIES ITS NEWS" HAS
+    /// NOTHING LEFT TO SAY.** That rule existed because taking a panel off the
+    /// canvas removed a display and never a subscription, so a quiet line said
+    /// what was happening with one press to bring it back. The canvas is gone
+    /// and the panels that remain are permanent, so no panel can be away and no
+    /// news can accumulate off screen (Tim, 2026-08-27).
+    ///
+    /// The method survives its own body because the decode poll calls it four
+    /// times a second, and a hot path is a poor place to discover a rename.
     /// </remarks>
     private void TellTheCanvasWhatItIsMissing()
     {
-        // LIVE: it is going on right now, and while the terminal is away the
-        // operator is missing a conversation as it happens (HM-DEC-087).
-        Canvas.News(
-            Layout.Widgets.Terminal,
-            IsDecoding && !Transcript.IsEmpty
-                ? "Morse is arriving right now and the terminal is not out. Nothing "
-                  + "is being lost, so bringing it back shows all of it."
-                : "",
-            AbsentUrgency.Live);
-
-        // QUIET: the reports are counted and kept, and they will read the same
-        // whenever the panel comes back, so there is nothing to hurry for.
-        Canvas.News(
-            Layout.Widgets.Heard,
-            HasHeardReports
-                ? "Somebody heard your call, and the panel that says who is away."
-                : "",
-            AbsentUrgency.Quiet);
     }
 
     /// <summary>

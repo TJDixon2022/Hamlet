@@ -2613,410 +2613,72 @@
         </ItemsControl.ItemTemplate>
     </ItemsControl>
 
-            <!-- PRESETS SIT ABOVE THE CANVAS, NOT IN A MENU. An arrangement
-                 buried two levels into a menu is an arrangement nobody finds,
-                 and these are the fastest way out of a canvas that has got away
-                 from somebody.
+            <!-- **THREE WORKSPACES, AND THE CANVAS IS GONE** (Tim's ruling of
+                 2026-08-27: *"CW should come up in its own canvas with send on
+                 the left, receive on the right, nothing else. Data should have
+                 an empty canvas. Voice should have an empty canvas. Those tabs
+                 should work."*).
 
-                 A PRESET IS A STARTING POINT AND NEVER A DOCUMENT: pressing one
-                 loads a fresh copy every time, and dragging things about
-                 afterward does not change it. -->
-            <Border Grid.Row="3" Margin="0,0,0,10" Padding="10,7"
-                    CornerRadius="8"
-                    Background="{StaticResource HmSlateTintBrush}"
-                    BorderBrush="{StaticResource HmSlateEdgeBrush}"
-                    BorderThickness="1">
-                <Grid ColumnDefinitions="Auto,*,Auto">
+                 **WHAT WENT AND WHY.** He photographed the CW tab twice, a day
+                 apart. The first time Receive rendered `wh at the rad io is he
+                 ari ng` one or two letters to a line, squeezed beside the whole
+                 arrangement. The second time Receive was fixed and the
+                 arrangement was still underneath it — a second neighborhood map
+                 and a second CW terminal on one screen, restored from a saved
+                 layout.
 
-                    <TextBlock Grid.Column="0" Text="Start from" FontSize="12"
-                               VerticalAlignment="Center" Margin="0,0,10,0"
-                               Foreground="{StaticResource HmTextMutedBrush}" />
+                 A surface the operator arranges is a surface that can be
+                 arranged wrongly, and a panel that is also a widget can appear
+                 twice. So the canvas, the tray, the preset bar, the layout namer
+                 and every saved arrangement are removed, and the workspaces hold
+                 permanent panels instead. `ABANDONED_WIDGETS.md` records the
+                 fifteen that went.
 
-                    <StackPanel Grid.Column="1" Orientation="Horizontal"
-                                Spacing="8" VerticalAlignment="Center">
+                 **HM-DEC-086 IS SUPERSEDED FOR THESE THREE**, explicitly rather
+                 than worked around. What that ruling forbids is a puzzle handed
+                 to somebody who came to talk on the radio; CW opens on two
+                 working panels, and Digital and Voice are empty because they
+                 have nothing to do yet. -->
+            <Grid Grid.Row="4" RowDefinitions="Auto,*">
 
-                        <ItemsControl ItemsSource="{Binding Canvas.Presets}">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <StackPanel Orientation="Horizontal" Spacing="8" />
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate x:DataType="lay:CanvasLayout">
-                                    <Button Content="{Binding Name}"
-                                            FontSize="12" Padding="12,5"
-                                            ToolTip.Tip="{Binding Blurb}"
-                                            Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).Canvas.LoadCommand}"
-                                            CommandParameter="{Binding}" />
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
+                <!-- **THE TABS SIT AT THE WORKSPACE'S OWN LEFT EDGE**, which is
+                     now the window's, because the tray that used to occupy a
+                     column to their left is gone. -->
+                <ItemsControl Grid.Row="0" x:Name="ModeTabs"
+                              ItemsSource="{Binding OperatingModes}"
+                              Margin="0,0,0,8">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal" Spacing="4" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="x:String">
+                            <RadioButton Classes="hm-tab"
+                                         GroupName="OperatingMode"
+                                         Content="{Binding}"
+                                         IsChecked="{Binding
+                                             $parent[Window].((vm:MainWindowViewModel)DataContext).OperatingMode,
+                                             Converter={x:Static ctl:ModeTabConverter.Instance},
+                                             ConverterParameter={Binding},
+                                             Mode=TwoWay}" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
 
-                        <!-- The operator's own, beside Hamlet's. Same press,
-                             same fresh copy, no separate place to look. -->
-                        <ItemsControl ItemsSource="{Binding Canvas.Saved}">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <StackPanel Orientation="Horizontal" Spacing="8" />
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate x:DataType="lay:CanvasLayout">
-                                    <Button Content="{Binding Name}"
-                                            FontSize="12" Padding="12,5"
-                                            ToolTip.Tip="{Binding Blurb}"
-                                            Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).Canvas.LoadCommand}"
-                                            CommandParameter="{Binding}" />
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </StackPanel>
+                <!-- **THE CW WORKSPACE IS ONE PIECE**: Send on the left,
+                     Receive on the right, nothing else in it. Neither is a
+                     widget: not removable, not draggable, not closable, and in
+                     no catalogue. Tim: *"Makes no sense to have a CW workspace
+                     without at least those two elements."* -->
+                <Grid Grid.Row="1" x:Name="CwWorkspace"
+                      ColumnDefinitions="Auto,*"
+                      IsVisible="{Binding IsCwMode}">
 
-                    <!-- SAVING IS ONE ACTION FROM WHERE YOU ARE. Not a dialog,
-                         not a manager window: a box on the bar you are already
-                         looking at, and what is in front of you is what gets
-                         kept. -->
-                    <StackPanel Grid.Column="2" Orientation="Horizontal"
-                                Spacing="6" VerticalAlignment="Center">
-                        <TextBox Text="{Binding Canvas.NewName, Mode=TwoWay}"
-                                 Watermark="name this layout"
-                                 FontSize="12" MinWidth="170" />
-
-                        <!-- SAY WHAT IT DOES (HM-DEC-087). "Keep it" was coy
-                             about an action that is neither unusual nor
-                             delicate, and the operator had to guess at it.
-                             Saved layouts appear on this same bar beside the
-                             ones Hamlet ships. -->
-                        <Button Content="Save this layout" FontSize="12" Padding="12,5"
-                                Command="{Binding Canvas.KeepCommand}" />
-                    </StackPanel>
-                </Grid>
-            </Border>
-
-            <Grid Grid.Row="4" ColumnDefinitions="Auto,*">
-
-                <!-- THE TRAY, DOWN THE LEFT EDGE. Every widget that is not out,
-                     with a line saying what it is for, because a list of names
-                     is only useful to somebody who already knows what they
-                     mean and the person this is for does not yet (§0.7). -->
-                <Border Grid.Column="0" Width="196" Margin="0,0,10,0"
-                        Padding="8" CornerRadius="8"
-                        Background="{StaticResource HmSlateTintBrush}"
-                        BorderBrush="{StaticResource HmSlateEdgeBrush}"
-                        BorderThickness="1">
-                    <ScrollViewer VerticalScrollBarVisibility="Auto">
-                        <StackPanel Spacing="6">
-                            <TextBlock Text="Add to the canvas" FontSize="12"
-                                       FontWeight="SemiBold"
-                                       Foreground="{StaticResource HmTextPrimaryBrush}" />
-
-                            <TextBlock Text="everything is out already"
-                                       FontSize="11" TextWrapping="Wrap"
-                                       IsVisible="{Binding !Canvas.HasTray}"
-                                       Foreground="{StaticResource HmTextMutedBrush}" />
-
-                            <ItemsControl ItemsSource="{Binding Canvas.Tray}">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate x:DataType="lay:Widget">
-                                        <Button HorizontalAlignment="Stretch"
-                                                HorizontalContentAlignment="Left"
-                                                Margin="0,0,0,4" Padding="8,6"
-                                                Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).Canvas.AddCommand}"
-                                                CommandParameter="{Binding}">
-                                            <StackPanel Spacing="1">
-                                                <TextBlock Text="{Binding Title}"
-                                                           FontSize="12"
-                                                           FontWeight="SemiBold"
-                                                           TextWrapping="Wrap" />
-                                                <TextBlock Text="{Binding Blurb}"
-                                                           FontSize="10"
-                                                           TextWrapping="Wrap"
-                                                           Foreground="{StaticResource HmTextMutedBrush}" />
-                                            </StackPanel>
-                                        </Button>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                        </StackPanel>
-                    </ScrollViewer>
-                </Border>
-
-                <!-- **THE TABS BEGIN AT THE LEFT EDGE OF THE OPERATING AREA**
-                     (Tim, 2026-08-27), which is this column. Putting the strip
-                     inside it rather than across the whole row is what makes
-                     that alignment structural instead of a margin somebody has
-                     to keep in step — the tray is column nought, the operating
-                     area is column one, and the strip starts where the area
-                     starts because it is in it.
-
-                     **AND THE HEADER IS NOT IN HERE**, which is the other half.
-                     Everything above the divider sits outside this grid
-                     entirely, so a mode change cannot re-create it. That is the
-                     point of the divider and a test holds it. -->
-                <Grid Grid.Column="1" RowDefinitions="Auto,*">
-
-                    <ItemsControl Grid.Row="0" x:Name="ModeTabs"
-                                  ItemsSource="{Binding OperatingModes}"
-                                  Margin="0,0,0,8">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <StackPanel Orientation="Horizontal" Spacing="4" />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate x:DataType="x:String">
-                                <RadioButton Classes="hm-tab"
-                                             GroupName="OperatingMode"
-                                             Content="{Binding}"
-                                             IsChecked="{Binding
-                                                 $parent[Window].((vm:MainWindowViewModel)DataContext).OperatingMode,
-                                                 Converter={x:Static ctl:ModeTabConverter.Instance},
-                                                 ConverterParameter={Binding},
-                                                 Mode=TwoWay}" />
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-
-                    <!-- **RECEIVE ON THE LEFT AND SEND ON THE RIGHT**, with
-                         Receive the wider (Tim, 2026-08-27). Receive is the
-                         canvas, which is where the terminal and everything else
-                         already lives; Send is a fixed column beside it, shown
-                         only on the CW tab.
-
-                         **IT COMPOSES AND IT DOES NOT KEY.** Nothing here
-                         reaches the transmitter. §0.2 stands and HM-DEC-098
-                         stands: an automatic transmit path is a separate ruling
-                         taken after every interlock has been watched to fire
-                         into a dummy load. The panel says so on its face rather
-                         than looking live and doing nothing. -->
-                    <Grid Grid.Row="1" ColumnDefinitions="*,Auto">
-
-                    <!-- **RECEIVE IS A PANEL, NOT WHATEVER SPACE IS LEFT
-                         OVER** (Tim, 2026-08-27: "this is a mess… It needs to be
-                         clear and only show the send receive parts for now").
-
-                         Unit 1.11.23 made the canvas itself the Receive side and
-                         the canvas still carried the whole previous arrangement
-                         stacked down the left of it, so Receive got the
-                         remainder — a column narrow enough to render `wh at the
-                         rad io is he ari ng` one or two letters to a line. -->
-                    <Grid Grid.Column="0" RowDefinitions="*,Auto">
-
-                    <Border Grid.Row="0" x:Name="ReceivePanel"
-                            Padding="12" CornerRadius="8"
-                            Background="{StaticResource HmPanelBrush}"
-                            BorderBrush="{StaticResource HmSlateEdgeBrush}"
-                            BorderThickness="1">
-                        <ContentControl Content="{Binding}"
-                                        ContentTemplate="{StaticResource widget.terminal}" />
-                    </Border>
-
-                    <!-- **THE CANVAS IS STILL HERE AND STARTS EMPTY.** No widget
-                         was deleted: every one is in the tray on the far left and
-                         dragging it out still works. It takes no room while it
-                         holds nothing, which is why two panels is what he
-                         sees. -->
-                    <Panel Grid.Row="1" MaxHeight="520" Margin="0,10,0,0"
-                           IsVisible="{Binding Canvas.HasPlaced}">
-
-                    <ScrollViewer x:Name="CanvasView"
-                                  VerticalScrollBarVisibility="Visible"
-                                  HorizontalScrollBarVisibility="Auto"
-                                  ScrollViewer.AllowAutoHide="False">
-                        <ItemsControl x:Name="CanvasItems"
-                                      ItemsSource="{Binding Canvas.Placed}">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <ctl:WidgetCanvas x:Name="TheCanvas" />
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-
-                            <ItemsControl.Styles>
-                                <Style Selector="ItemsControl#CanvasItems > ContentPresenter">
-                                    <Setter Property="Canvas.Left" Value="{Binding X, DataType=vm:WidgetViewModel}" />
-                                    <Setter Property="Canvas.Top" Value="{Binding Y, DataType=vm:WidgetViewModel}" />
-                                </Style>
-                            </ItemsControl.Styles>
-
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate x:DataType="vm:WidgetViewModel">
-                                    <!-- A FLOOR ON THE WIDTH, so reflow cannot
-                                         collapse a level bar into two pixels
-                                         (§0.5). Below this a widget is not
-                                         narrow, it is lost, and finding it again
-                                         means hunting for a few pixels. Same
-                                         number the resize grip already refused
-                                         to go under, named once and read by
-                                         both. -->
-                                    <Border Width="{Binding Width}"
-                                            MinWidth="{x:Static ctl:WidgetCanvas.Smallest}"
-                                            Height="{Binding DrawnHeight}"
-                                            VerticalAlignment="Top"
-                                            Background="White"
-                                            BorderBrush="{StaticResource HmSlateEdgeBrush}"
-                                            BorderThickness="1" CornerRadius="8"
-                                            BoxShadow="0 2 8 0 #14000000">
-                                        <Grid RowDefinitions="Auto,*,Auto">
-
-                                            <!-- MOVE BY THE HEADER. The panel
-                                                 inside keeps its own, so this
-                                                 one is a thin bar carrying the
-                                                 handle and the way off. -->
-                                            <ctl:WidgetFrame Grid.Row="0"
-                                                             Background="Transparent"
-                                                             Cursor="SizeAll"
-                                                             Padding="8,4">
-                                                <Grid ColumnDefinitions="*,Auto">
-                                                    <TextBlock Grid.Column="0"
-                                                               Text="{Binding Title}"
-                                                               FontSize="10"
-                                                               VerticalAlignment="Center"
-                                                               Foreground="{StaticResource HmTextMutedBrush}" />
-                                                    <Button Grid.Column="1"
-                                                            Content="✕" FontSize="11"
-                                                            Padding="6,0" Background="Transparent"
-                                                            ToolTip.Tip="put this back in the tray"
-                                                            Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).Canvas.RemoveCommand}"
-                                                            CommandParameter="{Binding}" />
-                                                </Grid>
-                                            </ctl:WidgetFrame>
-
-                                            <!-- NO HORIZONTAL SCROLLBAR, SAID
-                                                 OUT LOUD RATHER THAN LEFT TO A
-                                                 DEFAULT. A summary scrolled off
-                                                 the edge fails §0.5's test just
-                                                 as a clipped one does: the
-                                                 operator cannot tell there was
-                                                 more. Content is constrained to
-                                                 the widget's width and has to
-                                                 reflow inside it. -->
-                                            <ScrollViewer Grid.Row="1"
-                                                          Padding="10,0,10,0"
-                                                          HorizontalScrollBarVisibility="Disabled"
-                                                          VerticalScrollBarVisibility="Auto">
-                                                <ctl:WidgetBody />
-                                            </ScrollViewer>
-
-                                            <!-- RESIZE BY THE GRIP. -->
-                                            <ctl:WidgetFrame Grid.Row="2" IsGrip="True"
-                                                             HorizontalAlignment="Right"
-                                                             Background="Transparent"
-                                                             Cursor="BottomRightCorner"
-                                                             Padding="6,2">
-                                                <TextBlock Text="◢" FontSize="11"
-                                                           Foreground="{StaticResource HmTextMutedBrush}" />
-                                            </ctl:WidgetFrame>
-                                        </Grid>
-                                    </Border>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </ScrollViewer>
-
-                    <!-- WHAT IS HAPPENING ON A WIDGET THAT IS NOT OUT
-                         (HM-DEC-086). Morse arrives and the terminal is not on
-                         the canvas: the app may not swallow it, and it may not
-                         throw the terminal onto somebody's arrangement either.
-
-                         So this is §0.5's rule one level up. A collapsed panel
-                         still carries its summary; a widget that is not out
-                         still carries its news, with one press to bring it out.
-                         Nothing was lost while it was away. -->
-                    <!-- IT SITS ON THE CANVAS (HM-DEC-087). It used to run
-                         along the bottom of the window, where a permanent strip
-                         becomes part of the frame and stops being read. Here it
-                         floats over the surface it is talking about, and it is
-                         only there at all when there is something to say.
-
-                         AND ITS LOUDNESS FOLLOWS THE NEWS. Morse arriving right
-                         now is amber with a mark beside it and reads at a
-                         glance; a tally that will keep is said quietly, because
-                         two notices that look identical teach the operator to
-                         read past both. -->
-                    <!-- WHAT THE RESTORE COULD NOT PUT BACK (HM-DEC-089).
-                         Restoring less than was saved and saying nothing is how
-                         an operator concludes the whole thing was lost and
-                         starts again by hand. -->
-                    <Border IsVisible="{Binding Canvas.HasRestoreNote}"
-                            HorizontalAlignment="Left" VerticalAlignment="Top"
-                            MaxWidth="470" Margin="14"
-                            Padding="11,7" CornerRadius="8"
-                            BoxShadow="0 2 10 0 #22000000"
-                            Background="{StaticResource HmAmberTintBrush}"
-                            BorderBrush="{StaticResource HmAmberEdgeBrush}"
-                            BorderThickness="1">
-                        <Grid ColumnDefinitions="*,Auto">
-                            <TextBlock Grid.Column="0"
-                                       Text="{Binding Canvas.RestoreNote}"
-                                       FontSize="12" TextWrapping="Wrap"
-                                       VerticalAlignment="Center"
-                                       Margin="0,0,10,0"
-                                       Foreground="{StaticResource HmTextPrimaryBrush}" />
-                            <Button Grid.Column="1" Content="Right you are"
-                                    FontSize="11" Padding="10,4"
-                                    VerticalAlignment="Center"
-                                    Command="{Binding Canvas.ClearRestoreNoteCommand}" />
-                        </Grid>
-                    </Border>
-
-                    <ItemsControl Margin="14"
-                                  HorizontalAlignment="Right"
-                                  VerticalAlignment="Bottom"
-                                  MaxWidth="470"
-                                  IsVisible="{Binding Canvas.HasAbsent}"
-                                  ItemsSource="{Binding Canvas.Absent}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate x:DataType="vm:AbsentNote">
-                                <Border Classes="hm-note"
-                                        Classes.live="{Binding IsLive}"
-                                        Margin="0,6,0,0" Padding="11,7"
-                                        CornerRadius="8"
-                                        BoxShadow="0 2 10 0 #22000000"
-                                        BorderThickness="1">
-                                    <Grid ColumnDefinitions="Auto,*,Auto">
-                                        <TextBlock Grid.Column="0"
-                                                   Text="&#x25CF;" FontSize="10"
-                                                   Margin="0,0,8,0"
-                                                   VerticalAlignment="Center"
-                                                   IsVisible="{Binding IsLive}"
-                                                   Foreground="{StaticResource HmAmberDeepBrush}" />
-                                        <TextBlock Grid.Column="1"
-                                                   Text="{Binding Says}"
-                                                   FontSize="12" TextWrapping="Wrap"
-                                                   VerticalAlignment="Center"
-                                                   Margin="0,0,10,0"
-                                                   Foreground="{StaticResource HmTextPrimaryBrush}" />
-                                        <Button Grid.Column="2"
-                                                Content="{Binding Title}"
-                                                FontSize="11" Padding="10,4"
-                                                VerticalAlignment="Center"
-                                                Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).Canvas.ShowCommand}"
-                                                CommandParameter="{Binding}" />
-                                    </Grid>
-                                </Border>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </Panel>
-                    </Grid>
-
-                    <!-- **THE OTHER TWO TABS SAY WHAT WILL LIVE THERE**
-                         (Tim, 2026-08-27). They were blank, which reads as
-                         broken rather than as unbuilt. One line each and no
-                         controls: a placeholder panel would be a promise the
-                         screen cannot keep (§0.0). -->
-                    <TextBlock Grid.Column="0" x:Name="ComingHere"
-                               IsVisible="{Binding !IsCwMode}"
-                               VerticalAlignment="Top" Margin="4,8,0,0"
-                               FontSize="13" TextWrapping="Wrap"
-                               Text="{Binding ModeIsComing}"
-                               Foreground="{StaticResource HmTextMutedBrush}" />
-
-                    <Border Grid.Column="1" x:Name="SendPanel"
-                            Width="280" Margin="10,0,0,0"
+                    <Border Grid.Column="0" x:Name="SendPanel"
+                            Width="300" Margin="0,0,10,0"
                             VerticalAlignment="Top"
                             Padding="12" CornerRadius="8"
-                            IsVisible="{Binding IsCwMode}"
                             Background="{StaticResource HmSlateTintBrush}"
                             BorderBrush="{StaticResource HmSlateEdgeBrush}"
                             BorderThickness="1">
@@ -3042,17 +2704,33 @@
                             </StackPanel>
 
                             <!-- **A BUTTON THAT LOOKS LIVE AND IS NOT IS WORSE
-                                 THAN NO BUTTON** (§0.5.1, §0.0). This says what
-                                 it is rather than implying a transmitter behind
-                                 it. -->
+                                 THAN NO BUTTON** (§0.5.1, §0.0). -->
                             <TextBlock TextWrapping="Wrap" FontSize="11"
                                        Text="This composes what you would send and nothing leaves the radio. Keying is a separate ruling, taken once every interlock has been watched to fire into a dummy load."
                                        Foreground="{StaticResource HmTextMutedBrush}" />
                         </StackPanel>
                     </Border>
 
-                    </Grid>
+                    <Border Grid.Column="1" x:Name="ReceivePanel"
+                            Padding="12" CornerRadius="8"
+                            Background="{StaticResource HmPanelBrush}"
+                            BorderBrush="{StaticResource HmSlateEdgeBrush}"
+                            BorderThickness="1">
+                        <ContentControl Content="{Binding}"
+                                        ContentTemplate="{StaticResource widget.terminal}" />
+                    </Border>
                 </Grid>
+
+                <!-- **DIGITAL AND VOICE ARE EMPTY, AND EMPTY MEANS EMPTY.** No
+                     panels, no placeholder text, no controls. Unit 1.11.24 gave
+                     each a line naming what would live there, and a line that
+                     changes nothing is decoration: a tab that does not change
+                     the screen is not a tab. -->
+                <Grid Grid.Row="1" x:Name="DigitalWorkspace"
+                      IsVisible="{Binding IsDigitalMode}" />
+
+                <Grid Grid.Row="1" x:Name="VoiceWorkspace"
+                      IsVisible="{Binding IsVoiceMode}" />
             </Grid>
         </Grid>
 

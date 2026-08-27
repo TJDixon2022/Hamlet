@@ -53,46 +53,34 @@ public sealed class TheOperatingScreenIsLaidOutAsRuledTests
 
     private static void With(int width, Action<MainWindow, List<Button>> check)
     {
-        var layouts = Hamlet.App.Layout.LayoutStore.Path;
-
-        Hamlet.App.Layout.LayoutStore.Path =
-            Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".json");
-
-        try
+        var window = new MainWindow
         {
-            var window = new MainWindow
-            {
-                DataContext = new MainWindowViewModel(new AppSettings(), null),
-                Width = width,
-                Height = 900,
-            };
+            DataContext = new MainWindowViewModel(new AppSettings(), null),
+            Width = width,
+            Height = 900,
+        };
 
-            window.Show();
+        window.Show();
 
-            for (var i = 0; i < 6; i++)
-            {
-                Avalonia.Threading.Dispatcher.UIThread.RunJobs();
-                window.UpdateLayout();
-            }
-
-            var cards = window.GetVisualDescendants()
-                .OfType<Button>()
-                .Where(b => b.Classes.Contains("hm-band"))
-                .ToList();
-
-            Assert.True(
-                cards.Count >= 7,
-                $"only {cards.Count} band cards were found, so this test is not "
-                + "looking at the band row at all");
-
-            check(window, cards);
-
-            window.Close();
-        }
-        finally
+        for (var i = 0; i < 6; i++)
         {
-            Hamlet.App.Layout.LayoutStore.Path = layouts;
+            Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+            window.UpdateLayout();
         }
+
+        var cards = window.GetVisualDescendants()
+            .OfType<Button>()
+            .Where(b => b.Classes.Contains("hm-band"))
+            .ToList();
+
+        Assert.True(
+            cards.Count >= 7,
+            $"only {cards.Count} band cards were found, so this test is not "
+            + "looking at the band row at all");
+
+        check(window, cards);
+
+        window.Close();
     }
 
     private static Visual? Neighborhood(MainWindow window)
@@ -319,13 +307,18 @@ public sealed class TheOperatingScreenIsLaidOutAsRuledTests
     {
         With(1400, (window, _) =>
         {
-            var model = (MainWindowViewModel)window.DataContext!;
+            // **THE WORKSPACE HOLDS TWO PANELS AND THERE IS NO THIRD THING
+            // IT COULD HOLD** (Tim, 2026-08-27). The canvas that used to sit
+            // under them is gone, along with the tray, the presets and every
+            // saved arrangement — so this counts the panels rather than
+            // counting what is out on a surface that no longer exists.
+            var panels = window.GetVisualDescendants()
+                .OfType<Border>()
+                .Count(b => b.Name is "ReceivePanel" or "SendPanel");
 
-            _output.WriteLine(
-                $"{model.Canvas.Placed.Count} widgets out, "
-                + $"{model.Canvas.Tray.Count} in the tray");
+            _output.WriteLine($"{panels} panels in the CW workspace");
 
-            Assert.Empty(model.Canvas.Placed);
+            Assert.Equal(2, panels);
 
             var receive = window.GetVisualDescendants()
                 .OfType<Border>().FirstOrDefault(b => b.Name == "ReceivePanel");
@@ -335,9 +328,6 @@ public sealed class TheOperatingScreenIsLaidOutAsRuledTests
 
             Assert.NotNull(receive);
             Assert.NotNull(send);
-
-            // And every widget is still offered, so nothing was deleted.
-            Assert.NotEmpty(model.Canvas.Tray);
         });
     }
 

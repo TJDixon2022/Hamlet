@@ -58,44 +58,32 @@ public sealed class TheBandRowIsWhereItWasRuledTests
 
     private static void With(int width, Action<MainWindow, List<Button>> check)
     {
-        var layouts = Hamlet.App.Layout.LayoutStore.Path;
+        var model = new MainWindowViewModel(new AppSettings(), null);
+        var window = new MainWindow { DataContext = model };
 
-        Hamlet.App.Layout.LayoutStore.Path =
-            Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".json");
+        window.Width = width;
+        window.Height = 900;
+        window.Show();
 
-        try
+        for (var i = 0; i < 6; i++)
         {
-            var model = new MainWindowViewModel(new AppSettings(), null);
-            var window = new MainWindow { DataContext = model };
-
-            window.Width = width;
-            window.Height = 900;
-            window.Show();
-
-            for (var i = 0; i < 6; i++)
-            {
-                Avalonia.Threading.Dispatcher.UIThread.RunJobs();
-                window.UpdateLayout();
-            }
-
-            var cards = window.GetVisualDescendants()
-                .OfType<Button>()
-                .Where(b => b.Classes.Contains("hm-band"))
-                .ToList();
-
-            Assert.True(
-                cards.Count >= 7,
-                $"only {cards.Count} band cards were found, so this test is not "
-                + "looking at the band row at all");
-
-            check(window, cards);
-
-            window.Close();
+            Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+            window.UpdateLayout();
         }
-        finally
-        {
-            Hamlet.App.Layout.LayoutStore.Path = layouts;
-        }
+
+        var cards = window.GetVisualDescendants()
+            .OfType<Button>()
+            .Where(b => b.Classes.Contains("hm-band"))
+            .ToList();
+
+        Assert.True(
+            cards.Count >= 7,
+            $"only {cards.Count} band cards were found, so this test is not "
+            + "looking at the band row at all");
+
+        check(window, cards);
+
+        window.Close();
     }
 
     /// <remarks>

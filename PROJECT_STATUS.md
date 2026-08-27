@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 3 of 3
-BALL: tim
-NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-27T12:11:03-04:00
-NOTE: CW tab is Receive and Send at 61 and 81 characters a line; engine untouched and byte-identical
+STATE: EXECUTING
+TASK: 2 of 3
+BALL: code
+NEXT_PASTE: none
+UPDATED: 2026-08-27T13:17:55-04:00
+NOTE: canvas fully removed and the tree builds; running the app suite to see what the deletion moved
 
 ---
 

@@ -46,19 +46,16 @@ public sealed class TheFollowedSentenceReachesTheScreenTests
     [AvaloniaFact]
     public void ItIsDrawnWhileRefillingAndGoesWhenTextResumes()
     {
-        var layouts = Hamlet.App.Layout.LayoutStore.Path;
-        Hamlet.App.Layout.LayoutStore.Path =
-            Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".json");
+        // There is no layout store to protect any more (Tim, 2026-08-27).
 
-        try
-        {
             var model = new MainWindowViewModel(new AppSettings(), null);
             var window = new MainWindow { DataContext = model };
 
             window.Show();
 
-            model.Canvas.Add(Hamlet.App.Layout.Widgets.Find(
-                Hamlet.App.Layout.Widgets.Terminal));
+            // **THE TERMINAL IS THE CW WORKSPACE NOW**, permanent rather
+            // than a widget somebody has to fetch (Tim, 2026-08-27), so there
+            // is nothing to add before looking for it.
 
             model.ListeningAfresh = true;
 
@@ -96,19 +93,5 @@ public sealed class TheFollowedSentenceReachesTheScreenTests
                 + "the moment somebody answered");
 
             Assert.False(afterwards, "the sentence outstayed the silence");
-        }
-        finally
-        {
-            try
-            {
-                File.Delete(Hamlet.App.Layout.LayoutStore.Path);
-            }
-            catch (IOException)
-            {
-                // A leftover temporary file is not a failing test.
-            }
-
-            Hamlet.App.Layout.LayoutStore.Path = layouts;
-        }
     }
 }

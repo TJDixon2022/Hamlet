@@ -12,8 +12,8 @@ using Xunit.Abstractions;
 namespace Hamlet.App.Tests.Views;
 
 /// <summary>
-/// The tabs begin where the operating area begins, and the header outlives a
-/// mode change.
+/// The tabs begin where the workspace begins, each one changes it, and the
+/// header outlives a mode change.
 /// </summary>
 /// <remarks>
 /// <para>**THE DIVIDER IS THE WHOLE POINT AND ONLY A TEST KEEPS IT TRUE** (Tim's
@@ -23,13 +23,13 @@ namespace Hamlet.App.Tests.Views;
 /// screen will say so until the operator notices a flicker.</para>
 /// <para>Nothing here hit-tests, per unit 1.11.13's rule.</para>
 /// </remarks>
-public sealed class TheTabsAndTheTrayTests
+public sealed class TheTabsAndTheWorkspacesTests
 {
     private readonly ITestOutputHelper _output;
 
     /// <summary>Creates the tests.</summary>
     /// <param name="output">Where the geometry is printed.</param>
-    public TheTabsAndTheTrayTests(ITestOutputHelper output)
+    public TheTabsAndTheWorkspacesTests(ITestOutputHelper output)
         => _output = output;
 
     private static Rect OnScreen(Visual visual, Visual root)
@@ -48,34 +48,22 @@ public sealed class TheTabsAndTheTrayTests
 
     private static void With(Action<MainWindow, MainWindowViewModel> check)
     {
-        var layouts = Hamlet.App.Layout.LayoutStore.Path;
+        var model = new MainWindowViewModel(new AppSettings(), null);
 
-        Hamlet.App.Layout.LayoutStore.Path =
-            Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".json");
-
-        try
+        var window = new MainWindow
         {
-            var model = new MainWindowViewModel(new AppSettings(), null);
+            DataContext = model,
+            Width = 1400,
+            Height = 900,
+        };
 
-            var window = new MainWindow
-            {
-                DataContext = model,
-                Width = 1400,
-                Height = 900,
-            };
+        window.Show();
 
-            window.Show();
+        Settle(window);
 
-            Settle(window);
+        check(window, model);
 
-            check(window, model);
-
-            window.Close();
-        }
-        finally
-        {
-            Hamlet.App.Layout.LayoutStore.Path = layouts;
-        }
+        window.Close();
     }
 
     private static void Settle(MainWindow window)
@@ -92,10 +80,10 @@ public sealed class TheTabsAndTheTrayTests
             .OfType<ItemsControl>()
             .FirstOrDefault(c => c.Name == "ModeTabs");
 
-    private static ScrollViewer? OperatingArea(MainWindow window)
+    private static Grid? OperatingArea(MainWindow window)
         => window.GetVisualDescendants()
-            .OfType<ScrollViewer>()
-            .FirstOrDefault(c => c.Name == "CanvasView");
+            .OfType<Grid>()
+            .FirstOrDefault(c => c.Name == "CwWorkspace");
 
     /// <remarks>
     /// Proves the alignment from render bounds rather than by eye: the tab strip
@@ -133,39 +121,32 @@ public sealed class TheTabsAndTheTrayTests
     }
 
     /// <remarks>
-    /// Proves the tray is outside the tab region and to the left of it. The
-    /// widgets are shared across modes, so the tray must not move or reload when
-    /// the mode changes.
+    /// <para>Proves there is no tray, no preset bar and no layout namer anywhere
+    /// in the three workspaces (Tim's ruling of 2026-08-27: *"I don't care when
+    /// it destroys. We're abandoning all of that."*).</para>
+    /// <para>Asserted on the text each of them put on the screen, because that
+    /// is what the operator would see if one came back.</para>
     /// </remarks>
     [AvaloniaFact]
-    public void TheTrayIsOutsideTheTabRegionAndToItsLeft()
+    public void ThereIsNoTrayNoPresetBarAndNoLayoutNamer()
     {
         With((window, _) =>
         {
-            var tabs = Tabs(window);
-
-            Assert.NotNull(tabs);
-
-            var tray = window.GetVisualDescendants()
+            var said = window.GetVisualDescendants()
                 .OfType<TextBlock>()
-                .FirstOrDefault(t => t.Text == "Add to the canvas");
-
-            Assert.NotNull(tray);
-
-            var trayAt = OnScreen(tray!, window);
-            var tabsAt = OnScreen(tabs!, window);
+                .Select(t => t.Text)
+                .Where(t => t is not null && (
+                    t.Contains("Add to the canvas", StringComparison.Ordinal)
+                    || t.Contains("Start from", StringComparison.Ordinal)
+                    || t.Contains("Save this layout", StringComparison.Ordinal)))
+                .ToList();
 
             _output.WriteLine(
-                $"tray x={trayAt.X:0}, tabs x={tabsAt.X:0}");
+                said.Count == 0
+                    ? "no tray, no preset bar, no layout namer"
+                    : string.Join(", ", said));
 
-            Assert.True(
-                trayAt.X < tabsAt.X,
-                $"the tray is at x={trayAt.X:0} and the tabs at x={tabsAt.X:0}");
-
-            // And it is not inside the strip's own subtree, which is the part an
-            // x comparison alone would not catch.
-            Assert.DoesNotContain(
-                tray!, tabs!.GetVisualDescendants().OfType<TextBlock>());
+            Assert.Empty(said);
         });
     }
 
@@ -222,6 +203,58 @@ public sealed class TheTabsAndTheTrayTests
             Assert.Same(bandBefore,
                 window.GetVisualDescendants().OfType<Button>()
                     .FirstOrDefault(b => b.Classes.Contains("hm-band")));
+        });
+    }
+
+    /// <remarks>
+    /// <para>Proves each of the three tabs changes the workspace below it, which
+    /// is what unit 1.11.24 did not deliver: it gave Digital and Voice a line of
+    /// text apiece and left the same surface underneath. **A tab that does not
+    /// change the screen is not a tab.**</para>
+    /// <para>Asserted by reference identity on returning to CW, so "still there"
+    /// is told apart from "rebuilt identically".</para>
+    /// </remarks>
+    [AvaloniaFact]
+    public void EachTabChangesTheWorkspace()
+    {
+        With((window, model) =>
+        {
+            Grid? Workspace(string name)
+                => window.GetVisualDescendants()
+                    .OfType<Grid>().FirstOrDefault(g => g.Name == name);
+
+            var cw = Workspace("CwWorkspace");
+
+            Assert.NotNull(cw);
+            Assert.True(cw!.IsEffectivelyVisible, "the CW workspace is not showing on CW");
+            Assert.False(Workspace("DigitalWorkspace")!.IsEffectivelyVisible);
+            Assert.False(Workspace("VoiceWorkspace")!.IsEffectivelyVisible);
+
+            foreach (var mode in new[] { "Digital", "Voice" })
+            {
+                model.OperatingMode = mode;
+
+                Settle(window);
+
+                _output.WriteLine(
+                    $"on {mode}: CW showing {Workspace("CwWorkspace")!.IsEffectivelyVisible}, "
+                    + $"{mode} showing {Workspace(mode + "Workspace")!.IsEffectivelyVisible}");
+
+                Assert.False(
+                    Workspace("CwWorkspace")!.IsEffectivelyVisible,
+                    $"the CW workspace is still showing on {mode}");
+
+                Assert.True(
+                    Workspace(mode + "Workspace")!.IsEffectivelyVisible,
+                    $"the {mode} workspace is not showing on {mode}");
+            }
+
+            model.OperatingMode = "CW";
+
+            Settle(window);
+
+            Assert.Same(cw, Workspace("CwWorkspace"));
+            Assert.True(Workspace("CwWorkspace")!.IsEffectivelyVisible);
         });
     }
 

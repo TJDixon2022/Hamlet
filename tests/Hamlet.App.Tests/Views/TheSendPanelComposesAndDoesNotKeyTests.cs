@@ -47,34 +47,22 @@ public sealed class TheSendPanelComposesAndDoesNotKeyTests
 
     private static void With(Action<MainWindow, MainWindowViewModel> check)
     {
-        var layouts = Hamlet.App.Layout.LayoutStore.Path;
+        var model = new MainWindowViewModel(new AppSettings(), null);
 
-        Hamlet.App.Layout.LayoutStore.Path =
-            Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".json");
-
-        try
+        var window = new MainWindow
         {
-            var model = new MainWindowViewModel(new AppSettings(), null);
+            DataContext = model,
+            Width = 1400,
+            Height = 900,
+        };
 
-            var window = new MainWindow
-            {
-                DataContext = model,
-                Width = 1400,
-                Height = 900,
-            };
+        window.Show();
 
-            window.Show();
+        Settle(window);
 
-            Settle(window);
+        check(window, model);
 
-            check(window, model);
-
-            window.Close();
-        }
-        finally
-        {
-            Hamlet.App.Layout.LayoutStore.Path = layouts;
-        }
+        window.Close();
     }
 
     private static void Settle(MainWindow window)
@@ -92,11 +80,16 @@ public sealed class TheSendPanelComposesAndDoesNotKeyTests
             .FirstOrDefault(b => b.Name == "SendPanel");
 
     /// <remarks>
-    /// Proves Send is to the right of the area Receive occupies, and narrower —
-    /// the ruling makes Receive the wider of the two.
+    /// <para>Proves the CW workspace's own order: **Send on the left, Receive on
+    /// the right** (Tim's ruling of 2026-08-27). Unit 1.11.23 had Send outside
+    /// the workspace entirely, to the right of everything, which is why it read
+    /// as detached from the tab it belongs to.</para>
+    /// <para>**HE NAMED THE ORDER AND NOT THE WIDTHS**, and Receive is the panel
+    /// he reads, so Receive is still the wider — Send is a fixed column and
+    /// Receive takes what is left.</para>
     /// </remarks>
     [AvaloniaFact]
-    public void SendSitsToTheRightOfReceiveAndIsNarrower()
+    public void SendIsOnTheLeftAndReceiveOnTheRightAndWider()
     {
         With((window, _) =>
         {
@@ -120,9 +113,9 @@ public sealed class TheSendPanelComposesAndDoesNotKeyTests
                 + $"send x={sendAt.X:0} w={sendAt.Width:0}");
 
             Assert.True(
-                receiveAt.Right <= sendAt.X + 0.5,
-                $"receive reaches {receiveAt.Right:0} and send starts at "
-                + $"{sendAt.X:0}, so one is drawn over the other");
+                sendAt.Right <= receiveAt.X + 0.5,
+                $"send reaches {sendAt.Right:0} and receive starts at "
+                + $"{receiveAt.X:0}, so one is drawn over the other");
 
             Assert.True(
                 sendAt.Width < receiveAt.Width,
@@ -132,7 +125,12 @@ public sealed class TheSendPanelComposesAndDoesNotKeyTests
     }
 
     /// <remarks>
-    /// Proves Send belongs to the CW tab: it is there in CW and gone in Digital.
+    /// <para>Proves Send belongs to the CW tab: on screen in CW and off it in
+    /// Digital.</para>
+    /// <para>**ASKED OF EFFECTIVE VISIBILITY AND NOT THE LOCAL PROPERTY.** The
+    /// panel's own `IsVisible` stays true when the workspace containing it is
+    /// hidden, so a test reading that would have reported Send as showing on
+    /// every tab. What the operator sees is whether the whole chain is visible.</para>
     /// </remarks>
     [AvaloniaFact]
     public void SendBelongsToTheCwTab()
@@ -140,23 +138,29 @@ public sealed class TheSendPanelComposesAndDoesNotKeyTests
         With((window, model) =>
         {
             Assert.Equal("CW", model.OperatingMode);
-            Assert.True(Send(window)?.IsVisible, "send is missing on the CW tab");
+            Assert.True(
+                Send(window)?.IsEffectivelyVisible,
+                "send is missing on the CW tab");
 
             model.OperatingMode = "Digital";
 
             Settle(window);
 
             _output.WriteLine(
-                $"on Digital, send visible: {Send(window)?.IsVisible}");
+                $"on Digital, send on screen: "
+                + $"{Send(window)?.IsEffectivelyVisible}");
 
             Assert.False(
-                Send(window)?.IsVisible, "send is showing on the Digital tab");
+                Send(window)?.IsEffectivelyVisible,
+                "send is showing on the Digital tab");
 
             model.OperatingMode = "CW";
 
             Settle(window);
 
-            Assert.True(Send(window)?.IsVisible, "send did not come back on CW");
+            Assert.True(
+                Send(window)?.IsEffectivelyVisible,
+                "send did not come back on CW");
         });
     }
 
