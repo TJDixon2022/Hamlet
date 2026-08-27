@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
-TASK: 6 of 6
+TASK: 5 of 5
 BALL: tim
 NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-27T14:28:50-04:00
-NOTE: blank workspace fixed at the binding, boundary shipped, two stray blocks out; engine byte-identical
+UPDATED: 2026-08-27T15:18:46-04:00
+NOTE: seven writes converted, two guards shipped with their limits stated; Tim's Send panel work is not in this tree
 
 ---
 

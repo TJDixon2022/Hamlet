@@ -1,140 +1,171 @@
-# Work instruction 029 — the tab owns the canvas
+# Work instruction 030 — a green suite over a dead screen
 
 ## 1. What Claude did
 
 Claude Code, on the development computer, in `C:\Source\HamLet`. The prompt
 claimed `PROJECT: Hamlet`; the tree confirmed all four checks — `SHACK_FACTS.md`
 and `src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs` exist, neither
-`CoreHMI.sln` nor `MURC.sln` does. Branch `main` throughout, six commits, all
-pushed, none refused. Version 1.11.25 to 1.11.26 per HM-DEC-150.
+`CoreHMI.sln` nor `MURC.sln` does. Branch `main` throughout, five commits, all
+pushed, none refused. Version 1.11.26 to 1.11.27 per HM-DEC-150.
 
 **Nothing here is evidence about the radio.** No rig was connected.
 
 **No decision was recorded under §12.1.** Section 4 carries what needs a ruling.
 
-**All six tasks ran, including the drop. Nothing was left.**
+**All five tasks ran, including the drop. Nothing was left.**
 
 **No decoder file was touched, and both proofs are in.** `git diff` over this
 unit's commits against `src/Hamlet.RadioEngine/` reports **zero files**, and the
 engine suite is **28 failing of 1841, byte-identical to the stable set**.
 
+### One mismatch, and it is the first thing to say
+
+**Tim's Send panel work is not in this tree.** The order says he has built it
+himself since unit 1.11.26 — the transmit button, Send and Clear beside the
+title, Clear coloured as an action, the macro explanations — and to read it
+before touching anything near it.
+
+**What is in `MainWindow.axaml` is exactly what unit 1.11.24 shipped**: the title
+`Send`, a text box, four buttons reading CQ, RST, 73 and Clear, and the line
+about nothing leaving the radio. No transmit button, no Send button, no macro
+explanations. The last commit before this session is my own report from 1.11.26.
+
+**Nothing near it was modified**, so the prohibition is honoured either way — but
+if his work was meant to be in the zip, it did not arrive.
+
 ## 2. What the operator sees
 
-**CW shows Send on the left and Receive on the right, and it still does after
-pressing every tab twice round.** That was the fault: one click on Digital and
-back left the screen blank, permanently.
+**Nothing changed on the screen**, which for a unit about tests is the right
+answer. No app source file was edited at all: the five commits are one governance
+file, three test files added and two converted, and a version bump.
 
-**The tab strip now sits on the top edge of a bordered region that runs down over
-the whole working area.** The selected tab merges into it — same fill, same edge
-colour, no border along the bottom where they meet, overlapping by a pixel so no
-hairline shows through. The unselected tabs keep all four edges and read as
-separate things you could press. **The region is the same rectangle on all three
-tabs** — 16, 450, 1368 by 398 — so it reads as a space rather than as three
-panels.
+**The conversion uncovered no fault.** The order says a test that goes from
+passing to failing under conversion is the most valuable thing this unit could
+produce, and none did. **The fault the conversion would have caught was fixed
+last unit** — unit 1.11.26 repaired the tab strip's binding — so the value here
+is prospective rather than immediate, and that is stated rather than dressed up.
 
-**Digital and Voice are empty**, on every visit, with the CW workspace off the
-screen and nothing of their own in its place.
+**What did change is what the suite can see.** Two guards that did not exist:
+view tests must act through controls, and every resource key must resolve.
 
-**The frequency block renders once.** `7.030 MHz · yours to use · 97.305(a)` was
-appearing twice — inside the neighborhood map where it belongs, and again as a
-loose card beneath it. The loose one is gone.
+## 3. The count
 
-**The `recent · places you have been · forget this place` row is out of the strip
-between the header and the tabs.** It is not deleted: `FavoritesViewModel`,
-`RecentPlaces` and their commands are all still in the tree and still tested.
-`ABANDONED_WIDGETS.md` records what it did.
+**Seven writes across two files drove the view model where a control existed.
+All seven converted. No test went red under conversion.**
 
-**One thing changed that nobody asked for and it is worth knowing.** Receive has
-been drawing with **no background at all** since unit 1.11.24, because
-`HmPanelBrush` was never defined — see section 4. It has a white surface now,
-which is what HM-DEC-012 says a panel body is.
+| file | writes | what they bypassed |
+|---|---|---|
+| `TheTabsAndTheWorkspacesTests` | 4 | the CW / Digital / Voice tab strip |
+| `TheSendPanelComposesAndDoesNotKeyTests` | 2 mode + 4 commands | the tab strip, and the CQ / RST / 73 / Clear buttons |
 
-## 3. Task 1's answer, and the round trip
+**Group two — genuinely about the view model, not view tests.** Every remaining
+`model.` reference in the view tests is a read or an assertion —
+`Assert.Equal(model.OperatingMode, checkedTabs[0])` and the like. Reading state to
+check it against the screen is the point; only writing it bypasses the control.
 
-**What hid the workspace, with the line:** `MainWindow.axaml`, the tab strip's
-item template. Each tab's `IsChecked` was two-way bound through
-`ModeTabConverter` with the tab's own name passed as
-**`ConverterParameter={Binding}`** — and **a converter parameter cannot itself be
-a binding in Avalonia.** It never resolved.
+**Group three — behaviour no control can reach, and it is one thing.**
+`TheFollowedSentenceReachesTheScreenTests` sets `model.ListeningAfresh`. There is
+no control for it and there should not be: it is set from
+`_decoder.ListeningAfresh`, which is **state arriving from the radio**. A test
+must arrange it, and arranging state the app observes is not bypassing anything.
+**It is neither dead behaviour nor a missing control.**
 
-**Both directions were broken, and the second one is what the operator saw:**
+**Two improvements the conversion forced, both worth naming:**
 
-- `Convert` compared the selected mode against an unresolved parameter and
-  returned false for all three tabs. **Measured: a fresh window showed
-  `CW=False, Digital=False, Voice=False`.**
-- `ConvertBack` read the same parameter as null and wrote it to `OperatingMode`.
-  **Measured: the first press of any tab set the mode to `""`**, after which
-  `IsCwMode`, `IsDigitalMode` and `IsVoiceMode` were all false, every workspace
-  was hidden, and no further press recovered it.
+- **The Send tests now read the text box the operator reads**, not the property
+  behind it. A property that is right behind a box not bound to it is no use to
+  him.
+- **The button helper searches inside the Send panel**, not the whole window.
+  `Clear` is not a unique word on this screen, and a helper that takes whichever
+  button visual order reaches first is a test that works by luck. It passed
+  before I scoped it — by luck.
 
-```
-fresh                  mode="CW"      cw.Effective=True
-after pressing Digital mode=""        cw.Effective=False
-after pressing Voice   mode=""        cw.Effective=False
-after pressing CW      mode=""        cw.Effective=False
-```
+### Task 3 — the guard, and what it is worth
 
-**It is not the container's visibility, a template recreated without its content,
-or a binding that fails to re-evaluate.** The binding evaluated correctly every
-time, on a value that had been destroyed.
+**It catches** a test that builds a `MainWindow` and then writes one of four
+properties a control owns: `OperatingMode`, `SendText`, `IsBestChance`,
+`IsWhatsNew`. That is the exact shape of the fault that got through twice.
+**12 view test files scanned, no offences.**
 
-**Why unit 1.11.25's test passed, and there are two reasons.** It asserted the
-workspace is the same object on return, **and it is** — the container survived
-and stopped being shown, so object identity was true over a blank screen. But the
-deeper reason is that **the test set `OperatingMode` on the view model directly
-and never pressed a button**, so the fault, which lives entirely in the strip's
-binding, could not be reached. **A test that drives the view model cannot see a
-broken control.**
+**It does not catch** a property nobody has added to the list, an assignment
+split over two lines, a command invoked through `SomeCommand.Execute` rather than
+by writing a property, or a control driven by a method call.
 
-**The fix**: selection is state on the tab now. Each tab is a `ModeTabViewModel`
-with its own `IsSelected`, bound straight through, and the view model keeps the
-three in step from either end. The converter is deleted.
+**It cannot catch the general case at all.** Deciding whether a control exists
+for a given property is a question about the XAML, and answering it properly
+means resolving bindings — which is what the application does at run time and
+what a text search cannot do. **So it is a named-property guard and not a proof,
+and the class doc says exactly that.**
 
-**The round trip, twice, pressing the buttons:**
+**A second test proves it can go red**, because a guard that cannot fail enforces
+nothing.
 
-| | mode | Send | Receive |
-|---|---|---|---|
-| fresh | CW | 300 × 177 | 1058 × 401 |
-| back on CW, lap 1 | CW | 300 × 177 | 1058 × 401 |
-| back on CW, lap 2 | CW | 300 × 177 | 1058 × 401 |
+**And it skips one file, its own** — which it discovered by reporting its own
+self-test data as a breach on the first run. A check that fails on its own
+fixtures is a check nobody keeps.
 
-Effective visibility and non-zero render bounds, never a control's own
-`IsVisible`. **Exactly one tab is checked at every point and it is the one
-showing.**
+### Task 4 — the resources
 
-### The boundary
+**35 resource keys referenced, 35 resolve. None missing.**
 
-| | |
-|---|---|
-| strip bottom / boundary top, 1400 px | **450 / 450** |
-| strip bottom / boundary top, 1200 px | **478 / 478** |
-| boundary, all three tabs | **16, 450, 1368 × 398 — same object** |
-| selected tab | fill `White`, border `1,1,1,0` |
-| unselected tabs | fill `#ffedeae1`, border `1,1,1,1` |
+So `HmPanelBrush` was the only one, and nothing else was sitting silently. The
+check reads the application's markup, collects every `{StaticResource}` and
+`{DynamicResource}` key, and asks **the real window** — not
+`Application.Current` — because a key can live in a control's own resources or a
+merged dictionary, and the window is what the operator looks at. A second test
+proves a made-up key does not resolve, so the search is not finding something for
+everything.
 
-**Merging the selected tab worked cleanly** and needed no compromise.
+**It does not cover** a key built in code at run time, or one named only inside a
+control theme in a library this application does not own.
 
-### The two stray blocks
+### Task 5 — what the recent-places row would cost
 
-`"7.030 MHz · yours to use" renders 1 time(s)`. `no recent-places row on the
-screen`. `divider bottom=374, strip top=386, gap=12 px` with **nothing between
-them**.
+Measured at both widths, report only. Nothing was placed.
+
+| | 1400 px | 1200 px |
+|---|---|---|
+| header, bands to tabs | **295 px tall** | **327 px tall** |
+| workspace below the tabs | 518 px | 486 px |
+| neighborhood | x=31, w=778 | x=31, w=578 |
+| radio | x=851, w=520 | x=651, w=520 |
+| gap between them | **42 px** | **42 px** |
+
+**What it would take.** The row is a `recent` label, a combo box and a `forget
+this place` button — one line, about 34 px tall with its margins. There are three
+places it could go and each costs something:
+
+- **A fourth row in the header**, under the privilege line. Costs 34 px of
+  workspace at every width, taking the CW workspace to 484 and 452. **Cheapest to
+  build and it is the one that makes the header taller**, which is what
+  HM-DEC-141 spent a unit shrinking.
+- **In the 42-pixel gap between the neighborhood and the radio.** Free
+  vertically, and 42 px is nowhere near enough for a combo box — it would force
+  the neighborhood narrower, and that panel is untouchable.
+- **Inside the radio panel**, which already carries the frequency, the mode, the
+  filter and the age note, and has 520 px of width at both sizes. **Costs no
+  header height at 1400** because the radio column is shorter than the
+  neighborhood beside it; at 1200 the two are closer and it would add about 20 px.
+
+**The third is the only one that is nearly free, and it is also the least
+obviously right** — recent places are about where you have been, and the radio
+panel is about where you are. **That is the judgement, and it is Tim's.**
 
 ### The suites
 
 | | baseline | end |
 |---|---|---|
 | engine | 28 of 1841, stable set | **28 of 1841, byte-identical** |
-| app | 493 of 493 | **500 of 500** |
+| app | 503 of 503 | **507 of 507** |
 
-Ten tests added. One existing test changed: `TheTabStripBeginsWhereTheOperatingAreaBegins`
-was measuring the tabs against the CW workspace, and once the boundary gained
-padding the panels sat thirteen pixels in while the tabs stayed on the edge they
-own. **The tabs were right and the assertion was measuring the wrong thing**; it
-compares against the boundary now.
+Four tests added, two files converted, none deleted. The baseline was **503, not
+the 500 the order expected** — unit 1.11.26 added three header tests after its
+last full run, so 500 plus three. Nothing else moved.
 
 ### Where the instruction and the tree disagree
 
+- **Tim's Send panel work is absent**, above.
+- **The app baseline was 503, not 500**, above.
 - **`CLAUDE_CODE.md` is at 1.6**, as stated. Confirmed.
 - **`AppSettings.UseJointDecoder` and `ShowKeyingSweep` both ship false**,
   untouched.
@@ -143,57 +174,54 @@ compares against the boundary now.
 
 ## 4. What's blocking us
 
-**A brush that was never defined has been silently missing for two units, and the
-class of fault matters more than the instance.**
+**The rule is enforced by a heuristic, and a heuristic is worth exactly what it
+can see.**
 
 Ruling asked for:
 
-> **Avalonia leaves an unfound `StaticResource` as no brush at all rather than
-> failing, at build or at run time.** `HmPanelBrush` was written by unit 1.11.24
-> for the Receive panel and by this unit for the workspace boundary, and it was
-> never in `App.axaml` — so Receive drew with no background for two units and
-> nothing said so, in a suite of 500 tests that includes a binding-health test.
-> **`BindingHealthTests` catches an unresolved *binding* and not an unresolved
-> *resource*.** Whether it should is the ruling.
+> **The view-test rule is guarded by a named-property list and cannot be more
+> than that.** Whether a control exists for a property is a question about the
+> XAML that only a running application can answer, so the guard checks four
+> properties by name and fails loudly when one is written. **Adding a property to
+> the list when a control gains one is now part of adding the control**, and
+> nothing enforces that step.
 
-It is defined now, as the white panel surface HM-DEC-012 describes, which until
-today existed only as the literal `White` inside `CollapsiblePanel`'s theme.
-**The fix is one line; the gap in the harness is not.**
+The guard is in the tree and its own doc states its edges. **What has no
+enforcement is the list staying current.** A control added next month whose
+property is not on the list is invisible to it, and the failure mode is silence —
+the same silence that let two faults through.
 
----
-
-**The recent-places row has no home, which is why it was left in the tree.**
-
-The ruling said to report if it has none, and it has none. It is not a CW, a
-Digital or a Voice thing, so the three workspaces are the wrong place for it. The
-header above the divider is the right kind of place and is already carrying the
-band plan, the neighborhood and the radio.
-
-**The control is unreferenced in the tree and still tested**, which is the state
-the ruling asked for rather than a loose end. `ABANDONED_WIDGETS.md` describes
-what it did — dwell rather than landing, twenty seconds taken from one relaxed CQ
-call, two visits within 200 Hz counted as one place — so a decision to rebuild it
-starts from a description.
+*Not proposed, because it needs a ruling:* whether the list should instead be
+derived, by parsing the markup for two-way bindings on view-model properties and
+treating every such property as control-owned. It would be self-maintaining and
+it would be a second XAML parser in the test suite.
 
 ---
 
-**Two units running have shipped a fault that a passing test covered.**
+**Tim's Send panel work is not in the tree, and this unit could not read it.**
 
-Unit 1.11.25 asserted this area and passed over a blank screen, because it drove
-the view model instead of the control. Unit 1.11.24 shipped a panel with no
-background, because nothing checks that a resource resolves. **Both suites were
-green and both faults reached the operator's own screen.**
+The order describes a transmit button, Send and Clear beside the title, Clear
+coloured as an action, and macro explanations. **None of that is in
+`MainWindow.axaml`.** The panel is exactly as unit 1.11.24 shipped it.
 
-*Not proposed, because it needs a ruling:* whether view-level tests should be
-required to act through the controls — pressing the button, not setting the
-property — the way this unit's round-trip test does. It is a rule about how tests
-are written rather than a change to any of them, and unit 1.11.13's
-"assert the geometry that causes the fault" is the same shape of rule.
+Nothing near it was touched, so no harm was done either way — **but the next unit
+should not assume that work is present**, and if it was meant to be in this zip
+it did not arrive.
+
+---
+
+**One test passed by luck until this unit, and nothing would have caught it.**
+
+`TheButtonsComposeWhatWouldGoOut` found its buttons by searching the whole window
+for a `Content` of `"Clear"` and taking the first. It got the right one because
+of visual order. **It is scoped to the Send panel now**, but the class of fault —
+a test that resolves an ambiguous control by accident — has no guard, and the
+view-test rule does not address it.
 
 ### Asks still outstanding
 
-Carried forward verbatim per HM-DEC-139 and HM-DEC-140. **Twenty-two inbound. The
-oldest is open since 2026-08-14.**
+Carried forward verbatim per HM-DEC-139 and HM-DEC-140. **Twenty-three inbound.
+The oldest is open since 2026-08-14.**
 
 1. **The sweep's `invented` column counts substitutions, not invented
    characters.**
@@ -220,23 +248,26 @@ oldest is open since 2026-08-14.**
 17. **HM-DEC-086's supersession needs a record** (1.11.25).
 18. **The phrasebook's arrival and the absent-widget news are gone** (1.11.25).
 19. **Engine code behind the abandoned widgets is unreachable** (1.11.25).
-20. **An unresolved `StaticResource` fails silently and nothing checks**, above.
-21. **The recent-places row has no home**, above.
-22. **Whether view tests must act through the controls**, above.
+20. **The recent-places row has no home** (1.11.26) — **three options costed
+    above**; the judgement is Tim's.
+21. **The owned-property list has no enforcement of staying current**, above.
+22. **Tim's Send panel work is not in the tree**, above.
+23. **A test resolved an ambiguous control by accident and nothing guards that
+    class**, above.
 
-New this unit: **the silent resource failure**, above; **the recent-places row's
-homelessness**, above; **the question of driving controls rather than view
-models**, above.
+New this unit: **the guard's list needs maintaining and nothing enforces it**,
+above; **the missing Send panel work**, above; **the ambiguous-control class**,
+above.
 
-Closed this unit: **the blank workspace**, diagnosed to the line and fixed. **The
-boundary**, built with the selected tab merged into it. **The duplicate frequency
-card** and **the recent-places row**, both out. **The record of what that row
-did.**
+Closed this unit: **view tests act through controls** — seven writes converted
+and the rule enforced by a test. **Resources resolve** — 35 of 35, and
+`HmPanelBrush` was the only one that ever did not. **The recent-places row's
+options**, costed at both widths.
 
 Still open: **the lock's mixed help**; **three fixtures at accepted cost**; **the
 reference and port integrator difference**; **an unmeasured pitch costs `N4L`**;
 **the six-hertz window disagreement**; **the short-character bias**; **the
-Avalonia geometry offset**; **`CHANGELOG.md` at 1.9.0 against 1.11.26**; **the
+Avalonia geometry offset**; **`CHANGELOG.md` at 1.9.0 against 1.11.27**; **the
 whole-file second pass**; **the squelch has no axis**; **the three morning
 captures of 2026-08-26**; **seven timing intermittents, none of which fired
 today**.
