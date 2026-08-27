@@ -18,202 +18,165 @@ If all four hold, say "Hamlet confirmed" and continue.
 
 ---
 
-# Work instruction 025 — the cuts, not the letters
+# Work instruction 026 — the operating screen
 
 **ISSUED: 2026-08-27. A fresh order, not an amendment.**
 
-**Four tasks; task 4 is the drop.** This unit implements option A of
-`DEV_ANALYSIS_2026-08-27.md` §4, which is in this zip and is committed by task 1.
-
-The standing goal governs every part: **he hears CW, Hamlet must decode it,
-eighty percent of the time.**
+**Four tasks; task 4 is the drop. This unit is entirely about what the operator
+sees. No decoder file is touched, and the engine's failing set being
+byte-identical at the end is the proof.**
 
 ## Why this unit exists
 
-**The unit's number: `ATEEKEND`.**
+**The unit's number: three panels the operator needs at once, on three
+different screens.**
 
-On `cw-2026-08-25-021410` — 18.2 words a minute, machine-grade fist — the gap
-classes measure **53 / 221 / 913 ms**, which is 0.81u / 3.36u / 13.9u with wide
-dead zones between them. Perfectly separable. **And the cutter still split `W`
-into `A T E`.** The rule fails when the information is perfect.
+Tim reviewed the layout on 2026-08-27 and ruled a new one. The reasoning he
+gave, in his words: **the band plan "is the essential driver for a session"**;
+the neighborhood map and the radio "are independent, so that when we go from CW
+to digital to voice, that part stays the same"; and the widgets "apply to all
+different modes… but you drag them onto the current panel."
 
-At the other end, `cw-2026-08-25-013637` at 30.6 words a minute has element and
-character gaps **four milliseconds apart** — 24 and 28 ms. `AB OVE`, `BREE Z E`.
-**No per-gap threshold can work there even in principle.**
-
-**The letters are already right. The cuts are wrong.** `USEDTOUSEAFIRM`,
-`OUTOFALT`, `TTHINKING`, `FLENX` — every one is correct elements, mis-segmented.
-And the shack-side analysis states the thing that makes this the unit:
-**the element-to-character decision has not been touched since the corpus began,
-and it is now the only stage that hasn't.** Everything around it moved this week
-— the squelch, the screen, admission, the operator's assertion — and the quality
-of the characters Hamlet emits did not.
-
-**One correction the analysis does not carry, so the session does not confuse
-the two.** Unit 1.11.9 built and measured a *validity term* added to the
-existing cutter's path score, and settled it at a safe weight of nought: at the
-only weight that helped anything, it ate `VA3VRR`. **That is not this.** This is
-a dynamic program over element boundaries with duration-fit terms, which unit
-1.11.9's own report named as the untried alternative. Do not treat the earlier
-measurement as a verdict on this one.
+**And one thing comes off the screen because it was a workaround dressed as a
+feature.** The pitch controls — "Hold this pitch", and the pitch behaviour
+attached to "I hear a station" — exist because acquisition does not work. They
+put a decoder problem in the operator's hands and asked him to press a button
+whose meaning was never explained to him. **His verdict: "It shouldn't involve
+me randomly clicking on a button I don't understand."** They come off the CW
+panel. Decoding is Hamlet's job.
 
 ## Verify this instruction against the tree
 
-**Nothing here describes the tree.** Check every claim and report mismatches,
-including where the work succeeded anyway. Every unit since 1.11.17 disproved
-part of its own order's premise and was right to.
-
-**Fixtures this unit needs may be absent.** `021410`, `013637`, `011447`,
-`011514`, `011112`–`011617`, `021825`. **Task 1 checks and says which are
-present.** Any acceptance line naming an absent fixture is reported as
-unmeasurable rather than quietly dropped.
+**Nothing here describes the tree.** Check every claim against the files and
+report any mismatch, including where the work succeeded anyway.
 
 **Expected state: 28 failing of 1841 in the engine as the stable set; 503 of 503
-in the app. Seven timing intermittents exist and four fired in the last
-session.** Do not chase any of them; diff which tests moved and never trust a
-total.
+in the app. Seven timing intermittents exist.** Do not chase any of them; diff
+which tests moved and never trust a total.
 
-**A mismatch to check and report:** the analysis asks for the keying sweep to be
-hidden behind a debug flag, but unit 1.11.12 shipped `AppSettings.ShowKeyingSweep`
-defaulting off. **Say which is true in the tree today** — either the setting was
-turned back on, or the analysis is reading older captures.
+**`AppSettings.UseJointDecoder` ships false and stays false in this unit.**
+`AppSettings.ShowKeyingSweep` ships false and stays false.
+
+**Do not verify any of this by headless hit-testing.** Unit 1.11.9 asserted this
+area green by hit test while an unexplained headless-versus-real geometry offset
+of about thirteen pixels hid three faults the operator could see. **Unit
+1.11.13's rule stands: assert the geometry that causes the fault — visual-tree
+order, render bounds, clipping ancestors — never that a point reaches a
+control.**
 
 **`DECISIONS.md` still has no record for HM-DEC-096–133, 136, 141, 150, nor
 Tim's rulings of 2026-08-25/26/27.** **`CLAUDE_CODE.md` is at version 1.4.**
 
 ## Rulings in force
 
-**Tim's ruling, 2026-08-27, by adopting this unit (flagged for veto in the
-delivery):** option A of the analysis — **the joint decoder replaces per-gap
-thresholding**, as specified in its HOW section. Option B is rejected because it
-rebuilds half the machinery and then rebuilds it again; option C is the status
-quo.
+**Tim's layout ruling, 2026-08-27.** The operating screen, top to bottom:
 
-**Tim's ruling, same date: the joint decoder ships behind a setting.**
-`AppSettings.UseJointDecoder`. **Default on if every floor and every anchor is
-green; default off, shipped anyway, with the measurement reported, if they are
-not.** The operator is at the radio tonight and a switch he can throw is worth
-more than a change he cannot compare against.
+1. **The band plan, full width, at the top.** Card widths keep the wavelength
+   proportions of HM-DEC-141 — they are meaning, not size. The `best bet now`
+   badge renders over the row rather than inside its layout flow, per unit
+   1.11.13's fix, and takes no clicks.
+2. **The neighborhood panel on the left and the radio panel on the far right**,
+   on one row beneath the band plan. **The neighborhood panel is moved, not
+   modified** — Tim: *"It looks exactly like it does now. We do not need to
+   change the neighborhood."* The radio panel is the narrower of the two and
+   shows what the rig reports: frequency, mode, filter, signal, preamp.
+3. **A divider.** Everything above it is the same in every mode and does not
+   redraw when the mode changes.
+4. **The widget tray down the left, outside the tab region**, and **the tabs —
+   CW, Digital, Voice — beginning at the left edge of the Receive panel.**
+5. **Inside the CW tab: Receive on the left, Send on the right.** Receive is the
+   wider. Both are permanent on that tab.
 
-**The §0.0 guard, and it is not negotiable.** **No language model. No
-letter-frequency prior. No dictionary. No word list.** The only knowledge
-admitted is the Morse table and the fitted clock. A decoder with an English
-prior invents plausible words from marginal audio, which is the confident lie
-this project exists to prevent. **The validity term stays small against the
-timing terms, and `cw-2026-08-25-021825` — noise — must still yield blocks
-rather than letters. If the guard and the acceptance conflict, the guard wins
-and the unit ships less.**
+**Tim's ruling on the pitch controls, same date:** they come off the CW panel.
+**"Hold this pitch" is removed from the panel entirely.** "I hear a station"
+**keeps its capture behaviour and loses its pitch behaviour** — see task 3.
 
-**HM-DEC-120 is untouched and upstream.** The squelch, the gate and the silence
-property are not part of this unit. Both silence controls emit nothing, checked
-and stated.
+**Tim's ruling on the tray, same date:** the widgets are shared across modes and
+are dragged onto whichever panel is showing. **The tray is condensed later; this
+unit does not remove any widget.**
 
-**Rejected already, do not revisit:** the validity term on the existing cutter
-(1.11.9, safe weight nought); gap-cluster retuning (clusters merge at 30 WPM —
-`013637` is the proof); six admission axis families; the envelope as the
-survey's input; per-pass scoring; agreement between fitted units; gating on
-`spanLlr` (inverted on strong signals — 004808 soup at 8,000–29,000 against real
-letters at 41–437).
+**HM-DEC-141 is untouched.** **HM-DEC-148's precedent for the advisory area is
+untouched.** **No decoder behaviour changes.**
+
+**Rejected already, do not revisit:** moving the neighborhood panel's contents;
+shrinking the band cards to make room (make room around them); rebuilding the
+keying meter; re-enabling the sweep panel.
 
 ## Status cadence
 
 Per §4.5: after each task, before the next, update `PROJECT_STATUS.md` —
 `STATE`, `TASK: n of m`, `BALL`, `UPDATED` from the clock, `NOTE` saying what is
-moving. Same every ten minutes while a task runs. **This is the largest single
-change to the decode path in the project's history; the cadence is how Tim knows
-it is progressing rather than stuck.**
+moving. Same every ten minutes while a task runs.
 
 ## The tasks
 
-### Task 1 — the floors green, and the four fixtures on the record
+### Task 1 — the persistent header
 
-Commit `DEV_ANALYSIS_2026-08-27.md` to the repository root.
+Band plan at the top, full width. Neighborhood left, radio right, on the row
+below it. Divider beneath.
 
-Check for `021410`, `013637`, `011447`, `011514`, `011112`–`011617` and
-`021825`; commit and floor any that are present in this zip or already in the
-tree, and **name any that are absent**.
+**The neighborhood panel is relocated as a whole control. Its contents,
+rendering and behaviour are not touched** — if relocating it requires any change
+to the control itself, **report exactly what and why** rather than adjusting it
+quietly.
 
-**Record what each of the four named failures reads today**, verbatim, so the
-after is comparable: `021410`'s `ATEEKEND`, `TTHINKING`, `FLENX`; `013637`'s
-`AB OVE`, `BREE Z E`; `011447`'s `USEDTOUSEAFIRM`; `011514`'s `OUTOFALT`.
+**Assert, at the application's default width and at a narrower one:** the
+visual-tree order is band plan, then the neighborhood-and-radio row, then the
+divider; every band card's label renders inside its own card, `10 m` included;
+the badge's bounds sit inside every clipping ancestor; nothing occludes anything
+else. **Name the clipping ancestor of the badge in the report.**
 
-**Every floor and every anchor green before the first edit**, diffed rather than
-totalled. If anything is red that is not a known intermittent, **stop and report
-it** — this unit must not begin on an unstable tree.
+Build and run; record the baseline by diffing which tests fail.
 
-### Task 2 — the joint decoder
+### Task 2 — the tabs and the tray
 
-Implement the analysis's HOW exactly:
+**The tray sits outside the tab region, down the left**, holding the existing
+widgets. **The tab strip begins at the left edge of the Receive panel** — assert
+that alignment from render bounds, not by eye.
 
-- **State**: position between elements. **Transition**: emit character C
-  spanning elements i..j, allowed only if the mark pattern of i..j is C's
-  pattern.
-- **Transition cost**: the sum of duration-fit terms — each mark against 1u or
-  3u, each internal gap against 1u, the boundary gap against 3u for a character
-  or 7u for a word — as log-likelihoods around the fitted clock, with a per-fist
-  spread learned from the recent stream. Plus a **small** flat validity term,
-  and a matching cost for the `■` hypothesis **so an unreadable span loses to a
-  block rather than to an invented letter**.
-- **Streaming**: finalise with a lag of about two characters, emitting on
-  traceback agreement, at the pipeline's existing cadence.
-- **Nothing already settled is retracted.** §0.0: the display does not un-say
-  things.
+Switching tabs must redraw **only** the area below the tab strip. **Assert that
+the band plan, the neighborhood panel and the radio panel are not re-created
+when the mode changes** — that is the whole point of the divider, and a test is
+the only thing that will keep it true.
 
-Behind `AppSettings.UseJointDecoder`, per the ruling.
+**A widget dropped on a panel stays with that mode.** Drop it on CW, switch to
+Digital and back: it is still on CW and was never on Digital. **If the existing
+widget machinery cannot carry per-mode placement, report that and implement one
+shared arrangement**, saying plainly which was built.
 
-**Acceptance, and the floors are the judge:**
+### Task 3 — the pitch controls come off
 
-- `021410`: `ATEEKEND` → `WEEKEND`, `TTHINKING` → `THINKING`, `FLENX` → `FLEX`;
-- `013637`: `AB OVE` → `ABOVE`, `BREE Z E` → `BREEZE`;
-- `011447`: `USEDTOUSEAFIRM` → `USED TO USE A FIRM`;
-- **every floor and every anchor the same or better** — the two rag-chew
-  evenings, the W1AW seven, `KD0UN`, the synthetic file;
-- **`021825` still yields blocks, not letters**;
-- both silence controls silent; chunk invariance intact.
+**Remove "Hold this pitch" from the panel.**
 
-**If the acceptance is met, the setting defaults on. If it is not, the setting
-defaults off and ships anyway, with a per-fixture table of what improved and
-what regressed.** Shipping it off is not a failure; shipping it on while an
-anchor is red is.
+**"I hear a station" keeps banking the last half minute and adding to tonight's
+list. It stops setting the decode pitch.** The engine capability added in unit
+1.11.21 stays in the code and stays reachable by tests; **only the panel's use
+of it goes.** Nothing about admission, the tracker or the decoder changes.
 
-### Task 3 — the constrained margin, which falls out of the table
+**A capture taken after this task must not report an operator-asserted pitch**,
+because the operator can no longer assert one from the panel. Assert it.
 
-The analysis §2 measured margins of 0.1–3.4 on right answers and 0.0–1.9 on
-wrong ones — no separation — because second-best is free to re-segment, so
-there is always a trivially different alternative.
+### Task 4 — the send panel *(the drop candidate)*
 
-**Constrain it: second-best is the best path forced to a different character
-over the same span and the same element boundaries.** Task 2's dynamic program
-produces exactly this as a by-product.
+Receive is the existing terminal, relocated. **Send is new: a text line and
+buttons for CQ, RST, 73 and Send.**
 
-Log it beside the existing figures, **clamped** — the sheet has printed
-`6:27306879.3` and `■:-1876275.2`. **Report its distribution**, correct
-characters against pileup characters, on the logged corpus. The analysis's own
-target is an order of magnitude of separation. **Measure and report; change no
-behaviour on it.**
+**It composes and displays only. It does not key the radio.** Transmit is
+outside this unit and outside every unit so far; **if wiring it appears
+possible, do not**, and put the ask in section 4.
 
-### Task 4 — the three one-sentence items *(the drop candidate)*
-
-1. **After a Clear, `textCovers` still says "everything read since the decoder
-   started listening"** while the text starts at the clear. Say "since the
-   transcript was cleared at hh:mm:ss".
-2. **The keying sweep** — per the mismatch above, ensure it is behind its
-   setting and that the setting is off.
-3. **`competing: none found` appears in every sidecar of the week**, including
-   files with eight admitted tones and a station 2.4 dB from the tracked one.
-   **Either report what the survey saw or drop the field** — a field that always
-   says the same thing is worse than no field.
-
-**Dropped whole if time runs out, and the report says so.**
+**Dropped whole if time runs out, and the report says so** — the CW tab then
+shows Receive alone, which is what it shows today.
 
 ## Parked — do not touch, do not raise
 
-Admission and the six dead axis families; the survey; the squelch and the gate;
-the operator's assertion path; the meter's rebuild; the integrator width; the
-whole-file second pass; `001520`'s quadrillions and `013347`'s 17.2 million;
-the reference and port integrator difference; the short-character bias; the
-Avalonia offset; `CHANGELOG.md`; the seven intermittents; HM-OPEN-057;
-HM-OPEN-059; **the panel beyond task 4's items.**
+Every decoder question: admission, the six axis families, the gate, the squelch,
+the joint decoder, the constrained margin, the tracker, the meter's rebuild, the
+integrator width, `001520`'s quadrillions, `013347`'s 17.2 million, the whole-
+file second pass, the reference and port difference, the short-character bias.
+Also: `CHANGELOG.md`; the seven intermittents; HM-OPEN-057; HM-OPEN-059; the
+Avalonia geometry offset itself; **condensing the tray**; **the Rig tab** — the
+radio panel is permanent in the header and rig settings stay a tray widget.
 
 A parked item that blocks a task is raised once, and says it was parked.
 
@@ -221,15 +184,14 @@ A parked item that blocks a task is raised once, and says it was parked.
 
 Standing prohibitions are `CLAUDE.md`'s and are not retyped. Unit-specific:
 
-- **No language model, no letter-frequency prior, no dictionary, no word list.**
-  The guard outranks the acceptance.
-- **Do not default the setting on with any floor or anchor red.**
-- **Do not retract settled text.**
-- **Do not touch the squelch, the gate, admission, or the silence property.**
-- **Do not tune the validity term upward to reach an acceptance line** — if the
-  timing terms cannot do it, report that they cannot.
-- **Do not chase an intermittent.**
-- **Floors only rise; anchors stay green; chunk invariance holds.**
+- **Do not touch any decoder file.** The byte-identical failing set is the
+  claim.
+- **Do not modify the neighborhood panel.** Move it; report anything that
+  forces a change.
+- **Do not shrink the band cards.** HM-DEC-141's proportions are meaning.
+- **Do not verify by headless hit-testing.**
+- **Do not wire Send to the transmitter.**
+- **Do not remove a widget from the tray.**
 
 ## Committing, pushing, reporting
 
@@ -239,13 +201,15 @@ push is reported as refused, with the reason.
 Report per `CLAUDE_CODE.md` §8 — read the file's own section count — to
 `output.md` at the repository root, overwritten and printed.
 
-**Section 3 leads with the four named failures, before and after, verbatim.**
-**Section 2 says whether the setting ships on or off, and what the operator
-should expect to see differently at the radio tonight.**
+**Section 2 leads with what the screen looks like top to bottom**, because that
+is the deliverable. **Section 3 leads with the assertions: the visual-tree
+order, the band labels inside their cards, the badge's clipping ancestor, the
+tab strip's alignment to Receive, and that the header is not re-created on a
+mode change.**
 
 ### Asks still outstanding
 
-Carried forward verbatim per HM-DEC-139 and HM-DEC-140. **Eighteen inbound. The
+Carried forward verbatim per HM-DEC-139 and HM-DEC-140. **Nineteen inbound. The
 oldest is open since 2026-08-14.**
 
 1. **The sweep's `invented` column counts substitutions, not invented
@@ -254,36 +218,36 @@ oldest is open since 2026-08-14.**
 3. **`ANNUNCIATOR.md` renamed `PHASE` to `TASK` while HM-DEC-150 makes `PHASE`
    match the version's minor.**
 4. **`DECISIONS.md` has no record for HM-DEC-096–133, 136, 141 or 150 — nor for
-   Tim's rulings of 2026-08-25/26/27, including the two this unit acts under.**
+   Tim's rulings of 2026-08-25/26/27, including the three this unit acts
+   under.**
 5. **The tone tracker** — six axis families measured; the question is a design
-   one and the operator's assertion is the way round it meanwhile.
+   one, and **the operator's assertion is no longer available as the way round
+   it from the panel.**
 6. **The integrator width** — settled at 45 Hz, with the sharp-peak caveat.
 7. **The guard's gap is two to one**, calibrated on two empty captures.
 8. **A boxcar's nulls made two of five swept offsets pathological best cases.**
-9. **Two stations closer than 125 Hz are not named** — the operator's item five,
-   and `competing` is task 4's third item.
-10. **The keying meter** — 17 contradictions, including `no keying` on both of
-    the readable captures of 2026-08-27.
+9. **Two stations closer than 125 Hz are not named.**
+10. **The keying meter** — behind its setting, off; the rebuild is its own unit.
 11. **HM-OPEN-057** (2026-08-22) and **HM-OPEN-007** (2026-08-14).
-12. **The gate opens on everything, including two empty recordings** (1.11.18).
-13. **An asserted pitch does not relax the decoder's own gate** — `014113` is
+12. **The gate opens on everything, including two empty recordings.**
+13. **The joint cutter cannot find word gaps on a compressed fist** —
+    HM-DEC-115 arriving a second time. **Whether the cutter should fit its own
+    three gap classes is Tim's and is unruled.**
+14. **The constrained margin is bounded and still does not separate.**
+15. **`011447` and `011514` are absent**, and `021410` does not contain the text
+    three acceptance lines were written against.
+16. **A mutable static in the decode path cannot be measured under xUnit.**
+17. **An asserted pitch does not relax the decoder's own gate** — `014113` is
     pointed within seven hertz of its station and still emits nothing.
-    **Tim's, without exception; still unruled.**
-14. **The quantisation statistic's unit search is biased to its own lower
-    bound** (1.11.21).
-15. **`spanLlr` inverts on strong signals** — do not gate on it.
-16. **Raw scores still need clamping** — task 3 clamps the new one.
-17. **Seven timing intermittents, four fired in one session.** A full-run total
-    is unreadable; worth its own small unit.
-18. **The mark and gap classifiers do not share a unit** — a forced-unit sweep
-    across 8–44 WPM cannot reproduce Hamlet's signature with any single unit.
-    **Task 2 is the fix if the joint decoder lands.**
+18. **Whether Send should ever key the transmitter** — task 4 composes only.
+19. **Whether a dropped widget's placement is per-mode or shared** — task 2
+    builds per-mode if the machinery allows and says which was built.
 
-Still open: **the lock's mixed help**; **three fixtures at accepted cost**;
-**the reference and port integrator difference**; **an unmeasured pitch costs
-`N4L`**; **the six-hertz window disagreement**; **the short-character bias**;
-**the Avalonia geometry offset**; **`CHANGELOG.md` at 1.9.0 against 1.11.21**;
-**the whole-file second pass**; **the squelch has no axis**; **the three morning
-captures of 2026-08-26**.
+Still open: **three fixtures at accepted cost**; **the reference and port
+integrator difference**; **an unmeasured pitch costs `N4L`**; **the six-hertz
+window disagreement**; **the short-character bias**; **the Avalonia geometry
+offset**; **`CHANGELOG.md` at 1.9.0 against 1.11.22**; **the whole-file second
+pass**; **the squelch has no axis**; **the three morning captures of
+2026-08-26**.
 
 **If you finish every task, stop and report. Do not start the next unit.**

@@ -2186,7 +2186,7 @@
 
              So: the strip above stays put, a bar of starting points sits under
              it, and everything else is theirs to arrange. -->
-        <Grid Grid.Row="1" RowDefinitions="Auto,Auto,Auto,*">
+        <Grid Grid.Row="1" RowDefinitions="Auto,Auto,Auto,Auto,*">
 
             <!-- THE STRIP IS NOT PART OF THE CANVAS and cannot be closed or
                  moved. Band, frequency, mode, where you are and whether you may
@@ -2203,15 +2203,43 @@
                  Shakespeare, then the bands. The row had drifted below the
                  readout, about two hundred pixels down the window, so the first
                  control anybody reaches for was the last thing they found. -->
+            <!-- **THE HEADER IS THE SAME IN EVERY MODE** — Tim's ruling of
+                 2026-08-27. The band plan is "the essential driver for a
+                 session"; the neighborhood and the radio "are independent, so
+                 that when we go from CW to digital to voice, that part stays the
+                 same". So they sit above the divider and nothing below it can
+                 move them.
+
+                 **NEIGHBORHOOD LEFT AND WIDER, RADIO RIGHT AND NARROWER**, on
+                 one row. The neighborhood is moved and not modified: it is the
+                 same control with the same contents, hosted here instead of on
+                 the canvas.
+
+                 **THE PRIVILEGE LINE KEEPS ITS ROW BENEATH THEM.** The ruling
+                 names two panels for this row and says nothing about where the
+                 licence sentence goes, and HM-DEC-086 makes it permanent in the
+                 top strip — whether you may transmit is not decoration and does
+                 not get dropped for space. It stays above the divider, which is
+                 where that ruling puts it. -->
             <Grid Grid.Row="1" ColumnDefinitions="*,Auto"
                   RowDefinitions="Auto,Auto" Margin="0,0,0,10">
+
+                <!-- THE NEIGHBORHOOD, RELOCATED WHOLE (Tim, 2026-08-27: "It
+                     looks exactly like it does now. We do not need to change the
+                     neighborhood."). The template is the one the canvas used, so
+                     there is one definition of this panel and not two. -->
+                <ContentControl Grid.Row="0" Grid.Column="0"
+                                Margin="0,0,14,0"
+                                VerticalAlignment="Top"
+                                Content="{Binding}"
+                                ContentTemplate="{StaticResource widget.map}" />
 
 
     <!-- Frequency face: the rig's own LCD on the console. Deliberately
          NOT collapsible (HM-DEC-021), and the whole strip it sits in is
          exempt from the canvas (HM-DEC-086). Padding cut from twenty by
          twelve, because the space around it was doing nothing. -->
-    <Border Grid.Row="0" Grid.RowSpan="2" Grid.Column="1"
+    <Border Grid.Row="0" Grid.Column="1"
             VerticalAlignment="Top"
             Background="{StaticResource HmAmberTintBrush}"
             BorderBrush="{StaticResource HmAmberEdgeBrush}"
@@ -2278,8 +2306,9 @@
          width to say the whole sentence. -->
     <!-- WHERE YOU ARE AND WHERE YOU HAVE BEEN, on one line under the bands
          (HM-DEC-141). Both used to have a row to themselves. -->
-    <Grid Grid.Row="1" Grid.Column="0" ColumnDefinitions="Auto,*"
-          Margin="0,8,14,0" VerticalAlignment="Center">
+    <Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+          ColumnDefinitions="Auto,*"
+          Margin="0,8,0,0" VerticalAlignment="Center">
 
     <Border Grid.Column="0" VerticalAlignment="Center"
             CornerRadius="6" Padding="10,6" BorderThickness="1"
@@ -2421,6 +2450,13 @@
     </Grid>
             </Grid>
 
+    <!-- **THE DIVIDER, AND IT IS NOT DECORATION** (Tim, 2026-08-27).
+         Everything above it is the same in every mode and does not redraw when
+         the mode changes; everything below it belongs to the mode. The line is
+         how the operator can see which is which without being told. -->
+    <Border Grid.Row="2" Height="1" Margin="0,2,0,12"
+            Background="{StaticResource HmSlateEdgeBrush}" />
+
     <!-- **THE BAND ROW IS BELOW THE READOUT NOW, NOT BESIDE IT** — Tim's
          ruling of 2026-08-25, in his words: "the band's display is cut off. It
          needs to be shifted down."
@@ -2547,7 +2583,7 @@
                  A PRESET IS A STARTING POINT AND NEVER A DOCUMENT: pressing one
                  loads a fresh copy every time, and dragging things about
                  afterward does not change it. -->
-            <Border Grid.Row="2" Margin="0,0,0,10" Padding="10,7"
+            <Border Grid.Row="3" Margin="0,0,0,10" Padding="10,7"
                     CornerRadius="8"
                     Background="{StaticResource HmSlateTintBrush}"
                     BorderBrush="{StaticResource HmSlateEdgeBrush}"
@@ -2619,7 +2655,7 @@
                 </Grid>
             </Border>
 
-            <Grid Grid.Row="3" ColumnDefinitions="Auto,*">
+            <Grid Grid.Row="4" ColumnDefinitions="Auto,*">
 
                 <!-- THE TRAY, DOWN THE LEFT EDGE. Every widget that is not out,
                      with a line saying what it is for, because a list of names
