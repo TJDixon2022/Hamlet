@@ -3644,6 +3644,31 @@ public partial class MainWindowViewModel : ObservableObject
         // saying which instant either belonged to.
         var pressed = DecodeReport;
 
+        // **THE PRESS NOW ASSERTS A STATION, NOT ONLY A CASE** (Tim's ruling of
+        // 2026-08-26). The operator saying he can hear one is evidence that one
+        // is there, and it is the only evidence in this system that has never
+        // been wrong. Six families of admission statistic have now been measured
+        // and none of them can find a station he can hear, so waiting for the
+        // survey to agree with him is waiting for something that does not
+        // happen.
+        //
+        // He supplies the keying and Hamlet supplies the frequency: the loudest
+        // bin in the band at this instant, held until he clears it or the dial
+        // moves. HM-DEC-095 is untouched — it forbids Hamlet choosing a note by
+        // loudness on its own judgement, and this is his judgement.
+        //
+        // **THE AUTOMATIC PATH IS NOT CHANGED BY THIS.** An empty band still
+        // produces nothing when nobody has pressed anything.
+        // **OFF THE UI THREAD, BECAUSE IT SWEEPS THE BAND.** The keying sweep
+        // reads twenty-five pitches across half a minute of audio, which is the
+        // same work the keying meter already does on a background task rather
+        // than in front of the operator.
+        var decoding = _decoder;
+
+        var asserted = decoding is null
+            ? double.NaN
+            : await Task.Run(decoding.AssertStation);
+
         // **ASK THE RADIO WHERE IT IS BEFORE WRITING DOWN WHERE IT WAS**
         // (HM-DEC-107 phase 6 of the UI order). The frequency is never polled,
         // because the radio broadcasts a change and asking as well would spend
@@ -3713,9 +3738,20 @@ public partial class MainWindowViewModel : ObservableObject
 
             _lastCaptureSamples = seen;
 
-            StatusText =
-                $"Kept the last {audio.Duration.TotalSeconds:0} seconds of what the "
-                + "decoder heard, with what the radio was doing beside it.";
+            // **AND SAY WHAT THE PRESS DID TO THE DECODER**, because it now does
+            // two things and the second one is the one he pressed it for. The
+            // sentence says the pitch is the loudest bin rather than a station
+            // Hamlet found, so nothing here implies more than happened (§0.0).
+            StatusText = double.IsNaN(asserted)
+                ? $"Kept the last {audio.Duration.TotalSeconds:0} seconds of what "
+                  + "the decoder heard. Nothing has been surveyed yet, so there "
+                  + "was no loudest bin to point at; give it a few seconds and "
+                  + "press again."
+                : $"Kept the last {audio.Duration.TotalSeconds:0} seconds, and "
+                  + $"took your word for it: reading at {asserted:0} Hz, the "
+                  + "loudest thing in the band just now. Hamlet did not find "
+                  + "keying there, you did. Press Hold this pitch to let go "
+                  + "again, or move the dial.";
 
             MarkCase(
                 wav: Path.GetFileName(wav),
@@ -4387,6 +4423,17 @@ public partial class MainWindowViewModel : ObservableObject
         if (!report.HasTone)
         {
             return "none";
+        }
+
+        // **THE OPERATOR'S OWN ASSERTION IS SAID AS ONE** (Tim's ruling of
+        // 2026-08-26). Nothing here may read as Hamlet having found what a human
+        // found: it says the pitch is the loudest bin, that a person supplied the
+        // evidence there was a station on it, and that Hamlet measured no keying.
+        if (report.PitchWasAsserted)
+        {
+            return $"{report.ToneHz:0.0} Hz  (NOT MEASURED: you said you could "
+                + "hear a station, so this is the loudest bin in the band at that "
+                + "moment. Hamlet did not find keying here)";
         }
 
         return report.PitchWasMeasured

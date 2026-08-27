@@ -64,6 +64,8 @@ public sealed class CwDecoder
     /// <summary>The pitch the mixdown is held at, or NaN when it follows.</summary>
     private double _lockedToneHz = double.NaN;
 
+    private bool _asserted;
+
     /// <summary>The last pitch the survey actually measured, or NaN.</summary>
     /// <remarks>
     /// **A MEASURED PITCH IS HELD UNTIL A BETTER ONE ARRIVES, WITHOUT ANYBODY
@@ -283,7 +285,8 @@ public sealed class CwDecoder
         _tracker.Verdict.Interference,
         (double)_tracker.Guard.BlockedHops * _tracker.HopSamples / SampleRate,
         Competitor: _tracker.Competitor,
-        PitchWasMeasured: _tracker.HasMeasuredPitch);
+        PitchWasMeasured: _tracker.HasMeasuredPitch,
+        PitchWasAsserted: _asserted);
 
     /// <summary>Everything inside the decision delay, handed over whole.</summary>
     /// <remarks>
@@ -339,6 +342,11 @@ public sealed class CwDecoder
     /// </remarks>
     public void Retuned()
     {
+        // **AN ASSERTION IS ABOUT A FREQUENCY TOO.** The operator said he could
+        // hear a station on the frequency he was on; the dial has moved and that
+        // sentence is no longer about anything.
+        Unlock();
+
         _lastMeasuredToneHz = double.NaN;
 
         // **THE HELD PEAK GOES WITH IT, FOR THE SAME REASON AND NO OTHER.** It
@@ -395,7 +403,108 @@ public sealed class CwDecoder
     }
 
     /// <summary>Let the tracker steer the mixdown again.</summary>
-    public void Unlock() => _lockedToneHz = double.NaN;
+    public void Unlock()
+    {
+        _lockedToneHz = double.NaN;
+        _asserted = false;
+    }
+
+    /// <summary>
+    /// True while the pitch being decoded at was chosen by the operator saying
+    /// he can hear a station, rather than found by the survey.
+    /// </summary>
+    /// <remarks>
+    /// **NO CAPTURE MAY EVER IMPLY HAMLET FOUND WHAT A HUMAN FOUND** (§0.0).
+    /// <see cref="CwDecodeReport.PitchWasMeasured"/> stays false throughout, so
+    /// every sheet and every panel that already asks the honest question keeps
+    /// getting the honest answer. This says the separate thing: not that the
+    /// pitch is unmeasured, but who supplied it.
+    /// </remarks>
+    public bool PitchWasAsserted => _asserted;
+
+    /// <summary>
+    /// The operator says he can hear a station; decode at the loudest bin in the
+    /// band and hold it.
+    /// </summary>
+    /// <returns>The pitch taken, or NaN where the band held nothing to take.</returns>
+    /// <remarks>
+    /// <para>**HM-DEC-095 IS NOT AMENDED AND THIS IS WHY.** That ruling forbids
+    /// Hamlet choosing a note by how loud it is, because loudness is not evidence
+    /// of keying — a carrier is louder than a station and says nothing. It does
+    /// not forbid the operator supplying the evidence of keying himself. He is
+    /// the one detector in this system that has never been wrong about whether
+    /// somebody is sending; what he cannot do is name the frequency to a hertz,
+    /// and that is exactly what the survey can do. **He supplies the keying and
+    /// Hamlet supplies the number.**</para>
+    /// <para>**IT TAKES THE LOUDEST BIN AND NOT THE BEST KEYING CANDIDATE**,
+    /// because after six units of measurement there is no keying candidate to
+    /// take: admission refuses every station in this corpus, which is the fault
+    /// this route exists to get around rather than to wait for.</para>
+    /// <para>**AND IT BYPASSES ADMISSION RATHER THAN LOOSENING IT.** The
+    /// automatic path is untouched, so the empty band still produces nothing
+    /// when nobody has pressed anything. An operator who presses this on a dead
+    /// frequency gets whatever the audio contains, which is his choice to
+    /// make.</para>
+    /// <para>Released by <see cref="Unlock"/>, and by <see cref="Retuned"/> when
+    /// the dial moves, because a pitch asserted on one frequency is not evidence
+    /// about the next one.</para>
+    /// </remarks>
+    public double AssertStation()
+    {
+        // **THE STRONGEST *KEYED* BIN, WHICH IS NOT THE LOUDEST ONE.** Taking the
+        // loudest was built first and measured on 2026-08-26: it lands 121 Hz off
+        // on `cw-2026-08-26-125941`, 118 off on `cw-2026-08-22-014113` and 100 off
+        // on `cw-2026-08-25-012823`. HM-DEC-095 said exactly this — a carrier is
+        // louder than a station and says nothing — and the ruling's own wording
+        // says keyed.
+        //
+        // **THE SWEEP IS THE ONE THE CAPTURE SHEET ALREADY REPORTS**, scoring
+        // each pitch by how much of the stretch was spent keyed down for an
+        // element's length and how many of those key-downs were elements rather
+        // than a gate chattering. It shares nothing with the survey's admission,
+        // which is the point: admission is what has refused every station in this
+        // corpus for six units, and this route exists to get around it rather
+        // than to wait for it.
+        var audio = Tap?.Snapshot();
+
+        if (audio is null)
+        {
+            return double.NaN;
+        }
+
+        var found = KeyingEnvelope.Best(audio);
+
+        if (found is not { } sighting)
+        {
+            // Nothing in the band looks keyed at any pitch. Refusing is the
+            // honest answer; pointing at the bank centre and calling it his
+            // choice would put Hamlet's own default behind his assertion.
+            return double.NaN;
+        }
+
+        AssertAt(sighting.ToneHz);
+
+        return sighting.ToneHz;
+    }
+
+    /// <summary>Decode at a pitch the operator supplied, and hold it.</summary>
+    /// <param name="toneHz">The pitch.</param>
+    /// <remarks>
+    /// Separated from <see cref="AssertStation"/> so the choosing and the holding
+    /// can be measured apart, and so a caller that already knows the pitch — a
+    /// test, or a future control that lets him type one — need not go through the
+    /// sweep to use it.
+    /// </remarks>
+    public void AssertAt(double toneHz)
+    {
+        if (double.IsNaN(toneHz))
+        {
+            return;
+        }
+
+        _lockedToneHz = toneHz;
+        _asserted = true;
+    }
 
     /// <summary>
     /// How long decoding stays suspended after the radio stops transmitting.
