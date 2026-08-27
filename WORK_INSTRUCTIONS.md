@@ -18,53 +18,50 @@ If all four hold, say "Hamlet confirmed" and continue.
 
 ---
 
-# Work instruction 029 — the tab owns the canvas
+# Work instruction 030 — a green suite over a dead screen
 
 **ISSUED: 2026-08-27. A fresh order, not an amendment.**
 
-**Six tasks; task 6 is the drop. No decoder file is touched, and the engine's
+**Five tasks; task 5 is the drop. No decoder file is touched, and the engine's
 failing set being byte-identical at the end is the proof.**
 
 ## Why this unit exists
 
-**The unit's number: one click, everything gone.**
+**The unit's number: two units, two faults, two green suites.**
 
-Tim photographed unit 1.11.25's screen. **Clicking Digital and returning to CW
-leaves the workspace blank** — no Send, no Receive, nothing. The unit asserted
-that CW's workspace is the same object on return and that assertion passed, so
-**the objects survive and stop being shown**. The effective-visibility fix that
-unit made for Send reaches the panels and not the container: whatever hides the
-CW workspace on a tab change is not undone on the way back.
+**Unit 1.11.25 asserted the CW workspace was the same object after a tab change.
+It was. The screen was blank.** The fault lived in the tab strip's binding —
+`ConverterParameter={Binding}`, which Avalonia never resolves — and the test
+could not reach it, because **it set `OperatingMode` on the view model instead of
+pressing the tab.** A test that drives the view model cannot see a broken
+control.
 
-**And on a fresh start, where the panels do appear, nothing joins them to the
-tab.** Send and Receive float below the tab strip with no boundary of any kind.
-Tim: *"It doesn't look like the tab owns the workspace. We need a containing
-boundary to show what's happening… everything down from the tabs is the working
-canvas. Make that obvious."*
+**Unit 1.11.24 shipped the Receive panel with no background at all**, for two
+units, because `HmPanelBrush` was never defined in `App.axaml`. **Avalonia leaves
+an unfound `StaticResource` as no brush rather than failing** — no build error,
+no runtime error. `BindingHealthTests` catches an unresolved *binding* and not an
+unresolved *resource*.
 
-**Two smaller faults are in the same photograph.** The block
-`7.030 MHz · yours to use / 97.305(a)` renders **twice** — once inside the
-neighborhood map where it belongs, and again as a loose card beneath it. And the
-`recent · places you have been · forget this place` row sits between the header
-and the tabs.
+**Both suites were green. Both faults reached the operator's screen.** He found
+each of them by looking at it.
 
 ## Verify this instruction against the tree
 
 **Nothing here describes the tree.** Check every claim against the files and
 report any mismatch, including where the work succeeded anyway.
 
-**Expected state: 28 failing of 1841 in the engine as the stable set; 493 of 493
-in the app. Seven timing intermittents exist.** Do not chase any; diff which
-tests moved and never trust a total.
+**Tim has built the Send panel himself since unit 1.11.26** — the transmit
+button, Send and Clear beside the title, Clear coloured as an action, and the
+macro explanations. **Read what is there before touching anything near it, and do
+not modify it.** If a task below appears to require a change inside the Send
+panel, **stop and report** rather than editing his work.
+
+**Expected state: 28 failing of 1841 in the engine as the stable set; the app
+suite at 500 or whatever his own work has made it.** Seven timing intermittents
+exist. Do not chase any; diff which tests moved and never trust a total.
 
 **`AppSettings.UseJointDecoder` and `AppSettings.ShowKeyingSweep` both ship false
 and stay false.**
-
-**Do not verify by headless hit-testing.** Unit 1.11.13's rule stands: assert the
-geometry that causes the fault. **And unit 1.11.25's lesson goes with it: assert
-what the operator sees, not a control's own property** — a panel's `IsVisible`
-stays true inside a hidden container, which is precisely how a blank workspace
-passed its test.
 
 **`CLAUDE_CODE.md` is at version 1.6.** Read its own section count.
 
@@ -73,34 +70,23 @@ rulings of 2026-08-25/26/27.**
 
 ## Rulings in force
 
-**Tim's ruling, 2026-08-27, in his words:** *"Everything below the CW Digital and
-Voice is the workspace canvas. That space is bounded by the controlling tab. It
-needs to be obvious to the user."*
+**Tim's ruling, 2026-08-27: a view-level test acts through the control.** It
+presses the button; it does not set the property the button would have set.
+**A test that drives the view model cannot see a broken control**, and two units
+running proved it by passing over faults he then found by looking at the screen.
+This is the same shape of rule as unit 1.11.13's *assert the geometry that causes
+the fault*, which has held since.
 
-- **The tab strip and the workspace below it are one bounded region.** The tabs
-  sit on the top edge of that boundary and the selected tab merges into it, so
-  the tab is visibly the handle of the space it controls.
-- **The boundary runs from the tabs to the bottom of the working area** and is
-  the same region whichever tab is selected.
+**The rule is enforced by a test, not by prose.** A rule that lives only in a
+document is one a session reads at minute zero and has forgotten by task six.
 
-**Tim's ruling, same date: the duplicate card goes.** The loose
-`7.030 MHz · yours to use` card beneath the neighborhood map is removed. **The
-copy inside the map stays** — it belongs there.
-
-**Tim's ruling, same date: the `recent · places you have been · forget this
-place` row is removed from between the header and the tabs.** It is not deleted
-from the application; **if it has no other home, report that and leave the
-control in the tree unreferenced rather than destroying it** — this ruling is
-about where it sits, not about whether the capability exists.
-
-**Untouched:** the band plan, the neighborhood map itself, the radio panel, the
-divider; HM-DEC-141's wavelength proportions; every decoder behaviour; the pitch
-controls staying off; **CW's contents — Send left, Receive right, neither a
-widget** — settled by unit 1.11.25.
+**Untouched:** everything Tim built in the Send panel; the band plan, the
+neighborhood map, the radio panel, the divider; the workspace boundary and the
+tab strip as unit 1.11.26 left them; every decoder behaviour.
 
 **Rejected already, do not revisit:** bringing back the canvas, the tray, the
-preset bar or the layout namer; putting placeholder text in Digital or Voice;
-wiring Send to the transmitter (§0.2, HM-DEC-098).
+preset bar or the layout namer; placeholder text in Digital or Voice; asserting a
+control's own `IsVisible` where effective visibility is what the operator sees.
 
 ## Status cadence
 
@@ -110,69 +96,62 @@ moving. Same every ten minutes while a task runs.
 
 ## The tasks
 
-### Task 1 — find why returning to CW shows nothing
+### Task 1 — find every view test that drives the view model
 
-**Diagnose before fixing.** Report, with file and line, what hides the CW
-workspace on a tab change and what should restore it. Say whether it is the
-container's visibility, a binding that does not re-evaluate, a template
-recreated without its content, or something else.
+Inventory the app suite. For each test that exercises view behaviour, report
+**whether it acts through a control or sets a property directly**, with file and
+line, and group them: those that must change under the ruling, those that are
+genuinely about the view model and are not view tests at all, and any that cannot
+be driven through a control at all.
 
-**Then state why unit 1.11.25's test passed.** That test asserted the workspace
-is the same object on return, and it is — so name the property that is true
-while the operator sees nothing. **A test that passes over a blank screen is the
-finding here**, and the next task's assertion is written against it.
+**Report the third group carefully.** A view behaviour that no control can reach
+is either dead behaviour or a missing control, and which one it is matters.
 
 Build and run; record the baseline by diffing which tests fail.
 
-### Task 2 — returning to CW shows CW
+### Task 2 — make the tests act through the controls
 
-Fix what task 1 found.
+Convert the first group. Each test presses, clicks or types where the operator
+would, and asserts what the operator sees — effective visibility and render
+bounds, never a control's own property.
 
-**Assert what the operator sees, at the application's default width:** starting
-on CW, switching to Digital, switching to Voice, and returning to CW, **Send and
-Receive are effectively visible and have non-zero render bounds** at the end.
-Repeat the round trip twice in the same test — a fault that only appears on the
-second circuit is the kind this unit exists to catch.
+**Report any test that changes from passing to failing under conversion.** That
+is not a regression; **it is a fault the old test was covering**, and it is the
+most valuable thing this unit can produce. Fix it if the fix is contained; if it
+is not, **report the fault with file and line and leave it**, because a named
+fault beats a rushed change.
 
-**Digital and Voice remain empty** on every visit.
+### Task 3 — the rule enforces itself
 
-### Task 3 — the tab owns the canvas
+A test that fails when a view test sets a view-model property where a control
+exists to do it. **Report exactly what it can and cannot detect** — a rule
+enforced by a heuristic is worth what the heuristic is worth, and the next
+session needs to know which.
 
-Implement the boundary per the ruling: **the tab strip on the top edge of a
-bordered region that extends down over the whole working area**, the selected
-tab merging into it.
+If it cannot be enforced by a test at all, **say so plainly and say why**, and
+propose where the rule should live instead. **Do not ship a check that looks like
+enforcement and is not.**
 
-**Assert from render bounds:** the boundary's top edge meets the tab strip; its
-left and right edges enclose the workspace; the selected tab's bottom edge and
-the boundary's top edge coincide within a pixel; **the boundary is present and
-the same region on all three tabs.**
+### Task 4 — resources resolve, or the suite fails
 
-**If merging the selected tab into the border cannot be done cleanly, report
-exactly what fails and ship the closest thing that does not look broken** — a
-tab that nearly meets the edge is worse than one that plainly sits on it.
+A test that walks every `StaticResource` and `DynamicResource` key referenced in
+the application's XAML and asserts each one resolves.
 
-### Task 4 — the duplicate card
+`HmPanelBrush` was missing for two units, in a suite of five hundred tests that
+includes a binding-health test, and nothing said so. **Report how many keys are
+referenced, how many resolve, and name any that do not** — there may be others
+sitting silently.
 
-Remove the loose `7.030 MHz · yours to use` card beneath the neighborhood map.
-**The copy inside the map stays.**
+### Task 5 — the recent-places row's home *(the drop candidate)*
 
-**Assert that the string renders once**, not twice, in the whole window.
+Unit 1.11.26 removed it from between the header and the tabs and reported it has
+no home: not CW, not Digital, not Voice. **The control is unreferenced in the
+tree and still tested**, with `ABANDONED_WIDGETS.md` describing what it did.
 
-### Task 5 — the recent-places row
+**Report what it would take to put it in the header** — beside the band plan, the
+neighborhood and the radio — and what that would cost in space at the default
+width. **Report only; place nothing.** Where it goes is Tim's.
 
-Remove the `recent · places you have been · forget this place` row from between
-the header and the tabs.
-
-**If the control has another home in the application, say where.** If it does
-not, **leave it in the tree unreferenced and say so** — this is a placement
-ruling, not a deletion.
-
-**Assert that nothing renders between the header's divider and the tab strip.**
-
-### Task 6 — what the removed row was for *(the drop candidate)*
-
-One paragraph in `ABANDONED_WIDGETS.md`, beside unit 1.11.25's fifteen: what the
-recent-places control did, so a decision to rebuild it starts from a description.
 **Dropped whole if time runs out, and the report says so.**
 
 ## Parked — do not touch, do not raise
@@ -180,11 +159,11 @@ recent-places control did, so a decision to rebuild it starts from a description
 Every decoder question: admission, the six axis families, the gate, the squelch,
 the joint decoder, the constrained margin, the tracker, the meter, the integrator
 width, the whole-file second pass, the reference and port difference, the
-short-character bias, `001520`'s quadrillions, `013347`'s 17.2 million. Also: the
-Send button that does not send; the engine code behind the abandoned widgets;
-the phrasebook's arrival and the absent-widget news; `CHANGELOG.md`; the seven
-intermittents; the Avalonia geometry offset; HM-OPEN-057; HM-OPEN-059; **the band
-plan, the neighborhood map, the radio panel and the divider.**
+short-character bias, `001520`'s quadrillions, `013347`'s 17.2 million. Also:
+**the Send panel Tim built**; the engine code behind the abandoned widgets; the
+phrasebook's arrival and the absent-widget news; HM-DEC-086's supersession
+record; `CHANGELOG.md`; the seven intermittents; the Avalonia geometry offset;
+HM-OPEN-057; HM-OPEN-059.
 
 A parked item that blocks a task is raised once, and says it was parked.
 
@@ -193,12 +172,11 @@ A parked item that blocks a task is raised once, and says it was parked.
 Standing prohibitions are `CLAUDE.md`'s and are not retyped. Unit-specific:
 
 - **Do not touch any decoder file.** The byte-identical failing set is the claim.
-- **Do not change CW's contents.** Send left, Receive right, settled.
-- **Do not delete the recent-places control.** It moves out of that slot.
-- **Do not remove the copy of the frequency block inside the neighborhood map.**
-- **Do not assert a control's own visibility property** where effective
-  visibility is what the operator sees.
-- **Do not verify by headless hit-testing.**
+- **Do not modify the Send panel.** Tim built it. If a task seems to require it,
+  stop and report.
+- **Do not delete a test to make it comply.** A test converted is a test kept.
+- **Do not ship a check that looks like enforcement and is not.**
+- **Do not place the recent-places row anywhere.** Task 5 reports.
 
 ## Committing, pushing, reporting
 
@@ -208,10 +186,10 @@ push is reported as refused, with the reason.
 Report per `CLAUDE_CODE.md` §8 — read the file's own section count — to
 `output.md` at the repository root, overwritten and printed.
 
-**Section 3 leads with task 1's answer — what hid the workspace and why the
-previous test passed over a blank screen — and then the round-trip assertion.**
-**Section 2 says what the operator sees on each tab and what the boundary looks
-like.**
+**Section 3 leads with the count: how many view tests drove the view model, how
+many were converted, and how many faults the conversion uncovered** — with each
+fault named. **Section 2 says whether anything the operator sees changed**, which
+for a unit about tests should be nothing except any fault the conversion found.
 
 ### Asks still outstanding
 
@@ -224,7 +202,7 @@ oldest is open since 2026-08-14.**
 3. **`ANNUNCIATOR.md` renamed `PHASE` to `TASK` while HM-DEC-150 makes `PHASE`
    match the version's minor.**
 4. **`DECISIONS.md` has no record for HM-DEC-096–133, 136, 141 or 150 — nor for
-   Tim's rulings of 2026-08-25/26/27, including the three this unit acts under.**
+   Tim's rulings of 2026-08-25/26/27, including the one this unit acts under.**
 5. **The tone tracker** — six axis families measured; the question is a design
    one.
 6. **The integrator width** — settled at 45 Hz, with the sharp-peak caveat.
@@ -240,20 +218,20 @@ oldest is open since 2026-08-14.**
 14. **The constrained margin is bounded and still does not separate** (1.11.22).
 15. **Four fixtures are absent and five acceptance lines were unmeasurable**
     (1.11.22).
-16. **There is a Send button that does not send** (1.11.23), unruled.
-17. **HM-DEC-086's supersession needs a `DECISIONS.md` record** (1.11.25).
-18. **The phrasebook's arrival and the absent-widget news are gone** (1.11.25).
-19. **Engine code behind the abandoned widgets is unreachable from the screen**
-    (1.11.25) — `ScanViewModel`, `HeardWatch`, `AutoCallViewModel` and their
-    tests all still compile and run.
-20. **Where the recent-places control belongs**, if anywhere — task 5 reports.
+16. **HM-DEC-086's supersession needs a `DECISIONS.md` record** (1.11.25).
+17. **The phrasebook's arrival and the absent-widget news are gone** (1.11.25).
+18. **Engine code behind the abandoned widgets is unreachable from the screen**
+    (1.11.25).
+19. **Where the recent-places row belongs** (1.11.26) — task 5 reports the cost.
+20. **An unresolved `StaticResource` fails silently** (1.11.26) — task 4 closes
+    the harness gap.
 21. **`013347` returns a likelihood ratio of 17.2 million**, with `001520`'s
     quadrillions. Parked, raised once.
 
 Still open: **three fixtures at accepted cost**; **the reference and port
 integrator difference**; **an unmeasured pitch costs `N4L`**; **the six-hertz
 window disagreement**; **the short-character bias**; **the Avalonia geometry
-offset**; **`CHANGELOG.md` at 1.9.0 against 1.11.25**; **the whole-file second
+offset**; **`CHANGELOG.md` at 1.9.0 against 1.11.26**; **the whole-file second
 pass**; **the squelch has no axis**; **the three morning captures of
 2026-08-26**.
 
