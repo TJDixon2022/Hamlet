@@ -57,8 +57,11 @@ public sealed class TheCapturePressIsOnTheScreenTests
             // operator summons it from the tray. Nothing else about the window is
             // arranged: this test is about whether the press is inside the panel,
             // not about which preset carries it.
-            model.Canvas.Add(Hamlet.App.Layout.Widgets.Find(
-                Hamlet.App.Layout.Widgets.Terminal));
+            // **NOTHING IS DRAGGED OUT, AND THAT IS THE STRONGER CLAIM NOW**
+            // (Tim, 2026-08-27). Receive is a permanent panel on the CW tab
+            // rather than a widget somebody has to fetch, so the press that
+            // banks an evening's evidence is on the screen from the start. This
+            // used to have to add the terminal to the canvas first.
 
             for (var i = 0; i < 5; i++)
             {

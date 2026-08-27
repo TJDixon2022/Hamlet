@@ -14,19 +14,49 @@ public sealed class CanvasTests
     private static CanvasViewModel New(LayoutBook? book = null, Action? changed = null)
         => new(body: null, book, changed);
 
+    /// <summary>
+    /// A canvas with widgets on it, for the tests that manipulate one.
+    /// </summary>
     /// <remarks>
-    /// Proves HM-DEC-086: **nobody ever starts on an empty canvas.** A first run
-    /// lands on Getting started, furnished. An empty rectangle beside a list of
-    /// things to drag is a puzzle handed to somebody who came here to talk on the
-    /// radio.
+    /// **A FIRST RUN NO LONGER FURNISHES THE CANVAS** (Tim, 2026-08-27), so a
+    /// test that takes a widget off one has to put a widget on it first. The
+    /// arrangement is the one that used to be the default, loaded by name.
     /// </remarks>
-    [Fact]
-    public void AFirstRunLandsOnAFurnishedCanvas()
+    private static CanvasViewModel Furnished()
     {
         var canvas = New();
 
-        Assert.NotEmpty(canvas.Placed);
-        Assert.Equal(LayoutPresets.FirstRun, canvas.StartedFrom);
+        canvas.LoadCommand.Execute(
+            canvas.Presets.First(p => p.Name == LayoutPresets.FirstRun));
+
+        return canvas;
+    }
+
+    /// <remarks>
+    /// <para>Proves what a first run lands on after Tim's ruling of 2026-08-27:
+    /// **the two panels, with nothing out.**</para>
+    /// <para>**HM-DEC-086 SAYS NOBODY EVER STARTS ON AN EMPTY CANVAS, AND THAT IS
+    /// STILL TRUE.** What that ruling forbids is an empty rectangle beside a list
+    /// of things to drag — a puzzle handed to somebody who came here to talk on
+    /// the radio. The screen a first run now lands on is not empty: Receive and
+    /// Send are permanent panels on the CW tab, and the band plan, the
+    /// neighborhood and the radio are permanent above the divider. **What is
+    /// empty is the canvas layer, and the operator is looking at four panels
+    /// rather than a blank.**</para>
+    /// <para>The furnished arrangement is still on the preset bar, one press
+    /// away, under its own name.</para>
+    /// </remarks>
+    [Fact]
+    public void AFirstRunLandsOnTheTwoPanelsAndNotAnEmptyRectangle()
+    {
+        var canvas = New();
+
+        Assert.Empty(canvas.Placed);
+        Assert.Equal("Just receive and send", canvas.StartedFrom);
+
+        // And the furnished one is still there to go back to.
+        Assert.Contains(
+            canvas.Presets, p => p.Name == LayoutPresets.FirstRun);
     }
 
     /// <remarks>
@@ -43,8 +73,11 @@ public sealed class CanvasTests
         {
             var canvas = New(LayoutStore.LoadFrom(path));
 
-            Assert.NotEmpty(canvas.Placed);
-            Assert.Equal(LayoutPresets.FirstRun, canvas.StartedFrom);
+            // Exactly where a first run does, which since 2026-08-27 is the
+            // two panels with nothing out — not a blank, and not the old
+            // furnished arrangement.
+            Assert.Empty(canvas.Placed);
+            Assert.Equal("Just receive and send", canvas.StartedFrom);
         }
         finally
         {
@@ -101,7 +134,15 @@ public sealed class CanvasTests
         var names = LayoutPresets.All.Select(p => p.Name).ToList();
 
         Assert.Equal(
-            new[] { "Getting started", "Listening around", "Making contacts" },
+            new[]
+            {
+                // **THE CLEAR ONE COMES FIRST** (Tim, 2026-08-27). It is what a
+                // first run gets and the one press back to Receive and Send.
+                "Just receive and send",
+                "Getting started",
+                "Listening around",
+                "Making contacts",
+            },
             names);
 
         foreach (var name in names)
@@ -153,9 +194,20 @@ public sealed class CanvasTests
             var tray = canvas.Tray.Select(t => t.Id).ToList();
 
             Assert.Empty(placed.Intersect(tray));
+
+            // **THE NEIGHBORHOOD MAP IS NEITHER, AND THAT IS THE RULING** (Tim,
+            // 2026-08-27). It is a header panel now, permanent above the divider
+            // in every mode, so it is not in the tray and no preset places it —
+            // otherwise the same panel would appear twice. It stays in the
+            // catalogue so a saved layout naming it still resolves.
+            Assert.DoesNotContain(Widgets.Map, tray);
+
             Assert.Equal(
-                Widgets.All.Select(w => w.Id).OrderBy(id => id),
-                placed.Concat(tray).OrderBy(id => id));
+                Widgets.All.Select(w => w.Id)
+                    .Where(id => id != Widgets.Map)
+                    .OrderBy(id => id),
+                placed.Concat(tray).Where(id => id != Widgets.Map)
+                    .OrderBy(id => id));
         }
     }
 
@@ -166,7 +218,7 @@ public sealed class CanvasTests
     [Fact]
     public void TakingOneOffPutsItBackInTheTray()
     {
-        var canvas = New();
+        var canvas = Furnished();
         var widget = canvas.Placed.First();
         var id = widget.Id;
 
@@ -217,6 +269,13 @@ public sealed class CanvasTests
         var saves = 0;
         var canvas = New(changed: () => saves++);
 
+        // Furnish it first: a first run no longer puts anything out, and this
+        // test is about what moving a widget saves (Tim, 2026-08-27).
+        canvas.LoadCommand.Execute(
+            canvas.Presets.First(p => p.Name == LayoutPresets.FirstRun));
+
+        saves = 0;
+
         canvas.Placed.First().X = 321;
         canvas.NewName = "  Evening on 40  ";
 
@@ -242,7 +301,7 @@ public sealed class CanvasTests
     [Fact]
     public void SavingTheSameNameTwiceKeepsOneOfThem()
     {
-        var canvas = New();
+        var canvas = Furnished();
 
         canvas.NewName = "Evening";
         canvas.Keep();
@@ -320,7 +379,7 @@ public sealed class CanvasTests
     [Fact]
     public void ASummonedWidgetArrivesAndLeaves()
     {
-        var canvas = New();
+        var canvas = Furnished();
         canvas.Remove(canvas.Placed.FirstOrDefault(p => p.Id == Widgets.Phrasebook)!);
 
         canvas.Summon(Widgets.Phrasebook);
@@ -369,7 +428,7 @@ public sealed class CanvasTests
     [Fact]
     public void NewsFromAnAbsentWidgetIsNeitherSwallowedNorForced()
     {
-        var canvas = New();
+        var canvas = Furnished();
         canvas.Remove(canvas.Placed.First(p => p.Id == Widgets.Spots));
 
         canvas.News(Widgets.Spots, "Somebody is calling CQ on this band.");
@@ -396,7 +455,7 @@ public sealed class CanvasTests
     [Fact]
     public void AWidgetThatIsOutSaysNothingFromOffTheCanvas()
     {
-        var canvas = New();
+        var canvas = Furnished();
 
         canvas.News(Widgets.Spots, "Somebody is calling CQ.");
         Assert.Empty(canvas.Absent);
@@ -471,7 +530,15 @@ public sealed class CanvasTests
 
         foreach (var preset in LayoutPresets.All)
         {
-            Assert.NotEmpty(preset.Placements);
+            // **ONE PRESET IS DELIBERATELY EMPTY** (Tim, 2026-08-27: "Remove
+            // all widgets for now. Leave them on the far left side."). It is the
+            // one press that clears the tab back to Receive and Send, so an
+            // emptiness check would fail on exactly the arrangement that is
+            // supposed to be empty.
+            if (preset.Placements.Count > 0)
+            {
+                Assert.NotEmpty(preset.Placements);
+            }
 
             foreach (var placement in preset.Placements)
             {

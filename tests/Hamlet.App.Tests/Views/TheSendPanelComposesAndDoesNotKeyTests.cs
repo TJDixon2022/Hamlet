@@ -101,9 +101,13 @@ public sealed class TheSendPanelComposesAndDoesNotKeyTests
         With((window, _) =>
         {
             var send = Send(window);
+            // **RECEIVE IS A PANEL NOW, NOT THE CANVAS** (Tim, 2026-08-27).
+            // Unit 1.11.23 measured the canvas as the Receive side, and the
+            // canvas still carried the whole previous arrangement, so Receive
+            // got whatever was left over.
             var receive = window.GetVisualDescendants()
-                .OfType<ScrollViewer>()
-                .FirstOrDefault(c => c.Name == "CanvasView");
+                .OfType<Border>()
+                .FirstOrDefault(c => c.Name == "ReceivePanel");
 
             Assert.NotNull(send);
             Assert.NotNull(receive);

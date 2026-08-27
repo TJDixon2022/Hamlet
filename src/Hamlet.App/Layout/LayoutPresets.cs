@@ -58,7 +58,9 @@ public static class LayoutPresets
         "The whole band as a picture, and whatever you land on turned into text.",
         new[]
         {
-            new Placement(Widgets.Map, Gap, Gap, 700, 190),
+            // The map is not placed by any preset now: it is a header panel
+            // and permanent in every mode (Tim, 2026-08-27), so putting a second
+            // copy on the canvas would show the same panel twice.
             new Placement(Widgets.Tape, Gap, 214, 700, 180),
             new Placement(Widgets.Waterfall, Gap, 406, 700, 300),
             new Placement(Widgets.Terminal, 724, Gap, 400, 400),
@@ -111,9 +113,30 @@ public static class LayoutPresets
         },
         Preset: true);
 
+    /// <summary>
+    /// Just the two panels, with nothing out.
+    /// </summary>
+    /// <remarks>
+    /// <para>**WHAT THE OPERATOR ASKED FOR, IN HIS OWN WORDS** (2026-08-27):
+    /// *"Remove all widgets for now. Leave them on the far left side."* The CW
+    /// tab showed Receive squeezed beside the whole previous arrangement — the
+    /// map, the tape, the waterfall, the advice panel — and rendered `wh at the
+    /// rad io is he ari ng` one or two letters to a line.</para>
+    /// <para>**NOTHING IS DELETED AND THIS IS ONE PRESS AWAY FROM UNDOING.**
+    /// Every widget is still in the tray on the far left, and the arrangements
+    /// beside this one on the bar put them back the way they were.</para>
+    /// </remarks>
+    private static CanvasLayout JustTheRadio { get; } = new(
+        "Just receive and send",
+        "The terminal and the send line, with nothing else out. Everything is "
+        + "still in the tray on the left.",
+        Array.Empty<Placement>(),
+        Preset: true);
+
     /// <summary>Everything Hamlet offers, in the order the bar shows them.</summary>
     public static IReadOnlyList<CanvasLayout> All { get; } = new[]
     {
+        JustTheRadio,
         GettingStarted,
         ListeningAround,
         MakingContacts,
@@ -127,7 +150,12 @@ public static class LayoutPresets
     public static CanvasLayout? Fresh(string? name)
         => All.FirstOrDefault(l => l.Name == name)?.Fresh();
 
-    /// <summary>What a first run gets, furnished.</summary>
-    /// <returns>A fresh copy of Getting started.</returns>
-    public static CanvasLayout Start() => GettingStarted.Fresh();
+    /// <summary>What a first run gets.</summary>
+    /// <returns>A fresh copy of the two-panel arrangement.</returns>
+    /// <remarks>
+    /// **CLEAR RATHER THAN FURNISHED**, by Tim's ruling of 2026-08-27. It used to
+    /// be `Getting started`, which puts four widgets out before anybody has asked
+    /// for one; that arrangement is still on the bar and one press away.
+    /// </remarks>
+    public static CanvasLayout Start() => JustTheRadio.Fresh();
 }

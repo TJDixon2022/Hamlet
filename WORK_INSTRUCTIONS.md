@@ -18,89 +18,88 @@ If all four hold, say "Hamlet confirmed" and continue.
 
 ---
 
-# Work instruction 026 — the operating screen
+# Work instruction 027 — clear the CW tab
 
 **ISSUED: 2026-08-27. A fresh order, not an amendment.**
 
-**Four tasks; task 4 is the drop. This unit is entirely about what the operator
-sees. No decoder file is touched, and the engine's failing set being
-byte-identical at the end is the proof.**
+**Three tasks; task 3 is the drop. No decoder file is touched, and the engine's
+failing set being byte-identical at the end is the proof.**
 
 ## Why this unit exists
 
-**The unit's number: three panels the operator needs at once, on three
-different screens.**
+**The unit's number: one letter per line.**
 
-Tim reviewed the layout on 2026-08-27 and ruled a new one. The reasoning he
-gave, in his words: **the band plan "is the essential driver for a session"**;
-the neighborhood map and the radio "are independent, so that when we go from CW
-to digital to voice, that part stays the same"; and the widgets "apply to all
-different modes… but you drag them onto the current panel."
+Tim photographed the CW tab after unit 1.11.23. **Receive is rendering
+`wh at the rad io is he ari ng` one or two letters to a line**, because it was
+squeezed into a narrow column while the tab still carried the whole previous
+canvas — the neighborhood map, the dial tape, the waterfall, the advice panel,
+all stacked down the left of it. His verdict: **"this is a mess… It needs to be
+clear and only show the send receive parts for now."**
 
-**And one thing comes off the screen because it was a workaround dressed as a
-feature.** The pitch controls — "Hold this pitch", and the pitch behaviour
-attached to "I hear a station" — exist because acquisition does not work. They
-put a decoder problem in the operator's hands and asked him to press a button
-whose meaning was never explained to him. **His verdict: "It shouldn't involve
-me randomly clicking on a button I don't understand."** They come off the CW
-panel. Decoding is Hamlet's job.
+**The fault is in the previous order, not the session that executed it.** Unit
+1.11.23's instruction said what to add to the CW tab and never said what the tab
+should contain, so the work landed on top of the existing arrangement instead of
+replacing it. **This order states the contents.**
 
 ## Verify this instruction against the tree
 
 **Nothing here describes the tree.** Check every claim against the files and
 report any mismatch, including where the work succeeded anyway.
 
-**Expected state: 28 failing of 1841 in the engine as the stable set; 503 of 503
-in the app. Seven timing intermittents exist.** Do not chase any of them; diff
-which tests moved and never trust a total.
+**Two things this order assumes and cannot see. Report both before task 1, and
+if either is wrong, say so and build to what is actually there rather than to
+this description.**
 
-**`AppSettings.UseJointDecoder` ships false and stays false in this unit.**
-`AppSettings.ShowKeyingSweep` ships false and stays false.
+1. **That unit 1.11.23's header exists above the tab strip** — the band plan
+   full width, then the neighborhood on the left and the radio on the right,
+   then the divider. The photograph is cropped and shows only "Listening around
+   / Making contacts", a layout namer, and the tabs.
+2. **That the neighborhood in the photograph is a second copy dragged onto the
+   canvas**, the duplicate unit 1.11.23 reported in its section 4 — the same
+   `widget.map` template appearing twice because it is in the header and still
+   in the tray.
 
-**Do not verify any of this by headless hit-testing.** Unit 1.11.9 asserted this
-area green by hit test while an unexplained headless-versus-real geometry offset
-of about thirteen pixels hid three faults the operator could see. **Unit
-1.11.13's rule stands: assert the geometry that causes the fault — visual-tree
-order, render bounds, clipping ancestors — never that a point reaches a
-control.**
+**Expected state: 28 failing of 1841 in the engine as the stable set; 520 of 520
+in the app. Seven timing intermittents exist.** Do not chase any; diff which
+tests moved and never trust a total.
 
-**`DECISIONS.md` still has no record for HM-DEC-096–133, 136, 141, 150, nor
-Tim's rulings of 2026-08-25/26/27.** **`CLAUDE_CODE.md` is at version 1.4.**
+**`AppSettings.UseJointDecoder` and `AppSettings.ShowKeyingSweep` both ship
+false and stay false.**
+
+**Do not verify by headless hit-testing.** Unit 1.11.13's rule stands: assert the
+geometry that causes the fault — visual-tree order, render bounds, clipping
+ancestors, reference identity — never that a point reaches a control.
+
+**`CLAUDE_CODE.md` is at version 1.5** per unit 1.11.23's correction; read its own
+section count. **`DECISIONS.md` still has no record for HM-DEC-096–133, 136, 141,
+150, nor Tim's rulings of 2026-08-25/26/27.**
 
 ## Rulings in force
 
-**Tim's layout ruling, 2026-08-27.** The operating screen, top to bottom:
+**Tim's ruling, 2026-08-27, in his words: "Remove all widgets for now. Leave them
+on the far left side."**
 
-1. **The band plan, full width, at the top.** Card widths keep the wavelength
-   proportions of HM-DEC-141 — they are meaning, not size. The `best bet now`
-   badge renders over the row rather than inside its layout flow, per unit
-   1.11.13's fix, and takes no clicks.
-2. **The neighborhood panel on the left and the radio panel on the far right**,
-   on one row beneath the band plan. **The neighborhood panel is moved, not
-   modified** — Tim: *"It looks exactly like it does now. We do not need to
-   change the neighborhood."* The radio panel is the narrower of the two and
-   shows what the rig reports: frequency, mode, filter, signal, preamp.
-3. **A divider.** Everything above it is the same in every mode and does not
-   redraw when the mode changes.
-4. **The widget tray down the left, outside the tab region**, and **the tabs —
-   CW, Digital, Voice — beginning at the left edge of the Receive panel.**
-5. **Inside the CW tab: Receive on the left, Send on the right.** Receive is the
-   wider. Both are permanent on that tab.
+- **The CW tab's operating area contains Receive and Send. Nothing else.**
+- **Every widget currently on the CW canvas is removed from it** — the
+  neighborhood map, the dial tape, the waterfall, the advice panel, and anything
+  else there. **None is deleted.** Each remains available in the tray on the far
+  left, to be dragged out when he wants it.
+- **The neighborhood map comes out of the tray**, because it is a header panel
+  now and a second copy on the canvas is the duplicate unit 1.11.23 flagged.
+  **This is the one widget that leaves the catalogue.**
 
-**Tim's ruling on the pitch controls, same date:** they come off the CW panel.
-**"Hold this pitch" is removed from the panel entirely.** "I hear a station"
-**keeps its capture behaviour and loses its pitch behaviour** — see task 3.
+**Tim's ruling, same date: Receive gets the room.** It was unreadable at one
+letter per line. **Receive is the wider of the two panels and its text wraps at
+whole words.**
 
-**Tim's ruling on the tray, same date:** the widgets are shared across modes and
-are dragged onto whichever panel is showing. **The tray is condensed later; this
-unit does not remove any widget.**
+**HM-DEC-141's wavelength proportions, HM-DEC-148's advisory precedent, and every
+decoder behaviour are untouched.** The pitch controls stay off, per unit
+1.11.23.
 
-**HM-DEC-141 is untouched.** **HM-DEC-148's precedent for the advisory area is
-untouched.** **No decoder behaviour changes.**
-
-**Rejected already, do not revisit:** moving the neighborhood panel's contents;
-shrinking the band cards to make room (make room around them); rebuilding the
-keying meter; re-enabling the sweep panel.
+**Rejected already, do not revisit:** deleting any widget other than the
+neighborhood's tray entry; modifying the neighborhood panel itself; wiring Send
+to the transmitter (§0.2, HM-DEC-098 — the interlocks have never been watched
+firing into a dummy load); re-enabling the sweep panel or the joint decoder.
 
 ## Status cadence
 
@@ -110,73 +109,58 @@ moving. Same every ten minutes while a task runs.
 
 ## The tasks
 
-### Task 1 — the persistent header
+### Task 1 — clear the canvas, keep the tray
 
-Band plan at the top, full width. Neighborhood left, radio right, on the row
-below it. Divider beneath.
+Remove every widget from the CW tab's operating area. **Assert that the tray on
+the far left still offers each one**, by name, and that dragging one out still
+works.
 
-**The neighborhood panel is relocated as a whole control. Its contents,
-rendering and behaviour are not touched** — if relocating it requires any change
-to the control itself, **report exactly what and why** rather than adjusting it
-quietly.
+**Take the neighborhood map out of the tray**, per the ruling — it is in the
+header and must not be duplicable onto the canvas.
 
-**Assert, at the application's default width and at a narrower one:** the
-visual-tree order is band plan, then the neighborhood-and-radio row, then the
-divider; every band card's label renders inside its own card, `10 m` included;
-the badge's bounds sit inside every clipping ancestor; nothing occludes anything
-else. **Name the clipping ancestor of the badge in the report.**
+**Report what was on the CW canvas before this task**, by name, so the removal is
+on the record and nothing vanishes unnoticed.
 
 Build and run; record the baseline by diffing which tests fail.
 
-### Task 2 — the tabs and the tray
+### Task 2 — Receive and Send, sized to be read
 
-**The tray sits outside the tab region, down the left**, holding the existing
-widgets. **The tab strip begins at the left edge of the Receive panel** — assert
-that alignment from render bounds, not by eye.
+The operating area holds exactly two panels: **Receive on the left, wider; Send
+on the right, narrower.**
 
-Switching tabs must redraw **only** the area below the tab strip. **Assert that
-the band plan, the neighborhood panel and the radio panel are not re-created
-when the mode changes** — that is the whole point of the divider, and a test is
-the only thing that will keep it true.
+**Assert from render bounds, at the application's default width and at a
+narrower one:**
 
-**A widget dropped on a panel stays with that mode.** Drop it on CW, switch to
-Digital and back: it is still on CW and was never on Digital. **If the existing
-widget machinery cannot carry per-mode placement, report that and implement one
-shared arrangement**, saying plainly which was built.
+- the operating area contains **two** panels and no others;
+- **Receive is wider than Send**;
+- **Receive's text wraps at word boundaries and no line of decoded text is
+  narrower than forty characters** at the default width — the photographed
+  failure was one or two characters to a line, and a width assertion is the only
+  thing that will keep it from recurring;
+- the tab strip still begins at Receive's left edge;
+- the header above the divider is **not re-created** when the mode changes —
+  reference identity, as unit 1.11.23 asserted it.
 
-### Task 3 — the pitch controls come off
+**If the header is not present**, per the check above, **report that first and
+build the operating area anyway** — it is the part Tim can see is wrong.
 
-**Remove "Hold this pitch" from the panel.**
+### Task 3 — Digital and Voice *(the drop candidate)*
 
-**"I hear a station" keeps banking the last half minute and adding to tonight's
-list. It stops setting the decode pitch.** The engine capability added in unit
-1.11.21 stays in the code and stays reachable by tests; **only the panel's use
-of it goes.** Nothing about admission, the tracker or the decoder changes.
+Those tabs are empty and look unfinished. **Give each a single line naming what
+will live there and nothing else.** No controls, no placeholder panels.
 
-**A capture taken after this task must not report an operator-asserted pitch**,
-because the operator can no longer assert one from the panel. Assert it.
-
-### Task 4 — the send panel *(the drop candidate)*
-
-Receive is the existing terminal, relocated. **Send is new: a text line and
-buttons for CQ, RST, 73 and Send.**
-
-**It composes and displays only. It does not key the radio.** Transmit is
-outside this unit and outside every unit so far; **if wiring it appears
-possible, do not**, and put the ask in section 4.
-
-**Dropped whole if time runs out, and the report says so** — the CW tab then
-shows Receive alone, which is what it shows today.
+**Dropped whole if time runs out, and the report says so.**
 
 ## Parked — do not touch, do not raise
 
 Every decoder question: admission, the six axis families, the gate, the squelch,
-the joint decoder, the constrained margin, the tracker, the meter's rebuild, the
-integrator width, `001520`'s quadrillions, `013347`'s 17.2 million, the whole-
-file second pass, the reference and port difference, the short-character bias.
-Also: `CHANGELOG.md`; the seven intermittents; HM-OPEN-057; HM-OPEN-059; the
-Avalonia geometry offset itself; **condensing the tray**; **the Rig tab** — the
-radio panel is permanent in the header and rig settings stay a tray widget.
+the joint decoder, the constrained margin, the tracker, the meter, the integrator
+width, the whole-file second pass, the reference and port difference, the
+short-character bias, `001520`'s quadrillions, `013347`'s 17.2 million. Also:
+per-mode widget placement and the layout store's format; condensing the tray;
+`CHANGELOG.md`; the seven intermittents; the Avalonia geometry offset;
+HM-OPEN-057; HM-OPEN-059; **the Send button that does not send** — unruled and
+left exactly as it is.
 
 A parked item that blocks a task is raised once, and says it was parked.
 
@@ -184,14 +168,13 @@ A parked item that blocks a task is raised once, and says it was parked.
 
 Standing prohibitions are `CLAUDE.md`'s and are not retyped. Unit-specific:
 
-- **Do not touch any decoder file.** The byte-identical failing set is the
-  claim.
-- **Do not modify the neighborhood panel.** Move it; report anything that
-  forces a change.
-- **Do not shrink the band cards.** HM-DEC-141's proportions are meaning.
-- **Do not verify by headless hit-testing.**
+- **Do not touch any decoder file.** The byte-identical failing set is the claim.
+- **Do not delete a widget.** They leave the canvas and stay in the tray. The
+  neighborhood's tray entry is the single exception, by ruling.
+- **Do not modify the neighborhood panel.**
+- **Do not put anything else in the CW operating area.** Two panels.
 - **Do not wire Send to the transmitter.**
-- **Do not remove a widget from the tray.**
+- **Do not verify by headless hit-testing.**
 
 ## Committing, pushing, reporting
 
@@ -201,15 +184,15 @@ push is reported as refused, with the reason.
 Report per `CLAUDE_CODE.md` §8 — read the file's own section count — to
 `output.md` at the repository root, overwritten and printed.
 
-**Section 2 leads with what the screen looks like top to bottom**, because that
-is the deliverable. **Section 3 leads with the assertions: the visual-tree
-order, the band labels inside their cards, the badge's clipping ancestor, the
-tab strip's alignment to Receive, and that the header is not re-created on a
-mode change.**
+**Section 2 leads with what the CW tab now contains**, and names every widget
+that left it and where it went. **Section 3 leads with the width assertions on
+Receive** — panels in the operating area, Receive against Send, and the minimum
+decoded line length — because one letter per line is the fault this unit exists
+to fix.
 
 ### Asks still outstanding
 
-Carried forward verbatim per HM-DEC-139 and HM-DEC-140. **Nineteen inbound. The
+Carried forward verbatim per HM-DEC-139 and HM-DEC-140. **Twenty inbound. The
 oldest is open since 2026-08-14.**
 
 1. **The sweep's `invented` column counts substitutions, not invented
@@ -218,35 +201,34 @@ oldest is open since 2026-08-14.**
 3. **`ANNUNCIATOR.md` renamed `PHASE` to `TASK` while HM-DEC-150 makes `PHASE`
    match the version's minor.**
 4. **`DECISIONS.md` has no record for HM-DEC-096–133, 136, 141 or 150 — nor for
-   Tim's rulings of 2026-08-25/26/27, including the three this unit acts
-   under.**
+   Tim's rulings of 2026-08-25/26/27, including the two this unit acts under.**
 5. **The tone tracker** — six axis families measured; the question is a design
-   one, and **the operator's assertion is no longer available as the way round
-   it from the panel.**
+   one, and the operator's assertion is no longer the way round it.
 6. **The integrator width** — settled at 45 Hz, with the sharp-peak caveat.
 7. **The guard's gap is two to one**, calibrated on two empty captures.
 8. **A boxcar's nulls made two of five swept offsets pathological best cases.**
 9. **Two stations closer than 125 Hz are not named.**
-10. **The keying meter** — behind its setting, off; the rebuild is its own unit.
+10. **The keying meter** — its measurement found a station its verdict denied.
 11. **HM-OPEN-057** (2026-08-22) and **HM-OPEN-007** (2026-08-14).
 12. **The gate opens on everything, including two empty recordings.**
-13. **The joint cutter cannot find word gaps on a compressed fist** —
-    HM-DEC-115 arriving a second time. **Whether the cutter should fit its own
-    three gap classes is Tim's and is unruled.**
+13. **The joint cutter cannot find word gaps on a compressed fist** — HM-DEC-115
+    arriving a second time, and **still unruled.**
 14. **The constrained margin is bounded and still does not separate.**
-15. **`011447` and `011514` are absent**, and `021410` does not contain the text
-    three acceptance lines were written against.
-16. **A mutable static in the decode path cannot be measured under xUnit.**
-17. **An asserted pitch does not relax the decoder's own gate** — `014113` is
-    pointed within seven hertz of its station and still emits nothing.
-18. **Whether Send should ever key the transmitter** — task 4 composes only.
-19. **Whether a dropped widget's placement is per-mode or shared** — task 2
-    builds per-mode if the machinery allows and says which was built.
+15. **Four fixtures are absent and five acceptance lines were unmeasurable.**
+16. **Per-mode widget placement needs a stored-format ruling.**
+17. **The Digital and Voice tabs are empty** — task 3 gives them a line.
+18. **There is a Send button that does not send.**
+19. **A mutable static in the decode path cannot be measured under xUnit.**
+20. **`013347` returns a likelihood ratio of 17.2 million**, with `001520`'s
+    quadrillions.
+
+Closed by this unit if it lands: **the neighborhood's duplicate** — out of the
+tray, one copy in the header.
 
 Still open: **three fixtures at accepted cost**; **the reference and port
 integrator difference**; **an unmeasured pitch costs `N4L`**; **the six-hertz
 window disagreement**; **the short-character bias**; **the Avalonia geometry
-offset**; **`CHANGELOG.md` at 1.9.0 against 1.11.22**; **the whole-file second
+offset**; **`CHANGELOG.md` at 1.9.0 against 1.11.23**; **the whole-file second
 pass**; **the squelch has no axis**; **the three morning captures of
 2026-08-26**.
 

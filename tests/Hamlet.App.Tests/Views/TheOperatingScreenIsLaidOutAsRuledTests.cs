@@ -256,6 +256,92 @@ public sealed class TheOperatingScreenIsLaidOutAsRuledTests
     }
 
     /// <remarks>
+    /// <para>Proves the fault the operator photographed: Receive rendering
+    /// `wh at the rad io is he ari ng` one or two letters to a line, because it
+    /// was squeezed beside the whole previous canvas.</para>
+    /// <para>**THE ASSERTION IS A WIDTH IN CHARACTERS**, not a pixel count. A
+    /// column is wide enough or it is not, and the thing that went wrong is that
+    /// text had nowhere to go — so what is measured is how many characters of the
+    /// terminal's own font fit across the panel that holds it.</para>
+    /// </remarks>
+    /// <param name="width">How wide the window is.</param>
+    [AvaloniaTheory]
+    [InlineData(1200)]
+    [InlineData(1400)]
+    public void ReceiveIsWideEnoughToReadALineOfMorse(int width)
+    {
+        With(width, (window, _) =>
+        {
+            var receive = window.GetVisualDescendants()
+                .OfType<Border>()
+                .FirstOrDefault(b => b.Name == "ReceivePanel");
+
+            Assert.NotNull(receive);
+
+            var terminal = receive!.GetVisualDescendants()
+                .OfType<CwTerminalControl>()
+                .FirstOrDefault();
+
+            Assert.NotNull(terminal);
+
+            // One character of the terminal's own monospace face, measured
+            // rather than assumed.
+            var probe = new TextBlock
+            {
+                Text = new string('M', 10),
+                FontFamily = terminal!.FontFamily,
+                FontSize = terminal.FontSize,
+            };
+
+            probe.Measure(Size.Infinity);
+
+            var perCharacter = probe.DesiredSize.Width / 10;
+            var fits = terminal.Bounds.Width / Math.Max(perCharacter, 0.01);
+
+            _output.WriteLine(
+                $"{width} px: receive w={receive.Bounds.Width:0}, "
+                + $"terminal w={terminal.Bounds.Width:0}, "
+                + $"{perCharacter:0.0} px a character, **{fits:0} characters to a line**");
+
+            Assert.True(
+                fits >= 40,
+                $"at {width} px only {fits:0} characters fit across the decoded "
+                + "text, and the photographed failure was one or two");
+        });
+    }
+
+    /// <remarks>
+    /// Proves the operating area holds two panels and no widgets. Everything
+    /// else is in the tray on the far left (Tim, 2026-08-27).
+    /// </remarks>
+    [AvaloniaFact]
+    public void TheOperatingAreaHoldsTwoPanelsAndNoWidgets()
+    {
+        With(1400, (window, _) =>
+        {
+            var model = (MainWindowViewModel)window.DataContext!;
+
+            _output.WriteLine(
+                $"{model.Canvas.Placed.Count} widgets out, "
+                + $"{model.Canvas.Tray.Count} in the tray");
+
+            Assert.Empty(model.Canvas.Placed);
+
+            var receive = window.GetVisualDescendants()
+                .OfType<Border>().FirstOrDefault(b => b.Name == "ReceivePanel");
+
+            var send = window.GetVisualDescendants()
+                .OfType<Border>().FirstOrDefault(b => b.Name == "SendPanel");
+
+            Assert.NotNull(receive);
+            Assert.NotNull(send);
+
+            // And every widget is still offered, so nothing was deleted.
+            Assert.NotEmpty(model.Canvas.Tray);
+        });
+    }
+
+    /// <remarks>
     /// Proves the neighborhood and the radio do not overlap. They share a row
     /// and the neighborhood is the wider of the two, so the failure this guards
     /// against is one being drawn over the other.

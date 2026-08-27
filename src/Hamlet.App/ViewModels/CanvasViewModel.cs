@@ -246,9 +246,15 @@ public sealed partial class CanvasViewModel : ObservableObject
 
     private CanvasLayout Start()
     {
-        StartedFrom = LayoutPresets.FirstRun;
+        var starting = LayoutPresets.Start();
 
-        return LayoutPresets.Start();
+        // **THE NAME COMES FROM THE ARRANGEMENT RATHER THAN A CONSTANT BESIDE
+        // IT.** It used to be pinned to `FirstRun` while the layout came from
+        // `Start()`, so the two could disagree the moment either moved — and on
+        // 2026-08-27 they did.
+        StartedFrom = starting.Name;
+
+        return starting;
     }
 
     /// <summary>What is on the canvas.</summary>
@@ -282,6 +288,16 @@ public sealed partial class CanvasViewModel : ObservableObject
 
     /// <summary>True when the tray has anything left in it.</summary>
     public bool HasTray => Tray.Count > 0;
+
+    /// <summary>True while at least one widget is out on the canvas.</summary>
+    /// <remarks>
+    /// **THE CANVAS TAKES NO ROOM WHILE IT HOLDS NOTHING** (Tim, 2026-08-27:
+    /// "Remove all widgets for now. Leave them on the far left side."). The CW
+    /// tab shows Receive and Send, and an empty canvas beneath them that grows
+    /// only when he drags something out of the tray. Nothing is deleted; it is
+    /// simply not out.
+    /// </remarks>
+    public bool HasPlaced => Placed.Count > 0;
 
     /// <summary>
     /// Load an arrangement, as a fresh copy every time (HM-DEC-086).
@@ -772,6 +788,21 @@ public sealed partial class CanvasViewModel : ObservableObject
 
         foreach (var widget in Widgets.All)
         {
+            // **THE NEIGHBORHOOD MAP IS NOT OFFERED** (Tim's ruling of
+            // 2026-08-27). Unit 1.11.23 made it a header panel, above the
+            // divider, permanent in every mode — and left its tray entry behind,
+            // so a second copy could be dragged onto the canvas and the same
+            // panel appeared twice.
+            //
+            // **IT LEAVES THE TRAY AND NOT THE CATALOGUE.** A saved layout
+            // naming it must still resolve rather than becoming an empty box
+            // with a question mark in it, and the header hosts the same
+            // template, so `Widgets.Map` stays where `Lookup` can find it.
+            if (widget.Id == Widgets.Map)
+            {
+                continue;
+            }
+
             if (Placed.All(p => p.Id != widget.Id))
             {
                 Tray.Add(widget);
@@ -779,6 +810,7 @@ public sealed partial class CanvasViewModel : ObservableObject
         }
 
         OnPropertyChanged(nameof(HasTray));
+        OnPropertyChanged(nameof(HasPlaced));
 
         // A widget that has come out has nothing left to say from off the canvas.
         foreach (var note in Absent.Where(a => Placed.Any(p => p.Id == a.Id)).ToList())

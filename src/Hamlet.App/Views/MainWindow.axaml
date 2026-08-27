@@ -2791,7 +2791,33 @@
                          than looking live and doing nothing. -->
                     <Grid Grid.Row="1" ColumnDefinitions="*,Auto">
 
-                    <Panel Grid.Column="0">
+                    <!-- **RECEIVE IS A PANEL, NOT WHATEVER SPACE IS LEFT
+                         OVER** (Tim, 2026-08-27: "this is a mess… It needs to be
+                         clear and only show the send receive parts for now").
+
+                         Unit 1.11.23 made the canvas itself the Receive side and
+                         the canvas still carried the whole previous arrangement
+                         stacked down the left of it, so Receive got the
+                         remainder — a column narrow enough to render `wh at the
+                         rad io is he ari ng` one or two letters to a line. -->
+                    <Grid Grid.Column="0" RowDefinitions="*,Auto">
+
+                    <Border Grid.Row="0" x:Name="ReceivePanel"
+                            Padding="12" CornerRadius="8"
+                            Background="{StaticResource HmPanelBrush}"
+                            BorderBrush="{StaticResource HmSlateEdgeBrush}"
+                            BorderThickness="1">
+                        <ContentControl Content="{Binding}"
+                                        ContentTemplate="{StaticResource widget.terminal}" />
+                    </Border>
+
+                    <!-- **THE CANVAS IS STILL HERE AND STARTS EMPTY.** No widget
+                         was deleted: every one is in the tray on the far left and
+                         dragging it out still works. It takes no room while it
+                         holds nothing, which is why two panels is what he
+                         sees. -->
+                    <Panel Grid.Row="1" MaxHeight="520" Margin="0,10,0,0"
+                           IsVisible="{Binding Canvas.HasPlaced}">
 
                     <ScrollViewer x:Name="CanvasView"
                                   VerticalScrollBarVisibility="Visible"
@@ -2972,6 +2998,7 @@
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
                 </Panel>
+                    </Grid>
 
                     <Border Grid.Column="1" x:Name="SendPanel"
                             Width="280" Margin="10,0,0,0"

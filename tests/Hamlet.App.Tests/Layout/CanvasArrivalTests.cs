@@ -10,6 +10,24 @@ namespace Hamlet.App.Tests.Layout;
 /// </summary>
 public sealed class CanvasArrivalTests
 {
+    /// <summary>
+    /// A canvas with widgets on it, for the tests that manipulate one.
+    /// </summary>
+    /// <remarks>
+    /// **A FIRST RUN NO LONGER FURNISHES THE CANVAS** (Tim, 2026-08-27: "Remove
+    /// all widgets for now. Leave them on the far left side."), so a test that
+    /// takes a widget off one has to put a widget on it first.
+    /// </remarks>
+    private static CanvasViewModel Furnished()
+    {
+        var canvas = new CanvasViewModel(null);
+
+        canvas.LoadCommand.Execute(
+            canvas.Presets.First(p => p.Name == LayoutPresets.FirstRun));
+
+        return canvas;
+    }
+
     /// <remarks>
     /// <para>Proves HM-DEC-087: **a widget arrives showing its contents.**
     /// Everything used to arrive shut, so pulling three things out of the tray
@@ -59,7 +77,7 @@ public sealed class CanvasArrivalTests
     [Fact]
     public void TakingHoldOfAWidgetBringsItToTheFront()
     {
-        var canvas = new CanvasViewModel(null);
+        var canvas = Furnished();
         var first = canvas.Placed.First();
 
         Assert.NotSame(first, canvas.Placed.Last());
@@ -85,7 +103,7 @@ public sealed class CanvasArrivalTests
     [Fact]
     public void LiveNewsAndNewsThatWillKeepAreToldApart()
     {
-        var canvas = new CanvasViewModel(null);
+        var canvas = Furnished();
 
         canvas.Remove(canvas.Placed.First(p => p.Id == Widgets.Spots));
         canvas.Remove(canvas.Placed.First(p => p.Id == Widgets.Guide));
@@ -113,7 +131,7 @@ public sealed class CanvasArrivalTests
     [Fact]
     public void ANoteThatBecomesUrgentIsRedrawn()
     {
-        var canvas = new CanvasViewModel(null);
+        var canvas = Furnished();
         canvas.Remove(canvas.Placed.First(p => p.Id == Widgets.Spots));
 
         canvas.News(Widgets.Spots, "Somebody is calling.", AbsentUrgency.Quiet);
