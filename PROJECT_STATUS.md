@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 5 of 6
+TASK: 6 of 6
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-27T19:08:49-04:00
-NOTE: fitting key-up lowers every capture rather than lifting the unread three, because a better-fitting null explains more; nothing ships and the reason is arithmetic
+UPDATED: 2026-08-27T19:10:37-04:00
+NOTE: the reference decoder fails all five recordings including the control Hamlet reads, and emits words on an empty one; writing the report
 
 ---
 
