@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 5 of 5
-BALL: tim
-NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-27T16:50:51-04:00
-NOTE: ranking measured on all four captures and it loses to the loudest bin four to nil; HM-DEC-095 is the ask
+STATE: EXECUTING
+TASK: 2 of 9
+BALL: code
+NEXT_PASTE: none
+UPDATED: 2026-08-27T17:00:03-04:00
+NOTE: baseline measured at 28 of 1852 byte-identical; the empty-capture corpus is two recordings and cannot honestly be widened, which constrains task 5
 
 ---
 
