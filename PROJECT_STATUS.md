@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
+STATE: EXECUTING
 TASK: 4 of 4
-BALL: tim
-NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-26T19:58:23-04:00
-NOTE: the envelope is not the fix, and the last two units' conclusion was an artifact of pooling over the silence
+BALL: code
+NEXT_PASTE: none
+UPDATED: 2026-08-26T20:35:45-04:00
+NOTE: agreement is inverted: the empty band agrees tightest at CV 0.028 while VA3VRR agrees worst at 0.400, so task 3 is not built
 
 ---
 
