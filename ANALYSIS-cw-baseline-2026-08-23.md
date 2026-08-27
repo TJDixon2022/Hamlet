@@ -175,9 +175,9 @@ grid:    E JJ AT ARRL DOT NET <BT> EACH STATION HANDLING THIS MESSAG E PE
 
 | | shipped | grid |
 |---|---|---|
-| characters emitted | 136 | 53 |
+| characters emitted | 135 | 53 |
 | E-share | 11 % | 4 % |
-| single-character words | 44 % | 0 % |
+| single-character words | 41 % | 0 % |
 | words per minute read | 27 | 22.0 |
 
 The witness split, over the shipped decode:
@@ -190,14 +190,14 @@ absence (§0.0).
 
 | witness | characters | E-share | single-char words | span LLR P10 / median / P90 |
 |---|---|---|---|---|
-| said keying | 119 | 12 % | 46 % | 88.1 / 338.2 / 883.7 |
+| said keying | 118 | 12 % | 43 % | 88.8 / 338.2 / 883.7 |
 | said no keying | 0 | no characters | no characters | nothing measured |
-| had not decided | 17 | 6 % | 20 % | 145.5 / 329.1 / 480.5 |
+| had not decided | 17 | 6 % | 20 % | 156.9 / 349.4 / 534.0 |
 
 What each read:
 
 ```
-shipped: ADAA D KAKP EP TAT11H15TE5TT IT ITIT W WAEAS ES JJUJUNTNK K ■ <AS> ■ ■ ■ ■ S STITIRLALL IL HIHVEVE M MKY Y E T E TMO EO O9E9J1T1BB  ■TE ■TT T W JEEJETSTST T V VFFBFB TB TUUBB I LELIN
+shipped: ADAA D KAKP EP TAT11H15TE5TT IT ITIT W WAEAS ES JJUJUNTNKK  <AS> ■ ■ ■ ■ S STITIRLALL IL HIHVEVE M MKY Y E T E TMO EO O9E9J1T1BB  ■TE ■TT T W JEEJETSTST T V VFFBFB TB TUUBB I LELIN
 grid:    I<BT> HADA KPT15TT ITWAS #K <BT> #STILL HVE MY ETO 91B TT JUST VFB TUB LIN
 ```
 
@@ -256,7 +256,7 @@ absence (§0.0).
 |---|---|---|---|---|
 | said keying | 108 | 17 % | 64 % | -2.8 / 870.9 / 2895.4 |
 | said no keying | 0 | no characters | no characters | nothing measured |
-| had not decided | 14 | 7 % | 62 % | -82.3 / 1235.4 / 2422.1 |
+| had not decided | 14 | 7 % | 62 % | -82.3 / 1203.4 / 2421.6 |
 
 What each read:
 

@@ -129,12 +129,22 @@ it is new; it does not mean a station was found.
 
 | | baseline | end |
 |---|---|---|
-| engine | 28 of 1852, byte-identical by name | **still running when this was written** |
+| engine | 28 of 1852, byte-identical by name | **the 28, plus one timing intermittent** |
 | app | 509 of 509 | **not re-run — no app file was changed** |
 
-**The regression run was started and had not returned.** Three engine files
-changed: the tracker's acquisition rung, a new enum, one field on the report. No
-decoder file and no app file was touched.
+**One test moved and it is not this unit's:**
+`TheStateMonitorDoesNotHoldUpADisconnect`, which **passes three runs out of three
+in isolation**. It is a rig-disconnect timing test and the three files this unit
+changed are the tracker's acquisition rung, a new enum and one field on the
+report — nothing on that path. It is one of the seven intermittents the order
+says to diff and not chase, and this is the diff.
+
+**The run it was found in was killed before it printed a total**, so the count
+above is the failing set by name and not a total. A second full run was started
+after the report was written; if it disagrees, the disagreement is the answer and
+not this paragraph.
+
+No decoder file and no app file was touched.
 
 ## 3. What you should see
 
