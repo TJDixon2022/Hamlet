@@ -4,8 +4,8 @@ STATE: COMPLETED
 TASK: 2 of 9
 BALL: tim
 NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-27T17:16:06-04:00
-NOTE: stopped at task two of nine: the empty captures already emit nothing, so tasks three to seven target a fault the tree does not reproduce
+UPDATED: 2026-08-27T17:33:07-04:00
+NOTE: stopped at task two of nine; three observations agree the unit regressed nothing, and no full run completed to print a total
 
 ---
 

@@ -139,10 +139,17 @@ changed are the tracker's acquisition rung, a new enum and one field on the
 report — nothing on that path. It is one of the seven intermittents the order
 says to diff and not chase, and this is the diff.
 
-**The run it was found in was killed before it printed a total**, so the count
-above is the failing set by name and not a total. A second full run was started
-after the report was written; if it disagrees, the disagreement is the answer and
-not this paragraph.
+**Neither full run printed a total, because both were killed by the environment
+rather than by anything in the suite** — so the figure above is a failing set by
+name and not a count. **The second run corroborates the first**: 19 failures
+before it was stopped, **every one of them inside the stable 28**, with no
+unknown name and with `TheStateMonitorDoesNotHoldUpADisconnect` not among them.
+
+**So three separate observations agree that this unit regressed nothing** — the
+first run's diff, the second run's clean partial, and the intermittent passing
+three times out of three on its own. **What is still not in hand is a completed
+run with a total**, and the next unit should take one before trusting 28 of
+1852 as this tree's number.
 
 No decoder file and no app file was touched.
 
