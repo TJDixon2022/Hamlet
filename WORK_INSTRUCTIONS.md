@@ -18,45 +18,42 @@ If all four hold, say "Hamlet confirmed" and continue.
 
 ---
 
-# Work instruction 028 — three workspaces, and the canvas is gone
+# Work instruction 029 — the tab owns the canvas
 
 **ISSUED: 2026-08-27. A fresh order, not an amendment.**
 
-**Three tasks; task 3 is the drop. No decoder file is touched, and the engine's
+**Six tasks; task 6 is the drop. No decoder file is touched, and the engine's
 failing set being byte-identical at the end is the proof.**
 
 ## Why this unit exists
 
-**The unit's number: two CW terminals, one screen.**
+**The unit's number: one click, everything gone.**
 
-Tim photographed the CW tab after unit 1.11.24. Receive and Send are in place at
-the top — **and the entire old canvas is still beneath them**, restored from his
-saved layout: a second neighborhood map, the dial tape, the waterfall, **a second
-CW terminal**, and the advice panel. Above them sits the preset bar and the
-layout namer; down the left is the "Add to the canvas" column.
+Tim photographed unit 1.11.25's screen. **Clicking Digital and returning to CW
+leaves the workspace blank** — no Send, no Receive, nothing. The unit asserted
+that CW's workspace is the same object on return and that assertion passed, so
+**the objects survive and stop being shown**. The effective-visibility fix that
+unit made for Send reaches the panels and not the container: whatever hides the
+CW workspace on a tab change is not undone on the way back.
 
-**Two failures, both in the previous order rather than in the session that
-executed it.**
+**And on a fresh start, where the panels do appear, nothing joins them to the
+tab.** Send and Receive float below the tab strip with no boundary of any kind.
+Tim: *"It doesn't look like the tab owns the workspace. We need a containing
+boundary to show what's happening… everything down from the tabs is the working
+canvas. Make that obvious."*
 
-1. **It said to move widgets to the tray and forbade deleting any.** That
-   protected his saved arrangements, which is not what he asked for. His words:
-   *"I don't care when it destroys. We're abandoning all of that."*
-2. **It gave Digital and Voice "a single line naming what will live there."**
-   That is decoration, not behaviour. **A tab that does not change the screen is
-   not a tab**, and the previous order specified it that way.
-
-**And Send is not part of the CW workspace at all** — it sits outside the tab's
-own area, to the right of the canvas, which is why it reads as detached. Tim:
-*"I want the CW campus to be a single piece… They're not widgets. They're not
-removable. They're permanent parts of the CW workspace. Makes no sense to have a
-CW workspace without at least those two elements."*
+**Two smaller faults are in the same photograph.** The block
+`7.030 MHz · yours to use / 97.305(a)` renders **twice** — once inside the
+neighborhood map where it belongs, and again as a loose card beneath it. And the
+`recent · places you have been · forget this place` row sits between the header
+and the tabs.
 
 ## Verify this instruction against the tree
 
 **Nothing here describes the tree.** Check every claim against the files and
 report any mismatch, including where the work succeeded anyway.
 
-**Expected state: 28 failing of 1841 in the engine as the stable set; 527 of 527
+**Expected state: 28 failing of 1841 in the engine as the stable set; 493 of 493
 in the app. Seven timing intermittents exist.** Do not chase any; diff which
 tests moved and never trust a total.
 
@@ -64,8 +61,10 @@ tests moved and never trust a total.
 and stay false.**
 
 **Do not verify by headless hit-testing.** Unit 1.11.13's rule stands: assert the
-geometry that causes the fault — visual-tree order, render bounds, clipping
-ancestors, reference identity — never that a point reaches a control.
+geometry that causes the fault. **And unit 1.11.25's lesson goes with it: assert
+what the operator sees, not a control's own property** — a panel's `IsVisible`
+stays true inside a hidden container, which is precisely how a blank workspace
+passed its test.
 
 **`CLAUDE_CODE.md` is at version 1.6.** Read its own section count.
 
@@ -74,42 +73,34 @@ rulings of 2026-08-25/26/27.**
 
 ## Rulings in force
 
-**Tim's ruling, 2026-08-27, in his words.** *"CW should come up in its own canvas
-with send on the left, receive on the right, nothing else. Data should have an
-empty canvas. Voice should have an empty canvas. Those tabs should work."*
+**Tim's ruling, 2026-08-27, in his words:** *"Everything below the CW Digital and
+Voice is the workspace canvas. That space is bounded by the controlling tab. It
+needs to be obvious to the user."*
 
-- **Three workspaces below the divider: CW, Digital, Voice.** Selecting a tab
-  changes what is below it and nothing above it.
-- **The CW workspace is one piece: Send on the left, Receive on the right,
-  nothing else.** **They are not widgets. They are not removable, not
-  draggable, not closable, and they are not in any catalogue.**
-- **Digital is empty. Voice is empty.** No panels, no placeholder text, no
-  controls.
-- **The widget canvas is removed from all three workspaces**, with everything
-  that serves it: the tray, the preset bar, the layout namer and the saved
-  arrangements.
+- **The tab strip and the workspace below it are one bounded region.** The tabs
+  sit on the top edge of that boundary and the selected tab merges into it, so
+  the tab is visibly the handle of the space it controls.
+- **The boundary runs from the tabs to the bottom of the working area** and is
+  the same region whichever tab is selected.
 
-**Tim's ruling, same date, on what that destroys:** *"I don't care when it
-destroys. We're abandoning all of that."* **Saved layouts, presets and the
-arrangement machinery are abandoned deliberately.** A saved `layouts.json` that
-no longer loads is the intended outcome, not a regression.
+**Tim's ruling, same date: the duplicate card goes.** The loose
+`7.030 MHz · yours to use` card beneath the neighborhood map is removed. **The
+copy inside the map stays** — it belongs there.
 
-**HM-DEC-086 — "nobody ever starts on an empty canvas" — is superseded for these
-three workspaces by this ruling**, and the supersession is recorded rather than
-worked around. The reasoning unit 1.11.24 offered stands and is now explicit: what
-that ruling forbids is a puzzle handed to somebody who came to talk on the radio.
-**CW opens on two working panels. Digital and Voice are empty because they have
-nothing to do yet, and saying so honestly is better than furnishing them with
-text that does nothing.**
+**Tim's ruling, same date: the `recent · places you have been · forget this
+place` row is removed from between the header and the tabs.** It is not deleted
+from the application; **if it has no other home, report that and leave the
+control in the tree unreferenced rather than destroying it** — this ruling is
+about where it sits, not about whether the capability exists.
 
-**Untouched:** the header above the divider — band plan, neighborhood, radio — and
-the divider itself; HM-DEC-141's wavelength proportions; every decoder behaviour;
-the pitch controls staying off.
+**Untouched:** the band plan, the neighborhood map itself, the radio panel, the
+divider; HM-DEC-141's wavelength proportions; every decoder behaviour; the pitch
+controls staying off; **CW's contents — Send left, Receive right, neither a
+widget** — settled by unit 1.11.25.
 
-**Rejected already, do not revisit:** keeping the canvas anywhere in these three
-workspaces; keeping Receive or Send in a catalogue; furnishing Digital or Voice
-with placeholder text; wiring Send to the transmitter (§0.2, HM-DEC-098 — the
-interlocks have never been watched firing into a dummy load).
+**Rejected already, do not revisit:** bringing back the canvas, the tray, the
+preset bar or the layout namer; putting placeholder text in Digital or Voice;
+wiring Send to the transmitter (§0.2, HM-DEC-098).
 
 ## Status cadence
 
@@ -119,80 +110,81 @@ moving. Same every ten minutes while a task runs.
 
 ## The tasks
 
-### Task 1 — the CW workspace, as one piece
+### Task 1 — find why returning to CW shows nothing
 
-**Send on the left, Receive on the right, inside the CW tab's own area, and
-nothing else in it.**
+**Diagnose before fixing.** Report, with file and line, what hides the CW
+workspace on a tab change and what should restore it. Say whether it is the
+container's visibility, a binding that does not re-evaluate, a template
+recreated without its content, or something else.
 
-Neither is a widget. **Remove both from the widget catalogue** — the terminal's
-duplicate that unit 1.11.24 reported, and Send — so neither can be dragged out,
-closed or placed twice. Neither carries a close button.
-
-**Assert from render bounds, at the application's default width and at a narrower
-one:**
-
-- the CW workspace contains **exactly two panels**;
-- **Send's left edge is at the workspace's left edge, and Receive is to its
-  right** — the photographed fault was Send sitting outside the workspace
-  entirely, to the right of everything;
-- **no decoded line in Receive is narrower than forty characters**, the
-  assertion unit 1.11.24 introduced and measured at 61 and 81;
-- neither panel has a close affordance;
-- the tab strip still begins at the workspace's left edge.
-
-**Report which is the wider**, and say plainly if the ruling's left-right order
-makes Receive the narrower of the two — Tim named the order, not the widths, and
-Receive is the panel he reads.
+**Then state why unit 1.11.25's test passed.** That test asserted the workspace
+is the same object on return, and it is — so name the property that is true
+while the operator sees nothing. **A test that passes over a blank screen is the
+finding here**, and the next task's assertion is written against it.
 
 Build and run; record the baseline by diffing which tests fail.
 
-### Task 2 — the canvas is gone, and the tabs work
+### Task 2 — returning to CW shows CW
 
-**Remove the widget canvas from all three workspaces**, and with it the tray, the
-preset bar, the layout namer and the saved-arrangement machinery.
+Fix what task 1 found.
 
-**Digital and Voice are empty.** Selecting either shows an empty workspace.
-Selecting CW shows Send and Receive.
+**Assert what the operator sees, at the application's default width:** starting
+on CW, switching to Digital, switching to Voice, and returning to CW, **Send and
+Receive are effectively visible and have non-zero render bounds** at the end.
+Repeat the round trip twice in the same test — a fault that only appears on the
+second circuit is the kind this unit exists to catch.
 
-**Assert:**
+**Digital and Voice remain empty** on every visit.
 
-- **each of the three tabs changes the workspace below it**, by reference
-  identity — CW's two panels are present on CW, absent on Digital, absent on
-  Voice, and the same objects on returning to CW;
-- **nothing above the divider is re-created** on any tab change — band plan,
-  neighborhood and radio, by reference identity, as unit 1.11.23 asserted them;
-- **no canvas, tray, preset bar or layout namer exists anywhere in the three
-  workspaces.**
+### Task 3 — the tab owns the canvas
 
-**Report what was deleted, by name** — every widget definition, every preset,
-every stored arrangement — so the abandonment is on the record. **Tests pinning
-the removed behaviour are updated to say what is now true, with the reason at the
-site, and none is deleted.**
+Implement the boundary per the ruling: **the tab strip on the top edge of a
+bordered region that extends down over the whole working area**, the selected
+tab merging into it.
 
-**If any widget in the catalogue is reachable from somewhere other than these
-three workspaces, say so and leave that route alone** — this ruling covers the
-three workspaces, not the whole application.
+**Assert from render bounds:** the boundary's top edge meets the tab strip; its
+left and right edges enclose the workspace; the selected tab's bottom edge and
+the boundary's top edge coincide within a pixel; **the boundary is present and
+the same region on all three tabs.**
 
-### Task 3 — what the widgets were *(the drop candidate)*
+**If merging the selected tab into the border cannot be done cleanly, report
+exactly what fails and ship the closest thing that does not look broken** — a
+tab that nearly meets the edge is worse than one that plainly sits on it.
 
-**Before or as they go, record what is being abandoned**: each widget's name and
-the one line describing what it did — the scanner, the phrasebook, the field
-guide, "did anybody hear me", "call CQ on a cycle", and the rest. **Write it to
-`ABANDONED_WIDGETS.md` at the repository root**, so that rebuilding any of them
-later as a real panel starts from a list rather than from git archaeology.
+### Task 4 — the duplicate card
 
-**Dropped whole if time runs out, and the report says so** — the deletion still
-happens in task 2; only the record is at risk.
+Remove the loose `7.030 MHz · yours to use` card beneath the neighborhood map.
+**The copy inside the map stays.**
+
+**Assert that the string renders once**, not twice, in the whole window.
+
+### Task 5 — the recent-places row
+
+Remove the `recent · places you have been · forget this place` row from between
+the header and the tabs.
+
+**If the control has another home in the application, say where.** If it does
+not, **leave it in the tree unreferenced and say so** — this is a placement
+ruling, not a deletion.
+
+**Assert that nothing renders between the header's divider and the tab strip.**
+
+### Task 6 — what the removed row was for *(the drop candidate)*
+
+One paragraph in `ABANDONED_WIDGETS.md`, beside unit 1.11.25's fifteen: what the
+recent-places control did, so a decision to rebuild it starts from a description.
+**Dropped whole if time runs out, and the report says so.**
 
 ## Parked — do not touch, do not raise
 
 Every decoder question: admission, the six axis families, the gate, the squelch,
 the joint decoder, the constrained margin, the tracker, the meter, the integrator
 width, the whole-file second pass, the reference and port difference, the
-short-character bias, `001520`'s quadrillions, `013347`'s 17.2 million. Also:
-per-mode widget placement — **void, there is no canvas**; the Send button that
-does not send; `CHANGELOG.md`; the seven intermittents; the Avalonia geometry
-offset; HM-OPEN-057; HM-OPEN-059; **the header above the divider.**
+short-character bias, `001520`'s quadrillions, `013347`'s 17.2 million. Also: the
+Send button that does not send; the engine code behind the abandoned widgets;
+the phrasebook's arrival and the absent-widget news; `CHANGELOG.md`; the seven
+intermittents; the Avalonia geometry offset; HM-OPEN-057; HM-OPEN-059; **the band
+plan, the neighborhood map, the radio panel and the divider.**
 
 A parked item that blocks a task is raised once, and says it was parked.
 
@@ -201,12 +193,11 @@ A parked item that blocks a task is raised once, and says it was parked.
 Standing prohibitions are `CLAUDE.md`'s and are not retyped. Unit-specific:
 
 - **Do not touch any decoder file.** The byte-identical failing set is the claim.
-- **Do not keep the canvas anywhere in these three workspaces**, and do not
-  preserve a saved arrangement in order to be helpful. The ruling is explicit.
-- **Do not leave Receive or Send in any catalogue.**
-- **Do not put placeholder text in Digital or Voice.**
-- **Do not touch anything above the divider.**
-- **Do not wire Send to the transmitter.**
+- **Do not change CW's contents.** Send left, Receive right, settled.
+- **Do not delete the recent-places control.** It moves out of that slot.
+- **Do not remove the copy of the frequency block inside the neighborhood map.**
+- **Do not assert a control's own visibility property** where effective
+  visibility is what the operator sees.
 - **Do not verify by headless hit-testing.**
 
 ## Committing, pushing, reporting
@@ -217,14 +208,14 @@ push is reported as refused, with the reason.
 Report per `CLAUDE_CODE.md` §8 — read the file's own section count — to
 `output.md` at the repository root, overwritten and printed.
 
-**Section 2 leads with what each of the three tabs shows.** **Section 3 leads
-with the assertions: two panels on CW, Send at the workspace's left edge, the
-forty-character floor, each tab changing the workspace, and nothing above the
-divider re-created.**
+**Section 3 leads with task 1's answer — what hid the workspace and why the
+previous test passed over a blank screen — and then the round-trip assertion.**
+**Section 2 says what the operator sees on each tab and what the boundary looks
+like.**
 
 ### Asks still outstanding
 
-Carried forward verbatim per HM-DEC-139 and HM-DEC-140. **Twenty inbound. The
+Carried forward verbatim per HM-DEC-139 and HM-DEC-140. **Twenty-one inbound. The
 oldest is open since 2026-08-14.**
 
 1. **The sweep's `invented` column counts substitutions, not invented
@@ -233,7 +224,7 @@ oldest is open since 2026-08-14.**
 3. **`ANNUNCIATOR.md` renamed `PHASE` to `TASK` while HM-DEC-150 makes `PHASE`
    match the version's minor.**
 4. **`DECISIONS.md` has no record for HM-DEC-096–133, 136, 141 or 150 — nor for
-   Tim's rulings of 2026-08-25/26/27, including the two this unit acts under.**
+   Tim's rulings of 2026-08-25/26/27, including the three this unit acts under.**
 5. **The tone tracker** — six axis families measured; the question is a design
    one.
 6. **The integrator width** — settled at 45 Hz, with the sharp-peak caveat.
@@ -245,28 +236,24 @@ oldest is open since 2026-08-14.**
 11. **HM-OPEN-057** (2026-08-22) and **HM-OPEN-007** (2026-08-14).
 12. **The gate opens on everything, including two empty recordings** (1.11.18).
 13. **The joint cutter cannot find word gaps on a compressed fist** (1.11.22) —
-    HM-DEC-115 arriving a second time, **still unruled and the next decode
-    question.**
+    **the next decode question, still unruled.**
 14. **The constrained margin is bounded and still does not separate** (1.11.22).
 15. **Four fixtures are absent and five acceptance lines were unmeasurable**
     (1.11.22).
 16. **There is a Send button that does not send** (1.11.23), unruled.
-17. **A mutable static in the decode path cannot be measured under xUnit**
-    (1.11.22).
-18. **HM-DEC-086 is superseded for the three workspaces**, above — recorded
-    rather than worked around.
-19. **The widgets are abandoned**, above — task 3 records what they were.
-20. **`013347` returns a likelihood ratio of 17.2 million**, with `001520`'s
+17. **HM-DEC-086's supersession needs a `DECISIONS.md` record** (1.11.25).
+18. **The phrasebook's arrival and the absent-widget news are gone** (1.11.25).
+19. **Engine code behind the abandoned widgets is unreachable from the screen**
+    (1.11.25) — `ScanViewModel`, `HeardWatch`, `AutoCallViewModel` and their
+    tests all still compile and run.
+20. **Where the recent-places control belongs**, if anywhere — task 5 reports.
+21. **`013347` returns a likelihood ratio of 17.2 million**, with `001520`'s
     quadrillions. Parked, raised once.
-
-Closed by this unit if it lands: **the terminal's duplicate**; **the
-neighborhood's half-measure** — there is no tray to be in; **per-mode widget
-placement** — void.
 
 Still open: **three fixtures at accepted cost**; **the reference and port
 integrator difference**; **an unmeasured pitch costs `N4L`**; **the six-hertz
 window disagreement**; **the short-character bias**; **the Avalonia geometry
-offset**; **`CHANGELOG.md` at 1.9.0 against 1.11.24**; **the whole-file second
+offset**; **`CHANGELOG.md` at 1.9.0 against 1.11.25**; **the whole-file second
 pass**; **the squelch has no axis**; **the three morning captures of
 2026-08-26**.
 
