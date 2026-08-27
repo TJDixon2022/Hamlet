@@ -3952,6 +3952,11 @@ public partial class MainWindowViewModel : ObservableObject
             // A count that cannot be derived says so and does not print a number.
             $"inThis     {InThisRecording(audio, samplesSeen)}",
 
+            // **TASK 5 OF WORK INSTRUCTION 034.** The conjunction nothing on this
+            // sheet could state: characters on screen from a pitch the survey
+            // never admitted keying at.
+            $"unkeyed    {EmittedWithoutKeying(report)}",
+
             // **AND THE RUNNING TOTALS, WHICH NOW SAY WHAT THEY COVER.** They
             // were always cumulative from the moment listening started; what they
             // never did was admit it. A capture written seven hours into an
@@ -4532,12 +4537,68 @@ public partial class MainWindowViewModel : ObservableObject
                 + "moment. Hamlet did not find keying here)";
         }
 
-        return report.PitchWasMeasured
-            ? $"{report.ToneHz:0.0} Hz  (measured from the keying the survey "
-              + "admitted, interpolated between bins)"
+        if (report.PitchWasMeasured)
+        {
+            return $"{report.ToneHz:0.0} Hz  (measured from the keying the "
+                + "survey admitted, interpolated between bins)";
+        }
+
+        // **"THE MIDDLE OF THE BANK" STOPPED BEING TRUE ON 2026-08-27** and this
+        // sheet went on saying it. Tim's ruling of that date lets the strongest
+        // bin choose the note at acquisition, so an unmeasured pitch is now
+        // sometimes a bin that was picked for being the loudest thing in the
+        // band and sometimes still a bank centre nobody chose. **Those are
+        // different claims and a sheet that blurs them is the fault this whole
+        // field exists to prevent** (§0.0).
+        return report.PitchChoice == CwPitchChoice.StrongestBin
+            ? $"{report.ToneHz:0.0} Hz  (NOT MEASURED: the survey has admitted "
+              + "no keying, so this is the loudest bin in the band rather than a "
+              + "station)"
             : $"{report.ToneHz:0.0} Hz  (NOT MEASURED: the survey has admitted "
-              + "no keying, so this is the middle of the bank the decoder is "
-              + "pointed at rather than a station)";
+              + "no keying and nothing has chosen a bin, so this is the middle "
+              + "of the bank the decoder is pointed at rather than a station)";
+    }
+
+    /// <summary>
+    /// Whether characters reached the screen from a pitch nobody measured, and
+    /// what was behind them.
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE LINE THAT MAKES THE OPERATOR'S JUNK CAPTURABLE** (work
+    /// instruction 034 task 5). He is watching an empty frequency fill with
+    /// characters and **no recording in this repository reproduces it** — both
+    /// that hold nothing emit nought through the real decoder. So the next time
+    /// it happens, the capture has to carry enough to say what state produced
+    /// it.</para>
+    /// <para>**IT IS A CONJUNCTION AND THAT IS THE POINT.** Characters from a
+    /// measured pitch are an ordinary decode. Characters from a pitch the survey
+    /// never admitted keying at are the case worth catching, and until now the
+    /// sheet recorded both halves and never the pair.</para>
+    /// </remarks>
+    private static string EmittedWithoutKeying(CwDecodeReport report)
+    {
+        if (report.CharactersEmitted == 0)
+        {
+            return "nothing emitted";
+        }
+
+        if (report.PitchWasMeasured)
+        {
+            return $"no  ({report.CharactersEmitted} characters, and the survey "
+                + "admitted keying at this pitch)";
+        }
+
+        var how = report.PitchChoice switch
+        {
+            CwPitchChoice.OperatorAssertion => "you said you could hear a station",
+            CwPitchChoice.StrongestBin => "the loudest bin in the band",
+            CwPitchChoice.Keying => "keying, though the pitch reads unmeasured",
+            _ => "the middle of the bank, which nothing chose",
+        };
+
+        return $"YES  ({report.CharactersEmitted} characters reached the screen "
+            + $"from a pitch chosen by {how}, with no keying admitted here. "
+            + "This is the sheet to send back)";
     }
 
     /// <summary>

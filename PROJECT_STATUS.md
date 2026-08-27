@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 6 of 8
+TASK: 8 of 8
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-27T18:22:15-04:00
-NOTE: task 6 written with its own disproof at the top: the adjudicated anchor 012403 ranks as empty on every axis the evidence has
+UPDATED: 2026-08-27T18:24:33-04:00
+NOTE: sidecar now names the conjunction that makes the junk capturable and stops claiming a bank centre where a bin was chosen; app suite green at 509
 
 ---
 
