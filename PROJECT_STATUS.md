@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
-TASK: 2 of 3
-BALL: code
-NEXT_PASTE: none
-UPDATED: 2026-08-27T13:17:55-04:00
-NOTE: canvas fully removed and the tree builds; running the app suite to see what the deletion moved
+STATE: COMPLETED
+TASK: 3 of 3
+BALL: tim
+NEXT_PASTE: OUTPUT.md -> Claude Web
+UPDATED: 2026-08-27T13:41:13-04:00
+NOTE: three workspaces built, canvas and fifteen widgets deleted, engine byte-identical
 
 ---
 

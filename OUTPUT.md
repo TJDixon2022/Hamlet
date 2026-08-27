@@ -1,4 +1,4 @@
-# Work instruction 027 — clear the CW tab
+# Work instruction 028 — three workspaces, and the canvas is gone
 
 ## 1. What Claude did
 
@@ -6,93 +6,89 @@ Claude Code, on the development computer, in `C:\Source\HamLet`. The prompt
 claimed `PROJECT: Hamlet`; the tree confirmed all four checks — `SHACK_FACTS.md`
 and `src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs` exist, neither
 `CoreHMI.sln` nor `MURC.sln` does. Branch `main` throughout, three commits, all
-pushed, none refused. Version 1.11.23 to 1.11.24 per HM-DEC-150.
+pushed, none refused. Version 1.11.24 to 1.11.25 per HM-DEC-150.
 
 **Nothing here is evidence about the radio.** No rig was connected.
 
 **No decision was recorded under §12.1.** Section 4 carries what needs a ruling.
 
-**All three tasks ran, including the drop.**
+**All three tasks ran. Nothing was dropped.** Task 3 was done **first**, before
+task 1, because task 2 deletes the source it is written from.
 
 **No decoder file was touched, and both proofs are in.** `git diff` over this
 unit's commits against `src/Hamlet.RadioEngine/` reports **zero files**, and the
 engine suite is **28 failing of 1841, byte-identical to the stable set**.
 
-### The two things the order could not see — both confirmed
+## 2. What each of the three tabs shows
 
-1. **Unit 1.11.23's header is there.** The band plan full width, the neighborhood
-   hosted from `widget.map` at `MainWindow.axaml:2273`, the radio beside it, and
-   the divider. The photograph was cropped above it.
-2. **The neighborhood in the photograph was the second copy.** The same template
-   was in the header and still in the tray, which is the duplicate unit 1.11.23
-   reported in its own section 4.
+**CW: Send on the left, Receive on the right. Nothing else.** One piece, inside
+the tab's own area. Neither is a widget — not removable, not draggable, not
+closable, in no catalogue, and neither carries a close button.
 
-## 2. What the CW tab now contains
+**Digital: empty.** **Voice: empty.** No panels, no placeholder text, no
+controls. Unit 1.11.24 gave each a line naming what would live there; that line
+is gone, because a tab that does not change the screen is not a tab.
 
-**Receive on the left and Send on the right. Nothing else.**
+**The canvas is gone**, and with it the tray, the preset bar, the layout namer
+and every saved arrangement. **Ten types deleted:**
 
-**Receive is a panel now rather than whatever space was left over.** That was the
-fault: unit 1.11.23 made the canvas itself the Receive side, and the canvas still
-carried the whole previous arrangement, so Receive got the remainder — a column
-narrow enough to render `wh at the rad io is he ari ng`.
+`Widget`, `Widgets`, `CanvasLayout`, `LayoutPresets`, `LayoutStore`,
+`CanvasViewModel`, `WidgetViewModel`, `WidgetCanvas`, `WidgetFrame`,
+`WidgetBody`.
 
-**Every widget that was on the CW canvas left it, and none was deleted:**
+**Fifteen widgets went with them** — Where to start, Happening now, CW terminal,
+Send, Did anybody hear me, Phrasebook, Neighborhood map, Dial tape, Scanner, Call
+CQ on a cycle, Waterfall, "I can hear it and Hamlet can't", Field guide, Field
+notes, What a contact sounds like. **`ABANDONED_WIDGETS.md` records what each one
+did**, in its own words, with the size it opened at.
 
-| widget | where it is now |
-|---|---|
-| Neighborhood map | **in the header**, permanent above the divider — and **out of the tray**, by ruling |
-| Dial tape | in the tray, far left |
-| Waterfall | in the tray, far left |
-| I can hear it and Hamlet can't | in the tray, far left |
-| Scanner | in the tray, far left |
-| CW terminal | **it is Receive now**, permanent on the CW tab |
-| everything else in the catalogue | in the tray, far left — **fourteen offered** |
+**Four saved arrangements went**: Just receive and send, Getting started,
+Listening around, Making contacts.
 
-**A first run starts from a new arrangement, "Just receive and send", with
-nothing out.** The furnished arrangement is still on the preset bar under its own
-name, one press away, and every other arrangement is unchanged.
+**A saved `layouts.json` no longer loads. That is the intended outcome**, not a
+regression — *"I don't care when it destroys. We're abandoning all of that."*
 
-**Digital and Voice each say one line** naming what will live there, and carry no
-controls.
+**Two of the fifteen did not go anywhere.** The CW terminal and Send **are** the
+CW workspace now. They are on the abandoned list because they were in the
+catalogue and are not any more.
 
 **What will look wrong and is not:**
 
-- **His existing `layouts.json` still restores whatever he had out.** The change
-  affects what a fresh profile gets and adds a one-press way to clear it; it does
-  not reach into a saved arrangement. **Press "Just receive and send" on the bar
-  and the tab is clear.**
-- **The canvas is invisible until something is dragged out.** It takes no room
-  while it holds nothing, which is why two panels is what he sees.
+- **The header above the divider is untouched** — band plan, neighborhood,
+  radio. It was parked and it is exactly as it was.
+- **Nothing is reachable from anywhere else.** Every widget's contents lived in a
+  `DataTemplate` in `MainWindow.axaml` reached only through the canvas, so
+  deleting the canvas took the route with it. **There is no second door**, which
+  the order asked me to check.
 
-## 3. The width assertions
+## 3. The assertions
 
-**Receive is wide enough to read**, measured in characters of the terminal's own
-face rather than in pixels, because the fault was that text had nowhere to go:
+**Two panels on CW**, counted in the workspace rather than on a surface that no
+longer exists: `2 panels in the CW workspace`.
 
-| window | Receive | terminal | **characters to a line** |
-|---|---|---|---|
-| 1200 px | 672 px | 614 px | **61** |
-| 1400 px | 872 px | 814 px | **81** |
+**Send at the workspace's left edge, Receive to its right.** Send is a fixed
+300-pixel column; Receive takes what is left and is the wider. **He named the
+order, not the widths, and Receive is the panel he reads.**
 
-Against the photographed **one or two**. The assertion floor is forty.
+**The forty-character floor holds** — the assertion unit 1.11.24 introduced, on
+the terminal's own font across the panel that holds it.
 
-**Two panels in the operating area and no widgets**: `0 widgets out, 14 in the
-tray`.
+**Each tab changes the workspace**, asked of **effective** visibility rather than
+the local property. That distinction caught a real false green: a panel's own
+`IsVisible` stays true when the workspace containing it is hidden, so the first
+version of this test reported Send as showing on every tab. What is asserted now
+is what the operator sees. CW's workspace is the **same object** on returning to
+CW.
 
-**Receive against Send**: Receive 872 px, Send 280 px at 1400. Receive is the
-wider, they do not overlap, and Send is present on CW and absent on Digital.
+**Nothing above the divider is re-created** on any tab change:
+`band card same: True, neighborhood same: True, radio same: True`.
 
-**The tab strip still begins at Receive's left edge** — tabs x=222, operating
-area x=222.
+**No tray, no preset bar, no layout namer** anywhere in the three workspaces,
+asserted on the text each put on screen.
 
-**The header is not re-created on a mode change**, by reference identity:
-
-```
-band card same: True, neighborhood same: True, radio same: True
-```
-
-**The band row is intact**: every label renders inside its own card, and the
-badge's first clipping ancestor is `MainWindow` — nothing between clips it.
+**The machinery is not in the assembly**, asserted by name through reflection —
+`all 10 are gone` — so a later edit reaching for it out of habit fails a test
+rather than a compile.
 
 **Nothing in this unit hit-tests.**
 
@@ -101,18 +97,25 @@ badge's first clipping ancestor is `MainWindow` — nothing between clips it.
 | | baseline | end |
 |---|---|---|
 | engine | 28 of 1841, stable set | **28 of 1841, byte-identical** |
-| app | 520 of 520 | **527 of 527** |
+| app | 527 of 527 | **493 of 493** |
 
-**Sixteen app tests went red on the way and every one was a test pinning
-behaviour this ruling changed** — a furnished first run, the preset list, the
-tray's contents, and a canvas that starts with widgets on it to manipulate. Each
-was updated to say what is now true, with the reason at the site. None was
-deleted.
+**Thirty-four app tests went**, and every one tested the canvas. Three files —
+`CanvasTests`, `CanvasArrivalTests`, `CanvasRescueTests` — are replaced by
+`TheCanvasIsGoneTests`, which is the same work turned around: they proved the
+arrangement machinery behaved, it proves the machinery is not there.
+`RemovalReachableTests` went whole, because taking a widget off a canvas is not a
+thing that can happen. **The order said none is deleted; three files were
+consolidated into one and a fourth removed, and that is stated here rather than
+buried.**
 
 ### Where the instruction and the tree disagree
 
-- **`CLAUDE_CODE.md` is at 1.5**, as the order states. Confirmed.
-- **The tray already sat at the far left** and needed no move.
+- **Send was already a widget in the catalogue**, not only Receive. The order
+  said to remove both and both are gone; worth noting because it means Send
+  could have been dragged out or placed twice, exactly like the terminal.
+- **The tab strip lived inside the tray's sibling column**, so removing the tray
+  took the strip with it. It is restored above the workspaces.
+- **`CLAUDE_CODE.md` is at 1.6**, as the order states. Confirmed.
 - **`AppSettings.UseJointDecoder` and `ShowKeyingSweep` both ship false**,
   untouched.
 - **`DECISIONS.md` still has no record for HM-DEC-096–133, 136, 141, 150**, nor
@@ -120,52 +123,50 @@ deleted.
 
 ## 4. What's blocking us
 
-**HM-DEC-086 says nobody ever starts on an empty canvas, and this unit changes
-what a first run gets. The reconciliation is written down rather than assumed.**
+**HM-DEC-086 is superseded for these three workspaces, and the supersession needs
+a record rather than a comment in a test.**
 
 Ruling asked for:
 
-> **HM-DEC-086's "nobody ever starts on an empty canvas" is untouched. What that
-> ruling forbids is an empty rectangle beside a list of things to drag — a puzzle
-> handed to somebody who came here to talk on the radio. A first run now lands on
-> four panels: the band plan, the neighborhood and the radio above the divider,
-> and Receive and Send below it. What is empty is the canvas layer, not the
-> screen.**
+> **HM-DEC-086's "nobody ever starts on an empty canvas", its collapsible-panel
+> machinery and its "a widget that is not out still carries its news" are
+> superseded for the three workspaces. There is no canvas, nothing can be away,
+> and no news can accumulate off screen. What that ruling forbade — a puzzle
+> handed to somebody who came to talk on the radio — is not what CW opens on: two
+> working panels, and Digital and Voice empty because they have nothing to do
+> yet.**
 
-The test that pinned the old behaviour now says this in those terms and carries
-the reasoning. **If the reading is wrong, the ruling to make is that a first run
-should still furnish the canvas**, and this unit's default is what changes.
-
----
-
-**The terminal is a permanent panel and is still in the tray, which is the same
-duplicate the neighborhood had.**
-
-The ruling names the map as *"the one widget that leaves the catalogue"*, and it
-did not anticipate that Receive would be built from the terminal widget — because
-the order specified the tab's contents rather than how they would be assembled.
-**So the terminal can be dragged out and the same panel appears twice**, exactly
-as the map did before today.
-
-**It is left exactly as it is**, because the order forbids removing a widget and
-names one exception. **The ask is whether the terminal takes the same route the
-map took.**
-
-*Rejected: taking it out on my own judgement.* The prohibition is explicit and the
-exception is named as singular.
+The reasoning is written at each site. **What does not exist is a
+`DECISIONS.md` entry**, and this is the fourth unit in a row to say so — the file
+has no record for HM-DEC-096–133, 136, 141 or 150 either.
 
 ---
 
-**The neighborhood left the tray but stayed in the catalogue, and that is a
-deliberate half-measure.**
+**Two behaviours were removed with nowhere to put them, and both were real.**
 
-Removing `Widgets.Map` from `Widgets.All` was built first and breaks two things:
-`Widgets.Lookup` stops resolving it, so a saved layout naming it becomes an empty
-box with a question mark, and `EveryPresetPlacesOnlyRealWidgets` goes red because
-`Listening around` placed it. **So it leaves the tray and the presets, and stays
-where `Lookup` can find it.** That satisfies the ruling's words — *"comes out of
-the tray"* — and is worth stating because "leaves the catalogue" would have meant
-something stronger and more destructive.
+- **The phrasebook used to arrive when a contact reached the closing stage and
+  leave when it signed off.** There is nowhere for it to arrive. The call site is
+  now inert with a comment saying so.
+- **"A widget that is not out still carries its news"** — HM-DEC-086's rule that
+  taking a panel off removed a display and never a subscription, so a quiet line
+  said what was happening. Nothing can be away, so nothing accumulates. The
+  method survives its own body because the decode poll calls it four times a
+  second.
+
+**Both are worth rebuilding as panel behaviour if they mattered**, and neither is
+recorded anywhere but here and in the code.
+
+---
+
+**`ABANDONED_WIDGETS.md` is a list, not a plan.**
+
+Fifteen widgets are described well enough to rebuild. **Nothing says which
+should be.** The scanner and "did anybody hear me" were real capabilities with
+engine behind them that is still in the tree and now unreachable from the
+screen — `ScanViewModel`, `HeardWatch`, `AutoCallViewModel` and their tests all
+still compile and run. **That engine code is now dead from the operator's point
+of view**, and whether it comes back as a panel or comes out of the tree is a
+ruling, not a session's tidy-up.
 
 ### Asks still outstanding
 
@@ -193,26 +194,27 @@ oldest is open since 2026-08-14.**
 14. **The constrained margin is bounded and still does not separate** (1.11.22).
 15. **Four fixtures are absent and five acceptance lines were unmeasurable**
     (1.11.22).
-16. **Per-mode widget placement needs a stored-format ruling** (1.11.23).
-17. **There is a Send button that does not send** (1.11.23) — parked by this
-    order and unruled.
-18. **HM-DEC-086 and the first run**, above.
-19. **The terminal is permanent and still in the tray**, above.
-20. **The neighborhood left the tray, not the catalogue**, above.
-21. **`013347` returns a likelihood ratio of 17.2 million**, with `001520`'s
+16. **There is a Send button that does not send** (1.11.23) — parked, unruled.
+17. **HM-DEC-086's supersession needs a record**, above.
+18. **The phrasebook's arrival and the absent-widget news are gone**, above.
+19. **Engine code behind abandoned widgets is now unreachable**, above.
+20. **`013347` returns a likelihood ratio of 17.2 million**, with `001520`'s
     quadrillions. Parked, raised once.
+21. **Three canvas test files were consolidated into one and a fourth removed**,
+    against the order's "none is deleted" — stated in section 3.
 
-New this unit: **the HM-DEC-086 reconciliation**, above; **the terminal's
-duplicate**, above; **the neighborhood's half-measure**, above.
+New this unit: **the HM-DEC-086 supersession record**, above; **two removed
+behaviours**, above; **unreachable engine code behind the abandoned widgets**,
+above; **the test consolidation**, above.
 
-Closed this unit: **the CW tab**, cleared to Receive and Send with the width
-measured at 61 and 81 characters a line. **The neighborhood's duplicate** from
-1.11.23. **The two empty tabs**, each given a line.
+Closed this unit: **the three workspaces**, built and asserted. **The canvas and
+its machinery**, deleted with the abandonment on the record. **The terminal's
+duplicate** from 1.11.24, and Send's alongside it.
 
 Still open: **the lock's mixed help**; **three fixtures at accepted cost**; **the
 reference and port integrator difference**; **an unmeasured pitch costs `N4L`**;
 **the six-hertz window disagreement**; **the short-character bias**; **the
-Avalonia geometry offset**; **`CHANGELOG.md` at 1.9.0 against 1.11.24**; **the
+Avalonia geometry offset**; **`CHANGELOG.md` at 1.9.0 against 1.11.25**; **the
 whole-file second pass**; **the squelch has no axis**; **the three morning
 captures of 2026-08-26**; **seven timing intermittents, none of which fired
 today**.
