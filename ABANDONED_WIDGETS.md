@@ -43,6 +43,36 @@ with the description in hand.
 | **Field notes** | Amber | The story of whatever stretch of band you are sitting in. | 380x260 |
 | **What a contact sounds like** | Amber | A whole contact from the first call to the sign-off, both sides, in your own callsign. | 420x420 |
 
+## The recent-places row
+
+**Removed from between the header and the tabs on 2026-08-27**, by Tim's ruling
+of that date. It is the one entry here that was **not deleted**: the control's
+view model, its list and its commands are all still in the tree and still tested.
+What it lost was its slot.
+
+**What it did.** A dropdown of the last ten places the operator had been, beside
+his favourites and behaving like them. A place was recorded by **dwell rather
+than by landing** — twenty seconds, taken from the length of one relaxed CQ call
+and deliberately not a setting — so tuning past somewhere never put it on the
+list. Two visits within 200 Hz counted as the same place, read from the spot
+bucket so that two numbers meaning *near enough* could not drift apart. An entry
+named a station where one had been identified and was a bare frequency
+otherwise, and the newest visit won even when it knew nothing. A second visit was
+noted on the entry already there rather than making a new one, and the operator
+could take any entry out by hand, or all of them.
+
+**Why it existed.** Favourites are places he chose; recents are places he was,
+and most favourites are born from realising later that somewhere was worth
+keeping. The `forget this place` button belonged to wherever the dial was, so it
+came and went with the dial.
+
+**Where it might go.** It is not a CW thing, a Digital thing or a Voice thing, so
+the three workspaces are the wrong home for it. The header above the divider is
+the right kind of place and is already full. **That is the open question**, and it
+is why the control was left in the tree rather than destroyed.
+
+Refs: HM-DEC-072, HM-DEC-134.
+
 ## The arrangements that went with them
 
 Four saved arrangements, each a set of placements on the canvas:
