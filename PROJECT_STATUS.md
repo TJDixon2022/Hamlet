@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 4 of 4
-BALL: tim
-NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-26T20:57:28-04:00
-NOTE: the assert button ships and reads 35 characters where one capture read none; agreement measured dead and inverted
+STATE: EXECUTING
+TASK: 3 of 4
+BALL: code
+NEXT_PASTE: none
+UPDATED: 2026-08-26T22:16:29-04:00
+NOTE: measuring the constrained margin the cutter produces, correct characters against pileup
 
 ---
 
