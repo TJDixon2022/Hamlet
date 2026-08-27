@@ -2356,24 +2356,14 @@
           ColumnDefinitions="Auto,*"
           Margin="0,8,0,0" VerticalAlignment="Center">
 
-    <Border Grid.Column="0" VerticalAlignment="Center"
-            CornerRadius="6" Padding="10,6" BorderThickness="1"
-            Background="{Binding PrivilegeStatus.Tone,
-                Converter={x:Static ctl:PrivilegeToneConverter.Background}}"
-            BorderBrush="{Binding PrivilegeStatus.Tone,
-                Converter={x:Static ctl:PrivilegeToneConverter.Border}}">
-        <StackPanel Spacing="2">
-            <TextBlock Text="{Binding PrivilegeStatus.Headline}"
-                       FontSize="12" FontWeight="SemiBold"
-                       TextWrapping="Wrap"
-                       Foreground="{Binding PrivilegeStatus.Tone,
-                           Converter={x:Static ctl:PrivilegeToneConverter.Text}}" />
+    <!-- **THE FREQUENCY BLOCK RENDERED TWICE** (Tim, 2026-08-27): once inside
+         the neighborhood map where it belongs, and again as a loose card beneath
+         it saying the same `7.030 MHz · yours to use · 97.305(a)`. This was the
+         loose one and it is gone.
 
-            <TextBlock Text="{Binding PrivilegeStatus.Citation}"
-                       FontSize="10" TextWrapping="Wrap"
-                       Foreground="{StaticResource HmTextMutedBrush}" />
-        </StackPanel>
-    </Border>
+         **THE COPY INSIDE THE MAP STAYS**, so HM-DEC-086's rule that whether you
+         may transmit is permanent in the top strip is untouched — the map is a
+         header panel and sits above the divider. -->
 
         <!-- The strip along the top of the warm panel (HM-DEC-070):
              which favorite you landed on at the left, and the way to
@@ -2381,118 +2371,17 @@
              than in the black because a name is as long as somebody
              made it, and the LCD has a mode badge at one end and a
              clock at the other. -->
-        <Grid Grid.Column="1" ColumnDefinitions="*,Auto" Margin="14,0,0,0">
-            <!-- THE NAME SAYS WHERE AND THE LINE UNDER IT SAYS WHY
-                 (HM-DEC-060). It sits inside the flexible column, so
-                 however long the note is it cannot push the dropdowns
-                 out of shape, and it is a single line because a
-                 favorite is a signpost rather than a logbook entry.
-                 It appears the moment the star lights, because a box
-                 somebody has to go and find in a management window is
-                 a box that never gets written. -->
-            <StackPanel Grid.Column="0" VerticalAlignment="Center"
-                        Margin="2,0,10,0" Spacing="1">
-                <TextBlock Text="{Binding FavoriteHere}"
-                           FontSize="12"
-                           TextTrimming="CharacterEllipsis"
-                           Foreground="{StaticResource HmAmberBrush}" />
+            <!-- **THE RECENT-PLACES ROW IS NOT HERE ANY MORE** (Tim's ruling
+                 of 2026-08-27). `recent · places you have been · forget this
+                 place` sat between the header and the tabs, which is the one
+                 strip that is meant to be the same in every mode and is already
+                 carrying the band plan, the neighborhood and the radio.
 
-                <TextBox Text="{Binding FavoriteNote, Mode=TwoWay}"
-                         IsVisible="{Binding IsFavorite}"
-                         Watermark="why this one"
-                         AcceptsReturn="False"
-                         MaxLength="80"
-                         FontSize="11" Padding="4,1" MinHeight="0"
-                         Foreground="{StaticResource HmTextMutedBrush}" />
-            </StackPanel>
-
-            <!-- THE TWO SIT TOGETHER AND READ AS A PAIR (HM-DEC-072).
-                 Favorites are places he chose and recent are places he
-                 was, so scattering them would hide that they are the
-                 same kind of thing. Each is absent until it has
-                 something in it, because an empty dropdown reads as a
-                 control that is broken. -->
-            <!-- EACH BOX KEEPS ITS NAME AFTER SOMETHING IS PICKED, and that is
-                 the whole of this fix. The two dropdowns said what they were
-                 only through their placeholder text, so the moment the operator
-                 landed somewhere the recent box replaced "recent" with the
-                 station and the pair read as one control with a stray
-                 "favorites" label beside it. Both were populated correctly and
-                 neither label had detached; what was missing was that a
-                 placeholder is not a label, because a label survives a
-                 selection. -->
-            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="6">
-                <TextBlock Text="recent" FontSize="11"
-                           VerticalAlignment="Center"
-                           IsVisible="{Binding HasRecent}"
-                           Foreground="{StaticResource HmTextMutedBrush}" />
-
-                <ComboBox ItemsSource="{Binding Recent}"
-                          SelectedItem="{Binding SelectedRecent}"
-                          PlaceholderText="places you have been"
-                          MinWidth="180" FontSize="12"
-                          IsVisible="{Binding HasRecent}">
-                    <!-- PROVENANCE TRAVELS WITH THE NAME (HM-DEC-073).
-                         A callsign Hamlet read off the air and one a
-                         spot feed reported are different facts, and a
-                         line that showed only the name would let the
-                         weaker one borrow the stronger one's
-                         authority. -->
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate x:DataType="explore:RecentStation">
-                            <StackPanel Spacing="0">
-                                <TextBlock Text="{Binding Label}"
-                                           TextWrapping="Wrap" />
-                                <TextBlock Text="{Binding Provenance}"
-                                           FontSize="10" TextWrapping="Wrap"
-                                           IsVisible="{Binding IsIdentified}"
-                                           Foreground="{StaticResource HmTextMutedBrush}" />
-                                <!-- THE RETURN IS SAID, NOT COUNTED
-                                     (HM-DEC-134, §0.7). A "3" beside a
-                                     frequency is a number somebody has to
-                                     interpret; the sentence is the thing
-                                     the number was standing for. -->
-                                <TextBlock Text="{Binding ReturnNote}"
-                                           FontSize="10" TextWrapping="Wrap"
-                                           IsVisible="{Binding IsReturn}"
-                                           Foreground="{StaticResource HmTextMutedBrush}" />
-                            </StackPanel>
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
-
-                <!-- **BESIDE THE BOX AND NOT INSIDE IT** (HM-DEC-134). A
-                     dropdown's rows live in a popup with its own visual root,
-                     where a press competes with picking the row and where a
-                     test cannot reach the control to prove it is alive — which
-                     is HM-DEC-087's own fault wearing different clothes. So the
-                     one place he can forget is the place he is, said in those
-                     words, and the whole list goes from the Radio menu. -->
-                <Button Content="forget this place"
-                        FontSize="11" Padding="6,1" MinHeight="0"
-                        VerticalAlignment="Center"
-                        IsVisible="{Binding IsSomewhereRemembered}"
-                        Command="{Binding ForgetHereCommand}"
-                        ToolTip.Tip="Take where you are now out of the recent list" />
-
-                <TextBlock Text="favorites" FontSize="11"
-                           VerticalAlignment="Center" Margin="6,0,0,0"
-                           IsVisible="{Binding HasFavorites}"
-                           Foreground="{StaticResource HmTextMutedBrush}" />
-
-                <ComboBox ItemsSource="{Binding Favorites}"
-                          SelectedItem="{Binding SelectedFavorite}"
-                          PlaceholderText="places you chose"
-                          MinWidth="180" FontSize="12"
-                          IsVisible="{Binding HasFavorites}">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate x:DataType="explore:Favorite">
-                            <TextBlock Text="{Binding Name}" />
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
-            </StackPanel>
-        </Grid>
+                 **IT IS NOT DELETED.** `FavoritesViewModel`, `RecentPlaces` and
+                 the commands behind them are all still in the tree and still
+                 tested; what has gone is this slot. `ABANDONED_WIDGETS.md`
+                 records what it did, so rebuilding it somewhere it fits starts
+                 from a description. -->
     </Grid>
             </Grid>
 
