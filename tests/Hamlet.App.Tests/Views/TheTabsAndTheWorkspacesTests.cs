@@ -75,6 +75,26 @@ public sealed class TheTabsAndTheWorkspacesTests
         }
     }
 
+    /// <summary>Press a tab the way the operator does.</summary>
+    /// <param name="window">The window.</param>
+    /// <param name="name">Which tab.</param>
+    /// <remarks>
+    /// **THROUGH THE CONTROL, NEVER THE PROPERTY** (Tim's ruling of
+    /// 2026-08-27). This file used to set `OperatingMode` directly, and that is
+    /// precisely how it passed over a blank workspace: the fault was in the tab
+    /// strip's own binding, which a test that never presses a tab cannot reach.
+    /// </remarks>
+    private static void Press(MainWindow window, string name)
+    {
+        window.GetVisualDescendants()
+            .OfType<RadioButton>()
+            .First(b => b.Classes.Contains("hm-tab")
+                && (string?)b.Content == name)
+            .IsChecked = true;
+
+        Settle(window);
+    }
+
     private static ItemsControl? Tabs(MainWindow window)
         => window.GetVisualDescendants()
             .OfType<ItemsControl>()
@@ -187,9 +207,7 @@ public sealed class TheTabsAndTheWorkspacesTests
 
             Assert.Equal("CW", model.OperatingMode);
 
-            model.OperatingMode = "Digital";
-
-            Settle(window);
+            Press(window, "Digital");
 
             var bandAfter = window.GetVisualDescendants().OfType<Button>()
                 .FirstOrDefault(b => b.Classes.Contains("hm-band"));
@@ -206,9 +224,7 @@ public sealed class TheTabsAndTheWorkspacesTests
             Assert.Same(mapBefore, mapAfter);
             Assert.Same(rigBefore, rigAfter);
 
-            model.OperatingMode = "CW";
-
-            Settle(window);
+            Press(window, "CW");
 
             Assert.Same(bandBefore,
                 window.GetVisualDescendants().OfType<Button>()
@@ -242,9 +258,7 @@ public sealed class TheTabsAndTheWorkspacesTests
 
             foreach (var mode in new[] { "Digital", "Voice" })
             {
-                model.OperatingMode = mode;
-
-                Settle(window);
+                Press(window, mode);
 
                 _output.WriteLine(
                     $"on {mode}: CW showing {Workspace("CwWorkspace")!.IsEffectivelyVisible}, "
@@ -259,9 +273,7 @@ public sealed class TheTabsAndTheWorkspacesTests
                     $"the {mode} workspace is not showing on {mode}");
             }
 
-            model.OperatingMode = "CW";
-
-            Settle(window);
+            Press(window, "CW");
 
             Assert.Same(cw, Workspace("CwWorkspace"));
             Assert.True(Workspace("CwWorkspace")!.IsEffectivelyVisible);

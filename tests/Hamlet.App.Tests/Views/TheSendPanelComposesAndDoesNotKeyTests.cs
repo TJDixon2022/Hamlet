@@ -74,6 +74,57 @@ public sealed class TheSendPanelComposesAndDoesNotKeyTests
         }
     }
 
+    /// <summary>Press a tab the way the operator does.</summary>
+    /// <param name="window">The window.</param>
+    /// <param name="name">Which tab.</param>
+    /// <remarks>
+    /// **THROUGH THE CONTROL, NEVER THE PROPERTY** (Tim's ruling of
+    /// 2026-08-27). Setting `OperatingMode` on the view model is how unit
+    /// 1.11.25 passed over a blank screen: the fault lived in the tab strip's
+    /// binding and a test that never pressed a tab could not reach it.
+    /// </remarks>
+    private static void Press(MainWindow window, string name)
+    {
+        window.GetVisualDescendants()
+            .OfType<RadioButton>()
+            .First(b => b.Classes.Contains("hm-tab")
+                && (string?)b.Content == name)
+            .IsChecked = true;
+
+        Settle(window);
+    }
+
+    /// <summary>Click a button by its face, the way the operator does.</summary>
+    /// <param name="window">The window.</param>
+    /// <param name="face">What the button says.</param>
+    private static void Click(MainWindow window, string face)
+    {
+        // **SEARCHED INSIDE THE SEND PANEL AND NOT THE WHOLE WINDOW.** `Clear`
+        // is not a unique word on this screen, and a helper that takes whichever
+        // button visual order reaches first is a test that works by luck.
+        //
+        // `as string` and not a cast, because plenty of buttons here hold a whole
+        // layout as their content and a cast throws on the first one walked past.
+        var panel = Send(window);
+
+        Assert.NotNull(panel);
+
+        var button = panel!.GetVisualDescendants()
+            .OfType<Button>()
+            .First(b => b.Content as string == face);
+
+        Assert.True(
+            button.IsEffectivelyVisible,
+            $"the {face} button is not on the screen to be pressed");
+
+        Assert.True(
+            button.IsEnabled, $"the {face} button is not enabled");
+
+        button.Command?.Execute(button.CommandParameter);
+
+        Settle(window);
+    }
+
     private static Border? Send(MainWindow window)
         => window.GetVisualDescendants()
             .OfType<Border>()
@@ -142,9 +193,7 @@ public sealed class TheSendPanelComposesAndDoesNotKeyTests
                 Send(window)?.IsEffectivelyVisible,
                 "send is missing on the CW tab");
 
-            model.OperatingMode = "Digital";
-
-            Settle(window);
+            Press(window, "Digital");
 
             _output.WriteLine(
                 $"on Digital, send on screen: "
@@ -154,9 +203,7 @@ public sealed class TheSendPanelComposesAndDoesNotKeyTests
                 Send(window)?.IsEffectivelyVisible,
                 "send is showing on the Digital tab");
 
-            model.OperatingMode = "CW";
-
-            Settle(window);
+            Press(window, "CW");
 
             Assert.True(
                 Send(window)?.IsEffectivelyVisible,
@@ -171,23 +218,33 @@ public sealed class TheSendPanelComposesAndDoesNotKeyTests
     [AvaloniaFact]
     public void TheButtonsComposeWhatWouldGoOut()
     {
-        With((_, model) =>
+        With((window, _) =>
         {
-            model.ComposeCqCommand.Execute(null);
-            _output.WriteLine($"CQ  -> {model.SendText}");
-            Assert.Contains("CQ", model.SendText, StringComparison.Ordinal);
+            // **AND WHAT IS ASSERTED IS WHAT THE BOX SHOWS**, not what the view
+            // model holds: the operator reads the line, and a property that is
+            // right behind a box that is not bound to it is no use to him.
+            TextBox Line() => window.GetVisualDescendants()
+                .OfType<TextBox>()
+                .First(t => t.Watermark == "what you would send");
 
-            model.ComposeRstCommand.Execute(null);
-            _output.WriteLine($"RST -> {model.SendText}");
-            Assert.Contains("599", model.SendText, StringComparison.Ordinal);
+            foreach (var (face, wanted) in new[]
+            {
+                ("CQ", "CQ"), ("RST", "599"), ("73", "73"),
+            })
+            {
+                Click(window, face);
 
-            model.ComposeSeventyThreeCommand.Execute(null);
-            _output.WriteLine($"73  -> {model.SendText}");
-            Assert.Contains("73", model.SendText, StringComparison.Ordinal);
+                _output.WriteLine($"{face,-5} -> {Line().Text}");
 
-            model.ComposeClearCommand.Execute(null);
-            _output.WriteLine($"Clear -> \"{model.SendText}\"");
-            Assert.Equal("", model.SendText);
+                Assert.Contains(
+                    wanted, Line().Text ?? "", StringComparison.Ordinal);
+            }
+
+            Click(window, "Clear");
+
+            _output.WriteLine($"Clear -> \"{Line().Text}\"");
+
+            Assert.True(string.IsNullOrEmpty(Line().Text));
         });
     }
 
