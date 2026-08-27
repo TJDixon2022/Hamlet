@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 3 of 5
+TASK: 5 of 5
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-27T16:34:19-04:00
-NOTE: both scoring statistics choose 775 to 900 Hz on all four captures and the empty recordings outscore the real stations; adding the strongest-bin comparison the operator's assertion uses
+UPDATED: 2026-08-27T16:35:33-04:00
+NOTE: the strongest bin is right on all four captures and every keying statistic is right on none; running the full suite before reporting
 
 ---
 

@@ -275,4 +275,82 @@ public sealed class WhatRankingChoosesTests
 
         Assert.True(byMarginRight >= 0);
     }
+
+    /// <remarks>
+    /// <para>**THE THIRD SELECTION RULE, AND THE ONE THAT ALREADY WORKS.** Unit
+    /// 1.11.21 gave the operator a way to assert a station, and what it does is
+    /// take the strongest bin. On `cw-2026-08-22-014308` that read thirty-five
+    /// characters where automatic acquisition read none.</para>
+    /// <para>So the three rules are put on the same audio: **by what it reads**
+    /// (this unit's proposal, two ways), and **by how loud it is** (what the ear
+    /// already beats the machine with). HM-DEC-095 says loudness may not choose a
+    /// note, and this measures what that rule is costing.</para>
+    /// </remarks>
+    [Fact]
+    public void AgainstTheStrongestBinTheOperatorsAssertionTakes()
+    {
+        var bank = CwPitchRanking.CoarseBank();
+
+        _output.WriteLine("  window 12 s, whole coarse bank");
+        _output.WriteLine("");
+        _output.WriteLine(
+            "  capture                | heard | by ratio | by margin | "
+            + "loudest | loudest reads");
+        _output.WriteLine(
+            "  -----------------------|-------|----------|-----------|"
+            + "---------|--------------");
+
+        var loudestRight = 0;
+
+        foreach (var (name, heardHz) in Audible)
+        {
+            var slice = Tail(Capture(name), 12.0);
+            var ranked = CwPitchRanking.Rank(slice.Samples, slice.SampleRate, bank);
+
+            // The strongest bin, measured the way the assertion measures it:
+            // the mean envelope magnitude over the window.
+            var loudestHz = 0.0;
+            var loudest = double.NegativeInfinity;
+
+            foreach (var hz in bank)
+            {
+                var envelope = CwProbabilisticDecoder.Envelope(
+                    slice.Samples, slice.SampleRate, hz);
+
+                var mean = envelope.Average();
+
+                if (mean > loudest)
+                {
+                    loudest = mean;
+                    loudestHz = hz;
+                }
+            }
+
+            var atLoudest = ranked.First(r => Math.Abs(r.ToneHz - loudestHz) < 1e-6);
+
+            if (Math.Abs(loudestHz - heardHz) <= 25)
+            {
+                loudestRight++;
+            }
+
+            var text = atLoudest.Text.Length > 14
+                ? atLoudest.Text[..14] + "..."
+                : atLoudest.Text;
+
+            _output.WriteLine(
+                $"  {name,-22} | {heardHz,5:0} | {ranked[0].ToneHz,6:0} Hz | "
+                + $"{ranked.OrderByDescending(r => r.MedianSpanMargin).First().ToneHz,7:0} Hz | "
+                + $"{loudestHz,5:0} Hz | {text}");
+        }
+
+        _output.WriteLine("");
+        _output.WriteLine(
+            $"  within one bin of where he says the station is: "
+            + $"loudest {loudestRight} of 4");
+        _output.WriteLine(
+            "  HM-DEC-095 forbids loudness choosing the note; this is what that "
+            + "rule costs, measured");
+
+        Assert.True(loudestRight >= 0);
+    }
 }
