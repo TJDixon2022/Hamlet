@@ -2777,7 +2777,21 @@
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
 
-                    <Panel Grid.Row="1">
+                    <!-- **RECEIVE ON THE LEFT AND SEND ON THE RIGHT**, with
+                         Receive the wider (Tim, 2026-08-27). Receive is the
+                         canvas, which is where the terminal and everything else
+                         already lives; Send is a fixed column beside it, shown
+                         only on the CW tab.
+
+                         **IT COMPOSES AND IT DOES NOT KEY.** Nothing here
+                         reaches the transmitter. §0.2 stands and HM-DEC-098
+                         stands: an automatic transmit path is a separate ruling
+                         taken after every interlock has been watched to fire
+                         into a dummy load. The panel says so on its face rather
+                         than looking live and doing nothing. -->
+                    <Grid Grid.Row="1" ColumnDefinitions="*,Auto">
+
+                    <Panel Grid.Column="0">
 
                     <ScrollViewer x:Name="CanvasView"
                                   VerticalScrollBarVisibility="Visible"
@@ -2958,6 +2972,47 @@
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
                 </Panel>
+
+                    <Border Grid.Column="1" x:Name="SendPanel"
+                            Width="280" Margin="10,0,0,0"
+                            VerticalAlignment="Top"
+                            Padding="12" CornerRadius="8"
+                            IsVisible="{Binding IsCwMode}"
+                            Background="{StaticResource HmSlateTintBrush}"
+                            BorderBrush="{StaticResource HmSlateEdgeBrush}"
+                            BorderThickness="1">
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="Send" FontSize="13"
+                                       FontWeight="SemiBold"
+                                       Foreground="{StaticResource HmTextPrimaryBrush}" />
+
+                            <TextBox Text="{Binding SendText, Mode=TwoWay}"
+                                     AcceptsReturn="False"
+                                     Watermark="what you would send"
+                                     FontSize="13" />
+
+                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                <Button Content="CQ" FontSize="12" Padding="12,5"
+                                        Command="{Binding ComposeCqCommand}" />
+                                <Button Content="RST" FontSize="12" Padding="12,5"
+                                        Command="{Binding ComposeRstCommand}" />
+                                <Button Content="73" FontSize="12" Padding="12,5"
+                                        Command="{Binding ComposeSeventyThreeCommand}" />
+                                <Button Content="Clear" FontSize="12" Padding="12,5"
+                                        Command="{Binding ComposeClearCommand}" />
+                            </StackPanel>
+
+                            <!-- **A BUTTON THAT LOOKS LIVE AND IS NOT IS WORSE
+                                 THAN NO BUTTON** (§0.5.1, §0.0). This says what
+                                 it is rather than implying a transmitter behind
+                                 it. -->
+                            <TextBlock TextWrapping="Wrap" FontSize="11"
+                                       Text="This composes what you would send and nothing leaves the radio. Keying is a separate ruling, taken once every interlock has been watched to fire into a dummy load."
+                                       Foreground="{StaticResource HmTextMutedBrush}" />
+                        </StackPanel>
+                    </Border>
+
+                    </Grid>
                 </Grid>
             </Grid>
         </Grid>

@@ -179,6 +179,61 @@ public partial class MainWindowViewModel : ObservableObject
     public IReadOnlyList<string> OperatingModes { get; } =
         new[] { "CW", "Digital", "Voice" };
 
+    /// <summary>True while the CW tab is the one showing.</summary>
+    public bool IsCwMode => OperatingMode == "CW";
+
+    partial void OnOperatingModeChanged(string value)
+        => OnPropertyChanged(nameof(IsCwMode));
+
+    /// <summary>What the operator has composed to send.</summary>
+    /// <remarks>
+    /// <para>**IT COMPOSES AND IT DOES NOT KEY.** Nothing in this view model
+    /// reaches the transmitter from here, and that is the whole of what this
+    /// panel is for today: somewhere to put the words while the parts that would
+    /// carry them are still being argued about. §0.2 is untouched and so is
+    /// HM-DEC-098 — a transmit path is a separate ruling taken after every
+    /// interlock has been watched to fire into a dummy load.</para>
+    /// <para>The buttons fill this line rather than sending it, so the operator
+    /// can see exactly what would go out before anything ever does.</para>
+    /// </remarks>
+    [ObservableProperty]
+    private string _sendText = "";
+
+    /// <summary>Put a call in the send line, in the operator's own callsign.</summary>
+    [RelayCommand]
+    private void ComposeCq()
+    {
+        var mine = _settings.Operator.Callsign?.Trim();
+
+        SendText = string.IsNullOrWhiteSpace(mine)
+            ? "CQ CQ DE ... ... K"
+            : $"CQ CQ DE {mine} {mine} K";
+    }
+
+    /// <summary>Put a signal report in the send line.</summary>
+    /// <remarks>
+    /// **599 IS A POLITE FICTION AND HAMLET DOES NOT PRETEND OTHERWISE**
+    /// (HM-DEC-042). It is what nearly every contest exchange says whatever was
+    /// actually heard, and it is offered here as the phrase people use rather
+    /// than as a measurement of anything.
+    /// </remarks>
+    [RelayCommand]
+    private void ComposeRst() => SendText = "RST 599 599";
+
+    /// <summary>Put a sign-off in the send line.</summary>
+    [RelayCommand]
+    private void ComposeSeventyThree() => SendText = "73 TU E E";
+
+    /// <summary>Clear the send line.</summary>
+    /// <remarks>
+    /// **THE SEND BUTTON DOES NOT SEND** and says so where the operator can see
+    /// it. Wiring it to the transmitter is outside this unit and outside every
+    /// unit so far; a button that looks live and is not would be worse than no
+    /// button, so it clears the line and the panel states plainly what it does.
+    /// </remarks>
+    [RelayCommand]
+    private void ComposeClear() => SendText = "";
+
     /// <summary>True when "Best chance" is the lens in use.</summary>
     [ObservableProperty]
     private bool _isBestChance = true;
