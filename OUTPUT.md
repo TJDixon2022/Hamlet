@@ -1,121 +1,141 @@
-# Work instruction 028 — three workspaces, and the canvas is gone
+# Work instruction 029 — the tab owns the canvas
 
 ## 1. What Claude did
 
 Claude Code, on the development computer, in `C:\Source\HamLet`. The prompt
 claimed `PROJECT: Hamlet`; the tree confirmed all four checks — `SHACK_FACTS.md`
 and `src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs` exist, neither
-`CoreHMI.sln` nor `MURC.sln` does. Branch `main` throughout, three commits, all
-pushed, none refused. Version 1.11.24 to 1.11.25 per HM-DEC-150.
+`CoreHMI.sln` nor `MURC.sln` does. Branch `main` throughout, six commits, all
+pushed, none refused. Version 1.11.25 to 1.11.26 per HM-DEC-150.
 
 **Nothing here is evidence about the radio.** No rig was connected.
 
 **No decision was recorded under §12.1.** Section 4 carries what needs a ruling.
 
-**All three tasks ran. Nothing was dropped.** Task 3 was done **first**, before
-task 1, because task 2 deletes the source it is written from.
+**All six tasks ran, including the drop. Nothing was left.**
 
 **No decoder file was touched, and both proofs are in.** `git diff` over this
 unit's commits against `src/Hamlet.RadioEngine/` reports **zero files**, and the
 engine suite is **28 failing of 1841, byte-identical to the stable set**.
 
-## 2. What each of the three tabs shows
+## 2. What the operator sees
 
-**CW: Send on the left, Receive on the right. Nothing else.** One piece, inside
-the tab's own area. Neither is a widget — not removable, not draggable, not
-closable, in no catalogue, and neither carries a close button.
+**CW shows Send on the left and Receive on the right, and it still does after
+pressing every tab twice round.** That was the fault: one click on Digital and
+back left the screen blank, permanently.
 
-**Digital: empty.** **Voice: empty.** No panels, no placeholder text, no
-controls. Unit 1.11.24 gave each a line naming what would live there; that line
-is gone, because a tab that does not change the screen is not a tab.
+**The tab strip now sits on the top edge of a bordered region that runs down over
+the whole working area.** The selected tab merges into it — same fill, same edge
+colour, no border along the bottom where they meet, overlapping by a pixel so no
+hairline shows through. The unselected tabs keep all four edges and read as
+separate things you could press. **The region is the same rectangle on all three
+tabs** — 16, 450, 1368 by 398 — so it reads as a space rather than as three
+panels.
 
-**The canvas is gone**, and with it the tray, the preset bar, the layout namer
-and every saved arrangement. **Ten types deleted:**
+**Digital and Voice are empty**, on every visit, with the CW workspace off the
+screen and nothing of their own in its place.
 
-`Widget`, `Widgets`, `CanvasLayout`, `LayoutPresets`, `LayoutStore`,
-`CanvasViewModel`, `WidgetViewModel`, `WidgetCanvas`, `WidgetFrame`,
-`WidgetBody`.
+**The frequency block renders once.** `7.030 MHz · yours to use · 97.305(a)` was
+appearing twice — inside the neighborhood map where it belongs, and again as a
+loose card beneath it. The loose one is gone.
 
-**Fifteen widgets went with them** — Where to start, Happening now, CW terminal,
-Send, Did anybody hear me, Phrasebook, Neighborhood map, Dial tape, Scanner, Call
-CQ on a cycle, Waterfall, "I can hear it and Hamlet can't", Field guide, Field
-notes, What a contact sounds like. **`ABANDONED_WIDGETS.md` records what each one
-did**, in its own words, with the size it opened at.
+**The `recent · places you have been · forget this place` row is out of the strip
+between the header and the tabs.** It is not deleted: `FavoritesViewModel`,
+`RecentPlaces` and their commands are all still in the tree and still tested.
+`ABANDONED_WIDGETS.md` records what it did.
 
-**Four saved arrangements went**: Just receive and send, Getting started,
-Listening around, Making contacts.
+**One thing changed that nobody asked for and it is worth knowing.** Receive has
+been drawing with **no background at all** since unit 1.11.24, because
+`HmPanelBrush` was never defined — see section 4. It has a white surface now,
+which is what HM-DEC-012 says a panel body is.
 
-**A saved `layouts.json` no longer loads. That is the intended outcome**, not a
-regression — *"I don't care when it destroys. We're abandoning all of that."*
+## 3. Task 1's answer, and the round trip
 
-**Two of the fifteen did not go anywhere.** The CW terminal and Send **are** the
-CW workspace now. They are on the abandoned list because they were in the
-catalogue and are not any more.
+**What hid the workspace, with the line:** `MainWindow.axaml`, the tab strip's
+item template. Each tab's `IsChecked` was two-way bound through
+`ModeTabConverter` with the tab's own name passed as
+**`ConverterParameter={Binding}`** — and **a converter parameter cannot itself be
+a binding in Avalonia.** It never resolved.
 
-**What will look wrong and is not:**
+**Both directions were broken, and the second one is what the operator saw:**
 
-- **The header above the divider is untouched** — band plan, neighborhood,
-  radio. It was parked and it is exactly as it was.
-- **Nothing is reachable from anywhere else.** Every widget's contents lived in a
-  `DataTemplate` in `MainWindow.axaml` reached only through the canvas, so
-  deleting the canvas took the route with it. **There is no second door**, which
-  the order asked me to check.
+- `Convert` compared the selected mode against an unresolved parameter and
+  returned false for all three tabs. **Measured: a fresh window showed
+  `CW=False, Digital=False, Voice=False`.**
+- `ConvertBack` read the same parameter as null and wrote it to `OperatingMode`.
+  **Measured: the first press of any tab set the mode to `""`**, after which
+  `IsCwMode`, `IsDigitalMode` and `IsVoiceMode` were all false, every workspace
+  was hidden, and no further press recovered it.
 
-## 3. The assertions
+```
+fresh                  mode="CW"      cw.Effective=True
+after pressing Digital mode=""        cw.Effective=False
+after pressing Voice   mode=""        cw.Effective=False
+after pressing CW      mode=""        cw.Effective=False
+```
 
-**Two panels on CW**, counted in the workspace rather than on a surface that no
-longer exists: `2 panels in the CW workspace`.
+**It is not the container's visibility, a template recreated without its content,
+or a binding that fails to re-evaluate.** The binding evaluated correctly every
+time, on a value that had been destroyed.
 
-**Send at the workspace's left edge, Receive to its right.** Send is a fixed
-300-pixel column; Receive takes what is left and is the wider. **He named the
-order, not the widths, and Receive is the panel he reads.**
+**Why unit 1.11.25's test passed, and there are two reasons.** It asserted the
+workspace is the same object on return, **and it is** — the container survived
+and stopped being shown, so object identity was true over a blank screen. But the
+deeper reason is that **the test set `OperatingMode` on the view model directly
+and never pressed a button**, so the fault, which lives entirely in the strip's
+binding, could not be reached. **A test that drives the view model cannot see a
+broken control.**
 
-**The forty-character floor holds** — the assertion unit 1.11.24 introduced, on
-the terminal's own font across the panel that holds it.
+**The fix**: selection is state on the tab now. Each tab is a `ModeTabViewModel`
+with its own `IsSelected`, bound straight through, and the view model keeps the
+three in step from either end. The converter is deleted.
 
-**Each tab changes the workspace**, asked of **effective** visibility rather than
-the local property. That distinction caught a real false green: a panel's own
-`IsVisible` stays true when the workspace containing it is hidden, so the first
-version of this test reported Send as showing on every tab. What is asserted now
-is what the operator sees. CW's workspace is the **same object** on returning to
-CW.
+**The round trip, twice, pressing the buttons:**
 
-**Nothing above the divider is re-created** on any tab change:
-`band card same: True, neighborhood same: True, radio same: True`.
+| | mode | Send | Receive |
+|---|---|---|---|
+| fresh | CW | 300 × 177 | 1058 × 401 |
+| back on CW, lap 1 | CW | 300 × 177 | 1058 × 401 |
+| back on CW, lap 2 | CW | 300 × 177 | 1058 × 401 |
 
-**No tray, no preset bar, no layout namer** anywhere in the three workspaces,
-asserted on the text each put on screen.
+Effective visibility and non-zero render bounds, never a control's own
+`IsVisible`. **Exactly one tab is checked at every point and it is the one
+showing.**
 
-**The machinery is not in the assembly**, asserted by name through reflection —
-`all 10 are gone` — so a later edit reaching for it out of habit fails a test
-rather than a compile.
+### The boundary
 
-**Nothing in this unit hit-tests.**
+| | |
+|---|---|
+| strip bottom / boundary top, 1400 px | **450 / 450** |
+| strip bottom / boundary top, 1200 px | **478 / 478** |
+| boundary, all three tabs | **16, 450, 1368 × 398 — same object** |
+| selected tab | fill `White`, border `1,1,1,0` |
+| unselected tabs | fill `#ffedeae1`, border `1,1,1,1` |
+
+**Merging the selected tab worked cleanly** and needed no compromise.
+
+### The two stray blocks
+
+`"7.030 MHz · yours to use" renders 1 time(s)`. `no recent-places row on the
+screen`. `divider bottom=374, strip top=386, gap=12 px` with **nothing between
+them**.
 
 ### The suites
 
 | | baseline | end |
 |---|---|---|
 | engine | 28 of 1841, stable set | **28 of 1841, byte-identical** |
-| app | 527 of 527 | **493 of 493** |
+| app | 493 of 493 | **500 of 500** |
 
-**Thirty-four app tests went**, and every one tested the canvas. Three files —
-`CanvasTests`, `CanvasArrivalTests`, `CanvasRescueTests` — are replaced by
-`TheCanvasIsGoneTests`, which is the same work turned around: they proved the
-arrangement machinery behaved, it proves the machinery is not there.
-`RemovalReachableTests` went whole, because taking a widget off a canvas is not a
-thing that can happen. **The order said none is deleted; three files were
-consolidated into one and a fourth removed, and that is stated here rather than
-buried.**
+Ten tests added. One existing test changed: `TheTabStripBeginsWhereTheOperatingAreaBegins`
+was measuring the tabs against the CW workspace, and once the boundary gained
+padding the panels sat thirteen pixels in while the tabs stayed on the edge they
+own. **The tabs were right and the assertion was measuring the wrong thing**; it
+compares against the boundary now.
 
 ### Where the instruction and the tree disagree
 
-- **Send was already a widget in the catalogue**, not only Receive. The order
-  said to remove both and both are gone; worth noting because it means Send
-  could have been dragged out or placed twice, exactly like the terminal.
-- **The tab strip lived inside the tray's sibling column**, so removing the tray
-  took the strip with it. It is restored above the workspaces.
-- **`CLAUDE_CODE.md` is at 1.6**, as the order states. Confirmed.
+- **`CLAUDE_CODE.md` is at 1.6**, as stated. Confirmed.
 - **`AppSettings.UseJointDecoder` and `ShowKeyingSweep` both ship false**,
   untouched.
 - **`DECISIONS.md` still has no record for HM-DEC-096–133, 136, 141, 150**, nor
@@ -123,54 +143,56 @@ buried.**
 
 ## 4. What's blocking us
 
-**HM-DEC-086 is superseded for these three workspaces, and the supersession needs
-a record rather than a comment in a test.**
+**A brush that was never defined has been silently missing for two units, and the
+class of fault matters more than the instance.**
 
 Ruling asked for:
 
-> **HM-DEC-086's "nobody ever starts on an empty canvas", its collapsible-panel
-> machinery and its "a widget that is not out still carries its news" are
-> superseded for the three workspaces. There is no canvas, nothing can be away,
-> and no news can accumulate off screen. What that ruling forbade — a puzzle
-> handed to somebody who came to talk on the radio — is not what CW opens on: two
-> working panels, and Digital and Voice empty because they have nothing to do
-> yet.**
+> **Avalonia leaves an unfound `StaticResource` as no brush at all rather than
+> failing, at build or at run time.** `HmPanelBrush` was written by unit 1.11.24
+> for the Receive panel and by this unit for the workspace boundary, and it was
+> never in `App.axaml` — so Receive drew with no background for two units and
+> nothing said so, in a suite of 500 tests that includes a binding-health test.
+> **`BindingHealthTests` catches an unresolved *binding* and not an unresolved
+> *resource*.** Whether it should is the ruling.
 
-The reasoning is written at each site. **What does not exist is a
-`DECISIONS.md` entry**, and this is the fourth unit in a row to say so — the file
-has no record for HM-DEC-096–133, 136, 141 or 150 either.
-
----
-
-**Two behaviours were removed with nowhere to put them, and both were real.**
-
-- **The phrasebook used to arrive when a contact reached the closing stage and
-  leave when it signed off.** There is nowhere for it to arrive. The call site is
-  now inert with a comment saying so.
-- **"A widget that is not out still carries its news"** — HM-DEC-086's rule that
-  taking a panel off removed a display and never a subscription, so a quiet line
-  said what was happening. Nothing can be away, so nothing accumulates. The
-  method survives its own body because the decode poll calls it four times a
-  second.
-
-**Both are worth rebuilding as panel behaviour if they mattered**, and neither is
-recorded anywhere but here and in the code.
+It is defined now, as the white panel surface HM-DEC-012 describes, which until
+today existed only as the literal `White` inside `CollapsiblePanel`'s theme.
+**The fix is one line; the gap in the harness is not.**
 
 ---
 
-**`ABANDONED_WIDGETS.md` is a list, not a plan.**
+**The recent-places row has no home, which is why it was left in the tree.**
 
-Fifteen widgets are described well enough to rebuild. **Nothing says which
-should be.** The scanner and "did anybody hear me" were real capabilities with
-engine behind them that is still in the tree and now unreachable from the
-screen — `ScanViewModel`, `HeardWatch`, `AutoCallViewModel` and their tests all
-still compile and run. **That engine code is now dead from the operator's point
-of view**, and whether it comes back as a panel or comes out of the tree is a
-ruling, not a session's tidy-up.
+The ruling said to report if it has none, and it has none. It is not a CW, a
+Digital or a Voice thing, so the three workspaces are the wrong place for it. The
+header above the divider is the right kind of place and is already carrying the
+band plan, the neighborhood and the radio.
+
+**The control is unreferenced in the tree and still tested**, which is the state
+the ruling asked for rather than a loose end. `ABANDONED_WIDGETS.md` describes
+what it did — dwell rather than landing, twenty seconds taken from one relaxed CQ
+call, two visits within 200 Hz counted as one place — so a decision to rebuild it
+starts from a description.
+
+---
+
+**Two units running have shipped a fault that a passing test covered.**
+
+Unit 1.11.25 asserted this area and passed over a blank screen, because it drove
+the view model instead of the control. Unit 1.11.24 shipped a panel with no
+background, because nothing checks that a resource resolves. **Both suites were
+green and both faults reached the operator's own screen.**
+
+*Not proposed, because it needs a ruling:* whether view-level tests should be
+required to act through the controls — pressing the button, not setting the
+property — the way this unit's round-trip test does. It is a rule about how tests
+are written rather than a change to any of them, and unit 1.11.13's
+"assert the geometry that causes the fault" is the same shape of rule.
 
 ### Asks still outstanding
 
-Carried forward verbatim per HM-DEC-139 and HM-DEC-140. **Twenty-one inbound. The
+Carried forward verbatim per HM-DEC-139 and HM-DEC-140. **Twenty-two inbound. The
 oldest is open since 2026-08-14.**
 
 1. **The sweep's `invented` column counts substitutions, not invented
@@ -195,26 +217,26 @@ oldest is open since 2026-08-14.**
 15. **Four fixtures are absent and five acceptance lines were unmeasurable**
     (1.11.22).
 16. **There is a Send button that does not send** (1.11.23) — parked, unruled.
-17. **HM-DEC-086's supersession needs a record**, above.
-18. **The phrasebook's arrival and the absent-widget news are gone**, above.
-19. **Engine code behind abandoned widgets is now unreachable**, above.
-20. **`013347` returns a likelihood ratio of 17.2 million**, with `001520`'s
-    quadrillions. Parked, raised once.
-21. **Three canvas test files were consolidated into one and a fourth removed**,
-    against the order's "none is deleted" — stated in section 3.
+17. **HM-DEC-086's supersession needs a record** (1.11.25).
+18. **The phrasebook's arrival and the absent-widget news are gone** (1.11.25).
+19. **Engine code behind the abandoned widgets is unreachable** (1.11.25).
+20. **An unresolved `StaticResource` fails silently and nothing checks**, above.
+21. **The recent-places row has no home**, above.
+22. **Whether view tests must act through the controls**, above.
 
-New this unit: **the HM-DEC-086 supersession record**, above; **two removed
-behaviours**, above; **unreachable engine code behind the abandoned widgets**,
-above; **the test consolidation**, above.
+New this unit: **the silent resource failure**, above; **the recent-places row's
+homelessness**, above; **the question of driving controls rather than view
+models**, above.
 
-Closed this unit: **the three workspaces**, built and asserted. **The canvas and
-its machinery**, deleted with the abandonment on the record. **The terminal's
-duplicate** from 1.11.24, and Send's alongside it.
+Closed this unit: **the blank workspace**, diagnosed to the line and fixed. **The
+boundary**, built with the selected tab merged into it. **The duplicate frequency
+card** and **the recent-places row**, both out. **The record of what that row
+did.**
 
 Still open: **the lock's mixed help**; **three fixtures at accepted cost**; **the
 reference and port integrator difference**; **an unmeasured pitch costs `N4L`**;
 **the six-hertz window disagreement**; **the short-character bias**; **the
-Avalonia geometry offset**; **`CHANGELOG.md` at 1.9.0 against 1.11.25**; **the
+Avalonia geometry offset**; **`CHANGELOG.md` at 1.9.0 against 1.11.26**; **the
 whole-file second pass**; **the squelch has no axis**; **the three morning
 captures of 2026-08-26**; **seven timing intermittents, none of which fired
 today**.
