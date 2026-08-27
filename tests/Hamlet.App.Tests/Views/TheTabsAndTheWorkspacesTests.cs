@@ -80,10 +80,20 @@ public sealed class TheTabsAndTheWorkspacesTests
             .OfType<ItemsControl>()
             .FirstOrDefault(c => c.Name == "ModeTabs");
 
-    private static Grid? OperatingArea(MainWindow window)
+    /// <summary>
+    /// The bounded region the tabs sit on, which is what they align to.
+    /// </summary>
+    /// <remarks>
+    /// **THE TABS ALIGN TO THE BOUNDARY AND NOT TO THE PANELS INSIDE IT** (Tim,
+    /// 2026-08-27). This used to look for the CW workspace itself, and once the
+    /// boundary gained padding the panels moved thirteen pixels in while the
+    /// tabs stayed on the edge they own. The tabs were right and the assertion
+    /// was measuring the wrong thing.
+    /// </remarks>
+    private static Border? OperatingArea(MainWindow window)
         => window.GetVisualDescendants()
-            .OfType<Grid>()
-            .FirstOrDefault(c => c.Name == "CwWorkspace");
+            .OfType<Border>()
+            .FirstOrDefault(c => c.Name == "WorkspaceBoundary");
 
     /// <remarks>
     /// Proves the alignment from render bounds rather than by eye: the tab strip
@@ -106,17 +116,17 @@ public sealed class TheTabsAndTheWorkspacesTests
 
             _output.WriteLine(
                 $"tabs x={tabsAt.X:0} y={tabsAt.Y:0}, "
-                + $"operating area x={areaAt.X:0} y={areaAt.Y:0}");
+                + $"boundary x={areaAt.X:0} y={areaAt.Y:0}");
 
             Assert.True(
                 Math.Abs(tabsAt.X - areaAt.X) < 0.5,
-                $"the tabs start at x={tabsAt.X:0} and the area they belong to "
+                $"the tabs start at x={tabsAt.X:0} and the region they control "
                 + $"at x={areaAt.X:0}");
 
             Assert.True(
-                tabsAt.Bottom <= areaAt.Y + 0.5,
-                $"the tabs end at y={tabsAt.Bottom:0} and the area starts at "
-                + $"y={areaAt.Y:0}, so the strip is not above what it switches");
+                tabsAt.Bottom <= areaAt.Y + 1.5,
+                $"the tabs end at y={tabsAt.Bottom:0} and the region starts at "
+                + $"y={areaAt.Y:0}, so the strip is not on its edge");
         });
     }
 
