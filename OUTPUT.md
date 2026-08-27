@@ -1,264 +1,190 @@
-# Work instruction 023 — the survey reads the wrong thing
+# Work instruction 024 — the operator's ear, and the unit a station keeps
 
 ## 1. What Claude did
 
 Claude Code, on the development computer, in `C:\Source\HamLet`. The prompt
 claimed `PROJECT: Hamlet`; the tree confirmed all four checks — `SHACK_FACTS.md`
 and `src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs` exist, neither
-`CoreHMI.sln` nor `MURC.sln` does. Branch `main` throughout, two commits, all
-pushed, none refused. Version 1.11.19 to 1.11.20 per HM-DEC-150.
+`CoreHMI.sln` nor `MURC.sln` does. Branch `main` throughout, four commits, all
+pushed, none refused. Version 1.11.20 to 1.11.21 per HM-DEC-150.
 
 **Nothing here is evidence about the radio.** No rig was connected.
 
 **No decision was recorded under §12.1.** Section 4 carries what needs a ruling.
 
-**Task 1 ran and did not separate, so tasks 2 and 3 were not built** — the
-order's own instruction. Task 4, the drop candidate, ran, **and it overturned the
-premise both this unit and the last one were built on.**
+**Task 1 shipped and was committed before task 2 began**, as the order requires.
+**Task 2 did not separate, so task 3 was not built.** Task 4, the drop candidate,
+ran with a limitation stated below.
 
-### Task 1's sentence
+## 2. What Tim can do tonight that he could not this morning
 
-> **Stream B scores like stream A. The envelope reads 0.170 to 0.429 where the
-> gate reads 0.258 to 0.409, the two silence controls land at 0.305 and 0.287
-> inside the stations' range, and only one capture of ten improves.**
+**Press "I hear a station" and Hamlet will decode where he says a station is.**
 
-### Task 1 — the two streams side by side
+The button already banked the last half minute and added a row to the list. It
+now also points the decoder at the strongest **keyed** bin in the band and holds
+it there, bypassing admission entirely — the thing that has refused every station
+he can hear for six units.
 
-Both scored with unit 1.11.19's statistic, unchanged. **B is reported at two
-hops** because the envelope's is 5 ms and the survey's is 10, and a finer hop
-changes run lengths independently of the signal:
+**It releases when he clears it or when he moves the dial.** Pressing "Hold this
+pitch" lets go; a QSY lets go on its own, because a pitch asserted on one
+frequency is not evidence about the next.
 
-| capture | holds | A runs | **A** | **B at 10 ms** | **B at 5 ms** |
-|---|---|---|---|---|---|
-| `cw-2026-08-17-013347` | `VA3VRR` | 389 | 0.258 | **0.170** | 0.200 |
-| `cw-2026-08-25-012823` | a station | 1,649 | 0.288 | 0.276 | 0.292 |
-| `cw-2026-08-18-004507` | the bulletin | 1,290 | 0.319 | 0.286 | 0.294 |
-| **`cw-2026-08-20-014935`** | **nothing** | 2,110 | 0.327 | **0.287** | 0.318 |
-| `cw-2026-08-26-125941` | a station | 2,179 | 0.288 | 0.296 | 0.324 |
-| `cw-2026-08-24-012403` | `DE KD0UN` | 1,673 | 0.299 | 0.301 | 0.329 |
-| **`cw-2026-08-20-014854`** | **nothing** | 1,474 | 0.318 | **0.305** | 0.354 |
-| `cw-2026-08-22-014113` | a station | 1,919 | 0.308 | 0.326 | 0.366 |
-| `cw-2026-08-22-014308` | a station | 1,288 | 0.353 | 0.355 | 0.418 |
-| `cw-2026-08-17-134712` | **`N4L`** | 1,638 | 0.409 | **0.401** | 0.429 |
+**The status line says what it did**, naming the frequency it took and saying
+plainly that Hamlet did not find keying there, he did. The capture sheet says the
+same: `NOT MEASURED: you said you could hear a station, so this is the loudest
+bin in the band at that moment`. **`PitchWasMeasured` stays false throughout**, so
+nothing anywhere implies Hamlet found what a human found.
 
-Null values, same run: uniform random **0.231**; generated Morse **0.000**, and
-**0.187** at 30% jitter.
+**What it does on the four captures he can hear** — pressing, then carrying on
+listening:
 
-**One capture improves and it is the one that was already best.** `013347` falls
-from 0.258 to 0.170 — below the random null, into jittered-Morse territory. It is
-also the capture with 91 dB of swing and near-digital silence between elements.
+| capture | he hears it at | Hamlet takes | characters | before |
+|---|---|---|---|---|
+| `cw-2026-08-25-012823` | 500 Hz | **500.0 Hz — exact** | **12** | 41 |
+| `cw-2026-08-22-014308` | 606 Hz | **625.0 Hz** | **35** | **0** |
+| `cw-2026-08-22-014113` | 607 Hz | 600.0 Hz | 0 | 0 |
+| `cw-2026-08-26-125941` | 403.5 Hz | 450.0 Hz | 0 | 0 |
 
-**Everything else is unchanged or worse**, and the two silence controls sit at
-0.287 and 0.305, better than three of the four stations and far better than
-`N4L`, which reads an adjudicated callsign and scores worst in the table on both
-streams.
+**`cw-2026-08-22-014308` reads thirty-five characters where it read nothing**, and
+that is the first movement on any of these four in this whole phase.
 
-So the envelope is not quantised where the gate is not, and tasks 2 and 3 were
-not built.
+**Two still read nothing, and one of them is pointed within seven hertz of the
+station.** `014113` is asserted at 600 against a station at 607 and still emits
+nothing, so on that capture the fault is downstream of the pitch entirely. That
+is a finding rather than a shortfall, and it names where the next unit goes.
 
-### Task 4 — and it overturns the premise
-
-The order asked what `N4L` looks like to the decoder. The answer is the most
-important number in this unit.
-
-**HM-DEC-144's hand-read elements** — the gate's own output over the 1.56 seconds
-that spell the callsign, `225 30 55 | 180 | 55 40 55 40 60 40 55 30 245 | 150 |
-60 25 245 40 55 40 55`:
-
-| | |
-|---|---|
-| elements | 21 |
-| fitted unit | 30.5 ms |
-| **residual** | **0.173** |
-| distinct multiples | 6 |
-
-**0.173 is below the random null of 0.231 and level with Morse at 30% jitter.**
-
-**The same gate, on the same capture, pooled over the whole recording, scores
-0.409.** The structure is there. It was being averaged away.
-
-**So the statistic was reading the wrong window, not the wrong stream** — and
-that is HM-DEC-090's finding, in a place it was never applied. That ruling
-established that the reported ratio and the located pitch were *"averages over
-the ninety-six percent of a recording in which a station answering a call is
-silent"*, and replaced both with held peaks. **The admission statistics were
-never given the same treatment.**
-
-Tested directly, per survey pass rather than pooled:
-
-| capture | holds | pooled | **best pass** | P10 | median | passes under 0.20 |
-|---|---|---|---|---|---|---|
-| `cw-2026-08-18-004507` | the bulletin | 0.319 | **0.103** | 0.148 | 0.253 | **20 of 57** |
-| `cw-2026-08-17-134712` | `N4L` | 0.409 | **0.133** | 0.184 | 0.275 | 10 of 56 |
-| `cw-2026-08-26-125941` | a station | 0.288 | **0.146** | 0.179 | 0.240 | 12 of 57 |
-| `cw-2026-08-17-013347` | `VA3VRR` | 0.258 | **0.150** | 0.150 | 0.197 | **12 of 18** |
-| `cw-2026-08-24-012403` | `DE KD0UN` | 0.299 | **0.150** | 0.207 | 0.252 | **3 of 57** |
-| **`cw-2026-08-20-014854`** | **nothing** | 0.318 | **0.152** | 0.204 | 0.241 | **4 of 57** |
-| `cw-2026-08-25-012823` | a station | 0.288 | **0.157** | 0.177 | 0.221 | 12 of 57 |
-| **`cw-2026-08-20-014935`** | **nothing** | 0.327 | **0.167** | 0.200 | 0.253 | **6 of 57** |
-| `cw-2026-08-22-014308` | a station | 0.353 | **0.168** | 0.197 | 0.264 | 6 of 57 |
-| `cw-2026-08-22-014113` | a station | 0.308 | **0.188** | 0.198 | 0.228 | 7 of 57 |
-
-**Windowing recovers real structure — and noise recovers just as much.** Every
-capture now has passes scoring 0.10 to 0.19, well below the random null. But
-`cw-2026-08-24-012403`, which reads `DE KD0UN KD0UN K`, has **three** such passes
-while `cw-2026-08-20-014854`, which holds nothing, has **four**.
-
-The reason is sample size: about nineteen runs a pass, so a pass of noise fits a
-freely-chosen unit well by chance often enough to match a real one.
-
-**The decoder's own reading of `134712`** confirms the shape of the problem: it
-emits 92 characters, of which `N4LQ` is one, and the dit its segmentation implies
-runs from 25.0 ms at the tenth percentile to 61.7 at the ninetieth — a spread of
-**2.47×** across characters. Over the seconds that decode, the envelope swings
-**26.8 dB**.
-
-### The suite
-
-| | baseline | end |
-|---|---|---|
-| engine | 28 of 1841, identical to the stable set | **29 of 1841** |
-| app | 503 passing | **503 passing, 0 failing** |
-
-**The extra is a seventh intermittent and it is not this unit's.**
-`Rig.CivRigTests.ARigWhoseReadLoopIsStuckStillDisconnects` failed once in a full
-run and **passed three of three alone**. It is in the rig path; **no `src` file
-was changed by this unit at all** — the only committed change is a test probe and
-the version bump.
-
-### Where the instruction and the tree disagree
-
-- **The premise that the run stream carries nothing is wrong**, and unit
-  1.11.19's headline with it. Over the seconds a station is actually sending, the
-  gate's own elements score 0.173. Pooling destroyed it.
-- **The envelope is not the answer.** It improves exactly one capture of ten, the
-  one already cleanest, and leaves the silence controls scoring better than most
-  stations.
-- **`cw-2026-08-24-012403` was still under `unadjudicated/`** — the correction
-  carried into this order was right.
-- **`fit_clock` and `well_separated` are in `cwdecoder.py` at the root**, as the
-  order states. Confirmed.
-- **The baseline was 28, identical to the stable set**, as stated.
-- **`CLAUDE_CODE.md` is at 1.4**; §8 specifies four sections.
-- **`DECISIONS.md` still has no record for HM-DEC-096–133, 136, 141, 150**, nor
-  Tim's rulings of 2026-08-25/26.
-
-## 2. What Tim sees at the radio
-
-**Nothing changed, and a station he can hear still does not reach the decoder.**
-
-The envelope was measured against the gate on the same captures at the same
-pitches, and it is not better. Under the order's terms nothing was built.
-
-**But the unit found that the last two units were chasing a ghost.** Unit
-1.11.19 concluded the gate's run stream carries no Morse structure on any
-recording. That was measured over whole recordings, and it is wrong: over the
-1.56 seconds where `N4L` is actually being sent, the gate's own elements score
-**0.173** — below random, level with Morse at 30% jitter. **The structure was
-always there. It was being averaged against twenty-eight seconds of nobody
-sending.**
-
-**This project has fixed exactly this mistake once before.** HM-DEC-090 found the
-reported SNR and the located pitch were averages over the silence in a recording
-and replaced both with held peaks. The admission tests were never given the same
-treatment, and they are averaging in exactly the same way.
-
-**What the windowed measurement then shows is a harder problem, honestly.** Score
-per pass instead of pooled and every capture produces passes that look like
-Morse — including the two that hold nothing. Nineteen runs is not enough evidence
-for a fit to mean anything on its own.
+**Both silence controls still read nothing with the assertion applied**, and the
+automatic path is untouched.
 
 **What will look wrong and is not:**
 
-- **One commit that touches no `src` file.** The measurement needed no engine
-  change; the run-stream collection point shipped last unit.
-- **The engine shows 29 where the baseline showed 28.** A seventh intermittent,
-  named above, passing three of three alone.
-- **All four target captures are exactly where they were.**
+- **The engine shows 29 red where the stable set is 28.** One intermittent,
+  `TheStateMonitorDoesNotHoldUpADisconnect`, verified passing alone.
+- **The press takes a moment longer.** It now sweeps the band for the keyed pitch,
+  on a background thread so the window does not freeze.
+- **`cw-2026-08-25-012823` reads 12 where it read 41.** The 41 was soup off a
+  wrong station at 450 Hz; the 12 come from the right one at 500.
 
 ## 3. What you should see
 
-**Stream A and stream B, same captures, same pitches, with the nulls beside
-them** — the full tables are in section 1. The three rows that decide it:
+**Task 1, the four captures he can hear** — the table above. Pitch chosen, exact
+on `012823`, nineteen hertz out on `014308`, and two that read nothing.
 
-| | A (the gate) | B (the envelope, 10 ms) |
-|---|---|---|
-| **`cw-2026-08-17-134712`, `N4L`, reads a callsign** | **0.409** | **0.401** |
-| **`cw-2026-08-20-014854`, holds nothing** | **0.318** | **0.305** |
-| **`cw-2026-08-20-014935`, holds nothing** | **0.327** | **0.287** |
-| uniform random | — | **0.231** |
-| generated Morse, 30% jitter | — | **0.187** |
+**Task 2's sentence:**
 
-**Both recordings of an empty band fit Morse better than the recording of a
-callsign Hamlet reads, on both streams.**
+> **A station's good passes do not agree on a unit where noise's do not — the
+> comparison is inverted. `cw-2026-08-20-014935`, which holds nothing, agrees
+> tightest in the whole table at a coefficient of variation of 0.028;
+> `cw-2026-08-17-013347`, which reads `VA3VRR`, agrees worst at 0.400.**
 
-**And the number that changes the phase:**
+| capture | holds | good passes | units fitted (ms) | **spread** |
+|---|---|---|---|---|
+| **`cw-2026-08-20-014935`** | **nothing** | 6 | 28, 29, 30, 30, 30, 30 | **0.028** |
+| `cw-2026-08-24-012403` | `DE KD0UN` | 3 | 28, 30, 30 | 0.032 |
+| `cw-2026-08-26-125941` | a station | 12 | 25, 30 ×10, 37 | 0.078 |
+| **`cw-2026-08-20-014854`** | **nothing** | 4 | 36, 40, 56, 60 | **0.212** |
+| `cw-2026-08-17-134712` | `N4L` | 10 | 30 ×5, 31, 32, 42, 50, 50 | 0.226 |
+| `cw-2026-08-25-012823` | a station | 12 | 32, 32, 35–40, 63, 63 | 0.260 |
+| `cw-2026-08-18-004507` | the bulletin | 20 | 28–35, 58, 60, 60, 60 | 0.286 |
+| **`cw-2026-08-17-013347`** | **`VA3VRR`** | 12 | 34, 35, 35, 35, 45, **90, 90, 93, 93, 94, 94, 96** | **0.400** |
 
-| the gate's own elements on `134712` | residual |
-|---|---|
-| **over the 1.56 s that spell `N4L`** (HM-DEC-144, hand-read) | **0.173** |
-| pooled over the whole 30 s recording | **0.409** |
+**And the reason, which is a defect in the statistic rather than a fact about the
+signal.** Almost every fitted unit in the table is **25 or 30 milliseconds** — the
+bottom of the search range, which is bounded at the survey's own shortest dit.
+Noise runs pile up at the de-glitch floor of 20 to 30 ms, so a unit at the search
+floor fits them at a multiple of one and the residual is minimised there. **That
+is agreement on the bound, not on a sender's speed.** `013347` scores worst
+precisely because it is the one capture whose real dit is near 90 ms, and half its
+passes correctly fit 90 to 96.
 
-**The suite**: engine 29 of 1841 — the stable 28 plus a seventh intermittent that
-passes alone; app 503 of 503.
+**The suite**: engine 29 of 1841 — the stable 28 plus one intermittent verified
+alone; app 503 of 503.
+
+### Task 4 — the decoder's own dit spread, with its limitation
+
+| capture | reads | P10 | median | P90 | **spread** | LLR |
+|---|---|---|---|---|---|---|
+| `cw-2026-08-22-032129` | `OPAGATION` | 20.0 | 36.7 | 45.0 | **2.25×** | 7.2 |
+| `cw-2026-08-22-031838` | `, AND` | 15.0 | 25.0 | 38.9 | 2.59× | 5.9 |
+| `cw-2026-08-22-031905` | `DICTED 10.7` | 15.0 | 27.0 | 40.0 | 2.67× | 5.2 |
+| `cw-2026-08-22-032050` | `ULLETIN CAN BE FO` | 15.0 | 26.7 | 43.3 | 2.89× | 4.9 |
+| `cw-2026-08-18-004507` | the bulletin | 10.0 | 18.9 | 29.0 | 2.90× | 9.1 |
+| `cw-2026-08-18-003758` | `MP/4 QNIK` | 10.0 | 21.7 | 31.7 | 3.17× | 6.9 |
+| `cw-2026-08-22-031948` | the mean of 117 | 15.0 | 26.2 | 50.0 | 3.33× | 7.8 |
+| `cw-2026-08-22-032012` | `R OTHER WEBSITES` | 10.0 | 21.7 | 40.0 | 4.00× | 6.1 |
+| `cw-2026-08-17-013347` | `VA3VRR` | 20.0 | 30.0 | 85.0 | **4.25×** | **17,235,760** |
+
+**The spread is 2.25× to 4.25× on every anchored capture**, consistent with unit
+1.11.20's 2.47× on `134712`.
+
+**Whether it correlates with what reads correctly could not be established, and
+that is stated rather than glossed.** This measures the offline decoder at a fixed
+600 Hz, not the tracked pitch the app uses, so **no anchor was held in this
+configuration** and there is nothing to correlate against. The spread figures
+stand; the correlation does not.
+
+**`cw-2026-08-17-013347` returns a likelihood ratio of 17.2 million**, which is
+`001520`'s quadrillions problem in a second capture. Parked, raised once.
 
 ## 4. What's blocking us
 
-**The last two units' conclusion was an artifact of pooling, and the correction
-is a ruling this project has already made once.**
+**Six axis families have now failed, and the sixth failed backwards.**
 
 Ruling asked for:
 
-> **An admission statistic averaged over a whole recording is a statistic about
-> the silence, not about the station. HM-DEC-090 established this for the
-> reported SNR and the located pitch and replaced both with held peaks; the
-> admission tests were never given the same treatment. Measured: the gate's own
-> elements over the 1.56 seconds that spell `N4L` score 0.173 against a random
-> null of 0.231, while the same gate pooled over the same recording scores 0.409.
-> Unit 1.11.19's finding that the stream carries no Morse structure is withdrawn
-> — it carries structure exactly where somebody is sending.**
+> **Per-bin admission has now been measured against six families — separation,
+> the dah/dit ratio, level spread, lift over the band floor, quantisation
+> residual, and agreement between fitted units — and the sixth is inverted: a
+> recording holding nothing agrees to a coefficient of variation of 0.028 while
+> one reading `VA3VRR` agrees to 0.400. The question returns as a design one.
+> Task 1 has shipped the operator a way round it in the meantime.**
 
-*Rejected: the envelope as the survey's input.* Measured on all ten captures at
-matched hop. It improves one — `013347`, already the cleanest — and leaves both
-silence controls scoring better than most stations. It is not the fix.
-
-*Rejected: per-pass scoring as it stands.* Measured. It recovers the structure,
-and noise recovers as much: `012403` reads a callsign with three passes under
-0.20 while `014854` holds nothing and has four. Nineteen runs a pass is not
-enough evidence for a fit to carry a decision.
+*Rejected: agreement as a second condition on the held peak.* Measured across ten
+captures. It does not separate and it is the wrong way up.
 
 ---
 
-**The real question is now sharper than it has been in four units, and it is not
-a statistic.**
+**A defect in the quantisation statistic itself, which affects how the last two
+units' numbers should be read.**
 
-Every axis so far has asked "is this bin keyed?" of a three-second window, and a
-station answering a call is silent through most of any three seconds you pick.
-The measurement that works — HM-DEC-090's — does not average; it holds a peak and
-lets it decay.
+The unit search is bounded below at `ShortestDitMs`, 25 ms, and noise runs pile up
+at the de-glitch floor of 20 to 30 ms. So the residual is minimised at the search
+bound, and almost every fitted unit across ten captures is 25 or 30. **Any future
+use of this statistic must exclude the boundary, or the answer is about the bound
+rather than the signal.**
 
-*Not proposed, because it needs a ruling:* whether admission should hold the best
-fit a bin has produced over a decaying window, the way the SNR and the pitch
-already do, rather than scoring the window pooled. That would use the passes
-where the sender is actually sending and discard the ones where he is not, which
-is what a held peak is for. **The risk is the one HM-DEC-090's own guard names**:
-a held maximum over noise rises to whatever the luckiest pass produced, and the
-per-pass table shows noise producing passes at 0.152. So it needs a second
-condition — how many good passes, or how close together — and that is a design
-question rather than a constant.
+Units 1.11.19 and 1.11.20 reported *residuals* rather than fitted units, so their
+conclusions are unaffected — but the fitted unit was never examined until today,
+and it should have been the first thing checked.
 
 ---
 
-**A seventh intermittent, in a unit that changed no engine code.**
+**One capture is now pointed within seven hertz of its station and still reads
+nothing, which is new information.**
 
-`Rig.CivRigTests.ARigWhoseReadLoopIsStuckStillDisconnects`. Seven timing tests
-now fail unpredictably; three different ones have fired in the last four runs.
-**A full-run total is no longer a number anyone can read**, and every report now
-has to diff which tests moved. Worth its own small unit.
+`cw-2026-08-22-014113` asserts at 600 Hz against a station at 607 and emits zero
+characters, zero elements. Admission is bypassed, the pitch is right, and nothing
+comes out — so on that capture the fault is **downstream of both**, in the
+probabilistic decoder's own gate. `cw-2026-08-26-125941` is 46 Hz out and also
+reads nothing, so it is not yet a clean case.
+
+*Not proposed, because it needs a ruling:* the decoder's gate is 1.40 and unit
+1.11.18 measured every likelihood ratio on these captures below it, peaking at
+1.2. Whether an asserted pitch should also relax that gate — the operator having
+already supplied the evidence a station is there — is the same question this
+unit's first ruling answered for admission, one layer further down. **It touches
+what the display asserts, so it is Tim's without exception** (§12.1).
+
+---
+
+**Two files were swept into a commit by `git add -A` and removed in the next
+one.** An editor backup of `CLAUDE_CODE.md` that had sat untracked all day, and a
+scratch probe. Both are out of the tree and the backup pattern is now ignored.
+Recorded because a commit that adds files nobody chose is worth noticing.
 
 ### Asks still outstanding
 
-Carried forward verbatim per HM-DEC-139 and HM-DEC-140. **Seventeen inbound. The
+Carried forward verbatim per HM-DEC-139 and HM-DEC-140. **Eighteen inbound. The
 oldest is open since 2026-08-14.**
 
 1. **The sweep's `invented` column counts substitutions, not invented
@@ -267,39 +193,39 @@ oldest is open since 2026-08-14.**
 3. **`ANNUNCIATOR.md` renamed `PHASE` to `TASK` while HM-DEC-150 makes `PHASE`
    match the version's minor.**
 4. **`DECISIONS.md` has no record for HM-DEC-096–133, 136, 141 or 150 — nor for
-   Tim's rulings of 2026-08-25/26, including the one this unit acts under.**
-5. **The tone tracker** — the ask is now pooling versus a held peak, above.
+   Tim's rulings of 2026-08-25/26, including the two this unit acts under.**
+5. **The tone tracker** — six families measured; the question is now a design one.
 6. **The integrator width** — settled at 45 Hz, with the sharp-peak caveat.
 7. **The guard's gap is two to one**, calibrated on two empty captures.
 8. **A boxcar's nulls made two of five swept offsets pathological best cases.**
 9. **Two stations closer than 125 Hz are not named** — the operator's own item
    five, and the last of his list not yet attempted.
-10. **The keying meter** — its measurement found a station its verdict denied,
-    and on `cw-2026-08-20-014935` it reads 44 words a minute off silence.
+10. **The keying meter** — its measurement found a station its verdict denied.
 11. **HM-OPEN-057** (2026-08-22) and **HM-OPEN-007** (2026-08-14).
 12. **The gate opens on everything, including two empty recordings** (1.11.18).
-13. **The hop's ±32% cannot explain a worse-than-random residual** (1.11.19) —
-    **closed this unit**: the residual is not worse than random where somebody is
-    sending, so there is nothing left for the hop to fail to explain.
-14. **The survey's gate output carries no Morse structure** (1.11.19) —
-    **withdrawn this unit**, above. It carries structure where somebody is
-    sending; pooling destroyed it.
-15. **Pooling versus a held peak**, above — the headline ask.
-16. **Nineteen runs a pass is not enough evidence for a fit**, above.
-17. **A seventh intermittent**, above.
+13. **Pooling versus a held peak** (1.11.20) — **half closed**: the held peak's
+    guard was to be agreement, and agreement is measured dead. The pooling half
+    stands.
+14. **Nineteen runs a pass is not enough evidence for a fit** (1.11.20).
+15. **Agreement is inverted**, above — the headline ask.
+16. **The quantisation statistic's unit search is biased to its own lower
+    bound**, above.
+17. **An asserted pitch does not relax the decoder's own gate**, above.
+18. **`013347` returns a likelihood ratio of 17.2 million**, joining `001520`'s
+    quadrillions. Parked, raised once.
 
-New this unit: **the pooling artifact and the withdrawal of 1.11.19's
-conclusion**, above; **the envelope is not the fix**, above; **a seventh
-intermittent**, above.
+New this unit: **agreement is inverted**, above; **the statistic's search bound
+is an attractor**, above; **a capture pointed within seven hertz still reads
+nothing**, above.
 
-Closed this unit: **whether the envelope is quantised where the gate is not** —
-measured on ten captures at matched hop, and it is not, except on the one capture
-already cleanest.
+Closed this unit: **whether the operator may assert a station** — shipped, and it
+reads thirty-five characters on a capture that read none. **Whether good passes
+agree on a unit** — measured, and they do not.
 
-Still open: **the lock's mixed help**; **the "Hold this pitch" button**; **three
-fixtures at accepted cost**; **`001520`'s quadrillions**; **the reference and
-port integrator difference**; **an unmeasured pitch costs `N4L`**; **the
-six-hertz window disagreement**; **the short-character bias**; **the Avalonia
-geometry offset**; **`CHANGELOG.md` at 1.9.0 against 1.11.20**; **the whole-file
-second pass**; **the squelch has no axis**; **the three morning captures of
-2026-08-26**.
+Still open: **the lock's mixed help**; **three fixtures at accepted cost**; **the
+reference and port integrator difference**; **an unmeasured pitch costs `N4L`**;
+**the six-hertz window disagreement**; **the short-character bias**; **the
+Avalonia geometry offset**; **`CHANGELOG.md` at 1.9.0 against 1.11.21**; **the
+whole-file second pass**; **the squelch has no axis**; **the three morning
+captures of 2026-08-26**; **seven timing intermittents, four of which fired
+today**.
