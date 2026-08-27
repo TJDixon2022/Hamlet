@@ -1,6 +1,6 @@
 # CLAUDE_CODE.md
 
-**Version 1.4. This file is byte-identical in every project.**
+**Version 1.5. This file is byte-identical in every project.**
 
 It governs how a Claude Code prompt is built, delivered, executed and reported.
 It does not govern the work itself.
@@ -343,13 +343,21 @@ discovered by the panel.
 Names the four sections, and **what leads section 3** — the answer to the question
 this unit was commissioned to ask.
 
-Ends: **if you finish every task, stop and report.** Do not start the next unit.
+Ends: **write `output.md`, then stop.** Do not start the next unit.
 
-**And if you cannot finish, report anyway.** §8's report is written on the way out
-of every session, not only a successful one. A unit that blocks, refuses or fails
-says so in `output.md` — everything done, everything blocking, every question
-wanting an answer — because that file is the only thing that reaches the owner and
-the next unit.
+**Every exit writes it.** §8's report is written on the way out of every session,
+not only a successful one — finished, blocked, failed, or **stopped early by the
+session's own judgment**. A unit that blocks, refuses, fails or stops says so in
+`output.md` — everything done, everything blocking, every question wanting an
+answer — because that file is the only thing that reaches the owner and the next
+unit.
+
+**Stopping early is the exit this clause was rewritten for.** A session that
+finishes ten of fourteen tasks and judges the rest a natural break has not
+finished, and it is not blocked or failed either. It read *if you finish every
+task* and *if you cannot finish* and found itself in neither, so it wrote nothing.
+There is no third case: the report is written before the session stops, whatever
+made it stop.
 
 ---
 
@@ -417,10 +425,22 @@ NOTE saying what is moving inside the task, not restating the task name.
 Do the same every ten minutes while a task is running.
 
 Commit and push each task before starting the next.
+
+Before you stop, for any reason at all, write output.md per
+CLAUDE_CODE.md §8. Complete, blocked, failed or stopped early are
+all reported the same way and there is no exit that leaves the file
+unwritten. If you are stopping with tasks remaining, name them and
+say why in section 1.
 ```
 
 Everything else is in the file. The prompt names the project, names the file, and
-carries the one instruction that must stay in front of a running session.
+carries the two instructions that must stay in front of a running session.
+
+**The report is in the prompt for the same reason the cadence is.** See §7. It was
+in §8 and in §4.10 only — a standards file read at minute zero and a work
+instruction a session stops consulting around task 6 — and sessions reached the
+end of a run with neither in front of them. The one rule whose whole purpose is to
+survive to the exit was the one furthest from it.
 
 ---
 
@@ -451,21 +471,47 @@ still do not move, the cause is elsewhere.
 `output.md` at the repository root, overwritten, and printed to the session.
 **Four sections, in this order, no other headings.**
 
-**Writing it is the only way out.** Complete, blocked or failed, a session writes
-`output.md` before it stops. **There is no exit that leaves the file unwritten** —
-a session that blocks on task 1 writes it, a session that cannot do the work at
-all writes it, and a session that is about to ask the owner a question writes the
-question into section 4 rather than into the terminal. What is in the terminal is
-gone when the window closes, and what is not in the file did not happen as far as
-every reader downstream is concerned. **The panel reads the file, the next unit is
-written from the file, and the owner is holding neither.**
+**Writing it is the only way out.** Complete, blocked, failed or stopped, a
+session writes `output.md` before it stops. **There is no exit that leaves the
+file unwritten** — a session that blocks on task 1 writes it, a session that
+cannot do the work at all writes it, a session that decides to stop with tasks
+remaining writes it, and a session that is about to ask the owner a question
+writes the question into section 4 rather than into the terminal. What is in the
+terminal is gone when the window closes, and what is not in the file did not
+happen as far as every reader downstream is concerned. **The panel reads the
+file, the next unit is written from the file, and the owner is holding neither.**
 
-1. **What Claude did.** **Leading with the exit state** — complete, blocked or
-   failed, and at which task of how many. That is the fact every reader needs
-   first and the one currently inferred from a told `STATE`. Then surface,
-   machine, project claimed, what in the tree confirmed it, branch. Then what was
-   traced, built and measured, with the numbers. Any decision the session made for
-   itself, reproduced in full.
+**One line before section 1**, from the clock per §11, never composed:
+
+```
+UNIT: <n> — <exit state> at task <n> of <m> — <YYYY-MM-DD HH:MM>
+```
+
+That line is not a fifth heading and does not breach *no other headings*. It is
+there because `output.md` is overwritten in place: without it, *this session did
+not write the report* and *this is last week's report* are the same file on disk,
+and the second is worse — the owner reads a finished unit's findings as the
+current one's. `PROJECT_STATUS.md` has `UPDATED` for exactly this and the report
+had nothing.
+
+1. **What Claude did.** **Leading with the exit state** — complete, blocked,
+   failed or **stopped**, and at which task of how many. That is the fact every
+   reader needs first and the one currently inferred from a told `STATE`. Then
+   surface, machine, project claimed, what in the tree confirmed it, branch. Then
+   what was traced, built and measured, with the numbers. Any decision the
+   session made for itself, reproduced in full.
+
+   **Stopped is a real exit state and the one most often unreported.** A session
+   that finishes ten of fourteen tasks and judges the rest a separate unit has
+   stopped; it has not completed. Stopping may well be the right call — the
+   45-to-60-minute window in §2 is a constraint, not a target to overrun — and it
+   is reported like any other exit: **which tasks were not done, why stopping
+   there was judged better than continuing, and what the next unit inherits.**
+
+   **Where the tasks left undone are not the drop candidate §4.6 named, say so.**
+   A session that drops something other than the named candidate has made a
+   sizing decision the owner did not make, and that is a decision made for itself
+   under the clause above. Report it as one.
 2. **What the owner should expect.** What is now true, and **what will look wrong
    but is not.**
 3. **What you should see.** See §9.
@@ -565,6 +611,14 @@ Each has happened. Each is cheap to avoid and expensive to find.
   read; the next unit is written blind against a tree the last session measured and
   did not record. **The report is the only exit**, and §4.10 said *if you finish*
   for long enough that not finishing read as exempt.
+- **A session that stopped by choice and reported nothing.** Repeatedly, across
+  projects: ten or fourteen tasks done, tests green, commits pushed, and a session
+  deciding the rest is a separate unit. Not a failure and not a block, so neither
+  half of §4.10's conditional caught it, and the session that had just made a
+  sizing judgment for the owner was the one that recorded nothing. **Stopping is an
+  exit state and is named as one**, and the requirement now sits in §6's prompt
+  rather than only in a file read at minute zero — §7's argument, applied to the
+  one rule that has to survive to the end of a run.
 - **A filename without its sequence number.** `-tonight-` and `-456-` shipped in one
   evening. The number was in §5's example and in none of its prose — the same
   failure as naming an outcome instead of an artifact, one level down, and in the

@@ -18,191 +18,202 @@ If all four hold, say "Hamlet confirmed" and continue.
 
 ---
 
-# Work instruction 024 — the operator's ear, and the unit a station keeps
+# Work instruction 025 — the cuts, not the letters
 
-**ISSUED: 2026-08-26. A fresh order, not an amendment.**
+**ISSUED: 2026-08-27. A fresh order, not an amendment.**
 
-**Four tasks; task 4 is the drop. This is the last build before the operator
-goes to the night band, and task 1 is written to ship something he can use
-whatever the rest of the unit measures.**
+**Four tasks; task 4 is the drop.** This unit implements option A of
+`DEV_ANALYSIS_2026-08-27.md` §4, which is in this zip and is committed by task 1.
 
 The standing goal governs every part: **he hears CW, Hamlet must decode it,
 eighty percent of the time.**
 
 ## Why this unit exists
 
-**The unit's number: 0.173 against 0.409, on the same gate and the same
-recording.**
+**The unit's number: `ATEEKEND`.**
 
-Unit 1.11.20 measured the gate's own elements over the 1.56 seconds that spell
-`N4L` — HM-DEC-144's hand-read run lengths — at a quantisation residual of
-**0.173**, below the random null of 0.231 and level with Morse at 30% jitter.
-The same gate pooled over the same thirty-second recording scores **0.409**.
+On `cw-2026-08-25-021410` — 18.2 words a minute, machine-grade fist — the gap
+classes measure **53 / 221 / 913 ms**, which is 0.81u / 3.36u / 13.9u with wide
+dead zones between them. Perfectly separable. **And the cutter still split `W`
+into `A T E`.** The rule fails when the information is perfect.
 
-**The structure was always there. Twenty-eight seconds of nobody sending
-averaged it away** — and unit 1.11.19's conclusion that the stream carries no
-Morse structure is withdrawn on that evidence.
+At the other end, `cw-2026-08-25-013637` at 30.6 words a minute has element and
+character gaps **four milliseconds apart** — 24 and 28 ms. `AB OVE`, `BREE Z E`.
+**No per-gap threshold can work there even in principle.**
 
-**This project has already made the corresponding ruling once.** HM-DEC-090
-found the reported SNR and the located pitch were averages over the silence in a
-recording and replaced both with held peaks. **The admission tests were never
-given the same treatment.**
+**The letters are already right. The cuts are wrong.** `USEDTOUSEAFIRM`,
+`OUTOFALT`, `TTHINKING`, `FLENX` — every one is correct elements, mis-segmented.
+And the shack-side analysis states the thing that makes this the unit:
+**the element-to-character decision has not been touched since the corpus began,
+and it is now the only stage that hasn't.** Everything around it moved this week
+— the squelch, the screen, admission, the operator's assertion — and the quality
+of the characters Hamlet emits did not.
 
-**But scoring per pass is not by itself the answer, and that is measured too.**
-Every capture then produces passes below the random null — including the two
-that hold nothing. `cw-2026-08-24-012403`, which reads `DE KD0UN KD0UN K`, has
-**three** passes under 0.20; `cw-2026-08-20-014854`, which holds nothing, has
-**four**. Nineteen runs a pass is not enough evidence for a fit to carry a
-decision alone.
-
-**The untested second condition is agreement.** A station keying at one speed
-produces good passes that fit **the same unit** — `N4L`'s elements fit 30.5 ms.
-Noise producing a lucky pass fits whatever unit happens to suit that pass, and
-the next lucky pass fits a different one. **Agreement across passes is
-dimensionless and needs no new statistic**, only the fitted units the last two
-units already compute.
-
-**And because five axis families have now failed, task 1 does not depend on the
-sixth.** The one detector in this system that has never been wrong is the
-operator's ear. Task 1 lets it decide.
+**One correction the analysis does not carry, so the session does not confuse
+the two.** Unit 1.11.9 built and measured a *validity term* added to the
+existing cutter's path score, and settled it at a safe weight of nought: at the
+only weight that helped anything, it ate `VA3VRR`. **That is not this.** This is
+a dynamic program over element boundaries with duration-fit terms, which unit
+1.11.9's own report named as the untried alternative. Do not treat the earlier
+measurement as a verdict on this one.
 
 ## Verify this instruction against the tree
 
 **Nothing here describes the tree.** Check every claim and report mismatches,
-including where the work succeeded anyway. Each of the last three units
-disproved its own order's premise and was right to.
+including where the work succeeded anyway. Every unit since 1.11.17 disproved
+part of its own order's premise and was right to.
 
-**Expected state: 28 failing of 1841 in the engine as the stable set; 503 of
-503 in the app.** **Seven timing intermittents now exist and three different
-ones fired in the last four runs. Do not chase any of them.** Diff which tests
-moved; never trust a total.
+**Fixtures this unit needs may be absent.** `021410`, `013637`, `011447`,
+`011514`, `011112`–`011617`, `021825`. **Task 1 checks and says which are
+present.** Any acceptance line naming an absent fixture is reported as
+unmeasurable rather than quietly dropped.
 
-**Adopt unit 1.11.18's `Shut` / `StuckOpen` / `Truncated` measurement as the
-ruler**, never summed. No task polishes it.
+**Expected state: 28 failing of 1841 in the engine as the stable set; 503 of 503
+in the app. Seven timing intermittents exist and four fired in the last
+session.** Do not chase any of them; diff which tests moved and never trust a
+total.
+
+**A mismatch to check and report:** the analysis asks for the keying sweep to be
+hidden behind a debug flag, but unit 1.11.12 shipped `AppSettings.ShowKeyingSweep`
+defaulting off. **Say which is true in the tree today** — either the setting was
+turned back on, or the analysis is reading older captures.
 
 **`DECISIONS.md` still has no record for HM-DEC-096–133, 136, 141, 150, nor
-Tim's rulings of 2026-08-25/26.** **`CLAUDE_CODE.md` is at version 1.4.**
+Tim's rulings of 2026-08-25/26/27.** **`CLAUDE_CODE.md` is at version 1.4.**
 
 ## Rulings in force
 
-**Tim's ruling, 2026-08-26, by adopting this unit (flagged for veto in the
-delivery) — the operator may assert a station:**
+**Tim's ruling, 2026-08-27, by adopting this unit (flagged for veto in the
+delivery):** option A of the analysis — **the joint decoder replaces per-gap
+thresholding**, as specified in its HOW section. Option B is rejected because it
+rebuilds half the machinery and then rebuilds it again; option C is the status
+quo.
 
-> **When the operator presses "I hear a station", Hamlet takes that as evidence
-> that a station is present and decodes at the strongest keyed bin in the band
-> at that moment, holding it until he clears it or the radio's frequency
-> changes.** HM-DEC-095 forbids Hamlet *choosing* a note by loudness because
-> loudness is not evidence of keying. **It does not forbid the operator
-> supplying the evidence of keying himself and Hamlet supplying the frequency.**
-> The sidecar records that the pitch was operator-asserted rather than measured,
-> so no capture ever implies Hamlet found what a human found. **The button
-> already exists and already banks the last half minute; this adds decoding at
-> the asserted pitch to what it does.**
+**Tim's ruling, same date: the joint decoder ships behind a setting.**
+`AppSettings.UseJointDecoder`. **Default on if every floor and every anchor is
+green; default off, shipped anyway, with the measurement reported, if they are
+not.** The operator is at the radio tonight and a switch he can throw is worth
+more than a change he cannot compare against.
 
-**Tim's ruling, same date, same mechanism — admission may hold and agree:**
+**The §0.0 guard, and it is not negotiable.** **No language model. No
+letter-frequency prior. No dictionary. No word list.** The only knowledge
+admitted is the Morse table and the fitted clock. A decoder with an English
+prior invents plausible words from marginal audio, which is the confident lie
+this project exists to prevent. **The validity term stays small against the
+timing terms, and `cw-2026-08-25-021825` — noise — must still yield blocks
+rather than letters. If the guard and the acceptance conflict, the guard wins
+and the unit ships less.**
 
-> **An admission statistic averaged over a whole recording is a statistic about
-> the silence, not about the station.** Admission may hold the best fit a bin
-> produces over a decaying window, as HM-DEC-090 already does for the SNR and
-> the pitch, **provided a second condition guards the held peak** — because a
-> held maximum over noise rises to whatever the luckiest pass produced.
-> **Agreement between the units those passes fit is the condition to measure
-> first.**
+**HM-DEC-120 is untouched and upstream.** The squelch, the gate and the silence
+property are not part of this unit. Both silence controls emit nothing, checked
+and stated.
 
-**HM-DEC-120 is the acceptance test in its stricter form:** both silence
-controls emit nothing **and** their bins are `Shut` rather than `StuckOpen` —
-**and task 1's assertion path is exempt from nothing**: an operator pressing the
-button on an empty band gets whatever the audio contains, which is his own
-choice, but **the automatic path must not change**.
-
-**Rejected already, do not revisit:** the envelope as the survey's input
-(measured on ten captures at matched hop — improves one, the cleanest); per-pass
-scoring without a second condition (measured — noise wins); a sixth statistic on
-the pooled stream; `MinimumSeparation`; the ratio band; the admission valve; the
-threshold above the band floor; the two-levels-apart spread; the speed-scaled
-de-glitch; the integrator width; the confirmation window; the four dead squelch
-axes; locking to `CwPitch`.
+**Rejected already, do not revisit:** the validity term on the existing cutter
+(1.11.9, safe weight nought); gap-cluster retuning (clusters merge at 30 WPM —
+`013637` is the proof); six admission axis families; the envelope as the
+survey's input; per-pass scoring; agreement between fitted units; gating on
+`spanLlr` (inverted on strong signals — 004808 soup at 8,000–29,000 against real
+letters at 41–437).
 
 ## Status cadence
 
 Per §4.5: after each task, before the next, update `PROJECT_STATUS.md` —
 `STATE`, `TASK: n of m`, `BALL`, `UPDATED` from the clock, `NOTE` saying what is
-moving. Same every ten minutes while a task runs. **This unit is against a
-clock — the operator goes to the radio when it finishes.**
+moving. Same every ten minutes while a task runs. **This is the largest single
+change to the decode path in the project's history; the cadence is how Tim knows
+it is progressing rather than stuck.**
 
 ## The tasks
 
-### Task 1 — the operator asserts a station *(ships regardless of everything below)*
+### Task 1 — the floors green, and the four fixtures on the record
 
-Implement the first ruling. **Do this task first and commit it before starting
-task 2**, so that if the session runs long the operator still gains something
-tonight.
+Commit `DEV_ANALYSIS_2026-08-27.md` to the repository root.
 
-- Pressing **"I hear a station"** sets the decode pitch to the strongest keyed
-  bin at that moment and holds it, bypassing admission entirely.
-- **It is released** by the operator clearing it, or by the radio's frequency
-  changing — the release-on-QSY rule already in the tree.
-- **The sidecar says the pitch was asserted, not measured.** `HasMeasuredPitch`
-  stays false; a new state says who chose it. No capture may ever imply Hamlet
-  found what a human found.
-- **The panel changes only where the ruling says**: the button's existing
-  behaviour is kept and extended. **Nothing else on the panel moves.**
+Check for `021410`, `013637`, `011447`, `011514`, `011112`–`011617` and
+`021825`; commit and floor any that are present in this zip or already in the
+tree, and **name any that are absent**.
 
-**Acceptance:** on `cw-2026-08-26-125941` — the operator's live miss, a station
-at 403.5 Hz that Hamlet reads nothing from — asserting at the strongest bin
-produces a measured decode; report the characters, the pitch chosen, and the
-speed. Same for `cw-2026-08-22-014113` and `-014308` at 607 and 606, and
-`cw-2026-08-25-012823` at 500. **The automatic path is untouched: all twelve
-anchors green, both silence controls silent, every floor held.**
+**Record what each of the four named failures reads today**, verbatim, so the
+after is comparable: `021410`'s `ATEEKEND`, `TTHINKING`, `FLENX`; `013637`'s
+`AB OVE`, `BREE Z E`; `011447`'s `USEDTOUSEAFIRM`; `011514`'s `OUTOFALT`.
 
-### Task 2 — does the unit a bin fits stay put?
+**Every floor and every anchor green before the first edit**, diffed rather than
+totalled. If anything is red that is not a known intermittent, **stop and report
+it** — this unit must not begin on an unstable tree.
 
-**Measure before building.** For every capture in unit 1.11.20's table, and for
-both silence controls, take the passes scoring under 0.20 and report:
+### Task 2 — the joint decoder
 
-- **the fitted unit of each such pass**, in milliseconds;
-- **their spread** — the coefficient of variation across those passes,
-  dimensionless;
-- the same for the station's own bin and for a sample of its neighbours.
+Implement the analysis's HOW exactly:
 
-**Then answer in one sentence: do a station's good passes agree on a unit where
-noise's good passes do not, and by how much?**
+- **State**: position between elements. **Transition**: emit character C
+  spanning elements i..j, allowed only if the mark pattern of i..j is C's
+  pattern.
+- **Transition cost**: the sum of duration-fit terms — each mark against 1u or
+  3u, each internal gap against 1u, the boundary gap against 3u for a character
+  or 7u for a word — as log-likelihoods around the fitted clock, with a per-fist
+  spread learned from the recent stream. Plus a **small** flat validity term,
+  and a matching cost for the `■` hypothesis **so an unreadable span loses to a
+  block rather than to an invented letter**.
+- **Streaming**: finalise with a lag of about two characters, emitting on
+  traceback agreement, at the pipeline's existing cadence.
+- **Nothing already settled is retracted.** §0.0: the display does not un-say
+  things.
 
-- **If they agree**, task 3 is built.
-- **If they do not, stop, build nothing, and report it.** Six axis families
-  would then have failed and the ask returns to Tim as a design question, with
-  task 1 having shipped regardless. **That is an honest result and is reported
-  as one.**
+Behind `AppSettings.UseJointDecoder`, per the ruling.
 
-### Task 3 — held peak plus agreement *(only if task 2 separates)*
+**Acceptance, and the floors are the judge:**
 
-Admission holds the best fit a bin produces over a decaying window, guarded by
-the agreement condition task 2 measured. Existing tests keep operating; this is
-added, not substituted.
+- `021410`: `ATEEKEND` → `WEEKEND`, `TTHINKING` → `THINKING`, `FLENX` → `FLEX`;
+- `013637`: `AB OVE` → `ABOVE`, `BREE Z E` → `BREEZE`;
+- `011447`: `USEDTOUSEAFIRM` → `USED TO USE A FIRM`;
+- **every floor and every anchor the same or better** — the two rag-chew
+  evenings, the W1AW seven, `KD0UN`, the synthetic file;
+- **`021825` still yields blocks, not letters**;
+- both silence controls silent; chunk invariance intact.
 
-**Acceptance:** all four stations admitted at their own pitches; **both silence
-controls admit nothing, emit nothing, bins `Shut`**; all twelve anchors green
-character for character; every floor held; chunk invariance intact. **If no
-setting meets all of it, ship nothing and report the sweep**, naming which line
-each setting breaks.
+**If the acceptance is met, the setting defaults on. If it is not, the setting
+defaults off and ships anyway, with a per-fixture table of what improved and
+what regressed.** Shipping it off is not a failure; shipping it on while an
+anchor is red is.
 
-### Task 4 — the decoder's own dit spread *(the drop candidate)*
+### Task 3 — the constrained margin, which falls out of the table
 
-Unit 1.11.20 measured the decoder's segmentation on `134712` implying dits from
-25.0 to 61.7 ms — a spread of 2.47× across characters that decode, over an
-envelope swinging 26.8 dB. **Measure only**: the same spread on the other
-anchored captures, and whether it correlates with what reads correctly. It bears
-on whether the decoder's clock is following a station or being dragged.
+The analysis §2 measured margins of 0.1–3.4 on right answers and 0.0–1.9 on
+wrong ones — no separation — because second-best is free to re-segment, so
+there is always a trivially different alternative.
+
+**Constrain it: second-best is the best path forced to a different character
+over the same span and the same element boundaries.** Task 2's dynamic program
+produces exactly this as a by-product.
+
+Log it beside the existing figures, **clamped** — the sheet has printed
+`6:27306879.3` and `■:-1876275.2`. **Report its distribution**, correct
+characters against pileup characters, on the logged corpus. The analysis's own
+target is an order of magnitude of separation. **Measure and report; change no
+behaviour on it.**
+
+### Task 4 — the three one-sentence items *(the drop candidate)*
+
+1. **After a Clear, `textCovers` still says "everything read since the decoder
+   started listening"** while the text starts at the clear. Say "since the
+   transcript was cleared at hh:mm:ss".
+2. **The keying sweep** — per the mismatch above, ensure it is behind its
+   setting and that the setting is off.
+3. **`competing: none found` appears in every sidecar of the week**, including
+   files with eight admitted tones and a station 2.4 dB from the tracked one.
+   **Either report what the survey saw or drop the field** — a field that always
+   says the same thing is worse than no field.
+
 **Dropped whole if time runs out, and the report says so.**
 
 ## Parked — do not touch, do not raise
 
-The `Shut`/`StuckOpen`/`Truncated` metric; the seven intermittents; the hop's
-precision; confirmation; displacement; the hold's other behaviour; fist-quality
-selection; the meter; the squelch's successor; the integrator width; the
-whole-file second pass; `001520`'s quadrillions; the reference and port
-integrator difference; the short-character bias; the Avalonia offset;
-`CHANGELOG.md`; HM-OPEN-057; HM-OPEN-059; **the panel beyond task 1's ruling.**
+Admission and the six dead axis families; the survey; the squelch and the gate;
+the operator's assertion path; the meter's rebuild; the integrator width; the
+whole-file second pass; `001520`'s quadrillions and `013347`'s 17.2 million;
+the reference and port integrator difference; the short-character bias; the
+Avalonia offset; `CHANGELOG.md`; the seven intermittents; HM-OPEN-057;
+HM-OPEN-059; **the panel beyond task 4's items.**
 
 A parked item that blocks a task is raised once, and says it was parked.
 
@@ -210,11 +221,13 @@ A parked item that blocks a task is raised once, and says it was parked.
 
 Standing prohibitions are `CLAUDE.md`'s and are not retyped. Unit-specific:
 
-- **Do not let task 1 slip behind task 2.** It ships first and commits first.
-- **Do not let an asserted pitch be reported as a measured one**, anywhere.
-- **Do not change the automatic admission path in task 1.**
-- **Do not build task 3 if task 2 does not separate.**
-- **Do not trade the silence property** on the automatic path, in either form.
+- **No language model, no letter-frequency prior, no dictionary, no word list.**
+  The guard outranks the acceptance.
+- **Do not default the setting on with any floor or anchor red.**
+- **Do not retract settled text.**
+- **Do not touch the squelch, the gate, admission, or the silence property.**
+- **Do not tune the validity term upward to reach an acceptance line** — if the
+  timing terms cannot do it, report that they cannot.
 - **Do not chase an intermittent.**
 - **Floors only rise; anchors stay green; chunk invariance holds.**
 
@@ -226,15 +239,14 @@ push is reported as refused, with the reason.
 Report per `CLAUDE_CODE.md` §8 — read the file's own section count — to
 `output.md` at the repository root, overwritten and printed.
 
-**Section 2 leads with what the operator can do tonight that he could not do
-this morning**, because he goes to the radio on the strength of it. **Section 3
-leads with task 1's decodes on the four captures he can hear, and then task 2's
-sentence.**
+**Section 3 leads with the four named failures, before and after, verbatim.**
+**Section 2 says whether the setting ships on or off, and what the operator
+should expect to see differently at the radio tonight.**
 
 ### Asks still outstanding
 
-Carried forward verbatim per HM-DEC-139 and HM-DEC-140. **Seventeen inbound.
-The oldest is open since 2026-08-14.**
+Carried forward verbatim per HM-DEC-139 and HM-DEC-140. **Eighteen inbound. The
+oldest is open since 2026-08-14.**
 
 1. **The sweep's `invented` column counts substitutions, not invented
    characters.**
@@ -242,31 +254,36 @@ The oldest is open since 2026-08-14.**
 3. **`ANNUNCIATOR.md` renamed `PHASE` to `TASK` while HM-DEC-150 makes `PHASE`
    match the version's minor.**
 4. **`DECISIONS.md` has no record for HM-DEC-096–133, 136, 141 or 150 — nor for
-   Tim's rulings of 2026-08-25/26, including the two this unit acts under.**
-5. **The tone tracker** — pooling versus a held peak, task 2 and 3.
+   Tim's rulings of 2026-08-25/26/27, including the two this unit acts under.**
+5. **The tone tracker** — six axis families measured; the question is a design
+   one and the operator's assertion is the way round it meanwhile.
 6. **The integrator width** — settled at 45 Hz, with the sharp-peak caveat.
 7. **The guard's gap is two to one**, calibrated on two empty captures.
 8. **A boxcar's nulls made two of five swept offsets pathological best cases.**
 9. **Two stations closer than 125 Hz are not named** — the operator's item five,
-   the last of his list not yet attempted.
-10. **The keying meter** — its measurement found a station its verdict denied.
+   and `competing` is task 4's third item.
+10. **The keying meter** — 17 contradictions, including `no keying` on both of
+    the readable captures of 2026-08-27.
 11. **HM-OPEN-057** (2026-08-22) and **HM-OPEN-007** (2026-08-14).
 12. **The gate opens on everything, including two empty recordings** (1.11.18).
-13. **Nineteen runs a pass is not enough evidence for a fit** (1.11.20) — task 2
-    tests the second condition.
-14. **Pooling versus a held peak** (1.11.20) — acted on here.
-15. **A seventh intermittent, and three different ones in four runs** — a full
-    total is unreadable; worth its own small unit.
-16. **The decoder's own dit spread is 2.47× on a capture that reads** — task 4.
-17. **Whether an asserted pitch should also feed the tracker's history** — not
-    in this unit; the assertion bypasses admission and does not teach it.
+13. **An asserted pitch does not relax the decoder's own gate** — `014113` is
+    pointed within seven hertz of its station and still emits nothing.
+    **Tim's, without exception; still unruled.**
+14. **The quantisation statistic's unit search is biased to its own lower
+    bound** (1.11.21).
+15. **`spanLlr` inverts on strong signals** — do not gate on it.
+16. **Raw scores still need clamping** — task 3 clamps the new one.
+17. **Seven timing intermittents, four fired in one session.** A full-run total
+    is unreadable; worth its own small unit.
+18. **The mark and gap classifiers do not share a unit** — a forced-unit sweep
+    across 8–44 WPM cannot reproduce Hamlet's signature with any single unit.
+    **Task 2 is the fix if the joint decoder lands.**
 
-Still open: **the lock's mixed help**; **the "Hold this pitch" button**; **three
-fixtures at accepted cost**; **`001520`'s quadrillions**; **the reference and
-port integrator difference**; **an unmeasured pitch costs `N4L`**; **the
-six-hertz window disagreement**; **the short-character bias**; **the Avalonia
-geometry offset**; **`CHANGELOG.md` at 1.9.0 against 1.11.20**; **the whole-file
-second pass**; **the squelch has no axis**; **the three morning captures of
-2026-08-26**.
+Still open: **the lock's mixed help**; **three fixtures at accepted cost**;
+**the reference and port integrator difference**; **an unmeasured pitch costs
+`N4L`**; **the six-hertz window disagreement**; **the short-character bias**;
+**the Avalonia geometry offset**; **`CHANGELOG.md` at 1.9.0 against 1.11.21**;
+**the whole-file second pass**; **the squelch has no axis**; **the three morning
+captures of 2026-08-26**.
 
 **If you finish every task, stop and report. Do not start the next unit.**
