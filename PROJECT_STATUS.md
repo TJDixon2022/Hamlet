@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
-TASK: 3 of 8
-BALL: code
-NEXT_PASTE: none
-UPDATED: 2026-08-28T11:57:50-04:00
-NOTE: waterfall bound to the audio FFT and the clock added beside the static status without replacing it; app suite 509 green
+STATE: COMPLETED
+TASK: 4 of 8
+BALL: tim
+NEXT_PASTE: OUTPUT.md -> Claude Web
+UPDATED: 2026-08-28T11:59:26-04:00
+NOTE: waterfall and clock shipped; ft8_lib cannot be built here because the machine has no C toolchain, which is the wrap-or-write decision
 
 ---
 
