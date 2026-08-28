@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 2 of 4
-BALL: tim
-NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-27T21:11:09-04:00
-NOTE: gate proven working; the refusal that ends the phantoms costs N4L and is handed back as the ruling this unit ends on
+STATE: EXECUTING
+TASK: 2 of 5
+BALL: code
+NEXT_PASTE: none
+UPDATED: 2026-08-27T22:29:59-04:00
+NOTE: true cost is eleven tests not five: the five anchors ruled on plus six clean-signal speed tests, one of which drops to nothing when tuning on mid-transmission
 
 ---
 
