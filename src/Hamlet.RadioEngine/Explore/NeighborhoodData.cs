@@ -158,7 +158,8 @@ public sealed class NeighborhoodData
             dto.JumpHz == 0 ? dto.LowHz : dto.JumpHz,
             ParseFamily(dto.Family),
             dto.Cite ?? "",
-            dto.Caution);
+            dto.Caution,
+            dto.PassbandHz > 0 ? dto.PassbandHz : null);
 
     private static ModeFamily ParseFamily(string? name) => name?.Trim().ToUpperInvariant() switch
     {
@@ -219,6 +220,16 @@ public sealed class NeighborhoodData
         public string? Cite { get; set; }
 
         public string? Caution { get; set; }
+
+        /// <summary>
+        /// How wide a receiver passband this block needs, in hertz, or absent.
+        /// </summary>
+        /// <remarks>
+        /// **ABSENT MEANS NOBODY HAS STATED ONE, NOT THAT ANY WIDTH WILL DO**
+        /// (§12.4). A row without it produces no claim about the radio either
+        /// way, which is the honest reading of a fact the file does not carry.
+        /// </remarks>
+        public long PassbandHz { get; set; }
     }
 
     private sealed class SourceDto

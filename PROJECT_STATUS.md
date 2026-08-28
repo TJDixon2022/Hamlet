@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 4 of 7
-BALL: tim
-NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-28T13:30:17-04:00
-NOTE: waterfall fault found, reproduced on his own recordings and fixed; capture press blocked on the CW roster it would have to share
+STATE: EXECUTING
+TASK: 2 of 8
+BALL: code
+NEXT_PASTE: none
+UPDATED: 2026-08-28T14:08:51-04:00
+NOTE: engine at 28 byte-identical so 039's extra was an intermittent; passband requirement now carried by the twelve FT8 and FT4 rows
 
 ---
 

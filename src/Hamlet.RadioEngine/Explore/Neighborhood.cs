@@ -24,13 +24,48 @@ namespace Hamlet.RadioEngine.Explore;
 /// that the software in this block cannot hear Morse, and may not tell anybody
 /// what to do about it.
 /// </param>
+/// <param name="PassbandHz">
+/// How wide a receiver passband this block needs, or null where the file states
+/// none.
+/// </param>
+/// <remarks>
+/// **THE REQUIREMENT IS A FACT ABOUT THE RADIO, NOT ABOUT THE BAND** (work
+/// instruction 040). Every signal in an FT8 block sits as an audio tone between
+/// nought and three kilohertz above the dial, so a receiver has to pass all
+/// three kilohertz to hear the block at all. The operator lost an hour to a
+/// radio correctly tuned to 14.074 through a 500 Hz window, which is a state
+/// this map could describe and could not check.
+/// </remarks>
 public sealed record Neighborhood(
     string Name, string ShortName, long LowHz, long HighHz,
     string Vibe, string Blurb, long JumpHz, ModeFamily Family,
-    string Cite = "", string? Caution = null)
+    string Cite = "", string? Caution = null, long? PassbandHz = null)
 {
     /// <summary>True when the frequency lies inside this neighborhood.</summary>
     public bool Contains(long hz) => hz >= LowHz && hz <= HighHz;
+
+    /// <summary>
+    /// True when a receiver passband of this width can hear the whole block.
+    /// </summary>
+    /// <param name="hertz">The passband the radio reports, or null if unread.</param>
+    /// <returns>
+    /// True when it is wide enough, false when it is not, and **null when
+    /// nobody knows** — either the row states no requirement or the radio has
+    /// not been read.
+    /// </returns>
+    /// <remarks>
+    /// <para>**THREE ANSWERS, NOT TWO** (§0.0). A radio whose filter has not been
+    /// read is not a radio that is set correctly, and returning false for it
+    /// would say the operator has a problem he may not have. Unknown is the
+    /// honest third answer and the caller has to carry it.</para>
+    /// <para>**THE REQUIREMENT COMES FROM THE ROW, NOT FROM CODE.** The file
+    /// states it per neighborhood with its own reason; a constant here would be
+    /// a second copy of a fact the data already carries (§0).</para>
+    /// </remarks>
+    public bool? PassbandIsWideEnough(double? hertz)
+        => PassbandHz is not { } needed || hertz is not { } have
+            ? null
+            : have >= needed;
 }
 
 /// <summary>

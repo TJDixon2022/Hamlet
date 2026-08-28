@@ -147,7 +147,9 @@
           "vibe": "Always open, never quiet",
           "blurb": "This is the busiest few kilohertz in all of radio, and if you tune here and hear a wall of warbling that sounds like whale song, nothing is wrong with your radio. Everybody transmits together in fifteen-second bursts, so the waterfall looks like falling rain. The mode is built to dig a callsign out of noise you cannot even hear, which is why people reach so far from so little power, and with antennas they are faintly embarrassed about. Nobody here can hear Morse, and a Morse call in this block lands on top of dozens of contacts without reaching anyone.",
           "cite": "wsjtx-frequencies",
-          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived."
+          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived.",
+          "passbandHz": 3000,
+          "passbandWhy": "Every signal in this block sits as an audio tone between nought and three kilohertz above the dial, so a receiver has to pass the whole three kilohertz to hear the block at all. This is the same three-kilohertz rule the file already applies to where the block sits; here it is what the radio must be able to hear."
         },
         {
           "name": "FT4 sprint",
@@ -159,7 +161,9 @@
           "vibe": "FT8 in a hurry",
           "blurb": "The same idea as FT8 with the clock wound on: bursts of seven and a half seconds instead of fifteen, built for contest weekends when the point is how many rather than how far. It sounds like FT8 played at double speed, and it lives just up the band from it so the two do not tread on each other.",
           "cite": "wsjtx-frequencies",
-          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived."
+          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived.",
+          "passbandHz": 3000,
+          "passbandWhy": "Every signal in this block sits as an audio tone between nought and three kilohertz above the dial, so a receiver has to pass the whole three kilohertz to hear the block at all. This is the same three-kilohertz rule the file already applies to where the block sits; here it is what the radio must be able to hear."
         },
         {
           "name": "JS8 keyboard corner",
@@ -293,7 +297,9 @@
           "vibe": "FT8 in a hurry",
           "blurb": "The same idea as FT8 with the clock wound on: bursts of seven and a half seconds instead of fifteen, built for contest weekends when the point is how many rather than how far. It sounds like FT8 played at double speed, and it lives just up the band from it so the two do not tread on each other.",
           "cite": "wsjtx-frequencies",
-          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived."
+          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived.",
+          "passbandHz": 3000,
+          "passbandWhy": "Every signal in this block sits as an audio tone between nought and three kilohertz above the dial, so a receiver has to pass the whole three kilohertz to hear the block at all. This is the same three-kilohertz rule the file already applies to where the block sits; here it is what the radio must be able to hear."
         },
         {
           "name": "CW main street",
@@ -328,7 +334,9 @@
           "vibe": "Always open, never quiet",
           "blurb": "This is the busiest few kilohertz in all of radio, and if you tune here and hear a wall of warbling that sounds like whale song, nothing is wrong with your radio. Everybody transmits together in fifteen-second bursts, so the waterfall looks like falling rain. The mode is built to dig a callsign out of noise you cannot even hear, which is why people reach so far from so little power, and with antennas they are faintly embarrassed about. Nobody here can hear Morse, and a Morse call in this block lands on top of dozens of contacts without reaching anyone.",
           "cite": "wsjtx-frequencies",
-          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived."
+          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived.",
+          "passbandHz": 3000,
+          "passbandWhy": "Every signal in this block sits as an audio tone between nought and three kilohertz above the dial, so a receiver has to pass the whole three kilohertz to hear the block at all. This is the same three-kilohertz rule the file already applies to where the block sits; here it is what the radio must be able to hear."
         },
         {
           "name": "JS8 keyboard corner",
@@ -462,7 +470,9 @@
           "vibe": "Always open, never quiet",
           "blurb": "This is the busiest few kilohertz in all of radio, and if you tune here and hear a wall of warbling that sounds like whale song, nothing is wrong with your radio. Everybody transmits together in fifteen-second bursts, so the waterfall looks like falling rain. The mode is built to dig a callsign out of noise you cannot even hear, which is why people reach so far from so little power, and with antennas they are faintly embarrassed about. Nobody here can hear Morse, and a Morse call in this block lands on top of dozens of contacts without reaching anyone.",
           "cite": "wsjtx-frequencies",
-          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived."
+          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived.",
+          "passbandHz": 3000,
+          "passbandWhy": "Every signal in this block sits as an audio tone between nought and three kilohertz above the dial, so a receiver has to pass the whole three kilohertz to hear the block at all. This is the same three-kilohertz rule the file already applies to where the block sits; here it is what the radio must be able to hear."
         },
         {
           "name": "RTTY row",
@@ -548,7 +558,9 @@
           "vibe": "Always open, never quiet",
           "blurb": "This is the busiest few kilohertz in all of radio, and if you tune here and hear a wall of warbling that sounds like whale song, nothing is wrong with your radio. Everybody transmits together in fifteen-second bursts, so the waterfall looks like falling rain. The mode is built to dig a callsign out of noise you cannot even hear, which is why people reach so far from so little power, and with antennas they are faintly embarrassed about. Nobody here can hear Morse, and a Morse call in this block lands on top of dozens of contacts without reaching anyone.",
           "cite": "wsjtx-frequencies",
-          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived."
+          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived.",
+          "passbandHz": 3000,
+          "passbandWhy": "Every signal in this block sits as an audio tone between nought and three kilohertz above the dial, so a receiver has to pass the whole three kilohertz to hear the block at all. This is the same three-kilohertz rule the file already applies to where the block sits; here it is what the radio must be able to hear."
         },
         {
           "name": "JS8 keyboard corner",
@@ -572,7 +584,9 @@
           "vibe": "FT8 in a hurry",
           "blurb": "The same idea as FT8 with the clock wound on: bursts of seven and a half seconds instead of fifteen, built for contest weekends when the point is how many rather than how far. It sounds like FT8 played at double speed, and it lives just up the band from it so the two do not tread on each other.",
           "cite": "wsjtx-frequencies",
-          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived."
+          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived.",
+          "passbandHz": 3000,
+          "passbandWhy": "Every signal in this block sits as an audio tone between nought and three kilohertz above the dial, so a receiver has to pass the whole three kilohertz to hear the block at all. This is the same three-kilohertz rule the file already applies to where the block sits; here it is what the radio must be able to hear."
         },
         {
           "name": "RTTY row",
@@ -695,7 +709,9 @@
           "vibe": "Always open, never quiet",
           "blurb": "This is the busiest few kilohertz in all of radio, and if you tune here and hear a wall of warbling that sounds like whale song, nothing is wrong with your radio. Everybody transmits together in fifteen-second bursts, so the waterfall looks like falling rain. The mode is built to dig a callsign out of noise you cannot even hear, which is why people reach so far from so little power, and with antennas they are faintly embarrassed about. Nobody here can hear Morse, and a Morse call in this block lands on top of dozens of contacts without reaching anyone.",
           "cite": "wsjtx-frequencies",
-          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived."
+          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived.",
+          "passbandHz": 3000,
+          "passbandWhy": "Every signal in this block sits as an audio tone between nought and three kilohertz above the dial, so a receiver has to pass the whole three kilohertz to hear the block at all. This is the same three-kilohertz rule the file already applies to where the block sits; here it is what the radio must be able to hear."
         },
         {
           "name": "JS8 keyboard corner",
@@ -805,7 +821,9 @@
           "vibe": "Always open, never quiet",
           "blurb": "This is the busiest few kilohertz in all of radio, and if you tune here and hear a wall of warbling that sounds like whale song, nothing is wrong with your radio. Everybody transmits together in fifteen-second bursts, so the waterfall looks like falling rain. The mode is built to dig a callsign out of noise you cannot even hear, which is why people reach so far from so little power, and with antennas they are faintly embarrassed about. Nobody here can hear Morse, and a Morse call in this block lands on top of dozens of contacts without reaching anyone.",
           "cite": "wsjtx-frequencies",
-          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived."
+          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived.",
+          "passbandHz": 3000,
+          "passbandWhy": "Every signal in this block sits as an audio tone between nought and three kilohertz above the dial, so a receiver has to pass the whole three kilohertz to hear the block at all. This is the same three-kilohertz rule the file already applies to where the block sits; here it is what the radio must be able to hear."
         },
         {
           "name": "JS8 keyboard corner",
@@ -853,7 +871,9 @@
           "vibe": "FT8 in a hurry",
           "blurb": "The same idea as FT8 with the clock wound on: bursts of seven and a half seconds instead of fifteen, built for contest weekends when the point is how many rather than how far. It sounds like FT8 played at double speed, and it lives just up the band from it so the two do not tread on each other.",
           "cite": "wsjtx-frequencies",
-          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived."
+          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived.",
+          "passbandHz": 3000,
+          "passbandWhy": "Every signal in this block sits as an audio tone between nought and three kilohertz above the dial, so a receiver has to pass the whole three kilohertz to hear the block at all. This is the same three-kilohertz rule the file already applies to where the block sits; here it is what the radio must be able to hear."
         },
         {
           "name": "Beacon block",
@@ -940,7 +960,9 @@
           "vibe": "Always open, never quiet",
           "blurb": "This is the busiest few kilohertz in all of radio, and if you tune here and hear a wall of warbling that sounds like whale song, nothing is wrong with your radio. Everybody transmits together in fifteen-second bursts, so the waterfall looks like falling rain. The mode is built to dig a callsign out of noise you cannot even hear, which is why people reach so far from so little power, and with antennas they are faintly embarrassed about. Nobody here can hear Morse, and a Morse call in this block lands on top of dozens of contacts without reaching anyone.",
           "cite": "wsjtx-frequencies",
-          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived."
+          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived.",
+          "passbandHz": 3000,
+          "passbandWhy": "Every signal in this block sits as an audio tone between nought and three kilohertz above the dial, so a receiver has to pass the whole three kilohertz to hear the block at all. This is the same three-kilohertz rule the file already applies to where the block sits; here it is what the radio must be able to hear."
         },
         {
           "name": "JS8 keyboard corner",
@@ -988,7 +1010,9 @@
           "vibe": "FT8 in a hurry",
           "blurb": "The same idea as FT8 with the clock wound on: bursts of seven and a half seconds instead of fifteen, built for contest weekends when the point is how many rather than how far. It sounds like FT8 played at double speed, and it lives just up the band from it so the two do not tread on each other.",
           "cite": "wsjtx-frequencies",
-          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived."
+          "caution": "This block is where the digital modes gather, and the software listening here cannot hear Morse at all. A CW call lands on top of contacts that will never know it arrived.",
+          "passbandHz": 3000,
+          "passbandWhy": "Every signal in this block sits as an audio tone between nought and three kilohertz above the dial, so a receiver has to pass the whole three kilohertz to hear the block at all. This is the same three-kilohertz rule the file already applies to where the block sits; here it is what the radio must be able to hear."
         },
         {
           "name": "Beacon block",
