@@ -260,6 +260,7 @@ public sealed class RigPollingTests
                 => Task.FromResult(RigWriteResult.NotSupported("test rig"));
         public Task<RigWriteResult> SetModeAsync(
             Hamlet.RadioEngine.Civ.CivMode mode, bool dataMode,
+            byte? filterSlot = null,
             CancellationToken cancellationToken = default)
             => Task.FromResult(RigWriteResult.NotSupported("counting radio"));
 

@@ -107,8 +107,21 @@ public interface IRig
     /// THE FIRST WRITE THIS APP MAKES, and the pattern the setting writes
     /// inherited. Nothing here goes near keying the transmitter (§0.2).
     /// </remarks>
+    /// <param name="filterSlot">
+    /// Which filter preset to select — FIL1, FIL2 or FIL3 — or null to leave the
+    /// radio to pick that mode's own default.
+    /// </param>
+    /// <remarks>
+    /// **THE FILTER IS A PARAMETER BECAUSE THE DEFAULT WAS WRONG SOMEWHERE THAT
+    /// MATTERED** (work instruction 040). Skipping it selects the mode's default
+    /// (p. 19-11), and on 2026-08-28 that put the operator on a window far
+    /// narrower than the FT8 block, on a correctly tuned radio, for an hour.
+    /// **Choosing a slot is still not knowing a width**: what the slot opens onto
+    /// is whatever the operator configured, so it is read back.
+    /// </remarks>
     Task<RigWriteResult> SetModeAsync(
-        Civ.CivMode mode, bool dataMode, CancellationToken cancellationToken = default);
+        Civ.CivMode mode, bool dataMode, byte? filterSlot = null,
+        CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Set one documented setting, and read it back (HM-DEC-084).

@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 2 of 8
+TASK: 5 of 8
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-28T14:08:51-04:00
-NOTE: engine at 28 byte-identical so 039's extra was an intermittent; passband requirement now carried by the twelve FT8 and FT4 rows
+UPDATED: 2026-08-28T14:15:03-04:00
+NOTE: tune-in now sends a filter wide enough for the block and the map walk asserts it across every band; the walk caught my own typed 3 kHz on an 80 m block only 2 kHz wide
 
 ---
 

@@ -541,7 +541,7 @@ public sealed class BandScannerSafetyTests
             => Task.FromResult(RigWriteResult.NotSupported("scan test radio"));
 
         public Task<RigWriteResult> SetModeAsync(
-            CivMode mode, bool dataMode, CancellationToken cancellationToken = default)
+        CivMode mode, bool dataMode, byte? filterSlot, CancellationToken cancellationToken = default)
             => Task.FromResult(RigWriteResult.NotSupported("scan test radio"));
 
         public Task<IReadOnlyList<RigValue>> ReadAsync(

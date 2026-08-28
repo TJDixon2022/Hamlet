@@ -159,7 +159,7 @@ public sealed class NeighborhoodData
             ParseFamily(dto.Family),
             dto.Cite ?? "",
             dto.Caution,
-            dto.PassbandHz > 0 ? dto.PassbandHz : null);
+            dto.SignalsAreAudioOffsets);
 
     private static ModeFamily ParseFamily(string? name) => name?.Trim().ToUpperInvariant() switch
     {
@@ -222,14 +222,14 @@ public sealed class NeighborhoodData
         public string? Caution { get; set; }
 
         /// <summary>
-        /// How wide a receiver passband this block needs, in hertz, or absent.
+        /// Whether every signal here is an audio tone above the dial.
         /// </summary>
         /// <remarks>
         /// **ABSENT MEANS NOBODY HAS STATED ONE, NOT THAT ANY WIDTH WILL DO**
         /// (§12.4). A row without it produces no claim about the radio either
         /// way, which is the honest reading of a fact the file does not carry.
         /// </remarks>
-        public long PassbandHz { get; set; }
+        public bool SignalsAreAudioOffsets { get; set; }
     }
 
     private sealed class SourceDto

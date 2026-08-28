@@ -5645,7 +5645,21 @@ public partial class MainWindowViewModel : ObservableObject
         _settingModeOurselves = true;
         try
         {
-            var result = await rig.SetModeAsync(decision.Mode, decision.DataMode);
+            // **THE FILTER GOES WITH THE MODE, IN THE SAME FRAME** (work
+            // instruction 040). Where the block states how much passband it
+            // needs, the write asks for the widest slot; where it states none,
+            // nothing is claimed and the radio keeps choosing as before.
+            //
+            // **ASKING FOR THE WIDEST SLOT IS NOT KNOWING ITS WIDTH.** FIL1 is
+            // whatever the operator configured it to be, so the passband is only
+            // established by the readback, and until that arrives it is unknown
+            // rather than assumed (HM-DEC-056, §0.0).
+            var wantsPassband = here?.PassbandHz is not null;
+
+            var result = await rig.SetModeAsync(
+                decision.Mode,
+                decision.DataMode,
+                wantsPassband ? CivWrites.WidestFilterSlot : null);
 
             _lastKnownMode = result.Worked ? decision.Mode : null;
 

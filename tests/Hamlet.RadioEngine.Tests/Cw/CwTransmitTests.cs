@@ -505,7 +505,7 @@ public sealed class CwTransmitTests
 
                 => Task.FromResult(RigWriteResult.NotSupported("test rig"));
         public Task<RigWriteResult> SetModeAsync(
-            CivMode mode, bool dataMode, CancellationToken cancellationToken = default)
+        CivMode mode, bool dataMode, byte? filterSlot, CancellationToken cancellationToken = default)
             => Task.FromResult(RigWriteResult.NotSupported("blocking radio"));
 
         private void Unused()
@@ -565,7 +565,7 @@ public sealed class CwTransmitTests
 
                 => Task.FromResult(RigWriteResult.NotSupported("test rig"));
         public Task<RigWriteResult> SetModeAsync(
-            CivMode mode, bool dataMode, CancellationToken cancellationToken = default)
+        CivMode mode, bool dataMode, byte? filterSlot, CancellationToken cancellationToken = default)
             => Task.FromResult(RigWriteResult.NotSupported("refusing radio"));
 
         private void Unused()

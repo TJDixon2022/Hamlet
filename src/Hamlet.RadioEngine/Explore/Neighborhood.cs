@@ -24,9 +24,9 @@ namespace Hamlet.RadioEngine.Explore;
 /// that the software in this block cannot hear Morse, and may not tell anybody
 /// what to do about it.
 /// </param>
-/// <param name="PassbandHz">
-/// How wide a receiver passband this block needs, or null where the file states
-/// none.
+/// <param name="SignalsAreAudioOffsets">
+/// True where every signal in the block is an audio tone above the dial, so the
+/// receiver must pass the whole block to hear all of it.
 /// </param>
 /// <remarks>
 /// **THE REQUIREMENT IS A FACT ABOUT THE RADIO, NOT ABOUT THE BAND** (work
@@ -39,20 +39,25 @@ namespace Hamlet.RadioEngine.Explore;
 public sealed record Neighborhood(
     string Name, string ShortName, long LowHz, long HighHz,
     string Vibe, string Blurb, long JumpHz, ModeFamily Family,
-    string Cite = "", string? Caution = null, long? PassbandHz = null)
+    string Cite = "", string? Caution = null,
+    bool SignalsAreAudioOffsets = false)
 {
     /// <summary>True when the frequency lies inside this neighborhood.</summary>
     public bool Contains(long hz) => hz >= LowHz && hz <= HighHz;
 
-    /// <summary>
-    /// True when a receiver passband of this width can hear the whole block.
-    /// </summary>
-    /// <param name="hertz">The passband the radio reports, or null if unread.</param>
+    /// <summary>How wide a passband this block needs, or null.</summary>
     /// <returns>
     /// True when it is wide enough, false when it is not, and **null when
     /// nobody knows** — either the row states no requirement or the radio has
     /// not been read.
     /// </returns>
+    /// <remarks>
+    /// **THE REQUIREMENT IS THE BLOCK'S OWN WIDTH AND IS NOT WRITTEN DOWN
+    /// TWICE** (§0). The first version of this stored three kilohertz against
+    /// every FT8 row, and the map walk caught it immediately: the 80 m block is
+    /// two kilohertz wide, so the file was claiming a radio needed more passband
+    /// than the block occupies. Deriving it cannot be wrong that way.
+    /// </remarks>
     /// <remarks>
     /// <para>**THREE ANSWERS, NOT TWO** (§0.0). A radio whose filter has not been
     /// read is not a radio that is set correctly, and returning false for it
@@ -62,6 +67,14 @@ public sealed record Neighborhood(
     /// states it per neighborhood with its own reason; a constant here would be
     /// a second copy of a fact the data already carries (§0).</para>
     /// </remarks>
+    public long? PassbandHz
+        => SignalsAreAudioOffsets ? HighHz - LowHz : null;
+
+    /// <summary>
+    /// True when a receiver passband of this width can hear the whole block.
+    /// </summary>
+    /// <param name="hertz">The passband the radio reports, or null if unread.</param>
+    /// <returns>Wide enough, not wide enough, or null when nobody knows.</returns>
     public bool? PassbandIsWideEnough(double? hertz)
         => PassbandHz is not { } needed || hertz is not { } have
             ? null

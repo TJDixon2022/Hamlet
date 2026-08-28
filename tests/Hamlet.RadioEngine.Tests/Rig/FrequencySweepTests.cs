@@ -158,7 +158,7 @@ public sealed class FrequencySweepTests
             => Task.FromResult(RigWriteResult.NotSupported("silent radio"));
 
         public Task<RigWriteResult> SetModeAsync(
-            CivMode mode, bool dataMode, CancellationToken cancellationToken = default)
+        CivMode mode, bool dataMode, byte? filterSlot, CancellationToken cancellationToken = default)
             => Task.FromResult(RigWriteResult.NotSupported("silent radio"));
 
         public Task<IReadOnlyList<RigValue>> ReadAsync(

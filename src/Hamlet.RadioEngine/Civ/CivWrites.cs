@@ -386,4 +386,47 @@ public static class CivWrites
             (byte)(int)mode,
             dataMode ? DataModeOn : DataModeOff,
         };
+
+    /// <summary>The widest filter slot, which is FIL1 (p. 19-11).</summary>
+    /// <remarks>
+    /// **THE SLOT IS NOT A WIDTH AND THAT IS THE WHOLE CARE HERE.** FIL1, FIL2
+    /// and FIL3 are three presets whose passbands the operator sets on the
+    /// radio; the manual fixes their order, not their hertz. So this names the
+    /// widest *slot* and claims nothing about how wide it actually is —
+    /// <see cref="RigField.FilterBandwidth"/>, read back through `1A 03`, is the
+    /// only thing that knows that.
+    /// </remarks>
+    public const byte WidestFilterSlot = 0x01;
+
+    /// <summary>The data bytes for a mode write that also chooses a filter.</summary>
+    /// <param name="mode">The mode to select.</param>
+    /// <param name="dataMode">Whether the data variant is wanted.</param>
+    /// <param name="filterSlot">Which of FIL1, FIL2, FIL3 to select.</param>
+    /// <returns>The data area, sub-command included.</returns>
+    /// <remarks>
+    /// <para>**THE FILTER USED TO BE SKIPPED AND THE RADIO CHOSE.** The comment
+    /// on <see cref="Mode"/> called that a better answer than any Hamlet could
+    /// invent, and on 2026-08-28 it cost the operator an hour: tuning to the FT8
+    /// block left the radio on that mode's default filter, a window far narrower
+    /// than the three kilohertz the block occupies, and he heard nothing on a
+    /// correctly tuned radio.</para>
+    /// <para>**ONE FRAME, NOT TWO.** The manual's own note is that skipping the
+    /// trailing bytes selects DATA OFF and the default filter rather than
+    /// leaving either alone (p. 19-11), so the filter byte was already being
+    /// sent as a default whether or not anybody chose it. Choosing it costs
+    /// nothing extra on the wire.</para>
+    /// <para>**AND CHOOSING A SLOT IS NOT KNOWING A WIDTH.** What makes a slot
+    /// correct is that the passband it opens is at least as wide as the block
+    /// needs, and that is a readback (`1A 03`), not an assumption. Until it comes
+    /// back the passband is unknown, exactly as HM-DEC-056 already rules for the
+    /// mode.</para>
+    /// </remarks>
+    public static byte[] ModeData(CivMode mode, bool dataMode, byte filterSlot)
+        => new[]
+        {
+            SelectedVfo,
+            (byte)(int)mode,
+            dataMode ? DataModeOn : DataModeOff,
+            filterSlot,
+        };
 }

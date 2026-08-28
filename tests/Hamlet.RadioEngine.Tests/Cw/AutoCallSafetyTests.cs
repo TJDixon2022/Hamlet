@@ -626,7 +626,7 @@ public sealed class AutoCallSafetyTests
             => Task.FromResult(RigWriteResult.NotSupported("auto-call test radio"));
 
         public Task<RigWriteResult> SetModeAsync(
-            CivMode mode, bool dataMode, CancellationToken cancellationToken = default)
+        CivMode mode, bool dataMode, byte? filterSlot, CancellationToken cancellationToken = default)
             => Task.FromResult(RigWriteResult.NotSupported("auto-call test radio"));
 
         public Task<IReadOnlyList<RigValue>> ReadAsync(

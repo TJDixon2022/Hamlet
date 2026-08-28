@@ -141,7 +141,8 @@ public sealed class TrainingRig : IRig
 
     /// <inheritdoc/>
     public Task<RigWriteResult> SetModeAsync(
-        Civ.CivMode mode, bool dataMode, CancellationToken cancellationToken = default)
+        Civ.CivMode mode, bool dataMode, byte? filterSlot = null,
+        CancellationToken cancellationToken = default)
         => Task.FromResult(mode == Civ.CivMode.Cw && !dataMode
             ? RigWriteResult.Confirmed("training radio")
             : RigWriteResult.NotSupported(

@@ -355,14 +355,23 @@ public sealed class Ic7300Rig : IRig, IDisposable
 
     /// <inheritdoc/>
     public async Task<RigWriteResult> SetModeAsync(
-        CivMode mode, bool dataMode, CancellationToken cancellationToken = default)
+        CivMode mode, bool dataMode, byte? filterSlot = null,
+        CancellationToken cancellationToken = default)
     {
         var write = CivWrites.Mode;
 
         try
         {
+            // **ONE FRAME EITHER WAY.** Command 26 already carries the filter
+            // byte; skipping it does not leave the filter alone, it selects the
+            // mode's default (p. 19-11). So choosing costs nothing on the wire
+            // and not choosing was never neutral.
+            var data = filterSlot is { } slot
+                ? CivWrites.ModeData(mode, dataMode, slot)
+                : CivWrites.ModeData(mode, dataMode);
+
             var response = await RequestAsync(
-                write.Command, CivWrites.ModeData(mode, dataMode), null, null,
+                write.Command, data, null, null,
                 cancellationToken).ConfigureAwait(false);
 
             if (response.Command == CivConstants.ResultOk)
