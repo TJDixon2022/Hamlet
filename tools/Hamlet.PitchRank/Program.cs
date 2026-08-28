@@ -44,6 +44,11 @@ internal static class Program
 
                 return 0;
 
+            case "pedestal":
+                Pedestal(args.Length > 1 ? args[1] : null);
+
+                return 0;
+
             default:
                 Console.WriteLine("usage: pitch-rank cost | pitch-rank rank [capture]");
 
@@ -261,6 +266,138 @@ internal static class Program
     /// <summary>The score at the candidate nearest a pitch.</summary>
     private static double Nearest(List<(double Hz, double Score)> scores, double hz)
         => scores.OrderBy(s => Math.Abs(s.Hz - hz)).First().Score;
+
+    /// <summary>
+    /// Rank the candidates again with every envelope stood on one common noise
+    /// floor, which is the smallest change that could make the score comparable.
+    /// </summary>
+    /// <param name="only">One capture to do, or null for all of them.</param>
+    /// <remarks>
+    /// <para>**WHY THE PLAIN SCORE CANNOT RANK PITCHES.** The likelihood ratio
+    /// is scale invariant: the noise scale and the keyed level are both
+    /// estimated from the envelope being scored, so a bin holding nothing but
+    /// the receiver's rolled-off floor is scored against its own tiny sigma, and
+    /// small fluctuations then look exactly like marks. The quietest bin in the
+    /// band wins, and what it reads is a page of single dits.</para>
+    /// <para>**THE PEDESTAL IS THE ONE-LINE TEST OF WHETHER THAT IS THE WHOLE
+    /// FAULT.** Every candidate's envelope is combined in power with one noise
+    /// level taken across the whole band, which is what each bin would look like
+    /// if the receiver's floor were flat. A bin holding nothing goes flat and
+    /// scores near nothing; a bin holding a keyed station keeps its marks well
+    /// above the pedestal and keeps its structure. It is still the decoder's own
+    /// score and it is still a keying measurement rather than a loudness one
+    /// (HM-DEC-095), because a carrier is as flat against the pedestal as
+    /// silence is.</para>
+    /// <para>**IT IS A MEASUREMENT AND NOTHING IN THE APPLICATION DOES IT.**</para>
+    /// </remarks>
+    private static void Pedestal(string? only)
+    {
+        var files = Directory
+            .GetFiles(CaptureFolder(), "*.wav", SearchOption.AllDirectories)
+            .Where(f => only is null
+                || Path.GetFileName(f).Contains(only, StringComparison.Ordinal))
+            .OrderBy(f => Path.GetFileName(f), StringComparer.Ordinal)
+            .ToList();
+
+        Console.WriteLine(
+            "capture\tsidecarHz\tbareHz\tbareVerdict\twinnerHz\twinnerScore\t"
+            + "runnerUpHz\trunnerUpScore\tatSidecar\tverdict\twinnerText");
+
+        foreach (var file in files)
+        {
+            PedestalRow(file);
+        }
+    }
+
+    private static void PedestalRow(string file)
+    {
+        var name = Path.GetFileNameWithoutExtension(file);
+        var whole = WavAudio.Read(file);
+        var window = Tail(whole, CwProbabilisticStream.WindowSeconds);
+
+        var envelopes = new List<(double Hz, double[] Envelope)>();
+
+        foreach (var hz in Candidates())
+        {
+            envelopes.Add((
+                hz,
+                CwProbabilisticDecoder.Envelope(
+                    window.Samples, window.SampleRate, hz)));
+        }
+
+        // **THE PEDESTAL IS THE LOUDEST FLOOR IN THE BAND**, so no candidate is
+        // given a quieter noise scale than the noisiest bin genuinely has. Each
+        // bin's own floor is its lower quartile, which is what the decoder uses.
+        var floor = envelopes.Max(e => Quartile(e.Envelope));
+
+        var scores = new List<(double Hz, double Score, string Text)>();
+
+        // **THE SAME WINDOW WITHOUT THE PEDESTAL IS THE CONTROL.** Comparing a
+        // pedestal run against a differently-taken window would be comparing two
+        // things at once, which is how the last six units produced numbers
+        // nobody could act on.
+        var bare = new List<(double Hz, double Score)>();
+
+        foreach (var (hz, envelope) in envelopes)
+        {
+            var stood = new double[envelope.Length];
+
+            for (var i = 0; i < envelope.Length; i++)
+            {
+                stood[i] = Math.Sqrt(
+                    (envelope[i] * envelope[i]) + (floor * floor));
+            }
+
+            var read = CwProbabilisticDecoder.DecodeUngated(stood, hz);
+
+            scores.Add((hz, read.LikelihoodRatio, read.Text ?? ""));
+
+            bare.Add((
+                hz,
+                CwProbabilisticDecoder.DecodeUngated(envelope, hz).LikelihoodRatio));
+        }
+
+        var ranked = scores.OrderByDescending(s => s.Score).ToList();
+        var winner = ranked[0];
+        var runnerUp = ranked[1];
+        var bareWinner = bare.OrderByDescending(s => s.Score).First();
+        var sidecarHz = SidecarToneHz(file);
+
+        var atSidecar = double.IsNaN(sidecarHz)
+            ? double.NaN
+            : scores.OrderBy(s => Math.Abs(s.Hz - sidecarHz)).First().Score;
+
+        Console.WriteLine(string.Format(
+            CultureInfo.InvariantCulture,
+            "{0}\t{1:0.0}\t{2:0}\t{3}\t{4:0}\t{5:0.00}\t{6:0}\t{7:0.00}\t{8:0.00}\t{9}\t{10}",
+            name,
+            sidecarHz,
+            bareWinner.Hz,
+            Verdict(bareWinner.Hz, sidecarHz),
+            winner.Hz,
+            winner.Score,
+            runnerUp.Hz,
+            runnerUp.Score,
+            atSidecar,
+            Verdict(winner.Hz, sidecarHz),
+            Clip(winner.Text)));
+    }
+
+    /// <summary>Whether a chosen pitch is within one step of the sheet's.</summary>
+    private static string Verdict(double chosenHz, double sidecarHz)
+        => double.IsNaN(sidecarHz)
+            ? "unknown"
+            : Math.Abs(chosenHz - sidecarHz) <= StepHz ? "match" : "miss";
+
+    /// <summary>The lower quartile of an envelope, which is its own noise floor.</summary>
+    private static double Quartile(double[] envelope)
+    {
+        var sorted = (double[])envelope.Clone();
+
+        Array.Sort(sorted);
+
+        return sorted.Length == 0 ? 0 : sorted[sorted.Length / 4];
+    }
 
     /// <summary>
     /// Rank the candidates through the path the application actually runs.
