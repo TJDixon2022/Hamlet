@@ -15,7 +15,7 @@
     none.
   -->
   <PropertyGroup>
-    <Version>1.11.34</Version>
+    <Version>1.12.0</Version>
   </PropertyGroup>
 
   <!--
