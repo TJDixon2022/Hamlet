@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
-TASK: 5 of 7
-BALL: code
-NEXT_PASTE: none
-UPDATED: 2026-08-28T13:28:14-04:00
-NOTE: clock query runs at startup and every ten minutes off the UI thread; wiring the capture press the CW way next
+STATE: COMPLETED
+TASK: 4 of 7
+BALL: tim
+NEXT_PASTE: OUTPUT.md -> Claude Web
+UPDATED: 2026-08-28T13:30:17-04:00
+NOTE: waterfall fault found, reproduced on his own recordings and fixed; capture press blocked on the CW roster it would have to share
 
 ---
 
