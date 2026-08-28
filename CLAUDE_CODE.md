@@ -1,6 +1,6 @@
 # CLAUDE_CODE.md
 
-**Version 1.7. This file is byte-identical in every project.**
+**Version 1.8. This file is byte-identical in every project.**
 
 It governs how a Claude Code prompt is built, delivered, executed and reported.
 It does not govern the work itself.
@@ -408,6 +408,27 @@ any of the three is a failed delivery**, and it is not complete until all three
 are in the same message. A prompt referred to but not reproduced has not been
 delivered.
 
+**The zip carries a `MANIFEST.txt`.** See below: a delivery without one cannot be
+verified on arrival and the receiver refuses it.
+
+### The manifest
+
+**Every delivery zip carries a `MANIFEST.txt` at its root**, listing every path in
+the zip relative to the repository root, one per line, backslashes, **including
+itself**. Blank lines and `rem` lines are ignored by the reader.
+
+**A delivery without one cannot be verified on arrival, and the receiver refuses
+it.** That is the point of it: the sender declares what it sent, so a zip that is
+short a file is *detected* by the receiver rather than assumed away. Nothing else
+in the round trip can tell the difference between a file that was never packed and
+a file that was never asked for.
+
+**It is written by the sending script, not by hand.** `get-files.bat` enumerates
+its own staging folder into the manifest immediately before zipping, so the
+declaration cannot drift from the contents — a hand-written list is a second
+opinion about what is in the zip, and a second opinion is what this exists to
+remove.
+
 ### The extraction gate
 
 **Generated from `extract-gate.template.bat`, which is in project knowledge and
@@ -685,6 +706,15 @@ Each has happened. Each is cheap to avoid and expensive to find.
   comparing the two showed a delivered card whose review control never came alive —
   on two projects at once, for a day, with no error anywhere. **The gate stamps
   what it extracts.**
+- **A delivery that could not be verified on arrival.** Four `MISSING` lines and a
+  zip built anyway, on 2026-08-27, by the canonical harvest script — whose own
+  standard, §1 above, has always said a `MISSING` line is loud on purpose and must
+  not be built past. The script printed the rule and broke it, and no zip carried a
+  manifest, so the receiving half could not have caught it either: **the count of
+  deliveries ever verified on arrival was zero.** A short delivery is invisible to
+  everyone downstream, because a zip that is missing a file looks exactly like a zip
+  that was never asked for it. **The sender declares what it packed and refuses to
+  build a zip over a `MISSING` line.**
 - **A template corrected in one project and nowhere else.** Project knowledge is
   one store per project, unreachable and uncomparable from the owner's machine, so
   a fix to a canonical script is a fix in one of five. Nothing detects the other

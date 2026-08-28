@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 4 of 8
-BALL: tim
-NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-28T11:59:26-04:00
-NOTE: waterfall and clock shipped; ft8_lib cannot be built here because the machine has no C toolchain, which is the wrap-or-write decision
+STATE: EXECUTING
+TASK: 2 of 7
+BALL: code
+NEXT_PASTE: none
+UPDATED: 2026-08-28T13:14:42-04:00
+NOTE: engine run is in at 29 of 1914, the extra one a CI-V intermittent that passes alone; two render causes named with lines
 
 ---
 

@@ -23,12 +23,12 @@ dotnet test tests/Hamlet.RadioEngine.Tests --filter FullyQualifiedName~TheEmitDe
 
 | capture | holds | window | emitted | ■ | read |
 |---|---|---|---|---|---|
-| `cw-2026-08-17-013347` | VA3VRR (HM-DEC-145) | 4.0 | 59 | 49 | ` ■ ■■ ■ ■■■■■■■■■■ ■ ■■■ ■■■■■■ ■■■ ■ ■ ■ ■ ■ ■ ■■■■ ■■■■ ■ ■ ■■ ■ ■VRR VA3VRRT ■ ■ ` |
-| `cw-2026-08-17-013622` | unadjudicated | 0.2 | 55 | 55 | `■ ■■ ■■■ ■■ ■■■■■■ ■■■■■ ■■ ■■■ ■ ■■ ■ ■■■ ■■■■ ■■■■■ ■ ■■ ■■ ■■■■ ■■■ ■■ ■` |
-| `cw-2026-08-17-134712` | N4L (HM-DEC-144) | 12.6 | 63 | 63 | `■■ ■ ■ ■ ■■ ■ ■ ■ ■ ■ ■■ ■ ■■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■■ ■ ■ ■■■■■ ■ ■ ■■ ■ ■ ■ ■■ ■ ■■ ■■ ■ ■■■■ ■ ■■ ■ ■` |
+| `cw-2026-08-17-013347` | VA3VRR (HM-DEC-145) | 4.0 | 59 | 2 | ` E EI I HIAEIHEEEA E EEE HEEIEE IEE E T E I E E IEEI TEEI T E HA E WVRR VA3VRRT ■ ■ ` |
+| `cw-2026-08-17-013622` | unadjudicated | 0.2 | 55 | 4 | `E I5 SHE II 5EIEIE EEETE TE ESE E IE U EEE TSET TEEEE A E■ ET EEE■ ■II ■I E` |
+| `cw-2026-08-17-134712` | N4L (HM-DEC-144) | 12.6 | 63 | 42 | `■■ ■ ■ ■ ■■ ■ ■ ■ ■ ■ E■ ■ ■■ ■ ■ ■ ■ ■ ■ ■ ■ I ■ E E E EE E ■ ■■I■5 ■ ■ NT ■ ■ ■ N4 L ZT ■K ■ ■EE■ E ■■ ■ ■` |
 | `cw-2026-08-18-004507` | an ARRL bulletin | 5.8 | 49 | 1 | `E J J A T MR R L D O T N E T <BT> ■ E AC H STA TION HANDLING THIS MESSAGE PE` |
-| `cw-2026-08-18-003016` | unadjudicated | 3.6 | 57 | 6 | `■ ■ ■ADA KP T15TT IT WAS JUNK ■ ■ STILL HVE MY E TO 91B ■TT JETST VFB TUB LIN` |
-| `cw-2026-08-18-003126` | unadjudicated | 7.2 | 55 | 8 | `■ ■■■ ■ <BT> I WATCH AT L EAST 2 MOVI ESA DAY WID X■ WHY NNOTT ■ ■ , WESNRNS , E` |
+| `cw-2026-08-18-003016` | unadjudicated | 3.6 | 57 | 3 | `E <BT> HADA KP T15TT IT WAS JUNK ■ ■ STILL HVE MY E TO 91B ■TT JETST VFB TUB LIN` |
+| `cw-2026-08-18-003126` | unadjudicated | 7.2 | 55 | 4 | `A OM<BT> ■ <BT> I WATCH AT L EAST 2 MOVI ESA DAY WID X■ WHY NNOTT ■ ■ , WESNRNS , E` |
 | `cw-2026-08-18-003758` | AA4MP/4 QNIK (HM-DEC-126) | 6.3 | 58 | 15 | `KI S QR L TU ■ EAN EANDE AA4MP/4 QNIKK ■ ■■■ ■■ E AN EANQNIK ■ ■ ■ ■E ■ ■ ■ ■ EAN E` |
 | `cw-2026-08-20-014854` | nothing | 0.8 | 0 | 0 | `(nothing)` |
 | `cw-2026-08-20-014935` | nothing | 0.1 | 0 | 0 | `(nothing)` |
@@ -40,12 +40,12 @@ peak said then, and the tracker stopped steering from that moment.
 
 | capture | locked to | emitted | ■ | read |
 |---|---|---|---|---|
-| `cw-2026-08-17-013347` | 609.3 Hz | 57 | 48 | ` ■ ■■ ■ ■■■■■■■■■■ ■ ■■■ ■■■■■ ■■■ ■ ■ ■ ■ ■ ■ ■■■■ ■■■■ ■ ■ ■■ ■■VRR VA3VRR ■ ■ ` |
-| `cw-2026-08-17-013622` | refused | 55 | 55 | `■ ■■ ■■■ ■■ ■■■■■■ ■■■■■ ■■ ■■■ ■ ■■ ■ ■■■ ■■■■ ■■■■■ ■ ■■ ■■ ■■■■ ■■■ ■■ ■` |
-| `cw-2026-08-17-134712` | refused | 63 | 63 | `■■ ■ ■ ■ ■■ ■ ■ ■ ■ ■ ■■ ■ ■■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■■ ■ ■ ■■■■■ ■ ■ ■■ ■ ■ ■ ■■ ■ ■■ ■■ ■ ■■■■ ■ ■■ ■ ■` |
+| `cw-2026-08-17-013347` | 609.3 Hz | 57 | 2 | ` E EI I HIAEIHEEEA E EEE HEEIE SEE E T E I E E IEEI TEEI T E HA EWVRR VA3VRR ■ ■ ` |
+| `cw-2026-08-17-013622` | refused | 55 | 4 | `E I5 SHE II 5EIEIE EEETE TE ESE E IE U EEE TSET TEEEE A E■ ET EEE■ ■II ■I E` |
+| `cw-2026-08-17-134712` | refused | 63 | 42 | `■■ ■ ■ ■ ■■ ■ ■ ■ ■ ■ E■ ■ ■■ ■ ■ ■ ■ ■ ■ ■ ■ I ■ E E E EE E ■ ■■I■5 ■ ■ NT ■ ■ ■ N4 L ZT ■K ■ ■EE■ E ■■ ■ ■` |
 | `cw-2026-08-18-004507` | 500.0 Hz | 49 | 1 | `E J J A T MR R L D O T N E T <BT> ■ E AC H STA TION HANDLING THIS MESSAGE PE` |
-| `cw-2026-08-18-003016` | 669.0 Hz | 56 | 5 | `■ ■ ■ADA KP T15TT IT WAS JUNK ■ ■ STILAE HVE MY E TO 91B AT JUST VFB TUB LIN` |
-| `cw-2026-08-18-003126` | 675.0 Hz | 54 | 8 | `■ ■■■ ■ <BT> I WATCH AT L EAST 2 MOVI ESA DAY WID X■ WHY NOT ■ ■ , WESTERNS , E` |
+| `cw-2026-08-18-003016` | 669.0 Hz | 56 | 2 | `E <BT> HADA KP T15TT IT WAS JUNK ■ ■ STILAE HVE MY E TO 91B AT JUST VFB TUB LIN` |
+| `cw-2026-08-18-003126` | 675.0 Hz | 54 | 4 | `A OM<BT> ■ <BT> I WATCH AT L EAST 2 MOVI ESA DAY WID X■ WHY NOT ■ ■ , WESTERNS , E` |
 | `cw-2026-08-18-003758` | 501.0 Hz | 59 | 16 | `KI S QR L TU ■ EAN EANDE AA4MP/4 QNIKK ■ ■■■■ ■■ E AN EANQNIK ■ ■ ■ ■E ■ ■ ■ ■ EAN E` |
 | `cw-2026-08-20-014854` | refused | 0 | 0 | `(nothing)` |
 | `cw-2026-08-20-014935` | 622.6 Hz | 0 | 0 | `(nothing)` |
@@ -65,7 +65,7 @@ callsigns sit against everything else the same recordings produced.
 | capture | callsign | its characters | everything else |
 |---|---|---|---|
 | `cw-2026-08-17-013347` | `VA3VRR` | 6 chars, 2.0 to 6.7, median 2.7 | 53 chars, -9.9 to 417431412.5, median 46816412.1 |
-| `cw-2026-08-17-134712` | `N4L` | none found | 63 chars, -313.9 to 321.1, median 0.6 |
+| `cw-2026-08-17-134712` | `N4L` | 3 chars, 5.9 to 20.4, median 11.6 | 60 chars, -313.9 to 321.1, median 0.6 |
 | `cw-2026-08-18-003758` | `AA4MP/4QNIK` | 11 chars, 19.8 to 56.1, median 32.9 | 47 chars, -25.3 to 39.4, median 20.8 |
 
 **They overlap, and that is the finding.** The characters of an
