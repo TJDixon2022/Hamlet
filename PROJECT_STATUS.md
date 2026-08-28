@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
-TASK: 3 of 8
-BALL: code
-NEXT_PASTE: none
-UPDATED: 2026-08-28T14:27:27-04:00
-NOTE: card now names the block with each row's own width, 2 kHz on 80 m and 3 on 20; suites running before the commit
+STATE: COMPLETED
+TASK: 5 of 8
+BALL: tim
+NEXT_PASTE: OUTPUT.md -> Claude Web
+UPDATED: 2026-08-28T14:31:00-04:00
+NOTE: the hour he lost is fixed: the tune-in sends a wide enough filter and the card says the dial will sound dead; PBT and the capture press not reached
 
 ---
 
