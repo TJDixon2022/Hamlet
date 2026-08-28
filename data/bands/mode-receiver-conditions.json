@@ -1,4 +1,4 @@
-{
+﻿{
   "schema": "hamlet.receiver-conditions/1",
   "retrievedUtc": "2026-08-28",
   "_about": [
@@ -20,6 +20,14 @@
     "A block that states nothing produces no claim and no write, which is the",
     "correct behaviour rather than a gap.",
     "",
+    "SAYS AND BECAUSE ARE THE SAME REASON AT TWO LENGTHS, NOT TWO REASONS.",
+    "The short one goes into the sentence the operator reads after a tune-in,",
+    "where four paragraphs would be a wall rather than connected speech; the",
+    "long one is there for wherever there is room to explain properly",
+    "(CLAUDE.md 0.7). A test holds both to being present and to being about the",
+    "same control, because a short form that drifted from its long form would",
+    "be the app saying two things.",
+    "",
     "CONFIRMED SAYS WHETHER IT MAY BE WRITTEN. A condition marked confirmed",
     "follows from what the control does and what the mode sends, and both halves",
     "are in this file. One marked unconfirmed is stated so the operator can be",
@@ -33,6 +41,7 @@
       "conditions": [
         {
           "control": "noise blanker",
+          "says": "it chops up the steady tones this mode sends",
           "field": "noiseBlanker",
           "wanted": 0,
           "wantedText": "off",
@@ -41,6 +50,7 @@
         },
         {
           "control": "noise reduction",
+          "says": "it is built for a human voice and it mangles the faint carriers a decoder is listening for",
           "field": "noiseReduction",
           "wanted": 0,
           "wantedText": "off",
@@ -49,6 +59,7 @@
         },
         {
           "control": "auto notch",
+          "says": "it hunts steady carriers and everything in this block is one",
           "field": "autoNotch",
           "wanted": 0,
           "wantedText": "off",
@@ -57,6 +68,7 @@
         },
         {
           "control": "AGC",
+          "says": "dozens of stations transmit together here and the gain would ride up and down under the loudest of them",
           "field": "agc",
           "wanted": 3,
           "wantedText": "slow",

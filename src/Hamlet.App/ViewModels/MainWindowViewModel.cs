@@ -5805,6 +5805,16 @@ public partial class MainWindowViewModel : ObservableObject
 
             _receiverMemory = memory;
             LastReceiverSetup = results;
+
+            // **HE IS TOLD WHAT CHANGED AND WHY** (task 4). Silence where
+            // nothing needed doing, because a status line that congratulates
+            // itself on every tune-in is one nobody reads by the third time.
+            var say = ReceiverSetupVoice.Say(results);
+
+            if (say.Length > 0)
+            {
+                StatusText = say;
+            }
         }
         catch (Exception ex)
         {

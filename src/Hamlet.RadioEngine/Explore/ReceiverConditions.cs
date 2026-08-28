@@ -1,4 +1,4 @@
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 using Hamlet.RadioEngine.Rig;
 
@@ -13,8 +13,12 @@ namespace Hamlet.RadioEngine.Explore;
 /// </param>
 /// <param name="Wanted">The value wanted, or null where none can be written.</param>
 /// <param name="WantedText">That value in words.</param>
+/// <param name="Says">
+/// The reason as one clause, for the sentence the operator reads after a
+/// tune-in. It follows a "because", so it is a phrase and not a sentence.
+/// </param>
 /// <param name="Because">
-/// Why the mode needs it, in the app's voice, for the operator to be told.
+/// The same reason at length, for wherever there is room to explain properly.
 /// </param>
 /// <param name="Confirmed">
 /// Whether this may be written to a radio. False where the value is stated so
@@ -37,6 +41,7 @@ public sealed record ReceiverCondition(
     RigField? Field,
     int? Wanted,
     string WantedText,
+    string Says,
     string Because,
     bool Confirmed = true,
     string Confirm = "")
@@ -128,6 +133,8 @@ public static class ReceiverConditions
                 Field: null,
                 Wanted: null,
                 Describe(wideHz),
+                "a scope showing a couple of hundred kilohertz draws the whole "
+                + "block about seven pixels wide",
                 "The block is only a few kilohertz across, so a scope set to show "
                 + "a couple of hundred kilohertz draws the whole of it about "
                 + "seven pixels wide. A band full of stations and a band with "
@@ -197,6 +204,7 @@ public static class ReceiverConditions
             ParseField(dto.Field),
             dto.Wanted,
             dto.WantedText ?? "",
+            dto.Says ?? "",
             dto.Because ?? "",
             dto.Confirmed,
             dto.Confirm ?? "");
@@ -251,6 +259,8 @@ public static class ReceiverConditions
         public int? Wanted { get; set; }
 
         public string? WantedText { get; set; }
+
+        public string? Says { get; set; }
 
         public string? Because { get; set; }
 
