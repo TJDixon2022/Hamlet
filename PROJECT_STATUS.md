@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 6 of 6
-BALL: tim
-NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-27T19:12:13-04:00
-NOTE: premise confirmed and the fix runs backwards; the reference decoder is worse than Hamlet on all five recordings
+STATE: EXECUTING
+TASK: 2 of 4
+BALL: code
+NEXT_PASTE: none
+UPDATED: 2026-08-27T20:59:59-04:00
+NOTE: gate proven to fire on all seven captures; the minus sixty-eight thousand is a last-window snapshot printed as the recording's score, so two of the three refusals are the live ones
 
 ---
 

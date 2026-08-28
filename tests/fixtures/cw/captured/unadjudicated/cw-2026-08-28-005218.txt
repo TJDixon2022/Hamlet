@@ -1,0 +1,73 @@
+captured   2026-08-28 00:52:18 UTC
+audioSeen  14336640 samples
+fingerprint 1ca46403f1e7
+seconds    30.0
+sampleRate 48000
+frequency  7068000 Hz  (read from the radio a moment ago)
+band       40 m  (from the frequency the radio reported)
+broadcast  the radio volunteered nothing while this recording was being made, and the setting reads on; 144 of 16094 frames since the link came up were the radio announcing something
+
+inputPeak  -13.7 dBFS  (over the whole recording)
+meterPeak  -15.8 dBFS  (the moment it was kept)
+inputFloor -30.7 dBFS
+clipping   False
+toneHz     775.0 Hz  (measured from the keying the survey admitted, interpolated between bins)
+tonePeak   45.8  (the highest the tracked tone ever stood above the noise beside it, held and decaying; not a figure about this recording)
+inThis     55 characters emitted, 15 unsure, 110 elements seen, 110 resolved  (in the 30.0 seconds of audio in this file)
+unkeyed    no  (409 characters, and the survey admitted keying at this pitch)
+elements   860 seen, 860 resolved  (since the transcript was cleared at 00:51:44 UTC, less than a minute ago)
+characters 409 emitted, 132 unsure  (since the transcript was cleared at 00:51:44 UTC, less than a minute ago)
+decoderWpm withdrawn (the clock is being re-acquired; the decoder's own best hypothesis was 40 WPM)
+text       ■O E ■ ■ ■SSI■IV ■ ■SISI ■ I ■I ES E 5E ■ ■ D ■ ES ■EH E ■ IHESEE  HEEE IE I E E■■IIH SS■ ■■E SEE
+textCovers everything read since the transcript was cleared at 00:51:44 UTC, less than a minute ago
+spanLlr    67 of the last 98 characters read, each against the key having been up throughout its own span (since the transcript was cleared at 00:51:44 UTC, less than a minute ago)
+           ■:-54.7/22.3/-0.408 O:2158.6/6.3/0.003 E:86.2/0.2/0.002 ■:-72.1/35.4/-0.491 ■:-56.8/24.0/-0.423 ■:-199.0/23.1/-0.116 S:601.5/13.8/0.023 S:116.8/0.3/0.003 I:302.3/5.0/0.016 ■:1095.9/0.1/0.000 I:107.8/2.3/0.021 V:1732.1/7.2/0.004 ■:-279.5/47.6/-0.170 ■:-280.0/33.1/-0.118 S:1336.0/0.9/0.001 I:741.8/1.6/0.002 S:>1000000/19.1/0.000 I:>1000000/418130.6/0.050 ■:-11984.5/13888.5/-1.159 I:319240.0/5736.8/0.018 ■:-13076.7/3347.5/-0.256 I:41715.0/1610.0/0.039 E:8772.1/1902.1/0.217 S:210550.9/4217.1/0.020 E:47067.0/7045.7/0.150 5:150322.5/2437.8/0.016 E:34224.6/2505.5/0.073 ■:-13095.4/3329.7/-0.254 ■:-991.0/258.9/-0.261 D:9980.4/35.1/0.004 ■:-1417.8/355.6/-0.251 E:1413.1/287.8/0.204 S:4306.6/76.7/0.018 ■:-3116.8/1016.8/-0.326 E:9234.1/2.9/0.000 H:30472.9/546.4/0.018 E:5755.1/524.9/0.091 ■:-5355.6/1120.8/-0.209 I:7701.8/681.8/0.089 H:18371.3/207.4/0.011 E:833.4/642.2/0.771 S:6324.1/130.7/0.021 E:2765.3/24.4/0.009 E:4464.0/9.7/0.002 H:6448.4/37.9/0.006 E:252.1/30.1/0.119 E:164.3/22.6/0.138 E:256.6/33.0/0.129 I:2490.1/0.4/0.000 E:1831.2/357.1/0.195 I:11350.0/547.9/0.048 E:4968.2/43.5/0.009 E:1708.2/324.8/0.190 ■:-948.5/11.8/-0.012 ■:-948.3/11.9/-0.013 I:27824.7/484.2/0.017 I:19727.1/52.4/0.003 H:24824.5/220.4/0.009 S:20515.4/978.2/0.048 S:13607.2/19.1/0.001 ■:8485.1/6.0/0.001 ■:-14366.8/24.4/-0.002 ■:-10560.1/1851.2/-0.175 E:9043.7/1291.6/0.143 S:40040.1/387.9/0.010 E:36914.8/621.7/0.017 E:4713.5/482.5/0.102
+competing  none admitted, and the survey is not silent: the loudest thing in the band is at 575 Hz, +62.3 dB over the band floor, keyed 37% of the time. Nothing has judged it to be a station
+reading    40 WPM won out of 8 to 40, 86.7 better than silence per hop against a gate of 1  (AT THE TOP OF THE SEARCH: the sender may be faster than Hamlet can look)
+keying     keying at 625 Hz, 56 ms key down, 28 dB swing, 36 key-downs  (an independent sweep of 400 to 1200 Hz in 25 Hz steps over the last six seconds, sharing nothing with the decoder)
+duty       29.3%  (of the 30.0 seconds in this file, the key was down at 775.0 Hz)
+
+sinceLast  44 characters, 83 elements  (since the previous capture)
+
+Frequency            7.068000 MHz
+Mode                 CW
+DataMode             off
+FilterSelection      FIL2
+FilterBandwidth      500 Hz
+SMeter               S0
+TransmitStatus       receiving
+Overflow             not overloading
+Swr                  unknown
+PowerOut             unknown
+RfPower              31%
+RfGain               100%
+Squelch              7%
+SquelchStatus        open
+Agc                  FAST
+Preamp               off
+Attenuator           20 dB
+NoiseBlanker         off
+NoiseBlankerLevel    50%
+NoiseReduction       off
+NoiseReductionLevel  28%
+AutoNotch            off
+ManualNotch          off
+BreakIn              full
+KeyerSpeed           20 WPM
+CwPitch              600 Hz
+AccUsbOutputSelect   AF
+AccUsbAfLevel        80%
+NotchPosition        unknown
+FilterShape          unknown
+AfLevel              unknown
+RfSqlFunction        unknown
+BreakInDelay         unknown
+AntennaTuner         unknown
+Alc                  unknown
+AccUsbSquelch        open regardless of squelch
+Split                off
+ScopeOn              on
+ScopeOutput          off
+CivUsbPort           unknown
+CivTransceive        on
+Vfo                  undocumented

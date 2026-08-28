@@ -1,0 +1,73 @@
+captured   2026-08-28 00:50:51 UTC
+audioSeen  10274880 samples
+fingerprint b27dbdd2e625
+seconds    30.0
+sampleRate 48000
+frequency  7059600 Hz  (read from the radio a moment ago)
+band       40 m  (from the frequency the radio reported)
+broadcast  the radio volunteered a change of its own while this recording was being made, and the setting reads on
+
+inputPeak  -13.9 dBFS  (over the whole recording)
+meterPeak  -20.8 dBFS  (the moment it was kept)
+inputFloor -32.0 dBFS
+clipping   False
+toneHz     450.0 Hz  (NOT MEASURED: the survey has admitted no keying, so this is the loudest bin in the band rather than a station)
+tonePeak   76.7  (the highest the tracked tone ever stood above the noise beside it, held and decaying; not a figure about this recording)
+inThis     29 characters emitted, 10 unsure, 54 elements seen, 54 resolved  (in the 30.0 seconds of audio in this file)
+unkeyed    YES  (252 characters reached the screen from a pitch chosen by the loudest bin in the band, with no keying admitted here. This is the sheet to send back)
+elements   589 seen, 589 resolved  (since the transcript was cleared at 00:50:29 UTC, less than a minute ago)
+characters 252 emitted, 72 unsure  (since the transcript was cleared at 00:50:29 UTC, less than a minute ago)
+decoderWpm 17
+text       E EN ■ V Y ■Z ■H I S ■ IN ■ A E K I E N N
+textCovers everything read since the transcript was cleared at 00:50:29 UTC, less than a minute ago
+spanLlr    23 of the last 42 characters read, each against the key having been up throughout its own span (since the transcript was cleared at 00:50:29 UTC, less than a minute ago)
+           E:982.7/50.4/0.051 E:845.3/11.7/0.014 N:2705.9/17.8/0.007 ■:-227.9/57.2/-0.251 V:748.7/2.2/0.003 Y:5626.9/16.0/0.003 ■:-232.4/51.0/-0.219 Z:5356.7/0.4/0.000 ■:-248.9/42.8/-0.172 H:960.0/3.8/0.004 I:1489.9/11.6/0.008 S:2418.5/17.7/0.007 ■:-447.2/76.4/-0.171 I:432.2/1.5/0.003 N:3801.8/9.0/0.002 ■:-442.3/85.4/-0.193 A:2865.4/19.0/0.007 E:347.9/2.7/0.008 K:4874.5/11.5/0.002 I:330.9/3.4/0.010 E:64.9/5.8/0.089 N:4217.0/13.1/0.003 N:2298.1/1.4/0.001
+competing  none admitted, and the survey is not silent: the loudest thing in the band is at 450 Hz, +66.1 dB over the band floor, keyed 34% of the time. Nothing has judged it to be a station
+reading    17 WPM won out of 8 to 40, 7.6 better than silence per hop against a gate of 1
+keying     keying (held through a quiet stretch, so nothing was measured)  (an independent sweep of 400 to 1200 Hz in 25 Hz steps over the last six seconds, sharing nothing with the decoder)
+duty       not measured  (no pitch was measured, so there is no station to measure the keying of)
+
+sinceLast  92 characters, 208 elements  (since the previous capture)
+
+Frequency            7.059600 MHz
+Mode                 CW
+DataMode             off
+FilterSelection      FIL2
+FilterBandwidth      500 Hz
+SMeter               S0
+TransmitStatus       receiving
+Overflow             not overloading
+Swr                  unknown
+PowerOut             unknown
+RfPower              31%
+RfGain               100%
+Squelch              7%
+SquelchStatus        open
+Agc                  FAST
+Preamp               off
+Attenuator           20 dB
+NoiseBlanker         off
+NoiseBlankerLevel    50%
+NoiseReduction       off
+NoiseReductionLevel  28%
+AutoNotch            off
+ManualNotch          off
+BreakIn              full
+KeyerSpeed           20 WPM
+CwPitch              600 Hz
+AccUsbOutputSelect   AF
+AccUsbAfLevel        80%
+NotchPosition        unknown
+FilterShape          unknown
+AfLevel              unknown
+RfSqlFunction        unknown
+BreakInDelay         unknown
+AntennaTuner         unknown
+Alc                  unknown
+AccUsbSquelch        open regardless of squelch
+Split                off
+ScopeOn              on
+ScopeOutput          off
+CivUsbPort           unknown
+CivTransceive        on
+Vfo                  undocumented
