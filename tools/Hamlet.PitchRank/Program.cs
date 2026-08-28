@@ -325,10 +325,12 @@ internal static class Program
                     window.Samples, window.SampleRate, hz)));
         }
 
-        // **THE PEDESTAL IS THE LOUDEST FLOOR IN THE BAND**, so no candidate is
-        // given a quieter noise scale than the noisiest bin genuinely has. Each
-        // bin's own floor is its lower quartile, which is what the decoder uses.
-        var floor = envelopes.Max(e => Quartile(e.Envelope));
+        // **THE ENGINE'S COPY, NOT THE TOOL'S.** Unit 044 task 1 moved the
+        // pedestal into `CwPitchRanking` so the shipped path can call it, and a
+        // measurement taken through a second implementation would be measuring
+        // the second implementation (§12.5).
+        var floor = CwPitchRanking.Floor(
+            envelopes.Select(e => e.Envelope).ToList());
 
         var scores = new List<(double Hz, double Score, string Text)>();
 
@@ -340,13 +342,7 @@ internal static class Program
 
         foreach (var (hz, envelope) in envelopes)
         {
-            var stood = new double[envelope.Length];
-
-            for (var i = 0; i < envelope.Length; i++)
-            {
-                stood[i] = Math.Sqrt(
-                    (envelope[i] * envelope[i]) + (floor * floor));
-            }
+            var stood = CwPitchRanking.StandOn(envelope, floor);
 
             var read = CwProbabilisticDecoder.DecodeUngated(stood, hz);
 
@@ -389,15 +385,6 @@ internal static class Program
             ? "unknown"
             : Math.Abs(chosenHz - sidecarHz) <= StepHz ? "match" : "miss";
 
-    /// <summary>The lower quartile of an envelope, which is its own noise floor.</summary>
-    private static double Quartile(double[] envelope)
-    {
-        var sorted = (double[])envelope.Clone();
-
-        Array.Sort(sorted);
-
-        return sorted.Length == 0 ? 0 : sorted[sorted.Length / 4];
-    }
 
     /// <summary>
     /// Rank the candidates through the path the application actually runs.

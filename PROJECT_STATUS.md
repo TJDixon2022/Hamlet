@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 2 of 5
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
-UPDATED: 2026-08-28T18:59:16-04:00
-NOTE: ranking works once every candidate is scored against one band-wide noise floor, 1 of 44 to 34 of 44; not shipped, two rulings asked
+STATE: EXECUTING
+TASK: 2 of 4
+BALL: code
+NEXT_PASTE: none
+UPDATED: 2026-08-28T19:22:17-04:00
+NOTE: pedestal is in the engine and reproduces all 44 rows byte-identically; seven tests green, wiring the ranked pitch into the mixdown next
 
 ---
 
