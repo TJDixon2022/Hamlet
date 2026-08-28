@@ -4694,14 +4694,17 @@ public partial class MainWindowViewModel : ObservableObject
 
         return string.Format(
             CultureInfo.InvariantCulture,
-            "{0:0} WPM won out of {1} to {2}, {3:0.0} better than silence per hop "
-            + "against a gate of {4:0}{5}",
+            "{0:0} WPM won out of {1} to {2}, {3:0.0} better than silence per "
+            + "hop against a gate of {4:0}{5}  (this is the last {6:0} second "
+            + "window alone, at the moment of the press, and not the whole "
+            + "recording)",
             reading.WordsPerMinute,
             CwProbabilisticDecoder.SlowestWpm,
             CwProbabilisticDecoder.FastestWpm,
             reading.LikelihoodRatio,
             CwProbabilisticDecoder.Gate,
-            atEdge);
+            atEdge,
+            CwProbabilisticStream.WindowSeconds);
     }
 
     /// <summary>What the meter said, as one line for a record.</summary>
