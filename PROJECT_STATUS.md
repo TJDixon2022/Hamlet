@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 6 of 6
-BALL: tim
-NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-28T11:23:20-04:00
-NOTE: Digital tab drawn from placeholders, no engine or CW file touched, app suite 509 green
+STATE: EXECUTING
+TASK: 2 of 8
+BALL: code
+NEXT_PASTE: none
+UPDATED: 2026-08-28T11:39:19-04:00
+NOTE: trace done and task 5 is blocked: cl.exe exists with no CRT headers, no libs, no Windows SDK and no vcvarsall, so no C can be built here
 
 ---
 
