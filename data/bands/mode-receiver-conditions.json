@@ -1,0 +1,90 @@
+{
+  "schema": "hamlet.receiver-conditions/1",
+  "retrievedUtc": "2026-08-28",
+  "_about": [
+    "What a mode needs of the receiver in front of it, so that tuning into a",
+    "block can set it rather than the operator being sent to the front of the",
+    "radio (work instruction 042).",
+    "",
+    "KEYED BY MODE AND NOT BY BLOCK, on purpose. A noise blanker chops the",
+    "tones of an FT8 signal on 80 m for exactly the reason it chops them on",
+    "20 m, so the fact belongs to the mode. Written onto each block it would be",
+    "twelve copies of one sentence, and twelve copies drift silently (CLAUDE.md",
+    "0). The block supplies what is about the block: its width, which decides",
+    "the passband and the scope span, and that is derived from the row rather",
+    "than written here.",
+    "",
+    "NOTHING IS STATED FOR A MODE THIS FILE CANNOT SPEAK FOR. PSK31, RTTY and",
+    "JS8 have rows on the map and no conditions here, because nobody has",
+    "measured or cited what they want and a plausible entry would be acted on.",
+    "A block that states nothing produces no claim and no write, which is the",
+    "correct behaviour rather than a gap.",
+    "",
+    "CONFIRMED SAYS WHETHER IT MAY BE WRITTEN. A condition marked confirmed",
+    "follows from what the control does and what the mode sends, and both halves",
+    "are in this file. One marked unconfirmed is stated so the operator can be",
+    "told, and is not written to anybody's radio, because a setting changed on a",
+    "guess is the prime directive broken with a byte instead of a sentence",
+    "(CLAUDE.md 0.0, 12.4)."
+  ],
+  "modes": [
+    {
+      "mode": "FT8",
+      "conditions": [
+        {
+          "control": "noise blanker",
+          "field": "noiseBlanker",
+          "wanted": 0,
+          "wantedText": "off",
+          "confirmed": true,
+          "because": "The noise blanker listens for the sharp crack of an ignition or an electric fence and mutes the receiver for a fraction of a millisecond each time it hears one. What arrives here is a steady tone that never stops, so there is no crack to find and the blanker ends up chopping small holes in the signal instead of in the noise."
+        },
+        {
+          "control": "noise reduction",
+          "field": "noiseReduction",
+          "wanted": 0,
+          "wantedText": "off",
+          "confirmed": true,
+          "because": "Noise reduction is built to make a human voice easier to listen to, and it does that by deciding which parts of the sound are speech and smoothing away the rest. A machine listening for a faint tone wants the raw hiss and the tone sitting in it, because the decoder can dig out a signal quieter than anything the ear could pick up, and it can only do that if the hiss has been left alone."
+        },
+        {
+          "control": "auto notch",
+          "field": "autoNotch",
+          "wanted": 0,
+          "wantedText": "off",
+          "confirmed": true,
+          "because": "The automatic notch hunts for steady carriers and takes them out, which is exactly right when somebody is sitting on your frequency with a tuning signal. Here every station in the block is a steady carrier, so the notch goes hunting through a crowd and quietly removes whichever one it decides it dislikes."
+        },
+        {
+          "control": "AGC",
+          "field": "agc",
+          "wanted": 3,
+          "wantedText": "slow",
+          "confirmed": false,
+          "confirm": "tim",
+          "because": "Automatic gain control turns the receiver down when something loud arrives, and in this block dozens of stations transmit together in the same fifteen seconds. On the fast setting the gain rides up and down under the strongest of them, and every quiet station in the passband rides up and down with it, which is the opposite of holding still while a decoder listens.",
+          "why_unconfirmed": "Slow is the usual advice and it is not settled: the argument for fast is that one loud burst on slow holds the gain down for the rest of the slot. Nobody here has measured it on this radio, so it is stated and not written."
+        }
+      ]
+    },
+    {
+      "mode": "FT4",
+      "sameAs": "FT8",
+      "because": "FT4 sends the same shape of signal as FT8 in a shorter slot, so what the receiver has to leave alone is the same."
+    }
+  ],
+  "unknowns": [
+    {
+      "topic": "The scope span",
+      "reason": "The span the radio draws is a condition this file states and Hamlet cannot set, because CLAUDE.md 4 carries no CI-V command for it. The sub-command list on p. 19-7 runs 00, 10, 11, 12, 13, 14, 15, 16, 17, 19, 1A and 1B, and this project has read the pages for 10 and 11 only. Until one of the others is read and cited, the span is spoken and not written (CLAUDE.md 0, HM-DEC-084: no byte is written that is not cited)."
+    },
+    {
+      "topic": "PSK31, RTTY and JS8",
+      "reason": "They have blocks on the map and no conditions here. Their tones are not FT8 tones and copying FT8's row across would be a value invented at a desk."
+    },
+    {
+      "topic": "CW",
+      "reason": "What Morse wants of the receive side is a narrower window, not a wider one, and Hamlet already leaves the filter alone where a block states no passband requirement. Nothing else about CW has been measured here, so its rows state nothing rather than acquiring a set of settings this unit did not test."
+    }
+  ]
+}

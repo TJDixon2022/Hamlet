@@ -1,4 +1,4 @@
-using Hamlet.RadioEngine.Bands;
+﻿using Hamlet.RadioEngine.Bands;
 using Hamlet.RadioEngine.Civ;
 using Hamlet.RadioEngine.Explore;
 using Hamlet.RadioEngine.Rig;
@@ -175,12 +175,19 @@ public sealed class ModeFollowTests
     }
 
     /// <remarks>
-    /// THE WRITE ON THE WIRE. Command 26, the selected VFO, the mode, the data
-    /// flag, and no filter byte so the radio picks the filter it would have
-    /// picked for that mode itself (p. 19-11).
+    /// <para>THE WRITE ON THE WIRE. Command 26, the selected VFO, the mode, the
+    /// data flag, and no filter byte where the caller asked for none, so the
+    /// radio picks the filter it would have picked for that mode itself
+    /// (p. 19-11).</para>
+    /// <para>**AND THEN HAMLET ASKS WHAT IT ACTUALLY DID** (work instruction 042,
+    /// task 1). This used to assert a single frame, and a single frame was the
+    /// defect: the acknowledgement was folded into the model as though it were a
+    /// reading, and it says nothing at all about the filter that same frame had
+    /// just changed. Two reads follow every confirmed write, and the assertion
+    /// is now on the order rather than on the count.</para>
     /// </remarks>
     [Fact]
-    public async Task TheWriteIsCommand26WithTheDataFlagAndNoFilter()
+    public async Task TheWriteIsCommand26AndTheRadioIsAskedWhatItDid()
     {
         var (rig, port) = await ConnectAsync();
         using var _ = rig;
@@ -199,9 +206,15 @@ public sealed class ModeFollowTests
 
         Assert.True((await write).Worked);
 
-        var frame = Assert.Single(sent);
-        Assert.Equal(0x26, frame.Command);
-        Assert.Equal(new byte[] { 0x00, 0x01, 0x01 }, frame.Data);
+        Assert.Equal(0x26, sent[0].Command);
+        Assert.Equal(new byte[] { 0x00, 0x01, 0x01 }, sent[0].Data);
+
+        // The mode, the data flag and the filter slot together, then the width.
+        Assert.Equal(0x26, sent[1].Command);
+        Assert.Equal(new byte[] { 0x00 }, sent[1].Data);
+
+        Assert.Equal(0x1A, sent[2].Command);
+        Assert.Equal(new byte[] { 0x03 }, sent[2].Data);
     }
 
     /// <remarks>
