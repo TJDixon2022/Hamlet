@@ -1,6 +1,6 @@
 # CLAUDE_CODE.md
 
-**Version 1.8. This file is byte-identical in every project.**
+**Version 1.7. This file is byte-identical in every project.**
 
 It governs how a Claude Code prompt is built, delivered, executed and reported.
 It does not govern the work itself.
@@ -82,27 +82,6 @@ cost a round to get right**, including the exclusion parity with the listing
 script — change one and the arrival check compares two different views of the
 tree and reports differences that are not real.
 
-### Where the templates live
-
-**Both templates — `get-files.template.bat` and §5's
-`extract-gate.template.bat` — are in project knowledge, and that is the copy the
-session reads.** It is the only one available at turn one, before any harvest has
-run, and it is what generates the script that fetches everything else.
-
-**A copy of each also lives at `tools\templates\` in every repository**, pushed
-by the standards distribution script and verified byte-identical across all
-roots. That copy is not what the session reads. It exists because project
-knowledge is five separate stores that nothing on the owner's machine can write
-to or compare, so **a template corrected in one project is corrected in one
-project and nowhere else, silently.** The repository copy is the one a machine
-can check.
-
-**Where the harvested copy and project knowledge disagree, the session says so**
-and uses project knowledge, because that is the copy it was handed. Drift then
-surfaces on the first turn of the next conversation instead of never. **A
-template is not distributed until both are updated** — the file-list block for a
-conversation start includes `tools\templates\` for this reason.
-
 For a conversation start the block is the root `.md` files. The project's own
 `CLAUDE.md` may name more; where it does, it wins under §0's specificity floor.
 
@@ -171,6 +150,15 @@ failing test, or from the owner running the application and getting something
 other than what was expected. The second is the majority case and the owner calls
 them out. Neither is housekeeping.
 
+**Advancing the application is not the same as advancing the phase goal, and this
+clause has been read as though it were.** Five consecutive units in one project
+each fixed a real defect, each was defensible under the paragraph above, and none
+of them wrote a line toward the phase goal. No report said anything false. The
+aggregate was five units of drift that nobody could see, because every artifact in
+the loop is framed on one unit. A defect unit is legitimate and often necessary —
+what is not legitimate is a phase in which nobody is counting. §4.2 names the task
+that advances the goal, and §8's header block scores the unit against it.
+
 **Nothing interrupts a running session.** Defects found while a session runs are
 held. The cycle is: session completes → `output.md` arrives → then everything that
 accumulated is considered and folded into the next work instruction.
@@ -230,6 +218,35 @@ next session trusting the old figure.
 
 **Where there is no number**, one sentence naming the specific consequence: *after
 an Emergency Stop, an operator at the panel cannot bring the machine back.*
+
+**Then three lines, always, in this order:**
+
+```
+PHASE GOAL:   <the phase goal, from PROJECT_CARD.md>
+UNIT GOAL:    <what this unit is for, in one line>
+ADVANCES:     task <n>   |   none — this unit clears a blocker
+```
+
+The phase goal is written out rather than referenced. The author has held it in
+context since turn one of the conversation and the executing session has not: it
+reads the work instruction, and if the goal is not in the work instruction it is
+not in the session.
+
+**`ADVANCES` names the task by number, never by position.** The goal task is not
+required to be task 1 — task 1 is the trace, per §4.6, and the trace produces the
+before-number this unit is measured against. A goal task built ahead of the trace
+is built on an unverified premise, which is the failure §4.3 exists for. Naming
+gives the owner the same five-second check without costing the trace.
+
+**`none` is a permitted and often correct answer.** A unit that clears a blocker
+advances the phase goal by removing something in its way and writes `none`
+honestly. What the line is for is the case where nobody noticed that `none` was
+the answer four units running.
+
+**Where `ADVANCES` names the same task as §4.6's drop candidate, say so on the
+line.** The unit's only goal work is then also the part most likely not to happen,
+and that is a sizing decision the owner should make before the spend rather than
+read about afterwards.
 
 ### §4.3 Verify this instruction against the tree
 
@@ -408,27 +425,6 @@ any of the three is a failed delivery**, and it is not complete until all three
 are in the same message. A prompt referred to but not reproduced has not been
 delivered.
 
-**The zip carries a `MANIFEST.txt`.** See below: a delivery without one cannot be
-verified on arrival and the receiver refuses it.
-
-### The manifest
-
-**Every delivery zip carries a `MANIFEST.txt` at its root**, listing every path in
-the zip relative to the repository root, one per line, backslashes, **including
-itself**. Blank lines and `rem` lines are ignored by the reader.
-
-**A delivery without one cannot be verified on arrival, and the receiver refuses
-it.** That is the point of it: the sender declares what it sent, so a zip that is
-short a file is *detected* by the receiver rather than assumed away. Nothing else
-in the round trip can tell the difference between a file that was never packed and
-a file that was never asked for.
-
-**It is written by the sending script, not by hand.** `get-files.bat` enumerates
-its own staging folder into the manifest immediately before zipping, so the
-declaration cannot drift from the contents — a hand-written list is a second
-opinion about what is in the zip, and a second opinion is what this exists to
-remove.
-
 ### The extraction gate
 
 **Generated from `extract-gate.template.bat`, which is in project knowledge and
@@ -440,15 +436,6 @@ It ships **outside the zip** because it runs before there is anything extracted.
 The owner puts it in Downloads beside the zip and double-clicks it; it resolves
 §4.1's four checks against the root by filesystem, refuses without touching the
 zip if they do not all hold, and extracts only if they do.
-
-**It then stamps every extracted file with the receiving machine's clock.** Zip
-entries carry the timestamps of the machine that built them, and a delivery built
-on a machine running ahead lands with a future mtime. A `WORK_INSTRUCTIONS.md`
-dated tomorrow is permanently newer than any report beside it — which left a
-panel showing a delivered card whose review control never came alive, on two
-projects at once. **The clock is read on the machine that owns the tree**, never
-composed and never taken from the zip. The stamping step is part of the canonical
-script and is not one of the three edits above.
 
 The four checks are the work instruction's, unchanged. **The same gate runs
 twice** — once against Tim's hands before extraction, once against the session's
@@ -559,22 +546,55 @@ file, the next unit is written from the file, and the owner is holding neither.*
 **One line before section 1**, from the clock per §11, never composed:
 
 ```
-UNIT: <n> — <exit state> at task <n> of <m> — <YYYY-MM-DD HH:MM>
+UNIT:       <n> — <exit state> at task <n> of <m> — <YYYY-MM-DD HH:MM>
+PHASE GOAL: <restated by the session from the work instruction>
+UNIT GOAL:  <restated by the session>
+ADVANCED:   yes | no — <the reason, on the same line>
+NUMBER:     <before> -> <after>   |   unchanged — <why>   |   none — <no metric>
+DRIFT:      <n> consecutive units without advance  (was <n>)
 ```
 
-That line is not a fifth heading and does not breach *no other headings*. It is
-there because `output.md` is overwritten in place: without it, *this session did
+That block is not a fifth heading and does not breach *no other headings*. `UNIT:`
+is there because `output.md` is overwritten in place: without it, *this session did
 not write the report* and *this is last week's report* are the same file on disk,
 and the second is worse — the owner reads a finished unit's findings as the
 current one's. `PROJECT_STATUS.md` has `UPDATED` for exactly this and the report
 had nothing.
 
+**The four goal fields are there because every other artifact in the loop is
+framed on one unit.** The author of the next work instruction reads this file; the
+four sections below all take the unit as their frame, correctly, and none of them
+can score the unit against the phase. These lines are the only place that happens.
+
+- **`PHASE GOAL` and `UNIT GOAL` are restated by the session in its own words**,
+  from the work instruction. A session that cannot restate the phase goal has found
+  something worth knowing and says so on the line.
+- **`ADVANCED: no` is a normal answer and is written without apology.** *No — this
+  unit removed a blocker; no decoder path was touched* is exactly the signal the
+  next author needs, and it is more useful than a defensible yes. A session that
+  claims an advance it cannot evidence on the same line has laundered drift as
+  progress, which is worse than the drift.
+- **`NUMBER` carries the §4.2 figure before and after.** `unchanged` is an answer.
+  **`none` is an answer and is a finding** — a phase with a goal and no scoreboard
+  cannot tell repair from thrash, and the owner should learn that here.
+- **`DRIFT` is carried, not archived.** `output.md` is overwritten, so a session
+  cannot read prior reports; it takes the count from §4.2's block, increments it on
+  `ADVANCED: no`, resets it to zero on yes, and the next author carries it forward.
+  **Five units of drift were invisible because each report described one unit.**
+
+**What pays for it:** section 1's preamble compresses to one line. `surface,
+machine, project claimed, what in the tree confirmed it, branch` was written when
+a session's own gate was the first thing to confirm the root; since §5's extract
+gate runs before extraction, the confirmation has already happened outside the
+session and does not need reciting at length. Section 3 stops restating what the
+block now hoists.
+
 1. **What Claude did.** **Leading with the exit state** — complete, blocked,
    failed or **stopped**, and at which task of how many. That is the fact every
    reader needs first and the one currently inferred from a told `STATE`. Then
-   surface, machine, project claimed, what in the tree confirmed it, branch. Then
-   what was traced, built and measured, with the numbers. Any decision the
-   session made for itself, reproduced in full.
+   one line of provenance — machine, project claimed, branch. Then what was
+   traced, built and measured, with the numbers. Any decision the session made
+   for itself, reproduced in full.
 
    **Stopped is a real exit state and the one most often unreported.** A session
    that finishes ten of fourteen tasks and judges the rest a separate unit has
@@ -589,7 +609,8 @@ had nothing.
    under the clause above. Report it as one.
 2. **What the owner should expect.** What is now true, and **what will look wrong
    but is not.**
-3. **What you should see.** See §9.
+3. **What you should see.** See §9. **Does not restate the header block** — the
+   phase goal, the advance and the number are already at the top of the file.
 4. **What's blocking us.** Every question needing a ruling, in the decision log's
    format — ruling, reasoning, what was rejected and why, no id. Most-blocking
    first. **Empty is a real answer.**
@@ -694,38 +715,23 @@ Each has happened. Each is cheap to avoid and expensive to find.
   exit state and is named as one**, and the requirement now sits in §6's prompt
   rather than only in a file read at minute zero — §7's argument, applied to the
   one rule that has to survive to the end of a run.
+- **Goal drift, one defensible unit at a time.** A phase opened on *decode one
+  digital mode at ninety-nine percent accuracy*. Five consecutive units ran — a
+  render fault, a clock, a capture button, a radio mode, a stale cache. Every one
+  fixed a real defect, every report was honest, and not one line was written toward
+  the decoder. An earlier phase in the same project ran fifteen to twenty sessions
+  on a decoder that is still poor. **No single report said anything false**, which
+  is why nothing caught it: the author of each unit reads `output.md` and
+  `output.md` describes one unit. Every rule in this file until now was a
+  constraint on what a session may do; **none of them was an aim**, and a
+  prohibition cannot pull work toward a goal. §4.2 names the goal task, §8 scores
+  the unit against the goal, and `DRIFT` makes a run of them visible.
 - **A zip extracted over the wrong repository root.** The gate in §4.1 does not
   catch it: the gate lives inside the file that just landed in the wrong place, and
   by the time a session reads it the write has happened. Eight repositories across
   two machines, and §5's answer was a naming convention — the thing §4.1 rejects in
   its own last line. **The gate now runs before the extraction, from outside the
   zip.**
-- **A delivery landing with a future timestamp.** Zip entries carry the clock of
-  the machine that built them, not the one receiving them. A `WORK_INSTRUCTIONS.md`
-  dated tomorrow is permanently newer than any report beside it, and a panel
-  comparing the two showed a delivered card whose review control never came alive —
-  on two projects at once, for a day, with no error anywhere. **The gate stamps
-  what it extracts.**
-- **A delivery that could not be verified on arrival.** Four `MISSING` lines and a
-  zip built anyway, on 2026-08-27, by the canonical harvest script — whose own
-  standard, §1 above, has always said a `MISSING` line is loud on purpose and must
-  not be built past. The script printed the rule and broke it, and no zip carried a
-  manifest, so the receiving half could not have caught it either: **the count of
-  deliveries ever verified on arrival was zero.** A short delivery is invisible to
-  everyone downstream, because a zip that is missing a file looks exactly like a zip
-  that was never asked for it. **The sender declares what it packed and refuses to
-  build a zip over a `MISSING` line.**
-- **A template corrected in one project and nowhere else.** Project knowledge is
-  one store per project, unreachable and uncomparable from the owner's machine, so
-  a fix to a canonical script is a fix in one of five. Nothing detects the other
-  four. **The repository copy exists to be checked**, and a session that reads a
-  harvested template different from the one it was handed says so.
-- **A standard edited from a stale copy.** A session read `CLAUDE_CODE.md` at the
-  start of a conversation, the owner advanced it four versions during that
-  conversation, and the session then generated two new versions from the copy it
-  had first read — each of which would have overwritten the newer file in all five
-  roots on distribution. **The version line is the handle and it only works if it
-  is re-read**, not remembered from the top of a conversation.
 - **A filename without its sequence number.** `-tonight-` and `-456-` shipped in one
   evening. The number was in §5's example and in none of its prose — the same
   failure as naming an outcome instead of an artifact, one level down, and in the

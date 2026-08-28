@@ -18,277 +18,228 @@ If all four hold, say "Hamlet confirmed" and continue.
 
 ---
 
-# Work instruction 041 — the press, then the mode, then the readout
+# Work instruction 043 — decode every pitch, keep the best
 
-**ISSUED: 2026-08-28. A fresh order, not an amendment. Follows unit 040.**
+**ISSUED: 2026-08-28. A fresh order, not an amendment. Follows unit 042.**
 
-**Seven tasks; task 7 is the drop. This is a long unit by instruction —
-the 45-to-60-minute window is a floor against trivial units, not a ceiling.**
+**Five tasks; task 5 is the drop.**
 
 ## Why this unit exists
 
-**The operator graded this afternoon F-minus and the grade is accepted.** Four
-defects, in his words:
+**One in eight.** That is how often the operator says Hamlet lands on the pitch a
+station is actually sending at. When it lands, the decode measures **84.2 %** on
+`cw-2026-08-24-012403` and 85–90 % on the settled stretch of
+`cw-2026-08-28-004844`. **The whole gap between this project and its phase goal
+is pitch acquisition, and nothing else.**
 
-1. **He hears whale song** — FT8 through the speaker — **and the waterfall shows
-   dense speckle rather than the dashes FT8 makes.**
-2. **The rig readout says `USB`, not `USB-D`.**
-3. **The capture button does nothing.**
-4. **Switching to CW puts the radio in CW mode. Switching back to Digital does not
-   restore USB-D.**
+```
+PHASE GOAL:   Readable CW on the operator's screen — eighty percent of a
+              strong signal read correctly, first time.
+UNIT GOAL:    Choose the mixdown pitch by which candidate decodes best,
+              instead of by statistics on an intermediate signal.
+ADVANCES:     task 3
+```
 
-**The third is the one that makes the first unanswerable.** Without a WAV and a
-sidecar, every complaint about the waterfall is a description of a picture, and
-this author has now twice reached a wrong conclusion from a screenshot — once
-missing `CW`/`FIL2` in the readout, once building a work order on the premise
-that no signal could produce what was drawn.
+**Where the number came from and what it replaces.** Six families of admission
+statistic have been built and measured dead across units 1.11.17 to 1.11.21 —
+cluster separation, dah/dit ratio, level spread, lift over the band floor,
+quantisation residual, and agreement between fitted units. Every one asked *is
+this bin a station*. **That question has no good answer and six measurements say
+so.** This unit asks a different one: *which of these candidates decodes best*.
 
-**The capture press has been ordered in units 038, 039 and 040 and dropped from
-all three.** It was last in every one. **It is first in this one, and that is the
-only protection that has ever worked.**
+**The evidence that ranking works is already in the operator's own sheets, and
+it is not subtle:**
 
-**The second and fourth are the same organ**: Hamlet already knows the radio is in
-USB-D — the "What the radio is doing" window reads `Data mode: on` from `26 00`
-and displays it — but the readout does not render it, and the write that
-establishes it does not fire on every entry into Digital.
+| capture | best score, better than silence per hop |
+|---|---|
+| `cw-2026-08-28-004844` — reads `TUES AUG 25`, `W7GB`, `BRUCE` | **36.3** |
+| `cw-2026-08-28-004902` — reads the same net | **28.3** |
+| `cw-2026-08-28-005051` — phantom | 1.48 |
+| `cw-2026-08-28-005158` — phantom | 1.49 |
+| `cw-2026-08-28-005243` — phantom | 3.34 |
+
+**A factor of six to twenty-four, on the one quantity that measures the thing the
+operator wants.** Unit 1.11.33 proved it cannot work as a *gate* — no fixed
+threshold separates those columns from the rest of the corpus. **As a ranking
+between candidates on the same audio it does not need to.**
+
+**This also answers the phantoms, which is the operator's first goal tonight.**
+Last night's four junk captures were decoded at 750–775 Hz. Tested outside
+Hamlet at every candidate pitch including 599.3 — where two independent
+instruments pointed — **there is no readable Morse in those files at any pitch.**
+`#T#E2T#H1 N E TE KTE SAITINT` at 599, `##I##E#E TE #ME SA#INT` at 775. Hamlet
+was not misreading a station; it picked an empty bin and printed what it found.
+**A pitch chosen by decode score does not rank an empty bin first, and a winner
+whose own score is poor produces nothing.**
 
 ## Verify this instruction against the tree
 
-**Nothing here describes the tree.** Check every claim and report mismatches.
-Trust the tree over this order everywhere they differ.
+**Nothing here describes the tree.** Check every claim against the files and
+report any mismatch.
 
-From unit 040's report, not measured by this author:
+**This author's picture has been stale by several units and unit 1.11.33 caught
+it.** Trust the tree over this order everywhere they differ, and list the
+differences. The engine total in particular has moved twice this week.
 
-- **Engine 28 of 1916, byte-identical to the stable set. App 509 of 509.**
-  039's extra, `AConfirmedModeWriteFoldsTheDataVariantTooAsync`, does not appear
-  and is confirmed an intermittent.
-- The mode write is at **`CivWrites.cs:101`** and now carries the filter byte,
-  derived from the block's own width. The passband is established by the `1A 03`
-  readback and is **unknown until it arrives.**
-- **12 neighborhood blocks state a passband; 93 state none.**
-- The CW sidecar already carries `Mode`, `FilterSelection` and `FilterBandwidth`.
-- **`IC-7300_ENG_FM_12b.pdf` is not on the machine** and §2.1 forbids committing
-  it. `CLAUDE.md` §4 carries command `26` and the filter scale, verified
-  column-aware on 2026-08-14, and `1A 03` reads the radio's actual passband in
-  hertz — **which is a better source than any table of defaults.**
-- **Unit 040's tasks 4, 6, 7 and 8 were not started.** Tasks 1, 4, 6 and 7 of this
-  order are those, reordered.
+**Known from unit 1.11.34:** 28 failing in the engine as the stable set; 509 in
+the app; `CLAUDE_CODE.md` at 1.7. **Read the file's own section count for the
+report shape.** Seven captures of 2026-08-28 are in the tree.
 
-**Record the failing counts from the tree before task 2.**
+**The harness that runs a fixed pitch through the decoder exists** — unit 002
+built it and it has been the diagnostic instrument since. **Task 1 establishes
+whether it can be called per candidate, and if it already can, this unit is
+mostly plumbing.** Say so; that is tokens back.
 
 ## Rulings in force
 
-**Transcribed with what was rejected. Do not re-argue either.**
+**Transcribed in full with what was rejected. Do not re-argue either.**
 
-**Tim's rulings, 2026-08-28:**
+**Tim's ruling, 2026-08-28:**
 
-> **The order of work is: fix the capture button, then fix the automatic USB-D
-> setting, then the UI defects.** This is his sequencing, given after the F-minus.
-
-> **The filter write is made once per tune-in and then hands off** — the middle
-> option of unit 040's question B, as that unit built it.
+> **The mixdown pitch is chosen by which candidate decodes best, not by whether a
+> bin passes a test.** Decode at each candidate across the filter's width, rank by
+> the decoder's own score, take the winner. **Where even the winner's score is
+> poor, nothing is emitted.**
 >
-> Rejected: treating a hand-turned filter the way HM-DEC-056 treats a hand-turned
-> mode, suspending the write until the next band change — a filter left narrow in
-> a previous session would then silently defeat the fix, which is today's failure
-> returning by a different door. Rejected: always writing it — that takes the
-> filter knob away on a tab where narrowing onto one signal is normal operating.
->
-> **Tim's reason:** a tune-in is an explicit act of arriving somewhere new, and
-> re-establishing a filter wide enough to hear what is there is part of arriving.
+> **Rejected: a seventh admission statistic.** Six families measured dead across
+> five units; the fault is the question, not the choice of measure.
+> **Rejected: using the score as a fixed gate.** Unit 1.11.33 measured that no
+> threshold separates the corpus, and this unit does not need one — a ranking
+> compares candidates on the same audio.
+> **Rejected: thinning the band or lengthening the cadence to make the cost fit,
+> without reporting it.** If the compute does not fit, that is a measurement to
+> report, not a silent trade.
 
-> **The digital capture gets its own record and its own folder** — `captures\digital\`,
-> separate from `CwCaseRoster`. **`MarkCase` is not called.**
+**Standing, and this unit is bound by them:**
 
-> **The digital press works the way the CW one does** — same ring, same window,
-> same file shape. **No trimming, no slot alignment.** These files are diagnostic
-> material, not corpus; trimming returns when scoring starts.
-
-> **The point of the capture is to give a WAV to match against a screenshot.**
-
-> **The decoder is written in C#, not wrapped.**
-
-> **Static strings unit 037 wrote stay as written until they are live.**
-
-**Standing rulings this unit is bound by:**
-
-- **§0.0 / HM-DEC-009** — never present a guess as a decode; this binds pictures
-  as hard as sentences (HM-DEC-092).
-- **§0.0.1** — **the app's own record must be enough to tell whether a fault is in
-  the signal, the radio, or Hamlet itself. Task 1 is this principle and nothing
-  else.**
-- **HM-DEC-056** — the operator's own hand wins on the mode and suspends the write
-  visibly until the next band change; a value the radio did not confirm is
-  unknown, not assumed.
-- **§0** — generate from the source of truth; no constants sprinkled through code.
-- **§0.2 / HM-DEC-008** — **no transmit work of any kind.**
+- **§0.0 / HM-DEC-009** — never present a guess as a decode. A pitch nobody
+  measured must not produce letters that imply it was measured.
+- **HM-DEC-120** — nothing is emitted on audio holding no signal. **Both silence
+  controls stay silent; this unit may only tighten that, never loosen it.**
+- **HM-DEC-095** — a note is chosen by how it is keyed, never by how loud it is.
+  **A decode score is a keying measurement, not a loudness one**, which is why
+  ranking by it is inside that ruling rather than against it.
+- **§0.2 / HM-DEC-008** — no transmit work of any kind.
 
 ## Status cadence
 
-After each task, before the next, update `PROJECT_STATUS.md` — `STATE`,
-`TASK: n of m`, `BALL`, `UPDATED` from the clock, `NOTE` saying what is moving
-inside the task. Same every ten minutes while a task runs.
+Named here as well as in the prompt. After each task, before the next, update
+`PROJECT_STATUS.md` — `STATE`, `TASK: n of m`, `BALL`, `UPDATED` read from the
+clock, `NOTE` saying what is moving inside the task. The same every ten minutes
+while a task runs.
 
 ## The tasks
 
-### Task 1 — the capture press works *(first, and not droppable)*
+### Task 1 — trace, and say what you find rather than confirming this list
 
-**Nothing else in this unit starts until a press writes a file.**
+Answer from the code, with file and line, before writing anything:
 
-Trace what you need inside this task rather than before it: the CW capture path,
-what it writes, what `MarkCase` appends, and which parts are reusable without
-touching it. **Report what you find as part of this task.**
+1. **What it costs to decode one window at one pitch** — measured, not estimated.
+   The candidate count across a 500 Hz filter at 25 Hz steps is about
+   thirty-three; **thirty-three times that cost is the number this unit lives or
+   dies on.**
+2. **Whether the fixed-pitch harness can be called per candidate**, or whether
+   the decode path assumes one tracked pitch throughout. **If it is already
+   callable, say so — the unit shrinks.**
+3. **Where the mixdown pitch enters the decode**, and what else consumes it.
+4. **What the decoder's score is per window** — the quantity printed as *better
+   than silence per hop* — and whether it is comparable between two runs over the
+   same audio at different pitches. **If it is not comparable, this unit's
+   premise fails and task 2 must find what is.**
 
-The press on the waterfall header writes to **`captures\digital\`**:
+**Then build and run, and record the baseline by diffing which tests fail rather
+than by a total.**
 
-- **Its own record, separate from `CwCaseRoster`. `MarkCase` is not called and the
-  CW capture path is not edited.**
-- Same ring and same window length as the CW press. **No trimming, no slot
-  alignment.**
-- Filenames distinguish these from CW captures.
+### Task 2 — rank the candidates, measured, changing nothing
 
-**The sidecar is the point of the task.** §0.0.1 asks whether a later reader can
-tell if a fault was in the signal, the radio, or Hamlet. At minimum it carries:
+For every capture in the corpus: decode a window at **each candidate pitch across
+the filter**, and report per capture — the winning pitch, its score, the score at
+the pitch Hamlet chose today, and the score at the pitch measured from the audio
+where that is known.
 
-- **Mode, and the data flag separately** — `USB` and `USB-D` must not be the same
-  line, because that ambiguity is what cost this author an hour today.
-- **Filter slot, and the width in hertz from `1A 03`.**
-- Dial frequency, S-meter, preamp, attenuator, AGC, noise blanker, noise
-  reduction, front-end overload — **whatever the "What the radio is doing" window
-  already reads.** That window is §0.0.1 working; the sidecar should hold the same
-  set.
-- **The clock offset and its age.**
-- **That the file is untrimmed**, so a later scoring run can tell diagnostic
-  material from corpus without opening the audio.
-- **Every value marked measured or unknown. Nothing defaulted silently** (§0.0).
-  A row nobody could read says so, exactly as that window already does.
+**Then answer in one sentence: how often does the winner match the pitch that
+reads best, against the one-in-eight the operator has now?**
 
-**Acceptance:** a press writes a WAV and a sidecar the operator can find, and
-**the sidecar alone identifies the radio's mode, data flag and passband width** —
-the three fields whose absence has cost two hours today.
+That sentence is this unit's number. **If ranking is no better than what is
+shipped, stop, report it, and build nothing further** — that is an honest result
+and it retires the approach.
 
-### Task 2 — entering Digital restores USB-D
+### Task 3 — the winner drives the decode *(the goal task)*
 
-**Switching to CW puts the radio in CW. Switching back to Digital does not restore
-USB-D.** The two directions are not symmetric and they must be.
+Where task 2 shows ranking works, make it the source of the mixdown pitch.
 
-- Find why. **Report the cause with file and line** — whether the write does not
-  fire on the return, fires without the data flag, or fires and is not confirmed.
-- **Whatever establishes CW on entering the CW tab is what should establish the
-  digital mode on entering Digital**, with the filter byte unit 040 added.
-- **HM-DEC-056 still governs**: the operator's own hand wins, a value the radio did
-  not confirm is unknown rather than assumed, and the suspension is visible.
-- **The mode written on entering Digital is the one the current neighborhood
-  calls for**, generated from the band-plan row, not a constant (§0).
+- **The ranking runs on short windows**; the full path runs only on the winner,
+  if task 1's cost requires it. **Report which was necessary.**
+- **The sidecar says the pitch was chosen by ranking**, and carries the winner's
+  score and the runner-up's, so a bad choice is visible afterwards.
+- **Existing admission is not removed.** It keeps running and its verdict keeps
+  being recorded; what changes is what drives the mixdown. **A statistic measured
+  dead is not deleted in the same unit that replaces it.**
 
-**Acceptance:** from CW at 14.074, switching to Digital leaves the radio in USB-D
-on a filter wide enough for the block, confirmed by readback — and switching back
-and forth repeatedly does not drift.
+**Acceptance:**
 
-### Task 3 — the readout says USB-D
+- **`004844`, `004902`, `004915` unchanged or better, character for character** —
+  they read a real net and must not pay for this;
+- **the four phantom captures emit no letters, or the winner's own score is
+  reported as poor and nothing is emitted**;
+- **all twelve adjudicated anchors green**; every floor held; both silence
+  controls silent; chunk invariance intact.
 
-The rig readout renders `USB` while Hamlet holds `Data mode: on` from `26 00` and
-displays it correctly in the "What the radio is doing" window. **Two surfaces
-disagree about the same measured fact.**
+**If an anchor goes red, report which and what it loses before shipping.**
 
-- The readout shows the data variant. **`USB` and `USB-D` are different modes to
-  the operator and must look different at a glance.**
-- **If the data flag has not been read, the readout says the mode is unknown in
-  that respect rather than showing the bare mode** — showing `USB` when the flag
-  is unread is the guess §0.0 forbids, and it is exactly the guess that misled a
-  reader today.
-- The same applies to CW: whatever `26` reports is what is shown.
-- **Do not invent a new colour or badge language.** Use what the readout already
-  has.
+### Task 4 — what the operator sees when the winner is poor
 
-### Task 4 — the Twin PBT, seen but never claimed
+Where no candidate decodes well, **the terminal says so in the plain language it
+already uses**, in the existing prose area. One line. **No new panel, no new
+control, nothing else on the screen moves.**
 
-**There is no write for this control and the app must not claim to have cleared
-something it cannot clear.**
+The complaint is not an empty screen. It is a screen that lies.
 
-- Read the outer position — `CLAUDE.md` §4 records `14 08`, and records it as the
-  row once mistaken for the CW pitch, so **treat it column-aware.**
-- **Whether the inner control can be read is unknown and the manual is not on the
-  machine.** Check `SHACK_FACTS.md` first — a fact there outranks any inference
-  (HM-DEC-093). **If neither answers it, that is an explicit unknown in the ledger,
-  not an assumption that the inner is centred.**
-- A PBT away from centre narrows the effective passband below whatever the slot
-  gives. Hamlet says so in the app's voice and names the remedy: hold
-  `TWIN PBT CLR` for one second until the dot beside the width disappears.
-- **It suppresses the "you should hear the block now" claim.**
+### Task 5 — the tune-in case *(the drop candidate)*
 
-**Raise, do not decide:** whether an *unreadable* inner PBT suppresses that claim
-or only qualifies it. Unit 040 costed three options and had no recommendation
-because the deciding fact needs the manual. **Carry that table forward with
-whatever this session learns added to it.**
+Unit 1.11.34 measured that a blanket refusal costs
+`AFastFistIsReadWithoutARunUp` — **tuning onto a station already sending returns
+nothing**, which is most of how an operator finds one.
 
-### Task 5 — regression fixtures for the tab switch
-
-The failure is a state transition, so the fixtures are transitions:
-
-- **CW tab at 14.074, switch to Digital** — must end USB-D, wide enough.
-- **Digital, switch to CW, switch back** — must end where it started.
-- **Digital with the operator's hand having changed the mode** — HM-DEC-056's
-  suspension, visible.
-- **Digital where the readback never confirms** — passband and data flag unknown,
-  and no readiness claim.
-
-**A test asserts that entering a tab leaves the radio in a state that tab can
-actually work in, or says it does not know.**
-
-### Task 6 — the slot cutter
-
-Cut the audio into **15-second slots aligned to UTC quarter-minutes**, using the
-clock offset.
-
-- **Unknown offset means no slots are cut**, and the reason is observable.
-- A short slot is discarded and the discard count is observable (§0.0.1).
-- Pure over samples and an elapsed time, tested without a wall clock.
-- **Nothing consumes the slots yet.**
-
-### Task 7 — the Costas sync search *(the drop candidate)*
-
-The first stage of the C# decoder, on **the FFT frames, not the drawn bitmap.**
-
-- Three Costas arrays of seven symbols at the start, middle and end of each
-  transmission. Search a slot's frames across candidate time and frequency
-  offsets.
-- **Report candidates, not messages** — frequency, time offset, sync score.
-  **Nothing goes on the decoded-text panel.**
-- Mark located candidates on the waterfall if cheap; skip and say so if not.
-- Tested against a fixture. **A synthesised FT8 slot is a unit test and is not
-  evidence about yield.**
+**Measure only**: with ranking in, what does that test do? Ranking should help it,
+because a station mid-transmission decodes well immediately and needs no
+admission history. **Report the number; change nothing on its account.**
 
 **Dropped whole if time runs out, and the report says so.**
 
 ## Parked — do not touch, do not raise
 
-The whole CW decoder stream and unit 036's residue. The CW capture path itself.
-The scanner and the calling cycle. `CHANGELOG.md`. The missing `DECISIONS.md`
-records. The phrasebook and the recent-places row. The prefix table and the
-plain-English parser. The decoded-text panel's placeholder rows. The mode strip's
-static status. **The waterfall's rendering** — it is under suspicion and task 1
-exists to produce the evidence, but **nothing about it changes in this unit.**
+Built from unit 1.11.34's sections 3 and 4, and the operator's standing holds.
 
-**Both halves are required: do not touch them, and do not raise them.**
+- **The no-keying refusal.** Measured twice, handed back twice; ranking may make
+  it unnecessary. **Its own unit if it is still wanted after this one.**
+- **The clock-withdrawn refusal** — measured dead, 26/38/25 characters off the
+  good captures.
+- **The keying meter, `competing`, and the independent sweep** — task 2 supersedes
+  them as pitch sources; **do not fix, remove or rebuild them here.**
+- **The joint decoder, the constrained margin, the integrator width, the
+  whole-file second pass, `001520`'s quadrillions, `013347`'s 17.2 million, the
+  short-character bias, `cwdecoder.py`'s divergence.**
+- **The whole FT8 and layout stream of units 037–042**, the favourites list, the
+  redesign inventory, the recent-places row, the scanner and calling cycle.
+- **`CHANGELOG.md`, the missing `DECISIONS.md` records, the intermittents.**
 
-A parked item that genuinely blocks a task is raised once, and says it was parked.
+**Both halves are required: do not touch them, and do not raise them.** A parked
+item that genuinely blocks a task is raised once, and says it was parked.
 
 ## What not to do
 
-Standing prohibitions are `CLAUDE.md`'s and are not retyped. Unit-specific:
+Standing prohibitions are `CLAUDE.md`'s and are cited, not retyped.
+Unit-specific:
 
-- **No transmit. Nothing keys the radio.**
-- **Do not start task 2 until task 1 writes a file.**
-- **Do not call `MarkCase` or touch `CwCaseRoster` or the CW capture path.**
-- **Do not change the waterfall's rendering, floor, or colour ramp.**
-- **Do not show a bare mode when the data flag has not been read.**
-- **Do not claim to have cleared the PBT.**
-- **Do not write a mode or filter as a constant.** Generate from the band-plan row.
-- **Do not build trimming or slot-aligned capture.**
-- **Do not put anything on the decoded-text panel.**
-- **Do not report a sync candidate as a decode.**
-- **Do not code against a manual value without a source in the tree.**
+- **Do not build a seventh admission statistic.** Ruled out above with six
+  measurements.
+- **Do not use the score as a fixed threshold.** It is a ranking.
+- **Do not thin the band or slow the cadence silently.** Report the cost.
+- **Do not let the three good captures lose a character.**
+- **Do not remove existing admission in this unit.**
+- **Do not trade the silence property.**
+- **Do not touch the panel beyond task 4's one line.**
 - **Do not mint a decision id.**
 
 ## Committing, pushing, reporting
@@ -296,15 +247,33 @@ Standing prohibitions are `CLAUDE.md`'s and are not retyped. Unit-specific:
 Commit and push each task before starting the next; name the branch; a refused
 push is reported as refused, with the reason.
 
-Report per `CLAUDE_CODE.md` §8 to `output.md` at the repository root, overwritten
-and printed. **Read the file's own section count and follow it.**
+Report per `CLAUDE_CODE.md` §8 — **read the file's own section count** — to
+`output.md` at the repository root, overwritten and printed. **Writing it is the
+only way out**: complete, blocked, failed or stopped.
 
-**The section that says what the owner should expect leads with this: the capture
-press writes a WAV and a sidecar, and the sidecar names the mode, the data flag
-and the passband width in hertz.**
+**Section 3 leads with task 2's sentence — how often ranking picks the pitch that
+reads best, against one in eight.**
 
-**The section that reports measurements leads with the engine's failing count,
-then task 2's cause with file and line** — why entering Digital did not restore
-USB-D.
+**The section on what the owner should expect leads with this: on a frequency
+where nothing is happening the terminal stops filling with letters, and on a
+frequency where a station is sending Hamlet lands on it more often than it did.**
+
+### Asks still outstanding
+
+Carried forward per HM-DEC-139 and HM-DEC-140, from unit 1.11.34's list, trimmed
+to what this unit does not park.
+
+1. **The refusal costs reading a station you tune onto** — task 5 measures what
+   ranking does to it.
+2. **Admission admits a pitch 150 Hz off the station and holds it for
+   forty-five seconds without a refresh** — the held peak decayed at exactly
+   1 dB per second across both gaps, so it was never refreshed at all.
+3. **The `reading` line's new span wording needs approval.**
+4. **`DECISIONS.md` has no record for HM-DEC-096–133, 136, 141 or 150.**
+5. **Two stations closer than 125 Hz are not named** — the operator's item five.
+6. **HM-OPEN-057** (2026-08-22) and **HM-OPEN-007** (2026-08-14).
+7. **Nothing checks that deleting a surface is not deleting a capability** — the
+   operator has since found the favourites list gone. **Parked here, and it is
+   the next unit after this one unless he says otherwise.**
 
 **If you finish every task, stop and report. Do not start the next unit.**

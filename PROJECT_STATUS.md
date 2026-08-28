@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 3 of 7
-BALL: tim
-NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-28T15:17:27-04:00
-NOTE: three of the four F-minus defects fixed; the press writes so the waterfall complaint is now answerable from a file
+STATE: EXECUTING
+TASK: 7 of 7
+BALL: code
+NEXT_PASTE: none
+UPDATED: 2026-08-28T18:01:56-04:00
+NOTE: app suite green at 509 of 509; re-running the engine suite after the age-rule fix, then writing the report
 
 ---
 
