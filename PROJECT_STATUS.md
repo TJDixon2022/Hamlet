@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 2 of 8
+TASK: 3 of 8
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-28T11:39:19-04:00
-NOTE: trace done and task 5 is blocked: cl.exe exists with no CRT headers, no libs, no Windows SDK and no vcvarsall, so no C can be built here
+UPDATED: 2026-08-28T11:51:50-04:00
+NOTE: spectrum source deterministic across chunk sizes and a 1500 Hz tone lands at 1500; binning to the waterfall next
 
 ---
 
