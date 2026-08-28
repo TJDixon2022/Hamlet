@@ -5693,9 +5693,16 @@ public partial class MainWindowViewModel : ObservableObject
         // him sixty-six seconds of not being able to answer a station.
         var workingCw = IsInsideCwSegment || IsCopyingMorse;
 
+        // **THE AGE OF EACH READING TRAVELS WITH IT** (work instruction 042,
+        // task 1). A ledger value read before Hamlet's own write is the radio
+        // not having been asked since, and one read after it is the radio
+        // answering. Those are the snap-back and the operator's hand on the
+        // knob, and by value alone they are the same picture.
         var decision = ModeFollowPlan.Decide(
             _modeFollow, RigState.Mode, RigState.DataVariant,
-            ModeFollowPlan.TargetFor(here), atHz, workingCw);
+            ModeFollowPlan.TargetFor(here), atHz, workingCw,
+            RigState[RigField.Mode].AtUtc,
+            RigState[RigField.DataMode].AtUtc);
 
         if (!decision.Write)
         {
@@ -5734,7 +5741,7 @@ public partial class MainWindowViewModel : ObservableObject
             if (result.Worked)
             {
                 _modeFollow = _modeFollow.Done(
-                    atHz, decision.Mode, decision.DataMode);
+                    atHz, decision.Mode, decision.DataMode, DateTime.UtcNow);
             }
 
             // A radio that has no such mode says so by having nothing to say,

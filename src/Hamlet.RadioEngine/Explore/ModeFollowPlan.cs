@@ -24,12 +24,16 @@ public sealed record ModeTarget(CivMode Mode, bool DataMode, string Because)
 /// </param>
 /// <param name="DoneMode">What that write set, or null.</param>
 /// <param name="DoneDataMode">Whether that write asked for the data variant.</param>
+/// <param name="DoneAtUtc">
+/// When the radio confirmed that write, or null where none has been made.
+/// </param>
 public sealed record ModeFollowState(
     bool Enabled,
     bool Suspended,
     long? DoneAtHz = null,
     CivMode? DoneMode = null,
-    bool DoneDataMode = false)
+    bool DoneDataMode = false,
+    DateTime? DoneAtUtc = null)
 {
     /// <summary>The state a fresh session starts in.</summary>
     /// <param name="enabled">The operator's setting.</param>
@@ -40,6 +44,11 @@ public sealed record ModeFollowState(
     /// <param name="hz">Where the dial was.</param>
     /// <param name="mode">What was set.</param>
     /// <param name="dataMode">Whether the data variant was asked for.</param>
+    /// <param name="atUtc">
+    /// When the radio confirmed it. **A reading taken before this moment cannot
+    /// contradict the write**, which is the whole of how a snap-back is told
+    /// apart from the operator turning the knob (work instruction 042, task 1).
+    /// </param>
     /// <returns>The state carrying that memory.</returns>
     /// <remarks>
     /// **A CONFIRMED WRITE IS A FACT ABOUT WHAT HAMLET DID, AND IT IS NOT THE
@@ -52,8 +61,15 @@ public sealed record ModeFollowState(
     /// whatever the rig says, and the rig test stays as well, because either one
     /// alone would be a reason not to write.
     /// </remarks>
-    public ModeFollowState Done(long hz, CivMode mode, bool dataMode)
-        => this with { DoneAtHz = hz, DoneMode = mode, DoneDataMode = dataMode };
+    public ModeFollowState Done(
+        long hz, CivMode mode, bool dataMode, DateTime? atUtc = null)
+        => this with
+        {
+            DoneAtHz = hz,
+            DoneMode = mode,
+            DoneDataMode = dataMode,
+            DoneAtUtc = atUtc,
+        };
 
     /// <summary>
     /// The operator turned the mode knob, so Hamlet stops turning it.
@@ -64,7 +80,10 @@ public sealed record ModeFollowState(
     /// seconds later would be arguing with them about their own radio.
     /// </remarks>
     public ModeFollowState SuspendedByOperator()
-        => this with { Suspended = true, DoneAtHz = null, DoneMode = null };
+        => this with
+        {
+            Suspended = true, DoneAtHz = null, DoneMode = null, DoneAtUtc = null,
+        };
 
     /// <summary>A band change re-arms it.</summary>
     /// <remarks>
@@ -73,7 +92,10 @@ public sealed record ModeFollowState(
     /// mean to switch it off forever.
     /// </remarks>
     public ModeFollowState Rearmed()
-        => this with { Suspended = false, DoneAtHz = null, DoneMode = null };
+        => this with
+        {
+            Suspended = false, DoneAtHz = null, DoneMode = null, DoneAtUtc = null,
+        };
 }
 
 /// <summary>What to do about the mode, as a value.</summary>
@@ -194,6 +216,12 @@ public static class ModeFollowPlan
     /// True when the operator is visibly working Morse: the CW terminal is
     /// decoding, or the dial is inside a CW segment of the band plan.
     /// </param>
+    /// <param name="modeReadAtUtc">
+    /// When the mode reading was taken, or null where the caller cannot say.
+    /// </param>
+    /// <param name="dataReadAtUtc">
+    /// When the data-flag reading was taken, or null where the caller cannot say.
+    /// </param>
     /// <returns>The decision.</returns>
     public static ModeFollowDecision Decide(
         ModeFollowState state,
@@ -201,7 +229,9 @@ public static class ModeFollowPlan
         bool? currentDataMode,
         ModeTarget? target,
         long? frequencyHz = null,
-        bool workingCw = false)
+        bool workingCw = false,
+        DateTime? modeReadAtUtc = null,
+        DateTime? dataReadAtUtc = null)
     {
         ArgumentNullException.ThrowIfNull(state);
 
@@ -267,9 +297,30 @@ public static class ModeFollowPlan
         // (§0.0). Where nothing is known to differ, the only way past the test
         // above was a field nobody has read — which is precisely the case this
         // guard was built for, and it still holds it.
+        // **AND A READING FROM BEFORE THE WRITE CANNOT CONTRADICT IT**, which
+        // is what tells the two cases apart. They are identical by value: the
+        // ledger says CW, the target says USB-D, and Hamlet remembers writing
+        // USB-D here. In one the reading is older than the write and the radio
+        // simply has not been asked since, which is HM-OPEN-041's snap-back and
+        // writing again is the eighteen-writes evening. In the other the reading
+        // is newer, so the radio was asked after the write and answered CW,
+        // which means the operator turned the knob.
+        //
+        // **A CALLER THAT CANNOT SAY WHEN IT READ GETS THE CAUTIOUS ANSWER.**
+        // Unknown is not evidence of a contradiction, so the memory stands and
+        // nothing is written, exactly as before this unit.
+        bool Contradicts(bool differs, DateTime? readAt)
+            => differs
+               && readAt is { } read
+               && state.DoneAtUtc is { } wrote
+               && read > wrote;
+
         var ledgerContradictsTheMemory =
-            (currentMode is { } known && known != target.Mode)
-            || (currentDataMode is { } flag && flag != target.DataMode);
+            Contradicts(
+                currentMode is { } known && known != target.Mode, modeReadAtUtc)
+            || Contradicts(
+                currentDataMode is { } flag && flag != target.DataMode,
+                dataReadAtUtc);
 
         if (!ledgerContradictsTheMemory
             && frequencyHz is { } hz

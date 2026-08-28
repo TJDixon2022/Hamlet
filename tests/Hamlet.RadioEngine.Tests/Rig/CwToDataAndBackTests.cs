@@ -1,4 +1,4 @@
-using Hamlet.RadioEngine.Bands;
+﻿using Hamlet.RadioEngine.Bands;
 using Hamlet.RadioEngine.Civ;
 using Hamlet.RadioEngine.Explore;
 using Hamlet.RadioEngine.Rig;
@@ -81,7 +81,9 @@ public sealed class CwToDataAndBackTests
         {
             var decision = ModeFollowPlan.Decide(
                 State, Ledger.Mode, Ledger.DataVariant,
-                ModeFollowPlan.TargetFor(_here), Ft8Hz, workingCw: false);
+                ModeFollowPlan.TargetFor(_here), Ft8Hz, workingCw: false,
+                Ledger[RigField.Mode].AtUtc,
+                Ledger[RigField.DataMode].AtUtc);
 
             if (!decision.Write)
             {
@@ -96,7 +98,8 @@ public sealed class CwToDataAndBackTests
 
             if (result.Worked)
             {
-                State = State.Done(Ft8Hz, decision.Mode, decision.DataMode);
+                State = State.Done(
+                    Ft8Hz, decision.Mode, decision.DataMode, DateTime.UtcNow);
             }
         }
     }
@@ -262,6 +265,48 @@ public sealed class CwToDataAndBackTests
         Assert.True(follow.Ledger.DataVariant);
         Assert.Equal(
             ScriptedRadio.WideHz, follow.Ledger[RigField.FilterBandwidth].Number);
+    }
+
+    /// <remarks>
+    /// <para>**THE SNAP-BACK AND HIS HAND ON THE KNOB ARE THE SAME PICTURE BY
+    /// VALUE, AND THE READING'S AGE IS WHAT SEPARATES THEM.** In both, the
+    /// ledger says CW, the target says USB-D, and Hamlet remembers writing USB-D
+    /// at this frequency.</para>
+    /// <para>In one the reading was taken **before** the write, so the radio
+    /// simply has not been asked since: that is HM-OPEN-041's snap-back, and
+    /// writing again is the evening that carried eighteen mode writes with the
+    /// dial standing still. In the other it was taken **after**, so the radio was
+    /// asked and answered CW, which means somebody turned the knob.</para>
+    /// <para>**AND A CALLER THAT CANNOT SAY WHEN IT READ GETS THE CAUTIOUS
+    /// ANSWER**, because not knowing is not evidence of a contradiction.</para>
+    /// </remarks>
+    [Fact]
+    public void AReadingOlderThanTheWriteIsTheSnapBackAndOneNewerIsHisHand()
+    {
+        var target = ModeFollowPlan.TargetFor(Ft8City());
+        var wroteAt = new DateTime(2026, 8, 28, 20, 47, 0, DateTimeKind.Utc);
+
+        var after = ModeFollowState.Armed(true)
+            .Done(Ft8Hz, CivMode.Usb, dataMode: true, wroteAt);
+
+        var stale = ModeFollowPlan.Decide(
+            after, CivMode.Cw, false, target, Ft8Hz, workingCw: false,
+            wroteAt.AddSeconds(-4), wroteAt.AddSeconds(-4));
+
+        var fresh = ModeFollowPlan.Decide(
+            after, CivMode.Cw, false, target, Ft8Hz, workingCw: false,
+            wroteAt.AddSeconds(4), wroteAt.AddSeconds(4));
+
+        var undated = ModeFollowPlan.Decide(
+            after, CivMode.Cw, false, target, Ft8Hz, workingCw: false);
+
+        _output.WriteLine($"  read 4 s before the write: write={stale.Write}");
+        _output.WriteLine($"  read 4 s after  the write: write={fresh.Write}");
+        _output.WriteLine($"  no reading time at all:    write={undated.Write}");
+
+        Assert.False(stale.Write);
+        Assert.True(fresh.Write);
+        Assert.False(undated.Write);
     }
 
     /// <remarks>
