@@ -73,7 +73,36 @@ public sealed class AudioSpectrumSource : ISpectrumSource, IDisposable
     private readonly double[] _real;
     private readonly double[] _imaginary;
     private readonly byte[] _bins;
-    private readonly double[] _scratch;
+    private readonly double[] _binFloorDb;
+    private readonly double[] _binSpreadDb;
+
+    /// <summary>How fast a bin's noise spread is averaged.</summary>
+    /// <remarks>
+    /// **SLOW, BECAUSE IT IS A PROPERTY OF THE BAND AND NOT OF A MOMENT.** It
+    /// rises into a signal as well as into noise, which is why it is slow enough
+    /// that a transmission cannot lift its own zero out from under it.
+    /// </remarks>
+    private const double SpreadFollowsAt = 0.002;
+
+    /// <summary>How fast a bin's floor follows the level down.</summary>
+    /// <remarks>A quarter of the way each frame: noise is followed at once.</remarks>
+    private const double FloorFallsAt = 0.25;
+
+    /// <summary>How fast a bin's floor follows the level up.</summary>
+    /// <remarks>
+    /// **SLOW ENOUGH THAT A STATION DOES NOT ERASE ITSELF.** At roughly twelve
+    /// frames a second this is a time constant of minutes, so a fifteen-second
+    /// transmission stays bright for all of it.
+    /// </remarks>
+    private const double FloorRisesAt = 0.0008;
+
+    /// <summary>How many decibels above its own floor a bin needs to be white.</summary>
+    /// <remarks>
+    /// Thirty-five. With the floor now per bin rather than across the picture,
+    /// this is the dynamic range of one bin against its own quiet level rather
+    /// than of the whole passband against its quietest corner.
+    /// </remarks>
+    private const double RangeDb = 35;
     private readonly int _hop;
     private readonly int _firstBin;
     private readonly int _lastBin;
@@ -82,7 +111,6 @@ public sealed class AudioSpectrumSource : ISpectrumSource, IDisposable
     private int _fill;
     private int _sinceHop;
     private long _samplesSeen;
-    private double _floorDb = -90;
 
     /// <summary>Creates a spectrum source over one sample rate.</summary>
     /// <param name="sampleRate">Samples per second.</param>
@@ -118,7 +146,11 @@ public sealed class AudioSpectrumSource : ISpectrumSource, IDisposable
             (int)Math.Ceiling(HighHz * (double)size / _sampleRate));
 
         _bins = new byte[Math.Max(1, _lastBin - _firstBin + 1)];
-        _scratch = new double[_bins.Length];
+        _binFloorDb = new double[_bins.Length];
+        Array.Fill(_binFloorDb, double.NegativeInfinity);
+
+        _binSpreadDb = new double[_bins.Length];
+        Array.Fill(_binSpreadDb, double.NegativeInfinity);
     }
 
     /// <summary>The window size that suits a sample rate.</summary>
@@ -263,31 +295,63 @@ public sealed class AudioSpectrumSource : ISpectrumSource, IDisposable
         // and what makes one legible at all.
         var span = _lastBin - _firstBin + 1;
 
-        for (var i = 0; i < span; i++)
-        {
-            _scratch[i] = ToDb(_magnitudes[_firstBin + i]);
-        }
-
-        // **THE FLOOR IS A LOW PERCENTILE, NOT THE MINIMUM, AND THAT IS NOT A
-        // REFINEMENT.** Taken as the minimum it tracks whichever bin happened to
-        // cancel to nearly nothing, which on a clean tone is numerical zero
-        // around minus two hundred and forty decibels: the whole picture then
-        // saturates white and the loudest bin is indistinguishable from the
-        // quietest. Measured on a generated tone, that is exactly what happened.
+        // **THE FLOOR IS PER BIN AND TRACKED OVER TIME, NOT A PERCENTILE ACROSS
+        // THE PICTURE.** This is the fault the operator photographed on
+        // 2026-08-28: a single floor taken across the display span sits wherever
+        // the quietest quarter of that span is, and when the radio's filter
+        // leaves most of 200 to 3000 Hz in the stopband, that is tens of
+        // decibels below the noise inside the passband. Everything in band then
+        // saturates, and the filter skirt reads as a hard vertical edge.
         //
-        // The twenty-fifth percentile of the visible span is the band between
-        // the signals, which is what a floor is meant to be.
-        Array.Sort(_scratch, 0, span);
-        var quietest = _scratch[span / 4];
-
-        _floorDb = (_floorDb * 0.9) + (quietest * 0.1);
-
-        const double Range = 45;
-
+        // **MEASURED BEFORE AND AFTER, ON A RECORDING THAT HOLDS NOTHING**: it
+        // drew 12.3 % of its bins saturated with a worst neighbour-to-neighbour
+        // step of 226 of 255, which is band noise painted as signal.
+        //
+        // **EACH BIN AGAINST ITS OWN RECENT QUIET LEVEL** removes the filter's
+        // shape from the picture entirely, which is what makes the remaining
+        // brightness mean something: a bin is bright because it is louder than
+        // it usually is, not because it sits where the receiver happens to pass.
+        //
+        // **DOWN FAST, UP SLOWLY**, which is the standard minimum-tracking
+        // estimator. A bin that goes quiet is noise and the floor should follow
+        // it at once; a bin that goes loud may be a station and the floor must
+        // not chase it, or a steady signal erases itself. At about twelve frames
+        // a second the rise constant here is minutes, so a fifteen-second FT8
+        // transmission never fades into its own floor.
         for (var i = 0; i < span; i++)
         {
             var db = ToDb(_magnitudes[_firstBin + i]);
-            var above = (db - _floorDb) / Range;
+
+            if (_binFloorDb[i] is double.NegativeInfinity)
+            {
+                _binFloorDb[i] = db;
+            }
+            else
+            {
+                var alpha = db < _binFloorDb[i] ? FloorFallsAt : FloorRisesAt;
+                _binFloorDb[i] += (db - _binFloorDb[i]) * alpha;
+            }
+
+            // **DARK MEANS INDISTINGUISHABLE FROM THIS BIN'S OWN NOISE, AND
+            // THAT ZERO IS MEASURED RATHER THAN CHOSEN.** A floor that follows
+            // the level down quickly settles near the *minimum* of the noise,
+            // not its typical level, so noise sits several decibels above its
+            // own floor and the picture reads mid-grey everywhere. Measured:
+            // with the floor alone, a recording holding nothing drew only 15 %
+            // of its bins dark.
+            //
+            // The spread is how far this bin usually sits above its own floor,
+            // averaged over time. Subtracting it puts the display zero at the
+            // noise's ordinary level, so a bin has to beat its own noise to
+            // brighten at all. Nothing here is a tuned constant: the number
+            // comes from the audio.
+            var over = db - _binFloorDb[i];
+
+            _binSpreadDb[i] = _binSpreadDb[i] is double.NegativeInfinity
+                ? over
+                : _binSpreadDb[i] + ((over - _binSpreadDb[i]) * SpreadFollowsAt);
+
+            var above = (over - _binSpreadDb[i]) / RangeDb;
 
             _bins[i] = (byte)Math.Clamp(above * 255, 0, 255);
         }

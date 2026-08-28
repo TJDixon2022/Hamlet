@@ -221,7 +221,21 @@ public sealed class WaterfallControl : Control
 
         context.DrawImage(_bitmap, new Rect(0, 0, _width, HistoryRows), rect);
 
-        if (Axis.IsUsable)
+        // **THE MARKER IS DRAWN ONLY WHERE IT MEANS SOMETHING** (work
+        // instruction 039). It says where the dial is, in the same hertz the
+        // band edges are given in. The digital waterfall's band is audio — 200
+        // to 3000 Hz — and its `FrequencyHz` is nobody's: it is the property
+        // default of 7.03 MHz, so the rule was being drawn thousands of widths
+        // off the right edge.
+        //
+        // **THE CW PICTURE IS UNCHANGED BY THIS, AND THAT IS CHECKED RATHER THAN
+        // ASSUMED.** There the band edges come from the selected band and the
+        // frequency from the dial, so the marker is inside the span whenever the
+        // radio is tuned within the band it is showing — which is the only case
+        // in which it was ever visible.
+        if (Axis.IsUsable
+            && FrequencyHz >= BandLowHz
+            && FrequencyHz <= BandHighHz)
         {
             context.FillRectangle(
                 MarkerBrush, new Rect(Axis.XOf(FrequencyHz) - 0.5, 0, 1, h));

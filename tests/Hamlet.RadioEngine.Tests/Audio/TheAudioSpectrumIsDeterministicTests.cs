@@ -144,8 +144,8 @@ public sealed class TheAudioSpectrumIsDeterministicTests
     }
 
     /// <remarks>
-    /// <para>Proves a tone lands in the bin it belongs in, which is the one thing
-    /// that makes the picture mean anything.</para>
+    /// <para>Proves a station that arrives lands in the bin it belongs in, which
+    /// is the one thing that makes the picture mean anything.</para>
     /// <para>Generated audio, and it is a unit test rather than evidence about
     /// the decoder — the order is explicit that synthetic audio never appears in
     /// the phase's score.</para>
@@ -156,11 +156,37 @@ public sealed class TheAudioSpectrumIsDeterministicTests
         const int Rate = 12000;
         const double ToneHz = 1500;
 
-        var samples = new float[Rate * 2];
+        // **THE TONE ARRIVES; IT IS NOT THERE FROM THE START.** The picture
+        // measures each bin against its own recent quiet level, so a signal that
+        // has been perfectly constant since the first sample is by construction
+        // indistinguishable from a constant floor and correctly fades out. That
+        // is what an AGC does and it is what removes the receiver's filter shape
+        // from the picture.
+        //
+        // **REAL SIGNALS ARRIVE, AND FT8 ONES KEY EVERY FIFTEEN SECONDS.** So
+        // the honest test is a band that is quiet and then is not: two seconds
+        // of noise, then two seconds of noise with a station in it.
+        var samples = new float[Rate * 4];
+        var state = 12345u;
+
+        float Noise()
+        {
+            state ^= state << 13;
+            state ^= state >> 17;
+            state ^= state << 5;
+
+            return (float)(((state & 0xFFFF) / 65535.0) - 0.5) * 0.02f;
+        }
 
         for (var i = 0; i < samples.Length; i++)
         {
-            samples[i] = (float)(0.3 * Math.Sin(2 * Math.PI * ToneHz * i / Rate));
+            samples[i] = Noise();
+
+            if (i >= Rate * 2)
+            {
+                samples[i] += (float)(
+                    0.3 * Math.Sin(2 * Math.PI * ToneHz * i / Rate));
+            }
         }
 
         var source = new AudioSpectrumSource(Rate);

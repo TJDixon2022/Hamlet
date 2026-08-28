@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 2 of 7
+TASK: 4 of 7
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-28T13:14:42-04:00
-NOTE: engine run is in at 29 of 1914, the extra one a CI-V intermittent that passes alone; two render causes named with lines
+UPDATED: 2026-08-28T13:26:50-04:00
+NOTE: render fault fixed and measured: empty recording goes 12.3 percent saturated to 0.0, median byte 74 of 255, and a station that arrives still lands at its own frequency
 
 ---
 

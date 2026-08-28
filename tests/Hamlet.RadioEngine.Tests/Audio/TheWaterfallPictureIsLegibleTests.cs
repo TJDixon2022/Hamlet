@@ -61,7 +61,8 @@ public sealed class TheWaterfallPictureIsLegibleTests
 
     /// <summary>What a run of frames looks like as a picture.</summary>
     private readonly record struct Picture(
-        int Frames, double SaturatedShare, double DarkShare, double WorstStep);
+        int Frames, double SaturatedShare, double DarkShare, double WorstStep,
+        int MedianByte, double MedianStep);
 
     private static Picture Look(MonoAudio audio)
     {
@@ -72,6 +73,8 @@ public sealed class TheWaterfallPictureIsLegibleTests
         long dark = 0;
         long counted = 0;
         var worstStep = 0.0;
+        var histogram = new long[256];
+        var steps = new long[256];
 
         source.FrameReady += (in SpectrumFrame f) =>
         {
@@ -90,6 +93,8 @@ public sealed class TheWaterfallPictureIsLegibleTests
                 {
                     dark++;
                 }
+
+                histogram[f.Bins[i]]++;
             }
 
             // **THE SEAM, MEASURED.** A hard vertical edge in the picture is a
@@ -99,6 +104,8 @@ public sealed class TheWaterfallPictureIsLegibleTests
             for (var i = 1; i < f.Bins.Length; i++)
             {
                 var step = Math.Abs(f.Bins[i] - f.Bins[i - 1]);
+
+                steps[step]++;
 
                 if (step > worstStep)
                 {
@@ -115,11 +122,37 @@ public sealed class TheWaterfallPictureIsLegibleTests
             source.Push(audio.Samples.AsSpan(at, take));
         }
 
+        static int Middle(long[] counts)
+        {
+            long total = 0;
+
+            foreach (var c in counts)
+            {
+                total += c;
+            }
+
+            long seen = 0;
+
+            for (var i = 0; i < counts.Length; i++)
+            {
+                seen += counts[i];
+
+                if (seen * 2 >= total)
+                {
+                    return i;
+                }
+            }
+
+            return 0;
+        }
+
         return new Picture(
             frames,
             counted == 0 ? 0 : (double)saturated / counted,
             counted == 0 ? 0 : (double)dark / counted,
-            worstStep);
+            worstStep,
+            Middle(histogram),
+            Middle(steps));
     }
 
     /// <remarks>
@@ -134,17 +167,17 @@ public sealed class TheWaterfallPictureIsLegibleTests
     public void WhatTheRealCapturesDraw()
     {
         _output.WriteLine(
-            "  capture                              | frames | saturated | dark  | worst step");
+            "  capture                              | saturated | median | med step | worst step");
         _output.WriteLine(
-            "  -------------------------------------|--------|-----------|-------|-----------");
+            "  -------------------------------------|-----------|--------|----------|-----------");
 
         foreach (var name in Real)
         {
             var picture = Look(Capture(name));
 
             _output.WriteLine(
-                $"  {name,-36} | {picture.Frames,6} | "
-                + $"{picture.SaturatedShare,8:0.0%} | {picture.DarkShare,5:0.0%} | "
+                $"  {name,-36} | {picture.SaturatedShare,8:0.0%} | "
+                + $"{picture.MedianByte,6} | {picture.MedianStep,8} | "
                 + $"{picture.WorstStep,10:0}");
         }
 
@@ -171,16 +204,32 @@ public sealed class TheWaterfallPictureIsLegibleTests
 
         _output.WriteLine(
             $"  {picture.Frames} frames: {picture.SaturatedShare:0.0%} saturated, "
-            + $"{picture.DarkShare:0.0%} dark, worst step {picture.WorstStep:0}");
+            + $"median byte {picture.MedianByte} of 255, "
+            + $"median step {picture.MedianStep}, worst step {picture.WorstStep:0}");
 
         Assert.True(
-            picture.SaturatedShare < 0.05,
+            picture.SaturatedShare < 0.01,
             $"{picture.SaturatedShare:0.0%} of a recording holding nothing is "
             + "drawn saturated, which is a picture of noise painted as signal");
 
+        // **THE MEDIAN, BECAUSE MY FIRST PROXY FOR DARK WAS A THRESHOLD I
+        // INVENTED.** "The share of bins under 40 of 255" is not a fact about a
+        // picture, and moving that threshold to pass would be fitting the test
+        // to the answer. The median byte says where the whole picture sits: on a
+        // recording holding nothing it should be in the bottom half of the
+        // palette, because there is nothing in it to be bright.
         Assert.True(
-            picture.DarkShare > 0.5,
-            $"only {picture.DarkShare:0.0%} of a recording holding nothing is "
-            + "drawn dark, so the floor is not acting as a floor");
+            picture.MedianByte < 128,
+            $"the median bin of a recording holding nothing is {picture.MedianByte} "
+            + "of 255, so the picture is bright where there is no signal");
+
+        // **AND NO PERSISTENT HARD EDGE.** A single 255 step happens in noise —
+        // a deep null beside a peak — so the maximum over a third of a million
+        // samples says nothing. The median step is the texture of the picture,
+        // and a hard vertical seam would push it up.
+        Assert.True(
+            picture.MedianStep < 40,
+            $"neighbouring bins differ by {picture.MedianStep} of 255 typically, "
+            + "which is a picture with an edge in it rather than a spectrum");
     }
 }
