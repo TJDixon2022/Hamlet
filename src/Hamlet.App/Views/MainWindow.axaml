@@ -2787,13 +2787,38 @@
                                 </Border>
                             </StackPanel>
 
-                            <TextBlock Grid.Column="2"
-                                       Text="reading it &#183; 9 messages this slot"
-                                       HorizontalAlignment="Right"
-                                       VerticalAlignment="Center"
-                                       FontSize="12"
-                                       TextTrimming="CharacterEllipsis"
-                                       Foreground="{StaticResource HmTextMutedBrush}" />
+                            <!-- **THE STATIC STATUS STAYS EXACTLY AS UNIT 037
+                                 WROTE IT** (work instruction 038). The clock is
+                                 added beside it rather than replacing it: it is
+                                 the one value on this strip that is measured,
+                                 and it says so by standing apart from the ones
+                                 that are not. -->
+                            <StackPanel Grid.Column="2" Orientation="Horizontal"
+                                        Spacing="10"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center">
+
+                                <TextBlock Text="{Binding ClockOffsetLine}"
+                                           VerticalAlignment="Center"
+                                           FontSize="12"
+                                           TextTrimming="CharacterEllipsis"
+                                           IsVisible="{Binding !ClockIsConcerning}"
+                                           Foreground="{StaticResource HmTextMutedBrush}" />
+
+                                <TextBlock Text="{Binding ClockOffsetLine}"
+                                           VerticalAlignment="Center"
+                                           FontSize="12"
+                                           FontWeight="SemiBold"
+                                           TextTrimming="CharacterEllipsis"
+                                           IsVisible="{Binding ClockIsConcerning}"
+                                           Foreground="{StaticResource HmAmberDeepBrush}" />
+
+                                <TextBlock Text="reading it &#183; 9 messages this slot"
+                                           VerticalAlignment="Center"
+                                           FontSize="12"
+                                           TextTrimming="CharacterEllipsis"
+                                           Foreground="{StaticResource HmTextMutedBrush}" />
+                            </StackPanel>
                         </Grid>
                     </Border>
 
@@ -2817,7 +2842,7 @@
                             <ctl:CollapsiblePanel x:Name="DigitalWaterfallPanel"
                                                   Family="Lavender"
                                                   Title="Waterfall"
-                                                  Summary="200&#8211;3000 Hz &#183; 15 s slots"
+                                                  Summary="{Binding DigitalWaterfallSummary}"
                                                   IsExpanded="{Binding DigitalWaterfallExpanded, Mode=TwoWay}">
                                 <ctl:CollapsiblePanel.HeaderAction>
                                     <Button x:Name="DigitalCapturePress"
@@ -2831,6 +2856,7 @@
                                 </ctl:CollapsiblePanel.HeaderAction>
 
                                 <ctl:WaterfallControl MinHeight="180"
+                                                      Source="{Binding DigitalSpectrum}"
                                                       BandLowHz="200"
                                                       BandHighHz="3000" />
                             </ctl:CollapsiblePanel>

@@ -587,6 +587,68 @@ public partial class MainWindowViewModel : ObservableObject
     [NotifyPropertyChangedFor(nameof(SpectrumNotice))]
     private ISpectrumSource? _spectrumSource;
 
+    /// <summary>
+    /// The Digital tab's own waterfall, an FFT of the received audio.
+    /// </summary>
+    /// <remarks>
+    /// <para>**A SECOND SOURCE, NOT A SHARED ONE** (Tim's ruling of 2026-08-28).
+    /// The CW waterfall draws the radio's own scope stream, which is band-wide
+    /// RF in kilohertz; FT8 lives in a fifty hertz sliver of a three kilohertz
+    /// audio passband, so the two pictures are of different things and neither
+    /// substitutes for the other.</para>
+    /// <para>**IT RIDES THE SAME AUDIO THE CW DECODER LISTENS ON** and cannot
+    /// disturb it: SamplesReady is a multicast event and this consumer never
+    /// starts or stops the source.</para>
+    /// </remarks>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(DigitalWaterfallSummary))]
+    private AudioSpectrumSource? _digitalSpectrum;
+
+    /// <summary>How far the PC clock is from UTC, measured and never corrected.</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(ClockOffsetLine))]
+    [NotifyPropertyChangedFor(nameof(ClockIsConcerning))]
+    [NotifyPropertyChangedFor(nameof(DigitalWaterfallSummary))]
+    private ClockOffset _clockOffset = ClockOffset.Unknown;
+
+    /// <summary>What the Digital tab says about the clock.</summary>
+    public string ClockOffsetLine => ClockOffset.Describe(DateTime.UtcNow);
+
+    /// <summary>Whether the clock is far enough out to draw in amber.</summary>
+    public bool ClockIsConcerning
+        => Hamlet.RadioEngine.Audio.ClockOffset.IsConcerning(ClockOffset);
+
+    /// <summary>
+    /// The Digital waterfall panel's collapsed summary, reporting what is really
+    /// being drawn.
+    /// </summary>
+    /// <remarks>
+    /// **IT STOPPED BEING STATIC IN UNIT 038.** A collapsed panel still carries
+    /// its news (HM-DEC-021), and a summary saying the band and the slots while
+    /// nothing is arriving is a claim rather than a caption.
+    /// </remarks>
+    public string DigitalWaterfallSummary
+    {
+        get
+        {
+            if (DigitalSpectrum is null)
+            {
+                return "not listening yet";
+            }
+
+            var band = $"{AudioSpectrumSource.LowHz}–"
+                + $"{AudioSpectrumSource.HighHz} Hz";
+
+            var grid = ClockOffset.IsKnown
+                ? "15 s slots"
+                : "no slot grid until the clock is checked";
+
+            return DigitalSpectrum.IsSimulated
+                ? $"{band} · {grid} · simulated"
+                : $"{band} · {grid}";
+        }
+    }
+
     /// <summary>Waterfall display gain — a setting, not per-frame data.</summary>
     [ObservableProperty]
     private double _waterfallGain = 1.35;
@@ -3364,6 +3426,16 @@ public partial class MainWindowViewModel : ObservableObject
         _lastCharacterUtc = DateTime.MinValue;
         _lastDecodeUtc = DateTime.UtcNow;
         _decoder.Listen(_audioInput);
+
+        // **THE DIGITAL WATERFALL RIDES ALONG** (work instruction 038). It
+        // subscribes to the same event and never starts or stops the source, so
+        // nothing on the Digital tab can silence the CW decoder.
+        DigitalSpectrum?.Dispose();
+        DigitalSpectrum = new AudioSpectrumSource(
+            _audioInput.SampleRate, _audioInput.IsSimulated);
+        DigitalSpectrum.Listen(_audioInput);
+        DigitalSpectrum.Start();
+
         _audioInput.Start();
 
         AudioInputName = _audioInput.DeviceName;
@@ -3417,6 +3489,10 @@ public partial class MainWindowViewModel : ObservableObject
         _keyingMeter = null;
         _meterWork = null;
         PublishKeying(KeyingReading.None);
+
+        DigitalSpectrum?.Stop();
+        DigitalSpectrum?.Dispose();
+        DigitalSpectrum = null;
 
         _audioInput?.Stop();
         _audioInput?.Dispose();
