@@ -1,208 +1,200 @@
-UNIT: 040 — stopped at task 5 of 8 — 2026-08-28 14:27
+UNIT: 041 — stopped at task 3 of 7 — 2026-08-28 14:49
 
 ## 1. What Claude did
 
-**Stopped. Tasks 1, 2, 3 and 5 are done. Tasks 4, 6, 7 and 8 were not started.**
+**Stopped. Tasks 1, 2 and 3 are done — three of the four defects you graded
+F-minus. Tasks 4, 5, 6 and 7 were not started.**
 
 Claude Code, on the development computer, in `C:\Source\HamLet`. The prompt
 claimed `PROJECT: Hamlet`; the tree confirmed all four checks — `SHACK_FACTS.md`
 and `src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs` exist, neither
 `CoreHMI.sln` nor `MURC.sln` does. **Hamlet confirmed.** Branch `main`
-throughout, four commits, all pushed, none refused. Version 1.12.2 to 1.12.3.
+throughout, three commits, all pushed, none refused. Version 1.12.3 to 1.12.4.
 
 **Nothing here is evidence about the radio.** No rig was connected. **Nothing
-transmitted, and no rig setting was written by this session** — what changed is
-what the tune-in write *will* send when the operator next uses it.
+transmitted.**
 
-**No decision was recorded under §12.1.** Section 4 carries what needs a ruling,
-including the two questions task 4 asks to be raised in options-table form.
+**No decision was recorded under §12.1.** Section 4 carries what needs a ruling.
 
-**Only task 8 was the named drop, so dropping 4, 6 and 7 as well is a sizing
+**Only task 7 was the named drop, so dropping 4, 5 and 6 as well is a sizing
 decision the owner did not make**, and §8 requires it reported as one. This is
-it. The hour the operator lost is fixed; the diagnosability half of the unit is
-not.
+it.
 
-### The manual is not on this machine, and the order forbids coding without it
-
-`IC-7300_ENG_FM_12b.pdf` **is not in the tree and is not on this machine.** §2.1
-forbids committing it, so that is correct rather than an oversight — but it means
-**the per-mode filter default table the order asks to have confirmed cannot be
-confirmed, and nothing was coded against it.**
-
-**It turned out not to be needed, and that is the useful half of the finding.**
-`CLAUDE.md` §4 already carries command `26` and the filter scale, verified
-column-aware against `A7292-4EX-6` on 2026-08-14. And the application already
-reads the radio's **actual** passband in hertz through `1A 03` and
-`CivFilterWidth`. **The width the radio really has is a better source than any
-table of defaults**, and it is what the code now uses.
-
-**What could not be answered**: whether `14 08` has a companion sub-command for
-the *inner* Twin PBT. §4 records `14 08` as the outer position and nothing more.
-That is task 4's central question and it is unanswerable here.
+**One instruction was not followed in order.** The order says *record the failing
+counts from the tree before task 2*. **I went from task 1 straight to task 2 and
+took the engine run after task 3 instead.** Task 1 was ordered first and not
+droppable, and I read that as the stronger instruction; but the count is meant to
+be a baseline taken before the changes, and taken afterwards it is a different
+measurement. **It came back at 29 of 1926 and caught a real defect of mine**, which is in
+section 3 — so taking it late cost nothing this time, and would have cost a
+wrong claim if I had not run it at all.
 
 ## 2. What the owner should expect
 
-**Tuning into an FT8 block now sets the filter as well as the mode, in the same
-frame, and the card tells you the dial will sound dead.**
+**The capture button works.** Press it on the Digital tab and it writes a WAV
+and a sheet to `captures\digital\`, named `ft8-<timestamp>`. **That is the one
+that makes the other complaints answerable** — the whale song and the speckle are
+still descriptions of a picture until there is a file, and now there can be one.
 
-That is the hour you lost, in two parts. The radio landed in CW/FIL2/500 Hz
-because **the mode write deliberately skipped the filter byte** — its own comment
-called letting the radio choose "a better answer than any Hamlet could invent" —
-and skipping it was never neutral: the manual's note is that omitting the
-trailing bytes selects the mode's *default* filter rather than leaving it alone.
-**The byte was already being sent. Nobody was choosing it.**
+**The sheet names today's failure state in words.** On the state you were in it
+reads:
 
-**And the card now says the thing nobody told you**: tune to 14.074 and expect
-the dial itself to sound dead, because everybody transmits in the 3 kHz above it.
-On 80 m it says 2 kHz, because that block is 2 kHz.
+```
+mode       CW  (measured, read 16:41:00 UTC via CI-V 04)
+dataMode   off  (this is the plain voice or Morse variant)
+filterSlot FIL2  (measured, read 16:41:00 UTC via CI-V 04)
+filterHz   500 Hz  (measured …; TOO NARROW for the 3000 Hz this block
+           occupies, so most of it cannot be heard)
+```
 
-**What has not changed:** the PBT is still invisible to Hamlet, and the capture
-press still does nothing. Both are in section 4.
+**The readout says `USB-D`.** And where the data flag has not been read it says
+**`USB-?`** rather than a bare `USB` — because a bare `USB` when nobody has read
+the variant is the guess that cost an hour today.
+
+**Switching tabs now sets the radio.** Both directions, through the same door the
+dial uses.
+
+**What has not changed:** the PBT is still invisible, there is no slot cutter,
+and no sync search. **And the whale song and the speckle are untouched** — the
+press exists so the next unit can look at a file instead of a photograph.
 
 | | before | after |
 |---|---|---|
-| engine | 29 of 1914 (039) | **28 of 1916, byte-identical to the stable set** |
+| engine | 28 of 1916, byte-identical | **29 of 1926, then 28 after a fix the run caught** |
 | app | 509 of 509 | **509 of 509** |
-
-**The engine is back to 28** and the failing set is byte-identical by name.
-`AConfirmedModeWriteFoldsTheDataVariantTooAsync`, unit 039's extra, **does not
-appear** — which confirms it as the intermittent 039 judged it rather than a
-regression.
 
 ## 3. What you should see
 
-### The defect, with the line
+### Task 2's cause, and it is not what the complaint assumed
 
-**`CivWrites.cs:101`.** The mode write built `26` with the VFO selector, the mode
-and the data flag, and stopped. Its own documentation said so:
+**`MainWindowViewModel.cs:211`.** `OnOperatingModeChanged` raised three property
+notifications, synchronised the tab strip, and **touched the radio nowhere.**
 
-> "Hamlet sends the data flag and skips the filter, so the radio picks the filter
-> it would have picked for that mode itself, **which is a better answer than any
-> Hamlet could invent for somebody else's rig.**"
+So the two directions were never asymmetric. **Neither of them did anything.**
+Every mode write in the application came from the dial moving through
+`ScheduleModeFollow`, which is why switching to CW appeared to work — you were
+tuning as well — and switching back did not.
 
-**That reasoning is what left the radio too narrow to hear the block it had just
-been tuned to.**
+A tab press now goes through that same settle timer, so both arrive at one door.
+**HM-DEC-056 is untouched**: your own hand still wins, the suspension is still
+visible, and a value the radio did not confirm is still unknown rather than
+assumed. **What gets written is what the map says lives at the dial**, generated
+from the band-plan row rather than from the tab's name — a tab is not a mode, and
+the Digital tab at 14.074 wants USB-D because that is what is there.
 
-### What replaced it
+### Task 3's cause
 
-**One frame either way.** Command `26` already carries the filter byte, and
-skipping it selects the mode's default rather than leaving the filter alone
-(p. 19-11, already in §4). So choosing costs nothing on the wire.
+**`MainWindowViewModel.cs:3289.`** `RigModeText` was built from `RigField.Mode`
+alone. The data flag was read from `26 00` on the same poll and displayed
+correctly in the "What the radio is doing" window — **two surfaces disagreeing
+about one measured fact.**
 
-**Choosing a slot is not knowing a width, and the code says so.** FIL1 is the
-widest slot by the manual, but what it opens onto is whatever the operator
-configured it to be. So the passband is established by the `1A 03` readback and
-is **unknown until it arrives** — the same rule HM-DEC-056 already applies to the
-mode.
-
-**The question is three-valued**, and the four states of task 5 answer it:
-
-| radio state | answer |
+| the radio | the readout now |
 |---|---|
-| CW / FIL2 / 500 Hz — the failure | **too narrow** |
-| USB-D / FIL2 / 1.2 kHz — what the old write could leave | **too narrow** |
-| USB-D / FIL1 / 3.0 kHz | **wide enough** |
-| the filter has not been read | **unknown** |
+| USB, data flag on | **`USB-D`** |
+| USB, data flag off | `USB` |
+| USB, **flag never read** | **`USB-?`** |
+| nothing read at all | *(blank)* |
 
-**A filter nobody has read is not a filter that is wrong**, and saying either
-would be a guess on the one sentence the operator acts on.
+The unread case is the one that matters, and the test asserts it is visibly
+neither of the other two. **The suffix position is where the variant already
+lives, so there is no new colour and no new badge.**
 
-### The map walk caught my own mistake on its first run
+### The run caught a defect of mine, and the guard was right
 
-I added `passbandHz: 3000` to every FT8 row. The walk immediately found that
-**the 80 m FT8 block is 2 kHz wide** — so the file was claiming a radio needed
-more passband than the block occupies.
+**29 of 1926**, one over the stable 28, and the extra was
+`EveryTypedAccessorOnTheStateCanSayItDoesNotKnow` — **mine.**
 
-**The requirement is derived from the block's own width now**, and the file
-carries a flag saying *why* rather than a number that can disagree with it. That
-is §0: generated from the source of truth, not typed beside it.
+It reflects over every typed accessor on `RigState` and asserts each one returns
+**null** for an empty state. My `ModeWithVariant` returned `""`. **The guard is
+right and I conformed to it rather than adding myself to its exemption list**: an
+empty string is a value that reads as *nothing is set*, and null is the absence
+of a reading. Those are different facts, and keeping them different is the whole
+of §0.0.
 
-| band | block | needs |
-|---|---|---|
-| 80 m FT8 | 1999 Hz | 1999 Hz |
-| 20 m FT8 | 2999 Hz | 2999 Hz |
-| 40 m FT4 | 2999 Hz | 2999 Hz |
+**The failing set is back to the stable 28 by name.**
 
-**12 blocks state a passband; 93 state none**, and a block stating none produces
-no claim about the radio in either direction.
+### Task 1 — what the sheet holds
 
-### What the card says now
+Mode and the data flag are **separate lines on purpose**. The filter slot and its
+width in hertz from `1A 03`, judged against the block's requirement in words
+rather than as two numbers to compare. The dial, the block, the clock offset with
+its age, and the ten fields the diagnostics window reads. **Every row says
+measured with its time and source, or unknown with the reason. Nothing is
+defaulted.**
 
-> *Tune to 14.074, and expect the dial itself to sound dead. Everybody here
-> transmits somewhere in the 3 kHz above it, arriving as audio tones rather than
-> on the frequency you set, so the band comes alive across the whole block at
-> once.*
+**It does not call `MarkCase` and does not touch `CwCaseRoster`**, and the CW
+capture path was not edited. What is shared is the audio ring, read-only.
 
-On 80 m the same sentence says **2 kHz**. Every number is the row's own.
+**Two things the sheet says that it would have been easy to leave out:** that the
+file is **untrimmed**, so a later scoring run can tell diagnostic material from
+corpus without opening the audio; and that a block stating no passband
+requirement is **not judged either way** — 93 of the map's 105 blocks state none.
 
-### §0.0.1's question, answered
-
-**Could a session tomorrow tell from Hamlet's own files that the radio was in
-CW/FIL2/500 Hz today?** The CW sidecar carries `Mode`, `FilterSelection` and
-`FilterBandwidth` — so **for a CW capture, yes.** But the Digital tab has no
-capture at all, so **for the screenshot that started this, no**: there was no file
-because there is no press. **That is task 6, and it was not reached.**
+**The button's label changed** from `keep the last four slots` to `keep the last
+30 seconds`, because trimming is ruled out of this unit and a label describing
+work nobody had done would be its own small lie. **That is the only static string
+this unit touched**, and it was one describing behaviour that did not exist.
 
 ## 4. What's blocking us
 
-**Two questions task 4 asks to be raised rather than decided, in options-table
-form.**
+**The whale song and the speckle are still undiagnosed, and now they are
+diagnosable.**
 
-**A. Does an *unreadable* inner PBT suppress the readiness claim, or qualify it?**
+That is the honest state: three defects fixed, the fourth untouched but no longer
+unanswerable. **Press the button while it is doing it**, and the next unit has a
+WAV, a sheet naming mode, variant and passband, and a clock offset — which is
+everything two units have been guessing at from a photograph.
 
-| | what it does | for | against |
-|---|---|---|---|
-| **Suppress** | no "you should hear it" claim while the inner PBT is unknown | the conservative reading of §0.0 — a claim the operator acts on, made over a control that could be closing his window | **fires on every radio where that read does not exist**, which may be all of them, making the claim permanently unreachable |
-| **Qualify** | claim it, and say the PBT was not readable | the claim is still useful and the caveat is honest | a caveat beside a confident sentence is read past, which is how HM-DEC-092's picture problem works |
-| **Read the outer only** | claim it when the outer is centred, unknown otherwise | outer is `14 08` and verified | the inner alone can close the window, so a centred outer proves nothing |
-
-**I have no recommendation, because the deciding fact — whether the inner is
-readable at all — needs the manual I do not have.**
-
-**B. Does the filter write belong to the operator's hand the way the mode does?**
-
-| | what it does | for | against |
-|---|---|---|---|
-| **Yes, same as mode** | a filter turned by hand suspends the write until the next band change (HM-DEC-056) | **narrowing onto one signal is a deliberate, skilled act**, and overriding it is the app fighting the operator | a filter left narrow from a previous session then silently defeats the fix this unit just made |
-| **No, always write it** | every tune-in sets the widest slot the block needs | the failure that cost an hour cannot recur | takes the filter knob away on a tab where narrowing is normal |
-| **Write once per tune-in, then hands off** | set it on arrival, never again until the next tune-in | matches what a person would do | the "next tune-in" boundary is not the same as HM-DEC-056's "next band change" |
-
-**Built as the middle one**, because the write only happens on a tune-in and
-there was no existing suspension to inherit. **If that is wrong it is a small
-change**, and it is the one place this unit may have overreached.
+**No ruling is needed for that. It needs an evening at the radio.**
 
 ---
 
-**Tasks 4, 6, 7 and 8 were not started.**
+**Task 4's question is carried forward unchanged, because nothing this session
+learned bears on it.**
 
-Task 6 is the one that matters most: **the sidecar is what §0.0.1 asks for, and
-without it a screenshot is still a description rather than evidence.** It is
-unblocked — unit 039 established that `MarkCase` must not be called and this
-order rules the digital capture gets its own record and folder, so the design
-question is settled and only the writing remains.
+Whether an *unreadable* inner Twin PBT suppresses the "you should hear the block"
+claim or only qualifies it. Unit 040 costed three options and had no
+recommendation because **the deciding fact — whether the inner is readable at
+all — needs the manual, which is not on this machine.** I checked
+`SHACK_FACTS.md`: it carries nothing on the PBT. `CLAUDE.md` §4 records `14 08`
+as the outer position and records nothing about a companion.
+
+**So the table stands exactly as unit 040 left it, with one line added: the
+project's own two written sources have now been checked and neither answers it.**
+
+---
+
+**Tasks 4, 5, 6 and 7 were not started.**
+
+Task 5's regression fixtures are the notable absence: **task 2's fix is asserted
+by no test.** The mode-follow path runs through a dispatcher timer and a rig, and
+building that harness is real work rather than an afterthought. **The fix is a
+one-line call into machinery that is already tested; what is untested is that a
+tab press reaches it.**
 
 ### Asks still outstanding
 
 **Carried forward per HM-DEC-139 and HM-DEC-140, and deliberately not restated.**
-The order parks the CW stream, the CW capture path and the carried asks, and says
-*both halves are required*. **The thirty-one asks from unit 1.11.34's list stand
-unchanged.**
+The order parks the CW stream, the CW capture path and the carried asks. **The
+thirty-one asks from unit 1.11.34's list stand unchanged.**
 
-**Carried from unit 038, still open:**
+**Carried and still open:**
 
-1. **`ft8_lib` cannot be built here** — no C toolchain. **This order confirms the
-   decoder is written in C#.**
+1. **`ft8_lib` cannot be built here** — no C toolchain; the decoder is C#.
+2. **The inner PBT's readability** — needs the manual, both written sources
+   checked this session and neither answers it.
+3. **The manual is not obtainable from this machine**, so any task needing a
+   fresh page read has to be met another way.
 
 **New this unit:**
 
-2. **The inner PBT's readability**, above — needs the manual.
-3. **Whether the filter write belongs to the operator's hand**, above.
-4. **The manual named in the order is not obtainable from this machine**, so any
-   future task requiring a fresh page read has to be met some other way.
-5. **Tasks 4, 6, 7 and 8 not started**, above.
+4. **Task 2's fix has no test**, above.
+5. **Tasks 4, 5, 6 and 7 not started**, above.
+6. **The engine baseline was taken after the changes rather than before**, above.
 
-**Closed this unit:** **why the radio was too narrow** — the mode write skipped
-the filter byte, and skipping it selects the mode's default rather than leaving
-it alone. **Whether the map can say what a block needs** — yes, derived from the
-block's own width, walked across every band. **Whether 039's extra failure was a
-regression** — it was not; the engine is byte-identical at 28.
+**Closed this unit:** **the capture press** — writes a WAV and a sheet, after
+being ordered and dropped from three units. **Why Digital did not restore USB-D**
+— the tab handler never touched the radio in either direction. **Why the readout
+said `USB`** — it was built from the mode alone while the flag sat beside it,
+read and unused.

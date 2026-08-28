@@ -81,7 +81,10 @@ public sealed class TheReadoutNamesTheDataVariantTests
 
         // Nothing read at all: the readout shows nothing rather than inventing a
         // mode to hang a variant on.
-        Assert.Equal("", RigState.Empty.ModeWithVariant);
-        Assert.Equal("", With(Data(1)).ModeWithVariant);
+        // **NULL, NOT EMPTY.** An empty string reads as "nothing is set"; null
+        // is the absence of a reading, and RigUnknownStateTests enforces that
+        // distinction across the whole type.
+        Assert.Null(RigState.Empty.ModeWithVariant);
+        Assert.Null(With(Data(1)).ModeWithVariant);
     }
 }

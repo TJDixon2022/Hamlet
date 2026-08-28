@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
+STATE: COMPLETED
 TASK: 3 of 7
-BALL: code
-NEXT_PASTE: none
-UPDATED: 2026-08-28T14:49:09-04:00
-NOTE: tab switch now follows the map both ways and the readout shows USB-D, or USB-? where the flag was never read
+BALL: tim
+NEXT_PASTE: OUTPUT.md -> Claude Web
+UPDATED: 2026-08-28T15:17:27-04:00
+NOTE: three of the four F-minus defects fixed; the press writes so the waterfall complaint is now answerable from a file
 
 ---
 

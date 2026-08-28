@@ -3290,7 +3290,7 @@ public partial class MainWindowViewModel : ObservableObject
         // This read RigField.Mode alone, so a radio Hamlet knew was in USB-D
         // showed as USB on the readout while the diagnostics window said
         // `Data mode: on` from the same poll.
-        RigModeText = state.ModeWithVariant;
+        RigModeText = state.ModeWithVariant ?? "";
         RigFilterText = state[RigField.FilterSelection] is { IsKnown: true } filter
             ? filter.Text
             : "";

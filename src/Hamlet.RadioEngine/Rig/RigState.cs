@@ -123,7 +123,15 @@ public sealed class RigState
     /// mistaken for it. **No new colour and no new badge**: the readout's own
     /// language already puts the variant there.</para>
     /// </remarks>
-    public string ModeWithVariant
+    /// <remarks>
+    /// **NULL WHEN THE MODE ITSELF IS UNREAD, NOT AN EMPTY STRING.** Every typed
+    /// accessor here has to be able to say it does not know, and
+    /// `RigUnknownStateTests` asserts it by reflection over the whole type —
+    /// which caught this the moment it was added. An empty string is a value
+    /// that reads as *nothing is set*; null is the absence of a reading, and
+    /// those are different facts (§0.0).
+    /// </remarks>
+    public string? ModeWithVariant
     {
         get
         {
@@ -131,7 +139,7 @@ public sealed class RigState
 
             if (!mode.IsKnown || mode.Text.Length == 0)
             {
-                return "";
+                return null;
             }
 
             var flag = this[RigField.DataMode];
