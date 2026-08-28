@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
-TASK: 3 of 4
-BALL: code
-NEXT_PASTE: none
-UPDATED: 2026-08-27T21:09:34-04:00
-NOTE: the no-keying refusal takes 005158 from sixty characters to one letter and costs N4L, which the tree predicted; reverted per the order's own rule and handed back
+STATE: COMPLETED
+TASK: 2 of 4
+BALL: tim
+NEXT_PASTE: OUTPUT.md -> Claude Web
+UPDATED: 2026-08-27T21:11:09-04:00
+NOTE: gate proven working; the refusal that ends the phantoms costs N4L and is handed back as the ruling this unit ends on
 
 ---
 

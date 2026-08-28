@@ -1,209 +1,198 @@
-UNIT: 035 — complete at task 6 of 6 — 2026-08-27 19:10
+UNIT: 027 — stopped at task 2 of 4 — 2026-08-27 21:09
 
 ## 1. What Claude did
 
-**Complete. All six tasks ran, including the drop.**
+**Stopped. Tasks 1 and 2 done; task 3 is moot and task 4, the drop, was not
+reached.**
 
 Claude Code, on the development computer, in `C:\Source\HamLet`. The prompt
 claimed `PROJECT: Hamlet`; the tree confirmed all four checks — `SHACK_FACTS.md`
 and `src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs` exist, neither
 `CoreHMI.sln` nor `MURC.sln` does. **Hamlet confirmed.** Branch `main`
-throughout, five commits, all pushed, none refused. Version 1.11.31 to 1.11.32
+throughout, three commits, all pushed, none refused. Version 1.11.32 to 1.11.33
 per HM-DEC-150.
 
 **Nothing here is evidence about the radio.** No rig was connected.
 
-**No decision was recorded under §12.1.** Section 4 carries what needs a ruling.
+**No decision was recorded under §12.1.** Section 4 carries what needs a ruling,
+and this unit ends on one.
 
-**Nothing shipped from task 3, and that is the unit's result rather than a
-failure to finish.** The model was built exactly as specified, measured across
-the whole corpus, and moves every recording the wrong way.
+**Nothing shipped from task 2, by the order's own rule.** The refusal works and
+costs adjudicated anchors, and the order says that means ship the other two —
+which are already-enforced and unshippable respectively.
 
-### Task 1 — banked, deleted, and a completed run
+**Task 3 is moot rather than dropped.** It asks the terminal to say why it is
+quiet *when a refusal in task 2 is holding*. No refusal holds, so there is
+nothing to explain and a line saying so would be describing behaviour the
+application does not have.
 
-`ANALYSIS-cw-key-up-is-not-noise-2026-08-27.md` is committed at the root. Both
-captures it names were already in the tree with their sidecars.
+### Where the order and the tree disagree
 
-**`CwPitchRanking` and its tests are deleted** per Tim's ruling.
-
-**Suite to completion: 1852 tests, 1824 passed, 28 failed, 18.5 minutes, failing
-set byte-identical by name.** The total is 1852 rather than the order's expected
-1856 **because deleting the ranking took its four tests with it.**
-
-### Task 2 — the premise holds, and two of my own measurements were wrong first
-
-**Answer to the sentence the order asks for: yes.** Key-up sits **14.7 dB** above
-the band floor on `014113`, **15.9 dB** on `014308`, and **36.7 dB** on
-`012403`, which reads. It is well above the floor on captures that read as well
-as on captures that do not, so tasks 3 to 5 proceeded by the order's own rule.
-
-**And unit 1.11.31's conclusion was wrong, which this unit owns.** Band SNR
-through Hamlet's own envelope is **21.1 dB** on both unread captures against 41.1
-on the control. Calling them "below the decoder's sensitivity" was a statement
-about the window ratio dressed as a statement about the signal. **The stations
-are not weak.**
-
-**Two errors in my own instruments were caught before they misled anything.** The
-autocorrelation was unnormalised, so it fell away with lag and reported the
-search floor on four captures of five; normalised by the overlap and started
-above the integrator's own smoothing, `014113` reads **110 ms**, matching the
-analysis to the millisecond. And the two-state fit was cut at the midpoint of the
-range, which one quiet hop drags down; it is iterated to a fixed point now.
-
-### Task 6 — the drop, done, and it undermines the order's evidence
-
-Set out in section 3.
+- **The expected state is stale.** The order says 28 failing of **1841** in the
+  engine and **503 of 503** in the app, with `CLAUDE_CODE.md` at **1.4**. The
+  tree is **1852** engine tests with 28 failing, **509** app tests, and
+  `CLAUDE_CODE.md` at **1.6 with twelve sections**. The order also numbers itself
+  **027** while the tree's last report is unit 035. **The captures and the
+  `unkeyed` line it cites are from tonight**, so the order is new and its
+  header block is copied from an older one.
+- **`AppSettings.UseJointDecoder` and `ShowKeyingSweep` both ship false**, as
+  stated. Confirmed, untouched.
 
 ## 2. What the owner should expect
 
-**A station he can hear still does not reach the screen, and nothing this unit
-built changes that.** `014113`, `014308` and `125941` emit nothing;
-`cw-2026-08-25-012823` still emits 41 characters of junk at 450 Hz.
+**Nothing on the screen has changed, and the phantoms are still there.** The fix
+was built, it works, and it is handed back rather than shipped — because it
+takes `N4L` with it, and this project already ruled that trade to be yours.
 
-**A dead frequency still stays quiet.** Both recordings holding nothing emit
-nought, unchanged.
-
-**What will look wrong and is not:** `FittedLogLikelihoods` is in the engine and
-nothing in the application calls it. It is exercised by the measurement that
-decided against it, and deleting it would throw away the ability to re-run that
-comparison. **It is not a second decode path in the application.**
+**What did change is that the phantoms are now explained.** The gate is not
+broken. It never was.
 
 | | baseline | end |
 |---|---|---|
-| engine | 28 of 1852, byte-identical by name | **28, byte-identical — measured this unit** |
+| engine | 28 of 1852, byte-identical by name | **anchors and silence controls re-run green; no full run** |
 | app | 509 of 509 | **not re-run — no app file was changed** |
+
+**No engine source file was changed.** The refusal was written into
+`CwDecoder`, measured, and reverted with `git checkout`; what remains is the
+measurement in tests.
 
 ## 3. What you should see
 
-**Task 2's sentence first, as the order requires.** **Yes — the key-up state sits
-well above the band noise floor on captures that read and on captures that do
-not**, at 14.7, 15.9 and 36.7 dB. **But it sits higher still on both recordings
-that hold nothing, at 26.1 and 25.1 dB**, so it does not separate a station from
-an empty band.
+### Task 1 — the gate is firing, and the sheet is what lied
 
-### The window ratios, before and after, against the floor of 1.40
+**Every one of the seven captures streamed through a real decoder: zero
+characters settled while the standing window was below the gate.**
 
-| recording | assumed key-up | fitted key-up | move | what |
-|---|---|---|---|---|
-| `cw-2026-08-22-014113` | 0.88 | **0.79** | −0.09 | he hears it |
-| `cw-2026-08-22-014308` | 0.82 | **0.69** | −0.13 | he hears it |
-| `cw-2026-08-26-125941` | 0.51 | **0.44** | −0.07 | he hears it |
-| `cw-2026-08-24-012403` | 1.69 | 1.56 | −0.13 | READS — control |
-| `cw-2026-08-17-013347` | 3.21 | 2.12 | −1.09 | READS — `VA3VRR` |
-| `cw-2026-08-17-134712` | 4.67 | 3.86 | −0.81 | READS — `N4L` |
-| `cw-2026-08-18-004507` | 5.65 | 4.51 | −1.14 | READS — the bulletin |
-| `cw-2026-08-20-014854` | 0.94 | 0.74 | −0.19 | **holds nothing** |
-| `cw-2026-08-20-014935` | 0.11 | 0.16 | +0.05 | **holds nothing** |
+| capture | characters | settled under the gate | lowest ratio behind one |
+|---|---|---|---|
+| `004844` good | 190 | **0** | 22.33 |
+| `004902` good | 175 | **0** | 19.16 |
+| `004915` good | 154 | **0** | 5.48 |
+| `005051` phantom | 114 | **0** | 1.48 |
+| `005158` phantom | 58 | **0** | 1.49 |
+| `005218` phantom | 101 | **0** | 6.17 |
+| `005243` phantom | 158 | **0** | 3.34 |
 
-**Unread captures lifted over the gate: 0 of 3. Every recording moves down.**
+**So the −68562.4 is not a window that emitted.** It is `_probabilistic.Last` —
+**the score of the final window at the moment of the press** — printed on a sheet
+beside `inThis`, a character count accumulated across the whole recording. The
+two figures are about different things and the sheet puts them three lines apart.
 
-**The mechanism is arithmetic, not tuning, and it is the thing worth keeping from
-this unit.** The window ratio is a comparison **against** the all-key-up
-hypothesis. Fitting key-up makes that hypothesis explain the observed inter-mark
-hops *better*, which raises the null and therefore **lowers** the ratio. **If
-key-up genuinely is not the noise floor, the honest model must score keying lower
-than the shipped one does** — which means the shipped Rayleigh-at-the-noise-scale
-has been over-crediting keying all along, and the floor of 1.40 was calibrated
-against that over-crediting.
+**That is HM-DEC-091's `tonePeak` fault arriving in a second field**, and it is
+what sent this order after a gate that was working. The phantoms cleared the
+gate honestly, at 1.48 and 1.49 against 1.40 — **by a hair, but above it.**
 
-**So the analysis is right about the signal and the fix it implies runs the wrong
-way.**
+### Task 2 — the three refusals, measured
 
-### The number no observation model got past
+**Refusal 2, window score below the gate: already enforced.** Task 1 is the
+proof. Nothing to build.
 
-**`cw-2026-08-20-014854`, which holds nothing, scores 0.94. `cw-2026-08-22-014113`,
-which holds a station the operator can hear, scores 0.88.** Under the fitted model
-they are 0.74 and 0.79. **Under both models the empty recording and the real
-station are within a tenth of each other, on either side.** No threshold on this
-quantity separates them, and that is why no floor and no acquisition change has
-ever reached these captures.
+**Refusal 3, clock withdrawn: measured and not shippable.** Counted at the moment
+each character settles, it would block **26, 38 and 25** characters on `004844`,
+`004902` and `004915` — the three captures from earlier that read a real
+bulletin. That is the good case paying for the bad one, which the order forbids.
 
-### Task 6 — the reference decoder, and the order's evidence does not hold
+**Refusal 1, no keying admitted: works.** Wired at the emit seam as **blocks
+rather than deletions**, so no character position is lost and only the assertion
+goes:
 
-The order says `cwdecoder.py` reads these captures and Hamlet does not.
+| capture | letters | blocks | what it spells |
+|---|---|---|---|
+| `004844` good | 41 | 2 | `K IL O TUES AU G 2 5 K C 9 E T…` |
+| `004902` good | 45 | 2 | `TTEL <BT> BRU C E <AR> NRE…` |
+| `004915` good | 35 | 7 | `■ ■ ■■L A WED AUG 2 6 W 7 G B…` |
+| `005051` phantom | 13 | 17 | mostly blocks |
+| **`005158` phantom** | **1** | **59** | **almost entirely blocks** |
+| `005218` phantom | 40 | 13 | still letters |
+| **`005243` phantom** | **0** | **54** | **no letters at all** |
 
-| recording | `cwdecoder.py` | Hamlet |
-|---|---|---|
-| `cw-2026-08-22-014113` | `ET EEETTETEIEEETIEREEEEEETTEEEEEEEU EEE E EIT…` | nothing |
-| `cw-2026-08-22-014308` | **emits nothing** — "timings do not cluster as Morse" | nothing |
-| `cw-2026-08-24-012403` — adjudicated `DE KD0UN KD0UN K` | `EEIEIEETE▯ETTTITIEETTEEEEEEEEEE ETAEETT…` | **reads it at 84 %** |
-| `cw-2026-08-20-014854` — **holds nothing** | **`▯ ▯▯I M YOY▯KB A NB ▯A IM`** | **nothing** |
-| `cw-2026-08-20-014935` — **holds nothing** | emits nothing | nothing |
+**`005158` goes from sixty characters to one letter. `005243` goes to none.** And
+the good captures keep `TUES AUG 25`, `WED AUG 26`, `W7GB` and `BRUCE`.
 
-**It does not read either capture. It does not read the control Hamlet does read.
-And it puts words on a recording that holds nothing**, which is the property
-HM-DEC-120 exists to protect and which Hamlet holds and it does not.
+**`005218` is barely touched** — 2 characters — because its pitch *was* measured.
+The refusal reaches what the survey admits nothing on, and on that capture the
+survey admitted something.
 
-**Hamlet is better than the reference on all five recordings measured.** The
-claim that a published implementation reads what Hamlet cannot is not supported
-by running it.
+### And it costs anchors, which the tree predicted in a comment
+
+Five tests fail with it in, including **`N4L` on `cw-2026-08-17-134712`**
+(HM-DEC-144). `CwDecoder` already carried this, written before tonight:
+
+> Refusing to decode until the survey admits a candidate was built and measured,
+> **and it costs `N4L`** on `cw-2026-08-17-134712` along with six other captures'
+> text. The reason is worth keeping: that recording's fallback bank centre is
+> 500.0 and its station sits at 500.09, **so the callsign was only ever read
+> because an unmeasured number happened to land on it. Honesty and that callsign
+> are in tension and the ruling is Tim's.**
+
+**The order's ruling and the order's acceptance are on opposite sides of that
+tension.** The ruling says never letters from a pitch nobody judged a station;
+the acceptance says all twelve anchors green. **`N4L` is a letter from a pitch
+nobody judged a station.** The order's tie-break — ship the other two — leaves
+nothing to ship, so nothing shipped.
 
 ## 4. What's blocking us
 
-**Two recordings the operator can hear cannot be told from an empty band by any
-quantity this decoder computes, and that is now measured under two observation
-models rather than one.**
+**The refusal that ends the phantoms is the one that costs `N4L`, and that trade
+has been waiting for you since it was first measured.**
 
 Ruling asked for:
 
-> **The next unit adjudicates by ear before it measures anything.** An empty
-> recording scores 0.94 and a station he can hear scores 0.88 on the shipped
-> model; 0.74 and 0.79 on the fitted one. **The two are inseparable on this
-> quantity in both directions**, and four units have now searched for a
-> threshold, an acquisition rule and an observation model that would part them.
+> **Hamlet stops printing letters from a pitch the survey admitted no keying at,
+> and `N4L` becomes blocks.** Measured tonight: it takes
+> `cw-2026-08-28-005158` from sixty characters to one letter and `005243` to
+> none, while the three captures that read a bulletin keep it at a cost of two,
+> two and seven blocks. It costs five tests, including the `N4L` anchor of
+> HM-DEC-144 and part of six captures' text.
 >
-> **What is missing is not a statistic. It is ground truth.** Nobody has ruled
-> what `cw-2026-08-22-014113` and `cw-2026-08-22-014308` contain — not a
-> callsign, not a word, not how fast. `cwdecoder.py` says `014308`'s timings do
-> not cluster as Morse; the operator says he hears a station. **Those cannot both
-> be tested against until somebody writes down what was sent.**
+> **`N4L` was never read from a measurement.** `CwDecoder`'s own comment records
+> why: the fallback bank centre is 500.0, the station sits at 500.09, and the
+> callsign came back because an unmeasured number happened to land on it. **It
+> is a correct reading obtained the way the phantoms are obtained.**
 >
-> **What was rejected:** another observation model, on the evidence of this
-> unit — the premise was right and the fix ran backwards; and any further
-> threshold work, because the empty recording is on the wrong side of every
-> threshold tried.
+> **What was rejected:** the clock-withdrawn refusal, measured at 26, 38 and 25
+> characters off the three good captures; and raising the gate, which the order
+> forbids and which task 1 shows would be aimed at a mechanism that is working.
 
-**Three minutes with headphones on `014113` and `014308` is what unblocks this**,
-and it is the same ask task 6 of unit 1.11.31 made about the empty corpus.
+**This is the whole unit.** Everything else is measured and settled.
 
 ---
 
-**The floor of 1.40 was calibrated against a model that over-credits keying.**
+**The capture sheet prints a last-window score beside a whole-recording count.**
 
-That follows from this unit's arithmetic and it is not a proposal to move it. If
-the key-up state is not the noise floor — and it is 15 to 37 dB above it — then
-the shipped Rayleigh gives the null too little credit, every ratio in the corpus
-is inflated, **and the floor is a number fitted to that inflation.** Both remain
-self-consistent, which is why nothing here breaks; but the next honest
-observation model will need the floor re-derived with it, and that pair has to
-move together or not at all.
+`reading … −68562.4 better than silence per hop` is `_probabilistic.Last`, one
+window, taken at the instant of the press. `inThis 69 characters emitted` covers
+thirty seconds. **Three lines apart on the same sheet, nothing says they are
+about different spans**, and this order was written from reading them together.
+
+*Not proposed, because §12.1 puts the sheet's assertions outside a session:*
+whether `reading` says which window it is about, the way `tonePeak` and the
+running totals were made to after HM-DEC-091.
 
 ---
 
-**The order's supporting evidence did not survive being run.**
+**Task 4 was not reached, and it is the drop.**
 
-`cwdecoder.py` reads neither capture, does not read the control Hamlet reads, and
-emits words on a recording holding nothing. **Two orders have now cited it as the
-working reference.** If it is to keep that role it needs a measurement behind the
-claim; if not, the reference is the port under `tools/reference-decoder/`.
+Why the tracker holds 750–775 Hz while two independent instruments say 600–625
+is unmeasured by this unit. **Task 1's trace gives the next unit a running
+start**: it streams all seven captures through a real decoder and already reports
+per-capture state.
 
 ### Asks still outstanding
 
-Carried forward verbatim per HM-DEC-139 and HM-DEC-140. **Twenty-eight inbound
-after this unit. The oldest is open since 2026-08-14.**
+Carried forward verbatim per HM-DEC-139 and HM-DEC-140. **Thirty inbound after
+this unit. The oldest is open since 2026-08-14.**
 
 1. **The sweep's `invented` column counts substitutions, not invented
    characters.**
 2. **Whether the refill guard should apply to the first fill at all.**
 3. **`ANNUNCIATOR.md` renamed `PHASE` to `TASK` while HM-DEC-150 makes `PHASE`
    match the version's minor.**
-4. **`DECISIONS.md` has no record for HM-DEC-096–133, 136, 141 or 150** —
-   HM-DEC-090, 095, 120, 125 and 127 are all inside it.
+4. **`DECISIONS.md` has no record for HM-DEC-096–133, 136, 141 or 150.**
 5. **The integrator width** — settled at 45 Hz, with the sharp-peak caveat.
 6. **A boxcar's nulls made two of five swept offsets pathological best cases.**
 7. **Two stations closer than 125 Hz are not named** — the operator's item five.
-8. **The keying meter** — its measurement found a station its verdict denied,
-   confirmed on a second capture in 1.11.31.
+8. **The keying meter** — its measurement found a station its verdict denied.
 9. **HM-OPEN-057** (2026-08-22) and **HM-OPEN-007** (2026-08-14).
 10. **The joint cutter cannot find word gaps on a compressed fist** (1.11.22).
 11. **The constrained margin is bounded and still does not separate** (1.11.22).
@@ -224,28 +213,30 @@ after this unit. The oldest is open since 2026-08-14.**
     (1.11.28).
 22. **`013347` returns a likelihood ratio of 17.2 million**, with `001520`'s
     quadrillions. Parked, raised once.
-23. **No capture reproduces the junk the operator is watching** (1.11.30).
+23. **No capture reproduced the junk the operator was watching** (1.11.30) —
+    **closed tonight: seven captures arrived and four reproduce it.**
 24. **The empty corpus is blocked by the keying meter, with proof** (1.11.31).
-25. **An offline sweep over a bank is not what the application runs**, and a
-    figure from one was carried into two orders as though it described the app.
-    **`CwPitchRanking`'s lesson, for `DECISIONS.md`, per task 1.**
+25. **An offline sweep over a bank is not what the application runs**
+    (`CwPitchRanking`'s lesson, for `DECISIONS.md`).
 26. **The two captures have no ground truth and cannot be told from an empty
-    band**, above.
-27. **The floor was calibrated against a model that over-credits keying**, above.
-28. **`cwdecoder.py` does not read what two orders say it reads**, above.
+    band** (1.11.32).
+27. **The emission floor was calibrated against a model that over-credits
+    keying** (1.11.32).
+28. **`cwdecoder.py` does not read what two orders say it reads** (1.11.32).
+29. **`N4L` against the phantoms**, above — **the one this unit ends on.**
+30. **The sheet prints a last-window score beside a whole-recording count**,
+    above.
 
-New this unit: **the ground-truth ask**, above; **the floor's calibration**,
-above; **the reference decoder**, above; **the ranking's lesson**, item 25.
+New this unit: **the `N4L` trade**, above; **the sheet's two spans**, above.
 
-Closed this unit: **a completed engine run** — 1852, 28 failing, byte-identical.
-**Whether key-up is the noise floor** — it is not, by 15 to 37 dB, confirmed with
-Hamlet's own instruments. **Whether the stations are weak** — they are not, 21.1
-dB out of their band, and unit 1.11.31 was wrong. **Whether fitting key-up helps**
-— it does not; every recording moves down and the reason is arithmetic.
-**Whether the reference reads them** — it does not, and it is worse than Hamlet
-on all five.
+Closed this unit: **why the gate did not fire** — it did fire, on all seven
+captures, and the −68562.4 was a snapshot read as a summary. **What each refusal
+costs** — 26/38/25 on the good captures for the clock one, five anchors for the
+no-keying one, nothing to build for the gate one. **A capture that reproduces the
+phantoms** — four of them.
 
 Still open: **the lock's mixed help**; **three fixtures at accepted cost**; **an
-unmeasured pitch costs `N4L`**; **the six-hertz window disagreement**;
-**`CHANGELOG.md` at 1.9.0 against 1.11.32**; **the squelch has no axis**; **the
-three morning captures of 2026-08-26**; **seven timing intermittents**.
+unmeasured pitch costs `N4L`** — **now measured exactly**; **the six-hertz window
+disagreement**; **`CHANGELOG.md` at 1.9.0 against 1.11.33**; **the squelch has no
+axis**; **the three morning captures of 2026-08-26**; **seven timing
+intermittents**.
