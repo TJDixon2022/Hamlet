@@ -2709,13 +2709,306 @@
                     </Border>
                 </Grid>
 
-                <!-- **DIGITAL AND VOICE ARE EMPTY, AND EMPTY MEANS EMPTY.** No
-                     panels, no placeholder text, no controls. Unit 1.11.24 gave
-                     each a line naming what would live there, and a line that
-                     changes nothing is decoration: a tab that does not change
-                     the screen is not a tab. -->
+                <!-- **THE DIGITAL WORKSPACE, AND EVERY STRING IN IT IS A
+                     PLACEHOLDER** (work instruction 037). Nothing here decodes,
+                     nothing moves, nothing is wired. It exists so the operator
+                     can look at a finished-looking FT8 session and say what is
+                     wrong with it before there is a decoder to argue with.
+
+                     **THE PANELS ARE THE TAB'S, NOT WIDGETS** (Tim, 2026-08-28):
+                     fixed, not removable, not draggable, in no catalogue. The
+                     canvas is gone and nothing here reintroduces it. -->
                 <Grid x:Name="DigitalWorkspace"
-                      IsVisible="{Binding IsDigitalMode}" />
+                      RowDefinitions="Auto,*"
+                      IsVisible="{Binding IsDigitalMode}">
+
+                    <!-- **THE MODE STRIP RUNS THE FULL WIDTH AND DOES NOT
+                         COLLAPSE** (Tim, 2026-08-28: a row, not a column — four
+                         short items and a status is a row, and a column would
+                         narrow the waterfall for nothing). -->
+                    <Border Grid.Row="0" x:Name="DigitalModeStrip"
+                            Margin="0,0,0,10" Padding="10,7"
+                            CornerRadius="8"
+                            Background="{StaticResource HmPanelBrush}"
+                            BorderBrush="{StaticResource HmSlateEdgeBrush}"
+                            BorderThickness="1">
+                        <Grid ColumnDefinitions="Auto,Auto,*">
+
+                            <TextBlock Grid.Column="0"
+                                       Text="on this frequency"
+                                       VerticalAlignment="Center"
+                                       Margin="0,0,12,0"
+                                       FontSize="12"
+                                       Foreground="{StaticResource HmTextMutedBrush}" />
+
+                            <StackPanel Grid.Column="1" Orientation="Horizontal"
+                                        Spacing="6" VerticalAlignment="Center">
+
+                                <!-- **LIT AND UNLIT DIFFER BY MORE THAN COLOUR**
+                                     (§0.6, HM-DEC-032). The lit one carries a
+                                     border and semibold weight as well as the
+                                     fill, so it survives a greyscale print and
+                                     a colour-vision deficiency.
+
+                                     **BOTH COLOURS COME FROM `ModePalette` AND
+                                     NEITHER IS A LITERAL.** `ModeColors` already
+                                     exposes them as brushes, so the strip reads
+                                     the same language the map and the field
+                                     guide read. -->
+                                <Border x:Name="DigitalModeFt8"
+                                        Padding="10,3" CornerRadius="5"
+                                        Background="{x:Static ctl:ModePalette.DigitalFill}"
+                                        BorderBrush="{x:Static ctl:ModePalette.DigitalInk}"
+                                        BorderThickness="1">
+                                    <TextBlock Text="FT8" FontSize="12"
+                                               FontWeight="SemiBold"
+                                               Foreground="{x:Static ctl:ModePalette.DigitalInk}" />
+                                </Border>
+
+                                <Border Padding="10,3" CornerRadius="5"
+                                        Background="Transparent"
+                                        BorderThickness="0">
+                                    <TextBlock Text="FT4" FontSize="12"
+                                               Foreground="{StaticResource HmTextMutedBrush}" />
+                                </Border>
+
+                                <Border Padding="10,3" CornerRadius="5"
+                                        Background="Transparent"
+                                        BorderThickness="0">
+                                    <TextBlock Text="PSK31" FontSize="12"
+                                               Foreground="{StaticResource HmTextMutedBrush}" />
+                                </Border>
+
+                                <Border Padding="10,3" CornerRadius="5"
+                                        Background="Transparent"
+                                        BorderThickness="0">
+                                    <TextBlock Text="WSPR" FontSize="12"
+                                               Foreground="{StaticResource HmTextMutedBrush}" />
+                                </Border>
+                            </StackPanel>
+
+                            <TextBlock Grid.Column="2"
+                                       Text="reading it &#183; 9 messages this slot"
+                                       HorizontalAlignment="Right"
+                                       VerticalAlignment="Center"
+                                       FontSize="12"
+                                       TextTrimming="CharacterEllipsis"
+                                       Foreground="{StaticResource HmTextMutedBrush}" />
+                        </Grid>
+                    </Border>
+
+                    <ScrollViewer Grid.Row="1"
+                                  VerticalScrollBarVisibility="Auto">
+                        <StackPanel Spacing="10">
+
+                            <!-- **THE WATERFALL, WITH THE CAPTURE PRESS ON ITS
+                                 HEADER** (Tim, 2026-08-28). The press is where a
+                                 signal that decoded nothing is visible, rather
+                                 than under a panel that can be collapsed.
+
+                                 **IT IS DELIBERATELY NOT WIRED.** The trimming
+                                 rule it has to obey — four complete slots on UTC
+                                 boundaries — does not exist yet, and a press
+                                 that keeps the wrong thing is worse than one
+                                 that does nothing. It looks pressable because
+                                 every string on this tab is a placeholder; that
+                                 stops being acceptable the moment anything here
+                                 is live. -->
+                            <ctl:CollapsiblePanel x:Name="DigitalWaterfallPanel"
+                                                  Family="Lavender"
+                                                  Title="Waterfall"
+                                                  Summary="200&#8211;3000 Hz &#183; 15 s slots"
+                                                  IsExpanded="{Binding DigitalWaterfallExpanded, Mode=TwoWay}">
+                                <ctl:CollapsiblePanel.HeaderAction>
+                                    <Button x:Name="DigitalCapturePress"
+                                            Content="keep the last four slots"
+                                            FontSize="11"
+                                            Padding="10,3"
+                                            Background="{StaticResource HmSlateTintBrush}"
+                                            BorderBrush="{StaticResource HmSlateEdgeBrush}"
+                                            BorderThickness="1"
+                                            Foreground="{StaticResource HmTextPrimaryBrush}" />
+                                </ctl:CollapsiblePanel.HeaderAction>
+
+                                <ctl:WaterfallControl MinHeight="180"
+                                                      BandLowHz="200"
+                                                      BandHighHz="3000" />
+                            </ctl:CollapsiblePanel>
+
+                            <!-- **DECODED TEXT SITS ABOVE WHAT PEOPLE ARE
+                                 SAYING** (Tim, 2026-08-28: he is more interested
+                                 in the text and expects to switch between
+                                 them). -->
+                            <ctl:CollapsiblePanel x:Name="DigitalDecodedPanel"
+                                                  Family="Lavender"
+                                                  Title="Decoded text"
+                                                  Summary="14:22:45 UTC &#183; 4 shown"
+                                                  IsExpanded="{Binding DigitalDecodedExpanded, Mode=TwoWay}">
+                                <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,*"
+                                      RowDefinitions="Auto,Auto,Auto,Auto,Auto">
+
+                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="utc"
+                                               FontFamily="Consolas,Menlo,monospace" FontSize="11"
+                                               Margin="0,0,14,4"
+                                               Foreground="{StaticResource HmTextMutedBrush}" />
+                                    <TextBlock Grid.Row="0" Grid.Column="1" Text="snr"
+                                               FontFamily="Consolas,Menlo,monospace" FontSize="11"
+                                               Margin="0,0,14,4"
+                                               Foreground="{StaticResource HmTextMutedBrush}" />
+                                    <TextBlock Grid.Row="0" Grid.Column="2" Text="dt"
+                                               FontFamily="Consolas,Menlo,monospace" FontSize="11"
+                                               Margin="0,0,14,4"
+                                               Foreground="{StaticResource HmTextMutedBrush}" />
+                                    <TextBlock Grid.Row="0" Grid.Column="3" Text="hz"
+                                               FontFamily="Consolas,Menlo,monospace" FontSize="11"
+                                               Margin="0,0,14,4"
+                                               Foreground="{StaticResource HmTextMutedBrush}" />
+                                    <TextBlock Grid.Row="0" Grid.Column="4" Text="message"
+                                               FontFamily="Consolas,Menlo,monospace" FontSize="11"
+                                               Margin="0,0,0,4"
+                                               Foreground="{StaticResource HmTextMutedBrush}" />
+
+                                    <!-- **THE FIRST ROW IS DRAWN SELECTED AND
+                                         NOTHING SELECTS IT.** It is here so the
+                                         operator can see what selection will
+                                         look like before there is anything to
+                                         select. -->
+                                    <Border Grid.Row="1" Grid.ColumnSpan="5"
+                                            Background="{x:Static ctl:PanelPalette.LavenderFill}"
+                                            CornerRadius="4" Margin="-4,0" />
+
+                                    <TextBlock Grid.Row="1" Grid.Column="0" Text="142245"
+                                               FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,14,1" />
+                                    <TextBlock Grid.Row="1" Grid.Column="1" Text="-19"
+                                               FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,14,1" />
+                                    <TextBlock Grid.Row="1" Grid.Column="2" Text="-0.4"
+                                               FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,14,1" />
+                                    <TextBlock Grid.Row="1" Grid.Column="3" Text="1502"
+                                               FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,14,1" />
+                                    <TextBlock Grid.Row="1" Grid.Column="4" Text="W9XYZ K1ABC -13"
+                                               FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,0,1" />
+
+                                    <TextBlock Grid.Row="2" Grid.Column="0" Text="142230"
+                                               FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,14,1" />
+                                    <TextBlock Grid.Row="2" Grid.Column="1" Text="-13"
+                                               FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,14,1" />
+                                    <TextBlock Grid.Row="2" Grid.Column="2" Text="0.2"
+                                               FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,14,1" />
+                                    <TextBlock Grid.Row="2" Grid.Column="3" Text="1240"
+                                               FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,14,1" />
+                                    <TextBlock Grid.Row="2" Grid.Column="4" Text="CQ K1ABC FN42"
+                                               FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,0,1" />
+
+                                    <TextBlock Grid.Row="3" Grid.Column="0" Text="142230"
+                                               FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,14,1" />
+                                    <TextBlock Grid.Row="3" Grid.Column="1" Text="-08"
+                                               FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,14,1" />
+                                    <TextBlock Grid.Row="3" Grid.Column="2" Text="0.1"
+                                               FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,14,1" />
+                                    <TextBlock Grid.Row="3" Grid.Column="3" Text="1875"
+                                               FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,14,1" />
+                                    <TextBlock Grid.Row="3" Grid.Column="4" Text="CQ DX EA3QQ JN11"
+                                               FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,0,1" />
+
+                                    <TextBlock Grid.Row="4" Grid.Column="0" Text="142215"
+                                               FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,14,1" />
+                                    <TextBlock Grid.Row="4" Grid.Column="1" Text="-21"
+                                               FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,14,1" />
+                                    <TextBlock Grid.Row="4" Grid.Column="2" Text="0.6"
+                                               FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,14,1" />
+                                    <TextBlock Grid.Row="4" Grid.Column="3" Text="2310"
+                                               FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,14,1" />
+                                    <TextBlock Grid.Row="4" Grid.Column="4" Text="VE7AA N0RR RR73"
+                                               FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,0,1" />
+                                </Grid>
+                            </ctl:CollapsiblePanel>
+
+                            <ctl:CollapsiblePanel x:Name="DigitalSayingPanel"
+                                                  Family="Lavender"
+                                                  Title="What people are saying"
+                                                  Summary="4 stations &#183; 2 contacts running"
+                                                  IsExpanded="{Binding DigitalSayingExpanded, Mode=TwoWay}">
+                                <StackPanel Spacing="10">
+
+                                    <!-- Drawn in the same treatment as the
+                                         selected decode row, and just as inert. -->
+                                    <Border Background="{x:Static ctl:PanelPalette.LavenderFill}"
+                                            CornerRadius="4" Padding="8,6">
+                                        <Grid ColumnDefinitions="3,*">
+                                            <Border Grid.Column="0" CornerRadius="2"
+                                                    Background="{x:Static ctl:ModePalette.DigitalInk}" />
+                                            <StackPanel Grid.Column="1" Margin="10,0,0,0" Spacing="2">
+                                                <TextBlock Text="W9XYZ is answering K1ABC"
+                                                           FontSize="13" TextWrapping="Wrap" />
+                                                <TextBlock Text="and telling him he&#8217;s coming in weak"
+                                                           FontSize="12" TextWrapping="Wrap"
+                                                           Foreground="{StaticResource HmTextMutedBrush}" />
+                                                <TextBlock Text="W9XYZ K1ABC -13"
+                                                           FontFamily="Consolas,Menlo,monospace"
+                                                           FontSize="11"
+                                                           Foreground="{StaticResource HmTextMutedBrush}" />
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+
+                                    <Grid ColumnDefinitions="3,*" Margin="0,0,0,0">
+                                        <Border Grid.Column="0" CornerRadius="2"
+                                                Background="{x:Static ctl:PanelPalette.LavenderEdge}" />
+                                        <StackPanel Grid.Column="1" Margin="10,0,0,0" Spacing="2">
+                                            <TextBlock Text="K1ABC is calling anyone"
+                                                       FontSize="13" TextWrapping="Wrap" />
+                                            <TextBlock Text="Massachusetts &#183; about 480 miles &#183; strong"
+                                                       FontSize="12" TextWrapping="Wrap"
+                                                       Foreground="{StaticResource HmTextMutedBrush}" />
+                                            <TextBlock Text="CQ K1ABC FN42"
+                                                       FontFamily="Consolas,Menlo,monospace"
+                                                       FontSize="11"
+                                                       Foreground="{StaticResource HmTextMutedBrush}" />
+                                        </StackPanel>
+                                    </Grid>
+
+                                    <Grid ColumnDefinitions="3,*">
+                                        <Border Grid.Column="0" CornerRadius="2"
+                                                Background="{x:Static ctl:PanelPalette.LavenderEdge}" />
+                                        <StackPanel Grid.Column="1" Margin="10,0,0,0" Spacing="2">
+                                            <TextBlock Text="EA3QQ is calling for distant stations"
+                                                       FontSize="13" TextWrapping="Wrap" />
+
+                                            <!-- **THE WHOLE REASON THIS ENTRY IS
+                                                 IN THE PLACEHOLDER SET**: what a
+                                                 looked-up fact looks like beside
+                                                 facts that came off the air. The
+                                                 country is the only thing here
+                                                 Hamlet did not hear. -->
+                                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                                <TextBlock Text="Spain" FontSize="12"
+                                                           VerticalAlignment="Center"
+                                                           Foreground="{StaticResource HmTextMutedBrush}" />
+                                                <Border CornerRadius="3" Padding="5,1"
+                                                        VerticalAlignment="Center"
+                                                        Background="{x:Static ctl:PanelPalette.LavenderPillFill}">
+                                                    <TextBlock Text="from the prefix list"
+                                                               FontSize="10"
+                                                               Foreground="{x:Static ctl:ModePalette.DigitalInk}" />
+                                                </Border>
+                                                <TextBlock Text="&#183; about 3,900 miles &#183; strong"
+                                                           FontSize="12"
+                                                           VerticalAlignment="Center"
+                                                           TextWrapping="Wrap"
+                                                           Foreground="{StaticResource HmTextMutedBrush}" />
+                                            </StackPanel>
+
+                                            <TextBlock Text="CQ DX EA3QQ JN11"
+                                                       FontFamily="Consolas,Menlo,monospace"
+                                                       FontSize="11"
+                                                       Foreground="{StaticResource HmTextMutedBrush}" />
+                                        </StackPanel>
+                                    </Grid>
+                                </StackPanel>
+                            </ctl:CollapsiblePanel>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
 
                 <Grid x:Name="VoiceWorkspace"
                       IsVisible="{Binding IsVoiceMode}" />

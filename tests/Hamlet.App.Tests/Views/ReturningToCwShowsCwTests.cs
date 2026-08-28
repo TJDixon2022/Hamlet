@@ -172,11 +172,16 @@ public sealed class ReturningToCwShowsCwTests
     }
 
     /// <remarks>
-    /// Proves Digital and Voice stay empty on every visit — the CW workspace off
-    /// the screen, and nothing of their own put in its place.
+    /// <para>Proves each tab shows its own workspace and hides the others, on
+    /// every visit.</para>
+    /// <para>**IT USED TO REQUIRE DIGITAL TO BE EMPTY AND NO LONGER CAN**
+    /// (work instruction 037): Tim ruled on 2026-08-28 that the Digital tab gets
+    /// a screen, and it now carries a mode strip and three panels. **Voice is
+    /// still asserted empty**, because nothing has been ruled for it and an
+    /// empty tab that nobody has designed is the honest state.</para>
     /// </remarks>
     [AvaloniaFact]
-    public void DigitalAndVoiceStayEmpty()
+    public void EachTabShowsItsOwnWorkspace()
     {
         With((window, _) =>
         {
@@ -202,8 +207,20 @@ public sealed class ReturningToCwShowsCwTests
                         mine?.IsEffectivelyVisible,
                         $"the {name} workspace is not showing on {name}");
 
-                    // Empty means empty: nothing drawn inside it.
-                    Assert.Empty(mine!.GetVisualDescendants().OfType<Control>());
+                    if (name == "Voice")
+                    {
+                        // Empty means empty: nothing drawn inside it.
+                        Assert.Empty(
+                            mine!.GetVisualDescendants().OfType<Control>());
+                    }
+                    else
+                    {
+                        // Digital has a screen now, and it has to survive being
+                        // left and come back — the fault this test was written
+                        // for was a workspace that did not return.
+                        Assert.NotEmpty(
+                            mine!.GetVisualDescendants().OfType<Control>());
+                    }
                 }
 
                 Press(window, "CW");

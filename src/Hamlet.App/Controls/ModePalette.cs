@@ -82,6 +82,19 @@ public static class ModePalette
         ModeFamily.OutsideTheBand, "Not a ham band",
         Color.Parse("#B4B8BC"), Color.Parse("#23282D"));
 
+    /// <summary>The digital family's fill, for markup.</summary>
+    /// <remarks>
+    /// **`x:Static` NEEDS A BRUSH, AND THIS IS THE ONE `Digital` ALREADY BUILT.**
+    /// It is an accessor rather than a new colour, so markup reaching for the
+    /// digital family gets the same object the map and the field guide use and
+    /// no surface can carry a literal of its own (§0.6, HM-DEC-032).
+    /// </remarks>
+    public static IBrush DigitalFill => Digital.FillBrush;
+
+    /// <summary>The digital family's ink, for markup.</summary>
+    /// <remarks>See <see cref="DigitalFill"/>; same reason, same object.</remarks>
+    public static IBrush DigitalInk => Digital.InkBrush;
+
     /// <summary>The four families, in the order the legend shows them.</summary>
     public static IReadOnlyList<ModeColors> All { get; } = new[] { Cw, Digital, Phone, Open };
 
@@ -329,6 +342,60 @@ public static class PanelPalette
         Color.Parse("#CFEBDD"),
         Color.Parse("#0B5C39"));
 
+    /// <summary>The warm paper everything sits on, from `App.axaml`.</summary>
+    /// <remarks>
+    /// <para>**ONE PLACE, AND IT MATCHES `HmBackground`.** The tints below are
+    /// the family fill moved toward this, so a family that arrives later lands
+    /// in the same visual register as the three that were chosen by eye.</para>
+    /// <para>**IT IS DECLARED ABOVE EVERY FAMILY THAT USES IT AND THAT IS NOT
+    /// COSMETIC.** Static initialisers run in declaration order, so with this
+    /// below `Lavender` the blend ran against a default colour and produced a
+    /// dark tint: the header ink scored 1.10 against its own fill instead of
+    /// 12, and `EveryPanelInkClearsAaOnItsOwnSurface` caught it.</para>
+    /// </remarks>
+    private static readonly Color Paper = Color.FromRgb(0xF6, 0xF3, 0xEC);
+
+    /// <summary>Digital modes, and the tab that decodes them.</summary>
+    /// <remarks>
+    /// <para>**EVERY COLOUR HERE IS TAKEN FROM `ModePalette.Digital` AND NONE IS
+    /// TYPED** (§0.6, HM-DEC-032). The mode-colour language already fixes what
+    /// digital looks like — lavender fill, near-navy ink — and a panel family
+    /// that restated those as fresh literals would be a second copy of the
+    /// language, which is exactly what that ruling exists to prevent. The other
+    /// three families here predate `ModePalette` and keep their own values;
+    /// this one is derived, and the next family added should be too.</para>
+    /// <para>**THE INK IS THE MODE PALETTE'S OWN INK**, so it carries
+    /// HM-DEC-036's contrast guarantee with it: every ink in `ModePalette`
+    /// clears WCAG AA against its own fill, checked when that ruling was made.
+    /// Nothing here re-derives that and nothing here may weaken it.</para>
+    /// <para>**THE EDGE AND THE TINT ARE THE FILL, SOFTENED TOWARD THE PAPER**,
+    /// because a panel body stays white on warm paper (HM-DEC-012) and only the
+    /// header text and the border carry the family. Mixing toward the background
+    /// rather than toward white keeps the hue and drops the strength, which is
+    /// what the amber, blue and green entries do by eye.</para>
+    /// </remarks>
+    public static PanelColors Lavender { get; } = new(
+        PanelFamily.Lavender,
+        ModePalette.Digital.Ink,
+        Toward(ModePalette.Digital.Fill, Paper, 0.35),
+        Toward(ModePalette.Digital.Fill, Paper, 0.80),
+        ModePalette.Digital.Ink,
+        Toward(ModePalette.Digital.Fill, Paper, 0.55),
+        ModePalette.Digital.Ink);
+
+    /// <summary>One colour moved a share of the way toward another.</summary>
+    /// <param name="from">Where it starts.</param>
+    /// <param name="to">What it moves toward.</param>
+    /// <param name="share">How far, nought to one.</param>
+    /// <returns>The blend.</returns>
+    private static Color Toward(Color from, Color to, double share)
+    {
+        byte Mix(byte a, byte b) => (byte)Math.Round(a + ((b - a) * share));
+
+        return Color.FromRgb(
+            Mix(from.R, to.R), Mix(from.G, to.G), Mix(from.B, to.B));
+    }
+
     /// <summary>Everything else. The quiet one, and it keeps a white body.</summary>
     public static PanelColors Slate { get; } = new(
         PanelFamily.Slate,
@@ -341,9 +408,24 @@ public static class PanelPalette
 
     /// <summary>All four.</summary>
     public static IReadOnlyList<PanelColors> All { get; } =
-        new[] { Amber, Blue, Green, Slate };
+        new[] { Amber, Blue, Green, Lavender, Slate };
 
     /// <summary>The colors for a panel family.</summary>
+    /// <summary>The lavender family's tint, for markup.</summary>
+    /// <remarks>
+    /// **ACCESSORS, NOT COLOURS.** Everything here comes from
+    /// <see cref="Lavender"/>, which is itself derived from
+    /// `ModePalette.Digital`. Markup that needs the digital panel family reaches
+    /// these rather than restating a value (HM-DEC-032).
+    /// </remarks>
+    public static IBrush LavenderFill => Lavender.FillBrush;
+
+    /// <summary>The lavender family's edge, for markup.</summary>
+    public static IBrush LavenderEdge => Lavender.EdgeBrush;
+
+    /// <summary>The lavender family's badge background, for markup.</summary>
+    public static IBrush LavenderPillFill => Lavender.PillFillBrush;
+
     /// <param name="family">The family.</param>
     /// <returns>Its colors.</returns>
     public static PanelColors For(PanelFamily family) => family switch
@@ -351,6 +433,7 @@ public static class PanelPalette
         PanelFamily.Amber => Amber,
         PanelFamily.Blue => Blue,
         PanelFamily.Green => Green,
+        PanelFamily.Lavender => Lavender,
         _ => Slate,
     };
 }

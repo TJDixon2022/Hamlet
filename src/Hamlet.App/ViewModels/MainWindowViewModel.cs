@@ -653,6 +653,21 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty]
     private bool _waterfallExpanded = true;
 
+    /// <remarks>
+    /// **THE DIGITAL TAB'S THREE PANELS** (work instruction 037). Separate from
+    /// the CW waterfall's state for the reason `PanelKeys.DigitalWaterfall`
+    /// gives, and open by default like every other panel whose key is unknown
+    /// (HM-DEC-021).
+    /// </remarks>
+    [ObservableProperty]
+    private bool _digitalWaterfallExpanded = true;
+
+    [ObservableProperty]
+    private bool _digitalDecodedExpanded = true;
+
+    [ObservableProperty]
+    private bool _digitalSayingExpanded = true;
+
     [ObservableProperty]
     private bool _scanExpanded = true;
 
@@ -1906,6 +1921,9 @@ public partial class MainWindowViewModel : ObservableObject
         _mapExpanded = settings.IsPanelExpanded(PanelKeys.Map);
         _tapeExpanded = settings.IsPanelExpanded(PanelKeys.Tape);
         _waterfallExpanded = settings.IsPanelExpanded(PanelKeys.Waterfall);
+        _digitalWaterfallExpanded = settings.IsPanelExpanded(PanelKeys.DigitalWaterfall);
+        _digitalDecodedExpanded = settings.IsPanelExpanded(PanelKeys.DigitalDecoded);
+        _digitalSayingExpanded = settings.IsPanelExpanded(PanelKeys.DigitalSaying);
         _scanExpanded = settings.IsPanelExpanded(PanelKeys.Scan);
         _autoCallExpanded = settings.IsPanelExpanded(PanelKeys.AutoCall);
         _terminalExpanded = settings.IsPanelExpanded(PanelKeys.Terminal);
@@ -2688,6 +2706,15 @@ public partial class MainWindowViewModel : ObservableObject
 
     partial void OnWaterfallExpandedChanged(bool value)
         => PersistPanel(PanelKeys.Waterfall, value);
+
+    partial void OnDigitalWaterfallExpandedChanged(bool value)
+        => PersistPanel(PanelKeys.DigitalWaterfall, value);
+
+    partial void OnDigitalDecodedExpandedChanged(bool value)
+        => PersistPanel(PanelKeys.DigitalDecoded, value);
+
+    partial void OnDigitalSayingExpandedChanged(bool value)
+        => PersistPanel(PanelKeys.DigitalSaying, value);
 
     partial void OnScanExpandedChanged(bool value) => PersistPanel(PanelKeys.Scan, value);
 
@@ -6998,6 +7025,21 @@ public static class PanelKeys
 
     /// <summary>The CW terminal.</summary>
     public const string Terminal = "terminal";
+
+    /// <summary>The Digital tab's waterfall (work instruction 037).</summary>
+    /// <remarks>
+    /// **A KEY OF ITS OWN, NOT THE CW WATERFALL'S.** The two panels are on
+    /// different tabs and an operator who collapses one has said nothing about
+    /// the other, so sharing a key would make each one toggle the other from
+    /// under him (HM-DEC-021).
+    /// </remarks>
+    public const string DigitalWaterfall = "digital.waterfall";
+
+    /// <summary>The Digital tab's decoded text.</summary>
+    public const string DigitalDecoded = "digital.decoded";
+
+    /// <summary>The Digital tab's plain-English messages.</summary>
+    public const string DigitalSaying = "digital.saying";
 
     /// <summary>The Explorer's story card.</summary>
     public const string Story = "story";

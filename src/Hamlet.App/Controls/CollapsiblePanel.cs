@@ -23,6 +23,14 @@ public enum PanelFamily
 
     /// <summary>Decode.</summary>
     Green,
+
+    /// <summary>Digital modes (work instruction 037).</summary>
+    /// <remarks>
+    /// **ITS COLOURS ARE DERIVED FROM `ModePalette.Digital` AND NOT TYPED**, so
+    /// the panel chrome and the mode-colour language cannot drift apart
+    /// (HM-DEC-032). See `PanelPalette.Lavender`.
+    /// </remarks>
+    Lavender,
 }
 
 /// <summary>
