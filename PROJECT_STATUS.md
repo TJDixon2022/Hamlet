@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
+STATE: COMPLETED
 TASK: 2 of 5
-BALL: code
-NEXT_PASTE: none
-UPDATED: 2026-08-28T18:44:50-04:00
-NOTE: trace done and the engine baseline is 28 failing of 1958; ranking every candidate pitch across the corpus, 5 captures of 44 in
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
+UPDATED: 2026-08-28T18:59:16-04:00
+NOTE: ranking works once every candidate is scored against one band-wide noise floor, 1 of 44 to 34 of 44; not shipped, two rulings asked
 
 ---
 

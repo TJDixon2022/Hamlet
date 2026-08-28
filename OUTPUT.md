@@ -1,326 +1,275 @@
-UNIT:       042 — complete at task 7 of 7 — 2026-08-28 18:41
-PHASE GOAL: Digital modes: name the mode and decode it without the operator guessing. Taken from `CLAUDE.md` §2 phase 3, because `PROJECT_CARD.md` carries no phase-goal field — it is the five standing lines HM-DEC-132 rules, and none of them is a goal.
-UNIT GOAL:  Hamlet sets whatever the radio needs for a mode, so the operator never has to touch the radio; and CW to Data and back works.
-ADVANCED:   yes — the first three stages of an FT8 decoder now exist and are tested: the slot cutter, the Costas sync search, and the receiver setup that makes a block audible at all. Task 1 also removed the blocker.
-NUMBER:     none — the order states no figure. Per `CLAUDE_CODE.md` §4.2 it should carry one, and that is a finding rather than an omission to work around: this unit is measured against "he had to press three buttons", which is a count of frustrations and not a scoreboard.
-DRIFT:      not carried — the order has no §4.2 block, so there is no count to increment and none to reset. It cannot be recovered from here, because `OUTPUT.md` is overwritten and the previous report is gone.
+UNIT:       043 — stopped at task 2 of 5 — 2026-08-28 18:59
+PHASE GOAL: Readable CW on the operator's screen — eighty percent of a strong signal read correctly, first time.
+UNIT GOAL:  Choose the mixdown pitch by which candidate decodes best, rather than by a statistic on an intermediate signal.
+ADVANCED:   yes — pitch acquisition goes from 1 of 44 captures to 34 of 44 as a measurement; no decoder path was changed, so it is not on the operator's screen yet.
+NUMBER:     one in eight -> 34 of 44 measured offline; on the operator's screen, unchanged.
+DRIFT:      unknown — the work order's block carried no DRIFT line, so there is no count to carry or increment.
 
 ## 1. What Claude did
 
-**Complete. All seven tasks, including task 7, which the order named as the drop.**
+**Stopped at task 2 of 5, with task 2's question answered and answered
+positively.** Tasks 3, 4 and 5 were not built. **That is not the drop the order
+named** — task 5 was the drop candidate — so it is a sizing decision, and the
+reasons are in section 4 as two rulings rather than buried here.
 
-Claude Code on the development computer, project `Hamlet` claimed and confirmed
-against the tree, branch `main` throughout. Nine commits, all pushed, none
-refused. Version 1.12.4 to 1.12.5.
+Development computer, prompt claimed `PROJECT: Hamlet`, branch `main`, version
+`1.12.5` -> `1.12.6`. **Nothing in this report is evidence about the radio**: no
+radio was connected, and every number comes from WAV files already in the tree.
 
-**Nothing here is evidence about the radio.** No rig was connected. **Nothing
-transmitted.**
+### Task 1 — the trace
 
-**No decision was recorded under §12.1.** Section 4 carries what needs a ruling.
+**What one window at one pitch costs, measured with `tools/Hamlet.PitchRank cost`
+rather than estimated.** A 12-second window at 48 kHz is 2400 hops:
 
-**Unit 041's tasks 2 through 7: task 2 and task 3 landed, tasks 4 to 7 did not.**
-The order asked for this and it is measured from the tree, not from its report.
-`MainWindowViewModel.cs:243` calls `ScheduleModeFollow()` from
-`OnOperatingModeChanged`, so a tab press does reach the radio, and
-`RigState.ModeWithVariant` renders `USB-D`, `USB` and `USB-?` with a test holding
-the third apart from the first. `DigitalCaptureSheet` and the capture press
-exist. There is no slot cutter, no sync search and no receiver setup in the tree
-before this unit, which is tasks 4 through 7 of 041 not done.
+| | 12 s | 6 s | 4 s | 3 s | 2 s |
+|---|---|---|---|---|---|
+| quadrature mixdown | 10.4 ms | 4.2 ms | 2.6 ms | 2.0 ms | 1.6 ms |
+| decode, speed grid 8–40 | 39.2 ms | 18.7 ms | 13.0 ms | 9.5 ms | 6.2 ms |
+| **one candidate** | **49.6 ms** | 22.9 ms | 15.6 ms | 11.5 ms | 7.8 ms |
+| sweep of 25 candidates | 1240 ms | 572 ms | 390 ms | 287 ms | 195 ms |
+| share of one core at the shipped cadence | **248 %** | 114 % | 78 % | 57 % | 39 % |
 
-**The order's other claims check out against the tree**, with one correction: it
-says the sidecar showed values read up to 32 seconds before the press, which is
-true and is the behaviour, not a fault. It has not been weakened.
+**The sweep does not fit at the window and cadence that ship, and that is reported
+rather than traded away.** Cost is linear in window length, so the trade is real
+but it is a trade, and section 4 asks for it rather than taking it.
 
-**One instruction was followed late.** The order says *record the failing counts
-from the tree before task 2*. The first full engine run was started during task 1
-and returned during task 2; the count is in section 2 and it is a before-count in
-substance, since the only change in the tree at that point was task 1's.
+**The candidate count in the tree is 25, not the "about thirty-three" the order
+states.** `CwToneTracker.MinimumToneHz` is 300 and `MaximumToneHz` 900
+(`CwToneTracker.cs:125,128`), stepped by `CoarseSpacingHz` = 25 (`:138`).
+
+**The fixed-pitch harness is already callable per candidate, so the unit is mostly
+plumbing — as the order hoped.** Three public entry points, none of them new:
+
+- `CwProbabilisticDecoder.Decode(MonoAudio, double toneHz)` — `CwProbabilisticDecoder.cs:639`
+- `CwProbabilisticDecoder.Decode(IReadOnlyList<double> envelope, double toneHz)` — `:652`
+- `CwDecoder.AssertAt(double toneHz)` — `CwDecoder.cs:515`, which holds the mixdown
+  at a stated pitch through the whole shipped path.
+
+`CwProbabilisticStream.ReadAgain(audio, toneHz)` (`CwProbabilisticStream.cs:475`)
+already re-mixes held audio at a new pitch and `AudioTap` already keeps thirty
+seconds, so even the replay a ranking pass would want is built.
+
+**Where the mixdown pitch enters is one line**: `CwDecoder.Step`,
+`CwDecoder.cs:753` — the operator's lock, else the last measured pitch, else the
+tracker's. `CwProbabilisticStream.Process` (`:275`) mixes each sample at it;
+`Read` (`:665`) passes it into the decode. **What else consumes it matters for
+task 3**: `CwDecodeReport.ToneHz` comes from `_tracker.ToneHz`
+(`CwDecoder.cs:279`), not from the mixdown, so a ranked pitch driving the mixdown
+would not by itself reach the capture sheet, the duty line or the panel
+(`MainWindowViewModel.cs:4735–4784`, `:3689`). The sidecar the order asks task 3 to
+write would have to be fed from the ranking rather than from the tracker.
+
+**Baseline, by diffing which tests fail: 28 failing, 1930 passing, 1958 total,
+21 m 36 s.** Matches the order's stated 28 exactly, and the same 28 fail now.
+
+### Task 2 — the ranking
+
+**The decoder's score as it stands is not comparable between two pitches, and the
+reason is that it is scale invariant.** `LikelihoodRatio` is a per-hop
+log-likelihood of the best reading against "this is all noise", and both the noise
+scale and the keyed level are estimated from the very envelope being scored
+(`CwProbabilisticDecoder.LogLikelihoods`, `:973`). A bin where the receiver's
+filter has already thrown everything away has almost no noise in it, so the wobble
+that is left is scored against a tiny sigma and looks like the clearest keying in
+the band. **The quietest bin wins.**
+
+Measured through `CwDecoder.AssertAt`, the shipped path with the pitch held from
+the first sample, on 15 captures before the run was stopped: the winner sat at
+875–900 Hz on 10 of 15, it outscored the pitch that actually reads on **15 of 15**,
+and it matched the station on 1. On `cw-2026-08-28-004844` the winner at 875 Hz
+scored 312.62 and read `E E EE E EEEE E EEE EE E EEE E EE E E EE E E E E`, against
+29.84 at the pitch that reads the net.
+
+**So task 1's fourth question is answered no, and task 2's charge was then to find
+what is comparable. It did.**
+
+**Stand every candidate's envelope on one noise floor measured across the whole
+band, and the same score ranks correctly.** Each envelope is combined in power with
+a single pedestal — the loudest per-bin floor in the band — which is what each bin
+would look like if the receiver's floor were flat. A bin holding nothing goes flat
+against that pedestal and scores near nothing. A bin holding a keyed station keeps
+its marks well above it and keeps its structure.
+
+**Same window, same decoder, same 44 captures. The only change is the pedestal:**
+
+| | matches the station |
+|---|---|
+| ranking by the score as it stands | **1 of 44** |
+| ranking with a common noise floor | **34 of 44** |
+
+**And the winners read, which is what makes 34 credible rather than circular.** The
+pitch on the capture sheet is Hamlet's own tracker output, not independent truth,
+so the text is the evidence:
+
+| capture | what the winner reads |
+|---|---|
+| `cw-2026-08-17-013347` | `E W#VA3#R E` — the adjudicated `VA3VRR` |
+| `cw-2026-08-17-134712` | `LQ E N4LQ # E` — the adjudicated `N4L` |
+| `cw-2026-08-18-004507` | `H AN D L I NG T HIS M E S S A G E PE` — the adjudicated bulletin |
+| `cw-2026-08-24-012403` | `EEQ DE NED0UN KD0UN K` — the adjudicated `KD0UN` |
+| `cw-2026-08-28-004902` | `WED AU G 2 6 W 7 G B QRU M` — the net, with `W7GB` |
+| `cw-2026-08-28-004844` | `# <BT> BRU C E <AR> NR 2 3 0 CE` — the net, with `BRUCE` |
+| `cw-2026-08-22-032012` | `SES OR OTHER WEBSITES MENTI` |
+| `cw-2026-08-25-013402` | `D NOT SURE - BUT ANY WAY VY NICE` |
+
+**The four phantoms behave the way the order predicted they should.** They are the
+captures where the winner misses the sheet's pitch and reads nothing: `005158`,
+`005218` and `005243` all pick 600 Hz rather than the 750–775 Hz Hamlet used, and
+what they read there is junk. Their winning scores are 5.28, 3.07 and 5.13 against
+15.71, 12.32 and 10.15 for the three good ones on the same night. **A winner whose
+own score is poor is exactly the shape task 4 was written for**, and there is now a
+measured gap to put a floor in — though where it goes is a number nobody has swept
+yet, and unit 1.11.33's finding that no fixed threshold separates the corpus still
+stands until somebody re-measures it in these units.
+
+**One in eight and 34 of 44 are not the same measurement, and the report should not
+pretend they are.** One in eight is the operator's figure for the live application;
+34 of 44 is an offline ranking over one window per capture. The like-for-like
+comparison is the one in the table above: 1 of 44 against 34 of 44, same window,
+same decoder, one change.
+
+**What the order got wrong, and it matters because the unit rests on it.** The
+order's evidence table gives the phantoms as 1.48, 1.49 and 3.34 against 36.3 and
+28.3, "a factor of six to twenty-four". The sidecars in the tree do not say that:
+
+| capture | order says | the sheet in the tree says |
+|---|---|---|
+| `cw-2026-08-28-004844` | 36.3 | 36.3 |
+| `cw-2026-08-28-004902` | 28.3 | 28.3 |
+| `cw-2026-08-28-005051` | 1.48 | **7.6** |
+| `cw-2026-08-28-005158` | 1.49 | **−68562.4** |
+| `cw-2026-08-28-005243` | 3.34 | **158.4** |
+
+A phantom scores 158.4 where a real net scores 36.3, so the separation the unit was
+commissioned on is not in the sheets as quoted. **The pedestal supplies the
+separation the order expected to find already there**, which is the better outcome,
+but the table should not go into the next order unchecked.
+
+No decision was recorded under §12.1. Nothing here was a session's to settle.
 
 ## 2. What the owner should expect
 
-**Switching between CW and Digital now leaves the radio set for the mode in both
-directions, and tuning into FT8 sets the scope span and the noise controls as
-well, telling you in plain words what it changed and why.**
+**Nothing about the application changed.** No engine file, no view, no view model.
+The decoder reads what it read this morning and the terminal behaves as it did. The
+twelve adjudicated anchors are green because nothing went near them.
 
-What that reads like on screen, composed from the block's own row:
+New in the tree is one measurement tool, `tools/Hamlet.PitchRank`, added to
+`Hamlet.sln` beside `Hamlet.ScopeCheck`. It reads WAV files and prints numbers;
+nothing calls it and it keys nothing. `pitch-rank cost` gives the cost table,
+`pitch-rank shipped` the ranking through the shipped path, `pitch-rank pedestal`
+the comparison that produced 1 of 44 against 34 of 44.
 
-> I turned the noise blanker off because it chops up the steady tones this mode
-> sends, and turned the auto notch off because it hunts steady carriers and
-> everything in this block is one. The AGC usually wants to be slow here, because
-> dozens of stations transmit together here and the gain would ride up and down
-> under the loudest of them, and that is not settled well enough for me to change
-> it on your radio. Your scope span wants to be 3 kHz across, because a scope
-> showing a couple of hundred kilohertz draws the whole block about seven pixels
-> wide, and that is one I cannot set from here.
+**What will look wrong but is not:**
 
-**Two things in that sentence are admissions and they are deliberate.**
-
-**The scope span is the one you pressed SPAN for, and Hamlet still cannot set
-it.** `CLAUDE.md` §4 carries no CI-V command for the span. The sub-command list
-on p. 19-7 runs 00, 10, 11, 12, 13, 14, 15, 16, 17, 19, 1A and 1B, and this
-project has read the pages for 10 and 11 only. No byte is written that is not
-cited (HM-DEC-084), so the span is spoken and not written until one of the others
-is read. **That is the one button of the three you may still have to press**, and
-it is section 4's first ask.
-
-**The AGC is stated and not written.** Slow is the usual advice and it is not
-settled: the argument for fast is that one loud burst on slow holds the gain down
-for the rest of the slot. Nobody here has measured it on your radio, so it says
-what the mode usually wants and leaves the knob alone.
-
-**What will look wrong and is not.**
-
-The engine suite still shows a red count. **It is the same twenty-eight CW
-failures as before this unit, by name**, and the one that changed is a test of
-mine that had to change. Nothing new is red.
-
-| | before | after |
-|---|---|---|
-| engine | 1811 passed, 29 failed | **1929 passed, 28 failed** |
-| app | 509 of 509 | **509 of 509** |
-
-The engine count grew by about 120 because this unit added tests, not because
-anything was skipped. The one failure that cleared was
-`ModeFollowTests.TheWriteIsCommand26WithTheDataFlagAndNoFilter`, which asserted a
-single frame on the wire and now asserts three: the write, then the two reads
-that ask the radio what it actually did.
-
-**Nothing consumes the slots or the candidates yet.** The sync search is not
-wired to a screen and puts nothing on the decoded-text panel. Marking candidates
-on the waterfall was skipped: the search takes about two seconds a slot, which is
-not cheap enough to run behind a live render, and the order said to skip and say
-so.
-
-**`CLAUDE_CODE.md` in the working tree has gone backwards, from version 1.8 to
-1.7**, and it is not mine. It is uncommitted and I have left it that way rather
-than either committing a governance downgrade or reverting a file the owner may
-have placed on purpose. **The next `git add -A` will pick it up**, so it wants a
-decision before then. Section 4 carries it.
+- **28 engine tests still fail.** That is the stable baseline the order named,
+  unmoved. `CwAcquisitionWindowTests.AFastFistIsReadWithoutARunUp(25, 0.79)` is
+  among them — task 5's test, and task 5 was not reached.
+- **`Directory.Build.props` moved 1.12.5 to 1.12.6** for a unit that ships no
+  product change. HM-DEC-150 counts work units rather than grading them.
+- **The app suite has no result here.** It was still running when the session's
+  background work was stopped, so the order's 509 is unverified rather than
+  confirmed. No app code was touched.
+- **The shipped-path ranking covers 15 captures, not 44.** That run was killed
+  part way. Its 15 are unanimous and the pedestal run that replaced it covers all
+  44, so nothing turns on the missing 29.
+- **The pedestal measurement is one-shot, not streaming.** It reads one window per
+  capture. The two paths are already known to disagree — `CwProbabilisticDecoder`'s
+  own remarks record a case where they track 650 Hz and 500 Hz on the same file —
+  so **34 of 44 is not yet a claim about what the terminal would do.**
+- **`eng-final.txt` and `app-final.txt` sit modified in the working tree.** They
+  came from the previous session's commit `cf81849` and were left alone (§12.6).
 
 ## 3. What you should see
 
-### Task 1's cause, with file and line, and it is not staleness
+**Nothing yet. On a frequency where nothing is happening the terminal still fills
+with letters, and on a frequency where a station is sending Hamlet lands on it
+exactly as often as it did**, because no decoder path was changed.
 
-**`src/Hamlet.RadioEngine/Explore/ModeFollowPlan.cs`, the "already done" guard.**
-The automation remembers the last write it made and declines to repeat it.
-**Nothing ever cleared that memory.** Once USB-D had been confirmed at 14.074,
-the automation would never establish it there again, however far the radio
-wandered afterwards.
+What the evening bought is the reason the last six units failed, and it is short
+enough to carry: **the decoder's score never measures anything absolute.** It asks
+how much better a two-state reading explains this envelope than noise does, and it
+takes its idea of noise from the same envelope. Give it a bin the receiver's filter
+has already emptied and it finds almost no noise there, so the small wobble left
+over looks like the cleanest keying in the band. That is why every winner sat at
+the very edge of the search and read a page of single dits — those are the quietest
+bins, and a dit is the shortest thing the decoder can spell.
 
-The guard's own comment claimed it "can only ever reduce what goes out", and that
-was true exactly while the ledger and the memory agreed. **They disagree in one
-situation and it is yours**: the radio has left the mode Hamlet set it to. Your
-forced re-read corrected the **display**, which is why it read as staleness. **A
-re-read does not clear that memory, so the write still would not have fired.**
-
-The order's four candidates, resolved:
-
-| candidate | verdict |
-|---|---|
-| the write does not fire on the return | no — `OnOperatingModeChanged` reaches the follow path since 041 |
-| it fires without the data flag | no — command `26` carries the flag and the frame is asserted byte for byte |
-| it fires and is not read back | **partly true, and a second real defect** |
-| it fires, is read back, and the ledger serves a cached answer | no — this was the hypothesis and the memory is what refused |
-
-**The second defect is real and was found on the way.** A confirmed mode write
-folded its own request into the ledger rather than asking the radio, and said
-nothing at all about the filter that the same frame had just changed. So a
-widening write left the ledger reporting the old width **for up to thirty
-seconds**, which is the session poll interval. That is a stale value shown as
-current, and every field on the row looked measured. `Ic7300Rig` now reads
-`26 00` and `1A 03` after every confirmed mode write, and the values arrive
-stamped with the time the radio answered.
-
-**And a third, smaller one.** `RigState.IsDataMode` was a bare bool answering
-false for both "off" and "nobody has said". Against a target wanting the variant
-**off**, an unread flag compared equal to it and the automation concluded the
-radio was already right without anybody having looked. It is three-valued now,
-like every other reading.
-
-### The app suite caught a regression from that fix, and the repair is the better rule
-
-`ASnapBackDoesNotWriteAgain` went red, correctly. **The snap-back and your hand on
-the mode knob are the same picture by value**: the ledger says CW, the target says
-USB-D, and Hamlet remembers writing USB-D here.
-
-**What separates them is when the reading was taken.** Older than the write means
-the radio has not been asked since, which is HM-OPEN-041's snap-back and the
-evening that carried eighteen mode writes with the dial standing still. Newer
-means the radio was asked and answered CW, so somebody turned the knob. The
-memory now carries when the radio confirmed the write, and a reading may only
-contradict it if it is newer. A caller that cannot say when it read gets the
-cautious answer.
-
-**The readback is what makes that rule bite**, which is why the two fixes belong
-together: the ledger is stamped from the radio's own answer immediately after a
-write, so a genuine snap-back is now the only thing that can be older than it.
-
-Measured, three ways:
-
-```
-read 4 s before the write: write=False
-read 4 s after  the write: write=True
-no reading time at all:    write=False
-```
-
-### The acceptance, against a radio that holds its own state
-
-`FakeSerialPort` answers what a test enqueues, which cannot fail an acceptance
-about ten round trips, because the script is the answer. So `ScriptedRadio` holds
-mode, data flag, filter slot and four receive-side switches, and answers for
-itself.
-
-- **CW at 14.074, press Digital**: USB-D, FIL1, and the ledger's `3000 Hz` comes
-  from `CI-V 1A 03` rather than from the request. Nothing acknowledged a number
-  of hertz, so a ledger holding one has been told it.
-- **Ten round trips**: ten arrivals, ten writes, **and not an eleventh**. Both
-  failure modes are asserted, because they are opposite ones.
-- **Three of the four new tests fail without the fix.** The fourth asserts the
-  write loop the narrowed guard still prevents, and passes either way.
-
-### What the tune-in does, and what it refuses to do
-
-Every condition is read before it is written. Already correct is not sent. A
-control you moved yourself is left where you put it, **per control rather than
-wholesale**: switching the blanker back on to get through an electric fence does
-not hand you the auto notch as well.
-
-**A control the radio will not report is not written.** Without a reading Hamlet
-cannot tell an operator who set something deliberately from a radio nobody has
-touched, so silence is a stop, as it is for the scanner.
-
-Once per tune-in, keyed by the **block** and not by the dial. Nudging the VFO a
-hundred hertz inside an FT8 block is not arriving somewhere new.
-
-### The sync search works, and the floor under it is measured
-
-Three synthetic transmissions in one fifteen-second slot at three times the noise
-amplitude:
-
-```
-  frequency | starts at | sync score
-  ----------|-----------|-----------
-    2375.0 Hz |    0.40 s |   7.97
-    1112.5 Hz |    0.40 s |   7.86
-    1800.0 Hz |    0.40 s |   7.47
-```
-
-Eight is the ceiling. **The reporting floor was measured rather than reasoned**:
-ten seeds of pure noise reach 1.85 to 2.02, because the sweep tries tens of
-thousands of positions and takes the luckiest, so the floor is 4.0 and a test
-holds it above what an empty band actually gives. Noise produces nothing.
-
-**Run over a real recording from your radio it finds nothing, which is correct.**
-That capture is Morse from 40 m and holds no FT8.
-
-### The window's ambiguity is closed
-
-**The press is the end of the window.** The button keeps audio that had already
-arrived, so the window runs backwards from it, and the sidecar now says both ends
-in UTC on their own labelled lines. The old `captured` line is gone rather than
-kept beside them.
-
-That is not cosmetic. A thirty-second window read from the wrong end is out by
-two whole slots, which is invisible in a fifteen-second cycle and fatal to the
-alignment — it is why the 2.4-second offset in your 20:47:20 capture could not be
-resolved.
+Stand every bin on the same noise floor before scoring it and the same number
+starts pointing at stations instead: **1 capture in 44 becomes 34**, and what it
+reads at those pitches is `VA3VRR`, `N4L`, `KD0UN`, `HANDLING THIS MESSAGE`,
+`W7GB` and `BRUCE`. Six admission statistics asked whether a bin was a station.
+This asks the same question the seventh did and finally asks it in units that mean
+the same thing at 400 hertz as at 900.
 
 ## 4. What's blocking us
 
-**What are CI-V sub-commands `27 12` through `27 1B`, and is one of them the scope
-span?**
+Two rulings, the first blocking the more work.
 
-The order's premise is that you were sent to press SPAN and should not have been.
-Hamlet now knows the span a block needs, derived from the block's own width, and
-says so. It cannot set it, because `CLAUDE.md` §4 records only `27 00`, `27 10`
-and `27 11`, and no byte is written that is not cited.
+> **The ranking stands every candidate on one noise floor measured across the band,
+> and the mixdown pitch is the winner of that ranking.**
+>
+> The score as it stands cannot compare two pitches, because the noise scale and
+> the keyed level are both taken from the envelope being scored, so the emptiest
+> bin in the band wins and reads a page of dits — measured at 1 of 44 captures, and
+> 15 of 15 through the shipped path where the winner outscored the pitch that
+> actually reads. Combining every candidate's envelope in power with a single
+> band-wide floor takes the same ranking to 34 of 44, and the winners read six
+> adjudicated or corroborated readings.
+>
+> **Rejected: a seventh admission statistic.** This is not one. It changes the
+> units the existing score is measured in; it asks no new question about a bin.
+> **Rejected: shipping it on this measurement alone.** It is one window per
+> capture through the whole-file path, and this repository has already been bitten
+> by the whole-file and streaming paths disagreeing about which note they are on.
+> **What it needs before it drives anything is the same sweep through
+> `CwProbabilisticStream`.**
+> **Rejected: taking the pedestal as obviously right.** The loudest per-bin floor
+> in the band is one choice of common floor and nobody has swept the alternatives.
+> The 34 is evidence the approach works, not that this constant is the best one.
 
-The page is Full Manual `A7292-4EX-6` p. 19-7, which lists the sub-commands and
-which this machine does not hold. **A page read and a row added to §4 closes the
-last of the three buttons.** Rejected: guessing the sub-command from the pattern
-of the others, which is exactly the uncited number §4 exists to prevent, and it
-would move your scope on a guess.
-
----
-
-**Is AGC slow right for FT8 on this radio, or is fast?**
-
-Stated in the data with `confirmed: false` and an owner, so it is spoken and not
-written. Slow is the usual advice; the argument for fast is that one loud burst
-on slow holds the gain down for the rest of the slot. **Nobody here has measured
-it**, and it is a setting on your radio.
-
-An evening with the block audible and both settings tried would settle it, and it
-is the kind of thing that decides itself in five minutes at the radio. Rejected:
-writing it anyway on the strength of the usual advice, because a setting changed
-on a guess is the prime directive broken with a byte instead of a sentence.
-
----
-
-**`CLAUDE_CODE.md` in the working tree is version 1.7 and the committed copy is
-1.8.**
-
-It changed on disk during this session and not by me; the likely cause is a
-delivery zip carrying an older copy. The difference is a whole section, *Where the
-templates live*, which 1.8 has and 1.7 does not.
-
-It is uncommitted and I have left it so, per §12.6. **Rejected: reverting it
-myself**, because a governance file is yours and it may have been placed
-deliberately; **rejected: committing it**, because that would silently take the
-project's standards backwards. **The next `git add -A` in this repository will
-sweep it into a commit**, so it wants deciding before the next unit rather than
-after.
-
----
-
-**The order carries no §4.2 number block and no drift count.**
-
-`CLAUDE_CODE.md` §4.2 requires `PHASE GOAL`, `UNIT GOAL` and `ADVANCES` before
-the tasks, and §8 requires the report to carry the drift count forward from it.
-Neither is in work instruction 042, so this report's `DRIFT` line says it cannot
-be carried, and the count is lost rather than incremented — `OUTPUT.md` is
-overwritten, so the previous report is gone and a session cannot recover it.
-
-Not a blocker for the work. It is a blocker for knowing whether the phase is
-advancing, which is what those lines exist for.
+> **What the pitch sweep is allowed to cost, given that it does not fit as it
+> stands.**
+>
+> A sweep of 25 candidates over the 12-second window is 1240 ms, which is 248 % of
+> one core at the shipped half-second cadence. It fits only by shortening the
+> ranking window, lengthening the cadence, or both: a 4-second window swept every
+> two seconds is about 20 % of one core, which is arithmetic from the measured
+> table rather than a measurement of its own.
+>
+> **This is handed back rather than taken** because the ruling in force says in as
+> many words that thinning the band or lengthening the cadence to make the compute
+> fit is a measurement to report and not a silent trade. **A shorter ranking window
+> is not free**: HM-DEC-120's own reasoning is that a short window does not merely
+> read less, it reads confidently and wrongly, and `CwProbabilisticStream`'s refill
+> guard exists for that. Ranking is not emission, so it may be a different case —
+> but that is the argument, and it is the operator's to accept.
+> **Rejected: ranking only at acquisition and then holding.** It would cost far
+> less and it is probably right, but it changes what happens when a second station
+> starts up, and that is a behaviour question rather than a compute one.
 
 ### Asks still outstanding
 
-**Carried forward per HM-DEC-139 and HM-DEC-140.** The order parks the CW decoder
-stream, the CW capture path, the scanner, the calling cycle, `CHANGELOG.md`, the
-missing `DECISIONS.md` records, the phrasebook, the recent-places row, the prefix
-table, the plain-English parser, the decoded-text panel's placeholders, the mode
-strip's static status, the waterfall's rendering and the Twin PBT. **The
-thirty-one asks from unit 1.11.34's list stand unchanged.**
+Carried forward per HM-DEC-139 and HM-DEC-140, from unit 1.11.34's list.
 
-**Carried and still open:**
-
-1. **`ft8_lib` cannot be built here** — no C toolchain; the decoder is C#. That is
-   now a decision with code behind it rather than a constraint: the FFT, the slot
-   cutter and the sync search are all C# and all tested.
-2. **The inner PBT's readability** — needs the manual. Both of this project's
-   written sources were checked in unit 041 and neither answers it.
-3. **The manual is not obtainable from this machine**, so any task needing a fresh
-   page read has to be met another way. **This is now blocking real work**, not
-   just documentation: it is the scope span, above.
-
-**New this unit:**
-
-4. **The scope span sub-command**, above.
-5. **AGC slow against fast**, above.
-6. **`CLAUDE_CODE.md` has gone backwards in the working tree**, above.
-7. **The order carries no number block or drift count**, above.
-8. **There is no digital capture in this repository.** The order says the
-   operator's captures in `captures\digital\` hold FT8 keying on a 15.0-second
-   cycle and to use one as a fixture. **That folder does not exist in the tree and
-   no `ft8-*` file has ever been committed**, so the slot cutter and the sync
-   search were tested against a Morse capture, which proves they handle a real
-   file and proves nothing about FT8. **One of those three captures committed to
-   `tests/fixtures/` is what turns the sync search from arithmetic into
-   evidence.**
-
-**Closed this unit:** **why entering Digital did not establish USB-D** — the
-automation remembered its own earlier write and nothing ever cleared that memory.
-**Whether a confirmed write is a reading** — it is not, and the filter it changed
-was going unreported for up to thirty seconds. **Which end of the capture window
-the press is** — the end.
+1. **The refusal costs reading a station you tune onto** — first raised 2026-08-27.
+   Waiting on: task 5 of this unit, which was not reached. The test is
+   `CwAcquisitionWindowTests.AFastFistIsReadWithoutARunUp(25, 0.79)`, red in the
+   baseline and untouched this session.
+2. **Admission admits a pitch 150 Hz off the station and holds it for forty-five
+   seconds without a refresh** — the held peak decayed at exactly 1 dB per second
+   across both gaps, so it was never refreshed at all. Waiting on: Tim's ruling.
+3. **The `reading` line's new span wording needs approval.** Waiting on: Tim's
+   ruling.
+4. **`DECISIONS.md` has no record for HM-DEC-096–133, 136, 141 or 150.** Waiting
+   on: Tim's ruling on whether these are written retrospectively.
+5. **Two stations closer than 125 Hz are not named** — the operator's item five.
+   Waiting on: Tim's ruling.
+6. **HM-OPEN-057** (2026-08-22) and **HM-OPEN-007** (2026-08-14). Both open, both
+   owned by Tim.
+7. **Nothing checks that deleting a surface is not deleting a capability** — the
+   operator has since found the favourites list gone. Parked, and named as the next
+   unit unless he says otherwise.
+8. **A capture sheet carries a score of −68562.4** (`cw-2026-08-28-005158`). Raised
+   here for the first time. Waiting on: Tim's ruling on whether that is a display
+   defect worth a unit. It is a number the operator can read and nothing beside it
+   says what it means.
