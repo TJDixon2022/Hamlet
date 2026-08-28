@@ -1,4 +1,4 @@
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using Hamlet.App.ViewModels;
 using Hamlet.RadioEngine.Civ;
 using Hamlet.RadioEngine.Explore;
@@ -148,6 +148,19 @@ public sealed class ModeFollowsTheMapAgainTests
     /// <para>Proves the ruling: **mode-follow writes the mode and nothing else.**
     /// A sweep of the follow path for any other write — frequency, filter, power,
     /// gain, preamp, attenuator — finds none.</para>
+    /// <para>**THE BOUND MOVED AND THE RULING DID NOT** (work instruction 042,
+    /// task 3). Arriving on a block now also establishes what the mode needs of
+    /// the receive side, under Tim's ruling of 2026-08-28: *tuning into a
+    /// neighborhood changes only what would stop the operator hearing or seeing
+    /// the block, leaves everything else alone, and says in plain words what it
+    /// changed and why.* That is a second act with its own governance, its own
+    /// narration and its own tests, and folding it into this sweep would leave
+    /// this one measuring two things and proving neither.</para>
+    /// <para>So the sweep ends where that method begins. **Mode-follow itself is
+    /// still held to writing the mode and nothing else**, which is the whole of
+    /// what HM-DEC-149 asked for, and the receive side is held separately to
+    /// touching only what a block states and only through receive-tier
+    /// writes.</para>
     /// </remarks>
     [Fact]
     public void NothingButTheModeIsEverWritten()
@@ -158,7 +171,7 @@ public sealed class ModeFollowsTheMapAgainTests
         var follow = Between(
             source,
             "private async Task FollowTheMapAsync()",
-            "private void OnAgeTick(");
+            "private async Task EstablishReceiveConditionsAsync(");
 
         _output.WriteLine($"{follow.Split('\n').Length} lines of the follow path");
 
@@ -176,6 +189,34 @@ public sealed class ModeFollowsTheMapAgainTests
                  })
         {
             Assert.DoesNotContain(forbidden, follow, StringComparison.Ordinal);
+        }
+
+        // **AND THE SECOND ACT IS BOUNDED TOO**, so moving the end of the sweep
+        // above cannot become a way of hiding writes behind it. What it reaches
+        // is one call into the engine, which decides for itself what a block
+        // states and refuses anything with no cited command (§4, HM-DEC-084).
+        var conditions = Between(
+            source,
+            "private async Task EstablishReceiveConditionsAsync(",
+            "private async void OnSpotRefreshTick(");
+
+        _output.WriteLine(
+            $"{conditions.Length} characters of the receive-side path");
+
+        Assert.Contains("ReceiverSetup", conditions, StringComparison.Ordinal);
+        Assert.Contains("ReceiverConditions.ForBlock", conditions, StringComparison.Ordinal);
+
+        // Nothing in it names a setting: the block says what it needs and the
+        // engine works out the rest, so there is no list of controls here to
+        // drift from the data (§0).
+        foreach (var forbidden in new[]
+                 {
+                     "SetFrequencyAsync", "SetModeAsync", "SetPower",
+                     "NoiseBlanker", "NoiseReduction", "AutoNotch", "Agc",
+                     "WriteAsync",
+                 })
+        {
+            Assert.DoesNotContain(forbidden, conditions, StringComparison.Ordinal);
         }
     }
 
