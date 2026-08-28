@@ -1,4 +1,4 @@
-using System.Threading.Channels;
+﻿using System.Threading.Channels;
 using Hamlet.RadioEngine.Civ;
 using Hamlet.RadioEngine.Transport;
 
@@ -56,6 +56,43 @@ internal sealed class ScriptedRadio : ISerialPort
 
     /// <summary>How many mode writes the radio has accepted.</summary>
     public int ModeWrites { get; private set; }
+
+    /// <summary>
+    /// The receive-side switches, by their `16` sub-command.
+    /// </summary>
+    /// <remarks>
+    /// **KEYED BY THE BYTE RATHER THAN BY A NAME**, so a test that sets the
+    /// noise blanker and a Hamlet that writes `16 22` have to agree about which
+    /// control that is. Sub-commands from §4: `12` AGC, `22` noise blanker,
+    /// `40` noise reduction, `41` auto notch.
+    /// </remarks>
+    public Dictionary<byte, byte> Switches { get; } = new()
+    {
+        [0x12] = 3,
+        [0x22] = 0,
+        [0x40] = 0,
+        [0x41] = 0,
+    };
+
+    /// <summary>Every `16` write the radio has taken, in order.</summary>
+    public List<(byte Sub, byte Value)> SwitchWrites { get; } = new();
+
+    /// <summary>How many `16` reads the radio has answered.</summary>
+    public int SwitchReads { get; private set; }
+
+    /// <summary>Sub-commands the radio will not answer, for the unread case.</summary>
+    public HashSet<byte> Deaf { get; } = new();
+
+    /// <summary>The operator reaches over and works a receive-side control.</summary>
+    /// <param name="sub">Which one, by its sub-command byte.</param>
+    /// <param name="value">Where he leaves it.</param>
+    public void OperatorTurnsASwitch(byte sub, byte value)
+    {
+        lock (_gate)
+        {
+            Switches[sub] = value;
+        }
+    }
 
     /// <summary>
     /// The operator reaches over and turns the mode knob.
@@ -170,6 +207,23 @@ internal sealed class ScriptedRadio : ISerialPort
 
             case 0x04:
                 Reply(0x04, new[] { (byte)(int)Mode, FilterSlot });
+                break;
+
+            // Read: 16 <sub>. Write: 16 <sub> <value>.
+            case 0x16 when data.Length == 1 && Switches.ContainsKey(data[0]):
+                if (Deaf.Contains(data[0]))
+                {
+                    break;
+                }
+
+                SwitchReads++;
+                Reply(0x16, new[] { data[0], Switches[data[0]] });
+                break;
+
+            case 0x16 when data.Length >= 2 && Switches.ContainsKey(data[0]):
+                Switches[data[0]] = data[1];
+                SwitchWrites.Add((data[0], data[1]));
+                Reply(CivConstants.ResultOk, Array.Empty<byte>());
                 break;
 
             case 0x1A when data.Length >= 1 && data[0] == 0x03:

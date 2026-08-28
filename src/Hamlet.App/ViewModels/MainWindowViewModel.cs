@@ -64,6 +64,24 @@ public partial class MainWindowViewModel : ObservableObject
 
     private readonly DispatcherTimer _rigSendTimer;
     private readonly DispatcherTimer _modeSettleTimer;
+
+    /// <summary>What Hamlet last set on the receive side (work instruction 042).</summary>
+    private ReceiverSetupMemory _receiverMemory = ReceiverSetupMemory.Empty;
+
+    /// <summary>
+    /// The block whose conditions have been established, by its lower edge.
+    /// </summary>
+    /// <remarks>
+    /// **ONCE PER TUNE-IN, THEN HANDS OFF.** Keyed by the block rather than by
+    /// the dial, because nudging the VFO a hundred hertz inside an FT8 block is
+    /// not arriving somewhere new, and re-asserting the noise controls every time
+    /// the knob moved would be the app fighting the operator for his own radio.
+    /// </remarks>
+    private long? _conditionsSetForBlockHz;
+
+    /// <summary>What the last tune-in did to the receive side.</summary>
+    internal IReadOnlyList<ConditionResult> LastReceiverSetup { get; private set; }
+        = Array.Empty<ConditionResult>();
     private readonly DispatcherTimer _spotRefreshTimer;
     private readonly DispatcherTimer _ageTimer;
     private readonly AppSettings _settings;
@@ -2760,6 +2778,13 @@ public partial class MainWindowViewModel : ObservableObject
         // somebody who took the wheel on 40 m did not mean to keep it forever
         // (HM-DEC-056).
         _modeFollow = _modeFollow.Rearmed();
+
+        // The receive side is re-armed with it, for the same reason: a band
+        // change is a fresh start, and the noise blanker he switched on to get
+        // through an electric fence on 40 m says nothing about 20 (HM-DEC-056).
+        _receiverMemory = _receiverMemory.Rearmed();
+        _conditionsSetForBlockHz = null;
+
         ModeFollowSuspended = false;
         ScheduleModeFollow();
 
@@ -5674,6 +5699,11 @@ public partial class MainWindowViewModel : ObservableObject
 
         if (!decision.Write)
         {
+            // **THE MODE BEING RIGHT ALREADY IS NOT THE WHOLE OF ARRIVING**
+            // (work instruction 042, task 3). He can be in USB-D on an FT8 block
+            // with the noise blanker chopping the tones up, and that is exactly
+            // the state this unit exists to end.
+            await EstablishReceiveConditionsAsync(rig, here).ConfigureAwait(true);
             return;
         }
 
@@ -5729,6 +5759,56 @@ public partial class MainWindowViewModel : ObservableObject
         finally
         {
             _settingModeOurselves = false;
+        }
+
+        await EstablishReceiveConditionsAsync(rig, here).ConfigureAwait(true);
+    }
+
+    /// <summary>
+    /// Set what would otherwise stop the operator hearing this block, and
+    /// nothing else.
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE OPERATOR DOES NOT TOUCH THE RADIO** (work instruction 042).
+    /// He was told three times in one afternoon to press buttons on the front of
+    /// it, and what a mode needs of the receive side is a fact this project
+    /// holds. He states an intent by tuning somewhere and the settings are the
+    /// consequence; there is no row of switches and there is not going to be one
+    /// (HM-DEC-050).</para>
+    /// <para>Never-throw discipline (§8): a setting that could not be changed is
+    /// a sentence rather than a crash.</para>
+    /// </remarks>
+    private async Task EstablishReceiveConditionsAsync(IRig rig, Neighborhood? here)
+    {
+        if (here is null || _conditionsSetForBlockHz == here.LowHz)
+        {
+            return;
+        }
+
+        var conditions = ReceiverConditions.ForBlock(here);
+
+        // A block that states nothing produces no claim and no write, and the
+        // block is marked as done either way so a settled dial is quiet.
+        _conditionsSetForBlockHz = here.LowHz;
+
+        if (conditions.Count == 0)
+        {
+            LastReceiverSetup = Array.Empty<ConditionResult>();
+            return;
+        }
+
+        try
+        {
+            var (results, memory) = await ReceiverSetup
+                .ApplyAsync(rig, conditions, _receiverMemory)
+                .ConfigureAwait(true);
+
+            _receiverMemory = memory;
+            LastReceiverSetup = results;
+        }
+        catch (Exception ex)
+        {
+            StatusText = $"Hamlet could not set the receiver up: {ex.Message}";
         }
     }
 
