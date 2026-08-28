@@ -149,4 +149,78 @@ public sealed class WhyTheGateDidNotFireTests
         // deciding it in advance.
         Assert.Equal(7, Tonight.Length);
     }
+
+    /// <remarks>
+    /// <para>**WHAT EACH REFUSAL WOULD COST, MEASURED BEFORE IT IS BUILT.** Task
+    /// 2 names three conditions. The window-score one is already enforced, which
+    /// task 1 proved. The other two are counted here at the moment each character
+    /// settles.</para>
+    /// <para>**THE ACCEPTANCE SAYS THE GOOD CAPTURES MUST NOT PAY**, so the
+    /// question is not only how much junk each refusal catches but how much of
+    /// `004844`, `004902` and `004915` it would take with it. A refusal that
+    /// silences the phantoms and the bulletin alike is not shippable.</para>
+    /// </remarks>
+    [Fact]
+    public void WhatEachRefusalWouldCost()
+    {
+        _output.WriteLine(
+            "  capture                | chars | no keying | clock withdrawn | "
+            + "either | what");
+        _output.WriteLine(
+            "  -----------------------|-------|-----------|-----------------|"
+            + "--------|-----");
+
+        foreach (var (name, what) in Tonight)
+        {
+            var audio = Capture(name);
+            var decoder = new CwDecoder(audio.SampleRate, 600);
+
+            var settled = 0;
+            var unmeasured = 0;
+            var reacquiring = 0;
+            var either = 0;
+
+            decoder.CharacterSettled += _ =>
+            {
+                settled++;
+
+                var noKeying = !decoder.Tracker.HasMeasuredPitch;
+                var withdrawn = decoder.SpeedIsReacquiring;
+
+                if (noKeying)
+                {
+                    unmeasured++;
+                }
+
+                if (withdrawn)
+                {
+                    reacquiring++;
+                }
+
+                if (noKeying || withdrawn)
+                {
+                    either++;
+                }
+            };
+
+            using (var source = new BufferedAudioSource(audio))
+            {
+                decoder.Listen(source);
+                source.PumpAll();
+            }
+
+            decoder.Flush();
+
+            _output.WriteLine(
+                $"  {name,-22} | {settled,5} | {unmeasured,9} | {reacquiring,15} | "
+                + $"{either,6} | {what}");
+        }
+
+        _output.WriteLine("");
+        _output.WriteLine(
+            "  a refusal is shippable only if it takes the phantoms and leaves "
+            + "the three good captures whole");
+
+        Assert.Equal(7, Tonight.Length);
+    }
 }
