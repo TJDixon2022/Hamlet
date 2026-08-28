@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 5 of 8
-BALL: tim
-NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-08-28T14:31:00-04:00
-NOTE: the hour he lost is fixed: the tune-in sends a wide enough filter and the card says the dial will sound dead; PBT and the capture press not reached
+STATE: EXECUTING
+TASK: 2 of 7
+BALL: code
+NEXT_PASTE: none
+UPDATED: 2026-08-28T14:45:34-04:00
+NOTE: press writes a WAV and a sheet that names CW, data off, FIL2 and 500 Hz as too narrow for the block; finding why Digital does not restore USB-D
 
 ---
 

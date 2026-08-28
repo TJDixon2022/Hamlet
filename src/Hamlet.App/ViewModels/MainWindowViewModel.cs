@@ -5863,6 +5863,100 @@ public partial class MainWindowViewModel : ObservableObject
     /// </remarks>
     private const int RosterTextLength = 120;
 
+    /// <summary>Where digital captures go.</summary>
+    /// <remarks>
+    /// **ITS OWN FOLDER, BY TIM'S RULING OF 2026-08-28.** WSJT-X has to be
+    /// pointed at a folder of FT8 files, and hand-picking them out of the CW
+    /// captures every time is the cost of mixing them. One capture root, one
+    /// habit, one more line in `get-files`.
+    /// </remarks>
+    internal static string DigitalCaptureFolder
+        => Path.Combine(CaptureFolder, "digital");
+
+    /// <summary>
+    /// Keep the last stretch of audio and the radio's state beside it.
+    /// </summary>
+    /// <remarks>
+    /// <para>**ORDERED IN UNITS 038, 039 AND 040 AND DROPPED FROM ALL THREE**,
+    /// because it was last in every one. Without it every complaint about the
+    /// waterfall is a description of a picture, and a picture has now been read
+    /// wrongly twice: once missing that the radio was in CW at 500 Hz, once
+    /// concluding that no signal could produce what was drawn.</para>
+    /// <para>**IT DOES NOT CALL `MarkCase` AND DOES NOT TOUCH `CwCaseRoster`**
+    /// (Tim's ruling of 2026-08-28). Every row of that roster asserts the
+    /// operator heard a station the CW decoder failed to read, and a digital
+    /// press is not a CW case. The CW capture path is not edited by this at all;
+    /// what is shared is the audio ring, read-only.</para>
+    /// <para>**SAME RING, SAME WINDOW, NO TRIMMING.** A thirty-second grab
+    /// starting mid-slot leaves WSJT-X two partial slots it cannot score, and
+    /// that is accepted: these are diagnostic material, and the sheet says so.
+    /// Trimming returns when scoring starts.</para>
+    /// </remarks>
+    [RelayCommand]
+    private void CaptureDigital()
+    {
+        var tap = _decoder?.Tap;
+
+        if (tap is null)
+        {
+            StatusText =
+                "Nothing is listening, so there is no audio to keep. Connect a "
+                + "radio or pick the training radio and press it again.";
+            return;
+        }
+
+        var audio = tap.Snapshot();
+
+        if (audio is null || audio.Samples.Length == 0)
+        {
+            StatusText =
+                "No audio has arrived yet, so there is nothing to keep.";
+            return;
+        }
+
+        try
+        {
+            var folder = DigitalCaptureFolder;
+            Directory.CreateDirectory(folder);
+
+            var now = DateTime.UtcNow;
+            var stamp = now.ToString("yyyy-MM-dd-HHmmss");
+
+            // **THE NAME SAYS WHICH CORPUS IT BELONGS TO**, so a folder listing
+            // is enough to tell diagnostic material from CW captures without
+            // opening anything.
+            var wav = Path.Combine(folder, $"ft8-{stamp}.wav");
+
+            WavAudio.Write(wav, audio);
+
+            var here = Neighborhoods.FirstOrDefault(n => n.Contains(FrequencyHz));
+
+            File.WriteAllText(
+                Path.Combine(folder, $"ft8-{stamp}.txt"),
+                DigitalCaptureSheet.Compose(
+                    now,
+                    audio.Duration.TotalSeconds,
+                    audio.SampleRate,
+                    RigState,
+                    ClockOffset,
+                    now,
+                    here?.Name ?? "",
+                    here?.PassbandHz));
+
+            StatusText =
+                $"Kept the last {audio.Duration.TotalSeconds:0} seconds in "
+                + $"{folder}, with what the radio was doing beside it.";
+        }
+        catch (IOException error)
+        {
+            StatusText = $"Could not write the capture: {error.Message}";
+        }
+        catch (UnauthorizedAccessException error)
+        {
+            StatusText = $"Could not write the capture: {error.Message}";
+        }
+    }
+
     /// <summary>Where captures and the roster are written.</summary>
     /// <remarks>
     /// Settable so a test can point the whole path at a temporary folder, in the

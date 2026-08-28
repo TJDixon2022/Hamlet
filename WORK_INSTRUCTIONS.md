@@ -18,62 +18,63 @@ If all four hold, say "Hamlet confirmed" and continue.
 
 ---
 
-# Work instruction 040 — the radio lands ready, and the press works
+# Work instruction 041 — the press, then the mode, then the readout
 
-**ISSUED: 2026-08-28. A fresh order, not an amendment. Follows unit 039.**
+**ISSUED: 2026-08-28. A fresh order, not an amendment. Follows unit 040.**
 
-**Eight tasks; task 8 is the drop. This is a long unit by instruction —
+**Seven tasks; task 7 is the drop. This is a long unit by instruction —
 the 45-to-60-minute window is a floor against trivial units, not a ceiling.**
 
 ## Why this unit exists
 
-**Today the operator went to 20 m FT8, heard nothing at 14.074, and spent an
-hour getting the radio into a state where FT8 was audible. Four wrong turns, and
-each one is a defect in this application.** This is HM-DEC-054's moment happening
-a second time, fourteen days after the decision written to prevent it.
+**The operator graded this afternoon F-minus and the grade is accepted.** Four
+defects, in his words:
 
-The radio was in **CW mode, FIL2, 500 Hz** — a window sitting below the bottom of
-the FT8 block. Nothing about the band, the antenna or the decoder was involved.
+1. **He hears whale song** — FT8 through the speaker — **and the waterfall shows
+   dense speckle rather than the dashes FT8 makes.**
+2. **The rig readout says `USB`, not `USB-D`.**
+3. **The capture button does nothing.**
+4. **Switching to CW puts the radio in CW mode. Switching back to Digital does not
+   restore USB-D.**
 
-**And the same state cost a second hour downstream.** The screenshot of that
-radio was read as a broken waterfall; unit 039 found the picture was drawing the
-receiver's own filter skirt. **§0.0.1 says the app's own record must be enough to
-tell whether a fault is in the signal, the radio, or Hamlet itself. It was not.**
-The mode and filter existed nowhere in any file Hamlet wrote. That is the second
-principle failing, and tasks 2 through 6 are it being fixed.
+**The third is the one that makes the first unanswerable.** Without a WAV and a
+sidecar, every complaint about the waterfall is a description of a picture, and
+this author has now twice reached a wrong conclusion from a screenshot — once
+missing `CW`/`FIL2` in the readout, once building a work order on the premise
+that no signal could produce what was drawn.
 
-**Every manual value in this order is re-read from `IC-7300_ENG_FM_12b.pdf`
-before it is coded against, per §0.** Page numbers are given so the read is
-cheap, not so it can be skipped.
+**The capture press has been ordered in units 038, 039 and 040 and dropped from
+all three.** It was last in every one. **It is first in this one, and that is the
+only protection that has ever worked.**
+
+**The second and fourth are the same organ**: Hamlet already knows the radio is in
+USB-D — the "What the radio is doing" window reads `Data mode: on` from `26 00`
+and displays it — but the readout does not render it, and the write that
+establishes it does not fire on every entry into Digital.
 
 ## Verify this instruction against the tree
 
-**Nothing here describes the tree.** Check every claim and report mismatches,
-including where the work succeeded anyway. Trust the tree over this order
-everywhere they differ.
+**Nothing here describes the tree.** Check every claim and report mismatches.
+Trust the tree over this order everywhere they differ.
 
-From unit 039's report, not measured by this author:
+From unit 040's report, not measured by this author:
 
-- The digital waterfall's floor is now **per bin, tracked over time**, with a
-  second slow average holding how far each bin usually sits above its own floor.
-  Saturation on an empty recording went 12.3% to 0.0%.
-- **A dead-constant carrier fades from that waterfall.** Recorded, not a fault.
-- The tuning marker is drawn only when it falls inside the band; the CW picture
-  is unchanged and that was checked.
-- The clock queries at startup and every ten minutes; a failed query returns
-  unknown and does not erase an earlier good reading.
-- **Engine: 29 failing of 1914**, one more than the stable 28. The extra is
-  `AConfirmedModeWriteFoldsTheDataVariantTooAsync`, which passes three of three
-  in isolation and is a known intermittent. **App: 509 of 509.**
-- **The CW capture press calls `MarkCase`, which appends to `CwCaseRoster`** —
-  the roster that scores the CW decoder. This is what stopped 039's task 5.
-- `Ft8Slots` arithmetic exists and is tested.
+- **Engine 28 of 1916, byte-identical to the stable set. App 509 of 509.**
+  039's extra, `AConfirmedModeWriteFoldsTheDataVariantTooAsync`, does not appear
+  and is confirmed an intermittent.
+- The mode write is at **`CivWrites.cs:101`** and now carries the filter byte,
+  derived from the block's own width. The passband is established by the `1A 03`
+  readback and is **unknown until it arrives.**
+- **12 neighborhood blocks state a passband; 93 state none.**
+- The CW sidecar already carries `Mode`, `FilterSelection` and `FilterBandwidth`.
+- **`IC-7300_ENG_FM_12b.pdf` is not on the machine** and §2.1 forbids committing
+  it. `CLAUDE.md` §4 carries command `26` and the filter scale, verified
+  column-aware on 2026-08-14, and `1A 03` reads the radio's actual passband in
+  hertz — **which is a better source than any table of defaults.**
+- **Unit 040's tasks 4, 6, 7 and 8 were not started.** Tasks 1, 4, 6 and 7 of this
+  order are those, reordered.
 
-**Record the failing counts from the tree before task 2.** If the engine is not
-29, or if `AConfirmedModeWriteFoldsTheDataVariantTooAsync` is not the extra, say
-so before anything else.
-
-**Tasks 7 and 8 are unit 039's dropped tasks 6 and 7, returned unchanged.**
+**Record the failing counts from the tree before task 2.**
 
 ## Rulings in force
 
@@ -81,49 +82,46 @@ so before anything else.
 
 **Tim's rulings, 2026-08-28:**
 
-> **The digital capture gets its own record and its own folder.** `captures\digital\`,
-> a record separate from `CwCaseRoster`. The two corpora are measured differently
-> — CW by character accuracy, digital by decode yield against WSJT-X — and the CW
-> decoder is mid-repair.
->
-> Rejected: adding a column to `CwCaseRoster` saying which tab a press came from
-> — that changes the CW capture path. Rejected: routing the digital press through
-> `MarkCase` at all — every row of that roster asserts the operator heard a station
-> Hamlet failed to read.
+> **The order of work is: fix the capture button, then fix the automatic USB-D
+> setting, then the UI defects.** This is his sequencing, given after the F-minus.
 
-> **The digital capture press works the way the CW one does** — same ring, same
-> window, same file shape. **No trimming, no slot alignment.** The consequence is
-> accepted: a 30-second grab starting mid-slot leaves WSJT-X two partial slots it
-> cannot score, so **these files are diagnostic material, not corpus.** Trimming
-> returns when scoring starts. **Do not build trimming in this unit.**
+> **The filter write is made once per tune-in and then hands off** — the middle
+> option of unit 040's question B, as that unit built it.
+>
+> Rejected: treating a hand-turned filter the way HM-DEC-056 treats a hand-turned
+> mode, suspending the write until the next band change — a filter left narrow in
+> a previous session would then silently defeat the fix, which is today's failure
+> returning by a different door. Rejected: always writing it — that takes the
+> filter knob away on a tab where narrowing onto one signal is normal operating.
+>
+> **Tim's reason:** a tune-in is an explicit act of arriving somewhere new, and
+> re-establishing a filter wide enough to hear what is there is part of arriving.
+
+> **The digital capture gets its own record and its own folder** — `captures\digital\`,
+> separate from `CwCaseRoster`. **`MarkCase` is not called.**
+
+> **The digital press works the way the CW one does** — same ring, same window,
+> same file shape. **No trimming, no slot alignment.** These files are diagnostic
+> material, not corpus; trimming returns when scoring starts.
 
 > **The point of the capture is to give a WAV to match against a screenshot.**
-> That pairing is how a complaint about the screen becomes evidence instead of a
-> description.
 
-> **The decoder is written in C#, not wrapped.** Unit 038 found no C toolchain and
-> Tim's own condition names that as the trigger. **This unit does not start the
-> decoder proper** — only the sync search, in the tail, because it runs on the
-> transform that already exists.
+> **The decoder is written in C#, not wrapped.**
 
-> **Static strings unit 037 wrote stay as written until they are live**, including
-> the mode strip's `reading it · 9 messages this slot`.
+> **Static strings unit 037 wrote stay as written until they are live.**
 
 **Standing rulings this unit is bound by:**
 
-- **HM-DEC-009 / §0.0** — never present a guess as a decode; **this binds pictures
-  as hard as sentences** (HM-DEC-092).
-- **§0.0.1** — the app's own record must distinguish a fault in the signal, the
-  radio, or Hamlet. **This is the principle tasks 2 through 6 serve.**
-- **HM-DEC-054** — the band-plan file's editorial rule that the FT8 block is 3 kHz
-  wide.
-- **HM-DEC-056** — tuning into a neighborhood writes the mode; the operator's own
-  hand wins and suspends the write visibly until the next band change; a value the
-  radio did not confirm is unknown, not assumed.
-- **§0** — where something can be generated from a source of truth, generate it.
-  **No constants sprinkled through code.**
-- **HM-DEC-007** — decoders tested against WAV fixtures.
-- **§0.2 / HM-DEC-008** — **no transmit work of any kind in this unit.**
+- **§0.0 / HM-DEC-009** — never present a guess as a decode; this binds pictures
+  as hard as sentences (HM-DEC-092).
+- **§0.0.1** — **the app's own record must be enough to tell whether a fault is in
+  the signal, the radio, or Hamlet itself. Task 1 is this principle and nothing
+  else.**
+- **HM-DEC-056** — the operator's own hand wins on the mode and suspends the write
+  visibly until the next band change; a value the radio did not confirm is
+  unknown, not assumed.
+- **§0** — generate from the source of truth; no constants sprinkled through code.
+- **§0.2 / HM-DEC-008** — **no transmit work of any kind.**
 
 ## Status cadence
 
@@ -133,141 +131,112 @@ inside the task. Same every ten minutes while a task runs.
 
 ## The tasks
 
-### Task 1 — trace, and re-read the manual
+### Task 1 — the capture press works *(first, and not droppable)*
 
-**Run the engine suite whole and record the number** before anything else.
+**Nothing else in this unit starts until a press writes a file.**
 
-**Re-read from `IC-7300_ENG_FM_12b.pdf`**, and quote what you find rather than
-this order's summary of it:
+Trace what you need inside this task rather than before it: the CW capture path,
+what it writes, what `MarkCase` appends, and which parts are reusable without
+touching it. **Report what you find as part of this task.**
 
-- **p. 3-3** — the `[DATA]` key on the MODE screen, and in which modes it is
-  displayed. The operator concluded USB-D does not exist on this radio because it
-  is absent while CW is selected.
-- **p. 4-5, 4-6** — the filter selection gesture, the FILTER screen, and **the
-  per-mode filter defaults.** This order believes SSB-D's are 3.0 / 1.2 / 500 Hz
-  against SSB's 3.0 / 2.4 / 1.8 kHz. **Confirm or correct that table from the
-  manual.**
-- **p. 19-8, 19-11** — command `26`: the VFO selector, mode, data flag and filter
-  byte, and **which read distinguishes USB from USB-D.**
-- **p. 19-4, column-aware** — `14 08` and the Twin PBT. `CLAUDE.md` records this
-  as the row once mistaken for the CW pitch. **Find whether the inner control has
-  a companion sub-command or does not.**
+The press on the waterfall header writes to **`captures\digital\`**:
 
-Then trace, and **say what you find**:
-
-- **The tune-in write path.** Where HM-DEC-056's mode write happens, what frame it
-  builds, and whether a filter byte is currently sent, defaulted, or omitted.
-- **`data/bands/us-neighborhoods.json`** — its row shape, and where a passband
-  requirement would go.
-- **The neighborhood card** — where its text is composed, and where the dial
-  frequency is named.
-- **The CW capture path** — what it writes, what `MarkCase` appends, and **which
-  parts are reusable without touching it.**
-- **What the app currently records about the radio's state**, anywhere. §0.0.1's
-  question: could a session tomorrow tell from Hamlet's own files that the radio
-  was in CW/FIL2/500 Hz today? **Answer it.**
-
-### Task 2 — the neighborhood carries its passband, and the write sends it
-
-- Add a **passband requirement** to the neighborhood rows in
-  `data/bands/us-neighborhoods.json`. FT8 and FT4 need the full **3 kHz** by the
-  file's own editorial rule; **PSK31 at 31 Hz does not.**
-- **Derive the filter byte from the requirement and the mode's own filter scale.
-  Do not write `01` down as a constant.** FIL1 is the widest slot in every mode,
-  but what makes it correct here is that 3.0 kHz ≥ 3 kHz — **and that is the
-  sentence the code should be able to state.**
-- **Send it as part of the existing `26` frame. One write, not two.** `CLAUDE.md`
-  already records that omitting the trailing bytes selects DATA OFF and the mode
-  default rather than leaving them alone, so **the filter byte is already being
-  sent as a default whether or not it was chosen.**
-- **Read back** with `26` and the selector alone. **A filter the radio did not
-  confirm leaves the passband unknown rather than assumed**, exactly as HM-DEC-056
-  already rules for the mode.
-
-**Acceptance:** tuning into FT8 from any starting state produces one `26` frame
-carrying USB-D and a filter wide enough for the neighborhood's stated
-requirement, and the readback either confirms it or the passband reads unknown.
-
-### Task 3 — the card names the block, not just the dial
-
-**No station transmits on 14.074.** The energy sits from roughly 14.0742 to
-14.0770 as audio offsets above the dial in upper sideband — the same physics the
-file's 3 kHz editorial rule already encodes.
-
-The card names **both**: the dial to tune to, and the block that dial opens onto.
-
-**"Dead at the published frequency, alive one kilohertz up" is the correct
-behaviour of a correctly tuned radio.** An operator not told that concludes the
-band is empty or the rig is broken. **That has now happened twice to the one
-operator this app is for.**
-
-**Generate the block from the neighborhood row and the mode's sideband, not from
-a hand-typed number** (§0).
-
-### Task 4 — an uncleared PBT is a fact, and Hamlet is blind to it
-
-**There is no write available here and it must not be papered over.** The Twin PBT
-is a physical control; **the app must not claim to have cleared something it
-cannot clear.** What it can do is see it.
-
-- Read the outer position. **If the inner cannot be read, that is an explicit
-  unknown in the ledger, not an assumption that it is centred** (§0.0).
-- A PBT away from centre **narrows the effective passband below whatever FIL1
-  gives.** Hamlet says so in the app's voice, and names the remedy: hold
-  `TWIN PBT CLR` for one second until the dot beside the width disappears
-  (p. 4-5).
-- **It suppresses the "you should hear the block now" claim.** Saying the radio is
-  ready while a hand-set PBT closes the window is the prime directive broken on
-  the one sentence the operator will act on.
-
-**Raise, do not decide:** whether an *unreadable* inner PBT suppresses the
-readiness claim or only qualifies it. Suppressing on an unknown is the
-conservative reading of §0.0 and it fires on every radio where that read does not
-exist. **Put it in the report in HM-DEC-010's options-table form.**
-
-**Raise, do not decide:** whether the filter write belongs to the operator's hand
-the way the mode does. HM-DEC-056 says the operator's own hand wins and suspends
-the write visibly until the next band change; a filter turned by hand is the same
-gesture, **and it is also how somebody deliberately narrows onto one signal.**
-
-### Task 5 — regression fixtures, as radio states
-
-**The failure is a state, not a signal**, so the fixtures are states:
-
-- **CW / FIL2 / 500 Hz at 14.074** — today's starting state.
-- **USB-D / FIL2 / 1.2 kHz** — the state HM-DEC-056 as built can produce, which
-  task 2 must make unreachable.
-- **USB-D / FIL1 / 3.0 kHz with PBT off centre** — the state task 4 must catch.
-- **USB-D / FIL1 / 3.0 kHz, PBT clear** — **the only one that may produce a "you
-  should hear it" claim.**
-
-**A test walks the whole neighborhood map and asserts that no tune-in can leave
-the radio in a passband narrower than the neighborhood's stated requirement**, on
-any band, for any mode family. That is HM-DEC-054's test one layer down: it
-asserts the radio can actually hear what the map says lives there.
-
-### Task 6 — the capture press, wired
-
-The press on the waterfall header writes to **`captures\digital\`**, with **its
-own record, separate from `CwCaseRoster`.**
-
-- Same ring and same window length as CW. **No trimming, no slot alignment.**
-- **`MarkCase` is not called and `CwCaseRoster` is not touched.**
-- **The sidecar satisfies §0.0.1**, which is the whole point of this unit: it must
-  be enough for a later reader to tell whether a fault was in the signal, the
-  radio, or Hamlet. **At minimum that means the mode, the data flag, the filter
-  slot and its width, the PBT state including unknown, the dial frequency, and the
-  clock offset with its age** — alongside whatever the CW sidecar already carries.
-  **Every value marked measured or unknown; nothing defaulted silently** (§0.0).
-- **The sidecar records that the file is untrimmed**, so a later scoring run can
-  tell diagnostic material from corpus without opening the audio.
+- **Its own record, separate from `CwCaseRoster`. `MarkCase` is not called and the
+  CW capture path is not edited.**
+- Same ring and same window length as the CW press. **No trimming, no slot
+  alignment.**
 - Filenames distinguish these from CW captures.
 
-**Acceptance:** a press writes a WAV and a sidecar the operator can find, and
-**the sidecar alone identifies today's failure state** — CW, FIL2, 500 Hz — if the
-radio is in it.
+**The sidecar is the point of the task.** §0.0.1 asks whether a later reader can
+tell if a fault was in the signal, the radio, or Hamlet. At minimum it carries:
 
-### Task 7 — the slot cutter
+- **Mode, and the data flag separately** — `USB` and `USB-D` must not be the same
+  line, because that ambiguity is what cost this author an hour today.
+- **Filter slot, and the width in hertz from `1A 03`.**
+- Dial frequency, S-meter, preamp, attenuator, AGC, noise blanker, noise
+  reduction, front-end overload — **whatever the "What the radio is doing" window
+  already reads.** That window is §0.0.1 working; the sidecar should hold the same
+  set.
+- **The clock offset and its age.**
+- **That the file is untrimmed**, so a later scoring run can tell diagnostic
+  material from corpus without opening the audio.
+- **Every value marked measured or unknown. Nothing defaulted silently** (§0.0).
+  A row nobody could read says so, exactly as that window already does.
+
+**Acceptance:** a press writes a WAV and a sidecar the operator can find, and
+**the sidecar alone identifies the radio's mode, data flag and passband width** —
+the three fields whose absence has cost two hours today.
+
+### Task 2 — entering Digital restores USB-D
+
+**Switching to CW puts the radio in CW. Switching back to Digital does not restore
+USB-D.** The two directions are not symmetric and they must be.
+
+- Find why. **Report the cause with file and line** — whether the write does not
+  fire on the return, fires without the data flag, or fires and is not confirmed.
+- **Whatever establishes CW on entering the CW tab is what should establish the
+  digital mode on entering Digital**, with the filter byte unit 040 added.
+- **HM-DEC-056 still governs**: the operator's own hand wins, a value the radio did
+  not confirm is unknown rather than assumed, and the suspension is visible.
+- **The mode written on entering Digital is the one the current neighborhood
+  calls for**, generated from the band-plan row, not a constant (§0).
+
+**Acceptance:** from CW at 14.074, switching to Digital leaves the radio in USB-D
+on a filter wide enough for the block, confirmed by readback — and switching back
+and forth repeatedly does not drift.
+
+### Task 3 — the readout says USB-D
+
+The rig readout renders `USB` while Hamlet holds `Data mode: on` from `26 00` and
+displays it correctly in the "What the radio is doing" window. **Two surfaces
+disagree about the same measured fact.**
+
+- The readout shows the data variant. **`USB` and `USB-D` are different modes to
+  the operator and must look different at a glance.**
+- **If the data flag has not been read, the readout says the mode is unknown in
+  that respect rather than showing the bare mode** — showing `USB` when the flag
+  is unread is the guess §0.0 forbids, and it is exactly the guess that misled a
+  reader today.
+- The same applies to CW: whatever `26` reports is what is shown.
+- **Do not invent a new colour or badge language.** Use what the readout already
+  has.
+
+### Task 4 — the Twin PBT, seen but never claimed
+
+**There is no write for this control and the app must not claim to have cleared
+something it cannot clear.**
+
+- Read the outer position — `CLAUDE.md` §4 records `14 08`, and records it as the
+  row once mistaken for the CW pitch, so **treat it column-aware.**
+- **Whether the inner control can be read is unknown and the manual is not on the
+  machine.** Check `SHACK_FACTS.md` first — a fact there outranks any inference
+  (HM-DEC-093). **If neither answers it, that is an explicit unknown in the ledger,
+  not an assumption that the inner is centred.**
+- A PBT away from centre narrows the effective passband below whatever the slot
+  gives. Hamlet says so in the app's voice and names the remedy: hold
+  `TWIN PBT CLR` for one second until the dot beside the width disappears.
+- **It suppresses the "you should hear the block now" claim.**
+
+**Raise, do not decide:** whether an *unreadable* inner PBT suppresses that claim
+or only qualifies it. Unit 040 costed three options and had no recommendation
+because the deciding fact needs the manual. **Carry that table forward with
+whatever this session learns added to it.**
+
+### Task 5 — regression fixtures for the tab switch
+
+The failure is a state transition, so the fixtures are transitions:
+
+- **CW tab at 14.074, switch to Digital** — must end USB-D, wide enough.
+- **Digital, switch to CW, switch back** — must end where it started.
+- **Digital with the operator's hand having changed the mode** — HM-DEC-056's
+  suspension, visible.
+- **Digital where the readback never confirms** — passband and data flag unknown,
+  and no readiness claim.
+
+**A test asserts that entering a tab leaves the radio in a state that tab can
+actually work in, or says it does not know.**
+
+### Task 6 — the slot cutter
 
 Cut the audio into **15-second slots aligned to UTC quarter-minutes**, using the
 clock offset.
@@ -275,23 +244,20 @@ clock offset.
 - **Unknown offset means no slots are cut**, and the reason is observable.
 - A short slot is discarded and the discard count is observable (§0.0.1).
 - Pure over samples and an elapsed time, tested without a wall clock.
-- **Nothing consumes the slots yet.** This is the seam the decoder plugs into.
+- **Nothing consumes the slots yet.**
 
-### Task 8 — the Costas sync search *(the drop candidate)*
+### Task 7 — the Costas sync search *(the drop candidate)*
 
-The first stage of the C# decoder, running on **the FFT frames, not the drawn
-bitmap.**
+The first stage of the C# decoder, on **the FFT frames, not the drawn bitmap.**
 
-- FT8 carries **three Costas arrays of seven symbols** at the start, middle and
-  end of each transmission. Search a slot's frames for that pattern across
-  candidate time and frequency offsets.
-- **Report candidates, not messages.** Each carries a frequency, a time offset and
-  a sync score. **Nothing goes on the decoded-text panel** — no message has been
-  read, and HM-DEC-009 is absolute here.
-- **Mark located candidates on the waterfall** if that is cheap; skip it and say
-  so if it is not.
-- Tested against a fixture. **A synthesised FT8 slot is acceptable as a unit test
-  and is not evidence about yield** — say which it is.
+- Three Costas arrays of seven symbols at the start, middle and end of each
+  transmission. Search a slot's frames across candidate time and frequency
+  offsets.
+- **Report candidates, not messages** — frequency, time offset, sync score.
+  **Nothing goes on the decoded-text panel.**
+- Mark located candidates on the waterfall if cheap; skip and say so if not.
+- Tested against a fixture. **A synthesised FT8 slot is a unit test and is not
+  evidence about yield.**
 
 **Dropped whole if time runs out, and the report says so.**
 
@@ -299,9 +265,10 @@ bitmap.**
 
 The whole CW decoder stream and unit 036's residue. The CW capture path itself.
 The scanner and the calling cycle. `CHANGELOG.md`. The missing `DECISIONS.md`
-records including HM-DEC-086's supersession. The phrasebook and the recent-places
-row. The prefix table and the plain-English parser. The decoded-text panel's
-placeholder rows. The mode strip's static status.
+records. The phrasebook and the recent-places row. The prefix table and the
+plain-English parser. The decoded-text panel's placeholder rows. The mode strip's
+static status. **The waterfall's rendering** — it is under suspicion and task 1
+exists to produce the evidence, but **nothing about it changes in this unit.**
 
 **Both halves are required: do not touch them, and do not raise them.**
 
@@ -312,17 +279,16 @@ A parked item that genuinely blocks a task is raised once, and says it was parke
 Standing prohibitions are `CLAUDE.md`'s and are not retyped. Unit-specific:
 
 - **No transmit. Nothing keys the radio.**
-- **Do not call `MarkCase` or touch `CwCaseRoster`.**
-- **Do not edit the CW capture path, the CW decoder, or the CW markup.** If
-  something must be factored out to be reused, **stop and report.**
-- **Do not claim to have cleared the PBT.** There is no write for it.
-- **Do not write a filter byte as a constant.** Derive it and be able to state
-  why.
+- **Do not start task 2 until task 1 writes a file.**
+- **Do not call `MarkCase` or touch `CwCaseRoster` or the CW capture path.**
+- **Do not change the waterfall's rendering, floor, or colour ramp.**
+- **Do not show a bare mode when the data flag has not been read.**
+- **Do not claim to have cleared the PBT.**
+- **Do not write a mode or filter as a constant.** Generate from the band-plan row.
 - **Do not build trimming or slot-aligned capture.**
 - **Do not put anything on the decoded-text panel.**
-- **Do not report a sync candidate as a decode**, on the screen or in a log.
-- **Do not trade the waterfall's determinism across chunk sizes.**
-- **Do not code against a manual value this order states without re-reading it.**
+- **Do not report a sync candidate as a decode.**
+- **Do not code against a manual value without a source in the tree.**
 - **Do not mint a decision id.**
 
 ## Committing, pushing, reporting
@@ -333,13 +299,12 @@ push is reported as refused, with the reason.
 Report per `CLAUDE_CODE.md` §8 to `output.md` at the repository root, overwritten
 and printed. **Read the file's own section count and follow it.**
 
-**The section that says what the owner should expect leads with this: clicking
-into FT8 now puts the radio in USB-D on a filter wide enough to hear the block,
-the card says where the signals actually are, and the capture press writes a file
-whose sidecar would have identified today's failure in one line.**
+**The section that says what the owner should expect leads with this: the capture
+press writes a WAV and a sidecar, and the sidecar names the mode, the data flag
+and the passband width in hertz.**
 
-**The section that reports measurements leads with the engine's failing count**,
-then the manual re-read — every value in this order that the manual confirmed, and
-every one it corrected.
+**The section that reports measurements leads with the engine's failing count,
+then task 2's cause with file and line** — why entering Digital did not restore
+USB-D.
 
 **If you finish every task, stop and report. Do not start the next unit.**

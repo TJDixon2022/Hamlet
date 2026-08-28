@@ -2845,10 +2845,19 @@
                                                   Summary="{Binding DigitalWaterfallSummary}"
                                                   IsExpanded="{Binding DigitalWaterfallExpanded, Mode=TwoWay}">
                                 <ctl:CollapsiblePanel.HeaderAction>
+                                    <!-- **WIRED IN UNIT 041, AFTER BEING
+                                         ORDERED AND DROPPED THREE TIMES.** Its
+                                         label changes with what it does: it
+                                         keeps the raw ring, untrimmed, because
+                                         trimming is ruled out until scoring
+                                         starts. A button that said "four slots"
+                                         while keeping thirty raw seconds would
+                                         be describing work nobody had done. -->
                                     <Button x:Name="DigitalCapturePress"
-                                            Content="keep the last four slots"
+                                            Content="keep the last 30 seconds"
                                             FontSize="11"
                                             Padding="10,3"
+                                            Command="{Binding CaptureDigitalCommand}"
                                             Background="{StaticResource HmSlateTintBrush}"
                                             BorderBrush="{StaticResource HmSlateEdgeBrush}"
                                             BorderThickness="1"
