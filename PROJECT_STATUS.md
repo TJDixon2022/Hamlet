@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 7 of 7
+TASK: 2 of 5
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-28T18:01:56-04:00
-NOTE: app suite green at 509 of 509; re-running the engine suite after the age-rule fix, then writing the report
+UPDATED: 2026-08-28T18:44:50-04:00
+NOTE: trace done and the engine baseline is 28 failing of 1958; ranking every candidate pitch across the corpus, 5 captures of 44 in
 
 ---
 
