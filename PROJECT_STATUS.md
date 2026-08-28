@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 4 of 7
+TASK: 5 of 7
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-28T13:26:50-04:00
-NOTE: render fault fixed and measured: empty recording goes 12.3 percent saturated to 0.0, median byte 74 of 255, and a station that arrives still lands at its own frequency
+UPDATED: 2026-08-28T13:28:14-04:00
+NOTE: clock query runs at startup and every ten minutes off the UI thread; wiring the capture press the CW way next
 
 ---
 

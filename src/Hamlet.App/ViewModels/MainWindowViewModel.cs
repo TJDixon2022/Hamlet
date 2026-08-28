@@ -123,6 +123,20 @@ public partial class MainWindowViewModel : ObservableObject
     private IDisposable[] _ownedSources = Array.Empty<IDisposable>();
     private TrainingSpectrumSource? _trainingSpectrum;
     private readonly DispatcherTimer _decodeTimer;
+
+    /// <summary>Asks the time servers how far the machine's clock is out.</summary>
+    /// <remarks>
+    /// **EVERY TEN MINUTES, AND THE INTERVAL IS REASONED.** A PC clock the
+    /// operating system is already disciplining does not wander measurably in
+    /// ten minutes, and the answer is only needed to place fifteen-second slot
+    /// boundaries. Asking more often is a request a minute to somebody else's
+    /// volunteer-run pool for a number that has not changed (HM-DEC-024); asking
+    /// less often means an evening's session runs on one reading taken before
+    /// the radio warmed up.
+    /// </remarks>
+    private readonly DispatcherTimer _clockTimer;
+
+    private bool _clockQueryRunning;
     private RigStateMonitor? _rigMonitor;
     private IAudioSource? _audioInput;
     private CwDecoder? _decoder;
@@ -2110,6 +2124,14 @@ public partial class MainWindowViewModel : ObservableObject
         // than anything it would be worth interrupting the UI for.
         _decodeTimer = new DispatcherTimer(
             TimeSpan.FromMilliseconds(250), DispatcherPriority.Background, OnDecodeTick);
+
+        _clockTimer = new DispatcherTimer(
+            TimeSpan.FromMinutes(10), DispatcherPriority.Background, OnClockTick);
+        _clockTimer.Start();
+
+        // The first reading is wanted before ten minutes have passed, and the
+        // query is awaited nowhere: it lands when it lands.
+        _ = QueryTheClockAsync();
         _ageTimer.Stop();
 
         _activitySource = BuildSources();
@@ -2765,6 +2787,48 @@ public partial class MainWindowViewModel : ObservableObject
     partial void OnMapExpandedChanged(bool value) => PersistPanel(PanelKeys.Map, value);
 
     partial void OnTapeExpandedChanged(bool value) => PersistPanel(PanelKeys.Tape, value);
+
+    private void OnClockTick(object? sender, EventArgs e)
+        => _ = QueryTheClockAsync();
+
+    /// <summary>Ask once, and record whatever comes back.</summary>
+    /// <remarks>
+    /// <para>**OFF THE UI THREAD, AND A DEAD SERVER NEVER STALLS THE TAB.** The
+    /// query has its own timeout and every failure inside it returns unknown, so
+    /// nothing here can throw and nothing here can block (§8).</para>
+    /// <para>**A FAILED QUERY LEAVES THE OFFSET UNKNOWN RATHER THAN ZERO**
+    /// (HM-DEC-009). Unknown has its own words on the strip and it stops slots
+    /// being cut, which is the honest behaviour: a clock nobody could check is
+    /// not a clock that is right.</para>
+    /// <para>**AND A FAILURE DOES NOT ERASE AN EARLIER GOOD READING.** A network
+    /// that drops out for one poll has not made the last measurement untrue; it
+    /// has only made it older, and the age is already displayed.</para>
+    /// </remarks>
+    private async Task QueryTheClockAsync()
+    {
+        if (_clockQueryRunning)
+        {
+            return;
+        }
+
+        _clockQueryRunning = true;
+
+        try
+        {
+            var measured = await SntpClock
+                .QueryAsync(DateTime.UtcNow)
+                .ConfigureAwait(true);
+
+            if (measured.IsKnown || !ClockOffset.IsKnown)
+            {
+                ClockOffset = measured;
+            }
+        }
+        finally
+        {
+            _clockQueryRunning = false;
+        }
+    }
 
     partial void OnWaterfallExpandedChanged(bool value)
         => PersistPanel(PanelKeys.Waterfall, value);
