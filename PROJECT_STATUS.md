@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 2 of 7
+TASK: 3 of 7
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-28T14:45:34-04:00
-NOTE: press writes a WAV and a sheet that names CW, data off, FIL2 and 500 Hz as too narrow for the block; finding why Digital does not restore USB-D
+UPDATED: 2026-08-28T14:49:09-04:00
+NOTE: tab switch now follows the map both ways and the readout shows USB-D, or USB-? where the flag was never read
 
 ---
 

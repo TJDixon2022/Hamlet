@@ -220,6 +220,27 @@ public partial class MainWindowViewModel : ObservableObject
         {
             tab.Follow(tab.Name == value);
         }
+
+        // **ARRIVING ON A TAB IS ARRIVING SOMEWHERE, AND THE RADIO HAS TO BE
+        // ABLE TO WORK THERE** (work instruction 041, task 2). On 2026-08-28 the
+        // operator reported that switching to CW put the radio in CW and
+        // switching back to Digital did not restore USB-D. **The two directions
+        // were not asymmetric — neither of them did anything.** This handler
+        // raised three property notifications and synchronised the tab strip,
+        // and touched the radio nowhere; every mode write in the application
+        // came from the dial moving.
+        //
+        // **WHAT IS WRITTEN IS WHAT THE MAP SAYS LIVES AT THE DIAL**, generated
+        // from the band-plan row rather than from the tab's name (§0). A tab is
+        // not a mode: the Digital tab at an FT8 frequency wants USB-D, and at a
+        // frequency the map calls Morse it wants what the map says, because the
+        // map is the source of truth about the band and the tab is a view of it.
+        //
+        // **HM-DEC-056 IS UNTOUCHED AND STILL GOVERNS.** This goes through the
+        // same settle timer the dial does, so the operator's own hand still
+        // wins, the suspension is still visible, and a value the radio did not
+        // confirm is still unknown rather than assumed.
+        ScheduleModeFollow();
     }
 
 
@@ -3265,7 +3286,11 @@ public partial class MainWindowViewModel : ObservableObject
 
             ApplyRigFrequency((long)swept);
         }
-        RigModeText = state[RigField.Mode] is { IsKnown: true } mode ? mode.Text : "";
+        // **THE VARIANT COMES WITH THE MODE** (work instruction 041, task 3).
+        // This read RigField.Mode alone, so a radio Hamlet knew was in USB-D
+        // showed as USB on the readout while the diagnostics window said
+        // `Data mode: on` from the same poll.
+        RigModeText = state.ModeWithVariant;
         RigFilterText = state[RigField.FilterSelection] is { IsKnown: true } filter
             ? filter.Text
             : "";

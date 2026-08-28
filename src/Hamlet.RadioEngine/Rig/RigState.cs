@@ -106,6 +106,45 @@ public sealed class RigState
     public bool IsDataMode
         => this[RigField.DataMode] is { IsKnown: true, Number: 1 };
 
+    /// <summary>
+    /// The mode as the operator names it, with the data variant on it.
+    /// </summary>
+    /// <remarks>
+    /// <para>**`USB` AND `USB-D` ARE DIFFERENT RADIOS AND THE READOUT SHOWED
+    /// BOTH AS `USB`** (work instruction 041, task 3). Hamlet has read the flag
+    /// from `26 00` all along and displays it correctly in the "What the radio is
+    /// doing" window; the readout was built from `RigField.Mode` alone, so two
+    /// surfaces disagreed about the same measured fact. That ambiguity cost this
+    /// project an hour on 2026-08-28.</para>
+    /// <para>**AN UNREAD FLAG IS SHOWN AS UNREAD, NOT AS THE BARE MODE.**
+    /// Printing `USB` when nobody has read the variant is the guess §0.0 forbids,
+    /// and it is exactly the guess that misled a reader. The suffix position is
+    /// where the variant lives, so `-?` sits where `-D` would and cannot be
+    /// mistaken for it. **No new colour and no new badge**: the readout's own
+    /// language already puts the variant there.</para>
+    /// </remarks>
+    public string ModeWithVariant
+    {
+        get
+        {
+            var mode = this[RigField.Mode];
+
+            if (!mode.IsKnown || mode.Text.Length == 0)
+            {
+                return "";
+            }
+
+            var flag = this[RigField.DataMode];
+
+            if (!flag.IsKnown)
+            {
+                return mode.Text + "-?";
+            }
+
+            return flag.Number is 1 ? mode.Text + "-D" : mode.Text;
+        }
+    }
+
     /// <summary>The filter's width in hertz, or null.</summary>
     public int? FilterBandwidthHz
         => this[RigField.FilterBandwidth] is { IsKnown: true, Number: { } n } ? (int)n : null;
