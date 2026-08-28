@@ -1,4 +1,4 @@
-using Hamlet.RadioEngine.Audio;
+﻿using Hamlet.RadioEngine.Audio;
 using Hamlet.RadioEngine.Civ;
 using Hamlet.RadioEngine.Rig;
 using Xunit;
@@ -67,6 +67,49 @@ public sealed class TheDigitalSheetIdentifiesTheRadioTests
         Assert.Contains("3000 Hz", sheet, StringComparison.Ordinal);
 
         Assert.Contains("trimmed    no", sheet, StringComparison.Ordinal);
+    }
+
+    /// <remarks>
+    /// <para>**TASK 5 OF WORK INSTRUCTION 042: BOTH ENDS, LABELLED.** The sheet
+    /// used to carry one line reading `captured 20:47:20` and nothing saying
+    /// whether that was the start of the thirty seconds or the moment of the
+    /// button.</para>
+    /// <para>**THAT AMBIGUITY IS NOT COSMETIC.** Analysis of the operator's own
+    /// file found FT8 keying on a clean fifteen-second cycle sitting 2.4 seconds
+    /// off where a slot boundary should fall, and it could not be resolved,
+    /// because a window read from the wrong end is out by its own length. Thirty
+    /// seconds is two whole slots, so the error is invisible in the cycle and
+    /// fatal to the alignment.</para>
+    /// </remarks>
+    [Fact]
+    public void TheSheetNamesBothEndsAndWhichOneThePressIs()
+    {
+        var sheet = DigitalCaptureSheet.Compose(
+            Now, 30.0, 48000, State(), ClockOffset.Unknown, Now, "FT8 city", 3000);
+
+        _output.WriteLine(sheet);
+
+        // The press is 16:41:00, so the window opened thirty seconds earlier.
+        Assert.Contains(
+            "windowFrom 2026-08-28 16:40:30 UTC", sheet, StringComparison.Ordinal);
+        Assert.Contains(
+            "windowTo   2026-08-28 16:41:00 UTC", sheet, StringComparison.Ordinal);
+
+        // And which end the button was.
+        Assert.Contains("press      2026-08-28 16:41:00 UTC", sheet, StringComparison.Ordinal);
+        Assert.Contains("the END of the window", sheet, StringComparison.Ordinal);
+
+        // The old ambiguous line is gone rather than kept beside the new ones,
+        // because two lines for one instant is a second thing to drift (§0).
+        Assert.DoesNotContain("captured   ", sheet, StringComparison.Ordinal);
+
+        // A short window says so in both ends rather than only in the seconds.
+        var brief = DigitalCaptureSheet.Compose(
+            Now, 4.5, 48000, State(), ClockOffset.Unknown, Now, "FT8 city", 3000);
+
+        Assert.Contains(
+            "windowFrom 2026-08-28 16:40:55 UTC", brief, StringComparison.Ordinal);
+        Assert.Contains("seconds    4.5", brief, StringComparison.Ordinal);
     }
 
     /// <remarks>

@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 using System.Text;
 using Hamlet.RadioEngine.Rig;
 
@@ -32,7 +32,9 @@ public static class DigitalCaptureSheet
     public const string Unread = "unknown (not read)";
 
     /// <summary>Compose the sheet.</summary>
-    /// <param name="capturedUtc">When the press happened.</param>
+    /// <param name="capturedUtc">
+    /// When the press happened, which is the **end** of the window.
+    /// </param>
     /// <param name="seconds">How much audio was kept.</param>
     /// <param name="sampleRate">Samples per second.</param>
     /// <param name="state">The radio as Hamlet believed it at the press.</param>
@@ -60,8 +62,24 @@ public static class DigitalCaptureSheet
         void Line(string key, string value)
             => sheet.Append(key.PadRight(11)).Append(value).Append('\n');
 
-        Line("captured", capturedUtc.ToString(
-            "yyyy-MM-dd HH:mm:ss 'UTC'", CultureInfo.InvariantCulture));
+        // **BOTH ENDS, LABELLED, AND WHICH ONE THE PRESS IS** (work instruction
+        // 042, task 5). The sheet used to carry one line reading
+        // `captured 20:47:20` and nothing saying whether that was the start of
+        // the thirty seconds or the moment of the button. Analysis of the
+        // operator's own file found FT8 keying on a clean fifteen-second cycle
+        // sitting 2.4 seconds off where a slot boundary should fall, **and the
+        // ambiguity is the reason that could not be resolved**: a window read
+        // from the wrong end is out by its own length.
+        //
+        // The press is the end. The button keeps audio that has already
+        // arrived, so the window runs backwards from it.
+        var startUtc = capturedUtc.AddSeconds(-seconds);
+
+        Line("windowFrom", Stamp(startUtc));
+        Line("windowTo", Stamp(capturedUtc));
+        Line("press", Stamp(capturedUtc)
+            + "  (the END of the window: the button keeps audio that had "
+            + "already arrived, so the window runs backwards from it)");
         Line("seconds", seconds.ToString("0.0", CultureInfo.InvariantCulture));
         Line("sampleRate", sampleRate.ToString(CultureInfo.InvariantCulture));
 
@@ -112,6 +130,9 @@ public static class DigitalCaptureSheet
 
         return sheet.ToString();
     }
+
+    private static string Stamp(DateTime utc)
+        => utc.ToString("yyyy-MM-dd HH:mm:ss 'UTC'", CultureInfo.InvariantCulture);
 
     /// <summary>The data variant, on its own line, never folded into the mode.</summary>
     private static string DescribeDataMode(RigState state)
