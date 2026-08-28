@@ -1,4 +1,4 @@
-using Hamlet.RadioEngine.Rig;
+﻿using Hamlet.RadioEngine.Rig;
 
 namespace Hamlet.RadioEngine.Civ;
 
@@ -100,8 +100,9 @@ public static class CivWrites
     public static CivWrite Mode { get; } = new(
         RigField.Mode, 0x26, "19-11",
         "00=selected VFO; then 00=LSB, 01=USB, 02=AM, 03=CW, 04=RTTY, 05=FM, "
-        + "07=CW-R, 08=RTTY-R; then 00=data mode off, 01=data mode on; filter "
-        + "skipped so the mode's own default is used");
+        + "07=CW-R, 08=RTTY-R; then 00=data mode off, 01=data mode on; then "
+        + "optionally 01=FIL1, 02=FIL2, 03=FIL3, and skipping it selects the "
+        + "mode's own default rather than leaving the filter alone");
 
     /// <summary>Which VFO a write applies to (p. 19-11).</summary>
     public const byte SelectedVfo = 0x00;

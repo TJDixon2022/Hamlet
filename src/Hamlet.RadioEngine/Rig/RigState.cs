@@ -1,4 +1,4 @@
-using Hamlet.RadioEngine.Civ;
+﻿using Hamlet.RadioEngine.Civ;
 
 namespace Hamlet.RadioEngine.Rig;
 
@@ -94,17 +94,26 @@ public sealed class RigState
             : null;
 
     /// <summary>
-    /// True when the radio is known to be in the mode's data variant.
+    /// Whether the radio is in the mode's data variant, or null where nobody
+    /// has read the flag.
     /// </summary>
     /// <remarks>
-    /// KNOWN TO BE, and false covers both "off" and "nobody has said". That is
-    /// deliberate rather than sloppy: the only caller is the automation deciding
-    /// whether to write, and an unread data setting is a reason to set it rather
-    /// than a reason to leave it (HM-DEC-056). Anything that displays this reads
-    /// the field itself and gets the unknown state with it.
+    /// <para>**THIS WAS A NON-NULLABLE `IsDataMode` AND THE COLLAPSE COST A
+    /// WRITE** (work instruction 042, task 1). It answered false for both "off"
+    /// and "nobody has said", on the argument that its only caller was the
+    /// automation and an unread flag is a reason to write rather than to leave
+    /// things alone. That argument holds for a target that wants the variant on
+    /// and inverts for one that wants it off: against a target of plain USB, an
+    /// unread flag compared equal to it and the automation concluded the radio
+    /// was already right without anybody having looked.</para>
+    /// <para>Three answers because there are three states (§0.0). A caller that
+    /// wants the old behaviour writes <c>DataVariant is true</c> and says so;
+    /// what it may no longer do is get there by accident.</para>
     /// </remarks>
-    public bool IsDataMode
-        => this[RigField.DataMode] is { IsKnown: true, Number: 1 };
+    public bool? DataVariant
+        => this[RigField.DataMode] is { IsKnown: true, Number: { } n }
+            ? n == 1
+            : null;
 
     /// <summary>
     /// The mode as the operator names it, with the data variant on it.

@@ -1,4 +1,4 @@
-using Hamlet.RadioEngine.Civ;
+﻿using Hamlet.RadioEngine.Civ;
 
 namespace Hamlet.RadioEngine.Explore;
 
@@ -179,9 +179,12 @@ public static class ModeFollowPlan
     /// <param name="state">Whether the automation is on and armed.</param>
     /// <param name="currentMode">The mode the radio is in, or null when unknown.</param>
     /// <param name="currentDataMode">
-    /// Whether the radio is in the data variant. False when unknown, which is
-    /// deliberate: an unknown data setting is a reason to write rather than a
-    /// reason to skip.
+    /// Whether the radio is in the data variant, or null where nobody has read
+    /// the flag. **Three-valued on purpose** (work instruction 042): it was a
+    /// bare bool answering false for both "off" and "nobody has said", and
+    /// against a target wanting the variant off an unread flag then compared
+    /// equal to it, so the automation concluded the radio was already right
+    /// without anybody having looked.
     /// </param>
     /// <param name="target">What the map calls for, or null.</param>
     /// <param name="frequencyHz">
@@ -195,7 +198,7 @@ public static class ModeFollowPlan
     public static ModeFollowDecision Decide(
         ModeFollowState state,
         CivMode? currentMode,
-        bool currentDataMode,
+        bool? currentDataMode,
         ModeTarget? target,
         long? frequencyHz = null,
         bool workingCw = false)
@@ -241,12 +244,35 @@ public static class ModeFollowPlan
 
         // **AND ALREADY DONE, WHICH IS A DIFFERENT QUESTION** (HM-OPEN-041). The
         // test above asks the radio and the test here asks the record of what
-        // Hamlet did. They usually agree; when they do not, the first one alone
-        // writes the same command over and over at a dial nobody is touching,
-        // because a field that reads back unknown looks exactly like a radio
-        // that has not been set yet. Nothing here writes where the other test
-        // would have refused, so this can only ever reduce what goes out.
-        if (frequencyHz is { } hz
+        // Hamlet did. A field that reads back unknown looks exactly like a radio
+        // that has not been set yet, so without this the first test alone writes
+        // the same command over and over at a dial nobody is touching.
+        //
+        // **AND IT USED TO SUPPRESS THE WRITE THAT MATTERED MOST** (work
+        // instruction 042, task 1). The comment here claimed it "can only ever
+        // reduce what goes out" and that was true only while the two tests
+        // agreed. They disagree in exactly one situation, and it is the
+        // operator's: the radio has **left** the mode Hamlet set it to. Nothing
+        // ever cleared this memory, so once a successful write was recorded at
+        // 14.074 the automation would never write that mode there again — the
+        // operator turned the mode knob to CW, pressed the Digital tab, and
+        // Hamlet declined because it remembered having done the job once. His
+        // forced re-read corrected the **display**, which is why it read as
+        // staleness; a re-read does not clear this memory, so the write still
+        // would not have fired.
+        //
+        // So the memory may only speak where the ledger cannot contradict it.
+        // A known field that differs from the target is the radio saying it has
+        // moved, and that outranks Hamlet's recollection of its own last write
+        // (§0.0). Where nothing is known to differ, the only way past the test
+        // above was a field nobody has read — which is precisely the case this
+        // guard was built for, and it still holds it.
+        var ledgerContradictsTheMemory =
+            (currentMode is { } known && known != target.Mode)
+            || (currentDataMode is { } flag && flag != target.DataMode);
+
+        if (!ledgerContradictsTheMemory
+            && frequencyHz is { } hz
             && state.DoneAtHz == hz
             && state.DoneMode == target.Mode
             && state.DoneDataMode == target.DataMode)

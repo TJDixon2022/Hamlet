@@ -1,4 +1,4 @@
-using Hamlet.RadioEngine.Civ;
+﻿using Hamlet.RadioEngine.Civ;
 using Hamlet.RadioEngine.Transport;
 
 namespace Hamlet.RadioEngine.Rig;
@@ -376,33 +376,10 @@ public sealed class Ic7300Rig : IRig, IDisposable
 
             if (response.Command == CivConstants.ResultOk)
             {
-                // Fold the new mode straight into the model, sourced to the
-                // write that made it true rather than waiting for a poll.
-                //
-                // **AND THE DATA VARIANT WITH IT, WHICH IS THE HALF THAT WAS
-                // MISSING** (HM-OPEN-041). Command `26` carries the mode and the
-                // data byte in one frame, so a radio that acknowledged it
-                // acknowledged both. Folding only the mode left `DataMode` reading
-                // as it had before, so a target of USB with data on could never
-                // read back as satisfied: **every trigger wrote again, for ever.**
-                // That is why one evening carried eighteen mode writes, and why
-                // the operator kept being moved out of the mode he was working in.
-                //
-                // Not a weaker claim than the mode's. It is the same frame, the
-                // same acknowledgement and the same provenance, and a value the
-                // radio never confirmed is still not written here.
-                var values = new[]
-                {
-                    RigValue.Known(
-                        RigField.Mode, (int)mode, CivValues.Name(mode),
-                        DateTime.UtcNow, write.Label),
-                    RigValue.Known(
-                        RigField.DataMode, dataMode ? 1 : 0,
-                        dataMode ? "on" : "off",
-                        DateTime.UtcNow, write.Label),
-                };
+                var values = await ReadBackTheModeAsync(
+                    mode, dataMode, write.Label, cancellationToken)
+                    .ConfigureAwait(false);
 
-                RememberModeAndFilter(values);
                 ValuesReported?.Invoke(this, new RigValuesReportedEventArgs(values));
 
                 return RigWriteResult.Confirmed(write.Label);
@@ -514,6 +491,76 @@ public sealed class Ic7300Rig : IRig, IDisposable
             : ReadOnlySpan<byte>.Empty;
 
         return CivDecode.Values(read, payload, DateTime.UtcNow, mode, filterName);
+    }
+
+    /// <summary>
+    /// Ask the radio what the mode write actually left behind.
+    /// </summary>
+    /// <param name="mode">What was asked for.</param>
+    /// <param name="dataMode">Whether the data variant was asked for.</param>
+    /// <param name="label">The write, for provenance on the fallback.</param>
+    /// <param name="cancellationToken">Cancellation.</param>
+    /// <returns>The mode, the data flag, the filter slot and its width.</returns>
+    /// <remarks>
+    /// <para>**AN ACKNOWLEDGEMENT IS NOT A READING** (work instruction 042, task
+    /// 1). This used to fold the request into the model — mode and data flag,
+    /// stamped with the moment the acknowledgement arrived and sourced to the
+    /// write. That is a defensible claim about two of the four fields and it was
+    /// silent about the other two: command `26` carries a filter byte, so a
+    /// widening write changed the passband and **nothing told the model.** The
+    /// ledger went on reporting the width from before the write until the next
+    /// session sweep, up to thirty seconds later. A capture taken in that window
+    /// said `500 Hz` beside a three-kilohertz block that Hamlet had already
+    /// widened, which is a stale value shown as current — §0.0 broken where it is
+    /// hardest to see, because every field on the row looked measured.</para>
+    /// <para>`26 00` answers the mode, the data flag and the filter slot in one
+    /// transaction, and `1A 03` answers the width. Two reads on a slow bus, once
+    /// per tune-in, and the values arrive stamped with the time the radio
+    /// answered rather than the time Hamlet asked.</para>
+    /// <para>**THE FOLD SURVIVES AS THE FALLBACK AND SAYS SO IN ITS
+    /// PROVENANCE.** Where the readback does not answer, the acknowledgement is
+    /// still evidence about the mode and the variant — it is the same frame the
+    /// radio accepted (HM-OPEN-041, whose write loop this must not reopen) — and
+    /// the source names the write rather than a read, so anything displaying it
+    /// can tell the two apart. The width is not folded: nothing acknowledged a
+    /// number of hertz, and inventing one is the guess this exists to prevent.</para>
+    /// </remarks>
+    private async Task<IReadOnlyList<RigValue>> ReadBackTheModeAsync(
+        CivMode mode, bool dataMode, string label,
+        CancellationToken cancellationToken)
+    {
+        var readBack = await ReadAsync(
+            RigField.DataMode, RigState.Empty, cancellationToken)
+            .ConfigureAwait(false);
+
+        var values = new List<RigValue>();
+
+        if (readBack.Any(v => v is { Field: RigField.Mode, IsKnown: true }))
+        {
+            values.AddRange(readBack);
+        }
+        else
+        {
+            // The radio took the frame and did not answer the question. Report
+            // what the acknowledgement establishes, sourced to it.
+            values.Add(RigValue.Known(
+                RigField.Mode, (int)mode, CivValues.Name(mode),
+                DateTime.UtcNow, label));
+            values.Add(RigValue.Known(
+                RigField.DataMode, dataMode ? 1 : 0,
+                dataMode ? "on" : "off", DateTime.UtcNow, label));
+        }
+
+        // The width sits on a scale that depends on the mode, so it is read
+        // second and against what the readback just established.
+        var context = RigState.Empty.With(values.ToArray());
+
+        values.AddRange(await ReadAsync(
+            RigField.FilterBandwidth, context, cancellationToken)
+            .ConfigureAwait(false));
+
+        RememberModeAndFilter(values);
+        return values;
     }
 
     /// <summary>The mode to decode against: what the caller knows, or what was

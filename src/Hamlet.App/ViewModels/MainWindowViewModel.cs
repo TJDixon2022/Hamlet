@@ -1,4 +1,4 @@
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Globalization;
 using Avalonia;
 using Avalonia.Threading;
@@ -5669,7 +5669,7 @@ public partial class MainWindowViewModel : ObservableObject
         var workingCw = IsInsideCwSegment || IsCopyingMorse;
 
         var decision = ModeFollowPlan.Decide(
-            _modeFollow, RigState.Mode, RigState.IsDataMode,
+            _modeFollow, RigState.Mode, RigState.DataVariant,
             ModeFollowPlan.TargetFor(here), atHz, workingCw);
 
         if (!decision.Write)
