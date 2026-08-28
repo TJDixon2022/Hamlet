@@ -155,4 +155,39 @@ public sealed class NoTuneInLeavesTheRadioTooNarrowTests
         // changes what the radio does with the rest, not the mode being set.
         Assert.Equal(without, withFilter.Take(3).ToArray());
     }
+
+    /// <remarks>
+    /// <para>Proves the card names the block, not only the dial.</para>
+    /// <para>**THE SENTENCE IS BUILT FROM THE ROW'S OWN NUMBERS**, so a block
+    /// that is two kilohertz on one band and three on another says so on each
+    /// rather than quoting one figure everywhere.</para>
+    /// </remarks>
+    [Fact]
+    public void TheCardSaysWhereTheSignalsActuallyAre()
+    {
+        foreach (var band in HfBands.Bands)
+        {
+            foreach (var n in NeighborhoodPlan.ForBand(band))
+            {
+                var said = n.WhereTheSignalsAre();
+
+                if (!n.SignalsAreAudioOffsets)
+                {
+                    Assert.Equal("", said);
+                    continue;
+                }
+
+                _output.WriteLine($"  {band.Name,-5} {n.Name,-12} {said}");
+
+                Assert.Contains("sound dead", said, StringComparison.Ordinal);
+                Assert.Contains(
+                    $"{n.JumpHz / 1_000_000.0:0.000}", said, StringComparison.Ordinal);
+
+                // The width quoted is the block's own, not a constant.
+                var wideHz = n.HighHz - n.LowHz;
+                Assert.Contains(
+                    $"{wideHz / 1000.0:0.#} kHz", said, StringComparison.Ordinal);
+            }
+        }
+    }
 }

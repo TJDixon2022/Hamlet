@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 5 of 8
+TASK: 3 of 8
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-28T14:15:03-04:00
-NOTE: tune-in now sends a filter wide enough for the block and the map walk asserts it across every band; the walk caught my own typed 3 kHz on an 80 m block only 2 kHz wide
+UPDATED: 2026-08-28T14:27:27-04:00
+NOTE: card now names the block with each row's own width, 2 kHz on 80 m and 3 on 20; suites running before the commit
 
 ---
 

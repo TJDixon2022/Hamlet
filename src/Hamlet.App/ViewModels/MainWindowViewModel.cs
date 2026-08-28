@@ -2418,7 +2418,17 @@ public partial class MainWindowViewModel : ObservableObject
         AppEvents.NeighborhoodClicked(_telemetry, hood.Name);
         StoryTitle = hood.Name;
         StoryBadge = hood.Vibe;
-        StoryBody = hood.Blurb;
+
+        // **THE CARD NAMES THE BLOCK AS WELL AS THE DIAL** (work instruction
+        // 040). Where every signal is an audio tone above the dial, the dial
+        // itself sounds dead — which is the correct behaviour of a correctly
+        // tuned radio and has twice been read as a broken one.
+        var where = hood.WhereTheSignalsAre();
+
+        StoryBody = where.Length == 0
+            ? hood.Blurb
+            : hood.Blurb + Environment.NewLine + Environment.NewLine + where;
+
         StoryTuneHz = hood.JumpHz;
     }
 

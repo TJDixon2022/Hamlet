@@ -45,6 +45,41 @@ public sealed record Neighborhood(
     /// <summary>True when the frequency lies inside this neighborhood.</summary>
     public bool Contains(long hz) => hz >= LowHz && hz <= HighHz;
 
+    /// <summary>
+    /// Where the signals actually are, for somebody who has just tuned here.
+    /// </summary>
+    /// <returns>One sentence, or "" where the block does not work this way.</returns>
+    /// <remarks>
+    /// <para>**NOBODY TRANSMITS ON THE PUBLISHED FREQUENCY, AND THAT HAS NOW
+    /// COST THE OPERATOR TWO EVENINGS** (work instruction 040). You tune to
+    /// 14.074 and every station sits as an audio tone somewhere in the three
+    /// kilohertz above it. **A dead dial and a live band is the correct
+    /// behaviour of a correctly tuned radio**, and an operator not told that
+    /// concludes the band is empty or the rig is broken.</para>
+    /// <para>**THE NUMBERS ARE THE ROW'S OWN.** The dial is the jump frequency
+    /// and the block is the row's span; nothing here is typed, so a block that
+    /// is two kilohertz on 80 m and three on 20 m says so on each.</para>
+    /// </remarks>
+    public string WhereTheSignalsAre()
+    {
+        if (!SignalsAreAudioOffsets)
+        {
+            return "";
+        }
+
+        var wideHz = HighHz - LowHz;
+
+        var wide = wideHz >= 1000
+            ? $"{wideHz / 1000.0:0.#} kHz"
+            : $"{wideHz} Hz";
+
+        return $"Tune to {JumpHz / 1_000_000.0:0.000}, and expect the dial "
+            + $"itself to sound dead. Everybody here transmits somewhere in the "
+            + $"{wide} above it, arriving as audio tones rather than on the "
+            + "frequency you set, so the band comes alive across the whole "
+            + "block at once.";
+    }
+
     /// <summary>How wide a passband this block needs, or null.</summary>
     /// <returns>
     /// True when it is wide enough, false when it is not, and **null when
