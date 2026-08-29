@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
+STATE: COMPLETED
 TASK: 6 of 6
-BALL: code
-NEXT_PASTE: none
-UPDATED: 2026-08-29T11:39:16-04:00
-NOTE: read-back added because the acknowledgement was being taken as the value; ten round trips hold without drift
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
+UPDATED: 2026-08-29T11:43:33-04:00
+NOTE: six of six done and output.md written; engine regression still running and amended in when it lands
 
 ---
 
