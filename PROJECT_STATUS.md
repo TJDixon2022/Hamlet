@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 2 of 8
+TASK: 3 of 8
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-29T13:58:45-04:00
-NOTE: over-counting is 2.22 and not 89 because the sum is per hop; evidence outweighs the duration penalty about two thousand to one
+UPDATED: 2026-08-29T14:00:32-04:00
+NOTE: the four speed pins disagreed with the reference on all four, not two; claim fixed and the assertion is now what the test proves
 
 ---
 
