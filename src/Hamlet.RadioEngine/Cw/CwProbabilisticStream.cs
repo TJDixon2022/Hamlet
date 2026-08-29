@@ -215,6 +215,14 @@ public sealed class CwProbabilisticStream
     /// </remarks>
     public double ToneHz { get; set; } = 600;
 
+    /// <summary>The exponent the posterior is normalised at.</summary>
+    /// <remarks>
+    /// Carried through so a sweep runs inside the decoder rather than beside it.
+    /// It cannot change what is read (see <see cref="CwDecoder"/>).
+    /// </remarks>
+    public double PosteriorTemperature { get; set; }
+        = CwProbabilisticDecoder.Temperature;
+
     /// <summary>What the last read made of the window.</summary>
     public CwProbabilisticResult Last { get; private set; } = CwProbabilisticResult.None;
 
@@ -672,7 +680,8 @@ public sealed class CwProbabilisticStream
                     _heldGaps.WordMilliseconds,
                 }
                 : null,
-            UseJointCutter);
+            UseJointCutter,
+            PosteriorTemperature);
 
         Last = result;
 

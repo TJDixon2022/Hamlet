@@ -35,6 +35,23 @@ public static partial class CwProbabilisticDecoder
     /// </remarks>
     private const double LogSumFloor = -700;
 
+    /// <summary>The scaling exponent on the path score.</summary>
+    /// <remarks>
+    /// <para>**ONE, WHICH IS NO TEMPERATURE AT ALL, UNTIL A SWEEP SAYS
+    /// OTHERWISE.** Unit 049 measured the over-counting the evidence term commits
+    /// and it is 2.22, not the eighty-nine an order supposed: the sum runs over
+    /// five-millisecond hops rather than raw samples, so two hundred terms a
+    /// second stand against ninety independent degrees of freedom at 45 Hz. That
+    /// implies an alpha near 0.45.</para>
+    /// <para>**BUT THE OVER-COUNT IS NOT WHAT MAKES THE MODEL OVERCONFIDENT.**
+    /// Measured on the same corpus, the evidence per element runs 4.9 to 467 nats
+    /// against a duration penalty of 0.136 for a span a fifth off its expected
+    /// length — a ratio near two thousand. A 2.22 over-count does not explain
+    /// that, so the figure this constant should take is a measurement rather than
+    /// a derivation, and it is swept.</para>
+    /// </remarks>
+    public const double Temperature = 1.0;
+
     /// <summary>
     /// The probability of each state, marginalised over every path through the
     /// lattice.
@@ -50,6 +67,32 @@ public static partial class CwProbabilisticDecoder
     /// </returns>
     public static double[,]? Posterior(
         int count, double[] downTo, double[] upTo, double unit, double[]? gapHops)
+        => Posterior(count, downTo, upTo, unit, gapHops, Temperature);
+
+    /// <summary>
+    /// The same, at a stated temperature, so the exponent can be swept.
+    /// </summary>
+    /// <param name="count">How many hops there are.</param>
+    /// <param name="downTo">Cumulative key-down log-likelihood.</param>
+    /// <param name="upTo">Cumulative key-up log-likelihood.</param>
+    /// <param name="unit">The dit, in hops.</param>
+    /// <param name="gapHops">This sender's own gap lengths, or null.</param>
+    /// <param name="alpha">
+    /// The scaling exponent on the path score. One leaves it untouched; below one
+    /// flattens the distribution.
+    /// </param>
+    /// <returns>The posterior at each state, or null.</returns>
+    /// <remarks>
+    /// **THE TEMPERATURE MULTIPLIES THE WHOLE PATH SCORE AND SO CANNOT MOVE THE
+    /// ARGMAX.** Scaling every path by one positive constant leaves the largest
+    /// largest, which is why this changes the posterior and not one character of
+    /// the decode. Scaling the evidence term alone is a different question and a
+    /// different task, because it shifts the balance against the duration penalty
+    /// and does change what is read.
+    /// </remarks>
+    public static double[,]? Posterior(
+        int count, double[] downTo, double[] upTo, double unit,
+        double[]? gapHops, double alpha)
     {
         ArgumentNullException.ThrowIfNull(downTo);
         ArgumentNullException.ThrowIfNull(upTo);
@@ -60,14 +103,14 @@ public static partial class CwProbabilisticDecoder
         }
 
         var kinds = Kinds.Length;
-        var alpha = new double[count + 1, kinds];
+        var forward = new double[count + 1, kinds];
         var beta = new double[count + 1, kinds];
 
         for (var i = 0; i <= count; i++)
         {
             for (var k = 0; k < kinds; k++)
             {
-                alpha[i, k] = double.NegativeInfinity;
+                forward[i, k] = double.NegativeInfinity;
                 beta[i, k] = double.NegativeInfinity;
             }
         }
@@ -83,7 +126,8 @@ public static partial class CwProbabilisticDecoder
                 for (var span = shortest; span <= ceiling; span++)
                 {
                     var j = i - span;
-                    var step = StepOf(i, j, k, downTo, upTo, unit, gapHops);
+                    var step = alpha
+                        * StepOf(i, j, k, downTo, upTo, unit, gapHops);
 
                     if (j == 0)
                     {
@@ -97,16 +141,16 @@ public static partial class CwProbabilisticDecoder
                     for (var kj = 0; kj < kinds; kj++)
                     {
                         if (Kinds[kj].IsKeyDown == Kinds[k].IsKeyDown
-                            || double.IsNegativeInfinity(alpha[j, kj]))
+                            || double.IsNegativeInfinity(forward[j, kj]))
                         {
                             continue;
                         }
 
-                        total = LogSum(total, alpha[j, kj] + step);
+                        total = LogSum(total, forward[j, kj] + step);
                     }
                 }
 
-                alpha[i, k] = total;
+                forward[i, k] = total;
             }
         }
 
@@ -142,7 +186,7 @@ public static partial class CwProbabilisticDecoder
 
                         total = LogSum(
                             total,
-                            StepOf(i, j, k, downTo, upTo, unit, gapHops)
+                            (alpha * StepOf(i, j, k, downTo, upTo, unit, gapHops))
                             + beta[i, k]);
                     }
                 }
@@ -156,7 +200,7 @@ public static partial class CwProbabilisticDecoder
 
         for (var k = 0; k < kinds; k++)
         {
-            all = LogSum(all, alpha[count, k]);
+            all = LogSum(all, forward[count, k]);
         }
 
         if (double.IsNegativeInfinity(all) || double.IsNaN(all))
@@ -172,7 +216,7 @@ public static partial class CwProbabilisticDecoder
         {
             for (var k = 0; k < kinds; k++)
             {
-                var joint = alpha[i, k] + beta[i, k];
+                var joint = forward[i, k] + beta[i, k];
 
                 // Clamped at the top because floating error can put a ratio a
                 // whisker over one, and a probability above one is a number

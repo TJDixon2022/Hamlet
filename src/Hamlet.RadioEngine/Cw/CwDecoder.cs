@@ -994,6 +994,20 @@ public sealed class CwDecoder
     /// <summary>What the ranking chose, and what it beat.</summary>
     public CwPitchRank Ranked => _ranked;
 
+    /// <summary>The scaling exponent the posterior is normalised at.</summary>
+    /// <remarks>
+    /// **IT CANNOT MOVE A CHARACTER, WHICH IS WHY IT IS SAFE TO SWEEP.** The
+    /// temperature multiplies the whole path score, so the Viterbi argmax is
+    /// unchanged and only the normalisation moves. Nothing in the application
+    /// sets it; it exists so unit 049's sweep can be run through the decoder the
+    /// operator actually uses rather than around it.
+    /// </remarks>
+    public double PosteriorTemperature
+    {
+        get => _probabilistic.PosteriorTemperature;
+        set => _probabilistic.PosteriorTemperature = value;
+    }
+
     /// <summary>Whether the ranking supplies the mixdown pitch.</summary>
     /// <remarks>
     /// <para>**OFF, AND THE MACHINERY STAYS** — `ClearOnAStationChange`'s

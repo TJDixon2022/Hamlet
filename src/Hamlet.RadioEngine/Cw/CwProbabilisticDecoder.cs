@@ -774,6 +774,29 @@ public static partial class CwProbabilisticDecoder
             envelope, toneHz, atWordsPerMinute, gapMilliseconds,
             ungated: false, jointly);
 
+    /// <summary>Read an envelope, normalising the posterior at a stated exponent.</summary>
+    /// <param name="envelope">Envelope magnitudes, one every hop.</param>
+    /// <param name="toneHz">The pitch it was taken at.</param>
+    /// <param name="atWordsPerMinute">A speed to hold, or null to fit one.</param>
+    /// <param name="gapMilliseconds">This sender's three gap classes, or null.</param>
+    /// <param name="jointly">Whether the joint cutter decides the cuts.</param>
+    /// <param name="alpha">The exponent the posterior is normalised at.</param>
+    /// <returns>What it read.</returns>
+    /// <remarks>
+    /// **THE EXPONENT CANNOT CHANGE WHAT IS READ.** It multiplies the whole path
+    /// score, so the argmax is untouched and only the normalisation moves.
+    /// </remarks>
+    public static CwProbabilisticResult Decode(
+        IReadOnlyList<double> envelope,
+        double toneHz,
+        double? atWordsPerMinute,
+        IReadOnlyList<double>? gapMilliseconds,
+        bool jointly,
+        double alpha)
+        => Decode(
+            envelope, toneHz, atWordsPerMinute, gapMilliseconds,
+            ungated: false, jointly, NoiseSpanSeconds, alpha);
+
     private static CwProbabilisticResult Decode(
         IReadOnlyList<double> envelope,
         double toneHz,
@@ -781,7 +804,8 @@ public static partial class CwProbabilisticDecoder
         IReadOnlyList<double>? gapMilliseconds,
         bool ungated,
         bool jointly = false,
-        double noiseSpanSeconds = NoiseSpanSeconds)
+        double noiseSpanSeconds = NoiseSpanSeconds,
+        double alpha = Temperature)
     {
         ArgumentNullException.ThrowIfNull(envelope);
 
@@ -812,7 +836,7 @@ public static partial class CwProbabilisticDecoder
             var (score, characters, lastKind) =
                 DecodeAt(
                     envelope.Count, wpm, keyDown, keyUp, gapMilliseconds,
-                    jointly);
+                    jointly, alpha);
 
             if (score > bestScore)
             {
@@ -1391,6 +1415,7 @@ public static partial class CwProbabilisticDecoder
     /// seven units.
     /// </param>
     /// <param name="jointly">Whether the joint cutter decides the cuts.</param>
+    /// <param name="alpha">The exponent the posterior is normalised at.</param>
     /// <returns>The best total score and what it spells.</returns>
     /// <remarks>
     /// **EVERY PATH IS A CHAIN OF WHOLE ELEMENTS THAT MUST ALTERNATE.** A
@@ -1410,7 +1435,8 @@ public static partial class CwProbabilisticDecoder
         double[] keyDown,
         double[] keyUp,
         IReadOnlyList<double>? gapMilliseconds = null,
-        bool jointly = false)
+        bool jointly = false,
+        double alpha = Temperature)
     {
         var unit = 1200.0 / wpm / HopMilliseconds;
 
@@ -1550,7 +1576,7 @@ public static partial class CwProbabilisticDecoder
             Spell(
                 count, lastKind, fromHop, fromKind, downTo, upTo, best, second,
                 unit, gapHops, jointly,
-                Posterior(count, downTo, upTo, unit, gapHops)),
+                Posterior(count, downTo, upTo, unit, gapHops, alpha)),
             lastKind);
     }
 

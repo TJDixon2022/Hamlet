@@ -110,6 +110,11 @@ internal static class Program
 
                 return 0;
 
+            case "temperature":
+                TemperatureSweep();
+
+                return 0;
+
             default:
                 Console.WriteLine("usage: pitch-rank cost | pitch-rank rank [capture]");
 
@@ -1339,6 +1344,128 @@ internal static class Program
         Report("MarginLlr", margin);
         Report("MarginShare", share);
         Report("SpanMargin", span);
+    }
+
+    /// <summary>
+    /// How the posterior's discrimination varies with the temperature.
+    /// </summary>
+    /// <remarks>
+    /// Unit 049 task 3. The temperature multiplies the whole path score, so the
+    /// Viterbi argmax cannot move and the decode is untouched; only the
+    /// normalisation changes. **The alpha the over-count implies is 0.45**, and
+    /// the sweep runs decades either side of it because the over-count is not
+    /// what makes the model overconfident.
+    /// </remarks>
+    private static void TemperatureSweep()
+    {
+        // Every character, with the truth outcome, decoded once and re-scored
+        // at each alpha — so the decode is provably identical across the sweep.
+        var work = new List<(double[] DownTo, double[] UpTo, double Unit,
+            int Count, List<(int Hop, int Kind, bool Right)> Marks)>();
+
+        Console.WriteLine(
+            "alpha	n	medianRight	medianWrong	separation	correlation	spread");
+
+        foreach (var alpha in new[]
+        {
+            0.1, 0.01, 0.001, 0.0001,
+        })
+        {
+            var points = new List<(double Value, bool Right)>();
+
+            foreach (var (capture, truth, _) in Truths)
+            {
+                var path = Find(capture);
+
+                if (path is null)
+                {
+                    continue;
+                }
+
+                var audio = WavAudio.Read(path);
+                var decoder = new CwDecoder(audio.SampleRate, 600)
+                {
+                    PosteriorTemperature = alpha,
+                };
+
+                var chars = new List<CwCharacter>();
+
+                decoder.CharacterSettled += c =>
+                {
+                    if (c.Text != MorseAlphabet.WordGap)
+                    {
+                        chars.Add(c);
+                    }
+                };
+
+                var hop = decoder.Tracker.HopSamples;
+
+                for (var at = 0L; at + hop <= audio.Samples.Length; at += hop)
+                {
+                    decoder.Process(new AudioChunk(
+                        at, audio.SampleRate, audio.Samples.AsSpan((int)at, hop)));
+                }
+
+                decoder.Flush();
+
+                var read = string.Concat(chars.Select(c => c.Text)).ToUpperInvariant();
+                var want = new string(
+                    truth.ToUpperInvariant()
+                        .Where(c => !char.IsWhiteSpace(c)).ToArray());
+
+                foreach (var (index, outcome) in CwAccuracy.Align(read, want))
+                {
+                    if (index >= chars.Count
+                        || outcome == CwAccuracy.Outcome.Block
+                        || double.IsNaN(chars[index].Posterior))
+                    {
+                        continue;
+                    }
+
+                    points.Add((
+                        chars[index].Posterior,
+                        outcome == CwAccuracy.Outcome.Correct));
+                }
+            }
+
+            if (points.Count < 3)
+            {
+                Console.WriteLine(string.Format(
+                    CultureInfo.InvariantCulture, "{0:0.####}	none", alpha));
+
+                continue;
+            }
+
+            var right = points.Where(p => p.Right).Select(p => p.Value)
+                .OrderBy(v => v).ToArray();
+            var wrong = points.Where(p => !p.Right).Select(p => p.Value)
+                .OrderBy(v => v).ToArray();
+            var all = points.Select(p => p.Value).OrderBy(v => v).ToArray();
+
+            var mr = right.Length == 0 ? 0 : right[right.Length / 2];
+            var mw = wrong.Length == 0 ? 0 : wrong[wrong.Length / 2];
+
+            var xs = points.Select(p => p.Value).ToArray();
+            var ys = points.Select(p => p.Right ? 1.0 : 0.0).ToArray();
+            var mx = xs.Average();
+            var my = ys.Average();
+            var cov = xs.Zip(ys, (a, b) => (a - mx) * (b - my)).Sum() / xs.Length;
+            var sx = Math.Sqrt(xs.Select(a => (a - mx) * (a - mx)).Sum() / xs.Length);
+            var sy = Math.Sqrt(ys.Select(b => (b - my) * (b - my)).Sum() / ys.Length);
+
+            // The spread the order asks for: the gap between the tenth and the
+            // ninetieth percentile, which says whether the distribution moved off
+            // the ceiling at all.
+            var spread = all[(int)(all.Length * 0.9)] - all[all.Length / 10];
+
+            Console.WriteLine(string.Format(
+                CultureInfo.InvariantCulture,
+                "{0:0.####}	{1}	{2:0.0000}	{3:0.0000}	{4:+0.0000;-0.0000}	{5:+0.000;-0.000}	{6:0.0000}",
+                alpha, points.Count, mr, mw, mr - mw,
+                sx * sy < 1e-12 ? 0 : cov / (sx * sy), spread));
+        }
+
+        _ = work;
     }
 
     /// <summary>
