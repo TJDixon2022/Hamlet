@@ -1,12 +1,13 @@
+```
 STOP. Verify the project before reading any further.
 
 PROJECT: Hamlet
 
 Check the repository root:
-  MUST EXIST:      SHACK_FACTS.md
-  MUST EXIST:      src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs
-  MUST NOT EXIST:  CoreHMI.sln
-  MUST NOT EXIST:  MURC.sln
+  MUST EXIST:      CLAUDE.md
+  MUST EXIST:      data/bands/us-neighborhoods.json
+  MUST NOT EXIST:  ANNUNCIATOR_PANEL.md
+  MUST NOT EXIST:  src/CoreHMI
 
 If all four are not as stated, you are in the wrong repository.
 REFUSE. Do not read the rest of this file, do not summarise it, do not
@@ -15,367 +16,278 @@ Reply with only: the path you are in, which checks failed, and
 "wrong project — nothing done."
 
 If all four hold, say "Hamlet confirmed" and continue.
+```
 
 ---
 
-# Work instruction 049 — the model stops being overconfident
-
-**ISSUED: 2026-08-29. A fresh order, not an amendment. Follows unit 048.**
+# Why this unit exists
+
+**A single `26` read returns a stale answer. Tim has to issue the query twice
+before USB can be told from USB-D.** That is the number this unit is aimed at:
+reads-to-a-correct-answer goes from 2 to 1.
+
+Where it came from: Tim reported it at the bench on 2026-08-28 while recovering
+from a mode fault on 20 m FT8. It has not been measured in code. **Task 1 is the
+measurement, and if it does not reproduce, this unit stops there and says so** —
+the rest of the unit rests on it.
+
+The bench session behind it: the radio was in CW at 14.074, FIL2, 500 Hz. The
+operator heard nothing, tuned up, and found FT8 at 14.075. **That is HM-DEC-054's
+whale song, a second time, fourteen days after the ruling written to prevent it.**
+The mode automation HM-DEC-056 built did not fire, because the operator was
+tuning by hand rather than crossing a neighborhood boundary the app was watching.
+
+```
+PHASE GOAL:   not set — PROJECT_STATUS.md reads PHASE: — and PROJECT_CARD.md
+              carries no phase field. See section 4 of the delivery message.
+UNIT GOAL:    One CI-V read returns the current answer, and entering data
+              territory and staying there sets the data mode without being asked.
+ADVANCES:     none — no phase goal is set to advance. This is a defect unit.
+```
+
+---
+
+# Verify this instruction against the tree
+
+**Nothing here describes the tree.** Check every claim against the files and
+report any mismatch.
 
-**Eight tasks; task 8 is the drop.**
+Every path, type name and behaviour below comes from `DECISIONS.md` refs and from
+Tim's bench report, not from reading the code. Specifically unverified:
 
-## The number this unit is judged by
+- `src/Hamlet.RadioEngine/Civ/CivReads.cs` and `CivWrites.cs` as the location of
+  the frame reader and the mode write.
+- `src/Hamlet.RadioEngine/Explore/ModeFollowPlan.cs` as the tune-in decision.
+- `data/bands/us-neighborhoods.json` as having no passband field today.
+- That the app reads `26` rather than `04` for the mode.
+
+**Report the mismatch; do not repair the instruction.** Mismatches go in the
+report even where the work succeeded anyway. No checks are expected to fail; if
+any are already red when you arrive, name them with their ids so a known red is
+not rediscovered next unit.
+
+---
+
+# Rulings in force
+
+## HM-DEC-056 — transcribed, in force, do not re-argue
+
+Hamlet writes to the radio for the first time, and what it writes is the mode:
+tuning into a neighborhood sets the mode that neighborhood is worked in.
+
+The command is `26`, not `06`. Command `06` sets a mode and a filter and has no
+way at all to say whether the data variant is wanted (p. 19-8). Command `26`
+carries the mode, a data mode flag and the filter, for the selected or unselected
+VFO (p. 19-11). **Hamlet sends the data flag and skips the filter byte, because
+the manual says the radio then picks that mode's own default filter, which is a
+better answer than any Hamlet could invent for somebody else's rig.**
+
+Nothing is assumed from having sent it. The radio acknowledges with FB or refuses
+with FA, and anything else leaves the value UNKNOWN rather than set to what was
+asked for. Every write the app makes on its own initiative is narrated in the
+status line. The operator's own hand always wins: a mode change Hamlet did not
+make suspends the automation until the next band change re-arms it, and suspended
+is a visible state on screen rather than a silent one. A flip waits for the dial
+to settle, so crossing three neighborhoods in one drag produces one change and
+not three.
+
+A new read came with it: command `26` in its read form reports the mode, the data
+flag and the filter together, which is the only way to tell USB from USB-D —
+command `04` says USB for both. `DataMode` is a first-class field with an unknown
+state like every other, read on connect and when the diagnostics screen is
+opened, and never in the poll loop.
 
-**Precision is 0.766. The phase goal is 0.85. The gap is 8.4 points.**
+**Rejected, and not to be revisited inside this unit:** command `06`; assuming a
+write landed without an acknowledgement; a silent suspension when the operator's
+hand intervenes; one change per neighborhood crossed during a drag.
+
+## HM-DEC-054 — transcribed, in force, do not re-argue
+
+The neighborhood map lives in `data/bands/us-neighborhoods.json` with a source on
+every row. Convention and regulation are different files on purpose: `data/privileges`
+says what may be transmitted and has legal weight, `data/bands` says what will
+actually be found and has none.
+
+**One editorial rule, stated in the file and applied everywhere.** Several sources
+publish a watering hole as one dial frequency rather than a range. Those blocks
+run from the published frequency to the next one, or three kilohertz, whichever
+comes first, because these modes are worked in upper sideband with audio up to
+about three kilohertz and that is where the signals land. The 070 Club states
+exactly that, so even the width is cited rather than chosen.
+
+**Rejected:** inventing a neighborhood from memory; coloring an unclaimed stretch
+as Morse; the card inviting the operator to call where the map has a caution.
+
+## Proposed, NOT in force — the filter byte
 
-**Every task below reports precision, yield, substitutions, and the distance
-remaining to 0.85.** A task that does not move that distance says so plainly and
-is reported as not having advanced.
-
-**This unit is not a response to a report. It is the work that closes that gap**,
-and the reason it can is that unit 048 measured exactly why the decoder cannot
-currently tell a good reading from a bad one.
-
-## Why this unit exists
+**This is a proposal from the web session, marked as such per §4.4. It is not a
+ruling and no task below depends on it.** Tim rules on it before it is built.
 
-Unit 048 rebuilt the lattice by `(hop, kind)` and precision rose 0.761 to 0.766
-with substitutions falling 61 to 58. It then built a real forward–backward
-posterior and measured it against per-character correctness:
-
-| quantity | correlation |
-|---|---|
-| `MarginLlr` | −0.341 |
-| `MarginShareForRecord` | −0.286 |
-| `SpanMarginForRecord` | −0.246 |
-| **`Posterior`** | **+0.050** |
+HM-DEC-056 skipped the filter byte on the reasoning that the radio's own default
+is better than one Hamlet invents. **The manual's filter table (p. 4-6) appears to
+falsify the premise**: SSB-D's slots are not SSB's. SSB reads FIL1 3.0 kHz, FIL2
+2.4, FIL3 1.8. SSB-D reads FIL1 3.0 kHz, **FIL2 1.2**, FIL3 500 Hz. A radio whose
+remembered USB-D default is FIL2 lands on a 1.2 kHz window over a 3 kHz FT8 block
+— under half of it — and produces a thinned version of the symptom HM-DEC-056
+exists to prevent.
 
-**The first of six that is not negative, and it is inside the noise** — the
-standard error on 301 characters is about 0.058. **Median posterior 0.8433 on
-right characters against 0.8382 on wrong.** The threshold sweep peaks at 0.822
-precision and then goes backwards.
+Against it: the filter is also how an operator deliberately narrows onto one
+signal, and a per-mode default is a stored preference of his. Verify the table
+against the manual before Tim rules; **the manual is cited and never committed**,
+so this cannot be checked from the tree.
 
-**The session's diagnosis is correct and this unit acts on it: the model is
-overconfident, not the search.** The lattice now finds every legal path and the
-posterior says nearly all the probability sits on one of them, which cannot be
-true of audio a human reads at 76%.
+---
 
-### The cause, named
+# Status cadence
 
-**The evidence term sums a per-sample log-likelihood over every sample in a span
-and treats those samples as independent. They are not.**
+After each task, before starting the next, update `PROJECT_STATUS.md` per
+`CLAUDE.md` — `STATE`, `TASK: n of m`, `BALL`, `UPDATED` read from the clock, and
+`NOTE` saying what is moving inside the task, not restating the task name. Do the
+same every ten minutes while a task is running.
 
-The envelope is band-limited by the integrator — a settled 45 Hz. A dit at 24 WPM
-is 50 ms. At 8 kHz that span holds 400 samples but only about **2 × 45 × 0.05 ≈
-4.5 independent degrees of freedom.** **The accumulated log-likelihood is on the
-order of a hundred times too peaked**, and exponentiating it drives all the
-probability onto one path whatever the audio says.
+---
 
-**This is the frame conditional independence assumption, and it is a named problem
-with a named remedy.** Speech recognition describes the identical symptom —
-estimated posteriors tending toward 1.0 whether the utterance is correctly
-transcribed or not — and the standard remedy is a scaling exponent on the acoustic
-log-likelihoods, which the frame re-weighting literature describes as effectively
-applying a power operation to the likelihoods.
+# Tasks
 
-### Why this is safe to try
+## Task 1 — trace the read path, and reproduce the double query
 
-**A temperature applied to the whole path score cannot change the Viterbi
-argmax.** Scaling every path by the same positive constant leaves the largest
-one largest. **So the decode stays bit-identical, precision cannot fall, and only
-the posterior changes.** Task 3 finds out whether a properly tempered posterior
-discriminates without risking a character.
+**Nothing is built until this reports.** Say what you find rather than confirming
+this list.
 
-**Scaling the evidence term alone is a different question** — it shifts the balance
-against the duration penalty and does change the decode. **Task 5 does that
-separately**, measured on its own, because tangling the two would make neither
-answerable.
+Answer from the code: how a CI-V read is issued and how its reply is taken off
+the wire; whether the reader matches on the command byte it asked for or takes
+the next frame available; whether unsolicited transceive frames and the radio's
+own echo have a route that is separate from a pending read; whether the mode read
+uses `26` or `04`; and whether any caller already re-reads to work around a stale
+answer.
 
-## Verify this instruction against the tree
+Two mechanisms are the leading hypotheses and both are live by default on this
+radio. CI-V USB Port defaults to **"Link to [REMOTE]"** (p. 12-8), which echoes
+transmitted frames back. Transceive sends unsolicited frequency and mode
+broadcasts whenever the dial moves. Either puts a frame in the buffer that a
+next-frame-wins reader mistakes for its reply, and a second read succeeds because
+the queue has drained.
 
-**Nothing here describes the tree.** Check every claim and report mismatches. Trust
-the tree over this order everywhere they differ.
+**Produce the before-number**: reads required to obtain a correct
+mode-and-data-variant answer, measured, with the frames traced.
 
-From unit 048's report:
-
-- App **519 passing, 0 failing.** Corpus **yield 0.768, precision 0.766,
-  substitutions 58, deletions 31** over 384 adjudicated characters.
-- Engine **28 failing of 1963**, byte-identical to unit 046's set, **plus two
-  turned red by 048** — `TheSpeedIsFoundAndNotTold` on `003016` and `003126`.
-- **`TheSilencePropertyIsLockedTests` is green and unmodified.** It locks letters,
-  not characters.
-- The posterior lives in `CwProbabilisticDecoder.Posterior.cs`, log domain, with
-  thirteen numerical tests. **It is computed once for the winning speed**, because
-  the backward pass is O(hops × kinds² × span) and the grid runs thirty-three.
-- The five kinds are at `:525`; `ShortestShare` 0.45, `LongestShare` 2.2,
-  `LengthToleranceShare` 0.35. Transition scoring at `:1462–1472`. Speed grid at
-  `:794–805`. `LogLikelihoods` at `:973` — **no bound on the accumulated score.**
-- **The threshold sweep is over 301 characters inside an aligned truth span, which
-  is not the same set as the 384 the corpus score uses.** Do not compare the two.
-- **The eight captures of 2026-08-29 are still not in the tree**, a sixth
-  consecutive unit.
+**If the double query does not reproduce, stop here and report.** Do not build
+tasks 2 and 3 against a fault that is not there.
 
-**Record both suites and the corpus score before task 2.**
+## Task 2 — the frame reader returns the answer it asked for
 
-## Rulings in force
+A read matches on the command byte it issued, discards frames it did not ask for,
+and **returns an explicit unknown on timeout rather than the next thing that
+arrives**. Unsolicited broadcasts route to whatever consumes them and are never
+swallowed by a pending read.
 
-**Transcribed with what was rejected. Do not re-argue either.**
-
-**Tim's rulings, 2026-08-29:**
-
-> **The phase goal is 85% correct CW, precision before yield.** Never a wrong
-> character on screen, and as much of the traffic as that allows. **Precision is
-> 0.766 and the target is 0.850.**
-
-> **The two speed pins are re-measured from the reference as it stands and
-> relabelled for what they are — the reference's answer, not ground truth.**
->
-> Rejected: updating them to what Hamlet now says, which is fitting the test to the
-> change. Rejected: reverting the lattice on their account — precision rose across
-> the scored corpus and neither capture carries adjudicated truth.
->
-> **The provenance claim is what broke. Fix the claim.**
-
-> **Do not break the silence behaviour.** Not tradeable at any price.
-
-> **Ship the refusal** (2026-08-27): no letters from a pitch the survey admitted no
-> keying at.
->
-> **Rejected with it:** the clock-withdrawn refusal as unit 1.11.33 built it, and
-> raising the gate.
-
-> **The only measurement is against real data from the real radio.**
-
-> **FT8, FT4 and every other digital mode are outside this conversation's scope.**
-
-**Standing rulings this unit is bound by:**
-
-- **§0.0 / HM-DEC-009** — never present a guess as a decode.
-- **HM-DEC-120** — nothing emitted on audio holding no signal, and no letters from
-  a pitch nobody judged to be a station. **Tightened only.**
-- **§0.4** — reproduce, then change, then measure.
-- **HM-DEC-007** — tested against WAV fixtures.
-- **§5.4** — pure over samples and elapsed time.
-- **§0.2 / HM-DEC-008** — **no transmit work of any kind.**
-
-## Status cadence
-
-After each task, before the next, update `PROJECT_STATUS.md` — `STATE`,
-`TASK: n of m`, `BALL`, `UPDATED` from the clock, `NOTE` saying what is moving
-inside the task. Same every ten minutes while a task runs.
-
-## The measurement rule that governs every task
-
-**Every change is measured with `CwAccuracy` over the whole scored corpus, before
-and after.** Every task reports **precision, yield, substitutions, and points
-remaining to 0.85.**
-
-- **Precision must not fall. Ever.** A change that lowers it is reverted and
-  reported.
-- **A change that raises precision and lowers yield is kept**, and both are stated.
-- **`TheSilencePropertyIsLockedTests` runs after every task and may not be
-  modified.** A task that turns it red is reverted.
-
-## The tasks
-
-### Task 1 — baseline, and the evidence term measured
-
-**Run both suites and the corpus score. Record all three**, including whether the
-two speed pins are still the only additions to 046's failing set.
-
-Then read the evidence term and **report what is actually there**:
-
-- **`LogLikelihoods` at `:973`** — what is summed, over how many samples per span,
-  and at what sample rate the decoder actually runs.
-- **The integrator's effective bandwidth**, from the code rather than from this
-  order's 45 Hz.
-- **Compute the implied number of independent degrees of freedom per span**, for a
-  dit and a dah at 20, 24 and 30 WPM. **Report the ratio of samples to degrees of
-  freedom.** That ratio is the size of the overconfidence and **it is the first
-  number this unit needs.**
-- **Whether the duration penalty is on the same scale as the evidence term** — it
-  is a squared log-ratio, not a sum over samples, so it does not grow with span
-  length the way the evidence does. **Report the two magnitudes side by side on a
-  real capture.**
-
-### Task 2 — the speed pins' provenance
-
-**Small, and it clears the board before the measurement work.**
-
-- **Re-measure all four `TheSpeedIsFoundAndNotTold` captures from the reference as
-  it stands in the tree**, and record what it says now.
-- **Relabel the pins for what they are** — the reference implementation's answer,
-  not ground truth — with the re-measured values and the date.
-- **Where the reference refuses, the pin records a refusal**, not a number.
-- **Do not change the decoder to satisfy a pin.**
-
-### Task 3 — a temperature on the path score
-
-**The decode does not change in this task. That is the point.**
-
-- Apply a scaling exponent α to the **whole** path score before the
-  forward–backward normalisation — equivalently, divide every log score by a
-  constant. **The Viterbi argmax is unaffected by construction; assert it.**
-- **Derive a starting α from task 1's ratio** of samples to degrees of freedom, and
-  say so, rather than picking one.
-- **Sweep α** across at least two decades around that value. For each α report:
-  the **spread of the posterior** (its distribution across characters, not just a
-  mean), the **medians on right and wrong characters separately**, and the
-  **correlation with per-character correctness**.
-
-**Acceptance:**
-- **The decode is bit-identical.** The corpus score must not move at all. If it
-  does, the temperature is not being applied where this task says.
-- **Report the α at which the posterior's medians on right and wrong separate
-  furthest**, and the correlation there, **beside 048's +0.050 and the standard
-  error of 0.058.**
-- **If no α makes the posterior discriminative, stop and report.** That would say
-  the evidence term is not merely too sharp but uninformative, which is a finding
-  about the likelihood model and is worth more than a seventh quantity.
-
-### Task 4 — the gate opens
-
-**Only if task 3 found an α where the posterior discriminates beyond the noise.**
-
-- **Sweep the threshold at that α and report the curve** — kept, blocked, yield,
-  precision, substitutions, at each point.
-- **Choose the threshold that reaches the highest precision**, and state the
-  number and show the sweep. **Do not pick off a plateau inside the noise** — unit
-  048 refused to and that is the standard.
-- **Every consumer moves onto it:** the emission gate at `:822`, the character
-  floor at `:1513`, the character's confidence at `:734`, the sheet at `:4924`.
-- **A character below the threshold is a block**, which `CwAccuracy` scores as a
-  deletion so the trade is visible.
-- **The fit figure stays computed and stays on the sheet**, labelled for what it
-  is.
-
-**Acceptance: precision rises and substitutions fall.** Report the distance
-remaining to 0.85. **This is the task the phase goal rests on.**
-
-### Task 5 — the evidence and the duration prior, weighed against each other
-
-**This one does change the decode, and it is measured on its own.**
-
-Task 1 reports the two magnitudes side by side. If the evidence term dominates the
-duration penalty by the ratio the overconfidence implies, **the duration prior is
-currently doing almost nothing** — the decoder is fitting the envelope and
-essentially ignoring how implausible the resulting element lengths are.
-
-- **Scale the evidence term alone** by a factor, leaving the duration penalty
-  unscaled, and **sweep it.**
-- **Report the curve**: precision, yield and substitutions at each point.
-- **Adopt only a value on a monotonic region of the curve.** Unit 045 refused to
-  adopt 35 Hz off a non-monotonic sweep and that is the standard.
-- **If the curve is flat or non-monotonic, report it and change nothing.**
-
-**Acceptance:** measured before and after. **Precision must not fall.**
-
-### Task 6 — the durations fitted from the corpus
-
-The densities exist and are parameterised off the dit by the textbook ratios, with
-one shared `LengthToleranceShare` of 0.35 for all five kinds.
-
-- **Fit each kind's duration density from the corpus** — dit, dah, and the three
-  gaps — **including a separate spread per kind.** A word gap's spread is not a
-  dit's.
-- **Report what the corpus says the real ratios and spreads are.** A hand-sent fist
-  is not 1:3:1:3:7, and that is a finding about the operators on the band.
-- **Fit on captures excluded from the scored corpus, or state the overlap and what
-  it does to the score.** Fitting on the answer key would make the number
-  meaningless.
-- **If task 5 showed the duration prior is being drowned, this task's effect is
-  contingent on task 5's result** — say so in the report either way.
-
-**Acceptance:** measured before and after. **Precision must not fall.**
-
-### Task 7 — the speed inside the lattice
-
-- **Dit length becomes a slowly-varying state dimension**, so speed and text are
-  solved together and the best path carries its own speed.
-- **A transition cost penalises fast changes in dit length.** State the cost and
-  its derivation.
-- **The grid at `:794–805` becomes the initialisation of that dimension**, not a
-  committed answer.
-- **There is then no clock to withdraw.** Report what becomes of the sheet's
-  `decoderWpm` line and **put the proposed wording in the report — the sheet's
-  wording is Tim's.**
-- **The posterior becomes computable across speeds** rather than once for the
-  winner, which is what 048 had to settle for.
-
-**Acceptance:** measured before and after. **Precision must not fall.** Report what
-happens on the captures where the clock previously withdrew.
-
-### Task 8 — a language prior *(the drop candidate)*
-
-Morse traffic is highly predictable — prosigns, callsign structure, `CQ DE`, `73`,
-`RST`, plain English.
-
-- **A character n-gram prior added to the path cost.** Order and smoothing stated.
-- **Trained on text that is not the scored corpus. Say what it was trained on.**
-- **The prior is a tiebreaker, not an author.** It may reorder paths the acoustic
-  evidence finds nearly equal; **it may not create a character the signal does not
-  support.** State how the boundary is enforced and test it.
-- **The silence lock is the proof.**
-
-**Acceptance:** measured before and after. **Precision must not fall.** **Report
-substitutions separately** — a prior that raises yield by inventing plausible words
-is the worst outcome and the substitution count is where it shows.
-
-**Dropped whole if time runs out, and the report says so.**
-
-## Parked — do not touch, do not raise
-
-**FT8, FT4 and every other digital mode**, the digital tab, the digital capture
-press, the slot cutter, the sync search, the digital waterfall. **Outside this
-conversation's scope entirely.**
-
-**The settings contract** — `OwnedSettings`, the coverage table, the mode write's
-place in it. Unit 047 raised it and it is Tim's.
-
-Also: admission itself; the tracker; multichannel decoding; the attenuator and
-preamp rules; the scanner and the calling cycle; `CHANGELOG.md`; the missing
-`DECISIONS.md` records; the phrasebook and the recent-places row; the Twin PBT;
-the answer key's licensing; the dial-move threshold; the transcript break's
-wording; whether `CwPitch` follows an admitted station.
-
-**Both halves are required: do not touch them, and do not raise them.**
-
-A parked item that genuinely blocks a task is raised once, and says it was parked.
-
-## What not to do
-
-Standing prohibitions are `CLAUDE.md`'s and are not retyped. Unit-specific:
-
-- **No transmit. Nothing keys the radio.**
-- **Do not break the silence property**, and **do not modify its lock.**
-- **Do not let precision fall on any task.** Revert and report.
-- **Do not let task 3 change the decode.** Bit-identical or the temperature is in
-  the wrong place.
-- **Do not continue past task 3 if no α makes the posterior discriminative.**
-- **Do not adopt a value off a plateau inside the noise or a non-monotonic sweep.**
-- **Do not update a test pin to match the decoder.**
-- **Do not train the language prior on the scored corpus.**
-- **Do not let the language prior create a character the signal does not support.**
-- **Do not report a score without saying whether it is yield or precision.**
-- **Do not mint a decision id.**
-
-## Committing, pushing, reporting
-
-Commit and push each task before starting the next; name the branch; a refused push
-is reported as refused, with the reason.
-
-Report per `CLAUDE_CODE.md` §8 to `output.md` at the repository root, overwritten
-and printed. **Read the file's own section count and follow it.**
-
-**Write `output.md` before you stop, for any reason at all. Do not hold it behind a
-regression run** — unit 047 did and its engine result never landed. **Write the
-file, then amend it.**
-
-**The section that reports measurements leads with a table of one row per task —
-precision, yield, substitutions, and points remaining to 0.85 — so the whole unit's
-arc against the phase goal is one picture.** Then task 1's ratio of samples to
-degrees of freedom, and task 3's α sweep.
-
-**The section that says what the owner should expect leads with the precision
-number and its distance from 0.85.**
-
-**If you finish every task, stop and report. Do not start the next unit.**
+The reason, inline because a rule without it gets talked out of: a reader that
+takes the next frame is correct exactly until the radio volunteers something, and
+this radio volunteers constantly while the dial moves — which is precisely when a
+scan is running and precisely when the answer matters.
+
+## Task 3 — audit every CI-V read
+
+If task 1 confirmed the mechanism, every read in the app has been capable of
+returning the previous answer. Find them all. **Report the count**, and where a
+caller carried a re-read as a workaround, remove it and say so — a workaround
+left in place hides whether task 2 worked.
+
+## Task 4 — the dwell rule
+
+Entering data territory arms a timer. **The condition is the same neighborhood and
+an unchanged frequency across consecutive polls spanning one second — not one
+second spent inside the block.** Movement disqualifies, not position: a slow tune
+sits inside a 3 kHz block for longer than a second while still moving, and Tim
+crosses data every time he scans from CW to voice.
+
+- Suppressed entirely while the scanner is running.
+- Leaving and re-entering re-arms from zero.
+- Leaving before maturity discards silently. A write that did not happen is not
+  narrated. HM-DEC-056 already narrates the ones that do.
+
+This extends HM-DEC-056's settle rule rather than replacing it; that ruling waits
+for the dial to settle and this says how long and what disqualifies.
+
+## Task 5 — data territory sets its mode on dwell
+
+On a matured dwell inside a neighborhood whose mode is a data mode, send the
+`26` frame per HM-DEC-056 — VFO selector, mode, data flag, **no filter byte**
+until Tim rules on the proposal above.
+
+Read back with `26` and the selector alone. **Unconfirmed leaves the mode
+UNKNOWN**, per the ruling. Narrate in the app's voice.
+
+The read-back is a second round trip and is not the fault task 2 fixes: task 1's
+read discovers state, this one verifies a change. Two reads asking the *same*
+question are the defect; two reads asking different questions are the design.
+
+## Task 6 — the card says where the signals are — DROP CANDIDATE
+
+**This is the drop candidate. It is dropped whole and you say that you dropped
+it.** Not by position; it is named here.
+
+`14.074` is a dial frequency and no station transmits on it. The energy sits as
+audio offsets above the dial in upper sideband, which is the 3 kHz the editorial
+rule in HM-DEC-054 already encodes. The card names the number; it should name the
+dial and the block that number opens onto, so that **dead at the published
+frequency and alive one kilohertz up reads as a correctly tuned radio** rather
+than an empty band.
+
+Tests: a fixture for CW/FIL2/500 Hz at 14.074 — the 2026-08-28 state; a scan pass
+crossing three data neighborhoods without dwelling, asserting zero writes; a
+reader fed its own echo then the true reply, asserting one read returns the true
+reply.
+
+---
+
+# Parked — do not touch, do not raise
+
+- **The Twin PBT.** No write exists in the command table and reading it needs
+  `14 08` re-read column-aware — the row `CLAUDE.md` records as once confused with
+  the CW pitch. Real, and its own unit.
+- **RIT left on as a silent-radio cause.** Real, the command is unverified, and it
+  is the same unit as the PBT.
+- **The decoder.** Nothing in this unit is evidence about it.
+- **`PROJECT_CARD.md` having no phase field.** Raised in the delivery message and
+  changed only by ruling (§13.3). Not this unit's business.
+
+A parked item that turns out to block a task is raised once, and says it was
+parked.
+
+---
+
+# What not to do
+
+Standing prohibitions live in `CLAUDE.md` and are cited, not retyped.
+
+Unit-specific:
+
+- **Do not send the filter byte.** HM-DEC-056 rejected it and the reversal is a
+  proposal awaiting Tim. Building it would be a session overturning a ruling.
+- **Do not write slot widths via `1A 03`.** Selecting a slot is a session choice;
+  changing what a slot *means* rewrites a stored preference of the operator's.
+- **Do not commit the IC-7300 manual.** HM-DEC-056: cited and never committed.
+- **No transmit work.** §0.2 is untouched.
+
+---
+
+# Committing, pushing, reporting
+
+Commit and push each task before starting the next. Name the branch in the report
+and state whether the push succeeded; a refused push is reported as refused.
+
+Write `output.md` at the repository root per `CLAUDE_CODE.md` §8 — the header
+block from the clock, then the four sections. **Section 3 leads with the answer
+this unit was commissioned to ask: how many reads it now takes to get a correct
+mode-and-data-variant answer, before and after.**
+
+`ADVANCED: no` is the expected answer here and is written without apology; carry
+`DRIFT` forward from the block above, which reads 0 because no phase goal is set
+to drift from — say so on the line.
+
+**Every exit writes the report.** Complete, blocked, failed, or stopped early by
+your own judgment. If you stop with tasks remaining, name them and say why in
+section 1, and say whether what you dropped was task 6.
+
+Then stop. Do not start the next unit.
