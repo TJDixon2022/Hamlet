@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
-TASK: 3 of 7
+STATE: COMPLETED
+TASK: 7 of 7
 BALL: tim
-NEXT_PASTE: none
-UPDATED: 2026-08-28T23:20:15-04:00
-NOTE: task 2 ships nothing on its own bar: the withdrawal is true for 59% of all output and would block two anchors entirely
+NEXT_PASTE: output.md -> Claude Web
+UPDATED: 2026-08-28T23:36:17-04:00
+NOTE: task 2 ships nothing on its own bar; the fit figure is unbounded and that is one defect behind four sightings
 
 ---
 
