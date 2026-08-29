@@ -1,4 +1,4 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Globalization;
 using Hamlet.RadioEngine.Audio;
 using Hamlet.RadioEngine.Cw;
@@ -87,6 +87,11 @@ internal static class Program
 
             case "clock":
                 ClockSweep();
+
+                return 0;
+
+            case "tone":
+                ToneTable(args.Length > 1 ? args[1] : null);
 
                 return 0;
 
@@ -1675,6 +1680,61 @@ internal static class Program
 
         return flat;
     }
+
+    /// <summary>
+    /// The tracker's answer, the FFT peak and the strongest keyed bin, per
+    /// capture.
+    /// </summary>
+    /// <remarks>
+    /// **THREE ESTIMATES OF ONE NUMBER** (work instruction 050, tasks 1 and 3).
+    /// The tracker is what Hamlet commits to today; the peak is
+    /// `CwSpectralPeak`; the keyed bin is `KeyingEnvelope.Best`, which is the
+    /// only one of the three that asks whether anybody is keying rather than
+    /// merely where the energy is.
+    /// </remarks>
+    private static void ToneTable(string? only)
+    {
+        var files = Directory
+            .GetFiles(CaptureFolder(), "*.wav", SearchOption.AllDirectories)
+            .Where(f => only is null
+                || Path.GetFileName(f).Contains(only, StringComparison.Ordinal))
+            .OrderBy(f => Path.GetFileName(f), StringComparer.Ordinal)
+            .ToList();
+
+        Console.WriteLine(
+            "capture	sidecarHz	trackerHz	peakHz	keyedHz	purity	elementMs");
+
+        foreach (var file in files)
+        {
+            var audio = WavAudio.Read(file);
+
+            var tracker = Shipped(audio);
+            var peak = CwSpectralPeak.Find(audio.Samples, audio.SampleRate);
+            var keyed = KeyingEnvelope.Best(audio);
+
+            Console.WriteLine(string.Join(
+                "	",
+                Path.GetFileNameWithoutExtension(file),
+                Fmt(SidecarToneHz(file)),
+                Fmt(tracker),
+                peak is { } p ? p.ToString("0.0", CultureInfo.InvariantCulture) : "-",
+                keyed is { } k
+                    ? k.ToneHz.ToString("0.0", CultureInfo.InvariantCulture)
+                    : "-",
+                keyed is { } k2
+                    ? k2.Profile.ElementPurity.ToString(
+                        "0.00", CultureInfo.InvariantCulture)
+                    : "-",
+                keyed is { } k3
+                    ? k3.Profile.ElementMedianMs.ToString(
+                        "0.0", CultureInfo.InvariantCulture)
+                    : "-"));
+        }
+    }
+
+    /// <summary>A hertz figure, or a dash where nobody measured one.</summary>
+    private static string Fmt(double hz)
+        => double.IsNaN(hz) ? "-" : hz.ToString("0.0", CultureInfo.InvariantCulture);
 
     /// <summary>What the shipped decoder settles on, run over the whole file.</summary>
     private static double Shipped(MonoAudio audio)
