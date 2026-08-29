@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
+STATE: COMPLETED
 TASK: 4 of 4
-BALL: code
-NEXT_PASTE: none
-UPDATED: 2026-08-28T20:17:12-04:00
-NOTE: all four tasks worked and the report is written; full engine suite running for a final baseline check
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
+UPDATED: 2026-08-28T20:58:34-04:00
+NOTE: four tasks done, ranking off pending two rulings; the suite's early exits are a pre-existing host crash, HM-OPEN-061
 
 ---
 

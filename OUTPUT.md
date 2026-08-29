@@ -1,4 +1,4 @@
-UNIT:       044 — complete at task 4 of 4 — 2026-08-28 20:17
+UNIT:       044 — complete at task 4 of 4 — 2026-08-28 20:58
 PHASE GOAL: Readable CW on the operator's screen — eighty percent of a strong signal read correctly, first time.
 UNIT GOAL:  Make the ranked pitch drive the live decode, and stay silent when even the best candidate is poor.
 ADVANCED:   no — the ranking is built, wired end to end and switched off, because driving the decode costs two adjudicated callsigns.
@@ -159,11 +159,22 @@ What is now true of the tree:
   ranking off is the last measured pitch rather than the tracker's live one. On the
   batches run it moved nothing; it is a real change and it is named here rather
   than left to be discovered.
-- **The full engine suite has no result in this report.** It was killed twice
-  mid-run, as it was in unit 1.12.6. What did run: the twelve adjudicated anchors
-  green, the nine new tests green, and a thirty-one test batch over the pitch-hold,
-  emission-gate, phantom-block and tracker-switch cases with one failure, that
-  pre-existing one.
+- **The full engine suite has no result in this report, and the reason turned out
+  to be a crash rather than the clock.** `TheGateHasItsOwnWindowNowTests` aborts
+  the test host — `Test host process crashed`, not a failure — and takes the rest
+  of the run with it. **It is not this unit's**: the engine and the new test file
+  were reverted to `2fcbc33`, the suite rebuilt, and it crashes there too. Raised
+  as **HM-OPEN-061** and left alone (§12.6). It is also not reproducible on every
+  run: unit 1.12.6's full sweep completed with this class not among its 28
+  failures, so a green full run will not prove it gone.
+- **What did run, in batches, all green except one pre-existing failure:** the
+  twelve adjudicated anchors (13 tests); the nine new ranking tests; a 31-test
+  batch over pitch-hold, emission-gate, phantom-block and tracker-switch, whose
+  one failure — `CwEmissionGateTests.NoSpeedIsNamedWithoutCharactersToNameItFrom`
+  — is in the 28-failing baseline; a 22-test batch over the captured-signal,
+  keying and low-duty cases; and 79 tests across the survey-threshold and
+  captures-that-decode cases before the crash ended that run. **Nothing new went
+  red anywhere.**
 - **The app suite has no result either**, for the same reason. No app file changed
   except the sheet's pitch line.
 - **`eng-final.txt` and `app-final.txt` are still modified in the working tree**,
@@ -255,7 +266,8 @@ Carried forward per HM-DEC-139 and HM-DEC-140, from unit 1.12.6's list.
 9. **A capture sheet carries a score of −68562.4** (`cw-2026-08-28-005158`), first
    raised in unit 1.12.6 and unruled. A number the operator can read with nothing
    beside it saying what it means.
-10. **The full engine suite has now been killed mid-run in two consecutive
-    sessions**, both times at around twenty minutes. Acceptance is being assembled
-    from filtered batches, which is slower and leaves gaps. Raised as a working
-    condition rather than a code fault.
+10. **The full engine suite ends early, and it is a host crash rather than a
+    timeout** — `TheGateHasItsOwnWindowNowTests`, reproduced on the pre-unit-044
+    tree, now **HM-OPEN-061**. Acceptance has to be assembled from filtered
+    batches meanwhile, which is slower and leaves gaps nobody can see the shape
+    of. Owned by Claude, not waiting on a ruling.

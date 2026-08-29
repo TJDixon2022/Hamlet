@@ -4,6 +4,34 @@ Questions with owner and severity. `owner` is who must act next. Format in
 `CLAUDE.md` §3.
 
 ---
+id: HM-OPEN-061
+status: open
+owner: claude
+raised: 2026-08-28
+severity: slows
+blocks: assembling a full-suite acceptance figure in one run
+refs: unit 044's report, section 2
+---
+
+`TheGateHasItsOwnWindowNowTests` crashes the test host, and it is not new.
+
+Found while assembling unit 044's acceptance. Run on its own the class aborts
+with `Test host process crashed` rather than failing, so it produces no result
+for any test in it and takes the rest of the run down with it. **Checked against
+the tree as it stood at `2fcbc33`, before unit 044 touched anything, and it
+crashes there too** — the engine and the new test file were reverted, the suite
+rebuilt, and the crash reproduced. So it is inherited rather than introduced.
+
+**What makes it awkward rather than merely annoying**: unit 043's full run
+completed, 28 failing of 1958, with this class not among the failures. So the
+crash is not reproducible on every run or in every order, and a green full run is
+not evidence that it has gone. Three full-suite runs in unit 044 ended early.
+
+Not investigated further, because it is outside the unit that found it (§12.6).
+What it costs meanwhile is that acceptance has to be assembled from filtered
+batches, which is slower and leaves gaps that nobody can see the shape of.
+
+---
 id: HM-OPEN-060
 status: closed
 owner: tim
