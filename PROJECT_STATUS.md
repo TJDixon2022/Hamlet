@@ -1,11 +1,11 @@
 PROJECT: Hamlet
 STATE: EXECUTING
 PHASE: 12
-TASK: 5 of 6
+TASK: 6 of 6
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-29T17:20:32-04:00
-NOTE: Data write proved on the wire — a refused 26 now empties the data flag as well as the mode; app suite running
+UPDATED: 2026-08-29T17:22:41-04:00
+NOTE: output.md written; app suite still running, its result lands as the amendment
 
 ---
 
