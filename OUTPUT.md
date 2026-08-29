@@ -1,7 +1,7 @@
 UNIT:       049 — stopped at task 3 of 8 — 2026-08-29 14:19
 PHASE GOAL: 85% correct CW, precision before yield — never a wrong character on screen, and as much of the traffic as that allows.
 UNIT GOAL:  Find and remove the overconfidence in the evidence model, so a confidence figure can gate emission.
-ADVANCED:   no — precision is unchanged at 0.766 and the distance to 0.85 is still 8.4 points; what the unit produced is two measurements that redirect the work.
+ADVANCED:   no — precision is unchanged at 0.766 and the distance to 0.85 is still 8.4 points; what the unit produced is three measurements that redirect the work.
 NUMBER:     precision 0.766, yield 0.768, substitutions 58 — unchanged. **8.4 points short of 0.85.**
 DRIFT:      1 consecutive unit without advance  (was 0)
 
@@ -105,22 +105,18 @@ this safe to sweep. It is threaded from `CwDecoder.PosteriorTemperature` through
 the stream so the sweep runs inside the decoder the operator uses, and it **ships
 at 1.0** — no temperature at all.
 
-**Two points landed before the run was cut short:**
+**The sweep, completed across four decades in two runs:**
 
-| α | median right | median wrong | separation | correlation | spread |
-|---|---|---|---|---|---|
-| 1.0 | 0.8433 | 0.8382 | **+0.0051** | **+0.050** | 0.478 |
-| **0.45** | 0.6338 | 0.6408 | **−0.0070** | **−0.030** | 0.580 |
+| α | separation | correlation |
+|---|---|---|
+| 1.0 | +0.0051 | +0.050 |
+| **0.45** | −0.0070 | −0.030 |
+| 0.1 | −0.0227 | −0.201 |
+| 0.01 | −0.0612 | −0.310 |
 
-**At the α the over-count implies, the separation goes negative.** The
-distribution does flatten — the tenth-to-ninetieth spread widens 0.478 to 0.580 —
-**and the discrimination gets worse rather than better.** That is consistent with
-task 1: tempering by 0.45 addresses a 2.22-fold problem that is not the one in the
-way.
-
-**The standard error on 301 characters is about 0.058**, so both +0.050 and −0.030
-sit inside the noise. Neither is a result on its own; the shape of the curve across
-decades is what would be, and that is the amendment below.
+**At the α the over-count implies, the separation goes negative, and every decade
+below makes it worse.** The full table and what it means are in the amendment in
+section 2. **Task 3's gate does not open and task 4 does not start.**
 
 No decision was recorded under §12.1.
 
@@ -147,15 +143,49 @@ What is now true of the tree:
   temperature sweep. The app suite is 519 passing, 0 failing, and the targeted
   batches were green.
 
-### Amendment — the decade sweep and the engine suite
+### Amendment — the decade sweep, and task 3's gate does not open
 
-**Pending.** Replaced when they land. **If this is not replaced, they did not
-finish** — the HM-OPEN-061 host crash has ended four full engine runs, and an
-unreplaced line is the honest record rather than an omission.
+**Two more points landed before that run was stopped too, and between them the
+four settle the question.**
+
+| α | median right | median wrong | separation | correlation | spread |
+|---|---|---|---|---|---|
+| 1.0 | 0.8433 | 0.8382 | **+0.0051** | **+0.050** | 0.478 |
+| 0.45 | 0.6338 | 0.6408 | −0.0070 | −0.030 | 0.580 |
+| 0.1 | 0.3307 | 0.3534 | −0.0227 | **−0.201** | 0.562 |
+| 0.01 | 0.0688 | 0.1301 | **−0.0612** | **−0.310** | 0.172 |
+
+**The curve is monotonic and it runs the wrong way.** Every decade of tempering
+makes the discrimination worse, and at α = 0.01 the correlation is −0.310 —
+as bad as `MarginLlr`'s −0.341, which is one of the five quantities this whole
+line of work was meant to replace.
+
+**Task 3's own stopping condition fires**: *if no α makes the posterior
+discriminative, stop and report — that would say the evidence term is not merely
+too sharp but uninformative, which is a finding about the likelihood model.* **No
+α does. The unit stops here and task 4 does not open.**
+
+**And the direction of the failure is the most useful thing in this report.** As
+the temperature flattens the distribution, **wrong characters take a systematically
+higher posterior than right ones** — 0.1301 against 0.0688 at α = 0.01, nearly two
+to one. That is not noise; it is monotonic across four decades.
+
+**It means the model is most certain exactly where it is wrong.** Where Hamlet
+reads a character correctly, the lattice usually holds several competing
+segmentations of the same audio and the probability is shared among them. Where it
+reads one wrongly, the alternatives have been driven out and one path holds nearly
+everything. **A confidence built on this model would be worse than no confidence,
+because it would be actively anti-correlated with correctness** — which is what the
+five earlier quantities were, and this explains why rather than adding a sixth
+observation of it.
+
+**The engine suite has no result.** It was started and stopped with the sweeps.
+The app suite is 519 passing, 0 failing; the four speed pins and the targeted
+batches were green.
 
 ## 3. What you should see
 
-**Two measurements, and together they redirect the work.**
+**Three measurements, and together they redirect the work.**
 
 **The evidence term is over-counted 2.22-fold, not 89-fold**, because it sums per
 five-millisecond hop and not per sample. That correction matters because the whole
@@ -173,6 +203,13 @@ that the evidence term is unbounded** — the same `−e²/2σ²` that has now p
 17.2 million, 5,521,967, quadrillions, and 3.6 × 10⁷ per hop on `013347` in this
 unit's own table. Tempering divides everything by a constant and cannot fix a term
 whose scale varies by six orders of magnitude between captures.
+
+**And the third measurement says the model is most certain where it is wrong.**
+Tempered across four decades, wrong characters take a systematically higher
+posterior than right ones — 0.1301 against 0.0688 at α = 0.01. Where Hamlet reads
+correctly the lattice holds several competing segmentations and the probability is
+shared; where it reads wrongly the alternatives have been driven out and one path
+holds nearly everything.
 
 **Task 5 is the one this points at**, and it was written to be measured separately:
 scale the evidence term alone against the duration penalty. On these numbers that
