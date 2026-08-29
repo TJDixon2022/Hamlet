@@ -100,6 +100,11 @@ internal static class Program
 
                 return 0;
 
+            case "confidence":
+                ConfidenceSweep();
+
+                return 0;
+
             default:
                 Console.WriteLine("usage: pitch-rank cost | pitch-rank rank [capture]");
 
@@ -1212,6 +1217,143 @@ internal static class Program
                 asserted == 0 ? 0 : (double)correct / asserted,
                 correct, subs, ins, dels));
         }
+    }
+
+    /// <summary>
+    /// Whether any number the decoder already attaches to a character tracks
+    /// whether that character was right.
+    /// </summary>
+    /// <remarks>
+    /// **THIS IS UNIT 046 TASK 2'S MEASUREMENT, TAKEN ON THE QUANTITIES THAT
+    /// EXIST.** A forward-backward posterior needs the lattice indexed by
+    /// (hop, kind) and it is indexed by (hop) alone, so that number cannot be had
+    /// without the restructuring the task forbids. What can be had is the
+    /// per-hop runner-up margin the Viterbi already keeps, tested per character
+    /// rather than per recording for the first time.
+    /// </remarks>
+    private static void ConfidenceSweep()
+    {
+        var margin = new List<(double Value, bool Right)>();
+        var share = new List<(double Value, bool Right)>();
+        var span = new List<(double Value, bool Right)>();
+
+        Console.WriteLine("capture	scored	correct	subs	ins	blocks");
+
+        foreach (var (capture, truth, _) in Truths)
+        {
+            var path = Find(capture);
+
+            if (path is null)
+            {
+                continue;
+            }
+
+            var audio = WavAudio.Read(path);
+            var decoder = new CwDecoder(audio.SampleRate, 600);
+            var chars = new List<CwCharacter>();
+
+            decoder.CharacterSettled += c =>
+            {
+                if (c.Text != MorseAlphabet.WordGap)
+                {
+                    chars.Add(c);
+                }
+            };
+
+            var hop = decoder.Tracker.HopSamples;
+
+            for (var at = 0L; at + hop <= audio.Samples.Length; at += hop)
+            {
+                decoder.Process(new AudioChunk(
+                    at, audio.SampleRate, audio.Samples.AsSpan((int)at, hop)));
+            }
+
+            decoder.Flush();
+
+            // Spaces are dropped from both sides so the indices line up with the
+            // character list; this correlation is about letters.
+            var read = string.Concat(chars.Select(c => c.Text)).ToUpperInvariant();
+            var want = new string(
+                truth.ToUpperInvariant().Where(c => !char.IsWhiteSpace(c)).ToArray());
+
+            var outcomes = CwAccuracy.Align(read, want);
+
+            int correct = 0, subs = 0, ins = 0, blocks = 0;
+
+            foreach (var (index, outcome) in outcomes)
+            {
+                if (index >= chars.Count)
+                {
+                    continue;
+                }
+
+                var c = chars[index];
+
+                switch (outcome)
+                {
+                    case CwAccuracy.Outcome.Correct: correct++; break;
+                    case CwAccuracy.Outcome.Substitution: subs++; break;
+                    case CwAccuracy.Outcome.Insertion: ins++; break;
+                    default: blocks++; continue;
+                }
+
+                var right = outcome == CwAccuracy.Outcome.Correct;
+
+                if (!double.IsNaN(c.MarginLlr))
+                {
+                    margin.Add((c.MarginLlr, right));
+                }
+
+                if (!double.IsNaN(c.MarginShareForRecord))
+                {
+                    share.Add((c.MarginShareForRecord, right));
+                }
+
+                span.Add((c.SpanMarginForRecord, right));
+            }
+
+            Console.WriteLine(string.Format(
+                CultureInfo.InvariantCulture,
+                "{0}	{1}	{2}	{3}	{4}	{5}",
+                capture, outcomes.Count, correct, subs, ins, blocks));
+        }
+
+        Console.WriteLine();
+        Report("MarginLlr", margin);
+        Report("MarginShare", share);
+        Report("SpanMargin", span);
+    }
+
+    /// <summary>Correlate one candidate confidence against correctness.</summary>
+    private static void Report(string name, List<(double Value, bool Right)> data)
+    {
+        if (data.Count < 3)
+        {
+            Console.WriteLine($"{name}: too few points ({data.Count})");
+
+            return;
+        }
+
+        var xs = data.Select(d => d.Value).ToArray();
+        var ys = data.Select(d => d.Right ? 1.0 : 0.0).ToArray();
+        var mx = xs.Average();
+        var my = ys.Average();
+        var cov = xs.Zip(ys, (a, b) => (a - mx) * (b - my)).Sum() / xs.Length;
+        var sx = Math.Sqrt(xs.Select(a => (a - mx) * (a - mx)).Sum() / xs.Length);
+        var sy = Math.Sqrt(ys.Select(b => (b - my) * (b - my)).Sum() / ys.Length);
+
+        var right = data.Where(d => d.Right).Select(d => d.Value).OrderBy(v => v).ToArray();
+        var wrong = data.Where(d => !d.Right).Select(d => d.Value).OrderBy(v => v).ToArray();
+
+        Console.WriteLine(string.Format(
+            CultureInfo.InvariantCulture,
+            "{0}: n={1}  correlation {2:+0.000;-0.000}  median right {3:0.0000}  "
+            + "median wrong {4:0.0000}",
+            name,
+            data.Count,
+            sx * sy < 1e-12 ? 0 : cov / (sx * sy),
+            right.Length == 0 ? 0 : right[right.Length / 2],
+            wrong.Length == 0 ? 0 : wrong[wrong.Length / 2]));
     }
 
     /// <summary>Where a capture lives, adjudicated or not.</summary>

@@ -4,8 +4,8 @@ STATE: EXECUTING
 TASK: 2 of 8
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-29T10:59:23-04:00
-NOTE: silence locked on five captures; the lattice carries parity on the winning path, so a backward pass needs it in the state
+UPDATED: 2026-08-29T11:02:01-04:00
+NOTE: every per-character confidence the decoder has is anti-correlated with correctness, so task 2's own gate stops the unit
 
 ---
 

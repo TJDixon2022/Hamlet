@@ -205,6 +205,119 @@ public static class CwAccuracy
         return new CwScore(t.Length, scored, correct, subs, ins, dels);
     }
 
+    /// <summary>What became of one character of the read.</summary>
+    public enum Outcome
+    {
+        /// <summary>It matched the truth.</summary>
+        Correct,
+
+        /// <summary>A letter was asserted and it was the wrong one.</summary>
+        Substitution,
+
+        /// <summary>A letter was asserted that nobody sent.</summary>
+        Insertion,
+
+        /// <summary>Hamlet declined to name it.</summary>
+        Block,
+    }
+
+    /// <summary>
+    /// Align a read against the truth and say what became of each read
+    /// character.
+    /// </summary>
+    /// <param name="read">What Hamlet produced, one entry per character.</param>
+    /// <param name="truth">What was sent, over the span truth covers.</param>
+    /// <returns>
+    /// The outcome of every read character inside the aligned span, by its index
+    /// in <paramref name="read"/>. Characters outside the span are absent.
+    /// </returns>
+    /// <remarks>
+    /// <para>**THIS IS WHAT LETS A CONFIDENCE BE TESTED AGAINST CORRECTNESS.**
+    /// The aggregate score says how many characters were wrong; this says
+    /// **which**, so a number the decoder attaches to a character can be
+    /// correlated against whether that character was right. Without it a
+    /// confidence can only be checked at recording level, which is what an
+    /// earlier measurement of `MarginShareForRecord` had to settle for.</para>
+    /// <para>**NO NORMALISATION HAPPENS HERE**, because the indices have to line
+    /// up with the caller's own list of characters. The caller passes what it
+    /// wants compared.</para>
+    /// </remarks>
+    public static IReadOnlyDictionary<int, Outcome> Align(string? read, string? truth)
+    {
+        var outcomes = new Dictionary<int, Outcome>();
+        var t = truth ?? string.Empty;
+        var r = read ?? string.Empty;
+
+        if (t.Length == 0 || r.Length == 0)
+        {
+            return outcomes;
+        }
+
+        var cost = new int[t.Length + 1, r.Length + 1];
+
+        for (var i = 1; i <= t.Length; i++)
+        {
+            cost[i, 0] = i;
+        }
+
+        for (var i = 1; i <= t.Length; i++)
+        {
+            for (var j = 1; j <= r.Length; j++)
+            {
+                var same = t[i - 1] == r[j - 1];
+
+                cost[i, j] = Math.Min(
+                    Math.Min(cost[i - 1, j] + 1, cost[i, j - 1] + 1),
+                    cost[i - 1, j - 1] + (same ? 0 : 1));
+            }
+        }
+
+        var end = 0;
+
+        for (var j = 1; j <= r.Length; j++)
+        {
+            if (cost[t.Length, j] <= cost[t.Length, end])
+            {
+                end = j;
+            }
+        }
+
+        var y = t.Length;
+        var x = end;
+
+        while (y > 0 && x > 0)
+        {
+            var same = t[y - 1] == r[x - 1];
+
+            if (cost[y, x] == cost[y - 1, x - 1] + (same ? 0 : 1))
+            {
+                outcomes[x - 1] = same
+                    ? Outcome.Correct
+                    : r[x - 1] == Block ? Outcome.Block : Outcome.Substitution;
+
+                y--;
+                x--;
+
+                continue;
+            }
+
+            if (cost[y, x] == cost[y, x - 1] + 1)
+            {
+                outcomes[x - 1] = r[x - 1] == Block
+                    ? Outcome.Block
+                    : Outcome.Insertion;
+
+                x--;
+
+                continue;
+            }
+
+            y--;
+        }
+
+        return outcomes;
+    }
+
     /// <summary>
     /// What is compared: case folded, runs of space collapsed, ends trimmed.
     /// </summary>
