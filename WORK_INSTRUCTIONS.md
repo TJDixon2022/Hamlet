@@ -18,98 +18,89 @@ If all four hold, say "Hamlet confirmed" and continue.
 
 ---
 
-# Work instruction 043 — what tonight's captures caught
+# Work instruction 044 — no clock, no letters
 
-**ISSUED: 2026-08-29. A fresh order, not an amendment. Follows unit 042.**
+**ISSUED: 2026-08-29. A fresh order, not an amendment. Follows unit 043.**
 
 **Seven tasks; task 7 is the drop. This is a long unit by instruction.**
 
-**The digital work is parked for this unit. FT8 is a daytime mode and CW is a
-night mode; it is night.**
-
 ## Why this unit exists
 
-**Five captures taken between 02:05 and 02:10 UTC on 2026-08-29 caught four
-distinct faults, all upstream of the decoder, and every one of them is in the
-sidecars.**
+**Three captures, fifty seconds apart, one frequency, one station, one variable.
+The best test material this project has ever had.**
 
-### Fault 1 — letters from a pitch nobody chose
+At 03:08–03:10 UTC on 2026-08-29 the operator sat on 7.0473 MHz listening to a
+W1AW propagation bulletin — **a text published verbatim by the ARRL, so ground
+truth exists for it.** He pressed capture three times.
 
-`cw-2026-08-29-020809`, at 7.0372 MHz:
+| capture | pitch used | `decoderWpm` | fit vs silence | result |
+|---|---|---|---|---|
+| `-030850` | **850 Hz** | **withdrawn** | 36.0 | **clean read** |
+| `-030940` | 400 Hz | **withdrawn** | **8224.4** | **141 characters, 1 unsure, all `E I S` garbage** |
+| `-031024` | 400 Hz | **24** | 11.1 | **clean read** |
 
-> `unkeyed YES` — **237 characters reached the screen from a pitch chosen by the
-> middle of the bank, which nothing chose, with no keying admitted here.**
-> `toneHz 575.0 (NOT MEASURED)`. `reading` 0.2 better than silence against a gate
-> of 1. `decoderWpm not proved`, and the speed search **pinned at the top of its
-> range**, which is what a speed search does when there is nothing to fit.
+**Measured outside Hamlet, on the audio in those files: the station sits at
+398.4 Hz, 35–36 dB over the band floor, in every one of the three. At 850 Hz the
+energy is 4.4 dB *below* the floor — there is nothing there at all.**
 
-`cw-2026-08-29-020938`, at 7.0502 MHz: the same, 300 characters, this time from
-**the loudest bin in the band** rather than the bank centre.
+So the pitch was **correct** in both the disaster and the recovery. **Pitch is not
+the variable. The speed clock is.**
 
-**Every instrument said no station. Letters reached the screen anyway.**
+### The fault
 
-**Unit 036 shipped a refusal for the case where a pitch is admitted at the wrong
-frequency. This is its sibling and it is not covered: nothing was admitted at
-all, and a fallback — bank centre, or loudest bin — supplied a pitch that the
-emit path then treated as a station.** The blocks in that text are correct. The
-green letters between them are the fault, and on screen they are
-indistinguishable from the real letters of `HIGHER IN BAND` three captures
-earlier.
+**When the speed clock is withdrawn, the decoder keeps emitting characters at full
+confidence.** `-030940` produced 141 characters with **one** marked unsure. `E`,
+`I` and `S` are one, two and three dits — a decoder chopping the envelope into
+short elements because it does not know how long an element is.
 
-### Fault 2 — admission refuses a real station
+**A decoder that does not know the sender's speed cannot tell a dit from a dah.**
+`decoderWpm withdrawn` is Hamlet saying exactly that, in its own sidecar, while
+letters reach the screen anyway. **This is HM-DEC-009 broken in the same shape
+unit 036 fixed for pitch, on the other half of what a decoder must know.**
 
-Also `cw-2026-08-29-020938`. **Measured outside Hamlet, on the audio in that
-file: a carrier at 802.7 Hz standing 21.2 dB over the band floor, keyed with 66
-key-downs, about 14 WPM.** That is a station by any reading.
+### The second fault, and it is worse
 
-Hamlet's own sidecar agrees something is there — *the loudest thing in the band
-is at 800 Hz, +19.7 dB over the band floor, keyed 46% of the time* — and then
-says **"Nothing has judged it to be a station."**
+**The confidence figure is inverted.**
 
-**Two independent decoders converge on the same words from that audio.** Hamlet
-read `S T L O A I S`; an independent decode of the same file read `L?OUIS`.
-**That is almost certainly `ST LOUIS`.** A real conversation is being read, badly,
-by a decoder that has refused to admit the station it is reading.
+- The garbage scored **8224.4 better than silence per hop**, against a gate of 1.
+- The clean bulletin read scored **11.1**.
 
-**Faults 1 and 2 are the same organ failing in opposite directions**, and they
-appear in the same capture.
+**The number that is supposed to say how well the decoder is doing rose by three
+orders of magnitude as the output became worthless.** Whatever it measures rewards
+chopping the envelope into single dits. Its `spanLlr` entries run into the
+hundreds of thousands.
 
-### Fault 3 — the sweep's 25 Hz grid
+**The prime directive holds only if the confidence numbers mean something. Here
+they do not.**
 
-The independent keying sweep reported **825 Hz** for a station measured at
-**802.7 Hz** — 22 Hz off, because it steps in 25 Hz increments over 400 to 1200
-Hz. **The field report of 2026-08-24 named this grid and it is still there.**
+### The third fault, already known and now seen again
 
-### Fault 4 — the dial moved and nothing reset
+`-030850` produced a **clean, correct read** — `AUGUST 27, 2026, BY F. K. JANDA,
+OK1HH <BT> MORE OR LESS IN LINE WITH EXPECTATIONS` — **from 850 Hz, where the
+audio holds nothing.**
 
-Across the five captures the operator moved 7.0284 → 7.0372 → 7.0502. **The
-transcript carried across all of it**, so text read from the 550 Hz station was
-still on screen while the decoder was pointed at a different frequency entirely.
-
-**And the state carried too.** `tonePeak` is documented as *held and decaying* —
-so a peak measured on the first station was still decaying into readings taken
-where there was no station at all. **The tracker arrived at each new frequency
-holding a memory of the last one**, which is part of why the pitch wandered 550 →
-575 (bank centre) → 800 (loudest bin), two of those three labelled NOT MEASURED.
-
-**The operator's instruction: when the frequency changes, clear and reset.**
+**That is `N4L` again.** Unit 036 recorded the mechanism: a right answer obtained
+the way the phantoms are obtained, certifying a mechanism that produces junk
+everywhere else. **It has now happened twice, on different captures, months
+apart.**
 
 ## Verify this instruction against the tree
 
 **Nothing here describes the tree.** Check every claim and report mismatches.
 Trust the tree over this order everywhere they differ.
 
-**This author has not seen unit 042's report.** State what landed in 042 —
-particularly whether a per-neighborhood settings mechanism exists, because **task
-7 inherits it if it does and must not build a second one.**
+**This author has not seen unit 043's report and does not know whether it ran.**
+**Task 1 must establish which refusals are present at the emit seam before task 2
+adds another**, because 043's task 2 changes that same seam. **If 043's refusal is
+absent, say so and build this one beside where it would go, not on top of it.**
 
 **Record the failing counts for both suites before task 2.** Unit 041 last
 reported engine 28 of 1916 byte-identical, app 509 of 509;
 `AConfirmedModeWriteFoldsTheDataVariantTooAsync` is a known intermittent.
 
-**Tonight's five captures should be in the tree** — `cw-2026-08-29-020541`,
-`-020616`, `-020707`, `-020809`, `-020938`, with sidecars and a
-`cases-2026-08-28.txt` roster. **Confirm; if any are missing, say which.**
+**Tonight's captures should be in the tree** — `cw-2026-08-29-030850`, `-030940`,
+`-031024`, and the five from 02:05–02:10. **Confirm; if any are missing, say
+which.**
 
 ## Rulings in force
 
@@ -117,31 +108,37 @@ reported engine 28 of 1916 byte-identical, app 509 of 509;
 
 **Tim's rulings:**
 
-> **When the frequency changes, clear and reset.**
-
 > **Ship the refusal** (2026-08-27, unit 036): Hamlet stops printing letters from
 > a pitch the survey admitted no keying at, and `N4L` becomes blocks. **The
-> phantoms are the priority.** `N4L` returns as an anchor when admission can find
-> that station honestly.
+> phantoms are the priority.**
 >
-> **Rejected with it and not to be revisited:** the clock-withdrawn refusal,
-> measured dead; raising the gate, which fires correctly.
+> **Rejected with it and not to be revisited:** the clock-withdrawn refusal **as
+> unit 1.11.33 built it** — measured at 26, 38 and 25 characters off three good
+> captures, which was the good case paying for the bad; and raising the gate,
+> which fires correctly.
+
+**This unit revisits that rejection and the order says so plainly.** What Tim
+rejected was a refusal that cost 89 characters across three good captures. **The
+evidence now available did not exist then**: a capture where the withdrawn clock
+costs **141 characters of pure garbage carrying one unsure mark**, beside a
+capture fifty seconds later where the clock is locked and the same station reads
+cleanly. **Task 2 measures the cost again against tonight's corpus. If it is still
+the good case paying for the bad, the task reports that and ships nothing.**
+
+> **When the frequency changes, clear and reset.**
 
 > **Hamlet sets whatever the radio needs for the mode. The operator does not touch
-> the radio.** Tuning changes only what would stop him hearing the block, leaves
-> everything else alone, and says in plain words what it changed and why. **Once
-> per tune-in, then hands off.**
+> the radio.**
 
 **Standing rulings this unit is bound by:**
 
-- **§0.0 / HM-DEC-009** — never present a guess as a decode. **Fault 1 is this
-  rule broken; fault 2 is its cost when the same organ overcorrects.**
-- **HM-DEC-120** — nothing is emitted on audio holding no signal, and no letters
-  from a pitch nobody judged to be a station. **Tightened only, never loosened.**
+- **§0.0 / HM-DEC-009** — never present a guess as a decode.
+- **HM-DEC-120** — nothing emitted on audio holding no signal, and no letters from
+  a pitch nobody judged to be a station. **Tightened only, never loosened.**
 - **§0.0.1** — the app's record must distinguish a fault in the signal, the radio,
-  or Hamlet. **Tonight it did, in every sidecar. Do not weaken it.**
+  or Hamlet. **Every fault in this unit was found in a sidecar. Do not weaken
+  it.**
 - **HM-DEC-007** — decoders tested against WAV fixtures.
-- **HM-DEC-050 / §0.5** — no rig-control panel.
 - **§0.2 / HM-DEC-008** — **no transmit work of any kind.**
 
 ## Status cadence
@@ -152,154 +149,143 @@ inside the task. Same every ten minutes while a task runs.
 
 ## The tasks
 
-### Task 1 — reproduce all four faults before changing anything
+### Task 1 — the emit seam as it stands, and the three faults reproduced
 
 **Run both suites whole and record the numbers first.**
 
-Then reproduce, **on tonight's captures, in tests**, and **report the numbers
-before task 2 changes a line** (§0.4):
+**Establish what refusals exist at the emit seam right now** — unit 036's, unit
+043's if it ran, and any other. **Name them with file and line.** Task 2 adds to
+that list and must not duplicate or contradict it.
 
-- **Fault 1:** `-020809` and `-020938` emit letters with nothing admitted. Assert
-  the character counts — this order believes 237 and 300 for the session, 65 and
-  63 within those files. **Correct the figures from the tree.**
-- **Fault 2:** `-020938` holds a keyed carrier at 802.7 Hz, 21 dB over the floor.
-  **Assert that admission currently refuses it**, and report **why, with file and
-  line** — which test in the admission path it fails, and by how much.
-- **Fault 3:** the sweep's reported pitch against the measured one on that file.
-- **Fault 4:** state carried across a frequency change — name every field that
-  survives a dial move, with file and line.
+Then reproduce, **on tonight's three captures, in tests**, and report before task
+2 changes a line (§0.4):
 
-**Say what you find rather than confirming this list.** If a fault does not
-reproduce, that is a finding and the task that depends on it is reported rather
-than guessed at.
+- **`-030940` emits 141 characters with 1 unsure while `decoderWpm` is withdrawn.**
+  Confirm the counts from the tree.
+- **`-030940` scores 8224.4 and `-031024` scores 11.1.** Confirm both.
+- **`-030850` reads correctly from 850 Hz.** Confirm, and **confirm from the audio
+  that 850 Hz holds nothing** — this order measures the station at 398.4 Hz at
+  +35 dB and 850 Hz at −4.4 dB relative to the band floor. **Correct those figures
+  from your own measurement.**
+- **Why was the clock withdrawn** on `-030850` and `-030940` and not on
+  `-031024`? Name the condition, with file and line. **Measure only.**
 
-### Task 2 — no pitch admitted, no letters
+### Task 2 — no clock, no letters
 
-**Extend unit 036's refusal to cover the case where nothing was admitted at all.**
+**A decoder that does not know the sender's speed cannot resolve a dit from a dah.
+While the speed clock is withdrawn, characters are blocks.**
 
-- **A pitch that came from the bank centre, or from the loudest bin, or from any
-  fallback, is not a station.** Letters must not be emitted from it.
-- **Blocks rather than deletions**, as 036 ruled, so no character position is
+- **Blocks rather than deletions**, as unit 036 ruled, so no character position is
   lost and only the assertion goes.
-- **The sidecar's `unkeyed YES` already detects this exactly.** It is the same
-  condition; wire the emit path to it rather than inventing a second test.
+- **Wire it to the decoder's own existing withdrawal condition** — the one that
+  already prints `decoderWpm withdrawn` in the sidecar. **Do not invent a second
+  test for the same state.**
+- **This is not unit 1.11.33's refusal.** That one was measured at 26, 38 and 25
+  characters off three good captures and Tim rejected it on that measurement.
+  **Measure this one the same way and report the same table** before declaring the
+  task done.
 
-**Report the cost per test before declaring the task done**, not after: name every
-test that goes red and what it loses. **If the cost is materially larger than unit
-036's five tests, stop and report rather than shipping.**
+**Report the cost per capture before declaring the task done, not after.** Name
+every test that goes red and every capture that loses text.
 
-**Acceptance:** `-020809` and `-020938` emit **no letters at all**. Every capture
-where a station was genuinely admitted keeps what it reads — the three captures
-of the ragchew are the floor and **must not lose more than they read tonight.**
+**Acceptance:**
+- `-030940` emits **no letters at all**.
+- **`-031024` loses nothing** — it reads `BEEN OBSERVING MODERATE DASH SIZED
+  FLARES SINCE AUGUOT I24` with the clock locked at 24 WPM, and that is the whole
+  point of the refusal being conditional.
+- **The three ragchew captures of 02:05–02:07 lose no more than unit 036 measured**
+  — 2, 2 and 7 blocks on the good captures it named.
+- **If the cost across the corpus is materially larger than unit 036's, stop and
+  report rather than shipping.** That is the same bar Tim applied last time and it
+  applies here.
 
-### Task 3 — why admission refused a 21 dB station
+### Task 3 — the confidence figure is inverted
 
-**Measure and report. Do not change admission in this task.**
+**Measure and report with file and line. Change nothing.**
 
-On `-020938`, and across every capture in the corpus:
+The garbage scored **8224.4 better than silence per hop**; the clean read scored
+**11.1**. `spanLlr` entries in `-030940` reach the hundreds of thousands, and
+`-030850`'s tail carries `T:504898.5/7518.5` and `■:-299310.6/99805.6`.
 
-- What admission requires, and **which requirement the 802.7 Hz carrier failed**,
-  with the measured value beside the threshold.
-- **How often, across the corpus, a carrier standing more than 15 dB over the band
-  floor and keyed between 20% and 70% of the time is refused.** That number is the
-  size of fault 2.
-- Whether the refusal is the gate, the keying test, the duty test, or the tracker
-  never offering the candidate at all.
+- **What is this figure actually computing**, expression by expression, and **which
+  term grows when the envelope is chopped into single dits?**
+- **Across every capture in the corpus: report the fit figure beside the fraction
+  of emitted characters that are `E`, `I`, `T` or `S`.** If the correlation is
+  positive, the metric rewards fragmentation and **that is the size of the
+  problem.**
+- Is this the same root as the open asks about `013347` returning 17.2 million and
+  `001520`'s quadrillions? **Say yes or no with the reason.**
 
 **This is the measurement the next unit is built from. Change nothing.**
 
-### Task 4 — the sweep's grid
+### Task 4 — the second `N4L`
 
-The independent sweep steps 400 to 1200 Hz in 25 Hz increments and reported 825 Hz
-for a station at 802.7 Hz.
+`-030850` read a bulletin correctly from a pitch holding nothing.
 
-- **Interpolate between bins**, the way `toneHz` already does when a pitch is
-  measured, or narrow the step. **State which and why.**
-- **The sweep must stay independent of the decoder** — that independence is its
-  whole value, and it is what caught the tracker's 750–775 Hz hold on four
-  captures. **Do not couple it to the tracker to fix its resolution.**
+- **Confirm from the audio** and **report why the survey admitted keying at 850
+  Hz** when the station is at 398.4 Hz — 450 Hz away, and outside the 500 Hz
+  filter's likely passband centred on a 600 Hz pitch.
+- **Record it as an anchor obtained the way the phantoms are obtained**, in the
+  form unit 036 used for `N4L`: re-expressed with its reason in the test itself,
+  returning as a reading anchor when the station is found honestly.
+- **Do not delete the read.** Its text is correct and it is ground truth.
 
-**Acceptance:** on `-020938` the sweep reports a pitch within 5 Hz of 802.7, and
-the CW captures where the sweep was already right do not move.
+### Task 5 — the bulletin as ground truth
 
-### Task 5 — a frequency change clears and resets
+**The W1AW propagation bulletin of 2026-08-27 by F. K. Janda, OK1HH, is published
+verbatim.** These captures are the first in this corpus with an external answer
+key.
 
-**When the dial moves, the decoder starts fresh.**
-
-- **Reset:** the tracked pitch, the held-and-decaying `tonePeak`, the speed
-  hypothesis, the element and character counters, and anything else task 1 found
-  surviving a dial move. **The decoder's state after a frequency change is the
-  state it has when it first begins listening.**
-- **The transcript is not erased.** The operator may still be reading it. **Mark a
-  visible break** carrying the new frequency, so text from the old station stays
-  readable and nothing new can be confused with it. A `Clear` button already
-  exists and is his to use.
-- **A small nudge is not a move.** Fine-tuning a station by a few hundred hertz
-  must not reset anything — clearing on every dial click would be unusable.
-
-**Raise, do not decide, in HM-DEC-010's options-table form:**
-- **The threshold** at which a dial change counts as a move. Cost at least three
-  candidates against tonight's captures, where the moves were 8.8 kHz and 13.0
-  kHz and the CW filter is 500 Hz wide.
-- **What the break looks like** in the terminal. **The wording is Tim's** (§12.1):
-  put the exact proposed text in the report for approval rather than treating it
-  as settled.
+- **Record what the three captures read**, and mark which fragments are confirmed
+  against the bulletin's published wording and which are not. **If the bulletin
+  text is not in the tree and cannot be obtained from it, say so and record the
+  fragments as read rather than as verified** (§0.0).
+- Known reads to preserve: `AUGUST 27, 2026, BY F. K. JANDA, OK1HH`,
+  `MORE OR LESS IN LINE WITH EXPECTATIONS`, `BEEN OBSERVING MODERATE DASH SIZED
+  FLARES SINCE AUGUOT I24`.
+- **`DASH` is the sender's `M` read as the word.** Record it as a known
+  substitution, not as a correct read.
 
 ### Task 6 — regression fixtures from tonight
 
-Tonight's five captures become fixtures with their measured truth recorded:
+The three captures become fixtures with their measured truth:
 
-- `-020541`, `-020616`, `-020707` — **a real ragchew, correctly admitted.**
-  Fragments read correctly tonight and not to be lost: `HIGHER IN BAND`,
-  `AGE HR 85`, `FB JIM U GO BACK`, and `<BT>` in its right places. **These are the
-  floor.**
-- `-020809` — **nothing there. The floor is zero letters.**
-- `-020938` — **a station at 802.7 Hz that admission refused**, and text that
-  independently decodes to something containing `ST LOUIS`. **Its floor is zero
-  letters until task 3's finding is acted on**, and it carries a note saying it
-  becomes a reading anchor when admission finds that station honestly — the same
-  form unit 036 used for `N4L`.
+- **`-030850`** — clean text from a pitch holding nothing. **Anchor retired per
+  task 4.**
+- **`-030940`** — **floor is zero letters.** Carries the fit figure 8224.4 as the
+  recorded evidence of task 3's fault.
+- **`-031024`** — **floor is what it reads tonight.** This is the capture that
+  proves the task 2 refusal is conditional rather than blanket, and **it must never
+  regress.**
 
-**Record the callsigns as read and as uncertain**: `K8GPH` and `K8MPH` are the
-same station read two ways, and `WS3EAA` is probably `W3EAA`. **Do not assert
-which is right.**
+### Task 7 — the withdrawal itself *(the drop candidate)*
 
-### Task 7 — CW's receive conditions *(the drop candidate)*
+**Measure only. Change nothing.**
 
-**Only if unit 042 landed a per-neighborhood settings mechanism. If it did not,
-skip this task, say so, and do not build a second mechanism.**
+Task 1 names the condition that withdraws the clock. This task asks whether it is
+the right condition:
 
-All evening the attenuator sat at **20 dB** with the preamp off while the station
-faded S4 → S1 → S0, and `CwPitch` read **600 Hz** while the stations measured at
-**542 Hz** and **802.7 Hz**.
-
-- **CW's neighborhood rows state what CW needs**, with the reason as text beside
-  each value, the same shape 042 used for FT8.
-- **The attenuator comes off unless the front end is actually overloading** —
-  which Hamlet already reads. Twenty decibels thrown away on a fading signal is
-  the same class of defect as a scope span that renders the block seven pixels
-  wide.
-- **Read first, write only what would get in the way, read back, and say what
-  changed and why** — 042's rule, inherited, not reinvented.
-- **The operator's hand wins**, and once per tune-in then hands off.
-
-**Raise, do not decide:** whether `CwPitch` should follow the measured tone of an
-admitted station. It would centre the filter on the station, **and it changes what
-the operator hears**, which is a different kind of write from the others.
+- **Across the corpus, how often does the clock withdraw, and on which captures?**
+- On `-030850` and `-030940` the best hypotheses were 22 and 28 WPM; `-031024`
+  settled at 24. **Was the true speed ever outside the search range**, or did the
+  search simply fail to settle?
+- The previous session's `-020809` pinned at **40 WPM, the top of the search**, and
+  `-030850`'s sweep pinned at **400 Hz, the bottom of its range.** **Report every
+  place in the corpus where an estimator lands on the edge of its own search
+  space**, since an estimator at its boundary is reporting failure, not a value.
 
 **Dropped whole if time runs out, and the report says so.**
 
 ## Parked — do not touch, do not raise
 
 **The whole digital stream** — the FT8 decoder, the slot cutter, the sync search,
-the digital waterfall, the digital capture press. **It is night and FT8 is a
-daytime mode.**
+the digital waterfall, the digital capture press.
 
 Also: the joint decoder; the constrained margin; the meter's rebuild; the
 integrator width; the whole-file second pass; the scanner and the calling cycle;
-`CHANGELOG.md`; the missing `DECISIONS.md` records including HM-DEC-086's
-supersession; the phrasebook and the recent-places row; the Twin PBT, which needs
-a manual page not on the machine.
+`CHANGELOG.md`; the missing `DECISIONS.md` records; the phrasebook and the
+recent-places row; the Twin PBT; **the receive-conditions work** — the attenuator
+and `CwPitch` belong to unit 043's task 7 and are not this unit's.
 
 **Both halves are required: do not touch them, and do not raise them.**
 
@@ -310,14 +296,16 @@ A parked item that genuinely blocks a task is raised once, and says it was parke
 Standing prohibitions are `CLAUDE.md`'s and are not retyped. Unit-specific:
 
 - **No transmit. Nothing keys the radio.**
-- **Do not change admission in task 3.** Measure only. The next unit is built from
-  that measurement.
-- **Do not loosen the silence property.** This unit only tightens it.
-- **Do not delete an anchor.** Re-express it with its reason, as unit 036 ruled.
-- **Do not let the three ragchew captures lose what they read tonight.**
-- **Do not couple the independent sweep to the tracker.**
-- **Do not erase the transcript on a frequency change.** Mark a break.
-- **Do not build a second settings mechanism** if 042 landed one.
+- **Do not change the fit figure in task 3.** Measure only.
+- **Do not change admission or the tracker.** This unit is the emit seam and the
+  measurements.
+- **Do not loosen the silence property.** Only tighten.
+- **Do not let `-031024` lose a character.** A blanket refusal that also blocks the
+  clean read has failed, and shipping it would repeat exactly the trade Tim
+  rejected in unit 1.11.33.
+- **Do not delete an anchor.** Re-express it with its reason.
+- **Do not assert the bulletin's wording from memory.** If the published text is
+  not obtainable from the tree, the fragments are recorded as read, not verified.
 - **Do not mint a decision id.**
 
 ## Committing, pushing, reporting
@@ -328,13 +316,13 @@ push is reported as refused, with the reason.
 Report per `CLAUDE_CODE.md` §8 to `output.md` at the repository root, overwritten
 and printed. **Read the file's own section count and follow it.**
 
-**The section that says what the owner should expect leads with this: on a
-frequency where nothing is happening the terminal now shows blocks and no letters
-at all, and moving the dial starts the decoder fresh rather than carrying the last
-station's pitch and text along with it.**
+**The section that says what the owner should expect leads with this: when Hamlet
+does not know how fast the sender is going, it now shows blocks instead of
+letters — and the capture where it knew the speed still reads the bulletin.**
 
-**The section that reports measurements leads with task 3's number** — how often
-across the corpus a strong, keyed carrier is refused admission. **That is the size
-of what is still wrong.**
+**The section that reports measurements leads with task 3's finding** — what the
+confidence figure is actually computing, and whether it rewards chopping a signal
+into single dits. **That is the fault that makes every other number in the sheet
+untrustworthy.**
 
 **If you finish every task, stop and report. Do not start the next unit.**
