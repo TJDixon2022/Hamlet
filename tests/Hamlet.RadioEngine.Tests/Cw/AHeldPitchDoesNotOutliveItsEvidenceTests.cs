@@ -164,13 +164,27 @@ public sealed class AHeldPitchDoesNotOutliveItsEvidenceTests
     }
 
     /// <remarks>
-    /// Proves the release does not reset the decoder. The speed the tracker has
-    /// learned is a fact about the operator's ear and his habits rather than
+    /// <para>**THIS TEST ASSERTED THE OPPOSITE UNTIL 2026-08-29 AND THE REASON
+    /// IS KEPT RATHER THAN DELETED**, because it is a real argument and the next
+    /// session should not have to rediscover it. It read: *the speed the tracker
+    /// has learned is a fact about the operator's ear and his habits rather than
     /// about a frequency, and throwing it away on every band change would make
-    /// the first characters after a QSY worse rather than better.
+    /// the first characters after a QSY worse rather than better.*</para>
+    /// <para>**TIM'S RULING OF 2026-08-29 REVERSES IT AND NAMES THE SPEED
+    /// HYPOTHESIS EXPLICITLY**: when the frequency changes, clear and reset —
+    /// the tracked pitch, the held peak, the speed hypothesis, the counters, and
+    /// the decoder's state after a frequency change is the state it has when it
+    /// first begins listening.</para>
+    /// <para>**WHAT MAKES THE OLD ARGUMENT SURVIVABLE IS THAT A NUDGE IS NO
+    /// LONGER A MOVE.** The old behaviour was protecting against a reset that
+    /// fired on every dial click, including a ten-hertz one; the frequency has to
+    /// change by the CW filter's own width before anything is thrown away now.
+    /// So the speed is kept exactly where the old reasoning wanted it kept — on
+    /// the station being tuned — and released where the ruling wants it released,
+    /// on a genuine move to somewhere else.</para>
     /// </remarks>
     [Fact]
-    public void TheReleaseDoesNotThrowAwayWhatIsNotAboutTheFrequency()
+    public void TheReleaseStartsTheReadingFresh()
     {
         var (decoder, _) = Listening();
 
@@ -182,6 +196,7 @@ public sealed class AHeldPitchDoesNotOutliveItsEvidenceTests
 
         _output.WriteLine($"{before:0.0} WPM before the QSY, {after:0.0} after");
 
-        Assert.Equal(before, after);
+        Assert.NotEqual(before, after);
+        Assert.Equal(0, after);
     }
 }

@@ -1,4 +1,4 @@
-﻿{
+{
   "schema": "hamlet.receiver-conditions/1",
   "retrievedUtc": "2026-08-28",
   "_about": [
@@ -36,6 +36,48 @@
     "(CLAUDE.md 0.0, 12.4)."
   ],
   "modes": [
+    {
+      "mode": "CW",
+      "conditions": [
+        {
+          "control": "attenuator",
+          "says": "it throws away twenty decibels the signal needed",
+          "field": "attenuator",
+          "wanted": 0,
+          "wantedText": "off",
+          "confirmed": true,
+          "because": "The attenuator is there for the evening when a nearby transmitter is overloading the front end, and on a quiet band it is twenty decibels thrown away on a signal that did not have them to spare. On the evening of 2026-08-29 it sat at 20 dB with the preamp off while the station being worked faded from S4 to S1 to nothing. Hamlet reads whether the front end is actually overloading, so this is a setting nobody has to guess about."
+        },
+        {
+          "control": "preamp",
+          "says": "a weak signal on a quiet band needs the gain",
+          "field": "preamp",
+          "wanted": 1,
+          "wantedText": "preamp 1",
+          "confirmed": true,
+          "because": "On the higher bands and on a quiet night the noise arriving at the antenna is smaller than the noise the receiver makes itself, and the preamplifier is what lifts the signal clear of it. It is the first thing to turn off again if the band gets loud, because gain applied to a strong signal buys nothing and costs headroom."
+        },
+        {
+          "control": "noise blanker",
+          "says": "it chops holes in keying instead of in the noise",
+          "field": "noiseBlanker",
+          "wanted": 0,
+          "wantedText": "off",
+          "confirmed": true,
+          "because": "The noise blanker listens for the sharp crack of an ignition or an electric fence and mutes the receiver for a fraction of a millisecond each time. A Morse dit at twenty words a minute is about sixty milliseconds of steady tone, and its leading edge looks enough like a crack that the blanker takes bites out of the elements it is supposed to be protecting."
+        },
+        {
+          "control": "AGC",
+          "says": "fast gain pumps on the gaps between elements",
+          "field": "agc",
+          "wanted": 3,
+          "wantedText": "slow",
+          "confirmed": false,
+          "confirm": "Tim, against his own ear on a fading signal",
+          "because": "Automatic gain control follows the signal up and down, and Morse is a signal that stops several times a second. On fast the receiver winds its gain up in every gap between elements and back down on every mark, which lifts the noise into the spaces the decoder measures. Slow, which is 3 in the radio's own encoding where 1 is fast, rides over the gaps and follows the fade instead. It is stated unconfirmed because which setting reads better on a deep fade is a question about this receiver and this operator, and nobody has measured it here."
+        }
+      ]
+    },
     {
       "mode": "FT8",
       "conditions": [
@@ -97,6 +139,14 @@
     {
       "topic": "CW",
       "reason": "What Morse wants of the receive side is a narrower window, not a wider one, and Hamlet already leaves the filter alone where a block states no passband requirement. Nothing else about CW has been measured here, so its rows state nothing rather than acquiring a set of settings this unit did not test."
+    },
+    {
+      "topic": "The attenuator's condition",
+      "reason": "The attenuator should come off unless the front end is actually overloading, and Hamlet reads that flag four times a second. This file states one wanted value per control, so what is stated here is the quiet band's answer. Making the value conditional on a live reading is a change to the mechanism unit 042 built rather than a row in this file, and it is raised in unit 043's report rather than taken."
+    },
+    {
+      "topic": "The CW pitch",
+      "reason": "CwPitch read 600 Hz on 2026-08-29 while the stations measured at 542 Hz and 802.7 Hz, so the filter was not centred on either. Whether Hamlet should follow the measured tone of an admitted station is not stated here, because it changes what the operator hears rather than only what the decoder sees, and that is a different kind of write. Raised in unit 043's report."
     }
   ]
 }

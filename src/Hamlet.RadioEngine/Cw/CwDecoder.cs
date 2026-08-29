@@ -382,6 +382,37 @@ public sealed class CwDecoder
         _rankedAtSample = long.MinValue;
         _belowGateSince = long.MinValue;
 
+        // **AND THE READING ITSELF, WHICH USED TO SURVIVE THE MOVE.** Clearing
+        // the pitch and leaving the twelve-second window full of the last
+        // station's audio leaves the decoder fitting a speed to one frequency
+        // and demodulating another. The speed hypothesis, the settled mark and
+        // the envelope all live in the stream, so restarting it is what makes
+        // "the state it has when it first begins listening" true rather than
+        // nearly true (Tim's ruling of 2026-08-29).
+        _probabilistic.Restart();
+
+        // **THE COUNTERS ARE ABOUT A FREQUENCY TOO.** A sidecar written after a
+        // QSY reported elements and characters accumulated somewhere else, which
+        // is the same defect as the held peak and was missed with it: the sheet
+        // said what Hamlet had done that evening while every other field on it
+        // described this frequency (§0.0.1).
+        _charactersEmitted = 0;
+        _charactersUnsure = 0;
+        _elementsResolved = 0;
+
+        // What the tracker had concluded about following a station is a fact
+        // about the station it was following.
+        _toneLatched = false;
+        _hasFollowed = false;
+        _lastFollows = 0;
+        _lastPitchHz = double.NaN;
+        _reReadAt = double.NaN;
+        _lastMeasuredForReRead = double.NaN;
+
+        Array.Clear(_snrHistory);
+        _snrWrite = 0;
+        _snrFilled = 0;
+
         _tracker.Forget();
     }
 
