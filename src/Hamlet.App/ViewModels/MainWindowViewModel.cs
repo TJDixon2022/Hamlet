@@ -62,8 +62,20 @@ public partial class MainWindowViewModel : ObservableObject
     /// </remarks>
     private static readonly TimeSpan ModeSettleDelay = TimeSpan.FromMilliseconds(600);
 
+    /// <summary>How often the dial is looked at to see whether it has stopped.</summary>
+    /// <remarks>
+    /// **THE CONDITION IS AN UNCHANGED FREQUENCY ACROSS CONSECUTIVE LOOKS**
+    /// (work instruction 050, task 4), so there has to be a look even while
+    /// nothing is happening. The frequency raises a change notification only when
+    /// it changes, and a dial standing still raises none at all — a settle that
+    /// listened to changes alone could never observe stillness. Four times a
+    /// second is the rig poll's own cadence (HM-DEC-050).
+    /// </remarks>
+    private static readonly TimeSpan DwellLook = TimeSpan.FromMilliseconds(250);
+
     private readonly DispatcherTimer _rigSendTimer;
     private readonly DispatcherTimer _modeSettleTimer;
+    private readonly DispatcherTimer _dwellTimer;
 
     /// <summary>What Hamlet last set on the receive side (work instruction 042).</summary>
     private ReceiverSetupMemory _receiverMemory = ReceiverSetupMemory.Empty;
@@ -182,6 +194,9 @@ public partial class MainWindowViewModel : ObservableObject
     private bool _updatingFromRig;
     private bool _rigSendPending;
     private ModeFollowState _modeFollow = ModeFollowState.Armed(false);
+
+    /// <summary>Whether the dial has come to rest where it is (work instruction 050).</summary>
+    private ModeDwell _modeDwell = ModeDwell.Nowhere;
     private bool _settingModeOurselves;
     private CivMode? _lastKnownMode;
     private bool _windowVisible = true;
@@ -2149,6 +2164,12 @@ public partial class MainWindowViewModel : ObservableObject
         _modeSettleTimer = new DispatcherTimer(
             ModeSettleDelay, DispatcherPriority.Background, OnModeSettleTick);
         _modeSettleTimer.Stop();
+
+        // **THIS ONE RUNS WHETHER OR NOT ANYTHING IS HAPPENING**, because
+        // stillness is what it is looking for and stillness raises no events.
+        _dwellTimer = new DispatcherTimer(
+            DwellLook, DispatcherPriority.Background, OnDwellLook);
+        _dwellTimer.Start();
 
         _spotRefreshTimer = new DispatcherTimer(
             TimeSpan.FromMinutes(AppSettings.DefaultSpotRefreshMinutes),
@@ -5710,6 +5731,47 @@ public partial class MainWindowViewModel : ObservableObject
     }
 
     /// <summary>
+    /// Look at the dial, and follow the map where it has come to rest inside a
+    /// block that was waiting for exactly that.
+    /// </summary>
+    /// <remarks>
+    /// <para>**A DWELL MATURES ONCE AND THEN STOPS BEING NEWS** (work instruction
+    /// 050, task 4). Without that, a dial nobody is touching would report a
+    /// mature dwell four times a second and the write would go out on every one
+    /// of them.</para>
+    /// <para>Never-throw discipline (§8): this runs on a timer nobody is
+    /// awaiting, so an exception here would take the process down with no
+    /// operator action behind it.</para>
+    /// </remarks>
+    private async void OnDwellLook(object? sender, EventArgs e)
+    {
+        try
+        {
+            var atHz = FrequencyHz;
+            var here = Neighborhoods.FirstOrDefault(n => n.Contains(atHz));
+
+            // **SUPPRESSED ENTIRELY WHILE THE SCANNER RUNS.** A scan moves the
+            // dial on its own, so every block it crosses would look like an
+            // arrival, and §0.2.1 already has the scanner putting the dial back
+            // where it found it rather than leaving the radio somewhere it
+            // reconfigured on the way past.
+            var (next, matured) = _modeDwell.Observe(
+                here?.Name ?? "", atHz, DateTime.UtcNow, Scan.IsScanning);
+
+            _modeDwell = next;
+
+            if (matured && ModeFollowPlan.WaitsForDwell(ModeFollowPlan.TargetFor(here)))
+            {
+                await FollowTheMapAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            StatusText = $"Hamlet could not check the dial: {ex.Message}";
+        }
+    }
+
+    /// <summary>
     /// Set the radio to the mode this stretch of band is worked in.
     /// </summary>
     /// <remarks>
@@ -5745,13 +5807,34 @@ public partial class MainWindowViewModel : ObservableObject
         // not having been asked since, and one read after it is the radio
         // answering. Those are the snap-back and the operator's hand on the
         // knob, and by value alone they are the same picture.
+        var target = ModeFollowPlan.TargetFor(here);
+
         var decision = ModeFollowPlan.Decide(
             _modeFollow, RigState.Mode, RigState.DataVariant,
-            ModeFollowPlan.TargetFor(here), atHz, workingCw,
+            target, atHz, workingCw,
             RigState[RigField.Mode].AtUtc,
             RigState[RigField.DataMode].AtUtc);
 
-        if (!decision.Write)
+        // **DATA TERRITORY WAITS FOR THE DIAL TO COME TO REST** (work
+        // instruction 050, tasks 4 and 5). The settle timer above debounces one
+        // gesture; this asks the separate question of whether the gesture has
+        // finished. Crossing a three-kilohertz digital block on the way from
+        // Morse to voice takes longer than a second at a slow tune, and a write
+        // made in passing leaves the radio in a mode whose symptom is silence.
+        //
+        // **LEAVING BEFORE MATURITY DISCARDS SILENTLY.** A write that did not
+        // happen is not narrated; HM-DEC-056 narrates the ones that do, and a
+        // commentary on the ones that nearly did is noise on the one line the
+        // operator reads.
+        //
+        // The receive side still runs below, because hearing the block is not
+        // the same act as being in its mode.
+        var waiting = ModeFollowPlan.WaitsForDwell(target)
+                      && !(_modeDwell.Spent
+                           && _modeDwell.Block == (here?.Name ?? "")
+                           && _modeDwell.FrequencyHz == atHz);
+
+        if (!decision.Write || waiting)
         {
             // **THE MODE BEING RIGHT ALREADY IS NOT THE WHOLE OF ARRIVING**
             // (work instruction 042, task 3). He can be in USB-D on an FT8 block

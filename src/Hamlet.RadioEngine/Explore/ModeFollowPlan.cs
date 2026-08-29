@@ -197,6 +197,31 @@ public static class ModeFollowPlan
         return null;
     }
 
+    /// <summary>
+    /// Whether this target's write additionally waits for the dial to come to
+    /// rest.
+    /// </summary>
+    /// <param name="target">What the map calls for, or null.</param>
+    /// <returns>True where a matured dwell is required before writing.</returns>
+    /// <remarks>
+    /// <para>**DATA TERRITORY WAITS AND THE REST DOES NOT** (work instruction
+    /// 050, task 5). The operator crosses a data block every time he tunes from
+    /// Morse up to voice, and the blocks are three kilohertz wide: a slow tune
+    /// sits inside one for longer than a second while still moving. Writing on
+    /// entry would put the radio into USB-D on the way past somewhere he is not
+    /// going.</para>
+    /// <para>**IT IS ASKED OF THE TARGET AND NOT OF THE DIAL**, because the
+    /// answer is a fact about the kind of block rather than about where the
+    /// operator happens to be. A voice or Morse block reached in passing costs
+    /// him a mode he can hear is wrong; a data block reached in passing costs him
+    /// a mode whose symptom is silence, which is the confusion HM-DEC-056 exists
+    /// to end.</para>
+    /// <para>The dwell itself is <see cref="ModeDwell"/>, which is pure over
+    /// elapsed time and reads no clock.</para>
+    /// </remarks>
+    public static bool WaitsForDwell(ModeTarget? target)
+        => target?.DataMode == true;
+
     /// <summary>Work out whether to change the radio's mode, and to what.</summary>
     /// <param name="state">Whether the automation is on and armed.</param>
     /// <param name="currentMode">The mode the radio is in, or null when unknown.</param>

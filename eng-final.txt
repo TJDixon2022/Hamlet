@@ -2758,3 +2758,19 @@ Actual:   List<string> ["cw-2026-08-18-004507", "cw-2026-08-18-003758", "cw-2026
   Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.TheBufferSizeChangesNothing(name: "unadjudicated/cw-2026-08-25-011552") [9 s]
   Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.TheBufferSizeChangesNothing(name: "unadjudicated/cw-2026-08-23-001831") [9 s]
   Passed Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.TheBufferSizeChangesNothing(name: "unadjudicated/cw-2026-08-25-021410") [8 s]
+The active test run was aborted. Reason: Test host process crashed
+
+Test Run Aborted.
+Total tests: Unknown
+     Passed: 1925
+     Failed: 28
+ Total time: 19.7028 Minutes
+       _VSTestConsole:
+         MSB4181: The "VSTestTask" task returned false but did not log an error.
+     1>Done Building Project "C:\Source\HamLet\tests\Hamlet.RadioEngine.Tests\Hamlet.RadioEngine.Tests.csproj" (VSTest target(s)) -- FAILED.
+
+Build FAILED.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:19:43.61
