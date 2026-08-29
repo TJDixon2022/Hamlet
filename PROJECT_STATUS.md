@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 3 of 8
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
-UPDATED: 2026-08-29T14:32:40-04:00
-NOTE: amended: tempering makes discrimination monotonically worse across four decades, and the model is most certain where it is wrong
+STATE: EXECUTING
+TASK: 4 of 6
+BALL: code
+NEXT_PASTE: none
+UPDATED: 2026-08-29T16:56:37-04:00
+NOTE: the double query does not reproduce; the reader already matches on command and sub, so tasks 2 and 3 do not open
 
 ---
 

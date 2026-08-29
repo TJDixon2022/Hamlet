@@ -83,6 +83,45 @@ internal sealed class ScriptedRadio : ISerialPort
     /// <summary>Sub-commands the radio will not answer, for the unread case.</summary>
     public HashSet<byte> Deaf { get; } = new();
 
+    /// <summary>
+    /// Whether the bus echoes the controller's own frames back, as "Link to
+    /// [REMOTE]" does by default (§4, p. 12-8).
+    /// </summary>
+    /// <remarks>
+    /// **THIS IS ONE OF THE TWO MECHANISMS A STALE READ WAS BLAMED ON.** A reader
+    /// that answers with the next frame off the wire would take its own outgoing
+    /// command as the reply.
+    /// </remarks>
+    public bool EchoOwnFramesBack { get; set; }
+
+    /// <summary>
+    /// Whether an unsolicited transceive frame arrives just before each reply.
+    /// </summary>
+    /// <remarks>
+    /// **THE OTHER MECHANISM.** Transceive broadcasts whenever the dial moves,
+    /// which is exactly when a scan is running.
+    /// </remarks>
+    public bool VolunteerTransceiveBeforeReplying { get; set; }
+
+    /// <summary>Whether the radio says nothing at all.</summary>
+    public bool AnswerNothing { get; set; }
+
+    /// <summary>Set the mode and its data variant together.</summary>
+    /// <param name="mode">The mode byte.</param>
+    /// <param name="dataMode">One for the data variant, nought for plain.</param>
+    /// <remarks>
+    /// Command `04` cannot tell USB from USB-D; `26` is the read that carries the
+    /// flag (HM-DEC-056), and this is what puts the two in a known state.
+    /// </remarks>
+    public void SetModeAndData(byte mode, int dataMode)
+    {
+        lock (_gate)
+        {
+            Mode = (CivMode)mode;
+            DataMode = dataMode != 0;
+        }
+    }
+
     /// <summary>The operator reaches over and works a receive-side control.</summary>
     /// <param name="sub">Which one, by its sub-command byte.</param>
     /// <param name="value">Where he leaves it.</param>
@@ -296,6 +335,31 @@ internal sealed class ScriptedRadio : ISerialPort
     }
 
     private void Reply(byte command, byte[] data)
-        => _incoming.Writer.TryWrite(
+    {
+        if (AnswerNothing)
+        {
+            return;
+        }
+
+        // **THE INTERFERENCE GOES IN FRONT OF THE ANSWER**, which is where it
+        // arrives on the real bus: the echo is the controller's own frame coming
+        // straight back, and a transceive report lands whenever the dial moves.
+        if (EchoOwnFramesBack)
+        {
+            _incoming.Writer.TryWrite(
+                new CivFrame(0x94, 0xE0, command, data).ToWireBytes());
+        }
+
+        if (VolunteerTransceiveBeforeReplying)
+        {
+            _incoming.Writer.TryWrite(
+                new CivFrame(
+                    CivConstants.BroadcastAddress, 0x94,
+                    CivConstants.CmdTransceiveMode,
+                    new byte[] { 0x03, 0x02 }).ToWireBytes());
+        }
+
+        _incoming.Writer.TryWrite(
             new CivFrame(0xE0, 0x94, command, data).ToWireBytes());
+    }
 }
