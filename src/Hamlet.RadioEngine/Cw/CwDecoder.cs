@@ -272,9 +272,18 @@ public sealed class CwDecoder
     /// that became part of a character. A pair of figures where the gap between
     /// them used to mean something now says the gap is nought, which is true.
     /// </remarks>
+    /// <remarks>
+    /// **`ToneHz` IS THE PITCH THE DECODE ACTUALLY USED AND NOT THE TRACKER'S**
+    /// (Tim's ruling of 2026-08-28). It used to be `_tracker.ToneHz` throughout,
+    /// which was the same number until the ranking started supplying the mixdown;
+    /// leaving it there would have the sheet, the duty line and the panel all
+    /// report one pitch while the letters on the screen were read at another.
+    /// **That is the `tonePeak` fault a third time** (HM-DEC-111): a figure that
+    /// is not about the thing beside it.
+    /// </remarks>
     public CwDecodeReport Report => new(
         Tap.Level,
-        _tracker.ToneHz,
+        MixdownToneHz,
         _lastSnrDb,
         HasTone: _toneLatched,
         _elementsResolved,
@@ -289,7 +298,10 @@ public sealed class CwDecoder
         PitchWasAsserted: _asserted,
         PitchChoice: _asserted
             ? CwPitchChoice.OperatorAssertion
-            : _tracker.PitchChoice);
+            : _ranked.Ranked && double.IsNaN(_lockedToneHz)
+                ? CwPitchChoice.Ranked
+                : _tracker.PitchChoice,
+        Rank: _ranked.Ranked && double.IsNaN(_lockedToneHz) ? _ranked : null);
 
     /// <summary>Everything inside the decision delay, handed over whole.</summary>
     /// <remarks>
@@ -361,6 +373,14 @@ public sealed class CwDecoder
         // about this frequency either, which is a claim nothing on the sheet
         // qualified.
         _lastSnrDb = double.NaN;
+
+        // **AND THE RANKING GOES WITH THEM, FOR THE SAME REASON AND NO OTHER.**
+        // A pitch chosen because it read best on the old frequency is not a
+        // finding about this one, and holding it would point the mixer at a
+        // number whose whole evidence is audio that no longer exists.
+        _ranked = CwPitchRank.None;
+        _rankedAtSample = long.MinValue;
+        _belowGateSince = long.MinValue;
 
         _tracker.Forget();
     }
@@ -738,6 +758,8 @@ public sealed class CwDecoder
             ReadHeldAudioAgain();
         }
 
+        MaybeRank(firstSampleIndex + samples.Length);
+
         // **THE OPERATOR'S LOCK FIRST, THEN THE LAST MEASURED PITCH, THEN THE
         // BANK.** The middle rung is new and it is what stops the mixdown
         // swinging back to a bank centre every time the survey's three seconds
@@ -750,11 +772,14 @@ public sealed class CwDecoder
         // it changes is only what happens when nothing is admitted at all, which
         // is task 3's scope: the answer is the last thing actually measured
         // rather than the middle of a bank.
-        _probabilistic.ToneHz = double.IsNaN(_lockedToneHz)
-            ? double.IsNaN(_lastMeasuredToneHz)
-                ? _tracker.ToneHz
-                : _lastMeasuredToneHz
-            : _lockedToneHz;
+        //
+        // **AND THE RANKING SITS BETWEEN THE LOCK AND THE LAST MEASURED PITCH**
+        // (Tim's ruling of 2026-08-28). The operator still wins: a pitch he
+        // supplied is evidence of keying from the one detector here that has
+        // never been wrong about it. Below him, a pitch chosen by decoding at
+        // every candidate and keeping the best beats one the survey happened to
+        // admit — measured at 34 of 44 captures against 1 (`CwPitchRanking`).
+        _probabilistic.ToneHz = MixdownToneHz;
         _probabilistic.Process(samples);
 
         // **ASKED AFTER THE DECODER HAS READ THIS AUDIO, NOT BEFORE.** The
@@ -914,6 +939,175 @@ public sealed class CwDecoder
     private double _reReadAt = double.NaN;
 
     private double _lastMeasuredForReRead = double.NaN;
+
+    /// <summary>What the ranking last chose, or <see cref="CwPitchRank.None"/>.</summary>
+    private CwPitchRank _ranked = CwPitchRank.None;
+
+    /// <summary>Where on the audio clock the ranking last ran.</summary>
+    private long _rankedAtSample = long.MinValue;
+
+    /// <summary>
+    /// Where on the audio clock the reading first fell below the gate, or
+    /// <see cref="long.MinValue"/> while it is above it.
+    /// </summary>
+    private long _belowGateSince = long.MinValue;
+
+    /// <summary>How many times the ranking has run.</summary>
+    /// <remarks>
+    /// **A PASS NOBODY COUNTS IS A PASS NOBODY CAN SAY RAN** (§0.0.1). The whole
+    /// claim of the ruling is that this happens once on tune-in rather than
+    /// continuously, and that is not checkable from outside without this.
+    /// </remarks>
+    public int Rankings { get; private set; }
+
+    /// <summary>What the ranking chose, and what it beat.</summary>
+    public CwPitchRank Ranked => _ranked;
+
+    /// <summary>Whether the ranking supplies the mixdown pitch.</summary>
+    /// <remarks>
+    /// <para>**OFF, AND THE MACHINERY STAYS** — `ClearOnAStationChange`'s
+    /// precedent, and for the same kind of reason. Unit 044 built the ranking to
+    /// drive the live decode and measured what that costs: **two adjudicated
+    /// anchors lose their callsigns.** `cw-2026-08-17-013347` falls from
+    /// `VA3VRR` to nothing, and `cw-2026-08-24-012403` from `DE KD0UN KD0UN K`
+    /// to `DE XD0UN KD0`. The unit's own acceptance requires all twelve anchors
+    /// green, so it does not go on by this session's hand.</para>
+    /// <para>**THE TWO FAILURES HAVE DIFFERENT CAUSES AND ONLY ONE IS ABOUT THE
+    /// RANKING BEING WRONG.** On `012403` the ranking picks the right bin, 450,
+    /// and the station sits at 440: the candidates are the tracker's coarse grid
+    /// and a ranked pitch is only ever a bin centre, while the survey
+    /// interpolates to the hertz. On `013347` the opening four seconds hold no
+    /// station, so every bin's floor is tiny, the common pedestal is tiny with
+    /// them, and the scale invariance the pedestal exists to remove comes
+    /// straight back: the winner scores **5,521,967** at 775 Hz. **A degenerate
+    /// pitch looks maximally healthy**, so the collapse test that would re-rank
+    /// it never fires.</para>
+    /// <para>**AND THE WINDOW'S POSITION MATTERS MORE THAN ITS LENGTH**, which
+    /// no measurement before this one separated. Ranking over the tail of a
+    /// recording picks the station on 34 of 44 captures at four seconds and 34
+    /// at twelve; ranking over the opening four seconds, which is what tune-in
+    /// actually sees, picks it on **27**.</para>
+    /// <para>It is a property rather than a constant so the before and the after
+    /// can be measured on one build (§0.0.1); the shape is
+    /// <see cref="UseJointCutter"/>'s.</para>
+    /// </remarks>
+    public bool RankThePitch { get; set; }
+
+    /// <summary>The pitch the mixer is actually being run at.</summary>
+    /// <remarks>
+    /// **THE OPERATOR'S LOCK, THEN THE RANKING, THEN THE LAST MEASURED PITCH,
+    /// THEN THE BANK.** One property rather than an expression at the call site,
+    /// because the sheet has to report the pitch the decode used and the two
+    /// drifting apart is the `tonePeak` fault a third time (HM-DEC-111).
+    /// </remarks>
+    private double MixdownToneHz
+        => !double.IsNaN(_lockedToneHz) ? _lockedToneHz
+            : _ranked.Ranked ? _ranked.ToneHz
+            : !double.IsNaN(_lastMeasuredToneHz) ? _lastMeasuredToneHz
+            : _tracker.ToneHz;
+
+    /// <summary>
+    /// How long the reading stays under the gate before the ranking runs again.
+    /// </summary>
+    /// <remarks>
+    /// <para>**RANKING RUNS ONCE ON TUNE-IN AND AGAIN IF THE WINNER'S SCORE
+    /// COLLAPSES** (Tim's ruling of 2026-08-28). It does not run continuously:
+    /// that matches how the lock already behaves, costs nothing while the
+    /// operator sits on a station, and still recovers when it lands wrong.</para>
+    /// <para>**SIX SECONDS, AND WHAT IT IS MEASURED AGAINST IS A SENDER'S OWN
+    /// GAPS.** A station pausing between overs takes the reading under the gate
+    /// for a second or two, and re-ranking on that would be re-ranking
+    /// continuously in all but name. Six seconds is longer than any gap inside a
+    /// message at any speed this decoder considers — a word gap at eight words a
+    /// minute is one second — so it is a station that has stopped rather than a
+    /// station that is breathing.</para>
+    /// </remarks>
+    private const double CollapseSeconds = 6.0;
+
+    /// <summary>
+    /// Rank the band, on tune-in and when the reading has collapsed.
+    /// </summary>
+    /// <param name="atSample">Where on the audio clock this hop ends.</param>
+    /// <remarks>
+    /// **IT DOES NOTHING AT ALL WHILE THE OPERATOR HOLDS THE PITCH.** A lock or
+    /// an assertion is his answer, and re-deriving one over the top of it would
+    /// make the sheet's account of who chose the number false (§0.0).
+    /// </remarks>
+    private void MaybeRank(long atSample)
+    {
+        if (!RankThePitch || !double.IsNaN(_lockedToneHz))
+        {
+            return;
+        }
+
+        var window = (int)(CwPitchRanking.WindowSeconds * SampleRate);
+
+        if (atSample < window)
+        {
+            // Less audio has arrived than the ranking reads. Nothing is chosen
+            // and the tracker keeps steering, which is what it did before.
+            return;
+        }
+
+        if (_ranked.Ranked && !HasCollapsed(atSample, window))
+        {
+            return;
+        }
+
+        var audio = Tap.Window(atSample - window, window);
+
+        if (audio is null)
+        {
+            return;
+        }
+
+        var ranked = CwPitchRanking.Rank(audio.Samples, audio.SampleRate);
+
+        if (!ranked.Ranked)
+        {
+            // Nothing could be ranked from this stretch. Keeping whatever was
+            // already in force is right: a refusal is not a finding that the
+            // previous answer was wrong.
+            return;
+        }
+
+        _ranked = ranked;
+        _rankedAtSample = atSample;
+        _belowGateSince = long.MinValue;
+        Rankings++;
+    }
+
+    /// <summary>Whether the reading has been under the gate long enough to re-rank.</summary>
+    /// <param name="atSample">Where on the audio clock this hop ends.</param>
+    /// <param name="window">How many samples the ranking reads.</param>
+    /// <returns>True where the winner's score has collapsed.</returns>
+    private bool HasCollapsed(long atSample, int window)
+    {
+        if (_probabilistic.Last.LikelihoodRatio >= CwProbabilisticDecoder.Gate)
+        {
+            _belowGateSince = long.MinValue;
+
+            return false;
+        }
+
+        if (_belowGateSince == long.MinValue)
+        {
+            _belowGateSince = atSample;
+
+            return false;
+        }
+
+        if (atSample - _belowGateSince < CollapseSeconds * SampleRate)
+        {
+            return false;
+        }
+
+        // **AND NEVER TWICE OVER THE SAME AUDIO.** A ranking that ran on this
+        // window already looked at exactly these samples and would reach exactly
+        // this answer again, so re-running before the window has turned over
+        // spends the whole sweep to learn nothing.
+        return atSample - _rankedAtSample >= window;
+    }
 
     private void OnSamples(in AudioChunk chunk) => Process(chunk);
 

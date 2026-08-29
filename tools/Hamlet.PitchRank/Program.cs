@@ -49,6 +49,23 @@ internal static class Program
 
                 return 0;
 
+            case "live":
+                Live(
+                    args.Length > 2 ? args[2] : null,
+                    ranking: args.Length > 1 && args[1] == "ranked");
+
+                return 0;
+
+            case "floor":
+                FloorSweep();
+
+                return 0;
+
+            case "window":
+                WindowSweep();
+
+                return 0;
+
             default:
                 Console.WriteLine("usage: pitch-rank cost | pitch-rank rank [capture]");
 
@@ -268,6 +285,181 @@ internal static class Program
         => scores.OrderBy(s => Math.Abs(s.Hz - hz)).First().Score;
 
     /// <summary>
+    /// What every candidate floor on the winner's score would cost and buy,
+    /// across the whole corpus.
+    /// </summary>
+    /// <remarks>
+    /// **THE SWEEP IS PUBLISHED RATHER THAN A NUMBER BEING PICKED.** Unit 1.11.33
+    /// found that no fixed threshold separates this corpus in the old units;
+    /// these are new units and that finding does not carry, but it is the reason
+    /// the whole table is reported instead of a chosen value with the working
+    /// hidden.
+    /// </remarks>
+    private static void FloorSweep()
+    {
+        var files = Directory
+            .GetFiles(CaptureFolder(), "*.wav", SearchOption.AllDirectories)
+            .OrderBy(f => Path.GetFileName(f), StringComparer.Ordinal)
+            .ToList();
+
+        var rows = new List<(string Name, double Score, int Chars, bool Anchor)>();
+
+        // The recordings somebody has ruled on or corroborated. A floor that
+        // silences one of these is not a floor, whatever it does to the phantoms.
+        // The twelve of `TheAdjudicatedReadingsKeepReadingTests`, plus the three
+        // captures of 2026-08-28 that hold the net unit 044's acceptance protects.
+        var anchors = new[]
+        {
+            "cw-2026-08-17-013347",
+            "cw-2026-08-17-134712",
+            "cw-2026-08-18-003758",
+            "cw-2026-08-18-004507",
+            "cw-2026-08-22-031838",
+            "cw-2026-08-22-031905",
+            "cw-2026-08-22-031948",
+            "cw-2026-08-22-032012",
+            "cw-2026-08-22-032050",
+            "cw-2026-08-22-032113",
+            "cw-2026-08-22-032129",
+            "cw-2026-08-24-012403",
+            "cw-2026-08-28-004844",
+            "cw-2026-08-28-004902",
+            "cw-2026-08-28-004915",
+        };
+
+        foreach (var file in files)
+        {
+            var name = Path.GetFileNameWithoutExtension(file);
+            var audio = WavAudio.Read(file);
+
+            var decoder = new CwDecoder(audio.SampleRate, 600);
+            var characters = 0;
+
+            decoder.CharacterSettled += c =>
+            {
+                if (!c.IsWordGap)
+                {
+                    characters++;
+                }
+            };
+
+            var hop = decoder.Tracker.HopSamples;
+
+            for (var at = 0L; at + hop <= audio.Samples.Length; at += hop)
+            {
+                decoder.Process(new AudioChunk(
+                    at, audio.SampleRate, audio.Samples.AsSpan((int)at, hop)));
+            }
+
+            decoder.Flush();
+
+            rows.Add((
+                name,
+                decoder.Ranked.Score,
+                characters,
+                anchors.Contains(name, StringComparer.Ordinal)));
+        }
+
+        Console.WriteLine("capture\trankScore\tchars\tanchor");
+
+        foreach (var row in rows.OrderBy(r => r.Score))
+        {
+            Console.WriteLine(string.Format(
+                CultureInfo.InvariantCulture,
+                "{0}\t{1:0.00}\t{2}\t{3}",
+                row.Name,
+                row.Score,
+                row.Chars,
+                row.Anchor ? "anchor" : ""));
+        }
+
+        Console.WriteLine();
+        Console.WriteLine("floor\tsilenced\tanchorsLost\tanchorsKept");
+
+        foreach (var floor in new[]
+        {
+            0.0, 0.25, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0, 5.5, 6.0, 7.0,
+            7.5, 8.0, 10.0, 12.0, 14.0,
+        })
+        {
+            var silenced = rows.Count(r => r.Score < floor && r.Chars > 0);
+            var lost = rows.Count(r => r.Anchor && r.Score < floor);
+
+            Console.WriteLine(string.Format(
+                CultureInfo.InvariantCulture,
+                "{0:0.00}\t{1}\t{2}\t{3}",
+                floor,
+                silenced,
+                lost,
+                rows.Count(r => r.Anchor) - lost));
+        }
+    }
+
+    /// <summary>
+    /// What every capture reads through the whole shipped decoder, with whatever
+    /// is in the tree right now.
+    /// </summary>
+    /// <param name="only">One capture to do, or null for all of them.</param>
+    /// <remarks>
+    /// **THIS IS THE ACCEPTANCE MEASUREMENT AND NOT A RANKING ONE.** The tables
+    /// above compare candidates offline; this runs `CwDecoder` over the file the
+    /// way the terminal does and prints what the operator would have seen, with
+    /// the ranked pitch, both scores, and how many times the ranking ran.
+    /// </remarks>
+    private static void Live(string? only, bool ranking = true)
+    {
+        var files = Directory
+            .GetFiles(CaptureFolder(), "*.wav", SearchOption.AllDirectories)
+            .Where(f => only is null
+                || Path.GetFileName(f).Contains(only, StringComparison.Ordinal))
+            .OrderBy(f => Path.GetFileName(f), StringComparer.Ordinal)
+            .ToList();
+
+        Console.WriteLine(
+            "capture\tsidecarHz\tusedHz\trankScore\trunnerUp\trankings\tchars\ttext");
+
+        foreach (var file in files)
+        {
+            var name = Path.GetFileNameWithoutExtension(file);
+            var audio = WavAudio.Read(file);
+
+            var decoder = new CwDecoder(audio.SampleRate, 600)
+            {
+                RankThePitch = ranking,
+            };
+
+            var text = new System.Text.StringBuilder();
+
+            decoder.CharacterSettled += c => text.Append(c.Text);
+
+            var hop = decoder.Tracker.HopSamples;
+
+            for (var at = 0L; at + hop <= audio.Samples.Length; at += hop)
+            {
+                decoder.Process(new AudioChunk(
+                    at, audio.SampleRate, audio.Samples.AsSpan((int)at, hop)));
+            }
+
+            decoder.Flush();
+
+            var report = decoder.Report;
+            var rank = decoder.Ranked;
+
+            Console.WriteLine(string.Format(
+                CultureInfo.InvariantCulture,
+                "{0}\t{1:0.0}\t{2:0.0}\t{3:0.00}\t{4:0.00}\t{5}\t{6}\t{7}",
+                name,
+                SidecarToneHz(file),
+                report.ToneHz,
+                rank.Score,
+                rank.RunnerUpScore,
+                decoder.Rankings,
+                report.CharactersEmitted,
+                Clip(text.ToString())));
+        }
+    }
+
+    /// <summary>
     /// Rank the candidates again with every envelope stood on one common noise
     /// floor, which is the smallest change that could make the score comparable.
     /// </summary>
@@ -310,10 +502,26 @@ internal static class Program
     }
 
     private static void PedestalRow(string file)
+        => PedestalRow(file, CwProbabilisticStream.WindowSeconds, fromStart: false);
+
+    /// <summary>Rank one capture over a stated stretch of it.</summary>
+    /// <param name="file">The recording.</param>
+    /// <param name="seconds">How long a stretch to rank over.</param>
+    /// <param name="fromStart">
+    /// True to take the opening seconds, which is what the live decoder sees on
+    /// tune-in; false to take the tail, which is where the operator pressed.
+    /// </param>
+    private static void PedestalRow(string file, double seconds, bool fromStart)
     {
         var name = Path.GetFileNameWithoutExtension(file);
         var whole = WavAudio.Read(file);
-        var window = Tail(whole, CwProbabilisticStream.WindowSeconds);
+
+        var window = fromStart
+            ? new MonoAudio(
+                whole.SampleRate,
+                whole.Samples[..Math.Min(
+                    (int)(seconds * whole.SampleRate), whole.Samples.Length)])
+            : Tail(whole, seconds);
 
         var envelopes = new List<(double Hz, double[] Envelope)>();
 
@@ -466,6 +674,72 @@ internal static class Program
             Clip(winner.Text)));
     }
 
+    /// <summary>
+    /// How often the ranking picks the station, against the length of the
+    /// stretch it reads and where in the recording that stretch is taken.
+    /// </summary>
+    /// <remarks>
+    /// **THE 34 OF 44 WAS MEASURED ON THE TAIL OF A TWELVE-SECOND WINDOW**, and
+    /// the live decoder ranks four seconds taken at tune-in. Those are two
+    /// different measurements and this is what separates them.
+    /// </remarks>
+    private static void WindowSweep()
+    {
+        var files = Directory
+            .GetFiles(CaptureFolder(), "*.wav", SearchOption.AllDirectories)
+            .OrderBy(f => Path.GetFileName(f), StringComparer.Ordinal)
+            .ToList();
+
+        Console.WriteLine("seconds	where	matches	of");
+
+        foreach (var seconds in new[] { 4.0, 6.0, 8.0, 12.0 })
+        {
+            foreach (var fromStart in new[] { true, false })
+            {
+                var matches = 0;
+                var total = 0;
+
+                foreach (var file in files)
+                {
+                    var whole = WavAudio.Read(file);
+                    var sidecar = SidecarToneHz(file);
+
+                    if (double.IsNaN(sidecar))
+                    {
+                        continue;
+                    }
+
+                    var window = fromStart
+                        ? new MonoAudio(
+                            whole.SampleRate,
+                            whole.Samples[..Math.Min(
+                                (int)(seconds * whole.SampleRate),
+                                whole.Samples.Length)])
+                        : Tail(whole, seconds);
+
+                    var ranked = CwPitchRanking.Rank(
+                        window.Samples, window.SampleRate);
+
+                    total++;
+
+                    if (ranked.Ranked
+                        && Math.Abs(ranked.ToneHz - sidecar) <= StepHz)
+                    {
+                        matches++;
+                    }
+                }
+
+                Console.WriteLine(string.Format(
+                    CultureInfo.InvariantCulture,
+                    "{0:0}	{1}	{2}	{3}",
+                    seconds,
+                    fromStart ? "opening" : "tail",
+                    matches,
+                    total));
+            }
+        }
+    }
+
     /// <summary>The last stretch of a recording.</summary>
     private static MonoAudio Tail(MonoAudio audio, double seconds)
     {
@@ -507,7 +781,7 @@ internal static class Program
     {
         var flat = text.Replace('\n', ' ').Replace('\r', ' ').Trim();
 
-        return flat.Length <= 48 ? flat : flat[..48];
+        return flat;
     }
 
     /// <summary>What the shipped decoder settles on, run over the whole file.</summary>

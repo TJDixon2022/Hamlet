@@ -52,7 +52,16 @@ namespace Hamlet.RadioEngine.Cw;
 /// </param>
 /// <param name="PitchChoice">
 /// How <see cref="ToneHz"/> came to be chosen — from keying, from the strongest
-/// bin, from the operator, or not at all.
+/// bin, from a ranking, from the operator, or not at all.
+/// </param>
+/// <param name="Rank">
+/// What the ranking chose and what it beat, where the ranking supplied
+/// <see cref="ToneHz"/>. **Null says the pitch did not come from a ranking**, and
+/// never that the ranking found nothing.
+/// **The runner-up is carried because a wrong pick is otherwise a mystery
+/// afterwards** (§0.0.1): a winner three times its runner-up and a winner a
+/// hundredth above it are different situations, and the sheet cannot tell them
+/// apart from the winner alone.
 /// </param>
 /// <remarks>
 /// **`PitchWasMeasured` AND `PitchChoice` ANSWER DIFFERENT QUESTIONS AND BOTH
@@ -77,7 +86,8 @@ public readonly record struct CwDecodeReport(
     CwCompetitor? Competitor = null,
     bool PitchWasMeasured = false,
     bool PitchWasAsserted = false,
-    CwPitchChoice PitchChoice = CwPitchChoice.NotChosen)
+    CwPitchChoice PitchChoice = CwPitchChoice.NotChosen,
+    CwPitchRank? Rank = null)
 {
     /// <summary>
     /// How far above the band a tone has to stand before it is worth mentioning.

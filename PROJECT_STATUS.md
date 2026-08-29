@@ -4,8 +4,8 @@ STATE: EXECUTING
 TASK: 2 of 4
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-28T19:22:17-04:00
-NOTE: pedestal is in the engine and reproduces all 44 rows byte-identically; seven tests green, wiring the ranked pitch into the mixdown next
+UPDATED: 2026-08-28T20:08:36-04:00
+NOTE: ranking built and wired end to end but left off, because driving the decode costs VA3VRR and KD0UN; anchors green again
 
 ---
 

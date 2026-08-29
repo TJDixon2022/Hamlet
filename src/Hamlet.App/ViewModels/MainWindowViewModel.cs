@@ -4764,6 +4764,21 @@ public partial class MainWindowViewModel : ObservableObject
                 + "moment. Hamlet did not find keying here)";
         }
 
+        // **THE RANKING IS SAID FIRST, BECAUSE IT IS WHAT SUPPLIED THE NUMBER**
+        // (Tim's ruling of 2026-08-28). The survey may well have admitted keying
+        // somewhere too, but the mixer was run at the ranking's winner and the
+        // sheet has to report the pitch the decode used. **Both scores go on the
+        // line**, so a pick that only just beat its runner-up can be told from
+        // one that walked it (§0.0.1).
+        if (report.Rank is { } rank)
+        {
+            return $"{report.ToneHz:0.0} Hz  (ranked: the band was decoded at "
+                + $"every candidate pitch and this one read best, at "
+                + $"{rank.Score:0.00} against {rank.RunnerUpScore:0.00} for "
+                + $"{rank.RunnerUpHz:0.0} Hz. Scoring measures keying and not "
+                + "loudness, and it is not the survey admitting a station)";
+        }
+
         if (report.PitchWasMeasured)
         {
             return $"{report.ToneHz:0.0} Hz  (measured from the keying the "
@@ -4819,6 +4834,7 @@ public partial class MainWindowViewModel : ObservableObject
         {
             CwPitchChoice.OperatorAssertion => "you said you could hear a station",
             CwPitchChoice.StrongestBin => "the loudest bin in the band",
+            CwPitchChoice.Ranked => "decoding at every candidate and keeping the best",
             CwPitchChoice.Keying => "keying, though the pitch reads unmeasured",
             _ => "the middle of the bank, which nothing chose",
         };

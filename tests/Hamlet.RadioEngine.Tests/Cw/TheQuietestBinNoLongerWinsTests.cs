@@ -172,6 +172,58 @@ public sealed class TheQuietestBinNoLongerWinsTests
             $"the net is at {NetHz:0} Hz and the ranking chose {stood.ToneHz:0} Hz");
     }
 
+    /// <summary>
+    /// The ranking does not drive the live decode, and the reason is two lost
+    /// callsigns rather than an oversight.
+    /// </summary>
+    /// <remarks>
+    /// <para>**A SWITCH LEFT OFF WITH NO TEST ON IT IS A SWITCH SOMEBODY TURNS
+    /// ON NEXT WEEK WITHOUT KNOWING WHAT IT COST.** Unit 044 built the ranking
+    /// to supply the mixdown pitch and measured the result: `cw-2026-08-17-013347`
+    /// falls from `VA3VRR` to nothing and `cw-2026-08-24-012403` from
+    /// `DE KD0UN KD0UN K` to `DE XD0UN KD0`, both adjudicated readings.</para>
+    /// <para>This goes red the moment the default changes, which is the point:
+    /// whoever changes it re-measures those two first.</para>
+    /// </remarks>
+    [Fact]
+    public void TheRankingDoesNotYetDriveTheDecode()
+    {
+        var decoder = new CwDecoder(48_000, 600);
+
+        Assert.False(
+            decoder.RankThePitch,
+            "the ranking is driving the live decode, which costs VA3VRR on "
+            + "cw-2026-08-17-013347 and KD0UN on cw-2026-08-24-012403 — "
+            + "re-measure both before changing this");
+    }
+
+    /// <summary>Nothing is ranked at all while the ranking is switched off.</summary>
+    /// <remarks>
+    /// The sheet reports the pitch the decode used, so a ranking that ran while
+    /// the mixer ignored it would put a number on the sheet that is not about the
+    /// letters beside it (HM-DEC-111).
+    /// </remarks>
+    [Fact]
+    public void WithTheRankingOffTheSheetReportsTheTrackersPitch()
+    {
+        var audio = Signal("CQ CQ DE W1AW K");
+        var decoder = new CwDecoder(audio.SampleRate, 600);
+        var hop = decoder.Tracker.HopSamples;
+
+        for (var at = 0L; at + hop <= audio.Samples.Length; at += hop)
+        {
+            decoder.Process(new AudioChunk(
+                at, audio.SampleRate, audio.Samples.AsSpan((int)at, hop)));
+        }
+
+        decoder.Flush();
+
+        Assert.Equal(0, decoder.Rankings);
+        Assert.False(decoder.Ranked.Ranked);
+        Assert.Null(decoder.Report.Rank);
+        Assert.NotEqual(CwPitchChoice.Ranked, decoder.Report.PitchChoice);
+    }
+
     /// <summary>The last stretch of a recording.</summary>
     private static MonoAudio Tail(MonoAudio audio, double seconds)
     {

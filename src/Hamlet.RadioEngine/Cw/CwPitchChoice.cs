@@ -43,6 +43,25 @@ public enum CwPitchChoice
     /// </remarks>
     StrongestBin,
 
+    /// <summary>
+    /// The band was decoded at every candidate pitch and this one read best.
+    /// </summary>
+    /// <remarks>
+    /// <para>**TIM'S RULING OF 2026-08-28.** Six families of admission statistic
+    /// were measured dead across five units, all of them asking *is this bin a
+    /// station*. This asks *which of these candidates decodes best*, and takes
+    /// the winner.</para>
+    /// <para>**IT IS A KEYING MEASUREMENT AND NOT A LOUDNESS ONE**
+    /// (HM-DEC-095), which is why it sits inside that ruling rather than against
+    /// it: what the score rewards is a two-state structure, and a carrier is as
+    /// flat against the band's common floor as silence is.</para>
+    /// <para>**IT DOES NOT SET <see cref="CwDecodeReport.PitchWasMeasured"/>**,
+    /// because that flag says the survey admitted keying at this pitch and the
+    /// survey did no such thing here. The two are different findings and folding
+    /// them together would claim one the survey never made (§0.0).</para>
+    /// </remarks>
+    Ranked,
+
     /// <summary>The operator said he could hear a station there.</summary>
     /// <remarks>
     /// **NO SHEET MAY EVER IMPLY HAMLET FOUND WHAT A HUMAN FOUND** (§0.0). Unit
