@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
-TASK: 7 of 8
-BALL: code
-NEXT_PASTE: none
-UPDATED: 2026-08-29T10:11:35-04:00
-NOTE: width swept against the answer key; 35 Hz leads but 40 is the worst of the middle, so the corpus cannot choose and nothing ships
+STATE: COMPLETED
+TASK: 8 of 8
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
+UPDATED: 2026-08-29T10:26:52-04:00
+NOTE: first accuracy figure is yield 0.763 precision 0.761; the fit figure correlates negatively with it
 
 ---
 

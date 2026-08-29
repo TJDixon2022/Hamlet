@@ -1,347 +1,348 @@
-UNIT:       044 — stopped at task 7 of 7 — 2026-08-28 23:36
-PHASE GOAL: Readable CW on the operator's screen — eighty percent of a strong signal read correctly, first time.
-UNIT GOAL:  Stop the decoder printing letters while it does not know the sender's speed, and find out why the confidence figure rose as the output got worse.
-ADVANCED:   no — the goal task is task 2 and its own bar says ship nothing; the measurement it rests on is the unit's real product.
-NUMBER:     task 2's cost — unit 036's bar was 2, 2 and 7 blocks; this refusal costs 356 of the 599 characters carrying the twelve adjudicated readings.
-DRIFT:      4 consecutive units without advance  (was 3)
+UNIT:       045 — stopped at task 8 of 8 — 2026-08-29 10:26
+PHASE GOAL: Readable CW on the operator's screen — reading one mode at ninety-nine percent, measured against what was actually sent.
+UNIT GOAL:  Build the score this project has never had, then make the first structural change the evidence supports.
+ADVANCED:   yes — the phase goal is a percentage and this unit produced the first one: yield 0.763, precision 0.761 over 384 adjudicated characters.
+NUMBER:     none -> yield 0.763, precision 0.761.
+DRIFT:      0 consecutive units without advance  (was 4)
 
 ## 1. What Claude did
 
-**Stopped at task 7 of 7. Tasks 4, 5 and 6 were not done and task 1 is half
-done, all for the same reason: the eight 2026-08-29 captures are not in the
-repository.** Task 2 was measured and **ships nothing, on the bar the order
-itself sets.** Tasks 3 and 7 ran on the corpus that does exist.
+**Stopped at task 8 of 8.** Tasks 1, 3, 4, 6 and 7 landed. **Task 2 stopped as its
+own instruction requires. Task 5 was not done and task 8 was not done.**
 
-**This is not the drop the order named** — task 7 was the drop candidate and it
-is one of the three that landed.
+**Task 5 is blocked on audio and task 8 is the drop.** Task 5's acceptance is
+stated entirely on `cw-2026-08-29-030850` and `-031024`, which are not in the
+tree, so there is no way to show the change does what it is for or that it costs
+nothing. **This is the drop the order named plus one blocked task**, not a sizing
+decision taken here.
 
 Development computer, prompt claimed `PROJECT: Hamlet`, branch `main`, version
 `1.12.6` unchanged. **Nothing here is evidence about the radio**: no radio was
 connected.
 
-### The blocker, unchanged from last unit
+### Task 1 — where the tree is
 
-**None of the eight 2026-08-29 captures is in the tree.** Neither the three this
-order is built on nor the five the last one was:
+**Both suites:** app **519 passing, 0 failing**. Engine **28 failing of 1984**,
+excluding the five tests of `TheGateHasItsOwnWindowNowTests`, which crash the host
+rather than failing (HM-OPEN-061). The failing set is byte-identical to unit 043's
+baseline.
 
-| | |
-|---|---|
-| `cw-2026-08-29-030850`, `-030940`, `-031024` | missing |
-| `cw-2026-08-29-020541`, `-020616`, `-020707`, `-020809`, `-020938` | missing |
+**And unit 044's twenty-ninth failure was confirmed as an intermittent.**
+`ARigWhoseReadLoopIsStuckStillDisconnects` failed in that unit's whole-suite run,
+passed on its own, and **does not appear in this run at all**. The total rose 1976
+to 1984 with the eight scoring tests added here.
 
-The newest audio remains `cw-2026-08-28-005243`. **So none of this order's stated
-figures could be confirmed** — not 141 characters with 1 unsure, not 8224.4
-against 11.1, not the station at 398.4 Hz, not 850 Hz holding nothing. They are
-neither confirmed nor disputed here.
+**What unit 044 landed: no product code at all.** Its `git diff` over `src/` is
+empty. Its task 2 measured the no-clock refusal and **shipped nothing**, because
+blocking output while `SpeedIsReacquiring` costs 356 of the 599 characters
+carrying the twelve adjudicated readings — including every character of `N4L` and
+of `DICTED 10.7` — against unit 036's bar of 2, 2 and 7 blocks. **So the refusal
+this order asks about is not in force**, and every number below is measured
+without it.
 
-**What that costs**: task 1's reproduction half; task 4 entirely; task 5 entirely,
-including the bulletin ground truth; task 6 entirely; and task 2's acceptance,
-which is stated only on `-030940` and `-031024`.
+**The hard decisions in the chain, in order, with what each discards:**
 
-### Task 1 — the emit seam, and unit 043's answer
-
-**Both suites:** app **519 passing, 0 failing**. Engine **29 failing of 1976**,
-excluding the five tests of `TheGateHasItsOwnWindowNowTests` which crash the host
-(HM-OPEN-061). The order cites unit 041 at 28 of 1916 and 509 of 509; the totals
-have grown with tests added since.
-
-**The twenty-ninth is a second intermittent and it is not this unit's.**
-`Rig.RigDisconnectTests.ARigWhoseReadLoopIsStuckStillDisconnects` failed in the
-whole-suite run and **passes on its own**. `git diff` over `src/` between unit
-043's last commit and this one is **empty** — this unit changed no product code at
-all — so it cannot be a regression from here. The order names
-`AConfirmedModeWriteFoldsTheDataVariantTooAsync` as a known intermittent; **this is
-a second one**, and both are timing-sensitive tests about a stuck or slow link.
-
-**The emit seam has exactly one refusal, and it is not either of the ones the
-order asks about.**
-
-| refusal | where | what it does |
-|---|---|---|
-| the character floor | `CwProbabilisticDecoder.Marked`, `:1513` | a character whose `SpanMargin` is below `CharacterMargin` = 1.0 becomes `#`, which renders as a block |
-
-**Unit 036's refusal is absent.** Nothing anywhere keys emission to whether the
-survey admitted keying. **Unit 043's refusal is absent too** — its task 2 was
-blocked on this same missing audio, which is what my report of that unit says.
-The order anticipated this and said to build beside where it would go rather than
-on top of it; there is nothing there to build on top of.
-
-**Where the assertion is actually made is `CwProbabilisticStream.Character`,
-`:730`.** Every character whose pattern the alphabet knows is stamped
-`CwConfidence.High`, unconditionally. **The only thing that can mark a character
-unsure is the alphabet not recognising its pattern.** That is the mechanism behind
-the order's "141 characters with 1 unsure": it is not a confidence judgement that
-went wrong, it is that no confidence judgement is made at all.
-
-**Why the clock is withdrawn**, with file and line, since this is what task 2 had
-to wire to: `CwDecoder.SpeedIsReacquiring`, `:638`.
-
-    _hasFollowed
-        ? _lastSample - _samplesAtDiscontinuity < 12 seconds of samples
-        : _probabilistic.Last.Text.Length == 0
-
-**And this is the finding that reframes the unit.** `SpeedIsReacquiring` does not
-mean *no clock fits*. It means *the tracker changed station less than twelve
-seconds ago*, and the field's own documentation says so: the decoder reads a
-window several seconds long, so while that window still holds audio from the
-previous station it would name a speed between the two, describing neither.
-
-**So `decoderWpm withdrawn` is not Hamlet saying it cannot tell a dit from a dah.
-It is Hamlet saying its window may straddle two stations.** The order's reading of
-that field — the premise task 2 is built on — does not match what the field
-computes.
-
-### Task 2 — no clock, no letters: measured, and it ships nothing
-
-Wired as instructed to the decoder's own existing withdrawal condition rather
-than a second test, and measured across all 44 captures before changing a line.
-
-| | |
-|---|---|
-| characters emitted across the corpus | **1912** |
-| of those, emitted while the clock is withdrawn | **1125 (59 %)** |
-| captures emitting anything at all | 39 of 44 |
-| captures where *some* output is withdrawn | **36 of 39** |
-| captures where **every** character is withdrawn | 3 |
-
-**And what it costs the twelve adjudicated readings, which is the bar:**
-
-| capture | blocked | of | share |
+| stage | where | commits | can anything revise it |
 |---|---|---|---|
-| `cw-2026-08-17-134712` (`N4L`) | **63** | 63 | **100 %** |
-| `cw-2026-08-22-031905` (`DICTED 10.7`) | **42** | 42 | **100 %** |
-| `cw-2026-08-22-032113` | 46 | 55 | 84 % |
-| `cw-2026-08-22-031838` | 40 | 57 | 70 % |
-| `cw-2026-08-22-032050` | 37 | 53 | 70 % |
-| `cw-2026-08-22-032129` | 41 | 66 | 62 % |
-| `cw-2026-08-18-004507` (the ARRL bulletin) | 21 | 49 | 43 % |
-| `cw-2026-08-18-003758` (`AA4MP/4 QNIK`) | 22 | 58 | 38 % |
-| `cw-2026-08-17-013347` (`VA3VRR`) | 21 | 59 | 36 % |
-| `cw-2026-08-22-031948` | 11 | 31 | 35 % |
-| `cw-2026-08-22-032012` | 12 | 44 | 27 % |
-| `cw-2026-08-24-012403` (`KD0UN`) | 0 | 22 | 0 % |
-| **total** | **356** | **599** | **59 %** |
+| pitch admitted | `CwToneTracker`, `ConfirmWithinSurveys = 2`, `:287` | one bin, after two agreeing surveys | no — the survey's other candidates are gone |
+| pitch committed to the mixer | `CwDecoder.Step`, `:753` | one pitch per hop, lock → last measured → bank | no — the envelope is mixed at it and the audio is not kept per candidate |
+| speed | `CwProbabilisticDecoder.Decode`, `:798` | **one WPM out of the grid, keeping only `bestScore`** | no — losing hypotheses are discarded inside the loop |
+| element and character | the Viterbi inside `DecodeAt` | one path | no — one path is carried, not many |
+| emission | `CwProbabilisticStream.Character`, `:730` | `CwConfidence.High` for every pattern the alphabet knows | no |
 
-**Unit 036's bar was 2, 2 and 7 blocks on the good captures it named. This is 356,
-and two adjudicated readings disappear completely.** The order's own instruction
-is explicit: *if the cost across the corpus is materially larger than unit 036's,
-stop and report rather than shipping. That is the same bar Tim applied last time
-and it applies here.* **So nothing was shipped.**
+**The order's account of this is correct and the tree is worse than it says in one
+place:** at the emit seam **no confidence judgement is made at all**. The only
+thing that can mark a character unsure is the alphabet failing to recognise its
+pattern. The single refusal that exists is `CwProbabilisticDecoder.Marked`,
+`:1513`, which blocks a character whose `SpanMargin` is under 1.0.
 
-**It is the same trade Tim rejected in unit 1.11.33, an order of magnitude worse.**
-That refusal cost 89 characters across three good captures; this one costs 356
-across eleven.
+**The integrator width is a constant.** `IntegratorBandwidthHz = 45.0`,
+`:415`, fixed at construction (`CwDecoder.cs:145`) and **scaled by nothing**. The
+order's claim holds.
 
-**And the reason is task 1's finding rather than bad luck.** The condition is not
-*no clock*, it is *the tracker moved recently*, and on a thirty-second capture
-with a few tracker switches that is most of the recording. A letters-refusal wired
-to it blocks most of the corpus for a reason that has nothing to do with telling a
-dit from a dah.
+**Averaging on the pitch before it is committed: there is confirmation, not
+averaging.** A candidate must be admitted by two agreeing surveys before the
+tracker will follow it. That is a stability requirement over two half-second
+surveys; it is not an average of the peak estimate, and nothing smooths the
+number that reaches the mixer.
 
-### Task 3 — what the fit figure computes
+### Task 2 — the answer key: stopped, for two reasons
 
-**It is not a goodness-of-fit measure. It is closer to a signal-to-noise ratio,
-and it is unbounded.**
+**The order says to obtain the bulletin and stop if it cannot be got. It could
+not, and there is a second reason it should not be vendored even if it could.**
 
-`CwProbabilisticDecoder.Decode`, `:812`:
+The network is available and the ARRL archive was reached. `ARLP035` is listed for
+2026-08-28, and `ARLP034` for 2026-08-21. **The fetch declined to reproduce the
+bulletin verbatim on fair-use grounds**, returning only a summary — flux mean
+117.1, planetary A index from 12 declining to 5. **A summary is not an answer
+key**, and the order forbids reconstructing the text from memory or from Hamlet's
+own output.
 
-    ratio = (bestScore - nothingAtAll) / envelope.Count
+**And §2.1 forbids the vendoring the order asks for.** *No third-party proprietary
+material* in this repository, and HM-DEC-049's precedent is explicit: a source
+whose terms forbid redistribution is **cited and never committed**, which is why
+the Icom manual is page-cited and absent. The order asks for the bulletin to be
+vendored "the same way the band plan carries its citation", but the band plan's
+practice for restricted sources is citation without the text. **This is raised in
+section 4 rather than decided here.**
 
-`bestScore` is the winning Viterbi path's total log-likelihood; `nothingAtAll` is
-the sum of the key-up log-likelihood over every hop. So the figure is the mean
-per-hop advantage of the best reading over "the key was up the whole time".
+**A better answer key was already in the tree and costs nothing.** The twelve
+readings Tim has adjudicated on his own recordings — `VA3VRR`, `N4L`,
+`AA4MP/4 QNIK`, `DE KD0UN KD0UN K`, the ARRL bulletin fragment, and seven spans of
+the 2026-08-22 propagation bulletin — are real air, ruled by him, already committed
+with their decision ids, and carry no third-party rights question at all. **The
+score below is measured against those.**
 
-**The term that grows is the noise scale, not the reading.** From
-`LogLikelihoods`, `:973`:
+**One finding worth having: the 2026-08-22 captures are `ARLP034`.** One of them
+reads `2026 PROPAGATION FORECAST BULLETIN ARLP034`, and the archive confirms
+ARLP034 is dated 2026-08-21. So the corpus already held a bulletin capture with a
+published counterpart; the missing 03:08 captures are not the first.
 
-    keyUp[i]   = log(e) - 2*log(sigma) - e*e / (2*sigma*sigma)
-    keyDown[i] = -HalfLogTwoPi - log(sigma) - (e-amplitude)^2 / (2*sigma*sigma)
+### Tasks 3 and 4 — the first score this project has ever had
 
-On a hop where the envelope is loud, the null hypothesis must explain it as noise
-and pays `-e²/2σ²`, which grows as **the square of the level over the noise
-scale**. The best path avoids that wherever it calls the hop a mark. So the
-difference between the two — which is the whole figure — **scales as
-(amplitude/σ)², without a bound.** A loud signal in a bin whose estimated noise
-floor is small produces an enormous number whether or not a single letter is
-right.
+`CwAccuracy` scores a decode against truth. Semi-global alignment, so the
+adjudicated fragment is matched against the best-fitting stretch and the rest of
+the transmission is not counted as error. **A block is a deletion, not a
+substitution** — the trade unit 036 was ruled on. Two numbers, never reported
+apart. Eight tests, each checkable by hand.
 
-**Measured across the corpus, on the 39 captures that emit anything:**
+**The baseline, over 384 truth characters:**
+
+| capture | truth | yield | precision | correct | subs | ins | dels |
+|---|---|---|---|---|---|---|---|
+| `cw-2026-08-17-013347` | 6 | **1.000** | 1.000 | 6 | 0 | 0 | 0 |
+| `cw-2026-08-17-134712` | 3 | **1.000** | 0.750 | 3 | 0 | 1 | 0 |
+| `cw-2026-08-18-003758` | 12 | **1.000** | 1.000 | 12 | 0 | 0 | 0 |
+| `cw-2026-08-24-012403` | 16 | **1.000** | 1.000 | 16 | 0 | 0 | 0 |
+| `cw-2026-08-22-031948` | 36 | 0.944 | 0.944 | 34 | 2 | 0 | 0 |
+| `cw-2026-08-18-004507` | 57 | 0.930 | 0.828 | 53 | 3 | 8 | 1 |
+| `cw-2026-08-22-032012` | 51 | 0.922 | 0.797 | 47 | 3 | 9 | 1 |
+| `cw-2026-08-22-032113` | 28 | 0.821 | 0.719 | 23 | 4 | 5 | 1 |
+| `cw-2026-08-22-031905` | 39 | 0.692 | 0.643 | 27 | 10 | 5 | 2 |
+| `cw-2026-08-22-032050` | 59 | 0.678 | 0.800 | 40 | 7 | 3 | 12 |
+| `cw-2026-08-22-032129` | 42 | 0.452 | 0.500 | 19 | 19 | 0 | 4 |
+| `cw-2026-08-22-031838` | 35 | 0.371 | 0.500 | 13 | 13 | 0 | 9 |
+| **corpus** | **384** | **0.763** | **0.761** | 293 | 61 | 31 | 30 |
+
+**Reported plainly: seventy-six percent, both ways.** The phase goal is
+ninety-nine. Four short captures read perfectly; the long bulletin spans are where
+it falls apart, and the worst two are almost entirely substitutions — 19 and 13
+wrong letters against 4 and 9 blocks. **Hamlet is not refusing on those. It is
+guessing and missing.**
+
+### Task 6 — the fit figure does not measure quality
+
+**Correlation with accuracy across the twelve scored captures:**
 
 | | |
 |---|---|
-| fit figure, range | **−18.12 to 121.88** |
-| median | 3.74 |
-| correlation with the share of output that is `E`, `I`, `S` or `T` | **+0.228** |
+| fit against **yield** | **−0.179** |
+| fit against **precision** | **−0.203** |
 
-**So the metric does lean the wrong way, and weakly.** The correlation is positive
-— fragmentation and a high figure do travel together — but at +0.23 it is not
-strong enough to be the explanation on its own. **The unbounded (amplitude/σ)²
-term is the explanation**, and fragmentation is a fellow symptom rather than the
-cause: both happen when the gate is chopping a signal that is loud relative to a
-small estimated noise floor.
+**Negative on both.** The order states the consequence itself: *if the correlation
+is negative or absent, the metric is not measuring quality and every decision that
+consumes it is unsafe.* It is negative.
 
-**A figure that can be −18 is worth as much attention as one that can be 8224.**
-"Minus eighteen better than silence per hop" is on a sheet the operator reads, and
-it means the best reading the decoder could find explained the audio worse than
-assuming nothing was sent — which is a state that should produce no output at all.
+Sorted by fit, the point is plainer than the coefficient:
 
-**Is it the same root as `013347`'s 17.2 million and `001520`'s quadrillions?
-Yes.** Same expression, same unbounded term. Unit 043 measured the same mechanism
-from the other side: ranking pitches by this figure picked the emptiest bin in the
-band, at 5,521,967, because when σ collapses the ratio explodes. **One defect,
-four sightings.**
+| fit | yield | capture |
+|---|---|---|
+| 1.22 | 0.371 | `031838` |
+| 1.57 | **1.000** | `012403` |
+| 4.00 | **1.000** | `013347` |
+| 5.94 | **1.000** | `003758` |
+| 12.60 | **1.000** | `134712` |
+| 13.31 | 0.692 | `031905` |
+| **25.85** | 0.678 | `032050` |
+
+**The highest-scoring capture in the corpus reads 68 % and the second-lowest reads
+100 %.**
+
+**Confirming the order's analysis: yes, the figure compares the chosen reading
+against silence**, and it is `(bestScore − nothingAtAll) / hops`
+(`CwProbabilisticDecoder.cs:812`). **The term that grows is the noise scale, not
+the element count.** Both `keyUp` and `keyDown` carry `−e²/2σ²`
+(`LogLikelihoods`, `:973`); the null hypothesis pays it on every loud hop and the
+best path avoids it wherever it calls a mark, so the difference — the whole figure
+— **scales as the square of level over the estimated noise floor, unbounded.**
+Unit 044 measured its range on real captures at −18.12 to 121.88, and it has
+produced 5,521,967, 17.2 million and quadrillions on degenerate bins.
+
+**Does the decoder compute a second-best? No.** `Decode`'s speed loop keeps only
+`bestScore` (`:798`), the Viterbi inside it carries one path, and the string
+`secondBest` does not occur in the file. **That is the finding the order predicted:
+a pipeline that keeps one path has nothing to compare against except silence.**
 
 Changed nothing, as instructed.
 
-### Task 7 — the withdrawal and the search edges
+### Task 7 — the width, swept against truth for the first time
 
-**How often the clock withdraws: on 36 of the 39 captures that emit anything, and
-for 59 % of all characters.** A condition that is true most of the time is not
-identifying an unusual state.
+**The width has been swept before and never against an answer key** — the
+reasoning behind 45 Hz argued from character counts and E-shares, which are
+proxies for the thing now measurable.
 
-**Estimators at the edge of their own search space: two**, both at the top —
-`cw-2026-08-22-032113` and `cw-2026-08-22-032129`, each settling at exactly 40
-words a minute, which is `FastestWpm`. Both emit 55 and 66 characters. **An
-estimator at its boundary is reporting failure rather than a value**, and both of
-these are adjudicated anchors whose readings are being taken at a pinned number.
+| width | yield | precision | subs | ins | dels |
+|---|---|---|---|---|---|
+| 20 Hz | 0.708 | 0.747 | 66 | 26 | 46 |
+| 25 Hz | 0.747 | 0.811 | 55 | 12 | 42 |
+| 30 Hz | 0.745 | 0.784 | 61 | 18 | 37 |
+| **35 Hz** | **0.771** | **0.811** | 51 | 18 | 37 |
+| 40 Hz | 0.703 | 0.734 | 81 | 17 | 33 |
+| **45 Hz (shipped)** | 0.763 | 0.761 | 61 | 31 | 30 |
+| 55 Hz | 0.622 | 0.681 | 83 | 29 | 62 |
+| 70 Hz | 0.518 | 0.626 | 104 | 15 | 81 |
 
-The order's claims about `-020809` pinning at 40 and `-030850`'s sweep pinning at
-400 could not be checked; those files are not here.
+**35 Hz leads on both numbers and nothing ships on that.** 40 Hz sits between the
+two best rows and is the worst of the mid-range: **this is not a curve with a
+maximum in it, it is noise on twelve captures.** Picking 35 off it would be tuning
+a constant until the corpus reads better, which the order forbids in as many
+words. The eight-tenths of a point of yield is three characters.
+
+**What the sweep does establish is the wide end.** 55 and 70 Hz are clearly worse
+than anything at or below 45, by margins far outside the noise — 0.622 and 0.518
+against 0.763. So widening is ruled out even if narrowing is not settled.
+
+**And the speed-scaled width was not built, deliberately.** Fitting a second
+parameter on evidence that cannot choose the first would be the same error twice.
+Section 4 says what would settle it.
 
 No decision was recorded under §12.1.
 
 ## 2. What the owner should expect
 
-**Nothing on the screen has changed.** When Hamlet does not know how fast the
-sender is going it still shows letters, because the refusal that would stop it
-costs 356 characters across eleven of your twelve adjudicated readings — including
-every character of `N4L` and every character of `DICTED 10.7`. **The order's own
-bar says stop and report at that cost, so nothing shipped.**
+**Hamlet now scores itself against what was actually sent, and the number is
+seventy-six percent — yield 0.763, precision 0.761, over 384 characters you have
+adjudicated.** The goal is ninety-nine. Nothing on the screen changed this unit;
+what changed is that there is now an instrument that can tell whether the next
+change helps.
 
 What is now true of the tree:
 
-- `tools/Hamlet.PitchRank` gained `clock`, which produces the whole table above in
-  one command, so every figure here is one line from being re-measured.
-- No engine or app source changed. The suites are where they were.
+- `CwAccuracy` scores a decode against truth, with eight hand-checkable tests. It
+  is pure, deterministic, and takes no clock and no network.
+- `tools/Hamlet.PitchRank` gained `score` and `width`, so the baseline table and
+  the width sweep are each one command.
+- **No decoder behaviour changed.** No constant moved.
 
 **What will look wrong but is not:**
 
-- **The engine suite read 29 rather than 28**, and the extra is
-  `ARigWhoseReadLoopIsStuckStillDisconnects`, which passes on its own. No product
-  code changed in this unit, so nothing here moved it.
-- **Task 2 built nothing.** That is the instructed outcome at this cost, not an
-  omission.
-- **The full engine suite has no single clean run**, and the crash is wider than
-  HM-OPEN-061 first recorded — a run excluding the class it names crashed anyway
-  after 544 passing tests, which was logged against that issue last unit.
-- **This order says it follows unit 043 and has not seen its report.** Unit 043 ran
-  and is at `389cbe1`; its task 2 was blocked on this same missing audio, which is
-  why the refusal this order expected to find is absent.
+- **The score is against your twelve adjudicated readings, not the ARRL
+  bulletin.** The bulletin could not be obtained verbatim and should not be
+  vendored anyway — section 4.
+- **The engine baseline is still 28 failing**, and no product code changed to move
+  it. The twenty-ninth that unit 044 saw did not recur, which settles it as the
+  intermittent that report called it.
+- **35 Hz appears to beat the shipped 45 Hz and was not adopted.** The sweep is
+  non-monotonic; that is the reason, and it is in task 7.
+- **Task 5 did nothing.** Its acceptance is stated only on captures that are not
+  here.
+- **The full engine suite has no clean run.** The host crash is wider than
+  HM-OPEN-061 first recorded, which was logged against that issue in unit 043.
 
 ## 3. What you should see
 
-**The confidence figure is not measuring how well the decoder is doing. It is
-measuring how loud the signal is compared with the noise floor it estimated, and
-nothing bounds it.**
+**Seventy-six percent. Yield 0.763, precision 0.761, over 384 characters of your
+own adjudicated readings.** That is the first accuracy figure this project has
+produced, and the phase goal is ninety-nine.
 
-`ratio = (bestScore − nothingAtAll) / hops`, and both halves carry a
-`−e²/2σ²` term. The all-noise hypothesis has to explain every loud hop as noise
-and pays that on each one; the best path avoids it wherever it calls the hop a
-mark. **What is left over grows as the square of the level over the noise scale.**
-A loud signal in a bin with a small estimated floor produces a huge number whether
-the letters are right or wrong.
+The shape of the failure is worth as much as the number. **Four captures read
+perfectly and the long bulletin spans fall apart**, and the two worst are almost
+entirely substitutions — 19 wrong letters against 4 blocks on `032129`, 13 against
+9 on `031838`. **Hamlet is not refusing on those. It is guessing and missing**,
+which is the failure §0.0 exists to prevent, now visible as a number for the first
+time.
 
-Across the corpus the figure runs from **−18.12 to 121.88** on real captures, and
-its correlation with fragmented output is **+0.228** — leaning the wrong way, but
-too weakly to be the story. **The story is that the quantity has no ceiling and no
-floor.** That is why it read 8224 on garbage, and it is the same expression behind
-`013347`'s 17.2 million, `001520`'s quadrillions, and the 5,521,967 unit 043
-measured on an empty bin. **One defect, four sightings, and every number on the
-sheet that derives from it inherits it.**
+**And the second finding is the one that makes the rest untrustworthy: the fit
+figure correlates negatively with accuracy — −0.179 against yield, −0.203 against
+precision.** The highest-scoring capture in the corpus reads 68 % and the
+second-lowest reads 100 %. Your order's own words apply: the metric is not
+measuring quality, and every decision that consumes it is unsafe. It compares the
+chosen reading against silence, and what actually drives it is the square of the
+signal level over the estimated noise floor, with no bound.
 
-The second thing worth having is that **`decoderWpm withdrawn` does not mean what
-the order reads it as meaning.** It means the tracker changed station within the
-last twelve seconds — the field's own documentation says so. It is true for 59 %
-of everything Hamlet emits. Building a letters-refusal on it blocks most of the
-corpus for a reason unrelated to telling a dit from a dah, which is why the cost
-came out where it did.
+**The decoder computes no second-best at all** — one speed survives the grid, one
+path survives the Viterbi. So there is nothing in the tree to compare the winning
+interpretation against except nothing at all, which is exactly the architectural
+point your analysis makes.
 
 ## 4. What's blocking us
 
-**The audio, again, and it is now blocking two consecutive units.**
+Three rulings, most-blocking first.
 
-> **Tasks 1, 4, 5 and 6 need the eight 2026-08-29 captures in
-> `tests/fixtures/cw/captured/unadjudicated/`**, with their sidecars. The three of
-> 03:08–03:10 are the best test material this project has described — one
-> frequency, one station, one variable, and a published bulletin as an answer key.
-> None of it is here.
+> **The answer key is the adjudicated corpus, and a published bulletin is cited
+> rather than vendored.**
+>
+> The ARRL text could not be obtained verbatim, and §2.1 forbids third-party
+> proprietary material in this repository while HM-DEC-049 has restricted sources
+> cited and never committed — which is why the Icom manual is page-cited and
+> absent. **The order asks for vendoring under `data/truth/` and that conflicts
+> with both.** Meanwhile the twelve readings you have adjudicated are real air,
+> already committed, and carry no rights question; the score above is measured on
+> them.
+>
+> **Rejected: reconstructing the bulletin from memory or from Hamlet's output.**
+> The order forbids it and it would make the decoder its own answer key.
+> **Rejected: scoring only the fragments as pass or fail.** That is what the
+> anchors already do and it produces no percentage.
+> **What would change it:** a statement that ARRL bulletins may be redistributed,
+> or a truth file holding *your* transcription of your own recordings, which has
+> no rights question at all and would extend the corpus well past 384 characters.
 
-Then two rulings.
+> **Whether the fit figure is replaced, and with what.**
+>
+> It correlates **−0.179** with yield and **−0.203** with precision. It gates
+> emission at 1.40, it is printed on every capture sheet as `better than silence
+> per hop`, and the character floor at 1.0 is expressed in its units. **Every one
+> of those rests on a quantity now measured not to track correctness.**
+>
+> **Rejected: changing it in this unit.** The order says measure only and it is
+> right — a metric change moves every gate that consumes it and needs the score in
+> hand, which now exists.
+> **Rejected: the odds against the second-best, as stated.** Not because it is
+> wrong but because **the decoder computes no second-best**, so that quantity does
+> not exist yet and creating it means keeping more than one path — which is task
+> 8's redesign, not a metric swap.
+> **What is available cheaply:** the runner-up *speed* hypothesis. The grid is
+> already evaluated at every WPM and all but the winner discarded at `:798`;
+> keeping the second-highest costs one variable and would give a first
+> best-against-rival figure without touching the architecture.
 
-> **The fit figure is normalised so that it cannot grow without bound, and the
-> sheets that quote it are re-read afterwards.**
+> **The integrator width, and whether the corpus can settle it.**
 >
-> It is `(bestScore − nothingAtAll)/hops`, and both terms carry `−e²/2σ²`, so it
-> scales as the square of the level over the estimated noise scale. Measured on
-> real captures it runs −18.12 to 121.88; on degenerate bins it has produced
-> 5,521,967, 17.2 million and quadrillions. **Every confidence number the operator
-> reads derives from it**, so §0.0 rests on a quantity that is not bounded and not
-> comparable between two recordings.
+> Swept against truth: 35 Hz reads 0.771/0.811 and the shipped 45 Hz reads
+> 0.763/0.761, but 40 Hz between them reads 0.703/0.734. **Twelve captures cannot
+> resolve a difference of three characters.** The wide end is settled — 55 and 70
+> Hz are far worse and widening is ruled out.
 >
-> **Rejected: treating the extreme values as outliers.** Four sightings across
-> four units with one expression behind them is a defect, not a tail.
-> **Rejected: fixing it in this unit.** The order says measure only and change
-> nothing, and it is right — this needs its own unit with the whole corpus
-> re-measured after, because every floor and every anchor is expressed in these
-> units.
-> **What it is not yet:** a proposal. Which normalisation is correct is a real
-> question and this unit was not asked to answer it.
-
-> **Whether a letters-refusal should be built on a different condition, since the
-> one that exists is not about the clock.**
->
-> `SpeedIsReacquiring` means the tracker moved within twelve seconds, not that no
-> clock fits, and a refusal wired to it costs 356 of 599 adjudicated characters.
-> **The fault the order describes is real** — a decoder that cannot resolve a dit
-> from a dah should not print letters — **but this is not the flag for it.**
->
-> **Rejected: shipping it anyway.** The order's own bar forbids it at this cost.
-> **Rejected: exempting the anchors.** That is fitting the refusal to the test set.
-> **What would be needed** is a condition that actually says no clock fits. The
-> reference decoder ported in unit 045 has one — `FitClock` returns nothing when
-> the marks do not form two lengths, and it refuses eleven of forty-four captures
-> outright with no threshold anybody chose. **That is the closest thing in this
-> tree to what task 2 was asking for**, and unit 045's report already asks whether
-> to graft it onto the shipped path.
+> **Rejected: adopting 35 Hz.** It is the best row in a non-monotonic sweep, which
+> is the definition of fitting noise.
+> **Rejected: scaling the width with the committed speed now.** A second parameter
+> fitted on evidence that cannot choose the first.
+> **What would settle it:** more truth. The same sweep over a corpus three times
+> this size would separate 35 from 45 or show they are the same.
 
 ### Asks still outstanding
 
 Carried forward per HM-DEC-139 and HM-DEC-140.
 
-1. **The eight 2026-08-29 captures are not in the tree.** First raised in unit
-   043's report; now blocking a second unit.
-2. **The fit figure is unbounded** — raised here, and it subsumes the two open
-   asks below it.
-3. **`013347` returns 17.2 million and `001520` quadrillions.** Same root, answered
-   here: yes.
-4. **The pedestal ranking is measured at 34 of 44 and unbuilt** — unit 045's order
-   made it its own unit if the reference lost, and it lost.
+1. **The eight 2026-08-29 captures are not in the tree**, blocking a third
+   consecutive unit — task 5 here, tasks 2/3/4/6 of unit 044, tasks 2/3/4/6 of
+   unit 043.
+2. **The fit figure does not track correctness** — measured here, raised above.
+3. **The answer key's licensing** — raised above.
+4. **The pedestal ranking is measured at 34 of 44 and unbuilt.**
 5. **A dial move's threshold is provisional at 500 Hz**, shipped in unit 043 with
-   three candidates costed and awaiting a ruling.
+   three candidates costed.
 6. **The transcript break's wording** — proposed in unit 043's report, unruled.
 7. **The attenuator's condition on a live overflow reading**, and whether `CwPitch`
-   should follow an admitted station — both raised in unit 043's report.
+   should follow an admitted station.
 8. **`DECISIONS.md` has no record for HM-DEC-096–133, 136, 141 or 150.**
 9. **The `reading` line's span wording needs approval.**
 10. **Two stations closer than 125 Hz are not named.**
 11. **HM-OPEN-057** (2026-08-22) and **HM-OPEN-007** (2026-08-14).
-12. **Nothing checks that deleting a surface is not deleting a capability** — the
-    favourites list is gone.
-13. **A capture sheet carries a score of −68562.4** (`cw-2026-08-28-005158`) —
-    **and this unit explains it**: the fit figure has no floor either.
-14. **The engine test host crashes**, and not only on the class HM-OPEN-061 names.
+12. **Nothing checks that deleting a surface is not deleting a capability.**
+13. **The engine test host crashes**, and not only on the class HM-OPEN-061 names.
     Owned by Claude, not waiting on a ruling.
-15. **A second intermittent** —
-    `Rig.RigDisconnectTests.ARigWhoseReadLoopIsStuckStillDisconnects` fails in a
-    whole-suite run and passes alone, first seen here. Like the one the orders
-    already name, it is a timing-sensitive test about a slow link.
+14. **A second intermittent**, `ARigWhoseReadLoopIsStuckStillDisconnects`, seen in
+    unit 044 and **not reproduced here**, which confirms it is intermittent rather
+    than a regression.
