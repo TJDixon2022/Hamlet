@@ -1,13 +1,12 @@
-```
 STOP. Verify the project before reading any further.
 
 PROJECT: Hamlet
 
 Check the repository root:
-  MUST EXIST:      CLAUDE.md
-  MUST EXIST:      data/bands/us-neighborhoods.json
-  MUST NOT EXIST:  ANNUNCIATOR_PANEL.md
-  MUST NOT EXIST:  src/CoreHMI
+  MUST EXIST:      SHACK_FACTS.md
+  MUST EXIST:      src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs
+  MUST NOT EXIST:  CoreHMI.sln
+  MUST NOT EXIST:  MURC.sln
 
 If all four are not as stated, you are in the wrong repository.
 REFUSE. Do not read the rest of this file, do not summarise it, do not
@@ -16,278 +15,294 @@ Reply with only: the path you are in, which checks failed, and
 "wrong project — nothing done."
 
 If all four hold, say "Hamlet confirmed" and continue.
-```
 
 ---
 
-# Why this unit exists
-
-**A single `26` read returns a stale answer. Tim has to issue the query twice
-before USB can be told from USB-D.** That is the number this unit is aimed at:
-reads-to-a-correct-answer goes from 2 to 1.
-
-Where it came from: Tim reported it at the bench on 2026-08-28 while recovering
-from a mode fault on 20 m FT8. It has not been measured in code. **Task 1 is the
-measurement, and if it does not reproduce, this unit stops there and says so** —
-the rest of the unit rests on it.
-
-The bench session behind it: the radio was in CW at 14.074, FIL2, 500 Hz. The
-operator heard nothing, tuned up, and found FT8 at 14.075. **That is HM-DEC-054's
-whale song, a second time, fourteen days after the ruling written to prevent it.**
-The mode automation HM-DEC-056 built did not fire, because the operator was
-tuning by hand rather than crossing a neighborhood boundary the app was watching.
-
-```
-PHASE GOAL:   not set — PROJECT_STATUS.md reads PHASE: — and PROJECT_CARD.md
-              carries no phase field. See section 4 of the delivery message.
-UNIT GOAL:    One CI-V read returns the current answer, and entering data
-              territory and staying there sets the data mode without being asked.
-ADVANCES:     none — no phase goal is set to advance. This is a defect unit.
-```
-
----
-
-# Verify this instruction against the tree
-
-**Nothing here describes the tree.** Check every claim against the files and
-report any mismatch.
+# Work instruction 050 — the pitch, the envelope, and the bench
 
-Every path, type name and behaviour below comes from `DECISIONS.md` refs and from
-Tim's bench report, not from reading the code. Specifically unverified:
+**ISSUED: 2026-08-29. A fresh order, not an amendment. Follows unit 049.**
 
-- `src/Hamlet.RadioEngine/Civ/CivReads.cs` and `CivWrites.cs` as the location of
-  the frame reader and the mode write.
-- `src/Hamlet.RadioEngine/Explore/ModeFollowPlan.cs` as the tune-in decision.
-- `data/bands/us-neighborhoods.json` as having no passband field today.
-- That the app reads `26` rather than `04` for the mode.
-
-**Report the mismatch; do not repair the instruction.** Mismatches go in the
-report even where the work succeeded anyway. No checks are expected to fail; if
-any are already red when you arrive, name them with their ids so a known red is
-not rediscovered next unit.
-
----
-
-# Rulings in force
-
-## HM-DEC-056 — transcribed, in force, do not re-argue
-
-Hamlet writes to the radio for the first time, and what it writes is the mode:
-tuning into a neighborhood sets the mode that neighborhood is worked in.
-
-The command is `26`, not `06`. Command `06` sets a mode and a filter and has no
-way at all to say whether the data variant is wanted (p. 19-8). Command `26`
-carries the mode, a data mode flag and the filter, for the selected or unselected
-VFO (p. 19-11). **Hamlet sends the data flag and skips the filter byte, because
-the manual says the radio then picks that mode's own default filter, which is a
-better answer than any Hamlet could invent for somebody else's rig.**
-
-Nothing is assumed from having sent it. The radio acknowledges with FB or refuses
-with FA, and anything else leaves the value UNKNOWN rather than set to what was
-asked for. Every write the app makes on its own initiative is narrated in the
-status line. The operator's own hand always wins: a mode change Hamlet did not
-make suspends the automation until the next band change re-arms it, and suspended
-is a visible state on screen rather than a silent one. A flip waits for the dial
-to settle, so crossing three neighborhoods in one drag produces one change and
-not three.
-
-A new read came with it: command `26` in its read form reports the mode, the data
-flag and the filter together, which is the only way to tell USB from USB-D —
-command `04` says USB for both. `DataMode` is a first-class field with an unknown
-state like every other, read on connect and when the diagnostics screen is
-opened, and never in the poll loop.
+**Six tasks; task 6 is the drop.**
 
-**Rejected, and not to be revisited inside this unit:** command `06`; assuming a
-write landed without an acknowledgement; a silent suspension when the operator's
-hand intervenes; one change per neighborhood crossed during a drag.
-
-## HM-DEC-054 — transcribed, in force, do not re-argue
-
-The neighborhood map lives in `data/bands/us-neighborhoods.json` with a source on
-every row. Convention and regulation are different files on purpose: `data/privileges`
-says what may be transmitted and has legal weight, `data/bands` says what will
-actually be found and has none.
-
-**One editorial rule, stated in the file and applied everywhere.** Several sources
-publish a watering hole as one dial frequency rather than a range. Those blocks
-run from the published frequency to the next one, or three kilohertz, whichever
-comes first, because these modes are worked in upper sideband with audio up to
-about three kilohertz and that is where the signals land. The 070 Club states
-exactly that, so even the width is cited rather than chosen.
-
-**Rejected:** inventing a neighborhood from memory; coloring an unclaimed stretch
-as Morse; the card inviting the operator to call where the map has a caution.
-
-## Proposed, NOT in force — the filter byte
+## The number this unit is judged by
 
-**This is a proposal from the web session, marked as such per §4.4. It is not a
-ruling and no task below depends on it.** Tim rules on it before it is built.
+**Precision is 0.766. The phase goal is 0.85. The gap is 8.4 points.**
 
-HM-DEC-056 skipped the filter byte on the reasoning that the radio's own default
-is better than one Hamlet invents. **The manual's filter table (p. 4-6) appears to
-falsify the premise**: SSB-D's slots are not SSB's. SSB reads FIL1 3.0 kHz, FIL2
-2.4, FIL3 1.8. SSB-D reads FIL1 3.0 kHz, **FIL2 1.2**, FIL3 500 Hz. A radio whose
-remembered USB-D default is FIL2 lands on a 1.2 kHz window over a 3 kHz FT8 block
-— under half of it — and produces a thinned version of the symptom HM-DEC-056
-exists to prevent.
+**Every task reports precision, yield, substitutions, and the distance remaining.**
 
-Against it: the filter is also how an operator deliberately narrows onto one
-signal, and a per-mode default is a stored preference of his. Verify the table
-against the manual before Tim rules; **the manual is cited and never committed**,
-so this cannot be checked from the tree.
+## Why this unit exists
 
----
+**Every unit since 044 has been built on an argument. This one is built on two
+measurements taken outside Hamlet, on the operator's own captures.**
 
-# Status cadence
+A standalone Python bench was written this evening — 150 lines, no dependency on
+Hamlet — implementing Guenther's 1973 classification from a plain FFT tone
+estimate. **It ships in this zip as `cwbench.py`.** What it showed:
 
-After each task, before starting the next, update `PROJECT_STATUS.md` per
-`CLAUDE.md` — `STATE`, `TASK: n of m`, `BALL`, `UPDATED` read from the clock, and
-`NOTE` saying what is moving inside the task, not restating the task name. Do the
-same every ten minutes while a task is running.
+### Finding 1 — a plain FFT peak beats the tone tracker
 
----
+| capture | Hamlet's tracker said | the bench measured | the truth |
+|---|---|---|---|
+| `cw-2026-08-29-030850` | **850 Hz** | **400.4 Hz** | 399.9 Hz, +53 dB. **850 Hz is 4.4 dB below the band floor — nothing is there.** |
+| `cw-2026-08-29-020938` | **800 Hz, NOT MEASURED — "nothing has judged it to be a station"** | **801.3 Hz** | a keyed carrier at 802.7 Hz, 21 dB over the floor |
 
-# Tasks
+**Twelve lines — a magnitude peak with parabolic interpolation over an averaged
+spectrum — got both right where the tracker did not.** The 850 Hz excursion is the
+phantom that produced unit 044's whole premise; the 800 Hz refusal is the station
+unit 043 was written about.
 
-## Task 1 — trace the read path, and reproduce the double query
+### Finding 2 — a run-merging bug that corrupts every duration
 
-**Nothing is built until this reports.** Say what you find rather than confirming
-this list.
+The bench's first version dropped runs shorter than a minimum **without merging the
+neighbours those runs had been separating.** Dropping a 10 ms blip between two
+gaps leaves two adjacent gaps that are then counted separately, **so every duration
+after it is wrong.** The symptom was consecutive same-state runs — `s100 s28`,
+`P171 P194` — and the decode was unreadable until it was fixed.
 
-Answer from the code: how a CI-V read is issued and how its reply is taken off
-the wire; whether the reader matches on the command byte it asked for or takes
-the next frame available; whether unsolicited transceive frames and the radio's
-own echo have a route that is separate from a pending read; whether the mode read
-uses `26` or `04`; and whether any caller already re-reads to work around a stale
-answer.
+**Hamlet does the same kind of short-run filtering. Whether it has the same bug is
+unknown and task 2 answers it.**
 
-Two mechanisms are the leading hypotheses and both are live by default on this
-radio. CI-V USB Port defaults to **"Link to [REMOTE]"** (p. 12-8), which echoes
-transmitted frames back. Transceive sends unsolicited frequency and mode
-broadcasts whenever the dial moves. Either puts a frame in the buffer that a
-next-frame-wins reader mistakes for its reply, and a second read succeeds because
-the queue has drained.
+### Finding 3 — the classical algorithm alone is not better
 
-**Produce the before-number**: reads required to obtain a correct
-mode-and-data-variant answer, measured, with the frames traced.
+The bench reads `S#ELEN ODSERKING MODERATE DAAN SIMED FWTRES` where Hamlet reads
+`BEEN OBSERVING MODERATE DASH SIZED FLARES SINCE AUGUOT I24`. **Hamlet is better.**
 
-**If the double query does not reproduce, stop here and report.** Do not build
-tasks 2 and 3 against a fault that is not there.
+**So this unit does not rip anything out.** The classical classifier is a source of
+specific, testable ideas — not a replacement.
 
-## Task 2 — the frame reader returns the answer it asked for
+### Finding 4 — and the thing Hamlet has that the classics do not
 
-A read matches on the command byte it issued, discards frames it did not ask for,
-and **returns an explicit unknown on timeout rather than the next thing that
-arrives**. Unsolicited broadcasts route to whatever consumes them and are never
-swallowed by a pending read.
+On `cw-2026-08-29-020809`, where Hamlet correctly shows blocks, **the bench emitted
+text from noise.** Guenther has no refusal and neither does any classical decoder
+in the literature. **The silence property is Hamlet's own and it is not tradeable.**
 
-The reason, inline because a rule without it gets talked out of: a reader that
-takes the next frame is correct exactly until the radio volunteers something, and
-this radio volunteers constantly while the dial moves — which is precisely when a
-scan is running and precisely when the answer matters.
+## Verify this instruction against the tree
 
-## Task 3 — audit every CI-V read
+**Nothing here describes the tree.** Check every claim and report mismatches. Trust
+the tree over this order everywhere they differ.
 
-If task 1 confirmed the mechanism, every read in the app has been capable of
-returning the previous answer. Find them all. **Report the count**, and where a
-caller carried a re-read as a workaround, remove it and say so — a workaround
-left in place hides whether task 2 worked.
+From unit 049's report:
 
-## Task 4 — the dwell rule
+- Corpus **yield 0.768, precision 0.766, substitutions 58, deletions 31** over 384
+  adjudicated characters. App **519 passing, 0 failing.**
+- **The engine has had no completed run in three units** — the host crash has ended
+  four. Unit 048 saw 28 failing of 1963 before an abort.
+- `CwDecoder.PosteriorTemperature` exists and **ships at 1.0.** Nothing earned a
+  different value; **leave it alone.**
+- The four `TheSpeedIsFoundAndNotTold` pins were relabelled and are green.
+- **`TheSilencePropertyIsLockedTests` is green and unmodified.**
+- The evidence term outweighs the duration prior by roughly 2000:1 on sane
+  captures and 2 × 10⁹ on `cw-2026-08-17-013347`.
 
-Entering data territory arms a timer. **The condition is the same neighborhood and
-an unchanged frequency across consecutive polls spanning one second — not one
-second spent inside the block.** Movement disqualifies, not position: a slow tune
-sits inside a 3 kHz block for longer than a second while still moving, and Tim
-crosses data every time he scans from CW to voice.
+**Record both suites and the corpus score before task 2.**
 
-- Suppressed entirely while the scanner is running.
-- Leaving and re-entering re-arms from zero.
-- Leaving before maturity discards silently. A write that did not happen is not
-  narrated. HM-DEC-056 already narrates the ones that do.
+## Rulings in force
 
-This extends HM-DEC-056's settle rule rather than replacing it; that ruling waits
-for the dial to settle and this says how long and what disqualifies.
+**Transcribed with what was rejected. Do not re-argue either.**
 
-## Task 5 — data territory sets its mode on dwell
+**Tim's rulings, 2026-08-29:**
 
-On a matured dwell inside a neighborhood whose mode is a data mode, send the
-`26` frame per HM-DEC-056 — VFO selector, mode, data flag, **no filter byte**
-until Tim rules on the proposal above.
+> **The phase goal is 85% correct CW, precision before yield.**
 
-Read back with `26` and the selector alone. **Unconfirmed leaves the mode
-UNKNOWN**, per the ruling. Narrate in the app's voice.
+> **The decoder is not ripped out.** The classical classifier reads worse than what
+> ships. Ideas from it are tested in the bench and adopted only if they score.
+>
+> Rejected: porting AG1LE's Bayesian decoder — **its own author abandoned it**,
+> reporting it was never accurate enough for real-world signals and that he had
+> never found the cause of its base error rate.
 
-The read-back is a second round trip and is not the fault task 2 fixes: task 1's
-read discovers state, this one verifies a change. Two reads asking the *same*
-question are the defect; two reads asking different questions are the design.
+> **Do not break the silence behaviour.** Not tradeable at any price.
 
-## Task 6 — the card says where the signals are — DROP CANDIDATE
+> **The only measurement is against real data from the real radio.**
 
-**This is the drop candidate. It is dropped whole and you say that you dropped
-it.** Not by position; it is named here.
+> **FT8, FT4 and every other digital mode are outside this conversation's scope.**
 
-`14.074` is a dial frequency and no station transmits on it. The energy sits as
-audio offsets above the dial in upper sideband, which is the 3 kHz the editorial
-rule in HM-DEC-054 already encodes. The card names the number; it should name the
-dial and the block that number opens onto, so that **dead at the published
-frequency and alive one kilohertz up reads as a correctly tuned radio** rather
-than an empty band.
+**Standing rulings this unit is bound by:**
 
-Tests: a fixture for CW/FIL2/500 Hz at 14.074 — the 2026-08-28 state; a scan pass
-crossing three data neighborhoods without dwelling, asserting zero writes; a
-reader fed its own echo then the true reply, asserting one read returns the true
-reply.
+- **§0.0 / HM-DEC-009** — never present a guess as a decode.
+- **HM-DEC-120** — nothing emitted on audio holding no signal, and no letters from
+  a pitch nobody judged to be a station. **Tightened only.**
+- **§0.4** — reproduce, then change, then measure.
+- **HM-DEC-007** — tested against WAV fixtures.
+- **§0.2 / HM-DEC-008** — **no transmit work of any kind.**
+
+## Status cadence
+
+After each task, before the next, update `PROJECT_STATUS.md` — `STATE`,
+`TASK: n of m`, `BALL`, `UPDATED` from the clock, `NOTE` saying what is moving
+inside the task. Same every ten minutes while a task runs.
+
+## The measurement rule that governs every task
+
+**Every change is measured with `CwAccuracy` over the whole scored corpus, before
+and after.** Every task reports **precision, yield, substitutions, and points
+remaining to 0.85.**
+
+- **Precision must not fall. Ever.** A change that lowers it is reverted and
+  reported.
+- **`TheSilencePropertyIsLockedTests` runs after every task and may not be
+  modified.** A task that turns it red is reverted.
 
----
+## The tasks
+
+### Task 1 — the bench enters the tree, and reproduces the two findings
 
-# Parked — do not touch, do not raise
+**`cwbench.py` ships in this zip.** Put it under `tools/` with a note saying what
+it is: a standalone reference bench, not part of the application, written to test
+an idea before a unit is spent on it.
 
-- **The Twin PBT.** No write exists in the command table and reading it needs
-  `14 08` re-read column-aware — the row `CLAUDE.md` records as once confused with
-  the CW pitch. Real, and its own unit.
-- **RIT left on as a silent-radio cause.** Real, the command is unverified, and it
-  is the same unit as the PBT.
-- **The decoder.** Nothing in this unit is evidence about it.
-- **`PROJECT_CARD.md` having no phase field.** Raised in the delivery message and
-  changed only by ruling (§13.3). Not this unit's business.
+- **Run it over every capture in the corpus** and record its tone estimate and its
+  text beside Hamlet's, in a table.
+- **Reproduce finding 1**: on `cw-2026-08-29-030850` and `cw-2026-08-29-020938`,
+  report the bench's tone estimate against what Hamlet's tracker committed to and
+  against the strongest keyed bin measured from the audio.
+- **The eight captures of 2026-08-29 have blocked tasks in seven consecutive
+  units. If they are still absent, say so once and run over what exists.**
 
-A parked item that turns out to block a task is raised once, and says it was
-parked.
+**The bench is a reference, not a dependency. Nothing in the application may
+import it.**
 
----
+### Task 2 — the run-merging bug, found or ruled out
 
-# What not to do
+**Read Hamlet's envelope-to-elements path** and answer, with file and line:
 
-Standing prohibitions live in `CLAUDE.md` and are cited, not retyped.
+- **Is a run shorter than some minimum dropped?** What is the minimum and where is
+  it set?
+- **When one is dropped, are the neighbours it separated merged?** If not, **that
+  is the bug**, and every duration after a dropped run is wrong.
+- **Assert it either way with a test** over a synthetic run sequence containing a
+  sub-minimum blip between two gaps — the exact case that broke the bench.
 
-Unit-specific:
+**If the bug is present, fix it, and report the corpus score before and after.**
+This is the highest-value line in the unit if it is there, because it corrupts the
+durations that every later stage classifies.
 
-- **Do not send the filter byte.** HM-DEC-056 rejected it and the reversal is a
-  proposal awaiting Tim. Building it would be a session overturning a ruling.
-- **Do not write slot widths via `1A 03`.** Selecting a slot is a session choice;
-  changing what a slot *means* rewrites a stored preference of the operator's.
-- **Do not commit the IC-7300 manual.** HM-DEC-056: cited and never committed.
-- **No transmit work.** §0.2 is untouched.
+**If it is not present, say so plainly and move on.** A clean answer is worth the
+task.
 
----
+### Task 3 — the tone estimate
 
-# Committing, pushing, reporting
+**Add an FFT-peak tone estimator** with parabolic interpolation over a
+time-averaged magnitude spectrum, as the bench does — and **measure it against the
+tracker on every capture in the corpus.**
 
-Commit and push each task before starting the next. Name the branch in the report
-and state whether the push succeeded; a refused push is reported as refused.
+- **Report both estimates per capture**, beside the strongest keyed bin measured
+  from the audio.
+- **Then measure the decode both ways**: corpus score with the tracker, and corpus
+  score with the FFT estimate feeding the decoder.
+- **Adopt the FFT estimate only if precision rises or holds.** If it falls, report
+  and revert — the tracker has hysteresis the peak does not, and that may be doing
+  work on fading signals.
 
-Write `output.md` at the repository root per `CLAUDE_CODE.md` §8 — the header
-block from the clock, then the four sections. **Section 3 leads with the answer
-this unit was commissioned to ask: how many reads it now takes to get a correct
-mode-and-data-variant answer, before and after.**
+**Admission is not changed in this task.** Whatever decides that a station is
+present stays as it is; only the pitch handed to the decoder is in question.
 
-`ADVANCED: no` is the expected answer here and is written without apology; carry
-`DRIFT` forward from the block above, which reads 0 because no phase goal is set
-to drift from — say so on the line.
+### Task 4 — Guenther's boundaries, tested in the bench first
 
-**Every exit writes the report.** Complete, blocked, failed, or stopped early by
-your own judgment. If you stop with tasks remaining, name them and say why in
-section 1, and say whether what you dropped was task 6.
+**Three specific ideas from Guenther 1973, each tested in `cwbench.py` before any
+of them touches Hamlet.** The bench is the cheap place to find out.
 
-Then stop. Do not start the next unit.
+1. **The dit/dah boundary is not the midpoint** — it sits closer to the dot average
+   because the two clusters have different variances.
+2. **Space boundaries are conditioned on the preceding element** — character and
+   word spaces following a dash are systematically shorter than those following a
+   dot, so the boundary is a sloping line in two dimensions, not a threshold on
+   duration alone.
+3. **The character/word average is fed only by non-symbol spaces that follow a
+   dot.** Guenther documents the instability that follows from doing otherwise:
+   character spaces outnumber word spaces about four to one, ones slightly over the
+   threshold drag the word average down, which lowers the threshold, which
+   misclassifies more of them — until the threshold collapses onto the character
+   average.
+
+- **Measure each of the three in the bench, separately, over the corpus.** Report
+  which improve the bench's own reading and by how much.
+- **Then, and only for those that improved it**, state where the equivalent would
+  go in Hamlet's duration model and what it would cost. **Do not implement them in
+  Hamlet in this task** — the bench measurement is the deliverable.
+
+**Idea 2 is the one this author expects to matter most**, because gap
+misclassification breaks characters and words apart and Hamlet's boundary is
+one-dimensional. **Measure it rather than assuming it.**
+
+### Task 5 — the engine suite gets a completed run
+
+**The engine has had no completed run in three units. The host crash has ended
+four.**
+
+- **Get one completed run**, by whatever splitting, batching or exclusion it takes,
+  and **report the number and whether the failing set is byte-identical to unit
+  048's twenty-eight.**
+- **If the crash cannot be worked around, report exactly what it takes to
+  reproduce it** and how far the run gets. HM-OPEN-061 names a narrower class than
+  what is happening.
+
+**This is not glamorous and it is overdue.** Three units have reported a number
+they could not measure.
+
+### Task 6 — the strongest bench idea, implemented *(the drop candidate)*
+
+**Only for whichever of task 4's three measured best, and only if it improved the
+bench's reading.**
+
+- Implement it in Hamlet's duration model.
+- **Measure with `CwAccuracy` before and after. Precision must not fall.**
+- **Report the corpus score and the distance to 0.85.**
+
+**Dropped whole if time runs out, and the report says so.** Task 4's measurements
+stand on their own and the next unit can implement from them.
+
+## Parked — do not touch, do not raise
+
+**FT8, FT4 and every other digital mode**, the digital tab, the digital capture
+press, the waterfall.
+
+**The confidence work.** Seven quantities have been measured against correctness
+and none discriminates. **Do not add an eighth, do not tune the temperature, do not
+touch the emission gate or the character floor.**
+
+Also: admission itself; the lattice's structure; the evidence term's magnitude;
+the settings contract and `OwnedSettings`; the scanner and the calling cycle;
+`CHANGELOG.md`; the missing `DECISIONS.md` records; the phrasebook and the
+recent-places row; the Twin PBT; the answer key's licensing; the dial-move
+threshold; the transcript break's wording.
+
+**Both halves are required: do not touch them, and do not raise them.**
+
+A parked item that genuinely blocks a task is raised once, and says it was parked.
+
+## What not to do
+
+Standing prohibitions are `CLAUDE.md`'s and are not retyped. Unit-specific:
+
+- **No transmit. Nothing keys the radio.**
+- **Do not break the silence property**, and **do not modify its lock.** The bench
+  emits text from noise; Hamlet must not.
+- **Do not let precision fall on any task.** Revert and report.
+- **Do not let the application import or depend on the bench.**
+- **Do not implement Guenther's ideas in Hamlet before task 4 measures them.**
+- **Do not change admission.**
+- **Do not add an eighth confidence quantity.**
+- **Do not rip out the decoder.**
+- **Do not report a score without saying whether it is yield or precision.**
+- **Do not mint a decision id.**
+
+## Committing, pushing, reporting
+
+Commit and push each task before starting the next; name the branch; a refused push
+is reported as refused, with the reason.
+
+Report per `CLAUDE_CODE.md` §8 to `output.md` at the repository root, overwritten
+and printed. **Read the file's own section count and follow it.**
+
+**Write `output.md` before you stop, for any reason at all. Do not hold it behind a
+regression run.**
+
+**The section that reports measurements leads with task 2's answer — whether the
+run-merging bug is present — and then task 3's tone table, tracker against FFT peak
+against the measured strongest keyed bin, per capture.**
+
+**The section that says what the owner should expect leads with the precision
+number and its distance from 0.85.**
+
+**If you finish every task, stop and report. Do not start the next unit.**

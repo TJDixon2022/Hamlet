@@ -4,8 +4,8 @@ PHASE: 12
 TASK: 6 of 6
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-29T17:22:41-04:00
-NOTE: output.md written; app suite still running, its result lands as the amendment
+UPDATED: 2026-08-29T17:31:37-04:00
+NOTE: HM-DEC-149's own sweep caught my comment pushing the follow path past its 6,000-character bound; comment trimmed, full app suite re-running
 
 ---
 

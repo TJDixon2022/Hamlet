@@ -5815,20 +5815,11 @@ public partial class MainWindowViewModel : ObservableObject
             RigState[RigField.Mode].AtUtc,
             RigState[RigField.DataMode].AtUtc);
 
-        // **DATA TERRITORY WAITS FOR THE DIAL TO COME TO REST** (work
-        // instruction 050, tasks 4 and 5). The settle timer above debounces one
-        // gesture; this asks the separate question of whether the gesture has
-        // finished. Crossing a three-kilohertz digital block on the way from
-        // Morse to voice takes longer than a second at a slow tune, and a write
-        // made in passing leaves the radio in a mode whose symptom is silence.
-        //
-        // **LEAVING BEFORE MATURITY DISCARDS SILENTLY.** A write that did not
-        // happen is not narrated; HM-DEC-056 narrates the ones that do, and a
-        // commentary on the ones that nearly did is noise on the one line the
-        // operator reads.
-        //
-        // The receive side still runs below, because hearing the block is not
-        // the same act as being in its mode.
+        // **DATA TERRITORY WAITS FOR THE DIAL TO COME TO REST**, and the rule
+        // for that is <see cref="ModeDwell"/>, which carries its own reasoning.
+        // Not writing is silent: HM-DEC-056 narrates the writes that happen, and
+        // a commentary on the ones that nearly did is noise. The receive side
+        // still runs below, because hearing a block is not being in its mode.
         var waiting = ModeFollowPlan.WaitsForDwell(target)
                       && !(_modeDwell.Spent
                            && _modeDwell.Block == (here?.Name ?? "")

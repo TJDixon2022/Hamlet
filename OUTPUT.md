@@ -136,16 +136,35 @@ Build clean, no new warnings. Pushed to `main`: `222e3a4`, `9e35866`, and
 - **The filter byte is still sent.** Mismatch 2 above; it is a ruling ask, not an
   omission.
 - **Task 6 has no commit.** It was already in the tree.
-- **The full engine suite has no result in this report.** The app suite was still
-  running when this was written; both are amended below.
+- **Neither full suite has a single-run result.** Both are batched, and the app
+  Views batch does not come back at all. Amended below.
 - **HM-OPEN-061 remains open.** The engine test host crashes on full runs, wider
   than the class the issue names. Not touched this unit.
 
-### Amendment — the app suite
+### Amendment — the app suite, and a red test I caused
 
-**Pending.** Replaced when it lands. **If this line is not replaced, it did not
-finish** — HM-OPEN-061 has ended several full runs, and an unreplaced line is the
-honest record rather than an omission.
+**One test went red and it was mine: `ModeFollowsTheMapAgainTests.
+NothingButTheModeIsEverWritten`** — HM-DEC-149's own sweep of the follow path.
+Not a write it objected to: the sweep bounds itself at 6,000 characters between
+two method anchors, so that it cannot pass by sweeping the rest of the file and
+finding nothing there either, and **the comment I added to `FollowTheMapAsync`
+pushed the path past that bound.** The comment is trimmed to five lines pointing
+at `ModeDwell`, which carries the reasoning, and the sweep is green.
+
+**It found the right thing.** A guard that only fires on a forbidden call would
+not have noticed the method growing until it had grown enough to hide one.
+
+App suite, run in batches because a single run exceeds ten minutes:
+
+| batch | result |
+|---|---|
+| ViewModels | **240 passing, 0 failing** |
+| everything but ViewModels and Views | **217 passing, 0 failing** |
+| Views | **did not finish inside ten minutes** |
+
+**The Views batch has no number**, and that is the honest record rather than an
+omission. It is the same shape as HM-OPEN-061 on the engine side: a full run that
+does not come back. Nothing in this unit touched a view.
 
 ## 3. What we should do next
 
