@@ -54,8 +54,9 @@
           "field": "preamp",
           "wanted": 1,
           "wantedText": "preamp 1",
-          "confirmed": true,
-          "because": "On the higher bands and on a quiet night the noise arriving at the antenna is smaller than the noise the receiver makes itself, and the preamplifier is what lifts the signal clear of it. It is the first thing to turn off again if the band gets loud, because gain applied to a strong signal buys nothing and costs headroom."
+          "confirmed": false,
+          "because": "On the higher bands and on a quiet night the noise arriving at the antenna is smaller than the noise the receiver makes itself, and the preamplifier is what lifts the signal clear of it. It is the first thing to turn off again if the band gets loud, because gain applied to a strong signal buys nothing and costs headroom. It is stated unconfirmed because the work order names the attenuator and not this, and whether the preamplifier helps depends on the antenna and the band noise at this station, which nobody has measured here.",
+          "confirm": "Tim, on his own band and antenna"
         },
         {
           "control": "noise blanker",

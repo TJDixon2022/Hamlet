@@ -4,8 +4,8 @@ STATE: EXECUTING
 TASK: 7 of 7
 BALL: tim
 NEXT_PASTE: none
-UPDATED: 2026-08-28T22:37:35-04:00
-NOTE: one committed test reversed by the new ruling, re-expressed with its reason kept; committing tasks 1, 5 and 7
+UPDATED: 2026-08-28T22:54:36-04:00
+NOTE: CW rows asserted by their own test; the digital test now matches its own name and the preamp ships unconfirmed
 
 ---
 

@@ -30,6 +30,26 @@ public sealed class TheBlockStatesWhatTheModeNeedsTests
     public TheBlockStatesWhatTheModeNeedsTests(ITestOutputHelper output)
         => _output = output;
 
+    /// <summary>What every stated condition owes, whatever its mode.</summary>
+    /// <param name="hood">The block, for the message.</param>
+    /// <param name="conditions">Its conditions.</param>
+    /// <remarks>
+    /// A reason short enough to be missing is a reason that cannot be spoken, and
+    /// task 4 speaks all of them.
+    /// </remarks>
+    private static void AssertEveryConditionCarriesItsReason(
+        Neighborhood hood, IReadOnlyList<ReceiverCondition> conditions)
+    {
+        foreach (var condition in conditions)
+        {
+            Assert.NotEqual("", condition.Because);
+            Assert.NotEqual("", condition.Control);
+            Assert.True(
+                condition.Because.Length > 60,
+                $"{hood.Name} {condition.Control} gives a reason too short to say aloud");
+        }
+    }
+
     private static IEnumerable<(CwBand Band, Neighborhood Hood)> WholeMap()
         => HfBands.Bands.SelectMany(
             b => NeighborhoodPlan.ForBand(b).Select(n => (Band: b, Hood: n)));
@@ -65,6 +85,20 @@ public sealed class TheBlockStatesWhatTheModeNeedsTests
 
             var wideHz = hood.HighHz - hood.LowHz;
 
+            // **THIS TEST IS ABOUT THE DIGITAL BLOCKS AND ITS NAME SAYS SO.**
+            // It walked every block that states anything, which was the same set
+            // until 2026-08-29, when Tim's ruling had CW state what CW needs and
+            // the two stopped being the same set. The four fields below are what
+            // *this mode* needs; CW's four are different and are walked by
+            // `TheMorseBlocksStateWhatMorseNeeds`. What every block owes,
+            // whatever its mode, is asserted below for all of them.
+            if (hood.Family is not ModeFamily.Digital)
+            {
+                AssertEveryConditionCarriesItsReason(hood, conditions);
+
+                continue;
+            }
+
             _output.WriteLine(
                 $"  {band.Name,-5} | {hood.Name,-12} | {wideHz,5} | "
                 + string.Join(", ", conditions.Select(c => $"{c.Control}={c.WantedText}")));
@@ -87,15 +121,7 @@ public sealed class TheBlockStatesWhatTheModeNeedsTests
                 span.WantedText,
                 StringComparison.Ordinal);
 
-            // Every condition carries its reason, because task 4 speaks them.
-            foreach (var condition in conditions)
-            {
-                Assert.NotEqual("", condition.Because);
-                Assert.NotEqual("", condition.Control);
-                Assert.True(
-                    condition.Because.Length > 60,
-                    $"{hood.Name} {condition.Control} gives a reason too short to say aloud");
-            }
+            AssertEveryConditionCarriesItsReason(hood, conditions);
         }
 
         _output.WriteLine("");
@@ -106,10 +132,89 @@ public sealed class TheBlockStatesWhatTheModeNeedsTests
     }
 
     /// <remarks>
-    /// **THE BLOCKS THAT SAY NOTHING SAY NOTHING.** Morse rows, phone rows and
-    /// the open ground between the cited ones. The order is explicit that CW
-    /// states what CW needs and no more, and nobody has measured what CW needs
-    /// of the noise controls, so its rows produce no claim and no write.
+    /// <para>**WHAT MORSE NEEDS IS NOT WHAT FT8 NEEDS, AND THE ROWS SAY SO**
+    /// (Tim's ruling of 2026-08-29). The attenuator leads, because on the evening
+    /// that produced this ruling it sat at 20 dB with the preamp off while the
+    /// station faded S4 to S1 to nothing.</para>
+    /// <para>**AND THE TWO NOBODY HAS MEASURED HERE PRODUCE NO WRITE.** The
+    /// preamp and the AGC are stated so they can be spoken and marked unconfirmed
+    /// so no byte goes out on them (§12.4). Which AGC setting reads better on a
+    /// deep fade is a question about this receiver and this operator; whether the
+    /// preamplifier helps depends on the antenna and the band noise here.</para>
+    /// </remarks>
+    [Fact]
+    public void TheMorseBlocksStateWhatMorseNeeds()
+    {
+        var spoke = 0;
+
+        foreach (var (band, hood) in WholeMap())
+        {
+            if (hood.Family is not ModeFamily.Cw)
+            {
+                continue;
+            }
+
+            var conditions = ReceiverConditions.ForBlock(hood);
+
+            if (conditions.Count == 0)
+            {
+                // Not every Morse block is named `CW`; `CW DX` and `QRP` are
+                // Morse and the lookup is by short name. That is unit 042's
+                // shape and this unit did not change it (§12.6).
+                continue;
+            }
+
+            spoke++;
+
+            _output.WriteLine(
+                $"  {band.Name,-5} | {hood.Name,-14} | "
+                + string.Join(", ", conditions.Select(c => $"{c.Control}={c.WantedText}")));
+
+            foreach (var field in new[]
+            {
+                RigField.Attenuator, RigField.Preamp,
+                RigField.NoiseBlanker, RigField.Agc,
+            })
+            {
+                Assert.Contains(conditions, c => c.Field == field);
+            }
+
+            // **THE ATTENUATOR COMES OFF.** It is the one the order names and the
+            // one that cost the operator his evening.
+            var attenuator = conditions.Single(c => c.Field == RigField.Attenuator);
+
+            Assert.Equal(0, attenuator.Wanted);
+            Assert.True(attenuator.CanBeWritten);
+
+            // **AND THE TWO NOBODY MEASURED GO OUT AS WORDS AND NOT AS BYTES.**
+            foreach (var field in new[] { RigField.Preamp, RigField.Agc })
+            {
+                var stated = conditions.Single(c => c.Field == field);
+
+                Assert.False(
+                    stated.CanBeWritten,
+                    $"{stated.Control} is written to the radio on a value nobody "
+                    + "has measured at this station");
+                Assert.NotEqual("", stated.Confirm);
+            }
+
+            AssertEveryConditionCarriesItsReason(hood, conditions);
+        }
+
+        Assert.True(spoke > 0, "no Morse block states anything at all");
+    }
+
+    /// <remarks>
+    /// <para>**THE BLOCKS THAT SAY NOTHING SAY NOTHING.** Phone rows and the open
+    /// ground between the cited ones.</para>
+    /// <para>**MORSE ROWS USED TO BE ON THAT LIST AND ARE NOT ANY MORE.** Unit
+    /// 042's order was explicit that CW states what CW needs and no more, and
+    /// that nobody had measured what CW needs of the noise controls, so its rows
+    /// produced no claim and no write. **Tim's ruling of 2026-08-29 reverses
+    /// that** and has CW state four conditions in the same shape. What survives
+    /// of the old reasoning is where it was right: the two rows nobody has
+    /// measured here, the preamp and the AGC, are stated unconfirmed and produce
+    /// no write (§12.4).</para>
     /// </remarks>
     [Fact]
     public void ABlockWithNothingToSayProducesNoClaim()
