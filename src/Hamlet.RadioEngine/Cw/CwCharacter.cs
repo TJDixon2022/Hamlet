@@ -143,6 +143,22 @@ public sealed record CwCharacter(
     /// </remarks>
     public double MarginLlr { get; init; } = double.NaN;
 
+    /// <summary>
+    /// The probability that this character is what the path says, marginalised
+    /// over every path through the lattice.
+    /// </summary>
+    /// <remarks>
+    /// **THE FIRST CONFIDENCE HERE THAT CANNOT GROW WITH LOUDNESS.** Five
+    /// quantities have been measured against correctness and all five were
+    /// negative — the fit ratio at −0.179 and −0.203, `MarginLlr` at −0.351,
+    /// `MarginShareForRecord` at −0.345, `SpanMarginForRecord` at −0.190 — each
+    /// a difference of path scores carrying an unbounded level term. A posterior
+    /// is a ratio over the sum of all paths, so the level cancels.
+    /// **NaN where none could be computed, which is not a probability of nought**
+    /// (§0.0).
+    /// </remarks>
+    public double Posterior { get; init; } = double.NaN;
+
     /// <summary>The widest either likelihood figure may be written as.</summary>
     /// <remarks>
     /// **A MILLION, BECAUSE THE RECORD HAS PRINTED QUADRILLIONS.** The

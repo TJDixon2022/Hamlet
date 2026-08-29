@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 3 of 8
-BALL: code
+TASK: 4 of 8
+BALL: tim
 NEXT_PASTE: none
-UPDATED: 2026-08-29T11:56:38-04:00
-NOTE: forward-backward in and numerically sound; correlating the posterior against per-character correctness next, which is the unit's gate
+UPDATED: 2026-08-29T12:09:08-04:00
+NOTE: posterior is +0.050 against correctness, positive in sign and inside the noise; its sweep peaks at 0.822 precision against a target of 0.99
 
 ---
 

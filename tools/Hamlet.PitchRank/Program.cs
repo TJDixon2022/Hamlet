@@ -1233,7 +1233,9 @@ internal static class Program
     /// </remarks>
     private static void ConfidenceSweep()
     {
+        var posterior = new List<(double Value, bool Right)>();
         var margin = new List<(double Value, bool Right)>();
+        var truthTotal = 0;
         var share = new List<(double Value, bool Right)>();
         var span = new List<(double Value, bool Right)>();
 
@@ -1278,6 +1280,8 @@ internal static class Program
 
             var outcomes = CwAccuracy.Align(read, want);
 
+            truthTotal += want.Length;
+
             int correct = 0, subs = 0, ins = 0, blocks = 0;
 
             foreach (var (index, outcome) in outcomes)
@@ -1299,6 +1303,11 @@ internal static class Program
 
                 var right = outcome == CwAccuracy.Outcome.Correct;
 
+                if (!double.IsNaN(c.Posterior))
+                {
+                    posterior.Add((c.Posterior, right));
+                }
+
                 if (!double.IsNaN(c.MarginLlr))
                 {
                     margin.Add((c.MarginLlr, right));
@@ -1319,9 +1328,45 @@ internal static class Program
         }
 
         Console.WriteLine();
+        Sweep(posterior, truthTotal);
+        Console.WriteLine();
+        Report("Posterior", posterior);
         Report("MarginLlr", margin);
         Report("MarginShare", share);
         Report("SpanMargin", span);
+    }
+
+    /// <summary>
+    /// What blocking every character below a threshold would buy and cost.
+    /// </summary>
+    /// <remarks>
+    /// **THE CURVE IS REPORTED RATHER THAN A POINT BEING PICKED.** Choosing a
+    /// threshold by trying values until the corpus reads better is the failure
+    /// unit 045 avoided on the filter width and the standard here.
+    /// </remarks>
+    private static void Sweep(
+        List<(double Value, bool Right)> data, int truthTotal)
+    {
+        Console.WriteLine("threshold	kept	blocked	correct	yield	precision");
+
+        foreach (var t in new[]
+        {
+            0.0, 0.50, 0.70, 0.80, 0.85, 0.90, 0.95, 0.98, 0.99, 0.999,
+        })
+        {
+            var kept = data.Where(d => d.Value >= t).ToArray();
+            var correct = kept.Count(d => d.Right);
+
+            Console.WriteLine(string.Format(
+                CultureInfo.InvariantCulture,
+                "{0:0.000}	{1}	{2}	{3}	{4:0.000}	{5:0.000}",
+                t,
+                kept.Length,
+                data.Count - kept.Length,
+                correct,
+                truthTotal == 0 ? 0 : (double)correct / truthTotal,
+                kept.Length == 0 ? 0 : (double)correct / kept.Length));
+        }
     }
 
     /// <summary>Correlate one candidate confidence against correctness.</summary>

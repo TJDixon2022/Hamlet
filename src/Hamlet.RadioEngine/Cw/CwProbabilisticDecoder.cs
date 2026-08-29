@@ -77,6 +77,10 @@ public readonly record struct CwProbabilisticResult(
 /// How much better this character's own span is explained by the keying the path
 /// chose than by the key having been up throughout it.
 /// </param>
+/// <param name="Posterior">
+/// The probability that the character ends where the path says, marginalised
+/// over every path. NaN where none could be computed.
+/// </param>
 /// <remarks>
 /// <para>**A CHARACTER READ FROM A SIGNAL AND A CHARACTER MINTED FROM NOISE ARE
 /// SEPARABLE BY THIS NUMBER, AND UNTIL NOW NOTHING RECORDED IT.** The window's
@@ -103,8 +107,23 @@ public readonly record struct CwProbabilisticCharacter(
     int EndHop,
     double SpanLogLikelihoodRatio = 0,
     int SpanHops = 0,
-    double MarginLlr = double.NaN)
+    double MarginLlr = double.NaN,
+    double Posterior = double.NaN)
 {
+    /// <summary>
+    /// The probability that this character ends where the path says it does,
+    /// marginalised over every path through the lattice.
+    /// </summary>
+    /// <remarks>
+    /// **THE FIRST QUANTITY HERE THAT CANNOT GROW WITH LOUDNESS.** Five others
+    /// have been measured against correctness and all five were negative, each
+    /// being a difference of path scores carrying an unbounded level term. This
+    /// is a ratio over the sum of all paths, so the level cancels in the
+    /// normalisation. NaN where no posterior could be computed, which is not a
+    /// probability of nought (§0.0).
+    /// </remarks>
+    public double PathPosterior => Posterior;
+
     /// <summary>
     /// How much better the winning reading was than the nearest alternative
     /// arriving at the same place.
@@ -1530,7 +1549,8 @@ public static partial class CwProbabilisticDecoder
             total,
             Spell(
                 count, lastKind, fromHop, fromKind, downTo, upTo, best, second,
-                unit, gapHops, jointly),
+                unit, gapHops, jointly,
+                Posterior(count, downTo, upTo, unit, gapHops)),
             lastKind);
     }
 
@@ -1652,11 +1672,12 @@ public static partial class CwProbabilisticDecoder
     /// element gaps inside a character contribute nothing and why the length
     /// penalty is left out.
     /// </remarks>
+    /// <param name="posterior">The state posteriors, or null where none.</param>
     private static IReadOnlyList<CwProbabilisticCharacter> Spell(
         int count, int lastKind, int[,] fromHop, int[,] fromKind,
         double[] downTo, double[] upTo,
         double[,] best, double[,] second, double unit, double[]? gapHops,
-        bool jointly)
+        bool jointly, double[,]? posterior)
     {
         if (jointly)
         {
@@ -1666,6 +1687,11 @@ public static partial class CwProbabilisticDecoder
 
         // How much better the winning path was than the nearest alternative
         // arriving at the same hop; see `CwProbabilisticCharacter.MarginLlr`.
+        // The posterior at the state the path is actually in, or NaN where none
+        // could be computed — which is not a probability of nought (§0.0).
+        static double At(double[,]? posterior, int at, int k)
+            => posterior is null || k < 0 ? double.NaN : posterior[at, k];
+
         static double Margin(double[,] best, double[,] second, int at, int k)
             => k < 0
                || double.IsNegativeInfinity(second[at, k])
@@ -1743,7 +1769,9 @@ public static partial class CwProbabilisticDecoder
                     spanFrom < 0 ? 0 : startHop - spanFrom,
                     Margin(
                         best, second, startHop,
-                        marginAt.TryGetValue(startHop, out var mk) ? mk : -1)));
+                        marginAt.TryGetValue(startHop, out var mk) ? mk : -1),
+                    At(posterior, startHop,
+                        marginAt.TryGetValue(startHop, out var pk) ? pk : -1)));
 
                 pattern.Clear();
                 spanRatio = 0;
@@ -1765,7 +1793,9 @@ public static partial class CwProbabilisticDecoder
                 spanFrom < 0 ? 0 : count - spanFrom,
                 Margin(
                     best, second, count,
-                    marginAt.TryGetValue(count, out var lk) ? lk : lastKind)));
+                    marginAt.TryGetValue(count, out var lk) ? lk : lastKind),
+                At(posterior, count,
+                    marginAt.TryGetValue(count, out var pl) ? pl : lastKind)));
         }
 
         return characters;

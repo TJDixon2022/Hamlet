@@ -741,6 +741,7 @@ public sealed class CwProbabilisticStream
             (int)Math.Round(result.WordsPerMinute),
             at)
         {
+            Posterior = character.Posterior,
             SpanLogLikelihoodRatio = character.SpanLogLikelihoodRatio,
             MarginLlr = character.MarginLlr,
             SpanHops = character.SpanHops,
