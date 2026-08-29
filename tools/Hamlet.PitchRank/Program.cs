@@ -95,6 +95,11 @@ internal static class Program
 
                 return 0;
 
+            case "width":
+                WidthSweep();
+
+                return 0;
+
             default:
                 Console.WriteLine("usage: pitch-rank cost | pitch-rank rank [capture]");
 
@@ -1137,6 +1142,76 @@ internal static class Program
             truthTotal,
             truthTotal == 0 ? 0 : (double)correctTotal / truthTotal,
             assertedTotal == 0 ? 0 : (double)correctTotal / assertedTotal));
+    }
+
+    /// <summary>
+    /// What the integrator's width is worth, scored against the truth.
+    /// </summary>
+    /// <remarks>
+    /// **THE WIDTH HAS BEEN SWEPT BEFORE AND NEVER AGAINST AN ANSWER KEY.** The
+    /// reasoning behind 45 Hz was argued from character counts and E-shares,
+    /// which are proxies; this scores the same widths against what was actually
+    /// sent. Nothing in the application passes anything but the constant — the
+    /// parameter exists on the decoder precisely so a constant can be swept and
+    /// judged by what it reads.
+    /// </remarks>
+    private static void WidthSweep()
+    {
+        Console.WriteLine("widthHz	truth	yield	precision	correct	subs	ins	dels");
+
+        foreach (var width in new[] { 20.0, 25.0, 30.0, 35.0, 40.0, 45.0, 55.0, 70.0 })
+        {
+            var truthTotal = 0;
+            var correct = 0;
+            var subs = 0;
+            var ins = 0;
+            var dels = 0;
+            var asserted = 0;
+
+            foreach (var (capture, truth, _) in Truths)
+            {
+                var path = Find(capture);
+
+                if (path is null)
+                {
+                    continue;
+                }
+
+                var audio = WavAudio.Read(path);
+                var decoder = new CwDecoder(audio.SampleRate, 600, width, null);
+                var text = new System.Text.StringBuilder();
+
+                decoder.CharacterSettled += c => text.Append(c.Text);
+
+                var hop = decoder.Tracker.HopSamples;
+
+                for (var at = 0L; at + hop <= audio.Samples.Length; at += hop)
+                {
+                    decoder.Process(new AudioChunk(
+                        at, audio.SampleRate, audio.Samples.AsSpan((int)at, hop)));
+                }
+
+                decoder.Flush();
+
+                var score = CwAccuracy.Score(text.ToString(), truth);
+
+                truthTotal += score.TruthCharacters;
+                correct += score.Correct;
+                subs += score.Substitutions;
+                ins += score.Insertions;
+                dels += score.Deletions;
+                asserted += score.Correct + score.Substitutions + score.Insertions;
+            }
+
+            Console.WriteLine(string.Format(
+                CultureInfo.InvariantCulture,
+                "{0:0}	{1}	{2:0.000}	{3:0.000}	{4}	{5}	{6}	{7}",
+                width,
+                truthTotal,
+                truthTotal == 0 ? 0 : (double)correct / truthTotal,
+                asserted == 0 ? 0 : (double)correct / asserted,
+                correct, subs, ins, dels));
+        }
     }
 
     /// <summary>Where a capture lives, adjudicated or not.</summary>
