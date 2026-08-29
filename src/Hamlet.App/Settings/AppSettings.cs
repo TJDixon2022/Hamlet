@@ -247,6 +247,23 @@ public sealed class AppSettings
     public bool UseJointDecoder { get; set; }
 
     /// <summary>
+    /// Whether the ported reference decoder reads the audio instead of the
+    /// shipped path.
+    /// </summary>
+    /// <remarks>
+    /// <para>**IT SHIPS OFF AND THE RULING SAYS WHEN IT MAY SHIP ON** (Tim,
+    /// 2026-08-28): default on only if the four phantoms emit no letters, all
+    /// twelve adjudicated anchors still read, both silence controls stay silent,
+    /// and the reference picks the reading pitch on more captures than the
+    /// shipped path does.</para>
+    /// <para>**IT IS A PORT OF `cwdecoder.py`**, the decoder that has read the
+    /// operator's own captures since before this phase began, and it is behind a
+    /// setting so the two can be compared on his own audio and a regression is
+    /// one toggle away from being undone.</para>
+    /// </remarks>
+    public bool UseReferenceDecoder { get; set; }
+
+    /// <summary>
     /// The pitch the operator hears a CW signal at, in hertz.
     /// </summary>
     /// <remarks>

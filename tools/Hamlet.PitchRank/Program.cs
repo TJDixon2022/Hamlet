@@ -75,6 +75,11 @@ internal static class Program
 
                 return 0;
 
+            case "headtohead":
+                HeadToHead();
+
+                return 0;
+
             default:
                 Console.WriteLine("usage: pitch-rank cost | pitch-rank rank [capture]");
 
@@ -791,6 +796,64 @@ internal static class Program
                 read.ContrastDb,
                 read.Characters.Count(c => c.Text != " "),
                 read.Refusal ?? Clip(read.Text)));
+        }
+    }
+
+    /// <summary>
+    /// The shipped path and the ported reference over every capture, side by
+    /// side.
+    /// </summary>
+    /// <remarks>
+    /// Unit 045 task 2. One row per capture: the pitch each chose, the pitch the
+    /// sheet measured where there is one, and what each read.
+    /// </remarks>
+    private static void HeadToHead()
+    {
+        var files = Directory
+            .GetFiles(CaptureFolder(), "*.wav", SearchOption.AllDirectories)
+            .OrderBy(f => Path.GetFileName(f), StringComparer.Ordinal)
+            .ToList();
+
+        Console.WriteLine(
+            "capture	sheetHz	shippedHz	shippedChars	refHz	refChars	"
+            + "refReads	shippedText	refText");
+
+        foreach (var file in files)
+        {
+            var name = Path.GetFileNameWithoutExtension(file);
+            var audio = WavAudio.Read(file);
+
+            var decoder = new CwDecoder(audio.SampleRate, 600);
+            var shipped = new System.Text.StringBuilder();
+
+            decoder.CharacterSettled += c => shipped.Append(c.Text);
+
+            var hop = decoder.Tracker.HopSamples;
+
+            for (var at = 0L; at + hop <= audio.Samples.Length; at += hop)
+            {
+                decoder.Process(new AudioChunk(
+                    at, audio.SampleRate, audio.Samples.AsSpan((int)at, hop)));
+            }
+
+            decoder.Flush();
+
+            var reference = CwReferenceDecoder.Run(audio.Samples, audio.SampleRate);
+            var refLetters = reference.Characters
+                .Count(c => c.Text != MorseAlphabet.WordGap);
+
+            Console.WriteLine(string.Format(
+                CultureInfo.InvariantCulture,
+                "{0}	{1:0.0}	{2:0.0}	{3}	{4:0.0}	{5}	{6}	{7}	{8}",
+                name,
+                SidecarToneHz(file),
+                decoder.Report.ToneHz,
+                decoder.Report.CharactersEmitted,
+                reference.ToneHz,
+                refLetters,
+                reference.Refusal is null ? "read" : "refused",
+                Clip(shipped.ToString()),
+                Clip(reference.Refusal ?? reference.Text)));
         }
     }
 

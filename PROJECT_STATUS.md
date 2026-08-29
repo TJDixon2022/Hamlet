@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 2 of 4
+TASK: 3 of 4
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-28T21:09:52-04:00
-NOTE: port landed and agrees with the Python on all 44; one silence control emits 18 characters through the reference itself
+UPDATED: 2026-08-28T21:16:31-04:00
+NOTE: reference returns 1 of 12 adjudicated readings against the shipped path's 12; setting ships off
 
 ---
 
