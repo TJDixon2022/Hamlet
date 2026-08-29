@@ -332,7 +332,15 @@ internal static class Program
             var name = Path.GetFileNameWithoutExtension(file);
             var audio = WavAudio.Read(file);
 
-            var decoder = new CwDecoder(audio.SampleRate, 600);
+            // **THE SWEEP RUNS WITH THE RANKING ON EVEN THOUGH IT SHIPS OFF.**
+            // The question is what a floor on the winner's score would silence
+            // and what it would cost, and that only has an answer where the
+            // ranking is the thing driving the decode.
+            var decoder = new CwDecoder(audio.SampleRate, 600)
+            {
+                RankThePitch = true,
+            };
+
             var characters = 0;
 
             decoder.CharacterSettled += c =>
