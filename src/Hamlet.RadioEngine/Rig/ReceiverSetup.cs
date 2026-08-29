@@ -157,6 +157,28 @@ public static class ReceiverSetup
             var field = condition.Field!.Value;
             var wanted = condition.Wanted!.Value;
 
+            // **A RULE IS RESOLVED AGAINST A READING, OR IT IS NOT WRITTEN**
+            // (Tim's ruling of 2026-08-29). The attenuator is off unless the
+            // front end reads overloading and the preamp is off at 40 m and
+            // below; both were wrong in opposite directions on one evening while
+            // Hamlet held the reading that decides them. Where the reading is
+            // unknown the row is spoken and no byte goes out, because a rule
+            // applied without its input is a constant wearing a rule's clothes.
+            if (condition.IsConditional)
+            {
+                var resolved = await ResolveAsync(
+                    rig, condition, cancellationToken).ConfigureAwait(false);
+
+                if (resolved is null)
+                {
+                    results.Add(new ConditionResult(
+                        condition, ConditionOutcome.NotRead));
+                    continue;
+                }
+
+                wanted = resolved.Value;
+            }
+
             var before = (await rig
                 .ReadAsync(field, RigState.Empty, cancellationToken)
                 .ConfigureAwait(false))
@@ -213,5 +235,67 @@ public static class ReceiverSetup
         }
 
         return (results, memory);
+    }
+
+    /// <summary>What a conditional row wants right now, or null if it cannot say.</summary>
+    /// <param name="rig">The radio.</param>
+    /// <param name="condition">The row.</param>
+    /// <param name="cancellationToken">Cancellation.</param>
+    /// <returns>The value to write, or null where the reading is unknown.</returns>
+    /// <remarks>
+    /// <para>**`overflow`: the attenuator follows the front end's own flag.** Off
+    /// unless the radio says it is overloading, in which case 20 dB. On
+    /// 2026-08-29 it sat at 20 dB while a station faded S4 to S1 to nothing, and
+    /// later sat off while the front end read overloading at S9 plus 10.</para>
+    /// <para>**`band`: the preamp follows the frequency.** Off at 40 m and below,
+    /// where the noise arriving at the antenna is already louder than anything
+    /// the receiver adds and gain raises both together for nothing; on above,
+    /// where the band goes quiet enough that the receiver is the limit. The
+    /// boundary is 10 MHz, which is the top of 30 m and the bottom of the range
+    /// where that changes.</para>
+    /// <para>**NULL IS AN ANSWER AND IT MEANS NOTHING IS WRITTEN** (§0.0).</para>
+    /// </remarks>
+    private static async Task<int?> ResolveAsync(
+        IRig rig, ReceiverCondition condition, CancellationToken cancellationToken)
+    {
+        switch (condition.Condition)
+        {
+            case "overflow":
+            {
+                var reading = (await rig
+                    .ReadAsync(RigField.Overflow, RigState.Empty, cancellationToken)
+                    .ConfigureAwait(false))
+                    .FirstOrDefault(v => v.Field == RigField.Overflow);
+
+                if (reading is not { IsKnown: true })
+                {
+                    return null;
+                }
+
+                // 20 dB where the front end says it is overloading, off where it
+                // does not. The value is the decibels themselves (§4, `11`).
+                return reading.Number is > 0 ? 20 : 0;
+            }
+
+            case "band":
+            {
+                var reading = (await rig
+                    .ReadAsync(RigField.Frequency, RigState.Empty, cancellationToken)
+                    .ConfigureAwait(false))
+                    .FirstOrDefault(v => v.Field == RigField.Frequency);
+
+                if (reading is not { IsKnown: true, Number: { } hz })
+                {
+                    return null;
+                }
+
+                return hz > 10_000_000 ? 1 : 0;
+            }
+
+            default:
+                // A condition nobody has taught it is not a licence to write the
+                // stated constant.
+                return null;
+        }
     }
 }

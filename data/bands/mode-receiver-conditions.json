@@ -40,23 +40,22 @@
       "mode": "CW",
       "conditions": [
         {
-          "control": "attenuator",
-          "says": "it throws away twenty decibels the signal needed",
-          "field": "attenuator",
+          "control": "auto notch",
+          "says": "it hunts steady tones and Morse is a steady tone",
+          "field": "autoNotch",
           "wanted": 0,
           "wantedText": "off",
           "confirmed": true,
-          "because": "The attenuator is there for the evening when a nearby transmitter is overloading the front end, and on a quiet band it is twenty decibels thrown away on a signal that did not have them to spare. On the evening of 2026-08-29 it sat at 20 dB with the preamp off while the station being worked faded from S4 to S1 to nothing. Hamlet reads whether the front end is actually overloading, so this is a setting nobody has to guess about."
+          "because": "The automatic notch listens for a carrier sitting in the passband and removes it, which is exactly the right thing to do to a heterodyne and exactly the wrong thing to do here. A keyed Morse signal is a steady carrier that stops and starts, so the notch finds it, decides it is interference, and eats the thing we are trying to read."
         },
         {
-          "control": "preamp",
-          "says": "a weak signal on a quiet band needs the gain",
-          "field": "preamp",
-          "wanted": 1,
-          "wantedText": "preamp 1",
-          "confirmed": false,
-          "because": "On the higher bands and on a quiet night the noise arriving at the antenna is smaller than the noise the receiver makes itself, and the preamplifier is what lifts the signal clear of it. It is the first thing to turn off again if the band gets loud, because gain applied to a strong signal buys nothing and costs headroom. It is stated unconfirmed because the work order names the attenuator and not this, and whether the preamplifier helps depends on the antenna and the band noise at this station, which nobody has measured here.",
-          "confirm": "Tim, on his own band and antenna"
+          "control": "manual notch",
+          "says": "the same trap, under your hand rather than automatic",
+          "field": "manualNotch",
+          "wanted": 0,
+          "wantedText": "off",
+          "confirmed": true,
+          "because": "The manual notch does what the automatic one does, at a frequency you choose rather than one the radio picks. Left on from an earlier session it sits wherever it was last put, which may be straight on top of the station you have just tuned to."
         },
         {
           "control": "noise blanker",
@@ -68,14 +67,60 @@
           "because": "The noise blanker listens for the sharp crack of an ignition or an electric fence and mutes the receiver for a fraction of a millisecond each time. A Morse dit at twenty words a minute is about sixty milliseconds of steady tone, and its leading edge looks enough like a crack that the blanker takes bites out of the elements it is supposed to be protecting."
         },
         {
+          "control": "noise reduction",
+          "says": "it was built for speech and it mangles a keyed envelope",
+          "field": "noiseReduction",
+          "wanted": 0,
+          "wantedText": "off",
+          "confirmed": true,
+          "because": "Noise reduction is built around what human speech looks like, and it reshapes anything that does not. What it does to Morse is smear the edges of the elements, which is the one property the decoder measures to tell a dit from a dah."
+        },
+        {
           "control": "AGC",
-          "says": "fast gain pumps on the gaps between elements",
+          "says": "slow gain rides over the gaps and hides the keying",
           "field": "agc",
-          "wanted": 3,
-          "wantedText": "slow",
-          "confirmed": false,
-          "confirm": "Tim, against his own ear on a fading signal",
-          "because": "Automatic gain control follows the signal up and down, and Morse is a signal that stops several times a second. On fast the receiver winds its gain up in every gap between elements and back down on every mark, which lifts the noise into the spaces the decoder measures. Slow, which is 3 in the radio's own encoding where 1 is fast, rides over the gaps and follows the fade instead. It is stated unconfirmed because which setting reads better on a deep fade is a question about this receiver and this operator, and nobody has measured it here."
+          "wanted": 1,
+          "wantedText": "fast",
+          "confirmed": true,
+          "because": "Automatic gain control follows the signal up and down, and Morse is a signal that stops several times a second. Fast is the standard setting for CW because it tracks the keying itself rather than pumping across it; on slow the receiver holds its gain through the gaps and the contrast the decoder needs between key-down and key-up is reduced."
+        },
+        {
+          "control": "RF gain",
+          "says": "anything less throws away signal the decoder needs",
+          "field": "rfGain",
+          "wanted": 255,
+          "wantedText": "100%",
+          "confirmed": true,
+          "because": "RF gain sets how much of what the antenna delivers reaches the rest of the receiver. Backing it off is a way of taming a loud band by ear, and it costs the decoder exactly the signal it is trying to measure. It belongs at full unless the front end is actually overloading, and that is what the attenuator is for."
+        },
+        {
+          "control": "squelch",
+          "says": "a gate that shuts between elements is fatal to a decoder",
+          "field": "squelch",
+          "wanted": 0,
+          "wantedText": "open",
+          "confirmed": true,
+          "because": "Squelch mutes the receiver until a signal is strong enough to open it. Morse spends about half its time key-up, so a squelch set anywhere above fully open closes in the gaps between elements and hands the decoder a chopped envelope. On this radio the RF/SQL knob can be configured as squelch alone, which is how it ends up set without anybody meaning to."
+        },
+        {
+          "control": "attenuator",
+          "says": "twenty decibels thrown away on a signal that had none to spare",
+          "field": "attenuator",
+          "wanted": 0,
+          "wantedText": "off unless the front end is overloading",
+          "confirmed": true,
+          "condition": "overflow",
+          "because": "The attenuator is there for the evening when a nearby transmitter is overloading the front end, and on a quiet band it is twenty decibels thrown away. On 2026-08-29 it sat at 20 dB while a station faded from S4 to S1 to nothing, and later sat off while the front end read overloading at S9 plus 10. Both wrong, in opposite directions, and Hamlet read the overflow flag on both evenings and said nothing about either. So this one is not a constant: it follows the reading."
+        },
+        {
+          "control": "preamp",
+          "says": "below 40 m the noise arrives with the signal and gain adds both",
+          "field": "preamp",
+          "wanted": 1,
+          "wantedText": "preamp 1 above 40 m, off at 40 m and below",
+          "confirmed": true,
+          "condition": "band",
+          "because": "The preamplifier lifts everything the antenna delivers, signal and band noise alike, so it only helps where the receiver is quieter than the band. On the low bands the atmospheric noise arriving at the antenna is already louder than anything the receiver adds, and the preamp raises both together for nothing. Above 40 m the band goes quiet enough that the receiver becomes the limit and the preamp is worth having."
         }
       ]
     },

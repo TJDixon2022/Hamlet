@@ -25,6 +25,10 @@ namespace Hamlet.RadioEngine.Explore;
 /// it can be spoken and has not been established (§12.4).
 /// </param>
 /// <param name="Confirm">Who settles it, where it is unconfirmed.</param>
+/// <param name="Condition">
+/// What the value depends on, or empty where it is a constant. `overflow` means
+/// the front end's own reading decides; `band` means the frequency does.
+/// </param>
 /// <remarks>
 /// <para>**A CONDITION CARRIES ITS REASON BECAUSE THE OPERATOR IS GOING TO BE
 /// TOLD IT** (work instruction 042, tasks 2 and 4). Hamlet changing settings
@@ -44,8 +48,30 @@ public sealed record ReceiverCondition(
     string Says,
     string Because,
     bool Confirmed = true,
-    string Confirm = "")
+    string Confirm = "",
+    string Condition = "")
 {
+    /// <summary>
+    /// What this row depends on, or empty where its value is a constant.
+    /// </summary>
+    /// <remarks>
+    /// <para>**TWO OF CW'S SETTINGS ARE RULES RATHER THAN VALUES** (Tim's ruling
+    /// of 2026-08-29). The attenuator is off unless the front end reads
+    /// overloading, and the preamp is off at 40 m and below. Writing either as a
+    /// constant is wrong half the time, and on 2026-08-29 it was wrong in both
+    /// directions on one evening: 20 dB on while a station faded to nothing, and
+    /// off while the front end read overloading at S9 plus 10. **Hamlet read the
+    /// answer on both evenings and said nothing.**</para>
+    /// <para>**A CONDITION THAT CANNOT BE RESOLVED IS NOT WRITTEN.** Where the
+    /// reading it depends on is unknown, the row is spoken and no byte goes out,
+    /// because a rule applied without its input is a constant wearing a rule's
+    /// clothes (§0.0).</para>
+    /// </remarks>
+    public string Condition { get; init; } = Condition;
+
+    /// <summary>True where this row's value depends on a live reading.</summary>
+    public bool IsConditional => Condition.Length > 0;
+
     /// <summary>Whether Hamlet may set this itself.</summary>
     /// <remarks>
     /// Both halves are required and they fail for different reasons. No field
@@ -207,7 +233,8 @@ public static class ReceiverConditions
             dto.Says ?? "",
             dto.Because ?? "",
             dto.Confirmed,
-            dto.Confirm ?? "");
+            dto.Confirm ?? "",
+            dto.Condition ?? "");
 
     private static RigField? ParseField(string? name)
         => Enum.TryParse<RigField>(name, ignoreCase: true, out var field)
@@ -268,6 +295,9 @@ public static class ReceiverConditions
         public bool Confirmed { get; set; }
 
         public string? Confirm { get; set; }
+
+        /// <summary>What the row's value depends on, where it is a rule.</summary>
+        public string? Condition { get; set; }
     }
 
     private sealed class UnknownDto
