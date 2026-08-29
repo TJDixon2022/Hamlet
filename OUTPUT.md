@@ -1,4 +1,4 @@
-UNIT:       050 — the pitch, the envelope, and the bench — 2026-08-29
+﻿UNIT:       050 — the pitch, the envelope, and the bench — 2026-08-29
 PHASE GOAL: 85% correct CW, precision before yield.
 UNIT GOAL:  Test two measurements taken outside Hamlet against the tree, and adopt what scores.
 ADVANCED:   yes — **precision 0.766 to 0.858 and yield 0.768 to 0.914.** The phase goal is met with 0.8 points to spare.
@@ -159,11 +159,59 @@ average collapsing onto the character average — is a failure mode of the
 mechanism Hamlet does not use.** Implementing idea 3 would mean adding that
 mechanism in order to protect it from itself.
 
-### Task 5 — the engine run
+### Task 5 — the engine run, batched, and one number that matters
 
-Reported in section 2 with the numbers. **The crash is wider than HM-OPEN-061
-names and it is not only the engine**: the app suite's `Views` batch aborted the
-host too, after 35 passing tests.
+**The suite does complete, in batches, and the crash is narrower than three units
+of reporting suggested.** Nine folders ran clean:
+
+| folder | passing | failing |
+|---|---|---|
+| `Audio` | 44 | 0 |
+| `Bands` | 39 | 0 |
+| `Civ` | 61 | 0 |
+| `Explore` | 508 | 0 |
+| `Licensing` | 61 | 0 |
+| `Rig` | 275 | 0 |
+| `Solar` | 18 | 0 |
+| `Telemetry` | 21 | 0 |
+| `Training` | 45 | 0 |
+| **total** | **1072** | **0** |
+
+**No crash in any of them.** `Scan` adds 47 more across five classes, and its
+sixth, `ScannerEndToEndTests.ADwellReachesTheDecoder`, crashes the host —
+**checked against the tree at `ade5253`, before this unit touched the decoder,
+and it crashes there too.** Inherited, not introduced.
+
+**So the crash lives in the CW decode path and the Avalonia view path, and it is
+intermittent.** `TheCapturesThatDecodeKeepDecodingTests` ran twice within minutes
+on an unchanged tree: once to completion with nine failures, once aborting after
+a single passing test. Recorded as **HM-OPEN-063**, which is a new entry rather
+than an edit to HM-OPEN-061 because that issue names one engine class and this is
+in the app suite too.
+
+**Whether the failing set is byte-identical to unit 048's twenty-eight cannot be
+answered**, because no run in this repository since unit 047 has been a single
+run, and a set assembled from batches is not the same object.
+
+**What was measured instead, and it is the more useful number.** The three CW
+classes carrying every visible red were run with the change and without it, on
+the same tree, twice:
+
+| | failing | passing | total |
+|---|---|---|---|
+| without the spectral peak | **10** | 28 | 38 |
+| with it | **13** | 25 | 38 |
+
+**Three new reds, none fixed — and all three are the same recording.**
+`ARecordingWithKeyingInItIsReadTests.WhereTheTrackerStartsDoesNotDecideThis` at
+600, 550 and 500 Hz, every one of them `cw-2026-08-17-134712`, asserting the
+settled tone is 500 Hz to the nearest hertz. The peak reads 501.2.
+
+**That is the whole cost of this unit's change, and it is one capture.** The nine
+red ratchets are the same capture again (`N4L`, adjudicated) plus eight
+character-count floors on unadjudicated audio; the four red tests are that one
+capture at four starting pitches. **Every new failure in this unit is
+`cw-2026-08-17-134712` and the 1.1 hertz between 500.09 and 501.2.**
 
 ### Task 6 — **dropped whole, and this says so**
 
@@ -225,26 +273,38 @@ Concretely, from the corpus:
 **Build clean, no new warnings.** Version unchanged at 1.12.7 — the previous 050
 bumped it, and one work unit is one patch (HM-DEC-150).
 
-**Suites:**
+**Suites are in the amendment below, and they landed.**
+
+### Amendment — landed
 
 | suite | result |
 |---|---|
 | `TheSilencePropertyIsLockedTests` | **6 passing, 0 failing** — green and unmodified |
-| app, ViewModels | 240 passing, 0 failing |
-| app, everything but ViewModels and Views | 217 passing, 0 failing |
-| app, Views | **35 passing, then the host crashed** |
-| engine | amended below |
+| engine, nine folders batched | **1072 passing, 0 failing, no crash** |
+| engine, `Scan` | 47 passing; `ADwellReachesTheDecoder` crashes the host **on the pre-change tree too** |
+| engine, the three affected CW classes | **13 failing of 38, against 10 before** — the three new ones are all one capture |
+| engine, `TheCapturesThatDecodeKeepDecodingTests` | **8 character-count floors red**, on unadjudicated audio |
+| engine, `TheAdjudicatedReadingsKeepReadingTests` | **1 red: `N4L`** |
+| engine, `ThePeakFindsThePitchTheTrackerMissedTests` | 12 passing, 0 failing |
+| app, ViewModels | 240 passing, 0 failing — **re-run after the change** |
+| app, everything but ViewModels and Views | 217 passing, 0 failing — **re-run after the change** |
+| app, Views | 35 passing, then the host crashed |
 
-### Amendment — the engine run and the adjudicated ratchets
-
-**Pending.** Replaced when they land. **If this is not replaced, they did not
-finish** — the host crash has now ended five runs across two suites, and an
-unreplaced line is the honest record rather than an omission.
+**The eight character-count floors want reading carefully, and I am not going to
+claim they are all improvements.** Those floors record how many characters the
+decoder produced on the day they were set; they say nothing about how much of it
+was right, and their own documentation says so. The change makes the decoder emit
+fewer characters on eight unadjudicated recordings. **Where truth exists, fewer
+was better** — `cw-2026-08-22-031838` is one of the eight and its yield went
+0.371 to 0.971, from a page of `TTTTT` to `2, 2, AND 2 WITH A MEAN OF 2.■ . PRE`.
+**On the other seven there is no truth and nobody can say which happened.**
 
 ## 3. What we should do next
 
-1. **Rule on `N4L`** (section 4). It is the only thing standing between this unit
-   and a clean result.
+1. **Rule on `N4L`** (section 4). **Every new red in this unit is that one
+   capture** — one adjudicated reading, three tracker-start parameterisations, and
+   one of the eight character-count floors — and all of them are the 1.1 hertz
+   between 500.09 and 501.2.
 2. **The eight 2026-08-29 captures.** Eight units have asked. Finding 1's own two
    captures are among them and could not be checked.
 3. **HM-OPEN-061 is misnamed.** It says one engine test class; the crash is in the

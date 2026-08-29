@@ -78,18 +78,18 @@ of nought.
 | offset | level | correct | wrong | invented | emitted | E-share | read |
 |---|---|---|---|---|---|---|---|
 | 40 Hz | +0 dB | 7 | 2 | 26 | 35 | 23 % | `TTET ET T DEDE EE NNEUEURUP P  ■  ■  D DADLL T KK  ■ ` |
-| 40 Hz | -6 dB | 8 | 2 | 23 | 33 | 27 % | `QQ T DEDE E NNEEE■  TE TDCECAEARLILLL  ■ ■  ■ ` |
+| 40 Hz | -6 dB | 9 | 2 | 23 | 34 | 26 % | `QQ T DEDE E NNEEE■  TE TDCECAEARLILLL T KK  ■ ` |
 | 40 Hz | -12 dB | 10 | 1 | 20 | 31 | 16 % | `QQ T DEDE E NNM■00DCECAEARLILLL T KK  ■ ` |
 | 80 Hz | +0 dB | 7 | 3 | 18 | 28 | 11 % | `QQ T DEDE E UU U URUP P  ■  ■  D DADLL T KK  ■ ` |
-| 80 Hz | -6 dB | 8 | 2 | 26 | 36 | 36 % | `QQ T DEDE E NNEEEEEE E TE TKCECAEALLALLL  ■  ■  ■ ` |
+| 80 Hz | -6 dB | 9 | 2 | 26 | 37 | 35 % | `QQ T DEDE E NNEEEEEE E TE TKCECAEALLALLL T KK  ■ ` |
 | 80 Hz | -12 dB | 10 | 1 | 20 | 31 | 16 % | `QQ T DEDE E NNM■0■DCECAEARLILLL T KK  ■ ` |
-| 120 Hz | +0 dB | 8 | 2 | 24 | 34 | 21 % | `QQ T DEDE E NNEUEURUPP K CECAEALLALLL ■  ■  ■ ` |
-| 120 Hz | -6 dB | 9 | 1 | 21 | 31 | 19 % | `QQ T DEDE E NNM■0E0DCECAEARLILLL ■  ■  ■ ` |
+| 120 Hz | +0 dB | 9 | 2 | 24 | 35 | 20 % | `QQ T DEDE E NNEUEURUPP K CECAEALLALLL T KK  ■ ` |
+| 120 Hz | -6 dB | 10 | 1 | 21 | 32 | 19 % | `QQ T DEDE E NNM■0E0DCECAEARLILLL T KK  ■ ` |
 | 120 Hz | -12 dB | 10 | 1 | 20 | 31 | 16 % | `QQ T DEDE E NNM■0■DCECAEARLILLL T KK  ■ ` |
 | 200 Hz | +0 dB | 10 | 1 | 20 | 31 | 16 % | `QQ T DEDE E NNM■0■DCECAEARLILLL T KK  ■ ` |
-| 200 Hz | -6 dB | 9 | 1 | 20 | 30 | 17 % | `QQ T DEDE E NNM■00DCECAEARLILLL ■  ■  ■ ` |
-| 200 Hz | -12 dB | 9 | 1 | 20 | 30 | 17 % | `QQ T DEDE E NNM■00DCECAEARLILLL ■  ■  ■ ` |
+| 200 Hz | -6 dB | 10 | 1 | 20 | 31 | 16 % | `QQ T DEDE E NNM■00DCECAEARLILLL T KK  ■ ` |
+| 200 Hz | -12 dB | 10 | 1 | 20 | 31 | 16 % | `QQ T DEDE E NNM■00DCECAEARLILLL T KK  ■ ` |
 | 300 Hz | +0 dB | 10 | 1 | 20 | 31 | 16 % | `QQ T DEDE E NNM■00DCECAEARLILLL T KK  ■ ` |
 | 300 Hz | -6 dB | 10 | 1 | 20 | 31 | 16 % | `QQ T DEDE E NNM■00DCECAEARLILLL T KK  ■ ` |
-| 300 Hz | -12 dB | 9 | 1 | 20 | 30 | 17 % | `QQ T DEDE E NNM■00DCECAEARLILLL ■  ■  ■ ` |
+| 300 Hz | -12 dB | 10 | 1 | 20 | 31 | 16 % | `QQ T DEDE E NNM■00DCECAEARLILLL T KK  ■ ` |
 

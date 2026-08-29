@@ -1,11 +1,11 @@
 PROJECT: Hamlet
-STATE: EXECUTING
+STATE: COMPLETED
 PHASE: 12
-TASK: 5 of 6
-BALL: code
-NEXT_PASTE: none
-UPDATED: 2026-08-29T18:59:05-04:00
-NOTE: Waiting on the last four engine batches and a second detailed ratchet pass; report is written and will be amended with both
+TASK: 6 of 6
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
+UPDATED: 2026-08-29T19:50:12-04:00
+NOTE: Precision 0.766 to 0.858, past the 0.85 goal; one ruling waiting, and every new red is one capture
 
 ---
 
