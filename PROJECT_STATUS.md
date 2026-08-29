@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
+STATE: COMPLETED
 TASK: 4 of 8
 BALL: tim
-NEXT_PASTE: none
-UPDATED: 2026-08-29T12:09:08-04:00
-NOTE: posterior is +0.050 against correctness, positive in sign and inside the noise; its sweep peaks at 0.822 precision against a target of 0.99
+NEXT_PASTE: output.md -> Claude Web
+UPDATED: 2026-08-29T12:10:50-04:00
+NOTE: lattice rebuilt and precision up; the posterior it enables is uninformative, so no gate moved and the unit stops at 4
 
 ---
 

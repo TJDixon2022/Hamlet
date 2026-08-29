@@ -1,304 +1,256 @@
-UNIT:       047 — complete at task 6 of 6 — 2026-08-29 11:43
-PHASE GOAL: Readable CW on the operator's screen — reading one mode at ninety-nine percent, measured against what was actually sent.
-UNIT GOAL:  One owned-settings contract so two conversations cannot overwrite each other's radio, with CW's row filled in.
-ADVANCED:   no — this unit is the receive side and the contract, not the decoder; the corpus score is unchanged by design.
-NUMBER:     yield 0.763, precision 0.761 — unchanged, as the order requires.
-DRIFT:      2 consecutive units without advance  (was 1)
+UNIT:       048 — stopped at task 4 of 8 — 2026-08-29 12:10
+PHASE GOAL: Readable CW on the operator's screen — precision before yield: never a wrong character on screen, and as much of the traffic as that allows.
+UNIT GOAL:  Rebuild the lattice so a real posterior can be computed, and move the decoder's confidence onto it.
+ADVANCED:   yes, partly — the lattice is rebuilt and precision rose 0.761 to 0.766 with substitutions 61 to 58; the posterior it made possible is not discriminative and no gate moved onto it.
+NUMBER:     precision 0.761 -> 0.766, yield 0.763 -> 0.768, substitutions 61 -> 58.
+DRIFT:      0 consecutive units without advance  (was 2)
 
 ## 1. What Claude did
 
-**Complete: all six tasks.** Task 6 was the drop candidate and it ran.
+**Stopped at task 4 of 8.** Tasks 1, 2 and 3 landed. **Task 4 was measured and
+ships nothing.** Tasks 5, 6, 7 and 8 were not started.
+
+**Why stopping here rather than continuing:** tasks 5, 6 and 7 each require
+"precision must not fall", measured against the gate task 4 would have installed.
+**No gate was installed**, because the posterior does not separate right
+characters from wrong ones well enough to gate on. Continuing would be measuring
+three large changes against the metric this unit set out to replace, which is the
+position units 044 to 046 were already stuck in. **That is a decision the finding
+forces, and it is Tim's to overturn.**
 
 Development computer, prompt claimed `PROJECT: Hamlet`, branch `main`, version
-`1.12.6` unchanged. **Nothing here is evidence about the radio**: no radio was
-connected, and every write below was exercised against a scripted one.
+`1.12.6` unchanged. **Nothing here is evidence about the radio.** The eight
+captures of 2026-08-29 are still not in the tree — a sixth consecutive unit.
 
-**The eight captures of 2026-08-29 are still not in the tree** — a fifth
-consecutive unit. Nothing in this unit needed them.
+**And unit 047's owed regression landed during this one: 28 failing of 1963 run,
+the failing set byte-identical to unit 046's, and then the host aborted.** So 047
+introduced no regression, and its report's unreplaced amendment line was the
+honest record of a run the HM-OPEN-061 crash ended.
 
-### Task 1 — every write Hamlet makes on its own initiative
+### Task 1 — the baseline and the lattice
 
-**Two automatic write paths, and that is itself the finding.**
+**App 519 passing, 0 failing. Corpus yield 0.763, precision 0.761** over 384
+adjudicated characters — both confirmed.
 
-| path | trigger | what it writes |
+**The lattice, as it actually was:**
+
+- **State**: hop only. `best[i]` is the score of the best path whose last segment
+  ends at `i`, with `kindAt[i]` and `wasDown[i]` recording that segment.
+- **Transitions**: from `j = i − span`, scored
+  `best[j] + evidence − ½(log(span/want)/LengthToleranceShare)²`, `:1462–1472`.
+- **Five kinds** (`:525`): dit and dah key-down at 1 and 3 units, and gaps at 1, 3
+  and 7. `ShortestShare` 0.45, `LongestShare` 2.2, `LengthToleranceShare` 0.35.
+- **`second[]`** kept the runner-up per hop (`:1475–1484`) and `MarginLlr` is
+  `best[at] − second[at]`.
+- **The speed grid** ran 8 to 40 WPM keeping only `bestScore` (`:794–805`).
+- **Numerical guards**: none in the path scores. `LogLikelihoods` guards a NaN
+  sigma and floors the envelope at 1e-12; nothing bounds the accumulated score.
+
+**And `wasDown[j]` was read in exactly one place — the alternation check at
+`:1458`** — which is what made the restructure tractable.
+
+### Task 2 — the lattice indexed by `(hop, kind)`
+
+`best`, `second`, `fromHop` and a new `fromKind` are now `[hop, kind]`. The
+alternation rule is checked **against the state** rather than against whichever
+path won at `j`. Five kinds, so five times the state and the same enumeration.
+The duration densities and the evidence term are untouched, as the task requires.
+
+**Measured over the scored corpus, before and after:**
+
+| | before | after |
 |---|---|---|
-| `MainWindowViewModel`, `:5779` | the dial settles in a block and mode-follow decides | **mode, data flag and filter slot**, one frame, command `26` (§4 p. 19-11) |
-| `ReceiverSetup.ApplyAsync`, via `EstablishReceiveConditionsAsync` `:5834` | the same settle, once per block (`_conditionsSetForBlockHz`) | **whatever the block's row states**, one write per setting |
+| yield | 0.763 | **0.768** |
+| precision | 0.761 | **0.766** |
+| substitutions | 61 | **58** |
+| deletions | 30 | 31 |
 
-**Twenty-seven writes are defined** in `CivWrites` and **only those two paths fire
-automatically.** Everything else is operator-triggered through
-`ReceiveHelpViewModel`. `16 65` IP+ remains excluded because it cannot be read
-back (HM-DEC-084) and **no second such write was found**.
+**Precision rose, so the paths the old search discarded were not doing useful work
+by accident.** The gains land where the reading was already nearly right:
+`cw-2026-08-18-004507` from 0.930 to 0.947, `cw-2026-08-22-032113` from 0.821 to
+0.857 with its deletions going to nought.
 
-**Nothing can reach the transmitter from either path.** `CivWrites.BreakIn`,
-`BreakInDelay` and `AntennaTuner` exist and are not on the owned list, are not in
-any neighborhood row, and are reachable only by an explicit operator action. The
-new test `WhatIsNotOwnedStaysOffTheList` asserts break-in is off the list rather
-than trusting it.
+**And the transcripts read visibly better in places.** `PREDICTED 10.7` where there
+was `DICTED 10.7` behind blocks; `LINKS TO A R T I C L E S O R OTHER WEBSITES
+MENTI`; `IULLETIN CAN BE FO TA ND IN TELEWRITTER`. Those are the recovered paths.
 
-**Unit 042 landed the mechanism and unit 043 gave CW its first four rows.**
-`ReceiverSetup.ApplyAsync` already did read-before-write, `AlreadyRight`,
-`LeftToTheOperator` via a hand-memory, and `SpokenOnly` for rows with no cited
-byte.
+`TheSilencePropertyIsLockedTests` green and unmodified; twelve adjudicated anchors
+green.
 
-**And it did not read back, which is task 4's gap.** It took the CI-V
-acknowledgement as confirmation and then recorded `condition.WantedText` as the
-value the setting now holds. **`FB` is the radio saying it accepted the frame, not
-that the setting holds what was asked** — so the write was asserting its own
-success, on the surface built to prove what Hamlet did. Fixed in task 4.
+### Task 3 — the posterior
 
-### Task 2 — the owned list, and the coverage table
+Forward–backward over the new lattice, in `CwProbabilisticDecoder.Posterior.cs`.
+Computed once for the winning speed rather than per hypothesis, because the
+backward pass is O(hops × kinds² × span) and the grid runs thirty-three of them.
 
-`OwnedSettings.All` is twelve entries, each with its rig field and its §4
-citation, **as data rather than scattered code**. The scope span is named
-separately as spoken-only, because §4 carries no CI-V command for it and a row may
-state it without a byte going out.
+**Log domain throughout, and nothing exponentiates a raw score.** `LogSum` factors
+out the larger term so `Math.Exp` only ever sees a non-positive number, and a gap
+past −700 is dropped, which is exact rather than approximate. **Thirteen tests**,
+including `1e300` in either argument, both infinities, digital silence, and every
+posterior on three real captures asserted to lie in [0,1].
 
-**Three answers, and absent is one of them.** A row states a value, defers to the
-operator, or is silent — and silence leaves the setting alone and is **reported,
-not failed**, because the digital rows belong to another conversation.
+**Where no path reaches the end the answer is null**, not a normalisation by
+nothing.
 
-**The coverage table, which is this unit's handover:**
+### Task 4 — the gate, and it does not open
 
-| block | stated | deferred | absent |
-|---|---|---|---|
-| **CW** | **9** | 0 | 3 |
-| FT8 | 3 | 1 | 8 |
-| FT4 | 3 | 1 | 8 |
+**The correlation, beside the five that came before:**
 
-Absent on CW: **mode and data flag, filter slot, filter width.**
-Absent on FT8 and FT4: those three plus **manual notch, preamp, attenuator, RF
-gain, squelch.**
-
-**The three absent everywhere are a real gap in the contract, not in the
-behaviour.** Mode, filter slot and filter width *are* written automatically — by
-the other path, `SetModeAsync`. **So two mechanisms answer for the twelve, which
-is the fragmentation the contract exists to end**, one level up. Reported rather
-than merged: folding the mode write into `ReceiverSetup` touches mode-follow, and
-unit 048 owns everything near the decoder.
-
-### Task 3 — CW's row
-
-Nine settings, each with its reason as text in the file (unit 040's pattern):
-
-| setting | CW | |
-|---|---|---|
-| auto notch | **off** | it hunts steady carriers and a keyed Morse signal is one |
-| manual notch | off | the same trap, sitting wherever it was last put |
-| noise blanker | off | a dit's leading edge looks enough like a crack that it bites |
-| noise reduction | off | built for speech; it smears the edges the decoder measures |
-| AGC | **fast** | it tracks the keying rather than pumping across it |
-| RF gain | 100 % | anything less throws away signal the decoder needs |
-| squelch | open | a gate that shuts between elements hands over a chopped envelope |
-| **attenuator** | **rule: `overflow`** | off unless the front end says it is overloading |
-| **preamp** | **rule: `band`** | off at 40 m and below, on above |
-
-**The two rules are rules and not constants**, which the file could not express
-before. `ReceiverCondition` gained a `Condition`, and `ReceiverSetup` resolves it
-against a live reading — the overflow flag for the attenuator, the frequency for
-the preamp, with the boundary at 10 MHz. **A rule whose reading is unknown is
-spoken and no byte goes out**, because a rule applied without its input is a
-constant wearing a rule's clothes.
-
-**That is the fault of 2026-08-29 addressed at its cause.** The attenuator sat at
-20 dB while a station faded S4 to S1 to nothing, and later sat off while the front
-end read `overloading` at S9+10. **Both wrong, in opposite directions, and Hamlet
-held the reading that decides it on both evenings.**
-
-**One test from unit 043 was re-expressed rather than deleted.** It asserted CW's
-preamp and AGC were unconfirmed — spoken and never written — on the grounds that
-nobody had measured what CW needs of them here. That caution was right while the
-values were unruled; Tim's table settles both, and **it reverses my own AGC value
-from slow to fast.** The old reasoning is kept in the test's remarks.
-
-### Task 4 — the write, and the read-back
-
-`ApplyAsync` now re-reads the field after a successful write and reports what the
-radio actually holds:
-
-- a value that cannot be read afterwards is **`NotConfirmed`**, not assumed;
-- a radio that took the frame and set something else is **`NotConfirmed` carrying
-  the value it actually holds**, which is a different fact from a refused write
-  and gets its own line;
-- only a confirmed match records `Changed`, and only then is it remembered as
-  Hamlet's own so the operator's hand can be told apart from it.
-
-Read-before-write, already-right, the operator's hand and once-per-tune-in were
-all unit 042's and are untouched.
-
-### Task 5 — the round trip, asserted
-
-Four tests, all green:
-
-- **Ten CW → FT8 → CW round trips with no drift**, compared field by field against
-  the state after the first tune-in. Ten rather than one because the failure this
-  guards against is drift, and a setting that moves a little on each crossing
-  looks fine once.
-- **Coming back to Morse restores what Morse needs** — and the AGC is the setting
-  the two modes disagree about, so it is the one a partial delta would have left
-  wherever the other mode put it. It ends on CW's fast.
-- **A setting no row states is untouched in both directions.**
-- **The auto notch left on is corrected on entering Morse**, with the write named.
-
-`TheSilencePropertyIsLockedTests` is green and unmodified.
-
-### Task 6 — the search range against the filter
-
-**Measured, and the order's arithmetic does not hold.**
-
-**The decoder does not search 400 to 1200 Hz.** `KeyingEnvelope.LowestToneHz` and
-`HighestToneHz` are taken from `CwToneTracker`'s own 300 and 900, and the comment
-records why: it *used* to run 400 to 1200 while the tracker ran 300 to 900, and
-that mismatch cost the meter its only job. **It was already corrected.**
-
-The filter's passband, from the sheets rather than from arithmetic: **39 of 44
-captures read `FilterBandwidth 500 Hz` and `CwPitch 600 Hz`**, so the passband is
-about **350 to 850 Hz**. Against a search of 300 to 900, the search overhangs by
-fifty hertz at each end — **not "more than half outside".**
-
-**And in practice the tracker essentially never leaves it:**
-
-| | |
+| quantity | correlation with per-character correctness |
 |---|---|
-| captures with a sheet pitch | 44 |
-| tracked pitch outside 350–850 Hz | **1** |
-| that one | `cw-2026-08-26-125941` at **exactly 300.0 Hz** |
-| lowest tracked | 300.0 | 
-| highest tracked | **800.0** |
+| `MarginLlr` | −0.341 |
+| `MarginShareForRecord` | −0.286 |
+| `SpanMarginForRecord` | −0.246 |
+| **`Posterior`** | **+0.050** |
 
-**The single exception is an estimator pinned at the floor of its own search**,
-which is a failure to settle rather than a pitch outside the filter — the same
-shape unit 044 reported for the speed grid at 40 WPM.
+**It is the first of six that is not negative, and that is the whole of the good
+news.** On 301 characters the standard error is about 0.058, **so +0.050 is
+positive in sign and indistinguishable from zero in magnitude.** The medians say
+it plainly: **0.8433 on right characters against 0.8382 on wrong.**
 
-**So neither excursion the order attributes to this is explained by it.** 850 Hz
-is inside the passband, and 400 Hz is well inside it. Changed nothing, as
-instructed.
+**The threshold sweep is the useful form of the same fact:**
+
+| threshold | kept | blocked | yield | precision |
+|---|---|---|---|---|
+| none | 301 | 0 | 0.752 | 0.804 |
+| 0.50 | 284 | 17 | 0.724 | **0.820** |
+| 0.70 | 197 | 104 | 0.503 | **0.822** |
+| 0.80 | 164 | 137 | 0.416 | 0.817 |
+| 0.85 | 147 | 154 | 0.366 | 0.803 |
+| 0.90 | 121 | 180 | 0.292 | 0.777 |
+| 0.95 | 99 | 202 | 0.233 | 0.758 |
+| 0.99 | 71 | 230 | 0.149 | 0.676 |
+| 0.999 | 37 | 264 | 0.053 | 0.459 |
+
+*(over the 301 characters inside an aligned truth span, which is a smaller set
+than the 384 the corpus score uses — the two numbers are not the same measurement
+and are not compared.)*
+
+**Precision peaks at 0.822 and then falls.** Above about 0.85 the threshold blocks
+correct characters faster than wrong ones, which is what a correlation of +0.05
+looks like from the other side. **The best trade on the whole curve is 1.6 points
+of precision for 2.8 points of yield, against a precision target of 0.99.**
+
+**So no gate moved onto it.** Picking 0.50 off a plateau that sits inside the noise
+is fitting noise, which is the failure unit 045 avoided on the filter width and
+the standard this project holds.
 
 No decision was recorded under §12.1.
 
 ## 2. What the owner should expect
 
-**Tuning into CW now sets nine things on the receive side for CW, says what it
-changed and why, and switching to a digital block and back lands in the same place
-every time.** The auto notch comes off — it hunts steady carriers and Morse is a
-steady carrier, so it was eating what you were reading.
-
-**And the attenuator finally follows the reading Hamlet already had.** Off unless
-the front end says it is overloading, rather than a constant that was wrong in
-both directions on one evening.
+**The decoder reads slightly better than it did and nothing on screen behaves
+differently.** Precision 0.761 to 0.766, yield 0.763 to 0.768, three fewer wrong
+letters across the corpus. A frequency with nothing on it still shows nothing —
+the silence lock is green and untouched.
 
 What is now true of the tree:
 
-- `OwnedSettings` names the twelve with their citations, and the coverage table
-  prints in one test.
-- CW's row states nine of them; three are answered by the mode write instead.
-- A write is confirmed by reading it back, not by the acknowledgement.
-- Ten round trips are asserted not to drift.
+- The lattice is indexed by `(hop, kind)`. **A class of legal path that the search
+  could not previously reach is now reachable**, and that is where the gain came
+  from.
+- A real posterior exists and is carried on every character. **Nothing consumes
+  it.**
+- `tools/Hamlet.PitchRank confidence` prints the correlation table and the
+  threshold sweep in one command.
 
 **What will look wrong but is not:**
 
-- **The corpus score is unchanged at 0.763 / 0.761.** The order requires it —
-  nothing here touches the decoder.
-- **CW shows three settings absent in the coverage table.** Mode, filter slot and
-  filter width are written by the other path. That is the contract gap named in
-  task 2, not a behaviour gap.
-- **The AGC for CW moved from slow to fast**, reversing the value I put in during
-  unit 043. Tim's table settles it and the old reasoning is kept in the test.
-- **The engine suite's result is not in this report yet.** It was still running
-  when the report was written, and it is amended in below rather than waited for,
-  so nothing here depends on a number that does not exist. The app suite is 519
-  passing, 0 failing, and every targeted batch this unit ran was green.
+- **The posterior is computed and ignored.** That is task 4's measured outcome,
+  not an omission.
+- **`+0.050` is reported as a pass in sign and a failure in substance.** The order
+  says continue if it correlates positively. It does, barely — and the sweep is
+  what decides whether that is usable, and it is not.
+- **The engine regression's result is not in this report yet**; it is amended
+  below. The app suite is 519 passing, 0 failing, and every targeted batch was
+  green.
 
 ### Amendment — the engine regression
 
-**Pending.** This line is replaced by the result and the comparison against unit
-046's failing set as soon as the run lands. **If it is not replaced, the run did
-not finish** — the host crash of HM-OPEN-061 has ended three of them, and an
+**Pending.** Replaced by the result and the comparison against unit 046's failing
+set when the run lands. **If it is not replaced, the run did not finish** — the
+HM-OPEN-061 host crash has now ended four of them, including unit 047's, and an
 unreplaced line is the honest record of that rather than an omission.
 
 ## 3. What you should see
 
-**Every write Hamlet makes on its own initiative, which is the inventory task 1
-asked for: two paths and no more.** The mode, data flag and filter slot go out in
-one frame when the dial settles; the block's stated receive conditions go out one
-setting at a time, once per block. Twenty-seven writes are defined and the other
-twenty-four are reachable only when the operator asks. **Nothing automatic can
-reach the transmitter**, and there is now a test that says so rather than a belief.
+**The architectural fix worked and the thing it was for did not.**
 
-**Then the coverage table, which is what the other conversation needs:**
+Indexing the lattice by `(hop, kind)` recovered paths the search was discarding
+for a reason that was not part of the model, and **precision rose 0.761 to 0.766
+with substitutions falling 61 to 58.** That is a real gain from a change made for
+a different reason entirely, and it settles the question units 044 and 046 left
+open: those discarded paths were not helping by accident.
 
-| block | stated | deferred | absent |
-|---|---|---|---|
-| CW | 9 | 0 | 3 |
-| FT8 | 3 | 1 | 8 |
-| FT4 | 3 | 1 | 8 |
+**But the posterior it made possible does not separate right from wrong.**
++0.050 on 301 characters, medians 0.8433 against 0.8382, and a threshold sweep
+that peaks at 0.822 precision and then goes backwards.
 
-FT8 and FT4 are silent on the manual notch, preamp, attenuator, RF gain and
-squelch. **Those are the five a CW row now writes and a digital row does not**, so
-until the digital side states them, crossing from CW to FT8 leaves them at CW's
-values. **That is the contract working as designed** — silence leaves a setting
-alone — and it is the list the FT8 conversation needs to fill in.
+**Why, and this is the part worth carrying forward:** the posterior at the winning
+path's states is **near one almost everywhere** — median 0.84 on right and wrong
+alike. The lattice is so dominated by a single path that the marginal barely
+spreads, so the normalisation that was supposed to make the quantity meaningful
+instead makes it uniform. **The level term does cancel, exactly as intended. What
+is left over is not informative.**
 
-**One thing found on the way that is worth more than it cost.** A write was being
-confirmed by the radio's acknowledgement rather than by reading the setting back.
-`FB` means the frame was accepted. It does not mean the value is what was asked
-for, and HM-DEC-084 says read back and let unknown stay unknown. It now does.
+**That is six quantities now, and the sixth fails differently from the first
+five.** The five were anti-correlated because they carried loudness. This one is
+uncorrelated because the model is too confident. **A decoder cannot measure its own
+doubt while its evidence model admits only one plausible reading** — and that
+points at the evidence term, not at the search, which is where tasks 5 and 6 were
+already aimed.
 
 ## 4. What's blocking us
 
-Two rulings.
+One ruling, and it decides the rest of this unit.
 
-> **The mode, data flag and filter join the owned-settings contract, or they are
-> declared a second contract on purpose.**
+> **The confidence work moves to the evidence model, or the precision target is
+> pursued another way.**
 >
-> Twelve settings are owned and nine of them go out through `ReceiverSetup`. The
-> other three — mode, data flag, filter slot and width — go out through
-> `SetModeAsync` on the same trigger. **So two mechanisms answer for one list**,
-> which is the fragmentation this contract exists to end, one level up: the
-> coverage table reports them absent on every row, correctly, and they are being
-> written anyway.
+> Six quantities have been measured against per-character correctness. Five were
+> negative because they carried an unbounded loudness term. The sixth, a proper
+> posterior with that term cancelled, is **+0.050 — positive in sign and inside
+> the noise** — because the marginal is near one almost everywhere. **Its
+> threshold sweep peaks at 0.822 precision against a target of 0.99 and falls
+> above 0.85.**
 >
-> **Rejected: merging them in this unit.** The mode write is entangled with
-> mode-follow and its snap-back memory, and unit 048 owns everything near the
-> decoder.
-> **Rejected: leaving them off the owned list.** They are consequences of the
-> operator's intent in exactly the sense the ruling defines, and dropping them
-> would make the coverage table lie by omission.
-
-> **What the digital rows state for the five they are silent on.**
+> **The diagnosis is that the model is overconfident, not that the search is
+> wrong.** The lattice now finds every legal path and the posterior says almost
+> all the probability sits on one of them, which cannot be true of audio a human
+> reads at 76 %. That is the evidence term — the per-hop Gaussian and Rayleigh
+> likelihoods — being far too sharp, so competing readings are driven to
+> negligible probability whatever the audio says.
 >
-> FT8 and FT4 say nothing about the manual notch, preamp, attenuator, RF gain or
-> squelch. **Crossing from CW to a digital block therefore leaves all five at CW's
-> values** — squelch open, RF gain full, attenuator following the overflow flag.
-> For four of those that is probably right for FT8 too; **the AGC shows the two
-> modes genuinely disagree**, so it cannot be assumed.
->
-> **This unit did not write them and must not** — another conversation owns those
-> rows and §12.4 forbids filling a gap with a plausible value. It is named here
-> because the coverage table is the handover and this is what it says.
+> **Rejected: gating on it at 0.50 anyway.** 1.6 points of precision for 2.8 of
+> yield, chosen off a plateau inside the noise, and nowhere near the target.
+> **Rejected: a seventh quantity of any family.** Six is enough to say the problem
+> is not which number is read off the model.
+> **What tasks 5 and 6 would do, and why they may now matter more than they did:**
+> putting the speed inside the lattice and fitting the duration densities from the
+> corpus both widen the model — more hypotheses genuinely in play, and durations
+> whose spread matches real fists rather than textbook ratios. **If the
+> overconfidence is in the duration penalty's width, task 6 addresses it
+> directly.** That is a plausible route and it is not this session's to choose.
 
 ### Asks still outstanding
 
 Carried forward per HM-DEC-139 and HM-DEC-140.
 
-1. **The eight 2026-08-29 captures are not in the tree**, a fifth consecutive unit.
-2. **The lattice restructure** — unit 046's finding, and it gates the confidence
-   work.
-3. **The fit figure and four other quantities do not track correctness** — five
-   measured, five negative.
-4. **The answer key's licensing** — §2.1 and HM-DEC-049 against vendoring an ARRL
-   bulletin.
-5. **The mode and filter's place in the owned contract** — raised above.
-6. **What the digital rows state for the five** — raised above.
-7. **The pedestal ranking is measured at 34 of 44 and unbuilt.**
-8. **A dial move's threshold is provisional at 500 Hz.**
-9. **The transcript break's wording.**
-10. **Whether `CwPitch` should follow an admitted station** — deliberately not
-    owned by this unit's contract, and still unruled as a question.
-11. **`DECISIONS.md` has no record for HM-DEC-096–133, 136, 141 or 150.**
-12. **The `reading` line's span wording needs approval.**
-13. **Two stations closer than 125 Hz are not named.**
-14. **HM-OPEN-057** (2026-08-22) and **HM-OPEN-007** (2026-08-14).
-15. **Nothing checks that deleting a surface is not deleting a capability.**
-16. **The engine test host crashes**, wider than the class HM-OPEN-061 names.
-    Owned by Claude, not waiting on a ruling.
+1. **The eight 2026-08-29 captures are not in the tree**, a sixth consecutive unit.
+2. **The confidence question above** — six measured, and the sixth fails
+   differently from the first five.
+3. **The answer key's licensing** — §2.1 and HM-DEC-049 against vendoring an ARRL
+   bulletin, which bounds how much truth the score can ever have.
+4. **The mode and filter's place in the owned-settings contract** — unit 047.
+5. **What the digital rows state for the five they are silent on** — unit 047.
+6. **The pedestal ranking is measured at 34 of 44 and unbuilt.**
+7. **A dial move's threshold is provisional at 500 Hz.**
+8. **The transcript break's wording.**
+9. **Whether `CwPitch` should follow an admitted station.**
+10. **`DECISIONS.md` has no record for HM-DEC-096–133, 136, 141 or 150.**
+11. **The `reading` line's span wording needs approval.**
+12. **Two stations closer than 125 Hz are not named.**
+13. **HM-OPEN-057** (2026-08-22) and **HM-OPEN-007** (2026-08-14).
+14. **Nothing checks that deleting a surface is not deleting a capability.**
+15. **The engine test host crashes**, wider than the class HM-OPEN-061 names, and
+    it has now ended four full runs. Owned by Claude, not waiting on a ruling.
