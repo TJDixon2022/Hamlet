@@ -90,6 +90,11 @@ internal static class Program
 
                 return 0;
 
+            case "score":
+                ScoreSweep();
+
+                return 0;
+
             default:
                 Console.WriteLine("usage: pitch-rank cost | pitch-rank rank [capture]");
 
@@ -1022,6 +1027,132 @@ internal static class Program
                 all == 0 ? 0 : (double)whileWithdrawn / all,
                 Clip(text.ToString())));
         }
+    }
+
+    /// <summary>
+    /// The truth this repository holds: the readings Tim has adjudicated on his
+    /// own recordings.
+    /// </summary>
+    /// <remarks>
+    /// **REAL DATA FROM THE REAL RADIO, WHICH IS THE ONLY KIND THAT SCORES**
+    /// (Tim's ruling). These are his rulings on his own air, already in the tree
+    /// with their decision ids, so they carry no third-party rights question — an
+    /// ARRL bulletin vendored whole into a public GPL-3.0 repository would (§2.1,
+    /// HM-DEC-049).
+    /// </remarks>
+    private static readonly (string Capture, string Truth, string Ruling)[] Truths =
+    [
+        ("cw-2026-08-17-013347", "VA3VRR", "HM-DEC-145"),
+        ("cw-2026-08-17-134712", "N4L", "HM-DEC-144"),
+        ("cw-2026-08-18-003758", "AA4MP/4 QNIK", "HM-DEC-126"),
+        ("cw-2026-08-24-012403", "DE KD0UN KD0UN K", "work instruction 011"),
+        ("cw-2026-08-18-004507",
+            "AT ARRL DOT NET <BT> EACH STATION HANDLING THIS MESSAGE P",
+            "HM-DEC-115"),
+        ("cw-2026-08-22-031838",
+            "2, 2, AND 2 WITH A MEAN OF 2.9. PRE", "Tim 2026-08-25"),
+        ("cw-2026-08-22-031905",
+            "DICTED 10.7 CENTIMETER FLUX IS 125, 125", "Tim 2026-08-25"),
+        ("cw-2026-08-22-031948",
+            "110, 110, AND 110 WITH A MEAN OF 117", "Tim 2026-08-25"),
+        ("cw-2026-08-22-032012",
+            "N OF 117. LINKS TO ARTICLES OR OTHER WEBSITES MENTI",
+            "Tim 2026-08-25"),
+        ("cw-2026-08-22-032050",
+            "THIS BULLETIN CAN BE FOUND IN TELEPRINTER, PACKET, AND INTE",
+            "Tim 2026-08-25"),
+        ("cw-2026-08-22-032113",
+            "ACKET, AND INTERNET VERSIONS", "Tim 2026-08-25"),
+        ("cw-2026-08-22-032129",
+            "2026 PROPAGATION FORECAST BULLETIN ARLP034", "Tim 2026-08-25"),
+    ];
+
+    /// <summary>The first accuracy baseline this project has produced.</summary>
+    /// <remarks>
+    /// Unit 045 tasks 4 and 6 together: the score per capture, and the fit figure
+    /// beside it so the correlation between the two can be read off.
+    /// </remarks>
+    private static void ScoreSweep()
+    {
+        Console.WriteLine(
+            "capture	truth	yield	precision	correct	subs	ins	dels	fit	read");
+
+        var truthTotal = 0;
+        var correctTotal = 0;
+        var assertedTotal = 0;
+
+        foreach (var (capture, truth, _) in Truths)
+        {
+            var path = Find(capture);
+
+            if (path is null)
+            {
+                Console.WriteLine($"{capture}	MISSING");
+
+                continue;
+            }
+
+            var audio = WavAudio.Read(path);
+            var decoder = new CwDecoder(audio.SampleRate, 600);
+            var text = new System.Text.StringBuilder();
+
+            decoder.CharacterSettled += c => text.Append(c.Text);
+
+            var hop = decoder.Tracker.HopSamples;
+
+            for (var at = 0L; at + hop <= audio.Samples.Length; at += hop)
+            {
+                decoder.Process(new AudioChunk(
+                    at, audio.SampleRate, audio.Samples.AsSpan((int)at, hop)));
+            }
+
+            decoder.Flush();
+
+            var read = text.ToString();
+            var score = CwAccuracy.Score(read, truth);
+
+            truthTotal += score.TruthCharacters;
+            correctTotal += score.Correct;
+            assertedTotal += score.Correct + score.Substitutions + score.Insertions;
+
+            Console.WriteLine(string.Format(
+                CultureInfo.InvariantCulture,
+                "{0}	{1}	{2:0.000}	{3:0.000}	{4}	{5}	{6}	{7}	{8:0.00}	{9}",
+                capture,
+                truth.Length,
+                score.Yield,
+                score.Precision,
+                score.Correct,
+                score.Substitutions,
+                score.Insertions,
+                score.Deletions,
+                decoder.Reading.LikelihoodRatio,
+                Clip(read)));
+        }
+
+        Console.WriteLine();
+        Console.WriteLine(string.Format(
+            CultureInfo.InvariantCulture,
+            "CORPUS	truth {0}	yield {1:0.000}	precision {2:0.000}",
+            truthTotal,
+            truthTotal == 0 ? 0 : (double)correctTotal / truthTotal,
+            assertedTotal == 0 ? 0 : (double)correctTotal / assertedTotal));
+    }
+
+    /// <summary>Where a capture lives, adjudicated or not.</summary>
+    private static string? Find(string capture)
+    {
+        var folder = CaptureFolder();
+        var direct = Path.Combine(folder, capture + ".wav");
+
+        if (File.Exists(direct))
+        {
+            return direct;
+        }
+
+        var under = Path.Combine(folder, "unadjudicated", capture + ".wav");
+
+        return File.Exists(under) ? under : null;
     }
 
     /// <summary>The last stretch of a recording.</summary>

@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 4 of 8
+TASK: 6 of 8
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-29T10:04:34-04:00
-NOTE: scoring harness in with eight hand-counted tests; running it over the twelve adjudicated readings for the first baseline
+UPDATED: 2026-08-29T10:06:33-04:00
+NOTE: baseline is yield 0.763 precision 0.761 over 384 truth characters; the fit figure correlates negatively with accuracy
 
 ---
 
