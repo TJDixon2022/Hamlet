@@ -4,8 +4,8 @@ STATE: EXECUTING
 TASK: 3 of 8
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-29T11:53:36-04:00
-NOTE: lattice reindexed by hop and kind; precision 0.761 to 0.766, substitutions 61 to 58, silence lock green
+UPDATED: 2026-08-29T11:56:38-04:00
+NOTE: forward-backward in and numerically sound; correlating the posterior against per-character correctness next, which is the unit's gate
 
 ---
 
