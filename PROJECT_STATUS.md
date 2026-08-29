@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 3 of 4
+TASK: 4 of 4
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-28T21:16:31-04:00
-NOTE: reference returns 1 of 12 adjudicated readings against the shipped path's 12; setting ships off
+UPDATED: 2026-08-28T21:17:14-04:00
+NOTE: reference chain costs 1.3% of a core against the shipped path's 6.1%; writing the report
 
 ---
 

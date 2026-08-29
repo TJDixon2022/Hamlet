@@ -80,6 +80,11 @@ internal static class Program
 
                 return 0;
 
+            case "refcost":
+                ReferenceCost();
+
+                return 0;
+
             default:
                 Console.WriteLine("usage: pitch-rank cost | pitch-rank rank [capture]");
 
@@ -855,6 +860,73 @@ internal static class Program
                 Clip(shipped.ToString()),
                 Clip(reference.Refusal ?? reference.Text)));
         }
+    }
+
+    /// <summary>What the reference's chain costs per second of audio.</summary>
+    /// <remarks>
+    /// Unit 045 task 4. Measure only; nothing changes on its account.
+    /// </remarks>
+    private static void ReferenceCost()
+    {
+        var file = Directory
+            .GetFiles(CaptureFolder(), "*.wav", SearchOption.AllDirectories)
+            .OrderBy(f => Path.GetFileName(f), StringComparer.Ordinal)
+            .First(f => f.Contains("004844", StringComparison.Ordinal));
+
+        var audio = WavAudio.Read(file);
+        var seconds = audio.Samples.Length / (double)audio.SampleRate;
+
+        var x = new double[audio.Samples.Length];
+
+        for (var i = 0; i < x.Length; i++)
+        {
+            x[i] = audio.Samples[i];
+        }
+
+        // Warm the JIT.
+        CwReferenceDecoder.Run(audio.Samples, audio.SampleRate);
+
+        var mask = CwReferenceDecoder.MuteMask(x, audio.SampleRate);
+
+        var acq = Stopwatch.StartNew();
+        CwReferenceDecoder.AcquireTone(x, audio.SampleRate, mask);
+        acq.Stop();
+
+        var whole = Stopwatch.StartNew();
+        CwReferenceDecoder.Run(audio.Samples, audio.SampleRate);
+        whole.Stop();
+
+        var shipped = Stopwatch.StartNew();
+        var decoder = new CwDecoder(audio.SampleRate, 600);
+        var hop = decoder.Tracker.HopSamples;
+
+        for (var at = 0L; at + hop <= audio.Samples.Length; at += hop)
+        {
+            decoder.Process(new AudioChunk(
+                at, audio.SampleRate, audio.Samples.AsSpan((int)at, hop)));
+        }
+
+        decoder.Flush();
+        shipped.Stop();
+
+        Console.WriteLine(string.Format(
+            CultureInfo.InvariantCulture,
+            "audio            {0:0.0} s at {1} Hz", seconds, audio.SampleRate));
+        Console.WriteLine(string.Format(
+            CultureInfo.InvariantCulture,
+            "acquire_tone     {0:0} ms for the whole file  ({1:0.0}% of one core)",
+            acq.Elapsed.TotalMilliseconds,
+            acq.Elapsed.TotalMilliseconds / (seconds * 1000) * 100));
+        Console.WriteLine(string.Format(
+            CultureInfo.InvariantCulture,
+            "reference chain  {0:0} ms for the whole file  ({1:0.0}% of one core)",
+            whole.Elapsed.TotalMilliseconds,
+            whole.Elapsed.TotalMilliseconds / (seconds * 1000) * 100));
+        Console.WriteLine(string.Format(
+            CultureInfo.InvariantCulture,
+            "shipped path     {0:0} ms for the whole file  ({1:0.0}% of one core)",
+            shipped.Elapsed.TotalMilliseconds,
+            shipped.Elapsed.TotalMilliseconds / (seconds * 1000) * 100));
     }
 
     /// <summary>The last stretch of a recording.</summary>
