@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
+STATE: COMPLETED
 TASK: 4 of 4
-BALL: code
-NEXT_PASTE: none
-UPDATED: 2026-08-28T21:17:14-04:00
-NOTE: reference chain costs 1.3% of a core against the shipped path's 6.1%; writing the report
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
+UPDATED: 2026-08-28T21:19:39-04:00
+NOTE: reference ported faithfully and lost 1 of 12 adjudicated readings to the shipped path's 12; shipped off
 
 ---
 

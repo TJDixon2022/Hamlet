@@ -1,273 +1,237 @@
-UNIT:       044 — complete at task 4 of 4 — 2026-08-28 20:58
+UNIT:       045 — complete at task 4 of 4 — 2026-08-28 21:19
 PHASE GOAL: Readable CW on the operator's screen — eighty percent of a strong signal read correctly, first time.
-UNIT GOAL:  Make the ranked pitch drive the live decode, and stay silent when even the best candidate is poor.
-ADVANCED:   no — the ranking is built, wired end to end and switched off, because driving the decode costs two adjudicated callsigns.
-NUMBER:     34 of 44 offline -> 27 of 44 at the window the live decoder actually sees; on the operator's screen, unchanged.
-DRIFT:      1 consecutive unit without advance  (was 0 — unit 1.12.6 recorded no count and its own ADVANCED was yes)
+UNIT GOAL:  Port the reference decoder's acquisition and gating into the engine and measure it head to head against the shipped path.
+ADVANCED:   no — the reference was ported faithfully and lost the head to head, so it ships off; the shipped decode path is unchanged.
+NUMBER:     shipped 12 of 12 adjudicated readings -> reference 1 of 12.
+DRIFT:      2 consecutive units without advance  (was 1)
 
 ## 1. What Claude did
 
-**Complete: all four tasks worked, and the goal task ships switched off.** Task 4
-was not dropped for time — it applies only where task 3's floor is holding, and no
-floor holds.
+**Complete: all four tasks, and the answer to the question this unit was
+commissioned to ask is no.** Task 4 was not dropped.
 
 Development computer, prompt claimed `PROJECT: Hamlet`, branch `main`, version
 `1.12.6` unchanged. **Nothing here is evidence about the radio**: no radio was
 connected, and every number comes from WAV files already in the tree.
 
-### Task 1 — the pedestal in the engine
+### Task 1 — the port
 
-`CwPitchRanking` now holds it, and **the engine's copy reproduces the tool's
-forty-four rows byte for byte** — the check the order said to stop on if it failed.
-Seven tests, all green.
+`CwReferenceDecoder` carries the whole chain, function for function, each name
+kept so the two can be read side by side. **Every line number in the work order's
+table is correct against the tree** — `mute_mask:46`, `acquire_tone:62`,
+`fine_envelope:77`, `two_means:105`, `gate:113`, `deglitch:135`, `runs:145`,
+`fit_clock:163`, `well_separated:193`, `classify_gaps:212`, `decode:245`. The
+tree's `cwdecoder.py` is the one committed at `351784a` and nothing in it differs
+from the order's description.
 
-**One finding worth more than the move itself: the generated fixtures cannot show
-this fault.** The control test was written against `CwFixtureGenerator`'s shaped
-band and failed, because there the *bare* score picks the station correctly, at
-500 Hz scoring 39.45. The receiver's own 500 Hz filter empties the bins outside it
-far harder than the generator's band shaping does, so a session working only from
-synthetic audio would conclude there was nothing to fix. The test moved to
-`cw-2026-08-28-004844`, where the bare score picks 875 Hz.
+**The port agrees with its source on all forty-four captures.** Run side by side:
+the same acquired pitch, the same decision about whether a clock fits, the same
+gate contrast, the same character count, and **the same transcript character for
+character on 44 of 44**. The only differences anywhere are the fitted dah on
+`cw-2026-08-22-032012` (422 against 423) and the fitted dit on
+`cw-2026-08-28-005218` (142 against 143), each under a millisecond, which is
+floating-point accumulation order rather than behaviour.
 
-### Task 2 — the ranked pitch drives the decode, and is switched off
+Both of the reference's load-bearing comments came across verbatim: that the
+2.5–3.8 ratio band **refused `cw-2026-08-17-134712`'s real 4.24-dit fist**, and
+that `well_separated` was tried as a *replacement* for the band and measured at
+five decibels dropping fast-working from 58 % to nothing, so both are kept.
 
-Built exactly as ruled: ranking on a four-second window, once on tune-in and again
-when the reading sits under the gate for six seconds, the full path on the winner
-alone. The mixdown takes it at `CwDecoder.Step` behind the operator's lock;
-`CwDecodeReport.ToneHz` is fed from the pitch the decode used rather than from
-`_tracker.ToneHz`; the sheet says the pitch was ranked and prints the winner's
-score and the runner-up's; admission is untouched and still recorded.
+**Where the engine already had the thing, the engine's was used**, which is the
+order's own instruction and is tokens back. `MorseAlphabet.Lookup` is the table
+and `MorseAlphabet.Unreadable` is the placeholder, so the port keeps no second
+copy of either. The reference renders its tainted and its unknown characters as
+the same glyph, so folding them onto Hamlet's own mark loses nothing.
 
-**Then it was measured, and it costs two adjudicated anchors:**
+**One mismatch in the order, and it matters because it was a stated test.** The
+order asks that *"`acquire_tone` finds 429 Hz on `cw-2026-08-28-004844`"*. It
+cannot: the grid is 300 to 900 in steps of 25, so the answer is always a multiple
+of 25, and on that capture it is **425**. The 430 the reference prints is a
+different quantity — the median of the fine tracker's seven offsets over the loud
+hops. Both are now pinned by test.
 
-| capture | with the tracker steering | with the ranking driving |
-|---|---|---|
-| `cw-2026-08-17-013347` | `… VA3VRR` at 625 Hz | nothing readable, at 775 Hz |
-| `cw-2026-08-24-012403` | `DE KD0UN KD0UN K` at 440 Hz | `DE XD0UN KD0` at 450 Hz |
+Ten tests, all green.
 
-The unit's acceptance requires all twelve anchors green. **So it ships off**, as
-`CwDecoder.RankThePitch`, on `ClearOnAStationChange`'s precedent — the machinery
-stays, tested and measurable, and a test goes red the moment the default changes so
-that whoever flips it re-measures those two first. With it off the shipped
-behaviour is what it was this morning.
+### Task 2 — the head to head
 
-**The two failures have different causes and only one is the ranking being wrong.**
+**The reference returns one of the twelve adjudicated readings. The shipped path
+returns twelve.**
 
-- On `012403` **the ranking picks the right bin.** The candidates are the tracker's
-  coarse grid, so a ranked pitch is only ever a bin centre: it chooses 450 and the
-  station sits at 440, and ten hertz turns `KD0UN` into `XD0UN`. The survey
-  interpolates to the hertz and the ranking cannot. A refinement — take the
-  survey's pitch where it falls inside the winning bin — was built, measured, and
-  did not fire on this capture, so it was removed rather than shipped untested.
-- On `013347` **the pedestal collapses.** The opening four seconds hold no station,
-  so every bin's floor is tiny, the common floor is tiny with them, and the scale
-  invariance the pedestal exists to remove comes straight back: the winner scores
-  **5,521,967** at 775 Hz. **A degenerate pitch looks maximally healthy**, so the
-  collapse test that would re-rank it can never fire.
-
-**And the window's position matters more than its length, which no measurement
-before this one separated.** The 34 of 44 that commissioned this unit was measured
-on the *tail* of each recording. The live decoder ranks at tune-in, which is the
-opening:
-
-| stretch | 4 s | 6 s | 8 s | 12 s |
-|---|---|---|---|---|
-| tail | **34** | 34 | 35 | 34 |
-| opening | **27** | 31 | 32 | 33 |
-
-The ruling chose four seconds on cost and the accuracy at four seconds was never
-measured. At the tail it costs nothing at all; at the opening it costs seven
-captures against twelve seconds.
-
-**The three good captures keep every readable token, and the strings are not
-identical.** Reported precisely rather than as "unchanged": `004844` is identical;
-`004902` drops one junk `E` (`IELE` to `IEL`); `004915` gains one (`QSAETU` to
-`QSSAETU`). Every readable run — `TUES AU G 2 5`, `<BT> BRU C E <AR> NR 2 3 0`,
-`WED AUG 26 W7GB QRU` — comes back character for character.
-
-**The measured cost, not estimated.** A four-second sweep of twenty-five candidates
-is 15.6 ms a candidate, **390 ms once**. Ranking ran once on six of the seven
-captures of 2026-08-28 and twice on one, so on a thirty-second recording that is
-about 1.3 % of one core — not a continuous load, because it is not a continuous
-pass.
-
-### Task 3 — the floor, swept and not shipped
-
-**No floor both silences the phantoms and keeps every anchor, and it is not close.**
-
-The four junk captures score **0.01, 0.33, 5.09 and 5.25**. Eight adjudicated
-readings score below 5.09, and `cw-2026-08-17-134712`, which holds `N4L`, scores
-**0.00**. The whole sweep, as the order requires rather than a chosen value:
-
-| floor | captures silenced | anchors lost | anchors kept |
+| capture | adjudicated anchor | shipped | reference |
 |---|---|---|---|
-| 0.00 | 2 | 0 | 15 |
-| 0.25 | 5 | 1 | 14 |
-| 0.50 | 10 | 3 | 12 |
-| 1.00 | 17 | 3 | 12 |
-| 1.50 | 24 | 6 | 9 |
-| 2.00 | 27 | 8 | 7 |
-| 3.00 | 31 | 9 | 6 |
-| 5.00 | 32 | 10 | 5 |
-| 5.50 | 34 | 10 | 5 |
-| 7.50 | 36 | 12 | 3 |
-| 14.00 | 37 | 13 | 2 |
+| `cw-2026-08-17-013347` | `VA3VRR` | yes | **yes** |
+| `cw-2026-08-17-134712` | `N4` | yes | no |
+| `cw-2026-08-18-003758` | `MP/4 QNIK` | yes | no |
+| `cw-2026-08-24-012403` | `DE KD0UN KD0UN K` | yes | no |
+| `cw-2026-08-18-004507` | `N HANDLING THIS MESSAG` | yes | no |
+| `cw-2026-08-22-031838` | `, AND` | yes | no |
+| `cw-2026-08-22-031905` | `DICTED 10.7` | yes | no |
+| `cw-2026-08-22-031948` | `110, AND 110 WITH A MEAN OF 117` | yes | no |
+| `cw-2026-08-22-032012` | `R OTHER WEBSITES MENTI` | yes | no |
+| `cw-2026-08-22-032050` | `ULLETIN CAN BE FO` | yes | no |
+| `cw-2026-08-22-032113` | `INT` | yes | no |
+| `cw-2026-08-22-032129` | `OPAGATION` | yes | no |
 
-Which anchor each value costs, in the order they fall: 0.25 loses `134712`
-(`N4L`, 0.00); 0.50 adds `031905` (0.27) and `012403` (`KD0UN`, 0.35); 1.50 adds
-`032113` (1.27), `031948` (1.34) and `032129` (1.47); 2.00 adds `032012` (1.71) and
-`031838` (1.73); 3.00 adds `032050` (2.63); 4.00 adds `004507` (the ARRL bulletin,
-3.21); 7.00 adds `003758` (`AA4MP/4 QNIK`, 6.90); 7.50 adds `004915` (7.32); 14.00
-adds `004844` (13.90).
+**The port is not what lost, and that is the important half.** `cwdecoder.py`
+produces the same output on the same files. On `cw-2026-08-18-004507` it acquires
+**700 Hz** for a station the sheet measured at 500 and reads
+`E E TETEEE TE ETIT NE ETEEIE`. On `cw-2026-08-24-012403` it acquires 440
+**correctly**, fits a plausible 59/187 ms clock, and still reads
+`EEIEIEETE■ETTTITIEETT…`. So the failure is not acquisition alone: on that capture
+everything upstream is right and the segmentation still produces nothing.
 
-**So no floor ships**, which is what the order said to do in this case. Unit
-1.11.33 found no threshold separated the corpus in the old units; these are new
-units and the finding repeats in them.
+**Where the reference wins, it wins clearly.** On `cw-2026-08-17-013347` it reads
+`■ ■ ■ ■ ■ ■ M VRR VA3VRR` in sixteen characters where the shipped path needs
+fifty-nine to reach the same callsign. On `cw-2026-08-28-004844` it reads
+`K I L O T U E S A U G 2 5 K C 9 U C Q R ET 8 8 <BT> B R U C E <AR> N R 2 3 0 C`,
+the cleanest reading of that net anything in this repository has produced. On
+`cw-2026-08-28-004902` it gets `NR 2 3 0` and `W 7 G B` where the shipped path
+gets the callsign and loses the number.
 
-### Task 4 — not applicable rather than dropped
+**The four phantoms**: the reference silences one of four. `005158` refuses
+outright — a tone at 595 Hz and no clock fits. `005051`, `005218` and `005243`
+still emit 23, 14 and 19 characters, against the shipped path's 30, 53 and 54.
+Fewer, and not none.
 
-The line was to appear "where task 3's floor is holding". No floor holds, so there
-is no state for it to describe, and inventing one would be a sentence about a
-condition that never occurs. **Nothing on the screen moved.**
+**The two silence controls**: one of two. `cw-2026-08-20-014935` refuses, which is
+exactly the structural refusal the port was made for. **`cw-2026-08-20-014854` does
+not**: a clock fits, and eighteen characters come out of a capture this suite has
+always called HOLDS NOTHING — `■ ■■I M YOY■KB A NB ■A IM` — where the shipped path
+emits none.
 
-No decision was recorded under §12.1. Everything above is handed back.
+**Across the corpus the reference refuses outright on 11 of 44.**
+
+### Task 3 — the setting stays off
+
+`AppSettings.UseReferenceDecoder`, default **false**. Every one of the four
+acceptance lines fails:
+
+- the four phantoms emit no letters — **fails**, three of four still emit;
+- all twelve adjudicated anchors still read — **fails**, one of twelve;
+- both silence controls silent — **fails**, one of two;
+- the reference picks the reading pitch on more captures — **fails**, one against
+  twelve.
+
+**No constant was tuned to try to pass a line.** It is a port, and the order is
+right that a tuned port is a seventh invention.
+
+### Task 4 — cost
+
+Measured on thirty seconds of `cw-2026-08-28-004844`:
+
+| | whole file | share of one core |
+|---|---|---|
+| `acquire_tone` alone | 312 ms | **1.0 %** |
+| the whole reference chain | 401 ms | **1.3 %** |
+| the shipped path | 1840 ms | **6.1 %** |
+
+**The reference is about five times cheaper than what ships.** `acquire_tone` is a
+25 ms Goertzel over 25 bins at a 10 ms hop, against the 1240 ms a sweep of 25 full
+decodes cost in unit 1.12.6 — **a factor of four hundred.** Cost was never why
+this was not adopted. Measure only; nothing changed on its account.
+
+No decision was recorded under §12.1.
 
 ## 2. What the owner should expect
 
-**On a frequency where a station is sending, Hamlet lands on it exactly as often as
-it did; on one where nothing is, the screen goes on filling with letters.** That is
-the opposite of what the order asked this section to lead with, and the reason is
-task 2: the ranking is built and switched off, because switching it on loses
-`VA3VRR` and `KD0UN`.
+**With the setting on, a dead frequency does not show nothing, and a station you
+can hear does not reliably get picked.** One of the two dead-air captures fills
+with eighteen characters, three of the four junk captures still emit, and eleven
+of the twelve readings you have adjudicated stop coming back. **So it is off, and
+nothing you see tonight is different from this morning.**
 
 What is now true of the tree:
 
-- `CwPitchRanking` is in the engine with nine tests on it, and the tool calls it
-  rather than keeping a second copy.
-- `CwDecoder.RankThePitch` exists and is **false**. Setting it true is one line and
-  a rebuild, and the two captures above are what it costs.
-- The capture sheet will say a pitch was ranked, and print both scores, on any
-  build where that switch is on.
-- `tools/Hamlet.PitchRank` gained `live`, `floor` and `window`, so every figure
-  above is one command away from being re-measured.
+- `CwReferenceDecoder` is in the engine, a faithful port with ten tests, agreeing
+  with `cwdecoder.py` transcript for transcript on all forty-four captures.
+- `AppSettings.UseReferenceDecoder` exists and is **false**. Two tests go red if
+  that changes.
+- `tools/Hamlet.PitchRank` gained `reference`, `headtohead` and `refcost`, so
+  every figure above is one command from being re-measured.
+- The shipped decode path was not touched at all.
 
 **What will look wrong but is not:**
 
-- **The engine baseline is still 28 failing.** `CwEmissionGateTests.NoSpeedIsNamed­WithoutCharactersToNameItFrom` is among them and was among them this morning.
-- **`Report.ToneHz` changed meaning even with the ranking off.** It used to be the
-  tracker's pitch and is now the pitch the mixer was actually run at, which with
-  ranking off is the last measured pitch rather than the tracker's live one. On the
-  batches run it moved nothing; it is a real change and it is named here rather
-  than left to be discovered.
-- **The full engine suite has no result in this report, and the reason turned out
-  to be a crash rather than the clock.** `TheGateHasItsOwnWindowNowTests` aborts
-  the test host — `Test host process crashed`, not a failure — and takes the rest
-  of the run with it. **It is not this unit's**: the engine and the new test file
-  were reverted to `2fcbc33`, the suite rebuilt, and it crashes there too. Raised
-  as **HM-OPEN-061** and left alone (§12.6). It is also not reproducible on every
-  run: unit 1.12.6's full sweep completed with this class not among its 28
-  failures, so a green full run will not prove it gone.
-- **What did run, in batches, all green except one pre-existing failure:** the
-  twelve adjudicated anchors (13 tests); the nine new ranking tests; a 31-test
-  batch over pitch-hold, emission-gate, phantom-block and tracker-switch, whose
-  one failure — `CwEmissionGateTests.NoSpeedIsNamedWithoutCharactersToNameItFrom`
-  — is in the 28-failing baseline; a 22-test batch over the captured-signal,
-  keying and low-duty cases; and 79 tests across the survey-threshold and
-  captures-that-decode cases before the crash ended that run. **Nothing new went
-  red anywhere.**
-- **The app suite has no result either**, for the same reason. No app file changed
-  except the sheet's pitch line.
-- **`eng-final.txt` and `app-final.txt` are still modified in the working tree**,
-  from commit `cf81849`, and were left alone (§12.6).
+- **The engine baseline is still 28 failing.** Nothing this unit did went near
+  them.
+- **The reference reads `cw-2026-08-28-004844` better than Hamlet does**, and it
+  is still switched off. That capture is what the argument for the reference
+  rested on, and it does not generalise: the same chain loses eleven readings.
+- **The full engine suite has no result here.**
+  `TheGateHasItsOwnWindowNowTests` crashes the test host — **HM-OPEN-061**, raised
+  last unit and reproduced there on the pre-044 tree. What ran: 32 engine tests
+  across the port, the twelve anchors and the pedestal ranking, all green; 2 app
+  tests green.
+- **`cwdecoder.py` itself is unchanged.** The order said not to improve the
+  reference while porting it, and nothing in it was edited.
 
 ## 3. What you should see
 
-**With the ranked pitch driving the live decode, the three good captures read what
-they read before and the four phantoms still fill the screen — and two adjudicated
-callsigns disappear. The cost is 390 ms once at tune-in, about 1.3 % of one core
-over a thirty-second recording.**
+**On how many of the forty-four does the reference pick the pitch that reads?
+Measured against the only ground truth there is — the twelve readings somebody has
+adjudicated — the reference returns one and the shipped path returns twelve.**
 
-That is the answer to what this unit was commissioned to ask, and it is why nothing
-reaches the operator tonight.
+The table is in section 1. The short version is that the reference is not a better
+decoder than the one that ships. It is a **different** one: better on two captures
+and much worse on ten.
 
-The useful part is that the two remaining faults are now named and separated, and
-neither is the idea being wrong. **The ranking picks the right bin and cannot pick
-the right pitch inside it** — twenty-five hertz of quantisation is the difference
-between `KD0UN` and `XD0UN`. And **the pedestal needs a band with noise in it**: on
-four seconds of an empty opening there is no floor to stand anything on, the score
-blows up to five and a half million, and because that looks like the healthiest
-signal Hamlet has ever seen, nothing re-ranks it.
+**What it is genuinely better at is saying nothing.** It refuses outright on
+eleven of forty-four, and every one of those refusals is structural — no clock
+fits, so nothing runs — with no threshold anybody chose. That is the property six
+units of admission statistics were built to get and never got.
 
-Both have obvious shapes of answer and neither is this unit's to choose.
+It is not enough on its own, though, and the same corpus says so: one of the two
+dead-air captures still produces a clock and eighteen characters. So `fit_clock`'s
+refusal is a real mechanism and not yet a complete answer to your first question.
+
+**And it costs a fifth of what the current path costs**, so if any part of it is
+ever wanted, affordability is not the obstacle.
+
+**The argument this retires** is that the reference reads these captures and
+Hamlet has been reinventing it. It reads two of them well. On your own adjudicated
+set it reads one in twelve.
 
 ## 4. What's blocking us
 
-Two rulings, the first blocking the more work.
+One ruling, and it is about what to take from a decoder that lost.
 
-> **The ranking chooses the bin and the survey chooses the pitch inside it, and
-> the ranking refuses on a band with no floor to stand on.**
+> **The reference's structural refusal is worth taking on its own, and the rest of
+> it is not.**
 >
-> Ranking supplies the mixdown only as a bin; where the survey has a measured pitch
-> inside the winning bin, that pitch is used. Measured: `cw-2026-08-24-012403`'s
-> station sits at 440 and the ranking picks the 450 bin correctly, and the ten
-> hertz costs `DE KD0UN KD0UN K`. Separately, where the band's common floor is too
-> small for the pedestal to mean anything, nothing is ranked and the tracker keeps
-> steering — `cw-2026-08-17-013347`'s opening four seconds score 5,521,967 at a
-> pitch holding nothing.
+> `fit_clock` returning nothing when the marks do not form two lengths refuses
+> eleven of forty-four captures outright with no threshold anybody chose, which is
+> the property six families of admission statistic were built for and never
+> reached. It is separable from the rest of the chain: it reads mark lengths, and
+> the shipped path already has mark lengths.
 >
-> **Rejected: shipping the ranking as it stands.** It costs two adjudicated
-> callsigns and the unit's own acceptance forbids it.
-> **Rejected: catching the degenerate case with the collapse test.** Measured
-> impossible in principle: the degenerate pitch scores five and a half million, so
-> it looks healthier than any real station and the collapse test can never fire.
-> **Rejected: a refinement built on the last measured pitch alone.** Built and
-> measured this session; it did not fire on `012403`, so it was removed rather than
-> shipped untested. What it needs is the tracker's live pitch as well, and that is
-> a wider change than a session should make on its own.
-> **What is not yet decided is where the "no floor to stand on" line sits**, and
-> that is a number, which means a sweep and not a judgement.
-
-> **Where in the recording the ranking reads, given that position matters more
-> than length.**
->
-> Ranking the tail of a recording picks the station on 34 of 44 captures at four
-> seconds; ranking the opening four seconds, which is what tune-in sees, picks it
-> on 27. The four-second window was ruled on cost and its accuracy was never
-> measured; at the tail four seconds costs nothing against twelve, and at the
-> opening it costs seven captures.
->
-> **Rejected: lengthening the window to twelve seconds.** It recovers most of the
-> gap at the opening, 27 to 33, and costs 1240 ms a sweep against 390 — which is
-> affordable at one sweep on tune-in, so this is a live option rather than a dead
-> one and it is named as such.
-> **Rejected: ranking later than tune-in without a rule for when.** "A few seconds
-> after the operator stops turning the dial" is probably right and is a behaviour
-> nobody has specified.
+> **Rejected: adopting the reference whole.** Measured this unit at one of twelve
+> adjudicated readings against twelve.
+> **Rejected: taking its acquisition.** It picks 700 Hz for a station at 500 on
+> `cw-2026-08-18-004507`, and on `cw-2026-08-24-012403` it picks the right pitch
+> and reads junk anyway, so acquisition is not where its advantage lies either.
+> **Rejected: treating `fit_clock` as a finished answer to the phantoms.**
+> `cw-2026-08-20-014854` holds nothing, fits a clock, and yields eighteen
+> characters. The refusal is real and it is not sufficient.
+> **What is not yet decided** is whether a refusal that fires on eleven of
+> forty-four is worth what it costs on the other thirty-three, and that is a
+> measurement rather than a judgement: the same head-to-head table, with only the
+> clock refusal grafted onto the shipped path.
 
 ### Asks still outstanding
 
-Carried forward per HM-DEC-139 and HM-DEC-140, from unit 1.12.6's list.
+Carried forward per HM-DEC-139 and HM-DEC-140.
 
-1. **`DRIFT` had no count to carry** — unit 1.12.6's block carried none. This
-   report starts the chain at 1, on its own `ADVANCED: no`.
-2. **The ranking's ten misses of forty-four are unexamined** — which captures, and
-   whether they share a shape. Still unexamined; this unit measured the window
-   instead.
-3. **Admission admits a pitch 150 Hz off the station and holds it for forty-five
-   seconds without a refresh**, the held peak decaying at exactly 1 dB per second
-   because nothing refreshed it.
+1. **The pedestal ranking is measured at 34 of 44 and unbuilt.** The order said it
+   becomes its own unit **if the reference loses**. It lost.
+2. **The ranking's ten misses are unexamined.**
+3. **`DECISIONS.md` has no record for HM-DEC-096–133, 136, 141 or 150.**
 4. **The `reading` line's span wording needs approval.**
-5. **`DECISIONS.md` has no record for HM-DEC-096–133, 136, 141 or 150.**
-6. **Two stations closer than 125 Hz are not named.**
-7. **HM-OPEN-057** (2026-08-22) and **HM-OPEN-007** (2026-08-14).
-8. **Nothing checks that deleting a surface is not deleting a capability** — the
-   operator has since found the favourites list gone. **The next unit unless he
-   says otherwise.**
-9. **A capture sheet carries a score of −68562.4** (`cw-2026-08-28-005158`), first
-   raised in unit 1.12.6 and unruled. A number the operator can read with nothing
-   beside it saying what it means.
-10. **The full engine suite ends early, and it is a host crash rather than a
-    timeout** — `TheGateHasItsOwnWindowNowTests`, reproduced on the pre-unit-044
-    tree, now **HM-OPEN-061**. Acceptance has to be assembled from filtered
-    batches meanwhile, which is slower and leaves gaps nobody can see the shape
-    of. Owned by Claude, not waiting on a ruling.
+5. **Two stations closer than 125 Hz are not named.**
+6. **HM-OPEN-057** (2026-08-22) and **HM-OPEN-007** (2026-08-14).
+7. **Nothing checks that deleting a surface is not deleting a capability** — the
+   favourites list is gone and the operator found it by hand.
+8. **A capture sheet carries a score of −68562.4** (`cw-2026-08-28-005158`), first
+   raised in unit 1.12.6 and unruled.
+9. **`TheGateHasItsOwnWindowNowTests` crashes the test host** (**HM-OPEN-061**),
+   so full-suite acceptance is assembled from batches. Owned by Claude, not
+   waiting on a ruling.
