@@ -25,6 +25,10 @@ internal static class Program
 
     private static int Main(string[] args)
     {
+        // The transcripts carry Hamlet's own unreadable mark, which is not in
+        // the console's default codepage.
+        Console.OutputEncoding = System.Text.Encoding.UTF8;
+
         var what = args.Length > 0 ? args[0] : "help";
 
         switch (what)
@@ -63,6 +67,11 @@ internal static class Program
 
             case "window":
                 WindowSweep();
+
+                return 0;
+
+            case "reference":
+                Reference(args.Length > 1 ? args[1] : null);
 
                 return 0;
 
@@ -745,6 +754,43 @@ internal static class Program
                     matches,
                     total));
             }
+        }
+    }
+
+    /// <summary>What the ported reference decoder reads on every capture.</summary>
+    /// <param name="only">One capture to do, or null for all of them.</param>
+    /// <remarks>
+    /// **THE PORT IS ONLY A PORT IF IT AGREES WITH ITS SOURCE**, so this prints
+    /// the same fields `cwdecoder.py` prints and the two are diffed rather than
+    /// eyeballed.
+    /// </remarks>
+    private static void Reference(string? only)
+    {
+        var files = Directory
+            .GetFiles(CaptureFolder(), "*.wav", SearchOption.AllDirectories)
+            .Where(f => only is null
+                || Path.GetFileName(f).Contains(only, StringComparison.Ordinal))
+            .OrderBy(f => Path.GetFileName(f), StringComparer.Ordinal)
+            .ToList();
+
+        Console.WriteLine("capture	toneHz	ditMs	dahMs	wpm	contrast	chars	text");
+
+        foreach (var file in files)
+        {
+            var audio = WavAudio.Read(file);
+            var read = CwReferenceDecoder.Run(audio.Samples, audio.SampleRate);
+
+            Console.WriteLine(string.Format(
+                CultureInfo.InvariantCulture,
+                "{0}	{1:0}	{2:0}	{3:0}	{4:0.0}	{5:0}	{6}	{7}",
+                Path.GetFileNameWithoutExtension(file),
+                read.ToneHz,
+                read.DitMilliseconds,
+                read.DahMilliseconds,
+                read.WordsPerMinute,
+                read.ContrastDb,
+                read.Characters.Count(c => c.Text != " "),
+                read.Refusal ?? Clip(read.Text)));
         }
     }
 

@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 4 of 4
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
-UPDATED: 2026-08-28T20:58:34-04:00
-NOTE: four tasks done, ranking off pending two rulings; the suite's early exits are a pre-existing host crash, HM-OPEN-061
+STATE: EXECUTING
+TASK: 2 of 4
+BALL: code
+NEXT_PASTE: none
+UPDATED: 2026-08-28T21:09:52-04:00
+NOTE: port landed and agrees with the Python on all 44; one silence control emits 18 characters through the reference itself
 
 ---
 
