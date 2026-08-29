@@ -4,6 +4,45 @@ Questions with owner and severity. `owner` is who must act next. Format in
 `CLAUDE.md` §3.
 
 ---
+id: HM-OPEN-063
+status: open
+owner: claude
+raised: 2026-08-29
+severity: slows
+blocks: any single-run acceptance figure for either suite
+refs: HM-OPEN-061, work instruction 050 task 5, unit 050's report
+---
+
+The test host crash is in the app suite too, and HM-OPEN-061 names one engine
+class.
+
+**Measured this unit, batching the engine suite by folder.** Six folders ran to
+completion with no crash at all: `Audio` 44, `Bands` 39, `Civ` 61, `Explore` 508,
+`Licensing` 61, `Rig` 275 — **988 tests, nothing failing, no abort.** So the crash
+is not diffuse across the suite; it lives in `Cw`.
+
+**And inside `Cw` it is intermittent, on an unchanged tree.** The same filter,
+`TheCapturesThatDecodeKeepDecodingTests`, ran twice within a few minutes: once to
+completion with nine failures reported, once **aborting after a single passing
+test** with `Test host process crashed`. Nothing was rebuilt between them.
+
+**The app suite does it as well**, which HM-OPEN-061 does not say and which is the
+reason for a separate entry rather than an edit. The `Views` batch of
+`Hamlet.App.Tests` passed 35 tests and then aborted the host the same way. A full
+app run does not come back at all; it has to be taken in three batches, and the
+third is the one that dies.
+
+So the shape is: **a crash that follows the CW decode path and the Avalonia view
+path, is not tied to one test class, and does not fire every time.** A crash with
+no exception message on Windows is usually a stack overflow or an out-of-memory —
+neither can be caught, and neither leaves a message. Nobody has looked for which.
+
+**What it costs**: three units running have reported a number they could not
+measure, and no full-suite figure in this repository is a single run. The
+workaround is batching, which is what unit 050 used, and it is a way of getting
+further rather than a fix.
+
+---
 id: HM-OPEN-062
 status: open
 owner: tim
