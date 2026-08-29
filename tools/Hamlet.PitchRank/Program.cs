@@ -85,6 +85,11 @@ internal static class Program
 
                 return 0;
 
+            case "clock":
+                ClockSweep();
+
+                return 0;
+
             default:
                 Console.WriteLine("usage: pitch-rank cost | pitch-rank rank [capture]");
 
@@ -927,6 +932,96 @@ internal static class Program
             "shipped path     {0:0} ms for the whole file  ({1:0.0}% of one core)",
             shipped.Elapsed.TotalMilliseconds,
             shipped.Elapsed.TotalMilliseconds / (seconds * 1000) * 100));
+    }
+
+    /// <summary>
+    /// What the fit figure is doing, and what the clock withdrawal costs,
+    /// across every capture.
+    /// </summary>
+    /// <remarks>
+    /// Unit 044 tasks 2, 3 and 7 measured together, because all three are
+    /// questions about the same run: the figure beside the share of the output
+    /// that is one, two or three dits; how many settled characters arrive while
+    /// the speed clock is withdrawn; and where an estimator lands on the edge of
+    /// its own search space.
+    /// </remarks>
+    private static void ClockSweep()
+    {
+        var files = Directory
+            .GetFiles(CaptureFolder(), "*.wav", SearchOption.AllDirectories)
+            .OrderBy(f => Path.GetFileName(f), StringComparer.Ordinal)
+            .ToList();
+
+        Console.WriteLine(
+            "capture	fit	chars	shortShare	wpm	atEdge	withdrawnChars	"
+            + "withdrawnShare	text");
+
+        foreach (var file in files)
+        {
+            var audio = WavAudio.Read(file);
+            var decoder = new CwDecoder(audio.SampleRate, 600);
+
+            var all = 0;
+            var shortOnes = 0;
+            var whileWithdrawn = 0;
+            var text = new System.Text.StringBuilder();
+
+            decoder.CharacterSettled += c =>
+            {
+                if (c.Text == MorseAlphabet.WordGap)
+                {
+                    text.Append(c.Text);
+
+                    return;
+                }
+
+                all++;
+                text.Append(c.Text);
+
+                // E, I, S and T are one, two, three and one element: what a
+                // decoder emits when it is chopping an envelope it has no clock
+                // for.
+                if (c.Text is "E" or "I" or "S" or "T")
+                {
+                    shortOnes++;
+                }
+
+                if (decoder.SpeedIsReacquiring)
+                {
+                    whileWithdrawn++;
+                }
+            };
+
+            var hop = decoder.Tracker.HopSamples;
+
+            for (var at = 0L; at + hop <= audio.Samples.Length; at += hop)
+            {
+                decoder.Process(new AudioChunk(
+                    at, audio.SampleRate, audio.Samples.AsSpan((int)at, hop)));
+            }
+
+            decoder.Flush();
+
+            var reading = decoder.Reading;
+            var wpm = reading.WordsPerMinute;
+
+            var atEdge = reading.Characters.Count > 0
+                && (wpm <= CwProbabilisticDecoder.SlowestWpm + 1e-9
+                    || wpm >= CwProbabilisticDecoder.FastestWpm - 1e-9);
+
+            Console.WriteLine(string.Format(
+                CultureInfo.InvariantCulture,
+                "{0}	{1:0.00}	{2}	{3:0.00}	{4:0}	{5}	{6}	{7:0.00}	{8}",
+                Path.GetFileNameWithoutExtension(file),
+                reading.LikelihoodRatio,
+                all,
+                all == 0 ? 0 : (double)shortOnes / all,
+                wpm,
+                atEdge ? "EDGE" : "",
+                whileWithdrawn,
+                all == 0 ? 0 : (double)whileWithdrawn / all,
+                Clip(text.ToString())));
+        }
     }
 
     /// <summary>The last stretch of a recording.</summary>
