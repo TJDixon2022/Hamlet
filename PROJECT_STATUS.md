@@ -1,11 +1,11 @@
 PROJECT: Hamlet
 STATE: EXECUTING
 PHASE: 12
-TASK: 3 of 6
+TASK: 5 of 6
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-29T18:34:57-04:00
-NOTE: FFT peak wired in — corpus precision 0.766 to 0.858, past the 0.85 goal; silence lock green; ratchets running
+UPDATED: 2026-08-29T18:57:08-04:00
+NOTE: Engine suite batched — six folders green, no crash; Cw batch is where the host dies, and it dies intermittently
 
 ---
 
