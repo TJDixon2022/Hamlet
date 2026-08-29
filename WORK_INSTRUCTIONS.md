@@ -18,152 +18,140 @@ If all four hold, say "Hamlet confirmed" and continue.
 
 ---
 
-# Work instruction 047 — the owned settings, and one contract for every mode
+# Work instruction 048 — the lattice rebuilt
 
-**ISSUED: 2026-08-29. A fresh order, not an amendment. Follows unit 046.**
+**ISSUED: 2026-08-29. A fresh order, not an amendment. Follows unit 047.**
 
-**Six tasks; task 6 is the drop.**
+**Eight tasks; task 8 is the drop. This is the structural change units 044, 045
+and 046 were each written toward, and it is the largest this decoder has had.**
 
 ## Why this unit exists
 
-**Two conversations are now building against the same radio.** This one works CW
-at night; another works FT8 in daylight. **Each of them changes settings the other
-depends on**, and the way those changes are made today guarantees they will fight:
-each mode writes its own ad-hoc set of deltas, so whichever ran last wins on
-whatever it happened to touch, and nothing states what happens to a setting a mode
-never mentions.
+**Five quantities have now been measured against correctness and every one is
+negative.**
 
-**That is not a bug to find. It is a missing contract.**
-
-Last night showed the cost of the same gap on one mode. The attenuator sat at
-**20 dB** while a station faded S4 → S1 → S0, and then sat **off** while the front
-end read `overloading` at S9+10. Both wrong, in opposite directions, and Hamlet
-read `Overflow` in both cases and said nothing.
-
-**This unit builds the contract, fills in CW's row, and reports every gap it
-finds. It does not invent values for modes it does not own.**
-
-## The contract
-
-**One owned-settings list. Every neighborhood row states a value for every setting
-on that list, or states explicitly that the setting is the operator's own choice.
-Nothing is implicitly left alone.**
-
-That is the whole design, and everything below follows from it:
-
-- **Switching CW → FT8 → CW lands in exactly the same place every time**, because
-  the second mode restores what the first changed rather than leaving whatever it
-  did not think about.
-- **Two conversations cannot write conflicting partial deltas**, because a row is
-  complete or it is reported as incomplete.
-- **A setting that is nobody's business is said to be nobody's business**, which is
-  different from being forgotten.
-
-**A row that does not yet state a value for an owned setting leaves that setting
-alone and the gap is reported.** It is not an error and it is not filled in by
-guesswork — the FT8 rows belong to another conversation and this unit must not
-write them.
-
-## What Hamlet owns, and what it does not
-
-**Owned** — these are consequences of the operator's stated intent to work a mode
-in a place, and Hamlet sets them:
-
-mode and data flag; filter slot and width; auto notch; manual notch; noise
-blanker; noise reduction; AGC; preamp; attenuator; RF gain; squelch; scope span.
-
-**Not owned, and this is deliberate:**
-
-- **CW pitch** (`14 09`). Moving it changes what the operator hears in the
-  headphones. That is his ear, not a receive condition. **Left alone.**
-- **AF level.** Same reason.
-- **Break-in.** A transmit setting. §0.2 keeps this unit off it entirely, and the
-  manual's footnote 2 makes PC text become transmitted CW while break-in is on,
-  so it is the last thing that should be touched by an automatic write.
-- **Noise blanker level, noise reduction level, notch position.** They only matter
-  when their function is on, and Hamlet turns those off. Setting a level for a
-  disabled function is noise in the write log.
-
-## CW's row, decided, with the reason for each
-
-**These are Tim's, given 2026-08-29. Record them in the file beside the values, in
-the file's own voice, because unit 040 established that a row carries its reason
-as text.**
-
-| setting | CW | why |
+| quantity | against | correlation |
 |---|---|---|
-| mode | CW, data off | the mode the neighborhood is worked in |
-| filter | FIL2, 500 Hz | comfortable to listen to and standard practice for CW |
-| **auto notch** | **off** | **it hunts steady carriers and removes them, and a keyed CW signal is a steady carrier. It will eat the thing we are trying to read.** |
-| manual notch | off | same reason, under the operator's hand rather than automatic |
-| noise blanker | off | an impulse gate that chops keying edges |
-| noise reduction | off | built for speech; it mangles the envelope the decoder measures |
-| AGC | FAST | standard for CW; it tracks keying rather than pumping across it |
-| RF gain | 100% | anything less throws away signal the decoder needs |
-| squelch | open | a gate that closes between elements is fatal to a decoder |
-| **attenuator** | **driven by the overflow reading** | off unless the front end reads `overloading`. Last night was 20 dB on at S0 and off at S9+10 while overloading — both wrong, and Hamlet read the answer both times |
-| **preamp** | **from the band** | off at 40 m and below, where the noise floor is the limit and a preamp only raises noise with signal; on above |
-| scope span | narrow enough to show the neighborhood | ±100 kHz renders a 3 kHz block as seven pixels, which is what cost an hour on 2026-08-28 |
+| fit ratio | yield | −0.179 |
+| fit ratio | precision | −0.203 |
+| `MarginLlr` | per-character correctness | **−0.351** |
+| `MarginShareForRecord` | per-character correctness | **−0.345** |
+| `SpanMarginForRecord` | per-character correctness | **−0.190** |
 
-**The attenuator and preamp rules are conditional, not constants**, and the
-condition is a value Hamlet already reads. State the condition in the row.
+**Wrong characters carry more than twice the margin share of right ones** — 0.0074
+against 0.0029 — and the character floor is built on that quantity.
+
+**The common cause is understood.** All five are differences of path scores, and
+the path scores are dominated by an unbounded `−e²/2σ²` term (`LogLikelihoods`,
+`:973`). Two competing paths disagree about some hops, so their difference scales
+with how loud those hops were. **A loud station produces a large margin whether or
+not the reading is right.** Unit 046's report states it exactly: a margin between
+two numbers that both scale with loudness still scales with loudness.
+
+**Trying a sixth quantity of the same family would repeat a known dead end** — six
+admission statistics were measured dead across units 1.11.17 to 1.11.21.
+
+**A posterior is different in kind, not in degree.** It is a ratio over the sum of
+all paths, so the level terms cancel in the normalisation and it cannot grow with
+loudness by construction. **And it cannot be computed on this lattice.**
+
+### Why it cannot, and what that means
+
+Unit 046 answered the load-bearing question and the answer was worse than
+expected. The lattice is semi-Markov: `best[i]` is the score of the best path
+whose last segment *ends* at hop `i`, with `kindAt[i]` and `wasDown[i]` recording
+that segment's kind and parity, and a transition scored
+`best[j] + evidence − ½(log(span/want)/tolerance)²` (`:1462–1472`).
+
+**The alternation rule is enforced as `if (wasDown[j] == kind.IsKeyDown) continue`
+(`:1458`) — against the winning path's parity at `j`, not against a state.**
+
+- **A forward or backward sum has to range over all paths reaching `j`, and those
+  do not share a parity.** There is nothing well-defined to sum. The lattice is
+  indexed by `(hop)`; forward–backward needs `(hop, kind)`.
+- **And the same gap is a live defect in the Viterbi itself.** If the best path
+  into `j` ends key-down while a slightly worse one ends key-up, the worse one
+  could legally be extended by a key-down segment and **the search cannot see it.**
+  **Paths are being discarded for a reason that is not part of the model.**
+
+**So this is not a proper hidden Markov lattice, and the restructure is the
+prerequisite rather than an optional extra.**
+
+### Two premises of earlier orders were wrong, and are corrected here
+
+- **The decoder does keep a runner-up.** A `second[]` array exists (`:1475–1484`)
+  and `MarginLlr` is already `best[at] − second[at]` (`:1586`). Unit 045 grepped
+  for `secondBest`, found nothing, and drew the wrong conclusion; unit 046's order
+  inherited it. **Do not repeat that: check the code, not this order.**
+- **Explicit duration densities already exist.** Each segment carries a log-normal
+  penalty `½(log(span/want)/LengthToleranceShare)²` around its kind's expected
+  length, bounded by `ShortestShare` and `LongestShare`. **What is missing is
+  densities fitted from the corpus rather than parameterised off the dit.**
 
 ## Verify this instruction against the tree
 
 **Nothing here describes the tree.** Check every claim and report mismatches.
 Trust the tree over this order everywhere they differ.
 
-**This author does not know what unit 042 landed** and has not seen its report.
-**Task 1 must establish what is written automatically today** before anything
-changes.
+From unit 047's report:
 
-From unit 046's report: app **519 passing, 0 failing**; engine **28 failing of
-1990** excluding `TheGateHasItsOwnWindowNowTests` (HM-OPEN-061); corpus **yield
-0.763, precision 0.761**. **`TheSilencePropertyIsLockedTests` exists and may not be
-modified.**
-
-**Record both suites and the corpus score before task 2.** **The corpus score must
-not move in this unit** — nothing here touches the decoder.
+- App **519 passing, 0 failing.** Corpus **yield 0.763, precision 0.761** over 384
+  adjudicated characters, unchanged.
+- **`TheSilencePropertyIsLockedTests` is green and unmodified.** It covers
+  `cw-2026-08-20-014854`, `-014935`, `cw-2026-08-22-014113`, `-014308`,
+  `cw-2026-08-26-125941` and an all-zero buffer, and it locks **letters**, not
+  characters — a block is honest output.
+- `CwAccuracy` aligns per character. `tools/Hamlet.PitchRank` has `confidence`.
+- **Unit 047's engine regression never landed.** Its amendment line was left
+  unreplaced, which that report states is the honest record of a run the
+  HM-OPEN-061 host crash ended. **Unit 046 left the engine at 28 failing of 1990.**
+  **Establish the real number in task 1; do not carry 1990.**
+- **047 did not touch the decoder** and the corpus score confirms it.
 
 ## Rulings in force
 
 **Transcribed with what was rejected. Do not re-argue either.**
 
-**Tim's rulings:**
+**Tim's rulings, 2026-08-29:**
 
-> **Hamlet sets whatever the radio needs for the mode. The operator does not touch
-> the radio.**
-
-> **One owned-settings list, and every mode's row states a value for every setting
-> on it.**
+> **The lattice is indexed by `(hop, kind)`, and that is accepted as a change to
+> what the decoder reads.** It is measured with `CwAccuracy` before and after like
+> any other change.
 >
-> Rejected: per-mode deltas — whichever mode ran last wins on whatever it happened
-> to touch, and two conversations building against one radio then overwrite each
-> other silently.
+> **Rejected: attempting forward–backward on the lattice as it stands.** There is
+> no correct way to do it, and an approximation would produce a number that looks
+> like a posterior and is not one — §0.0 in the place it does most damage.
+> **Rejected: trying a sixth quantity of the existing family.** Five measured, five
+> negative, one understood cause.
 
-> **CW's values are as tabled above.** Auto notch off is the one that matters most.
+> **The phase goal is precision before yield.** Hamlet never puts a wrong character
+> on the screen, and shows as much of the traffic as it can under that constraint.
+> Yield of ninety-nine percent is a research problem; **precision of ninety-nine
+> percent is what §0.0 actually demands.** The corpus today is 0.763 and 0.761 —
+> nearly equal, which means Hamlet is refusing almost nothing. **61 substitutions
+> against 30 deletions.**
 
-> **The CW pitch and the AF level are the operator's.** Moving them changes what he
-> hears, which is a different class of write from a receive condition.
+> **Do not break the silence behaviour.** *I'm no longer seeing random characters
+> when there's just noise. Don't break it.* **Not tradeable at any price.**
 
-> **Do not break the silence property.**
+> **Ship the refusal** (2026-08-27): no letters from a pitch the survey admitted no
+> keying at.
+>
+> **Rejected with it:** the clock-withdrawn refusal as unit 1.11.33 built it, and
+> raising the gate.
+
+> **The only measurement is against real data from the real radio.**
 
 **Standing rulings this unit is bound by:**
 
-- **HM-DEC-084** — **settings are consequences of intent, never things the operator
-  operates. No screen may carry a control corresponding one-to-one with a radio
-  setting.** Read before write, read back after, announced, undoable, and **unknown
-  stays unknown**. No byte written that is not cited.
-- **HM-DEC-056** — the operator's own hand wins and suspends the automation
-  visibly until the next band change re-arms it; a flip waits for the dial to
-  settle so crossing three neighborhoods in one drag produces one change; the
-  status line says what changed and why in the app's voice.
-- **HM-DEC-050 / §0.5** — no rig-control panel.
-- **§0** — generate from the source of truth; no constants sprinkled through code.
-- **§0.0.1** — every write goes out through the same gate and the same trace as
-  every read, so a session log carries it verbatim with its timestamp.
-- **§0.2 / HM-DEC-008** — **no transmit work of any kind. Nothing goes near
-  break-in, and `1C 01` value `02` starts a tuning cycle that transmits.**
+- **§0.0 / HM-DEC-009** — never present a guess as a decode. **This unit is that
+  rule becoming a computable quantity.**
+- **HM-DEC-120** — nothing emitted on audio holding no signal, and no letters from
+  a pitch nobody judged to be a station. **Tightened only, never loosened.**
+- **§0.4** — reproduce, then change, then measure.
+- **HM-DEC-007** — tested against WAV fixtures.
+- **§5.4** — pure over samples and elapsed time; no clock below the pump.
+- **§0.2 / HM-DEC-008** — **no transmit work of any kind.**
 
 ## Status cadence
 
@@ -171,115 +159,200 @@ After each task, before the next, update `PROJECT_STATUS.md` — `STATE`,
 `TASK: n of m`, `BALL`, `UPDATED` from the clock, `NOTE` saying what is moving
 inside the task. Same every ten minutes while a task runs.
 
+## The measurement rule that governs every task below
+
+**Every change is measured with `CwAccuracy` over the whole scored corpus, before
+and after, and both numbers are reported per task.**
+
+- **Precision must not fall. Ever.** A change that lowers precision is reverted and
+  reported, whatever it does to yield.
+- **A change that raises precision and lowers yield is kept**, and both numbers are
+  stated. **That is the trade this unit exists to make.**
+- **`TheSilencePropertyIsLockedTests` is run after every task and may not be
+  modified.** If a task turns it red, that task is reverted.
+- **Substitutions are reported separately at every step.** 61 today. **That count
+  is the unit's real target.**
+
 ## The tasks
 
-### Task 1 — every write Hamlet makes on its own initiative
+### Task 1 — baseline and the lattice, exactly
 
-**Report before changing anything. Say what you find rather than confirming a
-list.**
+**Run both suites and the corpus score. Record all three.** The engine number is
+not known — 047's run never landed — so **establish it and say whether the failing
+set is byte-identical to unit 046's.**
 
-- **Every automatic write in the tree**: command, sub-command, value, **what
-  triggers it**, whether it is read back, and whether the operator's hand suspends
-  it. Name each with file and line.
-- **Every write reachable at all**, automatic or operator-triggered, so the two are
-  distinguishable.
-- **Any write that cannot be read back.** `16 65` IP+ is already excluded for that
-  reason (HM-DEC-084). **A second one is a finding.**
-- **Whether anything can reach the transmitter.** Break-in is on, and the manual's
-  footnote 2 makes PC text become CW in that state. **§0.2 says no keying; assert
-  it with a test rather than believing it.**
-- **What unit 042 landed** on the digital rows, if anything.
+Then read the lattice and **report what is actually there**, not what this order
+says:
 
-### Task 2 — the owned list, and the completeness report
+- **The state, the transitions, and every place `wasDown[j]` or `kindAt[j]` is
+  read.** The restructure has to preserve every one of them.
+- **The five kinds**, their expected lengths, and where `ShortestShare`,
+  `LongestShare` and `LengthToleranceShare` are set.
+- **How `second[]` is maintained** and everything downstream of `MarginLlr`.
+- **Where the speed grid enters and what it discards** (`:794–805`).
+- **Every numerical guard already present** — clamping, scaling, log-domain
+  handling. Unit 045 recorded fit values of 5,521,967, 17.2 million and
+  quadrillions on degenerate bins, and the carried asks record intermittent
+  overflows. **Underflow and overflow are the known failure of what task 3 builds.**
 
-- **Define the owned-settings list** as data, not as scattered code: the twelve
-  above, each with its CI-V command from `CLAUDE.md` §4 and its citation.
-- **A neighborhood row may state a value, or state `operator's choice`.** Both are
-  answers. **Absent is neither**, and absent leaves the setting alone.
-- **A test walks every neighborhood row and reports coverage** — which settings
-  each row states, which it defers, which are absent. **Absent is reported, not
-  failed**, because the FT8 rows belong to another conversation and this unit must
-  not write them.
-- **The report carries that coverage table.** It is what the other conversation
-  needs to fill its side in without collision.
+### Task 2 — the lattice indexed by `(hop, kind)`
 
-### Task 3 — CW's row
+**Viterbi only. No posterior in this task.**
 
-Fill in CW's values exactly as tabled above, **each with its reason as text in the
-file** (unit 040's pattern), generated from the source of truth where derivable
-(§0).
+- Index the DP by `(hop, kind)` — five kinds — so the alternation rule is checked
+  **against a state rather than against the winning path's parity.**
+- **Every path legal under the model becomes reachable**, including the ones the
+  current search discards because a different, better path into the same hop ended
+  on the wrong parity.
+- `second[]` becomes the runner-up **within the new indexing**, and `MarginLlr`
+  follows it.
+- **The duration densities and the evidence term are unchanged in this task.** Only
+  the indexing moves.
 
-- **The attenuator's rule is conditional on the live `Overflow` reading** (`15 07`),
-  which Hamlet already takes. Off unless the front end reads overloading.
-- **The preamp's rule is conditional on the band.** Off at 40 m and below, on
-  above. State the boundary and its reasoning in the file.
-- **The scope span is derived from the neighborhood's own width**, the way unit 040
-  derived the passband, not typed as a number.
+**Acceptance:** **the output will change**, and bit-identical is explicitly not the
+bar here. **Precision must not fall**, and the full table is reported before and
+after with the substitution count. **If precision falls, revert and report** — that
+would mean the discarded paths were doing useful work by accident, which is itself
+a finding worth the unit.
 
-### Task 4 — the write, and what it says
+### Task 3 — the posterior
 
-On tuning into a block, for each owned setting the row states:
+**Forward–backward over the new lattice.**
 
-- **Read the current value first.** If it already satisfies the row, **change
-  nothing** and record that it was already right.
-- **Write, then read back.** A value the radio did not confirm is **unknown**, not
-  assumed to be what was asked for (HM-DEC-084, HM-DEC-056).
-- **Once per tune-in, then hands off.** No timer, no re-assertion, no fighting the
-  knob.
-- **The operator's own hand wins.** A setting he changed by hand since the last
-  tune-in is left alone, and the suspension is visible.
-- **Hamlet says what it changed and why**, in connected speech, only for what
-  actually changed, in the app's voice (§0.7, HM-DEC-034):
+- **Log domain with scaling throughout.** The overflow history above is the
+  expected failure mode; **tests must cover both underflow and overflow**, on the
+  degenerate bins that produced the quadrillions.
+- Output **a posterior in [0,1] per emitted character** — the probability that the
+  character is what the best path says, marginalised over all paths.
+- **Emit nothing differently in this task.** The posterior is computed and carried;
+  no gate consumes it yet.
 
-> *I set the filter to 500 Hz and turned the auto notch off, because it hunts
-> steady tones and Morse is a steady tone.*
+**Acceptance, and this is the unit's gate:** correlate the posterior against
+per-character correctness over the scored corpus, **reported beside the five
+negatives above.**
 
-**Anything Hamlet could not confirm is said as unconfirmed, not silently omitted.**
+- **If it correlates positively, continue.**
+- **If it does not, stop and report.** Tasks 4 onward rest on it, and a sixth
+  negative would be a finding about the evidence model rather than about the
+  search — **say so plainly and stop rather than trying a seventh quantity.**
 
-### Task 5 — the round trip, asserted
+### Task 4 — the gates move onto the posterior
 
-The whole point of the contract, tested:
+**Only if task 3's correlation is positive.**
 
-- **CW → FT8 → CW returns to CW's stated row on every owned setting**, ten round
-  trips without drift.
-- **A setting a row defers to the operator is not touched by either direction.**
-- **A setting no row states is not touched by either direction**, and the gap is
-  in task 2's coverage table.
-- **The four states of last night are fixtures**: 20 dB attenuator on a weak
-  signal; no attenuator with the front end overloading; auto notch on in CW;
-  scope at ±100 kHz on a 3 kHz block. **Entering the mode must correct each.**
-- **`TheSilencePropertyIsLockedTests` stays green** and is not modified.
+Every consumer named in unit 046's task 1 takes the posterior:
 
-### Task 6 — the decoder's search range against the filter *(the drop candidate)*
+| consumer | where | today |
+|---|---|---|
+| emission gate | `Decode`, `:822` | `ratio < Gate` (1.40) empties the window |
+| character floor | `Marked`, `:1513` | `SpanMargin < 1.0` gives `#` |
+| the character's confidence | `Character`, `:734` | `LikelihoodRatio` stored on every `CwCharacter` |
+| the capture sheet | `MainWindowViewModel`, `:4924` | `better than silence per hop` |
 
-**Measure and report. Change nothing.**
+- **Thresholds are derived by sweeping the posterior against the corpus and
+  reporting the curve**, then choosing the point that reaches the precision target.
+  **State the number and show the sweep.** Do not try values until it reads better.
+- **A character below the threshold is a block**, which `CwAccuracy` scores as a
+  deletion, so the trade is visible.
+- **The fit figure stays computed and stays on the sheet**, labelled for what it
+  is, because the corpus's history is expressed in its units.
 
-The decoder searches **400 to 1200 Hz**. A 500 Hz filter centred on a 600 Hz pitch
-passes roughly **350 to 850 Hz**. **More than half the search range is outside what
-the radio can hear**, which would explain both the sweep pinning at 400 Hz and the
-tracker's excursion to 850 Hz on 2026-08-29.
+**Acceptance: precision rises, and the substitution count falls.** Yield may fall
+and that is the accepted trade. **Report both.**
 
-- **Confirm the filter's actual passband** from `1A 03` and the CW pitch, rather
-  than from this order's arithmetic.
-- **Report, across the corpus, how often the admitted or searched pitch falls
-  outside it.**
-- **Change nothing.** Unit 048 is rebuilding how pitch is handled and this is
-  evidence for it, not a fix.
+### Task 5 — the speed goes inside the lattice
+
+**Stop estimating WPM separately and feeding it in.** The withdrawn clock, the
+40 WPM pin, and the garbage that follows are artefacts of a separate estimator
+that can fail on its own.
+
+- **Dit length becomes a slowly-varying state dimension**, so speed and text are
+  solved together and the best path carries its own speed.
+- **A transition cost penalises fast changes in dit length**, because a sender's
+  speed drifts and does not jump. State the cost and its derivation.
+- **The grid at `:794–805` becomes the initialisation of that dimension**, not a
+  committed answer.
+- **There is then no clock to withdraw.** Report what becomes of the sheet's
+  `decoderWpm` line and **put the proposed wording in the report — the sheet's
+  wording is Tim's.**
+
+**Acceptance:** measured before and after. **Precision must not fall.** **Report
+what happens on the captures where the clock previously withdrew.**
+
+### Task 6 — the densities fitted from the corpus
+
+The densities exist; **their parameters are assumed rather than measured.**
+
+- **Fit each kind's duration density from the corpus** — dit, dah, intra-character
+  gap, inter-character gap, word gap — rather than parameterising off the dit by
+  the textbook ratios.
+- **Report what the corpus says the real ratios are.** A hand-sent fist is not
+  1:3:1:3:7, and that is a finding about the operators on the band as much as about
+  the decoder.
+- **Fit on captures excluded from the scored corpus**, or state plainly that they
+  overlap and what that does to the score. **Fitting on the answer key would make
+  the number meaningless.**
+
+**Acceptance:** measured before and after. **Precision must not fall.**
+
+### Task 7 — a language prior
+
+Morse traffic is highly predictable — prosigns, callsign structure, `CQ DE`, `73`,
+`RST`, plain English. This is where the last several percent live, and it is why
+CW Skimmer sanity-checks against a callsign database.
+
+- **A character n-gram prior added to the path cost.** Order and smoothing stated
+  and justified.
+- **Trained on text that is not the scored corpus. Say plainly what it was trained
+  on.**
+- **The prior is a tiebreaker, not an author.** It may reorder paths the acoustic
+  evidence finds nearly equal; **it may not create a character the signal does not
+  support.** State how that boundary is enforced and test it.
+- **The silence lock is the proof**: a capture holding no station must still emit
+  nothing.
+
+**Acceptance:** measured before and after. **Precision must not fall.** **Report
+substitutions separately** — a prior that raises yield by inventing plausible words
+is the worst possible outcome, and the substitution count is where it shows.
+
+### Task 8 — one decoder per bin *(the drop candidate)*
+
+**The state of the art does not track a pitch. CW Skimmer runs a decoder on every
+bin across the passband — hundreds in parallel — and AG1LE's multichannel fldigi
+does the same: detect peaks, spin up an instance per channel, merge anything
+closer than 20 Hz so one strong station does not spawn several.**
+
+That dissolves the tracker's failures rather than patching them: no single
+committed pitch means no wandering and no mid-stream migration.
+
+- **Run a decoder per candidate bin across the admitted range** and report those
+  whose posterior clears task 4's threshold.
+- **Average the peak estimate before an instance is placed on it** — the documented
+  cause of tuning to the wrong frequency.
+- **Merge candidates closer than the resolution.** Carried ask 13 names 125 Hz.
+- **The screen shows what it showed before** unless Tim rules otherwise. This task
+  is about where the decoders sit, not a new surface.
+
+**This is only possible because task 4 gives a scale-free score comparable across
+channels.** With the old quantities it could not be done at all.
 
 **Dropped whole if time runs out, and the report says so.**
 
 ## Parked — do not touch, do not raise
 
-**The decoder** — the lattice, the confidence work, admission, the tracker. Unit
-048 owns all of it.
+**The whole digital stream** — FT8, FT4, the digital tab, the slot cutter, the sync
+search, the digital waterfall, the digital capture press. **Another conversation
+owns it.**
 
-**The FT8 and FT4 neighborhood rows** — another conversation owns them. **Report
-their coverage; do not write their values.**
+**The settings contract** — `OwnedSettings`, the coverage table, the mode write's
+place in it, and what the digital rows state. Unit 047 raised both and they are
+Tim's.
 
-Also: the digital tab and its capture press; the scanner and the calling cycle;
-`CHANGELOG.md`; the missing `DECISIONS.md` records; the phrasebook and the
-recent-places row; the Twin PBT; the answer key's licensing; the dial-move
-threshold and the transcript break's wording.
+Also: admission itself; the attenuator and preamp rules; the scanner and the
+calling cycle; `CHANGELOG.md`; the missing `DECISIONS.md` records; the phrasebook
+and the recent-places row; the Twin PBT; the answer key's licensing; the dial-move
+threshold and the transcript break's wording; whether `CwPitch` follows an admitted
+station.
 
 **Both halves are required: do not touch them, and do not raise them.**
 
@@ -289,32 +362,41 @@ A parked item that genuinely blocks a task is raised once, and says it was parke
 
 Standing prohibitions are `CLAUDE.md`'s and are not retyped. Unit-specific:
 
-- **No transmit. Nothing keys the radio. Nothing touches break-in.**
-- **Do not write a value into a row this unit does not own.**
-- **Do not touch the CW pitch or the AF level.**
-- **Do not build a rig-control panel or a settings row** (HM-DEC-050).
-- **Do not re-assert a setting after the tune-in.** Once, then hands off.
-- **Do not override a control the operator's hand is holding.**
-- **Do not assume a write took.** Read back, and unknown stays unknown.
-- **Do not write a byte that is not cited** in `CLAUDE.md` §4.
-- **Do not change the decoder.** The corpus score must be identical at the end.
-- **Do not modify `TheSilencePropertyIsLockedTests`.**
+- **No transmit. Nothing keys the radio.**
+- **Do not break the silence property**, and **do not modify its lock.**
+- **Do not let precision fall on any task.** Revert and report.
+- **Do not continue past task 3 if the posterior does not correlate positively.**
+- **Do not approximate forward–backward on an under-specified lattice.** A number
+  that looks like a posterior and is not one is worse than none.
+- **Do not train the language prior on the scored corpus.**
+- **Do not let the language prior create a character the signal does not support.**
+- **Do not pick a threshold by trying values until the corpus reads better.** Sweep,
+  report the curve, say why the chosen point is on it.
+- **Do not adopt a value off a non-monotonic sweep.** Unit 045 got this right and it
+  is the standard here.
+- **Do not change admission.**
+- **Do not report a score without saying whether it is yield or precision.**
 - **Do not mint a decision id.**
 
 ## Committing, pushing, reporting
 
-Commit and push each task before starting the next; name the branch; a refused
-push is reported as refused, with the reason.
+Commit and push each task before starting the next; name the branch; a refused push
+is reported as refused, with the reason.
 
 Report per `CLAUDE_CODE.md` §8 to `output.md` at the repository root, overwritten
 and printed. **Read the file's own section count and follow it.**
 
-**The section that reports measurements leads with task 1's inventory — every
-write Hamlet makes on its own initiative — and then task 2's coverage table, which
-is what the other conversation needs.**
+**Write `output.md` before you stop, for any reason at all. Do not hold it behind a
+regression run** — unit 047 drafted its report and waited, and the engine result
+never landed. **Write the file, then amend it.**
 
-**The section that says what the owner should expect leads with this: tuning into
-CW now sets the whole receive side for CW, says what it changed and why, and
-switching to a digital block and back lands in the same place every time.**
+**The section that reports measurements leads with a table of one row per task —
+yield, precision and substitutions after each — so the whole unit's arc is one
+picture. Then task 3's correlation between the posterior and correctness, beside
+the five negatives.**
+
+**The section that says what the owner should expect leads with this: Hamlet now
+knows how sure it is of each character and blocks the ones it is not sure of — and
+it still shows nothing at all on a frequency where nothing is happening.**
 
 **If you finish every task, stop and report. Do not start the next unit.**
