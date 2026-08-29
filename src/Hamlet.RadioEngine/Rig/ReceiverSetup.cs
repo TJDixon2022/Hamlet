@@ -228,10 +228,42 @@ public static class ReceiverSetup
                 continue;
             }
 
+            // **THE ACKNOWLEDGEMENT IS NOT THE VALUE** (HM-DEC-084: read before
+            // write, read back after, and unknown stays unknown). `FB` is the
+            // radio saying it accepted the frame, not that the setting now holds
+            // what was asked for. This recorded `condition.WantedText` as the
+            // value afterwards, which is the write asserting its own success —
+            // exactly the shape §0.0 forbids, on the surface built to prove what
+            // Hamlet did.
+            var after = (await rig
+                .ReadAsync(field, RigState.Empty, cancellationToken)
+                .ConfigureAwait(false))
+                .FirstOrDefault(v => v.Field == field);
+
+            if (after is not { IsKnown: true, Number: { } settled })
+            {
+                // The write was acknowledged and the value cannot be read, so
+                // what the setting holds is unknown rather than assumed.
+                results.Add(new ConditionResult(
+                    condition, ConditionOutcome.NotConfirmed, before.Text));
+                continue;
+            }
+
+            if ((int)settled != wanted)
+            {
+                // The radio took the frame and did something else with it, which
+                // is a different fact from a refused write and is worth its own
+                // line in the record.
+                results.Add(new ConditionResult(
+                    condition, ConditionOutcome.NotConfirmed, before.Text,
+                    after.Text));
+                continue;
+            }
+
             memory = memory.Remember(field, wanted);
 
             results.Add(new ConditionResult(
-                condition, ConditionOutcome.Changed, before.Text, condition.WantedText));
+                condition, ConditionOutcome.Changed, before.Text, after.Text));
         }
 
         return (results, memory);

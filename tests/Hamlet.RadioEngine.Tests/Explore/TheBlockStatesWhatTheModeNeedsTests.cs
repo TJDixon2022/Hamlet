@@ -132,15 +132,23 @@ public sealed class TheBlockStatesWhatTheModeNeedsTests
     }
 
     /// <remarks>
-    /// <para>**WHAT MORSE NEEDS IS NOT WHAT FT8 NEEDS, AND THE ROWS SAY SO**
-    /// (Tim's ruling of 2026-08-29). The attenuator leads, because on the evening
-    /// that produced this ruling it sat at 20 dB with the preamp off while the
-    /// station faded S4 to S1 to nothing.</para>
-    /// <para>**AND THE TWO NOBODY HAS MEASURED HERE PRODUCE NO WRITE.** The
-    /// preamp and the AGC are stated so they can be spoken and marked unconfirmed
-    /// so no byte goes out on them (§12.4). Which AGC setting reads better on a
-    /// deep fade is a question about this receiver and this operator; whether the
-    /// preamplifier helps depends on the antenna and the band noise here.</para>
+    /// <para>**WHAT MORSE NEEDS IS NOT WHAT FT8 NEEDS, AND THE ROWS SAY SO.**
+    /// The attenuator leads, because on the evening that produced the first
+    /// version of this row it sat at 20 dB with the preamp off while the station
+    /// faded S4 to S1 to nothing.</para>
+    /// <para>**THIS TEST ASSERTED SOMETHING DIFFERENT UNTIL 2026-08-29 AND THE
+    /// REASON IS KEPT.** Unit 043 stated CW's preamp and AGC unconfirmed, so
+    /// they would be spoken and never written, on the grounds that nobody had
+    /// measured what CW needs of them at this station. **Tim's ruling of
+    /// 2026-08-29 settles both**: AGC is FAST for CW because it tracks the
+    /// keying rather than pumping across it, and the preamp follows the band
+    /// rather than being left alone. The caution was right while the values were
+    /// unruled and it is not a reason to keep them unruled.</para>
+    /// <para>**AND TWO OF THE ROW ARE NOW RULES RATHER THAN CONSTANTS**, which
+    /// is the thing unit 043 could not express: the attenuator follows the front
+    /// end's overflow flag and the preamp follows the frequency. A constant is
+    /// wrong half the time by construction, and on one evening it was wrong in
+    /// both directions.</para>
     /// </remarks>
     [Fact]
     public void TheMorseBlocksStateWhatMorseNeeds()
@@ -160,7 +168,7 @@ public sealed class TheBlockStatesWhatTheModeNeedsTests
             {
                 // Not every Morse block is named `CW`; `CW DX` and `QRP` are
                 // Morse and the lookup is by short name. That is unit 042's
-                // shape and this unit did not change it (§12.6).
+                // shape and no unit since has changed it (§12.6).
                 continue;
             }
 
@@ -172,31 +180,29 @@ public sealed class TheBlockStatesWhatTheModeNeedsTests
 
             foreach (var field in new[]
             {
-                RigField.Attenuator, RigField.Preamp,
-                RigField.NoiseBlanker, RigField.Agc,
+                RigField.AutoNotch, RigField.ManualNotch, RigField.NoiseBlanker,
+                RigField.NoiseReduction, RigField.Agc, RigField.RfGain,
+                RigField.Squelch, RigField.Attenuator, RigField.Preamp,
             })
             {
                 Assert.Contains(conditions, c => c.Field == field);
             }
 
-            // **THE ATTENUATOR COMES OFF.** It is the one the order names and the
-            // one that cost the operator his evening.
-            var attenuator = conditions.Single(c => c.Field == RigField.Attenuator);
+            // **AUTO NOTCH OFF IS THE ONE THAT MATTERS MOST.** It hunts steady
+            // carriers and a keyed Morse signal is a steady carrier.
+            var notch = conditions.Single(c => c.Field == RigField.AutoNotch);
 
-            Assert.Equal(0, attenuator.Wanted);
-            Assert.True(attenuator.CanBeWritten);
+            Assert.Equal(0, notch.Wanted);
+            Assert.True(notch.CanBeWritten);
 
-            // **AND THE TWO NOBODY MEASURED GO OUT AS WORDS AND NOT AS BYTES.**
-            foreach (var field in new[] { RigField.Preamp, RigField.Agc })
-            {
-                var stated = conditions.Single(c => c.Field == field);
+            // **AGC IS FAST FOR CW**, which reverses unit 043's unruled guess.
+            Assert.Equal(1, conditions.Single(c => c.Field == RigField.Agc).Wanted);
 
-                Assert.False(
-                    stated.CanBeWritten,
-                    $"{stated.Control} is written to the radio on a value nobody "
-                    + "has measured at this station");
-                Assert.NotEqual("", stated.Confirm);
-            }
+            // **AND THE TWO RULES ARE RULES.**
+            Assert.True(
+                conditions.Single(c => c.Field == RigField.Attenuator).IsConditional);
+            Assert.True(
+                conditions.Single(c => c.Field == RigField.Preamp).IsConditional);
 
             AssertEveryConditionCarriesItsReason(hood, conditions);
         }
