@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
+STATE: COMPLETED
 TASK: 7 of 7
 BALL: tim
-NEXT_PASTE: none
-UPDATED: 2026-08-28T22:54:36-04:00
-NOTE: CW rows asserted by their own test; the digital test now matches its own name and the preamp ships unconfirmed
+NEXT_PASTE: output.md -> Claude Web
+UPDATED: 2026-08-28T23:05:59-04:00
+NOTE: tasks 5 and 7 landed; 2, 3, 4 and 6 blocked because the five 2026-08-29 captures are not in the tree
 
 ---
 

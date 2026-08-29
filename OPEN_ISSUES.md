@@ -27,6 +27,13 @@ completed, 28 failing of 1958, with this class not among the failures. So the
 crash is not reproducible on every run or in every order, and a green full run is
 not evidence that it has gone. Three full-suite runs in unit 044 ended early.
 
+**AND IT IS NOT CONFINED TO THAT CLASS.** On 2026-08-28, running a filter that
+did not include `TheGateHasItsOwnWindowNowTests` at all — `Explore`, the held-pitch
+and the retune tests — the host crashed again after 544 tests had passed and none
+had failed. So excluding that class is not a workaround, it is a way of getting
+further before the same thing happens. Whatever this is, it is broader than one
+test class.
+
 Not investigated further, because it is outside the unit that found it (§12.6).
 What it costs meanwhile is that acceptance has to be assembled from filtered
 batches, which is slower and leaves gaps that nobody can see the shape of.
