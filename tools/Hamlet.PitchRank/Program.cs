@@ -105,6 +105,11 @@ internal static class Program
 
                 return 0;
 
+            case "magnitudes":
+                Magnitudes();
+
+                return 0;
+
             default:
                 Console.WriteLine("usage: pitch-rank cost | pitch-rank rank [capture]");
 
@@ -1334,6 +1339,89 @@ internal static class Program
         Report("MarginLlr", margin);
         Report("MarginShare", share);
         Report("SpanMargin", span);
+    }
+
+    /// <summary>
+    /// The evidence term and the duration penalty, side by side on real audio.
+    /// </summary>
+    /// <remarks>
+    /// Unit 049 task 1. If the evidence dominates by the ratio the
+    /// overconfidence implies, the duration prior is doing almost nothing and
+    /// the decoder is fitting the envelope while ignoring how implausible the
+    /// resulting element lengths are.
+    /// </remarks>
+    private static void Magnitudes()
+    {
+        Console.WriteLine(
+            "capture	chars	evidencePerHop	evidencePerElement	durationPenalty	ratio");
+
+        // The penalty a span twenty per cent off its expected length pays:
+        // half the squared log-ratio over the tolerance share.
+        var off20 = 0.5 * Math.Pow(Math.Log(1.2) / 0.35, 2);
+        var off50 = 0.5 * Math.Pow(Math.Log(1.5) / 0.35, 2);
+
+        foreach (var (capture, _, _) in Truths)
+        {
+            var path = Find(capture);
+
+            if (path is null)
+            {
+                continue;
+            }
+
+            var audio = WavAudio.Read(path);
+            var decoder = new CwDecoder(audio.SampleRate, 600);
+            var perHop = new List<double>();
+            var perElement = new List<double>();
+
+            decoder.CharacterSettled += c =>
+            {
+                if (c.Text == MorseAlphabet.WordGap || c.SpanHops <= 0
+                    || double.IsNaN(c.SpanLogLikelihoodRatio))
+                {
+                    return;
+                }
+
+                perHop.Add(Math.Abs(c.SpanLogLikelihoodRatio) / c.SpanHops);
+                perElement.Add(
+                    Math.Abs(c.SpanLogLikelihoodRatio)
+                    / Math.Max(1, c.Pattern.Length));
+            };
+
+            var hop = decoder.Tracker.HopSamples;
+
+            for (var at = 0L; at + hop <= audio.Samples.Length; at += hop)
+            {
+                decoder.Process(new AudioChunk(
+                    at, audio.SampleRate, audio.Samples.AsSpan((int)at, hop)));
+            }
+
+            decoder.Flush();
+
+            if (perHop.Count == 0)
+            {
+                continue;
+            }
+
+            perHop.Sort();
+            perElement.Sort();
+
+            var medHop = perHop[perHop.Count / 2];
+            var medElement = perElement[perElement.Count / 2];
+
+            Console.WriteLine(string.Format(
+                CultureInfo.InvariantCulture,
+                "{0}	{1}	{2:0.00}	{3:0.0}	{4:0.000}	{5:0}",
+                capture, perHop.Count, medHop, medElement, off20,
+                medElement / off20));
+        }
+
+        Console.WriteLine();
+        Console.WriteLine(string.Format(
+            CultureInfo.InvariantCulture,
+            "duration penalty: a span 20% off its want costs {0:0.000} nats, "
+            + "50% off costs {1:0.000}",
+            off20, off50));
     }
 
     /// <summary>
