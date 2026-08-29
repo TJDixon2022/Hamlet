@@ -18,103 +18,110 @@ If all four hold, say "Hamlet confirmed" and continue.
 
 ---
 
-# Work instruction 045 — the score, and the first structural change
+# Work instruction 046 — the decoder learns to doubt
 
-**ISSUED: 2026-08-29. A fresh order, not an amendment. Follows unit 044.**
+**ISSUED: 2026-08-29. A fresh order, not an amendment. Follows unit 045.**
 
-**Eight tasks; task 8 is the drop. This is a long unit by instruction.**
+**Eight tasks; task 8 is the drop. This is a long unit by instruction, and it is
+the largest structural change this decoder has had.**
 
 ## Why this unit exists
 
-**The goal is reading one mode at ninety-nine percent. This project has never
-measured a percentage.**
+**Unit 045 produced the first score: yield 0.763, precision 0.761 over 384
+adjudicated characters. The phase goal is 0.99.**
 
-Every unit so far has counted characters emitted, characters unsure, and blocks.
-None of those is accuracy. **Nothing in the tree compares what Hamlet read against
-what was actually sent**, because until last night there was nothing to compare
-against.
+It also produced the finding that explains the gap. **The quantity Hamlet uses as
+confidence does not measure correctness.** It correlates **−0.179** with yield and
+**−0.203** with precision. It is `(bestScore − nothingAtAll) / hops`
+(`CwProbabilisticDecoder.cs:812`), and because both hypotheses carry `−e²/2σ²`
+(`:973`) the difference **scales as the square of signal level over the estimated
+noise floor, unbounded.** It measures how loud the station is. It gates emission
+at 1.40 and the character floor at 1.0.
 
-That changed. The captures of 03:08–03:10 on 2026-08-29 hold a **W1AW propagation
-bulletin** — `AUGUST 27, 2026, BY F. K. JANDA, OK1HH` — and the ARRL publishes
-those bulletins verbatim. **For the first time this corpus has an external answer
-key.**
+**And 045 confirmed the architectural cause.** Every stage of the chain commits
+irreversibly and keeps nothing to compare against:
 
-**Tasks 1 to 4 build the score. Tasks 5 to 7 make the first structural change the
-evidence supports, with the score to prove it. Task 8 writes down what a real
-redesign would be, without building it.**
+| stage | where | commits | revisable |
+|---|---|---|---|
+| pitch admitted | `CwToneTracker:287` | one bin after two agreeing surveys | no |
+| pitch to the mixer | `CwDecoder.Step:753` | one pitch per hop | no |
+| speed | `CwProbabilisticDecoder.Decode:798` | **one WPM, keeping only `bestScore`** | no |
+| element and character | the Viterbi in `DecodeAt` | **one path** | no |
+| emission | `CwProbabilisticStream.Character:730` | **`CwConfidence.High` for every pattern the alphabet knows** | no |
 
-## What the analysis found, and it is not a symptom list
+**At the emit seam no confidence judgement is made at all.** The only thing that
+marks a character unsure is the alphabet failing to recognise its pattern. **The
+string `secondBest` does not occur in the file.**
 
-Three captures, fifty seconds apart, same station, same audio. Measured outside
-Hamlet: the carrier sits at **399.9 Hz at +53 dB** in all three; **850 Hz is 4.4 dB
-below the band floor** — nothing is there.
+**That is why the corpus fails by substitution.** 61 substitutions against 30
+deletions across the twelve scored captures; on the two worst, 19 wrong letters
+against 4 blocks and 13 against 9. **Hamlet is not refusing on those. It is
+guessing and missing** — which is the failure §0.0 exists to prevent.
 
-| capture | tracked pitch | `decoderWpm` | fit vs silence | result |
-|---|---|---|---|---|
-| `-030850` | **850 Hz — nothing there** | withdrawn | 36.0 | clean text |
-| `-030940` | 400 Hz — correct | withdrawn | **8224.4** | **141 characters, 1 unsure, all `E I S`** |
-| `-031024` | 400 Hz — correct | **24** | 11.1 | clean text |
+## What the state of the art does instead
 
-**The garbage came from the capture where the pitch was right.** The signal never
-changed. What changed was Hamlet's internal state: the tracker migrated from a
-phantom at 850 Hz to the real station at 400 Hz, and **it kept emitting all the
-way through the migration.**
+The published work converges on one idea. **Do not decide; compute a
+probability.** That is Alex Shovkoplyas VE3NEA's own advice, from eight years and
+hundreds of algorithms behind CW Skimmer: express prior knowledge as
+probabilities, update with observed data, and rather than deciding at each input
+sample whether the signal is present, compute the probability that it is.
 
-### The structural cause
+Mauri AG1LE's rebuild of the fldigi decoder along those lines is built from a
+noise estimator, Kalman filters giving the likelihood of the key state given the
+observed signal, and **Bayesian inference updating posterior probabilities across
+many paths** — paths kept and re-scored, not one committed guess. That decoder
+still carried around a 3% base error rate, which is the honest measure of how hard
+this is.
 
-**Hamlet's decoder is a pipeline of hard decisions.** Survey admits or refuses;
-the tracker commits to a pitch; the speed search commits to a WPM or withdraws;
-the classifier commits to dit or dah; a character is emitted. **Each stage
-commits, and no stage can be revised by what a later stage learns.** A wrong
-commitment upstream produces confident nonsense downstream, and nothing in the
-chain carries a notion of *I am not currently synchronised*.
+His documented failures are Hamlet's, precisely: **without averaging the peak
+estimate the decoder tunes to the wrong frequency and emits garbage** (Hamlet at
+850 Hz); **the speed estimator sticks at its upper or lower extreme and an
+incorrect speed produces a great deal of garbage text** (Hamlet pinning at 40 WPM
+and at 400 Hz); and **a fixed filter bandwidth costs accuracy where a
+speed-dependent one would not** (Hamlet's 45 Hz constant).
 
-**The reference implementations do the opposite, and their authors say so
-plainly.** Alex Shovkoplyas VE3NEA, who wrote CW Skimmer — eight years of work and hundreds of algorithms before the first version behaved as he wanted — advises approaching every problem in the Bayesian framework: express prior knowledge as probabilities and update with observed data, and rather than deciding at each input sample whether the signal is present, compute the probability that it is present.
+**This unit rebuilds the decoder along those lines, in the order the evidence
+supports, with the score to prove each step.**
 
-**Every fault in the table above is a hard decision made too early.**
+## The goal, restated — and this needs Tim's formal ruling
 
-### The prior art describes Hamlet's exact failures
+**Yield of 99% is a research problem.** The best published amateur decoders do not
+reach it on real air.
 
-Mauri AG1LE rebuilt the fldigi CW decoder along Bayesian lines and documented the
-same three problems:
+**Precision of 99% — never putting a wrong character on screen — is reachable, and
+it is what the prime directive actually demands.** A screen showing three quarters
+of the traffic with the rest blocked is more useful to a novice than one showing
+all of it with a quarter wrong, because the second cannot be trusted at all.
 
-- **The wandering pitch.** Without averaging, the detected peak centre frequency can be wrong, so the decoder is tuned to the wrong frequency — and with a narrow filter this produces garbage output. **That is Hamlet at 850 Hz.**
-- **The pinned speed estimator.** The speed estimator sometimes sticks at its lower or upper extreme, and an incorrect speed estimate produces a great deal of garbage text. **That is `-020809` pinning at 40 WPM and `-030850`'s sweep pinning at 400 Hz, the bottom of its own range.**
-- **The unmatched filter.** Each decoder instance used one manually-set filter bandwidth rather than a speed-dependent one — faster stations need a wider bandwidth and slower ones a narrower one, so accuracy suffers when stations run at different speeds. **Hamlet's integrator width is a settled constant at 45 Hz** (carried ask 5).
-
-His own architecture is worth naming because it is the shape this decoder is
-missing: a noise estimator, Kalman filters estimating the likelihood of the key state given the observed signal, and Bayesian inference updating posterior conditional probabilities for each new path. **Paths, plural, carried forward and re-scored — not one committed guess.**
-
-**Sober about the target:** that decoder still ran around a 3% base error rate. Ninety-nine percent on real air is at or beyond the edge of what published amateur decoders achieve. **This unit does not promise it. It builds the instrument that can tell whether we are approaching it.**
-
-### The fit figure, and why it is inverted
-
-The garbage scored **8224.4 better than silence per hop**; the correct read scored
-**11.1**.
-
-**The likely cause is in the name: it compares the chosen reading against
-silence.** On a band with a strong signal, *any* reading beats silence, and a
-reading chopped into more elements accumulates more evidence against silence than
-a correct one with fewer, longer elements. **A sum over elements grows with the
-number of elements.**
-
-The quantity that would not invert is **the odds of the best reading against the
-second-best reading** — how much better this interpretation is than its nearest
-rival, not than nothing at all. **Task 6 measures whether that is the cause. It
-does not assume it.**
+**This unit is built to raise precision first and then yield.** Tim directed the
+plan; **write the formal restatement into the report's decision section for him to
+enter.** Do not mint an id.
 
 ## Verify this instruction against the tree
 
 **Nothing here describes the tree.** Check every claim and report mismatches.
 Trust the tree over this order everywhere they differ.
 
-**This author has not seen unit 044's report.** Unit 044 was running when this was
-written. **Task 1 must establish what 044 landed** — in particular whether the
-no-clock refusal shipped, because it changes what the corpus emits and therefore
-every number this unit measures. **State the baseline after 044, not before.**
+From unit 045's report, not measured by this author:
 
-**Record the failing counts for both suites before task 2.**
+- App **519 passing, 0 failing.** Engine **28 failing of 1984**, excluding the five
+  of `TheGateHasItsOwnWindowNowTests` which crash the host (HM-OPEN-061).
+- `CwAccuracy` exists, with semi-global alignment, **a block counted as a deletion
+  rather than a substitution**, and two numbers never reported apart.
+- `tools/Hamlet.PitchRank` has `score` and `width`.
+- **Unit 044 shipped no product code.** Its no-clock refusal cost 356 of 599
+  adjudicated characters and it stopped at unit 036's bar.
+- **The width sweep is non-monotonic** — 35 Hz reads 0.771/0.811, 40 Hz reads
+  0.703/0.734, 45 Hz reads 0.763/0.761 — **and 35 Hz was correctly not adopted.**
+  The wide end is settled: 55 and 70 Hz are far worse.
+
+**Record both suites' failing counts and the corpus score before task 2.** Every
+later task is measured against that baseline.
+
+**The eight captures of 2026-08-29 have blocked tasks in three consecutive units.
+State whether they are in the tree now.** If they are, they join the corpus for
+every measurement below; if they are not, say so once and proceed with what
+exists.
 
 ## Rulings in force
 
@@ -122,31 +129,32 @@ every number this unit measures. **State the baseline after 044, not before.**
 
 **Tim's rulings:**
 
-> **The goal of this phase is reading one mode at ninety-nine percent.**
+> **Do all of it, in this order: give the decoder a real confidence, put the speed
+> inside the model, model the durations properly, add a language prior, and stop
+> tracking a single pitch.**
 
-> **The only measurement is against real data from the real radio.** Synthetic
-> audio may exist as a unit test; it never appears in the score.
+> **Do not break the silence behaviour.** In his words: *I'm no longer seeing
+> random characters when there's just noise, so that seems to be solved. Don't
+> break it.* **That property is not tradeable in this unit at any price**, and task
+> 1 locks it before anything moves.
 
-> **Ship the refusal** (2026-08-27): no letters from a pitch the survey admitted
-> no keying at. **The phantoms are the priority.**
+> **Ship the refusal** (2026-08-27): no letters from a pitch the survey admitted no
+> keying at.
 >
-> **Rejected with it:** the clock-withdrawn refusal *as unit 1.11.33 built it*,
-> measured at 26, 38 and 25 characters off three good captures; and raising the
-> gate.
+> **Rejected with it:** the clock-withdrawn refusal as unit 1.11.33 built it, and
+> raising the gate.
 
-> **When the frequency changes, clear and reset.**
-
-> **Do not mess around at the edges.** This unit exists because the operator asked
-> for the analysis to go to the goal rather than the symptoms.
+> **The only measurement is against real data from the real radio.**
 
 **Standing rulings this unit is bound by:**
 
-- **§0.0 / HM-DEC-009** — never present a guess as a decode.
-- **§0.0.1** — the app's record must distinguish a fault in the signal, the radio,
-  or Hamlet.
-- **§0.4** — a fix that cannot be shown to fix anything is a guess. **Reproduce,
-  then change, then measure.**
-- **HM-DEC-007** — decoders tested against WAV fixtures.
+- **§0.0 / HM-DEC-009** — never present a guess as a decode. **This unit is that
+  rule becoming a computable quantity.**
+- **HM-DEC-120** — nothing emitted on audio holding no signal, and no letters from
+  a pitch nobody judged to be a station. **Tightened only, never loosened.**
+- **§0.4** — reproduce, then change, then measure. A fix that cannot be shown to
+  fix anything is a guess.
+- **HM-DEC-007** — tested against WAV fixtures.
 - **§0.2 / HM-DEC-008** — **no transmit work of any kind.**
 
 ## Status cadence
@@ -155,137 +163,172 @@ After each task, before the next, update `PROJECT_STATUS.md` — `STATE`,
 `TASK: n of m`, `BALL`, `UPDATED` from the clock, `NOTE` saying what is moving
 inside the task. Same every ten minutes while a task runs.
 
+## The measurement rule that governs every task below
+
+**Every change in tasks 3 through 8 is measured with `CwAccuracy` over the whole
+scored corpus, before and after, and both numbers are reported per task.**
+
+- **Precision must not fall. Ever.** A change that lowers precision is reverted and
+  reported, whatever it does to yield.
+- **A change that raises precision and lowers yield is kept**, and both numbers are
+  stated. That is the trade this unit exists to make.
+- **The silence property is asserted after every task.** Captures holding no
+  station emit no letters. **If any task breaks that, stop the unit and report.**
+
 ## The tasks
 
-### Task 1 — where the tree actually is
+### Task 1 — the baseline, and the silence lock
 
-**Run both suites whole and record the numbers.** State what unit 044 landed and
-whether its refusal is in force.
+**Run both suites and the corpus score. Record all three.**
 
-Then answer from the code, and **say what you find rather than confirming this
-list**:
+Then **lock the silence property before anything moves**: a test asserting that
+every capture in the corpus holding no admitted station emits **zero letters**.
+Name the captures it covers. **This test may not be modified by any later task in
+this unit.** If a later task turns it red, that task is reverted.
 
-- **Every hard decision in the decode chain, in order**, with file and line: where
-  a pitch is committed, where a speed is committed, where an element is classified
-  dit or dah, where a character is emitted. **For each, state what is discarded at
-  that point and whether anything downstream can revise it.**
-- **What the fit figure computes**, expression by expression. **Name the term that
-  grows with the number of elements.**
-- **The integrator width** — is 45 Hz a constant, and does anything scale it with
-  the estimated speed?
-- **Whether any averaging is applied to the pitch estimate before it is
-  committed.**
+Then answer from the code, and **say what you find**:
 
-### Task 2 — the answer key enters the tree
+- **The Viterbi in `DecodeAt`** — its state space, its transition structure, what a
+  path score is, and **whether a backward pass is possible over the same lattice
+  without restructuring it.** This is the load-bearing question for task 2.
+- **Every consumer of the fit figure** — the 1.40 emission gate, the 1.0 character
+  floor, the sheet's `better than silence per hop` line, and anything else. **Name
+  each with file and line.** Task 3 replaces what they consume.
+- **How speed enters** — the grid at `:798`, what is evaluated, and what is
+  discarded.
+- **How element and gap durations are modelled** — thresholds, distributions, or
+  something else.
 
-**The ARRL propagation bulletin of 2026-08-27 by F. K. Janda, OK1HH is published
-verbatim.**
+### Task 2 — a real posterior per character
 
-- **Obtain it and vendor it under `data/truth/` with its source and retrieval
-  date**, the same way the band plan carries its citation. If the network is
-  unavailable, **say so and stop this task** — do not reconstruct the text from
-  memory or from Hamlet's own output, which would make the decoder its own answer
-  key.
-- Record which of the three captures covers which span of the bulletin, and
-  **which portions of each capture have truth and which do not.** A capture is
-  only scored over the span where truth exists.
-- Mark the known sender-side substitution: **`DASH` is the sender's `M` read as a
-  word**, not a decoder error.
+**The Viterbi finds the best path. A forward–backward pass over the same lattice
+gives the probability that each character is what the best path says it is.** That
+number is the confidence this decoder has never had.
 
-### Task 3 — the scoring harness
+- Implement forward–backward over the existing lattice. **Do not restructure the
+  lattice in this task.**
+- **Work in log domain with scaling.** Unit 045 recorded fit values of 5,521,967,
+  17.2 million and quadrillions on degenerate bins; the carried asks record
+  intermittent overflows. **Underflow and overflow are the known failure of this
+  algorithm and the tests must cover both.**
+- Output **a posterior in [0,1] per emitted character**, and the **margin between
+  the best path and the runner-up** where the lattice affords it.
+- **Emit nothing differently yet.** This task adds a number and changes no
+  behaviour.
 
-**Build the thing that turns a decode into a percentage.**
+**Acceptance:** the corpus score is **bit-identical** to task 1's baseline, because
+nothing that reaches the screen has changed. **If it moves, something was changed
+that should not have been.**
 
-- Align Hamlet's output against the truth text with an edit-distance alignment
-  (Levenshtein or Needleman–Wunsch) and report **character accuracy, substitutions,
-  insertions and deletions, separately.**
-- **A block counts as a deletion, not a substitution.** Refusing to guess is not
-  the same error as guessing wrong, and the score must be able to show that
-  trade — it is the exact trade Tim ruled on in unit 036.
-- Report **two numbers per capture**: accuracy over all truth characters, and
-  accuracy over the characters Hamlet actually emitted. **The first is yield, the
-  second is precision.** Ninety-nine percent means nothing until it is stated which
-  one it refers to.
-- Pure, deterministic, no clock, no network. Runs from a WAV and a truth file.
+**Then measure the thing that matters:** correlate the new posterior against
+per-character correctness from `CwAccuracy`, across the whole corpus, **and report
+it beside the fit figure's −0.179 and −0.203.** If the posterior does not correlate
+positively, **stop and report** — the rest of the unit rests on it.
 
-### Task 4 — the first score this project has ever had
+### Task 3 — the posterior replaces the loudness proxy
 
-Run the harness over every capture with truth and **publish the baseline table**:
-per capture, accuracy, precision, substitutions, insertions, deletions.
+**Only if task 2's correlation is positive.**
 
-**Report it plainly, however bad it is.** A number that flatters is worse than no
-number. **This table is the unit's most important output and it leads the report.**
+- **Every consumer named in task 1 takes the posterior instead of the fit figure.**
+- **The thresholds are derived, not guessed**: choose them by sweeping the
+  posterior against the corpus and picking the point that reaches the precision
+  target, then state the number and the sweep that produced it.
+- **A character below the threshold is a block, not a deletion and not a guess** —
+  unit 036's ruling, and `CwAccuracy` already scores blocks as deletions so the
+  trade is visible.
+- **The fit figure stays computed and stays on the capture sheet**, labelled for
+  what it is, because the corpus's history is expressed in its units.
 
-### Task 5 — the pitch is averaged before it is committed
+**Acceptance:** **precision rises.** Report the full table before and after. **The
+61 substitutions are the target; report the new count.** Yield may fall and that is
+the accepted trade.
 
-The tracker committed to 850 Hz where nothing exists, then migrated mid-stream.
-The prior art names the cause: **no averaging of the peak estimate before the
-decoder is tuned to it.**
+### Task 4 — the speed goes inside the model
 
-- **Average the pitch estimate over a stated window before committing it**, and
-  state the window and why.
-- **A pitch that has not been stable for that window is not committed at all**, and
-  the decoder reports that it is acquiring rather than emitting.
-- **While the committed pitch is changing, nothing is emitted.** A migration is not
-  a decode.
+**Stop estimating WPM separately and feeding it in.** The withdrawn clock, the
+40 WPM pin, and the garbage that follows both are artefacts of a separate
+estimator that can fail on its own.
 
-**Acceptance, measured with task 3's harness:** `-030850` no longer commits to 850
-Hz. `-031024` does not regress. **Report the score before and after for every
-capture with truth.** If the score falls, **say so and stop rather than shipping.**
+- **Dit length becomes a slowly-varying state dimension of the lattice**, so speed
+  and text are solved together and the best path carries its own speed.
+- **A transition cost penalises fast changes in dit length**, because a sender's
+  speed drifts and does not jump. State the cost and its reasoning.
+- **The grid search at `:798` goes away**, or becomes the initialisation of the
+  state dimension rather than a committed answer.
+- **There is then no clock to withdraw.** Report what happens to the sidecar's
+  `decoderWpm` line and put the proposed wording in the report — **the sheet's
+  wording is Tim's.**
 
-### Task 6 — what the fit figure is measuring
+**Acceptance:** measured before and after. **Precision must not fall.** Report what
+happens to the captures where the clock previously withdrew.
 
-**Measure and report. Change nothing in this task.**
+### Task 5 — durations modelled, not thresholded
 
-- Confirm or refute the analysis above: **does the figure compare the chosen
-  reading against silence, and does its value grow with the number of elements
-  rather than with correctness?**
-- **Across every capture with truth: plot the fit figure against the character
-  accuracy from task 3.** If the correlation is negative or absent, **the metric
-  is not measuring quality and every decision that consumes it is unsafe.**
-- **State what the corrected quantity would be** — this author's reading is the
-  odds of the best interpretation against the second-best rather than against
-  silence — **and say whether the decoder currently computes a second-best at
-  all.** If it does not, that is the finding: a pipeline that keeps one path has
-  nothing to compare against.
+Element and gap lengths are **distributions around the dit**, not sides of a
+threshold. A hidden semi-Markov model with explicit duration densities is the
+standard tool and it is what makes a decoder survive a wobbly fist and fading.
 
-**Do not change the metric in this unit.** A metric change alters every gate that
-consumes it, and it must be done with the score in hand.
+- **Give each state an explicit duration density** parameterised on the dit length
+  from task 4 — dit, dah, intra-character gap, inter-character gap, word gap.
+- **Fit the densities from the corpus, not from the textbook ratios**, and report
+  what the corpus says the real ratios are. A hand-sent fist is not 1:3:1:3:7.
+- **Report the fitted parameters in the report**, because they are a finding about
+  the operators on the band as much as about the decoder.
 
-### Task 7 — the filter follows the speed
+**Acceptance:** measured before and after. **Precision must not fall.**
 
-Faster stations need a wider bandwidth and slower ones a narrower one; a single fixed bandwidth costs accuracy across stations of different speeds. Hamlet's integrator is a settled constant at 45 Hz.
+### Task 6 — a language prior
 
-- **Scale the integrator width with the committed speed estimate**, and state the
-  relationship and its derivation. A dit at 24 WPM is 50 ms; the keying sidebands
-  scale inversely with element length.
-- **While the speed is not committed, the width does not change.** No estimate, no
-  adaptation.
-- **Measured with task 3's harness across the corpus.** The carried ask about a
-  sharp-peak caveat at 45 Hz stands — **if the sweep shows 45 Hz was right, report
-  that and revert.**
+Morse traffic is enormously predictable. **Prosigns, callsign structure, `CQ DE`,
+`73`, `RST`, and plain English** carry most of the information the decoder is
+currently ignoring. This is where the last several percent live, and it is why
+CW Skimmer sanity-checks against a callsign database.
 
-### Task 8 — what a real redesign would be, written not built *(the drop candidate)*
+- **A character n-gram prior added to the path cost.** Order and smoothing stated
+  and justified.
+- **Trained on text that is not the scored corpus.** Training on the answer key
+  would make the score meaningless — **say plainly what it was trained on.**
+- **The prior is a tiebreaker, not an author.** It may reorder paths the acoustic
+  evidence finds nearly equal; **it may not create a character the signal does not
+  support.** State how that boundary is enforced and test it: **a capture holding
+  no station must still emit nothing**, and task 1's lock proves it.
 
-**A design note in the repository, no code.**
+**Acceptance:** measured before and after. **Precision must not fall.** **Report
+substitutions separately** — a language prior that raises yield by inventing
+plausible words is the worst possible outcome and the substitution count is where
+it would show.
 
-The analysis says Hamlet's chain commits early and cannot revise. The reference
-architecture — noise estimation, Kalman-filtered likelihood of the key state, and Bayesian updating of posterior probabilities across multiple paths — keeps many interpretations alive and re-scores them as evidence arrives.
+### Task 7 — stop tracking one pitch
 
-Write down, with the corpus numbers to support it:
+The 850 Hz phantom and the mid-stream migration are not bugs to patch; **they are
+what a single committed pitch does.**
 
-- **What a lattice over (element, speed, pitch) hypotheses would look like** for
-  this decoder, and which of the current stages it would replace.
-- **What it would cost** — latency, since path decoding is not causal per
-  character; complexity; and what would have to be rewritten.
-- **What the current architecture's ceiling is**, argued from task 4's baseline and
-  task 6's finding, and **whether ninety-nine percent is reachable by repair or
-  only by replacement.**
-- **The staged path**, if replacement is right: what lands first, what proves it,
-  and what can be abandoned safely at each stage.
+- **Run a decoder per candidate bin** across the admitted range, and report the
+  ones whose posterior clears the task 3 threshold. CW Skimmer runs hundreds in
+  parallel; this needs a handful.
+- **Average the peak estimate before a decoder is placed on it**, which is the
+  documented cause of tuning to the wrong frequency.
+- **Two candidates closer than the resolution are one station** — carried ask 10
+  names 125 Hz.
+- **The screen shows what it showed before** unless Tim rules otherwise; this task
+  is about where the decoders sit, not about a new surface.
 
-**This is for Tim to rule on. Recommend; do not decide.** Put the options in
-HM-DEC-010's table form.
+**Acceptance:** measured before and after. **Precision must not fall.** **Report
+what happens on the captures where the tracker previously wandered.**
+
+### Task 8 — the speed-scaled filter width *(the drop candidate)*
+
+**Only after task 4, and only if the corpus can now resolve it.**
+
+Unit 045 could not settle 35 against 45 Hz because the sweep was non-monotonic on
+twelve captures. **With speed inside the model there is a per-path dit length to
+scale from**, which is a different question from picking one constant.
+
+- **Scale the integrator width from the path's own dit length**, with the
+  relationship derived and stated.
+- **Sweep the scaling factor, not the width.** Report the curve.
+- **If it is still non-monotonic, report that and change nothing.** Fitting noise
+  twice is worse than once.
 
 **Dropped whole if time runs out, and the report says so.**
 
@@ -294,11 +337,11 @@ HM-DEC-010's table form.
 **The whole digital stream** — FT8, the slot cutter, the sync search, the digital
 waterfall, the digital capture press.
 
-Also: the joint decoder; the constrained margin; the meter's rebuild; the
-whole-file second pass; the scanner and the calling cycle; `CHANGELOG.md`; the
-missing `DECISIONS.md` records; the phrasebook and the recent-places row; the
-Twin PBT; the attenuator and `CwPitch` receive conditions; **admission itself** —
-unit 043 owns it and this unit must not change it.
+Also: admission itself, which unit 043 owns; the attenuator and `CwPitch` receive
+conditions; the scanner and the calling cycle; `CHANGELOG.md`; the missing
+`DECISIONS.md` records; the phrasebook and the recent-places row; the Twin PBT;
+the answer key's licensing, raised in 045 and unruled; the pedestal ranking; the
+dial-move threshold and the transcript break's wording.
 
 **Both halves are required: do not touch them, and do not raise them.**
 
@@ -309,16 +352,16 @@ A parked item that genuinely blocks a task is raised once, and says it was parke
 Standing prohibitions are `CLAUDE.md`'s and are not retyped. Unit-specific:
 
 - **No transmit. Nothing keys the radio.**
-- **Do not write the truth text from memory or from Hamlet's own output.** If it
-  cannot be obtained from a published source, task 2 stops and says so.
-- **Do not change the fit figure.** Task 6 measures it.
-- **Do not change admission.** Unit 043 owns it.
-- **Do not build the lattice.** Task 8 writes it down.
-- **Do not tune a constant until a capture reads better.** Every change in tasks 5
-  and 7 is measured with task 3's harness across the whole corpus, before and
-  after, and **a change that lowers the score is reported and reverted.**
+- **Do not break the silence property**, and do not modify task 1's lock.
+- **Do not let precision fall on any task.** Revert and report instead.
+- **Do not train the language prior on the scored corpus.**
+- **Do not let the language prior create a character the signal does not support.**
+- **Do not pick a threshold or a width by trying values until the corpus reads
+  better.** Sweep, report the curve, and say why the chosen point is on it.
+- **Do not adopt a value off a non-monotonic sweep.** Unit 045 got this right and
+  it is the standard here.
+- **Do not change admission.**
 - **Do not report a score without saying whether it is yield or precision.**
-- **Do not let `-031024` regress.**
 - **Do not mint a decision id.**
 
 ## Committing, pushing, reporting
@@ -329,12 +372,13 @@ push is reported as refused, with the reason.
 Report per `CLAUDE_CODE.md` §8 to `output.md` at the repository root, overwritten
 and printed. **Read the file's own section count and follow it.**
 
-**The section that reports measurements leads with task 4's baseline table — the
-first accuracy percentage this project has ever produced — and then task 6's
-finding about whether the fit figure measures quality at all.**
+**The section that reports measurements leads with the precision and yield after
+every task, as a table with one row per task**, so the whole unit's arc is one
+picture — and then with **task 2's correlation between the new posterior and
+correctness, beside the fit figure's −0.179 and −0.203.**
 
 **The section that says what the owner should expect leads with this: Hamlet now
-scores itself against what was actually sent, and the number is stated plainly
-whatever it is.**
+knows how sure it is of each character, and blocks the ones it is not sure of —
+and it still shows nothing at all on a frequency where nothing is happening.**
 
 **If you finish every task, stop and report. Do not start the next unit.**
