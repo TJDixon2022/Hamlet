@@ -1416,25 +1416,41 @@ public static class CwProbabilisticDecoder
             upTo[i + 1] = upTo[i] + keyUp[i];
         }
 
-        var best = new double[count + 1];
-        var fromHop = new int[count + 1];
-        var kindAt = new int[count + 1];
-        var wasDown = new bool[count + 1];
+        // **THE LATTICE IS INDEXED BY (HOP, KIND), AND THAT IS THIS UNIT**
+        // (Tim's ruling of 2026-08-29). It used to be indexed by hop alone, with
+        // the alternation rule checked as `wasDown[j] == kind.IsKeyDown` against
+        // **the winning path's parity at j** rather than against a state.
+        //
+        // **TWO THINGS WERE WRONG WITH THAT AND ONLY ONE WAS NOTICED.** The
+        // known one: a forward or backward sum has to range over all paths
+        // reaching j, and those do not share a parity, so there was nothing
+        // well-defined to sum and no posterior could be computed at all. The
+        // live one: if the best path into j ended key-down while a slightly
+        // worse one ended key-up, that worse path could legally be extended by a
+        // key-down segment and **the search could not see it.** Paths were being
+        // discarded for a reason that is not part of the model.
+        //
+        // Five kinds, so this is five times the state and the same enumeration.
+        var kinds = Kinds.Length;
+        var best = new double[count + 1, kinds];
+        var second = new double[count + 1, kinds];
+        var fromHop = new int[count + 1, kinds];
+        var fromKind = new int[count + 1, kinds];
 
-        // **THE RUNNER-UP, KEPT SO A CHARACTER CAN SAY HOW CLOSE THE ARGUMENT
-        // WAS.** Nothing reads it yet; see
-        // <see cref="CwProbabilisticCharacter.MarginLlr"/> for why it is worth
-        // recording before anything is decided on it.
-        var second = new double[count + 1];
-
-        Array.Fill(second, double.NegativeInfinity);
-        Array.Fill(best, double.NegativeInfinity);
-        Array.Fill(fromHop, -1);
-        best[0] = 0;
+        for (var i = 0; i <= count; i++)
+        {
+            for (var k = 0; k < kinds; k++)
+            {
+                best[i, k] = double.NegativeInfinity;
+                second[i, k] = double.NegativeInfinity;
+                fromHop[i, k] = -1;
+                fromKind[i, k] = -1;
+            }
+        }
 
         for (var i = 1; i <= count; i++)
         {
-            for (var k = 0; k < Kinds.Length; k++)
+            for (var k = 0; k < kinds; k++)
             {
                 var kind = Kinds[k];
                 var want = gapHops is not null && !kind.IsKeyDown
@@ -1448,17 +1464,6 @@ public static class CwProbabilisticDecoder
                 {
                     var j = i - span;
 
-                    if (double.IsNegativeInfinity(best[j]))
-                    {
-                        continue;
-                    }
-
-                    // Elements must alternate: a mark cannot follow a mark.
-                    if (j > 0 && wasDown[j] == kind.IsKeyDown)
-                    {
-                        continue;
-                    }
-
                     var evidence = kind.IsKeyDown
                         ? downTo[i] - downTo[j]
                         : upTo[i] - upTo[j];
@@ -1468,30 +1473,100 @@ public static class CwProbabilisticDecoder
                     // it ever were not.
                     var off = Math.Log(Math.Max(span, 1e-9) / want)
                         / LengthToleranceShare;
-                    var score = best[j] + evidence - (0.5 * off * off);
+                    var step = evidence - (0.5 * off * off);
 
-                    if (score > best[i])
+                    if (j == 0)
                     {
-                        second[i] = best[i];
-                        best[i] = score;
-                        fromHop[i] = j;
-                        kindAt[i] = k;
-                        wasDown[i] = kind.IsKeyDown;
+                        // **THE FIRST ELEMENT MAY BE ANY KIND.** Nothing precedes
+                        // it, so there is no parity to alternate against.
+                        Offer(best, second, fromHop, fromKind, i, k, step, 0, -1);
+
+                        continue;
                     }
-                    else if (score > second[i])
+
+                    for (var kj = 0; kj < kinds; kj++)
                     {
-                        second[i] = score;
+                        var from = best[j, kj];
+
+                        if (double.IsNegativeInfinity(from))
+                        {
+                            continue;
+                        }
+
+                        // Elements must alternate: a mark cannot follow a mark.
+                        // **Checked against the state now, not against whichever
+                        // path happened to win at j.**
+                        if (Kinds[kj].IsKeyDown == kind.IsKeyDown)
+                        {
+                            continue;
+                        }
+
+                        Offer(
+                            best, second, fromHop, fromKind, i, k,
+                            from + step, j, kj);
                     }
                 }
             }
         }
 
+        var lastKind = -1;
+        var total = double.NegativeInfinity;
+
+        for (var k = 0; k < kinds; k++)
+        {
+            if (best[count, k] > total)
+            {
+                total = best[count, k];
+                lastKind = k;
+            }
+        }
+
+        if (lastKind < 0)
+        {
+            return (double.NegativeInfinity, Array.Empty<CwProbabilisticCharacter>(), -1);
+        }
+
         return (
-            best[count],
+            total,
             Spell(
-                count, fromHop, kindAt, downTo, upTo, best, second, unit, gapHops,
-                jointly),
-            kindAt[count]);
+                count, lastKind, fromHop, fromKind, downTo, upTo, best, second,
+                unit, gapHops, jointly),
+            lastKind);
+    }
+
+    /// <summary>Offer one candidate transition into a state, keeping two.</summary>
+    /// <param name="best">The winning score at each state.</param>
+    /// <param name="second">The runner-up score at each state.</param>
+    /// <param name="fromHop">Where the winner came from.</param>
+    /// <param name="fromKind">What kind the winner came from.</param>
+    /// <param name="i">The hop being entered.</param>
+    /// <param name="k">The kind being entered.</param>
+    /// <param name="score">What this candidate scores.</param>
+    /// <param name="j">The hop it comes from.</param>
+    /// <param name="kj">The kind it comes from, or -1 for the start.</param>
+    /// <remarks>
+    /// **THE RUNNER-UP IS KEPT WITHIN THE NEW INDEXING**, so `MarginLlr` still
+    /// means what it meant: how much better the winning way into this state is
+    /// than the next best way into the same state.
+    /// </remarks>
+    private static void Offer(
+        double[,] best, double[,] second, int[,] fromHop, int[,] fromKind,
+        int i, int k, double score, int j, int kj)
+    {
+        if (score > best[i, k])
+        {
+            second[i, k] = best[i, k];
+            best[i, k] = score;
+            fromHop[i, k] = j;
+            fromKind[i, k] = kj;
+
+            return;
+        }
+
+        if (score > second[i, k])
+        {
+            second[i, k] = score;
+        }
     }
 
     /// <summary>
@@ -1529,15 +1604,21 @@ public static class CwProbabilisticDecoder
 
     /// <summary>The element stream the first pass produced, marks and gaps.</summary>
     private static List<CwElement> ElementsOf(
-        int count, int[] fromHop, int[] kindAt)
+        int count, int lastKind, int[,] fromHop, int[,] fromKind)
     {
         var walk = new List<CwElement>();
         var at = count;
+        var atKind = lastKind;
 
-        while (at > 0 && fromHop[at] >= 0)
+        while (at > 0 && atKind >= 0 && fromHop[at, atKind] >= 0)
         {
-            walk.Add(new CwElement(Kinds[kindAt[at]].IsKeyDown, fromHop[at], at));
-            at = fromHop[at];
+            walk.Add(new CwElement(
+                Kinds[atKind].IsKeyDown, fromHop[at, atKind], at));
+
+            var nextAt = fromHop[at, atKind];
+
+            atKind = fromKind[at, atKind];
+            at = nextAt;
         }
 
         walk.Reverse();
@@ -1548,7 +1629,8 @@ public static class CwProbabilisticDecoder
     /// <summary>Walk the winning path back and turn it into letters.</summary>
     /// <param name="count">How many hops there were.</param>
     /// <param name="fromHop">Where each hop's best segment started.</param>
-    /// <param name="kindAt">Which kind that segment was.</param>
+    /// <param name="lastKind">Which kind the winning path ends on.</param>
+    /// <param name="fromKind">Which kind each state's best segment came from.</param>
     /// <param name="downTo">Cumulative key-down log-likelihood, hop by hop.</param>
     /// <param name="upTo">Cumulative key-up log-likelihood, hop by hop.</param>
     /// <param name="best">The winning score at each hop.</param>
@@ -1571,30 +1653,45 @@ public static class CwProbabilisticDecoder
     /// penalty is left out.
     /// </remarks>
     private static IReadOnlyList<CwProbabilisticCharacter> Spell(
-        int count, int[] fromHop, int[] kindAt, double[] downTo, double[] upTo,
-        double[] best, double[] second, double unit, double[]? gapHops,
+        int count, int lastKind, int[,] fromHop, int[,] fromKind,
+        double[] downTo, double[] upTo,
+        double[,] best, double[,] second, double unit, double[]? gapHops,
         bool jointly)
     {
         if (jointly)
         {
             return SpellJointly(
-                count, fromHop, kindAt, downTo, upTo, unit, gapHops);
+                count, lastKind, fromHop, fromKind, downTo, upTo, unit, gapHops);
         }
 
         // How much better the winning path was than the nearest alternative
         // arriving at the same hop; see `CwProbabilisticCharacter.MarginLlr`.
-        static double Margin(double[] best, double[] second, int at)
-            => double.IsNegativeInfinity(second[at]) || double.IsNegativeInfinity(best[at])
+        static double Margin(double[,] best, double[,] second, int at, int k)
+            => k < 0
+               || double.IsNegativeInfinity(second[at, k])
+               || double.IsNegativeInfinity(best[at, k])
                 ? double.NaN
-                : best[at] - second[at];
+                : best[at, k] - second[at, k];
 
         var path = new List<(int Kind, int StartHop, int EndHop)>();
         var at = count;
+        var atKind = lastKind;
 
-        while (at > 0 && fromHop[at] >= 0)
+        // The margin is read at the state the path is actually in, so a
+        // character's `MarginLlr` still says how much better the winning way in
+        // was than the next best way into the same state.
+        var marginAt = new Dictionary<int, int>();
+
+        while (at > 0 && atKind >= 0 && fromHop[at, atKind] >= 0)
         {
-            path.Add((kindAt[at], fromHop[at], at));
-            at = fromHop[at];
+            path.Add((atKind, fromHop[at, atKind], at));
+            marginAt[at] = atKind;
+
+            var nextAt = fromHop[at, atKind];
+            var nextKind = fromKind[at, atKind];
+
+            at = nextAt;
+            atKind = nextKind;
         }
 
         path.Reverse();
@@ -1644,7 +1741,9 @@ public static class CwProbabilisticDecoder
                     MorseAlphabet.Lookup(spelled) ?? "#", spelled, startHop,
                     spanRatio,
                     spanFrom < 0 ? 0 : startHop - spanFrom,
-                    Margin(best, second, startHop)));
+                    Margin(
+                        best, second, startHop,
+                        marginAt.TryGetValue(startHop, out var mk) ? mk : -1)));
 
                 pattern.Clear();
                 spanRatio = 0;
@@ -1664,7 +1763,9 @@ public static class CwProbabilisticDecoder
             characters.Add(new CwProbabilisticCharacter(
                 MorseAlphabet.Lookup(spelled) ?? "#", spelled, count, spanRatio,
                 spanFrom < 0 ? 0 : count - spanFrom,
-                Margin(best, second, count)));
+                Margin(
+                    best, second, count,
+                    marginAt.TryGetValue(count, out var lk) ? lk : lastKind)));
         }
 
         return characters;
@@ -1679,10 +1780,10 @@ public static class CwProbabilisticDecoder
     /// is now made together with what the letters are.
     /// </remarks>
     private static IReadOnlyList<CwProbabilisticCharacter> SpellJointly(
-        int count, int[] fromHop, int[] kindAt,
+        int count, int lastKind, int[,] fromHop, int[,] fromKind,
         double[] downTo, double[] upTo, double unit, double[]? gapHops)
     {
-        var elements = ElementsOf(count, fromHop, kindAt);
+        var elements = ElementsOf(count, lastKind, fromHop, fromKind);
         var cut = CwJointCutter.Cut(elements, unit, gapHops);
         var characters = new List<CwProbabilisticCharacter>();
 
