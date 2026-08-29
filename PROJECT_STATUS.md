@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 3 of 4
+TASK: 4 of 4
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-28T20:14:24-04:00
-NOTE: no floor silences a phantom without costing an anchor; two phantoms outscore eight adjudicated readings, so no floor ships
+UPDATED: 2026-08-28T20:17:12-04:00
+NOTE: all four tasks worked and the report is written; full engine suite running for a final baseline check
 
 ---
 

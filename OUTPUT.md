@@ -1,275 +1,261 @@
-UNIT:       043 — stopped at task 2 of 5 — 2026-08-28 18:59
+UNIT:       044 — complete at task 4 of 4 — 2026-08-28 20:17
 PHASE GOAL: Readable CW on the operator's screen — eighty percent of a strong signal read correctly, first time.
-UNIT GOAL:  Choose the mixdown pitch by which candidate decodes best, rather than by a statistic on an intermediate signal.
-ADVANCED:   yes — pitch acquisition goes from 1 of 44 captures to 34 of 44 as a measurement; no decoder path was changed, so it is not on the operator's screen yet.
-NUMBER:     one in eight -> 34 of 44 measured offline; on the operator's screen, unchanged.
-DRIFT:      unknown — the work order's block carried no DRIFT line, so there is no count to carry or increment.
+UNIT GOAL:  Make the ranked pitch drive the live decode, and stay silent when even the best candidate is poor.
+ADVANCED:   no — the ranking is built, wired end to end and switched off, because driving the decode costs two adjudicated callsigns.
+NUMBER:     34 of 44 offline -> 27 of 44 at the window the live decoder actually sees; on the operator's screen, unchanged.
+DRIFT:      1 consecutive unit without advance  (was 0 — unit 1.12.6 recorded no count and its own ADVANCED was yes)
 
 ## 1. What Claude did
 
-**Stopped at task 2 of 5, with task 2's question answered and answered
-positively.** Tasks 3, 4 and 5 were not built. **That is not the drop the order
-named** — task 5 was the drop candidate — so it is a sizing decision, and the
-reasons are in section 4 as two rulings rather than buried here.
+**Complete: all four tasks worked, and the goal task ships switched off.** Task 4
+was not dropped for time — it applies only where task 3's floor is holding, and no
+floor holds.
 
 Development computer, prompt claimed `PROJECT: Hamlet`, branch `main`, version
-`1.12.5` -> `1.12.6`. **Nothing in this report is evidence about the radio**: no
-radio was connected, and every number comes from WAV files already in the tree.
+`1.12.6` unchanged. **Nothing here is evidence about the radio**: no radio was
+connected, and every number comes from WAV files already in the tree.
 
-### Task 1 — the trace
+### Task 1 — the pedestal in the engine
 
-**What one window at one pitch costs, measured with `tools/Hamlet.PitchRank cost`
-rather than estimated.** A 12-second window at 48 kHz is 2400 hops:
+`CwPitchRanking` now holds it, and **the engine's copy reproduces the tool's
+forty-four rows byte for byte** — the check the order said to stop on if it failed.
+Seven tests, all green.
 
-| | 12 s | 6 s | 4 s | 3 s | 2 s |
-|---|---|---|---|---|---|
-| quadrature mixdown | 10.4 ms | 4.2 ms | 2.6 ms | 2.0 ms | 1.6 ms |
-| decode, speed grid 8–40 | 39.2 ms | 18.7 ms | 13.0 ms | 9.5 ms | 6.2 ms |
-| **one candidate** | **49.6 ms** | 22.9 ms | 15.6 ms | 11.5 ms | 7.8 ms |
-| sweep of 25 candidates | 1240 ms | 572 ms | 390 ms | 287 ms | 195 ms |
-| share of one core at the shipped cadence | **248 %** | 114 % | 78 % | 57 % | 39 % |
+**One finding worth more than the move itself: the generated fixtures cannot show
+this fault.** The control test was written against `CwFixtureGenerator`'s shaped
+band and failed, because there the *bare* score picks the station correctly, at
+500 Hz scoring 39.45. The receiver's own 500 Hz filter empties the bins outside it
+far harder than the generator's band shaping does, so a session working only from
+synthetic audio would conclude there was nothing to fix. The test moved to
+`cw-2026-08-28-004844`, where the bare score picks 875 Hz.
 
-**The sweep does not fit at the window and cadence that ship, and that is reported
-rather than traded away.** Cost is linear in window length, so the trade is real
-but it is a trade, and section 4 asks for it rather than taking it.
+### Task 2 — the ranked pitch drives the decode, and is switched off
 
-**The candidate count in the tree is 25, not the "about thirty-three" the order
-states.** `CwToneTracker.MinimumToneHz` is 300 and `MaximumToneHz` 900
-(`CwToneTracker.cs:125,128`), stepped by `CoarseSpacingHz` = 25 (`:138`).
+Built exactly as ruled: ranking on a four-second window, once on tune-in and again
+when the reading sits under the gate for six seconds, the full path on the winner
+alone. The mixdown takes it at `CwDecoder.Step` behind the operator's lock;
+`CwDecodeReport.ToneHz` is fed from the pitch the decode used rather than from
+`_tracker.ToneHz`; the sheet says the pitch was ranked and prints the winner's
+score and the runner-up's; admission is untouched and still recorded.
 
-**The fixed-pitch harness is already callable per candidate, so the unit is mostly
-plumbing — as the order hoped.** Three public entry points, none of them new:
+**Then it was measured, and it costs two adjudicated anchors:**
 
-- `CwProbabilisticDecoder.Decode(MonoAudio, double toneHz)` — `CwProbabilisticDecoder.cs:639`
-- `CwProbabilisticDecoder.Decode(IReadOnlyList<double> envelope, double toneHz)` — `:652`
-- `CwDecoder.AssertAt(double toneHz)` — `CwDecoder.cs:515`, which holds the mixdown
-  at a stated pitch through the whole shipped path.
-
-`CwProbabilisticStream.ReadAgain(audio, toneHz)` (`CwProbabilisticStream.cs:475`)
-already re-mixes held audio at a new pitch and `AudioTap` already keeps thirty
-seconds, so even the replay a ranking pass would want is built.
-
-**Where the mixdown pitch enters is one line**: `CwDecoder.Step`,
-`CwDecoder.cs:753` — the operator's lock, else the last measured pitch, else the
-tracker's. `CwProbabilisticStream.Process` (`:275`) mixes each sample at it;
-`Read` (`:665`) passes it into the decode. **What else consumes it matters for
-task 3**: `CwDecodeReport.ToneHz` comes from `_tracker.ToneHz`
-(`CwDecoder.cs:279`), not from the mixdown, so a ranked pitch driving the mixdown
-would not by itself reach the capture sheet, the duty line or the panel
-(`MainWindowViewModel.cs:4735–4784`, `:3689`). The sidecar the order asks task 3 to
-write would have to be fed from the ranking rather than from the tracker.
-
-**Baseline, by diffing which tests fail: 28 failing, 1930 passing, 1958 total,
-21 m 36 s.** Matches the order's stated 28 exactly, and the same 28 fail now.
-
-### Task 2 — the ranking
-
-**The decoder's score as it stands is not comparable between two pitches, and the
-reason is that it is scale invariant.** `LikelihoodRatio` is a per-hop
-log-likelihood of the best reading against "this is all noise", and both the noise
-scale and the keyed level are estimated from the very envelope being scored
-(`CwProbabilisticDecoder.LogLikelihoods`, `:973`). A bin where the receiver's
-filter has already thrown everything away has almost no noise in it, so the wobble
-that is left is scored against a tiny sigma and looks like the clearest keying in
-the band. **The quietest bin wins.**
-
-Measured through `CwDecoder.AssertAt`, the shipped path with the pitch held from
-the first sample, on 15 captures before the run was stopped: the winner sat at
-875–900 Hz on 10 of 15, it outscored the pitch that actually reads on **15 of 15**,
-and it matched the station on 1. On `cw-2026-08-28-004844` the winner at 875 Hz
-scored 312.62 and read `E E EE E EEEE E EEE EE E EEE E EE E E EE E E E E`, against
-29.84 at the pitch that reads the net.
-
-**So task 1's fourth question is answered no, and task 2's charge was then to find
-what is comparable. It did.**
-
-**Stand every candidate's envelope on one noise floor measured across the whole
-band, and the same score ranks correctly.** Each envelope is combined in power with
-a single pedestal — the loudest per-bin floor in the band — which is what each bin
-would look like if the receiver's floor were flat. A bin holding nothing goes flat
-against that pedestal and scores near nothing. A bin holding a keyed station keeps
-its marks well above it and keeps its structure.
-
-**Same window, same decoder, same 44 captures. The only change is the pedestal:**
-
-| | matches the station |
-|---|---|
-| ranking by the score as it stands | **1 of 44** |
-| ranking with a common noise floor | **34 of 44** |
-
-**And the winners read, which is what makes 34 credible rather than circular.** The
-pitch on the capture sheet is Hamlet's own tracker output, not independent truth,
-so the text is the evidence:
-
-| capture | what the winner reads |
-|---|---|
-| `cw-2026-08-17-013347` | `E W#VA3#R E` — the adjudicated `VA3VRR` |
-| `cw-2026-08-17-134712` | `LQ E N4LQ # E` — the adjudicated `N4L` |
-| `cw-2026-08-18-004507` | `H AN D L I NG T HIS M E S S A G E PE` — the adjudicated bulletin |
-| `cw-2026-08-24-012403` | `EEQ DE NED0UN KD0UN K` — the adjudicated `KD0UN` |
-| `cw-2026-08-28-004902` | `WED AU G 2 6 W 7 G B QRU M` — the net, with `W7GB` |
-| `cw-2026-08-28-004844` | `# <BT> BRU C E <AR> NR 2 3 0 CE` — the net, with `BRUCE` |
-| `cw-2026-08-22-032012` | `SES OR OTHER WEBSITES MENTI` |
-| `cw-2026-08-25-013402` | `D NOT SURE - BUT ANY WAY VY NICE` |
-
-**The four phantoms behave the way the order predicted they should.** They are the
-captures where the winner misses the sheet's pitch and reads nothing: `005158`,
-`005218` and `005243` all pick 600 Hz rather than the 750–775 Hz Hamlet used, and
-what they read there is junk. Their winning scores are 5.28, 3.07 and 5.13 against
-15.71, 12.32 and 10.15 for the three good ones on the same night. **A winner whose
-own score is poor is exactly the shape task 4 was written for**, and there is now a
-measured gap to put a floor in — though where it goes is a number nobody has swept
-yet, and unit 1.11.33's finding that no fixed threshold separates the corpus still
-stands until somebody re-measures it in these units.
-
-**One in eight and 34 of 44 are not the same measurement, and the report should not
-pretend they are.** One in eight is the operator's figure for the live application;
-34 of 44 is an offline ranking over one window per capture. The like-for-like
-comparison is the one in the table above: 1 of 44 against 34 of 44, same window,
-same decoder, one change.
-
-**What the order got wrong, and it matters because the unit rests on it.** The
-order's evidence table gives the phantoms as 1.48, 1.49 and 3.34 against 36.3 and
-28.3, "a factor of six to twenty-four". The sidecars in the tree do not say that:
-
-| capture | order says | the sheet in the tree says |
+| capture | with the tracker steering | with the ranking driving |
 |---|---|---|
-| `cw-2026-08-28-004844` | 36.3 | 36.3 |
-| `cw-2026-08-28-004902` | 28.3 | 28.3 |
-| `cw-2026-08-28-005051` | 1.48 | **7.6** |
-| `cw-2026-08-28-005158` | 1.49 | **−68562.4** |
-| `cw-2026-08-28-005243` | 3.34 | **158.4** |
+| `cw-2026-08-17-013347` | `… VA3VRR` at 625 Hz | nothing readable, at 775 Hz |
+| `cw-2026-08-24-012403` | `DE KD0UN KD0UN K` at 440 Hz | `DE XD0UN KD0` at 450 Hz |
 
-A phantom scores 158.4 where a real net scores 36.3, so the separation the unit was
-commissioned on is not in the sheets as quoted. **The pedestal supplies the
-separation the order expected to find already there**, which is the better outcome,
-but the table should not go into the next order unchecked.
+The unit's acceptance requires all twelve anchors green. **So it ships off**, as
+`CwDecoder.RankThePitch`, on `ClearOnAStationChange`'s precedent — the machinery
+stays, tested and measurable, and a test goes red the moment the default changes so
+that whoever flips it re-measures those two first. With it off the shipped
+behaviour is what it was this morning.
 
-No decision was recorded under §12.1. Nothing here was a session's to settle.
+**The two failures have different causes and only one is the ranking being wrong.**
+
+- On `012403` **the ranking picks the right bin.** The candidates are the tracker's
+  coarse grid, so a ranked pitch is only ever a bin centre: it chooses 450 and the
+  station sits at 440, and ten hertz turns `KD0UN` into `XD0UN`. The survey
+  interpolates to the hertz and the ranking cannot. A refinement — take the
+  survey's pitch where it falls inside the winning bin — was built, measured, and
+  did not fire on this capture, so it was removed rather than shipped untested.
+- On `013347` **the pedestal collapses.** The opening four seconds hold no station,
+  so every bin's floor is tiny, the common floor is tiny with them, and the scale
+  invariance the pedestal exists to remove comes straight back: the winner scores
+  **5,521,967** at 775 Hz. **A degenerate pitch looks maximally healthy**, so the
+  collapse test that would re-rank it can never fire.
+
+**And the window's position matters more than its length, which no measurement
+before this one separated.** The 34 of 44 that commissioned this unit was measured
+on the *tail* of each recording. The live decoder ranks at tune-in, which is the
+opening:
+
+| stretch | 4 s | 6 s | 8 s | 12 s |
+|---|---|---|---|---|
+| tail | **34** | 34 | 35 | 34 |
+| opening | **27** | 31 | 32 | 33 |
+
+The ruling chose four seconds on cost and the accuracy at four seconds was never
+measured. At the tail it costs nothing at all; at the opening it costs seven
+captures against twelve seconds.
+
+**The three good captures keep every readable token, and the strings are not
+identical.** Reported precisely rather than as "unchanged": `004844` is identical;
+`004902` drops one junk `E` (`IELE` to `IEL`); `004915` gains one (`QSAETU` to
+`QSSAETU`). Every readable run — `TUES AU G 2 5`, `<BT> BRU C E <AR> NR 2 3 0`,
+`WED AUG 26 W7GB QRU` — comes back character for character.
+
+**The measured cost, not estimated.** A four-second sweep of twenty-five candidates
+is 15.6 ms a candidate, **390 ms once**. Ranking ran once on six of the seven
+captures of 2026-08-28 and twice on one, so on a thirty-second recording that is
+about 1.3 % of one core — not a continuous load, because it is not a continuous
+pass.
+
+### Task 3 — the floor, swept and not shipped
+
+**No floor both silences the phantoms and keeps every anchor, and it is not close.**
+
+The four junk captures score **0.01, 0.33, 5.09 and 5.25**. Eight adjudicated
+readings score below 5.09, and `cw-2026-08-17-134712`, which holds `N4L`, scores
+**0.00**. The whole sweep, as the order requires rather than a chosen value:
+
+| floor | captures silenced | anchors lost | anchors kept |
+|---|---|---|---|
+| 0.00 | 2 | 0 | 15 |
+| 0.25 | 5 | 1 | 14 |
+| 0.50 | 10 | 3 | 12 |
+| 1.00 | 17 | 3 | 12 |
+| 1.50 | 24 | 6 | 9 |
+| 2.00 | 27 | 8 | 7 |
+| 3.00 | 31 | 9 | 6 |
+| 5.00 | 32 | 10 | 5 |
+| 5.50 | 34 | 10 | 5 |
+| 7.50 | 36 | 12 | 3 |
+| 14.00 | 37 | 13 | 2 |
+
+Which anchor each value costs, in the order they fall: 0.25 loses `134712`
+(`N4L`, 0.00); 0.50 adds `031905` (0.27) and `012403` (`KD0UN`, 0.35); 1.50 adds
+`032113` (1.27), `031948` (1.34) and `032129` (1.47); 2.00 adds `032012` (1.71) and
+`031838` (1.73); 3.00 adds `032050` (2.63); 4.00 adds `004507` (the ARRL bulletin,
+3.21); 7.00 adds `003758` (`AA4MP/4 QNIK`, 6.90); 7.50 adds `004915` (7.32); 14.00
+adds `004844` (13.90).
+
+**So no floor ships**, which is what the order said to do in this case. Unit
+1.11.33 found no threshold separated the corpus in the old units; these are new
+units and the finding repeats in them.
+
+### Task 4 — not applicable rather than dropped
+
+The line was to appear "where task 3's floor is holding". No floor holds, so there
+is no state for it to describe, and inventing one would be a sentence about a
+condition that never occurs. **Nothing on the screen moved.**
+
+No decision was recorded under §12.1. Everything above is handed back.
 
 ## 2. What the owner should expect
 
-**Nothing about the application changed.** No engine file, no view, no view model.
-The decoder reads what it read this morning and the terminal behaves as it did. The
-twelve adjudicated anchors are green because nothing went near them.
+**On a frequency where a station is sending, Hamlet lands on it exactly as often as
+it did; on one where nothing is, the screen goes on filling with letters.** That is
+the opposite of what the order asked this section to lead with, and the reason is
+task 2: the ranking is built and switched off, because switching it on loses
+`VA3VRR` and `KD0UN`.
 
-New in the tree is one measurement tool, `tools/Hamlet.PitchRank`, added to
-`Hamlet.sln` beside `Hamlet.ScopeCheck`. It reads WAV files and prints numbers;
-nothing calls it and it keys nothing. `pitch-rank cost` gives the cost table,
-`pitch-rank shipped` the ranking through the shipped path, `pitch-rank pedestal`
-the comparison that produced 1 of 44 against 34 of 44.
+What is now true of the tree:
+
+- `CwPitchRanking` is in the engine with nine tests on it, and the tool calls it
+  rather than keeping a second copy.
+- `CwDecoder.RankThePitch` exists and is **false**. Setting it true is one line and
+  a rebuild, and the two captures above are what it costs.
+- The capture sheet will say a pitch was ranked, and print both scores, on any
+  build where that switch is on.
+- `tools/Hamlet.PitchRank` gained `live`, `floor` and `window`, so every figure
+  above is one command away from being re-measured.
 
 **What will look wrong but is not:**
 
-- **28 engine tests still fail.** That is the stable baseline the order named,
-  unmoved. `CwAcquisitionWindowTests.AFastFistIsReadWithoutARunUp(25, 0.79)` is
-  among them — task 5's test, and task 5 was not reached.
-- **`Directory.Build.props` moved 1.12.5 to 1.12.6** for a unit that ships no
-  product change. HM-DEC-150 counts work units rather than grading them.
-- **The app suite has no result here.** It was still running when the session's
-  background work was stopped, so the order's 509 is unverified rather than
-  confirmed. No app code was touched.
-- **The shipped-path ranking covers 15 captures, not 44.** That run was killed
-  part way. Its 15 are unanimous and the pedestal run that replaced it covers all
-  44, so nothing turns on the missing 29.
-- **The pedestal measurement is one-shot, not streaming.** It reads one window per
-  capture. The two paths are already known to disagree — `CwProbabilisticDecoder`'s
-  own remarks record a case where they track 650 Hz and 500 Hz on the same file —
-  so **34 of 44 is not yet a claim about what the terminal would do.**
-- **`eng-final.txt` and `app-final.txt` sit modified in the working tree.** They
-  came from the previous session's commit `cf81849` and were left alone (§12.6).
+- **The engine baseline is still 28 failing.** `CwEmissionGateTests.NoSpeedIsNamed­WithoutCharactersToNameItFrom` is among them and was among them this morning.
+- **`Report.ToneHz` changed meaning even with the ranking off.** It used to be the
+  tracker's pitch and is now the pitch the mixer was actually run at, which with
+  ranking off is the last measured pitch rather than the tracker's live one. On the
+  batches run it moved nothing; it is a real change and it is named here rather
+  than left to be discovered.
+- **The full engine suite has no result in this report.** It was killed twice
+  mid-run, as it was in unit 1.12.6. What did run: the twelve adjudicated anchors
+  green, the nine new tests green, and a thirty-one test batch over the pitch-hold,
+  emission-gate, phantom-block and tracker-switch cases with one failure, that
+  pre-existing one.
+- **The app suite has no result either**, for the same reason. No app file changed
+  except the sheet's pitch line.
+- **`eng-final.txt` and `app-final.txt` are still modified in the working tree**,
+  from commit `cf81849`, and were left alone (§12.6).
 
 ## 3. What you should see
 
-**Nothing yet. On a frequency where nothing is happening the terminal still fills
-with letters, and on a frequency where a station is sending Hamlet lands on it
-exactly as often as it did**, because no decoder path was changed.
+**With the ranked pitch driving the live decode, the three good captures read what
+they read before and the four phantoms still fill the screen — and two adjudicated
+callsigns disappear. The cost is 390 ms once at tune-in, about 1.3 % of one core
+over a thirty-second recording.**
 
-What the evening bought is the reason the last six units failed, and it is short
-enough to carry: **the decoder's score never measures anything absolute.** It asks
-how much better a two-state reading explains this envelope than noise does, and it
-takes its idea of noise from the same envelope. Give it a bin the receiver's filter
-has already emptied and it finds almost no noise there, so the small wobble left
-over looks like the cleanest keying in the band. That is why every winner sat at
-the very edge of the search and read a page of single dits — those are the quietest
-bins, and a dit is the shortest thing the decoder can spell.
+That is the answer to what this unit was commissioned to ask, and it is why nothing
+reaches the operator tonight.
 
-Stand every bin on the same noise floor before scoring it and the same number
-starts pointing at stations instead: **1 capture in 44 becomes 34**, and what it
-reads at those pitches is `VA3VRR`, `N4L`, `KD0UN`, `HANDLING THIS MESSAGE`,
-`W7GB` and `BRUCE`. Six admission statistics asked whether a bin was a station.
-This asks the same question the seventh did and finally asks it in units that mean
-the same thing at 400 hertz as at 900.
+The useful part is that the two remaining faults are now named and separated, and
+neither is the idea being wrong. **The ranking picks the right bin and cannot pick
+the right pitch inside it** — twenty-five hertz of quantisation is the difference
+between `KD0UN` and `XD0UN`. And **the pedestal needs a band with noise in it**: on
+four seconds of an empty opening there is no floor to stand anything on, the score
+blows up to five and a half million, and because that looks like the healthiest
+signal Hamlet has ever seen, nothing re-ranks it.
+
+Both have obvious shapes of answer and neither is this unit's to choose.
 
 ## 4. What's blocking us
 
 Two rulings, the first blocking the more work.
 
-> **The ranking stands every candidate on one noise floor measured across the band,
-> and the mixdown pitch is the winner of that ranking.**
+> **The ranking chooses the bin and the survey chooses the pitch inside it, and
+> the ranking refuses on a band with no floor to stand on.**
 >
-> The score as it stands cannot compare two pitches, because the noise scale and
-> the keyed level are both taken from the envelope being scored, so the emptiest
-> bin in the band wins and reads a page of dits — measured at 1 of 44 captures, and
-> 15 of 15 through the shipped path where the winner outscored the pitch that
-> actually reads. Combining every candidate's envelope in power with a single
-> band-wide floor takes the same ranking to 34 of 44, and the winners read six
-> adjudicated or corroborated readings.
+> Ranking supplies the mixdown only as a bin; where the survey has a measured pitch
+> inside the winning bin, that pitch is used. Measured: `cw-2026-08-24-012403`'s
+> station sits at 440 and the ranking picks the 450 bin correctly, and the ten
+> hertz costs `DE KD0UN KD0UN K`. Separately, where the band's common floor is too
+> small for the pedestal to mean anything, nothing is ranked and the tracker keeps
+> steering — `cw-2026-08-17-013347`'s opening four seconds score 5,521,967 at a
+> pitch holding nothing.
 >
-> **Rejected: a seventh admission statistic.** This is not one. It changes the
-> units the existing score is measured in; it asks no new question about a bin.
-> **Rejected: shipping it on this measurement alone.** It is one window per
-> capture through the whole-file path, and this repository has already been bitten
-> by the whole-file and streaming paths disagreeing about which note they are on.
-> **What it needs before it drives anything is the same sweep through
-> `CwProbabilisticStream`.**
-> **Rejected: taking the pedestal as obviously right.** The loudest per-bin floor
-> in the band is one choice of common floor and nobody has swept the alternatives.
-> The 34 is evidence the approach works, not that this constant is the best one.
+> **Rejected: shipping the ranking as it stands.** It costs two adjudicated
+> callsigns and the unit's own acceptance forbids it.
+> **Rejected: catching the degenerate case with the collapse test.** Measured
+> impossible in principle: the degenerate pitch scores five and a half million, so
+> it looks healthier than any real station and the collapse test can never fire.
+> **Rejected: a refinement built on the last measured pitch alone.** Built and
+> measured this session; it did not fire on `012403`, so it was removed rather than
+> shipped untested. What it needs is the tracker's live pitch as well, and that is
+> a wider change than a session should make on its own.
+> **What is not yet decided is where the "no floor to stand on" line sits**, and
+> that is a number, which means a sweep and not a judgement.
 
-> **What the pitch sweep is allowed to cost, given that it does not fit as it
-> stands.**
+> **Where in the recording the ranking reads, given that position matters more
+> than length.**
 >
-> A sweep of 25 candidates over the 12-second window is 1240 ms, which is 248 % of
-> one core at the shipped half-second cadence. It fits only by shortening the
-> ranking window, lengthening the cadence, or both: a 4-second window swept every
-> two seconds is about 20 % of one core, which is arithmetic from the measured
-> table rather than a measurement of its own.
+> Ranking the tail of a recording picks the station on 34 of 44 captures at four
+> seconds; ranking the opening four seconds, which is what tune-in sees, picks it
+> on 27. The four-second window was ruled on cost and its accuracy was never
+> measured; at the tail four seconds costs nothing against twelve, and at the
+> opening it costs seven captures.
 >
-> **This is handed back rather than taken** because the ruling in force says in as
-> many words that thinning the band or lengthening the cadence to make the compute
-> fit is a measurement to report and not a silent trade. **A shorter ranking window
-> is not free**: HM-DEC-120's own reasoning is that a short window does not merely
-> read less, it reads confidently and wrongly, and `CwProbabilisticStream`'s refill
-> guard exists for that. Ranking is not emission, so it may be a different case —
-> but that is the argument, and it is the operator's to accept.
-> **Rejected: ranking only at acquisition and then holding.** It would cost far
-> less and it is probably right, but it changes what happens when a second station
-> starts up, and that is a behaviour question rather than a compute one.
+> **Rejected: lengthening the window to twelve seconds.** It recovers most of the
+> gap at the opening, 27 to 33, and costs 1240 ms a sweep against 390 — which is
+> affordable at one sweep on tune-in, so this is a live option rather than a dead
+> one and it is named as such.
+> **Rejected: ranking later than tune-in without a rule for when.** "A few seconds
+> after the operator stops turning the dial" is probably right and is a behaviour
+> nobody has specified.
 
 ### Asks still outstanding
 
-Carried forward per HM-DEC-139 and HM-DEC-140, from unit 1.11.34's list.
+Carried forward per HM-DEC-139 and HM-DEC-140, from unit 1.12.6's list.
 
-1. **The refusal costs reading a station you tune onto** — first raised 2026-08-27.
-   Waiting on: task 5 of this unit, which was not reached. The test is
-   `CwAcquisitionWindowTests.AFastFistIsReadWithoutARunUp(25, 0.79)`, red in the
-   baseline and untouched this session.
-2. **Admission admits a pitch 150 Hz off the station and holds it for forty-five
-   seconds without a refresh** — the held peak decayed at exactly 1 dB per second
-   across both gaps, so it was never refreshed at all. Waiting on: Tim's ruling.
-3. **The `reading` line's new span wording needs approval.** Waiting on: Tim's
-   ruling.
-4. **`DECISIONS.md` has no record for HM-DEC-096–133, 136, 141 or 150.** Waiting
-   on: Tim's ruling on whether these are written retrospectively.
-5. **Two stations closer than 125 Hz are not named** — the operator's item five.
-   Waiting on: Tim's ruling.
-6. **HM-OPEN-057** (2026-08-22) and **HM-OPEN-007** (2026-08-14). Both open, both
-   owned by Tim.
-7. **Nothing checks that deleting a surface is not deleting a capability** — the
-   operator has since found the favourites list gone. Parked, and named as the next
-   unit unless he says otherwise.
-8. **A capture sheet carries a score of −68562.4** (`cw-2026-08-28-005158`). Raised
-   here for the first time. Waiting on: Tim's ruling on whether that is a display
-   defect worth a unit. It is a number the operator can read and nothing beside it
-   says what it means.
+1. **`DRIFT` had no count to carry** — unit 1.12.6's block carried none. This
+   report starts the chain at 1, on its own `ADVANCED: no`.
+2. **The ranking's ten misses of forty-four are unexamined** — which captures, and
+   whether they share a shape. Still unexamined; this unit measured the window
+   instead.
+3. **Admission admits a pitch 150 Hz off the station and holds it for forty-five
+   seconds without a refresh**, the held peak decaying at exactly 1 dB per second
+   because nothing refreshed it.
+4. **The `reading` line's span wording needs approval.**
+5. **`DECISIONS.md` has no record for HM-DEC-096–133, 136, 141 or 150.**
+6. **Two stations closer than 125 Hz are not named.**
+7. **HM-OPEN-057** (2026-08-22) and **HM-OPEN-007** (2026-08-14).
+8. **Nothing checks that deleting a surface is not deleting a capability** — the
+   operator has since found the favourites list gone. **The next unit unless he
+   says otherwise.**
+9. **A capture sheet carries a score of −68562.4** (`cw-2026-08-28-005158`), first
+   raised in unit 1.12.6 and unruled. A number the operator can read with nothing
+   beside it saying what it means.
+10. **The full engine suite has now been killed mid-run in two consecutive
+    sessions**, both times at around twenty minutes. Acceptance is being assembled
+    from filtered batches, which is slower and leaves gaps. Raised as a working
+    condition rather than a code fault.
