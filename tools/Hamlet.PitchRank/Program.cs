@@ -96,7 +96,7 @@ internal static class Program
                 return 0;
 
             case "score":
-                ScoreSweep();
+                ScoreSweep(args.Length > 1 && args[1] == "peak");
 
                 return 0;
 
@@ -1097,8 +1097,16 @@ internal static class Program
     /// Unit 045 tasks 4 and 6 together: the score per capture, and the fit figure
     /// beside it so the correlation between the two can be read off.
     /// </remarks>
-    private static void ScoreSweep()
+    /// <param name="usePeak">
+    /// Feed the decoder <see cref="CwSpectralPeak"/>'s answer instead of letting
+    /// the tone tracker find its own (work instruction 050, task 3).
+    /// </param>
+    private static void ScoreSweep(bool usePeak = false)
     {
+        Console.WriteLine(usePeak
+            ? "PITCH: CwSpectralPeak, asserted"
+            : "PITCH: the tone tracker, free-running");
+
         Console.WriteLine(
             "capture	truth	yield	precision	correct	subs	ins	dels	fit	read");
 
@@ -1119,6 +1127,13 @@ internal static class Program
 
             var audio = WavAudio.Read(path);
             var decoder = new CwDecoder(audio.SampleRate, 600);
+
+            if (usePeak
+                && CwSpectralPeak.Find(audio.Samples, audio.SampleRate) is { } peak)
+            {
+                decoder.AssertAt(peak);
+            }
+
             var text = new System.Text.StringBuilder();
 
             decoder.CharacterSettled += c => text.Append(c.Text);

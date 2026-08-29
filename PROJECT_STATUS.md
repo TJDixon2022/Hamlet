@@ -4,8 +4,8 @@ PHASE: 12
 TASK: 3 of 6
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-29T18:10:21-04:00
-NOTE: FFT peak estimator built; tone table sweeping 47 captures for tracker against peak against keyed bin
+UPDATED: 2026-08-29T18:34:57-04:00
+NOTE: FFT peak wired in — corpus precision 0.766 to 0.858, past the 0.85 goal; silence lock green; ratchets running
 
 ---
 

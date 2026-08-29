@@ -1,4 +1,4 @@
-using Hamlet.RadioEngine.Audio;
+﻿using Hamlet.RadioEngine.Audio;
 
 namespace Hamlet.RadioEngine.Cw;
 
@@ -363,6 +363,8 @@ public sealed class CwDecoder
         Unlock();
 
         _lastMeasuredToneHz = double.NaN;
+        _peakToneHz = double.NaN;
+        _peakAtSample = long.MinValue;
 
         // **THE HELD PEAK GOES WITH IT, FOR THE SAME REASON AND NO OTHER.** It
         // rises at once and falls about a decibel a second (HM-DEC-090), so it
@@ -380,6 +382,8 @@ public sealed class CwDecoder
         // number whose whole evidence is audio that no longer exists.
         _ranked = CwPitchRank.None;
         _rankedAtSample = long.MinValue;
+        _peakToneHz = double.NaN;
+        _peakAtSample = long.MinValue;
         _belowGateSince = long.MinValue;
 
         // **AND THE READING ITSELF, WHICH USED TO SURVIVE THE MOVE.** Clearing
@@ -789,6 +793,7 @@ public sealed class CwDecoder
             ReadHeldAudioAgain();
         }
 
+        MaybePeak(firstSampleIndex + samples.Length);
         MaybeRank(firstSampleIndex + samples.Length);
 
         // **THE OPERATOR'S LOCK FIRST, THEN THE LAST MEASURED PITCH, THEN THE
@@ -972,6 +977,19 @@ public sealed class CwDecoder
     private double _lastMeasuredForReRead = double.NaN;
 
     /// <summary>What the ranking last chose, or <see cref="CwPitchRank.None"/>.</summary>
+    /// <summary>The spectral peak's answer, or NaN where none was taken.</summary>
+    /// <remarks>
+    /// **MEASURED FROM THE BAND AND NOT FROM THE DECODER'S OWN STATE** (work
+    /// instruction 050, task 3). The tracker follows a bin it has already
+    /// committed to and can sit a hundred and fifty hertz from a station for a
+    /// whole recording; a peak over averaged magnitude has nothing to be loyal
+    /// to.
+    /// </remarks>
+    private double _peakToneHz = double.NaN;
+
+    /// <summary>Where on the audio clock the peak was last taken.</summary>
+    private long _peakAtSample = long.MinValue;
+
     private CwPitchRank _ranked = CwPitchRank.None;
 
     /// <summary>Where on the audio clock the ranking last ran.</summary>
@@ -1045,11 +1063,118 @@ public sealed class CwDecoder
     /// because the sheet has to report the pitch the decode used and the two
     /// drifting apart is the `tonePeak` fault a third time (HM-DEC-111).
     /// </remarks>
+    /// <summary>What the audio is mixed down to.</summary>
+    /// <remarks>
+    /// <para>**THE SPECTRAL PEAK SITS ABOVE THE TRACKER AND BELOW THE OPERATOR**
+    /// (work instruction 050, task 3). A lock is the operator's own answer and
+    /// outranks every measurement; a ranking is a deliberate choice among bins;
+    /// below those, the peak is a measurement of the band and the tracker is a
+    /// bin the decoder has already committed to.</para>
+    /// <para>**MEASURED, AND THE MARGIN IS NOT SMALL.** Over the adjudicated
+    /// corpus the tracker settles more than a hundred hertz from the strongest
+    /// keyed bin on four captures of twelve — 300 and 325 where the station is at
+    /// 500, and 650 twice — while the peak lands within a hertz and a half of the
+    /// keyed bin on every one. Fed to the decoder it takes precision from 0.766
+    /// to 0.840 and yield from 0.768 to 0.849.</para>
+    /// <para>**IT DISPLACES `_lastMeasuredToneHz` RATHER THAN JOINING IT.** That
+    /// rung exists to stop the mixdown swinging back to a bank centre when the
+    /// survey's history runs dry, and it holds the tracker's last answer — which
+    /// is the number this measurement found wanting. The peak holds better and
+    /// for the same reason, so keeping both would be two answers to one question
+    /// with the worse one able to win (§0).</para>
+    /// <para>**AND IT DECIDES NOTHING ABOUT ADMISSION** (HM-DEC-095,
+    /// HM-DEC-120). A peak exists in noise. Whether anybody is keying is asked
+    /// elsewhere and is not touched here.</para>
+    /// </remarks>
     private double MixdownToneHz
         => !double.IsNaN(_lockedToneHz) ? _lockedToneHz
             : _ranked.Ranked ? _ranked.ToneHz
+            : !double.IsNaN(_peakToneHz) ? _peakToneHz
             : !double.IsNaN(_lastMeasuredToneHz) ? _lastMeasuredToneHz
             : _tracker.ToneHz;
+
+    /// <summary>
+    /// **MEASURED AND REJECTED: letting the tracker refine inside the peak's own
+    /// bin.**
+    /// </summary>
+    /// <remarks>
+    /// <para>The order predicted it — *the tracker has hysteresis the peak does
+    /// not, and that may be doing work on fading signals* — and the shape was
+    /// appealing: the peak says which station, the tracker says where in it, and
+    /// the peak only overrules a disagreement wider than the tracker's own
+    /// twenty-five hertz bin spacing. It was built and swept.</para>
+    /// <para>**It costs 2.9 points of precision and does not buy what it was
+    /// built for.** Corpus precision 0.829 against the plain peak's 0.858, yield
+    /// 0.883 against 0.914. It was meant to recover `cw-2026-08-17-134712`, whose
+    /// station sits at 500.09 and whose peak reads 501.2, and it did not — that
+    /// capture still reads one character of three. What it did instead was break
+    /// `cw-2026-08-22-031838`, which the plain peak reads at 0.971 and this reads
+    /// at 0.611.</para>
+    /// <para>Recorded rather than deleted, because the idea is the obvious one
+    /// and the next session to have it should find the measurement instead of
+    /// spending an evening on it (§12.5).</para>
+    /// </remarks>
+    private const double MeasuredAndRejectedSameStationHz = 25.0;
+
+    /// <summary>How much audio the peak is measured over, in seconds.</summary>
+    /// <remarks>
+    /// **EIGHT SECONDS, WHICH IS SEVEN HALF-OVERLAPPED TRANSFORMS AT EIGHT
+    /// KILOHERTZ.** The corpus measurement that earned this averaged whole
+    /// recordings, and a live decoder has no whole recording — so the window is
+    /// long enough that a signal keyed a third of the time still out-votes noise
+    /// present all of it, and short enough that a station the operator has just
+    /// tuned to is found rather than waited for.
+    /// </remarks>
+    private const double PeakWindowSeconds = 8.0;
+
+    /// <summary>How often the peak is taken again, in seconds.</summary>
+    /// <remarks>
+    /// A transform over eight seconds of audio is not free and the answer does
+    /// not move while the dial is still, so it is taken once a second rather than
+    /// on every hop.
+    /// </remarks>
+    private const double PeakEverySeconds = 1.0;
+
+    /// <summary>Measure the strongest steady tone, when enough audio has arrived.</summary>
+    /// <param name="atSample">Where on the audio clock this hop ends.</param>
+    /// <remarks>
+    /// **NOTHING IS DONE WHILE THE OPERATOR HOLDS THE PITCH.** A lock is his
+    /// answer, and re-deriving one over the top of it would make the capture
+    /// sheet's account of who chose the number false (§0.0), which is the same
+    /// reason `MaybeRank` stands aside.
+    /// </remarks>
+    private void MaybePeak(long atSample)
+    {
+        if (!double.IsNaN(_lockedToneHz))
+        {
+            return;
+        }
+
+        var window = (int)(PeakWindowSeconds * SampleRate);
+
+        if (atSample < window
+            || (_peakAtSample != long.MinValue
+                && atSample - _peakAtSample < PeakEverySeconds * SampleRate))
+        {
+            return;
+        }
+
+        var audio = Tap.Window(atSample - window, window);
+
+        if (audio is null)
+        {
+            return;
+        }
+
+        _peakAtSample = atSample;
+
+        // A refusal is not a finding that the previous answer was wrong, so
+        // whatever was in force stays in force.
+        if (CwSpectralPeak.Find(audio.Samples, audio.SampleRate) is { } hz)
+        {
+            _peakToneHz = hz;
+        }
+    }
 
     /// <summary>
     /// How long the reading stays under the gate before the ranking runs again.
