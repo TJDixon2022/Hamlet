@@ -90,6 +90,11 @@ internal static class Program
 
                 return 0;
 
+            case "peakcost":
+                PeakCost();
+
+                return 0;
+
             case "tone":
                 ToneTable(args.Length > 1 ? args[1] : null);
 
@@ -1694,6 +1699,45 @@ internal static class Program
         var flat = text.Replace('\n', ' ').Replace('\r', ' ').Trim();
 
         return flat;
+    }
+
+    /// <summary>What one spectral peak measurement costs, in milliseconds.</summary>
+    /// <remarks>
+    /// **THE DECODER RUNS ON THE AUDIO THREAD** (§8), and a decoder that stutters
+    /// to take a measurement has traded the thing for the record of it. The peak
+    /// is taken once a second over eight seconds of audio, which is seven
+    /// half-overlapped transforms, and this says whether that fits inside a
+    /// five-millisecond hop.
+    /// </remarks>
+    private static void PeakCost()
+    {
+        var rate = 8_000;
+        var samples = new float[rate * 8];
+        var random = new Random(20260829);
+
+        for (var i = 0; i < samples.Length; i++)
+        {
+            samples[i] = (float)(Math.Sin(2 * Math.PI * 500 * i / rate) * 0.4
+                                 + ((random.NextDouble() * 2) - 1) * 0.1);
+        }
+
+        // Warm the code paths so the first measurement is not the jitter.
+        CwSpectralPeak.Find(samples, rate);
+
+        var watch = System.Diagnostics.Stopwatch.StartNew();
+        const int Runs = 20;
+
+        for (var i = 0; i < Runs; i++)
+        {
+            CwSpectralPeak.Find(samples, rate);
+        }
+
+        watch.Stop();
+
+        Console.WriteLine(
+            "one peak over 8 s of 8 kHz audio: {0:0.00} ms, against a 5 ms hop "
+            + "and one measurement a second",
+            watch.Elapsed.TotalMilliseconds / Runs);
     }
 
     /// <summary>

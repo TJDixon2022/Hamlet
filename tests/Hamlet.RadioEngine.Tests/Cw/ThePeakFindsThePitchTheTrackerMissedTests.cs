@@ -1,4 +1,4 @@
-using Hamlet.RadioEngine.Audio;
+﻿using Hamlet.RadioEngine.Audio;
 using Hamlet.RadioEngine.Cw;
 using Hamlet.RadioEngine.Training;
 using Xunit;
@@ -80,7 +80,8 @@ public sealed class ThePeakFindsThePitchTheTrackerMissedTests
     [InlineData("captured/unadjudicated/cw-2026-08-22-032129.wav")]
     public void ThePeakAgreesWithTheKeyedBin(string relative)
     {
-        var audio = WavAudio.Read($"tests/fixtures/cw/{relative}");
+        var audio = WavAudio.Read(
+            Path.Combine(CwFixtures.Folder, relative.Replace('/', Path.DirectorySeparatorChar)));
 
         var peak = CwSpectralPeak.Find(audio.Samples, audio.SampleRate);
         var keyed = KeyingEnvelope.Best(audio);

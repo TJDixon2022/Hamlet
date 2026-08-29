@@ -4,8 +4,8 @@ PHASE: 12
 TASK: 5 of 6
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-29T18:57:08-04:00
-NOTE: Engine suite batched — six folders green, no crash; Cw batch is where the host dies, and it dies intermittently
+UPDATED: 2026-08-29T18:59:05-04:00
+NOTE: Waiting on the last four engine batches and a second detailed ratchet pass; report is written and will be amended with both
 
 ---
 
