@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
+STATE: COMPLETED
 TASK: 3 of 8
-BALL: code
-NEXT_PASTE: none
-UPDATED: 2026-08-29T14:17:45-04:00
-NOTE: at the derived alpha of 0.45 the separation goes negative; running the decade points to get the shape
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
+UPDATED: 2026-08-29T14:19:10-04:00
+NOTE: over-count is 2.22 not 89, and evidence outweighs the duration prior two thousand to one; tempering cannot fix an unbounded term
 
 ---
 

@@ -1,316 +1,227 @@
-UNIT:       048 — stopped at task 4 of 8 — 2026-08-29 12:10
-PHASE GOAL: Readable CW on the operator's screen — precision before yield: never a wrong character on screen, and as much of the traffic as that allows.
-UNIT GOAL:  Rebuild the lattice so a real posterior can be computed, and move the decoder's confidence onto it.
-ADVANCED:   yes, partly — the lattice is rebuilt and precision rose 0.761 to 0.766 with substitutions 61 to 58; the posterior it made possible is not discriminative and no gate moved onto it.
-NUMBER:     precision 0.761 -> 0.766, yield 0.763 -> 0.768, substitutions 61 -> 58.
-DRIFT:      0 consecutive units without advance  (was 2)
+UNIT:       049 — stopped at task 3 of 8 — 2026-08-29 14:19
+PHASE GOAL: 85% correct CW, precision before yield — never a wrong character on screen, and as much of the traffic as that allows.
+UNIT GOAL:  Find and remove the overconfidence in the evidence model, so a confidence figure can gate emission.
+ADVANCED:   no — precision is unchanged at 0.766 and the distance to 0.85 is still 8.4 points; what the unit produced is two measurements that redirect the work.
+NUMBER:     precision 0.766, yield 0.768, substitutions 58 — unchanged. **8.4 points short of 0.85.**
+DRIFT:      1 consecutive unit without advance  (was 0)
 
 ## 1. What Claude did
 
-**Stopped at task 4 of 8.** Tasks 1, 2 and 3 landed. **Task 4 was measured and
-ships nothing.** Tasks 5, 6, 7 and 8 were not started.
-
-**Why stopping here rather than continuing:** tasks 5, 6 and 7 each require
-"precision must not fall", measured against the gate task 4 would have installed.
-**No gate was installed**, because the posterior does not separate right
-characters from wrong ones well enough to gate on. Continuing would be measuring
-three large changes against the metric this unit set out to replace, which is the
-position units 044 to 046 were already stuck in. **That is a decision the finding
-forces, and it is Tim's to overturn.**
+**Stopped at task 3 of 8.** Tasks 1 and 2 landed. **Task 3 is built and its sweep
+was cut short** — two of thirteen points, then a reduced decade sweep still
+running, amended below. **Tasks 4 through 8 were not started**, and task 4 is
+explicitly conditional on task 3 finding an α where the posterior discriminates
+beyond the noise.
 
 Development computer, prompt claimed `PROJECT: Hamlet`, branch `main`, version
 `1.12.6` unchanged. **Nothing here is evidence about the radio.** The eight
-captures of 2026-08-29 are still not in the tree — a sixth consecutive unit.
+captures of 2026-08-29 are still not in the tree — a seventh consecutive unit.
 
-**And unit 047's owed regression landed during this one: 28 failing of 1963 run,
-the failing set byte-identical to unit 046's, and then the host aborted.** So 047
-introduced no regression, and its report's unreplaced amendment line was the
-honest record of a run the HM-OPEN-061 crash ended.
+### Task 1 — the baseline, and both of the order's numbers are wrong
 
-### Task 1 — the baseline and the lattice
+**Corpus: yield 0.768, precision 0.766** — confirmed, and **8.4 points short of
+0.85.** App 519 passing, 0 failing.
 
-**App 519 passing, 0 failing. Corpus yield 0.763, precision 0.761** over 384
-adjudicated characters — both confirmed.
+**The over-counting is 2.22, not about 89.**
 
-**The lattice, as it actually was:**
+The order's arithmetic assumes the evidence sum runs over raw samples: *"at 8 kHz
+that span holds 400 samples but only about 4.5 independent degrees of freedom …
+on the order of a hundred times too peaked."* **It does not run over samples.**
+`Envelope` emits one value per hop (`:915`, `step = sampleRate × 5 ms`), and
+`LogLikelihoods` produces one key-down and one key-up term per envelope entry
+(`:996`). **A 50 ms dit contributes ten terms, not four hundred.**
 
-- **State**: hop only. `best[i]` is the score of the best path whose last segment
-  ends at `i`, with `kindAt[i]` and `wasDown[i]` recording that segment.
-- **Transitions**: from `j = i − span`, scored
-  `best[j] + evidence − ½(log(span/want)/LengthToleranceShare)²`, `:1462–1472`.
-- **Five kinds** (`:525`): dit and dah key-down at 1 and 3 units, and gaps at 1, 3
-  and 7. `ShortestShare` 0.45, `LongestShare` 2.2, `LengthToleranceShare` 0.35.
-- **`second[]`** kept the runner-up per hop (`:1475–1484`) and `MarginLlr` is
-  `best[at] − second[at]`.
-- **The speed grid** ran 8 to 40 WPM keeping only `bestScore` (`:794–805`).
-- **Numerical guards**: none in the path scores. `LogLikelihoods` guards a NaN
-  sigma and floors the envelope at 1e-12; nothing bounds the accumulated score.
-
-**And `wasDown[j]` was read in exactly one place — the alternation check at
-`:1458`** — which is what made the restructure tractable.
-
-### Task 2 — the lattice indexed by `(hop, kind)`
-
-`best`, `second`, `fromHop` and a new `fromKind` are now `[hop, kind]`. The
-alternation rule is checked **against the state** rather than against whichever
-path won at `j`. Five kinds, so five times the state and the same enumeration.
-The duration densities and the evidence term are untouched, as the task requires.
-
-**Measured over the scored corpus, before and after:**
-
-| | before | after |
-|---|---|---|
-| yield | 0.763 | **0.768** |
-| precision | 0.761 | **0.766** |
-| substitutions | 61 | **58** |
-| deletions | 30 | 31 |
-
-**Precision rose, so the paths the old search discarded were not doing useful work
-by accident.** The gains land where the reading was already nearly right:
-`cw-2026-08-18-004507` from 0.930 to 0.947, `cw-2026-08-22-032113` from 0.821 to
-0.857 with its deletions going to nought.
-
-**And the transcripts read visibly better in places.** `PREDICTED 10.7` where there
-was `DICTED 10.7` behind blocks; `LINKS TO A R T I C L E S O R OTHER WEBSITES
-MENTI`; `IULLETIN CAN BE FO TA ND IN TELEWRITTER`. Those are the recovered paths.
-
-`TheSilencePropertyIsLockedTests` green and unmodified; twelve adjudicated anchors
-green. **And two speed tests outside the anchors went red on this change** — see
-the amendment in section 2, which is where that was found.
-
-### Task 3 — the posterior
-
-Forward–backward over the new lattice, in `CwProbabilisticDecoder.Posterior.cs`.
-Computed once for the winning speed rather than per hypothesis, because the
-backward pass is O(hops × kinds² × span) and the grid runs thirty-three of them.
-
-**Log domain throughout, and nothing exponentiates a raw score.** `LogSum` factors
-out the larger term so `Math.Exp` only ever sees a non-positive number, and a gap
-past −700 is dropped, which is exact rather than approximate. **Thirteen tests**,
-including `1e300` in either argument, both infinities, digital silence, and every
-posterior on three real captures asserted to lie in [0,1].
-
-**Where no path reaches the end the answer is null**, not a normalisation by
-nothing.
-
-### Task 4 — the gate, and it does not open
-
-**The correlation, beside the five that came before:**
-
-| quantity | correlation with per-character correctness |
+| | |
 |---|---|
-| `MarginLlr` | −0.341 |
-| `MarginShareForRecord` | −0.286 |
-| `SpanMarginForRecord` | −0.246 |
-| **`Posterior`** | **+0.050** |
+| terms summed per second | **200** |
+| independent degrees of freedom per second, at 45 Hz | **90** |
+| over-counting ratio | **2.22** |
+| implied α | **0.45** |
 
-**It is the first of six that is not negative, and that is the whole of the good
-news.** On 301 characters the standard error is about 0.058, **so +0.050 is
-positive in sign and indistinguishable from zero in magnitude.** The medians say
-it plainly: **0.8433 on right characters against 0.8382 on wrong.**
+And it is **constant** — 2.22 for a dit and a dah alike at 20, 24 and 30 words a
+minute, because both the term count and the degrees of freedom scale with span.
 
-**The threshold sweep is the useful form of the same fact:**
+**The second number is much larger, and it is the one that matters.**
 
-| threshold | kept | blocked | yield | precision |
-|---|---|---|---|---|
-| none | 301 | 0 | 0.752 | 0.804 |
-| 0.50 | 284 | 17 | 0.724 | **0.820** |
-| 0.70 | 197 | 104 | 0.503 | **0.822** |
-| 0.80 | 164 | 137 | 0.416 | 0.817 |
-| 0.85 | 147 | 154 | 0.366 | 0.803 |
-| 0.90 | 121 | 180 | 0.292 | 0.777 |
-| 0.95 | 99 | 202 | 0.233 | 0.758 |
-| 0.99 | 71 | 230 | 0.149 | 0.676 |
-| 0.999 | 37 | 264 | 0.053 | 0.459 |
+Measured across the twelve scored captures, the evidence term against the duration
+penalty a span pays for being a fifth off its expected length:
 
-*(over the 301 characters inside an aligned truth span, which is a smaller set
-than the 384 the corpus score uses — the two numbers are not the same measurement
-and are not compared.)*
+| capture | evidence per element | ratio to the 0.136 penalty |
+|---|---|---|
+| `cw-2026-08-17-134712` | 4.9 | 36 |
+| `cw-2026-08-22-031838` | 70.0 | 516 |
+| `cw-2026-08-24-012403` | 77.4 | 570 |
+| `cw-2026-08-18-004507` | 203.0 | 1 496 |
+| `cw-2026-08-22-032012` | 290.5 | 2 141 |
+| `cw-2026-08-22-032050` | 346.4 | 2 553 |
+| `cw-2026-08-22-032113` | 467.6 | 3 446 |
+| `cw-2026-08-17-013347` | **311 442 642** | **2 295 451 491** |
 
-**Precision peaks at 0.822 and then falls.** Above about 0.85 the threshold blocks
-correct characters faster than wrong ones, which is what a correlation of +0.05
-looks like from the other side. **The best trade on the whole curve is 1.6 points
-of precision for 2.8 points of yield, against a precision target of 0.99.**
+**The duration prior is doing essentially nothing.** The decoder fits the envelope
+and all but ignores how implausible the resulting element lengths are. And
+`013347`'s figure is the unbounded loudness term surfacing a seventh time — the
+same capture that produced 17.2 million in an earlier unit.
 
-**So no gate moved onto it.** Picking 0.50 off a plateau that sits inside the noise
-is fitting noise, which is the failure unit 045 avoided on the filter width and
-the standard this project holds.
+**The two findings are in tension, and that is the point.** A 2.22-fold
+over-count cannot produce a two-thousand-fold imbalance. **The over-count is not
+what makes the model overconfident; the evidence term's own magnitude is.** So the
+α the order's reasoning derives is about forty times too large to do the job, and
+the sweep has to run decades below it.
+
+### Task 2 — the speed pins, and the problem was worse than reported
+
+Tim's ruling: *the provenance claim is what broke, so fix the claim.*
+
+**Re-measured against `cwdecoder.py` as it stands, the reference disagrees with all
+four pins, not the two unit 048 turned red:**
+
+| capture | pinned as "the reference's answer" | what the reference says now |
+|---|---|---|
+| `cw-2026-08-18-004507` | 18 | **6.7** |
+| `cw-2026-08-18-003016` | 22 | **20.9** |
+| `cw-2026-08-18-003126` | 28 | **refuses — no clock fits** |
+| `cw-2026-08-18-003758` | 16 | **21.2** |
+
+**Two of them are out by more than ten words a minute**, and `004507` — which was
+*green* — is out by eleven. Nothing noticed because three of four were green
+against a decoder that has since changed, so the pins and their stated source had
+drifted apart silently.
+
+**The assertion is now what the test actually proves**: a speed is found without
+being told one, and it is not sitting on the edge of its own search, because an
+estimator at its boundary is reporting failure rather than a value. Both the
+reference's answer and Hamlet's are printed for comparison and **neither is
+asserted as truth** — none of these four captures carries an adjudicated speed.
+
+**That clears unit 048's two red tests without fitting anything to the change and
+without touching the decoder.** All four green.
+
+### Task 3 — the temperature, built and partly swept
+
+The exponent multiplies the **whole** path score, so the Viterbi argmax cannot
+move: scaling every path by one positive constant leaves the largest largest.
+**The decode is untouched and only the normalisation changes**, which is what makes
+this safe to sweep. It is threaded from `CwDecoder.PosteriorTemperature` through
+the stream so the sweep runs inside the decoder the operator uses, and it **ships
+at 1.0** — no temperature at all.
+
+**Two points landed before the run was cut short:**
+
+| α | median right | median wrong | separation | correlation | spread |
+|---|---|---|---|---|---|
+| 1.0 | 0.8433 | 0.8382 | **+0.0051** | **+0.050** | 0.478 |
+| **0.45** | 0.6338 | 0.6408 | **−0.0070** | **−0.030** | 0.580 |
+
+**At the α the over-count implies, the separation goes negative.** The
+distribution does flatten — the tenth-to-ninetieth spread widens 0.478 to 0.580 —
+**and the discrimination gets worse rather than better.** That is consistent with
+task 1: tempering by 0.45 addresses a 2.22-fold problem that is not the one in the
+way.
+
+**The standard error on 301 characters is about 0.058**, so both +0.050 and −0.030
+sit inside the noise. Neither is a result on its own; the shape of the curve across
+decades is what would be, and that is the amendment below.
 
 No decision was recorded under §12.1.
 
 ## 2. What the owner should expect
 
-**The decoder reads slightly better than it did and nothing on screen behaves
-differently.** Precision 0.761 to 0.766, yield 0.763 to 0.768, three fewer wrong
-letters across the corpus. A frequency with nothing on it still shows nothing —
-the silence lock is green and untouched.
+**Nothing on screen has changed and precision is where it was: 0.766, with 8.4
+points to go.** No character moved, by construction — the temperature cannot alter
+what the decoder reads.
 
 What is now true of the tree:
 
-- The lattice is indexed by `(hop, kind)`. **A class of legal path that the search
-  could not previously reach is now reachable**, and that is where the gain came
-  from.
-- A real posterior exists and is carried on every character. **Nothing consumes
-  it.**
-- `tools/Hamlet.PitchRank confidence` prints the correlation table and the
-  threshold sweep in one command.
+- `CwDecoder.PosteriorTemperature` exists, ships at 1.0, and cannot change a
+  character.
+- `tools/Hamlet.PitchRank` gained `magnitudes` and `temperature`.
+- The four speed pins say what they are, and unit 048's two red tests are green.
 
 **What will look wrong but is not:**
 
-- **The posterior is computed and ignored.** That is task 4's measured outcome,
-  not an omission.
-- **`+0.050` is reported as a pass in sign and a failure in substance.** The order
-  says continue if it correlates positively. It does, barely — and the sweep is
-  what decides whether that is usable, and it is not.
-- **The engine regression's result is not in this report yet**; it is amended
-  below. The app suite is 519 passing, 0 failing, and every targeted batch was
-  green.
+- **The unit stopped at task 3 of 8.** Task 4 is conditional on task 3's gate and
+  the sweep has not finished.
+- **`Temperature` ships at 1.0 having been built to be changed.** Nothing has
+  earned a different value yet.
+- **The engine suite has no result in this report**; it is amended below with the
+  temperature sweep. The app suite is 519 passing, 0 failing, and the targeted
+  batches were green.
 
-### Amendment — the engine regression, and two tests this unit turned red
+### Amendment — the decade sweep and the engine suite
 
-**The run was stopped before finishing, and it got far enough to show something
-this report had not.** Eighteen failures were seen against unit 046's twenty-eight
-before it ended. **Four of those eighteen are not in that set**, and running them
-alone separates them:
-
-| test | alone | verdict |
-|---|---|---|
-| `CwTransmitTests.TheStopFrameIsCommand17CarryingFf` | **passes** | intermittent |
-| `ModeFollowTests.TheWriteIsCommand26AndTheRadioIsAskedWhatItDid` | **passes** | intermittent |
-| `TheSpeedIsFoundAndNotTold("…003016", 22)` | **fails, 28** | **this unit** |
-| `TheSpeedIsFoundAndNotTold("…003126", 28)` | **fails, 24** | **this unit** |
-
-**So the lattice change moved the winning speed on two captures**, and section 1
-should have said so. It did not, because the full suite had not finished when the
-report was written — the targeted batches that had run were green and I reported
-those. **The regression check was still pending and the report claimed less
-uncertainty than it had.**
-
-**What the two are worth, measured rather than assumed.** Both captures are outside
-the twelve adjudicated readings, so neither affects the corpus score, which rose.
-The tests pin *"the speed the reference settled on"* — and **the reference in this
-tree does not say those numbers**:
-
-| capture | test pins | the ported reference says | Hamlet before | Hamlet now |
-|---|---|---|---|---|
-| `003016` | 22 | **20.9** | 22 | 28 |
-| `003126` | 28 | **refuses — no clock fits** | 28 | 24 |
-| `003758` | 16 | **21.2** | red already | 22 |
-
-**Two things follow and neither is comfortable.** On `003016` this unit moved
-Hamlet from about the reference's answer to six words a minute above it, which is
-a real cost. And **the pins' stated provenance does not hold**: they claim to come
-from the reference and the reference in this tree gives 20.9, a refusal, and 21.2.
-On `003758`, already red, Hamlet is now *closer* to the reference than the pin is.
-
-**Nothing was changed on this account.** Re-expressing the pins to match would be
-fitting the tests to the change, and the pins are separately in question. **Both
-belong in section 4 rather than in a commit**, and they are added there.
+**Pending.** Replaced when they land. **If this is not replaced, they did not
+finish** — the HM-OPEN-061 host crash has ended four full engine runs, and an
+unreplaced line is the honest record rather than an omission.
 
 ## 3. What you should see
 
-**The architectural fix worked and the thing it was for did not.**
+**Two measurements, and together they redirect the work.**
 
-Indexing the lattice by `(hop, kind)` recovered paths the search was discarding
-for a reason that was not part of the model, and **precision rose 0.761 to 0.766
-with substitutions falling 61 to 58.** That is a real gain from a change made for
-a different reason entirely, and it settles the question units 044 and 046 left
-open: those discarded paths were not helping by accident.
+**The evidence term is over-counted 2.22-fold, not 89-fold**, because it sums per
+five-millisecond hop and not per sample. That correction matters because the whole
+plan rested on the larger figure: a temperature derived from 2.22 is α ≈ 0.45, and
+**at 0.45 the posterior's discrimination goes slightly negative.**
 
-**But the posterior it made possible does not separate right from wrong.**
-+0.050 on 301 characters, medians 0.8433 against 0.8382, and a threshold sweep
-that peaks at 0.822 precision and then goes backwards.
+**And the evidence term outweighs the duration prior by about two thousand to
+one.** A span a fifth off its expected length pays 0.136 nats; the evidence for one
+element runs 70 to 470. **So the decoder is not weighing "is this a plausible dit"
+against "does the envelope look like a dit" — it is answering the second question
+and rounding the first to nothing.**
 
-**Why, and this is the part worth carrying forward:** the posterior at the winning
-path's states is **near one almost everywhere** — median 0.84 on right and wrong
-alike. The lattice is so dominated by a single path that the marginal barely
-spreads, so the normalisation that was supposed to make the quantity meaningful
-instead makes it uniform. **The level term does cancel, exactly as intended. What
-is left over is not informative.**
+That is the overconfidence, and it is not a frame-independence problem. **It is
+that the evidence term is unbounded** — the same `−e²/2σ²` that has now produced
+17.2 million, 5,521,967, quadrillions, and 3.6 × 10⁷ per hop on `013347` in this
+unit's own table. Tempering divides everything by a constant and cannot fix a term
+whose scale varies by six orders of magnitude between captures.
 
-**That is six quantities now, and the sixth fails differently from the first
-five.** The five were anti-correlated because they carried loudness. This one is
-uncorrelated because the model is too confident. **A decoder cannot measure its own
-doubt while its evidence model admits only one plausible reading** — and that
-points at the evidence term, not at the search, which is where tasks 5 and 6 were
-already aimed.
+**Task 5 is the one this points at**, and it was written to be measured separately:
+scale the evidence term alone against the duration penalty. On these numbers that
+is not a tuning exercise — the prior is currently switched off in all but name.
 
 ## 4. What's blocking us
 
-One ruling, and it decides the rest of this unit.
+One ruling, and the unit's remaining tasks hang on it.
 
-> **The confidence work moves to the evidence model, or the precision target is
-> pursued another way.**
+> **The evidence term is bounded before any confidence is read off it, and the
+> duration prior is given weight the same measurement decides.**
 >
-> Six quantities have been measured against per-character correctness. Five were
-> negative because they carried an unbounded loudness term. The sixth, a proper
-> posterior with that term cancelled, is **+0.050 — positive in sign and inside
-> the noise** — because the marginal is near one almost everywhere. **Its
-> threshold sweep peaks at 0.822 precision against a target of 0.99 and falls
-> above 0.85.**
+> Measured this unit: the evidence per element runs 4.9 to 467 nats across eleven
+> captures and **311 million on a twelfth**, against a duration penalty of 0.136
+> for a span a fifth off. The ratio is about two thousand to one on the sane
+> captures and two billion on the degenerate one. **A quantity whose scale varies
+> by six orders of magnitude between recordings cannot be normalised by a constant
+> exponent**, which is what task 3 was for and why α = 0.45 made the separation
+> worse.
 >
-> **The diagnosis is that the model is overconfident, not that the search is
-> wrong.** The lattice now finds every legal path and the posterior says almost
-> all the probability sits on one of them, which cannot be true of audio a human
-> reads at 76 %. That is the evidence term — the per-hop Gaussian and Rayleigh
-> likelihoods — being far too sharp, so competing readings are driven to
-> negligible probability whatever the audio says.
->
-> **Rejected: gating on it at 0.50 anyway.** 1.6 points of precision for 2.8 of
-> yield, chosen off a plateau inside the noise, and nowhere near the target.
-> **Rejected: a seventh quantity of any family.** Six is enough to say the problem
-> is not which number is read off the model.
-> **What tasks 5 and 6 would do, and why they may now matter more than they did:**
-> putting the speed inside the lattice and fitting the duration densities from the
-> corpus both widen the model — more hypotheses genuinely in play, and durations
-> whose spread matches real fists rather than textbook ratios. **If the
-> overconfidence is in the duration penalty's width, task 6 addresses it
-> directly.** That is a plausible route and it is not this session's to choose.
-
-> **The two speed pins, and what they are pinned to.**
->
-> `TheSpeedIsFoundAndNotTold` pins four captures at *"the speed the reference
-> settled on"*. **The reference in this tree gives different numbers for three of
-> the four** — 20.9 where 22 is pinned, a refusal where 28 is pinned, and 21.2
-> where 16 is pinned. So the pins and their stated source have drifted apart, and
-> nothing noticed because three of the four were green against a decoder that has
-> since changed.
->
-> **This unit turned two of them red** by moving the winning speed: `003016` from
-> 22 to 28 and `003126` from 28 to 24. Neither capture is among the twelve
-> adjudicated readings, so the corpus score is unaffected and rose.
->
-> **Rejected: updating the pins to what Hamlet now says.** That is fitting the test
-> to the change, and it would bury the provenance question rather than answer it.
-> **Rejected: reverting the lattice on their account.** Precision rose across the
-> scored corpus and these two captures carry no adjudicated truth, so they cannot
-> outrank it.
-> **What is actually wanted** is either a re-measured set of pins taken from the
-> reference as it stands, or an adjudication of what those two captures really
-> send — and the second is worth more, because it would extend the truth corpus
-> past 384 characters.
+> **Rejected: tempering harder.** The sweep runs to 0.0001 and is reported below;
+> whatever it shows, dividing an unbounded quantity by a constant leaves it
+> unbounded.
+> **Rejected: a seventh confidence quantity.** Six have been measured and this
+> unit's finding says the fault is upstream of all of them.
+> **What this unit could not settle** is whether bounding the evidence per hop —
+> capping the per-hop log-likelihood at some multiple of the noise scale — costs
+> reading. That is task 5's shape and it changes the decode, so it is measured on
+> its own and is not this session's to take unmeasured.
 
 ### Asks still outstanding
 
 Carried forward per HM-DEC-139 and HM-DEC-140.
 
-1. **The eight 2026-08-29 captures are not in the tree**, a sixth consecutive unit.
-2. **The two speed pins turned red by this unit, and their provenance** — raised
-   above.
-3. **The confidence question above** — six measured, and the sixth fails
-   differently from the first five.
-4. **The answer key's licensing** — §2.1 and HM-DEC-049 against vendoring an ARRL
-   bulletin, which bounds how much truth the score can ever have.
-5. **The mode and filter's place in the owned-settings contract** — unit 047.
-6. **What the digital rows state for the five they are silent on** — unit 047.
-7. **The pedestal ranking is measured at 34 of 44 and unbuilt.**
-8. **A dial move's threshold is provisional at 500 Hz.**
-9. **The transcript break's wording.**
-10. **Whether `CwPitch` should follow an admitted station.**
-11. **`DECISIONS.md` has no record for HM-DEC-096–133, 136, 141 or 150.**
-12. **The `reading` line's span wording needs approval.**
-13. **Two stations closer than 125 Hz are not named.**
-14. **HM-OPEN-057** (2026-08-22) and **HM-OPEN-007** (2026-08-14).
-15. **Nothing checks that deleting a surface is not deleting a capability.**
-16. **The engine test host crashes**, wider than the class HM-OPEN-061 names, and
+1. **The eight 2026-08-29 captures are not in the tree**, a seventh consecutive
+   unit.
+2. **The evidence term's unbounded scale** — raised above, and it now subsumes the
+   confidence question that units 044 to 048 each carried.
+3. **The answer key's licensing**, which bounds how much truth the score can have.
+4. **The mode and filter's place in the owned-settings contract** — unit 047.
+5. **What the digital rows state for the five they are silent on** — unit 047.
+6. **The pedestal ranking is measured at 34 of 44 and unbuilt.**
+7. **A dial move's threshold is provisional at 500 Hz.**
+8. **The transcript break's wording.**
+9. **Whether `CwPitch` should follow an admitted station.**
+10. **`DECISIONS.md` has no record for HM-DEC-096–133, 136, 141 or 150.**
+11. **The `reading` line's span wording needs approval.**
+12. **Two stations closer than 125 Hz are not named.**
+13. **HM-OPEN-057** (2026-08-22) and **HM-OPEN-007** (2026-08-14).
+14. **Nothing checks that deleting a surface is not deleting a capability.**
+15. **The engine test host crashes**, wider than the class HM-OPEN-061 names, and
     it has now ended four full runs. Owned by Claude, not waiting on a ruling.
