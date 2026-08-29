@@ -1,4 +1,4 @@
-UNIT:       050 — complete, 6 of 6 — 2026-08-29
+﻿UNIT:       050 — complete, 6 of 6 — 2026-08-29
 UNIT GOAL:  Stop the app leaving the radio in the wrong mode for the block, and prove one read answers the question it asked.
 ADVANCED:   yes — the dial now has to come to rest before data territory writes anything, and an unconfirmed write no longer leaves half a measured-looking answer on screen.
 NUMBER:     0 writes across three 40 m data blocks at a tuning speed; 1 write when the dial stops. Engine Rig+Explore 789 passing, 0 failing.
@@ -192,8 +192,9 @@ squarely with Tim.
 
 Carried forward per HM-DEC-139 and HM-DEC-140.
 
-1. **The filter byte against HM-DEC-149** — raised above, 2026-08-29. Waiting on
-   a ruling. The change is already in the tree at
+1. **The filter byte against HM-DEC-149** — raised above, 2026-08-29, and
+   recorded as **HM-OPEN-062** so it survives the next report. Waiting on a
+   ruling. The change is already in the tree at
    `src/Hamlet.App/ViewModels/MainWindowViewModel.cs`, from `46313cf`.
 2. **The eight 2026-08-29 captures are not in the tree**, an eighth consecutive
    unit. Waiting on the files.

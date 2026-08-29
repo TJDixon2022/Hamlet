@@ -1,7 +1,43 @@
-# Open issues
+﻿# Open issues
 
 Questions with owner and severity. `owner` is who must act next. Format in
 `CLAUDE.md` §3.
+
+---
+id: HM-OPEN-062
+status: open
+owner: tim
+raised: 2026-08-29
+severity: slows
+blocks: nothing today; it is a ruling the tree has already acted on
+refs: HM-DEC-149, HM-DEC-056, commit 46313cf, src/Hamlet.App/ViewModels/MainWindowViewModel.cs
+---
+
+The tune-in write carries a filter byte, and HM-DEC-149's text says it may not.
+
+That ruling reads "ONLY THE MODE IS WRITTEN. Not the frequency, not the filter,
+not the power, not the gain, not the preamp or the attenuator, not as a side
+effect and not as a convenience. A sweep of the follow path asserts it." Since
+`46313cf` on 2026-08-28 the mode write has sent `CivWrites.WidestFilterSlot`
+wherever the block states the passband it needs, and the sweep that ruling names
+does not catch it.
+
+**The change was ordered and its evidence is real.** It landed as tasks 2 and 5 of
+work instruction 040, after an evening on which the operator sat correctly tuned
+to 14.074 MHz with a five hundred hertz window over a three kilohertz block and
+heard nothing for an hour. And skipping the byte was never neutral: the manual is
+explicit (p. 19-11, `CLAUDE.md` §4) that omitting the trailing bytes of a `26`
+selects DATA OFF and the mode's own default filter, so a byte went out either way
+and the only question was whether anybody chose it.
+
+**What is missing is the ruling, not the reasoning.** Work instruction 050's task
+5 then said to send no filter byte, which is the third document in the tree
+holding a different answer, so this is recorded here rather than left to whichever
+order is read next. Raised in unit 050's report as a decision ask.
+
+Underneath it sits a question no session can settle from the tree: whether the
+manual's p. 4-6 table gives SSB-D a FIL2 of 1.2 kHz where SSB's is 2.4. The manual
+is cited and never committed (§2.1), so it takes somebody with the PDF open.
 
 ---
 id: HM-OPEN-061
