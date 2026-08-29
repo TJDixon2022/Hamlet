@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
+STATE: COMPLETED
 TASK: 2 of 8
-BALL: code
-NEXT_PASTE: none
-UPDATED: 2026-08-29T11:02:01-04:00
-NOTE: every per-character confidence the decoder has is anti-correlated with correctness, so task 2's own gate stops the unit
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
+UPDATED: 2026-08-29T11:17:00-04:00
+NOTE: five confidence quantities now measured against correctness and all five negative; the lattice needs restructuring before a posterior is possible
 
 ---
 
