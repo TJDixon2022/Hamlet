@@ -75,7 +75,8 @@ was `DICTED 10.7` behind blocks; `LINKS TO A R T I C L E S O R OTHER WEBSITES
 MENTI`; `IULLETIN CAN BE FO TA ND IN TELEWRITTER`. Those are the recovered paths.
 
 `TheSilencePropertyIsLockedTests` green and unmodified; twelve adjudicated anchors
-green.
+green. **And two speed tests outside the anchors went red on this change** — see
+the amendment in section 2, which is where that was found.
 
 ### Task 3 — the posterior
 
@@ -165,12 +166,46 @@ What is now true of the tree:
   below. The app suite is 519 passing, 0 failing, and every targeted batch was
   green.
 
-### Amendment — the engine regression
+### Amendment — the engine regression, and two tests this unit turned red
 
-**Pending.** Replaced by the result and the comparison against unit 046's failing
-set when the run lands. **If it is not replaced, the run did not finish** — the
-HM-OPEN-061 host crash has now ended four of them, including unit 047's, and an
-unreplaced line is the honest record of that rather than an omission.
+**The run was stopped before finishing, and it got far enough to show something
+this report had not.** Eighteen failures were seen against unit 046's twenty-eight
+before it ended. **Four of those eighteen are not in that set**, and running them
+alone separates them:
+
+| test | alone | verdict |
+|---|---|---|
+| `CwTransmitTests.TheStopFrameIsCommand17CarryingFf` | **passes** | intermittent |
+| `ModeFollowTests.TheWriteIsCommand26AndTheRadioIsAskedWhatItDid` | **passes** | intermittent |
+| `TheSpeedIsFoundAndNotTold("…003016", 22)` | **fails, 28** | **this unit** |
+| `TheSpeedIsFoundAndNotTold("…003126", 28)` | **fails, 24** | **this unit** |
+
+**So the lattice change moved the winning speed on two captures**, and section 1
+should have said so. It did not, because the full suite had not finished when the
+report was written — the targeted batches that had run were green and I reported
+those. **The regression check was still pending and the report claimed less
+uncertainty than it had.**
+
+**What the two are worth, measured rather than assumed.** Both captures are outside
+the twelve adjudicated readings, so neither affects the corpus score, which rose.
+The tests pin *"the speed the reference settled on"* — and **the reference in this
+tree does not say those numbers**:
+
+| capture | test pins | the ported reference says | Hamlet before | Hamlet now |
+|---|---|---|---|---|
+| `003016` | 22 | **20.9** | 22 | 28 |
+| `003126` | 28 | **refuses — no clock fits** | 28 | 24 |
+| `003758` | 16 | **21.2** | red already | 22 |
+
+**Two things follow and neither is comfortable.** On `003016` this unit moved
+Hamlet from about the reference's answer to six words a minute above it, which is
+a real cost. And **the pins' stated provenance does not hold**: they claim to come
+from the reference and the reference in this tree gives 20.9, a refusal, and 21.2.
+On `003758`, already red, Hamlet is now *closer* to the reference than the pin is.
+
+**Nothing was changed on this account.** Re-expressing the pins to match would be
+fitting the tests to the change, and the pins are separately in question. **Both
+belong in section 4 rather than in a commit**, and they are added there.
 
 ## 3. What you should see
 
@@ -232,25 +267,50 @@ One ruling, and it decides the rest of this unit.
 > overconfidence is in the duration penalty's width, task 6 addresses it
 > directly.** That is a plausible route and it is not this session's to choose.
 
+> **The two speed pins, and what they are pinned to.**
+>
+> `TheSpeedIsFoundAndNotTold` pins four captures at *"the speed the reference
+> settled on"*. **The reference in this tree gives different numbers for three of
+> the four** — 20.9 where 22 is pinned, a refusal where 28 is pinned, and 21.2
+> where 16 is pinned. So the pins and their stated source have drifted apart, and
+> nothing noticed because three of the four were green against a decoder that has
+> since changed.
+>
+> **This unit turned two of them red** by moving the winning speed: `003016` from
+> 22 to 28 and `003126` from 28 to 24. Neither capture is among the twelve
+> adjudicated readings, so the corpus score is unaffected and rose.
+>
+> **Rejected: updating the pins to what Hamlet now says.** That is fitting the test
+> to the change, and it would bury the provenance question rather than answer it.
+> **Rejected: reverting the lattice on their account.** Precision rose across the
+> scored corpus and these two captures carry no adjudicated truth, so they cannot
+> outrank it.
+> **What is actually wanted** is either a re-measured set of pins taken from the
+> reference as it stands, or an adjudication of what those two captures really
+> send — and the second is worth more, because it would extend the truth corpus
+> past 384 characters.
+
 ### Asks still outstanding
 
 Carried forward per HM-DEC-139 and HM-DEC-140.
 
 1. **The eight 2026-08-29 captures are not in the tree**, a sixth consecutive unit.
-2. **The confidence question above** — six measured, and the sixth fails
+2. **The two speed pins turned red by this unit, and their provenance** — raised
+   above.
+3. **The confidence question above** — six measured, and the sixth fails
    differently from the first five.
-3. **The answer key's licensing** — §2.1 and HM-DEC-049 against vendoring an ARRL
+4. **The answer key's licensing** — §2.1 and HM-DEC-049 against vendoring an ARRL
    bulletin, which bounds how much truth the score can ever have.
-4. **The mode and filter's place in the owned-settings contract** — unit 047.
-5. **What the digital rows state for the five they are silent on** — unit 047.
-6. **The pedestal ranking is measured at 34 of 44 and unbuilt.**
-7. **A dial move's threshold is provisional at 500 Hz.**
-8. **The transcript break's wording.**
-9. **Whether `CwPitch` should follow an admitted station.**
-10. **`DECISIONS.md` has no record for HM-DEC-096–133, 136, 141 or 150.**
-11. **The `reading` line's span wording needs approval.**
-12. **Two stations closer than 125 Hz are not named.**
-13. **HM-OPEN-057** (2026-08-22) and **HM-OPEN-007** (2026-08-14).
-14. **Nothing checks that deleting a surface is not deleting a capability.**
-15. **The engine test host crashes**, wider than the class HM-OPEN-061 names, and
+5. **The mode and filter's place in the owned-settings contract** — unit 047.
+6. **What the digital rows state for the five they are silent on** — unit 047.
+7. **The pedestal ranking is measured at 34 of 44 and unbuilt.**
+8. **A dial move's threshold is provisional at 500 Hz.**
+9. **The transcript break's wording.**
+10. **Whether `CwPitch` should follow an admitted station.**
+11. **`DECISIONS.md` has no record for HM-DEC-096–133, 136, 141 or 150.**
+12. **The `reading` line's span wording needs approval.**
+13. **Two stations closer than 125 Hz are not named.**
+14. **HM-OPEN-057** (2026-08-22) and **HM-OPEN-007** (2026-08-14).
+15. **Nothing checks that deleting a surface is not deleting a capability.**
+16. **The engine test host crashes**, wider than the class HM-OPEN-061 names, and
     it has now ended four full runs. Owned by Claude, not waiting on a ruling.

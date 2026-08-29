@@ -4,8 +4,8 @@ STATE: COMPLETED
 TASK: 4 of 8
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
-UPDATED: 2026-08-29T12:10:50-04:00
-NOTE: lattice rebuilt and precision up; the posterior it enables is uninformative, so no gate moved and the unit stops at 4
+UPDATED: 2026-08-29T12:25:18-04:00
+NOTE: amended: the killed regression showed two speed tests this unit turned red, and their pins do not match the reference they cite
 
 ---
 
