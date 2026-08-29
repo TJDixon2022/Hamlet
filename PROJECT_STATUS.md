@@ -1,11 +1,11 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 7 of 7
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
-UPDATED: 2026-08-28T23:36:17-04:00
-NOTE: task 2 ships nothing on its own bar; the fit figure is unbounded and that is one defect behind four sightings
+STATE: EXECUTING
+TASK: 4 of 8
+BALL: code
+NEXT_PASTE: none
+UPDATED: 2026-08-29T10:04:34-04:00
+NOTE: scoring harness in with eight hand-counted tests; running it over the twelve adjudicated readings for the first baseline
 
 ---
 
