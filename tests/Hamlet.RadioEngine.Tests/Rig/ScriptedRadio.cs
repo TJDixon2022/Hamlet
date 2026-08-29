@@ -106,6 +106,24 @@ internal sealed class ScriptedRadio : ISerialPort
     /// <summary>Whether the radio says nothing at all.</summary>
     public bool AnswerNothing { get; set; }
 
+    /// <summary>Refuse every mode write with NG, as a radio that cannot comply does.</summary>
+    /// <remarks>
+    /// **AN UNCONFIRMED WRITE LEAVES THE MODE UNKNOWN** (HM-DEC-056, work
+    /// instruction 050 task 5), and a refusal is the cheapest way to reach that
+    /// state deliberately.
+    /// </remarks>
+    public bool RefuseModeWrites { get; set; }
+
+    /// <summary>The data area of the last `26` write frame, verbatim.</summary>
+    /// <remarks>
+    /// Kept so a test can assert what went on the wire rather than what the
+    /// radio made of it. The data flag is the whole reason command `26` is used
+    /// instead of `06`, and a radio that happened to land in the right mode
+    /// would hide a frame that never carried the flag.
+    /// </remarks>
+    public IReadOnlyList<byte> LastModeWrite { get; private set; }
+        = Array.Empty<byte>();
+
     /// <summary>Set the mode and its data variant together.</summary>
     /// <param name="mode">The mode byte.</param>
     /// <param name="dataMode">One for the data variant, nought for plain.</param>
@@ -279,6 +297,15 @@ internal sealed class ScriptedRadio : ISerialPort
 
             // The write form: VFO, mode, data flag, and optionally a filter.
             case 0x26 when data.Length >= 3:
+                LastModeWrite = data.ToArray();
+
+                if (RefuseModeWrites)
+                {
+                    Reply(CivConstants.ResultNg, Array.Empty<byte>());
+
+                    break;
+                }
+
                 if (CivValues.Mode(data[1]) is { } wanted)
                 {
                     Mode = wanted;

@@ -1,11 +1,11 @@
 PROJECT: Hamlet
 STATE: EXECUTING
 PHASE: 12
-TASK: 4 of 6
+TASK: 5 of 6
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-29T17:04:33-04:00
-NOTE: Dwell rule landed — 11 tests green, a slow tune across three 40 m data blocks writes nothing
+UPDATED: 2026-08-29T17:20:32-04:00
+NOTE: Data write proved on the wire — a refused 26 now empties the data flag as well as the mode; app suite running
 
 ---
 

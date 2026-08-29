@@ -463,6 +463,18 @@ public sealed class Ic7300Rig : IRig, IDisposable
     }
 
     /// <summary>Mark the mode unknown after a write nobody confirmed.</summary>
+    /// <remarks>
+    /// <para>**THE DATA FLAG GOES UNKNOWN WITH IT** (work instruction 050, task
+    /// 5). It used to empty the mode alone, so a refused or unanswered `26` left
+    /// the badge blank and the variant reading whatever it had read before. The
+    /// two travel in one frame and one refusal, and **the flag is the entire
+    /// reason command `26` is used instead of `06`** — command `04` reports USB
+    /// for both USB and USB-D (HM-DEC-056). A half-emptied answer is the worse
+    /// shape of the two: it looks measured.</para>
+    /// <para>The filter is not touched here, for the same reason unit 042 gave
+    /// for not folding a width in: nothing said anything about it either way, and
+    /// a value nobody contradicted is not a value nobody read.</para>
+    /// </remarks>
     private void ReportModeUnknown(string why)
     {
         _lastMode = null;
@@ -470,6 +482,7 @@ public sealed class Ic7300Rig : IRig, IDisposable
         ValuesReported?.Invoke(this, new RigValuesReportedEventArgs(new[]
         {
             RigValue.Unknown(RigField.Mode, why),
+            RigValue.Unknown(RigField.DataMode, why),
         }));
     }
 
