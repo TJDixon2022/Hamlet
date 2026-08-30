@@ -197,6 +197,15 @@ public partial class MainWindowViewModel : ObservableObject
 
     /// <summary>Whether the dial has come to rest where it is (work instruction 050).</summary>
     private ModeDwell _modeDwell = ModeDwell.Nowhere;
+
+    /// <summary>Why mode-follow last declined, for the diagnostics screen.</summary>
+    /// <remarks>
+    /// **KEPT RATHER THAN SAID** (work instruction 051, task 5). The status line
+    /// stays silent, because a commentary on writes that nearly happened is noise
+    /// on the one line the operator reads; this is what rig diagnostics shows
+    /// somebody who has come looking for why nothing happened.
+    /// </remarks>
+    private string _modeFollowNote = "";
     private bool _settingModeOurselves;
     private CivMode? _lastKnownMode;
     private bool _windowVisible = true;
@@ -3203,7 +3212,8 @@ public partial class MainWindowViewModel : ObservableObject
         var window = new Views.RigDiagnosticsWindow
         {
             DataContext = new RigDiagnosticsViewModel(
-                _rigMonitor, RigState, (_rig as Ic7300Rig)?.Link),
+                _rigMonitor, RigState, (_rig as Ic7300Rig)?.Link,
+                _modeFollowNote),
         };
 
         AppEvents.RigDiagnosticsOpened(_telemetry, RigState.KnownCount);
@@ -5771,6 +5781,24 @@ public partial class MainWindowViewModel : ObservableObject
         }
     }
 
+    /// <summary>Keep the reason mode-follow declined, for rig diagnostics.</summary>
+    /// <param name="target">What the map called for, or null.</param>
+    /// <param name="decision">What the plan decided.</param>
+    /// <param name="waiting">Whether a data block is still waiting on the dwell.</param>
+    /// <remarks>
+    /// **KEPT, NOT SAID** (work instruction 051, task 5). The status line stays
+    /// silent — a commentary on writes that nearly happened is noise on the one
+    /// line the operator reads — and this is what the diagnostics screen shows
+    /// somebody who came looking for why nothing happened (§8.1).
+    /// </remarks>
+    private void RememberWhyNothingHappened(
+        ModeTarget? target, ModeFollowDecision decision, bool waiting)
+        => _modeFollowNote = waiting && decision.Write
+            ? "Mode-follow is waiting for the dial to come to rest before it "
+              + "sets the mode for this block."
+            : ModeFollowNote.Describe(
+                target, RigState.Mode, RigState.DataVariant, decision.Because);
+
     /// <summary>
     /// Set the radio to the mode this stretch of band is worked in.
     /// </summary>
@@ -5797,11 +5825,11 @@ public partial class MainWindowViewModel : ObservableObject
         var here = Neighborhoods.FirstOrDefault(n => n.Contains(atHz));
 
         // **WHAT HE IS VISIBLY DOING BEATS WHAT THE MAP SAYS LIVES HERE**
-        // (HM-DEC-056). The evidence for that is `ModeFollowPlan.WorkingCw`,
-        // which carries its own reasoning and the measurement behind it. It used
-        // to be an expression on this line asking `IsInsideCwSegment`, which
-        // silenced mode-follow across all 28 digital blocks and which no test
-        // could reach, because every one of them supplied the value by hand.
+        // (HM-DEC-056). The evidence is `ModeFollowPlan.WorkingCw`, which carries
+        // its reasoning and the measurement behind it. It used to be an
+        // expression on this line asking `IsInsideCwSegment`, which silenced
+        // mode-follow across all 28 digital blocks and which no test could reach,
+        // because every one of them supplied the value by hand.
         var target = ModeFollowPlan.TargetFor(here);
         var workingCw = ModeFollowPlan.WorkingCw(target, IsCopyingMorse);
 
@@ -5816,15 +5844,15 @@ public partial class MainWindowViewModel : ObservableObject
             RigState[RigField.Mode].AtUtc,
             RigState[RigField.DataMode].AtUtc);
 
-        // **DATA TERRITORY WAITS FOR THE DIAL TO COME TO REST**, and the rule
-        // for that is <see cref="ModeDwell"/>, which carries its own reasoning.
-        // Not writing is silent: HM-DEC-056 narrates the writes that happen, and
-        // a commentary on the ones that nearly did is noise. The receive side
-        // still runs below, because hearing a block is not being in its mode.
+        // Data territory waits for the dial to come to rest; the rule is
+        // `ModeDwell`. Not writing is silent, and the receive side still runs
+        // below, because hearing a block is not being in its mode.
         var waiting = ModeFollowPlan.WaitsForDwell(target)
                       && !(_modeDwell.Spent
                            && _modeDwell.Block == (here?.Name ?? "")
                            && _modeDwell.FrequencyHz == atHz);
+
+        RememberWhyNothingHappened(target, decision, waiting);
 
         if (!decision.Write || waiting)
         {

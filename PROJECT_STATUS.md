@@ -1,11 +1,11 @@
 PROJECT: Hamlet
 STATE: EXECUTING
 PHASE: 12
-TASK: 5 of 6
+TASK: 6 of 6
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-29T20:25:12-04:00
-NOTE: PBT read added and the inner control and RIT marked undocumented rather than guessed; putting the refusal reason into diagnostics
+UPDATED: 2026-08-29T20:38:37-04:00
+NOTE: Refusal reason now named per branch and shown in rig diagnostics; checking whether task 6 is already built
 
 ---
 

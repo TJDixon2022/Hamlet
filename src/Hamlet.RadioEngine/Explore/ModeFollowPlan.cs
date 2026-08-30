@@ -105,11 +105,61 @@ public sealed record ModeFollowState(
 /// <param name="Narration">
 /// What to say in the status line afterwards, or "" when nothing is happening.
 /// </param>
+/// <param name="Because">
+/// Which test declined, as a stable machine token, or "" where the decision was
+/// to write. **It never reaches the status line** (work instruction 051, task 5):
+/// a commentary on writes that nearly happened is noise on the one line the
+/// operator reads, and this is for rig diagnostics, where somebody hunting for
+/// why nothing happened will look.
+/// </param>
 public sealed record ModeFollowDecision(
-    bool Write, CivMode Mode, bool DataMode, string Narration)
+    bool Write, CivMode Mode, bool DataMode, string Narration, string Because = "")
 {
-    /// <summary>Nothing to do.</summary>
+    /// <summary>Nothing to do, for a reason nobody wrote down.</summary>
     public static ModeFollowDecision Nothing { get; } = new(false, CivMode.Cw, false, "");
+
+    /// <summary>Nothing to do, and which test declined.</summary>
+    /// <param name="because">
+    /// A **stable machine token** naming the branch taken, never a display string
+    /// (§8.1). A display string gets reworded the next time somebody improves the
+    /// copy, and takes every comparison across sessions with it.
+    /// </param>
+    /// <returns>The decision.</returns>
+    /// <remarks>
+    /// **THE SILENCE STAYS AND THE REASON STOPS BEING UNRECOVERABLE** (work
+    /// instruction 051, task 5). A running commentary on writes that nearly
+    /// happened is noise on the one line the operator reads, so the status line is
+    /// unchanged. But the guard's silence is how a fault survived weeks: nothing
+    /// anywhere recorded that mode-follow had declined, so there was no difference
+    /// between "Hamlet refused", "Hamlet is broken" and "nobody tuned anywhere"
+    /// (§8.1). This is the difference, and it belongs where somebody hunting for
+    /// why nothing happened will look.
+    /// </remarks>
+    public static ModeFollowDecision NothingBecause(string because)
+        => new(false, CivMode.Cw, false, "", because);
+}
+
+/// <summary>Why mode-follow declined. Stable tokens, never display strings.</summary>
+/// <remarks>
+/// Machine tokens on purpose (§8.1): these are compared across sessions and read
+/// out of the telemetry record, and a reworded string breaks both silently.
+/// </remarks>
+public static class ModeFollowRefusal
+{
+    /// <summary>The automation is off, or suspended by the operator's own hand.</summary>
+    public const string NotArmed = "not_armed";
+
+    /// <summary>The map says nothing about this stretch of band.</summary>
+    public const string NoTarget = "no_target";
+
+    /// <summary>He is visibly working Morse and the map wants something else.</summary>
+    public const string WorkingMorse = "working_morse";
+
+    /// <summary>The radio is already in the mode the map calls for.</summary>
+    public const string AlreadyThere = "already_there";
+
+    /// <summary>Hamlet has already written this here and nothing contradicts it.</summary>
+    public const string AlreadyWritten = "already_written";
 }
 
 /// <summary>
@@ -296,7 +346,10 @@ public static class ModeFollowPlan
 
         if (!state.Enabled || state.Suspended || target is null)
         {
-            return ModeFollowDecision.Nothing;
+            return ModeFollowDecision.NothingBecause(
+                target is null
+                    ? ModeFollowRefusal.NoTarget
+                    : ModeFollowRefusal.NotArmed);
         }
 
         // **NOTHING TAKES HIM OUT OF MORSE WHILE HE IS WORKING MORSE.**
@@ -319,7 +372,7 @@ public static class ModeFollowPlan
         // to interrupt, and saying so every time the dial moved would be noise.
         if (workingCw && target.Mode != CivMode.Cw)
         {
-            return ModeFollowDecision.Nothing;
+            return ModeFollowDecision.NothingBecause(ModeFollowRefusal.WorkingMorse);
         }
 
         // Already there. Not writing is the point: a command sent four times a
@@ -328,7 +381,7 @@ public static class ModeFollowPlan
         // (HM-DEC-050).
         if (currentMode == target.Mode && currentDataMode == target.DataMode)
         {
-            return ModeFollowDecision.Nothing;
+            return ModeFollowDecision.NothingBecause(ModeFollowRefusal.AlreadyThere);
         }
 
         // **AND ALREADY DONE, WHICH IS A DIFFERENT QUESTION** (HM-OPEN-041). The
@@ -387,7 +440,7 @@ public static class ModeFollowPlan
             && state.DoneMode == target.Mode
             && state.DoneDataMode == target.DataMode)
         {
-            return ModeFollowDecision.Nothing;
+            return ModeFollowDecision.NothingBecause(ModeFollowRefusal.AlreadyWritten);
         }
 
         return new ModeFollowDecision(

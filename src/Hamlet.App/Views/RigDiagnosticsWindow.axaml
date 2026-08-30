@@ -1,4 +1,4 @@
-<Window xmlns="https://github.com/avaloniaui"
+﻿<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:Hamlet.App.ViewModels"
         xmlns:ctl="using:Hamlet.App.Controls"
@@ -33,6 +33,16 @@
                        TextWrapping="Wrap"
                        IsVisible="{Binding HasLinkLine}"
                        Foreground="{StaticResource HmTextMutedBrush}" />
+            <!-- **A REFUSAL NOBODY CAN SEE IS HOW THE LAST ONE LASTED WEEKS**
+                 (work instruction 051, task 5). Mode-follow declines in silence,
+                 which is right for the status line and wrong for everywhere: with
+                 nothing recorded anywhere, "Hamlet refused", "Hamlet is broken"
+                 and "nobody tuned anywhere" were one picture, and a guard that
+                 silenced every digital block on the map survived for weeks. -->
+            <TextBlock Text="{Binding ModeFollowLine}" FontSize="12"
+                       TextWrapping="Wrap" Margin="0,6,0,0"
+                       IsVisible="{Binding HasModeFollowLine}" />
+
             <TextBlock Text="Everything Hamlet has asked the radio, with what each answer was and when it arrived. A row that says unknown is one nobody has managed to read, which is not the same as a radio that does not have it."
                        FontSize="12" TextWrapping="Wrap" Margin="0,4,0,0"
                        Foreground="{StaticResource HmTextMutedBrush}" />

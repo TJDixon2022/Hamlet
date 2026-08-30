@@ -1,4 +1,4 @@
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Hamlet.RadioEngine.Rig;
@@ -61,9 +61,15 @@ public partial class RigDiagnosticsViewModel : ObservableObject
     /// <param name="monitor">The monitor to refresh from, or null.</param>
     /// <param name="state">The state to show.</param>
     /// <param name="link">What the link says about itself, or null.</param>
+    /// <param name="modeFollowNote">
+    /// Why mode-follow last declined, or "" (work instruction 051, task 5).
+    /// </param>
     public RigDiagnosticsViewModel(
-        RigStateMonitor? monitor, RigState state, CivLinkHealth? link = null)
+        RigStateMonitor? monitor, RigState state, CivLinkHealth? link = null,
+        string modeFollowNote = "")
     {
+        ModeFollowLine = modeFollowNote;
+
         _monitor = monitor;
         Rows = new ObservableCollection<RigDiagnosticRow>();
 
@@ -89,6 +95,18 @@ public partial class RigDiagnosticsViewModel : ObservableObject
 
     /// <summary>True while there is something to show.</summary>
     public bool HasLinkLine => LinkLine.Length > 0;
+
+    /// <summary>Why mode-follow last declined, or "".</summary>
+    /// <remarks>
+    /// **A REFUSAL NOBODY CAN SEE IS HOW THE LAST ONE LASTED WEEKS** (work
+    /// instruction 051, task 5). It stays off the status line, where it would be
+    /// noise, and lands here, where somebody looking for why nothing happened
+    /// will look (§8.1).
+    /// </remarks>
+    public string ModeFollowLine { get; } = "";
+
+    /// <summary>True while mode-follow has something to explain.</summary>
+    public bool HasModeFollowLine => ModeFollowLine.Length > 0;
 
     /// <summary>Every field, known or not.</summary>
     public ObservableCollection<RigDiagnosticRow> Rows { get; }
