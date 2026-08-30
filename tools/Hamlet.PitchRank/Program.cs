@@ -90,6 +90,11 @@ internal static class Program
 
                 return 0;
 
+            case "peakwindow":
+                PeakWindow();
+
+                return 0;
+
             case "presence":
                 Presence();
 
@@ -1719,6 +1724,43 @@ internal static class Program
         var flat = text.Replace('\n', ' ').Replace('\r', ' ').Trim();
 
         return flat;
+    }
+
+    /// <summary>The peak over the whole file against the loudest stretch.</summary>
+    /// <remarks>
+    /// **TASK 4'S ACCEPTANCE, MEASURED ON THE REAL CORPUS** (work instruction
+    /// 052). The synthetic sweep says the two agree to two hundredths of a hertz;
+    /// this asks whether the real recordings say the same.
+    /// </remarks>
+    private static void PeakWindow()
+    {
+        Console.WriteLine("capture	wholeHz	loudest8Hz	loudest4Hz	spread");
+
+        foreach (var (capture, _, _) in Truths)
+        {
+            var path = Find(capture);
+
+            if (path is null)
+            {
+                continue;
+            }
+
+            var audio = WavAudio.Read(path);
+
+            var whole = CwSpectralPeak.Find(audio.Samples, audio.SampleRate);
+            var eight = CwSpectralPeak.FindOverLoudestStretch(
+                audio.Samples, audio.SampleRate, 8.0);
+            var four = CwSpectralPeak.FindOverLoudestStretch(
+                audio.Samples, audio.SampleRate, 4.0);
+
+            var all = new[] { whole, eight, four }
+                .Where(v => v is not null).Select(v => v!.Value).ToArray();
+
+            Console.WriteLine(
+                "{0}	{1:0.00}	{2:0.00}	{3:0.00}	{4:0.00}",
+                capture, whole, eight, four,
+                all.Length == 0 ? 0 : all.Max() - all.Min());
+        }
     }
 
     /// <summary>

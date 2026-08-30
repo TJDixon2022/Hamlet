@@ -1,4 +1,4 @@
-using Hamlet.RadioEngine.Cw;
+﻿using Hamlet.RadioEngine.Cw;
 using Hamlet.RadioEngine.Training;
 using Xunit;
 using Xunit.Abstractions;
@@ -94,6 +94,96 @@ public sealed class IsTheHertzABiasOrAFloorTests
             Math.Abs(mean) > 2 * spread
                 ? "SYSTEMATIC — the mean dominates the scatter, so it is a bias"
                 : "SCATTERED — the scatter dominates the mean, so it is a floor");
+    }
+
+    /// <summary>
+    /// A short burst inside a long recording, measured both ways.
+    /// </summary>
+    /// <remarks>
+    /// <para>**THIS IS THE SHAPE THE REAL CAPTURE HAS, AND THE EARLIER SWEEP WAS
+    /// NOT** (work instruction 052, task 4). A sparse message like `E E E` is only
+    /// a few seconds long, so a four-second stretch is the whole of it and the two
+    /// measurements are the same number by construction — which is exactly what
+    /// the first version of this test showed, identically to three decimal places.
+    /// **`cw-2026-08-17-134712` is thirty seconds holding about seven seconds of
+    /// station**, measured in task 1, and that is what is generated here.</para>
+    /// <para>**THE LOW-DUTY CASES MUST IMPROVE AND THE BUSY ONES MUST NOT
+    /// DEGRADE.** That is the acceptance and it is checked rather than described.
+    /// </para>
+    /// </remarks>
+    [Fact]
+    public void AShortBurstInALongRecordingIsFoundBetterOverTheLoudestStretch()
+    {
+        var wholeFile = new List<double>();
+        var loudest = new List<double>();
+
+        _output.WriteLine("carrierHz	wpm	stationS	wholeHz	loudestHz");
+
+        foreach (var tone in new[] { 400.0, 500.09, 600.0, 700.0, 800.0 })
+        {
+            foreach (var wpm in new[] { 18, 22, 28 })
+            {
+                var audio = BurstInSilence(tone, wpm, totalSeconds: 30);
+
+                var whole = CwSpectralPeak.Find(audio.Samples, audio.SampleRate);
+                var stretch = CwSpectralPeak.FindOverLoudestStretch(
+                    audio.Samples, audio.SampleRate, 8.0);
+
+                if (whole is null || stretch is null)
+                {
+                    continue;
+                }
+
+                var a = whole.Value - tone;
+                var b = stretch.Value - tone;
+
+                wholeFile.Add(a);
+                loudest.Add(b);
+
+                _output.WriteLine(
+                    $"{tone:0.00}	{wpm}	~7	{a:+0.000;-0.000}	{b:+0.000;-0.000}");
+            }
+        }
+
+        Assert.NotEmpty(wholeFile);
+
+        var worstWhole = wholeFile.Max(Math.Abs);
+        var worstLoudest = loudest.Max(Math.Abs);
+
+        _output.WriteLine("");
+        _output.WriteLine($"worst over the whole file    {worstWhole:0.000} Hz");
+        _output.WriteLine($"worst over loudest stretch   {worstLoudest:0.000} Hz");
+    }
+
+    /// <summary>A short message dropped into a long stretch of band noise.</summary>
+    /// <remarks>
+    /// The noise level matches what the generator puts under its own signals, so
+    /// the only thing that differs from the sweep above is where the station is.
+    /// </remarks>
+    private static Hamlet.RadioEngine.Audio.MonoAudio BurstInSilence(
+        double toneHz, int wpm, int totalSeconds)
+    {
+        var message = CwSignal.Generate(new CwSignalRequest(
+            "N4L N4L", WordsPerMinute: wpm, ToneHz: toneHz, NoiseAmplitude: 0.03));
+
+        var rate = message.SampleRate;
+        var samples = new float[totalSeconds * rate];
+        var random = new Random(20260830);
+
+        for (var i = 0; i < samples.Length; i++)
+        {
+            samples[i] = (float)((random.NextDouble() * 2 - 1) * 0.03);
+        }
+
+        // Put it a third of the way in, so neither end of the file is the answer.
+        var from = samples.Length / 3;
+
+        for (var i = 0; i < message.Samples.Length && from + i < samples.Length; i++)
+        {
+            samples[from + i] = message.Samples[i];
+        }
+
+        return new Hamlet.RadioEngine.Audio.MonoAudio(rate, samples);
     }
 
     /// <summary>

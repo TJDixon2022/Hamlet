@@ -1,4 +1,4 @@
-namespace Hamlet.RadioEngine.Cw;
+﻿namespace Hamlet.RadioEngine.Cw;
 
 /// <summary>
 /// Where the strongest steady tone in the passband is, from a time-averaged
@@ -86,6 +86,95 @@ public static class CwSpectralPeak
         }
 
         return Interpolate(spectrum, peak, binHz);
+    }
+
+    /// <summary>
+    /// Find the strongest steady tone over the loudest stretch of the audio
+    /// rather than over all of it.
+    /// </summary>
+    /// <param name="samples">The audio.</param>
+    /// <param name="sampleRate">Its sample rate.</param>
+    /// <param name="stretchSeconds">How long a stretch to measure over.</param>
+    /// <returns>The peak in hertz, or null where there is not enough audio.</returns>
+    /// <remarks>
+    /// <para>**THE ERROR IS A DUTY-CYCLE EFFECT AND THIS IS THE CONSEQUENCE**
+    /// (work instruction 052, task 4). Unit 051 measured `CwSpectralPeak` against
+    /// synthetic carriers: on a busy message it is accurate to three hundredths
+    /// of a hertz at every carrier and speed tried, and on a low-duty one it errs
+    /// by ±1.25 Hz — the same magnitude as the real error that retired `N4L`.
+    /// **Averaging a spectrum over silence adds noise to the average and nothing
+    /// else**, so the fix is to average over the part where somebody is
+    /// sending.</para>
+    /// <para>**THE STRETCH IS CHOSEN BY ENERGY ALONE.** Not by where characters
+    /// came out, not by where a pitch was admitted: either would make the
+    /// measurement circular, and the order forbids both. Total energy over a
+    /// sliding stretch, largest wins.</para>
+    /// <para>**IT IS A PITCH AND STILL NOT A VERDICT.** Choosing the loudest
+    /// stretch of a recording that holds nothing gives the loudest stretch of
+    /// noise, and admission is asked elsewhere (HM-DEC-095, HM-DEC-120).</para>
+    /// </remarks>
+    public static double? FindOverLoudestStretch(
+        float[] samples, int sampleRate, double stretchSeconds)
+    {
+        ArgumentNullException.ThrowIfNull(samples);
+
+        if (sampleRate <= 0 || samples.Length < Window)
+        {
+            return null;
+        }
+
+        var stretch = (int)(stretchSeconds * sampleRate);
+
+        if (stretch < Window || stretch >= samples.Length)
+        {
+            // Nothing to choose between: the stretch is the whole recording, or
+            // shorter than one transform.
+            return Find(samples, sampleRate);
+        }
+
+        // Energy in blocks of one transform, so the search is over the same
+        // granularity the transform sees.
+        var blocks = samples.Length / Window;
+        var energy = new double[blocks];
+
+        for (var b = 0; b < blocks; b++)
+        {
+            var sum = 0.0;
+
+            for (var i = b * Window; i < (b + 1) * Window; i++)
+            {
+                sum += (double)samples[i] * samples[i];
+            }
+
+            energy[b] = sum;
+        }
+
+        var span = Math.Max(1, stretch / Window);
+        var running = 0.0;
+
+        for (var b = 0; b < Math.Min(span, blocks); b++)
+        {
+            running += energy[b];
+        }
+
+        var best = running;
+        var bestStart = 0;
+
+        for (var b = span; b < blocks; b++)
+        {
+            running += energy[b] - energy[b - span];
+
+            if (running > best)
+            {
+                best = running;
+                bestStart = b - span + 1;
+            }
+        }
+
+        var from = bestStart * Window;
+        var count = Math.Min(span * Window, samples.Length - from);
+
+        return Find(samples.AsSpan(from, count).ToArray(), sampleRate);
     }
 
     /// <summary>The magnitude spectrum, averaged over the whole recording.</summary>
