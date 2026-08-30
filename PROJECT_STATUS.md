@@ -1,11 +1,11 @@
 PROJECT: Hamlet
 STATE: EXECUTING
 PHASE: 12
-TASK: 2 of 6
+TASK: 3 of 6
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-30T09:28:33-04:00
-NOTE: Three captures of twelve have a presence gap at all, and two of those already read perfectly — effectively one can test a window change
+UPDATED: 2026-08-30T09:35:39-04:00
+NOTE: Four W1AW anchors re-expressed with what each still reads; 13 of 13 green. Weighing whether the corpus can verify a window change
 
 ---
 

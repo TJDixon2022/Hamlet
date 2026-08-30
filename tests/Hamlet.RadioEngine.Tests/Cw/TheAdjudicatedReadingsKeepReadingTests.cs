@@ -75,6 +75,28 @@ public sealed class TheAdjudicatedReadingsKeepReadingTests
         string Name, string Adjudicated, string Anchor, string Ruling,
         string Retired = "");
 
+    /// <summary>Why the four W1AW anchors are retired, in one place.</summary>
+    /// <remarks>
+    /// <para>**RE-EXPRESSED, NOT LOWERED** (Tim's ruling, 2026-08-30). Unit 051
+    /// wired the squelch: nothing is asserted from a pitch the survey has not
+    /// admitted a station at. On these four recordings the survey admits partway
+    /// through, so the earlier part blocks and the later part reads — and **these
+    /// floors were set on text that included the part it was never entitled to
+    /// assert.**</para>
+    /// <para>**HAMLET IS NOT READING THESE BULLETINS WORSE.** It is declining to
+    /// name letters it had no business naming. Each entry above records what the
+    /// capture still reads, so the re-expression carries its own evidence rather
+    /// than asking anybody to take it on trust.</para>
+    /// <para>**WHAT BRINGS THEM BACK** is admission, not the decoder: when the
+    /// survey admits these stations for the whole recording rather than part of
+    /// it, the blocked stretch reads and the anchors are restored. That is the
+    /// window this unit is about.</para>
+    /// </remarks>
+    private const string Squelched =
+        "the squelch of unit 051 blocks the stretch of this recording where the "
+        + "survey has not admitted a station, and this floor was set on text "
+        + "that included it (Tim, 2026-08-30)";
+
     /// <summary>Every reading anybody has adjudicated, with its anchor.</summary>
     /// <remarks>
     /// Anchors measured 2026-08-25 at <see cref="RadioPitchHz"/> through
@@ -122,10 +144,13 @@ public sealed class TheAdjudicatedReadingsKeepReadingTests
         new Reading(
             "unadjudicated/cw-2026-08-22-031838",
             "2, 2, AND 2 WITH A MEAN OF 2.9. PRE", ", AND", "Tim 2026-08-25"),
+        // **RE-EXPRESSED, NOT LOWERED** (Tim, 2026-08-30). Still reads
+        // `■ ■■■■ICTED 10.7 K NTIMETER FLAX IS 125, 125T` — the admitted stretch
+        // comes through and the anchor `DICTED 10.7` straddles the boundary.
         new Reading(
             "unadjudicated/cw-2026-08-22-031905",
             "DICTED 10.7 CENTIMETER FLUX IS 125, 125",
-            "DICTED 10.7", "Tim 2026-08-25"),
+            "DICTED 10.7", "Tim 2026-08-25", Retired: Squelched),
         new Reading(
             "unadjudicated/cw-2026-08-22-031948",
             "110, 110, AND 110 WITH A MEAN OF 117",
@@ -134,17 +159,22 @@ public sealed class TheAdjudicatedReadingsKeepReadingTests
             "unadjudicated/cw-2026-08-22-032012",
             "N OF 117. LINKS TO ARTICLES OR OTHER WEBSITES MENTI",
             "R OTHER WEBSITES MENTI", "Tim 2026-08-25"),
+        // Still reads `…■■CKETY AN MT TINTERE`: the last few seconds are
+        // admitted and the first twenty-odd are not.
         new Reading(
             "unadjudicated/cw-2026-08-22-032050",
             "THIS BULLETIN CAN BE FOUND IN TELEPRINTER, PACKET, AND INTE",
-            "ULLETIN CAN BE FO", "Tim 2026-08-25"),
+            "ULLETIN CAN BE FO", "Tim 2026-08-25", Retired: Squelched),
         new Reading(
             "unadjudicated/cw-2026-08-22-032113",
-            "ACKET, AND INTERNET VERSIONS", "INT", "Tim 2026-08-25"),
+            "ACKET, AND INTERNET VERSIONS", "INT", "Tim 2026-08-25",
+            Retired: Squelched),
+        // Still reads `…ON FORECAST BUAELETIN ARLP034` where it is admitted,
+        // which is most of the bulletin's own name.
         new Reading(
             "unadjudicated/cw-2026-08-22-032129",
             "2026 PROPAGATION FORECAST BULLETIN ARLP034",
-            "OPAGATION", "Tim 2026-08-25"),
+            "OPAGATION", "Tim 2026-08-25", Retired: Squelched),
     };
 
     /// <summary>The same list, as xunit wants it.</summary>
