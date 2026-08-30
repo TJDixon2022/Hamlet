@@ -1,11 +1,11 @@
 PROJECT: Hamlet
-STATE: COMPLETED
+STATE: EXECUTING
 PHASE: 12
-TASK: 6 of 6
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
-UPDATED: 2026-08-29T19:50:12-04:00
-NOTE: Precision 0.766 to 0.858, past the 0.85 goal; one ruling waiting, and every new red is one capture
+TASK: 2 of 6
+BALL: code
+NEXT_PASTE: none
+UPDATED: 2026-08-29T20:16:00-04:00
+NOTE: Measured 28 of 28 digital blocks silenced, both edges inside the segment — the diagnosis holds, so tasks 2 and 3 open
 
 ---
 
