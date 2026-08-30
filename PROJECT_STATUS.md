@@ -1,11 +1,11 @@
 PROJECT: Hamlet
 STATE: EXECUTING
 PHASE: 12
-TASK: 2 of 7
+TASK: 3 of 7
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-29T20:54:53-04:00
-NOTE: Task 1 answered — the refusal was built 2026-08-24 and withheld pending a ruling that arrived with this order; wiring it now
+UPDATED: 2026-08-29T21:15:01-04:00
+NOTE: Squelch wired — precision 0.858 to 0.888, yield 0.914 to 0.745; task 3 must give the yield back by admitting these stations
 
 ---
 

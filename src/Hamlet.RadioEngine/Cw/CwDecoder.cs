@@ -146,6 +146,25 @@ public sealed class CwDecoder
 
         _probabilistic.CharacterSettled += c =>
         {
+            // **NOTHING IS ASSERTED FROM A PITCH NOBODY JUDGED TO BE A STATION**
+            // (work instruction 051, task 2; §0.0, HM-DEC-120). On 2026-08-30 at
+            // 7.058 MHz sixty-one characters reached the screen from a pitch the
+            // survey had admitted no keying at, and the capture sheet said so in
+            // the same breath — `unkeyed YES` — because the field was computed,
+            // printed, and read by nothing.
+            //
+            // **IT IS THE SAME CONDITION THE SHEET PRINTS, NOT A SECOND TEST FOR
+            // IT.** `EmittedWithoutKeying` asks whether characters came out at an
+            // unmeasured pitch; this asks the identical question one step
+            // earlier, of the identical field.
+            //
+            // **BLOCKS RATHER THAN DELETIONS** (unit 036). No character position
+            // is lost and the counts still count: what goes is the assertion, so
+            // the operator sees that Hamlet heard something here and would not
+            // name it, which is the whole difference between refusing and going
+            // quiet.
+            c = Squelched(c);
+
             // **THE COUNTERS COUNT WHAT REACHED THE SCREEN** (HM-DEC-091). They
             // used to be incremented on the old path's own emit, which raised
             // nothing anybody could see, so a capture sidecar said `0 characters
@@ -1086,6 +1105,38 @@ public sealed class CwDecoder
     /// HM-DEC-120). A peak exists in noise. Whether anybody is keying is asked
     /// elsewhere and is not touched here.</para>
     /// </remarks>
+    /// <summary>Whether an unadmitted pitch may assert characters.</summary>
+    /// <remarks>
+    /// **SHIPS ON.** It exists as a switch only so the cost of the rule can be
+    /// measured against the corpus both ways, which is what the order asks for
+    /// before the task is declared done. Nothing in the application turns it off.
+    /// </remarks>
+    public bool SquelchWithoutAdmission { get; set; } = true;
+
+    /// <summary>
+    /// Blank a character the survey never admitted a station for.
+    /// </summary>
+    /// <param name="character">What the decoder read.</param>
+    /// <returns>The character, or the same character asserting nothing.</returns>
+    /// <remarks>
+    /// <para>**A WORD GAP CARRIES NO ASSERTION AND IS LEFT ALONE.** Blanking it
+    /// would turn a space into a mark and invent structure rather than withhold
+    /// it.</para>
+    /// <para>**AND THE COUNTS ARE NOT TOUCHED.** A blocked character was still
+    /// heard; `charactersEmitted` counting it is what lets the capture sheet say
+    /// how much was refused rather than reporting an empty band (§0.0.1).</para>
+    /// </remarks>
+    private CwCharacter Squelched(CwCharacter character)
+        => !SquelchWithoutAdmission
+           || _tracker.HasMeasuredPitch
+           || character.IsWordGap
+            ? character
+            : character with
+            {
+                Text = MorseAlphabet.Unreadable,
+                Confidence = CwConfidence.Unreadable,
+            };
+
     private double MixdownToneHz
         => !double.IsNaN(_lockedToneHz) ? _lockedToneHz
             : _ranked.Ranked ? _ranked.ToneHz
