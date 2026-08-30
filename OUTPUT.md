@@ -1,259 +1,269 @@
-UNIT:       051 — the guard that silenced the digital map — 2026-08-29
-PHASE GOAL: phase 12 — no goal text recorded. `PROJECT_STATUS.md` carries `PHASE: 12`
-            and `PROJECT_CARD.md` has no phase field, so there is nothing to quote.
-UNIT GOAL:  Arriving in a digital block leaves the radio able to hear it, and where
-            Hamlet cannot set something it says so instead of implying it did.
-ADVANCED:   not assessable against a phase goal, because no phase goal text exists.
-            Against the unit's own number: **0 of 28 digital blocks could receive a
-            mode write, and now 28 of 28 can.**
-NUMBER:     **digital blocks able to receive a mode write: 0 of 28 before, 28 of 28 after.**
-DRIFT:      carried — **no phase goal text exists to measure drift against.**
+UNIT:       051 — the threshold, the window, and the squelch — 2026-08-30
+PHASE GOAL: 85% correct CW, precision before yield.
+UNIT GOAL:  Stop characters reaching the screen from a pitch nothing judged to be a station, and stop the survey refusing stations that are plainly there.
+ADVANCED:   **half.** The invention is stopped and precision rose to 0.888. **The false rejection is not fixed**, the repair for it was measured and refused, and it cost four W1AW anchors that nothing now gives back.
+NUMBER:     **precision 0.858 → 0.888, yield 0.914 → 0.745**, over 384 adjudicated characters.
+DRIFT:      0 consecutive units without advance.
 
 ## 1. What Claude did
 
 **Hamlet confirmed.** All four gate checks verified against the tree before the
-order was read: `CLAUDE.md` and `data/bands/us-neighborhoods.json` present,
-`ANNUNCIATOR_PANEL.md` and `src/CoreHMI` absent, with `Hamlet.sln` and
-`CLAUDE.md`'s own header corroborating. Branch `main`, every task committed and
-pushed, every push succeeded. **Nothing in this report is evidence about the
-radio.**
+order was read, with `Hamlet.sln` and `CLAUDE.md`'s header corroborating. Branch
+`main`, every task committed and pushed, every push succeeded. **Nothing here is
+evidence about the radio.**
 
-**Five of six tasks done. Task 6 was the named drop candidate and is dropped
-whole** — the reason is below and it is not only time.
+**Five of seven tasks. Tasks 4 and 5 were not done and task 7 was, which inverts
+the order's plan** — task 7 was the drop candidate and it is the one that could
+be finished, because **the two captures this whole unit is about are not in the
+repository.**
 
-### Task 1 — the blast radius, and the diagnosis holds exactly
+### The blocker, stated once
 
-Walked the real map against the real `HfBands`, in a test rather than by reading:
+**`cw-2026-08-30-001650` and `cw-2026-08-30-001547` are not in the tree.** Nothing
+under `tests/fixtures/` matches `2026-08-30`. Every acceptance criterion in tasks
+3, 4 and 5 is written against them:
 
-| | count |
-|---|---|
-| digital rows on the map | 28 |
-| **digital rows inside their band's CW segment** | **28 of 28** |
-| digital rows *outside* one | **none** |
-| digital blocks straddling a segment edge | **none** |
-| Morse rows inside a CW segment | 20 of 20 |
-| digital blocks producing a write, terminal idle | **0 of 28** |
+- Task 3 — *"On `cw-2026-08-30-001650` the survey admits 575–625 Hz, `unkeyed`
+  reads NO, and duty reports about 23%."* Unverifiable.
+- Task 4 — *"`-001547` either becomes admitted or stays refused."* Unverifiable.
+- Task 5 — the captures become fixtures. **Impossible.**
 
-**The order's expected answer was all of them and it is all of them.** The
-straddle check is the one the order did not ask for and it matters: had any block
-crossed a segment edge there would be a stretch of dial where the write did go
-out, which is an intermittent fault rather than a total one, and it would have
-shown up as "it worked that one time". It does not happen. **"The dial is in a
-digital block" and "the guard fires" are the same statement, with no frequency
-between them.**
+Task 3's *change* was built and measured against the corpus that exists, which is
+what settled it. Task 4 was not built: it changes admission, and building a second
+unverifiable admission change straight after the first was measured and refused
+would have been the same mistake twice.
 
-The second half, answered from the code: **no.** `Neighborhoods` and
-`IsInsideCwSegment` both read `SelectedBand.Band`, so they cannot disagree about
-which band; a non-null digital `here` therefore implies `IsInsideCwSegment` is
-true. There is one call site and no path around it.
+### Task 1 — the refusal was withheld, not missed, and that changes the lesson
 
-### Task 2 — the map decides, and one consequence stated rather than left to be found
+**The order says it has been ordered three times and this is the fourth. The tree
+says it was ordered once and then blocked on a ruling.**
 
-`workingCw` stops consulting `IsInsideCwSegment` and asks the map instead.
-`IsInCwSegment` and `HfBands` are untouched (HM-DEC-110) and `ModeLineText` keeps
-its one remaining use of the property.
+Commit **`1366199`, 2026-08-24**, in its own message: *"Refusing to decode at an
+unmeasured pitch was built and measured and is not shipped. It costs N4L on
+cw-2026-08-17-134712 and text on six other captures… Honesty and that callsign are
+in tension and the ruling is Tim's."* The same paragraph still stands at
+`CwDecoder.cs:780`.
 
-**What I want flagged rather than buried: the map operand cannot fire the guard
-on its own.** The guard is `workingCw && target.Mode != CivMode.Cw`, so where the
-block is Morse the second half is already false, and where it is not the first
-half is. **The protection that actually bites is `IsCopyingMorse`** — characters
-arriving — which is the operand HM-DEC-149 corrected and the one 2026-08-18 turned
-on. The block operand is kept because it states what the evidence *is* rather than
-what survives an inlining, and it starts mattering the moment a Morse block wants
-anything other than plain CW. It is written into the code as well as here.
+So the session built it, measured its cost, escalated it, and declined to make the
+operator's decision for him. **What took six days was the ruling** — and the ruling
+arrived in the header of this order. That is a different failure from "nobody did
+it", and it has a different fix: not more diligence, but a shorter path from a
+recorded ask to a ruling.
 
-### Task 3 — the seam is closed, not tested around
+**Every gate on the emit path, with what each tests:**
 
-The evidence expression moved out of the view model into
-`ModeFollowPlan.WorkingCw`, which the view model now calls. **The bug existed
-because that expression lived on a line no test could reach**, so testing around it
-would have left the next one just as invisible.
+| gate | where | what it asks |
+|---|---|---|
+| window gate, 1.40 | `CwProbabilisticDecoder.cs:865` | is this stretch better explained by a message than by silence |
+| character margin, 1.0 | `CwProbabilisticDecoder.cs:1643` | does this letter clear its own evidence (marks, never deletes) |
+| refusal floor, 14 | HM-DEC-120, settled pass | is the whole reading strong enough to assert |
+
+**All three ask about the audio at the chosen pitch. None asks whether anybody
+chose the pitch.** That is the hole 61 characters came through.
+
+### Task 2 — the squelch is wired, and the cost is real
+
+Same condition the sheet already prints, asked one step earlier of the same field.
+Blocks rather than deletions; a word gap asserts nothing and is left alone.
 
 | | before | after |
 |---|---|---|
-| digital blocks producing a USB-D write | **0 of 28** | **28 of 28** |
-| Morse blocks asking for the wrong thing | 0 of 20 | 0 of 20 |
-| digital blocks writing while Morse is being copied | 0 of 28 | **0 of 28** |
+| **precision** | 0.858 | **0.888** |
+| yield | 0.914 | **0.745** |
+| substitutions | 30 | 16 |
 
-**That last row is the control and it is the whole reason to trust the first.**
-Without it this repair is indistinguishable from deleting the 2026-08-18
-protection.
+Precision rises three points, and it rises because the blocked characters were
+wrong more often than the average.
 
-`ArrivingInADigitalBlockDoingNothingElseStillFollows` is **fixed, not deleted**,
-and its remark now records how it lied: it claimed 14.074 MHz was "outside any CW
-segment" and handed `workingCw: false` to match, while the running app computed
-`true`. It keeps the named frequency — a sweep is not what somebody reads when
-they come back asking what went wrong — but it derives the value now instead of
-writing it down.
+**Per capture:** KD0UN, AA4MP/4 and VA3VRR unchanged at 1.000. The losses are the
+ARRL bulletins — 032050 0.831→0.322, 032113 0.857→0.250, 032129 0.905→0.667,
+032012 0.922→0.804. `N4L` to zero, which Tim ruled.
 
-### Task 4 — what could be established is less than the order hoped
+### Task 3 — built exactly as specified, measured, and refused on three counts
 
-**The manual is not in this repository** (§2.1 forbids committing it), so p. 19-4
-could not be re-read column-aware. What is citable *here*:
+**The fraction sweep, all nine points:**
 
-| control | status |
+| fraction | yield | precision |
+|---|---|---|
+| 0.20 | 0.560 | 0.601 |
+| 0.30 | 0.695 | 0.728 |
+| 0.35 | 0.674 | 0.751 |
+| 0.40 | 0.695 | 0.703 |
+| 0.45 | 0.740 | 0.770 |
+| **0.50** | 0.742 | **0.787** |
+| 0.55 | 0.711 | 0.742 |
+| 0.60 | 0.740 | 0.738 |
+
+1. **Not monotonic** — up, down, up, down. The order forbids adopting off such a
+   curve.
+2. **Every candidate far below the floor.** Best 0.787 against 0.888 with Otsu and
+   a hard floor of 0.858.
+3. **It fails its own acceptance criterion.** That was *"on the known-good captures
+   the threshold lands within a decibel or two of where it lands today."*
+
+**Measured, per capture, in decibels:**
+
+| capture | Otsu | percentile | move | p20 | p98 |
+|---|---|---|---|---|---|
+| `013347` | −68.4 | −63.8 | **+4.6** | **−110.2** | −17.4 |
+| `134712` | −35.6 | −30.6 | **+4.9** | −41.3 | −19.9 |
+| `003758` | −33.2 | −31.1 | +2.1 | −42.9 | −19.4 |
+| `012403` | −30.2 | −28.5 | +1.7 | −36.8 | −20.2 |
+| `004507` | −30.7 | −30.1 | +0.6 | −40.7 | −19.5 |
+| `031838` | −32.3 | −29.0 | +3.3 | −38.4 | −19.6 |
+| `031905` | −32.3 | −29.0 | +3.2 | −38.5 | −19.5 |
+| `031948` | −32.9 | −29.1 | +3.8 | −38.6 | −19.5 |
+| `032012` | −32.0 | −29.8 | +2.2 | −40.0 | −19.6 |
+| `032050` | −31.6 | −29.3 | +2.3 | −39.1 | −19.5 |
+| `032113` | −32.5 | −29.6 | +2.9 | −39.7 | −19.5 |
+| `032129` | −32.8 | −29.7 | +3.0 | −40.0 | −19.5 |
+
+**It lands 0.6 to 4.9 dB higher, median about 3.0, and higher on every single
+capture** — which is exactly why yield collapsed. One capture in twelve is within
+a decibel. On `013347` the twentieth percentile falls at **−110 dB**, because that
+recording is mostly digital silence and **a percentile of silence is not a noise
+floor.**
+
+**So Otsu is right precisely where the order predicted it would be**, and its fault
+is real and confined to the mostly-silent case. The function, the sweeps and the
+threshold comparison are all kept in the tree with their numbers, so the next
+session finds a measurement rather than an evening.
+
+### Task 6 — `N4L` re-expressed
+
+Retired with its reason **in the test itself**, not deleted. The recording still
+runs, what it reads is still printed, and the line says what would bring it back.
+HM-DEC-144 is not withdrawn: `N4L` is still what that station sent, and what is
+withdrawn is the requirement that Hamlet read it, because the only way it ever did
+was by luck.
+
+### Task 7 — done, and it answers more than it was asked
+
+**Ground truth is synthetic on purpose**: on a real capture nobody knows the
+carrier to a tenth of a hertz, which is why unit 050 could not settle this at all.
+
+| condition | error |
 |---|---|
-| outer Twin PBT | **`14 08`**, cited in §4's own correction note to p. 19-3 |
-| inner Twin PBT | **no command recorded anywhere in this repository** |
-| RIT state and offset | **no command recorded anywhere in this repository** |
+| **500.09 Hz at 18, 22, 25 WPM** | **−0.021, −0.022, −0.021 Hz** |
+| 500.09 Hz, no noise at all | −0.022 Hz |
+| five carriers × four speeds, busy message | never worse than ±0.03 Hz |
+| 700 Hz, very low duty | **−1.25 Hz** |
+| 800 Hz, very low duty | **+1.26 Hz** |
 
-The obvious guess for the inner control is the sub-command beside the outer one.
-**That guess is not taken**, because it is precisely how the CW pitch landed on
-the wrong row of this two-column page and cost weeks. Both are marked
-`Undocumented`, which this tree already distinguishes from unknown and from
-unsupported, with the reason recorded.
+mean −0.005 Hz, spread 0.356, worst 1.255.
 
-`PassbandReport` names the remedy — hold `TWIN PBT CLR` for a second — and
-**suppresses the audible claim on uncertainty, not only on a bad reading.** Away
-from centre and never read are different facts about the radio and the same fact
-about what Hamlet knows. **Today that means the claim can never be made**, because
-two of the three controls have no read; a test asserts that, so the day somebody
-closes them is the day it gets noticed rather than the day it silently starts
-claiming.
+**The 1.1 Hz is not a keying floor.** At the exact carrier that retired `N4L` the
+peak is accurate to two hundredths of a hertz. **Every outlier is a very low duty
+message**, and ±1.25 Hz is the magnitude seen on the real capture — which is short
+and sparse.
 
-**A standing guard was narrowed and I want that seen.** `TheCwPitchReadIsSubCommandNine`
-forbade *any* `14 08` read. Its stated hazard is a payload, which a read does not
-carry, and its purpose is stopping the pitch coming back on the wrong row. It now
-says something **stricter**: the pitch is 09, and any `14 08` read must be the Twin
-PBT and nothing else — the old form would have gone green on a `14 08` read of some
-third field. A separate test carries the half that was always about the real
-hazard: **nothing writes `14 08`.** Changing a test to admit one's own change is
-the move §12.5 warns about, so it is reported here rather than mentioned in a
-commit.
+**So the answer is neither bias nor floor but duty**, and the fix is to measure the
+peak over the stretch where somebody is actually keying. **That is task 4's window
+chosen by signal strength, arrived at from the opposite direction** — which is the
+strongest argument in this report for doing task 4 next.
 
-### Task 5 — the reason stops being unrecoverable
-
-Silence on the status line stays. What changes is that every refusal branch now
-names itself with a **stable machine token** (§8.1, never a display string), and
-rig diagnostics says three things: what the map called for, what the radio is in,
-and which test declined. Unread is said as unread.
-
-**This is the fault §8.1 was written against.** With nothing recorded anywhere,
-"Hamlet refused", "Hamlet is broken" and "nobody tuned anywhere" were one picture,
-and that is how a guard silencing every digital block survived from one ruling to
-the next.
-
-### Task 6 — **dropped whole**
-
-It is the named drop candidate, and two of its three parts already exist:
-`Neighborhood.WhereTheSignalsAre()` names the dial and the block it opens onto,
-composed into the card at `MainWindowViewModel.cs:2495`. Missing is "and the mode
-now set", and the card fires on startup and on a click rather than on arrival.
-
-**Beyond being the drop candidate, there is a reason not to build it this
-unit.** Task 4 established that Hamlet cannot verify the block is audible — two of
-three passband controls have no read. Adding "the mode is now set" to an arrival
-card would introduce, on the one sentence the operator acts on, exactly the claim
-task 4 exists to suppress. It wants doing *after* those two reads exist, or with
-`PassbandReport.CanClaimAudible` wired through it.
-
-**No decision was recorded under §12.1.** Nothing here was one-way: the guard
-narrowing weighs two costs, and §12.1 puts anything touching what the display
-asserts with Tim without exception.
+**No decision was recorded under §12.1.** The floor violation below weighs two
+costs and §12.1 puts anything touching what the display asserts with Tim.
 
 ## 2. What Tim should expect
 
-**Tune to 20 m FT8 and the radio goes to USB-D and says so.** That is the change.
-It works in all 28 digital blocks on the map, not just that one, and it needs the
-dial to come to rest for a second first (unit 050's dwell, unchanged).
+**Precision is 0.888, up from 0.858. Yield is 0.745, down from 0.914.**
 
-**Copy Morse and it will still refuse**, everywhere, exactly as before — that is
-the 2026-08-18 protection and it is asserted across all 28 blocks.
+**Hamlet will no longer print letters on a frequency the survey has not admitted.**
+It shows blocks instead, so you can see it heard something and would not name it.
+That is the 61 characters stopped.
 
-**Open rig diagnostics and there is a new line** saying why mode-follow last wrote
-nothing, when it wrote nothing. It is deliberately not on the status line.
+**And it will now stay silent on four W1AW bulletins it used to read.** That is the
+other half of the same change and it is the leading ask below.
 
 **What will look wrong but is not:**
 
-- **Hamlet will not tell you a digital block is audible.** It cannot read the
-  inner Twin PBT or RIT, so it declines to claim rather than guessing. That is
-  task 4 working, not a gap.
-- **The Views batch of the app suite still crashes the host.** Inherited,
-  HM-OPEN-063, untouched here.
-- **Task 6 has no commit.** Dropped, above.
+- **Blocks where text used to be, on the ARRL bulletins.** The survey admits those
+  stations partway through the recording, so the early part blocks and the later
+  part reads. That is the squelch working; it is also the floor violation.
+- **Task 7 done and tasks 4 and 5 not.** The captures those need are absent.
+- **`CwUnitEstimator.Threshold` exists and nothing calls it.** Measured and
+  refused, kept with its numbers.
 
-Build clean, no new warnings. Version unchanged at 1.12.7 — flagged as a mismatch
-below, since HM-DEC-150 makes a work unit a patch bump and I did not take one
-without knowing whether this unit and the previous 050 count as one phase's work.
-
-**Suites, batched because no full run of either comes back (HM-OPEN-063):**
+**Build clean, no new warnings.** Version unchanged at 1.12.7 — the bump question
+from unit 051's report is still unruled and I did not guess again.
 
 | suite | result |
 |---|---|
-| engine `Explore` (incl. every new test) | **541 passing, 0 failing** |
-| engine `Rig` | **276 passing, 0 failing** |
-| engine `Civ` | 61 passing, 0 failing |
-| engine `Bands` | 39 passing, 0 failing |
-| engine `Licensing` | 61 passing, 0 failing |
-| app ViewModels | **240 passing, 0 failing** |
-| app, everything but ViewModels and Views | 217 passing, 0 failing |
-| app Views | not run — crashes the host, inherited |
-| engine `Cw` | not run — untouched by this unit, and it is where the crash lives |
+| `TheSilencePropertyIsLockedTests` | **6 passing, 0 failing** — green, unmodified |
+| `TheAdjudicatedReadingsKeepReadingTests` | **9 passing, 4 failing** — the four are the ask below |
+| `NothingActsOnTheAdmissionVerdictTests` | 2 passing |
+| `IsTheHertzABiasOrAFloorTests` | 2 passing |
+| `CwEmissionGateTests.NoSpeedIsNamedWithoutCharactersToNameItFrom` | **red before this unit** — verified by reverting |
 
 ## 3. What we should do next
 
-**The number this unit was commissioned on: digital rows able to receive a mode
-write, 0 of 28 before and 28 of 28 after.**
+**Task 1's answer first: nothing has ever acted on `unkeyed`, and the reason is
+that the refusal was built on 2026-08-24 and withheld pending a ruling that
+arrived with this order — not that it was forgotten.** Task 3's threshold sweep and
+its duty table are reproduced above.
 
-1. **Read p. 19-4 column-aware** for the inner Twin PBT and RIT. Two explicit
-   unknowns are sitting in the ledger and they are what stops Hamlet ever saying a
-   block is audible.
-2. **Then task 6**, with `CanClaimAudible` wired through the arrival card.
-3. Rule on the guard narrowing and the version bump (section 4).
-4. HM-OPEN-062, the filter byte, still unruled and still parked.
+1. **Rule on the floor violation** (section 4). Nothing else in this unit is
+   blocked, and this is.
+2. **Get `cw-2026-08-30-001650` and `-001547` into the tree.** Three tasks of seven
+   were written against them.
+3. **Then task 4**, which task 7 independently argues for: choose the measurement
+   window by signal strength. It is the likely fix for both the false rejection and
+   the `N4L` hertz.
 
 ## 4. What's blocking us
 
-Two, and both are small.
+One ruling, and it is the whole balance of this unit.
 
-> **A session may narrow a standing guard when its blanket form blocks work the
-> order commissioned, provided the replacement is strictly stronger and the report
-> says so.**
+> **The squelch ships and the W1AW anchors fall, or the anchors hold and the
+> invented characters come back. Both halves of the order cannot be satisfied at
+> once, because the repair that was to reconcile them does not work.**
 >
-> `TheCwPitchReadIsSubCommandNine` forbade any `14 08` read at all. Task 4
-> commissions exactly that read, and the guard's own stated hazard — issuing 08
-> *with a payload* — is one a read cannot commit. Its purpose is stopping the CW
-> pitch returning on the wrong row of a two-column page, and that purpose is
-> untouched.
+> Task 2 says wire the squelch. The prohibitions say **"Do not let a floor fall.
+> Floors only rise"**, and name the W1AW seven. **Four of those seven anchors are
+> now red** — `031905`, `032050`, `032113`, `032129`.
 >
-> **Rejected: leaving the guard and refusing the task.** The read is cited in this
-> repository's own §4 correction note and the order asks for it.
-> **Rejected: deleting the assertion.** What replaced it is stricter — any `14 08`
-> read must be the Twin PBT, where the old form would have passed a `14 08` read of
-> some third field — and a second test carries the real hazard, that nothing
-> *writes* `14 08`.
-> **What this session could not settle** is whether `14 08` is genuinely read-capable
-> on this radio. §4's note says sub-command 08 is the outer Twin PBT position and
-> cites p. 19-3; it does not say in so many words that the row is send/read, and
-> the manual is not in the tree.
-
-> **A work unit is a patch bump, and two orders that both called themselves 050
-> are two work units or one.**
+> **The order anticipated exactly this and resolved it with task 3**: *"after task 3
+> these frequencies become admitted and decoding resumes legitimately. Both halves
+> are needed."* **Task 3 was built as specified and refused on three independent
+> measurements**, so that resolution is not available.
 >
-> HM-DEC-150 makes the minor the phase and the patch the work unit. The previous
-> order took 1.12.6 to 1.12.7. This one is a separate order, separately issued,
-> with its own six tasks — so by that ruling it is 1.12.8. **I did not take the
-> bump**, because both orders called themselves 050 and a version that counts work
-> units should not be advanced on a session's guess about what counts as one.
+> **What the anchors actually record**: they were set on text that included
+> stretches the survey never admitted. The squelch does not make Hamlet read those
+> bulletins worse — it makes it decline to assert the part it was never entitled to
+> assert. On `032129` the later, admitted part still reads `…ON FORECAST BUAELETIN
+> ARLP034`.
+>
+> **Rejected: reverting task 2.** It restores 61 invented characters on an empty
+> band, which is §0.0 broken and is the whole reason for the unit.
+> **Rejected: moving the anchors down.** Floors are Tim's and lowering one to fit a
+> change is the move §12.5 exists to stop.
+> **Rejected: a narrower squelch.** Every narrowing I could construct is a second
+> test for a state `unkeyed` already computes, which the order forbids outright.
+> **What this session could not settle** is whether the anchors should be
+> re-expressed with their reason, the way `N4L` just was — which would say plainly
+> that four bulletins are read only in part, and why.
 
 ### Asks still outstanding
 
 Carried forward per HM-DEC-139 and HM-DEC-140.
 
-1. **The guard narrowing** — raised above, 2026-08-29. In the tree at
+1. **The squelch against the W1AW floor** — raised above, 2026-08-30. In the tree
+   from `95a5e06`.
+2. **The two 2026-08-30 captures are not in the tree**, and three tasks needed
+   them. **The eight 2026-08-29 captures are also still absent**, a tenth
+   consecutive unit.
+3. **The guard narrowing** — 2026-08-29, unit 051. In the tree at
    `tests/Hamlet.RadioEngine.Tests/Rig/RigStateModelTests.cs`.
-2. **The version bump for this unit** — raised above, 2026-08-29. Nothing in the
-   tree; `Directory.Build.props` still says 1.12.7.
-3. **`N4L` against the measured pitch** — 2026-08-29, unit 050. Waiting on a
-   ruling. In the tree from `efcd524`.
-4. **The filter byte against HM-DEC-149** — 2026-08-29, **HM-OPEN-062**. Waiting on
-   a ruling. In the tree from `46313cf`.
-5. **The eight 2026-08-29 captures are not in the tree**, a ninth consecutive unit.
-6. **The evidence term's unbounded scale** (unit 049). Should be re-measured
-   against the new pitch before it is ruled on.
-7. **The answer key's licensing**, which bounds how much truth the CW score can have.
+4. **The version bump** — 2026-08-29. Two orders both called themselves 050 and one
+   called itself 051 the day after another did; `Directory.Build.props` still says
+   1.12.7 and I have not guessed twice.
+5. **The filter byte against HM-DEC-149** — **HM-OPEN-062**, unruled.
+6. **The evidence term's unbounded scale** (unit 049), to be re-measured against
+   the new pitch before it is ruled on.
+7. **The answer key's licensing.**
 8. **The mode and filter's place in the owned-settings contract** — unit 047.
-9. **What the digital rows state for the five settings they are silent on** — unit 047.
+9. **What the digital rows state for the five settings they are silent on.**
 10. **The pedestal ranking is measured at 34 of 44 and unbuilt.**
 11. **A dial move's threshold is provisional at 500 Hz.**
 12. **The transcript break's wording.**
@@ -263,7 +273,5 @@ Carried forward per HM-DEC-139 and HM-DEC-140.
 16. **Two stations closer than 125 Hz are not named.**
 17. **HM-OPEN-057** (2026-08-22) and **HM-OPEN-007** (2026-08-14).
 18. **Nothing checks that deleting a surface is not deleting a capability.**
-19. **The test host crashes**, in the app suite as well as the engine —
-    **HM-OPEN-063**. Owned by Claude, not waiting on a ruling.
-20. **`PROJECT_CARD.md` has no phase field**, so no phase goal text exists to
-    measure `ADVANCED` or `DRIFT` against. Raised by this order's own header.
+19. **The test host crashes** in both suites — **HM-OPEN-063**. Owned by Claude.
+20. **`PROJECT_CARD.md` has no phase field.**
