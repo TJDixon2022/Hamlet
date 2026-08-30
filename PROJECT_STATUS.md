@@ -1,11 +1,11 @@
 PROJECT: Hamlet
 STATE: EXECUTING
 PHASE: 12
-TASK: 3 of 6
+TASK: 4 of 6
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-29T20:17:21-04:00
-NOTE: Evidence swapped from the regulatory segment to the map's own block; building the view-model seam test that would have caught this
+UPDATED: 2026-08-29T20:20:44-04:00
+NOTE: 28 of 28 digital blocks now write, 0 of 28 before; control holds. Reading the manual for what Twin PBT and RIT can report
 
 ---
 

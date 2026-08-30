@@ -1,4 +1,4 @@
-using Hamlet.RadioEngine.Civ;
+﻿using Hamlet.RadioEngine.Civ;
 using Hamlet.RadioEngine.Explore;
 using Hamlet.RadioEngine.Rig;
 using Xunit;
@@ -63,9 +63,23 @@ public sealed class NothingTakesHimOutOfCwTests
     }
 
     /// <remarks>
-    /// Proves the feature survives: arriving in a digital block with the terminal
-    /// off and outside any CW segment still follows the map, which is what
-    /// HM-DEC-056 was built for.
+    /// <para>Proves the feature survives: arriving in a digital block with the
+    /// terminal off still follows the map, which is what HM-DEC-056 was built
+    /// for.</para>
+    /// <para>**THIS TEST WAS A LIE FOR WEEKS AND IT IS WORTH SAYING HOW** (work
+    /// instruction 051, task 3). Its remark used to claim 14.074 MHz was "outside
+    /// any CW segment" and it handed `workingCw: false` to match. **14.074 is
+    /// inside 20 m's CW segment** — every digital block is, because a CW segment
+    /// here is derived from the data-carrying emission ranges of 47 CFR 97.305(c)
+    /// and that is the same stretch. So the running app computed `true` where this
+    /// wrote `false`, the test asserted a state the application could not reach,
+    /// it passed, and the radio stayed in CW.</para>
+    /// <para>**So the value is no longer written down.** It comes from
+    /// `ModeFollowPlan.WorkingCw`, the expression the view model calls, and the
+    /// whole map is walked through it in
+    /// `ArrivingAnywhereOnTheMapFollowsItTests`. Kept rather than deleted because
+    /// the named frequency is the one the operator was on, and a sweep is not what
+    /// somebody reads when they come back asking what went wrong.</para>
     /// </remarks>
     [Fact]
     public void ArrivingInADigitalBlockDoingNothingElseStillFollows()
@@ -73,7 +87,8 @@ public sealed class NothingTakesHimOutOfCwTests
         var state = ModeFollowState.Armed(true);
 
         var decision = ModeFollowPlan.Decide(
-            state, CivMode.Cw, false, Digital, 14_074_000, workingCw: false);
+            state, CivMode.Cw, false, Digital, 14_074_000,
+            ModeFollowPlan.WorkingCw(Digital, isCopyingMorse: false));
 
         Assert.True(decision.Write);
         Assert.Equal(CivMode.Usb, decision.Mode);

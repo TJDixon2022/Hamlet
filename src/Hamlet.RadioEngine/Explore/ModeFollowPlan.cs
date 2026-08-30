@@ -198,6 +198,40 @@ public static class ModeFollowPlan
     }
 
     /// <summary>
+    /// Whether the operator is visibly working Morse, from the block he is in and
+    /// whether anything is being copied.
+    /// </summary>
+    /// <param name="target">What the map calls for here, or null.</param>
+    /// <param name="isCopyingMorse">
+    /// Whether characters have actually arrived recently. **Not whether the
+    /// decoder is switched on** — that was HM-DEC-149's correction, and reading it
+    /// the other way made this true for a whole session.
+    /// </param>
+    /// <returns>True where the automation should stand aside.</returns>
+    /// <remarks>
+    /// <para>**THIS LIVED INLINE IN THE VIEW MODEL AND THAT IS WHY IT WAS WRONG
+    /// FOR WEEKS** (work instruction 051, tasks 2 and 3). Its second operand was
+    /// `IsInsideCwSegment`, a CW segment here being derived from the emission
+    /// ranges carrying data in 47 CFR 97.305(c) — **the CW *and data* segment**,
+    /// which is the stretch the digital watering holes live in, because that is
+    /// what they are. Measured: all 28 digital rows on the map inside one, all 20
+    /// Morse rows inside one, not a block straddling an edge. **Mode-follow could
+    /// not fire in digital territory at all**, silently, by design.</para>
+    /// <para>**AND NOTHING COULD SEE IT, BECAUSE EVERY TEST SUPPLIED THIS VALUE BY
+    /// HAND.** `ArrivingInADigitalBlockDoingNothingElseStillFollows` passed
+    /// `workingCw: false` at 14.074 MHz and asserted a write; in the running app
+    /// the same frequency computed `true`. The test asserted a state the
+    /// application could not reach, went green, and the radio stayed in CW. So the
+    /// expression moves here, where the map can be walked through it.</para>
+    /// <para>**THE MAP ANSWERS WHAT THE REGULATION CANNOT.** Orange for Morse,
+    /// purple for data, cited row by row, and the operator can see it. `IsInCwSegment`
+    /// is untouched and still correct about regulation (HM-DEC-110); it is simply
+    /// not evidence about what somebody is doing.</para>
+    /// </remarks>
+    public static bool WorkingCw(ModeTarget? target, bool isCopyingMorse)
+        => target?.Mode == CivMode.Cw || isCopyingMorse;
+
+    /// <summary>
     /// Whether this target's write additionally waits for the dial to come to
     /// rest.
     /// </summary>
