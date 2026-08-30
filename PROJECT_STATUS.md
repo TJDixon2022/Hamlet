@@ -1,11 +1,11 @@
 PROJECT: Hamlet
 STATE: EXECUTING
 PHASE: 12
-TASK: 1 of 6
+TASK: 2 of 6
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-30T19:21:48-04:00
-NOTE: Listing the commit range from unit 048 to head to bisect the three captures that read at 1.000
+UPDATED: 2026-08-30T19:47:32-04:00
+NOTE: Bisect done — 95a5e06 took 013347 from 5 percent blocks to 84 with precision unmoved at 1.000; building a floor that can see it
 
 ---
 
