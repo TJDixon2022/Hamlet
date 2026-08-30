@@ -1,13 +1,12 @@
-```
 STOP. Verify the project before reading any further.
 
 PROJECT: Hamlet
 
 Check the repository root:
-  MUST EXIST:      CLAUDE.md
-  MUST EXIST:      data/bands/us-neighborhoods.json
-  MUST NOT EXIST:  ANNUNCIATOR_PANEL.md
-  MUST NOT EXIST:  src/CoreHMI
+  MUST EXIST:      SHACK_FACTS.md
+  MUST EXIST:      src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs
+  MUST NOT EXIST:  CoreHMI.sln
+  MUST NOT EXIST:  MURC.sln
 
 If all four are not as stated, you are in the wrong repository.
 REFUSE. Do not read the rest of this file, do not summarise it, do not
@@ -16,272 +15,361 @@ Reply with only: the path you are in, which checks failed, and
 "wrong project — nothing done."
 
 If all four hold, say "Hamlet confirmed" and continue.
-```
 
 ---
 
-# Why this unit exists
+# Work instruction 051 — the threshold, the window, and the squelch
 
-**Mode-follow has never once fired in a digital block, and it cannot.** Tim went
-to 20 m FT8 on 2026-08-29, on a build where unit 050's dwell work was complete
-and passing, and the radio stayed in CW. Nothing was written and nothing was
-said.
+**ISSUED: 2026-08-30. A fresh order, not an amendment. Follows unit 050.**
 
-`MainWindowViewModel.cs:5803`:
+**Seven tasks; task 7 is the drop.**
 
-```csharp
-var workingCw = IsInsideCwSegment || IsCopyingMorse;
-```
+**Numbering note: two orders in the tree are numbered 050 and both were
+executed. This order is 051 and the tree's numbering governs from here.**
 
-which feeds the guard at `ModeFollowPlan.Decide`, line 286:
+## Why this unit exists
 
-```csharp
-if (workingCw && target.Mode != CivMode.Cw)
-{
-    return ModeFollowDecision.Nothing;
-}
-```
+**2026-08-30, 00:15–00:17 UTC, 7.058 MHz. The operator heard a station clear as
+day, pressed capture twice, and Hamlet refused to admit either one — then printed
+61 characters from the frequency it had just refused.**
 
-**`IsInsideCwSegment` is true across every digital watering hole in the map, by
-construction.** `HfBands` builds each band's `CwLowHz..CwHighHz` from the
-emission ranges carrying `TransmitMode.Data` in 47 CFR 97.305(c), and says so:
-*the data ranges are what mark the bottom of a band off from the phone segment
-above it.* A "CW segment" in this tree is the CW **and data** segment. It is the
-same stretch of band the digital blocks live in — that is what they are.
-
-So for all 28 digital rows on the map, the target is USB-D, the target is not CW,
-`workingCw` is true on the segment test alone whether or not anything is
-decoding, and the decision is `Nothing`. **Silently**, by design: *"It is silence
-rather than a refusal with a sentence."*
-
-**The map already draws this distinction perfectly and is not being asked.** The
-operator sees orange and hatched orange for Morse, purple for data. The file
-carries 79 rows: 20 Morse (`CW`, `CW DX`, `QRP`) and 28 digital (`FT8`, `FT4`,
-`JS8`, `PSK31`, `RTTY`), each cited. `ModeFollowPlan.TargetFor` reads those very
-labels. Three lines above 5803 the block the dial is in is already in hand as
-`here`. **The guard asks the band plan a question the map answers better**, and
-the band plan cannot tell orange from purple because under 97.305(c) they are the
-same segment.
+The sidecars:
 
 ```
-PHASE GOAL:   phase 12 — no goal text recorded. PROJECT_STATUS.md carries
-              PHASE: 12 and PROJECT_CARD.md has no phase field, so there is
-              nothing to quote. See section 4 of the delivery message.
-UNIT GOAL:    Arriving in a digital block leaves the radio able to hear it —
-              and where Hamlet cannot set something, it says so instead of
-              implying it did.
-ADVANCES:     not assessable — no phase goal text exists to advance.
+toneHz    599.0 Hz  (NOT MEASURED: the survey has admitted no keying, so this is
+                     the loudest bin in the band rather than a station)
+unkeyed   YES  (61 characters reached the screen from a pitch chosen by the
+                loudest bin in the band, with no keying admitted here)
+competing none admitted, and the survey is not silent: the loudest thing in the
+          band is at 600 Hz, +17.6 dB over the band floor, keyed 39% of the
+          time. Nothing has judged it to be a station
 ```
 
----
+**The pitch was right. Unit 050's spectral peak found 599–600 Hz and the station
+is at 600 Hz.** The failure is entirely downstream of it.
 
-# Verify this instruction against the tree
+### The cause, measured
 
-**Nothing here describes the tree.** Check every claim and report any mismatch.
-Unit 050 found four, all real, and reporting them rather than repairing the order
-is why this unit exists at all.
+**The key-down threshold is set by an Otsu two-class split of the envelope over
+the whole recording. Otsu assumes two classes of comparable mass.** The station
+occupies about 12% of that file, so there are not two classes — **Otsu split the
+noise distribution down the middle and returned a threshold inside the hiss.**
 
-Read from the tree by the web session and believed accurate: `MainWindowViewModel.cs:5803`;
-`ModeFollowPlan.Decide` line 286; `CwBand.IsInCwSegment` and the 97.305(c)
-derivation in `HfBands`; the 79 rows and their labels; and
-`NothingTakesHimOutOfCwTests` line 76.
+Measured both ways over the last 15 seconds:
 
-**Not read, and to be established rather than assumed:** anything about the
-Twin PBT or RIT command set; whether `RigField` has entries for either.
+| bin | duty at the Otsu threshold | duty at a threshold above the noise |
+|---|---|---|
+| 450 Hz | 65% | **0%** |
+| 500 Hz | 68% | **0%** |
+| 550 Hz | 45% | **0%** |
+| **575 Hz** | 28% | **21%** |
+| **600 Hz** | 27% | **23%** |
+| **625 Hz** | 31% | **21%** |
+| 650 Hz | 55% | **0%** |
+| 700 Hz | 69% | **0%** |
+| 775 Hz | 63% | **0%** |
 
-Report mismatches; do not repair the instruction.
+**With a noise-split threshold every bin reads 45–69% and nothing stands out.
+With a threshold above the noise exactly one 50 Hz band lights up and the entire
+rest of the passband goes to zero. Same audio, opposite verdicts.**
 
----
+The envelope at 600 Hz over seconds 27 and 28, 5 ms per character, level 0–9 over
+−54 to −26 dB:
 
-# Rulings in force
+```
+27  5432553455445554467888888888888888864578888741222016888888888888888887512132147888888888888888876578
+28  6664203556656524566557888888888888888888888888888888888876788888886431111478888888888888788864121135
+```
 
-## HM-DEC-056, as amended by HM-DEC-149 — in force, do not re-argue
+**Runs of 60–420 ms at −26 dB against a −40 dB floor. Nobody looking at that
+should call it noise.**
 
-The operator's own hand always wins. A mode change Hamlet did not make suspends
-the automation until the next band change, and suspended is a visible state
-rather than a silent one. Nothing is assumed from having sent a write: the radio
-acknowledges or refuses, and anything else leaves the value UNKNOWN. Every write
-Hamlet makes on its own initiative is narrated. A flip waits for the dial to
-settle.
+### What this retires
 
-**The guard at line 286 is correct and stays.** On 2026-08-18 mode-follow wrote
-USB-D repeatedly while the operator sat on CW main street with a signal decoding,
-and the send controls refused `not_in_morse` for sixty-six seconds — he could not
-answer a station because the app had moved his radio out from under him. **What
-is wrong is one of the two things feeding it, not the rule.** `IsCopyingMorse`
-was already corrected once for exactly this reason, when `IsDecoding` was found
-to mean "the decoder is switched on" rather than "somebody is sending". That fix
-repaired one operand and left the other.
+**The admission test is not broken.** Fed an inflated duty of 39% and an
+understated 19 dB swing, "is this one station keying?" correctly answers no — **to
+the wrong question.** The test is sound and its inputs are not.
 
-## HM-DEC-054 — in force, do not re-argue
+**That also explains unit 043's finding** — a carrier at 802.7 Hz standing 21 dB
+over the floor that admission refused — without needing a second theory.
 
-The neighborhood map lives in `data/bands/us-neighborhoods.json` with a source on
-every row. Blocks published as a single dial frequency run to the next one or
-three kilohertz, whichever comes first, because these modes are worked in upper
-sideband with audio to about three kilohertz.
+**And it is the third time this class of fault has appeared**: `tonePeak` sampled
+its noise reference outside the passband; the `spanLlr` inversion chose its null
+hypothesis wrongly; now the threshold is derived from a split of a window that is
+mostly silence. **Three times the measurement was right and the reference it was
+measured against was wrong.**
 
-## HM-DEC-110 — in force, and it is why task 2 is narrow
+### The second failure, and it is one line
 
-**The neighborhood file is not the source for the CW segments and must not become
-one.** Its Morse rows fall short at the top of every band and leave a hole on
-40 m between 7.040 and 7.050. A CW segment is a regulatory boundary; the
-privileges file is where regulation lives.
+**`unkeyed YES` reports that 61 characters reached the screen from a pitch nothing
+judged to be a station. It should have prevented them.**
 
-**So `IsInCwSegment` is not wrong and is not being changed.** It is a true
-statement about regulation, it is correctly derived, and `ModeLineText` should go
-on using it. It is simply not evidence about what the operator is *doing*, which
-is the only thing the guard at 286 wants to know.
+**This has now been ordered three times** — unit 043's task 2, unit 044's clock
+variant, and this. **The operator was told two days ago that random characters on
+noise had stopped, and tonight 61 of them reached the screen.** Task 1 establishes
+whether that refusal ever shipped, shipped narrowly, or regressed. **A fourth
+order for the same one-line fix would be the real failure.**
 
-## HM-OPEN-062 — open, unruled, and out of scope
+## Verify this instruction against the tree
 
-The filter byte has been sent since `46313cf` and HM-DEC-149's text says only the
-mode is written. **Tim has not ruled. Do not add, remove or alter the filter
-byte in this unit, and do not re-argue it.** Task 4 reports what the radio says
-about the filter; it changes nothing about what is written.
+**Nothing here describes the tree.** Check every claim and report mismatches. Trust
+the tree over this order everywhere they differ.
 
----
+From unit 050's report:
 
-# Status cadence
+- Corpus **yield 0.914, precision 0.858, substitutions 30** over 384 adjudicated
+  characters — **the phase goal of 0.85 passed.**
+- `CwSpectralPeak` ships and feeds the streaming path. The tone tracker was more
+  than 100 Hz from the station on four captures of twelve.
+- **`N4L` on `cw-2026-08-17-134712` fell from 1.000 to 0.333** and is Tim's ask.
+- `TheSilencePropertyIsLockedTests` — 6 passing, green, unmodified.
+- Engine, nine folders batched: 1072 passing, 0 failing. **The host crash is in
+  the app suite too and HM-OPEN-061 names only one engine class.**
+- Eight character-count floors red on unadjudicated audio.
 
-After each task, before starting the next, update `PROJECT_STATUS.md` per
-`CLAUDE.md` — `STATE`, `TASK: n of m`, `BALL`, `UPDATED` from the clock, and
-`NOTE` saying what is moving inside the task. Same every ten minutes while a task
-runs.
+**Record both suites and the corpus score before task 2.**
 
----
+## Rulings in force
 
-# Tasks
+**Transcribed with what was rejected. Do not re-argue either.**
 
-## Task 1 — measure the blast radius
+**Tim's rulings:**
 
-**Nothing is built until this reports.**
+> **`N4L` is retired as a reading anchor and the measured pitch is kept.** The
+> decoder's own comment already records that the callsign was read only because an
+> unmeasured bank centre of 500.0 landed within a tenth of a hertz of a station at
+> 500.09. **Re-express the anchor with its reason, as unit 036 did; do not delete
+> it. It returns when the peak can find that station honestly.**
+>
+> Rejected: keeping the tracker — four captures abandoned 100 to 200 Hz from their
+> station. Rejected: steering the peak with the tracker — built and measured in
+> unit 050 at a cost of 2.9 points, and it did not recover the capture.
 
-Walk the real map against the real `HfBands` and count: **of the map's digital
-rows, how many sit inside their band's CW segment?** The expected answer is all
-of them, which would mean mode-follow has been inoperative in digital territory
-since the guard landed. Report the count as `n of 28` and name any row that is
-*not* inside one, because an exception would be interesting.
+> **The phase goal is 85% correct CW, precision before yield.** It is met at 0.858
+> **on twelve adjudicated captures, and it failed completely on a strong clear
+> signal on the air the same night.** The corpus is not the goal; the air is.
 
-Then answer from the code, not from this order: has any digital-block write ever
-been possible through `MainWindowViewModel`? Check whether any path reaches
-`ModeFollowPlan.Decide` with `workingCw` false while the dial is in a digital
-block.
+> **Do not break the silence behaviour.**
 
-**The before-number this unit is judged on is that count.** If it comes back 0 of
-28 blocked, the diagnosis here is wrong — stop, report, and do not build tasks 2
-and 3.
+> **The only measurement is against real data from the real radio.**
 
-## Task 2 — the map decides what he is doing, not the band plan
+> **FT8, FT4 and every other digital mode are outside this conversation's scope.**
 
-`workingCw` stops consulting `IsInsideCwSegment`. The evidence that the operator
-is working Morse becomes:
+**Standing rulings this unit is bound by:**
 
-- `IsCopyingMorse` — characters actually arriving, which stays exactly as it is;
-  and
-- **the block the dial is in being a Morse block**, which the map already says
-  and which `TargetFor(here)` already computes.
+- **§0.0 / HM-DEC-009** — never present a guess as a decode. **61 characters from
+  an unadmitted pitch is this rule broken, and the field that would have stopped
+  them already computes correctly.**
+- **HM-DEC-120** — nothing emitted on audio holding no signal, and no letters from
+  a pitch nobody judged to be a station. **Tightened only.**
+- **§0.4** — reproduce, then change, then measure.
+- **HM-DEC-007** — tested against WAV fixtures. **HM-DEC-091** — captures are
+  read-only.
+- **§0.2 / HM-DEC-008** — **no transmit work of any kind.**
 
-`IsInsideCwSegment` stays where it is used for `ModeLineText` (HM-DEC-055 —
-one derivation behind the map, the card and the line). It loses no other caller.
+## Status cadence
 
-State the reason inline, because a rule without one gets talked out of: a
-regulatory segment cannot distinguish Morse from data, since by 97.305(c) they
-share it. The map can, it does, and the operator can see it in the colours.
+After each task, before the next, update `PROJECT_STATUS.md` — `STATE`,
+`TASK: n of m`, `BALL`, `UPDATED` from the clock, `NOTE` saying what is moving
+inside the task. Same every ten minutes while a task runs.
 
-## Task 3 — close the seam the tests were on the wrong side of
+## The measurement rule that governs every task
 
-`NothingTakesHimOutOfCwTests.ArrivingInADigitalBlockDoingNothingElseStillFollows`
-calls `Decide` at `14_074_000` with `workingCw: false` supplied by hand. **In the
-running app at that frequency it is `true`.** The test asserts a state the app
-cannot reach, passes, and the radio stays in CW. Every other mode-follow test
-does the same — including the ones in `Hamlet.App.Tests`, which call `Decide`
-directly and never cross line 5803.
+**Every change is measured with `CwAccuracy` over the whole scored corpus, before
+and after.** Every task reports **precision, yield, substitutions**.
 
-Build a test **at the view-model seam**, driving frequency the way the app does
-and asserting on what would be written:
+- **Precision must not fall below 0.858.** A change that lowers it is reverted and
+  reported.
+- **Floors only rise.** The rag-chew evenings, the W1AW seven, KD0UN and the 8 kHz
+  synthetic read the same or better.
+- **`TheSilencePropertyIsLockedTests` runs after every task and may not be
+  modified.**
 
-- every one of the 28 digital rows: a matured dwell produces a USB-D write;
-- every one of the 20 Morse rows: a CW target, and no data write;
-- **the control**: the terminal actively copying inside a digital block still
-  refuses, so the fix has not simply deleted the 2026-08-18 protection.
+## The tasks
 
-Fix the misleading `workingCw: false` at line 76 or delete it in favour of the
-seam test, and say which.
+### Task 1 — has the refusal ever shipped?
 
-## Task 4 — what Hamlet cannot write, it reports
+**Answer first, before anything is built.**
 
-This is the half of "the data settings are set" that has no write behind it, and
-it must not be papered over.
+`unkeyed` computes correctly and prints the right answer. **Does anything act on
+it?**
 
-Establish first, from the manual and the command table, what can be **read**:
-the Twin PBT position, and RIT state and offset. `CLAUDE.md` records `14 08` as
-the outer Twin PBT — **the row once confused with the CW pitch, so re-read 19-4
-column-aware.** Whether the inner control has a companion sub-command is unknown
-and must be established, not assumed centred. If a read does not exist, that is
-an explicit unknown in the ledger and the task reports it as one.
+- **Find every place the emit path is gated**, with file and line. Name what each
+  gate tests.
+- **Is there a gate on "the survey admitted no keying"?** If there is, **why did 61
+  characters pass it on `cw-2026-08-30-001650`?** If there is not, say so plainly —
+  **it has been ordered three times and this is the fourth.**
+- **Report which of unit 043's and unit 044's refusals are in the tree today**, and
+  for any that are not, why.
 
-Where either is away from neutral, Hamlet says so in the app's voice and names
-the remedy — holding `TWIN PBT CLR` for one second until the dot beside the
-width disappears (p. 4-5) — and **suppresses any claim that the block is now
-audible.** Saying the radio is ready while a hand-set PBT closes the window is
-the prime directive broken on the one sentence the operator acts on.
+**This is the highest-value line in the unit** because the operator has been told
+the problem was solved and it was not.
 
-**No writes.** There is no PBT write and RIT is not this unit's to touch.
+### Task 2 — the squelch is wired
 
-## Task 5 — a refusal nobody can see is how this lasted
+**If the survey admits no keying, nothing is emitted.**
 
-The guard's silence was defensible and it cost weeks. Silence on the status line
-stays — a commentary on writes that nearly happened is noise on the one line the
-operator reads. **But the reason belongs in rig diagnostics**, where somebody
-looking for why nothing happened can find it: what the map called for, what the
-radio is in, and which test declined.
+- **Wire the emit path to the same condition `unkeyed` already computes.** Do not
+  invent a second test for the same state.
+- **Blocks rather than deletions**, as unit 036 ruled, so no character position is
+  lost and only the assertion goes.
+- **Report the cost per capture before declaring the task done**, not after.
 
-## Task 6 — the arrival card says what the radio can hear — DROP CANDIDATE
+**Acceptance:** `cw-2026-08-30-001650` and `-001547` emit **no letters** while the
+survey refuses them. **`TheSilencePropertyIsLockedTests` stays green.** The corpus
+score does not fall.
 
-**Named as the drop candidate. Dropped whole, and say that you dropped it.**
+**Note the ordering: after task 3 these frequencies become admitted and decoding
+resumes legitimately. Both halves are needed — this one stops the invented
+characters, task 3 stops the false rejection.**
 
-On arriving in a digital block, the card names the dial, the block it opens onto,
-and the mode now set — so that **dead at the published frequency and alive one
-kilohertz up reads as a correctly tuned radio** rather than an empty band. Check
-first whether `Neighborhood.WhereTheSignalsAre()` already covers this; unit 050
-reported it built, and if it does, this task is a no-op and says so.
+### Task 3 — the threshold comes from the signal, not from a split
 
----
+Replace the Otsu split with a threshold placed relative to the envelope's own
+percentiles:
 
-# Parked — do not touch, do not raise
+```
+floor  = percentile(envelope, 20)          # noise, robust to a busy signal
+peak   = percentile(envelope, 98)          # signal, robust to clicks
+if (peak - floor) < MIN_SWING:  no station here
+thr    = floor + FRACTION * (peak - floor)
+```
 
-- **The filter byte.** HM-OPEN-062, awaiting Tim.
-- **The eight 2026-08-29 captures.** Ninth consecutive unit; the ask carries.
-- **HM-OPEN-061**, the engine test host crash.
-- **The decoder.** Nothing here is evidence about it.
+- **Sweep `FRACTION` rather than fixing it at 0.5, and report the curve.** The
+  reported dah:dit ratio on this capture is **2.1 against a textbook 3.0**, and an
+  independent bench measured 2.87 and 3.22 on other captures of this corpus.
+  **A ratio near 2 is the signature of a threshold still clipping the leading and
+  trailing edges of dahs**, so 0.5 may be too high. **Measure it.**
+- **Sweep `MIN_SWING` and report that curve too.** It is the "no station here"
+  test and it is now load-bearing.
+- **Keep the ±6 dB Schmitt hysteresis.** It is measured and it works.
+- **Adopt only a value on a monotonic region of the sweep.** Unit 045 refused to
+  adopt off a non-monotonic curve and that is the standard.
 
----
+**Acceptance:**
+- On `cw-2026-08-30-001650` the survey admits 575–625 Hz, `unkeyed` reads **NO**,
+  and duty reports about **23%**, not 39%.
+- **On the known-good captures the threshold lands within a decibel or two of
+  where it lands today and the fixtures do not move.** That is what makes this safe
+  — signal and noise have comparable mass there, so Otsu was working.
+- **Corpus precision does not fall below 0.858.**
 
-# What not to do
+### Task 4 — an intermittent station is not judged on a silent window
 
-- **Do not change `IsInCwSegment` or `HfBands`.** HM-DEC-110 rules the segments
-  regulatory and the neighborhood file explicitly not their source. This unit
-  changes who *asks*, not what it answers.
-- **Do not touch the filter byte.** Unruled.
-- **Do not remove the guard at line 286.** Its evidence is wrong, not its rule.
-- **No transmit work.** §0.2 untouched.
-- **Do not commit the IC-7300 manual.**
+The station on `-001650` is absent for the first 15 seconds and present for the
+last 15. **A duty or a swing computed over the whole window describes neither
+half.**
 
----
+- **Compute the admission statistics over the strongest contiguous few seconds in
+  the window, not over the whole of it.** State the length chosen and why.
+- **A station unmistakable for six seconds is a station**, even if the surrounding
+  twenty-four are empty.
+- **The window is chosen by signal strength, not by where characters were
+  emitted** — choosing it by the decoder's own output would make the test circular.
 
-# Committing, pushing, reporting
+**Acceptance:** `-001547`, the same frequency a minute earlier and weaker, either
+becomes admitted or stays refused with task 2 suppressing emission. **Both are
+acceptable outcomes. 45 characters on screen is not.**
 
-Commit and push each task before starting the next. Name the branch and say
-whether the push succeeded; a refused push is reported as refused.
+### Task 5 — the two captures become fixtures
 
-Write `output.md` per `CLAUDE_CODE.md` §8. **Section 3 leads with the number this
-unit was commissioned on: digital rows able to receive a mode write, before and
-after.**
+- **`cw-2026-08-30-001650`** — the primary. Station at 600 Hz, about 28 WPM,
+  present from ~16 s. **Acceptance as task 3 states it.**
+- **`cw-2026-08-30-001547`** — the same frequency weaker.
+- **Record the measured element structure** — dit about 42 ms, dah about 88 ms,
+  gaps 42 / 90–135 / 245–502 ms — **as measurements, not as an asserted
+  transcript.** No text is adjudicated for these captures and none is claimed.
+- **The dah:dit ratio of 2.1 is recorded as unexplained** and task 3's sweep is
+  the evidence about it.
 
-Carry `DRIFT` forward and say on the line that no phase goal text exists to
-measure it against.
+### Task 6 — `N4L` re-expressed
 
-**Every exit writes the report.** If you stop with tasks remaining, name them and
-say whether what you dropped was task 6.
+Per Tim's ruling above.
 
-Then stop. Do not start the next unit.
+- **Re-express the anchor with its reason in the test itself** — that the callsign
+  was read from a bank centre of 500.0 against a station at 500.09, that it is
+  retired as a reading anchor, and **that it returns when the peak finds that
+  station honestly.**
+- **Do not delete it. Do not change the decoder to satisfy it.**
+- **Write the amendment to HM-DEC-144 into the report for Tim to enter.**
+
+### Task 7 — is 1.1 hertz a floor or a bias? *(the drop candidate)*
+
+**Measure only. Change nothing.**
+
+Unit 050 could not settle whether `CwSpectralPeak` can be accurate to a tenth of a
+hertz on a keyed signal. **Keying spreads a tone into sidebands, so the peak of an
+averaged spectrum is not exactly the carrier.** Whether the 1.1 Hz error on
+`cw-2026-08-17-134712` is a floor or a fixable bias decides whether `N4L` returns.
+
+- **Measure the peak's error against the true carrier across the corpus**, using a
+  method that does not share code with `CwSpectralPeak`.
+- **Report whether the error is systematic** — a consistent offset would be a bias
+  and correctable — **or scattered**, which would be the floor.
+- **Report how it varies with duty cycle and with speed**, since both change the
+  sideband structure.
+
+**Dropped whole if time runs out, and the report says so.**
+
+## Parked — do not touch, do not raise
+
+**FT8, FT4 and every other digital mode**, the digital tab, the digital capture
+press, the waterfall.
+
+**The confidence work.** Seven quantities measured, none discriminates. **Do not
+add an eighth, do not tune the temperature, do not touch the emission gate or the
+character floor** beyond wiring task 2's squelch.
+
+**The joint decoder.** `DEV_ANALYSIS_2026-08-27.md` puts it next and its evidence
+stands, **but a decoder that cuts characters perfectly is worth nothing on a
+frequency the survey has refused to admit. Detection is upstream of everything.**
+It is the unit after this one.
+
+Also: the lattice's structure; the evidence term's magnitude; the settings
+contract; the scanner and the calling cycle; `CHANGELOG.md`; the missing
+`DECISIONS.md` records; the phrasebook and the recent-places row; the Twin PBT;
+the answer key's licensing; the dial-move threshold; the transcript break's
+wording.
+
+**Both halves are required: do not touch them, and do not raise them.**
+
+A parked item that genuinely blocks a task is raised once, and says it was parked.
+
+## What not to do
+
+Standing prohibitions are `CLAUDE.md`'s and are not retyped. Unit-specific:
+
+- **No transmit. Nothing keys the radio.**
+- **Do not break the silence property**, and **do not modify its lock.**
+- **Do not let precision fall below 0.858.** Revert and report.
+- **Do not let a floor fall.** Floors only rise.
+- **Do not invent a second test for a state `unkeyed` already computes.**
+- **Do not choose task 4's window from the decoder's own output.** Circular.
+- **Do not fix `FRACTION` at 0.5 without sweeping it.** The 2.1 ratio is evidence
+  against it.
+- **Do not adopt a value off a non-monotonic sweep.**
+- **Do not delete an anchor.** Re-express it with its reason.
+- **Do not assert a transcript for the two new captures.** No truth is adjudicated
+  for them.
+- **Do not change the spectral peak.** Task 7 measures it.
+- **Do not mint a decision id.**
+
+## Committing, pushing, reporting
+
+Commit and push each task before starting the next; name the branch; a refused push
+is reported as refused, with the reason.
+
+Report per `CLAUDE_CODE.md` §8 to `output.md` at the repository root, overwritten
+and printed. **Read the file's own section count and follow it.**
+
+**Write `output.md` before you stop, for any reason at all. Do not hold it behind a
+regression run.**
+
+**The section that reports measurements leads with task 1's answer — whether
+anything has ever acted on `unkeyed` — and then task 3's threshold sweep with the
+duty table reproduced from the tree.**
+
+**The section that says what the owner should expect leads with whether
+`cw-2026-08-30-001650` now reads, and with the corpus precision beside it.**
+
+**If you finish every task, stop and report. Do not start the next unit.**

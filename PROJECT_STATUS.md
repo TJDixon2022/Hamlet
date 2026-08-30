@@ -1,11 +1,11 @@
 PROJECT: Hamlet
-STATE: COMPLETED
+STATE: EXECUTING
 PHASE: 12
-TASK: 6 of 6
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
-UPDATED: 2026-08-29T20:45:08-04:00
-NOTE: Digital blocks able to take a mode write went 0 of 28 to 28 of 28; two small rulings waiting
+TASK: 2 of 7
+BALL: code
+NEXT_PASTE: none
+UPDATED: 2026-08-29T20:54:53-04:00
+NOTE: Task 1 answered — the refusal was built 2026-08-24 and withheld pending a ruling that arrived with this order; wiring it now
 
 ---
 
