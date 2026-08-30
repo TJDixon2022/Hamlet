@@ -18,116 +18,98 @@ If all four hold, say "Hamlet confirmed" and continue.
 
 ---
 
-# Work instruction 051 — the threshold, the window, and the squelch
+# Work instruction 052 — the window where somebody is keying
 
-**ISSUED: 2026-08-30. A fresh order, not an amendment. Follows unit 050.**
+**ISSUED: 2026-08-30. A fresh order, not an amendment. Follows unit 051.**
 
-**Seven tasks; task 7 is the drop.**
-
-**Numbering note: two orders in the tree are numbered 050 and both were
-executed. This order is 051 and the tree's numbering governs from here.**
+**Six tasks; task 6 is the drop.**
 
 ## Why this unit exists
 
-**2026-08-30, 00:15–00:17 UTC, 7.058 MHz. The operator heard a station clear as
-day, pressed capture twice, and Hamlet refused to admit either one — then printed
-61 characters from the frequency it had just refused.**
+**Unit 051 found the same cause from two directions and neither was the one the
+order predicted.**
 
-The sidecars:
+**From the detection side.** A station present for the last fifteen seconds of a
+thirty-second capture had its duty and swing computed over the whole recording.
+The statistics described neither half, admission correctly answered no to the
+wrong question, and a station the operator could hear plainly was refused.
 
-```
-toneHz    599.0 Hz  (NOT MEASURED: the survey has admitted no keying, so this is
-                     the loudest bin in the band rather than a station)
-unkeyed   YES  (61 characters reached the screen from a pitch chosen by the
-                loudest bin in the band, with no keying admitted here)
-competing none admitted, and the survey is not silent: the loudest thing in the
-          band is at 600 Hz, +17.6 dB over the band floor, keyed 39% of the
-          time. Nothing has judged it to be a station
-```
+**From the pitch side.** Task 7 measured `CwSpectralPeak` against synthetic
+carriers of known frequency:
 
-**The pitch was right. Unit 050's spectral peak found 599–600 Hz and the station
-is at 600 Hz.** The failure is entirely downstream of it.
+| condition | error |
+|---|---|
+| 500.09 Hz at 18, 22 and 25 WPM | **−0.021, −0.022, −0.021 Hz** |
+| 500.09 Hz, no noise at all | −0.022 Hz |
+| five carriers × four speeds, busy message | never worse than ±0.03 Hz |
+| **700 Hz, very low duty** | **−1.25 Hz** |
+| **800 Hz, very low duty** | **+1.26 Hz** |
 
-### The cause, measured
+**The 1.1 Hz that retired `N4L` is not a keying floor.** At the exact carrier the
+peak is accurate to two hundredths of a hertz. **Every outlier is a low-duty
+message**, and ±1.25 Hz is the magnitude seen on the real capture — which is short
+and sparse.
 
-**The key-down threshold is set by an Otsu two-class split of the envelope over
-the whole recording. Otsu assumes two classes of comparable mass.** The station
-occupies about 12% of that file, so there are not two classes — **Otsu split the
-noise distribution down the middle and returned a threshold inside the hiss.**
+**So the pitch error and the false rejection are the same fault: a statistic
+computed over a window that is mostly silence.** Both fix the same way — **measure
+over the stretch where somebody is actually keying.**
 
-Measured both ways over the last 15 seconds:
+### What was measured and refused, and must not be retried
 
-| bin | duty at the Otsu threshold | duty at a threshold above the noise |
+**Unit 051's task 3 replaced the Otsu threshold with a percentile-based one,
+exactly as specified, and it failed on three independent counts:**
+
+1. **The fraction sweep is not monotonic** — 0.601, 0.728, 0.751, 0.703, 0.770,
+   0.787, 0.742, 0.738 across fractions 0.20 to 0.60.
+2. **Every candidate is far below the floor** — best 0.787 precision against 0.888
+   with Otsu.
+3. **It fails its own acceptance test.** It lands **0.6 to 4.9 dB higher on every
+   one of twelve captures**, median about 3.0 dB, where the criterion was "within a
+   decibel or two."
+
+**On `cw-2026-08-17-013347` the twentieth percentile falls at −110 dB, because that
+recording is mostly digital silence and a percentile of silence is not a noise
+floor.** That capture is the in-tree instance of this unit's whole subject.
+
+**Otsu is correct wherever signal and noise have comparable mass. Do not replace
+it. The window is what is wrong, not the formula.** `CwUnitEstimator.Threshold`
+is kept in the tree with its numbers so nobody spends an evening rediscovering
+this.
+
+### The state of the corpus
+
+**Unit 051 wired the squelch** — nothing is emitted from a pitch the survey has
+not admitted — and it cost what it was measured to cost:
+
+| | before | after |
 |---|---|---|
-| 450 Hz | 65% | **0%** |
-| 500 Hz | 68% | **0%** |
-| 550 Hz | 45% | **0%** |
-| **575 Hz** | 28% | **21%** |
-| **600 Hz** | 27% | **23%** |
-| **625 Hz** | 31% | **21%** |
-| 650 Hz | 55% | **0%** |
-| 700 Hz | 69% | **0%** |
-| 775 Hz | 63% | **0%** |
+| **precision** | 0.858 | **0.888** |
+| yield | 0.914 | **0.745** |
+| substitutions | 30 | **16** |
 
-**With a noise-split threshold every bin reads 45–69% and nothing stands out.
-With a threshold above the noise exactly one 50 Hz band lights up and the entire
-rest of the passband goes to zero. Same audio, opposite verdicts.**
-
-The envelope at 600 Hz over seconds 27 and 28, 5 ms per character, level 0–9 over
-−54 to −26 dB:
-
-```
-27  5432553455445554467888888888888888864578888741222016888888888888888887512132147888888888888888876578
-28  6664203556656524566557888888888888888888888888888888888876788888886431111478888888888888788864121135
-```
-
-**Runs of 60–420 ms at −26 dB against a −40 dB floor. Nobody looking at that
-should call it noise.**
-
-### What this retires
-
-**The admission test is not broken.** Fed an inflated duty of 39% and an
-understated 19 dB swing, "is this one station keying?" correctly answers no — **to
-the wrong question.** The test is sound and its inputs are not.
-
-**That also explains unit 043's finding** — a carrier at 802.7 Hz standing 21 dB
-over the floor that admission refused — without needing a second theory.
-
-**And it is the third time this class of fault has appeared**: `tonePeak` sampled
-its noise reference outside the passband; the `spanLlr` inversion chose its null
-hypothesis wrongly; now the threshold is derived from a split of a window that is
-mostly silence. **Three times the measurement was right and the reference it was
-measured against was wrong.**
-
-### The second failure, and it is one line
-
-**`unkeyed YES` reports that 61 characters reached the screen from a pitch nothing
-judged to be a station. It should have prevented them.**
-
-**This has now been ordered three times** — unit 043's task 2, unit 044's clock
-variant, and this. **The operator was told two days ago that random characters on
-noise had stopped, and tonight 61 of them reached the screen.** Task 1 establishes
-whether that refusal ever shipped, shipped narrowly, or regressed. **A fourth
-order for the same one-line fix would be the real failure.**
+**Four W1AW anchors are red as a consequence** — `031905`, `032050`, `032113`,
+`032129`. **Tim has ruled on them; task 2.**
 
 ## Verify this instruction against the tree
 
 **Nothing here describes the tree.** Check every claim and report mismatches. Trust
 the tree over this order everywhere they differ.
 
-From unit 050's report:
+**The captures unit 051 was written about do not exist and will not.**
+`cw-2026-08-30-001650` and `-001547` were never in the repository and are not
+coming. **No acceptance criterion in this order names them.** The eight captures of
+2026-08-29 are likewise absent.
 
-- Corpus **yield 0.914, precision 0.858, substitutions 30** over 384 adjudicated
-  characters — **the phase goal of 0.85 passed.**
-- `CwSpectralPeak` ships and feeds the streaming path. The tone tracker was more
-  than 100 Hz from the station on four captures of twelve.
-- **`N4L` on `cw-2026-08-17-134712` fell from 1.000 to 0.333** and is Tim's ask.
-- `TheSilencePropertyIsLockedTests` — 6 passing, green, unmodified.
-- Engine, nine folders batched: 1072 passing, 0 failing. **The host crash is in
-  the app suite too and HM-OPEN-061 names only one engine class.**
-- Eight character-count floors red on unadjudicated audio.
+**Every measurement in this unit is against the corpus that is in the tree.** If a
+task cannot be verified against it, **say so and do not build the change** — unit
+051 declined to build an unverifiable admission change and that was correct.
 
-**Record both suites and the corpus score before task 2.**
+From unit 051's report: `TheSilencePropertyIsLockedTests` 6 passing, green,
+unmodified. `TheAdjudicatedReadingsKeepReadingTests` 9 passing, 4 failing — the
+four are task 2's. `CwEmissionGateTests.NoSpeedIsNamedWithoutCharactersToNameItFrom`
+was **red before unit 051**, verified by reverting.
+
+**Record both suites and the corpus score before task 3.**
 
 ## Rulings in force
 
@@ -135,19 +117,20 @@ From unit 050's report:
 
 **Tim's rulings:**
 
-> **`N4L` is retired as a reading anchor and the measured pitch is kept.** The
-> decoder's own comment already records that the callsign was read only because an
-> unmeasured bank centre of 500.0 landed within a tenth of a hertz of a station at
-> 500.09. **Re-express the anchor with its reason, as unit 036 did; do not delete
-> it. It returns when the peak can find that station honestly.**
+> **The four W1AW anchors are re-expressed with their reason, in the same form
+> `N4L` was.** They were set on text that included stretches the survey never
+> admitted. **Hamlet is not reading those bulletins worse — it is declining to
+> assert a part it was never entitled to assert.**
 >
-> Rejected: keeping the tracker — four captures abandoned 100 to 200 Hz from their
-> station. Rejected: steering the peak with the tracker — built and measured in
-> unit 050 at a cost of 2.9 points, and it did not recover the capture.
+> Rejected: reverting the squelch — it restores invented characters on an empty
+> band. Rejected: lowering the floors to fit the change, which is the move §12.5
+> exists to stop. Rejected: a narrower squelch — every narrowing is a second test
+> for a state `unkeyed` already computes.
 
-> **The phase goal is 85% correct CW, precision before yield.** It is met at 0.858
-> **on twelve adjudicated captures, and it failed completely on a strong clear
-> signal on the air the same night.** The corpus is not the goal; the air is.
+> **`N4L` is retired as a reading anchor and the measured pitch is kept.** It
+> returns when the peak can find that station honestly.
+
+> **The phase goal is 85% correct CW, precision before yield.**
 
 > **Do not break the silence behaviour.**
 
@@ -157,14 +140,13 @@ From unit 050's report:
 
 **Standing rulings this unit is bound by:**
 
-- **§0.0 / HM-DEC-009** — never present a guess as a decode. **61 characters from
-  an unadmitted pitch is this rule broken, and the field that would have stopped
-  them already computes correctly.**
+- **§0.0 / HM-DEC-009** — never present a guess as a decode.
 - **HM-DEC-120** — nothing emitted on audio holding no signal, and no letters from
   a pitch nobody judged to be a station. **Tightened only.**
 - **§0.4** — reproduce, then change, then measure.
 - **HM-DEC-007** — tested against WAV fixtures. **HM-DEC-091** — captures are
   read-only.
+- **§12.5** — a floor is not lowered to fit a change.
 - **§0.2 / HM-DEC-008** — **no transmit work of any kind.**
 
 ## Status cadence
@@ -178,136 +160,107 @@ inside the task. Same every ten minutes while a task runs.
 **Every change is measured with `CwAccuracy` over the whole scored corpus, before
 and after.** Every task reports **precision, yield, substitutions**.
 
-- **Precision must not fall below 0.858.** A change that lowers it is reverted and
+- **Precision must not fall below 0.888.** A change that lowers it is reverted and
   reported.
-- **Floors only rise.** The rag-chew evenings, the W1AW seven, KD0UN and the 8 kHz
-  synthetic read the same or better.
 - **`TheSilencePropertyIsLockedTests` runs after every task and may not be
   modified.**
+- **A floor is not lowered.** Where a floor and a change conflict, the change is
+  reported and the floor stands.
 
 ## The tasks
 
-### Task 1 — has the refusal ever shipped?
+### Task 1 — how much of each capture holds a station
 
-**Answer first, before anything is built.**
+**Measure before building. This is what tells us whether the window change can
+help at all on the corpus we have.**
 
-`unkeyed` computes correctly and prints the right answer. **Does anything act on
-it?**
+For every capture in the tree, report:
 
-- **Find every place the emit path is gated**, with file and line. Name what each
-  gate tests.
-- **Is there a gate on "the survey admitted no keying"?** If there is, **why did 61
-  characters pass it on `cw-2026-08-30-001650`?** If there is not, say so plainly —
-  **it has been ordered three times and this is the fourth.**
-- **Report which of unit 043's and unit 044's refusals are in the tree today**, and
-  for any that are not, why.
+- **The fraction of the recording in which a station is present**, measured from
+  the envelope at the admitted pitch by a method that does not share code with
+  admission.
+- **The longest contiguous stretch of presence**, in seconds.
+- **The duty within that stretch, against the duty over the whole recording.** The
+  gap between those two numbers is the size of this unit's subject, per capture.
+- **The twentieth percentile of the envelope**, which on `013347` sits at −110 dB.
 
-**This is the highest-value line in the unit** because the operator has been told
-the problem was solved and it was not.
+**Rank the corpus by that gap.** A capture where presence is 95% of the file cannot
+demonstrate anything here; a capture near `013347` can. **Say plainly how many
+captures in the tree can test this change.** If the answer is one or two, **say so
+and say what that does to the confidence in any result.**
 
-### Task 2 — the squelch is wired
+### Task 2 — the four W1AW anchors, re-expressed
 
-**If the survey admits no keying, nothing is emitted.**
+Per Tim's ruling.
 
-- **Wire the emit path to the same condition `unkeyed` already computes.** Do not
-  invent a second test for the same state.
-- **Blocks rather than deletions**, as unit 036 ruled, so no character position is
-  lost and only the assertion goes.
-- **Report the cost per capture before declaring the task done**, not after.
+- **Re-express each with its reason in the test itself**, as `N4L` was: what the
+  capture reads now, that the earlier floor included stretches the survey never
+  admitted, and **what would bring the full reading back.**
+- **Do not delete them. Do not lower them. Do not change the decoder to satisfy
+  them.**
+- **`032129` still reads `…ON FORECAST BUAELETIN ARLP034` where it is admitted** —
+  record what each of the four still reads, so the re-expression carries the
+  evidence.
+- **Write the amendment for Tim to enter. Do not mint a decision id.**
 
-**Acceptance:** `cw-2026-08-30-001650` and `-001547` emit **no letters** while the
-survey refuses them. **`TheSilencePropertyIsLockedTests` stays green.** The corpus
-score does not fall.
+### Task 3 — the admission window
 
-**Note the ordering: after task 3 these frequencies become admitted and decoding
-resumes legitimately. Both halves are needed — this one stops the invented
-characters, task 3 stops the false rejection.**
+**Compute the admission statistics over the strongest contiguous stretch, not over
+the whole recording.**
 
-### Task 3 — the threshold comes from the signal, not from a split
+- **The window is chosen by signal strength alone.** Not by where characters were
+  emitted, not by where a pitch was admitted — **either would make the test
+  circular.**
+- **State the minimum window length and why.** A station unmistakable for a few
+  seconds is a station; a window short enough to fit inside one dah is noise.
+- **Sweep the window length and report the curve.** Adopt only on a monotonic
+  region.
+- **The threshold within the window stays Otsu.** Unit 051 measured the alternative
+  and it is refused; **this task changes what Otsu is applied to, not what it is.**
 
-Replace the Otsu split with a threshold placed relative to the envelope's own
-percentiles:
+**Acceptance:** measured over the corpus, **precision must not fall below 0.888**.
+Report per capture, and **lead with the captures task 1 ranked as able to
+demonstrate the change.** If none can, **report that the change is unverifiable on
+this corpus and do not adopt it** — building an unverifiable admission change is
+what unit 051 correctly declined to do.
 
-```
-floor  = percentile(envelope, 20)          # noise, robust to a busy signal
-peak   = percentile(envelope, 98)          # signal, robust to clicks
-if (peak - floor) < MIN_SWING:  no station here
-thr    = floor + FRACTION * (peak - floor)
-```
+### Task 4 — the pitch measured over the same window
 
-- **Sweep `FRACTION` rather than fixing it at 0.5, and report the curve.** The
-  reported dah:dit ratio on this capture is **2.1 against a textbook 3.0**, and an
-  independent bench measured 2.87 and 3.22 on other captures of this corpus.
-  **A ratio near 2 is the signature of a threshold still clipping the leading and
-  trailing edges of dahs**, so 0.5 may be too high. **Measure it.**
-- **Sweep `MIN_SWING` and report that curve too.** It is the "no station here"
-  test and it is now load-bearing.
-- **Keep the ±6 dB Schmitt hysteresis.** It is measured and it works.
-- **Adopt only a value on a monotonic region of the sweep.** Unit 045 refused to
-  adopt off a non-monotonic curve and that is the standard.
+Task 7 of unit 051 showed the peak is accurate to two hundredths of a hertz on a
+busy message and errs by ±1.25 Hz on a low-duty one.
 
-**Acceptance:**
-- On `cw-2026-08-30-001650` the survey admits 575–625 Hz, `unkeyed` reads **NO**,
-  and duty reports about **23%**, not 39%.
-- **On the known-good captures the threshold lands within a decibel or two of
-  where it lands today and the fixtures do not move.** That is what makes this safe
-  — signal and noise have comparable mass there, so Otsu was working.
-- **Corpus precision does not fall below 0.858.**
+- **Measure `CwSpectralPeak` over the task 3 window rather than over a fixed
+  rolling span.**
+- **Re-run task 7's synthetic sweep** — the same carriers, speeds and duties — and
+  report the error table before and after. **The low-duty cases are the ones that
+  must improve; the busy cases must not degrade.**
+- **Then measure the corpus.** Precision must not fall below 0.888.
 
-### Task 4 — an intermittent station is not judged on a silent window
+### Task 5 — does `N4L` come back?
 
-The station on `-001650` is absent for the first 15 seconds and present for the
-last 15. **A duty or a swing computed over the whole window describes neither
-half.**
+`cw-2026-08-17-134712` sits at 500.09 Hz and the peak read 501.2.
 
-- **Compute the admission statistics over the strongest contiguous few seconds in
-  the window, not over the whole of it.** State the length chosen and why.
-- **A station unmistakable for six seconds is a station**, even if the surrounding
-  twenty-four are empty.
-- **The window is chosen by signal strength, not by where characters were
-  emitted** — choosing it by the decoder's own output would make the test circular.
+- **After tasks 3 and 4, what does the peak read on that capture?**
+- **If it reads within a tenth of a hertz, `N4L` returns and the anchor is restored
+  to a reading anchor** with a note saying what brought it back.
+- **If it does not, report the residual error and why**, and the anchor stays as
+  unit 051 re-expressed it.
+- **Do not change the decoder to make it return.**
 
-**Acceptance:** `-001547`, the same frequency a minute earlier and weaker, either
-becomes admitted or stays refused with task 2 suppressing emission. **Both are
-acceptable outcomes. 45 characters on screen is not.**
+### Task 6 — the confidence quantities, re-measured *(the drop candidate)*
 
-### Task 5 — the two captures become fixtures
+**Measure only. Change nothing. Do not add an eighth quantity.**
 
-- **`cw-2026-08-30-001650`** — the primary. Station at 600 Hz, about 28 WPM,
-  present from ~16 s. **Acceptance as task 3 states it.**
-- **`cw-2026-08-30-001547`** — the same frequency weaker.
-- **Record the measured element structure** — dit about 42 ms, dah about 88 ms,
-  gaps 42 / 90–135 / 245–502 ms — **as measurements, not as an asserted
-  transcript.** No text is adjudicated for these captures and none is claimed.
-- **The dah:dit ratio of 2.1 is recorded as unexplained** and task 3's sweep is
-  the evidence about it.
+Seven quantities were measured against correctness and none discriminated. **All
+seven were measured against a decoder that was more than a hundred hertz from the
+station on four captures of twelve**, and unit 050 noted that is not the same
+experiment.
 
-### Task 6 — `N4L` re-expressed
-
-Per Tim's ruling above.
-
-- **Re-express the anchor with its reason in the test itself** — that the callsign
-  was read from a bank centre of 500.0 against a station at 500.09, that it is
-  retired as a reading anchor, and **that it returns when the peak finds that
-  station honestly.**
-- **Do not delete it. Do not change the decoder to satisfy it.**
-- **Write the amendment to HM-DEC-144 into the report for Tim to enter.**
-
-### Task 7 — is 1.1 hertz a floor or a bias? *(the drop candidate)*
-
-**Measure only. Change nothing.**
-
-Unit 050 could not settle whether `CwSpectralPeak` can be accurate to a tenth of a
-hertz on a keyed signal. **Keying spreads a tone into sidebands, so the peak of an
-averaged spectrum is not exactly the carrier.** Whether the 1.1 Hz error on
-`cw-2026-08-17-134712` is a floor or a fixable bias decides whether `N4L` returns.
-
-- **Measure the peak's error against the true carrier across the corpus**, using a
-  method that does not share code with `CwSpectralPeak`.
-- **Report whether the error is systematic** — a consistent offset would be a bias
-  and correctable — **or scattered**, which would be the floor.
-- **Report how it varies with duty cycle and with speed**, since both change the
-  sideband structure.
+- **Re-measure all seven against the corpus as it now stands** — measured pitch,
+  squelch wired, and whatever tasks 3 and 4 land.
+- **Report each correlation beside its value from the earlier unit.**
+- **Draw no conclusion beyond the numbers.** If one now discriminates, that is the
+  next unit's subject, not this one's.
 
 **Dropped whole if time runs out, and the report says so.**
 
@@ -316,20 +269,18 @@ averaged spectrum is not exactly the carrier.** Whether the 1.1 Hz error on
 **FT8, FT4 and every other digital mode**, the digital tab, the digital capture
 press, the waterfall.
 
-**The confidence work.** Seven quantities measured, none discriminates. **Do not
-add an eighth, do not tune the temperature, do not touch the emission gate or the
-character floor** beyond wiring task 2's squelch.
+**The threshold formula.** Measured and refused in unit 051 on three counts.
+`CwUnitEstimator.Threshold` stays in the tree with its numbers and nothing calls
+it.
 
-**The joint decoder.** `DEV_ANALYSIS_2026-08-27.md` puts it next and its evidence
-stands, **but a decoder that cuts characters perfectly is worth nothing on a
-frequency the survey has refused to admit. Detection is upstream of everything.**
-It is the unit after this one.
+**The joint decoder**, the lattice's structure, the evidence term's magnitude, the
+emission gate and the character floor beyond what the squelch already does.
 
-Also: the lattice's structure; the evidence term's magnitude; the settings
-contract; the scanner and the calling cycle; `CHANGELOG.md`; the missing
-`DECISIONS.md` records; the phrasebook and the recent-places row; the Twin PBT;
-the answer key's licensing; the dial-move threshold; the transcript break's
-wording.
+Also: the settings contract; the scanner and the calling cycle; `CHANGELOG.md`;
+the missing `DECISIONS.md` records; the phrasebook and the recent-places row; the
+Twin PBT; the answer key's licensing; the dial-move threshold; the transcript
+break's wording; the version bump, which is unruled and **must not be guessed a
+third time**.
 
 **Both halves are required: do not touch them, and do not raise them.**
 
@@ -341,17 +292,17 @@ Standing prohibitions are `CLAUDE.md`'s and are not retyped. Unit-specific:
 
 - **No transmit. Nothing keys the radio.**
 - **Do not break the silence property**, and **do not modify its lock.**
-- **Do not let precision fall below 0.858.** Revert and report.
-- **Do not let a floor fall.** Floors only rise.
-- **Do not invent a second test for a state `unkeyed` already computes.**
-- **Do not choose task 4's window from the decoder's own output.** Circular.
-- **Do not fix `FRACTION` at 0.5 without sweeping it.** The 2.1 ratio is evidence
-  against it.
-- **Do not adopt a value off a non-monotonic sweep.**
-- **Do not delete an anchor.** Re-express it with its reason.
-- **Do not assert a transcript for the two new captures.** No truth is adjudicated
-  for them.
-- **Do not change the spectral peak.** Task 7 measures it.
+- **Do not let precision fall below 0.888.** Revert and report.
+- **Do not lower a floor.**
+- **Do not replace the Otsu threshold.** Measured and refused.
+- **Do not choose the window from the decoder's own output.** Circular.
+- **Do not adopt off a non-monotonic sweep.**
+- **Do not build a change this corpus cannot verify.** Report it instead.
+- **Do not write an acceptance criterion against a capture that is not in the
+  tree.**
+- **Do not add an eighth confidence quantity.**
+- **Do not change the decoder to make `N4L` return.**
+- **Do not guess the version bump.**
 - **Do not mint a decision id.**
 
 ## Committing, pushing, reporting
@@ -365,11 +316,11 @@ and printed. **Read the file's own section count and follow it.**
 **Write `output.md` before you stop, for any reason at all. Do not hold it behind a
 regression run.**
 
-**The section that reports measurements leads with task 1's answer — whether
-anything has ever acted on `unkeyed` — and then task 3's threshold sweep with the
-duty table reproduced from the tree.**
+**The section that reports measurements leads with task 1's table — how many
+captures in this corpus can demonstrate a window change at all — and then task 4's
+synthetic error table before and after.**
 
-**The section that says what the owner should expect leads with whether
-`cw-2026-08-30-001650` now reads, and with the corpus precision beside it.**
+**The section that says what the owner should expect leads with the corpus
+precision and whether any capture reads that did not before.**
 
 **If you finish every task, stop and report. Do not start the next unit.**
