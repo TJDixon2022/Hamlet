@@ -1,11 +1,11 @@
 PROJECT: Hamlet
 STATE: EXECUTING
 PHASE: 12
-TASK: 4 of 7
+TASK: 7 of 7
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-29T21:54:09-04:00
-NOTE: Percentile threshold measured and refused on three counts; task 2's squelch costs four W1AW anchors and task 3 cannot give them back
+UPDATED: 2026-08-29T21:55:56-04:00
+NOTE: Peak error is duty-dependent, not a keying floor — 0.02 Hz at 500.09 on synthetic, 1.25 Hz only at very low duty
 
 ---
 
