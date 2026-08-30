@@ -1,11 +1,11 @@
 PROJECT: Hamlet
-STATE: EXECUTING
+STATE: COMPLETED
 PHASE: 12
 TASK: 6 of 6
-BALL: code
-NEXT_PASTE: none
-UPDATED: 2026-08-30T09:41:21-04:00
-NOTE: Window makes no difference to the peak — 0.16 Hz spread on 134712 — so N4L stays retired and unit 051's duty explanation is withdrawn
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
+UPDATED: 2026-08-30T09:42:55-04:00
+NOTE: Both candidate changes measured and neither earned its place; the order's premise about the admission window does not hold
 
 ---
 
