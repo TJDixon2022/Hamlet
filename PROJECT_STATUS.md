@@ -1,11 +1,11 @@
 PROJECT: Hamlet
 STATE: EXECUTING
 PHASE: 12
-TASK: 3 of 6
+TASK: 4 of 6
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-30T09:35:39-04:00
-NOTE: Four W1AW anchors re-expressed with what each still reads; 13 of 13 green. Weighing whether the corpus can verify a window change
+UPDATED: 2026-08-30T09:38:30-04:00
+NOTE: Survey window measured at 3.00 s, so task 3's premise does not hold and the change is not built; moving to the pitch window
 
 ---
 
