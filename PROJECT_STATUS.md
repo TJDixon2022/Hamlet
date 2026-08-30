@@ -1,11 +1,11 @@
 PROJECT: Hamlet
 STATE: EXECUTING
 PHASE: 12
-TASK: 2 of 6
+TASK: 3 of 6
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-29T20:16:00-04:00
-NOTE: Measured 28 of 28 digital blocks silenced, both edges inside the segment — the diagnosis holds, so tasks 2 and 3 open
+UPDATED: 2026-08-29T20:17:21-04:00
+NOTE: Evidence swapped from the regulatory segment to the map's own block; building the view-model seam test that would have caught this
 
 ---
 

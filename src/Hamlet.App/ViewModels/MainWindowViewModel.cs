@@ -5797,18 +5797,49 @@ public partial class MainWindowViewModel : ObservableObject
         var here = Neighborhoods.FirstOrDefault(n => n.Contains(atHz));
 
         // **WHAT HE IS VISIBLY DOING BEATS WHAT THE MAP SAYS LIVES HERE.** The
-        // terminal decoding and the dial inside a CW segment are both the
+        // terminal decoding and the dial sitting in a Morse block are both the
         // operator's own hand (HM-DEC-056), and on 2026-08-18 ignoring them cost
         // him sixty-six seconds of not being able to answer a station.
-        var workingCw = IsInsideCwSegment || IsCopyingMorse;
+        //
+        // **THE SECOND OPERAND USED TO BE `IsInsideCwSegment` AND THAT SILENCED
+        // MODE-FOLLOW ACROSS THE WHOLE DIGITAL MAP** (work instruction 051,
+        // measured at 28 of 28 blocks). A CW segment in this tree is derived from
+        // the emission ranges carrying data in 47 CFR 97.305(c), so **it is the
+        // CW *and data* segment** — the very stretch the digital watering holes
+        // live in, because that is what they are. Asking it whether the operator
+        // is working Morse is asking a question it cannot answer: under that
+        // paragraph Morse and data share the segment, and all 20 Morse rows and
+        // all 28 digital rows are inside one.
+        //
+        // **THE MAP CAN ANSWER IT, AND THE OPERATOR CAN SEE THE ANSWER.** Orange
+        // for Morse, purple for data, 79 cited rows, and `TargetFor` reads those
+        // very labels — the same object already in hand as `here`. So the
+        // evidence is the block, not the regulation.
+        //
+        // `IsInCwSegment` is not wrong and is not changed (HM-DEC-110): it is a
+        // true statement about regulation and `ModeLineText` still reads it. It
+        // is simply not evidence about what the operator is doing.
+        //
+        // **AND THE FIRST OPERAND CANNOT FIRE THE GUARD ON ITS OWN TODAY, WHICH
+        // IS WORTH SAYING RATHER THAN LEAVING TO BE DISCOVERED.** The guard is
+        // `workingCw && target.Mode != CivMode.Cw`, so where the block is Morse
+        // the second half is already false and where it is not the first half is.
+        // **The protection that actually bites is `IsCopyingMorse`** — characters
+        // arriving in the last half minute — and that is the operand HM-DEC-149
+        // corrected and the one the 2026-08-18 incident turned on.
+        //
+        // It is kept because it states what the evidence is rather than what
+        // survives an inlining, and because it is the half that stops mattering
+        // only while `TargetFor` maps every Morse block to CW. A future block
+        // that wanted, say, CW-R would need it.
+        var target = ModeFollowPlan.TargetFor(here);
+        var workingCw = target?.Mode == CivMode.Cw || IsCopyingMorse;
 
         // **THE AGE OF EACH READING TRAVELS WITH IT** (work instruction 042,
         // task 1). A ledger value read before Hamlet's own write is the radio
         // not having been asked since, and one read after it is the radio
         // answering. Those are the snap-back and the operator's hand on the
         // knob, and by value alone they are the same picture.
-        var target = ModeFollowPlan.TargetFor(here);
-
         var decision = ModeFollowPlan.Decide(
             _modeFollow, RigState.Mode, RigState.DataVariant,
             target, atHz, workingCw,
