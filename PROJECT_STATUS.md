@@ -1,11 +1,11 @@
 PROJECT: Hamlet
 STATE: EXECUTING
 PHASE: 12
-TASK: 1 of 6
+TASK: 2 of 6
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-30T09:25:12-04:00
-NOTE: Measuring presence, longest contiguous stretch and duty gap per capture, to see how many can demonstrate a window change at all
+UPDATED: 2026-08-30T09:28:33-04:00
+NOTE: Three captures of twelve have a presence gap at all, and two of those already read perfectly — effectively one can test a window change
 
 ---
 

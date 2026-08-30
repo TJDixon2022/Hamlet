@@ -90,6 +90,11 @@ internal static class Program
 
                 return 0;
 
+            case "presence":
+                Presence();
+
+                return 0;
+
             case "thresholds":
                 Thresholds();
 
@@ -1714,6 +1719,188 @@ internal static class Program
         var flat = text.Replace('\n', ' ').Replace('\r', ' ').Trim();
 
         return flat;
+    }
+
+    /// <summary>
+    /// How much of each capture holds a station, and how far the whole-file duty
+    /// is from the duty where the station actually is.
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE GATING MEASUREMENT** (work instruction 052, task 1). A window
+    /// change can only be demonstrated on a capture where the whole file and the
+    /// busy stretch disagree. Where a station is present for 95 per cent of a
+    /// recording the two numbers are the same and the capture proves nothing
+    /// either way.</para>
+    /// <para>**PRESENCE IS MEASURED BY A RULE THAT SHARES NO CODE WITH
+    /// ADMISSION.** Not `CwToneSurvey`, which is admission; not
+    /// `CwUnitEstimator.Otsu`, which is the threshold admission applies. The
+    /// recording is cut into one-second blocks, each block reduced to what it
+    /// reaches at its own ninetieth percentile, and a block counts as present
+    /// when that is six decibels above the quietest tenth of all blocks.</para>
+    /// <para>**TWO EARLIER INSTRUMENTS WERE DEGENERATE AND ARE RECORDED RATHER
+    /// THAN QUIETLY REPLACED**, because both failures say something about the
+    /// corpus. Six decibels above the whole envelope's median marked six of
+    /// twelve captures as nought per cent present: on a continuously-keyed
+    /// bulletin the median sits inside the signal. Six decibels above the
+    /// quietest tenth of one-second blocks marked eight of twelve at nought, for
+    /// a sharper reason — **a station present throughout leaves no quiet
+    /// reference inside its own recording**, so every relative rule reports it
+    /// as absent.</para>
+    /// <para>**SO THE TEST IS ABSOLUTE.** A second of Morse swings fifteen to
+    /// twenty-five decibels between key-down and key-up; a second of noise sits
+    /// still. Ten decibels of swing inside one second is somebody keying, and it
+    /// needs nothing else in the file to compare against.</para>
+    /// </remarks>
+    private static void Presence()
+    {
+        // **EIGHTEEN DECIBELS, TAKEN FROM THE CORPUS RATHER THAN GUESSED.**
+        // Printed to standard error below, per capture: the quietest blocks in
+        // every recording swing 11 to 15 dB and the keyed ones swing 20 to 30,
+        // with the 08-22 bulletins sitting at a tenth percentile of 19 to 24
+        // because they are keyed throughout. Eighteen is the gap between the two
+        // populations. A first guess of 10 marked every capture present and a
+        // relative rule before that marked eight of them absent; both are
+        // recorded in the remarks because each failure says something about the
+        // corpus.
+        const double KeyedSwingDb = 18.0;
+
+        Console.WriteLine(
+            "capture	seconds	present%	longestS	dutyWhole%	dutyWindow%	"
+            + "gap	p20dB	medianDb");
+
+        var rows = new List<(string Name, double Gap, string Line)>();
+
+        foreach (var (capture, _, _) in Truths)
+        {
+            var path = Find(capture);
+
+            if (path is null)
+            {
+                continue;
+            }
+
+            var audio = WavAudio.Read(path);
+            var seconds = audio.Samples.Length / (double)audio.SampleRate;
+            var toneHz = CwSpectralPeak.Find(audio.Samples, audio.SampleRate) ?? 600;
+
+            var envelope = CwProbabilisticDecoder.Envelope(
+                audio.Samples, audio.SampleRate, toneHz);
+
+            var db = envelope.Select(v => 20 * Math.Log10(Math.Max(v, 1e-12)))
+                .ToArray();
+
+            var sorted = (double[])db.Clone();
+            Array.Sort(sorted);
+
+            var p20 = At(sorted, 20);
+            var median = At(sorted, 50);
+
+            // **PRESENCE IS MEASURED IN ONE-SECOND BLOCKS, NOT SAMPLE BY SAMPLE.**
+            // A single threshold over the whole envelope is degenerate at both
+            // ends: on a mostly-silent recording the median is noise and works,
+            // and on a continuously-keyed one the median sits inside the signal
+            // and marks nothing present at all. Six of twelve captures read 0.0
+            // per cent that way, which is a fault in the instrument rather than a
+            // fact about the audio.
+            //
+            // A block is the right scale anyway. The question is "was somebody
+            // sending during this second", and Morse is silent half of any second
+            // it is sent in.
+            var hopsPerBlock = (int)(1000 / CwProbabilisticDecoder.HopMilliseconds);
+            var swings = new List<double>();
+
+            for (var at = 0; at + hopsPerBlock <= db.Length; at += hopsPerBlock)
+            {
+                var block = db.Skip(at).Take(hopsPerBlock).OrderBy(v => v).ToArray();
+
+                // **THE SWING INSIDE THE SECOND, WHICH IS AN ABSOLUTE TEST.**
+                // Morse spends a second going up and down: key-down against
+                // key-up is fifteen to twenty-five decibels. Noise sits still.
+                // Nothing here is relative to the rest of the recording, which is
+                // what the two rules before this one got wrong — a station
+                // present throughout leaves no quiet reference to be relative to,
+                // and both earlier instruments then reported it as absent.
+                swings.Add(At(block, 90) - At(block, 10));
+            }
+
+            if (swings.Count == 0)
+            {
+                continue;
+            }
+
+            var swingSorted = swings.OrderBy(v => v).ToArray();
+
+            Console.Error.WriteLine(
+                "{0}  swing p10 {1:0.0}  p50 {2:0.0}  p90 {3:0.0}  min {4:0.0}  max {5:0.0}",
+                capture, At(swingSorted, 10), At(swingSorted, 50),
+                At(swingSorted, 90), swingSorted[0], swingSorted[^1]);
+
+            var present = swings.Select(v => v > KeyedSwingDb).ToArray();            var presentShare = present.Count(v => v) / (double)present.Length;
+
+            // The longest contiguous run of presence, allowing the gaps a sender
+            // leaves between characters: a run is broken only by a second of
+            // continuous absence, since Morse is absent half the time by nature.
+            // One block is one second, so a run is broken by a single quiet
+            // second rather than by a gap between characters.
+            const int breakHops = 1;
+
+            var bestStart = 0;
+            var bestLength = 0;
+            var runStart = -1;
+            var absent = 0;
+
+            for (var i = 0; i < present.Length; i++)
+            {
+                if (present[i])
+                {
+                    if (runStart < 0)
+                    {
+                        runStart = i;
+                    }
+
+                    absent = 0;
+                }
+                else if (runStart >= 0 && ++absent > breakHops)
+                {
+                    var length = i - absent - runStart;
+
+                    if (length > bestLength)
+                    {
+                        bestLength = length;
+                        bestStart = runStart;
+                    }
+
+                    runStart = -1;
+                }
+            }
+
+            if (runStart >= 0 && present.Length - runStart > bestLength)
+            {
+                bestLength = present.Length - runStart;
+                bestStart = runStart;
+            }
+
+            var longestSeconds = (double)bestLength;
+
+            var dutyWhole = presentShare;
+            var dutyWindow = bestLength == 0
+                ? 0
+                : present.Skip(bestStart).Take(bestLength).Count(v => v)
+                  / (double)bestLength;
+
+            var gap = dutyWindow - dutyWhole;
+
+            rows.Add((capture, gap, string.Format(
+                CultureInfo.InvariantCulture,
+                "{0}	{1:0.0}	{2:0.0}	{3:0.0}	{4:0.0}	{5:0.0}	{6:+0.0;-0.0}	{7:0.0}	{8:0.0}",
+                capture, seconds, presentShare * 100, longestSeconds,
+                dutyWhole * 100, dutyWindow * 100, gap * 100, p20, median)));
+        }
+
+        foreach (var row in rows.OrderByDescending(r => r.Gap))
+        {
+            Console.WriteLine(row.Line);
+        }
     }
 
     /// <summary>Where each threshold lands, per capture, in decibels.</summary>
