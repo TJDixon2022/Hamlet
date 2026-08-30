@@ -1,11 +1,11 @@
 PROJECT: Hamlet
-STATE: EXECUTING
+STATE: COMPLETED
 PHASE: 12
 TASK: 6 of 6
-BALL: code
-NEXT_PASTE: none
-UPDATED: 2026-08-29T20:38:37-04:00
-NOTE: Refusal reason now named per branch and shown in rig diagnostics; checking whether task 6 is already built
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
+UPDATED: 2026-08-29T20:45:08-04:00
+NOTE: Digital blocks able to take a mode write went 0 of 28 to 28 of 28; two small rulings waiting
 
 ---
 

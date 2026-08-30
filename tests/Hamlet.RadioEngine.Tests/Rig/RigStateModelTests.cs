@@ -1,4 +1,4 @@
-using Hamlet.RadioEngine.Civ;
+﻿using Hamlet.RadioEngine.Civ;
 using Hamlet.RadioEngine.Rig;
 using Xunit;
 
@@ -158,17 +158,52 @@ public sealed class RigStateModelTests
     }
 
     /// <remarks>
-    /// THE CORRECTION, named so it cannot come back. Sub-command 08 is the outer
-    /// Twin PBT position and 09 is the CW pitch (p. 19-3). Issuing 08 with a
-    /// payload would move somebody's passband while trying to read a pitch.
+    /// <para>THE CORRECTION, named so it cannot come back. Sub-command 08 is the
+    /// outer Twin PBT position and 09 is the CW pitch (p. 19-3). Issuing 08 with a
+    /// payload would move somebody's passband while trying to read a pitch.</para>
+    /// <para>**THIS USED TO FORBID ANY `14 08` READ AT ALL, AND IT IS NARROWED
+    /// HERE RATHER THAN RELAXED** (work instruction 051, task 4, which
+    /// commissions the PBT read). The blanket form was a fair way to say "the
+    /// pitch is not 08" while no legitimate 08 read existed, and its own stated
+    /// hazard is a *payload* — which a read does not carry. What the guard is
+    /// actually for is stopping the pitch coming back on the wrong row of a
+    /// two-column page.</para>
+    /// <para>So it now says something stricter than before: the pitch is 09, and
+    /// **any `14 08` read must be the Twin PBT and nothing else.** The old form
+    /// would have gone green on a `14 08` read of some third field; this one does
+    /// not.</para>
     /// </remarks>
     [Fact]
     public void TheCwPitchReadIsSubCommandNine()
     {
         Assert.Equal(0x14, CivReads.CwPitch.Command);
         Assert.Equal(new byte[] { 0x09 }, CivReads.CwPitch.SubCommand);
+
+        var atZeroEight = CivReads.All
+            .Where(r => r.Command == 0x14 && r.SubCommand is [0x08])
+            .ToList();
+
+        Assert.All(
+            atZeroEight,
+            r => Assert.Equal(RigField.TwinPbtOuter, r.Field));
+    }
+
+    /// <remarks>
+    /// **AND NOTHING WRITES `14 08`**, which is the half of the old guard that was
+    /// always about the real hazard. A read carries no payload and cannot move
+    /// anything; a write carries one and would shift the operator's passband
+    /// (HM-DEC-050). This unit adds a read and no write.
+    /// </remarks>
+    [Fact]
+    public void NothingWritesTheTwinPbt()
+    {
+        var writes = typeof(CivWrites)
+            .GetProperties()
+            .Where(p => p.PropertyType == typeof(CivWrite))
+            .Select(p => (CivWrite)p.GetValue(null)!);
+
         Assert.DoesNotContain(
-            CivReads.All, r => r.Command == 0x14 && r.SubCommand is [0x08]);
+            writes, w => w.Command == 0x14 && w.Sub is [0x08]);
     }
 
     /// <remarks>
