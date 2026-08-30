@@ -1,4 +1,4 @@
-namespace Hamlet.RadioEngine.Rig;
+﻿namespace Hamlet.RadioEngine.Rig;
 
 /// <summary>
 /// One thing Hamlet can know about the radio's current state.
@@ -59,6 +59,46 @@ public enum RigField
 
     /// <summary>Whether the front end is overloading.</summary>
     Overflow,
+
+    /// <summary>
+    /// The outer Twin PBT control, which shifts one edge of the passband.
+    /// </summary>
+    /// <remarks>
+    /// **`14 08`, AND IT IS THE ROW THAT COST WEEKS.** §4 records that the CW
+    /// pitch was first read off this table as `14 08` from a flattened
+    /// extraction, and that sub-command 08 is the outer Twin PBT position
+    /// (HM-DEC-050, p. 19-3). Reading it is safe — a read carries no payload;
+    /// issuing 08 *with* one would move the operator's passband while trying to
+    /// ask a question.
+    /// </remarks>
+    TwinPbtOuter,
+
+    /// <summary>
+    /// The inner Twin PBT control. **No command for it is recorded anywhere in
+    /// this repository.**
+    /// </summary>
+    /// <remarks>
+    /// The obvious guess is the sub-command next to the outer one, and §4's own
+    /// history is the reason not to make it: that is exactly how the CW pitch
+    /// landed on the wrong row. The manual is cited and never committed (§2.1),
+    /// so establishing this needs somebody with the PDF open, and until then it
+    /// is <see cref="RigValueState.Undocumented"/> rather than a byte nobody
+    /// checked.
+    /// </remarks>
+    TwinPbtInner,
+
+    /// <summary>
+    /// Receiver incremental tuning, which offsets the receive frequency from the
+    /// transmit one. **No command for it is recorded anywhere in this
+    /// repository.**
+    /// </summary>
+    /// <remarks>
+    /// Left on, it moves the receiver off the station the dial says it is on,
+    /// which is a silent-radio cause of exactly the kind this project keeps
+    /// finding. §4 names no command for it, `CivReads` has none, and inventing
+    /// one is what §4 forbids.
+    /// </remarks>
+    Rit,
 
     /// <summary>
     /// Standing wave ratio, which only means anything while transmitting

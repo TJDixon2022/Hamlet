@@ -1,4 +1,4 @@
-using Hamlet.RadioEngine.Rig;
+﻿using Hamlet.RadioEngine.Rig;
 
 namespace Hamlet.RadioEngine.Civ;
 
@@ -265,6 +265,21 @@ public static class CivReads
         RigField.KeyerSpeed, 0x14, new byte[] { 0x0C }, "19-3",
         "00 00=6 WPM, 02 55=48 WPM");
 
+    /// <summary>Read where the outer Twin PBT control is sitting.</summary>
+    /// <remarks>
+    /// <para>**SUB-COMMAND 08, WHICH IS THE ROW THE CW PITCH WAS ONCE READ OFF BY
+    /// MISTAKE.** §4 records the correction: the pitch is 09 and 08 is the outer
+    /// Twin PBT position (HM-DEC-050, p. 19-3). This is the read form, so it
+    /// carries no payload and cannot move anything; a `14 08` *with* a payload
+    /// would shift the operator's passband while trying to ask a question, which
+    /// is what that ruling warns about.</para>
+    /// <para>**IT IS READ AND NEVER WRITTEN.** There is no PBT write in
+    /// `CivWrites` and this unit adds none.</para>
+    /// </remarks>
+    public static CivRead TwinPbtOuter { get; } = new(
+        RigField.TwinPbtOuter, 0x14, new byte[] { 0x08 }, "19-3",
+        "00 00 to 02 55, centred at 01 28");
+
     /// <summary>Read the CW pitch.</summary>
     /// <remarks>
     /// SUB-COMMAND 09, NOT 08. The first reading of this table put it at 08,
@@ -362,7 +377,7 @@ public static class CivReads
     public static IReadOnlyList<CivRead> All { get; } = new[]
     {
         Frequency, ModeAndFilter, ModeDataAndFilter, FilterWidth, SMeter,
-        TransmitStatus, Overflow, Swr, PowerOut,
+        TransmitStatus, Overflow, Swr, PowerOut, TwinPbtOuter,
         RfPower, RfGain, Squelch, SquelchStatus, Agc, Preamp, Attenuator,
         NoiseBlanker, NoiseBlankerLevel, NoiseReduction, NoiseReductionLevel,
         AutoNotch, ManualNotch, BreakIn, KeyerSpeed, CwPitch,
@@ -384,6 +399,23 @@ public static class CivReads
             [RigField.Vfo] =
                 "the command table has 07 00 and 07 01 to select VFO A or B and "
                 + "nothing that asks which one is selected (p. 19-3)",
+
+            // **THE GUESS IS AVAILABLE AND IS NOT TAKEN** (work instruction 051,
+            // task 4). The sub-command beside the outer control is the obvious
+            // candidate and §4's own history is the reason to leave it alone:
+            // that is precisely how the CW pitch landed on the wrong row of this
+            // two-column page. The manual is cited and never committed (§2.1),
+            // so this closes when somebody reads p. 19-4 column-aware, and not
+            // before.
+            [RigField.TwinPbtInner] =
+                "this repository records no sub-command for the inner Twin PBT, "
+                + "and the one beside the outer control is a guess rather than a "
+                + "citation",
+
+            [RigField.Rit] =
+                "no RIT command is recorded in CLAUDE.md section 4 or anywhere "
+                + "in this command table, so nothing here can say whether it is "
+                + "on or how far it is offset",
         };
 
     /// <summary>
