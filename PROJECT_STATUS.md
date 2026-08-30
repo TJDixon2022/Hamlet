@@ -1,11 +1,11 @@
 PROJECT: Hamlet
 STATE: EXECUTING
 PHASE: 12
-TASK: 3 of 7
+TASK: 4 of 7
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-29T21:15:01-04:00
-NOTE: Squelch wired — precision 0.858 to 0.888, yield 0.914 to 0.745; task 3 must give the yield back by admitting these stations
+UPDATED: 2026-08-29T21:54:09-04:00
+NOTE: Percentile threshold measured and refused on three counts; task 2's squelch costs four W1AW anchors and task 3 cannot give them back
 
 ---
 

@@ -1,4 +1,4 @@
-using Hamlet.RadioEngine.Audio;
+﻿using Hamlet.RadioEngine.Audio;
 using Hamlet.RadioEngine.Cw;
 using Xunit;
 using Xunit.Abstractions;
@@ -64,8 +64,16 @@ public sealed class TheAdjudicatedReadingsKeepReadingTests
     /// written. **A floor, never an answer key**: it may grow and may not shrink.
     /// </param>
     /// <param name="Ruling">Who says so.</param>
+    /// <param name="Retired">
+    /// Why this reading is no longer required of the decoder, or "" while it is
+    /// still required. **A retired anchor is re-expressed and never deleted**
+    /// (work instruction 051, task 6; the pattern unit 036 set): the recording,
+    /// the text and the reason all stay, so what was given up is visible and the
+    /// day it can be asked for again is a change to one field.
+    /// </param>
     public readonly record struct Reading(
-        string Name, string Adjudicated, string Anchor, string Ruling);
+        string Name, string Adjudicated, string Anchor, string Ruling,
+        string Retired = "");
 
     /// <summary>Every reading anybody has adjudicated, with its anchor.</summary>
     /// <remarks>
@@ -78,8 +86,23 @@ public sealed class TheAdjudicatedReadingsKeepReadingTests
         // The three callsigns, ruled before this unit.
         new Reading(
             "cw-2026-08-17-013347", "VA3VRR", "VA3VRR", "HM-DEC-145"),
+        // **RETIRED AS A READING ANCHOR BY TIM'S RULING OF 2026-08-30, AND KEPT
+        // HERE ENTIRE.** The station on this recording sits at 500.09 Hz. The old
+        // tone tracker's fallback bank centre was 500.0, so the callsign was read
+        // because an unmeasured number happened to land within a tenth of a hertz
+        // of a station — the decoder's own comment said so before unit 050
+        // measured it. `CwSpectralPeak` measures 501.2 and the reading goes.
+        //
+        // **HM-DEC-144 IS NOT WITHDRAWN.** `N4L` is still what that station sent;
+        // what is withdrawn is the requirement that Hamlet read it, because the
+        // only way it ever did was by luck. It returns when the peak can find
+        // that station honestly, which is task 7's question.
         new Reading(
-            "cw-2026-08-17-134712", "N4L", "N4", "HM-DEC-144"),
+            "cw-2026-08-17-134712", "N4L", "N4", "HM-DEC-144",
+            Retired:
+                "the peak measures 501.2 Hz against a station at 500.09, and the "
+                + "callsign was only ever read because an unmeasured bank centre "
+                + "of 500.0 landed on it (Tim, 2026-08-30)"),
         new Reading(
             "unadjudicated/cw-2026-08-18-003758",
             "AA4MP/4 QNIK", "MP/4 QNIK", "HM-DEC-126"),
@@ -178,6 +201,22 @@ public sealed class TheAdjudicatedReadingsKeepReadingTests
     public void EachAdjudicatedReadingStillComesBack(Reading reading)
     {
         var text = Settled(reading.Name);
+
+        if (reading.Retired.Length > 0)
+        {
+            // **RETIRED, AND SAID OUT LOUD RATHER THAN SKIPPED IN SILENCE.** The
+            // recording still runs and what it reads is still printed, so the day
+            // it comes back is a day somebody can see in the output rather than
+            // one nobody noticed.
+            _output.WriteLine(
+                $"{reading.Name} ({reading.Ruling}): RETIRED — {reading.Retired}");
+            _output.WriteLine($"  it reads: {text}");
+            _output.WriteLine(
+                $"  it would come back if \"{reading.Anchor}\" appeared: "
+                + text.Contains(reading.Anchor, StringComparison.Ordinal));
+
+            return;
+        }
 
         _output.WriteLine(
             $"{reading.Name} ({reading.Ruling}): looking for \"{reading.Anchor}\" "

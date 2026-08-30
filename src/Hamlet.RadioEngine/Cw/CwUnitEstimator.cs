@@ -1,4 +1,4 @@
-namespace Hamlet.RadioEngine.Cw;
+﻿namespace Hamlet.RadioEngine.Cw;
 
 /// <summary>What a stretch of envelope says the sender's timing is.</summary>
 /// <param name="UnitMilliseconds">
@@ -348,16 +348,125 @@ public static class CwUnitEstimator
         return Runs(db, Otsu(db), hysteresisDb, hopMilliseconds);
     }
 
+    /// <summary>How far above the noise floor the key-down threshold sits.</summary>
+    /// <remarks>
+    /// **BUILT, SWEPT, AND NOT ADOPTED** (work instruction 051, task 3). Kept
+    /// with its numbers so the next session finds the measurement rather than
+    /// spending an evening rebuilding it; see <see cref="Threshold"/> for the
+    /// three independent reasons it was refused.
+    /// </remarks>
+    public static double Fraction { get; set; } = 0.5;
+
+    /// <summary>
+    /// The smallest swing between noise and signal that counts as a station.
+    /// </summary>
+    /// <remarks>
+    /// **THIS IS THE "NO STATION HERE" TEST AND IT IS LOAD-BEARING NOW.** Otsu
+    /// always returned a number, so an empty band got a threshold through the
+    /// middle of its own hiss and every bin read 45 to 69 per cent duty. A
+    /// percentile threshold has to say when there is nothing to put a threshold
+    /// between.
+    /// </remarks>
+    public static double MinimumSwingDb { get; set; } = 6.0;
+
+    /// <summary>
+    /// The key-down threshold, from the envelope's own percentiles.
+    /// </summary>
+    /// <param name="db">The envelope in decibels.</param>
+    /// <returns>The threshold in decibels.</returns>
+    /// <remarks>
+    /// <para>**OTSU ASSUMES TWO CLASSES OF COMPARABLE MASS AND A BAND MOSTLY
+    /// SILENT HAS ONE** (work instruction 051, task 3). On
+    /// `cw-2026-08-30-001650` the station occupies about twelve per cent of the
+    /// file, so Otsu split the noise distribution down the middle and returned a
+    /// threshold inside the hiss. Measured over the last fifteen seconds, every
+    /// bin from 450 to 775 Hz then read 45 to 69 per cent duty and nothing stood
+    /// out; with a threshold above the noise exactly one fifty-hertz band lit up
+    /// and the rest of the passband went to zero. **Same audio, opposite
+    /// verdicts.**</para>
+    /// <para>**THE PERCENTILES ARE CHOSEN TO BE ROBUST TO THE THING THAT BROKE
+    /// OTSU.** The twentieth is noise even when a signal is busy; the
+    /// ninety-eighth is signal even when a click is louder than it. Neither
+    /// depends on the two having comparable mass, which is the assumption that
+    /// failed.</para>
+    /// <para>**AND THE HYSTERESIS IS UNTOUCHED.** The ±6 dB Schmitt trigger is
+    /// measured and it works; only where the trigger sits has changed.</para>
+    /// <para>**IT IS NOT WIRED IN, AND THREE INDEPENDENT MEASUREMENTS REFUSED
+    /// IT.** The reasoning above is sound about the failing case and the corpus
+    /// says it is wrong about every other one.</para>
+    /// <list type="number">
+    /// <item>**The fraction sweep is not monotonic**, and the order forbids
+    /// adopting off a curve that is not: precision runs 0.601, 0.728, 0.751,
+    /// 0.703, 0.770, 0.787, 0.742, 0.738 across fractions 0.20 to 0.60. It goes
+    /// up, down, up, down.</item>
+    /// <item>**Every candidate is far below the floor.** The best is 0.787 at a
+    /// fraction of 0.50, against 0.888 with Otsu and a hard floor of 0.858.</item>
+    /// <item>**It fails its own acceptance criterion**, which was that on
+    /// known-good captures the threshold lands within a decibel or two of where
+    /// it lands today. Measured, it lands **0.6 to 4.9 dB higher**, median about
+    /// 3.0, and higher on every single capture — which is why yield collapsed.
+    /// On `cw-2026-08-17-013347` the twentieth percentile falls at −110 dB,
+    /// because that recording is mostly digital silence and a percentile of
+    /// silence is not a noise floor.</item>
+    /// </list>
+    /// <para>**SO OTSU IS RIGHT EXACTLY WHERE THE ORDER PREDICTED IT WOULD BE** —
+    /// where signal and noise have comparable mass — and the fault it has is real
+    /// and is confined to the case where they do not. **What could not be done
+    /// this unit is verify a repair**, because the two captures the fault was
+    /// measured on are not in this repository.</para>
+    /// </remarks>
+    public static double Threshold(double[] db)
+    {
+        ArgumentNullException.ThrowIfNull(db);
+
+        if (db.Length == 0)
+        {
+            return 0;
+        }
+
+        var sorted = (double[])db.Clone();
+
+        Array.Sort(sorted);
+
+        var floor = Percentile(sorted, 20);
+        var peak = Percentile(sorted, 98);
+
+        if (peak - floor < MinimumSwingDb)
+        {
+            // **NOTHING HERE.** Returning a threshold above everything means no
+            // hop is ever key-down, which is the honest answer for a band with
+            // no station in it — and the answer Otsu could not give (§0.0).
+            return sorted[^1] + 1;
+        }
+
+        return floor + (Fraction * (peak - floor));
+    }
+
+    /// <summary>One percentile of an already-sorted array.</summary>
+    private static double Percentile(double[] sorted, double share)
+    {
+        var at = (share / 100.0) * (sorted.Length - 1);
+        var low = (int)Math.Floor(at);
+        var high = Math.Min(low + 1, sorted.Length - 1);
+
+        return sorted[low] + ((sorted[high] - sorted[low]) * (at - low));
+    }
+
     /// <summary>
     /// The level that splits the envelope into two classes with the least
     /// variance inside them.
     /// </summary>
     /// <remarks>
-    /// Otsu's method over a histogram of the envelope in decibels. It is a
+    /// <para>Otsu's method over a histogram of the envelope in decibels. It is a
     /// measurement of this recording rather than a level anybody chose, which is
-    /// what lets the trigger depth be the only constant here.
+    /// what lets the trigger depth be the only constant here.</para>
+    /// <para>**PUBLIC SO THE TWO THRESHOLDS CAN BE COMPARED SIDE BY SIDE** (work
+    /// instruction 051, task 3), which is the acceptance criterion that decided
+    /// whether the percentile threshold could be adopted.</para>
     /// </remarks>
-    private static double Otsu(double[] db)
+    /// <param name="db">The envelope in decibels.</param>
+    /// <returns>The split, in decibels.</returns>
+    public static double Otsu(double[] db)
     {
         var low = double.MaxValue;
         var high = double.MinValue;

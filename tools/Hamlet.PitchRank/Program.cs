@@ -90,6 +90,21 @@ internal static class Program
 
                 return 0;
 
+            case "thresholds":
+                Thresholds();
+
+                return 0;
+
+            case "fraction":
+                FractionSweep(args.Skip(1).ToArray());
+
+                return 0;
+
+            case "minswing":
+                MinSwingSweep(args.Skip(1).ToArray());
+
+                return 0;
+
             case "peakcost":
                 PeakCost();
 
@@ -1699,6 +1714,161 @@ internal static class Program
         var flat = text.Replace('\n', ' ').Replace('\r', ' ').Trim();
 
         return flat;
+    }
+
+    /// <summary>Where each threshold lands, per capture, in decibels.</summary>
+    /// <remarks>
+    /// **THE ORDER'S OWN ACCEPTANCE CRITERION** (work instruction 051, task 3):
+    /// *on the known-good captures the threshold lands within a decibel or two of
+    /// where it lands today.* This measures that directly rather than inferring
+    /// it from a score, because a score conflates where the threshold is with
+    /// what the decoder made of it.
+    /// </remarks>
+    private static void Thresholds()
+    {
+        Console.WriteLine("capture	otsuDb	percentileDb	moveDb	p20	p98	swing");
+
+        foreach (var (capture, _, _) in Truths)
+        {
+            var path = Find(capture);
+
+            if (path is null)
+            {
+                continue;
+            }
+
+            var audio = WavAudio.Read(path);
+            var peak = CwSpectralPeak.Find(audio.Samples, audio.SampleRate) ?? 600;
+            var envelope = Envelope(audio, peak);
+
+            var db = envelope.Select(v => 20 * Math.Log10(Math.Max(v, 1e-12)))
+                .ToArray();
+
+            var sorted = (double[])db.Clone();
+            Array.Sort(sorted);
+
+            var p20 = At(sorted, 20);
+            var p98 = At(sorted, 98);
+
+            var otsu = CwUnitEstimator.Otsu(db);
+            var pct = CwUnitEstimator.Threshold(db);
+
+            Console.WriteLine(
+                "{0}	{1:0.0}	{2:0.0}	{3:+0.0;-0.0}	{4:0.0}	{5:0.0}	{6:0.0}",
+                capture, otsu, pct, pct - otsu, p20, p98, p98 - p20);
+        }
+    }
+
+    /// <summary>One percentile of a sorted array.</summary>
+    private static double At(double[] sorted, double share)
+    {
+        var at = (share / 100.0) * (sorted.Length - 1);
+        var low = (int)Math.Floor(at);
+        var high = Math.Min(low + 1, sorted.Length - 1);
+
+        return sorted[low] + ((sorted[high] - sorted[low]) * (at - low));
+    }
+
+    /// <summary>The decoder's own envelope at one pitch.</summary>
+    /// <remarks>
+    /// The same function the decoder runs, so the thresholds compared below sit
+    /// on the numbers the decoder actually sees (§0: one source of truth).
+    /// </remarks>
+    private static IReadOnlyList<double> Envelope(MonoAudio audio, double toneHz)
+        => CwProbabilisticDecoder.Envelope(
+            audio.Samples, audio.SampleRate, toneHz);
+
+    /// <summary>Corpus score across candidate key-down fractions.</summary>
+    /// <remarks>
+    /// **THE ORDER FORBIDS FIXING IT AT 0.5 WITHOUT SWEEPING** (work instruction
+    /// 051, task 3), and forbids adopting off a non-monotonic curve.
+    /// </remarks>
+    private static void FractionSweep(string[] only)
+    {
+        Console.WriteLine("fraction	yield	precision	correct	subs	ins	dels");
+
+        var values = only.Length > 0
+            ? only.Select(v => double.Parse(v, CultureInfo.InvariantCulture)).ToArray()
+            : new[] { 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50, 0.55, 0.60 };
+
+        foreach (var fraction in values)
+        {
+            CwUnitEstimator.Fraction = fraction;
+            ScoreQuietly(fraction.ToString("0.00", CultureInfo.InvariantCulture));
+        }
+
+        CwUnitEstimator.Fraction = 0.5;
+    }
+
+    /// <summary>Corpus score across candidate minimum swings.</summary>
+    private static void MinSwingSweep(string[] only)
+    {
+        Console.WriteLine("minSwingDb	yield	precision	correct	subs	ins	dels");
+
+        var values = only.Length > 0
+            ? only.Select(v => double.Parse(v, CultureInfo.InvariantCulture)).ToArray()
+            : new[] { 3.0, 4.0, 5.0, 6.0, 8.0, 10.0, 12.0, 15.0 };
+
+        foreach (var swing in values)
+        {
+            CwUnitEstimator.MinimumSwingDb = swing;
+            ScoreQuietly(swing.ToString("0.0", CultureInfo.InvariantCulture));
+        }
+
+        CwUnitEstimator.MinimumSwingDb = 6.0;
+    }
+
+    /// <summary>One corpus score as a single row.</summary>
+    private static void ScoreQuietly(string label)
+    {
+        var truthTotal = 0;
+        var correct = 0;
+        var asserted = 0;
+        var subs = 0;
+        var ins = 0;
+        var dels = 0;
+
+        foreach (var (capture, truth, _) in Truths)
+        {
+            var path = Find(capture);
+
+            if (path is null)
+            {
+                continue;
+            }
+
+            var audio = WavAudio.Read(path);
+            var decoder = new CwDecoder(audio.SampleRate, 600);
+            var text = new System.Text.StringBuilder();
+
+            decoder.CharacterSettled += c => text.Append(c.Text);
+
+            var hop = decoder.Tracker.HopSamples;
+
+            for (var at = 0L; at + hop <= audio.Samples.Length; at += hop)
+            {
+                decoder.Process(new AudioChunk(
+                    at, audio.SampleRate, audio.Samples.AsSpan((int)at, hop)));
+            }
+
+            decoder.Flush();
+
+            var score = CwAccuracy.Score(text.ToString(), truth);
+
+            truthTotal += score.TruthCharacters;
+            correct += score.Correct;
+            asserted += score.ScoredCharacters;
+            subs += score.Substitutions;
+            ins += score.Insertions;
+            dels += score.Deletions;
+        }
+
+        Console.WriteLine(
+            "{0}	{1:0.000}	{2:0.000}	{3}	{4}	{5}	{6}",
+            label,
+            truthTotal == 0 ? 0 : (double)correct / truthTotal,
+            asserted == 0 ? 0 : (double)correct / asserted,
+            correct, subs, ins, dels);
     }
 
     /// <summary>What one spectral peak measurement costs, in milliseconds.</summary>
