@@ -1,11 +1,11 @@
 PROJECT: Hamlet
-STATE: COMPLETED
+STATE: EXECUTING
 PHASE: 12
-TASK: 6 of 6
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
-UPDATED: 2026-08-30T09:42:55-04:00
-NOTE: Both candidate changes measured and neither earned its place; the order's premise about the admission window does not hold
+TASK: 1 of 6
+BALL: code
+NEXT_PASTE: none
+UPDATED: 2026-08-30T19:21:48-04:00
+NOTE: Listing the commit range from unit 048 to head to bisect the three captures that read at 1.000
 
 ---
 
