@@ -1,11 +1,11 @@
 PROJECT: Hamlet
-STATE: EXECUTING
+STATE: BLOCKED
 PHASE: 12
-TASK: 3 of 7
-BALL: code
-NEXT_PASTE: none
-UPDATED: 2026-08-30T23:40:03-04:00
-NOTE: Swing admission shipped — 003229 reads 57 characters where it showed 43 blocks; precision 0.889 sits 0.005 under the floor
+TASK: 2 of 7
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
+UPDATED: 2026-08-30T23:42:14-04:00
+NOTE: The refused CQ reads 57 characters where it showed 43 blocks; precision sits 0.005 under the floor and that needs a ruling
 
 ---
 
