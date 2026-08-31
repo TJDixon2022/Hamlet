@@ -1,9 +1,9 @@
 PROJECT: Hamlet
-STATE: COMPLETED
+STATE: RUNNING
 PHASE: Hamlet hears FT8 off the radio and displays the decoded text on screen
-TASK: 6 of 6
-BALL: tim
+TASK: 1 of 6
+BALL: claude
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-152 (2026-08-31)
-UPDATED: 2026-08-31T19:10:00-04:00
-NOTE: All six tasks done and pushed; criterion 5 demonstrated by 7553 zero syndrome bits with three corruptions watched refusing, rank 83 confirms the dimension. Earlier UPDATED stamps this unit were composed rather than read and ran up to 50 minutes fast — corrected here and reported in output.md section 4
+UPDATED: 2026-08-31T19:42:00-04:00
+NOTE: Trace measured — HEAD a3a5c90 on main as stated, Hamlet.sln names exactly the three test projects and no fourth. Ft8Sharp.Tests run next, then the single build attempt on Hamlet.App.Tests that decides whether the whole suite is reachable tonight
