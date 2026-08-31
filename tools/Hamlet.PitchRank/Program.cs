@@ -90,6 +90,28 @@ internal static class Program
 
                 return 0;
 
+            case "holdscore":
+                foreach (var h in args.Skip(1))
+                {
+                    CwUnitEstimator.HoldOverMilliseconds =
+                        double.Parse(h, CultureInfo.InvariantCulture);
+
+                    var t = ScoreTotals();
+
+                    Console.WriteLine(
+                        "{0} ms	yield {1:0.000}	precision {2:0.000}	subs {3}",
+                        h, t.Yield, t.Precision, t.Subs);
+                }
+
+                CwUnitEstimator.HoldOverMilliseconds = 0;
+
+                return 0;
+
+            case "holdover":
+                HoldOverSweep();
+
+                return 0;
+
             case "scatter":
                 ScatterSweep();
 
@@ -1739,6 +1761,75 @@ internal static class Program
         var flat = text.Replace('\n', ' ').Replace('\r', ' ').Trim();
 
         return flat;
+    }
+
+    /// <summary>Dit scatter across hold-over lengths, per capture.</summary>
+    /// <remarks>
+    /// **DIT CV IS THE MEASURE FOR THIS ONE** (work instruction 054, task 3): a
+    /// dit whose length varies by half its own duration is a dit that has been cut
+    /// in two, and that is the fault the hold-over exists to repair.
+    /// </remarks>
+    private static void HoldOverSweep()
+    {
+        var holds = new[] { 0, 8, 12, 16, 24, 32.0 };
+
+        Console.WriteLine(
+            "safe bound: {0:0} ms, a dit at {1:0} words a minute",
+            CwUnitEstimator.LongestSafeHoldOverMs,
+            CwProbabilisticDecoder.FastestWpm);
+
+        Console.Write("capture");
+
+        foreach (var hold in holds)
+        {
+            Console.Write("	" + hold.ToString("0", CultureInfo.InvariantCulture));
+        }
+
+        Console.WriteLine();
+
+        foreach (var (capture, _, _) in Truths)
+        {
+            var path = Find(capture);
+
+            if (path is null)
+            {
+                continue;
+            }
+
+            var audio = WavAudio.Read(path);
+            var toneHz = CwSpectralPeak.Find(audio.Samples, audio.SampleRate) ?? 600;
+            var envelope = CwProbabilisticDecoder.Envelope(
+                audio.Samples, audio.SampleRate, toneHz);
+
+            Console.Write(capture);
+
+            foreach (var hold in holds)
+            {
+                CwUnitEstimator.HoldOverMilliseconds = hold;
+
+                var (marks, _) = CwUnitEstimator.Elements(
+                    envelope, CwProbabilisticDecoder.HopMilliseconds);
+
+                if (marks.Count < 8)
+                {
+                    Console.Write("	-");
+
+                    continue;
+                }
+
+                var sorted = marks.OrderBy(v => v).ToArray();
+                var cut = (At(sorted, 25) + At(sorted, 75)) / 2;
+                var shortOnes = marks.Where(m => m <= cut).ToArray();
+
+                Console.Write(shortOnes.Length >= 4
+                    ? "	" + Cv(shortOnes).ToString("0.000", CultureInfo.InvariantCulture)
+                    : "	-");
+            }
+
+            Console.WriteLine();
+        }
+
+        CwUnitEstimator.HoldOverMilliseconds = 0;
     }
 
     /// <summary>Element scatter across threshold setbacks, per capture.</summary>

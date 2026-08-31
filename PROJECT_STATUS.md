@@ -1,11 +1,11 @@
 PROJECT: Hamlet
 STATE: EXECUTING
 PHASE: 12
-TASK: 3 of 6
+TASK: 4 of 6
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-30T21:32:17-04:00
-NOTE: Peak reference refused — under 6 dB is arithmetically impossible, the rest is non-monotonic, and the one candidate reads 0.840; on to the hold-over
+UPDATED: 2026-08-30T21:53:22-04:00
+NOTE: Hold-over of 12 ms ships — precision 0.888 to 0.894, subs 17 to 15, every floor held and silence lock green
 
 ---
 

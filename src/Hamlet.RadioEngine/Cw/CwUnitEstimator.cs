@@ -609,7 +609,65 @@ public static class CwUnitEstimator
         return low + ((bestBin + 0.5) * width);
     }
 
+    /// <summary>
+    /// How long a key-down may dip below the trigger without ending, in
+    /// milliseconds.
+    /// </summary>
+    /// <remarks>
+    /// <para>**SIZED FROM THE FADING AND BOUNDED BY THE SHORTEST REAL GAP** (work
+    /// instruction 054, task 3). Unit 053 measured dropouts inside key-down at 32
+    /// to 53 ms on this corpus, and this unit measured that the existing bridging
+    /// absorbs 20 ms and gives out at 30 — so the fading sits just past what is
+    /// already handled.</para>
+    /// <para>**THE BOUND IS THE INTER-ELEMENT GAP AND IT IS ASSERTED, NOT
+    /// REMEMBERED.** At the fastest speed the decoder considers, one dit is the
+    /// gap, so the hold-over must be shorter than a dit at
+    /// <see cref="CwProbabilisticDecoder.FastestWpm"/> or it bridges a real gap
+    /// and welds two elements into one. That bound is what stops this being sized
+    /// to the fading alone.</para>
+    /// <para>**TWELVE MILLISECONDS, ADOPTED ON A MONOTONIC REGION AND BOUNDED BY
+    /// A FLOOR.** Swept over the whole corpus, precision reads 0.888 at nought,
+    /// 0.888 at 8, **0.894 at 12**, 0.905 at 16 and 0.898 at 24. Nought through
+    /// sixteen is non-decreasing, so sixteen is the top of the monotonic region
+    /// and was the first candidate.</para>
+    /// <para>**SIXTEEN COST AN ANCHOR AND IS NOT TAKEN.** It broke
+    /// `cw-2026-08-22-031838`'s adjudicated run `, AND` in
+    /// `TheAdjudicatedReadingsKeepReadingTests`, and §12.5 does not let a floor be
+    /// lowered to fit a change. Twelve holds every floor in the suite, and it is
+    /// the better point on two of the three numbers anyway: yield **0.750**
+    /// against 0.745 at nought and 0.742 at sixteen, and substitutions **15**
+    /// against 17 and 18. The 1.1 points of precision given up against sixteen buy
+    /// an anchor that stays.</para>
+    /// <para>**IT IS THREE HOPS, AND IT DOES NOT REACH THE FADING.** The dropouts
+    /// unit 053 measured run 32 to 53 ms and the safe bound here is 30, so this
+    /// cannot bridge them and does not claim to. What it does is extend the
+    /// bridging from the 20 ms the hysteresis already absorbs to about 25, and the
+    /// corpus says that is worth 0.6 points of precision and two substitutions.</para>
+    /// <para>**DIT SCATTER BARELY MOVED AND THE DECODE IMPROVED ANYWAY**, which is
+    /// worth recording because dit CV was the measure this change was expected to
+    /// be judged on. Across the whole sweep it changes by hundredths and not
+    /// always downward — `134712` runs 0.432, 0.432, 0.432, 0.428, 0.441, 0.462.
+    /// **The scatter was a poor proxy for the reading**, and the reading is what
+    /// the goal is stated in.</para>
+    /// </remarks>
+    public static double HoldOverMilliseconds { get; set; } = 12.0;
+
+    /// <summary>The longest hold-over that cannot bridge a real gap.</summary>
+    /// <remarks>
+    /// A dit at the fastest speed the decoder will consider. At 30 words a minute
+    /// that is 40 ms, and the inter-element gap is one dit, so anything at or
+    /// above it can weld two elements together.
+    /// </remarks>
+    public static double LongestSafeHoldOverMs
+        => 1200.0 / CwProbabilisticDecoder.FastestWpm;
+
     /// <summary>Mark and gap lengths from a two-level trigger.</summary>
+    /// <remarks>
+    /// **THE HOLD-OVER APPLIES ONLY INSIDE A KEY-DOWN THAT HAS ALREADY BEEN
+    /// ADMITTED.** A dip while the key is up is not extended into an element —
+    /// that would turn a noise crossing into a mark, which is the opposite of
+    /// what this is for (§0.0, HM-DEC-120).
+    /// </remarks>
     private static (List<double> Marks, List<double> Gaps) Runs(
         double[] db, double cut, double hysteresisDb, double hopMilliseconds)
     {
@@ -620,11 +678,23 @@ public static class CwUnitEstimator
         var keyDown = db[0] > on;
         var runStart = 0;
 
+        var holdHops = (int)Math.Floor(
+            Math.Min(HoldOverMilliseconds, LongestSafeHoldOverMs - 1e-9)
+            / hopMilliseconds);
+
         for (var i = 1; i < db.Length; i++)
         {
             var changed = keyDown ? db[i] < off : db[i] > on;
 
             if (!changed)
+            {
+                continue;
+            }
+
+            // **A KEY-DOWN THAT COMES BACK INSIDE THE HOLD-OVER NEVER ENDED.**
+            // Look ahead: if the trigger reopens within the hold, this dip is a
+            // fade in the middle of one element rather than the end of it.
+            if (keyDown && holdHops > 0 && ReopensWithin(db, i, holdHops, on))
             {
                 continue;
             }
@@ -641,6 +711,27 @@ public static class CwUnitEstimator
         }
 
         return (marks, gaps);
+    }
+
+    /// <summary>Whether the trigger reopens within the hold-over.</summary>
+    /// <param name="db">The envelope in decibels.</param>
+    /// <param name="from">Where the dip began.</param>
+    /// <param name="holdHops">How many hops the hold-over covers.</param>
+    /// <param name="on">The level that reopens the trigger.</param>
+    /// <returns>True where the key comes back before the hold-over runs out.</returns>
+    private static bool ReopensWithin(double[] db, int from, int holdHops, double on)
+    {
+        var last = Math.Min(from + holdHops, db.Length - 1);
+
+        for (var i = from + 1; i <= last; i++)
+        {
+            if (db[i] > on)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /// <summary>
