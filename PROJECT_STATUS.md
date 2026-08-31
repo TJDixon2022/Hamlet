@@ -1,11 +1,11 @@
 PROJECT: Hamlet
 STATE: EXECUTING
 PHASE: 12
-TASK: 2 of 7
+TASK: 3 of 7
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-30T23:03:48-04:00
-NOTE: Swing ranking finds 588 Hz on 003229 where the survey found nothing; building it into the engine next
+UPDATED: 2026-08-30T23:40:03-04:00
+NOTE: Swing admission shipped — 003229 reads 57 characters where it showed 43 blocks; precision 0.889 sits 0.005 under the floor
 
 ---
 

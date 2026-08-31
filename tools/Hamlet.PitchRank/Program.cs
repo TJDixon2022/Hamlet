@@ -90,6 +90,58 @@ internal static class Program
 
                 return 0;
 
+            case "swingsweep":
+                foreach (var v in args.Skip(1))
+                {
+                    CwDecoder.LeastSwingDb =
+                        double.Parse(v, CultureInfo.InvariantCulture);
+
+                    var r = ScoreTotals();
+
+                    Console.WriteLine(
+                        "{0} dB	yield {1:0.000}	precision {2:0.000}	subs {3}",
+                        v, r.Yield, r.Precision, r.Subs);
+                }
+
+                CwDecoder.LeastSwingDb = 15.0;
+
+                return 0;
+
+            case "show":
+                foreach (var n in args.Skip(1))
+                {
+                    var f = Directory
+                        .GetFiles(CaptureFolder(), "*.wav", SearchOption.AllDirectories)
+                        .First(x => Path.GetFileName(x).Contains(n, StringComparison.Ordinal));
+
+                    var a = WavAudio.Read(f);
+                    var d = new CwDecoder(a.SampleRate, 600);
+                    var b = new System.Text.StringBuilder();
+
+                    d.CharacterSettled += c => b.Append(c.Text);
+
+                    var h = d.Tracker.HopSamples;
+
+                    for (var at = 0L; at + h <= a.Samples.Length; at += h)
+                    {
+                        d.Process(new AudioChunk(
+                            at, a.SampleRate, a.Samples.AsSpan((int)at, h)));
+                    }
+
+                    d.Flush();
+
+                    var txt = b.ToString();
+                    var named = txt.Count(c => c != ' ' && c.ToString() != "■");
+                    var blocks = txt.Count(c => c.ToString() == "■");
+
+                    Console.WriteLine(
+                        "{0}  {1:0.0} Hz  {2} named  {3} blocks",
+                        n, d.Reading.ToneHz, named, blocks);
+                    Console.WriteLine("   " + txt);
+                }
+
+                return 0;
+
             case "profile":
                 {
                     var f = Directory

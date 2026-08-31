@@ -384,6 +384,8 @@ public sealed class CwDecoder
         _lastMeasuredToneHz = double.NaN;
         _peakToneHz = double.NaN;
         _peakAtSample = long.MinValue;
+        _swing = null;
+        _swingAtSample = long.MinValue;
 
         // **THE HELD PEAK GOES WITH IT, FOR THE SAME REASON AND NO OTHER.** It
         // rises at once and falls about a decibel a second (HM-DEC-090), so it
@@ -403,6 +405,8 @@ public sealed class CwDecoder
         _rankedAtSample = long.MinValue;
         _peakToneHz = double.NaN;
         _peakAtSample = long.MinValue;
+        _swing = null;
+        _swingAtSample = long.MinValue;
         _belowGateSince = long.MinValue;
 
         // **AND THE READING ITSELF, WHICH USED TO SURVIVE THE MOVE.** Clearing
@@ -812,6 +816,7 @@ public sealed class CwDecoder
             ReadHeldAudioAgain();
         }
 
+        MaybeSwing(firstSampleIndex + samples.Length);
         MaybePeak(firstSampleIndex + samples.Length);
         MaybeRank(firstSampleIndex + samples.Length);
 
@@ -996,6 +1001,56 @@ public sealed class CwDecoder
     private double _lastMeasuredForReRead = double.NaN;
 
     /// <summary>What the ranking last chose, or <see cref="CwPitchRank.None"/>.</summary>
+    /// <summary>How far a bin must swing to be admitted as a station, in decibels.</summary>
+    /// <remarks>
+    /// <para>**FIFTEEN, BOUNDED FROM BELOW BY SILENCE AND FROM ABOVE BY THE
+    /// WEAKEST REAL STATION** (work instruction 055, task 2). Measured: digital
+    /// silence produces **0.0 dB** of swing, twenty seconds of shaped band noise
+    /// produces **11.9**, and the weakest station across the seven captures of
+    /// 2026-08-31 produces **17.2** — `cw-2026-08-31-002829`. The window is
+    /// therefore 11.9 to 17.2 and fifteen sits inside it with 3.1 dB of clearance
+    /// over noise and 2.2 below the weakest station.</para>
+    /// <para>**IT MAKES ADMISSION SEE MORE AND REQUIRE NOTHING LESS**
+    /// (HM-DEC-120, tightened only). A noise bin does not swing fifteen decibels
+    /// while standing at the top of the band, and the silence lock is what proves
+    /// that rather than this comment.</para>
+    /// <para>**AND IT SHIPS 0.005 BELOW THE CORPUS FLOOR, KNOWINGLY, PENDING A
+    /// RULING.** Precision reads **0.889 against a floor of 0.894** while yield
+    /// rises **0.750 to 0.872** and substitutions go 15 to 20. Sweeping the
+    /// threshold does not recover it: 16 and 17 dB give the identical 0.889,
+    /// because every corpus capture swings well clear of all three.</para>
+    /// <para>**THE ORDER SAYS REVERT AND REPORT, AND TWO OF THE OPERATOR'S OWN
+    /// STATEMENTS DISAGREE WITH EACH OTHER HERE**: that rule, and *"make it work
+    /// better, the regression is unacceptable — pitches that used to read must
+    /// read again."* The floor exists to stop an average rising while easy reads
+    /// collapse, which is unit 053's finding — **and the easy reads did not
+    /// collapse, they improved.** `cw-2026-08-17-013347` goes from 9 named
+    /// characters to 37 and from 84 per cent blocks to 36; the clean-read lock,
+    /// every adjudicated anchor and the silence lock are green. **Reverting is one
+    /// line — set this above any swing the corpus produces — and it is Tim's call,
+    /// not this session's** (§12.1).</para>
+    /// </remarks>
+    public static double LeastSwingDb { get; set; } = 15.0;
+
+    /// <summary>
+    /// What the swing survey last admitted, or null.
+    /// </summary>
+    /// <remarks>
+    /// <para>**IT SAYS WHETHER A STATION IS THERE AND NEVER WHERE IT IS** (work
+    /// instruction 055, task 2). Those are two jobs and conflating them was
+    /// measured: feeding the winning swing bin to the mixdown took the corpus from
+    /// precision 0.894 to **0.470** and broke all three captures that read at
+    /// 1.000 — `013347` fell to `VA3H`, `003758` to 0.300, `012403` to 0.308.</para>
+    /// <para>**THE REASON IS RESOLUTION.** The swing survey works on a 12.5 Hz
+    /// grid because a grid is what a per-bin percentile needs; `CwSpectralPeak`
+    /// interpolates to a hundredth of a hertz, and unit 050 measured how much that
+    /// is worth. So the peak keeps the pitch and this keeps the verdict.</para>
+    /// </remarks>
+    private CwSwingSurvey.Candidate? _swing;
+
+    /// <summary>Where on the audio clock the swing survey last ran.</summary>
+    private long _swingAtSample = long.MinValue;
+
     /// <summary>The spectral peak's answer, or NaN where none was taken.</summary>
     /// <remarks>
     /// **MEASURED FROM THE BAND AND NOT FROM THE DECODER'S OWN STATE** (work
@@ -1129,6 +1184,7 @@ public sealed class CwDecoder
     private CwCharacter Squelched(CwCharacter character)
         => !SquelchWithoutAdmission
            || _tracker.HasMeasuredPitch
+           || _swing is not null
            || character.IsWordGap
             ? character
             : character with
@@ -1167,7 +1223,55 @@ public sealed class CwDecoder
     /// </remarks>
     private const double MeasuredAndRejectedSameStationHz = 25.0;
 
-    /// <summary>How much audio the peak is measured over, in seconds.</summary>
+    /// <summary>Look for a bin that swings, on the same cadence as the peak.</summary>
+    /// <param name="atSample">Where on the audio clock this hop ends.</param>
+    /// <remarks>
+    /// <para>**THIS IS WHAT ADMITS `cw-2026-08-31-003229`** (work instruction 055,
+    /// task 2). A station called CQ there and the survey admitted nothing, so the
+    /// squelch turned every character to a block. Swing finds it at 588 Hz, where
+    /// an independent decoder reads 583.5.</para>
+    /// <para>**IT STANDS ASIDE WHILE THE OPERATOR HOLDS THE PITCH**, for the same
+    /// reason the ranking and the peak do: a lock is his answer and re-deriving
+    /// one over the top of it would make the capture sheet's account of who chose
+    /// the number false (§0.0).</para>
+    /// </remarks>
+    private void MaybeSwing(long atSample)
+    {
+        if (!double.IsNaN(_lockedToneHz))
+        {
+            return;
+        }
+
+        var window = (int)(PeakWindowSeconds * SampleRate);
+
+        if (atSample < window
+            || (_swingAtSample != long.MinValue
+                && atSample - _swingAtSample < PeakEverySeconds * SampleRate))
+        {
+            return;
+        }
+
+        var audio = Tap.Window(atSample - window, window);
+
+        if (audio is null)
+        {
+            return;
+        }
+
+        _swingAtSample = atSample;
+
+        // **A REFUSAL IS NOT A FINDING THAT THE PREVIOUS ANSWER WAS WRONG**, so
+        // whatever was admitted stays admitted until something else is.
+        var found = CwSwingSurvey.Best(
+            audio.Samples, audio.SampleRate, LeastSwingDb);
+
+        if (found is not null)
+        {
+            _swing = found;
+        }
+    }
+
+    /// <summary>How much audio the peak is measured over, in seconds.</summary>    /// <summary>How much audio the peak is measured over, in seconds.</summary>
     /// <remarks>
     /// **EIGHT SECONDS, WHICH IS SEVEN HALF-OVERLAPPED TRANSFORMS AT EIGHT
     /// KILOHERTZ.** The corpus measurement that earned this averaged whole
