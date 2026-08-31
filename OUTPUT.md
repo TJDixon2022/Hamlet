@@ -1,404 +1,385 @@
 READ IN THIS ORDER — A, then B, then C.
 
 A. PHASE — Hamlet hears FT8 off the radio and displays the decoded text on screen.
-Seven steps. Step 1 (the library exists and its tables are proven) is at four of its
-six must-pass criteria demonstrated, up from three. Steps 2 (messages round-trip
-through 77 bits), 3 (a valid FT8 signal can be produced), 4 (signals are found in
-noise), 5 (a found signal becomes a message), 6 (sensitivity meets the published
-threshold) and 7 (Hamlet displays decoded FT8) are all not started, and none of them
-has been touched by this unit. Steps 2 through 7 remain unreachable until step 1
-closes: the plan's own named deviation is that every step depends on the one before
-it, so there is no branch of this phase that can be worked in parallel while step 1
-is open.
-B. STEP 1 — the library exists and its tables are proven. Six must-pass exit
-criteria: (1) the project builds under .NET 8 with nullable, warnings as errors and
-no third-party runtime dependencies; (2) LICENSE, NOTICE and porting-notes.md present
-and correct; (3) the boundary test passing AND shown to fail; (4) tables converted by
-a checked-in tool that reads ft8/constants.c, reproducible against a future upstream;
-(5) tables verified by LDPC encode against reference parity; (6) whole Hamlet suite —
-no new red, inherited failing set unchanged, named and counted. 1, 2 and 3 were
-demonstrated by unit 201 and this unit inherits them. THIS UNIT WAS AIMED AT 4 AND AT
-NOTHING ELSE. Criterion 4 is met: the six tables were converted by
-tests/Ft8Sharp.Tests/TableGen/, the result is checked in at
-src/Ft8Sharp/Tables/Ft8Tables.g.cs, and a watched test parses the pinned clone again,
-emits into memory and asserts byte-identity — passing, and watched refusing a single
-altered element by name. Criterion 5 was not attempted: no encoder was written and no
-parity was checked. The four tables it needs — the generator, Nm, Mn and Num_rows —
-are now on disk with their geometry proven, so the parity unit is authorable against
-real data. Criterion 6 is not a unit's to run: the whole suite takes over 25 minutes,
-it is not required until step 1 closes, and running it is what killed unit 200.
-C. THIS REPORT — the checked-in tables ARE byte-identical to what the converter
-produces from C:\Source\ft8_lib\ft8\constants.c at the pin today: 20043 characters on
-each side, line endings normalised and nothing else. Section 4 raises 3 items. None of
-them stands in the way of criterion 4, which is met. One of them — an orphaned
-testhost holding Hamlet.App.Tests' output — will stand in the way of criterion 6 when
-somebody comes to close step 1.
+Seven steps. Step 1, the library exists and its tables are proven, is **partial and is
+the only one moving**: five of its six must-pass criteria are now demonstrated. Steps 2
+(messages round-trip through 77 bits), 3 (a valid FT8 signal can be produced), 4
+(signals are found in noise), 5 (a found signal becomes a message), 6 (sensitivity meets
+the published threshold) and 7 (Hamlet displays decoded FT8) all read `not started` in
+`PHASE_STATUS.md` and none was touched. **Steps 2 through 7 remain unreachable until
+step 1 closes**, every step depending on the one before it by the plan's own named
+deviation: there is nothing to round-trip through until the library exists, nothing to
+modulate until messages pack, nothing to find until a signal can be made, nothing to
+decode until candidates are found, nothing to measure until decodes happen, and nothing
+to display until they are trustworthy.
+B. STEP 1 — the library exists and its tables are proven. Six must-pass exit criteria:
+(1) the project builds under .NET 8 with nullable, warnings as errors and no third-party
+runtime dependencies; (2) LICENSE, NOTICE and porting-notes.md present and correct; (3)
+the boundary test passing AND shown to fail; (4) tables converted by a checked-in tool
+that reads ft8/constants.c, reproducible against a future upstream; (5) tables verified
+by LDPC encode against reference parity; (6) whole Hamlet suite — no new red, inherited
+failing set unchanged, named and counted. 1, 2 and 3 were demonstrated by unit 201 and 4
+by unit 202; this unit inherits all four and re-checked 4 in task 1, where
+`CheckedInTablesAreWhatTheConverterProduces` passed today. THIS UNIT WAS AIMED AT 5 AND
+AT NOTHING ELSE. **Criterion 5 is met.** The evidence: all 91 weight-one payloads
+encoded through `kFTX_LDPC_generator`, 91 × 83 = **7553 syndrome bits asserted zero**
+against `kFTX_LDPC_Nm`, and the corruption tests **were watched refusing** — a flipped
+generator bit, an altered Nm element and a flipped codeword bit each produced the guard's
+own refusal text, quoted in section 3. **Criterion 6 was not attempted**, and it cannot
+be measured while `Hamlet.App.Tests` will not build: an orphaned `testhost` holds that
+project's output and fails it `MSB3027`. Clearing that means killing a process, which is
+not a session's to do, so criterion 6 needs Tim at the keyboard before any unit can
+reach it.
+C. THIS REPORT — every codeword the generator produces satisfies every parity check the
+Nm table defines, and that is proved over **the whole code space, not a sample**: the
+code is linear over GF(2), so the 91 basis vectors' zero syndromes cover all 2⁹¹
+codewords. Section 4 raises 5 items, and **none of them stands in the way of a criterion
+named in B except the first**, which is the orphaned `testhost` already blocking
+criterion 6 and already known.
 
 ```
-UNIT:       202 — complete at task 6 of 6 — 2026-08-31 18:45
-PHASE GOAL: Hamlet pulls FT8 out of the air and puts the decoded text on the screen.
-UNIT GOAL:  Move the six FT8 protocol tables out of the pinned ft8_lib clone into
-            Ft8Sharp by machine, and prove the bytes now in the repository are the
-            bytes that machine produces from that clone.
-ADVANCED:   yes — criterion 4 is demonstrated, not merely on disk: the regeneration
-            test ran, said byte-identical, and was watched refusing a corrupted copy.
-NUMBER:     step 1 must-pass criteria demonstrated: 3 -> 4 of 6
-DRIFT:      0 consecutive units without advance  (was 0 — unit 201 advanced)
+UNIT:       203 — complete at task 6 of 6 — 2026-08-31 19:10
+PHASE GOAL: Hamlet listens to the radio, finds FT8 transmissions in the audio, and puts
+            what they said on the screen.
+UNIT GOAL:  Stop trusting the four LDPC tables and start verifying them — push payloads
+            through the generator and prove the resulting codewords satisfy every check
+            the Nm table defines, so the two independent descriptions of the code that
+            came out of the pinned clone are shown to be one code.
+ADVANCED:   yes — criterion 5 is demonstrated, not asserted: 7553 syndrome bits zero over
+            the complete code space, with the check watched refusing three corruptions.
+NUMBER:     step 1 must-pass criteria demonstrated: 4 -> 5 of 6
+DRIFT:      0 consecutive units without advance  (was 0 — unit 202 advanced)
 ```
 
 ## 1. What Claude did
 
-**Complete, at task 6 of 6.** All six tasks were done, including task 6, the named
-drop candidate — nothing was dropped. Windows 11, project claimed and confirmed as
-Hamlet, branch `main`, six commits, every one pushed and none refused.
+**Exit state: complete, at task 6 of 6.** All six tasks were done, including task 6,
+which the instruction named as the drop candidate. **Nothing was dropped and nothing was
+substituted**, so no sizing decision was made that the owner did not make.
 
-The gate was checked against the tree before the instruction was read past its first
-screen: `SHACK_FACTS.md` present, `src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs`
-present, `CoreHMI.sln` absent, `MURC.sln` absent. All four hold.
+Machine `C:\Source\HamLet`, project claimed `PROJECT: Hamlet` and verified against the
+tree before the instruction was read — `SHACK_FACTS.md` and
+`src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs` present, `CoreHMI.sln` and
+`MURC.sln` absent, `Hamlet.sln` the only solution. Branch `main`, tracking `origin/main`,
+starting at `249be7b` as the instruction stated. **Six commits, all pushed, every push
+succeeded, none refused.**
 
 ### Task 1 — the trace
 
-`dotnet build` on both `Ft8Sharp` projects, then the `Ft8Sharp` tests alone: **4
-total, 4 passed, 0 failed, 0 skipped.** Unit 201's report says `Total: 4` in its
-transcript and "5" in its prose; the count on this machine today is 4, and neither
-number is worth chasing further.
+Built `src/Ft8Sharp` and `tests/Ft8Sharp.Tests` by path, not through the solution. The
+`Ft8Sharp` suite measured **23 total, 22 passed, 1 skipped, 0 failed** — unit 202's
+number unchanged, to the test. The single skip is `RewriteTheCheckedInTablesFile`, which
+gates on `FT8_TABLEGEN_WRITE`; it was not set and the tables were not regenerated.
 
-`ReferenceCloneProbeTests` printed:
+`CheckedInTablesAreWhatTheConverterProduces` **passed today**, so the tables everything
+below rests on are the converter's own bytes from the pin. All seven
+`Ft8TableGeometryTests` passed. `src/Ft8Sharp/Ldpc/` did not exist. The file inventory of
+both project folders matched the instruction exactly, and the two versions were as
+stated: root `1.12.9`, `src/Ft8Sharp` `0.1.0`.
 
-```
-clone path              : C:\Source\ft8_lib
-reachability            : Reachable (directory enumerated)
-ft8\constants.c         : present, 15155 bytes, 392 lines
-ft8\constants.h         : present, 3728 bytes, 90 lines
-HEAD                    : 9fec6ca39886edbf96f4f5e71edc76da5074e871
-pin                     : 9fec6ca39886edbf96f4f5e71edc76da5074e871
-HEAD == pin             : True
-array definitions found : 9
-```
+### Task 2 — the encoder
 
-The inventory the instruction gives is the inventory on disk: `src/Ft8Sharp/` held
-`Ft8Sharp.csproj`, `Ft8SharpAssembly.cs`, `LICENSE`, `NOTICE` and a 203-line
-`porting-notes.md` with no `Tables/` folder; `tests/Ft8Sharp.Tests/` held its csproj
-and two test files and nothing else; `ToolchainProbe.TEMP.cs` is gone and did not come
-back; root `Directory.Build.props` was at 1.12.8 and there is no root
-`Directory.Build.targets`; `.gitattributes` forces CRLF for `*.bat` and says nothing
-about `*.cs`; both projects are in `Hamlet.sln`; `Ft8Sharp.csproj` declares no
-package and no project reference and sets `net8.0`, `Nullable`, `TreatWarningsAsErrors`
-itself.
+**The route: a test process read the clone in place.** My own shell was refused
+`C:\Source\ft8_lib` by the working-directory sandbox, exactly as the arbiter measured, so
+a probe test enumerated `ft8/` and read the source. **No file was copied out of the
+clone, and no junction, symlink or encoded path was attempted.**
 
-### Task 2 — the converter
+**The upstream encoder is `ft8/encode.c`, function `encode174`.** I ported it — this is
+the first of the instruction's two permitted routes, not the derive-from-tables fallback.
+The multiply and nothing else came across: upstream's `ft8_encode` also calls
+`ftx_add_crc` and maps the codeword onto tones through the Costas pattern and Gray map,
+and **none of that is in the tree**. No CRC, no packing, no tones, no Gray mapping, no
+symbol sequence, no audio.
 
-`tests/Ft8Sharp.Tests/TableGen/` — four files: `CSourceParser.cs` reads one C array
-by identifier, `ExpressionEvaluator.cs` evaluates the arithmetic a dimension macro is
-written as, `Ft8TableConverter.cs` holds the six-table manifest and the emitter, and
-`RepositoryTree.cs` finds the tree root and reads emitted arrays back. It handles
-nested brace initialisers, block and line comments, hex and decimal literals with
-integer suffixes, and trailing commas. **Element counts come from the parse; the
-manifest's counts are only ever a cross-check.**
+`src/Ft8Sharp/Ldpc/LdpcEncoder.cs`, in the library where step 3 extends it. It adds no
+reference of any kind; both boundary tests stay green. It builds clean under
+`TreatWarningsAsErrors` with zero warnings.
 
-**Nine tests on synthetic C watch it refuse**, and they need no clone: a missing
-identifier, a value that will not fit `uint8_t`, ragged rows, a literal dimension the
-initialiser contradicts, a macro dimension the header contradicts, and — separately —
-a macro the header does not resolve, which is *reported* rather than failed, because
-a header that will not parse is a gap in corroboration where a header that parses and
-disagrees is a contradiction. Every refusal names the identifier, and one of the tests
-asserts the refusal does **not** contain the offending value.
+Before any upstream line reached the transcript I elided array-initialiser bodies from
+`encode.c` by regex, since the no-values ruling binds test output and I did not yet know
+whether that file carried a table of its own. It carries none, so nothing was elided in
+the event — but the check ran first.
 
-`Ft8Sharp` gained no parser, no package reference and no project reference from any
-of this.
+### Tasks 3, 4 and 6 — the proof, the refusals, the second opinion
 
-### Task 3 — emit, check in, prove reproducible
+**The syndrome checker is in the test project and does not call the encoder.** It reads
+`LdpcNm`, `LdpcNumRows` and `LdpcMn` and nothing else, so the two descriptions of the
+code cannot agree with each other by construction. Upstream's 1-based index has the one
+taken off in exactly one named place, `LdpcCheck.Variable`, and **no table was
+renumbered**.
 
-`dotnet test ... -e FT8_TABLEGEN_WRITE=1` wrote
-`src/Ft8Sharp/Tables/Ft8Tables.g.cs`: 6 tables, 2197 elements, 20043 characters, 443
-lines. The write is gated behind that environment variable, because a generator that
-fires on every `dotnet test` would rewrite the tree under anybody running the suite
-and the comparison it is meant to be checked by could never fail.
-
-The file is one `public static class Ft8Tables`, each table a `ReadOnlySpan<byte>`
-over a flattened literal behind named stride constants. Its header names the pin, the
-source file, the tool, the regeneration command and the test that proves it, says
-**DO NOT EDIT BY HAND**, and carries no clock and no machine name.
-
-Then the test that makes criterion 4 mean something — see section 3 for its output.
-
-### Task 4 — the geometry
-
-Seven assertions in `Ft8TableGeometryTests`, run against the checked-in file rather
-than against the clone, so they need no reference material and never skip. All pass.
-Results in section 3.
+Numbers are in section 3. All 14 of this unit's parity, layout, refusal and
+second-opinion tests **run without any reference material** — verified by pointing
+`FT8_LIB_PATH` at a path that does not exist and watching them still run.
 
 ### Task 5 — the record
 
-`porting-notes.md` gained the converter (where it lives, why it is a test, how to
-re-run it, what is checked in), the byte-identity result, the watched skip and the
-watched refusal, the three FT4-only tables deliberately not converted, the measured
-index base, and the geometry results — **no values anywhere in it**.
+`porting-notes.md` gained a section covering all of it. Root `Directory.Build.props`
+moved **1.12.9 → 1.12.10** under HM-DEC-150; it was at 1.12.9 as stated.
+`src/Ft8Sharp/Directory.Build.props` stays at `0.1.0`. **No decision id was minted.**
 
-`CLAUDE.md` §1 gained **HM-DEC-152** and **HM-DEC-151**, in that order, immediately
-below the `|---|` separator, dated 2026-08-31, transcribed in full from the work
-instruction rather than paraphrased. `PROJECT_STATUS.md`'s `RULES_AT` advanced to
-`HM-DEC-152 (2026-08-31)` and nothing else in that field changed.
+### Decisions I made for myself, reproduced in full
 
-**Root `Directory.Build.props` moved 1.12.8 → 1.12.9**, which is what it was actually
-at, under HM-DEC-150.
+1. **The corruption tests needed a way to encode against a substitute generator, so
+   `LdpcEncoder` has a second `Encode` overload taking a generator span.** The alternative
+   was for the refusal tests to reimplement the multiply, which would have meant the guard
+   being watched was not the guard that ships. The overload is documented as existing for
+   that purpose. This weighs no trade-off the governing principles leave open — a guard
+   that cannot be watched refusing is not a guard, by the phase plan's own standard for
+   criterion 3.
 
-`DecisionLogOrderTests` guards §1's ordering and **could not be run** — building
-`Hamlet.App.Tests` fails `MSB3027`, the orphaned `testhost (34836)` holding its
-output, which is the known fault this unit was told not to chase. The two rows were
-checked by hand against that test's own rule instead: both dated 2026-08-31, 152 above
-151, both above HM-DEC-150 of 2026-08-21, neither id reused, and the row shape matches
-its regex. See section 4.
+2. **The basis proof was factored into `BasisProof` so the refusals quote the guard's own
+   words.** A corruption test that composed its own failure message would be reporting its
+   own opinion of what the guard would have said. The passing path and the three refusing
+   paths are now literally the same routine.
 
-### Task 6 — the library's own version
+3. **`LdpcEncoder` refuses a payload whose five spare bits are set** rather than folding
+   them into parity as upstream silently would. The codeword that came back would look
+   perfectly well formed, which is §0.0's territory.
 
-Not dropped. `src/Ft8Sharp/Directory.Build.props`, deliberately not importing the root
-one, puts `Ft8Sharp` at **0.1.0**. Before and after in section 3. Dropping the
-inheritance was not sufficient on its own and that is worth knowing: the SDK appends
-the repository's source revision to `AssemblyInformationalVersion` without any help
-from the root file, so `IncludeSourceRevisionInInformationalVersion` is off in that
-file too. **A decision this session made for itself**, inside task 6's stated purpose
-— the ruling's own words are that an extracted `Ft8Sharp` must not carry "Hamlet's git
-commit", and without that property it still would.
+4. **I added `UpstreamEncoderProvenanceTests`, which the instruction did not ask for.** It
+   asserts `ft8/encode.c` is present at the pin, so the port's provenance is checkable
+   rather than only written in a notes file. It skips without the clone. This is scope I
+   added; it is thirty lines and it is the most licence-sensitive claim in the unit.
 
-### Decisions this session made for itself
-
-Two, both inside the instruction's scope and both reproduced in full:
-
-1. **The write half of the converter is a separate, environment-gated test**
-   (`FT8_TABLEGEN_WRITE=1`) rather than something that runs with the suite. The
-   instruction fixed where the converter lives and what it must prove; it did not say
-   how the file gets written the first time. A generator that runs unconditionally
-   would rewrite checked-in source under anybody who ran `dotnet test` and would make
-   the byte-identity assertion incapable of failing.
-2. **`IncludeSourceRevisionInInformationalVersion=false` in the library's props**, as
-   above.
-
-### The known items, confirmed rather than rediscovered
-
-All ten listed in the instruction were checked and none was repaired: `PHASE_OUTCOME.md`
-still has no entries and every step still reads `not started`; `PHASE_STATUS.md` still
-reads `WORK_INSTRUCTION: 001` and `STEP: 1 | partial`; `PROJECT_STATUS.md` was stale
-from unit 201 and has been overwritten under the status cadence; the `RULES_AT` reload
-defect was not touched and nothing under `tools\` was edited; unit 201's `output.md`
-has been overwritten by this file; **`ft8sharp-spec.md` is absent from both the root
-and `docs/`**, confirmed, and was not written and not treated as a source;
-`CLAUDE.md` HM-DEC-004's GPL premise still cites "Phase 3 links ft8_lib (GPL)" where
-this phase has it as MIT, and the root `LICENSE` was not touched; the loop's own root
-files are still untracked and were not committed; `outcome-read.bat` was not touched;
-`ToolchainProbe.TEMP.cs` is gone and stayed gone.
-
-**No mismatch was found between the instruction and the tree.** Every measured fact it
-asserted — file lists, project settings, version, `.gitattributes`, the absent
-`Tables/` folder, the nine array definitions and their shapes — matched.
+5. **I did not build C, did not seek a toolchain and did not ask for one**, per the
+   instruction — see section 4 item 3, where the instruction's stated reason turns out to
+   be narrower than the tree says, without changing the answer.
 
 ## 2. What the owner should expect
 
-**What is now true.** `Ft8Sharp` holds the six FT8 protocol tables, converted by a
-tool checked in beside them, and a test that fails the moment those two stop agreeing.
-The library builds clean and reports itself as version 0.1.0 with no trace of Hamlet
-in its assembly attributes. `CLAUDE.md` carries your two rulings of 2026-08-31 as
-HM-DEC-151 and HM-DEC-152.
+**What is now true.** The four LDPC tables are no longer trusted, they are verified. A
+wrong bit in the generator, in `Nm`, in `Mn` or in `Num_rows` now turns the suite red
+immediately and names which check and which payload, instead of surfacing four stages
+later as a decoder that fails for reasons nobody can attribute. That was the entire point
+of pulling this verification forward.
 
-**What will look wrong and is not:**
+`Ft8Sharp` now contains an encoder. It runs one direction only and corrects nothing, so
+it is not a decoder and cannot become one by accident.
 
-- **One `Ft8Sharp` test is always skipped.** `RewriteTheCheckedInTablesFile` is the
-  generator. It skips unless `FT8_TABLEGEN_WRITE=1`, and that is the design — it is
-  the only thing in the tree that writes `Ft8Tables.g.cs`.
-- **Five are skipped on a machine without the clone.** Pointing `FT8_LIB_PATH` at a
-  path that does not exist gives 23 total, 18 passed, 5 skipped, 0 failed. A fresh
-  clone with no reference material stays green, which is the ruling.
-- **`Ft8Tables.g.cs` is 443 lines of hex and is not meant to be read.** It is machine
-  output, it says so in its header, and reviewing its values by eye is not how it is
-  checked — the regeneration test is.
-- **Two version numbers in the tree now**, 1.12.9 for Hamlet and 0.1.0 for the
-  library. That is HM-DEC-152 working, not drift.
-- **`dotnet build Hamlet.sln` still fails `MSB3027`.** The orphaned `testhost` from
-  the session killed earlier today still holds `Hamlet.App.Tests`' output. Nothing in
-  this unit touched it and nothing in this unit needs it.
+**What will look wrong but is not:**
+
+- **`dotnet build Hamlet.sln` still fails `MSB3027`.** Inherited, item 1 of the
+  instruction's known list, not touched, and it is what keeps criterion 6 out of reach.
+- **One `Ft8Sharp` test skips on this machine and six skip on a machine without the
+  clone.** That is the design — reference material is never committed and a fresh clone
+  must stay green. **None of the skips is a parity test.**
+- **`src/Ft8Sharp` stays at 0.1.0 while the root went to 1.12.10.** Deliberate,
+  HM-DEC-152. The library gained a capability but not a released one.
+- **`LdpcEncoder` has a public overload that takes a generator table.** It exists so the
+  corruption tests can watch the proof refuse; production callers want the one-argument
+  form.
+- **`tests/Ft8Sharp.Tests/TempEncoderProbe.cs` is on disk, untracked and empty of code.**
+  See section 4 item 2.
+- **The suite got slower by about 200 ms.** 500 seeded random payloads and a rank
+  computation. It is still under a second.
 
 ## 3. What you should see
 
-**Are the tables in the repository byte-identical to the tables the converter produces
-from `C:\Source\ft8_lib\ft8\constants.c` at the pin? Yes.**
+> **Does every codeword produced through `kFTX_LDPC_generator` satisfy every parity check
+> defined by `kFTX_LDPC_Nm`? YES.**
 
 ```
-Passed Ft8Sharp.Tests.Ft8TableGenerationTests.CheckedInTablesAreWhatTheConverterProduces
-
-C identifier             dimensions     elements
-kFT8_Costas_pattern      [7]            7
-kFT8_Gray_map            [8]            8
-kFTX_LDPC_generator      [83][12]       996
-kFTX_LDPC_Nm             [83][7]        581
-kFTX_LDPC_Mn             [174][3]       522
-kFTX_LDPC_Num_rows       [83]           83
-
-derived geometry        : LdpcM=83 LdpcN=174 LdpcKBytes=12 NmRowWidth=7 MnRowWidth=3
-header cross-check      : every declared dimension resolved against ft8/constants.h
-
-checked-in file         : C:\Source\HamLet\src\Ft8Sharp\Tables\Ft8Tables.g.cs
-characters produced     : 20043
-characters checked in   : 20043
-byte-identical          : True
+91 payloads x 83 checks = 7553 syndrome bits, all zero
+the code is linear over GF(2), so 91 zero syndromes cover all 2^91 codewords
 ```
 
-**The six tables and their parsed element counts** are the table above — 2197 elements
-in total, every count taken from what the parser found and then compared against the
-manifest, never the other way round. The three FT4-only tables in the same file were
-not converted. **No value of any table appears in this report, in `porting-notes.md`,
-in any commit message or in any test's output.**
+**This is proved for all payloads, not only the ones I tried.** In one sentence: the code
+is linear over GF(2), every payload is a sum of the 91 weight-one payloads, and the
+syndrome of a sum is the sum of the syndromes — so 91 zero syndromes settle every one of
+the 2⁹¹ codewords the generator can produce. A compiled reference encoder would only ever
+have given agreement on as many vectors as somebody had patience for.
 
-**The dimension macros were corroborated, not inferred.** `FTX_LDPC_M`,
-`FTX_LDPC_K_BYTES` and `FTX_LDPC_N` were resolved from `ft8/constants.h` — including
-the one that is written as arithmetic rather than as a number — and every one of them
-agreed with the shape the initialiser itself has. A disagreement would have been a
-failure, not a preference.
+### The four measurements from task 2
 
-**Task 4's geometry, each named, each passing:**
+Each was established by trying the other reading and watching the reference parity tables
+refuse it, rather than by trusting upstream's comment.
 
-```
-Passed ElementCountsAndDerivedGeometryAgree
-  996 = 83 x 12, 581 = 83 x 7, 522 = 174 x 3
-Passed GrayMapIsAPermutationOfTheEightTones
-  Ft8GrayMap: every one of the 8 tones present exactly once.
-Passed CostasPatternIsSevenTonesInRange
-  Ft8CostasPattern: 7 entries, every one inside the 8-tone alphabet.
-Passed NumRowsIsAWidthPerCheckAndSumsToMnsElementCount
-  LdpcNumRows: every entry in 1..7, and they sum to 522, which is LdpcMn's
-  element count (522).
-Passed NmPadsWithZeroExactlyWhereNumRowsSaysItDoes
-  LdpcNm: every row is real up to its LdpcNumRows length and zero after it, with
-  no zero inside the real part and no non-zero in the padding.
-Passed IndexBasesAreUpstreamsAndAreMeasuredRatherThanAssumed
-  LdpcMn holds check indices    : 1-based, covering all 83 checks with no gaps.
-  LdpcNm holds variable indices : 1-based, covering all 174 variables with no gaps.
-Passed NmAndMnAreTransposesOfEachOther
-  LdpcNm and LdpcMn agree on all 522 edges in both directions.
-```
-
-**The index base was measured, not assumed, and is 1 for both tables.** The
-measurement is that the entries cover a contiguous range of exactly the right
-cardinality — 83 checks, 174 variables — with no gaps, and that the smallest is one
-rather than zero; in `Nm`, zero is padding and never an index, which is what makes
-1-based the only reading that works. **They are not renumbered.** Every consumer
-subtracts the same one, written down in one place.
-
-**The `Nm`/`Mn` transpose is the strongest of these**, and it is exact in both
-directions over all 522 edges. A single wrong bit in either table fails it.
-
-**The comparison was watched refusing.** One element of `kFTX_LDPC_Nm` was altered in
-memory, by machine, in a copy of the generated text — the checked-in file was never
-touched and nothing was hand-edited:
+| Question | Answer | The losing reading |
+|---|---|---|
+| Bit order within a generator byte | **most significant first** — 0 failing checks | least-significant-first — **533** failing checks |
+| The five spare bits past the 91st | **zero in every row** — 0 of 83 rows sets one | — |
+| Codeword layout | **message first, parity appended** — 0 failing checks | parity first — **3730** failing checks |
+| Index base of `Nm` and `Mn` | **upstream's 1** — `Nm` spans 1..174, `Mn` spans 1..83 | — |
 
 ```
-Passed TheComparisonRefusesAFileWithOneAlteredElement
-  identical               : False
-  reported                : kFTX_LDPC_Nm: differs at 1 of 581 positions.
+payloads encoded                     : 91
+checks per payload                   : 83
+failing checks, MSB-first (as shipped): 0
+failing checks, LSB-first (the other) : 533
+
+failing checks, message first + parity : 0
+failing checks, parity first + message : 3730
+
+generator rows                : 83
+bits per row                  : 96
+bits the code carries         : 91
+spare bits per row            : 5
+rows with any spare bit set   : 0
 ```
 
-It named the table, counted the positions, said nothing about the other five, and
-printed no value.
+**The spare bits are all zero**, so the row width is being read right. The one comes off
+the index base in `LdpcCheck.Variable` and nowhere else in the tree.
 
-**The watched skip, with `FT8_LIB_PATH` pointing nowhere:**
+### The basis-vector counts and the random seed
 
-```
-dotnet test tests/Ft8Sharp.Tests -e FT8_LIB_PATH=C:\Source\ft8_lib_does_not_exist
+- **91 basis payloads, 83 checks each, 7553 syndrome bits, all zero.** All 91 asserted,
+  not a selection.
+- **The all-zero payload encodes to all-zero parity** — 0 of 83 parity bits set. This is
+  what refuses a checker that returns zero for everything.
+- **Every basis payload produces non-zero parity** — 0 dead generator columns, lightest
+  parity weight **29 of 83**. An all-zero column would pass every syndrome check and mean
+  a payload bit protected by nothing. Only the per-column weights' minimum is reported;
+  all 91 would be a characterisation of the generator by another route.
+- **8 fixed patterns and 500 seeded random payloads, seed `20260831`**, 0 failures.
 
-  Ft8Sharp.Tests.ReferenceCloneProbeTests.TestProcessCanReachThePinnedReferenceClone [SKIP]
-  Ft8Sharp.Tests.ReferenceCloneProbeTests.ConstantsInventoryIsLegibleAsShapesOnly [SKIP]
-  Ft8Sharp.Tests.Ft8TableGenerationTests.CheckedInTablesAreWhatTheConverterProduces [SKIP]
-  Ft8Sharp.Tests.Ft8TableGenerationTests.TheComparisonRefusesAFileWithOneAlteredElement [SKIP]
-  Ft8Sharp.Tests.Ft8TableGenerationTests.RewriteTheCheckedInTablesFile [SKIP]
+### The three watched refusals, in the guard's own words, values elided
 
-Passed! - Failed: 0, Passed: 18, Skipped: 5, Total: 23
-```
-
-The seven geometry tests keep running there, because they read the checked-in file
-rather than the clone. That is deliberate: what ships is asserted sound on a machine
-that has never seen `ft8_lib`.
-
-**The `Ft8Sharp` suite as it now stands: 23 total, 22 passed, 1 skipped, 0 failed** —
-4 at the start of this unit, 23 at the end.
-
-**Task 6, the before and the after**, read out of the generated
-`src/Ft8Sharp/obj/Debug/net8.0/Ft8Sharp.AssemblyInfo.cs`:
+**Refusal 1 — one bit flipped in an in-memory copy of `LdpcGenerator`, row 40:**
 
 ```
-BEFORE
-[assembly: AssemblyMetadataAttribute("BuildStampUtc", "2026-08-31 22:41")]
-[assembly: AssemblyFileVersionAttribute("1.12.9.0")]
-[assembly: AssemblyInformationalVersionAttribute("1.12.9+53a586e0579f84cb299189aa91d8b772877db33e")]
-[assembly: AssemblyVersionAttribute("1.12.9.0")]
-
-AFTER
-[assembly: AssemblyFileVersionAttribute("0.1.0.0")]
-[assembly: AssemblyInformationalVersionAttribute("0.1.0")]
-[assembly: AssemblyVersionAttribute("0.1.0.0")]
+REFUSED. 1 of 91 basis payloads encoded to a codeword the parity tables reject,
+3 failing checks in all out of 7553 syndrome bits.
+kFTX_LDPC_generator and kFTX_LDPC_Nm are not descriptions of the same code as they
+stand here. Because the code is linear over GF(2), a single basis payload failing
+means codewords throughout the space fail, and a decoder built on these tables would
+go wrong in ways nearly impossible to attribute.
+No table value is printed below, by ruling -- a parity vector from a weight-one
+payload is a column of the generator matrix wearing a different hat.
+    payload bit  1:  3 of 83 checks failed, at check indices [31, 47, 70]
 ```
 
-No 1.12.9, no Hamlet commit, no `BuildStampUtc`. That commit hash is Hamlet's, and an
-extracted `Ft8Sharp` would have carried it. The library builds clean with the
-non-inheriting props file and the tests still pass, so nothing was reverted.
-
-**Commits, all on `main`, all pushed, none refused:**
+**Refusal 2 — one element altered in an in-memory copy of `LdpcNm`, check 17.** This is
+the direction that matters most: it shows the check side is genuinely consulted rather
+than carried along.
 
 ```
-663cfca chore(status): unit 202 task 1 — the clone still answers, and the pin still matches
-ceec87f feat(ft8sharp): a checked-in converter that reads ft8/constants.c
-8602ec9 feat(ft8sharp): the six tables, written by the tool from the pinned clone
-11acc15 test(ft8sharp): the four LDPC tables describe one graph, counted from both sides
-53a586e docs(docs): record the conversion, and Tim's two rulings as HM-DEC-151 and 152
-09717e4 build(ft8sharp): the library stops publishing itself as a version of Hamlet
+REFUSED. 2 of 91 basis payloads encoded to a codeword the parity tables reject,
+2 failing checks in all out of 7553 syndrome bits.
+    payload bit 16:  1 of 83 checks failed, at check indices [17]
+    payload bit 17:  1 of 83 checks failed, at check indices [17]
 ```
 
-Nothing from `C:\Source\ft8_lib` was committed, no `bin/` or `obj/` output was
-committed, and none of the loop's own machinery was committed.
+**Refusal 3 — one bit flipped in a valid codeword, all 174 variables tried:**
+
+```
+variables flipped, one at a time : 174
+REFUSED. Flipping codeword bit 0 left 3 of 83 checks unsatisfied, at check indices
+[15, 44, 72]. Mn's row for that variable independently says 3. A single wrong bit in
+a codeword is visible and is not silently absorbed.
+variables where Nm and Mn disagreed on the count : 0
+```
+
+**The failing-check count equalled `Mn`'s own count for every one of the 174 variables**,
+with no exceptions. That is a third and independent corroboration of the transpose unit
+202 proved, arrived at from the syndrome side.
+
+**Every corruption was on an in-memory copy.** `Ft8Tables.g.cs` was never touched, nothing
+was hand-edited, and the tables were never regenerated.
+
+### Task 6 — not dropped
+
+**The `Mn`-side agreement:**
+
+```
+codewords compared            : 769
+of those, non-zero syndrome   : 174
+codewords where Nm and Mn disagreed : 0
+```
+
+91 basis, 4 fixed, 500 seeded random and 174 deliberately corrupted codewords, so the
+agreement is not merely two routes to zero.
+
+**The rank, as a number:**
+
+```
+check matrix        : 83 x 174 over GF(2)
+rank                : 83
+code dimension      : 174 - 83 = 91
+generator payload   : 91
+```
+
+**The rank is 83.** No check row is dependent on the others, so the code's dimension is
+exactly 91 — the same 91 the generator takes as its payload. A rank below 83 would have
+been a finding of the first importance; it is not below 83.
+
+### Suite totals
+
+| | Total | Passed | Skipped | Failed |
+|---|---|---|---|---|
+| Unit 202's baseline | 23 | 22 | 1 | 0 |
+| Task 1, re-measured today | 23 | 22 | 1 | 0 |
+| After this unit, clone present | **38** | **37** | **1** | **0** |
+| After this unit, `FT8_LIB_PATH` nowhere | **38** | **32** | **6** | **0** |
+
+**No test in this unit skips for want of reference material.** The six skips without a
+clone are the five inherited ones plus the new provenance test, which needs the clone by
+design. The 14 parity, layout, refusal and second-opinion tests run in both columns.
+
+**The whole Hamlet suite was not run** and `Hamlet.sln` was not built, per the
+instruction.
 
 ## 4. What's blocking us
 
-**Three items. None of them blocks criterion 4, which is met. One of them will block
-criterion 6.** Most-blocking first.
+**Five items. None asks for a ruling.** Four are observations or things already acted on;
+the first is a known blocker that needs Tim's hands rather than his judgment. Only item 1
+bears on a criterion named in B.
 
-**1. The orphaned `testhost` will stop step 1 from closing, and it is not something a
-session can clear.** Building `tests/Hamlet.App.Tests` fails `MSB3027` — `testhost
-(34836)`, left by the session killed earlier today, holds `Hamlet.App.dll` and
-`Hamlet.RadioEngine.dll` in that project's output folder. This unit did not need it
-and did not chase it, as instructed, but it had one real cost here:
-`DecisionLogOrderTests`, which is the check on the two `CLAUDE.md` rows this unit
-added, **could not be run**, so those rows are verified by hand against the test's own
-rule rather than by the test. More importantly, **criterion 6 of step 1 is "whole
-Hamlet suite — no new red, inherited failing set unchanged, named and counted", and
-that cannot be measured at all while the build of a test project fails.** Killing the
-process is outside what a session can do here. **This is a note and a heads-up, not a
-ruling request** — the action is a reboot or an end-task before the unit that closes
-step 1 runs.
+1. **The orphaned `testhost` still blocks criterion 6, and I could not confirm it
+   directly.** My shell refused process enumeration — `tasklist` and `ps -W` both need
+   approval this session — so I could not run the one line the instruction asked for. I
+   did not chase it, kill anything, work around it, or build `Hamlet.App.Tests` to
+   provoke the symptom. **This is the only thing standing between step 1 and its last
+   criterion**, and clearing it is a keyboard action, not a ruling.
 
-**2. HM-DEC-150's "the minor version is the phase number" has nothing to equal under
-the phase layer.** The ruling says the minor version *is* the phase and equals
-`PROJECT_STATUS.md`'s `PHASE`, with no second copy of the number. Under the phase
-layer `PHASE` is a sentence — "Hamlet hears FT8 off the radio and displays the decoded
-text on screen" — so there is no number for the minor to equal, and the version moved
-1.12.8 → 1.12.9 on the patch alone. **Noted, not resolved, and no id minted for it**,
-as instructed. It is a real inconsistency between two live conventions and it wants a
-ruling eventually; it blocks nothing now.
+2. **A spent scratch file is on disk that I could not delete: `tests/Ft8Sharp.Tests/TempEncoderProbe.cs`.**
+   The sandbox refused every deletion I attempted, including of a file inside the working
+   directory. I emptied it to a comment so it compiles to nothing and adds no test, and I
+   never `git add`ed it, so it is untracked and nothing was committed. To be rid of it:
+   `del tests\Ft8Sharp.Tests\TempEncoderProbe.cs`. **Already acted on as far as I could —
+   this is a note, not a request.**
 
-**3. The loop's own root files are untracked, and the phase's memory is empty.**
-`ARBITER.md`, `PHASE_CONTROL.md`, `PHASE_PLAN.md`, `PHASE_STATUS.md`,
-`PHASE_OUTCOME.md`, `PHASE_UPLIFT.md`, `RUN_LEDGER.md`, `MANIFEST.txt`,
-`VERIFY_PASS.md`, `.gitattributes`, `.run-unit/`, `docs/phase-uplift/` and
-`tools/arbiter/` are all untracked; another author put them there and this unit did not
-commit them. Related and worth stating in the same breath: **`PHASE_OUTCOME.md` still
-has no entries and every step still reads `not started`**, although units 200, 201 and
-now 202 have run and two of them completed. The phase's memory is empty, so the
-arbiter's loop test has nothing to read and has to be judged from `RUN_LEDGER.md` and
-the last report instead. **Recommendation, for their author rather than for a session:
-commit them, and make the outcome append happen** — three units of work are now
-invisible to the one file designed to remember them. `PHASE_OUTCOME.md` was not
-hand-edited.
+3. **The instruction's reason for having no C oracle is narrower in the tree than it is on
+   the page, and the conclusion is unaffected.** The instruction says there is "no route to
+   a compiled C oracle that does not begin with Tim installing a toolchain." But
+   `porting-notes.md`, written by unit 202, records that **MSVC `cl.exe` is installed on
+   this machine** — Visual Studio Community 2026, version 19.51.36256 — and that unit 200's
+   "no toolchain" reading was right about `PATH` and wrong about the machine. So the real
+   obstacles are the permission scope and `ft8_lib`'s GNU-flavoured `Makefile`, not a
+   missing compiler. **I did not build C, did not seek a toolchain and am not asking for
+   one**, because the linearity proof is strictly stronger than anything an oracle could
+   have supplied. Reported because the next unit should not inherit the wrong reason for a
+   right decision.
 
-**Nothing else is blocking.** The known defects listed in the instruction — the
-`RULES_AT` reload mangling the id, HM-DEC-004's GPL premise, the absent
-`ft8sharp-spec.md`, `outcome-read.bat`'s apostrophe — were all confirmed still present
-and none was touched. No ruling is needed to author criterion 5's unit: the four
-tables it needs are on disk, their geometry is proven, and the pin is verified in the
-suite.
+4. **My own status cadence was defective and I am reporting it against myself.** Six of the
+   seven `UPDATED` stamps I wrote to `PROJECT_STATUS.md` during this unit were **composed
+   rather than read from the clock**, and they ran progressively fast — the last said
+   `20:03` when the clock read `19:10`. That is precisely the failure `CLAUDE_CODE.md` §7
+   names: a timestamp written into the future defeats the one signal that catches a
+   stopped session. The file is corrected to the true clock and the note in it says so.
+   The status writes themselves were frequent and the content was accurate; only the
+   timestamps were wrong.
+
+5. **Four smaller mismatches, none affecting any outcome, reported and not repaired.**
+   (a) `PHASE_STATUS.md` contradicts itself — its prose says "There is no `HEARTBEAT:`
+   line above and one must never be written by hand" while a `HEARTBEAT: 2026-08-31
+   18:54:31` line is present above it. (b) The instruction says 14 uncommitted or
+   untracked paths at the root; there are 14 untracked **plus four modified tracked
+   files** — `ANALYSIS-cw-emit-decision-2026-08-24.md`,
+   `ANALYSIS-cw-two-stations-2026-08-23.md`, `PROJECT_CARD.md` and `WORK_INSTRUCTIONS.md` —
+   which the instruction does not account for. I committed none of them, matching what
+   unit 202 did. (c) HM-DEC-152's own text in `CLAUDE.md` §1 says `Ft8Sharp.dll` "was
+   compiling as version 1.12.8 of Hamlet", where the root was at 1.12.9 and
+   `porting-notes.md` records 1.12.9. (d) Upstream's own comment above `encode174` says
+   "The generator matrix has dimensions (87,87)", which is wrong — it is 83 rows of 12
+   bytes, as the tables and this unit's measurements both confirm. That is an inherited
+   upstream documentation error, harmless, and the port does not repeat it.
+
+**Confirmed as still true, and not re-raised:** `PHASE_OUTCOME.md` has no entries and all
+seven steps read `not started`; `PHASE_STATUS.md` reads `WORK_INSTRUCTION: 001` and
+`STEP: 1 | partial`; `ft8sharp-spec.md` is absent from the root and from `docs/`;
+HM-DEC-004's GPL-3.0 reasoning still cites "Phase 3 links ft8_lib (GPL)" where this phase
+has ft8_lib as MIT; `CLAUDE.md` §1 does hold **HM-DEC-152** as unit 202 wrote it. I did
+not run the `RULES_AT` extractor, so I can neither confirm nor deny the mangling reported
+as known item 5. I hand-edited neither `PHASE_STATUS.md` nor `PHASE_OUTCOME.md`, touched
+neither `tools\` nor the root `LICENSE`, and minted no decision id.
