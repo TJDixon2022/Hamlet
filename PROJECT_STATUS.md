@@ -1,11 +1,11 @@
 PROJECT: Hamlet
 STATE: EXECUTING
 PHASE: 12
-TASK: 4 of 6
+TASK: 3 of 6
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-31T10:23:18-04:00
-NOTE: Task 4 finding - Hamlet and the reference element streams agree to one hop over the CQ; the divergence is downstream
+UPDATED: 2026-08-31T10:52:21-04:00
+NOTE: Task 3 - four split criteria surveyed, none divides 002829 from the clean captures; verdict withheld
 
 ---
 

@@ -297,6 +297,23 @@ internal static class Program
 
                 return 0;
 
+            case "streamsurvey":
+                foreach (var t in args.Length > 1
+                             ? args.Skip(1).ToArray()
+                             : new[] { "10" })
+                {
+                    CwStreamSplit.TrustedResolutionHz =
+                        double.Parse(t, CultureInfo.InvariantCulture);
+
+                    Console.WriteLine($"TRUSTED <= {t} Hz");
+                    StreamSurvey();
+                    Console.WriteLine();
+                }
+
+                CwStreamSplit.TrustedResolutionHz = 10.0;
+
+                return 0;
+
             case "elements":
                 Elements(
                     args.Length > 1 ? args[1] : "003229",
@@ -350,7 +367,70 @@ internal static class Program
     /// decoder chooses its own pitch and would be answering a different
     /// question.</para>
     /// </remarks>
-    /// <summary>A speed to hold rather than fit, for the comparison in task 4.</summary>
+    /// <summary>
+    /// What a two-way split of every capture's mark pitches would find, before
+    /// any threshold is chosen.
+    /// </summary>
+    /// <remarks>
+    /// **THE CRITERION IS SET FROM THIS AND NOT FROM A GUESS** (work instruction
+    /// 056, task 3). A split that fragments one wobbly sender into two is worse
+    /// than the collision it fixes, so the separation a single-sender capture
+    /// produces by chance is the number the threshold has to clear.
+    /// </remarks>
+    private static void StreamSurvey()
+    {
+        Console.WriteLine(
+            "capture	pitch	marks	trusted	low n	low Hz	high n	high Hz	apart"
+            + "	scatter	sep	hand");
+
+        var files = Directory
+            .GetFiles(CaptureFolder(), "*.wav", SearchOption.AllDirectories)
+            .OrderBy(f => Path.GetFileName(f), StringComparer.Ordinal);
+
+        foreach (var file in files)
+        {
+            var audio = WavAudio.Read(file);
+            var pitch = CwSpectralPeak.FindOverLoudestStretch(
+                audio.Samples, audio.SampleRate, 6.0);
+
+            if (pitch is not { } toneHz)
+            {
+                continue;
+            }
+
+            var envelope = CwProbabilisticDecoder.Envelope(
+                audio.Samples, audio.SampleRate, toneHz);
+
+            var read = CwProbabilisticDecoder.Decode(
+                envelope, toneHz, null, null, false);
+
+            var measured = CwElementPitch.MeasureAll(
+                read.Elements, audio.Samples, audio.SampleRate, toneHz,
+                CwProbabilisticDecoder.HopMilliseconds);
+
+            var split = CwStreamSplit.Divide(measured);
+            var mark = split.Split ? "  SPLIT" : "";
+
+            Console.WriteLine(string.Format(
+                CultureInfo.InvariantCulture,
+                "{0}	{1:0.0}	{2}	{3}	{4}	{5:0.0}	{6}	{7:0.0}	{8:0.0}"
+                + "	{9:0.00}	{10:0.0}	{11}",
+                Path.GetFileNameWithoutExtension(file),
+                toneHz,
+                measured.Count(e => e.IsMark),
+                split.Trusted,
+                split.LowerCount,
+                split.LowerHz,
+                split.UpperCount,
+                split.UpperHz,
+                split.ApartHz,
+                split.ScatterHz,
+                split.Separation,
+                split.Handovers) + mark);
+        }
+    }
+
+    /// <summary>A speed to hold rather than fit, for the comparison in task 4.</summary>    /// <summary>A speed to hold rather than fit, for the comparison in task 4.</summary>
     private static double? HeldWpm { get; set; }
 
     private static void Elements(
