@@ -1,0 +1,76 @@
+captured   2026-08-31 00:27:34 UTC
+audioSeen  3792480 samples
+fingerprint d64d17f0caef
+seconds    30.0
+sampleRate 48000
+frequency  7028300 Hz  (read from the radio a moment ago)
+band       40 m  (from the frequency the radio reported)
+broadcast  the radio volunteered a change of its own while this recording was being made, and the setting reads on
+
+inputPeak  -13.0 dBFS  (over the whole recording)
+meterPeak  -13.5 dBFS  (the moment it was kept)
+inputFloor -21.7 dBFS
+clipping   False
+toneHz     609.8 Hz  (NOT MEASURED: the survey has admitted no keying, so this is the loudest bin in the band rather than a station)
+tonePeak   41.3  (the highest the tracked tone ever stood above the noise beside it, held and decaying; not a figure about this recording)
+inThis     35 characters emitted, 35 unsure, 52 elements seen, 52 resolved  (in the 30.0 seconds of audio in this file)
+unkeyed    YES  (35 characters reached the screen from a pitch chosen by the loudest bin in the band, with no keying admitted here. This is the sheet to send back)
+elements   52 seen, 52 resolved  (since the transcript was cleared at 00:25:23 UTC, about 2 minutes ago)
+characters 35 emitted, 35 unsure  (since the transcript was cleared at 00:25:23 UTC, about 2 minutes ago)
+decoderWpm withdrawn (the clock is being re-acquired; the decoder's own best hypothesis was 28 WPM)
+text       ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■■ ■■■ ■ ■ ■ ■ ■ ■■■■ ■■ ■■■
+textCovers everything read since the transcript was cleared at 00:25:23 UTC, about 2 minutes ago
+spanLlr    35 of the last 60 characters read, each against the key having been up throughout its own span (since the transcript was cleared at 00:25:23 UTC, about 2 minutes ago)
+           ■:124.8/3.5/0.028 ■:5.7/2.1/0.362 ■:12.9/0.3/0.020 ■:14.1/0.2/0.017 ■:2.3/0.5/0.231 ■:7.3/2.1/0.281 ■:2.6/0.5/0.176 ■:6.5/0.6/0.089 ■:2.3/0.1/0.047 ■:10.6/2.0/0.191 ■:-1.1/0.1/-0.068 ■:-2.3/0.9/-0.368 ■:502.2/0.2/0.000 ■:-5.1/2.7/-0.527 ■:-4.9/2.2/-0.444 ■:236.6/0.4/0.002 ■:69.1/3.1/0.045 ■:64.6/0.5/0.008 ■:33.0/0.3/0.010 ■:53.1/2.0/0.037 ■:60.6/1.3/0.021 ■:-1.8/1.2/-0.694 ■:4.4/0.6/0.143 ■:-4.0/0.8/-0.188 ■:-7.9/4.7/-0.596 ■:-4.9/2.4/-0.486 ■:444.3/2.4/0.005 ■:380.2/2.4/0.006 ■:63.0/0.2/0.003 ■:495.2/0.2/0.000 ■:390.5/1.7/0.004 ■:159.2/0.7/0.004 ■:397.8/0.4/0.001 ■:129.2/0.5/0.004 ■:463.6/0.2/0.000
+competing  none admitted, and the survey is not silent: the loudest thing in the band is at 625 Hz, +20.3 dB over the band floor, keyed 54% of the time. Nothing has judged it to be a station
+reading    28 WPM won out of 8 to 40, 1.7 better than silence per hop against a gate of 1  (this is the last 12 second window alone, at the moment of the press, and not the whole recording)
+keying     keying (held through a quiet stretch, so nothing was measured)  (an independent sweep of 400 to 1200 Hz in 25 Hz steps over the last six seconds, sharing nothing with the decoder)
+duty       not measured  (no pitch was measured, so there is no station to measure the keying of)
+
+sinceLast  -13 characters, 4 elements  (since the previous capture)
+
+Frequency            7.028300 MHz
+Mode                 CW
+DataMode             off
+FilterSelection      FIL2
+FilterBandwidth      500 Hz
+SMeter               S3
+TransmitStatus       receiving
+Overflow             not overloading
+TwinPbtOuter         unknown
+TwinPbtInner         undocumented
+Rit                  undocumented
+Swr                  unknown
+PowerOut             unknown
+RfPower              31%
+RfGain               100%
+Squelch              7%
+SquelchStatus        open
+Agc                  FAST
+Preamp               off
+Attenuator           off
+NoiseBlanker         off
+NoiseBlankerLevel    50%
+NoiseReduction       off
+NoiseReductionLevel  28%
+AutoNotch            off
+ManualNotch          off
+BreakIn              full
+KeyerSpeed           20 WPM
+CwPitch              600 Hz
+AccUsbOutputSelect   AF
+AccUsbAfLevel        80%
+NotchPosition        unknown
+FilterShape          unknown
+AfLevel              unknown
+RfSqlFunction        unknown
+BreakInDelay         unknown
+AntennaTuner         unknown
+Alc                  unknown
+AccUsbSquelch        open regardless of squelch
+Split                off
+ScopeOn              on
+ScopeOutput          off
+CivUsbPort           unknown
+CivTransceive        on
+Vfo                  undocumented

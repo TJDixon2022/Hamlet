@@ -5571,6 +5571,17 @@ public partial class MainWindowViewModel : ObservableObject
         {
             _decoderTunedAtHz = clamped;
             _decoder?.Retuned();
+
+            // **THE TRAIL IS A HISTORY OF COUNTERS THAT HAVE JUST RESTARTED**
+            // (work instruction 055, task 1), so what it holds is about another
+            // frequency. Dropping it is what makes the next window derivable
+            // rather than merely non-negative; `CwCounterTrail.Over` refuses a
+            // window whose counters went backwards, and this is what stops that
+            // refusal being the answer for the next thirty seconds.
+            _counters = _audioInput is { } input
+                ? new CwCounterTrail(
+                    (long)input.SampleRate * AudioTap.SecondsKept * 2)
+                : null;
         }
 
         if (_arrivedOnHz != clamped)

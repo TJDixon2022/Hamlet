@@ -1,0 +1,76 @@
+captured   2026-08-31 00:34:19 UTC
+audioSeen  14126400 samples
+fingerprint b408f5f9a96d
+seconds    30.0
+sampleRate 48000
+frequency  7032500 Hz  (read from the radio a moment ago)
+band       40 m  (from the frequency the radio reported)
+broadcast  the radio volunteered a change of its own while this recording was being made, and the setting reads on
+
+inputPeak  -12.6 dBFS  (over the whole recording)
+meterPeak  -13.4 dBFS  (the moment it was kept)
+inputFloor -21.9 dBFS
+clipping   False
+toneHz     613.1 Hz  (measured from the keying the survey admitted, interpolated between bins)
+tonePeak   40.0  (the highest the tracked tone ever stood above the noise beside it, held and decaying; not a figure about this recording)
+inThis     5 characters emitted, 4 unsure, 24 elements seen, 24 resolved  (in the 30.0 seconds of audio in this file)
+unkeyed    no  (25 characters, and the survey admitted keying at this pitch)
+elements   59 seen, 59 resolved  (since the transcript was cleared at 00:33:53 UTC, less than a minute ago)
+characters 25 emitted, 24 unsure  (since the transcript was cleared at 00:33:53 UTC, less than a minute ago)
+decoderWpm withdrawn (the clock is being re-acquired; the decoder's own best hypothesis was 22 WPM)
+text       ■■■■ ■ ■ ■■ ■■ ■■ ■■■■ ■■ ■■■ K ■ ■ ■
+textCovers everything read since the transcript was cleared at 00:33:53 UTC, less than a minute ago
+spanLlr    25 of the last 37 characters read, each against the key having been up throughout its own span (since the transcript was cleared at 00:33:53 UTC, less than a minute ago)
+           ■:54.8/0.2/0.004 ■:164.5/3.3/0.020 ■:176.9/1.9/0.011 ■:181.0/3.3/0.018 ■:158.2/4.5/0.028 ■:742.9/5.0/0.007 ■:3083.1/4.0/0.001 ■:261.1/3.3/0.013 ■:128.9/2.6/0.021 ■:91.7/1.6/0.018 ■:1078.3/1.4/0.001 ■:1837.0/4.4/0.002 ■:20.6/2.4/0.119 ■:37.0/0.0/0.001 ■:282.6/4.3/0.015 ■:265.9/2.0/0.007 ■:55.6/1.8/0.033 ■:10.8/0.3/0.030 ■:257.4/2.4/0.009 ■:482.7/0.8/0.002 ■:1148.9/1.5/0.001 K:565.2/0.7/0.001 ■:-2.2/3.3/-1.457 ■:-8.4/4.1/-0.487 ■:13.3/0.7/0.051
+competing  none found, and the survey found nothing else either — which is not the same as the frequency being clear
+reading    22 WPM won out of 8 to 40, 3.7 better than silence per hop against a gate of 1  (this is the last 12 second window alone, at the moment of the press, and not the whole recording)
+keying     keying (held through a quiet stretch, so nothing was measured)  (an independent sweep of 400 to 1200 Hz in 25 Hz steps over the last six seconds, sharing nothing with the decoder)
+duty       29.8%  (of the 30.0 seconds in this file, the key was down at 613.1 Hz)
+
+sinceLast  10 characters, 23 elements  (since the previous capture)
+
+Frequency            7.032500 MHz
+Mode                 CW
+DataMode             off
+FilterSelection      FIL2
+FilterBandwidth      500 Hz
+SMeter               S6
+TransmitStatus       receiving
+Overflow             not overloading
+TwinPbtOuter         unknown
+TwinPbtInner         undocumented
+Rit                  undocumented
+Swr                  unknown
+PowerOut             unknown
+RfPower              31%
+RfGain               100%
+Squelch              16%
+SquelchStatus        open
+Agc                  FAST
+Preamp               off
+Attenuator           off
+NoiseBlanker         off
+NoiseBlankerLevel    50%
+NoiseReduction       off
+NoiseReductionLevel  28%
+AutoNotch            off
+ManualNotch          off
+BreakIn              full
+KeyerSpeed           20 WPM
+CwPitch              600 Hz
+AccUsbOutputSelect   AF
+AccUsbAfLevel        80%
+NotchPosition        unknown
+FilterShape          unknown
+AfLevel              unknown
+RfSqlFunction        unknown
+BreakInDelay         unknown
+AntennaTuner         unknown
+Alc                  unknown
+AccUsbSquelch        open regardless of squelch
+Split                off
+ScopeOn              on
+ScopeOutput          off
+CivUsbPort           unknown
+CivTransceive        on
+Vfo                  undocumented

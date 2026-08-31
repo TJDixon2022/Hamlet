@@ -1,11 +1,11 @@
 PROJECT: Hamlet
-STATE: COMPLETED
+STATE: EXECUTING
 PHASE: 12
-TASK: 6 of 6
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
-UPDATED: 2026-08-30T22:12:25-04:00
-NOTE: Hold-over shipped at 12 ms, precision 0.894 and every floor held; the threshold reference was built, swept and refused
+TASK: 2 of 7
+BALL: code
+NEXT_PASTE: none
+UPDATED: 2026-08-30T23:01:21-04:00
+NOTE: Nine captures in as fixtures and the negative counters fixed; building detection by swing
 
 ---
 

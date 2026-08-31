@@ -1,0 +1,76 @@
+captured   2026-08-31 00:28:29 UTC
+audioSeen  5270880 samples
+fingerprint 8c755ffdfbac
+seconds    30.0
+sampleRate 48000
+frequency  7028300 Hz  (read from the radio a moment ago)
+band       40 m  (from the frequency the radio reported)
+broadcast  the radio volunteered nothing while this recording was being made, and the setting reads on; 72 of 14592 frames since the link came up were the radio announcing something
+
+inputPeak  -13.0 dBFS  (over the whole recording)
+meterPeak  -13.2 dBFS  (the moment it was kept)
+inputFloor -21.4 dBFS
+clipping   False
+toneHz     611.3 Hz  (measured from the keying the survey admitted, interpolated between bins)
+tonePeak   20.2  (the highest the tracked tone ever stood above the noise beside it, held and decaying; not a figure about this recording)
+inThis     74 characters emitted, 40 unsure, 162 elements seen, 162 resolved  (in the 30.0 seconds of audio in this file)
+unkeyed    no  (110 characters, and the survey admitted keying at this pitch)
+elements   216 seen, 216 resolved  (since the transcript was cleared at 00:25:23 UTC, about 3 minutes ago)
+characters 110 emitted, 76 unsure  (since the transcript was cleared at 00:25:23 UTC, about 3 minutes ago)
+decoderWpm 23
+text       ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■■ ■■■ ■ ■ ■ ■ ■ ■■■■ ■■ ■■■■■ ■ ■■ ■■■■ ■■■■■ ■■■■■■■ ■ ■ ■■■ ■■4NI RE VUN ■■■■■■ ■■P ■TUN VAFTAE I ■ R■IA ■ I NNTEIAB HT G■E
+textCovers everything read since the transcript was cleared at 00:25:23 UTC, about 3 minutes ago
+spanLlr    110 of the last 158 characters read, each against the key having been up throughout its own span (since the transcript was cleared at 00:25:23 UTC, about 3 minutes ago)
+           ■:124.8/3.5/0.028 ■:5.7/2.1/0.362 ■:12.9/0.3/0.020 ■:14.1/0.2/0.017 ■:2.3/0.5/0.231 ■:7.3/2.1/0.281 ■:2.6/0.5/0.176 ■:6.5/0.6/0.089 ■:2.3/0.1/0.047 ■:10.6/2.0/0.191 ■:-1.1/0.1/-0.068 ■:-2.3/0.9/-0.368 ■:502.2/0.2/0.000 ■:-5.1/2.7/-0.527 ■:-4.9/2.2/-0.444 ■:236.6/0.4/0.002 ■:69.1/3.1/0.045 ■:64.6/0.5/0.008 ■:33.0/0.3/0.010 ■:53.1/2.0/0.037 ■:60.6/1.3/0.021 ■:-1.8/1.2/-0.694 ■:4.4/0.6/0.143 ■:-4.0/0.8/-0.188 ■:-7.9/4.7/-0.596 ■:-4.9/2.4/-0.486 ■:444.3/2.4/0.005 ■:380.2/2.4/0.006 ■:63.0/0.2/0.003 ■:495.2/0.2/0.000 ■:390.5/1.7/0.004 ■:159.2/0.7/0.004 ■:397.8/0.4/0.001 ■:129.2/0.5/0.004 ■:463.6/0.2/0.000 ■:137.5/0.8/0.006 ■:297.2/0.5/0.002 ■:-26.6/9.5/-0.359 ■:-4.6/4.5/-0.973 ■:-2.9/0.1/-0.032 ■:1.5/6.3/4.297 ■:383.4/2.4/0.006 ■:92.5/0.2/0.003 ■:112.8/0.6/0.006 ■:50.6/1.2/0.023 ■:62.1/1.6/0.026 ■:328.0/0.0/0.000 ■:187.1/0.5/0.003 ■:67.1/1.5/0.022 ■:69.6/1.8/0.026 ■:127.0/0.4/0.003 ■:89.9/1.9/0.021 ■:80.3/0.3/0.003 ■:79.5/3.3/0.042 ■:213.8/0.2/0.001 ■:336.4/2.3/0.007 ■:-27.1/8.1/-0.298 ■:-16.8/6.9/-0.407 ■:290.0/2.4/0.008 ■:62.9/0.4/0.006 ■:111.9/0.7/0.006 ■:69.8/0.8/0.012 ■:213.4/1.1/0.005 4:644.2/0.3/0.000 N:370.3/1.4/0.004 I:142.5/1.7/0.012 R:216.0/4.1/0.019 E:45.0/1.7/0.039 V:399.9/2.5/0.006 U:362.8/2.1/0.006 N:136.8/1.7/0.013 ■:1.3/3.6/2.821 ■:13.3/0.6/0.048 ■:14.7/0.5/0.037 ■:58.3/0.0/0.000 ■:4.0/0.1/0.037 ■:6.9/0.2/0.032 ■:8.9/0.3/0.029 ■:5.8/0.0/0.003 P:90.2/0.5/0.006 ■:22.7/0.1/0.004 T:164.4/0.7/0.005 U:232.1/1.5/0.007 N:141.8/1.6/0.012 V:290.2/0.7/0.002 A:205.9/2.8/0.014 F:357.2/4.3/0.012 T:168.9/0.7/0.004 A:242.1/2.3/0.009 E:24.2/0.2/0.010 I:142.9/1.6/0.011 ■:1.8/1.1/0.640 R:125.1/0.6/0.005 ■:354.5/0.4/0.001 I:78.0/0.2/0.002 A:224.5/1.9/0.008 ■:-21.6/8.3/-0.383 I:184.3/2.1/0.011 N:260.1/3.4/0.013 N:120.6/4.4/0.037 T:101.1/0.4/0.004 E:5.5/0.3/0.053 I:45.1/0.1/0.001 A:48.1/0.7/0.014 B:165.4/0.7/0.004 H:131.5/1.3/0.010 T:132.4/0.9/0.007 G:325.3/1.2/0.004 ■:450.8/0.3/0.001 E:5.0/0.3/0.062
+competing  none admitted, and the survey is not silent: the loudest thing in the band is at 625 Hz, +16.4 dB over the band floor, keyed 46% of the time. Nothing has judged it to be a station
+reading    23 WPM won out of 8 to 40, 1.8 better than silence per hop against a gate of 1  (this is the last 12 second window alone, at the moment of the press, and not the whole recording)
+keying     no keying at 600 Hz, 64 ms key down, 17 dB swing, 84 key-downs  (an independent sweep of 400 to 1200 Hz in 25 Hz steps over the last six seconds, sharing nothing with the decoder)
+duty       39.3%  (of the 30.0 seconds in this file, the key was down at 611.3 Hz)
+
+sinceLast  42 characters, 97 elements  (since the previous capture)
+
+Frequency            7.028300 MHz
+Mode                 CW
+DataMode             off
+FilterSelection      FIL2
+FilterBandwidth      500 Hz
+SMeter               S4
+TransmitStatus       receiving
+Overflow             not overloading
+TwinPbtOuter         unknown
+TwinPbtInner         undocumented
+Rit                  undocumented
+Swr                  unknown
+PowerOut             unknown
+RfPower              31%
+RfGain               100%
+Squelch              7%
+SquelchStatus        open
+Agc                  FAST
+Preamp               off
+Attenuator           off
+NoiseBlanker         off
+NoiseBlankerLevel    50%
+NoiseReduction       off
+NoiseReductionLevel  28%
+AutoNotch            off
+ManualNotch          off
+BreakIn              full
+KeyerSpeed           20 WPM
+CwPitch              600 Hz
+AccUsbOutputSelect   AF
+AccUsbAfLevel        80%
+NotchPosition        unknown
+FilterShape          unknown
+AfLevel              unknown
+RfSqlFunction        unknown
+BreakInDelay         unknown
+AntennaTuner         unknown
+Alc                  unknown
+AccUsbSquelch        open regardless of squelch
+Split                off
+ScopeOn              on
+ScopeOutput          off
+CivUsbPort           unknown
+CivTransceive        on
+Vfo                  undocumented

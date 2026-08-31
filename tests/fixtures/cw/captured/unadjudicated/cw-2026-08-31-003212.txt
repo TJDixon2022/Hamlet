@@ -1,0 +1,76 @@
+captured   2026-08-31 00:32:12 UTC
+audioSeen  10804800 samples
+fingerprint c977970e010f
+seconds    30.0
+sampleRate 48000
+frequency  7032900 Hz  (read from the radio a moment ago)
+band       40 m  (from the frequency the radio reported)
+broadcast  the radio volunteered a change of its own while this recording was being made, and the setting reads on
+
+inputPeak  -12.8 dBFS  (over the whole recording)
+meterPeak  -13.1 dBFS  (the moment it was kept)
+inputFloor -21.9 dBFS
+clipping   False
+toneHz     585.7 Hz  (NOT MEASURED: the survey has admitted no keying, so this is the loudest bin in the band rather than a station)
+tonePeak   38.5  (the highest the tracked tone ever stood above the noise beside it, held and decaying; not a figure about this recording)
+inThis     -249 characters emitted, -109 unsure, -466 elements seen, -466 resolved  (in the 30.0 seconds of audio in this file)
+unkeyed    YES  (19 characters reached the screen from a pitch chosen by the loudest bin in the band, with no keying admitted here. This is the sheet to send back)
+elements   43 seen, 43 resolved  (since the transcript was cleared at 00:32:01 UTC, less than a minute ago)
+characters 19 emitted, 19 unsure  (since the transcript was cleared at 00:32:01 UTC, less than a minute ago)
+decoderWpm withdrawn (the clock is being re-acquired; the decoder's own best hypothesis was 34 WPM)
+text       ■■■■■■■ ■ ■ ■ ■ ■ ■ ■■■■■ ■
+textCovers everything read since the transcript was cleared at 00:32:01 UTC, less than a minute ago
+spanLlr    19 of the last 28 characters read, each against the key having been up throughout its own span (since the transcript was cleared at 00:32:01 UTC, less than a minute ago)
+           ■:49.1/1.0/0.020 ■:35.6/0.5/0.014 ■:21.1/0.9/0.042 ■:42.0/1.6/0.039 ■:98.5/0.6/0.006 ■:200.4/2.9/0.014 ■:219.2/9.5/0.043 ■:203.5/7.7/0.038 ■:0.2/15.2/64.935 ■:682.6/22.3/0.033 ■:57.5/5.5/0.095 ■:-96.9/103.7/-1.070 ■:-91.9/56.8/-0.617 ■:263.2/3.1/0.012 ■:915.5/1.3/0.001 ■:665.2/2.6/0.004 ■:1530.4/4.1/0.003 ■:326.8/0.1/0.000 ■:589.1/2.7/0.005
+competing  none admitted, and the survey is not silent: the loudest thing in the band is at 575 Hz, +17.8 dB over the band floor, keyed 29% of the time. Nothing has judged it to be a station
+reading    34 WPM won out of 8 to 40, 3.2 better than silence per hop against a gate of 1  (this is the last 12 second window alone, at the moment of the press, and not the whole recording)
+keying     keying at 575 Hz, 68 ms key down, 21 dB swing, 49 key-downs  (an independent sweep of 400 to 1200 Hz in 25 Hz steps over the last six seconds, sharing nothing with the decoder)
+duty       not measured  (no pitch was measured, so there is no station to measure the keying of)
+
+sinceLast  -91 characters, -173 elements  (since the previous capture)
+
+Frequency            7.032900 MHz
+Mode                 CW
+DataMode             off
+FilterSelection      FIL2
+FilterBandwidth      500 Hz
+SMeter               S9
+TransmitStatus       receiving
+Overflow             not overloading
+TwinPbtOuter         unknown
+TwinPbtInner         undocumented
+Rit                  undocumented
+Swr                  unknown
+PowerOut             unknown
+RfPower              31%
+RfGain               100%
+Squelch              16%
+SquelchStatus        open
+Agc                  FAST
+Preamp               off
+Attenuator           off
+NoiseBlanker         off
+NoiseBlankerLevel    50%
+NoiseReduction       off
+NoiseReductionLevel  28%
+AutoNotch            off
+ManualNotch          off
+BreakIn              full
+KeyerSpeed           20 WPM
+CwPitch              600 Hz
+AccUsbOutputSelect   AF
+AccUsbAfLevel        80%
+NotchPosition        unknown
+FilterShape          unknown
+AfLevel              unknown
+RfSqlFunction        unknown
+BreakInDelay         unknown
+AntennaTuner         unknown
+Alc                  unknown
+AccUsbSquelch        open regardless of squelch
+Split                off
+ScopeOn              on
+ScopeOutput          off
+CivUsbPort           unknown
+CivTransceive        on
+Vfo                  undocumented
