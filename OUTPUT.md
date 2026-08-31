@@ -1,443 +1,404 @@
-UNIT:       056 — complete at task 6 of 6 — 2026-08-31 11:05
-PHASE GOAL: Read 85% of the characters correctly on a capture where the pitch is right, precision before yield.
-UNIT GOAL:  Lower the speed ceiling and re-sweep the hold-over; measure every element's own pitch; split near-tied senders; and find why Hamlet reads letters where an independent decoder reads `CQ … K`.
-ADVANCED:   **yes.** Precision 0.889 → **0.901** with all five named locks green, and task 4's question answered by measurement; the unnamed character ratchet goes 15 of 38 red to 18 and that is section 4's first ask.
-NUMBER:     **precision 0.889 -> 0.901, yield 0.872 -> 0.878, substitutions 20 -> 16.**
-DRIFT:      0 consecutive units without advance.
+READ IN THIS ORDER — A, then B, then C.
+
+A. PHASE — Hamlet hears FT8 off the radio and displays the decoded text on screen.
+Seven steps. Step 1 (the library exists and its tables are proven) is at four of its
+six must-pass criteria demonstrated, up from three. Steps 2 (messages round-trip
+through 77 bits), 3 (a valid FT8 signal can be produced), 4 (signals are found in
+noise), 5 (a found signal becomes a message), 6 (sensitivity meets the published
+threshold) and 7 (Hamlet displays decoded FT8) are all not started, and none of them
+has been touched by this unit. Steps 2 through 7 remain unreachable until step 1
+closes: the plan's own named deviation is that every step depends on the one before
+it, so there is no branch of this phase that can be worked in parallel while step 1
+is open.
+B. STEP 1 — the library exists and its tables are proven. Six must-pass exit
+criteria: (1) the project builds under .NET 8 with nullable, warnings as errors and
+no third-party runtime dependencies; (2) LICENSE, NOTICE and porting-notes.md present
+and correct; (3) the boundary test passing AND shown to fail; (4) tables converted by
+a checked-in tool that reads ft8/constants.c, reproducible against a future upstream;
+(5) tables verified by LDPC encode against reference parity; (6) whole Hamlet suite —
+no new red, inherited failing set unchanged, named and counted. 1, 2 and 3 were
+demonstrated by unit 201 and this unit inherits them. THIS UNIT WAS AIMED AT 4 AND AT
+NOTHING ELSE. Criterion 4 is met: the six tables were converted by
+tests/Ft8Sharp.Tests/TableGen/, the result is checked in at
+src/Ft8Sharp/Tables/Ft8Tables.g.cs, and a watched test parses the pinned clone again,
+emits into memory and asserts byte-identity — passing, and watched refusing a single
+altered element by name. Criterion 5 was not attempted: no encoder was written and no
+parity was checked. The four tables it needs — the generator, Nm, Mn and Num_rows —
+are now on disk with their geometry proven, so the parity unit is authorable against
+real data. Criterion 6 is not a unit's to run: the whole suite takes over 25 minutes,
+it is not required until step 1 closes, and running it is what killed unit 200.
+C. THIS REPORT — the checked-in tables ARE byte-identical to what the converter
+produces from C:\Source\ft8_lib\ft8\constants.c at the pin today: 20043 characters on
+each side, line endings normalised and nothing else. Section 4 raises 3 items. None of
+them stands in the way of criterion 4, which is met. One of them — an orphaned
+testhost holding Hamlet.App.Tests' output — will stand in the way of criterion 6 when
+somebody comes to close step 1.
+
+```
+UNIT:       202 — complete at task 6 of 6 — 2026-08-31 18:45
+PHASE GOAL: Hamlet pulls FT8 out of the air and puts the decoded text on the screen.
+UNIT GOAL:  Move the six FT8 protocol tables out of the pinned ft8_lib clone into
+            Ft8Sharp by machine, and prove the bytes now in the repository are the
+            bytes that machine produces from that clone.
+ADVANCED:   yes — criterion 4 is demonstrated, not merely on disk: the regeneration
+            test ran, said byte-identical, and was watched refusing a corrupted copy.
+NUMBER:     step 1 must-pass criteria demonstrated: 3 -> 4 of 6
+DRIFT:      0 consecutive units without advance  (was 0 — unit 201 advanced)
+```
 
 ## 1. What Claude did
 
-**Complete. Six tasks of six, and task 6 — the named drop — was not dropped.**
-Hamlet confirmed against all four gate checks before the order was read.
-Development machine, project claimed `Hamlet`, branch `main`, five commits, every
-push succeeded. **Nothing here is evidence about the radio.**
+**Complete, at task 6 of 6.** All six tasks were done, including task 6, the named
+drop candidate — nothing was dropped. Windows 11, project claimed and confirmed as
+Hamlet, branch `main`, six commits, every one pushed and none refused.
 
-**Two acceptances were not met and are reported as named residues rather than
-forced, and one unnamed regression guard moved the wrong way.** Task 3's split does not fire on `002829` and task 4's `003229` does not
-read `CQ` through the shipped path. Both are measured refusals with their evidence
-attached, which the order asks for in preference to a forced pass.
+The gate was checked against the tree before the instruction was read past its first
+screen: `SHACK_FACTS.md` present, `src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs`
+present, `CoreHMI.sln` absent, `MURC.sln` absent. All four hold.
 
-### The two rulings, recorded as the order gives them
+### Task 1 — the trace
 
-> **HM-DEC (for Tim to enter): the corpus precision floor is redefined.** The
-> average floor may move only when **every individual lock holds** — the
-> clean-read locks, the adjudicated anchors, and both silence locks. An average
-> can never again be traded against a collapsed easy read, because the easy reads
-> are individually locked. **Unit 055's 0.889 against the prior 0.894 is accepted
-> under this rule and is the worked example**: yield rose 0.750 → 0.872 while
-> every individual lock stayed green.
->
-> Rejected: reverting — it returns `003229` to a wall of blocks and `002443` to
-> 48 `E`s from noise. Rejected: treating the average floor as inviolable on its
-> own — its purpose was always carried by the per-capture locks.
+`dotnet build` on both `Ft8Sharp` projects, then the `Ft8Sharp` tests alone: **4
+total, 4 passed, 0 failed, 0 skipped.** Unit 201's report says `Total: 4` in its
+transcript and "5" in its prose; the count on this machine today is 4, and neither
+number is worth chasing further.
 
-> **HM-DEC (for Tim to enter): `CwProbabilisticDecoder.FastestWpm` is lowered
-> from 40 to 30, provisionally.** The ceiling **rises again the day a capture
-> shows something faster worth reading** — record that condition with the value.
-> The hold-over's safety bound rises from 30 ms to 40 ms with it, reaching the
-> lower half of the measured 32–53 ms dropouts.
->
-> Rejected: keeping 40 — nothing in the corpus, the bulletins, or any capture the
-> operator has sent runs above about 28 WPM, and the bound was sitting just under
-> the fault it was built for.
+`ReferenceCloneProbeTests` printed:
 
-### Task 1 — the ceiling, and the hold-over re-swept
+```
+clone path              : C:\Source\ft8_lib
+reachability            : Reachable (directory enumerated)
+ft8\constants.c         : present, 15155 bytes, 392 lines
+ft8\constants.h         : present, 3728 bytes, 90 lines
+HEAD                    : 9fec6ca39886edbf96f4f5e71edc76da5074e871
+pin                     : 9fec6ca39886edbf96f4f5e71edc76da5074e871
+HEAD == pin             : True
+array definitions found : 9
+```
 
-**Baseline verified against the tree before anything changed:** precision 0.889,
-yield 0.872, substitutions 20, and all five lock suites green at 42 tests. Every
-figure matches the order's stated baseline exactly.
+The inventory the instruction gives is the inventory on disk: `src/Ft8Sharp/` held
+`Ft8Sharp.csproj`, `Ft8SharpAssembly.cs`, `LICENSE`, `NOTICE` and a 203-line
+`porting-notes.md` with no `Tables/` folder; `tests/Ft8Sharp.Tests/` held its csproj
+and two test files and nothing else; `ToolchainProbe.TEMP.cs` is gone and did not come
+back; root `Directory.Build.props` was at 1.12.8 and there is no root
+`Directory.Build.targets`; `.gitattributes` forces CRLF for `*.bat` and says nothing
+about `*.cs`; both projects are in `Hamlet.sln`; `Ft8Sharp.csproj` declares no
+package and no project reference and sets `net8.0`, `Nullable`, `TreatWarningsAsErrors`
+itself.
 
-`FastestWpm` is 30 with the condition that raises it in a comment beside the
-value. `LongestSafeHoldOverMs` is derived from it, so the safe bound went 30 ms to
-40 without a second edit. **The ceiling alone moved precision 0.889 → 0.901,
-yield 0.872 → 0.878, substitutions 20 → 16** — visible on `032050`, which goes
-`TELEWRITTER, PACKETY AN MT TINTERE` to `TELEWRITTER, PACKETY AND INTERE`.
+### Task 2 — the converter
 
-**The hold-over swept across the whole newly legal range:**
+`tests/Ft8Sharp.Tests/TableGen/` — four files: `CSourceParser.cs` reads one C array
+by identifier, `ExpressionEvaluator.cs` evaluates the arithmetic a dimension macro is
+written as, `Ft8TableConverter.cs` holds the six-table manifest and the emitter, and
+`RepositoryTree.cs` finds the tree root and reads emitted arrays back. It handles
+nested brace initialisers, block and line comments, hex and decimal literals with
+integer suffixes, and trailing commas. **Element counts come from the parse; the
+manifest's counts are only ever a cross-check.**
 
-| hold | yield | precision | subs |
-|---|---|---|---|
-| **12 ms** | **0.878** | **0.901** | **16** |
-| 16 ms | 0.875 | 0.926 | 14 |
-| 20 ms | 0.878 | **0.939** | **12** |
-| 24 ms | 0.878 | **0.939** | **12** |
-| 28 ms | 0.870 | 0.930 | 15 |
-| 32 ms | 0.870 | 0.920 | 17 |
-| 36 ms | 0.841 | 0.910 | 24 |
-| 40 ms | 0.841 | 0.910 | 24 |
+**Nine tests on synthetic C watch it refuse**, and they need no clone: a missing
+identifier, a value that will not fit `uint8_t`, ragged rows, a literal dimension the
+initialiser contradicts, a macro dimension the header contradicts, and — separately —
+a macro the header does not resolve, which is *reported* rather than failed, because
+a header that will not parse is a gap in corroboration where a header that parses and
+disagrees is a contradiction. Every refusal names the identifier, and one of the tests
+asserts the refusal does **not** contain the offending value.
 
-Monotonic to 20, tied at 24, falling after. **On the average the answer is 20 and
-it is not taken**, because it costs `cw-2026-08-22-031838`'s adjudicated `, AND`,
-which the order says still governs. Measured at all three points, the read goes
-`, 2, 2, AND 2` at twelve, `, 2, 2,■AND■2■` at sixteen, `, 2, 2,■■AND■■■` at
-twenty. **The mechanism is visible in that progression**: bridging inside a
-key-down lengthens the mark and shortens the gap after it, so this sender's
-character gaps fall in among his element gaps and the spacing collapses into
-blocks. **Twelve stands.**
+`Ft8Sharp` gained no parser, no package reference and no project reference from any
+of this.
 
-**What the wider bound does to the shredded pair**, measured though nothing is
-promised for them:
+### Task 3 — emit, check in, prove reproducible
 
-| | 12 ms | 20 ms | 40 ms |
-|---|---|---|---|
-| `003408` | 37 named, 25 blocks | 37, 24 | 33, 23 |
-| `003419` | 30 named, 30 blocks | 30, 26 | 26, 28 |
+`dotnet test ... -e FT8_TABLEGEN_WRITE=1` wrote
+`src/Ft8Sharp/Tables/Ft8Tables.g.cs`: 6 tables, 2197 elements, 20043 characters, 443
+lines. The write is gated behind that environment variable, because a generator that
+fires on every `dotnet test` would rewrite the tree under anybody running the suite
+and the comparison it is meant to be checked by could never fail.
 
-Blocks fall a little and named characters fall with them. `73` survives at twelve
-and twenty and is lost at forty. **Nothing reads these at any bound.**
+The file is one `public static class Ft8Tables`, each table a `ReadOnlySpan<byte>`
+over a flattened literal behind named stride constants. Its header names the pin, the
+source file, the tool, the regeneration command and the test that proves it, says
+**DO NOT EDIT BY HAND**, and carries no clock and no machine name.
 
-### Task 2 — every element carries its own pitch
+Then the test that makes criterion 4 mean something — see section 3 for its output.
 
-The decoder now hands out the winning path's own elements on the result,
-**produced by the same walk that spells the text**, so the stream and the letters
-cannot disagree. Each mark carries the frequency measured over its own samples by
-a transform at that element's own bin spacing, Hann-windowed, with a parabola on
-the log magnitude.
+### Task 4 — the geometry
 
-**The resolution is the element's own length and nothing buys past it**: a 190 ms
-dah separates tones about 5 Hz apart, a 55 ms dit about 18 Hz. On clean
-synthesized tones a single isolated tone is *located* far better than that — 0.05
-to 0.23 Hz across seven cases — but locating one tone and separating two are
-different questions, and the tests assert against the separation limit because
-that is the claim task 3 rests on. An element too short to beat its own search
-returns "nobody measured" rather than the mixdown pitch.
+Seven assertions in `Ft8TableGeometryTests`, run against the checked-in file rather
+than against the clone, so they need no reference material and never skip. All pass.
+Results in section 3.
 
-**Acceptance met: the corpus is identical to the digit.** 0.901 / 0.878 / 16
-before and after the plumbing.
+### Task 5 — the record
 
-### Task 3 — the split is measured and the verdict is withheld
+`porting-notes.md` gained the converter (where it lives, why it is a test, how to
+re-run it, what is checked in), the byte-identity result, the watched skip and the
+watched refusal, the three FT4-only tables deliberately not converted, the measured
+index base, and the geometry results — **no values anywhere in it**.
 
-`CwStreamSplit` clusters an admitted station's marks by their measured pitch and
-reports the two centres, their counts, the separation, the pooled scatter, the
-separation in units of that scatter, and how many times the marks cross the
-boundary in time order. **It returns no split, and that is the finding.**
+`CLAUDE.md` §1 gained **HM-DEC-152** and **HM-DEC-151**, in that order, immediately
+below the `|---|` separator, dated 2026-08-31, transcribed in full from the work
+instruction rather than paraphrased. `PROJECT_STATUS.md`'s `RULES_AT` advanced to
+`HM-DEC-152 (2026-08-31)` and nothing else in that field changed.
 
-Four criteria were surveyed across every capture in the tree. Each either misses
-the case the order names or fires on a recording known to hold one operator.
+**Root `Directory.Build.props` moved 1.12.8 → 1.12.9**, which is what it was actually
+at, under HM-DEC-150.
 
-| criterion | clean captures | `002829` | what breaks it |
-|---|---|---|---|
-| separation, Hz | 0.1 to 0.8 | 9.0 | `001831` gives 7.2 and `005051` 8.7; the only two clearing 15 are `003212` and `003229` |
-| separation over scatter | 1.5 to 3.7 | 4.2 | `001831` scores **17.2** on 7.2 Hz, because a steady sender leaves nothing to divide by |
-| handovers | 20 to 90 | 14 | a bisected heap crosses constantly; a real burst crosses twice, so the test has the sign the data does not |
-| trough in sorted pitches | 0.10 Hz | 1.30 Hz | the wrong way round: that second sender is mostly dits, and letting dits vote lets every noise-fitted short mark vote |
+`DecisionLogOrderTests` guards §1's ordering and **could not be run** — building
+`Hamlet.App.Tests` fails `MSB3027`, the orphaned `testhost (34836)` holding its
+output, which is the known fault this unit was told not to chase. The two rows were
+checked by hand against that test's own rule instead: both dated 2026-08-31, 152 above
+151, both above HM-DEC-150 of 2026-08-21, neither id reused, and the row shape matches
+its regex. See section 4.
 
-**The second sender is not in dispute.** Read in time order at a mixdown of 608.5
-Hz, `002829` puts **thirteen consecutive marks at 599 to 605 Hz between 13.58 and
-15.45 seconds**, with 613 Hz either side. The eye finds it at once. What does not
-exist is a rule that finds it without also finding one in `cw-2026-08-18-003758`,
-which Hamlet reads at a precision of 1.000.
+### Task 6 — the library's own version
 
-**So nothing is split** (§0.0, and the order's own "when in doubt, one sender").
-`NoSenderIsSplitInTwoTests` locks the refusal so a later unit changing it does so
-deliberately.
+Not dropped. `src/Ft8Sharp/Directory.Build.props`, deliberately not importing the root
+one, puts `Ft8Sharp` at **0.1.0**. Before and after in section 3. Dropping the
+inheritance was not sufficient on its own and that is worth knowing: the SDK appends
+the repository's source revision to `AssemblyInformationalVersion` without any help
+from the root file, so `IncludeSourceRevisionInInformationalVersion` is off in that
+file too. **A decision this session made for itself**, inside task 6's stated purpose
+— the ruling's own words are that an extracted `Ft8Sharp` must not carry "Hamlet's git
+commit", and without that property it still would.
 
-### Task 4 — the element streams agree, so the reading is lost after them
+### Decisions this session made for itself
 
-**The unit's centre, and the answer is a negative one.** Detail in section 3.
+Two, both inside the instruction's scope and both reproduced in full:
 
-### Task 5 — the sheet speaks for elements
+1. **The write half of the converter is a separate, environment-gated test**
+   (`FT8_TABLEGEN_WRITE=1`) rather than something that runs with the suite. The
+   instruction fixed where the converter lives and what it must prove; it did not say
+   how the file gets written the first time. A generator that runs unconditionally
+   would rewrite checked-in source under anybody who ran `dotnet test` and would make
+   the byte-identity assertion incapable of failing.
+2. **`IncludeSourceRevisionInInformationalVersion=false` in the library's props**, as
+   above.
 
-The capture sheet gains an `elementHz` line, measured over the audio in the file
-at the pitch the decoder was following. Wording proposed in section 4 for a
-ruling. The arithmetic locks stay green.
+### The known items, confirmed rather than rediscovered
 
-### Task 6 — the shredded pair, characterised
+All ten listed in the instruction were checked and none was repaired: `PHASE_OUTCOME.md`
+still has no entries and every step still reads `not started`; `PHASE_STATUS.md` still
+reads `WORK_INSTRUCTION: 001` and `STEP: 1 | partial`; `PROJECT_STATUS.md` was stale
+from unit 201 and has been overwritten under the status cadence; the `RULES_AT` reload
+defect was not touched and nothing under `tools\` was edited; unit 201's `output.md`
+has been overwritten by this file; **`ft8sharp-spec.md` is absent from both the root
+and `docs/`**, confirmed, and was not written and not treated as a source;
+`CLAUDE.md` HM-DEC-004's GPL premise still cites "Phase 3 links ft8_lib (GPL)" where
+this phase has it as MIT, and the root `LICENSE` was not touched; the loop's own root
+files are still untracked and were not committed; `outcome-read.bat` was not touched;
+`ToolchainProbe.TEMP.cs` is gone and stayed gone.
 
-Measure only, nothing changed, nothing promised. Detail in section 3.
+**No mismatch was found between the instruction and the tree.** Every measured fact it
+asserted — file lists, project settings, version, `.gitattributes`, the absent
+`Tables/` folder, the nine array definitions and their shapes — matched.
 
 ## 2. What the owner should expect
 
-**`cw-2026-08-31-003229` now shows 27 named characters and 29 blocks at 586.2 Hz,
-where unit 055 left it at 57 named and 38 blocks.**
+**What is now true.** `Ft8Sharp` holds the six FT8 protocol tables, converted by a
+tool checked in beside them, and a test that fails the moment those two stop agreeing.
+The library builds clean and reports itself as version 0.1.0 with no trace of Hamlet
+in its assembly attributes. `CLAUDE.md` carries your two rulings of 2026-08-31 as
+HM-DEC-151 and HM-DEC-152.
 
-    ■■■■■■■ ■■EEE ■ ■■ E ■SI ■ ■ ■ ■E<HH> E H ■ ■D ■ ■ ■ NEQ TIT K■G ■ ■ XA ■ ■ ■ EE■ E
+**What will look wrong and is not:**
 
-**Fewer characters, and it is still not `CQ`.** The lower ceiling makes the
-decoder emit less on this capture while the corpus improves, and since `003229`
-has no adjudicated truth its named count measures nothing on its own. **What is
-new is that Hamlet's own offline path reads the callsign attempt off the same
-audio** — `CXSIT#DD # SXEIT#S # KA` free-running, and a literal `CQ SIT K8DZ`
-held at 23 words a minute. The reading exists inside the decoder and does not
-survive the streaming window.
-
-**`002829`'s two streams, side by side.** There are two senders and Hamlet will
-not yet say so, so what follows is the measurement rather than two decodes:
-
-| | lower | upper |
-|---|---|---|
-| centre | **604.7 Hz** | **613.7 Hz** |
-| marks that could vote | 7 | 22 |
-| when | one burst, **13.58 to 15.45 s** | everywhere else |
-| median mark | 55 ms | 60 ms |
-
-At a mixdown of 608.5 Hz the two heaps sit at 601.4 and 613.7, **12.3 Hz apart**,
-which is the figure the order names. The combined decode is unchanged and still
-reads badly: 53 named, 17 blocks.
-
-**What will look wrong but is not:**
-
-- **`003229` names fewer characters than last unit.** Deliberate consequence of
-  the ceiling; the corpus improved on every one of the three numbers.
-- **Task 3 ships machinery that splits nothing.** That is the finding, not an
-  unfinished job, and there is a test holding it.
-- **The shredded pair still reads badly.** Section 3 says why nothing will read
-  them.
-- **`CwStreamSplit.LeastSeparation` and its neighbours are live constants behind a
-  verdict that is hard-coded false.** They are the surveyed figures, kept so the
-  unit that proves a criterion has somewhere to put it.
-
-**Version unchanged at 1.12.7.** The order parks the version bump and forbids
-raising it; HM-DEC-150 says a session bumps the patch every unit. That conflict is
-section 4's first ask.
-
-**Build clean, no new warnings. Six commits, all pushed to `main`.**
-
-| suite | result |
-|---|---|
-| `TheSilencePropertyIsLockedTests` | 6 passing |
-| `TheCleanReadsStayCleanTests` | 7 passing |
-| `TheAdjudicatedReadingsKeepReadingTests` | 13 passing |
-| `AStationIsABinThatSwingsTests` | 10 passing |
-| `TheSheetDoesNotLieAboutArithmeticTests` | 6 passing |
-| `EveryElementCarriesItsOwnPitchTests` | 11 passing — new |
-| `NoSenderIsSplitInTwoTests` | 6 passing — new |
-| `WhereHamletAndTheReferenceDivergeTests` | 4 passing — new |
-| `TheSheetSaysWhatEachElementWasSentAtTests` | 4 passing — new |
-| `TheCapturesThatDecodeKeepDecodingTests` | **18 of 38 failing, against 15 of 38 before this unit** |
-| corpus | **0.901 / 0.878 / 16** |
-
-**THE ONE RED NUMBER THAT IS PARTLY MINE, MEASURED RATHER THAN ASSUMED.** The
-character-and-element ratchet is not one of the five locks the order names, and it
-was **already 15 of 38 red at `bb3551b`, before this unit touched anything** — its
-floors were set 2026-08-25 and nothing has maintained them since. I checked out
-that commit into a detached worktree and ran the suite there rather than reasoning
-about it.
-
-**Three captures newly fall below their floors, and the ceiling change is the
-cause:**
-
-| capture | characters | elements | unsure |
-|---|---|---|---|
-| `003016` | 54 against a floor of 57 | 146 against 149 | 3 → **1** |
-| `001831` | 53 against 55 | 124 against 124 | 10 → 18 |
-| `021410` | 40 against 47 | 97 against 99 | 11 → **6** |
-
-**None was fixed and none of the fifteen already failing was recovered.** Two of
-the three mark *fewer* characters unsure than when their floors were set, which is
-the decoder becoming more certain rather than less, and the suite's own remarks say
-the unsure count is deliberately not asserted in either direction. **This is
-section 4's second ask**: Tim's ruling bought 1.2 points of corpus precision and
-cost three floors on a guard that was already two-fifths red, and whether that
-trade stands is his.
-
-**A flake, named so it is not mistaken for a regression.**
-`CwToDataAndBackTests.ArrivingOnTheDigitalBlockLeavesTheRadioAbleToHearIt` failed
-once inside the whole-solution run under heavy parallel load, and **passes at both
-`bb3551b` and head when run on its own**. It is an async rig test with a scripted
-radio; nothing in this unit touches that path.
-
-**The whole-solution run was not carried to completion.** It ran an hour and three
-quarters without finishing and was stopped; what replaced it is every suite named
-above plus the ratchet comparison at both commits. **The suites not run this unit
-are the analysis tables and the sensitivity sweeps**, which write records rather
-than assert behaviour.
+- **One `Ft8Sharp` test is always skipped.** `RewriteTheCheckedInTablesFile` is the
+  generator. It skips unless `FT8_TABLEGEN_WRITE=1`, and that is the design — it is
+  the only thing in the tree that writes `Ft8Tables.g.cs`.
+- **Five are skipped on a machine without the clone.** Pointing `FT8_LIB_PATH` at a
+  path that does not exist gives 23 total, 18 passed, 5 skipped, 0 failed. A fresh
+  clone with no reference material stays green, which is the ruling.
+- **`Ft8Tables.g.cs` is 443 lines of hex and is not meant to be read.** It is machine
+  output, it says so in its header, and reviewing its values by eye is not how it is
+  checked — the regeneration test is.
+- **Two version numbers in the tree now**, 1.12.9 for Hamlet and 0.1.0 for the
+  library. That is HM-DEC-152 working, not drift.
+- **`dotnet build Hamlet.sln` still fails `MSB3027`.** The orphaned `testhost` from
+  the session killed earlier today still holds `Hamlet.App.Tests`' output. Nothing in
+  this unit touched it and nothing in this unit needs it.
 
 ## 3. What you should see
 
-**The question this unit was commissioned to ask was why Hamlet reads letters
-where the reference reads `CQ … K`. The answer is that it does not. The two
-element streams are the same stream, and the reading is lost after the elements,
-inside Hamlet's own streaming window.**
-
-**Hamlet's stream against the reference's, over the seconds the reference reads
-`CQ` — 13.50 to 14.72 on `cw-2026-08-31-003229`, both at 583.5 Hz:**
+**Are the tables in the repository byte-identical to the tables the converter produces
+from `C:\Source\ft8_lib\ft8\constants.c` at the pin? Yes.**
 
 ```
-      reference              Hamlet            apart
-      MARK   150 ms          MARK   155 ms       5 ms
-      gap     30 ms          gap     30 ms       0 ms
-      MARK    65 ms          MARK    65 ms       0 ms
-      gap     36 ms          gap     35 ms       1 ms
-      MARK   161 ms          MARK   160 ms       1 ms
-      gap     24 ms          gap     30 ms       6 ms
-      MARK    68 ms          MARK    60 ms       8 ms
-      gap    126 ms          gap    130 ms       4 ms
-      MARK   155 ms          MARK   155 ms       0 ms
-      gap     36 ms          gap     40 ms       4 ms
-      MARK    98 ms          MARK    90 ms       8 ms
-      gap     17 ms          gap     30 ms      13 ms
-      MARK    68 ms          MARK    55 ms      13 ms
-      gap     24 ms          gap     30 ms       6 ms
-      MARK   157 ms          MARK   160 ms       3 ms
+Passed Ft8Sharp.Tests.Ft8TableGenerationTests.CheckedInTablesAreWhatTheConverterProduces
+
+C identifier             dimensions     elements
+kFT8_Costas_pattern      [7]            7
+kFT8_Gray_map            [8]            8
+kFTX_LDPC_generator      [83][12]       996
+kFTX_LDPC_Nm             [83][7]        581
+kFTX_LDPC_Mn             [174][3]       522
+kFTX_LDPC_Num_rows       [83]           83
+
+derived geometry        : LdpcM=83 LdpcN=174 LdpcKBytes=12 NmRowWidth=7 MnRowWidth=3
+header cross-check      : every declared dimension resolved against ft8/constants.h
+
+checked-in file         : C:\Source\HamLet\src\Ft8Sharp\Tables\Ft8Tables.g.cs
+characters produced     : 20043
+characters checked in   : 20043
+byte-identical          : True
 ```
 
-**Eight marks and seven gaps, in the same order, with the same alternation.** Nine
-of the fifteen agree inside one hop and the worst disagrees by three. The absolute
-times differ by a constant 48 ms, which is a centred 33 ms Hann against a centred
-25 ms boxcar, and a constant offset cancels for a length.
+**The six tables and their parsed element counts** are the table above — 2197 elements
+in total, every count taken from what the parser found and then compared against the
+manifest, never the other way round. The three FT4-only tables in the same file were
+not converted. **No value of any table appears in this report, in `porting-notes.md`,
+in any commit message or in any test's output.**
 
-**No marks split. No gaps missed. No marks invented.** The order's hypothesis —
-that Hamlet's stream holds many short isolated marks — is false here.
+**The dimension macros were corroborated, not inferred.** `FTX_LDPC_M`,
+`FTX_LDPC_K_BYTES` and `FTX_LDPC_N` were resolved from `ft8/constants.h` — including
+the one that is written as arithmetic rather than as a number — and every one of them
+agreed with the shape the initialiser itself has. A disagreement would have been a
+failure, not a preference.
 
-**So none of the four named causes can be the difference**, because every one of
-them corrupts the element stream and the element stream is not corrupt. Each was
-measured anyway, in the order the work instruction gives them:
+**Task 4's geometry, each named, each passing:**
 
-1. **Integrator width.** The reference's 25 ms boxcar is 40 Hz nominal against
-   Hamlet's 45 Hz Hann. As the order guessed, unlikely, and now excluded.
-2. **The threshold's placement on this capture.** The reference uses a fixed
-   threshold at the 98th percentile less 6 dB over the whole file. Hamlet's own
-   reads `CXSIT#DL … KA` at **every** pitch from 583.5 to 589 Hz, so its threshold
-   is not putting the reading out of reach.
-3. **The hold-over's reach after task 1.** Swept 12 to 40 ms. It moves the corpus
-   and moves nothing on `003229`.
-4. **The minimum-run drop-without-merge.** Real in the code, and it does not fire:
-   **one run in 140** on `003229`, **none in 235** on `004507`, **none in 212** on
-   `003758`. The hysteresis absorbs the notches first.
-   `CwUnitEstimator.Elements` now counts them, because a silent filter cannot be
-   diagnosed.
+```
+Passed ElementCountsAndDerivedGeometryAgree
+  996 = 83 x 12, 581 = 83 x 7, 522 = 174 x 3
+Passed GrayMapIsAPermutationOfTheEightTones
+  Ft8GrayMap: every one of the 8 tones present exactly once.
+Passed CostasPatternIsSevenTonesInRange
+  Ft8CostasPattern: 7 entries, every one inside the 8-tone alphabet.
+Passed NumRowsIsAWidthPerCheckAndSumsToMnsElementCount
+  LdpcNumRows: every entry in 1..7, and they sum to 522, which is LdpcMn's
+  element count (522).
+Passed NmPadsWithZeroExactlyWhereNumRowsSaysItDoes
+  LdpcNm: every row is real up to its LdpcNumRows length and zero after it, with
+  no zero inside the real part and no non-zero in the padding.
+Passed IndexBasesAreUpstreamsAndAreMeasuredRatherThanAssumed
+  LdpcMn holds check indices    : 1-based, covering all 83 checks with no gaps.
+  LdpcNm holds variable indices : 1-based, covering all 174 variables with no gaps.
+Passed NmAndMnAreTransposesOfEachOther
+  LdpcNm and LdpcMn agree on all 522 edges in both directions.
+```
 
-**What diverges is Hamlet from Hamlet.** Same core decoder, same audio, same
-pitch:
+**The index base was measured, not assumed, and is 1 for both tables.** The
+measurement is that the entries cover a contiguous range of exactly the right
+cardinality — 83 checks, 174 variables — with no gaps, and that the smallest is one
+rather than zero; in `Nm`, zero is padding and never an index, which is what makes
+1-based the only reading that works. **They are not renumbered.** Every consumer
+subtracts the same one, written down in one place.
 
-| path | reads |
-|---|---|
-| offline, free-running | `CXSIT#DD # SXEIT#S # KA` |
-| offline, held at 23 WPM | **`CQ SIT K8DZ# # DQ EITK#G # VA`** |
-| **streaming, as shipped** | 27 named, 29 blocks, no `CQ` |
+**The `Nm`/`Mn` transpose is the strongest of these**, and it is exact in both
+directions over all 522 edges. A single wrong bit in either table fails it.
 
-**The named residue, stated exactly:** the callsign attempt survives the offline
-window and dissolves in the sliding one. The remaining difference is in the
-streaming path — its twelve-second window, its per-window noise scale, its
-settle-by-time, its held gap classes — and not in element extraction, thresholds,
-bandwidth or the run filter. **That is a different investigation from the one this
-order scoped, and it is where the next unit should start.**
+**The comparison was watched refusing.** One element of `kFTX_LDPC_Nm` was altered in
+memory, by machine, in a copy of the generated text — the checked-in file was never
+touched and nothing was hand-edited:
 
-**Task 6, the shredded pair: the fragments cluster at many pitches, not one, and
-nothing will read these.** With per-element pitch available for the first time:
+```
+Passed TheComparisonRefusesAFileWithOneAlteredElement
+  identical               : False
+  reported                : kFTX_LDPC_Nm: differs at 1 of 581 positions.
+```
 
-| | `003408` | `003419` | `003758` (control, reads at 1.000) |
-|---|---|---|---|
-| marks | 108 | 116 | 118 |
-| mark lengths | smeared 20 to 240 ms, every bin filled | the same | **two sharp heaps**, 61 marks at 40–60 ms and 41 at 140–160 |
-| pitch spread, p10 to p90 | **31.5 Hz** | **30.3 Hz** | **0.8 Hz** |
-| pitch gatherings | 580–585 (11), 600–605 (39), 610–620 (41) | 580–585 (11), 600–605 (25), 615–620 (37) | one |
+It named the table, counted the positions, said nothing about the other five, and
+printed no value.
 
-**Forty times the pitch spread of a capture Hamlet reads perfectly, and at least
-three gatherings across 35 Hz inside a 45 Hz detector.** That is several stations
-colliding rather than one station torn apart, and it is why the mark lengths have
-no dit-and-dah structure to recover: the marks belong to different senders. **The
-honest answer is that nothing reads this**, and no change to a threshold, a
-bandwidth or a hold-over will change that.
+**The watched skip, with `FT8_LIB_PATH` pointing nowhere:**
 
-**Nothing else in the application looks different.** The capture sheet gains one
-line; the terminal, the panels and the decode on screen are as they were.
+```
+dotnet test tests/Ft8Sharp.Tests -e FT8_LIB_PATH=C:\Source\ft8_lib_does_not_exist
+
+  Ft8Sharp.Tests.ReferenceCloneProbeTests.TestProcessCanReachThePinnedReferenceClone [SKIP]
+  Ft8Sharp.Tests.ReferenceCloneProbeTests.ConstantsInventoryIsLegibleAsShapesOnly [SKIP]
+  Ft8Sharp.Tests.Ft8TableGenerationTests.CheckedInTablesAreWhatTheConverterProduces [SKIP]
+  Ft8Sharp.Tests.Ft8TableGenerationTests.TheComparisonRefusesAFileWithOneAlteredElement [SKIP]
+  Ft8Sharp.Tests.Ft8TableGenerationTests.RewriteTheCheckedInTablesFile [SKIP]
+
+Passed! - Failed: 0, Passed: 18, Skipped: 5, Total: 23
+```
+
+The seven geometry tests keep running there, because they read the checked-in file
+rather than the clone. That is deliberate: what ships is asserted sound on a machine
+that has never seen `ft8_lib`.
+
+**The `Ft8Sharp` suite as it now stands: 23 total, 22 passed, 1 skipped, 0 failed** —
+4 at the start of this unit, 23 at the end.
+
+**Task 6, the before and the after**, read out of the generated
+`src/Ft8Sharp/obj/Debug/net8.0/Ft8Sharp.AssemblyInfo.cs`:
+
+```
+BEFORE
+[assembly: AssemblyMetadataAttribute("BuildStampUtc", "2026-08-31 22:41")]
+[assembly: AssemblyFileVersionAttribute("1.12.9.0")]
+[assembly: AssemblyInformationalVersionAttribute("1.12.9+53a586e0579f84cb299189aa91d8b772877db33e")]
+[assembly: AssemblyVersionAttribute("1.12.9.0")]
+
+AFTER
+[assembly: AssemblyFileVersionAttribute("0.1.0.0")]
+[assembly: AssemblyInformationalVersionAttribute("0.1.0")]
+[assembly: AssemblyVersionAttribute("0.1.0.0")]
+```
+
+No 1.12.9, no Hamlet commit, no `BuildStampUtc`. That commit hash is Hamlet's, and an
+extracted `Ft8Sharp` would have carried it. The library builds clean with the
+non-inheriting props file and the tests still pass, so nothing was reverted.
+
+**Commits, all on `main`, all pushed, none refused:**
+
+```
+663cfca chore(status): unit 202 task 1 — the clone still answers, and the pin still matches
+ceec87f feat(ft8sharp): a checked-in converter that reads ft8/constants.c
+8602ec9 feat(ft8sharp): the six tables, written by the tool from the pinned clone
+11acc15 test(ft8sharp): the four LDPC tables describe one graph, counted from both sides
+53a586e docs(docs): record the conversion, and Tim's two rulings as HM-DEC-151 and 152
+09717e4 build(ft8sharp): the library stops publishing itself as a version of Hamlet
+```
+
+Nothing from `C:\Source\ft8_lib` was committed, no `bin/` or `obj/` output was
+committed, and none of the loop's own machinery was committed.
 
 ## 4. What's blocking us
 
-> **The version bump is ruled or the order's park is upheld, and today they
-> disagree.** `Directory.Build.props` says 1.12.7. HM-DEC-150 says the minor is
-> the phase and the patch is the work unit, so a session reads the version, bumps
-> the patch, and reports what it moved from and to — which makes this unit 1.12.8.
-> Work instruction 056's parked list says the version bump is "still unruled, do
-> not guess", and says not to raise it either.
->
-> **The order is ten days newer than the ruling and more specific to this unit, so
-> it was followed and the version was not touched.** Rejected: bumping on
-> HM-DEC-150's authority, because the order forbids guessing here and a version
-> is cheap to move and expensive to move wrongly. Rejected: staying silent, because
-> §0 of `CLAUDE_CODE.md` requires a session that follows one document over another
-> to name the conflict rather than leave the drift in place.
+**Three items. None of them blocks criterion 4, which is met. One of them will block
+criterion 6.** Most-blocking first.
 
-> **The capture sheet's element line reads as proposed below, or Tim rewords it.**
-> §12.1: this is the sheet's voice and the sheet is evidence, so the wording is
-> his.
->
-> Measured, with elements present:
->
->     elementHz  29 elements measured, gathering at 604.7 and 613.7 Hz, 9.0 Hz
->                apart with 2.15 Hz of scatter inside them  (measured over this
->                recording; whether that is one operator or two is not something
->                Hamlet can yet tell you)
->
-> Too few long elements:
->
->     elementHz  3 elements were long enough to measure a pitch from, which is too
->                few to say anything about how they spread
->
-> No pitch measured at all:
->
->     elementHz  not measured  (no pitch was measured, so there is nothing for an
->                element's own pitch to be measured against)
->
-> **The closing clause is the load-bearing part and it is deliberately flat.** It
-> says Hamlet cannot yet tell one operator from two, which is true and is the
-> whole of task 3's finding. Rejected: naming the two gatherings as senders, which
-> is the untested criterion. Rejected: dropping the clause and printing the two
-> figures bare, because two numbers labelled "gathering at" invite exactly the
-> conclusion the measurement cannot support. **The per-stream lines task 5 asked
-> for are not proposed at all**, because there are no streams to speak for.
+**1. The orphaned `testhost` will stop step 1 from closing, and it is not something a
+session can clear.** Building `tests/Hamlet.App.Tests` fails `MSB3027` — `testhost
+(34836)`, left by the session killed earlier today, holds `Hamlet.App.dll` and
+`Hamlet.RadioEngine.dll` in that project's output folder. This unit did not need it
+and did not chase it, as instructed, but it had one real cost here:
+`DecisionLogOrderTests`, which is the check on the two `CLAUDE.md` rows this unit
+added, **could not be run**, so those rows are verified by hand against the test's own
+rule rather than by the test. More importantly, **criterion 6 of step 1 is "whole
+Hamlet suite — no new red, inherited failing set unchanged, named and counted", and
+that cannot be measured at all while the build of a test project fails.** Killing the
+process is outside what a session can do here. **This is a note and a heads-up, not a
+ruling request** — the action is a reboot or an end-task before the unit that closes
+step 1 runs.
 
-> **The ratchet's three lost floors are accepted for what the ceiling bought, or
-> the ceiling goes back.** `TheCapturesThatDecodeKeepDecodingTests` goes 15 of 38
-> red to 18 of 38 on `FastestWpm` alone. It is not one of the five locks this order
-> names, all five of which are green, and it was already two-fifths red before this
-> unit began.
->
-> **The ruling to lower the ceiling is yours and explicit, so it was executed and
-> the cost is reported rather than used as grounds to revert.** Rejected: reverting
-> the ceiling, because your ruling in this order rejects keeping 40 on measured
-> grounds and a session does not overturn that on a guard the order does not name.
-> Rejected: raising the three floors to what the decoder now produces, because
-> §12.5 forbids lowering a floor to fit a change and that is what it would be.
-> Rejected: staying quiet because the named locks are green, which is how a guard
-> goes from fifteen red to eighteen without anybody deciding it should.
->
-> **The suite itself may be the real ask.** Floors set on one day over unadjudicated
-> audio, two-fifths of them broken, and no unit since has reported them. Either they
-> are re-measured with the decoder as it now stands, or the suite is retired and its
-> job given to the adjudicated anchors, which is where the guarding has actually been
-> happening.
+**2. HM-DEC-150's "the minor version is the phase number" has nothing to equal under
+the phase layer.** The ruling says the minor version *is* the phase and equals
+`PROJECT_STATUS.md`'s `PHASE`, with no second copy of the number. Under the phase
+layer `PHASE` is a sentence — "Hamlet hears FT8 off the radio and displays the decoded
+text on screen" — so there is no number for the minor to equal, and the version moved
+1.12.8 → 1.12.9 on the patch alone. **Noted, not resolved, and no id minted for it**,
+as instructed. It is a real inconsistency between two live conventions and it wants a
+ruling eventually; it blocks nothing now.
 
-> **Whether the next unit works the streaming window.** Task 4's residue puts the
-> whole remaining difference on `003229` inside the streaming path, and that path
-> has never been measured against its own offline path on the corpus. The obvious
-> first measurement is to score every capture both ways and see how wide the gap
-> is — if the offline path reads the corpus materially better, that is the phase
-> goal's shortest route and it is a bigger change than a threshold.
->
-> Rejected: doing it inside this unit, because the order scoped task 4 to the
-> element comparison and named causes, and a session that finds a bigger fish and
-> chases it has left the plan.
+**3. The loop's own root files are untracked, and the phase's memory is empty.**
+`ARBITER.md`, `PHASE_CONTROL.md`, `PHASE_PLAN.md`, `PHASE_STATUS.md`,
+`PHASE_OUTCOME.md`, `PHASE_UPLIFT.md`, `RUN_LEDGER.md`, `MANIFEST.txt`,
+`VERIFY_PASS.md`, `.gitattributes`, `.run-unit/`, `docs/phase-uplift/` and
+`tools/arbiter/` are all untracked; another author put them there and this unit did not
+commit them. Related and worth stating in the same breath: **`PHASE_OUTCOME.md` still
+has no entries and every step still reads `not started`**, although units 200, 201 and
+now 202 have run and two of them completed. The phase's memory is empty, so the
+arbiter's loop test has nothing to read and has to be judged from `RUN_LEDGER.md` and
+the last report instead. **Recommendation, for their author rather than for a session:
+commit them, and make the outcome append happen** — three units of work are now
+invisible to the one file designed to remember them. `PHASE_OUTCOME.md` was not
+hand-edited.
 
-### Asks still outstanding
-
-Carried forward per HM-DEC-139 and HM-DEC-140.
-
-1. **The ratchet's three lost floors** — raised above, 2026-08-31. **New.**
-   `TheCapturesThatDecodeKeepDecodingTests`, 15 of 38 red to 18 of 38.
-2. **The version bump against HM-DEC-150** — raised above, 2026-08-31. **New.**
-   `Directory.Build.props` says 1.12.7.
-3. **The capture sheet's element wording** — raised above, 2026-08-31. **New.**
-   The line is in `MainWindowViewModel.ElementPitchLine` and shipping.
-4. **The streaming window against the offline path** — raised above, 2026-08-31.
-   **New.** Nothing changed for it.
-5. **Hysteresis on the peak** — 2026-08-30, unit 053. Costed, not built, and this
-   order forbade building it.
-6. **The squelch and `013347`'s blocks** — 2026-08-30, unit 053. Materially
-   improved in unit 055, 84% blocks to 36%.
-7. **The `134712` carrier** — 2026-08-30, unit 052.
-8. **The guard narrowing** — 2026-08-29, unit 051.
-9. **The filter byte against HM-DEC-149** — HM-OPEN-062, unruled.
-10. **The evidence term's unbounded scale** — unit 049.
-11. **The answer key's licensing.**
-12. **The mode and filter's place in the owned-settings contract** — unit 047.
-13. **What the digital rows state for the five settings they are silent on.**
-14. **The pedestal ranking**, measured at 34 of 44 and unbuilt.
-15. **A dial move's threshold**, provisional at 500 Hz.
-16. **The transcript break's wording.**
-
-**Dropped from the queue this unit:** the 0.005 floor breach (2026-08-31, unit
-055) and `FastestWpm` with the hold-over bound (2026-08-30, unit 054). Both were
-ruled in this order and both are recorded in section 1.
+**Nothing else is blocking.** The known defects listed in the instruction — the
+`RULES_AT` reload mangling the id, HM-DEC-004's GPL premise, the absent
+`ft8sharp-spec.md`, `outcome-read.bat`'s apostrophe — were all confirmed still present
+and none was touched. No ruling is needed to author criterion 5's unit: the four
+tables it needs are on disk, their geometry is proven, and the pin is verified in the
+suite.
