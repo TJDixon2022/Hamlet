@@ -4330,6 +4330,19 @@ public partial class MainWindowViewModel : ObservableObject
             // to be pointed at is a fact about a bank rather than about a station,
             // and this sheet has printed one of those before.
             $"duty       {DutyForTheRecord(audio, report)}",
+
+            // **WHAT PITCH EACH ELEMENT WAS ACTUALLY SENT AT**, which nothing on
+            // this sheet has ever carried and which the decoder could not have
+            // told it until work instruction 056. Every other pitch here is a
+            // pitch for the whole recording, so two operators a few hertz apart
+            // arrive as one number and the sheet cannot say they were two.
+            //
+            // **IT IS A MEASUREMENT AND NOT A VERDICT** (see `CwStreamSplit`,
+            // whose verdict is withheld because no criterion measured across this
+            // corpus divides the two-sender case from the clean ones). The line
+            // says how far the elements spread and how far apart the two heaps
+            // stand, and it says nothing at all about whether they are two people.
+            $"elementHz  {ElementPitchLine(audio, report)}",
             "",
         };
 
@@ -4740,6 +4753,70 @@ public partial class MainWindowViewModel : ObservableObject
 
         return "none found, and the survey found nothing else either — which is "
             + "not the same as the frequency being clear";
+    }
+
+    /// <summary>
+    /// What pitch each element was sent at, spread and heaps, or why there is
+    /// nothing to say.
+    /// </summary>
+    /// <param name="audio">The recording being written.</param>
+    /// <param name="report">What the decoder had at the moment of the press.</param>
+    /// <returns>The line, in the sheet's own voice.</returns>
+    /// <remarks>
+    /// <para>**MEASURED OVER THE AUDIO IN THIS FILE**, at the pitch the decoder
+    /// was following, like every other figure on this sheet that is about the
+    /// recording rather than about the evening.</para>
+    /// <para>**AND NOT WRITTEN AT ALL WHERE THE PITCH WAS NEVER MEASURED**
+    /// (§0.0). An element pitch taken relative to the middle of whatever bank the
+    /// decoder happens to be pointed at is a fact about a bank, and this sheet has
+    /// printed one of those before.</para>
+    /// <para>**IT REPORTS AND DOES NOT CONCLUDE.** `CwStreamSplit` returns no
+    /// split today, on evidence recorded in its own remarks, so the line gives the
+    /// two heaps and their separation and leaves the question where it is. Saying
+    /// two people are sending on the strength of an untested criterion is the
+    /// guess dressed as an answer §0.0 exists to forbid.</para>
+    /// </remarks>
+    public static string ElementPitchLine(MonoAudio audio, CwDecodeReport report)
+    {
+        ArgumentNullException.ThrowIfNull(audio);
+        ArgumentNullException.ThrowIfNull(report);
+
+        if (double.IsNaN(report.ToneHz) || report.ToneHz <= 0)
+        {
+            return "not measured  (no pitch was measured, so there is nothing "
+                   + "for an element's own pitch to be measured against)";
+        }
+
+        var envelope = CwProbabilisticDecoder.Envelope(
+            audio.Samples, audio.SampleRate, report.ToneHz);
+
+        var read = CwProbabilisticDecoder.Decode(
+            envelope, report.ToneHz, null, null, false);
+
+        var measured = CwElementPitch.MeasureAll(
+            read.Elements, audio.Samples, audio.SampleRate, report.ToneHz,
+            CwProbabilisticDecoder.HopMilliseconds);
+
+        var division = CwStreamSplit.Divide(measured);
+
+        if (division.Trusted < 2 * CwStreamSplit.LeastTrustedMarks)
+        {
+            return $"{division.Trusted} elements were long enough to measure a "
+                   + "pitch from, which is too few to say anything about how they "
+                   + "spread";
+        }
+
+        return string.Format(
+            CultureInfo.InvariantCulture,
+            "{0} elements measured, gathering at {1:0.0} and {2:0.0} Hz, "
+            + "{3:0.0} Hz apart with {4:0.0} Hz of scatter inside them  "
+            + "(measured over this recording; whether that is one operator or two "
+            + "is not something Hamlet can yet tell you)",
+            division.Trusted,
+            division.LowerHz,
+            division.UpperHz,
+            division.ApartHz,
+            division.ScatterHz);
     }
 
     /// <summary>
