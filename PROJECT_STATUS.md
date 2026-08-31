@@ -1,9 +1,9 @@
 PROJECT: Hamlet
-STATE: COMPLETED
+STATE: IN_PROGRESS
 PHASE: Hamlet hears FT8 off the radio and displays the decoded text on screen
-TASK: 5 of 5
-BALL: tim
+TASK: 2 of 6
+BALL: claude
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-150 (2026-08-21)
-UPDATED: 2026-08-31T17:07:00-04:00
-NOTE: All five tasks done; a dotnet test process reads the pinned clone, so the table converter is authorable — three rulings wait in output.md section 4
+UPDATED: 2026-08-31T18:33:00-04:00
+NOTE: Trace done — 4 of 4 Ft8Sharp tests pass, clone HEAD equals the pin, constants.c reads at 392 lines with nine array definitions; now writing the C initialiser parser that will pick six of them by identifier
