@@ -8,14 +8,26 @@ namespace Ft8Sharp.Tests;
 /// <summary>
 /// Ft8Sharp is built as if it will be published on its own. That claim is only
 /// true while the library depends on nothing outside itself, and a guard that has
-/// never refused is not a guard — this one has been watched failing on a
-/// deliberately added reference to Hamlet.RadioEngine.
+/// never refused is not a guard — this one was watched failing on 2026-08-31, on a
+/// ProjectReference to Hamlet.RadioEngine added on purpose and then reverted.
 /// </summary>
 /// <remarks>
+/// <para>
 /// Two halves, catching different failures. <see cref="DeclaresNoReferences"/>
 /// reads the project file and catches a reference someone writes down;
 /// <see cref="NoHamletAssemblyArrives"/> reads the built assembly and catches one
 /// that arrives without being written down here.
+/// </para>
+/// <para>
+/// <b>Only the first half refused, and that is the shape of the guard rather than a
+/// defect in it.</b> The compiler emits an assembly reference for an assembly whose
+/// types are used, and the added reference was used by nothing, so
+/// <see cref="NoHamletAssemblyArrives"/> stayed green throughout. It is the second
+/// net, not the first: it catches Hamlet arriving through something that is used —
+/// transitively, or through a reference nobody wrote in this file — and it cannot
+/// catch a declaration on its own. The declaration is what
+/// <see cref="DeclaresNoReferences"/> is for, and it failed immediately.
+/// </para>
 /// </remarks>
 public class Ft8SharpBoundaryTests
 {
