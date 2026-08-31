@@ -90,6 +90,11 @@ internal static class Program
 
                 return 0;
 
+            case "fading":
+                Fading();
+
+                return 0;
+
             case "peakwindow":
                 PeakWindow();
 
@@ -1724,6 +1729,169 @@ internal static class Program
         var flat = text.Replace('\n', ' ').Replace('\r', ' ').Trim();
 
         return flat;
+    }
+
+    /// <summary>How much the envelope ripples inside a key-down stretch.</summary>
+    /// <remarks>
+    /// <para>**FADING FAST ENOUGH TO PUNCH HOLES IN SINGLE ELEMENTS** (work
+    /// instruction 053, task 5). Independent analysis of the 2026-08-29 evening
+    /// found 49 to 61 per cent peak-to-peak ripple during key-down with dominant
+    /// modulation at 7, 37 and 53 Hz — which is why the same recording measures
+    /// 21 words a minute at one threshold and 37 at another, and why the ear reads
+    /// it and an envelope detector does not.</para>
+    /// <para>**MEASURE ONLY.** This is the next unit's evidence, taken now while
+    /// the numbers are cheap.</para>
+    /// </remarks>
+    private static void Fading()
+    {
+        Console.WriteLine(
+            "capture	stretches	rippleP50%	rippleP90%	dominantHz	namedChars");
+
+        var rows = new List<(double Ripple, string Line)>();
+
+        foreach (var (capture, _, _) in Truths)
+        {
+            var path = Find(capture);
+
+            if (path is null)
+            {
+                continue;
+            }
+
+            var audio = WavAudio.Read(path);
+            var toneHz = CwSpectralPeak.Find(audio.Samples, audio.SampleRate) ?? 600;
+
+            var envelope = CwProbabilisticDecoder.Envelope(
+                audio.Samples, audio.SampleRate, toneHz);
+
+            var db = envelope.Select(v => 20 * Math.Log10(Math.Max(v, 1e-12)))
+                .ToArray();
+
+            var threshold = CwUnitEstimator.Otsu(db);
+            var hopMs = CwProbabilisticDecoder.HopMilliseconds;
+            var minimumHops = (int)(120 / hopMs);
+
+            var ripples = new List<double>();
+            var rates = new List<double>();
+            var from = -1;
+
+            for (var i = 0; i <= db.Length; i++)
+            {
+                var down = i < db.Length && db[i] > threshold;
+
+                if (down && from < 0)
+                {
+                    from = i;
+                }
+                else if (!down && from >= 0)
+                {
+                    if (i - from >= minimumHops)
+                    {
+                        var run = envelope.Skip(from).Take(i - from).ToArray();
+                        var high = run.Max();
+                        var low = run.Min();
+
+                        if (high > 0)
+                        {
+                            ripples.Add((high - low) / high * 100);
+                        }
+
+                        rates.Add(DominantHz(run, 1000 / hopMs));
+                    }
+
+                    from = -1;
+                }
+            }
+
+            if (ripples.Count == 0)
+            {
+                Console.WriteLine($"{capture}	0	-	-	-	-");
+
+                continue;
+            }
+
+            var sorted = ripples.OrderBy(v => v).ToArray();
+            var median = At(sorted, 50);
+
+            rows.Add((median, string.Format(
+                CultureInfo.InvariantCulture,
+                "{0}	{1}	{2:0}	{3:0}	{4:0.0}	{5}",
+                capture, ripples.Count, median, At(sorted, 90),
+                rates.Count == 0 ? 0 : rates.OrderBy(v => v).ElementAt(rates.Count / 2),
+                NamedCharacters(audio))));
+        }
+
+        foreach (var row in rows.OrderByDescending(r => r.Ripple))
+        {
+            Console.WriteLine(row.Line);
+        }
+    }
+
+    /// <summary>The strongest modulation rate inside one key-down run.</summary>
+    /// <remarks>
+    /// A plain periodogram over the run's own envelope, searched from 3 Hz to a
+    /// quarter of the hop rate. Below 3 Hz is the element itself rather than
+    /// modulation of it.
+    /// </remarks>
+    private static double DominantHz(double[] run, double hopsPerSecond)
+    {
+        var mean = run.Average();
+        var best = 0.0;
+        var bestHz = 0.0;
+
+        // **AT LEAST ONE FULL CYCLE INSIDE THE RUN**, or the answer is the
+        // element's own rise and fall rather than modulation of it. The first
+        // version of this searched from 3 Hz and returned 4.5 to 6 Hz on every
+        // capture, which over a 120 ms run is less than one cycle — it was
+        // measuring the shape of the dah, not the fading.
+        var lowest = 1000.0 / (run.Length * (1000.0 / hopsPerSecond));
+
+        for (var hz = Math.Max(lowest, 8.0); hz <= hopsPerSecond / 4; hz += 0.5)
+        {
+            var re = 0.0;
+            var im = 0.0;
+
+            for (var i = 0; i < run.Length; i++)
+            {
+                var turn = 2 * Math.PI * hz * i / hopsPerSecond;
+
+                re += (run[i] - mean) * Math.Cos(turn);
+                im += (run[i] - mean) * Math.Sin(turn);
+            }
+
+            var power = (re * re) + (im * im);
+
+            if (power > best)
+            {
+                best = power;
+                bestHz = hz;
+            }
+        }
+
+        return bestHz;
+    }
+
+    /// <summary>How many characters the decoder names on this audio.</summary>
+    private static int NamedCharacters(MonoAudio audio)
+    {
+        var decoder = new CwDecoder(audio.SampleRate, 600);
+        var named = 0;
+
+        decoder.CharacterSettled += c =>
+        {
+            if (!c.IsWordGap && c.Text != "■")
+            {
+                named++;
+            }
+        };
+
+        using var source = new BufferedAudioSource(audio);
+
+        decoder.Listen(source);
+        source.PumpAll();
+        decoder.Flush();
+
+        return named;
     }
 
     /// <summary>The peak over the whole file against the loudest stretch.</summary>
