@@ -99,6 +99,120 @@ A converter is auditable — anyone can run it against the pinned commit and dif
 result. A transcription is not, and a hand-copied table is exactly the artifact a
 future licence question cannot be answered about.
 
+### The converter, and why it is a test
+
+It lives at **`tests/Ft8Sharp.Tests/TableGen/`** and it is reached as a test rather
+than as a console tool, for two reasons that are both about where it can run and
+where it may ship.
+
+`dotnet run` is not available in the loop this port is built in — only `build`,
+`test` and `restore` are — so a console tool would be a converter nobody could
+execute, which is no converter at all. And a parser of C source has no business
+shipping inside a published decoder assembly: **`Ft8Sharp` gains no parser, no
+package reference and no project reference from any of this**, and the boundary test
+would refuse it if it did.
+
+| File | Does |
+|---|---|
+| `TableGen/CSourceParser.cs` | Reads one C array by identifier: nested brace initialisers, block and line comments, hex and decimal literals with integer suffixes, trailing commas |
+| `TableGen/ExpressionEvaluator.cs` | Evaluates the arithmetic a dimension macro is written as, so `FTX_LDPC_K_BYTES` can be corroborated rather than shrugged at |
+| `TableGen/Ft8TableConverter.cs` | The manifest of six tables, the geometry it derives from them, and the emitter |
+| `TableGen/TableComparison.cs` | Says which table differs and at how many positions, and never says by what |
+| `Ft8TableGenerationTests.cs` | Runs it: the regeneration proof, and the write gate |
+| `Ft8TableGeometryTests.cs` | The assertions below, against the checked-in file |
+
+**To re-run it** — after a pin move, or on another machine:
+
+```
+dotnet test tests/Ft8Sharp.Tests -e FT8_TABLEGEN_WRITE=1
+```
+
+That is the **only** thing that writes `src/Ft8Sharp/Tables/Ft8Tables.g.cs`, and it
+skips itself unless the environment variable is set, because a test that rewrites
+the source tree every time somebody runs the suite is a trap. The clone's location
+can be moved with `FT8_LIB_PATH`, as the probe already allows.
+
+### What is checked in, and what proves it
+
+**`src/Ft8Sharp/Tables/Ft8Tables.g.cs`** — one `public static class Ft8Tables`, each
+table a `ReadOnlySpan<byte>` over a flattened literal, behind named stride constants
+(`LdpcM`, `LdpcN`, `LdpcKBytes`, `LdpcNmRowWidth`, `LdpcMnRowWidth`) so a row is
+addressable without a magic number. Its header names the pin, the source file, the
+tool and the command above, and says **DO NOT EDIT BY HAND**.
+
+**The header carries no generation time and no machine name, deliberately.** A clock
+would make the file differ from itself on every run, and that would destroy the one
+proof this whole arrangement exists for:
+
+> `Ft8TableGenerationTests.CheckedInTablesAreWhatTheConverterProduces` parses the
+> clone, emits into memory, and asserts the result equals the file on disk.
+
+Measured 2026-08-31: **byte-identical, 20 043 characters on each side.** The
+comparison **normalises line endings and nothing else** — `.gitattributes` says
+nothing about `*.cs`, so whether the working copy holds LF or CRLF is a property of
+one machine's `core.autocrlf` rather than of the port, and a test that went red over
+that would teach the next reader to distrust it.
+
+It **skips** rather than fails when the clone is absent, and that skip has been
+watched by pointing `FT8_LIB_PATH` at a path that does not exist.
+
+It has also been **watched refusing**. One element of `kFTX_LDPC_Nm` was altered in
+memory, by machine, in a copy of the generated text — the checked-in file was never
+touched — and the comparison reported `kFTX_LDPC_Nm: differs at 1 of 581 positions`,
+named that table alone, and printed no value. That is what "reproducible against a
+future upstream" buys: when the pin moves, this goes red and names the table that
+changed, instead of the port quietly acquiring a second provenance.
+
+### The six that came across, and the three that did not
+
+Converted: `kFT8_Costas_pattern`, `kFT8_Gray_map`, `kFTX_LDPC_generator`,
+`kFTX_LDPC_Nm`, `kFTX_LDPC_Mn`, `kFTX_LDPC_Num_rows` — 2197 elements in six tables.
+
+**`kFT4_Costas_pattern`, `kFT4_Gray_map` and `kFT4_XOR_sequence` were deliberately
+not converted.** They are in the same file and they are left in it. FT4 is parked for
+this phase, and an unused, unproven table inside a library headed for publication is
+a liability rather than a head start. The converter emits what its manifest names,
+not everything it finds, and adding a table to it is a deliberate act.
+
+### The geometry, proven without a decoder
+
+A conversion can succeed and still be wrong — a table can arrive transposed,
+truncated or shifted by one, and every one of those files compiles. Seven assertions
+in `Ft8TableGeometryTests` run against the checked-in file, need no reference clone,
+and all pass as of 2026-08-31:
+
+- **The element counts and the derived geometry agree.** 996 = 83 × 12,
+  581 = 83 × 7 and 522 = 174 × 3, so `FTX_LDPC_M` is 83, `FTX_LDPC_N` is 174 and
+  `FTX_LDPC_K_BYTES` is 12 — the published LDPC(174,91) geometry. These are derived
+  from the initialisers' own structure and were **corroborated against
+  `ft8/constants.h`**, which resolved every declared dimension.
+- **`kFT8_Gray_map` is a permutation of the eight tones**, each present exactly once.
+- **`kFT8_Costas_pattern` is seven entries**, every one inside the 8-tone alphabet.
+- **Every `kFTX_LDPC_Num_rows` entry is between 1 and 7, and they sum to 522** — the
+  same number as `Mn`'s element count, because the two count the same incidence
+  structure from opposite sides.
+- **`Nm` is padded exactly where `Num_rows` says**: real to that length, zero after
+  it, no zero inside the real part and no non-zero in the padding.
+- **`Nm` and `Mn` are transposes of each other.** All 522 edges agree in both
+  directions. This is the single strongest thing that can be asserted about these
+  tables without running an encoder, and a wrong bit in either would fail it.
+
+**None of this is LDPC parity.** Encoding a known message and checking it against
+reference parity bits is a separate piece of work, and nothing here stands in for it.
+
+### The index base is upstream's, and it was measured
+
+**Both `Nm` and `Mn` are 1-based**, and that was measured from the data rather than
+assumed: the entries cover their full ranges — all 83 checks, all 174 variables —
+with no gaps, and the smallest is one, not zero. In `Nm`, zero is padding and never
+an index, which is what makes a 1-based table the only reading that works.
+
+**They are not renumbered.** A port that reads better and indexes differently is
+exactly the failure mode this project's plan names for callsign hashing, and it
+applies at least as hard here: every consumer of these tables — the encoder, the
+belief-propagation decoder — has to subtract the same one, and it has to be written
+down in one place rather than rediscovered by each of them.
+
 ### Table inventory
 
 Measured 2026-08-31 from `ft8/constants.c` at the pinned commit, by
