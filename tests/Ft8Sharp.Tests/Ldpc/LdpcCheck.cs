@@ -183,6 +183,65 @@ internal static class LdpcCheck
     }
 
     /// <summary>
+    /// The rank of a GF(2) matrix, by Gaussian elimination.
+    /// </summary>
+    /// <remarks>
+    /// Over GF(2) elimination is XOR and there is no pivoting for numerical stability to
+    /// worry about, so this is the textbook routine with the arithmetic replaced.
+    /// </remarks>
+    public static int RankOverGf2(byte[,] matrix)
+    {
+        var rows = matrix.GetLength(0);
+        var columns = matrix.GetLength(1);
+
+        // A working copy: the caller's matrix is built from the tables and is not eliminated
+        // out from under them.
+        var work = (byte[,])matrix.Clone();
+
+        var rank = 0;
+        for (var column = 0; column < columns && rank < rows; column++)
+        {
+            var pivot = -1;
+            for (var row = rank; row < rows; row++)
+            {
+                if (work[row, column] != 0)
+                {
+                    pivot = row;
+                    break;
+                }
+            }
+
+            if (pivot < 0)
+            {
+                continue;
+            }
+
+            if (pivot != rank)
+            {
+                for (var c = 0; c < columns; c++)
+                {
+                    (work[rank, c], work[pivot, c]) = (work[pivot, c], work[rank, c]);
+                }
+            }
+
+            for (var row = 0; row < rows; row++)
+            {
+                if (row != rank && work[row, column] != 0)
+                {
+                    for (var c = 0; c < columns; c++)
+                    {
+                        work[row, c] ^= work[rank, c];
+                    }
+                }
+            }
+
+            rank++;
+        }
+
+        return rank;
+    }
+
+    /// <summary>
     /// How many checks flipping a given variable would disturb, according to <c>Mn</c>'s row
     /// for it.
     /// </summary>
