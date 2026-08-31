@@ -1,9 +1,9 @@
 PROJECT: Hamlet
 STATE: IN_PROGRESS
 PHASE: Hamlet hears FT8 off the radio and displays the decoded text on screen
-TASK: 4 of 6
+TASK: 5 of 6
 BALL: claude
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-152 (2026-08-31)
-UPDATED: 2026-08-31T19:41:00-04:00
-NOTE: All three corruptions were watched being refused in the guard's own words — a flipped generator bit costs 1 payload and 3 checks, an altered Nm element costs 2 payloads at check 17, and each of the 174 codeword bits disturbs exactly the count Mn independently states; suite now 36/35/1/0
+UPDATED: 2026-08-31T19:52:00-04:00
+NOTE: porting-notes.md gains the parity section — provenance from encode174, the four measurements as measurements, the linearity sentence and the three refusals; root patch 1.12.9 to 1.12.10, Ft8Sharp held at 0.1.0; no decision id minted

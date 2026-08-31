@@ -232,8 +232,9 @@ and all pass as of 2026-08-31:
   directions. This is the single strongest thing that can be asserted about these
   tables without running an encoder, and a wrong bit in either would fail it.
 
-**None of this is LDPC parity.** Encoding a known message and checking it against
-reference parity bits is a separate piece of work, and nothing here stands in for it.
+**None of this is LDPC parity.** Encoding a message and checking it against reference
+parity is a separate piece of work, and nothing above stands in for it. It was done
+on 2026-08-31 and it has its own section below.
 
 ### The index base is upstream's, and it was measured
 
@@ -282,6 +283,144 @@ things a later reader can take from the shapes alone:
 
 The counts are what makes the converter checkable: a table that arrives in C# with
 a different element count than the row above is wrong before anyone runs a decoder.
+
+## The tables answer to parity
+
+Everything above says the tables were *copied faithfully*. This section is what says
+they are *right*: that `kFTX_LDPC_generator` and `kFTX_LDPC_Nm` are two descriptions
+of one code and not of two. Done 2026-08-31.
+
+### Where the encoder lives, and why there
+
+**`src/Ft8Sharp/Ldpc/LdpcEncoder.cs`** — in the library, not in the tests. Turning a
+payload into parity is part of what Ft8Sharp is *for*; the belief-propagation decoder
+extends it rather than duplicating it, and putting it in the test project would mean
+writing it twice. It adds **no reference of any kind**, and the boundary test stays
+green.
+
+**The checker that judges it is in the test project and does not call it**
+(`tests/Ft8Sharp.Tests/Ldpc/LdpcCheck.cs`). That separation is the whole value of the
+exercise. A checker sharing code with the encoder would be agreeing with itself and
+would say nothing about whether the two upstream descriptions match. `LdpcCheck` reads
+`LdpcNm`, `LdpcNumRows` and `LdpcMn`, and nothing else.
+
+### Provenance of the encoder
+
+**Ported from `ft8/encode.c`, function `encode174`**, at the pinned commit. It was
+read by a test process — the same sanctioned route as everything else here, the
+agent's own tools being refused that path — and the port follows what that function
+does.
+
+**The generator-matrix multiply and nothing around it.** Upstream's entry point
+`ft8_encode` also calls `ftx_add_crc` and maps the codeword onto tones through the
+Costas pattern and the Gray map. **None of that is here.** The CRC belongs to message
+packing and the tone mapping to the modulator, both later steps, and pulling them
+forward would have built protocol nobody had verified yet. `LdpcEncoder` computes
+parity and stops.
+
+`UpstreamEncoderProvenanceTests` asserts that `ft8/encode.c` is present at the pin, so
+this paragraph is checkable rather than merely written down. It skips when the clone
+is absent, like everything else that needs reference material.
+
+### Four things measured, not assumed
+
+Upstream states three of these in comments. A comment is somebody's recollection of a
+file they were editing; each of these was established instead by **trying the other
+reading and watching the reference parity tables refuse it**, in `Ft8LdpcLayoutTests`.
+
+| Question | Answer | How it was established |
+|---|---|---|
+| Bit order within a generator byte | **Most significant first** | 0 failing checks over the 91 basis payloads, against **533** for least-significant-first |
+| The five spare bits past the 91st | **Zero in every row** | 0 of 83 rows carries a set bit past bit 91 |
+| Codeword layout | **Message first, parity appended** | 0 failing checks, against **3730** for parity-first |
+| Index base of `Nm` and `Mn` | **Upstream's 1** | `Nm` spans 1..174, `Mn` spans 1..83 |
+
+On the bit order: reversing the bits within every generator byte is exactly equivalent
+to reading the unreversed table least-significant-bit-first against a
+most-significant-first payload, so a reversed in-memory copy is the honest
+counterfactual and no second encoder was needed to produce it.
+
+On the spare bits: `LdpcKBytes` is 12, which is 96 bits for a 91-bit payload. Upstream
+ANDs across all twelve bytes, so a non-zero spare bit would fold into the parity of any
+payload that set the matching bit. They are all zero, which also confirms the row width
+is being read right. `LdpcEncoder` goes one step further and **refuses** a payload with
+a spare bit set rather than silently absorbing it, because the codeword that came back
+would look perfectly well formed.
+
+On the index base: **nothing is renumbered.** The one comes off in exactly one named
+place, `LdpcCheck.Variable`, and nowhere else in the tree.
+
+### The proof: 91 encodes cover the whole code space
+
+```
+91 payloads x 83 checks = 7553 syndrome bits, all zero
+```
+
+**Why 91 encodes are the whole of it and not a sample.** The code is linear over
+GF(2). Every one of the 2⁹¹ payloads is a sum of the 91 weight-one payloads, and the
+syndrome of a sum is the sum of the syndromes — so if each basis payload encodes to a
+codeword with a zero syndrome, every codeword the generator can produce has one. That
+is a proof of the whole space, not an agreement count over however many vectors
+somebody had patience for.
+
+Three corroborations, in `Ft8LdpcParityTests`, none of them needed for the proof and
+each catching a bug the proof cannot see:
+
+- **The all-zero payload encodes to all-zero parity.** Trivial, and it is what refuses
+  a checker that returns zero for everything.
+- **Every basis payload produces non-zero parity** — the lightest weight seen was 29 of
+  83. An all-zero generator column would satisfy every syndrome check and be silently
+  wrong: one payload bit carried by the code and protected by none of it.
+- **8 fixed patterns and 500 seeded random payloads**, seed **20260831**, all satisfy
+  every check. Linearity says these cannot fail if the basis passed; they are here to
+  catch an encoder whose indexing depends on the payload, which is not a linear fault.
+
+These tests read the checked-in tables and **never skip**. No clone, no `FT8_LIB_PATH`,
+no reference material — what ships is asserted sound on a machine that has never seen
+`ft8_lib`.
+
+### Watched refusing
+
+A syndrome check that would pass a corrupted table proves nothing about an
+uncorrupted one. Three corruptions, in `Ft8LdpcRefusalTests`, **each on an in-memory
+copy — `Ft8Tables.g.cs` was never touched, nothing was hand-edited and nothing was
+regenerated**:
+
+| Corruption | The proof's answer |
+|---|---|
+| One bit flipped in a copy of `LdpcGenerator`, row 40 | 1 of 91 payloads refused, 3 failing checks |
+| One element altered in a copy of `LdpcNm`, check 17 | 2 of 91 payloads refused, both at check 17 |
+| One bit flipped in a valid codeword, all 174 tried | exactly the checks `Mn` names, every time |
+
+The second matters most: it is what shows the check side is really being consulted
+rather than carried along beside a proof that only ever exercises the generator.
+
+The third is a **third and independent corroboration of the `Nm`/`Mn` transpose**,
+arrived at from the syndrome side — the failing count comes from `Nm`, the expected
+count from `Mn`'s row for that variable, and they agreed on all 174 variables with no
+exceptions.
+
+The refusals are produced by `BasisProof`, the same routine that clears the real
+tables, so what is quoted is the guard's own words rather than a test's account of what
+it would have said. Its message names payload indices, check indices and counts, and
+**no value**.
+
+### Why there is no compiled C oracle
+
+`ft8_lib`'s own encoder was **not** built and run as a reference, and this is
+deliberate rather than a shortfall.
+
+- **The permission scope is `dotnet build`, `dotnet test` and `dotnet restore`.** Unit
+  201 measured that even `dotnet run` is outside it.
+- **Nothing is on `PATH`** — no `gcc`, `cc`, `cl`, `make`, `cmake`. MSVC *is* installed
+  on this machine (see *Can ft8_lib be built on this machine?* below), so the obstacle
+  is the permission scope and `ft8_lib`'s GNU-flavoured `Makefile`, not the absence of
+  a compiler.
+- **It is not needed, and this is the part worth understanding rather than taking on
+  trust.** An oracle would have given agreement on a finite list of vectors. The
+  linearity argument gives all 2⁹¹ of them in 91 encodes. The proof above is strictly
+  stronger than the one an oracle could have supplied, so building one would have
+  bought nothing at the cost of a toolchain decision that is the owner's to make.
 
 ## Inherited bugs
 
