@@ -90,6 +90,16 @@ internal static class Program
 
                 return 0;
 
+            case "scatter":
+                ScatterSweep();
+
+                return 0;
+
+            case "setback":
+                SetbackSweep(args.Skip(1).ToArray());
+
+                return 0;
+
             case "fading":
                 Fading();
 
@@ -1731,6 +1741,233 @@ internal static class Program
         return flat;
     }
 
+    /// <summary>Element scatter across threshold setbacks, per capture.</summary>
+    /// <remarks>
+    /// **NO DECODING, SO IT IS CHEAP.** The full sweep with a corpus score at each
+    /// point does not finish: the peak-referenced cut puts almost nothing
+    /// key-down, the speed estimate withdraws, and the decoder spends its time
+    /// re-acquiring. This measures the thing the order names to watch — dah CV —
+    /// straight off the envelope.
+    /// </remarks>
+    private static void ScatterSweep()
+    {
+        var setbacks = new[] { double.NaN, 3, 4, 5, 6, 8, 10, 12.0 };
+
+        Console.Write("capture");
+
+        foreach (var setback in setbacks)
+        {
+            Console.Write(double.IsNaN(setback)
+                ? "	otsu"
+                : "	-" + setback.ToString("0", CultureInfo.InvariantCulture));
+        }
+
+        Console.WriteLine();
+
+        foreach (var (capture, _, _) in Truths)
+        {
+            var path = Find(capture);
+
+            if (path is null)
+            {
+                continue;
+            }
+
+            var audio = WavAudio.Read(path);
+            var toneHz = CwSpectralPeak.Find(audio.Samples, audio.SampleRate) ?? 600;
+            var envelope = CwProbabilisticDecoder.Envelope(
+                audio.Samples, audio.SampleRate, toneHz);
+
+            Console.Write(capture);
+
+            foreach (var setback in setbacks)
+            {
+                CwUnitEstimator.PeakSetbackDb = setback;
+
+                var (marks, _) = CwUnitEstimator.Elements(
+                    envelope, CwProbabilisticDecoder.HopMilliseconds);
+
+                if (marks.Count < 8)
+                {
+                    Console.Write("	-");
+
+                    continue;
+                }
+
+                var sorted = marks.OrderBy(v => v).ToArray();
+                var cut = (At(sorted, 25) + At(sorted, 75)) / 2;
+                var longOnes = marks.Where(m => m > cut).ToArray();
+
+                Console.Write(longOnes.Length >= 4
+                    ? "	" + Cv(longOnes).ToString("0.000", CultureInfo.InvariantCulture)
+                    : "	-");
+            }
+
+            Console.WriteLine();
+        }
+
+        CwUnitEstimator.PeakSetbackDb = double.NaN;
+    }
+
+    /// <summary>Corpus score and element scatter across threshold setbacks.</summary>
+    /// <remarks>
+    /// **DAH CV IS THE MEASURE TO WATCH** (work instruction 054, task 2): it is
+    /// what moved from 0.267 to 0.104 on the operator's audio, and every capture
+    /// in this corpus that reads sits between 0.028 and 0.134 on it.
+    /// </remarks>
+    private static void SetbackSweep(string[] only)
+    {
+        var values = only.Length > 0
+            ? only.Select(v => v == "otsu"
+                ? double.NaN
+                : double.Parse(v, CultureInfo.InvariantCulture)).ToArray()
+            : new[] { double.NaN, 3, 4, 5, 6, 8, 10, 12.0 };
+
+        Console.WriteLine(
+            "setback	yield	precision	subs	ditCV	dahCV	worstDahCV");
+
+        foreach (var setback in values)
+        {
+            CwUnitEstimator.PeakSetbackDb = setback;
+
+            var label = double.IsNaN(setback)
+                ? "otsu"
+                : setback.ToString("0", CultureInfo.InvariantCulture);
+
+            var (yieldValue, precision, subs) = ScoreTotals();
+            var (dit, dah, worstDah) = Scatter();
+
+            Console.WriteLine(
+                "{0}	{1:0.000}	{2:0.000}	{3}	{4:0.000}	{5:0.000}	{6:0.000}",
+                label, yieldValue, precision, subs, dit, dah, worstDah);
+        }
+
+        CwUnitEstimator.PeakSetbackDb = double.NaN;
+    }
+
+    /// <summary>The corpus score as three numbers.</summary>
+    private static (double Yield, double Precision, int Subs) ScoreTotals()
+    {
+        var truthTotal = 0;
+        var correct = 0;
+        var asserted = 0;
+        var subs = 0;
+
+        foreach (var (capture, truth, _) in Truths)
+        {
+            var path = Find(capture);
+
+            if (path is null)
+            {
+                continue;
+            }
+
+            var audio = WavAudio.Read(path);
+            var decoder = new CwDecoder(audio.SampleRate, 600);
+            var text = new System.Text.StringBuilder();
+
+            decoder.CharacterSettled += c => text.Append(c.Text);
+
+            var hop = decoder.Tracker.HopSamples;
+
+            for (var at = 0L; at + hop <= audio.Samples.Length; at += hop)
+            {
+                decoder.Process(new AudioChunk(
+                    at, audio.SampleRate, audio.Samples.AsSpan((int)at, hop)));
+            }
+
+            decoder.Flush();
+
+            var score = CwAccuracy.Score(text.ToString(), truth);
+
+            truthTotal += score.TruthCharacters;
+            correct += score.Correct;
+            // **THE SAME DENOMINATOR THE CORPUS SCORE USES.** ScoredCharacters
+            // counts blocks, which are refusals rather than assertions, so using
+            // it here reported a precision that could not be compared with the
+            // published figure at all (work instruction 054, task 2).
+            asserted += score.Correct + score.Substitutions + score.Insertions;
+            subs += score.Substitutions;
+        }
+
+        return (
+            truthTotal == 0 ? 0 : (double)correct / truthTotal,
+            asserted == 0 ? 0 : (double)correct / asserted,
+            subs);
+    }
+
+    /// <summary>Median dit and dah coefficient of variation across the corpus.</summary>
+    /// <remarks>
+    /// Marks are split at the midpoint of their own two clusters, which is the
+    /// same cut the estimator uses, so the two populations here are the ones the
+    /// decoder is working from.
+    /// </remarks>
+    private static (double Dit, double Dah, double WorstDah) Scatter()
+    {
+        var dits = new List<double>();
+        var dahs = new List<double>();
+
+        foreach (var (capture, _, _) in Truths)
+        {
+            var path = Find(capture);
+
+            if (path is null)
+            {
+                continue;
+            }
+
+            var audio = WavAudio.Read(path);
+            var toneHz = CwSpectralPeak.Find(audio.Samples, audio.SampleRate) ?? 600;
+
+            var envelope = CwProbabilisticDecoder.Envelope(
+                audio.Samples, audio.SampleRate, toneHz);
+
+            var (marks, _) = CwUnitEstimator.Elements(
+                envelope, CwProbabilisticDecoder.HopMilliseconds);
+
+            if (marks.Count < 8)
+            {
+                continue;
+            }
+
+            var sorted = marks.OrderBy(v => v).ToArray();
+            var cut = (At(sorted, 25) + At(sorted, 75)) / 2;
+
+            var shortOnes = marks.Where(m => m <= cut).ToArray();
+            var longOnes = marks.Where(m => m > cut).ToArray();
+
+            if (shortOnes.Length >= 4)
+            {
+                dits.Add(Cv(shortOnes));
+            }
+
+            if (longOnes.Length >= 4)
+            {
+                dahs.Add(Cv(longOnes));
+            }
+        }
+
+        return (
+            dits.Count == 0 ? 0 : dits.OrderBy(v => v).ElementAt(dits.Count / 2),
+            dahs.Count == 0 ? 0 : dahs.OrderBy(v => v).ElementAt(dahs.Count / 2),
+            dahs.Count == 0 ? 0 : dahs.Max());
+    }
+
+    /// <summary>Coefficient of variation.</summary>
+    private static double Cv(double[] values)
+    {
+        var mean = values.Average();
+
+        if (mean <= 0)
+        {
+            return 0;
+        }
+
+        var variance = values.Sum(v => (v - mean) * (v - mean)) / values.Length;
+
+        return Math.Sqrt(variance) / mean;
+    }
+
     /// <summary>How much the envelope ripples inside a key-down stretch.</summary>
     /// <remarks>
     /// <para>**FADING FAST ENOUGH TO PUNCH HOLES IN SINGLE ELEMENTS** (work
@@ -2254,7 +2491,11 @@ internal static class Program
 
             truthTotal += score.TruthCharacters;
             correct += score.Correct;
-            asserted += score.ScoredCharacters;
+            // **THE SAME DENOMINATOR THE CORPUS SCORE USES.** ScoredCharacters
+            // counts blocks, which are refusals rather than assertions, so using
+            // it here reported a precision that could not be compared with the
+            // published figure at all (work instruction 054, task 2).
+            asserted += score.Correct + score.Substitutions + score.Insertions;
             subs += score.Substitutions;
             ins += score.Insertions;
             dels += score.Deletions;

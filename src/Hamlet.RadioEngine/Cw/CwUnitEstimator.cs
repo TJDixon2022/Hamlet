@@ -345,7 +345,77 @@ public static class CwUnitEstimator
             db[i] = 20 * Math.Log10(Math.Max(envelope[i], 1e-12));
         }
 
-        return Runs(db, Otsu(db), hysteresisDb, hopMilliseconds);
+        return Runs(db, Cut(db), hysteresisDb, hopMilliseconds);
+    }
+
+    /// <summary>
+    /// How far below the loudest signal the key-down threshold sits, in decibels,
+    /// or NaN to keep the Otsu split.
+    /// </summary>
+    /// <remarks>
+    /// <para>**REFERENCED TO THE LOUDEST SIGNAL RATHER THAN TO A SPLIT OF
+    /// EVERYTHING** (work instruction 054, task 2). Otsu asks where the two
+    /// classes divide, and on a passband holding two stations the second station
+    /// is one of the classes — so the cut lands in the middle of it and its fades
+    /// and peaks are counted as elements of the first. A setback from the high
+    /// percentile has no opinion about anything but the loudest thing present.</para>
+    /// <para>**MEASURED AND REFUSED ON THREE GROUNDS, AND NaN SHIPS** (work
+    /// instruction 054, task 2). The reasoning is right about what it does to dah
+    /// scatter and the decoder reads worse anyway.</para>
+    /// <list type="number">
+    /// <item>**A setback under six decibels cannot work at all, and that is
+    /// arithmetic rather than a corpus accident.** The Schmitt trigger opens at
+    /// the cut plus `HysteresisDb`, which is 6 dB, so a setback of 5 puts the
+    /// opening threshold one decibel *above* the envelope's own ninety-eighth
+    /// percentile and nothing is ever key-down. **Setbacks of 3, 4 and 5 produce
+    /// fewer than eight marks on every capture in the corpus**, so the order's
+    /// recommended peak − 5 dB is unreachable while the hysteresis is ±6.</item>
+    /// <item>**The usable range is not monotonic.** On `cw-2026-08-17-013347` dah
+    /// CV runs 0.444 at Otsu, **0.113 at −6**, 0.413 at −8, 0.531 at −10 and
+    /// 0.486 at −12. It dips and comes back, and §12.5's standard is not to adopt
+    /// off a curve like that.</item>
+    /// <item>**The one candidate that helps costs precision.** At −6 dB the corpus
+    /// reads **0.840 against a floor of 0.888**, yield 0.630 against 0.745, and
+    /// substitutions 33 against 17.</item>
+    /// </list>
+    /// <para>**THE FINDING IS REAL AND IS THE REASON THIS IS KEPT.** At −6 dB the
+    /// worst captures improve exactly as the order predicted — `013347` 0.444 to
+    /// 0.113, `134712` 0.647 to 0.275, worst-in-corpus 0.647 to 0.275 — while the
+    /// captures that already read cleanly get worse, `004507` going 0.015 to
+    /// 0.113. **Referencing to the peak buys the hard captures and sells the easy
+    /// ones**, which is the trade this project has been making by accident and
+    /// must not make on purpose.</para>
+    /// </remarks>
+    public static double PeakSetbackDb { get; set; } = double.NaN;
+
+    /// <summary>The key-down threshold for this envelope, in decibels.</summary>
+    /// <param name="db">The envelope in decibels.</param>
+    /// <returns>The cut.</returns>
+    /// <remarks>
+    /// **THE HYSTERESIS IS APPLIED AROUND WHATEVER THIS RETURNS** and is not
+    /// changed by the reference. Only where the trigger sits moves.
+    /// </remarks>
+    public static double Cut(double[] db)
+    {
+        ArgumentNullException.ThrowIfNull(db);
+
+        if (double.IsNaN(PeakSetbackDb) || db.Length == 0)
+        {
+            return Otsu(db);
+        }
+
+        var sorted = (double[])db.Clone();
+
+        Array.Sort(sorted);
+
+        // The ninety-eighth percentile rather than the maximum: a click is louder
+        // than the station and is not the station.
+        var at = 0.98 * (sorted.Length - 1);
+        var low = (int)Math.Floor(at);
+        var high = Math.Min(low + 1, sorted.Length - 1);
+        var peak = sorted[low] + ((sorted[high] - sorted[low]) * (at - low));
+
+        return peak - PeakSetbackDb;
     }
 
     /// <summary>How far above the noise floor the key-down threshold sits.</summary>

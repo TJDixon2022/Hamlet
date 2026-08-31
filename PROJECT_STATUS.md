@@ -1,11 +1,11 @@
 PROJECT: Hamlet
 STATE: EXECUTING
 PHASE: 12
-TASK: 2 of 6
+TASK: 3 of 6
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-30T20:45:00-04:00
-NOTE: Existing bridging absorbs 20 ms and gives out at 30, against measured dropouts of 32 to 53; sweeping the threshold reference next
+UPDATED: 2026-08-30T21:32:17-04:00
+NOTE: Peak reference refused — under 6 dB is arithmetically impossible, the rest is non-monotonic, and the one candidate reads 0.840; on to the hold-over
 
 ---
 
