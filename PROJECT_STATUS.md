@@ -1,11 +1,11 @@
 PROJECT: Hamlet
 STATE: EXECUTING
 PHASE: 12
-TASK: 3 of 6
+TASK: 4 of 6
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-30T19:57:42-04:00
-NOTE: Clean-read floor in and green — 013347 pinned at 84 percent blocks so it cannot worsen unseen; on to the two-signal case
+UPDATED: 2026-08-30T20:00:14-04:00
+NOTE: Peak yields to a competitor at -3 dB where the tracker holds to 0 and yields at +6; costing the options without building one
 
 ---
 
