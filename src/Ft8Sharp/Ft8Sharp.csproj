@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    THIS PROJECT HAS NO REFERENCES, AND THAT IS THE POINT.
+
+    Ft8Sharp is built as if it will be published on its own, under its own MIT
+    LICENSE (see LICENSE and NOTICE beside this file). Extraction stays cheap
+    only while it depends on nothing but the framework, so there is no
+    PackageReference and no ProjectReference here — none, not one.
+
+    That is not left to good intentions. Ft8SharpBoundaryTests in
+    tests/Ft8Sharp.Tests reads this file off disk and asserts both item counts
+    are zero, and walks the built assembly's referenced assemblies to catch one
+    that arrives transitively. It has been watched refusing a reference to
+    Hamlet.RadioEngine.
+  -->
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+</Project>

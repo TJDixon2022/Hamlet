@@ -1,0 +1,30 @@
+NOTICE — Ft8Sharp
+
+Credit
+------
+
+Ft8Sharp owes its structure and its constants to ft8_lib by Kārlis Goba
+(https://github.com/kgoba/ft8_lib), an MIT-licensed C implementation of the FT8
+and FT4 protocols. Without that work this library would not exist, and the debt
+is acknowledged here rather than only in a commit message.
+
+Citation
+--------
+
+The protocols themselves are described in:
+
+    Franke K9AN, Somerville G4WJS, Taylor K1JT, "The FT4 and FT8 Communication
+    Protocols," QEX, July/August 2020
+
+Independent port
+----------------
+
+Ft8Sharp is an independent port. It is written in C# against the published
+protocol description above and the structure of ft8_lib; it is not a derivative
+distribution of ft8_lib, it is not affiliated with or endorsed by Kārlis Goba,
+and it is not affiliated with or endorsed by the WSJT-X project or the authors
+of the paper cited above. Errors in this library are its own.
+
+Ft8Sharp is licensed under the MIT License; see the LICENSE file beside this
+one. See porting-notes.md for the provenance of everything ported, including the
+upstream commit this port is pinned to.
