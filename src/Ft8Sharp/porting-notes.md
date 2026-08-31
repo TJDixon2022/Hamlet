@@ -75,6 +75,41 @@ The point of the MIT grant is extraction. Ft8Sharp is built to be lifted out of
 Hamlet and published on its own, and an MIT library is one that others can
 actually use.
 
+## The library carries its own version number
+
+**`src/Ft8Sharp/Directory.Build.props` does not import the root one, and that is
+deliberate** (HM-DEC-152, ruled by Tim 2026-08-31). Ft8Sharp is at **0.1.0** and
+Hamlet is at whatever Hamlet is at.
+
+The root `Directory.Build.props` injects `Version` — and with it `AssemblyVersion`,
+`AssemblyInformationalVersion` and `BuildStampUtc` — into every project in the
+solution, which is right for one application and wrong for a library built to be
+lifted out of it. **The boundary test cannot catch this**: it walks assembly
+references, and an injected attribute is not one. Measured by reading
+`obj/Debug/net8.0/Ft8Sharp.AssemblyInfo.cs` on 2026-08-31, before and after:
+
+| | Before | After |
+|---|---|---|
+| `AssemblyVersion` | `1.12.9.0` | `0.1.0.0` |
+| `AssemblyFileVersion` | `1.12.9.0` | `0.1.0.0` |
+| `AssemblyInformationalVersion` | `1.12.9+53a586e0579f84cb299189aa91d8b772877db33e` | `0.1.0` |
+| `AssemblyMetadata("BuildStampUtc")` | present | gone |
+
+That commit hash is Hamlet's. **An extracted Ft8Sharp would have published itself as
+a version of a program it has never heard of, stamped with that program's git
+history.** Dropping the inheritance was not quite enough on its own — the SDK appends
+the source revision to the informational version without any help from the root file
+— so `IncludeSourceRevisionInInformationalVersion` is off here too.
+
+**0.1.0 because the library has tables and no decoder.** A 1.x would claim a maturity
+it has not got, and the version is the first thing a reader of an extracted package
+sees. It bumps when Ft8Sharp gains a capability of its own, not when Hamlet ships.
+
+This is not drift from HM-DEC-063, which exists so the tree has one answer to *what
+version is this app*. Ft8Sharp is not the app: it is a separate work product with its
+own licence, its own boundary and an intended life outside this repository, and a
+second version number here is the same reasoning that gave it its own `LICENSE`.
+
 ## What is not read, ported, or referenced
 
 **`ft4_ft8_public/` in the upstream repository is off limits.** It is not read, not

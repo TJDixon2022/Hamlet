@@ -1,0 +1,49 @@
+<Project>
+
+  <!--
+    THIS FILE DELIBERATELY DOES NOT IMPORT THE ROOT Directory.Build.props (HM-DEC-152).
+
+    MSBuild walks up from a project looking for the first Directory.Build.props and
+    stops at it. The usual courtesy is to import the one above before adding to it.
+    Not importing it is the whole point here, and the absence of that import is a
+    decision rather than an oversight.
+
+    The root file injects Version, and with it AssemblyVersion,
+    AssemblyInformationalVersion and BuildStampUtc, into every project in the
+    solution. So Ft8Sharp.dll was compiling as a version of Hamlet, carrying
+    Hamlet's git commit — and the boundary test cannot see that, because it walks
+    assembly references and an injected attribute is not one.
+
+    Ft8Sharp is built to be lifted out of this repository and published on its own,
+    under its own MIT LICENSE. An extracted library that announces itself as
+    version 1.12.9 of a desktop program it has never heard of is wrong on the first
+    line a reader of the package sees. HM-DEC-063 exists so the tree has one answer
+    to "what version is this app"; Ft8Sharp is not the app.
+
+    0.1.0 BECAUSE IT HAS TABLES AND NO DECODER.
+
+    A 1.x would claim a maturity this library has not got. The number is the first
+    thing anybody sees, and it is the one part of a package that is read by people
+    who have read nothing else.
+
+    Bump it when Ft8Sharp gains a capability of its own, not when Hamlet ships.
+  -->
+  <PropertyGroup>
+    <Version>0.1.0</Version>
+  </PropertyGroup>
+
+  <!--
+    AND NO GIT COMMIT EITHER.
+
+    The SDK appends the repository's source revision to
+    AssemblyInformationalVersion by itself, without help from the root file, so
+    dropping the inheritance above is not enough on its own: the library would
+    still publish "0.1.0+<a Hamlet commit>", which names a repository the extracted
+    package has no relationship with. Measured on 2026-08-31 by reading
+    obj/Debug/net8.0/Ft8Sharp.AssemblyInfo.cs before and after.
+  -->
+  <PropertyGroup>
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+  </PropertyGroup>
+
+</Project>
