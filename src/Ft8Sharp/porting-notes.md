@@ -171,18 +171,33 @@ different findings and `Directory.Exists` answers false to both. Point
 
 ## Can ft8_lib be built on this machine?
 
-**Unknown, and here is why.**
+**Not by its own build, as things stand — but there is a C compiler here.**
+Measured 2026-08-31.
 
-- **No C toolchain is on `PATH`.** Measured 2026-08-31: `cc`, `gcc`, `clang`, `cl`,
-  `cmake`, `make`, `ninja` and `nmake` are all absent from the session's `PATH`.
-- **Whether one is installed off `PATH` could not be determined.** Checking the
-  usual Visual Studio locations requires reading outside `C:\Source\HamLet`, and
-  those reads were refused.
-- **`ft8_lib`'s own build files could not be read** for the same reason, so nothing
-  can be said about whether its `Makefile` or `CMakeLists.txt` would work here.
+- **A C compiler is installed.** Microsoft's `cl.exe`, *Optimizing Compiler Version
+  19.51.36256 for x64*, with `nmake.exe` and `link.exe` beside it, under Visual
+  Studio Community 2026 at
+  `C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.51.36231`.
+  It runs — the banner above came from running it.
+- **Nothing is on `PATH`.** `cc`, `gcc`, `clang`, `cl`, `cmake`, `make`, `ninja` and
+  `nmake` are all absent from `PATH`, which is what unit 200 measured and reported
+  as *no toolchain*. That reading was right about `PATH` and wrong about the
+  machine: MSVC is there, one `vcvars64.bat` away.
+- **`ft8_lib` ships a `Makefile` and no `CMakeLists.txt`** — 1543 bytes, measured by
+  the probe as existence and size, contents unread. It expects GNU `make`, and
+  there is **no `make` and no `gcc` or `clang` anywhere checked**: not on `PATH`,
+  not under `C:\msys64`, `C:\MinGW`, `C:\cygwin64`, `C:\Program Files\LLVM`,
+  Chocolatey, or Git for Windows' `mingw64`.
+
+So the honest answer has two halves. **Its shipped build cannot run here**, for want
+of `make` and a GNU-flavoured compiler. **Whether its sources compile under MSVC is
+untested** — it is portable C, which makes it plausible, and nothing more than
+plausible until somebody tries.
 
 Its build was **not run**, and no artifact of it has been copied into this tree.
 
 This matters to one thing only: the phase's *audio synthesis produces a signal the
 reference decoder decodes* check, which needs `ft8_lib` built locally. That check
-stays **nice-to-pass** until this question has a real answer.
+stays **nice-to-pass**. It is no longer blocked on *is there a compiler* — there is
+— but on somebody deciding it is worth an hour, and the phase reaches its goal
+without it either way.
