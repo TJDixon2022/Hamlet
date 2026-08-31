@@ -1,9 +1,9 @@
 PROJECT: Hamlet
 STATE: IN_PROGRESS
 PHASE: Hamlet hears FT8 off the radio and displays the decoded text on screen
-TASK: 4 of 6
+TASK: 5 of 6
 BALL: claude
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-150 (2026-08-21)
-UPDATED: 2026-08-31T18:38:00-04:00
-NOTE: Six tables emitted as 2197 elements and the regeneration test says byte-identical; it has been watched refusing a single altered element by name, so the geometry assertions are next
+UPDATED: 2026-08-31T18:40:00-04:00
+NOTE: Nm and Mn agree on all 522 edges in both directions and the indices measure 1-based; 23 Ft8Sharp tests, 22 pass and 1 skips by design, so the notes and the two decision rows are next
