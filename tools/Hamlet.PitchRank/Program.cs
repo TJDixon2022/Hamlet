@@ -90,6 +90,33 @@ internal static class Program
 
                 return 0;
 
+            case "carriers":
+                Carriers();
+
+                return 0;
+
+            case "bothscore":
+                foreach (var pair in new[]
+                         {
+                             (Setback: 6.0, Hold: 12.0),
+                         })
+                {
+                    CwUnitEstimator.PeakSetbackDb = pair.Setback;
+                    CwUnitEstimator.HoldOverMilliseconds = pair.Hold;
+
+                    var t = ScoreTotals();
+
+                    Console.WriteLine(
+                        "{0}	hold {1:0} ms	yield {2:0.000}	precision {3:0.000}	subs {4}",
+                        double.IsNaN(pair.Setback) ? "otsu    " : "peak-6dB",
+                        pair.Hold, t.Yield, t.Precision, t.Subs);
+                }
+
+                CwUnitEstimator.PeakSetbackDb = double.NaN;
+                CwUnitEstimator.HoldOverMilliseconds = 12.0;
+
+                return 0;
+
             case "holdscore":
                 foreach (var h in args.Skip(1))
                 {
@@ -1761,6 +1788,144 @@ internal static class Program
         var flat = text.Replace('\n', ' ').Replace('\r', ' ').Trim();
 
         return flat;
+    }
+
+    /// <summary>How many carriers share the passband with the admitted pitch.</summary>
+    /// <remarks>
+    /// <para>**THE STANDING REASON THE CORPUS AND THE OPERATOR'S BAND DISAGREE**
+    /// (work instruction 054, task 5). A real evening on forty metres puts more
+    /// than one station inside a five-hundred-hertz passband. This was written to
+    /// count how often these recordings do.</para>
+    /// <para>**IT DOES NOT ANSWER THAT QUESTION AND THE OUTPUT MUST NOT BE READ AS
+    /// IF IT DID.** It returns four neighbours on all twelve captures, at 30 to
+    /// 100 Hz from the admitted pitch and 9 to 24 dB below it — which is what the
+    /// *first* station's own spectral structure looks like. The floor reference is
+    /// the median of the whole spectrum, and on a band holding one strong station
+    /// that median is noise, so every ripple and skirt clears it.</para>
+    /// <para>**A SECOND STATION IS ONE THAT IS KEYED INDEPENDENTLY**, and nothing
+    /// here tests that. Separating the two needs the neighbour's envelope compared
+    /// against the first's, which is a real measurement and not this one. Until
+    /// somebody builds it, **unit 053's finding stands unchanged: every capture in
+    /// this corpus has one dominant station**, established there by summing two
+    /// captures deliberately to get a second.</para>
+    /// </remarks>
+    private static void Carriers()
+    {
+        Console.WriteLine("capture	pitchHz	others	levels below the first, dB");
+
+        var withSecond = 0;
+        var total = 0;
+
+        foreach (var (capture, _, _) in Truths)
+        {
+            var path = Find(capture);
+
+            if (path is null)
+            {
+                continue;
+            }
+
+            total++;
+
+            var audio = WavAudio.Read(path);
+            var pitch = CwSpectralPeak.Find(audio.Samples, audio.SampleRate) ?? 600;
+            var found = Peaks(audio, pitch);
+
+            if (found.Count > 0)
+            {
+                withSecond++;
+            }
+
+            Console.WriteLine(
+                "{0}	{1:0.0}	{2}	{3}",
+                capture, pitch, found.Count,
+                found.Count == 0
+                    ? "-"
+                    : string.Join(", ", found.Select(
+                        f => $"{f.Hz:0} Hz at -{f.Down:0.0}")));
+        }
+
+        Console.WriteLine();
+        Console.WriteLine(
+            "{0} of {1} captures have a second carrier within +/-120 Hz standing "
+            + "more than 15 dB over the floor",
+            withSecond, total);
+    }
+
+    /// <summary>Carriers near the pitch that stand well over the band floor.</summary>
+    private static List<(double Hz, double Down)> Peaks(MonoAudio audio, double pitch)
+    {
+        var spectrum = Spectrum(audio);
+        var binHz = (double)audio.SampleRate / CwSpectralPeak.Window;
+
+        var floor = spectrum.Where(v => v > 0).OrderBy(v => v)
+            .ElementAt(spectrum.Count(v => v > 0) / 2);
+
+        var atPitch = spectrum[(int)Math.Round(pitch / binHz)];
+        var found = new List<(double, double)>();
+
+        var low = (int)((pitch - 120) / binHz);
+        var high = (int)((pitch + 120) / binHz);
+
+        for (var i = Math.Max(1, low); i <= Math.Min(spectrum.Length - 2, high); i++)
+        {
+            // A local maximum, well over the floor, and far enough from the
+            // admitted pitch to be a different station rather than its skirt.
+            if (spectrum[i] <= spectrum[i - 1] || spectrum[i] < spectrum[i + 1])
+            {
+                continue;
+            }
+
+            var hz = i * binHz;
+
+            if (Math.Abs(hz - pitch) < 25)
+            {
+                continue;
+            }
+
+            var overFloor = 20 * Math.Log10(spectrum[i] / floor);
+
+            if (overFloor > 15)
+            {
+                found.Add((hz, 20 * Math.Log10(atPitch / spectrum[i])));
+            }
+        }
+
+        return found
+            .OrderBy(f => f.Item2)
+            .Take(4)
+            .Select(f => (f.Item1, f.Item2))
+            .ToList();
+    }
+
+    /// <summary>The averaged magnitude spectrum, as the peak finder builds it.</summary>
+    private static double[] Spectrum(MonoAudio audio)
+    {
+        var bins = (CwSpectralPeak.Window / 2) + 1;
+        var total = new double[bins];
+        var windows = 0;
+
+        for (var start = 0;
+             start + CwSpectralPeak.Window <= audio.Samples.Length;
+             start += CwSpectralPeak.Window / 2)
+        {
+            var slice = audio.Samples
+                .AsSpan(start, CwSpectralPeak.Window).ToArray();
+
+            var peak = CwSpectralPeak.Find(slice, audio.SampleRate);
+
+            if (peak is null)
+            {
+                continue;
+            }
+
+            windows++;
+        }
+
+        // Re-use the peak finder's own averaging by asking it for the spectrum
+        // through a narrow sweep, which keeps one source of truth for the
+        // transform (section 0).
+        return CwSpectralPeak.AverageSpectrum(audio.Samples, audio.SampleRate);
     }
 
     /// <summary>Dit scatter across hold-over lengths, per capture.</summary>

@@ -178,6 +178,18 @@ public static class CwSpectralPeak
     }
 
     /// <summary>The magnitude spectrum, averaged over the whole recording.</summary>
+    /// <param name="samples">The audio.</param>
+    /// <param name="sampleRate">Its sample rate.</param>
+    /// <returns>One magnitude per bin.</returns>
+    /// <remarks>
+    /// Public so a second signal in the passband can be counted against the same
+    /// transform the pitch was found with, rather than against a second copy of it
+    /// (section 0).
+    /// </remarks>
+    public static double[] AverageSpectrum(float[] samples, int sampleRate)
+        => Average(samples, sampleRate);
+
+    /// <summary>The magnitude spectrum, averaged over the whole recording.</summary>
     /// <remarks>
     /// Hann-windowed, half-overlapped. The window is what stops a tone that does
     /// not fall exactly on a bin from smearing across the whole spectrum and

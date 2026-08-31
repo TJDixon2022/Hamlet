@@ -1,11 +1,11 @@
 PROJECT: Hamlet
 STATE: EXECUTING
 PHASE: 12
-TASK: 4 of 6
+TASK: 5 of 6
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-30T21:53:22-04:00
-NOTE: Hold-over of 12 ms ships — precision 0.888 to 0.894, subs 17 to 15, every floor held and silence lock green
+UPDATED: 2026-08-30T22:10:46-04:00
+NOTE: Carrier counter cannot separate a second station from the first's own skirts; reporting that rather than its number
 
 ---
 
