@@ -1,14 +1,9 @@
 PROJECT: Hamlet
 STATE: COMPLETED
-PHASE: 12
-TASK: 6 of 6
+PHASE: Hamlet hears FT8 off the radio and displays the decoded text on screen
+TASK: 5 of 5
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
-UPDATED: 2026-08-31T11:59:25-04:00
-NOTE: Six tasks done; two acceptances reported as named residues and the character ratchet went 15 to 18 red
-
----
-
-Written by a Claude Code session per CLAUDE.md 13. Protocol 2 is not in this
-repository, so the header names which protocol this is written against rather
-than conformance anybody here can check.
+RULES_AT: HM-DEC-150 (2026-08-21)
+UPDATED: 2026-08-31T17:07:00-04:00
+NOTE: All five tasks done; a dotnet test process reads the pinned clone, so the table converter is authorable — three rulings wait in output.md section 4
