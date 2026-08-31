@@ -55,25 +55,76 @@ public class Ft8TableGenerationTests
             $"{path} is not there. The converter runs and the tables parse, but nothing is checked "
             + $"in for it to be compared against. Run: {Ft8TableConverter.RegenerateCommand}");
 
-        var produced = Ft8TableConverter.NormaliseLineEndings(result.GeneratedSource);
-        var checkedIn = Ft8TableConverter.NormaliseLineEndings(File.ReadAllText(path));
+        var checkedIn = File.ReadAllText(path);
+        var comparison = TableComparison.Compare(result, checkedIn);
 
         _output.WriteLine(string.Empty);
         _output.WriteLine($"checked-in file         : {path}");
-        _output.WriteLine($"characters produced     : {produced.Length}");
+        _output.WriteLine($"characters produced     : {result.GeneratedSource.Length}");
         _output.WriteLine($"characters checked in   : {checkedIn.Length}");
-        _output.WriteLine($"byte-identical          : {produced == checkedIn}");
+        _output.WriteLine($"byte-identical          : {comparison.Identical}");
 
-        if (produced == checkedIn)
+        if (comparison.Identical)
         {
             return;
         }
 
         Assert.Fail(
             "The tables checked in are not the tables the converter produces from "
-            + $"{Ft8TableConverter.SourceFile} at commit {Ft8TableConverter.UpstreamCommit}.\n"
-            + string.Join("\n", DescribeDifferences(result, checkedIn))
+            + $"{Ft8TableConverter.SourceFile} at commit {Ft8TableConverter.UpstreamCommit}.\n  "
+            + string.Join("\n  ", comparison.Differences)
             + $"\nIf upstream has moved deliberately, re-run: {Ft8TableConverter.RegenerateCommand}");
+    }
+
+    /// <summary>
+    /// Watches the comparison refuse. A guard nobody has seen refuse is an assumption.
+    /// </summary>
+    /// <remarks>
+    /// One element of one table is changed <b>in memory, by machine</b> — the checked-in file is
+    /// never touched, nothing is hand-edited, and the altered value is neither chosen nor printed.
+    /// What is asserted is that the refusal names the table that changed, counts the positions,
+    /// stays quiet about the other five tables, and carries no value in its message.
+    /// </remarks>
+    [RequiresReferenceCloneFact]
+    public void TheComparisonRefusesAFileWithOneAlteredElement()
+    {
+        var result = ConvertFromTheClone();
+        var altered = AlterOneElementOf("LdpcNm", result.GeneratedSource);
+        Assert.NotEqual(result.GeneratedSource, altered);
+
+        var comparison = TableComparison.Compare(result, altered);
+
+        _output.WriteLine($"identical               : {comparison.Identical}");
+        foreach (var difference in comparison.Differences)
+        {
+            _output.WriteLine($"reported                : {difference}");
+        }
+
+        Assert.False(comparison.Identical);
+        var reported = Assert.Single(comparison.Differences);
+        Assert.Equal("kFTX_LDPC_Nm: differs at 1 of 581 positions.", reported);
+        Assert.DoesNotContain("0x", reported, StringComparison.OrdinalIgnoreCase);
+    }
+
+    /// <summary>
+    /// Changes the first element of one emitted table to a different byte, in a copy of the text.
+    /// The replacement is arithmetic on what was there, so no value is chosen by anybody.
+    /// </summary>
+    private static string AlterOneElementOf(string propertyName, string generatedSource)
+    {
+        var marker = $"public static ReadOnlySpan<byte> {propertyName} => new byte[]";
+        var start = generatedSource.IndexOf(marker, StringComparison.Ordinal);
+        Assert.True(start >= 0, $"{propertyName} is not in the generated source.");
+
+        var element = generatedSource.IndexOf("0x", start, StringComparison.Ordinal);
+        Assert.True(element >= 0, $"{propertyName} has no elements in the generated source.");
+
+        var was = System.Convert.ToByte(generatedSource.Substring(element + 2, 2), 16);
+        var now = (byte)((was + 1) % 256);
+        return string.Concat(
+            generatedSource.AsSpan(0, element + 2),
+            now.ToString("X2"),
+            generatedSource.AsSpan(element + 4));
     }
 
     /// <summary>
@@ -105,45 +156,6 @@ public class Ft8TableGenerationTests
 
         var header = File.Exists(headerPath) ? File.ReadAllText(headerPath) : null;
         return Ft8TableConverter.Convert(File.ReadAllText(constantsPath), header);
-    }
-
-    private static IEnumerable<string> DescribeDifferences(ConversionResult result, string checkedIn)
-    {
-        var onDisk = GeneratedTablesFile.ReadTables(checkedIn);
-        var found = false;
-
-        foreach (var spec in Ft8TableConverter.Manifest)
-        {
-            var produced = result[spec.CIdentifier].Values;
-            if (!onDisk.TryGetValue(spec.CSharpName, out var stored))
-            {
-                found = true;
-                yield return $"  {spec.CIdentifier}: absent from the checked-in file.";
-                continue;
-            }
-
-            if (stored.Length != produced.Length)
-            {
-                found = true;
-                yield return $"  {spec.CIdentifier}: {stored.Length} elements checked in, "
-                    + $"{produced.Length} produced.";
-                continue;
-            }
-
-            var differing = produced.Where((t, i) => stored[i] != t).Count();
-            if (differing > 0)
-            {
-                found = true;
-                yield return $"  {spec.CIdentifier}: differs at {differing} of {produced.Length} "
-                    + "positions.";
-            }
-        }
-
-        if (!found)
-        {
-            yield return "  No table's values differ. The difference is in the file's header, its "
-                + "geometry constants or its layout — the data is the same and the wrapper is not.";
-        }
     }
 }
 
