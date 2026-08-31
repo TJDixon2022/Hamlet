@@ -1,11 +1,11 @@
 PROJECT: Hamlet
-STATE: EXECUTING
+STATE: COMPLETED
 PHASE: 12
-TASK: 5 of 6
-BALL: code
-NEXT_PASTE: none
-UPDATED: 2026-08-30T20:05:51-04:00
-NOTE: Fading measured — dropouts run 32 to 53 ms against a dit of 43 to 60, so a hold-over cannot be sized without merging elements
+TASK: 6 of 6
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
+UPDATED: 2026-08-30T20:07:45-04:00
+NOTE: Regression found at 95a5e06 and locked behind a floor the average cannot hide; hysteresis costed and waiting on a ruling
 
 ---
 
