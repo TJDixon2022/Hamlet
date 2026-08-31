@@ -1,11 +1,11 @@
 PROJECT: Hamlet
-STATE: EXECUTING
+STATE: COMPLETED
 PHASE: 12
 TASK: 6 of 6
-BALL: code
-NEXT_PASTE: none
-UPDATED: 2026-08-31T11:04:09-04:00
-NOTE: Task 6 - characterising the shredded pair with per-element pitch now available
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
+UPDATED: 2026-08-31T11:59:25-04:00
+NOTE: Six tasks done; two acceptances reported as named residues and the character ratchet went 15 to 18 red
 
 ---
 

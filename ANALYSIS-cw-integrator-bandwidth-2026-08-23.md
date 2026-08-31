@@ -56,11 +56,11 @@ table where every cell is perfect measures nothing about the filter.
 | 300 Hz | -6 dB | 11/11, 0 made up | 11/11, 0 made up | 11/11, 0 made up | 11/11, 0 made up |
 | 300 Hz | -12 dB | 11/11, 0 made up | 11/11, 0 made up | 11/11, 0 made up | 11/11, 0 made up |
 | 30 Hz | +0 dB | 9/11, 0 made up | 9/11, 0 made up | 10/11, 0 made up | 11/11, 0 made up |
-| 30 Hz | +6 dB | 2/11, 31 made up | 2/11, 32 made up | 9/11, 0 made up | 10/11, 0 made up |
-| 20 Hz | +0 dB | 2/11, 28 made up | 9/11, 0 made up | 9/11, 0 made up | 10/11, 0 made up |
+| 30 Hz | +6 dB | 1/11, 25 made up | 1/11, 26 made up | 9/11, 0 made up | 10/11, 0 made up |
+| 20 Hz | +0 dB | 2/11, 27 made up | 9/11, 0 made up | 9/11, 0 made up | 10/11, 0 made up |
 | 20 Hz | +6 dB | 4/11, 2 made up | 5/11, 2 made up | 5/11, 1 made up | 9/11, 0 made up |
-| 15 Hz | +0 dB | 5/11, 6 made up | 5/11, 1 made up | 6/11, 0 made up | 6/11, 0 made up |
-| 10 Hz | +0 dB | 6/11, 4 made up | 5/11, 0 made up | 5/11, 2 made up | 6/11, 0 made up |
+| 15 Hz | +0 dB | 4/11, 19 made up | 5/11, 4 made up | 6/11, 0 made up | 6/11, 0 made up |
+| 10 Hz | +0 dB | 5/11, 2 made up | 5/11, 0 made up | 5/11, 2 made up | 6/11, 0 made up |
 
 ## The cost in sensitivity
 
@@ -98,10 +98,10 @@ that has never been traded (HM-DEC-120).
 
 | recording | holds | 60 Hz | 45 Hz | 30 Hz | 20 Hz |
 |---|---|---|---|---|---|
-| `cw-2026-08-20-014854` | nothing | 0.5 | 0.6 | 0.8 | 0.7 |
+| `cw-2026-08-20-014854` | nothing | 0.5 | 0.7 | 0.8 | 0.7 |
 | `cw-2026-08-20-014935` | nothing | 0.1 | 0.1 | 0.1 | 0.2 |
 | `cw-2026-08-18-004507` | a station | 6.1 | 7.0 | 8.2 | 8.6 |
-| `cw-2026-08-17-013347` | a station | 19010365.9 | 17235760.0 | 10694850.9 | 1700091.2 |
+| `cw-2026-08-17-013347` | a station | 19010365.9 | 17325602.9 | 10713154.4 | 1706197.3 |
 
 The gate is **1**. A row holding
 nothing must stay well under it and a row holding a station well over.
@@ -114,10 +114,10 @@ much comes out and how much of it is the letter `E`.
 
 | recording | 60 Hz | 45 Hz | 30 Hz | 20 Hz |
 |---|---|---|---|---|
-| `cw-2026-08-17-013347` | 101 chars, E 44 % | 81 chars, E 63 % | 86 chars, E 59 % | 98 chars, E 39 % |
-| `cw-2026-08-17-134712` | 0 chars, E 0 % | 0 chars, E 0 % | 90 chars, E 20 % | 58 chars, E 29 % |
+| `cw-2026-08-17-013347` | 102 chars, E 43 % | 100 chars, E 42 % | 100 chars, E 42 % | 98 chars, E 39 % |
+| `cw-2026-08-17-134712` | 0 chars, E 0 % | 0 chars, E 0 % | 86 chars, E 21 % | 79 chars, E 22 % |
 | `cw-2026-08-18-004507` | 49 chars, E 12 % | 48 chars, E 13 % | 48 chars, E 13 % | 48 chars, E 13 % |
-| `cw-2026-08-18-003758` | 58 chars, E 12 % | 60 chars, E 13 % | 38 chars, E 21 % | 43 chars, E 21 % |
+| `cw-2026-08-18-003758` | 56 chars, E 13 % | 57 chars, E 14 % | 39 chars, E 23 % | 38 chars, E 21 % |
 
 ## What was chosen, and why
 

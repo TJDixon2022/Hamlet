@@ -21,18 +21,18 @@ be measured at all. `window` is what the guard would have seen.
 
 | capture | window | chars | margins: min / median / max | read |
 |---|---|---|---|---|
-| `cw-2026-08-17-013347` | 17235760.00 | 81 | -11.62 / 46849864.11 / 453074102.29 | ` E EI EE 5EEETEEE V EEEA E E EE IEEEE I EE IEET E T E EE E E EETEM E TEEEE T E IEEET E O EEETETTW EEMAEAMJOW E E ` |
-| `cw-2026-08-17-013622` | 4137086.23 | 108 | -3.73 / 3.69 / 152811536.68 | `E EE # EUE# E H EE SEEE E H E EE T EN E E # E T E EE EEE E II E EE EEN IU E SI TIE IT AET T E E T TIEE ET EETEE EESEEE E II E E EETI E RI EIE EE E EIE E E HE E E E E E` |
-| `cw-2026-08-17-134712` | 1.40 | 114 | -81.82 / 0.73 / 41.79 | ` EEE EE E E E E EIE E EIE E E E IEE I E EE S E E SE E E E EI E I EE E EE EE E EE E I E I E E E E A E E E E E EE E I EIIHIIS EH E #5I IISEE A E S ES E E ## E HE H E IEEE EE TES I I EISE E` |
+| `cw-2026-08-17-013347` | 17325602.95 | 100 | -22757244.18 / 38817968.10 / 453074102.29 | ` E EI EE 5 EE ES E EE V EEEH E T EE HEEE E S E E EAE ET E T E EE T E AET ETT E TE ETE T E EEEEET E TTT TTTTTTTTTT TTTTTTTTTTTTTTTTTTTTT E E E ` |
+| `cw-2026-08-17-013622` | 4086060.00 | 99 | -0.69 / 3.81 / 152811536.68 | `E EE # ESEF E H EE SEEE E S E EE EEEE ER E T E E EEE E EE E E EEI IA E IETSET AEE E E T EEE E ET IEEE #EEE S E EEEEE E ETE E SEE E SEE E SE E E E E E E` |
+| `cw-2026-08-17-134712` | 1.39 | 99 | -31.82 / 0.69 / 41.12 | ` EE EEE EEE EEE EEEE EE E EE E EE I E EI EE E E EIE EI E E EE EE E E I EI E E E E EE E E E E EE E E EE<HH>S I E #HIIHE TE S I E E I# 5E HESI EE EEEE E E ISE E` |
 | `cw-2026-08-18-004507` | 6.96 | 48 | 6.07 / 14.24 / 36.49 | `E JJ AT ARRL DOT NET <BT> EACH STATION HANDLING THIS MESSAG E PE` |
-| `cw-2026-08-18-003016` | 4.55 | 53 | -14.93 / 7.55 / 17.97 | `I<BT> HADA KPT15TT ITWAS #K <BT> ESTILL HVE MY ETO 91B TT JUST VFB TUB LIN` |
-| `cw-2026-08-18-003126` | 5.96 | 54 | -19.02 / 9.60 / 23.94 | `A OM <BT> E <BT> I WATCH AT L EAST 2 MOVI ES A DAY WID X# WHY NOT E E , WESTERNS , E` |
-| `cw-2026-08-18-003758` | 10.77 | 60 | -25.85 / 21.95 / 54.04 | `K I S QR L TU E EE AN E AN D E AA4MP /4 QNI K E EEEE E E E E AN E ANQNI K E EE E E E H I E E RN E` |
-| `cw-2026-08-24-012403` | 1.10 | 46 | -1.06 / 1.38 / 8.33 | ` I E E E EE E E E E EEE E ADM UUT UD0 TN DEQ 6Q E SQ DE KD0UN KD0UN K ` |
+| `cw-2026-08-18-003016` | 4.55 | 58 | -7.61 / 7.65 / 17.97 | `I <BT> HAD A KP T15TT IT WAS JUNK E <BT> E STILAI HVE MY E TO 91B E TT JUST VFB TUB LIN` |
+| `cw-2026-08-18-003126` | 5.97 | 52 | -10.57 / 9.60 / 20.53 | `A OM<BT> E <BT> IWATCH AT L E<AS>T 2 MOVIESA DAY WID X# WHY NOT E E , WESNRNS , E` |
+| `cw-2026-08-18-003758` | 10.80 | 57 | -16.89 / 21.95 / 54.04 | `KI S QRL TU E EAN EANDE AA4MP/4 QNIK E EEEEEE EAN EANQNIK E E E EE S E E EAN E` |
+| `cw-2026-08-24-012403` | 1.10 | 49 | -0.20 / 1.24 / 8.33 | ` EE E E E E EE E EE E E EEE E ADMVUT UD0 TN DEQ 6Q E SQ DE KD0UN KD0UN K ` |
 | `cw-2026-08-22-031905` | 4.93 | 39 | 0.39 / 8.09 / 18.88 | `TO . PREDICTED 10.7 K NTIMETER FLUX IS 125, 125N` |
 | `cw-2026-08-23-001520` | 0.00 | 1 | 0.00 / 0.00 / 0.00 | `#` |
-| `cw-2026-08-20-014854` | 0.65 | 82 | -8.18 / 1.05 / 4.61 | ` EEE E E 5 SEE E EI N SE IE E T II E T E IE T E EE N TEI E E MING I UM N ERQ GRE CTIT EE W ID PE T EES SE G T E EIGIE E P IE OP 6` |
-| `cw-2026-08-20-014935` | 0.13 | 127 | -1.64 / 0.68 / 4.05 | `EE E EE ESEE EIEEE IE E E EINEE E EI E N E E E EEI E E 4 E EE EL EEE EI ES S E S E E E E N E E E EEE EI H E E EI EE EE EEE EEEE E E E EE E IEE E I EI E EEE E IEEE E EE E EE E EI ESE EE E E EIEE E E EE` |
+| `cw-2026-08-20-014854` | 0.65 | 81 | -1.89 / 0.97 / 4.61 | ` E E EE 5EEEE E EE N SEIE E E II E TE IE T E EE N TEI E E MING I ETM N ERQ GRE CTIT EE W ID PE T IS SE G T E EIGIE EP S OP 6` |
+| `cw-2026-08-20-014935` | 0.11 | 106 | -0.32 / 0.69 / 3.22 | `EE E E EEI I EE IE E INEE E E E I E E E EEEEE IE EI 5 EEE EI ES S E I EI E E I E E E EE EES E E I EEE IE EEE EE EEE E EEE E E EE E E E EEIE EE E EE E SH I E E EEEE E E E` |
 
 ## Can the guard go?
 
@@ -64,16 +64,16 @@ the provisional span arrives with its own sensitivity measured.
 
 | capture | 1.5 s | 2.5 s | 4.0 s |
 |---|---|---|---|
-| `cw-2026-08-17-013347` | 16707718.2, 76 chars, VA3VRR LOST | 17235760.0, 81 chars, VA3VRR LOST | 16672592.2, 76 chars, VA3VRR LOST |
-| `cw-2026-08-17-013622` | 4712372.7, 107 chars | 4137086.2, 108 chars | 4328363.8, 107 chars |
-| `cw-2026-08-17-134712` | 1.1, 74 chars, N4L LOST | 1.4, 114 chars, N4L LOST | 1.7, 113 chars, N4L LOST |
+| `cw-2026-08-17-013347` | 16776321.8, 103 chars, VA3VRR LOST | 17325602.9, 100 chars, VA3VRR LOST | 16773939.3, 101 chars, VA3VRR LOST |
+| `cw-2026-08-17-013622` | 4664523.4, 100 chars | 4086060.0, 99 chars | 4332200.7, 100 chars |
+| `cw-2026-08-17-134712` | 1.1, 78 chars, N4L LOST | 1.4, 99 chars, N4L LOST | 1.7, 92 chars, N4L LOST |
 | `cw-2026-08-18-004507` | 6.7, 48 chars | 7.0, 48 chars | 7.0, 48 chars |
-| `cw-2026-08-18-003016` | 4.6, 55 chars | 4.5, 53 chars | 4.6, 53 chars |
-| `cw-2026-08-18-003126` | 5.9, 52 chars | 6.0, 54 chars | 6.3, 54 chars |
-| `cw-2026-08-18-003758` | 11.2, 54 chars, AA4MP/4QNIK kept | 10.8, 60 chars, AA4MP/4QNIK kept | 10.4, 51 chars, AA4MP/4QNIK kept |
-| `cw-2026-08-24-012403` | 1.1, 49 chars, KD0UNKD0UNK LOST | 1.1, 46 chars, KD0UNKD0UNK kept | 1.2, 42 chars, KD0UNKD0UNK kept |
+| `cw-2026-08-18-003016` | 4.6, 56 chars | 4.6, 58 chars | 4.6, 53 chars |
+| `cw-2026-08-18-003126` | 5.9, 52 chars | 6.0, 52 chars | 6.3, 52 chars |
+| `cw-2026-08-18-003758` | 11.2, 60 chars, AA4MP/4QNIK kept | 10.8, 57 chars, AA4MP/4QNIK kept | 10.4, 56 chars, AA4MP/4QNIK kept |
+| `cw-2026-08-24-012403` | 1.1, 52 chars, KD0UNKD0UNK LOST | 1.1, 49 chars, KD0UNKD0UNK kept | 1.2, 46 chars, KD0UNKD0UNK LOST |
 | `cw-2026-08-22-031905` | 5.1, 40 chars | 4.9, 39 chars | 4.8, 40 chars |
-| `cw-2026-08-23-001520` | 8048633.8, 136 chars | 0.0, 1 chars | 0.0, 1 chars |
-| `cw-2026-08-20-014854` | 0.6, 80 chars | 0.6, 82 chars | 0.7, 81 chars |
-| `cw-2026-08-20-014935` | 0.1, 130 chars | 0.1, 127 chars | 0.1, 127 chars |
+| `cw-2026-08-23-001520` | 8048633.8, 12 chars | 0.0, 1 chars | 0.0, 1 chars |
+| `cw-2026-08-20-014854` | 0.7, 79 chars | 0.7, 81 chars | 0.7, 79 chars |
+| `cw-2026-08-20-014935` | 0.1, 107 chars | 0.1, 106 chars | 0.1, 109 chars |
 

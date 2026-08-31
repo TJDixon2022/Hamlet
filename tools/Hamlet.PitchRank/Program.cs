@@ -311,15 +311,10 @@ internal static class Program
                              ? args.Skip(1).ToArray()
                              : new[] { "10" })
                 {
-                    CwStreamSplit.TrustedResolutionHz =
-                        double.Parse(t, CultureInfo.InvariantCulture);
-
                     Console.WriteLine($"TRUSTED <= {t} Hz");
-                    StreamSurvey();
+                    StreamSurvey(double.Parse(t, CultureInfo.InvariantCulture));
                     Console.WriteLine();
                 }
-
-                CwStreamSplit.TrustedResolutionHz = 10.0;
 
                 return 0;
 
@@ -434,7 +429,7 @@ internal static class Program
     /// than the collision it fixes, so the separation a single-sender capture
     /// produces by chance is the number the threshold has to clear.
     /// </remarks>
-    private static void StreamSurvey()
+    private static void StreamSurvey(double trustedResolutionHz)
     {
         Console.WriteLine(
             "capture	pitch	marks	trusted	low n	low Hz	high n	high Hz	apart"
@@ -465,7 +460,7 @@ internal static class Program
                 read.Elements, audio.Samples, audio.SampleRate, toneHz,
                 CwProbabilisticDecoder.HopMilliseconds);
 
-            var split = CwStreamSplit.Divide(measured);
+            var split = CwStreamSplit.Divide(measured, trustedResolutionHz);
             var mark = split.Split ? "  SPLIT" : "";
 
             Console.WriteLine(string.Format(

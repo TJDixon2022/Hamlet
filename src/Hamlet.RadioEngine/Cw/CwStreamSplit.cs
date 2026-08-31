@@ -73,7 +73,7 @@ public static class CwStreamSplit
     /// stream once the boundary exists; they are not allowed to decide that it
     /// does.
     /// </remarks>
-    public static double TrustedResolutionHz { get; set; } = 10.0;
+    public const double TrustedResolutionHz = 10.0;
 
     /// <summary>How many trusted marks each side must hold to be a sender.</summary>
     /// <remarks>
@@ -206,8 +206,22 @@ public static class CwStreamSplit
 
     /// <summary>Divide an element stream by the pitch of its own marks.</summary>
     /// <param name="elements">The stream, with per-element pitch measured.</param>
+    /// <param name="trustedResolutionHz">
+    /// The coarsest per-element resolution allowed to vote, for a survey that
+    /// sweeps it. Defaults to <see cref="TrustedResolutionHz"/>.
+    /// </param>
     /// <returns>What the division found.</returns>
-    public static CwStreamDivision Divide(IReadOnlyList<CwElement> elements)
+    /// <remarks>
+    /// **A PARAMETER AND NEVER A MUTABLE STATIC.** This is read on the capture
+    /// sheet's own path, and a static swept by a survey tool would be read by
+    /// whichever caller happened to be running — the same hazard
+    /// `CwProbabilisticStream.UseJointCutter` carries its own warning about, and
+    /// the reason the first build of that measured itself as having changed
+    /// nothing.
+    /// </remarks>
+    public static CwStreamDivision Divide(
+        IReadOnlyList<CwElement> elements,
+        double trustedResolutionHz = TrustedResolutionHz)
     {
         ArgumentNullException.ThrowIfNull(elements);
 
@@ -223,7 +237,7 @@ public static class CwStreamSplit
             var milliseconds =
                 element.Hops * CwProbabilisticDecoder.HopMilliseconds;
 
-            if (CwElementPitch.ResolutionHz(milliseconds) <= TrustedResolutionHz)
+            if (CwElementPitch.ResolutionHz(milliseconds) <= trustedResolutionHz)
             {
                 trusted.Add(element.PitchHz);
             }
