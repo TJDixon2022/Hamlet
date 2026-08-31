@@ -1,11 +1,11 @@
 PROJECT: Hamlet
-STATE: EXECUTING
+STATE: COMPLETED
 PHASE: 12
-TASK: 5 of 6
-BALL: code
-NEXT_PASTE: none
-UPDATED: 2026-08-30T22:10:46-04:00
-NOTE: Carrier counter cannot separate a second station from the first's own skirts; reporting that rather than its number
+TASK: 6 of 6
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
+UPDATED: 2026-08-30T22:12:25-04:00
+NOTE: Hold-over shipped at 12 ms, precision 0.894 and every floor held; the threshold reference was built, swept and refused
 
 ---
 
