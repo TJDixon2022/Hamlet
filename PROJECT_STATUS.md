@@ -1,11 +1,11 @@
 PROJECT: Hamlet
-STATE: COMPLETED
+STATE: EXECUTING
 PHASE: 12
-TASK: 6 of 6
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
-UPDATED: 2026-08-30T20:07:45-04:00
-NOTE: Regression found at 95a5e06 and locked behind a floor the average cannot hide; hysteresis costed and waiting on a ruling
+TASK: 2 of 6
+BALL: code
+NEXT_PASTE: none
+UPDATED: 2026-08-30T20:45:00-04:00
+NOTE: Existing bridging absorbs 20 ms and gives out at 30, against measured dropouts of 32 to 53; sweeping the threshold reference next
 
 ---
 
