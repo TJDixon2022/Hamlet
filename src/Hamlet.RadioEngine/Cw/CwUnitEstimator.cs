@@ -638,11 +638,35 @@ public static class CwUnitEstimator
     /// against 0.745 at nought and 0.742 at sixteen, and substitutions **15**
     /// against 17 and 18. The 1.1 points of precision given up against sixteen buy
     /// an anchor that stays.</para>
-    /// <para>**IT IS THREE HOPS, AND IT DOES NOT REACH THE FADING.** The dropouts
-    /// unit 053 measured run 32 to 53 ms and the safe bound here is 30, so this
-    /// cannot bridge them and does not claim to. What it does is extend the
-    /// bridging from the 20 ms the hysteresis already absorbs to about 25, and the
-    /// corpus says that is worth 0.6 points of precision and two substitutions.</para>
+    /// <para>**IT IS THREE HOPS, AND IT STILL DOES NOT REACH THE FADING.** The
+    /// dropouts unit 053 measured run 32 to 53 ms. The safe bound was 30 when
+    /// this was written and is 40 now, because
+    /// <see cref="CwProbabilisticDecoder.FastestWpm"/> came down to thirty (work
+    /// instruction 056, task 1) — so for the first time the bound reaches the
+    /// lower half of the fading, and the hold-over still does not, because
+    /// twelve is where the locks put it rather than where the bound does.</para>
+    /// <para>**RE-SWEPT ACROSS THE WHOLE NEWLY LEGAL RANGE AND TWELVE SURVIVED**
+    /// (work instruction 056, task 1). Precision reads **0.901 at 12, 0.926 at
+    /// 16, 0.939 at 20, 0.939 at 24**, then falls: 0.930 at 28, 0.920 at 32,
+    /// 0.910 at 36 and 40. Yield is flat at 0.878 through 24 and drops to 0.841
+    /// by 36. On the average alone the answer would be 20 — monotonic to it,
+    /// tied with 24, and 3.8 points of precision better than 12.</para>
+    /// <para>**AND IT COSTS THE SAME ANCHOR SIXTEEN COST, WHICH IS WHY IT IS NOT
+    /// TAKEN.** `cw-2026-08-22-031838`'s adjudicated `, AND` survives at twelve
+    /// and does not at sixteen or at twenty: the read goes `, 2, 2, AND 2` to
+    /// `, 2, 2,■AND■2■` to `, 2, 2,■■AND■■■`. **The mechanism is visible in that
+    /// progression** — bridging inside a key-down lengthens the mark and shortens
+    /// the gap after it, so the character gaps this sender leaves fall below what
+    /// separates them from element gaps and the spacing collapses into blocks.
+    /// Tim's ruling with this order settles what to do about it: the average
+    /// floor may move only when every individual lock holds, and a change that
+    /// drops one is reverted regardless of what it does to the average.</para>
+    /// <para>**WHAT THE OLD REMARKS CLAIMED FOR TWELVE NO LONGER HOLDS AND IS
+    /// CORRECTED HERE.** It said twelve bought 0.6 points of precision over
+    /// nought; that was measured at a ceiling of forty words a minute. What
+    /// twelve buys now is measured above and is nothing at all over sixteen or
+    /// twenty on the average — it buys one adjudicated anchor, and that is the
+    /// whole of its case.</para>
     /// <para>**DIT SCATTER BARELY MOVED AND THE DECODE IMPROVED ANYWAY**, which is
     /// worth recording because dit CV was the measure this change was expected to
     /// be judged on. Across the whole sweep it changes by hundredths and not

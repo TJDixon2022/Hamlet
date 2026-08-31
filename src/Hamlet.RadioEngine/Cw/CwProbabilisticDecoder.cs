@@ -1,4 +1,4 @@
-using Hamlet.RadioEngine.Audio;
+﻿using Hamlet.RadioEngine.Audio;
 
 namespace Hamlet.RadioEngine.Cw;
 
@@ -40,6 +40,25 @@ public readonly record struct CwProbabilisticResult(
     IReadOnlyList<CwProbabilisticCharacter> Characters,
     bool EndsInsideCharacter = false)
 {
+    /// <summary>
+    /// The winning path's own elements, marks and gaps, in the order they were
+    /// sent.
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE CHARACTERS WERE ALWAYS HERE AND THE ELEMENTS THEY WERE BUILT
+    /// FROM WERE NOT.** A reader could see that Hamlet said `E` and not that it
+    /// had seen one 55 ms mark, and the two most common failures on this corpus —
+    /// a mark split in two, and a mark invented out of a notch in the noise — are
+    /// both invisible at the character level and obvious at this one.</para>
+    /// <para>**CARRIED, NOT ACTED ON.** Nothing in the decode reads this back;
+    /// it is produced by the same walk that spells the text, so it cannot
+    /// disagree with what was read.</para>
+    /// <para>Empty where the gate is closed, or where the result is
+    /// <see cref="None"/>.</para>
+    /// </remarks>
+    public IReadOnlyList<CwElement> Elements { get; init; }
+        = Array.Empty<CwElement>();
+
     /// <summary>
     /// True when the winning speed sits at either end of the search, so it may
     /// be a limit rather than a measurement.
@@ -506,8 +525,23 @@ public static partial class CwProbabilisticDecoder
     /// <para>**AND A WINNER AT EITHER END IS NOW SAID OUT LOUD**, so a range
     /// limit is never again mistaken for a measurement
     /// (<see cref="CwProbabilisticResult.SpeedIsAtTheEdge"/>).</para>
+    /// <para>**LOWERED TO THIRTY, PROVISIONALLY, BY TIM'S RULING IN WORK
+    /// INSTRUCTION 056.** Nothing in the corpus, the bulletins, or any capture the
+    /// operator has sent runs above about twenty-eight words a minute, and the
+    /// ceiling was paying for a speed nobody here sends at. What it costs is
+    /// <see cref="CwUnitEstimator.LongestSafeHoldOverMs"/>, which is one dit at
+    /// this value: at forty the safe bound was 30 ms and sat just under the 32 to
+    /// 53 ms dropouts unit 053 measured, so the bridging could never reach the
+    /// fault it was built for. At thirty the bound is 40 ms and reaches the lower
+    /// half of them.</para>
+    /// <para>**THE CONDITION THAT RAISES IT AGAIN IS RECORDED WITH THE VALUE**:
+    /// the ceiling rises the day a capture shows something faster worth reading.
+    /// Not the day a fit lands at the edge — <see cref="SlowestWpm"/>'s own
+    /// remarks say why an edge winner is not evidence — but the day a recording in
+    /// the tree holds a sender above this and somebody wants it read. Rejected:
+    /// keeping forty, on the measurement above.</para>
     /// </remarks>
-    public const double FastestWpm = 40;
+    public const double FastestWpm = 30;
 
     /// <summary>How far apart the speed hypotheses sit.</summary>
     /// <remarks>
@@ -827,13 +861,14 @@ public static partial class CwProbabilisticDecoder
         var bestLastKind = -1;
         IReadOnlyList<CwProbabilisticCharacter> bestCharacters =
             Array.Empty<CwProbabilisticCharacter>();
+        IReadOnlyList<CwElement> bestElements = Array.Empty<CwElement>();
 
         var from = atWordsPerMinute ?? SlowestWpm;
         var to = atWordsPerMinute ?? FastestWpm;
 
         for (var wpm = from; wpm <= to + 1e-9; wpm += WpmStep)
         {
-            var (score, characters, lastKind) =
+            var (score, characters, lastKind, elements) =
                 DecodeAt(
                     envelope.Count, wpm, keyDown, keyUp, gapMilliseconds,
                     jointly, alpha);
@@ -844,6 +879,7 @@ public static partial class CwProbabilisticDecoder
                 bestWpm = wpm;
                 bestCharacters = characters;
                 bestLastKind = lastKind;
+                bestElements = elements;
             }
         }
 
@@ -859,7 +895,10 @@ public static partial class CwProbabilisticDecoder
         {
             return new CwProbabilisticResult(
                 ratio, bestWpm, string.Concat(bestCharacters.Select(c => c.Text)),
-                toneHz, bestCharacters, insideCharacter);
+                toneHz, bestCharacters, insideCharacter)
+            {
+                Elements = bestElements,
+            };
         }
 
         if (ratio < Gate)
@@ -887,7 +926,10 @@ public static partial class CwProbabilisticDecoder
             string.Concat(judged.Select(c => c.Text)),
             toneHz,
             judged,
-            insideCharacter);
+            insideCharacter)
+        {
+            Elements = bestElements,
+        };
     }
 
     /// <summary>
@@ -1428,7 +1470,8 @@ public static partial class CwProbabilisticDecoder
     private static (
         double Score,
         IReadOnlyList<CwProbabilisticCharacter> Characters,
-        int LastKind)
+        int LastKind,
+        IReadOnlyList<CwElement> Elements)
         DecodeAt(
         int count,
         double wpm,
@@ -1568,16 +1611,19 @@ public static partial class CwProbabilisticDecoder
 
         if (lastKind < 0)
         {
-            return (double.NegativeInfinity, Array.Empty<CwProbabilisticCharacter>(), -1);
+            return (
+                double.NegativeInfinity,
+                Array.Empty<CwProbabilisticCharacter>(),
+                -1,
+                Array.Empty<CwElement>());
         }
 
-        return (
-            total,
-            Spell(
-                count, lastKind, fromHop, fromKind, downTo, upTo, best, second,
-                unit, gapHops, jointly,
-                Posterior(count, downTo, upTo, unit, gapHops, alpha)),
-            lastKind);
+        var (spelled, walked) = Spell(
+            count, lastKind, fromHop, fromKind, downTo, upTo, best, second,
+            unit, gapHops, jointly,
+            Posterior(count, downTo, upTo, unit, gapHops, alpha));
+
+        return (total, spelled, lastKind, walked);
     }
 
     /// <summary>Offer one candidate transition into a state, keeping two.</summary>
@@ -1699,7 +1745,10 @@ public static partial class CwProbabilisticDecoder
     /// penalty is left out.
     /// </remarks>
     /// <param name="posterior">The state posteriors, or null where none.</param>
-    private static IReadOnlyList<CwProbabilisticCharacter> Spell(
+    private static (
+        IReadOnlyList<CwProbabilisticCharacter> Characters,
+        IReadOnlyList<CwElement> Elements)
+        Spell(
         int count, int lastKind, int[,] fromHop, int[,] fromKind,
         double[] downTo, double[] upTo,
         double[,] best, double[,] second, double unit, double[]? gapHops,
@@ -1824,7 +1873,18 @@ public static partial class CwProbabilisticDecoder
                     marginAt.TryGetValue(count, out var pl) ? pl : lastKind)));
         }
 
-        return characters;
+        // **THE SAME WALK, HANDED OUT RATHER THAN RECOMPUTED.** The path above
+        // already is the element stream; turning it into `CwElement`s here costs
+        // one pass and cannot disagree with what was spelled, where a second
+        // traversal built for the record could.
+        var walked = new List<CwElement>(path.Count);
+
+        foreach (var (k, startHop, endHop) in path)
+        {
+            walked.Add(new CwElement(Kinds[k].IsKeyDown, startHop, endHop));
+        }
+
+        return (characters, walked);
     }
 
     /// <summary>
@@ -1835,7 +1895,10 @@ public static partial class CwProbabilisticDecoder
     /// is only where those elements are divided into letters, and that decision
     /// is now made together with what the letters are.
     /// </remarks>
-    private static IReadOnlyList<CwProbabilisticCharacter> SpellJointly(
+    private static (
+        IReadOnlyList<CwProbabilisticCharacter> Characters,
+        IReadOnlyList<CwElement> Elements)
+        SpellJointly(
         int count, int lastKind, int[,] fromHop, int[,] fromKind,
         double[] downTo, double[] upTo, double unit, double[]? gapHops)
     {
@@ -1871,6 +1934,6 @@ public static partial class CwProbabilisticDecoder
             }
         }
 
-        return characters;
+        return (characters, elements);
     }
 }

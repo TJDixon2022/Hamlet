@@ -1,4 +1,4 @@
-namespace Hamlet.RadioEngine.Cw;
+﻿namespace Hamlet.RadioEngine.Cw;
 
 /// <summary>
 /// One element of the stream the first pass produced: a mark or a gap, with the
@@ -9,6 +9,22 @@ namespace Hamlet.RadioEngine.Cw;
 /// <param name="EndHop">Where it ended.</param>
 public readonly record struct CwElement(bool IsMark, int StartHop, int EndHop)
 {
+    /// <summary>What frequency this element itself was sent at, in hertz.</summary>
+    /// <remarks>
+    /// <para>**NOT SET BY THE DECODE PATH, BECAUSE THE DECODE PATH HAS NO
+    /// AUDIO.** Everything above works from the envelope, which was mixed down at
+    /// one pitch before any of it ran, so the pitch of an individual element is
+    /// not a thing the dynamic program could know. It is filled in afterwards by
+    /// <see cref="CwElementPitch"/> from the samples the element spans, and until
+    /// then it is <see cref="double.NaN"/>.</para>
+    /// <para>**NaN IS NOBODY MEASURED AND IS NOT A PITCH OF NOUGHT** (§0.0). It
+    /// is also what a `default(CwElement)` carries, and a reader that treats the
+    /// two the same is right to: neither was measured.</para>
+    /// <para>**NOTHING IN THE DECODE READS IT.** It reaches the record and the
+    /// stream separation and stops there.</para>
+    /// </remarks>
+    public double PitchHz { get; init; } = double.NaN;
+
     /// <summary>How many hops it spans.</summary>
     public int Hops => EndHop - StartHop;
 }

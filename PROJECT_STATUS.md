@@ -1,14 +1,14 @@
 PROJECT: Hamlet
-STATE: BLOCKED
+STATE: EXECUTING
 PHASE: 12
-TASK: 2 of 7
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
-UPDATED: 2026-08-30T23:42:14-04:00
-NOTE: The refused CQ reads 57 characters where it showed 43 blocks; precision sits 0.005 under the floor and that needs a ruling
+TASK: 4 of 6
+BALL: code
+NEXT_PASTE: none
+UPDATED: 2026-08-31T10:23:18-04:00
+NOTE: Task 4 finding - Hamlet and the reference element streams agree to one hop over the CQ; the divergence is downstream
 
 ---
 
-Written by a Claude Code session per CLAUDE.md §13. Protocol 2 is not in this
+Written by a Claude Code session per CLAUDE.md 13. Protocol 2 is not in this
 repository, so the header names which protocol this is written against rather
 than conformance anybody here can check.

@@ -297,11 +297,136 @@ internal static class Program
 
                 return 0;
 
+            case "elements":
+                Elements(
+                    args.Length > 1 ? args[1] : "003229",
+                    args.Length > 2
+                        ? double.Parse(args[2], CultureInfo.InvariantCulture)
+                        : 583.5,
+                    args.Length > 3
+                        ? double.Parse(args[3], CultureInfo.InvariantCulture)
+                        : 0,
+                    args.Length > 4
+                        ? double.Parse(args[4], CultureInfo.InvariantCulture)
+                        : double.MaxValue);
+
+                return 0;
+
+            case "atwpm":
+                foreach (var w in args.Skip(3))
+                {
+                    HeldWpm = double.Parse(w, CultureInfo.InvariantCulture);
+                    Elements(args[1], double.Parse(args[2], CultureInfo.InvariantCulture),
+                        99, 99);
+                }
+
+                HeldWpm = null;
+
+                return 0;
+
             default:
                 Console.WriteLine("usage: pitch-rank cost | pitch-rank rank [capture]");
 
                 return 1;
         }
+    }
+
+    /// <summary>
+    /// Hamlet's own element stream over a capture, with absolute times and each
+    /// mark's own measured pitch.
+    /// </summary>
+    /// <param name="capture">Part of a capture's name.</param>
+    /// <param name="toneHz">The pitch to mix down at.</param>
+    /// <param name="fromSeconds">Where to start printing.</param>
+    /// <param name="toSeconds">Where to stop printing.</param>
+    /// <remarks>
+    /// <para>**WORK INSTRUCTION 056, TASK 4.** The reference bench reads `CQ` off
+    /// `003229` where Hamlet reads a storm of `E`, and until now neither decoder
+    /// printed the element stream it built before naming any letter. The letters
+    /// cannot explain the difference — both use the same Morse table — so the
+    /// difference is here or it is nowhere.</para>
+    /// <para>**THE OFFLINE PATH AT AN ASSERTED PITCH**, so the comparison is like
+    /// for like: the bench is given 583.5 Hz and so is this. The streaming
+    /// decoder chooses its own pitch and would be answering a different
+    /// question.</para>
+    /// </remarks>
+    /// <summary>A speed to hold rather than fit, for the comparison in task 4.</summary>
+    private static double? HeldWpm { get; set; }
+
+    private static void Elements(
+        string capture, double toneHz, double fromSeconds, double toSeconds)
+    {
+        var path = Find(capture)
+            ?? Directory
+                .GetFiles(CaptureFolder(), "*.wav", SearchOption.AllDirectories)
+                .FirstOrDefault(f =>
+                    Path.GetFileName(f).Contains(capture, StringComparison.Ordinal));
+
+        if (path is null)
+        {
+            Console.WriteLine($"{capture}	MISSING");
+
+            return;
+        }
+
+        var audio = WavAudio.Read(path);
+
+        var envelope = CwProbabilisticDecoder.Envelope(
+            audio.Samples, audio.SampleRate, toneHz);
+
+        var read = CwProbabilisticDecoder.Decode(
+            envelope, toneHz, HeldWpm, null, false);
+
+        var measured = CwElementPitch.MeasureAll(
+            read.Elements, audio.Samples, audio.SampleRate, toneHz,
+            CwProbabilisticDecoder.HopMilliseconds);
+
+        Console.WriteLine($"file       {Path.GetFileName(path)}");
+        Console.WriteLine(string.Format(
+            CultureInfo.InvariantCulture,
+            "pitch      {0:0.0} Hz   integrator {1:0} Hz   hop {2:0} ms   "
+            + "window ratio {3:0.00}   {4:0} WPM",
+            toneHz,
+            CwProbabilisticDecoder.IntegratorBandwidthHz,
+            CwProbabilisticDecoder.HopMilliseconds,
+            read.LikelihoodRatio,
+            read.WordsPerMinute));
+
+        Console.WriteLine($"reads      {read.Text}");
+        Console.WriteLine();
+        Console.WriteLine("at (s)    state       ms   pitch Hz   +/- Hz");
+
+        var shown = 0;
+
+        foreach (var element in measured)
+        {
+            var at = element.StartHop * CwProbabilisticDecoder.HopMilliseconds / 1000.0;
+            var ms = element.Hops * CwProbabilisticDecoder.HopMilliseconds;
+
+            if (at + (ms / 1000.0) < fromSeconds || at > toSeconds)
+            {
+                continue;
+            }
+
+            Console.WriteLine(string.Format(
+                CultureInfo.InvariantCulture,
+                "{0,9:0.000} {1,-5} {2,8:0}   {3,8}   {4,6}",
+                at,
+                element.IsMark ? "MARK" : "gap",
+                ms,
+                double.IsNaN(element.PitchHz)
+                    ? "unmeasured"
+                    : element.PitchHz.ToString("0.0", CultureInfo.InvariantCulture),
+                double.IsNaN(element.PitchHz)
+                    ? ""
+                    : CwElementPitch.ResolutionHz(ms)
+                        .ToString("0.0", CultureInfo.InvariantCulture)));
+
+            shown++;
+        }
+
+        Console.WriteLine();
+        Console.WriteLine($"{shown} elements shown of {measured.Count}");
     }
 
     /// <summary>What one window at one pitch costs, measured rather than guessed.</summary>
