@@ -90,6 +90,37 @@ internal static class Program
 
                 return 0;
 
+            case "profile":
+                {
+                    var f = Directory
+                        .GetFiles(CaptureFolder(), "*.wav", SearchOption.AllDirectories)
+                        .First(x => Path.GetFileName(x).Contains(args[1], StringComparison.Ordinal));
+
+                    var a = WavAudio.Read(f);
+
+                    Console.WriteLine("hz	quiet	keyed	swing");
+
+                    for (var hz = 400.0; hz <= 1000.0; hz += 25)
+                    {
+                        var env = CwProbabilisticDecoder.Envelope(
+                            a.Samples, a.SampleRate, hz);
+
+                        var d = env.Select(v => 20 * Math.Log10(Math.Max(v, 1e-12)))
+                            .OrderBy(v => v).ToArray();
+
+                        Console.WriteLine(
+                            "{0:0}	{1:0.0}	{2:0.0}	{3:0.0}",
+                            hz, At(d, 20), At(d, 95), At(d, 95) - At(d, 20));
+                    }
+                }
+
+                return 0;
+
+            case "swing":
+                Swing(args.Skip(1).ToArray());
+
+                return 0;
+
             case "carriers":
                 Carriers();
 
@@ -1788,6 +1819,99 @@ internal static class Program
         var flat = text.Replace('\n', ' ').Replace('\r', ' ').Trim();
 
         return flat;
+    }
+
+    /// <summary>Rank the band by how much each bin swings, not by its average.</summary>
+    /// <remarks>
+    /// <para>**A STATION IS A BIN THAT SWINGS** (work instruction 055, task 2). The
+    /// loudest *average* bin on a signal keyed a third of the time is noise,
+    /// because the average is dominated by the two thirds in which nobody is
+    /// sending. A bin that carries a station is quiet in the gaps and loud in the
+    /// marks, and the difference between those two states is the measurement.</para>
+    /// <para>Per bin over the recording: a high percentile of its own level is its
+    /// keyed state, a low percentile is its gaps, and the swing is the gap between
+    /// them. Ranked by swing, tie-broken by the keyed level.</para>
+    /// </remarks>
+    private static void Swing(string[] only)
+    {
+        var files = Directory
+            .GetFiles(CaptureFolder(), "*.wav", SearchOption.AllDirectories)
+            .Where(f => only.Length == 0
+                || only.Any(o => Path.GetFileName(f).Contains(o, StringComparison.Ordinal)))
+            .OrderBy(f => Path.GetFileName(f), StringComparer.Ordinal)
+            .ToList();
+
+        Console.WriteLine("capture	top bins by swing (Hz: swing dB, keyed dB)");
+
+        foreach (var file in files)
+        {
+            var audio = WavAudio.Read(file);
+            var ranked = SwingRank(audio);
+
+            Console.WriteLine(
+                "{0}	{1}",
+                Path.GetFileNameWithoutExtension(file),
+                ranked.Count == 0
+                    ? "-"
+                    : string.Join("  ", ranked.Take(4).Select(
+                        r => $"{r.Hz:0}: {r.Swing:0.0}, {r.Keyed:0.0}")));
+        }
+    }
+
+    /// <summary>Every candidate bin, ranked by swing.</summary>
+    /// <remarks>
+    /// The bins are the tracker's own 25 Hz grid across the range Morse is worked
+    /// in, so a candidate here is a candidate the rest of the decoder can use.
+    /// </remarks>
+    private static List<(double Hz, double Swing, double Keyed)> SwingRank(
+        MonoAudio audio)
+    {
+        var ranked = new List<(double, double, double)>();
+
+        for (var hz = 400.0; hz <= 1000.0; hz += 12.5)
+        {
+            var envelope = CwProbabilisticDecoder.Envelope(
+                audio.Samples, audio.SampleRate, hz);
+
+            if (envelope.Length < 32)
+            {
+                continue;
+            }
+
+            var db = envelope.Select(v => 20 * Math.Log10(Math.Max(v, 1e-12)))
+                .OrderBy(v => v)
+                .ToArray();
+
+            var quiet = At(db, 20);
+            var keyed = At(db, 95);
+
+            ranked.Add((hz, keyed - quiet, keyed));
+        }
+
+        // **THE STOPBAND SWINGS HARDEST AND HOLDS NOTHING** (work instruction
+        // 055, task 2, which forbids measuring strength against the filter
+        // skirt). Above about 800 Hz the receiver's own filter rolls the level
+        // from -57 dB to -85, and a decibel swing on a near-zero signal is the
+        // logarithm stretching noise: on `003229` every bin from 850 to 1000
+        // ranks above the station, at swings of 24 to 32 dB and keyed levels of
+        // -45 to -53.
+        //
+        // **SO A CANDIDATE HAS TO BE LOUD WHEN IT IS KEYED, NOT JUST VARIABLE.**
+        // The band's own median keyed level separates them cleanly: the station
+        // on `003229` sits 10 dB above it and the whole stopband sits 20 dB
+        // below. That is a reference inside the passband, taken from the band
+        // itself rather than from a number anybody chose.
+        var medianKeyed = ranked
+            .Select(r => r.Item3)
+            .OrderBy(v => v)
+            .ElementAt(ranked.Count / 2);
+
+        return ranked
+            .Where(r => r.Item3 >= medianKeyed)
+            .OrderByDescending(r => r.Item2)
+            .ThenByDescending(r => r.Item3)
+            .Select(r => (r.Item1, r.Item2, r.Item3))
+            .ToList();
     }
 
     /// <summary>How many carriers share the passband with the admitted pitch.</summary>

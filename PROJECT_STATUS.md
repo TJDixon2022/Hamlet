@@ -4,8 +4,8 @@ PHASE: 12
 TASK: 2 of 7
 BALL: code
 NEXT_PASTE: none
-UPDATED: 2026-08-30T23:01:21-04:00
-NOTE: Nine captures in as fixtures and the negative counters fixed; building detection by swing
+UPDATED: 2026-08-30T23:03:48-04:00
+NOTE: Swing ranking finds 588 Hz on 003229 where the survey found nothing; building it into the engine next
 
 ---
 
