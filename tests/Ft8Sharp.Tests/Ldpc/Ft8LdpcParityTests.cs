@@ -55,37 +55,16 @@ public class Ft8LdpcParityTests
     [Fact]
     public void AllNinetyOneBasisPayloadsSatisfyEveryCheckSoByLinearityEveryCodewordDoes()
     {
-        var syndromeBits = 0;
-        var failures = new List<string>();
-
-        for (var bit = 0; bit < LdpcEncoder.PayloadBits; bit++)
-        {
-            var syndrome = SyndromeOf(Payloads.Basis(bit));
-            syndromeBits += syndrome.Length;
-
-            var failing = LdpcCheck.FailingChecks(syndrome);
-            if (failing.Length > 0)
-            {
-                failures.Add(
-                    $"payload bit {bit}: {failing.Length} of {Ft8Tables.LdpcM} checks failed, "
-                    + $"at check indices [{string.Join(", ", failing)}]");
-            }
-        }
+        var result = BasisProof.Run(Ft8Tables.LdpcGenerator, Ft8Tables.LdpcNm, Ft8Tables.LdpcNumRows);
 
         _output.WriteLine(
-            $"{LdpcEncoder.PayloadBits} payloads x {Ft8Tables.LdpcM} checks = {syndromeBits} syndrome bits, "
-            + $"{(failures.Count == 0 ? "all zero" : "NOT all zero")}");
+            $"{LdpcEncoder.PayloadBits} payloads x {Ft8Tables.LdpcM} checks = {result.SyndromeBits} "
+            + $"syndrome bits, {(result.IsClean ? "all zero" : "NOT all zero")}");
         _output.WriteLine(
             "the code is linear over GF(2), so 91 zero syndromes cover all 2^91 codewords");
 
-        Assert.True(
-            failures.Count == 0,
-            $"{failures.Count} of the {LdpcEncoder.PayloadBits} basis payloads encoded to a codeword the "
-            + "reference parity tables refuse, so kFTX_LDPC_generator and kFTX_LDPC_Nm are not "
-            + "descriptions of the same code as they sit in this tree:"
-            + Environment.NewLine + string.Join(Environment.NewLine, failures));
-
-        Assert.Equal(LdpcEncoder.PayloadBits * Ft8Tables.LdpcM, syndromeBits);
+        Assert.True(result.IsClean, result.Refusal);
+        Assert.Equal(LdpcEncoder.PayloadBits * Ft8Tables.LdpcM, result.SyndromeBits);
     }
 
     /// <summary>

@@ -1,9 +1,9 @@
 PROJECT: Hamlet
 STATE: IN_PROGRESS
 PHASE: Hamlet hears FT8 off the radio and displays the decoded text on screen
-TASK: 3 of 6
+TASK: 4 of 6
 BALL: claude
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-152 (2026-08-31)
-UPDATED: 2026-08-31T19:29:00-04:00
-NOTE: 91 payloads x 83 checks = 7553 syndrome bits, all zero, so by linearity the whole 2^91 code space clears; no basis payload has a dead generator column, lightest parity weight 29; 8 fixed and 500 seeded random payloads agree
+UPDATED: 2026-08-31T19:41:00-04:00
+NOTE: All three corruptions were watched being refused in the guard's own words — a flipped generator bit costs 1 payload and 3 checks, an altered Nm element costs 2 payloads at check 17, and each of the 174 codeword bits disturbs exactly the count Mn independently states; suite now 36/35/1/0

@@ -183,17 +183,25 @@ internal static class LdpcCheck
     }
 
     /// <summary>
-    /// How many checks a given variable takes part in, according to <c>Mn</c>'s row for it.
+    /// How many checks flipping a given variable would disturb, according to <c>Mn</c>'s row
+    /// for it.
     /// </summary>
-    public static int ChecksPerVariableFromMn(int variable, ReadOnlySpan<byte> mn)
+    /// <remarks>
+    /// Checks the variable appears in an <em>even</em> number of times are counted out
+    /// rather than counted once: flipping the bit would toggle such a check twice and leave
+    /// it satisfied. For a regular column-weight-3 code the two readings coincide, but the
+    /// question being asked is "what would move", and that is the reading that answers it.
+    /// </remarks>
+    public static int ChecksDisturbedByFlippingFromMn(int variable, ReadOnlySpan<byte> mn)
     {
         var row = mn.Slice(variable * Ft8Tables.LdpcMnRowWidth, Ft8Tables.LdpcMnRowWidth);
-        var distinct = new HashSet<int>();
+        var multiplicity = new Dictionary<int, int>();
         for (var i = 0; i < Ft8Tables.LdpcMnRowWidth; i++)
         {
-            distinct.Add(Variable(row[i]));
+            var check = Variable(row[i]);
+            multiplicity[check] = multiplicity.GetValueOrDefault(check) + 1;
         }
 
-        return distinct.Count;
+        return multiplicity.Values.Count(count => count % 2 == 1);
     }
 }
