@@ -297,6 +297,15 @@ internal static class Program
 
                 return 0;
 
+            case "runsdrop":
+                RunsDrop(
+                    args.Length > 1 ? args[1] : "003229",
+                    args.Length > 2
+                        ? double.Parse(args[2], CultureInfo.InvariantCulture)
+                        : 583.5);
+
+                return 0;
+
             case "streamsurvey":
                 foreach (var t in args.Length > 1
                              ? args.Skip(1).ToArray()
@@ -368,6 +377,54 @@ internal static class Program
     /// question.</para>
     /// </remarks>
     /// <summary>
+    /// How much of a capture the clock fit's short-run filter throws away, and
+    /// whether it throws away enough to corrupt what follows.
+    /// </summary>
+    /// <remarks>
+    /// **THE FOURTH NAMED CAUSE IN TASK 4.** Unit 054 proved `CwUnitEstimator.Runs`
+    /// drops a run shorter than two hops without merging the two it separated, and
+    /// that at one hop the hysteresis makes the line unreachable. What was never
+    /// measured is whether a real capture at a real signal-to-noise ratio produces
+    /// notches long enough to reach it — because a drop without a merge corrupts
+    /// every duration after it.
+    /// </remarks>
+    private static void RunsDrop(string capture, double toneHz)
+    {
+        var path = Find(capture)
+            ?? Directory
+                .GetFiles(CaptureFolder(), "*.wav", SearchOption.AllDirectories)
+                .FirstOrDefault(f =>
+                    Path.GetFileName(f).Contains(capture, StringComparison.Ordinal));
+
+        if (path is null)
+        {
+            Console.WriteLine($"{capture}	MISSING");
+
+            return;
+        }
+
+        var audio = WavAudio.Read(path);
+
+        var envelope = CwProbabilisticDecoder.Envelope(
+            audio.Samples, audio.SampleRate, toneHz);
+
+        var (marks, gaps) = CwUnitEstimator.Elements(
+            envelope, CwProbabilisticDecoder.HopMilliseconds, out var dropped);
+
+        Console.WriteLine($"file       {Path.GetFileName(path)}  at {toneHz:0.0} Hz");
+        Console.WriteLine(
+            $"runs       {marks.Count} marks, {gaps.Count} gaps kept");
+        Console.WriteLine(
+            $"dropped    {dropped} runs shorter than two hops, of "
+            + $"{marks.Count + gaps.Count + dropped} the trigger produced");
+        Console.WriteLine(
+            "           a dropped run leaves the two it separated unmerged, so "
+            + "every duration after it is wrong");
+    }
+
+    /// <summary>
+    /// What a two-way split of every capture's mark pitches would find, before
+    /// any threshold is chosen.    /// <summary>
     /// What a two-way split of every capture's mark pitches would find, before
     /// any threshold is chosen.
     /// </summary>

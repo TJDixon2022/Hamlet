@@ -349,6 +349,47 @@ public static class CwUnitEstimator
     }
 
     /// <summary>
+    /// The same runs, and how many the short-run floor threw away without merging
+    /// what they separated.
+    /// </summary>
+    /// <param name="envelope">Envelope magnitudes.</param>
+    /// <param name="hopMilliseconds">How long one hop lasts.</param>
+    /// <param name="dropped">
+    /// How many runs the trigger produced that <see cref="ShortestRunHops"/>
+    /// refused to record.
+    /// </param>
+    /// <param name="hysteresisDb">How deep the trigger is.</param>
+    /// <returns>Mark lengths and gap lengths, in milliseconds.</returns>
+    /// <remarks>
+    /// **A COUNT, BECAUSE THE FILTER IS SILENT AND ITS FAILURE IS NOT** (work
+    /// instruction 056, task 4). Unit 054 established that `Runs` drops a run
+    /// shorter than the floor **without merging the two runs it separated**, so
+    /// every duration after such a drop is wrong, and that at one hop the
+    /// hysteresis makes the line unreachable. Whether a real capture at a real
+    /// signal-to-noise ratio reaches it was never measured, and could not be,
+    /// because nothing counted. §0.0.1: a fault the app's own record cannot see is
+    /// a fault nobody can diagnose.
+    /// </remarks>
+    public static (IReadOnlyList<double> Marks, IReadOnlyList<double> Gaps)
+        Elements(
+            IReadOnlyList<double> envelope,
+            double hopMilliseconds,
+            out int dropped,
+            double hysteresisDb = HysteresisDb)
+    {
+        ArgumentNullException.ThrowIfNull(envelope);
+
+        var db = new double[envelope.Count];
+
+        for (var i = 0; i < envelope.Count; i++)
+        {
+            db[i] = 20 * Math.Log10(Math.Max(envelope[i], 1e-12));
+        }
+
+        return Runs(db, Cut(db), hysteresisDb, hopMilliseconds, out dropped);
+    }
+
+    /// <summary>
     /// How far below the loudest signal the key-down threshold sits, in decibels,
     /// or NaN to keep the Otsu split.
     /// </summary>
@@ -694,7 +735,14 @@ public static class CwUnitEstimator
     /// </remarks>
     private static (List<double> Marks, List<double> Gaps) Runs(
         double[] db, double cut, double hysteresisDb, double hopMilliseconds)
+        => Runs(db, cut, hysteresisDb, hopMilliseconds, out _);
+
+    private static (List<double> Marks, List<double> Gaps) Runs(
+        double[] db, double cut, double hysteresisDb, double hopMilliseconds,
+        out int dropped)
     {
+        dropped = 0;
+
         var on = cut + hysteresisDb;
         var off = cut - hysteresisDb;
         var marks = new List<double>();
@@ -728,6 +776,10 @@ public static class CwUnitEstimator
             if (hops >= ShortestRunHops)
             {
                 (keyDown ? marks : gaps).Add(hops * hopMilliseconds);
+            }
+            else
+            {
+                dropped++;
             }
 
             keyDown = !keyDown;
