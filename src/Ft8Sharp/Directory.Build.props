@@ -35,9 +35,19 @@
     it has ever carried, as against tables that described one. Minor rather than
     patch, because it is an addition to what the library can do rather than a
     correction to what it already did. Still not a 1.x: nothing here decodes.
+
+    0.3.0 ON 2026-09-01, BECAUSE IT GAINED ANOTHER.
+
+    The library now turns a message into the 77 bits that go on the air and turns
+    77 bits back into the words a person would read — the standard message, free
+    text and telemetry, with a dispatcher in front of them that gives every one of
+    the protocol's type codes a defined answer. That is the first time anything
+    here has produced or consumed a message rather than the envelope one travels
+    in, so it is a minor by the same rule. Still not a 1.x: there is no
+    demodulator, so nothing here has yet read anything off a radio.
   -->
   <PropertyGroup>
-    <Version>0.2.0</Version>
+    <Version>0.3.0</Version>
   </PropertyGroup>
 
   <!--

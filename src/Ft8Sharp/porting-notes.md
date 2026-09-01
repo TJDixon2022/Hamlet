@@ -113,6 +113,14 @@ and it is a minor rather than a patch because it is an addition to what the libr
 can do rather than a correction to what it already did. Still not a 1.x: nothing here
 decodes.
 
+**0.3.0 on 2026-09-01, because it gained another.** The library now turns a message
+into the 77 bits that go on the air and turns 77 bits back into the words a person
+would read — the standard message, free text and telemetry, with a dispatcher in
+front of them. That is the first time anything here has produced or consumed a
+*message* rather than the envelope one travels in, so it is a minor by the same rule.
+Still not a 1.x: there is no demodulator, so nothing here has yet read anything off a
+radio.
+
 This is not drift from HM-DEC-063, which exists so the tree has one answer to *what
 version is this app*. Ft8Sharp is not the app: it is a separate work product with its
 own licence, its own boundary and an intended life outside this repository, and a
@@ -674,3 +682,168 @@ possible answers.
 **`ExpressionEvaluator` had no cast form.** Upstream writes one of the CRC scalars as
 a cast literal. The evaluator now applies a cast to the fixed-width integer types
 rather than ignoring it, so a macro that truncates in C truncates here too.
+
+---
+
+## The message layer, part one — unit 207
+
+Unit 206 built the substrate. This is the part that turns text into the 77 bits and the
+77 bits back into text.
+
+### What was ported
+
+From **`ft8/message.c`** and **`ft8/text.c`** at the pin:
+
+| Upstream | Here | What it is |
+|---|---|---|
+| `charn`, `nchar` | `Message/Ft8Text.cs` | The six alphabets, as branching arithmetic |
+| `to_upper`, `is_digit`, `is_letter`, `is_space`, `in_range` | `Message/Ft8Text.cs` | The character predicates the callsign shapes test against |
+| `int_to_dd`, `dd_to_int` | `Message/Ft8Text.cs` | Fixed-width signed decimals, which the report field is written in |
+| `pack28`, `unpack28`, `pack_basecall`, `parse_cq_modifier` | `Message/Ft8CallsignField.cs` | The 28-bit callsign field and the suffix bit beside it |
+| `packgrid`, `unpackgrid` | `Message/Ft8GridField.cs` | The 15-bit grid-and-report field and the `R` flag |
+| `ftx_message_get_i3`, `ftx_message_get_n3`, `ftx_message_get_type` | `Message/Ft8MessageTypes.cs` | The two type selectors |
+| `ftx_message_encode_std`, `ftx_message_decode_std` | `Message/Ft8StandardMessage.cs` | The standard message |
+| `ftx_message_encode_free`, `ftx_message_decode_free` | `Message/Ft8FreeText.cs` | Thirteen characters as a base-42 number |
+| `ftx_message_encode_telemetry`, `ftx_message_decode_telemetry` and its hex form | `Message/Ft8FreeText.cs` | The raw 71-bit body |
+| the dispatch inside `ftx_message_decode` | `Message/Ft8MessageDecoder.cs` | One entry point, and a refusal that says why |
+
+### What was deliberately not ported
+
+**`save_callsign`, `lookup_callsign`, the 22, 12 and 10-bit hashes and the rolling cache
+behind them.** They are the whole of unit 208 and they are the only stateful thing in this
+layer. The plan calls hashing *the subtle part*, and its failure mode is the one nothing
+else here has: a callsign that resolves to the **wrong text** rather than to no text.
+Building it in the same night as the standard message would have given a failed round trip
+two possible homes.
+
+Also not ported: the non-standard-callsign message type, which cannot work without the
+cache; the contest and DXpedition types, which the dispatcher refuses by name;
+`ftx_message_encode`'s text tokeniser, because nothing in this library takes a whole
+message as a string yet; and upstream's C string plumbing — trimming, token copying, the
+message formatter — which a .NET caller has no use for.
+
+### The seam at the hashed callsign, and why it refuses rather than guesses
+
+The 28-bit callsign field has three sub-ranges. The middle one holds a 22-bit hash of a
+callsign, and the text it stands for lives in a cache of calls heard earlier in the
+session. **There is no cache here, so that sub-range is refused as unresolved and the whole
+message with it.**
+
+Upstream, in the same position with no cache attached, writes a literal placeholder into
+the caller's buffer and returns success. **That is the divergence, and it is deliberate.**
+`CLAUDE.md` §0.0 / HM-DEC-009 says never present a guess as a decode, and a placeholder
+where a callsign should be is a message on the operator's screen that nobody sent. There is
+no placeholder here, no partial message, and no numeric field returned as if it were a
+call. The packing side of the same seam refuses too: a non-standard callsign would have to
+be hashed and stored to be packed, so it is refused rather than written as a value nothing
+could read back.
+
+### The type cover, and what *unsupported* means here today
+
+The two selectors give **15 combinations** and every one has a defined behaviour. **Four
+are built and round-trip** — the standard message under both of its type codes, free text,
+and telemetry. **Eleven are refused as unsupported by name.** No combination throws, and
+none returns a decode for a type that is not built.
+
+*Unsupported* here means the library will not tell you what those bits say. It is a correct
+answer and it is not a failure: a receiver that guessed at a contest exchange it cannot
+parse would be worse than one that says nothing.
+
+### Round-trip proves consistency, not correctness
+
+**A packer and an unpacker that agree with each other are inverses and nothing more.** A
+field packed in the wrong order round-trips perfectly and is wholly wrong on the air.
+Everything measured in unit 207 — a million callsigns, 200 000 standard messages, 100 000
+free-text strings, 100 000 telemetry bodies, the whole of the 15-bit grid field — is
+**internal self-consistency over a corpus**, which is what catches an ordinary porting slip
+and is not evidence of agreement with upstream.
+
+There were three honest settlements available and only two of them exist:
+
+1. **An external message-level known value in the pin — there is not one that can serve.**
+   See below.
+2. **Machine-corroborated scalars.** Present, and listed below.
+3. **Step 3's bit-identical symbol comparison against the reference implementation.**
+   **That is where correctness gets settled**, and a systematically wrong alphabet or a
+   swapped field would show up there for certain.
+
+### Does the pin hold a message-level known value? Not a usable one
+
+Asked for the first time in unit 207, by a checked-in inventory over every C source in the
+clone.
+
+**The live code holds none.** The clone's one test source drives upstream's own encoder
+into upstream's own decoder and compares the text that comes out with the text that went
+in. That is the same self-consistency this port measures, not a known value: it would pass
+identically for an implementation that packed everything in a different order.
+
+**One message-level vector does exist and it cannot be used.** Three message strings, each
+paired with a stated symbol sequence, sit inside the same commented-out block that carries
+the stale CRC value unit 206 reported. They are against the **superseded 72-bit packing**,
+whose function is not in the pin any more, rather than the 77-bit message layer this port
+builds. Disabled code, for a protocol generation this library does not implement.
+
+**So: no.** Correctness is standing on the corroborated scalars and on step 3.
+
+### Which scalars are corroborated against the pin by machine, and which are not
+
+Read out of the pin at run time by
+`tests/Ft8Sharp.Tests/Message/UpstreamMessageProvenanceTests.cs`, which reuses the existing
+`TableGen` reader unchanged.
+
+| Scalar | Corroborated | How |
+|---|---|---|
+| The hashed-callsign sub-range size | yes | integer macro in `message.c` |
+| The start of the hashed sub-range | yes | integer macro in `message.c` |
+| The grid and report boundary | yes | integer macro in `message.c` |
+| The six alphabet lengths | yes, weakly | the comment beside each enumerator in `text.h`, not a macro |
+| The two type selector widths | yes | the mask and shift shapes in `message.c` |
+| The mapping from type code to message type | **no** | it is a `switch`, not a table |
+| The token sub-range boundaries inside the field | **no** | they are literals inside a function body |
+| The basecall positional alphabet sizes | **no** | they are literals in the multiply chain |
+
+**Three of eight by macro, two more by a weaker mechanical read, three not corroborated at
+all.** An honest count is worth more than a claim of full provenance.
+
+### Divergences from upstream, all deliberate, all here
+
+1. **A hashed callsign refuses instead of producing a placeholder.** Above.
+2. **The grid value at the boundary is refused.** Both sub-ranges reach it: upstream's
+   unpacker takes it as the last grid square and upstream's packer arrives at it from a
+   report of thirty-five below zero. The bits are ambiguous and upstream presents one
+   reading as certain.
+3. **One grid square is refused because a token has taken its name.** Its four characters
+   spell a sign-off, and the packer tests for tokens first, so the packer can never produce
+   that value while the unpacker can. **Found by sweeping the whole field rather than
+   predicted** — which is the argument for exhausting a field instead of sampling it.
+4. **A report code whose number will not fit two digits is refused.** Upstream's
+   fixed-width formatter emits a character that is not a digit for it; the text it makes is
+   not a report and is not anything.
+5. **A free-text body larger than thirteen characters of a 42-symbol alphabet is refused.**
+   Rather more than half of all 71-bit bodies are such numbers. Upstream shows the low part
+   of the number as though it were the message.
+6. **The telemetry packer sets the type selectors.** Upstream's sets none — its own comment
+   asks whether it should — so a message it produces declares itself free text. The bit the
+   secondary selector needs is exactly the one upstream's left shift vacates.
+7. **The character lookup refuses a negative index** where C would index off the front of a
+   range. No caller here can produce one; what it buys is a total function, which is what
+   lets the dispatcher promise never to throw.
+
+### Upstream shapes inherited rather than repaired
+
+Reported because they are on the air, and changing them would change the wire format.
+
+- **The two prefix work-arounds collide.** A callsign spelled the way the Swaziland or
+  Guinea work-around spells its own compressed form packs to the same integer as the call
+  that work-around is for, and unpacks to that one. Measured at **4971 of a million**
+  generated calls.
+- **A lettered CQ modifier with a space in it does not round-trip.** The unpacker trims only
+  the leading spaces off the four symbols; upstream's parser then stops at the space that is
+  left. **56 186 of the 531 441** values in that sub-range.
+- **The unpacker will produce an R-prefixed grid square and the packer has no route to
+  one.** Upstream's own comment says so.
+- **The enumeration declares a contest type its type function never returns.** That
+  secondary code falls through to the unknown branch upstream, and it does here.
+- **Free text loses leading and trailing spaces.** The encoder pads to the full width with
+  spaces and the decoder trims them all off again, so the two are not distinguishable.
+  Measured at **4200 of 100 000** generated strings.
