@@ -121,6 +121,18 @@ front of them. That is the first time anything here has produced or consumed a
 Still not a 1.x: there is no demodulator, so nothing here has yet read anything off a
 radio.
 
+**0.4.0 on 2026-09-01, because it learned to remember.** FT8 does not spell a long
+callsign out every time — it sends a hash of one and expects the receiver to have
+heard that station name itself earlier — so a library that cannot remember goes deaf
+at exactly the point a station stops being introduced and starts being referred to.
+The library now holds the 22, 12 and 10-bit callsign hashes, the rolling cache that
+resolves them, and the message type that carries one callsign in full and names the
+other by twelve bits alone. A capability rather than a correction, so a minor by the
+same rule. It also holds the refusals that go with remembering, and those are the half
+worth naming: a hash it has never heard resolves to nothing at all, and where two
+callsigns it *has* heard share a hash it returns nothing rather than either of them.
+Still not a 1.x, for the same reason as 0.3.0.
+
 This is not drift from HM-DEC-063, which exists so the tree has one answer to *what
 version is this app*. Ft8Sharp is not the app: it is a separate work product with its
 own licence, its own boundary and an intended life outside this repository, and a
@@ -869,6 +881,32 @@ application rather than from a library, and that is weaker provenance than anyth
 this port. It is also lower stakes: a different capacity cannot make this library deaf, and
 a different multiplier would.
 
+### What was ported
+
+- **The three callsign hashes** — 22, 12 and 10-bit — as `Ft8CallsignHash`. One function, one
+  packing of the call against the alphabet, one multiply, one shift; the narrow two are
+  truncations of the wide one and that relationship is asserted rather than assumed.
+- **The rolling cache** — `Ft8CallsignCache` — with the pin's slot arithmetic, probe stride,
+  duplicate check and age-based eviction. **Constructible per test**: there is no static instance
+  anywhere in this library and none hiding behind a property, so no corpus result can depend on
+  the order tests happened to run in.
+- **The non-standard-callsign message** — `Ft8NonstandardMessage` — 12 bits of hash, 58 bits of
+  callsign, a flip flag, a two-bit report, a CQ flag and the three-bit type code. It works on the
+  77-bit message and nothing else: no checksum, no encoder, no second copy of the container.
+- **The seam unit 207 left** now has somewhere to go. `Ft8CallsignField`, `Ft8StandardMessage`
+  and `Ft8MessageDecoder` each gained an overload taking a cache. **A null cache behaves exactly
+  as a cold one**, so every refusal unit 207 measured is still measured, unchanged, by the
+  overloads without a cache.
+
+### What was deliberately not ported
+
+- **Nothing that keys a radio.** §0.2 is untouched; a hash cache goes nowhere near a transmitter.
+- **The contest and DXpedition types**, which the cache is what they will need. Still refused by
+  name.
+- **Upstream's age-in-the-top-byte trick.** The stored hash's unused top byte carries the entry's
+  age in the pin; here the age is its own array. Same behaviour, no byte-stuffing — a
+  representation difference and not a divergence.
+
 ### Why the hash was held to a different standard of proof
 
 Everything else this port has built is a private agreement between its own packer and its
@@ -954,3 +992,44 @@ Numbered on from unit 207's seven, which are unchanged.
 - **A space inside a callsign changes its hash.** The padding upstream applies is that same
   space, so a call with one written into it is a call one character longer. Every caller in
   this library trims before it gets here.
+
+### The three legs of the hash's provenance, and which of them exist
+
+**Leg A — the pin's own scalars, read by machine at run time.** `UpstreamCallsignHashProvenanceTests`
+resolves and asserts **ten** scalars of the hash, **six** of the cache and **five** of the
+non-standard message against the pin, with **none uncorroborated**. Every one of the hash's ten is
+a **literal inside a function body rather than a macro**, so each is located by anchoring on the
+expression that uses it inside the definition it belongs to and putting the captured token through
+the same literal reader the table converter uses. That is a mechanical read rather than a
+transcription — nobody typed any of them — but it is **weaker than a macro**, because a shape can be
+rewritten upstream in a way a name cannot, and the tests say so on every line. Of the cache's six,
+one is a macro and five are expressions; and the cache's provenance is weaker again for a reason
+that has nothing to do with the reading: **the pin implements its cache in a demo application, not
+in its library.** The alphabet is corroborated as an *identifier* by its position in the pin's own
+declaration order rather than as a value.
+
+**Leg B — an independent implementation.** `HashCheck` recomputes all three widths from the pin,
+in the test project, **without calling the library and without borrowing a constant from it** — the
+alphabet is spelled out there rather than taken from `Ft8Text`, so a wrong alphabet in the library
+could not make the two agree. It agreed with the library on **all three widths for all 100 000**
+generated callsigns across all ten shapes, with none refused. It catches an ordinary porting slip.
+**It does not catch a misreading made twice.**
+
+**Leg C — a known value. There is none.** The pin was asked the narrow question once, mechanically,
+across **95** sources with `ft4_ft8_public/` excluded: **the pin states no hash value for a named
+callsign anywhere.** Five sources mention hashing at all and not one of them pairs a hash mention
+with a numeric literal and a callsign-shaped token. That is a different question from unit 207's,
+which asked about message-level vectors and is settled; this one is now settled too and neither
+needs asking again.
+
+### Where the hash actually gets settled, which is not here
+
+**A round trip against this library's own cache is not evidence that the hash matches upstream.**
+It is internal self-consistency and nothing more.
+
+**Step 3's bit-identical symbol comparison against `ft8_lib` is what settles it, and that comparison
+must include a message carrying a hashed callsign.** A comparison that only covers standard messages
+with basecalls in them will pass whatever the hash does, because no hash will have been on the wire.
+**If step 3 does not compare a non-standard-callsign message, the hash goes unsettled into step 4**,
+where a wrong hash looks exactly like a quiet band. This is a note for step 3's arbiter and it is
+written down here because it is the one thing tonight could not do for itself.

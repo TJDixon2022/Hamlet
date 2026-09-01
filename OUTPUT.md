@@ -1,417 +1,450 @@
 READ IN THIS ORDER — A, then B, then C.
 
-A. PHASE — Hamlet hears FT8 off the radio and displays the decoded text on screen.
-Seven steps. **Step 1 is closed** (the library exists and its tables are proven);
-**step 2 is in progress and this is its second unit**; **steps 3, 4, 5, 6 and 7 are all
-not started and remain unreachable until step 2 closes**, every step depending on the one
-before it by the plan's own named deviation. Task 1 measured the ground under step 2 and
-it is still standing: `Ft8Sharp.Tests` at 74 total, 73 passed, 0 failed, 1 skipped in
-5.3 s cold; the library building at 0 warnings and 0 errors with no `PackageReference` and
-no `ProjectReference`; attribution at 44 paths from `2828ab6` with not one under
-`src/Hamlet.App/`, `src/Hamlet.RadioEngine/`, `tests/Hamlet.App.Tests/` or
-`tests/Hamlet.RadioEngine.Tests/`; and all three channels green at 55 and 13.
-B. STEP 2 — messages round-trip through 77 bits. SIX exit criteria: (1) CRC matches known
-values, must-pass — **closed by unit 206, untouched tonight**; (2) standard, free-text,
-telemetry and non-standard-callsign messages round-trip across a large generated corpus,
-must-pass — **three of its four categories round-trip tonight** (standard at 200 000
-messages, free text at 100 000 strings, telemetry at 100 000 bodies) **and the criterion
-stays open, because non-standard callsigns pack against a rolling hash cache which is
-parked to unit 208**; (3) any random 77-bit pattern either decodes or fails cleanly and
-never throws, must-pass — **claimed CLOSED**: 1 000 000 seeded random patterns, seed
-20260901, **0 exceptions, 0 decodes returned for a type not built, 0 decodes returned for
-an unresolvable callsign**, and the type cover is complete at 15 of 15 combinations;
-(4) contest and DXpedition types round-trip, nice-to-pass — **not built, so the
-nice-to-pass half is not met; its must-pass clause IS met**, with 15 combinations
-enumerated, 4 built and round-tripping and 11 refused as unsupported by name, none
-throwing and none returning a decode; (5) Ft8Sharp tests green, must-pass — **108 total,
-107 passed, 0 failed, 1 skipped**; (6) attribution clean from `2828ab6` and the channel
-tests green, must-pass — **58 paths, 0 under any Hamlet project**, and all three channels
-green with `VersionTests` re-run at 3 of 3 **after** the version bump, `PrivilegeTests`
-and `AudioSeamTests` at 55, `DecisionLogOrderTests`, `DecisionEmissionTests` and
-`VoiceTests` at 13.
-C. THIS REPORT — **No usable message-level known value exists in the pinned clone**: its
-live test source drives its own encoder into its own decoder, which is the same
-self-consistency this port measures, and the one real vector is three message strings with
-stated symbol sequences inside the disabled block of `test/test.c`, against the superseded
-72-bit packing rather than the 77-bit layer. **Every corpus here proves self-consistency
-and not agreement with upstream** — a field packed in the wrong order round-trips
-perfectly — and correctness is standing on 5 machine-corroborated scalars and on step 3's
-bit-identical symbol comparison, which is named as where it gets settled. **The
-grid-and-report field was exhausted at all 32 768 values: 32 533 round-tripped and 235
-were refused, and the two sum to 32 768.** **Task 6 was not dropped** — free text and
-telemetry are built and the type cover moved from 2 built to 4. **The Ft8Sharp project
-returns in 2.3 s warm and 3.5 s with a rebuild, and no corpus was cut for the clock.**
-Section 4 raises 3 items, and **none of them stands in the way of a criterion named in B**.
+A. PHASE — Hamlet hears FT8 off the radio and displays the decoded text on screen. Seven steps.
+Step 1 is closed; steps 3, 4, 5, 6 and 7 remain not started and unreachable until step 2 closes,
+because every step depends on the one before it by the plan's own named deviation. Step 2 is in
+progress and this is its third unit. Task 1 measured that the message layer unit 207 left under
+step 2 is still standing: `Ft8Sharp.Tests` at 108 total, 107 passed, 0 failed, 1 skipped in 3.4 s;
+`src/Ft8Sharp` building at 0 warnings and 0 errors with no `PackageReference` and no
+`ProjectReference`; attribution 58 paths from `2828ab6` with not one under any Hamlet project; and
+all three channel classes green at 55 and 13.
+B. STEP 2 — messages round-trip through 77 bits. SIX exit criteria as `PHASE_PLAN.md` numbers them.
+(1) CRC matches known values, must-pass — closed by unit 206, untouched tonight. (2) standard,
+free-text, telemetry and non-standard-callsign messages round-trip across a large generated corpus,
+must-pass — THIS UNIT'S TARGET, and the last open must-pass criterion of the step. Measured at
+seed 20871: standard 200 000, of which 198 280 round-tripped and 1720 came back as a different call
+through upstream's two prefix work-arounds, which are counted apart and never as passes; free text
+100 000, all of them; telemetry 100 000, all of them; non-standard callsign 100 000, with its three
+legs reported SEPARATELY and never summed — 91 590 full calls round-tripped with no cache needed,
+91 590 hashed and resolved through a warm cache, and 91 590 refused by a cold cache with no text
+written on identical bits, with 8410 skipped as too long for the 58-bit field. Zero failures on any
+category and on any leg. CRITERION 2 IS CLOSED. (3) any random 77-bit pattern either decodes or
+fails cleanly and never throws, must-pass — RE-TAKEN tonight rather than inherited, 1 000 000
+patterns at seed 20871, cold and warm. Cold: 0 exceptions, 0 decodes for a type not built, 0 decodes
+carrying a call the cache never stored. Warm, against a cache filled to its 256-entry capacity and
+therefore frozen for the run: the same three zeros, with 5471 calls correctly resolved from a hash
+counted separately, and 298 003 decodes against the cold run's 292 532. The type cover is complete.
+CRITERION 3 IS CLOSED AGAIN. (4) contest and DXpedition types round-trip, nice-to-pass, with "an
+unsupported type must fail as unsupported and never as a wrong decode" must-pass — 15 combinations
+enumerated, 5 built and 10 refused as unsupported, against unit 207's 4 and 11. Exactly one row
+moved. The nice-to-pass half is still not built. (5) Ft8Sharp tests green, must-pass every unit —
+148 total, 147 passed, 0 failed, 1 skipped in 4.0 s, the skip being the table write gate. (6)
+attribution clean from `2828ab6` and the channel tests green, must-pass every unit — 72 paths, none
+under `src/Hamlet.App/`, `src/Hamlet.RadioEngine/`, `tests/Hamlet.App.Tests/` or
+`tests/Hamlet.RadioEngine.Tests/`; `AudioSeamTests` and `PrivilegeTests` green at 55;
+`DecisionLogOrderTests`, `VersionTests`, `DecisionEmissionTests` and `VoiceTests` green at 13, all
+re-run AFTER the version bump.
+C. THIS REPORT — the HASH stands on two of its three legs: leg A machine-corroborated 10 of 10 of
+its scalars against the pin at run time with none uncorroborated, though every one of the ten is a
+literal inside a function body rather than a macro and is therefore the weaker expression-anchored
+form; leg B, an independent implementation that does not call the library, agreed on all three
+widths for all 100 000 generated callsigns; leg C does not exist — the pin states no hash value for
+a named callsign anywhere, asked once across 95 sources. A round-trip against this library's own
+cache is NOT evidence that the hash matches upstream, and step 3's bit-identical symbol comparison
+must include a message carrying a hashed callsign or the hash goes unsettled into step 4. On a
+collision the cache returns nothing rather than either call, which diverges from upstream, whose
+lookup returns whichever its probe chain reaches first. Task 6, the collision census, was NOT
+dropped. The `Ft8Sharp` project still returns in about four seconds and no corpus was cut for the
+clock. Section 4 raises 3 items and none of them stands in the way of a criterion named in B.
 
-UNIT:       207 — complete at task 7 of 7 — 2026-09-01 11:55
-PHASE GOAL: Hamlet listens to the radio, finds FT8 signals in the audio, and puts the
-            words that were actually on the air on Tim's screen.
-UNIT GOAL:  Turn a callsign and a grid into the 77 bits FT8 carries, turn 77 bits back
-            into words, and put a dispatcher in front of it that gives every one of the
-            protocol's type codes a defined answer — so a pattern this library cannot read
-            is refused rather than guessed at.
-ADVANCED:   yes — criterion 3 closed with three zero counts over a million patterns and a
-            complete type cover, and criterion 4's must-pass clause closed with it.
-NUMBER:     step 2 must-pass criteria demonstrated: 3 -> 5 of 6
-DRIFT:      0 consecutive units without advance  (was 0 — unit 206 advanced)
+```
+UNIT:       208 — complete at task 8 of 8 — 2026-09-01 14:03
+PHASE GOAL: Hamlet takes FT8 off the air and puts the decoded words on the screen.
+UNIT GOAL:  Build the three callsign hashes and the rolling cache that resolves them, and the
+            message that carries them, so a station heard once can be read back when a later
+            message names it only by a hash — and one never heard is refused rather than guessed.
+ADVANCED:   yes — criterion 2, the last open must-pass criterion of step 2, closed on all four
+            categories with all three legs of the fourth measured separately and zero failures.
+NUMBER:     step 2 must-pass criteria demonstrated: 5 -> 6 of 6
+DRIFT:      0 consecutive units without advance  (was 0 — unit 207 advanced)
+```
 
-## 1. What Claude did
+# 1. What Claude did
 
-**Complete, at task 7 of 7. Nothing was dropped, including the named drop candidate.**
+**Complete, at task 8 of 8. Nothing was dropped, including the named drop candidate.**
 
-Machine `C--Source-HamLet`, project claimed and verified as Hamlet, branch `main`, HEAD
-now `4e4bd72`. Seven commits, one per task, each pushed to `origin/main` before the next
-began. **Every push succeeded; none was refused.**
+Windows 11, `C:\Source\HamLet`, project gate `PROJECT: Hamlet` verified against the tree —
+`SHACK_FACTS.md` and `src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs` both present, neither
+`CoreHMI.sln` nor `MURC.sln` present, `Hamlet.sln` the only solution. Branch `main`, eight commits,
+every one pushed and every push succeeded.
 
-The gate passed against the tree: `SHACK_FACTS.md` and
-`src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs` are both present, `Hamlet.sln` is
-the only solution file, and neither `CoreHMI.sln` nor `MURC.sln` exists.
+**Task 1 — the trace.** `HEAD` at `666db6e` on `main` as stated. `git status --short` printed **34**
+lines against the instruction's 33; unit 207 measured 34 too, and the extra line is the loop's own
+`SESSION.lock`. Ft8Sharp 108 / 107 / 0 / 1 in 3.4 s, matching exactly. Library builds 0 warnings
+0 errors, `net8.0`, nullable on, warnings as errors, no `PackageReference`, no `ProjectReference`.
+Attribution 58 paths, 0 under any Hamlet project. All three channels green at 55 and 13. Known
+items 5 and 9 confirmed and neither touched.
 
-**What was traced.** `HEAD` was `c2ab4bf` on `main` as stated. `git status --short`
-printed **34** lines where the instruction said 33 — one more, reported below.
-`Ft8Sharp.Tests` measured 74 / 73 / 0 / 1. The library built at 0 and 0 with `net8.0`,
-nullable enabled, warnings as errors, and no package or project reference. Attribution was
-44 paths with no Hamlet path. All three channels green. **The clone-gated tests passed
-rather than skipped, so `C:\Source\ft8_lib` was reachable and the port had its route.**
+**Task 2 — the sanctioned read.** The clone is reachable from a checked-in test and the port had
+its route. Three inventory tests added, mirroring unit 207's and reusing its reachability probe and
+skip-when-absent attribute rather than writing a second one of either.
 
-**What was built.** Six new files in `src/Ft8Sharp/Message/` — the character primitives,
-the callsign field, the grid-and-report field, the type selectors, the standard message,
-free text and telemetry, and the dispatcher. Five new test files and one new inventory
-file in `tests/Ft8Sharp.Tests/`. The test count went from 74 to 108.
+**Task 3 — the three hashes**, `src/Ft8Sharp/Message/Ft8CallsignHash.cs`, with both provenance legs
+that exist.
 
-**What was measured.** Section 3 carries it.
+**Task 4 — the rolling cache**, `src/Ft8Sharp/Message/Ft8CallsignCache.cs`, constructible per test
+with no static instance anywhere.
 
-**Decisions this session made for itself, reproduced in full:**
+**Task 5 — the non-standard-callsign message**, `src/Ft8Sharp/Message/Ft8NonstandardMessage.cs`, and
+the one row of the type cover that moved.
 
-**1. Four values are refused where upstream returns text, and one where upstream returns
-nothing.** The governing rule of this unit is HM-DEC-009 — never present a guess as a
-decode — and each of these is a place where following upstream exactly would put a
-confident wrong answer on the operator's screen rather than no answer. Each is recorded in
-`porting-notes.md` with its reasoning, each affects only patterns no conforming
-transmitter produces, and none of them changes what this library *sends*, because nothing
-in this phase transmits. **(a)** The grid value at the sub-range boundary, which both
-sub-ranges reach — upstream's unpacker reads it as the last grid square while upstream's
-packer arrives at it from a report of thirty-five below zero, so the bits are ambiguous
-and upstream presents one reading as certain. **(b)** One grid square whose four
-characters spell a sign-off token; the packer tests for tokens first so it can never
-produce that value, while the unpacker can, and the text an operator would read is not the
-place those bits name. **(c)** A report code whose number will not fit the two digits
-upstream's formatter writes it into — the text it emits contains a character that is not a
-digit, so it is not a report and is not anything. **(d)** A free-text body larger than
-thirteen characters of a 42-symbol alphabet can be; rather more than half of all 71-bit
-bodies are such numbers, and upstream shows the low part of the number as though it were
-the message. **(e)** The character lookup refuses a negative index where C would index off
-the front of a range — no caller here can produce one, and what it buys is a total
-function, which is what lets the dispatcher promise never to throw.
+**Task 6 — the collision census**, not dropped, and it took under a second.
 
-**2. The telemetry packer sets the type selectors, where upstream's sets none.** Upstream's
-own comment asks whether it should; without them a message it produces declares itself
-free text and cannot be read back as telemetry. The bit the secondary selector needs is
-exactly the one upstream's left shift vacates, which is what the shift is for.
+**Task 7 — criterion 2's closing corpus and criterion 3 re-taken.**
 
-**3. Two test corpora were shaped to stop them generating messages the protocol cannot
-express.** The standard-message corpus gives both callsigns in a message the same suffix
-kind, because one message carries one suffix meaning and a mixed pair is a correct
-refusal rather than a failure. The same corpus does not generate the one grid square named
-in (b) or the two prefix-collision spellings, because a corpus that generated them would
-be measuring those named refusals rather than the message layer. **No assertion was
-loosened and no corpus size was cut**; both restrictions are stated in the tests
-themselves, and both classes are measured directly elsewhere — the collisions in
-`Ft8CallsignFieldTests` at 4971 of a million, the grid square in `Ft8GridFieldTests`.
+**Task 8 — the record, both versions, the channels re-run after the bump, and this report.**
 
-## 2. What the owner should expect
+## The decisions this session made for itself, reproduced in full
 
-**Ft8Sharp can now read an FT8 message.** Give it 77 bits and it gives back the text a
-person would read, or it tells you it cannot and why. That is the first time anything in
-this repository has done that.
+All six are recorded in `src/Ft8Sharp/porting-notes.md` beside unit 207's seven, numbered on from
+them, and all six are taken under `CLAUDE.md` §0.0 / HM-DEC-009 with unit 207's precedent.
+
+**8. A cache miss refuses the whole message.** Upstream writes a literal `<...>` into the callsign
+field and returns the message with it in. That is a decode with a station's name missing from it and
+no way for the operator to know which station. A miss writes no text — at the cache, at the field, at
+the message, and at the dispatcher.
+
+**9. A cache collision refuses rather than answering. This is the divergence that mattered most.**
+Two distinct callsigns can share a 22, 12 or 10-bit hash; a 12-bit hash has only 4096 values.
+Upstream stores both and its lookup returns whichever its probe chain reaches first — a real,
+plausible, entirely wrong callsign, presented with no mark of doubt on it, which is precisely the one
+output HM-DEC-009 forbids. This lookup finds *every* stored call matching at the requested width and
+returns nothing where there is more than one. Refusing costs a decode upstream would have shown;
+answering costs the operator a logged contact with a station that was never on the air, and a wrong
+callsign in a log is worse than a gap in one. Note the consequence: **a cache that knows more
+sometimes produces less**, and that is the correct direction, because the extra knowledge is what
+reveals the answer was never certain. What no cache can know is a station it has never heard whose
+call collides with one it has, and nothing here pretends otherwise.
+
+**10. The lookup examines every occupied slot rather than stopping at the first empty one.**
+Upstream's early stop is correct only while nothing has ever been removed, and its own ageing pass
+punches holes in the table. A hole can hide the second half of a colliding pair behind it, which
+turns decision 9's refusal back into a confident wrong answer. Scanning the whole table costs a walk
+of at most the capacity and makes the refusal depend on what the cache holds rather than on the
+order it was filled in.
+
+**11. The cache stores the callsign it was given rather than clipping it to eleven characters.**
+Upstream copies eleven characters into a fixed buffer, so two calls agreeing that far collapse into
+one entry spelled as neither of them, and a lookup returns that. Storing what was actually heard
+turns the same case into an ambiguity, which refuses. The hash itself still reads only eleven
+characters, because that part is on the air and may not be changed.
+
+**12. A full cache answers rather than spinning.** Upstream's insert walks the table looking for an
+empty slot with no bound at all and loops forever once every slot is taken.
+
+**13. The hashed field is resolved before this message's own call is remembered, and upstream's
+order is the other way round.** Upstream stores the callsign a message spells out in full and *then*
+looks up its twelve-bit hash — so where the two calls in one message happen to share that hash, its
+lookup finds the call the message is already carrying and reports the addressed station as the
+transmitting one. A hashed field names a station the receiver is expected to have heard *already*,
+so it is resolved here against what the receiver knew before this message arrived, and the call is
+remembered afterwards — including when the message is then refused, because the call really was in
+those bits and a receiver that threw it away would never warm up from the very messages it cannot
+yet read. **Measured at 21 of 100 000 generated messages**, about the one in four thousand the width
+predicts. This divergence *recovers* decodes rather than refusing more of them.
+
+**14. A callsign too long for the 58-bit field is refused rather than truncated.** Upstream reads
+eleven characters and stops without checking whether there were more, so a twelve-character call
+goes on the air as its first eleven — a callsign nobody has, written as though it were certain.
+
+## One thing to report against myself
+
+**I committed the probe file of known item 9 by accident, and could not undo it.** Task 3's commit
+used `git add -A` over the test project, which picked up
+`tests/Ft8Sharp.Tests/TempEncoderProbe.cs` — the 673-byte file, emptied to a comment, that five
+sessions' sandboxes have refused to delete and that this instruction says to leave alone. On
+noticing, I tried `git rm --cached` to return it to untracked without touching the file on disk.
+**The harness refused the command.** Reported as a refusal and not worked around; I switched to
+explicit paths for every later commit. The file is unchanged on disk and no sixth deletion was
+attempted, but it is now tracked, and the next unit's known item 9 should say so.
+
+# 2. What the owner should expect
+
+**Ft8Sharp is now 0.4.0 and the root is 1.12.15.** The library can read a message that names a
+station by a hash of its call rather than by the call itself, which is the mechanism FT8 actually
+uses once stations stop introducing themselves. Until tonight Hamlet would have gone deaf at exactly
+that point.
 
 **What will look wrong but is not:**
 
-- **The library decodes fewer patterns than `ft8_lib` would.** That is the point. Five
-  classes of bits that upstream turns into text are refused here, all listed above and all
-  in `porting-notes.md`. In every one of them upstream's answer is a plausible-looking
-  callsign, grid or message that the transmitter did not send.
-- **Non-standard callsigns do not decode at all.** `EA8/G5LSI` and everything shaped like
-  it packs against a 22-bit hash resolved from a rolling cache, and that cache is unit
-  208's. Where a message carries one, **the whole message is refused** rather than returned
-  with a placeholder in it.
-- **Criterion 2 is still open even though three of its four categories round-trip.** The
-  fourth category is the non-standard callsigns above.
-- **`Ft8CallsignFieldTests` reports 4971 callsigns of a million that did not come back as
-  they went in, and the test passes.** They are upstream's own prefix work-arounds
-  colliding with calls spelled the same way; the test asserts that *every* mismatch is of
-  exactly that shape and that there are no others.
-- **A `TheFullTwentyEightBitSweep` test exists and does nothing on an ordinary run.** It is
-  268 million round-trips, gated behind `FT8_CALLSIGN_FULL_SWEEP=1` in the
-  `FT8_TABLEGEN_WRITE` idiom. It was run once here, in 67 s, and the result is in
-  section 3.
-- **`tests/Ft8Sharp.Tests/TempEncoderProbe.cs` is still on disk, untracked and emptied to a
-  comment.** Not touched; four sessions' sandboxes have refused to delete it and this one
-  did not try a fifth time.
-- **One `Ft8Sharp` test still skips** — `Ft8TableGenerationTests.RewriteTheCheckedInTablesFile`
-  — which is the write gate, not a failure.
+- **A resolved callsign comes back inside angle brackets — `<W9XYZ>`.** That is upstream's own
+  convention and it is deliberately kept, because it marks a call that was *remembered* rather than
+  read out of these bits. It is a claim of a different strength and the display should be able to
+  tell the two apart.
+- **1720 of 200 000 standard messages came back as a different callsign.** These are upstream's two
+  prefix work-arounds — a call spelled the way the Swaziland or Guinea work-around spells its own
+  compressed form packs to the same integer as the call the work-around is for. Upstream's wire
+  format, not a defect here; unit 207 measured the same thing at 4971 of a million.
+- **The four-category corpus reports 91 590 non-standard messages out of 100 000, with 8410
+  skipped.** The skipped ones are longer than eleven characters, which is more than the 58-bit field
+  can hold. That is the protocol's limit and the generator deliberately produces some.
+- **A cache that has heard *more* stations sometimes decodes *fewer* messages.** Decision 9. It is
+  the right direction and it is asserted directly.
+- **`Ft8CallsignCache` is not thread-safe and has no static instance.** Both deliberate; a decoder
+  owns its cache, and a shared one would make corpus results depend on test ordering.
+- **`Ft8CallsignHash.TryCompute` answers for the empty string.** So does upstream's. Nothing in the
+  library ever puts that hash in a cache — the cache refuses anything shorter than three characters.
+- **`Ft8Sharp.Tests` grew from 108 to 148 tests and still finishes in about four seconds.** The
+  fast inner loop is intact.
+- **`tests/Ft8Sharp.Tests/TempEncoderProbe.cs` is tracked now.** See section 1; the file itself is
+  untouched.
 
-## 3. What you should see
+# 3. What you should see
 
-### The type cover — 15 combinations, every one with a defined behaviour
+## CRITERION 2 — the three legs of the non-standard-callsign round trip
 
-| i3 | n3 | type | behaviour | corpus that round-tripped it |
-|---|---|---|---|---|
-| 0 | 0 | FreeText | **built** | 100 000 seeded strings |
-| 0 | 1 | DxPedition | refused as unsupported | — |
-| 0 | 2 | EuVhfContest | refused as unsupported | — |
-| 0 | 3 | ArrlFieldDay | refused as unsupported | — |
-| 0 | 4 | ArrlFieldDay | refused as unsupported | — |
-| 0 | 5 | Telemetry | **built** | 100 000 seeded bodies |
-| 0 | 6 | Unknown | refused as unsupported | — |
-| 0 | 7 | Unknown | refused as unsupported | — |
-| 1 | — | Standard | **built** | 171 133 of the 200 000 standard corpus |
-| 2 | — | Standard | **built** | 28 867 of the 200 000 standard corpus |
-| 3 | — | ArrlRttyRoundup | refused as unsupported | — |
-| 4 | — | NonstandardCallsign | refused as unsupported | — |
-| 5 | — | WwrofContest | refused as unsupported | — |
-| 6 | — | Unknown | refused as unsupported | — |
-| 7 | — | Unknown | refused as unsupported | — |
+**Corpus 100 000. Seed 20871.**
 
-**15 enumerated. 4 built and round-tripping. 11 refused as unsupported. None throws and
-none returns a decode for a type that is not built.**
-
-### The fuzz — corpus 1 000 000, seed 20260901
-
-```
-exceptions                            : 0
-decodes returned for a type not built : 0
-decodes returned for an unresolvable callsign : 0
-```
-
-237 820 of the million decoded as standard messages before task 6, 261 800 after it added
-free text and telemetry. The rest were refused by name: 718 866 unsupported type, 11 678
-malformed field, 7 656 unresolvable callsign. **Criterion 3 is claimed closed on these
-three zeros together with the complete type cover above.**
-
-### The grid-and-report field, exhausted
-
-**All 32 768 values, no seed and no sampling argument.**
-
-```
-round-tripped : 32 533     of which 32 399 grid squares, 130 reports,
-                            3 fixed tokens, 1 "no third field"
-refused       :    235
-sum           : 32 768
-```
-
-The 235 refusals are: 1 at the sub-range boundary both ranges claim, 1 grid square whose
-name a token has taken, and 233 report codes whose number overruns two digits. **The
-second of those was found by the sweep and not predicted** — which is the argument for
-exhausting a field rather than sampling it, and it is worth its own line.
-
-Under the `R` flag, where the property is weaker and upstream's own comment says why: 130
-decoded and re-packed, 32 403 decoded without re-packing the flag, 235 refused, summing to
-32 768 with no exception anywhere.
-
-### The callsign field
-
-**Corpus 1 000 000, seed 20260901**, generated systematically across all eight shapes the
-pin's branching admits — four base shapes, each with and without a suffix, and both suffix
-meanings. **0 refused at pack. 995 029 round-tripped. 4971 did not, and every one of them
-is one of upstream's two prefix work-arounds colliding with a call spelled its compressed
-way; there were 0 unexplained mismatches.**
-
-**Special tokens, all by name:** `DE`, `QRZ` and `CQ` each round-trip as tokens; the
-numeric CQ family round-trips for all 1000 of its values; the lettered CQ family was
-walked over all 531 441 of its values, of which 475 255 round-trip and 56 186 carry a
-space in the modifier and do not — upstream's own asymmetry, asserted to be exactly that
-shape and nothing else.
-
-**Sub-range boundaries, each with the value on either side:** the first token, the last
-bare token, the first and last numeric CQ, the first and last lettered CQ, the last defined
-token, the start of the hash range, the end of the hash range, and the top of the field.
-Every one produced a defined answer.
-
-**The hashed region refuses rather than guesses.** 400 010 values across the whole 22-bit
-region, at both suffix settings, **every one refused as unresolved with no text written**.
-On the packing side, `EA8/G5LSI`, `YL/LB2JK`, `PJ4/KA1ABC` and `K1ABC/QRP` are each refused
-as requiring the hash cache rather than written as a value nothing could read back. A whole
-message carrying one is refused whole — no placeholder, no partial message, no numeric
-field dressed as a call.
-
-**The optional full 2^28 sweep was run once, and it is not in the default run.** Gated
-behind `FT8_CALLSIGN_FULL_SWEEP=1`. **All 268 435 456 values in 67.0 s:**
-
-```
-decoded                        : 262 709 644
-    of which not re-packing    :      56 186
-unresolved (the hash region)   :   4 194 304
-malformed                      :   1 531 508
-sum                            : 268 435 456
-```
-
-Two things fall out of it that the million-callsign sample could not show. **The
-unresolved count is exactly the size of the hashed sub-range**, so the seam covers that
-range precisely and nothing on either side of it. And **the only values in the entire
-field that decode without re-packing are the 56 186 lettered-CQ modifiers carrying a
-space** — every one of the 262 million standard basecall values re-packs to the integer it
-came from.
-
-### The standard message round-trip corpus
-
-**200 000 seeded messages, seed 20260901. All 200 000 came back. None did not.** 171 133
-packed under the first type code and 28 867 under the second, and 50 351 carried a suffix
-on the transmitting station's call. **No packed message ever set a bit past the
-seventy-seventh**, asserted directly on every one rather than discovered through the
-container's refusal.
-
-### Free text and telemetry
-
-**100 000 seeded free-text strings**, including the empty string, a full-length string, and
-strings with leading, trailing and both-end spaces. **95 800 came back exactly and 4200
-came back trimmed** — the encoder pads to the full width with spaces and the decoder trims
-them, so the two are not distinguishable. That is upstream's shape and it is reported here
-rather than narrowed out of the corpus. **0 refused at pack, 0 unexplained.** The whole
-42-character alphabet was packed in chunks so that no code point went untried; characters
-outside the alphabet are refused rather than substituted.
-
-**100 000 seeded telemetry bodies**, including all zeros and all ones. **All 100 000
-round-tripped** and each decoded to exactly 18 hexadecimal digits.
-
-### The character primitives
-
-**All six alphabets walked end to end — 190 code points.** Every one round-trips index to
-character to index, and every one is distinct, so **each alphabet is a bijection between
-its indices and a set of ASCII characters**. **All 128 ASCII inputs have a defined answer
-in every alphabet** — accepted counts of 42, 38, 37, 27, 36 and 10, with the rest cleanly
-rejected, and **no exception for any input in any alphabet**. Indices from −600 to 599
-answer with the sentinel rather than throwing.
-
-**These prove the mapping is a bijection. They do not prove it is upstream's** — a mapping
-in the wrong order round-trips perfectly and is wholly wrong on the air. That is settled by
-the corroborated scalars below and, definitively, by step 3.
-
-### Scalars corroborated against the pin by machine
-
-Read out of the pin at run time. **5 corroborated, 3 not.**
-
-| Scalar | Corroborated | How |
+| leg | count | failures |
 |---|---|---|
-| Hashed-callsign sub-range size | yes | integer macro in `message.c` |
-| Start of the hashed sub-range | yes | integer macro in `message.c` |
-| Grid and report boundary | yes | integer macro in `message.c` |
-| The six alphabet lengths | yes, **weakly** | the comment beside each enumerator in `text.h`, not a macro |
-| The two type selector widths | yes | the mask and shift shapes in `message.c` |
-| Type code to message type mapping | **no** | it is a `switch`, not a table |
-| Token sub-range boundaries | **no** | literals inside a function body |
-| Basecall positional alphabet sizes | **no** | literals in the multiply chain |
+| full call round-tripped, no cache needed | **91 590** | **0** |
+| hashed and resolved through a warm cache | **91 590** | **0** |
+| refused by a cold cache with no text written, on identical bits | **91 590** | **0** |
 
-**Nothing under `tools\` was edited and neither `CSourceParser` nor `ExpressionEvaluator`
-was changed.** `Ft8TableGenerationTests` was re-run and is green at 2 passed, 1 skipped.
-No scalar value is printed anywhere — only whether it matched.
+8410 were skipped as longer than the 58-bit field holds. 21 of the 91 590 had two calls sharing a
+12-bit hash and resolved correctly anyway because of decision 13. **The three legs are reported
+separately and are never summed.**
 
-### End-to-end: text through the proven encoder
+### The four categories of criterion 2 together
 
-**2000 messages** went text → pack → `Ft8Payload.Create` → `LdpcEncoder` → **all 83 parity
-checks** → `Ft8Payload.TryRead` → unpack → **the same text**. Every one cleared every
-parity check and every one came back as what went in. **This is the first time in this
-phase that words have made the round trip through the encoder step 1 proved.**
+| category | corpus | round-tripped | failures |
+|---|---|---|---|
+| standard | 200 000 | 198 280 | **0** |
+| free text | 100 000 | 100 000 | **0** |
+| telemetry | 100 000 | 100 000 | **0** |
+| non-standard callsign | 100 000 | 91 590 | **0** |
 
-### The Ft8Sharp test totals
+The 1720 standard messages not counted as passes are upstream's prefix work-around collisions,
+counted apart rather than as passes.
 
-| | total | passed | failed | skipped | wall clock |
+**Criterion 2 is closed. That is the last open must-pass criterion of step 2.** Whether the step is
+done is not this unit's call.
+
+## The hash's provenance
+
+**Leg A — machine-read from the pin at run time, and every scalar matched.**
+
+| scalars | corroborated by macro | corroborated by expression | uncorroborated |
+|---|---|---|---|
+| the hash itself | 0 | **10** | **0** |
+| the rolling cache | **1** | **5** | **0** |
+| the non-standard message's field widths | 0 | **5** | **0** |
+
+The hash's ten, by role: the packing base; the callsign length read; the callsign length padded; the
+multiplier; the product width; the hash width; the hash mask; the 12-bit truncation shift; the
+10-bit truncation shift; and the packing alphabet, corroborated as an *identifier* by its position
+in the pin's own declaration order and then tied to the base by its length. **Not one of the ten is
+a macro** — every one is a literal inside a function body — so each is located by anchoring on the
+expression that uses it inside the definition it belongs to and put through the same literal reader
+the table converter uses. That is a mechanical read rather than a transcription, but it is **weaker
+than a macro**, because a shape can be rewritten upstream in a way a name cannot, and every line of
+the test says so. The cache's provenance is weaker again for a reason unrelated to the reading:
+**the pin implements its cache in a demo application rather than in its library.**
+
+**Leg B — the independent checker: 100 000 callsigns across 10 shapes, seed 20826, agreed on all
+three widths, 0 disagreements, 0 refused.** Written from the pin in the test project, it does not
+call the library and does not borrow a constant from it — its alphabet is spelled out separately, so
+a wrong alphabet in the library could not make the two agree. It catches an ordinary porting slip.
+**It does not catch a misreading made twice.**
+
+**Leg C — a known value. There is none. The pin states no hash value for a named callsign
+anywhere.** Asked once, mechanically, across **95** sources with `ft4_ft8_public/` excluded; five
+mention hashing at all and not one pairs a hash mention with a numeric literal and a callsign-shaped
+token.
+
+**A round trip against this library's own cache is not evidence that the hash matches upstream.** It
+is internal self-consistency and nothing more. **Step 3's bit-identical symbol comparison against
+`ft8_lib` is where the hash gets settled, and that comparison must include a non-standard-callsign
+message.** A comparison covering only standard messages with basecalls in them will pass whatever the
+hash does, because no hash will have been on the wire. **If step 3 does not compare a message
+carrying a hashed callsign, the hash goes unsettled into step 4**, where a wrong hash looks exactly
+like a quiet band. This is a note for step 3's arbiter.
+
+## CRITERION 3 — the fuzz re-taken, cold and warm
+
+**1 000 000 random 77-bit patterns. Seed 20871.**
+
+| count | cold | warm |
+|---|---|---|
+| exceptions | **0** | **0** |
+| decodes returned for a type not built | **0** | **0** |
+| decodes carrying a call the cache never stored | **0** | **0** |
+| — | | |
+| decoded in all | 292 532 | 298 003 |
+| of those, carrying a call resolved from a hash | 0 | **5471** |
+| refused | 707 468 | 701 997 |
+
+**Cold** is no cache at all, which is the strictest reading of cold: it has heard nothing and cannot
+warm up part-way through the run, so the third count stays unambiguous. **Warm** is a cache filled to
+its 256-entry capacity *before* the run and therefore frozen for it, since a full cache stores
+nothing further — which is what makes "a call the cache never stored" a checkable claim about a fixed
+set rather than a moving target. The set was verified unchanged at the end of the run. The 5471
+resolved calls are the correct outcome and are counted separately; they are also what shows the warm
+run measured something the cold one did not. **The type cover is complete at 15 combinations.**
+
+## The type cover — one row moved
+
+| i3 | n3 | type | verdict |
+|---|---|---|---|
+| 0 | 0 | FreeText | built |
+| 0 | 1 | DxPedition | refused as UnsupportedType |
+| 0 | 2 | EuVhfContest | refused as UnsupportedType |
+| 0 | 3 | ArrlFieldDay | refused as UnsupportedType |
+| 0 | 4 | ArrlFieldDay | refused as UnsupportedType |
+| 0 | 5 | Telemetry | built |
+| 0 | 6 | Unknown | refused as UnsupportedType |
+| 0 | 7 | Unknown | refused as UnsupportedType |
+| 1 | — | Standard | built |
+| 2 | — | Standard | built |
+| 3 | — | ArrlRttyRoundup | refused as UnsupportedType |
+| **4** | **—** | **NonstandardCallsign** | **built — THE ROW THAT MOVED** |
+| 5 | — | WwrofContest | refused as UnsupportedType |
+| 6 | — | Unknown | refused as UnsupportedType |
+| 7 | — | Unknown | refused as UnsupportedType |
+
+**15 combinations, 5 built, 10 refused as unsupported**, against unit 207's 4 and 11. None threw and
+none returned a decode for a type not built. Measured with a fresh cache per combination and each
+combination handed the best message it could carry. **This is a new test and it does not replace
+unit 207's cover**, which still runs unchanged and still asks the harder question — what the
+dispatcher does with bits declaring a type they are not.
+
+## The cache's collision behaviour
+
+**It returns nothing.** Decision 9 above, in full in section 1. **It diverges from upstream**, whose
+lookup returns whichever call its probe chain reaches first. Colliding pairs were found at all three
+widths by search over this project's own generated callsigns: **148 ms, after walking 4733 of
+200 000 generated calls, seed 20841**. Each pair resolves correctly when the cache holds only one of
+the two, and refuses with no text when it holds both — asserted at the cache, and again through the
+whole stack on real bits at both the standard and the non-standard message.
+
+## The miss refusing
+
+Asserted at every level: at the cache for all three widths; at the field across a sweep of the
+hashed sub-range, every value refusing as `UnresolvedCallsign` with no text and no field type; at
+the message, which refuses whole rather than returning one field with a hole in it; and at
+`Ft8MessageDecoder`, which returns an empty `Text` and a default `Fields`. **A null cache behaves
+exactly as a cold one**, so every refusal unit 207 measured is still measured by the overloads
+without a cache, unchanged.
+
+## The collision census — task 6, NOT dropped
+
+**1 000 000 distinct generated callsigns across 10 shapes, seed 20861, all of them hashable.
+Generated in 519 ms, censused in 753 ms.**
+
+| width | distinct calls | distinct hashes | colliding pairs | largest group | values the width holds |
 |---|---|---|---|---|---|
-| Task 1, before | 74 | 73 | 0 | 1 | 5.3 s cold |
-| Task 5 | 104 | 103 | 0 | 1 | 2.6 s |
-| Task 7, final | **108** | **107** | **0** | **1** | **2.3 s warm, 3.5 s with rebuild** |
+| 22-bit | 1 000 000 | 890 166 | 118 559 | 5 | 4 194 304 |
+| 12-bit | 1 000 000 | 4096 | 122 075 605 | 297 | 4096 |
+| 10-bit | 1 000 000 | 1024 | 488 255 230 | 1099 | 1024 |
 
-**34 new tests.** The one skip is the table-rewrite write gate. **The project still returns
-in well under a minute and no corpus was cut for the clock.** Clone-gated tests now number
-**17** by `grep` — up from the 11 measured at task 1, the six new ones being the message
-inventory and the message provenance.
+**What that means for an operator, measured on a real cache rather than modelled:** a cache of the
+pin's own size, filled with 256 callsigns and then asked for each of their own 12-bit hashes,
+resolved **242** and refused **14** because a second call it was also holding shared the hash. That
+is **5.5 per cent** of the stations a full cache has genuinely heard which it will refuse to name
+rather than pick between. What the display does about a refusal is Tim's under §12.1 and this stops
+at the number.
 
-### Attribution and the three channels
+## The end-to-end integration, with the new type included
 
-`git diff --name-only 2828ab6..HEAD` is **58 paths**, up from 44. **Not one is under
-`src/Hamlet.App/`, `src/Hamlet.RadioEngine/`, `tests/Hamlet.App.Tests/` or
-`tests/Hamlet.RadioEngine.Tests/`.**
+**1905 messages carried whole through text → pack → `Ft8Payload.Create` → `LdpcEncoder` → all 83
+parity checks → `Ft8Payload.TryRead` → unpack → the same text. 906 of them non-standard-callsign
+messages through a warm cache.** Every one cleared all 83 checks and came back as the text that went
+in. Separately, 19 033 packed non-standard messages were checked directly for a bit set past the
+seventy-seventh: none had one, asserted on the bits and again through the container.
 
-| Channel | Verdict |
+## The Ft8Sharp totals
+
+| | before | after |
+|---|---|---|
+| total | 108 | **148** |
+| passed | 107 | **147** |
+| failed | 0 | **0** |
+| skipped | 1 | **1** |
+| wall clock | 3.4 s | **4.0 s** |
+
+**40 tests added.** The one skip is `Ft8TableGenerationTests.RewriteTheCheckedInTablesFile`, the
+write gate, not a failure. All clone-gated tests passed rather than skipped, so the pin was reachable
+throughout.
+
+## Attribution and the three channels
+
+`git diff --name-only 2828ab6..HEAD` lists **72 paths** (58 at the start of the unit), and **not one
+is under `src/Hamlet.App/`, `src/Hamlet.RadioEngine/`, `tests/Hamlet.App.Tests/` or
+`tests/Hamlet.RadioEngine.Tests/`** — `grep -c` over that list returns 0.
+
+| channel class | verdict |
 |---|---|
-| `AudioSeamTests` + `PrivilegeTests` | **green, 55 of 55** — re-run after the version bump |
-| `DecisionLogOrderTests`, `DecisionEmissionTests`, `VoiceTests` | **green, 10 of 10** |
-| `VersionTests` | **green, 3 of 3 — measured after the bump, not before** |
+| `AudioSeamTests` + `PrivilegeTests` | **green, 55** |
+| `DecisionLogOrderTests` | **green** |
+| `VersionTests` | **green — re-run AFTER the version bump** |
+| `DecisionEmissionTests` | **green** |
+| `VoiceTests` | **green** |
 
-**One shared artifact changed: the root `Directory.Build.props`.** That is the version
-channel, which is already named in the plan's channel set and is already read by
-`VersionTests`; no new channel was opened.
+13 in the App project, 68 in all. `git status --short` printed **34** lines at the start of the unit
+and **36** at the end; the two extra are `Directory.Build.props` and `src/Ft8Sharp/Directory.Build.props`
+awaiting task 8's commit. The loop's own files were counted and not committed.
 
-### What task 2's inventory found in the clone — names and shapes only
+## What task 2's inventory found in the clone — names and shapes only
 
-**Known item 1 confirmed on this session's own reading, not inherited.** `ft8/pack.c` and
-`ft8/unpack.c` are both **absent**, and the inventory test asserts they stay absent.
-Packing lives in `ft8/message.c` at 37 805 bytes and 1156 lines, which declares **7**
-functions whose names mention packing. `ft8/message.h` is 8497 bytes and 161 lines,
-`ft8/text.c` 6421 bytes and 304 lines, `ft8/text.h` 3041 bytes and 83 lines.
+`ft8/message.c` is 37 805 bytes and 1156 lines. `ft8/message.h` is 8497 bytes and 161 lines,
+`ft8/text.c` 6421 and 304, `ft8/text.h` 3041 and 83, `ft8/constants.h` 3728 and 91. **`ft8/pack.c`
+and `ft8/unpack.c` are both absent, confirmed on this session's own reading.**
 
-**16 candidate C sources were swept for a message-level known value**, in three shapes: a
-message-shaped string literal, a braced byte array of packed-payload shape, and an array
-named like a tone or symbol sequence. **10 sources carried at least one of those shapes.**
-The only test source, `test/test.c`, holds 22 message-shaped literals, 2 packed arrays and
-5 comparison calls, and its functions `test_std_msg`, `test_msg` and `main` are live code
-that **encodes with upstream's encoder and decodes with upstream's decoder and compares the
-text** — self-consistency, not a known value. The one true message-level vector is in the
-same file's commented-out block and is against the superseded 72-bit packing.
+**The hash does not live where its name would suggest.** `message.c` declares **no** function whose
+name mentions hashing; all three widths are computed in one static function reached through a
+two-entry function-pointer interface declared in `message.h`, whose enumeration names the 22, 12 and
+10-bit widths as three members. **Two** functions in `message.c` mention non-standard by name, one to
+encode and one to decode.
 
-A gated emitter keyed on `FT8_MESSAGE_SOURCE_DUMP=1`, with an optional
-`FT8_MESSAGE_SOURCE_FILE` so one file can be read at a time, is how the port read what it
-ported. **Not one line of upstream source, and no value of any kind, is in `output.md`, in
-any commit message, in `porting-notes.md`, or in any committed file.**
+**The rolling cache is not in the pin's library at all.** `message.c` calls the interface and never
+implements it; the only implementations are in the clone's demo decoder and its test harness, both
+of which declare the table's capacity as a macro. The emitter was extended by one array to reach
+them.
 
-### Task 6 — done, not dropped
+The gated emitter is off unless `FT8_HASH_SOURCE_DUMP=1` is set on the run, and it emits **named
+definitions** rather than whole files — `message.c` is over a thousand lines and a reader who has to
+page through all of them to reach the function being ported will skim, which is the failure mode a
+faithful port of a hash cannot afford. **Not one line of upstream source is in this report, in any
+commit message, or in any committed file.**
 
-Free text and telemetry were both built, both corpora were run, the type cover moved from
-2 built and 13 refused to **4 built and 11 refused**, and the fuzz was re-run against the
-wider cover with all three counts still zero.
+## The two version numbers as they now stand
 
-### The two versions as they now stand
+| | was | is |
+|---|---|---|
+| `src/Ft8Sharp/Directory.Build.props` | 0.3.0 | **0.4.0** (HM-DEC-152) |
+| root `Directory.Build.props` | 1.12.14 | **1.12.15** (HM-DEC-150) |
 
-**`src/Ft8Sharp/Directory.Build.props`: 0.2.0 → 0.3.0**, with the reason written into both
-the props file and `porting-notes.md` — the library can now produce and consume a *message*
-rather than the envelope one travels in. **Root `Directory.Build.props`: 1.12.13 →
-1.12.14.**
+Both reasoned in the props file and in `porting-notes.md`. `Ft8Sharp.AssemblyInfo.cs` was read after
+the build and carries 0.4.0 with no Hamlet commit in it.
 
-## 4. What's blocking us
+# 4. What's blocking us
 
-**Nothing is blocking. Three items, all observations, none of them a ruling request, and
-none of them standing in the way of any criterion named in B.** The pinned clone was
-reachable throughout, so section 4 is not the blocker case the instruction describes.
+**Nothing is blocking. The pinned clone was reachable all night and no ruling is needed to
+continue.** Three items, none of which stands in the way of any criterion named in B, and none of
+which is a ruling request.
 
-**1. Five known items were confirmed and one measurement disagreed by one — reported, not
-repaired.** `git status --short` prints **34** lines where the instruction states 33; the
-extra entry appears to be the loop's own `SESSION.lock`, which is another author's and was
-not touched or committed. Confirmed as stated: known item 4, `PHASE_STATUS.md` says
-`STEP: 1 | done` with `CURRENT_STEP: 2` while `PHASE_OUTCOME.md`'s header says step 1
-`partial` and step 2 `partial` — and `PHASE_STATUS.md` additionally says step 2 is `not
-started`, which is a **third** disagreement with the arbiter's judgement that step 2 is in
-progress; neither file was hand-edited. Known item 8, `TempEncoderProbe.cs` is still on
-disk, untracked, 673 bytes; not touched. Known item 14's prediction held: **shell output
-redirection into the tree was refused** when appending to `porting-notes.md`, and the file
-tool was used instead rather than a workaround. **This is an observation. It asks for
-nothing.**
+**1. Step 3's symbol comparison must include a message carrying a hashed callsign. A note for step
+3's arbiter, not a request.** The hash is the one artifact in this port whose correctness cannot be
+established by any test this library can run against itself, because it travels on the air and is
+only useful if it agrees with what the transmitting station computed. Two of its three provenance
+legs exist and both are recorded honestly; the third does not exist in the pin. **A comparison
+covering only standard messages with basecalls in them will pass whatever the hash does**, because no
+hash will have been on the wire. Already acted on to the extent this unit can: written into
+`porting-notes.md` under its own heading so the next author reads it there as well as here.
 
-**2. Four refusals were added where upstream returns text, and a fifth where upstream
-returns nothing.** They are reproduced in full in section 1 and recorded in
-`porting-notes.md`. Each was taken under `CLAUDE.md` §0.0 / HM-DEC-009, which the
-instruction names as the governing rule of tonight's unpacker, and each affects only
-patterns that no conforming transmitter produces. **The consequence Tim should know about
-is that this library will be silent where `ft8_lib` would print something** — which is the
-trade this project has already ruled on, but it is now real rather than theoretical.
-**This is a decision already acted on, written here as one. It asks for nothing.**
+**2. The probe file of known item 9 is tracked now, and the harness refused the command that would
+have untracked it.** Task 3's commit used `git add -A` over the test project and picked up
+`tests/Ft8Sharp.Tests/TempEncoderProbe.cs`. `git rm --cached` was refused by the sandbox; reported as
+a refusal and not worked around. The file on disk is untouched and no sixth deletion was attempted.
+**An observation for whoever writes known item 9 next**, not a ruling request — it changes nothing
+about what the library does.
 
-**3. Correctness against upstream is not settled and cannot be settled before step 3.**
-There is no usable message-level known value in the pin, so every measurement in this unit
-is self-consistency. The provenance is honest but partial: **5 of 8 scalars corroborated by
-machine, and one of those 5 only through a comment rather than a macro; the mapping from
-type code to message type, the token sub-range boundaries and the basecall alphabet sizes
-are not corroborated at all.** A systematically wrong alphabet or a swapped field would
-survive everything measured tonight and would be caught for certain by step 3's
-bit-identical symbol comparison. **This is a note for whoever writes step 3's unit: that
-comparison is now load-bearing for the whole message layer, not just for the encoder. It
-asks for nothing tonight.**
+**3. Two mismatches between the instruction and the tree, reported and not repaired.** `git status
+--short` printed **34** lines rather than the stated 33, which is the loop's own `SESSION.lock` and
+which unit 207 also measured at 34. And the instruction describes upstream's cache as one where "the
+later call overwrites the earlier one"; **measured, it does not overwrite** — it stores both in
+adjacent slots by linear probing and its lookup returns whichever the probe chain reaches first,
+which is the *earlier* one. The consequence is identical, a confident wrong callsign, and the
+decision taken was the same either way; the mechanism differs and the next author should know it.
+Known items 5 and 9 were confirmed and neither touched; nothing under `tools\` was edited; neither
+`PHASE_STATUS.md` nor `PHASE_OUTCOME.md` nor `PHASE_PLAN.md` nor `PROJECT_CARD.md` was hand-edited.

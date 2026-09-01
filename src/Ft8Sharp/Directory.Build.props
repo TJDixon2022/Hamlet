@@ -45,9 +45,24 @@
     here has produced or consumed a message rather than the envelope one travels
     in, so it is a minor by the same rule. Still not a 1.x: there is no
     demodulator, so nothing here has yet read anything off a radio.
+
+    0.4.0 ON 2026-09-01, BECAUSE IT LEARNED TO REMEMBER.
+
+    FT8 does not spell a long callsign out every time. It sends a hash of one and expects the
+    receiver to have heard that station name itself earlier, so a library that cannot remember
+    goes deaf at exactly the point a station stops being introduced and starts being referred to.
+    This version holds the 22, 12 and 10-bit callsign hashes, the rolling cache that resolves
+    them, and the message type that carries one callsign in full and names the other by twelve
+    bits alone. A capability the library did not have rather than a correction to one it did, so
+    a minor by the same rule as 0.2.0 and 0.3.0.
+
+    It also holds the refusals that go with remembering, and those are the half worth naming: a
+    hash this library has never heard resolves to nothing at all, and where two callsigns it HAS
+    heard share a hash it returns nothing rather than either of them. Still not a 1.x: there is
+    no demodulator, so nothing here has yet read anything off a radio.
   -->
   <PropertyGroup>
-    <Version>0.3.0</Version>
+    <Version>0.4.0</Version>
   </PropertyGroup>
 
   <!--
