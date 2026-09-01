@@ -230,7 +230,14 @@ public class ReferenceCloneMessageInventoryTests
         // One file at a time when asked for one: message.c alone is 1156 lines, and a reader that
         // has to page through all of them to reach the function it is porting will skim.
         var only = Environment.GetEnvironmentVariable("FT8_MESSAGE_SOURCE_FILE");
-        var wanted = MessageSources.Concat(new[] { @"ft8\constants.h", @"test\test.c" });
+
+        // Unit 209 extends this list by name rather than building a second emitter: the symbol
+        // assembly lives in ft8/encode.c, which is where encode174 was already ported from, and
+        // the sequence geometry is declared in ft8/constants.h. Still gated, still off by default.
+        var wanted = MessageSources.Concat(new[]
+        {
+            @"ft8\constants.h", @"test\test.c", @"ft8\encode.c", @"ft8\encode.h",
+        });
         if (only is { Length: > 0 })
         {
             wanted = wanted.Where(r => r.Contains(only, StringComparison.OrdinalIgnoreCase));
