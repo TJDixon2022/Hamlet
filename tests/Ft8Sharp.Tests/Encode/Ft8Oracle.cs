@@ -35,9 +35,34 @@ internal static class Ft8Oracle
     /// </summary>
     private const string RelativeExecutablePath = @"build\gen_ft8.exe";
 
-    /// <summary>The generator, wherever the clone is.</summary>
+    /// <summary>The generator as the owner's script built it, wherever the clone is.</summary>
+    /// <remarks>
+    /// <b>This is the pin and it is read-only.</b> It is never opened for writing, never patched and
+    /// never deleted. Where it cannot survive its own waveform, a copy of it is patched instead —
+    /// see <see cref="ResolvedExecutablePath"/>.
+    /// </remarks>
     public static string ExecutablePath =>
         Path.Combine(ReferenceClone.Location, RelativeExecutablePath);
+
+    /// <summary>The image questions are actually put to.</summary>
+    /// <remarks>
+    /// <para>
+    /// The original where it can answer, and a temporary copy with a wider
+    /// <c>SizeOfStackReserve</c> where it cannot — but <b>only a copy that
+    /// <see cref="OracleStackPatch.Attempt.Proven"/> has shown to be the same program in every byte
+    /// that does any work</b>. An unproven copy is never offered here, so no comparison in this
+    /// project can be run against one by accident.
+    /// </para>
+    /// <para>
+    /// Resolved once per run and visible in <see cref="ProbeUsability"/>'s detail string, so a skip
+    /// reason and a report both say which binary answered.
+    /// </para>
+    /// </remarks>
+    public static string ResolvedExecutablePath => OracleStackPatch.ProvenCopyPath ?? ExecutablePath;
+
+    /// <summary>Whether the image being questioned is a patched copy rather than the original.</summary>
+    public static bool AnsweringImageIsAPatchedCopy =>
+        !string.Equals(ResolvedExecutablePath, ExecutablePath, StringComparison.OrdinalIgnoreCase);
 
     /// <summary>Whether the oracle is on this machine and can be run.</summary>
     public static bool IsPresent
@@ -102,10 +127,21 @@ internal static class Ft8Oracle
     /// behaviour on a message it will not encode can be read rather than guessed at.
     /// </summary>
     /// <param name="wavToMeasure">The file whose size is reported, or null when none is expected.</param>
-    public static Run Invoke(string? wavToMeasure, params string[] arguments)
+    public static Run Invoke(string? wavToMeasure, params string[] arguments) =>
+        InvokeImage(ResolvedExecutablePath, wavToMeasure, arguments);
+
+    /// <summary>
+    /// Runs one named image, so the original and a patched copy of it can be held against each other
+    /// rather than one of them standing in for the other.
+    /// </summary>
+    /// <remarks>
+    /// <see cref="OracleStackPatch"/> is the only caller that names an image: everything else goes
+    /// through <see cref="Invoke"/> and gets whichever image can answer.
+    /// </remarks>
+    public static Run InvokeImage(string imagePath, string? wavToMeasure, params string[] arguments)
     {
         {
-            var start = new ProcessStartInfo(ExecutablePath)
+            var start = new ProcessStartInfo(imagePath)
             {
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
@@ -122,7 +158,7 @@ internal static class Ft8Oracle
             }
 
             using var process = Process.Start(start)
-                ?? throw new InvalidOperationException($"could not start {ExecutablePath}");
+                ?? throw new InvalidOperationException($"could not start {imagePath}");
 
             // Read both pipes before waiting. A generator that fills one of them while we block on
             // Exit would deadlock, and this one writes to both.
@@ -141,7 +177,7 @@ internal static class Ft8Oracle
                 }
 
                 throw new TimeoutException(
-                    $"{ExecutablePath} did not exit within 30 s for arguments "
+                    $"{imagePath} did not exit within 30 s for arguments "
                     + $"'{string.Join(' ', arguments)}'.");
             }
 
@@ -309,6 +345,18 @@ internal static class Ft8Oracle
                     $"nothing is built at {ExecutablePath}; run tools\\build-ft8-oracle.bat");
             }
 
+            // Which image is going to answer, and why. A patch attempt that failed one of its four
+            // proofs says so here, so a skip reason carries the diagnosis rather than only the
+            // symptom.
+            var patch = OracleStackPatch.Ensure();
+            var which = AnsweringImageIsAPatchedCopy
+                ? "a temporary copy of upstream's generator with a wider SizeOfStackReserve, proven "
+                  + $"identical to the original but for that field ({patch.ProofSummary})"
+                : $"upstream's generator as built, at {ExecutablePath}"
+                  + (patch.CopyMade
+                      ? $" — a patched copy was made and NOT used, because {patch.ProofSummary}"
+                      : patch.Reason.Length > 0 ? $" — no patch was made: {patch.Reason}" : string.Empty);
+
             Run run;
             try
             {
@@ -316,7 +364,7 @@ internal static class Ft8Oracle
             }
             catch (Exception ex)
             {
-                return (Usability.BuiltButWillNotRun, $"{ex.GetType().Name}: {ex.Message}");
+                return (Usability.BuiltButWillNotRun, $"{which}; {ex.GetType().Name}: {ex.Message}");
             }
 
             if (run.ExitCode != 0)
@@ -325,14 +373,15 @@ internal static class Ft8Oracle
                     ? " (STATUS_STACK_OVERFLOW)"
                     : string.Empty;
                 return (Usability.BuiltButWillNotRun,
-                    $"{ExecutablePath} exited {run.ExitCode} (0x{run.ExitCode:X8}){named} on a "
-                    + "message it should encode");
+                    $"{ResolvedExecutablePath} exited {run.ExitCode} (0x{run.ExitCode:X8}){named} on "
+                    + $"a message it should encode; the image asked was {which}");
             }
 
             return TryReadTones(run.StandardOutput, ToneSequenceLength, out _)
-                ? (Usability.Usable, "ran, and printed a tone sequence")
+                ? (Usability.Usable, $"ran, and printed a tone sequence — the image asked was {which}")
                 : (Usability.RanButPrintedNoTones,
-                    "ran and exited zero, but printed no line this parser recognised as tones");
+                    "ran and exited zero, but printed no line this parser recognised as tones; the "
+                    + $"image asked was {which}");
         }
     }
 
