@@ -1,0 +1,122 @@
+rem  run-unit-tools.txt
+rem
+rem  THE PERMISSION SCOPE FOR AN UNATTENDED UNIT. One rule per line.
+rem  Read by run-unit.bat and passed to claude as --allowedTools.
+rem
+rem  IT IS A DATA FILE ON PURPOSE. Widening the scope must be an edit
+rem  here, visible in a diff on its own, rather than a change to the
+rem  launcher's logic. A guard that is widened in the same commit as
+rem  the code that needed widening is a guard nobody can review.
+rem
+rem  rem lines and blank lines are ignored.
+rem
+rem  ---------------------------------------------------------------
+rem  TWO FLAGS, TWO JOBS, and confusing them is the trap.
+rem
+rem    --tools        names which BUILT-IN tools exist at all.
+rem                   claude --help: --restricted "removes the
+rem                   built-in tools that run commands or code (Bash,
+rem                   PowerShell, REPL and the other code-running
+rem                   tools) and WebFetch UNLESS --tools NAMES THEM".
+rem    --allowedTools is the permission scope over those tools -
+rem                   these lines.
+rem
+rem  A tool absent from --tools has nothing to deny, so
+rem  permission_denials stays EMPTY while the work silently does not
+rem  happen. run-unit.bat therefore prints both lists on every run.
+rem  The --tools list lives in the launcher because it is the shape
+rem  of the session rather than its scope; this file is the scope.
+rem  ---------------------------------------------------------------
+rem
+rem  Permission rules match the WHOLE command string, so a compound
+rem  command is refused even when its parts are allowed. That refusal
+rem  is loud - it arrives in permission_denials naming the exact
+rem  string - and widening this file is then an edit informed by
+rem  evidence rather than by guessing. The owner accepted that cost
+rem  in the 2026-08-28 ruling.
+rem
+rem  Generated 2026-08-28 for: work instructions 039 task 4
+
+Read
+Write
+Edit
+
+rem  --- git, scoped to what a unit demonstrably runs -------------
+Bash(git status:*)
+Bash(git add:*)
+Bash(git commit:*)
+Bash(git push:*)
+Bash(git log:*)
+Bash(git diff:*)
+Bash(git rev-parse:*)
+
+rem  --- TEST_CMD from PROJECT_CARD.md ----------------------------
+rem  dotnet test
+Bash(dotnet test:*)
+Bash(dotnet build:*)
+Bash(dotnet restore:*)
+
+rem  --- added 2026-09-01 -----------------------------------------
+rem  THE UNIT VALIDATES ITS OWN REPORT. CLAUDE_CODE.md section 8
+rem  requires it and the tools file did not permit it, so unit 206
+rem  was refused this twice, finished six of six tasks with a valid
+rem  report, and was then failed by run-unit exit 4 - permission
+rem  denials - for the refusal it could not work around. The other
+rem  six denials that run were probes it adapted past. A denial is
+rem  only fatal when it blocks something the unit is obliged to do.
+Bash(cmd //c tools\arbiter\validate-output.bat:*)
+Bash(cmd /c tools\arbiter\validate-output.bat:*)
+Bash(tools\arbiter\validate-output.bat:*)
+
+rem  --- added 2026-09-01, second pass ----------------------------
+rem  A UNIT MUST BE ABLE TO UNDO ITS OWN STAGING. Unit 208 committed
+rem  a probe file by accident with git add -A, tried twice to un-track
+rem  it, was refused both times, and was then failed by run-unit exit 4
+rem  after eight of eight tasks and a valid report. git rm --cached
+rem  removes nothing from disk - it only un-stages - so it is the
+rem  narrowest repair available and refusing it leaves the tree dirtier
+rem  than allowing it.
+Bash(git rm --cached:*)
+Bash(git restore --staged:*)
+Bash(git reset HEAD:*)
+
+rem  READING THE PROJECT FILES IT IS GOVERNED BY. Unit 208 was also
+rem  refused a plain cat of PROJECT_STATUS.md and a sed range out of
+rem  CLAUDE_CODE.md - the report spec it is required to write against.
+rem  The Read tool covers these, so the refusals were survivable, but a
+rem  unit reaching for a shell read of its own standard is not misuse.
+Bash(cat PROJECT_STATUS.md:*)
+Bash(cat CLAUDE_CODE.md:*)
+Bash(sed -n:*)
+Bash(head -:*)
+Bash(tail -:*)
+
+rem  --- added 2026-08-29, work instructions 044 task 4 ------------
+rem  TWO READ-ONLY GIT COMMANDS, and the evidence for each is an
+rem  instruction an arbiter actually authored rather than a guess
+rem  about what a unit might want.
+rem
+rem  043's arbiter was refused its write, so the instruction it wrote
+rem  never reached the tree - but the whole text survives in the
+rem  refused call's tool_input, and its task 1 directs the unit to
+rem  run `git ls-files` and to record what `git remote -v` reports.
+rem  Neither was in this file, so that unit would have been refused
+rem  its own trace task.
+rem
+rem  BOTH ARE READ-ONLY. Neither can change the tree, the index or
+rem  the remote. `git remote` without a subcommand lists; the rule
+rem  is a prefix match, so `git remote add` would also match, and
+rem  that is accepted here because a fixture root has no remote and
+rem  because the alternative - Bash(git remote -v:*) - would refuse
+rem  `git remote -v` typed with any other flag order and send the
+rem  next unit back to widening-until-it-stops.
+rem
+rem  NOT ADDED, and deliberately: the seven calls 043's unit was
+rem  refused. Every one of them - cat, ls, grep, python, rm, and two
+rem  compound `cd ... && ...` lines - was a session with no
+rem  instruction hunting for one. A denial is evidence that a unit
+rem  WANTED something, never that it NEEDED it, and widening a scope
+rem  from the flailing of a unit that had nothing to do is how a
+rem  guard becomes a formality.
+Bash(git ls-files:*)
+Bash(git remote:*)

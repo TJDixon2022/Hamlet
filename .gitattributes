@@ -1,0 +1,19 @@
+# BATCH FILES ARE CRLF, AND THIS IS NOT COSMETIC.
+#
+# cmd.exe resumes a running batch file by BYTE OFFSET. With LF-only line
+# endings that arithmetic drifts, and a large file jumps: run-phase.bat with
+# LF was measured on 2026-08-31 leaving the reload check and arriving at
+# :noadvances - refusing a unit for a missing ADVANCES field that no arbiter
+# had yet been asked for - and, in another layout, failing to find :budget,
+# a label that is plainly in the file. The same file converted to CRLF, in
+# the same directory against the same root, took the correct branch.
+#
+# It is the same mechanism PHASE_PLAN.md's ruling of 2026-08-31 already
+# records for a file edited while it runs. This entry stops it arriving from
+# the other side: a session writing a .bat with LF endings.
+#
+# The working copies in this tree were LF because sessions wrote them that
+# way; git's own blobs are LF and core.autocrlf was already converting on
+# checkout. This makes the checkout rule explicit rather than dependent on
+# one machine's setting.
+*.bat text eol=crlf
