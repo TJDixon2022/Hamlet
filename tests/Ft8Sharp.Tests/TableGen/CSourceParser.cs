@@ -174,6 +174,16 @@ public static class CSourceParser
     /// Function-like macros are skipped — the regex requires whitespace between the name and
     /// the body, which <c>#define MAX(a,b)</c> does not have. Bodies that will not evaluate
     /// are left out rather than guessed at, and the caller reports what was missing.
+    /// <para>
+    /// <b>The line terminator is matched explicitly</b>, and that is not decoration. The pinned
+    /// <c>constants.h</c> has mixed line endings — most of it LF, part of it CRLF — and an
+    /// anchor of plain <c>$</c> matches before <c>\n</c> and not before <c>\r</c>, so every
+    /// macro on a CRLF line was being dropped without a word. Found by unit 206, when the two
+    /// scalars the message layer needs turned out to sit on opposite sides of that boundary and
+    /// only one of them resolved. Silently unresolved is the worst of the three possible
+    /// answers here, because the caller reports unresolved macros as a gap in corroboration
+    /// rather than as a contradiction.
+    /// </para>
     /// </remarks>
     public static IReadOnlyDictionary<string, long> ParseIntegerMacros(string headerSource)
     {
@@ -183,7 +193,7 @@ public static class CSourceParser
         var raw = new List<KeyValuePair<string, string>>();
         foreach (Match m in Regex.Matches(
                      text,
-                     @"^[ \t]*#[ \t]*define[ \t]+(?<name>[A-Za-z_][A-Za-z0-9_]*)[ \t]+(?<body>[^\r\n]*)$",
+                     @"^[ \t]*#[ \t]*define[ \t]+(?<name>[A-Za-z_][A-Za-z0-9_]*)[ \t]+(?<body>[^\r\n]*)\r?$",
                      RegexOptions.Multiline))
         {
             raw.Add(new KeyValuePair<string, string>(m.Groups["name"].Value, m.Groups["body"].Value.Trim()));

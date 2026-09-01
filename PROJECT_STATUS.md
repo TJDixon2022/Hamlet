@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: RUNNING
-TASK: 1 of 6
+TASK: 2 of 6
 WORK_INSTRUCTION: 206
 BALL: claude
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-152 (2026-08-31)
-UPDATED: 2026-09-01T10:46:00-04:00
-NOTE: Step 2's entry answered on its own evidence, not inherited: Ft8Sharp 38/37/0/1 in 291 ms, library builds 0 warnings 0 errors, 37 changed paths since the phase boundary with no Hamlet source or test path among them, and 55 plus 13 channel tests green with DecisionLogOrderTests among them. One skip only, which means the pinned clone answered - so task 2's sanctioned read has a route.
+UPDATED: 2026-09-01T10:47:22-04:00
+NOTE: The read landed and it turned up a defect on the way. The two scalars the port needs are not in crc.h where the instruction expects them but in constants.h, and the existing macro reader was silently dropping one of them because the pinned header has mixed line endings and the regex anchor only matches before a newline. Both the anchor and a missing cast form are now handled, so leg A has something to assert against. The task 1 stamp in the previous commit was composed rather than read, which is corrected here from the clock.
 
 ---
 
