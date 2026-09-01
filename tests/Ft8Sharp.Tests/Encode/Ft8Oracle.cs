@@ -122,6 +122,77 @@ internal static class Ft8Oracle
         }
     }
 
+    /// <summary>One run of the generator whose WAV was kept rather than deleted.</summary>
+    /// <param name="Run">Everything <see cref="Generate"/> would have reported.</param>
+    /// <param name="WavPath">
+    /// Where the file is. <b>The caller owns it and must delete it</b> — see
+    /// <see cref="WavFile.DeleteQuietly"/>.
+    /// </param>
+    internal sealed record KeptRun(Run Run, string WavPath);
+
+    /// <summary>
+    /// Runs the generator on one message and <em>keeps</em> the WAV it wrote, so its samples can be
+    /// read rather than only its size.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// <b>Beside <see cref="Generate"/> rather than instead of it.</b> Everything that only wants to
+    /// know whether a file was written and how big it was still goes through <see cref="Generate"/>
+    /// and still cannot leave a file behind by forgetting to.
+    /// </para>
+    /// <para>
+    /// <b>The caller deletes it, and deletes it per message rather than at the end.</b> These files
+    /// are roughly 350 KB apiece and the comparison corpus is fifty-one of them; held to the end
+    /// that is some eighteen megabytes of somebody else's output sitting in the temp folder for no
+    /// reason. Nothing upstream's binary produced is ever committed, so the file lives under
+    /// <see cref="Path.GetTempPath"/> and never under the tree.
+    /// </para>
+    /// </remarks>
+    public static KeptRun GenerateKeepingWav(string messageText)
+    {
+        var wav = Path.Combine(
+            Path.GetTempPath(),
+            $"ft8-oracle-{Guid.NewGuid():N}.wav");
+
+        try
+        {
+            return new KeptRun(Invoke(wav, messageText, wav), wav);
+        }
+        catch
+        {
+            WavFile.DeleteQuietly(wav);
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// The same, at a base frequency of our choosing rather than the generator's default, because
+    /// the generator takes one on its command line and a comparison that could only ever ask for the
+    /// default would never find out whether the frequency reaches the waveform at all.
+    /// </summary>
+    public static KeptRun GenerateKeepingWav(string messageText, float baseFrequency)
+    {
+        var wav = Path.Combine(
+            Path.GetTempPath(),
+            $"ft8-oracle-{Guid.NewGuid():N}.wav");
+
+        try
+        {
+            return new KeptRun(
+                Invoke(
+                    wav,
+                    messageText,
+                    wav,
+                    baseFrequency.ToString("R", System.Globalization.CultureInfo.InvariantCulture)),
+                wav);
+        }
+        catch
+        {
+            WavFile.DeleteQuietly(wav);
+            throw;
+        }
+    }
+
     /// <summary>
     /// Runs the generator with whatever arguments are given, so its own usage text and its
     /// behaviour on a message it will not encode can be read rather than guessed at.
