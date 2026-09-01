@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: RUNNING
-TASK: 2 of 6
+TASK: 3 of 6
 WORK_INSTRUCTION: 206
 BALL: claude
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-152 (2026-08-31)
-UPDATED: 2026-09-01T10:47:22-04:00
-NOTE: The read landed and it turned up a defect on the way. The two scalars the port needs are not in crc.h where the instruction expects them but in constants.h, and the existing macro reader was silently dropping one of them because the pinned header has mixed line endings and the regex anchor only matches before a newline. Both the anchor and a missing cast form are now handled, so leg A has something to assert against. The task 1 stamp in the previous commit was composed rather than read, which is corrected here from the clock.
+UPDATED: 2026-09-01T10:58:10-04:00
+NOTE: All three legs are standing and one of them turned up something. Leg A matches both scalars against the pin by machine; leg B agrees with an implementation that runs in the opposite direction over 504 messages at each of 20 bit lengths; leg C holds, because the seed is zero and there is no final XOR, so 77 basis computations reconstruct 20000 random messages exactly. The one external vector in the clone is disabled code and disagrees, and a 1458-way search over widths, bit counts and both polynomial forms reproduces it under none of them, so the comment is stale rather than the port being wrong. Container next.
 
 ---
 
