@@ -1270,3 +1270,151 @@ values one short.
 **None added.** The count stands at fifteen. Everything this unit built is in the test project;
 nothing under `src/Ft8Sharp/` changed tonight, and the library gained evidence about the capability
 it already had rather than a new one.
+
+---
+
+## What unit 211 found — the oracle answers, and the tones match
+
+The third unit of step 3, and the one where upstream's generator was finally asked a question.
+
+### Which of the three legs criterion 2 now stands on
+
+All three exist for the first time.
+
+- **Leg A, provenance against the pin.** Unchanged from unit 209: fourteen items corroborated
+  against upstream's own source, seven of them in the weaker expression-anchored form taken from
+  inside `ft8_encode`'s body. Still the weakest of the three and still worth having, because it is
+  the only leg that says *why* the port is shaped as it is.
+- **Leg B, the independent second implementation.** Unchanged, untouched and not weakened. It agrees
+  on every symbol of every message in the corpus by deliberately opposite arithmetic. **It is now
+  the weaker of two agreeing legs rather than the only implementation-level evidence there is** —
+  but it is kept, and not only for sentiment: it covers the messages leg C cannot reach, and it is
+  the only symbol-level evidence that survives on a machine with no clone.
+- **Leg C, bit-identity against upstream's own output. This one is new tonight.** Every message in
+  the comparison corpus that upstream's generator can be asked for was encoded by both, and every
+  symbol of every one of them is identical. This is the leg that agreeing with ourselves cannot
+  fake.
+
+### How the oracle was made to run, so the route survives a re-pin
+
+**Read this before deciding the temporary copy is a hack.** Upstream's generator is built outside
+this tree by the owner's own script, from the pinned clone. The image it produces is a *correct*
+program that cannot survive its own output on this platform:
+
+- `demo/gen_ft8.c` puts the whole fifteen-second waveform on the stack in a C99 variable length
+  array — an array whose extent is an expression rather than a constant;
+- the systems `ft8_lib` is written for hand a main thread 8 MB of stack;
+- the Windows linker gave the image the default **1 MB** and wrote that number into
+  `SizeOfStackReserve` in its PE optional header, where **Windows reads it at process creation**.
+
+So no way of *launching* the program helps, and for two units the phase could not ask it anything:
+it died of `STATUS_STACK_OVERFLOW` before it could flush a byte.
+
+**What the test project does about it.** It copies the executable to a folder of its own under the
+system temp path, writes a larger reserve into the copy at the one offset the header names, runs the
+copy, and deletes it when the run ends. **The original is never opened for writing.** Nothing
+patched enters the tree and nothing patched is committed.
+
+**Why that is not a weakened oracle, and why the answer is a requirement rather than an argument.**
+`SizeOfStackReserve` is a number the loader reads to size an address-space reservation. It is not
+code, it is not data the program reads, and it is an input to no computation the generator performs.
+That is a *claim*, and the test project is not permitted to assume it: **the equality of the copy
+with the original is asserted on every run**, four ways, before a single tone is compared —
+
+1. the two files are the same length and **every byte that differs lies inside the field written**;
+2. the `.text` sections of the two images hash the same, so no instruction moved;
+3. run with no arguments, where the original already worked, the copy exits the same way and prints
+   the same bytes; and
+4. it now survives a real message and writes its WAV.
+
+Where any of those does not come out, the copy is **not offered to the comparison at all** and the
+skip reason says which proof failed. A comparison run against an unproven copy may not be reported
+as bit-identity with `ft8_lib`.
+
+**One thing here is worth knowing before it looks like a bug.** The number of differing bytes is
+*smaller* than the width of the field, because the old and new reserves share most of their
+little-endian bytes. The proof is containment, not a count: no byte outside the field moved.
+
+**What would make the copy unnecessary.** A stack-size flag on the link line in the owner's build
+script. The test project checks the image's reserve first and **makes no copy at all** if it already
+asks for 8 MB or more, so the day that flag lands this machinery quietly stops running.
+
+### What upstream actually prints, which nobody could know until it ran
+
+Two lines and a blank one: the packed message as hex bytes after a label, and the tone sequence as
+**an unbroken run of digits after a label — not space-separated**. The tone parser was written for
+the space-separated form and gained the run-together form here; both are exact, both require the
+right count, and both are watched refusing a run one short, one long, one carrying a value outside
+the alphabet, and a same-length run of digits that are not tones.
+
+**There is no codeword on upstream's stdout, under any label tried.** That settles something that
+had been recorded as pending: criterion 1's codeword half **cannot** be upgraded to a byte-for-byte
+comparison however well the oracle runs, and stays on the syndrome check against the checked-in
+parity tables. Its payload half **is** upgraded — upstream's packed message and ours are compared
+byte for byte across the whole corpus.
+
+### Whether the Gray map direction and the bit-walk continuity are settled
+
+**Both are settled against upstream, and they are no longer expression-anchored readings.**
+
+Unit 209 named these as the two ways this port could be wrong that nothing inside the library could
+catch: the Gray map run backwards, and the codeword bit walk restarted at each sync block instead of
+continuing across it. Either produces a sequence of exactly the right length, every value inside the
+tone alphabet, and sync blocks in exactly the right places.
+
+Neither survives the comparison. Every data symbol of every compared message agrees with upstream's,
+and a reversed map or a restarted walk moves data symbols. **The readings were right.**
+
+### The two corpus entries that were asking a different question
+
+**This is the subtlest thing the unit found and it would have read as a defect.** Our API names a
+message type — the caller chooses the packer. Upstream's generator is handed a string and chooses
+the type *itself*. Where the two choose differently, the tones differ for a reason that has nothing
+to do with either encoder, and a comparison that only looked at tones would have called that a bug
+in this port.
+
+Both cases were caught by comparing the **packed bytes and the message type**, not the tones:
+
+- **The non-standard hashed-companion entry.** We pack it as the non-standard-callsign type with a
+  twelve-bit hash. Upstream, given the same words, packs a **standard** message with the
+  non-standard call hashed into its 28-bit field as a twenty-two-bit hash. Two hashes, two wire
+  formats, two different questions. **That entry now has no text form**, exactly as telemetry has
+  none, and is named as not covered rather than left looking covered.
+- **A free-text string that reads as a standard message.** A free-text entry must be a string
+  upstream would *also* choose free text for. One added during this unit was not, and was replaced
+  rather than excused.
+
+**The lesson for the next unit is general:** when comparing against upstream, compare the packed
+message first. It separates *the two sides disagree* from *the two sides were asked different
+things*, and only the first of those is a defect.
+
+### Unit 208's carried-forward debt, on its fourth unit
+
+**Settled for the form upstream can be asked, and honestly short of complete.**
+
+A callsign genuinely travels as a hash on **both** sides, in the standard-message form, and those
+messages are identical to upstream's symbol for symbol and byte for byte. A wrong hash function
+moves those bytes, so the hash is now checked against upstream rather than against itself.
+
+**What is still not covered:** the non-standard-callsign type carrying a *real* twelve-bit companion
+hash. Upstream's generator keeps no cache between runs and its packer will not prime one from a
+command line, so no string produces that wire format from it. The one form that does yield the
+non-standard type from the command line is a CQ, and a CQ under that type writes the twelve bits as
+zero — no hash on the wire. **That leg is not covered and is not counted as covered.**
+
+### What is not covered, said plainly rather than left looking covered
+
+- **Telemetry.** Nine bytes is not a sentence and upstream's generator takes only a string. Reachable
+  by our encoder, not by this comparison. Unchanged from unit 210.
+- **The non-standard type's twelve-bit companion hash**, for the reason above.
+- **The 174-bit LDPC codeword**, byte for byte — upstream does not print one.
+- **Every machine but this one.** The comparison invokes the binary at run time and **skips rather
+  than fails** when the clone or the build is absent, so a fresh clone stays green. That is the same
+  standing the plan already gives the reference-WAV criterion, and it is accepted. What makes it
+  worth something is that it *ran here*.
+
+### Divergences from upstream
+
+**None added.** The count stands at fifteen. Everything this unit built is in the test project;
+nothing under `src/Ft8Sharp/` changed except the version, and the library gained evidence about the
+capability it already had rather than a new one.

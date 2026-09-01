@@ -76,7 +76,16 @@ public class Ft8SymbolSecondOpinionTests
             + string.Join(", ", corpus.Select(e => e.Kind).Distinct()));
         _output.WriteLine(
             $"messages carrying a hashed callsign     : {corpus.Count(e => e.CarriesHashedCallsign)}");
-        _output.WriteLine("THIS IS LEG B. It is not bit-identity with ft8_lib. Criterion 2 is open.");
+        _output.WriteLine(
+            "THIS IS LEG B, and it is still not bit-identity with ft8_lib — it is this library "
+            + "agreeing with a second implementation of its own, by deliberately opposite "
+            + "arithmetic. What changed in unit 211 is what stands beside it: leg C now runs, so "
+            + "leg B is the WEAKER OF TWO AGREEING LEGS rather than the only implementation-level "
+            + "evidence there is. It is kept for two reasons. It covers the four messages leg C "
+            + "cannot reach — the telemetry entries and the non-standard hashed-companion entry, "
+            + "which upstream's generator has no text form for — and it is the only symbol-level "
+            + "evidence that survives on a machine with no clone and nothing built from it, which "
+            + "is every machine but this one.");
 
         Assert.Equal(compared, agreeing);
         Assert.True(firstDivergence.Length == 0, firstDivergence);
