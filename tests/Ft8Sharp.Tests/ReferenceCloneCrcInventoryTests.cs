@@ -190,6 +190,121 @@ public class ReferenceCloneCrcInventoryTests
         }
     }
 
+    /// <summary>
+    /// Whether the packing alphabets are tables the checked-in converter could read — and they are
+    /// not.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// <b>An alphabet is a table, and a table has one route into this repository.</b> So the
+    /// question here is not what the alphabets contain but what form upstream holds them in.
+    /// <b>The answer is that upstream does not hold them as data at all.</b> They are enumeration
+    /// members in <c>ft8/text.h</c>, and the mapping between a character and its index is computed
+    /// by arithmetic and branching in <c>ft8/text.c</c> — there is no string literal anywhere for
+    /// a converter to lift. The only place the characters appear in order is a trailing comment
+    /// beside each enumerator, and reading a table out of somebody's comment is worse provenance
+    /// than transcribing one, not better.
+    /// </para>
+    /// <para>
+    /// <b>That settles unit 206's drop candidate on its own stated condition</b> rather than on
+    /// the clock, and it leaves the generated tables file untouched. What unit 207 inherits is a
+    /// port of two small functions rather than an extraction of six tables.
+    /// </para>
+    /// <para>
+    /// <b>Lengths and identifiers only.</b> No character of any alphabet is printed.
+    /// </para>
+    /// </remarks>
+    [RequiresReferenceCloneFact]
+    public void ThePackingAlphabetsAreNotTablesAConverterCouldRead()
+    {
+        var location = RequireReachableClone();
+        _output.WriteLine($"clone                   : {location}");
+        _output.WriteLine("LENGTHS ONLY — no character of any alphabet is printed here, by ruling.");
+
+        // The instruction names pack.c and unpack.c. Neither is in the pin: packing and unpacking
+        // both live in message.c.
+        foreach (var relative in new[]
+                 {
+                     @"ft8\pack.c", @"ft8\unpack.c", @"ft8\text.c", @"ft8\text.h", @"ft8\message.c",
+                 })
+        {
+            var path = Path.Combine(location, relative);
+            _output.WriteLine(File.Exists(path)
+                ? $"{relative,-16}: present, {new FileInfo(path).Length} bytes, "
+                  + $"{CountLines(File.ReadAllText(path))} lines"
+                : $"{relative,-16}: ABSENT");
+        }
+
+        var sources = Directory.EnumerateFiles(Path.Combine(location, "ft8"), "*.*").Where(IsCSource).ToList();
+
+        // A table a converter could read would look like one of these two.
+        var literals = 0;
+        var braceArrays = 0;
+        foreach (var text in sources.Select(File.ReadAllText))
+        {
+            literals += AlphabetAsStringLiteral.Matches(text).Count;
+            braceArrays += AlphabetAsCharArray.Matches(text).Count;
+        }
+
+        _output.WriteLine($"sources scanned          : {sources.Count}");
+        _output.WriteLine($"alphabets as literals    : {literals}");
+        _output.WriteLine($"alphabets as char arrays : {braceArrays}");
+
+        // What they are instead: names, and the length each one's own comment states.
+        _output.WriteLine("declared as enumerators in ft8/text.h:");
+        var enumerators = 0;
+        foreach (var path in sources)
+        {
+            foreach (Match m in AlphabetEnumerator.Matches(File.ReadAllText(path)))
+            {
+                enumerators++;
+                _output.WriteLine(
+                    $"    {Path.GetFileName(path),-10} {m.Groups["name"].Value,-38} "
+                    + $"{m.Groups["length"].Value} characters");
+            }
+        }
+
+        Assert.True(enumerators > 0, "no alphabet enumerator was found, so this measured nothing.");
+
+        Assert.Equal(0, literals);
+        Assert.Equal(0, braceArrays);
+    }
+
+    /// <summary>An alphabet held as a string literal, which is the form a converter could read.</summary>
+    private static readonly Regex AlphabetAsStringLiteral = new(
+        @"[A-Za-z_][A-Za-z0-9_]*CHAR_TABLE[A-Za-z0-9_]*\s*(?:\[[^\]]*\])?\s*=\s*""",
+        RegexOptions.Compiled);
+
+    /// <summary>An alphabet held as a braced char array, the other form a converter could read.</summary>
+    private static readonly Regex AlphabetAsCharArray = new(
+        @"[A-Za-z_][A-Za-z0-9_]*CHAR_TABLE[A-Za-z0-9_]*\s*\[[^\]]*\]\s*=\s*\{",
+        RegexOptions.Compiled);
+
+    /// <summary>
+    /// An alphabet as upstream actually holds it: an enumerator, with its length in the comment
+    /// beside it. The length is taken from the bracketed count, never from the comment's own text.
+    /// </summary>
+    private static readonly Regex AlphabetEnumerator = new(
+        @"(?<name>[A-Za-z_][A-Za-z0-9_]*CHAR_TABLE[A-Za-z0-9_]*)\s*,\s*//\s*table\[(?<length>\d+)\]",
+        RegexOptions.Compiled);
+
+    /// <summary>The length a C string literal actually has, counting an escape as one character.</summary>
+    private static int UnescapedLength(string literal)
+    {
+        var length = 0;
+        for (var i = 0; i < literal.Length; i++)
+        {
+            if (literal[i] == '\\')
+            {
+                i++;
+            }
+
+            length++;
+        }
+
+        return length;
+    }
+
     private string RequireReachableClone()
     {
         var reach = ReferenceClone.Probe(out var detail);
