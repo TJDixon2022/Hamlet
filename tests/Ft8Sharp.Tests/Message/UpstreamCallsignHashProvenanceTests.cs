@@ -272,6 +272,80 @@ public class UpstreamCallsignHashProvenanceTests
     }
 
     /// <summary>
+    /// That the pin's non-standard-callsign message carries the field widths this port packs, read
+    /// out of the pin's own packing expressions rather than out of its comments.
+    /// </summary>
+    [RequiresReferenceCloneFact]
+    public void TheNonstandardMessageFieldWidthsMatchThePin()
+    {
+        var source = ReadFromPin(@"ft8\message.c");
+        var definition = ReferenceCloneHashInventoryTests.ExtractDefinition(source, "ftx_message_encode_nonstd");
+        Assert.NotNull(definition);
+
+        _output.WriteLine("NAMES AND WIDTHS ONLY — no packed value is printed here.");
+
+        var corroborated = 0;
+        var uncorroborated = new List<string>();
+
+        void Check(string role, string body, string pattern, long ours)
+        {
+            var match = Regex.Match(body, pattern);
+            if (!match.Success || !CSourceParser.TryParseIntegerLiteral(match.Groups["v"].Value, out var theirs))
+            {
+                uncorroborated.Add(role);
+                _output.WriteLine($"    {role,-26} NOT RESOLVABLE — uncorroborated");
+                return;
+            }
+
+            Assert.True(theirs == ours, $"the {role} in the pin does not equal this library's constant.");
+            corroborated++;
+            _output.WriteLine($"    {role,-26} matches");
+        }
+
+        // The type code, and the two shifts that place the 12-bit hash and the 58-bit call. The
+        // widths follow from the shifts: the hash's low nibble lands where the call's top nibble
+        // begins, which is what makes the split twelve and fifty-eight rather than anything else.
+        Check("type code", definition!, @"uint8_t\s+i3\s*=\s*(?<v>\d+)\s*;", Ft8MessageTypes.PrimaryNonstandard);
+        Check(
+            "hash field placement",
+            definition!,
+            @"payload\[0\]\s*=\s*\(uint8_t\)\(\s*n12\s*>>\s*(?<v>\d+)\s*\)",
+            Ft8CallsignHash.Bits12 - 8);
+        Check(
+            "call field placement",
+            definition!,
+            @"n58\s*>>\s*(?<v>\d+)\s*\)\s*;\s*\r?\n\s*msg->payload\[2\]",
+            Ft8NonstandardMessage.CallBits - 4);
+
+        // The 58-bit field's own packing base, read out of the function that fills it.
+        var pack58 = ReferenceCloneHashInventoryTests.ExtractDefinition(source, "pack58");
+        Assert.NotNull(pack58);
+        Check(
+            "call packing base",
+            pack58!,
+            @"result\s*\*\s*(?<v>\d+)\s*\)\s*\+\s*j",
+            (long)Ft8NonstandardMessage.CallBase);
+        Check(
+            "call length",
+            pack58!,
+            @"length\s*<\s*(?<v>\d+)\s*\)",
+            Ft8NonstandardMessage.CallLength);
+
+        _output.WriteLine(
+            $"    field widths sum           {Ft8NonstandardMessage.HashBits} + {Ft8NonstandardMessage.CallBits} "
+            + "+ 1 + 2 + 1 + 3 = 77, which is the message");
+
+        _output.WriteLine($"corroborated   : {corroborated}");
+        _output.WriteLine($"uncorroborated : {uncorroborated.Count} ({string.Join(", ", uncorroborated)})");
+
+        Assert.Empty(uncorroborated);
+        Assert.Equal(5, corroborated);
+        Assert.Equal(
+            Ft8Payload.MessageBits,
+            Ft8NonstandardMessage.HashBits + Ft8NonstandardMessage.CallBits + 1 + 2 + 1 + Ft8MessageTypes.PrimaryBits);
+    }
+
+    /// <summary>
     /// The pin's own declaration order of the six alphabets, which is what pairs an upstream
     /// alphabet name with one of this library's.
     /// </summary>

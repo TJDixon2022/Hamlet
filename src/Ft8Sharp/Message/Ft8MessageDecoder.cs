@@ -93,6 +93,14 @@ public static class Ft8MessageDecoder
                     : Ft8DecodeResult.Refusal(type, status);
             }
 
+            case Ft8MessageType.NonstandardCallsign:
+            {
+                var status = Ft8NonstandardMessage.TryUnpack(message, cache, out var fields);
+                return status == Ft8DecodeStatus.Decoded
+                    ? Ft8DecodeResult.Message(type, fields.Text, fields)
+                    : Ft8DecodeResult.Refusal(type, status);
+            }
+
             case Ft8MessageType.FreeText:
             {
                 var status = Ft8FreeText.TryUnpackText(message, out var text);

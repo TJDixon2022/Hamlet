@@ -57,6 +57,12 @@ public static class Ft8MessageTypes
     /// <summary>The primary code of a standard message carrying a <c>/P</c> suffix.</summary>
     public const int PrimaryStandardWithP = 2;
 
+    /// <summary>
+    /// The primary code of the message that carries one non-standard callsign in full and one as a
+    /// twelve-bit hash.
+    /// </summary>
+    public const int PrimaryNonstandard = 4;
+
     /// <summary>The primary selector of a packed message.</summary>
     /// <remarks>Never throws: any ten bytes have one.</remarks>
     public static int Primary(ReadOnlySpan<byte> message) => (message[9] >> 3) & 0x07;
@@ -95,7 +101,7 @@ public static class Ft8MessageTypes
         },
         PrimaryStandard or PrimaryStandardWithP => Ft8MessageType.Standard,
         3 => Ft8MessageType.ArrlRttyRoundup,
-        4 => Ft8MessageType.NonstandardCallsign,
+        PrimaryNonstandard => Ft8MessageType.NonstandardCallsign,
         5 => Ft8MessageType.WwrofContest,
         _ => Ft8MessageType.Unknown,
     };
@@ -111,6 +117,11 @@ public static class Ft8MessageTypes
         Ft8MessageType.Standard => true,
         Ft8MessageType.FreeText => true,
         Ft8MessageType.Telemetry => true,
+
+        // Built by unit 208. It is the one row that moved: reading it needs the rolling hash cache,
+        // and a decode of it without one is refused as unresolved rather than as unsupported, which
+        // is a different and more honest answer.
+        Ft8MessageType.NonstandardCallsign => true,
         _ => false,
     };
 }
