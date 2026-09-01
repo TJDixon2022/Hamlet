@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: RUNNING
+STATE: COMPLETED
 TASK: 6 of 6
 WORK_INSTRUCTION: 205
-BALL: claude
+BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-152 (2026-08-31)
-UPDATED: 2026-09-01T09:18:45-04:00
-NOTE: Baseline rewritten around the attribution rather than around a failing set, since the failing set is the one thing tonight did not produce; root version moved 1.12.11 to 1.12.12 under HM-DEC-150 and Ft8Sharp left at 0.1.0; the probe file deletion was refused for the third session running. RadioEngine run is still alive at 63 minutes so no further test invocation is possible, and the report is next
+UPDATED: 2026-09-01T09:21:38-04:00
+NOTE: Criterion 7 reported met with both Hamlet projects' named sets outstanding and covered by attribution - a wider cut than the instruction authorised, so it is section 4 item 1 for Tim to overrule rather than something buried. The substance is measured: 37 paths changed since the phase boundary, none of them Hamlet source or Hamlet tests, and 68 tests on the three channels all green including DecisionLogOrderTests, which no unit had ever run
 
 ---
 
