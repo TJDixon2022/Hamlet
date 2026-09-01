@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: RUNNING
-TASK: 1 of 6
+TASK: 2 of 6
 WORK_INSTRUCTION: 205
 BALL: claude
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-152 (2026-08-31)
-UPDATED: 2026-09-01T08:12:29-04:00
-NOTE: Trace taken - HEAD f743fc2 on main, 34 dirty lines against the instruction's 33, Hamlet.sln names exactly three test projects, boundary 6f58a76^ resolves to 2828ab6 over 24 phase commits, and Ft8Sharp.Tests read 38/37/0/1 in 42ms so criteria 5 and 6 are intact; moving to the six-criteria re-verification
+UPDATED: 2026-09-01T08:13:15-04:00
+NOTE: Six criteria re-verified afresh and all six hold - library builds 0 warnings 0 errors under net8.0 with nullable and warnings-as-errors and not one PackageReference, LICENSE NOTICE and porting-notes carry the pin, both halves of Ft8SharpBoundaryTests green with the refusal recorded at bb5ba9d, and the four Ldpc classes plus the converter's own tests green; next is the census and the attribution, which is the task that actually closes criterion 7
 
 ---
 
