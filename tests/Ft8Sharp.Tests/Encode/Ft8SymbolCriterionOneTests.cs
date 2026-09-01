@@ -100,7 +100,10 @@ public class Ft8SymbolCriterionOneTests
         _output.WriteLine(
             "READING STOOD ON: the syndrome check against the checked-in parity tables, computed "
             + "by the independent LdpcCheck. NOT a byte-for-byte comparison against ft8_lib's own "
-            + "codeword — the reference could not be built on this machine.");
+            + "codeword. Unit 209 recorded that as 'the reference could not be built on this "
+            + "machine', which unit 210 found to be no longer the whole truth: the reference IS "
+            + "built here and it will not run, so the stronger reading is still out of reach for a "
+            + "different reason. Ft8OracleDiagnosisTests holds the measurement.");
 
         Assert.True(failures == 0, firstFailure);
 
