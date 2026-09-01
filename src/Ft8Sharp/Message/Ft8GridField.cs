@@ -36,6 +36,11 @@ namespace Ft8Sharp.Message;
 ///     want and it is reached deliberately rather than by printing punctuation into a callsign
 ///     line.
 ///   </description></item>
+///   <item><description>
+///     <b>One grid square is refused because a token has taken its name</b> — see
+///     <see cref="GridClaimedByAToken"/>. Found by the exhaustive sweep rather than predicted, and
+///     it is the reason that sweep is worth running over a whole field instead of a sample.
+///   </description></item>
 /// </list>
 /// </remarks>
 public static class Ft8GridField
@@ -80,6 +85,26 @@ public static class Ft8GridField
     /// refused as malformed.
     /// </remarks>
     public const int LastReportCode = ReportOffset + 99;
+
+    /// <summary>
+    /// The one grid square inside the grid sub-range whose own text is taken by a token: the
+    /// square whose four characters spell the sign-off <c>RR73</c>.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// <b>Found by the exhaustive sweep rather than reasoned about in advance.</b> The packer tests
+    /// for the tokens before it tests for a grid, so it can never produce this value; the unpacker
+    /// reaches it, and the text it produces is text every operator on the band reads as a sign-off.
+    /// Presenting a grid square that will be read as something else is the display fault §0.0 is
+    /// about, so this value is refused.
+    /// </para>
+    /// <para>
+    /// The cost is that a station really in this square, using an encoder that does not make the
+    /// same choice, is not decoded. Silence is the right answer there and a confident wrong one is
+    /// not.
+    /// </para>
+    /// </remarks>
+    public const int GridClaimedByAToken = (((('R' - 'A') * 18) + ('R' - 'A')) * 100) + 73;
 
     /// <summary>The bit that carries the <c>R</c> flag in the value <see cref="Pack"/> returns.</summary>
     /// <remarks>
@@ -176,6 +201,12 @@ public static class Ft8GridField
 
         if (value < 0 || value >= Range)
         {
+            return Ft8FieldResult.Malformed;
+        }
+
+        if (value == GridClaimedByAToken)
+        {
+            // The square whose name a token has taken. Refused rather than shown as a grid.
             return Ft8FieldResult.Malformed;
         }
 
