@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: RUNNING
-TASK: 3 of 6
+TASK: 6 of 6
 WORK_INSTRUCTION: 205
 BALL: claude
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-152 (2026-08-31)
-UPDATED: 2026-09-01T08:14:47-04:00
-NOTE: The census discovered 2718 tests across the three projects - 2157 RadioEngine, 523 App, 38 Ft8Sharp - and Hamlet.App.Tests enumerated in six seconds, so whatever ate 110 minutes last unit is in the running and not the loading; attribution shows 37 changed paths since 2828ab6 with none under either Hamlet source tree or either Hamlet test tree, and all three channels came back green, DecisionLogOrderTests included, so nothing this phase did has reddened a Hamlet test
+UPDATED: 2026-09-01T09:16:10-04:00
+NOTE: Task 4 bounded out at 60 minutes with the run still going and its stream holding nothing but the start stamp, and the reason it holds nothing is mine - a grep in the pipe block-buffered the very console text the instruction named as the only thing that survives an early stop. Task 5 is dropped because the run is still alive and two projects may not run at once. Writing the baseline and the verdict now
 
 ---
 
