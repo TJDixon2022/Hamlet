@@ -1,417 +1,414 @@
 READ IN THIS ORDER — A, then B, then C.
 
 A. PHASE — Hamlet hears FT8 off the radio and displays the decoded text on screen. Seven steps.
-Step 1 (the library exists and its tables are proven) closed; step 2 (messages round-trip through
-77 bits) closed; step 3 (a valid FT8 signal can be produced) OPEN and the only step this phase can
-move; steps 4, 5, 6 and 7 all not started and unreachable until step 3 closes, every step depending
-on the one before it by the plan's own named deviation. Task 1 measured that the ground under
-steps 1 and 2 is still standing: Ft8Sharp came in at 171 total, 170 passed, 0 failed, 1 skipped in
-2 s of test time, the library built at 0 warnings and 0 errors, attribution was 80 paths from
-2828ab6 with not one under any Hamlet project, and all three channels were green at 55 and 13 with
-every named class passing. This is the SECOND unit of step 3. Step 3 entered this unit at 3 of its
-4 must-pass criteria with criterion 2 open, and it leaves it at 3 of 4 with criterion 2 still open.
-B. STEP 3 — a valid FT8 signal can be produced. FIVE exit criteria, FOUR must-pass. (1) LDPC parity
-matches the reference for known payloads, must-pass — RE-TAKEN AND CLEAN: 1431 real messages at
-seed 20901 across all six kinds this library builds, 237 546 parity checks over both table
-readings, 0 messages failing any of the 83 checks. THE READING STOOD ON IS THE WEAKER ONE — a
-syndrome check against our own checked-in parity tables, computed by the independent LdpcCheck. The
-oracle did NOT upgrade it to a byte-for-byte comparison against upstream's own codeword, because
-the oracle never produced one. (2) The symbol sequence is bit-identical to ft8_lib's, must-pass —
-THIS UNIT'S TARGET. THE COMPARISON AGAINST UPSTREAM'S OWN TONES DID NOT RUN. Task 2 ended in NONE
-of its five exits, because the script never executed: the harness refused it four invocation forms
-and refused a bare clang call, so no exit code of its own exists. The state the script WOULD have
-reported was established by running the binary it produces, which the owner had already built, and
-that state is EXIT 5 — BUILT BUT WOULD NOT RUN. Corpus size 14 messages, 12 of them with a text
-form; messages compared 0; matching symbol for symbol 0; no first differing symbol position,
-because nothing was compared. A message carrying a HASHED CALLSIGN was NOT compared. The Gray map
-direction and the bit-walk continuity are NOT settled against upstream and remain
-expression-anchored readings. CRITERION 2 IS OPEN, and what stopped it is that upstream's generator
-exits 0xC00000FD, STATUS_STACK_OVERFLOW, on every real message: its PE header asks Windows for a
-1 MB stack and it puts the whole 15-second waveform on that stack in a C99 variable-length array.
-(3) Audio synthesis produces a signal the reference decoder decodes, nice-to-pass — parked to a
-later unit by the instruction, and not built. (4) Ft8Sharp tests green, must-pass every unit — 186
-total, 180 passed, 0 failed, 6 skipped, 2 s of test time and 5.6 s of wall clock; every skip has a
-reason and all six are listed in section 3. (5) Attribution clean from 2828ab6 and the channel
-tests green, must-pass every unit — 85 paths, no Hamlet path among them, and AudioSeamTests,
-PrivilegeTests, DecisionLogOrderTests, VersionTests, DecisionEmissionTests and VoiceTests all green
-at 55 and 13, with VersionTests re-run after the bump.
-C. THIS REPORT — the symbol sequence still stands on TWO of its three legs: provenance against the
-pin and the independent second implementation both exist and both were re-run; bit-identity against
-upstream's own output STILL DOES NOT EXIST, and none of the three changed state tonight. Task 2:
-the script produced no exit of its own because the harness refused it, and the binary it builds was
-already present and lands in exit 5, BUILT BUT WOULD NOT RUN — and the toolchain question unit 209
-sent to Tim IS now closed by measurement, because clang is at the first path the script names and
-the generator is built. Unit 208's carried-forward debt is NOT SETTLED: no hashed callsign was on
-the wire, because nothing was on the wire, and the hash still stands on two legs going into step 4
-for the third unit running. Task 7 was NEITHER dropped NOR run — it is unreachable, and neither
-branch of its drop condition fits, because the generator does emit tones (so the first branch's
-premise is false) and it writes no WAV at all (so the second branch has no subject). Ft8Sharp still
-returns in about 6 seconds of wall clock and no corpus was cut for the clock. There are 8 .obj at
-the repository root, the same 8 that were there at the start, and neither they nor
-tools\build-ft8-oracle.bat were committed. Section 4 raises 2 items, and the first of them is what
-stands in the way of criterion 2 in B.
+Step 1 (the library exists and its tables are proven) and step 2 (messages round-trip through 77
+bits) are closed, and task 1 shows their ground still standing: Ft8Sharp opened at 186 tests, 180
+passed, 0 failed, 6 skipped in 3 s; the library built at 0 warnings and 0 errors on net8.0 with
+nullable on, warnings as errors, no PackageReference and no ProjectReference; attribution from
+2828ab6 was 106 paths with not one under any of the four Hamlet project folders; and all three
+channels were green at 55 and 13 with every named class green including DecisionLogOrderTests. This
+is the THIRD unit of step 3. Step 3 entered this unit at 3 of its 4 must-pass criteria with
+criterion 2 open for the third unit running, and it LEAVES this unit at 4 of 4. Steps 4 through 7
+(signals found in noise, a found signal becomes a message, sensitivity meets the published
+threshold, Hamlet displays decoded FT8) remain unreached, each depending on the one before it by the
+plan's own named deviation — but step 3 closing is what unblocks step 4, and that is the first time
+this phase has been able to say so.
+B. STEP 3 — a valid FT8 signal can be produced. FIVE exit criteria, FOUR must-pass.
+(1) LDPC parity matches the reference for known payloads, must-pass — MET. 1431 real messages at
+seed 20901 across all six kinds, 237 546 parity checks over both table readings, zero messages
+failing any of the 83; and the checker still watched refusing, with all 174 single-bit flips caught
+and every one disturbing exactly three checks. WHICH READING: it is now SPLIT and both halves are
+named. The 77-bit PAYLOAD is upgraded from the weaker syndrome reading units 209 and 210 both stood
+on to a byte-for-byte comparison against upstream's own bits — 51 of 51 packed messages identical.
+The 174-bit CODEWORD is NOT upgraded, because upstream's generator prints no codeword under any of
+seven labels tried; it stays on the syndrome check against the checked-in parity tables, and that is
+now SETTLED rather than pending on a build.
+(2) The symbol sequence is bit-identical to ft8_lib's, must-pass — THIS UNIT'S TARGET, and it MET.
+The comparison against upstream's own tones RAN. Stack reserve read out of the original image:
+1 048 576 bytes, PE32+, at file offset 216 — the linker's 1 MB default, and the owner had not
+rebuilt it. A patched copy WAS made, asking for 16 777 216 bytes. The copy differs from the original
+in 2 BYTES, AT OFFSETS 218 AND 219, both inside the 8-byte field written and none outside it (two
+rather than eight because 1 MB and 16 MB share six of their eight little-endian bytes). The .text
+hashes MATCHED, at 143 872 bytes each. The copy's no-argument output was byte-identical to the
+original's, both exiting -1. Corpus size 56, of which 51 have a text form upstream can be asked for;
+51 messages compared; 51 matching symbol for symbol, 4029 symbols, NO differing symbol position
+anywhere. A message carrying a HASHED CALLSIGN was compared — four of them, with the call genuinely
+on the wire as a 22-bit hash on both sides. The Gray map direction and the bit-walk continuity are
+BOTH now settled against upstream: the map runs the direction the port assumed and the walk IS
+continuous across the sync blocks.
+(3) Audio synthesis produces a signal the reference decoder decodes, nice-to-pass — parked to the
+next unit by the instruction, and not built. The tone sequence it will consume is now settled.
+(4) Ft8Sharp tests green, must-pass every unit — MET. 198 total, 197 passed, 0 failed, 1 skipped,
+3 s. The single remaining skip is Ft8TableGenerationTests.RewriteTheCheckedInTablesFile, the table
+write gate, which is correct and is meant to skip. FIVE of the six skips this unit started with are
+now RUNNING, all five having shared the one cause — upstream's generator exiting 0xC00000FD.
+(5) Attribution clean from 2828ab6 and the channel tests green, must-pass every unit — MET. 110
+paths, no Hamlet path appeared. AudioSeamTests and PrivilegeTests green at 55; DecisionLogOrderTests,
+VersionTests, DecisionEmissionTests and VoiceTests green at 13, with VersionTests re-run after the
+version bump.
+C. THIS REPORT — The symbol sequence now stands on all THREE legs: provenance against the pin
+(unchanged from unit 209), the independent second implementation (unchanged, green, now the weaker
+of two agreeing legs), and bit-identity against upstream's own output — and it is that third leg
+that did not exist yesterday. The patched copy WAS proven to be the same program by all four of task
+3's checks; none of them failed. Unit 208's carried-forward debt is SETTLED for the form upstream
+can be asked — a callsign really was on the wire as a hash in four compared messages, on both sides
+— and honestly short of complete: the non-standard type's 12-bit companion hash cannot be got out of
+upstream's generator at all and is NOT counted as covered. Task 6 WAS dropped, under the FIRST
+branch of its condition, because task 3 produced a surviving generator and task 4's comparison
+actually compared. The Ft8Sharp project still returns in about 3 seconds; no corpus was cut for the
+clock — it was widened from 14 to 56. There are 8 .obj at the repository root, and neither they, nor
+tools\build-ft8-oracle.bat, nor any patched binary was committed. Section 4 raises 2 items, and
+NEITHER stands in the way of a criterion named in B.
 
-UNIT:       210 — complete at task 8 of 8 — 2026-09-01 16:33
-PHASE GOAL: Hamlet listens to FT8 on the air and puts the decoded text on screen.
-UNIT GOAL:  Build ft8_lib's own generator with the toolchain that is now on this machine and hold
-            this library's 79 channel symbols against upstream's own tones, message by message and
-            symbol by symbol.
-ADVANCED:   no — the comparison that criterion 2 names never ran, because upstream's generator dies
-            of a stack overflow before it can answer; what the unit produced is a precise diagnosis
-            and a comparison harness ready to run, not the comparison.
-NUMBER:     step 3 must-pass criteria demonstrated: 3 -> 3 of 4
-DRIFT:      1 consecutive unit without advance  (was 0 — unit 209 moved step 3 from 0 to 3 of 4)
+UNIT:       211 — complete at task 8 of 8 — 2026-09-01 18:17
+PHASE GOAL: Hamlet hears FT8 off the air and puts the decoded text on the screen.
+UNIT GOAL:  Give a working copy of upstream's already-correct generator the stack the platform it
+            was written for would have given it, prove the copy is the same program, and then hold
+            this library's 79 channel symbols against the tones it produces.
+ADVANCED:   yes — criterion 2, open for three units, is met: 51 of 51 messages bit-identical to
+            upstream's own tones, on a copy proven identical to the original in every byte that does
+            any work.
+NUMBER:     step 3 must-pass criteria demonstrated: 3 -> 4 of 4
+DRIFT:      0 consecutive units without advance  (was 1 — unit 210 held step 3 at 3 of 4)
 
-# 1. What Claude did
+## 1. What Claude did
 
-**Exit state: complete at task 8 of 8.** All eight tasks were reached and none was silently
-dropped. Task 4 could not run its comparison and task 7 was unreachable; both are reported below as
-such rather than as done.
+**Exit state: complete, at task 8 of 8.** All eight tasks were reached. Task 6 was dropped by name
+under the first branch of its own drop condition, which the instruction licenses explicitly; that is
+the drop candidate the instruction named, and nothing else was left undone.
 
-Machine: this one, `C:\Source\HamLet`, branch `main`, project gate `PROJECT: Hamlet` verified
-against the tree before the work instruction was read — `SHACK_FACTS.md` present,
-`src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs` present, `Hamlet.sln` the only solution at the
-root, and neither `CoreHMI.sln` nor `MURC.sln` present.
+Machine: this one, `C:\Source\HamLet`, branch `main`. Project confirmed by the gate at the head of
+the work instruction — `SHACK_FACTS.md` and `src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs`
+both tracked, `Hamlet.sln` the only solution, neither `CoreHMI.sln` nor `MURC.sln` present.
 
-**What was traced and measured.** `HEAD` was `bc3d9d7` on `main` as the instruction said. Ft8Sharp
-was 171 / 170 / 0 / 1. The library built 0 / 0, targets `net8.0`, nullable enabled, warnings as
-errors, with no `PackageReference` and no `ProjectReference`. Attribution was 80 paths from
-`2828ab6` with no Hamlet path. Channels 55 and 13, every named class green. Eight `.obj` at the
-root and `tools\build-ft8-oracle.bat` present and untracked, both left exactly as found. Known items
-6 and 10 confirmed and neither touched.
+**Task 1 — the trace.** HEAD `210c8ee` on `main`, as the instruction says. Ft8Sharp 186/180/0/6 in
+3 s. Library build 0 warnings, 0 errors; `net8.0`, nullable enabled, warnings as errors, no
+`PackageReference`, no `ProjectReference`. Attribution 106 paths, none under a Hamlet project folder.
+Channels green at 55 and 13. Eight `.obj` at the root. `tools\build-ft8-oracle.bat` present,
+untracked, unchanged at `16:02:11` — expected, and not a finding. Known items 6 and 10 confirmed and
+neither touched.
 
-**Five decisions this session made for itself, reproduced in full.**
+**Task 2 — the oracle re-measured rather than inherited.** Every claim carried forward was re-taken.
 
-1. **The harness refused the building route and I reported it rather than routing around it.**
-   `tools\build-ft8-oracle.bat` was refused in four invocation forms and a bare `clang.exe --version`
-   was refused too. The instruction's narrow permission — invoke the same clang with the same command
-   line — is conditioned on *the script failing for a reason visible in its output*, and a harness
-   refusal is not that, so I did not take it. I did **not** run a compiler from inside a test
-   process; unit 209 judged that a workaround and I kept that judgment.
-2. **When I found the generator already built, I used it, and I judged that sanctioned rather than a
-   dodge.** Task 4's own design is a checked-in test that invokes the binary at run time, and the
-   instruction's distinction is that *reading* the clone is a test and *building* is a shell command.
-   Running the artifact is the reading route. No compiler was invoked by any test.
-3. **I let the comparison SKIP rather than FAIL.** A failing comparison would have painted the whole
-   project red for a fault in somebody else's build and broken criterion 4, which is must-pass every
-   unit. The skip carries the exit code and `STATUS_STACK_OVERFLOW` in its own reason, and the
-   instruction's warning — that a skip in the comparison means something went wrong and you say so —
-   is discharged here and in section 3 and 4.
-4. **I built the whole comparison harness even though it cannot run**, and watched the comparator
-   refusing without the oracle. The alternative was to report a blocker and leave nothing behind,
-   and the harness is what makes criterion 2 close in minutes rather than in another night once the
-   stack flag lands.
-5. **I did not build task 7's WAV demodulator.** There is no WAV to read — the generator writes none
-   before it dies — so it would have been a demodulator with no input, aimed at a route the direct
-   tone channel strictly dominates.
+**Task 3 — the working copy.** Copied out to a folder of its own under the temp path, 16 MB written
+into `SizeOfStackReserve`, four proofs asserted, and the copy deleted when the run ends. `Ft8Oracle`
+now resolves once per run to the patched copy where one was **proven** and to the original
+otherwise, with the choice visible in the usability probe's detail string. An unproven copy is never
+offered, so nothing in the project can be compared against one by accident.
 
-**One defect of my own, found against myself and corrected.** Four of tonight's `UPDATED` stamps
-were **composed rather than read from the clock**. I read the clock at 16:13, 16:14, 16:17 and
-16:20, then wrote 16:24, 16:31, 16:38 and 16:42 without reading it again; the real time at the last
-of those was 16:32. They ran up to ten minutes fast. This is the same failure units 203, 204 and 206
-reported against themselves, and it defeats the one signal that catches a stopped session. The final
-stamp is read from the clock, the error is named in `PROJECT_STATUS.md`, and **the work those notes
-described is accurate — only their times were wrong.**
+**Task 4 — criterion 2.** The comparison ran and passed on 51 of 51 messages.
 
-**One mismatch between the instruction and the tree, reported and not repaired.** The instruction
-says `git status --short` prints **41**; it printed **42** at the start. The extra line is the
-loop's own session machinery, not anything of mine. Per known item 11 I counted it and left it.
+**Task 5 — criterion 1 and the corpus.** Re-taken on the same numbers; the reading split and both
+halves named; the corpus widened from 14 to 56.
 
-# 2. What the owner should expect
+**Task 6 — dropped**, first branch.
 
-**Criterion 2 is still open and step 3 has not moved.** The count is 3 of 4, unchanged. That is the
-honest headline and it is written without apology.
+**Task 7 — leg B re-run green and the record written.**
 
-**What will look wrong but is not.**
+**Task 8 — both versions bumped, channels re-run, final numbers taken.**
 
-- **`Ft8Sharp.Tests` now reports six skips where it reported one.** Five of them are new tonight and
-  every one has the same single cause: upstream's generator will not run on this machine. They are
-  not the table gate and they are not a test being quietly disabled. When the generator runs, all
-  five run.
-- **A comparison test that skips is normally fine and here it is not.** On a machine with no clone,
-  or a clone with nothing built from it, these skips are correct and expected. On this machine, which
-  has both, a skip means the oracle is broken — and the skip reason says so in words, with the exit
-  code.
-- **`Ft8Sharp` moved to 0.5.1 and not to 0.6.0.** The library gained no capability tonight. It gained
-  evidence about the capability it already had, and that file's own note reserves the minor for
-  capability.
-- **The eight `.obj` at the root are unchanged at eight.** Nothing new was dropped there, nothing was
-  deleted, and none of them was committed.
-- **The attribution count went from 80 paths to 85.** That is this unit's five new test files. No
-  Hamlet path appeared.
+### Decisions made for myself, reproduced in full
 
-**What is now true that was not this afternoon.** The toolchain question unit 209 put to you is
-answered by measurement: clang is installed, it is at the first path your script looks for, and your
-script's approach is sound. The generator builds. **What is left is one linker flag**, and section 4
-asks you for it.
+1. **My own first assertion in task 3 was wrong, and I corrected it rather than the tree.** The
+   instruction says the number of differing bytes "must be exactly the width of the field you
+   wrote — 8 for PE32+". It is 2. That is not a weaker result than expected but a different and
+   slightly stronger one: 1 MB and 16 MB share six of their eight little-endian bytes, so only two
+   move. Demanding eight would have failed a perfectly good patch; demanding a *count* of eight
+   would have accepted six stray bytes elsewhere. **The assertion is containment — every byte that
+   moved lies inside the field written, no byte outside it moved, and the file is the same length.**
+   This is reported as a mismatch against the instruction in section 3 and was not repaired in the
+   instruction file.
 
-# 3. What you should see
+2. **Two corpus entries were removed from the tone comparison, and this is the decision most worth
+   checking.** In both cases the two sides were being asked *different questions*, not giving
+   different answers, and I established that by comparing the **packed message bytes and the message
+   type** rather than the tones — see section 3. Neither is an assertion loosened, and in both cases
+   the coverage was replaced by something stronger. I want the reasoning visible because "the
+   comparison stopped comparing that one" is exactly the shape a laundered failure takes:
+   - the non-standard hashed-companion entry now has **no text form**, exactly as telemetry has
+     none, because no string makes upstream produce that wire format. It is named as NOT COVERED in
+     the test's own output and in the record, and is not counted as covered.
+   - one free-text string I added tonight (`K1ABC RR73 X`) is read by upstream's own type selector
+     as a standard message. I replaced it with an unambiguous one and recorded the finding, which is
+     worth more than the entry was.
 
-## Criterion 2, first and before anything else
+3. **The corpus was widened rather than cut.** The instruction permits cutting for the clock; the
+   clock did not require it. It went from 14 to 56, and the whole project still returns in 3 s.
+
+4. **I did not treat "the generator survives" as "the generator can be read".** The copy exited 0 and
+   the comparison still skipped, because the tone parser did not recognise upstream's format. I added
+   a test that reports the *form* of each output line — every character replaced by its character
+   class, so the format is visible and no tone value is. That is how the run-together tone format was
+   found, and the test stays in the tree.
+
+### What was not done, and what was refused
+
+- **No compiler was invoked, by any route.** No batch file was run. `tools\build-ft8-oracle.bat` was
+  not edited, run, or committed.
+- **Nothing inside `C:\Source\ft8_lib` was written to, patched or deleted**, including
+  `build\gen_ft8.exe`. The original image was opened for reading only.
+- **The sandbox again refused shell access outside the tree** — `ls /c/Source/ft8_lib/build/` was
+  declined, as it was for the arbiters of units 209, 210 and 211. **Reported as a refusal and not
+  routed around:** everything read from the clone was read by the test process, which is the
+  sanctioned route and the one this project already uses for reference material.
+- **The `dotnet test` shell pipeline was never piped through `grep` on a run whose result mattered**
+  (known item 12). The one `grep` used was on a re-run whose full output I had already seen.
+- **`tools\arbiter\validate-output.bat` could not be run** — the harness refuses a batch file, which
+  is the same refusal section 4 item 2 records. **Reported as a refusal and not routed around.** The
+  ordering block was checked by hand instead: `A.`, `B.` and `C.` start at the beginning of lines 3,
+  16 and 49, all inside the first 60, and the count in C is written as a digit.
+- **Known item 9 confirmed by observation.** Writing `output.md` landed on the tracked `OUTPUT.md`,
+  as the instruction says it would on this filesystem. Not renamed.
+
+## 2. What the owner should expect
+
+**Step 3 is done on its four must-pass criteria.** The encoder is no longer only self-consistent;
+it produces the same tones Goba's own program produces, for every message either side can be asked
+about. Eleven units of message-layer work — the CRC, the packer, the alphabets, the field layouts,
+the callsign hash, the LDPC codeword — settle at once against the world rather than against
+themselves, because a wrong bit anywhere in that chain moves a tone and none moved.
+
+**What will look wrong but is not:**
+
+- **A test that skips on every machine but this one.** Criterion 2's evidence invokes upstream's
+  binary at run time and skips when the clone or the build is absent. On a fresh clone the project
+  is green with one skip more than here, and that is correct and deliberate — it is the same
+  standing the plan already gives the reference-WAV criterion. What makes it worth something is that
+  it *ran here*.
+- **A temporary copy of somebody else's executable, with two bytes changed.** It lives under the
+  system temp folder, it is deleted when the run ends, it is never committed, and its equality with
+  the original is asserted on every run rather than believed. See section 4, item 1 — this is a
+  decision you may overrule.
+- **`Ft8Sharp` at 0.5.2 while the root is at 1.12.18.** Two version numbers, deliberately, under
+  HM-DEC-152. Not drift.
+- **Eight `.obj` files at the repository root.** Yours, from your build at 15:37–15:39. Not
+  committed, not deleted, counted at 8.
+- **`git status --short` printing 26 lines.** The loop's own uncommitted files, the `.obj`, and the
+  oracle script. Not committed.
+
+## 3. What you should see
+
+### CRITERION 2 — the block, before any prose
 
 ```
-task 2's exit, by number      : NONE of the five — the script never executed.
-                                The harness refused tools\build-ft8-oracle.bat in four
-                                invocation forms and refused a bare clang.exe call.
-                                The state it WOULD have reported, established by running
-                                the binary it produces: EXIT 5 — BUILT BUT WOULD NOT RUN.
-did the comparison run?       : NO.
-corpus size                   : 14 messages (12 with a text form; 2 telemetry have none)
-messages compared             : 0
-matching symbol for symbol    : 0
-first differing symbol position : n/a — nothing was compared
-hashed-callsign message compared? : NO. Unit 208's debt is NOT settled, third unit running.
-Gray map direction settled against upstream?      : NO — still expression-anchored.
-bit-walk continuity settled against upstream?     : NO — still expression-anchored.
+original image stack reserve      : 1 048 576 bytes (1.00 MB), PE32+, field at file offset 216
+had the owner already raised it?  : NO — still the linker's 1 MB default
+patched copy made?                : YES — 16 777 216 bytes (16.00 MB) written
+bytes differing, copy v. original : 2, AT OFFSETS 218 AND 219
+                                    both inside the 8-byte field written; no byte outside it moved;
+                                    both files 208 896 bytes
+.text hashes equal?               : YES — 143 872 bytes each, at file offset 1024 in both
+no-argument output identical?     : YES — byte-identical stdout and stderr, both images exit -1
+copy survives a real message?     : YES — exit 0x00000000, WAV written, 360 044 bytes
+all four proofs?                  : PROVEN
+comparison ran?                   : YES
+corpus size                       : 56 messages (51 with a text form upstream can be asked for)
+messages compared                 : 51
+matching symbol for symbol        : 51  (4029 symbols)
+first differing symbol position   : NONE — no message differed at any position
+hashed-callsign message compared? : YES — 4 of them, call on the wire as a 22-bit hash on both sides
+Gray map direction settled?       : YES — the map runs the direction the port assumed
+bit-walk continuity settled?      : YES — the walk IS continuous across the sync blocks
 ```
 
-**Criterion 2 is OPEN.** The cause is not the port, not the approach and not the toolchain. It is
-that upstream's generator cannot survive its own waveform buffer on Windows.
+Both of the two ways unit 209 said this port could still be wrong — a Gray map run backwards, a
+codeword bit-walk restarted at each sync block — are dead. Either would leave the sequence the right
+length, every value inside the alphabet, and the sync blocks in the right places, and either would
+move data symbols. Every data symbol of every compared message agrees with upstream's.
 
-## Task 2 — the build, in the five-exit form
+### The oracle as task 2 measured it
 
-**Clang is here.** `clang.exe` exists at the **first** path the script names, under the Visual
-Studio 18 Insiders install root, in `VC\Tools\Llvm\x64\bin`. Established by a filesystem test of that
-exact path, not inferred from the object files. **The toolchain blocker unit 209 reported is
-cleared, and this is not a second failure of that shape.**
+The pinned clone is reachable and `build\gen_ft8.exe` is present at 208 896 bytes. Its PE32+ optional
+header asks Windows for **1 048 576 bytes**, at file offset 216 — **the owner had NOT rebuilt it**,
+so the linker-flag route was still open and task 3 was needed. Given a real message the original
+still exits **0xC00000FD (STATUS_STACK_OVERFLOW)** and writes no WAV. Given no arguments it prints
+194 characters over 7 lines and exits -1, cleanly — a sound build meeting a platform limit, exactly
+as unit 210 diagnosed. Every claim carried into this unit came back confirmed.
 
-**The script did not run.** Four invocation forms were refused by the harness — `cmd //c` with the
-backslash path, `cmd /c` with it, `./tools/build-ft8-oracle.bat`, and `cmd //c` with the path
-quoted — and a bare `clang.exe --version` at the absolute path was refused as well. Creating a
-working directory outside the tree was blocked, and so was setting the working directory to `%TEMP%`
-for the run, so the "run it from outside the tree" preference could not be honoured. **Reported as a
-refusal, not worked around**, exactly as the instruction directs. No compiler was routed through a
-test process.
+Two independent readings of the header field agree: the reader unit 210 wrote inside
+`Ft8OracleDiagnosisTests`, and the one added beside it to find the offset to write to. Both land on
+216. That is asserted, because a writer aiming somewhere the reader is not looking would make the
+whole-file comparison check the wrong bytes.
 
-**The binary was already there.** `C:\Source\ft8_lib\build\gen_ft8.exe` exists — the owner built it.
-So the script's outcome could be measured from its product.
+### Task 3's four proofs, each with its number
 
-**It is a sound build that will not do the job.** Given no arguments it prints its own usage text
-cleanly and exits. Given any real message it dies at once:
+1. **Whole-file:** both images 208 896 bytes; **2 bytes differ, at offsets 218 and 219**; the field
+   written spans 216–223; every differing offset is inside it and none outside it moved. No checksum
+   was recomputed and nothing was re-signed.
+2. **`.text`:** equal SHA-256, 143 872 bytes each at file offset 1024 in both images. No instruction
+   moved.
+3. **Behaviour where it already worked:** both exit -1 with no arguments and print byte-identical
+   stdout and stderr. A patched image printing its usage unchanged is direct evidence its code path
+   is untouched.
+4. **A real message:** exit 0x00000000, WAV written, 360 044 bytes. The thing the original could not
+   do.
 
-```
-exit code                     : -1073741571  =  0xC00000FD  =  STATUS_STACK_OVERFLOW
-WAV written                   : none at all (the crash precedes the wave write)
-stdout captured               : empty (a process that dies never flushes its buffer)
-```
+**MISMATCH AGAINST THE INSTRUCTION, reported and not repaired.** Task 3.3 says the number of
+differing bytes "must be exactly the width of the field you wrote — 8 for PE32+". It is **2**, and
+that is correct rather than suspicious: 1 MB and 16 MB share six of their eight little-endian bytes.
+The proof that actually bears weight is **containment** — no byte outside the field moved — not a
+count, and the test asserts containment. The work succeeded anyway; the instruction's expectation is
+the thing that is wrong.
 
-**Diagnosed from three independent directions, all measured:**
+### The comparison watched refusing — and now also passing
 
-- **The image's own PE optional header** asks Windows for a stack reserve of **1 048 576 bytes** —
-  exactly 1 MB, the linker default. Read by walking the header to `SizeOfStackReserve` at offset 72
-  of a PE32+ optional header. Windows takes the reserve from the image, so **no way of launching the
-  process can give it more.**
-- **The generator declares four C99 variable-length arrays**, every extent an expression rather than
-  a constant. The whole fifteen-second waveform is one of them, on the stack.
-- **The platform difference is the whole story.** The systems `ft8_lib` is written for default to
-  8 MB of stack. This is a property of the link and the platform — not of the pin, not of the script's
-  approach, and not of this port.
+Both together, which is what makes the pass mean something:
 
-**The fix is one stack-size flag on the link line in `tools\build-ft8-oracle.bat`.** That file is the
-owner's, the instruction forbids editing it, and I did not. It is section 4's first item.
-
-## Task 3 — what the generator emits
-
-**A WAV file, and a tone sequence on stdout.** Its usage line takes a message, a WAV path and an
-optional frequency.
-
-**The tone sequence is the important half, and I got this wrong first and corrected it.** My first
-pattern for "a print inside a loop over the tones" was too narrow and returned zero, and I recorded
-"the tones are NOT printed". Asked two further ways, the answer reversed: the generator prints a
-label, opens a loop, prints **one integer conversion per tone**, and closes the line — and it does
-all of it at lines 165 to 170, while **the waveform buffer that overflows is not declared until line
-177.**
-
-**So the tones are computed and printed BEFORE the crash**, and are lost only because a process that
-dies never flushes its stdio buffer. Two consequences, and both matter more than anything else in
-this report after criterion 2 itself:
-
-- **The direct channel to criterion 2 exists.** No demodulation is needed.
-- **Criterion 2 can close in minutes** once the generator survives, because the comparison is already
-  written, gated, and watched refusing.
-
-Whether it also prints a payload or a codeword could not be established — that test skips with the
-rest — so **criterion 1's stronger reading was not available.**
-
-## The comparison watched refusing
-
-Leg C's machinery is checked in and exercised even though leg C did not run, because a comparator
-nobody has seen work is not evidence. **It reports a position and never a count.**
-
-| what it was fed | what it said |
+| what was fed to it | what it said |
 |---|---|
-| one symbol altered at position 7 | position **7**, the 1st data symbol, carrying codeword bits 0–2 — so the codeword, the Gray map direction or the bit walk is implicated |
-| one symbol altered at position 38 | position **38**, **inside sync block 1** (symbols 36–42) — so the Costas pattern or its placement is implicated instead |
-| two sequences of different lengths | refused outright, 0 compared — rather than agreeing over the shorter prefix |
-| an unaltered sequence, all 14 messages | agreed on all 79 symbols of each, so the refusals are not a comparator that refuses everything |
+| one symbol altered at position 7 | names position 7, the 1st data symbol, carrying codeword bits 0–2 |
+| one symbol altered at position 38 | names position 38, inside sync block 1 (symbols 36–42) |
+| two sequences of different lengths | refused outright, 0 compared, not compared over the prefix |
+| an unaltered sequence, whole corpus | agrees, 79 of 79, every message |
+| 51 real messages against upstream | agrees, 79 of 79, every message |
 
-And the tone parser separately watched refusing: prose, an empty string, the right count with one
-value outside the eight-tone alphabet, and the right values one short — all refused; a well-formed
-line between a header and a trailer — accepted.
+The tone parser is watched refusing prose, an empty string, the right count with one value outside
+the alphabet, and the right values one short. **The run-together form added tonight is held to the
+same standard** and is watched refusing a run one short, one long, one carrying an 8, and a
+same-length run of nines. The hex reader gained its own refusal test for the same reason.
 
-## Leg B re-run
+### The two corpus entries that were asking a different question
 
-**Green, 3 of 3, untouched and not weakened.** `SymbolCheck` and `Ft8SymbolSecondOpinionTests` are
-exactly as unit 209 left them; the only change anywhere near them is an optional text field added to
-the corpus record.
+This is the subtlest thing the unit found and it would have read as a defect in the port.
 
-**It is NOT now the weaker of two agreeing legs** — that is what it would have become had leg C run.
-It remains the only implementation-level evidence about the sequence, and **two implementations
-written in one session against one reading of one source share whatever that reading got wrong.**
+Our API names a message type — the caller picks the packer. Upstream's generator is handed a string
+and picks the type **itself**. Where the two pick differently, the tones differ for a reason that has
+nothing to do with either encoder.
 
-## Criterion 1
+| entry | our type | upstream's type | verdict |
+|---|---|---|---|
+| non-standard, hashed companion | i3 = 4 | i3 = 1 | different wire formats — not comparable |
+| free text `K1ABC RR73 X` | i3 = 0 | i3 = 1 | upstream reads it as a standard message |
 
-```
-real messages through pack, CRC, payload, encode : 1431   (seed 20901)
-    standard CQ 435 | standard exchange 354 | free text 200
-    telemetry 200 | non-standard, call in full 124 | non-standard, hashed 118
-parity checks run over all 83, both table readings : 237546
-messages failing any of the 83 checks              : 0
-```
+Both were caught by comparing the **packed bytes and the message type**, not the tones. That
+instrument is now a permanent test, and it prints both types on every difference, because it
+separates *the two sides disagree* — a defect — from *the two sides were asked different things*,
+which is not.
 
-**The reading stood on is the WEAKER one**, and it is named as such in the test's own output: a
-syndrome check against our own checked-in parity tables, computed by the independent `LdpcCheck`.
-**The stronger byte-for-byte reading against upstream's own codeword was not available**, because
-the generator produced nothing. The checker is still watched refusing — all 174 single-bit flips
-caught, each disturbing exactly 3 checks, the column weight the code declares.
+### Leg B, re-run
 
-`Ft8LdpcParityTests`, `BasisProof` and `Payloads` were not touched.
+Green at 3 of 3, over 56 messages and 4424 symbols, **untouched and not weakened**. It is now **the
+weaker of two agreeing legs** rather than the only implementation-level evidence there is. It is
+kept for two reasons beyond that: it covers the 5 messages leg C cannot reach — the four telemetry
+entries and the non-standard hashed-companion entry — and it is the only symbol-level evidence that
+survives on a machine with no clone, which is every machine but this one. Its own closing line said
+"criterion 2 is open"; that line is now true instead.
 
-**One sentence corrected against itself.** That test printed "the reference could not be built on
-this machine", which unit 209 wrote truthfully and which is no longer the whole truth. It now records
-that the reference **is** built here and will not run, so the stronger reading is out of reach for a
-different reason. The assertion was not changed.
+### Criterion 1, and which reading it stands on
 
-## Task 7
+1431 real messages at seed 20901 across all six kinds, **237 546 parity checks** over both table
+readings, **zero** messages failing any of the 83. Watched refusing: all 174 single-bit flips caught,
+each disturbing exactly three checks, which is the column weight the code declares.
 
-**Neither dropped nor run — unreachable, and neither branch of its stated drop condition fits.** The
-first branch needs task 4's direct comparison to have run, and it did not. The second branch applies
-where the generator emits only a WAV, and that premise is false twice over: it does emit tones, and
-it writes **no WAV at all**, because the crash precedes the wave write. **There is nothing to
-demodulate.** Building a demodulator against a file that does not exist, aimed at a route the direct
-tone channel strictly dominates, would be speculative work the next unit does not need.
+**The reading is split and both halves are named.** The **payload** is upgraded to the stronger,
+byte-for-byte reading — 51 of 51 packed messages identical to upstream's own bits. The **codeword**
+is not, and cannot be: the question that had been skipping since unit 210 now answers, and the
+answer is that upstream prints a 10-byte packed message and **no codeword under any of seven labels
+tried** (a 174-bit codeword would be 22 bytes). So the codeword half stays on the syndrome check
+against the checked-in tables — **settled, not pending on a build**. One stale sentence in that
+test, inherited from unit 209 and saying the reference could not be built here, was corrected.
 
-## Divergences and corrections to the port
+### The corpus as widened
 
-**No divergence added — the count stands at fifteen.** **No correction was made to the port**, and
-task 4's bounded permission was not used: nothing under `src/Ft8Sharp/Encode/` changed. The only
-changes under `src/Ft8Sharp/` are `porting-notes.md` and the version.
+From unit 209's **14** to **56**, across the same six kinds: 39 standard (grids at both corners and
+the middle, reports at both ends and zero, the roger forms, the extra-field tokens, ten callsign
+shapes, the lettered and numbered CQ forms and QRZ), 8 free text (both length extremes, digits,
+punctuation, spaces), 4 telemetry, 2 non-standard with the call in full, 1 non-standard with a hashed
+companion, 4 standard with a callsign hashed onto the wire. **Nothing was cut for the clock.**
 
-## The numbers
+### Divergences, and corrections to the port
 
-```
-                        before            after
-Ft8Sharp.Tests   171 / 170 / 0 / 1   186 / 180 / 0 / 6
-wall clock             6.4 s              5.6 s      (2 s of test time)
-tests added                             15
-```
+**No divergence from upstream was added; the count stands at fifteen.** **No correction was made to
+the port** — task 4's bounded permission was not needed and was not used. Nothing under
+`src/Ft8Sharp/` changed except `Directory.Build.props` and `porting-notes.md`. Every line of
+machinery this unit built is in the test project.
 
-**The six skips, with a reason for each:**
+### The numbers
 
-1. `Ft8TableGenerationTests.RewriteTheCheckedInTablesFile` — the table write gate. **The one
-   pre-existing skip, and it is correct.** Known item 14; not touched.
-2. `Ft8OracleDiscoveryTests.TheGeneratorRunsAndSaysWhatItEmits` — the oracle exits 0xC00000FD.
-3. `Ft8OracleDiscoveryTests.WhetherTheGeneratorAlsoEmitsAPayloadOrACodeword` — same cause. **This is
-   why criterion 1's stronger reading was unavailable.**
-4. `Ft8OracleDiscoveryTests.TheGeneratorIsAskedForAHashedCallsignMessage` — same cause.
-5. `Ft8SymbolBitIdentityTests.EverySymbolOfEveryMessageIsIdenticalToUpstreams` — same cause. **This
-   is criterion 2.**
-6. `Ft8SymbolBitIdentityTests.AMessageWhoseCallsignTravelsAsAHashIsCompared` — same cause. **This is
-   unit 208's debt.**
+| | before | after |
+|---|---|---|
+| Ft8Sharp total | 186 | 198 |
+| passed | 180 | 197 |
+| failed | 0 | 0 |
+| skipped | 6 | 1 |
+| wall clock | 3 s | 3 s |
 
-**Five new skips, one single cause.** Each carries the executable's path, its exit code and
-`STATUS_STACK_OVERFLOW` in its own skip reason.
+**12 tests added.** **Five of the six starting skips are now running** — all five shared the one
+cause, upstream's generator exiting 0xC00000FD, and the patched copy removed it. **The one remaining
+skip is `Ft8TableGenerationTests.RewriteTheCheckedInTablesFile`**, the table write gate, which is
+correct and is meant to skip. No test was repaired, quarantined, deleted, renamed or disabled to make
+a count come out.
 
-**Not covered, said plainly rather than left looking covered:** **telemetry**, because nine bytes is
-not a sentence and upstream's generator takes only a string, so those two corpus entries have no text
-form and are unreachable by this comparison at all.
+### Attribution and the three channels
 
-## Attribution and the three channels
+**110 paths** from `2828ab6`, and **not one** under `src/Hamlet.App/`, `src/Hamlet.RadioEngine/`,
+`tests/Hamlet.App.Tests/` or `tests/Hamlet.RadioEngine.Tests/`. Channels, re-run **after** the
+version bump: `AudioSeamTests` and `PrivilegeTests` green at **55**; `DecisionLogOrderTests`,
+`VersionTests`, `DecisionEmissionTests` and `VoiceTests` green at **13**. Every named class green.
+No new shared artifact, so the channel list is unchanged.
 
-```
-git diff --name-only 2828ab6..HEAD  :  85 paths, 0 under src/Hamlet.* or tests/Hamlet.*
-AudioSeamTests, PrivilegeTests      :  55 tests, all green
-DecisionLogOrderTests               :  green   (2 tests)
-VersionTests                        :  green   (3 tests)  — re-run AFTER the version bump
-DecisionEmissionTests               :  green   (5 tests)
-VoiceTests                          :  green   (3 tests)
-```
+### The root, and what was not committed
 
-No new shared artifact was added, so the channel list is unchanged.
+**8 `.obj` at the repository root**, unchanged and untouched. **Not committed:** the eight `.obj`,
+`tools\build-ft8-oracle.bat`, the patched binary or any trace of it, any WAV, any tone sequence, any
+payload, any codeword, and the loop's own files. `git status --short` prints **26**. Every commit
+used explicit paths; `git add -A` was not used anywhere. Versions now stand at **`Ft8Sharp` 0.5.2**
+and **root 1.12.18**.
 
-## The root, and what was not committed
+### Mismatches against the instruction, reported and not repaired
 
-**8 `.obj` at the repository root** — the same eight that were there when the unit started. **None of
-them was committed and none was deleted.** `tools\build-ft8-oracle.bat` was **not committed, not
-edited and not improved**, and its clang search was left exactly as the owner wrote it. Nothing
-upstream's binary produced entered the tree: no tone sequence, no payload, no codeword, no WAV, no
-value pasted into a test as an expectation. Every WAV path the harness would use is under `%TEMP%`
-and deleted as it goes. `git status --short` prints 45 lines at the end against 42 at the start; the
-loop's own uncommitted files were counted and not committed.
+1. `git status --short` printed **24** at task 1 and **26** at the end, where the instruction says
+   **23**.
+2. `git diff --name-only 2828ab6..HEAD` gave **106** at task 1, matching, and **110** at the end
+   after this unit's own commits.
+3. Task 3.3's expectation that the copy differs by exactly the field width — it differs by 2 of 8,
+   described above.
 
-**The two versions as they now stand:** `Ft8Sharp` **0.5.1**, root **1.12.17**.
+## 4. What's blocking us
 
-# 4. What's blocking us
+**Nothing is blocking.** Both items below are notes, and **neither is asking Tim to decide anything
+before work continues.** Neither stands in the way of a criterion named in section B.
 
-**Two items. The first blocks criterion 2 in section B; the second does not block anything.**
+### 1. The arbiter licensed patching a working copy of upstream's binary, and you may overrule it
 
----
+**This is a note, not a ruling request, and nothing is stopped waiting for you.**
 
-**1. `tools\build-ft8-oracle.bat` needs a stack-size flag on its link line, and the file is yours.**
+Unit 210 considered editing the built executable's PE header to widen its stack and rejected it, on
+the ground that "an oracle I have modified is a weaker oracle." The arbiter overruled that for this
+unit — not with an argument but with a requirement: the copy had to be *proven* the same program
+before it could answer anything.
 
-**Ruling:** add a linker stack-reserve flag to the clang command line in
-`tools\build-ft8-oracle.bat`, raising the generator's main-thread stack from the 1 MB default to
-8 MB or more, and re-run the script.
+It was. Every run asserts it, and here are tonight's numbers:
 
-**Reasoning:** the script's approach is right and its clang search works — clang is at the first path
-it looks for. The executable it produces is a sound build that prints its own usage. What it cannot
-do is survive its own waveform: `demo/gen_ft8.c` puts the whole fifteen-second signal on the stack as
-a C99 variable-length array, the image asks Windows for exactly 1 MB, and every real message exits
-`0xC00000FD`, `STATUS_STACK_OVERFLOW`. The systems `ft8_lib` targets default to 8 MB of stack, so
-this is a Windows link-time property and neither a fault in the pin nor in the port. Windows reads
-the reserve out of the image, so there is no way to launch it with more.
+- both images **208 896 bytes**; **2 bytes differ, at offsets 218 and 219**, both inside the 8-byte
+  `SizeOfStackReserve` field, and **no byte outside that field moved**;
+- `.text` hashes **equal**, 143 872 bytes each;
+- no-argument output **byte-identical**, both exiting -1;
+- and the copy exits **0** on a real message where the original exits **0xC00000FD**.
 
-**This is the second toolchain-class question this phase has sent you and it is NOT the same one.**
-Unit 209 asked whether a C compiler could exist here; you answered that with an install and the
-answer is measured and closed — clang is present and the generator builds. This is a different and
-much smaller question about one flag.
+The field written is read by Windows at process creation to size an address-space reservation. It is
+not code, not data the program reads, and not an input to any tone the generator computes. **The
+original was never opened for writing; the copy lives under the temp folder and is deleted when the
+run ends; nothing patched was committed.**
 
-**What was rejected and why.** Editing the script myself — the instruction rules it yours, and
-whether it belongs in the repository at all is your call. Patching `C:\Source\ft8_lib` — a modified
-pin makes every provenance test in the tree a lie. Invoking clang myself with a changed command
-line — the narrow permission I was given explicitly forbids changing the flags, and the harness
-refused clang anyway. Editing the built executable's PE header to widen its stack — that is patching
-the oracle to make it agree with me, and an oracle I have modified is a weaker oracle. Reading the
-tones out of a pseudo-console to beat the unflushed buffer — a real possibility, and I judged it a
-night spent inside somebody else's build for a result one flag gives cleanly.
+**If you would rather the oracle came only from your own script, the stack-size flag on the link line
+in `tools\build-ft8-oracle.bat` is still the route, and you can overrule this.** That question
+remains open with you — the script is unchanged at `16:02:11`, before unit 210 even ran, and this
+unit neither edited it, ran it, nor chased the answer. Tonight's route makes your answer **optional
+rather than blocking**, and the machinery is built to stand down on its own: the test checks the
+image's reserve first and **makes no copy at all** if it already asks for 8 MB or more. The day the
+flag lands, this quietly stops running.
 
-**What it buys.** Criterion 2 closes on the next run and step 3 goes to 4 of 4. The comparison is
-already written, already gated to skip when the oracle is absent, and already watched refusing on a
-deliberately altered symbol. **The generator prints its tones before the buffer that overflows**, so
-the direct comparison is available the moment it survives — no WAV demodulation is needed, and
-criterion 1 gets its stronger byte-for-byte reading at the same time if the generator prints a
-codeword.
+### 2. The permission scope has no rule under which a unit can run a batch file or a compiler
 
-**Second-order, and yours as well:** the harness that runs these units has no permission rule for
-executing a batch file or a compiler, so a unit cannot run your script even when it is correct. If
-you want future units to be able to build the oracle themselves, `tools\arbiter\run-unit-tools.txt`
-is where that widens — but it is a guard, and I have not touched it.
+**Recorded, owner-class under `ARBITER.md` §6, and no longer holding anything up.**
 
----
+`tools\arbiter\run-unit-tools.txt` grants `Read`, `Write`, `Edit`, seven `git` verbs, `dotnet test`,
+`dotnet build`, `dotnet restore` and the report validator. There is no rule under which a unit can
+execute a batch file or a compiler, which is why the build route to the oracle was not attempted
+tonight. Unit 210 raised this; it is a note, it is yours, and **tonight's route means the phase is no
+longer waiting on it.** I did not edit that file and am not arguing for it to be widened.
 
-**2. Unit 208's hashed-callsign debt is not settled, and this is its third unit.**
-
-**Not a ruling request — it is a fact being carried forward so nobody counts it as covered.** A
-message whose callsign travels as a hash is in the corpus and has its own separately named leg in
-the comparison, and that leg did not run because nothing ran. **No hash has ever been on any wire but
-this library's own.** Whether upstream's generator can even be made to emit one is still unknown —
-its packer may not prime a cache from the command line — and that question is asked by a test that
-is written and skipping. It resolves with item 1 and needs nothing from you separately.
-
----
-
-**Nothing else is blocking.** No ruling is needed on the port, the corpus, the versions or the test
-project. The one mismatch found against the instruction — `git status --short` printing 42 where the
-instruction said 41 — is reported and was not repaired, and it decides nothing. The four composed
-`UPDATED` stamps in section 1 are my defect, already corrected, and are named there rather than here
-because they are not asking you to decide anything.
+**Separately, and reported as a refusal rather than routed around:** the harness again declined shell
+access outside the repository root, so nothing about `C:\Source\ft8_lib` in this report was read by a
+shell. Everything was measured by the test process, which is the sanctioned route.
