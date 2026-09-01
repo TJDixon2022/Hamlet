@@ -183,7 +183,7 @@ themselves, because a wrong bit anywhere in that chain moves a tone and none mov
   HM-DEC-152. Not drift.
 - **Eight `.obj` files at the repository root.** Yours, from your build at 15:37–15:39. Not
   committed, not deleted, counted at 8.
-- **`git status --short` printing 26 lines.** The loop's own uncommitted files, the `.obj`, and the
+- **`git status --short` printing 24 lines.** The loop's own uncommitted files, the `.obj`, and the
   oracle script. Not committed.
 
 ## 3. What you should see
@@ -351,14 +351,14 @@ No new shared artifact, so the channel list is unchanged.
 
 **8 `.obj` at the repository root**, unchanged and untouched. **Not committed:** the eight `.obj`,
 `tools\build-ft8-oracle.bat`, the patched binary or any trace of it, any WAV, any tone sequence, any
-payload, any codeword, and the loop's own files. `git status --short` prints **26**. Every commit
+payload, any codeword, and the loop's own files. `git status --short` prints **24**. Every commit
 used explicit paths; `git add -A` was not used anywhere. Versions now stand at **`Ft8Sharp` 0.5.2**
 and **root 1.12.18**.
 
 ### Mismatches against the instruction, reported and not repaired
 
-1. `git status --short` printed **24** at task 1 and **26** at the end, where the instruction says
-   **23**.
+1. `git status --short` printed **24** at task 1 and **24** at the end, where the instruction says
+   **23** — one more, both times.
 2. `git diff --name-only 2828ab6..HEAD` gave **106** at task 1, matching, and **110** at the end
    after this unit's own commits.
 3. Task 3.3's expectation that the copy differs by exactly the field width — it differs by 2 of 8,
