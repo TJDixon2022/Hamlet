@@ -282,10 +282,16 @@ public class ReferenceCloneHashInventoryTests
 
     /// <summary>
     /// Pulls a named function or file-scope definition out of C source by brace-matching from its
-    /// first definition. Crude by design: it is a reading aid for a human porter, and nothing is
-    /// asserted on what it returns.
+    /// first definition.
     /// </summary>
-    private static string? ExtractDefinition(string text, string symbol)
+    /// <remarks>
+    /// Crude by design as a reading aid for a human porter. It is also what
+    /// <c>UpstreamCallsignHashProvenanceTests</c> narrows its search to before it resolves a scalar,
+    /// so that a literal is read out of <em>the function that uses it</em> rather than out of
+    /// whichever line in a thousand happened to match first. Nothing is asserted on the text it
+    /// returns; what is asserted is what the scalar reader makes of that text.
+    /// </remarks>
+    internal static string? ExtractDefinition(string text, string symbol)
     {
         // A macro, a typedef or a file-scope struct is not brace-matched from a call site, so take
         // those shapes first and only then fall through to the function-body walk.
@@ -304,6 +310,27 @@ public class ReferenceCloneHashInventoryTests
             return typedef.Value;
         }
 
+        // A definition beats both a declaration and a call site, and upstream's file gives this
+        // extractor both of those before it gives it the definition: the static functions are
+        // prototyped at the top of the file, called in the middle, and only defined at the bottom.
+        // Anchoring on a line that begins at column zero with a return type and ends in an opening
+        // brace is what separates a definition from the call to it — a call is always indented
+        // inside a body, and a prototype always ends in a semicolon.
+        var definition = Regex.Match(
+            text,
+            $@"^[A-Za-z_][A-Za-z0-9_ \t\*]*?\b{Regex.Escape(symbol)}\s*\([^;{{]*\)\s*\{{",
+            RegexOptions.Multiline);
+        if (definition.Success)
+        {
+            var body = BraceMatch(text, definition.Index);
+            if (body is not null)
+            {
+                return PrecedingComment(text, definition.Index) + body;
+            }
+        }
+
+        string? statement = null;
+
         foreach (Match match in Regex.Matches(text, $@"^[^\n]*\b{Regex.Escape(symbol)}\s*[\(\[=]", RegexOptions.Multiline))
         {
             var start = match.Index;
@@ -311,29 +338,46 @@ public class ReferenceCloneHashInventoryTests
             var semicolon = text.IndexOf(';', start);
             if (open < 0 || (semicolon >= 0 && semicolon < open))
             {
-                // A declaration or a one-line definition. Take the statement.
-                if (semicolon < 0)
+                if (semicolon >= 0)
                 {
-                    continue;
+                    statement ??= text[start..(semicolon + 1)];
                 }
 
-                return text[start..(semicolon + 1)];
+                continue;
             }
 
-            var depth = 0;
-            for (var i = open; i < text.Length; i++)
+            var body = BraceMatch(text, start);
+            if (body is not null)
             {
-                if (text[i] == '{')
+                return PrecedingComment(text, start) + body;
+            }
+        }
+
+        return statement;
+    }
+
+    /// <summary>From <paramref name="start"/> to the brace that closes the first one after it.</summary>
+    private static string? BraceMatch(string text, int start)
+    {
+        var open = text.IndexOf('{', start);
+        if (open < 0)
+        {
+            return null;
+        }
+
+        var depth = 0;
+        for (var i = open; i < text.Length; i++)
+        {
+            if (text[i] == '{')
+            {
+                depth++;
+            }
+            else if (text[i] == '}')
+            {
+                depth--;
+                if (depth == 0)
                 {
-                    depth++;
-                }
-                else if (text[i] == '}')
-                {
-                    depth--;
-                    if (depth == 0)
-                    {
-                        return PrecedingComment(text, start) + text[start..(i + 1)];
-                    }
+                    return text[start..(i + 1)];
                 }
             }
         }
