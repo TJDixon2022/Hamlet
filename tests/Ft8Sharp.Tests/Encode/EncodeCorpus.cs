@@ -30,7 +30,17 @@ namespace Ft8Sharp.Tests.Encode;
 internal static class EncodeCorpus
 {
     /// <summary>One message of the corpus: what it is, and the 77 bits it packs to.</summary>
-    internal sealed record Entry(string Label, string Kind, byte[] Message, bool CarriesHashedCallsign);
+    /// <param name="Text">
+    /// The same message as upstream's generator takes it on its command line, or null where there
+    /// is no text form of it. Added by unit 210: the comparison against upstream's own tones has to
+    /// hand it a message, and the generator's only input is a string.
+    /// </param>
+    internal sealed record Entry(
+        string Label,
+        string Kind,
+        byte[] Message,
+        bool CarriesHashedCallsign,
+        string? Text = null);
 
     /// <summary>The callsign the hashed entries put on the wire as a hash rather than in full.</summary>
     internal const string HashedCompanion = "PJ4/K1ABC";
@@ -43,6 +53,12 @@ internal static class EncodeCorpus
     {
         var entries = new List<Entry>();
 
+        // The text form is assembled from the same fields the packer is given, so the string handed
+        // to upstream and the bits handed to our encoder cannot drift apart by a typo in one of
+        // them. Two sources for one message is how a comparison quietly stops comparing.
+        static string Spoken(string to, string de, string extra) =>
+            string.Join(' ', new[] { to, de, extra }.Where(part => part.Length > 0));
+
         void Standard(string label, string to, string de, string extra)
         {
             var message = new byte[Ft8Payload.MessageBytes];
@@ -50,7 +66,7 @@ internal static class EncodeCorpus
             Assert.True(
                 result == Ft8PackResult.Ok,
                 $"the corpus entry '{label}' did not pack as a standard message: {result}");
-            entries.Add(new Entry(label, "standard", message, false));
+            entries.Add(new Entry(label, "standard", message, false, Spoken(to, de, extra)));
         }
 
         void FreeText(string label, string text)
@@ -60,7 +76,7 @@ internal static class EncodeCorpus
             Assert.True(
                 result == Ft8PackResult.Ok,
                 $"the corpus entry '{label}' did not pack as free text: {result}");
-            entries.Add(new Entry(label, "free text", message, false));
+            entries.Add(new Entry(label, "free text", message, false, text));
         }
 
         void Telemetry(string label, byte[] bytes)
@@ -70,7 +86,11 @@ internal static class EncodeCorpus
             Assert.True(
                 result == Ft8PackResult.Ok,
                 $"the corpus entry '{label}' did not pack as telemetry: {result}");
-            entries.Add(new Entry(label, "telemetry", message, false));
+
+            // No text form on purpose. Telemetry is nine bytes, not a sentence, and upstream's
+            // generator takes only a string — so this type is reachable by our encoder and not by
+            // the comparison, and the report says so rather than letting it look covered.
+            entries.Add(new Entry(label, "telemetry", message, false, Text: null));
         }
 
         void Nonstandard(string label, string to, string de, string extra, bool hashed)
@@ -90,7 +110,12 @@ internal static class EncodeCorpus
             Assert.True(
                 result == Ft8PackResult.Ok,
                 $"the corpus entry '{label}' did not pack as a non-standard callsign message: {result}");
-            entries.Add(new Entry(label, hashed ? "non-standard, hashed companion" : "non-standard", message, hashed));
+            entries.Add(new Entry(
+                label,
+                hashed ? "non-standard, hashed companion" : "non-standard",
+                message,
+                hashed,
+                Spoken(to, de, extra)));
         }
 
         // Standard: the forms a band actually carries.
