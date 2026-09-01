@@ -236,27 +236,48 @@ public static class Ft8NonstandardMessage
         var needsFullCall = !flip || !isCq;
         var needsHashedCall = flip || !isCq;
 
-        string fullCall = string.Empty;
-        if (needsFullCall || cache is not null)
+        var validFullCall = TryUnpackCall(n58, out var fullCall);
+        if (needsFullCall && !validFullCall)
         {
-            if (!TryUnpackCall(n58, cache, out fullCall) && needsFullCall)
-            {
-                // Fewer than three characters is not a callsign. Upstream ignores this failure and
-                // uses the text anyway, which puts a one or two character station on the screen.
-                return Ft8DecodeStatus.MalformedField;
-            }
+            // Fewer than three characters is not a callsign. Upstream ignores this failure and uses
+            // the text anyway, which puts a one or two character station on the screen.
+            return Ft8DecodeStatus.MalformedField;
         }
 
+        // THE LOOKUP COMES BEFORE THE STORE, AND UPSTREAM'S DOES NOT. A hashed field names a station
+        // the receiver is expected to have heard already, so it is resolved against what the receiver
+        // knew before this message arrived. Upstream stores this message's own spelled-out call
+        // first, so where the two calls in one message happen to share a 12-bit hash — which happens
+        // once in about four thousand messages — its lookup finds the call the message is carrying in
+        // full and reports the addressed station as the transmitting one. Recorded in
+        // porting-notes.md; it refuses fewer messages than the alternative rather than more.
         var hashedCall = string.Empty;
+        var unresolved = false;
         if (needsHashedCall)
         {
             if (cache is null
                 || cache.TryLookup(Ft8CallsignHashWidth.Bits12, hash12, out var resolved) != Ft8CacheLookup.Found)
             {
-                return Ft8DecodeStatus.UnresolvedCallsign;
+                unresolved = true;
             }
+            else
+            {
+                hashedCall = Ft8CallsignField.Bracket(resolved);
+            }
+        }
 
-            hashedCall = Ft8CallsignField.Bracket(resolved);
+        // Now remember the call this message spelled out, which is how the next message gets to name
+        // that station by its hash alone. Remembered even where the message is about to be refused:
+        // the call was really in these bits and the checksum passed, and a receiver that threw it
+        // away would never warm up from the very messages it cannot yet read.
+        if (validFullCall)
+        {
+            cache?.Save(fullCall);
+        }
+
+        if (unresolved)
+        {
+            return Ft8DecodeStatus.UnresolvedCallsign;
         }
 
         var first = flip ? fullCall : hashedCall;
@@ -361,15 +382,15 @@ public static class Ft8NonstandardMessage
     }
 
     /// <summary>
-    /// Unpacks a callsign out of the 58-bit field, and stores it in the cache on the way past.
+    /// Unpacks a callsign out of the 58-bit field.
     /// </summary>
     /// <remarks>
     /// The eleven characters come out right-aligned, because a shorter call packed to a smaller
     /// number and the leading positions are the alphabet's space. Trimming them off is what recovers
-    /// the call. Storing it is the other half of the mechanism the whole hash depends on: a station
-    /// that spells its call out in one message can be named by its hash in the next.
+    /// the call. <b>Nothing is stored here</b>; the caller stores it after the hashed field has been
+    /// resolved, for the reason given at that call site.
     /// </remarks>
-    private static bool TryUnpackCall(ulong value, Ft8CallsignCache? cache, out string callsign)
+    private static bool TryUnpackCall(ulong value, out string callsign)
     {
         Span<char> text = stackalloc char[CallLength];
         var n = value;
@@ -385,13 +406,7 @@ public static class Ft8NonstandardMessage
         }
 
         callsign = text.Trim(' ').ToString();
-        if (callsign.Length < MinimumCallLength)
-        {
-            return false;
-        }
-
-        cache?.Save(callsign);
-        return true;
+        return callsign.Length >= MinimumCallLength;
     }
 
     /// <summary>The report code for a third field, or <see cref="ReportNone"/> for anything else.</summary>

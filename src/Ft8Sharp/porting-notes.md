@@ -920,8 +920,31 @@ Numbered on from unit 207's seven, which are unchanged.
     stored is simply one this cache has not heard, which the lookup already refuses
     correctly.
 
+13. **The hashed field is resolved before this message's own call is remembered, and upstream's
+    order is the other way round.** Upstream's unpacker stores the callsign this message spells
+    out in full and *then* looks up the twelve-bit hash — so where the two calls in one message
+    happen to share that hash, its lookup finds the call the message is already carrying and
+    reports the addressed station as the transmitting one. A hashed field names a station the
+    receiver is expected to have heard *already*, so it is resolved here against what the receiver
+    knew before this message arrived, and the call is remembered afterwards. **Measured at 21 of
+    100 000 generated messages**, which is about the one in four thousand the width predicts.
+    Note that this divergence *recovers* decodes rather than refusing more of them: without it,
+    those messages would resolve to a plausible wrong station under upstream's rule, or refuse as
+    ambiguous under divergence 9. The call this message spells out is still remembered even when
+    the message is then refused — the call was really in these bits and the checksum passed, and a
+    receiver that threw it away would never warm up from the very messages it cannot yet read.
+14. **A callsign too long for the 58-bit field is refused rather than truncated.** Upstream reads
+    eleven characters and stops without checking whether there were more, so a twelve-character
+    call goes on the air as its first eleven — a callsign nobody has, written as though it were
+    certain.
+
 ### Upstream shapes inherited rather than repaired
 
+- **A bracketed callsign cannot be packed.** The pin's own header comment writes this message
+  type's example with the hashed call in angle brackets, but the bracket is not in the alphabet
+  the hash packs against, so upstream's own packer refuses it. Brackets are an output convention
+  — they mark a call recovered from a hash rather than read out of the bits — and they are
+  produced here and refused on input exactly as upstream does.
 - **The hash reads eleven characters and stops.** Two callsigns agreeing in their first
   eleven have one hash between them, wherever they are heard. Repairing it would make this
   library disagree with every station transmitting, which is the one failure a hash cannot
