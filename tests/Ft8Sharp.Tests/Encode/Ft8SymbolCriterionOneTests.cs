@@ -98,12 +98,15 @@ public class Ft8SymbolCriterionOneTests
         _output.WriteLine($"parity checks run (both table readings)       : {checksRun}");
         _output.WriteLine($"messages failing any of the {Ft8Tables.LdpcM} checks        : {failures}");
         _output.WriteLine(
-            "READING STOOD ON: the syndrome check against the checked-in parity tables, computed "
-            + "by the independent LdpcCheck. NOT a byte-for-byte comparison against ft8_lib's own "
-            + "codeword. Unit 209 recorded that as 'the reference could not be built on this "
-            + "machine', which unit 210 found to be no longer the whole truth: the reference IS "
-            + "built here and it will not run, so the stronger reading is still out of reach for a "
-            + "different reason. Ft8OracleDiagnosisTests holds the measurement.");
+            "READING STOOD ON, and it is now split rather than simply weak. The 174-bit CODEWORD "
+            + "still stands on the syndrome check against the checked-in parity tables, computed by "
+            + "the independent LdpcCheck — upstream's generator does not print a codeword, so there "
+            + "is nothing to hold it against and this is settled rather than pending. The 77-bit "
+            + "PAYLOAD it is computed from now stands on the STRONGER reading: upstream prints the "
+            + "packed message and Ft8PayloadIdentityTests compares it byte for byte against ours "
+            + "over the whole comparison corpus. Unit 209 recorded the stronger reading as "
+            + "unreachable because the reference could not be built; unit 210 found it built and "
+            + "unable to run; unit 211 gave a copy of it a stack it can live on, and it runs.");
 
         Assert.True(failures == 0, firstFailure);
 

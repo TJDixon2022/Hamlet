@@ -1,4 +1,6 @@
+using Ft8Sharp;
 using Ft8Sharp.Encode;
+using Ft8Sharp.Message;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -111,11 +113,40 @@ public class Ft8OracleDiscoveryTests
     {
         var run = Ft8Oracle.Generate("CQ K1ABC FN42");
 
-        foreach (var label in new[] { "payload", "codeword", "crc", "message" })
+        var widest = 0;
+        foreach (var label in new[] { "data", "payload", "codeword", "crc", "message", "symbols", "tones" })
         {
             var found = Ft8Oracle.TryReadHexAfterLabel(run.StandardOutput, label, out var bytes);
-            _output.WriteLine($"a hex run labelled '{label}': {found}" + (found ? $", {bytes.Length} bytes" : string.Empty));
+            _output.WriteLine(
+                $"a hex run labelled '{label}': {found}"
+                + (found ? $", {bytes.Length} bytes" : string.Empty));
+            if (found)
+            {
+                widest = Math.Max(widest, bytes.Length);
+            }
         }
+
+        _output.WriteLine(string.Empty);
+        _output.WriteLine($"the widest hex run found: {widest} bytes");
+        _output.WriteLine($"a 77-bit packed message is {Ft8Payload.MessageBytes} bytes");
+        _output.WriteLine($"a {Ft8Tables.LdpcN}-bit codeword would be {(Ft8Tables.LdpcN + 7) / 8} bytes");
+
+        // The answer this question was asked for, and it is a NO with a consequence. Upstream prints
+        // the packed message and stops there: there is no codeword on its stdout at any label. So
+        // criterion 1's codeword half cannot be upgraded to a byte-for-byte comparison however well
+        // the oracle runs, and that is now settled rather than pending on a build. The payload half
+        // IS upgraded, and Ft8PayloadIdentityTests is where that happens.
+        _output.WriteLine(string.Empty);
+        _output.WriteLine(
+            widest >= (Ft8Tables.LdpcN + 7) / 8
+                ? "A codeword-width hex run IS printed, so criterion 1 can be taken byte for byte "
+                  + "against upstream's own codeword."
+                : "NO codeword-width hex run is printed. The widest thing upstream emits is the "
+                  + "packed message, so criterion 1's codeword half stays on the syndrome check "
+                  + "against the checked-in tables — settled, not pending — and only its payload "
+                  + "half is upgraded to a byte-for-byte comparison.");
+
+        Assert.True(widest > 0, "upstream printed no hex run at all under any label tried");
     }
 
     /// <summary>
