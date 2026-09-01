@@ -1033,3 +1033,138 @@ with basecalls in them will pass whatever the hash does, because no hash will ha
 **If step 3 does not compare a non-standard-callsign message, the hash goes unsettled into step 4**,
 where a wrong hash looks exactly like a quiet band. This is a note for step 3's arbiter and it is
 written down here because it is the one thing tonight could not do for itself.
+
+---
+
+## The symbol assembly — unit 209
+
+### What was ported, and from where
+
+**`Ft8SymbolEncoder`, in `src/Ft8Sharp/Encode/`, ported from `ft8/encode.c`, function
+`ft8_encode`**, at the pin. It takes a packed 77-bit message and produces the 79 channel symbols an
+FT8 transmission sends: the LDPC codeword mapped three bits at a time through the Gray code,
+interleaved with three Costas sync blocks.
+
+**The input is the 77 bits, not message text.** That is upstream's own boundary — its generator
+takes a packed payload and never sees a string — and it keeps this type out of deciding what
+message type some text is. A caller with text packs it first.
+
+**It goes through `Ft8Payload.Create` and `LdpcEncoder.Encode` rather than around them.** There is
+no second CRC, no second packer and no second encoder anywhere in it. The Costas pattern and the
+Gray map are read from `Tables/Ft8Tables.g.cs`; neither is hand-written and nothing new was sent
+through the converter.
+
+**`ft4_encode` was deliberately not ported.** It sits in the same file with the same skeleton and
+different numbers in it. FT4 is out of scope for this phase.
+
+**Nothing here goes near audio, a sound device or a transmitter, and nothing here is capable of
+it.** This type produces small integers. Audio synthesis is a later unit's; routing any of it to a
+radio is forbidden outright.
+
+### Which scalars are corroborated against the pin, and in which of the two forms
+
+**The distinction is load-bearing and each line says which it is.** A macro is a declaration with a
+name that every compiler reads the same way. A literal inside a function body is matched by shape,
+and the match can go stale silently. Both are mechanical reads of the pin rather than
+transcriptions, and that is all they have in common.
+
+**Macro-anchored, in `ft8/constants.h` — the strong form. Five, none uncorroborated:**
+
+1. Total channel symbols in a transmission.
+2. Data symbols.
+3. Length of each sync group.
+4. Number of sync groups.
+5. Offset between sync groups.
+
+**Two more macros, corroborating that step 2's payload assembly is upstream's:** the CRC'd payload
+buffer size and the codeword buffer size. Upstream's generator adds the CRC into the first and
+encodes into the second, which is exactly `Ft8Payload.Create` followed by `LdpcEncoder.Encode` with
+nothing between them. **No step 2 defect surfaced here.**
+
+**Array-extent-anchored — a declaration, weaker than a macro and stronger than a transcription.
+Two:** the tone alphabet size, taken from the declared extent of upstream's Gray map, and the sync
+group length, taken from the declared extent of its Costas pattern.
+
+**Expression-anchored, inside `ft8_encode`'s own body — the weak form. Seven:**
+
+1. Where the first sync block sits, and that its Costas index is not rebased.
+2. Where the second sits, and that its index is rebased to its own start.
+3. Where the third sits, likewise.
+4. **Which direction the Gray map runs** — the three codeword bits are the *index* and the map's
+   element is the *tone*. The inverse is the decoder's and is not what runs here.
+5. Bit order within the group: the first bit taken is the most significant.
+6. The codeword is walked most significant bit first, which is how `LdpcEncoder` writes it.
+7. **The bit walk is continuous across the sync blocks.** A sync symbol consumes no codeword bit, so
+   the reader's position carries across a block rather than restarting after it.
+
+The function's body is extracted by brace-matching from its definition at column zero, so nothing
+above can have been matched against `ft4_encode` by accident.
+
+**Items 4 and 7 are the ones a plausible reading gets wrong, and neither can be caught from this
+side.** A port that ran the map backwards, or that restarted the walk at each block, would produce a
+sequence of the right length, with every value inside the alphabet and the sync blocks in exactly
+the right places. Nothing this library asserts about its own output would notice.
+
+### Which of the three legs criterion 2 is standing on, in plain words
+
+**Two of the three exist. The one the criterion actually asks for does not.**
+
+**Leg A — provenance against the pin. It exists.** Fourteen items corroborated by machine at run
+time, listed above, with none uncorroborated. Seven of them are the weak expression-anchored form.
+
+**Leg B — an independent second implementation. It exists.** `SymbolCheck`, in the test project,
+calling nothing under `Encode/`, laying the sequence out by deliberately opposite arithmetic: it
+flattens the codeword to separate bits, folds them into data tones with no notion of position, and
+splices the sync blocks in afterwards by index, where the encoder decides position by position with
+a running mask. The two agree on every symbol of every message of the corpus, and the checker is
+watched catching a difference rather than only agreeing.
+
+**Leg C — bit-identity against `ft8_lib`'s own tone output. IT DOES NOT EXIST, and it is the one
+step 3's second exit criterion names.** The pin *does* carry a generator — a demo program whose job
+is to turn a message into tones, named as a target by the Makefile at the clone root. **It would not
+build on this machine.** There is no C toolchain here: nothing resolves on `PATH`, and the one
+compiler present has no `include` folder beside it, no C runtime import libraries, and no Windows
+SDK anywhere on the machine. Installing one is the owner's and was refused rather than done.
+
+**So criterion 2 is open, and agreement between two implementations written in the same session is
+not bit-identity with anybody.** Both share whatever the session misunderstood, and the way they
+would most plausibly be wrong — the Gray map's direction — is inherited by both from the same
+reading of the same source. **Unit 208's carried-forward item is therefore still open too:** a
+message carrying a hashed callsign is in the corpus, but the corpus is only compared against this
+library's own second implementation, so no hash has been on any wire but this one's. **The hash
+still stands on two legs going into step 4.**
+
+### Divergences from upstream, all deliberate, all here
+
+**Numbered on from the thirteen recorded by units 207 and 208. Two.**
+
+14. **The sync block positions are derived from the offset macro rather than written as literals.**
+    Upstream writes each block's range as literal numbers in its own guards, so the macro that
+    states the offset between sync groups is declared and then not used by the code that places
+    them. Deriving them means the macro and the placement cannot drift apart. The provenance test
+    checks the derivation against upstream's literals so the two readings still have to agree, and a
+    change to either side fails it.
+
+15. **A table value outside the tone alphabet refuses instead of reaching the sequence.** Upstream
+    indexes its Costas pattern and its Gray map and uses what comes back. This checks that each is
+    the length it should be and that each value it takes is inside the alphabet, and throws
+    otherwise. **HM-DEC-009.** A regenerated table that had gone wrong could otherwise put a value
+    on the air that is not a tone, and the failure would surface as a waveform rather than as an
+    error. The check is arithmetic over data the port already trusts, so it costs nothing and it
+    closes the one route by which this type could emit something that is not a symbol.
+
+**And the refusal shape, which is the standing habit rather than a new divergence:** a message of
+the wrong length, a message with bits set past its 77th, and a symbol buffer of the wrong length are
+all refused, and **no partial sequence is ever returned**. The whole assembly happens in stack
+buffers and the caller's span is written once, at the end, so a call that threw leaves it exactly as
+it arrived. The refusals inherited from `Ft8Payload.Create` and `LdpcEncoder.Encode` are
+deliberately not caught.
+
+### What the pin's build system holds, as names and shapes only
+
+A `Makefile` at the clone root, no `CMakeLists.txt`. Nine rule heads, among them one for the
+generator, one for the decoder and one for the test program. Two demo programs, one of which has a
+`main`, calls an encode entry point and mentions tones — the generator — and one of which calls a
+decode entry point instead. **The narrow question, asked and answered: yes, the pin contains a
+program whose job is to turn a message into tones or symbols, and yes, the build system names it as
+a target.** It is the machine that cannot build it, not the pin that lacks it.

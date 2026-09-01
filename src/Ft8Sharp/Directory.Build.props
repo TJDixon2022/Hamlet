@@ -60,9 +60,22 @@
     hash this library has never heard resolves to nothing at all, and where two callsigns it HAS
     heard share a hash it returns nothing rather than either of them. Still not a 1.x: there is
     no demodulator, so nothing here has yet read anything off a radio.
+
+    0.5.0 — unit 209. The library can now produce the tones a transmission is made of: a packed
+    message becomes the 79 channel symbols an FT8 signal actually sends, the codeword mapped
+    through the Gray code and interleaved with the three Costas sync blocks. A capability it did
+    not have rather than a correction to one it did, so a minor by the same rule as the three
+    before it.
+
+    What that minor does NOT claim, and the distinction matters more here than anywhere so far:
+    these symbols have never been held against ft8_lib's own. The reference generator could not be
+    built on this machine — there is no C toolchain here — so the sequence is proved against the
+    pinned source and against a second implementation in the test project, and against nothing
+    else. Step 3's second exit criterion is open. Still not a 1.x, and now for two reasons: there
+    is no demodulator, and nothing has yet agreed with anybody but itself.
   -->
   <PropertyGroup>
-    <Version>0.4.0</Version>
+    <Version>0.5.0</Version>
   </PropertyGroup>
 
   <!--
