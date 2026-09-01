@@ -847,3 +847,87 @@ Reported because they are on the air, and changing them would change the wire fo
 - **Free text loses leading and trailing spaces.** The encoder pads to the full width with
   spaces and the decoder trims them all off again, so the two are not distinguishable.
   Measured at **4200 of 100 000** generated strings.
+
+---
+
+## The callsign hash and the rolling cache — unit 208
+
+### Where the hash lives, and where the cache does not
+
+`ft8/message.c` declares no function whose name mentions hashing. All three widths are
+computed in **one static function**, which packs the callsign against the alphabet the port
+calls `AlphanumericSpaceSlash`, multiplies, and takes the top bits of a 64-bit product; the
+narrow two are **truncations of the wide one** rather than separate functions, which is why
+one stored value answers a lookup at any width.
+
+**The cache is not in the library at all.** `ft8/message.h` declares a two-entry
+function-pointer interface — one call to store a callsign under its hash, one to look a
+callsign up by it — and `message.c` calls that interface without implementing it. The only
+implementations in the pin are in its **demo decoder** and its **test harness**. So the
+capacity, the probe stride, the duplicate check and the ageing pass are ported from an
+application rather than from a library, and that is weaker provenance than anything else in
+this port. It is also lower stakes: a different capacity cannot make this library deaf, and
+a different multiplier would.
+
+### Why the hash was held to a different standard of proof
+
+Everything else this port has built is a private agreement between its own packer and its
+own unpacker. **A hash is not.** It travels on the air, and it is only useful if it agrees
+with what the transmitting station computed. **A hash that is wrong but self-consistent
+round-trips perfectly through its own cache, passes every corpus that can be written against
+it, and is silently and permanently deaf** — and the symptom is a quiet band rather than a
+failing test.
+
+So a round-trip corpus is **not evidence about the hash** and is not reported as any. What
+the hash actually stands on is recorded in the section on its three legs below.
+
+### Divergences from upstream, all deliberate, all here
+
+Numbered on from unit 207's seven, which are unchanged.
+
+8. **A cache miss refuses the whole message.** Upstream writes a literal `<...>` into the
+   callsign field and returns the message with it in. That is a decode with a station's name
+   missing from it, and the operator has no way to know which station. HM-DEC-009: a miss
+   writes no text, at the cache, at the field, at the message and at the dispatcher.
+9. **A cache collision refuses rather than answering.** **This is the divergence that
+   mattered most tonight.** Two distinct callsigns can share a 22, 12 or 10-bit hash; a
+   12-bit hash has only four thousand and ninety-six values. Upstream stores both and its
+   lookup returns whichever its probe chain reaches first — **a real, plausible, entirely
+   wrong callsign, presented with no mark of doubt on it**, which is precisely the one output
+   HM-DEC-009 forbids. This lookup finds *every* stored call matching at the requested width
+   and returns nothing where there is more than one. Refusing costs a decode upstream would
+   have shown; answering costs the operator a logged contact with a station that was never on
+   the air, and **a wrong callsign in a log is worse than a gap in one**. Note that a cache
+   which knows *more* therefore sometimes produces *less* — that is the correct direction,
+   because the extra knowledge is what reveals the answer was never certain. What no cache
+   can know is a station it has never heard whose call collides with one it has, and nothing
+   here pretends otherwise.
+10. **The lookup examines every occupied slot rather than stopping at the first empty one.**
+    Upstream's early stop is correct only while nothing has ever been removed, and its own
+    ageing pass punches holes in the table. A hole can hide the second half of a colliding
+    pair behind it, which turns a refusal back into a confident wrong answer. Scanning the
+    whole table costs a walk of at most the capacity and makes the refusal above depend on
+    what the cache holds rather than on the order it was filled in.
+11. **The cache stores the callsign it was given rather than clipping it to eleven
+    characters.** Upstream copies eleven characters into a fixed buffer, so two calls
+    agreeing that far collapse into one entry spelled as neither of them and a lookup returns
+    that. Storing what was actually heard turns the same case into an ambiguity, which
+    refuses. **The hash itself still reads only eleven characters**, because that part is on
+    the air.
+12. **A full cache answers rather than spinning.** Upstream's insert walks the table looking
+    for an empty slot with no bound at all and loops forever once every slot is taken. The
+    walk here is bounded by the capacity and the caller is told. A call that could not be
+    stored is simply one this cache has not heard, which the lookup already refuses
+    correctly.
+
+### Upstream shapes inherited rather than repaired
+
+- **The hash reads eleven characters and stops.** Two callsigns agreeing in their first
+  eleven have one hash between them, wherever they are heard. Repairing it would make this
+  library disagree with every station transmitting, which is the one failure a hash cannot
+  survive.
+- **The hash is case-sensitive.** The alphabet it packs against holds upper-case letters and
+  no lower-case ones, so a lower-case call has no hash and is refused rather than folded.
+- **A space inside a callsign changes its hash.** The padding upstream applies is that same
+  space, so a call with one written into it is a call one character longer. Every caller in
+  this library trims before it gets here.

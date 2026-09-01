@@ -42,7 +42,28 @@ public static class Ft8StandardMessage
     /// says which field it was about.
     /// </remarks>
     /// <exception cref="ArgumentException"><paramref name="message"/> is the wrong length.</exception>
-    public static Ft8PackResult TryPack(string callTo, string callDe, string extra, Span<byte> message)
+    public static Ft8PackResult TryPack(string callTo, string callDe, string extra, Span<byte> message) =>
+        TryPack(callTo, callDe, extra, null, message);
+
+    /// <summary>
+    /// Packs a standard message, hashing a non-standard callsign into the cache rather than refusing
+    /// it.
+    /// </summary>
+    /// <param name="callTo">The addressed station, or one of the tokens the field admits.</param>
+    /// <param name="callDe">The transmitting station.</param>
+    /// <param name="extra">A grid square, a signal report, one of three tokens, or nothing.</param>
+    /// <param name="cache">
+    /// The rolling cache, or <see langword="null"/> for none. With none, a non-standard callsign is
+    /// refused exactly as before.
+    /// </param>
+    /// <param name="message"><see cref="MessageBytes"/> bytes, written only on success.</param>
+    /// <exception cref="ArgumentException"><paramref name="message"/> is the wrong length.</exception>
+    public static Ft8PackResult TryPack(
+        string callTo,
+        string callDe,
+        string extra,
+        Ft8CallsignCache? cache,
+        Span<byte> message)
     {
         if (message.Length != MessageBytes)
         {
@@ -53,7 +74,7 @@ public static class Ft8StandardMessage
         callTo ??= string.Empty;
         callDe ??= string.Empty;
 
-        var toResult = Ft8CallsignField.TryPack(callTo, out var n28a, out var suffixA);
+        var toResult = Ft8CallsignField.TryPack(callTo, cache, out var n28a, out var suffixA);
         if (toResult != Ft8FieldResult.Ok)
         {
             return toResult == Ft8FieldResult.RequiresHashCache
@@ -61,7 +82,7 @@ public static class Ft8StandardMessage
                 : Ft8PackResult.FirstCallInvalid;
         }
 
-        var deResult = Ft8CallsignField.TryPack(callDe, out var n28b, out var suffixB);
+        var deResult = Ft8CallsignField.TryPack(callDe, cache, out var n28b, out var suffixB);
         if (deResult != Ft8FieldResult.Ok)
         {
             return deResult == Ft8FieldResult.RequiresHashCache
@@ -134,7 +155,27 @@ public static class Ft8StandardMessage
     /// rolling hash cache is refused as unresolved, and nothing partial is returned.
     /// </remarks>
     /// <exception cref="ArgumentException"><paramref name="message"/> is the wrong length.</exception>
-    public static Ft8DecodeStatus TryUnpack(ReadOnlySpan<byte> message, out Ft8StandardFields decoded)
+    public static Ft8DecodeStatus TryUnpack(ReadOnlySpan<byte> message, out Ft8StandardFields decoded) =>
+        TryUnpack(message, null, out decoded);
+
+    /// <summary>
+    /// Reads a standard message back out of its 77 bits, resolving a hashed callsign through the
+    /// cache where the cache has heard it.
+    /// </summary>
+    /// <param name="message"><see cref="MessageBytes"/> bytes.</param>
+    /// <param name="cache">The rolling cache, or <see langword="null"/> for none.</param>
+    /// <param name="decoded">The three fields, written only on success.</param>
+    /// <remarks>
+    /// <b>A callsign the cache cannot resolve refuses the whole message, exactly as before.</b> The
+    /// cache gives that refusal somewhere to go; it does not soften it. A message with one field
+    /// resolved and one unresolved is still refused whole, because half a message with a station's
+    /// name missing from it is not a decode.
+    /// </remarks>
+    /// <exception cref="ArgumentException"><paramref name="message"/> is the wrong length.</exception>
+    public static Ft8DecodeStatus TryUnpack(
+        ReadOnlySpan<byte> message,
+        Ft8CallsignCache? cache,
+        out Ft8StandardFields decoded)
     {
         decoded = default;
 
@@ -161,7 +202,7 @@ public static class Ft8StandardMessage
         var i3 = Ft8MessageTypes.Primary(message);
 
         var toResult = Ft8CallsignField.TryUnpack(
-            n29a >> 1, (n29a & 1u) != 0, i3, out var callTo, out var toType);
+            n29a >> 1, (n29a & 1u) != 0, i3, cache, out var callTo, out var toType);
         if (toResult != Ft8FieldResult.Ok)
         {
             return toResult == Ft8FieldResult.UnresolvedCallsign
@@ -170,7 +211,7 @@ public static class Ft8StandardMessage
         }
 
         var deResult = Ft8CallsignField.TryUnpack(
-            n29b >> 1, (n29b & 1u) != 0, i3, out var callDe, out var deType);
+            n29b >> 1, (n29b & 1u) != 0, i3, cache, out var callDe, out var deType);
         if (deResult != Ft8FieldResult.Ok)
         {
             return deResult == Ft8FieldResult.UnresolvedCallsign

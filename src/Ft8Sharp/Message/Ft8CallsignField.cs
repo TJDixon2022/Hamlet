@@ -251,7 +251,33 @@ public static class Ft8CallsignField
     /// <b>Never throws.</b> Every string, of every length, including the empty one, gets one of the
     /// three answers.
     /// </remarks>
-    public static Ft8FieldResult TryPack(string callsign, out uint value, out bool suffix)
+    public static Ft8FieldResult TryPack(string callsign, out uint value, out bool suffix) =>
+        TryPack(callsign, null, out value, out suffix);
+
+    /// <summary>
+    /// Packs a callsign or special token into the 28-bit field, hashing a non-standard call into the
+    /// cache rather than refusing it.
+    /// </summary>
+    /// <param name="callsign">The token or callsign, already trimmed and upper-cased.</param>
+    /// <param name="cache">
+    /// The rolling cache. Where it is <see langword="null"/> this behaves exactly as the overload
+    /// without one: a non-standard callsign is refused as
+    /// <see cref="Ft8FieldResult.RequiresHashCache"/> rather than written as a value nothing could
+    /// read back.
+    /// </param>
+    /// <param name="value">The field value, written only on <see cref="Ft8FieldResult.Ok"/>.</param>
+    /// <param name="suffix">The suffix flag, written only on <see cref="Ft8FieldResult.Ok"/>.</param>
+    /// <remarks>
+    /// <b>A standard basecall is stored in the cache too.</b> Upstream hashes and stores every call
+    /// it packs, standard or not, which is what lets a later message refer to a station by the hash
+    /// of a call this one spelled out in full. That is the whole mechanism, and leaving it out would
+    /// give a cache that only ever remembered the calls it could not read.
+    /// </remarks>
+    public static Ft8FieldResult TryPack(
+        string callsign,
+        Ft8CallsignCache? cache,
+        out uint value,
+        out bool suffix)
     {
         value = 0;
         suffix = false;
@@ -304,9 +330,17 @@ public static class Ft8CallsignField
         if (basecall >= 0)
         {
             // Upstream hashes and stores the call at this point, which cannot fail for characters
-            // that already packed as a basecall. The character check is kept as the part of that
-            // step which is not the cache; nothing is hashed and nothing is stored.
-            if (!IsHashable(callsign))
+            // that already packed as a basecall. Without a cache the character check is kept as the
+            // part of that step which is not the cache; with one, the call is really stored, which
+            // is how a later message gets to name this station by its hash alone.
+            if (cache is null)
+            {
+                if (!IsHashable(callsign))
+                {
+                    return Ft8FieldResult.Malformed;
+                }
+            }
+            else if (cache.Save(callsign) == Ft8CacheStore.NotHashable)
             {
                 return Ft8FieldResult.Malformed;
             }
@@ -317,11 +351,23 @@ public static class Ft8CallsignField
 
         if (length is >= 3 and <= 11)
         {
-            // A non-standard callsign packs as its 22-bit hash. Producing one means computing and
-            // storing a hash, which is the rolling cache — deliberately not built. Refused rather
-            // than written, because a value written here could not be read back.
+            // A non-standard callsign packs as its 22-bit hash.
             suffix = false;
-            return Ft8FieldResult.RequiresHashCache;
+
+            if (cache is null)
+            {
+                // No cache, so nothing could read this value back. Refused rather than written.
+                return Ft8FieldResult.RequiresHashCache;
+            }
+
+            var stored = cache.Save(callsign, out var hash22, out _, out _);
+            if (stored == Ft8CacheStore.NotHashable)
+            {
+                return Ft8FieldResult.Malformed;
+            }
+
+            value = TokenRangeSize + hash22;
+            return Ft8FieldResult.Ok;
         }
 
         return Ft8FieldResult.Malformed;
@@ -347,6 +393,43 @@ public static class Ft8CallsignField
         bool suffix,
         int messageType,
         out string text,
+        out Ft8FieldType fieldType) =>
+        TryUnpack(value, suffix, messageType, null, out text, out fieldType);
+
+    /// <summary>
+    /// Unpacks the 28-bit field back to a token or a callsign, resolving a hashed one through the
+    /// cache where the cache has heard it.
+    /// </summary>
+    /// <param name="value">The field value. Anything at or above <see cref="Range"/> is refused.</param>
+    /// <param name="suffix">The suffix bit that sat beside the field.</param>
+    /// <param name="messageType">The message's own type code, which says what the suffix bit means.</param>
+    /// <param name="cache">
+    /// The rolling cache, or <see langword="null"/> for none. A <see langword="null"/> cache behaves
+    /// exactly as a cold one: every hashed value is refused as
+    /// <see cref="Ft8FieldResult.UnresolvedCallsign"/>.
+    /// </param>
+    /// <param name="text">The token or callsign, written only on <see cref="Ft8FieldResult.Ok"/>.</param>
+    /// <param name="fieldType">What kind of thing was decoded, written only on success.</param>
+    /// <remarks>
+    /// <para>
+    /// <b>A resolved call comes back inside angle brackets, and that is not decoration.</b> Upstream
+    /// writes <c>&lt;CALL&gt;</c> for a call it recovered from a hash, and this does the same. The
+    /// brackets say the call was not in these bits — it was remembered from an earlier transmission
+    /// and matched by a hash. An operator reading a log needs to be able to tell those two apart,
+    /// and this is upstream's own way of telling them.
+    /// </para>
+    /// <para>
+    /// <b>A miss and a collision are both refusals and neither writes a character.</b> Upstream
+    /// writes a literal <c>&lt;...&gt;</c> on a miss and its first probe-chain match on a collision;
+    /// this refuses both. HM-DEC-009.
+    /// </para>
+    /// </remarks>
+    public static Ft8FieldResult TryUnpack(
+        uint value,
+        bool suffix,
+        int messageType,
+        Ft8CallsignCache? cache,
+        out string text,
         out Ft8FieldType fieldType)
     {
         text = string.Empty;
@@ -365,10 +448,17 @@ public static class Ft8CallsignField
         var n = value - TokenRangeSize;
         if (n < HashRangeSize)
         {
-            // The seam. These bits are a 22-bit hash and the text they stand for lives in a cache
-            // this library does not have. Refused as unresolved: no placeholder, no hash dressed
-            // as a call.
-            return Ft8FieldResult.UnresolvedCallsign;
+            // The seam. These bits are a 22-bit hash, and the only thing that can turn one back into
+            // a callsign is having heard that callsign already.
+            if (cache is null || cache.TryLookup(Ft8CallsignHashWidth.Bits22, n, out var resolved)
+                != Ft8CacheLookup.Found)
+            {
+                return Ft8FieldResult.UnresolvedCallsign;
+            }
+
+            text = Bracket(resolved);
+            fieldType = Ft8FieldType.Callsign;
+            return Ft8FieldResult.Ok;
         }
 
         n -= HashRangeSize;
@@ -421,10 +511,22 @@ public static class Ft8CallsignField
             }
         }
 
+        // Upstream remembers every standard call it reads, and this is the other half of the
+        // mechanism: a station that spells its call out once can be named by its hash afterwards,
+        // and it is a message like this one that teaches the cache the call.
+        cache?.Save(result);
+
         text = result;
         fieldType = Ft8FieldType.Callsign;
         return Ft8FieldResult.Ok;
     }
+
+    /// <summary>
+    /// A callsign wrapped in the angle brackets that mark it as recovered from a hash rather than
+    /// read out of the bits.
+    /// </summary>
+    /// <remarks>Upstream's own <c>add_brackets</c>, and its own convention.</remarks>
+    internal static string Bracket(string callsign) => "<" + callsign + ">";
 
     /// <summary>The token sub-range: the three bare tokens and the two families of CQ modifier.</summary>
     private static Ft8FieldResult TryUnpackToken(uint value, out string text, out Ft8FieldType fieldType)

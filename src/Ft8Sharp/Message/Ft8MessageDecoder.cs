@@ -47,7 +47,33 @@ public static class Ft8MessageDecoder
     /// not depend on the padding.
     /// </remarks>
     /// <exception cref="ArgumentException"><paramref name="message"/> is the wrong length.</exception>
-    public static Ft8DecodeResult Decode(ReadOnlySpan<byte> message)
+    public static Ft8DecodeResult Decode(ReadOnlySpan<byte> message) => Decode(message, null);
+
+    /// <summary>
+    /// Reads a 77-bit message, resolving hashed callsigns through the cache, or says why it cannot.
+    /// </summary>
+    /// <param name="message"><see cref="MessageBytes"/> bytes.</param>
+    /// <param name="cache">
+    /// The rolling cache of callsigns heard so far, or <see langword="null"/> for none. Passing
+    /// <see langword="null"/> is the same as passing a cache that has heard nothing, and every
+    /// message carrying a hashed call is refused as unresolved.
+    /// </param>
+    /// <remarks>
+    /// <para>
+    /// <b>Decoding fills the cache as well as reading it.</b> A message that spells a callsign out
+    /// teaches the cache that call, which is what lets the next message name that station by its
+    /// hash alone. The cache is therefore modified by a successful decode, and by construction it is
+    /// the caller's object rather than a shared one, so what one decoder learns cannot leak into
+    /// another.
+    /// </para>
+    /// <para>
+    /// <b>The three promises above hold with a cache exactly as they hold without one.</b> A hash
+    /// the cache has not heard is refused; a hash two cached callsigns share is refused; and neither
+    /// writes a character.
+    /// </para>
+    /// </remarks>
+    /// <exception cref="ArgumentException"><paramref name="message"/> is the wrong length.</exception>
+    public static Ft8DecodeResult Decode(ReadOnlySpan<byte> message, Ft8CallsignCache? cache)
     {
         if (message.Length != MessageBytes)
         {
@@ -61,7 +87,7 @@ public static class Ft8MessageDecoder
         {
             case Ft8MessageType.Standard:
             {
-                var status = Ft8StandardMessage.TryUnpack(message, out var fields);
+                var status = Ft8StandardMessage.TryUnpack(message, cache, out var fields);
                 return status == Ft8DecodeStatus.Decoded
                     ? Ft8DecodeResult.Message(type, fields.Text, fields)
                     : Ft8DecodeResult.Refusal(type, status);

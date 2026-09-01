@@ -175,6 +175,103 @@ public class UpstreamCallsignHashProvenanceTests
     }
 
     /// <summary>
+    /// The scalars the rolling cache is made of, read out of upstream's own implementation of the
+    /// hash interface.
+    /// </summary>
+    /// <remarks>
+    /// <b>The cache is not in the library upstream.</b> <c>message.c</c> declares a two-entry
+    /// function-pointer interface and calls it; the table behind it lives in the demo application.
+    /// So this reads a demo rather than a library, which is weaker provenance again, and the report
+    /// says so. The capacity and the probe stride are an application's choices rather than protocol
+    /// facts — unlike the hash itself, a different capacity here cannot make this library deaf.
+    /// </remarks>
+    [RequiresReferenceCloneFact]
+    public void TheCacheScalarsMatchThePin()
+    {
+        var source = ReadFromPin(@"demo\decode_ft8.c");
+        var macros = CSourceParser.ParseIntegerMacros(source);
+
+        _output.WriteLine("NAMES ONLY — no capacity, stride or mask value is printed here.");
+        _output.WriteLine($"integer macros resolved in decode_ft8.c : {macros.Count}");
+
+        var byMacro = 0;
+        var byExpression = 0;
+        var uncorroborated = new List<string>();
+
+        if (macros.TryGetValue("CALLSIGN_HASHTABLE_SIZE", out var capacity))
+        {
+            Assert.True(
+                capacity == Ft8CallsignCache.DefaultCapacity,
+                "the pin's hash table capacity does not equal this library's. The value is deliberately "
+                + "not in this message.");
+            byMacro++;
+            _output.WriteLine("    CALLSIGN_HASHTABLE_SIZE    matches (a macro — the strong form)");
+        }
+        else
+        {
+            uncorroborated.Add("CALLSIGN_HASHTABLE_SIZE");
+            _output.WriteLine("    CALLSIGN_HASHTABLE_SIZE    NOT RESOLVABLE as a macro — uncorroborated");
+        }
+
+        var add = ReferenceCloneHashInventoryTests.ExtractDefinition(source, "hashtable_add");
+        var lookup = ReferenceCloneHashInventoryTests.ExtractDefinition(source, "hashtable_lookup");
+        Assert.NotNull(add);
+        Assert.NotNull(lookup);
+
+        void CheckExpression(string role, string body, string pattern, long ours)
+        {
+            var match = Regex.Match(body, pattern);
+            if (!match.Success || !CSourceParser.TryParseIntegerLiteral(match.Groups["v"].Value, out var theirs))
+            {
+                uncorroborated.Add(role);
+                _output.WriteLine($"    {role,-26} NOT RESOLVABLE from the expression — uncorroborated");
+                return;
+            }
+
+            Assert.True(theirs == ours, $"the {role} in the pin does not equal this library's constant.");
+            byExpression++;
+            _output.WriteLine($"    {role,-26} matches (literal in a function body — weaker than a macro)");
+        }
+
+        CheckExpression(
+            "probe stride",
+            add!,
+            @"idx_hash\s*=\s*\(\s*hash10\s*\*\s*(?<v>\d+)\s*\)\s*%",
+            Ft8CallsignCache.ProbeStride);
+        CheckExpression(
+            "slot selector shift",
+            add!,
+            @"hash10\s*=\s*\(\s*hash\s*>>\s*(?<v>\d+)\s*\)",
+            Ft8CallsignHash.Shift10);
+        CheckExpression(
+            "stored callsign length",
+            add!,
+            @"strncpy\s*\([^;]*,\s*(?<v>\d+)\s*\)",
+            Ft8CallsignHash.MaxCallsignLength);
+
+        // The lookup's own shift table, which is what lets one stored 22-bit value answer a lookup
+        // at any of the three widths. Read as the two shifts it names.
+        CheckExpression(
+            "10-bit lookup shift",
+            lookup!,
+            @"HASH_10_BITS\s*\)\s*\?\s*(?<v>\d+)\s*:",
+            Ft8CallsignHash.Shift10);
+        CheckExpression(
+            "12-bit lookup shift",
+            lookup!,
+            @"HASH_12_BITS\s*\?\s*(?<v>\d+)\s*:",
+            Ft8CallsignHash.Shift12);
+
+        _output.WriteLine($"corroborated by macro      : {byMacro}");
+        _output.WriteLine($"corroborated by expression : {byExpression}");
+        _output.WriteLine($"uncorroborated             : {uncorroborated.Count} ({string.Join(", ", uncorroborated)})");
+
+        Assert.Empty(uncorroborated);
+        Assert.Equal(1, byMacro);
+        Assert.Equal(5, byExpression);
+    }
+
+    /// <summary>
     /// The pin's own declaration order of the six alphabets, which is what pairs an upstream
     /// alphabet name with one of this library's.
     /// </summary>
