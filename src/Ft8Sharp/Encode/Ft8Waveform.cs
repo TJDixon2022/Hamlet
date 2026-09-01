@@ -98,6 +98,14 @@ public static class Ft8Waveform
     }
 
     /// <summary>How many samples the signal itself occupies, silence excluded.</summary>
+    /// <remarks>
+    /// Upstream reaches this number twice by two different routes — once from the whole
+    /// transmission's duration, which is what sizes the slot, and once as the symbol count times
+    /// the samples per symbol, which is what the synthesis actually writes. At the rate it uses,
+    /// the two agree. They do not agree at every rate, so <see cref="Synthesize"/> refuses the ones
+    /// where they part company rather than quietly writing a signal of one length into a slot laid
+    /// out for the other. See <see cref="RequireConsistentGeometry"/>.
+    /// </remarks>
     public static int SampleCount(int sampleRate)
     {
         RequireSampleRate(sampleRate);
@@ -138,6 +146,7 @@ public static class Ft8Waveform
     {
         RequireSymbols(symbols);
         RequireSampleRate(sampleRate);
+        RequireConsistentGeometry(sampleRate);
         RequireBaseFrequency(baseFrequency, sampleRate);
 
         var samplesPerSymbol = SamplesPerSymbol(sampleRate);
@@ -381,6 +390,37 @@ public static class Ft8Waveform
                 sampleRate,
                 "the sample rate must be a positive number of samples per second; a waveform cannot "
                 + "be synthesized at zero or fewer.");
+        }
+    }
+
+    /// <summary>
+    /// Refuses a sample rate at which the signal's two lengths disagree.
+    /// </summary>
+    /// <remarks>
+    /// <b>Inherited from upstream and made loud rather than inherited silently.</b> Upstream sizes
+    /// its slot from one of these numbers and writes the other, which is exactly right at the rate
+    /// it uses and would run off the end of its own buffer at rates where they differ. Nothing here
+    /// runs off anything — the arrays are managed — but a signal one length written into a slot laid
+    /// out for another puts every sample after the join at the wrong offset, and a comparison would
+    /// report that as a defect in the synthesis. So it is refused with the reason, and
+    /// <c>porting-notes.md</c> records it as a deliberate divergence.
+    /// </remarks>
+    private static void RequireConsistentGeometry(int sampleRate)
+    {
+        var fromDuration = SampleCount(sampleRate);
+        var fromSymbols = SymbolCount * SamplesPerSymbol(sampleRate);
+        if (fromDuration != fromSymbols)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(sampleRate),
+                sampleRate,
+                $"at {sampleRate} samples per second the signal is {fromDuration} samples long "
+                + $"measured from the transmission's duration and {fromSymbols} measured as "
+                + $"{SymbolCount} symbols of {SamplesPerSymbol(sampleRate)} samples. The slot is laid "
+                + "out from the first and the waveform is written from the second, so a rate where "
+                + "they disagree puts every sample after the signal starts at the wrong offset. Use "
+                + $"a rate at which a symbol is a whole number of samples — {DefaultSampleRate} is "
+                + "the one FT8 is written and decoded at.");
         }
     }
 
