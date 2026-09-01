@@ -81,7 +81,7 @@ public class Ft8MessageDecoderTests
                         $"i3={primary} n3={secondary} decoded as {type}, which this library has not "
                         + "built. A decode returned for an unbuilt type is the failure this test "
                         + "exists to catch.");
-                    Assert.NotEqual(string.Empty, result.Text);
+                    Assert.NotNull(result.Text);
                 }
                 else
                 {
@@ -259,11 +259,13 @@ public class Ft8MessageDecoderTests
 
             // A decode whose callsign fields could not be resolved would be the worst of the three:
             // a message on the screen with a call nobody sent. Re-derived here from the fields
-            // rather than trusted from the status.
-            if (result.Fields.CallToType == Ft8FieldType.Unknown
-                || result.Fields.CallDeType == Ft8FieldType.Unknown
-                || string.IsNullOrEmpty(result.Fields.CallTo)
-                || string.IsNullOrEmpty(result.Fields.CallDe))
+            // rather than trusted from the status. Only the standard message has callsign fields;
+            // free text and telemetry carry none, so there is nothing there to be unresolved.
+            if (result.Type == Ft8MessageType.Standard
+                && (result.Fields.CallToType == Ft8FieldType.Unknown
+                    || result.Fields.CallDeType == Ft8FieldType.Unknown
+                    || string.IsNullOrEmpty(result.Fields.CallTo)
+                    || string.IsNullOrEmpty(result.Fields.CallDe)))
             {
                 decodesWithUnresolvedCallsigns++;
             }

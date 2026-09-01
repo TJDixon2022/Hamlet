@@ -109,6 +109,8 @@ public static class Ft8MessageTypes
     public static bool IsSupported(Ft8MessageType type) => type switch
     {
         Ft8MessageType.Standard => true,
+        Ft8MessageType.FreeText => true,
+        Ft8MessageType.Telemetry => true,
         _ => false,
     };
 }

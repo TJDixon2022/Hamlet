@@ -67,6 +67,19 @@ public static class Ft8MessageDecoder
                     : Ft8DecodeResult.Refusal(type, status);
             }
 
+            case Ft8MessageType.FreeText:
+            {
+                var status = Ft8FreeText.TryUnpackText(message, out var text);
+                return status == Ft8DecodeStatus.Decoded
+                    ? Ft8DecodeResult.Message(type, text, default)
+                    : Ft8DecodeResult.Refusal(type, status);
+            }
+
+            case Ft8MessageType.Telemetry:
+                // Every 71-bit body is telemetry: the type carries raw bits and interprets none of
+                // them, so there is nothing here that could be malformed.
+                return Ft8DecodeResult.Message(type, Ft8FreeText.UnpackTelemetryHex(message), default);
+
             default:
                 // Everything this library has not built, by name. A correct answer, and the only
                 // honest one available until the type is ported.
