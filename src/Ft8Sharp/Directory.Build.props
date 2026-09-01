@@ -20,16 +20,24 @@
     line a reader of the package sees. HM-DEC-063 exists so the tree has one answer
     to "what version is this app"; Ft8Sharp is not the app.
 
-    0.1.0 BECAUSE IT HAS TABLES AND NO DECODER.
+    0.1.0 BECAUSE IT HAD TABLES AND NO DECODER.
 
     A 1.x would claim a maturity this library has not got. The number is the first
     thing anybody sees, and it is the one part of a package that is read by people
     who have read nothing else.
 
     Bump it when Ft8Sharp gains a capability of its own, not when Hamlet ships.
+
+    0.2.0 ON 2026-09-01, BECAUSE IT GAINED ONE.
+
+    The library now holds the CRC every FT8 message is protected by and the 77-bit
+    container every message travels in — the first two pieces of the protocol itself
+    it has ever carried, as against tables that described one. Minor rather than
+    patch, because it is an addition to what the library can do rather than a
+    correction to what it already did. Still not a 1.x: nothing here decodes.
   -->
   <PropertyGroup>
-    <Version>0.1.0</Version>
+    <Version>0.2.0</Version>
   </PropertyGroup>
 
   <!--
