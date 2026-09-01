@@ -1,76 +1,213 @@
 # Test baseline — the failing set, by name
 
-**Measured 2026-08-31, at `HEAD` `a3a5c90` on `main`, on Tim's Windows 11 machine, by
-work unit 204.** Written for someone who has never seen that unit.
+**Rewritten 2026-09-01 by work unit 205, at `HEAD` `fb4d9af` on `main`, on Tim's
+Windows 11 Pro machine (10.0.26200).** Written for somebody who has never seen unit 204
+or unit 205 and needs to know what is red in this repository and what that means.
 
-This is the first record in this repository that names the failing tests rather than
-counting them. Before it, the only figure anywhere in the tree was "18 of 38 red" inside
-the text of HM-DEC-151 itself, with no list behind it and nothing saying what the 38
-counted.
+**This file supersedes unit 204's version of it.** Unit 204's measurement is not deleted —
+it is kept below, clearly labelled as a prior reading taken under CPU contention, because a
+measurement is not thrown away because a later one disagreed with it. But it is no longer
+the top of the file, and it should not be diffed against without reading the caveat that
+sits on it.
 
-**Read the two caveats below before you use this file for anything.** They are not
-hedging; they materially change how much weight the numbers will bear.
+**Read the two caveats before you use this file for anything.** They are not hedging; they
+change how much weight each number will bear.
 
 ---
 
-## Caveat 1 — this baseline covers two of the three test projects
+## Caveat 1 — the discovered census is complete, the run is not
 
-`Hamlet.sln` names three test projects: `tests/Ft8Sharp.Tests`,
-`tests/Hamlet.RadioEngine.Tests` and `tests/Hamlet.App.Tests`.
+For the first time in this phase, **every test project has been enumerated**. All three
+answered `--list-tests` in seconds, including `Hamlet.App.Tests`, which unit 204 could not
+get a single byte out of.
 
-**`tests/Hamlet.App.Tests` is missing from this baseline.** It is not missing because it
-would not build — it builds clean, in about six seconds, with no warnings and no errors,
-and the `MSB3027` file lock that earlier units reported is gone. It is missing because
-`dotnet test` on it ran for over one hundred minutes without emitting a single line of
-output and had still not returned when the measurement was cut off. Whether it is a
-genuinely slow headless-UI suite or is wedged was not determined; process enumeration was
-refused by the environment the measurement ran in.
+**What has still never been produced is a completed whole-project run of either Hamlet test
+project.** `Hamlet.RadioEngine.Tests` was started alone at 08:15:26 and had not returned at
+09:16:10, when unit 205's 60-minute bound stopped the wait. `Hamlet.App.Tests` was dropped
+as the named drop candidate rather than started, because the RadioEngine run was still
+alive and this loop's standing rule is that two test projects never run at once.
 
-**So this file describes the suite less `Hamlet.App.Tests`.** A partial baseline that says
-it is partial is useful. Do not treat it as complete.
+**So the counts table below has a discovered column that is complete and a run column that
+is mostly empty, and the difference between those two columns is the honest state of this
+repository's knowledge of itself.**
 
-## Caveat 2 — this baseline was taken under CPU contention, and may over-count
+## Caveat 2 — unit 205 blinded its own instrument, and says so
 
-`Hamlet.RadioEngine.Tests` was run **concurrently with** the stalled `Hamlet.App.Tests`
-run, because the alternative was measuring nothing at all before time ran out. The two
-projects write to disjoint output directories, so nothing was corrupted — but they shared
-a CPU.
+Unit 205 ran `dotnet test tests/Hamlet.RadioEngine.Tests --logger "console;verbosity=detailed"`
+and piped it through `grep` to select the failure lines. **`grep` block-buffers when its
+output is not a terminal.** The consequence is that when the run was still going at the
+60-minute bound, the captured stream held one line — the run's own start stamp — and not
+one test result, passing or failing.
 
-**A number of the failures below are timeout-shaped and may be starvation rather than
-defects.** All seventeen `RigReadTests` failures fail inside the same `ConnectAsync()`
-helper, with individual cases taking one to four seconds against a fake link.
-`AnOrdinaryDisconnectIsImmediate`, `ARigWhoseReadLoopIsStuckStillDisconnects` and
-`ItKeepsUpWithLiveAudio` assert on timing by their own names. Against that, the CW fixture
-failures decode recorded audio and assert on decoded characters, and those are unlikely to
-be contention.
+That is a defect in unit 205's method, not a property of the suite. **The instruction it
+was working from said in terms that only the streamed console text survives an early stop,
+and putting a buffering filter in the pipe threw exactly that away.** It is recorded here
+so the next unit does not repeat it.
 
-**The set below was never re-run in isolation**, so real reds and starved ones are not
-separated here. **The first thing the next unit to touch this file should do is re-run
-these names alone on a quiet machine and rewrite this list from that run.** Until then,
-this is a first draft with a known upward bias.
+**The correct instrument for a run that may not finish is the unfiltered console logger,
+with the filtering done after the run ends or on a stream that is not block-buffered.**
 
 ---
 
 ## Counts
 
-| Project | Total | Passed | Failed | Skipped |
-|---|---|---|---|---|
-| `Ft8Sharp.Tests` | 38 | 37 | 0 | 1 |
-| `Hamlet.RadioEngine.Tests` | not read | not read | **84** | not read |
-| `Hamlet.App.Tests` | not run | not run | not run | not run |
+Discovered by `dotnet test <project> --list-tests`, one project at a time, 2026-09-01.
 
-**There is deliberately no summed total.** The `Hamlet.RadioEngine.Tests` run did not
-print its summary line before the cut-off, so its total, passed and skipped figures were
-never read. The 84 is a count of failure names observed one at a time on the run's own
-output stream. Nothing here is extrapolated.
+| Project | Discovered | Total run | Passed | Failed | Skipped | Wall clock | Completed? |
+|---|---|---|---|---|---|---|---|
+| `Ft8Sharp.Tests` | 38 | 38 | 37 | 0 | 1 | 42 ms | yes |
+| `Hamlet.RadioEngine.Tests` | 2157 | not read | not read | not read | not read | > 60 min, cut off | **no** |
+| `Hamlet.App.Tests` | 523 | not run | not run | not run | not run | — | **not started** |
+| **Total discovered** | **2718** | | | | | | |
+
+**There is no summed run total, because two of the three projects produced no summary
+line.** Nothing in this table is extrapolated and nothing is carried forward from a prior
+unit's report as though it had been measured on 2026-09-01.
+
+**On the census figure.** `PHASE_PLAN.md` contains two mutually incompatible statements
+about the size of this suite: a table headed *The baseline, measured* giving 1049 tests
+across the three projects with 0 failed, and a sentence two paragraphs earlier saying the
+suite is 2682 tests. **Tonight's discovery says 2718.** The larger figure is the one the
+tree supports. `PHASE_PLAN.md` is the owner's file and was not edited; the disagreement is
+reported and nothing more.
 
 **No failing test is inside `Ft8Sharp`.** `Ft8Sharp.Tests` ran to completion as its own
-invocation and reported `Failed: 0`. Every name below begins
-`Hamlet.RadioEngine.Tests.`.
+invocation and reported `Failed: 0` — 38 discovered, 38 run, 37 passed, 1 skipped.
 
 ---
 
-## The failing set — all 84, grouped by class
+## The tests that were run to completion on 2026-09-01
+
+### `Ft8Sharp.Tests` — 38 discovered, 37 passed, 0 failed, 1 skipped
+
+Green in full. The classes that passed: `Ft8SharpBoundaryTests`, `Ft8TableGeometryTests`,
+`Ft8TableGenerationTests`, `CSourceParserTests`, `ReferenceCloneProbeTests`,
+`Ldpc.Ft8LdpcParityTests`, `Ldpc.Ft8LdpcLayoutTests`, `Ldpc.Ft8LdpcRefusalTests`,
+`Ldpc.Ft8LdpcSecondOpinionTests`, `Ldpc.UpstreamEncoderProvenanceTests`.
+
+### The three channels — 68 tests, 0 failed
+
+These are the only tests in the Hamlet projects that read anything the FT8 phase changed.
+They are named and run individually in the attribution section below. All 68 passed.
+
+---
+
+## Attribution — what this phase changed, and every test that reads it
+
+**This is the part of the file that answers "has the FT8 phase broken Hamlet", and it does
+not depend on the suite completing.**
+
+### The phase boundary
+
+`2828ab6` is the parent of `6f58a76`, the first commit of the FT8 phase; `git rev-parse
+6f58a76^` confirms it. Everything the phase has done is `2828ab6..HEAD`, which at
+`f743fc2` was **24 commits and 37 changed paths**.
+
+### The 37 paths
+
+Under `src/Ft8Sharp/` (8): `Directory.Build.props`, `Ft8Sharp.csproj`,
+`Ft8SharpAssembly.cs`, `LICENSE`, `Ldpc/LdpcEncoder.cs`, `NOTICE`,
+`Tables/Ft8Tables.g.cs`, `porting-notes.md`.
+
+Under `tests/Ft8Sharp.Tests/` (19): `CSourceParserTests.cs`, `Ft8Sharp.Tests.csproj`,
+`Ft8SharpBoundaryTests.cs`, `Ft8TableGenerationTests.cs`, `Ft8TableGeometryTests.cs`,
+`ReferenceCloneProbeTests.cs`, `Ldpc/BasisProof.cs`, `Ldpc/Ft8LdpcLayoutTests.cs`,
+`Ldpc/Ft8LdpcParityTests.cs`, `Ldpc/Ft8LdpcRefusalTests.cs`,
+`Ldpc/Ft8LdpcSecondOpinionTests.cs`, `Ldpc/LdpcCheck.cs`, `Ldpc/Payloads.cs`,
+`Ldpc/UpstreamEncoderProvenanceTests.cs`, `TableGen/CSourceParser.cs`,
+`TableGen/ExpressionEvaluator.cs`, `TableGen/Ft8TableConverter.cs`,
+`TableGen/RepositoryTree.cs`, `TableGen/TableComparison.cs`.
+
+The loop's own machinery (4): `tools/arbiter/outcome-append.bat`,
+`tools/arbiter/outcome-entry.py`, `tools/write-status.py`, `write-status.bat`.
+
+Everything else (6): `CLAUDE.md`, `Directory.Build.props`, `Hamlet.sln`, `OUTPUT.md`,
+`PROJECT_STATUS.md`, `docs/test-baseline.md`.
+
+**Not one path is under `src/Hamlet.App/`, `src/Hamlet.RadioEngine/`,
+`tests/Hamlet.App.Tests/` or `tests/Hamlet.RadioEngine.Tests/`.** The FT8 phase has not
+touched a line of Hamlet's source or a line of Hamlet's tests.
+
+**No `.csproj` outside the FT8 project references `Ft8Sharp`.** Grepping every `.csproj` in
+the tree finds `Ft8Sharp` only in its own project file's comments and in
+`Ft8Sharp.Tests.csproj`'s single `ProjectReference`. `Hamlet.sln` membership is the only
+link between this library and the application, and nothing in Hamlet consumes it yet.
+
+### The three channels, and their verdicts
+
+That leaves exactly three ways the phase could have reached a Hamlet test at all. Each was
+run by name on 2026-09-01.
+
+**Channel 1 — the two rows added to `CLAUDE.md` §1.** `DecisionLogOrderTests` parses that
+table with a regex and asserts it is newest-first. **This is the single most likely way the
+phase could have reddened a Hamlet test, and before tonight no unit had ever run it.**
+
+| Test | Verdict |
+|---|---|
+| `Hamlet.App.Tests.DecisionLogOrderTests.TheDecisionLogIsNewestFirst` | **passed** |
+| `Hamlet.App.Tests.DecisionLogOrderTests.EveryRulingAppearsOnceAndTheGapsAreTheKnownOnes` | **passed** |
+| `Hamlet.App.Tests.Telemetry.DecisionEmissionTests.TheDecisionLogKeepsTransitionsAndDropsRepeats` | **passed** |
+| `Hamlet.App.Tests.Telemetry.DecisionEmissionTests.AnUnchangedVerdictIsNotWrittenAgain` | **passed** |
+| `Hamlet.App.Tests.Telemetry.DecisionEmissionTests.NothingTheDecisionLogCopiesCanIdentifyAnybody` | **passed** |
+| `Hamlet.App.Tests.Telemetry.DecisionEmissionTests.AStateArrivingAfterConnectReEvaluatesAndEmits` | **passed** |
+| `Hamlet.App.Tests.Telemetry.DecisionEmissionTests.ARefusalWithNoButtonPressStillEmits` | **passed** |
+| `Hamlet.App.Tests.VoiceTests.TheSweepIsActuallyReadingTheCopy` | **passed** |
+| `Hamlet.App.Tests.VoiceTests.NoPassageOfCopyCarriesTwoEmDashes` | **passed** |
+| `Hamlet.App.Tests.VoiceTests.CommentsAreNotMistakenForCopy` | **passed** |
+
+**Channel 2 — the root version, moved 1.12.8 → 1.12.11 across the phase.**
+`ViewModels/VersionTests` holds the chain from `Directory.Build.props` to the About box.
+
+| Test | Verdict |
+|---|---|
+| `Hamlet.App.Tests.ViewModels.VersionTests.TheShellAndTheEngineCarryTheSameVersion` | **passed** |
+| `Hamlet.App.Tests.ViewModels.VersionTests.TheAboutBoxReportsWhateverTheAssemblySays` | **passed** |
+| `Hamlet.App.Tests.ViewModels.VersionTests.TheVersionIsAtLeastTheReleaseThatSetIt` | **passed** |
+
+**Channel 3 — solution membership**, two new projects in `Hamlet.sln`. The engine-side
+tests that read the seam and the licensing data: `Hamlet.RadioEngine.Tests.Audio.AudioSeamTests`
+(12 cases) and `Hamlet.RadioEngine.Tests.Licensing.PrivilegeTests` (32 cases), plus
+`Hamlet.RadioEngine.Tests.Cw.TransmitPrivilegeTests` (11 cases) which the same filter
+caught. **55 tests, 55 passed, 0 failed**, in 3 seconds.
+
+**Verdict on attribution: nothing the FT8 phase did has made a Hamlet test red.** 68 tests
+on the three channels, every one green, and no Hamlet source or test file changed at all.
+
+---
+
+## The failing set — not measured on 2026-09-01
+
+**This section is empty on purpose, and its emptiness is a fact rather than a claim of
+zero.** The `Hamlet.RadioEngine.Tests` run did not return inside its bound, and the stream
+it was writing to was block-buffered by unit 205's own filter (caveat 2), so **not one
+failing name was read tonight**. `Hamlet.App.Tests` was not run.
+
+**Do not read this as "nothing is red."** The prior reading below says a great deal is.
+Read it as: this repository still has no failing set it has measured in isolation, and
+producing one is the first job of the next unit that touches this file.
+
+---
+
+## PRIOR READING — unit 204, 2026-08-31, taken under CPU contention
+
+**Everything from here to the skipped set is unit 204's measurement, kept intact. It was
+taken at `HEAD` `a3a5c90`, and unit 204 said in its own report that it may over-count.**
+Unit 205 did not reproduce it, did not confirm it and did not refute it.
+
+**Why it may over-count.** `Hamlet.RadioEngine.Tests` was run *concurrently with* a stalled
+`Hamlet.App.Tests` run, because the alternative was measuring nothing before time ran out.
+The two projects wrote to disjoint output directories so nothing was corrupted, but they
+shared a CPU. A number of the failures are timeout-shaped: all seventeen `RigReadTests`
+failures fail inside the same `ConnectAsync()` helper at `RigReadTests.cs:37`, with
+individual cases taking one to four seconds against a *fake* link, and
+`AnOrdinaryDisconnectIsImmediate`, `ARigWhoseReadLoopIsStuckStillDisconnects` and
+`ItKeepsUpWithLiveAudio` assert on timing by their own names. Against that, the CW fixture
+failures decode recorded audio and assert on decoded characters, and those are unlikely to
+be contention.
+
+**Tonight's diff against these 84: 0 in both, 0 new, 0 shown green — because tonight
+produced no set to diff.** That is the whole of the comparison and it is reported as
+nothing rather than as agreement.
 
 ### `Hamlet.RadioEngine.Tests.Cw.AutoCallSafetyTests` (8)
 
@@ -236,6 +373,12 @@ All seventeen fail inside the same `ConnectAsync()` helper at `RigReadTests.cs:3
 
 - `ATransceiveBroadcastDoesNotAnswerARead`
 
+**Two of these are transmit-safety tests** —
+`Cw.AutoCallSafetyTests.NoTestInThisSuiteCanReachARealTransmitter` and
+`Scan.BandScannerSafetyTests.AScanNeverKeysTheTransmitter`. They were red before the FT8
+phase existed and nothing in it goes anywhere near transmit. They are named here and not
+investigated, which is what the phase plan says to do with them.
+
 ---
 
 ## The skipped set
@@ -246,13 +389,15 @@ Kept deliberately separate from the failing set.
 
 - `Ft8Sharp.Tests.Ft8TableGenerationTests.RewriteTheCheckedInTablesFile`
 
-`Hamlet.RadioEngine.Tests`' skip count was not read, because that run did not reach its
-summary line.
+`Hamlet.RadioEngine.Tests`' and `Hamlet.App.Tests`' skip counts have never been read,
+because neither run has ever reached its summary line.
 
 **A skip is not a failure here.** Reference material — off-air recordings and the pinned
-upstream clone — is never committed to this repository, so tests that need it report
-skipped when it is absent rather than red. That is what keeps a fresh clone green for
-somebody who has just downloaded the project, and it is a deliberate design, not a gap.
+upstream `ft8_lib` clone at `C:\Source\ft8_lib` — is never committed to this repository, so
+tests that need it report skipped when it is absent rather than red. On a machine without
+the clone, six `Ft8Sharp` tests skip instead of one. That is what keeps a fresh clone green
+for somebody who has just downloaded the project, and it is a deliberate design rather than
+a gap.
 
 ---
 
@@ -260,26 +405,33 @@ somebody who has just downloaded the project, and it is a deliberate design, not
 
 A later unit re-runs the suite and compares **name by name** against the lists above. Any
 name that has appeared, and any name that has disappeared, is the finding — and it is
-reported as a finding whichever direction it went, because a red that has quietly gone
-green is as much a change to the inherited set as a green that has gone red.
+reported as a finding whichever direction it went, because a red that has quietly gone green
+is as much a change to the inherited set as a green that has gone red.
 
 **A matching count is not a match.** This is the whole reason HM-DEC-151 asks for names
-rather than a number: one inherited red going green while a green goes red leaves the
-total exactly where it was, and a count-only comparison sees nothing. Compare the sets,
-not their sizes.
+rather than a number: one inherited red going green while a green goes red leaves the total
+exactly where it was, and a count-only comparison sees nothing. Compare the sets, not their
+sizes.
 
-Given caveat 2, the correct first use of this file is to **replace it** — re-run these
-names on a quiet machine, in isolation, and rewrite the lists from that run before anyone
-starts diffing against them.
+**The one list in here that is measured and current is the attribution section**, and it is
+measured in a way that does not need the suite to finish: the paths the phase changed, and
+the verdict of every test in the tree that reads any of them.
+
+**The correct next use of this file is still to replace its failing set** — run
+`Hamlet.RadioEngine.Tests` alone, with an unfiltered console logger so the stream survives an
+early stop, and rewrite the list from that run before anyone diffs against it. Unit 204's 84
+are a first draft with a known upward bias, and unit 205 did not manage to confirm or refute
+them.
 
 ## What this file is not
 
 **It is not a list of bugs to fix.** Nobody is assigned to any name in it by its presence
 here.
 
-**It is not a ratchet the FT8 phase owns.** The CW work and the rig work predate this
-phase, and this phase neither created these failures nor took responsibility for them.
-Its obligation is narrower: do not add to the set, and do not silently change it.
+**It is not a ratchet the FT8 phase owns.** The CW work and the rig work predate this phase,
+and this phase neither created these failures nor took responsibility for them. Its
+obligation is narrower: do not add to the set, and do not silently change it. The attribution
+section is the evidence that it has done neither.
 
-**And it is not a licence to leave the CW reds alone forever.** HM-DEC-151's own words —
-it says only that fixing them is not this phase's work. Somebody's night, eventually.
+**And it is not a licence to leave the CW reds alone forever.** HM-DEC-151's own words — it
+says only that fixing them is not this phase's work. Somebody's night, eventually.

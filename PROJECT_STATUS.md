@@ -6,8 +6,8 @@ WORK_INSTRUCTION: 205
 BALL: claude
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-152 (2026-08-31)
-UPDATED: 2026-09-01T09:16:10-04:00
-NOTE: Task 4 bounded out at 60 minutes with the run still going and its stream holding nothing but the start stamp, and the reason it holds nothing is mine - a grep in the pipe block-buffered the very console text the instruction named as the only thing that survives an early stop. Task 5 is dropped because the run is still alive and two projects may not run at once. Writing the baseline and the verdict now
+UPDATED: 2026-09-01T09:18:45-04:00
+NOTE: Baseline rewritten around the attribution rather than around a failing set, since the failing set is the one thing tonight did not produce; root version moved 1.12.11 to 1.12.12 under HM-DEC-150 and Ft8Sharp left at 0.1.0; the probe file deletion was refused for the third session running. RadioEngine run is still alive at 63 minutes so no further test invocation is possible, and the report is next
 
 ---
 
