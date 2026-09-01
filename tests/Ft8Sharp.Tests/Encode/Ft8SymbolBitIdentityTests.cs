@@ -107,33 +107,63 @@ public class Ft8SymbolBitIdentityTests
     /// travels as a hash rather than in full.
     /// </summary>
     /// <remarks>
+    /// <para>
     /// A comparison covering only standard messages with basecalls in them passes whatever the hash
     /// does, because no hash will have been on the wire. This leg is reported separately for that
     /// reason and must not be folded into the corpus total.
+    /// </para>
+    /// <para>
+    /// <b>What counts is a hash on the wire on BOTH sides.</b> The corpus carries hashed entries of
+    /// two kinds and only one of them upstream can be asked for — see the remarks on
+    /// <see cref="EncodeCorpus"/>. The entries with no text form are named here as not covered rather
+    /// than left out silently, because a leg quietly dropped reads exactly like a leg that passed.
+    /// </para>
     /// </remarks>
     [RequiresWorkingOracleFact]
     public void AMessageWhoseCallsignTravelsAsAHashIsCompared()
     {
-        var entry = EncodeCorpus.Build().Single(e => e.CarriesHashedCallsign);
-        Assert.NotNull(entry.Text);
+        var hashed = EncodeCorpus.Build().Where(e => e.CarriesHashedCallsign).ToList();
+        var comparable = hashed.Where(e => e.Text is not null).ToList();
 
-        var run = Ft8Oracle.Generate(entry.Text!);
-        _output.WriteLine($"message  : the hashed-companion entry, '{entry.Label}'");
-        _output.WriteLine($"upstream : exit {run.ExitCode}");
+        _output.WriteLine($"entries carrying a hash on the wire : {hashed.Count}");
+        _output.WriteLine($"of those, upstream can be asked for : {comparable.Count}");
+        foreach (var entry in hashed.Where(e => e.Text is null))
+        {
+            _output.WriteLine(
+                $"  NOT COVERED [{entry.Kind}] {entry.Label}: no text form makes upstream produce "
+                + "this wire format, so it cannot be compared and is not counted as covered");
+        }
 
-        Assert.Equal(0, run.ExitCode);
+        _output.WriteLine(string.Empty);
 
-        var read = Ft8Oracle.TryReadTones(run.StandardOutput, Ft8SymbolEncoder.SymbolCount, out var theirs);
         Assert.True(
-            read,
-            "upstream would not give a tone sequence for a message carrying a hashed callsign, so "
-            + "this leg is NOT COVERED and the hash still stands on two legs");
+            comparable.Count > 0,
+            "no message whose callsign travels as a hash can be put to upstream at all, so this leg "
+            + "is NOT COVERED and the hash still stands on two legs");
 
-        var ours = Ft8SymbolEncoder.Encode(entry.Message);
-        var result = SymbolComparison.Compare(ours, theirs);
+        foreach (var entry in comparable)
+        {
+            var run = Ft8Oracle.Generate(entry.Text!);
+            Assert.Equal(0, run.ExitCode);
 
-        _output.WriteLine($"result   : {result.Explanation}");
-        Assert.True(result.Identical, $"the hashed-callsign leg differs: {result.Explanation}");
+            var read = Ft8Oracle.TryReadTones(run.StandardOutput, Ft8SymbolEncoder.SymbolCount, out var theirs);
+            Assert.True(
+                read,
+                $"[{entry.Label}] upstream would not give a tone sequence for a message carrying a "
+                + "hashed callsign, so this leg is NOT COVERED and the hash still stands on two legs");
+
+            var ours = Ft8SymbolEncoder.Encode(entry.Message);
+            var result = SymbolComparison.Compare(ours, theirs);
+
+            _output.WriteLine($"  [{entry.Kind}] {entry.Label}: {result.Explanation}");
+            Assert.True(result.Identical, $"[{entry.Label}] the hashed-callsign leg differs: {result.Explanation}");
+        }
+
+        _output.WriteLine(string.Empty);
+        _output.WriteLine(
+            $"{comparable.Count} messages compared with a callsign genuinely on the wire as a hash, "
+            + "and every symbol of every one of them is identical to upstream's. Unit 208's debt is "
+            + "settled for this form.");
     }
 
     /// <summary>
@@ -262,5 +292,44 @@ public class Ft8SymbolBitIdentityTests
         var good = string.Join(' ', Enumerable.Repeat("5", n));
         Assert.True(Ft8Oracle.TryReadTones($"header line\n{good}\ntrailer", n, out var tones));
         Assert.Equal(n, tones.Length);
+
+        // The run-together form upstream actually uses, watched refusing on the same three faults
+        // before it is trusted to accept anything. It was added when the generator was first made to
+        // survive its own waveform and print, and a second accepted form is a second way to read
+        // agreement that was never measured unless it is held to the same standard as the first.
+        var run = new string('5', n);
+        Assert.False(Ft8Oracle.TryReadTones($"FT8 tones: {run[..^1]}", n, out _));
+        Assert.False(Ft8Oracle.TryReadTones($"FT8 tones: {run}5", n, out _));
+        Assert.False(Ft8Oracle.TryReadTones($"FT8 tones: {run[..^1]}8", n, out _));
+
+        // A long run of decimal digits that is not tones — the right length, wrong alphabet.
+        Assert.False(Ft8Oracle.TryReadTones($"checksum: {new string('9', n)}", n, out _));
+
+        Assert.True(Ft8Oracle.TryReadTones($"label: {run}", n, out var packed));
+        Assert.Equal(n, packed.Length);
+        Assert.All(packed, tone => Assert.Equal(5, tone));
+    }
+
+    /// <summary>
+    /// The hex reader watched refusing, since it is what upgrades criterion 1 from a syndrome check
+    /// against our own tables to a byte-for-byte comparison against upstream's own bits.
+    /// </summary>
+    /// <remarks>
+    /// A reader that accepted anything after a label would compare our packed message against
+    /// whatever happened to sit on that line, and report a match nobody measured.
+    /// </remarks>
+    [Fact]
+    public void TheHexReaderRefusesLinesThatCarryNoHexRun()
+    {
+        Assert.False(Ft8Oracle.TryReadHexAfterLabel("nothing labelled here", "payload", out _));
+        Assert.False(Ft8Oracle.TryReadHexAfterLabel("payload: not hex at all", "payload", out _));
+        Assert.False(Ft8Oracle.TryReadHexAfterLabel(string.Empty, "payload", out _));
+
+        // A label followed by hex, with the colon upstream puts between them stepped over rather
+        // than read as a field and mistaken for the end of the run.
+        Assert.True(Ft8Oracle.TryReadHexAfterLabel("Packed data: 00 11 AB cd", "data", out var bytes));
+        Assert.Equal(4, bytes.Length);
+        Assert.Equal(0xAB, bytes[2]);
+        Assert.Equal(0xCD, bytes[3]);
     }
 }

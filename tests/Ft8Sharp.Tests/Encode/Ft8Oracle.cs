@@ -192,11 +192,26 @@ internal static class Ft8Oracle
     /// The tone sequence upstream printed, or an empty span when it printed none.
     /// </summary>
     /// <remarks>
+    /// <para>
     /// <b>Deliberately strict about what a tone line is.</b> A parser that scavenges digits out of
     /// any line would happily read a frequency, a duration or a checksum as tones and then report
-    /// agreement it never measured. This takes only a line that is entirely whitespace-separated
-    /// single digits in the FT8 alphabet, and only when there are exactly as many of them as the
-    /// modulation has channel symbols.
+    /// agreement it never measured.
+    /// </para>
+    /// <para>
+    /// <b>Two forms are accepted and both are exact.</b> Either the line is entirely
+    /// whitespace-separated single digits in the FT8 alphabet, or one of its fields is an unbroken
+    /// run of characters every one of which is in the alphabet — and in both cases there must be
+    /// exactly as many of them as the modulation has channel symbols. The second form is the one
+    /// upstream's generator actually uses: a short label, a colon, then the tones run together with
+    /// no separator at all. Unit 210 could not know that, because the generator could not be made to
+    /// print anything; the run-together form was added when it could.
+    /// </para>
+    /// <para>
+    /// <b>The second form is no looser than the first.</b> A run of exactly
+    /// <paramref name="expectedCount"/> characters, every one of them a digit between 0 and 7, is
+    /// not something a frequency, a duration, a byte count or a checksum produces. A run one
+    /// character short, or one carrying an 8, is refused — and both refusals are watched.
+    /// </para>
     /// </remarks>
     public static bool TryReadTones(string standardOutput, int expectedCount, out byte[] tones)
     {
@@ -209,33 +224,56 @@ internal static class Ft8Oracle
             }
 
             var fields = line.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries);
-            if (fields.Length != expectedCount)
-            {
-                continue;
-            }
 
-            var candidate = new byte[expectedCount];
-            var ok = true;
-            for (var i = 0; i < fields.Length; i++)
+            // Form one: one field per tone.
+            if (fields.Length == expectedCount
+                && TryReadAlphabet(string.Concat(fields), expectedCount, out var spaced)
+                && fields.All(f => f.Length == 1))
             {
-                if (fields[i].Length != 1 || fields[i][0] < '0' || fields[i][0] > '7')
-                {
-                    ok = false;
-                    break;
-                }
-
-                candidate[i] = (byte)(fields[i][0] - '0');
-            }
-
-            if (ok)
-            {
-                tones = candidate;
+                tones = spaced;
                 return true;
+            }
+
+            // Form two: one field carrying every tone, run together.
+            foreach (var field in fields)
+            {
+                if (TryReadAlphabet(field, expectedCount, out var packed))
+                {
+                    tones = packed;
+                    return true;
+                }
             }
         }
 
         tones = [];
         return false;
+    }
+
+    /// <summary>
+    /// Reads a run of characters as tones, and only when there are exactly
+    /// <paramref name="expectedCount"/> of them and every one is inside the eight-tone alphabet.
+    /// </summary>
+    private static bool TryReadAlphabet(string run, int expectedCount, out byte[] tones)
+    {
+        tones = [];
+        if (run.Length != expectedCount)
+        {
+            return false;
+        }
+
+        var candidate = new byte[expectedCount];
+        for (var i = 0; i < run.Length; i++)
+        {
+            if (run[i] < '0' || run[i] > '7')
+            {
+                return false;
+            }
+
+            candidate[i] = (byte)(run[i] - '0');
+        }
+
+        tones = candidate;
+        return true;
     }
 
     /// <summary>
@@ -257,7 +295,9 @@ internal static class Ft8Oracle
                 continue;
             }
 
-            var tail = line[(at + label.Length)..];
+            // Upstream separates its label from its bytes with a colon, so the punctuation is
+            // stepped over rather than read as the first field and mistaken for a non-hex run.
+            var tail = line[(at + label.Length)..].TrimStart().TrimStart(':').TrimStart();
             var fields = tail.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries);
             var collected = new List<byte>();
             foreach (var field in fields)

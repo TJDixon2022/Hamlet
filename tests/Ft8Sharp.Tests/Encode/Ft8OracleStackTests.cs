@@ -279,6 +279,58 @@ public class Ft8OracleStackTests
     }
 
     /// <summary>
+    /// The <em>form</em> of what the surviving generator prints, line by line, without reproducing a
+    /// single value it computed.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Every character is replaced by what kind of character it is — <c>d</c> for a digit, <c>a</c>
+    /// for a letter, everything else left as itself. That is enough to see whether a tone sequence is
+    /// space-separated, comma-separated, run together, or split over lines, and it carries none of
+    /// the tones themselves. <b>Values read out of upstream's binary never enter this repository;
+    /// their shape is a fact about its output format and does.</b>
+    /// </para>
+    /// <para>
+    /// This exists because the generator surviving turned out not to be the same thing as the parser
+    /// recognising it, and a session that could not see the format would have been guessing at one.
+    /// </para>
+    /// </remarks>
+    [RequiresOracleFact]
+    public void TheFormOfWhatTheSurvivingGeneratorPrints()
+    {
+        var run = Ft8Oracle.Generate("CQ K1ABC FN42");
+
+        _output.WriteLine($"image     : {Ft8Oracle.ResolvedExecutablePath}");
+        _output.WriteLine($"exit code : {run.ExitCode} (0x{run.ExitCode:X8})");
+        _output.WriteLine($"wav bytes : {run.WavBytes}");
+        _output.WriteLine($"stdout    : {run.StandardOutput.Length} chars");
+        _output.WriteLine($"stderr    : {run.StandardError.Length} chars");
+        _output.WriteLine(string.Empty);
+
+        var lines = run.StandardOutput.Replace("\r", string.Empty).Split('\n');
+        _output.WriteLine($"stdout lines: {lines.Length}");
+        for (var i = 0; i < lines.Length; i++)
+        {
+            var line = lines[i];
+            var signature = string.Concat(line.Select(c =>
+                char.IsAsciiDigit(c) ? 'd' : char.IsAsciiLetter(c) ? 'a' : c));
+            var single = line
+                .Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries)
+                .Count(f => f.Length == 1 && f[0] >= '0' && f[0] <= '7');
+
+            _output.WriteLine(
+                $"  [{i,2}] {Ft8Oracle.Shape(line)}; fields in the tone alphabet: {single}");
+            _output.WriteLine(
+                $"       form: {(signature.Length > 200 ? signature[..200] + " …" : signature)}");
+        }
+
+        _output.WriteLine(string.Empty);
+        _output.WriteLine(
+            $"a line of exactly {Ft8Oracle.ToneSequenceLength} tone fields: "
+            + Ft8Oracle.TryReadTones(run.StandardOutput, Ft8Oracle.ToneSequenceLength, out _));
+    }
+
+    /// <summary>
     /// The two independent readings of the same header field agree.
     /// </summary>
     /// <remarks>
