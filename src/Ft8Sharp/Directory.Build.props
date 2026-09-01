@@ -75,7 +75,7 @@
     is no demodulator, and nothing has yet agreed with anybody but itself.
   -->
   <PropertyGroup>
-    <Version>0.5.0</Version>
+    <Version>0.5.1</Version>
   </PropertyGroup>
 
   <!--

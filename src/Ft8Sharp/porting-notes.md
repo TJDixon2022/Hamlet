@@ -1126,6 +1126,12 @@ build on this machine.** There is no C toolchain here: nothing resolves on `PATH
 compiler present has no `include` folder beside it, no C runtime import libraries, and no Windows
 SDK anywhere on the machine. Installing one is the owner's and was refused rather than done.
 
+> **Superseded in part by unit 210, 2026-09-01.** The toolchain sentence above was true when it was
+> written and is not true now: clang arrived on this machine the same afternoon and the generator
+> **is** built here. Leg C still does not exist, for an entirely different reason. See *What unit
+> 210 found* at the end of this file; the paragraph is left standing rather than rewritten because
+> the sequence of what was known when is itself part of the provenance.
+
 **So criterion 2 is open, and agreement between two implementations written in the same session is
 not bit-identity with anybody.** Both share whatever the session misunderstood, and the way they
 would most plausibly be wrong — the Gray map's direction — is inherited by both from the same
@@ -1168,3 +1174,99 @@ generator, one for the decoder and one for the test program. Two demo programs, 
 decode entry point instead. **The narrow question, asked and answered: yes, the pin contains a
 program whose job is to turn a message into tones or symbols, and yes, the build system names it as
 a target.** It is the machine that cannot build it, not the pin that lacks it.
+
+## What unit 210 found — the oracle exists, and it will not run
+
+**2026-09-01, the second unit of step 3.** Written after unit 209's account above, which it revises
+in one place and completes in another.
+
+### Which of the three legs the symbol sequence stands on
+
+**Leg A, provenance against the pin: exists.** Untouched tonight.
+
+**Leg B, an independent second implementation: exists.** Re-run and green. It is worth saying
+plainly that this is *not* now the weaker of two agreeing legs — that is what it would have become
+had leg C run. It is still the only implementation-level evidence about the sequence, and two
+implementations written in one session against one reading of one source share whatever that reading
+got wrong.
+
+**Leg C, bit-identity against upstream's own tones: still does not exist.** Criterion 2 is OPEN.
+
+### How the oracle was built, so the route survives a re-pin
+
+Not by this unit. **`tools\build-ft8-oracle.bat`, the owner's own script, drives `clang.exe` from
+the Visual Studio install's LLVM toolset**, compiling the pin's generator demo and six of its
+sources out of source into a `build` folder beside the clone. The script exists because MSVC refuses
+this source twice over — the generator uses C99 variable-length arrays, which MSVC has never
+supported in C mode, and the message layer calls a POSIX string function absent from the Microsoft
+CRT, which the script supplies with a define. **The script is not this repository's and is not
+committed.** This unit ran none of it: the session's harness declined to execute a batch file or a
+compiler, four invocation forms and one bare compiler call, and that refusal was reported rather
+than routed around. A compiler was **not** run from inside a test process; unit 209 judged that a
+workaround and that judgment stands.
+
+### Why the oracle cannot answer, measured three ways
+
+The executable was already on the machine, built by the owner. It is a **sound build**: given no
+arguments it prints its own usage text and exits cleanly. Given a message it dies immediately with
+`STATUS_STACK_OVERFLOW`.
+
+- **Its own PE optional header** asks Windows for a stack reserve of exactly one mebibyte, the
+  linker's default. Windows takes the reserve from the image, so no way of launching the process
+  can give it more.
+- **The generator declares four C99 variable-length arrays**, extents written as expressions rather
+  than constants. The whole fifteen-second waveform is one of them, on the stack.
+- **That is fine where the program comes from and not here.** The systems `ft8_lib` is written for
+  default to eight mebibytes of stack. This is a property of the platform and of the link, not of
+  the pin and not of this port.
+
+**The fix is a stack-size flag on the link line in the owner's script, and this unit may not edit
+it.** It is recorded for him rather than taken.
+
+### The finding that matters most to the next unit: the tones *are* printed
+
+Read out of the generator's source rather than guessed, and it corrects a first reading this unit
+took from too narrow a pattern. The generator prints a label, opens a loop, and prints one integer
+conversion per tone — **and it does all of that before the waveform buffer that overflows is
+declared.** So on every crashed run the tones were computed and printed, and lost only because a
+process that dies never flushes its output buffer.
+
+Two things follow. **The direct channel to criterion 2 exists**, so no WAV demodulation is needed —
+the route that would have been the only one had the generator emitted audio alone. And **the moment
+the generator survives its own waveform, criterion 2 can close in minutes**, because the comparison
+is already written, already gated to skip with the reason named, and already watched refusing.
+
+### Whether the Gray map direction and the bit-walk continuity are settled
+
+**Neither. Both remain expression-anchored readings taken from inside upstream's own function body,
+exactly as unit 209 left them.** They are the two ways this port can be self-consistently wrong —
+a sequence of the right length, every value inside the alphabet, all three sync blocks in their
+right places, and every assertion in the tree still passing. Nothing in this repository can settle
+them and nothing tonight did.
+
+### The comparison, watched refusing
+
+Leg C's machinery is checked in and exercised, even though leg C did not run. The comparator reports
+**a position and never a count**, because a count says nothing about where the port went wrong.
+Altered by one symbol at the first data position it names that position and says the codeword, the
+Gray map or the bit walk is implicated; altered inside the second sync block it names that position
+and says the Costas pattern is implicated instead. Two sequences of different lengths are refused
+outright rather than compared over the shorter prefix. The tone parser refuses prose, an empty
+string, a line with the right count carrying a value outside the alphabet, and a line with the right
+values one short.
+
+### What is not covered, said plainly rather than left looking covered
+
+- **Telemetry.** Nine bytes is not a sentence and upstream's generator takes only a string, so the
+  telemetry entries of the corpus have no text form and are unreachable by this comparison. Our
+  encoder reaches them; upstream's could not be asked.
+- **Unit 208's carried-forward debt is NOT settled, for the third unit running.** A message whose
+  callsign travels as a hash is in the corpus and has its own separately named leg in the
+  comparison, and that leg did not run because nothing ran. **No hash has been on any wire but this
+  library's own.** The hash still stands on two legs going into step 4.
+
+### Divergences from upstream
+
+**None added.** The count stands at fifteen. Everything this unit built is in the test project;
+nothing under `src/Ft8Sharp/` changed tonight, and the library gained evidence about the capability
+it already had rather than a new one.
