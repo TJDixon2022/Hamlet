@@ -4,6 +4,84 @@ Questions with owner and severity. `owner` is who must act next. Format in
 `CLAUDE.md` §3.
 
 ---
+id: HM-OPEN-065
+status: open
+owner: tim
+raised: 2026-09-01
+severity: slows
+blocks: nothing — step 3 is closed on its must-pass criteria; step 5 will want it
+refs: PHASE_PLAN.md step 3 criterion 3, PHASE_PLAN.md ruling of 2026-09-01, units 210, 211, 212, 213
+---
+
+**Step 3's nice-to-pass criterion 3 is not met: *audio synthesis produces a
+signal the reference decoder decodes.*** Recorded here by name because the
+plan's ruling of 2026-09-01 requires every unmet nice-to-pass criterion to be,
+and because **recorded is not dropped**. Until unit 213 this file held nothing
+about FT8 at all and the debt had been unpaid for four units.
+
+**What it would have shown.** That a signal `Ft8Sharp` synthesizes is
+*decodable by upstream's own decoder* — a different and stronger statement than
+the one that was taken instead, which is that the samples are *identical to
+upstream's own encoder output*. Identity to an encoder proves the port
+reproduces the encoder. Only a decoder reading the signal proves the signal is
+a valid FT8 transmission in the sense that matters on the air.
+
+**What it would take.** `decode_ft8.exe` built on this machine. The pinned clone
+at `C:\Source\ft8_lib` carries `demo/decode_ft8.c` and the Makefile names it as
+a target, but the binary is not built here and **a unit may not build it** — a
+compiler run is owner-class under `ARBITER.md` §6 and the permission scope has
+no rule for one. The owner's own `tools\build-ft8-oracle.bat` builds only the
+generator. Units 210, 211 and 212 each confirmed the absence and each left it
+with the owner; unit 213 records it here rather than raising it a fourth time.
+
+**What was taken instead, and what neither shows.** Unit 212 compared this
+library's samples against the WAV upstream's own generator writes, over 51
+messages and 9 180 000 samples, and found a **maximum absolute difference of one
+count**. Unit 212 also recovered the tone of every one of 4424 symbols back out
+of its own samples by frequency measurement, and unit 213 recovered 4424 of 4424
+again through an independent spectrogram. **Neither of those is the decoder
+decoding it, and neither is claimed to be.** Nothing has demodulated this
+waveform — not this library, and not anybody else.
+
+**Step 5 will want it.** Step 5 turns a found signal into a message, and the
+first thing worth knowing there is whether the two directions agree on a signal
+the other one made.
+
+---
+id: HM-OPEN-064
+status: open
+owner: claude
+raised: 2026-09-01
+severity: slows
+blocks: nothing — the must-pass half of step 2's criterion is met
+refs: PHASE_PLAN.md step 2, PHASE_PLAN.md ruling of 2026-09-01, units 207, 208, 213
+---
+
+**Step 2's contest and DXpedition message types do not round-trip, because they
+are not built.** Six types: `EU_VHF`, `ARRL_FD`, `ARRL_RTTY`, `WWROF`,
+`DXPEDITION`, `CONTESTING`. Recorded here by name under the plan's ruling of
+2026-09-01, for the same reason as HM-OPEN-065.
+
+**The must-pass half of that criterion IS met, and the gap is exactly the
+round-trip and nothing more.** The criterion has two halves: that supported
+types round-trip, and that an unsupported type **fails as unsupported and never
+as a wrong decode**. The second is the one that protects the operator — a
+message this library cannot read must be reported as unread rather than reported
+as something else — and it is met and tested. What is missing is only the
+ability to carry these six.
+
+**What it would have shown.** That `Ft8Sharp` can pack and unpack the full set
+of message types the protocol defines, rather than the subset an ordinary QSO
+uses. In practice these appear during contests and DXpeditions, which is when
+the band is busiest and an operator most wants to read it.
+
+**What it would take.** The packers and unpackers for six more message types,
+against the field layouts in the pin's `ft8/message.c`. It is ordinary work of
+the kind units 207 and 208 did for the standard, free-text, telemetry and
+non-standard types; it is not blocked on anything, and it was left out of step 2
+as scope rather than found to be impossible.
+
+---
 id: HM-OPEN-063
 status: open
 owner: claude

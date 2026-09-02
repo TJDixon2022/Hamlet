@@ -1528,3 +1528,219 @@ sample after the join at the wrong offset, and a comparison would report that as
 synthesis. So the rate is **refused with the reason** rather than the inconsistency being inherited
 silently. This is a divergence in *behaviour at rates upstream never uses* and not in the waveform:
 at the rate that matters the two routes agree and nothing is refused.
+
+## The spectrum — unit 213
+
+**The library stops speaking and starts listening.** For thirteen units it could pack a callsign into
+77 bits, encode a codeword, lay out seventy-nine tones and turn those tones into audio that agrees
+with Goba's own program to one count over nine million samples — and it had **never once looked at a
+sample and asked what was in it.** There was no FFT in this tree, no spectrum, no spectrogram, and
+nothing anywhere under `src/Ft8Sharp/` that turned audio back into frequency. Step 4's three subject
+criteria all sit on a frequency-domain representation that did not exist. This unit builds it.
+
+**And it stops there.** Nothing in this unit searches, correlates against the Costas pattern, scores
+a candidate or ranks anything. That is the next unit's, and the separation is deliberate: if the
+spectrum and the correlator arrive on the same night and a signal is not found, the failure has two
+homes.
+
+### What was ported, and from where
+
+`src/Ft8Sharp/Dsp/`, new, from the pin at `9fec6ca39886edbf96f4f5e71edc76da5074e871`:
+
+- **`common/monitor.c` and `common/monitor.h`** — the whole receive front end: the window, the
+  sliding analysis frame, the oversampling loops and the magnitude storage. This is `Ft8Monitor`.
+- **`ft8/decode.h`** — the waterfall structure, its element type and its axis order. This is
+  `Ft8Waterfall`.
+- **`ft8/constants.h`** — the symbol period and the slot duration.
+- **`demo/decode_ft8.c`** — the passband and the two oversampling factors, and the expressions that
+  turn a bin and a block back into a frequency and a time. **Note where those live:** they are the
+  *application's* choices, not the library's, which is why they are `Ft8WaterfallGeometry`'s
+  defaults rather than its constants.
+
+`src/Ft8Sharp/Dsp/Ft8Fft.cs` and `Ft8RealFft.cs` are ported **from nothing**. See below.
+
+**The library writes no file and opens no device.** It takes samples and returns magnitudes.
+
+### Why this library writes its own FFT rather than using the one the pin vendors
+
+**`ft8_lib` does not implement a transform. It vendors one**, whole, in its own folder:
+
+- folder: **`fft/`** — five files, `kiss_fft.{c,h}`, `kiss_fftr.{c,h}` and `_kiss_fft_guts.h`
+- project: **KISS FFT**, `https://github.com/mborgerding/kissfft`
+- copyright: **Copyright (c) 2003-2010, Mark Borgerding. All rights reserved.**
+- licence: **SPDX-License-Identifier: BSD-3-Clause**
+
+That is **a second copyright holder under a second licence.** `Ft8Sharp` carries one `LICENSE` —
+Tim's MIT — and a `NOTICE` crediting Goba and citing the QEX paper. Adding a third party's
+obligations to a library headed for publication changes what may be published, which is owner-class
+under `ARBITER.md` §6 and is not a unit's to author around. Step 1's must-pass criterion of *no
+third-party runtime dependencies* points the same way, and `Ft8Sharp.csproj` still carries no
+`PackageReference` and no `ProjectReference`.
+
+**And it does not need to, because the mathematics is free.** Cooley–Tukey is sixty years of public
+literature. `Ft8Fft` is written from the decomposition and **nothing in `fft/` was read beyond the
+comment block quoted above** — no structure, no algorithm, no line. That restriction is enforced
+rather than promised: `UpstreamWaterfallInventoryTests` reads that folder only as far as the first
+preprocessor directive, and its source-dump route **refuses the folder by name**. The finding is on
+the record so the decision stands on a measurement rather than on an assumption.
+
+### The finding that changed the shape of the transform
+
+**Upstream's transform length is 3840, and 3840 is not a power of two.** It is 2^8 × 3 × 5. The
+length is the samples in one symbol multiplied by the frequency oversampling factor, which at 12 kHz
+is 1920 × 2. **A radix-2 Cooley–Tukey alone cannot compute the length this library actually needs.**
+
+So `Ft8Fft` is the *general* mixed-radix decomposition, of which radix-2 is the special case: for a
+power-of-two length every stage is a radix-2 butterfly and `IsPureRadix2` says so. Radices other than
+two combine through the defining p-point sum, which is exact and, at 3 and 5, costs nothing. This is
+the same textbook decomposition and is still written from the mathematics.
+
+### What task 2 read, as shapes rather than values
+
+Each is now asserted by `UpstreamWaterfallInventoryTests`, which skips rather than fails when the
+clone is absent.
+
+**The transform.** The block is the samples in one symbol at the configured rate. The analysis
+advance is the block divided by the time oversampling factor. The transform length is the block times
+the frequency oversampling factor. The transform is the **real-input** entry point and its output
+buffer is **length/2 + 1** complex bins.
+
+**The window.** A **Hann window written as the square of a sine**, over the *whole* transform. A
+Hamming, a Blackman and a shorter hand-picked window are all present in the pin and all **commented
+out**; an alternative left commented is not the window in force. The normalisation is two over the
+transform length and — this is the shape that matters — **it is multiplied into the window
+coefficients, not applied to the transform output.** Scaling the samples going in and scaling the
+bins coming out are the same thing in exact arithmetic and are not the same thing in floating point.
+
+**The oversampling.** Two in time and two in frequency. The extra **time** offsets come from
+**shifting the input frame** by a sub-block between transforms — a sliding window, not a second
+transform of the same samples. The extra **frequency** offsets come from **the transform itself being
+longer than a symbol**, and are read out by striding the bins. **Neither is zero padding and neither
+is a separate finer transform.**
+
+**The storage.** One **unsigned byte** per magnitude. The value is a **logarithm** — ten times
+log base ten of the squared magnitude, with a floor added *inside* the logarithm so a silent bin is
+finite rather than negative infinity. It becomes a byte as twice the decibels plus 240, truncated,
+then **clamped** to 0..255 rather than wrapping. Half a decibel per count. **Nothing is normalised** —
+not per block, not per slot; a running maximum is tracked and never divides anything. The axis order
+is **[block][timeSub][freqSub][bin]**, bin varying fastest, and the stride from one block to the next
+is the product of the other three.
+
+### The anchoring split: 6 strong, 15 weak, 21 shapes read, 0 unread
+
+**Strong — a macro or a typedef in a header, which cannot be misread.** The symbol period and the
+slot duration in `ft8/constants.h`; the waterfall element type and the byte-to-decibel macro in
+`ft8/decode.h`; the waterfall structure itself; and the axis order, which is documented on the field.
+
+**Weak — an expression inside a function body, or a value the application chose.** The block size,
+the analysis advance, the transform length, the normalisation factor, the window and its length, the
+block count, the first and last kept bins, the decibel conversion, the byte scaling and the frequency
+sub-offset stride are all expressions inside `monitor_init` or `monitor_process`. **The four weakest
+of all are the passband and the two oversampling factors**, which are not the library's at all: they
+are `demo/decode_ft8.c`'s choices, and a different caller of `monitor_init` would get a different
+waterfall out of identical code.
+
+**Nothing was guessed.** Every constant in `Ft8WaterfallGeometry` traces to one of the twenty-one
+shapes above. What could *not* be read is named below rather than filled in.
+
+### Why the geometry computes in single precision, which is the finding worth carrying forward
+
+**Unit 212 found that its waveform agrees with upstream to one count precisely because it keeps the
+phase step in single precision as upstream does, while its own more accurate double-precision version
+drifts to 117 counts. The same lesson arrives here, and it is larger: on this side it moves whole
+integers rather than last places.**
+
+`0.160f` is not 0.160. It is 0.1599999964237213. Every extent of the waterfall is a product of it,
+truncated:
+
+```
+                      in float (upstream, and this port)   in double ("more accurate")
+  block size          12000 * 0.160f -> 1920.0f -> 1920      1919.99995708 -> 1919
+  first kept bin        200 * 0.160f ->   32.0f ->   32        31.99999928 ->   31
+  last kept bin        3000 * 0.160f ->  480.0f ->  481       479.99998927 ->  480
+```
+
+A block one sample short misaligns every symbol after the first. A first bin one lower shifts **every
+frequency this library reports by 6.25 Hz, which is one whole FT8 tone.** So the more accurate
+arithmetic is the wrong arithmetic, and `Ft8WaterfallGeometry` is single precision on purpose. Both
+columns are computed and printed by `Ft8WaterfallGeometryTests` rather than asserted in a comment.
+
+**A smaller consequence, recorded because it will surprise somebody.** The tone spacing by upstream's
+own arithmetic is **not 6.25 Hz**; it is one over the single-precision symbol period, 6.2500001397.
+Two routes to a bin's frequency therefore differ by 6.7 × 10⁻⁵ Hz at the top of the passband — one
+part in 93 110, which no bin decision can see. It is measured and printed rather than rounded away,
+because a reader who finds the discrepancy needs to be able to find out why.
+
+### What tonight's evidence is, and what it explicitly does not show
+
+**Three legs, and none of them is agreement with upstream's own output, because nothing upstream
+emits a spectrum, a waterfall or a candidate list.** `decode_ft8.exe` is not built on this machine
+and a unit may not build one — recorded in `OPEN_ISSUES.md` as HM-OPEN-065.
+
+1. **Mathematics.** The transform is held against a naive DFT written in the test project that
+   computes the defining sum term by term and calls nothing in the library. Thirty lengths from 1 to
+   4096, including 1920 and 3840: **worst relative error 4.575354 × 10⁻¹⁵ at length 4096**, measured
+   and printed before the bound of 10⁻¹³ was asserted. A four-point transform matches one worked out
+   by hand to 2.2 × 10⁻¹⁶. **This leg is stronger than agreement with any particular implementation,
+   because the DFT is defined and a vendored FFT is merely one program that computes it.**
+2. **Construction.** The signal analysed is one this library synthesized, from symbols it chose, at a
+   base frequency and a slot offset it chose. **The truth is known by construction rather than
+   believed.** 4424 of 4424 symbols across 56 messages; 2844 of 2844 across six base frequencies
+   including one exactly halfway between two bins; 2370 of 2370 across five slot offsets.
+3. **Provenance against the pin.** The twenty-one shapes above, read by machine and asserted by a
+   checked-in test that skips when the clone is absent.
+
+**What none of them shows, and this must not be read otherwise:**
+
+- **Nothing here finds a signal it was not told the location of.** The frequency was chosen and
+  handed to the synthesizer; the offset was chosen and used to place the signal; the symbol index is
+  a loop variable; the block is *computed* from the geometry rather than found. **This is not a
+  search.** Costas correlation, candidate lists and ranking are the next unit's, and **none of step
+  4's three subject criteria is met by this unit or aimed at by it.**
+- **Nothing here demodulates.** No soft symbols, no belief propagation, no message comes out.
+- **The recovery rate under noise is not step 6's sensitivity figure.** Step 6 measures a *decode*
+  rate — a whole message through demodulation, LDPC and CRC — against a published threshold near
+  -21 dB. Tonight's number is a *per-symbol tone recovery* at a frequency and a time it was told,
+  with no search and no error correction, and error correction is what stands between the two.
+- **The exact alignment between a block index and a sample offset was not settled by reading.** The
+  analysis frame is prefilled with zeros and slides, so the samples behind a block reach back before
+  it; upstream's own resynth comment calls this a three-sub-block loading offset. The port reproduces
+  the same prefill and the same shift and therefore inherits whatever alignment upstream has, **but
+  it is not asserted as a number.**
+- **`Ft8Waveform` cannot place a signal at an arbitrary offset in a slot** — `SynthesizeSlot` puts it
+  at `PaddingSampleCount` and nowhere else, which at 12 kHz is 14 160 samples, itself 0.375 of a
+  symbol off the analysis grid. The varied offsets in the tests are built in the test project.
+  **Step 3's proven code was not changed.**
+
+### Divergences from upstream
+
+**Two added, numbered on from sixteen.**
+
+**17 — the transform computes in double precision where upstream's computes in single.** Upstream's
+`kiss_fft_scalar` is `float`. `Ft8Fft` and `Ft8RealFft` hold real and imaginary parts as `double`.
+**There is no bit-identity to lose:** this is a different algorithm from the one upstream vendors, so
+agreement in the last place was never available. And the waterfall quantises every magnitude to half
+a decibel, which is coarser than either precision by ten orders of magnitude. **Note carefully what
+this does *not* extend to** — the *geometry* is single precision, deliberately, and so is the value
+at the point it becomes a stored byte; only the transform's internal arithmetic is widened. A stored
+byte could differ from upstream's by one count where the decibel value sits within about 10⁻⁶ of the
+truncation boundary, and nothing tonight could have measured that, because nothing upstream emits a
+byte to compare against.
+
+**18 — a sample rate the geometry does not divide is refused.** Two shapes, and the second is the
+one that matters. First, where the rate times the symbol period is not a whole number of samples, a
+block would not cover exactly one symbol and every symbol after the first would sit at a growing
+offset. Second, and worse, **where the block does not divide by the time oversampling factor the
+analysis consumes fewer samples from a block than the caller advances by, so the remainder is audio
+that is silently never looked at.** Upstream truncates and carries on, and inherits both, because at
+12 kHz there is no remainder in either. This is the same reasoning as divergence 16: an inconsistency
+that cannot arise at the rate upstream uses and that would be reported as a defect in the analysis if
+it ever did. Note that the guard almost never fires — the symbol period is 4/25 of a second, so
+**every sample rate that is a multiple of 25 passes, which is every audio rate in ordinary use**, and
+that is precisely why upstream never met it.
+
+### The library's version
+
+`0.6.0` → **`0.7.0`** under HM-DEC-152. The library gains a capability it did not have: **it can turn
+audio into a spectrum.** What that does *not* claim — nothing here searches, nothing scores, nothing
+ranks, nothing decodes, and **it still cannot hear a signal it was not told where to find.**

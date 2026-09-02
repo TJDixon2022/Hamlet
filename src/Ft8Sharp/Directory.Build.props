@@ -100,9 +100,37 @@
     It also does not claim to be a transmitter and never will be. The synthesizer returns a buffer.
     Nothing in this library opens a sound device, a stream or a port, and nothing plays what it
     makes.
+
+    0.7.0 — THE LIBRARY LOOKS AT A SAMPLE FOR THE FIRST TIME IN ITS LIFE.
+
+    Every version up to 0.6.0 could only speak. This one adds src/Ft8Sharp/Dsp/: a discrete Fourier
+    transform written from the mathematics rather than borrowed from anyone, a real-input path, and
+    the waterfall spectrogram ft8_lib's own monitor builds — audio in, magnitudes out, at the block
+    size, window, oversampling and byte storage read out of the pin. A capability the library did not
+    have rather than a correction to one it did, so a minor by the same rule as the six before it.
+
+    The transform is nobody else's code. ft8_lib does not implement one; it vendors KISS FFT, which
+    is Mark Borgerding's under BSD-3-Clause, and this library carries one LICENSE and one NOTICE.
+    Cooley-Tukey is public literature, so it is written from the decomposition and nothing in that
+    folder was read beyond its licence header. There is still no PackageReference here, for anything.
+
+    The evidence: the transform agrees with a naive DFT computed independently in the tests to a
+    worst relative error of 4.6e-15 over thirty lengths, measured before any bound was asserted; and
+    4424 of 4424 symbols of 56 messages were found again in the spectrum of audio this library
+    synthesized itself, with noise alone finding them at 12.4 per cent against a chance rate of 12.5.
+
+    WHAT THIS MINOR DOES NOT CLAIM, and it is the important half.
+
+    NOTHING HERE SEARCHES. Every one of those 4424 symbols was looked for at a frequency and a time
+    the caller CHOSE and HANDED IN. There is no Costas correlation, no candidate list, no score and
+    no ranking, so this library still cannot find a signal it was not told the location of - which is
+    what "hearing" would actually mean.
+
+    AND NOTHING HERE DECODES. No demodulator, no soft symbol, no belief propagation, no message comes
+    out the other end. Still not a 1.x. It can speak, and it can now see; it cannot yet hear.
   -->
   <PropertyGroup>
-    <Version>0.6.0</Version>
+    <Version>0.7.0</Version>
   </PropertyGroup>
 
   <!--
