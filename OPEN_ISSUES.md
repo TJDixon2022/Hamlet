@@ -9,9 +9,20 @@ status: open
 owner: claude
 raised: 2026-09-02
 severity: slows
-blocks: step 5 criterion 3, which is must-pass where the clone is present and is partial at 760 of 1298
-refs: PHASE_PLAN.md step 5 criterion 3, units 216, 217, 218, 219
+blocks: nothing — step 5 closed on 2026-09-02; the raw count is a regression witness and is no longer a gate
+refs: PHASE_PLAN.md step 5 criterion 3 as amended 2026-09-02, units 216, 217, 218, 219, 220
 ---
+
+**`blocks:` changed by unit 220 and the reason is stated rather than left to be
+inferred.** This entry was raised against criterion 3's *old* wording, which
+asked that the reference WAVs decode **matching upstream's expected decode
+lists**. The owner replaced that wording on 2026-09-02 with **no decode that is
+present and recoverable is lost**, and unit 220 re-measured the new one and got
+**zero**. So the criterion this entry names is met and the entry no longer
+blocks a step. **It is not closed**, because the number it is about — 760 of
+1298 — has not moved and is still worth understanding; it is now a **regression
+witness** rather than a gate, and route 1 below is still the thing that would
+answer it.
 
 **Step 5's criterion 3 is partial and its residue has been carried in three
 reports without living in any file.** Recorded here by name under the plan's
@@ -146,6 +157,37 @@ was added to any total** and criterion 3 stands where it stood.
    no such defect. Kept here so the next reader can see that the route was taken
    rather than dropped.
 
+## Unit 220 — the measurement re-taken under the amended criterion, and the count held still
+
+**Unit 220 re-took the whole of the above rather than inheriting it, and every
+figure reproduced.** The control group ran first and could have stopped the
+night on its own: 12 of 12 already-matched lines found a decoding alignment at
+mean best agreement **170.2 of 174**, lowest 156, mean best score 24.6, **all
+twelve at bin offset zero**; 10 quiet neighbourhoods over 600 points each
+returned **0 messages and 0 recovered codewords**, with best-of-600 agreement on
+empty air running **106 to 115**, mean 110.1; and 12 of 12 agreements **equalled**
+`Ft8MissAccountingTests`' separately written reading. **Nothing had come undone.**
+
+**The outcome split reproduced exactly**, over the same two populations: the 78
+at 0 dB or better split **5 A, 35 B, 38 C** with all five A lines repeated
+expected lines and **outcome-A lines that are not a repeated line: 0**; the 91
+from −5.0 up to but not including 0.0 dB split **0 A, 33 B, 58 C**. 78 + 91 =
+**169**. **3703 belief propagations over 101 400 alignment points**, and **0
+lines met divergence 22's passband refusal.** The bound fell in a gap in the 78
+— highest C 129, lowest B 132 — and **adjacent in the 91, at 129 and 130**,
+which is printed rather than hidden.
+
+**So criterion 3 as amended is met, with the count stated as a count and not a
+proportion: recoverable-and-lost is ZERO, out of 169.**
+
+**The raw count did not move and that is why it is worth reporting.** 760 of
+1298, 58.6 per cent, against the representable ceiling of **1157** which is 65.7
+per cent — **identical column for column to units 216, 217, 218 and 219**: 7803
+candidates, 2733 parity, 2733 checksum, 2263 text, 783 unique, 538 missed, **23
+extra, still the same 23**, 60 files measured and 0 skipped. **A fifth
+reproduction is what makes this a witness rather than an anecdote**, and it is
+the number a future regression would show up in.
+
 **What is NOT wanted.** Tuning. Unit 216 was offered a candidate-limit sweep and
 refused it; unit 217 measured two fixes and built neither; unit 218 licensed a
 fix under four conditions and none was met; **unit 219 licensed one under the
@@ -160,8 +202,8 @@ status: open
 owner: tim
 raised: 2026-09-01
 severity: slows
-blocks: nothing — step 3 is closed on its must-pass criteria; step 5 will want it
-refs: PHASE_PLAN.md step 3 criterion 3, PHASE_PLAN.md ruling of 2026-09-01, units 210, 211, 212, 213
+blocks: nothing — steps 3 and 5 are both closed on their must-pass criteria; step 6 will want it
+refs: PHASE_PLAN.md step 3 criterion 3, PHASE_PLAN.md ruling of 2026-09-01, units 210, 211, 212, 213, 219, 220
 ---
 
 **Step 3's nice-to-pass criterion 3 is not met: *audio synthesis produces a
@@ -197,6 +239,30 @@ waveform — not this library, and not anybody else.
 **Step 5 will want it.** Step 5 turns a found signal into a message, and the
 first thing worth knowing there is whether the two directions agree on a signal
 the other one made.
+
+## Unit 220 — step 5 closed with this recorded rather than met
+
+**Step 5 closed on 2026-09-02 with all five of its must-pass criteria met, and
+this entry is named in that closure rather than resolved by it.** The plan's
+ruling of 2026-09-01 is what makes that legitimate: *a step is done when its
+must-pass criteria are met, and an unmet nice-to-pass criterion does not hold it
+open, provided it is recorded here by name.* This is the record. **It was not
+dropped and it was not silently satisfied.**
+
+**Step 5 did want it, and said so in its own terms.** Unit 219 established that
+**96 of 169** matchable strong misses are *not present as far as this receiver
+can see*, and unit 220 reproduced that. **The question nothing on this machine
+can answer is whether they are present as far as the pin can see.** That is why
+unit 219 raised this from third to first among HM-OPEN-066's routes, and why it
+is still first now that step 5 has closed.
+
+**Step 6 will want it too, and for a different reason.** Step 6 measures
+sensitivity against the *published* threshold rather than against `ft8_lib`, so
+it does not need the reference decoder to run. But if step 6's number falls
+short, the first question will be whether this library's synthesized signal is
+what it believes it is — and only `decode_ft8.exe` reading one of them answers
+that. **It is still `tim`'s: a compiler run is owner-class under `ARBITER.md`
+§6 and no unit may build it.**
 
 ---
 id: HM-OPEN-064
