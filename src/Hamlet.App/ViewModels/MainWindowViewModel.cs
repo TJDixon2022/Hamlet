@@ -167,6 +167,28 @@ public partial class MainWindowViewModel : ObservableObject
     private readonly DispatcherTimer _clockTimer;
 
     private bool _clockQueryRunning;
+
+    /// <summary>Notices when a fifteen-second FT8 slot has closed.</summary>
+    /// <remarks>
+    /// <para>**IT RIDES `_decodeTimer` RATHER THAN A TIMER OF ITS OWN** (unit
+    /// 225). That timer already ticks four times a second while the decoder is
+    /// listening, which is sixty looks inside every fifteen-second slot, and the
+    /// watch's own de-duplication means the tick rate does not decide how many
+    /// decodes happen. A second timer would be another thing to start, stop and
+    /// dispose for no gain, and it would have to be kept in step with this one
+    /// anyway, because the watch needs the same tap.</para>
+    /// <para>**IT LOOKS ONLY WHILE THE DIGITAL TAB IS ON SCREEN**, and that is
+    /// one boolean per tick. Decoding slots the operator cannot see would be a
+    /// defensible choice, but it is a core burnt on a background tab for a table
+    /// nobody is reading, and the watch re-arms when the tab goes away so that
+    /// coming back never claims a slot that closed while nothing was watching.
+    /// </para>
+    /// </remarks>
+    private readonly Ft8SlotWatch _slotWatch = new();
+
+    /// <summary>True while a slot is being decoded off the UI thread.</summary>
+    private bool _slotDecodeRunning;
+
     private RigStateMonitor? _rigMonitor;
     private IAudioSource? _audioInput;
     private CwDecoder? _decoder;
@@ -741,6 +763,67 @@ public partial class MainWindowViewModel : ObservableObject
     /// </remarks>
     public ObservableCollection<DigitalDecodeRow> DigitalDecodes { get; } = new();
 
+    /// <summary>
+    /// How many rows the table keeps before the oldest fall off.
+    /// </summary>
+    /// <remarks>
+    /// <para>**A NIGHT AT 14.074 IS 5760 SLOTS AND AN UNBOUNDED COLLECTION BOUND
+    /// TO AN `ItemsControl` IS A MEMORY LEAK WITH A SCROLLBAR** (unit 225).</para>
+    /// <para>**FIVE HUNDRED, AND THE NUMBER IS THE MARKUP'S RATHER THAN
+    /// MEMORY'S.** At a handful of messages a slot, five hundred rows is roughly
+    /// the last half hour of a busy band, which is further back than an operator
+    /// scrolls. The binding is a plain `ItemsControl` inside a `ScrollViewer` and
+    /// does not virtualise, so every row is five live `TextBlock`s whether or not
+    /// it is on screen — the cost that bites first is layout, not bytes, and a
+    /// bound chosen for bytes would be several thousand and would make the panel
+    /// crawl.
+    /// </para>
+    /// </remarks>
+    internal const int MaxDigitalDecodes = 500;
+
+    /// <summary>
+    /// How far the dial may move before the table is cleared.
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE TABLE MAY NOT PUT TWO PLACES UNDER ONE HEADING** (§0.0.1).
+    /// Rows decoded on 7.074 sitting above rows decoded on 14.074 is a picture
+    /// asserting that those stations were all heard here, and the operator acting
+    /// on it would be wrong for a reason the screen gave him.</para>
+    /// <para>**THREE KILOHERTZ, WHICH IS THE RECEIVER'S OWN AUDIO PASSBAND.**
+    /// Inside it the same transmissions are still arriving through the same
+    /// filter, so a nudge of a few hundred hertz has not changed what the rows
+    /// describe and clearing on it would throw away a session every time the rig
+    /// reported a slightly different dial reading. Outside it the rows are about
+    /// a different piece of spectrum. **Clearing is the cheapest honest answer**
+    /// and it is what this does.</para>
+    /// </remarks>
+    internal const long DigitalRetuneClearsBeyondHz = 3000;
+
+    /// <summary>What is already on the table, so nothing is shown twice.</summary>
+    /// <remarks>
+    /// **A TRANSMISSION APPEARS ONCE, WHATEVER ROUTE IT ARRIVED BY** (§0.0). The
+    /// running watch and the capture press can both reach the same slot — a press
+    /// keeps the last thirty seconds, which is two whole slots the watch has
+    /// usually already read — and a table showing a message twice says two
+    /// stations sent it.
+    /// </remarks>
+    private readonly HashSet<string> _digitalDecodeKeys = new(StringComparer.Ordinal);
+
+    /// <summary>The same keys in row order, so the oldest can be dropped.</summary>
+    private readonly List<string> _digitalDecodeKeyOrder = new();
+
+    /// <summary>Where the dial was when the rows on the table were decoded.</summary>
+    private long _digitalRowsTunedAtHz;
+
+    /// <summary>Why the running watch is not producing slots, or "".</summary>
+    /// <remarks>
+    /// **IT OUTRANKS THE ROW COUNT ON THE PANEL SUMMARY**, because the state it
+    /// describes is the one where a table full of old rows is most misleading: the
+    /// clock has gone unmeasured or the audio has stopped, nothing new can arrive,
+    /// and a summary still reporting yesterday's rows reads as a working session.
+    /// </remarks>
+    private string _digitalRefusal = "";
+
     /// <summary>Whether the decoded table has anything to show.</summary>
     /// <remarks>
     /// **WHEN IT IS FALSE THE PANEL SHOWS ITS OWN IDLE LINE** (HM-DEC-021). An
@@ -774,9 +857,11 @@ public partial class MainWindowViewModel : ObservableObject
     /// the strip's own idle line, written in August.
     /// </remarks>
     public string DigitalModeStripLine
-        => _digitalDecodeNote.Length > 0
-            ? _digitalDecodeNote
-            : DigitalIdleText.ModeStrip;
+        => _digitalRefusal.Length > 0
+            ? _digitalRefusal
+            : _digitalDecodeNote.Length > 0
+                ? _digitalDecodeNote
+                : DigitalIdleText.ModeStrip;
 
     /// <summary>The decoded panel's collapsed summary.</summary>
     /// <remarks>
@@ -788,9 +873,21 @@ public partial class MainWindowViewModel : ObservableObject
     {
         get
         {
+            // **A REASON NOTHING IS ARRIVING BEATS A COUNT OF WHAT ALREADY
+            // ARRIVED** (§0.0.1). An unmeasured clock over a full table is the
+            // state that reads most like a working session and is not one.
+            if (_digitalRefusal.Length > 0)
+            {
+                return _digitalRefusal;
+            }
+
             if (DigitalDecodes.Count > 0)
             {
-                return $"{DigitalDecodes[0].Utc} UTC · {DigitalDecodes.Count} shown";
+                // **THE LAST ROW AND NOT THE FIRST** (unit 225). While the table
+                // was one press' worth these were the same row. It grows now, so
+                // reading row zero would leave the summary naming a slot from an
+                // hour ago while messages arrived underneath it.
+                return $"{DigitalDecodes[^1].Utc} UTC · {DigitalDecodes.Count} shown";
             }
 
             return _digitalDecodeNote.Length > 0
@@ -3842,6 +3939,11 @@ public partial class MainWindowViewModel : ObservableObject
         // read "they are sending at about 62 words a minute" with nobody
         // sending, which is the phantom speed reaching a third surface.
         Transmit.HeardWpm = _decoder.WordsPerMinute;
+
+        // **AND THE FT8 SLOT WATCH RIDES THE SAME TICK** (unit 225). Four looks a
+        // second is sixty inside every fifteen-second slot, and exactly one of
+        // them can produce a decode.
+        OnSlotTick();
     }
 
     /// <summary>
@@ -5674,6 +5776,11 @@ public partial class MainWindowViewModel : ObservableObject
         UpdateFavoriteState();
         ScheduleModeFollow();
 
+        // **THE DECODED TABLE MAY NOT CARRY TWO FREQUENCIES UNDER ONE HEADING**
+        // (§0.0.1, unit 225). Rows from 7.074 above rows from 14.074 assert that
+        // every one of those stations was heard here.
+        ClearDigitalDecodesOnRetune(clamped);
+
         // The dwell clock restarts wherever the dial lands, from any source
         // (HM-DEC-072). A callsign the operator arrived on stops applying the
         // moment he is somewhere else, which is what keeps the recent list from
@@ -6438,14 +6545,207 @@ public partial class MainWindowViewModel : ObservableObject
         var heard = Ft8Reader.Read(audio, endedAtPcUtc, offset);
 
         DigitalDecodes.Clear();
+        _digitalDecodeKeys.Clear();
+        _digitalDecodeKeyOrder.Clear();
+        _digitalRefusal = "";
+        _digitalRowsTunedAtHz = FrequencyHz;
 
         foreach (var decode in heard.Decodes)
         {
-            DigitalDecodes.Add(DigitalDecodeRow.From(decode));
+            AddDecodeRow(decode);
         }
 
         _digitalDecodeNote = DescribeDecodes(heard);
 
+        // **THE WATCH RE-ARMS BEHIND A PRESS.** The press has just written the
+        // last thirty seconds — two whole slots — over the table, so a watch that
+        // carried on from where it was would report a slot it had already shown.
+        _slotWatch.Rearm();
+
+        RaiseDigitalDecodeChanges();
+    }
+
+    /// <summary>
+    /// One look at the clock and the tap: has a slot closed, and what was in it.
+    /// </summary>
+    /// <remarks>
+    /// <para>**THIS IS WHERE THE TAB STOPS SAMPLING THE BAND AND STARTS HEARING
+    /// IT** (unit 225). Until now the count of slots decoded without somebody
+    /// pressing a button was nought. FT8 opens a slot every fifteen seconds, four
+    /// a minute and 240 an hour, and an operator pressing a button for each one is
+    /// not watching a band.</para>
+    /// <para>**THE CLOCK IS READ HERE AND NOWHERE DEEPER.** <see
+    /// cref="Ft8SlotWatch"/> takes the moment as an argument, which is what makes
+    /// the whole of the slot arithmetic assertable against a controllable clock.
+    /// </para>
+    /// <para>**OFF SCREEN IT COSTS ONE BOOLEAN.** The watch re-arms rather than
+    /// running, so returning to the tab never claims a slot that closed while
+    /// nothing was watching.</para>
+    /// </remarks>
+    private void OnSlotTick()
+    {
+        var tap = _decoder?.Tap;
+
+        if (!IsDigitalMode || tap is null)
+        {
+            _slotWatch.Rearm();
+            return;
+        }
+
+        var offset = ClockOffset;
+        var look = _slotWatch.Look(tap, DateTime.UtcNow, offset);
+
+        if (look.Refusal != _digitalRefusal)
+        {
+            _digitalRefusal = look.Refusal;
+            RaiseDigitalDecodeChanges();
+        }
+
+        if (look.Ready is { } ready && !_slotDecodeRunning)
+        {
+            _ = DecodeTheSlotAsync(ready, offset);
+        }
+    }
+
+    /// <summary>Decode one completed slot and put what came out on the table.</summary>
+    /// <param name="ready">The slot, whole, from the watch.</param>
+    /// <param name="offset">The offset the slot was cut against.</param>
+    /// <remarks>
+    /// **OFF THE UI THREAD, IN THE MANNER `QueryTheClockAsync` ALREADY USES.** A
+    /// slot decode is tens of milliseconds of signal processing, and running it on
+    /// the dispatcher would stop the waterfall dead four times a minute. Nothing
+    /// here can overlap: a decode takes far less than the fifteen seconds until
+    /// the next slot, and the guard says so rather than assuming it.
+    /// </remarks>
+    private async Task DecodeTheSlotAsync(Ft8SlotReady ready, ClockOffset offset)
+    {
+        _slotDecodeRunning = true;
+
+        try
+        {
+            var heard = await Task
+                .Run(() => Ft8Reader.Read(ready.Audio, ready.EndedAtPcUtc, offset))
+                .ConfigureAwait(true);
+
+            NoteSlot(heard);
+        }
+        finally
+        {
+            _slotDecodeRunning = false;
+        }
+    }
+
+    /// <summary>
+    /// Add what one completed slot gave up to the running table.
+    /// </summary>
+    /// <param name="heard">What came out of the slot.</param>
+    /// <remarks>
+    /// <para>**ROWS APPEND RATHER THAN REPLACE** (unit 225). Unit 224 made a press
+    /// replace the table on purpose, because one press is one question about one
+    /// moment. Continuous decoding is the other case: it is a session, and a
+    /// session accumulates.</para>
+    /// <para>Internal rather than private so a test can drive several slots
+    /// through it and read the rows back, in the manner <see cref="ShowDecodes"/>
+    /// already is.</para>
+    /// </remarks>
+    internal void NoteSlot(Ft8Reception heard)
+    {
+        ArgumentNullException.ThrowIfNull(heard);
+
+        if (heard.Refusal.Length > 0)
+        {
+            _digitalRefusal = heard.Refusal;
+            RaiseDigitalDecodeChanges();
+            return;
+        }
+
+        _digitalRefusal = "";
+
+        foreach (var decode in heard.Decodes)
+        {
+            AddDecodeRow(decode);
+        }
+
+        _digitalDecodeNote = DescribeDecodes(heard);
+
+        RaiseDigitalDecodeChanges();
+    }
+
+    /// <summary>Put one decode on the table, unless it is already there.</summary>
+    /// <param name="decode">What came out of a slot.</param>
+    /// <returns>True when a row was added.</returns>
+    /// <remarks>
+    /// **THE OLDEST ROWS FALL OFF AT <see cref="MaxDigitalDecodes"/>**, and their
+    /// keys go with them, so a message from an hour ago that comes round again is
+    /// a new row rather than a silently swallowed one.
+    /// </remarks>
+    private bool AddDecodeRow(Ft8Decode decode)
+    {
+        var key = string.Create(
+            CultureInfo.InvariantCulture,
+            $"{decode.SlotStartUtc:o}|{decode.FrequencyHz:0}|{decode.Message}");
+
+        if (!_digitalDecodeKeys.Add(key))
+        {
+            return false;
+        }
+
+        if (DigitalDecodes.Count == 0)
+        {
+            _digitalRowsTunedAtHz = FrequencyHz;
+        }
+
+        _digitalDecodeKeyOrder.Add(key);
+        DigitalDecodes.Add(DigitalDecodeRow.From(decode));
+
+        while (DigitalDecodes.Count > MaxDigitalDecodes)
+        {
+            DigitalDecodes.RemoveAt(0);
+            _digitalDecodeKeys.Remove(_digitalDecodeKeyOrder[0]);
+            _digitalDecodeKeyOrder.RemoveAt(0);
+        }
+
+        return true;
+    }
+
+    /// <summary>
+    /// Throw the table away because the rows no longer describe where the radio
+    /// is.
+    /// </summary>
+    /// <param name="nowHz">Where the dial has moved to.</param>
+    /// <remarks>
+    /// See <see cref="DigitalRetuneClearsBeyondHz"/> for why the move has to be a
+    /// large one and why clearing rather than annotating is the answer.
+    /// </remarks>
+    private void ClearDigitalDecodesOnRetune(long nowHz)
+    {
+        if (DigitalDecodes.Count == 0)
+        {
+            _digitalRowsTunedAtHz = nowHz;
+            return;
+        }
+
+        if (Math.Abs(nowHz - _digitalRowsTunedAtHz) <= DigitalRetuneClearsBeyondHz)
+        {
+            return;
+        }
+
+        DigitalDecodes.Clear();
+        _digitalDecodeKeys.Clear();
+        _digitalDecodeKeyOrder.Clear();
+        _digitalDecodeNote = "";
+        _digitalRefusal = "";
+        _digitalRowsTunedAtHz = nowHz;
+
+        // The audio in the ring is from where the radio used to be.
+        _slotWatch.Rearm();
+
+        RaiseDigitalDecodeChanges();
+    }
+
+    /// <summary>Everything on the tab that reads the decoded table.</summary>
+    private void RaiseDigitalDecodeChanges()
+    {
         OnPropertyChanged(nameof(HasDigitalDecodes));
         OnPropertyChanged(nameof(DigitalDecodedSummary));
         OnPropertyChanged(nameof(DigitalModeStripLine));
