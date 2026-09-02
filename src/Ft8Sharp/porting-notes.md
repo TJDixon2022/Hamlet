@@ -2950,3 +2950,124 @@ because the highest frequency any of these lines names is 2746 Hz and the passba
 
 `0.10.2` → **`0.10.3`** under HM-DEC-152. **Tonight is measurement only.** No library file changed, so
 the library gains evidence rather than a capability — unit 211's precedent, unit 217's and unit 218's.
+
+---
+
+## Step 6's sensitivity curve, and the verdict at -21 dB — unit 221
+
+**Nothing in this section is a port and no library file changed for it.** It is the measurement step 6
+exists to take: **this library's decode rate against signal-to-noise ratio, on signals it synthesized
+itself, read against a figure that is neither `ft8_lib`'s nor this library's own arithmetic.**
+
+`PHASE_PLAN.md`: *this step is the verdict on steps 1 through 5. Everything before it can pass its own
+tests and still be a deaf decoder.* And, in the same section: *if the number falls short, the step has
+done its job.*
+
+### Everything under the next heading was written into the tree and committed BEFORE the curve ran once
+
+**That is the whole reason the measurement is worth anything.** A curve read first and judged
+afterwards is not a verdict; it is a rationalisation. Unit 212 established the pattern on this
+project — measure the maximum, print it, and only then assert a bound — and this is the same rule
+applied to a decode rate. The constants live in `Ft8Step6Ladder.cs`, which is a separate file from
+`Ft8Step6CurveTests.cs` for exactly this reason.
+
+### What was fixed in advance
+
+#### a. The published figure, and the part of its provenance this machine cannot supply
+
+```
+  the figure     : -21 dB
+  the convention : signal power / noise power in a 2500 Hz reference bandwidth
+  what a threshold means in that convention : the ratio at which the decode
+                   probability is about 50 per cent
+```
+
+The convention is `SignalToNoise`'s, written down by unit 214 with its arithmetic shown, and it is the
+amateur weak-signal one. **The figure is `PHASE_PLAN.md`'s: step 6 names -21 dB and calls it the
+published threshold.**
+
+**Where it could not be verified, said plainly rather than dressed up as a citation.** The primary
+source is the QEX paper this project already cites in `NOTICE` — Franke K9AN, Somerville G4WJS, Taylor
+K1JT, *The FT4 and FT8 Communication Protocols*, QEX, July/August 2020. **That paper is not on this
+machine, and no copy of the WSJT-X documentation is either.** Neither could be opened and the number
+read off the page. **So the -21 dB and the 50 per cent are stated as an assumption, in those words,
+and not as a verified quotation.** An assumed figure honestly labelled is fine; a figure quoted as
+published without a source is not.
+
+**No route around that was attempted.** The licensing boundary forbids `ft4_ft8_public/` and WSJT-X
+source, and a published figure comes from a paper or a manual rather than from somebody's code.
+
+#### b. The verdict band, fixed by unit 221's instruction before the run
+
+```
+  decode rate at -21 dB, delivered:
+     >= 40 %   criterion 2 MET
+     25 - 40 % criterion 2 PARTIAL - the arbiter judges it, not the unit
+     <  25 %   criterion 2 NOT MET - a clear shortfall, and that is a finding
+```
+
+**This is an operational reading of the owner's word *comparable*, not a change to his criterion.**
+The raw rate and its trial count are reported whatever they are, so the owner can apply his own
+reading to the same number. **The band does not move after the result is seen.**
+
+#### c. The rungs
+
+```
+  -10  -13                                    anchors above
+  -16  -17  -18  -19  -20  -21  -22  -23  -24 one decibel apart
+  -26  -28  -30                               anchors below, and criterion 3's population
+```
+
+Fourteen rungs. **One decibel through the collapse because two cannot resolve it** — unit 218's
+diagnostic went 100 per cent at -18, 25 at -20, 3.8 at -21 and 0 at -22, the whole collapse inside
+four decibels on a ladder whose step was two. **-21 is on the ladder because it is the ratio the
+criterion names.**
+
+#### d. The trials, sized from a measured cost rather than from taste
+
+**One slot decode was timed at 64.1 ms** at -20 dB mid-collapse — fastest 58.3, slowest 97.6, over 24
+timed trials after two discarded warm-ups — so ten minutes buys about 9360 of them.
+
+```
+  6 noise draws through the collapse x 51 messages = 306 trials on each of nine rungs
+  3 noise draws on the anchors       x 51 messages = 153 trials on each of five rungs
+  3519 slot decodes for one pass, about 3.8 minutes; about 7.5 for the two passes
+```
+
+**The floors were 200 and 100. Nothing was thinned** — every rung carries more than its floor. 306
+trials is what lets a rate near the collapse carry the word *comparable* at all: **unit 218's 2 of 52
+has a 95 per cent Wilson interval running from about 1 per cent to about 13**, which cannot be
+compared with anything.
+
+#### e. The population, and the one exclusion is measured rather than inherited
+
+**51 messages, nearly twice unit 218's 26**: 37 standard, **8 free text**, 4 telemetry, 2 non-standard
+with the companion spelled out. Drawn deterministically — the corpus is built in a fixed order and
+filtered by a fixed predicate, with no shuffle, so trial *i* at every rung and in every process is the
+same message.
+
+**All 51 were proved to come back at -10 dB before the curve stood on them**, so a rung short of 100
+per cent lower down is the receiver rather than a message the path was never going to return.
+
+**The five hashed-callsign entries are excluded, and task 2e's requirement to include one is the
+ladder's own construction forbidding it.** Measured, not assumed: offered at -10 dB they returned
+**nothing at all, against a truth-side text that is itself the empty string**. A 22-bit hashed
+callsign resolves only against a cache the receiver warms from *earlier* decodes, and one synthesized
+slot has no history behind it. **There is no text on either side to compare**, so such an entry can
+never count as returned, and keeping it in would cap every rate at 51 of 56 and make the *top* of the
+ladder read 91 per cent for a reason with nothing to do with sensitivity.
+
+#### f. Binned by the delivered ratio and never by the requested one
+
+Unit 218's rule and it stays. **The worst requested-versus-delivered error over the whole run is
+printed before any bound is asserted.**
+
+### The seeds, so the curve can be redrawn from this file rather than from a report
+
+```
+  221_001  221_002  221_003  221_004  221_005  221_006
+```
+
+The draw for a rung is `seed + round(requested x 10)`, which depends only on the rung and the draw
+index and never on iteration order — **which is what makes a fresh process draw the same noise.**
+Empty-slot seeds: `221_701` to `221_706`. Population probe: `221_500`. Cost probe: `221_900 + trial`.
