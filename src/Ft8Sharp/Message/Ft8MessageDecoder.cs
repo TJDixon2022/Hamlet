@@ -151,11 +151,13 @@ public enum Ft8DecodeStatus
 /// </remarks>
 public readonly struct Ft8DecodeResult
 {
+    private readonly string? _text;
+
     private Ft8DecodeResult(Ft8MessageType type, Ft8DecodeStatus status, string text, Ft8StandardFields fields)
     {
         Type = type;
         Status = status;
-        Text = text;
+        _text = text;
         Fields = fields;
     }
 
@@ -166,7 +168,16 @@ public readonly struct Ft8DecodeResult
     public Ft8DecodeStatus Status { get; }
 
     /// <summary>The message as an operator would read it, or the empty string on a refusal.</summary>
-    public string Text { get; }
+    /// <remarks>
+    /// <b>Empty rather than null on a default-constructed result too</b>, which unit 215 found by
+    /// dereferencing one. Every result this file builds already carries a real string, but a
+    /// caller holding a <c>default(Ft8DecodeResult)</c> -- which is what
+    /// <c>Ft8CodewordResult</c> carries when the parity or checksum gate refuses -- got a null
+    /// here, against a summary line that has said "the empty string on a refusal" since step 2.
+    /// A display reading it would have thrown at exactly the moment nothing decoded, which is
+    /// the moment that has to be uneventful.
+    /// </remarks>
+    public string Text => _text ?? string.Empty;
 
     /// <summary>The decoded fields, or the default on a refusal.</summary>
     public Ft8StandardFields Fields { get; }
