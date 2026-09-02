@@ -3465,3 +3465,53 @@ exactly, in a third process.
 extraction trustworthy, and no change to extraction was made. Task 3's five substituted rows returned
 **0 wrong messages over 1530 substituted slot decodes**, which is a free reading in the same
 direction and is reported as one rather than as a criterion.
+
+### The confirmation column at -20 dB, and it was run rather than dropped
+
+**It is the named drop candidate and it was not dropped**, because the night was not long: at
+tonight's measured 26.1 ms per slot decode a whole column is twenty seconds. The same five
+substitutions, the same population, the same seeds, at the rung where the as-is rate is 23.9 per cent.
+
+```
+                             row     n    of    rate   lo 95   hi 95    delta  WRONG  equivalent
+  A. as-is                          73   306    23.9    19.4    28.9      0.0      0  +1.00 dB
+  B. oracle alignment               74   306    24.2    19.7    29.3     +0.3      0  +1.00 dB
+  C. unquantised magnitudes         74   306    24.2    19.7    29.3     +0.3      0  +1.00 dB
+  D. ratios from the physics        79   306    25.8    21.2    31.0     +2.0      0  +1.03 dB
+  E. 100 iterations, not 25         79   306    25.8    21.2    31.0     +2.0      0  +1.03 dB
+```
+
+**The as-is row reproduces unit 221's -20 dB rung exactly: 73 of 306, 23.9 per cent.** And **this
+column is flat too** — every row inside the as-is row's own interval of 19.4 to 28.9, the largest
+effect six decodes in 306.
+
+**What the column was worth having for, in its own terms:** a stage costing the same at both rungs is
+a fixed loss and one costing more at -21 than at -20 is a cliff. **Neither is present.** No stage
+costs anything measurable at either rung, so there is no fixed loss to remove and no cliff to soften.
+The soft symbols at -20 dB agree with the true codeword at **150.3, 150.1 and 150.4 of 174** under the
+three ratio rules — the same ordering, the same tiny spread and the same conclusion as at -21.
+
+### What this is evidence about, and five things it is not
+
+**It is evidence** that the decibel axis unit 221's verdict was quoted on is sound to 0.04 dB against
+an independently built second instrument; that **no single stage of this receive path holds the 1.5
+dB** — not the search, not the byte-quantised waterfall, not upstream's ratio rule, not the iteration
+bound — at either -21 or -20 dB; that **no ratio rule available closes the ten bits** unit 221's
+census identified, the best of them buying 0.4 of 174; and that **belief propagation is a faithful
+port of `bp_decode`**, thirteen of fourteen audited terms identical and the fourteenth a recorded
+deliberate divergence that cannot cost a decode.
+
+**It is not evidence about:**
+
+1. **What `ft8_lib` itself would decode at -21 dB on these same samples.** Nothing tonight ran
+   upstream's decoder, because building it is owner-class — `HM-OPEN-065`, cited and not re-raised.
+   The audit says this port does what the C says; it cannot say what the C *achieves*.
+2. **The published figure itself.** The QEX paper is not on this machine, so **-21 dB at 50 per cent
+   remains an assumption taken from the plan**, honestly labelled, and the 0.734 dB between the burst
+   and slot conventions is published above so the verdict can be read either way.
+3. **Impaired air.** Everything here is aligned to the block grid, on a bin centre, alone in the
+   passband, with no drift.
+4. **Criterion 3's 760 of 1298.** Nothing here touches the reference WAVs.
+5. **Anything reaching a radio or a screen.** The encoder ran thousands of times tonight to build
+   samples in memory and nowhere else — no device, no stream, no port, no file. And nothing here is
+   evidence about the CW decoder.

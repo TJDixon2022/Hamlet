@@ -21,8 +21,18 @@
     phase - criteria 1 and 3 met, criterion 2 NOT MET at 13 of 306 at -21 dB and recorded as
     HM-OPEN-067.
   -->
+  <!--
+    1.12.28 -> 1.12.29, UNIT 222, UNDER HM-DEC-150. A PATCH FOR THE SAME REASON AND IT IS THE SIXTH
+    RUNNING: no Hamlet file changed, no Ft8Sharp file changed except porting-notes.md, and the
+    night's whole product is a measurement. The 1.5 dB shortfall was taken apart stage by stage - the
+    decibel axis checked against an independently built second instrument and holding to 0.04 dB, and
+    five oracle substitutions at -21 dB every one of which lands inside the as-is rate's own interval.
+    NO STAGE HOLDS THE SHORTFALL. bp_decode audited against the pin at thirteen of fourteen terms
+    identical, so the port is faithful and criterion 2 stays NOT MET at 13 of 306. HM-OPEN-067 updated
+    in place with the budget.
+  -->
   <PropertyGroup>
-    <Version>1.12.28</Version>
+    <Version>1.12.29</Version>
   </PropertyGroup>
 
   <!--

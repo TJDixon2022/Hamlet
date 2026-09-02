@@ -63,6 +63,70 @@ move the band. The band was the arbiter's, fixed before the run, and the raw
 rate and its trial count are published beside it so the owner can apply his own
 reading of *comparable* and overrule it.
 
+## Unit 222 — the shortfall taken apart, and it is not in any one stage
+
+**Updated in place rather than duplicated.** The entry stays open, stays severity
+*blocks*, and still blocks step 6 criterion 2 by name. What has changed is that it
+now carries a budget rather than an address.
+
+**The rate has not moved and was re-measured rather than inherited:** the -21 dB
+rung alone, on the same population, seeds, frequency and offset, reads **13 of 306,
+4.2 per cent, at a delivered -21.001 dB, 0 wrong** — a third process producing unit
+221's figure exactly.
+
+**The axis the verdict is quoted on was checked against a second instrument that
+shares no line of code with the first**, and it holds: over 20 trials at -21 dB and
+10 at -10, the two readings differ by a **mean of 0.0098 dB and a largest of
+0.0398**, against a bound of 0.2 fixed before the run. The one-sided noise density
+in force predicts the measured 2500 Hz band power to **-0.047 dB**; a two-sided one
+would be 2.963 dB out and the sampled bandwidth taken for the reference one 3.828
+dB out. **The 1.5 dB belongs to the receiver.**
+
+**The budget, at -21 dB, 306 trials per row, one oracle-perfect stage each:**
+
+```
+  A. as-is                    13 of 306   4.2 %   (2.5 - 7.1)
+  B. oracle alignment         14 of 306   4.6 %   +0.3 points
+  C. unquantised magnitudes   13 of 306   4.2 %    0.0 points
+  D. ratios from the physics  11 of 306   3.6 %   -0.7 points
+  E. 100 iterations, not 25   15 of 306   4.9 %   +0.7 points
+```
+
+**Every row lies inside the as-is row's own 95 per cent interval. The confirmation
+column at -20 dB is flat in the same way** — 73, 74, 74, 79, 79 of 306 against an
+interval of 19.4 to 28.9 — **so there is no fixed loss and no cliff.** The largest
+single effect anywhere is six decodes in 306, which the ladder values at about
+0.03 dB against a shortfall of 1.5.
+
+**The three routes this entry listed have all been taken, and the ranking is now
+resolved:**
+
+1. **Soft-symbol extraction and scaling — DISCHARGED as the stage.** Rows C and D
+   substitute the store and the ratio rule and buy nothing. Read at the same oracle
+   alignment, the three rules agree with the transmitted codeword at **143.1, 143.1
+   and 143.5 of 174**: no rule closes the ten bits, and the best buys 0.4 of one.
+   At -21 dB the hard decisions carry about **31 errors** against a code whose
+   recovery unit 215 measured reaching **zero at 17**. The information is not in the
+   ratios.
+2. **The belief propagation and its bound — AUDITED AND FAITHFUL.** Fourteen terms
+   of `bp_decode` read against `LdpcDecoder.Decode`; **thirteen SAME**, one
+   DIFFERING and it is divergence 21, recorded, deliberate, and unable to cost a
+   decode. **This port is faithful here and the loss is upstream's.**
+3. **`HM-OPEN-065`, the reference decoder — RISES TO FIRST AND IS THE ONLY ROUTE
+   LEFT.** Cited, not re-raised, and still owner-class because it is a compiler run.
+   Everything else on the list has been discharged by measurement, and the one
+   question nobody on this machine can answer is whether `ft8_lib` itself decodes
+   these same samples at -21 dB. **That is the question this entry now turns on.**
+
+**What follows, and it is named for the owner rather than resolved here.** Every
+stage the budget could reach is faithful to the pin, so **criterion 2 may not be
+reachable without a deliberate divergence from `ft8_lib`** — the byte-quantised
+waterfall, the 25-iteration bound, and upstream's lowest-order `fast_tanh` with
+three better approximations commented out beside it are the three places such a
+divergence would live. **Whether this library may hear better than the code it was
+ported from is the owner's ruling and no unit has taken it.** Nothing was tuned and
+no divergence was added; the count stands at twenty-five.
+
 ---
 id: HM-OPEN-066
 status: open

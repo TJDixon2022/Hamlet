@@ -303,9 +303,47 @@
 
     A SHORTFALL MEASURED IS WHAT THIS STEP IS FOR. PHASE_PLAN.md: "if the number falls short, the
     step has done its job."
+
+    0.10.5 -> 0.10.6, UNIT 222, AND THIS IS THE ONE THAT TAKES THE SHORTFALL APART. 0.10.5 measured
+    that this receiver is about 1.5 dB short. This version says WHERE IT IS NOT.
+
+    FIRST THE RULER, BECAUSE A DECIBEL AND A HALF IS EXACTLY THE SIZE OF A CONVENTION ERROR AND
+    NOBODY HAD EVER CHECKED THE AXIS WITH ANYTHING BUT THE INSTRUMENT THAT DREW IT. A second reading
+    built from the samples - a periodogram of a noise-only slot in a 2500 Hz band against the clean
+    transmission's power - sharing NO LINE OF CODE with SignalToNoise, and proved before it was
+    trusted by Parseval to a relative 2.6e-14. Over 20 trials at -21 dB and 10 at -10 the two
+    readings differ by a MEAN OF 0.0098 dB AND A LARGEST OF 0.0398, against a bound of 0.2 fixed
+    before the run. THE AXIS IS SOUND AND THE 1.5 dB BELONGS TO THE RECEIVER.
+
+    THEN THE BUDGET, ONE ORACLE-PERFECT STAGE AT A TIME, 306 TRIALS A ROW AT -21 dB AGAINST AN AS-IS
+    13 OF 306: oracle alignment 14, unquantised magnitudes 13, ratios formed from the linear tone
+    powers over the known noise 11, a hundred iterations instead of twenty-five 15. EVERY ROW LIES
+    INSIDE THE AS-IS ROW'S OWN 95 PER CENT INTERVAL OF 2.5 TO 7.1, and the -20 dB confirmation column
+    is flat in the same way. THERE IS NO STAGE OF THIS RECEIVE PATH HOLDING A DECIBEL AND A HALF, no
+    fixed loss and no cliff.
+
+    AND THE MEASUREMENT THAT DECIDES IT. Read at the same oracle place so alignment cannot separate
+    them, the three ratio rules agree with the transmitted codeword at 143.1, 143.1 and 143.5 of 174.
+    NO RULE CLOSES THE TEN BITS UNIT 221'S CENSUS FOUND; the best buys 0.4 of one. The hard decisions
+    at -21 dB carry about 31 errors against a code whose recovery unit 215 measured reaching ZERO AT
+    17. THE INFORMATION IS NOT IN THE RATIOS.
+
+    A PATCH FOR THE SIXTH TIME RUNNING, AND THE REASON IS AGAIN THE POINT OF THE NIGHT. NO LIBRARY
+    FILE CHANGED. A fix was licensed under two conditions and BOTH FAILED: the audit of bp_decode
+    against the pin found thirteen of fourteen terms identical and the fourteenth a recorded
+    deliberate divergence, and the budget attributed no decodes to any stage. Three numbers could
+    have been moved to buy decodes - the byte-quantised waterfall, the 25-iteration bound, and
+    upstream's LOWEST-ORDER fast_tanh with three better approximations commented out beside it - and
+    NOT ONE OF THEM MOVED. An operator's screen shows exactly what it showed under 0.10.5.
+
+    CRITERION 2 STILL STANDS NOT MET AT 13 OF 306, re-measured tonight in a third process at a
+    delivered -21.001 dB. What has changed is that HM-OPEN-067 now carries a budget instead of an
+    address, and that the phase can name which world it is in: THE PORT IS FAITHFUL EVERYWHERE THE
+    LOSS COULD BE, so criterion 2 may not be reachable without a deliberate divergence from ft8_lib.
+    THAT IS THE OWNER'S RULING AND NO UNIT HAS TAKEN IT.
   -->
   <PropertyGroup>
-    <Version>0.10.5</Version>
+    <Version>0.10.6</Version>
   </PropertyGroup>
 
   <!--
