@@ -1418,3 +1418,113 @@ zero — no hash on the wire. **That leg is not covered and is not counted as co
 **None added.** The count stands at fifteen. Everything this unit built is in the test project;
 nothing under `src/Ft8Sharp/` changed except the version, and the library gained evidence about the
 capability it already had rather than a new one.
+
+## The waveform — unit 212
+
+**The library stops computing numbers and starts making a signal.** Step 3 delivers three things by
+the plan's own words — LDPC encode, the symbol sequence, and audio synthesis from it. The first two
+were built by units 209 and 211. Until this unit **nothing in this tree turned a symbol into a
+sample**, and step 4 has no fixtures without one.
+
+### What was ported, and from where
+
+`src/Ft8Sharp/Encode/Ft8Waveform.cs`, from the pin at
+`9fec6ca39886edbf96f4f5e71edc76da5074e871`:
+
+- **`demo/gen_ft8.c`** — the synthesis itself and the slot layout. Note where that is: the generator
+  carries its own synthesis rather than calling a library one, so there is no file under `ft8/` to
+  point at for the waveform. That is why this port reads `demo/` at all.
+- **`common/wave.c`** — the conversion from a floating-point sample to a sixteen-bit one.
+- **`ft8/constants.h`** — the symbol period and the slot duration.
+
+The boundary is `Ft8SymbolEncoder`'s output. The synthesizer takes **symbols**, a sample rate and a
+base frequency; it does not take message text, does not pack, and does not re-derive a tone. That is
+upstream's own boundary and the encoder already draws it.
+
+**The library writes no file and opens no device.** It returns a buffer. WAV reading, process
+invocation and everything else with the world in it lives in the test project.
+
+### What task 2 read, as shapes rather than values
+
+Recorded as structure, because upstream's constants may live in `src/Ft8Sharp/` where the port needs
+them and nowhere else. Each of these is now asserted by `UpstreamSynthesisInventoryTests`, which
+skips when the clone is absent, so a re-pin that moves any of them goes red rather than drifting.
+
+- The pulse is a **Gaussian-filtered frequency-shift pulse**, truncated to **three symbol periods**,
+  and is the difference of two error functions half a symbol either side of each point.
+- **Phase is accumulated across symbol boundaries and never restarted.** Asserted as the accumulator
+  shape itself, not merely as a mention of the variable.
+- **Dummy symbols** repeating the first and last tones extend the pulse past both ends.
+- There is a **raised-cosine envelope ramp** over a fraction of the first and last symbol.
+- The float becomes a sixteen-bit sample by **a half added before a truncation toward zero**, after
+  clipping — which is not symmetric about zero and is not any of the framework's rounding modes.
+- The WAV is **canonical PCM, mono, sixteen-bit, with a forty-four-byte header**, and the signal sits
+  between two equal runs of silence whose length is computed from the timing.
+- **The base frequency can be set on the command line**, so the comparison is not confined to the
+  default.
+
+**The file and the source agree on every one of those**, checked against a WAV the generator actually
+wrote rather than against the source alone.
+
+### What the comparison found
+
+Every sample of **fifty-one** messages, against the WAV upstream's own generator writes for the same
+message. **The maximum absolute difference over all of them is one count.** The number was measured
+and reported before any bound was asserted; the bound is two, one above the measurement.
+
+**The alignment was read from the pin's own timing and not searched for.** Nothing was
+cross-correlated.
+
+**The shape of what does differ was read, and it is worth recording.** The differences grow through
+the transmission — under one per cent of samples in the first fifth, over five per cent in the last —
+and there are none at all in the silence. **Growing count at a constant magnitude of one count is
+accumulated last-place rounding.** A wrong sample rate or symbol period would grow the *magnitude*
+and not merely the count.
+
+**Before any sample was compared, the packed bytes and the tones were checked on every message.**
+That is unit 211's lesson applied rather than restated: a comparison should find out whether the two
+sides are answering the same question before it reports a difference. All fifty-one agreed on both.
+
+### Why the port computes in single precision, which is the finding worth carrying forward
+
+**An independent second implementation in the test project holds the phase in double and differs from
+the library by up to a hundred and seventeen counts** — against one count for upstream. That is not a
+defect in either. Upstream keeps the per-sample phase step in single precision; a step of that size
+in single precision is off by a fixed fraction of its last place **in the same direction at every one
+of a hundred and fifty thousand samples**, so the error does not cancel, it drifts. Measured: **one
+count of difference in the first symbol and a hundred and three in the last.**
+
+**So a port that computed the phase in double "because it is more accurate" would have been more
+accurate and would have disagreed with upstream by about a hundred counts.** This library agrees to
+one count precisely because it reproduces upstream's evaluation rather than improving on it. Anyone
+tempted to tidy the precision in `Ft8Waveform` should read this paragraph first.
+
+### What is not covered, said plainly rather than left looking covered
+
+- **Nothing has decoded this waveform.** No demodulator has been run against it by this project or by
+  anybody. Step 3's third exit criterion asks that the reference *decoder* decode what we synthesize;
+  that program is not built on this machine, a unit cannot build one, and **the criterion is not met
+  on its own terms.** What was taken instead is the sample agreement above and the tone recovery
+  below. Neither is a decode.
+- **The five corpus entries with no text form** — the four telemetry entries and the non-standard
+  hashed-companion one — are reachable by the synthesizer and not by the comparison, for the reasons
+  unit 211 recorded. They are covered by the tone recovery and not by upstream.
+- **Every machine but this one.** The comparison invokes the binary at run time and **skips rather
+  than fails** when the clone or the build is absent. What survives everywhere is the tone recovery:
+  the frequency measured back out of our own samples over the settled middle of every symbol, with
+  all four thousand four hundred and twenty-four symbols of fifty-six messages recovered.
+
+### Divergences from upstream
+
+**One added, numbered on from fifteen.**
+
+**16 — a sample rate at which the signal's two lengths disagree is refused.** Upstream reaches the
+signal's length twice by two different routes: once from the transmission's duration, which is what
+sizes the slot, and once as the symbol count times the samples per symbol, which is what the
+synthesis actually writes. **At the rate FT8 is used at the two agree; at other rates they do not**,
+and upstream would run past the end of its own stack buffer there. Nothing here runs past anything —
+the arrays are managed — but a signal of one length laid into a slot sized for the other puts every
+sample after the join at the wrong offset, and a comparison would report that as a defect in the
+synthesis. So the rate is **refused with the reason** rather than the inconsistency being inherited
+silently. This is a divergence in *behaviour at rates upstream never uses* and not in the waveform:
+at the rate that matters the two routes agree and nothing is refused.

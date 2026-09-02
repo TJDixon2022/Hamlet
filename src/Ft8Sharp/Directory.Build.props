@@ -73,9 +73,36 @@
     pinned source and against a second implementation in the test project, and against nothing
     else. Step 3's second exit criterion is open. Still not a 1.x, and now for two reasons: there
     is no demodulator, and nothing has yet agreed with anybody but itself.
+
+    0.6.0 — unit 212. THE LIBRARY CAN NOW MAKE THE AUDIO A TRANSMISSION IS.
+
+    Until tonight nothing in this tree turned a symbol into a sample. Ft8Waveform takes the 79
+    channel symbols the encoder produces and returns the actual waveform — the tones shaped by a
+    Gaussian pulse, the phase running continuously across every symbol boundary, the ends ramped,
+    the whole thing laid into a fifteen-second slot, and a second entry point giving the sixteen-bit
+    samples a file or a sound card would want. A capability the library did not have rather than a
+    correction to one it did, so a minor by the same rule as every one of the five before it.
+
+    And unlike 0.5.0, this one HAS been held against ft8_lib. Every sample of fifty-one messages was
+    compared against the WAV upstream's own generator writes for the same message and the largest
+    disagreement anywhere was one count in sixteen-bit terms. So what this library produces is not
+    merely something we believe is FT8 — it is, sample for sample, the waveform every FT8 decoder in
+    the world already reads.
+
+    WHAT THIS MINOR DOES NOT CLAIM, and it is the same shortfall as every version before it.
+    NOTHING HERE DECODES. There is no demodulator, no candidate search, no soft symbol and no belief
+    propagation. No program has been run against this waveform to see whether it can be read back —
+    not ours and not anybody's, because the reference decoder is not built on this machine. The
+    evidence is that our samples are upstream's samples, which is a strong statement about the
+    synthesizer and no statement at all about reception. Still not a 1.x, and for the reason it has
+    always been: this library can now speak and it still cannot hear.
+
+    It also does not claim to be a transmitter and never will be. The synthesizer returns a buffer.
+    Nothing in this library opens a sound device, a stream or a port, and nothing plays what it
+    makes.
   -->
   <PropertyGroup>
-    <Version>0.5.2</Version>
+    <Version>0.6.0</Version>
   </PropertyGroup>
 
   <!--
