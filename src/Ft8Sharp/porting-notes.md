@@ -3210,3 +3210,46 @@ after the search and inside soft-symbol quality.
 ### Divergences from upstream
 
 **None added, and none was expected.** No library file changed. The count stands at **twenty-five**.
+
+## Where the decibel and a half went — unit 222
+
+**The unit that took the shortfall apart rather than measuring it again.** Unit 221 measured step 6's
+curve and left criterion 2 NOT MET at 13 of 306 at -21 dB, with a census naming the stage — found, and
+the ratios too damaged — but no number against any stage. This unit checks the decibel axis against a
+second instrument built from scratch, then substitutes one oracle-perfect stage at a time and reads
+off what each is costing.
+
+### The channel filter strings, recorded so the next unit reproduces a number rather than a superset
+
+**This is a one-line repair of a reproducibility gap unit 221 raised and is not this unit's subject.**
+Unit 218 was credited with printing the channel filters and they were written into no checked-in file,
+so unit 221 could not reproduce its 55 and ran a 108-test superset instead — a superset that also
+caught classes whose only mention of a shared artifact is in a comment.
+
+**The rule, stated so the set can be rebuilt rather than remembered: a channel test is a test class
+that OPENS one of the three shared artifacts at run time** — `CLAUDE.md`, `Directory.Build.props` or
+`Hamlet.sln`. In the tree at unit 222 that is four classes in `Hamlet.App.Tests` and eleven in
+`Hamlet.RadioEngine.Tests`, and the two filter strings are:
+
+```
+Hamlet.App.Tests            9 tests, 0.5 s
+  --filter "FullyQualifiedName~DecisionLogOrderTests|FullyQualifiedName~VersionTests|FullyQualifiedName~EveryResourceKeyResolvesTests|FullyQualifiedName~ViewTestsActThroughControlsTests"
+
+Hamlet.RadioEngine.Tests   38 tests, 7 m 38 s
+  --filter "FullyQualifiedName~TheAudioSpectrumIsDeterministicTests|FullyQualifiedName~TheCostasSearchFindsTransmissionsTests|FullyQualifiedName~TheSlotCutterTests|FullyQualifiedName~TheWaterfallPictureIsLegibleTests|FullyQualifiedName~FittingKeyUpAgainstAssumingItTests|FullyQualifiedName~ThePhantomsBecomeBlocksTests|FullyQualifiedName~WhatDecodeScoringCostsTests|FullyQualifiedName~WhatTheWindowRatioIsMadeOfTests|FullyQualifiedName~WhereAcquisitionPointsTests|FullyQualifiedName~WhereTheKeyUpStateSitsTests|FullyQualifiedName~WhyTheGateDidNotFireTests"
+```
+
+**Both green at unit 222: 9 of 9 and 38 of 38.** The RadioEngine set takes well over the plan's
+*about a minute*, and that is reported rather than trimmed — four of its eleven classes run real
+signal processing over recorded audio.
+
+### The before-number, re-measured and not inherited
+
+`Unit222TraceTests` re-runs **the -21 dB rung alone** on unit 221's population, seeds, frequency and
+offset, nothing widened. It reads **13 of 306, 4.2 per cent, 95 per cent Wilson 2.5 to 7.1, at a
+delivered -21.001 dB, 0 wrong messages, worst delivery error 0.0406 dB** — unit 221's figure exactly,
+so the budget below stands on ground that has now reproduced in a third process.
+
+**One slot decode cost 26.1 ms**, against unit 221's 64.1 ms measured under contention. Ten minutes
+buys about 23 000 slot decodes, so every row of the budget and its -20 dB confirmation column fit
+inside the night with room to spare.

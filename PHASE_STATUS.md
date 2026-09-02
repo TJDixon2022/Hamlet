@@ -2,14 +2,14 @@ PHASE: Hamlet hears FT8 off the radio and displays the decoded text on screen
 PHASE_SET: 2026-08-31
 DESCRIPTION: Port ft8_lib to a managed FT8 decoder and wire it to Hamlet's audio and display
 CURRENT_STEP: 6
-WORK_INSTRUCTION: 221 - the sensitivity curve, and the verdict at -21 dB
-HEARTBEAT: 2026-09-02 14:38:45
+WORK_INSTRUCTION: 222 - where the decibel and a half went, and closing it if it is ours
+HEARTBEAT: 2026-09-02 15:56:37
 STEP: 1 | done | the library exists and its tables are proven
 STEP: 2 | done | messages round-trip through 77 bits
 STEP: 3 | done | a valid FT8 signal can be produced
 STEP: 4 | done | signals are found in noise
 STEP: 5 | done | a found signal becomes a message
-STEP: 6 | not started | sensitivity meets the published threshold
+STEP: 6 | partial | sensitivity meets the published threshold
 STEP: 7 | not started | Hamlet displays decoded FT8
 
 ---
