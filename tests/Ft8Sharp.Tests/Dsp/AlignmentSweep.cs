@@ -117,6 +117,14 @@ internal static class AlignmentSweep
         internal Point? DecodedAt { get; init; }
 
         /// <summary>
+        /// The rank, one-based, the search gave the point that decoded, or -1 where it kept no
+        /// candidate there. <b>This is what names the stage</b>: a transmission recoverable at a
+        /// point the search never kept was lost at the search; one recoverable at a point the search
+        /// DID keep was lost after it.
+        /// </summary>
+        internal int RankOfDecodedPoint { get; init; }
+
+        /// <summary>
         /// The belief propagation's 174 corrected bits equalled the true codeword exactly, whether or
         /// not the message layer could then put it into words. Reported beside <see cref="Decoded"/>
         /// and never in place of it.
@@ -257,6 +265,7 @@ internal static class AlignmentSweep
                 PassbandRefusal = refusal,
                 RankOfBestAgreementPoint = -1,
                 BestRankInNeighbourhood = -1,
+                RankOfDecodedPoint = -1,
             };
         }
 
@@ -372,6 +381,13 @@ internal static class AlignmentSweep
             KeptPointsInNeighbourhood = keptHere,
             Decoded = decoded,
             DecodedAt = decodedAt,
+            RankOfDecodedPoint = decodedAt is null
+                ? -1
+                : ranks.TryGetValue(
+                    (decodedAt.Value.Block, decodedAt.Value.TimeSub, decodedAt.Value.Bin, decodedAt.Value.FreqSub),
+                    out var decodedRank)
+                    ? decodedRank
+                    : -1,
             CodewordRecovered = codewordRecovered,
             CodewordRecoveredAt = codewordAt,
             PassbandRefusal = refusal,
