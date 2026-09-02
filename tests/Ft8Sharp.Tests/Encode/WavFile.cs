@@ -13,11 +13,18 @@ namespace Ft8Sharp.Tests.Encode;
 /// mechanical for a reason.
 /// </para>
 /// <para>
-/// <b>Deliberately narrow.</b> It reads exactly the one form upstream writes — canonical 44-byte
-/// PCM, mono, sixteen bits — and refuses everything else rather than coping. A reader that copes is
-/// a reader that will one day quietly read a stereo file as twice as many mono samples and report
-/// the resulting disagreement as a defect in the synthesizer. Every refusal below is watched by
+/// <b>Deliberately narrow.</b> It reads uncompressed PCM, mono, sixteen bits, with a canonical
+/// 16-byte fmt chunk, and refuses everything else rather than coping. A reader that copes is a
+/// reader that will one day quietly read a stereo file as twice as many mono samples and report the
+/// resulting disagreement as a defect in the synthesizer. Every refusal below is watched by
 /// <c>WavFileTests</c>; a guard that has never refused is not a guard.
+/// </para>
+/// <para>
+/// <b>One thing it does cope with, added by unit 216 and only that one.</b> It walks the chunks
+/// after <c>fmt</c> to find <c>data</c> rather than requiring it to be second. Upstream's generator
+/// always writes it second; nine of the sixty off-air reference recordings in the pinned clone put
+/// a chunk in between, and refusing those would have narrowed the reference-WAV criterion to
+/// fifty-one files for a reason that has nothing to do with the audio. Nothing else was relaxed.
 /// </para>
 /// <para>
 /// <b>Nothing it reads is ever committed.</b> The files live under <see cref="Path.GetTempPath"/>
@@ -102,10 +109,49 @@ internal static class WavFile
                 + "to compare.");
         }
 
-        RequireTag(bytes, 36, "data", what, "the second chunk is not data");
+        // WALK TO THE DATA CHUNK RATHER THAN ASSUMING IT IS SECOND.
+        //
+        // Upstream's own generator writes it second, at byte 36, and for four units that was every
+        // file this reader had to read. Unit 216 handed it upstream's off-air REFERENCE RECORDINGS,
+        // and nine of the sixty carry a chunk between fmt and data — a 158-byte one, which is why
+        // those files are 360202 bytes where the rest are 360044. Refusing them would have narrowed
+        // criterion 3 to fifty-one files for a reason that has nothing to do with the audio.
+        //
+        // So the walk is added and NOTHING ELSE IS RELAXED: the RIFF and WAVE tags, the fmt chunk's
+        // position and length, the format, the channel count, the bit width and the truncation check
+        // are all exactly as they were. A file with no data chunk anywhere is still refused, and the
+        // refusal names every chunk it did find.
+        var dataAt = -1;
+        var dataSize = 0u;
+        var tagsSeen = new List<string>();
+        var cursor = 20 + (int)fmtSize;
+        while (cursor + 8 <= bytes.Length)
+        {
+            var tag = Encoding.ASCII.GetString(bytes.Slice(cursor, 4));
+            var size = ReadUInt32(bytes, cursor + 4);
+            tagsSeen.Add(Printable(tag));
 
-        var dataSize = ReadUInt32(bytes, 40);
-        var available = bytes.Length - CanonicalHeaderBytes;
+            if (string.Equals(tag, "data", StringComparison.Ordinal))
+            {
+                dataAt = cursor + 8;
+                dataSize = size;
+                break;
+            }
+
+            // Chunks are padded to an even length, and a zero-length chunk would not advance.
+            var advance = (long)size + (size % 2);
+            cursor += 8 + (int)Math.Min(advance, bytes.Length);
+        }
+
+        if (dataAt < 0)
+        {
+            throw new InvalidDataException(
+                $"{what} carries no data chunk. The chunks after fmt were: "
+                + $"{(tagsSeen.Count == 0 ? "none" : string.Join(", ", tagsSeen))}. "
+                + "A WAV with no data chunk has no samples to compare.");
+        }
+
+        var available = bytes.Length - dataAt;
         if (dataSize > (uint)available)
         {
             throw new InvalidDataException(
@@ -117,10 +163,10 @@ internal static class WavFile
         var samples = new short[dataSize / 2];
         for (var i = 0; i < samples.Length; i++)
         {
-            samples[i] = (short)ReadUInt16(bytes, CanonicalHeaderBytes + (i * 2));
+            samples[i] = (short)ReadUInt16(bytes, dataAt + (i * 2));
         }
 
-        return new Contents(sampleRate, bits, channels, CanonicalHeaderBytes, samples);
+        return new Contents(sampleRate, bits, channels, dataAt, samples);
     }
 
     /// <summary>Removes a temporary file, and never minds if it is already gone.</summary>
