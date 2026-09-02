@@ -89,6 +89,50 @@ internal static class SearchFixture
     }
 
     /// <summary>
+    /// One slot carrying <paramref name="count"/> different messages at different frequencies across
+    /// the passband and at different time offsets — the real case, and the one a 3 kHz slice of 20 m
+    /// actually presents.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// <b>Nothing in it is aligned to anything else.</b> The frequencies are spread across the
+    /// passband and every one of them carries a different fraction of a bin, so no two sit on the
+    /// grid the same way; the offsets rotate through five values on and off the block and sub-block
+    /// grids, because stations do not start together and a fixture where all twenty begin at the
+    /// same sample is easier than the air.
+    /// </para>
+    /// <para>
+    /// <b>The frequencies stop below the top of the passband on purpose.</b> A candidate spans eight
+    /// tones, so a transmission whose lowest tone sits in one of the top seven bins has nowhere for
+    /// its highest to go. That is a property of the passband, not of the search.
+    /// </para>
+    /// </remarks>
+    internal static (float[] Slot, IReadOnlyList<Truth> Truths) ManySignals(
+        int sampleRate,
+        IReadOnlyList<EncodeCorpus.Entry> corpus,
+        int count,
+        double lowestHz,
+        double spacingHz,
+        double binHz)
+    {
+        var slot = EmptySlot(sampleRate);
+        var truths = new List<Truth>(count);
+
+        // Five offsets: one on the block grid, one on the sub-block grid, three on neither.
+        var offsets = new[] { 0, 960 * 5, 1920 * 2, 3701, 12345 };
+
+        for (var i = 0; i < count; i++)
+        {
+            // Every signal at a different fraction of a bin, cycling through quarters, so the
+            // easy case and the hard one are both in the same slot rather than in different runs.
+            var frequency = lowestHz + (i * spacingHz) + (i % 4 * (binHz / 4));
+            truths.Add(Place(slot, sampleRate, corpus[i % corpus.Count], frequency, offsets[i % offsets.Length]));
+        }
+
+        return (slot, truths);
+    }
+
+    /// <summary>
     /// The mean square of the transmissions in a slot, for turning a wanted signal-to-noise ratio
     /// into a noise amplitude. <b>Measured over the whole slot</b>, including the silence around a
     /// short transmission, so it is the power a receiver actually sees rather than the power inside
