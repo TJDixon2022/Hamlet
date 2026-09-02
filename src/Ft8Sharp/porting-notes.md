@@ -3448,3 +3448,20 @@ measurements make the refusal easy rather than costly — the byte is worth noth
 bound is worth two decodes in 306.
 
 **Divergences from upstream: none added, and none was expected. The count stands at twenty-five.**
+
+### The verdict, not re-taken, because nothing changed
+
+**No library file changed in task 5, so the fourteen-rung curve stands exactly as unit 221 measured
+it and it was not re-run to fill a section.** Criterion 2 stands **NOT MET at 13 of 306, 4.2 per
+cent, 95 per cent Wilson 2.5 to 7.1**, against the band fixed in writing before unit 221's first
+trial ran and untouched tonight: 40 per cent or better MET, under 25 NOT MET, between PARTIAL.
+
+**The rung was nevertheless re-measured, which is stronger than standing on a report.** Task 1 ran
+the -21 dB rung alone on the same population, seeds, frequency and offset and read **13 of 306 at a
+delivered -21.001 dB with 0 wrong messages** — unit 221's numerator, denominator and delivered ratio
+exactly, in a third process.
+
+**Criterion 3 was not re-taken either, and does not need to be:** a re-take is what makes a change to
+extraction trustworthy, and no change to extraction was made. Task 3's five substituted rows returned
+**0 wrong messages over 1530 substituted slot decodes**, which is a free reading in the same
+direction and is reported as one rather than as a criterion.
