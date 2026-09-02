@@ -726,6 +726,56 @@ public partial class MainWindowViewModel : ObservableObject
         }
     }
 
+    /// <summary>
+    /// What the Digital tab's decoded table is showing.
+    /// </summary>
+    /// <remarks>
+    /// <para>**REAL SINCE UNIT 224, AND EMPTY UNTIL SOMETHING DECODES.** Work
+    /// instruction 037 put four literal rows in the markup so the operator could
+    /// argue with a finished-looking session before there was a decoder; they came
+    /// out in the same change that put this in, because a table showing both is
+    /// worse than a table showing neither.</para>
+    /// <para>**NOTHING ARRIVES HERE THAT DID NOT PASS ITS OWN CHECKSUM.** The
+    /// library returns a message only after the codeword's CRC has been verified,
+    /// so a line on this table is a line somebody sent (§0.0).</para>
+    /// </remarks>
+    public ObservableCollection<DigitalDecodeRow> DigitalDecodes { get; } = new();
+
+    /// <summary>Whether the decoded table has anything to show.</summary>
+    /// <remarks>
+    /// **WHEN IT IS FALSE THE PANEL SHOWS ITS OWN IDLE LINE** (HM-DEC-021). An
+    /// empty panel is indistinguishable from a broken one, and one message for the
+    /// whole tab is lost the moment a panel is collapsed.
+    /// </remarks>
+    public bool HasDigitalDecodes => DigitalDecodes.Count > 0;
+
+    /// <summary>What the decoded panel says before anything has decoded.</summary>
+    public string DigitalDecodedIdle => DigitalIdleText.Decoded;
+
+    /// <summary>The decoded panel's collapsed summary.</summary>
+    /// <remarks>
+    /// **IT REPORTS WHAT IS REALLY THERE** (HM-DEC-021), including the case the
+    /// operator most needs to be told about: audio was decoded and nothing came
+    /// out of it, which is a different fact from never having pressed the button.
+    /// </remarks>
+    public string DigitalDecodedSummary
+    {
+        get
+        {
+            if (DigitalDecodes.Count > 0)
+            {
+                return $"{DigitalDecodes[0].Utc} UTC · {DigitalDecodes.Count} shown";
+            }
+
+            return _digitalDecodeNote.Length > 0
+                ? _digitalDecodeNote
+                : "nothing decoded yet";
+        }
+    }
+
+    /// <summary>What the last press made of the audio, in one line.</summary>
+    private string _digitalDecodeNote = "";
+
     /// <summary>Waterfall display gain — a setting, not per-frame data.</summary>
     [ObservableProperty]
     private double _waterfallGain = 1.35;
@@ -6274,6 +6324,12 @@ public partial class MainWindowViewModel : ObservableObject
             return;
         }
 
+        // **THE DECODE COMES FIRST, BECAUSE A FULL DISK IS NOT A DEAF BAND.**
+        // Writing the diagnostic material can fail for a dozen reasons that have
+        // nothing to do with what was on the air, and the operator pressed this
+        // button to find out what was on the air.
+        ShowDecodes(audio, DateTime.UtcNow, ClockOffset);
+
         try
         {
             var folder = DigitalCaptureFolder;
@@ -6304,8 +6360,9 @@ public partial class MainWindowViewModel : ObservableObject
                     here?.PassbandHz));
 
             StatusText =
-                $"Kept the last {audio.Duration.TotalSeconds:0} seconds in "
-                + $"{folder}, with what the radio was doing beside it.";
+                $"{_digitalDecodeNote}. Kept the last "
+                + $"{audio.Duration.TotalSeconds:0} seconds in {folder}, with "
+                + "what the radio was doing beside it.";
         }
         catch (IOException error)
         {
@@ -6315,6 +6372,89 @@ public partial class MainWindowViewModel : ObservableObject
         {
             StatusText = $"Could not write the capture: {error.Message}";
         }
+    }
+
+    /// <summary>
+    /// Decode a stretch of captured audio and put what came out on the table.
+    /// </summary>
+    /// <param name="audio">What the tap was holding.</param>
+    /// <param name="endedAtPcUtc">When the press happened, by the PC clock.</param>
+    /// <param name="offset">
+    /// How far the PC clock is from UTC. **Passed rather than read off the view
+    /// model**, so the whole path is a function of its arguments: the clock query
+    /// runs on a timer and finishes whenever the network lets it, and a test
+    /// reading the property would be a test that decodes on some evenings.
+    /// </param>
+    /// <remarks>
+    /// <para>**THIS IS WHERE THE DIGITAL TAB STOPS BEING A PICTURE** (unit 224).
+    /// Every row on that table from work instruction 037 until now was a literal
+    /// string in the markup; from here it is whatever the band was doing when the
+    /// button was pressed, or nothing.</para>
+    /// <para>**THE TABLE IS REPLACED RATHER THAN APPENDED TO.** One press is one
+    /// question about one moment, and a table mixing this press with the last one
+    /// would put two bands, two clock readings and two antenna positions under one
+    /// heading (§0.0.1).</para>
+    /// <para>**AN UNKNOWN CLOCK IS SAID PLAINLY AND NOT SHOWN AS AN EMPTY TABLE.**
+    /// FT8 needs the PC within about a second of UTC or nothing decodes, and it
+    /// fails silently; a blank table and a wrong clock look identical, which is the
+    /// commonest newcomer failure in this mode. The cutter's own refusal sentence
+    /// is what reaches the operator.</para>
+    /// <para>**NOTHING IS INTERPRETED HERE** (§12.1). The text goes on the table
+    /// exactly as it was sent.</para>
+    /// <para>Internal rather than private so a test can hand it a recording it
+    /// built and read the rows back, the way the telemetry format is reached — a
+    /// press needs a sound card, and the assertion that matters is about what
+    /// lands on the table rather than about the button.</para>
+    /// </remarks>
+    internal void ShowDecodes(
+        MonoAudio audio, DateTime endedAtPcUtc, ClockOffset offset)
+    {
+        var heard = Ft8Reader.Read(audio, endedAtPcUtc, offset);
+
+        DigitalDecodes.Clear();
+
+        foreach (var decode in heard.Decodes)
+        {
+            DigitalDecodes.Add(DigitalDecodeRow.From(decode));
+        }
+
+        _digitalDecodeNote = DescribeDecodes(heard);
+
+        OnPropertyChanged(nameof(HasDigitalDecodes));
+        OnPropertyChanged(nameof(DigitalDecodedSummary));
+    }
+
+    /// <summary>What a press made of the audio, in one line.</summary>
+    /// <param name="heard">What came back.</param>
+    /// <returns>A sentence with no full stop, for the caller to place.</returns>
+    /// <remarks>
+    /// **FOUND-BUT-UNREAD IS A DIFFERENT ANSWER FROM NOTHING THERE** (§0.0.1), and
+    /// the operator can act on the difference: signals found and none read is a
+    /// gain, a filter or a clock question, where nothing found at all is a band or
+    /// an antenna question.
+    /// </remarks>
+    private static string DescribeDecodes(Ft8Reception heard)
+    {
+        if (heard.Refusal.Length > 0)
+        {
+            return heard.Refusal;
+        }
+
+        var slots = heard.SlotsDecoded == 1 ? "one slot" : $"{heard.SlotsDecoded} slots";
+
+        if (heard.Decodes.Count > 0)
+        {
+            var messages = heard.Decodes.Count == 1
+                ? "one message"
+                : $"{heard.Decodes.Count} messages";
+
+            return $"{messages} out of {slots}";
+        }
+
+        return heard.CandidatesFound > 0
+            ? $"{slots} decoded, and of {heard.CandidatesFound} places that "
+                + "looked like a signal, not one came out as a message"
+            : $"{slots} decoded, and nothing on the band looked like FT8 at all";
     }
 
     /// <summary>Where captures and the roster are written.</summary>

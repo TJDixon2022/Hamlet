@@ -22,6 +22,17 @@
     <PackageReference Include="NAudio" Version="2.2.1" />
   </ItemGroup>
 
+  <!-- The FT8 decoder, built over steps 1 to 6 of this phase as a library with
+       its own licence and its own version, and consumed here for the first time
+       in unit 224. **The reference goes this way and only this way**: Ft8Sharp
+       declares no ProjectReference at all and a test refuses one, which is what
+       keeps it extractable (PHASE_PLAN.md, "the boundary is mechanical"). The
+       engine is where audio and DSP live (§0.1), so the join sits here rather
+       than in the shell. -->
+  <ItemGroup>
+    <ProjectReference Include="..\Ft8Sharp\Ft8Sharp.csproj" />
+  </ItemGroup>
+
   <!-- The cited Part 97 privileges data lives in /data as its single source
        of truth (HM-OPEN-005) and is embedded so it ships with the app. One
        file, so there is no copy to drift away from the regulation. -->

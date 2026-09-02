@@ -41,9 +41,17 @@
     interval, and over every failing trial THE TRUE CODEWORD SCORES LOWER THAN THE WORD THE DECODER
     SETTLED ON. The information is not in the ratios, and criterion 2 stays NOT MET at 13 of 306.
     HM-OPEN-067 updated in place.
+
+    1.12.31 -> UNIT 224, UNDER HM-DEC-150. A PATCH, AND THE FIRST OF THIS PHASE THAT CHANGES WHAT THE
+    OPERATOR SEES. The Digital tab's decoded table stops being four literal strings from work
+    instruction 037 and becomes whatever the band was doing when the capture button was pressed:
+    Hamlet.RadioEngine references Ft8Sharp for the first time, a band-limited resampler puts the sound
+    card's own rate onto the 12 kHz grid the library was measured at, and the slot cutter that has sat
+    unused since August cuts the capture on the UTC quarter minute. Measured through four sample rates
+    including one that is not a whole ratio.
   -->
   <PropertyGroup>
-    <Version>1.12.30</Version>
+    <Version>1.12.31</Version>
   </PropertyGroup>
 
   <!--

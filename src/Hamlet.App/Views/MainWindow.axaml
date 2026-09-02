@@ -2831,14 +2831,12 @@
                                  signal that decoded nothing is visible, rather
                                  than under a panel that can be collapsed.
 
-                                 **IT IS DELIBERATELY NOT WIRED.** The trimming
-                                 rule it has to obey — four complete slots on UTC
-                                 boundaries — does not exist yet, and a press
-                                 that keeps the wrong thing is worse than one
-                                 that does nothing. It looks pressable because
-                                 every string on this tab is a placeholder; that
-                                 stops being acceptable the moment anything here
-                                 is live. -->
+                                 **IT DECODES SINCE UNIT 224.** It still keeps the
+                                 raw thirty seconds untrimmed, because trimming
+                                 is ruled out until scoring starts; what changed
+                                 is that the same audio is now cut on the UTC
+                                 quarter minute and read, and whatever comes out
+                                 of it lands on the decoded panel below. -->
                             <ctl:CollapsiblePanel x:Name="DigitalWaterfallPanel"
                                                   Family="Lavender"
                                                   Title="Waterfall"
@@ -2877,10 +2875,20 @@
                             <ctl:CollapsiblePanel x:Name="DigitalDecodedPanel"
                                                   Family="Lavender"
                                                   Title="Decoded text"
-                                                  Summary="14:22:45 UTC &#183; 4 shown"
+                                                  Summary="{Binding DigitalDecodedSummary}"
                                                   IsExpanded="{Binding DigitalDecodedExpanded, Mode=TwoWay}">
+                              <StackPanel Spacing="6">
+
+                                <!-- **THE HEADINGS STAY AND THE FOUR ROWS UNDER
+                                     THEM ARE GONE** (unit 224). They were
+                                     literal strings from work instruction 037 -
+                                     CQ K1ABC FN42 at 1240 Hz and the rest - and
+                                     they came out in the same change that bound
+                                     the real ones, because a table showing both
+                                     is worse than a table showing neither. -->
                                 <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,*"
-                                      RowDefinitions="Auto,Auto,Auto,Auto,Auto">
+                                      RowDefinitions="Auto"
+                                      IsVisible="{Binding HasDigitalDecodes}">
 
                                     <TextBlock Grid.Row="0" Grid.Column="0" Text="utc"
                                                FontFamily="Consolas,Menlo,monospace" FontSize="11"
@@ -2903,59 +2911,39 @@
                                                Margin="0,0,0,4"
                                                Foreground="{StaticResource HmTextMutedBrush}" />
 
-                                    <!-- **THE FIRST ROW IS DRAWN SELECTED AND
-                                         NOTHING SELECTS IT.** It is here so the
-                                         operator can see what selection will
-                                         look like before there is anything to
-                                         select. -->
-                                    <Border Grid.Row="1" Grid.ColumnSpan="5"
-                                            Background="{x:Static ctl:PanelPalette.LavenderFill}"
-                                            CornerRadius="4" Margin="-4,0" />
-
-                                    <TextBlock Grid.Row="1" Grid.Column="0" Text="142245"
-                                               FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,14,1" />
-                                    <TextBlock Grid.Row="1" Grid.Column="1" Text="-19"
-                                               FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,14,1" />
-                                    <TextBlock Grid.Row="1" Grid.Column="2" Text="-0.4"
-                                               FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,14,1" />
-                                    <TextBlock Grid.Row="1" Grid.Column="3" Text="1502"
-                                               FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,14,1" />
-                                    <TextBlock Grid.Row="1" Grid.Column="4" Text="W9XYZ K1ABC -13"
-                                               FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,0,1" />
-
-                                    <TextBlock Grid.Row="2" Grid.Column="0" Text="142230"
-                                               FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,14,1" />
-                                    <TextBlock Grid.Row="2" Grid.Column="1" Text="-13"
-                                               FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,14,1" />
-                                    <TextBlock Grid.Row="2" Grid.Column="2" Text="0.2"
-                                               FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,14,1" />
-                                    <TextBlock Grid.Row="2" Grid.Column="3" Text="1240"
-                                               FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,14,1" />
-                                    <TextBlock Grid.Row="2" Grid.Column="4" Text="CQ K1ABC FN42"
-                                               FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,0,1" />
-
-                                    <TextBlock Grid.Row="3" Grid.Column="0" Text="142230"
-                                               FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,14,1" />
-                                    <TextBlock Grid.Row="3" Grid.Column="1" Text="-08"
-                                               FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,14,1" />
-                                    <TextBlock Grid.Row="3" Grid.Column="2" Text="0.1"
-                                               FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,14,1" />
-                                    <TextBlock Grid.Row="3" Grid.Column="3" Text="1875"
-                                               FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,14,1" />
-                                    <TextBlock Grid.Row="3" Grid.Column="4" Text="CQ DX EA3QQ JN11"
-                                               FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,0,1" />
-
-                                    <TextBlock Grid.Row="4" Grid.Column="0" Text="142215"
-                                               FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,14,1" />
-                                    <TextBlock Grid.Row="4" Grid.Column="1" Text="-21"
-                                               FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,14,1" />
-                                    <TextBlock Grid.Row="4" Grid.Column="2" Text="0.6"
-                                               FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,14,1" />
-                                    <TextBlock Grid.Row="4" Grid.Column="3" Text="2310"
-                                               FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,14,1" />
-                                    <TextBlock Grid.Row="4" Grid.Column="4" Text="VE7AA N0RR RR73"
-                                               FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,0,1" />
                                 </Grid>
+
+                                <ItemsControl x:Name="DigitalDecodedRows"
+                                              ItemsSource="{Binding DigitalDecodes}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="vm:DigitalDecodeRow">
+                                            <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,*">
+                                                <TextBlock Grid.Column="0" Text="{Binding Utc}"
+                                                           FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,14,1" />
+                                                <TextBlock Grid.Column="1" Text="{Binding Snr}"
+                                                           FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,14,1" />
+                                                <TextBlock Grid.Column="2" Text="{Binding Dt}"
+                                                           FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,14,1" />
+                                                <TextBlock Grid.Column="3" Text="{Binding Hz}"
+                                                           FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,14,1" />
+                                                <TextBlock Grid.Column="4" Text="{Binding Message}"
+                                                           FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,0,1" />
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+
+                                <!-- **THE PANEL'S OWN IDLE LINE, WRITTEN IN
+                                     AUGUST AND KEPT** (HM-DEC-021). An empty
+                                     panel is indistinguishable from a broken
+                                     one, and the tab swaps between this and the
+                                     live table rather than losing either. -->
+                                <TextBlock x:Name="DigitalDecodedIdleLine"
+                                           Text="{Binding DigitalDecodedIdle}"
+                                           IsVisible="{Binding !HasDigitalDecodes}"
+                                           FontSize="11" TextWrapping="Wrap"
+                                           Foreground="{StaticResource HmTextMutedBrush}" />
+                              </StackPanel>
                             </ctl:CollapsiblePanel>
 
                             <ctl:CollapsiblePanel x:Name="DigitalSayingPanel"
