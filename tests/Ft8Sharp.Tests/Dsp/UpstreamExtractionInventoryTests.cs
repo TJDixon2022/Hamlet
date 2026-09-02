@@ -407,16 +407,17 @@ public class UpstreamExtractionInventoryTests
         Assert.Equal(Ft8SyncSearch.DefaultMinimumScore, read[0].Value);
         Assert.Equal(Ft8SyncSearch.DefaultCandidateLimit, read[1].Value);
         Assert.Equal(LdpcDecoder.DefaultMaxIterations, read[2].Value);
+        Assert.Equal(Ft8SlotDecoder.DefaultMessageLimit, read[3].Value);
 
         _output.WriteLine($"  Ft8SyncSearch.DefaultMinimumScore    = {Ft8SyncSearch.DefaultMinimumScore}  MATCHES");
         _output.WriteLine($"  Ft8SyncSearch.DefaultCandidateLimit  = {Ft8SyncSearch.DefaultCandidateLimit}  MATCHES");
         _output.WriteLine($"  LdpcDecoder.DefaultMaxIterations     = {LdpcDecoder.DefaultMaxIterations}  MATCHES");
-        _output.WriteLine("  Three of the four already match upstream and NOTHING WAS TUNED - these are");
-        _output.WriteLine("  the defaults units 214 and 215 shipped, and this is the reading that says");
-        _output.WriteLine("  they are upstream's rather than somebody's preference.");
-        _output.WriteLine("  The fourth, the decoded-message limit, had no counterpart in this library");
-        _output.WriteLine("  because nothing here returned a list of messages until tonight. The whole");
-        _output.WriteLine("  path adds one and Ft8SlotDecoderProvenanceTests binds it to this number.");
+        _output.WriteLine($"  Ft8SlotDecoder.DefaultMessageLimit   = {Ft8SlotDecoder.DefaultMessageLimit}  MATCHES");
+        _output.WriteLine("  ALL FOUR MATCH UPSTREAM AND NOTHING WAS TUNED. The first three are the");
+        _output.WriteLine("  defaults units 214 and 215 shipped, and this is the reading that says they");
+        _output.WriteLine("  are upstream's rather than somebody's preference. The fourth had no");
+        _output.WriteLine("  counterpart in this library until tonight, because nothing here returned a");
+        _output.WriteLine("  list of messages before the whole path existed.");
     }
 
     // ------------------------------------------------------------------------------------------
