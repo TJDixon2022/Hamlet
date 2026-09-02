@@ -128,9 +128,38 @@
 
     AND NOTHING HERE DECODES. No demodulator, no soft symbol, no belief propagation, no message comes
     out the other end. Still not a 1.x. It can speak, and it can now see; it cannot yet hear.
+
+    0.8.0 — IT CAN FIND A TRANSMISSION NOBODY TOLD IT ABOUT.
+
+    Every version up to 0.7.0 had to be handed the answer. The spectrogram in 0.7.0 could show where
+    the energy was, but every tone it ever recovered was looked for at a frequency and a moment the
+    caller chose, which is not hearing. This one adds Ft8SyncSearch and Ft8Candidate: the Costas sync
+    correlation ported from ft8_lib's own ft8_sync_score, and the candidate search across the whole
+    passband, ranked in a deterministic total order. It takes a slot of samples and the extents of
+    the analysis, AND THERE IS NO PARAMETER THROUGH WHICH IT COULD BE TOLD WHERE TO LOOK — a search
+    with a hint cannot be shown not to have used it, so the hint does not exist. A capability the
+    library did not have rather than a correction to one it did, so a minor by the same rule as the
+    seven before it.
+
+    The evidence: 56 of 56 synthesized messages found at rank 1 out of clean slots and 56 of 56 again
+    under noise at a delivered -10.001 dB, at frequencies including one exactly halfway between two
+    bins and at offsets on neither the block nor the sub-block grid; 20 of 20 simultaneous
+    transmissions found across the passband in one search, with the list 22 deep to cover them; and
+    over twenty slots of noise alone the best score was 14 against 31 at a real signal, so no
+    noise-only slot ever produced a candidate as strong as a real one. Still no PackageReference
+    here, for anything.
+
+    WHAT THIS MINOR DOES NOT CLAIM, and it is again the important half.
+
+    NOTHING HERE DEMODULATES. No soft symbol, no log-likelihood ratio, no belief propagation, no CRC
+    check, no message comes out. A CANDIDATE IS A PLACE, NOT A MESSAGE, and a strong sync score is
+    not a decode. It says where to point a decoder that does not exist yet. Still not a 1.x.
+
+    And it has never been shown a real signal off a real antenna. Every measurement above is over
+    audio this library synthesized itself, which has no fading, no drift and no neighbours.
   -->
   <PropertyGroup>
-    <Version>0.7.0</Version>
+    <Version>0.8.0</Version>
   </PropertyGroup>
 
   <!--

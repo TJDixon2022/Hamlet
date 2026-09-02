@@ -1744,3 +1744,222 @@ that is precisely why upstream never met it.
 `0.6.0` → **`0.7.0`** under HM-DEC-152. The library gains a capability it did not have: **it can turn
 audio into a spectrum.** What that does *not* claim — nothing here searches, nothing scores, nothing
 ranks, nothing decodes, and **it still cannot hear a signal it was not told where to find.**
+
+## The search — unit 214
+
+**The library stops being told where to look.** For fourteen units it could speak, and since unit 213
+it could see — but **every tone it had ever found was at a frequency and a moment somebody handed
+it**, which is not hearing. `ToneRecovery` said so in its own remarks: *you are told where to look,
+in frequency and in time, by construction.* Unit 213's report said so in its own words: *nothing
+tonight searched for anything.* This unit is the other half. It is given a slot of samples and the
+extents of the analysis, and it says where the transmissions are.
+
+**And it stops there.** Nothing in this unit demodulates. No soft symbol, no log-likelihood ratio, no
+belief propagation, no CRC, no text. **A candidate is a place, not a message**, and a strong sync
+score is not a decode.
+
+### What was ported, and from where
+
+`src/Ft8Sharp/Dsp/`, from the pin at `9fec6ca39886edbf96f4f5e71edc76da5074e871`:
+
+- **`ft8/decode.c`, `ft8_sync_score`** — the Costas correlation: which cells are read, which
+  neighbours are subtracted from them, in what order, under which guards, and what the total is
+  divided by. This is `Ft8SyncSearch.ScoreAt`.
+- **`ft8/decode.c`, `ftx_find_candidates`** — the sweep: which axes, in which nesting, over which
+  ranges. This is `Ft8SyncSearch.Find`. **Its selection is not ported** — see divergences 19 and 20.
+- **`ft8/decode.h`** — the candidate record and the search's own declaration. This is `Ft8Candidate`.
+- **`ft8/constants.h`** — the sync geometry macros, and the declaration of the Costas array.
+- **`demo/decode_ft8.c`** — the minimum score and the candidate limit. **Note where those live:**
+  they are the *application's* choices and are not in the library at all, which is why they are
+  `Ft8SyncSearch`'s constructor parameters rather than literals in a loop.
+
+**The Costas array itself is not transcribed.** `Ft8SyncSearch` reads `Ft8Tables.Ft8CostasPattern`,
+generated in step 1 by the checked-in converter and proved byte-for-byte against `ft8/constants.c`.
+Re-typing a table whose regeneration proof is load-bearing would have been the worst available way to
+obtain it.
+
+**`ft8/decode.c` was read for the sync score, the sweep and the two heap helpers, and for nothing
+else.** The likelihood extraction in the same file is step 5's and was not read for structure.
+
+### Prior art in this repository that was deliberately NOT used
+
+**`src/Hamlet.RadioEngine/Audio/Ft8Sync.cs` exists and is 289 lines of Hamlet's own Costas sync
+search**, written under work instruction 042, with its own candidate record and its own scoring. **It
+was not ported, not copied, not read for structure, not referenced and not edited.**
+
+The reason is the whole basis of this library's evidence. `Ft8Sharp`'s claim is that it is a faithful
+port of a pinned upstream, and every shape it stands on is asserted against that pin by a checked-in
+test. **A correlator that came from somewhere else in this repository could not make that claim** —
+it would have to be defended on its own merits, by a unit with no reference implementation to hold it
+against. There is a second reason and it is mechanical: `Ft8Sync.cs` lives under
+`src/Hamlet.RadioEngine/`, and a single edit there would put a Hamlet path into this phase's
+attribution filter and break step 4's fifth criterion for this unit and every unit after it.
+
+**What becomes of Hamlet's own copy is step 7's question and not this unit's.**
+
+### What task 2 read, as shapes rather than values
+
+Asserted by `UpstreamSyncSearchInventoryTests`, which skips when the clone is absent:
+
+- **The candidate is a record of five fields** — a score, a block offset and a bin offset held as
+  sixteen-bit integers, and a time sub-offset and a frequency sub-offset held as bytes. **The score
+  is an integer type and not a float**, which is what lets two candidates compare exactly.
+- **The search's own declaration takes four parameters**, two of which are the bounds on the answer:
+  how many candidates to keep, and the score below which to discard one. Both are the caller's.
+- **The scoring reads the stored byte as an integer count and never as decibels.** Upstream's
+  integer accessor macro is the identity on the stored type in the branch that is compiled, so the
+  whole arithmetic is in whole counts of half a decibel.
+- **The sync pattern is three groups of seven symbols, thirty-six symbols apart** — the published
+  protocol geometry, and the correlator's outer two loops.
+- **The score is a sum of up to four guarded neighbour differences per sync symbol**: the expected
+  tone's cell minus the cell one frequency bin lower, minus the cell one bin higher, minus the same
+  tone one symbol earlier, minus the same tone one symbol later. Each term is taken only where its
+  neighbour exists, and **the total is divided by however many were actually taken**, which is what
+  makes a candidate at the edge of the slot comparable with one in the middle. The division is
+  integer and truncates toward zero, which C and C# do identically including for a negative total.
+- **The two boundary rules are not symmetric.** A sync block before the start of the analysis is
+  skipped and the group carries on; a sync block past the end of it abandons the rest of that group.
+  Reproduced as read.
+- **The sweep runs both sub-offset axes, block offsets that begin before the start of the slot, and
+  every frequency offset that still leaves room for the eighth tone.** A transmission that began
+  before the slot was opened is findable; the top seven bins of the passband are never a candidate's
+  base frequency.
+- **The candidates are held in a min-heap ordered on the score and then heapsorted into descending
+  order.** Every comparison in both heap helpers is on the score and on nothing else.
+
+**Three things were named as unread rather than guessed:**
+
+1. **What the reference decoder actually returns for a given slot.** The binary is not built on this
+   machine (`HM-OPEN-065`) and a unit may not build one, so **no candidate list of upstream's was
+   compared against this port's.**
+2. **The exact alignment between a block index and a sample offset.** Unit 213 carried this forward
+   unsettled and reading the search does not settle it — upstream's own block offset is an index and
+   its meaning in samples is never written down. **It was measured instead**; see below.
+3. **Whether upstream's heap order for tied scores is reproducible across compilers.** Not readable
+   from the source, and not needed: this port does not reproduce that order, it replaces it.
+
+### The anchoring split: 6 strong, 6 weak, 2 weakest, 14 shapes read, 3 unread
+
+**Strong — a macro, a typedef or a header declaration, which cannot be misread:** the candidate
+record and its integer score; the search entry point and its four parameters; the integer accessor on
+the stored magnitude; the waterfall's axis order and block stride; the three-groups-of-seven sync
+geometry; the declaration of the seven-tone Costas array.
+
+**Weak — an expression inside a static function body, and the port is only as good as the reading:**
+the four neighbour terms and their guards; the skip-before/break-past asymmetry; the integer division
+by the terms actually taken; the block offset range; the frequency offset bound; the min-heap and the
+heapsort.
+
+**Weakest, and they are called out by name because they are the two numbers that bound the answer:**
+**the minimum score and the candidate limit are not in the library at all.** They are file-scope
+constants in the demo application, which was asserted rather than assumed — a search of `ft8/` finds
+neither name anywhere. They are therefore one application's judgement about how much sensitivity to
+trade for how much work, and **this port exposes both as constructor parameters** with the demo's
+values as defaults, so a caller that wants a different sensitivity does not have to fork the search.
+
+### The ranking, which is the finding this unit turns on
+
+**Upstream's returned order is not a total order.** Its heap comparisons are on the score alone,
+heapsort is not stable, and the score is a small integer over tens of thousands of hypotheses — this
+port measured **2976 adjacent tied pairs in a list of 3000** on a single clean signal. So where two
+candidates share a score, upstream's order is whatever its heap's swaps happened to leave: fixed for
+one build over one input, and not a function of the input.
+
+**Step 4's third exit criterion is that the ranking is stable across runs, and step 5 will consume
+this list in order.** A ranking the caller cannot reproduce is not a ranking. So `Ft8Candidate`
+compares on the score descending and then, where the scores tie, **through every remaining field in a
+stated sequence: block offset, then time sub-offset, then bin offset, then frequency sub-offset, all
+ascending.** Because no two distinct hypotheses share all four position fields, **no two distinct
+candidates ever compare equal**, and the order is therefore a function of the input and of nothing
+else. Nothing about that particular sequence is claimed to be better than another; what is claimed is
+that it is fixed, that it exhausts every field, and that it leaves no pair undecided.
+
+That was measured rather than intended: the whole hypothesis space was re-enumerated in reversed
+order and in a seeded shuffle, scored through the same primitive and sorted by the same order, and
+the answer was the search's own element for element, on a single-signal slot and on a twenty-signal
+one. **Two runs of the same code over the same data agree even when the sort is unstable, because
+the generation order is the same both times.** That comparison is the one that does not let it
+through.
+
+### The block-to-sample alignment, measured because it could not be read
+
+**This library's own number, not verified against upstream's**, and unit 213 carried it forward as
+unsettled.
+
+Over 56 messages at three fractions of a bin and five slot offsets, the **mean signed time error is
++0.158936 s, which is 0.993 blocks** — a constant one-block bias and not a spread. A candidate's
+block offset `b` names a transmission that began at about `(b - 1)` blocks into the slot. The
+residual about that constant is at worst 0.0156 s, well inside half a block.
+
+The arithmetic that predicts it is the analysis window's: the transform for block `b` at time
+sub-offset `t` ends at sample `b·block + (t+1)·subblock` and is one transform long, so its centre
+sits half a transform earlier — and setting that equal to the centre of the first symbol of a
+transmission at sample offset `d` gives `(b + t/2)·block = d + block`, one whole block of lead.
+
+**It is reported and not chased.** Nothing here corrects for it, because a correction would be a
+guess about what upstream's own block index means in samples, and that is exactly the thing task 2
+named as unread. **Step 5 is what will use it**, and it will use it against a decode that either
+works or does not, which is a better test of the alignment than anything this unit could run.
+
+### What tonight's evidence is, and what it explicitly does not show
+
+**Three legs, and every claim below stands on a named one.**
+
+1. **Provenance against the pin.** The scoring arithmetic, the search ranges, the sync geometry, the
+   candidate record, the minimum score and the candidate limit are read out of upstream's source by
+   machine and asserted by two checked-in test classes, with the strong/weak/weakest split above.
+2. **Construction.** The signals searched for are ones *this library synthesized*, at frequencies and
+   offsets *the test chose and the search was not told*. **The search was given the samples and the
+   geometry and nothing else.** There is no parameter on `Find` through which a frequency, a time or
+   an alignment could have been passed, and that is asserted by reflection over the signature rather
+   than left to inspection. `ToneRecovery.AlignmentFor` — the helper that computes the truth from a
+   known offset — appears in none of the search's test files.
+3. **Refusal.** Over twenty slots of noise alone at about −10 dB, the best score the search ever
+   produced was 14, against 31 at a true signal's position at the same noise level. **No noise-only
+   slot produced any candidate as strong as the real one.** Across the whole sensitivity sweep the
+   noise-alone top score stayed between 11 and 13 while the true score fell from 32 to 10 — the
+   false-alarm floor does not move, which is what makes the separation readable.
+
+**What none of them shows:**
+
+- **That this finds a real station off a real antenna.** Every signal here was synthesized by this
+  library, and a synthetic signal has no fading, no drift, no birdies, no carrier and no adjacent
+  splatter.
+- **That anything decodes.** Nothing tonight demodulates. A candidate is a place.
+- **That this port agrees with upstream's own candidate list.** It never ran: the reference decoder
+  is not built on this machine and a unit may not build one (`HM-OPEN-065`). The agreement asserted
+  is with upstream's *source*, read by machine, and not with its *output*.
+- **Anything about the published sensitivity threshold.** That figure is about decodes and error
+  correction stands between a found signal and a decoded one. Step 6's question, not this unit's.
+
+### Divergences from upstream
+
+**Two added, numbered on from eighteen. Both are about the ranking and neither is about the score.**
+
+**19 — the candidate ordering is a total order with an explicit tie-break, where upstream's compares
+the score and nothing else.** Reasoned in full above. Upstream's heap comparisons are on `score`
+alone and its heapsort is not stable, so tied candidates come back in an order decided by the
+accident of the heap's swaps rather than by the input. This port continues past the score through the
+block offset, the time sub-offset, the bin offset and the frequency sub-offset, all ascending, which
+leaves no two distinct candidates undecided. **The reason is step 4's third criterion and step 5's
+consumption of this list in order**: a ranking the caller cannot reproduce is not a ranking. The set
+of scores returned is upstream's; which of several equally scored candidates survives the cut, and in
+what order, is this library's and is defined.
+
+**20 — every hypothesis is scored and the survivors are sorted, where upstream keeps a bounded
+min-heap as it sweeps.** This follows from 19 and is recorded separately because it is a different
+observable: upstream's eviction rule discards the current worst only for a *strictly* greater score,
+so which of several tied candidates is standing at the cut when the sweep ends depends on the order
+the sweep visited them in. Scoring everything and sorting afterwards has no such dependence, and it
+is what makes 19 testable — the same list comes back when the hypotheses are generated in reversed
+or shuffled order. **The cost is bounded and was measured:** the whole space is 53 040 hypotheses at
+12 kHz, scored in 10 to 12 ms, so nothing was traded for it. Note what does *not* change: the
+minimum score is applied before anything is kept, so **no candidate below it is ever returned at any
+rank or any limit**, and shortening the list truncates it rather than reordering it.
+
+### The library's version
+
+`0.7.0` → **`0.8.0`** under HM-DEC-152. The library gains a capability it did not have: **it can find
+a transmission nobody told it about.** What that does *not* claim — **nothing here demodulates**, no
+soft symbol, no log-likelihood ratio, no belief propagation, no CRC check, no message comes out, and
+**a candidate is not a decode.** It says where to point a decoder that does not exist yet.
