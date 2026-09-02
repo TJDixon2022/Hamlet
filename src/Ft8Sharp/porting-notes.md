@@ -3421,3 +3421,30 @@ pair that is live. Goba chose the **lowest-order** approximation, and its error 
 that decides bits. **This port reproduces the live one, constant for constant, and that is correct
 under the ruling in force.** Whether this library may use a more accurate hyperbolic than the code it
 was ported from is a divergence question and it is the owner's.
+
+### The fix — and there is none, which is the expected outcome in world two
+
+**A fix was licensed tonight under two conditions fixed in writing before the run, and both had to
+hold. Both fail.**
+
+1. **Task 4 had to name a place where this port's arithmetic differs from the pinned source.** It
+   named one term of fourteen, and that term is **divergence 21** — already recorded, already
+   deliberate, and the port's side of it is the *only* defensible one, because C's untouched output
+   buffer is undefined content and there is no faithful port of undefined content.
+2. **Task 3 had to attribute decodes at -21 dB to that stage.** It attributes **none**, to that stage
+   or to any other. The budget is flat, and divergence 21 cannot cost a decode by construction: it
+   applies only when the loop body never runs at all.
+
+**So nothing under `src/Ft8Sharp/` changed except this file, and that is said plainly rather than
+apologised for.** The instruction names this as the expected outcome in world two and it is not a
+failure.
+
+**The prohibition that makes the night honest, and what it refused.** Three numbers in this receive
+path were measured tonight to be costing something, or could be argued to: upstream's byte-quantised
+waterfall, its 25-iteration bound, and its lowest-order `fast_tanh`. **Not one of them moved.** A
+number upstream chose stays where upstream put it even where a substitution measures that it costs
+decodes; that is a divergence question and it belongs to the owner. In this unit's case the
+measurements make the refusal easy rather than costly — the byte is worth nothing and the iteration
+bound is worth two decodes in 306.
+
+**Divergences from upstream: none added, and none was expected. The count stands at twenty-five.**
