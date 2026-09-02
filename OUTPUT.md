@@ -32,7 +32,7 @@ themselves through the whole path — the 5 that did not are the hashed-callsign
 own decoder refuses the same 77 bits — with 288 of 288 across the offset sweep and 0 wrong messages
 anywhere. The measured ratio variance is 24.0000 after normalisation from inputs whose variances were
 0.0595, 0.9523, 22.8555, 380.9222 and 9523.05, against the figure 24 read out of the pin in task 2.
-Section 4 raises 3 items and ONE OF THEM IS IN THE WAY OF A CRITERION IN B — the shortfall on
+Section 4 raises 2 items and ONE OF THEM IS IN THE WAY OF A CRITERION IN B — the shortfall on
 criterion 3 and what would settle its cause. Task 7 was NOT dropped, though the branch that licenses
 it applied: task 5 produced a real comparison on rung 1, and it was run anyway because a synthetic
 twenty is the one instrument that separates overlap from real-world impairment.
@@ -57,13 +57,13 @@ DRIFT:      1 consecutive unit without advance  (was 0)
 claimed and confirmed as Hamlet by all four gate checks — `SHACK_FACTS.md` and
 `src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs` both tracked, `Hamlet.sln` the only solution,
 `CoreHMI.sln` and `MURC.sln` both absent. Branch `main`. Every task was committed before the next
-began; eight commits, `897183b` to `29e82cf`.
+began; nine commits, `897183b` to `7281fb0`, all of them on `origin/main`.
 
-**THE LAST PUSH WAS REFUSED BY THE REMOTE AND THE REFUSAL IS REPORTED RATHER THAN WORKED AROUND.**
-The first seven commits were pushed and accepted. Task 8's commit was refused twice with
-`! [remote rejected] main -> main (Internal Server Error)` — a server-side fault at GitHub, not a
-rejection of the content. Nothing was rebased, force-pushed or otherwise coerced. `main` is one
-commit ahead of `origin/main` and the eighth commit is on disk.
+**One push was refused and the refusal is reported rather than glossed.** Task 8's commit was refused
+twice with `! [remote rejected] main -> main (Internal Server Error)` — a server-side fault at
+GitHub, not a rejection of the content. Nothing was rebased, force-pushed or otherwise coerced; the
+next push, with the report's commit on top, was accepted and carried both. **The tree and the remote
+agree.**
 
 ### What was traced, built and measured
 
@@ -528,14 +528,14 @@ and 535, in order, with the exact names the script's `WANT` string holds, and no
 deeper are ignored by the script's own stated reading. **Rule 4** — `## 4. What's blocking us` is
 present, with a straight ASCII apostrophe, which is what its `findstr /b /c:` needs. **Rule 5** —
 section 3 runs from line 170 to line 534 and is very far from empty. **Rule 6** — `READ IN THIS ORDER`
-at line 1, `A.` at line 3, `B.` at line 12, `C.` at line 28, and *Section 4 raises 3 items* at line
+at line 1, `A.` at line 3, `B.` at line 12, `C.` at line 28, and *Section 4 raises 2 items* at line
 35: all five inside the first 60 lines, all above the `UNIT:` line, each of `A.`, `B.` and `C.`
 beginning its line with no indentation, and **the count in `C` written as a digit.**
 
 ## 4. What's blocking us
 
-**Three items. One is in the way of a criterion in B; the other two are carried forward, and none is
-a ruling request.**
+**Two items. One is in the way of a criterion in B; the other is carried forward, and neither is a
+ruling request.**
 
 **1. Criterion 3 is partial at 760 of 1298, and the cause is narrowed but not settled.** This is the
 one in the way. What is known: the search is not where the misses die — **509 of the 531 misses had a
@@ -557,7 +557,8 @@ wrote them. They are treated as upstream's claim about its own recordings, which
 asks for, and **not** as ground truth about what was transmitted. **This is why the 23 messages
 returned that are not on any list are reported as extras but are not proven to be false decodes.**
 
-**3. The push of task 8's commit was refused by the remote, twice, with an Internal Server Error.**
-The first seven commits are on `origin/main`. The eighth — `29e82cf`, the porting notes, both version
-bumps and the final status — is local only. It was not worked around. `git push` on `main` should
-land it when GitHub recovers.
+**Not carried here, and said so rather than left out.** Task 8's commit was refused twice by GitHub
+with an Internal Server Error; the next push carried it and the report's commit together and was
+accepted, so nothing is outstanding and it is recorded in section 1 rather than as a blocker. And the
+validator refusal, sixth unit running, is a report about the harness rather than about the work: the
+six rules were checked by hand and all six pass, so it blocks nothing here — it is section 3's.
