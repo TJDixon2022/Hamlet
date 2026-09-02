@@ -2632,3 +2632,172 @@ had never been written down; recording it is the change, not the behaviour.**
 `0.10.0` → **`0.10.1`** under HM-DEC-152. **Tonight is measurement only.** No library file changed, so
 the library gains evidence rather than a capability — which is unit 211's arbiter's precedent for a
 patch rather than a minor.
+
+---
+
+## How deaf this receiver is, in decibels — unit 218
+
+**Nothing in this section is a port.** No upstream file was read for it and no library file changed.
+It is a **measurement of this library against a physical standard** rather than against `ft8_lib` or
+against itself, and it exists because criterion 3 had stood at 760 of 1298 for three units with the
+question underneath it unanswered: *is this receiver deaf, or are those lists simply beyond it?*
+
+### Why calibrated noise, and why it is a third oracle
+
+Every receive-side measurement this phase had taken compared this library to upstream or to itself.
+The pinned decoder cannot be run here — `HM-OPEN-065` — and comparing the port to itself is what units
+216 and 217 did thoroughly. **A signal at a known ratio in a known bandwidth answers to nobody.** The
+instrument already existed in the test project: `SignalToNoise`, `GaussianNoise` and `SearchFixture`,
+built by unit 214 and used by unit 216. **Nothing was added to it and no second convention was
+written.**
+
+### The convention, stated so the number means something
+
+```
+SNR(dB) = 10 log10( signal power / noise power in a 2500 Hz reference bandwidth )
+sigma   = sqrt( signalPower * (12000/2) / (2500 * 10^(snr/10)) )
+```
+
+The reference bandwidth is the amateur weak-signal convention the published FT8 figure is quoted
+against; the sampled band is 6000 Hz one-sided, so the noise inside the reference bandwidth is
+`sigma^2 * 0.41667` of the total. **The signal power is measured from the samples that will be
+transmitted** — 0.499008 for the reference message, close to but not exactly the 0.5 of a bare sine,
+because the FT8 waveform carries raised-cosine ramps at its two ends.
+
+**Requested equals delivered over one slot's draw**, which is the draw every trial actually gets:
+twenty points across all ten rungs at both seeds, **worst error 0.0211 dB, mean 0.0097**, printed
+before the 0.05 dB bound was asserted. **Every ladder in this unit is binned by the delivered ratio
+and never by the requested one.**
+
+### The floor, and it is the assertion the rest stands on
+
+**Eighteen slots of pure noise with no signal in them at all**, at the amplitudes the top, middle and
+bottom of the ladder deliver, six seeds each: **183 candidates found, 0 reached parity, 0 became
+text, 0 messages returned.** Candidates and no text is the path behaving correctly — the search is
+permissive by design and the parity and CRC gates are what refuse. **A path that manufactured
+messages out of noise would make every rung above it meaningless**, and would violate HM-DEC-009
+outright.
+
+One fact nobody had written down fell out of it: **the candidate counts are identical at all three
+amplitudes for the same seed** — 14, 7, 13, 10, 9, 8 at -10, at -18 and at -26 alike. **The search is
+scale-invariant**, which is the waterfall's normalisation doing its job.
+
+### What this library's measured sensitivity is
+
+**Aligned, on a bin centre, alone in the passband, 26 corpus messages, 2 seeds, 520 slot decodes:**
+
+| requested | delivered | offered | returned | rate % | WRONG | cand | par | crc | txt |
+|---|---|---|---|---|---|---|---|---|---|
+| -10.0 | -9.999 | 52 | 52 | 100.0 | 0 | 18.2 | 1.6 | 1.6 | 1.6 |
+| -12.0 | -12.001 | 52 | 52 | 100.0 | 0 | 17.5 | 1.2 | 1.2 | 1.2 |
+| -14.0 | -14.001 | 52 | 52 | 100.0 | 0 | 16.0 | 1.0 | 1.0 | 1.0 |
+| -16.0 | -16.000 | 52 | 52 | 100.0 | 0 | 14.4 | 1.0 | 1.0 | 1.0 |
+| -18.0 | -17.998 | 52 | 52 | 100.0 | 0 | 13.6 | 1.0 | 1.0 | 1.0 |
+| -20.0 | -19.998 | 52 | 13 | 25.0 | 0 | 11.9 | 0.2 | 0.2 | 0.2 |
+| -21.0 | -20.998 | 52 | 2 | 3.8 | 0 | 12.5 | 0.0 | 0.0 | 0.0 |
+| -22.0 | -22.000 | 52 | 0 | 0.0 | 0 | 13.3 | 0.0 | 0.0 | 0.0 |
+| -24.0 | -23.998 | 52 | 0 | 0.0 | 0 | 12.4 | 0.0 | 0.0 | 0.0 |
+| -26.0 | -25.999 | 52 | 0 | 0.0 | 0 | 11.4 | 0.0 | 0.0 | 0.0 |
+| *noise only, no signal* | — | 0 | 0 | — | 0 | 10.2 | 0.0 | 0.0 | 0.0 |
+
+**This path returns every message down to -18.0 dB and stops between -18.0 and -21.0 dB. The 50 per
+cent crossing sits near -19 dB. Zero wrong messages in 520 trials.**
+
+**The collapse is not the search, and the stage columns say so without a second run.** Candidates per
+slot barely move across the whole ladder while parity falls from 1.0 to 0.2 to 0.0 between -18 and
+-21. At -21, where the rate is 0.0 per cent, **99 of 102 trials still had a kept candidate within four
+hertz of where the fixture put the signal**, and the mean hard-decision agreement at that candidate is
+**140.4 of 174 — thirty-four bit errors**, against a code whose recovery unit 215 measured **reaching
+zero at seventeen**. **The signal is found and the ratios are too damaged to correct.** That is what a
+channel does, not what a defect does.
+
+### What the fixture's idealisations cost, each on its own
+
+| rung | aligned | off the block grid | off the frequency bin | twenty sharing the slot |
+|---|---|---|---|---|
+| -16.0 | 100.0 | 100.0 | 100.0 | 100.0 |
+| -18.0 | 100.0 | 94.2 | 86.5 | 93.3 |
+| -20.0 | 25.0 | 19.2 | 11.5 | 10.0 |
+| -21.0 | 3.8 | 0.0 | 0.0 | 0.0 |
+
+**Every impairment costs well under one rung**, and **twenty simultaneous transmissions at 137
+candidates per slot returned not one message nobody sent, at any rung, down to -26 dB.** The
+frequency impairment is harsher than it reads: the transform bin is **3.1250 Hz**, not the 6.25 Hz
+tone spacing, because the geometry oversamples frequency by two — so a half bin is 1.5625 Hz and is
+genuinely equidistant from two bins.
+
+**Drift is named and not tested.** A drifting transmitter needs a synthesizer that can make one, and
+step 3's proven encoder cannot. Building one would have been new DSP nobody has bounded.
+
+### The number unit 217's histogram had been missing
+
+Hard-decision agreement against the ratio, measured **before error correction is asked to do
+anything**, which is exactly where unit 217 measured it:
+
+| delivered | trials | no candidate | mean agreement |
+|---|---|---|---|
+| -9.999 | 52 | 0 | 174.0 |
+| -12.001 | 52 | 0 | 173.9 |
+| -14.001 | 52 | 0 | 173.7 |
+| -16.000 | 52 | 0 | 171.3 |
+| -17.998 | 52 | 0 | 164.1 |
+| -19.998 | 51 | 1 | 148.5 |
+| -20.998 | 50 | 2 | 139.9 |
+| -22.000 | 45 | 7 | 135.6 |
+| -23.998 | 21 | 31 | 120.8 |
+| -25.999 | 4 | 48 | 93.5 |
+
+**Unit 217's three on-air numbers read off that curve:** matched at 167.7 → **about -17.0 dB**; missed
+at 122.8 → **about -23.7 dB**; chance at 84.8 → **below -26 dB, off the bottom of this ladder.**
+
+### What this measured sensitivity is NOT evidence about
+
+Stated as plainly as unit 212 stated its single-precision finding, because a number this quotable
+will be quoted:
+
+- **It is not a step 6 result and step 6 is not begun.** Step 6 still requires a curve **generated
+  across a range of SNR and shown to be reproducible**; a decode rate at -21 dB compared against the
+  published figure **as a verdict**; and **degradation below the threshold recorded as a criterion**.
+  This is one session's diagnostic ladder and it claims none of the three.
+- **It is not a comparison with `ft8_lib`.** Nothing was held against `decode_ft8` running. That
+  binary is still not built here.
+- **It is not a comparison with the published FT8 threshold.** The figure near -21 dB is named here
+  only as **the standard step 6 will judge against**. That this ladder's 50 per cent crossing sits
+  near -19 is stated as a fact about this tree and **is not claimed as a verdict**.
+- **It is not a measurement of real air.** The signals are aligned, or deliberately misaligned by a
+  known amount, alone or crowded by twenty of this library's own transmissions, and free of fading,
+  drift, propagation and an antenna. **It says what this path does with additive white Gaussian noise
+  and nothing more.**
+- **It does not calibrate the expected lists' own SNR column.** That column is a third party's
+  estimate under a convention this project did not choose — and unit 216 proved the lists were not
+  even the pinned decoder's output. **The two dB scales are not proven to be the same scale**, they
+  are compared as ordinal, and no conclusion that depends on their being identical is available.
+
+### What the join found, and it does not agree with the ladder
+
+The 1298 expected lines split by **their own** SNR column and joined to matched-or-missed for the
+first time. **The rate is nearly flat:** 85.7 per cent in the +18 dB bin to 53.5 per cent in the
+-24 dB bin over the 1157 lines the list did not lose to a hash — **about thirty points across
+forty-five decibels**, which is not the shape a sensitivity limit makes.
+
+**And the reading that needs no calibration at all: 78 matchable expected lines at 0 dB or better were
+missed, two of them at +19 dB, and 169 at -5 dB or better.** They are **not random** — 58 distinct
+texts, 13 of them missed in more than one recording, `9A9A` at 2046 Hz missed in four files at +17 and
++19. **75 of the 78 had a kept candidate within four hertz**, 96.2 per cent against unit 216's 95.9
+per cent over all the misses, so **they die exactly where the weak ones die.**
+
+**So the two halves of the night disagree, and that is the honest result.** The agreement calibration
+says the on-air misses look like signals near -24 dB, well below where this path stops answering. The
+lists' own column says a good many of them are strong. **One of those two readings is wrong and this
+unit cannot say which**, because settling it needs either `decode_ft8.exe` or a reason to trust the
+column. Recorded as `HM-OPEN-066`.
+
+### Divergences from upstream
+
+**None added, and none was expected.** Nothing was ported tonight and no library file changed. The
+count stands at **twenty-five**.
+
+### The library's version
+
+`0.10.1` → **`0.10.2`** under HM-DEC-152. **Tonight is measurement only.** No library file changed, so
+the library gains evidence rather than a capability — unit 211's precedent and unit 217's.

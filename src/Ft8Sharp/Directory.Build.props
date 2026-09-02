@@ -228,9 +228,22 @@
     DID NOT DO YESTERDAY and returns exactly what it returned yesterday — 760 of 1298 — so it gains
     no capability an operator could see and takes a patch rather than a minor. Unit 211's arbiter set
     that precedent.
+
+    0.10.2 IS A PATCH FOR THE SAME REASON, AND UNIT 218 WAS MEASUREMENT ONLY TOO. Not one library
+    file changed. What it adds is the one thing this library had never had: A SENSITIVITY, IN
+    DECIBELS, MEASURED AGAINST CALIBRATED NOISE RATHER THAN AGAINST ft8_lib OR AGAINST ITSELF. The
+    whole path returns every message down to -18.0 dB and stops between -18.0 and -21.0, with the
+    50 per cent crossing near -19; 0 wrong messages in 520 trials; and 0 messages out of eighteen
+    slots of pure noise. It returns exactly what it returned yesterday against the sixty recordings
+    — 760 of 1298 — so it gains no capability an operator could see.
+
+    AND THE LINE THAT MATTERS MOST HERE. That -19 IS NOT A STEP 6 RESULT and must not be quoted as
+    one. Step 6 still wants a reproducible curve, a comparison with the published figure AS A
+    VERDICT, and graceful degradation as a criterion. Unit 218 took a diagnostic ladder in one
+    session and claimed none of the three.
   -->
   <PropertyGroup>
-    <Version>0.10.1</Version>
+    <Version>0.10.2</Version>
   </PropertyGroup>
 
   <!--

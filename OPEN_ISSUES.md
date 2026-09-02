@@ -4,6 +4,87 @@ Questions with owner and severity. `owner` is who must act next. Format in
 `CLAUDE.md` §3.
 
 ---
+id: HM-OPEN-066
+status: open
+owner: claude
+raised: 2026-09-02
+severity: slows
+blocks: step 5 criterion 3, which is must-pass where the clone is present and is partial at 760 of 1298
+refs: PHASE_PLAN.md step 5 criterion 3, units 216, 217, 218
+---
+
+**Step 5's criterion 3 is partial and its residue has been carried in three
+reports without living in any file.** Recorded here by name under the plan's
+ruling that **recorded is not dropped**, with an id so the next unit inherits a
+number rather than a paragraph.
+
+**What the number is.** `ft8_lib`'s sixty reference recordings carry **1298
+expected decode lines**. This library returns **760** of them, **58.6 per cent**,
+with **538 missed** and **23 returned that are on no list**. Unit 216 measured
+it, unit 217 reproduced it column for column, and unit 218 reproduced it a third
+time and then a fourth through the SNR join. **The count has not moved in three
+units and no measurement taken so far offers a way to move it.**
+
+**What the buckets are.** Unit 217 gave every one of the 538 a name and they sum
+exactly: **69** never had a candidate, **380** were transmissions the code could
+not recover, **82** were recovered and validated and then refused by this
+library's own message layer because the callsign was an unresolved hash, and
+**7** are repeats inside upstream's own lists. Separately, **141 of the 1298
+lines print `<...>` because the list's own writer lost the callsign**, so no
+receiver can ever match them and the representable ceiling is **1157**, making
+760 also **65.7 per cent** of what is reachable. **Both readings are given and
+neither stands alone.**
+
+**What unit 218's ladder measured.** Against calibrated noise, on signals this
+library synthesizes itself, the whole path returns **every message down to
+-18.0 dB** and stops between **-18.0 and -21.0** — 100 per cent at -10, -12,
+-14, -16 and -18; **25.0 per cent at -20.0**; **3.8 per cent at -21.0**; and
+**0.0 at -22 and below**, with **0 wrong messages in 520 trials** and **0
+messages out of 18 slots of pure noise**. The 50 per cent crossing sits near
+**-19 dB**. Off-grid timing, off-bin frequency and twenty transmissions sharing
+the slot each cost **well under one rung**.
+
+**Which of the three named outcomes applied, and it is not a clean one.** The
+arbiter fixed three readings before the run. **Outcome 2 — the receiver is deaf
+and the port has a defect — is ruled out**: a decoder returning everything at
+-18 dB is not deaf. **Outcome 3's three tested impairments are ruled out** at
+about a decibel each. **Outcome 1 is supported by one measurement and
+contradicted by another**, and that is the state of the question:
+
+- *supporting it* — unit 217's on-air miss mean of **122.8 of 174** hard
+  decisions reads **about -23.7 dB** on unit 218's own measured agreement curve,
+  three to five decibels below where this path stops answering;
+- *contradicting it* — the decode rate against the lists' **own SNR column is
+  nearly flat**, 85.7 per cent in the +18 dB bin to 53.5 per cent in the -24 dB
+  bin over the 1157 representable lines, and **78 matchable expected lines at
+  0 dB or better were missed, two of them at +19 dB**, with **169** at -5 dB or
+  better.
+
+**What it would take to close it, in the order the evidence points.**
+
+1. **The 78.** They are not random: **58 distinct texts, 13 of them missed in
+   more than one recording**, covering 33 lines — `9A9A` at **2046 Hz** missed in
+   four files at +17 and +19 dB, `SP9LKP` at 2378 Hz in four, `R7NO` at 1087 Hz
+   in three. **75 of the 78 had a kept candidate within 4 Hz**, 96.2 per cent
+   against unit 216's 95.9 per cent over all the misses, so they die exactly
+   where the weak ones die. A signal a third party calls +19 dB that is found and
+   not recovered is a defect with an address, and it is the cheapest thing left.
+2. **The 82 placeholder messages.** Reserved to the owner under `CLAUDE.md`
+   §12.1 and in front of him from unit 217. **Not this issue's to decide.**
+3. **`decode_ft8.exe`.** `HM-OPEN-065`. It would say whether the pin itself
+   returns these lines, which is the one thing that would settle whether the
+   benchmark is beyond the code this library was ported from.
+4. **The 2 dB.** This path's 50 per cent crossing is near -19 dB against a
+   published FT8 figure near -21. **That comparison is step 6's to make as a
+   verdict and unit 218 did not make it** — but if it holds under step 6's own
+   measurement it is worth about two rungs of weak signals.
+
+**What is NOT wanted.** Tuning. Unit 216 was offered a candidate-limit sweep and
+refused it; unit 217 measured two fixes and built neither; unit 218 licensed a
+fix under four conditions and none was met. **A fidelity fix restoring what the
+pin does, or nothing.**
+
+---
 id: HM-OPEN-065
 status: open
 owner: tim
