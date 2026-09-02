@@ -1,3 +1,6 @@
+# Work instruction 224 - the Digital tab stops being a picture of an FT8 session and becomes one
+
+```
 STOP. Verify the project before reading any further.
 
 PROJECT: Hamlet
@@ -12,279 +15,208 @@ If all four are not as stated, you are in the wrong repository.
 REFUSE. Do not read the rest of this file, do not summarise it, do not
 adapt it to whatever project you are actually in, and change nothing.
 Reply with only: the path you are in, which checks failed, and
-"wrong project — nothing done."
+"wrong project - nothing done."
 
 If all four hold, say "Hamlet confirmed" and continue.
+```
+
+The four are carried forward unchanged per `ARBITER.md` section 7.
 
 ---
 
-# Work instruction 056 — the split, the bound, and why letters instead of words
+# THIS IS A SEED INSTRUCTION
 
-**ISSUED: 2026-08-31. A fresh order, not an amendment. Follows unit 055, and
-tasks 3, 4, 6 and 7 of that order return here as Tim directed.**
+**Written by the web session. The launcher was given `--seed`, so iteration 1
+executes this file as written and the arbiter authors every unit after it.**
 
-**Six tasks; task 6 is the drop.**
+**The arbiter continues after this unit.** Step 7 is unlikely to close in one
+unit and is not expected to. What this unit must do is put **real decoded text on
+the Digital tab** and leave the next unit a clean entry. Step 6 is also open and
+independent; the arbiter may take either.
 
-## Two rulings arrived with this order. Record both.
+Read `PHASE_PLAN.md` before this file.
 
-> **HM-DEC (for Tim to enter): the corpus precision floor is redefined.** The
-> average floor may move only when **every individual lock holds** — the
-> clean-read locks, the adjudicated anchors, and both silence locks. An average
-> can never again be traded against a collapsed easy read, because the easy reads
-> are individually locked. **Unit 055's 0.889 against the prior 0.894 is accepted
-> under this rule and is the worked example**: yield rose 0.750 → 0.872 while
-> every individual lock stayed green.
->
-> Rejected: reverting — it returns `003229` to a wall of blocks and `002443` to
-> 48 `E`s from noise. Rejected: treating the average floor as inviolable on its
-> own — its purpose was always carried by the per-capture locks.
+---
 
-> **HM-DEC (for Tim to enter): `CwProbabilisticDecoder.FastestWpm` is lowered
-> from 40 to 30, provisionally.** The ceiling **rises again the day a capture
-> shows something faster worth reading** — record that condition with the value.
-> The hold-over's safety bound rises from 30 ms to 40 ms with it, reaching the
-> lower half of the measured 32–53 ms dropouts.
->
-> Rejected: keeping 40 — nothing in the corpus, the bulletins, or any capture the
-> operator has sent runs above about 28 WPM, and the bound was sitting just under
-> the fault it was built for.
+# Why this unit exists
 
-**The corpus floor for this unit is therefore precision 0.889, plus every
-individual lock.** A change that drops any single lock is reverted regardless of
-what it does to the average.
+**The Digital tab is finished-looking and entirely fake.** Work instruction 037
+built it that way on purpose and the markup says so in its own words:
 
-## Where the tree is
+> Nothing here decodes, nothing moves, nothing is wired. It exists so the
+> operator can look at a finished-looking FT8 session and say what is wrong with
+> it before there is a decoder to argue with.
 
-From unit 055's report, to be verified against the tree, which governs:
+There is a decoder to argue with now. Steps 1 to 5 are closed: the library packs
+a callsign into 77 bits, produces tones bit-identical to upstream's for 51 of 51
+messages, finds 56 of 56 signals at rank 1 including in noise, and turns a found
+signal into a message without inventing any - **0 wrong messages in 18 000
+trials, 0 of 5096 bad-CRC codewords returned.**
 
-- **Precision 0.889, yield 0.872, substitutions 20.** Baseline for every task.
-- Swing admission shipped: threshold **15 dB**, bounded by measurement — silence
-  0.0, band noise 11.9, weakest station 17.2, the CQ 21.5. **The peak keeps the
-  pitch; swing keeps the verdict** — that division is written into the code after
-  a catastrophic regression (0.894 → 0.470) was caught inside the unit.
-- **`003229` shows 57 named characters at 587.5 Hz where it showed 43 blocks —
-  and it is not `CQ`.** The admission half is fixed; the reading half is not.
-- `002443` emits nothing. The silence set is silent. `013347` recovered 9 → 37
-  named, 84% → 36% blocks.
-- The negative counters are fixed; `Over` refuses a window whose counters went
-  backwards, and the trail drops on retune.
-- The nine captures of 2026-08-31 are in the tree as read-only fixtures.
-- Locks: `TheSilencePropertyIsLockedTests` 6, `TheCleanReadsStayCleanTests` 7,
-  `TheAdjudicatedReadingsKeepReadingTests` 13, `AStationIsABinThatSwingsTests`
-  10, `TheSheetDoesNotLieAboutArithmeticTests` 6 — all green.
-
-**Record both suites and the corpus score before task 2.**
-
-## The reference reading, for task 4
-
-An independent decoder sharing no code with Hamlet, run on `003229` at 583.5 Hz
-with a 25 ms integrator and a threshold at the envelope's 98th percentile minus
-6 dB, read:
+**Tonight the tab stops lying.**
 
 ```
-CQ SITKTZDZ TIQTITK#TTE K
+  PHASE GOAL:   Hamlet hears FT8 off the radio and displays the decoded text
+                on screen.
+  STEP:         7 of 7 - Hamlet displays decoded FT8.
+  UNIT GOAL:    Real decodes reach the Digital tab's decoded table, and every
+                hardcoded row is gone.
+  ADVANCES:     step 7. This unit is not required to close it.
 ```
 
-with dah CV **0.05** — and at minus 8 dB, `COSITKTZDD DQIITK#TN KA`. **`CQ` and
-the closing `K` are stable across settings.** Hamlet, at the same station, now
-reads `E`-heavy fragments. **Same audio, same pitch, one reads the call and one
-does not — the difference is in the element extraction, and it is findable.**
+**The owner wants to be at the radio tomorrow morning with this working.** That
+is the shape of the night: a working path first, polish second.
 
-## Rulings in force
+---
 
-**Transcribed with what was rejected. Do not re-argue either.**
+# What already exists - do not rebuild any of it
 
-**Tim's rulings**, beyond the two above:
+Read by the web session from a harvest taken 2026-09-02. **Verify each against
+the tree and report any mismatch.**
 
-> **Two streams may be a conversation or two people who cannot hear each other.
-> Do not assume.** Separate and label by pitch only.
+**Capture is real.** `MainWindowViewModel.CaptureDigital` at about line 6256
+takes `_decoder.Tap.Snapshot()`, gets an audio buffer with `Samples`,
+`SampleRate` and `Duration`, and writes it with `WavAudio.Write`. It is not a
+mock-up and the button works today.
 
-> **Do not break the silence behaviour.**
+**`ClockOffset` already exists** and is already passed to
+`DigitalCaptureSheet.Compose`. **Step 7's clock criterion may already be met** -
+check before building anything for it.
 
-> **The phase goal is 85% correct CW on a capture where the pitch is right,
-> precision before yield.**
+**`DigitalSpectrum`** is an `AudioSpectrumSource` constructed at about line 3589
+from `_audioInput.SampleRate`, listening to `_audioInput`, started and stopped
+with the session. The waterfall panel binds to it.
 
-> **The only measurement is against real data from the real radio.**
+**The four panels exist** in `Views/MainWindow.axaml` from about line 2712:
+`DigitalModeStrip`, `DigitalWaterfallPanel`, `DigitalDecodedPanel`,
+`DigitalSayingPanel`. They are the tab's, fixed, not widgets, not draggable
+(Tim, 2026-08-28). **Nothing here reintroduces a canvas.**
 
-> **FT8, FT4 and every other digital mode are outside this conversation's scope.**
+**`ViewModels/DigitalIdleText.cs`** holds the four idle strings, written in the
+CW terminal's voice. **These are real and they stay.** An empty panel is
+indistinguishable from a broken one, and one message for the whole tab is lost
+when a panel is collapsed, so each carries its own (HM-DEC-021). The unit swaps
+between idle and live; it does not delete them.
 
-**Standing rulings this unit is bound by:**
+**The decoded table's columns are already committed**: `utc / snr / dt / hz /
+message`. That is what the decoder produces. **The shape is settled and this unit
+is wiring, not design.**
 
-- **§0.0 / HM-DEC-009** — never present a guess as a decode.
-- **HM-DEC-120** — nothing emitted on audio holding no signal. **Tightened only.**
-- **§0.4** — reproduce, then change, then measure.
-- **HM-DEC-007 / HM-DEC-091** — WAV fixtures, read-only.
-- **§12.5** — a floor is not lowered to fit a change; **the redefinition above is
-  Tim's, not a session's.**
-- **§0.2 / HM-DEC-008** — **no transmit work of any kind.**
+---
 
-## Status cadence
+# Tasks
 
-After each task, before the next, update `PROJECT_STATUS.md` — `STATE`,
-`TASK: n of m`, `BALL`, `UPDATED` from the clock, `NOTE` saying what is moving
-inside the task. Same every ten minutes while a task runs.
+## Task 1 - the ground, and what step 7 already has
 
-## The rule that governs every change
+Re-measure rather than inherit: `Ft8Sharp` totals, attribution from `2828ab6`,
+the channel tests. Then answer three questions from the code:
 
-- **Precision at or above 0.889, and every individual lock green.** Either
-  failing reverts the change.
-- **Every task reports precision, yield, substitutions — and what `003229` now
-  shows.**
+- **What sample rate does `_audioInput` deliver, and does anything already
+  resample?** `Ft8Sharp` wants 12 kHz.
+- **Is `ClockOffset` measured against UTC, and to what accuracy?** If it already
+  satisfies step 7's clock criterion, say so and do not rebuild it.
+- **Does `AudioTap` expose a continuous stream or only `Snapshot()`?** Slot-
+  aligned decoding needs to know.
 
-## The tasks
+**Report what you find. Do not assume this instruction is right about any of it.**
 
-### Task 1 — the two rulings take effect
+## Task 2 - a decode reaches the table, by the shortest honest path
 
-- **Record both rulings** in the report's decision section in the form above.
-  **Do not mint ids.**
-- **Lower `FastestWpm` to 30**, with the provisional condition in a comment beside
-  the value, and **raise the hold-over bound to one dit at the new ceiling.**
-- **Re-sweep the hold-over across the newly legal range** — 12, 16, 20, 24, 28,
-  32, 36, 40 ms — against the corpus and every lock. Unit 054 found 16 ms broke
-  the `, AND` anchor on `031838`; **that anchor still governs.** Adopt the best
-  point at which **every lock holds**; report the curve either way.
-- **Report what the wider bound does to the shredded pair** (`003408`, `003419`)
-  even though nothing is promised for them — the dropouts there are the far end
-  of the range this bound was raised for.
+**Press the capture button, decode what it captured, put the result in the
+table.** That is the whole task.
 
-### Task 2 — every element carries its own pitch
+The path exists end to end already: `Tap.Snapshot()` gives samples,
+`Ft8Sharp` decodes them, the table has columns for what comes out. **Do not
+build slot alignment, a background service, or a continuous pipeline in this
+task.** One button, one decode, real rows.
 
-For each element the decoder resolves, **measure the element's frequency over the
-element's own samples** — peak with parabolic interpolation. A 190 ms dah
-resolves to ~5 Hz; a 55 ms dit to ~18 Hz with interpolation.
+**Bind the table.** The four data rows in `MainWindow.axaml` are literal
+`Text="..."` values - `CQ K1ABC FN42` at 1240 Hz, `VE7AA N0RR RR73` at -21 dB
+and the rest. They become an `ItemsControl` over a collection the view model
+owns. **Every hardcoded row goes in the same change that puts real ones in**, so
+the table never shows both.
 
-- **Store it on the element**; it reaches the capture sheet's element records.
-- **No behaviour changes.** The corpus score must be **identical** — this task
-  adds a measurement and its acceptance is that nothing moves.
+**When the collection is empty, `DigitalIdleText.Decoded` shows.** That is what
+those strings were written for.
 
-### Task 3 — near-tied senders separate into streams
+## Task 3 - slot alignment, if the window allows
 
-**Cluster an admitted station's elements by their measured pitch.**
+FT8 transmits in 15-second slots aligned to the UTC quarter minute. A decoder
+handed audio that straddles two slots decodes neither.
 
-- **One cluster: nothing changes.** The common case must cost nothing.
-- **Two clusters separated by more than the per-element measurement error but
-  within the detector's bandwidth** — the `002829` case, ~13 Hz — **the elements
-  divide into two streams, each decoded separately**, each with its own speed and
-  gap structure.
-- **Conservative**: when in doubt, one sender. **State the separation criterion
-  and its margin over the measurement error** — a split that fragments one wobbly
-  sender into two is worse than the collision it fixes.
-- **Labelled by pitch only.** No claim about their relationship (Tim's ruling).
+**This task is the drop candidate and it is named as such.** If task 2 lands and
+the window is thin, **drop this whole and say so** - a capture button that
+decodes real audio is worth more tonight than a half-built continuous path, and
+the next unit picks it up with the hard part already proven.
 
-**Acceptance:** on `002829`, two streams near 602 and 615 Hz, each stream's dit CV
-reported beside the combined 0.47, and the decode of each stream shown. On every
-single-sender fixture, exactly one stream and an unchanged decode. **Floor and
-locks hold.**
+If it is built: align on the quarter minute, decode each slot as it completes,
+append to the same collection. **`ClockOffset` is what tells the operator the PC
+clock is wrong** - FT8 needs it within about a second of UTC or nothing decodes,
+and it fails silently, which is the commonest newcomer failure in this mode.
+**Hamlet says so plainly rather than showing an empty table.**
 
-### Task 4 — why letters instead of words
+## Task 4 - the other three panels
 
-**Same audio, same pitch: the reference reading finds `CQ … K` and Hamlet finds
-`E`-fragments. Find the difference. This is the unit's centre.**
+Only if tasks 1 and 2 are done and time remains. Mode strip, waterfall summary,
+and the plain-English panel. **The plain-English panel is the one to leave
+last** - what Hamlet says a message means is the owner's under `CLAUDE.md` 12.1,
+and this unit must not decide it.
 
-Work the comparison concretely on `003229`:
+## Task 5 - what the next unit inherits
 
-- **Extract Hamlet's element stream** — every mark and space with durations — **and
-  the element stream implied by the reference parameters** (25 ms integrator,
-  threshold at the 98th percentile minus 6 dB, minimum run 15 ms with
-  drop-and-merge). **Print both, aligned in time, over the seconds where the
-  reference reads `CQ`.**
-- **Name where they diverge**: marks split that the reference keeps whole, gaps
-  missed, marks invented. **The `E`-storm means Hamlet's stream has many short
-  isolated marks; establish whether they are real dits the reference merges, or
-  fragments the reference never sees.**
-- **Candidate causes to check against the divergence, in this order**: the
-  integrator width (45 Hz here, ~40 Hz in the reference — unlikely); **the
-  threshold's placement on this capture** (Otsu on a mostly-quiet window was unit
-  051's finding — `003229`'s station is present for only part of the file, and the
-  admission window fix of unit 052 was measured and refused, so the *decoder's*
-  threshold may still be computed over the silent majority); the hold-over's
-  reach after task 1; **and the minimum-run handling** — unit 054 proved
-  `Runs` drops a short run **without merging the two it separated** and that at
-  one hop the hysteresis makes it unreachable; **establish whether at this
-  capture's SNR longer noise notches reach it**, because drop-without-merge
-  corrupts every duration after it and is the exact bug that made the reference
-  bench unreadable until fixed.
-- **Fix what the divergence names, smallest change first, measured after each**
-  against the corpus and every lock.
+Write into `porting-notes.md` or the report: what was wired, what was left, the
+sample rate answer, and whether slot alignment was built or dropped.
 
-**Acceptance:** `003229` reads **`CQ` and the closing `K`**, with the middle as
-blocks or letters as the audio allows. **That was unit 055's acceptance and it is
-still the acceptance.** If after the named causes are exhausted it still does not,
-**report exactly which divergence remains and stop** — a named residue is worth
-more than a forced pass.
+---
 
-### Task 5 — the sheet speaks for streams
+# What not to do
 
-Where task 3 split streams, the capture sheet carries **per-stream lines** —
-pitch, element count, characters, speed — in the sheet's own voice.
+- **Do not delete `DigitalIdleText`.** It is real and it is the owner's voice.
+- **Do not reintroduce the canvas** or make the panels widgets.
+- **Do not decide what a message means in plain English.** `CLAUDE.md` 12.1.
+- **Do not tune any decoder threshold.** Step 6's number is not this unit's.
+- **Do not run the full Hamlet suite.**
+- **No transmit work.** `CLAUDE.md` 0.2. Nothing this unit produces reaches an
+  antenna, a port, or a keying line.
+- **Do not commit `ft8_lib`, its WAVs, its built oracles, or the IC-7300 manual.**
 
-- **Propose the wording in the report for Tim** (§12.1). Do not invent idioms
-  beyond the proposal.
-- The per-element pitch from task 2 appears in the element records.
-- **The arithmetic locks** (`TheSheetDoesNotLieAboutArithmeticTests`) **must stay
-  green** through the additions.
+---
 
-### Task 6 — the shredded pair, characterised *(the drop candidate)*
+# Committing, pushing, reporting
 
-**Measure only. Change nothing. Promise nothing.**
+Commit and push each task before starting the next. Take the version bumps.
 
-On `003408` and `003419`, now with per-element pitch available: element-length
-distribution, swing, per-element pitch spread, and **whether the fragments cluster
-at one pitch or many** — which is the difference between one station being torn
-apart and several stations colliding. **If the honest answer is "nothing reads
-this," say so.**
+Write `output.md` per `CLAUDE_CODE.md` section 8. **Exactly four top-level
+sections, at `##` level, spelled and ordered exactly:**
 
-**Dropped whole if time runs out, and the report says so.**
+```
+## 1. What Claude did
+## 2. What the owner should expect
+## 3. What you should see
+## 4. What's blocking us
+```
 
-## Parked — do not touch, do not raise
+Use `###` and deeper for your own headings. **Then run
+`tools\arbiter\validate-output.bat output.md` yourself and fix the report until
+it exits 0.**
 
-**FT8, FT4 and every other digital mode.**
+**Section 3 leads with whether real decoded text appeared on the Digital tab, and
+what it said.**
 
-**Hysteresis on the peak** — costed in 053, still awaiting ruling. **The
-peak-referenced threshold** — refused in 054, kept with its numbers. **The
-admission window** — refused in 052. **The confidence quantities** — seven
-measured, no eighth.
+Then stop. Do not start the next unit.
 
-Also: the joint decoder; the lattice; the evidence term; the settings contract;
-the scanner; `CHANGELOG.md`; the missing `DECISIONS.md` records; the phrasebook;
-the Twin PBT; the answer key's licensing; the dial-move threshold; the transcript
-break's wording; **the version bump — still unruled, do not guess.**
+---
 
-**Both halves are required: do not touch them, and do not raise them.**
-
-A parked item that genuinely blocks a task is raised once, and says it was parked.
-
-## What not to do
-
-Standing prohibitions are `CLAUDE.md`'s and are not retyped. Unit-specific:
-
-- **No transmit. Nothing keys the radio.**
-- **Do not break the silence property**, and **do not modify any lock.**
-- **Do not let any individual lock fall**, whatever it does to the average.
-- **Do not let precision fall below 0.889.**
-- **Do not assert a relationship between two streams.**
-- **Do not split one sender into two.** Conservative, margin stated.
-- **Do not raise the hold-over past one dit at `FastestWpm`.**
-- **Do not force `003229` to pass.** A named residue beats a forced pass.
-- **Do not adopt off a non-monotonic sweep.**
-- **Do not build peak hysteresis.**
-- **Do not mint a decision id.**
-
-## Committing, pushing, reporting
-
-Commit and push each task before starting the next; name the branch; a refused
-push is reported as refused, with the reason.
-
-Report per `CLAUDE_CODE.md` §8 to `output.md` at the repository root, overwritten
-and printed. **Read the file's own section count and follow it.**
-
-**Write `output.md` before you stop, for any reason at all.**
-
-**The section that says what the owner should expect leads with one line: what
-`cw-2026-08-31-003229` now shows.** Then `002829`'s two streams, side by side.
-
-**The section that reports measurements leads with task 4's aligned element
-streams — Hamlet's against the reference's — over the seconds where the reference
-reads `CQ`.**
-
-**If you finish every task, stop and report. Do not start the next unit.**
+```
+ARBITER-DECISION
+STEP: 7
+APPROACH: wire the Digital tab's decoded table to real Ft8Sharp output by the shortest honest path - capture button to decoder to bound collection - and remove every hardcoded row in the same change
+MOVE: continue
+WHY: Steps 1 to 5 are closed and the decoder turns found signals into messages without inventing any, but the Digital tab is still the finished-looking mock-up work instruction 037 built on purpose so the operator could argue with a picture before there was a decoder to argue with. There is one now. Step 7 is independent of step 6 by the plan's 2026-09-02 ruling, so the tab can be made real while step 6's sensitivity question is still open, and step 6's 4.2 per cent at threshold does not bear on it - 20 m FT8 is full of strong signals and this decoder reads 760 of 1298 reference lines. The owner wants to be at the radio tomorrow morning with text on screen, so the night is shaped working path first and polish second.
+STATE: partial
+DECIDED: That the shortest honest path is the capture button rather than a continuous pipeline, because that path already exists end to end - Tap.Snapshot gives samples, Ft8Sharp decodes them, the table has columns for what comes out - and a decode reaching the screen tonight is worth more than a half-built background service. That slot alignment is the named drop candidate for the same reason, and that dropping it whole is explicitly licensed rather than treated as a failure. That every hardcoded row comes out in the same change that binds real ones, because a table showing both is worse than a table showing neither. That DigitalIdleText is not deleted - it is the owner's voice from 2026-08-28, each panel carries its own line because one message for the whole tab is lost when a panel collapses, and the unit swaps between idle and live rather than removing the idle case. That the plain-English panel is left last and its wording is not decided, because what Hamlet says a message means is the owner's under CLAUDE.md 12.1. That task 1 asks three questions of the code rather than asserting answers, because the web session read this tree from a harvest and has been wrong about it before.
+LICENCE: PHASE_PLAN.md's step 7 section; the plan's 2026-09-02 ruling that steps 6 and 7 depend on step 5 and not on each other, which is what licenses working step 7 while step 6 is blocked; the plan's ruling on what a unit runs, which forbids the full Hamlet suite; the plan's 2026-09-01 ruling that an unmet nice-to-pass criterion does not hold a step open; CLAUDE.md 0.2, restated because audio moves in this unit and nothing it produces may reach a transmitter; CLAUDE.md 12.1, which is why the plain-English panel's wording is not this unit's; HM-DEC-021 for each panel carrying its own idle line; HM-DEC-152 and HM-DEC-150 for the version bumps. Reported plainly: this instruction was written from a harvest of src/Hamlet.App/Views and ViewModels taken 2026-09-02, and every claim it makes about CaptureDigital, ClockOffset, DigitalSpectrum, AudioTap and the markup is to be checked against the tree rather than trusted.
+ACCOMPLISHED: Twenty-four units have built a decoder nobody has ever seen work. Tonight the operator presses a button on the Digital tab and reads what the radio actually said - not a mock-up of what it might say, and not a number in a test report. The four hardcoded rows that have stood in for a working session since work instruction 037 come out, and what replaces them is whatever the band was doing when the button was pressed. If the band is quiet the table says so in the words Tim wrote for it in August. Either way the tab stops being a picture of an FT8 session and becomes one, and tomorrow morning at 14.074 there is something on screen to be right or wrong about.
+ADVANCES: Step 7. Real decodes on the Digital tab and the mock-up rows removed. The step is not expected to close in this unit and the arbiter continues.
+END-ARBITER-DECISION
+```
