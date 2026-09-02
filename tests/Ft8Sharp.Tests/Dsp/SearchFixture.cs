@@ -97,6 +97,33 @@ internal static class SearchFixture
     internal static double SlotPower(ReadOnlySpan<float> slot) => SignalToNoise.MeanSquare(slot);
 
     /// <summary>
+    /// Adds noise to a copy of a slot and <b>reports the power it actually delivered</b> rather than
+    /// the power it was asked for.
+    /// </summary>
+    /// <remarks>
+    /// <see cref="GaussianNoise.AddedTo"/> keeps its noise to itself, so the ratio a test quotes
+    /// would be the one it requested. A finite draw is not its own standard deviation, so the noise
+    /// is drawn here, measured, and then summed — and the ratio in the report is the delivered one.
+    /// </remarks>
+    internal static float[] AddNoise(
+        ReadOnlySpan<float> slot,
+        GaussianNoise noise,
+        double rootMeanSquare,
+        out double deliveredNoisePower)
+    {
+        var drawn = noise.Block(slot.Length, rootMeanSquare);
+        deliveredNoisePower = SignalToNoise.MeanSquare(drawn);
+
+        var mixed = new float[slot.Length];
+        for (var i = 0; i < slot.Length; i++)
+        {
+            mixed[i] = slot[i] + drawn[i];
+        }
+
+        return mixed;
+    }
+
+    /// <summary>
     /// The power of one transmission alone, measured over the samples it actually occupies. This is
     /// the number the published signal-to-noise convention is quoted against.
     /// </summary>
