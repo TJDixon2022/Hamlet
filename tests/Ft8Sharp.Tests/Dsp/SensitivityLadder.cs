@@ -1,5 +1,6 @@
 using Ft8Sharp.Dsp;
 using Ft8Sharp.Ldpc;
+using Ft8Sharp.Message;
 using Ft8Sharp.Tests.Encode;
 
 namespace Ft8Sharp.Tests.Dsp;
@@ -134,6 +135,123 @@ internal static class SensitivityLadder
         "requested  delivered  offered  returned    rate   WRONG   cand     par     crc     txt";
 
     /// <summary>
+    /// <b>Walks the whole path — samples to text — down the ladder and reports what came back.</b>
+    /// Where a transmission is put is the caller's, so the aligned ladder and the impaired ones are
+    /// the same experiment with one thing changed.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// <b>A rung that returns nothing is a MEASUREMENT and not a failure.</b> Nothing in here throws
+    /// on a poor result; the caller asserts only what must always be true. A test that threw at
+    /// -22 dB would destroy the measurement it was written to take.
+    /// </para>
+    /// <para>
+    /// <b>Nothing is told to the decode path.</b> The frequency and the offset are chosen here and
+    /// handed to the <em>synthesizer</em>; <see cref="Ft8SlotDecoder"/> and
+    /// <see cref="Ft8SyncSearch"/> are given the samples and the geometry and nothing else. The truth
+    /// is used twice and both times after the code has answered: to compare the text, and to pick
+    /// which candidate the agreement figure is read at.
+    /// </para>
+    /// </remarks>
+    /// <param name="messages">The transmissions offered at every rung.</param>
+    /// <param name="frequencyFor">The base frequency for message <c>i</c>, in hertz.</param>
+    /// <param name="offsetFor">Where message <c>i</c>'s first sample is written in the slot.</param>
+    /// <param name="measureAgreement">
+    /// Whether to read the hard-decision agreement at the candidate nearest the truth. Costs a second
+    /// pass of the search per trial, so the impaired ladders leave it off.
+    /// </param>
+    /// <param name="log">Where the per-trial line goes, or null for silence.</param>
+    internal static IReadOnlyList<Rung> Walk(
+        IReadOnlyList<EncodeCorpus.Entry> messages,
+        Func<int, double> frequencyFor,
+        Func<int, int> offsetFor,
+        bool measureAgreement,
+        Action<string>? log = null)
+    {
+        const int rate = Ft8WaterfallGeometry.DefaultSampleRate;
+
+        var decoder = new Ft8SlotDecoder();
+        var search = new Ft8SyncSearch();
+        var geometry = decoder.Geometry;
+        var rungs = new List<Rung>();
+
+        foreach (var requested in Rungs)
+        {
+            var rung = new Rung(requested);
+
+            foreach (var seed in Seeds)
+            {
+                var noise = new GaussianNoise(seed + (int)Math.Round(requested * 10));
+
+                for (var i = 0; i < messages.Count; i++)
+                {
+                    var entry = messages[i];
+                    var frequency = frequencyFor(i);
+                    var offset = offsetFor(i);
+
+                    var (clean, _) = SearchFixture.OneSignal(rate, entry, frequency, offset);
+                    var signalPower = SearchFixture.TransmissionPower(rate, entry, frequency);
+                    var sigma = SignalToNoise.NoiseAmplitudeFor(signalPower, requested, rate);
+                    var mixed = SearchFixture.AddNoise(clean, noise, sigma, out var noisePower);
+                    var delivered = SignalToNoise.DecibelsFor(signalPower, noisePower, rate);
+
+                    var waterfall = new Ft8Monitor(geometry).Analyse(mixed);
+                    var result = decoder.Decode(waterfall);
+
+                    var expected = Ft8MessageDecoder.Decode(entry.Message).Text;
+                    var returned = result.Texts.Contains(expected, StringComparer.Ordinal);
+                    var wrong = result.Texts.Count(t => !string.Equals(t, expected, StringComparison.Ordinal));
+
+                    rung.Add(result, delivered, returned, wrong);
+
+                    if (measureAgreement)
+                    {
+                        var candidates = search.Find(waterfall);
+                        var nearest = NearestTo(candidates, geometry, frequency);
+                        var agreement = AgreementAt(waterfall, nearest, TrueCodeword(entry));
+                        if (agreement >= 0)
+                        {
+                            rung.AddAgreement(agreement, returned);
+                        }
+                    }
+
+                    log?.Invoke($"    rung {requested,6:F1} dB seed {seed} message {i + 1,3} of "
+                        + $"{messages.Count}: {(returned ? "back" : "MISSED")}"
+                        + $"{(wrong > 0 ? $" +{wrong} WRONG" : string.Empty)}");
+                }
+            }
+
+            rungs.Add(rung);
+        }
+
+        return rungs;
+    }
+
+    /// <summary>
+    /// The kept candidate closest in frequency to where the fixture actually put the transmission,
+    /// within four hertz — <b>unit 217's rule, kept so the two agreement figures are comparable.</b>
+    /// Null where the search found nothing within four hertz of it.
+    /// </summary>
+    internal static Ft8Candidate? NearestTo(
+        IReadOnlyList<Ft8Candidate> candidates, Ft8WaterfallGeometry geometry, double hz)
+    {
+        Ft8Candidate? best = null;
+        var bestDistance = double.MaxValue;
+
+        foreach (var candidate in candidates)
+        {
+            var distance = Math.Abs(candidate.FrequencyHz(geometry) - hz);
+            if (distance < bestDistance)
+            {
+                bestDistance = distance;
+                best = candidate;
+            }
+        }
+
+        return bestDistance <= 4.0 ? best : null;
+    }
+
+    /// <summary>
     /// The messages every ladder in this unit offers: the corpus filtered exactly the way
     /// <c>TheCorpusComesBackInSeededNoiseAtAMeasuredRatio</c> filters it, then thinned to keep the
     /// run under its budget while staying spread across the corpus's message kinds.
@@ -155,8 +273,13 @@ internal static class SensitivityLadder
     /// </summary>
     internal static byte[] TrueCodeword(EncodeCorpus.Entry entry)
     {
+        // 77 bits, then the checksum makes 91, then the parity makes 174 — the same three steps
+        // Ft8SymbolEncoder takes, so this is the codeword that was actually on the air.
+        Span<byte> payload = stackalloc byte[Ft8Payload.PayloadBytes];
+        Ft8Payload.Create(entry.Message, payload);
+
         var codeword = new byte[LdpcEncoder.CodewordBytes];
-        LdpcEncoder.Encode(entry.Message, codeword);
+        LdpcEncoder.Encode(payload, codeword);
         return codeword;
     }
 
