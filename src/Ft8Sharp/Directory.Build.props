@@ -193,9 +193,36 @@
 
     Still not a 1.x. It can speak, it can see, it can find, and it can now repair. The piece that
     turns a place in a waterfall into the numbers this decoder eats does not exist.
+
+    0.9.0 -> 0.10.0 (unit 216). THE LIBRARY GAINS THE CAPABILITY THE WHOLE PHASE IS FOR: IT CAN
+    TAKE AUDIO AND RETURN THE TEXT THAT WAS IN IT.
+
+    src/Ft8Sharp/Dsp/ gains Ft8SoftSymbols, which reads 174 log-likelihood ratios out of a waterfall
+    at a candidate's position and rescales them to upstream's own variance of 24; and
+    Ft8SlotDecoder, which is the whole path — analyse, search, extract, normalise, correct, check
+    the checksum, unpack, de-duplicate — samples in, messages out. The pieces above it were all
+    proved separately and had never met.
+
+    AND IT WAS JUDGED BY SOMEBODY OTHER THAN ITSELF FOR THE FIRST TIME IN THIS PHASE. Every
+    receive-side measurement before tonight was taken against a signal this library synthesized, and
+    a port wrong in the same way at both ends passes all of them. This version decodes ft8_lib's own
+    off-air recordings against the expected decode lists checked in beside them: 760 OF 1298
+    EXPECTED MESSAGES MATCHED ACROSS 60 RECORDINGS, with 23 returned that are not on any list out of
+    783 returned.
+
+    WHAT THIS MINOR DOES NOT CLAIM, and it is again the important half.
+
+    NO AUDIO COMES FROM A RADIO. Every sample it has been given came from a file or from its own
+    synthesizer; nothing opens a device, a stream or a port. NOTHING IS SCHEDULED TO A UTC SLOT — it
+    decodes a buffer somebody hands it and has no idea what time it is. NOTHING REACHES A SCREEN.
+    And THE SENSITIVITY IS UNMEASURED: 760 of 1298 is where it stands against those recordings, that
+    figure is not comparable with any published threshold, and the measurement that would be has not
+    been taken.
+
+    Still not a 1.x — and the reason is now a number rather than a missing piece.
   -->
   <PropertyGroup>
-    <Version>0.9.0</Version>
+    <Version>0.10.0</Version>
   </PropertyGroup>
 
   <!--
