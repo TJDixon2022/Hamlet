@@ -303,6 +303,13 @@ internal sealed class MissAccounting
 
     internal int Total => _rows.Count;
 
+    /// <summary>
+    /// Every row, so a later unit can hold this instrument's own reading against an independently
+    /// written one rather than trusting either. <b>Read-only; nothing outside this class adds a row.</b>
+    /// Added by unit 219 for task 2's third check and it changes nothing this file computes.
+    /// </summary>
+    internal IReadOnlyList<Row> Rows => _rows;
+
     internal int AssignedWithoutAgreement => _rows.Count(r => !r.HasAgreement);
 
     internal IReadOnlyList<int> MissAgreements => _rows.Where(r => r.HasAgreement).Select(r => r.Agreement).ToList();
