@@ -49,9 +49,18 @@
     card's own rate onto the 12 kHz grid the library was measured at, and the slot cutter that has sat
     unused since August cuts the capture on the UTC quarter minute. Measured through four sample rates
     including one that is not a whole ratio.
+
+    1.12.32 -> UNIT 225, UNDER HM-DEC-150. A PATCH, AND THE ONE THAT TAKES THE PRESS OUT OF THE LOOP.
+    Unit 224 left the count of slots decoded with nobody pressing anything at nought; FT8 opens a new
+    slot every fifteen seconds, so an operator pressing a button for each one is sampling a band
+    rather than watching it. Ft8SlotWatch in the engine notices when a quarter minute has closed and
+    hands over exactly that slot's audio - clock passed in, never read, so the alignment is assertable
+    against a controllable clock. The Digital tab rides the decode timer, appends rather than
+    replaces, bounds the table, shows nothing twice and clears on a band change. The capture press now
+    contributes to the same table instead of wiping it. No library file changed.
   -->
   <PropertyGroup>
-    <Version>1.12.31</Version>
+    <Version>1.12.32</Version>
   </PropertyGroup>
 
   <!--

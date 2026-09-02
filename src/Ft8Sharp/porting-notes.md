@@ -3890,3 +3890,114 @@ press uses it, so the decoder is never handed audio that straddles a boundary.
 
 **Open, and the owner's:** what goes in the `snr` column.
 
+## The continuous path — unit 225
+
+**Nothing was ported in this unit and no file under `src/Ft8Sharp/` changed except this one.** The
+consumer stopped needing a button, and that is recorded here because the whole of the timing lives
+outside the library and the next session reading these notes will want to know why.
+
+### What was missing, and it was one thing
+
+Unit 224 left the count of slots decoded with nobody pressing anything at **nought**. Everything under
+it worked: `Ft8Reader.Read` is pure audio-in-text-out and proven at four sample rates,
+`Ft8SlotCutter` has cut on the UTC quarter minute since work instruction 042 and refuses in words
+when the offset is unmeasured, and `SntpClock` measures the offset and corrects nothing. **What did
+not exist was anything that noticed a slot had ended.**
+
+`Hamlet.RadioEngine.Audio.Ft8SlotWatch` is that, and it is a watch and not a decoder.
+
+### The clock contract, which is the whole reason it is where it is
+
+**No `DateTime.UtcNow` appears in `Ft8SlotWatch.cs`, deliberately.** Step 7's first must-pass
+criterion is that slot alignment be asserted *against synthesized audio and a controllable clock*, and
+a class that reads the wall clock cannot be driven across a boundary by a test. Unit 224 already paid
+for the alternative: its first draft read the view model's clock property and produced a test that
+decoded on some evenings. It also settles where the watch lives — in the engine, not in a
+`DispatcherTimer` handler in the shell (§0.1), because a timer callback cannot be driven at all.
+
+`Look(tap, nowPcUtc, offset)` is a function of its arguments. The view model reads the clock once, at
+the tick, and nothing deeper does.
+
+### The mapping from a moment to a sample index did not exist, and building it found a hazard
+
+`AudioTap` holds `SamplesSeen`, a `SampleRate` and thirty seconds of ring, and **no timestamps at
+all**. There was no defined mapping from a wall-clock instant to a sample index anywhere in the tree,
+so one had to be constructed, and the only anchor available is that **the newest sample the tap holds
+arrived at about this moment**. That is the same assumption `Ft8SlotCutter` has made about a capture
+press since August — the end of the buffer is now — stated explicitly here rather than left implicit.
+
+**The assumption has exactly one failure mode and it is the §0.0 fault in its worst form.** If the
+audio stream stalls, `SamplesSeen` stands still while the clock runs on, and the last fifteen seconds
+in the ring get handed over wearing the current slot's timestamp: a row that looks exactly like a real
+decode and is not. HM-DEC-090 caught the same shape once already, where a stalled pipeline let a
+capture hand over the same thirty seconds three times.
+
+So the watch keeps an anchor — a sample index and the moment it was current — and refuses when the
+audio has fallen more than a slot behind the clock. A sound card whose clock differs from the PC's by
+a hundred parts per million takes over forty hours to drift that far, and every slot that comes back
+re-anchors. **The refusal is watched firing** in `TheSlotWatchTests`.
+
+### Thirty seconds is exactly enough, and that is load-bearing
+
+A boundary is never more than fifteen seconds back, so the slot the watch asks for spans at most
+**thirty** seconds back from now — which is `AudioTap.SecondsKept` to the second. A full ring and a
+stream that is keeping up therefore always hold the completed slot, and the aged-out refusal is
+reachable only while the ring is still filling after start-up. **Shorten the tap and the watch starts
+missing slots.**
+
+### What the watch guarantees, each with the reason
+
+- **Never the same slot twice.** It remembers which slot it was *in* at the last look rather than which
+  it last returned, so nothing turns on a caller acknowledging anything. Sixty looks fall inside every
+  slot and at most one produces a decode.
+- **Never a partial slot and never a padded one** (§0.0). A decoder handed twelve seconds of a
+  fifteen-second transmission finds nothing and cannot say why, so the wrongness would arrive as
+  silence.
+- **The first look arms and claims nothing.** A watch that opens its eyes mid-slot did not hear the
+  slot before it. Reporting the slot that closes while it is running is a claim it can stand behind.
+- **It skips rather than stalls.** Two or three boundaries between looks — a busy machine, a laptop
+  resuming — yields the most recently completed slot and a count of the rest. It never walks back
+  through audio the ring has dropped.
+- **An unknown offset returns `Ft8SlotCutter.NoOffset` unchanged**, and a stale one returns the
+  offset's own `Describe` words. `ClockOffset` owns the thresholds; nothing here is a second opinion
+  about the clock.
+
+### On the tab: the bound, the retune rule, and the two paths becoming one
+
+**The table appends and is bounded at 500 rows**, and the number is the markup's rather than memory's:
+the `ItemsControl` it binds to sits in a `ScrollViewer` and does not virtualise, so every row is five
+live `TextBlock`s whether or not it is on screen. A bound chosen for bytes would be several thousand
+and would make the panel crawl. Five hundred is roughly the last half hour of a busy band.
+
+**Nothing appears twice.** The key is the slot start, the frequency and the text, and the keys fall off
+with the rows they belong to.
+
+**The retune rule: the table is cleared when the dial moves more than three kilohertz**, which is the
+receiver's own audio passband. Inside it the same transmissions are still arriving through the same
+filter, so a nudge has not changed what the rows describe; outside it the rows are about a different
+piece of spectrum, and rows from 7.074 under the same heading as rows from 14.074 assert that all
+those stations were heard here (§0.0.1). Clearing is the cheapest honest answer and it is what happens.
+
+**The watch looks only while the Digital tab is on screen**, which costs one boolean per tick, and it
+re-arms when the tab goes away so that coming back never claims a slot that closed while nothing was
+watching. **The decode itself runs off the UI thread**, in the manner `QueryTheClockAsync` already
+uses, because tens of milliseconds of signal processing on the dispatcher would stop the waterfall
+dead four times a minute.
+
+**The capture press and the running watch are one behaviour now.** Unit 224 made a press replace the
+table because a press was then the only way anything reached it; a press that cleared a running
+session would now wipe its history, so `ShowDecodes` is one line into `NoteSlot` and the press
+contributes its slots through the same de-duplication.
+
+### What a session picking this up must not assume
+
+- **Do not assume the watch decodes.** It hands over audio. `Ft8Reader.Read` is the decoder and is
+  where the resampling and the cutting happen.
+- **Do not assume the tick rate matters.** The watch de-duplicates, so a faster or slower timer changes
+  latency and nothing else. Do not "fix" a missed slot by ticking faster.
+- **Do not read the clock inside the watch**, and do not let a caller pass a local time. The grid is in
+  UTC and the offset is added, never subtracted from something that already has an offset in it.
+- **Do not assume `SamplesSeen` is a timestamp.** It is a count, and the anchor above is the only thing
+  standing between that count and a wrong row.
+- **The `snr` column is still an em dash and it is still the owner's** — HM-OPEN-068, untouched here.
+

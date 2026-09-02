@@ -81,6 +81,23 @@ this entry does not claim to know which test it is.
 builds the test assembly somewhere the dead process is not holding, and the run
 proceeds normally.
 
+**Unit 225: the hang did not recur and the workaround held.** Every run of this
+unit used `-p:OutputPath=bin/unit225/`, no run was made with the `~Views` filter,
+and no build was blocked. Eight runs across both Hamlet test projects and
+`Ft8Sharp`, all by named class, and the longest of them returned in three
+seconds. **That is not evidence the hang is gone** — it is evidence that naming
+classes avoids it, which is what the plan's ruling already says. The class that
+does not terminate is still unidentified and nobody has run the census this entry
+asks for.
+
+**One thing unit 225 can add, because it went looking.** The `~Views` filter
+matches, among others, `ViewTestsActThroughControlsTests` and
+`EveryResourceKeyResolvesTests`, both of which construct Avalonia controls. A run
+that constructs a window and never gets a dispatcher to pump it would look
+exactly like this. **Named as the first place to look and not as a finding** — it
+was not tested, deliberately, because testing it means making the hanging run
+again.
+
 ---
 id: HM-OPEN-067
 status: open
