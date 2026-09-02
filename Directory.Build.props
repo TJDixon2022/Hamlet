@@ -14,8 +14,15 @@
     capability the operator can see and use, patch for fixes and polish that add
     none.
   -->
+  <!--
+    1.12.27 -> 1.12.28, UNIT 221, UNDER HM-DEC-150. A PATCH BECAUSE NOTHING AN OPERATOR COULD SEE
+    MOVED: no Hamlet file changed, no Ft8Sharp file changed except porting-notes.md, and the night's
+    whole product is a measurement. Step 6's sensitivity curve was taken for the first time in the
+    phase - criteria 1 and 3 met, criterion 2 NOT MET at 13 of 306 at -21 dB and recorded as
+    HM-OPEN-067.
+  -->
   <PropertyGroup>
-    <Version>1.12.27</Version>
+    <Version>1.12.28</Version>
   </PropertyGroup>
 
   <!--

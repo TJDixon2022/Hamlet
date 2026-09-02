@@ -3071,3 +3071,142 @@ printed before any bound is asserted.**
 The draw for a rung is `seed + round(requested x 10)`, which depends only on the rung and the draw
 index and never on iteration order — **which is what makes a fresh process draw the same noise.**
 Empty-slot seeds: `221_701` to `221_706`. Population probe: `221_500`. Cost probe: `221_900 + trial`.
+Census control: `221_800`.
+
+---
+
+### THE CURVE
+
+**3519 slot decodes. Binned by the delivered ratio, never by the requested one.**
+
+| requested | delivered | trials | returned | rate % | lo 95 | hi 95 | WRONG | cand | par | crc | txt |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| -10.0 | -10.000 | 153 | 153 | 100.0 | 97.6 | 100.0 | 0 | 18.13 | 1.70 | 1.70 | 1.70 |
+| -13.0 | -13.001 | 153 | 153 | 100.0 | 97.6 | 100.0 | 0 | 16.77 | 1.10 | 1.09 | 1.09 |
+| -16.0 | -16.001 | 306 | 306 | 100.0 | 98.8 | 100.0 | 0 | 14.72 | 1.00 | 1.00 | 1.00 |
+| -17.0 | -17.001 | 306 | 306 | 100.0 | 98.8 | 100.0 | 0 | 13.55 | 1.00 | 1.00 | 1.00 |
+| -18.0 | -17.999 | 306 | 304 | 99.3 | 97.6 | 99.8 | 0 | 13.11 | 1.00 | 0.99 | 0.99 |
+| -19.0 | -19.001 | 306 | 248 | 81.0 | 76.3 | 85.0 | 0 | 13.00 | 0.81 | 0.81 | 0.81 |
+| -20.0 | -20.000 | 306 | 73 | 23.9 | 19.4 | 28.9 | 0 | 12.87 | 0.24 | 0.24 | 0.24 |
+| **-21.0** | **-21.001** | **306** | **13** | **4.2** | **2.5** | **7.1** | **0** | 12.65 | 0.04 | 0.04 | 0.04 |
+| -22.0 | -21.999 | 306 | 0 | 0.0 | 0.0 | 1.2 | 0 | 12.39 | 0.00 | 0.00 | 0.00 |
+| -23.0 | -22.999 | 306 | 0 | 0.0 | 0.0 | 1.2 | 0 | 11.73 | 0.00 | 0.00 | 0.00 |
+| -24.0 | -24.001 | 306 | 0 | 0.0 | 0.0 | 1.2 | 0 | 11.71 | 0.00 | 0.00 | 0.00 |
+| -26.0 | -26.000 | 153 | 0 | 0.0 | 0.0 | 2.4 | 0 | 11.03 | 0.00 | 0.00 | 0.00 |
+| -28.0 | -28.000 | 153 | 0 | 0.0 | 0.0 | 2.4 | 0 | 11.54 | 0.01 | 0.00 | 0.00 |
+| -30.0 | -30.000 | 153 | 0 | 0.0 | 0.0 | 2.4 | 0 | 10.97 | 0.00 | 0.00 | 0.00 |
+
+`lo 95` and `hi 95` are the **Wilson** score interval, which is the interval a rate near zero needs;
+the normal approximation puts 2 of 52 below zero and is worthless exactly where this curve is
+interesting. `cand / par / crc / txt` are means per slot.
+
+**Worst requested-versus-delivered error over the whole run: 0.0503 dB. Mean absolute: 0.0006 dB.**
+
+### The verdict
+
+```
+  DELIVERED -21.001 dB : 13 of 306, 4.2 per cent, 95 per cent interval 2.5 to 7.1
+
+  VERDICT AGAINST THE BAND FIXED BEFORE THE RUN: NOT MET
+```
+
+**It reproduces unit 218's diagnostic on six times the trials** — 2 of 52, 3.8 per cent, at the same
+rung — and 306 trials is what lets the number carry an interval narrow enough to argue with.
+
+### It reproduces, and that is half of criterion 1
+
+Two runs, **two separate processes**, same seeds. The TRX output region is **byte-identical**, md5
+`2dbb8f6f41371bff74f6e6d1e18b554c` on both, 114 lines covering every table, every rate, every interval
+and every stage count. Diffing the two files whole turns up four kinds of difference and every one is
+the harness: the run GUID, the execution GUID, the timestamps, and xUnit's own discovery timing lines.
+**Not one row differs.**
+
+### The shape is a cliff and not a threshold, and that is evidence
+
+**99.3 per cent at -18 and exactly zero at -22: the whole collapse happens inside 4.0 dB.** Between
+-19 and -21 the rate falls 81.0 → 23.9 → 4.2, roughly **a factor of four per decibel**. A real FT8
+decoder's rate falls off over several decibels.
+
+**The 50 per cent crossing, interpolated between 81.0 per cent at -19.0 and 23.9 at -20.0, is near
+-19.5 dB. So this receiver is about 1.5 dB short of the published figure** — not the two to three
+decibels unit 218's two-decibel ladder suggested. **That correction is the sharpest thing the
+one-decibel rungs bought**, and it changes what the next unit is looking for: a decoder losing a
+decibel and a half is losing something small and specific.
+
+### Degradation rather than wrong decodes
+
+**Wrong messages at every one of the fourteen rungs: zero. 0 out of 3519 trials.**
+
+Below the threshold it degrades by returning fewer and never by returning false. At -26, -28 and -30
+the rate is 0 of 153 at each, and the stage columns say *where* it stops: candidates per slot still
+11.03, 11.54 and 10.97; parity per slot 0.00, 0.01 and 0.00; **checksum 0.00 everywhere and text 0.00
+everywhere**. At -28 a codeword or two of 153 slots did satisfy parity and **not one passed its CRC**.
+
+**Pure noise, no signal in the slot at all** — 18 empty slots at the amplitudes the bottom three rungs
+deliver, six seeds each: **219 candidates found, 0 reaching parity, 0 passing checksum, 0 becoming
+words, 0 messages returned.** Candidates in noise are the search behaving correctly. And unasked: the
+candidate counts are **identical at all three amplitudes for the same seed** — 9, 20, 12, 8, 7, 17 —
+so the search is scale-invariant, which reproduces unit 218 independently.
+
+### Where the loss is — the census, bounded to two rungs
+
+All **526** failing trials at -20 and -21, each in exactly one bucket:
+
+| rung | trials | returned | failed | not found | soft symbols too poor | agreement high, BP did not converge |
+|---|---|---|---|---|---|---|
+| -20.0 | 306 | 73 | 233 | **1** (0.4 %) | **212** (91.0 %) | **20** (8.6 %) |
+| -21.0 | 306 | 13 | 293 | **6** (2.0 %) | **281** (95.9 %) | **6** (2.0 %) |
+
+**THE SEARCH IS NOT THE STAGE.** Seven of 526 failures — 1.3 per cent — found nothing at the true
+alignment. In the other 98.7 per cent **the transmission was found and the ratios extracted there were
+too damaged for the code to close.** That rules out the candidate limit, the minimum sync score and
+the passband as the address, which is consistent with unit 216 having swept the first two for nothing.
+
+**And the gap is small and measured.** Best agreement with the true codeword, out of 174, at -20 dB:
+
+```
+  trials that RETURNED        : mean 157.0, lowest 150, highest 166
+  found and failed, too poor  : mean 147.3, lowest 135, highest 155
+```
+
+**Ten bits out of 174 is where the missing decibel and a half lives.**
+
+**The instrument caught a mistake before it reached a number.** The census first computed the
+alignment this fixture had placed the signal at, straight out of the geometry. **Its own control
+refused it**: at -5 dB agreement at that point came out at mean 97.3 of 174 against an expected 174 —
+the block arithmetic was one out. Rebuilt on unit 219's neighbourhood sweep, which assumes nothing,
+the control reads **mean 174.0 of 174, lowest 174, all twelve on the same point**.
+
+**One honest limit on the third bucket, with the boundary left unmoved.** 156 was fixed before the run
+as the lowest agreement at which units 219 and 220 ever observed a decode, **on real recordings**. On
+this population the distributions **overlap** — returned trials run down to 142, "too poor" runs up to
+155 — so **agreement alone does not decide decodability** and the third bucket is a *lower bound*
+rather than an exact count. It is reported unmoved, because moving a bound after seeing the result is
+the one thing this unit exists not to do. **The first bucket does not depend on it at all, and the
+first bucket is the one that names a stage.**
+
+### What this is evidence about, and five things it is not
+
+**It is evidence** that this library's sensitivity on aligned, on-grid, single-signal synthetic slots
+crosses 50 per cent near **-19.5 dB**, about **1.5 dB short** of the figure `PHASE_PLAN.md` names; that
+it never manufactures a message, at any ratio, in 3519 trials or on empty air; and that the loss is
+after the search and inside soft-symbol quality.
+
+**It is not evidence about:**
+
+1. **Impaired air.** Everything here is aligned to the block grid and on a bin centre, alone in the
+   passband, with no drift. **The impaired ladder was unit 221's named drop candidate and was dropped
+   whole.** Unit 218 measured the impairments separately at its own trial counts and found each
+   costing under one rung; that is not re-measured here.
+2. **The published figure itself.** The QEX paper is not on this machine, so **-21 dB and the 50 per
+   cent are an assumption taken from the plan**, honestly labelled, and everything above is read
+   against them rather than against a source that was opened.
+3. **Criterion 3's 760 of 1298.** Nothing here touches the reference WAVs, and no number here is
+   comparable to that one.
+4. **Anything reaching a radio or a screen.** Nothing here opens a device, a stream, a port or a file.
+   The encoder ran thousands of times tonight to build samples in memory and nowhere else.
+5. **The CW decoder.**
+
+### Divergences from upstream
+
+**None added, and none was expected.** No library file changed. The count stands at **twenty-five**.

@@ -281,9 +281,31 @@
     AND THE SAME LINE A FOURTH TIME. NOTHING IN 0.10.4 IS A STEP 6 RESULT. Step 6 wants a
     reproducible curve, a verdict against the published figure, and graceful degradation; unit 220
     took none of the three and claims none of them.
+
+    0.10.4 -> 0.10.5, UNIT 221, AND THIS IS THE ONE THAT DOES TAKE STEP 6. Tonight measured the
+    sensitivity curve step 6 exists for: fourteen rungs from -10 dB to -30 dB, one decibel apart
+    through the collapse, 51 messages, 306 trials on every rung the verdict is read from, 3519 slot
+    decodes, drawn TWICE IN TWO SEPARATE PROCESSES and byte-identical between them.
+
+    A PATCH RATHER THAN A MINOR, AND THE REASON IS THE POINT OF THE NIGHT. NO LIBRARY FILE CHANGED.
+    Not one threshold moved, not one iteration bound rose, not one limit widened. The library gains
+    EVIDENCE and not a capability, which is unit 211's precedent and units 217's, 218's, 219's and
+    220's. An operator's screen would show exactly what it showed under 0.10.4.
+
+    AND THE LINE THAT KEEPS THIS HONEST, WHICH TONIGHT IS THE OPPOSITE OF THE ONE ABOVE. STEP 6 DID
+    NOT CLOSE. Criteria 1 and 3 are met - the curve exists, it reproduces exactly, and the wrong-
+    message count is ZERO at all fourteen rungs over 3519 trials and on eighteen empty slots.
+    CRITERION 2 IS NOT MET: 13 of 306 at a delivered -21.001 dB, 4.2 per cent, 95 per cent interval
+    2.5 to 7.1, against a band fixed in writing before the run at 40 per cent. Recorded by name as
+    HM-OPEN-067. The 50 per cent crossing is near -19.5 dB, so this receiver is about 1.5 dB short,
+    and the census says the search is not the stage - 7 of 526 failures found nothing at the true
+    alignment and the other 98.7 per cent were found and too damaged for the code to close.
+
+    A SHORTFALL MEASURED IS WHAT THIS STEP IS FOR. PHASE_PLAN.md: "if the number falls short, the
+    step has done its job."
   -->
   <PropertyGroup>
-    <Version>0.10.4</Version>
+    <Version>0.10.5</Version>
   </PropertyGroup>
 
   <!--

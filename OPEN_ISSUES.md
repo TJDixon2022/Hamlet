@@ -4,6 +4,66 @@ Questions with owner and severity. `owner` is who must act next. Format in
 `CLAUDE.md` §3.
 
 ---
+id: HM-OPEN-067
+status: open
+owner: claude
+raised: 2026-09-02
+severity: blocks
+blocks: step 6 criterion 2 — decode rate at -21 dB comparable to the published figure
+refs: PHASE_PLAN.md step 6, unit 221, src/Ft8Sharp/porting-notes.md "Step 6's sensitivity curve"
+---
+
+**Step 6's criterion 2 is NOT MET and this entry is the record of it by name,
+under the plan's ruling that recorded is not dropped.** Unit 221 measured the
+curve, and criteria 1 and 3 are met; this is the one that is not.
+
+**The number.** At a delivered **-21.001 dB**: **13 of 306, 4.2 per cent, 95 per
+cent Wilson interval 2.5 to 7.1.** Against the verdict band fixed in writing and
+committed before the run — 40 per cent or better MET, under 25 per cent NOT MET
+— it is **NOT MET**. It reproduces unit 218's diagnostic of 2 of 52 on six times
+the trials.
+
+**What it would have shown if met.** That this port hears as weakly as the
+protocol allows, and therefore that a quiet band showing nothing on Hamlet's
+screen is a quiet band rather than a deaf receiver. That is the whole reason step
+6 exists: `PHASE_PLAN.md` says *a port that decodes at -15 dB and calls itself
+finished is broken*.
+
+**How far short, which is a smaller number than anyone expected.** The 50 per
+cent crossing, interpolated between 81.0 per cent at -19.0 dB and 23.9 at -20.0,
+is near **-19.5 dB**. **About 1.5 dB short**, not the two to three unit 218's
+two-decibel ladder suggested. A decoder losing a decibel and a half is losing
+something small and specific.
+
+**Where the loss is, so this entry carries an address rather than a rate.** All
+526 failing trials at -20 and -21 were bucketed. **The search is not the stage:**
+7 of 526 — 1.3 per cent — found nothing at the true alignment, and in the other
+98.7 per cent the transmission was found and the ratios extracted there were too
+damaged for the code to close. At -20 dB the trials that returned agree with the
+true codeword at **mean 157.0 of 174** and the trials found-and-failed at **mean
+147.3**. **Ten bits out of 174.**
+
+**What it would take.** In the order the evidence points:
+
+1. **Soft-symbol extraction and scaling, against the pin.** The census says the
+   loss is here and nowhere else. A fidelity re-read of `Ft8SoftSymbols` against
+   upstream's own extraction and normalisation — not a tuned constant, and unit
+   216 refused tuning in writing.
+2. **The belief propagation's own arithmetic and its iteration bound**, read
+   against the pin for fidelity rather than raised to buy decodes.
+3. **`HM-OPEN-065`, the reference decoder.** Cited, not re-raised. It is the only
+   instrument on the table that could say whether upstream's own decoder hears
+   what this one cannot at the same ratio on the same samples, which would turn
+   *this port is 1.5 dB short* into *this port is 1.5 dB short of upstream* or
+   *upstream is short too and the figure is quoted differently*. It is still
+   owner-class: a compiler run.
+
+**What this entry is not.** It is not a request for a ruling and not a request to
+move the band. The band was the arbiter's, fixed before the run, and the raw
+rate and its trial count are published beside it so the owner can apply his own
+reading of *comparable* and overrule it.
+
+---
 id: HM-OPEN-066
 status: open
 owner: claude
