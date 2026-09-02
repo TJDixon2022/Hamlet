@@ -72,6 +72,73 @@ public class UpstreamSynthesisInventoryTests
     }
 
     /// <summary>
+    /// Where step 3's third exit criterion actually stands, written down where it cannot be
+    /// mistaken for something else.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// <b>The criterion says: audio synthesis produces a signal the reference decoder decodes.</b>
+    /// The reference decoder is <c>decode_ft8</c>, a different program from the generator and a
+    /// materially larger build — it pulls in the FFT. The owner's script builds the generator and
+    /// only the generator. <b>A unit cannot build it</b>: the permission scope has no rule under
+    /// which a unit runs a compiler or a batch file, which is owner-class under <c>ARBITER.md</c> §6
+    /// and has been a standing note with the owner since unit 210.
+    /// </para>
+    /// <para>
+    /// <b>So on this machine criterion 3 is NOT MET ON ITS OWN TERMS, and unit 212 does not claim
+    /// it.</b> What was taken instead is two things, and neither of them is the criterion:
+    /// </para>
+    /// <list type="number">
+    /// <item><see cref="Ft8WaveformComparisonTests"/> — every sample of fifty-one messages held
+    /// against the WAV upstream's own generator writes for the same message. If our samples are
+    /// upstream's samples then our audio <em>is</em> the audio every FT8 decoder already decodes,
+    /// which is a stronger statement about the synthesizer than one successful decode on every
+    /// point but the one below.</item>
+    /// <item><see cref="Ft8WaveformTests.EverySymbolOfEveryMessageIsRecoveredBackOutOfTheWaveform"/>
+    /// — the frequency measured back out of our own samples and all seventy-nine symbols recovered
+    /// from it, which unlike the comparison runs on a machine with no clone.</item>
+    /// </list>
+    /// <para>
+    /// <b>The one thing neither of them shows.</b> Nothing has demodulated this waveform — not this
+    /// project, not upstream, not anybody. No candidate search has run over it, no soft symbol has
+    /// been formed from it, no belief propagation has read one. That is steps 4 and 5 and this unit
+    /// claims none of it.
+    /// </para>
+    /// <para>
+    /// <b>This test passes either way and asserts nothing about the outcome</b>, because the
+    /// decoder's arrival on a later machine must close the criterion rather than turn this red.
+    /// </para>
+    /// </remarks>
+    [RequiresReferenceCloneFact]
+    public void WhereCriterionThreeStandsOnThisMachineIsStatedRatherThanImplied()
+    {
+        var decoder = Path.Combine(RequireReachableClone(), @"build\decode_ft8.exe");
+        var present = File.Exists(decoder);
+
+        _output.WriteLine("criterion 3: audio synthesis produces a signal the reference decoder decodes.");
+        _output.WriteLine($"the reference decoder   : {decoder}");
+        _output.WriteLine($"built on this machine   : {present}");
+
+        if (present)
+        {
+            _output.WriteLine(
+                "CRITERION 3 CAN BE MET ON ITS OWN TERMS on this machine: run the decoder against a "
+                + "WAV this library's synthesizer wrote and report what it decoded.");
+            return;
+        }
+
+        _output.WriteLine("CRITERION 3 IS NOT MET ON ITS OWN TERMS.");
+        _output.WriteLine("    the reference decoder is not built here;");
+        _output.WriteLine("    building it needs a compiler run, for which the permission scope has");
+        _output.WriteLine("    no rule — owner-class under ARBITER.md section 6, a standing note");
+        _output.WriteLine("    with the owner since unit 210;");
+        _output.WriteLine("    what was taken instead is sample-level agreement with upstream's own");
+        _output.WriteLine("    WAV, plus tone recovery out of our own waveform;");
+        _output.WriteLine("    and the one thing neither shows is that NO DEMODULATOR HAS BEEN RUN");
+        _output.WriteLine("    AGAINST THIS WAVEFORM BY ANYBODY. That is steps 4 and 5.");
+    }
+
+    /// <summary>
     /// Task 2, question 5: the synthesis itself, read out of the pin as structure rather than as
     /// values, so that the port can be authored against it and a re-pin cannot move it silently.
     /// </summary>
