@@ -1,9 +1,9 @@
 PHASE: Hamlet hears FT8 off the radio and displays the decoded text on screen
 PHASE_SET: 2026-08-31
-STEP: 1 | partial | the library exists and its tables are proven
+STEP: 1 | done | the library exists and its tables are proven
 STEP: 2 | done | messages round-trip through 77 bits
-STEP: 3 | blocked | a valid FT8 signal can be produced
-STEP: 4 | not started | signals are found in noise
+STEP: 3 | done | a valid FT8 signal can be produced
+STEP: 4 | partial | signals are found in noise
 STEP: 5 | not started | a found signal becomes a message
 STEP: 6 | not started | sensitivity meets the published threshold
 STEP: 7 | not started | Hamlet displays decoded FT8
@@ -145,3 +145,33 @@ ACCOMPLISHED: Tim asked a question with a compiler install rather than with a se
 FATE: executed
 STATE_AFTER: blocked
 STATE_WHY: Criteria 1, 4 and 5 are met with measured evidence, but must-pass criterion 2 never ran because upstream's generator dies with STATUS_STACK_OVERFLOW and the fix is a linker flag in a file the unit is forbidden to edit, with the harness also refusing to run the build, so no further effort by a unit can close it without an owner decision or change.
+
+## UNIT 1 - STEP 3
+
+STEP: 3
+APPROACH: synthesize FT8 audio from the 79 tones and compare the waveform sample for sample against the WAV upstream writes for the same message
+HIT: section 4 wants a ruling: no - section 4 is blank, which is CLAUDE_CODE.md section 8's empty-is-a-real-answer
+MOVE: cut down
+WHY: Step 3's four must-pass criteria are met but its third named deliverable, audio synthesis, has never been built, and step 4 has no fixtures without it. Criterion 3 as written needs the reference DECODER, which is not built here and which a unit cannot build - the permission scope has no rule for a compiler and that is owner-class - so the criterion is cut down rather than chased: the evidence taken is sample-level agreement with upstream's own WAV plus tone recovery out of our own waveform, and the report is required to say in terms that criterion 3 is not met on its own terms.
+DECIDED: That the synthesizer is built under step 3 rather than as step 4's first night, because the plan names it as step 3's deliverable while step 4's criteria are about finding signals that already exist. That criterion 3 is cut down and its substitute named, rather than declared unachievable or reported as met on task 4's evidence. That the comparison measures the maximum sample difference and reports it BEFORE any bound is asserted, because samples are floating point and a tolerance chosen first is where a laundered failure gets in; a maximum above 2 counts is a finding, not a tolerance to widen. That task 6, an independent second implementation of the waveform, is the drop candidate, droppable ONLY where task 4 ran and agreed and NOT where it skipped or disagreed. That Ft8Sharp goes 0.5.2 to 0.6.0 and the root takes a patch.
+LICENCE: PHASE_PLAN.md's step 3, approved by Tim 2026-08-31, whose Delivers line names audio synthesis and whose third criterion is the nice-to-pass one this unit cuts down; step 4's dependency on step 3 for the fixtures; the plan's 2026-09-01 ruling on what a unit runs, which forbids the full suite; the plan's ruling that reference material is read from the pinned clone at run time and skipped when absent, applied to the WAVs the generator writes; the plan's first named boundary, the encoder as a test oracle never routed to a transmitter, made this unit's first prohibition; HM-DEC-152 and HM-DEC-150 for the versions; ARBITER.md section 3 for the cut down and section 6 for what is refused - invoking a compiler, editing tools. Per section 5: the sandbox again refused C:\Source\ft8_lib, so no claim here about upstream's synthesis is the arbiter's own reading, and no route around was attempted.
+COST: 16.1859135
+ACCOMPLISHED: Hamlet's FT8 library stops being a thing that computes numbers and becomes a thing that makes a signal. Tonight it turns the seventy-nine tones unit 211 proved correct into the actual audio an FT8 transmission is - and then holds every one of those samples against the audio Goba's own program writes for the same message, on this machine, message by message. If they agree, what this library produces is not merely something we believe is FT8: it is the same waveform every decoder in the world already decodes, and step 4 gets its test signals from a synthesizer checked against the world rather than against itself. Tim also gets a straight answer on the one criterion this machine cannot satisfy - the reference decoder is not built here, a unit cannot build it, and the report says so in those words rather than quietly counting something else as the same thing.
+FATE: executed
+STATE_AFTER: partial
+STATE_WHY: All four must-pass criteria are met with quoted measurements, 237546 parity checks with zero failures, 51 of 51 symbol sequences identical, 222 tests with 0 failed, and 118 attribution paths with none under the Hamlet folders, but the nice-to-pass criterion 3 is not met on its own terms since decode_ft8.exe does not exist on this machine, and the one count maximum sample agreement with upstream's WAV is strong evidence of a valid signal yet is not the reference decoder decoding it.
+
+## UNIT 1 - STEP 4
+
+STEP: 4
+APPROACH: build the FFT and the waterfall spectrogram as step 4 substrate and prove the spectrum against an independent naive DFT
+HIT: section 4 wants a ruling: no - section 4 is blank, which is CLAUDE_CODE.md section 8's empty-is-a-real-answer
+MOVE: continue
+WHY: Steps 1, 2 and 3 are closed - step 3 met all four must-pass criteria in unit 212 and the plan's 2026-09-01 tier ruling, which names that unit, says an unmet nice-to-pass criterion does not hold a step open - so step 4 is the only step this phase can move, and it is at 0 of its three subject criteria because the frequency-domain representation all three need does not exist anywhere in the tree. This unit takes the representation and leaves the search to the next, so that a signal that is not found has one home rather than two.
+DECIDED: That step 3 is closed on the plan's tier ruling despite PHASE_STATUS.md reading blocked and the last outcome entry reading partial, because that entry's own STATE_WHY is the definition of done under the ruling - all four must-pass met, criterion 3 nice-to-pass and unreachable - and the stale files are the loop's to fix and are carried as known item 6 rather than hand-edited. That the night stops at the spectrum and does not reach Costas correlation, candidate search or ranking, because step 4's three subject criteria all sit on a representation that does not exist and building both layers in one night gives a failed detection two possible homes; the plan's own words are that the answer to this is too big is a second unit. That the FFT is WRITTEN FROM THE MATHEMATICS AND NOT PORTED from the one ft8_lib vendors, because that is a third party's separate copyright and licence and adding it t
+LICENCE: PHASE_PLAN.md's step 4 section and its five exit criteria, approved by Tim 2026-08-31, whose Delivers line names FFT and the waterfall representation as the first two of its four deliverables; the plan's 2026-09-01 ruling on when a step is done, which is what closes step 3 and opens step 4, and its requirement that every unmet nice-to-pass criterion is recorded in OPEN_ISSUES.md by name, which is what licenses task 7 part 1; the plan's ruling that small units are the default and that a second unit beats a sacrifice, which licenses stopping at the spectrum; the plan's step 1 must-pass criterion of no third-party runtime dependencies and its mechanical boundary test, together with the One repository ruling that gives Ft8Sharp one LICENSE and a NOTICE crediting Goba - those are what forbid the vendored FFT; the plan's ruling that inheriting Goba's bugs is accepted and that step 6 is what wo
+COST: 23.139314500000008
+ACCOMPLISHED: For thirteen units this library has only been able to speak. It can pack a callsign into 77 bits, encode a codeword, lay out seventy-nine tones, and turn those tones into audio that agrees with Goba's own program to one count in a nine-million-sample comparison - and it has never once looked at a sample and asked what was in it. Tonight it looks. It gets an FFT written from the mathematics rather than borrowed from anyone, checked against the defining sum computed independently in the tests, with the error measured and printed before any bound is asserted. And then the thing that makes it worth having: Tim gets a number for the first time in the receive direction - out of a signal this library built itself, at a frequency and a moment it chose, how many of the tones can it find again. What that does not claim is written into the report and into the notes in the same breath, because nothi
+FATE: executed
+STATE_AFTER: partial
+STATE_WHY: The two housekeeping criteria are met with quoted figures, 348 tests with 347 passed and 0 failed and 1 intended skip, and 133 attribution paths with none under the Hamlet trees plus channel tests green at 55 and 13, while all three subject criteria of finding a signal, finding twenty across the passband, and stable candidate ranking remain unmet and by the unit's own account unaimed at, since nothing searched, scored or ranked.

@@ -99,6 +99,15 @@ rem ============================================================
 
 setlocal
 
+rem  THIS SCRIPT'S OWN DIRECTORY, CAPTURED BEFORE ANY shift.
+rem  PHASE_UPLIFT.md section 12: `shift` moves %0 along with the numbered
+rem  arguments, so afterwards `%~dp0` resolves to the CALLER's directory
+rem  and the sibling script goes missing - and this script would then
+rem  report a missing field about a file that has one, which is the exact
+rem  fault readkey.bat was introduced to stop.
+set "HERE=%~dp0"
+
+
 set "RC=0"
 set "MINUTES=12"
 set "REPO="
@@ -183,7 +192,11 @@ if not exist "%STATUS%" (
 
 rem --- UPDATED, read from the file ------------------------------
 set "RAW="
-for /f "usebackq tokens=1,* delims=:" %%A in (`findstr /b /c:"UPDATED:" "%STATUS%"`) do set "RAW=%%B"
+rem  READ THROUGH readkey.bat, NOT findstr. PHASE_UPLIFT.md section 12.
+rem  This reader is the one the section is sharpest about: a watchdog that
+rem  reports UNKNOWN about a file whose UPDATED is present sends somebody
+rem  to fix what is not broken, and CR-only or a BOM is enough to do it.
+call "%HERE%readkey.bat" "%STATUS%" "UPDATED" RAW
 if not defined RAW (
   echo   UNKNOWN - no UPDATED line in PROJECT_STATUS.md
   echo   The field is required by STATUS_PROTOCOL.md section 3. Its

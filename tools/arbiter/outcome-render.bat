@@ -69,6 +69,13 @@ rem ============================================================
 
 setlocal
 
+rem  THIS SCRIPT'S OWN DIRECTORY, CAPTURED BEFORE ANY shift.
+rem  PHASE_UPLIFT.md section 12: `shift` moves %0 too, so afterwards
+rem  `%~dp0` resolves to the CALLER's directory and the sibling goes
+rem  missing.
+set "HERE=%~dp0"
+
+
 set "RC=0"
 set "FILE="
 set "OUT="
@@ -102,8 +109,10 @@ if not exist "%FILE%" (
   goto :end
 )
 
-findstr /b /c:"PHASE:" "%FILE%" >nul 2>&1
-if errorlevel 1 (
+rem  READ THROUGH readkey.bat, NOT findstr. PHASE_UPLIFT.md section 12.
+set "PHASEHDR="
+call "%HERE%readkey.bat" "%FILE%" "PHASE" PHASEHDR
+if not defined PHASEHDR (
   echo   MALFORMED - no PHASE: line. Nothing below it can be trusted.
   set "RC=1"
   goto :end

@@ -271,7 +271,11 @@ rem  window that labels itself from its folder name is the specific
 rem  failure this whole repository exists to prevent.
 set "UNIT_PROJECT="
 if exist "%ROOT%\PROJECT_CARD.md" (
-  for /f "usebackq tokens=1,* delims=:" %%A in (`findstr /b /c:"PROJECT:" "%ROOT%\PROJECT_CARD.md"`) do set "UNIT_PROJECT=%%B"
+  rem  READ THROUGH readkey.bat, NOT findstr. PHASE_UPLIFT.md section 12.
+  rem  PROJECT: is the FIRST field of PROJECT_CARD.md, which is precisely
+  rem  the line a byte-order mark hides from findstr - and this value is
+  rem  the gate the unit prompt opens with.
+  call "%HERE%readkey.bat" "%ROOT%\PROJECT_CARD.md" "PROJECT" UNIT_PROJECT
 )
 if defined UNIT_PROJECT call :trimproj
 if not defined UNIT_PROJECT (

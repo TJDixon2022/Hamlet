@@ -71,6 +71,15 @@ rem ============================================================
 
 setlocal
 
+rem  THIS SCRIPT'S OWN DIRECTORY, CAPTURED BEFORE ANY shift.
+rem  PHASE_UPLIFT.md section 12: `shift` moves %0 along with the numbered
+rem  arguments, so afterwards `%~dp0` resolves to the CALLER's directory
+rem  and the sibling script goes missing - and this script would then
+rem  report a missing field about a file that has one, which is the exact
+rem  fault readkey.bat was introduced to stop.
+set "HERE=%~dp0"
+
+
 set "RC=0"
 set "SINCE=%~1"
 set "REPO=%~2"
@@ -102,7 +111,8 @@ echo ============================================================
 
 rem --- the unit number, read rather than typed -----------------
 set "UNIT=unknown"
-for /f "usebackq tokens=2 delims=: " %%U in (`findstr /b /c:"WORK_INSTRUCTION:" "%REPO%\PROJECT_STATUS.md" 2^>nul`) do set "UNIT=%%U"
+rem  READ THROUGH readkey.bat, NOT findstr. PHASE_UPLIFT.md section 12.
+call "%HERE%readkey.bat" "%REPO%\PROJECT_STATUS.md" "WORK_INSTRUCTION" UNIT
 
 rem --- the date, measured --------------------------------------
 set "TODAY="
@@ -146,7 +156,7 @@ rem  a picture, and acting on a picture rather than a measurement
 rem  is the failure this whole unit exists to remove.
 echo.
 echo Running the reload, so the picture is measured now...
-call "%~dp0reload.bat" "%REPO%" --out "%STAGE%\reload.txt" >nul
+call "%HERE%reload.bat" "%REPO%" --out "%STAGE%\reload.txt" >nul
 if not exist "%STAGE%\reload.txt" (
   echo   NOTE: the reload produced nothing. The package still goes, and
   echo   this line says the arbiter will be reading without one.

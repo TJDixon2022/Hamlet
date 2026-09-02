@@ -67,6 +67,14 @@ rem  only fatal when it blocks something the unit is obliged to do.
 Bash(cmd //c tools\arbiter\validate-output.bat:*)
 Bash(cmd /c tools\arbiter\validate-output.bat:*)
 Bash(tools\arbiter\validate-output.bat:*)
+Bash(cmd.exe /c tools\arbiter\validate-output.bat:*)
+Bash(cmd.exe //c tools\arbiter\validate-output.bat:*)
+
+rem  FOUR SPELLINGS, AND THAT IS THE POINT. Units have reached for
+rem  cmd //c, cmd /c and cmd.exe /c on different runs. Each unseen
+rem  spelling is another exit 4 on a unit that did its work. Add any
+rem  new one that appears in .run-unit\denials.txt rather than
+rem  expecting the model to guess which form is permitted.
 
 rem  --- added 2026-09-01, second pass ----------------------------
 rem  A UNIT MUST BE ABLE TO UNDO ITS OWN STAGING. Unit 208 committed

@@ -306,37 +306,28 @@ rem  rather than only on screen.
 call :judges4
 
 rem --- 4d. are the two status files telling the truth? ----------
-rem  AFTER the unit and BEFORE the record, so a failure lands in
-rem  PHASE_OUTCOME.md attached to the unit that caused it rather than
-rem  only on a screen nobody was watching at three in the morning.
+rem  PHASE_UPLIFT.md section 11. AFTER the unit and BEFORE the record,
+rem  so the verdict rides into PHASE_OUTCOME.md attached to the unit
+rem  that caused it rather than onto a screen nobody was watching.
 rem
-rem  IT DOES NOT HALT THE PHASE, AND THAT IS THE RULING IT IS BUILT
-rem  TO. A status file is a report about work, not the work. Throwing
-rem  away a good unit because its caption carried a bad timestamp is a
-rem  worse outcome than carrying the fault forward with its name on it.
-rem  The owner sees it twice: in the ledger, and on the unit's entry.
+rem  IT DOES NOT HALT THE PHASE. A status file is a report about work
+rem  and not the work; throwing away a good unit because its caption
+rem  carried a bad timestamp is the worse outcome. The fault is carried
+rem  forward with its name on it instead.
 rem
-rem  THE LEDGER LINE IS A SECOND LINE, NEVER A CORRECTION. run-unit.bat
-rem  has already written this unit's row by the time this runs, and
-rem  ledger.bat is append-only by design - its own header says a run
-rem  that went wrong gets a second line saying so, not a corrected
-rem  first one.
-set "SCNOTE="
+rem  THE VERDICT RIDES ON FATE, which section 11 names. FATE already
+rem  says what happened to the RUN as opposed to the step - `executed`
+rem  or `never ran` - so a status file that failed validation is the
+rem  same kind of fact about the same run, and it appends rather than
+rem  replaces so the run's own fate is not lost behind it.
 call "%HERE%status-check.bat" "%ROOT%"
 set "SCRC=%ERRORLEVEL%"
 if "%SCRC%"=="0" goto :statusok
 echo.
 echo       *** status-check exit %SCRC% - a status file is wrong. The phase
 echo       *** is NOT halted. The fault is recorded against unit %ITER%.
-set "SCNOTE=  [status-check exit %SCRC%: a status file failed validation - see the run above]"
-for /f "usebackq delims=" %%T in (`powershell -NoProfile -Command "Get-Date -Format s"`) do set "SCSTAMP=%%T"
-call "%HERE%ledger.bat" "%ITER%" "%SCSTAMP%" "%SCSTAMP%" "status-check" "status-check exit %SCRC%: PROJECT_STATUS.md or PHASE_STATUS.md failed validation; the phase was not halted" "0" "%ROOT%" >nul
+set "RUNFATE=%RUNFATE%; status-check exit %SCRC% - a status file failed validation"
 :statusok
-
-rem  The note rides on HIT, which is the entry field for what the unit
-rem  ran into. It is appended rather than substituted so the arbiter's
-rem  own account of what it hit is not overwritten by a machine fact.
-set "A_HIT=%A_HIT%%SCNOTE%"
 
 rem --- 5. the record, with the arbiter's judgment ---------------
 echo.
@@ -362,19 +353,13 @@ call :scrub A_DID
 call :scrub J_WHY
 call "%HERE%outcome-append.bat" "%ITER%" "%A_STEP%" "%J_STATE%" "%A_APPROACH%" "%A_HIT%" "%A_MOVE%" "%A_WHY%" "%A_DECIDED%" "%A_LICENCE%" "%RUNCOST%" "%A_DID%" "%ROOT%\PHASE_OUTCOME.md" "%RUNFATE%" "%J_WHY%"
 set "OARC=%ERRORLEVEL%"
-rem  FLAT CONTROL FLOW, NOT A PARENTHESISED BLOCK, AND NOT BY TASTE.
-rem  This file's own header records a `)` inside forwarded prose closing
-rem  an if-block early and cmd running the next word as a command. The
-rem  errorlevel is captured to a variable on the line after the call for
-rem  the same family of reason: %ERRORLEVEL% inside a block is expanded
-rem  when the block is PARSED, not when it runs.
 if not "%OARC%"=="0" goto :appendfailed
 
-rem  THE CARD FOLLOWS THE RECORD, AND ONLY WHEN THE RECORD MOVED.
-rem  PHASE_OUTCOME.md's header is the authority on where the phase
-rem  stands; PHASE_STATUS.md is what the panel paints. A failed append
-rem  means the authority did not move, so the card must not either -
-rem  copying from an unchanged header would paint the previous unit's
+rem --- 5a. the card follows the record ---------------------------
+rem  PHASE_UPLIFT.md section 5. Guarded on the append having succeeded,
+rem  because PHASE_OUTCOME.md's header is the authority on where the
+rem  phase stands and a failed append means the authority did not move.
+rem  Copying from an unchanged header would paint the previous unit's
 rem  position as though this unit had confirmed it.
 call :phasesteps
 goto :appended
@@ -384,8 +369,8 @@ echo.
 echo   *** outcome-append FAILED, exit %OARC%. The phase position
 echo   *** did not move. Stop 10 will fire on the next reload and it
 echo   *** will not be the truth about the work.
-echo   *** The card was NOT updated: the record is the authority and it
-echo   *** did not change.
+echo   *** The card was NOT updated: the record is the authority and
+echo   *** it did not change.
 echo.
 
 :appended
@@ -401,6 +386,14 @@ setlocal enabledelayedexpansion
 set "V=!%~1!"
 if not defined V ( endlocal & goto :eof )
 set "V=!V:"='!"
+rem  AND CAP IT. cmd.exe refuses a command line over 8191 characters
+rem  with "The input line is too long." Measured 2026-09-01 in Hamlet:
+rem  outcome-append failed with exactly that on unit 211, so the phase
+rem  memory recorded nothing while the unit had succeeded. Eight prose
+rem  fields go into one call and the arbiter writes at length, so any
+rem  one of them left uncapped can sink the whole record. 900 each
+rem  keeps the worst case near 7200 with the paths and the flags.
+set "V=!V:~0,900!"
 endlocal & set "%~1=%V%"
 goto :eof
 
@@ -981,6 +974,54 @@ for /f "delims=" %%F in ('dir /b "%SCRATCH%" 2^>nul') do set "SCRATCHLEFT=%%F"
 if defined SCRATCHLEFT echo       WARNING: %SCRATCH% could not be emptied - a file in it is held open
 goto :eof
 
+rem ============================================================
+rem  The heartbeat. PHASE_PLAN.md step 4, and 054's dropped task 7.
+rem ============================================================
+rem  THE CARD READS THIS AND NOTHING ELSE SAYS THE LOOP IS TURNING.
+rem  loopBeatView in PROJECT_ANNUNCIATOR.html reads HEARTBEAT: out of
+rem  PHASE_STATUS.md: fresh within CFG.loopBeatMin is `loop turning`,
+rem  and absent, unparseable, ahead of the clock or older than the
+rem  threshold are all `loop stopped`. Absent is read as stopped and
+rem  NEVER as turning, which is what makes removing the beat on the
+rem  way out an honest act rather than a hole.
+rem
+rem  THE CLOCK IS READ, NEVER COMPOSED. Get-Date -Format is the
+rem  reading; CLAUDE_CODE.md section 11 records seven consecutive
+rem  composed timestamps in this repository, and CPS-DEC-029 is what
+rem  the panel does to one that lands ahead of its own clock.
+rem
+rem  THE INSERT RULE, proved by 054 against this file's actual bytes
+rem  in tools\tests\heartbeat.test.js: replace an existing HEARTBEAT:
+rem  line in the header IN PLACE, otherwise insert immediately above
+rem  the FIRST ^STEP: line, and NEVER APPEND. Appended below the
+rem  terminator the key is collected into strandedNames and the whole
+rem  file returns not readable, which takes the entire phase region
+rem  off the card.
+rem
+rem  THE ANCHOR IS ^STEP: AND NOT THE SUBSTRING. `CURRENT_STEP: 4`
+rem  contains `STEP:` and comes FIRST in the real file, so what
+rem  findstr "STEP:" would find is the middle of the CURRENT_STEP
+rem  line - splitting it into a dangling `CURRENT_` and a bogus sixth
+rem  step, and leaving the card unable to say which step is current.
+rem  054's suite asserts that trap; this is the code it was asserted
+rem  against.
+rem
+rem  THE HEADER IS THE LEADING RUN OF KEY: VALUE LINES, ending at the
+rem  first line that is not one - STATUS_PROTOCOL.md 2.1's parse rule,
+rem  which is the same rule the panel's parser uses. Only that region
+rem  is searched, so a HEARTBEAT: written in the prose below the rule
+rem  is neither replaced nor trusted.
+rem
+rem  BYTES OUTSIDE THE ONE LINE DO NOT MOVE. The file is read as
+rem  bytes, its BOM and its newline are detected and reproduced, and
+rem  it is written back with the same encoding - because Get-Content
+rem  piped to Set-Content would rewrite every line ending in the file
+rem  and 054 asserted that nothing else moved.
+rem
+rem  NO PHASE_STATUS.md, NO BEAT. PHASE_CONTROL.md section 4 gives
+rem  that file to the arbiter and the launcher does not invent one:
+rem  a file this routine composed would carry a phase, a current step
+rem  and a step list that nobody read off anything.
 rem ============================================================
 rem  The heartbeat. PHASE_PLAN.md step 4, and 054's dropped task 7.
 rem ============================================================

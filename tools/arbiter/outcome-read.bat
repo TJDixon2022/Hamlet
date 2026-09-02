@@ -60,6 +60,13 @@ rem ============================================================
 
 setlocal
 
+rem  THIS SCRIPT'S OWN DIRECTORY, CAPTURED BEFORE ANY shift.
+rem  PHASE_UPLIFT.md section 12: `shift` moves %0 too, so afterwards
+rem  `%~dp0` resolves to the CALLER's directory and the sibling goes
+rem  missing.
+set "HERE=%~dp0"
+
+
 set "RC=0"
 set "FILE=%~1"
 set "WANTED="
@@ -90,8 +97,13 @@ if not exist "%FILE%" (
 )
 
 rem --- is it a phase outcome file at all? ------------------------
-findstr /b /c:"PHASE:" "%FILE%" >nul 2>&1
-if errorlevel 1 (
+rem  READ THROUGH readkey.bat, NOT findstr. PHASE_UPLIFT.md section 12:
+rem  `PHASE:` is the FIRST line of this file, which is exactly the line a
+rem  byte-order mark hides from findstr - so this guard would call a
+rem  perfectly good outcome file MALFORMED.
+set "PHASEHDR="
+call "%HERE%readkey.bat" "%FILE%" "PHASE" PHASEHDR
+if not defined PHASEHDR (
   echo   MALFORMED - the file exists but carries no PHASE: line.
   echo   A phase outcome file has a phase header; this one does not,
   echo   so nothing below can be trusted to mean what it looks like.
@@ -100,8 +112,11 @@ if errorlevel 1 (
 )
 
 rem --- the phase header -----------------------------------------
-for /f "usebackq tokens=1,* delims=:" %%A in (`findstr /b /c:"PHASE:" "%FILE%"`) do echo   PHASE     :%%B
-for /f "usebackq tokens=1,* delims=:" %%A in (`findstr /b /c:"PHASE_SET:" "%FILE%"`) do echo   PHASE_SET :%%B
+set "PHASESET="
+call "%HERE%readkey.bat" "%FILE%" "PHASE_SET" PHASESET
+echo   PHASE     : %PHASEHDR%
+if defined PHASESET echo   PHASE_SET : %PHASESET%
+if not defined PHASESET echo   PHASE_SET : not recorded
 echo.
 
 rem --- the position, step by step --------------------------------

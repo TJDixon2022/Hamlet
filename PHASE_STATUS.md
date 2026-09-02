@@ -1,13 +1,13 @@
 PHASE: Hamlet hears FT8 off the radio and displays the decoded text on screen
 PHASE_SET: 2026-08-31
 DESCRIPTION: Port ft8_lib to a managed FT8 decoder and wire it to Hamlet's audio and display
-CURRENT_STEP: 1
+CURRENT_STEP: 4
 WORK_INSTRUCTION: 213 - the library learns to see, and the energy is found where the tones are known to be
-HEARTBEAT: 2026-09-01 20:57:53
-STEP: 1 | partial | the library exists and its tables are proven
+HEARTBEAT: 2026-09-01 21:42:43
+STEP: 1 | done | the library exists and its tables are proven
 STEP: 2 | done | messages round-trip through 77 bits
-STEP: 3 | blocked | a valid FT8 signal can be produced
-STEP: 4 | not started | signals are found in noise
+STEP: 3 | done | a valid FT8 signal can be produced
+STEP: 4 | partial | signals are found in noise
 STEP: 5 | not started | a found signal becomes a message
 STEP: 6 | not started | sensitivity meets the published threshold
 STEP: 7 | not started | Hamlet displays decoded FT8

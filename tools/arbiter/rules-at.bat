@@ -52,6 +52,15 @@ rem ============================================================
 
 setlocal
 
+rem  THIS SCRIPT'S OWN DIRECTORY, CAPTURED BEFORE ANY shift.
+rem  PHASE_UPLIFT.md section 12: `shift` moves %0 along with the numbered
+rem  arguments, so afterwards `%~dp0` resolves to the CALLER's directory
+rem  and the sibling script goes missing - and this script would then
+rem  report a missing field about a file that has one, which is the exact
+rem  fault readkey.bat was introduced to stop.
+set "HERE=%~dp0"
+
+
 set "RC=0"
 set "REPO=%~1"
 if "%REPO%"=="" set "REPO=C:\Source\HamLet"
@@ -101,7 +110,10 @@ if not defined HIGH (
 
 rem --- what the status file currently says -----------------------
 set "CURRENT="
-for /f "usebackq tokens=1,* delims=:" %%A in (`findstr /b /c:"RULES_AT:" "%STATUS%"`) do set "CURRENT=%%B"
+rem  READ THROUGH readkey.bat, NOT findstr. PHASE_UPLIFT.md section 12:
+rem  findstr /b finds only the first field in a CR-only file and fails on
+rem  the first field in a BOM'd one, which between them covers every line.
+call "%HERE%readkey.bat" "%STATUS%" "RULES_AT" CURRENT
 if defined CURRENT call :trim "%CURRENT%"
 
 set "WANT=%HIGH% (%HIGHDATE%)"
