@@ -127,6 +127,83 @@ divergence would live. **Whether this library may hear better than the code it w
 ported from is the owner's ruling and no unit has taken it.** Nothing was tuned and
 no divergence was added; the count stands at twenty-five.
 
+## Unit 223 — the last unit-reachable route is closed by measurement
+
+**Updated in place rather than duplicated.** The entry stays open, stays severity
+*blocks*, and still blocks step 6 criterion 2 by name. What has changed is that
+**route 2 is now finished** and the entry's central claim is a measurement rather
+than an inference.
+
+**The rate has not moved and was re-measured rather than inherited:** the -21 dB
+rung alone, on the same population, seeds, frequency and offset, reads **13 of 306,
+4.2 per cent, at a delivered -21.001 dB, 0 wrong** — a **fourth** process producing
+unit 221's figure exactly.
+
+**Route 2 — the belief propagation and its bound — is now COMPLETE.** Unit 222
+audited `bp_decode` term by term and found the port faithful; what it could not do
+was price the arithmetic *inside* that loop, because **every row of its budget
+shared upstream's `fast_tanh` and `fast_atanh`** and a stage every row shares is a
+stage no row can isolate. Unit 223 replaced them with the real functions, in the
+test project, and asked the same 306 questions:
+
+```
+  A.  as-is                             13 of 306   4.2 %   (2.5 - 7.1)
+  A'. as-is, TRANSCRIBED (control)      13 of 306   4.2 %    0.0 points
+  F.  exact tanh/atanh, 25 iterations   15 of 306   4.9 %   +0.7 points
+  G.  exact tanh/atanh, 100 iterations  17 of 306   5.6 %   +1.3 points
+  H.  an INDEPENDENT soft decoder       17 of 306   5.6 %   +1.3 points
+```
+
+**All three substituted rows lie inside the as-is row's own 95 per cent interval**,
+which is the reading fixed in writing before the run. The approximation is
+nevertheless materially in play — `fast_atanh` caps every check-to-variable message
+at **4.567** against exact arithmetic's 37.43, and **5.58 per cent** of `fast_tanh`
+calls land on its ±4.97 clamp — so **it costs something, and what it costs is two
+decodes in 306.**
+
+**And the claim this entry has rested on since unit 222 is now measured rather than
+inferred.** That unit concluded *the information is not in the ratios* by comparing
+about 31 soft-decoded errors against a correcting power of 17 measured over **hard
+bit flips**, which carry no reliability information — not the same kind of thing,
+and a soft decoder is not bound by its hard-decision limit. Unit 223 measured it
+directly. Over the **292** trials the library failed and the **288** the
+independent decoder failed, at the oracle alignment, scoring each word by
+`sum of ratio times (2*bit - 1)`:
+
+**the true codeword scores higher than the word the decoder settled on in 0.0 per
+cent of them — zero of 292 and zero of 288.** Mean gap **-86.7** and **-86.4**, and
+the least negative gap anywhere is -7.2.
+
+**THE RATIOS THEMSELVES PREFER THE WRONG ANSWER.** No decoder searching them for
+the most likely codeword can recover the message, however patient or however exact.
+That is a fact about the ratios and not about any decoder, and it means
+**criterion 2 is not reachable by any change to the correction stage.**
+
+**The routes, re-ranked a second time:**
+
+1. **Soft-symbol extraction and scaling — DISCHARGED as the stage** by unit 222,
+   and unit 223 adds that its **normalisation is a faithful port too** — ten of
+   twelve terms identical to `ftx_normalize_logl`, the two differences being
+   divergence 23 and a return type — and that upstream's target of 24 sits on a
+   **broad plateau**, with the best of twelve swept values worth one decode and
+   inside the 24 row's own interval.
+2. **The belief propagation and its bound — COMPLETE.** Audited faithful by unit
+   222, priced by unit 223 at two decodes in 306, and shown by an independent
+   decoder over the identical ratios to be **not where the recovery is being lost**.
+   **Nothing further a unit can do lives on this route.**
+3. **`HM-OPEN-065`, the reference decoder — STILL FIRST AND STILL THE ONLY ROUTE
+   LEFT.** Cited, not re-raised, still owner-class because it is a compiler run.
+
+**What follows, and it is named for the owner rather than resolved here.** Two
+routes remain and **both are the owner's**: the reference decoder under
+`HM-OPEN-065`, and the ruling on whether this library may deliberately hear better
+than the code it was ported from. **This unit has taken neither.** It adds a
+**fourth** number to that ruling — exact `tanh` and `atanh`, worth +2 decodes in
+306, beside unit 222's byte-quantised waterfall, 25-iteration bound and
+lowest-order `fast_tanh`. **This is the first night a substituted row plainly
+decoded better and nothing was moved.** No divergence was added; the count stands
+at twenty-five.
+
 ---
 id: HM-OPEN-066
 status: open

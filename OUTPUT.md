@@ -1,374 +1,429 @@
 READ IN THIS ORDER
 
-A. **The phase goal.** Hamlet hears FT8 off the radio and displays the decoded
-   text on screen. Tonight is step 5 of 7 — a found signal becomes a message.
-B. **This step and its exit criteria.** Step 5 has five must-pass criteria: a
-   corrupted codeword within the code's correcting power is recovered and one
-   beyond it fails honestly; a candidate failing CRC is never returned as a
-   decode; **no decode that is present and recoverable is lost**, as the owner
-   amended it on 2026-09-02; `Ft8Sharp` tests green; attribution clean from
-   `2828ab6` with the channel tests green.
-C. **What this report adds, and whether it bears on A or B.** It bears directly
-   on B and it closes it: all five must-pass criteria were measured tonight and
-   all five are met, so **step 5 is closed**. It bears on A only by unblocking
-   it — step 6 can now start, and step 6 is the verdict on steps 1 through 5.
-   Nothing tonight is a sensitivity measurement. This report **raises 2 items**
-   in section 4, neither of them a request for a ruling.
+A. The phase goal. Hamlet hears FT8 off the radio and displays the decoded
+   text on screen. Steps 1 to 5 are done; tonight is the third unit on
+   step 6 of 7 - sensitivity meets the published threshold - and step 7 is
+   not started.
+B. This step and its exit criteria. Step 6 has five must-pass criteria.
+   Four are met and were re-measured tonight: the reproducible fourteen-rung
+   curve stands as units 221 and 222 measured it, wrong messages are zero
+   everywhere including all 5202 substituted slot decodes taken tonight,
+   Ft8Sharp is green at 512/511/0/1, and attribution is clean at 192 paths
+   with 0 under Hamlet. CRITERION 2, the decode rate at -21 dB against the
+   published figure, has been NOT MET at 13 of 306 through two units and it
+   is NOT MET tonight at the same 13 of 306, re-measured in a fourth
+   process. It was the only criterion this unit aimed at.
+C. What this report adds, and it bears on B. This unit is in OUTCOME TWO:
+   the information is not in the ratios, now measured rather than inferred.
+   Exact tanh and atanh at upstream's 25 iterations give 15 of 306 (4.9 %,
+   3.0 to 7.9) and at 100 iterations 17 of 306; an independently written
+   soft decoder over the identical ratios gives 17 of 306 (5.6 %, 3.5 to
+   8.7); the as-is row is 13 of 306 (4.2 %, 2.5 to 7.1). All three land
+   INSIDE the as-is interval, which is the reading fixed before the run.
+   The normalisation audit found the port faithful - ten of twelve terms
+   identical to the pin, both differences already recorded. No fidelity fix
+   was licensed and none landed; nothing under src/Ft8Sharp/ changed except
+   porting-notes.md and the version. The -21 dB rate at the end of the night
+   is 13 of 306, 4.2 per cent, NOT MET against the unchanged band. Section 4
+   raises 2 items, neither is a ruling request from me, and the first is
+   criterion 2 itself so it bears directly on B.
 
-UNIT:       220 — complete at task 6 of 6 — 2026-09-02 14:25
+UNIT:       223 - complete at task 7 of 7
 PHASE GOAL: Hamlet hears FT8 off the radio and puts the decoded text on screen.
-UNIT GOAL:  Re-take step 5's five criteria under criterion 3's amended wording, with the control group proved first, and close the step or name what holds it.
-ADVANCED:   yes — step 5's criterion 3 is met and the step closes, the first step to move in five units.
-NUMBER:     recoverable-and-lost, 0 of 169 (criterion 3's new gate, met) | raw reference-WAV count 760 of 1298 -> 760 of 1298, unchanged and no longer the gate
-DRIFT:      0 consecutive units without advance  (was 4 — inferred, see below)
+UNIT GOAL:  Price upstream's fast_tanh and fast_atanh against exact arithmetic at -21 dB, and find out by measurement whether the true codeword is reachable from the same extracted ratios by any soft decoder.
+ADVANCED:   no - criterion 2 did not move and no other criterion changed state. What moved is that criterion 2's last unit-reachable route is now closed by measurement instead of by an untested inference.
+NUMBER:     exact arithmetic: 15 of 306 | independent decoder: 17 of 306 | as-is: 13 of 306 | verdict: NOT MET
+DRIFT:      2 consecutive units without advance
 
 ## 1. What Claude did
 
-**Step 5 is closed. All five must-pass criteria were measured tonight and all
-five are met.** Complete at task 6 of 6. Machine `QUIVERFULL`, project claimed
-Hamlet and confirmed by the gate, branch `main`.
+### The outcome, first, because the instruction fixed both before the run
 
-**The gate passed on all four checks:** `SHACK_FACTS.md` present,
-`src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs` present, `CoreHMI.sln`
-absent, `MURC.sln` absent.
+**This unit is in OUTCOME TWO: the information is not in the ratios, now measured
+rather than inferred.** Exact arithmetic, exact arithmetic with four times the
+iterations, and an independently written soft decoder all land inside the as-is
+row's own 95 per cent interval of 2.5 to 7.1 per cent.
 
-**This was a re-take, not a hunt.** Unit 219 had already looked, one signal at a
-time, and found nothing recoverable being thrown away. Tonight re-measured that
-under the criterion the owner rewrote to match it, with the control group
-underneath it, and with the old count printed beside the new one.
+**And the row that decided it is not a rate.** It is the score census. At the oracle
+alignment, over the 292 trials the library's decoder failed and the 288 the
+independent decoder failed, scoring each word by `sum of ratio times (2*bit - 1)` on
+the normalised ratios:
 
-### The five criteria, each with what was measured
+**the true codeword scores higher than the word the decoder settled on in 0.0 per
+cent of them.** Not a minority. **Zero of 292 and zero of 288.** Mean gap -86.7 and
+-86.4, and the least negative gap anywhere is -7.2.
 
-**Criterion 1 — a corrupted codeword within the correcting power is recovered;
-one beyond it fails honestly. MET.** Carried by the suite and not re-argued, but
-read for its numbers: **18 000 trials** over a bit-flip sweep, every trial
-recovered up to **k = 6**, recovery reached **zero at k = 17**, and **wrong
-messages returned over the whole sweep: 0**. Beyond the correcting power at
-**k = 44**, **400 of 400 returned nothing** and **0 returned a wrong message** —
-which is the second half of the criterion in its own words. Three trials reached
-a wrong codeword at all, against CRC-14's own undetected-error floor of 1 in
-16 384.
+**The ratios themselves prefer the wrong answer.** No decoder that searches these
+ratios for the most likely codeword can recover the message, however patient or
+however exact. That is a fact about the ratios and not about any decoder, and it
+means **criterion 2 is not reachable by any change to the correction stage.**
 
-**Criterion 2 — a candidate failing CRC is never returned as a decode. MET, and
-taken harder than any unit has taken it.**
+Seven tasks, nothing dropped. Task 5 was the named drop candidate and it was **run**,
+because the night was not long.
 
-- **5096 genuine codewords with altered checksum bits**, and the sharp part is
-  that **parity was fully satisfied on all 5096** — every one is a codeword the
-  LDPC gate cannot fault. **0 returned anything at all.**
-- **5000 random ratio arrays**: 0 messages returned, the closest trial still **2
-  of 83 checks unsatisfied**.
-- **51 wrong-checksum transmissions through the full slot decoder**: candidates
-  and parity in every case, **0 returned**, every one refused `ChecksumFailed`
-  at 0 checks unsatisfied.
-- **An empty slot**: 0 candidates, 0 returned.
-- **51 transmissions at −30 dB**: **603 candidates**, 0 reaching parity, **0
-  wrong text**.
-- And the one this unit added: **10 quiet neighbourhoods swept at 600 points
-  each — 6000 alignment points through the full gate — 0 messages and 0 true
-  codewords.**
+### Task 1 - the ground, and the before-number
 
-**Criterion 3 — no decode that is present and recoverable is lost. MET.** The
-count is in section 3 because it is what the unit was commissioned to produce.
+Every figure re-measured rather than inherited. **The before-number reproduces
+exactly: 13 of 306, 4.2 per cent, at a delivered -21.001 dB, 0 wrong, worst delivery
+error 0.0406 dB** - unit 221's figure to the numerator and the **fourth process** to
+produce it.
 
-**Criteria 4 and 5 — `Ft8Sharp` green, attribution clean, channels green. MET.**
-`Ft8Sharp` **502 total, 501 passed, 0 failed, 1 skipped** in 1 m 39 s, read from
-the TRX `Counters` element and not a console line; the one skip is
-`Ft8TableGenerationTests.RewriteTheCheckedInTablesFile`, the table write gate.
-Library rebuilt `--no-incremental` at **0 warnings, 0 errors**, with **0
-`PackageReference` and 0 `ProjectReference` elements** in `Ft8Sharp.csproj`.
-**183 paths** from `2828ab6` and **0** under `src/Hamlet.` or `tests/Hamlet.`.
-Channels **55** and **9**, both green.
+**The four untracked probe sources are answered rather than repaired.** All four
+**compile** - the build succeeds with them present - and all four are
+**comment-only**, six to eight comment lines each and not one declaration, emptied
+by units 214 to 217 when their reads were committed into the inventory tests. **The
+count is 512 with them and 512 without.** There is no reproducibility gap and they
+are left where they are.
 
-### The control group ran first and could have stopped the night
+**One figure disagrees with the instruction and it is a budgeting fact rather than a
+defect.** One slot decode cost **75.5 ms** tonight against unit 222's 26.1, the
+Ft8Sharp suite 4 m 57 s against its 1 m 42, and the RadioEngine channel set 13 m 36 s
+against its 7 m 38. The machine is about three times slower. **Rates are
+deterministic in the seeds and were unaffected**; only wall time was.
 
-**An instrument that has never failed is not an instrument**, so this was taken
-before anything was claimed, and all three checks reproduced unit 219 figure for
-figure.
+### Task 2 - the stage unit 222's own rule skipped
 
-- **It finds what is there.** 12 of 12 lines the untold path already matched
-  found a decoding alignment. Mean best agreement **170.2 of 174**, lowest 156,
-  mean best sync score 24.6, and **all twelve decoded at bin offset zero** from
-  the centre the list's own frequency put them at.
-- **It refuses what is not there.** 10 quiet neighbourhoods, 600 points each,
-  **0 messages and 0 codewords**. Best-of-600 agreement on empty air runs **106
-  to 115**, mean 110.1 — so the B bound of **130**, fixed before the run, still
-  sits 15 above the highest the null ever reached.
-- **It agrees with the existing instrument.** 12 of 12 equal against
-  `Ft8MissAccountingTests`' separately written nearest-candidate reading, 0
-  differing. Two implementations agreeing, not one agreeing with itself.
+Unit 222's audit rule picked the stage its largest budget row named. **No budget row
+could ever have named this one**: the normalisation sits between extraction and
+correction, every row passed through it, and it cancels out of every delta a budget
+can form. It is the only stage of the receive path no unit had read against upstream.
 
-The neighbourhood is unchanged and is the search's own: block offsets **−10 to
-19**, both time sub-offsets, **two bins either side** (about 15.6 Hz), both
-frequency sub-offsets — **600 points per line**. The decode rule was stated
-before the run: the 20 best-agreeing points **plus every point the search itself
-kept**, so the sweep can never miss a decode the untold path could have had.
+`ftx_normalize_logl` against `Ft8SoftSymbols.Normalise` and `Variance`, term by term,
+through a checked-in test that reports skipped when the clone is absent. **Twelve
+terms, ten SAME, two DIFFERING and both already recorded.** The port is faithful here
+too. Details in section 3.
 
-### What I did to the record
+**One mistake of mine the instrument caught before it reached a verdict.** My first
+slice of the region between the two calls started at the open bracket rather than
+after the semicolon, so the call's own argument sat inside the region and the row read
+DIFFERING at 1 of 2 statements touching the array. Fixed, with the reason written into
+the file, and it reads 0 of 1.
 
-`OPEN_ISSUES.md`: **`HM-OPEN-065`, the reference decoder, is recorded by name as
-task 5 required and is not resolved by the closure.** It gains a unit-220
-section saying in terms that step 5 closed with it **recorded rather than met**
-under the plan's 2026-09-01 ruling; that step 5 *did* want it, and named the one
-question nothing on this machine can answer — whether the 96 of 169 lines absent
-to *this* receiver are present to the pin; that **step 6 will want it too**, for
-a different reason; and that it stays `tim`'s because a compiler run is
-owner-class under `ARBITER.md` §6.
+### Task 3 - the row unit 222 named and could not take
 
-**`HM-OPEN-066` is not closed, and its `blocks:` line changed with the reason
-written into the entry** rather than left to be inferred: it was raised against
-criterion 3's *old* wording, the owner replaced that wording, and the new one is
-met — so it blocks nothing and is now a **regression witness rather than a
-gate**. It gains a unit-220 section with the reproduced control group, the
-reproduced split, and the fifth identical reproduction of 760 of 1298.
+A copy of `LdpcDecoder.Decode` in the test project with exactly two terms moved, and a
+**transcription control** - the same apparatus with upstream's own arithmetic in it -
+which reproduces the as-is row exactly. Without that control, rows F and G would be
+unreadable.
 
-**Versions bumped as directed:** `Ft8Sharp` **0.10.3 → 0.10.4** under HM-DEC-152
-with the reason written into the props file itself, including the line that
-**nothing in 0.10.4 is a step 6 result**; root **1.12.26 → 1.12.27** under
-HM-DEC-150. Both gates re-run after both bumps: 502/501/0/1, channels 55 and 9,
-library 0 warnings 0 errors, attribution still 183 and 0.
+**And the approximation is materially in play**, which is what made the row worth
+taking even though it bought little: `fast_atanh` caps every check-to-variable message
+at **4.567** against exact arithmetic's 37.43, and **5.58 per cent of 50,410,062
+`fast_tanh` calls** land on the ±4.97 clamp over 306 real slots.
 
-**What I did not write, deliberately.** `PHASE_STATUS.md`'s `STEP:` lines and
-`PHASE_OUTCOME.md` belong to the launcher under the session prompt and
-`outcome-append.bat`. Step 5's closure is **declared** in this section and in
-the decision block, and the launcher moves the card. I touched only the
-`WORK_INSTRUCTION:` line.
+**One thing neither the instruction nor unit 222 expected**, found only because the
+largest message came back above the ceiling `fast_atanh` allows: **`fast_tanh`
+overshoots one just below its own clamp**, at 1.007218, so the product of tangents
+leaves [-1, 1] and `fast_atanh`'s denominator falls from 120 to 86.8 toward its own
+root. The pole is not reached. Reported, not fixed.
 
-### Task 6 was dropped whole, and it is the named drop candidate
+### Task 4 - the claim the whole phase's world-two finding rested on
 
-**Task 6 — the entry step 6 inherits — was dropped whole, and I am saying so.**
-The instruction named it the drop candidate and said *"Dropped whole, and say
-that you dropped it"* with no condition attached, so it was dropped **as
-directed** and not on a sizing judgement of my own. **No task other than the
-named candidate was dropped.**
+Unit 222 concluded *the information is not in the ratios* by comparing about 31
+soft-decoded errors against a correcting power of 17 measured over **hard bit flips**.
+Those are not the same kind of thing, and a soft decoder is not bound by its
+hard-decision limit. So a **second decoder** was written from the parity tables in this
+tree and the sum-product algorithm as public literature - the log domain through
+Gallager's phi rather than a product of tangents, the opposite sign convention
+internally, prefix and suffix sums rather than re-multiplication, the Tanner graph
+built from `LdpcNm` alone with the variable side counted rather than read from
+`LdpcMn`, double precision, 100 iterations.
 
-**And the drop was verified costless rather than assumed costless**, which is
-the part worth having. All three things task 6 would have written into
-`porting-notes.md` are already in that file: unit 218's **measured sensitivity
-and its ladder table** at line 2638, the **calibrated noise convention with its
-arithmetic** and the eighteen-slot noise floor in the same section, and the
-**SNR-column disagreement recorded as `HM-OPEN-066`** at lines 2789, 2793, 2813
-and 2932. So step 6's first unit inherits it from the file, not only from the
-reports.
+**Watched refusing before it was believed, and one control refused on its first run.**
+Control 3 was written expecting zero and read 1 of 500 passing parity on pure noise. It
+was **widened to 5000 rather than loosened**, and at 5000 the independent decoder and
+the library's own read **identically** at 2 of 5000, with 0 becoming a message - which
+is the gate row H actually counts at.
 
-### The validator was refused again, for the tenth unit running
+**One bound was widened after a result was seen and it is declared.** The assertion
+that phi is its own inverse was written at 1e-9 and read 1.6e-3 at x = 35. The reason
+is the **type** and not the algorithm - phi(35) is 1.3e-15 - so it is scoped to x <= 20
+where phi is still 4.1e-9. **No measurement moved and the verdict band was not
+touched.**
 
-**`tools\arbiter\validate-output.bat` could not be run, and this is reported as a
-refusal rather than routed around.** **Six** spellings were attempted and every
-one was denied: `cmd //c "tools\arbiter\validate-output.bat output.md"`,
-`tools/arbiter/validate-output.bat output.md`,
-`./tools/arbiter/validate-output.bat output.md`,
-`cmd.exe /c tools\arbiter\validate-output.bat output.md`, the same with an
-absolute path to the report, and
-`powershell -NoProfile -Command "& '<abs path>\validate-output.bat' '<abs path>\output.md'"`.
+### Task 5 - run, not dropped, and it vindicates upstream's constant
 
-**So all six rules were checked by hand against the script's own source**, with
-the line numbers, and all six pass:
+Twelve targets cost 63.8 s. **24 sits on a broad plateau** - everything from 18 to 36
+reads 13 or 14 of 306 - and the best row in the sweep is one decode better and inside
+the 24 row's own interval. **The value in `src/Ft8Sharp/` did not move.**
 
-| rule | source | checked | result |
-|---|---|---|---|
-| 1 — a parseable `UNIT:` line above section 1 | line 97 | `UNIT:` found within the first 60 lines | **ok** |
-| 2 — the four `## ` sections, in order, exact names | lines 110–114 | the four found and nothing else | **ok** |
-| 3 — no fifth top-level section | line 117 | exactly 4 `^## ` lines; `###` is ignored by the script's own printed reading at lines 34–47 | **ok** |
-| 4 — section 4 present even when empty | line 126 | `## 4. What's blocking us` at line start, plain ASCII apostrophe confirmed by byte dump | **ok** |
-| 5 — section 3 non-empty | line 138 | **53** non-blank lines between `## 3.` and `## 4.` | **ok** |
-| 6 — the ordering block above `UNIT:` | line 168 | `READ IN THIS ORDER` present, one `A.`, one `B.`, one `C.`, and `raises 2 items` matching its `raises \d+ item` | **ok** |
+### Task 6 - no fix was licensed, and tonight the refusal cost something
 
-**I cannot claim exit 0**, because the script did not run. I can claim that the
-rules it holds were applied by hand and that none of them fails.
+**Both conditions failed.** Condition 1: neither differing term is a place where this
+port's arithmetic differs from the pin - one is divergence 23, which can only fire on
+174 identical ratios, the other a return type. Condition 2 fails outright: no row
+attributed a decode to any difference.
 
-### Decisions I made for myself, reproduced in full
+**This is the first night a substituted row plainly decoded better and the answer is
+still no.** Four numbers were measured to be worth decodes and **not one of them
+moved** - exact tanh and atanh at +2, exact arithmetic at 100 iterations at +4, an
+independent decoder at +4, and a normalisation target of 18 at +1.
 
-**That the unit is numbered 220.** `WORK_INSTRUCTIONS.md` carries **no `# Work
-instruction <n> - <title>` heading at all**, which the session prompt says to
-read the number and title from. I took 220 from 219 being the last committed
-unit, and wrote `PHASE_STATUS.md`'s `WORK_INSTRUCTION:` line from the unit goal.
-Reported rather than repaired.
+### Task 7 - the record
 
-**That two of the instruction's quoted figures disagree with the tree, and both
-are explained rather than smoothed.** It quotes **496 / 495 / 0 / 1** tests and
-**180** attribution paths. Those are unit 219's *entry* figures. Unit 219 added
-six tests and three test files, so its exit — and tonight's entry — is **502 /
-501 / 0 / 1** and **183 paths**. Nothing is wrong; the instruction was written
-from 219's opening rather than its close.
-
-**That the drift count is inferred and the header line says so.** §8 has a
-session take the count from §4.2's block, and **this instruction carries no such
-block** — it is a seed written by the web session. `output.md` is also
-git-ignored here, so the prior report cannot be read back. I took **4** from the
-instruction's own decision block, which states that *four units worked step 5
-and three worked that criterion and the count never moved*: units 216, 217, 218
-and 219. **It is evidenced to that sentence and to nothing stronger.**
-
-**That `HM-OPEN-066`'s `blocks:` line had to change.** Leaving it reading *blocks
-step 5 criterion 3* after the owner replaced that criterion and the replacement
-was met would have left the next reader with a step recorded closed and an open
-issue recorded blocking it. I changed the line and wrote the reason into the
-entry rather than silently editing it.
+`porting-notes.md` gains its unit-223 section. `HM-OPEN-067` is **updated in place and
+not duplicated** - still open, still severity *blocks*, still blocking step 6 criterion
+2 by name - with route 2 now marked **COMPLETE** rather than merely audited, route 1
+gaining the normalisation audit and the sweep, and `HM-OPEN-065` still first and still
+the only route left, cited and not re-raised. Versions bumped **both patches** because
+no library file changed. **The curve was not re-run to fill a section.**
 
 ## 2. What the owner should expect
 
-**Step 5 is closed and the dashboard should move to step 6** once the launcher
-writes the card from the outcome file. **This is the first time in five units
-the phase has moved a step.**
+**Step 6 did not close.** Four of its five must-pass criteria are met; criterion 2 is
+not, and it is the one the step is named after.
 
-**What will look wrong but is not.**
+**Nothing an operator could see moved, and the version bump says so by being a patch.**
+The screen shows exactly what it showed under 0.10.6. A station at -21 dB is still
+decoded about four times in a hundred rather than about half the time, and the 50 per
+cent crossing is still near -19.5 dB - about **1.5 dB** short of the published figure.
+**No fix landed, so there is no number of decibels weaker a station Tim can now hear.**
 
-**The number that has held this phase up did not change, and the step closed
-anyway.** Criterion 3 still reads **760 of 1298** against the reference WAVs —
-the same figure units 216, 217, 218 and 219 all measured, identical column for
-column. That is not a step closing on a number that failed. **The owner replaced
-the criterion on 2026-09-02** because the old one measured somebody's expected
-list rather than this decoder, and could not be met by any decoder that
-de-duplicates the way upstream does. The new criterion asks whether anything
-recoverable is being thrown away, and the answer is **nothing**. The 760 is
-carried forward as a regression witness so a real fall in it stays visible.
+**What has changed is what Tim now knows, and it is the thing that makes his next
+decision decidable.** Three instruments have now been pointed at criterion 2. Unit 221
+measured the rate. Unit 222 measured the axis and substituted four stages above the
+arithmetic. This unit went inside the arithmetic itself and then asked whether the
+message was ever recoverable at all - and the answer is that **it was not**. The true
+codeword is not the most likely word these ratios describe, in **every single failing
+trial**. A better decoder cannot find what is not there.
 
-**`HM-OPEN-066` is still open with a closed step above it.** Deliberate. The
-issue is about a number worth understanding, not about a gate; its `blocks:`
-line now says so.
+**So the two routes left are both his**, and this unit has taken neither:
 
-**`HM-OPEN-065` is still open and step 5 closed without it.** Also deliberate,
-and licensed by the plan's own 2026-09-01 ruling — an unmet *nice-to-pass*
-criterion does not hold a step open provided it is recorded by name. It is
-recorded by name. **It is the first thing step 6 will want if step 6's number
-falls short**, and building `decode_ft8.exe` is still yours.
+- **`HM-OPEN-065`, the reference decoder.** Building `decode_ft8.exe` is a compiler run
+  and is owner-class. It is the only instrument that could say whether `ft8_lib` itself
+  hears these same samples at -21 dB - which would turn *this port is 1.5 dB short* into
+  either *short of upstream* or *upstream is short too and the figure is quoted
+  differently*.
+- **The deliberate-divergence ruling** unit 222 put in front of him. **This unit adds a
+  fourth priced number to it** - exact `tanh` and `atanh`, worth two decodes in 306 -
+  beside the byte-quantised waterfall, the 25-iteration bound and the lowest-order
+  `fast_tanh`. Every one of them is small. **None of them was taken.**
 
-**Nothing in the library changed.** No library file was touched, no threshold
-moved, no dependency taken, no divergence added. The decoder behaves exactly as
-it did yesterday. **A version bumped twice with no behaviour change is correct
-here** — it is a patch precisely because an operator would see no difference.
-
-**Nothing tonight is a step 6 result** and none of it may be counted toward one.
-Step 6 wants a reproducible curve, a verdict against the published figure, and
-graceful degradation. This unit took none of the three and claims none.
+**What he should not expect is a fourth measurement of this criterion from a unit.**
+Everything a unit can reach has now been read against the pin or substituted and
+measured, and the budget is flat everywhere.
 
 ## 3. What you should see
 
-**The number this unit was commissioned to produce, as a count and not a
-proportion:**
+### The rate table - as-is first, then F, G and H
 
-> **Recoverable-and-lost: ZERO. Out of 169 matchable missed expected lines at
-> −5 dB or better.**
->
-> **Criterion 3 is met if and only if that count is zero, and it is zero.**
+```
+row                                    n     of    rate   lo 95   hi 95    delta  WRONG
+A.  as-is, the library's own path     13    306     4.2     2.5     7.1      0.0      0
+A'. as-is, TRANSCRIBED (the control)  13    306     4.2     2.5     7.1      0.0      0
+F.  exact tanh/atanh, 25 iterations   15    306     4.9     3.0     7.9     +0.7      0
+G.  exact tanh/atanh, 100 iterations  17    306     5.6     3.5     8.7     +1.3      0
+H.  independent soft decoder          17    306     5.6     3.5     8.7     +1.3      0
+```
 
-**No visible change in the application.** Nothing an operator could see moved
-tonight, and the version bumps say so by being patches. What changed is that the
-step gating every remaining step in this phase is now closed.
+**All three substituted rows lie inside row A's own 95 per cent interval.** Row A' is
+the control: the same apparatus as F and G with upstream's own arithmetic in it,
+reproducing row A exactly. On the ladder, the largest of these is worth about **+0.07
+dB** against a shortfall of 1.5.
 
-### The evidence under that zero
+### The fast_atanh error table
 
-**The two populations, re-measured rather than inherited, both reproducing unit
-219 exactly:**
+```
+        x    fast_atanh(x)    Math.Atanh(x)   absolute error      ratio
+ 0.000000         0.000000         0.000000         0.000000     1.0000
+ 0.500000         0.549305         0.549306         0.000002     1.0000
+ 0.700000         0.867145         0.867301         0.000155     0.9998
+ 0.900000         1.455777         1.472219         0.016443     0.9888
+ 0.950000         1.755443         1.831781         0.076337     0.9583
+ 0.990000         2.145311         2.646652         0.501341     0.8106
+ 0.999000         2.268464         3.800201         1.531737     0.5969
+ 0.999900         2.281835         4.951719         2.669884     0.4608
+ 0.999990         2.283183         6.103034         3.819851     0.3741
+ 0.999999         2.283319         7.254329         4.971009     0.3148
+ 1.000000         2.283333              inf              inf     0.0000
+```
 
-| population | lines | A present & recoverable | B present, not recoverable | C not present |
-|---|---|---|---|---|
-| at 0 dB or better | 78 | **5** | 35 | 38 |
-| −5.0 up to but not including 0.0 dB | 91 | **0** | 33 | 58 |
-| **together** | **169** | **5** | **68** | **96** |
+**The largest value `fast_atanh` can return is 2.283333**, swept over 2,000,000 points
+across its whole reachable range and monotonic throughout. **So every
+check-to-variable message is capped at 4.567**, against the exact arithmetic's 37.43 -
+a **ceiling ratio of 8.2 to 1**. Its denominator's smallest magnitude on [-1, 1] is
+**120**, so it does not vanish where the true function goes to infinity, which is why
+upstream needs no clamp on it.
 
-**And the reading that decides what those 5 mean.** Every one of the five is an
-**expected line the list itself carries twice**. The untold path *did* return
-that text for that file and then de-duplicated it by **upstream's own payload
-rule**. So:
+**The clamp on the exact `atanh` is `Math.BitDecrement(1.0)`**, the largest double
+strictly below one. It is stated because it **cannot be tuned**: there is no value
+between it and the pole to move to, so it is not a threshold chosen to flatter a row.
 
-> **Outcome-A lines that are not a repeated expected line: 0, in both
-> populations.**
+### What the arithmetic actually did, over 306 real -21 dB slots
 
-**Not one of the 169 is a transmission this library could have recovered and
-threw away.** The search kept the decoding point in all five, so nothing was
-lost at the search either.
+```
+arithmetic             tanh calls   ON THE CLAMP   fraction   largest msg   mean |msg|
+upstream fast_tanh     50,410,062      2,813,051      5.58%        5.6797       0.7125
+exact Math.Tanh        50,407,974      2,827,042      5.61%       37.4299       0.7166
 
-**The cost of the measurement:** **101 400 alignment points**, **3703 belief
-propagations**, and **0 lines met divergence 22's passband refusal**.
+atanh calls handed a product already at +/-1 : 80,121 (upstream), 1,116 (exact)
+largest |product| handed to atanh            : 1.027844 (upstream), 1.000000 (exact)
+```
 
-**The bound is shown rather than asserted.** In the 78 it fell in a **gap** —
-highest C **129**, lowest B **132**. In the 91 it fell **adjacent** — highest C
-**129**, lowest B **130** — which is printed here rather than hidden, because a
-bound cutting through a cluster should be read with more suspicion than one
-falling in a gap. Both sit above the quiet-air null's ceiling of 115.
+**The clamp is not idle.** And the largest upstream message reads 5.68 where
+`fast_atanh`'s own ceiling is 4.567, which is how the overshoot was found:
+`fast_tanh(4.9699)` returns **1.007218**, so the product leaves [-1, 1] and
+`fast_atanh`'s denominator falls from 120 to 86.8 toward its root at 1.1035. **The pole
+is not reached.**
 
-### The raw count alongside, and it is not the gate
+### The score census - the measurement that decides the unit
 
-| column | tonight | units 216–219 |
-|---|---|---|
-| matched of expected | **760 of 1298** (58.6%) | 760 of 1298 |
-| against the representable ceiling of 1157 | **65.7%** | 65.7% |
-| candidates / parity / checksum / text / unique | 7803 / 2733 / 2733 / 2263 / 783 | identical |
-| missed | 538 | 538 |
-| **returned but on no list** | **23** | 23 |
-| files measured / skipped for sample rate | 60 / 0 | 60 / 0 |
+Oracle alignment control: **174.0 of 174** on all twelve messages at -5 dB.
 
-**Identical column for column for the fifth unit running. No regression.** A
-fifth reproduction is what makes this a witness rather than an anecdote.
+```
+over the failing trials             n     mean gap       lowest      highest   true higher
+the library's decoder             292        -86.7       -275.5         -7.2         0.0 %
+the independent decoder           288        -86.4       -274.4         -1.0         0.0 %
 
-### The control group, which is the reason to believe any of the above
+the true codeword's own score, over all 306 trials : mean 580.1, 406.8 to 721.9
+the library's settled word, over its failures      : mean 662.7
+the independent decoder's, over its failures       : mean 660.8
+```
 
-| check | result |
-|---|---|
-| finds what is there | **12 of 12** found a decoding alignment, mean **170.2 of 174**, all at **bin offset zero** |
-| refuses what is not there | 10 quiet neighbourhoods, **0 messages, 0 codewords** over 6000 points |
-| agrees with the existing instrument | **12 of 12 equal**, 0 differing |
+**Zero of 292 and zero of 288.** Beside it: at that same alignment the hard decisions
+are wrong at a **mean of 30.9 of 174**, reproducing unit 222's *about 31* - but that
+number is no longer what the conclusion rests on.
 
-**A sweep hit is evidence a transmission is present and it is never a decode.**
-It is not a match, it did not move the 760, and it was added to no total
-anywhere.
+**Truth was used as a diagnostic and never as a decode.** The census is computed after
+both decoders answered, from ratios never told what was sent, and no rate in this unit
+counts a trial a decoder did not return on its own.
+
+### The independent decoder's controls
+
+```
+CONTROL 1  it finds what is there    51 of 51 clean codewords returned EXACTLY, 1 iteration each
+CONTROL 2  inverted ratios           0 of 51 passed parity, 0 returned the true codeword
+CONTROL 3  5000 Gaussian arrays      2 passed parity, 0 passed the checksum, 0 became a message
+                                     the LIBRARY's decoder on the same arrays: 2 of 5000
+CONTROL 4  hard bit flips            k=0: 51/51 and 51/51.  k=6: 51/51 and 51/51.
+                                     k=12: 32/51 and 38/51. k=17, 24, 31: 0 and 0.
+```
+
+Graph built from `LdpcNm` alone: **522 edges**, variable degrees 3 to 3, check degrees
+6 to 7. **Control 4 confirms unit 215's 17 with a second instrument**, which matters
+because that number is what unit 222's inference leaned on.
+
+### The normalisation audit - twelve terms, ten SAME
+
+SAME: the loop bound (`FTX_LDPC_N` both); the accumulation precision (`float sum`,
+`float sum2`, the word `double` appearing **0 times** in the pin's body); the variance
+expression `(sum2 - (sum * sum * inv_n)) * inv_n` term for term; the reciprocal formed
+once and multiplied twice; **the mean removed from the variance and NOT from the
+array**, measured as a count - exactly **one** write to `log174` in the whole function
+and it is a `*=`, no subtraction of any kind; the target constant `24.0f`; the scale
+factor `sqrtf(24.0f / variance)` then `log174[i] *= norm_factor`; `sqrtf` and not the
+double-precision root; **where the call sits** - inside `ftx_decode_candidate`, after
+extraction and before `bp_decode`, with **0 of 1** intervening statements mentioning
+the array; and exactly **one** call site.
+
+DIFFERING: **the degenerate variance**, which is divergence 23, recorded, deliberate,
+and able to fire only on 174 identical ratios; and **what comes back**, `void` against
+`float`, which is a return type and changes not one value in the array.
+
+**The port is faithful here too.**
+
+### The normalisation target swept
+
+```
+ target      n of 306    on the clamp
+    3.0         0           0.00 %
+    6.0         5           0.02 %
+   12.0        12           0.65 %
+   18.0        14           2.68 %
+   21.0        14           4.06 %
+   24.0        13           5.58 %   <-- upstream's
+   27.0        13           7.17 %
+   30.0        13           8.78 %
+   36.0        13          11.93 %
+   48.0        12          17.63 %
+   96.0        10          33.28 %
+  192.0         2          48.59 %
+```
+
+0 wrong at every target and the row at 24 reproduces the before-number exactly. The
+clamp column explains the shape: the target decides how hard the decoder is driven into
+`fast_tanh`'s saturation, so **the constant is not a free scale**.
+
+### The gates
+
+```
+Ft8Sharp tests, from the TRX Counters element, never from a console line:
+  entry, before any change                     : 512 total, 511 passed, 0 FAILED, 1 skipped, 4 m 57 s
+  exit, after both version bumps               : 518 total, 517 passed, 0 FAILED, 1 skipped, 5 m 38 s
+                                                 SIX TESTS ADDED and still the one correct skip
+  the one skip                                 : Ft8TableGenerationTests.RewriteTheCheckedInTablesFile,
+                                                 the table write gate - and NOT a reference test,
+                                                 so the pinned clone is reachable
+  and 512 with the four untracked probes and 512 without: they compile and declare nothing
+library rebuilt --no-incremental, before and after: 0 warnings, 0 errors
+Ft8Sharp.csproj                                : 0 PackageReference, 0 ProjectReference ELEMENTS
+attribution from 2828ab6                       : 192 paths at entry, 198 at exit - the six added
+                                                 are this unit's own test files - and the
+                                                 src/Hamlet. tests/Hamlet. filter STILL RETURNS 0
+channel tests, unit 222's own filter strings   : App 9 of 9 in 752 ms; RadioEngine 38 of 38 in 13 m 36 s
+  re-run after both bumps                      : App 9 of 9 in 598 ms; RadioEngine 38 of 38 in 14 m 19 s
+                                                 BOTH SETS RUN TWICE, both green both times
+versions                                       : Ft8Sharp 0.10.6 -> 0.10.7 under HM-DEC-152
+                                                 root     1.12.29 -> 1.12.30 under HM-DEC-150
+                                                 BOTH PATCHES - no library file changed
+divergences in porting-notes.md                : 25, unchanged - none added
+wrong messages over every substituted row       : 0 of 5202 slot decodes
+```
+
+### What did not move, said plainly
+
+The verdict band. The decibel axis. The candidate limit, the minimum sync score, the
+byte-quantised waterfall, the 25-iteration bound, `NormalisedVariance` at 24.0f,
+`fast_tanh`, `fast_atanh`. **Not one library file changed except `porting-notes.md` and
+the version in the props file**, and `git diff` from `c344786` confirms it.
 
 ## 4. What's blocking us
 
-**Nothing blocks step 5, which is closed. Two items, neither a request for a
-ruling.**
+**Two items. Neither is a ruling request from me. The first is criterion 2 itself, so
+it bears directly on B.**
 
-### 1. `WORK_INSTRUCTIONS.md` has no `# Work instruction <n> - <title>` heading
+### 1. Criterion 2 is still NOT MET, and it is now not reachable by any unit
 
-**Reported, not repaired.** The session prompt says to take the
-`WORK_INSTRUCTION:` line from that heading, and the file does not carry one —
-its top-level headings are *Why this unit exists*, *Verify this instruction
-against the tree*, *Rulings in force*, *Status cadence*, *Tasks*, *Parked* and
-*What not to do*. This is a seed instruction written by the web session rather
-than by the arbiter, so the heading the arbiter's own template supplies is
-absent.
+**13 of 306, 4.2 per cent, 95 per cent Wilson 2.5 to 7.1, at a delivered -21.001 dB**,
+against a band fixed in writing before unit 221's first trial and untouched tonight:
+40 per cent or better MET, under 25 per cent NOT MET. **NOT MET.**
 
-**What I did instead:** took **220** from 219 being the last committed unit, and
-wrote the title from the unit goal. **What it would take:** either the seed
-template gains the heading, or the prompt's rule gains a fallback. **It bears on
-neither A nor B** and cost the unit nothing.
+Beside it, the rows that were meant to move it: **exact arithmetic 15 of 306, exact
+arithmetic at 100 iterations 17 of 306, an independent soft decoder 17 of 306.** All
+three inside the as-is interval.
 
-### 2. `HM-OPEN-065` is what step 6 will want first, and only the owner can build it
+**The outcome, in the instruction's own words: the information is not in the ratios,
+now measured rather than inferred.** In **zero of 292** failing trials for the
+library's decoder and **zero of 288** for the independent one does the true codeword
+score higher than the word the decoder settled on. The ratios prefer the wrong answer
+everywhere.
 
-**Not a new item and not re-raised** — it is recorded by name in `OPEN_ISSUES.md`
-per task 5, and this is the pointer rather than the raising.
+**What follows.** **No unit-reachable change to the decoder moves criterion 2.** The
+routes left are the owner's - the reference decoder under `HM-OPEN-065`, and the
+deliberate-divergence ruling unit 222 put to him - and **this unit has taken neither.**
 
-**Why it matters now rather than later.** Unit 219 established, and unit 220
-reproduced, that **96 of 169** matchable strong misses are not present *as far
-as this receiver can see*. The one question left is whether they are present as
-far as **the pin** can see. If step 6's sensitivity number falls short, the first
-thing worth knowing is whether this library's synthesized signal is what it
-believes it is — and only `decode_ft8.exe` reading one answers that.
+### 2. Both remaining routes are owner-class, and both are now waiting
 
-**What it would take:** `decode_ft8.exe` built from the pinned clone at
-`C:\Source\ft8_lib`, which carries `demo/decode_ft8.c` with the Makefile naming
-it as a target. **A unit may not build it** — a compiler run is owner-class under
-`ARBITER.md` §6. **It bears on A**, by way of step 6.
+Stated as a blockage rather than as a request, because the phase cannot move on
+criterion 2 until one of them is decided.
 
-### Not raised, deliberately
+- **`HM-OPEN-065`** needs a compiler run to build `decode_ft8.exe`. That is owner-class
+  under `ARBITER.md` section 6 and no unit may do it. It is the only instrument left
+  that could say whether `ft8_lib` itself hears these samples at -21 dB.
+- **The deliberate-divergence ruling.** Whether this library may hear better than the
+  code it was ported from. **This unit added a fourth priced number to it and refused
+  to take it**, which is the plan's ruling that inheriting Goba's bugs is accepted
+  working exactly as intended - and tonight is the first night that refusal cost
+  measurable decodes.
 
-The reference decoder as a *question* (`HM-OPEN-065`), the 82 placeholder
-messages, and the two-decibel question are all already in front of the owner and
-the instruction forbids re-raising them. The candidate limit and the minimum
-sync score are parked; unit 216 answered sweeping them no, and tonight only
-*read* what the search assigned at the true alignments and proposed nothing.
+**Not raised, because they are recorded and parked:** the channel set's runtime against
+the plan's *about a minute* (unit 222 logged it; tonight it took 13 m 36 s on a machine
+about three times slower than unit 222's, and that is a budgeting fact for the next
+unit rather than a question); `PROJECT_STATUS.md` reading `HM-DEC-152` where `CLAUDE.md`
+holds `CPS-DEC-0152`; and `PHASE_OUTCOME.md`'s header disagreeing with its own entries
+on steps 1 and 3. **Citing a recorded issue is not raising it.**
 
-```
-ARBITER-DECISION
-STEP: 5
-APPROACH: re-take step 5's five criteria under criterion 3's amended wording - no decode that is present and recoverable is lost - with the control group taken first and the raw reference-WAV count reported alongside as a regression witness rather than as the gate
-MOVE: continue
-WHY: All five must-pass criteria of step 5 were measured tonight and all five are met, so the step closes and step 6 becomes reachable for the first time in this phase. Criterion 3 under its 2026-09-02 wording returned zero recoverable-and-lost out of 169 matchable missed lines at -5 dB or better, with every outcome-A line proving to be an expected line the list carries twice and de-duplicated by upstream's own payload rule. The control group was taken before anything was claimed and reproduced unit 219 figure for figure, so the instrument was watched working before it was believed. The raw count did not move - 760 of 1298 for the fifth unit running, identical column for column - which is reported as a regression witness and was explicitly not the gate. Nothing in the library changed, no threshold moved, and no fix was licensed or needed.
-STATE: done
-DECIDED: That step 5 is closed rather than held open, because all five must-pass criteria have a measurement taken tonight and the plan's 2026-09-01 ruling says an unmet nice-to-pass criterion does not hold a step open provided it is recorded by name. That HM-OPEN-065 is recorded by name and not resolved by the closure, gaining a unit-220 section that says step 5 closed with it recorded rather than met and that step 6 will want it first if step 6's number falls short. That HM-OPEN-066's blocks: line had to change and the reason had to be written into the entry rather than the line quietly edited, because leaving it reading blocks step 5 criterion 3 after the owner replaced that criterion would have left a closed step with an open issue recorded as blocking it; it is a regression witness now and is not closed. That task 6 was dropped whole because the instruction directed it in those words with no condition attached, and that the drop was VERIFIED costless rather than assumed costless - all three things it would have written are already in porting-notes.md at named line numbers. That PHASE_STATUS.md's STEP: lines and PHASE_OUTCOME.md were not written, because they are the launcher's under the session prompt, so the closure is declared in section 1 and here and the launcher moves the card. That two of the instruction's quoted figures - 496/495/0/1 and 180 attribution paths - disagree with the tree because they are unit 219's entry rather than its exit, and are reported as explained rather than smoothed. That the unit is numbered 220 by inference, because WORK_INSTRUCTIONS.md carries no work-instruction heading at all for the number to be read from.
-LICENCE: PHASE_PLAN.md's step 5 section and its five exit criteria, with criterion 3 as amended by the owner on 2026-09-02; the plan's 2026-09-01 ruling on when a step is done, which is what lets step 5 close on its must-pass criteria with HM-OPEN-065 recorded rather than met; the plan's ruling that every unmet criterion is recorded in OPEN_ISSUES.md by name and that recorded is not dropped, which task 5 discharges; the plan's ruling on what a unit runs, which licenses Ft8Sharp plus attribution plus the channel tests and forbids the full suite - the full Hamlet suite was not run; the plan's ruling that reference WAVs are never committed and are read from the clone by a test that skips when absent, and the clone was present so nothing skipped but the table write gate; the plan's ruling that no threshold moves and that a fix must be a fidelity fix against the pin, and no library file was touched; CLAUDE.md 0.2, restated because the encoder ran again for the true codewords and nothing it produced reached a device, a stream, a port or a file; CLAUDE.md 12.1, which is why the 82 placeholder messages are parked untouched; HM-DEC-152 for Ft8Sharp 0.10.4 and HM-DEC-150 for the root 1.12.27.
-ACCOMPLISHED: Five units have held step 5 open on a count that turned out to be measuring somebody else's list rather than this decoder. Tonight that count was measured a fifth time and did not move, and the step closed anyway - because the owner rewrote the criterion to ask the question that matters, and the answer to it is zero. Nothing recoverable is being thrown away, across all 169 matchable missed lines at -5 dB or better, and the instrument that says so was watched answering correctly on twelve known answers and refusing correctly on ten stretches of empty air before it was asked anything unknown. Criterion 2 was taken harder than any unit has taken it: 5096 genuine codewords whose parity the LDPC gate cannot fault, every one refused at the checksum, plus 5000 random ratio arrays and 6000 quiet-air alignment points, and not one message came back that nobody sent. The phase now has a decoder proved to turn found signals into messages without inventing any, and the next unit can start asking the only question left that matters - how deaf it is against the published figure.
-ADVANCES: Step 5, closed. All five must-pass criteria met, criterion 3 under its 2026-09-02 wording at zero recoverable-and-lost out of 169. Step 6 is now reachable and is the verdict on steps 1 through 5.
-END-ARBITER-DECISION
-```
+**One piece of housekeeping the next unit should know:** `TestResults223/` at the root
+is mine, holds the TRX logs and two scratch files, is untracked and was never
+committed, and is disposable. The `.obj` files, `tools/build-ft8-oracle.bat`,
+`.run-unit/` and `.unit222/` were left untouched, as instructed.

@@ -31,8 +31,19 @@
     identical, so the port is faithful and criterion 2 stays NOT MET at 13 of 306. HM-OPEN-067 updated
     in place with the budget.
   -->
+  <!--
+    1.12.29 -> 1.12.30, UNIT 223, UNDER HM-DEC-150. A PATCH FOR THE SAME REASON AND IT IS THE SEVENTH
+    RUNNING: no Hamlet file changed, no Ft8Sharp file changed except porting-notes.md, and the
+    night's whole product is a measurement. The one budget item unit 222 could not price was priced -
+    upstream's fast_tanh and fast_atanh replaced by the real functions in the test project, worth two
+    decodes in 306 - and the question underneath the whole phase was measured instead of inferred: an
+    independently written soft decoder over the identical ratios also lands inside the as-is
+    interval, and over every failing trial THE TRUE CODEWORD SCORES LOWER THAN THE WORD THE DECODER
+    SETTLED ON. The information is not in the ratios, and criterion 2 stays NOT MET at 13 of 306.
+    HM-OPEN-067 updated in place.
+  -->
   <PropertyGroup>
-    <Version>1.12.29</Version>
+    <Version>1.12.30</Version>
   </PropertyGroup>
 
   <!--

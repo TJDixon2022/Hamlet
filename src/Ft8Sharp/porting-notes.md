@@ -3515,3 +3515,312 @@ deliberate divergence that cannot cost a decode.
 5. **Anything reaching a radio or a screen.** The encoder ran thousands of times tonight to build
    samples in memory and nowhere else — no device, no stream, no port, no file. And nothing here is
    evidence about the CW decoder.
+
+## The arithmetic inside the loop, and whether the information was ever there — unit 223
+
+**Unit 222 closed with two things it had not measured, and this unit measured both.** The first it
+named itself: every row of its loss budget passed through upstream's `fast_tanh` and `fast_atanh`, so
+*a stage every row shares is a stage no row can see*, and it said in terms that pricing them would
+have meant running arithmetic the pin does not run. The second it did not name, because it did not
+notice: its conclusion that **the information is not in the ratios** was an *inference*, read off a
+comparison between about 31 soft-decoded errors and a correcting power of 17 measured over **hard bit
+flips**. Those are not the same kind of thing. A soft decoder is given a magnitude per bit and
+routinely closes error counts past its hard-decision limit — that is the entire reason
+log-likelihood ratios exist rather than bits.
+
+**Both are now measurements. The conclusion survives, and it survives far more sharply than the
+inference could have carried it.**
+
+### The ground, and the before-number
+
+The -21 dB rung alone, on unit 221's population, seeds, frequency, offset and trial count, nothing
+widened: **13 of 306, 4.2 per cent, 95 per cent Wilson 2.5 to 7.1, at a delivered -21.001 dB, 0 wrong
+messages, worst delivery error 0.0406 dB.** Unit 221's figure to the numerator, and the **fourth
+process** to produce it.
+
+**One budgeting fact, recorded because two units have now quoted a per-decode cost and they
+disagree.** One slot decode cost **75.5 ms** tonight against unit 222's 26.1, the `Ft8Sharp` suite
+took 4 m 57 s against its 1 m 42, and the RadioEngine channel set 13 m 36 s against its 7 m 38. The
+machine is about three times slower tonight. **Rates are deterministic in the seeds and were
+unaffected**; only wall time was.
+
+**And the four untracked probe sources are answered rather than repaired.** `Unit216Probe.cs`,
+`Unit217Probe.cs`, `UpstreamSyncSearchProbe.cs` and `UpstreamLdpcProbe.cs` all **compile** — the
+build succeeds with them present — and all four are **comment-only**, six to eight comment lines each
+and not one declaration, emptied by units 214 to 217 when their reads were committed into the
+inventory tests. **The test count is 512 with them and 512 without**, so there is no reproducibility
+gap of the kind unit 222 closed for the channel filter strings, and they are left where they are.
+
+### The normalisation audited against the pin — the one stage nobody had read
+
+**Unit 222's audit rule skipped this stage by construction.** That rule picked the stage its largest
+budget row named, and **no budget row could ever have named this one**: the normalisation sits
+between extraction and correction, every row passed through it, and it cancels out of every delta a
+budget can form.
+
+`ftx_normalize_logl` in `ft8/decode.c` against `Ft8SoftSymbols.Normalise` and
+`Ft8SoftSymbols.Variance`, term by term, through a checked-in test that **reports skipped when the
+clone is absent**. **Twelve terms audited, ten SAME, two DIFFERING and both already recorded.**
+
+| term | pin | port | |
+| --- | --- | --- | --- |
+| the loop bound | 2 loops, both `FTX_LDPC_N` | both `ratios.Length`, refused unless 174 | SAME |
+| the accumulation precision | `float sum`, `float sum2`, the word `double` appearing **0 times** | `0.0f` and `0.0f`, single precision throughout | SAME |
+| the variance expression | `(sum2 - (sum * sum * inv_n)) * inv_n` | `(sumOfSquares - (sum * sum * inverseCount)) * inverseCount` | SAME |
+| the reciprocal | `1.0f / FTX_LDPC_N` formed once, multiplied twice | `1.0f / ratios.Length`, multiplied twice | SAME |
+| **the mean removed from the ARRAY** | **1 write to `log174` in the whole function and it is a `*=`** — no subtraction of any kind | 1 write to `ratios`, and it is a `*=` | SAME |
+| the target constant | `24.0f` | `NormalisedVariance = 24.0f` | SAME |
+| the square-root scale factor | `sqrtf(24.0f / variance)` then `log174[i] *= norm_factor` | `MathF.Sqrt(...)` then `ratios[i] *= factor` | SAME |
+| the root's own precision | `sqrtf`, not the double-precision `sqrt` | `MathF.Sqrt`, not `Math.Sqrt` | SAME |
+| **where the call sits** | inside `ftx_decode_candidate`, after extraction and **before** `bp_decode`, **0 of 1** intervening statements mentioning the array | normalise then decode, nothing between | SAME |
+| how many times it normalises | 3 mentions, 2 of them the declaration and the definition, so **1 call site** | once per candidate | SAME |
+| the degenerate variance | **no guard** — divides unchecked | `if (!(variance > 0.0f)) return variance` | **DIFFERING — divergence 23** |
+| what comes back | `void`, the variance discarded | `float`, the pre-scale variance returned | **DIFFERING — a return type, not arithmetic** |
+
+**The port is faithful here too.** Divergence 23 is recorded and deliberate, and the port's side is
+the only defensible one — there is no faithful port of dividing by zero and multiplying an array by
+the NaN that comes out. **It can only fire on 174 identical ratios**, which no real waterfall
+produces, so it cannot cost a decode: the same shape of argument that retired divergence 21 in unit
+222. The return type changes **not one value in the array**.
+
+**One mistake of mine the instrument caught before it reached a verdict.** The first slice of the
+region between `ftx_normalize_logl` and `bp_decode` started at the open bracket rather than after the
+semicolon, so the call's own argument `log174)` sat inside the region and the row read **DIFFERING**
+at 1 of 2 statements mentioning the array. It is fixed, the reason is written into the file so nobody
+rediscovers it, and it reads 0 of 1.
+
+### The price of the approximation, and it is two decodes in 306
+
+The row unit 222 named and could not take. **A copy of `LdpcDecoder.Decode` in the test project, with
+exactly two terms moved** — `Math.Tanh` and `Math.Atanh` in double precision — and everything else
+transcribed: the loop bound, the hard decision at the top, the all-zero refusal, `ldpc_check` with
+its running minimum and its break at zero, `min_errors` from `FTX_LDPC_M`, both message passes with
+their exclusions, the parity row bound at `NUM_ROWS[m]`, the single-precision message arrays.
+
+Same population, same seeds, same frequency, same offset, same 306 trials, same rung.
+
+```
+row                                  n     of    rate   lo 95   hi 95    delta  WRONG
+A.  as-is, the library's own path    13    306     4.2     2.5     7.1      0.0      0
+A'. as-is, TRANSCRIBED (control)     13    306     4.2     2.5     7.1      0.0      0
+F.  exact tanh/atanh, 25 iterations  15    306     4.9     3.0     7.9     +0.7      0
+G.  exact tanh/atanh, 100 iterations 17    306     5.6     3.5     8.7     +1.3      0
+```
+
+**Row A' is the control every row above depends on** and it is why F and G are readable: the same
+substituted apparatus, with **upstream's own arithmetic** in it, reproduces row A exactly. A
+substituted decoder that did not reproduce the as-is number would be a wiring mistake rather than a
+measurement.
+
+**Both F and G lie inside the as-is row's own 95 per cent interval**, which is the reading fixed in
+writing before the run.
+
+**And the approximation is not idle, which is what made the row worth taking.** `fast_atanh`'s
+**largest returnable value is 2.283333**, swept over 2,000,000 points across its whole reachable
+range, so **every check-to-variable message is capped at 4.567** against the exact arithmetic's
+37.43 — a ceiling ratio of **8.2 to 1**. Its error against the true function:
+
+```
+        x    fast_atanh(x)    Math.Atanh(x)   absolute error      ratio
+ 0.500000         0.549305         0.549306         0.000002     1.0000
+ 0.900000         1.455777         1.472219         0.016443     0.9888
+ 0.990000         2.145311         2.646652         0.501341     0.8106
+ 0.999000         2.268464         3.800201         1.531737     0.5969
+ 0.999999         2.283319         7.254329         4.971009     0.3148
+ 1.000000         2.283333                inf             inf     0.0000
+```
+
+Its denominator's smallest magnitude anywhere on `[-1, 1]` is **120**, so it does not vanish where the
+true function goes to infinity, which is why upstream needs no clamp on it. And the `fast_tanh` clamp
+**is** in play: **5.58 per cent of 50,410,062 calls** land on ±4.97 over 306 real slots.
+
+**One thing neither the instruction nor unit 222 expected, found only because the largest message came
+back above the ceiling `fast_atanh` allows.** In exact arithmetic a product of hyperbolic tangents
+cannot leave `[-1, 1]`. **`fast_tanh` overshoots one just below its own clamp** — `fast_tanh(4.9699)`
+reads **1.007218** — so the product does leave the range the inverse was fitted on, reaching
+**1.027844** in these slots, **80,121 `atanh` calls are handed an out-of-range argument**, and
+`fast_atanh`'s denominator falls from 120 to **86.8** toward its own root at |x| = 1.1035. **The pole
+is not reached.** Recorded as an observation about upstream's arithmetic; it is not a porting error
+and **nothing was fixed for it**.
+
+**The clamp on the exact `atanh` is stated because a clamp chosen to flatter a row is the same failure
+as a tolerance chosen after the measurement.** It is `Math.BitDecrement(1.0)`, the largest double
+strictly below one — **the most generous clamp double precision admits, with no value between it and
+the pole to move to.** It cannot be tuned.
+
+### Is the information in the ratios? Measured rather than inferred
+
+**An independently written soft decoder, and deliberately different arithmetic at every choice.**
+
+- **The domain.** Upstream multiplies hyperbolic tangents; this works in the **log domain** through
+  Gallager's `φ(x) = -log tanh(x/2)`, which is its own inverse, so the check update is a **sum** and
+  no product of tangents is ever formed. Public literature, and nothing was read from
+  `ft4_ft8_public/` or WSJT-X for it.
+- **The sign convention.** Internally `L = log(P(0)/P(1))` — the **opposite** of the library's — so a
+  convention error in either would show as total disagreement rather than as a small one.
+- **The exclusion.** Prefix and suffix sums, so a message never has its own term subtracted back out
+  and there is no cancellation anywhere.
+- **The graph.** Built from **`LdpcNm` alone**, with the variable-side incidence **counted** rather
+  than read from `LdpcMn`, so a fault in that table could not be shared between the two decoders. It
+  finds **522 edges**, variable degrees 3 to 3, check degrees 6 to 7.
+- **The precision and the bound.** Double throughout, exact `Exp` and `Log`, **100 iterations —
+  four times upstream's 25.**
+
+**Watched refusing before it was believed, and one of the four controls refused on its first run.**
+
+```
+CONTROL 1  it finds what is there    51 of 51 clean codewords returned EXACTLY, in 1 iteration each
+CONTROL 2  inverted ratios           0 of 51 passed parity, 0 returned the true codeword
+CONTROL 3  5000 Gaussian arrays      2 passed parity, 0 passed the checksum, 0 became a message
+                                     the LIBRARY's decoder on the same arrays: 2 of 5000
+CONTROL 4  hard bit flips            k=0: 51/51 and 51/51.  k=6: 51/51 and 51/51.
+                                     k=12: 32/51 and 38/51. k=17, 24, 31: 0 and 0.
+```
+
+**Control 3 was written expecting zero on its first line and did not get it, and that is reported
+rather than smoothed.** At 500 arrays it read 1; it was **widened to 5000 rather than loosened**, and
+at 5000 the independent decoder and the library's own read **identically** at 2 of 5000. Neither
+produces a message, which is the gate row H actually counts at. **Control 4 confirms unit 215's 17
+with a second instrument**, which matters because that number is what unit 222's inference leaned on.
+
+**One bound in the control file was widened after a result was seen, and it is declared rather than
+buried.** The assertion that `φ` is its own inverse was written at a relative 1e-9 across the whole
+table and read 1.6e-3, at x = 35. **The reason is the type and not the algorithm**: `φ`'s tail is
+`2·exp(-x)`, which by x = 35 is 1.3e-15, so the round trip is reading back a number with nothing left
+of it to read. The assertion is now scoped to x ≤ 20, where `φ` is still 4.1e-9 — and a message of
+*that* size cannot change a decision taken on sums of order one. **No measurement moved and the
+verdict band was not touched.**
+
+**Row H, over the identical ratios, at the same candidates, on the same 306 trials:**
+
+```
+row                                  n     of    rate   lo 95   hi 95   WRONG
+H.  independent soft decoder         17    306     5.6     3.5     8.7       0
+```
+
+**Inside the as-is row's interval, as F and G are. All three substituted rows land inside it.**
+
+### THE INFORMATION IS NOT IN THE RATIOS, NOW MEASURED RATHER THAN INFERRED
+
+**The measurement that settles it is not the rate.** At the oracle alignment — swept, with its control
+reading **174.0 of 174** on all twelve messages at -5 dB, so it is the most generous place either
+decoder could be asked to work — the score of a word is
+`sum over bits of ratio times (2*bit - 1)` on the normalised ratios: the log-likelihood of that word,
+up to a constant. **Higher is more likely.**
+
+```
+over the failing trials             n     mean gap       lowest      highest   true higher
+the library's decoder             292        -86.7       -275.5         -7.2         0.0 %
+the independent decoder           288        -86.4       -274.4         -1.0         0.0 %
+
+the true codeword's own score, over all 306 trials : mean 580.1, 406.8 to 721.9
+the library's settled word, over its failures      : mean 662.7
+the independent decoder's, over its failures       : mean 660.8
+```
+
+**In not one failing trial — not a minority, zero of 292 and zero of 288 — does the true codeword
+score higher than the word the decoder settled on.** The least negative gap anywhere is -7.2 and
+-1.0. **The ratios themselves prefer the wrong answer.**
+
+So no decoder that searches these ratios for the most likely codeword can recover the message,
+however patient or however exact. That is **a fact about the ratios and not about any decoder**, and
+it means **criterion 2 is not reachable by any change to the correction stage.**
+
+Beside it, for the record: at that same oracle alignment the hard decisions are wrong at a **mean of
+30.9 of 174**, which reproduces unit 222's *about 31* — but that number is no longer what the
+conclusion rests on.
+
+**Truth was used as a diagnostic and never as a decode.** The census is computed *after* both
+decoders have answered, from ratios that were never told what was sent. **No rate in this unit counts
+a trial a decoder did not return on its own**, and no function that returns a decode takes the
+message, the codeword, the frequency or the time.
+
+### The normalisation target, swept — and upstream's constant vindicated
+
+`NormalisedVariance` is `24.0f` and upstream's own comment calls it an *experimentally found
+coefficient*. **This is the first time this tree has measured it.**
+
+```
+ target      n of 306    on the clamp
+    3.0         0           0.00 %
+    6.0         5           0.02 %
+   12.0        12           0.65 %
+   18.0        14           2.68 %
+   21.0        14           4.06 %
+   24.0        13           5.58 %   <-- upstream's
+   27.0        13           7.17 %
+   30.0        13           8.78 %
+   36.0        13          11.93 %
+   48.0        12          17.63 %
+   96.0        10          33.28 %
+  192.0         2          48.59 %
+```
+
+0 wrong at every target, and **the row at 24 reproduces the before-number exactly**, which is what
+makes this a sweep of the target rather than of something else. **24 sits on a broad plateau** —
+everything from 18 to 36 reads 13 or 14 — and **the best row in the whole sweep is one decode better
+and lies inside the 24 row's own interval.** A sweep's best row is the maximum of twelve draws and is
+biased upward by construction, so it is not read as a gain.
+
+**And the clamp column explains the shape.** The target decides how hard the decoder is driven into
+`fast_tanh`'s saturation, so the constant is **not a free scale**: upstream chose a number that puts a
+typical ratio right on the clamp — variance 24 is a standard deviation of 4.9 against a clamp at
+4.97. **24.0f stays where upstream put it.**
+
+### No fix was licensed, and tonight the refusal cost something
+
+**Both conditions failed.** Condition 1: the audit named two differing terms and **neither is a place
+where this port's arithmetic differs from the pin** — one is divergence 23, already recorded and
+unable to fire on real ratios, the other a return type. Condition 2 fails outright: **no row
+attributed a decode at -21 dB to any difference**, and the score census says why in a way no rate
+can.
+
+**So nothing under `src/Ft8Sharp/` changed except this file and the version in the props file**, and
+git confirms it.
+
+**This is the first night a substituted row plainly decoded better, and the answer is still no.**
+Four numbers in this path were measured to be worth decodes and **not one of them moved**:
+
+| what could have been moved | measured worth at -21 dB | whose number it is |
+| --- | --- | --- |
+| exact `tanh` and `atanh` for `fast_tanh`/`fast_atanh` | +2 decodes in 306 | upstream's, ported faithfully |
+| exact arithmetic at 100 iterations | +4 decodes in 306 | upstream's `kLDPC_iterations` |
+| an independent soft decoder | +4 decodes in 306 | not a decoder Hamlet would run |
+| a normalisation target of 18 rather than 24 | +1 decode in 306 | upstream's *experimentally found coefficient* |
+
+**Measuring what upstream's approximation costs is what step 6 exists for; replacing it is the
+owner's ruling.** The plan's ruling that *inheriting Goba's bugs is accepted* is what licensed every
+row above and equally what forbids taking any of them. **This unit adds a fourth number to the
+deliberate-divergence question unit 222 put in front of the owner, and does not take the ruling.**
+
+**No divergence added — still 25.** The verdict band is untouched and nothing was re-binned.
+**Criterion 2 stands NOT MET at 13 of 306, 4.2 per cent**, and the curve stands as units 221 and 222
+measured it; it was not re-run to fill a section, because no library file changed.
+
+### What this is evidence about, and five things it is not
+
+**It is evidence** that upstream's `fast_tanh` and `fast_atanh` cost **two decodes in 306** at -21 dB
+and no more, priced against a transcription control that reproduces the as-is row exactly; that the
+approximation is nevertheless **materially in play** — a message ceiling 8.2 times lower than the
+exact one and 5.58 per cent of calls on the clamp; that **the normalisation is a faithful port**, ten
+of twelve terms identical and both differences already recorded; that **24 is a good number on a
+broad plateau**; and above all that **the true codeword is not the most likely word these ratios
+describe, in every failing trial**, so the recovery is not there to be had.
+
+**It is not evidence about:**
+
+1. **What `ft8_lib` itself would decode at -21 dB on these same samples.** Nothing tonight ran
+   upstream's decoder, because building it is owner-class — `HM-OPEN-065`, cited and not re-raised.
+   Everything here says what *these ratios* contain; it cannot say what the C achieves on its own
+   extraction of its own audio.
+2. **Whether a different EXTRACTION would put the information in the ratios.** The finding is about
+   the ratios this library produces, and unit 222 measured three ratio rules agreeing at 143.1, 143.1
+   and 143.5 of 174 — but three rules are not all rules, and nothing tonight went above extraction.
+3. **The published figure itself.** The QEX paper is not on this machine, so **-21 dB at 50 per cent
+   remains an assumption taken from the plan**, honestly labelled.
+4. **Impaired air.** Everything here is aligned to the block grid, on a bin centre, alone in the
+   passband, with no drift; and nothing here touches criterion 3's 760 of 1298.
+5. **Anything reaching a radio or a screen.** The encoder ran thousands of times tonight to build
+   samples in memory and nowhere else — no device, no stream, no port, no file. And nothing here is
+   evidence about the CW decoder.
+
