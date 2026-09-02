@@ -274,6 +274,70 @@ public sealed class TheTabHearsEverySlotTests
     }
 
     /// <summary>
+    /// **THE PRESS NO LONGER WIPES A RUNNING SESSION, AND IT NO LONGER SHOWS
+    /// ANYTHING TWICE** (unit 225, task 4). Unit 224 made *keep the last 30
+    /// seconds* replace the table because a press was then the only way anything
+    /// reached it; the tab decodes continuously now, and the two paths are one
+    /// behaviour.
+    /// </summary>
+    [Fact]
+    public void ThePressContributesToTheRunningTableRatherThanWipingIt()
+    {
+        var model = new MainWindowViewModel(new AppSettings(), null);
+
+        var slots = RunTheBand(
+            model,
+            new DateTime(2026, 9, 2, 14, 22, 10, DateTimeKind.Utc),
+            new DateTime(2026, 9, 2, 14, 23, 20, DateTimeKind.Utc));
+
+        Assert.Equal(5, slots);
+        Assert.Equal(4, model.DigitalDecodes.Count);
+
+        // A press over audio holding the slot that opened at 14:22:30 — a slot
+        // the watch has already read and put on the table.
+        model.ShowDecodes(
+            Kept(Rate, OnTheAir[1]),
+            new DateTime(2026, 9, 2, 14, 22, 47, DateTimeKind.Utc),
+            Measured);
+
+        foreach (var row in model.DigitalDecodes)
+        {
+            _output.WriteLine($"    {row.Utc}  {row.Hz}  {row.Message}");
+        }
+
+        _output.WriteLine($"  summary [{model.DigitalDecodedSummary}]");
+
+        // **THE SESSION SURVIVED THE PRESS AND THE PRESS ADDED NO DUPLICATE.**
+        Assert.Equal(4, model.DigitalDecodes.Count);
+
+        Assert.Equal(
+            new[] { "142215", "142230", "142245", "142300" },
+            model.DigitalDecodes.Select(r => r.Utc).ToArray());
+    }
+
+    /// <summary>
+    /// **A PRESS OVER A SLOT THE WATCH NEVER SAW STILL ADDS ITS ROW.** The two
+    /// paths being one behaviour must not mean the press stopped doing anything.
+    /// </summary>
+    [Fact]
+    public void APressOverASlotTheWatchNeverSawStillAddsIt()
+    {
+        var model = new MainWindowViewModel(new AppSettings(), null);
+
+        model.ShowDecodes(
+            Kept(Rate, OnTheAir[1]),
+            new DateTime(2026, 9, 2, 14, 22, 47, DateTimeKind.Utc),
+            Measured);
+
+        var only = Assert.Single(model.DigitalDecodes);
+
+        _output.WriteLine($"    {only.Utc}  {only.Hz}  {only.Message}");
+
+        Assert.Equal("CQ W9XYZ EM48", only.Message);
+        Assert.Equal("142230", only.Utc);
+    }
+
+    /// <summary>
     /// **NOTHING NEW IS SAID ABOUT WHAT A MESSAGE MEANS** (§12.1). The
     /// plain-English panel carries the line Tim wrote in August and nothing this
     /// unit invented, however full the table above it gets.
@@ -345,6 +409,32 @@ public sealed class TheTabHearsEverySlotTests
         }
 
         return slots;
+    }
+
+    /// <summary>
+    /// What a capture press would be holding — thirty seconds of audio with one
+    /// transmission in the whole slot that fits inside it.
+    /// </summary>
+    /// <param name="rate">The rate to build it at.</param>
+    /// <param name="sent">The transmission, in the slot it goes out in.</param>
+    private static MonoAudio Kept(
+        int rate, (DateTime At, string To, string Call, string Grid) sent)
+    {
+        var packed = new byte[Ft8StandardMessage.MessageBytes];
+
+        Assert.Equal(
+            Ft8PackResult.Ok,
+            Ft8StandardMessage.TryPack(sent.To, sent.Call, sent.Grid, packed));
+
+        var slot = Ft8Waveform.SynthesizeSlot(
+            Ft8SymbolEncoder.Encode(packed), rate, PlacedAtHz);
+
+        var samples = new float[rate * 30];
+
+        // Thirteen seconds into a recording ending at 14:22:47 is 14:22:30.
+        slot.CopyTo(samples.AsSpan(13 * rate));
+
+        return new MonoAudio(rate, samples);
     }
 
     /// <summary>One slot's worth of reception carrying one transmission.</summary>

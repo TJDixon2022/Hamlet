@@ -6523,10 +6523,19 @@ public partial class MainWindowViewModel : ObservableObject
     /// Every row on that table from work instruction 037 until now was a literal
     /// string in the markup; from here it is whatever the band was doing when the
     /// button was pressed, or nothing.</para>
-    /// <para>**THE TABLE IS REPLACED RATHER THAN APPENDED TO.** One press is one
-    /// question about one moment, and a table mixing this press with the last one
-    /// would put two bands, two clock readings and two antenna positions under one
-    /// heading (§0.0.1).</para>
+    /// <para>**THE PRESS AND THE RUNNING WATCH ARE ONE BEHAVIOUR NOW** (unit 225,
+    /// task 4). Unit 224 made a press replace the table, because a press was then
+    /// the only way anything reached it and one press is one question about one
+    /// moment. The tab decodes continuously now, and a press that cleared the
+    /// table would wipe a running session's history — so the press contributes its
+    /// slots to the same table, through the same de-duplication, and this method
+    /// is one line into <see cref="NoteSlot"/>.</para>
+    /// <para>**WHICH IS WHY NOTHING APPEARS TWICE.** A press keeps the last thirty
+    /// seconds, which is two whole slots the watch has usually already read; the
+    /// key is the slot, the frequency and the text, so those arrive as the rows
+    /// that are already there. **What §0.0.1 forbade was two moments under one
+    /// heading, and every row carries its own** — the thing that would really mix
+    /// two places is a retune, and that is handled where the dial moves.</para>
     /// <para>**AN UNKNOWN CLOCK IS SAID PLAINLY AND NOT SHOWN AS AN EMPTY TABLE.**
     /// FT8 needs the PC within about a second of UTC or nothing decodes, and it
     /// fails silently; a blank table and a wrong clock look identical, which is the
@@ -6542,27 +6551,7 @@ public partial class MainWindowViewModel : ObservableObject
     internal void ShowDecodes(
         MonoAudio audio, DateTime endedAtPcUtc, ClockOffset offset)
     {
-        var heard = Ft8Reader.Read(audio, endedAtPcUtc, offset);
-
-        DigitalDecodes.Clear();
-        _digitalDecodeKeys.Clear();
-        _digitalDecodeKeyOrder.Clear();
-        _digitalRefusal = "";
-        _digitalRowsTunedAtHz = FrequencyHz;
-
-        foreach (var decode in heard.Decodes)
-        {
-            AddDecodeRow(decode);
-        }
-
-        _digitalDecodeNote = DescribeDecodes(heard);
-
-        // **THE WATCH RE-ARMS BEHIND A PRESS.** The press has just written the
-        // last thirty seconds — two whole slots — over the table, so a watch that
-        // carried on from where it was would report a slot it had already shown.
-        _slotWatch.Rearm();
-
-        RaiseDigitalDecodeChanges();
+        NoteSlot(Ft8Reader.Read(audio, endedAtPcUtc, offset));
     }
 
     /// <summary>
@@ -6654,7 +6643,11 @@ public partial class MainWindowViewModel : ObservableObject
 
         if (heard.Refusal.Length > 0)
         {
+            // The note as well as the refusal, because the capture press puts the
+            // note into the status bar and a stale one there would describe the
+            // last press rather than this one.
             _digitalRefusal = heard.Refusal;
+            _digitalDecodeNote = heard.Refusal;
             RaiseDigitalDecodeChanges();
             return;
         }
