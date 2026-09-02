@@ -1963,3 +1963,283 @@ rank or any limit**, and shortening the list truncates it rather than reordering
 a transmission nobody told it about.** What that does *not* claim — **nothing here demodulates**, no
 soft symbol, no log-likelihood ratio, no belief propagation, no CRC check, no message comes out, and
 **a candidate is not a decode.** It says where to point a decoder that does not exist yet.
+
+## The correction — unit 215
+
+**The library learns to be wrong and come back.** For sixteen units everything it did was exact: the
+right bits, the right tones, the right samples, the right place in a slot. A radio is not exact. The
+whole reason FT8 works below the noise is that 174 bits carry 91 bits of message and the rest is
+there to repair the damage — and until tonight nothing in this tree corrected a single bit error.
+`src/Ft8Sharp/Ldpc/` held one file and it was the encoder, whose own summary says *this is not a
+decoder and cannot become one by accident.*
+
+**And it stops well short of a radio.** Nothing in this unit touches an audio sample, a waterfall or
+a candidate. **No text came off the air tonight and none will until extraction exists.** The ratios
+every measurement here is built on are constructed in the test project from a known codeword and from
+nowhere else.
+
+**This unit does not close step 5 and did not try to.** It aims at criteria 1 and 2; criterion 3,
+upstream's reference WAVs decoding against its expected decode lists, is the next unit's and is named
+as not aimed at rather than left to read as a failure.
+
+### What was ported, and from where
+
+`src/Ft8Sharp/Ldpc/`, from the pin at `9fec6ca39886edbf96f4f5e71edc76da5074e871`:
+
+- **`ft8/ldpc.c`, `bp_decode`** — the belief propagation itself: the two message arrays and their
+  extents, the hard decision and where in the iteration it is taken, the running minimum, both break
+  conditions, and the two update rules term for term. This is `LdpcDecoder.Decode`.
+- **`ft8/ldpc.c`, `ldpc_check`** — the parity count over the hard decision. This is
+  `LdpcDecoder.UnsatisfiedChecks`, private, because it is the decoder's convergence test and not a
+  service.
+- **`ft8/ldpc.c`, `fast_tanh` and `fast_atanh`** — the rational approximations and the clamp.
+- **`ft8/ldpc.h`** — both decoders' declarations, and the two stale comments recorded below.
+- **`ft8/decode.c`, `ftx_decode_candidate`** — the order of the gates and what each returns. This is
+  `Ft8CodewordDecoder.Decode`.
+- **`ft8/constants.h`** — the code's dimensions and both check tables' declared widths.
+- **`demo/decode_ft8.c`** — the iteration count. **Note where that lives:** it is the *application's*
+  choice and is in no file under `ft8/` at all, which is why it is a parameter with upstream's value
+  as its default rather than a literal in a loop.
+
+**No table is transcribed.** The decoder reads `Ft8Tables.LdpcNm`, `LdpcMn` and `LdpcNumRows`,
+generated in step 1 by the checked-in converter and proved byte-for-byte against `ft8/constants.c`.
+Upstream's one-based indices come off in **exactly one place**, a private `ZeroBased`, and the tables
+themselves are untouched.
+
+**`ft8/decode.c` was read for the gate order and for the sign convention, and for nothing else.** The
+likelihood extraction in the same file was read only far enough to settle which sign means which bit;
+its arithmetic is the next unit's and was not ported.
+
+### There are two decoders upstream, and one of them was deliberately not ported
+
+`ft8/ldpc.h` declares **both** `bp_decode` and `ldpc_decode`, with identical signatures. They are the
+same sum-product algorithm expressed twice: `ldpc_decode` carries two dense `[83][174]` float
+matrices — upstream's own comment says *~60 kB* of each — where `bp_decode` carries only the 522
+edges the Tanner graph actually has.
+
+**`ftx_decode_candidate` calls `bp_decode`, and the call to `ldpc_decode` is on the line below it,
+commented out.** So `bp_decode` is what was ported. `ldpc_decode` was read in full and left alone,
+because porting the one upstream does not run would be porting something nothing has ever exercised —
+and because two decoders in a library that needs one is two things to keep faithful.
+
+### The shapes read, stated as shapes
+
+**Strong — a macro, a typedef or a header declaration, which cannot be misread:**
+
+1. The code's dimensions are `#define`s in `ft8/constants.h`: the codeword length, the payload
+   length, and the number of checks.
+2. Both check tables' row widths are in their `extern` declarations in the same header.
+3. Both decoders are declared in `ft8/ldpc.h` taking an array of ratios, a maximum iteration count,
+   an output bit array and an out-parameter for the residual error count.
+4. `ftx_decode_candidate` in `ft8/decode.h` **takes the maximum iteration count as a parameter.**
+5. `ftx_decode_status_t` in `ft8/decode.h` carries the LDPC error count and the extracted and
+   computed checksums as separate fields.
+6. The variable-node degree is the second dimension of the `Mn` declaration, and it is fixed.
+
+**Weak — an expression inside a function body:**
+
+7. The hard decision is taken at the **top** of the iteration, before any message is sent, so the
+   first pass judges the raw ratios uncorrected.
+8. The convergence test is the **parity of that hard decision**, not a message-passing residual.
+9. Zero unsatisfied checks breaks the loop.
+10. An all-zero hard decision breaks the loop, refused rather than scored.
+11. The status returned is a **running minimum** across the iterations, initialised to the number of
+    checks, so zero means success.
+12. The check-node loop is bounded by `Num_rows` and not by the row width.
+13. The variable-to-check message excludes the check it is sent to; the check-to-variable message
+    excludes the variable it is sent to.
+14. The gate order in `ftx_decode_candidate`: decode, refuse on unsatisfied parity, pack, extract the
+    checksum, recompute it over the zero-extended payload, refuse on a mismatch, and only then write
+    the message. **Exactly two `return false` statements.**
+15. `fast_tanh` clamps at ±4.97 and both functions are rational approximations; the standard library
+    is called nowhere in the file.
+
+**Weakest — a number the *application* chose, in no file under `ft8/`:**
+
+16. **The maximum iteration count.** It is a file-scope constant in `demo/decode_ft8.c`, measured as
+    appearing in none of `ft8/ldpc.c`, `ft8/ldpc.h`, `ft8/decode.c`, `ft8/decode.h` or
+    `ft8/constants.h`. **This is the one the instruction said to watch and it is the weakest anchor
+    in the unit.** It is `LdpcDecoder.DefaultMaxIterations`, a default on a parameter.
+
+**Nothing was left unread.** Every question this unit asked of the pin was answered from the source.
+
+### The sign convention, in words, and how it was settled
+
+**A positive ratio means the bit is more likely 1. A negative ratio means 0.** That is
+`log(P(bit = 1) / P(bit = 0))`.
+
+**It was not settled by a round trip and could not have been.** A decoder whose convention is
+backwards agrees perfectly with test helpers that share the mistake, passes everything writable in a
+night with no radio in it, and goes deaf on the first real signal — because the next unit's
+extraction will follow upstream's convention and not this project's. This is the same trap unit 208
+was warned about for the callsign hash, and the report says which leg the claim stands on rather than
+counting arithmetic agreeing with itself as proof.
+
+It stands on **three independent readings of upstream's source**, all agreeing:
+
+1. **Extraction.** The routine in `ft8/decode.c` that produces the ratios states in its own comment
+   that it computes `log(p(1) / p(0))`, and its arithmetic subtracts the best zero hypothesis from
+   the best one hypothesis — larger when the tones carrying a 1 hold more energy.
+2. **The hard decision.** Both of upstream's decoders map a positive total to the bit 1.
+3. **The check-node update.** It negates before the hyperbolic tangent and negates again after the
+   inverse. Writing `L` for `log(P(0)/P(1))`, the sum-product check rule is `+2 atanh(∏ tanh(L/2))`;
+   substituting `L = -λ` for `λ = log(P(1)/P(0))` gives upstream's expression exactly. **The two
+   extra minus signs are the convention, not decoration**, and a port that tidied them away would
+   have inverted itself.
+
+**AND UPSTREAM'S OWN `ft8/ldpc.c` STATES THE OPPOSITE.** Its opening comment calls the input the
+*log-likelihood of zero* and writes `codeword[i] = log(P(x=0)/P(x=1))`. That comment contradicts all
+three readings above. **The code was followed and the comment was not**, and
+`UpstreamLdpcDecoderInventoryTests` asserts the wrong comment is **still present**, so a re-pin that
+corrects it goes red beside the port rather than quietly removing the trap.
+
+**Two more stale comments in the same pair of files, recorded so nobody re-derives them:**
+`ft8/ldpc.h` says `ok == 87 means success`, which is wrong twice — success is zero, and 87 is not the
+number of checks either; and `ft8/ldpc.c` says the *last* 87 bits are the systematic plain text,
+where `ftx_decode_candidate` packs the *first* 91.
+
+**And the convention is watched refusing.** A clean codeword decoded with every ratio negated returns
+nothing, 56 of 56 over the corpus — and the reason is predicted from the code's own structure before
+it is measured. Negating every ratio complements the hard decision, and the complement of a codeword
+is that codeword exclusive-ored with the all-ones word, which satisfies a check exactly when the
+check has even degree. **This code is not regular**: 59 of its 83 checks cover six variables and 24
+cover seven. So an inverted codeword is predicted to fail precisely the 24 odd-degree checks, and the
+measurement at the first hard decision is 24, for every message. **Had the code been regular, an
+inverted codeword would have been a perfect codeword and the decoder would have been
+convention-blind.**
+
+### The measured correcting power, with the trial counts beside it
+
+Bit flips are the crisp instrument: `k` positions of a known codeword's ratios have their sign
+reversed, so the receiver is left exactly as certain as it was and certain of the wrong thing.
+**45 error counts, 400 trials at each, 56 corpus messages, and the table printed before any bound was
+asserted.**
+
+- **6 is the largest `k` at which every one of 400 trials recovered.** Recovery then falls through
+  99.8 per cent at 7, 99.0 at 8, 95.5 at 9, 92.5 at 10, 86.5 at 11, 66.2 at 12, 47.5 at 13, 27.2 at
+  14, 9.2 at 15 and 3.8 at 16, and **reaches zero at 17**, staying there to 44.
+- **The trial count is why that 6 is 6.** At 200 trials the answer read 7; doubling the denominator
+  found the single failure at `k = 7` that 200 had missed. That is worth recording because the same
+  arithmetic applies to every rate in this file.
+- **Recovered means the 77 bits that came back are the 77 bits that went in**, compared after the
+  decoder has answered. The decoder is never told the message: its signature has no parameter for
+  one, because a decoder with a truth parameter cannot be shown not to have used it.
+- Iterations: 1.00 mean on a clean codeword — because the hard decision precedes any message pass —
+  rising through 2.09, 2.29, 2.65, 3.04, 3.65, 4.29 and saturating at the bound of 25 from `k = 17`.
+- **0.504 ms per decode**, 18 000 decodes in 9.1 seconds.
+
+**The soft sweep**, which is the realistic instrument and what step 6 starts from: seeded Gaussian
+noise added to every ratio, 12 points, 400 trials each. 100 per cent decoded at σ/A of 0.00, 0.25 and
+0.50; 89.0 at 0.75; **4.5 at 1.00**; zero at 1.25 and above. **The cliff is sharp, which is what an
+LDPC code looks like.**
+
+**A caveat carried forward with it, and it is the useful part.** Upstream rescales all 174 ratios to
+a fixed variance before its decoder sees them, and **that normalisation is extraction's and was
+deliberately not ported.** So this sweep's arrays drift off upstream's scale as the noise grows —
+23.4 clean, then 24.9, 29.4, 36.8, 47.5 and on to 405.6 at σ/A of 4. The variance is printed per row.
+**Where it leaves 24, this sweep and upstream's path have parted company**, and the tail should be
+read accordingly. **The decoder is not scale-free** — the hyperbolic tangent and its clamp are not
+homogeneous — so extraction must deliver ratios on upstream's scale and not merely with upstream's
+signs.
+
+### The gate, and what it is claimed at
+
+Ratios in, **a message or nothing** out. `Ft8CodewordDecoder` composes the decoder,
+`Ft8Payload.TryRead` and `Ft8MessageDecoder` and re-implements none of them: **there is still exactly
+one CRC check in this library.** Both halves are required — every parity check satisfied *and* the
+checksum matching — and if either fails nothing is returned, not a partial, not a best guess, not a
+message with a flag or a confidence on it.
+
+- Clean codewords over the corpus: **56 of 56** on the 77 bits, and the gate's verdict equals what
+  step 2 makes of the same message 56 of 56. 51 became text; the 5 that did not are the
+  hashed-callsign entries, sound past both gates and unreadable without a cache that has heard the
+  call — **counted by agreeing about the refusal rather than excused from the count.**
+- **The tempting case, which is what the criterion is actually about: 5 096 codewords built with the
+  checksum deliberately wrong *before* the parity was computed**, so every one is a genuine member of
+  the code that belief propagation finds in one iteration with zero unsatisfied checks. Parity was
+  fully satisfied on all 5 096; all 5 096 were refused at the checksum gate; **0 returned anything.**
+- Uniform random ratios: **0 of 5 000** returned a message, closest 2 of 83 checks short.
+- Gaussian ratios with no codeword under them: **0 of 5 000**, and **the closest came within one
+  check of 83** and still returned nothing.
+
+**WHICH READING OF CRITERION 2 THIS STANDS ON.** The criterion says *a candidate*, and there are no
+candidates in this path: extraction does not exist, so nothing that has ever been near a radio
+reaches this gate. **The gate is proven at the codeword entry point, and the criterion is re-taken
+end to end when the next unit connects a candidate to it.** That sentence is in the test file as well
+as here.
+
+### Prior art in this repository that was deliberately NOT used
+
+**`src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs` exists and carries a span log-likelihood
+ratio and a posterior over characters**, and `src/Hamlet.RadioEngine/Audio/Ft8Sync.cs` exists beside
+it. **Neither was ported, copied, read for structure, referenced or edited.**
+
+The reason is the same one that kept `Ft8Sync.cs` out of unit 214, and it is the whole basis of this
+library's evidence: `Ft8Sharp`'s claim is that it is a faithful port of a named commit of `ft8_lib`,
+and a decoder assembled partly from Hamlet's own CW work would be a different artifact with a weaker
+claim, however similar the mathematics. Hamlet's decoder uses the same words for a different mode.
+**There is also a mechanical reason**: one edit under `src/Hamlet.` puts a Hamlet path into this
+phase's attribution filter and breaks step 5's criterion 5 for this unit and every unit after it.
+
+### What tonight's evidence is, and what it explicitly does not show
+
+**Three legs, and each claim stands on a named one:**
+
+1. **Provenance against the pin** — the update rule, the iteration bound, the convergence test and
+   the sign convention are read out of upstream's source by a checked-in test that skips, never
+   fails, when the clone is absent.
+2. **Inversion against a proven encoder** — every codeword damaged tonight came from `LdpcEncoder`,
+   whose parity was proved for *every* payload by linearity over all 91 basis payloads in unit 209,
+   and whose syndrome is computed independently in the test project by `LdpcCheck`, which reads the
+   check tables and **never calls the library.** That separation is what makes the recovery claim
+   mean something and it was kept.
+3. **Refusal** — random ratios, ratios beyond the correcting power, a corrupted checksum and an
+   inverted convention all produce nothing rather than a message.
+
+**What none of them shows:**
+
+- **Nothing decodes off the air.** No sample, no waterfall, no candidate is anywhere in this unit.
+- **Nothing extracts a symbol.** There is no Gray demapping, no three-bits-per-symbol layout, no
+  reading of magnitudes at a candidate's position, and no normalisation of ratios to upstream's
+  scale.
+- **The soft sweep is not a sensitivity figure** and is not comparable with the published threshold.
+- **Nothing has been held against upstream's own decoder running.** The reference decoder is not
+  built on this machine (`HM-OPEN-065`); the decoder was proved against upstream's *source* and
+  against this project's own proven encoder, and against nothing else.
+
+### Divergences from upstream
+
+**One added, numbered on from twenty.**
+
+**21 — the output bits are cleared before the iteration begins, where upstream leaves them
+untouched.** Upstream's `bp_decode` writes `plain[]` only inside the loop body, so a call with a
+maximum of zero iterations returns with the caller's array holding whatever was in it — in C, stack
+garbage. There is no faithful port of undefined content. This port clears the buffer first, so a
+decode that decided nothing returns an all-zero array with every check reported unsatisfied, which is
+the honest report of having decided nothing. **The case cannot arise in upstream's own use**, which
+always passes a positive count, and the divergence is observable only where a caller asks for zero
+iterations.
+
+**An addition that is not a divergence, recorded so it is not mistaken for one:** `LdpcDecodeResult`
+carries an iteration count, which upstream does not report. It changes no decision the decoder makes.
+It exists because the cost of correction is a thing this project has to measure rather than assume,
+and a count nobody can see cannot be measured.
+
+**A defect corrected in this library, not a divergence:** `Ft8DecodeResult.Text` returned `null`
+rather than the empty string on a default-constructed result, against a summary line that has
+promised *the empty string on a refusal* since step 2. It was found by this unit's gate
+dereferencing it — the gate carries a default result whenever parity or the checksum refuses — and a
+display reading it would have thrown at exactly the moment nothing decoded, which is the moment that
+has to be uneventful.
+
+### The library's version
+
+`0.8.0` → **`0.9.0`** under HM-DEC-152. The library gains a capability it did not have: **it can
+recover a codeword that arrived damaged, and refuse one it cannot.**
+
+**What that does *not* claim.** Nothing here extracts a symbol from audio. Nothing has demodulated
+anything. **No candidate has ever been turned into text, and no message has come off a radio** — not
+in this unit and not in any unit before it. The ratios every measurement above is built on were
+constructed from a codeword this library encoded itself. Still not a 1.x: it can speak, it can see,
+it can find, and it can now repair — and **the piece that turns a place in a waterfall into the
+numbers this decoder eats does not exist.**

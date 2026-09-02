@@ -157,9 +157,45 @@
 
     And it has never been shown a real signal off a real antenna. Every measurement above is over
     audio this library synthesized itself, which has no fading, no drift and no neighbours.
+
+    0.9.0 — IT CAN BE WRONG AND COME BACK.
+
+    Every version up to 0.8.0 was exact. It packed the right bits, made the right tones, wrote the
+    right samples, and found the right place in a slot — and a radio is not exact. The whole reason
+    FT8 works at signal levels a human ear cannot hear is that 174 bits carry 91 bits of message and
+    the rest is there to repair the damage, and until this version NOTHING IN THIS LIBRARY CORRECTED
+    A SINGLE BIT ERROR. src/Ft8Sharp/Ldpc/ held one file and it was the encoder, whose own summary
+    says it is not a decoder and cannot become one by accident.
+
+    This version adds LdpcDecoder — ft8_lib's own bp_decode, the belief propagation over the FT8
+    LDPC(174,91) code's Tanner graph, ported term for term including the rational tanh and its clamp
+    rather than the standard library's, because the arithmetic inside the loop that decides bits is
+    part of what is being ported. And it adds Ft8CodewordDecoder, THE GATE: log-likelihood ratios
+    in, a message or nothing out, with BOTH parity and the checksum required and neither a partial
+    nor a best guess nor a flagged message ever returned. A capability the library did not have
+    rather than a correction to one it did, so a minor by the same rule as the eight before it.
+
+    THE EVIDENCE, AND THE SECOND NUMBER MATTERS MORE THAN THE FIRST. Every one of 400 trials
+    recovered from 6 bit errors, with recovery falling to zero by 17, measured over 45 error counts
+    and 18000 trials rather than taken from a textbook. And across 37952 trials in which a wrong
+    message could have come back — damaged codewords, codewords built with the checksum deliberately
+    wrong, random ratios, noise with no codeword under it, and a clean codeword with every ratio's
+    sign inverted — IT RETURNED A WRONG MESSAGE ZERO TIMES. A decoder that shows an operator a
+    callsign nobody sent is worse than one that shows nothing.
+
+    WHAT THIS MINOR DOES NOT CLAIM, and it is again the important half.
+
+    NOTHING HERE EXTRACTS A SYMBOL FROM AUDIO. There is no Gray demapping, no three-bits-per-symbol
+    layout, no reading of magnitudes out of a waterfall at a candidate's position, and no
+    normalisation of ratios onto upstream's scale. Every ratio this decoder has ever seen was
+    constructed from a codeword this library encoded itself. NO CANDIDATE HAS EVER BEEN TURNED INTO
+    TEXT AND NO MESSAGE HAS COME OFF A RADIO — not in this version and not in any before it.
+
+    Still not a 1.x. It can speak, it can see, it can find, and it can now repair. The piece that
+    turns a place in a waterfall into the numbers this decoder eats does not exist.
   -->
   <PropertyGroup>
-    <Version>0.8.0</Version>
+    <Version>0.9.0</Version>
   </PropertyGroup>
 
   <!--
