@@ -3253,3 +3253,60 @@ so the budget below stands on ground that has now reproduced in a third process.
 **One slot decode cost 26.1 ms**, against unit 221's 64.1 ms measured under contention. Ten minutes
 buys about 23 000 slot decodes, so every row of the budget and its -20 dB confirmation column fit
 inside the night with room to spare.
+
+### The decibel axis, checked against a second instrument — and it holds
+
+**The whole verdict rests on the claim that the slot carried -21.001 dB, and until unit 222 nobody
+had checked that claim with an instrument other than the one that made it.** Unit 221's 0.05 dB
+requested-versus-delivered agreement compares two calls into the *same* two lines of
+`SignalToNoise`, so a systematic convention error is invisible to it — and a convention error is
+exactly the size of the shortfall being chased.
+
+**The convention in force, read off the tree, one line each:**
+
+| | |
+|---|---|
+| bandwidth the ratio is quoted in | **2500 Hz** (`SignalToNoise.ReferenceBandwidthHz`) |
+| signal power averaged over | **the transmission's own 151 680 samples, 12.64 s** (`SearchFixture.TransmissionPower`) |
+| noise power measured over | **the whole slot, 180 000 samples, 15.00 s** (`SearchFixture.AddNoise`) |
+| noise density | **one-sided** — sigma² spread over 0 to fs/2 = 6000 Hz |
+
+```
+  SNR(dB) = 10 log10( meanSquare(transmission) / (meanSquare(noise over slot) * 2500 / 6000) )
+```
+
+**The second reading shares no line of code with the first.** `Unit222AxisTests` takes the samples,
+transforms them in 4096-point rectangular segments (2.93 Hz per bin, 43 segments in a slot and 37 in
+a transmission), and forms power per hertz. It never calls `SignalToNoise` and never calls
+`SearchFixture`'s power helpers. **It is proved before it is trusted:** its periodogram sums to the
+block's own mean square to a relative **2.6e-14**, which is Parseval and is an assertion rather than
+a print.
+
+**The verdict, over 20 trials at -21 dB and 10 at -10 dB:**
+
+```
+  mean difference between the two readings : +0.0098 dB
+  largest difference                       :  0.0398 dB
+  range                                    : -0.0276 to +0.0398 dB
+```
+
+**The two readings agree within 0.2 dB. THE AXIS IS SOUND AND THE 1.5 dB BELONGS TO THE RECEIVER.**
+
+**The four named candidates, measured from the same samples rather than argued**, so a convention
+error would have shown as a number:
+
+| candidate | named size | measured |
+|---|---|---|
+| one-sided noise density (the one in force) | — | **-0.047 dB** from the measured band power |
+| a two-sided density instead | 3.01 dB | **+2.963 dB** — ruled out |
+| reference bandwidth taken as the sampled bandwidth | 3.80 dB | **+3.828 dB** — ruled out |
+| signal averaged over the slot rather than the burst | 0.74 dB | **-0.734 dB** — see below |
+
+**What the check does not settle, and it is said plainly.** It confirms the noise side of the
+convention from the samples — the one-sided density and the 2500 Hz reference band are both measured
+rather than assumed — and it confirms the signal power over the burst. **It cannot settle whether the
+published figure itself is quoted against the burst or against the slot**, because that is a fact
+about a paper that is not on this machine. The **0.734 dB** separating the two is printed so the
+verdict can be read either way; on the slot convention every rung of unit 221's curve would sit
+0.73 dB lower, which moves the 50 per cent crossing from about -19.5 to about -20.2 and leaves this
+receiver still short.
