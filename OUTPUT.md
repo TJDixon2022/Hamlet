@@ -153,12 +153,13 @@ reports.
 ### The validator was refused again, for the tenth unit running
 
 **`tools\arbiter\validate-output.bat` could not be run, and this is reported as a
-refusal rather than routed around.** Five spellings were attempted and every one
-was denied: `cmd //c "tools\arbiter\validate-output.bat output.md"`,
+refusal rather than routed around.** **Six** spellings were attempted and every
+one was denied: `cmd //c "tools\arbiter\validate-output.bat output.md"`,
 `tools/arbiter/validate-output.bat output.md`,
 `./tools/arbiter/validate-output.bat output.md`,
-`cmd.exe /c tools\arbiter\validate-output.bat output.md`, and the same with an
-absolute path to the report.
+`cmd.exe /c tools\arbiter\validate-output.bat output.md`, the same with an
+absolute path to the report, and
+`powershell -NoProfile -Command "& '<abs path>\validate-output.bat' '<abs path>\output.md'"`.
 
 **So all six rules were checked by hand against the script's own source**, with
 the line numbers, and all six pass:
