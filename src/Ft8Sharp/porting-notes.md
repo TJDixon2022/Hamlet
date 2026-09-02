@@ -3310,3 +3310,75 @@ about a paper that is not on this machine. The **0.734 dB** separating the two i
 verdict can be read either way; on the slot convention every rung of unit 221's curve would sit
 0.73 dB lower, which moves the 50 per cent crossing from about -19.5 to about -20.2 and leaves this
 receiver still short.
+
+### The loss budget: one oracle-perfect stage at a time, at -21 dB
+
+**Same population, same seeds, same 306 trials as the before-number, so every row is a delta from
+13 of 306.** Exactly one stage moves per row; every substitution lives in the test project and none
+of them is proposed for the library.
+
+**The oracle alignment was swept and not computed, and the sweep caught the same trap unit 221 hit.**
+The geometry predicts block 3 from `5760 / 1920`; the sweep at -5 dB finds **block 4**, and the
+swept point agrees with the transmitted codeword at **174.0 of 174 on all twelve control messages,
+lowest 174, highest 174**. The naive division is one block out, which is recorded here so the next
+unit does not rediscover it.
+
+```
+                             row     n    of    rate   lo 95   hi 95    delta  WRONG  equivalent
+  A. as-is                          13   306     4.2     2.5     7.1      0.0      0   0.00 dB
+  B. oracle alignment               14   306     4.6     2.7     7.5     +0.3      0  +0.02 dB
+  C. unquantised magnitudes         13   306     4.2     2.5     7.1      0.0      0   0.00 dB
+  D. ratios from the physics        11   306     3.6     2.0     6.3     -0.7      0  -0.14 dB
+  E. 100 iterations, not 25         15   306     4.9     3.0     7.9     +0.7      0  +0.04 dB
+```
+
+**THE BUDGET IS FLAT. Not one row moves the rate outside the as-is row's own 95 per cent interval of
+2.5 to 7.1 per cent.** The largest single effect is row E at +0.7 percentage points — two decodes in
+306 — which the ladder values at about **0.04 dB** against a shortfall of 1.5. **There is no stage of
+this receive path holding a decibel and a half.**
+
+**Nothing was fixed. No threshold moved, no iteration bound rose, no candidate limit widened, and no
+library file was touched.**
+
+#### What the rows are made of
+
+- **B — the search.** Decoding at the place the fixture put the signal instead of at the candidate
+  the search kept buys **one decode in 306**. Unit 221's census independently put NOT FOUND at 7 of
+  526 failures; both instruments agree the search is not the stage.
+- **C — the byte.** `Ft8Waterfall` stores one unsigned byte at half a decibel per count — upstream's
+  `WF_ELEM_T` and `WF_ELEM_MAG`. Reading the magnitude before that truncation buys **nothing at all**,
+  and the row is proved to be doing something rather than assumed to be: **all 174 ratios differ**
+  between the two stores and **3.07 hard decisions of 174 differ on average**, range 0 to 13. The
+  quantisation is real and it is not what costs decodes.
+- **D — the ratio rule.** Upstream forms each ratio as the largest decibel magnitude among the four
+  values whose bit is one, less the largest among the four whose bit is zero — a max-log taken in the
+  logarithmic domain, discarding three of four candidates on each side. The row replaces it with the
+  textbook metric for a square-law detector on eight orthogonal tones in known noise,
+  `logsumexp(P_v / N0)` over each half of the partition, with the noise power the fixture itself
+  added. **It loses two decodes.** This is the row the plan's *soft symbols first* asked for and its
+  answer is that the shortcut costs nothing measurable.
+- **E — the iteration bound.** 25 is upstream's `kLDPC_iterations`. At 100 the rate reads 4.9 per
+  cent against 4.2. **Not moved.**
+
+#### The measurement that decides it: the soft symbols themselves
+
+**All three ratio rules read at the same oracle alignment, so the alignment cannot be what separates
+them.** Unit 221's census put the gap at **ten bits out of 174** — trials that returned agreeing at
+157.0 and trials found-and-failed at 147.3 — so the question each rule has to answer is whether it
+closes those ten.
+
+```
+  ratio rule                        mean   lowest  highest    (agreement of 174)
+  upstream's, off the byte store   143.1      118      159
+  upstream's, unquantised          143.1      121      161
+  log-sum-exp over known noise     143.5      118      160
+```
+
+**No rule closes the ten bits. The best of them buys 0.4 of 174.** At -21 dB the hard decisions at
+the true alignment carry about **31 errors**, and unit 215's sweep of this code's correcting power
+found recovery reaching **zero at 17 errors**. **The information is not in the ratios**, and it is not
+the extraction that is losing it.
+
+**The noise floor row D was allowed to know was itself checked**: the measured mean per-bin power over
+the noise-only slots is 5.844e-2 against an analytic `sigma^2 * 3 / (2 * transformLength)` of
+5.890e-2, a ratio of 0.9923.
