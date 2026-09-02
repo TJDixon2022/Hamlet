@@ -3,522 +3,489 @@ READ IN THIS ORDER — A, then B, then C.
 A. PHASE — Hamlet hears FT8 off the radio and displays the decoded text on screen. Seven steps.
 Step 1 (the library exists and its tables are proven) and step 2 (messages round-trip through 77
 bits) are CLOSED. Step 3 (a valid FT8 signal can be produced) is CLOSED on its four must-pass
-criteria, met by unit 212; its NICE-TO-PASS criterion 3 is NOT MET and is now recorded in
-OPEN_ISSUES.md by name as HM-OPEN-065, which is the debt task 7 paid — that file held nothing about
-FT8 at all, four units after the ruling of 2026-09-01 required it. Step 4 (signals are found in
-noise) is THIS UNIT'S and this is its FIRST unit. It ENTERED at 0 of its three subject criteria and
-it LEAVES at 0 of its three subject criteria: none was met, none was aimed at, and nothing tonight
-searched for anything. What it entered without and leaves with is the thing all three of them
-require — there was no FFT, no spectrum and no waterfall anywhere in this tree this morning, and
-there is one now, proved against the defining sum. Steps 5 (a found signal becomes a message), 6
-(sensitivity meets the published threshold) and 7 (Hamlet displays decoded FT8) are NOT STARTED.
-Step 4 was the only step this phase could move, because every step depends on the one before it by
-the plan's own named deviation and steps 1 to 3 are done.
-B. STEP 4 — signals are found in noise. FIVE exit criteria, ALL FIVE MUST-PASS. (1) A synthesized
-signal at a known offset and time is found — NOT MET, and NOT AIMED AT. Tonight built the
-representation the finding would happen in: an independent FFT, a real-input path, and the waterfall
-spectrogram, with 4424 of 4424 tones recovered from a signal whose frequency and time were HANDED IN
-rather than found. NOTHING SEARCHED. There is no Costas correlation, no candidate, no score.
-(2) Twenty simultaneous synthesized signals across the passband are found — NOT MET, NOT AIMED AT.
-Nothing tonight analysed more than one signal at a time. (3) Candidate ranking is stable across runs
-— NOT MET, NOT AIMED AT; there are no candidates and nothing ranks. The foundation it will rest on
-was measured: the transform gives bit-identical output on 3840 of 3840 bins on a reused plan and on
-a fresh one, and the whole waterfall is byte-identical at 167028 of 167028 on a fresh monitor and on
-one reused after a reset. THAT IS NOT THE CRITERION and must not be read as it. (4) Ft8Sharp tests
-green — ENTRY 222 total, 221 passed, 0 failed, 1 skipped in 3 s; EXIT 348 total, 347 passed, 0
-failed, 1 skipped in 11 s, re-run after both version bumps. 126 tests added. The one skip at entry
-and at exit is Ft8TableGenerationTests.RewriteTheCheckedInTablesFile, the table write gate, which is
-meant to skip; no new skip was created, because every clone-reading test found the clone.
-(5) Attribution clean from 2828ab6 and the channel tests green — 133 paths, NOT ONE under
+criteria; its nice-to-pass criterion is NOT MET and is recorded by name in OPEN_ISSUES.md as
+HM-OPEN-065, the reference decoder that is not built on this machine. Step 4 (signals are found in
+noise) is THIS UNIT'S and this is its SECOND unit. It ENTERED at 0 of its three subject criteria —
+unit 213's own report says so in those words — and it LEAVES AT 3 OF 3. Steps 5 (a found signal
+becomes a message), 6 (sensitivity meets the published threshold) and 7 (Hamlet displays decoded
+FT8) are NOT STARTED. Step 4 was the only step this phase could move, because every step depends on
+the one before it and steps 1 to 3 are done while 5, 6 and 7 all need a list of places to point a
+decoder at, which did not exist this morning.
+B. STEP 4 — signals are found in noise. FIVE exit criteria, ALL FIVE MUST-PASS, ALL FIVE MET.
+(1) A synthesized signal at a known offset and time is found — MET. 56 OF 56 messages of the corpus
+found, AT RANK 1 IN 56 OF THEM, on clean slots at frequencies rotating over a bin centre, a quarter
+bin off and EXACTLY HALFWAY BETWEEN TWO BINS, at offsets on the block grid, the sub-block grid and
+neither. Frequency error at worst 1.5625224 Hz, tolerance asserted AFTER the print at half a bin
+plus 0.001 Hz for the geometry's own single-precision symbol period. Mean signed time error
++0.158936 s = 0.993 blocks, a constant bias; residual at worst 0.0156 s against a tolerance of half
+a block. In noise at a DELIVERED -10.001 dB, measured not assumed: 56 of 56, rank 1 in 56. THE
+SEARCH WAS GIVEN THE SAMPLES AND THE GEOMETRY AND NOTHING ELSE.
+(2) Twenty simultaneous synthesized signals across the passband are found — MET. 20 OF 20, on a
+clean slot and again with noise over the whole passband at a delivered -10.009 dB per transmission.
+The list must be read 22 DEEP to cover all twenty. None missed, so none is named.
+(3) Candidate ranking is stable across runs — MET. Compared ON THE VALUES AT EVERY POSITION and
+never on the count: two independent runs (680 and 75 field comparisons, all equal); a fresh monitor
+against one reused after Reset(); one search instance used six times alternating between two slots;
+and the one that catches an unstable sort — all 53040 hypotheses re-enumerated in REVERSED order and
+in a SEEDED SHUFFLE, giving the search's own list element for element. Not the FFT's or the
+waterfall's determinism, which unit 213 measured and called the foundation.
+(4) Ft8Sharp tests green — ENTRY 348 total, 347 passed, 0 failed, 1 skipped in 11 s; EXIT 394 total,
+393 passed, 0 failed, 1 skipped in 19 s, re-run after both version bumps. 46 tests added. The one
+skip at entry and at exit is Ft8TableGenerationTests.RewriteTheCheckedInTablesFile, the table write
+gate, which is meant to skip. No new skip: every clone-reading test found the clone.
+(5) Attribution clean from 2828ab6 and the channel tests green — 147 paths, NOT ONE under
 src/Hamlet.App/, src/Hamlet.RadioEngine/, tests/Hamlet.App.Tests/ or tests/Hamlet.RadioEngine.Tests/;
-AudioSeamTests and PrivilegeTests green at 55, DecisionLogOrderTests, VersionTests,
-DecisionEmissionTests and VoiceTests green at 13, both re-run after the bumps.
-C. THIS REPORT — THE NUMBER: 4424 of 4424 symbols across 56 messages, 100.000 per cent, worst margin
-13.5 dB; and across six base frequencies including one EXACTLY HALFWAY between two bins, 2844 of
-2844 with a worst margin of 4.5 dB, which is the margin the next unit's correlator actually has.
-Over NOISE ALONE the same measurement returns 12.405 per cent against a chance rate of 12.500 for
-eight candidates — 0.11 standard deviations from chance — so the first number is a measurement and
-not a question with an obvious answer. TONIGHT'S EVIDENCE IS MATHEMATICS, CONSTRUCTION AND
-PROVENANCE, and it is explicitly NOT agreement with upstream's own output, because nothing upstream
-emits a spectrum and decode_ft8.exe is not on this machine. WHAT IT DOES NOT SHOW: that this
-spectrum will find a signal it was not told where to look for. It was told, every time, in frequency
-and in time, by construction. Task 6 was NOT DROPPED although the FIRST branch of its condition
-licensed it — task 5 ran and its recovery was measured on a clean signal — and it was built anyway
-because step 4's own name and the whole of step 6 need it and the generator was already half-built
-for task 5's noise-alone check. Section 4 raises 2 items, NEITHER is a ruling request and NEITHER is
-in the way of a criterion named in B.
+AudioSeamTests and PrivilegeTests green at 55; DecisionLogOrderTests, VersionTests,
+DecisionEmissionTests and VoiceTests green at 13; both re-run after the bumps.
+C. THIS REPORT — THE SEARCH FOUND SIGNALS IT WAS NOT TOLD ABOUT, AND IT FOUND THEM AT RANK 1: 56 of
+56 messages, first in the list every time, out of a slot of audio handed over with no frequency, no
+offset and no alignment, through a signature that has no parameter one could be passed through — a
+fact asserted by reflection rather than by inspection. Twenty simultaneous transmissions across the
+passband: 20 of 20, twice, with the list 22 deep. The ranking is stable, and it is stable in the
+strong sense: the same list comes back when the hypotheses are generated in reversed or shuffled
+order, which is the comparison upstream's own heapsort could not pass, because ITS ORDER IS NOT A
+TOTAL ORDER — every comparison in its heap is on the score alone, and this port measured 2976 tied
+adjacent pairs in a list of 3000. That is divergence 19. Task 7 was NOT DROPPED although the FIRST
+branch of its condition licensed it — tasks 4, 5 and 6 all ran and produced their measurements — and
+it was run anyway because it cost 14 seconds and it is what step 6 will start from.
+Section 4 raises 1 item, it is NOT a ruling request, and it is NOT in the way of a criterion in B.
 
-UNIT:       213 — complete at task 7 of 7 — 2026-09-01 21:37
+UNIT:       214 — complete at task 8 of 8 — 2026-09-01 23:47
 DATE:       2026-09-01
 STATE:      COMPLETE
-TASKS:      7 of 7
-DROPPED:    none — task 6 was the named candidate and was kept; see section 3
+TASKS:      8 of 8
+DROPPED:    none — task 7 was the named candidate, its first branch licensed dropping it, and it
+            was run anyway; see section 3
 PHASE GOAL: Hamlet listens to the radio, finds FT8 transmissions in the audio, and puts the words
             they carry on the screen.
-UNIT GOAL:  Build the frequency-domain front end — an FFT of this library's own and the waterfall
-            spectrogram — and prove it by recovering the tones of a signal this library synthesized
-            at a frequency and a time it chose.
-ADVANCED:   no — no subject criterion of step 4 was met and none was aimed at. What advanced is the
-            substrate all three of them sit on: there was no frequency-domain representation of
-            audio anywhere in this tree and there is one now, proved against the defining sum.
-NUMBER:     step 4 subject criteria met: 0 -> 0 of 3. Tone recovery, which is not a criterion:
-            none -> 4424 of 4424 symbols over 56 messages
-DRIFT:      1 consecutive unit without advance  (was 0 — unit 212 closed step 3's third deliverable)
+UNIT GOAL:  Build the Costas sync correlation and the candidate search over the waterfall, with a
+            deterministic ranking, and use it to find signals whose frequency and time were never
+            handed to it.
+ADVANCED:   yes — criteria 1, 2 and 3 of step 4, all three subject criteria, all met and all
+            measured: 56 of 56 at rank 1, 20 of 20 across the passband, and a ranking that survives
+            being generated in a different order. Criteria 4 and 5 re-taken.
+NUMBER:     step 4 subject criteria met: 0 -> 3 of 3. Corpus found out of a slot with no hint:
+            none -> 56 of 56 at rank 1, and 20 of 20 simultaneous.
+DRIFT:      0 consecutive units without advance  (was 1 — unit 213 built the substrate and advanced
+            no criterion, and said so)
 
-# 1. What was asked, and what happened
+## 1. What Claude did
 
-Seven tasks were asked. **All seven ran. Nothing was dropped and nothing was left unreachable.**
-Task 6 was the named drop candidate and the first branch of its condition licensed dropping it; it
-was built anyway, for the reason given in section 3.
+**COMPLETE, at task 8 of 8.** This machine, `C:\Source\HamLet`, branch `main`, gated on
+`PROJECT: Hamlet` and verified against the tree before the work instruction was read: `SHACK_FACTS.md`
+and `src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs` both present, `CoreHMI.sln` and `MURC.sln`
+both absent, `Hamlet.sln` the only solution.
 
-Machine: `C:\Source\HamLet` on Windows 11, branch `main`, project confirmed as Hamlet against all
-four preflight checks — `SHACK_FACTS.md` and `src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs`
-both present, `CoreHMI.sln` and `MURC.sln` both absent, and `Hamlet.sln` the only solution at the
-root.
+**Nothing was dropped and nothing was left unreachable.** Task 7 was the named drop candidate; the
+first branch of its condition licensed dropping it, and it was run anyway. That is recorded here
+rather than presented as diligence: it was a sizing decision, and the reason it was safe is that the
+whole sweep cost 14 seconds.
 
-**The unit's target was task 5 and it came out whole.** Nothing is deferred.
+### What was traced, built and measured
 
-## What was traced, built and measured
+**Task 1 — the ground, measured before anything was changed.** `Ft8Sharp.Tests` at entry 348 total,
+347 passed, 0 failed, 1 skipped in 11 s, which is exactly what unit 213 reported. The one skip is
+`Ft8TableGenerationTests.RewriteTheCheckedInTablesFile`, the table write gate, and it is meant to
+skip. The library builds at 0 warnings and 0 errors; `Ft8Sharp.csproj` still reads `net8.0`, nullable
+enabled, warnings as errors, and has no `PackageReference` and no `ProjectReference`. 137 paths from
+`2828ab6`, and the filter for `src/Hamlet.` and `tests/Hamlet.` returned nothing. Channels 55 and 13.
+`HEAD` `58c1563`, `git status --short` 25 lines, 8 `.obj` at the root, versions 1.12.20 and 0.7.0, 18
+divergences in `porting-notes.md`. The four substrate classes green at 113, and the geometry
+re-derived from `Ft8WaterfallGeometry` rather than taken from the prior report: block 1920, sub-block
+960, transform 3840, 93 blocks, bins 32 to 481 which is 449, stride 1796, 167028 magnitudes, 3.125 Hz.
 
-**Task 1 — the ground, re-measured rather than inherited.** `Ft8Sharp` 222 total, 221 passed, 0
-failed, 1 skipped in 3 s. The library builds at 0 warnings and 0 errors; `Ft8Sharp.csproj` still
-reads `net8.0`, nullable enabled, warnings as errors, **no `PackageReference` and no
-`ProjectReference`**. Attribution 118 paths from `2828ab6` with 0 under `src/Hamlet.` or
-`tests/Hamlet.`. Channels 55 and 13. `HEAD` `2842dc3`, 8 `.obj` at the root, versions 1.12.19 and
-0.6.0, sixteen divergences on record in `porting-notes.md` — the instruction's number, checked
-against the file and correct. Step 3's evidence re-run in one line: `Ft8WaveformTests` and
-`Ft8WaveformComparisonTests`, 12 green, **0 skipped**, so the clone is present and the one-count WAV
-agreement still agrees. Not re-run as a project of its own.
+**Task 2 — upstream's search, read through the test process and pinned by ten tests.** The sandbox
+refused the session `C:\Source\ft8_lib` directly, exactly as it refused the arbiter, so every line of
+it was read by `dotnet test`. The result is `UpstreamSyncSearchInventoryTests`, which skips when the
+clone is absent.
 
-**Task 2 — upstream's receive front end, found rather than assumed.** The files were discovered, not
-guessed at: the monitor is `common/monitor.{c,h}`, the waterfall structure and its element type are
-in `ft8/decode.h`, and the passband and the two oversampling factors are chosen by
-`demo/decode_ft8.c` rather than declared by the library. All of it read through the test process, by
-a checked-in test that skips when the clone is absent. **The arbiter's expectation that the transform
-size is a power of two is wrong** — see section 3.
+**Task 3 — the correlator and the search.** `src/Ft8Sharp/Dsp/Ft8SyncSearch.cs` and
+`Ft8Candidate.cs`, new. The scoring is upstream's `ft8_sync_score` term for term and guard for guard;
+the sweep is upstream's; the selection and the ordering are not, and both are recorded as
+divergences. 17 tests, including seven refusals watched refusing.
 
-**Task 3 — an FFT of this library's own.** `src/Ft8Sharp/Dsp/` is the first receive-side code this
-tree has held. `Ft8Fft` is a mixed-radix Cooley–Tukey decimation in time, written from the
-decomposition; `Ft8RealFft` is the one-sided real path the monitor actually uses. **Nothing in the
-pin's vendored FFT folder was read beyond its licence header**, and that restriction is enforced by
-the code rather than promised — the source-dump route refuses the folder by name.
+**Task 4 — the target.** `Ft8SearchRecoveryTests`, 7 tests. The measurement is in section 3.
 
-**Task 4 — the waterfall, faithful to what task 2 read**, and the port found the same lesson unit 212
-found, on the other side of the radio and larger.
+**Task 5 — twenty at once.** `Ft8SearchPassbandTests`, 3 tests, including the depth-against-limit
+table.
 
-**Task 5 — the target.** Section 3 leads with it.
+**Task 6 — the same input, the same ranking.** `Ft8SearchStabilityTests`, 8 tests, every comparison
+on values and never on counts.
 
-**Task 6 — noise with an SNR that is defined**, its definition written out with the arithmetic shown,
-its delivery measured, and a degradation curve reported as a measurement rather than a target.
+**Task 7 — how far down it still hears.** `Ft8SearchSensitivityTests`, one sweep over nine ratios.
 
-**Task 7 — the plan's unpaid debt, the record, both versions and this report.**
+**Task 8 — the record.** `porting-notes.md` gains its unit-214 section; `OPEN_ISSUES.md` is
+unchanged; `Ft8Sharp` 0.7.0 → 0.8.0 and the root 1.12.20 → 1.12.21; and this report.
 
-## Decisions this session made for itself
+### Decisions this session made for itself, reproduced in full
 
-**1. The FFT is mixed-radix rather than radix-2, because the length the monitor wants is not a power
-of two.** The instruction directs a radix-2 Cooley–Tukey and lists "a length that is not a power of
-two" among the refusals to build. Task 2 measured that upstream transforms **3840** points, which is
-2^8 × 3 × 5. A radix-2 transform cannot compute it, and a refusal of non-powers of two would refuse
-the library's own working size. The general Cooley–Tukey decomposition — of which radix-2 is the
-special case, and for a power-of-two length every stage **is** a radix-2 butterfly — is the same
-textbook mathematics, so the decision does not touch the licensing reasoning at all. The refusals
-built instead are named in section 3.
+**One, and it is a test-design decision rather than a ruling.** The task 2 inventory test prints the
+demo application's minimum score and candidate limit rather than asserting them as literals, and the
+assertion that binds them to the port's own defaults lives in a separate class,
+`Ft8SyncSearchProvenanceTests`. The reason: those two numbers are upstream's application's to own, so
+the claim worth asserting is not *upstream says 10* but *this port's default is still whatever
+upstream's application says*. It also lets the record of the read compile and answer on its own,
+before the port it describes exists. Reproduced here because it changes where a reader looks.
 
-**2. Two entries were added to the top of `OPEN_ISSUES.md` rather than the bottom.** The instruction
-says *append*. That file runs newest-first and all sixty-three entries before these were added at the
-top. The reading taken is *add without disturbing anything already there*, which both placements
-satisfy, and the file's own convention decided between them. **Not one character of existing content
-was touched.**
+## 2. What the owner should expect
 
-**3. `PHASE_STATUS.md`'s `WORK_INSTRUCTION:` line was edited.** The work instruction's known item 6
-says not to hand-edit that file; the session prompt explicitly assigns that line to me and instructs
-me to set it. The prompt is the later and more specific instruction and it resolves the ownership of
-exactly that line, so it was followed. **Only that line was changed**, and the file was committed
-once, at task 1, exactly as unit 212 committed it.
+**`Ft8Sharp` can now be handed fifteen seconds of audio and asked what is in it.** It answers with a
+ranked list of places — a frequency, a time and a strength for each — and the list is the same list
+every time for the same audio.
 
-# 2. What the owner should expect
+**Nothing decodes, and nothing will until step 5.** A candidate is a place, not a message. There is
+no demodulator in this tree, no soft symbol, no belief propagation and no CRC check on a received
+signal, so no text comes out of a radio yet and none will tonight.
 
-**`Ft8Sharp` can now turn audio into a spectrum, and that is all it can do with audio.** It cannot
-find a signal. It cannot decode one. Given a frequency and a time it is told, it can say which of
-eight tones is there, and it is right every time on a clean signal it made itself.
+**Nothing about Hamlet itself changed.** No screen is different, no panel is new, nothing behaves
+differently when the application runs. The attribution filter from `2828ab6` returns nothing under
+`src/Hamlet.*` or `tests/Hamlet.*` for the fifteenth unit running, and that is deliberate.
 
-**What will look wrong but is not:**
+### What will look wrong but is not
 
-- **`ADVANCED: no` and `DRIFT: 1`.** No subject criterion of step 4 moved, because none was aimed at.
-  The instruction is explicit that a report from this unit reading as though step 4 advanced would be
-  worse than one saying the truth. The truth is that the substrate was built and the criteria were
-  not touched.
-- **The library's version went 0.6.0 → 0.7.0 while `ADVANCED` reads no.** Those measure different
-  things. The library gained a capability; the step gained none of its criteria.
-- **The tone spacing this library reports is 6.2500001397 Hz, not 6.25 Hz**, and the frequency of a
-  bin computed two ways differs by 6.7 × 10⁻⁵ Hz. That is upstream's single-precision symbol period
-  showing through, it is one part in 93 110, and it is printed rather than rounded away on purpose.
-- **The recovery under noise falls to 37 per cent at −25 dB.** That is **not** step 6's sensitivity
-  figure and must not be compared with the published −21 dB. Step 6 measures a *decode* rate through
-  demodulation, LDPC and CRC; this is a per-symbol tone recovery with no search and no error
-  correction, and error correction is what stands between the two.
-- **The `Analyse` guard on sample rates almost never fires.** The symbol period is 4/25 of a second,
-  so every rate that is a multiple of 25 passes — which is every audio rate in ordinary use. That is
-  precisely why upstream never met the inconsistency it refuses.
+**The reported start time of every signal is one block late, by 0.16 s, every time.** That is
+measured, named and reported as a constant bias rather than corrected, because correcting it would be
+a guess about what upstream's own block index means in samples — the one thing task 2 could not read.
+Step 5 is what will settle it, against a decode that either works or does not.
 
-# 3. What you should see
+**The candidate list is full of near-duplicates and that is expected.** A transmission is a couple of
+bins wide and half a block long in this geometry, so several neighbouring hypotheses score well on
+the same energy. Twenty signals produced a list where 20 to 27 entries were duplicates of a signal
+already covered. It is not a defect; it is what the depth number in section 3 is for.
 
-## THE TASK 5 MEASUREMENT, FIRST AND IN ONE BLOCK
+**`src/Hamlet.RadioEngine/Audio/Ft8Sync.cs` still exists and now has a rival.** This repository
+carries 289 lines of Hamlet's own Costas sync search from work instruction 042. It was not read for
+structure, not copied, not referenced and not edited, and the reason is in `porting-notes.md`. There
+are now two of these in the tree. **What becomes of Hamlet's own copy is step 7's question**, and
+raising it earlier would put a Hamlet path into this phase's attribution filter.
+
+**The library version and the application version disagree, still.** 0.8.0 and 1.12.21. That is
+HM-DEC-152 working as intended.
+
+## 3. What you should see
+
+**The task 4 measurement, before any prose.**
 
 ```
-THE CORPUS SWEEP, at 1000.0 Hz and offset 0 samples
-  RECOVERED           4424 of 4424 symbols across 56 messages   =  100.000 %
-  worst margin        13.5 dB
+56 OF 56 MESSAGES FOUND, AT RANK 1 IN 56 OF THEM     (clean slots, whole corpus)
+  ranks:  worst 1, mean 1.00
+  scores: worst 31, mean 35.0
 
-BASE FREQUENCIES — six, three of them NOT on a bin centre (bins are 3.125 Hz apart)
-  1000.0000   474/474   13.5 dB   on a bin centre (320 x 3.125)
-   800.0000   474/474   13.5 dB   on a bin centre (256 x 3.125)
-  1500.0000   474/474   13.5 dB   on a bin centre (480 x 3.125)
-  1001.5625   474/474    4.5 dB   EXACTLY HALFWAY BETWEEN TWO BINS
-  1234.0000   474/474   11.0 dB   off centre by 0.75 Hz
-  2000.7812   474/474    8.0 dB   a quarter of a bin off centre
-  TOTAL       2844 of 2844        WORST MARGIN OVER THE SWEEP  4.5 dB
+  base frequencies, rotating over the corpus:
+    1000.000000 Hz   on a bin centre
+    1001.562500 Hz   EXACTLY HALFWAY BETWEEN TWO BINS   (unit 213's 4.5 dB case)
+    1000.781250 Hz   a quarter of a bin off
+  slot offsets, rotating over the corpus:
+    0        on the block grid
+    5760     3 whole blocks
+    4800     5 sub-blocks - off the block grid
+    5000     off both grids
+    12345    off both grids
 
-TIME OFFSETS — five, two NOT a whole number of blocks, one not a whole number of sub-blocks
-      0  (0 blocks + 0)      474/474   13.5 dB   residual   0 samples
-   1920  (1 block  + 0)      474/474   13.5 dB   residual   0 samples
-    960  (0 blocks + 960)    474/474   13.5 dB   residual   0 samples   NOT a whole block
-  14160  (7 blocks + 720)    474/474   11.0 dB   residual 240 samples   OFF the sub-block grid
-   4805  (2 blocks + 965)    474/474   13.5 dB   residual   5 samples
-  TOTAL       2370 of 2370        WORST MARGIN OVER THE SWEEP  11.0 dB
+  frequency error     worst |e|  1.562522 Hz   mean |e| 0.781257 Hz   MEAN SIGNED  0.223237 Hz
+  time error          worst |e|  0.171250 s    mean |e| 0.158936 s    MEAN SIGNED  0.158936 s
+  time error          worst |e|  2055 samples  mean |e| 1907 samples  MEAN SIGNED  1907 samples
+  time residual       worst |e|  0.015603 s    mean |e| 0.006130 s    MEAN SIGNED  0.000000 s
 
-THE MARGIN AS A DISTRIBUTION, over 948 symbols of 12 messages
-  worst 13.5   1st pct 14.0   5th pct 14.5   median 16.0   95th pct 101.5   best 113.5
-  mean 22.18 dB
-  sync symbols (252): worst 14.0 dB, mean 15.87 dB    <- what the next unit's correlator uses
-  data symbols (696): worst 13.5 dB, mean 24.46 dB
-  every margin is a multiple of 0.5 dB, because the store quantises there
+  THE MEAN SIGNED TIME ERROR IS +0.158936 s, WHICH IS 0.993 BLOCKS.
 
-NOISE ALONE — no signal in the slot at all, same frequency, same offset
-  symbols asked        1580
-  'recovered'           196
-  RATE               12.405 %
-  CHANCE             12.500 %   (8 candidate tones, so one in eight)
-  distance from chance  0.11 standard deviations
-  against            100.000 % on the clean signal
+  TOLERANCES ASSERTED, AFTER THE NUMBERS THEY WERE SET FROM:
+    frequency  half a bin, 1.5625000 Hz, plus 0.001 Hz for the geometry's own
+               single-precision symbol period = 1.5635000 Hz.  Worst measured 1.5625224 Hz.
+    time       within half a block, 0.080 s, of the constant bias.  Worst measured 0.015603 s.
 
-DISPLACEMENT IN FREQUENCY — measured, not assumed
-  base 1000.00 Hz -> peak at bin 131 sub 0 = 1018.7500 Hz
-  base 1500.00 Hz -> peak at bin 211 sub 0 = 1518.7500 Hz
-  shift MEASURED 160 cells of 3.125 Hz     shift PREDICTED 160
-  and 1018.75 Hz is where the first Costas tone (tone 3) was put, exactly
+IN NOISE, DELIVERED RATIO MEASURED RATHER THAN ASSUMED:
+  requested -10.0 dB in a 2500 Hz reference bandwidth
+  DELIVERED -10.001 dB   (worst -10.033, best -9.974)
+  56 OF 56 FOUND, AT RANK 1 IN 56.  scores: worst 24, mean 28.7
 
-DISPLACEMENT IN TIME — measured, not assumed
-  offset      0 -> peaks at block 33 sub 1 = 5.360 s
-  offset   9600 -> peaks at block 38 sub 1 = 6.160 s
-  shift MEASURED 5.00 blocks               shift PREDICTED 5.00
+NOISE ALONE, 20 SLOTS, NO SIGNAL ANYWHERE IN THEM, SAME NOISE LEVEL:
+  top score over noise alone     worst 14, mean 11.7
+  score at a true signal          31
+  a number beside a number:       31 against 14, a margin of 17
+  FALSE ALARMS AT THE TRUE SIGNAL'S OWN STRENGTH: 0 of 20
+
+THE SEARCH WAS GIVEN THE SAMPLES AND THE GEOMETRY AND NOTHING ELSE.
 ```
 
-**Read it this way.** The clean recovery is total and the margin at its worst is 4.5 dB, which is at
-the frequency exactly halfway between two bins — the case a single well-chosen frequency would have
-hidden, which is why it is in the sweep. **The 4.5 dB is the number the next unit's correlator
-actually has to work with**, not the 13.5 dB the headline sweep gives. Noise alone comes back at
-chance, so the recovery is discriminating rather than tautological. Both displacements land exactly
-where the arithmetic says.
+That sentence is in the test file, in `porting-notes.md` and here, in those words. It is the whole
+difference between this unit and the last one, and it is not left to be believed: `Find` has two
+overloads and neither has a parameter whose name contains *freq*, *hertz*, *time*, *offset*,
+*expect*, *hint* or *truth*, which is asserted by reflection over the signature.
+`ToneRecovery.AlignmentFor` — the helper that computes the truth from a known offset — appears in
+none of the search's test files.
 
-**And what it is not.** **This is not a search.** The base frequency was chosen and handed to the
-synthesizer. The slot offset was chosen and used to place the signal. The symbol index is a loop
-variable. The block and time sub-offset are *computed* from the geometry, not found. Those words are
-in the test file, in `porting-notes.md` and here. **No step 4 subject criterion is met by any of it.**
-
-## Task 3 — the FFT error, measured before the bound was asserted
+### The dedicated sweeps, because an average can hide the hard case
 
 ```
-sweep                30 lengths, 1 to 4096, including 1920 and 3840
-reference            a naive DFT in the test project computing the defining sum term by term,
-                     calling nothing in the library
-WORST RELATIVE ERROR 4.575354e-15   at length 4096
-absolute there       6.252776e-13
-BOUND ASSERTED       1.000000e-13   -- after the measurement, never before
-headroom             21.9x
+FREQUENCY, four fractions of a bin at six base frequencies from 300 to 2500 Hz:
+  on centre       (+0.00000 Hz)  6 of 6, rank 1 in 6, worst score 38, worst |dF| 0.0001 Hz
+  quarter bin     (+0.78125 Hz)  6 of 6, rank 1 in 6, worst score 38, worst |dF| 0.7812 Hz
+  HALF BIN        (+1.56250 Hz)  6 of 6, rank 1 in 6, worst score 33, worst |dF| 1.5626 Hz
+  three quarters  (+2.34375 Hz)  6 of 6, rank 1 in 6, worst score 37, worst |dF| 0.7813 Hz
+  24 of 24 across the whole sweep
+
+TIME, seven offsets:
+  0      on the block grid                 rank 1, score 38
+  5760   3 whole blocks                    rank 1, score 38
+  4800   5 sub-blocks, off the block grid  rank 1, score 38
+  3880   off both grids by 40 samples      rank 1, score 37
+  5000   off both grids                    rank 1, score 35
+  12345  off both grids                    rank 1, score 37
+  27913  off both grids                    rank 1, score 37
 ```
 
-**Why the gap is what it is.** Double precision carries about 2.2 × 10⁻¹⁶ per operation. The *naive*
-side accumulates N terms into one running sum while the transform accumulates about log₂(N) levels,
-so most of what is measured is the reference's own error and it grows with N. The bound is one round
-order above the worst measurement. It is not a tolerance that would absorb a real defect: a
-transposed index or a sign error moves a bin by order one, not by order 10⁻¹³.
+The half-bin case is the one worth looking at. Unit 213 measured the tone-recovery margin falling
+from 13.5 dB to 4.5 dB there and carried it forward as the number tonight's thresholds should be set
+against. **It cost three points of sync score — 33 against 38 — and nothing else.** All six were
+found, all at rank 1.
 
-Other measurements, each printed before its own bound: a four-point transform matches the one worked
-out **by hand** to 2.2 × 10⁻¹⁶; a chirp at 3840 agrees to 7.3 × 10⁻¹⁵; the real path against the
-defining sum at seven lengths and against the complex path over 1921 bins at 1.4 × 10⁻¹⁵; linearity
-3.5 × 10⁻¹⁶; Parseval with both energies printed and agreeing to better than 10⁻¹⁴; **an impulse
-transforming to a spectrum flat to exactly zero**; DC leaking 9.2 × 10⁻¹⁷ of itself outside bin zero.
-
-**A measurement that surprised, chased down rather than absorbed.** The bin-centre sinusoid test was
-written with a bound of 10⁻¹⁴ **before** the measurement, which is the mistake this project has a
-rule against, and it measured 1.888 × 10⁻¹⁴ at bin 320 and 1.029 × 10⁻¹³ at bin 1000. Widening the
-bound would have been wrong, and the numbers said where to look: the two leakages differed by a
-factor of five for two bins whose ratio is about three, and the *larger* bin leaked more. That is how
-an **input** behaves, not a transform. At bin 1000 the last angle handed to `Math.Cos` is about 6283
-radians, and argument reduction there costs ≈ 1.4 × 10⁻¹² in the sample, which over 3840 samples is a
-spectral error of order 10⁻¹⁰ — exactly what was seen. **The leakage was the test's own sinusoid.**
-Reducing the angle in exact integers first drops the ratio to **1.587 × 10⁻¹⁶ and 1.699 × 10⁻¹⁶**,
-two to three orders, and the bound is now 10⁻¹⁵, set from the new number.
-
-## Task 2 — the shapes, and the strong/weak anchoring split
-
-**The transform.** Block = samples in one symbol at the configured rate. Advance = block ÷ time
-oversampling. Transform length = block × frequency oversampling. **Real-input**, output buffer
-length/2 + 1 bins. At 12 kHz: block 1920, advance 960, **transform 3840, and 3840 is not a power of
-two — it is 2^8 × 3 × 5**, giving 1921 bins.
-
-**The window.** Hann, **written as the square of a sine**, over the whole transform. Hamming,
-Blackman and a shorter hand-picked window are all present and all **commented out**. Normalisation is
-2 ÷ transform length and **it is folded into the window coefficients, not applied to the output** —
-which is the answer to *is there a scale factor on the transform output*, and it is **no**.
-
-**The oversampling.** 2 in time, 2 in frequency. Time offsets come from **shifting the input frame**
-by a sub-block; frequency offsets come from **the transform being longer than a symbol**, read out by
-striding the bins. **Not zero padding, and not a second finer transform.**
-
-**The storage.** `uint8_t`, one byte. 10·log₁₀(1 × 10⁻¹² + |X|²) — decibels of **power**, floor
-**inside** the logarithm. Byte = clamp(0, 255, (int)(2·dB + 240)); half a decibel per count; −120 dB
-to +7.5 dB; **clamped, not wrapped**. **Normalised nowhere** — not per block, not per slot; a running
-maximum is tracked and never divides anything. Axis order **[block][timeSub][freqSub][bin]**, bin
-fastest, stride = timeOsr × freqOsr × bins.
-
-**The anchoring split: 6 strong, 15 weak, 21 shapes read, 0 unread.** Strong (a macro or typedef in a
-header): the symbol period, the slot duration, the waterfall element type, the byte-to-decibel macro,
-the waterfall structure, and the axis order. Weak (an expression inside a function body, or a value
-the application chose): the block size, the advance, the transform length, the normalisation factor,
-the window and its length, the block count, the first and last kept bins, the decibel conversion, the
-byte scaling, the sub-offset stride, and — **the four weakest of all** — the passband edges and the
-two oversampling factors, which are `demo/decode_ft8.c`'s choices and not the library's at all.
-
-**Three things named as unread rather than guessed.** Nothing upstream emits a spectrum, so no number
-here was checked against upstream's output. **The exact alignment between a block index and a sample
-offset was not settled by reading** — the frame is prefilled with zeros and slides, and the port
-reproduces the same prefill and shift so it inherits whatever alignment upstream has, but it is not
-asserted as a number. And the float-to-byte truncation order was reproduced rather than verified
-against a running monitor. **No constant in the port was guessed.**
-
-## The FFT licence finding
+### Task 5 — twenty at once, and how deep the list has to be read
 
 ```
-folder      fft/  (5 files: kiss_fft.{c,h}, kiss_fftr.{c,h}, _kiss_fft_guts.h)
-project     KISS FFT — https://github.com/mborgerding/kissfft
-copyright   Copyright (c) 2003-2010, Mark Borgerding. All rights reserved.
-licence     SPDX-License-Identifier: BSD-3-Clause
+  twenty transmissions, 300.0000 Hz to 2772.3438 Hz, across a 200..3000 Hz passband
+  every one at a different fraction of a bin; five start offsets, three of them off both grids
+  closest pair 127.6562 Hz apart = 20.4 tone spacings = 40.9 bins - NO TWO OF THEM OVERLAP
+
+  CLEAN SLOT                    20 OF 20 FOUND.  list 140 long, 22 DEEP, 27 duplicates
+  NOISE AT -10.009 dB DELIVERED 20 OF 20 FOUND.  list 133 long, 22 DEEP, 20 duplicates
+    ranks: worst 22, mean 10.7      scores: worst 25, mean 29.2
+    worst |dF| 1.56246 Hz           worst |dt - bias| 0.01158 s
+
+  DEPTH AGAINST THE CANDIDATE LIMIT, which is the demo application's number and not FT8's:
+     limit  returned  covered  depth  duplicates
+        20        20       19     19           0
+        40        40       20     21           1
+        80        80       20     21          12
+       140       130       20     21          23
+       400       130       20     21          23
 ```
 
-**A second copyright holder under a second licence**, against a library carrying one `LICENSE`
-(Tim's MIT) and a `NOTICE` crediting Goba. Only the leading comment block was read — the test stops
-at the first preprocessor directive — and **no structure, no algorithm and no line of that folder was
-consulted**. The decision to write the transform stands on this measurement rather than on an
-assumption.
+**Nothing was tuned to reach twenty.** *Found* means a candidate within task 4's tolerance exists
+somewhere in the list — not that the top twenty candidates are the twenty signals. The depth is the
+number step 5 pays for: it is how many decode attempts have to be made before the last of the twenty
+is reached. At the default limit of 140 the limit is not the binding constraint; at 20 it is, and one
+signal is lost to it.
 
-## Task 4 — the waterfall geometry, and the single precision that moves whole integers
+**No two of the twenty are close enough in frequency to be confused**, and that is stated rather than
+left to be assumed — the closest pair is 20.4 tone spacings apart. A fixture with overlapping signals
+would be a different and harder measurement, and it is not one step 4 asks for.
 
-```
-                      in float (upstream, and this port)   in double ("more accurate")
-  block size          12000 * 0.160f -> 1920.0f -> 1920      1919.99995708 -> 1919
-  first kept bin        200 * 0.160f ->   32.0f ->   32        31.99999928 ->   31
-  last kept bin        3000 * 0.160f ->  480.0f ->  481       479.99998927 ->  480
-```
-
-`0.160f` is 0.1599999964237213, and every extent is a truncated product of it. **A block one sample
-short misaligns every symbol after the first; a first bin one lower shifts every frequency this
-library reports by 6.25 Hz, one whole FT8 tone.** So the more accurate arithmetic is the wrong
-arithmetic. This is unit 212's lesson arriving on the receive side, and it is larger here — that unit
-found single precision worth 116 counts in the last place, and this one finds it worth whole
-integers. Both columns are computed and printed by a checked-in test rather than asserted in a
-comment.
-
-Extents at 12 kHz: block 1920, subblock 960, transform 3840, **93 blocks**, bins 32 to 481, **449
-bins**, stride **1796**, **167028 magnitudes** in a slot, transform bins **3.125 Hz** apart. A whole
-15-second slot analyses in **55 ms**. A slot of 180000 samples gives 93 whole blocks and 1440 samples
-left over, and the block capacity computed from the slot duration agrees with the count computed from
-the sample count — two routes through the same floats. Silence reads as byte 0 everywhere and −120 dB
-exactly, no not-a-number. Every one of the 898 bin centres maps to a frequency and back to itself,
-and 100 Hz and 5000 Hz are reported as outside the passband rather than clamped silently into it.
-
-**No constant was guessed**, so there is no guessed constant to flag.
-
-## Every refusal that was watched refusing
-
-| Refusal | Watched at | How far outside |
-|---|---|---|
-| transform length 0, −1, −3840 | `Ft8Fft` | refused; message names the rule |
-| each of 4 transform spans one short | `Ft8Fft` | refused, and **every output value still held its sentinel** |
-| real length 0, 1, −2, 3, 1921, 3839 | `Ft8RealFft` | refused; odd and below-two named separately |
-| each of 3 real spans wrong | `Ft8RealFft` | refused, sentinel intact, `ParamName` correct |
-| sample rates 4410, 11111, 12001, 9999 | geometry | refused — not a whole symbol |
-| rates 6000…48000, incl. 8000, 11025, 44100 | geometry | **accepted**, so the guard is not always on |
-| time oversampling 7 at a 960-sample block | geometry | refused — 1 sample per block would never be looked at; 5 at the same rate accepted |
-| 8 degenerate configurations | geometry | refused (0/negative factors and rates, inverted, empty and negative passbands) |
-| 8 out-of-range waterfall reads | `Ft8Waterfall` | refused on every axis, both ends |
-| blocks of 0, 1, 1919, 1921, 3840 samples | `Ft8Monitor` | refused, **and the next good block matched a monitor that never saw the refusal** — the sliding frame really was untouched |
-| signals of 0, 1, 959, 1919 samples | `Ft8Monitor` | refused; exactly 1920 accepted |
-| 5 blocks past the end of the waterfall | `Ft8Monitor` | reported false, nothing stored, matching upstream's early return |
-
-**The one refusal the instruction named that was not built** is "a length that is not a power of
-two", because 3840 is the length this library needs. It is replaced by the length and buffer guards
-above, and the substitution is a decision reported in section 1.
-
-## Task 6 — not dropped, and which branch licensed dropping it
-
-**The FIRST branch licensed it**: task 5 ran and its recovery was measured on a clean signal, so the
-unit's evidence was complete and the fixture is next-unit provisioning. **It was built anyway** —
-step 4's own name is *signals are found in noise*, step 6 needs an SNR that is defined rather than
-approximate, the generator was already half-built for task 5's noise-alone check, and there was time.
+### Task 6 — stability, on the values and never on the count
 
 ```
-DEFINITION, arithmetic shown rather than asserted
-  SNR(dB) = 10 log10( signal power / noise power in a 2500 Hz reference bandwidth )
-  2500 Hz is the amateur weak-signal convention the published FT8 figures use
-  at 12 kHz, real samples occupy 6000 Hz one-sided, so noise in the reference
-  is sigma^2 * 2500/6000, and sigma = sqrt( P * 6000 / (2500 * 10^(snr/10)) )
-  signal power MEASURED from the samples at 0.499008, not assumed to be 0.5
-
-REQUESTED IS DELIVERED — 8 points, +20 to -30 dB, 3 600 000 samples each
-  WORST ERROR 0.0061 dB          tolerance 0.01 dB, set after the measurement
-
-THE GENERATOR, measured before it is trusted — 400 000 samples
-  mean 0.000263   deviation 1.001911   KURTOSIS 2.9966  (3 normal, 1.8 uniform)
-  68.26 / 95.45 / 99.73 per cent inside 1, 2, 3 sigma
-  10000 of 10000 bit-identical on replay from the seed; 0 of 10000 from another
-
-WHITE, measured with this library's own transform, 1919 bins x 200 blocks
-  TILT ACROSS THE BAND  -0.0079 dB
-
-THE DEGRADATION — A MEASUREMENT, NOT A TARGET. NOTHING TUNED.
-  clean 100.00 %   +20 100.00   +10 100.00   +5 100.00    0 100.00
-   -5   100.00 %   -10 100.00   -15  99.21   -20  74.37  -25  37.34
-  chance is 12.50 %.  Flat, a knee at -15 dB, then a fall toward chance.
+  two independent runs, twenty signals in noise   136 candidates,  680 field comparisons, all equal
+  two independent runs, one signal                 15 candidates,   75 field comparisons, all equal
+  fresh monitor vs one reused after Reset()        both slots, all equal
+  one search instance used 6 times, alternating    both slots, all equal every round
+  REVERSED generation order, both slots            all equal, element for element
+  SEEDED SHUFFLE of all 53040 hypotheses           all equal, element for element
+  shortening the list at limits 1, 5, 20, 60, 140  truncates rather than reorders
 ```
 
-**This is not step 6's figure.** Step 6 measures a decode rate through demodulation, LDPC and CRC
-against a published threshold near −21 dB. This is a per-symbol tone recovery at a frequency and a
-time it was told, with no search and no error correction.
+The last two are the ones that mean something. **Two runs of the same code over the same data agree
+even when the sort is unstable**, because the generation order is the same both times. Re-enumerating
+the whole hypothesis space in a different order and requiring the same answer is the comparison that
+does not let that through, and it is exactly the comparison upstream's own search would fail.
 
-## The divergences added
+### Task 2 — the shapes, and the anchoring split
 
-**Two, numbered 17 and 18 on from the sixteen already on record** — the count was checked against
-`porting-notes.md` and the instruction's sixteen is correct.
+**STRONG — a macro, a typedef or a header declaration, which cannot be misread (6):** the candidate
+record of five fields with an integer score; the search entry point and its four parameters; the
+integer accessor that reads a stored magnitude as a count and never as decibels; the waterfall axis
+order and block stride; the three-groups-of-seven-thirty-six-apart sync geometry; the declaration of
+the seven-tone Costas array.
 
-**17 — the transform computes in double where upstream's computes in single.** There is no
-bit-identity to lose: this is a different algorithm from the one upstream vendors, so agreement in the
-last place was never available, and the waterfall quantises to half a decibel. **Note what it does
-not extend to** — the geometry is single precision deliberately, and so is the value at the point it
-becomes a stored byte; only the transform's internal arithmetic is widened. A stored byte could
-differ from upstream's by one count where the decibel value sits within ≈ 10⁻⁶ of the truncation
-boundary, and nothing tonight could measure that because nothing upstream emits a byte.
+**WEAK — an expression inside a static function body (6):** the four neighbour difference terms and
+their guards; the asymmetry by which a block before the slot is skipped and a block past its end
+abandons the group; the integer division by the number of terms actually taken; the block offset
+range; the frequency offset bound; the min-heap and the heapsort.
 
-**18 — a sample rate the geometry does not divide is refused.** Two shapes: a rate at which a symbol
-is not a whole number of samples, and — the dangerous one — a block that does not divide by the time
-oversampling factor, where the analysis consumes fewer samples than the caller advances by and the
-remainder is **audio silently never looked at**. Upstream truncates and inherits both, because at
-12 kHz there is no remainder in either.
+**WEAKEST, named because they are the two numbers that bound the answer:** **the minimum score and
+the candidate limit are not in the library at all.** They are file-scope constants in
+`demo/decode_ft8.c`, and that neither name appears anywhere in `ft8/` is asserted rather than
+assumed. They are one application's judgement about how much sensitivity to trade for how much work,
+so `Ft8SyncSearch` exposes both as constructor parameters with the demo's values as defaults.
 
-## The versions
+**Three things named as UNREAD rather than guessed:** what upstream's decoder actually returns for a
+slot (the binary is not on this machine, HM-OPEN-065, and a unit may not build one); the exact
+alignment between a block index and a sample offset, which reading does not settle and which was
+measured instead; and whether upstream's heap order for tied scores is reproducible across compilers,
+which is not readable and is not needed, because this port replaces that order rather than
+reproducing it.
 
-`src/Ft8Sharp/Directory.Build.props` **0.6.0 → 0.7.0** under HM-DEC-152, with the note saying what
-the minor claims — the library can turn audio into a spectrum — and what it does not: nothing
-searches, nothing scores, nothing ranks, nothing decodes, and **it can now see and it still cannot
-hear.** Root `Directory.Build.props` **1.12.19 → 1.12.20** under HM-DEC-150. **Both re-run after the
-bumps:** `Ft8Sharp` 348/347/0/1 in 11 s, channels 55 and 13 with `VersionTests` among them.
+### The tie-break, and whether upstream's order is total
 
-**No new shared artifact was added, so no new channel was added.** `Ft8Sharp` still has no
-`PackageReference` and no `ProjectReference`; the boundary test is green.
+**It is not.** Every comparison in both of upstream's heap helpers is on `score` and on nothing else,
+its sort is a heapsort, and heapsort is not stable. Scores are small integers over tens of thousands
+of hypotheses: **2976 of 3000 adjacent pairs in one list tied on score alone.** So where two
+candidates tie, upstream's returned order is whatever its heap's swaps left — fixed for one build
+over one input, and not a function of the input.
 
-## What was committed, and what was left alone
+`Ft8Candidate` therefore compares on **score descending, then block offset, then time sub-offset,
+then bin offset, then frequency sub-offset, all ascending.** No two distinct hypotheses share all
+four position fields, so **no two distinct candidates ever compare equal.** Nothing about that
+sequence is claimed to be better than another; what is claimed is that it is fixed, that it exhausts
+every field, and that step 5 can therefore rely on the order it reads.
 
-Seven commits, one per task. **Every file committed is under `src/Ft8Sharp/`,
-`tests/Ft8Sharp.Tests/`, `OPEN_ISSUES.md`, the two `Directory.Build.props` files, or the two status
-files that are mine.** Nothing else.
+### Every refusal, watched refusing, and by how much it missed
 
-**Left alone, deliberately:** the **8 `.obj`** at the repository root, counted at the end and
-unchanged; `tools\build-ft8-oracle.bat`, present, untracked, not run and not edited; everything under
-`tools\`, including the two modified arbiter files that are the owner's; `PHASE_OUTCOME.md`, stale
-and the loop's; the four modified `ANALYSIS-*`/`PROJECT_CARD`/`WORK_INSTRUCTIONS` files;
-`tests/Ft8Sharp.Tests/TempEncoderProbe.cs`, on disk, emptied to a comment and still tracked, and an
-eleventh attempt to be rid of it was not made; `src/Ft8Sharp/Tables/Ft8Tables.g.cs`, not opened;
-`CLAUDE.md` §1. **Nothing from the clone was committed** — not a source file, not a line, not a
-licence text, not a value. **No WAV, no binary, no `.obj`.**
+```
+  a minimum score no hypothesis reaches   best score on the slot was 38; a minimum of 39
+                                          returns 0 candidates. Empty, not an exception,
+                                          not a partly filled list.
+  a candidate limit of zero               returns 0, does not throw
+  more candidates than the slot supplies  asking for 1,000,000 returns exactly the 34
+                                          hypotheses that reach the minimum and stops
+  no candidate below the minimum, ever    at minimums 0, 10, 25 and 50 the weakest returned
+                                          candidate was 0, 10, 25 and 0-of-none
+  a negative candidate limit              refused, with the reason
+  an inverted block offset sweep          refused: 5 to 4 is empty
+  a null waterfall                        refused
+  a time sub-offset of 2 (of 2)           refused
+  a frequency sub-offset of 2 (of 2)      refused
+  a bin offset of 442 (of 0..441)         refused, and 441 SCORES rather than refusing,
+                                          so the bound is where it says it is
+  a hypothesis outside the analysed blocks  scores 0 rather than throwing
+```
 
-## Mismatches against the instruction — reported, not repaired
+### Task 7 — how far down it still hears
 
-**1. The transform size is not a power of two, and the instruction assumes it is.** Task 3 says
-*sweep every power-of-two size the monitor could want* and lists *a length that is not a power of
-two* among the refusals. The monitor's length is **3840 = 2^8 × 3 × 5**. Both statements are wrong
-about the tree. The consequence is the decision in section 1; the refusal is not implementable and
-was replaced.
+```
+  20 messages and 5 noise-only slots at each ratio. Delivered ratio measured at every point.
 
-**2. `git status --short` printed 27 lines at entry, not the 26 the arbiter measured.** It reads 30
-now, which is those 27 plus this session's own uncommitted-then-committed files at the moment of
-measuring. Not investigated further.
+    asked  delivered    found   rate  worst true  mean true  best false  mean false  cands
+     -4.0     -4.000    20/20  100.0%         28       32.2          13        11.6     10
+     -8.0     -8.000    20/20  100.0%         27       30.3          11        10.8     12
+    -11.0    -10.999    20/20  100.0%         24       27.8          12        11.4     10
+    -13.0    -12.995    20/20  100.0%         21       25.4          12        11.4     11
+    -15.0    -15.001    20/20  100.0%         19       22.8          12        11.6     13
+    -17.0    -16.997    20/20  100.0%         16       20.4          12        11.2     12
+    -19.0    -18.999    20/20  100.0%         14       16.6          13        12.2     13
+    -21.0    -21.001    19/20   95.0%          9       12.7          13        11.8     11
+    -24.0    -24.002    11/20   55.0%          6        9.7          12        11.4     11
 
-**3. Known item 6 and the session prompt disagree about `PHASE_STATUS.md`.** Reported as a decision
-in section 1 rather than silently resolved.
+  EVERY MESSAGE FOUND DOWN TO A DELIVERED -18.999 dB.
+  FIRST MISS AT -21.001 dB: 19 of 20.
+  THE DISTRIBUTIONS BEGIN TO OVERLAP AT -21.001 dB, where the weakest true score 9 has
+  fallen below the best noise-alone score 13.
+```
 
-**Everything else the instruction asserted checked out**: `HEAD` `2842dc3`; 118 attribution paths
-with the Hamlet filter returning nothing; 1.12.19 and 0.6.0; 8 `.obj`; `src/Ft8Sharp/` holding
-exactly the listed folders and files with `Encode/` holding exactly two; **`tests/Ft8Sharp.Tests/Encode/`
-holding exactly twenty-two files**; unit 212's exit figures of 222/221/0/1 and channels 55 and 13;
-sixteen divergences on record; `OPEN_ISSUES.md` holding nothing about FT8 — its only two mentions of
-the string are a note from 2026-08-18 about how to integrate a decoder, not a criterion.
+**The false-alarm floor does not move.** Across a twenty-decibel sweep the best score noise alone
+produced stayed between 11 and 13 while the score at a true signal fell from 32 to 10. That is what
+makes the separation readable, and it is why the overlap point is a real number rather than an
+artefact of one seed.
 
-## Defects of my own, found against myself and corrected
+**Nothing was tuned to improve this and it is not compared with any published sensitivity figure.**
+Those figures are about decodes; error correction stands between a found signal and a decoded one;
+nothing in this library demodulates anything. Step 6's question.
 
-Eight, all in tests and none in the library:
+### The divergences added, and the versions
 
-1. A weak-anchoring tally written as 16 where the list holds 15.
-2. A regex that could not cross the `(float)` cast in the pin's Hann window.
-3. A bin-centre leakage bound written before its measurement — the largest of the eight, and the one
-   the instruction's rule exists to catch. Chased to its cause rather than widened.
-4. and 5. Two geometry assertions written as though `0.160f` were 0.160.
-6. `92 × 0.16` written as 14.88 when it is 14.72.
-7. `180000 mod 1920` written as 750 when it is 1440.
-8. Four sample rates chosen as "bad" that are all multiples of 25 and therefore perfectly fine —
-   which is itself the reason upstream never met that guard, and is now recorded in the test.
+**19 — the candidate ordering is a total order with an explicit tie-break**, where upstream's
+compares the score and nothing else. Reasoned above.
 
-## The validator
+**20 — every hypothesis is scored and the survivors are sorted**, where upstream keeps a bounded
+min-heap as it sweeps. Recorded separately because it is a different observable: upstream's eviction
+rule discards the current worst only for a *strictly* greater score, so which of several tied
+candidates is standing at the cut depends on the order the sweep visited them in. **The cost was
+measured before it was accepted:** the whole space is 53040 hypotheses at 12 kHz, scored in 10 to
+12 ms.
 
-**It did not run, in any of the five spellings `tools\arbiter\run-unit-tools.txt` lists.** Reported
-as a failure to invoke rather than routed around, and it reproduces unit 212's measured diagnosis
-exactly — known item 15:
+`porting-notes.md` now records **20 deliberate divergences**, numbered on from eighteen in the same
+form. `Ft8Sharp` **0.7.0 → 0.8.0** under HM-DEC-152, with the note saying what it does not claim.
+Root **1.12.20 → 1.12.21** under HM-DEC-150. `OPEN_ISSUES.md` is unchanged, which is the expected
+answer: step 4 has no nice-to-pass criterion and all five of its must-pass criteria are met.
 
-| Spelling | What happened |
-|---|---|
-| `cmd //c tools\arbiter\validate-output.bat` | `'toolsarbitervalidate-output.bat' is not recognized` — **the backslashes are lost** |
-| `cmd.exe //c tools\arbiter\validate-output.bat` | same, backslashes lost |
-| `tools\arbiter\validate-output.bat` | `toolsarbitervalidate-output.bat: command not found` — backslashes lost |
-| `cmd /c tools\arbiter\validate-output.bat` | prints the Windows banner and stops — **an interactive `cmd`**, the batch never runs |
-| `cmd.exe /c tools\arbiter\validate-output.bat` | same, interactive `cmd` |
+### What was committed and what was left alone
 
-**The ordering block was therefore checked by hand**, against the four rules the validator enforces:
-`A.`, `B.` and `C.` each begin a line with **no indentation**, at lines **3, 17 and 36**; all three
-are inside the first 60 lines; all three are above the `UNIT:` line, which is at line **51**; and the
-count in C is written as a digit — *"Section 4 raises 2 items"*.
+Eight commits, each pushed before the next task began. **Committed:** `PROJECT_STATUS.md`;
+`src/Ft8Sharp/Dsp/Ft8SyncSearch.cs`; `src/Ft8Sharp/Dsp/Ft8Candidate.cs`;
+`src/Ft8Sharp/porting-notes.md`; `src/Ft8Sharp/Directory.Build.props`; the root
+`Directory.Build.props`; and six files under `tests/Ft8Sharp.Tests/Dsp/` —
+`UpstreamSyncSearchInventoryTests.cs`, `Ft8SyncSearchProvenanceTests.cs`, `Ft8SyncSearchTests.cs`,
+`SearchFixture.cs`, `Ft8SearchRecoveryTests.cs`, `Ft8SearchPassbandTests.cs`,
+`Ft8SearchStabilityTests.cs` and `Ft8SearchSensitivityTests.cs`.
 
-# 4. What needs a decision, or is carried forward
+**Left alone, every one of them deliberately:** the 8 `.obj` files at the repository root, counted
+and not touched; `tools/build-ft8-oracle.bat`, present, untracked, not run and not committed;
+`PHASE_STATUS.md`, `PHASE_OUTCOME.md` and everything under `tools/`; the modified
+`ANALYSIS-cw-*.md`, `PROJECT_CARD.md` and `WORK_INSTRUCTIONS.md`; and the untracked `ARBITER.md`,
+`MANIFEST.txt`, `PHASE_PLAN.md`, `RUN_LEDGER.md`, `VERIFY_PASS.md`, `SCRUB_SELFTEST.bat`,
+`SESSION.lock`, `.run-unit/` and `docs/phase-uplift/`. `git status --short` printed **25** lines at
+entry — the instruction said 24 — and **28** at exit, the three added being the modified `OUTPUT.md`,
+the modified `PROJECT_STATUS.md` before it is committed, and the one piece of untracked debris the
+harness would not let this session delete, named below.
 
-**No ruling is requested. Section 4 raises 2 items and both are carried forward for the next unit,
-not questions for the owner.** The reference decoder is not re-raised: it is a standing item with the
-owner from units 210, 211 and 212 and it is now recorded in `OPEN_ISSUES.md` as HM-OPEN-065, which is
-where the plan says it belongs.
+### Mismatches against the instruction, reported and not repaired
 
-**1. The block-to-sample alignment is inherited, not asserted, and the next unit will need it
-exactly.** Upstream's analysis frame is prefilled with zeros and slides by a sub-block, so the
-samples behind a block reach back before it; upstream's own resynth comment calls this a
-three-sub-block loading offset. This port reproduces the same prefill and the same shift, so it
-inherits whatever alignment upstream has — but task 2 could not settle what that alignment *is* as a
-number, and nothing tonight asserts one. Tonight's recovery does not depend on it, because the
-alignment used is computed from this library's own geometry and is self-consistent. **A correlator
-comparing its candidate times against upstream's would depend on it**, and the cheapest way to settle
-it is a fixture whose time offset is known and whose recovered block is measured against upstream's
-`freq_hz`/`time_sec` expressions rather than against this library's.
+1. **`git status --short` printed 25 lines at entry, not 24.** The extra is `SESSION.lock`, which the
+   instruction's list of untracked loop files does not name. Reported; nothing touched.
+2. **`git diff --name-only 2828ab6..HEAD` listed 137 paths at entry, which matches.** No mismatch.
+   Named here because the instruction asked for the number and it was checked.
+3. **Every one of task 2's expectations was correct.** The instruction warned that finding one wrong
+   would be a result; none was wrong. The search is in `ft8/decode.c` with the type in
+   `ft8/decode.h`; the candidate carries a time block offset, a time sub-offset, a frequency bin
+   offset, a frequency sub-offset and an integer score; the score is summed over three sync blocks of
+   seven with differences against frequency AND time neighbours; there is a minimum score and a
+   candidate limit, a heap and then a sort; and the sweep begins at a negative block offset and
+   covers both sub-offset axes. **The one thing the instruction did not predict is which way the
+   answer to its own question about the sort would come out**, and it comes out *not a total order*.
+4. **The instruction says to update `PHASE_STATUS.md`'s `WORK_INSTRUCTION:` line, and also says not
+   to hand-edit `PHASE_STATUS.md`.** The session prompt is explicit that the `WORK_INSTRUCTION:`,
+   `PHASE:`, `PHASE_SET:` and `DESCRIPTION:` lines are the session's, so that one line was edited and
+   nothing else was, and the file was **not committed** — known item 11 says to commit none of the
+   loop's files. Both instructions were followed as far as they can both be followed; the conflict is
+   reported rather than resolved.
 
-**2. The margin the correlator actually has is 4.5 dB, not 13.5 dB.** The headline sweep's 13.5 dB is
-at a base frequency sitting exactly on a bin centre. At a frequency exactly halfway between two bins
-the worst margin falls to 4.5 dB, and off-centre frequencies are the ordinary case on the air. **The
-sync symbols — the ones a Costas correlator sums — have a worst margin of 14.0 dB and a mean of
-15.87 dB on a clean on-centre signal**, and that is the budget the next unit is working inside before
-any noise is added. Carried forward so the correlator's thresholds are set against a measured number
-rather than a hopeful one.
+### Refusals by the harness, reported as refusals
+
+1. **The sandbox refused the session `C:\Source\ft8_lib`**, exactly as it refused the arbiter. Every
+   line of upstream read tonight was read by the test process, which is the sanctioned route.
+   **No route around the refusal was attempted.**
+2. **The harness refused every attempt to DELETE a file**, including its own scratch directory and
+   the temporary probe used to read the clone. This is the same refusal that has left
+   `TempEncoderProbe.cs` on disk for eleven sessions. Consequence: two untracked files remain on
+   disk and **neither is committed** — `tests/Ft8Sharp.Tests/Dsp/UpstreamSyncSearchProbe.cs`, emptied
+   to a comment so that what is on disk and what is in the commit compile to the same tests, and
+   `scratch-audio/u214/rotate.sh`, which is inside a `.gitignore`d directory.
+3. **The harness refused `sed -i` and shell redirection into the working tree**, so every file was
+   written through the editing tools instead. No mismatch resulted; noted because it is why no
+   scripted status update was used.
+4. **`tools\arbiter\validate-output.bat` could not be run, in any of the five spellings
+   `tools\arbiter\run-unit-tools.txt` lists.** This is the fourth unit running — 211, 212 and 213
+   were refused it too, and unit 213 measured why. Both `//c` forms reach the shell but the
+   backslashes are stripped before `cmd` sees them, so `cmd` reports
+   `'toolsarbitervalidate-output.bat' is not recognized`; the bare `tools\arbiter\...` form is
+   stripped the same way by bash itself; and `cmd /c`, `cmd.exe /c` and every quoted variant tried
+   were refused outright by the permission scope. **No route around the refusal was attempted** —
+   no copy of the script, no reimplementation of its checks in another language, no editing of
+   `tools\`. **The six rules were checked by hand instead**, against the script's own source, which
+   is readable: the `UNIT:` line is at line 53, inside the first 60 and above section 1; there are
+   exactly four `## ` headings and they are the four expected, in order, with no fifth; section 4 is
+   present; section 3 holds several hundred non-blank lines; and the ordering block sits above the
+   `UNIT:` line with the `READ IN THIS ORDER` header, an `A.`, a `B.` and a `C.` each beginning a
+   line, and the count of section 4's items written as a digit on one line. **The unit's own check
+   says this report is valid; the script did not say so, because it could not be reached.**
+
+## 4. What's blocking us
+
+**One item, and it is not a ruling request.** It is carried forward for step 5, which is the unit
+that will need it.
+
+**The block-to-sample alignment is measured but not explained against upstream.** A candidate's block
+offset `b` names a transmission that began at about `(b - 1)` blocks into the slot: the mean signed
+time error is +0.158936 s over 56 messages, which is 0.993 of a block, with a residual of at worst
+0.0156 s. The arithmetic of the analysis window predicts exactly that one-block lead, so the number
+is understood on this side. **What is not settled is whether upstream's own block offset means the
+same thing**, because upstream never writes down what its `time_offset` is in samples and its decoder
+is not built on this machine to be asked. Nothing was corrected for it tonight, because a correction
+would be a guess about the very thing task 2 named as unread.
+
+**Why it is not in the way of anything in B.** Criterion 1 is met with the bias reported and the
+tolerance stated against the residual rather than against zero; criteria 2 and 3 do not depend on it
+at all. It becomes real in step 5, where a demodulator has to start reading data symbols at the right
+block — and there it will be settled by a decode that either works or does not, which is a better
+test of an alignment than anything this unit could have run.
+
+**The reference decoder is not re-raised.** It is a standing item, `HM-OPEN-065`, and known item 4.
