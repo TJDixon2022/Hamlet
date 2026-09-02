@@ -3382,3 +3382,42 @@ the extraction that is losing it.
 **The noise floor row D was allowed to know was itself checked**: the measured mean per-bin power over
 the noise-only slots is 5.844e-2 against an analytic `sigma^2 * 3 / (2 * transformLength)` of
 5.890e-2, a ratio of 0.9923.
+
+### The audit: belief propagation read against the pin, term by term
+
+**The stage the budget named is row E's — the decoder and its iteration bound.** It is the largest
+thing in a flat table, and the soft-symbol measurement points the same way: at the true alignment the
+hard decisions carry about 31 errors against a code whose recovery reaches zero at 17.
+`Unit222LdpcAuditTests` reads `ft8/ldpc.c`'s `bp_decode` and this port's `LdpcDecoder.Decode` and
+compares them term by term, skipping when the clone is absent.
+
+**Fourteen terms audited. Thirteen SAME. One DIFFERING, and it is divergence 21.**
+
+| term | evidence | same? |
+|---|---|---|
+| which of the two decoders is ported | STRONG | SAME — `decode.c` calls `bp_decode` once, `ldpc_decode` never |
+| the iteration loop and its bound | STRONG | SAME |
+| the hard decision, taken at the top over three to-variable messages | STRONG | SAME |
+| the all-zero refusal | STRONG | SAME |
+| the early exit: `ldpc_check`, running minimum, break at zero | STRONG | SAME |
+| the status returned: `min_errors` from `FTX_LDPC_M` | STRONG | SAME |
+| variable node to check node, `fast_tanh(-tnm / 2)`, with the exclusion | STRONG | SAME |
+| check node to variable node, `-2 * fast_atanh(product)`, with the exclusion | STRONG | SAME |
+| `fast_tanh`'s constants `[-4.97, -1, 4.97, 1, 945, 105, 945, 420, 15]` | STRONG | SAME, in order |
+| `fast_atanh`'s constants `[945, -735, 64, 945, -1050, 225]` | STRONG | SAME, in order |
+| neither side calls the standard `tanh`/`atanh` | STRONG | SAME |
+| the parity check's row bound is `NUM_ROWS[m]` and not the row width | STRONG | SAME |
+| the iteration bound, 25, from `demo/decode_ft8.c` | WEAK — it is the application's number | SAME |
+| the output buffer left untouched when the loop body never runs | STRONG | **DIFFERS — divergence 21** |
+
+**THE PORT IS FAITHFUL HERE AND THE LOSS IS UPSTREAM'S**, in those words. The one differing term is
+divergence 21, which is recorded, deliberate, and **cannot cost a decode**: it clears an output buffer
+C leaves undefined, and it applies only when the loop body never runs at all.
+
+**One thing the audit found that the owner should see, and it is not a defect.** Upstream's
+`fast_tanh` carries **three higher-order rational approximations beside the one it uses, commented
+out** — the constants of the unused ones are 135135/17325/378 and 10395/1260/21, against the 945/105
+pair that is live. Goba chose the **lowest-order** approximation, and its error sits inside the loop
+that decides bits. **This port reproduces the live one, constant for constant, and that is correct
+under the ruling in force.** Whether this library may use a more accurate hyperbolic than the code it
+was ported from is a divergence question and it is the owner's.
