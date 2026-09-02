@@ -1,564 +1,706 @@
-READ IN THIS ORDER
+READ IN THIS ORDER — A the phase, B the step and its exit criteria, C this report against both.
 
 A. PHASE — Hamlet hears FT8 off the radio and displays the decoded text on screen. Seven steps.
-Steps 1 and 2 are closed. Step 3 is closed on its four must-pass criteria, its nice-to-pass one
-recorded as HM-OPEN-065. Step 4 was closed by unit 214 on all five must-pass criteria. STEP 5 IS
-THIS UNIT'S AND THIS IS ITS SECOND UNIT: it entered at 2 of its 3 subject criteria and LEAVES AT
-2 OF 3 — criterion 2 was re-taken and strengthened, criterion 3 was attempted for the first time and
-is PARTIAL, not met. Steps 6 and 7 have not started and cannot, because every step of this plan
-depends on the one before it — the plan's own named deviation, and why step 5 was the only step this
-phase could move.
+Steps 1 and 2 closed. Step 3 closed on its four must-pass criteria, its nice-to-pass one recorded
+as HM-OPEN-065. Step 4 closed by unit 214. **Step 5 is this unit's and its third**, entered at
+2 of its 3 subject criteria with criterion 3 partial at 760 of 1298, and **leaves at 760 of 1298,
+still partial** — but no longer unexplained. Steps 6 and 7 not started and cannot start, because
+every step of this plan depends on the one before it, the plan's own named deviation. **Step 5 was
+the only step this phase could move**, and criterion 3 its only outstanding must-pass criterion.
 
-B. STEP 5 — a found signal becomes a message. Five exit criteria, one at a time, and criterion 3
-leads because it is the unit's target. (3) ft8_lib's reference WAVs decode against its expected
-decode lists — PARTIAL, on RUNG 1 of the instruction's ladder. 760 OF 1298 EXPECTED MESSAGES MATCHED
-ACROSS 60 RECORDINGS, 538 missed, and 23 RETURNED THAT ARE NOT ON ANY LIST out of 783 returned. No
-file skipped for its rate; one file produced nothing and its stage is named. (2) A candidate failing
-CRC is never returned — MET, AND NOW CLAIMED IN THE CANDIDATE SENSE, which unit 215 explicitly did
-not claim: 0 messages from an empty slot, 0 from 239 candidates found in noise over 20 slots, 0 of 51
-genuine transmissions carrying a wrong checksum whose candidates reached parity with ZERO unsatisfied
-checks, and 0 wrong text from 51 transmissions at −30 dB. (1) A corrupted codeword within the code's
-correcting power is recovered and one beyond it fails honestly — MET BY UNIT 215 at k = 6 over 400
-trials with 0 wrong messages in 37 952; tonight bears on it only in that the ratios reaching that
-decoder now come off real air and are on upstream's own scale. (4) Ft8Sharp tests green — 429/428/0/1
-at entry, 470/469/0/1 at exit, the one skip being the table write gate at both ends. (5) Attribution
-clean and the channels green — 168 paths from 2828ab6 with 0 under src/Hamlet. or tests/Hamlet.,
-channels 55 and 13 re-run after both version bumps.
+B. STEP 5 — a found signal becomes a message. Five exit criteria.
+1. Corrupted codeword recovered / beyond-power failing honestly — met by unit 215. Tonight bears
+   on it: the agreement histogram says where recovery actually stops on real air, and it is a
+   slope, not a cliff.
+2. A candidate failing CRC is never returned — met by unit 216 at four counts of zero. **Task 6's
+   second pass was measured and NOT built, so nothing touched this criterion**; `Ft8SlotDecoder`
+   is byte-for-byte what unit 216 left.
+3. `ft8_lib`'s reference WAVs decode against its expected decode lists — **entered at 760 of 1298,
+   leaves at 760 of 1298, against a ceiling measured tonight at 1157. PARTIAL, not met.** The
+   number did not move and this report says so in those words.
+4. `Ft8Sharp` green — entry 470/469/0/1, exit 485/484/0/1, the one skip the table write gate.
+5. Attribution clean and channels green — 174 paths from `2828ab6`, 0 under `src/Hamlet.` or
+   `tests/Hamlet.`, channels 55 and 9 re-run after both version bumps.
 
-C. THIS REPORT — the findings weighed against A and B. 760 OF 1298 OF UPSTREAM'S OWN EXPECTED
-DECODES CAME BACK, ACROSS 60 OF ITS OFF-AIR RECORDINGS, AND 23 MESSAGES WERE RETURNED THAT ARE NOT ON
-ANY EXPECTED LIST. On audio this library synthesized, 51 of 56 corpus messages came back as
-themselves through the whole path — the 5 that did not are the hashed-callsign entries and step 2's
-own decoder refuses the same 77 bits — with 288 of 288 across the offset sweep and 0 wrong messages
-anywhere. The measured ratio variance is 24.0000 after normalisation from inputs whose variances were
-0.0595, 0.9523, 22.8555, 380.9222 and 9523.05, against the figure 24 read out of the pin in task 2.
-Section 4 raises 2 items and ONE OF THEM IS IN THE WAY OF A CRITERION IN B — the shortfall on
-criterion 3 and what would settle its cause. Task 7 was NOT dropped, though the branch that licenses
-it applied: task 5 produced a real comparison on rung 1, and it was run anyway because a synthetic
-twenty is the one instrument that separates overlap from real-world impairment.
+C. THIS REPORT — 8 findings, and the lead is the census. **470 validated codewords never became
+text and every one now has a name: `UnsupportedType` 0 occurrences and 0 distinct,
+`UnresolvedCallsign` 277 and 109, `MalformedField` 193 and 68** — summing to 470, against
+2733 − 2263 = 470. **The ceiling is 1157 of 1298** and its whole shortfall is the 141 lines the
+list itself lost to a hash. **The buckets: H1 69, H2 380, H3 82, H4 7, summing to 538.** The match
+rate did not move. **Section 4 raises 2 items and ONE IS IN THE WAY OF CRITERION 3** — the price
+of fix C, 82 messages found and thrown away, which is the owner's under CLAUDE.md §12.1.
+**Task 7's drop branch applied and the census number that decided it is 0** distinct expected
+messages against a bar of 20.
 
-UNIT:       216 — complete at task 8 of 8 — 2026-09-02 10:35
-PHASE GOAL: Hamlet hears FT8 off the radio and displays the decoded text on screen.
-UNIT GOAL:  Build soft symbol extraction and the whole path from samples to text, and decode
-            ft8_lib's own reference recordings against its expected decode lists.
-STATE:      complete
-TASKS:      8 of 8
-DROPPED:    none
-ADVANCED:   partly — criterion 2 is now met IN THE CANDIDATE SENSE, which unit 215 could not claim,
-            and criteria 4 and 5 are re-taken. CRITERION 3 IS NOT MET. It was attempted for the
-            first time and it is PARTIAL at 760 of 1298, so step 5 leaves at 2 of its 3 subject
-            criteria, the same count it entered at, and STEP 5 DOES NOT CLOSE.
-NUMBER:     step 5 at 2 of its 3 subject criteria -> 2 of 3 (criterion 3 partial, 760 of 1298)
-DRIFT:      1 consecutive unit without advance  (was 0)
+UNIT:       217 — complete at task 8 of 8 — 2026-09-02 12:00
+PHASE GOAL: Hamlet hears FT8 off the radio and shows the decoded text on screen.
+UNIT GOAL:  Give every one of criterion 3's 538 misses exactly one named cause, reconcile the 470
+            validated codewords that never became text against them, and close what needs no ruling.
+ADVANCED:   partly — the accounting is complete and the number did not move. No criterion newly met;
+            criterion 3 stays partial at 760 of 1298 and is now fully explained rather than a
+            percentage nobody could account for.
+NUMBER:     760 of 1298 -> 760 of 1298 — unchanged, and unchanged on purpose: nothing was tuned,
+            nothing was built, and the two fixes on offer were measured at zero and refused.
+DRIFT:      0 consecutive units without advance (was 0) — unit 216 advanced, and this unit advanced
+            the criterion's legibility rather than its value.
 
 ## 1. What Claude did
 
-**Exit state: complete, at task 8 of 8. Nothing was dropped.** Machine `C:\Source\HamLet`, project
-claimed and confirmed as Hamlet by all four gate checks — `SHACK_FACTS.md` and
-`src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs` both tracked, `Hamlet.sln` the only solution,
-`CoreHMI.sln` and `MURC.sln` both absent. Branch `main`. Every task was committed before the next
-began; nine commits, `897183b` to `7281fb0`, all of them on `origin/main`.
+**Complete, at task 8 of 8. Nothing dropped by the clock; task 7 dropped by its own named
+condition, which the census decided.** Machine `C:\Source\HamLet`, project Hamlet confirmed against
+all four checks in the instruction's gate, branch `main`, HEAD `d990f95` at exit.
 
-**One push was refused and the refusal is reported rather than glossed.** Task 8's commit was refused
-twice with `! [remote rejected] main -> main (Internal Server Error)` — a server-side fault at
-GitHub, not a rejection of the content. Nothing was rebased, force-pushed or otherwise coerced; the
-next push, with the report's commit on top, was accepted and carried both. **The tree and the remote
-agree.**
+**No library file changed tonight.** `src/Ft8Sharp/` gained a version bump and a `porting-notes.md`
+section and nothing else. Every number below came out of tests added under
+`tests/Ft8Sharp.Tests/`.
 
-### What was traced, built and measured
+### Task 1 — the ground, and the one run everything rests on
 
-**Task 1 — the ground, re-measured rather than inherited.** Ft8Sharp at entry 429 total, 428 passed,
-0 failed, 1 skipped in 19 s, which is exactly what unit 215 reported. Library built at 0 warnings and
-0 errors, `net8.0`, nullable enabled, warnings as errors, no `PackageReference` and no
-`ProjectReference`. 158 paths from `2828ab6` with 0 under any Hamlet project. Channels 55 and 13.
-`HEAD` `760eae2`, 8 `.obj` at the root, versions 1.12.22 and 0.9.0, 21 divergences. Both halves this
-unit joins were taken from existing green tests and not re-swept:
-`Ft8SearchRecoveryTests.EveryMessageOfTheCorpusIsFoundAtAPlaceTheSearchWasNeverTold` for the search,
-`Ft8LdpcCodewordGateTests.ACleanCodewordDecodesToItsOwnMessageOverTheWholeCorpus` for the decoder.
+`Ft8Sharp` at entry **470 total, 469 passed, 0 failed, 1 skipped** in 37 s; the skip is
+`Ft8TableGenerationTests.RewriteTheCheckedInTablesFile`, the table write gate, which is meant to
+skip. Library builds **0 warnings, 0 errors**. **174** paths from `2828ab6` at exit (168 at entry)
+and the `src/Hamlet.`/`tests/Hamlet.` filter returns **0**. HEAD at entry `96b34b9`,
+`git status --short` **31** lines at entry and **37** at exit, versions **1.12.23** and **0.10.0**
+at entry, **24** divergences, **8** `.obj` at the root.
 
-**Task 2 — upstream's extraction and its recordings, read through the test process** because the
-sandbox refuses the session direct access to `C:\Source\ft8_lib`, exactly as it refused units 209 to
-215 and this unit's arbiter. Twelve inventory tests green over the pin. Findings in section 3.
+**And the trace this unit is built on reproduced exactly**: 7803 candidates, 2733 parity, 2733
+checksum, 2263 text, 783 unique, **760 matched of 1298**, 538 missed, 23 extra. Not one total
+moved on its own, so the accounting stands on a run that repeats.
 
-**Task 3 — extraction and normalisation.** `src/Ft8Sharp/Dsp/Ft8SoftSymbols.cs`: a waterfall and a
-candidate in, 174 log-likelihood ratios out, plus upstream's normalisation as a separate callable
-step. Nine tests. **56 of 56 corpus messages extract at 174 of 174 hard decisions** before any
-correction is involved.
+### Task 2 — what upstream does at the stage this library refuses at
 
-**Task 4 — the whole path.** `src/Ft8Sharp/Dsp/Ft8SlotDecoder.cs`: samples in, messages out. Seven
-tests. **51 of 56, 288 of 288, 51 of 51 in noise, 0 wrong.**
+Six inventory tests over the pin, read through the test process because the sandbox refuses a
+session direct access to the clone. Each answer pinned by an assertion.
 
-**Task 5 — the unit's target.** All 60 reference recordings that carry an expected list, in 9
-seconds. Five tests. The table leads section 3.
+### Task 3 — the refusal census, the centre of the night
 
-**Task 6 — criterion 2 in the candidate sense.** Five tests, four counts, all zero.
+Instrumented by walking the same public parts `Ft8SlotDecoder` composes, candidate by candidate,
+with one cache per slot — **and proving the walk faithful per file rather than on totals: 240
+stage-count comparisons against the untold path, all equal.**
 
-**Task 7 — twenty at once.** Two tests. **20 of 20, twice, 0 extra.**
+### Task 4 — the ceiling
 
-**Task 8 — the record, the versions and this report.**
+Every one of the 1298 expected lines through this library's own packers, into one of four buckets
+summing to 1298.
 
-### Decisions made for myself, reproduced in full
+### Task 5 — the per-miss accounting
 
-**One. `WavFile` was taught to walk to the `data` chunk, rather than nine of the sixty recordings
-being skipped.** The instruction says *this is how a WAV is read, do not write a second reader*. The
-reader required `data` to be the second chunk; nine of the sixty reference recordings put a 158-byte
-chunk in between, which is why they are 360 202 bytes where the rest are 360 044. The choice was
-between measuring criterion 3 on 51 files for a reason that has nothing to do with the audio, or
-extending the one reader by fifteen lines. **I extended it, and nothing else was relaxed** — the
-RIFF and WAVE tags, the fmt chunk's position and length, the format, the channel count, the bit width
-and the truncation check are all exactly as they were, and every one of them is still watched by
-`WavFileTests`. The refusal that changed is *the second chunk is not data*, which became *there is no
-data chunk anywhere*, and the refusal message names every chunk it did find so the existing test
-that replaces `data` with `fact` still sees `fact` in the message.
+Every miss into exactly one of H1–H4, with the matched control and the chance figure beside it.
+**The sharpest prohibition in the instruction was kept and is stated in the test file in those
+words**: the search ran untold on all sixty recordings and its candidate list was read, never
+filtered, re-ordered or re-scored; the expected text built a comparison codeword and nothing else;
+the expected frequency chose which already-found candidate to look at, after the fact. **No
+expected text, frequency, count or list reached `Ft8SlotDecoder`, `Ft8SoftSymbols`,
+`Ft8SyncSearch`, `Ft8CodewordDecoder` or any signature they can see.**
 
-**Two. The de-duplicator recovers the codeword by re-running the decoder.** Upstream keys duplicates
-on the packed payload. `Ft8CodewordDecoder` does not hand the codeword back and is closed evidence
-this unit may not change, so `Ft8SlotDecoder` re-runs `LdpcDecoder.Decode` over the same ratios —
-**only for candidates that already passed the gate**, so it costs one belief propagation per
-successful decode and none per refusal. It is not a second CRC check. A later unit that wants to tidy
-this would have the gate return the payload.
+### Task 6 — fix A, measured and refused
 
-**Three. Task 7 was run rather than dropped, and the branch that licensed dropping it applied.** Task
-5 produced a real comparison on rung 1, which is exactly the branch the instruction names as making
-task 7 droppable. It was run anyway, for two seconds, because task 5 came back at 58.6 per cent and a
-synthetic twenty is the one instrument that has overlap and none of the fading, interference or
-timing error a real recording carries. Twenty of twenty says the shortfall is not about having more
-than one signal in a slot. **This was a decision to do more than the instruction required, not less.**
+Measured at 1 of 109, worth 0 matches. **Not built.**
 
-**Four. The candidate limit was swept as a measurement and not adopted.** The obvious move on a 58.6
-per cent match rate is to raise a threshold until the number improves. That is tuning and it is
-forbidden. It was swept at 140, 280, 560 and 1120, printed, and shown to change nothing; the default
-remains upstream's 140. **The minimum sync score and the iteration count were not swept at all**,
-because they are upstream's, they already match, and sweeping them is the temptation the instruction
-names by name.
+### Task 7 — fix B, dropped by its own condition
+
+Census named 0 types against a bar of 20. **Not built.** `HM-OPEN-064` updated.
+
+### Task 8 — criterion 3 re-taken, the record, the versions
+
+Re-run through the untold path, identical to unit 216 on every total. `porting-notes.md` gains its
+unit-217 section with **one divergence added, numbered 25**. Versions bumped and everything re-run.
+
+### Decisions this session made for itself
+
+1. **Not to build the second pass**, on its own measurement of 1 recovered of 109, none on any
+   expected list. The instruction licensed building it if it paid; it did not pay.
+2. **To measure the price of the hashed-callsign refusal with a rendering computed in the test
+   project.** Producing the number section 4 needs meant knowing what a `<...>` line would have
+   said. That rendering exists in `RefusalCensus.UpstreamWouldPrint`, is called only by a report,
+   and never reaches a caller or the library. **The library still refuses the whole message.** If
+   the owner reads that as too close to fix C, the number stands and the helper can go.
+3. **To assign the 141 hashed misses on the candidate test alone**, since no true codeword can be
+   built for them, and to print that count in the buckets table rather than let it pass as
+   measured evidence.
+4. **To leave a tripwire on task 6's zero** — a test that reds if the second pass ever becomes
+   worth building — rather than recording a stale decision in a file nobody reads.
 
 ## 2. What the owner should expect
 
-**Ft8Sharp can now be handed fifteen seconds of audio and hand back the messages that were in it.**
-That is the thing the whole phase is for, and until tonight no unit had ever done it: unit 215's own
-report says in its own words that no message had come off the air.
+**The radio does not do anything new tonight.** This library returns exactly what it returned
+yesterday, on exactly the same recordings: 760 of upstream's 1298 expected messages. **That is on
+purpose.** Two changes were on the table, both were measured before being built, and both measured
+at zero — so neither was made. A number that rises because something was adjusted until it rose is
+not evidence about anything, and step 6 measures this receiver against a published sensitivity
+threshold and would be worthless if the path had been tuned to sixty recordings.
 
-**And it has been judged by somebody other than itself for the first time.** Every receive-side
-number this phase had produced was measured against a signal the library synthesized. Tonight it
-decoded Karlis Goba's own off-air recordings against the lists checked in beside them, and **760 of
-1298 came back.**
+**What is new is that the shortfall is no longer a mystery.** Yesterday the honest summary was
+*760 of 1298 and nobody can say why*. Tonight it is: 141 of the missing can never be matched while
+this decoder refuses to name a station it cannot identify; 82 of those were actually found,
+repaired and checked twice before being thrown away; 380 were real transmissions too faint for the
+error-correcting code; 69 were never found at all; 7 are duplicate lines in upstream's own list
+that any de-duplicating decoder must miss; and exactly **one** is a case where this library had
+the signal cleanly and failed anyway.
 
-**What will look wrong but is not, and there are four.**
+### What will look wrong but is not
 
-**One. 58.6 per cent looks like a broken port and the evidence says it is not that simple.** The
-expected decode lists in the clone **were not written by the decoder this library was ported from**,
-and that is provable from the lists rather than guessed: `decode_ft8` computes its SNR column as
-`score * 0.5` and refuses a score below 10, so the lowest figure it can print is +5.0 — and 1078 of
-the 1298 lines are below it, down to −24.0. They are a *stronger* reference than `ft8_lib` itself.
-What this port has not been held against is `ft8_lib` running, and it cannot be, because
-`decode_ft8.exe` is not built on this machine.
-
-**Two. 23 messages came back that are not on any expected list, and that is the number this project
-refuses.** It is reported as an extra, in full, every one of them. It is **not proven** that any of
-them is a false decode: nothing in the clone says the lists are complete, so some may be messages the
-list-writer missed. Every one of them passed all 83 parity checks and CRC-14. It is counted as an
-extra anyway, because that is the safe way round.
-
-**Three. `ADVANCED` says *partly* and the criterion count did not move.** Step 5 entered at 2 of 3
-and leaves at 2 of 3. Criterion 2 got materially stronger — it is now claimed with real candidates
-from real audio rather than at the codeword entry point — but a strengthening is not a new criterion,
-and criterion 3 is partial. **Step 5 does not close and step 6 does not open.**
-
-**Four. The library version went to 0.10.0 and it is still not a 1.x.** No audio comes from a radio,
-nothing is scheduled to a UTC slot, nothing reaches a screen, and the sensitivity is unmeasured.
+- **`ADVANCED: partly` and an unchanged number.** The unit was told in terms it would not be judged
+  on whether criterion 3 closed. A complete accounting with no movement is the outcome the
+  instruction named as a full success.
+- **`MalformedField` at 193 occurrences sounds like a defect and is not.** All 68 distinct ones are
+  the grid-or-report field, and upstream refuses at exactly that place with `ERROR_GRID`. A test
+  reds if one ever lands anywhere other than upstream's own three refusal points.
+- **`UnsupportedType` at zero looks like the census failed to run.** It did run. Upstream's own
+  message layer decodes exactly the four types this library builds, so there was never a type on
+  these recordings that upstream reads and this does not.
+- **`Ft8Sharp` went from 470 tests to 485, not to 488.** Three of the added tests were a temporary
+  probe onto the clone, emptied to a comment before finishing so that what is on disk and what is
+  committed compile to the same tests.
+- **The version went to 0.10.1 and not 0.11.0.** Nothing the library does changed.
+- **The App channel count reads 9 tonight where prior units reported 13.** See the mismatches
+  below; the exact filter earlier units used is not recorded anywhere in the tree.
 
 ## 3. What you should see
 
-### The task 5 table — upstream's own recordings, one row per file
+**No visible change in the application. Nothing reaches a screen in this phase yet.** What this
+unit produces is a decision the next one can make from evidence: the 538 messages Hamlet did not
+show you off upstream's recordings now each have a named reason, and one of those reasons is a
+question for you rather than a bug for anybody.
 
-Columns: candidates, parity satisfied, checksum passed, became text, unique after de-duplication,
-expected, matched, missed, and **returned but not on the list**. Rate is 12 000 Hz, duration 15.00 s
-and sample count 180 000 for every row, so those three are stated once here rather than repeated.
-
-```
-file                    cand  par  crc  txt uniq  exp  match miss  extra
-191111_110115.wav         24    0    0    0    0    1      0    1      0
-191111_110130.wav         40   10   10    8    4    5      4    1      0
-191111_110145.wav         32    5    5    3    1    2      1    1      0
-191111_110200.wav         37   11   11   11    4    5      4    1      0
-191111_110215.wav         44    9    9    6    2    4      2    2      0
-191111_110615.wav        140   54   54   52   16   22     16    6      0
-191111_110630.wav        140   39   39   39   12   15     11    4      1
-191111_110645.wav        140   48   48   44   15   20     15    5      0
-191111_110700.wav        140   46   46   44   13   16     13    3      0
-20m_busy/test_01.wav     140   50   50   39   15   24     13   11      2
-20m_busy/test_02.wav     140   56   56   36   13   24     13   11      0
-20m_busy/test_03.wav     140   33   33   33   12   19     12    7      0
-20m_busy/test_04.wav     140   49   49   45   14   20     13    7      1
-20m_busy/test_05.wav     140   54   54   52   19   32     19   13      0
-20m_busy/test_06.wav     140   49   49   41   17   27     17   10      0
-20m_busy/test_07.wav     140   56   56   43   15   31     15   16      0
-20m_busy/test_08.wav     140   53   53   45   15   19     14    5      1
-20m_busy/test_09.wav     140   49   49   42   16   27     16   11      0
-20m_busy/test_10.wav     140   54   54   48   16   20     14    6      2
-20m_busy/test_11.wav     140   52   52   45   16   31     16   15      0
-20m_busy/test_12.wav     140   47   47   41   12   18     12    6      0
-20m_busy/test_13.wav     140   56   56   44   16   26     16   10      0
-20m_busy/test_14.wav     140   44   44   27   10   17     10    7      0
-20m_busy/test_15.wav     140   63   63   50   16   28     16   12      0
-20m_busy/test_16.wav     140   44   44   41   15   16     14    2      1
-20m_busy/test_17.wav     140   53   53   44   15   26     15   11      0
-20m_busy/test_18.wav     140   47   47   31   11   20     11    9      0
-20m_busy/test_19.wav     140   64   64   49   17   30     17   13      0
-20m_busy/test_20.wav     140   51   51   35   12   20     11    9      1
-20m_busy/test_21.wav     140   52   52   40   15   34     15   19      0
-20m_busy/test_22.wav     140   58   58   36   12   23     12   11      0
-20m_busy/test_23.wav     140   51   51   35   13   26     11   15      2
-20m_busy/test_24.wav     140   52   52   33   12   22     11   11      1
-20m_busy/test_25.wav     140   55   55   47   17   28     17   11      0
-20m_busy/test_26.wav     140   49   49   34   12   23     12   11      0
-20m_busy/test_27.wav     140   53   53   42   15   29     15   14      0
-20m_busy/test_28.wav     140   43   43   28   11   25     11   14      0
-20m_busy/test_29.wav     140   50   50   38   14   23     12   11      2
-20m_busy/test_30.wav     140   56   56   47   15   27     15   12      0
-20m_busy/test_31.wav     140   53   53   40   14   24     12   12      2
-20m_busy/test_32.wav     140   57   57   49   19   25     17    8      2
-20m_busy/test_33.wav     140   56   56   45   14   28     14   14      0
-20m_busy/test_34.wav     140   48   48   34   12   25     12   13      0
-20m_busy/test_35.wav     140   60   60   43   13   32     13   19      0
-20m_busy/test_36.wav     140   45   45   32   11   24     11   13      0
-20m_busy/test_37.wav     140   54   54   47   13   24     13   11      0
-20m_busy/test_38.wav     140   40   40   35   11   19     11    8      0
-websdr_test1.wav         140   35   35   35   13   18     13    5      0
-websdr_test10.wav        113   30   30   30   12   15     12    3      0
-websdr_test11.wav        140   44   44   32   10   23     10   13      0
-websdr_test12.wav         99   12   12   12    7   14      6    8      1
-websdr_test13.wav        140   36   36   35   12   13     10    3      2
-websdr_test2.wav         140   50   50   46   18   21     18    3      0
-websdr_test3.wav         134   28   28   27    8   11      8    3      0
-websdr_test4.wav         140   61   61   55   19   23     18    5      1
-websdr_test5.wav         140   49   49   41   15   27     15   12      0
-websdr_test6.wav         140   57   57   57   20   30     20   10      0
-websdr_test7.wav         140   49   49   47   17   27     16   11      1
-websdr_test8.wav         140   55   55   53   17   26     17    9      0
-websdr_test9.wav         140   50   50   49   13   24     13   11      0
-TOTAL                   7803 2733 2733 2263  783 1298    760  538     23
-```
-
-### The three numbers, in words
-
-**MATCHED OUT OF EXPECTED: 760 of 1298**, which is 58.6 per cent, across 60 files. **538 missed.**
-
-**RETURNED BUT NOT ON ANY LIST: 23**, out of 783 returned. Every one is printed in full by the test:
-`JH1AJT W4FGA EM83`, `OE3MLC G3ZQQ 73`, `JO1COV PA0CAH JO21`, `CQ MM0IMC IO75`, `RW6PA UA3NFG 73`,
-`CQ LZ365BM`, `SP9LKP F4VTS 73`, `UR7HN UA3NFG LO28`, `CQ 2E0LDW IO70`, `YC6RMT IZ7NLM -22`,
-`7Z1AL DF2FE JO51`, `CQ G0OSK IO91`, `DM2DLG UR7HN -13`, `<LZ365BM> US5IQI KN87`, `DM2DLG UR7HN -13`,
-`RA3TPE BD8NBG -17`, `DH1NAS UA3NFG LO28`, `E75C RA9UJP NO25`, `CT7AIX WG5D EM62`, `CQ 2E0PKK IO90`,
-`CQ N2BJ EN61`, `UT7IS SV8EUB -12`, `SQ7MRR ON7AN JO20`.
-
-**FILES THAT PRODUCED NOTHING: 1**, and the stage it died at is named — `191111_110115.wav`, **24
-candidates found and none of them reached parity.** Its expected list holds one message.
-**No file was skipped for its sample rate.**
-
-### Criterion 3: PARTIAL, on rung 1, and that is said in those words
-
-It is not met. Messages came back off real air and matched a list this project did not write, which
-is more than this phase has ever had, and 58.6 per cent is not *matching its expected decode lists*.
-**A partial is not a pass and this report does not let it read as one.**
-
-### Where the misses die, and where they do not — three checked-in diagnostics
-
-**One. The lists were not written by the pinned decoder.** 1078 of the 1298 expected lines carry an
-SNR column below +5.0; the column runs −24.0 to +20.0. `decode_ft8` computes `snr = score * 0.5f` and
-`ftx_find_candidates` refuses a score below `kMin_score` = 10, **so +5.0 is the lowest it can print.**
-Some lines also carry a trailing country annotation its `printf` does not emit. They are a stronger
-reference than the code being ported, and a shortfall against them is not by itself evidence that
-this port is worse than `ft8_lib`.
-
-**Two. Eight times the candidate list buys nothing.** Over a sixth of the recordings, limits of 140,
-280, 560 and 1120 all return **117 matched of 183 with 6 extras**; candidates rise from 1257 to 1748
-and stop. The cap is not what costs the match rate. The default remains upstream's 140.
-
-**Three, and it is what the next unit needs. 509 of the 531 misses — 95.9 per cent — had a kept
-candidate within 4 Hz of the frequency the expected list gives for them.** 22 had none. The search
-found the place and the message was not recovered from it, which points at extraction fidelity or at
-the code's correcting power at real signal levels, and away from unit 214's search. The candidate
-limit bound on 52 of the 60 files.
-
-### Task 4 — the whole path on audio this library made
-
-**The corpus, one transmission per slot.** 56 messages. **51 came back as themselves.** The 5 that
-did not are the hashed-callsign entries, and they are counted **by agreeing about the refusal** —
-step 2's own decoder, given the same 77 bits with no cache, refuses them too. 1341 candidates over
-the 56 slots, 159 reached parity, 159 passed the checksum, 143 became text, 51 unique.
-**WRONG MESSAGES: 0 out of 56.**
-
-**The offset sweep.** Four frequencies — a bin centre, a quarter bin up, exactly half a bin up, three
-quarters of a bin up — crossed with six offsets — on the block grid, three whole blocks, five
-sub-blocks, half a symbol, 5000 samples and 12345 samples, the last four off the block grid and three
-of them off both. **288 of 288 at every one of the 24 combinations. WRONG MESSAGES: 0 out of 288.**
-
-**In seeded noise**, seed 216 004, at a **delivered −9.961 to −10.028 dB measured rather than
-requested**: **51 of 51. WRONG MESSAGES: 0 out of 51.** The ratio is stated and is not compared with
-any published sensitivity figure.
-
-**De-duplication watched working:** one strong transmission gives 34 candidates, 3 decodes, 2
-duplicates suppressed and **exactly one message**.
-
-**Determinism, on the messages and their order and never on a count:** five runs over a six-signal
-slot — a fresh decoder, one reused twice, and one handed the waterfall instead of the samples —
-equal on the text *and* the candidate at every position and on all five stage counts.
-
-### Task 3 — the 174-of-174 hard-decision check, and the alignment
-
-**56 of 56 corpus messages extract at 174 of 174**, at four frequencies and four offsets, taken at
-the candidate the search ranked first and **before a single bit of correction is involved.** Worst
-agreement 174, mean 174.00.
-
-**The alignment unit 214 carried forward is settled by measurement.** At the candidate: 174 of 174.
-One block earlier 103, one block later 105. Two blocks earlier 100, two later 98. The wrong time
-sub-offset 139. One bin low 113, one bin high 131. The wrong frequency sub-offset 149. **Chance is
-87.** There is exactly one place it works and the search puts the candidate there. Reading upstream
-adds the structural half: `ft8_sync_score` and `ft8_extract_likelihood` both enter through
-`get_cand_mag`, so the two cannot disagree, and the port keeps that by sending both through
-`Ft8Waterfall.IndexOf`.
-
-### The variance before and after normalisation
-
-Against **24**, the figure task 2 read out of `ft8/decode.c` and
-`Ft8SoftSymbolsProvenanceTests` binds the port's constant to.
+### The census — the answer this unit was commissioned for
 
 ```
-input magnitude   variance before   variance after   mean before   mean after
-          0.250            0.0595          24.0000       -0.0546      -1.0964
-          1.000            0.9523          24.0000       -0.2184      -1.0964
-          4.899           22.8555          24.0000       -1.0699      -1.0964
-         20.000          380.9222          24.0000       -4.3678      -1.0964
-        100.000         9523.0547          24.0000      -21.8391      -1.0964
+Over all sixty of ft8_lib's off-air recordings:
+
+  candidates                                   7803
+  of those, satisfied all 83 parity checks     2733
+  of those, carried their own CRC-14           2733
+  of those, became text                        2263
+  VALIDATED AND NEVER BECAME TEXT              2733 - 2263 = 470
+
+refusal                 occurrences  distinct  on a list
+UnsupportedType                   0         0          0
+UnresolvedCallsign              277       109          0
+MalformedField                  193        68          0
+TOTAL                           470       177          0
+
+  0 + 277 + 193 = 470, and 2733 - 2263 = 470.
 ```
 
-Every sign is untouched, so the hard decision is unchanged by the rescale, and **the mean is scaled
-rather than removed**, which is what upstream does. Off the air the raw ratios are differences of
-decibels tens of dB apart, so their variance before normalisation is far above 24 and the rescale is
-doing real work rather than a rounding.
+**Distinct means one message once per recording**: a payload refused at five candidates in one slot
+is one message and four duplicates. The occurrence column is the larger and more flattering one and
+is never given alone.
 
-### Task 6 — criterion 2's four gate counts, in the candidate sense
-
-Every input below went in **as audio** and was found by the search without being told where it is.
-
-1. **An empty slot:** 0 candidates, **0 messages.**
-2. **Seeded Gaussian noise alone, 20 slots, seeds 216 601 to 216 620, rms 0.02:** **239 candidates
-   found**, best sync score 15, 0 reached parity, 0 became text, **0 messages returned.**
-3. **51 genuine transmissions whose checksum was made wrong before the parity bits were computed**,
-   synthesized at five frequencies: 893 candidates, **114 reached parity with ZERO unsatisfied checks
-   out of 83 — some in a single iteration — so every one is a genuine member of the code the parity
-   gate has nothing to object to.** 0 passed the checksum. 0 became text. **0 of 51 returned anything
-   at all.** The fixture that builds them is checked against the library's own encoder, 4424 symbol
-   comparisons over 56 messages all equal, so the only thing wrong with one of them is its checksum.
-4. **51 transmissions at a delivered −30.043 to −29.972 dB:** 603 candidates, 0 reached parity,
-   **0 wrong text out of 51.**
-
-**Criterion 2 is now claimed in the candidate sense, and what changed since unit 215 is that a
-candidate exists:** that unit met it at the codeword entry point because extraction did not exist and
-nothing that had been near a radio could reach the gate; tonight every one of these went in as audio.
-
-### Task 2 — the shapes, the anchoring split, the inventory and the rung
-
-**Anchoring: 7 strong, 8 weak, 3 weakest.** Strong — the extraction and decode entry points, the
-waterfall struct and its documented axis order, the two magnitude macros, the data and channel symbol
-counts, the codeword length, the Gray map declaration. Weak, every one an expression inside a static
-function body — the candidate's fold into an offset, the `k + (k<29 ? 7 : 14)` step, the zero-fill for
-an out-of-range block, the value-order gather, the three bit partitions, the variance formula, the
-extract-normalise-decode order, the payload comparison. Weakest — the normalisation's target
-variance, whose own comment calls it an *experimentally found coefficient*, and the four application
-constants.
-
-**The shapes, as shapes.** A candidate indexes the store in the store's own axis order. The sync
-blocks are **stepped over, not through**. A symbol whose block falls outside the waterfall gives
-**three zero ratios** — no opinion, not a refusal. The magnitudes are read as **decibels** where the
-scorer reads the raw byte. Each ratio is a maximum over the four values whose bit is one less a
-maximum over the four whose bit is zero. The normalisation takes the population variance of all 174
-with the mean removed *from the variance*. **One attempt per candidate** — no retry at neighbouring
-offsets. Duplicates are decided on the whole packed payload, and the text is produced only after.
-
-**`ft8_decode_multi_symbols` is read and deliberately not ported.** It is declared once, defined once
-and **never called**; the inventory test asserts the mention count is exactly two, so a re-pin that
-starts calling it goes red.
-
-**The WAV and expected-list inventory.** `test/wav` and `test/wav/20m_busy` hold **69 recordings**.
-**60 carry a `.txt` expected decode file named for the recording**, holding **1298 expected messages**
-in the format `decode_ft8` prints. All 60 are mono, 16-bit, **12 000 Hz**, 15.00 s, 180 000 samples.
-The 9 without a list are `websdr_test14` through `websdr_test20` at **6400 Hz** and two 12 kHz
-re-samples of two of them. **141 of the 1298 expected lines name a station by an unresolved hash**,
-printed `<...>`.
-
-**RUNG 1 of the ladder** — a checked-in expected-decode file beside the recordings. Nothing was
-invented and no lower rung was needed.
-
-**Hashed callsigns: compared like any other line, not excused.** Upstream's own hash table produced
-`<...>` from the same recording, so both sides are in the same position.
-
-**The text normalisation, applied identically to both sides, stated exactly:** the message is
-everything after the first tilde, trimmed, up to a run of **two or more spaces**. **Nothing else.** No
-brackets stripped, no case folded, `RR73` and `RRR` stay different messages. The two-space rule exists
-because 85 lines carry a trailing country annotation and an FT8 message is single-space separated
-between tokens.
-
-### Upstream's four decode constants, and whether this library matched
+**`UnsupportedType`, broken down by type code, as the instruction requires:**
 
 ```
-constant                where                      upstream   this library                match
-kMin_score              demo\decode_ft8.c                10   Ft8SyncSearch.DefaultMinimumScore     yes
-kMax_candidates         demo\decode_ft8.c               140   Ft8SyncSearch.DefaultCandidateLimit   yes
-kLDPC_iterations        demo\decode_ft8.c                25   LdpcDecoder.DefaultMaxIterations      yes
-kMax_decoded_messages   demo\decode_ft8.c                50   Ft8SlotDecoder.DefaultMessageLimit    yes (new)
+type                      occurrences  distinct
+(no rows)
+
+NOT ONE of the 470 was refused for an unsupported type. The census names no type
+at all, so task 7's bar of 20 distinct expected messages was not approached.
 ```
 
-**All four match. None of the four appears anywhere in `ft8/`** — all are the application's choices.
-**Nothing was tuned and nothing needed correcting.** The fourth had no counterpart in this library
-before tonight because nothing here returned a *list* of messages.
+**The other two, by declared type code:**
+
+```
+UnresolvedCallsign        occurrences  distinct
+NonstandardCallsign                74        24
+Standard                          203        85
+
+MalformedField            occurrences  distinct
+Standard                          193        68
+```
+
+### `MalformedField` — its own paragraph, as required
+
+**All 68 distinct malformed-field refusals are the grid-or-report field**, re-derived from the same
+77 bits by calling the field readers directly. Upstream refuses at exactly three places —
+`ERROR_CALLSIGN1`, `ERROR_CALLSIGN2`, `ERROR_GRID` — and every one of these lands on the third, so
+**this is agreement with upstream and not a port defect.** A codeword that satisfied 83 parity
+checks and a 14-bit checksum carrying a grid value the protocol does not define is a transmission
+upstream would also print `Error [4] while unpacking!` for. The test asserts none lands outside
+upstream's own three, so a real defect there would red rather than pass quietly.
+
+### The join between the two ledgers, with its control
+
+```
+distinct refused payloads                        177
+of those, matching an expected line on bits        0
+expected lines this packer could represent      1157 of 1298
+
+CONTROL — the packer against messages this library ITSELF decoded:
+  messages decoded off the sixty recordings      2263
+    packed back to THE SAME 77 BITS              2187   (96.6 per cent)
+    the packer refused the text                     0
+    packed, and to DIFFERENT bits                  76
+```
+
+**The zero can be read because the control says so.** The 76 that pack to different bits are
+`CQ <non-standard call>` lines, where this library and upstream disagree about which wire format
+carries them — unit 211's recorded finding, not a new one. **So none of the 470 corresponds by bits
+to an expected line this library can represent**, and the only route from the refusals to the lists
+is the hashed one below.
+
+### The ceiling
+
+```
+outcome                                         lines    share
+REPRESENTABLE - packs and round-trips            1157    89.1%
+the LIST lost the callsign to a hash (<...>)      141    10.9%
+no shape this library builds accepts it             0     0.0%
+packed, and came back as different text             0     0.0%
+TOTAL                                            1298   100.0%
+```
+
+**The highest score criterion 3 could reach with a perfect receiver, given this library's message
+layer as it stands tonight, is 1157 of 1298 — 89.1 per cent.** And last night's result against it,
+both readings, neither alone:
+
+```
+760 of 1298 expected lines            = 58.6 per cent
+760 of a ceiling of 1157              = 65.7 per cent
+the gap a receiver can still close    = 397 lines
+the gap no receiver can close         = 141 lines
+```
+
+**The hashed lines are counted apart on purpose.** A line printed `<...>` has lost the callsign in
+the *list*; nobody can re-pack it — not this library, not upstream, not whatever wrote the list.
+Folding them into "lines this library refuses" would blame this port for somebody else's missing
+information. **A ceiling below 1298 is not an excuse and is not used as one**: it says the
+receive-side shortfall is smaller than 58.6 per cent suggests, and that a named part of the rest
+sits in a decision the owner holds.
+
+### The buckets, with the matched control and the histogram
+
+```
+bucket  count  what it means
+H1         69  no candidate on that transmission - none within 4 Hz, or one
+               within 4 Hz agreeing below 100 of 174, which is chance
+H2        380  the signal was there and too weak for the code to recover
+H3         82  RECOVERED, past parity and CRC, AND THE MESSAGE LAYER REFUSED IT
+H4          7  decoded and matched nothing anyway - de-duplication or the
+               text comparison
+TOTAL     538  and the miss total is 538
+
+  of which assigned WITHOUT an agreement figure, because the list itself lost
+  the callsign and no true codeword can be built for them:  141
+```
+
+```
+agreement      misses   matched
+0-79                6         3
+80-89              22         0
+90-99              36         0
+100-109            47         0
+110-119            61         6
+120-129            73         0
+130-139            43         1
+140-149            68         2
+150-159            29        19
+160-164             4        21
+165-169             1        33
+170-173             2        47
+174                 5       137
+
+misses with an agreement figure:   397   mean 122.8
+matched control, sampled:          269   mean 167.7
+CHANCE, on a candidate placed where there is no signal: 84.8 of 174 (expected 87)
+```
+
+**It is a slope, not a cliff**, and the two say completely different things about this port. A
+cliff would mean a threshold sitting in the wrong place; a slope is what a real channel looks like.
+The misses spread right across 100 to 160 while the matched pile up from 160 to 174, with 137 of
+269 at 174 exactly. **The chance control landed at 84.8 against the 87 a bit-is-a-bit predicts**,
+which is what makes the rest of the column mean anything.
+
+**The indictment set is one row.** Eight misses reached 165 of 174 or better; seven are H4
+duplicates rather than failures. The only genuine one:
+
+```
+20m_busy/test_34.wav      1344 Hz   within 4 Hz   agreement 165   H2   JG2PQN F1BHB -24
+```
+
+**So extraction is not indicted by this night's measurement**, and the next unit does not have that
+target. That is a finding worth as much as a fix.
+
+### Criterion 3 re-taken, in unit 216's exact columns
+
+```
+file                     rate   secs  samples  cand  par  crc  txt  uniq  exp  match  miss  extra
+191111_110115.wav       12000  15.00   180000    24    0    0    0     0    1      0     1      0
+191111_110130.wav       12000  15.00   180000    40    9    9    9     4    5      4     1      0
+191111_110145.wav       12000  15.00   180000    32    5    5    3     1    2      1     1      0
+191111_110200.wav       12000  15.00   180000    37   11   11   11     4    5      4     1      0
+191111_110215.wav       12000  15.00   180000    44    9    9    6     2    4      2     2      0
+191111_110615.wav       12000  15.00   180000   140   54   54   52    16   22     16     6      0
+191111_110630.wav       12000  15.00   180000   140   39   39   39    12   15     11     4      1
+191111_110645.wav       12000  15.00   180000   140   48   48   44    15   20     15     5      0
+191111_110700.wav       12000  15.00   180000   140   46   46   44    13   16     13     3      0
+20m_busy/test_01.wav    12000  15.00   180000   140   50   50   39    15   24     13    11      2
+20m_busy/test_02.wav    12000  15.00   180000   140   56   56   36    13   24     13    11      0
+20m_busy/test_03.wav    12000  15.00   180000   140   33   33   33    12   19     12     7      0
+20m_busy/test_04.wav    12000  15.00   180000   140   49   49   45    14   20     13     7      1
+20m_busy/test_05.wav    12000  15.00   180000   140   54   54   52    19   32     19    13      0
+20m_busy/test_06.wav    12000  15.00   180000   140   49   49   41    17   27     17    10      0
+20m_busy/test_07.wav    12000  15.00   180000   140   56   56   43    15   31     15    16      0
+20m_busy/test_08.wav    12000  15.00   180000   140   53   53   45    15   19     14     5      1
+20m_busy/test_09.wav    12000  15.00   180000   140   49   49   42    16   27     16    11      0
+20m_busy/test_10.wav    12000  15.00   180000   140   54   54   48    16   20     14     6      2
+20m_busy/test_11.wav    12000  15.00   180000   140   52   52   45    16   31     16    15      0
+20m_busy/test_12.wav    12000  15.00   180000   140   47   47   41    12   18     12     6      0
+20m_busy/test_13.wav    12000  15.00   180000   140   56   56   44    16   26     16    10      0
+20m_busy/test_14.wav    12000  15.00   180000   140   44   44   27    10   17     10     7      0
+20m_busy/test_15.wav    12000  15.00   180000   140   63   63   50    16   28     16    12      0
+20m_busy/test_16.wav    12000  15.00   180000   140   44   44   41    15   16     14     2      1
+20m_busy/test_17.wav    12000  15.00   180000   140   53   53   44    15   26     15    11      0
+20m_busy/test_18.wav    12000  15.00   180000   140   47   47   31    11   20     11     9      0
+20m_busy/test_19.wav    12000  15.00   180000   140   64   64   49    17   30     17    13      0
+20m_busy/test_20.wav    12000  15.00   180000   140   51   51   35    12   20     11     9      1
+20m_busy/test_21.wav    12000  15.00   180000   140   52   52   40    15   34     15    19      0
+20m_busy/test_22.wav    12000  15.00   180000   140   58   58   36    12   23     12    11      0
+20m_busy/test_23.wav    12000  15.00   180000   140   51   51   35    13   26     11    15      2
+20m_busy/test_24.wav    12000  15.00   180000   140   52   52   33    12   22     11    11      1
+20m_busy/test_25.wav    12000  15.00   180000   140   55   55   47    17   28     17    11      0
+20m_busy/test_26.wav    12000  15.00   180000   140   49   49   34    12   23     12    11      0
+20m_busy/test_27.wav    12000  15.00   180000   140   53   53   42    15   29     15    14      0
+20m_busy/test_28.wav    12000  15.00   180000   140   43   43   28    11   25     11    14      0
+20m_busy/test_29.wav    12000  15.00   180000   140   50   50   38    14   23     12    11      2
+20m_busy/test_30.wav    12000  15.00   180000   140   56   56   47    15   27     15    12      0
+20m_busy/test_31.wav    12000  15.00   180000   140   53   53   40    14   24     12    12      2
+20m_busy/test_32.wav    12000  15.00   180000   140   57   57   49    19   25     17     8      2
+20m_busy/test_33.wav    12000  15.00   180000   140   56   56   45    14   28     14    14      0
+20m_busy/test_34.wav    12000  15.00   180000   140   48   48   34    12   25     12    13      0
+20m_busy/test_35.wav    12000  15.00   180000   140   60   60   43    13   32     13    19      0
+20m_busy/test_36.wav    12000  15.00   180000   140   45   45   32    11   24     11    13      0
+20m_busy/test_37.wav    12000  15.00   180000   140   54   54   47    13   24     13    11      0
+20m_busy/test_38.wav    12000  15.00   180000   140   40   40   35    11   19     11     8      0
+websdr_test1.wav        12000  15.00   180000   140   35   35   35    13   18     13     5      0
+websdr_test10.wav       12000  15.00   180000   113   30   30   30    12   15     12     3      0
+websdr_test11.wav       12000  15.00   180000   140   44   44   32    10   23     10    13      0
+websdr_test12.wav       12000  15.00   180000    99   12   12   12     7   14      6     8      1
+websdr_test13.wav       12000  15.00   180000   140   36   36   35    12   13     10     3      2
+websdr_test2.wav        12000  15.00   180000   140   50   50   46    18   21     18     3      0
+websdr_test3.wav        12000  15.00   180000   134   28   28   27     8   11      8     3      0
+websdr_test4.wav        12000  15.00   180000   140   61   61   55    19   23     18     5      1
+websdr_test5.wav        12000  15.00   180000   140   49   49   41    15   27     15    12      0
+websdr_test6.wav        12000  15.00   180000   140   57   57   57    20   30     20    10      0
+websdr_test7.wav        12000  15.00   180000   140   49   49   47    17   27     16    11      1
+websdr_test8.wav        12000  15.00   180000   140   55   55   53    17   26     17     9      0
+websdr_test9.wav        12000  15.00   180000   140   50   50   49    13   24     13    11      0
+TOTAL                                          7803 2733 2733 2263   783 1298    760   538     23
+
+THE CHANGE ON EVERY TOTAL, against unit 216:
+  candidates  7803 -> 7803   (0)      unique    783 ->  783   (0)
+  parity      2733 -> 2733   (0)      expected 1298 -> 1298   (0)
+  checksum    2733 -> 2733   (0)      MATCHED   760 ->  760   (0)
+  text        2263 -> 2263   (0)      missed    538 ->  538   (0)
+                                      EXTRA      23 ->   23   (0)
+```
+
+**The match rate did not move, and it did not move because nothing was changed.** Both fixes on
+offer were measured first and both measured at zero. **The extras did not rise**, which is the
+number that mattered most tonight: every measurement here was aimed at the message layer, and the
+one thing this project refuses is a message on Tim's screen that nobody sent. The 23 are the same
+23 unit 216 printed, unchanged, and no fix raised the count because no fix was made.
+
+### The 538 against the 531 — reconciled, and 538 is right
+
+```
+expected lines in all sixty lists:                     1298
+lines that repeat another line in the SAME list:          9
+of those, repeats of a message this library RETURNED:     7
+
+  191111_110615.wav   x3  RETURNED         PA3EPP SP8NFO KN09
+  191111_110645.wav   x2  RETURNED         PA3EPP SP8NFO R+01
+  websdr_test11.wav   x3  never came back  K4VBM HA8EK RR73
+  websdr_test4.wav    x2  RETURNED         SM2EKA UT7IS KN98
+  websdr_test6.wav    x2  RETURNED         SM2EKA UT7IS -06
+  websdr_test9.wav    x3  RETURNED         K4VBM HA8EK -15
+
+the totals row, a MULTISET comparison:      538 missed   <- the criterion's own
+the diagnostic, a CONTAINMENT comparison:   531 missed
+the difference:                               7
+repeats of a message that DID come back:      7
+```
+
+**538 is right.** The criterion's table compares as a multiset, so a list carrying a message twice
+is not satisfied by one decode. The diagnostic asks only whether the text came back at all, so it
+scores every copy of a repeated line as found. The other two repeats never came back at all, so
+both comparisons agree about them. **None of the seven is a lost message**: each was returned and
+de-duplicated to a single decode by upstream's own payload rule. They belong to the ceiling, not
+the shortfall, and the accounting puts them in H4.
+
+### Task 2's findings, with the anchoring split
+
+**STRONG — declarations in `ft8/message.h`:** `ftx_message_type_t` with eleven enumerators;
+`ftx_message_rc_t` with six values, **not one naming an unresolved hash**; and
+`ftx_callsign_hash_interface_t`, two function pointers and nothing else, so the library owns no
+hash storage at all and the application supplies it.
+
+**WEAK — expressions inside static function bodies:** `lookup_callsign`'s placeholder write; the
+switch inside `ftx_message_decode`; the one-pass shape of the demo's `decode` helper; and the hash
+table's storage and lifetime.
+
+**WEAKEST — one `snprintf` in the demo:** `"Error [%d] while unpacking!"`.
+
+1. **What upstream does with a hashed callsign it cannot resolve.** `lookup_callsign` writes the
+   literal `"<...>"` into the callsign buffer and **returns the miss to its caller** — and neither
+   caller looks. `unpack28` calls it and then unconditionally `return 0; // Success`;
+   `ftx_message_decode_nonstd` calls it as a bare statement and returns `FTX_MESSAGE_RC_OK`. **So
+   upstream prints a message naming a station it cannot name, and reports the decode as clean.** A
+   resolved hash is bracketed by `add_brackets`, so `<CALL>` is upstream's form too and the two
+   sides agree there.
+2. **Which types upstream actually prints.** Exactly four: `FREE_TEXT` (0.0), `TELEMETRY` (0.5),
+   `STANDARD` (1 and 2) and `NONSTD_CALL` (4). Its default branch reads `// not handled yet` and
+   returns `FTX_MESSAGE_RC_ERROR_TYPE`. Declared and never decoded: `DXPEDITION` (0.1), `EU_VHF`
+   (0.2), `ARRL_FD` (0.3/0.4), `CONTESTING` (0.6), `ARRL_RTTY` (3), `WWROF` (5). **These are
+   exactly the six `HM-OPEN-064` records, so upstream does not build them either.** And the demo
+   does not drop a line it cannot read — it prints `Error [n] while unpacking!` as the text. **No
+   expected list in the pin carries that string**, one more independent confirmation that these
+   lists were not written by the pinned decoder.
+3. **Does upstream re-offer a refused payload? No — stated plainly.** One `ftx_find_candidates`,
+   one loop over the candidates in score order, one `ftx_decode_candidate` each, and **exactly one
+   `ftx_message_decode` call site in the whole application**, inside the branch that has just
+   entered a new payload in the duplicate table. **So fix A would have been an addition and a
+   numbered divergence, not a port.**
+4. **Is upstream's hash table per-slot, per-file or per-process? Per-process, and aged.**
+   `callsign_hashtable` is a file-scope `static struct` array in `demo/decode_ft8.c` with a
+   `static int callsign_hashtable_size` beside it; `hashtable_init()` is called **once**, in
+   `main`, before the slot loop; and `hashtable_cleanup(10)` runs at the **end of every** `decode()`,
+   ageing entries in the top byte of their hash word and evicting those older than ten slots. **So
+   upstream can name a station from a callsign heard up to two and a half minutes earlier.** Unit
+   208's per-slot ruling stands and the lifetime was not changed; **the difference is recorded as
+   divergence 25.**
+
+### Task 6 — fix A measured, and refused
+
+```
+distinct payloads refused for an unresolved callsign:  109
+  resolved when re-offered at the end of the slot:       1
+  still refused, because the slot never heard the call: 108
+  of those resolved, on an expected list:                0
+
+  20m_busy/test_29.wav   not on a list  (already returned)  <LZ365BM> US5IQI KN87
+```
+
+**It would be worth zero matches.** The one payload it resolves is a message the same slot had
+already returned, so de-duplication would drop it — and that text is one of unit 216's 23 extras,
+so the only thing building it could have done is risk the extras count. **108 of 109 belong to
+stations whose callsign was never spelled out anywhere in the same fifteen seconds**, so waiting
+cannot help them. **The hypothesis that decode order costs this library messages is removed
+permanently.** No determinism re-run was needed because nothing changed; `Ft8SlotDecoder` is
+byte-for-byte what unit 216 left, which is also why criterion 2 cannot have been disturbed.
+
+**A tripwire is left behind**: the test asserts the zero, so a later re-pin or a better receiver
+that makes the second pass worth building reds this test rather than leaving a stale decision.
 
 ### Every refusal watched refusing
 
-**Extraction, 16 refusals**, each with both numbers in the message: a null waterfall; output spans of
-0, 173, 175 and 348; bin offsets of −1, 442 and 449, the middle one being the case whose eighth tone
-is one bin past the end; a time sub-offset of 2 where there are 2 subdivisions; a frequency
-sub-offset of −1; normalisations over 0, 173 and 175 ratios; seven tone magnitudes; four bits from
-one symbol; a hard decision into a span of a different length.
+- **The one that must still refuse after task 6**, watched without the clone on a message built in
+  memory: a hashed companion is refused **cold**; refused **again** against a warm cache holding
+  three other calls; and **decoded** only once the slot has actually heard its owner, coming back
+  as `<PJ4/K1ABC> W9XYZ/R RR73`. **So waiting never weakens the gate.** HM-DEC-009 untouched, no
+  placeholder written, nothing invented.
+- **The unsupported-type remainder**, still watched: 15 type combinations enumerated, 5 built and
+  round-tripping, **10 refused as `UnsupportedType`**, and not one returning a wrong decode. Step
+  2's must-pass clause holds.
+- **The malformed-field refusals**, asserted to land only on upstream's own three refusal points.
+- **The packer's own refusals**, named rather than lumped: `HashedCallsignLostInTheList` 141,
+  `NoShapeThisLibraryBuildsAcceptsIt` 0, `PackedButDidNotRoundTrip` 0.
 
-**And the ones that must not refuse:** bin offset **441**, the highest legal one, extracts — so the
-bound is exactly where the message says it is; and **a block offset of −10 extracts**, with 78 of 174
-ratios zero, because those symbols fall before the slot and the search sweeps there on purpose.
+### Task 7's branch, and the number that decided it
 
-**The path, 4 refusals:** a negative message limit, a negative iteration count, a null waterfall,
-audio shorter than one block. **And the one that must not refuse:** a message limit of **0** runs the
-whole path, decodes 3 candidates, and returns 0 messages.
+**The drop branch applied.** The census named **0** types against a bar of **20** distinct expected
+messages — not below the bar, not near it. Nothing was built. `HM-OPEN-064` is updated with the
+measurement, kept open, kept `owner: claude`, and now also records the correction that its stated
+field layouts are **not** in the pin's `ft8/message.c`: only the comment table of field widths in
+`message.h`, so building those six would be protocol work against the QEX paper rather than
+porting, with no upstream oracle for a round trip.
 
-### Task 7 — twenty at once, not dropped
+### The price of fix C, as a number
 
 ```
-                    cand  par  crc  txt  dupes  unique  themselves  missed  extra
-clean                140   51   51   51     31      20       20/20       0      0
-noise -10.020 dB     140   45   45   45     25      20       20/20       0      0
+UPPER BOUND - expected lines printed <...>:   141 of 1298  (10.9 per cent)
+REALISED    - of those, whose codeword this library RECOVERED and then
+              refused, so a placeholder would have made them matches:  82
 ```
 
-Unit 214's own fixture — twenty different messages from 300 Hz to 2772 Hz, every one at a different
-fraction of a bin, at five different start offsets, summed into one buffer.
-**Twenty become twenty, twice, with nothing extra.** The branch that licensed dropping it applied and
-it was run anyway; two seconds bought the finding that the reference-recording shortfall is not about
-having more than one signal in a slot.
+**82 transmissions were found, corrected, checked against a 14-bit checksum, and thrown away** —
+6.3 percentage points of criterion 3, or 7.1 per cent of the 1157-line ceiling. The rendering that
+measured this lives in the test project, is called only by a report, and never reaches the library.
+**The library still refuses the whole message.** This goes to section 4.
 
-### Divergences added, versions, and the tree
+### The extras — every one printed, count unchanged at 23
 
-**Three divergences, numbered on from twenty-one.** **22** — a candidate whose eighth tone falls
-outside the kept bins is refused, where upstream reads past the end of its array. **23** — 174
-identical ratios are left alone, where upstream computes `sqrtf(24/0)` and multiplies the array by an
-infinity. **24** — a full message list stops accepting, where upstream's own duplicate probe never
-terminates. Plus one **addition that is not a divergence** — `Ft8SlotResult`'s five stage counts,
-which change no decision — and one **test-project change that is not one either**, `WavFile` walking
-to the `data` chunk.
+```
+191111_110630.wav      JH1AJT W4FGA EM83
+20m_busy/test_01.wav   OE3MLC G3ZQQ 73
+20m_busy/test_01.wav   JO1COV PA0CAH JO21
+20m_busy/test_04.wav   CQ MM0IMC IO75
+20m_busy/test_08.wav   RW6PA UA3NFG 73
+20m_busy/test_10.wav   CQ LZ365BM
+20m_busy/test_10.wav   SP9LKP F4VTS 73
+20m_busy/test_16.wav   UR7HN UA3NFG LO28
+20m_busy/test_20.wav   CQ 2E0LDW IO70
+20m_busy/test_23.wav   YC6RMT IZ7NLM -22
+20m_busy/test_23.wav   7Z1AL DF2FE JO51
+20m_busy/test_24.wav   CQ G0OSK IO91
+20m_busy/test_29.wav   DM2DLG UR7HN -13
+20m_busy/test_29.wav   <LZ365BM> US5IQI KN87
+20m_busy/test_31.wav   DM2DLG UR7HN -13
+20m_busy/test_31.wav   RA3TPE BD8NBG -17
+20m_busy/test_32.wav   DH1NAS UA3NFG LO28
+20m_busy/test_32.wav   E75C RA9UJP NO25
+websdr_test12.wav      CT7AIX WG5D EM62
+websdr_test13.wav      CQ 2E0PKK IO90
+websdr_test13.wav      CQ N2BJ EN61
+websdr_test4.wav       UT7IS SV8EUB -12
+websdr_test7.wav       SQ7MRR ON7AN JO20
+```
 
-**Versions.** `src/Ft8Sharp/Directory.Build.props` **0.9.0 → 0.10.0** under HM-DEC-152, with the note
-saying what it does not claim. Root `Directory.Build.props` **1.12.22 → 1.12.23** under HM-DEC-150.
-**Re-run after both bumps: Ft8Sharp 470 total, 469 passed, 0 failed, 1 skipped in 35 s**, 41 tests
-added and still the one correct skip — `Ft8TableGenerationTests.RewriteTheCheckedInTablesFile`, the
-table write gate, whose reason names the environment variable that would run it. Channels **55** and
-**13**, `VersionTests` among them. Library 0 warnings, 0 errors. **168 paths from `2828ab6` and the
-`src/Hamlet.`/`tests/Hamlet.` filter returns 0.** **8 `.obj` at the root, untouched.**
-`git status --short` prints **33**.
+**No fix raised this count, because no fix was made.**
+
+### Divergences, versions, counts, and what was committed
+
+**One divergence added and numbered 25** — the callsign cache lives for one slot where upstream's
+lives for the process and is aged over ten. It has been true since unit 208 and had never been
+written down; **recording it is the change, not the behaviour.**
+
+**Versions.** `src/Ft8Sharp/Directory.Build.props` **0.10.0 → 0.10.1** under HM-DEC-152, a patch
+because the night was measurement only and the library gains evidence rather than a capability —
+unit 211's arbiter's precedent. Root `Directory.Build.props` **1.12.23 → 1.12.24** under HM-DEC-150.
+
+**Re-run after both bumps.** `Ft8Sharp` **485 total, 484 passed, 0 failed, 1 skipped** in 38 s.
+**The one skip is `Ft8TableGenerationTests.RewriteTheCheckedInTablesFile`**, the table write gate,
+whose reason names the environment variable that would run it — it is meant to skip. Library builds
+**0 warnings, 0 errors**. Channels **55** (RadioEngine) and **9** (App), both green with
+`VersionTests` among them. **174** paths from `2828ab6`, and the `src/Hamlet.`/`tests/Hamlet.`
+filter returns **0**. **8** `.obj` at the repository root, counted at the end and untouched.
+`git status --short` prints **35** at exit, the four added since entry being this session's own
+untracked scratch: `Unit217Probe.cs`, `tools/unit217/`, `unit217-status.py`, and `OUTPUT.md` itself
+awaiting its commit.
 
 **No new shared artifact was added, so no new channel was needed.**
 
-### What was committed, and what was left alone
+**Committed:** `PROJECT_STATUS.md`, `OPEN_ISSUES.md`, both `Directory.Build.props`,
+`src/Ft8Sharp/porting-notes.md`, and five test files under `tests/Ft8Sharp.Tests/` —
+`Message/UpstreamMessageLayerInventoryTests.cs`, `Message/ExpectedMessagePacker.cs`,
+`Dsp/Ft8RefusalCensusTests.cs`, `Dsp/Ft8CriterionCeilingTests.cs`, `Dsp/Ft8MissAccountingTests.cs`
+and `Dsp/Ft8SecondPassMeasurementTests.cs`. **Nine commits — one per task and one for this report —
+each pushed before the next task started; every push accepted first time, no refusals from GitHub.**
 
-**Committed:** `PROJECT_STATUS.md`, `PHASE_STATUS.md`'s `WORK_INSTRUCTION:` line, the two
-`Directory.Build.props`, `src/Ft8Sharp/porting-notes.md`, two new files under `src/Ft8Sharp/Dsp/`,
-seven new files under `tests/Ft8Sharp.Tests/Dsp/`, and one modified file under
-`tests/Ft8Sharp.Tests/Encode/`. **Nothing else.**
+**Left alone:** the 8 `.obj` at the root; `tools/build-ft8-oracle.bat`, which is present, untracked
+and was not run; `PHASE_OUTCOME.md`; the loop's uncommitted files — modified
+`tools/arbiter/run-phase.bat` and `run-unit.bat`, and untracked `ARBITER.md`, `MANIFEST.txt`,
+`PHASE_PLAN.md`, `RUN_LEDGER.md`, `VERIFY_PASS.md`, `SCRUB_SELFTEST.bat`, `SESSION.lock`,
+`.run-unit/` and `docs/phase-uplift/`; the six probe and scratch files known item 10 names; and
+`src/Ft8Sharp/Tables/Ft8Tables.g.cs`, read for declarations and not edited.
 
-**Left alone, every one of them deliberately:** the 8 `.obj` at the root; `tools/build-ft8-oracle.bat`
-and everything under `tools/`; `ARBITER.md`, `MANIFEST.txt`, `PHASE_PLAN.md`, `RUN_LEDGER.md`,
-`VERIFY_PASS.md`, `SCRUB_SELFTEST.bat`, `SESSION.lock`, `.run-unit/`, `docs/phase-uplift/`;
-`PHASE_OUTCOME.md` and the two `ANALYSIS-cw-*` files and `PROJECT_CARD.md` and `WORK_INSTRUCTIONS.md`;
-`OPEN_ISSUES.md`, unchanged and correctly so; every WAV and every byte of the clone; and every file
-under `src/Hamlet.*` and `tests/Hamlet.*`.
+**`PHASE_STATUS.md` was edited on one line only** — `WORK_INSTRUCTION:` set to
+`217 - where the other 538 die, and every one of them given a name`, as the session prompt directs.
+It was not committed, `HEARTBEAT:`, `CURRENT_STEP:` and the `STEP:` lines were not touched, and
+nothing below the `---` was changed. **The work instruction's known item 14 says not to hand-edit
+that file at all**; the two directions conflict and the session followed the prompt's explicit,
+narrower one. Reported here rather than resolved.
 
-**OPEN_ISSUES.md is unchanged and that is the expected answer.** Step 5 carries no nice-to-pass
-criterion, so nothing is owed there. The one exception the instruction names — the clone carrying no
-expected decode list — does not apply, because task 2 found 60 of them.
+### Mismatches against the instruction — reported, not repaired
 
-### Mismatches against this instruction, reported and not repaired
+1. **Task 7's field layouts are not where the instruction says.** It directs that they *come from
+   the pin's `ft8/message.c`, read the way units 207 and 208 read it.* **They are not in
+   `ft8/message.c`.** `ftx_message_decode` has four cases and a default commented `// not handled
+   yet`; the only description of those six types anywhere in the pin is the comment table of field
+   widths in `ft8/message.h`. Recorded in `HM-OPEN-064`.
+2. **The 141-hashed-lines figure is confirmed**, exactly as unit 216 measured it — the arbiter
+   flagged it as a likely mismatch and it is not one.
+3. **`git status --short` printed 31 at entry, not the 30 the instruction states.** The extra line
+   is `SESSION.lock`. **35 at exit**, the four added being this session's own untracked scratch —
+   `Unit217Probe.cs`, `tools/unit217/`, `unit217-status.py` — and `OUTPUT.md` awaiting its commit.
+4. **Attribution is 174 paths at exit, not the 168 the instruction cites from unit 216's report.**
+   The difference is this unit's own six added files.
+5. **The App channel count is 9 under a reconstructed filter, where prior units reported 13.** The
+   exact filter earlier units used **is not recorded anywhere in the tree** — the plan names the
+   three channels and `DecisionLogOrderTests` but no command. The RadioEngine half reconstructs
+   exactly: `AudioSeamTests` plus `PrivilegeTests`, the two tests reading `CLAUDE.md`/`DECISIONS.md`
+   in that project, gives **55**, unit 215's and 216's own figure. The App half was reconstructed
+   from the same principle — `DecisionLogOrderTests` for the `CLAUDE.md` §1 rows, `VersionTests` for
+   the root version, `EveryResourceKeyResolvesTests` and `ViewTestsActThroughControlsTests` for
+   `Hamlet.sln` membership — and gives 9. **Both are green and neither reds.** Whether 13 counted
+   something else cannot be established from the tree, and a channel list nobody can reconstruct is
+   the failure the plan's own line warns about.
+6. **A directory was created under `tools/` in error at the start of the unit** —
+   `tools/unit217/status.py`, a status-writing helper, before the session re-read known item 14's
+   prohibition. **The sandbox refused every attempt to delete the file and the directory**, in four
+   spellings. It is emptied to a comment naming the mistake, it is untracked, and it was not
+   committed. The helper that replaced it is `unit217-status.py` at the repository root, also
+   untracked and also not committed. **Reported as a refusal and not routed around.**
+7. **`tests/Ft8Sharp.Tests/Dsp/Unit217Probe.cs` is left behind, emptied to a comment**, the same
+   way units 214, 215 and 216 left theirs. No deletion was attempted; known item 10 says not to try.
+8. **`PHASE_STATUS.md` is stale and `PHASE_OUTCOME.md`'s header disagrees with its own entries.**
+   Both confirmed and neither touched beyond the one line above.
 
-**One. Extraction does not need an inverse Gray map, and the instruction says it does.** It says
-*extraction needs the inverse map, tone → value; derive it in code from `Ft8GrayMap`*. Upstream
-indexes its eight magnitudes **by symbol value through the forward map** — `s2[j] = mag[GrayMap[j]]` —
-so the array is already in value order and the three bit tests read straight off it. **No inverse map
-exists anywhere in upstream's decoder and none was built.** The forward map is used from
-`Ft8Tables.Ft8GrayMap` in code, as required, and nothing was transcribed.
+### The validator, refused for the seventh unit running
 
-**Two. `WavFile` could not read 9 of the 60 recordings.** The instruction says *this is how a WAV is
-read, do not write a second reader*, and the reader as it stood refused a file whose `data` chunk is
-not second. Reported, and the repair chosen is described in section 1 as a decision made for myself.
+**All five spellings `tools\arbiter\run-unit-tools.txt` lists were tried and none ran the script.**
+`cmd /c ...`, `cmd.exe /c ...` and `cmd.exe //c ...` were **denied outright** by the permission
+layer. `cmd //c tools\arbiter\validate-output.bat output.md` and
+`tools\arbiter\validate-output.bat output.md` were **permitted and still failed**, for a reason
+worth recording because it is not the one units 211 to 216 hit: the Bash tool is Git Bash, a POSIX
+shell, and it **strips the backslashes** before `cmd` ever sees the path — so the batch file is
+invoked as `toolsarbitervalidate-output.bat` and cmd reports it does not exist. Quoting the path
+would fix the shell and breaks the permission match, and that form was denied too.
 
-**Three. `git status --short` printed 29 at entry where the instruction says 28**, and 33 at exit.
-The extra untracked file at entry is `SESSION.lock`.
+**Reported as a refusal and not routed around.** No alternative interpreter was used, the script was
+not copied, and nothing was renamed to make a permitted spelling resolve. **If one line is added to
+`tools\arbiter\run-unit-tools.txt` for the next unit, the useful one is a quoted spelling** — the
+listed forms cannot work from a shell that eats backslashes.
 
-**Four, and it is not a mismatch but is worth stating:** every one of the sixteen known items held.
-The 8 `.obj` are still there and still untouched. `tools\build-ft8-oracle.bat` is present, untracked
-and was not run. `PHASE_STATUS.md` still reads `CURRENT_STEP: 4` against an outcome file recording
-step 4 done and step 5 partial, and was not hand-edited beyond the one line that is mine.
-`Ft8Sharp.Tests` still carries exactly one skip and it is the table write gate. `TempEncoderProbe.cs`,
-`UpstreamSyncSearchProbe.cs`, `UpstreamLdpcProbe.cs` and `unit215-section.md` are all still on disk; a
-thirteenth attempt to delete them was not made. **This unit leaves two more of the same kind** —
-`tests/Ft8Sharp.Tests/Dsp/Unit216Probe.cs`, emptied to a comment so that what is on disk and what is
-committed compile to the same tests, and `unit216-section.md` at the root, the scratch copy of the
-porting-notes section. Both are untracked.
+**The six rules were therefore checked by hand against the script's own source, and all six pass:**
 
-### The validator was refused for the sixth unit running, and the refusal is reported as a refusal
-
-**All five spellings `tools\arbiter\run-unit-tools.txt` lists were tried and none of them ran the
-script.** `tools\arbiter\validate-output.bat output.md`, `cmd //c tools\...` and
-`cmd.exe //c tools\...` all failed with *`toolsarbitervalidate-output.bat` is not recognized* — **the
-shell strips the backslashes before `cmd` ever sees the path.** `cmd /c tools\...` and
-`cmd.exe /c tools\...` printed the Windows banner and the contents of `.run-unit\prompt.txt` instead,
-because without the `//` escape the `/c` is consumed as a path. Two further spellings with forward
-slashes were denied by the permission layer. **No route around was attempted** and nothing was copied,
-renamed or re-pathed to make it run. This is the same refusal units 211 to 215 reported, and unit 213
-measured why.
-
-**So the six rules were checked by hand against the script's own source, which was read**, and all
-six pass. **Rule 1** — a parseable `UNIT:` line at file line 40, inside the first 60 the script reads
-and above `## 1.` at line 54. **Rules 2 and 3** — exactly four `## ` headings at lines 54, 135, 170
-and 535, in order, with the exact names the script's `WANT` string holds, and no fifth; `###` and
-deeper are ignored by the script's own stated reading. **Rule 4** — `## 4. What's blocking us` is
-present, with a straight ASCII apostrophe, which is what its `findstr /b /c:` needs. **Rule 5** —
-section 3 runs from line 170 to line 534 and is very far from empty. **Rule 6** — `READ IN THIS ORDER`
-at line 1, `A.` at line 3, `B.` at line 12, `C.` at line 28, and *Section 4 raises 2 items* at line
-35: all five inside the first 60 lines, all above the `UNIT:` line, each of `A.`, `B.` and `C.`
-beginning its line with no indentation, and **the count in `C` written as a digit.**
+```
+rule 1  UNIT: line present, parseable, above section 1     line 35, section 1 at line 47   ok
+rule 2  four top-level sections, in order, exact names     lines 47, 124, 159, 667         ok
+rule 3  no fifth top-level section                         `grep -c "^## "` returns 4      ok
+rule 4  section 4 present                                  line 667, ASCII apostrophe      ok
+rule 5  section 3 non-empty                                lines 160 to 666                ok
+rule 6  ordering block above UNIT:, in the first 60 lines   READ IN THIS ORDER  line 1
+        A. line 3, B. line 11, C. line 25, and C names a
+        count as a digit - "raises 2 items" at line 30                                     ok
+```
 
 ## 4. What's blocking us
 
-**Two items. One is in the way of a criterion in B; the other is carried forward, and neither is a
-ruling request.**
+**Two items. One is in the way of criterion 3 and it is genuinely the owner's.**
 
-**1. Criterion 3 is partial at 760 of 1298, and the cause is narrowed but not settled.** This is the
-one in the way. What is known: the search is not where the misses die — **509 of the 531 misses had a
-kept candidate within 4 Hz of the listed frequency**; the candidate limit is not the cost — eight
-times the list changes nothing; overlap is not the cause — twenty clean overlapping transmissions all
-decode; and the reference itself is stronger than the code being ported — 1078 of 1298 expected lines
-carry an SNR the pinned decoder cannot print. What is not known is **whether the remaining gap is
-this port falling short of `ft8_lib`, or `ft8_lib` itself falling short of whatever wrote those
-lists.** Step 6 depends on the answer, because a sensitivity measurement against the published
-threshold is meaningless if the path is already leaving decodes on the table for a reason nobody has
-named. **The single thing that would separate the two is `decode_ft8.exe` run over the same
-recordings** — which is `HM-OPEN-065`, a standing item and known item 4, raised here not as a new
-finding but because this is the first unit whose result actually turns on it.
+### 1 — May a decoder ever tell you *a station I cannot name*? Worth 82 messages tonight.
 
-**2. What wrote the expected decode lists is unread and unreadable from the clone.** They are in
-`decode_ft8`'s print format, they carry an SNR column it cannot produce, and some carry a country
-annotation it does not emit. Nothing in the clone says which program, which version or which machine
-wrote them. They are treated as upstream's claim about its own recordings, which is what criterion 3
-asks for, and **not** as ground truth about what was transmitted. **This is why the 23 messages
-returned that are not on any list are reported as extras but are not proven to be false decodes.**
+**The ruling requested.** Whether `Ft8Sharp` may return a message in which a callsign it could not
+resolve is rendered as a placeholder — `<...>`, the way `ft8_lib` does — rather than refusing the
+whole message.
 
-**Not carried here, and said so rather than left out.** Task 8's commit was refused twice by GitHub
-with an Internal Server Error; the next push carried it and the report's commit together and was
-accepted, so nothing is outstanding and it is recorded in section 1 rather than as a blocker. And the
-validator refusal, sixth unit running, is a report about the harness rather than about the work: the
-six rules were checked by hand and all six pass, so it blocks nothing here — it is section 3's.
+**The reasoning, with the number in front of it.** This library refuses. Upstream does not:
+`lookup_callsign` writes the literal `"<...>"` and both its callers discard the miss and report
+success, so upstream's own lists carry those lines. **141 of the 1298 expected lines are of that
+shape — 10.9 per cent of criterion 3 — and no improvement to this receiver can ever match one of
+them while the refusal stands, because matching would mean printing the placeholder.** Of those
+141, **82 were transmissions this library found, corrected, and validated against a 14-bit checksum
+before discarding.** They are 6.3 points of criterion 3 and 7.1 per cent of the 1157 that are
+reachable at all. **A warm cache does not recover them**: task 6 measured re-offering every
+unresolved payload at the end of its slot and got 1 of 109, none on any list.
+
+**What was rejected, and why it was not decided here.** The change itself was forbidden tonight and
+correctly so. The refusal is a deliberate divergence, number 8 in `porting-notes.md`, taken under
+HM-DEC-009 and tested since step 2, and `CLAUDE.md` §12.1 puts what the display asserts to Tim with
+Tim. **Neither this session nor an arbiter may rule on it.** No recommendation is offered here.
+What can be said factually is what the two answers cost: refusing costs 82 real messages on these
+sixty recordings; printing costs a line naming a station the receiver cannot identify, in a project
+whose prime directive is that a decode nobody transmitted is worse than a blank screen.
+
+### 2 — Carried forward, not a ruling request: where the residue actually lives
+
+**380 of the 538 misses are real transmissions too weak for the code to recover**, at a mean
+hard-decision agreement of 122.8 of 174 against 167.7 for the messages that came back. That is not
+a defect with an address; it is a sensitivity statement, and **the measurement that would judge it
+is step 6's**, against the published threshold, which this unit is forbidden to invoke. **The
+extraction indictment the instruction anticipated did not materialise**: exactly one miss had the
+signal cleanly present at 165 of 174 and still failed. The next unit does not have that target and
+should not be sent looking for it.
+
+**Nothing else needs a decision.** The reference decoder binary is not re-raised: it is
+`HM-OPEN-065`, a standing owner-side item, and tonight's question did not need it.
