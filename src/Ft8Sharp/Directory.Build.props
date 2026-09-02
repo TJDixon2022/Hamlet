@@ -261,9 +261,29 @@
     AND THE SAME LINE AS LAST TIME, BECAUSE IT IS STILL TRUE. NOTHING IN 0.10.3 IS A STEP 6 RESULT.
     Unit 219 measured PRESENCE, per signal, and not sensitivity. Step 6 still wants all three of its
     criteria and this version claims none of them.
+
+    0.10.4 IS A PATCH FOR THE FOURTH TIME RUNNING, AND UNIT 220 WAS MEASUREMENT ONLY TOO. Not one
+    library file changed and not one threshold moved. What it adds is not a new measurement but a
+    RE-TAKEN one, under the criterion the owner rewrote on 2026-09-02: no decode that is present and
+    recoverable is lost. THE NUMBER, AS A COUNT AND NOT A PROPORTION: RECOVERABLE-AND-LOST IS ZERO,
+    OUT OF 169 MATCHABLE MISSED EXPECTED LINES AT -5 dB OR BETTER. The control group ran first and
+    could have stopped the unit on its own - 12 of 12 already-matched lines found at mean agreement
+    170.2 of 174 and every one at bin offset zero, 10 quiet neighbourhoods returning 0 messages and
+    0 codewords over 6000 alignment points, and 12 of 12 agreements equal to the instrument this
+    phase already had. STEP 5 CLOSES ON THIS VERSION, all five of its must-pass criteria met.
+
+    AND THE LINE THAT KEEPS THIS HONEST. THE RAW COUNT DID NOT MOVE AND IS NOT THE GATE. Against
+    the sixty recordings this library returns exactly what it returned in 0.10.1, 0.10.2 and 0.10.3
+    - 760 of 1298, extras still 23, identical column for column - so it gains no capability an
+    operator could see, which is why a step closing is still a patch. The count is now carried as a
+    REGRESSION WITNESS rather than a criterion.
+
+    AND THE SAME LINE A FOURTH TIME. NOTHING IN 0.10.4 IS A STEP 6 RESULT. Step 6 wants a
+    reproducible curve, a verdict against the published figure, and graceful degradation; unit 220
+    took none of the three and claims none of them.
   -->
   <PropertyGroup>
-    <Version>0.10.3</Version>
+    <Version>0.10.4</Version>
   </PropertyGroup>
 
   <!--
