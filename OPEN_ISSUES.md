@@ -81,6 +81,47 @@ the kind units 207 and 208 did for the standard, free-text, telemetry and
 non-standard types; it is not blocked on anything, and it was left out of step 2
 as scope rather than found to be impossible.
 
+**MEASURED FOR THE FIRST TIME BY UNIT 217, AND NOTHING WAS BUILT.** Work
+instruction 217 un-parked these six conditionally: if a census of step 5's
+reference-WAV run showed them costing a must-pass criterion, their weight had
+changed and they were to be built — but only the types the census named, and only
+if they were worth at least **20 distinct expected messages**.
+
+**The census named none of them, and the number is zero.** Over all sixty of
+`ft8_lib`'s off-air recordings, 2733 candidates satisfied every parity check and
+their own CRC-14, and 470 of those were refused by `Ft8MessageDecoder` without
+becoming text. Split by refusal status: `UnresolvedCallsign` 277 occurrences and
+109 distinct payloads, `MalformedField` 193 and 68, and **`UnsupportedType` 0 and
+0.** Not one validated codeword on any of these recordings declared a type this
+library has not built. **The bar of 20 was not approached, let alone cleared, so
+task 7 did not run and no type was built.**
+
+**And a second reading, taken independently, says the same thing.** Unit 217
+read the pin's own message layer through the test process:
+`ftx_message_decode` in `ft8/message.c` has a switch with **exactly four** cases —
+`FREE_TEXT`, `TELEMETRY`, `STANDARD` and `NONSTD_CALL`, which are precisely the
+four this library builds — and a default branch commented `// not handled yet`
+returning `FTX_MESSAGE_RC_ERROR_TYPE`. **Upstream does not build these six
+either.** That is pinned by an assertion in
+`UpstreamMessageLayerInventoryTests` so a re-pin that starts decoding one of them
+goes red.
+
+**Which changes what this item would take, and it is worth recording plainly.**
+This entry previously said the work was *against the field layouts in the pin's
+`ft8/message.c`*. **Those layouts are not in `ft8/message.c`** — only the
+comment table in `ft8/message.h` naming each type's field widths. Building them
+would therefore be protocol work against the QEX paper rather than porting, with
+no upstream behaviour to be faithful to and no upstream oracle to check a round
+trip against. That does not make it impossible and it does not close this item;
+it makes it a larger and differently-shaped job than the entry implied.
+
+**Still open, still `owner: claude`, and still not blocking.** Nothing measured
+tonight argues for building these; nothing measured tonight argues against
+building them either, for the reason the entry already gives — these types appear
+during contests and DXpeditions, and the sixty recordings in the pin are ordinary
+band activity. **What the measurement settles is only that they are not what is
+costing step 5's criterion 3.**
+
 ---
 id: HM-OPEN-063
 status: open
