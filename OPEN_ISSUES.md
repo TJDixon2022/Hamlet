@@ -4,6 +4,84 @@ Questions with owner and severity. `owner` is who must act next. Format in
 `CLAUDE.md` §3.
 
 ---
+id: HM-OPEN-068
+status: open
+owner: tim
+raised: 2026-09-02
+severity: cosmetic
+blocks: nothing — the Digital tab works with the column as it stands
+refs: work instruction 037 task 6, unit 224, src/Ft8Sharp/porting-notes.md "The first consumer"
+---
+
+**The Digital tab's decoded table has an `snr` column and this decoder does not
+produce a signal-to-noise ratio.** The column set — `utc / snr / dt / hz /
+message` — was committed in work instruction 037 on the stated assumption that
+all five are what the decoder produces. **Three of them are.**
+
+**What the library actually returns** is `Ft8Candidate.Score`, the Costas sync
+score: how far the expected tone stood above the average of the eight, over the
+twenty-one sync symbols. It is a small integer, it is not decibels, it is not
+calibrated against anything, and it is not the number WSJT-X prints in that
+column.
+
+**What unit 224 did, and why it is not the answer.** The cell carries an em dash.
+That is honest — §0.0 forbids a plausible number that was not measured, and a
+figure under a heading reading `snr` would be read as a measurement by every
+reader of that screen — but a column of dashes is not a good answer, only a true
+one.
+
+**The three ways out, none of them taken:**
+
+1. **Relabel the column `sync` and show the score.** Cheapest, honest, and shows
+   something real. It changes what the screen says, which is why it was not done.
+2. **Compute an SNR.** Signal power in the transmission's tone bins against noise
+   power in the 2500 Hz reference bandwidth, which is how the figure is defined.
+   Real work, and it belongs with step 6's calibration rather than with wiring.
+   Note that upstream computes its own in `demo/decode_ft8.c` and not in `ft8/`,
+   so porting it would inherit one application's estimate rather than a property
+   of the mode.
+3. **Leave the dash** until the operator has used the tab and says what he wants
+   there.
+
+**This is Tim's under §12.1** and is recorded rather than decided.
+
+---
+id: HM-OPEN-069
+status: open
+owner: claude
+raised: 2026-09-02
+severity: annoying
+blocks: nothing yet — it cost one unit about twenty-five minutes
+refs: PHASE_PLAN.md "what a unit runs", docs/test-baseline.md, unit 224
+---
+
+**A `dotnet test` run over `Hamlet.App.Tests` filtered by
+`FullyQualifiedName~Views` hung and never returned.** It produced no output at
+all in twenty-five minutes, and it kept a `testhost` process alive holding a
+write lock on `tests/Hamlet.App.Tests/bin/Debug/net8.0/Hamlet.App.dll`, which
+then failed the next build with `MSB3027`.
+
+**It is not this unit's change.** The same binaries, in the same state, ran
+`TheTabsAndTheWorkspacesTests` (5 tests, 1.9 s) and
+`EveryResourceKeyResolvesTests` (2 tests, 1.0 s) green while the hung run was
+still going, and every named test in the run's own filter passes when named
+individually. Something else under `~Views` does not terminate.
+
+**Why it matters beyond the twenty-five minutes.** `PHASE_PLAN.md` records four
+units eaten by this suite and rules that a unit runs the smallest set that
+answers its question. This is the mechanism behind that ruling, caught in the
+act, and it has a second cost nobody had recorded: **a hung run blocks the next
+build**, so the damage outlives the run.
+
+**What would settle it.** Run `Hamlet.App.Tests.Views` class by class with a TRX
+logger until one does not return, and name it here. Nobody has done that, and
+this entry does not claim to know which test it is.
+
+**The workaround, recorded because it worked.** `-p:OutputPath=bin/unit224/`
+builds the test assembly somewhere the dead process is not holding, and the run
+proceeds normally.
+
+---
 id: HM-OPEN-067
 status: open
 owner: claude

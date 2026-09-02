@@ -3824,3 +3824,69 @@ describe, in every failing trial**, so the recovery is not there to be had.
    samples in memory and nowhere else — no device, no stream, no port, no file. And nothing here is
    evidence about the CW decoder.
 
+---
+
+## The first consumer — unit 224
+
+**Nothing was ported in this unit and no file under `src/Ft8Sharp/` changed except this one.** It is
+recorded here anyway, because it is the first time anything outside the library has ever called it,
+and because it found one constraint the library states that the caller had to be built to meet.
+
+### The reference goes one way, and the boundary still refuses the other
+
+`src/Hamlet.RadioEngine/Hamlet.RadioEngine.csproj` gained
+`<ProjectReference Include="..\Ft8Sharp\Ft8Sharp.csproj" />`. **`Ft8Sharp.csproj` was not touched and
+still declares no `ProjectReference` and no `PackageReference` at all**; `Ft8SharpBoundaryTests` was
+re-run after the change and both cases pass. Extraction stays as cheap as it was this morning.
+
+### The 12 kHz constraint is real, and nothing in Hamlet met it
+
+`Ft8WaterfallGeometry` refuses any sample rate where a 0.160 s symbol is not a whole number of
+samples, and everything this phase measured over six steps was measured at **12 000 Hz**. Hamlet's
+audio does not arrive there: `WasapiAudioSource` passes the capture device's own rate straight
+through — 48 000 on a USB codec — and the training radio runs at **8 000**. **Nothing in the tree
+resampled anything**, and its own remarks said why: the CW decoder counts samples and is indifferent
+to the rate. FT8 is not.
+
+So the caller resamples rather than the library widening. `Hamlet.RadioEngine.Audio.Ft8Resample` is a
+windowed-sinc band-limited resampler onto 12 kHz — sixteen zero crossings each side, cutoff at 0.45
+of the lower Nyquist, tabulated at 128 points per input sample and read with linear interpolation, and
+every output sample normalised by its own kernel sum so the gain does not wander with the fractional
+phase. **It is in the engine and not in `Ft8Sharp`**, deliberately: the library's contract is *give me
+12 kHz*, which is upstream's own contract, and a resampler inside it would be a second answer to a
+question the geometry already answers by refusing.
+
+Measured at four rates, through the whole path from samples to text: **8 000, 12 000, 44 100 and
+48 000 all return the message that went in.** 44 100 is in the set because it is deliberately not a
+whole ratio of 12 000. And the filter is measured rather than assumed — a 10 500 Hz tone, which naive
+decimation would fold onto 1500 Hz in the middle of the FT8 passband, comes through at under a
+hundredth of the wanted tone's amplitude.
+
+### The library produces no signal-to-noise ratio, and the screen now says so
+
+The Digital tab's decoded table was committed in work instruction 037 with the columns
+`utc / snr / dt / hz / message`, on the stated assumption that those are what the decoder produces.
+**Three of the five are. `snr` is not.** `Ft8SlotResult` carries an `Ft8Candidate` whose only strength
+figure is `Score`, the Costas sync score — how far the expected tone stood above the average of the
+eight over the twenty-one sync symbols. It is not decibels, it is not calibrated against anything, and
+it is not comparable with the number WSJT-X prints in that column.
+
+**So the column carries an em dash and no number**, and what belongs there is raised to the owner
+rather than decided. Whoever answers it should know that upstream computes its own SNR in
+`demo/decode_ft8.c` rather than in `ft8/`, which would make it one application's estimate rather than
+a property of the mode — the same weak-anchor caveat `Ft8SlotDecoder.DefaultMessageLimit` already
+carries.
+
+### What the next unit inherits
+
+**Built and proven:** samples at any device rate to text on screen, through
+`Ft8Resample` → `Ft8SlotCutter` → `Ft8SlotDecoder`, entered from the capture press.
+
+**Not built, and named as the drop:** the continuous path. A timer on the UTC quarter minute, a slot
+decoded as it completes, appended rather than replacing. Everything under it works; what is missing
+is the timer and the decision about whether the decode runs off the UI thread. **The alignment itself
+is not missing** — `Ft8SlotCutter` has cut on the quarter minute since work instruction 042 and the
+press uses it, so the decoder is never handed audio that straddles a boundary.
+
+**Open, and the owner's:** what goes in the `snr` column.
+
