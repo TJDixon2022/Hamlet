@@ -169,6 +169,96 @@ public sealed class TheDecodedTableIsRealTests
         Assert.Contains("{Binding DigitalDecodes}", markup, StringComparison.Ordinal);
     }
 
+    /// <summary>
+    /// **NO PANEL ON THE TAB STILL CLAIMS A STATION WAS HEARD.** The decoded
+    /// table became real in this unit, so a mode strip counting nine messages or
+    /// a plain-English card describing a contact that never happened is not a
+    /// placeholder any more — it is the tab disagreeing with itself.
+    /// </summary>
+    [Fact]
+    public void NoPanelOnTheTabStillClaimsAStationWasHeard()
+    {
+        var markup = DigitalWorkspaceMarkup();
+
+        var claims = new[]
+        {
+            "reading it &#183; 9 messages this slot",
+            "4 stations &#183; 2 contacts running",
+            "14:22:45 UTC &#183; 4 shown",
+            "W9XYZ is answering K1ABC",
+            "K1ABC is calling anyone",
+            "EA3QQ is calling for distant stations",
+        };
+
+        foreach (var claim in claims)
+        {
+            var literal = $"\"{claim}\"";
+
+            _output.WriteLine(
+                $"  {claim,-42} "
+                + $"{(markup.Contains(literal, StringComparison.Ordinal) ? "STILL THERE" : "gone")}");
+
+            Assert.DoesNotContain(literal, markup, StringComparison.Ordinal);
+        }
+
+        // **AND THE PANEL THAT LOST ITS CARDS CARRIES ITS OWN IDLE LINE**, rather
+        // than being left blank, which is indistinguishable from broken.
+        Assert.Contains("{Binding DigitalSayingIdle}", markup, StringComparison.Ordinal);
+    }
+
+    /// <summary>
+    /// **THE PLAIN-ENGLISH PANEL SAYS NOTHING THIS UNIT WROTE** (§12.1). What
+    /// Hamlet says a message means is Tim's, so the panel carries the line he
+    /// wrote in August and nothing else.
+    /// </summary>
+    [Fact]
+    public void ThePlainEnglishPanelCarriesOnlyTimsOwnIdleLine()
+    {
+        var model = new MainWindowViewModel(new AppSettings(), null);
+
+        _output.WriteLine($"  saying [{model.DigitalSayingIdle}]");
+        _output.WriteLine($"  strip  [{model.DigitalModeStripLine}]");
+
+        Assert.Equal(DigitalIdleText.Saying, model.DigitalSayingIdle);
+        Assert.Equal(DigitalIdleText.ModeStrip, model.DigitalModeStripLine);
+    }
+
+    /// <summary>
+    /// **THE MODE STRIP REPORTS THE PRESS RATHER THAN A PLACEHOLDER.** After a
+    /// decode it carries what the press made of the audio.
+    /// </summary>
+    [Fact]
+    public void TheModeStripReportsWhatThePressFound()
+    {
+        var model = new MainWindowViewModel(new AppSettings(), null);
+
+        model.ShowDecodes(
+            Recording(48000),
+            new DateTime(2026, 9, 2, 14, 22, 47, DateTimeKind.Utc),
+            Measured);
+
+        _output.WriteLine($"  strip [{model.DigitalModeStripLine}]");
+
+        Assert.Equal("one message out of one slot", model.DigitalModeStripLine);
+    }
+
+    /// <summary>The whole Digital workspace's markup.</summary>
+    private static string DigitalWorkspaceMarkup()
+    {
+        var markup = File.ReadAllText(
+            Path.Combine(Root(), "src", "Hamlet.App", "Views", "MainWindow.axaml"));
+
+        var from = markup.IndexOf(
+            "x:Name=\"DigitalWorkspace\"", StringComparison.Ordinal);
+        var to = markup.IndexOf(
+            "x:Name=\"VoiceWorkspace\"", StringComparison.Ordinal);
+
+        Assert.InRange(from, 0, int.MaxValue);
+        Assert.InRange(to, from, int.MaxValue);
+
+        return markup[from..to];
+    }
+
     /// <summary>The decoded panel's own markup, and nothing else's.</summary>
     /// <remarks>
     /// **SCOPED TO ONE PANEL DELIBERATELY.** The plain-English panel below it

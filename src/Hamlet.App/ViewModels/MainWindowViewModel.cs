@@ -752,6 +752,32 @@ public partial class MainWindowViewModel : ObservableObject
     /// <summary>What the decoded panel says before anything has decoded.</summary>
     public string DigitalDecodedIdle => DigitalIdleText.Decoded;
 
+    /// <summary>What the plain-English panel says, which is its idle line.</summary>
+    /// <remarks>
+    /// **IT SAYS NOTHING ELSE YET, ON PURPOSE.** Unit 224 removed the three
+    /// invented cards that stood there — a station answering another, a distance,
+    /// a signal strength, none of it heard — because the table above them became
+    /// real. **What replaces them is Tim's to word** (§12.1), so this unit took a
+    /// claim out and did not put one in.
+    /// </remarks>
+    public string DigitalSayingIdle => DigitalIdleText.Saying;
+
+    /// <summary>
+    /// The one line of status on the Digital mode strip.
+    /// </summary>
+    /// <remarks>
+    /// **IT WAS `reading it · 9 messages this slot` UNTIL UNIT 224**, written as a
+    /// placeholder by work instruction 037 and kept by 038 because the clock
+    /// beside it was then the only measured value on the strip. There are two now,
+    /// and a strip claiming nine messages beside a table showing what was really
+    /// decoded is the mixture this unit exists to end. Before a press it carries
+    /// the strip's own idle line, written in August.
+    /// </remarks>
+    public string DigitalModeStripLine
+        => _digitalDecodeNote.Length > 0
+            ? _digitalDecodeNote
+            : DigitalIdleText.ModeStrip;
+
     /// <summary>The decoded panel's collapsed summary.</summary>
     /// <remarks>
     /// **IT REPORTS WHAT IS REALLY THERE** (HM-DEC-021), including the case the
@@ -6422,6 +6448,7 @@ public partial class MainWindowViewModel : ObservableObject
 
         OnPropertyChanged(nameof(HasDigitalDecodes));
         OnPropertyChanged(nameof(DigitalDecodedSummary));
+        OnPropertyChanged(nameof(DigitalModeStripLine));
     }
 
     /// <summary>What a press made of the audio, in one line.</summary>

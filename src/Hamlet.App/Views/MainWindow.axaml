@@ -2787,12 +2787,14 @@
                                 </Border>
                             </StackPanel>
 
-                            <!-- **THE STATIC STATUS STAYS EXACTLY AS UNIT 037
-                                 WROTE IT** (work instruction 038). The clock is
-                                 added beside it rather than replacing it: it is
-                                 the one value on this strip that is measured,
-                                 and it says so by standing apart from the ones
-                                 that are not. -->
+                            <!-- **THE STATIC STATUS IS GONE** (unit 224). Work
+                                 instruction 037 wrote `reading it · 9 messages
+                                 this slot` as a placeholder and unit 038 kept it
+                                 deliberately, because the clock beside it was
+                                 then the only measured value on the strip. There
+                                 are two now, and a strip claiming nine messages
+                                 beside a table showing what was really decoded
+                                 is the mixture this unit exists to end. -->
                             <StackPanel Grid.Column="2" Orientation="Horizontal"
                                         Spacing="10"
                                         HorizontalAlignment="Right"
@@ -2813,7 +2815,8 @@
                                            IsVisible="{Binding ClockIsConcerning}"
                                            Foreground="{StaticResource HmAmberDeepBrush}" />
 
-                                <TextBlock Text="reading it &#183; 9 messages this slot"
+                                <TextBlock x:Name="DigitalModeStripStatus"
+                                           Text="{Binding DigitalModeStripLine}"
                                            VerticalAlignment="Center"
                                            FontSize="12"
                                            TextTrimming="CharacterEllipsis"
@@ -2949,85 +2952,30 @@
                             <ctl:CollapsiblePanel x:Name="DigitalSayingPanel"
                                                   Family="Lavender"
                                                   Title="What people are saying"
-                                                  Summary="4 stations &#183; 2 contacts running"
+                                                  Summary="nothing put into words yet"
                                                   IsExpanded="{Binding DigitalSayingExpanded, Mode=TwoWay}">
-                                <StackPanel Spacing="10">
 
-                                    <!-- Drawn in the same treatment as the
-                                         selected decode row, and just as inert. -->
-                                    <Border Background="{x:Static ctl:PanelPalette.LavenderFill}"
-                                            CornerRadius="4" Padding="8,6">
-                                        <Grid ColumnDefinitions="3,*">
-                                            <Border Grid.Column="0" CornerRadius="2"
-                                                    Background="{x:Static ctl:ModePalette.DigitalInk}" />
-                                            <StackPanel Grid.Column="1" Margin="10,0,0,0" Spacing="2">
-                                                <TextBlock Text="W9XYZ is answering K1ABC"
-                                                           FontSize="13" TextWrapping="Wrap" />
-                                                <TextBlock Text="and telling him he&#8217;s coming in weak"
-                                                           FontSize="12" TextWrapping="Wrap"
-                                                           Foreground="{StaticResource HmTextMutedBrush}" />
-                                                <TextBlock Text="W9XYZ K1ABC -13"
-                                                           FontFamily="Consolas,Menlo,monospace"
-                                                           FontSize="11"
-                                                           Foreground="{StaticResource HmTextMutedBrush}" />
-                                            </StackPanel>
-                                        </Grid>
-                                    </Border>
+                                <!-- **THE THREE PLACEHOLDER CARDS ARE GONE AND
+                                     NOTHING HAS REPLACED THEM** (unit 224). They
+                                     asserted that Hamlet had heard W9XYZ
+                                     answering K1ABC, K1ABC calling anyone and
+                                     EA3QQ calling for distant stations, with
+                                     distances and signal strengths beside them.
+                                     Every word of that was invented, and the
+                                     decoded table above is now real, so the two
+                                     panels contradicted each other.
 
-                                    <Grid ColumnDefinitions="3,*" Margin="0,0,0,0">
-                                        <Border Grid.Column="0" CornerRadius="2"
-                                                Background="{x:Static ctl:PanelPalette.LavenderEdge}" />
-                                        <StackPanel Grid.Column="1" Margin="10,0,0,0" Spacing="2">
-                                            <TextBlock Text="K1ABC is calling anyone"
-                                                       FontSize="13" TextWrapping="Wrap" />
-                                            <TextBlock Text="Massachusetts &#183; about 480 miles &#183; strong"
-                                                       FontSize="12" TextWrapping="Wrap"
-                                                       Foreground="{StaticResource HmTextMutedBrush}" />
-                                            <TextBlock Text="CQ K1ABC FN42"
-                                                       FontFamily="Consolas,Menlo,monospace"
-                                                       FontSize="11"
-                                                       Foreground="{StaticResource HmTextMutedBrush}" />
-                                        </StackPanel>
-                                    </Grid>
-
-                                    <Grid ColumnDefinitions="3,*">
-                                        <Border Grid.Column="0" CornerRadius="2"
-                                                Background="{x:Static ctl:PanelPalette.LavenderEdge}" />
-                                        <StackPanel Grid.Column="1" Margin="10,0,0,0" Spacing="2">
-                                            <TextBlock Text="EA3QQ is calling for distant stations"
-                                                       FontSize="13" TextWrapping="Wrap" />
-
-                                            <!-- **THE WHOLE REASON THIS ENTRY IS
-                                                 IN THE PLACEHOLDER SET**: what a
-                                                 looked-up fact looks like beside
-                                                 facts that came off the air. The
-                                                 country is the only thing here
-                                                 Hamlet did not hear. -->
-                                            <StackPanel Orientation="Horizontal" Spacing="6">
-                                                <TextBlock Text="Spain" FontSize="12"
-                                                           VerticalAlignment="Center"
-                                                           Foreground="{StaticResource HmTextMutedBrush}" />
-                                                <Border CornerRadius="3" Padding="5,1"
-                                                        VerticalAlignment="Center"
-                                                        Background="{x:Static ctl:PanelPalette.LavenderPillFill}">
-                                                    <TextBlock Text="from the prefix list"
-                                                               FontSize="10"
-                                                               Foreground="{x:Static ctl:ModePalette.DigitalInk}" />
-                                                </Border>
-                                                <TextBlock Text="&#183; about 3,900 miles &#183; strong"
-                                                           FontSize="12"
-                                                           VerticalAlignment="Center"
-                                                           TextWrapping="Wrap"
-                                                           Foreground="{StaticResource HmTextMutedBrush}" />
-                                            </StackPanel>
-
-                                            <TextBlock Text="CQ DX EA3QQ JN11"
-                                                       FontFamily="Consolas,Menlo,monospace"
-                                                       FontSize="11"
-                                                       Foreground="{StaticResource HmTextMutedBrush}" />
-                                        </StackPanel>
-                                    </Grid>
-                                </StackPanel>
+                                     **AND NOTHING IS WRITTEN IN THEIR PLACE.**
+                                     What Hamlet says a message *means* is Tim's
+                                     under `CLAUDE.md` §12.1, so this unit removes
+                                     a claim rather than deciding a replacement.
+                                     The panel carries its own idle line, written
+                                     in his voice in August, until he words what
+                                     goes here. -->
+                                <TextBlock x:Name="DigitalSayingIdleLine"
+                                           Text="{Binding DigitalSayingIdle}"
+                                           FontSize="11" TextWrapping="Wrap"
+                                           Foreground="{StaticResource HmTextMutedBrush}" />
                             </ctl:CollapsiblePanel>
                         </StackPanel>
                     </ScrollViewer>
