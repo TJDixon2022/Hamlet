@@ -10,7 +10,7 @@ owner: claude
 raised: 2026-09-02
 severity: slows
 blocks: step 5 criterion 3, which is must-pass where the clone is present and is partial at 760 of 1298
-refs: PHASE_PLAN.md step 5 criterion 3, units 216, 217, 218
+refs: PHASE_PLAN.md step 5 criterion 3, units 216, 217, 218, 219
 ---
 
 **Step 5's criterion 3 is partial and its residue has been carried in three
@@ -60,29 +60,99 @@ contradicted by another**, and that is the state of the question:
   0 dB or better were missed, two of them at +19 dB**, with **169** at -5 dB or
   better.
 
-**What it would take to close it, in the order the evidence points.**
+## Unit 219 — the 78 taken one at a time, and route 1 is discharged
 
-1. **The 78.** They are not random: **58 distinct texts, 13 of them missed in
-   more than one recording**, covering 33 lines — `9A9A` at **2046 Hz** missed in
-   four files at +17 and +19 dB, `SP9LKP` at 2378 Hz in four, `R7NO` at 1087 Hz
-   in three. **75 of the 78 had a kept candidate within 4 Hz**, 96.2 per cent
-   against unit 216's 95.9 per cent over all the misses, so they die exactly
-   where the weak ones die. A signal a third party calls +19 dB that is found and
-   not recovered is a defect with an address, and it is the cheapest thing left.
+**The ambiguity recorded above is settled.** Unit 219 swept the alignment
+neighbourhood of every one of the 78 against its re-encoded true codeword —
+**600 points per line, 46 800 in all, over block offsets −10 to 19, both time
+sub-offsets, two bins either side and both frequency sub-offsets** — and sorted
+each into one of three outcomes fixed before the run.
+
+**The split, and it is the number this entry now turns on:**
+
+> **Of the 78 strong-SNR misses, 5 are present and recoverable, 35 are present
+> and not recoverable, and 38 are not present at all as far as this receiver can
+> see. Of the further 91 matchable misses between −5 and 0 dB, 0, 33 and 58.**
+
+**And the reading that decides what the 5 mean: every one of them is a repeated
+expected line.** The untold path returned that text for that file and
+de-duplicated it by **upstream's own payload rule**, which unit 216 proved this
+library keeps; the search kept the decoding point at ranks 1, 1, 4, 6 and 61.
+They are the five of unit 217's seven H4 rows that sit at 0 dB or better.
+**Outcome-A lines that are not a repeated expected line: zero, in both
+populations.** **Not one of the 169 is a transmission this library could have
+recovered and threw away.**
+
+**The instrument was proved before it was trusted.** 12 of 12 expected lines the
+untold path already matched found a decoding alignment, mean best agreement
+**170.2 of 174**, every one at bin offset zero from the list's own frequency; 10
+quiet neighbourhoods at frequencies the list places nothing within 30 Hz of
+returned **0 messages and 0 recovered codewords** over the same 600 points; and
+12 of 12 agreement figures **equalled** `Ft8MissAccountingTests`' own,
+independently written, at the nearest kept candidate. The quiet control also
+gave the night the null it needed: **best-of-600 agreement on empty air runs 106
+to 115**, against unit 218's one-point chance figure of 84.8. The B bound of
+**130** was fixed before the run and fell in a gap — **highest C 129, lowest B
+132**.
+
+**The sharpest single fact for the bar.** The two **+19 dB** lines at **2046 Hz**
+are **outcome C at best agreement 120** — inside the quiet-air null's reach —
+while the search **scores 27 to 29 there and keeps the point at ranks 5 and 6**.
+**Something is transmitting at 2046 Hz and it is not the message the list
+names.** That is the reading unit 218 could not choose between, and it is chosen.
+
+**The search is not the stage.** Of the 40 outcome-A and outcome-B lines, **none
+scores below `DefaultMinimumScore` of 10** — mean best score 23.4, lowest 13 —
+and **the search kept between three and twelve points in every one of the 40
+neighbourhoods**. `DefaultMessageLimit` of 50 is not in reach either: **no
+recording returned more than 20 messages**. The saturated limit is
+`DefaultCandidateLimit`, at **140 in 52 of the 60 recordings**, and unit 216
+already swept it to 1120 for nothing.
+
+**`191111_110115.wav` is accounted for.** It **carries exactly one expected
+line**, so a whole file returning nothing is one missed message. 24 candidates,
+best sync score **24** against a mean of 34.9 across the other 59, 0 reaching
+parity — and its one line, `GJ0KYZ RK9AX MO05` at 1234 Hz and +6 dB, is
+**outcome B at agreement 148 of 174 at rank 1**.
+
+**What is now believed and what is still not.** The residue at the strong end is
+**a mixture of the benchmark's reach and this code's correcting power, and not a
+defect with an address in this port.** What this does **not** establish is that
+the list is wrong: an outcome-C line could in principle be one whose text this
+library packs to different bits than were on the air, and unit 217 measured that
+at **76 of 2263, 3.4 per cent**, on messages this library itself decoded. Over 78
+lines that is of the order of three, not thirty-eight. **Nothing from the sweep
+was added to any total** and criterion 3 stands where it stood.
+
+**What it would take to close it, re-ranked in the light of unit 219.**
+
+1. **`decode_ft8.exe`.** `HM-OPEN-065`, and it is now **first** rather than
+   third. Unit 219 established that 96 of 169 strong misses are not present as
+   far as *this* receiver can see. **The one remaining question is whether they
+   are present as far as the pin can see** — if the pinned decoder does not
+   return them either, the benchmark's own lists are beyond the code this library
+   was ported from and criterion 3's residue has a name. Nothing else can answer
+   that.
 2. **The 82 placeholder messages.** Reserved to the owner under `CLAUDE.md`
-   §12.1 and in front of him from unit 217. **Not this issue's to decide.**
-3. **`decode_ft8.exe`.** `HM-OPEN-065`. It would say whether the pin itself
-   returns these lines, which is the one thing that would settle whether the
-   benchmark is beyond the code this library was ported from.
-4. **The 2 dB.** This path's 50 per cent crossing is near -19 dB against a
-   published FT8 figure near -21. **That comparison is step 6's to make as a
-   verdict and unit 218 did not make it** — but if it holds under step 6's own
-   measurement it is worth about two rungs of weak signals.
+   §12.1 and in front of him from unit 217. **Not this issue's to decide**, and
+   it is the largest single block of matches still on the table.
+3. **The 2 dB.** This path's 50 per cent crossing is near −19 dB against a
+   published FT8 figure near −21. **Step 6's to make as a verdict.** Unit 219's
+   68 outcome-B lines are exactly the population two rungs of sensitivity would
+   act on, which raises this from fourth to third.
+4. **The 78.** **Discharged by unit 219 and no longer a route.** It was ranked
+   first because a strong signal found and not recovered would have been a defect
+   with an address; the sweep looked at every one of them individually and found
+   no such defect. Kept here so the next reader can see that the route was taken
+   rather than dropped.
 
 **What is NOT wanted.** Tuning. Unit 216 was offered a candidate-limit sweep and
 refused it; unit 217 measured two fixes and built neither; unit 218 licensed a
-fix under four conditions and none was met. **A fidelity fix restoring what the
-pin does, or nothing.**
+fix under four conditions and none was met; **unit 219 licensed one under the
+same four and condition 2 failed outright** — the only change the evidence points
+at is not de-duplicating, which is a divergence *from* the pin and would put the
+same message on the screen twice. **A fidelity fix restoring what the pin does,
+or nothing.**
 
 ---
 id: HM-OPEN-065

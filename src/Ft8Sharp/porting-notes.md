@@ -2801,3 +2801,152 @@ count stands at **twenty-five**.
 
 `0.10.1` → **`0.10.2`** under HM-DEC-152. **Tonight is measurement only.** No library file changed, so
 the library gains evidence rather than a capability — unit 211's precedent and unit 217's.
+
+## Is the signal there and lost, or not there at all — unit 219
+
+**Twenty units in, this library answers 760 of `ft8_lib`'s 1298 expected lines, and for three nights
+nobody could say whether the missing five hundred are whispers below what any receiver could reach or
+transmissions this port is throwing away.** Unit 216 built the path and read the total. Unit 217 gave
+all 538 misses a name. Unit 218 measured this receiver's own sensitivity against calibrated noise —
+every message down to −18.0 dB, stopping between −18 and −21 — and then found **78 missed expected
+lines the lists themselves call 0 dB or better, two of them +19 dB.** Those two measurements
+contradict each other and the contradiction is on the record as `HM-OPEN-066`.
+
+**Every one of those three units took an aggregate, and an aggregate cannot say which reading is
+wrong. A single signal can.** Unit 219 took the 78 one at a time.
+
+### What was measured, and it is not a sensitivity measurement
+
+**Nothing in this section is a step 6 result and none of it may be quoted as one.** Step 6 still
+wants a reproducible curve, a comparison with the published figure **as a verdict**, and graceful
+degradation as a criterion. This unit took none of the three and claims none of them. It measured
+**presence**, per signal, against a codeword this library built itself.
+
+### The instrument
+
+For one expected line — file, frequency, text — with the recording's waterfall built once and shared
+across every line in that file:
+
+1. **The truth.** The expected text through `ExpectedMessagePacker`, `Ft8Payload.Create` and
+   `LdpcEncoder.Encode` — the three steps the encoder itself takes — giving **the exact 174-bit
+   codeword that was on the air**, through the chain unit 212 proved bit-identical to upstream's own
+   encoder over 51 of 51 messages.
+2. **The neighbourhood.** `Ft8SyncSearch.ScoreAt`, which its own file documents as *a scoring
+   primitive for a caller asking what the score was at a position it already knows*, plus
+   `Ft8SoftSymbols.Extract` on a **hand-built `Ft8Candidate`**, at every alignment in a bounded
+   neighbourhood.
+3. **The three readings at each point.** The sync score; the hard-decision agreement out of 174; and,
+   at the points worth decoding, `Ft8CodewordDecoder.Decode` with the text compared exactly.
+
+**The neighbourhood, fixed before the run and not widened afterwards:** block offsets **−10 to 19**,
+which is the search's own range; **both** time sub-offsets; **two bins either side**, which is two
+whole FT8 tone spacings and reaches about **15.6 Hz** either way against the four hertz every
+previous unit tested at; **both** frequency sub-offsets. **600 points per line.**
+
+**The decode rule, also fixed before the run:** score and agreement at all 600; belief propagation at
+the **20 best-agreeing points plus every point in the neighbourhood the search itself kept**, so the
+sweep can never miss a decode the untold path could have had. **1712 belief propagations over the
+78**, ten seconds in all.
+
+### The control group, because a probe that has never failed is not a probe
+
+**A diagnostic told the answer can be written to find it whether or not it is there.** Three checks,
+all before a single miss was swept.
+
+| check | result |
+|---|---|
+| it finds what is there — 12 lines the untold path already matched | **12 of 12** found a decoding alignment, mean best agreement **170.2 of 174**, lowest 156, **every one at bin offset zero** from the list's own frequency |
+| it refuses what is not there — 10 quiet neighbourhoods, same true codewords, frequencies the list places nothing within 30 Hz of | **0 messages returned, 0 codewords recovered**, over 600 points each |
+| it agrees with the existing instrument at the nearest kept candidate | **12 of 12 equal** to `Ft8MissAccountingTests`' own separately written reading, 0 differing |
+
+**And the quiet control gave the night a null it could not have had otherwise.** Unit 218's chance
+figure of **84.8 of 174** is a *one-point* statistic. **The best of six hundred correlated points is a
+different and higher statistic**, and on empty air it runs **106 to 115, mean 110.1**. Every threshold
+below is read against that and not against 84.8.
+
+### The three outcomes, fixed before the run
+
+| what the sweep shows | outcome |
+|---|---|
+| some alignment point **decodes to the expected text exactly** | **A — present and recoverable** |
+| no decode, best agreement **130 of 174 or better** | **B — present and not recoverable** |
+| best agreement below 130 | **C — not present as far as this receiver can see** |
+
+**The bound fell in a gap rather than through a cluster:** highest C **129**, lowest B **132**.
+
+### The answer
+
+> **Of the 78 strong-SNR misses, 5 are present and recoverable, 35 are present and not recoverable,
+> and 38 are not present at all. Of the further 91 matchable misses between −5 and 0 dB: 0, 33 and
+> 58.**
+
+**And the reading that decides what the 5 mean.** **All five are repeated expected lines.** The
+untold path returned that text for that file and de-duplicated it by **upstream's own payload rule**;
+the search kept the decoding point at ranks 1, 1, 4, 6 and 61. They are five of the seven H4 rows
+unit 217 already reconciled. **Outcome-A lines that are not a repeated expected line: zero, in both
+populations. Not one of the 169 is a transmission this library could have recovered and threw away.**
+
+**The two +19 dB lines at 2046 Hz are outcome C at best agreement 120** — inside the quiet-air null's
+reach — **while the search scores 27 to 29 there and keeps the point at ranks 5 and 6.** Something is
+transmitting at 2046 Hz and it is not the message the list names.
+
+**Twelve of the thirteen recurring texts fall entirely within one outcome**, one scatters. A station
+missed in file after file at the same frequency is a property with a cause, and the cause is the
+same one every time.
+
+### The four readings that came free
+
+1. **The search is not the stage.** Of the 40 outcome-A and outcome-B lines, **none scores below
+   `DefaultMinimumScore` of 10** — mean best score 23.4, lowest 13 — and the search **kept between
+   three and twelve points in every one of the 40 neighbourhoods**. No threshold argument survives
+   that, and none was made.
+2. **`DefaultMessageLimit` of 50 is not in reach.** **No recording returned more than 20 messages**
+   against a most-expected of 34. The saturated limit is `DefaultCandidateLimit`, at **140 in 52 of
+   60 recordings** — already swept to 1120 by unit 216 for nothing. Both are readings; neither was
+   changed.
+3. **The 78 are spread across the passband**, not clustered: 3.2 per cent of lines in 0–500 Hz, then
+   7.6, 8.2, 10.8, **15.2 in 2000–2500** and 6.8 in 2500–3000.
+4. **`191111_110115.wav` carries exactly one expected line**, so a whole file returning nothing is one
+   missed message. 24 candidates, best sync score **24** against a mean of 34.9 across the other 59,
+   0 reaching parity — and that one line is **outcome B at agreement 148 of 174 at rank 1**.
+
+### What this measurement IS evidence about
+
+**That criterion 3's residue at the strong end is not a defect with an address in this port.** 169
+matchable missed lines at −5 dB or better were examined individually: **96 are not present as far as
+this receiver can see, 68 are present and beyond this code's correcting power at that damage level,
+and 0 are recoverable and lost.** That is the measured bar, and it is stated rather than suspected.
+
+### What this measurement is NOT evidence about, and step 6 is named first
+
+1. **STEP 6.** Nothing here is a sensitivity curve, a comparison with the published threshold, or a
+   graceful-degradation result. **Unit 219 claims no step 6 criterion and the two-decibel question is
+   untouched.**
+2. **That the expected lists are wrong.** An outcome-C line could be one whose text this library packs
+   to *different bits* than were on the air. Unit 217 measured that at **76 of 2263, 3.4 per cent**,
+   on messages this library itself decoded — of the order of three lines in 78, not thirty-eight, but
+   not zero.
+3. **That the pin would do better or worse.** `decode_ft8.exe` is not built on this machine
+   (`HM-OPEN-065`) and **no unit has ever asked the pinned decoder what it makes of these
+   recordings.** That is the one remaining question and unit 219 raised it from third to first in
+   `HM-OPEN-066`.
+4. **That a sweep hit is a decode.** It is not. The sweep is told the file, the frequency and the
+   text. **A point at which it recovers the expected text is evidence that the transmission is present
+   and it is nothing else** — not a match, not part of 760, and added to no total. Criterion 3 was
+   re-taken only through `TheReferenceRecordingsDecodeAgainstUpstreamsOwnExpectedLists` unchanged, and
+   it reproduces column for column: 7803 candidates, 2733 parity, 2733 checksum, 2263 text, 783
+   unique, **760 matched of 1298**, 538 missed, **23 extra**.
+5. **That anything reached a radio or a screen.** Nothing here opens a device, a stream, a port or a
+   file, and the encoder ran tonight to build codewords rather than audio.
+
+### Divergences from upstream
+
+**None added, and none was expected.** No library file changed. The count stands at **twenty-five**.
+**Divergence 22 was watched and never met**: a hand-built candidate whose eighth tone leaves the
+passband is refused, and across **169 lines and 101 400 alignment points not one met that refusal**,
+because the highest frequency any of these lines names is 2746 Hz and the passband reaches 3000.
+
+### The library's version
+
+`0.10.2` → **`0.10.3`** under HM-DEC-152. **Tonight is measurement only.** No library file changed, so
+the library gains evidence rather than a capability — unit 211's precedent, unit 217's and unit 218's.

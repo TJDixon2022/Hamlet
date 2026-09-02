@@ -241,9 +241,29 @@
     one. Step 6 still wants a reproducible curve, a comparison with the published figure AS A
     VERDICT, and graceful degradation as a criterion. Unit 218 took a diagnostic ladder in one
     session and claimed none of the three.
+
+    0.10.3 IS A PATCH FOR THE THIRD TIME RUNNING, AND UNIT 219 WAS MEASUREMENT ONLY TOO. Not one
+    library file changed. What it adds is the answer three units of aggregates could not reach: for
+    each of the 78 missed expected lines the reference lists themselves call 0 dB or better, taken
+    ONE AT A TIME rather than counted, WHETHER THE TRANSMISSION IS IN THE RECORDING AT ALL. The
+    alignment neighbourhood around each was swept at 600 points against the exact 174-bit codeword
+    that text encodes to, and every line landed in one of three outcomes fixed before the run:
+    5 PRESENT AND RECOVERABLE, 35 PRESENT AND NOT RECOVERABLE, 38 NOT PRESENT AS FAR AS THIS
+    RECEIVER CAN SEE - and over a further 91 lines between -5 and 0 dB, 0, 33 and 58.
+
+    AND THE HALF THAT MATTERS MOST. ALL FIVE OF THE RECOVERABLE ONES ARE EXPECTED LINES THEIR OWN
+    LIST CARRIES TWICE, whose message this library DID return and then de-duplicated by upstream's
+    own payload rule. NOT ONE OF THE 169 IS A TRANSMISSION THIS LIBRARY COULD HAVE RECOVERED AND
+    THREW AWAY. So there is no defect with an address here, nothing was tuned, and the library
+    returns exactly what it returned yesterday against the sixty recordings - 760 of 1298 - so it
+    gains no capability an operator could see.
+
+    AND THE SAME LINE AS LAST TIME, BECAUSE IT IS STILL TRUE. NOTHING IN 0.10.3 IS A STEP 6 RESULT.
+    Unit 219 measured PRESENCE, per signal, and not sensitivity. Step 6 still wants all three of its
+    criteria and this version claims none of them.
   -->
   <PropertyGroup>
-    <Version>0.10.2</Version>
+    <Version>0.10.3</Version>
   </PropertyGroup>
 
   <!--
