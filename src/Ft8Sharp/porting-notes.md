@@ -2484,3 +2484,151 @@ somebody hands it and has no idea what time it is. **Nothing reaches a screen.**
 is unmeasured** — 760 of 1298 against upstream's own recordings is where it stands tonight, that
 figure is not comparable with any published threshold, and the measurement that would be is step 6's.
 Still not a 1.x, and the reason is now a number rather than a missing piece.
+
+---
+
+## Where the misses die, and every one given a name — unit 217
+
+**Nothing was ported tonight and no library file changed.** This section records a night of
+measurement: what the pin's message layer does at the stage this library refuses at, and where each
+of criterion 3's 538 missed messages actually dies. **One divergence is added, numbered 25, and it
+records a difference that has existed since unit 208 and had never been written down.**
+
+### What was read, and from which files of the pin
+
+`ft8/message.h`, `ft8/message.c` and `demo/decode_ft8.c`. **Read through the test process**, because
+the sandbox refuses a session direct access to `C:\Source\ft8_lib` and has since unit 209. Every
+finding below is pinned by an assertion in `UpstreamMessageLayerInventoryTests`, so a re-pin that
+changes one of them goes red rather than leaving the next unit reasoning from this paragraph.
+
+### The anchoring split — 3 strong, 4 weak, 1 weakest
+
+**STRONG — declarations in `ft8/message.h`:**
+
+- `ftx_message_type_t`, eleven enumerators including `FTX_MESSAGE_TYPE_UNKNOWN`, each carrying the
+  field widths of its type in a trailing comment.
+- `ftx_message_rc_t`, six values: `OK` and five ways to fail. **Not one of them names an unresolved
+  hash.**
+- `ftx_callsign_hash_interface_t`, **two function pointers and nothing else** — `lookup_hash` and
+  `save_hash`. The library owns no storage at all; the application supplies it. **That is the shape
+  this port follows and it is why `Ft8CallsignCache` is the caller's object.**
+
+**WEAK — expressions inside static function bodies:**
+
+- `lookup_callsign`'s `strcpy(callsign, "<...>")` on a miss, in `ft8/message.c`. One occurrence in the
+  whole file.
+- The switch inside `ftx_message_decode`. The function is declared in the header, so the boundary is
+  public even where the branch list is not.
+- The one-pass shape of the demo's own static `decode` helper.
+- The callsign hash table's storage and lifetime, both file-scope statics in `demo/decode_ft8.c`.
+
+**WEAKEST — one `snprintf` in the demo application:** the string `"Error [%d] while unpacking!"`.
+
+### The four answers
+
+**1. Upstream writes `<...>` into the callsign and calls the decode successful.** `lookup_callsign`
+writes the literal on a miss *and returns the miss to its caller* — and **neither caller looks**.
+`unpack28` calls it and then unconditionally `return 0; // Success`; `ftx_message_decode_nonstd` calls
+it as a bare statement and returns `FTX_MESSAGE_RC_OK`. So a message naming a station upstream cannot
+name is printed on its list with a placeholder where the callsign belongs, and its return code says
+nothing went wrong. **This library refuses the whole message instead. That is divergence 8, it is
+HM-DEC-009, and it was not touched tonight** — what was done is to put a number on it, below.
+
+**2. Upstream decodes exactly four of the eleven types it names**, and they are exactly the four this
+library builds: `FREE_TEXT`, `TELEMETRY`, `STANDARD` and `NONSTD_CALL`. Its default branch reads
+`// not handled yet` and returns `FTX_MESSAGE_RC_ERROR_TYPE`. **The six types `HM-OPEN-064` records as
+not built are not built upstream either.** And the demo does not drop a line it cannot read: it prints
+it with `"Error [%d] while unpacking!"` as the text. **No expected list in the pin carries that
+string**, which is one more independent confirmation of unit 216's finding that these lists were not
+written by the pinned decoder.
+
+**3. Upstream never re-offers a refused payload.** One `ftx_find_candidates`, one loop over the
+candidates in score order, one `ftx_decode_candidate` each, and **exactly one `ftx_message_decode` call
+site in the whole application** — inside the branch that has just entered a new payload in the
+duplicate table. The unpack happens at first sight and never again. It does not need a second pass
+because it never refuses for an unresolved hash at all.
+
+**4. Upstream's callsign hash table is per-process and aged across ten slots.** See divergence 25.
+
+### Divergences from upstream
+
+**One added, numbered on from twenty-four.**
+
+**25 — the callsign cache lives for one slot, where upstream's lives for the whole process and is
+aged.** `demo/decode_ft8.c` holds `callsign_hashtable` as a file-scope `static struct` array with a
+`static int callsign_hashtable_size` beside it; `hashtable_init()` is called **once**, in `main`,
+before the `do … while (is_live)` slot loop; and `hashtable_cleanup(10)` runs at the **end of every**
+`decode()`, incrementing an age kept in the top byte of each entry's hash word and evicting entries
+older than ten slots. **So upstream can name a station in one slot from a callsign it heard spelled
+out up to two and a half minutes earlier.** `Ft8SlotDecoder` creates one `Ft8CallsignCache` per
+`Decode` call and drops it on return, under unit 208's ruling that the cache is never a static
+singleton — **because a decode that depends on what some other slot happened to contain is not a decode
+anybody can reproduce**, and every determinism proof this phase has taken rests on that, including
+unit 216's five-run comparison. **The cost is real and is stated rather than hidden:** a hash whose
+owner was spelled out in an earlier slot is resolvable by upstream and refused here. It costs
+criterion 3 nothing, because the criterion runs the sixty recordings independently and in no order, so
+upstream's aged table would carry nothing across them either. **This has been true since unit 208 and
+had never been written down; recording it is the change, not the behaviour.**
+
+**Nothing else was added, and two things were deliberately not built:**
+
+- **The second pass over payloads refused for an unresolved callsign was measured and refused.** Of
+  109 distinct such payloads across the sixty recordings, re-offering every one to the unpacker
+  against the slot's own cache at the end of the slot resolves **exactly one** — and that one is on no
+  expected list and had already been returned by the same slot, so de-duplication would drop it. **It
+  would be worth zero matches**, and it would add a second code path through the message layer and a
+  divergence from an upstream that is strictly one pass. **108 of 109 belong to stations whose
+  callsign was never spelled out anywhere in the same fifteen seconds**, so waiting cannot help them.
+  The hypothesis that decode order costs this library messages is removed. A test asserts the zero, so
+  a later change that makes the second pass worth building reds rather than leaving this stale.
+- **No message type was built.** The census named none: `UnsupportedType` came back at 0 occurrences
+  and 0 distinct over all sixty recordings.
+
+### What tonight's evidence is
+
+- **470 validated codewords never became text, and every one now has a name.** `UnsupportedType` 0
+  occurrences and 0 distinct; `UnresolvedCallsign` 277 and 109; `MalformedField` 193 and 68. The three
+  sum to 470, and 2733 − 2263 = 470.
+- **All 68 distinct `MalformedField` refusals are the grid-or-report field**, re-derived from the same
+  77 bits. **Upstream refuses at that same place with `ERROR_GRID`**, so it is agreement and not a port
+  defect — and the test reds if one ever lands anywhere other than upstream's own three.
+- **The ceiling on criterion 3 is 1157 of 1298 — 89.1 per cent.** Every expected line went through this
+  library's own packers into exactly one of four buckets summing to 1298: **1157 representable, 141
+  where the list itself lost the callsign to a hash, 0 of a shape no type here accepts, and 0 that
+  packed and came back as different text.** **The whole ceiling shortfall is the hashed lines and
+  nothing else.**
+- **Every one of the 538 misses is in exactly one bucket: H1 69, H2 380, H3 82, H4 7.** H1 is no
+  candidate on that transmission; H2 the signal present and too weak; **H3 recovered past both gates
+  and refused by the message layer**; H4 decoded and matched nothing anyway.
+- **The instrument is controlled.** The matched sample agrees with its own codeword at a mean of
+  **167.7 of 174** and the misses at **122.8**, and **chance measured on a candidate placed where there
+  is no signal came back at 84.8** against the 87 a bit-is-a-bit predicts. The packer reproduces **2187
+  of 2263** — 96.6 per cent — of the messages this library itself decoded.
+- **The histogram is a slope, not a cliff.** Misses spread right across 100 to 160; matched pile up
+  from 160 to 174 with 137 of 269 at 174 exactly.
+- **The indictment set is one row.** Eight misses reached 165 of 174 or better and seven of those are
+  H4 duplicates; the only genuine one is `20m_busy/test_34.wav` at 1344 Hz, agreement 165.
+  **Extraction is not indicted by this night's measurement.**
+- **Unit 216's 538 and 531 are reconciled and 538 is right.** Nine expected lines repeat another line
+  in the same list; **seven of those repeat a message this library did return** and de-duplicated to
+  one decode, and seven is exactly the difference between the criterion's multiset comparison and the
+  diagnostic's containment one.
+
+### What tonight's evidence explicitly does not show
+
+- **It does not show that this port matches `ft8_lib`.** Nothing was held against `decode_ft8`
+  running; it is still not built on this machine, and the expected lists are not its output.
+- **It does not explain the 380 in H2 beyond calling them weak.** A hard-decision agreement of 120 says
+  a real transmission is there and the code could not close the gap; it does not say whether a better
+  receiver could. **That is a sensitivity question and it is step 6's**, and nothing here is compared
+  with any published threshold.
+- **It does not show that the 82 in H3 would be correct if printed.** They are messages whose codeword
+  this library recovered and whose station it cannot name. What they would say with a placeholder in
+  them is measured; whether saying it is right is the owner's, under `CLAUDE.md` §12.1.
+- **Nothing here has been near a radio, a clock or a screen.**
+
+### The library's version
+
+`0.10.0` → **`0.10.1`** under HM-DEC-152. **Tonight is measurement only.** No library file changed, so
+the library gains evidence rather than a capability — which is unit 211's arbiter's precedent for a
+patch rather than a minor.

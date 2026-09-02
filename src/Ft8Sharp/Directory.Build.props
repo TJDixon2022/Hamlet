@@ -220,9 +220,17 @@
     been taken.
 
     Still not a 1.x — and the reason is now a number rather than a missing piece.
+
+    0.10.1 IS A PATCH BECAUSE UNIT 217 WAS MEASUREMENT ONLY. Not one library file changed. What it
+    added is evidence: every one of the 470 validated codewords that never became text is now
+    accounted for by refusal status, the ceiling on criterion 3 is measured at 1157 of 1298, and each
+    of the 538 missed messages is assigned to exactly one named cause. THE LIBRARY DOES NOTHING IT
+    DID NOT DO YESTERDAY and returns exactly what it returned yesterday — 760 of 1298 — so it gains
+    no capability an operator could see and takes a patch rather than a minor. Unit 211's arbiter set
+    that precedent.
   -->
   <PropertyGroup>
-    <Version>0.10.0</Version>
+    <Version>0.10.1</Version>
   </PropertyGroup>
 
   <!--
