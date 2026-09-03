@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: DONE
-TASK: 5 of 5
-WORK_INSTRUCTION: 230
-BALL: owner
+STATE: WORKING
+TASK: 2 of 7
+WORK_INSTRUCTION: 233
+BALL: claude
 NEXT_PASTE: none
 RULES_AT: HM-DEC-152 (2026-08-31)
-UPDATED: 2026-09-03T08:58:00-04:00
-NOTE: All five tasks done, nothing dropped, and the last gate is green: Ft8Sharp 524 total, 523 executed, 523 passed, 0 failed, 1 skipped, 5 m 09 s, failing set EMPTY. All four gates in - attribution 231 paths with 18 under Hamlet, so the plan's reduction does not apply and is not claimed; App channel 9 of 9 after the 1.12.36 bump; Engine channel 38 of 38 in 13 m 38 s on the eleven-class filter from porting-notes.md, not the four-class one the instruction named; every failing set empty. The unit's answer: Hamlet.App.Tests STOPS PARTWAY, it does not finish and refuse to exit, and it is inherited rather than this phase's - it reproduces with all four phase classes excluded and with Views running alone after six seconds of work. It is now readable end to end, 557 of 557 all green, in the four commands written into docs/full-suite-run.md, which is the first complete run column this project has ever had. Task 2 went to its stop rule and no code was changed, so no panel says anything different the night before the bench check - which was the point. validate-output.bat refused the permitted spellings for the seventh unit running; six of six rules were hand-checked against the script's own body and no exit 0 is claimed. Ball with Tim: three items in section 4, none blocking a step 7 criterion.
+UPDATED: 2026-09-03T12:02:00-04:00
+NOTE: Task 1 answered and the answer is a negative one. THE FAILED SESSION LEFT NO CAPTURE ON THIS MACHINE - C:\Users\TimDi\AppData\Roaming\Hamlet\captures DOES NOT EXIST, so neither does captures\digital, and there are zero ft8-*.wav and zero ft8-*.txt anywhere under the data folder. The telemetry folder exists and its newest file is 2026-08-28.jsonl, while settings.json was written 2026-09-03 12:34:32 UTC - so the app ran this morning and wrote no telemetry line for today at all. Every "decode" event in the jsonl is CW decode_quality (toneHz 600, elementsSeen, charactersEmitted); NOTHING IN TELEMETRY SAYS ANYTHING ABOUT AN FT8 SLOT. That is the finding task 6 rests on. Task 2 has no capture to read, so per the instruction it is skipped and the unit becomes tasks 3 to 7; the control is still being run once as evidence the instrument answers. Trace ran as a scratch xunit harness because the permission scope has no shell reach outside the repository.
 
 ---
 
