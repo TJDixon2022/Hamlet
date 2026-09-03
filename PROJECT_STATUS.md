@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: WORKING
-TASK: 5 of 7
+TASK: 6 of 7
 WORK_INSTRUCTION: 236
 BALL: claude
 NEXT_PASTE: none
 RULES_AT: HM-DEC-152 (2026-08-31)
-UPDATED: 2026-09-03T14:54:29-04:00
-NOTE: BENCH_CHECK.md section 3 now tells him how to split the fork from the file rather than from the screen. Two subsections under "The table is empty and the clock is fine", both marked line by line for measured against predicted. The first names all five ft8_slot level fields in a table with the file to open - step 10's first file - and gives three readings with the numbers actually measured tonight beside each: both levels null with the fraction at 1 means NOTHING WAS ARRIVING and is not a quiet band, because a receiver on a dead band still delivers its own noise; levels present with a tiny zero fraction means audio arrived and the problem is downstream, quoting the real off-air -2.05 and -14.17 with 13 zeros in 180000; levels present but very low, quoting the synthesized -60.00 and -64.77 with NO zeros at all, which is the whole distinction. The second names decoder_started and all six deviceChoice states in a table, says plainly that SystemDefault or FirstInTheList beside an empty table is the answer, and gives the fix - pick the input in Settings once and the line reads OperatorsRemembered. It says a level is not a signal-to-noise ratio in terms, does not restate the decoder's sensitivity, and promises him no decode. Unit 226's, 234's and 235's existing text is untouched. Next: task 6, the capture sheet - NOT dropped, because task 3 landed and was seen carrying the fields.
+UPDATED: 2026-09-03T14:56:41-04:00
+NOTE: TASK 6 WAS NOT DROPPED. It was droppable - task 3 landed and its line was read whole - but it cost one small pass and the sheet is what a press produces on paper. DigitalCaptureSheet's census now writes an audio line per slot beside the counts line, its own line because a level and a candidate count are different kinds of thing. Writing it turned up a real fault in the first draft and it is worth recording: the naive version reported a census entry that was never given audio as "every sample was exactly zero", which is a slot nobody measured being reported as a slot measured at nought - the exact collapse this whole unit exists to undo. DescribeLevel now has THREE states: level unread with no audio handed over, peak and rms none where every sample really was zero, and the two figures where there was a level. Measured lines: "peak -2.05  rms -14.17  (dB relative to full scale, NOT a signal-to-noise ratio)  samples 180000  exactly zero 13  (0.000072 of the slot)" and "peak and rms none - every sample in this slot was exactly zero  samples 720000  exactly zero 720000  (1.000000 of the slot)". Three new assertions, and the pre-existing DoesNotContain snr check still holds. 16 of 16 green across both sheet classes. Next: task 7, the five gates, the version and the push.
 
 ---
 

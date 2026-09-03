@@ -261,4 +261,103 @@ public sealed class TheSheetSaysWhichAudioPathItRanOnTests
             "census     " + DigitalCaptureSheet.Unread, sheet, StringComparison.Ordinal);
         Assert.Contains("refusal    none", sheet, StringComparison.Ordinal);
     }
+
+    /// <summary>
+    /// **AND HOW LOUD THE AUDIO IN EACH SLOT WAS** (unit 236). Every other figure
+    /// on a census row describes the decode, so a press taken while a sound card
+    /// handed over silence produced a sheet identical to one taken on a quiet band.
+    /// </summary>
+    [Fact]
+    public void TheSheetSaysHowLoudTheAudioInEachSlotWas()
+    {
+        var sheet = Compose(
+            null,
+            new[]
+            {
+                new Ft8SlotCensus(
+                    new DateTime(2026, 9, 3, 14, 22, 45, DateTimeKind.Utc),
+                    140, 44, 41, 40, 1, new[] { 51 }, 12000)
+                {
+                    Level = new Ft8SlotLevel(-2.0541, -14.1684, 180_000, 13),
+                },
+            },
+            string.Empty);
+
+        _output.WriteLine(sheet);
+
+        Assert.Contains("peak -2.05", sheet, StringComparison.Ordinal);
+        Assert.Contains("rms -14.17", sheet, StringComparison.Ordinal);
+        Assert.Contains("samples 180000", sheet, StringComparison.Ordinal);
+        Assert.Contains("exactly zero 13", sheet, StringComparison.Ordinal);
+
+        // A level says how loud the audio was, not how strong a signal in it was,
+        // and the row says so where the operator will read it (CLAUDE.md 0.0).
+        Assert.Contains(
+            "dB relative to full scale, NOT a signal-to-noise ratio",
+            sheet,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain("snr", sheet, StringComparison.OrdinalIgnoreCase);
+    }
+
+    /// <summary>
+    /// **A SLOT OF DIGITAL SILENCE REFUSES ON PAPER TOO** (HM-DEC-009). A floor in
+    /// place of a level is a plausible number, and the operator is reading this
+    /// sheet at the radio to decide what to change.
+    /// </summary>
+    [Fact]
+    public void ASlotOfDigitalSilenceSaysSoRatherThanShowingAFloor()
+    {
+        var sheet = Compose(
+            null,
+            new[]
+            {
+                new Ft8SlotCensus(
+                    new DateTime(2026, 9, 3, 14, 22, 45, DateTimeKind.Utc),
+                    0, 0, 0, 0, 0, Array.Empty<int>(), 48000)
+                {
+                    Level = new Ft8SlotLevel(null, null, 720_000, 720_000),
+                },
+            },
+            string.Empty);
+
+        _output.WriteLine(sheet);
+
+        Assert.Contains(
+            "peak and rms none - every sample in this slot was exactly zero",
+            sheet,
+            StringComparison.Ordinal);
+        Assert.Contains("exactly zero 720000", sheet, StringComparison.Ordinal);
+        Assert.Contains("(1.000000 of the slot)", sheet, StringComparison.Ordinal);
+
+        // Not minus ninety, and not any other number a reader would average.
+        Assert.DoesNotContain("peak -90", sheet, StringComparison.Ordinal);
+    }
+
+    /// <summary>
+    /// **A SLOT NOBODY MEASURED AND A SLOT MEASURED AT NOUGHT ARE DIFFERENT
+    /// FACTS** (`CLAUDE.md` §0.0). Collapsing them is how the record came to be
+    /// unable to tell a dead sound card from a quiet band in the first place.
+    /// </summary>
+    [Fact]
+    public void ACensusWithNoAudioBehindItSaysTheLevelWasNotRead()
+    {
+        var sheet = Compose(
+            null,
+            new[]
+            {
+                new Ft8SlotCensus(
+                    new DateTime(2026, 9, 3, 14, 22, 45, DateTimeKind.Utc),
+                    17, 0, 0, 0, 0, new[] { 34 }, 48000),
+            },
+            string.Empty);
+
+        _output.WriteLine(sheet);
+
+        Assert.Contains(
+            "level " + DigitalCaptureSheet.Unread, sheet, StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "every sample in this slot was exactly zero",
+            sheet,
+            StringComparison.Ordinal);
+    }
 }

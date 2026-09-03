@@ -307,7 +307,9 @@ public static class DigitalCaptureSheet
     /// how many places were looked at and how many became words. They do not say
     /// what anybody said, and they do not conclude that the band was quiet.
     /// **A COSTAS MATCH COUNT IS NOT A SIGNAL-TO-NOISE RATIO** (§0.0) and the
-    /// column is labelled for what it is.
+    /// column is labelled for what it is. **Neither is the level on the audio
+    /// line** (unit 236), which says how loud the slot's audio was and nothing
+    /// about how strong a signal in it was; its own label says so on every row.
     /// </remarks>
     private static void AppendCensus(
         Action<string, string> line,
@@ -361,7 +363,61 @@ public static class DigitalCaptureSheet
                         slot.TopSyncScores.Select(
                             s => s.ToString(CultureInfo.InvariantCulture))))
                 .Append('\n');
+
+            // **AND HOW LOUD THE AUDIO IN THE SLOT WAS** (unit 236). Every figure
+            // on the line above describes the decode, so a muted sound card and a
+            // quiet band wrote the same row — which is the fork the bench check of
+            // 2026-09-03 died on. Its own line, because a level and a candidate
+            // count are different kinds of thing and folding them together is the
+            // ambiguity §0.0.1 exists to prevent.
+            sheet
+                .Append("  audio    ")
+                .Append(Stamp(slot.SlotStartUtc))
+                .Append("  ")
+                .Append(DescribeLevel(slot.Level))
+                .Append('\n');
         }
+    }
+
+    /// <summary>
+    /// How loud one slot's audio was, or what is said instead (unit 236).
+    /// </summary>
+    /// <param name="level">What was measured.</param>
+    /// <returns>One row's worth of level.</returns>
+    /// <remarks>
+    /// <para>**THREE STATES AND THEY ARE NOT THE SAME FACT** (`CLAUDE.md` §0.0).
+    /// A slot nobody measured, a slot measured and found to be literally nought,
+    /// and a slot with a level in it are three different answers, and collapsing
+    /// any two of them is how the record came to be unable to tell a dead sound
+    /// card from a quiet band in the first place.</para>
+    /// <para>**AND AN ALL-ZERO SLOT HAS NO LOGARITHM** (HM-DEC-009). A floor
+    /// written in its place is a plausible number in a column somebody will
+    /// average, and the zero count beside it is what says why instead.</para>
+    /// </remarks>
+    private static string DescribeLevel(Ft8SlotLevel level)
+    {
+        if (level.SampleCount == 0)
+        {
+            return "level " + Unread + "  (no audio was handed to this sheet)";
+        }
+
+        var levels = level.PeakDbFullScale is { } peak
+                     && level.RmsDbFullScale is { } rms
+            ? "peak " + peak.ToString("0.00", CultureInfo.InvariantCulture)
+                + "  rms " + rms.ToString("0.00", CultureInfo.InvariantCulture)
+                + "  (dB relative to full scale, NOT a signal-to-noise ratio)"
+            : "peak and rms none - every sample in this slot was exactly zero";
+
+        return levels
+            + "  samples "
+            + level.SampleCount.ToString(CultureInfo.InvariantCulture)
+            + "  exactly zero "
+            + level.ZeroSampleCount.ToString(CultureInfo.InvariantCulture)
+            + (level.ZeroSampleFraction is { } fraction
+                ? "  ("
+                    + fraction.ToString("0.000000", CultureInfo.InvariantCulture)
+                    + " of the slot)"
+                : "");
     }
 
     private static string Stamp(DateTime utc)
