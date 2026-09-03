@@ -6547,6 +6547,8 @@ public partial class MainWindowViewModel : ObservableObject
             StatusText =
                 "Nothing is listening, so there is no audio to keep. Connect a "
                 + "radio or pick the training radio and press it again.";
+            AppEvents.DigitalCaptureRefused(
+                _telemetry, DigitalCaptureRefusal.NothingIsListening);
             return;
         }
 
@@ -6556,6 +6558,8 @@ public partial class MainWindowViewModel : ObservableObject
         {
             StatusText =
                 "No audio has arrived yet, so there is nothing to keep.";
+            AppEvents.DigitalCaptureRefused(
+                _telemetry, DigitalCaptureRefusal.NoAudioYet);
             return;
         }
 
@@ -6605,10 +6609,14 @@ public partial class MainWindowViewModel : ObservableObject
         catch (IOException error)
         {
             StatusText = $"Could not write the capture: {error.Message}";
+            AppEvents.DigitalCaptureRefused(
+                _telemetry, DigitalCaptureRefusal.IOException);
         }
         catch (UnauthorizedAccessException error)
         {
             StatusText = $"Could not write the capture: {error.Message}";
+            AppEvents.DigitalCaptureRefused(
+                _telemetry, DigitalCaptureRefusal.UnauthorizedAccessException);
         }
     }
 

@@ -16,7 +16,7 @@ public sealed class CallsignPrivacyTests : IDisposable
     /// <summary>Every public event-writing method on <see cref="AppEvents"/>.
     /// If this number moves, a new event was added and the walk below has to
     /// grow with it — that is the point.</summary>
-    private const int ExpectedEventMethodCount = 64;
+    private const int ExpectedEventMethodCount = 65;
 
     private const string Callsign = "KC3QIS";
     // "Timothy", not "Tim": a three-letter needle matches "timer", which is a
@@ -243,6 +243,15 @@ public sealed class CallsignPrivacyTests : IDisposable
             Hamlet.RadioEngine.Audio.Ft8SlotCutter.NoOffset,
             Hamlet.RadioEngine.Audio.ClockOffset.Unknown,
             now);
+
+        // A capture press that produced nothing, all four ways (unit 234). The
+        // two exception members are the ones that matter here: the paths they
+        // stand for catch exceptions whose messages carry a file path, and a
+        // Windows file path carries the operator's own account name.
+        foreach (var reason in Enum.GetValues<DigitalCaptureRefusal>())
+        {
+            AppEvents.DigitalCaptureRefused(telemetry, reason);
+        }
 
         // The scope path and the link carrying it (HM-DEC-092).
         AppEvents.ScopeOutputRequested(telemetry, "Confirmed", 115_200, 0);

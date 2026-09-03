@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: RUNNING
-TASK: 4 of 7
+TASK: 5 of 7
 WORK_INSTRUCTION: 234
 BALL: claude
 NEXT_PASTE: none
 RULES_AT: HM-DEC-152 (2026-08-31)
-UPDATED: 2026-09-03T12:58:00-04:00
-NOTE: BOTH WRITERS WORK. The sink put 2026-09-03.jsonl on disk in 12 ms with no Dispose, one app_start line at 1.12.38, dropped 0, and refuses when the category is off. The press created captures\digital, wrote a 720044-byte WAV that reads back 360000 samples at 12000 Hz and a 46-line sheet carrying unit 233's three blocks. Driving it turned up something the instruction did not anticipate: the press cuts NO slots until the SNTP clock query returns, so the branch was a coin toss until the test fixed the offset. Now adding the one telemetry event that makes all four silent refusal paths leave a line.
+UPDATED: 2026-09-03T13:02:00-04:00
+NOTE: All four silent paths now leave a warn line and each was watched doing it on disk - NothingIsListening, NoAudioYet, IOException and UnauthorizedAccessException, one line each, reason the whole payload, no path and no message anywhere in it. The two exception paths were forced for real rather than mocked: a file where the digital folder goes, and a directory where the WAV goes. Privacy walk taken 64 to 65. Tasks 2, 3 and 4 are all green, so task 5 is droppable - but the trace found a defect-shaped fact the owner needs on that sheet, so it is being written rather than dropped.
 
 ---
 

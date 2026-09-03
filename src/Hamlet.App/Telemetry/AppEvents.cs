@@ -1306,6 +1306,34 @@ public static class AppEvents
             },
             outcome == "Confirmed" ? TelemetryLevel.Info : TelemetryLevel.Warn);
 
+    /// <summary>
+    /// A digital capture press produced no files, and why.
+    /// </summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="reason">Which of the four ways it produced nothing.</param>
+    /// <remarks>
+    /// <para>**A PRESS THAT PRODUCED NOTHING IS ALWAYS WORTH FINDING**, so it is
+    /// <see cref="TelemetryLevel.Warn"/>. Scanning a morning's file for warnings
+    /// is how the owner finds out what happened at the radio, and a refused
+    /// capture at info level is a line nobody reads.</para>
+    /// <para>**THE PAYLOAD IS A REASON CODE AND NOTHING ELSE** (HM-DEC-018). No
+    /// message text, no path, no callsign, no free text of any kind — see
+    /// <see cref="DigitalCaptureRefusal"/> for why the parameter is an enum.</para>
+    /// <para>**IT IS NOT A SCREEN CLAIM** (`CLAUDE.md` §12.1). The status bar
+    /// keeps the sentence it always had, unchanged and in Tim's words; this adds
+    /// a line to a log file and nothing to any tab.</para>
+    /// </remarks>
+    public static void DigitalCaptureRefused(
+        ITelemetry? telemetry, DigitalCaptureRefusal reason)
+        => telemetry?.Write(
+            TelemetryCategory.Decode,
+            "digital_capture_refused",
+            new Dictionary<string, object?>(StringComparer.Ordinal)
+            {
+                ["reason"] = reason.ToString(),
+            },
+            TelemetryLevel.Warn);
+
     private static IReadOnlyDictionary<string, object?> Merge(
         IReadOnlyDictionary<string, object?> a, IReadOnlyDictionary<string, object?> b)
     {
