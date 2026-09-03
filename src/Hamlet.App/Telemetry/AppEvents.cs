@@ -857,6 +857,15 @@ public static class AppEvents
     /// §0.0), and the key says so. There is no `snr` in this payload and none is
     /// invented: a plausible number under that heading would be read as a
     /// measurement by everyone downstream.</para>
+    /// <para>**AND SINCE UNIT 236 IT SAYS WHETHER THERE WAS ANY AUDIO AT ALL.**
+    /// Every field above describes the decode, so a muted sound card, a radio with
+    /// its USB cable out, a laptop microphone in a quiet room and a band with no
+    /// decodable FT8 in it produced byte-identical lines — which is the fork the
+    /// bench check of 2026-09-03 died on. The level fields are a measurement of the
+    /// audio the slot was cut from, taken at the rate it arrived, and the count of
+    /// samples that were exactly zero is what separates a dead input from a quiet
+    /// one. **A level is not a signal-to-noise ratio** (`CLAUDE.md` §0.0) and an
+    /// all-zero slot writes null rather than a floor (HM-DEC-009).</para>
     /// <para>**IT COUNTS AND IT DOES NOT INTERPRET** (`CLAUDE.md` §12.1). Nothing
     /// here concludes that the band was quiet or that a station was weak.</para>
     /// </remarks>
@@ -927,6 +936,40 @@ public static class AppEvents
                     ["duplicates"] = slot.DuplicateCount,
                     ["topCostasMatchCounts"] = slot.TopSyncScores,
                     ["sampleRate"] = slot.SampleRate,
+
+                    // **HOW LOUD THE AUDIO WAS, WHICH NONE OF THE ABOVE COULD
+                    // SAY** (unit 236). Everything before this line describes the
+                    // decode. On 2026-09-03 the phase's closing line was performed
+                    // at the radio and produced nothing, and four units could not
+                    // establish whether any audio had reached the decoder at all,
+                    // because a muted sound card and a quiet band write the same
+                    // line here.
+                    //
+                    // **A LEVEL IS NOT A SIGNAL-TO-NOISE RATIO** (`CLAUDE.md`
+                    // §0.0) and the keys say what they are: decibels relative to
+                    // full scale. There is no `snr` in this payload, no `signal`
+                    // and no `strength`, and nothing here is comparable with this
+                    // mode's published sensitivity figure.
+                    //
+                    // **NULL WHERE THE SLOT WAS ALL ZEROS** (HM-DEC-009). The
+                    // logarithm of nought is not a number, and a floor written in
+                    // its place is a measurement somebody will average.
+                    // `audioZeroSamples` standing at `audioSamples` is what says
+                    // why, and it is the one field that separates a dead input
+                    // from a quiet one.
+                    ["audioPeakDbFullScale"] = slot.Level.PeakDbFullScale is { } peak
+                        ? Math.Round(peak, 2)
+                        : null,
+                    ["audioRmsDbFullScale"] = slot.Level.RmsDbFullScale is { } rms
+                        ? Math.Round(rms, 2)
+                        : null,
+                    ["audioSamples"] = slot.Level.SampleCount,
+                    ["audioZeroSamples"] = slot.Level.ZeroSampleCount,
+                    ["audioZeroSampleFraction"] =
+                        slot.Level.ZeroSampleFraction is { } zeros
+                            ? Math.Round(zeros, 6)
+                            : null,
+
                     ["clockOffsetSeconds"] = offset.OffsetSeconds is { } known
                         ? Math.Round(known, 3)
                         : null,

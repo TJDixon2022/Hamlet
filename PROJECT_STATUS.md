@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: WORKING
-TASK: 2 of 7
+TASK: 3 of 7
 WORK_INSTRUCTION: 236
 BALL: claude
 NEXT_PASTE: none
 RULES_AT: HM-DEC-152 (2026-08-31)
-UPDATED: 2026-09-03T14:46:31-04:00
-NOTE: THE NUMBERS ARE IN AND THE TWO CASES ARE NOW DIFFERENT FACTS. Ft8SlotLevel added beside the census - peak and rms in decibels relative to full scale, both NULLABLE, plus the sample count and the count of samples exactly zero - and computed in Ft8Reader.Read from slot.Audio before the resampler. Four tests, 4 of 4 green off TRX Counters, and the pinned clone at C:\Source\ft8_lib IS present so the off-air one ran rather than skipping. Measured: DIGITAL SILENCE reads peak none, rms none, 720000 of 720000 samples exactly zero, fraction 1.0000. REAL OFF-AIR (20m_busy/test_21.wav, 15 s at 12000 Hz, 140 candidates, 40 became text) reads peak -2.0541 dBFS, rms -14.1684 dBFS, 13 zero samples of 180000, fraction 0.0001, crest 12.11 dB. Synthesized noise at a thousandth of full scale reads peak -60.0000, rms -64.7653, no zeros at all - which is the whole point, a quiet band is not a dead input. The half-scale sine read -6.0206 and -9.0309 against arithmetic predicting -6.0206 and -9.0309, printed before the twentieth-of-a-decibel bound was asserted. The all-zero refusal is a null and NOT minus ninety, because AudioTap.ToDb floors a zero there and that is a plausible number somebody would average. Next: task 3, the level into the ft8_slot telemetry line.
+UPDATED: 2026-09-03T14:49:29-04:00
+NOTE: The line is written and it has been read whole rather than key by key. ft8_slot now carries audioPeakDbFullScale, audioRmsDbFullScale, audioSamples, audioZeroSamples and audioZeroSampleFraction beside sampleRate. Printed as it will actually appear on disk, decoded case: {"outcome":"decoded",...,"sampleRate":12000,"audioPeakDbFullScale":-2.05,"audioRmsDbFullScale":-14.17,"audioSamples":180000,"audioZeroSamples":13,"audioZeroSampleFraction":7.2E-05,...}. Digital silence: the same shape with both levels NULL, audioZeroSamples 720000 of audioSamples 720000 and the fraction at 1. The two are now different facts in the file. Four new assertions in EverySlotLeavesALineTests, one of which walks the forbidden key list - snr, signal, strength and a bare db are all absent. The refusal branch is untouched and writes no level at all, asserted. CALLSIGNPRIVACYTESTS BEFORE 4 of 4 GREEN, AFTER 4 of 4 GREEN, event method count unmoved at 65 because no AppEvents method was added - the payload grew, and the walk now hands Ft8SlotsRead a measured level AND a refused one so both branches of the new fields are walked. EverySlotLeavesALineTests 6 -> 10, all green. Next: task 4, why this device.
 
 ---
 

@@ -4,6 +4,7 @@ using Hamlet.App.Telemetry;
 using Hamlet.RadioEngine.Audio;
 using Hamlet.RadioEngine.Telemetry;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Hamlet.App.Tests.Telemetry;
 
@@ -24,6 +25,18 @@ namespace Hamlet.App.Tests.Telemetry;
 /// </remarks>
 public sealed class EverySlotLeavesALineTests
 {
+    private readonly ITestOutputHelper _output;
+
+    /// <summary>Creates the tests.</summary>
+    /// <param name="output">Where the written line is printed.</param>
+    /// <remarks>
+    /// **THE LINE IS PRINTED AS IT WILL ACTUALLY APPEAR** (unit 236). A payload
+    /// asserted key by key and never seen whole is a payload nobody has read, and
+    /// the operator is going to be told to open this file at the radio.
+    /// </remarks>
+    public EverySlotLeavesALineTests(ITestOutputHelper output)
+        => _output = output;
+
     private static readonly DateTime SlotStart =
         new(2026, 9, 3, 14, 22, 30, DateTimeKind.Utc);
 
@@ -200,6 +213,141 @@ public sealed class EverySlotLeavesALineTests
         Assert.Contains("\"candidates\":5", json, StringComparison.Ordinal);
         Assert.Contains("\"topCostasMatchCounts\":[28,21]", json, StringComparison.Ordinal);
         Assert.Contains("\"sampleRate\":8000", json, StringComparison.Ordinal);
+    }
+
+    /// <summary>
+    /// **THE FORK THE BENCH CHECK OF 2026-09-03 DIED ON** (unit 236). Everything
+    /// else on this line describes the decode, so a muted sound card and a quiet
+    /// band wrote the same line. The level says which.
+    /// </summary>
+    [Fact]
+    public void HowLoudTheAudioWasReachesTheLine()
+    {
+        var sink = new CapturingTelemetry();
+
+        AppEvents.Ft8SlotsRead(
+            sink,
+            new[]
+            {
+                new Ft8SlotCensus(SlotStart, 140, 44, 41, 40, 1, new[] { 51 }, 12000)
+                {
+                    Level = new Ft8SlotLevel(-2.0541, -14.1684, 180_000, 13),
+                },
+            },
+            string.Empty,
+            Measured,
+            Now);
+
+        var data = Assert.Single(sink.Events).Data;
+
+        _output.WriteLine("  decoded: " + JsonSerializer.Serialize(data));
+
+        Assert.Equal(-2.05, data["audioPeakDbFullScale"]);
+        Assert.Equal(-14.17, data["audioRmsDbFullScale"]);
+        Assert.Equal(180_000, data["audioSamples"]);
+        Assert.Equal(13, data["audioZeroSamples"]);
+        Assert.Equal(0.000072, data["audioZeroSampleFraction"]);
+    }
+
+    /// <summary>
+    /// **DIGITAL SILENCE WRITES NOTHING WHERE A LEVEL WOULD GO, AND SAYS WHY**
+    /// (HM-DEC-009). The logarithm of nought is not a number. A floor written in
+    /// its place is a measurement somebody will average months later, and the
+    /// zero-sample count standing at the whole slot is the honest answer instead.
+    /// </summary>
+    [Fact]
+    public void AnAllZeroSlotWritesNoLevelRatherThanAPlausibleNumber()
+    {
+        var sink = new CapturingTelemetry();
+
+        AppEvents.Ft8SlotsRead(
+            sink,
+            new[]
+            {
+                new Ft8SlotCensus(SlotStart, 0, 0, 0, 0, 0, Array.Empty<int>(), 48000)
+                {
+                    Level = new Ft8SlotLevel(null, null, 720_000, 720_000),
+                },
+            },
+            string.Empty,
+            Measured,
+            Now);
+
+        var data = Assert.Single(sink.Events).Data;
+
+        _output.WriteLine("  digital silence: " + JsonSerializer.Serialize(data));
+
+        Assert.Null(data["audioPeakDbFullScale"]);
+        Assert.Null(data["audioRmsDbFullScale"]);
+        Assert.Equal(720_000, data["audioSamples"]);
+        Assert.Equal(720_000, data["audioZeroSamples"]);
+        Assert.Equal(1.0, data["audioZeroSampleFraction"]);
+
+        // The fields are PRESENT and null, rather than absent. A missing key and a
+        // measurement that refused are different facts to whoever reads the file.
+        Assert.Contains("audioPeakDbFullScale", data.Keys);
+        Assert.Contains("audioRmsDbFullScale", data.Keys);
+    }
+
+    /// <summary>
+    /// **AND NONE OF THE LEVEL KEYS READS AS A SIGNAL-TO-NOISE RATIO** (`CLAUDE.md`
+    /// §0.0). A level says how loud the audio was. It says nothing about how strong
+    /// a signal in it was, and it is not comparable with this mode's published
+    /// sensitivity figure.
+    /// </summary>
+    [Fact]
+    public void NoLevelKeyReadsAsASignalToNoiseRatio()
+    {
+        var sink = new CapturingTelemetry();
+
+        AppEvents.Ft8SlotsRead(
+            sink,
+            new[]
+            {
+                new Ft8SlotCensus(SlotStart, 3, 1, 1, 1, 0, new[] { 33 }, 44100)
+                {
+                    Level = new Ft8SlotLevel(-6.02, -9.03, 661_500, 0),
+                },
+            },
+            string.Empty,
+            Measured,
+            Now);
+
+        var keys = Assert.Single(sink.Events).Data.Keys;
+
+        foreach (var forbidden in new[] { "snr", "signal", "strength", "db" })
+        {
+            Assert.DoesNotContain(forbidden, keys, StringComparer.OrdinalIgnoreCase);
+        }
+
+        // What is there instead says what it is: decibels relative to full scale.
+        Assert.Contains("audioPeakDbFullScale", keys);
+        Assert.Contains("audioRmsDbFullScale", keys);
+    }
+
+    /// <summary>
+    /// **THE REFUSAL BRANCH IS UNTOUCHED AND WRITES NO SLOT LINE** (unit 236). A
+    /// reading that could not cut anything has no audio to describe, and a level
+    /// beside a refusal would be a level of nothing.
+    /// </summary>
+    [Fact]
+    public void ARefusalStillCarriesNoLevelAtAll()
+    {
+        var sink = new CapturingTelemetry();
+
+        AppEvents.Ft8SlotsRead(
+            sink,
+            Array.Empty<Ft8SlotCensus>(),
+            Ft8SlotCutter.NoOffset,
+            ClockOffset.Unknown,
+            Now);
+
+        var keys = Assert.Single(sink.Events).Data.Keys;
+
+        Assert.DoesNotContain("audioPeakDbFullScale", keys);
+        Assert.DoesNotContain("audioRmsDbFullScale", keys);
+        Assert.DoesNotContain("audioSamples", keys);
+        Assert.DoesNotContain("audioZeroSamples", keys);
     }
 
     private sealed record Written(

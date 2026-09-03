@@ -230,8 +230,22 @@ public sealed class CallsignPrivacyTests : IDisposable
             telemetry,
             new[]
             {
+                // Measured, so the level fields unit 236 added are walked in their
+                // written form rather than as nulls.
                 new Hamlet.RadioEngine.Audio.Ft8SlotCensus(
-                    now, 12, 3, 2, 2, 1, new[] { 33, 27, 21 }, 48_000),
+                    now, 12, 3, 2, 2, 1, new[] { 33, 27, 21 }, 48_000)
+                {
+                    Level = new Hamlet.RadioEngine.Audio.Ft8SlotLevel(
+                        -2.05, -14.17, 720_000, 13),
+                },
+
+                // And refused, which is the other branch of the same fields.
+                new Hamlet.RadioEngine.Audio.Ft8SlotCensus(
+                    now, 0, 0, 0, 0, 0, Array.Empty<int>(), 48_000)
+                {
+                    Level = new Hamlet.RadioEngine.Audio.Ft8SlotLevel(
+                        null, null, 720_000, 720_000),
+                },
             },
             string.Empty,
             new Hamlet.RadioEngine.Audio.ClockOffset(0.25, now.AddMinutes(-2)),
