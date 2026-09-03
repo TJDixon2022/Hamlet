@@ -80,9 +80,12 @@ than off `Directory.Build.props` —
 is **1.12.38** — so that is exactly what the About box and every telemetry line
 will show you.
 
-**The tree has since been bumped to 1.12.39** as tonight's patch. Building the
-pushed tree gives you **1.12.39**, and anything at or above 1.12.38 carries
-this phase's work.
+**The tree has since been bumped to 1.12.39** as tonight's patch, and the same
+command was run again against it. *Measured*: `Hamlet.App.dll` and
+`Hamlet.App.exe` both come out at Win32 `FileVersion` **1.12.39.0**,
+`ProductVersion` 1.12.39+f34dc06, `AssemblyVersion` 1.12.39.0 — so **building
+the pushed tree shows you 1.12.39 in About.** Anything at or above 1.12.38
+carries this phase's work.
 
 `dotnet publish` was refused by the session's sandbox and was not run, so the
 folder above is a build output rather than a published one. It runs; it is just
