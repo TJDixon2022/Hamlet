@@ -60,6 +60,14 @@ internal static class Unit227Paired
     /// The decode lines upstream printed, joined. Read at run time and never committed — a report
     /// quotes a count, and a shape where it must, and not upstream's output.
     /// </param>
+    /// <param name="Peak">
+    /// The largest sample magnitude before gain staging, so the reason gain staging exists is
+    /// measured on every slot rather than asserted once.
+    /// </param>
+    /// <param name="ClippedFraction">
+    /// The fraction of samples that would have been clamped by <c>save_wav</c> had the slot been
+    /// written unscaled.
+    /// </param>
     internal sealed record SlotOutcome(
         string Label,
         int Seed,
@@ -68,7 +76,9 @@ internal static class Unit227Paired
         int OursWrong,
         bool UpstreamReturned,
         int UpstreamWrong,
-        string UpstreamPrinted);
+        string UpstreamPrinted,
+        double Peak,
+        double ClippedFraction);
 
     /// <summary>One side's count at one rung.</summary>
     internal sealed record Side(int Returned, int Wrong, int Trials)
@@ -163,6 +173,70 @@ internal static class Unit227Paired
     }
 
     /// <summary>
+    /// <b>The peak a slot is scaled to before it is written.</b> Just off full scale, so that
+    /// nothing lands on <c>save_wav</c>'s clamp through a rounding last place.
+    /// </summary>
+    internal const float TargetPeak = 0.999f;
+
+    /// <summary>
+    /// <b>Gain staging, and at -21 dB it is not optional.</b> Scales a slot so its largest sample
+    /// sits at <see cref="TargetPeak"/>.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// <b>Measured on 2026-09-02 and it is the whole reason this method exists.</b> A WAV holds
+    /// samples in -1 to +1 and upstream's <c>save_wav</c> clamps anything outside that. At the
+    /// -21 dB rung the noise this ladder adds has an RMS of roughly twelve — the signal is
+    /// twenty-one decibels <em>below</em> it in a 2500 Hz reference bandwidth, and the noise is
+    /// spread over the whole 6 kHz Nyquist band — so writing the mixed slot unscaled clips
+    /// substantially every sample of the file into a square wave. The first run of this harness did
+    /// exactly that and <b>both</b> decoders returned 0 of 306, which is a defect in the harness and
+    /// not a finding about either of them.
+    /// </para>
+    /// <para>
+    /// <b>It changes no ratio.</b> One constant multiplies signal and noise alike, so the delivered
+    /// decibels are what they were; what it changes is only where the pair sits in the sixteen-bit
+    /// range. This is what every receiver in the world does between its antenna and its ADC, and a
+    /// comparison run through a file has to do it too.
+    /// </para>
+    /// <para>
+    /// <b>Nothing is lost to quantisation by it.</b> Peak-normalised Gaussian noise sits about four
+    /// and a half sigma below full scale, so the noise RMS is some seven thousand counts against a
+    /// quantisation step of one — eighty-odd decibels of headroom under a measurement whose whole
+    /// span is twenty.
+    /// </para>
+    /// </remarks>
+    internal static float[] GainStage(ReadOnlySpan<float> slot, out double peak, out double clippedFraction)
+    {
+        peak = 0.0;
+        var wouldClip = 0;
+        foreach (var sample in slot)
+        {
+            var magnitude = Math.Abs((double)sample);
+            if (magnitude > peak)
+            {
+                peak = magnitude;
+            }
+
+            if (magnitude > 1.0)
+            {
+                wouldClip++;
+            }
+        }
+
+        clippedFraction = slot.Length == 0 ? 0.0 : (double)wouldClip / slot.Length;
+
+        var scale = peak > 0.0 ? TargetPeak / peak : 1.0;
+        var staged = new float[slot.Length];
+        for (var i = 0; i < slot.Length; i++)
+        {
+            staged[i] = (float)(slot[i] * scale);
+        }
+
+        return staged;
+    }
+
+    /// <summary>
     /// Writes one slot, reads it back with both decoders, and deletes it.
     /// </summary>
     /// <remarks>
@@ -182,7 +256,7 @@ internal static class Unit227Paired
         var path = Path.Combine(Path.GetTempPath(), $"ft8-unit227-{Guid.NewGuid():N}.wav");
         try
         {
-            WavFile.Write(path, mixed, Rate);
+            WavFile.Write(path, GainStage(mixed, out var peak, out var clipped), Rate);
 
             var quantised = ReadBack(path);
             var ours = decoder.Decode(new Ft8Monitor(geometry).Analyse(quantised));
@@ -203,7 +277,9 @@ internal static class Unit227Paired
                 oursWrong,
                 upstreamReturned,
                 upstreamWrong,
-                string.Join(" | ", upstream.Lines.Select(l => l.Raw.Trim())));
+                string.Join(" | ", upstream.Lines.Select(l => l.Raw.Trim())),
+                peak,
+                clipped);
         }
         finally
         {
