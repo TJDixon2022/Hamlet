@@ -1,3 +1,4 @@
+﻿using System.Diagnostics;
 using NAudio.CoreAudioApi;
 using NAudio.Dmo;
 using NAudio.Wave;
@@ -125,6 +126,10 @@ public sealed class WasapiAudioSource : IAudioSource
     private WasapiCapture? _capture;
     private float[] _mono = Array.Empty<float>();
     private long _delivered;
+    private long _callbackFailures;
+    private long _emptyBuffers;
+    private double _longestCallbackMicroseconds;
+    private string _lastCallbackFailure = string.Empty;
     private bool _disposed;
 
     /// <summary>Opens a source over a capture device.</summary>
@@ -270,11 +275,18 @@ public sealed class WasapiAudioSource : IAudioSource
             return;
         }
 
+        var started = Stopwatch.GetTimestamp();
+
         try
         {
             var frames = Downmix(e.Buffer, e.BytesRecorded, format, ref _mono);
             if (frames <= 0)
             {
+                // **A BUFFER THAT DOWNMIXED TO NOTHING IS NOT DELIVERED**, and
+                // the census must be able to say so. It is counted here rather
+                // than left to look like a device that went quiet.
+                _emptyBuffers++;
+
                 return;
             }
 
@@ -282,13 +294,53 @@ public sealed class WasapiAudioSource : IAudioSource
             _delivered += frames;
             handler(in chunk);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            // A bad buffer must not take down the capture thread (§8). A
-            // dropped chunk shows up as a gap in the decode, which the
-            // terminal's own note already knows how to say out loud.
+            // **A BAD BUFFER MUST NOT TAKE DOWN THE CAPTURE THREAD** (CLAUDE.md
+            // section 8), and it must not vanish either. **A dropped chunk that
+            // leaves no number is the fault this whole unit is about**: the tap
+            // was starved for weeks and nothing counted it (HM-DEC-093). The
+            // count and the last type are read by the census, the sidecar and
+            // the slot refusal, so a chunk that failed downmix is visibly a
+            // chunk that was not delivered rather than a gap the operator has to
+            // guess at.
+            _callbackFailures++;
+            _lastCallbackFailure = ex.GetType().Name;
+        }
+        finally
+        {
+            // **THE LONGEST CALLBACK SEEN IS THE WHOLE POINT OF TASK 2.** Before
+            // this unit the callback ran a complete CW decode, so its duration
+            // was the decode's; the assertion that it now returns inside one
+            // buffer duration is only checkable because this is measured.
+            var micros = (Stopwatch.GetTimestamp() - started) * 1_000_000.0
+                / Stopwatch.Frequency;
+
+            if (micros > _longestCallbackMicroseconds)
+            {
+                _longestCallbackMicroseconds = micros;
+            }
         }
     }
+
+    /// <summary>How many callbacks threw, and were counted rather than lost.</summary>
+    public long CallbackFailures => _callbackFailures;
+
+    /// <summary>The type name of the most recent callback failure, or "".</summary>
+    /// <remarks>
+    /// The type rather than the message: a message carries device paths and user
+    /// text, and HM-DEC-018 keeps both out of anything that might be recorded.
+    /// </remarks>
+    public string LastCallbackFailure => _lastCallbackFailure;
+
+    /// <summary>How many device buffers downmixed to no samples at all.</summary>
+    public long EmptyBuffers => _emptyBuffers;
+
+    /// <summary>The longest a single callback has taken, in microseconds.</summary>
+    public double LongestCallbackMicroseconds => _longestCallbackMicroseconds;
+
+    /// <summary>How many samples the device has delivered since it started.</summary>
+    public long DeliveredSamples => _delivered;
 
     /// <summary>
     /// Convert the device's buffer into mono floats.

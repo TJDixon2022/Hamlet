@@ -29,6 +29,30 @@ public sealed class CwDecoder
     private readonly Action<ToneReading> _onReading;
 
     private IAudioSource? _attached;
+
+    /// <summary>The bounded hand-off to the decode worker, while attached.</summary>
+    /// <remarks>
+    /// Null when no source is attached, which is the fixture path: a test that
+    /// calls <see cref="Process(in AudioChunk)"/> directly decodes on the
+    /// calling thread exactly as it always has.
+    /// </remarks>
+    private AudioHandoff? _handoff;
+
+    /// <summary>The one thread that drains the hand-off.</summary>
+    private Thread? _worker;
+
+    /// <summary>How long to stall inside a decode, for tests only.</summary>
+    /// <remarks>
+    /// <para>**A TEST HOOK IN PRODUCTION CODE, AND IT IS THE HONEST WAY TO PROVE
+    /// THIS ONE.** The property task 2 has to establish is that the tap stays
+    /// whole *while the decoder cannot keep up*. On this machine the real
+    /// decoder runs at 2.29x real time and never falls behind, so a test using
+    /// it would pass against the old inline design too and prove nothing.</para>
+    /// <para>It is `internal`, defaults to zero, and is read on the worker
+    /// thread only - never on the callback path, which is the path under test.
+    /// Nothing in the application sets it.</para>
+    /// </remarks>
+    internal TimeSpan ProcessDelayForTests { get; set; }
     private long _lastSample;
     /// <summary>Where the tracker last moved to a different station.</summary>
     private long _samplesAtDiscontinuity;
@@ -716,6 +740,14 @@ public sealed class CwDecoder
             _attached.SamplesReady -= OnSamples;
         }
 
+        // **THE WORKER NEVER OUTLIVES THE SOURCE.** Detaching closes the
+        // hand-off, which is the worker's only exit, and the join is what makes
+        // that a fact rather than an intention. The queue is discarded rather
+        // than drained: the audio in it belongs to a source being taken away,
+        // and decoding it afterwards would put characters on screen that the
+        // operator can no longer point at.
+        StopWorker(discard: true);
+
         if (source is not null && source.SampleRate != SampleRate)
         {
             throw new ArgumentException(
@@ -728,19 +760,113 @@ public sealed class CwDecoder
 
         if (_attached is not null)
         {
+            // **THE HAND-OFF IS BUILT BEFORE THE SUBSCRIPTION**, so the first
+            // callback cannot arrive to find it null and fall back to decoding
+            // on the capture thread - which is the fault this unit exists
+            // against, arriving once at startup instead of always.
+            _handoff = new AudioHandoff(SampleRate);
+
+            _worker = new Thread(DrainHandoff)
+            {
+                IsBackground = true,
+                Name = "cw-decode",
+            };
+
+            _worker.Start();
+
             _attached.SamplesReady += OnSamples;
+        }
+    }
+
+    /// <summary>Close the hand-off and wait for the worker to leave.</summary>
+    /// <param name="discard">True to drop what is queued rather than drain it.</param>
+    private void StopWorker(bool discard)
+    {
+        var handoff = _handoff;
+        var worker = _worker;
+
+        _handoff = null;
+        _worker = null;
+
+        handoff?.Close(discard);
+
+        // Bounded, because a worker that will not leave must not hang the thread
+        // that is detaching the source. It is a background thread, so a stuck
+        // one dies with the process rather than holding it open.
+        worker?.Join(TimeSpan.FromSeconds(2));
+    }
+
+    /// <summary>The one consumer, draining the hand-off in order.</summary>
+    /// <remarks>
+    /// **IN ORDER AND ON ONE THREAD**, because `FirstSampleIndex` must stay
+    /// monotonic for HM-DEC-147's audio clock. Two workers would interleave
+    /// chunks and misdate every character read afterwards.
+    /// </remarks>
+    private void DrainHandoff()
+    {
+        var handoff = _handoff;
+
+        if (handoff is null)
+        {
+            return;
+        }
+
+        var buffer = new float[960];
+
+        while (handoff.Take(ref buffer, out var count, out var first, out var rate))
+        {
+            try
+            {
+                // **THE TAP IS NOT FED HERE.** It was fed synchronously on the
+                // callback thread before this chunk was queued. Feeding it again
+                // would double every sample FT8 reads.
+                if (ProcessDelayForTests > TimeSpan.Zero)
+                {
+                    Thread.Sleep(ProcessDelayForTests);
+                }
+
+                Process(
+                    new AudioChunk(first, rate, buffer.AsSpan(0, count)),
+                    takeIntoTap: false);
+            }
+            catch (Exception)
+            {
+                // A bad chunk must not take the worker down and silence every
+                // chunk after it (CLAUDE.md section 8). The counts belong to the
+                // hand-off and the source; this arm exists so the thread lives.
+            }
+            finally
+            {
+                // **IN THE FINALLY, SO A THROWN CHUNK STILL CLEARS.** A chunk
+                // that failed is still a chunk nobody is waiting for, and
+                // leaving it in flight would hang the next Flush.
+                handoff.Completed();
+            }
         }
     }
 
     /// <summary>Feed samples directly, without a source.</summary>
     /// <param name="chunk">The samples.</param>
-    public void Process(in AudioChunk chunk)
+    public void Process(in AudioChunk chunk) => Process(chunk, takeIntoTap: true);
+
+    /// <summary>Feed samples, saying whether the tap has already had them.</summary>
+    /// <param name="chunk">The samples.</param>
+    /// <param name="takeIntoTap">
+    /// False when the caller has already fed the tap. The worker passes false
+    /// because <see cref="OnSamples"/> tapped the chunk synchronously on the
+    /// callback thread before queueing it, and feeding it again here would
+    /// double every sample FT8 reads.
+    /// </param>
+    private void Process(in AudioChunk chunk, bool takeIntoTap)
     {
         // **THE TAP STILL TAKES IT.** A capture is the raw evidence of what
         // arrived at the sound card, and audio the operator made himself is part
         // of that: a recording that quietly omitted his own sending would be
         // worth less, not more (§0.0.1). What it does not do is reach a decoder.
-        Tap.Take(chunk.Samples, chunk.SampleRate);
+        if (takeIntoTap)
+        {
+            Tap.Take(chunk.Samples, chunk.SampleRate);
+        }
 
         if (DecodingSuspended)
         {
@@ -855,7 +981,22 @@ public sealed class CwDecoder
     /// Finish: settle anything still inside the decision delay, because nothing
     /// more is coming to revise it.
     /// </summary>
-    public void Flush() => _probabilistic.Flush();
+    public void Flush()
+    {
+        // **DRAIN BEFORE FLUSHING, OR THE FIXTURE PATH BECOMES A RACE.** The CW
+        // harness does `Listen(source); source.PumpAll(); decoder.Flush();`, and
+        // once the decode moved onto a worker `PumpAll` returned when the audio
+        // was queued rather than when it had been read. Waiting here makes the
+        // two orderings identical again, so several hundred committed CW
+        // assertions keep meaning what they meant.
+        //
+        // Bounded: a worker that will not finish must not hang the caller. On a
+        // timeout the flush proceeds on whatever was decoded, which is the same
+        // thing that happens when audio genuinely runs out.
+        _handoff?.WaitUntilDrained(TimeSpan.FromSeconds(30));
+
+        _probabilistic.Flush();
+    }
 
     /// <summary>
     /// Tell the decoder what the radio says about its own transmitter.
@@ -1434,7 +1575,43 @@ public sealed class CwDecoder
         return atSample - _rankedAtSample >= window;
     }
 
-    private void OnSamples(in AudioChunk chunk) => Process(chunk);
+    /// <summary>One chunk from the source, on the device's callback thread.</summary>
+    /// <remarks>
+    /// <para>**THE TAP IS FED HERE AND THE DECODER IS NOT.** FT8 reads the tap,
+    /// and **FT8 must never depend on the CW decoder keeping up**. Before this
+    /// unit the only feed into the tap was `Process`, which ran the tracker, the
+    /// mixer and the probabilistic decoder on this same call - so the tap
+    /// received audio at whatever fraction of real time the CW decode happened
+    /// to run at, and on the shack machine on 2026-09-03 that was 13%.</para>
+    /// <para>**AND IT RETURNS IN THE TIME TWO COPIES TAKE.** Both are bounded by
+    /// the chunk length and neither decodes anything. Whatever the decoder does
+    /// now, the device's callback is no longer waiting for it.</para>
+    /// </remarks>
+    private void OnSamples(in AudioChunk chunk)
+    {
+        var handoff = _handoff;
+
+        if (handoff is null)
+        {
+            // No source attached through Listen, so nothing has promised to
+            // drain a queue. Decode inline, which is the fixture path.
+            Process(chunk);
+
+            return;
+        }
+
+        Tap.Take(chunk.Samples, chunk.SampleRate);
+        handoff.Offer(chunk.FirstSampleIndex, chunk.SampleRate, chunk.Samples);
+    }
+
+    /// <summary>How many chunks the decode queue dropped because it was full.</summary>
+    public long DecodeQueueDroppedChunks => _handoff?.DroppedChunks ?? 0;
+
+    /// <summary>How many samples those dropped chunks carried.</summary>
+    public long DecodeQueueDroppedSamples => _handoff?.DroppedSamples ?? 0;
+
+    /// <summary>How many chunks are waiting for the decode worker.</summary>
+    public int DecodeQueueDepth => _handoff?.Depth ?? 0;
 
     private void OnReading(ToneReading reading)
     {
