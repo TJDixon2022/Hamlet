@@ -1,4 +1,5 @@
 using NAudio.CoreAudioApi;
+using NAudio.Dmo;
 using NAudio.Wave;
 
 namespace Hamlet.RadioEngine.Audio;
@@ -348,11 +349,16 @@ public sealed class WasapiAudioSource : IAudioSource
     /// <param name="offset">Where in it this sample starts.</param>
     /// <param name="format">What the device says those bytes are.</param>
     /// <returns>The sample, as a fraction of full scale.</returns>
+    /// <exception cref="NotSupportedException">
+    /// The device speaks something this cannot read.
+    /// </exception>
     internal static double ReadSample(byte[] buffer, int offset, WaveFormat format)
     {
-        if (format.Encoding == WaveFormatEncoding.IeeeFloat && format.BitsPerSample == 32)
+        if (Kind(format) == SampleKind.Float)
         {
-            return BitConverter.ToSingle(buffer, offset);
+            return format.BitsPerSample == 32
+                ? BitConverter.ToSingle(buffer, offset)
+                : throw Unreadable(format);
         }
 
         return format.BitsPerSample switch
@@ -363,9 +369,92 @@ public sealed class WasapiAudioSource : IAudioSource
             // top one. Sign-extended by hand because there is no 24-bit type.
             24 => ((buffer[offset] | (buffer[offset + 1] << 8) | ((sbyte)buffer[offset + 2] << 16))
                    / 8388608.0),
+
+            // 32-bit integer, which is also how a 24-in-32 container arrives:
+            // those samples are left-aligned in the word, so the same division
+            // is right and the low bits are simply zero.
             32 => BitConverter.ToInt32(buffer, offset) / 2147483648.0,
             8 => (buffer[offset] - 128) / 128.0,
-            _ => 0.0,
+            _ => throw Unreadable(format),
         };
     }
+
+    /// <summary>What a device's bytes really are, whatever it calls them.</summary>
+    private enum SampleKind
+    {
+        /// <summary>Nothing here can read them.</summary>
+        Unreadable,
+
+        /// <summary>Signed integers, or unsigned at 8 bits.</summary>
+        Integer,
+
+        /// <summary>IEEE-754 floating point.</summary>
+        Float,
+    }
+
+    /// <summary>Which of those a format is.</summary>
+    /// <param name="format">What the device declared.</param>
+    /// <returns>The kind, or <see cref="SampleKind.Unreadable"/>.</returns>
+    /// <remarks>
+    /// <para>**THE TOP-LEVEL TAG IS NOT THE ANSWER, AND THIS IS WHY THE RADIO WAS
+    /// SILENT** (unit 237). Windows shared-mode capture presents its mix format as
+    /// WAVE_FORMAT_EXTENSIBLE, which says what the bytes are in a subformat GUID
+    /// and leaves the top-level tag reading <c>Extensible</c>. Until this unit the
+    /// float branch here asked only for <c>IeeeFloat</c>, so an extensible float
+    /// device fell through to the 32-bit integer arm and every sample the radio
+    /// delivered was read as a whole number: loud, structureless, and with every
+    /// FT8 tone in it destroyed. Measured, not reasoned - 0.999023438 in and
+    /// 0.496086100 out.</para>
+    /// <para>**AND AN UNRECOGNISED SUBFORMAT IS UNREADABLE RATHER THAN INTEGER**
+    /// (HM-DEC-009). A device speaking something else through an extensible
+    /// wrapper would read as integers with the same shape of failure, and
+    /// answering a question nobody can answer is what this project's prime
+    /// directive forbids.</para>
+    /// </remarks>
+    private static SampleKind Kind(WaveFormat format)
+    {
+        if (format.Encoding == WaveFormatEncoding.Extensible)
+        {
+            // A format that says it is extensible but did not arrive as one
+            // cannot be asked what its subformat is, so nothing is known.
+            if (format is not WaveFormatExtensible extensible)
+            {
+                return SampleKind.Unreadable;
+            }
+
+            if (extensible.SubFormat == AudioMediaSubtypes.MEDIASUBTYPE_IEEE_FLOAT)
+            {
+                return SampleKind.Float;
+            }
+
+            return extensible.SubFormat == AudioMediaSubtypes.MEDIASUBTYPE_PCM
+                ? SampleKind.Integer
+                : SampleKind.Unreadable;
+        }
+
+        return format.Encoding switch
+        {
+            WaveFormatEncoding.IeeeFloat => SampleKind.Float,
+            WaveFormatEncoding.Pcm => SampleKind.Integer,
+            _ => SampleKind.Unreadable,
+        };
+    }
+
+    /// <summary>The refusal a format nothing here can read produces.</summary>
+    /// <param name="format">What the device declared.</param>
+    /// <returns>The exception to throw.</returns>
+    /// <remarks>
+    /// **A REFUSAL, BECAUSE THE ALTERNATIVE LOOKS LIKE QUIET AUDIO** (§0.0,
+    /// HM-DEC-009). This arm used to return <c>0.0</c>, which put a stream of
+    /// silence on the tap that no reading anywhere could tell from a dead band -
+    /// and the operator would spend the morning on a gain knob. Throwing means the
+    /// buffer is dropped by <see cref="OnDataAvailable"/> and nothing at all
+    /// reaches the tap, which unit 236's slot level writes down as *no level at
+    /// all* rather than as a quiet one. **The format is named and the device never
+    /// is** (HM-DEC-018).
+    /// </remarks>
+    private static NotSupportedException Unreadable(WaveFormat format) =>
+        new($"the capture device is delivering {format.Encoding} "
+            + $"{format.BitsPerSample}-bit samples, which this conversion cannot "
+            + "read. Nothing is passed on rather than silence being invented.");
 }
