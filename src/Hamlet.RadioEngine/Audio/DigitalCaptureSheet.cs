@@ -4,6 +4,40 @@ using Hamlet.RadioEngine.Rig;
 
 namespace Hamlet.RadioEngine.Audio;
 
+/// <summary>What the audio actually came through, as the machine reported it.</summary>
+/// <param name="DeviceName">What the operating system calls the input, or "".</param>
+/// <param name="SampleRate">The rate the source reported, or null when unread.</param>
+/// <param name="ChannelCount">
+/// How many channels the device delivers, or null when the source cannot say.
+/// </param>
+/// <param name="Encoding">
+/// The device's encoding and bit depth as the driver reports it, or "" when unread.
+/// </param>
+/// <param name="IsSimulated">
+/// True where the samples were synthesized rather than received off the air
+/// (HM-DEC-026), or null where there was no source at all.
+/// </param>
+/// <param name="Health">What Windows was doing to the input (HM-DEC-088).</param>
+/// <remarks>
+/// **A RECORD THAT DOES NOT DESCRIBE THE PATH IT RAN ON IS BROKEN IN THE PLACE
+/// NOBODY CHECKS** (`CLAUDE.md` §0.0.1). The same absence left the CW filter
+/// anomaly of 2026-08-31 unresolvable, and on 2026-09-03 an FT8 bench check
+/// produced an empty table with nothing on disk saying which sound card it had
+/// been listening to.
+/// </remarks>
+public sealed record AudioPath(
+    string DeviceName,
+    int? SampleRate,
+    int? ChannelCount,
+    string Encoding,
+    bool? IsSimulated,
+    CaptureHealth Health)
+{
+    /// <summary>Nothing about the path was read.</summary>
+    public static AudioPath Unknown { get; } =
+        new("", null, null, "", null, CaptureHealth.Unknown);
+}
+
 /// <summary>
 /// The sheet written beside a digital capture, so a later reader can tell
 /// whether a fault was in the signal, the radio, or Hamlet.
@@ -22,6 +56,11 @@ namespace Hamlet.RadioEngine.Audio;
 /// nobody read says so, the way the "What the radio is doing" window already
 /// does; a plausible number in its place is worse than a gap, because it will be
 /// believed.</para>
+/// <para>**AND IT SAYS WHICH AUDIO PATH IT RAN ON, AND WHAT THE SLOTS DID** (unit
+/// 233). Mode and filter were the gap of 2026-08-28; the sound card, the slot
+/// geometry and the stage each candidate reached were the gap of 2026-09-03, when
+/// an FT8 bench check produced an empty table and no file that could say
+/// why.</para>
 /// <para>**AND IT IS NOT `CwCaseRoster`.** That roster scores the CW decoder and
 /// every row of it asserts the operator heard a station Hamlet failed to read
 /// (Tim's ruling of 2026-08-28). A digital press is not a CW case.</para>
@@ -44,6 +83,20 @@ public static class DigitalCaptureSheet
     /// <param name="needsHz">
     /// How much passband the block needs, or null where none is stated.
     /// </param>
+    /// <param name="audioPath">
+    /// What the audio came through, or null where nothing was read. **§0.0.1**: a
+    /// sheet that does not describe the path it ran on cannot separate a deaf
+    /// decoder from the wrong sound card.
+    /// </param>
+    /// <param name="census">
+    /// How far each slot's candidates got, or null where nothing was decoded.
+    /// **The press already decodes before it writes** — `CaptureDigital` calls
+    /// `ShowDecodes` first, deliberately — so this is passed in rather than
+    /// decoded a second time.
+    /// </param>
+    /// <param name="refusal">
+    /// Why the reading produced nothing, in the reader's own words, or "".
+    /// </param>
     /// <returns>The sheet, ready to write.</returns>
     public static string Compose(
         DateTime capturedUtc,
@@ -53,14 +106,23 @@ public static class DigitalCaptureSheet
         ClockOffset clock,
         DateTime nowUtc,
         string neighborhood,
-        long? needsHz)
+        long? needsHz,
+        AudioPath? audioPath = null,
+        IReadOnlyList<Ft8SlotCensus>? census = null,
+        string refusal = "")
     {
         ArgumentNullException.ThrowIfNull(state);
 
         var sheet = new StringBuilder();
 
+        // Eleven, which every key written before unit 233 fits inside. A longer key
+        // takes one space rather than running into its own value, which is what
+        // `audioIsReal` did the first time it was written.
         void Line(string key, string value)
-            => sheet.Append(key.PadRight(11)).Append(value).Append('\n');
+            => sheet
+                .Append(key.PadRight(Math.Max(11, key.Length + 1)))
+                .Append(value)
+                .Append('\n');
 
         // **BOTH ENDS, LABELLED, AND WHICH ONE THE PRESS IS** (work instruction
         // 042, task 5). The sheet used to carry one line reading
@@ -128,7 +190,178 @@ public static class DigitalCaptureSheet
             Line(Name(field), Describe(state[field]));
         }
 
+        sheet.Append('\n');
+
+        // **THE PATH THE AUDIO ACTUALLY CAME THROUGH** (§0.0.1). Nothing above
+        // this line says which sound card was open, at what rate, in how many
+        // channels, or whether Windows was holding the level down before Hamlet
+        // saw anything. On 2026-09-03 an empty table was the only artefact of a
+        // bench check, and none of these could be answered afterwards.
+        var path = audioPath ?? AudioPath.Unknown;
+
+        Line("device", path.DeviceName.Length == 0 ? Unread : path.DeviceName);
+        Line("deviceRate", path.SampleRate is { } deviceRate
+            ? deviceRate.ToString(CultureInfo.InvariantCulture)
+              + " Hz  (what the device reported; the file above was written at "
+              + sampleRate.ToString(CultureInfo.InvariantCulture) + ")"
+            : Unread);
+        Line("channels", path.ChannelCount is { } channels
+            ? channels.ToString(CultureInfo.InvariantCulture)
+            : Unread + "  (the source does not report it)");
+        Line("encoding", path.Encoding.Length == 0
+            ? Unread + "  (the source does not report it)"
+            : path.Encoding);
+        Line("audioIsReal", path.IsSimulated switch
+        {
+            null => Unread + "  (no source was open)",
+            true => "NO  (these samples were synthesized, not received off the air)",
+            false => "yes  (received off the air)",
+        });
+        Line("windowsGain", path.Health.Gain is { } gain
+            ? ((int)Math.Round(gain * 100)).ToString(CultureInfo.InvariantCulture)
+              + " percent  (applied by Windows before Hamlet sees anything)"
+            : Unread);
+        Line("windowsMuted", path.Health.Muted switch
+        {
+            null => Unread,
+            true => "YES  (nothing is reaching Hamlet at all)",
+            false => "no",
+        });
+
+        sheet.Append('\n');
+
+        // **THE SLOT GEOMETRY.** *Nothing decoded* and *nothing decodable was
+        // captured* are different statements and only one of them is about the
+        // decoder. A press lands wherever the operator's thumb lands, so a
+        // thirty-second grab holds one whole slot, or two, or none.
+        AppendGeometry(Line, sheet, startUtc, capturedUtc, clock);
+
+        sheet.Append('\n');
+
+        AppendCensus(Line, sheet, census, refusal);
+
         return sheet.ToString();
+    }
+
+    /// <summary>Where the slot boundaries fell inside the window.</summary>
+    private static void AppendGeometry(
+        Action<string, string> line,
+        StringBuilder sheet,
+        DateTime startPcUtc,
+        DateTime endPcUtc,
+        ClockOffset clock)
+    {
+        if (Ft8Slots.TrueUtc(startPcUtc, clock) is not { } from
+            || Ft8Slots.TrueUtc(endPcUtc, clock) is not { } to)
+        {
+            line("slotGrid", Unread
+                + "  (the clock offset has not been measured, so where the "
+                + "fifteen-second boundaries fall is not known)");
+            line("wholeSlots", Unread);
+            return;
+        }
+
+        var boundaries = Ft8Slots.BoundariesBetween(from, to);
+        var whole = 0;
+
+        foreach (var boundary in boundaries)
+        {
+            if (boundary.AddSeconds(Ft8Slots.TransmissionSeconds) <= to)
+            {
+                whole++;
+            }
+        }
+
+        line("slotGrid", boundaries.Count == 0
+            ? "no fifteen-second boundary falls inside this window at all"
+            : $"{boundaries.Count} boundaries, corrected to UTC");
+
+        // **ITS OWN FIELD, BECAUSE ZERO IS THE ANSWER THAT MATTERS.** A capture
+        // holding no whole transmission decodes nothing however good the decoder
+        // is, and a reader who cannot see that will blame the decoder.
+        line("wholeSlots", whole == 0
+            ? "0  (NO WHOLE TRANSMISSION IS INSIDE THIS AUDIO, so nothing here "
+              + "could decode whatever was on the air)"
+            : whole.ToString(CultureInfo.InvariantCulture)
+              + $"  (of {boundaries.Count} boundaries, this many are followed by "
+              + $"the whole {Ft8Slots.TransmissionSeconds:0.00} s transmission "
+              + "inside the audio)");
+
+        foreach (var boundary in boundaries)
+        {
+            var fits = boundary.AddSeconds(Ft8Slots.TransmissionSeconds) <= to;
+
+            sheet
+                .Append("  slot     ")
+                .Append(Stamp(boundary))
+                .Append(fits
+                    ? "  whole transmission inside the audio"
+                    : "  CUT SHORT: the audio ends before the transmission does")
+                .Append('\n');
+        }
+    }
+
+    /// <summary>How far each slot's candidates got.</summary>
+    /// <remarks>
+    /// **IT COUNTS AND IT DOES NOT INTERPRET** (`CLAUDE.md` §12.1). The rows say
+    /// how many places were looked at and how many became words. They do not say
+    /// what anybody said, and they do not conclude that the band was quiet.
+    /// **A COSTAS MATCH COUNT IS NOT A SIGNAL-TO-NOISE RATIO** (§0.0) and the
+    /// column is labelled for what it is.
+    /// </remarks>
+    private static void AppendCensus(
+        Action<string, string> line,
+        StringBuilder sheet,
+        IReadOnlyList<Ft8SlotCensus>? census,
+        string refusal)
+    {
+        if (refusal.Length > 0)
+        {
+            // Verbatim. A paraphrase of a refusal is a different refusal, and the
+            // operator read this sentence on the screen at the time.
+            line("refusal", refusal);
+            line("census", "nothing was decoded, so there is no census");
+            return;
+        }
+
+        if (census is null)
+        {
+            line("refusal", "none");
+            line("census", Unread + "  (no decode was handed to this sheet)");
+            return;
+        }
+
+        line("refusal", "none");
+        line("census", census.Count == 0
+            ? "no slot was cut and run"
+            : $"{census.Count} slots, counts below");
+
+        foreach (var slot in census)
+        {
+            sheet
+                .Append("  slot     ")
+                .Append(Stamp(slot.SlotStartUtc))
+                .Append("  candidates ")
+                .Append(slot.CandidateCount.ToString(CultureInfo.InvariantCulture))
+                .Append("  parity ")
+                .Append(slot.ParitySatisfiedCount.ToString(CultureInfo.InvariantCulture))
+                .Append("  checksum ")
+                .Append(slot.ChecksumPassedCount.ToString(CultureInfo.InvariantCulture))
+                .Append("  text ")
+                .Append(slot.BecameTextCount.ToString(CultureInfo.InvariantCulture))
+                .Append("  duplicate ")
+                .Append(slot.DuplicateCount.ToString(CultureInfo.InvariantCulture))
+                .Append("  at ")
+                .Append(slot.SampleRate.ToString(CultureInfo.InvariantCulture))
+                .Append(" Hz  top Costas match counts ")
+                .Append(slot.TopSyncScores.Count == 0
+                    ? "none"
+                    : string.Join(
+                        ", ",
+                        slot.TopSyncScores.Select(
+                            s => s.ToString(CultureInfo.InvariantCulture))))
+                .Append('\n');
+        }
     }
 
     private static string Stamp(DateTime utc)

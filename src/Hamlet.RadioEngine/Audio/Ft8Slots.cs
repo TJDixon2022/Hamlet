@@ -125,6 +125,15 @@ public static class Ft8Slots
     /// </remarks>
     public const double SlotSeconds = 15;
 
+    /// <summary>How long the transmission inside a slot runs.</summary>
+    /// <remarks>
+    /// 12.64 seconds of tones inside a fifteen-second slot — 79 symbols at 0.16 s
+    /// each. Named here because *a whole slot was cut* and *the whole transmission
+    /// was captured* are different questions, and a capture that holds neither
+    /// should be able to say which.
+    /// </remarks>
+    public const double TransmissionSeconds = 12.64;
+
     /// <summary>True UTC, from a PC time and a measured offset.</summary>
     /// <param name="pcUtc">What the machine believes.</param>
     /// <param name="offset">The measurement, which may be unknown.</param>

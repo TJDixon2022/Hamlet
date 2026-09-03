@@ -144,6 +144,14 @@ public sealed class WasapiAudioSource : IAudioSource
             _capture = new WasapiCapture(endpoint);
             _capture.DataAvailable += OnDataAvailable;
             SampleRate = _capture.WaveFormat.SampleRate;
+
+            // **THE REST OF THE FORMAT, READ ONCE AND KEPT** (§0.0.1). A capture
+            // sheet that does not say how many channels the device delivers, or at
+            // what depth, cannot separate a deaf decoder from a sound card
+            // delivering something nobody expected.
+            ChannelCount = _capture.WaveFormat.Channels;
+            Encoding = $"{_capture.WaveFormat.Encoding} "
+                + $"{_capture.WaveFormat.BitsPerSample}-bit";
         }
         catch (Exception ex)
         {
@@ -157,6 +165,19 @@ public sealed class WasapiAudioSource : IAudioSource
 
     /// <inheritdoc/>
     public int SampleRate { get; }
+
+    /// <summary>How many channels the device delivers, as the driver reports it.</summary>
+    /// <remarks>
+    /// **NOT ON <see cref="IAudioSource"/>, DELIBERATELY.** The training radio has
+    /// no channel count and no encoding, and a seam widened to carry nulls for it
+    /// would put a row on every sheet that never says anything. A caller that wants
+    /// this asks the WASAPI source for it and reports *unknown (not read)* when it
+    /// is looking at something else.
+    /// </remarks>
+    public int ChannelCount { get; }
+
+    /// <summary>The encoding and bit depth, as the driver reports them.</summary>
+    public string Encoding { get; } = "";
 
     /// <inheritdoc/>
     /// <remarks>

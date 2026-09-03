@@ -6541,7 +6541,7 @@ public partial class MainWindowViewModel : ObservableObject
         // Writing the diagnostic material can fail for a dozen reasons that have
         // nothing to do with what was on the air, and the operator pressed this
         // button to find out what was on the air.
-        ShowDecodes(audio, DateTime.UtcNow, ClockOffset);
+        var heard = ShowDecodes(audio, DateTime.UtcNow, ClockOffset);
 
         try
         {
@@ -6570,7 +6570,10 @@ public partial class MainWindowViewModel : ObservableObject
                     ClockOffset,
                     now,
                     here?.Name ?? "",
-                    here?.PassbandHz));
+                    here?.PassbandHz,
+                    DescribeAudioPath(),
+                    heard.Slots,
+                    heard.Refusal));
 
             StatusText =
                 $"{_digitalDecodeNote}. Kept the last "
@@ -6585,6 +6588,33 @@ public partial class MainWindowViewModel : ObservableObject
         {
             StatusText = $"Could not write the capture: {error.Message}";
         }
+    }
+
+    /// <summary>What the audio is actually coming through, for the sheet.</summary>
+    /// <remarks>
+    /// **§0.0.1, AND EVERY FIELD IS READ OR SAID TO BE UNREAD.** Nothing is
+    /// defaulted: a source that cannot report its channel count leaves the row
+    /// saying so rather than carrying a plausible 1. The channel count and the
+    /// encoding come off <see cref="WasapiAudioSource"/> rather than off
+    /// <see cref="IAudioSource"/>, because the training radio has neither and a
+    /// seam widened to carry nulls for it would teach nothing.
+    /// </remarks>
+    private AudioPath DescribeAudioPath()
+    {
+        if (_audioInput is null)
+        {
+            return AudioPath.Unknown;
+        }
+
+        var wasapi = _audioInput as WasapiAudioSource;
+
+        return new AudioPath(
+            _audioInput.DeviceName,
+            _audioInput.SampleRate,
+            wasapi?.ChannelCount,
+            wasapi?.Encoding ?? "",
+            _audioInput.IsSimulated,
+            _capture);
     }
 
     /// <summary>
@@ -6628,10 +6658,17 @@ public partial class MainWindowViewModel : ObservableObject
     /// press needs a sound card, and the assertion that matters is about what
     /// lands on the table rather than about the button.</para>
     /// </remarks>
-    internal void ShowDecodes(
+    internal Ft8Reception ShowDecodes(
         MonoAudio audio, DateTime endedAtPcUtc, ClockOffset offset)
     {
-        NoteSlot(Ft8Reader.Read(audio, endedAtPcUtc, offset));
+        var heard = Ft8Reader.Read(audio, endedAtPcUtc, offset);
+
+        NoteSlot(heard);
+
+        // **RETURNED SO THE SHEET DOES NOT DECODE A SECOND TIME** (unit 233). The
+        // press decodes before it writes, deliberately, so the census already
+        // exists by the time `DigitalCaptureSheet.Compose` runs.
+        return heard;
     }
 
     /// <summary>
