@@ -51,9 +51,65 @@ status: open
 owner: claude
 raised: 2026-09-02
 severity: annoying
-blocks: nothing yet — it cost one unit about twenty-five minutes
-refs: PHASE_PLAN.md "what a unit runs", docs/test-baseline.md, unit 224
+blocks: nothing — unit 230 measured the boundary and docs/full-suite-run.md reads
+  the whole project around it in four commands. It blocked the owner's one
+  full-suite run until 2026-09-03 and no longer does.
+refs: PHASE_PLAN.md "what a unit runs", docs/test-baseline.md, docs/full-suite-run.md, unit 224, unit 230
 ---
+
+**Unit 230 ran the census this entry asks for and the answer is not a class.** The
+stall is confined to `Hamlet.App.Tests.Views` — 62 tests in 16 classes — and it
+depends on **how many of them share one test host**, not on which. Ten runs, every
+count from the TRX `ResultSummary.Counters` element:
+
+| Filter | Recorded | Outcome |
+|---|---|---|
+| whole project | 251 / 557 | stalled |
+| whole project, again | 170 / 557 | stalled |
+| this phase's four classes excluded | 49 / 553 | stalled |
+| `Views` only | 41 / 62 | stalled |
+| `Views` classes 1–8 | 25 / 25 | **returned, exit 0, 4.4 s** |
+| `Views` classes 9–16 | 34 / 37 | stalled |
+| `Views` classes 9–12 | 20 / 20 | **returned, exit 0, 4.6 s** |
+| `Views` classes 13–16 | 17 / 17 | **returned, exit 0, 2.7 s** |
+| one `Views` class | 5 / 5 | **returned, exit 0, 3.2 s** |
+| everything except `Views` | 495 / 495 | **returned, exit 0, 50 s** |
+
+**Nothing failed in any of them.** 495 + 25 + 20 + 17 = 557, exactly the declared
+count, so **`Hamlet.App.Tests` now has a complete run column for the first time:
+557 of 557, all green, in four invocations.**
+
+**Two things this settles that the entry above got wrong.** It is not *a run that
+finishes and will not exit* — unit 228's reading — it **stops partway**, with
+everything green behind it and no `All tests finished running`. And it is not one
+class: six recorded runs named six different tests as in flight when the bound
+fired, at 92, 251, 170, 49, 41 and 34 results deep. The tool's own words are that
+the named test *may, or may not be the source of the crash*, and here it is not.
+
+**It is inherited, not the FT8 phase's.** It reproduces with all four classes this
+phase added excluded by filter, and it reproduces with the `Views` namespace
+running entirely on its own after six seconds of work.
+
+**The mechanism, named from reading and not proven.** `TestParallelism.cs` already
+records it: *an Avalonia headless test runs on one process-wide dispatcher*, which
+is why the assembly is serialized. Every one of the six named in-flight tests
+carries `[AvaloniaFact]`. Each stalled run put **exactly the inactivity bound** —
+3 m 00 s, or 2 m 00 s where that was the bound — between its last recorded result
+and the abort, so nothing was slow; the dispatcher stopped. The nearest production
+object a reading can name is `MainWindowViewModel`, whose constructor starts a
+250 ms `DispatcherTimer` and a clock timer and fires an un-awaited SNTP query with
+`ConfigureAwait(true)`, and which **cannot be shut down: it is not `IDisposable`
+and has no `Shutdown`**, while 38 sites in this test project construct one.
+**Named as the first place to look and not as a finding.** Unit 230 deliberately
+did not change it — moving the application's timer lifetime the night before the
+owner measures the decoder at the radio is the wrong trade.
+
+**What is still open.** Which object holds the dispatcher, and therefore an actual
+fix. What is closed is the operational problem: the project can be read.
+
+---
+
+### The original entry, kept as raised
 
 **A `dotnet test` run over `Hamlet.App.Tests` filtered by
 `FullyQualifiedName~Views` hung and never returned.** It produced no output at

@@ -98,9 +98,27 @@
     already handled. RigState gained a fallback to the last state through its one seam so the mode
     condition could be reached by a test; production behaviour does not move. No decoder, threshold or
     Ft8Sharp file changed.
+
+    1.12.36 -> UNIT 230, UNDER HM-DEC-150. A PATCH, AND THE ONE WITH NO PRODUCT CHANGE IN IT AT ALL -
+    nothing under src/ moved, no threshold moved, no panel says anything different. What moved is
+    that the test suite can now be read. Hamlet.App.Tests had never once been run to completion in
+    this repository: unit 228 concluded it passes everything and then will not exit, and that was
+    wrong - it STOPS PARTWAY, at 92, 251, 170, 49, 41 and 34 results out of 557 declared across six
+    recorded runs, each naming a different test as in flight and each putting exactly the inactivity
+    bound between its last result and the abort. Ten runs tonight localised it: the stall lives
+    entirely in the Hamlet.App.Tests.Views namespace and depends on how many of those 16 classes
+    share one host, not on which. Everything outside Views reads 495 of 495 and returns; Views split
+    three ways reads 25, 20 and 17 and returns. 495+25+20+17 is exactly 557, all green, no hang
+    collector - the project's first complete run column. It reproduces with all four classes this
+    phase added excluded and with Views running alone, so it is INHERITED and not the FT8 phase's.
+    No fix was attempted: the seam is cross-class state on the one process-wide Avalonia headless
+    dispatcher, and the only production object a reading can name near it is MainWindowViewModel's
+    timer lifetime, which is not moving the night before the owner measures the decoder at the radio.
+    docs/full-suite-run.md is the deliverable - what he types, what he reads, how long each leg takes,
+    what a hang looks like beside a failure, every line tagged measured-tonight or inherited.
   -->
   <PropertyGroup>
-    <Version>1.12.35</Version>
+    <Version>1.12.36</Version>
   </PropertyGroup>
 
   <!--
