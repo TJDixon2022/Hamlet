@@ -459,15 +459,33 @@ public static class SettingsStore
     };
 
     /// <summary>%AppData%\Hamlet — the one folder Hamlet writes to.</summary>
-    public static string DataFolder { get; } = Path.Combine(
+    /// <remarks>
+    /// **The setter is internal so a test can point the whole path at a temporary
+    /// folder**, in the manner <c>MainWindowViewModel.CaptureFolder</c> already is.
+    /// It defaults to the operator's real folder and nothing in the application
+    /// ever assigns it; only the test assembly does, and it does so once for the
+    /// whole run.
+    ///
+    /// Unit 235 measured why this seam has to exist. Nine tests of one class,
+    /// run alone, rewrote the operator's own <c>settings.json</c> and touched his
+    /// <c>spots.db</c> — because constructing a <c>MainWindowViewModel</c> opens
+    /// the spot store, saves a byline index and resolves a callsign, all before a
+    /// test body runs. Twenty test files construct one, thirty-nine times.
+    ///
+    /// The four paths below are computed on each read rather than captured once,
+    /// which is the whole point: a folder fixed at static-initialisation time
+    /// cannot be redirected by anything, and that is what made his folder
+    /// reachable.
+    /// </remarks>
+    public static string DataFolder { get; internal set; } = Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
         "Hamlet");
 
     /// <summary>%AppData%\Hamlet\telemetry.</summary>
-    public static string TelemetryFolder { get; } = Path.Combine(DataFolder, "telemetry");
+    public static string TelemetryFolder => Path.Combine(DataFolder, "telemetry");
 
     /// <summary>%AppData%\Hamlet\settings.json.</summary>
-    public static string SettingsPath { get; } = Path.Combine(DataFolder, "settings.json");
+    public static string SettingsPath => Path.Combine(DataFolder, "settings.json");
 
     /// <summary>
     /// %AppData%\Hamlet\scan-segments.json — where a scan may move the dial.
@@ -479,8 +497,7 @@ public static class SettingsStore
     /// opened in an editor, and a stretch of band buried in a settings blob is a
     /// stretch of band nobody will edit.
     /// </remarks>
-    public static string ScanSegmentsPath { get; }
-        = Path.Combine(DataFolder, "scan-segments.json");
+    public static string ScanSegmentsPath => Path.Combine(DataFolder, "scan-segments.json");
 
     /// <summary>
     /// %AppData%\Hamlet\scan-home — where the dial was when a scan started.
@@ -491,7 +508,7 @@ public static class SettingsStore
     /// the dial is back, so it exists only while a scan is in flight. Settings
     /// are saved on a clean exit, which is the one exit this has to survive.
     /// </remarks>
-    public static string ScanHomePath { get; } = Path.Combine(DataFolder, "scan-home");
+    public static string ScanHomePath => Path.Combine(DataFolder, "scan-home");
 
     /// <summary>Load settings, or defaults if the file is missing, corrupt or
     /// unreadable. Never throws.</summary>
