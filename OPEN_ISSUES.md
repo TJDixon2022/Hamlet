@@ -98,6 +98,16 @@ exactly like this. **Named as the first place to look and not as a finding** —
 was not tested, deliberately, because testing it means making the hanging run
 again.
 
+**Unit 226: the hang did not recur and the workaround held again.** Every run of
+this unit used `-p:OutputPath=bin/unit226/`, no run was made with the `~Views`
+filter, and no build was blocked. Twelve runs across all three test projects,
+the longest of them the `Ft8Sharp` suite at 4 m 59 s and every other one under a
+minute. **Still not evidence the hang is gone** — the class that does not
+terminate remains unidentified and this unit did not run the census either, for
+the same reason unit 225 gave. What unit 226 adds is that the workaround now has
+three units of evidence behind it and that the sheet handed to the owner names
+the filter he must not use.
+
 ---
 id: HM-OPEN-067
 status: open

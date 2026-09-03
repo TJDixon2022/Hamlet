@@ -58,9 +58,19 @@
     against a controllable clock. The Digital tab rides the decode timer, appends rather than
     replaces, bounds the table, shows nothing twice and clears on a band change. The capture press now
     contributes to the same table instead of wiping it. No library file changed.
+
+    1.12.33 -> UNIT 226, UNDER HM-DEC-150. A PATCH, AND THE ONE WHERE THE APPLICATION FIRST HEARS A
+    REAL BAND. Every row the Digital tab has ever shown came from audio this project synthesized for
+    itself, and a port that is self-consistently wrong at both ends passes every such test. Karlis
+    Goba's off-air recordings now go through Hamlet's own ring buffer at 48 000 and 44 100 in the 480
+    and 441 sample chunks a shared-mode capture delivers, are cut by the same slot watch that runs on
+    the tab, and come out as rows: 194 out of twelve slots at each rate, fifteen of them read back off
+    the view model's own collection. The slowest slot through the whole path is 326.0 ms, which is
+    0.0217 of a slot. No product code changed - the change is a shared test-side locator for the
+    recordings, two measurement classes and BENCH_CHECK.md. No library file changed.
   -->
   <PropertyGroup>
-    <Version>1.12.32</Version>
+    <Version>1.12.33</Version>
   </PropertyGroup>
 
   <!--

@@ -4001,3 +4001,131 @@ contributes its slots through the same de-duplication.
   standing between that count and a wrong row.
 - **The `snr` column is still an em dash and it is still the owner's** — HM-OPEN-068, untouched here.
 
+---
+
+## Unit 226 — the first real band, and the channel list reconciled
+
+**Nothing under `src/Ft8Sharp/` changed except this section.** The version stays at **0.10.7** under
+HM-DEC-152; the root moved 1.12.32 to 1.12.33 under HM-DEC-150. `git diff --name-only 3b02e9e..HEAD`
+names eight files and not one of them is under `src/`.
+
+### The gap this closes, stated plainly
+
+`Ft8Sharp` has read upstream's off-air recordings since step 5 — 760 messages out of sixty
+recordings. **Not one of them had ever been through `AudioTap`, `Ft8SlotWatch`, `Ft8Reader` and onto
+the view model's collection.** Every row the Digital tab has shown in twenty-five units came from
+audio this project synthesized for itself, and *a port that is self-consistently wrong at both ends
+passes every such test.* The library had heard a real band. The application had not.
+
+### What was run, and how
+
+Upstream's recordings are 12 kHz and a sound card is not, so the audio is resampled **up** to the
+device rate first and the shipped path takes it back down. That is deliberate: the resampler sits in
+the path twice and its cost is inside the figures below.
+
+| | |
+|---|---|
+| recordings | the **twelve busiest**, ranked by *upstream's* expected-list count and not by ours |
+| device rates | **48 000** and **44 100** — the second is deliberately not a whole ratio to 12 000 |
+| chunk size | **480 and 441 samples, ten milliseconds**, which is WASAPI's shared-mode period and what `WasapiAudioSource.OnDataAvailable` hands the tap |
+| driven by | `Ft8SlotWatch.Look` at four looks a second, across real boundaries, clock passed in |
+| pre-roll | **one second of stream before the recording and one after**, because a sound card is already running when the tab starts watching and the ring must hold the whole slot at the boundary |
+
+**The watch arms inside the recording's own first slot, not in the pre-roll.** Arming a slot earlier
+asks for fifteen seconds that were never on the wire, and the watch answers `AudioAgedOut` —
+correctly, and that start-up case is already asserted by unit 225. Measuring it again here would only
+measure a pre-roll this unit invented. The first draft did exactly that and the refusal is what
+caught it.
+
+### The numbers
+
+| | 48 000 | 44 100 |
+|---|---|---|
+| slots handed over | 12 | 12 |
+| **rows produced** | **194** | **194** |
+| slowest single slot | **326.0 ms** (`20m_busy/test_06.wav`) | **311.2 ms** (`20m_busy/test_11.wav`) |
+| slowest as a fraction of a slot | 0.0217 | 0.0207 |
+| in upstream's own lists | 194 of 194 | 194 of 194 |
+
+**The agreement count is a witness and not a gate.** Step 5's third criterion was rewritten by the
+owner on 2026-09-02 and this unit does not re-litigate it, does not chase the count, and adjusted
+nothing to move it. Upstream's lists total 360 across these twelve recordings; this port read 194 of
+them. That is the same shortfall step 6 already owns, seen from a different angle, and it is not this
+unit's number.
+
+**Fifteen of those rows were read back off `MainWindowViewModel.DigitalDecodes`** for
+`20m_busy/test_21.wav` at 48 kHz, which is what the markup binds to and is the stronger reading:
+`CQ IK4LZH JN54`, `CQ IQ5PJ JN53`, `R8JA 4U1A -23`, `JO1COV RA9UJP NO25`, `CQ DH1NAS JO50`,
+`CQ E75C JN93`, `CQ F5UOU JN06`, `CQ F6HUK JN06` and seven more. Every `snr` cell an em dash. The
+panel summary read `142230 UTC · 15 shown`.
+
+### The slot decode's wall time, which nobody had ever measured
+
+`DecodeTheSlotAsync` guards with `_slotDecodeRunning` on the stated assumption that *a decode takes
+far less than the fifteen seconds until the next slot*. That assumption had never been checked
+against a real band, and it matters because **a ready slot arriving while a decode runs is discarded
+and never returns** — the watch has already advanced `_lastSeenSlotStart`.
+
+Over the twelve busiest recordings, `Ft8Reader.Read` called exactly as `DecodeTheSlotAsync` calls it,
+at 12 kHz:
+
+```
+  median 119.7 ms, worst 140.9 ms, worst as a fraction of a slot 0.0094
+```
+
+Through the whole tap path at device rates, resampler included twice, the worst is **326.0 ms**.
+**One machine, one evening, and it is quoted as that.** The margin is between forty-six and a hundred
+times, so the loss path is not reachable at the radio here, and the remediation was dropped as the
+instruction's own condition directs.
+
+**The fault is still real and is recorded rather than fixed:** a ready slot arriving mid-decode is
+silently discarded, and `Ft8SlotLook.Skipped` is computed and read by nothing outside the engine's
+own tests. Both losses are invisible to the operator. A machine an order of magnitude slower, or a
+future decoder that searches harder, brings them back into reach.
+
+### What this shows and what it does not
+
+**It shows** that audio recorded off a real antenna — real stations, a real band, somebody else's
+ionosphere — produces rows on the Digital tab through Hamlet's own ring buffer, its own slot watch
+and its own reader, at the sample rates a sound card actually delivers.
+
+**It is not a radio.** There is no sound card, no USB-D path, no rig and no clock error in it, and it
+is not a sensitivity measurement of anything. The tests say those words in those words.
+
+### Where the recordings are reached from, and why there is one locator
+
+`tests/Shared/OffAirRecordings.cs`, **compiled into both Hamlet test projects rather than copied into
+either.** `Ft8Sharp.Tests` reaches the clone through `ReferenceClone` and `ReferenceRecordings`, and
+both are `internal` to that assembly, so nothing on Hamlet's side of the boundary could open one.
+Absence of the clone is a **skip** via `RequiresOffAirRecordingsFactAttribute`, never a failure, and
+nothing is copied out of the clone. The expected-list normalisation is restated rather than shared,
+and is the same rule.
+
+One small difference worth knowing about: `WavAudio.ReadPcm16` divides by `short.MaxValue` (32 767)
+where upstream's `load_wav` divides by 32 768. That is three parts in a hundred thousand of gain,
+reported rather than changed — it is engine code, not library code, and nothing in this unit's
+measurement turns on it.
+
+### The channel-test list, reconciled so nobody rediscovers it
+
+**Two lists were in force and unit 225 declined to pick between them.** The arbiter picked, and this
+is the record so the question stays closed: **the recorded set above wins**, because it has a stated
+rule that can be rebuilt — *a channel test is a test class that opens one of the three shared
+artifacts at run time* — and the seven-class list has none.
+
+Checked against the tree at unit 226: **all fifteen classes still exist**, four in `Hamlet.App.Tests`
+and eleven in `Hamlet.RadioEngine.Tests`, and the filter strings recorded at unit 222 still select
+them. The four classes unit 225 counted that are not on this list are not channel tests by the rule;
+they are tests over changed code, which is where unit 226 runs them.
+
+### What a session picking this up must not assume
+
+- **Do not assume this run means the path is proven at a radio.** It is proven against a file. A
+  sound card, a USB-D path, a rig and a real clock error are all still untested by anything.
+- **Do not tune anything to move the 194.** Step 6 owns the sensitivity number and a path tuned to
+  sixty recordings is not a measurement of anything.
+- **Do not use the agreement with upstream's lists as a gate.** It is a witness. The owner settled
+  that wording on 2026-09-02.
+- **Do not treat 140.9 ms as a constant.** It is one machine on one evening. The margin, not the
+  figure, is what the drop was reasoned from.
+
