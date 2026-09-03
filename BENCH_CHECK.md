@@ -35,6 +35,59 @@ it. This step only tells you which build you are looking at.
 *Predicted*: that the About box shows the version. *Measured tonight*: that
 1.12.0 is the newest build in this machine's own record.
 
+#### There may be no About box to open (added by unit 235, *measured*)
+
+**Unit 235 looked for an installed Hamlet on this machine and did not find
+one.** Desktop, both Start Menus, both Program Files, Local AppData, Roaming
+and the whole user profile were searched, with unreadable sub-folders stepped
+over and counted rather than silently skipped. **There is no `Hamlet.App.exe`
+and no `Hamlet.exe` anywhere outside this repository's own `bin` folders**, and
+the only Hamlet-named shortcuts are Windows *Recent documents* entries pointing
+at work-instruction zips, the source folder and `Hamlet.sln` — none at an
+application.
+
+So if you were expecting an icon, there may not be one, and what you have been
+starting may be a build from somewhere else. That would also explain the
+1.12.0.
+
+#### How to produce a Hamlet that carries this work (added by unit 235, *measured*)
+
+```
+dotnet build -c Release src\Hamlet.App\Hamlet.App.csproj
+```
+
+**It lands in `src\Hamlet.App\bin\Release\net8.0\`, and the thing to start is
+`Hamlet.App.exe` in that folder.**
+
+*Measured tonight, not predicted*: that command ran here at 17:47 UTC on
+2026-09-03, exit code 0, **0 warnings and 0 errors**, in **5.0 seconds**. That
+matters more than it sounds, because this project builds with
+`TreatWarningsAsErrors` and `GenerateDocumentationFile` both on, so a single
+missing doc comment anywhere in units 224 to 234 would have stopped it — and
+until tonight **no unit of this phase had ever built the shell as an
+application at all.**
+
+*Measured tonight*: the version was then read off the produced binary rather
+than off `Directory.Build.props` —
+
+| Read from | `Hamlet.App.dll` | `Hamlet.App.exe` |
+|---|---|---|
+| `AssemblyVersion` | 1.12.38.0 | (apphost shim, none) |
+| Win32 `FileVersion` | 1.12.38.0 | 1.12.38.0 |
+| Win32 `ProductVersion` | 1.12.38+daeccb3 | 1.12.38+daeccb3 |
+
+`App.axaml.cs:37` stamps `GetName().Version.ToString(3)`, which for that binary
+is **1.12.38** — so that is exactly what the About box and every telemetry line
+will show you.
+
+**The tree has since been bumped to 1.12.39** as tonight's patch. Building the
+pushed tree gives you **1.12.39**, and anything at or above 1.12.38 carries
+this phase's work.
+
+`dotnet publish` was refused by the session's sandbox and was not run, so the
+folder above is a build output rather than a published one. It runs; it is just
+not self-contained.
+
 ---
 
 Then do these in order.
@@ -325,6 +378,49 @@ Keep the captures anyway. They are the only evidence a failed session produces.
 
 Run this once, before you sit down at the radio. Not while anything else is
 running, and not while Hamlet is open.
+
+### Read this first: until tonight, this run rewrote your settings (added by unit 235, *measured*)
+
+**This is measured, not predicted, and it was measured on your own folder.**
+
+Unit 235 took a SHA-256 snapshot of every file in `%AppData%\Hamlet`, ran
+**one class** of `Hamlet.App.Tests` — nine tests — and snapshotted again:
+
+- **`settings.json` was rewritten.** 1200 bytes to 1352, a different hash.
+- **`spots.db-shm` was touched**, two seconds earlier, contents unchanged.
+
+Nothing in those nine tests asked for that. It is the `MainWindowViewModel`
+constructor, and it did three things to your folder before a single test body
+ran: opened your real `spots.db`, saved a byline index, and **started a live
+callsign lookup and saved its answer** — which rewrote your grid square, your
+latitude and longitude and your licence class. Twenty files in that project
+construct that view model, thirty-nine times.
+
+**So the instruction at the top of this section — run the full suite by hand,
+once, immediately before you sit down at the radio — has been rewriting the
+settings the radio session depends on, minutes before the session.**
+
+**It is fixed as of 1.12.39.** The data folder now has a seam, the test project
+points it at a temporary folder before any test runs, and the same nine tests
+were re-run with a snapshot either side: **all fourteen files byte-identical.**
+Two tests were added that fail if that ever stops being true.
+
+**What to check afterwards anyway**, because your file has already been through
+this several times today:
+
+1. Open **Settings** and confirm your **grid square** and **licence class** are
+   what you expect. Those are the two fields measured as having been overwritten
+   by the lookup.
+2. **Confirm the audio input device.** *Measured tonight*: `AudioInputDeviceId`
+   is **absent** from your `settings.json`, which means **no device has ever
+   been chosen and Hamlet is picking one for you every time**. That is step 3
+   of part 1 and it is the single commonest cause of a silent FT8 screen.
+3. Your **callsign is intact** — it was compared before and after and is
+   byte-identical.
+
+A backup of the whole folder was taken before any of tonight's runs and is at
+`%TEMP%\hamlet-unit235-backup` (14 files, 1,803,040 bytes). **Nothing was
+restored from it** — writing into your profile is yours, not a session's.
 
 Three projects, run separately:
 
