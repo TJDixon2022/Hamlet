@@ -346,8 +346,8 @@ walk, 64 to 65). Outside Hamlet: `Directory.Build.props`, `BENCH_CHECK.md`,
 
 ### The push
 
-**`c3f10a1..443aaf7` on `main`, pushed and confirmed.** Six commits, one per task,
-named paths only:
+**`c3f10a1..443aaf7` on `main`, pushed and confirmed**, and this report follows in
+`443aaf7..70b7ab4`. Six commits, one per task, named paths only:
 
 | commit | task |
 |---|---|
