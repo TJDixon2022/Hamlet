@@ -26,4 +26,12 @@
     <ProjectReference Include="..\..\src\Hamlet.App\Hamlet.App.csproj" />
   </ItemGroup>
 
+  <!-- ONE LOCATOR FOR UPSTREAM'S OFF-AIR RECORDINGS, NOT TWO (unit 226). See the
+       matching comment in Hamlet.RadioEngine.Tests. The measurement that ends on
+       the view model's own collection has to open the same recordings the engine
+       measurement opens, by the same rule. -->
+  <ItemGroup>
+    <Compile Include="..\Shared\OffAirRecordings.cs" Link="Shared\OffAirRecordings.cs" />
+  </ItemGroup>
+
 </Project>

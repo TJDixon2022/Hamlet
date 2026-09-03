@@ -21,4 +21,14 @@
     <ProjectReference Include="..\..\src\Hamlet.RadioEngine\Hamlet.RadioEngine.csproj" />
   </ItemGroup>
 
+  <!-- ONE LOCATOR FOR UPSTREAM'S OFF-AIR RECORDINGS, NOT TWO (unit 226). Both
+       Hamlet test projects need to open them and neither may reference the
+       other, so the file is compiled into both rather than copied into both.
+       A second copy is how two lists of the same thing get into force and then
+       disagree, which this phase has already paid for once with the channel
+       test set. -->
+  <ItemGroup>
+    <Compile Include="..\Shared\OffAirRecordings.cs" Link="Shared\OffAirRecordings.cs" />
+  </ItemGroup>
+
 </Project>
