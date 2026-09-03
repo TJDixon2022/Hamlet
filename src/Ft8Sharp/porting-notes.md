@@ -4129,3 +4129,165 @@ they are tests over changed code, which is where unit 226 runs them.
 - **Do not treat 140.9 ms as a constant.** It is one machine on one evening. The margin, not the
   figure, is what the drop was reasoned from.
 
+---
+
+## Unit 227 — upstream's own decoder on the identical slots, and the shortfall is inherited
+
+**Written 2026-09-02.** This is the first measurement in the phase taken with an instrument
+**outside** this receiver. Units 221 to 223 opened, substituted and priced every stage inside it and
+none of them moved step 6's criterion 2. This one asks the question none of them could: given the
+identical audio, does the code this library was ported from do any better?
+
+**It does not. It does exactly the same, slot for slot.**
+
+### The instrument, and why the file is in the middle of it
+
+`decode_ft8.exe`, built from the pin by the owner's `tools\build-ft8-oracle.bat`. **That script is
+the owner's file: it was read, it was not edited, not committed and not deleted, and no unit ran a
+compiler.** Both binaries were already on disk when unit 227 started —
+`C:\Source\ft8_lib\build\gen_ft8.exe` at 208 896 bytes and
+`C:\Source\ft8_lib\build\decode_ft8.exe` at 227 328 bytes, last written **2026-09-02 18:05:56 and
+18:05:57**, one second apart.
+
+**Every slot is written to disk once and both decoders read that same file.** Handing each side its
+own float array would have left two differences in the comparison — the algorithm and the
+quantisation — so sixteen-bit quantisation is made common to both, and **this port's own number is
+re-taken through the file** rather than carried over from the array it came from.
+
+The WAV writer transcribes upstream's own `save_wav`: clamp to -1..+1, then
+`(int)(0.5 + (x * 32767.0))` with the arithmetic in `double` and the cast truncating toward zero.
+The read-back divides by **32 768**, which is what upstream's `load_wav` hands its own
+`float signal[]`. That asymmetry is upstream's and is reproduced rather than corrected.
+
+**What upstream's decoder accepts, read out of the pin on 2026-09-02.** `load_wav` takes PCM only,
+mono only, sixteen bits only, with a 16-byte `fmt` chunk and `data` immediately after it — it does
+not walk chunks — and returns `-2`, `-3` or `-4` otherwise. It takes the sample rate **from the
+file**. The buffer is `FT8_SLOT_TIME * 12000 = 180 000` samples and a longer file is refused
+outright; a 15-second 12 kHz slot is exactly at that limit and not over it. The monitor is
+configured `f_min = 200`, `f_max = 3000`, so the ladder's 1000 Hz base tone is **well inside
+upstream's search band** — checked before the run, because a fixture outside it would have produced
+a zero that meant nothing. A decode prints as
+`printf("%02d%02d%02d %+05.1f %+4.2f %4.0f ~  %s\n", ...)`, and the parser is anchored on that `~`
+rather than scavenging digits out of any line.
+
+### GAIN STAGING, AND AT -21 dB IT IS NOT OPTIONAL
+
+**The first run of this harness returned 0 of 306 on BOTH sides, and the cause was measured rather
+than guessed.** A WAV holds samples in -1..+1 and `save_wav` clamps anything outside. At the -21 dB
+rung the ladder's noise has an RMS of roughly twelve — the signal is twenty-one decibels *below* it
+in a 2500 Hz reference bandwidth and the noise is spread over the whole 6 kHz Nyquist band — so the
+mixed slot **peaks at 72.18 and 93.5 per cent of its samples hit the clamp.** The file was a square
+wave. That is a defect in the harness and a finding about neither decoder.
+
+The fix is one constant multiplying the whole slot to a peak of 0.999. **It multiplies signal and
+noise alike and therefore changes no ratio** — the delivered figures are still -21.001, -20.000 and
+-19.001 dB — and it is what every receiver in the world does between its antenna and its ADC.
+Nothing is lost to quantisation by it: peak-normalised Gaussian noise sits about four and a half
+sigma below full scale, so the noise RMS is some seven thousand counts against a quantisation step
+of one.
+
+**A session repeating this must gain-stage.** Writing a weak-signal slot to sixteen bits unscaled
+does not measure a decoder; it measures a clipper.
+
+### The controls, which came first because they can stop the night
+
+**Control one — upstream reads its own generator. 12 of 12 back, 0 wrong.** Nothing this project
+wrote is anywhere in that path, so a shortfall there would have been the wiring, the parser or the
+build. This is also the round-trip self-test the owner's script performs on one message, done here
+on twelve.
+
+**Control two — upstream reads a signal this library made. 51 of 51 back, all 51 with the exact
+transmitted text, 0 wrong.** Noiseless, one slot per message of the scoreable population.
+**This discharges `HM-OPEN-065`**, step 3's nice-to-pass criterion 3, carried since unit 210 and
+unaskable until today. Unit 212's nine million samples agreeing with upstream's WAV to one count
+proved the waveform *identical*; it never proved anything could *demodulate* it, and unit 212 said
+so in those words. Something has now, and it is not us.
+
+### The measurement
+
+Same population, same seeds, same frequency, same offset, same draw rule as the recorded curve —
+`seed + round(requested x 10)`, so a fresh process redraws the same noise. 51 messages by 6 seeds is
+306 trials a rung.
+
+```
+  rung     ours              upstream          both  ours only  upstream only  neither  WRONG
+  -21 dB    14/306  4.6 %     14/306  4.6 %      14      0            0          292    0 / 0
+  -20 dB    71/306 23.2 %     71/306 23.2 %      71      0            0          235    0 / 0
+  -19 dB   248/306 81.0 %    248/306 81.0 %     248      0            0           58    0 / 0
+
+  Wilson 95 per cent, identical on both sides:  2.7-7.5,  18.8-28.2,  76.3-85.0
+```
+
+**WORLD A — AN INHERITED LIMIT**, on all three rungs, against a reading fixed in the instruction
+before the run.
+
+**And it is sharper than that reading required.** World A was defined as *upstream's rate lies inside
+the 95 per cent Wilson interval of ours*. What was measured is not two rates that happen to agree
+but **the same 918 slots decided identically, message for message.** The off-diagonal is empty
+everywhere. There is no address for a defect because there is no diagonal to list.
+
+**So the decibel gap is not small — it is absent.** The two upper rungs exist to turn a rate gap into
+a decibel gap, which is the number a ruling would actually be about, and there is no offset between
+the two receivers to measure at all.
+
+**Reading back through the file did not move our own number**, which was the control the instruction
+asked for: the recorded curve reads 13 of 306 (4.2 per cent) at -21, 24 per cent at -20 and 81 per
+cent at -19; through the file it reads 14 of 306 (4.6 per cent), 23.2 and 81.0. The -21 figure is
+inside its recorded interval of 2.5 to 7.1. One decode of difference at the bottom rung is
+quantisation and gain staging, and it is reported rather than smoothed.
+
+### Redrawing this from the file rather than from a report
+
+```
+  dotnet test tests/Ft8Sharp.Tests/Ft8Sharp.Tests.csproj
+    --filter "FullyQualifiedName~Unit227ControlTests" -v q --logger "console;verbosity=detailed"
+  dotnet test tests/Ft8Sharp.Tests/Ft8Sharp.Tests.csproj
+    --filter "FullyQualifiedName~Unit227MeasurementTests" -v q --logger "console;verbosity=detailed"
+```
+
+Seeds `221001`-`221006`; the drawn seed is `seedBase + round(requested * 10)`, so -21.0 draws
+`220791`-`220796`, -20.0 draws `220801`-`220806` and -19.0 draws `220811`-`220816`. Population:
+`Ft8Step6Ladder.Population()`, 51 scoreable messages. Fixture: 1000.00 Hz base, offset 5760 samples,
+12 000 Hz. Every test skips rather than fails when the clone or a binary is absent.
+
+**Nothing upstream wrote, and no WAV, entered this repository.** Scratch audio is written under the
+system temp folder and deleted per slot — the -21 rung alone is 110 MB if it is not.
+
+### One reading defect of my own, fixed and named
+
+Wilson's lower bound at zero successes is zero in exact arithmetic and lands a few parts in 10^17
+either side of it in `double`. On the clipped first run, where both sides read 0 of 306, an upstream
+rate **equal** to ours therefore read as *below the lower bound* — world C — purely on the sign of a
+last place. A tolerance a millionth of a per cent wide restores the instruction's own rule; it is
+finer than one decode in 306 by a factor of three hundred thousand and it alters nothing.
+
+### What this is evidence about, and five things it is not
+
+1. **Not that criterion 2 is met.** It is not. 4.6 per cent against a band of 40, unmoved.
+2. **Not that the published figure is wrong.** Nothing here reads the QEX paper; the -21 dB and the
+   50 per cent are still taken from the plan and still stated as an assumption.
+3. **Not a licence to adopt anything.** No row here decodes better than any other row. Even if one
+   had, the plan's ruling makes it evidence and never an adoption.
+4. **Not a statement about real off-air audio.** One synthesized signal in Gaussian noise at a fixed
+   frequency and a fixed offset is not a band.
+5. **Not a statement about upstream's decoder in its normal use.** It was handed single-signal
+   fifteen-second files through its WAV path; its live-capture path was never entered and its
+   multi-signal behaviour was never exercised.
+
+**What it IS evidence about, and it is the one thing three units could not produce:** at these three
+ratios, on identical audio, **this port is neither better nor worse than the program it was ported
+from — it is the same program.** The shortfall against the published figure was inherited with the
+code.
+
+### What a session picking this up must not assume
+
+- **Do not read the empty off-diagonal as a licence to change anything.** It is the strongest
+  possible evidence that a faithful port cannot raise criterion 2, which makes the remaining
+  question the owner's rather than a unit's.
+- **Do not rebuild the binaries to check.** They are the owner's, `build-ft8-oracle.bat` is the
+  owner's, and a unit may not run a compiler — `ARBITER.md` §6.
+- **Do not skip the gain staging.** See above; the unscaled file is a square wave and both decoders
+  read 0.
+- **Do not re-open step 5.** Tonight's oracle would make `HM-OPEN-066` answerable and that is a note
+  for the next arbiter, not a licence.
+

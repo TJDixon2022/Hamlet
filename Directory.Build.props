@@ -68,9 +68,21 @@
     the view model's own collection. The slowest slot through the whole path is 326.0 ms, which is
     0.0217 of a slot. No product code changed - the change is a shared test-side locator for the
     recordings, two measurement classes and BENCH_CHECK.md. No library file changed.
+
+    1.12.34 -> UNIT 227, UNDER HM-DEC-150. A PATCH, AND THE ONE THAT SETTLES WHERE THE SENSITIVITY
+    SHORTFALL CAME FROM. Three units opened, substituted and priced every stage inside this receiver
+    without moving step 6's criterion 2 off 13 of 306. Unit 227 pointed the first instrument from
+    OUTSIDE it: upstream's own decode_ft8.exe, built from the pin by the owner's own oracle script,
+    reading the IDENTICAL slots - each written to disk once as a 12 kHz sixteen-bit WAV and read by
+    both decoders in turn. Over three rungs and 918 paired slots the two agree on every one: 14 and
+    14 at -21 dB, 71 and 71 at -20, 248 and 248 at -19, with an empty off-diagonal and 0 wrong on
+    both sides throughout. The shortfall was inherited with the code. On the way past, upstream's
+    decoder read 51 of 51 signals this library synthesized, which discharges HM-OPEN-065 after
+    seventeen units. Nothing was tuned, raised or adopted; the deliberate-divergence question is the
+    owner's. No file under src/ changed except this one and porting-notes.md.
   -->
   <PropertyGroup>
-    <Version>1.12.33</Version>
+    <Version>1.12.34</Version>
   </PropertyGroup>
 
   <!--

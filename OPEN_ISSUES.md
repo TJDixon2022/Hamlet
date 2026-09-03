@@ -309,6 +309,69 @@ lowest-order `fast_tanh`. **This is the first night a substituted row plainly
 decoded better and nothing was moved.** No divergence was added; the count stands
 at twenty-five.
 
+## Unit 227 — the last unit-reachable route is now closed by measurement
+
+**Updated in place rather than duplicated.** The entry stays open, stays severity
+*blocks*, and still blocks step 6 criterion 2 by name. **What has changed is that
+the shortfall now has a source, and it is not this port.**
+
+**The measurement.** Upstream's own `decode_ft8.exe` — built from the pin by the
+owner's `tools\build-ft8-oracle.bat` — read the *identical* slots. Each slot was
+written once as a 12 kHz sixteen-bit mono WAV and both decoders read that same
+file, so quantisation is common to both and this port's own number was re-taken
+through the file rather than carried over from a float array.
+
+```
+  rung     ours              upstream          both  ours only  upstream only  neither
+  -21 dB    14/306  4.6 %     14/306  4.6 %      14      0            0          292
+  -20 dB    71/306 23.2 %     71/306 23.2 %      71      0            0          235
+  -19 dB   248/306 81.0 %    248/306 81.0 %     248      0            0           58
+```
+
+**WRONG is 0 on both sides of all three rungs.** Delivered ratios -21.001,
+-20.000 and -19.001 dB.
+
+**The off-diagonal is empty on every rung, which is stronger than the reading the
+instruction required.** World A was defined as *upstream's rate lies inside the 95
+per cent Wilson interval of ours*. What was measured is not two rates that happen
+to agree but **the same 918 slots decided identically, message for message, by
+Karlis Goba's program and by this port.** There is no address for a defect because
+there is no diagonal to list.
+
+**So the decibel gap is not small — it is absent.** The two upper rungs exist to
+turn a rate gap into a decibel gap, which is the number a ruling would actually be
+about, and there is no offset between the two receivers to measure at all.
+
+**The routes, re-ranked a third and final time:**
+
+1. **Soft-symbol extraction and scaling — DISCHARGED as the stage** by unit 222,
+   confirmed faithful by unit 223. Unchanged.
+2. **The belief propagation and its bound — COMPLETE.** Unchanged.
+3. **`HM-OPEN-065`, the reference decoder — TAKEN, AND IT IS NOW DISCHARGED.**
+   It was raised to first by unit 219 and called *the only route left* by units
+   222 and 223. Unit 227 ran it. **It is no longer a route because it has been
+   travelled**, and what it found is that upstream is exactly as deaf here.
+
+**THE LAST UNIT-REACHABLE ROUTE ON THIS CRITERION IS NOW CLOSED BY MEASUREMENT.**
+Every stage inside this receiver was opened, substituted and priced by units 221
+to 223 without moving the rate, and the one instrument outside it now says the
+rate is what the code this library was ported from produces on the same audio.
+**No change a unit may make can raise criterion 2**, because raising it means
+decoding better than the pin, and that is not a port.
+
+**ONE RULING REMAINS AND IT IS THE OWNER'S, NAMED HERE AND NOT ANSWERED:**
+**may this library deliberately diverge from the pin in order to hear better than
+it?** The plan's ruling that *inheriting Goba's bugs is accepted* is what licensed
+this measurement and is equally what forbids acting on it — a row that decodes
+better is evidence, never an adoption. Unit 223 already priced four such rows and
+moved none. **This unit adds no fifth number and takes nothing.** It reports that
+the question is now the only thing standing between step 6's criterion 2 and a
+verdict.
+
+**What this entry is still not.** It is not a request to move the verdict band.
+The band was the arbiter's, fixed before unit 221's first trial, and it is
+untouched. **This unit does not declare step 6 met, closed or unachievable.**
+
 ---
 id: HM-OPEN-066
 status: open
@@ -504,12 +567,13 @@ or nothing.**
 
 ---
 id: HM-OPEN-065
-status: open
+status: closed
 owner: tim
 raised: 2026-09-01
+closed: 2026-09-02
 severity: slows
-blocks: nothing — steps 3 and 5 are both closed on their must-pass criteria; step 6 will want it
-refs: PHASE_PLAN.md step 3 criterion 3, PHASE_PLAN.md ruling of 2026-09-01, units 210, 211, 212, 213, 219, 220
+blocks: nothing — discharged by unit 227: upstream's own decoder read 51 of 51 signals this library synthesized, all with the exact transmitted text
+refs: PHASE_PLAN.md step 3 criterion 3, PHASE_PLAN.md ruling of 2026-09-01, units 210, 211, 212, 213, 219, 220, 227
 ---
 
 **Step 3's nice-to-pass criterion 3 is not met: *audio synthesis produces a
@@ -569,6 +633,48 @@ short, the first question will be whether this library's synthesized signal is
 what it believes it is — and only `decode_ft8.exe` reading one of them answers
 that. **It is still `tim`'s: a compiler run is owner-class under `ARBITER.md`
 §6 and no unit may build it.**
+
+## Unit 227 — ASKED, AND DISCHARGED. 51 of 51.
+
+**The debt this file has carried since unit 210 is paid.** Upstream's own
+`decode_ft8.exe` read fifty-one noiseless slots synthesized by `Ft8Sharp`, one
+per message of step 6's scoreable population, written as 12 kHz sixteen-bit mono
+WAVs. **All 51 came back, all 51 with the exact transmitted text, and 0 wrong.**
+
+**This is the statement that was never available before.** Unit 212's nine
+million samples agreeing with upstream's own generator to a maximum of one count
+proved the waveform is *identical to what upstream's encoder makes*. It could not
+prove that anything could demodulate it, and unit 212 said so in those words —
+*nothing has demodulated this waveform, not this library, not upstream, not
+anybody*. **Something has now, and it is not us.** Step 3's nice-to-pass criterion
+3 reads *audio synthesis produces a signal the reference decoder decodes*, and the
+reference decoder has decoded it.
+
+**Why it could be asked tonight and not before.** The blocker was environmental
+and it was never the arbiter's to clear: a compiler run is owner-class under
+`ARBITER.md` §6. **The owner cleared it himself**, by modifying
+`tools\build-ft8-oracle.bat` at 18:05 on 2026-09-02 to build `decode_ft8.exe`
+alongside the generator — three POSIX shims dated *measured 2026-09-02*, the two
+`kiss_fft` sources the decoder alone needs, and a comment quoting this issue and
+`ARBITER.md` §6 by name. Unit 227 measured the result rather than inferring it:
+`decode_ft8.exe`, 227 328 bytes, last written 2026-09-02 18:05:57, one second
+after `gen_ft8.exe`. **The script itself was neither edited, committed nor
+deleted, and unit 227 did not run a compiler.**
+
+**The instrument was shown working before it was believed.** Upstream's generator
+into upstream's decoder, twelve messages, **12 of 12 back and 0 wrong** — nothing
+this project wrote anywhere in that path, so a shortfall there would have been the
+harness rather than a finding.
+
+**Discharged as an open issue, not as step 3 being reopened.** Step 3 closed on
+its four must-pass criteria and this was always the nice-to-pass one; the plan's
+ruling of 2026-09-01 is what kept it recorded, and *recorded is not dropped* has
+now been honoured in the only way that counts. **The entry is left here as the
+record of a debt paid rather than deleted.**
+
+**And it paid a second time on the way past.** The same binary answered
+`HM-OPEN-067`'s question — see that entry — which is what unit 219 raised this to
+first among the routes for.
 
 ---
 id: HM-OPEN-064
