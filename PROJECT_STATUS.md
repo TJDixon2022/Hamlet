@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: RUNNING
-TASK: 1 of 7
+TASK: 3 of 7
 WORK_INSTRUCTION: 234
 BALL: claude
 NEXT_PASTE: none
 RULES_AT: HM-DEC-152 (2026-08-31)
-UPDATED: 2026-09-03T12:52:00-04:00
-NOTE: Project checks verified against this tree - both required files present, neither forbidden solution exists. Building the scratch trace harness by overwriting unit 233's spent file, so it lists %AppData%\Hamlet with sizes and UTC write times, censuses appVersion across every jsonl, and dumps the newest file's last five lines. Nothing is written into the operator's folder.
+UPDATED: 2026-09-03T12:53:00-04:00
+NOTE: THE SINK WRITES - driven with App.axaml.cs's own four arguments it put 2026-09-03.jsonl on disk in 12 ms with no Dispose, one app_start line at appVersion 1.12.38, DroppedEventCount 0, and it refuses silently when the category is off. So task 2's stop rule does not fire and the night continues. Task 1's census is the harder finding: the newest build that has ever written a line on this machine is 1.12.0, thirty-seven patches behind this tree. Now pointing CaptureFolder at a temporary folder to drive the write path that has never once succeeded here.
 
 ---
 
