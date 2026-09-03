@@ -133,9 +133,13 @@
     now asserted from constructed bytes, mono and stereo with the channels carrying different values.
     The _ => 0.0 arm is gone; an unrecognised format throws, the buffer is dropped, and nothing
     reaches the tap, because inventing silence is the one answer no reading downstream can tell from a
-    dead band (HM-DEC-009). AND THE HONEST QUALIFIER: both capture endpoints active on this machine
-    declare IeeeFloat 32-bit with no wrapper, so neither of them would have hit this, and the silent
-    bench check of 2026-09-03 is NOT explained by it. No file under src/Ft8Sharp/ changed.
+    dead band (HM-DEC-009). AND THE HONEST QUALIFIER: whether this is what silenced the bench check of
+    2026-09-03 is NOT KNOWN and cannot be established from this tree. SHACK_FACTS.md FACT-004, added
+    during unit 237, records that the radio lives on a different computer and that nothing measured
+    about the development machine's audio endpoints says anything about it - so the two endpoints
+    enumerated here, both IeeeFloat 32-bit, neither clear nor implicate this defect. The question is
+    one row on one capture sheet on the shack machine and it is in unit 237's report. No file under
+    src/Ft8Sharp/ changed.
   -->
   <PropertyGroup>
     <Version>1.12.41</Version>

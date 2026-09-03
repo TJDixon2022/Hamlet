@@ -356,16 +356,20 @@ row. It reads a word and a bit depth, like `IeeeFloat 32-bit`.
 | `Extensible 16-bit`, `Extensible 24-bit` | read correctly, by luck, on every version |
 | anything else | from 1.12.41 Hamlet refuses it and nothing reaches the tab, which reads as *nothing was arriving* one subsection up |
 
-**This is very probably not what happened to you.** *Measured tonight*: the two
-capture devices active on this machine both declare `IeeeFloat 32-bit`, with no
-wrapper at all, so neither of them would have hit the fault. Whether the radio's
-own codec was one of those two is not known — Hamlet does not read device names
-and neither did this measurement (HM-DEC-018). **So this row is worth one glance
-at the sheet and no more**; if it says `IeeeFloat 32-bit`, this was not it and the
-answer is somewhere else on this page.
+**Whether this is what happened to you is not known, and this row is how you find
+out.** *Measured tonight*: the two capture devices active on the **development
+machine** both declare `IeeeFloat 32-bit` with no wrapper. **That says nothing
+about your radio** — `SHACK_FACTS.md` FACT-004: the IC-7300 is on the shack
+machine and its codec is not present on the development machine, so what it
+declares cannot be inferred from there. **Nobody knows the answer to this until
+you look at the sheet on the shack machine.** If it says `Extensible 32-bit` and
+your empty morning was on 1.12.40 or earlier, that was why. If it says
+`IeeeFloat 32-bit`, this was not it and the answer is somewhere else on this
+page. Either way it is one press and one file.
 
-*Inherited, not measured tonight*: that no capture sheet exists yet on this
-machine, because no press has ever succeeded here.
+*Inherited, not measured tonight*: that the capture folder is absent on the
+development machine, which under FACT-004 is the expected state there and says
+nothing about whether a press has ever succeeded at the radio.
 
 #### Which sound card, and why that one (added by unit 236)
 

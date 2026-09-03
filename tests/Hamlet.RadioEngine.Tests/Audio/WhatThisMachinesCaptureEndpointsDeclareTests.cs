@@ -16,6 +16,14 @@ namespace Hamlet.RadioEngine.Tests.Audio;
 /// <see cref="DeviceBytesBecomeTheFloatsTheTapSeesTests"/> and needs no hardware
 /// at all. This asks a different and smaller question: does a real endpoint on
 /// this machine present the format that was wrong.</para>
+/// <para>**AND IT SAYS NOTHING ABOUT THE RADIO. READ `SHACK_FACTS.md` FACT-004
+/// BEFORE DRAWING ANYTHING FROM WHAT THIS PRINTS.** The repository lives on the
+/// development machine and the IC-7300 lives on the shack machine, so the
+/// endpoints enumerated here are not the radio's codec and what that codec
+/// declares cannot be inferred from them. A session that clears or implicates an
+/// audio-path defect from this output has measured the wrong hardware. **What
+/// this test is for is the contract in the last paragraph, and the printed
+/// formats are a note about this computer and nothing more.**</para>
 /// <para>**IT READS AND STARTS NOTHING** (`CLAUDE.md` §0.2, §6). It enumerates
 /// active capture endpoints and reads the format each one declares. No stream is
 /// initialised, no recording begins, no audio is captured, and nothing is
