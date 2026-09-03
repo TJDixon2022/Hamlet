@@ -156,7 +156,7 @@ discovers what exists without running any of it.
 
 | Project | Declared | Expected to pass | |
 |---|---|---|---|
-| `Ft8Sharp.Tests` | 524 | 523, with 1 skipped | declared `[measured 2026-09-03]`, pass count `[inherited]` |
+| `Ft8Sharp.Tests` | 524 | 523, with 1 skipped | `[measured 2026-09-03]` |
 | `Hamlet.App.Tests` | 557 | 557 | `[measured 2026-09-03]` |
 | `Hamlet.RadioEngine.Tests` | 2179 | 2177, with 2 inherited reds | `[inherited]` |
 | **Total** | **3260** | | `[measured 2026-09-03]` |
@@ -174,8 +174,9 @@ count, so the split loses nothing. `[measured 2026-09-03]`
 `Hamlet.RadioEngine.Tests.Cw`. They pre-date the FT8 phase, have nothing to do
 with FT8, and are not this phase's to fix. `[inherited]`
 
-**`Ft8Sharp`'s one skip is the table-write gate** and is expected, not a failure.
-`[inherited]`
+**`Ft8Sharp`'s one skip is the table-write gate** — `Ft8TableGenerationTests.`
+`RewriteTheCheckedInTablesFile` — and is expected, not a failure.
+`[measured 2026-09-03]`
 
 ---
 
@@ -183,7 +184,7 @@ with FT8, and are not this phase's to fix. `[inherited]`
 
 | Leg | Duration | |
 |---|---|---|
-| `Ft8Sharp.Tests` | about 5 minutes | `[inherited]` — 5 m 11 s at unit 229 |
+| `Ft8Sharp.Tests` | 5 m 09 s | `[measured 2026-09-03]` — 5 m 11 s at unit 229 |
 | App 1, not Views | 50 seconds | `[measured 2026-09-03]` |
 | App 2, Views a | 4.4 seconds | `[measured 2026-09-03]` |
 | App 3, Views b | 4.6 seconds | `[measured 2026-09-03]` |
