@@ -271,7 +271,7 @@ public sealed class WasapiAudioSource : IAudioSource
 
         try
         {
-            var frames = Downmix(e.Buffer, e.BytesRecorded, format);
+            var frames = Downmix(e.Buffer, e.BytesRecorded, format, ref _mono);
             if (frames <= 0)
             {
                 return;
@@ -292,8 +292,25 @@ public sealed class WasapiAudioSource : IAudioSource
     /// <summary>
     /// Convert the device's buffer into mono floats.
     /// </summary>
+    /// <param name="buffer">The device's buffer.</param>
+    /// <param name="byteCount">How much of it the device filled.</param>
+    /// <param name="format">What the device says those bytes are.</param>
+    /// <param name="mono">
+    /// The scratch array to write into, grown in place when it is too small.
+    /// </param>
     /// <returns>How many mono samples were written.</returns>
-    private int Downmix(byte[] buffer, int byteCount, WaveFormat format)
+    /// <remarks>
+    /// **INTERNAL AND STATIC SO A TEST CAN REACH IT, AND FOR NO OTHER REASON**
+    /// (unit 237). The only constructor this class has opens a real capture
+    /// device, so an instance method here is unreachable without a sound card and
+    /// the conversion between the antenna and the tap went eleven units without a
+    /// single test executing it. The scratch array moves from a field to a
+    /// <c>ref</c> parameter and nothing else changes: the caller still passes its
+    /// own <c>_mono</c>, it is still grown once and reused, and this still
+    /// allocates nothing after the first buffer.
+    /// </remarks>
+    internal static int Downmix(
+        byte[] buffer, int byteCount, WaveFormat format, ref float[] mono)
     {
         var channels = Math.Max(1, format.Channels);
         var bytesPerSample = format.BitsPerSample / 8;
@@ -305,9 +322,9 @@ public sealed class WasapiAudioSource : IAudioSource
 
         var frames = byteCount / (bytesPerSample * channels);
 
-        if (_mono.Length < frames)
+        if (mono.Length < frames)
         {
-            _mono = new float[frames];
+            mono = new float[frames];
         }
 
         for (var frame = 0; frame < frames; frame++)
@@ -320,14 +337,18 @@ public sealed class WasapiAudioSource : IAudioSource
                 sum += ReadSample(buffer, offset, format);
             }
 
-            _mono[frame] = (float)(sum / channels);
+            mono[frame] = (float)(sum / channels);
         }
 
         return frames;
     }
 
     /// <summary>One sample, whatever the device chose to speak.</summary>
-    private static double ReadSample(byte[] buffer, int offset, WaveFormat format)
+    /// <param name="buffer">The device's buffer.</param>
+    /// <param name="offset">Where in it this sample starts.</param>
+    /// <param name="format">What the device says those bytes are.</param>
+    /// <returns>The sample, as a fraction of full scale.</returns>
+    internal static double ReadSample(byte[] buffer, int offset, WaveFormat format)
     {
         if (format.Encoding == WaveFormatEncoding.IeeeFloat && format.BitsPerSample == 32)
         {
