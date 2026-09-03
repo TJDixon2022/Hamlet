@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: WORKING
-TASK: 6 of 7
+TASK: 7 of 7
 WORK_INSTRUCTION: 236
 BALL: claude
 NEXT_PASTE: none
 RULES_AT: HM-DEC-152 (2026-08-31)
-UPDATED: 2026-09-03T14:56:41-04:00
-NOTE: TASK 6 WAS NOT DROPPED. It was droppable - task 3 landed and its line was read whole - but it cost one small pass and the sheet is what a press produces on paper. DigitalCaptureSheet's census now writes an audio line per slot beside the counts line, its own line because a level and a candidate count are different kinds of thing. Writing it turned up a real fault in the first draft and it is worth recording: the naive version reported a census entry that was never given audio as "every sample was exactly zero", which is a slot nobody measured being reported as a slot measured at nought - the exact collapse this whole unit exists to undo. DescribeLevel now has THREE states: level unread with no audio handed over, peak and rms none where every sample really was zero, and the two figures where there was a level. Measured lines: "peak -2.05  rms -14.17  (dB relative to full scale, NOT a signal-to-noise ratio)  samples 180000  exactly zero 13  (0.000072 of the slot)" and "peak and rms none - every sample in this slot was exactly zero  samples 720000  exactly zero 720000  (1.000000 of the slot)". Three new assertions, and the pre-existing DoesNotContain snr check still holds. 16 of 16 green across both sheet classes. Next: task 7, the five gates, the version and the push.
+UPDATED: 2026-09-03T15:20:54-04:00
+NOTE: ALL FIVE GATES GREEN, every failing set EMPTY, every count read off ResultSummary.Counters in a TRX logger and never off a console line, one invocation at a time and none overlapping. Ft8Sharp.Tests whole 524/523/523/0 with 1 skipped by design. Engine channel 38 of 38 - the eleven classes unit 222 recorded, and it took about nine minutes because four of them run real signal processing over recorded audio. App channel 9 of 9 AFTER the version bump, so VersionTests reads 1.12.40 and agrees. Changed code 49 of 49 on the engine side across seven classes and 22 of 22 on the app side across four. TheOperatorsFolderIsNotOursTests 2 of 2, unit 235's seam still holding. Root 1.12.39 -> 1.12.40 under HM-DEC-150, Ft8Sharp unmoved at 0.10.7 under HM-DEC-152 because nothing under src/Ft8Sharp/ changed. Attribution: 251 paths from 2828ab6, 38 under src/Hamlet.* or tests/Hamlet.*, twelve of them this unit's - the reduction does not apply to step 7 by construction and is NOT claimed. MainWindowViewModel was constructed 5 times tonight, all in Hamlet.App.Tests: four in ARefusedPressLeavesALineTests, which was run because AppEvents changed, and one in TheOperatorsFolderIsNotOursTests. Each is a live third-party callsign lookup carrying the operator's callsign - unit 235's item 2, in front of the owner, kept small and counted, not fixed. Writing the report.
 
 ---
 
