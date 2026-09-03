@@ -271,6 +271,87 @@ and something downstream of the search is not working. Keep a capture. For the
 first, check you are actually on 14.074 in USB-D, check the radio's AF output
 level, and check Hamlet's input level meter is moving.
 
+#### Was there any audio in it at all? (added by unit 236)
+
+**This is the question the screen cannot answer and the log now can.** Until
+1.12.40 a sound card handing Hamlet digital silence, a radio with its USB cable
+out, a laptop microphone in a quiet room, and a genuinely empty band all
+produced the same empty table and the same log line. From 1.12.40 they do not.
+
+**Open the log** — `%AppData%\Hamlet\telemetry\<today's date>.jsonl`, which is
+step 10's first file — and find a line whose `event` is `ft8_slot`. Each slot
+the tab reads writes one, four a minute, so a morning has several hundred.
+Look at these five fields:
+
+| Field | What it says |
+|---|---|
+| `audioPeakDbFullScale` | the loudest sample in the slot, in decibels below full scale — `0` is as loud as the path can carry |
+| `audioRmsDbFullScale` | the average level over the same slot, same scale |
+| `audioSamples` | how many samples the slot held |
+| `audioZeroSamples` | how many of them were **exactly** zero |
+| `audioZeroSampleFraction` | that, as a fraction of the slot |
+
+**Reading them** (*measured tonight* against real audio and against a slot of
+manufactured silence):
+
+- **Both levels are `null` and `audioZeroSampleFraction` is `1`.** Every sample
+  in the slot was literally nought. **Nothing was arriving.** This is not a
+  quiet band — a receiver on a dead band still delivers its own noise, and noise
+  is not zero. It is a muted input, an unplugged codec, or Hamlet listening to a
+  device that is not connected to anything. Go to the branch check below.
+  *Measured*: a manufactured silent slot reads `null`, `null`, 720000 zero
+  samples of 720000, fraction `1`.
+- **The levels are numbers and the zero fraction is tiny.** Audio was arriving.
+  The problem is downstream of the sound card, and the census counts on the same
+  line say which stage. *Measured*: fifteen seconds of real off-air twenty metre
+  audio read peak `-2.05`, rms `-14.17`, 13 zero samples out of 180000, fraction
+  `0.000072`.
+- **The levels are numbers but very low** — say a peak below `-60`. Audio is
+  arriving and there is almost none of it. *Measured*: synthesized noise at a
+  thousandth of full scale read peak `-60.00` and rms `-64.77`, with **no zero
+  samples at all** — which is the point, a quiet input and a dead one do not
+  look alike at the sample level.
+
+**A level is not a signal-to-noise ratio.** It says how loud the audio was, not
+how strong a signal in it was, and it cannot be compared with this mode's
+published sensitivity figure. There is no number anywhere in Hamlet that says
+how strong a station was.
+
+#### Which sound card, and why that one (added by unit 236)
+
+**Hamlet picks the capture device for you on every launch, and until 1.12.40 no
+file said which rule it used.** *Measured by unit 235*: your settings hold no
+remembered audio device at all, so the one rule that is your own choice has
+never run on this machine.
+
+In the same log, find the line whose `event` is `decoder_started` — there is one
+per time Hamlet starts listening. Read `deviceChoice`:
+
+| `deviceChoice` | What happened |
+|---|---|
+| `OperatorsRemembered` | the device you picked in Settings, still plugged in |
+| `LooksLikeRadio` | a device whose name matched the radio's USB codec |
+| `SystemDefault` | **nothing matched, so Hamlet took whatever Windows calls the default input** |
+| `FirstInTheList` | nothing matched and there was no default either |
+| `NothingToChooseFrom` | the machine offered no capture devices |
+| absent / `null` | no device was opened — the training radio, not the receiver |
+
+**`SystemDefault` and `FirstInTheList` beside an empty table are the answer.**
+That is Hamlet listening to the laptop's own microphone while every layer below
+it works perfectly. `captureDevicesOffered` on the same line says how many
+devices the machine had, and `looksLikeRadio` says whether the one it took
+matched the codec.
+
+**Fix**: open Settings, pick the radio's input by hand. That writes the
+remembered id, and from then on the line reads `OperatorsRemembered`.
+
+**The device's name is deliberately not in the log** and never will be — it can
+carry your computer's name or your own (HM-DEC-018).
+
+*Predicted*: what your own session's lines will say. *Measured tonight*: the
+shape of every line above, the exact values quoted, and that all six
+`deviceChoice` states are reachable and written.
+
 ### Nothing is listening, and the tab does not say so
 
 **This is the trap.** With nothing listening, the Digital tab's slot watch does
