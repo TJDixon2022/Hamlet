@@ -324,7 +324,10 @@ public static class DigitalCaptureSheet
 
         foreach (var boundary in boundaries)
         {
-            var fits = boundary.AddSeconds(Ft8Slots.TransmissionSeconds) <= to;
+            // **THE SAME FUNCTION THE CUTTER USES.** These two lines printed
+            // contradictory answers on ft8-2026-09-03-210644 because each had
+            // its own arithmetic; now there is one.
+            var fits = Ft8Slots.TransmissionFits((to - boundary).TotalSeconds);
 
             sheet
                 .Append("  slot     ")

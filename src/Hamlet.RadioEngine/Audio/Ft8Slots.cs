@@ -1,4 +1,4 @@
-namespace Hamlet.RadioEngine.Audio;
+﻿namespace Hamlet.RadioEngine.Audio;
 
 /// <summary>
 /// How far the PC clock is from UTC, and how old that measurement is.
@@ -133,6 +133,34 @@ public static class Ft8Slots
     /// should be able to say which.
     /// </remarks>
     public const double TransmissionSeconds = 12.64;
+
+    /// <summary>
+    /// Whether a whole FT8 transmission fits after a boundary, given how much
+    /// audio follows it.
+    /// </summary>
+    /// <param name="secondsAfterBoundary">Audio available after the boundary.</param>
+    /// <returns>True where the whole transmission is inside the audio.</returns>
+    /// <remarks>
+    /// <para>**ONE FUNCTION, BECAUSE TWO ANSWERS DISAGREED IN CONSECUTIVE
+    /// LINES.** On capture `ft8-2026-09-03-210644` the sidecar wrote
+    /// `wholeSlots 1 ... whole transmission inside the audio` and, on the line
+    /// under it, `refusal no whole slot fits inside the recording`. The sheet
+    /// measured the 12.64 s a transmission occupies; the cutter required a full
+    /// 15 s slot. Both were reasonable and they cannot both be printed.</para>
+    /// <para>**AND 12.64 IS THE RIGHT ONE**, because it is what the signal
+    /// actually occupies. A boundary with 13 s of audio after it holds the whole
+    /// transmission; refusing it discards a decodable slot for the sake of 2.36 s
+    /// of silence that carries nothing. The cutter pads the remainder rather than
+    /// changing what `Ft8Sharp` wants - its waterfall asks for 93 blocks and
+    /// zeros after the transmission are harmless to it, and changing `Ft8Sharp`
+    /// is not this unit's to do.</para>
+    /// <para>**THE EPSILON IS FOR ROUNDING AND NOTHING ELSE.** A boundary
+    /// computed in ticks and a sample count computed by rounding disagree in the
+    /// last decimal place, and a slot refused for a nanosecond is a slot refused
+    /// for arithmetic.</para>
+    /// </remarks>
+    public static bool TransmissionFits(double secondsAfterBoundary)
+        => secondsAfterBoundary + 1e-6 >= TransmissionSeconds;
 
     /// <summary>True UTC, from a PC time and a measured offset.</summary>
     /// <param name="pcUtc">What the machine believes.</param>

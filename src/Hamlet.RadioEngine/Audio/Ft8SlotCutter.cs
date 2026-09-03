@@ -1,10 +1,30 @@
-namespace Hamlet.RadioEngine.Audio;
+﻿namespace Hamlet.RadioEngine.Audio;
 
 /// <summary>One slot of audio, cut on a UTC quarter minute.</summary>
 /// <param name="StartUtc">The boundary it opens on, corrected.</param>
 /// <param name="FirstSample">Where it starts in the recording.</param>
 /// <param name="Audio">The samples.</param>
-public sealed record AudioSlot(DateTime StartUtc, int FirstSample, MonoAudio Audio);
+/// <param name="PadSamples">Silence appended to reach a full slot.</param>
+public sealed record AudioSlot(
+    DateTime StartUtc,
+    int FirstSample,
+    MonoAudio Audio,
+    int PadSamples = 0)
+{
+    /// <summary>How much silence was appended to reach a full slot.</summary>
+    /// <remarks>
+    /// **RECORDED RATHER THAN HIDDEN.** A slot that was padded is not the same
+    /// evidence as one that was whole, and a reader comparing two decodes needs
+    /// to know which is which. Zero for a slot that needed no pad.
+    /// </remarks>
+    public int PadSamples { get; init; } = PadSamples;
+
+    /// <summary>How long that silence lasts.</summary>
+    public double PadSeconds
+        => Audio is null || Audio.SampleRate <= 0
+            ? 0
+            : PadSamples / (double)Audio.SampleRate;
+}
 
 /// <summary>Why a cut produced what it produced.</summary>
 /// <param name="Slots">The whole slots, oldest first.</param>
@@ -62,7 +82,7 @@ public static class Ft8SlotCutter
 
     /// <summary>What is said when the recording is shorter than one slot.</summary>
     public const string TooShort =
-        "the recording is shorter than one whole slot, so there is nothing to cut";
+        "the recording is shorter than one whole transmission, so there is nothing to cut";
 
     /// <summary>
     /// Cut a recording into whole slots.
@@ -94,8 +114,13 @@ public static class Ft8SlotCutter
         var total = audio.Samples.Length;
         var perSlot = (int)Math.Round(Ft8Slots.SlotSeconds * rate);
 
-        if (rate <= 0 || perSlot <= 0 || total < perSlot)
+        var perTransmission = (int)Math.Round(Ft8Slots.TransmissionSeconds * rate);
+
+        if (rate <= 0 || perSlot <= 0 || total < perTransmission)
         {
+            // **AGAINST THE TRANSMISSION, NOT THE SLOT**, for the same reason
+            // the loop below is. A 13 s window holds a whole transmission and
+            // used to be refused as too short for a 15 s slot.
             return new SlotCut(Array.Empty<AudioSlot>(), TooShort, total, 0);
         }
 
@@ -112,16 +137,35 @@ public static class Ft8SlotCutter
             // is a bias in the same direction every time.
             var at = (int)Math.Round((boundary - startedAt).TotalSeconds * rate);
 
-            if (at < 0 || at + perSlot > total)
+            if (at < 0)
             {
                 continue;
             }
 
-            var samples = new float[perSlot];
-            Array.Copy(audio.Samples, at, samples, 0, perSlot);
+            // **THE TRANSMISSION IS WHAT HAS TO FIT, NOT THE SLOT.** A slot is
+            // 15 s of grid and the signal occupies 12.64 s of it, so requiring a
+            // full slot discarded decodable audio for the sake of trailing
+            // silence. `Ft8Slots.TransmissionFits` is the one answer the sidecar
+            // reads too, which is what stops the two disagreeing in consecutive
+            // lines the way they did on ft8-2026-09-03-210644.
+            var available = (total - at) / (double)rate;
 
+            if (!Ft8Slots.TransmissionFits(available))
+            {
+                continue;
+            }
+
+            var have = Math.Min(perSlot, total - at);
+            var samples = new float[perSlot];
+
+            Array.Copy(audio.Samples, at, samples, 0, have);
+
+            // The remainder is already zero from the allocation. Zeros after the
+            // transmission are harmless to Ft8Sharp's waterfall, which wants its
+            // 93 blocks; the pad is recorded so a padded slot is never mistaken
+            // for a whole one.
             slots.Add(new AudioSlot(
-                boundary, at, new MonoAudio(rate, samples)));
+                boundary, at, new MonoAudio(rate, samples), perSlot - have));
         }
 
         if (slots.Count == 0)
@@ -138,6 +182,10 @@ public static class Ft8SlotCutter
             slots,
             "",
             first.FirstSample,
-            total - (last.FirstSample + perSlot));
+
+            // What is left after the last slot's REAL audio, which is not the
+            // same as after its padded length: padding does not consume samples
+            // the recording never had.
+            Math.Max(0, total - (last.FirstSample + perSlot - last.PadSamples)));
     }
 }
