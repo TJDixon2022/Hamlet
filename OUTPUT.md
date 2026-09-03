@@ -1,347 +1,409 @@
 READ IN THIS ORDER
 
-A. The phase goal. Hamlet hears FT8 off the radio and displays the decoded text
-   on screen. Steps 1 to 5 are done. Step 6 is open and unit 227 settled why: the
-   sensitivity shortfall was inherited with the code, upstream's own decoder
-   returning the same messages slot for slot on the identical files, so criterion
-   2 is not met and no unit-reachable change moves it. Step 7 is where this unit
-   works, on the plan's 2026-09-02 ruling that steps 6 and 7 do not depend on each
-   other. The phase itself closes at Tim's eyes at 14.074, not at a test.
+A. The phase goal. Hamlet hears FT8 off the radio and displays the decoded text on
+   screen. Steps 1 to 5 are done - the library and its tables, 77-bit messages,
+   encode and synthesis, candidate search, decode. Step 6 is BLOCKED at 14 of 306,
+   4.6 per cent against a 40 per cent band, on a ruling only Tim can give: four
+   instruments were pointed at it and the fourth ran upstream's own decode_ft8.exe
+   over the identical audio and got the identical messages on all 918 slots, so the
+   shortfall came in with the code and what remains is whether this port may
+   deliberately diverge from the pin. Nothing tonight touched it. Step 7 is BLOCKED
+   with all five of its must-pass criteria evidenced by units 224 to 228, and its
+   closing line is a bench check at 14.074 that no unit performs.
 
-B. This step and its exit criteria. Step 7 - Hamlet displays decoded FT8. Five
-   must-pass criteria. THIS UNIT IS AIMED AT THE SECOND ONE, which reads that the
-   clock offset is measured and shown because FT8 fails silently and "Hamlet says
-   so plainly rather than showing an empty window". That criterion was met
-   narrowly in unit 038 by a clock caption; this unit widens it to the four other
-   things that produce the same empty window and the same silence. INHERITED, NOT
-   RE-TAKEN: criterion 1, slots aligned to the quarter minute, met by units 225
-   and 226; criterion 3, decodes render on screen, met by unit 224. RE-TAKEN
-   TONIGHT: criterion 4, Ft8Sharp green; criterion 5, attribution and the channel
-   tests. THIS UNIT DOES NOT DECLARE STEP 7 MET OR CLOSED. Its last line is a
-   bench check only Tim can perform.
+B. This step and its exit criteria. Step 7 - Hamlet displays decoded FT8. THIS UNIT
+   CLAIMS NONE OF ITS FIVE CRITERIA AND WAS NOT AUTHORED TO. It clears a blocker
+   sitting in front of the one whole-suite run PHASE_PLAN.md places between this
+   tree and Tim closing the phase - "run by hand, by Tim, uncontended, once, before
+   he looks at the screen". The two standing lines were re-taken and are reported
+   with their numbers: Ft8Sharp 524 total, 523 passed, 0 failed, 1 skipped;
+   attribution 231 paths from 2828ab6..HEAD with 18 under src/Hamlet.* or
+   tests/Hamlet.*, SO THE PLAN'S REDUCTION DOES NOT APPLY AND IS NOT CLAIMED; the
+   channel tests 9 of 9 in the App project after the version bump and 38 of 38 in
+   the Engine project in 13 m 38 s.
 
-C. This report. What it adds, weighed against A and B: the Digital tab now names
-   the first thing standing between the operator and a decode, and says nothing at
-   all when there is no such thing, which is the property a test asserts. The mode
-   strip stopped claiming the dial was in FT8 territory wherever the dial was. And
-   ONE CLAIM THE INSTRUCTION OFFERED WAS REFUSED AS FALSE ABOUT THIS PROGRAM:
-   Hamlet cuts its slots on the measured clock offset, so "nothing will decode
-   until the clock is fixed" would have sent tomorrow morning to repair the one
-   thing already handled. Section 4 raises 4 items. TWO OF THEM ARE OWNER RULINGS
-   ON WHAT THE DISPLAY ASSERTS, which is his without exception; a third is in the
-   way of the full-suite run the plan reserves for him at the end of the phase.
-   NONE OF THE FOUR BLOCKS A CRITERION IN B.
+C. This report. The answer to the question this unit was commissioned to ask:
+   Hamlet.App.Tests STOPS PARTWAY. It does not finish and refuse to exit, which is
+   what unit 228 concluded. Six recorded runs read 92, 251, 170, 49, 41 and 34
+   results out of 557 declared, each naming a different test as in flight, each
+   putting exactly the inactivity bound between its last result and the abort, and
+   none printing "All tests finished running". Complete runs of this project
+   recorded in this tree before tonight: 0 of 557. After tonight: 557 OF 557, ALL
+   GREEN, in four invocations rather than one - 495 outside the Views namespace,
+   then 25, 20 and 17 across Views split three ways. The stall is INHERITED, not
+   this phase's: it reproduces with all four classes this phase added excluded and
+   with Views running alone. Section 4 raises 3 items. NONE OF THE THREE IS IN THE
+   WAY OF A CRITERION IN B.
 
-UNIT:       228 - complete at task 4 of 4, nothing dropped: the named drop candidate was task 4 and its drop condition was measured false - 2026-09-02 23:50
-PHASE GOAL: Hamlet hears FT8 off the radio and shows the decoded text on screen. Five steps done, step 6 open on an inherited limit, step 7 is this unit's.
-UNIT GOAL:  When nothing is decoding and something is wrong, the Digital tab says which thing, in the operator's words, and says nothing when nothing is wrong.
-ADVANCED:   yes - step 7's second must-pass criterion goes from a clock caption to a line covering all five silent failures, asserted at the view-model seam, and the mode strip stopped asserting a block it had not read.
-NUMBER:     the number of the five silent FT8 failures Hamlet named in one place, 0 -> 5, with a sixth outcome asserted: all five right produces no line at all. Sixteen new tests, 16 of 16.
-DRIFT:      0 consecutive units without advance  (was 0)
+UNIT:       230 - complete at task 5 of 5, nothing dropped: the named drop candidate was task 5 and it was kept - 2026-09-03 08:55
+PHASE GOAL: Hamlet hears FT8 off the radio and shows the decoded text on screen. Steps 1-5 done, step 6 blocked on an inherited limit and an owner ruling, step 7 evidenced and closing on a bench check at 14.074.
+UNIT GOAL:  Settle what Hamlet.App.Tests actually does, fix it if the seam is nameable, and leave Tim a written procedure for the one full-suite run that stands whether or not the fix landed.
+ADVANCED:   no - this unit removed a blocker; no decoder path, no threshold and no panel was touched, and no step 7 criterion is claimed.
+NUMBER:     whole-project runs of Hamlet.App.Tests that recorded every declared test and returned on their own: 0 -> 0. The instrument is nonetheless readable: 557 of 557 across four invocations, which is 0 -> 557 on tests recorded in one sitting.
+DRIFT:      1 consecutive units without advance  (was 0)
 
 ## 1. What Claude did
 
-**Complete, at task 4 of 4. Nothing was dropped.** The instruction named task 4 as
-the drop candidate and gave it a condition rather than an instruction to drop: drop
-it if the mode strip is already live, wire it if it is still static. It was
-measured still static, so it was wired. Machine `C--Source-HamLet`, project claimed
-Hamlet and confirmed by `SHACK_FACTS.md`, `CwProbabilisticDecoder.cs`, no
-`CoreHMI.sln` and no `MURC.sln`, branch `main`.
+**Complete, at task 5 of 5. Nothing was dropped.** The named drop candidate was
+task 5, `HM-OPEN-069`, and it was kept - the night ran short of trouble, not short
+of time. Task 2 went to its own stop rule, which is described below and is not a
+dropped task.
 
-### Task 1 - the ground, and the one thing the harvest got wrong
+QUIVERFULL, Windows 11 Pro 10.0.26200, `Hamlet` confirmed by the four gate checks,
+branch `main`, four commits from `90c184c` to `b55a46f`, all pushed.
 
-Three gates at entry, all taken before anything was written.
+### The measurement, which is the unit
 
-- **Ft8Sharp 524 total, 523 passed, 0 failed, 1 skipped**, in 5 m 10 s, read from
-  the TRX `Counters` element rather than a console line. The one skip is the
-  table-write gate. Unit 227's exit figure exactly.
-- **Attribution from `2828ab6`: 226 paths, 15 under `src/Hamlet.` or
-  `tests/Hamlet.`**, unmoved from unit 227.
-- **App channel set 9 of 9 in 556 ms**, by the filter unit 222 recorded.
+Ten `dotnet test` invocations, one at a time, never two at once. **Every count
+below is the TRX `ResultSummary.Counters` element. Not one is a console line.**
 
-**Five of the six harvested facts are exactly as the instruction describes.**
-`ClockOffsetLine` is `ClockOffset.Describe(DateTime.UtcNow)`. `ClockIsConcerning`
-is `ClockOffset.IsConcerning` and the threshold behind it is half a second, chosen
-from the mode. `DigitalWaterfallSummary` does say `no slot grid until the clock is
-checked` and does append `simulated`. `DigitalSpectrum.IsSimulated` is a
-constructor argument meaning the training radio. `DigitalDecodes` is the bound
-collection. `DigitalIdleText` carries all four of the owner's August strings and
-nothing has touched it.
+| Run | Filter | Recorded | Outcome |
+|---|---|---|---|
+| A | whole project | 251 / 557 | stalled, bound fired |
+| B | whole project | 170 / 557 | stalled, bound fired |
+| C | this phase's four classes excluded | 49 / 553 | stalled, bound fired |
+| D | `Views` only | 41 / 62 | stalled, bound fired |
+| E | one `Views` class | 5 / 5 | **returned, exit 0, 3.2 s** |
+| F | everything except `Views` | 495 / 495 | **returned, exit 0, 50 s** |
+| G1 | `Views` classes 1-8 | 25 / 25 | **returned, exit 0, 4.4 s** |
+| G2 | `Views` classes 9-16 | 34 / 37 | stalled, bound fired |
+| Q3 | `Views` classes 9-12 | 20 / 20 | **returned, exit 0, 4.6 s** |
+| Q4 | `Views` classes 13-16 | 17 / 17 | **returned, exit 0, 2.7 s** |
 
-**One mismatch, and it shaped the rest of the unit.** The harvest calls the data
-flag `RigState.DataMode`. There is no such member: the field key is
-`RigField.DataMode` and the typed accessor is `RigState.DataVariant`, a `bool?`
-that is null when nobody has read the flag, which is the HM-DEC-056 behaviour the
-instruction asks for under a different name. More seriously, **`RigState` was a
-read-only projection of the rig monitor**, so it answered `Empty` forever unless a
-real monitor was polling a real port, and condition 4 was not reachable at the
-view-model seam the instruction asks for its tests at.
+**Nothing failed in any of them. Every test that ran, passed.**
 
-### Task 2 - one line that says why
+`495 + 25 + 20 + 17 = 557`, which is exactly what `--list-tests` declares, so the
+split loses nothing.
 
-`DigitalReadiness.FirstProblem` is pure, reads no clock, and returns the **first**
-wrong thing in the instruction's order. `DigitalReadinessLine` on the view model
-assembles the five facts from the surfaces that already held them and delegates.
-`HasDigitalReadiness` hides the whole row when there is nothing to say.
+### 1a - what unit 229 left on disk, which nobody had read
 
-**`RigState` gained a fallback and production behaviour did not move.** It now
-answers `_rigMonitor?.State ?? _rigStateApplied`, the second being the last state
-that came through `ApplyRigState`, which HM-DEC-078 already documents as the only
-seam rig state enters the UI by. In the running application the two are the same
-value at every observable moment: the monitor is created before any state can
-arrive, and `StopRigMonitor` applies `RigState.Empty` on the way out, so a
-disconnected Hamlet still reports knowing nothing. What changed is that a condition
-no test could reach became a condition a test checks.
+`TestResults229/app-full-run1.trx`: `total="92" executed="92" passed="92"
+failed="0"`, `start` 00:36:44.822, `finish` 00:42:38.294 - **5 m 53 s**. The
+`Sequence_07195e38b88648d0bd931baacbb33324.xml` carries **93 `Test` elements, 92
+`Completed="True"` and exactly one `Completed="False"`**:
+`ViewModels.TuningDoesNotSnapBackTests.AReadingFromAfterTheTuneStillMovesIt`.
+**The run ended by the hang collector, not by returning.** The hang dump beside it
+measures **396,924,352 bytes**. Nothing was committed or deleted from that folder.
 
-**A decision I made for myself, reproduced in full, because it is a change to what
-the display asserts and that is Tim's.** The instruction offers, as the voice to
-aim at, *the PC clock is four seconds off UTC, and FT8 needs it within about one -
-nothing will decode until that is fixed.* I took the voice and refused the claim.
-`Ft8SlotCutter` cuts slots on the **measured offset** rather than on the machine's
-own minute, so Hamlet stays aligned to true UTC with a clock that is out, and that
-sentence would send an operator to repair the one thing that was already handled -
-on the morning the whole phase exists to protect. §0.0 binds this, `PHASE_PLAN.md`
-lists what the display asserts among the three things the arbiter may not reason
-past, and §0.7 says warmth never buys a claim. What the line says instead is how
-far out the clock is, that Hamlet cuts on the offset so it is not lost, and that a
-clock that far out drifts between checks and the machine is worth putting back on a
-time server.
+### 1b - the census, by discovery
 
-**A second decision inside the same condition.** The instruction names
-`ClockIsConcerning`, which is false when nothing has been measured. An offset
-nobody has measured means `Ft8SlotCutter` cuts **no slots at all**, which is the
-strongest true statement any of the five conditions can make, so an unchecked clock
-is folded into condition 3 rather than left silent. It is not a sixth condition:
-a clock that is known and inside half a second is still "right", and the control
-test is unaffected.
+`--list-tests`, one project at a time: **Ft8Sharp 524, Hamlet.App.Tests 557,
+Hamlet.RadioEngine.Tests 2179, total 3260.** That reproduces unit 229's figures
+exactly. **`PHASE_PLAN.md`'s 2157 / 523 / 38 and total 2718 are stale in all four
+figures**, and its 38 for `Ft8Sharp` was never a census - it is the size of a
+RadioEngine channel-test filter that got written into a census column.
 
-### Task 3 - the tests, and a fixture that was passing for the wrong reason
+### 1c - the decisive question, answered in the instruction's own words
 
-Sixteen tests in `TheTabSaysWhyNothingIsDecodingTests`, 16 of 16 in 234 ms. Every
-one of the five conditions is driven at the view-model seam, not through the pure
-function underneath.
+- **How many results out of the declared count?** 251 of 557 on run A, 170 of 557
+  on run B.
+- **Did the collector print `All tests finished running`?** **No.** It printed
+  `The specified inactivity time of 3 minutes has elapsed` and `Test Run Aborted`.
+- **How long between the last recorded result and the bound firing?** Run A: last
+  `endTime` 08:12:59.639, `finish` 08:15:59.725 - **3 m 00.1 s.** Run B: last
+  `endTime` 08:17:18.519, `finish` 08:20:18.609 - **3 m 00.1 s.** Both are exactly
+  the bound. **Nothing was slow. The run stopped dead.**
+- **So which is it?** **IT STOPS PARTWAY.** Unit 228's conclusion - passes
+  everything and then will not exit - is wrong, and this report says so plainly
+  rather than splitting the difference.
+- **Deterministic?** **No. A different test every time**, with everything green
+  behind it, which is the shutdown-or-dispatcher signature the instruction named.
 
-**The control did not pass for the right reason on the first run, and that is
-worth more than the tests that passed.** `OnFrequencyHzChanged` clamps the dial to
-the selected band's map, a fresh view model opens on 40 m, and the first draft
-asked every question at 14.074. Every frequency was silently clamped to 7.325 MHz,
-the map has no block there, and the readiness line returned nothing because the
-dial was nowhere rather than because it was in a digital block. It was caught by
-printing what the fixture actually held instead of what it had been told to hold.
-`Ready` now asserts the dial landed where it was put, and the control checks all
-five as values - listening, not simulated, clock known and inside the threshold,
-mode USB with the data flag on, and the block at the dial is family `Digital` -
-before it asks for the line at all. That is §12.5 exactly.
+### 1d - whose stall is it
 
-**Two of the assertions are about what the line does not say.** The clock case
-asserts `nothing will decode` is absent. The map case asserts that a frequency the
-map has no block for produces no line at all, because not knowing where you are is
-not evidence that you are in the wrong place (HM-DEC-009), which is the same ruling
-that makes an unread mode unknown rather than wrong.
+**Inherited. It is not this phase's.** Run C excluded all four classes this phase
+added - `TheDecodedTableIsRealTests`, `TheTabHearsEverySlotTests`,
+`TheTabHearsARealBandTests`, `TheTabSaysWhyNothingIsDecodingTests` - and stalled at
+49. Run D ran the `Views` namespace with none of the other five hundred tests
+before it and stalled after **six seconds of work**. Nobody had excluded all four
+before; the answer is that it makes no difference.
 
-### Task 4 - the drop candidate, kept
+### 1e - the seam, from reading
 
-**Its drop condition was measured false.** `FT8` was lit in the markup as a
-literal from work instruction 037, with `FT4`, `PSK31` and `WSPR` greyed beside it,
-so the strip asserted the dial was in FT8 territory wherever the dial actually was.
-A picture makes a claim as hard as a sentence does (HM-DEC-092). Which chip lights
-is now the map's answer, read from the same short label `ModeFollowPlan` already
-reads, and **nothing is lit** in a Morse block, in open ground, or in a digital
-block whose mode is not one of the four. The four labels are the owner's and were
-not changed.
+**Named, and named as a class of thing rather than an object, because that is as
+far as reading got.** `TestParallelism.cs` already records the mechanism in its own
+words - *an Avalonia headless test runs on one process-wide dispatcher* - and
+serializes the assembly for it. **Every one of the six named in-flight tests
+carries `[AvaloniaFact]`.** The stall is confined to `Hamlet.App.Tests.Views`, 62
+tests in 16 classes, and scales with how many share one host: 8 classes and 25
+tests returned, 8 classes and 37 tests stalled at 34, the namespace stalled at 41.
 
-### The gates at exit
+**The nearest production object a reading can name, offered as the first place to
+look and not as a finding:** `MainWindowViewModel`'s constructor starts a 250 ms
+`DispatcherTimer` and a clock timer and fires `_ = QueryTheClockAsync()`, an
+un-awaited SNTP UDP query with 3 s timeouts and `ConfigureAwait(true)`. **The class
+is not `IDisposable` and has no `Shutdown`, so nothing can stop them**, and 38
+sites in this test project construct one. **I did not read the
+`Avalonia.Headless.XUnit` 11.3.0 source** - it lives outside the working directory
+and the harness would not list it - so the object that actually holds the
+dispatcher is not named, and I am saying that rather than guessing at it.
 
-- **Ft8Sharp 524 total, 523 passed, 0 failed, 1 skipped at exit**, in 5 m 9 s,
-  from the TRX `Counters` element. Identical to entry, which is right: this unit
-  added no test there and changed no file under `src/Ft8Sharp`. The one skip is
-  still the table-write gate and there are no new skips.
-- **Attribution 229 paths, 18 under Hamlet**, up from 15. The three added are
-  `DigitalReadiness.cs`, `DigitalModeChip.cs` and the new test file; the other two
-  files this unit touched under `src/Hamlet.App` were already in the set from units
-  224 to 226. **The attribution reduction does not apply to this unit and is not
-  claimed**: a unit that changes Hamlet source cannot argue that it could not have
-  reached Hamlet's tests.
-- **Channel tests: App 9 of 9 in 443 ms, re-run after the version bump because
-  the artifact it guards is the root version and that is what moved. Engine 38 of
-  38 in 13 m 39 s.** **The failing set is named and it is empty.**
-- **The whole `Hamlet.App.Tests` project was run as well, because this unit
-  changed Hamlet source and the plan's attribution reduction does not cover a
-  unit that did. Every test that ran passed, and the host would not exit.** That
-  is a finding rather than a number, and I chased it rather than reporting a total
-  I did not understand:
-  - first pass, whole project: **111 passed, 0 failed**, then the host was
-    declared hung at `TheTabsAndTheWorkspacesTests.EachTabChangesTheWorkspace`;
-  - that class alone: **5 of 5 in 1 s**;
-  - Views, ViewModels and Layout together: **67 passed, 0 failed**, then hung at a
-    **different** test, `TuningDoesNotSnapBackTests`;
-  - **the same set with this unit's new class excluded: 167 passed, 0 failed, and
-    it hung anyway**, with the collector reporting `All tests finished running`.
-  **So the stall is at host shutdown, it is not inside a test, and it reproduces
-  with nothing this unit wrote in the run.** `TestParallelism.cs` already records
-  the cause in its own words: a headless Avalonia test runs on one process-wide
-  dispatcher. Unit 205 recorded the same project stalling before this phase
-  touched anything. **Across five runs tonight - 111, 167, 67, 56 and 16 - there
-  was not one failure.**
-- Versions **1.12.34 to 1.12.35**, a patch because `PHASE_PLAN.md` reserves the
-  minor for when the phase closes. `Ft8Sharp` stays at **0.10.7** and no file under
-  `src/Ft8Sharp` changed.
-- **Four commits, each pushed before the next task started.**
+### Task 2 - the stop rule, invoked deliberately
 
-### What I was refused, and what it cost
+**No code change was attempted and none is committed.** Task 2 permits touching
+`src/Hamlet.App` only if the trace names a production object as the thing holding
+the process open. The trace named a seam class, not an object. Moving
+`MainWindowViewModel`'s timer lifetime on a hypothesis, the night before Tim
+measures the decoder at the radio, is exactly the trade that task's own
+prohibitions exist to prevent.
 
-**`validate-output.bat` would not run, under six invocation forms, and the report
-below is NOT claimed as an exit 0.** This is the refusal units 224 through 227
-reported and the cause is now identified rather than endured. The scope permits
-five spellings of `tools\arbiter\validate-output.bat`, every one with single
-backslashes, and the harness matches the command as it is typed. **Git Bash then
-removes a backslash before an ordinary letter**, so the permitted spelling reaches
-`cmd` as `toolsarbitervalidate-output.bat` and `cmd` reports no such file.
-Doubling the backslashes fixes the shell and breaks the permission match; quoting
-the path does the same; forward slashes do the same. I tried a shim at the name
-the shell produces and `cmd` does not find it either, so its search path does not
-include the working directory here. **That shim is on disk, untracked and not
-committed, at `toolsarbitervalidate-output.bat` in the root**, and it says all of
-this in its own body.
+**Task 2's literal assertion - two consecutive WHOLE-PROJECT runs that record every
+declared test and return on their own - is NOT MET and is not claimed.** What was
+delivered instead is the four-command route that reads all 557.
 
-**So the six rules were read out of the script and checked by hand, mechanically,
-against the report as it sits:** rule 1, a `UNIT:` line at line 35, inside the 60
-the script reads; rules 2 and 3, exactly four `## ` headings and they are the four
-expected names in the expected order; rule 4, section 4 present; rule 5, section 3
-carries 36 non-blank lines; rule 6, the ordering block is in the first 30 lines
-with `READ IN THIS ORDER`, an `A.`, a `B.`, a `C.` and `raises 4 items`, which is
-the count the script requires C to commit to. **That is a hand check and it is
-worth exactly what a hand check is worth.**
+### Task 3 - `docs/full-suite-run.md`, committed
 
-**`python`, `rm` and a compound `&&` were also refused once each.** The python and
-compound calls were adapted past. The `rm` refusal left two helper files at
-`tools/unit228/`, written before I found the interpreter was out of scope;
-**untracked, not committed**, and a one-line job for whoever next opens a shell.
+Seven sections, **every line tagged `[measured 2026-09-03]` or `[inherited]`**.
+What to type per project with the reason attached, where to read the answer with
+the UTF-16 console trap named, the expected counts with the plan's 2718 marked
+stale, how long each leg takes, what a hang looks like beside a failure with
+tonight's text quoted verbatim, what to do when a host stalls, and what the run is
+read for with `docs/test-baseline.md`'s own two caveats quoted honestly.
+**`Hamlet.RadioEngine.Tests` was not run tonight and the file says so in those
+words** - its timing is inherited and labelled.
+
+### Task 4 - the standing gates, taken at the end
+
+- **`Ft8Sharp`: 524 total, 523 executed, 523 passed, 0 failed, 1 skipped**, from the
+  TRX `Counters` element, in **5 m 09 s** - unit 229 read the same figures in
+  5 m 11 s. **The failing set is EMPTY.** The one skip is
+  `Ft8TableGenerationTests.RewriteTheCheckedInTablesFile`, the table-write gate,
+  and is expected.
+- **Attribution: `git diff --name-only 2828ab6..HEAD` gives 231 paths, 18 of them
+  under `src/Hamlet.*` or `tests/Hamlet.*`.** **The plan's reduction therefore does
+  not apply to this unit by its own terms, and no clean attribution diff is
+  claimed.** The criterion is answered by those named paths plus tests over the
+  changed code. Worth adding, as a fact and not as a laundering: **this unit itself
+  changed none of those 18** - it committed `PROJECT_STATUS.md`, `PHASE_STATUS.md`,
+  `Directory.Build.props`, `OPEN_ISSUES.md`, `docs/full-suite-run.md` and
+  `tools/unit230/census.sh` and nothing else.
+- **Channel tests: App 9 of 9 in 2.6 s, re-run AFTER the 1.12.36 bump** because the
+  root version is one of the three channels and it is what moved. **Engine 38 of 38
+  in 13 m 38 s**, backgrounded, alone, with statuses written across it.
+  **Both failing sets EMPTY.**
+
+### Task 5 - the drop candidate, kept
+
+`HM-OPEN-069` asked in its own words for somebody to run the Views classes with a
+TRX logger until one does not return. **Three units in a row recorded that they had
+not done it.** Tonight it was done, and the entry is rewritten with the ten-run
+table, the two things it had wrong, and a `blocks:` line that is finally true: it
+blocked Tim's one full-suite run until today, and since `docs/full-suite-run.md` it
+does not. The original text is kept below, labelled, rather than overwritten.
+
+### Decisions I made for myself
+
+1. **I re-ordered the tasks.** Task 5 and the version bump were committed before
+   task 4's gates finished, because the Engine channel leg is 13 minutes and
+   leaving it to last would have put the whole unit's evidence behind one long run.
+   The gates were still taken at the end, as the instruction directs.
+2. **I ran four diagnostic invocations the instruction did not name** - E, F, G1
+   and Q3/Q4. They are what turned "this project cannot be read" into "here is how
+   you read it", and without them task 3 would have been a runbook for an
+   instrument that does not work.
+3. **I used a 3-minute hang bound, not unit 229's longer one**, and
+   `--blame-hang-dump-type none` throughout. No dump was written tonight.
+
+### Mismatches found, reported and NOT repaired
+
+- **The instruction's channel filter is the App one.** Task 4 names
+  `DecisionLogOrderTests`, `VersionTests`, `EveryResourceKeyResolvesTests`,
+  `ViewTestsActThroughControlsTests` for both projects. In `Hamlet.RadioEngine.Tests`
+  that filter **matches nothing** - I ran it and got `total="0"` in 1.5 s. The
+  Engine channel set is **eleven different classes**, recorded in
+  `src/Ft8Sharp/porting-notes.md`, and that is what the 38 of 38 above was run with.
+- **`PHASE_OUTCOME.md`'s last entry records unit 229 as `FATE: executed`,
+  `STATE_AFTER: blocked`, `COST: 24.5806055` - unit 228's cost - and unit 228's
+  `STATE_WHY` verbatim. `RUN_LEDGER.md` records the same run as `killed by the
+  watchdog: no status write within 25 min of the launch clock`.** Confirmed in both
+  files. Neither was changed.
+- `PROJECT_STATUS.md` `RULES_AT` reads `HM-DEC-152 (2026-08-31)`; the highest entry
+  in `CLAUDE.md` section 1 reads `CPS-DEC-0152`. Unchanged.
+- `PHASE_OUTCOME.md`'s header says steps 1 and 3 are `done` while the last entry for
+  each says `partial`. Unchanged.
+- `PHASE_STATUS.md` read `CURRENT_STEP: 6` and `WORK_INSTRUCTION: 229`. I set the
+  `WORK_INSTRUCTION:` line to `230 - the closing instrument, and the night that
+  survives its own test runs`, which is mine to write. **`CURRENT_STEP:` belongs to
+  the launcher and still reads 6 while this unit worked step 7.** Not mine to touch.
+- **The "2026-09-02 ruling that steps 6 and 7 do not depend on each other", cited by
+  units 224, 225 and 228, is not in `PHASE_PLAN.md`.** It is not repeated here. What
+  licenses step 7 work while step 6 waits is the plan's Branching section.
+- **Untracked debris, unchanged and uncommitted**: eight `.obj` files at the root,
+  `unit215-section.md`, `unit216-section.md`, `unit217-status.py`,
+  `toolsarbitervalidate-output.bat`, `tools/unit217/`, `tools/unit228/`, and
+  `TestResults223/`, `TestResults228/`, `TestResults229/`. **`TestResults229/`
+  contains a 397 MB hang dump** at
+  `TimDi_QUIVERFULL_2026-09-03_00_36_47/In/QUIVERFULL/testhost_47244_20260903T004236_hangdump.dmp`.
+  I added `TestResults230/` to that pile and did not commit it either.
+
+### The validator - and this report is NOT claimed as an exit 0
+
+**The permitted spellings were attempted once and refused, for the seventh unit
+running.** `tools\arbiter\validate-output.bat output.md` reached the shell as
+`toolsarbitervalidate-output.bat: command not found` - Git Bash removes a
+backslash before an ordinary letter, exactly as unit 228 diagnosed. The
+forward-slash form and a `cmd //c` wrapper were both refused by the harness. **The
+remedy is a permission change, which is Tim's under `ARBITER.md` section 6.** It is
+not campaigned for here.
+
+**Hand-checked against the script's own body, which I read in full:**
+
+1. `UNIT:` line present and parseable, **line 38**, inside the 60-line window the
+   script reads. **PASS.**
+2. The four `## ` headings, in order, exact names: lines 45, 267, 297, 355, and
+   the joined string matches the script's `WANT` exactly. **PASS.**
+3. No fifth `## ` heading - `grep -n '^## '` returns those four and nothing else.
+   **PASS.**
+4. `## 4. What's blocking us` present, and its apostrophe verified as ASCII `0x27`
+   by `od -c` so `findstr /b /c:` will match it. **PASS.**
+5. Section 3 non-empty - 56 lines between the section 3 and section 4 headings.
+   **PASS.**
+6. Ordering block: `READ IN THIS ORDER` at line 1, `A.` at 3, `B.` at 14, `C.` at
+   25, and `raises 3 items` at line 35 - all inside the 60-line window, and C
+   commits to a count. **PASS.**
+
+**Six of six by hand. No exit 0 was obtained and none is claimed.**
 
 ## 2. What the owner should expect
 
-**The Digital tab has one more thing on it and most of the time it will not be
-there.** A strip above the waterfall, outside the scroller so a collapsed panel
-cannot hide it, in the same amber the scope note uses. It carries one sentence and
-it is gone entirely when there is nothing to say.
+**Nothing about the application has changed.** No file under `src/` moved. No
+threshold moved. No panel says anything different. If you start Hamlet it behaves
+exactly as it did after unit 228. **That is deliberate** - the decoder you are
+about to measure at 14.074 must not move the night before you measure it.
 
-**What will look wrong and is not.**
+**What changed is that the test suite can be read.** Before tonight, no run of
+`Hamlet.App.Tests` recorded in this repository had ever completed - the best was
+167 of 557, and unit 229's was 92. Tonight all 557 were recorded, all passing, in
+four commands. Those four commands are written down in `docs/full-suite-run.md`.
 
-- **It will be there tonight, saying the training radio.** That is correct. With
-  no rig connected Hamlet listens to its own synthesised audio, real FT8 cannot
-  arrive, and the line says so rather than letting an empty table imply a dead
-  band.
-- **It says the clock is not checked for the first few seconds after start.** The
-  time query has not answered yet. It clears itself.
-- **It does not say "nothing will decode" about a clock that is out**, which is
-  what every FT8 guide on the internet says. That is deliberate and section 1
-  gives the reason. If you would rather it shouted, section 4 has the ruling.
-- **The FT8 chip on the mode strip is now dark most of the time.** It used to be
-  lit always, and it was lit because it was typed into the markup rather than
-  because anything had been read. Dark is the honest picture on 7.030.
-- **The readiness line does not know whether anybody is transmitting.** All five
-  conditions right and an empty table means the band is quiet, and that is not a
-  fault the line will ever report.
+**What will look wrong but is not:**
 
-**Nothing about the decoder moved.** No threshold, no `Ft8Sharp` file, no library
-behaviour. Tomorrow's measurement is against exactly the decoder unit 227 measured.
+- **`Hamlet.App.Tests` still cannot be run whole, and running it whole still looks
+  like a pass.** It prints `Passed!` and `Failed: 0` and then `Test Run Aborted`,
+  after running fewer than half its tests. **That is the single most misleading
+  thing in this repository** and section 5 of the runbook exists for it.
+- **The version went to 1.12.36 with no product change in it.** Under HM-DEC-150
+  every unit that touches the tree takes a patch; this one bought measurement, not
+  behaviour.
+- **`HM-OPEN-069` is still `status: open`.** Its `blocks:` line now says nothing,
+  which is true - the operational problem is solved by procedure. What is still
+  open is the underlying object, which nobody has named.
+- **`docs/test-baseline.md` has not been updated** to say that `Hamlet.App.Tests`
+  now has a complete run column. That was not this unit's file to rewrite;
+  `docs/full-suite-run.md` says so beside it.
+- **A 397 MB hang dump is sitting in `TestResults229/`.** It is untracked, `rm` is
+  out of scope, and it is yours to delete whenever you like.
 
 ## 3. What you should see
 
-**What the line says on this machine right now, with the band closed.** On a view
-model built the way the application builds one, before anything is started, and
-printed by the test that asserts it:
+**The first line of `docs/full-suite-run.md` for `Hamlet.App.Tests` is this, and on
+this machine it comes back:**
 
-> nothing is listening yet, so there is no audio arriving here at all and none of
-> it can be cut into slots however busy the band is. Hamlet opens the sound card
-> when it starts listening, and until it does this tab has nothing to work on.
+```
+dotnet test tests\Hamlet.App.Tests\Hamlet.App.Tests.csproj ^
+  -p:OutputPath=bin/unit230/ ^
+  --filter "FullyQualifiedName!~Hamlet.App.Tests.Views" ^
+  --logger "trx;LogFileName=app-1-not-views.trx" ^
+  --results-directory TestResults-close ^
+  --blame-hang-timeout 2m --blame-hang-dump-type none
+```
 
-**When you start Hamlet tonight without connecting the radio**, the source becomes
-the training radio and the line becomes:
+**The prompt comes back on its own in about 50 seconds**, exit code 0, and the last
+two lines are:
 
-> this is the training radio rather than the receiver, so everything in the audio
-> was made by Hamlet and nothing off the air can reach the table below. Real
-> signals start arriving when the radio's own audio is the source.
+```
+Data collector 'Blame' message: All tests finished running, Sequence file will not be generated.
+Passed!  - Failed:     0, Passed:   495, Skipped:     0, Total:   495, Duration: 48 s
+```
 
-**Tomorrow at 14.074 with the rig connected, in USB-D, with the clock checked, the
-strip is not there at all.** The tab looks exactly as it did before this unit, and
-if the table stays empty the band is quiet. That is the whole point of the control
-test.
+and the TRX reads:
 
-**The other five sentences, each printed by the test that asserts it:**
+```xml
+<Counters total="495" executed="495" passed="495" failed="0" ... />
+```
 
-> the clock has not been checked against UTC yet, so where the fifteen second
-> boundaries fall is not known and nothing is being cut into slots. It settles
-> itself when the time check answers, so this one is usually worth a moment before
-> you go looking anywhere else.
+**Three more commands, 4.4 s, 4.6 s and 2.7 s, add 25, 20 and 17. That is 557 of
+557 with nothing red - the first time this project has ever been counted whole.**
 
-> the PC clock is about 4 seconds slow against UTC, where FT8 wants it inside about
-> a second. Hamlet cuts its slots on the offset it measured rather than on the
-> machine's own minute, so it is not lost, but a clock that far out drifts between
-> checks and the machine is worth putting back on a time server.
+**And the thing to recognise rather than diagnose at seven in the morning.** If you
+run that project WITHOUT a filter, this is what the screen does. Nothing appears
+for about 10 to 50 seconds while it works, then **nothing appears at all** - no
+output, no progress, no cursor movement. **You wait exactly as long as your
+`--blame-hang-timeout` says**, three minutes on the runs above, and then it ends
+itself with:
 
-> the radio has not said which mode it is in, so whether it is on the data setting
-> FT8 wants is unknown rather than wrong. Nothing is being claimed about it until
-> the radio answers for itself.
+```
+The active test run was aborted. Reason: Test host process crashed
+Data collector 'Blame' message: The specified inactivity time of 3 minutes has elapsed.
 
-> the radio is on the upper sideband but not on the data setting, and USB-D is what
-> takes the microphone out of the path and hands the computer the receiver's own
-> audio. It is worth changing before you decide the band is quiet.
+Passed!  - Failed:     0, Passed:   251, Skipped:     0, Total:   251, Duration: 7 s
+Test Run Aborted.
 
-> the dial is in CW fast lane, which the map does not have the digital modes
-> gathering in, so an FT8 signal turning up here would be a stranger. The band map
-> has the digital blocks marked if you want to move to one.
+The test running when the crash occurred:
+Hamlet.App.Tests.Views.TheTabOwnsTheWorkspaceTests.TheSelectedTabMergesIntoTheBoundary
+```
 
-**And the mode strip.** Tune to 7.074 and the `FT8` chip lights. Tune down to
-7.020 and every chip goes dark, where before tonight `FT8` stayed lit whatever the
-dial was doing.
+**Read it twice. It says `Passed!` and `Failed: 0`, and it ran 251 of 557.** The
+named test is not the culprit - six runs named six different tests. **If you run it
+without a hang bound at all, it never ends**, and it holds a write lock that fails
+your next build with `MSB3027`.
+
+**Nothing you can see in the application changed tonight.** This unit only makes
+the suite countable so that the run you make before closing the phase means
+something.
 
 ## 4. What's blocking us
 
-**1. May the readiness line say a clock that is out stops decoding, when in this
-program it does not?** *Ruling wanted.* What is in the tree tonight: the line
-reports how far out the clock is, says Hamlet cuts its slots on the measured offset
-so it is not lost, and says the machine is worth putting back on a time server.
-*Reasoning:* `Ft8SlotCutter` corrects for the offset, so the received wisdom about
-FT8 and PC clocks is true of WSJT-X and not of Hamlet, and §0.0 forbids a display
-claiming more than its input justifies. *Rejected, and why:* the instruction's own
-example sentence, *nothing will decode until that is fixed*, because it would send
-a morning to fix something already handled. **The counter-argument I could not
-settle and is yours:** a clock four seconds out is a machine whose time is not being
-disciplined at all, the measured correction is only as fresh as the last query, and
-you may prefer the blunt warning precisely because it gets the underlying fault
-fixed. This is what the display asserts, so it is yours without exception.
+**Three items. None of them blocks a step 7 criterion, and none needs an answer
+before you make the full-suite run.**
 
-**2. The mode strip carries four labels and the map knows more blocks than that.**
-*Ruling wanted.* `FT8`, `FT4`, `PSK31` and `WSPR` are yours from August and were
-kept. The map's digital blocks also include `JS8` and `RTTY`, which have no chip,
-so the strip goes dark in one of those while the readiness line stays silent
-because the dial **is** in digital territory. That is two surfaces agreeing on the
-facts and disagreeing in tone. Nothing here is wrong tonight; the question is
-whether you want a fifth and sixth chip, or a single chip that shows whatever the
-map says, or the four kept as they are because they are the ones you work.
+**1. The loop's own record of unit 229 disagrees with itself, and I was told not to
+repair it.**
 
-**3. The `Hamlet.App.Tests` host does not exit, and the plan reserves one
-full-suite run for you at the end of this phase.** *Not a ruling, a warning about
-an instrument.* Every test passes and then the process sits until a hang timeout
-kills it, at a different test each time, and it does so with none of tonight's
-tests in the run. `TestParallelism.cs` names the mechanism in its own comment: one
-process-wide Avalonia dispatcher. **If you run the whole suite by hand without
-`--blame-hang-timeout` you will watch it appear to hang and may read a healthy
-project as a broken one**, which is the same confusion this unit exists to end,
-one layer out. It is worth a unit of its own and it is not this one's.
+- **Ruling wanted:** whether `PHASE_OUTCOME.md`'s last entry should be corrected.
+- **Reasoning:** it records unit 229 as `FATE: executed` with `STATE_AFTER:
+  blocked`, carrying unit 228's `COST` of `24.5806055` and unit 228's `STATE_WHY`
+  word for word. `RUN_LEDGER.md` records the same run as killed by the watchdog at
+  00:51. The tree agrees with the ledger: no commit after `90c184c`, no `output.md`
+  newer than unit 228's, `PROJECT_STATUS.md` frozen at `TASK: 1 of 4`. A phase
+  outcome file that reports a killed run as executed, with another unit's cost,
+  makes the loop's own drift and spend unreadable.
+- **Rejected:** repairing it silently, which the instruction forbids and which
+  would teach nobody; and treating it as a one-off, when the same shape would
+  recur on the next watchdog kill.
 
-**4. Carried, not raised by this unit: the deliberate-divergence ruling from unit
-227.** Whether `Ft8Sharp` may diverge from the pin in order to hear better than it
-is still the one thing in the way of step 6's criterion 2, and it is still yours.
-Nothing tonight touched it and nothing tonight depends on it.
+**2. Two files now carry stale numbers that a reader would trust.**
 
-**In the same breath, and this one is cheap to fix for good:** the reason
-`validate-output.bat` has been refused to five units running is now diagnosed and
-it is a one-line edit to `run-unit-tools.txt`. The permitted spellings all carry
-single backslashes and Git Bash deletes a backslash before a letter, so the only
-form the shell will pass correctly is the one the scope does not permit. **Adding
-`Bash(cmd //c tools\\arbiter\\validate-output.bat:*)`, with the doubled
-backslashes, would end it.** Housekeeping: three files sit untracked and
-uncommitted because `rm` is refused, two at `tools/unit228/` and one shim at
-`toolsarbitervalidate-output.bat` in the root.
+- **Ruling wanted:** whether `PHASE_PLAN.md`'s census and `docs/test-baseline.md`
+  should be brought up to what is now measured, and by whom.
+- **Reasoning:** the plan records 2157 / 523 / 38 and a total of 2718; discovery
+  reads 2179 / 557 / 524 and 3260. Its 38 is a filter size in a census column.
+  Separately, `docs/test-baseline.md` says in its own voice that no completed
+  whole-project run of either Hamlet project has ever been produced - that is no
+  longer true of `Hamlet.App.Tests`, which now reads 557 of 557. Both files are the
+  ones a future unit will diff against.
+- **Rejected:** editing either tonight. `docs/full-suite-run.md` names both as
+  stale and gives the current figures beside them, which is the honest holding
+  position but is not a fix.
+
+**3. The Views stall is worked around, not fixed, and nobody has named the object.**
+
+- **Ruling wanted:** whether a unit should be spent naming what holds the Avalonia
+  headless dispatcher open, or whether the four-command workaround is enough.
+- **Reasoning:** the workaround is real and measured - 557 of 557 tonight - so this
+  is genuinely optional. Against that: the fault has now cost this phase parts of
+  five units, the suite cannot be run in one command by anyone or anything, and a
+  fix probably needs a debugger on the hang dump plus reading
+  `Avalonia.Headless.XUnit` 11.3.0, neither of which was reachable from inside this
+  session's permissions. **My reading names `MainWindowViewModel`'s undisposable
+  250 ms `DispatcherTimer` as the first place to look and explicitly not as a
+  finding.**
+- **Rejected:** attempting it tonight. Task 2's stop rule and the prohibition on
+  moving application behaviour before the bench check both point the same way, and
+  a speculative fix to inherited test infrastructure is how a night disappears.
+
+**On `validate-output.bat`:** the permitted spellings were attempted once, per the
+instruction, and refused for the seventh unit running. The six rules were
+hand-checked against the script's own body and all six pass; **this report is not
+claimed as an exit 0.** The details are at the end of section 1. The scope defect
+is parked and is not campaigned for here.
