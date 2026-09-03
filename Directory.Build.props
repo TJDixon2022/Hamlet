@@ -116,9 +116,29 @@
     timer lifetime, which is not moving the night before the owner measures the decoder at the radio.
     docs/full-suite-run.md is the deliverable - what he types, what he reads, how long each leg takes,
     what a hang looks like beside a failure, every line tagged measured-tonight or inherited.
+
+    1.12.41 -> UNIT 237, UNDER HM-DEC-150. A PATCH BECAUSE IT IS A DEFECT REPAIR AND NOT A NEW
+    CAPABILITY, and it is the first defect this phase has found in the segment between the antenna and
+    everything else. Every test that has ever shown this application hearing a real band starts from
+    mono floats that were already made - RealOffAirAudioReachesTheTabTests says so in its own comment
+    at line 311 - so WasapiAudioSource.Downmix and ReadSample, the code that makes those floats out of
+    a sound card's bytes, were executed by NO test in this repository at all. ReadSample decided a
+    sample was floating point only when the format's top-level tag read IeeeFloat, and Windows
+    shared-mode capture commonly presents its mix format as WAVE_FORMAT_EXTENSIBLE with the real
+    answer one level down in a subformat GUID. On such a device every float the radio delivered was
+    reinterpreted as a 32-bit integer: loud, structureless, nonlinear, and with every FT8 tone in it
+    destroyed - a healthy level meter over an empty table. MEASURED, at 48 000 and at 44 100 alike:
+    Karlis Goba's three busiest off-air recordings gave 47 messages through the float path, 24 through
+    an extensible-float device buffer, and 47 after the repair. Fourteen rows of the format table are
+    now asserted from constructed bytes, mono and stereo with the channels carrying different values.
+    The _ => 0.0 arm is gone; an unrecognised format throws, the buffer is dropped, and nothing
+    reaches the tap, because inventing silence is the one answer no reading downstream can tell from a
+    dead band (HM-DEC-009). AND THE HONEST QUALIFIER: both capture endpoints active on this machine
+    declare IeeeFloat 32-bit with no wrapper, so neither of them would have hit this, and the silent
+    bench check of 2026-09-03 is NOT explained by it. No file under src/Ft8Sharp/ changed.
   -->
   <PropertyGroup>
-    <Version>1.12.40</Version>
+    <Version>1.12.41</Version>
   </PropertyGroup>
 
   <!--
