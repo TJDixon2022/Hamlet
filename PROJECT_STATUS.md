@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: RUNNING
-TASK: 5 of 7
+TASK: 7 of 7
 WORK_INSTRUCTION: 234
 BALL: claude
 NEXT_PASTE: none
 RULES_AT: HM-DEC-152 (2026-08-31)
-UPDATED: 2026-09-03T13:02:00-04:00
-NOTE: All four silent paths now leave a warn line and each was watched doing it on disk - NothingIsListening, NoAudioYet, IOException and UnauthorizedAccessException, one line each, reason the whole payload, no path and no message anywhere in it. The two exception paths were forced for real rather than mocked: a file where the digital folder goes, and a directory where the WAV goes. Privacy walk taken 64 to 65. Tasks 2, 3 and 4 are all green, so task 5 is droppable - but the trace found a defect-shaped fact the owner needs on that sheet, so it is being written rather than dropped.
+UPDATED: 2026-09-03T13:35:00-04:00
+NOTE: All five gates green off their TRX Counters, run one at a time and never overlapping, every failing set EMPTY - Ft8Sharp 524 total 523 passed 1 skipped by design; engine channel 38 of 38; App channel 9 of 9 after the bump to 1.12.38; changed code 20 of 20 across the five classes this unit added or touched; attribution 244 paths with 31 under Hamlet against unit 233's 240 with 27, so the plan's reduction does not apply and is not claimed. Writing output.md and pushing.
 
 ---
 
