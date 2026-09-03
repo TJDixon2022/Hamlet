@@ -2,8 +2,8 @@ PHASE: Hamlet hears FT8 off the radio and displays the decoded text on screen
 PHASE_SET: 2026-08-31
 DESCRIPTION: Port ft8_lib to a managed FT8 decoder and wire it to Hamlet's audio and display
 CURRENT_STEP: 6
-WORK_INSTRUCTION: 228 - why nothing is decoding, said before the operator has to ask
-HEARTBEAT: 2026-09-02 22:34:57
+WORK_INSTRUCTION: 230 - the closing instrument, and the night that survives its own test runs
+HEARTBEAT: 2026-09-03 08:09:58
 STEP: 1 | done | the library exists and its tables are proven
 STEP: 2 | done | messages round-trip through 77 bits
 STEP: 3 | done | a valid FT8 signal can be produced
