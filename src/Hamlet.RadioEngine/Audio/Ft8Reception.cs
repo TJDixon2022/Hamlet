@@ -69,7 +69,27 @@ public sealed record Ft8SlotCensus(
     int BecameTextCount,
     int DuplicateCount,
     IReadOnlyList<int> TopSyncScores,
-    int SampleRate);
+    int SampleRate)
+{
+    /// <summary>How loud the audio this slot was cut from was (unit 236).</summary>
+    /// <remarks>
+    /// <para>**ADDED RATHER THAN SUBSTITUTED**, on unit 233's own precedent. Every
+    /// member above keeps its meaning and every construction site above keeps
+    /// compiling; this sits beside them and carries the one thing they could never
+    /// say.</para>
+    /// <para>**AND THE THING THEY COULD NEVER SAY IS WHETHER THERE WAS ANY AUDIO
+    /// AT ALL.** Eight members describe the decode. A sound card handing over
+    /// digital silence, a radio with its USB cable out, a laptop microphone in a
+    /// quiet room and a twenty metre band with no decodable FT8 in it all produce
+    /// the same eight numbers, and on 2026-09-03 the phase's closing line was
+    /// performed at the radio and the record could not separate them.</para>
+    /// <para>**IT IS A LEVEL AND NOT A SIGNAL-TO-NOISE RATIO** (`CLAUDE.md` §0.0),
+    /// and <see cref="Ft8SlotLevel"/> says so at length.</para>
+    /// <para>Defaults to <see cref="Ft8SlotLevel.None"/>, which is what a census
+    /// line built by a caller that had no audio to measure has.</para>
+    /// </remarks>
+    public Ft8SlotLevel Level { get; init; } = Ft8SlotLevel.None;
+}
 
 /// <summary>What a stretch of captured audio gave up.</summary>
 /// <param name="Decodes">The messages, oldest slot first.</param>
@@ -208,7 +228,16 @@ public static class Ft8Reader
                 result.BecameTextCount,
                 result.DuplicateCount,
                 TopScores(places),
-                slot.Audio.SampleRate));
+                slot.Audio.SampleRate)
+            {
+                // **MEASURED FROM `slot.Audio`, NOT FROM `samples`** (unit 236).
+                // The resampler above is one of the things a slot that found
+                // nothing could be, and a level taken downstream of a suspect
+                // cannot clear it. This is the same reason `SampleRate` on the
+                // line above is the rate the audio arrived at rather than the
+                // twelve kilohertz grid it was put on.
+                Level = Ft8SlotLevel.Of(slot.Audio),
+            });
 
             foreach (var message in result.Messages)
             {

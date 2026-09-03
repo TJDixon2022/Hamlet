@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: WORKING
-TASK: 1 of 7
+TASK: 2 of 7
 WORK_INSTRUCTION: 236
 BALL: claude
 NEXT_PASTE: none
 RULES_AT: HM-DEC-152 (2026-08-31)
-UPDATED: 2026-09-03T14:40:46-04:00
-NOTE: Task 1's trace is answered and it found something that changes what task 2 is worth. THE BEFORE IS NOT ZERO, but it is close and it is not on the slot record. A level EXISTS in this tree - AudioTap.Level (AudioTap.cs:109), an AudioLevel of PeakDb/RmsDb/FloorDb/Clipping computed on the very tap the FT8 slot watch reads - and AppEvents.DecodeQuality (AppEvents.cs:1059) writes inputPeakDb, inputRmsDb, inputFloorDb and nearlySilent into telemetry. It is not per slot, it is not tied to a slot boundary, and NoteDecodeQuality (MainWindowViewModel.cs:4202) is rate-limited by a did-it-move test whose starting state is CwDecodeReport.None, whose Level.PeakDb is AudioLevel.SilenceDb = -90 - which is exactly what a digitally silent input reads, because AudioTap.ToDb floors zero at -90. So a morning of pure silence moves nothing and writes NOT ONE decode_quality line. Also confirmed: AudioTap.PeakOf floors an all-zero recording at -90 dBFS, which is the plausible-number-for-no-measurement that HM-DEC-009 forbids, so it is the arithmetic to follow and not the refusal. Section 2's claims 1, 2, 3, 4, 5, 6, 7, 10, 11, 12 and 13 all check out against the tree. Next: task 2, the level on every slot.
+UPDATED: 2026-09-03T14:46:31-04:00
+NOTE: THE NUMBERS ARE IN AND THE TWO CASES ARE NOW DIFFERENT FACTS. Ft8SlotLevel added beside the census - peak and rms in decibels relative to full scale, both NULLABLE, plus the sample count and the count of samples exactly zero - and computed in Ft8Reader.Read from slot.Audio before the resampler. Four tests, 4 of 4 green off TRX Counters, and the pinned clone at C:\Source\ft8_lib IS present so the off-air one ran rather than skipping. Measured: DIGITAL SILENCE reads peak none, rms none, 720000 of 720000 samples exactly zero, fraction 1.0000. REAL OFF-AIR (20m_busy/test_21.wav, 15 s at 12000 Hz, 140 candidates, 40 became text) reads peak -2.0541 dBFS, rms -14.1684 dBFS, 13 zero samples of 180000, fraction 0.0001, crest 12.11 dB. Synthesized noise at a thousandth of full scale reads peak -60.0000, rms -64.7653, no zeros at all - which is the whole point, a quiet band is not a dead input. The half-scale sine read -6.0206 and -9.0309 against arithmetic predicting -6.0206 and -9.0309, printed before the twentieth-of-a-decibel bound was asserted. The all-zero refusal is a null and NOT minus ninety, because AudioTap.ToDb floors a zero there and that is a plausible number somebody would average. Next: task 3, the level into the ft8_slot telemetry line.
 
 ---
 
