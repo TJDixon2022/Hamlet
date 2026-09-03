@@ -955,6 +955,63 @@ public partial class MainWindowViewModel : ObservableObject
     /// <summary>The census of the last slot that decoded and produced no text.</summary>
     private string _digitalCensusLine = "";
 
+    /// <summary>What the audio path delivered, taken at the moment it is read.</summary>
+    /// <remarks>
+    /// **TAKEN HERE RATHER THAN CARRIED**, because a ratio is a fact about a
+    /// span of wall clock and one carried from earlier would describe a
+    /// different span than the line it is printed on.
+    /// </remarks>
+    private AudioArrival MeasureArrival()
+    {
+        var tap = _decoder?.Tap;
+
+        if (tap is null)
+        {
+            return AudioArrival.None;
+        }
+
+        var wasapi = _audioInput as WasapiAudioSource;
+        var slotSpan = TimeSpan.FromSeconds(Ft8Slots.SlotSeconds);
+        var now = DateTime.UtcNow;
+
+        return new AudioArrival(
+            tap.ArrivalRatio(slotSpan),
+            tap.ArrivalRatioBetween(now - slotSpan, now),
+            _decoder?.DecodeQueueDroppedChunks ?? 0,
+            _decoder?.DecodeQueueDroppedSamples ?? 0,
+            wasapi?.CallbackFailures ?? 0,
+            wasapi?.EmptyBuffers ?? 0,
+            wasapi?.LongestCallbackMicroseconds ?? 0,
+            tap.SamplesSeen);
+    }
+
+    /// <summary>What the census line says about the audio that reached it.</summary>
+    /// <remarks>
+    /// <para>**IT IS ON THE CENSUS BECAUSE THE CENSUS IS WHERE THE OPERATOR
+    /// LOOKS WHEN NOTHING DECODED.** A census that lists candidates and parity
+    /// failures without saying whether the audio was whole sends him to the
+    /// decoder, which is where three units went.</para>
+    /// <para>**IT SAYS NOTHING WHEN NOTHING WAS MEASURED** (§0.0), and it says
+    /// nothing when the audio was whole either - a line that always speaks is
+    /// one that stops being read, which is the reasoning the readiness strip
+    /// already carries.</para>
+    /// </remarks>
+    private static string ArrivalSuffix(AudioArrival arrival)
+    {
+        if (double.IsNaN(arrival.RecentRatio))
+        {
+            return "";
+        }
+
+        if (!arrival.FellShort(Ft8SlotWatch.LeastArrival))
+        {
+            return "";
+        }
+
+        return "  The sound card delivered " + arrival.RecentText
+            + " of the last fifteen seconds, so this slot is fragments.";
+    }
+
     /// <summary>
     /// One line under the decoded table naming the stage that refused, or "".
     /// </summary>
@@ -6641,7 +6698,8 @@ public partial class MainWindowViewModel : ObservableObject
                     here?.PassbandHz,
                     DescribeAudioPath(),
                     heard.Slots,
-                    heard.Refusal));
+                    heard.Refusal,
+                    MeasureArrival()));
 
             StatusText =
                 $"{_digitalDecodeNote}. Kept the last "
@@ -6838,8 +6896,11 @@ public partial class MainWindowViewModel : ObservableObject
         // **THE CENSUS AND THE REFUSAL, NOT THE RECEPTION.** `AppEvents` is handed
         // only the things that cannot hold a decoded message, which is HM-DEC-018
         // enforced by the signature rather than remembered here.
+        var arrival = MeasureArrival();
+
         AppEvents.Ft8SlotsRead(
-            _telemetry, heard.Slots, heard.Refusal, heard.Offset, DateTime.UtcNow);
+            _telemetry, heard.Slots, heard.Refusal, heard.Offset, DateTime.UtcNow,
+            arrival);
 
         if (heard.Refusal.Length > 0)
         {
@@ -6865,7 +6926,7 @@ public partial class MainWindowViewModel : ObservableObject
         }
 
         _digitalDecodeNote = DescribeDecodes(heard);
-        _digitalCensusLine = DescribeCensus(heard);
+        _digitalCensusLine = DescribeCensus(heard) + ArrivalSuffix(arrival);
 
         RaiseDigitalDecodeChanges();
     }

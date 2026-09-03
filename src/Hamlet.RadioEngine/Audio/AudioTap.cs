@@ -1,4 +1,4 @@
-namespace Hamlet.RadioEngine.Audio;
+﻿namespace Hamlet.RadioEngine.Audio;
 
 /// <summary>
 /// What the decoder is actually being fed, right now (HM-DEC-088).
@@ -105,6 +105,25 @@ public sealed class AudioTap
     private double _floorDb = AudioLevel.SilenceDb;
     private bool _started;
 
+    /// <summary>Wall-clock marks, one per Take, for the arrival ratio.</summary>
+    /// <remarks>
+    /// <para>**THE ONLY DEVICE-INDEPENDENT WAY TO SAY THE AUDIO IS SHORT.**
+    /// NAudio 2.2.1 defines `AudioClientBufferFlags.DataDiscontinuity` and
+    /// `WasapiCapture` never surfaces it: `WaveInEventArgs` carries `Buffer` and
+    /// `BytesRecorded` and nothing else. So there is no overrun signal to read,
+    /// and arrival has to be inferred from how many samples turned up against
+    /// how much time passed - which is exactly what work instruction 238's own
+    /// table did by hand from four press captures.</para>
+    /// <para>A small ring of marks rather than a running average, because the
+    /// slot refusal needs the ratio across **one slot's own wall-clock span**
+    /// and not a smoothed figure that a good minute can hide a bad slot inside.
+    /// </para>
+    /// </remarks>
+    private readonly (DateTime AtUtc, long SamplesSeen)[] _marks = new (DateTime, long)[512];
+
+    private int _markWrite;
+    private int _marksFilled;
+
     /// <summary>The most recent level, or nothing measured yet.</summary>
     public AudioLevel Level { get; private set; } = AudioLevel.None;
 
@@ -157,6 +176,17 @@ public sealed class AudioTap
             }
 
             SamplesSeen += samples.Length;
+
+            // **THE MARK IS TAKEN HERE, WHERE THE AUDIO ACTUALLY ARRIVES.**
+            // Timing it anywhere else would measure when something asked about
+            // the audio rather than when the device delivered it.
+            _marks[_markWrite] = (DateTime.UtcNow, SamplesSeen);
+            _markWrite = (_markWrite + 1) % _marks.Length;
+
+            if (_marksFilled < _marks.Length)
+            {
+                _marksFilled++;
+            }
 
             for (var i = 0; i < samples.Length; i++)
             {
@@ -340,6 +370,110 @@ public sealed class AudioTap
 
             return new MonoAudio(_sampleRate, samples);
         }
+    }
+
+    /// <summary>
+    /// What fraction of real time the device actually delivered, over a window.
+    /// </summary>
+    /// <param name="window">How far back to look.</param>
+    /// <returns>
+    /// Samples delivered divided by samples a continuous stream would have
+    /// delivered in the same wall-clock span, or NaN where there is not enough
+    /// history to say.
+    /// </returns>
+    /// <remarks>
+    /// <para>**IT IS A COUNT OVER A COUNT AND IT IS LABELLED AS ONE** (§0.0).
+    /// It is not a signal-to-noise ratio, not a quality figure and not a
+    /// judgement about the band. It says: this many samples arrived, that much
+    /// time passed, here is the fraction.</para>
+    /// <para>**NaN IS NOT ZERO.** Too little history to divide by is *nobody
+    /// measured*, and a zero there would read as *the sound card delivered
+    /// nothing*, which is a different and much louder claim.</para>
+    /// <para>One above is possible and is not clamped: a device whose clock runs
+    /// slightly fast, or a burst arriving after a stall, genuinely delivers more
+    /// than the nominal rate for a moment. Hiding that would be hiding the same
+    /// class of fact this exists to show.</para>
+    /// </remarks>
+    public double ArrivalRatio(TimeSpan window)
+    {
+        lock (_lock)
+        {
+            if (_sampleRate <= 0 || _marksFilled == 0)
+            {
+                return double.NaN;
+            }
+
+            var now = DateTime.UtcNow;
+
+            return RatioBetween(now - window, now);
+        }
+    }
+
+    /// <summary>The same fraction across one stated wall-clock span.</summary>
+    /// <param name="fromUtc">The start of the span.</param>
+    /// <param name="toUtc">The end of the span.</param>
+    /// <returns>The fraction, or NaN where the marks do not cover it.</returns>
+    /// <remarks>
+    /// **THE SLOT'S OWN RATIO**, which is what the refusal needs: a slot is
+    /// fifteen seconds of wall clock and the question is how much audio arrived
+    /// inside it, not how the last minute averaged.
+    /// </remarks>
+    public double ArrivalRatioBetween(DateTime fromUtc, DateTime toUtc)
+    {
+        lock (_lock)
+        {
+            return RatioBetween(fromUtc, toUtc);
+        }
+    }
+
+    /// <summary>The arithmetic, with the lock already held.</summary>
+    private double RatioBetween(DateTime fromUtc, DateTime toUtc)
+    {
+        var span = (toUtc - fromUtc).TotalSeconds;
+
+        if (_sampleRate <= 0 || _marksFilled == 0 || span <= 0)
+        {
+            return double.NaN;
+        }
+
+        long? atStart = null;
+        long? atEnd = null;
+        var oldest = DateTime.MaxValue;
+
+        for (var i = 0; i < _marksFilled; i++)
+        {
+            var mark = _marks[i];
+
+            if (mark.AtUtc < oldest)
+            {
+                oldest = mark.AtUtc;
+            }
+
+            // The newest mark at or before the start, and at or before the end.
+            if (mark.AtUtc <= fromUtc && (atStart is null || mark.SamplesSeen > atStart))
+            {
+                atStart = mark.SamplesSeen;
+            }
+
+            if (mark.AtUtc <= toUtc && (atEnd is null || mark.SamplesSeen > atEnd))
+            {
+                atEnd = mark.SamplesSeen;
+            }
+        }
+
+        // **NO MARK BEFORE THE SPAN BEGAN MEANS THE HISTORY DOES NOT REACH IT.**
+        // Treating the first mark as the start would divide real audio by a
+        // shorter span and report a ratio near one for a stream that had only
+        // just begun - flattering exactly the case this is here to catch.
+        if (atEnd is null || (atStart is null && oldest > fromUtc))
+        {
+            return double.NaN;
+        }
+
+        var delivered = atEnd.Value - (atStart ?? 0);
+        var expected = span * _sampleRate;
+
+        return expected <= 0 ? double.NaN : delivered / expected;
     }
 
     /// <summary>Throw away what is held, so the next capture starts fresh.</summary>

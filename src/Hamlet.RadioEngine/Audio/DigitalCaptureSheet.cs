@@ -94,6 +94,10 @@ public static class DigitalCaptureSheet
     /// `ShowDecodes` first, deliberately — so this is passed in rather than
     /// decoded a second time.
     /// </param>
+    /// <param name="arrival">
+    /// What the audio path delivered, as counts. Default is nothing measured,
+    /// which the sheet says rather than guessing.
+    /// </param>
     /// <param name="refusal">
     /// Why the reading produced nothing, in the reader's own words, or "".
     /// </param>
@@ -109,7 +113,8 @@ public static class DigitalCaptureSheet
         long? needsHz,
         AudioPath? audioPath = null,
         IReadOnlyList<Ft8SlotCensus>? census = null,
-        string refusal = "")
+        string refusal = "",
+        AudioArrival arrival = default)
     {
         ArgumentNullException.ThrowIfNull(state);
 
@@ -234,7 +239,7 @@ public static class DigitalCaptureSheet
         // captured* are different statements and only one of them is about the
         // decoder. A press lands wherever the operator's thumb lands, so a
         // thirty-second grab holds one whole slot, or two, or none.
-        AppendGeometry(Line, sheet, startUtc, capturedUtc, clock);
+        AppendGeometry(Line, sheet, startUtc, capturedUtc, clock, arrival);
 
         sheet.Append('\n');
 
@@ -249,7 +254,8 @@ public static class DigitalCaptureSheet
         StringBuilder sheet,
         DateTime startPcUtc,
         DateTime endPcUtc,
-        ClockOffset clock)
+        ClockOffset clock,
+        AudioArrival arrival)
     {
         if (Ft8Slots.TrueUtc(startPcUtc, clock) is not { } from
             || Ft8Slots.TrueUtc(endPcUtc, clock) is not { } to)
@@ -271,6 +277,35 @@ public static class DigitalCaptureSheet
                 whole++;
             }
         }
+
+        // **WHETHER THIS FILE IS A RECORDING OR A COLLAGE**, which is the one
+        // thing every line above assumes and none of them checks. On 2026-09-03
+        // four consecutive press captures were byte-identical prefixes of one
+        // another: the tap was filling at 13% of real time, so a thirty-second
+        // file held about four minutes of fragments and every figure on the
+        // sheet described it as though it were thirty seconds of band.
+        //
+        // **NOT MEASURED IS SAID AND NEVER GUESSED** (HM-DEC-009). A capture
+        // taken before the tap had a slot's worth of history has no ratio, and
+        // a zero there would read as a dead sound card.
+        line("arrival", double.IsNaN(arrival.RecentRatio)
+            ? Unread + "  (no arrival ratio was taken for this capture)"
+            : arrival.RecentText
+              + "  (samples the sound card delivered over the last fifteen "
+              + "seconds, divided by the samples a continuous stream would "
+              + "have delivered in the same wall clock; below 100% this file "
+              + "is fragments with gaps in it rather than a recording)");
+
+        line("audioPathDrops", string.Format(
+            CultureInfo.InvariantCulture,
+            "{0} chunks / {1} samples dropped by the decode queue, "
+            + "{2} callback failure(s), {3} empty buffer(s), "
+            + "longest callback {4:0} us",
+            arrival.QueueDroppedChunks,
+            arrival.QueueDroppedSamples,
+            arrival.CallbackFailures,
+            arrival.EmptyBuffers,
+            arrival.LongestCallbackMicroseconds));
 
         line("slotGrid", boundaries.Count == 0
             ? "no fifteen-second boundary falls inside this window at all"

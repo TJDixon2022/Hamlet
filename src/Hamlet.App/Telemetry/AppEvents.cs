@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 using Hamlet.RadioEngine.Audio;
 using Hamlet.RadioEngine.Cw;
 using Hamlet.RadioEngine.Rig;
@@ -855,6 +855,16 @@ public static class AppEvents
             TelemetryCategory.Decode, "decode_window", window.ToBag(),
             window.Level);
     }
+    /// <summary>A ratio rounded for the record, or null where none was taken.</summary>
+    /// <remarks>
+    /// **NULL AND NOT NaN, AND NOT ZERO.** A JSON NaN is not valid JSON in most
+    /// readers, and a zero would read as a sound card that delivered nothing
+    /// (HM-DEC-009). Absent is the honest entry for a measurement nobody took.
+    /// </remarks>
+    private static object? Ratio(double value)
+        => double.IsNaN(value) ? null : Math.Round(value, 4);
+
+
 
     /// <summary>
     /// What every FT8 slot the tab decoded gave up, one line each (unit 233).
@@ -866,6 +876,7 @@ public static class AppEvents
     /// </param>
     /// <param name="offset">The clock offset the reading was cut against.</param>
     /// <param name="nowUtc">
+    /// <param name="arrival">What the audio path delivered, as counts.</param>
     /// The moment the line is written, by the PC clock, used only to age the clock
     /// measurement. Passed rather than read, so the payload is a function of its
     /// arguments.
@@ -912,7 +923,8 @@ public static class AppEvents
         IReadOnlyList<Ft8SlotCensus>? slots,
         string refusal,
         ClockOffset offset,
-        DateTime nowUtc)
+        DateTime nowUtc,
+        AudioArrival arrival = default)
     {
         if (telemetry is null)
         {
@@ -939,6 +951,19 @@ public static class AppEvents
                     ["clockOffsetAgeSeconds"] = age is { } old
                         ? Math.Round(old.TotalSeconds, 1)
                         : null,
+
+                    // **THE AUDIO PATH'S OWN NUMBERS, ON THE REFUSAL TOO.** A
+                    // refusal that cannot say whether the audio arrived is the
+                    // line that read `nothing decoded yet` for an evening while
+                    // the tap was filling at 13% of real time.
+                    ["arrivalRatio"] = Ratio(arrival.RecentRatio),
+                    ["slotArrivalRatio"] = Ratio(arrival.SlotRatio),
+                    ["queueDroppedChunks"] = arrival.QueueDroppedChunks,
+                    ["queueDroppedSamples"] = arrival.QueueDroppedSamples,
+                    ["callbackFailures"] = arrival.CallbackFailures,
+                    ["emptyBuffers"] = arrival.EmptyBuffers,
+                    ["longestCallbackMicroseconds"] =
+                        Math.Round(arrival.LongestCallbackMicroseconds, 0),
                 },
                 TelemetryLevel.Warn);
 
@@ -973,6 +998,18 @@ public static class AppEvents
                     ["becameText"] = slot.BecameTextCount,
                     ["duplicates"] = slot.DuplicateCount,
                     ["topCostasMatchCounts"] = slot.TopSyncScores,
+
+                    // The same counters on a slot that decoded, because a slot
+                    // that produced candidates and no text is exactly the case
+                    // where the question is whether it was ever whole audio.
+                    ["arrivalRatio"] = Ratio(arrival.RecentRatio),
+                    ["slotArrivalRatio"] = Ratio(arrival.SlotRatio),
+                    ["queueDroppedChunks"] = arrival.QueueDroppedChunks,
+                    ["queueDroppedSamples"] = arrival.QueueDroppedSamples,
+                    ["callbackFailures"] = arrival.CallbackFailures,
+                    ["emptyBuffers"] = arrival.EmptyBuffers,
+                    ["longestCallbackMicroseconds"] =
+                        Math.Round(arrival.LongestCallbackMicroseconds, 0),
                     ["sampleRate"] = slot.SampleRate,
 
                     // **HOW LOUD THE AUDIO WAS, WHICH NONE OF THE ABOVE COULD

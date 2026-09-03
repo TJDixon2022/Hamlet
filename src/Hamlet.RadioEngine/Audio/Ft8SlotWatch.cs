@@ -1,4 +1,4 @@
-namespace Hamlet.RadioEngine.Audio;
+﻿namespace Hamlet.RadioEngine.Audio;
 
 /// <summary>One whole slot that has just finished, and the audio it was made of.</summary>
 /// <param name="SlotStartUtc">The quarter minute it opened on, corrected.</param>
@@ -115,6 +115,35 @@ public sealed class Ft8SlotWatch
     /// <summary>What is said when nothing is arriving at all.</summary>
     public const string NoAudio =
         "no audio is arriving, so no slot can be cut";
+
+    /// <summary>
+    /// The least of a slot's audio that must actually have arrived.
+    /// </summary>
+    /// <remarks>
+    /// <para>**0.98, AND THE TWO PER CENT IS FOR BUFFER-EDGE JITTER AND NOTHING
+    /// ELSE.** A slot boundary does not land on a device buffer boundary, so the
+    /// first and last buffers of a slot are counted at whichever side of the
+    /// edge they fell; at 48 kHz in 20 ms buffers that is under half a per cent
+    /// either way. Two per cent is that with room, and it is deliberately not
+    /// enough to admit a slot that is actually short.</para>
+    /// <para>**IT IS NOT A QUALITY THRESHOLD.** FT8 needs 12.64 s of continuous,
+    /// phase-coherent audio. A slot at 0.9 is not a slightly worse slot, it is
+    /// a collage of fragments with gaps in it, and no amount of decoder
+    /// sensitivity recovers a signal whose phase was cut apart.</para>
+    /// </remarks>
+    public const double LeastArrival = 0.98;
+
+    /// <summary>What the operator reads when the sound card fell behind.</summary>
+    /// <remarks>
+    /// **THIS IS THE SENTENCE THAT SHOULD HAVE BEEN ON SCREEN ON 2026-09-03.**
+    /// What was there instead was `nothing decoded yet`, which reads as an empty
+    /// band and sent three units looking at the decoder. The percentage is
+    /// filled in by the caller, because a refusal that cannot say how short it
+    /// was is the same unfalsifiable shrug in politer words.
+    /// </remarks>
+    public const string AudioShort =
+        "the sound card delivered {0} of the last fifteen seconds, so this slot "
+        + "is fragments and cannot be decoded";
 
     /// <summary>What is said when the samples have stopped keeping up.</summary>
     /// <remarks>
@@ -308,6 +337,32 @@ public sealed class Ft8SlotWatch
         // than widening across a night.
         _anchorSample = seen;
         _anchorPcUtc = nowPcUtc;
+
+        // **AND THE SLOT SAYS WHETHER ITS OWN AUDIO ACTUALLY ARRIVED.** Every
+        // check above asks whether the tap holds samples at the right INDEX;
+        // none of them asks whether those samples arrived in the fifteen seconds
+        // they claim to cover. On 2026-09-03 the tap was filling at 13% of real
+        // time, so a window at the right index held about two minutes of
+        // fragments wearing one slot's timestamp, and every check passed
+        // (HM-DEC-093: the path was uncounted, so nothing could say so).
+        var arrival = tap.ArrivalRatioBetween(
+            endedAtPcUtc.AddSeconds(-Ft8Slots.SlotSeconds), endedAtPcUtc);
+
+        // NaN is *nobody measured* and never a refusal: a watch that has just
+        // started has no marks reaching back a slot, and refusing there would
+        // report a fault about a device that is working (§0.0).
+        if (!double.IsNaN(arrival) && arrival < LeastArrival)
+        {
+            Rearm();
+
+            return new Ft8SlotLook(
+                null,
+                string.Format(
+                    System.Globalization.CultureInfo.InvariantCulture,
+                    AudioShort,
+                    arrival.ToString("P0", System.Globalization.CultureInfo.InvariantCulture)),
+                closed);
+        }
 
         return new Ft8SlotLook(
             new Ft8SlotReady(
