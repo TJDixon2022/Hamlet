@@ -301,11 +301,21 @@ manufactured silence):
   device that is not connected to anything. Go to the branch check below.
   *Measured*: a manufactured silent slot reads `null`, `null`, 720000 zero
   samples of 720000, fraction `1`.
+  **From 1.12.41 there is a fourth thing this can mean** — a sound card
+  speaking a format Hamlet cannot read. It now refuses such a buffer instead of
+  turning it into zeros, so nothing reaches the tab at all and the slot reads
+  exactly like an unplugged codec. *Added by unit 237, measured*: the two are
+  told apart by the `encoding` row of a capture sheet, one subsection down.
 - **The levels are numbers and the zero fraction is tiny.** Audio was arriving.
   The problem is downstream of the sound card, and the census counts on the same
   line say which stage. *Measured*: fifteen seconds of real off-air twenty metre
   audio read peak `-2.05`, rms `-14.17`, 13 zero samples out of 180000, fraction
   `0.000072`.
+  **Before 1.12.41 this reading had one more meaning and the sentence above was
+  wrong** — audio could be arriving, be perfectly loud, and have been *read
+  wrongly*, in which case the problem is not downstream of the sound card at all.
+  *Added by unit 237, measured*: see the next subsection. On a build of 1.12.41
+  or later that possibility is gone and the sentence above stands as written.
 - **The levels are numbers but very low** — say a peak below `-60`. Audio is
   arriving and there is almost none of it. *Measured*: synthesized noise at a
   thousandth of full scale read peak `-60.00` and rms `-64.77`, with **no zero
@@ -316,6 +326,46 @@ manufactured silence):
 how strong a signal in it was, and it cannot be compared with this mode's
 published sensitivity figure. There is no number anywhere in Hamlet that says
 how strong a station was.
+
+#### What the sound card said it was speaking (added by unit 237, *measured*)
+
+**Until 1.12.41 Hamlet decided whether a device's bytes were decimals or whole
+numbers by asking the wrong question, and on some sound cards it got the wrong
+answer.** Windows usually describes a capture device with a wrapper called
+WAVE_FORMAT_EXTENSIBLE, which puts the real answer one level down. Hamlet read
+only the top level. On a device described that way, every sample the radio
+delivered was read as a whole number instead of a decimal — **loud, and not the
+band**. The level meter would look healthy and the table would stay nearly empty,
+which is exactly what a working radio and a deaf program look like together.
+
+*Measured tonight*: three of Karlis Goba's off-air twenty-metre recordings gave
+**47 messages** through the path as it has always been tested, **24** through a
+device buffer described that way, and **47** again after the repair. At 48 000 Hz
+and at 44 100 Hz alike. Every other format a sound card can speak gave 47 both
+before and after, except eight-bit, which gave 46.
+
+**Where to look.** Press *keep the last 30 seconds*, then open the `.txt` file
+beside the WAV in `%AppData%\Hamlet\captures\digital\` and find the `encoding`
+row. It reads a word and a bit depth, like `IeeeFloat 32-bit`.
+
+| `encoding` says | What it means |
+|---|---|
+| `IeeeFloat 32-bit` | read correctly on every version, including the ones before tonight |
+| `Pcm 16-bit`, `Pcm 24-bit`, `Pcm 32-bit`, `Pcm 8-bit` | read correctly on every version |
+| `Extensible 32-bit` | **read wrongly on 1.12.40 and earlier, correctly from 1.12.41** — if your empty morning was on an older build and this is what the sheet says, this was why |
+| `Extensible 16-bit`, `Extensible 24-bit` | read correctly, by luck, on every version |
+| anything else | from 1.12.41 Hamlet refuses it and nothing reaches the tab, which reads as *nothing was arriving* one subsection up |
+
+**This is very probably not what happened to you.** *Measured tonight*: the two
+capture devices active on this machine both declare `IeeeFloat 32-bit`, with no
+wrapper at all, so neither of them would have hit the fault. Whether the radio's
+own codec was one of those two is not known — Hamlet does not read device names
+and neither did this measurement (HM-DEC-018). **So this row is worth one glance
+at the sheet and no more**; if it says `IeeeFloat 32-bit`, this was not it and the
+answer is somewhere else on this page.
+
+*Inherited, not measured tonight*: that no capture sheet exists yet on this
+machine, because no press has ever succeeded here.
 
 #### Which sound card, and why that one (added by unit 236)
 
