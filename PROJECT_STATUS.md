@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: RUNNING
-TASK: 3 of 7
+TASK: 4 of 7
 WORK_INSTRUCTION: 234
 BALL: claude
 NEXT_PASTE: none
 RULES_AT: HM-DEC-152 (2026-08-31)
-UPDATED: 2026-09-03T12:53:00-04:00
-NOTE: THE SINK WRITES - driven with App.axaml.cs's own four arguments it put 2026-09-03.jsonl on disk in 12 ms with no Dispose, one app_start line at appVersion 1.12.38, DroppedEventCount 0, and it refuses silently when the category is off. So task 2's stop rule does not fire and the night continues. Task 1's census is the harder finding: the newest build that has ever written a line on this machine is 1.12.0, thirty-seven patches behind this tree. Now pointing CaptureFolder at a temporary folder to drive the write path that has never once succeeded here.
+UPDATED: 2026-09-03T12:58:00-04:00
+NOTE: BOTH WRITERS WORK. The sink put 2026-09-03.jsonl on disk in 12 ms with no Dispose, one app_start line at 1.12.38, dropped 0, and refuses when the category is off. The press created captures\digital, wrote a 720044-byte WAV that reads back 360000 samples at 12000 Hz and a 46-line sheet carrying unit 233's three blocks. Driving it turned up something the instruction did not anticipate: the press cuts NO slots until the SNTP clock query returns, so the branch was a coin toss until the test fixed the offset. Now adding the one telemetry event that makes all four silent refusal paths leave a line.
 
 ---
 
