@@ -2985,6 +2985,35 @@
                                            IsVisible="{Binding !HasDigitalDecodes}"
                                            FontSize="11" TextWrapping="Wrap"
                                            Foreground="{StaticResource HmTextMutedBrush}" />
+
+                                <!-- **THE STAGE THAT REFUSED, UNDER THE TABLE**
+                                     (unit 233). On 2026-09-03 the owner sat at
+                                     14.074, pressed the button this phase was
+                                     built for, and got an empty table with no
+                                     way to tell a quiet band from a wrong audio
+                                     device from a deaf decoder.
+
+                                     **IT IS ABOUT A DECODE THAT HAPPENED**, which
+                                     is what separates it from the readiness strip
+                                     above the panels: that one describes the setup
+                                     BEFORE a decode and this one describes a slot
+                                     that was actually read.
+
+                                     **IT IS HERE ONLY WHILE A SLOT WAS DECODED AND
+                                     PRODUCED NO TEXT.** A line that always says
+                                     something is one the operator stops reading,
+                                     which is the readiness strip's own argument.
+
+                                     **IT COUNTS AND IT DOES NOT INTERPRET**
+                                     (CLAUDE.md 12.1). It names the stage the
+                                     numbers point at. It does not say the band was
+                                     quiet and it does not say what to change. -->
+                                <TextBlock x:Name="DigitalCensusLine"
+                                           Text="{Binding DigitalCensusLine}"
+                                           IsVisible="{Binding HasDigitalCensus}"
+                                           FontSize="11" TextWrapping="Wrap"
+                                           Margin="0,2,0,0"
+                                           Foreground="{StaticResource HmTextMutedBrush}" />
                               </StackPanel>
                             </ctl:CollapsiblePanel>
 

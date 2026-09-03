@@ -952,6 +952,28 @@ public partial class MainWindowViewModel : ObservableObject
     /// <summary>What the last press made of the audio, in one line.</summary>
     private string _digitalDecodeNote = "";
 
+    /// <summary>The census of the last slot that decoded and produced no text.</summary>
+    private string _digitalCensusLine = "";
+
+    /// <summary>
+    /// One line under the decoded table naming the stage that refused, or "".
+    /// </summary>
+    /// <remarks>
+    /// <para>**THIS IS ABOUT A DECODE THAT HAPPENED**, which is what separates it
+    /// from unit 228's readiness line above the panels — that one is about the
+    /// setup *before* a decode, and the two never describe the same moment.</para>
+    /// <para>**IT IS PRESENT ONLY WHILE A SLOT HAS BEEN DECODED AND PRODUCED NO
+    /// TEXT.** A line that always says something is one the operator stops reading,
+    /// which is the reasoning the readiness strip already carries.</para>
+    /// <para>**IT COUNTS AND IT DOES NOT INTERPRET** (`CLAUDE.md` §12.1). It names
+    /// the stage the numbers point at and stops there. It does not say the band was
+    /// quiet, does not say a station was weak, and does not say what to do.</para>
+    /// </remarks>
+    public string DigitalCensusLine => _digitalCensusLine;
+
+    /// <summary>True while there is a census worth showing.</summary>
+    public bool HasDigitalCensus => _digitalCensusLine.Length > 0;
+
     /// <summary>Waterfall display gain — a setting, not per-frame data.</summary>
     [ObservableProperty]
     private double _waterfallGain = 1.35;
@@ -6776,6 +6798,11 @@ public partial class MainWindowViewModel : ObservableObject
             // last press rather than this one.
             _digitalRefusal = heard.Refusal;
             _digitalDecodeNote = heard.Refusal;
+
+            // A refusal has its own sentence on the strip and no slot behind it,
+            // so a census line under the table would be a second voice about the
+            // same state.
+            _digitalCensusLine = "";
             RaiseDigitalDecodeChanges();
             return;
         }
@@ -6788,6 +6815,7 @@ public partial class MainWindowViewModel : ObservableObject
         }
 
         _digitalDecodeNote = DescribeDecodes(heard);
+        _digitalCensusLine = DescribeCensus(heard);
 
         RaiseDigitalDecodeChanges();
     }
@@ -6856,6 +6884,11 @@ public partial class MainWindowViewModel : ObservableObject
         _digitalDecodeKeyOrder.Clear();
         _digitalDecodeNote = "";
         _digitalRefusal = "";
+
+        // The census described a slot from where the radio used to be, and a
+        // sentence about one place under a table cleared for another is §0.0.1's
+        // two moments under one heading.
+        _digitalCensusLine = "";
         _digitalRowsTunedAtHz = nowHz;
 
         // The audio in the ring is from where the radio used to be.
@@ -6870,6 +6903,87 @@ public partial class MainWindowViewModel : ObservableObject
         OnPropertyChanged(nameof(HasDigitalDecodes));
         OnPropertyChanged(nameof(DigitalDecodedSummary));
         OnPropertyChanged(nameof(DigitalModeStripLine));
+        OnPropertyChanged(nameof(DigitalCensusLine));
+        OnPropertyChanged(nameof(HasDigitalCensus));
+    }
+
+    /// <summary>
+    /// The census of a slot that decoded and produced no text, in words.
+    /// </summary>
+    /// <param name="heard">What came back from the reader.</param>
+    /// <returns>One line, or "" when there is nothing of this kind to say.</returns>
+    /// <remarks>
+    /// <para>**IT NAMES THE STAGE AND IT DOES NOT DIAGNOSE** (§12.1). Candidates at
+    /// zero is ahead of the decoder entirely; candidates with no parity is the soft
+    /// symbols or the correction; parity with no checksum is a codeword that is not
+    /// a message; checksum with no text is the message layer. Saying which of those
+    /// the numbers point at is counting. Saying what to change about the radio is
+    /// not, and is not done here.</para>
+    /// <para>**THE WORST SLOT IN THE READING, NOT THE LAST.** A press hands over two
+    /// slots and a watch hands over one; where a press holds one slot that read
+    /// nothing and one that read something, the one worth explaining is the one that
+    /// read nothing.</para>
+    /// <para>**A COSTAS MATCH COUNT IS NOT A SIGNAL-TO-NOISE RATIO** (§0.0), so the
+    /// scores are not shown here at all — a bare number on a screen beside the word
+    /// *signal* is exactly how one gets read as decibels.</para>
+    /// </remarks>
+    private static string DescribeCensus(Ft8Reception heard)
+    {
+        if (heard.Refusal.Length > 0 || heard.Slots.Count == 0)
+        {
+            return "";
+        }
+
+        Ft8SlotCensus? worst = null;
+
+        foreach (var slot in heard.Slots)
+        {
+            if (slot.BecameTextCount > 0)
+            {
+                continue;
+            }
+
+            if (worst is null || slot.CandidateCount > worst.CandidateCount)
+            {
+                worst = slot;
+            }
+        }
+
+        if (worst is null)
+        {
+            return "";
+        }
+
+        var at = worst.SlotStartUtc.ToString("HH:mm:ss", CultureInfo.InvariantCulture);
+
+        if (worst.CandidateCount == 0)
+        {
+            return $"the slot at {at} UTC was decoded and the search found no "
+                + "place in it that looked like the start of an FT8 transmission, "
+                + "so nothing reached the decoder at all";
+        }
+
+        var places = worst.CandidateCount == 1
+            ? "one place that looked like the start of an FT8 transmission"
+            : $"{worst.CandidateCount} places that looked like the start of an "
+              + "FT8 transmission";
+
+        if (worst.ParitySatisfiedCount == 0)
+        {
+            return $"the slot at {at} UTC gave up {places}, and not one of them "
+                + "came out as a valid codeword";
+        }
+
+        if (worst.ChecksumPassedCount == 0)
+        {
+            return $"the slot at {at} UTC gave up {places}, "
+                + $"{worst.ParitySatisfiedCount} of them came out as valid "
+                + "codewords, and not one of those carried its own checksum";
+        }
+
+        return $"the slot at {at} UTC gave up {places}, "
+            + $"{worst.ChecksumPassedCount} of them carried their own checksum, "
+            + "and not one of those could be put into words";
     }
 
     /// <summary>What a press made of the audio, in one line.</summary>

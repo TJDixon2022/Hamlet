@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: WORKING
-TASK: 6 of 7
+TASK: 7 of 7
 WORK_INSTRUCTION: 233
 BALL: claude
 NEXT_PASTE: none
 RULES_AT: HM-DEC-152 (2026-08-31)
-UPDATED: 2026-09-03T13:04:00-04:00
-NOTE: Task 6 built and green, 6 of 6. ACapturedFileDiagnosesItselfTests writes a WAV to a temp folder from Ft8Waveform, reads it back with WavAudio.Read, runs Ft8Reader.Read at the rate the file declares, and asserts the census is REPORTED - every field populated, the stages narrowing in order with none exceeding the one before, the top Costas match counts strongest first and at most three, the sample rate the file's own and not the resampler's 12000, and the refusal sentence present exactly when no whole slot was cut and absent otherwise. Driven at 44100 and 48000 so the resampler is in the path; 44100 is deliberately not a whole ratio of 12000. No recording of any kind is committed and there is NO fixture expecting zero decodes - a slot with nothing in it is asserted to be COUNTED, all zeroes, which is a different claim from asserting that a particular recording decodes nothing. The scratch harness from tasks 1 and 2 was emptied rather than deleted: rm and git clean are both outside this unit's permission scope, so the file is untracked, contains only a comment, and was never staged. Next: the standing gates, then task 7 which is the named drop candidate.
+UPDATED: 2026-09-03T12:36:00-04:00
+NOTE: TASK 7 IS NOT DROPPED AFTER ALL, AND THE REASON I NEARLY DROPPED IT WAS MY OWN ERROR. I had been composing the UPDATED timestamps in these notes instead of reading them off the clock, which is the exact thing CLAUDE_CODE section 7 forbids, and by the time the gates finished my composed clock said 13:38 while the real one said 12:33. The unit opened at 11:51, so it is at forty-five minutes, not a hundred, and the sizing reason for dropping the named candidate did not exist. Every UPDATED line before this one is wrong by roughly an hour and no other number in this unit came from that clock. Task 7 is now built and green: DigitalCensusLine under the decoded table, present ONLY while a slot was decoded and produced no text, naming which of the four stages refused in words - no candidates found at all, candidates but no codeword, codewords but no checksum, checksums but no words. It carries no Costas match count and no dB, because a bare number beside the word signal is how one gets read as decibels. 42 of 42 across the four view model classes, and one bug in my own test found by itself: the needle "30" matched the slot timestamp 14:22:30, so the score is now 37. App channel re-run after the axaml change: 9 of 9. Remaining: re-run nothing else, finish the report, commit, push.
 
 ---
 
