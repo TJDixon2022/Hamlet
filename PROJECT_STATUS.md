@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: WORKING
+STATE: DONE
 TASK: 7 of 7
 WORK_INSTRUCTION: 236
-BALL: claude
+BALL: owner
 NEXT_PASTE: none
 RULES_AT: HM-DEC-152 (2026-08-31)
-UPDATED: 2026-09-03T15:20:54-04:00
-NOTE: ALL FIVE GATES GREEN, every failing set EMPTY, every count read off ResultSummary.Counters in a TRX logger and never off a console line, one invocation at a time and none overlapping. Ft8Sharp.Tests whole 524/523/523/0 with 1 skipped by design. Engine channel 38 of 38 - the eleven classes unit 222 recorded, and it took about nine minutes because four of them run real signal processing over recorded audio. App channel 9 of 9 AFTER the version bump, so VersionTests reads 1.12.40 and agrees. Changed code 49 of 49 on the engine side across seven classes and 22 of 22 on the app side across four. TheOperatorsFolderIsNotOursTests 2 of 2, unit 235's seam still holding. Root 1.12.39 -> 1.12.40 under HM-DEC-150, Ft8Sharp unmoved at 0.10.7 under HM-DEC-152 because nothing under src/Ft8Sharp/ changed. Attribution: 251 paths from 2828ab6, 38 under src/Hamlet.* or tests/Hamlet.*, twelve of them this unit's - the reduction does not apply to step 7 by construction and is NOT claimed. MainWindowViewModel was constructed 5 times tonight, all in Hamlet.App.Tests: four in ARefusedPressLeavesALineTests, which was run because AppEvents changed, and one in TheOperatorsFolderIsNotOursTests. Each is a live third-party callsign lookup carrying the operator's callsign - unit 235's item 2, in front of the owner, kept small and counted, not fixed. Writing the report.
+UPDATED: 2026-09-03T15:24:54-04:00
+NOTE: All seven tasks done, nothing dropped including the named drop candidate, pushed cb73fcb..bb0ee24 on main. THE VERDICT: a slot of digital silence now reads NO LEVEL AT ALL - audioPeakDbFullScale null, audioRmsDbFullScale null, 720000 of 720000 samples exactly zero, fraction 1 - and a slot of real off-air audio reads peak -2.05 and rms -14.17 with 13 zero samples in 180000, fraction 7.2E-05. The two are different facts in the file for the first time. The third case is the one that matters most and it is now separable too: synthesized noise at a thousandth of full scale reads -60.00 and -64.77 with NO zero samples at all, because a receiver on a dead band delivers its own noise and noise is not zero. All five device branches named, asserted from constructed lists, and written as the BRANCH and never the device - decoder_started now carries deviceChoice, looksLikeRadio and captureDevicesOffered. AND VALIDATE-OUTPUT.BAT RAN, EXIT 0, ALL SIX RULES: the spelling that survives is the path IN DOUBLE QUOTES, which units 234 and 235 did not find. It caught two real faults first time - the UNIT: line and the ordering block are read from the first 60 lines only, and rule 6 matches a literal digit so "raises three items" fails where "raises 3 items" passes. Task 1's trace found the before is not zero off the slot record: AudioTap.Level exists on the same tap, and a morning of pure silence writes not one decode_quality line because the rate limit's starting state is already -90. Five gates green off TRX Counters, every failing set EMPTY. Attribution 251 paths, 38 under Hamlet, twelve this unit's, reduction not claimed. MainWindowViewModel constructed 5 times, counted not fixed. Root 1.12.40, Ft8Sharp unmoved at 0.10.7. Section 4 raises 3 items, none blocking a criterion.
 
 ---
 
