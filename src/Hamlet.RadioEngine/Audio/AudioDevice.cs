@@ -55,6 +55,58 @@ public interface IAudioDevices
 }
 
 /// <summary>
+/// Which of the five rules picked the capture device (unit 236).
+/// </summary>
+/// <remarks>
+/// <para>**THE CHOICE WAS MADE FOR THE OPERATOR AND RECORDED NOWHERE.** Unit 235
+/// measured that <c>AudioInputDeviceId</c> is not present in his settings at all,
+/// so <see cref="AudioDeviceChoice.Choose"/> has run with a null remembered id on
+/// every launch this program has ever had. If the radio is off, its USB cable is
+/// out, or Windows has renamed the codec, the fall-through quietly hands Hamlet
+/// the machine's default input — and everything downstream works perfectly, on
+/// room noise, forever.</para>
+/// <para>**IT IS THE BRANCH AND IT IS NEVER THE DEVICE** (HM-DEC-018). A device
+/// name can carry a computer's name, a person's name or the model of somebody's
+/// headset, and none of that belongs in a file the operator might paste into a
+/// public issue. The shell's existing <c>AppEvents.AudioDeviceChosen</c> already
+/// records a boolean for the same reason, and this follows it.</para>
+/// </remarks>
+public enum AudioDeviceChoiceReason
+{
+    /// <summary>The machine offered no capture devices, so nothing was chosen.</summary>
+    NothingToChooseFrom,
+
+    /// <summary>
+    /// The device the operator chose last time, still plugged in. **The only one
+    /// of the five that is his own decision** rather than Hamlet's guess.
+    /// </summary>
+    OperatorsRemembered,
+
+    /// <summary>
+    /// A device whose name matches the radio's USB codec. A suggestion and not a
+    /// proof — see <see cref="AudioDevice.LooksLikeRadioCodec"/>.
+    /// </summary>
+    LooksLikeRadio,
+
+    /// <summary>Whatever Windows calls the default capture device.</summary>
+    SystemDefault,
+
+    /// <summary>
+    /// The first device in the list, because none of the rules above matched.
+    /// </summary>
+    FirstInTheList,
+}
+
+/// <summary>
+/// A chosen capture device and which rule chose it (unit 236).
+/// </summary>
+/// <param name="Device">The device to open, or null where there was none.</param>
+/// <param name="Reason">Which of the five rules picked it.</param>
+public readonly record struct AudioDeviceChoiceResult(
+    AudioDevice? Device,
+    AudioDeviceChoiceReason Reason);
+
+/// <summary>
 /// Picks which capture device to listen to, given what is available and what
 /// the operator chose last time.
 /// </summary>
@@ -82,10 +134,36 @@ public static class AudioDeviceChoice
     /// </remarks>
     public static AudioDevice? Choose(
         IReadOnlyList<AudioDevice> devices, string? rememberedId)
+        => ChooseWithReason(devices, rememberedId).Device;
+
+    /// <summary>
+    /// The device to open, and which of the five rules picked it (unit 236).
+    /// </summary>
+    /// <param name="devices">What the machine offers.</param>
+    /// <param name="rememberedId">The id stored in settings, or null.</param>
+    /// <returns>The chosen device and the branch that chose it.</returns>
+    /// <exception cref="ArgumentNullException">The device list is null.</exception>
+    /// <remarks>
+    /// <para>**THE RULES ARE UNCHANGED AND THIS IS WHERE THEY NOW LIVE.**
+    /// <see cref="Choose"/> is this method with the reason dropped, so every
+    /// existing caller keeps its behaviour exactly and there is one copy of the
+    /// order rather than two that could drift.</para>
+    /// <para>**WHY THE REASON EXISTS AT ALL.** On 2026-09-03 the owner sat at
+    /// 14.074 and saw nothing on screen, and no file anywhere said which sound
+    /// card Hamlet had opened or why. Four of these five branches are Hamlet
+    /// guessing; only <see cref="AudioDeviceChoiceReason.OperatorsRemembered"/> is
+    /// his own decision, and unit 235 measured that his settings have never held
+    /// one.</para>
+    /// </remarks>
+    public static AudioDeviceChoiceResult ChooseWithReason(
+        IReadOnlyList<AudioDevice> devices, string? rememberedId)
     {
+        ArgumentNullException.ThrowIfNull(devices);
+
         if (devices.Count == 0)
         {
-            return null;
+            return new AudioDeviceChoiceResult(
+                null, AudioDeviceChoiceReason.NothingToChooseFrom);
         }
 
         if (!string.IsNullOrWhiteSpace(rememberedId))
@@ -95,12 +173,24 @@ public static class AudioDeviceChoice
 
             if (remembered is not null)
             {
-                return remembered;
+                return new AudioDeviceChoiceResult(
+                    remembered, AudioDeviceChoiceReason.OperatorsRemembered);
             }
         }
 
-        return devices.FirstOrDefault(d => d.LooksLikeRadio)
-               ?? devices.FirstOrDefault(d => d.IsDefault)
-               ?? devices[0];
+        if (devices.FirstOrDefault(d => d.LooksLikeRadio) is { } codec)
+        {
+            return new AudioDeviceChoiceResult(
+                codec, AudioDeviceChoiceReason.LooksLikeRadio);
+        }
+
+        if (devices.FirstOrDefault(d => d.IsDefault) is { } fallback)
+        {
+            return new AudioDeviceChoiceResult(
+                fallback, AudioDeviceChoiceReason.SystemDefault);
+        }
+
+        return new AudioDeviceChoiceResult(
+            devices[0], AudioDeviceChoiceReason.FirstInTheList);
     }
 }

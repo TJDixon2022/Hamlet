@@ -3873,7 +3873,13 @@ public partial class MainWindowViewModel : ObservableObject
         _decodeTimer.Start();
 
         AppEvents.DecoderStarted(
-            _telemetry, _audioInput.IsSimulated, _audioInput.SampleRate, _settings.CwPitchHz);
+            _telemetry,
+            _audioInput.IsSimulated,
+            _audioInput.SampleRate,
+            _settings.CwPitchHz,
+            _deviceChoice,
+            _deviceLooksLikeRadio,
+            _captureDevicesOffered);
     }
 
     /// <summary>
@@ -3881,6 +3887,13 @@ public partial class MainWindowViewModel : ObservableObject
     /// </summary>
     private IAudioSource? OpenAudioInput()
     {
+        // **CLEARED FIRST, SO A SECOND LISTEN CANNOT INHERIT THE FIRST'S REASON**
+        // (unit 236). The training radio opens no device at all, and a stale
+        // branch beside it would say Hamlet chose a sound card it never looked at.
+        _deviceChoice = null;
+        _captureDevicesOffered = null;
+        _deviceLooksLikeRadio = null;
+
         if (_rig?.IsSimulated == true)
         {
             // Real Morse at a known speed, with nothing plugged in. Twelve words
@@ -3892,11 +3905,40 @@ public partial class MainWindowViewModel : ObservableObject
                 toneHz: _settings.CwPitchHz);
         }
 
-        var device = AudioDeviceChoice.Choose(
-            new WasapiAudioDevices().List(), _settings.AudioInputDeviceId);
+        var devices = new WasapiAudioDevices().List();
 
-        return device is null ? null : new WasapiAudioSource(device);
+        // **WHY THIS DEVICE, KEPT FOR THE RECORD** (unit 236). Four of the five
+        // rules below are Hamlet guessing on the operator's behalf, and unit 235
+        // measured that the one that is his own choice has never been set. Which
+        // rule ran is written beside `DecoderStarted`; the device itself is not
+        // written anywhere (HM-DEC-018).
+        var choice = AudioDeviceChoice.ChooseWithReason(
+            devices, _settings.AudioInputDeviceId);
+
+        _deviceChoice = choice.Reason;
+        _captureDevicesOffered = devices.Count;
+        _deviceLooksLikeRadio = choice.Device?.LooksLikeRadio;
+
+        return choice.Device is null ? null : new WasapiAudioSource(choice.Device);
     }
+
+    /// <summary>
+    /// Which rule picked the capture device this listen, or null where none was
+    /// chosen (unit 236).
+    /// </summary>
+    private AudioDeviceChoiceReason? _deviceChoice;
+
+    /// <summary>How many capture devices the machine offered, or null.</summary>
+    private int? _captureDevicesOffered;
+
+    /// <summary>
+    /// Whether the chosen device's name matches the radio's codec, or null.
+    /// </summary>
+    /// <remarks>
+    /// **THE BOOLEAN AND NOT THE NAME**, which is the shape HM-DEC-018 requires
+    /// and the one <c>AppEvents.AudioDeviceChosen</c> has had since it was written.
+    /// </remarks>
+    private bool? _deviceLooksLikeRadio;
 
     /// <summary>Stop listening and put the decoder away.</summary>
     private void StopDecoding()

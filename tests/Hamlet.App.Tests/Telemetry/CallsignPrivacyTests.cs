@@ -318,6 +318,23 @@ public sealed class CallsignPrivacyTests : IDisposable
         AppEvents.DecoderStarted(
             telemetry, simulated: true, sampleRate: 8_000, pitchHz: 600);
 
+        // And with the device branch unit 236 added, in every one of its five
+        // states. What is written is the BRANCH, never the device: a name can
+        // carry a computer's name, a person's name or a headset model, and this
+        // walk is what keeps that provable rather than asserted.
+        foreach (var reason in
+            Enum.GetValues<Hamlet.RadioEngine.Audio.AudioDeviceChoiceReason>())
+        {
+            AppEvents.DecoderStarted(
+                telemetry,
+                simulated: false,
+                sampleRate: 48_000,
+                pitchHz: 600,
+                reason,
+                looksLikeRadio: true,
+                captureDevicesOffered: 4);
+        }
+
         // HM-DEC-050 puts the radio's whole state on a screen. What it is tuned
         // to and how its filters are set are the operator's business, so the
         // event carries a count and nothing else, and this walk is what keeps

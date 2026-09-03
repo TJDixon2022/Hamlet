@@ -535,21 +535,59 @@ public static class AppEvents
     /// <param name="simulated">Whether the audio is synthesized.</param>
     /// <param name="sampleRate">Samples per second.</param>
     /// <param name="pitchHz">The pitch it was told to start looking at.</param>
+    /// <param name="deviceChoice">
+    /// Which of the five rules picked the capture device, or null where no device
+    /// was chosen at all — the training radio, which opens none (unit 236).
+    /// </param>
+    /// <param name="looksLikeRadio">
+    /// Whether the chosen device's name matches the radio's USB codec, or null
+    /// where nothing was chosen.
+    /// </param>
+    /// <param name="captureDevicesOffered">
+    /// How many capture devices the machine offered, or null where the list was
+    /// never asked for.
+    /// </param>
     /// <remarks>
-    /// The parameters a decode ran with, which §0.0.1 asks for by name. What is
-    /// NOT here, and never will be, is anything that was decoded: the category's
+    /// <para>The parameters a decode ran with, which §0.0.1 asks for by name. What
+    /// is NOT here, and never will be, is anything that was decoded: the category's
     /// own description says decoder runs and confidence statistics, never
     /// message content, and a transcript names two stations who did not agree to
-    /// be in this file (HM-DEC-018).
+    /// be in this file (HM-DEC-018).</para>
+    /// <para>**AND SINCE UNIT 236 IT SAYS WHY THIS DEVICE** — never which one.
+    /// Hamlet chooses the capture device for the operator on every launch, from a
+    /// remembered id unit 235 measured to be absent from his settings, and until
+    /// now no file anywhere said which of the five rules had run. A machine with no
+    /// USB codec in the list and nothing remembered falls through to the system
+    /// default, which is Hamlet listening to a laptop microphone all morning while
+    /// every layer below it works perfectly.</para>
+    /// <para>**THE BRANCH IS RECORDED AND THE DEVICE IS NOT** (HM-DEC-018), which
+    /// is the shape <c>AudioDeviceChosen</c> above already has and for the same
+    /// reason: a device name can carry a computer's name, a person's name or the
+    /// model of somebody's headset.</para>
+    /// <para>**THE THREE NEW PARAMETERS ARE OPTIONAL SO EVERY EXISTING CALLER
+    /// KEEPS COMPILING AND KEEPS ITS MEANING**, which is unit 233's precedent for
+    /// adding beside rather than substituting. This was extended rather than given
+    /// an event of its own because it is one fact about one moment: a separate line
+    /// could be present when this one is missing, and a reader joining two lines by
+    /// timestamp is exactly the ambiguity §0.0.1 exists to prevent.</para>
     /// </remarks>
     public static void DecoderStarted(
-        ITelemetry? telemetry, bool simulated, int sampleRate, int pitchHz)
+        ITelemetry? telemetry,
+        bool simulated,
+        int sampleRate,
+        int pitchHz,
+        AudioDeviceChoiceReason? deviceChoice = null,
+        bool? looksLikeRadio = null,
+        int? captureDevicesOffered = null)
         => telemetry?.Write(TelemetryCategory.Decode, "decoder_started",
             new Dictionary<string, object?>
             {
                 ["simulated"] = simulated,
                 ["sampleRate"] = sampleRate,
                 ["pitchHz"] = pitchHz,
+                ["deviceChoice"] = deviceChoice?.ToString(),
+                ["looksLikeRadio"] = looksLikeRadio,
+                ["captureDevicesOffered"] = captureDevicesOffered,
             });
 
     /// <summary>
