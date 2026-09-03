@@ -87,9 +87,13 @@ public class Unit227GroundTests(ITestOutputHelper output)
             "slot_period",
             "is_ft8");
 
-        // load_wav in full: what it accepts and what it refuses is a dozen lines and reading them
-        // by needle would be reading the answer the needles were chosen for.
-        Span(Path.Combine(ReferenceClone.Location, "common", "wave.c"), 69, 125);
+        // save_wav and load_wav in full: what upstream writes and what it refuses is fifty lines,
+        // and reading them by needle would be reading the answer the needles were chosen for.
+        // The write half matters as much as the read half, because unit 227's harness has to
+        // quantise a float slot the way upstream's own generator does or the two decoders would
+        // be reading a file neither of them would have written.
+        Span(Path.Combine(ReferenceClone.Location, "common", "wave.c"), 10, 68);
+        Span(Path.Combine(ReferenceClone.Location, "common", "wave.c"), 69, 133);
 
         void Quote(string path, params string[] needles)
         {

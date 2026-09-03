@@ -169,6 +169,114 @@ internal static class WavFile
         return new Contents(sampleRate, bits, channels, dataAt, samples);
     }
 
+    /// <summary>
+    /// <b>Writes a slot the way upstream's own <c>save_wav</c> writes one</b>, so that a file this
+    /// harness makes is a file both decoders would accept and neither is being handed something
+    /// only the other has seen before.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// <b>Added by unit 227, and the reason it exists is the whole point of that unit's method.</b>
+    /// The paired comparison writes each slot to disk once and has <em>both</em> decoders read that
+    /// same file. Sixteen-bit quantisation is then common to both, and this port's own control
+    /// number is taken through the file rather than from the float array it came from.
+    /// </para>
+    /// <para>
+    /// <b>The conversion is upstream's, transcribed rather than improved.</b> Read from
+    /// <c>common/wave.c</c> in the pin on 2026-09-02: clamp to -1..+1, then
+    /// <c>(int)(0.5 + (x * 32767.0))</c> — the arithmetic in <em>double</em>, and the cast
+    /// truncating toward zero, which is not <see cref="Math.Round(double)"/> and is worth one count
+    /// on about half the samples if got wrong. Unit 212 measured that same half-before-truncate on
+    /// the generator side and this is the same rule.
+    /// </para>
+    /// <para>
+    /// <b>The header is the canonical 44 bytes and nothing else.</b> Upstream's <c>load_wav</c> does
+    /// not walk chunks — it reads <c>fmt</c> then <c>data</c> at fixed offsets and refuses a
+    /// <c>fmt</c> chunk that is not 16 bytes. A file with a chunk in between would be read as
+    /// nonsense rather than refused, so this writes only the form upstream writes.
+    /// </para>
+    /// <para>
+    /// <b>Nothing written here is ever committed.</b> The caller puts it under
+    /// <see cref="Path.GetTempPath"/> and deletes it.
+    /// </para>
+    /// </remarks>
+    public static void Write(string path, ReadOnlySpan<float> samples, int sampleRate)
+    {
+        const int bitsPerSample = 16;
+        const int channels = 1;
+        const int blockAlign = channels * bitsPerSample / 8;
+
+        var dataSize = samples.Length * blockAlign;
+        var bytes = new byte[CanonicalHeaderBytes + dataSize];
+
+        WriteTag(bytes, 0, "RIFF");
+        WriteUInt32(bytes, 4, (uint)(4 + 8 + 16 + 8 + dataSize));
+        WriteTag(bytes, 8, "WAVE");
+
+        WriteTag(bytes, 12, "fmt ");
+        WriteUInt32(bytes, 16, 16);
+        WriteUInt16(bytes, 20, 1);
+        WriteUInt16(bytes, 22, channels);
+        WriteUInt32(bytes, 24, (uint)sampleRate);
+        WriteUInt32(bytes, 28, (uint)(sampleRate * blockAlign));
+        WriteUInt16(bytes, 32, blockAlign);
+        WriteUInt16(bytes, 34, bitsPerSample);
+
+        WriteTag(bytes, 36, "data");
+        WriteUInt32(bytes, 40, (uint)dataSize);
+
+        for (var i = 0; i < samples.Length; i++)
+        {
+            WriteUInt16(bytes, CanonicalHeaderBytes + (i * 2), (ushort)Quantise(samples[i]));
+        }
+
+        File.WriteAllBytes(path, bytes);
+    }
+
+    /// <summary>
+    /// One float becoming one sixteen-bit count, by upstream's rule and not by the framework's.
+    /// </summary>
+    /// <remarks>
+    /// Exposed so <c>WavFileTests</c> can watch the clamp and the half-before-truncate on named
+    /// values rather than inferring them from a file.
+    /// </remarks>
+    public static short Quantise(float sample)
+    {
+        var x = (double)sample;
+        if (x > 1.0)
+        {
+            x = 1.0;
+        }
+        else if (x < -1.0)
+        {
+            x = -1.0;
+        }
+
+        return (short)(int)(0.5 + (x * 32767.0));
+    }
+
+    private static void WriteTag(byte[] bytes, int at, string tag)
+    {
+        for (var i = 0; i < 4; i++)
+        {
+            bytes[at + i] = (byte)tag[i];
+        }
+    }
+
+    private static void WriteUInt32(byte[] bytes, int at, uint value)
+    {
+        bytes[at] = (byte)value;
+        bytes[at + 1] = (byte)(value >> 8);
+        bytes[at + 2] = (byte)(value >> 16);
+        bytes[at + 3] = (byte)(value >> 24);
+    }
+
+    private static void WriteUInt16(byte[] bytes, int at, ushort value)
+    {
+        bytes[at] = (byte)value;
+        bytes[at + 1] = (byte)(value >> 8);
+    }
+
     /// <summary>Removes a temporary file, and never minds if it is already gone.</summary>
     public static void DeleteQuietly(string? path)
     {
