@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: WORKING
-TASK: 3 of 7
+TASK: 4 of 7
 WORK_INSTRUCTION: 233
 BALL: claude
 NEXT_PASTE: none
 RULES_AT: HM-DEC-152 (2026-08-31)
-UPDATED: 2026-09-03T12:12:00-04:00
-NOTE: Task 3 built and green. Ft8Reception gains an init-only Slots list of a new Ft8SlotCensus record - corrected slot start, the five counts straight off Ft8SlotResult, and the three highest Costas match counts. CandidatesFound did not move and no existing construction of Ft8Reception changed, so nothing that reads it had to be touched. The one real design call: Ft8Reader now builds the waterfall once through Ft8Monitor and runs a mirror Ft8SyncSearch on it before handing the same waterfall to the decoder, because Ft8SlotResult carries no candidate list and the top scores are needed exactly in the case where nothing decoded and there is no message to read a score off. The mirror is built from the decoder's own published CandidateLimit and MinimumScore; nothing in src/Ft8Sharp was touched. 16 of 16 green across TheDigitalTabDecodesWhatItKept, RealOffAirAudioReachesTheTab and TheSlotCutter. Root version 1.12.36 -> 1.12.37 under HM-DEC-150. Next: task 4, one telemetry line per decoded slot - and the trace found telemetry wrote nothing at all for 2026-09-03, which is itself going in the report.
+UPDATED: 2026-09-03T12:31:00-04:00
+NOTE: Task 4 built and green, 12 of 12 in the telemetry classes. AppEvents.Ft8SlotsRead writes one ft8_slot line per slot NoteSlot sees - both the press and the running watch go through that one funnel - carrying the corrected slot start, all five counts, the top Costas match counts, the sample rate, the clock offset and its age. A refusal is its own line with the sentence verbatim, not a silence. Levelled warn where candidates were found and none became words, info otherwise, in the manner DecodeWindow already levels a quiet band. One design call worth naming: the method is NOT handed the Ft8Reception, because that carries Ft8Decode rows and an FT8 message is very often a pair of callsigns - it takes the census list, the refusal string and the offset, so HM-DEC-018 is enforced by the signature rather than remembered at the call site, and a new test fails if a later unit widens it. Ft8Reception gained an Offset and Ft8SlotCensus a SampleRate so the reader hands over what it actually applied. CallsignPrivacyTests walk bumped 63 -> 64 and both new events added to it. Standing worry for the report: telemetry has no file at all for 2026-09-03 although settings.json was written today at 12:34:32 UTC, and TelemetryCategories is empty so Decode is on by default - so the sink this task writes into recorded nothing on the morning the bench check ran. Next: task 5, the sheet.
 
 ---
 

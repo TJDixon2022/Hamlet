@@ -1,3 +1,5 @@
+using System.Globalization;
+using Hamlet.RadioEngine.Audio;
 using Hamlet.RadioEngine.Cw;
 using Hamlet.RadioEngine.Rig;
 using Hamlet.RadioEngine.Telemetry;
@@ -814,6 +816,126 @@ public static class AppEvents
         telemetry.Write(
             TelemetryCategory.Decode, "decode_window", window.ToBag(),
             window.Level);
+    }
+
+    /// <summary>
+    /// What every FT8 slot the tab decoded gave up, one line each (unit 233).
+    /// </summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="slots">The census, one entry per slot that was cut and run.</param>
+    /// <param name="refusal">
+    /// Why nothing could be run, in the reader's own words, or "" where it ran.
+    /// </param>
+    /// <param name="offset">The clock offset the reading was cut against.</param>
+    /// <param name="nowUtc">
+    /// The moment the line is written, by the PC clock, used only to age the clock
+    /// measurement. Passed rather than read, so the payload is a function of its
+    /// arguments.
+    /// </param>
+    /// <remarks>
+    /// <para>**THIS IS THE ARTEFACT THAT SURVIVES AN UNATTENDED SESSION**, and it
+    /// is the whole reason unit 233 exists. On 2026-09-03 the owner sat at 14.074,
+    /// got an empty table, and the machine kept no record of it at all: the capture
+    /// folder was never created, and the only thing telemetry had ever said about a
+    /// decode was a CW confidence count. Since unit 225 the tab decodes every slot
+    /// with no press, so a morning at the radio can produce 240 of these an hour or
+    /// none — and *none* is itself readable.</para>
+    /// <para>**A SLOT THAT REFUSED IS AN EVENT, NOT A SILENCE.** Where the reader
+    /// could not cut anything, its sentence is written verbatim and no slot lines
+    /// are. Where it cut slots, there is one line per slot whether or not the slot
+    /// produced text.</para>
+    /// <para>**COUNTS AND MEASUREMENTS, NEVER TEXT** (HM-DEC-018), and the signature
+    /// is what enforces it. <see cref="Ft8Reception"/> is deliberately *not* the
+    /// parameter here even though the call site holds one: it carries
+    /// <see cref="Ft8Decode"/> rows, and an FT8 message is very often a pair of
+    /// callsigns. <see cref="Ft8SlotCensus"/> has no member that can hold a
+    /// character, so the shape refuses rather than this method remembering — the
+    /// same reasoning that keeps <see cref="DecodeWindow"/> unable to hold a decoded
+    /// letter. The refusal sentence is Hamlet's own words about its own state and is
+    /// not anything that was on the air.</para>
+    /// <para>**A COSTAS MATCH COUNT IS NOT A SIGNAL-TO-NOISE RATIO** (`CLAUDE.md`
+    /// §0.0), and the key says so. There is no `snr` in this payload and none is
+    /// invented: a plausible number under that heading would be read as a
+    /// measurement by everyone downstream.</para>
+    /// <para>**IT COUNTS AND IT DOES NOT INTERPRET** (`CLAUDE.md` §12.1). Nothing
+    /// here concludes that the band was quiet or that a station was weak.</para>
+    /// </remarks>
+    public static void Ft8SlotsRead(
+        ITelemetry? telemetry,
+        IReadOnlyList<Ft8SlotCensus>? slots,
+        string refusal,
+        ClockOffset offset,
+        DateTime nowUtc)
+    {
+        if (telemetry is null)
+        {
+            return;
+        }
+
+        var age = offset.Age(nowUtc);
+
+        if (!string.IsNullOrEmpty(refusal))
+        {
+            telemetry.Write(
+                TelemetryCategory.Decode,
+                "ft8_slot",
+                new Dictionary<string, object?>(StringComparer.Ordinal)
+                {
+                    ["outcome"] = "refused",
+
+                    // Verbatim, because a paraphrase of a refusal is a different
+                    // refusal and the operator is reading the same sentence.
+                    ["refusal"] = refusal,
+                    ["clockOffsetSeconds"] = offset.OffsetSeconds is { } known
+                        ? Math.Round(known, 3)
+                        : null,
+                    ["clockOffsetAgeSeconds"] = age is { } old
+                        ? Math.Round(old.TotalSeconds, 1)
+                        : null,
+                },
+                TelemetryLevel.Warn);
+
+            return;
+        }
+
+        if (slots is null)
+        {
+            return;
+        }
+
+        foreach (var slot in slots)
+        {
+            // **THE ONE CASE WORTH FINDING BY SCANNING**: the search found places
+            // and not one of them became words. A slot with nothing in it is the
+            // ordinary state of a receiver and is written at info, in the manner
+            // DecodeWindow already levels a quiet band.
+            var foundAndNotRead =
+                slot.CandidateCount > 0 && slot.BecameTextCount == 0;
+
+            telemetry.Write(
+                TelemetryCategory.Decode,
+                "ft8_slot",
+                new Dictionary<string, object?>(StringComparer.Ordinal)
+                {
+                    ["outcome"] = "decoded",
+                    ["slotStartUtc"] = slot.SlotStartUtc.ToString(
+                        "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture),
+                    ["candidates"] = slot.CandidateCount,
+                    ["paritySatisfied"] = slot.ParitySatisfiedCount,
+                    ["checksumPassed"] = slot.ChecksumPassedCount,
+                    ["becameText"] = slot.BecameTextCount,
+                    ["duplicates"] = slot.DuplicateCount,
+                    ["topCostasMatchCounts"] = slot.TopSyncScores,
+                    ["sampleRate"] = slot.SampleRate,
+                    ["clockOffsetSeconds"] = offset.OffsetSeconds is { } known
+                        ? Math.Round(known, 3)
+                        : null,
+                    ["clockOffsetAgeSeconds"] = age is { } old
+                        ? Math.Round(old.TotalSeconds, 1)
+                        : null,
+                },
+                foundAndNotRead ? TelemetryLevel.Warn : TelemetryLevel.Info);
+        }
     }
 
     /// <summary>

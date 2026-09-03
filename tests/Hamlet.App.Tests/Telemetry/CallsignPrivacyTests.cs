@@ -16,7 +16,7 @@ public sealed class CallsignPrivacyTests : IDisposable
     /// <summary>Every public event-writing method on <see cref="AppEvents"/>.
     /// If this number moves, a new event was added and the walk below has to
     /// grow with it — that is the point.</summary>
-    private const int ExpectedEventMethodCount = 63;
+    private const int ExpectedEventMethodCount = 64;
 
     private const string Callsign = "KC3QIS";
     // "Timothy", not "Tim": a three-letter needle matches "timer", which is a
@@ -219,6 +219,30 @@ public sealed class CallsignPrivacyTests : IDisposable
 
         AppEvents.AudioCaptured(telemetry, 30, 7_030_000, worked: true);
         AppEvents.AudioCaptured(telemetry, 0, 7_030_000, worked: false);
+
+        // The FT8 slot census (unit 233). This is the newest ground the rule has
+        // to cover and the most tempting: an FT8 message is very often a pair of
+        // callsigns, and the tab decodes four slots a minute unattended. The
+        // method cannot be handed one - it takes Ft8SlotCensus, which has no
+        // member that can hold a character - and this walk is what keeps that
+        // provable rather than asserted.
+        AppEvents.Ft8SlotsRead(
+            telemetry,
+            new[]
+            {
+                new Hamlet.RadioEngine.Audio.Ft8SlotCensus(
+                    now, 12, 3, 2, 2, 1, new[] { 33, 27, 21 }, 48_000),
+            },
+            string.Empty,
+            new Hamlet.RadioEngine.Audio.ClockOffset(0.25, now.AddMinutes(-2)),
+            now);
+
+        AppEvents.Ft8SlotsRead(
+            telemetry,
+            Array.Empty<Hamlet.RadioEngine.Audio.Ft8SlotCensus>(),
+            Hamlet.RadioEngine.Audio.Ft8SlotCutter.NoOffset,
+            Hamlet.RadioEngine.Audio.ClockOffset.Unknown,
+            now);
 
         // The scope path and the link carrying it (HM-DEC-092).
         AppEvents.ScopeOutputRequested(telemetry, "Confirmed", 115_200, 0);

@@ -43,6 +43,13 @@ public sealed record Ft8Decode(
 /// of how far the Costas pattern stood above the average of the eight tones, in no
 /// units, calibrated against nothing.
 /// </param>
+/// <param name="SampleRate">
+/// The rate the slot's audio arrived at, **before** the resampler put it on the
+/// twelve kilohertz grid. It is here because a record that does not describe the
+/// path it ran on is broken in the place nobody checks (`CLAUDE.md` §0.0.1), and
+/// because a sound card at an unexpected rate is one of the things a slot that
+/// found nothing could be.
+/// </param>
 /// <remarks>
 /// <para>**THESE FOUR NUMBERS NAME THE STAGE THAT REFUSED**, which is the whole
 /// reason they are carried instead of discarded. Candidates at zero is a front end,
@@ -61,7 +68,8 @@ public sealed record Ft8SlotCensus(
     int ChecksumPassedCount,
     int BecameTextCount,
     int DuplicateCount,
-    IReadOnlyList<int> TopSyncScores);
+    IReadOnlyList<int> TopSyncScores,
+    int SampleRate);
 
 /// <summary>What a stretch of captured audio gave up.</summary>
 /// <param name="Decodes">The messages, oldest slot first.</param>
@@ -91,6 +99,17 @@ public sealed record Ft8Reception(
     /// here, all zeroes if that is what it found.</para>
     /// </remarks>
     public IReadOnlyList<Ft8SlotCensus> Slots { get; init; } = Array.Empty<Ft8SlotCensus>();
+
+    /// <summary>The clock offset this reading was cut against.</summary>
+    /// <remarks>
+    /// **CARRIED SO THE RECORD CAN SAY WHICH CLOCK IT BELIEVED** (`CLAUDE.md`
+    /// §0.0.1). A clock a second or two out and a receiver that hears nothing look
+    /// identical from the outside, and the only thing that separates them after the
+    /// fact is knowing what was applied. Defaults to
+    /// <see cref="ClockOffset.Unknown"/>, which is what a reading that never cut a
+    /// slot has.
+    /// </remarks>
+    public ClockOffset Offset { get; init; } = ClockOffset.Unknown;
 }
 
 /// <summary>
@@ -151,7 +170,10 @@ public static class Ft8Reader
                 Array.Empty<Ft8Decode>(),
                 0,
                 0,
-                cut.Reason.Length > 0 ? cut.Reason : NoWholeSlot);
+                cut.Reason.Length > 0 ? cut.Reason : NoWholeSlot)
+            {
+                Offset = offset,
+            };
         }
 
         decoder ??= new Ft8SlotDecoder();
@@ -185,7 +207,8 @@ public static class Ft8Reader
                 result.ChecksumPassedCount,
                 result.BecameTextCount,
                 result.DuplicateCount,
-                TopScores(places)));
+                TopScores(places),
+                slot.Audio.SampleRate));
 
             foreach (var message in result.Messages)
             {
@@ -201,6 +224,7 @@ public static class Ft8Reader
         return new Ft8Reception(found, cut.Slots.Count, candidates, "")
         {
             Slots = census,
+            Offset = offset,
         };
     }
 

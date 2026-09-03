@@ -6713,6 +6713,11 @@ public partial class MainWindowViewModel : ObservableObject
     /// replace the table on purpose, because one press is one question about one
     /// moment. Continuous decoding is the other case: it is a session, and a
     /// session accumulates.</para>
+    /// <para>**EVERY SLOT LEAVES A LINE, WHETHER OR NOT IT PRODUCED TEXT** (unit
+    /// 233). This is the one funnel both the press and the running watch go
+    /// through, so writing the census here is what makes an unattended morning at
+    /// the radio readable afterwards. On 2026-09-03 the phase's closing line was
+    /// performed and the machine kept no record of it at all.</para>
     /// <para>Internal rather than private so a test can drive several slots
     /// through it and read the rows back, in the manner <see cref="ShowDecodes"/>
     /// already is.</para>
@@ -6720,6 +6725,12 @@ public partial class MainWindowViewModel : ObservableObject
     internal void NoteSlot(Ft8Reception heard)
     {
         ArgumentNullException.ThrowIfNull(heard);
+
+        // **THE CENSUS AND THE REFUSAL, NOT THE RECEPTION.** `AppEvents` is handed
+        // only the things that cannot hold a decoded message, which is HM-DEC-018
+        // enforced by the signature rather than remembered here.
+        AppEvents.Ft8SlotsRead(
+            _telemetry, heard.Slots, heard.Refusal, heard.Offset, DateTime.UtcNow);
 
         if (heard.Refusal.Length > 0)
         {
