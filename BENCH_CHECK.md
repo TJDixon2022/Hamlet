@@ -12,7 +12,32 @@ There is no transmit step anywhere in this check. Nothing here keys the radio.
 
 ## 1. What to do
 
-Do these in order.
+### Step 0 — confirm which Hamlet is running (added by unit 234)
+
+**Do this before you plug anything in.**
+
+Open **About** and read the version. It should be **1.12.38**, which is what
+this tree carries as of tonight, 2026-09-03.
+
+**Why this step exists, and it is *measured*, not predicted.** Unit 234 read the
+telemetry files in `%AppData%\Hamlet\telemetry` and listed every version of
+Hamlet that has ever written a line on this machine. **The newest is 1.12.0.**
+Every version above it — the thirty-seven patches that carry this phase's FT8
+work, the Digital tab's continuous slot watch, the per-slot census and the
+capture sheet — has never been seen running here.
+
+**If the number on screen is older than 1.12.38**, then the Hamlet in front of
+you does not contain the work this check is testing, and nothing below will
+happen however good the band is. What to do about that is **your** call — how
+you build and install Hamlet on this machine is yours and no unit has touched
+it. This step only tells you which build you are looking at.
+
+*Predicted*: that the About box shows the version. *Measured tonight*: that
+1.12.0 is the newest build in this machine's own record.
+
+---
+
+Then do these in order.
 
 1. Plug the radio in. USB cable to the PC.
 2. Start Hamlet.
@@ -30,6 +55,48 @@ Do these in order.
 7. Set the rig to **USB-D**.
 8. Pick the **Digital** tab.
 9. **Leave it alone for two minutes.** Do not press anything.
+10. **Afterwards, look at the two files below — whether or not anything
+    appeared.** This step is added by unit 234 and is the only way a session
+    that showed nothing can be diagnosed later.
+
+### Step 10 — the two files to look at afterwards (added by unit 234)
+
+Do this even when it worked. Especially when it did not.
+
+**The log.**
+
+```
+%AppData%\Hamlet\telemetry\<today's date>.jsonl
+```
+
+*Measured tonight*: driven exactly the way `App.axaml.cs` drives it, Hamlet's
+telemetry writer put today's dated file on disk **12 milliseconds** after
+start-up, with no clean shutdown needed, holding one `app_start` line. So **if
+there is no file with today's date on it, the Hamlet you ran did not write one
+— which means it was not this code**, and step 0 is where to look. Every slot
+the Digital tab reads writes a line into this file, so a session that decoded
+nothing still leaves several hundred of them.
+
+**The captures.**
+
+```
+%AppData%\Hamlet\captures\digital\
+```
+
+*Measured tonight*: this folder does not exist on this machine, and
+`CaptureDigital` creates it the first time a press succeeds — so **no press has
+ever written anything here, on any day.** If you pressed *keep the last 30
+seconds* and this folder is still absent afterwards, the press refused. *Added
+tonight*: from 1.12.38 onward a refused press writes a `digital_capture_refused`
+line into the log above, at `warn`, saying which of the four ways it refused —
+nothing was listening, no audio had arrived, or the write failed. Before 1.12.38
+it left only a status-bar sentence that the next message overwrote.
+
+*Predicted*: what either file will contain after your session. *Measured
+tonight*: that both writers put files on disk when they are driven, and what
+each file's absence therefore means.
+
+---
 
 **Step 5 is the one nothing else in this project has written down.** The FT8
 path reads the CW decoder's audio tap. The CW decoder only exists while Hamlet
