@@ -388,6 +388,8 @@ public partial class MainWindowViewModel : ObservableObject
     private DateTime _lastSpotLoadUtc = DateTime.UtcNow;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(DigitalReadinessLine))]
+    [NotifyPropertyChangedFor(nameof(HasDigitalReadiness))]
     private long _frequencyHz;
 
     [ObservableProperty]
@@ -415,6 +417,8 @@ public partial class MainWindowViewModel : ObservableObject
     private BandButtonViewModel _selectedBand;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(DigitalReadinessLine))]
+    [NotifyPropertyChangedFor(nameof(HasDigitalReadiness))]
     private IReadOnlyList<Neighborhood> _neighborhoods = Array.Empty<Neighborhood>();
 
     /// <summary>
@@ -701,6 +705,8 @@ public partial class MainWindowViewModel : ObservableObject
     /// </remarks>
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(DigitalWaterfallSummary))]
+    [NotifyPropertyChangedFor(nameof(DigitalReadinessLine))]
+    [NotifyPropertyChangedFor(nameof(HasDigitalReadiness))]
     private AudioSpectrumSource? _digitalSpectrum;
 
     /// <summary>How far the PC clock is from UTC, measured and never corrected.</summary>
@@ -708,6 +714,8 @@ public partial class MainWindowViewModel : ObservableObject
     [NotifyPropertyChangedFor(nameof(ClockOffsetLine))]
     [NotifyPropertyChangedFor(nameof(ClockIsConcerning))]
     [NotifyPropertyChangedFor(nameof(DigitalWaterfallSummary))]
+    [NotifyPropertyChangedFor(nameof(DigitalReadinessLine))]
+    [NotifyPropertyChangedFor(nameof(HasDigitalReadiness))]
     private ClockOffset _clockOffset = ClockOffset.Unknown;
 
     /// <summary>What the Digital tab says about the clock.</summary>
@@ -747,6 +755,38 @@ public partial class MainWindowViewModel : ObservableObject
                 : $"{band} · {grid}";
         }
     }
+
+    /// <summary>
+    /// The first thing standing between the operator and a decode, or "".
+    /// </summary>
+    /// <remarks>
+    /// <para>**IT IS EMPTY AND INVISIBLE WHEN NOTHING IS WRONG**, and that is
+    /// asserted by a test. A quiet band is not a fault, the decoded panel's own
+    /// idle line already covers it, and a readiness line that always says
+    /// something is one the operator stops reading.</para>
+    /// <para>**THE ORDER AND THE WORDS ARE `DigitalReadiness`', WHICH IS PURE.**
+    /// This assembles the five facts from the surfaces that already hold them:
+    /// whether anything is listening, whether the source is the training radio,
+    /// the measured clock offset, what the radio says its mode is, and which
+    /// neighborhood the dial is in. Every one of them was already on this tab
+    /// somewhere and none of them was in one place.</para>
+    /// </remarks>
+    public string DigitalReadinessLine
+        => DigitalReadiness.FirstProblem(
+            DigitalSpectrum is not null,
+            DigitalSpectrum?.IsSimulated == true,
+            ClockOffset,
+            RigState.Mode,
+            RigState.DataVariant,
+            Neighborhoods.FirstOrDefault(n => n.Contains(FrequencyHz)));
+
+    /// <summary>Whether the readiness line has anything to say.</summary>
+    /// <remarks>
+    /// **THE MARKUP HIDES THE WHOLE ROW RATHER THAN SHOWING AN EMPTY ONE.** A
+    /// blank strip where a warning sometimes appears is a gap the operator
+    /// learns to read past, and the space it holds is space the waterfall wants.
+    /// </remarks>
+    public bool HasDigitalReadiness => DigitalReadinessLine.Length > 0;
 
     /// <summary>
     /// What the Digital tab's decoded table is showing.
@@ -2101,7 +2141,26 @@ public partial class MainWindowViewModel : ObservableObject
     public bool HasFilterBandwidth => FilterBandwidthText.Length > 0;
 
     /// <summary>Everything Hamlet currently knows about the radio.</summary>
-    public RigState RigState => _rigMonitor?.State ?? RigState.Empty;
+    /// <remarks>
+    /// <para>**THE MONITOR IS THE SOURCE OF TRUTH WHILE ONE IS ATTACHED**, and
+    /// the fallback is the last reading that came through
+    /// <see cref="ApplyRigState"/>, which HM-DEC-078 makes the only seam rig
+    /// state enters the UI by. In the running application the two are the same
+    /// value at every observable moment: the monitor is created before any state
+    /// can arrive, and <see cref="StopRigMonitor"/> applies
+    /// <see cref="RigState.Empty"/> on the way out, so a disconnected Hamlet
+    /// still reports knowing nothing rather than the last radio's readings
+    /// (§0.0).</para>
+    /// <para>**WHAT IT CHANGES IS THAT THE SEAM CAN BE DRIVEN WITHOUT A RADIO**
+    /// (unit 228). This property used to answer `Empty` forever unless a real
+    /// monitor was polling a real port, which put anything reading the mode
+    /// beyond the reach of a test. The readiness line reads the mode, and a
+    /// condition no test can reach is a condition nobody has checked.</para>
+    /// </remarks>
+    public RigState RigState => _rigMonitor?.State ?? _rigStateApplied;
+
+    /// <summary>The last state that came through the one seam.</summary>
+    private RigState _rigStateApplied = RigState.Empty;
 
     /// <summary>True once the decoder is tracking a speed worth showing.</summary>
     public bool HasDetectedSpeed => DetectedWpm > 0;
@@ -3465,6 +3524,8 @@ public partial class MainWindowViewModel : ObservableObject
             return;
         }
 
+        _rigStateApplied = state;
+
         NoticeOperatorModeChange(state);
 
         // **THE SWEPT FREQUENCY CORRECTS THE DISPLAY** (HM-DEC-109). A broadcast
@@ -3574,6 +3635,12 @@ public partial class MainWindowViewModel : ObservableObject
 
         OnPropertyChanged(nameof(RigState));
         OnPropertyChanged(nameof(TerminalSummary));
+
+        // **THE MODE IS ONE OF THE FIVE THE READINESS LINE ORDERS** (unit 228),
+        // and it is the one that arrives from the radio rather than from
+        // anything the operator did, so nothing else would re-ask it.
+        OnPropertyChanged(nameof(DigitalReadinessLine));
+        OnPropertyChanged(nameof(HasDigitalReadiness));
 
         // The link check and the age caption both read the clock, so they are
         // re-asked on the same beat as everything else here (HM-DEC-078).

@@ -2719,7 +2719,7 @@
                      fixed, not removable, not draggable, in no catalogue. The
                      canvas is gone and nothing here reintroduces it. -->
                 <Grid x:Name="DigitalWorkspace"
-                      RowDefinitions="Auto,*"
+                      RowDefinitions="Auto,Auto,*"
                       IsVisible="{Binding IsDigitalMode}">
 
                     <!-- **THE MODE STRIP RUNS THE FULL WIDTH AND DOES NOT
@@ -2825,7 +2825,38 @@
                         </Grid>
                     </Border>
 
-                    <ScrollViewer Grid.Row="1"
+                    <!-- **THE FIRST THING STANDING BETWEEN THE OPERATOR AND A
+                         DECODE, AND NOTHING AT ALL WHEN THERE IS NO SUCH
+                         THING** (unit 228). An empty panel is
+                         indistinguishable from a broken one (Tim,
+                         2026-08-28), and that ruling is why every panel below
+                         carries an idle line. This is the case those lines
+                         cannot cover: the table is empty and there is a
+                         reason.
+
+                         **IT SITS OUTSIDE THE SCROLLER AND ABOVE EVERY
+                         PANEL**, because the state it describes is one where
+                         the panel a reader happens to have collapsed is
+                         exactly the panel that would have carried the news.
+
+                         **THE WHOLE ROW GOES WHEN THERE IS NOTHING TO SAY.** A
+                         blank strip where a warning sometimes appears is a gap
+                         the operator learns to read past, and a readiness line
+                         that always says something is one he stops reading. -->
+                    <Border Grid.Row="1" x:Name="DigitalReadinessStrip"
+                            Margin="0,0,0,10" Padding="10,7"
+                            CornerRadius="8"
+                            Background="{StaticResource HmAmberTintBrush}"
+                            BorderBrush="{StaticResource HmAmberEdgeBrush}"
+                            BorderThickness="1"
+                            IsVisible="{Binding HasDigitalReadiness}">
+                        <ctl:GlossaryTextControl
+                            Text="{Binding DigitalReadinessLine}"
+                            FontSize="12" LineSpacing="1.4"
+                            Foreground="{StaticResource HmAmberDeepBrush}" />
+                    </Border>
+
+                    <ScrollViewer Grid.Row="2"
                                   VerticalScrollBarVisibility="Auto">
                         <StackPanel Spacing="10">
 
