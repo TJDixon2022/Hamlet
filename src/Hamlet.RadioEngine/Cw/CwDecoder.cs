@@ -649,6 +649,26 @@ public sealed class CwDecoder
     /// <summary>True while the radio is transmitting or has just stopped.</summary>
     public bool DecodingSuspended { get; private set; }
 
+    /// <summary>True while the operator is working a digital mode.</summary>
+    /// <remarks>
+    /// <para>**A SECOND TRIGGER ON HM-DEC-147'S PATH, NOT A SECOND PATH.** When
+    /// it is set the audio is taken for the tap, the clock is advanced, and the
+    /// decode is skipped - exactly what happens while the radio is
+    /// transmitting, for a different reason. Building a separate route would
+    /// mean two places that must agree about what "take it but do not read it"
+    /// means, and they would drift.</para>
+    /// <para>**IT IS NO LONGER THE FAULT, AND THAT IS WHY IT IS A TIDY-UP.**
+    /// Before task 2 the CW decode ran on the device's callback thread and
+    /// starved the tap, so running it on the Data tab was actively harmful. Now
+    /// it is a worker doing arithmetic nobody reads. Skipping it is one fewer
+    /// moving part rather than a repair.</para>
+    /// <para>**AND IT IS SET FROM THE MODE, NEVER INFERRED FROM THE AUDIO** -
+    /// the same discipline HM-DEC-147 imposes on the transmit state, for the
+    /// same reason: a guess about what the operator is doing, made from the
+    /// thing he is doing it to, is not a measurement.</para>
+    /// </remarks>
+    public bool DigitalMode { get; set; }
+
     /// <summary>How many chunks of audio were dropped rather than decoded.</summary>
     public long SuspendedChunks => _suspendedChunks;
 
@@ -868,7 +888,7 @@ public sealed class CwDecoder
             Tap.Take(chunk.Samples, chunk.SampleRate);
         }
 
-        if (DecodingSuspended)
+        if (DecodingSuspended || DigitalMode)
         {
             // **NOT DECODED, NOT HELD, NOT RELEASED LATER** (HM-DEC-147). The
             // sidetone of the operator's own transmission is not something
@@ -883,6 +903,7 @@ public sealed class CwDecoder
             _probabilistic.Skip(chunk.Samples.Length);
             return;
         }
+
 
         // **THE AUDIO IS WALKED A HOP AT A TIME, WHATEVER SIZE IT ARRIVED IN.**
         // What follows sets the mixer's pitch from the tracker and then mixes the

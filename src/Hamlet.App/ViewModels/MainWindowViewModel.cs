@@ -6822,6 +6822,17 @@ public partial class MainWindowViewModel : ObservableObject
     {
         var tap = _decoder?.Tap;
 
+        // **THE DECODER IS TOLD WHICH MODE IT IS IN, ON THE TICK THAT ALREADY
+        // KNOWS.** Work instruction 238 task 5: in Digital the CW decode is
+        // arithmetic nobody reads, so the audio is taken for the tap and the
+        // decode is skipped, on HM-DEC-147's own path. It is set here rather
+        // than watched from inside the engine because the mode is the shell's
+        // fact, and the engine takes state from what it is told (§0.1).
+        if (_decoder is not null)
+        {
+            _decoder.DigitalMode = IsDigitalMode;
+        }
+
         if (!IsDigitalMode || tap is null)
         {
             _slotWatch.Rearm();
