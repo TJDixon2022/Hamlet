@@ -294,7 +294,7 @@ public sealed class RealOffAirAudioReachesTheTabTests
     /// <param name="LastRefusal">The last thing it refused with, or "".</param>
     /// <param name="Decodes">The messages, oldest slot first.</param>
     /// <param name="SlowestSlotMs">The wall time of the slowest slot decode.</param>
-    private sealed record Run(
+    internal sealed record Run(
         int SlotsReady,
         int Skipped,
         string LastRefusal,
@@ -314,8 +314,20 @@ public sealed class RealOffAirAudioReachesTheTabTests
     /// boundary the watch is looking for falls in the middle of a chunk, exactly as
     /// it will at the radio.
     /// </remarks>
-    private static int ChunkFor(int deviceRate)
+    internal static int ChunkFor(int deviceRate)
         => (int)Math.Round(deviceRate * 0.010);
+
+    /// <summary>
+    /// A chunk of samples, as it arrives after whatever the device did to it.
+    /// </summary>
+    /// <param name="block">What was on the wire.</param>
+    /// <returns>What the tap is handed.</returns>
+    /// <remarks>
+    /// **THE ONE SEAM BETWEEN THE FLOAT PATH AND THE BYTE PATH** (unit 237).
+    /// Everything else about a run is identical, so a difference between the two
+    /// has exactly one possible home.
+    /// </remarks>
+    internal delegate ReadOnlySpan<float> DeviceArrival(ReadOnlySpan<float> block);
 
     /// <summary>
     /// Play one recording into a real tap and let a real watch find its slots.
@@ -323,8 +335,22 @@ public sealed class RealOffAirAudioReachesTheTabTests
     /// <param name="recording">The off-air audio.</param>
     /// <param name="deviceRate">What the sound card is pretending to be.</param>
     /// <param name="chunk">How many samples arrive at once.</param>
+    /// <param name="through">
+    /// What the samples pass through on the way in, or null for the float path
+    /// this file has always used.
+    /// </param>
     /// <returns>What came out.</returns>
-    private static Run Play(OffAirRecording recording, int deviceRate, int chunk)
+    /// <remarks>
+    /// **<paramref name="through"/> IS WHY THIS IS ONE HELPER AND NOT TWO** (unit
+    /// 237, task 4). Writing a second harness for the byte path would put two
+    /// differences between the two runs - the conversion, and whatever the second
+    /// harness got wrong - and only one of them would be the thing under test.
+    /// </remarks>
+    internal static Run Play(
+        OffAirRecording recording,
+        int deviceRate,
+        int chunk,
+        DeviceArrival? through = null)
     {
         var source = recording.Read();
 
@@ -362,8 +388,10 @@ public sealed class RealOffAirAudioReachesTheTabTests
 
         void Deliver(ReadOnlySpan<float> block)
         {
-            tap.Take(block, deviceRate);
-            now = now.AddSeconds((double)block.Length / deviceRate);
+            var arrived = through is null ? block : through(block);
+
+            tap.Take(arrived, deviceRate);
+            now = now.AddSeconds((double)arrived.Length / deviceRate);
 
             while (now >= nextLook)
             {
