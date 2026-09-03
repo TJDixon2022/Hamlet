@@ -1,438 +1,601 @@
 READ IN THIS ORDER
 
 A. THE PHASE GOAL. Hamlet hears FT8 off the radio and displays the decoded text
-on screen. Steps 1 to 5 are done. Step 6 is blocked at 14 of 306 against a 40 per
-cent band, on an owner ruling that is already in front of him and that nobody
-else may give. Step 7's five must-pass criteria are all evidenced by units 224 to
-228, and its closing line - the owner at 14.074 - was performed on 2026-09-03 and
-nothing appeared on screen.
+on screen. Steps 1 to 5 are done. Step 6 is blocked on an owner ruling that was
+not touched tonight. Step 7 is partial: its five criteria are evidenced against
+audio this project fed itself, and its closing line was performed at the radio
+on 2026-09-03 and produced nothing on screen.
 
-B. THIS STEP AND ITS EXIT CRITERIA. Step 7's five criteria are: slot alignment
-asserted against synthesized audio and a controllable clock (unit 224); audio at
-a sound card's own rate decoding to the message that went in (unit 224); a decode
-reaching the table as itself (unit 224); an unmeasured clock refusing in words
-rather than showing an empty table (unit 226); and the tab decoding unattended
-rather than on a press (unit 225, hardened by 228). All five are met and none is
-reopened. THIS UNIT CLAIMS NONE OF THEM. What it clears instead is whether
-Hamlet's two record-keepers - the telemetry sink and the digital capture - write
-anything at all, which decides whether the next bench check can be read.
+B. THIS STEP AND ITS EXIT CRITERIA. Step 7's five, named, with which unit met
+each. THIS UNIT AIMS AT CRITERION 3 - decodes render on screen - and at the one
+segment of the path that no test has ever executed: the conversion of a capture
+device's raw bytes into the floats every existing test starts from. Say whether
+that segment is now asserted, and whether it was correct.
 
-C. THIS REPORT. Section 4 raises 5 items. NONE of them is in the way of a
-criterion in B, because all five criteria in B are already met. THE SINK WRITES:
-driven with `App.axaml.cs`'s own four arguments it put today's dated file on disk
-in 12 milliseconds with no `Dispose` called, so the stop rule in task 2 did not
-fire and all seven tasks ran. The capture write path works too, watched from a
-test for the first time. What bears on A is item 1: the newest build that has ever
-written a line on this machine is 1.12.0, thirty-seven patches behind this tree,
-which is the cheapest available explanation of the whole silent morning.
+C. THIS REPORT. Section 4 raises 4 items and none of them is in the way of a
+criterion in B: one asks the owner one question about the shack machine that
+would settle what tonight could not, one is a ruling request about what the
+operator is told when a sound card speaks a format Hamlet cannot read, one
+records that the swallowing catch in the capture path leaves no trace of a
+dropped buffer, and one records mismatches between the instruction and the tree.
+The answer the next unit is authored from, stated here and again in section 3:
+through the float path the same three off-air recordings give 47 decodes;
+through a device byte buffer they give 47 for 16-bit PCM, 24-bit PCM, 32-bit
+PCM, IEEE float 32, Extensible PCM 16 and Extensible PCM 32, 46 for 8-bit PCM,
+and for Extensible IEEE float 32 they gave 24 before tonight's fix and 47 after.
+The segment is now asserted and it was WRONG. **Whether it is what silenced the
+bench check is UNKNOWN and could not be determined from here**: `SHACK_FACTS.md`
+FACT-004, added to this tree during this session, says the radio is on a
+different machine and that nothing measured about this machine's audio endpoints
+says anything about it. The defect is real and repaired; it is neither cleared
+nor implicated.
 
-UNIT:       234 - complete - 7 of 7 tasks, nothing dropped - 2026-09-03 13:37
-PHASE GOAL: Hamlet hears FT8 off the radio and shows the decoded text on screen.
-UNIT GOAL:  Watch Hamlet's two record-keepers actually write, by driving them the
-            way the application drives them, and make a refused capture press
-            leave a line instead of a status bar that scrolls away.
-ADVANCED:   no - this unit clears a blocker on step 7 and claims none of its five
-            criteria. A unit cannot advance a step whose only remaining work is
-            the owner's, at a radio, with an antenna on it.
-NUMBER:     sessions of Hamlet whose record can be found afterwards: 0 -> 0. Task
-            1 found no file anybody had missed. What moved is that a missing
-            record is now a failing test rather than a mystery.
-DRIFT:      3. Reported honestly and it is structural: step 7's five criteria are
-            all met and its remaining work is the owner's; step 6 is out of
-            unit-reachable moves and waits on a ruling. There is no step left for
-            a unit to advance, so a unit that does real work still reads as drift.
-
----
+UNIT:       237 - complete at task 7 of 7 - 2026-09-03 16:39
+PHASE GOAL: FT8 comes off the antenna, through Hamlet, onto the screen as text
+            the operator can read.
+UNIT GOAL:  Assert the one segment nobody has ever asserted - a real capture
+            device's raw byte buffer becoming the mono floats the tap receives -
+            by driving it with the off-air audio already known to make 194 rows,
+            and repair it if it is wrong.
+ADVANCED:   yes - criterion 3: a known-good off-air recording now produces all
+            47 of its messages through 7 of 8 real device byte formats where no
+            test had ever executed the conversion at all and an Extensible-float
+            buffer produced 24; whether that repair is the silent morning's cause
+            is unknown from this machine and is one question for the shack
+NUMBER:     device byte formats through which a known-good off-air recording
+            produces its full set of decodes: 0 -> 7 (of 8 measured; the eighth,
+            8-bit PCM, gives 46 of 47)
+DRIFT:      0 consecutive units without advance  (was 5)
 
 ## 1. What Claude did
 
-Seven tasks, all seven completed. **Nothing was dropped**, including task 5, the
-named drop candidate - it was droppable because tasks 2, 3 and 4 all landed green,
-but task 1 measured something the owner needs on that sheet, so it was written.
+**Complete, at task 7 of 7. Nothing was dropped, including the named drop
+candidate.** Machine `C--Source-HamLet`, project confirmed Hamlet by all four
+gate checks - `SHACK_FACTS.md` present, `CwProbabilisticDecoder.cs` present,
+`CoreHMI.sln` and `MURC.sln` both absent - branch `main`.
 
-### Task 1 - the trace, and the finding that reframes the morning
+### What was traced, built and measured
 
-A scratch xunit harness (overwriting unit 233's spent file, left untracked, never
-staged) read `%AppData%\Hamlet` and wrote what it found into the repository.
-**Nothing was written into the operator's folder** - not a probe file, not a
-folder. It is a listing and a set of reads.
+**Task 1 - the trace.** Walked the device-to-tap path naming every line that
+transforms a sample, and established that no test in this repository executes
+any of it. Details and line numbers in section 3.
 
-Eight files and one subfolder. `captures` **still does not exist**. The newest
-telemetry file is **still `2026-08-28.jsonl`** - no file for 2026-09-03, none
-after 2026-08-28 at all - while `settings.json` was rewritten that same day at
-16:35:55 UTC, so a Hamlet did run. Then the census nobody had asked for.
+**Task 2 - the seam and the table.** `Downmix` and `ReadSample` are reachable
+from `Hamlet.RadioEngine.Tests` now. Fourteen rows built from bytes the test
+writes itself, mono and stereo, the two channels always carrying different
+values. Thirteen exact. The fourteenth, **32-bit float declared as
+`Extensible`, was out by 0.503 of full scale**.
 
-### Task 2 - the sink, driven the way `App.axaml.cs` drives it
+**Task 3 - the repair, watched failing first.** Three tests failed against the
+unfixed code and seventeen pass against the fixed one. The discriminator now
+reads the format's subformat rather than its top-level tag.
 
-A committed test in `tests/Hamlet.App.Tests/Telemetry/`, constructing
-`JsonlTelemetry` with the same four arguments the shell passes - a folder, a
-version string, `settings.IsTelemetryEnabled` off a default `AppSettings`, and
-`TelemetryMaxMegabytes * 1024 * 1024` - pointed at a temporary folder, then
-`AppEvents.AppStart` on it. Four facts, each asserted as a file on disk and not as
-a `Write` call returning.
+**Task 4 - end to end.** Karlis Goba's three busiest off-air recordings, encoded
+into device byte buffers in eight formats at two rates and pushed through the
+production conversion into the same `AudioTap` and the same `Ft8SlotWatch`.
 
-**On `TelemetryTests.cs`, which section 2 told me to read first.** It does not
-assert what task 2 asserts and was not extended. It proves the daily-file naming,
-the eviction order, the never-throw discipline and `ClearAll`, all against a
-hand-written `_ => true` predicate inside a `using`. Nothing in it builds the sink
-from an `AppSettings`, goes through `AppEvents`, reads a line back as JSON, or
-measures anything without `Dispose` - and a process that never disposes is exactly
-the bench case. The new class is a different question in a different project, and
-it says so in its own remarks.
+**Task 5 - taken, not dropped**, and then its conclusion withdrawn. It was
+droppable under its own conditions. `SHACK_FACTS.md` gained FACT-004 during this
+session, which says a defect cleared or implicated by enumerating this machine's
+capture devices has been measured against the wrong hardware. Section 3 and
+section 4 item 1 carry the correction.
 
-### Task 3 - the capture, driven the way the button drives it
+**Task 6 - the bench sheet.** Three corrections, each tagged measured or
+inherited.
 
-A committed test that points `MainWindowViewModel.CaptureFolder` at a temporary
-folder, restores it in a `finally`, and asserts it is back. **The seam:**
-`CaptureDigital` reads `_decoder?.Tap`, and `_decoder` is a private field set only
-when a sound card opens. Rather than open one, the field is set by reflection to a
-real `CwDecoder` whose real `AudioTap` has been fed real samples; everything
-downstream - the decode, the WAV, the sheet - is production code running
-unmodified. Nothing opens a window and nothing reaches a transmitter.
+**Task 7 - the gates.** Four, one at a time, every failing set empty.
 
-### Task 4 - the four silent paths
+### The decisions this session made for itself
 
-One new event, `AppEvents.DigitalCaptureRefused`, written on every one of the four
-ways `CaptureDigital` produces nothing. Its parameter is a new enum,
-`DigitalCaptureRefusal`, with four members - and **the two exception members are
-named for their exception types**, which is how the type name reaches the file
-without a string ever being passed. HM-DEC-018 is enforced by the signature, in
-the manner unit 233 used for `Ft8SlotCensus`: there is no parameter that can hold
-a character, so the call site has nothing to remember. Level `warn`.
-`CallsignPrivacyTests`'s walk went 64 to 65.
+**1. `Downmix` became `internal static` with a `ref float[]` parameter, which is
+more than the access modifier task 2 allowed.** The instruction says the seam
+costs an access modifier. It does not: `Downmix` is an instance method reading
+the field `_mono`, and the only constructor `WasapiAudioSource` has opens a real
+capture device, so an instance is unreachable without a sound card and the whole
+point of the night was a verdict that needs no hardware. The scratch array moved
+from a field to a `ref` parameter and nothing else changed - the caller passes
+its own `_mono`, it is still grown once and reused, and the method still
+allocates nothing after the first buffer. **Reported as a decision because it is
+one**, and because §7 forbids restructuring `Downmix` for readability; this was
+not for readability.
 
-**No sentence was added to any screen.** The status bar keeps the four sentences
-it already had, in Tim's words, unchanged.
+**2. An unrecognised format throws rather than returning `0.0`.** Task 3 left
+this to the unit under HM-DEC-009 with one binding constraint - whatever it
+returns must not be able to look like quiet audio. `NotSupportedException`,
+naming the format and never the device (HM-DEC-018). `OnDataAvailable` drops the
+buffer, nothing reaches the tap, and unit 236's slot level writes that down as
+*no level at all* - both levels `null`, zero fraction `1` - which is a reading
+the operator can act on. Returning zero manufactured a stream of silence that no
+reading anywhere could tell from a dead band. **The cost is that this reading is
+now shared with an unplugged codec**, which is why the bench sheet gained the
+line that tells them apart, and why section 4 raises the ruling.
 
-### Task 5 - `BENCH_CHECK.md`, two additions and nothing else touched
+**3. Task 4 asserts equality for every format except 8-bit PCM, which is
+reported and not gated.** Eight bits quantises at 1/128 of full scale, which is
+above the noise floor of a quiet band, so a weak decode can be lost in it. It
+was measured at 46 against 47 and none of the three recordings matched exactly.
+Gating on it would be asserting that eight-bit audio is as good as float, which
+is false.
 
-A **step 0** before "plug the radio in", telling the owner to open About and read
-the version against 1.12.38, with the measured reason why that step now exists and
-an explicit statement that what to do about an older number is his call and not an
-instruction to reinstall anything. And a **step 10**, the two files to look at
-afterwards, each with what its *absence* means now that both writers have been
-measured. Every added line says whether it was measured tonight or is predicted.
-Unit 226's existing text is untouched.
-
-### Tasks 6 and 7
-
-Five gates, run one after another, never overlapping, every count read from
-`ResultSummary.Counters` in a TRX and never off a console. Root version
-`1.12.37` -> `1.12.38` under HM-DEC-150, taken before the App channel gate because
-`VersionTests` reads it. **`Ft8Sharp` did not move** - no file under
-`src/Ft8Sharp/` changed. Six commits, named paths only, no `git add -A` and no
-`git add .` at any point.
-
-### What was left alone
-
-Step 6 in its entirety, everything under `src/Ft8Sharp/`, step 5's criterion 3,
-the `snr` column, the plain-English panel, the untracked debris at the repository
-root, `tools/`, and the full Hamlet suite.
+**4. Task 4 plays three recordings, not the twelve
+`RealOffAirAudioReachesTheTabTests` uses.** Nine runs per recording per rate is
+the cost, and the question - does a format change the answer - is answered as
+well by three busy recordings. The twelve-recording run is untouched and still
+in the audio gate.
 
 ## 2. What the owner should expect
 
-**Open About before you sit down at the radio.** That is the whole of what changed
-for you tonight, and it is now step 0 of `BENCH_CHECK.md`. If the version on
-screen is not 1.12.38, the Hamlet in front of you does not contain this phase's
-work and nothing on the Digital tab will happen however good the band is. Every
-version of Hamlet that has ever written a line on this machine is 1.12.0 or
-older - the whole phase has been built in a tree whose output, so far as the
-machine's own record goes, has never been run.
+**A defect in the capture path was found, measured and repaired, and whether it
+is what happened to you on 2026-09-03 is one press away from being known.** It
+cannot be settled from this computer - the radio is on the other one - so section
+4 puts one question to you rather than guessing at the answer.
 
-**After the session, look at two files** - `%AppData%\Hamlet\telemetry\<today>.jsonl`
-and `%AppData%\Hamlet\captures\digital\`. `BENCH_CHECK.md` now says what each
-one's absence means. In short: a Hamlet that runs writes the first one within
-milliseconds, so its absence means the thing you ran was not this code; and the
-second one has never existed on this machine, so if you press *keep the last 30
-seconds* and it is still absent, the press refused.
+**What is now true.** Hamlet used to decide whether a sound card's bytes were
+decimals or whole numbers by asking the wrong question. On a sound card
+described the way Windows usually describes one, it got the wrong answer, and
+every sample the radio delivered was read as the wrong kind of number - loud,
+and completely unintelligible. That is fixed, it is asserted from constructed
+bytes for every format a sound card can speak, and real off-air recordings now
+decode identically whichever of those formats they arrive in.
 
-**A refused press is no longer silent.** From 1.12.38 a press that produces
-nothing writes a `warn` line into the log saying which of the four ways it
-refused. Search a morning's file for `digital_capture_refused`. This is why unit
-233's question to you - whether you pressed the capture button on 2026-09-03 - is
-not being waited on: both answers now lead to the same place next time.
+**What will look wrong but is not.**
 
-**Nothing on any screen changed.** No new sentence, no new column, no new panel.
+- **The version moved to 1.12.41 and you will see no difference at the radio**
+  unless your sound card was one of the affected ones. Nothing was added to any
+  screen; three display rulings are still with you.
+- **`BENCH_CHECK.md` grew a subsection that ends by telling you nobody knows the
+  answer.** That is deliberate and it is FACT-004 being obeyed. The development
+  machine's capture devices are not the affected kind; your radio's codec is not
+  on the development machine, so that measurement does not carry over. The
+  subsection tells you the one row that settles it.
+- **A sound card Hamlet cannot read now looks identical to an unplugged one** in
+  the log - both levels `null`, every sample zero. That is a deliberate trade
+  made under the honesty rule, and the bench sheet says how to tell them apart.
+- **Test count went up by 20 in the audio set** and one of the new tests reads
+  the development machine's capture device formats. It opens nothing, starts
+  nothing and records nothing, and it never reads a device name. Its class
+  comment now carries FACT-004 so nobody reads the radio's behaviour out of it.
 
-**Two things you should not read into this.** Sensitivity is still short of the
-published figure and step 6 still waits on your ruling; nothing tonight touched
-the decoder. And nothing tonight has heard a radio - the writers were watched
-working on a bench, which is a different claim from the phase goal.
+**What is not claimed.** Nothing tonight bears on step 6. That measurement was
+taken on synthesized samples that never went near the capture path, and a
+byte-conversion fault could not have touched it.
 
 ## 3. What you should see
 
-**THE VERDICT ON THE SINK: driven the way `App.axaml.cs` drives it, Hamlet's
-telemetry writer DOES put a line on disk for today.** File `2026-09-03.jsonl`, one
-line, verbatim:
+**No user-visible change in the application.** This unit repairs a defect on the
+path between the sound card and everything else and adds no sentence to any
+screen. What an operator would see is a difference only where the sound card is
+described with the extensible wrapper: there, the Digital tab's table goes from
+about half full to full - 24 messages to 47 on the recordings measured tonight.
+**Whether the shack machine's card is one of those is the question in section
+4.** On the development machine, measured, nothing changes, and under FACT-004
+that fact does not carry across to the radio.
+
+### The answer, first
+
+**For each format a capture device can present, the conversion produced the
+sample values that went in, to within one quantisation step, and the same
+off-air recordings produced 47 decodes through the byte path against 47 through
+the float path - except 8-bit PCM at 46, and except 32-bit float declared
+`Extensible`, which produced 24 before tonight's fix and 47 after.**
+
+NAudio is at **2.2.1** (`NAudio`, `NAudio.Core`, `NAudio.Wasapi`, all 2.2.1).
+
+The failure text of the new test taken against the unfixed code, verbatim:
 
 ```
-{"ts":"2026-09-03T16:52:47.652Z","sessionId":"32f617cd","level":"info","appVersion":"1.12.38","category":"diagnostics","event":"app_start","data":{}}
+extensible-float32 at 1 channel(s), declared as Extensible 32-bit: the
+conversion is out by 0.502937317 at frame 5 - it produced 0.496086100 where
+0.999023438 went in. A device speaking this format delivers audio that is loud
+and is not the band.
+
+extensible-float32 at 2 channel(s), declared as Extensible 32-bit: the
+conversion is out by 0.199218750 at frame 1 - it produced -0.011718750 where
+0.187500000 went in.
+
+AFormatNothingCanReadRefusesInsteadOfReturningQuietAudio
+Assert.Throws() Failure: No exception was thrown
+Expected: typeof(System.NotSupportedException)
 ```
 
-`DroppedEventCount` was **0**. **Elapsed before the line appeared with no
-`Dispose` ever called: 12 ms.** That is the number that matters, because an
-application killed rather than closed never disposes - so the bench case is
-covered, and a missing file cannot be explained by a process that exited badly.
-With Diagnostics switched off through the same `AppSettings`, there was no line
-and **no file at all**, and dropped stayed 0: the guard was watched refusing. A
-default `AppSettings` was asserted directly to enable Diagnostics, which is the
-branch `settings.json`'s empty `{}` takes.
+### Step 7's five criteria, and which unit met each
 
-**So the sink is not the fault, and the silence has to be explained somewhere
-else.** The next table is where.
-
-### Which builds of Hamlet have ever run on this machine (task 1)
-
-Every distinct `appVersion` across all eight jsonl files, with the newest `ts`
-carrying it. 2 897 lines, 0 unparseable.
-
-| appVersion | lines | newest ts | in file |
-|---|---|---|---|
-| 1.0.0 | 948 | 2026-08-14T22:02:26.013Z | 2026-08-14.jsonl |
-| 1.2.0 | 171 | 2026-08-15T17:51:39.229Z | 2026-08-15.jsonl |
-| 1.2.7 | 50 | 2026-08-15T19:43:21.211Z | 2026-08-15.jsonl |
-| 1.2.9 | 10 | 2026-08-15T20:12:30.428Z | 2026-08-15.jsonl |
-| 1.3.0 | 22 | 2026-08-15T22:27:56.924Z | 2026-08-15.jsonl |
-| 1.4.0 | 34 | 2026-08-15T23:59:22.328Z | 2026-08-15.jsonl |
-| 1.4.1 | 42 | 2026-08-16T00:41:20.672Z | 2026-08-16.jsonl |
-| 1.5.0 | 99 | 2026-08-16T01:09:36.490Z | 2026-08-16.jsonl |
-| 1.5.1 | 96 | 2026-08-16T02:04:42.865Z | 2026-08-16.jsonl |
-| 1.6.0 | 199 | 2026-08-16T13:53:56.432Z | 2026-08-16.jsonl |
-| 1.8.1 | 18 | 2026-08-17T13:35:14.068Z | 2026-08-17.jsonl |
-| 1.10.10 | 15 | 2026-08-22T21:28:19.610Z | 2026-08-22.jsonl |
-| 1.11.23 | 25 | 2026-08-27T15:33:29.858Z | 2026-08-27.jsonl |
-| 1.11.24 | 393 | 2026-08-27T17:08:01.835Z | 2026-08-27.jsonl |
-| 1.11.25 | 77 | 2026-08-27T17:51:06.407Z | 2026-08-27.jsonl |
-| 1.11.34 | 17 | 2026-08-28T14:55:48.168Z | 2026-08-28.jsonl |
-| **1.12.0** | **73** | **2026-08-28T15:33:38.978Z** | **2026-08-28.jsonl** |
-
-**THE NEWEST BUILD IN THE RECORD IS 1.12.0, WHICH IS OLDER THAN THIS TREE'S
-1.12.37.** Thirty-seven patch versions - every unit from 225 onward, the
-continuous slot watch, the per-slot census, the capture sheet's audio-path and
-geometry blocks - have never been seen running on this machine.
-
-I am not asserting that the owner ran an old build on 2026-09-03; the record for
-that day does not exist, so it cannot say. What the record does say is that **no
-build carrying this phase's work has ever written a line here**, and that is the
-cheapest explanation available for a morning that produced nothing on screen,
-nothing in telemetry and nothing in captures all at once. It is item 1 of section
-4 and the reason step 0 was added to `BENCH_CHECK.md`.
-
-### The rest of the trace (task 1)
-
-Every file in `%AppData%\Hamlet`, sizes and last-write times in UTC:
-
-| entry | bytes | last written UTC |
+| # | Criterion | Where it stands |
 |---|---|---|
-| `layouts.json` | 819 | 2026-08-27T17:08:01Z |
-| `scan-segments.json` | 4 601 | 2026-08-17T23:40:52Z |
-| `settings.json` | 1 353 | **2026-09-03T16:35:55Z** |
-| `spots.db` | 716 800 | 2026-08-28T15:33:39Z |
-| `spots.db-shm` | 32 768 | **2026-09-03T16:35:53Z** |
-| `spots.db-wal` | 370 832 | 2026-09-03T12:29:17Z |
-| `telemetry\2026-08-13.jsonl` | 84 605 | 2026-08-13T23:19:03Z |
-| `telemetry\2026-08-14.jsonl` | 109 634 | 2026-08-14T23:55:13Z |
-| `telemetry\2026-08-15.jsonl` | 69 122 | 2026-08-15T23:59:22Z |
-| `telemetry\2026-08-16.jsonl` | 214 802 | 2026-08-16T13:53:56Z |
-| `telemetry\2026-08-17.jsonl` | 8 848 | 2026-08-17T13:35:14Z |
-| `telemetry\2026-08-22.jsonl` | 7 507 | 2026-08-22T21:28:19Z |
-| `telemetry\2026-08-27.jsonl` | 144 592 | 2026-08-27T17:51:06Z |
-| `telemetry\2026-08-28.jsonl` | 36 910 | 2026-08-28T15:33:38Z |
+| 1 | Audio arrives in 15-second slots aligned to the quarter minute | met, unit 225 - `Ft8SlotWatch` against synthesized audio and an injectable clock |
+| 2 | The clock offset is measured and shown | met, unit 228 - the readiness line names a clock that is out or unchecked |
+| 3 | **Decodes render on screen** | met against this project's own audio by unit 224, strengthened by unit 226 on real off-air recordings - **and contradicted at the radio on 2026-09-03** |
+| 4 | `Ft8Sharp` tests green | met, every unit; tonight 523 passed, 0 failed, 1 skipped |
+| 5 | Attribution clean from `2828ab6`, channel tests green | met, every unit; tonight 254 paths, 9 of 9 and 38 of 38 |
 
-- **`captures` does not exist. `captures\digital` does not exist.** Unit 233's
-  measurement is confirmed against the tree tonight.
-- **File for 2026-09-03: no. Any file after 2026-08-28: no.**
-- Line counts, oldest to newest: 473, 601, 161, 436, 18, 15, 495, 90.
-- **`settings.json` and `spots.db-shm` were written at 16:35:55Z and 16:35:53Z on
-  2026-09-03** - two seconds apart, and about fourteen minutes before the trace
-  ran. Something opened the spots database and saved settings that day. Whatever
-  it was left no telemetry line, and after task 2 that is a statement about the
-  process, not about the sink.
-- Last five lines of the newest file (`2026-08-28.jsonl`), verbatim, **no callsign
-  in any of them** - the last is `app_stop`, the four before it are
-  `decode_quality` and `rig_heartbeat` at `appVersion 1.12.0`, carrying counts and
-  decibels only.
-- `settings.json`: `TelemetryCategories: {}` and `TelemetryMaxMegabytes: 50`,
-  verbatim. The empty object is the branch that reads as *every category on*.
-- **`ft8` events in any jsonl, of any kind: 0.** Every decode event in the whole
-  folder is CW.
+**Is the segment now asserted, and was it correct?** It is asserted, in two
+independent ways - from constructed bytes with known values, and end to end from
+real off-air audio to real messages. **It was not correct.**
 
-### The capture verdict (task 3)
+### Task 1 - the trace, with file and line numbers
 
-**The digital capture write path works, and tonight is the first time it has been
-watched working anywhere.** Pointed at a temporary folder and driven through
-`CaptureDigitalCommand`:
+All line numbers are in `src/Hamlet.RadioEngine/Audio/WasapiAudioSource.cs`
+unless stated.
 
-- `captures\digital` was **created by the press** - asserted absent before it and
-  present after.
-- `ft8-2026-09-03-165722.wav`, **720 044 bytes**, and `ft8-2026-09-03-165722.txt`,
-  **2 061 bytes**, both present, names paired by stamp.
-- The WAV read back through `WavAudio.Read` as **360 000 samples at 12 000 Hz**,
-  which is what the tap held.
-- The sheet is **46 lines** and carries unit 226's blocks and all three of unit
-  233's - the audio path (`device`, `audioIsReal`, `windowsMuted`), the slot
-  geometry, and the census. Measured from the sheet itself:
+| Step of the path | Where | Transforms a sample? | Any test executes it? |
+|---|---|---|---|
+| `new MMDeviceEnumerator()` / `GetDevice` | `:141`, `:142` | no | **no** |
+| `new WasapiCapture(endpoint)` | `:144` | no | **no** |
+| `SampleRate`, `ChannelCount`, `Encoding` off `_capture.WaveFormat` | `:146`, `:152`, `:153-154` | no | **no** |
+| `StartRecording` | `:206` | no | **no** |
+| `OnDataAvailable` | `:262` | no - transport only | **no** |
+| `Downmix` | `:296` before tonight, `:306` after | **yes** - the channel average at `:323`/`:340` | **no** |
+| `ReadSample` | `:330` before, `:351` after | **yes** - every arm | **no** |
+| `new AudioChunk(...)`, `SamplesReady` | `:280`, `:282` | no | **no** |
+| `AudioTap.Take` and everything after it | `AudioTap.cs` | yes | **yes**, extensively - unit 225 onward |
 
-```
-  slot     2026-09-03 16:57:00 UTC  whole transmission inside the audio
-  slot     2026-09-03 16:57:15 UTC  CUT SHORT: the audio ends before the transmission does
-census     1 slots, counts below
-  slot     2026-09-03 16:57:00 UTC  candidates 5  parity 0  checksum 0  text 0  duplicate 0  at 12000 Hz  top Costas match counts 20, 16, 15
-```
+**The expected answer held: no test reaches `Downmix` or `ReadSample`.** The
+only test in the repository that names the type at all is
+`tests/Hamlet.RadioEngine.Tests/Audio/AudioSeamTests.cs:150`, which reflects on
+the `IsSimulated` property to assert it has no setter and executes no conversion
+code.
 
-- `CaptureFolder` was restored in a `finally` and **asserted back** afterwards.
+**There is no `OpenAsync`.** The instruction names one in section 2 item 4 and
+in task 1; line 144 is inside the constructor `WasapiAudioSource(AudioDevice)`
+at `:132`. Reported, not repaired.
 
-### A refused press leaves a line (task 4)
+**What NAudio sets `WasapiCapture.WaveFormat` to, read out of the package.** Two
+measurements, both hardware-free, both now committed tests:
 
-All four paths were forced for real - not mocked - and each was read back off
-disk. The two exception paths were provoked by putting a file where the `digital`
-folder has to go, and a directory where the WAV has to go.
+- `WaveFormat.MarshalFromPtr`, given 40 bytes laid out as Windows lays out a
+  `WAVEFORMATEXTENSIBLE` with the IEEE-float subformat, returns a
+  `WaveFormatExtensible` whose `Encoding` is **`Extensible`** and whose
+  `BitsPerSample` is 32. Printed by the test: *NAudio 2.2.1 read the operating
+  system's WAVEFORMATEXTENSIBLE as WaveFormatExtensible, Encoding Extensible,
+  32-bit, 2 channels.* The top-level tag is **not** normalised to `IeeeFloat`.
+- `WasapiCapture`'s constructors call `MMDevice.get_AudioClient` and
+  `AudioClient.get_MixFormat` - read out of the constructors' own IL with a
+  proper opcode walk, not a scan for four-byte patterns. So the format handed to
+  `ReadSample` is the device's mix format with its tag intact.
 
-```
-{"ts":"...","level":"warn","appVersion":"1.12.38","category":"decode","event":"digital_capture_refused","data":{"reason":"NothingIsListening"}}
-{"ts":"...","level":"warn","appVersion":"1.12.38","category":"decode","event":"digital_capture_refused","data":{"reason":"NoAudioYet"}}
-{"ts":"...","level":"warn","appVersion":"1.12.38","category":"decode","event":"digital_capture_refused","data":{"reason":"IOException"}}
-{"ts":"...","level":"warn","appVersion":"1.12.38","category":"decode","event":"digital_capture_refused","data":{"reason":"UnauthorizedAccessException"}}
-```
+**Could `OnDataAvailable`'s `catch (Exception)` be swallowing a conversion
+fault, and would anything record it?** Before tonight, no - the old code could
+not throw. `ReadSample`'s `_ => 0.0` returned a value for everything, so a fault
+was expressed as silence rather than as an exception, and the swallow was not
+hiding anything because nothing was thrown. **From tonight it can be**: an
+unreadable format throws, `OnDataAvailable` catches it at `:284`, and **nothing
+anywhere records that it happened.** No telemetry key, no log line, no counter.
+What is visible is the consequence - no chunk is delivered, so the slot level
+reads *no level at all*. That is a real signal and it is not the same as being
+told why. Section 4 raises it.
 
-**Exactly one line per press** on every path, asserted. The `data` object was
-asserted to hold **exactly one key**, and the whole line asserted to contain no
-backslash - so no path, no exception message, no free text of any kind.
+### The format x bits table, and which arm each takes
+
+Measured through the production conversion. *Before* is the code as it stood at
+1.12.40; *after* is 1.12.41. Error is the worst absolute error across six frames
+per row, mono and stereo, the two channels always different.
+
+| Declared | Bits | Real layout | Arm before | Arm after | Error after | Tolerance |
+|---|---|---|---|---|---|---|
+| `Pcm` | 8 | unsigned 8 | `8` | `8` | 0.006836 (mono), 0.003906 (stereo) | 0.0078125 |
+| `Pcm` | 16 | signed 16 | `16` | `16` | 0.000000 | 3.05e-5 |
+| `Pcm` | 24 | packed 24 | `24` | `24` | 0.000000 | 1.19e-7 |
+| `Pcm` | 32 | signed 32 | `32` | `32` | 0.000000 | 1e-6 |
+| `IeeeFloat` | 32 | float32 | float branch | float branch | 0.000000 | 1e-7 |
+| **`Extensible`, subformat IEEE float** | **32** | **float32** | **`32` integer - WRONG** | **float branch** | **0.000000** | 1e-7 |
+| `Extensible`, subformat PCM | 16 | signed 16 | `16` - right by luck | `16` | 0.000000 | 3.05e-5 |
+| `Extensible`, subformat PCM | 32 | signed 32 | `32` - right by luck | `32` | 0.000000 | 1e-6 |
+| `IeeeFloat` | 64 | float64 | `_ => 0.0` - **invented silence** | **refuses** | n/a | n/a |
+| `Extensible`, any other subformat | any | unknown | integer arm - wrong | **refuses** | n/a | n/a |
+| anything else (`Adpcm`, `MpegLayer3`, ...) | any | unknown | integer arm or `0.0` | **refuses** | n/a | n/a |
+
+**The combinations that took an arm not matching their layout** are the last
+four rows: extensible IEEE float 32, IEEE float 64, extensible with any other
+subformat, and every non-PCM non-float top-level tag. Only the first of those is
+a format Windows shared-mode capture commonly presents, and it is the one that
+was silently wrong.
+
+**The eight-bit error is quantisation and not a fault.** Five of the six test
+values are exact multiples of 1/128 and come back exactly; the sixth is
+deliberately near full scale and between codes at every depth.
+
+### The fix, and the before-and-after
+
+`ReadSample` decided a sample was floating point on
+`format.Encoding == WaveFormatEncoding.IeeeFloat`. It now asks `Kind(format)`,
+which reads `WaveFormatExtensible.SubFormat` against
+`AudioMediaSubtypes.MEDIASUBTYPE_IEEE_FLOAT` and `MEDIASUBTYPE_PCM` where the
+top-level tag is `Extensible`, and reads the top-level tag otherwise. **One
+branch. `Downmix`'s structure is untouched.**
+
+The `_ => 0.0` arm is gone, per the decision in section 1.
+
+**Watched failing first, per task 3.** Against the unfixed code: 3 failed, 14
+passed - both `extensible-float32` rows and the refusal row, with the text
+quoted above. Against the fixed code: **17 of 17**.
+
+### Task 4 - decode counts per format, byte path against float path
+
+Three busiest off-air recordings, stereo, ten-millisecond chunks, through
+`WasapiAudioSource`'s own conversion and then the same `AudioTap` and
+`Ft8SlotWatch` `RealOffAirAudioReachesTheTabTests` uses. **Identical numbers at
+48 000 Hz and at 44 100 Hz.**
+
+| Format | Rows, byte path | Rows, float path | Recordings identical to the float path |
+|---|---|---|---|
+| float path (baseline) | - | **47** | - |
+| `pcm8` | 46 | 47 | 0 of 3 |
+| `pcm16` | 47 | 47 | 3 of 3 |
+| `pcm24` | 47 | 47 | 3 of 3 |
+| `pcm32` | 47 | 47 | 3 of 3 |
+| `float32` | 47 | 47 | 3 of 3 |
+| **`extensible-float32`, before the fix** | **24** | **47** | **0 of 3** |
+| **`extensible-float32`, after the fix** | **47** | **47** | **3 of 3** |
+| `extensible-pcm16` | 47 | 47 | 3 of 3 |
+| `extensible-pcm32` | 47 | 47 | 3 of 3 |
+
+**The sentence, with real numbers: these recordings produced 47 decodes as
+floats, 24 through an Extensible-float device buffer before the fix, and 47
+after.**
+
+**And the number is 24, not 0, which matters.** The instruction predicted zero.
+The reinterpretation of float bits as integers is destructive but not total -
+for samples in one exponent range it is monotonic enough that some structure
+survives - so **roughly half the band came through, scrambled.** On its own that
+does not account for a table with nothing at all in it. It would account for a
+table that filled far too slowly, or one that showed a handful of the strongest
+stations.
+
+### Task 5 - what the development machine's endpoints declare, and why that is not the radio
+
+Taken, not dropped. It was droppable under its own conditions - task 2 gave a
+definite verdict on every row including Extensible-float, without hardware - and
+it was taken because it is the only thing that could say whether the fault was
+this machine's. **It is not too close to `ARBITER.md` §6:** §6's owner line is
+rulings that change what the project is for, its risk posture, or its cost.
+Reading a declared format opens no stream, records nothing, keys nothing and
+writes nothing; it is the enumeration `WasapiAudioDevices.List()` already
+performs whenever the settings page opens.
+
+**2 active capture endpoints. Both declare `IeeeFloat 32-bit`, 2 channels,
+48 000 Hz, with no subformat - the top-level tag is the whole answer.** Both
+take the float branch, correctly, and took it correctly before tonight too.
+Endpoints are numbered, no name or id was read (HM-DEC-018).
+
+**And that measurement says nothing whatever about the radio, which I did not
+know when I took it.** `SHACK_FACTS.md` gained **FACT-004** during this session -
+it was not in the tree when the unit started and it is uncommitted in the working
+copy as I write. It records that there are two computers: this one, which holds
+the repository and has never had a radio attached to it, and the shack machine,
+where the IC-7300 is connected and where the bench check was performed. Its
+third consequence is exactly this task: *no measurement of the development
+machine's audio endpoints says anything about the radio ... a unit that clears or
+implicates an audio-path defect by enumerating this machine's capture devices has
+measured the wrong hardware and its conclusion does not stand.*
+
+**So the correct reading of task 5 is this.** The defect is real, is measured,
+and is repaired. **The two capture endpoints on the development machine declare
+`IeeeFloat 32-bit`. The radio's USB codec is not one of them and what it declares
+is unknown from this side.** The defect is therefore **neither cleared nor
+implicated** as the cause of the silent bench check, and no session can settle
+that from this tree. Section 4 turns it into one cheap question for the owner.
+
+**An earlier draft of this report drew the inference FACT-004 forbids** - that
+the silent morning is probably not explained by this defect, because this
+machine's endpoints are unaffected. That inference is withdrawn. The
+`BENCH_CHECK.md` line and the `Directory.Build.props` version note that carried
+it have been corrected in the same commit as this correction.
+
+### `BENCH_CHECK.md` - the lines changed
+
+| Line | Change | Measured or inherited |
+|---|---|---|
+| *Both levels are `null`...* bullet | gains a fourth meaning - a format Hamlet cannot read is now refused, so nothing reaches the tab and the slot reads exactly like an unplugged codec | **measured tonight** |
+| *The levels are numbers and the zero fraction is tiny...* bullet | says that before 1.12.41 *the problem is downstream of the sound card* was false, because audio could arrive, be loud, and have been read wrongly | **measured tonight** |
+| new subsection *What the sound card said it was speaking* | the `encoding` row of a capture sheet as a lookup table, the 47/24/47 numbers, and the plain statement that nobody knows whether this was his fault until he looks at that row on the shack machine | **measured tonight** for the table and the numbers; the two-machine limit is **FACT-004**, read from `SHACK_FACTS.md` and not measured here |
+
+No new claim goes on a screen. The sheet is a file he opens deliberately.
 
 ### The gates
 
-Every count read from `ResultSummary.Counters` in a TRX. Run one after another,
-never overlapping, never blocking the shell.
+Every count read from `ResultSummary.Counters` in a TRX logger, never a console
+count. One invocation at a time, never two at once.
 
-| Gate | total | executed | passed | failed | skipped | failing set |
-|---|---|---|---|---|---|---|
-| `Ft8Sharp.Tests`, whole | 524 | 523 | 523 | 0 | 1 | **EMPTY** |
-| Channel, `Hamlet.RadioEngine.Tests` | 38 | 38 | 38 | 0 | 0 | **EMPTY** |
-| Channel, `Hamlet.App.Tests` (after the bump) | 9 | 9 | 9 | 0 | 0 | **EMPTY** |
-| Changed code, `Hamlet.App.Tests` | 20 | 20 | 20 | 0 | 0 | **EMPTY** |
+**Gates 2, 3a and 3b were run twice, and the figures below are the second run.**
+FACT-004 arrived after the first pass and the corrections it forced touched
+`Directory.Build.props`, `BENCH_CHECK.md` and one test file's class comment - and
+the channel set is by definition the classes that open `Directory.Build.props` at
+run time. A gate run against a tree that was then edited has not gated the tree.
+Both runs agree exactly on every count. Gate 1 was not re-run: nothing under
+`src/Ft8Sharp/` was touched in either pass.
 
-The one skip in `Ft8Sharp.Tests` is `Ft8TableGenerationTests.RewriteTheCheckedInTablesFile`,
-the table-writing gate that is skipped by design. Nothing under `src/Ft8Sharp/`
-changed tonight, so that gate is regression insurance and it held.
+| # | Gate | Result | Failing set |
+|---|---|---|---|
+| 1 | `Ft8Sharp.Tests`, whole project | **523 passed, 0 failed, 1 skipped**, 524 total, 5 m 19 s - exactly the expected figure, so nothing under `src/Ft8Sharp/` moved | **empty** |
+| 2 | `Hamlet.RadioEngine.Tests`, filter `~Hamlet.RadioEngine.Tests.Audio` | **117 passed, 0 failed, 0 skipped**, 59 s and 58 s. This is where tonight's change lives. 20 of the 117 are new. | **empty** |
+| 3a | `Hamlet.App.Tests`, channel filter | **9 passed, 0 failed**, 459 ms and 551 ms - `DecisionLogOrderTests`, `VersionTests`, `EveryResourceKeyResolvesTests`, `ViewTestsActThroughControlsTests`, green at the new version | **empty** |
+| 3b | `Hamlet.RadioEngine.Tests`, channel filter | **38 passed, 0 failed**, 13 m 43 s and 13 m 51 s - the expected 38 of 38. Its own record says 7 m 38 s; it took nearly twice that here on both runs, which is a machine fact and not a result | **empty** |
+| 4 | Attribution, `git diff --name-only 2828ab6..HEAD` | 254 paths, 41 under `src/Hamlet.*` or `tests/Hamlet.*` | n/a |
 
-The changed-code gate names five classes: `TheSinkWritesWhenDrivenLikeTheAppTests`
-(4, new), `ThePressActuallyWritesItsCaptureTests` (2, new),
-`ARefusedPressLeavesALineTests` (4, new), `CallsignPrivacyTests` (5, extended) and
-`EverySlotLeavesALineTests` (5, unchanged, run because it walks the same surface).
+**No test skipped for want of the pinned clone.** `C:\Source\ft8_lib` is on this
+machine, so every `[RequiresOffAirRecordingsFact]` ran rather than skipping.
 
-**No new red, and the inherited failing set is unchanged: it is empty in every
-gate this unit runs.** The two standing CW failures recorded in `BENCH_CHECK.md`
-are outside all four filters and were not run, which is the plan's ruling on what
-a unit runs and not a claim about them.
+**Attribution, and the reduction is not claimed.** 254 paths changed since
+`2828ab6`, 41 of them under Hamlet's own folders. **The attribution reduction
+does not apply to step 7 and is not claimed here** - step 7 is by construction
+the step that reaches Hamlet's code. The honest substitute, per unit 225: the
+Hamlet paths this unit added or touched are
 
-### Attribution, and the reduction that is not claimed
+- `src/Hamlet.RadioEngine/Audio/WasapiAudioSource.cs`
+- `tests/Hamlet.RadioEngine.Tests/Audio/DeviceBytesBecomeTheFloatsTheTapSeesTests.cs`
+- `tests/Hamlet.RadioEngine.Tests/Audio/OffAirAudioThroughADeviceByteBufferTests.cs`
+- `tests/Hamlet.RadioEngine.Tests/Audio/WhatThisMachinesCaptureEndpointsDeclareTests.cs`
+- `tests/Hamlet.RadioEngine.Tests/Audio/RealOffAirAudioReachesTheTabTests.cs`
 
-`git diff --name-only 2828ab6..HEAD` gives **244 paths, of which 31 are under
-`src/Hamlet.*` or `tests/Hamlet.*`** - unit 233 measured 240 with 27, so this unit
-added four. **The plan's attribution reduction does not apply to step 7 and is not
-claimed.** Step 7 is by construction the step that reaches Hamlet's code. The
-honest substitute is used instead: every Hamlet path this unit added or touched,
-named, with the tests run over the changed code.
+and outside them, `Directory.Build.props`, `BENCH_CHECK.md`, `PROJECT_STATUS.md`,
+`PHASE_STATUS.md` and this file. **Gate 2 runs the tests over all of that
+changed code.**
 
-Added: `src/Hamlet.App/Telemetry/DigitalCaptureRefusal.cs`,
-`tests/Hamlet.App.Tests/Telemetry/TheSinkWritesWhenDrivenLikeTheAppTests.cs`,
-`tests/Hamlet.App.Tests/Telemetry/ThePressActuallyWritesItsCaptureTests.cs`,
-`tests/Hamlet.App.Tests/Telemetry/ARefusedPressLeavesALineTests.cs`.
-Touched: `src/Hamlet.App/Telemetry/AppEvents.cs` (one method added),
-`src/Hamlet.App/ViewModels/MainWindowViewModel.cs` (four call sites in
-`CaptureDigital`), `tests/Hamlet.App.Tests/Telemetry/CallsignPrivacyTests.cs` (the
-walk, 64 to 65). Outside Hamlet: `Directory.Build.props`, `BENCH_CHECK.md`,
-`PROJECT_STATUS.md`, `PHASE_STATUS.md`.
+**`Hamlet.App.Tests` invocations: 2**, gate 3a and its re-run after FACT-004
+forced an edit to `Directory.Build.props`. The channel filter keeps both out of
+the `Views` namespace where HM-OPEN-069's stall lives; they returned in 459 ms
+and 551 ms. No other route in this unit touched that project. **The second
+invocation was a choice**: reporting a gate that ran against a superseded tree
+would have been the cheaper answer and the wrong one.
 
-### The push
+### Versions
 
-**`c3f10a1..443aaf7` on `main`, pushed and confirmed**, and this report follows in
-`443aaf7..70b7ab4`. Six commits, one per task, named paths only:
+Root `1.12.40` -> **`1.12.41`** under HM-DEC-150, a patch because this is a
+defect repair and not a new capability. `Ft8Sharp` **stays at `0.10.7`** under
+HM-DEC-152 - no file under `src/Ft8Sharp/` changed.
 
-| commit | task |
-|---|---|
-| `83bc502` | 1 - the trace and the appVersion census |
-| `0533cc8` | 2 - the sink watched writing |
-| `5b7118c` | 3 - the capture watched writing |
-| `914048f` | 4 - a refused press leaves a line |
-| `30c900b` | 5 - `BENCH_CHECK.md` step 0 and step 10 |
-| `fca61c8` | 7 - root patch to 1.12.38 |
-| `443aaf7` | 6 - the gates |
+### Drift, and whether the silent morning now has a mechanical explanation
 
-The validator could not be executed from this session; what was done instead is
-item 5 of section 4.
+**Tonight produces a real candidate for it and cannot confirm it, and I spent the
+night inside the capture path, so this judgment is worth having on the record.**
+The header reads `DRIFT: 0 (was 5)` because the measurement met the rule the
+instruction set for an advance, and the last two units read 4 and 5 because step
+7's remaining work was judged to be the owner's at the radio. **Tonight does not
+overturn that judgment.** A real defect was found on the one unasserted segment,
+and on a sound card described the way Windows usually describes one it would
+have cost roughly half the decodes - a table that filled far too slowly, or one
+showing a handful of the strongest stations. Whether the radio's codec is such a
+card is **not knowable from this machine**, under `SHACK_FACTS.md` FACT-004, and
+I will not guess it. So the honest position is: **the silent morning now has a
+plausible mechanical explanation for the first time, and confirming or killing it
+costs the owner one glance at one row on the shack machine.** Two things follow
+for whoever authors next. First, the path from the antenna to the tap is measured
+end to end rather than taken on trust - that segment is retired as *unasserted*,
+and it was the last one. Second, everything still open is on the other computer:
+which device Hamlet opened that morning, what format it declared, and what the
+shack machine's own log says. **I do not think another unit of code on this
+machine is the next thing this phase needs** - the instruments exist and the
+measurement is now on the wrong side of a USB cable from this session. That does
+not set the next subject; the arbiter reasons from the plan.
+
+### The validator, and the push
+
+`tools\arbiter\validate-output.bat "C:\Source\HamLet\output.md"` - **exit 0,
+VALID, all six rules passed**: the `UNIT:` line, the four sections in order, no
+fifth, section 4 present, section 3 non-empty at 228 lines, and the ordering
+block with its count. Unit 236 measured that the path must be in double quotes;
+**the script path must be too.** Bash eats a lone backslash, so
+`tools\arbiter\validate-output.bat` runs as `toolsarbitervalidate-output.bat` and
+exits 127 - which is what put the file of that name in the root debris. The
+spelling that runs is `"tools\arbiter\validate-output.bat"`, both halves quoted.
+
+**Pushed `997963e..6c5feeb` on `main`, seven commits, one per task**, then
+`6c5feeb..4b77bc2` carrying the first draft of this report, then
+`4b77bc2..ec64834` carrying the correction FACT-004 forced.
+
+**And then the check found that this file was in none of them.** `git status`
+after the third push still read `M OUTPUT.md`. **Git tracks this path as
+`OUTPUT.md`, uppercase**, and this session wrote and staged `output.md` - which
+on Windows is the same file on disk and a different path to git, so `git add
+output.md` matched nothing and both report commits carried everything except the
+report. A tenth commit adds it under the tracked spelling. **The full range is
+`997963e..HEAD` on `main`, and the range is quoted here rather than assumed
+because that check is the only reason this was caught** (`CLAUDE_CODE.md` §11).
 
 ## 4. What's blocking us
 
-Five items. **One is a prompt I am asking the owner to act on; four are records.**
+Four items. **None of them is in the way of a criterion in B.**
 
-**1. The build the owner runs has never been one this phase produced. THIS IS THE
-ONE I AM ASKING YOU TO ACT ON, and it is not a ruling request - it is a
-prompt to check.** The newest Hamlet that has ever written a line on this machine
-is 1.12.0. This tree is 1.12.38. I cannot see how you build or install Hamlet and
-no unit has touched it, so I cannot tell you whether the icon you click points at
-this tree's output. What I can tell you is that if it does not, every artefact of
-units 225 to 234 is invisible to you and the bench check cannot succeed. Step 0 of
-`BENCH_CHECK.md` now asks you to read the version off the About box before you
-start. **This does not block a step 7 criterion** - all five are met against the
-code - but it is squarely in the way of the phase goal being *observed*.
+### 1. One question is asked of the owner, and it is cheap: what does the shack machine's sound card say it is speaking?
 
-**2. A capture press decodes nothing until the SNTP clock query returns.
-Recorded, not a ruling request.** Driving the press for task 3 turned this up:
-`MainWindowViewModel.ClockOffset` starts Unknown and is set by a background time
-query, and `Ft8SlotCutter` refuses to cut any slot against an unmeasured clock.
-The first run of my own test refused and the second decoded, purely on whether the
-query had landed; I fixed the offset in the test so the branch is a decision
-rather than a coin toss. **This is correct behaviour, not a defect** - HM-DEC-009
-says an unmeasured clock refuses rather than guessing, and `BENCH_CHECK.md` part 3
-already tells the operator to wait a minute for the first query. I record it
-because *a press in the first seconds after start-up produces a capture with no
-census in it*, and nobody had written that down. No task of mine covered it and I
-changed nothing about it.
+**The question.** On the **shack machine** - the one with the IC-7300 on it -
+open Hamlet on the Digital tab, press *keep the last 30 seconds*, and open the
+`.txt` file that appears beside the WAV in
+`%AppData%\Hamlet\captures\digital\`. **What does its `encoding` row say?**
 
-**3. `%AppData%\Hamlet` was read, never written. Recorded.** Task 1 is a listing
-and a set of file reads. No probe file, no folder, nothing created. Whether that
-folder is writable is therefore still an inference - from the eight files already
-in it and from task 2 writing freely to a temporary folder - and not a
-measurement. That was the arbiter's instruction and I followed it; I note it so
-nobody later reads "the sink writes" as "the sink writes *there*."
+- If it says **`Extensible 32-bit`**, this unit found the cause of the silent
+  morning and 1.12.41 fixes it.
+- If it says **`IeeeFloat 32-bit`** or any `Pcm` value, this unit found a real
+  defect that was not your defect, and the empty table has another cause.
 
-**4. The scratch trace file is untracked and I could not delete it. Recorded.**
-`tests/Hamlet.RadioEngine.Tests/Audio/Unit233ScratchTraceTests.cs` was overwritten
-rather than orphaned, as instructed, and is left untracked and never staged - but
-`rm` and `git clean` are outside this unit's permission scope, so it is still
-there, now holding unit 234's harness instead of unit 233's comment. It can be
-deleted by hand. The same is true of `.unit234\task1-trace.txt` and
-`TestResults234\`, which are this unit's own scratch output.
+**Why it is asked rather than measured.** `SHACK_FACTS.md` FACT-004, added to
+this tree during this session, says no measurement of this machine's audio
+endpoints says anything about the radio, and that a unit clearing or implicating
+an audio-path defect by enumerating them has measured the wrong hardware. That
+is precisely what task 5 did, so its conclusion is withdrawn and the question is
+put to the only person who can answer it. **It is one press and one file.**
 
-**5. `validate-output.bat` could not be run and exit 0 is NOT claimed.
-Recorded.** Every form of invoking it from this session was refused by the
-sandbox - `cmd /c`, `cmd //c`, the bare path, and running it in the background -
-and so was `powershell -File`. Unit 233 hit the same wall from the other side
-(cmd could not find unit 228's shim) and it is now two units running. **I am not
-reporting a validator result I did not get.**
+**What was rejected and why.** Inferring it from this machine's two endpoints -
+forbidden by FACT-004, and it is the mistake FACT-004 was written to stop.
+Reading device names to work out whether the codec is present - HM-DEC-018.
+Guessing - `CLAUDE.md` §0.0.
 
-What I did instead is below. It is a hand-run of the six rules, using the file's
-actual content and the same expressions the script's own body uses, and it is
-weaker than running the script for exactly the reason the script's header
-argues - a second copy of the rules read by the same reader is one check wearing
-two coats. Treat it as a self-check, not as the gate.
+**Not blocking.** The repair stands on its own measurement either way, and step
+7's criterion 3 does not wait on the answer.
 
-**Nothing else is raised.** Step 6 was not measured, not argued and not touched.
-Nothing under `src/Ft8Sharp/` changed, so `Ft8Sharp`'s version did not move under
-HM-DEC-152.
+### 2. A ruling is asked for: what does Hamlet tell the operator when a sound card speaks a format it cannot read?
 
-### The six rules, hand-checked against this file
+**The ruling wanted.** A capture device presenting a format `ReadSample` cannot
+read now produces nothing at all on the tab, and the log reads exactly as an
+unplugged codec reads - both levels `null`, every sample zero. **Should Hamlet
+say, somewhere the operator will see it, that the sound card is speaking
+something it does not understand?**
 
-| rule | what the script measures | measured here |
-|---|---|---|
-| 1 | a `UNIT:` line above section 1, parseable | present, line 29; section 1 opens at line 47 |
-| 2 | the four top-level sections, in order, exact names | the only `## ` lines are 1, 2, 3, 4 at lines 47, 132, 162, 365, spelled as the script's `WANT` string |
-| 3 | no fifth top-level section | four `## ` lines and no more |
-| 4 | section 4 present even when empty | `## 4. What's blocking us` present, with a plain ASCII apostrophe, which is what the script's `findstr /b /c:` needs |
-| 5 | section 3 non-empty | 167 non-blank lines between the section 3 and section 4 headings |
-| 6 | ordering block above `UNIT:`, A B C, and C naming a count | `READ IN THIS ORDER` ×1, `^A.` ×1, `^B.` ×1, `^C.` ×1, and `raises 5 items` ×1, all inside the first 60 lines |
+**The reasoning.** HM-DEC-009 made returning `0.0` unacceptable, and refusing is
+the honest alternative, but refusal costs the operator the distinction between
+*nothing is plugged in* and *this device speaks something I cannot read*. Those
+have different fixes. The sheet now carries the distinction, but the sheet
+requires him to press *keep the last 30 seconds* first.
 
-All six read as passing. **The script itself was not run, so the unit does not
-claim its exit code**, and if that is disqualifying under the standing rule then
-it is disqualifying - saying so is the point of this item.
+**What was rejected and why.** Adding a branch to `DigitalReadiness`, or a
+sentence to the status bar - `CLAUDE.md` §12.1 makes what Hamlet asserts to the
+operator the owner's, and three display rulings from units 227, 233 and 236 are
+already in front of him unanswered. Authoring a fourth around them would be
+exactly the drift §12.1 exists to stop. Adding a telemetry key - §7 of tonight's
+instruction forbids it and units 233 to 236 already built the record.
+
+**This is genuinely a fourth display question and it should probably be answered
+together with the other three.** It is not blocking.
+
+### 3. Recorded, not asked: the swallowing catch leaves no trace
+
+`OnDataAvailable`'s `catch (Exception)` at `WasapiAudioSource.cs:284` drops the
+buffer and records nothing anywhere - no telemetry line, no counter, no log.
+Before tonight nothing could throw there, so it was hiding nothing. From
+tonight an unreadable format throws every buffer, and the only evidence is the
+absence of audio. **Recording it would need a telemetry key, which this unit was
+forbidden to add**, so it is written down here rather than built. It is coupled
+to item 2 and would be settled by the same answer.
+
+### 4. Recorded, not asked: mismatches between the instruction and the tree, and the inherited debris
+
+Per §5 of the instruction - reported, not repaired.
+
+- **`OpenAsync` does not exist.** Section 2 item 4 and task 1 both name it. Line
+  144 is inside the constructor at `:132`. Everything else in section 2 checked
+  out exactly, including `git grep Extensible` under `src/` returning nothing.
+- **The seam does not cost only an access modifier.** Section 1's last paragraph
+  says it does. `Downmix` is an instance method on a class whose only
+  constructor opens a device. Handled as a named decision in section 1.
+- **`AudioMediaSubtypes` is in `NAudio.Dmo`, not `NAudio.CoreAudioApi`**, which
+  cost one compile. Noted for the next unit that reaches for it.
+- **The instruction's task 5 could not have produced the evidence it was written
+  to produce.** Its drop conditions turn on whether task 2 settled the Extensible
+  row, but under FACT-004 the corroboration it describes - what a real device
+  presents - is not available on this machine at all. That is not the arbiter's
+  error: FACT-004 did not exist when the instruction was written. It is recorded
+  so the next instruction does not ask for it again.
+- **`SHACK_FACTS.md` is modified and uncommitted in the working tree**, holding
+  FACT-004. I read it and obeyed it; I did not commit it, because it is the
+  owner's file and staging somebody else's uncommitted work is not mine to do.
+  **It should be committed.**
+- **The report file is tracked as `OUTPUT.md` and every session writes
+  `output.md`.** On Windows those are one file on disk and two paths to git, so
+  `git add output.md` stages nothing and the report is silently left out of the
+  commit. This unit caught it only by reading `git status` after pushing. **It
+  has been happening for at least one unit before this one**: `OUTPUT.md`'s last
+  commit is `8745b11`, unit 234, and it was already dirty in the working tree
+  when this unit started - so unit 236's report, and possibly 235's, exist on
+  disk and are not in the repository. This unit's is committed under the tracked
+  spelling. **Recorded rather than repaired**: renaming the tracked path is a
+  change to the loop's own plumbing and every future session's habit, which is
+  not a unit's call to make on its way out of the door.
+
+And the inherited items the instruction named as known and not mine, all still
+present and all untouched: `PHASE_OUTCOME.md`'s header disagreeing with its
+entries on steps 1 and 3; `PROJECT_STATUS.md` and `CLAUDE.md` §1 disagreeing on
+the ruling id; and the uncommitted root debris, which stands at 25 items
+including eight `.obj` files and several scratch scripts. **One more for the
+list**: `Directory.Build.props` has version-log entries up to `1.12.36` and none
+for `.37` through `.40`; tonight's `1.12.41` has one, following the file's own
+convention, and the four missing entries were left alone.
