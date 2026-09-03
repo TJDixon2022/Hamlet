@@ -89,7 +89,39 @@ public sealed class AudioTap
     /// <summary>How fast the floor gives way to a noisier one.</summary>
     private const double FloorRiseAlpha = 0.01;
 
-    private readonly object _lock = new();
+    /// <summary>Held by WRITERS ONLY. No reader ever waits on it.</summary>
+    /// <remarks>
+    /// <para>**IT IS NOT THE READ LOCK IT USED TO BE, AND THAT IS THE WHOLE OF
+    /// THIS CHANGE.** `Take`, `Snapshot`, `Window` and `Tail` all took one lock,
+    /// so a reader copying thirty seconds out of the ring held the audio
+    /// callback off for the duration of that copy. Measured on this machine at
+    /// unit 239 task 1: with a reader running, the writer's 99th-percentile
+    /// `Take` went from 176 us to 1,831 us — tenfold, and in the ordinary case
+    /// rather than as an outlier.</para>
+    /// <para>**IT SURVIVES FOR WRITERS BECAUSE THERE CAN BE MORE THAN ONE.** The
+    /// device callback is one writer, and `CwDecoder.Process` taps directly on
+    /// the fixture path, so two threads can call `Take` in a test even though
+    /// the application has only ever had one. A sequence number alone would
+    /// corrupt the ring there; this keeps writers serialised with each other
+    /// while readers wait for nobody.</para>
+    /// </remarks>
+    private readonly object _writeGate = new();
+
+    /// <summary>Even between writes, odd during one. Readers retry on a change.</summary>
+    /// <remarks>
+    /// <para>**A SEQLOCK, AND THE TEAR GUARANTEE IS WHY IT IS NOT JUST A LOOSER
+    /// READ.** Unit 238's own remark on `Snapshot` says a capture must not come
+    /// out torn across the write cursor, and this project has already spent two
+    /// evenings on audio that was not what it claimed to be. Dropping the lock
+    /// without detecting a tear would buy the callback's time with the
+    /// recording's honesty.</para>
+    /// <para>**HOW IT WORKS.** The writer bumps this to odd, writes, and bumps
+    /// it to even. A reader takes the count, copies, and takes it again: if it
+    /// changed or was odd, the copy may straddle a write and is thrown away and
+    /// retried. The writer never looks at the reader at all.</para>
+    /// </remarks>
+    private long _sequence;
+
 
     private float[] _ring = Array.Empty<float>();
     private int _write;
@@ -164,8 +196,13 @@ public sealed class AudioTap
             return;
         }
 
-        lock (_lock)
+        lock (_writeGate)
         {
+            // **ODD WHILE WRITING.** Everything between here and the matching
+            // bump below may be seen half-finished by a reader, which is exactly
+            // what the reader checks for.
+            System.Threading.Volatile.Write(ref _sequence, _sequence + 1);
+
             if (_sampleRate != sampleRate)
             {
                 _sampleRate = sampleRate;
@@ -225,6 +262,11 @@ public sealed class AudioTap
 
                 Settle();
             }
+
+            // **EVEN AGAIN: THE RING AND ITS CURSORS AGREE ONCE MORE.** A reader
+            // that took an odd count, or a different one, throws its copy away
+            // and tries again.
+            System.Threading.Volatile.Write(ref _sequence, _sequence + 1);
         }
     }
 
@@ -270,24 +312,59 @@ public sealed class AudioTap
     /// </remarks>
     public MonoAudio? Snapshot()
     {
-        lock (_lock)
+        var count = _filled;
+
+        if (count <= 0)
         {
-            if (_filled == 0 || _sampleRate <= 0)
-            {
-                return null;
-            }
-
-            var samples = new float[_filled];
-            var start = _filled < _ring.Length ? 0 : _write;
-
-            for (var i = 0; i < _filled; i++)
-            {
-                samples[i] = _ring[(start + i) % _ring.Length];
-            }
-
-            return new MonoAudio(_sampleRate, samples);
+            return null;
         }
+
+        var samples = new float[count];
+
+        return TryRead(samples, count, Newest, out var rate)
+            ? new MonoAudio(rate, samples)
+            : null;
     }
+
+    /// <summary>Everything held, into a caller's buffer.</summary>
+    /// <param name="destination">
+    /// Where to put it. Must hold at least <see cref="SamplesHeld"/> samples.
+    /// </param>
+    /// <param name="written">How many samples were written into it.</param>
+    /// <param name="rate">The rate they were taken at.</param>
+    /// <returns>True where a clean copy was made.</returns>
+    /// <remarks>
+    /// **FOR THE CALLERS THAT REPEAT.** 5.7 MB of `float[]` several times a
+    /// second is large-object-heap traffic, and its collections pause every
+    /// thread including the one carrying the audio. A caller that reads on a
+    /// timer owns one buffer and reuses it.
+    /// </remarks>
+    public bool Snapshot(float[] destination, out int written, out int rate)
+    {
+        ArgumentNullException.ThrowIfNull(destination);
+
+        written = 0;
+        var count = _filled;
+
+        if (count <= 0 || destination.Length < count)
+        {
+            rate = 0;
+
+            return false;
+        }
+
+        if (!TryRead(destination, count, Newest, out rate))
+        {
+            return false;
+        }
+
+        written = count;
+
+        return true;
+    }
+
+    /// <summary>How many samples the ring is holding right now.</summary>
+    public int SamplesHeld => _filled;
 
     /// <summary>The samples between two places on the audio clock.</summary>
     /// <param name="firstSample">Where to start, counted from the first sample ever taken.</param>
@@ -303,31 +380,33 @@ public sealed class AudioTap
     /// </remarks>
     public MonoAudio? Window(long firstSample, int count)
     {
-        lock (_lock)
+        if (count <= 0)
         {
-            if (count <= 0 || _filled == 0 || _sampleRate <= 0)
-            {
-                return null;
-            }
-
-            var oldest = SamplesSeen - _filled;
-
-            if (firstSample < oldest || firstSample + count > SamplesSeen)
-            {
-                return null;
-            }
-
-            var samples = new float[count];
-            var start = firstSample - oldest;
-            var from = _filled < _ring.Length ? 0 : _write;
-
-            for (var i = 0; i < count; i++)
-            {
-                samples[i] = _ring[(int)((from + start + i) % _ring.Length)];
-            }
-
-            return new MonoAudio(_sampleRate, samples);
+            return null;
         }
+
+        var samples = new float[count];
+
+        return TryRead(samples, count, firstSample, out var rate)
+            ? new MonoAudio(rate, samples)
+            : null;
+    }
+
+    /// <summary>One span, into a caller's buffer.</summary>
+    /// <param name="firstSample">The first sample wanted.</param>
+    /// <param name="count">How many.</param>
+    /// <param name="destination">Where to put them.</param>
+    /// <param name="rate">The rate they were taken at.</param>
+    /// <returns>True where a clean copy was made.</returns>
+    public bool Window(long firstSample, int count, float[] destination, out int rate)
+    {
+        ArgumentNullException.ThrowIfNull(destination);
+
+        rate = 0;
+
+        return count > 0
+            && destination.Length >= count
+            && TryRead(destination, count, firstSample, out rate);
     }
 
     /// <summary>
@@ -346,30 +425,62 @@ public sealed class AudioTap
     /// </remarks>
     public MonoAudio? Tail(TimeSpan wanted)
     {
-        lock (_lock)
+        var rate = _sampleRate;
+
+        if (rate <= 0)
         {
-            if (_filled == 0 || _sampleRate <= 0)
-            {
-                return null;
-            }
-
-            var count = (int)Math.Round(wanted.TotalSeconds * _sampleRate);
-
-            if (count <= 0 || count > _filled)
-            {
-                return null;
-            }
-
-            var samples = new float[count];
-            var start = _filled < _ring.Length ? _filled - count : _write + (_filled - count);
-
-            for (var i = 0; i < count; i++)
-            {
-                samples[i] = _ring[((start + i) % _ring.Length + _ring.Length) % _ring.Length];
-            }
-
-            return new MonoAudio(_sampleRate, samples);
+            return null;
         }
+
+        var count = (int)Math.Round(wanted.TotalSeconds * rate);
+
+        if (count <= 0 || count > _filled)
+        {
+            return null;
+        }
+
+        var samples = new float[count];
+
+        // The newest `count`, which `TryRead` expresses as "start `count` back
+        // from the newest" - the same span `Snapshot` takes when count == filled.
+        return TryRead(samples, count, SamplesSeen - count, out var taken)
+            ? new MonoAudio(taken, samples)
+            : null;
+    }
+
+    /// <summary>The newest span, into a caller's buffer.</summary>
+    /// <param name="wanted">How much.</param>
+    /// <param name="destination">Where to put it.</param>
+    /// <param name="written">How many samples were written.</param>
+    /// <param name="rate">The rate they were taken at.</param>
+    /// <returns>True where a clean copy was made.</returns>
+    public bool Tail(TimeSpan wanted, float[] destination, out int written, out int rate)
+    {
+        ArgumentNullException.ThrowIfNull(destination);
+
+        written = 0;
+        rate = _sampleRate;
+
+        if (rate <= 0)
+        {
+            return false;
+        }
+
+        var count = (int)Math.Round(wanted.TotalSeconds * rate);
+
+        if (count <= 0 || count > _filled || destination.Length < count)
+        {
+            return false;
+        }
+
+        if (!TryRead(destination, count, SamplesSeen - count, out rate))
+        {
+            return false;
+        }
+
+        written = count;
+
+        return true;
     }
 
     /// <summary>
@@ -396,17 +507,9 @@ public sealed class AudioTap
     /// </remarks>
     public double ArrivalRatio(TimeSpan window)
     {
-        lock (_lock)
-        {
-            if (_sampleRate <= 0 || _marksFilled == 0)
-            {
-                return double.NaN;
-            }
+        var now = DateTime.UtcNow;
 
-            var now = DateTime.UtcNow;
-
-            return RatioBetween(now - window, now);
-        }
+        return ArrivalRatioBetween(now - window, now);
     }
 
     /// <summary>The same fraction across one stated wall-clock span.</summary>
@@ -420,10 +523,35 @@ public sealed class AudioTap
     /// </remarks>
     public double ArrivalRatioBetween(DateTime fromUtc, DateTime toUtc)
     {
-        lock (_lock)
+        // **READ THROUGH THE SEQUENCE, NOT A LOCK** (work instruction 239 task 2:
+        // "a reader asking for the arrival ratio must not take a lock the
+        // callback needs either"). The marks are a small ring the writer appends
+        // to, so the same rule applies as to the samples: copy, then check the
+        // writer did not move under the copy.
+        for (var attempt = 0; attempt < ReadAttempts; attempt++)
         {
-            return RatioBetween(fromUtc, toUtc);
+            var before = System.Threading.Volatile.Read(ref _sequence);
+
+            if ((before & 1) != 0)
+            {
+                continue;
+            }
+
+            var answer = RatioBetween(fromUtc, toUtc);
+
+            if (System.Threading.Volatile.Read(ref _sequence) == before)
+            {
+                return answer;
+            }
+
+            TornReads++;
         }
+
+        AbandonedReads++;
+
+        // **NaN IS NOBODY MEASURED**, which is exactly what a read that could not
+        // get a clean look has to say (§0.0).
+        return double.NaN;
     }
 
     /// <summary>The arithmetic, with the lock already held.</summary>
@@ -476,13 +604,143 @@ public sealed class AudioTap
         return expected <= 0 ? double.NaN : delivered / expected;
     }
 
+
+    /// <summary>How many reads had to be retried because a write intervened.</summary>
+    /// <remarks>
+    /// **A RETRY IS NOT A FAULT AND IT IS STILL COUNTED** (HM-DEC-093). It is the
+    /// tear guarantee doing its job, and the number says how often a reader and
+    /// the callback met. A count that climbed steeply would mean readers are
+    /// reading far too often for the ring they are reading, which is a fact
+    /// worth having rather than one to discover later.
+    /// </remarks>
+    public long TornReads { get; private set; }
+
+    /// <summary>How many reads gave up after retrying and answered null.</summary>
+    /// <remarks>
+    /// **NULL RATHER THAN A TORN BUFFER** (§0.0). A reader that cannot get a
+    /// clean copy says it has nothing, which every caller already handles,
+    /// because `Window` has always been able to answer null for audio the ring
+    /// no longer holds.
+    /// </remarks>
+    public long AbandonedReads { get; private set; }
+
+    /// <summary>How many times a read is retried before it gives up.</summary>
+    /// <remarks>
+    /// **EIGHT, WHICH IS FAR MORE THAN THE ARITHMETIC NEEDS.** A device writes
+    /// one buffer per period - 100 ms on this machine, measured - and a block
+    /// copy of the whole thirty-second ring takes on the order of a millisecond.
+    /// A reader has to be unlucky twice to retry once and eight times running to
+    /// fail, and each retry re-reads a cursor that has already moved past it.
+    /// </remarks>
+    private const int ReadAttempts = 8;
+
+    /// <summary>Ask for the newest samples rather than an absolute index.</summary>
+    private const long Newest = long.MinValue;
+
+    /// <summary>
+    /// Copy `count` samples ending at the newest, starting `fromNewest` back,
+    /// into a caller's buffer, without ever making the writer wait.
+    /// </summary>
+    /// <param name="destination">Where to put them.</param>
+    /// <param name="count">How many.</param>
+    /// <param name="firstSample">
+    /// The absolute index of the first sample wanted, or <see cref="Newest"/>
+    /// to mean "the newest `count` the ring holds".
+    /// </param>
+    /// <param name="rate">The rate the samples were taken at.</param>
+    /// <returns>True where a clean copy was made.</returns>
+    /// <remarks>
+    /// <para>**THE COPY HAPPENS OUTSIDE ANY LOCK.** That is the point of the
+    /// whole change: the writer is never behind a reader, however big the read
+    /// or however slow the machine.</para>
+    /// <para>**TWO BLOCK COPIES, NOT A MODULO PER SAMPLE.** The ring is
+    /// contiguous either side of the write cursor, so a read is at most two
+    /// spans. The old form walked 1,440,000 samples with a `%` on each one while
+    /// holding the lock the callback needed.</para>
+    /// </remarks>
+    private bool TryRead(float[] destination, int count, long firstSample, out int rate)
+    {
+        rate = 0;
+
+        for (var attempt = 0; attempt < ReadAttempts; attempt++)
+        {
+            var before = System.Threading.Volatile.Read(ref _sequence);
+
+            if ((before & 1) != 0)
+            {
+                // A write is in progress. Nothing read now can be trusted.
+                continue;
+            }
+
+            var ring = _ring;
+            var filled = _filled;
+            var write = _write;
+            var seen = SamplesSeen;
+            var sampleRate = _sampleRate;
+
+            if (ring.Length == 0 || filled == 0 || sampleRate <= 0 || count <= 0)
+            {
+                return false;
+            }
+
+            var oldest = seen - filled;
+            // **THE SENTINEL IS long.MinValue AND NOT `NEGATIVE`, BECAUSE A
+            // NEGATIVE INDEX IS A REAL QUESTION WITH A REAL ANSWER.** The first
+            // cut of this used `firstSample < 0` to mean "the newest", so
+            // `Window(-1000000, n)` - a caller asking for audio long before
+            // anything the ring holds - came back with the NEWEST audio instead
+            // of null. That is a confident wrong answer in place of an honest
+            // refusal, and the refusal test caught it.
+            var start = firstSample == Newest ? filled - count : firstSample - oldest;
+
+            if (count > filled || start < 0 || start + count > filled)
+            {
+                // The ring no longer holds what was asked for. That is a real
+                // answer and not a torn read, so it does not retry.
+                return false;
+            }
+
+            var from = (int)(((filled < ring.Length ? 0 : write) + start) % ring.Length);
+            var first = Math.Min(count, ring.Length - from);
+
+            Array.Copy(ring, from, destination, 0, first);
+
+            if (first < count)
+            {
+                Array.Copy(ring, 0, destination, first, count - first);
+            }
+
+            if (System.Threading.Volatile.Read(ref _sequence) == before)
+            {
+                rate = sampleRate;
+
+                return true;
+            }
+
+            // The writer moved under the copy. Everything above may straddle it.
+            TornReads++;
+        }
+
+        AbandonedReads++;
+
+        return false;
+    }
+
     /// <summary>Throw away what is held, so the next capture starts fresh.</summary>
     public void Forget()
     {
-        lock (_lock)
+        // **A WRITER, SO IT TAKES THE WRITER'S GATE** and opens the sequence
+        // window: it moves the same cursors `Take` does, and a reader mid-copy
+        // must see that and retry rather than return a ring that was emptied
+        // underneath it.
+        lock (_writeGate)
         {
+            System.Threading.Volatile.Write(ref _sequence, _sequence + 1);
+
             _write = 0;
             _filled = 0;
+
+            System.Threading.Volatile.Write(ref _sequence, _sequence + 1);
         }
     }
 
