@@ -390,6 +390,7 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(DigitalReadinessLine))]
     [NotifyPropertyChangedFor(nameof(HasDigitalReadiness))]
+    [NotifyPropertyChangedFor(nameof(DigitalModeChips))]
     private long _frequencyHz;
 
     [ObservableProperty]
@@ -419,6 +420,7 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(DigitalReadinessLine))]
     [NotifyPropertyChangedFor(nameof(HasDigitalReadiness))]
+    [NotifyPropertyChangedFor(nameof(DigitalModeChips))]
     private IReadOnlyList<Neighborhood> _neighborhoods = Array.Empty<Neighborhood>();
 
     /// <summary>
@@ -778,6 +780,17 @@ public partial class MainWindowViewModel : ObservableObject
             ClockOffset,
             RigState.Mode,
             RigState.DataVariant,
+            Neighborhoods.FirstOrDefault(n => n.Contains(FrequencyHz)));
+
+    /// <summary>The mode strip's four chips, with whichever one is lit.</summary>
+    /// <remarks>
+    /// **IT STOPPED BEING STATIC IN UNIT 228.** FT8 was lit in the markup and
+    /// the other three greyed there, from work instruction 037, so the strip
+    /// asserted the dial was in FT8 territory wherever the dial was. The
+    /// reasoning is `DigitalModeChip`'s, and it is the map that answers.
+    /// </remarks>
+    public IReadOnlyList<DigitalModeChip> DigitalModeChips
+        => DigitalModeChip.For(
             Neighborhoods.FirstOrDefault(n => n.Contains(FrequencyHz)));
 
     /// <summary>Whether the readiness line has anything to say.</summary>

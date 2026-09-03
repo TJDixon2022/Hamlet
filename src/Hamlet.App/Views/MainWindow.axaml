@@ -2741,51 +2741,59 @@
                                        FontSize="12"
                                        Foreground="{StaticResource HmTextMutedBrush}" />
 
-                            <StackPanel Grid.Column="1" Orientation="Horizontal"
-                                        Spacing="6" VerticalAlignment="Center">
+                            <!-- **LIT AND UNLIT DIFFER BY MORE THAN COLOUR**
+                                 (§0.6, HM-DEC-032). The lit one carries a
+                                 border and semibold weight as well as the
+                                 fill, so it survives a greyscale print and
+                                 a colour-vision deficiency.
 
-                                <!-- **LIT AND UNLIT DIFFER BY MORE THAN COLOUR**
-                                     (§0.6, HM-DEC-032). The lit one carries a
-                                     border and semibold weight as well as the
-                                     fill, so it survives a greyscale print and
-                                     a colour-vision deficiency.
+                                 **BOTH COLOURS COME FROM `ModePalette` AND
+                                 NEITHER IS A LITERAL.** `ModeColors` already
+                                 exposes them as brushes, so the strip reads
+                                 the same language the map and the field
+                                 guide read.
 
-                                     **BOTH COLOURS COME FROM `ModePalette` AND
-                                     NEITHER IS A LITERAL.** `ModeColors` already
-                                     exposes them as brushes, so the strip reads
-                                     the same language the map and the field
-                                     guide read. -->
-                                <Border x:Name="DigitalModeFt8"
-                                        Padding="10,3" CornerRadius="5"
-                                        Background="{x:Static ctl:ModePalette.DigitalFill}"
-                                        BorderBrush="{x:Static ctl:ModePalette.DigitalInk}"
-                                        BorderThickness="1">
-                                    <TextBlock Text="FT8" FontSize="12"
-                                               FontWeight="SemiBold"
-                                               Foreground="{x:Static ctl:ModePalette.DigitalInk}" />
-                                </Border>
+                                 **AND WHICH ONE IS LIT IS THE MAP'S ANSWER
+                                 SINCE UNIT 228.** FT8 was lit here as a
+                                 literal from work instruction 037, so the
+                                 strip asserted the dial was in FT8 territory
+                                 wherever the dial actually was. A picture
+                                 makes a claim as hard as a sentence does
+                                 (HM-DEC-092), and none of the four is lit in
+                                 a Morse block or in open ground. -->
+                            <ItemsControl Grid.Column="1"
+                                          x:Name="DigitalModeChipStrip"
+                                          ItemsSource="{Binding DigitalModeChips}"
+                                          VerticalAlignment="Center">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Horizontal" Spacing="6" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:DigitalModeChip">
+                                        <Panel>
+                                            <Border Padding="10,3" CornerRadius="5"
+                                                    Background="{x:Static ctl:ModePalette.DigitalFill}"
+                                                    BorderBrush="{x:Static ctl:ModePalette.DigitalInk}"
+                                                    BorderThickness="1"
+                                                    IsVisible="{Binding IsLit}">
+                                                <TextBlock Text="{Binding Label}" FontSize="12"
+                                                           FontWeight="SemiBold"
+                                                           Foreground="{x:Static ctl:ModePalette.DigitalInk}" />
+                                            </Border>
 
-                                <Border Padding="10,3" CornerRadius="5"
-                                        Background="Transparent"
-                                        BorderThickness="0">
-                                    <TextBlock Text="FT4" FontSize="12"
-                                               Foreground="{StaticResource HmTextMutedBrush}" />
-                                </Border>
-
-                                <Border Padding="10,3" CornerRadius="5"
-                                        Background="Transparent"
-                                        BorderThickness="0">
-                                    <TextBlock Text="PSK31" FontSize="12"
-                                               Foreground="{StaticResource HmTextMutedBrush}" />
-                                </Border>
-
-                                <Border Padding="10,3" CornerRadius="5"
-                                        Background="Transparent"
-                                        BorderThickness="0">
-                                    <TextBlock Text="WSPR" FontSize="12"
-                                               Foreground="{StaticResource HmTextMutedBrush}" />
-                                </Border>
-                            </StackPanel>
+                                            <Border Padding="10,3" CornerRadius="5"
+                                                    Background="Transparent"
+                                                    BorderThickness="0"
+                                                    IsVisible="{Binding !IsLit}">
+                                                <TextBlock Text="{Binding Label}" FontSize="12"
+                                                           Foreground="{StaticResource HmTextMutedBrush}" />
+                                            </Border>
+                                        </Panel>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
 
                             <!-- **THE STATIC STATUS IS GONE** (unit 224). Work
                                  instruction 037 wrote `reading it · 9 messages

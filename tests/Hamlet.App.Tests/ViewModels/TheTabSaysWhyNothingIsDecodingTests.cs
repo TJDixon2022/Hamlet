@@ -379,6 +379,72 @@ public sealed class TheTabSaysWhyNothingIsDecodingTests
             "{Binding DigitalSayingIdle}", markup, StringComparison.Ordinal);
     }
 
+    /// <summary>
+    /// **THE MODE STRIP LIGHTS THE BLOCK THE DIAL IS ACTUALLY IN.** It was a
+    /// literal until this unit: FT8 lit in the markup wherever the dial was.
+    /// </summary>
+    [AvaloniaFact]
+    public void TheModeStripLightsTheBlockTheDialIsIn()
+    {
+        var model = Ready();
+
+        foreach (var chip in model.DigitalModeChips)
+        {
+            _output.WriteLine($"  {chip.Label,-6} {(chip.IsLit ? "lit" : "unlit")}");
+        }
+
+        var lit = Assert.Single(model.DigitalModeChips, c => c.IsLit);
+
+        Assert.Equal("FT8", lit.Label);
+        Assert.Equal(
+            DigitalModeChip.Labels,
+            model.DigitalModeChips.Select(c => c.Label).ToList());
+    }
+
+    /// <summary>
+    /// **NOTHING LIT IS A REAL ANSWER**, and lighting the nearest chip instead
+    /// would be a guess dressed as a reading (§0.0, HM-DEC-092).
+    /// </summary>
+    [AvaloniaFact]
+    public void AMorseBlockLightsNothingAtAll()
+    {
+        var model = Ready();
+
+        model.FrequencyHz = MorseOnForty;
+
+        foreach (var chip in model.DigitalModeChips)
+        {
+            _output.WriteLine($"  {chip.Label,-6} {(chip.IsLit ? "lit" : "unlit")}");
+        }
+
+        Assert.All(model.DigitalModeChips, c => Assert.False(c.IsLit));
+    }
+
+    /// <summary>
+    /// **THE STRIP IS BOUND AND NO CHIP IS A LITERAL ANY MORE.** Read as text,
+    /// because a chip lit in the markup passes every test that only reads the
+    /// collection.
+    /// </summary>
+    [AvaloniaFact]
+    public void NoModeChipIsStillLitInTheMarkup()
+    {
+        var markup = DigitalWorkspaceMarkup();
+
+        Assert.Contains(
+            "{Binding DigitalModeChips}", markup, StringComparison.Ordinal);
+
+        foreach (var label in DigitalModeChip.Labels)
+        {
+            var literal = $"Text=\"{label}\"";
+
+            _output.WriteLine(
+                $"  {literal,-20} "
+                + $"{(markup.Contains(literal, StringComparison.Ordinal) ? "STILL THERE" : "gone")}");
+
+            Assert.DoesNotContain(literal, markup, StringComparison.Ordinal);
+        }
+    }
+
     /// <summary>A view model with all five conditions right.</summary>
     /// <returns>The model, ready for one thing to be broken in it.</returns>
     private static MainWindowViewModel Ready()

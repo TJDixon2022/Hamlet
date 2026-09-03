@@ -80,9 +80,27 @@
     decoder read 51 of 51 signals this library synthesized, which discharges HM-OPEN-065 after
     seventeen units. Nothing was tuned, raised or adopted; the deliberate-divergence question is the
     owner's. No file under src/ changed except this one and porting-notes.md.
+
+    1.12.35 -> UNIT 228, UNDER HM-DEC-150. A PATCH BECAUSE PHASE_PLAN.md RESERVES THE MINOR FOR WHEN
+    THIS PHASE CLOSES, and it is otherwise the first change since unit 224 that an operator will see
+    without being told where to look. The Digital tab gains one readiness line, above every panel and
+    outside the scroller, that names the FIRST thing standing between him and a decode: nothing
+    listening, the training radio as the source, a clock that is out or has never been checked, a
+    radio in the wrong mode or one that has not said, or a dial outside the digital blocks. It is
+    EMPTY AND THE WHOLE ROW IS GONE when none of those is wrong, and a test asserts that, because a
+    line that always says something is one the operator stops reading. Hamlet knew all five of these
+    already and said none of them in one place, so a blank decoded table could not be told from a
+    wrong setup. The mode strip beside it stops being four literals: FT8 was lit in the markup
+    wherever the dial was, and which chip lights is now the map's answer. One claim the received
+    wisdom would have written is deliberately not written - Ft8SlotCutter cuts on the measured offset
+    rather than on the machine's own minute, so a clock that is out does not stop this program
+    decoding, and the line says how far out it is instead of sending the operator to fix what was
+    already handled. RigState gained a fallback to the last state through its one seam so the mode
+    condition could be reached by a test; production behaviour does not move. No decoder, threshold or
+    Ft8Sharp file changed.
   -->
   <PropertyGroup>
-    <Version>1.12.34</Version>
+    <Version>1.12.35</Version>
   </PropertyGroup>
 
   <!--
