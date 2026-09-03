@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: WORKING
-TASK: 5 of 7
+TASK: 6 of 7
 WORK_INSTRUCTION: 233
 BALL: claude
 NEXT_PASTE: none
 RULES_AT: HM-DEC-152 (2026-08-31)
-UPDATED: 2026-09-03T12:52:00-04:00
-NOTE: Task 5 built and green, 13 of 13 across the two sheet classes with the pre-existing sheet test untouched and still passing. The sheet gained three blocks. AUDIO PATH: device name, the rate the device reported beside the rate the file was written at, channel count, encoding and bit depth, whether the samples were real or synthesized, and the Windows capture gain and mute from CaptureHealth - every row measured or "unknown (not read)" and nothing defaulted. SLOT GEOMETRY: every 15-second boundary inside the window at its corrected UTC, each marked whole-transmission-inside or CUT SHORT, with wholeSlots in its own field saying in capitals when no whole transmission is in the audio at all - because nothing decoded and nothing decodable was captured are different statements. CENSUS: one row per slot with the five counts, the rate, the top Costas match counts, and the refusal verbatim. ShowDecodes now returns the Ft8Reception so Compose gets the census the press already produced rather than decoding twice. WasapiAudioSource gained ChannelCount and Encoding, deliberately not on IAudioSource because the training radio has neither. One bug caught by its own test: the key column pads to 11 and audioIsReal is exactly 11, so it ran into its own value - padding is now at least key length plus one, which changes no row written before this unit. Next: task 6.
+UPDATED: 2026-09-03T13:04:00-04:00
+NOTE: Task 6 built and green, 6 of 6. ACapturedFileDiagnosesItselfTests writes a WAV to a temp folder from Ft8Waveform, reads it back with WavAudio.Read, runs Ft8Reader.Read at the rate the file declares, and asserts the census is REPORTED - every field populated, the stages narrowing in order with none exceeding the one before, the top Costas match counts strongest first and at most three, the sample rate the file's own and not the resampler's 12000, and the refusal sentence present exactly when no whole slot was cut and absent otherwise. Driven at 44100 and 48000 so the resampler is in the path; 44100 is deliberately not a whole ratio of 12000. No recording of any kind is committed and there is NO fixture expecting zero decodes - a slot with nothing in it is asserted to be COUNTED, all zeroes, which is a different claim from asserting that a particular recording decodes nothing. The scratch harness from tasks 1 and 2 was emptied rather than deleted: rm and git clean are both outside this unit's permission scope, so the file is untracked, contains only a comment, and was never staged. Next: the standing gates, then task 7 which is the named drop candidate.
 
 ---
 
