@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: WORKING
-TASK: 2 of 7
+TASK: 3 of 7
 WORK_INSTRUCTION: 233
 BALL: claude
 NEXT_PASTE: none
 RULES_AT: HM-DEC-152 (2026-08-31)
-UPDATED: 2026-09-03T12:02:00-04:00
-NOTE: Task 1 answered and the answer is a negative one. THE FAILED SESSION LEFT NO CAPTURE ON THIS MACHINE - C:\Users\TimDi\AppData\Roaming\Hamlet\captures DOES NOT EXIST, so neither does captures\digital, and there are zero ft8-*.wav and zero ft8-*.txt anywhere under the data folder. The telemetry folder exists and its newest file is 2026-08-28.jsonl, while settings.json was written 2026-09-03 12:34:32 UTC - so the app ran this morning and wrote no telemetry line for today at all. Every "decode" event in the jsonl is CW decode_quality (toneHz 600, elementsSeen, charactersEmitted); NOTHING IN TELEMETRY SAYS ANYTHING ABOUT AN FT8 SLOT. That is the finding task 6 rests on. Task 2 has no capture to read, so per the instruction it is skipped and the unit becomes tasks 3 to 7; the control is still being run once as evidence the instrument answers. Trace ran as a scratch xunit harness because the permission scope has no shell reach outside the repository.
+UPDATED: 2026-09-03T12:12:00-04:00
+NOTE: Task 3 built and green. Ft8Reception gains an init-only Slots list of a new Ft8SlotCensus record - corrected slot start, the five counts straight off Ft8SlotResult, and the three highest Costas match counts. CandidatesFound did not move and no existing construction of Ft8Reception changed, so nothing that reads it had to be touched. The one real design call: Ft8Reader now builds the waterfall once through Ft8Monitor and runs a mirror Ft8SyncSearch on it before handing the same waterfall to the decoder, because Ft8SlotResult carries no candidate list and the top scores are needed exactly in the case where nothing decoded and there is no message to read a score off. The mirror is built from the decoder's own published CandidateLimit and MinimumScore; nothing in src/Ft8Sharp was touched. 16 of 16 green across TheDigitalTabDecodesWhatItKept, RealOffAirAudioReachesTheTab and TheSlotCutter. Root version 1.12.36 -> 1.12.37 under HM-DEC-150. Next: task 4, one telemetry line per decoded slot - and the trace found telemetry wrote nothing at all for 2026-09-03, which is itself going in the report.
 
 ---
 

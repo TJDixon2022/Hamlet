@@ -26,6 +26,43 @@ public sealed record Ft8Decode(
     int SyncScore,
     string Message);
 
+/// <summary>How far one slot's candidates got, stage by stage.</summary>
+/// <param name="SlotStartUtc">The quarter minute the slot opened on, corrected.</param>
+/// <param name="CandidateCount">Places the search returned.</param>
+/// <param name="ParitySatisfiedCount">Of those, how many reached a valid codeword.</param>
+/// <param name="ChecksumPassedCount">Of those, how many carried their own checksum.</param>
+/// <param name="BecameTextCount">Of those, how many became words.</param>
+/// <param name="DuplicateCount">
+/// Of those, how many repeated a message already returned from this slot. Expected
+/// and not a defect: a strong transmission produces several candidates and every
+/// one of them decodes.
+/// </param>
+/// <param name="TopSyncScores">
+/// The highest Costas match counts the search saw in this slot, strongest first, at
+/// most three. **NOT SIGNAL-TO-NOISE RATIOS** (`CLAUDE.md` §0.0) — they are counts
+/// of how far the Costas pattern stood above the average of the eight tones, in no
+/// units, calibrated against nothing.
+/// </param>
+/// <remarks>
+/// <para>**THESE FOUR NUMBERS NAME THE STAGE THAT REFUSED**, which is the whole
+/// reason they are carried instead of discarded. Candidates at zero is a front end,
+/// an audio device, a routing, a mode or a filter, and no decoder change touches it.
+/// Candidates present with parity at zero is the soft symbols or the belief
+/// propagation. Parity present with checksum at zero is a codeword that is not a
+/// message. Checksum present with text at zero is the message layer.</para>
+/// <para>**THEY COUNT AND THEY DO NOT INTERPRET** (`CLAUDE.md` §12.1). Nothing here
+/// concludes that the band was quiet, that a station was weak, or that anything was
+/// said. Four integers and a slot boundary.</para>
+/// </remarks>
+public sealed record Ft8SlotCensus(
+    DateTime SlotStartUtc,
+    int CandidateCount,
+    int ParitySatisfiedCount,
+    int ChecksumPassedCount,
+    int BecameTextCount,
+    int DuplicateCount,
+    IReadOnlyList<int> TopSyncScores);
+
 /// <summary>What a stretch of captured audio gave up.</summary>
 /// <param name="Decodes">The messages, oldest slot first.</param>
 /// <param name="SlotsDecoded">How many whole slots were cut and run.</param>
@@ -41,7 +78,20 @@ public sealed record Ft8Reception(
     IReadOnlyList<Ft8Decode> Decodes,
     int SlotsDecoded,
     int CandidatesFound,
-    string Refusal);
+    string Refusal)
+{
+    /// <summary>The census, one entry per slot that was cut and run, oldest first.</summary>
+    /// <remarks>
+    /// <para>**ADDED RATHER THAN SUBSTITUTED** (unit 233). <see cref="CandidatesFound"/>
+    /// stays exactly where it was and means exactly what it meant, because existing
+    /// callers and tests read it; this sits beside it and carries the four counts the
+    /// join used to throw away at the sum.</para>
+    /// <para>**EMPTY WHERE NOTHING RAN**, which is the refusal case and is not the
+    /// same as a slot that ran and found nothing. A slot that ran always has an entry
+    /// here, all zeroes if that is what it found.</para>
+    /// </remarks>
+    public IReadOnlyList<Ft8SlotCensus> Slots { get; init; } = Array.Empty<Ft8SlotCensus>();
+}
 
 /// <summary>
 /// Takes a stretch of captured audio and returns the FT8 messages in it.
@@ -106,16 +156,36 @@ public static class Ft8Reader
 
         decoder ??= new Ft8SlotDecoder();
 
+        // A mirror of the decoder's own search, built from the limit and minimum it
+        // publishes. It exists for one thing the result type cannot give: the highest
+        // Costas match counts in a slot that decoded NOTHING, where there is no
+        // message to read a candidate off. The counts below are the decoder's own.
+        var search = new Ft8SyncSearch(decoder.CandidateLimit, decoder.MinimumScore);
+        var monitor = new Ft8Monitor(decoder.Geometry);
+
         var found = new List<Ft8Decode>();
+        var census = new List<Ft8SlotCensus>();
         var candidates = 0;
 
         foreach (var slot in cut.Slots)
         {
             var samples = Ft8Resample.ToFt8Rate(slot.Audio).Samples;
 
-            var result = decoder.Decode(samples);
+            var waterfall = monitor.Analyse(samples);
+            var places = search.Find(waterfall);
+
+            var result = decoder.Decode(waterfall);
 
             candidates += result.CandidateCount;
+
+            census.Add(new Ft8SlotCensus(
+                slot.StartUtc,
+                result.CandidateCount,
+                result.ParitySatisfiedCount,
+                result.ChecksumPassedCount,
+                result.BecameTextCount,
+                result.DuplicateCount,
+                TopScores(places)));
 
             foreach (var message in result.Messages)
             {
@@ -128,6 +198,28 @@ public static class Ft8Reader
             }
         }
 
-        return new Ft8Reception(found, cut.Slots.Count, candidates, "");
+        return new Ft8Reception(found, cut.Slots.Count, candidates, "")
+        {
+            Slots = census,
+        };
+    }
+
+    /// <summary>The three highest Costas match counts, strongest first.</summary>
+    /// <remarks>
+    /// The search returns strongest first already, so this takes the front of the list
+    /// rather than sorting it again. Three, because a fourth number tells a reader
+    /// nothing a third did not.
+    /// </remarks>
+    private static IReadOnlyList<int> TopScores(IReadOnlyList<Ft8Candidate> places)
+    {
+        var take = Math.Min(3, places.Count);
+        var scores = new int[take];
+
+        for (var i = 0; i < take; i++)
+        {
+            scores[i] = places[i].Score;
+        }
+
+        return scores;
     }
 }
