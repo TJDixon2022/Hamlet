@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 0 of 5
+TASK: 1 of 4
 WORK_INSTRUCTION: 240 - the waterfall is on the audio callback
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-152 (2026-08-31)
-UPDATED: 2026-09-03T22:11:23-04:00
-NOTE: Gate verified for 240; closing out unit 239's report and its baseline comparison before starting
+UPDATED: 2026-09-03T22:38:51-04:00
+NOTE: Measured: Push costs 62271us a buffer and the per-sample full-ring shift is 99.5 percent of it; the FFT is 0.4
 
 ---
 
