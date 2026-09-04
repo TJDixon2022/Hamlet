@@ -1,4 +1,4 @@
-using Hamlet.RadioEngine.Training;
+﻿using Hamlet.RadioEngine.Training;
 
 namespace Hamlet.RadioEngine.Audio;
 
@@ -111,6 +111,26 @@ public sealed class AudioSpectrumSource : ISpectrumSource, IDisposable
     private int _fill;
     private int _sinceHop;
     private long _samplesSeen;
+
+    /// <summary>Where the next sample goes, and the oldest sample once full.</summary>
+    /// <remarks>
+    /// <para>**THE RING USED TO HAVE NO CURSOR, AND THAT WAS THE WHOLE FAULT.**
+    /// It was a linear array with the oldest sample at index 0, so making room
+    /// for a new one meant `Array.Copy(_ring, 1, _ring, 0, _ring.Length - 1)` -
+    /// moving 16,383 floats - **once per sample**. Measured in unit 240 task 1:
+    /// 63,120 microseconds for a single 4,800-sample buffer, which is 78 million
+    /// floats moved per 100 ms of audio and **99.5% of everything the device
+    /// callback was doing**.</para>
+    /// <para>**WITH A CURSOR NOTHING MOVES AT ALL.** A buffer is written where
+    /// the cursor points, in at most two `Array.Copy` calls, and the cursor
+    /// advances. It is what `AudioTap` has always done a few files away.</para>
+    /// <para>**THE READER PAYS FOR IT INSTEAD, AND THAT IS THE RIGHT PLACE.**
+    /// `Emit` has to walk the ring from the oldest sample rather than from index
+    /// zero, so it does two passes over 16,384 floats where it used to do one.
+    /// That runs once a hop rather than once a sample - a factor of 4,096 - and
+    /// after task 3 it does not run on the callback thread at all.</para>
+    /// </remarks>
+    private int _write;
 
     /// <summary>Creates a spectrum source over one sample rate.</summary>
     /// <param name="sampleRate">Samples per second.</param>
@@ -240,33 +260,91 @@ public sealed class AudioSpectrumSource : ISpectrumSource, IDisposable
             return;
         }
 
-        foreach (var sample in samples)
+        // **THE SAMPLES ARE WRITTEN IN RUNS, AND THE HOP IS WHAT BREAKS THEM
+        // UP.** A frame has to be raised at exactly the sample the old code
+        // raised it at, or the picture changes cadence and every frame carries
+        // the wrong time - so the buffer is cut at hop boundaries and no
+        // further. Between two boundaries nothing is examined per sample at all.
+        var from = 0;
+
+        while (from < samples.Length)
         {
+            int take;
+            bool emit;
+
             lock (_gate)
             {
-                if (_fill < _ring.Length)
-                {
-                    _ring[_fill++] = sample;
-                }
-                else
-                {
-                    Array.Copy(_ring, 1, _ring, 0, _ring.Length - 1);
-                    _ring[^1] = sample;
-                }
+                // How many samples until this hop completes. Before the ring has
+                // filled there is no hop to complete, because the old code only
+                // emitted once `_fill` had reached `_ring.Length`.
+                var untilHop = _hop - _sinceHop;
+                var untilFull = _ring.Length - _fill;
 
-                _samplesSeen++;
-                _sinceHop++;
+                take = samples.Length - from;
+                emit = false;
 
-                if (_fill < _ring.Length || _sinceHop < _hop)
+                if (untilHop <= take && untilFull <= take)
                 {
-                    continue;
+                    take = Math.Max(untilHop, untilFull);
+                    emit = true;
                 }
 
-                _sinceHop = 0;
+                Write(samples.Slice(from, take));
+
+                _samplesSeen += take;
+                _sinceHop += take;
+
+                if (emit)
+                {
+                    _sinceHop = 0;
+                }
             }
 
-            Emit();
+            from += take;
+
+            if (emit)
+            {
+                Emit();
+            }
         }
+    }
+
+    /// <summary>Write one run into the ring, without moving anything.</summary>
+    /// <param name="samples">The run. Never longer than the ring.</param>
+    /// <remarks>
+    /// **AT MOST TWO `Array.Copy` CALLS, AND USUALLY ONE.** The ring is
+    /// contiguous either side of the cursor, so a run that does not reach the
+    /// end is one copy and a run that wraps is two. Nothing is shifted and
+    /// nothing is examined per sample.
+    /// </remarks>
+    private void Write(ReadOnlySpan<float> samples)
+    {
+        var count = samples.Length;
+
+        if (count <= 0)
+        {
+            return;
+        }
+
+        // A run longer than the ring can only leave its own tail behind, and
+        // taking the tail is what the old code's repeated shifting amounted to.
+        if (count > _ring.Length)
+        {
+            samples = samples[^_ring.Length..];
+            count = _ring.Length;
+        }
+
+        var first = Math.Min(count, _ring.Length - _write);
+
+        samples[..first].CopyTo(_ring.AsSpan(_write, first));
+
+        if (first < count)
+        {
+            samples[first..].CopyTo(_ring.AsSpan(0, count - first));
+        }
+
+        _write = (_write + count) % _ring.Length;
+        _fill = Math.Min(_ring.Length, _fill + count);
     }
 
     private void Emit()
@@ -280,9 +358,24 @@ public sealed class AudioSpectrumSource : ISpectrumSource, IDisposable
 
         lock (_gate)
         {
+            // **OLDEST FIRST, WHICH IS WHERE THE CURSOR POINTS ONCE THE RING IS
+            // FULL.** The old linear ring kept the oldest sample at index 0 and
+            // paid for that ordering on every single sample. This reads the same
+            // order out of a ring that costs nothing to write, and the taper
+            // still lands on the same sample it always did - which is why the
+            // pinned frames in `tests/fixtures/spectrum` come out identical.
+            var oldest = _fill < _ring.Length ? 0 : _write;
+
             for (var i = 0; i < _ring.Length; i++)
             {
-                _window[i] = (float)(_ring[i] * _taper[i]);
+                var index = oldest + i;
+
+                if (index >= _ring.Length)
+                {
+                    index -= _ring.Length;
+                }
+
+                _window[i] = (float)(_ring[index] * _taper[i]);
             }
         }
 
