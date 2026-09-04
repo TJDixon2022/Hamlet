@@ -1,330 +1,334 @@
 ﻿READ IN THIS ORDER
 
 A. THE PHASE GOAL. Hamlet hears FT8 off the radio and displays the decoded text
-on screen. Nothing on screen is closer tonight. What is closer is that the thing
-which was eating three quarters of the audio has been found, measured, and taken
-out of the way.
+on screen. It heard it on 2026-09-04 at 21:41 UTC. This unit is about the second
+half of that sentence: the panel it lands in was built for four hard-coded rows
+and now takes about fourteen a slot.
 
-B. THIS STEP AND ITS EXIT CRITERIA. Arrival on the shack machine was 76%, with
-zero callback overruns, zero queue drops and zero callback failures, and 554 of
-561 callbacks running past half their budget. Unit 238 moved the CW decode off
-the device callback and arrival went 13% to 76%; unit 239 fixed the tap's readers
-and correctly reported that the spectrum source does not read the tap. This unit
-went after the second subscriber to the same event.
+B. THIS STEP AND ITS EXIT CRITERIA. Every item came off the operator's own
+screen. The headers did not line up with the text under them, there was no
+scrollbar, no way to clear it, no way to choose the order, and the columns read
+as gibberish to somebody who has not been told what `snr`, `dt` and `hz` are or
+that a message is three parts.
 
-C. WHAT THIS REPORT ADDS, AND WHETHER IT BEARS ON A OR B. It bears hard on B. The
-device callback was spending **62,271 microseconds** on a single 100 ms buffer,
-and **99.5% of it was one line**: the waterfall's ring shifting 16,383 floats
-down one place, once per sample. It is now **270 microseconds**, and with the
-transform moved off the thread as well a stalled picture costs the callback
-**92 microseconds** where it used to cost 522,895. **Whether that takes the shack
-machine from 76% to 99% is the operator's reading to take** (`SHACK_FACTS.md`
-FACT-004). Nothing below was measured on a computer with a radio attached.
+C. WHAT THIS REPORT ADDS, AND WHETHER IT BEARS ON A OR B. It bears on B and
+finishes it. All six tasks are done. The misalignment had a mechanism rather
+than a fudge - two sibling grids of `Auto` columns, which share no measure - and
+it is now provable rather than eyeballed: the header and every row report the
+same five column origins in a headless build of the real window. **No engine
+work, no decoder work, no transmit work of any kind, and nothing in
+`src/Ft8Sharp/` was touched.**
 
 ---
 
-UNIT:       240 — complete at task 4 of 4 — 2026-09-03 23:35
+UNIT:       241 — complete at task 6 of 6 — 2026-09-04 19:40
 PHASE GOAL: Hamlet hears FT8 off the radio and displays the decoded text on screen.
-UNIT GOAL:  No subscriber to SamplesReady does more than copy on the device callback thread, and the waterfall's transform work happens somewhere a slow frame cannot cost the radio audio.
-ADVANCED:   **yes** — the goal task. The callback's work fell by three orders of magnitude and the picture is provably unchanged.
-NUMBER:     **the device callback with a stalled picture: 522,895 µs to 92 µs**; `Push` alone 62,271 µs to 270 µs; 43 pinned frames byte-identical.
+UNIT GOAL:  An operator who has never seen FT8 can read the panel without being told what it means, in the order he chose, and start it again when he wants to.
+ADVANCED:   **yes** — every fault the operator named is fixed, and the panel that asserted something untrue is gone.
+NUMBER:     header and every row share column origins **0, 76, 124, 172, 226**; row list bounded at **300 px** with 201 rows; **35** vocabulary tests, and a payload off the table produces **nothing**.
 DRIFT:      0 consecutive units without advance.
 
 ## 1. What Claude did
 
-**Complete. Four tasks of four.** Task 4 was the named drop candidate and was
-taken rather than dropped, because tasks 2 and 3 left room.
+**Complete. Six tasks of six.** Nothing was dropped.
 
 Hamlet confirmed against all four gate checks before the instruction was read:
-`SHACK_FACTS.md` and `src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs` both
-present, `CoreHMI.sln` and `MURC.sln` both absent.
+`SHACK_FACTS.md` and `src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs`
+present, `CoreHMI.sln` and `MURC.sln` absent.
 
-Development machine, branch **`main`**, four commits, **every push succeeded**.
-Root version **1.12.43 to 1.12.44** per HM-DEC-150; `Ft8Sharp` did not move and
-nothing in `src/Ft8Sharp/` was touched.
+Development machine, branch **`main`**, six commits, **every push succeeded**.
+Root version **1.12.44 → 1.12.45** per HM-DEC-150; `Ft8Sharp` did not move.
 
 **Nothing in this report is evidence about the radio** (FACT-004).
 
-### Task 1 — the measurement, before anything was built
+### Task 1 — what the panel is made of
 
-**Two subscribers to `IAudioSource.SamplesReady`, and no third.**
+**Why the columns did not line up.** The header is one `Grid` with
+`ColumnDefinitions="Auto,Auto,Auto,Auto,*"` at `MainWindow.axaml:2932`. Each data
+row was a **separate** `Grid`, declared inside the `ItemsControl.ItemTemplate`,
+with its own identical string.
 
-| Subscriber | Where | What it does synchronously |
-|---|---|---|
-| `AudioSpectrumSource.OnSamples` | `AudioSpectrumSource.cs:225` | `Push(chunk.Samples)`, in full |
-| `CwDecoder.OnSamples` | `CwDecoder.cs:797` | enqueues onto `AudioHandoff` and returns |
+**Sibling grids share no measure.** Every `Auto` column sizes to its own content
+and nothing else: the header's first column to `utc` at FontSize 11, a row's to
+`214135` at FontSize 12. Two rows carrying `231` and `2438` in the `hz` column
+disagreed with each other as well. It was not padding and not the font.
 
-`MainWindowViewModel` holds an `AudioSpectrumSource` but does not subscribe to
-the event itself.
+**`DigitalDecodes`** is an `ObservableCollection<DigitalDecodeRow>` at line 817.
+`AddDecodeRow` appends, keyed on slot, frequency and message so a repeat inside
+the window is swallowed. `ClearDigitalDecodesOnRetune` empties it when the dial
+moves far enough. Readers: `HasDigitalDecodes`, `DigitalDecodedSummary`, and the
+markup's `ItemsSource`. Nothing else.
 
-**One 100 ms buffer of 4,800 samples, ring full, `FrameReady` attached:**
+**The growth**, from the shack machine's 21:41 slot — fourteen messages, and
+sixty-three shown. There is no telemetry for 2026-09-04 in this tree, so this is
+arithmetic on that one reading and the slot geometry rather than a measurement
+taken here.
 
-| | Median | Worst |
-|---|---|---|
-| `AudioSpectrumSource.Push` | **62,271 µs** | 65,585 µs |
-| `AudioHandoff.Offer` | **1 µs** | 60 µs |
-
-The spectrum source is 100.0% of the callback's time to one decimal place, and
-62 ms against a 100,000 µs period sits exactly where the shack machine's 50 to
-86 ms does.
-
-**And `Push`'s three parts, each timed at the size `Push` runs it at:**
-
-| Part | Cost | Share |
-|---|---|---|
-| 4,800 uncontended lock acquisitions | 69 µs | 0.1% |
-| **4,800 full-ring `Array.Copy` of 16,383 floats** | **63,120 µs** | **99.5%** |
-| One 16,384-point FFT with taper | 244 µs | 0.4% |
-
-**The shift owns it.** Not the lock, and not the transform. 78 million floats
-moved per 100 ms of audio.
-
-**That changed what the remaining tasks were each worth, and the report says so
-rather than crediting the fix to whichever landed last.** Task 2 is the repair.
-Task 3 is worth 244 µs of the 62,271 and is insurance against variance. Both
-were built as instructed.
-
-Committed as `98286cd`.
-
-### Task 2 — the ring stops moving 78 million floats a buffer
-
-The ring gets a write cursor. A run of samples is written where the cursor points
-in at most two `Array.Copy` calls and usually one, and nothing is shifted, which
-is what `AudioTap` has done a few files away all along. The lock is taken per run
-rather than per sample: `Push` cuts the incoming buffer at hop boundaries and
-takes the lock once per piece, so a 4,800-sample buffer takes it once or twice
-instead of 4,800 times.
-
-The cut is not thrift. A frame has to be raised at exactly the sample the old
-code raised it at, or every frame carries the wrong time, and on a mode whose
-whole geometry is fifteen-second slots that is not a small error.
-
-`Emit` pays instead, walking the ring from the oldest sample rather than from
-index zero. That runs once a hop rather than once a sample, a factor of 4,096.
-
-**`Push`: 62,271 µs to 270 µs median, 556 µs worst.**
-
-**The picture is unchanged, and that is pinned rather than asserted.** The 43
-frames a fixture produces, timestamps and every bin, were written to
-`tests/fixtures/spectrum/waterfall-frames.txt` **from the old implementation,
-before a line of it was touched**, and committed in that state. The rewrite
-reproduces them byte for byte. A test that captured its own expectation after
-the change would have passed whatever the change did (§12.5).
-
-The fixture is pushed in 4,800-sample buffers on purpose: a device does not hand
-over whole hops, and 4,800 does not divide the 4,096-sample hop, so a ring that
-only worked when the buffer divided the hop would pass a tidier fixture and fail
-on the radio.
-
-Committed as `cefa179`.
-
-### Task 3 — the transform leaves the callback thread
-
-`OnSamples` copies onto a queue and returns. The ring write, the taper, the
-transform, the decibel floor and `FrameReady` all happen on a worker.
-
-**It reuses unit 238's `AudioHandoff` and does not grow a second mechanism.** It
-fits without argument: bounded, ordered, oldest-dropped, one consumer, samples
-copied before the call returns, never blocking, never throwing, counting what it
-drops.
-
-`Push` itself is unchanged and still synchronous, because the class's determinism
-lives in it. What moved is who calls it, which is why task 2's pinned frames are
-still byte-identical.
-
-**Both designs measured in one run on one machine, with a `FrameReady` handler
-sleeping 250 ms on every frame:**
-
-| | Worst callback |
+| | |
 |---|---|
-| Before, `Push` inline | **522,895 µs**, five whole buffer periods |
-| After, offer and return | **92 µs** |
+| 15 s slots | 4 a minute, 240 an hour |
+| Rows an hour | **3,360** |
+| Rows over a five-hour evening | **16,800** |
 
-**A full queue drops rows and counts them while the audio survives:** 86 rows
-dropped, 412,800 samples' worth, and a second subscriber feeding an `AudioTap`
-on the same callback held **576,000 of 576,000 samples. Not one lost.** That is
-the whole design in one measurement.
+Committed as `bdc03b1`.
 
-The worker runs `BelowNormal` on purpose. Detaching closes the queue discarding
-rather than draining, because a row arriving after the source was detached has
-nowhere to be drawn, and the join is bounded so a stalled handler cannot hold a
-shutdown open.
+### Task 2 — the columns line up
 
-The drop count and the worst frame duration join unit 239's numbers on all three
-surfaces: `ft8_slot` telemetry on both paths, the sidecar's `audioPathDrops`
-line, and the census line, which speaks only when rows were actually dropped and
-says plainly that it cost the picture and not the audio.
+Both grids carry identical pixel widths and `hz` is right-aligned.
 
-Committed as `5ea9c71`.
+| | |
+|---|---|
+| Header column origins | 0, 76, 124, 172, 226 |
+| Every row's origins | 0, 76, 124, 172, 226 |
+| `231` and `2438` right edges | 212 and 212 |
 
-### Task 4 — nothing is computed while nobody is drawing
+**Two approaches failed first and are written into the code so nobody repeats
+them.** A shared `StaticResource` does not work — `ColumnDefinitions` has no
+conversion from a resource string, and one shared instance would be worse than
+two literals because definitions carry per-grid layout state. And the first set
+of widths was too narrow: **a pixel column narrower than its content is widened
+to fit**, so the drift came straight back at header 58 against row 72. Every
+column is now wider than anything that can land in it.
 
-**What `IsRunning` was actually driven by, which the instruction said it did not
-know: `StartDecoding` and `StopDecoding` in `MainWindowViewModel`, lines 3964 and
-4062, the CW decoder's own lifetime.** It has never had anything to do with
-whether the Digital tab is showing, so before this the transform ran for an
-entire evening whether or not the picture was on screen.
+What stops the two literals drifting is the test, which builds the real window
+headless and asserts the origins agree. That is stronger than one declaration
+because it checks the result rather than the intent.
 
-The honest test of whether anything is consuming frames is `FrameReady` being
-non-null, and `WaterfallControl` already unsubscribes when it leaves the visual
-tree. So the engine learns it without being told that tabs exist, which §0.1
-requires. No UI signal was added and none was needed.
+Committed as `4ac422e`.
 
-**The window is dropped rather than left sitting, and that is §0.0 rather than
-thrift.** Skipping the work alone would leave the ring holding whatever was in it
-when the tab closed, and the first frame after it reopened would be part old
-audio and part new: a picture asserting a signal was present at a time it was
-not, which HM-DEC-092 binds exactly as hard as a sentence. The cost is that the
-first frame after somebody looks again waits one full window, about a third of a
-second.
+### Task 3 — the panel scrolls
 
-Measured: with nobody subscribed, forty buffers produce zero frames, zero drops
-and a worst frame duration of zero, so the worker is never woken. Subscribe,
-deliver the same forty, and 36 frames arrive.
+The rows sit in their own `ScrollViewer` at `MaxHeight="300"` — `MaxHeight` and
+not `Height`, so three rows are three rows tall rather than a mostly empty box.
 
-Committed as `39d37ec`.
+| | |
+|---|---|
+| 1 row | list height 12 px |
+| 201 rows | list height **300 px**, extent exceeds viewport |
+| Parked at 216, a row arrives | still 216 |
+| Scrolled to the end, a row arrives | 0 px from the end |
+
+`FollowingScroll` **works out which end is the live end rather than being told**,
+by watching where rows are inserted. So task 4's toggle could not get out of step
+with the scrolling, and needed no change here.
+
+Committed as `f94e7cf`.
+
+### Task 4 — clear, and the sort toggle
+
+Both controls sit in the panel header, where the waterfall panel above already
+puts its capture button, and both hide while the table is empty.
+
+**Within one slot, order is not the sort's to invent.** The direction reverses
+**slots**; inside a slot the decoder's order is preserved exactly. That is why
+the display is derived from a separate arrival list rather than reversed in
+place — reversing would turn each slot's rows back to front too, and flipping
+twice would not return what was there. Both are asserted.
+
+**Three latent faults the toggle would have exposed**, each fixed here: inserting
+now goes after any same-slot rows already at the top rather than at index nought;
+the trim drops the oldest **arrival** rather than the first row on screen, which
+under newest-first would have thrown away the row that just arrived; and
+`DigitalDecodedSummary` read `DigitalDecodes[^1]` and would have named the
+**oldest** row.
+
+Committed as `9f84be0`.
+
+### Task 5 — the message reads as three parts
+
+The message draws as addressee, sender and payload — addressee muted, sender in
+the decode green, payload in the primary text colour. **Colour is not the only
+carrier** (§0.6): the order is fixed and each field says what it is on hover, so
+the structure survives being printed in grey.
+
+`Ft8Vocabulary` is the closed table, in one place. The eight ruled payloads get
+their sentence. **Everything else gets nothing** — `599`, `QRZ`, `TNX`, `5NN` and
+a compound callsign are each asserted to produce null. A grid square is "grid
+square: where he is" and never a place: the test sweeps five grids against twelve
+place words, and the sentence does not vary with the square.
+
+`RR73` is matched before the grid test on purpose — it is letters then digits and
+would otherwise read as a Maidenhead field.
+
+**A message that is not plainly three fields is left whole**, with no colouring
+and no field tooltips, because labelling the wrong half is worse than labelling
+none of it.
+
+Committed as `727cd05`.
+
+### Task 6 — the trim says so, and the panel that lied is gone
+
+**The cap was never the fault; the silence was.** `MaxDigitalDecodes` and its
+trim were already here. 500 rows is about nine minutes of the band measured, and
+the trim then runs all evening — 33.6 times over. It is not raised, and the
+reason is rows rather than bytes: the list does not virtualise, and task 5 made a
+row more expensive rather than less. The summary now says `oldest 7 dropped` once
+it starts.
+
+**"What people are saying" is removed.** It never had a feed and said "nobody
+heard yet" while sixty-three real messages sat in the panel directly above it.
+Checked before deleting: the panel was Digital-only, CW has no equivalent, and
+`DigitalIdleText.Waterfall`, `.Decoded` and `.ModeStrip` are all still in use, so
+only `.Saying` went with it. An orphaned `digital.saying` key in an existing
+`settings.json` is inert, so no migration is needed.
+
+Committed as `3d823a7`.
 
 ### Where the instruction did not match the tree
 
-**Every claim in its verification list held exactly**: the lock inside the
-`foreach`, the per-sample `Array.Copy`, `OnSamples` subscribed to a multicast
-event, `WindowAt48K` 16,384 and `HopDivisor` 4, unit 238's hand-off, unit 239's
-buffer length and `CallbackBudget`, version 1.12.43.
+**Every claim in its verification list held**, with two additions it did not know
+about:
 
-**One item in the parked list is stale.** It says the 51 red CW cases are ones
-unit 239 could not compare against the baseline worktree at `d541fc8`. That
-comparison did complete, in unit 239's closing minutes: every one of the 51 fails
-at `d541fc8` as well, none is red at `HEAD` and green before, and the names are
-checked in at `docs/unit239-failing-set.txt`. Nothing was done about them here,
-and they remain parked, but the next instruction should not be written believing
-the question is open.
+- **A cap already existed.** The instruction's task 6 reads as though the panel
+  had none. `MaxDigitalDecodes = 500` and its trim were both in place; what was
+  missing was telling the operator.
+- **That cap's own remark described a `ScrollViewer` that was not there** — "a
+  plain `ItemsControl` inside a `ScrollViewer`". The items control was in a
+  `StackPanel`. That comment was the missing-scrollbar fault, written down and
+  not noticed.
+- **The panel's family is `Lavender` in the markup**, where the rulings section
+  says the decode family is green. Left alone; the header bar is text colour only
+  either way, which is what the ruling governs.
+
+### A value the engine does not expose
+
+`Ft8Sharp.Ft8StandardMessage.TryUnpack` already produces the three message fields
+separately, and `Ft8Decode` carries only the joined string. Task 5's split is the
+view re-deriving what the decoder knew and did not pass on. **Reported rather
+than reached for**, per the instruction: the engine was not touched, the reason
+is written in `Ft8Vocabulary` where somebody will find it, and a later unit could
+pass the fields through instead.
 
 ### Recorded under §12.1
 
-**Nothing.** Every conclusion here is a measurement.
+**Nothing.**
 
 ## 2. What Tim should expect
 
-**The waterfall looks exactly the same.** Same source, same window, same hop,
-same bins. Tim's ruling of 2026-08-28 is untouched, and the 43 pinned frames
-prove it rather than asserting it. The one visible change is that after opening
-the Digital tab the first row now takes about a third of a second to appear,
-because the window is deliberately started clean rather than drawn from audio
-that arrived while nobody was looking.
+Every item below is something he pointed at on his own screen.
 
-**What is new that he can see on a shack-machine run:**
+- **The headers sit over their columns**, at every value, and `hz` is
+  right-aligned so 231 and 2438 line up on their units.
+- **The panel has its own scrollbar** and stops growing at about eighteen rows.
+  The waterfall above it no longer gets pushed off the screen, and a slot's worth
+  is visible without touching anything.
+- **It follows new rows when he is at the live end and leaves him alone when he
+  has scrolled away** to read a callsign he missed.
+- **Two buttons in the panel header**: the order, which reads `newest first` or
+  `oldest first` and says which state it is in, and `clear`. Both disappear while
+  the table is empty.
+- **It opens newest-first** and remembers that between evenings.
+- **The message is three coloured parts.** Hovering the addressee or the sender
+  says which is which; hovering a payload Hamlet knows says what it means, in
+  ordinary words; hovering anything else says **nothing at all**.
+- **The column headings explain themselves on hover**, including `snr`, which
+  says the column shows a dash because nothing in this path measures one yet.
+- **The summary carries the direction and the trim**, so a collapsed panel still
+  says which end is live and whether rows have been dropped.
+- **"What people are saying" is gone.**
 
-- The sidecar's `audioPathDrops` line gains the picture's own cost beside the
-  audio's: `... 0 over the 100000 us buffer period, 241 over half of it, in 248
-  timed, 0 waterfall row(s) dropped, worst frame 634 us`.
-- `ft8_slot` telemetry carries `droppedFrames` and `longestFrameMicroseconds` on
-  both the refused and the decoded paths.
-- The census line adds one sentence **only if rows were actually dropped**,
-  saying it cost the picture and not the audio, so he does not chase the sound
-  card over a stuttering display.
+**One thing that will look like a loss and is not:** the panel below the decoded
+table has disappeared entirely. It never had a feed, and after task 5 the row
+itself carries the vocabulary it was waiting for.
 
 **Build:** clean, 0 errors, 0 warnings, both projects.
 
 **Tests:**
 
-| Project | Result |
+| | |
 |---|---|
-| `Hamlet.App.Tests`, not-Views leg | **530 of 530** |
-| `Hamlet.App.Tests`, Views leg | **62 of 62** |
-| Engine: audio, spectrum, waterfall, FT8, capture-sheet | **245 of 246**, twice in a row |
+| `Hamlet.App.Tests`, not-Views leg | **572 of 572** |
+| `Hamlet.App.Tests`, Views leg | **66 of 66** |
+| Engine, audio and FT8 channels | **242 of 243** |
 
 **What will look wrong and is not:**
 
-- **`CwAdjudicationTests.ASpeedChangeInRealisticAudio` is red.** Named
-  pre-existing by units 238, 239 and this instruction. Not touched.
-- **The engine project has no total again**, and for the same reason as unit
-  239: the full leg takes over half an hour and was not run to a summary here.
-  What was run is the five channels this unit could affect, whole, twice. **The
-  51 inherited CW reds are unchanged and unexamined**, and they are on this
-  instruction's parked list.
-- **`DroppedFrames` climbing is not a fault.** It is the design working: the
-  picture falls behind and the audio does not.
-- **A worst frame duration of 0 with 0 drops is not a broken counter.** It is
-  nobody looking at the Digital tab, which after task 4 costs exactly one null
-  check per callback.
+- **`CwAdjudicationTests.ASpeedChangeInRealisticAudio` is red**, named
+  pre-existing by this instruction and by units 238 to 240. Not touched.
+- **The 51 inherited CW reds are untouched** and remain on the parked list.
+- **The engine project has no total**, for the third report running. This unit
+  had no reason to run it — nothing outside `Hamlet.App` was changed — and the
+  audio and FT8 channels were run as a sanity check.
+- **Ten existing tests changed.** None is a repair; every one is a ruled change,
+  and section 3 names the one that is a narrowed promise rather than a moved
+  expectation.
 
-**Pushed to `main`,** four commits, working tree clean of everything this unit
-touched.
+**Pushed to `main`,** six commits.
 
 ## 3. What we should do next
 
-**The three numbers this unit was asked for.**
+**The three things this section was asked to lead with.**
 
-| | Figure |
-|---|---|
-| **Device callback's worst duration, stalled frame consumer** | **522,895 µs to 92 µs.** Both arms measured in one run on one machine. `Push` alone, unstalled: 62,271 to 270 |
-| **Which of `Push`'s three parts owned the time** | **The per-sample full-ring `Array.Copy`: 63,120 µs, 99.5%.** The lock was 0.1% and the FFT 0.4% |
-| **Frame-drop count from task 3's test** | **86 rows dropped, 412,800 samples' worth, counted**, while the tap on the same callback held 576,000 of 576,000 |
+**The mechanism that was misaligning the columns, named:** the header and each
+data row were **separate `Grid`s whose `Auto` columns measure independently**.
+Not padding, not the font, not a proportional typeface — there was no shared
+measure of any kind, so the header sized to its labels and every row sized to its
+own values.
 
-**And the one thing only the operator can supply, named as outstanding rather
-than answered: the arrival ratio and the `over half of it` count on a
-shack-machine sidecar.**
+**The measured row rate and the cap it argues for:** fourteen messages a slot on
+the band measured, which is **3,360 rows an hour and 16,800 over a five-hour
+evening**. That argues for keeping 500 rather than raising it — it is nine
+minutes of the busiest band recorded here, the list does not virtualise, and task
+5 made each row more expensive. **What it argues for far more strongly is saying
+so**, which is what changed: the cap and the trim both predate this unit and the
+operator was never told either existed.
 
-Before this unit, 554 of 561 callbacks ran past half the period, on a machine
-where nothing overran and nothing dropped. On this machine the work behind that
-figure fell from 62,271 µs to 270, and to 92 with the picture stalled. **If the
-over-half count collapses and arrival does not, the spectrum source was not the
-whole of it and the next suspect is the device or the driver.** That is the
-reading the next instruction should be written from, and it cannot be taken here.
+**A payload off the table produces no tooltip rather than a fallback:**
+confirmed, and asserted for `599`, `QRZ`, `TNX`, `5NN`, a compound callsign and
+an empty payload. `Ft8Vocabulary.Explain` returns null and the row's
+`PayloadHelp` is the empty string, which Avalonia renders as no tooltip at all.
+Not "unrecognised", not a partial reading, nothing.
 
 Then, in order:
 
-1. **Take one shack-machine sidecar and read four lines**: `arrival`, the
-   over-half count, `droppedFrames`, and the worst frame duration. Those four
-   separate the picture having been the problem from something else also being
-   wrong.
-2. **Finish one uncontended engine run to a summary line.** Unit 239 could not
-   and neither could this one; the project's total has now been missing from two
-   consecutive reports. Budget the 45 minutes `docs/full-suite-run.md` asks for.
-3. **The 51 inherited CW reds**, which are now a named, checked-in set with a
-   baseline behind them and no owner.
+1. **Measuring SNR**, which the instruction says is ruled next. The column and
+   its full width are reserved for it and the header tooltip already says the
+   dash means nothing measured one, so the measurement drops in without moving a
+   pixel.
+2. **Pass the three message fields through the engine** rather than re-splitting
+   the string in the view, so `Ft8Decode` carries what `Ft8Sharp` already knows.
+3. **One uncontended engine run to a summary line**, still outstanding from unit
+   239.
 
 ## 4. What's blocking us
 
-**Nothing is blocking the next step.** The shack reading needs an evening at the
-radio and not a ruling.
+**Nothing is blocking the next step.**
 
 One question is handed back:
 
-> **The waterfall's window is thrown away whenever nobody is drawing it, so the
-> first row after the Digital tab is opened is about a third of a second late.**
+> **The decoded panel is `Family="Lavender"` in the markup, and this
+> instruction's rulings section describes the decode family as green.**
 >
-> That was my call under §0.0 and I think it is right: the alternative is a first
-> row built partly from audio that arrived while the tab was shut, which is a
-> picture asserting a signal was present at a time it was not (HM-DEC-092). But
-> it is a visible behavior change to a surface Tim has ruled on before, and it
-> trades a third of a second of blank against never drawing a mixed row.
+> Task 5 then coloured the sender field in the decode green, so the panel now
+> carries a lavender chevron and a green field inside it. Both readings are
+> defensible — lavender is the digital family under §0.6 and this is the digital
+> tab, green is the decode family and this is decoded text — and the two are
+> currently mixed on one panel.
 >
-> The alternatives: keep feeding the ring while nobody looks, which restores the
-> instant first row and costs the transform nothing but keeps the ring writes on
-> the callback, cheap now and still the coupling this unit just removed; or mark
-> the first row after a gap as incomplete rather than discarding it, which needs
-> a way for a frame to say so and nothing on the drawing side reads such a flag
-> today.
+> I did not change the panel's family, because §0.5 and HM-DEC-012 govern it and
+> a family is not a session's to pick. The alternatives are: leave it, and accept
+> a lavender header over a green field; make the panel green, which matches the
+> ruling's own words and makes the tab two families; or colour the sender
+> lavender, which loses the distinction from the payload.
 >
-> **Rejected already:** drawing the mixed row silently.
+> **Rejected already:** filling the header bar with either colour. Text colour
+> only.
 
 ### Asks still outstanding
 
-1. **The waterfall's dropped window and its late first row**, raised above,
-   2026-09-03. **New.** The code is in `AudioSpectrumSource.Idle()` and shipped
-   with the discard.
-2. **`ReusableWindow`'s borrowed buffer**, raised by unit 239, 2026-09-03. The
-   code is in `src/Hamlet.RadioEngine/Audio/ReusableWindow.cs`, shipped with the
-   documented-rule option. Not touched.
-3. **`ProcessDelayForTests` as a hook or a seam**, raised by unit 238,
-   2026-09-03. The code is in `CwDecoder`. Not touched.
-4. **The tap's owner**, parked since work instruction 238, 2026-09-03.
-5. **The divergence ruling on `Ft8Sharp` sensitivity**, owner's, open. Nothing
+1. **The decoded panel's family colour** — raised above, 2026-09-04. **New.** The
+   markup says `Lavender`; the sender field is green.
+2. **The waterfall's dropped window and its late first row** — raised by unit
+   240, 2026-09-03. The code is in `AudioSpectrumSource.Idle()`.
+3. **`ReusableWindow`'s borrowed buffer** — raised by unit 239, 2026-09-03.
+4. **`ProcessDelayForTests` as a hook or a seam** — raised by unit 238,
+   2026-09-03.
+5. **The tap's owner** — parked since work instruction 238, 2026-09-03.
+6. **The divergence ruling on `Ft8Sharp` sensitivity** — owner's, open. Nothing
    in `src/Ft8Sharp/` was touched.
-6. **Unit 237's Extensible-format conclusion**: the fix stands, the exoneration
-   does not (FACT-004). Taken at the shack from the sidecar's `encoding` line.
-7. **Work instruction 231's four tree items**: the `PHASE_OUTCOME.md` header,
+7. **Unit 237's Extensible-format conclusion** — the fix stands, the exoneration
+   does not (FACT-004).
+8. **Work instruction 231's four tree items** — the `PHASE_OUTCOME.md` header,
    the `RULES_AT` mismatch, uncommitted root paths, the Views stall.
-8. **`validate-output.bat`'s permitted-spellings bug**, which has refused for ten
-   units. Not exercised this unit.
+9. **`validate-output.bat`'s permitted-spellings bug** — it has refused for
+   eleven units. Not exercised this unit.
