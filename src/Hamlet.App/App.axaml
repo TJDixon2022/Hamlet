@@ -1,4 +1,4 @@
-<Application xmlns="https://github.com/avaloniaui"
+﻿<Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="Hamlet.App.App"
              RequestedThemeVariant="Light">
@@ -11,6 +11,35 @@
                  trap for a future session. -->
             <ResourceInclude Source="avares://Hamlet.App/Controls/CollapsiblePanel.axaml" />
         </ResourceDictionary.MergedDictionaries>
+
+        <!-- **THE DECODED TABLE'S COLUMN WIDTHS, IN ONE PLACE** (unit 241
+             task 2). The header and every row read this same string, so they
+             cannot measure differently. They used to be two sibling Grids of
+             `Auto` columns, which share no measure at all: the header sized to
+             its three-letter labels and each row sized to its own values, and
+             no two rows agreed either.
+
+             The figures are the widest each field holds in Consolas at the
+             sizes used. `snr` keeps its full width although it shows a dash,
+             because the ruling reserves it for the measurement rather than
+             letting the table reflow when that measurement arrives. -->
+        <x:String x:Key="HmDecodeColumns">58,34,40,46,*</x:String>
+
+        <!-- **WHAT THE COLUMNS MEAN, IN THE OPERATOR'S WORDS** (unit 241 task
+             5). He said the headings read as gibberish, and he is right that
+             `snr`, `dt` and `hz` explain nothing to somebody who has not been
+             told. Each says what the field is and, where it matters, what it is
+             measured against.
+
+             **THE `snr` LINE SAYS THE COLUMN IS EMPTY AND WHY.** Nothing in this
+             path measures a signal-to-noise ratio, and a heading that describes
+             a measurement the column does not carry would be the same fault as
+             putting a plausible number in it (§0.0). -->
+        <x:String x:Key="HmDecodeUtcHelp">When the slot started, as hhmmss. FT8 runs on a strict fifteen-second grid, so every message decoded from one slot carries the same time.</x:String>
+        <x:String x:Key="HmDecodeSnrHelp">Signal-to-noise in decibels, measured against a 2500 Hz reference. Nothing in this path measures one yet, which is why the column shows a dash rather than a number.</x:String>
+        <x:String x:Key="HmDecodeDtHelp">Seconds from the start of the slot to the moment that station began transmitting.</x:String>
+        <x:String x:Key="HmDecodeHzHelp">The audio tone above the dial. The station is on the dial frequency plus this.</x:String>
+        <x:String x:Key="HmDecodeMessageHelp">What was sent. Thirteen characters in three parts: who it is to, who it is from, and the payload.</x:String>
 
         <!-- Hamlet palette (HM-DEC-012): light with COLOR. Each panel
              owns a color family: amber = tuning, blue = spectrum,

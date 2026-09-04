@@ -1,4 +1,4 @@
-<Window xmlns="https://github.com/avaloniaui"
+﻿<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:Hamlet.App.ViewModels"
         xmlns:ctl="using:Hamlet.App.Controls"
@@ -2928,27 +2928,82 @@
                                      they came out in the same change that bound
                                      the real ones, because a table showing both
                                      is worse than a table showing neither. -->
-                                <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,*"
+                                <!-- **ONE SET OF COLUMN WIDTHS, DECLARED ONCE
+                                     IN App.axaml AND USED BY BOTH THE HEADER AND
+                                     EVERY ROW** (unit 241 task 2).
+
+                                     The header and the rows used to be separate
+                                     Grids, each with Auto,Auto,Auto,Auto,*.
+                                     Sibling Grids share no measure: the header
+                                     first column sized to "utc" at FontSize 11
+                                     and a row to "214135" at FontSize 12, and
+                                     two rows carrying 231 and 2438 in the hz
+                                     column disagreed with each other as well.
+                                     Nothing was going to line up, and nudging
+                                     the margins would have hidden it for one
+                                     font and one set of values.
+
+                                     Fixed widths cannot drift, because there is
+                                     no measure left to disagree about. Each is
+                                     sized to the widest value its field can
+                                     hold in this font PLUS its fourteen-pixel
+                                     gap, and that headroom is the whole trick.
+                                     A pixel column narrower than its content
+                                     is widened to fit, so a value that only
+                                     just overflows brings the drift straight
+                                     back - which is what the first attempt at
+                                     these numbers did, giving a header column
+                                     at 58 and a row column at 72. Every column
+                                     here is wider than anything that can land
+                                     in it: six digits for utc, a signed
+                                     two-digit dB for snr (reserved at full
+                                     width per the ruling, so the measurement
+                                     drops in without moving anything), a
+                                     signed one-decimal dt, and four digits for
+                                     hz.
+
+                                     **THE SAME LITERAL APPEARS ON THE ROW GRID
+                                     BELOW, AND A SHARED RESOURCE WAS TRIED
+                                     FIRST AND IS WRONG.** `ColumnDefinitions`
+                                     does not convert from a `StaticResource`
+                                     string, and one shared instance would be
+                                     worse than two literals: definitions carry
+                                     per-grid layout state, so the header and
+                                     every row would be writing over each
+                                     other's. What stops the two drifting is
+                                     `TheDecodedColumnsLineUpTests`, which
+                                     builds this window headless and asserts
+                                     the header's column origins equal every
+                                     row's. That is a stronger guard than one
+                                     declaration, because it checks the result
+                                     rather than the intent. -->
+                                <Grid ColumnDefinitions="76,48,48,54,*"
                                       RowDefinitions="Auto"
                                       IsVisible="{Binding HasDigitalDecodes}">
 
                                     <TextBlock Grid.Row="0" Grid.Column="0" Text="utc"
+                                               ToolTip.Tip="{StaticResource HmDecodeUtcHelp}"
                                                FontFamily="Consolas,Menlo,monospace" FontSize="11"
                                                Margin="0,0,14,4"
                                                Foreground="{StaticResource HmTextMutedBrush}" />
                                     <TextBlock Grid.Row="0" Grid.Column="1" Text="snr"
+                                               ToolTip.Tip="{StaticResource HmDecodeSnrHelp}"
                                                FontFamily="Consolas,Menlo,monospace" FontSize="11"
                                                Margin="0,0,14,4"
                                                Foreground="{StaticResource HmTextMutedBrush}" />
                                     <TextBlock Grid.Row="0" Grid.Column="2" Text="dt"
+                                               ToolTip.Tip="{StaticResource HmDecodeDtHelp}"
                                                FontFamily="Consolas,Menlo,monospace" FontSize="11"
                                                Margin="0,0,14,4"
                                                Foreground="{StaticResource HmTextMutedBrush}" />
                                     <TextBlock Grid.Row="0" Grid.Column="3" Text="hz"
+                                               ToolTip.Tip="{StaticResource HmDecodeHzHelp}"
+                                               TextAlignment="Right"
                                                FontFamily="Consolas,Menlo,monospace" FontSize="11"
                                                Margin="0,0,14,4"
                                                Foreground="{StaticResource HmTextMutedBrush}" />
                                     <TextBlock Grid.Row="0" Grid.Column="4" Text="message"
+                                               ToolTip.Tip="{StaticResource HmDecodeMessageHelp}"
                                                FontFamily="Consolas,Menlo,monospace" FontSize="11"
                                                Margin="0,0,0,4"
                                                Foreground="{StaticResource HmTextMutedBrush}" />
@@ -2959,14 +3014,27 @@
                                               ItemsSource="{Binding DigitalDecodes}">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate x:DataType="vm:DigitalDecodeRow">
-                                            <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,*">
+                                            <!-- The same widths as the header,
+                                                 from the same resource, so the
+                                                 two cannot drift apart again. -->
+                                            <Grid ColumnDefinitions="76,48,48,54,*">
                                                 <TextBlock Grid.Column="0" Text="{Binding Utc}"
                                                            FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,14,1" />
                                                 <TextBlock Grid.Column="1" Text="{Binding Snr}"
                                                            FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,14,1" />
                                                 <TextBlock Grid.Column="2" Text="{Binding Dt}"
                                                            FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,14,1" />
+
+                                                <!-- **RIGHT-ALIGNED SO 231 AND
+                                                     2438 AGREE ON THEIR UNITS.**
+                                                     Left-aligned, the hundreds
+                                                     digit of one sits under the
+                                                     thousands digit of the other
+                                                     and the eye reads a column of
+                                                     numbers that are not
+                                                     comparable. -->
                                                 <TextBlock Grid.Column="3" Text="{Binding Hz}"
+                                                           TextAlignment="Right"
                                                            FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,14,1" />
                                                 <TextBlock Grid.Column="4" Text="{Binding Message}"
                                                            FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,0,1" />

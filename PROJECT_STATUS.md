@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 1 of 6
+TASK: 2 of 6
 WORK_INSTRUCTION: 241 - the decoded text panel becomes readable
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-152 (2026-08-31)
-UPDATED: 2026-09-04T18:01:15-04:00
-NOTE: Header and rows are separate Grids so their Auto columns measure independently; 3360 rows an hour against a cap of 500
+UPDATED: 2026-09-04T18:10:22-04:00
+NOTE: Header and every row now share column origins 0,76,124,172,226 and the two tone widths end on the same edge
 
 ---
 
