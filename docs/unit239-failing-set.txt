@@ -1,0 +1,51 @@
+Hamlet.RadioEngine.Tests.Cw.ABlipDoesNotShiftEverythingAfterItTests.ASubMinimumBlipInAGapChangesNothingAfterIt
+Hamlet.RadioEngine.Tests.Cw.ARecordingWithKeyingInItIsReadTests.WhereTheTrackerStartsDoesNotDecideThis(startHz: 500)
+Hamlet.RadioEngine.Tests.Cw.ARecordingWithKeyingInItIsReadTests.WhereTheTrackerStartsDoesNotDecideThis(startHz: 550)
+Hamlet.RadioEngine.Tests.Cw.ARecordingWithKeyingInItIsReadTests.WhereTheTrackerStartsDoesNotDecideThis(startHz: 600)
+Hamlet.RadioEngine.Tests.Cw.CapturedSignalTests.TheSignalReadsAsStrongAsItIs(name: "cw-2026-08-17-134712")
+Hamlet.RadioEngine.Tests.Cw.CwAcquisitionWindowTests.AFastFistIsReadWithoutARunUp(wordsPerMinute: 25, floor: 0.79000000000000004)
+Hamlet.RadioEngine.Tests.Cw.CwAcquisitionWindowTests.AFastFistIsReadWithoutARunUp(wordsPerMinute: 28, floor: 0.79000000000000004)
+Hamlet.RadioEngine.Tests.Cw.CwAcquisitionWindowTests.AFastFistIsReadWithoutARunUp(wordsPerMinute: 30, floor: 0.79000000000000004)
+Hamlet.RadioEngine.Tests.Cw.CwAcquisitionWindowTests.AFastFistIsReadWithoutARunUp(wordsPerMinute: 35, floor: 0.78000000000000003)
+Hamlet.RadioEngine.Tests.Cw.CwAcquisitionWindowTests.TheSameFistWithARunUpDoesNot(wordsPerMinute: 25)
+Hamlet.RadioEngine.Tests.Cw.CwAcquisitionWindowTests.TheSameFistWithARunUpDoesNot(wordsPerMinute: 28)
+Hamlet.RadioEngine.Tests.Cw.CwAcquisitionWindowTests.TheSameFistWithARunUpDoesNot(wordsPerMinute: 30)
+Hamlet.RadioEngine.Tests.Cw.CwAcquisitionWindowTests.TheSlowEndReadsTheMessage(wordsPerMinute: 10, snrDb: 18)
+Hamlet.RadioEngine.Tests.Cw.CwAcquisitionWindowTests.TheSlowEndReadsTheMessage(wordsPerMinute: 10, snrDb: 3)
+Hamlet.RadioEngine.Tests.Cw.CwAcquisitionWindowTests.TheSlowEndReadsTheMessage(wordsPerMinute: 12, snrDb: 18)
+Hamlet.RadioEngine.Tests.Cw.CwAcquisitionWindowTests.TheSlowEndReadsTheMessage(wordsPerMinute: 12, snrDb: 3)
+Hamlet.RadioEngine.Tests.Cw.CwAcquisitionWindowTests.TheSlowEndReadsTheMessage(wordsPerMinute: 12, snrDb: 6)
+Hamlet.RadioEngine.Tests.Cw.CwDisplacementFloorTests.AStationElsewhereIsStillFound(toneHz: 400)
+Hamlet.RadioEngine.Tests.Cw.CwDisplacementFloorTests.AStationElsewhereIsStillFound(toneHz: 500)
+Hamlet.RadioEngine.Tests.Cw.CwDisplacementFloorTests.AStationElsewhereIsStillFound(toneHz: 750)
+Hamlet.RadioEngine.Tests.Cw.CwDisplacementFloorTests.AStationElsewhereIsStillFound(toneHz: 875)
+Hamlet.RadioEngine.Tests.Cw.CwDisplacementFloorTests.NothingIsRefusedBeforeAnythingIsBeingRead
+Hamlet.RadioEngine.Tests.Cw.CwDisplacementFloorTests.TheTrackerDoesNotLeaveAStationForItsOwnImage
+Hamlet.RadioEngine.Tests.Cw.CwEmissionGateTests.NoSpeedIsNamedWithoutCharactersToNameItFrom
+Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.EveryRecordingGivesBackTheShareItShould(name: "clean-12wpm")
+Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.EveryRecordingGivesBackTheShareItShould(name: "clean-18wpm")
+Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.EveryRecordingGivesBackTheShareItShould(name: "fading-18wpm")
+Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.EveryRecordingGivesBackTheShareItShould(name: "interference-18wpm")
+Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.EveryRecordingGivesBackTheShareItShould(name: "noisy-18wpm")
+Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.EveryRecordingGivesBackTheShareItShould(name: "prosigns-18wpm")
+Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.TheCleanRecordingsDecodeExactly(name: "clean-12wpm")
+Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.TheCleanRecordingsDecodeExactly(name: "clean-18wpm")
+Hamlet.RadioEngine.Tests.Cw.CwFixtureTests.TheProsignRecordingDecodesItsProsigns
+Hamlet.RadioEngine.Tests.Cw.CwLowDutyTests.AStationKeyedForAMomentReadsAsAStrongStation
+Hamlet.RadioEngine.Tests.Cw.CwLowDutyTests.TheHeldFigureLetsGoWhenTheStationStops
+Hamlet.RadioEngine.Tests.Cw.CwLowDutyTests.TheToneIsFoundWhereItActuallyIs
+Hamlet.RadioEngine.Tests.Cw.CwRefiningRetuneTests.AHandoverToAnotherStationStillResets
+Hamlet.RadioEngine.Tests.Cw.CwRefiningRetuneTests.AMoveBeforeAnythingHasBeenReadIsAFollow
+Hamlet.RadioEngine.Tests.Cw.CwRefiningRetuneTests.TheSurveySettlingBetweenTwoBinsIsNotAStationChange
+Hamlet.RadioEngine.Tests.Cw.CwSurveyThresholdPinTests.TheToneInTheInterferenceCaptureIsStillFound
+Hamlet.RadioEngine.Tests.Cw.Fixtures.CwAdjudicationTests.ASpeedChangeInRealisticAudio
+Hamlet.RadioEngine.Tests.Cw.Fixtures.CwReceiverFixtureTests.NothingIsEmittedDuringTheOperatorsOwnTransmission
+Hamlet.RadioEngine.Tests.Cw.Fixtures.CwReceiverFixtureTests.TheEasyTierIsReadWhole(name: "coverage-easy")
+Hamlet.RadioEngine.Tests.Cw.Fixtures.CwReceiverFixtureTests.TheEasyTierIsReadWhole(name: "exchange-easy")
+Hamlet.RadioEngine.Tests.Cw.Fixtures.CwReceiverFixtureTests.TheEasyTierIsReadWhole(name: "tightfist-easy")
+Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.ListeningAndFeedingReadTheSame(name: "unadjudicated/cw-2026-08-23-001952")
+Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.ListeningAndFeedingReadTheSame(name: "unadjudicated/cw-2026-08-25-012922")
+Hamlet.RadioEngine.Tests.Cw.OneDecoderNotTwoTests.ListeningAndFeedingReadTheSame(name: "unadjudicated/cw-2026-08-28-005051")
+Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-23-001520", characters: 5, elements: 45, unsure: 1)
+Hamlet.RadioEngine.Tests.Cw.TheCapturesThatDecodeKeepDecodingTests.EachStillProducesWhatItDid(name: "unadjudicated/cw-2026-08-25-013637", characters: 63, elements: 164, unsure: 3)
+Hamlet.RadioEngine.Tests.Cw.ThePitchCanBeHeldTests.UnlockingLetsTheTrackerSteerAgain

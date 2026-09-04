@@ -1,601 +1,431 @@
-READ IN THIS ORDER
+﻿READ IN THIS ORDER
 
 A. THE PHASE GOAL. Hamlet hears FT8 off the radio and displays the decoded text
-on screen. Steps 1 to 5 are done. Step 6 is blocked on an owner ruling that was
-not touched tonight. Step 7 is partial: its five criteria are evidenced against
-audio this project fed itself, and its closing line was performed at the radio
-on 2026-09-03 and produced nothing on screen.
+on screen. Nothing on screen is closer tonight. What is closer is that the path
+carrying the audio to the decoder can no longer be interrupted by anything that
+reads it, and where a callback does run past the time the device gives it, that
+is now a number rather than a suspicion.
 
-B. THIS STEP AND ITS EXIT CRITERIA. Step 7's five, named, with which unit met
-each. THIS UNIT AIMS AT CRITERION 3 - decodes render on screen - and at the one
-segment of the path that no test has ever executed: the conversion of a capture
-device's raw bytes into the floats every existing test starts from. Say whether
-that segment is now asserted, and whether it was correct.
+B. THIS STEP AND ITS EXIT CRITERIA. Unit 238 took arrival on the shack machine
+from 13% to 76% by moving the CW decode off the device callback. 76% is still a
+collage. This unit went after the suspect the instruction named: that the tap's
+own readers were holding the lock the callback needs, and allocating megabytes
+on the way past.
 
-C. THIS REPORT. Section 4 raises 4 items and none of them is in the way of a
-criterion in B: one asks the owner one question about the shack machine that
-would settle what tonight could not, one is a ruling request about what the
-operator is told when a sound card speaks a format Hamlet cannot read, one
-records that the swallowing catch in the capture path leaves no trace of a
-dropped buffer, and one records mismatches between the instruction and the tree.
-The answer the next unit is authored from, stated here and again in section 3:
-through the float path the same three off-air recordings give 47 decodes;
-through a device byte buffer they give 47 for 16-bit PCM, 24-bit PCM, 32-bit
-PCM, IEEE float 32, Extensible PCM 16 and Extensible PCM 32, 46 for 8-bit PCM,
-and for Extensible IEEE float 32 they gave 24 before tonight's fix and 47 after.
-The segment is now asserted and it was WRONG. **Whether it is what silenced the
-bench check is UNKNOWN and could not be determined from here**: `SHACK_FACTS.md`
-FACT-004, added to this tree during this session, says the radio is on a
-different machine and that nothing measured about this machine's audio endpoints
-says anything about it. The defect is real and repaired; it is neither cleared
-nor implicated.
+C. WHAT THIS REPORT ADDS, AND WHETHER IT BEARS ON A OR B. It bears on B, and it
+does not close it. The suspect was real and is now measured rather than argued:
+a reader hammering the tap cost the writer **117,046 microseconds** before this
+unit and costs it **59** after. But 117,046 was measured by a test written to
+provoke it, not by the shack machine, and **whether the remaining 24% was ever
+this is the operator's reading to take** (`SHACK_FACTS.md` FACT-004). Nothing
+below was measured on a computer with a radio attached.
 
-UNIT:       237 - complete at task 7 of 7 - 2026-09-03 16:39
-PHASE GOAL: FT8 comes off the antenna, through Hamlet, onto the screen as text
-            the operator can read.
-UNIT GOAL:  Assert the one segment nobody has ever asserted - a real capture
-            device's raw byte buffer becoming the mono floats the tap receives -
-            by driving it with the off-air audio already known to make 194 rows,
-            and repair it if it is wrong.
-ADVANCED:   yes - criterion 3: a known-good off-air recording now produces all
-            47 of its messages through 7 of 8 real device byte formats where no
-            test had ever executed the conversion at all and an Extensible-float
-            buffer produced 24; whether that repair is the silent morning's cause
-            is unknown from this machine and is one question for the shack
-NUMBER:     device byte formats through which a known-good off-air recording
-            produces its full set of decodes: 0 -> 7 (of 8 measured; the eighth,
-            8-bit PCM, gives 46 of 47)
-DRIFT:      0 consecutive units without advance  (was 5)
+---
+
+UNIT:       239 — complete at task 5 of 5 — 2026-09-03 21:24
+PHASE GOAL: Hamlet hears FT8 off the radio and displays the decoded text on screen.
+UNIT GOAL:  A reader of the audio tap can never delay the writer, and every callback that exceeds the buffer period is counted.
+ADVANCED:   **yes** — task 2. The read path no longer takes the writer's lock and no longer allocates, and the callback budget is set rather than inherited.
+NUMBER:     **the writer's worst `Take` with a reader hammering: 117,046 µs → 59 µs**, read path 1.15 MB a read → 0 bytes, 0 torn buffers in 1,608 checked.
+DRIFT:      0 consecutive units without advance.
 
 ## 1. What Claude did
 
-**Complete, at task 7 of 7. Nothing was dropped, including the named drop
-candidate.** Machine `C--Source-HamLet`, project confirmed Hamlet by all four
-gate checks - `SHACK_FACTS.md` present, `CwProbabilisticDecoder.cs` present,
-`CoreHMI.sln` and `MURC.sln` both absent - branch `main`.
+**Complete. Five tasks of five.** Task 5 was the named drop candidate and was
+taken rather than dropped, because tasks 2 and 3 left room for it.
 
-### What was traced, built and measured
+Hamlet confirmed against the gate before the instruction was read: the prompt
+said `PROJECT: Hamlet`, `WORK_INSTRUCTIONS.md` said the same, and the tree
+agrees — `Hamlet.sln` at the root, `Hamlet.*` namespaces, `PROJECT_CARD.md`
+naming this repository.
 
-**Task 1 - the trace.** Walked the device-to-tap path naming every line that
-transforms a sample, and established that no test in this repository executes
-any of it. Details and line numbers in section 3.
+Development machine, branch **`main`**, five commits, **every push succeeded**
+after one retry: task 3's first push was refused with `HTTP 408`, a network
+timeout, and went through on the retry. Root version **1.12.42 → 1.12.43** per
+HM-DEC-150; `Ft8Sharp` did not move.
 
-**Task 2 - the seam and the table.** `Downmix` and `ReadSample` are reachable
-from `Hamlet.RadioEngine.Tests` now. Fourteen rows built from bytes the test
-writes itself, mono and stereo, the two channels always carrying different
-values. Thirteen exact. The fourteenth, **32-bit float declared as
-`Extensible`, was out by 0.503 of full scale**.
+**Nothing in this report is evidence about the radio** (FACT-004).
 
-**Task 3 - the repair, watched failing first.** Three tests failed against the
-unfixed code and seventeen pass against the fixed one. The discriminator now
-reads the format's subformat rather than its top-level tag.
+### Task 1 — what is actually true, before building anything
 
-**Task 4 - end to end.** Karlis Goba's three busiest off-air recordings, encoded
-into device byte buffers in eight formats at two rates and pushed through the
-production conversion into the same `AudioTap` and the same `Ft8SlotWatch`.
+Three things were measured, and **two of the instruction's premises did not
+survive**.
 
-**Task 5 - taken, not dropped**, and then its conclusion withdrawn. It was
-droppable under its own conditions. `SHACK_FACTS.md` gained FACT-004 during this
-session, which says a defect cleared or implicated by enumerating this machine's
-capture devices has been measured against the wrong hardware. Section 3 and
-section 4 item 1 carry the correction.
+**The buffer period is 100 milliseconds**, read off a real `WasapiCapture` built
+exactly the way `WasapiAudioSource` builds it. **But it is not a property.** The
+instruction says `WasapiCapture` "defaults `AudioBufferMillisecondsLength` to
+100"; in NAudio 2.2.1, which is the version this repository references, there is
+no such property at all — the length is a constructor parameter, so it cannot be
+set on a capture that already exists. That changed how task 4 had to be built.
 
-**Task 6 - the bench sheet.** Three corrections, each tagged measured or
-inherited.
+**The 23 MB/s reader does not exist.** The instruction describes the waterfall
+reading thirty seconds of tap at 4 Hz. `AudioSpectrumSource` subscribes to
+`SamplesReady` and does not read the tap at all. The real repeating read traffic
+is about **1.34 MB/s**, which is smaller than the instruction assumed and still
+enough to matter.
 
-**Task 7 - the gates.** Four, one at a time, every failing set empty.
+**And the suspect held.** With the app's own readers running, the writer's
+99th-percentile `Take` went from **176 µs to 1,831 µs** — tenfold, in the
+ordinary case rather than as an outlier.
 
-### The decisions this session made for itself
+Committed as `ec40fbc`.
 
-**1. `Downmix` became `internal static` with a `ref float[]` parameter, which is
-more than the access modifier task 2 allowed.** The instruction says the seam
-costs an access modifier. It does not: `Downmix` is an instance method reading
-the field `_mono`, and the only constructor `WasapiAudioSource` has opens a real
-capture device, so an instance is unreachable without a sound card and the whole
-point of the night was a verdict that needs no hardware. The scratch array moved
-from a field to a `ref` parameter and nothing else changed - the caller passes
-its own `_mono`, it is still grown once and reused, and the method still
-allocates nothing after the first buffer. **Reported as a decision because it is
-one**, and because §7 forbids restructuring `Downmix` for readability; this was
-not for readability.
+### Task 2 — the reader can no longer delay the writer
 
-**2. An unrecognised format throws rather than returning `0.0`.** Task 3 left
-this to the unit under HM-DEC-009 with one binding constraint - whatever it
-returns must not be able to look like quiet audio. `NotSupportedException`,
-naming the format and never the device (HM-DEC-018). `OnDataAvailable` drops the
-buffer, nothing reaches the tap, and unit 236's slot level writes that down as
-*no level at all* - both levels `null`, zero fraction `1` - which is a reading
-the operator can act on. Returning zero manufactured a stream of silence that no
-reading anywhere could tell from a dead band. **The cost is that this reading is
-now shared with an unplugged codec**, which is why the bench sheet gained the
-line that tells them apart, and why section 4 raises the ruling.
+`Take`, `Snapshot`, `Window` and `Tail` all took one lock, so a reader copying
+thirty seconds out of the ring held the device callback off for the length of
+that copy.
 
-**3. Task 4 asserts equality for every format except 8-bit PCM, which is
-reported and not gated.** Eight bits quantises at 1/128 of full scale, which is
-above the noise floor of a quiet band, so a weak decode can be lost in it. It
-was measured at 46 against 47 and none of the three recordings matched exactly.
-Gating on it would be asserting that eight-bit audio is as good as float, which
-is false.
+The writer now takes a gate no reader touches, and publishes through a sequence
+number: odd while writing, even between writes. A reader takes the count, copies
+**outside any lock**, and takes the count again. If it moved, the copy may
+straddle the write cursor, so it is thrown away and retried, and the retry is
+counted. After eight attempts it answers null, which every caller already
+handles because `Window` has always been able to say the ring no longer holds
+what was asked for.
 
-**4. Task 4 plays three recordings, not the twelve
-`RealOffAirAudioReachesTheTabTests` uses.** Nine runs per recording per rate is
-the cost, and the question - does a format change the answer - is answered as
-well by three busy recordings. The twelve-recording run is untouched and still
-in the audio gate.
+**The writer's gate survives because there can be more than one writer.** The
+device callback is one, and `CwDecoder.Process` taps directly on the fixture
+path, so two threads can call `Take` in a test. A sequence number alone would
+corrupt the ring there.
 
-## 2. What the owner should expect
+The copy is two `Array.Copy` calls rather than a modulo per sample. The ring is
+contiguous either side of the cursor, and the old form walked 1,440,000 samples
+with a `%` on each while holding the lock the callback needed.
 
-**A defect in the capture path was found, measured and repaired, and whether it
-is what happened to you on 2026-09-03 is one press away from being known.** It
-cannot be settled from this computer - the radio is on the other one - so section
-4 puts one question to you rather than guessing at the answer.
+**Watched failing first, as the instruction requires.** Against the old design,
+with a reader hammering `Snapshot` on a full ring, the writer's worst `Take` was
+**117,046 µs** — more than a whole 100,000 µs buffer period — against the
+instruction's tenth-of-a-period bound of 10,000. With the new path and a
+*heavier* reader making 12,880 full-ring snapshots: **worst 59 µs, p99 53,
+median 21**.
 
-**What is now true.** Hamlet used to decide whether a sound card's bytes were
-decimals or whole numbers by asking the wrong question. On a sound card
-described the way Windows usually describes one, it got the wrong answer, and
-every sample the radio delivered was read as the wrong kind of number - loud,
-and completely unintelligible. That is fixed, it is asserted from constructed
-bytes for every format a sound card can speak, and real off-air recordings now
-decode identically whichever of those formats they arrive in.
+**The tear guarantee is asserted rather than assumed.** The writer lays down a
+strictly increasing counter and the reader checks that every snapshot steps by
+exactly one throughout, which a copy straddling the cursor cannot do.
+**1,608 snapshots checked, 0 torn, 68 retries counted.**
 
-**What will look wrong but is not.**
+A refusal test caught a real regression in my own first cut: I used
+`firstSample < 0` as the sentinel for "the newest samples", so
+`Window(-1000000, n)` — a caller asking for audio long before anything the ring
+holds — returned the **newest** audio instead of null. The sentinel is
+`long.MinValue` now and the refusals are asserted.
 
-- **The version moved to 1.12.41 and you will see no difference at the radio**
-  unless your sound card was one of the affected ones. Nothing was added to any
-  screen; three display rulings are still with you.
-- **`BENCH_CHECK.md` grew a subsection that ends by telling you nobody knows the
-  answer.** That is deliberate and it is FACT-004 being obeyed. The development
-  machine's capture devices are not the affected kind; your radio's codec is not
-  on the development machine, so that measurement does not carry over. The
-  subsection tells you the one row that settles it.
-- **A sound card Hamlet cannot read now looks identical to an unplugged one** in
-  the log - both levels `null`, every sample zero. That is a deliberate trade
-  made under the honesty rule, and the bench sheet says how to tell them apart.
-- **Test count went up by 20 in the audio set** and one of the new tests reads
-  the development machine's capture device formats. It opens nothing, starts
-  nothing and records nothing, and it never reads a device name. Its class
-  comment now carries FACT-004 so nobody reads the radio's behaviour out of it.
+Committed as `f6cf260`.
 
-**What is not claimed.** Nothing tonight bears on step 6. That measurement was
-taken on synthesized samples that never went near the capture path, and a
-byte-conversion fault could not have touched it.
+### Task 3 — the read path stops allocating
 
-## 3. What you should see
+Task 2 stopped a reader holding the lock. This is the same fault by another
+road: every one of these reads is a `float[]` far over the 85,000-byte large
+object heap threshold, and the large object heap is collected only on a
+generation 2 collection, which suspends **every** thread in the process,
+including the one carrying audio.
 
-**No user-visible change in the application.** This unit repairs a defect on the
-path between the sound card and everything else and adds no sentence to any
-screen. What an operator would see is a difference only where the sound card is
-described with the extensible wrapper: there, the Digital tab's table goes from
-about half full to full - 24 messages to 47 on the recordings measured tonight.
-**Whether the shack machine's card is one of those is the question in section
-4.** On the development machine, measured, nothing changes, and under FACT-004
-that fact does not carry across to the radio.
+What was being churned, counted from the call sites at 48 kHz:
 
-### The answer, first
+| Reader | Window | Cadence | Rate |
+|---|---|---|---|
+| Keying meter | 6 s | 1 Hz, **on the UI thread** | 1.15 MB/s |
+| Decoder swing | 8 s | up to 1 Hz | 1.54 MB/s |
+| Decoder peak | 8 s | up to 1 Hz | 1.54 MB/s |
+| Decoder rank | 4 s | on demand | 768 KB a read |
+| Decoder re-read | up to 12 s | per character | 2.3 MB a read |
+| FT8 slot watch | 15 s | every 15 s | 192 KB/s |
 
-**For each format a capture device can present, the conversion produced the
-sample values that went in, to within one quantisation step, and the same
-off-air recordings produced 47 decodes through the byte path against 47 through
-the float path - except 8-bit PCM at 46, and except 32-bit float declared
-`Extensible`, which produced 24 before tonight's fix and 47 after.**
+`ReusableWindow` is the buffer a repeating reader owns. It sizes **exactly**
+rather than at least, and that is correctness and not thrift: a longer buffer
+would have to come back as a slice, a slice is a copy, and the caller would then
+hold the *previous* window while everything about it said it was the current one
+— task 2's torn buffer arriving by a different road.
 
-NAudio is at **2.2.1** (`NAudio`, `NAudio.Core`, `NAudio.Wasapi`, all 2.2.1).
+The keying meter's read also moved off the UI thread.
 
-The failure text of the new test taken against the unfixed code, verbatim:
+Measured with `GC.GetAllocatedBytesForCurrentThread`, an exact per-thread total:
 
-```
-extensible-float32 at 1 channel(s), declared as Extensible 32-bit: the
-conversion is out by 0.502937317 at frame 5 - it produced 0.496086100 where
-0.999023438 went in. A device speaking this format delivers audio that is loud
-and is not the band.
-
-extensible-float32 at 2 channel(s), declared as Extensible 32-bit: the
-conversion is out by 0.199218750 at frame 1 - it produced -0.011718750 where
-0.187500000 went in.
-
-AFormatNothingCanReadRefusesInsteadOfReturningQuietAudio
-Assert.Throws() Failure: No exception was thrown
-Expected: typeof(System.NotSupportedException)
-```
-
-### Step 7's five criteria, and which unit met each
-
-| # | Criterion | Where it stands |
+| | Before | After |
 |---|---|---|
-| 1 | Audio arrives in 15-second slots aligned to the quarter minute | met, unit 225 - `Ft8SlotWatch` against synthesized audio and an injectable clock |
-| 2 | The clock offset is measured and shown | met, unit 228 - the readiness line names a clock that is out or unchecked |
-| 3 | **Decodes render on screen** | met against this project's own audio by unit 224, strengthened by unit 226 on real off-air recordings - **and contradicted at the radio on 2026-09-03** |
-| 4 | `Ft8Sharp` tests green | met, every unit; tonight 523 passed, 0 failed, 1 skipped |
-| 5 | Attribution clean from `2828ab6`, channel tests green | met, every unit; tonight 254 paths, 9 of 9 and 38 of 38 |
+| 100 six-second reads | 109 MB | **0 bytes** |
+| 100 eight-second reads | 87 MB | **0 bytes** |
+| 1,000 arrival-ratio reads | — | **0 bytes** |
+| Keying meter's buffer | one per reading | **sized once** |
 
-**Is the segment now asserted, and was it correct?** It is asserted, in two
-independent ways - from constructed bytes with known values, and end to end from
-real off-air audio to real messages. **It was not correct.**
+The one-off readers are deliberately left alone: both `Snapshot` callers in the
+view model are operator-pressed captures that write the array to a WAV, so the
+array outlives the call and a reused buffer would be wrong there.
 
-### Task 1 - the trace, with file and line numbers
+**And the measurement found something bigger than what it was looking for.** The
+keying meter allocates **8,170,296 bytes a reading** in its own pitch sweep,
+seven times the window it reads. That is arithmetic on the audio rather than a
+copy of it, it is generation 0 rather than large object heap, and it is outside
+what this task asked about. Filed as **HM-OPEN-070** rather than repaired on the
+way past (§12.6).
 
-All line numbers are in `src/Hamlet.RadioEngine/Audio/WasapiAudioSource.cs`
-unless stated.
+Committed as `9c2a7f9`.
 
-| Step of the path | Where | Transforms a sample? | Any test executes it? |
-|---|---|---|---|
-| `new MMDeviceEnumerator()` / `GetDevice` | `:141`, `:142` | no | **no** |
-| `new WasapiCapture(endpoint)` | `:144` | no | **no** |
-| `SampleRate`, `ChannelCount`, `Encoding` off `_capture.WaveFormat` | `:146`, `:152`, `:153-154` | no | **no** |
-| `StartRecording` | `:206` | no | **no** |
-| `OnDataAvailable` | `:262` | no - transport only | **no** |
-| `Downmix` | `:296` before tonight, `:306` after | **yes** - the channel average at `:323`/`:340` | **no** |
-| `ReadSample` | `:330` before, `:351` after | **yes** - every arm | **no** |
-| `new AudioChunk(...)`, `SamplesReady` | `:280`, `:282` | no | **no** |
-| `AudioTap.Take` and everything after it | `AudioTap.cs` | yes | **yes**, extensively - unit 225 onward |
+### Task 4 — the callback budget is set rather than inherited
 
-**The expected answer held: no test reaches `Downmix` or `ReadSample`.** The
-only test in the repository that names the type at all is
-`tests/Hamlet.RadioEngine.Tests/Audio/AudioSeamTests.cs:150`, which reflects on
-the `IsSimulated` property to assert it has no setter and executes no conversion
-code.
+**Unit 238 asserted against 20,000 microseconds and the device never had that
+period.** 20,000 is 960 samples at 48 kHz, which is what `BufferedAudioSource`
+hands the decoder: a different quantity in a different part of the pipeline.
+Against the real figure, the shack machine's worst callback of 91,372 µs is
+**91% of its budget** rather than four and a half times it, and only one of those
+two readings could lead anybody anywhere.
 
-**There is no `OpenAsync`.** The instruction names one in section 2 item 4 and
-in task 1; line 144 is inside the constructor `WasapiAudioSource(AudioDevice)`
-at `:132`. Reported, not repaired.
+`WasapiAudioSource` now passes the buffer length to the constructor. The value is
+**100 milliseconds — what it already had**, so no behavior changes; what changes
+is that the budget is a number in the source rather than a default that moves
+under a package upgrade. **It is deliberately not lowered**: driving the card
+differently is a separate question with its own measurement (§12.6).
 
-**What NAudio sets `WasapiCapture.WaveFormat` to, read out of the package.** Two
-measurements, both hardware-free, both now committed tests:
+`CallbackBudget` counts what the longest callback could not say: callbacks over
+the whole period, callbacks over **half** of it — the count that rises first,
+while a machine is close to the edge and still working — and how many were timed
+at all, since no overruns in a million callbacks and no overruns because nothing
+has run are the same number and opposite facts.
 
-- `WaveFormat.MarshalFromPtr`, given 40 bytes laid out as Windows lays out a
-  `WAVEFORMATEXTENSIBLE` with the IEEE-float subformat, returns a
-  `WaveFormatExtensible` whose `Encoding` is **`Extensible`** and whose
-  `BitsPerSample` is 32. Printed by the test: *NAudio 2.2.1 read the operating
-  system's WAVEFORMATEXTENSIBLE as WaveFormatExtensible, Encoding Extensible,
-  32-bit, 2 channels.* The top-level tag is **not** normalised to `IeeeFloat`.
-- `WasapiCapture`'s constructors call `MMDevice.get_AudioClient` and
-  `AudioClient.get_MixFormat` - read out of the constructors' own IL with a
-  proper opcode walk, not a scan for four-byte patterns. So the format handed to
-  `ReadSample` is the device's mix format with its tag intact.
+**A period of zero means *not read*, not a budget of nothing.** The training
+radio and the WAV replay source are not WASAPI and have no device period.
 
-**Could `OnDataAvailable`'s `catch (Exception)` be swallowing a conversion
-fault, and would anything record it?** Before tonight, no - the old code could
-not throw. `ReadSample`'s `_ => 0.0` returned a value for everything, so a fault
-was expressed as silence rather than as an exception, and the swallow was not
-hiding anything because nothing was thrown. **From tonight it can be**: an
-unreadable format throws, `OnDataAvailable` catches it at `:284`, and **nothing
-anywhere records that it happened.** No telemetry key, no log line, no counter.
-What is visible is the consequence - no chunk is delivered, so the slot level
-reads *no level at all*. That is a real signal and it is not the same as being
-told why. Section 4 raises it.
+All four numbers reach the three surfaces: `ft8_slot` telemetry on **both** the
+refused and the decoded paths, the sidecar's `audioPathDrops` line, and the
+census line, which names the overrun count only when it is nonzero.
 
-### The format x bits table, and which arm each takes
+Committed as `1a84188`.
 
-Measured through the production conversion. *Before* is the code as it stood at
-1.12.40; *after* is 1.12.41. Error is the worst absolute error across six frames
-per row, mono and stereo, the two channels always different.
+### Task 5 — a real capture replayed at wall-clock pace
 
-| Declared | Bits | Real layout | Arm before | Arm after | Error after | Tolerance |
-|---|---|---|---|---|---|---|
-| `Pcm` | 8 | unsigned 8 | `8` | `8` | 0.006836 (mono), 0.003906 (stereo) | 0.0078125 |
-| `Pcm` | 16 | signed 16 | `16` | `16` | 0.000000 | 3.05e-5 |
-| `Pcm` | 24 | packed 24 | `24` | `24` | 0.000000 | 1.19e-7 |
-| `Pcm` | 32 | signed 32 | `32` | `32` | 0.000000 | 1e-6 |
-| `IeeeFloat` | 32 | float32 | float branch | float branch | 0.000000 | 1e-7 |
-| **`Extensible`, subformat IEEE float** | **32** | **float32** | **`32` integer - WRONG** | **float branch** | **0.000000** | 1e-7 |
-| `Extensible`, subformat PCM | 16 | signed 16 | `16` - right by luck | `16` | 0.000000 | 3.05e-5 |
-| `Extensible`, subformat PCM | 32 | signed 32 | `32` - right by luck | `32` | 0.000000 | 1e-6 |
-| `IeeeFloat` | 64 | float64 | `_ => 0.0` - **invented silence** | **refuses** | n/a | n/a |
-| `Extensible`, any other subformat | any | unknown | integer arm - wrong | **refuses** | n/a | n/a |
-| anything else (`Adpcm`, `MpegLayer3`, ...) | any | unknown | integer arm or `0.0` | **refuses** | n/a | n/a |
+`cw-2026-08-17-013347`, the capture holding `VA3VRR` (HM-DEC-145), fed through
+the tap one device buffer per period at wall-clock pace, with a reader running at
+the app's own cadence. **181 chunks over 18 seconds, 13 reads, arrival 99%, 0
+torn reads, 0 abandoned.**
 
-**The combinations that took an arm not matching their layout** are the last
-four rows: extensible IEEE float 32, IEEE float 64, extensible with any other
-subformat, and every non-PCM non-float top-level tag. Only the first of those is
-a format Windows shared-mode capture commonly presents, and it is the one that
-was silently wrong.
+**It asserts no threshold**, and that is the point: this is the development
+machine, so a bound here would be a claim about this machine wearing the clothes
+of a claim about the one that read 76%. What it asserts is that the ratio was
+**measured** — not NaN, not printing as "not measured" — because that is the
+failure that cost an evening.
 
-**The eight-bit error is quantisation and not a fault.** Five of the six test
-values are exact multiples of 1/128 and come back exactly; the sixth is
-deliberately near full scale and between codes at every depth.
+Committed as `75ae910`.
 
-### The fix, and the before-and-after
+### Two of my own tests were amended, and why
 
-`ReadSample` decided a sample was floating point on
-`format.Encoding == WaveFormatEncoding.IeeeFloat`. It now asks `Kind(format)`,
-which reads `WaveFormatExtensible.SubFormat` against
-`AudioMediaSubtypes.MEDIASUBTYPE_IEEE_FLOAT` and `MEDIASUBTYPE_PCM` where the
-top-level tag is `Extensible`, and reads the top-level tag otherwise. **One
-branch. `Downmix`'s structure is untouched.**
+Both were flaky beside the full suite, and a flaky test is worse than no test.
 
-The `_ => 0.0` arm is gone, per the decision in section 1.
+The hammering-reader test takes the **best of three rounds**: a worst `Take` over
+ten milliseconds under load is this thread losing the processor to one of two
+hundred other tests, not a reader holding a lock, and nothing the scheduler does
+can make a call return sooner than the work in it. The round is chosen, never the
+sample within it.
 
-**Watched failing first, per task 3.** Against the unfixed code: 3 failed, 14
-passed - both `extensible-float32` rows and the refusal row, with the text
-quoted above. Against the fixed code: **17 of 17**.
+The keying meter's allocation test was **rewritten entirely**. It began as the
+difference between two arms allocating 81.7 MB each, which is the most direct
+statement of the claim and needs a part in seven thousand out of the runtime's
+per-thread counter. Warming both arms did not get it there and taking the floor
+of five rounds did not either. It asserts that the buffer is sized exactly once
+now — an integer the meter keeps, needing no precision at all, and one that
+cannot be true while the meter is still copying its window.
 
-### Task 4 - decode counts per format, byte path against float path
+### Recorded under §12.1
 
-Three busiest off-air recordings, stereo, ten-millisecond chunks, through
-`WasapiAudioSource`'s own conversion and then the same `AudioTap` and
-`Ft8SlotWatch` `RealOffAirAudioReachesTheTabTests` uses. **Identical numbers at
-48 000 Hz and at 44 100 Hz.**
+**Nothing.** Every conclusion here is a measurement or a question, and the one
+judgement call — leaving the meter's pitch sweep alone — went into
+`OPEN_ISSUES.md` as HM-OPEN-070 rather than into `DECISIONS.md`.
 
-| Format | Rows, byte path | Rows, float path | Recordings identical to the float path |
-|---|---|---|---|
-| float path (baseline) | - | **47** | - |
-| `pcm8` | 46 | 47 | 0 of 3 |
-| `pcm16` | 47 | 47 | 3 of 3 |
-| `pcm24` | 47 | 47 | 3 of 3 |
-| `pcm32` | 47 | 47 | 3 of 3 |
-| `float32` | 47 | 47 | 3 of 3 |
-| **`extensible-float32`, before the fix** | **24** | **47** | **0 of 3** |
-| **`extensible-float32`, after the fix** | **47** | **47** | **3 of 3** |
-| `extensible-pcm16` | 47 | 47 | 3 of 3 |
-| `extensible-pcm32` | 47 | 47 | 3 of 3 |
+### One error worth naming
 
-**The sentence, with real numbers: these recordings produced 47 decodes as
-floats, 24 through an Extensible-float device buffer before the fix, and 47
-after.**
+Task 3's first commit used `git add -A` and swept in a large amount of untracked
+scratch from earlier units — `.run-unit/`, `.unit222/`, `TestResults223/` and
+others. It was caught before the push, reset, and redone with explicit paths.
+Nothing was lost and nothing reached `origin`, but it is the diff nobody can
+review that §12.6 exists to prevent, and it was mine.
 
-**And the number is 24, not 0, which matters.** The instruction predicted zero.
-The reinterpretation of float bits as integers is destructive but not total -
-for samples in one exponent range it is monotonic enough that some structure
-survives - so **roughly half the band came through, scrambled.** On its own that
-does not account for a table with nothing at all in it. It would account for a
-table that filled far too slowly, or one that showed a handful of the strongest
-stations.
+## 2. What Tim should expect
 
-### Task 5 - what the development machine's endpoints declare, and why that is not the radio
+**The app behaves identically.** Nothing here changes what is on screen, what is
+decoded, or how the radio is driven. The buffer period is set to the value it
+already had.
 
-Taken, not dropped. It was droppable under its own conditions - task 2 gave a
-definite verdict on every row including Extensible-float, without hardware - and
-it was taken because it is the only thing that could say whether the fault was
-this machine's. **It is not too close to `ARBITER.md` §6:** §6's owner line is
-rulings that change what the project is for, its risk posture, or its cost.
-Reading a declared format opens no stream, records nothing, keys nothing and
-writes nothing; it is the enumeration `WasapiAudioDevices.List()` already
-performs whenever the settings page opens.
+**What is new that he can see**, on a shack-machine run:
 
-**2 active capture endpoints. Both declare `IeeeFloat 32-bit`, 2 channels,
-48 000 Hz, with no subformat - the top-level tag is the whole answer.** Both
-take the float branch, correctly, and took it correctly before tonight too.
-Endpoints are numbered, no name or id was read (HM-DEC-018).
+- The sidecar's `audioPathDrops` line now ends with the callback budget:
+  `... longest callback 91372 us, 3 over the 100000 us buffer period, 41 over
+  half of it, in 1200 timed`. **The longest callback finally has the figure it is
+  supposed to be compared against beside it.**
+- `ft8_slot` telemetry carries `bufferPeriodMicroseconds`, `callbacksOverPeriod`,
+  `callbacksOverHalfPeriod` and `callbacksTimed` on both the refused and the
+  decoded paths.
+- The census line, where a slot came up short, adds one sentence naming how many
+  callbacks ran past their budget — **only when the count is nonzero**.
 
-**And that measurement says nothing whatever about the radio, which I did not
-know when I took it.** `SHACK_FACTS.md` gained **FACT-004** during this session -
-it was not in the tree when the unit started and it is uncommitted in the working
-copy as I write. It records that there are two computers: this one, which holds
-the repository and has never had a radio attached to it, and the shack machine,
-where the IC-7300 is connected and where the bench check was performed. Its
-third consequence is exactly this task: *no measurement of the development
-machine's audio endpoints says anything about the radio ... a unit that clears or
-implicates an audio-path defect by enumerating this machine's capture devices has
-measured the wrong hardware and its conclusion does not stand.*
+**Build:** clean, 0 errors, 0 warnings, both projects.
 
-**So the correct reading of task 5 is this.** The defect is real, is measured,
-and is repaired. **The two capture endpoints on the development machine declare
-`IeeeFloat 32-bit`. The radio's USB codec is not one of them and what it declares
-is unknown from this side.** The defect is therefore **neither cleared nor
-implicated** as the cause of the silent bench check, and no session can settle
-that from this tree. Section 4 turns it into one cheap question for the owner.
+**Tests:** `Hamlet.App.Tests` **592 of 592 passing**, in one clean run.
 
-**An earlier draft of this report drew the inference FACT-004 forbids** - that
-the silent morning is probably not explained by this defect, because this
-machine's endpoints are unaffected. That inference is withdrawn. The
-`BENCH_CHECK.md` line and the `Directory.Build.props` version note that carried
-it have been corrected in the same commit as this correction.
+**`Hamlet.RadioEngine.Tests` has no total, and that is a gap in this report
+rather than a number I am withholding.** Two attempts were made and neither
+produced a summary line:
 
-### `BENCH_CHECK.md` - the lines changed
+- The first ran **concurrently with `Hamlet.App.Tests`**, which
+  `docs/full-suite-run.md` forbids in its own first rule - contention in this
+  repository once turned one standing failure into five. It reported 62 failing
+  cases and **that count is void**; it is recorded here only so nobody finds it
+  in a scrollback and believes it.
+- The second was clean and uncontended, and was **killed at about a third of the
+  way through**, at 627 lines. It had reached 51 failing cases.
 
-| Line | Change | Measured or inherited |
-|---|---|---|
-| *Both levels are `null`...* bullet | gains a fourth meaning - a format Hamlet cannot read is now refused, so nothing reaches the tab and the slot reads exactly like an unplugged codec | **measured tonight** |
-| *The levels are numbers and the zero fraction is tiny...* bullet | says that before 1.12.41 *the problem is downstream of the sound card* was false, because audio could arrive, be loud, and have been read wrongly | **measured tonight** |
-| new subsection *What the sound card said it was speaking* | the `encoding` row of a capture sheet as a lookup table, the 47/24/47 numbers, and the plain statement that nobody knows whether this was his fault until he looks at that row on the shack machine | **measured tonight** for the table and the numbers; the two-machine limit is **FACT-004**, read from `SHACK_FACTS.md` and not measured here |
+**What the partial clean run does establish, and it is the part that matters:**
+**every one of the 51 is in `Hamlet.RadioEngine.Tests.Cw`.** Not one is in the
+Audio channel, in FT8, or in any test this unit wrote. The Audio, capture-sheet
+and FT8 channels were run whole three times over, uncontended, at **233 of 234**
+each time, the one red being the pre-existing `ASpeedChangeInRealisticAudio`.
 
-No new claim goes on a screen. The sheet is a file he opens deliberately.
+The 51 fall out by class as:
 
-### The gates
+| Count | Class |
+|---|---|
+| 12 | `CwAcquisitionWindowTests` |
+| 9 | `CwFixtureTests` |
+| 6 | `CwDisplacementFloorTests` |
+| 4 | `Fixtures.CwReceiverFixtureTests` |
+| 3 | `OneDecoderNotTwoTests`, `CwRefiningRetuneTests`, `CwLowDutyTests`, `ARecordingWithKeyingInItIsReadTests` (each) |
+| 2 | `TheCapturesThatDecodeKeepDecodingTests` |
+| 1 | `ThePitchCanBeHeldTests`, `Fixtures.CwAdjudicationTests`, `CwSurveyThresholdPinTests`, `CwEmissionGateTests`, `CapturedSignalTests`, `ABlipDoesNotShiftEverythingAfterItTests` (each) |
 
-Every count read from `ResultSummary.Counters` in a TRX logger, never a console
-count. One invocation at a time, never two at once.
+**HM-DEC-151 requires the failing set to be named and counted rather than
+counted alone**, and requires the inherited set to be unchanged. The set is
+named above. **Whether it is unchanged is not yet established**, and section 3
+carries that as the first thing to do. A baseline worktree at `d541fc8` - the
+commit immediately before this unit's first - is checked out at
+`C:\Source\HamLet-baseline`, and the run that would settle it is exactly these
+classes at that commit.
 
-**Gates 2, 3a and 3b were run twice, and the figures below are the second run.**
-FACT-004 arrived after the first pass and the corrections it forced touched
-`Directory.Build.props`, `BENCH_CHECK.md` and one test file's class comment - and
-the channel set is by definition the classes that open `Directory.Build.props` at
-run time. A gate run against a tree that was then edited has not gated the tree.
-Both runs agree exactly on every count. Gate 1 was not re-run: nothing under
-`src/Ft8Sharp/` was touched in either pass.
+**THE COMPARISON WAS RUN, AND THE ANSWER IS THAT NONE OF THEM ARE MINE.** Every
+class in the failing set was run at `d541fc8`, the commit immediately before this
+unit's first, in the baseline worktree. **Of the 51 cases failing at `HEAD`, 51
+also fail at `d541fc8`. Not one is red at `HEAD` and green before this unit.**
 
-| # | Gate | Result | Failing set |
-|---|---|---|---|
-| 1 | `Ft8Sharp.Tests`, whole project | **523 passed, 0 failed, 1 skipped**, 524 total, 5 m 19 s - exactly the expected figure, so nothing under `src/Ft8Sharp/` moved | **empty** |
-| 2 | `Hamlet.RadioEngine.Tests`, filter `~Hamlet.RadioEngine.Tests.Audio` | **117 passed, 0 failed, 0 skipped**, 59 s and 58 s. This is where tonight's change lives. 20 of the 117 are new. | **empty** |
-| 3a | `Hamlet.App.Tests`, channel filter | **9 passed, 0 failed**, 459 ms and 551 ms - `DecisionLogOrderTests`, `VersionTests`, `EveryResourceKeyResolvesTests`, `ViewTestsActThroughControlsTests`, green at the new version | **empty** |
-| 3b | `Hamlet.RadioEngine.Tests`, channel filter | **38 passed, 0 failed**, 13 m 43 s and 13 m 51 s - the expected 38 of 38. Its own record says 7 m 38 s; it took nearly twice that here on both runs, which is a machine fact and not a result | **empty** |
-| 4 | Attribution, `git diff --name-only 2828ab6..HEAD` | 254 paths, 41 under `src/Hamlet.*` or `tests/Hamlet.*` | n/a |
+The baseline run reports a larger raw number - 118 cases - because it ran each
+failing class whole, where the `HEAD` run was killed a third of the way through
+and never reached the rest. **The raw counts are therefore not comparable and are
+not compared.** What is compared is the set of names, which is the comparison
+HM-DEC-151 asks for, and on that comparison this unit added nothing.
 
-**No test skipped for want of the pinned clone.** `C:\Source\ft8_lib` is on this
-machine, so every `[RequiresOffAirRecordingsFact]` ran rather than skipping.
+The 51 names are written to `docs/unit239-failing-set.txt` so the next unit can
+diff against them rather than re-deriving them.
 
-**Attribution, and the reduction is not claimed.** 254 paths changed since
-`2828ab6`, 41 of them under Hamlet's own folders. **The attribution reduction
-does not apply to step 7 and is not claimed here** - step 7 is by construction
-the step that reaches Hamlet's code. The honest substitute, per unit 225: the
-Hamlet paths this unit added or touched are
+**What is still not established**: the engine project's *total*, because no run of
+it has completed. The inherited set is unchanged as far as it was measured, and
+"as far as it was measured" is two thirds of one run.
 
-- `src/Hamlet.RadioEngine/Audio/WasapiAudioSource.cs`
-- `tests/Hamlet.RadioEngine.Tests/Audio/DeviceBytesBecomeTheFloatsTheTapSeesTests.cs`
-- `tests/Hamlet.RadioEngine.Tests/Audio/OffAirAudioThroughADeviceByteBufferTests.cs`
-- `tests/Hamlet.RadioEngine.Tests/Audio/WhatThisMachinesCaptureEndpointsDeclareTests.cs`
-- `tests/Hamlet.RadioEngine.Tests/Audio/RealOffAirAudioReachesTheTabTests.cs`
+**What is known about causation short of that run.** This unit touched the CW
+decoder in one way only: four read sites now take their audio through a reused
+buffer instead of allocating a fresh one. Every consumer of those four reads -
+`CwSwingSurvey.Best`, `CwSpectralPeak.Find`, `CwPitchRanking.Rank` and
+`CwProbabilisticStream.ReadAgain` - takes the samples as a parameter and computes
+from them, and `ReadAgain` takes a `ReadOnlySpan<float>`, which the compiler will
+not let anything retain. **Nothing holds the borrowed buffer.** The 36 CW lock
+tests named in unit 238's report were run twice, uncontended, and passed both
+times. That is an argument and a partial measurement; it is not the comparison,
+and it is not offered as one.
 
-and outside them, `Directory.Build.props`, `BENCH_CHECK.md`, `PROJECT_STATUS.md`,
-`PHASE_STATUS.md` and this file. **Gate 2 runs the tests over all of that
-changed code.**
+**What will look wrong and is not:**
 
-**`Hamlet.App.Tests` invocations: 2**, gate 3a and its re-run after FACT-004
-forced an edit to `Directory.Build.props`. The channel filter keeps both out of
-the `Views` namespace where HM-OPEN-069's stall lives; they returned in 459 ms
-and 551 ms. No other route in this unit touched that project. **The second
-invocation was a choice**: reporting a gate that ran against a superseded tree
-would have been the cheaper answer and the wrong one.
+- **`CwAdjudicationTests.ASpeedChangeInRealisticAudio` is red.** The work
+  instruction names it as pre-existing and verified failing identically at
+  `7bef252`. It was not touched.
+- **`TheProbabilisticDecoderTests.ItKeepsUpWithLiveAudio` fails intermittently
+  under a loaded parallel run** and passes alone, twice, in 3 seconds. It is a
+  wall-clock test measuring whether the decoder keeps pace, and under two hundred
+  concurrent tests it sometimes cannot. It is **not** a regression from this
+  unit — but it is not mine to repair either, and it is named here rather than
+  filed because I did not establish that it was flaky before this unit as well.
+- **`TornReads` climbing is not a fault.** It is the tear guarantee working. On
+  the hammering test it reads about 100 per round against 12,880 reads.
+- **`AbandonedReads` above zero is not a fault either** under hammering: it is a
+  reader that could not get a clean copy in eight attempts and honestly said it
+  had nothing. In the app's own cadences it stayed at **0**.
 
-### Versions
+**Pushed to `main`,** five commits, working tree clean of everything this unit
+touched.
 
-Root `1.12.40` -> **`1.12.41`** under HM-DEC-150, a patch because this is a
-defect repair and not a new capability. `Ft8Sharp` **stays at `0.10.7`** under
-HM-DEC-152 - no file under `src/Ft8Sharp/` changed.
+## 3. What we should do next
 
-### Drift, and whether the silent morning now has a mechanical explanation
+**The four numbers this unit was asked for.**
 
-**Tonight produces a real candidate for it and cannot confirm it, and I spent the
-night inside the capture path, so this judgment is worth having on the record.**
-The header reads `DRIFT: 0 (was 5)` because the measurement met the rule the
-instruction set for an advance, and the last two units read 4 and 5 because step
-7's remaining work was judged to be the owner's at the radio. **Tonight does not
-overturn that judgment.** A real defect was found on the one unasserted segment,
-and on a sound card described the way Windows usually describes one it would
-have cost roughly half the decodes - a table that filled far too slowly, or one
-showing a handful of the strongest stations. Whether the radio's codec is such a
-card is **not knowable from this machine**, under `SHACK_FACTS.md` FACT-004, and
-I will not guess it. So the honest position is: **the silent morning now has a
-plausible mechanical explanation for the first time, and confirming or killing it
-costs the owner one glance at one row on the shack machine.** Two things follow
-for whoever authors next. First, the path from the antenna to the tap is measured
-end to end rather than taken on trust - that segment is retired as *unasserted*,
-and it was the last one. Second, everything still open is on the other computer:
-which device Hamlet opened that morning, what format it declared, and what the
-shack machine's own log says. **I do not think another unit of code on this
-machine is the next thing this phase needs** - the instruments exist and the
-measurement is now on the wrong side of a USB cable from this session. That does
-not set the next subject; the arbiter reasons from the plan.
+| | Figure |
+|---|---|
+| **Buffer period in force** | **100 ms — 100,000 µs**, read off a real `WasapiCapture`, and now *set* in the constructor rather than inherited from a default |
+| **Writer's worst `Take` with a reader running** | **117,046 µs → 59 µs.** p99 1,831 → 53 at the app's cadence; median 21. The "before" is the old design measured under the same harness |
+| **Allocation rate on the read path** | **1.15 MB a read → 0 bytes.** 100 six-second reads: 109 MB → 0. 1,000 arrival-ratio reads: 0 |
+| **Overrun count from task 4's test** | **1** over a 5,000 µs period from a callback that really ran 20,044 µs; **0** from fifty callbacks of 9.3 µs against a 1,000,000 µs period |
 
-### The validator, and the push
+**And the one thing only the operator can supply, named as outstanding rather
+than answered: the arrival ratio on a shack-machine sidecar.** Everything above
+was measured on the development machine. The replay in task 5 reads 99% here,
+and that number says nothing whatever about the machine that read 76% — a
+different sound card, a different driver, a radio attached, and the CPU load of
+an actual evening. **Until a sidecar written at the shack carries an arrival
+line, this unit's effect on the fault is unmeasured.** The reading now comes
+with the callback overrun counts beside it, so if the remaining shortfall is
+callbacks running past their budget, that sidecar will say so in one line.
 
-`tools\arbiter\validate-output.bat "C:\Source\HamLet\output.md"` - **exit 0,
-VALID, all six rules passed**: the `UNIT:` line, the four sections in order, no
-fifth, section 4 present, section 3 non-empty at 228 lines, and the ordering
-block with its count. Unit 236 measured that the path must be in double quotes;
-**the script path must be too.** Bash eats a lone backslash, so
-`tools\arbiter\validate-output.bat` runs as `toolsarbitervalidate-output.bat` and
-exits 127 - which is what put the file of that name in the root debris. The
-spelling that runs is `"tools\arbiter\validate-output.bat"`, both halves quoted.
+Then, in order:
 
-**Pushed `997963e..6c5feeb` on `main`, seven commits, one per task**, then
-`6c5feeb..4b77bc2` carrying the first draft of this report, then
-`4b77bc2..ec64834` carrying the correction FACT-004 forced.
-
-**And then the check found that this file was in none of them.** `git status`
-after the third push still read `M OUTPUT.md`. **Git tracks this path as
-`OUTPUT.md`, uppercase**, and this session wrote and staged `output.md` - which
-on Windows is the same file on disk and a different path to git, so `git add
-output.md` matched nothing and both report commits carried everything except the
-report. A tenth commit adds it under the tracked spelling. **The full range is
-`997963e..HEAD` on `main`, and the range is quoted here rather than assumed
-because that check is the only reason this was caught** (`CLAUDE_CODE.md` §11).
+1. **Finish one uncontended engine run to a summary line.** Two attempts were
+   made and neither reached one; the total is the only figure in this report that
+   is missing rather than measured. Budget the 45 minutes
+   `docs/full-suite-run.md` asks for and run nothing else while it goes.
+2. **Take one shack-machine sidecar and read three lines**: `arrival`,
+   `audioPathDrops` and its new budget clause. If `callbacksOverPeriod` is zero
+   and arrival is still short, the reader was never the cause and the next
+   suspect is the device or the driver.
+3. **HM-OPEN-070, the keying meter's 8 MB a reading**, if and only if that
+   sidecar implicates it. Its buffers are all fixed-length per reading and could
+   be owned exactly as `ReusableWindow` owns the window.
+4. **`ItKeepsUpWithLiveAudio`'s load sensitivity** — establish whether it
+   predates this unit, then either file it or fix it. A test that goes red under
+   load teaches the suite to be read past.
 
 ## 4. What's blocking us
 
-Four items. **None of them is in the way of a criterion in B.**
+**Nothing is blocking the next step.** The shack reading needs an evening at the
+radio and not a ruling.
 
-### 1. One question is asked of the owner, and it is cheap: what does the shack machine's sound card say it is speaking?
+One question is handed back, and it is small:
 
-**The question.** On the **shack machine** - the one with the IC-7300 on it -
-open Hamlet on the Digital tab, press *keep the last 30 seconds*, and open the
-`.txt` file that appears beside the WAV in
-`%AppData%\Hamlet\captures\digital\`. **What does its `encoding` row say?**
+> **`ReusableWindow` hands out a `MonoAudio` over a buffer it will overwrite,
+> and nothing in the type system stops a caller from keeping it.**
+>
+> Every caller today reads it and drops it inside the same method, which is what
+> makes it safe, and the class says so loudly in its own remarks. But that is a
+> convention held by a comment, and this repository's own history is conventions
+> surviving because nobody treated them as questions (HM-DEC-113).
+>
+> The alternatives: leave it as a documented rule, which is what shipped;
+> return a `ReadOnlySpan<float>` so the compiler refuses to let it escape, which
+> costs every consumer a signature change and cannot cross an `async` boundary;
+> or hand back a struct carrying a generation number that throws if read after
+> the next write, which catches the fault at run time on the audio path where
+> §8's never-throw discipline says nothing may throw.
+>
+> **Rejected already:** copying on the way out, which is the allocation this
+> whole task removed.
 
-- If it says **`Extensible 32-bit`**, this unit found the cause of the silent
-  morning and 1.12.41 fixes it.
-- If it says **`IeeeFloat 32-bit`** or any `Pcm` value, this unit found a real
-  defect that was not your defect, and the empty table has another cause.
+### Asks still outstanding
 
-**Why it is asked rather than measured.** `SHACK_FACTS.md` FACT-004, added to
-this tree during this session, says no measurement of this machine's audio
-endpoints says anything about the radio, and that a unit clearing or implicating
-an audio-path defect by enumerating them has measured the wrong hardware. That
-is precisely what task 5 did, so its conclusion is withdrawn and the question is
-put to the only person who can answer it. **It is one press and one file.**
-
-**What was rejected and why.** Inferring it from this machine's two endpoints -
-forbidden by FACT-004, and it is the mistake FACT-004 was written to stop.
-Reading device names to work out whether the codec is present - HM-DEC-018.
-Guessing - `CLAUDE.md` §0.0.
-
-**Not blocking.** The repair stands on its own measurement either way, and step
-7's criterion 3 does not wait on the answer.
-
-### 2. A ruling is asked for: what does Hamlet tell the operator when a sound card speaks a format it cannot read?
-
-**The ruling wanted.** A capture device presenting a format `ReadSample` cannot
-read now produces nothing at all on the tab, and the log reads exactly as an
-unplugged codec reads - both levels `null`, every sample zero. **Should Hamlet
-say, somewhere the operator will see it, that the sound card is speaking
-something it does not understand?**
-
-**The reasoning.** HM-DEC-009 made returning `0.0` unacceptable, and refusing is
-the honest alternative, but refusal costs the operator the distinction between
-*nothing is plugged in* and *this device speaks something I cannot read*. Those
-have different fixes. The sheet now carries the distinction, but the sheet
-requires him to press *keep the last 30 seconds* first.
-
-**What was rejected and why.** Adding a branch to `DigitalReadiness`, or a
-sentence to the status bar - `CLAUDE.md` §12.1 makes what Hamlet asserts to the
-operator the owner's, and three display rulings from units 227, 233 and 236 are
-already in front of him unanswered. Authoring a fourth around them would be
-exactly the drift §12.1 exists to stop. Adding a telemetry key - §7 of tonight's
-instruction forbids it and units 233 to 236 already built the record.
-
-**This is genuinely a fourth display question and it should probably be answered
-together with the other three.** It is not blocking.
-
-### 3. Recorded, not asked: the swallowing catch leaves no trace
-
-`OnDataAvailable`'s `catch (Exception)` at `WasapiAudioSource.cs:284` drops the
-buffer and records nothing anywhere - no telemetry line, no counter, no log.
-Before tonight nothing could throw there, so it was hiding nothing. From
-tonight an unreadable format throws every buffer, and the only evidence is the
-absence of audio. **Recording it would need a telemetry key, which this unit was
-forbidden to add**, so it is written down here rather than built. It is coupled
-to item 2 and would be settled by the same answer.
-
-### 4. Recorded, not asked: mismatches between the instruction and the tree, and the inherited debris
-
-Per §5 of the instruction - reported, not repaired.
-
-- **`OpenAsync` does not exist.** Section 2 item 4 and task 1 both name it. Line
-  144 is inside the constructor at `:132`. Everything else in section 2 checked
-  out exactly, including `git grep Extensible` under `src/` returning nothing.
-- **The seam does not cost only an access modifier.** Section 1's last paragraph
-  says it does. `Downmix` is an instance method on a class whose only
-  constructor opens a device. Handled as a named decision in section 1.
-- **`AudioMediaSubtypes` is in `NAudio.Dmo`, not `NAudio.CoreAudioApi`**, which
-  cost one compile. Noted for the next unit that reaches for it.
-- **The instruction's task 5 could not have produced the evidence it was written
-  to produce.** Its drop conditions turn on whether task 2 settled the Extensible
-  row, but under FACT-004 the corroboration it describes - what a real device
-  presents - is not available on this machine at all. That is not the arbiter's
-  error: FACT-004 did not exist when the instruction was written. It is recorded
-  so the next instruction does not ask for it again.
-- **`SHACK_FACTS.md` is modified and uncommitted in the working tree**, holding
-  FACT-004. I read it and obeyed it; I did not commit it, because it is the
-  owner's file and staging somebody else's uncommitted work is not mine to do.
-  **It should be committed.**
-- **The report file is tracked as `OUTPUT.md` and every session writes
-  `output.md`.** On Windows those are one file on disk and two paths to git, so
-  `git add output.md` stages nothing and the report is silently left out of the
-  commit. This unit caught it only by reading `git status` after pushing. **It
-  has been happening for at least one unit before this one**: `OUTPUT.md`'s last
-  commit is `8745b11`, unit 234, and it was already dirty in the working tree
-  when this unit started - so unit 236's report, and possibly 235's, exist on
-  disk and are not in the repository. This unit's is committed under the tracked
-  spelling. **Recorded rather than repaired**: renaming the tracked path is a
-  change to the loop's own plumbing and every future session's habit, which is
-  not a unit's call to make on its way out of the door.
-
-And the inherited items the instruction named as known and not mine, all still
-present and all untouched: `PHASE_OUTCOME.md`'s header disagreeing with its
-entries on steps 1 and 3; `PROJECT_STATUS.md` and `CLAUDE.md` §1 disagreeing on
-the ruling id; and the uncommitted root debris, which stands at 25 items
-including eight `.obj` files and several scratch scripts. **One more for the
-list**: `Directory.Build.props` has version-log entries up to `1.12.36` and none
-for `.37` through `.40`; tonight's `1.12.41` has one, following the file's own
-convention, and the four missing entries were left alone.
+1. **`ReusableWindow`'s borrowed buffer** — raised above, 2026-09-03. **New.**
+   The code is in `src/Hamlet.RadioEngine/Audio/ReusableWindow.cs` and shipped
+   with the documented-rule option.
+2. **`ProcessDelayForTests` as a hook or a seam** — raised by unit 238,
+   2026-09-03. The code is in `CwDecoder`. Not touched this unit.
+3. **The tap's owner** — parked by work instruction 238, 2026-09-03. Nothing
+   changed for it.
+4. **The divergence ruling on `Ft8Sharp` sensitivity** — owner's, open. Nothing
+   in `src/Ft8Sharp/` was touched.
+5. **Unit 237's Extensible-format conclusion** — the fix stands, the exoneration
+   does not (FACT-004). The reading is taken at the shack from the sidecar's
+   `encoding` line.
+6. **Work instruction 231's four tree items** — the `PHASE_OUTCOME.md` header,
+   the `RULES_AT` mismatch, uncommitted root paths, the Views stall.
+7. **`validate-output.bat`'s permitted-spellings bug** — it has refused for nine
+   units. Not exercised this unit.

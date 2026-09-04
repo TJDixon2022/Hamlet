@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 5 of 5
-WORK_INSTRUCTION: 239 - the reader must never block the writer
+TASK: 0 of 5
+WORK_INSTRUCTION: 240 - the waterfall is on the audio callback
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-152 (2026-08-31)
-UPDATED: 2026-09-03T21:13:52-04:00
-NOTE: Paced replay of a real capture with the app's own readers running reports 99 percent arrival, 0 torn reads
+UPDATED: 2026-09-03T22:11:23-04:00
+NOTE: Gate verified for 240; closing out unit 239's report and its baseline comparison before starting
 
 ---
 
