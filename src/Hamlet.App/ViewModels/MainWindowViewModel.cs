@@ -990,7 +990,9 @@ public partial class MainWindowViewModel : ObservableObject
             wasapi?.BufferPeriodMicroseconds ?? 0,
             wasapi?.CallbacksOverPeriod ?? 0,
             wasapi?.CallbacksOverHalfPeriod ?? 0,
-            wasapi?.CallbacksTimed ?? 0);
+            wasapi?.CallbacksTimed ?? 0,
+            DigitalSpectrum?.DroppedFrames ?? 0,
+            DigitalSpectrum?.LongestFrameMicroseconds ?? 0);
     }
 
     /// <summary>What the census line says about the audio that reached it.</summary>
@@ -1033,6 +1035,18 @@ public partial class MainWindowViewModel : ObservableObject
                 + arrival.BufferPeriodMicroseconds.ToString(
                     "0", System.Globalization.CultureInfo.InvariantCulture)
                 + " us the device allows them.";
+        }
+
+        // **AND WHETHER THE WATERFALL FELL BEHIND, WHICH IS A DIFFERENT FAULT
+        // AND NO LONGER THE SAME ONE** (unit 240). Before this unit the picture
+        // and the audio shared a thread, so a slow frame was lost audio and the
+        // operator could not tell the two apart. Rows dropping now means the
+        // picture is behind and the audio is not, and saying so keeps him from
+        // chasing the sound card over a stuttering waterfall.
+        if (arrival.DroppedFrames > 0)
+        {
+            line += "  The waterfall dropped " + arrival.DroppedFrames
+                + " row(s) keeping up, which costs the picture and not the audio.";
         }
 
         return line;

@@ -977,6 +977,14 @@ public static class AppEvents
                     ["callbacksOverPeriod"] = arrival.CallbacksOverPeriod,
                     ["callbacksOverHalfPeriod"] = arrival.CallbacksOverHalfPeriod,
                     ["callbacksTimed"] = arrival.CallbacksTimed,
+
+                    // Unit 240: the waterfall's transform moved off the device
+                    // callback, so a slow frame costs a row rather than audio.
+                    // Both numbers travel together, because a drop count with no
+                    // frame duration cannot say whether the machine is coping.
+                    ["droppedFrames"] = arrival.DroppedFrames,
+                    ["longestFrameMicroseconds"] =
+                        Math.Round(arrival.LongestFrameMicroseconds, 0),
                 },
                 TelemetryLevel.Warn);
 
@@ -1036,6 +1044,14 @@ public static class AppEvents
                     ["callbacksOverPeriod"] = arrival.CallbacksOverPeriod,
                     ["callbacksOverHalfPeriod"] = arrival.CallbacksOverHalfPeriod,
                     ["callbacksTimed"] = arrival.CallbacksTimed,
+
+                    // Unit 240: the waterfall's transform moved off the device
+                    // callback, so a slow frame costs a row rather than audio.
+                    // Both numbers travel together, because a drop count with no
+                    // frame duration cannot say whether the machine is coping.
+                    ["droppedFrames"] = arrival.DroppedFrames,
+                    ["longestFrameMicroseconds"] =
+                        Math.Round(arrival.LongestFrameMicroseconds, 0),
                     ["sampleRate"] = slot.SampleRate,
 
                     // **HOW LOUD THE AUDIO WAS, WHICH NONE OF THE ABOVE COULD

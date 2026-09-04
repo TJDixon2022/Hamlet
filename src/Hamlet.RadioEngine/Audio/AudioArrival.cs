@@ -36,6 +36,12 @@
 /// How many callbacks were timed at all, so a zero overrun count can be told
 /// from a path nothing has run down yet.
 /// </param>
+/// <param name="DroppedFrames">
+/// Waterfall rows the picture lost because its worker was behind.
+/// </param>
+/// <param name="LongestFrameMicroseconds">
+/// The longest a single waterfall frame took its worker.
+/// </param>
 /// <remarks>
 /// <para>**EVERY FIELD IS A COUNT OR A COUNT OVER A COUNT** (`CLAUDE.md` §0.0).
 /// There is no quality figure here and no signal-to-noise ratio. A ratio says
@@ -63,7 +69,9 @@ public readonly record struct AudioArrival(
     double BufferPeriodMicroseconds = 0,
     long CallbacksOverPeriod = 0,
     long CallbacksOverHalfPeriod = 0,
-    long CallbacksTimed = 0)
+    long CallbacksTimed = 0,
+    long DroppedFrames = 0,
+    double LongestFrameMicroseconds = 0)
 {
     /// <summary>Nothing measured.</summary>
     public static AudioArrival None { get; } = new(
@@ -87,6 +95,23 @@ public readonly record struct AudioArrival(
                 BufferPeriodMicroseconds,
                 CallbacksOverHalfPeriod,
                 CallbacksTimed);
+
+    /// <summary>What the waterfall's own worker cost, for a line somebody reads.</summary>
+    /// <remarks>
+    /// **A DROPPED ROW IS FREE AND IT IS STILL COUNTED** (HM-DEC-093). Unit 240
+    /// moved the transform off the device callback, and work moved is not work
+    /// gone: it is work somewhere a slow frame costs the picture instead of the
+    /// radio. A drop count climbing says the picture is behind, which is a fact
+    /// worth having rather than one to discover from a screenshot.
+    /// </remarks>
+    public string FrameWorkerText
+        => DroppedFrames == 0 && LongestFrameMicroseconds <= 0
+            ? "no waterfall row dropped, worst frame not measured"
+            : string.Format(
+                System.Globalization.CultureInfo.InvariantCulture,
+                "{0} waterfall row(s) dropped, worst frame {1:0} us",
+                DroppedFrames,
+                LongestFrameMicroseconds);
 
     /// <summary>The recent ratio as a percentage, or "not measured".</summary>
     public string RecentText => Describe(RecentRatio);

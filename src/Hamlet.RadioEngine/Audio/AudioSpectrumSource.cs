@@ -112,6 +112,41 @@ public sealed class AudioSpectrumSource : ISpectrumSource, IDisposable
     private int _sinceHop;
     private long _samplesSeen;
 
+    /// <summary>The queue between the device callback and the transform.</summary>
+    /// <remarks>
+    /// <para>**UNIT 238'S HAND-OFF, A SECOND INSTANCE OF IT, AND NOT A SECOND
+    /// MECHANISM.** It already solves bounded, ordered, oldest-dropped, one
+    /// consumer, samples copied before the call returns, never blocking and
+    /// never throwing. Every one of those is required here for the same reasons
+    /// it was required for the CW decoder, and a second mechanism would be a
+    /// second set of the same bugs.</para>
+    /// <para>**DROPPING A WATERFALL ROW IS FREE AND DROPPING AUDIO IS THE FAULT
+    /// THIS UNIT EXISTS TO REMOVE.** So when the queue fills, the picture loses
+    /// a row and the count says so; the callback is never made to wait.</para>
+    /// </remarks>
+    private AudioHandoff? _handoff;
+
+    private Thread? _worker;
+
+    private float[] _fromQueue = [];
+
+    /// <summary>The longest a single frame took the worker, in microseconds.</summary>
+    /// <remarks>
+    /// **THE NUMBER THAT SAYS WHETHER MOVING IT HELPED OR ONLY HID IT**
+    /// (HM-DEC-093). Work moved off the callback thread has not gone away; it
+    /// has gone somewhere a slow frame costs the picture instead of the radio.
+    /// A figure climbing here with no drops is a machine coping; one climbing
+    /// with drops is the picture falling behind, which is a fact worth having
+    /// rather than one to discover from a screenshot.
+    /// </remarks>
+    public double LongestFrameMicroseconds { get; private set; }
+
+    /// <summary>Rows the picture lost because the worker was behind.</summary>
+    public long DroppedFrames => _handoff?.DroppedChunks ?? 0;
+
+    /// <summary>Samples those dropped rows carried.</summary>
+    public long DroppedFrameSamples => _handoff?.DroppedSamples ?? 0;
+
     /// <summary>Where the next sample goes, and the oldest sample once full.</summary>
     /// <remarks>
     /// <para>**THE RING USED TO HAVE NO CURSOR, AND THAT WAS THE WHOLE FAULT.**
@@ -234,15 +269,168 @@ public sealed class AudioSpectrumSource : ISpectrumSource, IDisposable
             _attached.SamplesReady -= OnSamples;
         }
 
+        // **UNSUBSCRIBED FIRST, THEN THE WORKER STOPPED.** The other order
+        // leaves a window where a callback can offer onto a closed queue.
+        StopWorker();
+
         _attached = source;
 
         if (_attached is not null)
         {
+            StartWorker(_attached.SampleRate);
             _attached.SamplesReady += OnSamples;
         }
     }
 
-    private void OnSamples(in AudioChunk chunk) => Push(chunk.Samples);
+    /// <summary>Bring up the queue and the thread that drains it.</summary>
+    /// <param name="sampleRate">What the source delivers, to size the queue.</param>
+    private void StartWorker(int sampleRate)
+    {
+        // Sized against the device buffer rather than the hop: what is queued is
+        // what the callback hands over, and that is one device buffer at a time.
+        var handoff = new AudioHandoff(
+            sampleRate,
+            Math.Max(1, sampleRate * WasapiAudioSource.BufferMilliseconds / 1000));
+
+        _handoff = handoff;
+        _fromQueue = new float[Math.Max(1, sampleRate)];
+
+        var worker = new Thread(Drain)
+        {
+            IsBackground = true,
+            Name = "spectrum-frames",
+
+            // **BELOW NORMAL, AND IT IS THE POINT OF THE WHOLE TASK.** The
+            // picture must never be the reason the audio thread waits, and on a
+            // busy machine the scheduler should starve a waterfall row before it
+            // starves anything else this application is doing.
+            Priority = ThreadPriority.BelowNormal,
+        };
+
+        _worker = worker;
+        worker.Start();
+    }
+
+    /// <summary>Close the queue and let the worker finish, without hanging.</summary>
+    /// <remarks>
+    /// **DISCARDED RATHER THAN DRAINED, BECAUSE THESE ARE PICTURES.** Unit 238's
+    /// decoder drains on the way out so no audio is lost; a waterfall row that
+    /// arrives after the source was detached has nowhere to be drawn. The join
+    /// is bounded so a stalled `FrameReady` handler cannot hold a shutdown open.
+    /// </remarks>
+    private void StopWorker()
+    {
+        var handoff = _handoff;
+        var worker = _worker;
+
+        _handoff = null;
+        _worker = null;
+
+        handoff?.Close(discard: true);
+        worker?.Join(TimeSpan.FromSeconds(2));
+    }
+
+    /// <summary>
+    /// The device callback's whole share of the waterfall: a copy and a return.
+    /// </summary>
+    /// <remarks>
+    /// <para>**IT USED TO CALL `Push` IN FULL, ON WASAPI'S OWN CAPTURE THREAD.**
+    /// Task 1 measured that at 62,271 microseconds for one 100 ms buffer against
+    /// a 100,000 microsecond period, and the shack machine reported 554 of 561
+    /// callbacks running past half their budget.</para>
+    /// <para>**TASK 2 TOOK THAT TO 270 MICROSECONDS AND THIS IS STILL WORTH
+    /// DOING.** What is left is a real 16,384-point transform, and the argument
+    /// against it is not its size but its variance: it runs on the thread
+    /// carrying the radio's audio, where a garbage collection, a descheduled
+    /// core, or a `FrameReady` handler that decides to touch the UI costs
+    /// samples that no later work can recover. **A dropped waterfall row is
+    /// free. Dropped audio is the fault this unit exists to remove.**</para>
+    /// <para>**`Push` ITSELF IS UNCHANGED AND STILL SYNCHRONOUS**, because it is
+    /// the pump and the class's determinism lives in it: a fixture pushed
+    /// directly produces the same frames in the same order with the same times
+    /// on every run. What moved is who calls it.</para>
+    /// </remarks>
+    private void OnSamples(in AudioChunk chunk)
+    {
+        var handoff = _handoff;
+
+        if (handoff is null || !IsRunning)
+        {
+            return;
+        }
+
+        handoff.Offer(chunk.FirstSampleIndex, chunk.SampleRate, chunk.Samples);
+    }
+
+    /// <summary>How many frame workers are alive across the whole process.</summary>
+    /// <remarks>
+    /// **A COUNT, BECAUSE COUNTING PROCESS THREADS IS THE WRONG INSTRUMENT.**
+    /// The first version of the leak test counted every thread in the process,
+    /// which passed alone and failed beside the rest of the suite: the threads
+    /// it saw appear were other tests' and had nothing to do with this class.
+    /// This counts exactly the workers this class started, so it is exact and
+    /// cannot be moved by anything running alongside it.
+    /// </remarks>
+    internal static int LiveWorkers => System.Threading.Volatile.Read(ref _liveWorkers);
+
+    private static int _liveWorkers;
+
+    /// <summary>Drain the queue, doing the transform work off the callback.</summary>
+    private void Drain()
+    {
+        var handoff = _handoff;
+
+        if (handoff is null)
+        {
+            return;
+        }
+
+        Interlocked.Increment(ref _liveWorkers);
+
+        try
+        {
+            DrainLoop(handoff);
+        }
+        finally
+        {
+            Interlocked.Decrement(ref _liveWorkers);
+        }
+    }
+
+    private void DrainLoop(AudioHandoff handoff)
+    {
+
+        while (handoff.Take(ref _fromQueue, out var count, out _, out _))
+        {
+            var started = System.Diagnostics.Stopwatch.GetTimestamp();
+
+            try
+            {
+                Push(_fromQueue.AsSpan(0, count));
+            }
+            catch
+            {
+                // **NEVER-THROW, ON THE SAME GROUND AS EVERY OTHER WORKER HERE**
+                // (§8). A transform that threw would take the thread with it and
+                // the picture would stop with no record of why, which is worse
+                // than a missing row. The frame is lost and the worker lives.
+            }
+
+            // **AFTER THE WORK, NOT AFTER THE TAKE.** `WaitUntilDrained` waits
+            // on this rather than on the queue emptying, and the difference is
+            // one frame - which is the difference between a deterministic test
+            // and a flaky one.
+            handoff.Completed();
+
+            var micros = (System.Diagnostics.Stopwatch.GetTimestamp() - started)
+                * 1_000_000.0 / System.Diagnostics.Stopwatch.Frequency;
+
+            if (micros > LongestFrameMicroseconds)
+            {
+                LongestFrameMicroseconds = micros;
+            }
+        }
+    }
 
     /// <summary>
     /// Feed samples in and raise a frame whenever a hop has filled.
@@ -463,5 +651,12 @@ public sealed class AudioSpectrumSource : ISpectrumSource, IDisposable
         => 20 * Math.Log10(Math.Max(magnitude, 1e-12));
 
     /// <summary>Stop riding along.</summary>
-    public void Dispose() => Listen(null);
+    public void Dispose()
+    {
+        Listen(null);
+
+        // Listen(null) already stops the worker; this is here for the case where
+        // nothing was ever attached and a queue was still built.
+        StopWorker();
+    }
 }

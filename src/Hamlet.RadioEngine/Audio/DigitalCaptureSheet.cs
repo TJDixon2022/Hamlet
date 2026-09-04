@@ -300,7 +300,7 @@ public static class DigitalCaptureSheet
             CultureInfo.InvariantCulture,
             "{0} chunks / {1} samples dropped by the decode queue, "
             + "{2} callback failure(s), {3} empty buffer(s), "
-            + "longest callback {4:0} us, {5}",
+            + "longest callback {4:0} us, {5}, {6}",
             arrival.QueueDroppedChunks,
             arrival.QueueDroppedSamples,
             arrival.CallbackFailures,
@@ -310,7 +310,12 @@ public static class DigitalCaptureSheet
             // A reader months from now has no way to know what this device's
             // period was, so the figure that made the longest callback either
             // alarming or unremarkable travels with it (unit 239 task 4).
-            arrival.CallbackBudgetText));
+            arrival.CallbackBudgetText,
+            // **THE PICTURE'S OWN COST, BESIDE THE AUDIO'S** (unit 240). The
+            // waterfall used to do its whole transform on the device callback,
+            // so a slow frame was lost audio; it is a lost row now, and a reader
+            // months from now needs to see which of the two happened.
+            arrival.FrameWorkerText));
 
         line("slotGrid", boundaries.Count == 0
             ? "no fifteen-second boundary falls inside this window at all"
