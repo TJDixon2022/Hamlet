@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 4 of 5
+TASK: 5 of 5
 WORK_INSTRUCTION: 239 - the reader must never block the writer
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-152 (2026-08-31)
-UPDATED: 2026-09-03T20:57:55-04:00
-NOTE: Buffer period set to 100ms explicitly and overruns counted onto telemetry, sidecar and census; suite clean but for the named pre-existing red
+UPDATED: 2026-09-03T21:13:52-04:00
+NOTE: Paced replay of a real capture with the app's own readers running reports 99 percent arrival, 0 torn reads
 
 ---
 
