@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 4 of 4
-WORK_INSTRUCTION: 240 - the waterfall is on the audio callback
-BALL: tim
-NEXT_PASTE: OUTPUT.md -> Claude Web
+STATE: EXECUTING
+TASK: 1 of 6
+WORK_INSTRUCTION: 241 - the decoded text panel becomes readable
+BALL: code
+NEXT_PASTE: none
 RULES_AT: HM-DEC-152 (2026-08-31)
-UPDATED: 2026-09-03T23:44:25-04:00
-NOTE: Four of four done; the callback's per-buffer work fell from 62271us to 270 and the shack arrival reading is the operator's to take
+UPDATED: 2026-09-04T18:01:15-04:00
+NOTE: Header and rows are separate Grids so their Auto columns measure independently; 3360 rows an hour against a cap of 500
 
 ---
 
