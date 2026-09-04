@@ -359,8 +359,62 @@ public sealed class AudioSpectrumSource : ISpectrumSource, IDisposable
             return;
         }
 
+        // **NOBODY IS LOOKING, SO NOTHING IS COMPUTED** (unit 240 task 4).
+        // `WaterfallControl` unsubscribes from `FrameReady` when it leaves the
+        // visual tree, so a collapsed panel or an unselected tab really does
+        // leave this null, and that is the honest test of whether anything is
+        // consuming frames. The engine learns it without knowing that tabs
+        // exist, which §0.1 requires of it.
+        //
+        // **WHAT `IsRunning` WAS ACTUALLY DRIVEN BY, WHICH THE INSTRUCTION SAID
+        // IT DID NOT KNOW:** `StartDecoding` and `StopDecoding` in the view
+        // model - the CW decoder's lifetime. It has never had anything to do
+        // with whether the Digital tab is showing, so before this the transform
+        // ran for an entire evening whether or not the picture was on screen.
+        if (FrameReady is null)
+        {
+            Idle();
+
+            return;
+        }
+
+        _idle = false;
+
         handoff.Offer(chunk.FirstSampleIndex, chunk.SampleRate, chunk.Samples);
     }
+
+    /// <summary>Forget the window while nothing is drawing it.</summary>
+    /// <remarks>
+    /// **A ROW MUST NEVER MIX TWO DIFFERENT MOMENTS** (§0.0). Simply skipping
+    /// the work would leave the ring holding whatever was in it when the tab was
+    /// closed, and the first frame after it reopened would be part old audio and
+    /// part new - a picture asserting that a signal was present at a time it was
+    /// not, which is exactly the kind of claim a waterfall makes more
+    /// persuasively than a sentence (HM-DEC-092).
+    ///
+    /// So the window is dropped, and the first frame after somebody looks again
+    /// costs one full window of audio before it appears. On the FT8 window that
+    /// is about a third of a second.
+    /// </remarks>
+    private void Idle()
+    {
+        if (_idle)
+        {
+            return;
+        }
+
+        _idle = true;
+
+        lock (_gate)
+        {
+            _fill = 0;
+            _write = 0;
+            _sinceHop = 0;
+            Array.Clear(_ring);
+        }
+    }
+
+    private bool _idle;
 
     /// <summary>How many frame workers are alive across the whole process.</summary>
     /// <remarks>

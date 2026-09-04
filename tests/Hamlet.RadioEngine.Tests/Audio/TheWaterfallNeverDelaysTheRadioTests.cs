@@ -217,6 +217,75 @@ public sealed class TheWaterfallNeverDelaysTheRadioTests
         Assert.Equal(before, AudioSpectrumSource.LiveWorkers);
     }
 
+    /// <summary>
+    /// With nobody drawing frames, the source does no work at all.
+    /// </summary>
+    /// <remarks>
+    /// **WHAT `IsRunning` WAS ACTUALLY DRIVEN BY.** The instruction said it did
+    /// not know; it is `StartDecoding` and `StopDecoding` in the view model, the
+    /// CW decoder's own lifetime. It has never had anything to do with whether
+    /// the Digital tab is showing, so the transform ran all evening whether or
+    /// not the picture was on screen. `WaterfallControl` already unsubscribes
+    /// from `FrameReady` when it leaves the visual tree, so "is anything
+    /// consuming frames" is a question the engine can answer without knowing
+    /// that tabs exist (§0.1).
+    /// </remarks>
+    [Fact]
+    public void NothingIsComputedWhileNobodyIsDrawing()
+    {
+        using var source = new FakeSource(Rate, Buffer);
+        using var spectrum = new AudioSpectrumSource(Rate);
+
+        spectrum.Start();
+        spectrum.Listen(source);
+
+        var samples = Tone(Buffer);
+
+        // Nobody has subscribed to FrameReady: this is the collapsed panel.
+        for (var i = 0; i < 40; i++)
+        {
+            source.Deliver(samples);
+        }
+
+        Thread.Sleep(50);
+
+        var idleWorst = spectrum.LongestFrameMicroseconds;
+
+        _output.WriteLine("with nobody drawing:");
+        _output.WriteLine("  worst frame on the worker : "
+            + idleWorst.ToString("0") + " us");
+        _output.WriteLine("  rows dropped              : " + spectrum.DroppedFrames);
+
+        Assert.Equal(0, spectrum.DroppedFrames);
+        Assert.Equal(0, idleWorst);
+
+        // --- and it comes back when somebody looks --------------------------
+        var frames = 0;
+
+        spectrum.FrameReady += (in SpectrumFrame _) => Interlocked.Increment(ref frames);
+
+        for (var i = 0; i < 40; i++)
+        {
+            source.Deliver(samples);
+        }
+
+        var deadline = Stopwatch.GetTimestamp() + (Stopwatch.Frequency * 3);
+
+        while (Volatile.Read(ref frames) == 0
+            && Stopwatch.GetTimestamp() < deadline)
+        {
+            Thread.Sleep(10);
+        }
+
+        _output.WriteLine("");
+        _output.WriteLine("after somebody subscribes:");
+        _output.WriteLine("  frames drawn : " + Volatile.Read(ref frames));
+
+        Assert.True(
+            Volatile.Read(ref frames) > 0,
+            "the picture never came back after somebody started drawing again");
+    }
+
     private static double Worst(int times, Action work)
     {
         var worst = 0.0;
