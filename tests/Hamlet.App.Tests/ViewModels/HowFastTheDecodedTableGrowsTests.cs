@@ -1,3 +1,4 @@
+﻿using Hamlet.App.Settings;
 using Hamlet.App.ViewModels;
 using Hamlet.RadioEngine.Audio;
 using Xunit;
@@ -89,6 +90,60 @@ public sealed class HowFastTheDecodedTableGrowsTests
             "the cap holds only " + capHoldsMinutes.ToString("0.0")
             + " minutes of a band as busy as the one measured, which is less "
             + "than one over-and-back exchange");
+    }
+
+    /// <summary>The summary says so while the cap is dropping rows.</summary>
+    /// <remarks>
+    /// **A CAP HE CANNOT SEE IS WORSE THAN NO CAP** (§0.0). The cap and its trim
+    /// were both here before unit 241 and the operator was never told either
+    /// existed. At the measured rate the table fills in about nine minutes and
+    /// then quietly drops a row for every row that arrives, for the rest of the
+    /// evening - a list discarding rows he believes are still there.
+    /// </remarks>
+    [Fact]
+    public void TheSummarySaysWhenItIsTrimming()
+    {
+        var model = new MainWindowViewModel(new AppSettings(), null);
+        var opened = new DateTime(2026, 9, 4, 21, 0, 0, DateTimeKind.Utc);
+
+        // Up to the cap and no further: nothing has been dropped yet.
+        Offer(model, opened, MainWindowViewModel.MaxDigitalDecodes);
+
+        var atTheCap = model.DigitalDecodedSummary;
+
+        Offer(model, opened, MainWindowViewModel.MaxDigitalDecodes + 7,
+            from: MainWindowViewModel.MaxDigitalDecodes);
+
+        var overIt = model.DigitalDecodedSummary;
+
+        _output.WriteLine("at the cap : " + atTheCap);
+        _output.WriteLine("seven over : " + overIt);
+
+        Assert.DoesNotContain("dropped", atTheCap, StringComparison.Ordinal);
+        Assert.Contains("oldest 7 dropped", overIt, StringComparison.Ordinal);
+
+        // And the count is of rows, not of slots or of anything derived.
+        Assert.Equal(
+            MainWindowViewModel.MaxDigitalDecodes, model.DigitalDecodes.Count);
+    }
+
+    private static void Offer(
+        MainWindowViewModel model, DateTime opened, int to, int from = 0)
+    {
+        for (var i = from; i < to; i++)
+        {
+            model.NoteSlot(
+                new Ft8Reception(
+                    new[]
+                    {
+                        new Ft8Decode(
+                            opened.AddSeconds(15 * i), 1.4, 1240, 12,
+                            $"CQ K{i}ABC FN42"),
+                    },
+                    1,
+                    1,
+                    ""));
+        }
     }
 
     /// <summary>

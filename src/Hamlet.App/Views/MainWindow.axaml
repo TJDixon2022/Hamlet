@@ -3208,34 +3208,30 @@
                               </StackPanel>
                             </ctl:CollapsiblePanel>
 
-                            <ctl:CollapsiblePanel x:Name="DigitalSayingPanel"
-                                                  Family="Lavender"
-                                                  Title="What people are saying"
-                                                  Summary="nothing put into words yet"
-                                                  IsExpanded="{Binding DigitalSayingExpanded, Mode=TwoWay}">
+                            <!-- **"WHAT PEOPLE ARE SAYING" IS GONE** (Tim's
+                                 ruling, 2026-09-04: the decoded text is what
+                                 people are saying).
 
-                                <!-- **THE THREE PLACEHOLDER CARDS ARE GONE AND
-                                     NOTHING HAS REPLACED THEM** (unit 224). They
-                                     asserted that Hamlet had heard W9XYZ
-                                     answering K1ABC, K1ABC calling anyone and
-                                     EA3QQ calling for distant stations, with
-                                     distances and signal strengths beside them.
-                                     Every word of that was invented, and the
-                                     decoded table above is now real, so the two
-                                     panels contradicted each other.
+                                 It never had a feed. It said "nobody heard yet"
+                                 while sixty-three real messages sat in the panel
+                                 directly above it, which is a surface asserting
+                                 something untrue about what was heard - the
+                                 exact fault §0.0 exists to stop, in the place it
+                                 is least likely to be noticed, because an idle
+                                 line looks like patience rather than a claim.
 
-                                     **AND NOTHING IS WRITTEN IN THEIR PLACE.**
-                                     What Hamlet says a message *means* is Tim's
-                                     under `CLAUDE.md` §12.1, so this unit removes
-                                     a claim rather than deciding a replacement.
-                                     The panel carries its own idle line, written
-                                     in his voice in August, until he words what
-                                     goes here. -->
-                                <TextBlock x:Name="DigitalSayingIdleLine"
-                                           Text="{Binding DigitalSayingIdle}"
-                                           FontSize="11" TextWrapping="Wrap"
-                                           Foreground="{StaticResource HmTextMutedBrush}" />
-                            </ctl:CollapsiblePanel>
+                                 Unit 224 had already emptied it of its three
+                                 invented cards and left the idle line standing
+                                 until somebody worded a replacement. After task
+                                 5 the row itself carries the vocabulary: the
+                                 payload says what it means on hover, from a
+                                 closed table, and nothing needs a second panel
+                                 to say it in.
+
+                                 The panel was Digital-only. CW has no equivalent
+                                 and `DigitalIdleText.Waterfall`, `.Decoded` and
+                                 `.ModeStrip` are all still in use; only
+                                 `.Saying` went with it. -->
                         </StackPanel>
                     </ScrollViewer>
                 </Grid>

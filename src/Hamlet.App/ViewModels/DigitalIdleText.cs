@@ -1,4 +1,4 @@
-namespace Hamlet.App.ViewModels;
+﻿namespace Hamlet.App.ViewModels;
 
 /// <summary>
 /// What each panel on the Digital tab says before anything has been heard.
@@ -38,9 +38,4 @@ public static class DigitalIdleText
     public const string Decoded =
         "nothing decoded yet. Every message that comes out of a slot lands here "
         + "exactly as it was sent, before Hamlet makes anything of it.";
-
-    /// <summary>The plain-English panel, before anything has decoded.</summary>
-    public const string Saying =
-        "nobody heard yet. As stations come in this is where they are put into "
-        + "ordinary words, with the raw line underneath so you can check it.";
 }

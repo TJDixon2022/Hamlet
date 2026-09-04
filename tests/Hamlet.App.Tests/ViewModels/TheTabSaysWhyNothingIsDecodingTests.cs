@@ -1,4 +1,4 @@
-using Avalonia.Headless.XUnit;
+﻿using Avalonia.Headless.XUnit;
 using Hamlet.App.Settings;
 using Hamlet.App.ViewModels;
 using Hamlet.RadioEngine.Audio;
@@ -375,8 +375,10 @@ public sealed class TheTabSaysWhyNothingIsDecodingTests
         // them.
         Assert.Contains(
             "{Binding DigitalDecodedIdle}", markup, StringComparison.Ordinal);
-        Assert.Contains(
-            "{Binding DigitalSayingIdle}", markup, StringComparison.Ordinal);
+
+        // The "what people are saying" idle line is not checked here any more:
+        // unit 241 removed that panel on Tim's ruling of 2026-09-04, because it
+        // said "nobody heard yet" over a table holding real messages.
     }
 
     /// <summary>

@@ -204,25 +204,44 @@ public sealed class TheDecodedTableIsRealTests
             Assert.DoesNotContain(literal, markup, StringComparison.Ordinal);
         }
 
-        // **AND THE PANEL THAT LOST ITS CARDS CARRIES ITS OWN IDLE LINE**, rather
-        // than being left blank, which is indistinguishable from broken.
-        Assert.Contains("{Binding DigitalSayingIdle}", markup, StringComparison.Ordinal);
+        // **AND THE PANEL THAT LOST ITS CARDS IS ITSELF GONE** (Tim's ruling,
+        // 2026-09-04: the decoded text is what people are saying). Unit 224
+        // emptied it and left its idle line standing; unit 241 removed it,
+        // because "nobody heard yet" over a table of real messages is a surface
+        // asserting something untrue about what was heard.
+        Assert.DoesNotContain(
+            "DigitalSayingPanel", markup, StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "What people are saying", markup, StringComparison.Ordinal);
+
+        // The decoded panel's own idle line stays: an empty panel that says
+        // nothing is indistinguishable from a broken one (HM-DEC-021).
+        Assert.Contains(
+            "{Binding DigitalDecodedIdle}", markup, StringComparison.Ordinal);
     }
 
     /// <summary>
-    /// **THE PLAIN-ENGLISH PANEL SAYS NOTHING THIS UNIT WROTE** (§12.1). What
-    /// Hamlet says a message means is Tim's, so the panel carries the line he
-    /// wrote in August and nothing else.
+    /// **THE MODE STRIP CARRIES ONLY TIM'S OWN IDLE LINE** (§12.1).
     /// </summary>
+    /// <remarks>
+    /// **THIS USED TO ASSERT THE SAME OF "WHAT PEOPLE ARE SAYING", AND THAT
+    /// PANEL IS GONE** (Tim's ruling, 2026-09-04: the decoded text is what
+    /// people are saying). It never had a feed and said "nobody heard yet" over
+    /// a table holding sixty-three real messages, which is a surface asserting
+    /// something untrue about what was heard.
+    ///
+    /// What the removed half guarded has not been dropped, it has been narrowed
+    /// by ruling and moved: Hamlet may now translate the closed FT8 vocabulary
+    /// and must say nothing about anything else. `TheMessageReadsAsThreeParts`
+    /// asserts both halves of that, including the silence.
+    /// </remarks>
     [Fact]
-    public void ThePlainEnglishPanelCarriesOnlyTimsOwnIdleLine()
+    public void TheModeStripCarriesOnlyTimsOwnIdleLine()
     {
         var model = new MainWindowViewModel(new AppSettings(), null);
 
-        _output.WriteLine($"  saying [{model.DigitalSayingIdle}]");
         _output.WriteLine($"  strip  [{model.DigitalModeStripLine}]");
 
-        Assert.Equal(DigitalIdleText.Saying, model.DigitalSayingIdle);
         Assert.Equal(DigitalIdleText.ModeStrip, model.DigitalModeStripLine);
     }
 
@@ -257,17 +276,18 @@ public sealed class TheDecodedTableIsRealTests
             "x:Name=\"VoiceWorkspace\"", StringComparison.Ordinal);
 
         Assert.InRange(from, 0, int.MaxValue);
-        Assert.InRange(to, from, int.MaxValue);
 
         return markup[from..to];
     }
 
     /// <summary>The decoded panel's own markup, and nothing else's.</summary>
     /// <remarks>
-    /// **SCOPED TO ONE PANEL DELIBERATELY.** The plain-English panel below it
-    /// still carries the placeholder cards work instruction 037 wrote, and what
-    /// Hamlet says a message *means* is Tim's under §12.1 — a test asserting over
-    /// the whole file would be this unit ruling on his words by the back door.
+    /// **IT RAN TO THE PLAIN-ENGLISH PANEL AND NOW RUNS TO THE END OF THE
+    /// FILE**, because unit 241 removed that panel (Tim, 2026-09-04). The slice
+    /// was scoped so a claim in the panel below could not satisfy an assertion
+    /// about this one; with that panel gone the decoded table is the last thing
+    /// in the Digital workspace, and every assertion over the slice is a
+    /// DoesNotContain, so a wider slice can only catch more.
     /// </remarks>
     private static string DecodedPanelMarkup()
     {
@@ -276,11 +296,15 @@ public sealed class TheDecodedTableIsRealTests
 
         var from = markup.IndexOf(
             "x:Name=\"DigitalDecodedPanel\"", StringComparison.Ordinal);
-        var to = markup.IndexOf(
-            "x:Name=\"DigitalSayingPanel\"", StringComparison.Ordinal);
+        // **THE SLICE USED TO END AT THE "WHAT PEOPLE ARE SAYING" PANEL**,
+        // which unit 241 removed on Tim's ruling of 2026-09-04. The decoded
+        // panel is the last thing in the Digital workspace now, so the slice
+        // runs to the end of the file. That is wider than before and no weaker:
+        // every assertion over this slice is a DoesNotContain, so a longer slice
+        // can only catch more.
+        var to = markup.Length;
 
         Assert.InRange(from, 0, int.MaxValue);
-        Assert.InRange(to, from, int.MaxValue);
 
         return markup[from..to];
     }

@@ -847,6 +847,25 @@ public partial class MainWindowViewModel : ObservableObject
     /// crawl.
     /// </para>
     /// </remarks>
+    /// <remarks>
+    /// <para>**FIVE HUNDRED, MEASURED AGAINST THE RATE RATHER THAN LEFT AT A
+    /// ROUND NUMBER** (unit 241 tasks 1.3 and 6). The shack machine's first FT8
+    /// slot, 2026-09-04 at 21:41 UTC, held fourteen messages. At four slots a
+    /// minute that is 3,360 rows an hour and 16,800 across a five-hour evening,
+    /// so this cap fills in about nine minutes and then drops a row for every
+    /// row that arrives, all evening - 33.6 times over.</para>
+    /// <para>**IT IS NOT RAISED, AND THE REASON IS THE ROWS RATHER THAN THE
+    /// BYTES.** The list does not virtualise, so every retained row is a live
+    /// grid of controls whether or not it is on screen, and task 5 made a row
+    /// more expensive rather than less - the message cell is now five text
+    /// blocks instead of one. Nine minutes of the busiest band anybody has
+    /// recorded here is a reasonable amount of scrollback for a panel that also
+    /// has a clear button.</para>
+    /// <para>**WHAT WAS ACTUALLY WRONG WAS THE SILENCE.** The cap and its trim
+    /// were already here; the operator was never told either existed. A list
+    /// that discards rows he believes are still there is §0.0's fault whatever
+    /// the number is, so the summary says how many have gone.</para>
+    /// </remarks>
     internal const int MaxDigitalDecodes = 500;
 
     /// <summary>
@@ -949,7 +968,6 @@ public partial class MainWindowViewModel : ObservableObject
     /// real. **What replaces them is Tim's to word** (§12.1), so this unit took a
     /// claim out and did not put one in.
     /// </remarks>
-    public string DigitalSayingIdle => DigitalIdleText.Saying;
 
     /// <summary>
     /// The one line of status on the Digital mode strip.
@@ -1215,9 +1233,6 @@ public partial class MainWindowViewModel : ObservableObject
 
     [ObservableProperty]
     private bool _digitalDecodedExpanded = true;
-
-    [ObservableProperty]
-    private bool _digitalSayingExpanded = true;
 
     [ObservableProperty]
     private bool _scanExpanded = true;
@@ -2494,7 +2509,6 @@ public partial class MainWindowViewModel : ObservableObject
         _digitalWaterfallExpanded = settings.IsPanelExpanded(PanelKeys.DigitalWaterfall);
         _digitalDecodedExpanded = settings.IsPanelExpanded(PanelKeys.DigitalDecoded);
         _digitalNewestFirst = settings.DecodedNewestFirst;
-        _digitalSayingExpanded = settings.IsPanelExpanded(PanelKeys.DigitalSaying);
         _scanExpanded = settings.IsPanelExpanded(PanelKeys.Scan);
         _autoCallExpanded = settings.IsPanelExpanded(PanelKeys.AutoCall);
         _terminalExpanded = settings.IsPanelExpanded(PanelKeys.Terminal);
@@ -3356,9 +3370,6 @@ public partial class MainWindowViewModel : ObservableObject
 
     partial void OnDigitalDecodedExpandedChanged(bool value)
         => PersistPanel(PanelKeys.DigitalDecoded, value);
-
-    partial void OnDigitalSayingExpandedChanged(bool value)
-        => PersistPanel(PanelKeys.DigitalSaying, value);
 
     partial void OnScanExpandedChanged(bool value) => PersistPanel(PanelKeys.Scan, value);
 
@@ -8733,7 +8744,6 @@ public static class PanelKeys
     public const string DigitalDecoded = "digital.decoded";
 
     /// <summary>The Digital tab's plain-English messages.</summary>
-    public const string DigitalSaying = "digital.saying";
 
     /// <summary>The Explorer's story card.</summary>
     public const string Story = "story";

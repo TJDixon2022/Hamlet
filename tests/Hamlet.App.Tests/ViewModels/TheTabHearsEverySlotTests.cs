@@ -366,10 +366,25 @@ public sealed class TheTabHearsEverySlotTests
             new DateTime(2026, 9, 2, 14, 22, 10, DateTimeKind.Utc),
             new DateTime(2026, 9, 2, 14, 23, 20, DateTimeKind.Utc));
 
-        _output.WriteLine($"  saying [{model.DigitalSayingIdle}]");
-
         Assert.Equal(4, model.DigitalDecodes.Count);
-        Assert.Equal(DigitalIdleText.Saying, model.DigitalSayingIdle);
+
+        // **A FULL TABLE STILL SAYS NOTHING BEYOND THE RULED VOCABULARY.** This
+        // used to assert that the "what people are saying" panel was still
+        // showing its idle line; that panel is gone (Tim, 2026-09-04) and the
+        // promise moved onto the rows themselves. Each of these carries a grid
+        // square, which is on the closed list, and none of them names a place.
+        foreach (var row in model.DigitalDecodes)
+        {
+            _output.WriteLine($"  [{row.Message}] -> [{row.PayloadHelp}]");
+
+            Assert.DoesNotContain("Kentucky", row.PayloadHelp, StringComparison.OrdinalIgnoreCase);
+            Assert.DoesNotContain("Spain", row.PayloadHelp, StringComparison.OrdinalIgnoreCase);
+
+            if (row.HasPayloadHelp)
+            {
+                Assert.Equal("grid square: where he is", row.PayloadHelp);
+            }
+        }
     }
 
     /// <summary>
