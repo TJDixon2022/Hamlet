@@ -300,12 +300,17 @@ public static class DigitalCaptureSheet
             CultureInfo.InvariantCulture,
             "{0} chunks / {1} samples dropped by the decode queue, "
             + "{2} callback failure(s), {3} empty buffer(s), "
-            + "longest callback {4:0} us",
+            + "longest callback {4:0} us, {5}",
             arrival.QueueDroppedChunks,
             arrival.QueueDroppedSamples,
             arrival.CallbackFailures,
             arrival.EmptyBuffers,
-            arrival.LongestCallbackMicroseconds));
+            arrival.LongestCallbackMicroseconds,
+            // **THE LONGEST CALLBACK ON ITS OWN SAYS NOTHING WITHOUT A BUDGET.**
+            // A reader months from now has no way to know what this device's
+            // period was, so the figure that made the longest callback either
+            // alarming or unremarkable travels with it (unit 239 task 4).
+            arrival.CallbackBudgetText));
 
         line("slotGrid", boundaries.Count == 0
             ? "no fifteen-second boundary falls inside this window at all"

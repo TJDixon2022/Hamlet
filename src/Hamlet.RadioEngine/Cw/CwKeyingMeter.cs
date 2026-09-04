@@ -190,6 +190,17 @@ public sealed class CwKeyingMeter
     private int _quiet;
     private KeyingVerdict _verdict = KeyingVerdict.Listening;
 
+    /// <summary>How many times the meter's own buffer has been sized.</summary>
+    /// <remarks>
+    /// **ONE, FOR THE LIFE OF THE METER, OR IT IS NOT REUSING ANYTHING**
+    /// (HM-DEC-093). It is the whole of what unit 239 task 3 claims about this
+    /// class, stated as a count rather than as an allocation measurement: a
+    /// difference between two eighty-megabyte readings needs a precision the
+    /// runtime's per-thread counter does not have on a loaded machine, and this
+    /// needs none at all.
+    /// </remarks>
+    public int WindowSizings => _window.Sizings;
+
     /// <summary>The last thing it read.</summary>
     public KeyingReading Reading { get; private set; } = KeyingReading.None;
 

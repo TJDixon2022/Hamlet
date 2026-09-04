@@ -123,6 +123,16 @@ public sealed class WasapiAudioSource : IAudioSource
     private readonly object _gate = new();
     private readonly string _deviceId;
 
+    /// <summary>The device buffer length asked for, in milliseconds.</summary>
+    /// <remarks>
+    /// **IT IS WHAT NAUDIO 2.2.1 ALREADY DEFAULTED TO**, read off a real capture
+    /// rather than recalled, so writing it down pins the budget without changing
+    /// how the card is driven.
+    /// </remarks>
+    public const int BufferMilliseconds = 100;
+
+    private CallbackBudget? _budget;
+
     private WasapiCapture? _capture;
     private float[] _mono = Array.Empty<float>();
     private long _delivered;
@@ -147,7 +157,26 @@ public sealed class WasapiAudioSource : IAudioSource
             using var enumerator = new MMDeviceEnumerator();
             using var endpoint = enumerator.GetDevice(_deviceId);
 
-            _capture = new WasapiCapture(endpoint);
+            // **THE BUFFER LENGTH IS SET HERE RATHER THAN TAKEN**, because it
+            // is the budget every callback is measured against and a budget
+            // nobody wrote down is a budget that changes under a package
+            // upgrade. NAudio 2.2.1 has no property for it - unit 239 task 1
+            // went looking and found there is only this constructor parameter,
+            // so it cannot be adjusted after the capture is built.
+            //
+            // **ONE HUNDRED MILLISECONDS IS WHAT THIS ALREADY HAD**, read off a
+            // real WasapiCapture in `WhatBufferPeriodIsInForceTests`. Writing it
+            // down changes no behavior at all; what it changes is that the
+            // number in `BufferPeriodMicroseconds` is now the number in force
+            // rather than a reasonable guess about a default.
+            //
+            // **AND IT IS NOT LOWERED, ON PURPOSE.** A shorter period would mean
+            // more callbacks with less work in each, which sounds like an
+            // improvement and is a change to how the sound card is driven on a
+            // machine whose audio path this unit is still measuring. That is a
+            // separate question with its own measurement (§12.6).
+            _capture = new WasapiCapture(endpoint, false, BufferMilliseconds);
+            _budget = new CallbackBudget(BufferMilliseconds * 1000.0);
             _capture.DataAvailable += OnDataAvailable;
             SampleRate = _capture.WaveFormat.SampleRate;
 
@@ -320,6 +349,13 @@ public sealed class WasapiAudioSource : IAudioSource
             {
                 _longestCallbackMicroseconds = micros;
             }
+
+            // **AND WHETHER IT FIT IN THE TIME IT HAD.** The longest callback on
+            // its own cannot say that: 91,372 us is a catastrophe against a
+            // 20,000 us budget and 91% of a 100,000 us one, and unit 238
+            // asserted against the first of those figures without the device
+            // ever having had that period (HM-DEC-093).
+            _budget?.Record(micros);
         }
     }
 
@@ -338,6 +374,18 @@ public sealed class WasapiAudioSource : IAudioSource
 
     /// <summary>The longest a single callback has taken, in microseconds.</summary>
     public double LongestCallbackMicroseconds => _longestCallbackMicroseconds;
+
+    /// <summary>The device buffer period every callback is measured against.</summary>
+    public double BufferPeriodMicroseconds => _budget?.PeriodMicroseconds ?? 0;
+
+    /// <summary>Callbacks that ran longer than the whole buffer period.</summary>
+    public long CallbacksOverPeriod => _budget?.OverPeriod ?? 0;
+
+    /// <summary>Callbacks that ran longer than half the buffer period.</summary>
+    public long CallbacksOverHalfPeriod => _budget?.OverHalfPeriod ?? 0;
+
+    /// <summary>How many callbacks have been timed.</summary>
+    public long CallbacksTimed => _budget?.Measured ?? 0;
 
     /// <summary>How many samples the device has delivered since it started.</summary>
     public long DeliveredSamples => _delivered;

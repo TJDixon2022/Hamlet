@@ -964,6 +964,19 @@ public static class AppEvents
                     ["emptyBuffers"] = arrival.EmptyBuffers,
                     ["longestCallbackMicroseconds"] =
                         Math.Round(arrival.LongestCallbackMicroseconds, 0),
+
+                    // **THE BUDGET THAT FIGURE IS MEASURED AGAINST, AND HOW OFTEN
+                    // IT WAS MISSED.** Unit 238 recorded the longest callback and
+                    // nothing to compare it to, so 91,372 us read as a
+                    // catastrophe against a budget the device never had. The
+                    // count of overruns is the number that means something on its
+                    // own; the count over half the period is the one that moves
+                    // first, while the machine is close and still working.
+                    ["bufferPeriodMicroseconds"] =
+                        Math.Round(arrival.BufferPeriodMicroseconds, 0),
+                    ["callbacksOverPeriod"] = arrival.CallbacksOverPeriod,
+                    ["callbacksOverHalfPeriod"] = arrival.CallbacksOverHalfPeriod,
+                    ["callbacksTimed"] = arrival.CallbacksTimed,
                 },
                 TelemetryLevel.Warn);
 
@@ -1010,6 +1023,19 @@ public static class AppEvents
                     ["emptyBuffers"] = arrival.EmptyBuffers,
                     ["longestCallbackMicroseconds"] =
                         Math.Round(arrival.LongestCallbackMicroseconds, 0),
+
+                    // **THE BUDGET THAT FIGURE IS MEASURED AGAINST, AND HOW OFTEN
+                    // IT WAS MISSED.** Unit 238 recorded the longest callback and
+                    // nothing to compare it to, so 91,372 us read as a
+                    // catastrophe against a budget the device never had. The
+                    // count of overruns is the number that means something on its
+                    // own; the count over half the period is the one that moves
+                    // first, while the machine is close and still working.
+                    ["bufferPeriodMicroseconds"] =
+                        Math.Round(arrival.BufferPeriodMicroseconds, 0),
+                    ["callbacksOverPeriod"] = arrival.CallbacksOverPeriod,
+                    ["callbacksOverHalfPeriod"] = arrival.CallbacksOverHalfPeriod,
+                    ["callbacksTimed"] = arrival.CallbacksTimed,
                     ["sampleRate"] = slot.SampleRate,
 
                     // **HOW LOUD THE AUDIO WAS, WHICH NONE OF THE ABOVE COULD

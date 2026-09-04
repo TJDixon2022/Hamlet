@@ -20,6 +20,22 @@
 /// The longest a single device callback has taken.
 /// </param>
 /// <param name="DeliveredSamples">Samples the device has delivered in total.</param>
+/// <param name="BufferPeriodMicroseconds">
+/// The device buffer period every callback is measured against, or zero where
+/// it was not read.
+/// </param>
+/// <param name="CallbacksOverPeriod">
+/// Callbacks that ran longer than the whole period, so the device filled the
+/// next buffer while they were still working.
+/// </param>
+/// <param name="CallbacksOverHalfPeriod">
+/// Callbacks that ran longer than half the period. It is the number that rises
+/// first, while a machine is close to the edge and still working.
+/// </param>
+/// <param name="CallbacksTimed">
+/// How many callbacks were timed at all, so a zero overrun count can be told
+/// from a path nothing has run down yet.
+/// </param>
 /// <remarks>
 /// <para>**EVERY FIELD IS A COUNT OR A COUNT OVER A COUNT** (`CLAUDE.md` §0.0).
 /// There is no quality figure here and no signal-to-noise ratio. A ratio says
@@ -43,11 +59,34 @@ public readonly record struct AudioArrival(
     long CallbackFailures,
     long EmptyBuffers,
     double LongestCallbackMicroseconds,
-    long DeliveredSamples)
+    long DeliveredSamples,
+    double BufferPeriodMicroseconds = 0,
+    long CallbacksOverPeriod = 0,
+    long CallbacksOverHalfPeriod = 0,
+    long CallbacksTimed = 0)
 {
     /// <summary>Nothing measured.</summary>
     public static AudioArrival None { get; } = new(
         double.NaN, double.NaN, 0, 0, 0, 0, 0, 0);
+
+    /// <summary>What the callback budget says, for a line somebody reads.</summary>
+    /// <remarks>
+    /// **IT NAMES HOW MANY WERE TIMED, ALWAYS.** No overruns in a million
+    /// callbacks and no overruns because nothing has run are the same number and
+    /// opposite facts (HM-DEC-093).
+    /// </remarks>
+    public string CallbackBudgetText
+        => BufferPeriodMicroseconds <= 0
+            ? CallbacksTimed + " callbacks timed, buffer period not read so no "
+              + "overrun can be counted"
+            : string.Format(
+                System.Globalization.CultureInfo.InvariantCulture,
+                "{0} over the {1:0} us buffer period, {2} over half of it, "
+                + "in {3} timed",
+                CallbacksOverPeriod,
+                BufferPeriodMicroseconds,
+                CallbacksOverHalfPeriod,
+                CallbacksTimed);
 
     /// <summary>The recent ratio as a percentage, or "not measured".</summary>
     public string RecentText => Describe(RecentRatio);

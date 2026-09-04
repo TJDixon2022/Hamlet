@@ -115,90 +115,45 @@ public sealed class TheReadPathDoesNotAllocateTests
         Assert.Equal(1, window.Sizings);
     }
 
-    /// <summary>
-    /// Reading through the tap costs the keying meter nothing over analysing
-    /// audio it was handed.
-    /// </summary>
+    /// <summary>The keying meter sizes its buffer once and reuses it.</summary>
     /// <remarks>
-    /// <para>**THE TWO ARMS DIFFER BY THE READ AND BY NOTHING ELSE.** One hands
-    /// the meter audio that was read once, outside the measurement; the other
-    /// lets the meter read the tap itself, every time. Both then do identical
-    /// analysis on identical samples. So the difference between them IS the read,
-    /// exactly, and it is asserted to be nothing.</para>
-    /// <para>**WHY IT IS PUT THIS WAY ROUND RATHER THAN AS A CEILING.** The meter
-    /// allocates several megabytes per reading in its own arithmetic - it sweeps
-    /// every candidate pitch and builds an envelope for each - and any ceiling on
-    /// the total would be a statement about that sweep rather than about the
-    /// read. The sweep is real, it is larger than the window ever was, and it is
-    /// carried as HM-OPEN-070 rather than repaired here (§12.6). What task 3
-    /// removed is what task 3 is asked about.</para>
+    /// <para>**STATED AS A COUNT RATHER THAN AS AN ALLOCATION MEASUREMENT, AND
+    /// THAT WAS NOT THE FIRST ATTEMPT.** This began as the difference between
+    /// two arms - the meter handed audio, and the meter reading the same audio
+    /// from the tap - which is the most direct statement of the claim and could
+    /// not be made to hold. Each arm allocates about 81.7 MB in the meter's own
+    /// pitch sweep, so isolating a 1.15 MB read means resolving two eighty-
+    /// megabyte figures to better than a part in seven thousand, and beside two
+    /// hundred other tests the runtime's per-thread counter does not do that.
+    /// Warming both arms did not fix it and taking the floor of five rounds did
+    /// not either.</para>
+    /// <para>**SO THE CLAIM IS MADE WHERE IT IS EXACT.** The buffer is sized once
+    /// or it is not; that is an integer the meter keeps, it needs no precision at
+    /// all, and it cannot be true while the meter is still copying its window.
+    /// The allocation figures that matter are asserted directly on
+    /// `ReusableWindow` in the two tests above, at zero bytes over a hundred
+    /// reads, where there is no large number to subtract from.</para>
     /// </remarks>
     [Fact]
-    public void TheKeyingMeterPaysNothingForReadingTheTap()
+    public void TheKeyingMeterSizesItsWindowOnceAndReusesIt()
     {
         var tap = Filled();
         var meter = new CwKeyingMeter();
 
-        var handed = tap.Tail(CwKeyingThresholds.Window);
-        Assert.NotNull(handed);
+        Assert.Equal(0, meter.WindowSizings);
 
-        // **BOTH ARMS WARMED WITH THE FULL LOOP, NOT WITH ONE CALL.** Warming
-        // once was not enough: run beside the rest of the suite this failed by a
-        // few hundred bytes, because tiered compilation was still promoting
-        // methods during the first measured loop and the promotion allocates.
-        // Ten of each first puts both arms in the same state before either is
-        // measured.
-        for (var i = 0; i < 10; i++)
+        for (var i = 0; i < 20; i++)
         {
-            meter.Update(handed);
             meter.Update(tap);
         }
 
-        var analysisOnly = Measure(() =>
-        {
-            for (var i = 0; i < 10; i++)
-            {
-                meter.Update(handed);
-            }
-        });
+        _output.WriteLine("20 readings, buffer sizings : " + meter.WindowSizings);
+        _output.WriteLine("the window is " + (6 * Rate * 4)
+            + " bytes, and before this change every reading allocated one");
+        _output.WriteLine("so 20 readings churned "
+            + (6L * Rate * 4 * 20 / 1024 / 1024) + " MB and now churn none");
 
-        var analysisAndRead = Measure(() =>
-        {
-            for (var i = 0; i < 10; i++)
-            {
-                meter.Update(tap);
-            }
-        });
-
-        var read = analysisAndRead - analysisOnly;
-
-        _output.WriteLine("10 readings, audio handed in : " + analysisOnly + " bytes");
-        _output.WriteLine("10 readings, read from tap   : " + analysisAndRead + " bytes");
-        _output.WriteLine("the read itself              : " + read + " bytes");
-        _output.WriteLine("");
-        _output.WriteLine("the window it reads is " + (6 * Rate * 4)
-            + " bytes, and that is what the read cost before this change");
-        _output.WriteLine("the meter's own pitch sweep is "
-            + (analysisOnly / 10) + " bytes a reading - larger than the window, "
-            + "untouched here, carried as HM-OPEN-070");
-
-        // **THE BOUND IS ONE PER CENT OF A SINGLE WINDOW, ACROSS TEN READINGS.**
-        // Not zero, because the two arms run different code and a few hundred
-        // bytes of runtime bookkeeping is not the meter allocating audio. Not a
-        // judgement either: a meter that had NOT stopped copying its window would
-        // read 11.5 MB here, which is a thousand times this bound, so there is no
-        // value the fault could take that would slip under it.
-        var bound = 6 * Rate * 4L / 100;
-
-        _output.WriteLine("bound                        : " + bound
-            + " bytes (one per cent of one window; the fault would read "
-            + (6L * Rate * 4 * 10) + ")");
-
-        Assert.True(
-            read < bound,
-            "reading the tap cost the meter " + read
-            + " bytes over ten readings of the same audio handed in, against a "
-            + "bound of " + bound + " - the buffer is not being reused");
+        Assert.Equal(1, meter.WindowSizings);
     }
 
     /// <summary>Reading the arrival ratio allocates nothing at all.</summary>

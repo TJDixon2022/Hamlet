@@ -982,7 +982,15 @@ public partial class MainWindowViewModel : ObservableObject
             wasapi?.CallbackFailures ?? 0,
             wasapi?.EmptyBuffers ?? 0,
             wasapi?.LongestCallbackMicroseconds ?? 0,
-            tap.SamplesSeen);
+            tap.SamplesSeen,
+            // **ZERO HERE MEANS THE PERIOD WAS NOT READ, NOT THAT IT IS ZERO.**
+            // The training radio and the WAV replay source are not WASAPI, so
+            // they have no device period, and `AudioArrival` says so in words
+            // rather than reporting a budget of nothing (§0.0).
+            wasapi?.BufferPeriodMicroseconds ?? 0,
+            wasapi?.CallbacksOverPeriod ?? 0,
+            wasapi?.CallbacksOverHalfPeriod ?? 0,
+            wasapi?.CallbacksTimed ?? 0);
     }
 
     /// <summary>What the census line says about the audio that reached it.</summary>
@@ -1008,8 +1016,26 @@ public partial class MainWindowViewModel : ObservableObject
             return "";
         }
 
-        return "  The sound card delivered " + arrival.RecentText
+        var line = "  The sound card delivered " + arrival.RecentText
             + " of the last fifteen seconds, so this slot is fragments.";
+
+        // **AND WHETHER THE CALLBACK WAS THE REASON**, which is the one thing
+        // the operator can act on from here: a card that is delivering short
+        // because its callbacks are running past their budget is a different
+        // fault from a card that is not delivering at all, and until unit 239
+        // the census could not tell him which he had. It is added only when the
+        // count is nonzero, because a line that always speaks is one he stops
+        // reading.
+        if (arrival.CallbacksOverPeriod > 0)
+        {
+            line += "  " + arrival.CallbacksOverPeriod
+                + " audio callbacks ran past the "
+                + arrival.BufferPeriodMicroseconds.ToString(
+                    "0", System.Globalization.CultureInfo.InvariantCulture)
+                + " us the device allows them.";
+        }
+
+        return line;
     }
 
     /// <summary>
