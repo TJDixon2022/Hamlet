@@ -177,6 +177,16 @@ public static class CwKeyingThresholds
 /// </remarks>
 public sealed class CwKeyingMeter
 {
+    /// <summary>The six seconds it reads, in a buffer it owns.</summary>
+    /// <remarks>
+    /// **ONCE A SECOND, AND IT USED TO BE 1.15 MB EACH TIME.** Six seconds at
+    /// 48 kHz is 288,000 floats, which is on the large object heap, whose
+    /// collection stops every thread in the process including the one carrying
+    /// audio. The meter exists to tell the operator whether the audio path is
+    /// delivering; it should not be one of the reasons it is not.
+    /// </remarks>
+    private readonly ReusableWindow _window = new();
+
     private int _quiet;
     private KeyingVerdict _verdict = KeyingVerdict.Listening;
 
@@ -198,7 +208,7 @@ public sealed class CwKeyingMeter
     {
         ArgumentNullException.ThrowIfNull(tap);
 
-        return Update(tap.Tail(CwKeyingThresholds.Window));
+        return Update(_window.Tail(tap, CwKeyingThresholds.Window));
     }
 
     /// <summary>Look at one stretch of audio.</summary>

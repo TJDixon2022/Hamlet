@@ -183,6 +183,16 @@ public sealed class Ft8SlotWatch
     /// A sample index and the moment it was current, against which the audio is
     /// checked for keeping up. Null until any audio has been seen.
     /// </summary>
+    /// <summary>The slot it reads, in a buffer it owns.</summary>
+    /// <remarks>
+    /// **A SLOT IS 720,000 SAMPLES AND IT IS READ EVERY FIFTEEN SECONDS.** That
+    /// is 2.88 MB straight onto the large object heap four times a minute, all
+    /// of it dead the moment the slot is decoded, and its collection stops the
+    /// audio callback along with everything else. The watch's whole job is to
+    /// notice audio that did not arrive; it should not be helping.
+    /// </remarks>
+    private readonly ReusableWindow _slot = new();
+
     private long? _anchorSample;
     private DateTime _anchorPcUtc;
 
@@ -321,11 +331,12 @@ public sealed class Ft8SlotWatch
         var firstSample = lastSample - perSlot;
 
         // `Window` answers null rather than short when the ring has moved past
-        // what was asked for, which is what makes the refusal below honest. It
-        // takes the tap's own lock, so audio arriving between reading
-        // `SamplesSeen` and asking for the window can only make the answer null —
-        // never wrong audio, and never a slot from the wrong place.
-        var audio = firstSample < 0 ? null : tap.Window(firstSample, perSlot);
+        // what was asked for, which is what makes the refusal below honest.
+        // Since unit 239 it takes no lock at all: it copies and then checks the
+        // tap's sequence number, so audio arriving between reading `SamplesSeen`
+        // and asking for the window can only make the answer null — never wrong
+        // audio, and never a slot from the wrong place.
+        var audio = firstSample < 0 ? null : _slot.From(tap, firstSample, perSlot);
 
         if (audio is null)
         {

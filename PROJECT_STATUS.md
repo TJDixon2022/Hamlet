@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 5 of 5
-WORK_INSTRUCTION: 238 - the tap gets every sample, or counts the ones it didn't
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
+STATE: EXECUTING
+TASK: 3 of 5
+WORK_INSTRUCTION: 239 - the reader must never block the writer
+BALL: code
+NEXT_PASTE: none
 RULES_AT: HM-DEC-152 (2026-08-31)
-UPDATED: 2026-09-03T18:14:01-04:00
-NOTE: Five of five done; callback 46780us to 35us, tap whole, 249 drops counted. Arrival ratio now reads on the census, telemetry and sidecar
+UPDATED: 2026-09-03T19:57:15-04:00
+NOTE: Repeating readers own their buffers: the read path measures 0 bytes where it churned 1.15MB a second, 36 CW locks green
 
 ---
 

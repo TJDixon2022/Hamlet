@@ -1147,7 +1147,7 @@ public sealed class CwDecoder
         }
 
         var samples = held * _tracker.HopSamples;
-        var audio = Tap.Window(_probabilistic.SamplesSeen - samples, samples);
+        var audio = _reReadWindow.From(Tap, _probabilistic.SamplesSeen - samples, samples);
 
         if (audio is null)
         {
@@ -1157,6 +1157,28 @@ public sealed class CwDecoder
         _reReadAt = measured;
         _probabilistic.ReadAgain(audio.Samples, measured);
     }
+
+    /// <summary>The four windows the decoder reads on a timer, each in its
+    /// own reused buffer.</summary>
+    /// <remarks>
+    /// <para>**FOUR AND NOT ONE, BECAUSE THEY ARE FOUR DIFFERENT LENGTHS.** The
+    /// swing and the peak read eight seconds, the ranking four, and the re-read
+    /// however many hops the probabilistic stream is holding. Sharing one buffer
+    /// between them would resize it on every call, which is the allocation this
+    /// removes, wearing a different name.</para>
+    /// <para>**WHAT THEY WERE COSTING.** At 48 kHz, and at the once-a-second
+    /// ceiling each of them has: 1.54 MB a second for the swing, 1.54 for the
+    /// peak, 768 KB a read for the ranking, and 2.3 MB for a twelve-second
+    /// re-read. All of it on the large object heap, whose collection stops the
+    /// audio callback along with every other thread.</para>
+    /// </remarks>
+    private readonly Audio.ReusableWindow _swingWindow = new();
+
+    private readonly Audio.ReusableWindow _peakWindow = new();
+
+    private readonly Audio.ReusableWindow _rankWindow = new();
+
+    private readonly Audio.ReusableWindow _reReadWindow = new();
 
     private double _reReadAt = double.NaN;
 
@@ -1413,7 +1435,7 @@ public sealed class CwDecoder
             return;
         }
 
-        var audio = Tap.Window(atSample - window, window);
+        var audio = _swingWindow.From(Tap, atSample - window, window);
 
         if (audio is null)
         {
@@ -1476,7 +1498,7 @@ public sealed class CwDecoder
             return;
         }
 
-        var audio = Tap.Window(atSample - window, window);
+        var audio = _peakWindow.From(Tap, atSample - window, window);
 
         if (audio is null)
         {
@@ -1541,7 +1563,7 @@ public sealed class CwDecoder
             return;
         }
 
-        var audio = Tap.Window(atSample - window, window);
+        var audio = _rankWindow.From(Tap, atSample - window, window);
 
         if (audio is null)
         {

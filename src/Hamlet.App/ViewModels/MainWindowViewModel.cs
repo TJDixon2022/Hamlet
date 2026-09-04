@@ -4924,9 +4924,18 @@ public partial class MainWindowViewModel : ObservableObject
         _meterLastUtc = DateTime.UtcNow;
 
         var meter = _keyingMeter;
-        var window = _decoder.Tap.Tail(CwKeyingThresholds.Window);
+        var tap = _decoder.Tap;
 
-        _meterWork = Task.Run(() => meter.Update(window));
+        // **THE READ MOVED INSIDE THE TASK IN UNIT 239, AND IT IS NOT A TIDY-UP.**
+        // It used to happen right here, on the UI thread: six seconds of audio,
+        // 1.15 MB, allocated once a second on the thread that draws. The meter
+        // now owns that buffer and reads into it, so this costs the UI thread
+        // nothing and the large object heap nothing.
+        //
+        // **ONE UPDATE RUNS AT A TIME AND THAT IS WHAT MAKES A SHARED BUFFER
+        // SAFE.** The guard above returns while `_meterWork` is not null, so a
+        // second read cannot start while the first is still reading.
+        _meterWork = Task.Run(() => meter.Update(tap));
     }
 
     /// <summary>Put a reading on the screen.</summary>

@@ -4,6 +4,48 @@ Questions with owner and severity. `owner` is who must act next. Format in
 `CLAUDE.md` §3.
 
 ---
+id: HM-OPEN-070
+status: open
+owner: unassigned
+raised: 2026-09-03
+severity: slows
+refs: src/Hamlet.RadioEngine/Cw/KeyingEnvelope.cs, tests/Hamlet.RadioEngine.Tests/Audio/TheReadPathDoesNotAllocateTests.cs
+---
+
+The keying meter allocates 8.17 MB per reading, once a second, and none of it
+is the audio it reads.
+
+Found while proving work instruction 239 task 3, which set out to stop the
+repeating readers of `AudioTap` allocating. That worked: the meter's read is now
+exactly zero bytes, measured as the difference between analysing audio handed in
+and reading the same audio from the tap. But the same measurement showed the
+meter's own arithmetic allocating **8,170,296 bytes a reading** — seven times the
+1.15 MB window it was reading, and the window was the thing unit 239 was worried
+about.
+
+`KeyingEnvelope.Best` sweeps every candidate pitch from `LowestToneHz` to
+`HighestToneHz` and builds a fresh envelope for each: a `List<double>` per
+candidate, plus `OrderBy(...).ToArray()`, plus a runs list and an elements list.
+Roughly twenty-five candidates a reading, and none of it survives the call.
+
+**Why it is not simply repaired on the way past** (§12.6). The envelope work is
+arithmetic on the audio rather than a copy of it, task 3 asked about the read
+path, and a session that fixes what it walked past produces a diff nobody can
+review. It is also not obviously the same hazard: at about 48 KB a list these are
+generation 0 allocations rather than large object heap ones, so they are
+collected cheaply and often instead of rarely and expensively.
+
+**Why it is still worth an entry.** 8 MB a second of generation 0 churn beside a
+live audio callback is not free, every collection suspends every thread, and this
+is now the largest allocator on the timer path by a wide margin. The buffers are
+all fixed-length per reading and could be owned exactly as `ReusableWindow` owns
+the window.
+
+**What would settle it**: measure the meter's contribution to callback overruns
+on the shack machine with the counters task 4 adds, and act on the number rather
+than on the size of the allocation.
+
+---
 id: HM-OPEN-068
 status: open
 owner: tim
