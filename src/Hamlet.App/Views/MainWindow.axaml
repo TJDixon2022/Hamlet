@@ -3010,7 +3010,32 @@
 
                                 </Grid>
 
+                                <!-- **THE PANEL SCROLLS ITSELF, AND THE REST OF
+                                     THE TAB STOPS MOVING** (unit 241 task 3).
+
+                                     There was no scroller here at all. The
+                                     comment on `MaxDigitalDecodes` said there
+                                     was one - "a plain ItemsControl inside a
+                                     ScrollViewer" - and there was not, so the
+                                     window's own scroller carried the whole
+                                     list and the panel grew without bound. At
+                                     fourteen rows a slot the waterfall above
+                                     was pushed off the screen inside a minute
+                                     and only the first few rows were reachable.
+
+                                     **MaxHeight AND NOT Height**, so a table with
+                                     three rows in it is three rows tall rather
+                                     than a mostly empty box. 300 is about
+                                     eighteen rows, which is longer than one
+                                     slot's worth on the busiest band recorded
+                                     here, so an operator watching live sees a
+                                     whole slot without touching anything. -->
+                                <ScrollViewer MaxHeight="300"
+                                              VerticalScrollBarVisibility="Auto"
+                                              HorizontalScrollBarVisibility="Disabled"
+                                              IsVisible="{Binding HasDigitalDecodes}">
                                 <ItemsControl x:Name="DigitalDecodedRows"
+                                              ctl:FollowingScroll.Follows="True"
                                               ItemsSource="{Binding DigitalDecodes}">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate x:DataType="vm:DigitalDecodeRow">
@@ -3042,6 +3067,7 @@
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
+                                </ScrollViewer>
 
                                 <!-- **THE PANEL'S OWN IDLE LINE, WRITTEN IN
                                      AUGUST AND KEPT** (HM-DEC-021). An empty
