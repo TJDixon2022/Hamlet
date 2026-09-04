@@ -3107,7 +3107,58 @@
                                                 <TextBlock Grid.Column="3" Text="{Binding Hz}"
                                                            TextAlignment="Right"
                                                            FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,14,1" />
-                                                <TextBlock Grid.Column="4" Text="{Binding Message}"
+                                                <!-- **THE MESSAGE READS AS THREE
+                                                     THINGS AT A GLANCE** (unit 241
+                                                     task 5). The operator said the
+                                                     columns read as gibberish and
+                                                     that he could not tell a
+                                                     message was three parts.
+
+                                                     **COLOUR IS NOT THE ONLY
+                                                     CARRIER** (§0.6). The order is
+                                                     fixed - addressee, sender,
+                                                     payload - and each field says
+                                                     what it is on hover, so the
+                                                     structure survives being
+                                                     printed in grey.
+
+                                                     **THE TWO PRESENTATIONS ARE
+                                                     EXCLUSIVE.** A message with no
+                                                     three parts, such as free text
+                                                     or telemetry, is drawn below
+                                                     exactly as it arrived rather
+                                                     than being split at a boundary
+                                                     nobody found. -->
+                                                <StackPanel Grid.Column="4"
+                                                            Orientation="Horizontal"
+                                                            Spacing="0"
+                                                            IsVisible="{Binding HasFields}">
+                                                    <TextBlock Text="{Binding Addressee}"
+                                                               ToolTip.Tip="{Binding AddresseeHelp}"
+                                                               Foreground="{StaticResource HmTextMutedBrush}"
+                                                               FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,0,1" />
+                                                    <TextBlock Text=" "
+                                                               FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,0,1" />
+                                                    <TextBlock Text="{Binding Sender}"
+                                                               ToolTip.Tip="{Binding SenderHelp}"
+                                                               Foreground="{StaticResource HmGreenBrush}"
+                                                               FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,0,1" />
+                                                    <TextBlock Text=" "
+                                                               FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,0,1" />
+
+                                                    <!-- The payload keeps the
+                                                         primary text colour, and
+                                                         carries hover text only
+                                                         where the closed table has
+                                                         a sentence for it. -->
+                                                    <TextBlock Text="{Binding Payload}"
+                                                               ToolTip.Tip="{Binding PayloadHelp}"
+                                                               Foreground="{StaticResource HmTextPrimaryBrush}"
+                                                               FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,0,1" />
+                                                </StackPanel>
+
+                                                <TextBlock Grid.Column="4" Text="{Binding Unsplit}"
+                                                           IsVisible="{Binding !HasFields}"
                                                            FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,0,1" />
                                             </Grid>
                                         </DataTemplate>

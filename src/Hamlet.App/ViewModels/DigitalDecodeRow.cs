@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 using Hamlet.RadioEngine.Audio;
 
 namespace Hamlet.App.ViewModels;
@@ -29,6 +29,68 @@ public sealed record DigitalDecodeRow(
 {
     /// <summary>What the `snr` cell says while nothing measures one.</summary>
     public const string NoMeasurement = "—";
+
+    /// <summary>The message split into its three fields, or null.</summary>
+    /// <remarks>
+    /// **NULL FOR ANYTHING THAT IS NOT PLAINLY THREE FIELDS.** Free text,
+    /// telemetry and non-standard callsign forms are drawn as they arrived, with
+    /// no colouring and no field tooltips, because labelling the wrong half of a
+    /// message is worse than labelling none of it.
+    /// </remarks>
+    public Ft8MessageFields? Fields => Ft8Vocabulary.Split(Message);
+
+    /// <summary>Who the message is addressed to, or "".</summary>
+    /// <remarks>
+    /// **`Addressee` AND `Sender` RATHER THAN `To` AND `From`.** The record
+    /// already has a static `From(Ft8Decode)` factory, and a property of the
+    /// same name does not compile. The pair is renamed together so they stay
+    /// symmetrical.
+    /// </remarks>
+    public string Addressee => Fields?.To ?? "";
+
+    /// <summary>Who sent it, or "".</summary>
+    public string Sender => Fields?.From ?? "";
+
+    /// <summary>The payload, or "".</summary>
+    public string Payload => Fields?.Payload ?? "";
+
+    /// <summary>The whole message, shown only where it has no three parts.</summary>
+    /// <remarks>
+    /// **THE TWO ARE EXCLUSIVE**, so a message never appears twice: either the
+    /// three coloured fields are shown, or this is.
+    /// </remarks>
+    public string Unsplit => Fields is null ? Message : "";
+
+    /// <summary>True where the message has three fields to colour.</summary>
+    public bool HasFields => Fields is not null;
+
+    /// <summary>Hover text naming the addressee field.</summary>
+    /// <remarks>
+    /// **STRUCTURE, NOT MEANING.** Saying which field is the addressee is a fact
+    /// about the message format. It does not say who the station is, where they
+    /// are, or why they are calling.
+    /// </remarks>
+    public string AddresseeHelp
+        => string.Equals(Addressee, "CQ", StringComparison.OrdinalIgnoreCase)
+            || Addressee.StartsWith("CQ ", StringComparison.OrdinalIgnoreCase)
+            ? "Who this is addressed to. CQ means anyone."
+            : "Who this is addressed to.";
+
+    /// <summary>Hover text naming the sender field.</summary>
+    public string SenderHelp => "Who sent it.";
+
+    /// <summary>
+    /// Hover text for the payload, from the closed table, or "" for silence.
+    /// </summary>
+    /// <remarks>
+    /// **AN EMPTY STRING AND NOT A FALLBACK SENTENCE.** Avalonia shows no
+    /// tooltip for an empty tip, which is exactly what Tim's ruling asks for:
+    /// anything off the list gets nothing, not "unrecognised".
+    /// </remarks>
+    public string PayloadHelp => Ft8Vocabulary.Explain(Payload) ?? "";
+
+    /// <summary>True where the payload is on the list and has hover text.</summary>
+    public bool HasPayloadHelp => PayloadHelp.Length > 0;
 
     /// <summary>Puts a decode into the table's five columns.</summary>
     /// <param name="decode">What came out of the slot.</param>

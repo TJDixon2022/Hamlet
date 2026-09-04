@@ -225,8 +225,16 @@ public sealed class TheDecodedColumnsLineUpTests
     private static List<double> Origins(Grid grid)
         => grid.Children
             .OfType<Control>()
-            .OrderBy(Grid.GetColumn)
-            .Select(c => c.Bounds.X)
+
+            // **ONE VISIBLE CHILD PER COLUMN.** Since unit 241 task 5 the
+            // message column holds two children - the three coloured fields and
+            // the whole-message fallback - and exactly one of them is visible
+            // for any given row. A hidden control is arranged at nought, so
+            // taking every child would compare a real origin against a zero.
+            .Where(c => c.IsVisible)
+            .GroupBy(Grid.GetColumn)
+            .OrderBy(g => g.Key)
+            .Select(g => g.First().Bounds.X)
             .ToList();
 
     /// <summary>Put two real decodes on the table, at two tone widths.</summary>
