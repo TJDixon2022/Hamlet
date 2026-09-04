@@ -1,4 +1,4 @@
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 using Hamlet.RadioEngine.Explore;
 using Hamlet.RadioEngine.Telemetry;
@@ -382,6 +382,16 @@ public sealed class AppSettings
     [JsonIgnore]
     public int EnabledTelemetryCategoryCount
         => Enum.GetValues<TelemetryCategory>().Count(IsTelemetryEnabled);
+
+    /// <summary>Whether the decoded table shows the newest slot first.</summary>
+    /// <remarks>
+    /// **NEWEST AT THE TOP, AND THAT IS A RULING RATHER THAN A DEFAULT THIS
+    /// CODE MAY WEIGH** (Tim, 2026-09-04). The toggle exists and it opens this
+    /// way round. It sits beside the panel's expand state because it is the same
+    /// kind of fact: how this operator wants this panel to look, remembered
+    /// between evenings.
+    /// </remarks>
+    public bool DecodedNewestFirst { get; set; } = true;
 
     /// <summary>True when the panel is expanded. Unknown panels are expanded.</summary>
     /// <param name="panelKey">Stable panel id, e.g. "spots".</param>

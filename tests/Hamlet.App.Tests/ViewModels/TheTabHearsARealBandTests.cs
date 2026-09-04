@@ -1,4 +1,4 @@
-using Hamlet.App.Settings;
+﻿using Hamlet.App.Settings;
 using Hamlet.App.ViewModels;
 using Hamlet.RadioEngine.Audio;
 using Hamlet.Tests.Shared;
@@ -108,7 +108,7 @@ public sealed class TheTabHearsARealBandTests
         // The summary names the slot the rows came from and how many there are,
         // which is the only claim on that panel and is true of this recording.
         Assert.Equal(
-            $"142230 UTC · {model.DigitalDecodes.Count} shown",
+            $"142230 UTC · {model.DigitalDecodes.Count} shown · newest first",
             model.DigitalDecodedSummary);
 
         // **A WITNESS, NEVER A GATE.** Step 5's third criterion was rewritten by

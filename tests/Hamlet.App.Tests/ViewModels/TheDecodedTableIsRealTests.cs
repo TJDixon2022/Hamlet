@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 using Ft8Sharp.Encode;
 using Ft8Sharp.Message;
 using Hamlet.App.Settings;
@@ -100,7 +100,10 @@ public sealed class TheDecodedTableIsRealTests
         Assert.Equal(DigitalDecodeRow.NoMeasurement, only.Snr);
 
         Assert.True(model.HasDigitalDecodes);
-        Assert.Equal("142230 UTC · 1 shown", model.DigitalDecodedSummary);
+        // The summary now names the direction too, so a collapsed panel says
+        // which end the newest slot is at (§0.5).
+        Assert.Equal(
+            "142230 UTC · 1 shown · newest first", model.DigitalDecodedSummary);
     }
 
     /// <summary>

@@ -2919,6 +2919,52 @@
                                                   Title="Decoded text"
                                                   Summary="{Binding DigitalDecodedSummary}"
                                                   IsExpanded="{Binding DigitalDecodedExpanded, Mode=TwoWay}">
+
+                                <!-- **THE TWO CONTROLS GO IN THE HEADER, WHERE
+                                     THIS PANEL FAMILY ALREADY PUTS THEM** (§0.5).
+                                     The waterfall panel above carries its
+                                     "keep the last 30 seconds" button in exactly
+                                     this slot, so neither of these is a new
+                                     affordance to learn.
+
+                                     **BOTH ARE HIDDEN WHILE THE TABLE IS
+                                     EMPTY.** There is nothing to clear and
+                                     nothing to order, and a live control that
+                                     does nothing teaches the operator that
+                                     controls here do nothing (HM-DEC-087). -->
+                                <ctl:CollapsiblePanel.HeaderAction>
+                                    <StackPanel Orientation="Horizontal" Spacing="6"
+                                                IsVisible="{Binding HasDigitalDecodes}">
+
+                                        <!-- **IT NAMES THE STATE AND NOT THE
+                                             ACTION.** "oldest first" on a button
+                                             is ambiguous about whether that is
+                                             what you have or what you would
+                                             get, and this panel is read by
+                                             somebody who has never seen FT8. -->
+                                        <Button x:Name="DigitalOrderToggle"
+                                                Content="{Binding DigitalOrderLabel}"
+                                                ToolTip.Tip="Which end the newest slot is at. Messages decoded from the same slot keep the order they were found in either way."
+                                                FontSize="11"
+                                                Padding="10,3"
+                                                Command="{Binding ToggleDigitalOrderCommand}"
+                                                Background="{StaticResource HmSlateTintBrush}"
+                                                BorderBrush="{StaticResource HmSlateEdgeBrush}"
+                                                BorderThickness="1"
+                                                Foreground="{StaticResource HmTextPrimaryBrush}" />
+
+                                        <Button x:Name="DigitalClearPress"
+                                                Content="clear"
+                                                ToolTip.Tip="Empties what is on screen. The telemetry record and any capture sidecars are untouched."
+                                                FontSize="11"
+                                                Padding="10,3"
+                                                Command="{Binding ClearDigitalDecodesCommand}"
+                                                Background="{StaticResource HmSlateTintBrush}"
+                                                BorderBrush="{StaticResource HmSlateEdgeBrush}"
+                                                BorderThickness="1"
+                                                Foreground="{StaticResource HmTextPrimaryBrush}" />
+                                    </StackPanel>
+                                </ctl:CollapsiblePanel.HeaderAction>
                               <StackPanel Spacing="6">
 
                                 <!-- **THE HEADINGS STAY AND THE FOUR ROWS UNDER

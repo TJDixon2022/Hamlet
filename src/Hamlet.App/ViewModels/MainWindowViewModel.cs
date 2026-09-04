@@ -816,6 +816,21 @@ public partial class MainWindowViewModel : ObservableObject
     /// </remarks>
     public ObservableCollection<DigitalDecodeRow> DigitalDecodes { get; } = new();
 
+    /// <summary>Every row in the order the decoder produced it.</summary>
+    /// <remarks>
+    /// <para>**THE DISPLAY ORDER IS A VIEW OF THIS AND NEVER THE RECORD OF
+    /// IT.** `DigitalDecodes` is whichever way round the operator asked for;
+    /// this is what actually happened, and it is what the direction is applied
+    /// to when he changes his mind. Deriving the display from arrival order
+    /// means flipping the toggle twice returns exactly the rows that were
+    /// there, which reversing the display in place would not.</para>
+    /// <para>**IT IS ALSO WHAT THE TRIM READS.** The oldest row is the oldest
+    /// arrival wherever it currently sits on screen, and dropping "the first
+    /// one in the collection" would drop the newest under a newest-first
+    /// ordering.</para>
+    /// </remarks>
+    private readonly List<DigitalDecodeRow> _digitalArrivals = new();
+
     /// <summary>
     /// How many rows the table keeps before the oldest fall off.
     /// </summary>
@@ -885,6 +900,44 @@ public partial class MainWindowViewModel : ObservableObject
     /// </remarks>
     public bool HasDigitalDecodes => DigitalDecodes.Count > 0;
 
+    /// <summary>Whether the newest slot is shown at the top.</summary>
+    /// <remarks>
+    /// **IT OPENS NEWEST-FIRST** (Tim, 2026-09-04), and persists beside the
+    /// panel's expand state.
+    /// </remarks>
+    public bool DigitalNewestFirst
+    {
+        get => _digitalNewestFirst;
+        set
+        {
+            if (_digitalNewestFirst == value)
+            {
+                return;
+            }
+
+            _digitalNewestFirst = value;
+            _settings.DecodedNewestFirst = value;
+            SettingsStore.Save(_settings);
+
+            Reorder();
+
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(DigitalOrderLabel));
+            OnPropertyChanged(nameof(DigitalDecodedSummary));
+        }
+    }
+
+    private bool _digitalNewestFirst = true;
+
+    /// <summary>What the order button says it will do.</summary>
+    /// <remarks>
+    /// **IT NAMES THE STATE, NOT THE ACTION.** A button reading "oldest first"
+    /// is ambiguous about whether that is what you have or what you will get,
+    /// and this panel is being read by somebody who has never seen FT8.
+    /// </remarks>
+    public string DigitalOrderLabel
+        => _digitalNewestFirst ? "newest first" : "oldest first";
+
     /// <summary>What the decoded panel says before anything has decoded.</summary>
     public string DigitalDecodedIdle => DigitalIdleText.Decoded;
 
@@ -940,7 +993,21 @@ public partial class MainWindowViewModel : ObservableObject
                 // was one press' worth these were the same row. It grows now, so
                 // reading row zero would leave the summary naming a slot from an
                 // hour ago while messages arrived underneath it.
-                return $"{DigitalDecodes[^1].Utc} UTC · {DigitalDecodes.Count} shown";
+                // **THE NEWEST DECODE, WHICHEVER END IT IS NOW AT.** This
+                // read `DigitalDecodes[^1]` when there was only one possible
+                // order, and would have named the oldest row the moment the
+                // toggle below was built. The arrival list always ends at the
+                // newest, whatever the display is doing.
+                var newest = _digitalArrivals.Count > 0
+                    ? _digitalArrivals[^1].Utc
+                    : DigitalDecodes[^1].Utc;
+
+                // **AND WHICH WAY ROUND IT IS ORDERED, BECAUSE A COLLAPSED
+                // PANEL STILL CARRIES ITS SUMMARY** (§0.5). Somebody who shuts
+                // the panel and opens it later should not have to work out from
+                // the rows which end is the live one.
+                return $"{newest} UTC · {DigitalDecodes.Count} shown · "
+                    + DigitalOrderLabel + TrimNote();
             }
 
             return _digitalDecodeNote.Length > 0
@@ -2426,6 +2493,7 @@ public partial class MainWindowViewModel : ObservableObject
         _waterfallExpanded = settings.IsPanelExpanded(PanelKeys.Waterfall);
         _digitalWaterfallExpanded = settings.IsPanelExpanded(PanelKeys.DigitalWaterfall);
         _digitalDecodedExpanded = settings.IsPanelExpanded(PanelKeys.DigitalDecoded);
+        _digitalNewestFirst = settings.DecodedNewestFirst;
         _digitalSayingExpanded = settings.IsPanelExpanded(PanelKeys.DigitalSaying);
         _scanExpanded = settings.IsPanelExpanded(PanelKeys.Scan);
         _autoCallExpanded = settings.IsPanelExpanded(PanelKeys.AutoCall);
@@ -7016,16 +7084,149 @@ public partial class MainWindowViewModel : ObservableObject
         }
 
         _digitalDecodeKeyOrder.Add(key);
-        DigitalDecodes.Add(DigitalDecodeRow.From(decode));
 
-        while (DigitalDecodes.Count > MaxDigitalDecodes)
+        var row = DigitalDecodeRow.From(decode);
+
+        _digitalArrivals.Add(row);
+        DigitalDecodes.Insert(InsertAt(row), row);
+
+        while (_digitalArrivals.Count > MaxDigitalDecodes)
         {
-            DigitalDecodes.RemoveAt(0);
+            // **THE OLDEST ARRIVAL, NOT THE FIRST ROW ON SCREEN.** Under a
+            // newest-first ordering the first row in the collection is the
+            // newest, and the old `RemoveAt(0)` would have thrown away the row
+            // that had just arrived.
+            var oldest = _digitalArrivals[0];
+
+            _digitalArrivals.RemoveAt(0);
+            DigitalDecodes.Remove(oldest);
             _digitalDecodeKeys.Remove(_digitalDecodeKeyOrder[0]);
             _digitalDecodeKeyOrder.RemoveAt(0);
+
+            _digitalTrimmed++;
         }
 
         return true;
+    }
+
+    /// <summary>Where a newly arrived row belongs in the display order.</summary>
+    /// <param name="row">The row that just arrived.</param>
+    /// <returns>The index to insert it at.</returns>
+    /// <remarks>
+    /// <para>**WITHIN ONE SLOT, ORDER IS NOT THE SORT'S TO INVENT.** Fourteen
+    /// messages can share one `HHmmss`, and the air did not put them in any
+    /// sequence - they were all on at once and the decoder found them in the
+    /// order it happened to search. The direction reverses **slots**; inside a
+    /// slot the decoder's order is preserved exactly. Sorting those rows by
+    /// frequency, or reversing them along with everything else, would assert a
+    /// sequence that did not happen (§0.0).</para>
+    /// <para>**SO NEWEST-FIRST DOES NOT MEAN INDEX NOUGHT.** It means after any
+    /// rows already at the top that belong to the same slot. Oldest-first is a
+    /// plain append, because a new row is always in the newest slot.</para>
+    /// </remarks>
+    private int InsertAt(DigitalDecodeRow row)
+    {
+        if (!_digitalNewestFirst)
+        {
+            return DigitalDecodes.Count;
+        }
+
+        var at = 0;
+
+        while (at < DigitalDecodes.Count
+            && string.Equals(DigitalDecodes[at].Utc, row.Utc, StringComparison.Ordinal))
+        {
+            at++;
+        }
+
+        return at;
+    }
+
+    /// <summary>Rebuild the display from the arrival order.</summary>
+    /// <remarks>
+    /// **A STABLE GROUPING AND NOT A REVERSE.** Reversing the list would turn
+    /// each slot's rows back to front as well, which is the one thing the
+    /// direction may not do. This walks the slots in the order they arrived,
+    /// takes them newest-slot-first or oldest-slot-first, and inside each slot
+    /// keeps the arrival order untouched.
+    /// </remarks>
+    private void Reorder()
+    {
+        var slots = new List<string>();
+        var bySlot = new Dictionary<string, List<DigitalDecodeRow>>(StringComparer.Ordinal);
+
+        foreach (var row in _digitalArrivals)
+        {
+            if (!bySlot.TryGetValue(row.Utc, out var rows))
+            {
+                rows = new List<DigitalDecodeRow>();
+                bySlot[row.Utc] = rows;
+                slots.Add(row.Utc);
+            }
+
+            rows.Add(row);
+        }
+
+        if (_digitalNewestFirst)
+        {
+            slots.Reverse();
+        }
+
+        DigitalDecodes.Clear();
+
+        foreach (var slot in slots)
+        {
+            foreach (var row in bySlot[slot])
+            {
+                DigitalDecodes.Add(row);
+            }
+        }
+    }
+
+    /// <summary>How many rows the cap has dropped since the panel was cleared.</summary>
+    private long _digitalTrimmed;
+
+    /// <summary>What the summary says about trimming, or nothing.</summary>
+    /// <remarks>
+    /// **A CAP HE CANNOT SEE IS WORSE THAN NO CAP** (§0.0). At the rate measured
+    /// on 2026-09-04 the table fills in about nine minutes and then quietly
+    /// drops a row for every row that arrives, all evening. A list that discards
+    /// rows the operator believes are still there is the same fault as a decode
+    /// with nothing behind it.
+    /// </remarks>
+    private string TrimNote()
+        => _digitalTrimmed == 0
+            ? ""
+            : $" · oldest {_digitalTrimmed} dropped";
+
+    /// <summary>Flip which end the newest slot is shown at.</summary>
+    [RelayCommand]
+    private void ToggleDigitalOrder() => DigitalNewestFirst = !DigitalNewestFirst;
+
+    /// <summary>Empty the table, and nothing else.</summary>
+    /// <remarks>
+    /// **THE DISPLAY AND NOT THE RECORD.** Telemetry, the capture sidecars and
+    /// the census are what this session is kept in; this clears what is on
+    /// screen because the operator wants the screen back. Nothing that has been
+    /// written down is touched.
+    /// </remarks>
+    [RelayCommand]
+    private void ClearDigitalDecodes()
+    {
+        DigitalDecodes.Clear();
+        _digitalArrivals.Clear();
+        _digitalDecodeKeys.Clear();
+        _digitalDecodeKeyOrder.Clear();
+        _digitalTrimmed = 0;
+
+        // **THE PANEL SAYS IT IS EMPTY RATHER THAN GOING BLANK** (HM-DEC-021).
+        // `HasDigitalDecodes` is false now, so the idle line takes over, and the
+        // refusal and the note are cleared with it so nothing left over
+        // describes a table that is no longer there.
+        _digitalDecodeNote = "";
+        _digitalRefusal = "";
+
+        RaiseDigitalDecodeChanges();
     }
 
     /// <summary>
@@ -7051,8 +7252,10 @@ public partial class MainWindowViewModel : ObservableObject
         }
 
         DigitalDecodes.Clear();
+        _digitalArrivals.Clear();
         _digitalDecodeKeys.Clear();
         _digitalDecodeKeyOrder.Clear();
+        _digitalTrimmed = 0;
         _digitalDecodeNote = "";
         _digitalRefusal = "";
 

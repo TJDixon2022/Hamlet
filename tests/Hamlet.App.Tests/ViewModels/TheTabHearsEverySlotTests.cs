@@ -1,4 +1,4 @@
-using Ft8Sharp.Encode;
+﻿using Ft8Sharp.Encode;
 using Ft8Sharp.Message;
 using Hamlet.App.Settings;
 using Hamlet.App.ViewModels;
@@ -88,17 +88,23 @@ public sealed class TheTabHearsEverySlotTests
         Assert.Equal(5, slots);
 
         Assert.Equal(
+            // **NEWEST-FIRST IS THE PANEL'S ORDER SINCE UNIT 241** (Tim's
+            // ruling, 2026-09-04), so the slots read newest to oldest. Only the
+            // slots swap ends; rows inside one slot keep the decoder's order.
             new[]
             {
-                "CQ K1ABC FN42",
-                "CQ W9XYZ EM48",
-                "CQ VE7AA CN89",
                 "CQ EA3QQ JN11",
+                "CQ VE7AA CN89",
+                "CQ W9XYZ EM48",
+                "CQ K1ABC FN42",
             },
             model.DigitalDecodes.Select(r => r.Message).ToArray());
 
         Assert.Equal(
-            new[] { "142215", "142230", "142245", "142300" },
+            // **NEWEST-FIRST IS THE PANEL'S ORDER SINCE UNIT 241** (Tim's
+            // ruling, 2026-09-04), so the slots read newest to oldest. Only the
+            // slots swap ends; rows inside one slot keep the decoder's order.
+            new[] { "142300", "142245", "142230", "142215" },
             model.DigitalDecodes.Select(r => r.Utc).ToArray());
 
         Assert.True(model.HasDigitalDecodes);
@@ -110,7 +116,8 @@ public sealed class TheTabHearsEverySlotTests
 
         // **THE SUMMARY NAMES THE MOST RECENT SLOT, NOT THE FIRST.** Reading row
         // zero would leave it reporting a slot from an hour ago.
-        Assert.Equal("142300 UTC · 4 shown", model.DigitalDecodedSummary);
+        Assert.Equal(
+            "142300 UTC · 4 shown · newest first", model.DigitalDecodedSummary);
     }
 
     /// <summary>
@@ -202,9 +209,12 @@ public sealed class TheTabHearsEverySlotTests
 
         Assert.Equal(MainWindowViewModel.MaxDigitalDecodes, model.DigitalDecodes.Count);
 
-        // The first twenty went over the side, oldest first.
-        Assert.Equal("CQ K20ABC FN42", model.DigitalDecodes[0].Message);
-        Assert.Equal($"CQ K{over - 1}ABC FN42", model.DigitalDecodes[^1].Message);
+        // The first twenty went over the side, oldest first. **THE TRIM IS
+        // UNCHANGED AND STILL DROPS THE OLDEST ARRIVAL**; what moved is which
+        // end of the display that arrival sits at, because the panel shows the
+        // newest slot at the top since unit 241.
+        Assert.Equal($"CQ K{over - 1}ABC FN42", model.DigitalDecodes[0].Message);
+        Assert.Equal("CQ K20ABC FN42", model.DigitalDecodes[^1].Message);
     }
 
     /// <summary>
@@ -257,7 +267,8 @@ public sealed class TheTabHearsEverySlotTests
 
         model.NoteSlot(OneSlot(OnTheAir[0]));
 
-        Assert.Equal("142215 UTC · 1 shown", model.DigitalDecodedSummary);
+        Assert.Equal(
+            "142215 UTC · 1 shown · newest first", model.DigitalDecodedSummary);
 
         model.NoteSlot(
             new Ft8Reception(
@@ -311,7 +322,10 @@ public sealed class TheTabHearsEverySlotTests
         Assert.Equal(4, model.DigitalDecodes.Count);
 
         Assert.Equal(
-            new[] { "142215", "142230", "142245", "142300" },
+            // **NEWEST-FIRST IS THE PANEL'S ORDER SINCE UNIT 241** (Tim's
+            // ruling, 2026-09-04), so the slots read newest to oldest. Only the
+            // slots swap ends; rows inside one slot keep the decoder's order.
+            new[] { "142300", "142245", "142230", "142215" },
             model.DigitalDecodes.Select(r => r.Utc).ToArray());
     }
 

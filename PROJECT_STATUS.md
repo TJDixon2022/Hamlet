@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 3 of 6
+TASK: 4 of 6
 WORK_INSTRUCTION: 241 - the decoded text panel becomes readable
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-152 (2026-08-31)
-UPDATED: 2026-09-04T18:13:10-04:00
-NOTE: Row list bounded at 300px; a parked reader stays at 216 while the live end follows to 0
+UPDATED: 2026-09-04T18:43:46-04:00
+NOTE: Clear and a stable newest-first toggle in; slots reverse while within-slot order is preserved and the summary names the newest either way
 
 ---
 
