@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
+STATE: COMPLETED
 TASK: 4 of 4
 WORK_INSTRUCTION: 240 - the waterfall is on the audio callback
-BALL: code
-NEXT_PASTE: none
+BALL: tim
+NEXT_PASTE: OUTPUT.md -> Claude Web
 RULES_AT: HM-DEC-152 (2026-08-31)
-UPDATED: 2026-09-03T23:36:47-04:00
-NOTE: Idle gate in: with nobody drawing the source computes nothing, and the window is dropped so no row mixes two moments
+UPDATED: 2026-09-03T23:44:25-04:00
+NOTE: Four of four done; the callback's per-buffer work fell from 62271us to 270 and the shack arrival reading is the operator's to take
 
 ---
 
