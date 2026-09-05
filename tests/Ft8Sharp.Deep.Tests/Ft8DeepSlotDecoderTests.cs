@@ -166,6 +166,13 @@ public class Ft8DeepSlotDecoderTests(ITestOutputHelper output)
     /// statistics stage that loop exists to host. The list below is exhaustive and is asserted
     /// exhaustively, so the next unit that adds a type has to come here too.
     /// </para>
+    /// <para>
+    /// <b>Unit 247 is that next unit, and it came here on purpose too.</b> Its task 2 added the soft
+    /// combiner — <c>Ft8DeepCombineWeighting</c> and <c>Ft8DeepSoftCombiner</c> — and its task 4 adds
+    /// the repeat decoder that carries it. <b>This test going red is the tripwire working; the list is
+    /// rewritten by the unit that changed the assembly and never by the unit that discovers it
+    /// afterwards.</b>
+    /// </para>
     /// </remarks>
     [Fact]
     public void TheSiblingHoldsExactlyTheseTypesAndTheListIsAssertedWhole()
@@ -181,11 +188,13 @@ public class Ft8DeepSlotDecoderTests(ITestOutputHelper output)
         Assert.Equal(
             new[]
             {
+                typeof(Ft8DeepCombineWeighting),
                 typeof(Ft8DeepOrderedStatistics),
                 typeof(Ft8DeepOsdCounts),
                 typeof(Ft8DeepOsdResult),
                 typeof(Ft8DeepOsdSettings),
                 typeof(Ft8DeepSlotDecoder),
+                typeof(Ft8DeepSoftCombiner),
             },
             types.OrderBy(t => t.FullName, StringComparer.Ordinal).ToArray());
     }

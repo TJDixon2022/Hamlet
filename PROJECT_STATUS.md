@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: WORKING
-TASK: 1 of 7
+TASK: 2 of 7
 WORK_INSTRUCTION: 247 - the same transmission heard twice, combined before the decoder sees it
 BALL: claude
 RULES_AT: HM-DEC-153 (2026-09-04)
 NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-09-05T00:33:00-04:00
-NOTE: Writing the trace that decides the night - the same 51 messages synthesised twice at -21 and -24 dB with two independent noise draws, the closest candidate in each slot measured against the codeword the ladder knows it transmitted, and then the two normalised ratio vectors summed and re-normalised to see whether the summed distance falls from a median near 31 towards the code recovery threshold of about 17. Two whole 51-trial blocks at two rungs with two slots a trial, so this walks 204 slot decodes before it prints anything. The Ft8Sharp.Tests baseline is running beside it
+UPDATED: 2026-09-05T00:52:00-04:00
+NOTE: The trace answered yes and the combiner core is being built on it - at -21 dB the summed distance fell from a median of 31 to 18 and 22 of 51 trials crossed under the recovery threshold of 17 where neither slot alone did, while at -24 dB nothing reached at all. Now writing Ft8DeepSoftCombiner and its four properties on synthesised ratios: independent errors repair each other, two different codewords do not, a slot combined with itself decides exactly what it decided alone, and degenerate input is combined rather than refused. The type-list tripwire unit 246 left has fired as designed and is being changed deliberately
 
 ---
 
