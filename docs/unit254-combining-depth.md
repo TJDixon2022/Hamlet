@@ -793,4 +793,145 @@ inside FT8's 15 seconds.
 
 ## 5. The verdict
 
-*Task 5.*
+### 5.1 What combining bought, at -21 dB jittered, 306 trials
+
+| column | decoded | rate | 95 % Wilson | only-combined | discordant vs combined x2 |
+|---|---|---|---|---|---|
+| the port, one hearing | 13 of 306 | 4.2 % | 2.5–7.1 | — | 0 only-port / 55 only-combined |
+| single + OSD, one hearing | 33 of 306 | 10.8 % | 7.8–14.8 | — | 11 only-OSD / 46 only-combined |
+| **combined x2**, pairwise | **68 of 306** | 22.2 % | 17.9–27.2 | **55 of 306** | — |
+| **combined x2, stacked** with fine sync and OSD | **79 of 306** | 25.8 % | 21.2–31.0 | 46 of 306 | 0 only-alone / 11 only-stacked |
+| **summed x4**, accumulated | **252 of 306** | 82.4 % | 77.7–86.2 | **236 of 306** | 0 only-combined-x2 / **184 only-summed-x4** |
+
+**Every combined decode was checked against the message the ladder knows it transmitted:
+62 of 62 at two hearings, 470 of 470 at four. Zero wrong decodes on every row of every
+measurement in this unit.**
+
+**The only-combined count is step 5's second exit in one number: 236 of 306 trials where no
+single slot returned the message on its own and the combination did.**
+
+### 5.2 What the third and fourth hearing bought over the second, and whether the prediction held
+
+**From 4a, the isolation — the same repeat count with accumulation on and off:**
+
+| | decodes | milliseconds a trial | submissions |
+|---|---|---|---|
+| three hearings summed rather than paired | **+3 of 51** (36 → 39) | 198.5 → **193.5** | 203 → **203** |
+| four hearings summed rather than paired | **+4 of 51** (37 → 41) | 259.7 → **260.0** | 359 → **359** |
+
+**It cost nothing.** Not one extra submission, and no measurable time — the sum of four
+floats-arrays instead of two is lost in the noise of a decode that already costs 65 ms.
+
+**The prediction held.** §1.4, written and committed before the accumulator existed,
+predicted the four-hearing gain would be **between 0 and 10 of 51**, non-zero but far
+smaller than the 1.76 + 1.25 dB of processing gain implies, because a chain needs the
+search to offer a candidate in every slot. It read **+4 of 51**, and the smaller 1.76 dB
+step (two to three hearings) bought the smaller number, +3. **The `10 log10 R` arithmetic
+is the right model and the search is the limit**, which §3.5 shows directly: at the noise
+levels where the search stopped offering candidates in enough slots, the deepest
+combination fell back to 2 hearings and the sum could not help.
+
+**It did not buy nothing, so the hypothesis is not removed — it is confirmed with a small
+number.** Depth beyond a pair is worth having and it is free; it is not worth as much as
+the decibels say, and the reason is measured.
+
+### 5.3 The submission budget, as it was actually spent across the whole unit
+
+| measurement | pairs offered | submitted | port accepted | expected nobody sent |
+|---|---|---|---|---|
+| task 2, jittered x2, 306 | 50 677 | 516 | 88 | 0.031 |
+| task 2, same placement x2, 306 | 48 344 | 357 | 216 | 0.022 |
+| 4a, four configurations, 51 each | — | 1 124 | 315 | 0.069 |
+| 4b, x2 and accumulated x4, 306 each | 350 585 | 2 748 | 824 | 0.168 |
+| 4c, alone and stacked, 306 each | 101 354 | 1 032 | 176 | 0.063 |
+| **whole unit** | — | **5 777** | **1 619** | **0.353** |
+
+**Expected messages nobody sent: 0.353. Returned: 0.** That last number is asserted on
+every row of every measurement, not hoped for — `AssertRowsAreClean` fails the test on a
+single wrong return and prints it with the message that was sent beside it.
+
+**And the deeper sum did not buy its gain out of that budget.** 4a's two isolations spent
+203 against 203 and 359 against 359. The accumulation is a sliding window over the history,
+not an extra submission (§3.1), and §3.3 asserts the equality slot for slot.
+
+### 5.4 The time, for the configuration this unit would recommend
+
+**A trial is R slots but what has to fit inside FT8's 15 seconds is ONE slot** — unit 247's
+distinction, and it is kept.
+
+| configuration | worst observed single slot | margin against 15 000 ms |
+|---|---|---|
+| combining alone, x2 | 74.7 ms | **201×** |
+| accumulated, x4, depth 3 | 85.4 ms | **176×** |
+| combining stacked with fine sync and OSD, x2 | 99.6 ms | **151×** |
+
+**The configuration this unit would recommend is accumulated combining at history depth 3
+with the stages Hamlet ships turned on, and that exact combination was not measured.** 4b
+measured accumulation without the stack and 4c measured the stack without accumulation. The
+two worst observed slots bound it: the accumulation adds submissions, not slot work, so the
+recommended configuration should sit near 4c's 99.6 ms and comfortably above 100×. **Said
+as a bound rather than as a figure, because it is a bound and not a figure.**
+
+Memory: `Ft8DeepRepeatDecoder`'s history is at most 140 hearings of 174 floats a slot —
+**about 97 kB a slot, about 291 kB at the recommended depth of 3, and under a megabyte at
+the maximum depth of 8.**
+
+### 5.5 Whether the instrument moved
+
+**It did not.** Task 2 re-measured unit 247's -21 dB jittered and same-placement
+configurations at `Ft8Sharp.Deep` 0.7.0 and read 13 / 33 / 68 and 13 / 33 / 217 of 306, with
+55 and 200 only-combined and 50 677 / 516 / 88 and 48 344 / 357 / 216 of submission budget —
+**every number identical to what unit 247 recorded at 0.3.0, four sibling versions and four
+units earlier.**
+
+### 5.6 The shipping question, answered
+
+**Combining stays OFF by default and `Ft8Reception.cs` is not touched** (work instruction
+254, ruling 1). Accumulation stays at depth 1, where every sum is a pair. What turning it
+on would mean:
+
+**What it would buy the operator.** At -21 dB — 1.2 dB below the single-slot 50 per cent
+crossing — a station that repeats its call:
+
+| what the operator hears | decodes of 306 |
+|---|---|
+| today: one hearing, through the decoder Hamlet ships | 33 |
+| combining across two slots, stacked with today's stages | **79** |
+| four hearings accumulated (measured without the stack, so a floor) | **252** |
+
+**A CQ repeated four times goes from 33 of 306 to at least 252 of 306.** That is not a
+laboratory margin; it is the difference between a station being unreadable and being
+readable, at a ratio a real 20-metre band delivers routinely.
+
+**What it would cost him a slot.** 99.6 ms worst observed, **151× inside FT8's 15
+seconds**, against about 75 ms today. Nothing an operator can perceive.
+
+**What it would cost in memory.** About 97 kB a slot of history — **291 kB at depth 3**,
+under a megabyte at depth 8. Held for the lifetime of the reception rather than per slot.
+
+**What it would cost in risk.** 5 777 submissions across this whole unit for an expected
+0.353 messages nobody sent and **zero returned.** Both of the port's gates stay in the path
+at every depth; a wrongly combined sum fails the CRC-14 and is discarded rather than shown,
+and unit 247's `Ft8DeepCombineGateTests` measured that directly — 56 deliberately wrong
+pairings, 51 never satisfied parity, 5 decoded and every one returned one of its own two
+transmissions, 0 returned a message nobody sent.
+
+**Which surfaces must change first**, from §1.7 and listed there in full: the per-slot
+decoder at `Ft8Reception.cs:460` becomes a cross-slot one held for the reception, with a
+reset rule for band changes and gaps; `Ft8DecoderIdentity` gains a combining flag with its
+depth; the five-count census gains the four combine counts and the hearings-per-combination
+count; the telemetry line must distinguish *this slot decoded it* from *this slot and the
+previous three did*; and the capture sidecar's per-message rows need which slots the sum
+drew on, because step 0's must-pass is that a capture says which decoder read the slot and
+which stages were on.
+
+**The step closes on the figure it reached: 252 of 306 at -21 dB from four hearings, 82.4
+per cent, Wilson 77.7–86.2, 236 of them trials no single slot could reach, zero wrong.**
+
+### 5.7 The drop candidate was not taken
+
+Work instruction 254 named the accumulated four-repeat column at 306 trials in 4b as the
+drop candidate. **It was measured** — 252 of 306 — and nothing in the unit was dropped.
+Every non-droppable item is present: task 2's reproduction, task 3's watched failure and
+both identities, 4a's depth sweep, 4b's port and combined x2 columns at 306 trials, the
+zero-wrong assertion on every row, and task 1's trace.

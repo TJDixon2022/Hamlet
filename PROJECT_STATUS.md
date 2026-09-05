@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: WORKING
-TASK: 4 of 6
+TASK: 5 of 6
 WORK_INSTRUCTION: 254 - repeated transmissions are combined across slots, and the sum is taken deeper than a pair
 BALL: claude
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-155 (2026-09-05)
-UPDATED: 2026-09-05T17:57:48-04:00
-NOTE: All three ladder runs returned green - the stack reads 79 of 306 against combining alone's 68, discordant 11 to 0, on an identical submission budget, so ordered statistics did the work and fine sync recovered none of the jitter cost HM-OPEN-075 prices
+UPDATED: 2026-09-05T17:59:18-04:00
+NOTE: Verdict written - 5777 submissions across the whole unit for an expected 0.353 messages nobody sent and zero returned, the drop candidate was not taken, and the shipping question is answered with the surfaces that must change first rather than left open
 
 ---
 
