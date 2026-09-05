@@ -1,0 +1,28 @@
+UNIT 255 CLOSING LADDER, -21.0 dB, CELL CENTRE, 306 trials, 6 columns.
+PLACEMENT: +1.56 Hz, +480 samples - unit 248's WorstFrequencyOffsetHz and WorstOffsetSamples, and no others.
+LADDER: Ft8LadderHarness.Run - one signal, no neighbour. The audio is synthesised once per trial and every column is handed the same array, so this is a PAIRED design.
+SHIPPING is new Ft8DeepSlotDecoder(osd: Ft8DeepOsdSettings.Default, fineSync: Ft8DeepFineSyncSettings.Default) - transcribed from Ft8Reception.cs:460.
+
+decoder      requested  delivered  trials  DECODED  MISSED  WRONG    rate   lo 95   hi 95    wall s    ms/tr
+Ft8Sharp         -21.0    -21.001     306        0     306      0     0.0     0.0     1.2     19.7     64.5
+Deep all off     -21.0    -21.001     306        0     306      0     0.0     0.0     1.2     19.7     64.3
+fine sync only     -21.0    -21.001     306        3     303      0     1.0     0.3     2.8     59.3    193.9
+OSD only         -21.0    -21.001     306        0     306      0     0.0     0.0     1.2     22.3     72.9
+SHIPPING         -21.0    -21.001     306        3     303      0     1.0     0.3     2.8     62.3    203.6
+subtraction only     -21.0    -21.001     306        0     306      0     0.0     0.0     1.2     19.8     64.7
+
+THE TIME BUDGET, on this rung and placement:
+column              worst slot ms   its candidates   margin vs 15 000 ms      ms/trial
+Ft8Sharp                    104.8               16                  143x          64.5
+Deep all off                 99.3               12                  151x          64.3
+fine sync only              316.4               24                   47x         193.9
+OSD only                     98.2                5                  153x          72.9
+SHIPPING                    331.8               24                   45x         203.6
+subtraction only            104.9               20                  143x          64.7
+
+THE DISCORDANT COUNTS FOR SHIPPING, on identical audio:
+comparison                       only the first   only SHIPPING
+SHIPPING vs Ft8Sharp                          0               3
+SHIPPING vs Deep all off                      0               3
+
+rung-placement wall clock 206.6 s.

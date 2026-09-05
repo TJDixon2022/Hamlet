@@ -397,3 +397,95 @@ is for.
 *Unit 248's `WorstFrequencyOffsetHz` and `WorstOffsetSamples` and no others, so these rows
 are comparable with its §4.2.*
 
+```
+decoder      requested  delivered  trials  DECODED  MISSED  WRONG    rate   lo 95   hi 95    wall s    ms/tr
+Ft8Sharp         -19.0    -19.001     306        6     300      0     2.0     0.9     4.2     20.1     65.6
+Deep all off     -19.0    -19.001     306        6     300      0     2.0     0.9     4.2     20.1     65.7
+fine sync only   -19.0    -19.001     306      277      29      0    90.5    86.7    93.3     63.1    206.1
+OSD only         -19.0    -19.001     306       33     273      0    10.8     7.8    14.8     23.1     75.5
+SHIPPING         -19.0    -19.001     306      278      28      0    90.8    87.1    93.6     66.1    216.1
+subtraction only -19.0    -19.001     306        6     300      0     2.0     0.9     4.2     20.9     68.1
+
+Ft8Sharp         -20.0    -20.000     306        0     306      0     0.0     0.0     1.2     19.9     65.0
+Deep all off     -20.0    -20.000     306        0     306      0     0.0     0.0     1.2     19.8     64.8
+fine sync only   -20.0    -20.000     306       73     233      0    23.9    19.4    28.9     61.8    201.9
+OSD only         -20.0    -20.000     306        1     305      0     0.3     0.1     1.8     22.7     74.1
+SHIPPING         -20.0    -20.000     306       73     233      0    23.9    19.4    28.9     64.9    212.1
+subtraction only -20.0    -20.000     306        0     306      0     0.0     0.0     1.2     19.9     65.1
+
+Ft8Sharp         -21.0    -21.001     306        0     306      0     0.0     0.0     1.2     19.7     64.5
+Deep all off     -21.0    -21.001     306        0     306      0     0.0     0.0     1.2     19.7     64.3
+fine sync only   -21.0    -21.001     306        3     303      0     1.0     0.3     2.8     59.3    193.9
+OSD only         -21.0    -21.001     306        0     306      0     0.0     0.0     1.2     22.3     72.9
+SHIPPING         -21.0    -21.001     306        3     303      0     1.0     0.3     2.8     62.3    203.6
+subtraction only -21.0    -21.001     306        0     306      0     0.0     0.0     1.2     19.8     64.7
+```
+
+**The attribution column equals the port at all three rungs here too**, which is what unit
+248's own rows said it did, and it is asserted rather than assumed. **Subtraction alone
+again equals the port at all three rungs.**
+
+**The discordant counts for SHIPPING at the cell centre:**
+
+| rung | only the port | only SHIPPING | only `Deep all off` | only SHIPPING |
+|---|---:|---:|---:|---:|
+| -19.0 | **0** | **272** | **0** | **272** |
+| -20.0 | **0** | **73** | **0** | **73** |
+| -21.0 | **0** | **3** | **0** | **3** |
+
+**At -19 dB off the grid the shipping stack reads 272 trials of 306 that the port did not,
+and loses none.** That is the largest single figure in this document and §3.4 is what it
+means.
+
+### 3.3 The same table read across the two placements
+
+**This is the pair the phase goal is about**, and it is the reason the cell centre had to
+be walked rather than cited.
+
+| rung | column | on grid | cell centre | change |
+|---|---|---:|---:|---:|
+| -19.0 | `Ft8Sharp` | **248** of 306 (81.0 %) | **6** of 306 (2.0 %) | **−242** |
+| -19.0 | **`SHIPPING`** | **283** of 306 (92.5 %) | **278** of 306 (90.8 %) | **−5** |
+| -20.0 | `Ft8Sharp` | 73 (23.9 %) | 0 (0.0 %) | −73 |
+| -20.0 | **`SHIPPING`** | **138** (45.1 %) | **73** (23.9 %) | −65 |
+| -21.0 | `Ft8Sharp` | 13 (4.2 %) | 0 (0.0 %) | −13 |
+| -21.0 | **`SHIPPING`** | **35** (11.4 %) | **3** (1.0 %) | −32 |
+
+**Read the -19 dB pair.** A sender who moves **one and a half hertz and an eightieth of a
+second** — a distance no operator could control or would notice, and one that nothing on
+14.074 avoids, because real stations do not arrange themselves on Hamlet's analysis grid —
+costs the bare port **242 of its 248 decodes**. It costs what Hamlet actually ships **five
+of its 283.** The port falls from 81.0 per cent to 2.0; the shipping stack falls from 92.5
+to 90.8.
+
+**That sentence is the phase goal, measured.** It is also the first time in this project
+that the configuration on the operator's screen has been read at the placement a real
+station lands in.
+
+**At -20 and -21 dB the picture is different and the document says so rather than
+generalising from the best rung.** Off the grid at -20 dB the stack keeps 73 of the 138 it
+had on the grid, and at -21 dB it keeps 3 of 35. **Off-grid immunity is close to complete
+at -19 dB, partial at -20 and slight at -21** — the stack does not make placement free, it
+buys back most of it where there is enough signal for fine sync to lock.
+
+### 3.4 Which stage is doing the work, and it is not the same one at each placement
+
+| placement | rung | port | fine sync alone | OSD alone | SHIPPING |
+|---|---|---:|---:|---:|---:|
+| on grid | -19 | 248 | 268 | **276** | 283 |
+| on grid | -20 | 73 | 95 | **125** | 138 |
+| on grid | -21 | 13 | 18 | **33** | 35 |
+| cell centre | -19 | 6 | **277** | 33 | 278 |
+| cell centre | -20 | 0 | **73** | 1 | 73 |
+| cell centre | -21 | 0 | **3** | 0 | 3 |
+
+**On the grid ordered statistics carries the column and fine sync adds a little.** Off the
+grid **it reverses completely**: fine sync carries the column and ordered statistics adds
+essentially nothing — at -20 and -21 the shipping stack equals fine sync alone, decode for
+decode.
+
+**Neither stage alone is the answer, and that is the argument for shipping both.** On the
+grid, dropping fine sync would cost 7, 13 and 2 decodes; off the grid, dropping fine sync
+would cost 245, 72 and 3. **The two stages are not redundant — they cover different
+failures**, and the configuration `Ft8Reception.cs:460` builds is the one that covers both.
+
