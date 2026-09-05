@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: WORKING
-TASK: 5 of 7
+TASK: 6 of 7
 WORK_INSTRUCTION: 247 - the same transmission heard twice, combined before the decoder sees it
 BALL: claude
 RULES_AT: HM-DEC-153 (2026-09-04)
 NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-09-05T02:04:00-04:00
-NOTE: The repeats ladder exists beside Run rather than instead of it, and one block at -21 dB says the approach works. Three columns: single slot 3 of 51, single plus OSD 4 of 51, combined across two slots 34 of 51 at 66.7 per cent with zero wrong, and 32 of those 51 trials had no single slot decode the message alone. With the harder variant - the later slot moved 2 Hz and 480 samples, off the block grid and off the sub-block grid - the combined column falls to 15 of 51 and 12 only-combined, still zero wrong, so placement jitter costs more than half the gain and that is a finding rather than a defect. Repeat 0 draws bit-for-bit the noise Run draws, asserted. Now taking the whole scoreboard, 306 trials at -21 and -24 dB both ways
+UPDATED: 2026-09-05T01:06:00-04:00
+NOTE: The scoreboard is taken and step 6 has its number. At -21 dB over 306 trials the combined column reads 68 of 306 at 22.2 per cent with the placement jitter on and far more with it off, against the port at 13 of 306 and OSD at 33, with zero wrong on all twelve rows across four configurations; 55 of 306 trials had no single slot decode alone and the combination did, on the jittered run. At -24 dB nothing decodes in any column, which is what task 1 predicted from the distances. Step 2's number was re-measured underneath and still reads 13 and 33 of 306 exactly. Re-running the -21 dB same-placement configuration to recapture its table for the report, then the write-up
 
 ---
 
