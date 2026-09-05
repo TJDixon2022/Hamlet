@@ -426,8 +426,8 @@ version in the tree tonight — **so it is cited, not re-run**:
 | P2 | `Ft8Sharp` on grid: point -19.54 dB, band **-19.62 to -19.46 dB**, 0.16 dB wide | **exact.** `-19.5429` dB, `-19.62 to -19.46`, **0.162 dB** wide |
 | P3 | the coarse search costs **≤ 94.2 s** | **11.3 s.** It stopped at its first rung |
 | P4 | each 306-trial cell-centre rung costs **≈ 113 s** | **34.8 s** at -17 and **28.9 s** at -18 — **the prediction was 3.5× high** |
-| P5 | each panel rung costs **130 – 150 s** | *task 4* |
-| P6 | every row of every walk reads **zero wrong** | **held on every cell-centre row.** *task 4 outstanding* |
+| P5 | each panel rung costs **130 – 150 s** | **45.0 s** and **44.9 s** — **the prediction was 3× high**, and in the opposite direction to P4 |
+| P6 | every row of every walk reads **zero wrong** | **BROKEN, once.** Held on all 2 448 cell-centre slot decodes and on the whole -22 dB panel; **one wrong at -23 dB on `summed x4`**. §8.3 |
 | P7 | `Deep all off` equals `Ft8Sharp` on every cell-centre rung | **held**, 235/71/0 and 77/229/0, decode for decode |
 
 > **P4 IS THE INTERESTING MISS AND IT IS WORTH THE PARAGRAPH.** §3.1 priced the bracket rungs
@@ -590,7 +590,125 @@ cell-centre row, 33 of 306** — same placement, same seed, same `Ft8Sharp.Deep`
 
 ---
 
-## 8. Where the deliverable is
+## 8. Task 4 — combining's own on-and-off panel
+
+**Ladder: `Ft8LadderHarness.RunRepeats`, four slots a trial carrying the same message, jittered
+2.00 Hz and 480 samples between hearings. ONE placement, ruling 5. `Ft8Sharp.Deep` 0.8.0.
+No row on this panel is comparable with any row in §3 of the closing document.**
+
+### 8.1 The three rows, at three rungs
+
+**-21 dB is unit 255 §5.3's, cited and not re-run** — the tree's `Ft8Sharp.Deep` is still
+0.8.0, and the call's arguments were checked against it one by one at §5.2. **-22 and -23 dB
+are unit 256's.**
+
+| row | -21 dB *(cited)* | **-22 dB** | **-23 dB** | wrong |
+|---|---:|---:|---:|---:|
+| `single slot` | 13 of 306, 4.2 % (2.5–7.1) | **0 of 306**, 0.0 % (0.0–1.2) | **0 of 306**, 0.0 % | 0 |
+| `single + OSD` | 33 of 306, 10.8 % (7.8–14.8) | **1 of 306**, 0.3 % (0.1–1.8) | **0 of 306**, 0.0 % | 0 |
+| **`summed x4`** | **254 of 306, 83.0 %** (78.4–86.8) | **43 of 306, 14.1 %** (10.6–18.4) | **1 of 306**, 0.3 % | **1 at -23** |
+| `OnlyCombined` | **206 of 306** | **41 of 306** | **1 of 306** | |
+
+**Three rows and not four**, from `Ft8LadderHarness.cs:518`, and the third is labelled
+`summed x4` and not `combined x4` because `AccumulationDepth` is 3 (`:514`). Unit 255 reported
+that shape as its own mismatch 6 and tonight's panel has three rows and says so.
+
+**Wall clocks 45.0 s and 44.9 s**, against 130–150 s predicted at §3.3 — **P5 missed low, and
+in the opposite direction to P4.** On this ladder the combined column's cost is driven by the
+number of combinations attempted, which *falls* as the ratio worsens: 2 232 submissions at -21,
+**1 335 at -22, 632 at -23**, and 295.5, 82.4 and 81.7 ms a trial to match.
+
+**Worst single slot on the whole panel: 76.2 ms**, a **197× margin**. Nothing here disturbs
+unit 255's exit-3 figure.
+
+### 8.2 The crossing, and no unit has ever quoted one
+
+`docs/unit256-runs/crossing-bands.txt`.
+
+| row | ladder | rungs | point | **band** | width |
+|---|---|---|---:|---|---:|
+| `single slot` | repeats ×4 | -21 / -22, 306 each | — | **not bracketed — above -21 dB** | — |
+| `single + OSD` | repeats ×4 | -21 / -22, 306 each | — | **not bracketed — above -21 dB** | — |
+| **`summed x4`** | **repeats ×4** | **-21 / -22, 306 each** | **-21.48 dB** | **-21.54 to -21.42 dB** | **0.119 dB** |
+
+> **COMBINING CROSSES 50 PER CENT AT -21.48 dB, BAND -21.54 TO -21.42, ON THE REPEATS LADDER
+> AT FOUR HEARINGS.** Interpolated between 254 of 306 at -21 dB and 43 of 306 at -22 dB, both
+> 306 trials. **No unit in this project has quoted a crossing for combining before.**
+
+**The two single-slot rows are `not bracketed` and the ceiling is named: above -21 dB.** They
+are already below 50 per cent at the panel's own highest rung, and **the panel was walked
+downward from -21 because that is where combining's crossing is.** No rung above -21 dB was
+licensed for this ladder and none was invented. **Their rates at -21 dB — 13 and 33 of 306 —
+are exactly §3.1's on-grid port and `OSD only` figures at the same rung**, which is the
+consistency check available without walking more of this ladder, and it holds to the decode.
+
+**AND THE CAVEAT TRAVELS WITH THE CROSSING, IN UNIT 254'S OWN WORDS.** `RunRepeats` scores the
+combined column on the union over the trial's slots, so **a four-repeat column gets four
+single-slot attempts as well as deeper sums.** `OnlyCombined` is the honest statement of what
+combining added, and at the two rungs that produced the crossing it reads **206 of 306** and
+**41 of 306**. -21.48 dB is what *a station heard four times, with the combiner accumulating*
+crosses at; it is **not** the gain from accumulation in isolation, which unit 254 §4a puts at
++4 of 51 at four hearings.
+
+### 8.3 THE WRONG DECODE AT -23 dB, AND IT IS THE MOST IMPORTANT THING TONIGHT MEASURED
+
+> **`TheCombiningPanelAtMinus23` IS RED AND IT IS RED BECAUSE OF WHAT IT MEASURED.**
+>
+> ```
+> summed x4 at -23.0 dB on the repeats ladder returned 1 message(s) that were not sent. A
+> wrong decode is counted separately from a missed one everywhere in this project and every
+> column measured reads zero.
+> ```
+>
+> ```
+> trial    29  seed 220771  SENT "CQ PY2ABC GG66"  RETURNED "WN8ESU/P JG5HKE/P R AH58"
+> ```
+
+**It reproduces.** Run a second time under the identical filter it returned the same wrong
+message on the same trial and the same seed. **It is deterministic, not a flake.**
+
+**It is the first wrong decode measured anywhere in this phase** — against zero in all
+thirty-six cells of unit 255's closing table, zero in every cited table in its §5, and zero
+across the 2 448 scored slot decodes of unit 256's own cell-centre walks.
+
+**AND IT DID NOT COME FROM A COMBINATION.** `CodewordsAccepted` is **1**, `CombinedDecodes` is
+**1** and `CombinedDecodesVerified` is **1** — the single combination the port took past both
+its gates at this rung *was* the message that was sent. So the wrong return came from the
+combined column's **inner** decoder acting on a single slot: `new Ft8DeepSlotDecoder(osd:
+Ft8DeepOsdSettings.Default, fineSync: Ft8DeepFineSyncSettings.Default, rememberHearings:
+true)` — **the shipping stack** — run on **all four slots of every trial**, four times the
+exposure of the `single + OSD` row, which reads zero wrong at the same rung.
+
+**What that means and what it does not.**
+
+- **It does not move what ships.** Ruling 6 stands and nothing under `src/` was touched.
+- **It does not touch any published figure.** -23 dB is two decibels below the deepest rung in
+  the closing table and 1.5 dB below combining's own crossing. **No number in
+  `docs/unit255-closing-measurement.md` is affected**, and unit 256 changed no assertion to
+  reach this.
+- **It does say that "every column measured in this project reads zero wrong" is no longer
+  true**, and the sentence must be qualified wherever it is written. **That is `HM-OPEN-082`.**
+- **The assertion was not weakened.** The method stays red in the tree, documented on its own
+  face, and the whole table is printed before the assertion runs so the red cost none of its
+  own numbers.
+
+**And a second reading the assertion order hides.** `DeepestHearings` is **3** at -23 dB, not
+4, so the third assertion would have gone red as well. **That is not `B17`.** At -23 dB almost
+nothing decodes, so no slot ever held four hearings' worth of candidates to accumulate — the
+`== 4` assertion only means anything at a rung where the combiner has candidates to work with.
+At -22 dB it reads **4**, as it should.
+
+### 8.4 The -24 dB rung was NOT run, and the reason is arithmetic
+
+The combined row reads **43 of 306, 14.1 per cent at -22 dB** — **already far below 50** — so
+the bracket `(-22, -21)` is closed and the crossing is interpolated inside it. **The single
+licensed -24 dB rung was conditional on -23 still being above 50 per cent, and -23 reads
+1 of 306.** The condition did not arise, the rung was not spent, and **unit 247's parked floor
+does not move.**
+
+---
+
+## 9. Where the deliverable is
 
 **`docs/unit255-closing-measurement.md` is the phase's closing statement and stays ONE
 document.** Tonight's numbers land there:

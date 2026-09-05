@@ -1,0 +1,65 @@
+UNIT 256, TASK 4, THE COMBINING PANEL AT -22.0 dB, 306 trials, 3 rows.
+LADDER: Ft8LadderHarness.RunRepeats - FOUR slots a trial carrying the same message, jittered 2.00 Hz and 480 samples between hearings. THIS IS NOT THE CLOSING TABLE'S LADDER AND NO ROW HERE IS COMPARABLE WITH ONE THERE. Unit 255 section 5.0.
+PLACEMENT: ONE, and deliberately. The first slot starts on grid and every later hearing is jittered from the one before it, so this ladder is already a mixed-placement instrument; a second column labelled "cell centre" would not mean what that phrase means in section 3. Same placement as unit 255 section 5.3, so its -21 dB row is CITED rather than re-run.
+COMBINING: new Ft8DeepCombineSettings(historyDepth: 3, accumulationDepth: 3) - three remembered slots, and up to three of them in ONE sum.
+STACKED: combinedOsd Ft8DeepOsdSettings.Default and combinedFineSync Ft8DeepFineSyncSettings.Default - the two stages Ft8Reception.cs:460 builds, on the combined column's inner decoder.
+WHY THIS RUNG: the combined row reads 83.0 per cent at -21 dB (unit 255 section 5.3, cited and not re-run), so its 50 per cent crossing lies BELOW -21 dB and no unit has ever quoted one. This is the first step of the search.
+THE CAVEAT, UNIT 254'S OWN, AND IT TRAVELS WITH EVERY FIGURE BELOW: RunRepeats scores the combined column on the union over the trial's slots, so A FOUR-REPEAT COLUMN GETS FOUR SINGLE-SLOT ATTEMPTS AS WELL AS DEEPER SUMS. OnlyCombined is the honest statement of what combining added and it is printed below.
+
+decoder      requested  delivered  trials  DECODED  MISSED  WRONG    rate   lo 95   hi 95    wall s    ms/tr
+single slot      -22.0    -21.999     306        0     306      0     0.0     0.0     1.2      5.7     18.5
+single + OSD     -22.0    -21.999     306        1     305      0     0.3     0.1     1.8      6.3     20.5
+summed x4        -22.0    -22.000     306       43     263      0    14.1    10.6    18.4     25.2     82.4
+
+  DECODED + MISSED = trials. WRONG is not part of that partition: a slot can
+  return the right message and a wrong one at once, and both are true.
+  lo 95 / hi 95 are the WILSON score interval on the decode rate.
+
+  single slot at -22.0 dB: NO WRONG DECODES. 0 messages returned that were not sent.
+  single + OSD at -22.0 dB: NO WRONG DECODES. 0 messages returned that were not sent.
+  summed x4 at -22.0 dB: NO WRONG DECODES. 0 messages returned that were not sent.
+
+  4 slots a trial. Delivered per slot: -21.999 dB, -22.000 dB, -21.999 dB, -22.001 dB
+
+  THE NUMBER THIS STEP IS JUDGED ON:
+    trials NO single slot decoded alone and the combination DID: 41 of 306
+    trials SOME single slot decoded alone, no combining needed:  2 of 306   (the two-chances baseline)
+    trials a single slot decoded and the combination did NOT:    0 of 306   (zero, as the superset property requires)
+
+  THE SUBMISSION BUDGET, AS IT WAS ACTUALLY SPENT:
+    candidate pairs the rule looked at        276310
+    combinations submitted to the port        1335
+    HEARINGS IN THE DEEPEST COMBINATION        4   (6.02 dB of processing gain if the hearings were independent)
+    of those, the PORT took past both gates   67
+    naive expected messages nobody sent       0.081
+
+  EVERY COMBINED DECODE AGAINST THE LADDER'S OWN GROUND TRUTH:
+    messages the combining stage added        53
+    of those, the message that was sent       53
+    of those, a message that was NOT sent     0
+
+  WORST SINGLE SLOT: 76.2 ms, carrying 20 candidates and 1 combinations - a margin of 197x against FT8's 15 seconds.
+
+EVERY FIELD THIS PANEL IS JUDGED ON, ON ITS OWN LINE:
+  repeats                                  4
+  OnlyCombined                             41 of 306
+  AnySlotAlone                             2 of 306
+  LostByCombining                          0 of 306
+  PairsOffered                             276310
+  CombinationsSubmitted                    1335
+  CodewordsAccepted                        67
+  CombinedDecodes                          53
+  CombinedDecodesVerified                  53
+  of those, a message that was NOT sent    0
+  ExpectedFalseAccepts                     0.081   (Ft8DeepCombineSettings.ExpectedFalseAccepts, a static on the settings type - it is NOT a field of RepeatsRun)
+  DeepestHearings                          4
+  WorstSlotMilliseconds                    76.2 ms, carrying 20 candidates and 1 combinations - a margin of 197x against FT8's 15 000 ms
+
+ONLYCOMBINED ON EVERY ROW, WHICH IS WHAT THE CAVEAT REQUIRES:
+  single slot       0 of 306    0.0 %   trials no single slot decoded alone and the combination DID: 41 of 306
+  single + OSD      1 of 306    0.3 %   trials no single slot decoded alone and the combination DID: 41 of 306
+  summed x4        43 of 306   14.1 %   trials no single slot decoded alone and the combination DID: 41 of 306
+
+PANEL WALL CLOCK 45.0 s.
+TOTAL WRONG ACROSS ALL THREE ROWS AT THIS RUNG: 0.
+TOTAL SCORED SLOT DECODES AT THIS RUNG: 918.

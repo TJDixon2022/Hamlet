@@ -116,6 +116,41 @@ public class Ft8Unit256CrossingIntervalTests(ITestOutputHelper output)
     ];
 
     /// <summary>
+    /// <b>THE COMBINING PANEL'S OWN ROWS, ON A LADDER THAT IS NOT THE ONE ABOVE.</b>
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// <b>NO ROW HERE IS COMPARABLE WITH ANY ROW ABOVE AND THE PLACEMENT COLUMN SAYS SO ON ITS
+    /// FACE.</b> These are <c>Ft8LadderHarness.RunRepeats</c> rows — <b>four slots a trial</b>
+    /// carrying the same message, jittered 2.00 Hz and 480 samples between hearings — and
+    /// <c>docs/unit255-closing-measurement.md</c> §5.0 rules that such a row cannot share a table
+    /// with a single-slot row. They are computed here only because this is where the crossing
+    /// arithmetic lives, and they are printed in their own block under their own heading.
+    /// </para>
+    /// <para>
+    /// <b>The -21 dB rung is unit 255 §5.3's, cited and not re-run</b>
+    /// (<c>docs/unit255-runs/accumulated-stacked-minus21.txt</c>, <c>Ft8Sharp.Deep</c> 0.8.0,
+    /// which is the version in the tree tonight). The -22 dB rung is unit 256's
+    /// (<c>docs/unit256-runs/combining-panel-minus22.txt</c>).
+    /// </para>
+    /// <para>
+    /// <b>And the caveat travels with all three: a four-repeat column gets four single-slot
+    /// attempts as well as deeper sums.</b>
+    /// </para>
+    /// </remarks>
+    private static IReadOnlyList<(
+        string Row,
+        double UpperDecibels,
+        int UpperDecoded,
+        double LowerDecibels,
+        int LowerDecoded)> ThePanel =>
+    [
+        ("single slot", -21.0, 13, -22.0, 0),
+        ("single + OSD", -21.0, 33, -22.0, 1),
+        ("summed x4", -21.0, 254, -22.0, 43),
+    ];
+
+    /// <summary>
     /// <b>The band brackets the point, is open where a bound curve never reaches 50 per cent, and
     /// reproduces the one crossing this project has already published by hand.</b>
     /// </summary>
@@ -185,6 +220,40 @@ public class Ft8Unit256CrossingIntervalTests(ITestOutputHelper output)
             Say(
                 $"  {row.Column,-20} {row.UpperDecibels,6:F1} dB and {row.LowerDecibels,6:F1} dB   "
                 + row.Source);
+        }
+
+        Say(string.Empty);
+        Say(
+            "AND COMBINING'S OWN PANEL - A DIFFERENT LADDER, AND NO ROW HERE IS COMPARABLE WITH "
+            + "ANY ROW ABOVE. Ft8LadderHarness.RunRepeats, FOUR slots a trial carrying the same "
+            + "message, jittered 2.00 Hz and 480 samples between hearings. Unit 255 section 5.0.");
+        Say(
+            "  -21 dB is unit 255 section 5.3's row, CITED and not re-run; -22 dB is unit 256's "
+            + "(docs/unit256-runs/combining-panel-minus22.txt). Both 306 trials, Ft8Sharp.Deep "
+            + "0.8.0.");
+        Say(
+            "  THE CAVEAT TRAVELS WITH ALL THREE: a four-repeat column gets four single-slot "
+            + "attempts as well as deeper sums.");
+        Say(Ft8Unit256CrossingBand.Header);
+
+        foreach (var row in ThePanel)
+        {
+            var band = Ft8Unit256CrossingBand.Crossing(
+                new Ft8Unit256CrossingBand.Rung(row.UpperDecibels, row.UpperDecoded, Trials),
+                new Ft8Unit256CrossingBand.Rung(row.LowerDecibels, row.LowerDecoded, Trials));
+
+            bands.Add((row.Row, "repeats x4", band));
+            Say(Ft8Unit256CrossingBand.AsRow(row.Row, "repeats x4", band));
+
+            if (!band.Bracketed)
+            {
+                Say(
+                    $"    {row.Row}: NOT BRACKETED - {row.UpperDecoded} of {Trials} at "
+                    + $"{row.UpperDecibels:F1} dB is already BELOW 50 per cent, so its crossing "
+                    + $"lies ABOVE {row.UpperDecibels:F1} dB, which is this panel's own ceiling. "
+                    + "The panel was walked DOWNWARD from -21 dB because that is where combining's "
+                    + "crossing is, and it was not walked above it. NOTHING IS EXTRAPOLATED.");
+            }
         }
 
         Say(string.Empty);
@@ -290,8 +359,10 @@ public class Ft8Unit256CrossingIntervalTests(ITestOutputHelper output)
         // EVERYTHING IS PRINTED AND WRITTEN BEFORE ANYTHING IS ASSERTED. A measurement that dies
         // on an assertion and takes its own numbers with it has cost the night for nothing.
 
-        // ASSERTION ONE OF THREE: the point crossing lies inside its own band, on every row.
-        foreach (var (column, placement, band) in bands)
+        // ASSERTION ONE OF THREE: the point crossing lies inside its own band, on every row that
+        // HAS one. A row whose two rungs do not straddle 50 per cent has no crossing and no band,
+        // and "not bracketed" is a result rather than a failure - unit 255's ruling 3.
+        foreach (var (column, placement, band) in bands.Where(b => b.Band.Bracketed))
         {
             Assert.True(
                 band.ContainsPoint,

@@ -26,6 +26,16 @@ WHERE EACH OF THOSE FOUR RUNGS CAME FROM:
   OSD only              -18.0 dB and  -19.0 dB   unit 256 cell-centre-minus18.txt / unit 255 minus19-cell-centre.txt
   subtraction only      -17.0 dB and  -18.0 dB   unit 256 cell-centre-minus17.txt / cell-centre-minus18.txt
 
+AND COMBINING'S OWN PANEL - A DIFFERENT LADDER, AND NO ROW HERE IS COMPARABLE WITH ANY ROW ABOVE. Ft8LadderHarness.RunRepeats, FOUR slots a trial carrying the same message, jittered 2.00 Hz and 480 samples between hearings. Unit 255 section 5.0.
+  -21 dB is unit 255 section 5.3's row, CITED and not re-run; -22 dB is unit 256's (docs/unit256-runs/combining-panel-minus22.txt). Both 306 trials, Ft8Sharp.Deep 0.8.0.
+  THE CAVEAT TRAVELS WITH ALL THREE: a four-repeat column gets four single-slot attempts as well as deeper sums.
+column               placement    upper rung                            lower rung                            point       band                             width
+single slot          repeats x4    -21.0 dB    13 of  306    4.25 % (  2.50 -   7.13)  -22.0 dB     0 of  306    0.00 % (  0.00 -   1.24)      n/a  not bracketed                      open
+    single slot: NOT BRACKETED - 13 of 306 at -21.0 dB is already BELOW 50 per cent, so its crossing lies ABOVE -21.0 dB, which is this panel's own ceiling. The panel was walked DOWNWARD from -21 dB because that is where combining's crossing is, and it was not walked above it. NOTHING IS EXTRAPOLATED.
+single + OSD         repeats x4    -21.0 dB    33 of  306   10.78 % (  7.78 -  14.76)  -22.0 dB     1 of  306    0.33 % (  0.06 -   1.83)      n/a  not bracketed                      open
+    single + OSD: NOT BRACKETED - 33 of 306 at -21.0 dB is already BELOW 50 per cent, so its crossing lies ABOVE -21.0 dB, which is this panel's own ceiling. The panel was walked DOWNWARD from -21 dB because that is where combining's crossing is, and it was not walked above it. NOTHING IS EXTRAPOLATED.
+summed x4            repeats x4    -21.0 dB   254 of  306   83.01 % ( 78.40 -  86.80)  -22.0 dB    43 of  306   14.05 % ( 10.60 -  18.39)   -21.48  -21.54 dB to -21.42 dB            0.119
+
 WHAT UNIT 255 PUBLISHED, BESIDE WHAT THE ARITHMETIC RETURNS:
 column               placement     published    computed    agrees
 Ft8Sharp             on grid         -19.54    -19.5429         yes
@@ -50,6 +60,7 @@ THE OPEN SIDES, AND WHY EACH ONE IS OPEN:
   Deep all off cell centre: CLOSED on both sides, 0.187 dB wide.
   OSD only cell centre: CLOSED on both sides, 0.234 dB wide.
   subtraction only cell centre: CLOSED on both sides, 0.187 dB wide.
+  summed x4 repeats x4: CLOSED on both sides, 0.119 dB wide.
 
 THE HAND-COMPUTED CASE, from docs/unit256-crossings-and-combining.md section 2.2:
   283 of 306 = 92.48366 %, Wilson 88.974 - 94.940
