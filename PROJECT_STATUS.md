@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: DONE
-TASK: 7 of 7
-WORK_INSTRUCTION: 245 - Ft8Sharp.Deep exists, and the scoreboard grows a second column that reads the same
-BALL: tim
+STATE: WORKING
+TASK: 1 of 8
+WORK_INSTRUCTION: 246 - ordered statistics decoding, on the most reliable basis, when belief propagation gives up
+BALL: claude
 RULES_AT: HM-DEC-153 (2026-09-04)
 NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-09-04T22:26:00-04:00
-NOTE: Step 1 closed at four of four must-pass exits and steps 2, 3, 4 and 6 are open behind it; no decibel moved and none was meant to, the two scoreboard columns reading 13 of 306 at a delivered -21.001 dB with 0 wrong, and the only thing now waiting on Tim is whatever he makes of the census that says step 2 can reach everything it needs without touching the port
+UPDATED: 2026-09-04T23:33:00-04:00
+NOTE: Baseline Ft8Sharp.Tests run started in the background while task 1 reads the port surface; the trace being built is the 91-row generator read off LdpcEncoder by encoding unit payloads, then the -21 dB ceiling - closest candidate hard-decision distance to the true codeword over one 51-trial block, and how many of those errors fall inside the 91 most reliable positions
 
 ---
 

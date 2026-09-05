@@ -56,3 +56,5 @@ the owner reads instead of watching.
 | phase | 2026-09-04T19:33 | 2026-09-04T19:33 | halted | 0 | stop 3: a ruling is wanted - judged, not counted |
 | 1 | 2026-09-04T20:49 | 2026-09-04T21:11 | complete | 13.183756000000011 | ran unattended, 168 turns, 16 denied call(s) worked around, report valid |
 | 2 | 2026-09-04T21:17 | 2026-09-04T21:46 | complete | 15.484151499999996 | ran unattended, 157 turns, 5 denied call(s) worked around, report valid |
+| 3 | 2026-09-04T21:53 | 2026-09-04T22:25 | complete | 18.422151 | ran unattended, 192 turns, 11 denied call(s) worked around, report valid |
+| phase | 2026-09-04T22:26 | 2026-09-04T22:26 | halted | 47.0902 | stop 2: budget exhausted - spent 47.0902 of 40.00 |
