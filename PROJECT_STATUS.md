@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 6 of 6
-WORK_INSTRUCTION: 254 - repeated transmissions are combined across slots, and the sum is taken deeper than a pair
-BALL: tim
+STATE: RUNNING
+TASK: 1 of 7
+WORK_INSTRUCTION: 255 - the closing measurement, and what the operator actually gets
+BALL: claude
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-155 (2026-09-05)
-UPDATED: 2026-09-05T18:10:00-04:00
-NOTE: Six of six; a column headed combined x4 summed two hearings at a time and now sums four, which bought +4 decodes of 51 in the clean isolation for not one extra submission, 252 of 306 at -21 dB against the port's 13, zero wrong on every row across 5777 submissions, combining stays off by default, and the report validates at exit 0
+UPDATED: 2026-09-05T18:32:00-04:00
+NOTE: Trace written; Ft8Reception.cs:460 transcribes as osd Default plus fineSync Default and nothing else, six columns priced at 217 s a rung-placement against a 480 s ceiling so no split is needed, and the 306-trial drop candidate is affordable at about 200 s; running one dotnet build before committing
 
 ---
 
