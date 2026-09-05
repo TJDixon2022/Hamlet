@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: RUNNING
-TASK: 4 of 6
+TASK: 5 of 6
 WORK_INSTRUCTION: 252 - ordered statistics, taken as far as it goes
 BALL: claude
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-155 (2026-09-05)
-UPDATED: 2026-09-05T16:38:00-04:00
-NOTE: The shipping column returned in 144 s at 35 of 306 today against 43 with the window, zero wrong; writing the whole scoreboard into the trace document before the verdict is taken
+UPDATED: 2026-09-05T16:47:00-04:00
+NOTE: The default does not move; the Wilson intervals overlap on all three rungs, and the table that decided it is now on the property's own remarks with the paired-design qualification beside it
 
 ---
 

@@ -103,6 +103,49 @@ public sealed class Ft8DeepOsdSettings
     /// rung</b>, at 72.5 ms a trial against the port's 64.1 and a worst observed slot of 110 ms.
     /// Whether order 1 would have done as much at 306 trials is not known and is not claimed.
     /// </para>
+    /// <para>
+    /// <b>UNIT 252 LOOKED AGAIN WITH A WINDOW AVAILABLE, AND LEFT THIS WHERE IT IS.</b> Three rungs,
+    /// 306 trials each, five columns, fine sync off, the same audio to all five, and <b>zero wrong
+    /// decodes on all fifteen rows</b>. The port and the order-2 column reproduced unit 246's
+    /// figures to the decode, which is what says the instrument had not moved:
+    /// </para>
+    /// <code>
+    /// column          -19 dB rate   -20 dB rate   -21 dB rate (of 306)   95% Wilson   ms/trial   worst slot
+    /// Ft8Sharp               81.0          23.9              4.2 (13)      2.5-7.1       63.9        97.0
+    /// Deep OSD off           81.0          23.9              4.2 (13)      2.5-7.1       64.2       100.8
+    /// order 2, full          90.2          40.8             10.8 (33)     7.8-14.8       72.3       106.1
+    /// order 3, window 60     90.5          47.1             13.4 (41)    10.0-17.7      132.4       201.7
+    /// order 3, full          91.8          50.7             14.1 (43)    10.6-18.4      298.1       516.7
+    /// </code>
+    /// <para>
+    /// The 50 per cent crossing, <b>interpolated</b> between the -19 and -20 rungs and quoted as an
+    /// interpolation: <b>-19.54 dB</b> for the port, <b>-19.81 dB</b> at order 2 full basis,
+    /// <b>-19.93 dB</b> at order 3 over a window of 60, and <b>-20.02 dB</b> at order 3 over the
+    /// whole basis. <b>So the window bought 0.12 dB over this default and the whole basis bought
+    /// 0.21 dB, for 2.25 times the window's price.</b>
+    /// </para>
+    /// <para>
+    /// <b>AND IT IS STILL ORDER 2 OVER THE FULL BASIS, because the intervals overlap at every
+    /// rung</b> - 86.3-93.0 against 86.7-93.3, 35.5-46.4 against 41.5-52.7, and 7.8-14.8 against
+    /// 10.0-17.7. <b>306 trials did not separate the two cells by the only interval this project
+    /// computes, and a measurement that does not separate two options is a result.</b> Moving this
+    /// on the point estimate would be tuning until a number passed.
+    /// </para>
+    /// <para>
+    /// <b>The qualification, because it is why this is worth re-opening rather than closed.</b>
+    /// <c>Ft8Step6Ladder.Wilson</c> is an independent-sample interval and the ladder is a paired
+    /// design - one audio array per trial, handed to every column - so that interval overstates the
+    /// uncertainty of a difference. McNemar on the discordant trials is the right test and
+    /// <c>Ft8LadderHarness.Result</c> does not record the pairs. Unit 252 also measured that on all
+    /// three rungs the increase in trials decoded exactly equalled the increase in codewords the
+    /// port's gates accepted - +1/+4, +19/+11 and +8/+2 - which is a strong hint the discordant
+    /// count is one-sided, <b>and a hint is not a test</b>. The whole table is
+    /// <c>docs/unit252-osd-window.md</c> §7 and §8.
+    /// </para>
+    /// <para>
+    /// <b>Nothing here was tuned to a target either.</b> No cell in that table reaches 40 per cent
+    /// at -21 dB, and this default was not moved because a number was wanted.
+    /// </para>
     /// </remarks>
     public static Ft8DeepOsdSettings Default { get; } = new(2);
 

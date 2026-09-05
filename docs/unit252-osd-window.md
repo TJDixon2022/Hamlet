@@ -467,7 +467,114 @@ ship o3 W60      -21.0    -21.001     306       43     263      0    14.1    10.
 
 ## 8. The verdict
 
-*Filled by task 5.*
+### 8.1 The 50 per cent crossing, before and after
+
+**Quoted as an interpolation over three rungs and not as a measured crossing**, by the
+same linear arithmetic `docs/unit246-osd.md` §4 used and that `HM-OPEN-067`'s *near
+-19.5* was read off.
+
+| column | -19 dB | -20 dB | -21 dB | 50 per cent crossing |
+|---|---|---|---|---|
+| `Ft8Sharp` | 81.0 | 23.9 | 4.2 | **-19.54 dB** (unit 246 read -19.54) |
+| Deep OSD off | 81.0 | 23.9 | 4.2 | **-19.54 dB** |
+| **o2 full — the `before`** | 90.2 | 40.8 | 10.8 | **-19.81 dB** (unit 246 read -19.81) |
+| **o3 W60 — the `after`** | 90.5 | 47.1 | 13.4 | **-19.93 dB** |
+| o3 full | 91.8 | 50.7 | 14.1 | **-20.02 dB** |
+
+**Both control figures reproduce unit 246's to the hundredth of a decibel.**
+
+`o3 full` is the one row whose crossing is not bracketed by the -19 and -20 rungs —
+its -20 dB rate is 50.7 per cent, already past 50 — so its figure is interpolated
+between **-20 and -21** instead. The -19/-20 line extrapolates to the same -20.02.
+
+**What the window bought, in decibels: 0.12 dB over the order 2 that ships**
+(-19.81 to -19.93). Full-basis order 3 bought 0.21 dB (-19.81 to -20.02) for 2.25
+times the price of the window. Against the port, ordered statistics now stands at
+**0.39 dB windowed and 0.48 dB at the full basis**, of the 1.5 dB `HM-OPEN-067`
+records.
+
+### 8.2 The -21 dB rate, before and after, with trial counts and Wilson intervals
+
+| | decoded | trials | rate | 95 per cent Wilson | **wrong** |
+|---|---|---|---|---|---|
+| `Ft8Sharp` | 13 | 306 | 4.2 % | 2.5 - 7.1 | **0** |
+| **before** — o2 full | **33** | **306** | **10.8 %** | **7.8 - 14.8** | **0** |
+| **after** — o3 W60 | **41** | **306** | **13.4 %** | **10.0 - 17.7** | **0** |
+| o3 full | 43 | 306 | 14.1 % | 10.6 - 18.4 | **0** |
+
+### 8.3 The time budget
+
+The configuration being recommended is **the one that ships, unchanged** — see 8.4 —
+so its worst observed slot is the shipping row's: **330.4 ms against a 15 000 ms
+budget, a 45× margin.** In the isolation, with fine sync off, `o2 full`'s worst
+observed slot was 106.1 ms, a **141× margin**.
+
+Had the window shipped, it would have been **476.0 ms, a 32× margin** in the shipping
+configuration and 201.7 ms, a 74× margin, in isolation. **Neither is anywhere near
+the budget**, and time is not what decides 8.4.
+
+### 8.4 `Ft8DeepOsdSettings.Default` — THE DECISION, AND IT IS NOT TO MOVE IT
+
+**The default stays at order 2 over the full basis.**
+
+**Why, stated as the rule it was decided on.** At every one of the three rungs the 95
+per cent Wilson intervals of the `before` and the `after` overlap:
+
+| rung | before | after | overlap |
+|---|---|---|---|
+| -19 | 86.3 - 93.0 | 86.7 - 93.3 | almost complete |
+| -20 | 35.5 - 46.4 | 41.5 - 52.7 | 41.5 - 46.4 |
+| -21 | 7.8 - 14.8 | 10.0 - 17.7 | 10.0 - 14.8 |
+
+**306 trials did not separate these two cells by the only interval this project
+computes, and a measurement that does not separate two options is a result.** Moving
+the default anyway would be moving it on the point estimate, which is tuning until a
+number passes, and step 3's third exit forbids that by name.
+
+**AND THE HONEST QUALIFICATION, because it is the reason a later unit should re-open
+this and not let it lie.** `Ft8Step6Ladder.Wilson` is an *independent-sample*
+interval, and this design is **paired**: `Ft8LadderHarness.Run` synthesises one audio
+array per trial and hands the same array to every column, which the harness's own
+remarks call *worth far more than two independent runs*. An independent-sample
+interval is the wrong statistic for a paired design and it overstates the uncertainty
+of a difference. The right one - McNemar on the trials where exactly one of the two
+columns decoded - **needs the discordant pairs, and nothing in this tree records
+them**: `Ft8LadderHarness.Result` carries totals only. §7's six exactly-matching
+deltas are a strong hint that the discordant count is one-sided, which would make the
+difference significant at -20 and -21, **but a hint is not a test and this document
+does not report one.**
+
+**So the finding is not "the window bought nothing".** It is: *the window bought a
+measured 0.12 dB and 8 more decodes of 306 at -21 dB with zero wrong, and the
+statistic this project computes cannot say that difference is not chance.* **Settling
+it costs one instrumented run and no new algorithm** - record per-trial decoded flags
+per column and apply McNemar - and that is logged in `OPEN_ISSUES.md` for step 6.
+
+**What the operator gets tonight: nothing new.** `Ft8Reception` still builds
+`Ft8DeepOsdSettings.Default`, which is still order 2 over the whole basis, and the
+shipping configuration still reads **35 of 306 at -21 dB**. Nothing on his screen
+changed and nothing costs him a millisecond more per slot. **What is new is that the
+window exists, is measured, and any caller can name one** - `new
+Ft8DeepOsdSettings(3, 60)` - and knows what it costs and what it bought.
+
+### 8.5 The step closes on the figure it reached
+
+Ordered statistics, taken as far as this unit takes it:
+
+- The port reaches **4.2 per cent at -21 dB** and crosses 50 per cent at **-19.54 dB**.
+- What ships reaches **10.8 per cent (33 of 306, 7.8 - 14.8)** and crosses at
+  **-19.81 dB**.
+- The furthest any cell measured tonight reaches is **14.1 per cent (43 of 306,
+  10.6 - 18.4)** at full-basis order 3, crossing at **-20.02 dB**, for 298.1 ms a
+  trial against the port's 63.9.
+- **Order 3 is no longer unresolved.** Unit 246 left it at one decode of 51 and about
+  25 minutes of wall clock; it is now measured at 306 trials on all three rungs, it
+  buys 0.21 dB over order 2, and the window buys 0.12 dB of that for 44 per cent of
+  the price.
+- **Zero wrong decodes on every row of every measurement in this unit** - eleven grid
+  rows, fifteen scoreboard rows and two shipping rows.
+
+That is how far ordered statistics goes on this decoder, and the step closes on it.
 
 ---
 
