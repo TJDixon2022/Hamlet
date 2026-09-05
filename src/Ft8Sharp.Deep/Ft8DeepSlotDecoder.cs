@@ -59,6 +59,11 @@ public sealed class Ft8DeepSlotDecoder
     /// How hard the ordered statistics stage tries, or <see langword="null"/> - the default - for the
     /// port's behaviour exactly.
     /// </param>
+    /// <param name="rememberHearings">
+    /// Whether to keep every candidate's normalised ratios in <see cref="LastHearings"/> so that a
+    /// later slot can be combined with them. <b>Off by default and off costs nothing</b> - see that
+    /// property.
+    /// </param>
     /// <exception cref="ArgumentOutOfRangeException">
     /// The message limit is negative, or the iteration count is negative. <b>Thrown by the port</b>,
     /// with the port's own wording, because this constructor does not check what it is about to hand
@@ -69,12 +74,14 @@ public sealed class Ft8DeepSlotDecoder
         Ft8SyncSearch? search = null,
         int messageLimit = Ft8SlotDecoder.DefaultMessageLimit,
         int maxIterations = LdpcDecoder.DefaultMaxIterations,
-        Ft8DeepOsdSettings? osd = null)
+        Ft8DeepOsdSettings? osd = null,
+        bool rememberHearings = false)
     {
         var used = search ?? new Ft8SyncSearch();
         _port = new Ft8SlotDecoder(geometry, used, messageLimit, maxIterations);
         _search = used;
         Osd = osd;
+        RemembersHearings = rememberHearings;
         (_statistics, _osdCodeword, _osdRatios) = Prepare(osd);
     }
 
@@ -98,12 +105,14 @@ public sealed class Ft8DeepSlotDecoder
     public Ft8DeepSlotDecoder(
         Ft8SlotDecoder port,
         Ft8SyncSearch? search = null,
-        Ft8DeepOsdSettings? osd = null)
+        Ft8DeepOsdSettings? osd = null,
+        bool rememberHearings = false)
     {
         ArgumentNullException.ThrowIfNull(port);
         _port = port;
         _search = search ?? new Ft8SyncSearch(port.CandidateLimit, port.MinimumScore);
         Osd = osd;
+        RemembersHearings = rememberHearings;
         (_statistics, _osdCodeword, _osdRatios) = Prepare(osd);
     }
 
@@ -147,6 +156,34 @@ public sealed class Ft8DeepSlotDecoder
     /// </para>
     /// </remarks>
     public Ft8DeepOsdCounts LastOsd { get; private set; }
+
+    /// <summary>
+    /// <b>Whether every candidate's normalised ratios are kept for a later slot to be combined
+    /// with.</b> Off by default.
+    /// </summary>
+    public bool RemembersHearings { get; }
+
+    /// <summary>
+    /// <b>Every candidate of the last slot decoded, with the normalised ratios the gate saw</b>, or an
+    /// empty list when <see cref="RemembersHearings"/> is false.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// <b>This is what step 6 needs and it is the only reason it exists.</b> Combining a repeat means
+    /// adding an earlier slot's ratios to a later slot's, and a finished
+    /// <see cref="Ft8SlotResult"/> does not carry them - by the time it exists, every refused
+    /// candidate's evidence has been overwritten by the next candidate's.
+    /// </para>
+    /// <para>
+    /// <b>Off by default because it costs an allocation and a copy per candidate.</b> With it off this
+    /// decoder does exactly what it did at unit 246, which with <see cref="Osd"/> also null is exactly
+    /// what the port does - and the scoreboard's OSD-off and OSD-on columns stay comparable with the
+    /// rows already recorded. <b>Turning it on changes no decision and no count</b>; it only keeps a
+    /// copy of what was already computed.
+    /// </para>
+    /// </remarks>
+    public IReadOnlyList<Ft8DeepHearing> LastHearings { get; private set; } =
+        Array.Empty<Ft8DeepHearing>();
 
     /// <summary>The extents this decoder analyses to. The port's.</summary>
     public Ft8WaterfallGeometry Geometry => _port.Geometry;
@@ -212,10 +249,18 @@ public sealed class Ft8DeepSlotDecoder
         var accepted = 0;
         var reencodings = 0L;
 
+        var hearings = RemembersHearings
+            ? new List<Ft8DeepHearing>(candidates.Count)
+            : null;
+
         foreach (var candidate in candidates)
         {
             Ft8SoftSymbols.Extract(waterfall, candidate, ratios);
             Ft8SoftSymbols.Normalise(ratios);
+
+            // KEPT BEFORE ANYTHING IS DECIDED, and a copy rather than the buffer, which is re-used on
+            // the next candidate. Nothing about this changes what happens below.
+            hearings?.Add(new Ft8DeepHearing(candidate, (float[])ratios.Clone()));
 
             var result = Ft8CodewordDecoder.Decode(ratios, cache, MaxIterations);
             byte[]? osdKey = null;
@@ -314,6 +359,9 @@ public sealed class Ft8DeepSlotDecoder
         // is the search's candidate limit times the order's re-encoding count, which is a number
         // that can be measured rather than a policy that has to be believed.
         LastOsd = new Ft8DeepOsdCounts(offered, produced, accepted, reencodings);
+        LastHearings = hearings is null
+            ? Array.Empty<Ft8DeepHearing>()
+            : hearings;
 
         return new Ft8SlotResult(
             candidates.Count, paritySatisfied, checksumPassed, becameText, duplicates, messages);

@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: WORKING
-TASK: 3 of 7
+TASK: 4 of 7
 WORK_INSTRUCTION: 247 - the same transmission heard twice, combined before the decoder sees it
 BALL: claude
 RULES_AT: HM-DEC-153 (2026-09-04)
 NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-09-05T01:14:00-04:00
-NOTE: The pairing rule and the false-accept budget are written and measured. One tone of frequency tolerance and two symbol periods of time tolerance, both read off task 1 where the two closest candidates sat a median 0.00 Hz and 0.000 s apart, and one partner per candidate per remembered slot - which is the smallest budget that can produce a combination at all and puts the naive expectation at 0.24 messages nobody sent across a 306-trial rung against 366 for unbounded pairing. The wrong-pairing gate test found something worth having: 5 of 56 deliberately wrong pairings did decode, and every one of them returned one of its own two transmissions rather than an invented message, so the count that must be zero is zero
+UPDATED: 2026-09-05T01:38:00-04:00
+NOTE: The combiner is in the loop and it works on real audio. Ft8DeepRepeatDecoder takes slots in order, returns the single-slot result for each and then combines against a bounded history, and on a synthesised slot at a noise level where neither hearing decoded alone the two together returned the message. The superset property holds at every level swept - same messages, same order, five counts untouched - and combining off is still the port whole. Remembering a slot costs 11 kB at 17 candidates. Now moving to the repeats ladder, a second entry point beside Run, which is where the 306-trial number comes from
 
 ---
 

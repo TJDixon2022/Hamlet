@@ -167,9 +167,11 @@ public class Ft8DeepSlotDecoderTests(ITestOutputHelper output)
     /// exhaustively, so the next unit that adds a type has to come here too.
     /// </para>
     /// <para>
-    /// <b>Unit 247 is that next unit, and it came here on purpose too.</b> Its task 2 added the soft
-    /// combiner — <c>Ft8DeepCombineWeighting</c> and <c>Ft8DeepSoftCombiner</c> — and its task 4 adds
-    /// the repeat decoder that carries it. <b>This test going red is the tripwire working; the list is
+    /// <b>Unit 247 is that next unit, and it came here on purpose three times.</b> Task 2 added the
+    /// soft combiner — <c>Ft8DeepCombineWeighting</c> and <c>Ft8DeepSoftCombiner</c>; task 3 added the
+    /// pairing rule and its budget — <c>Ft8DeepCombineSettings</c> and <c>Ft8DeepCombineCounts</c>;
+    /// task 4 added the decoder that carries them across slots — <c>Ft8DeepHearing</c> and
+    /// <c>Ft8DeepRepeatDecoder</c>. <b>This test going red is the tripwire working; the list is
     /// rewritten by the unit that changed the assembly and never by the unit that discovers it
     /// afterwards.</b>
     /// </para>
@@ -191,10 +193,12 @@ public class Ft8DeepSlotDecoderTests(ITestOutputHelper output)
                 typeof(Ft8DeepCombineCounts),
                 typeof(Ft8DeepCombineSettings),
                 typeof(Ft8DeepCombineWeighting),
+                typeof(Ft8DeepHearing),
                 typeof(Ft8DeepOrderedStatistics),
                 typeof(Ft8DeepOsdCounts),
                 typeof(Ft8DeepOsdResult),
                 typeof(Ft8DeepOsdSettings),
+                typeof(Ft8DeepRepeatDecoder),
                 typeof(Ft8DeepSlotDecoder),
                 typeof(Ft8DeepSoftCombiner),
             },
