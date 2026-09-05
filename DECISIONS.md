@@ -4,6 +4,55 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-155
+date: 2026-09-05
+refs: PHASE_PLAN.md, RUN_LEDGER.md, docs/gate-set.md, docs/breakage-record.md, docs/test-baseline.md, HM-DEC-154, work instruction 250
+---
+
+**A unit runs no test suite. A unit may run only the test it constructs in that
+work instruction, filtered by exact name, in the foreground, with a stated
+timeout. A unit never backgrounds a command and polls for it.** Tim, 2026-09-05.
+
+**The cause is three dead sessions in one day**, and it is written here because
+the next session will be tempted by exactly the same shape. `RUN_LEDGER.md`
+records units killed at `01:32→02:48`, `12:02→12:35` and `13:09→13:47` on
+2026-09-05, every one of them *killed by the watchdog: no status write within 12
+min of the launch clock*. Every one was sitting in
+
+```
+until grep -q "exited with code" .../tasks/xxx.output; do sleep 15; done
+```
+
+with a 900,000 ms timeout, waiting on a backgrounded test run. **The watchdog
+fires after twelve minutes with no status write. The suite was incidental; the
+poll was fatal.** Between 33 and 76 minutes of unattended time was spent each
+night producing nothing at all.
+
+**The second cause is that the suites had stopped being affordable and nobody had
+said so.** `Ft8Sharp.Tests` is 610 tests and about fourteen minutes.
+`Hamlet.RadioEngine.Tests` is 2,281 discovered and **has never once completed a
+whole-project run** — started alone at 08:15 on 2026-09-01 and cut off at 09:16 —
+and four consecutive reports carried no total for it, because the console logs in
+this tree are UTF-16 and a filter reading them as UTF-8 reports zero. **A suite
+nobody can finish guards nothing.**
+
+**What replaces it.** `dotnet build` stays allowed, foregrounded, with a timeout.
+`docs/gate-set.md` is the short list of tests that guard what this phase must not
+break, and **Tim runs it, at the end of the phase, by hand and uncontended.** Its
+absence never blocks a step.
+
+**This supersedes the sentence in HM-DEC-154 that a unit runs the gate set and
+the channels it touched.** That ruling stands in every other respect, including
+the rule it introduced and this one keeps: **no test is added, to the gate set or
+to the tree, without naming the breakage it would have caught.**
+`docs/breakage-record.md` is where those breakages are now written down.
+
+**Rejected: a longer watchdog.** The kills were not a timeout being too tight.
+A unit that cannot report progress for twelve minutes is a unit nobody can see,
+and the loop is unattended by design — the owner reads a report rather than
+watching a console.
+
+---
 id: HM-DEC-154
 date: 2026-09-05
 refs: PHASE_PLAN.md, PHASE_STATUS.md, PROJECT_CARD.md, docs/gate-set.md, HM-DEC-131, HM-DEC-153, unit 249, unit 250
