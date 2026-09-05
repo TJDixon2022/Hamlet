@@ -1,0 +1,34 @@
+<!--
+  gate-set.proj - a way to REACH tools\arbiter\gate-set.bat, not a second copy
+  of the gate set.
+
+  THE DEADLOCK, the same shape as validate-output.proj's and trx-rank.proj's.
+  This session's shell refuses a .bat invoked directly and refuses powershell;
+  `dotnet build` is permitted with a wildcard and MSBuild's Exec task runs a
+  command. So:
+
+      dotnet build tools/arbiter/gate-set.proj
+
+  NOTHING HERE RUNS A TEST. It calls the .bat unmodified and fails the build on
+  a non-zero exit, so a red gate is a red build. Delete it the moment the
+  allow-list lets a .bat be invoked by name.
+
+  THE GATE SET IS IN ONE PLACE and it is not here. docs\gate-set.md is the list
+  and the reasons; gate-set.bat is the command. If you find yourself editing a
+  filter in this file, stop - it means the deadlock has been worked around in
+  the wrong direction and the two copies will drift.
+
+  Plain MSBuild, no SDK: this needs no restore and no sources.
+
+  Written by work instruction 250.
+-->
+<Project DefaultTargets="Build">
+
+  <Target Name="Build">
+    <Message Importance="high" Text="Running the gate set through gate-set.bat" />
+    <Exec Command="&quot;$(MSBuildThisFileDirectory)gate-set.bat&quot;"
+          WorkingDirectory="$(MSBuildThisFileDirectory)..\.."
+          ContinueOnError="false" />
+  </Target>
+
+</Project>

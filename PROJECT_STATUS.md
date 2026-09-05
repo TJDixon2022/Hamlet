@@ -6,8 +6,8 @@ WORK_INSTRUCTION: 250 - the gate set exists, and the slow tests are named
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-152 (2026-08-31)
-UPDATED: 2026-09-05T12:23:00-04:00
-NOTE: Task 1 running; Ft8Sharp.Tests timed and ranked at 610 tests in 14 m 14 s, engine suite now under way in namespace batches so a cut-off still leaves per-test times
+UPDATED: 2026-09-05T13:12:00-04:00
+NOTE: Task 1 ranking read out of five TRX files; Ft8Sharp 610 tests and Deep 69 both ranked, and the engine's four batches account for 1,541 of the 2,281 it discovers today, so the missing namespaces are being enumerated before the gap is reported
 
 ---
 
