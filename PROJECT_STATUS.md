@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 6 of 6
-WORK_INSTRUCTION: 252 - ordered statistics, taken as far as it goes
-BALL: tim
+STATE: WORKING
+TASK: 1 of 6
+WORK_INSTRUCTION: 253 - strong signals are subtracted and the slot is read again
+BALL: claude
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-155 (2026-09-05)
-UPDATED: 2026-09-05T16:04:00-04:00
-NOTE: Six of six; the search has a window, -21 dB reads 33 of 306 before and 41 of 306 after with zero wrong on all twenty-eight rows, the default stays at order 2 because the intervals overlap, and the report validates at exit 0
+UPDATED: 2026-09-05T16:23:00-04:00
+NOTE: Reading before writing - the two entry points, the coarse candidate's 0.080 s by 3.125 Hz cell, and why a real scale factor alone leaves the whole quadrature component of a loud station in the residual
 
 ---
 
