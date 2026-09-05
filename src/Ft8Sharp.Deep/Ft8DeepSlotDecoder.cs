@@ -46,6 +46,9 @@ public sealed class Ft8DeepSlotDecoder
     private readonly Ft8DeepOrderedStatistics? _statistics;
     private readonly byte[] _osdCodeword;
     private readonly float[] _osdRatios;
+    private readonly Ft8DeepFineSync? _fineSync;
+    private readonly float[] _fineRatios;
+    private readonly double[] _fineGrid;
 
     /// <summary>
     /// Builds a sibling decoder over an <see cref="Ft8SlotDecoder"/> constructed with these same
@@ -75,14 +78,19 @@ public sealed class Ft8DeepSlotDecoder
         int messageLimit = Ft8SlotDecoder.DefaultMessageLimit,
         int maxIterations = LdpcDecoder.DefaultMaxIterations,
         Ft8DeepOsdSettings? osd = null,
-        bool rememberHearings = false)
+        bool rememberHearings = false,
+        Ft8DeepFineSyncSettings? fineSync = null,
+        Ft8DeepBasebandSettings? baseband = null)
     {
         var used = search ?? new Ft8SyncSearch();
         _port = new Ft8SlotDecoder(geometry, used, messageLimit, maxIterations);
         _search = used;
         Osd = osd;
         RemembersHearings = rememberHearings;
+        FineSync = fineSync;
+        Baseband = baseband;
         (_statistics, _osdCodeword, _osdRatios) = Prepare(osd);
+        (_fineSync, _fineRatios, _fineGrid) = PrepareFineSync(fineSync);
     }
 
     /// <summary>Builds a sibling decoder over a port decoder somebody else constructed.</summary>
@@ -106,14 +114,19 @@ public sealed class Ft8DeepSlotDecoder
         Ft8SlotDecoder port,
         Ft8SyncSearch? search = null,
         Ft8DeepOsdSettings? osd = null,
-        bool rememberHearings = false)
+        bool rememberHearings = false,
+        Ft8DeepFineSyncSettings? fineSync = null,
+        Ft8DeepBasebandSettings? baseband = null)
     {
         ArgumentNullException.ThrowIfNull(port);
         _port = port;
         _search = search ?? new Ft8SyncSearch(port.CandidateLimit, port.MinimumScore);
         Osd = osd;
         RemembersHearings = rememberHearings;
+        FineSync = fineSync;
+        Baseband = baseband;
         (_statistics, _osdCodeword, _osdRatios) = Prepare(osd);
+        (_fineSync, _fineRatios, _fineGrid) = PrepareFineSync(fineSync);
     }
 
     /// <summary>
@@ -126,6 +139,47 @@ public sealed class Ft8DeepSlotDecoder
             : (new Ft8DeepOrderedStatistics(),
                 new byte[Ft8DeepOrderedStatistics.CodewordBits],
                 new float[Ft8DeepOrderedStatistics.CodewordBits]);
+
+    /// <summary>
+    /// The fine synchronisation stage and its scratch, or nothing at all when it is off. Built once
+    /// per decoder so that a per-candidate re-sync allocates nothing but its baseband.
+    /// </summary>
+    private static (Ft8DeepFineSync?, float[], double[]) PrepareFineSync(
+        Ft8DeepFineSyncSettings? settings) =>
+        settings is null
+            ? (null, [], [])
+            : (new Ft8DeepFineSync(settings),
+                new float[Ft8SoftSymbols.RatioCount],
+                new double[Ft8DeepBasebandExtractor.GridLength]);
+
+    /// <summary>
+    /// <b>How far a candidate's nominal time sits from the start of the signal it found, in
+    /// seconds.</b> Exactly minus one symbol period, and it was measured rather than derived.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// <c>Ft8WaterfallGeometry.TimeSeconds</c> says in its own remarks that it returns <em>the
+    /// block's nominal position and not the centre of the window that produced it</em> - the analysis
+    /// frame is 3840 samples, is prefilled with zeros and slides, so the samples behind a block reach
+    /// back before it - and that <b>the exact alignment could not be settled by reading and is not
+    /// asserted there</b>.
+    /// </para>
+    /// <para>
+    /// <b>So unit 248 swept it on the hard-decision distance instead</b>, over one whole 51-message
+    /// block at -14 dB, taking the candidate closest to the transmitted codeword in each trial and
+    /// running this library's extractor at that candidate's nominal time plus a bias running two
+    /// symbols either way in half-symbol steps. The median distance is <b>0 of 174 at minus one
+    /// symbol with all 51 trials inside the code's recovery threshold</b>, and 47 or worse at every
+    /// neighbouring half-symbol step. The table is in <c>docs/unit248-baseband-resync.md</c> and the
+    /// sweep is <c>Ft8Unit248ExtractorTraceTests</c>.
+    /// </para>
+    /// <para>
+    /// <b>Getting this wrong would be a constant time error in every position this library reports</b>
+    /// and it would look exactly like a fine search that does not work, so it is a named constant
+    /// with its measurement beside it rather than a number inside an expression.
+    /// </para>
+    /// </remarks>
+    public const double CandidateTimeBiasSeconds = -Ft8WaterfallGeometry.SymbolPeriodSeconds;
 
     /// <summary>
     /// The port decoder this one takes its geometry, its limits and its refusals from.
@@ -185,6 +239,44 @@ public sealed class Ft8DeepSlotDecoder
     public IReadOnlyList<Ft8DeepHearing> LastHearings { get; private set; } =
         Array.Empty<Ft8DeepHearing>();
 
+    /// <summary>
+    /// <b>How far a refused candidate may be re-synced below the waterfall's grid, or
+    /// <see langword="null"/> for off.</b> Null is the default and means this decoder does exactly
+    /// what it did at unit 247 - which, with <see cref="Osd"/> also null, is exactly what the port
+    /// does.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// <b>Fine synchronisation runs only where the port's gates refused the candidate, and it never
+    /// replaces a decode the port already made.</b> Same shape as the ordered statistics stage: the
+    /// candidate goes through the port's path first and only a candidate the port would have thrown
+    /// away is re-synced. <b>At most one extra submission to <c>Ft8CodewordDecoder.Decode</c> per
+    /// coarse candidate</b>, which is what bounds the false-accept arithmetic and what makes the
+    /// superset property assertable - <b>re-syncing only ever adds.</b>
+    /// </para>
+    /// <para>
+    /// <b>It needs the samples.</b> A waterfall holds magnitudes quantised to half a decibel on a
+    /// fixed grid, with no phase and no audio behind it, so <see cref="Decode(Ft8Waterfall)"/> with
+    /// this configured performs no re-sync at all. It does not throw and it does not pretend: the
+    /// candidates it could not touch are counted in
+    /// <c>Ft8DeepFineSyncCounts.RefusedForWantOfSamples</c>.
+    /// </para>
+    /// </remarks>
+    public Ft8DeepFineSyncSettings? FineSync { get; }
+
+    /// <summary>
+    /// How the samples are mixed down, filtered and decimated for a re-sync, or
+    /// <see langword="null"/> for <c>Ft8DeepBasebandSettings.Default</c>. Unused while
+    /// <see cref="FineSync"/> is null.
+    /// </summary>
+    public Ft8DeepBasebandSettings? Baseband { get; }
+
+    /// <summary>
+    /// <b>What the fine synchronisation stage did in the last slot decoded.</b> Reset at the top of
+    /// every decode and read after it; all zero while <see cref="FineSync"/> is null.
+    /// </summary>
+    public Ft8DeepFineSyncCounts LastFineSync { get; private set; }
+
     /// <summary>The extents this decoder analyses to. The port's.</summary>
     public Ft8WaterfallGeometry Geometry => _port.Geometry;
 
@@ -205,8 +297,15 @@ public sealed class Ft8DeepSlotDecoder
     /// </summary>
     /// <param name="samples">The slot's audio. At least one block long.</param>
     /// <exception cref="ArgumentException">The signal is shorter than one block.</exception>
+    /// <remarks>
+    /// <b>This is the samples-carrying entry point and it is the only one a re-sync can run in.</b>
+    /// Until unit 248 it discarded the audio the moment it had a waterfall; it now keeps it
+    /// alongside, because a waterfall has no phase in it and no samples behind it and there is
+    /// nothing in one to re-sync from. <b>Nothing else about it changed</b>: with
+    /// <see cref="FineSync"/> null it is the same call it always was.
+    /// </remarks>
     public Ft8SlotResult Decode(ReadOnlySpan<float> samples) =>
-        Decode(new Ft8Monitor(Geometry).Analyse(samples));
+        Decode(new Ft8Monitor(Geometry).Analyse(samples), samples);
 
     /// <summary>Decodes one slot from a waterfall that has already been built.</summary>
     /// <param name="waterfall">The spectrogram of one slot.</param>
@@ -223,7 +322,19 @@ public sealed class Ft8DeepSlotDecoder
     /// <c>LdpcDecoder.Decode</c> over the same ratios - and the message limit stops adding without
     /// stopping the loop.
     /// </remarks>
-    public Ft8SlotResult Decode(Ft8Waterfall waterfall)
+    public Ft8SlotResult Decode(Ft8Waterfall waterfall) =>
+        Decode(waterfall, ReadOnlySpan<float>.Empty);
+
+    /// <summary>
+    /// The whole loop, with the audio behind the waterfall when there is any and an empty span when
+    /// there is not.
+    /// </summary>
+    /// <remarks>
+    /// <b>One body and not two.</b> The two public entry points differ in exactly one thing - whether
+    /// the samples came with the waterfall - and a second copy of this loop would be a second thing
+    /// to drift.
+    /// </remarks>
+    private Ft8SlotResult Decode(Ft8Waterfall waterfall, ReadOnlySpan<float> samples)
     {
         ArgumentNullException.ThrowIfNull(waterfall);
 
@@ -248,6 +359,24 @@ public sealed class Ft8DeepSlotDecoder
         var produced = 0;
         var accepted = 0;
         var reencodings = 0L;
+
+        var fineOffered = 0;
+        var fineResynced = 0;
+        var fineAccepted = 0;
+        var fineTimeEdges = 0;
+        var fineFrequencyEdges = 0;
+        var fineNoSamples = 0;
+        var fineTimeTotal = 0.0;
+        var fineFrequencyTotal = 0.0;
+        var fineTimeWorst = 0.0;
+        var fineFrequencyWorst = 0.0;
+
+        // ONE BASEBAND PER MIXING FREQUENCY, not one per candidate. The mixing and the 401-tap
+        // filter are the expensive part and they depend only on where the eight tones sit, so two
+        // candidates in the same bin at different times share one. Cleared with the slot.
+        var basebands = _fineSync is null
+            ? null
+            : new Dictionary<(int Bin, int Sub), Ft8DeepBaseband>();
 
         var hearings = RemembersHearings
             ? new List<Ft8DeepHearing>(candidates.Count)
@@ -306,6 +435,85 @@ public sealed class Ft8DeepSlotDecoder
                 // carry OSD's story. Nothing here overrides a refusal.
             }
 
+            // THE FINE SYNCHRONISATION STAGE, at the only place it can go and under the same rule as
+            // OSD: the port has just refused this candidate, so there is nothing here to overwrite.
+            // Where the port DECODED, this never runs and the port's answer stands untouched.
+            byte[]? fineKey = null;
+
+            if (_fineSync is not null && result.Status != Ft8CodewordStatus.Decoded)
+            {
+                fineOffered++;
+
+                if (samples.IsEmpty)
+                {
+                    // A WATERFALL HAS NO SAMPLES BEHIND IT. Not an error and not a pretence: the
+                    // count says so and the loop carries on doing exactly what unit 247 did.
+                    fineNoSamples++;
+                }
+                else
+                {
+                    var mixedAt = (candidate.BinOffset, candidate.FrequencySubOffset);
+                    if (!basebands!.TryGetValue(mixedAt, out var baseband))
+                    {
+                        baseband = Ft8DeepBaseband.Build(
+                            samples,
+                            Geometry.SampleRate,
+                            Geometry.FrequencyHz(candidate.BinOffset, candidate.FrequencySubOffset),
+                            Baseband);
+
+                        basebands[mixedAt] = baseband;
+                    }
+
+                    var found = _fineSync.Search(
+                        baseband,
+                        Geometry.TimeSeconds(candidate.BlockOffset, candidate.TimeSubOffset)
+                            + CandidateTimeBiasSeconds);
+
+                    fineResynced++;
+                    fineTimeTotal += Math.Abs(found.TimeShiftSeconds);
+                    fineFrequencyTotal += Math.Abs(found.FrequencyShiftHz);
+                    fineTimeWorst = Math.Max(fineTimeWorst, Math.Abs(found.TimeShiftSeconds));
+                    fineFrequencyWorst =
+                        Math.Max(fineFrequencyWorst, Math.Abs(found.FrequencyShiftHz));
+
+                    if (found.OnTimeEdge)
+                    {
+                        fineTimeEdges++;
+                    }
+
+                    if (found.OnFrequencyEdge)
+                    {
+                        fineFrequencyEdges++;
+                    }
+
+                    // ONE CODEWORD TO THE GATE, AND THE GATE IS THE PORT'S. Exactly one submission
+                    // per candidate re-synced, so the expected false accepts stay at about the
+                    // candidate count in 16384 rather than at a search's worth.
+                    Ft8DeepBasebandExtractor.Extract(
+                        baseband,
+                        found.StartSeconds,
+                        found.FrequencyOffsetHz,
+                        _fineRatios,
+                        _fineGrid);
+
+                    Ft8SoftSymbols.Normalise(_fineRatios);
+                    var gated = Ft8CodewordDecoder.Decode(_fineRatios, cache, MaxIterations);
+
+                    if (gated.Decoded)
+                    {
+                        fineAccepted++;
+                        result = gated;
+
+                        // THE KEY COMES FROM THE RE-SYNCED RATIOS, not from the coarse ones. The
+                        // port recovers its key by re-running belief propagation over the ratios
+                        // that produced the decode, and for a candidate this stage rescued those
+                        // are these - the coarse ones did not converge and will not.
+                        LdpcDecoder.Decode(_fineRatios, codeword, MaxIterations);
+                        fineKey = codeword[..Ft8Payload.MessageBits];
+                    }
+                }
+            }
+
             if (result.Status != Ft8CodewordStatus.ParityNeverSatisfied)
             {
                 paritySatisfied++;
@@ -324,7 +532,11 @@ public sealed class Ft8DeepSlotDecoder
             becameText++;
 
             byte[] key;
-            if (osdKey is not null)
+            if (fineKey is not null)
+            {
+                key = fineKey;
+            }
+            else if (osdKey is not null)
             {
                 key = osdKey;
             }
@@ -359,6 +571,18 @@ public sealed class Ft8DeepSlotDecoder
         // is the search's candidate limit times the order's re-encoding count, which is a number
         // that can be measured rather than a policy that has to be believed.
         LastOsd = new Ft8DeepOsdCounts(offered, produced, accepted, reencodings);
+        LastFineSync = new Ft8DeepFineSyncCounts(
+            fineOffered,
+            fineResynced,
+            fineAccepted,
+            fineTimeEdges,
+            fineFrequencyEdges,
+            fineNoSamples,
+            fineTimeTotal,
+            fineFrequencyTotal,
+            fineTimeWorst,
+            fineFrequencyWorst);
+
         LastHearings = hearings is null
             ? Array.Empty<Ft8DeepHearing>()
             : hearings;

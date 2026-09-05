@@ -175,6 +175,15 @@ public class Ft8DeepSlotDecoderTests(ITestOutputHelper output)
     /// rewritten by the unit that changed the assembly and never by the unit that discovers it
     /// afterwards.</b>
     /// </para>
+    /// <para>
+    /// <b>Unit 248 came here on purpose too, and added seven.</b> Task 2 added the downconversion and
+    /// the extractor that reads a candidate below the waterfall's grid —
+    /// <c>Ft8DeepBasebandSettings</c>, <c>Ft8DeepBaseband</c> and <c>Ft8DeepBasebandExtractor</c>;
+    /// task 3 added the search that finds the position instead of being told it —
+    /// <c>Ft8DeepFineSyncSettings</c>, <c>Ft8DeepFineSync</c> and <c>Ft8DeepFineSyncResult</c>; task 4
+    /// added the counts that say what it did — <c>Ft8DeepFineSyncCounts</c>. <b>This list was
+    /// rewritten by unit 248 deliberately and is not a test that broke.</b>
+    /// </para>
     /// </remarks>
     [Fact]
     public void TheSiblingHoldsExactlyTheseTypesAndTheListIsAssertedWhole()
@@ -190,9 +199,16 @@ public class Ft8DeepSlotDecoderTests(ITestOutputHelper output)
         Assert.Equal(
             new[]
             {
+                typeof(Ft8DeepBaseband),
+                typeof(Ft8DeepBasebandExtractor),
+                typeof(Ft8DeepBasebandSettings),
                 typeof(Ft8DeepCombineCounts),
                 typeof(Ft8DeepCombineSettings),
                 typeof(Ft8DeepCombineWeighting),
+                typeof(Ft8DeepFineSync),
+                typeof(Ft8DeepFineSyncCounts),
+                typeof(Ft8DeepFineSyncResult),
+                typeof(Ft8DeepFineSyncSettings),
                 typeof(Ft8DeepHearing),
                 typeof(Ft8DeepOrderedStatistics),
                 typeof(Ft8DeepOsdCounts),
