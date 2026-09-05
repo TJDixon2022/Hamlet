@@ -23,4 +23,12 @@
     <ProjectReference Include="..\..\src\Ft8Sharp\Ft8Sharp.csproj" />
   </ItemGroup>
 
+  <!-- The shack command, and nothing else. tools/Ft8FixtureMaker writes the
+       fixtures that Fixtures/Ft8CaptureFixture.cs reads, and they must be the
+       SAME CODE: a second copy of a format is a copy that drifts, silently, which
+       is the failure mode this unit exists to prevent. Added by unit 244. -->
+  <ItemGroup>
+    <InternalsVisibleTo Include="Ft8FixtureMaker" />
+  </ItemGroup>
+
 </Project>

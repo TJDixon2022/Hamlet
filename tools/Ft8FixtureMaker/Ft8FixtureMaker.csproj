@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    THE COMMAND TIM RUNS AT THE SHACK. One capture in, one committed fixture out,
+    no editing afterwards.
+
+        dotnet run [dash][dash]project tools/Ft8FixtureMaker [dash][dash] capture.wav
+
+    (spelled out because MSBuild will not have two dashes inside an XML comment;
+    the real command is in tools/Ft8FixtureMaker/README.md)
+
+    WHY IT REFERENCES A TEST PROJECT, which is backwards and is deliberate.
+
+    The fixture this writes has to be byte-for-byte the fixture Ft8CaptureFixture
+    reads, forever, on a machine that is not this one. The only way to guarantee
+    that is ONE COPY OF THE CODE - the writer and the reader are the same type, and
+    the read-back check in Ft8FixtureGenerator.WriteFixture goes through the same
+    reader every later session uses. Copying those three files in here would have
+    made a second copy that drifts, and it would drift silently, which is the exact
+    failure mode this whole unit exists to prevent.
+
+    So: the format code lives with the tests that watch its refusals, and this
+    project borrows it. Ft8Sharp.Tests grants InternalsVisibleTo to this assembly
+    and to nothing else.
+  -->
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <IsPackable>false</IsPackable>
+    <RootNamespace>Ft8FixtureMaker</RootNamespace>
+    <AssemblyName>Ft8FixtureMaker</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\tests\Ft8Sharp.Tests\Ft8Sharp.Tests.csproj" />
+  </ItemGroup>
+
+</Project>

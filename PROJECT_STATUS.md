@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: WORKING
-TASK: 4 of 7
+TASK: 5 of 7
 WORK_INSTRUCTION: 244 - the fixture format, the reader that refuses, and the command Tim runs
 BALL: claude
 RULES_AT: HM-DEC-153 (2026-09-04)
 NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-09-04T21:44:00-04:00
-NOTE: The harness is being extended rather than rebuilt; the third count is kept but carries a different meaning on a real capture than on the ladder, and the code says so where it is computed
+UPDATED: 2026-09-04T21:55:00-04:00
+NOTE: Building the shack command in two halves - the hashing, parsing and writing are testable here and are being tested; invoking WSJT-X is not reachable on this machine and Tim's first run is what exercises it
 
 ---
 

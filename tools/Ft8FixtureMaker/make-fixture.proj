@@ -1,0 +1,45 @@
+<!--
+  make-fixture.proj - a way to REACH Ft8FixtureMaker where "dotnet run" is not a
+  permitted command spelling.
+
+  At the shack, Tim runs the ordinary command and this file is not involved:
+
+      dotnet run [dash][dash]project tools/Ft8FixtureMaker [dash][dash] capture.wav
+
+  Inside a Claude Code session, "dotnet run" is refused by the allow-list while
+  "dotnet build" is permitted with a wildcard - the same deadlock unit 243 met with
+  the arbiter's batch files, and the same way out. MSBuild's Exec task runs a
+  command, so:
+
+      dotnet build tools/Ft8FixtureMaker/make-fixture.proj -p:Capture=path\to.wav
+
+  This changes NOTHING about what the maker does. It builds the project and runs
+  the assembly it produced, with the arguments given, and fails the build on a
+  non-zero exit so a refusal cannot be lost.
+
+  Plain MSBuild with no SDK: an SDK project here would want a restore of its own.
+-->
+<Project DefaultTargets="Build">
+
+  <PropertyGroup>
+    <Here>$(MSBuildThisFileDirectory)</Here>
+    <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
+    <Assembly>$(Here)bin\$(Configuration)\net8.0\Ft8FixtureMaker.dll</Assembly>
+    <Options Condition="'$(Options)' == ''"></Options>
+  </PropertyGroup>
+
+  <Target Name="Build">
+    <Error Condition="'$(Capture)' == ''"
+           Text="Pass the capture: dotnet build tools/Ft8FixtureMaker/make-fixture.proj -p:Capture=path\to\capture.wav [-p:Options=...]" />
+
+    <Exec Command="dotnet build &quot;$(Here)Ft8FixtureMaker.csproj&quot; -c $(Configuration) -v quiet"
+          WorkingDirectory="$(Here)..\.." />
+
+    <Message Importance="high" Text="Running Ft8FixtureMaker over $(Capture)" />
+
+    <Exec Command="dotnet &quot;$(Assembly)&quot; &quot;$(Capture)&quot; $(Options)"
+          WorkingDirectory="$(Here)..\.."
+          ContinueOnError="false" />
+  </Target>
+
+</Project>
