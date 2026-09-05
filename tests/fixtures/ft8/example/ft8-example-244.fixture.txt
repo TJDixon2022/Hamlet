@@ -1,0 +1,30 @@
+# Hamlet FT8 capture fixture - format 1
+#
+# THIS IS AN EXAMPLE AND ITS ROWS ARE NOT WSJT-X'S.
+#
+# The audio beside it was synthesised by this repository's own ladder, which knows
+# exactly what it transmitted, where it put it and at what ratio. So every row below
+# is ground truth about a signal we built, not a decode of a signal we heard.
+# provenance is "example" and Ft8CaptureFixture.RequireScorable REFUSES to score a
+# claim against it.
+#
+# It exists so the reader has something to be tested against, and so Tim has something
+# to hold his first real one beside. See docs/ft8-capture-fixture-format.md.
+#
+# On the snrDb column: it is the ratio actually DELIVERED onto the samples, each
+# transmission's own power against the noise power the fixture itself mixed in. That is
+# a figure this repository computed about audio it made. WSJT-X reports a MEASURED
+# per-message SNR, which is not the same measurement - and is exactly why this file's
+# provenance can never be "wsjtx".
+
+format      1
+capture     ft8-example-244.wav
+utc         2026-09-04T00:00:00Z
+sha256      9a4b71aa6820f18047c04018fc7a7d7112a3045716f3acd15bb5116247b2688d
+sampleRate  12000
+provenance  example
+generator   Hamlet unit 244, Ft8ExampleFixture, three synthesised transmissions at a commanded 5.0 dB with noise seed 244001
+
+ROW     5.0    0.48    1000  CQ K1ABC FN42
+ROW     5.0    0.64    1500  CQ W9XYZ
+ROW     5.0    0.80    2000  K1ABC W9XYZ -11
