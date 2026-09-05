@@ -945,3 +945,28 @@ reach the checksum.
 telemetry line, and the capture sidecar. **The census one is not paperwork**: this
 unit's multi-pass path sums the five counts over the passes, which is a real change in
 what a census means, and gate-set entry 6 asserts that census reaches three surfaces.
+
+### 10.6 What this measurement does not say
+
+**Named here so that step 6 does not have to infer it, and logged in `OPEN_ISSUES.md`.**
+
+1. **One separation and one level difference.** The ladder walked one of the twenty
+   cells §7 surveyed. §7's table says the single-pass cost is total below 25 Hz at every
+   level difference, so the cell is representative of a large region — but the *recovery*
+   figure, 153 of 306, is a figure for 0.00 Hz at +6 dB and nothing else.
+2. **Two stations, never more.** Every figure here is a two-signal slot. Tim's 21:58
+   capture returned seven distinct messages from one slot, and **nothing measured tonight
+   says what happens when six stations have to be subtracted in sequence** — including
+   whether the third and fourth passes stay worthless, which §9 says they are *on a
+   two-station slot* and only there.
+3. **Both stations start at the same sample.** A time-staggered neighbour is a second
+   axis this unit did not have the night for. A synchronous neighbour is the worst case
+   for masking; whether it is the worst case for *subtraction* is not known.
+4. **No real air.** The step defers the WSJT-X comparison in its own terms and this unit
+   did not attempt it. The ladder knows what it transmitted and that is the whole
+   instrument.
+5. **The other 151.** Half the messages the ceiling says were recoverable are still not
+   recovered after subtraction. **Nothing here says why.** The candidates were not traced,
+   the residual was not examined, and the 151 could be a fit that is not good enough, a
+   search that does not find the quiet station in the residual, or a code that cannot
+   correct what is left. That is the largest single question this step hands on.
