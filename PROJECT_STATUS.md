@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
+STATE: COMPLETED
 TASK: 5 of 5
 WORK_INSTRUCTION: 250 - the gate set exists
-BALL: code
-NEXT_PASTE: none
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-155 (2026-09-05)
-UPDATED: 2026-09-05T14:58:00-04:00
-NOTE: The bookkeeping is landing - HM-DEC-155 records that a unit runs no suite and never polls a backgrounded command, with the three watchdog kills as its cause, and the outcome entry is appended through the tool with step 1 now done in the header
+UPDATED: 2026-09-05T15:12:00-04:00
+NOTE: Five of five; the gate set is 27 tests each naming a breakage that actually happened, the seven breakages no test could have caught are written down beside them, and no suite was run and the command was not executed once
 
 ---
 
