@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 5 of 6
-WORK_INSTRUCTION: 250 - the gate set exists, and the slow tests are named
+TASK: 1 of 5
+WORK_INSTRUCTION: 250 - the gate set exists
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-154 (2026-09-05)
-UPDATED: 2026-09-05T13:35:00-04:00
-NOTE: Gate set committed at 27 tests over four projects, each entry naming a real breakage; its wall clock cannot be measured until the engine's remaining 740 Cw tests finish, so the phase bookkeeping is being done first rather than contending for the CPU
+UPDATED: 2026-09-05T14:20:00-04:00
+NOTE: The breakage record is written from the outcome files, the ledger and the fix commits - 13 breakages a test caught or would have, and 7 that no test could have, which are the more useful half; committing it before the gate set is rewritten against it
 
 ---
 
