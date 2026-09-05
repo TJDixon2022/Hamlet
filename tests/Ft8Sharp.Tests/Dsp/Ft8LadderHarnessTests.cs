@@ -71,9 +71,17 @@ public class Ft8LadderHarnessTests
 
         if (decoders.Count == 1)
         {
-            _output.WriteLine("                  Ft8Sharp.Deep DOES NOT EXIST YET - step 1 of PHASE_PLAN.md");
-            _output.WriteLine("                  creates it. Ft8LadderHarness.Available() is where it joins,");
-            _output.WriteLine("                  and every trial then runs BOTH over the SAME samples.");
+            _output.WriteLine("                  ONE DECODER ONLY. Ft8Sharp.Deep joined this seat in unit 245;");
+            _output.WriteLine("                  if it is missing here, something took it out and that is a");
+            _output.WriteLine("                  finding rather than the expected state.");
+        }
+        else
+        {
+            _output.WriteLine("                  BOTH COLUMNS RUN OVER THE SAME MIXED SAMPLES, so a difference");
+            _output.WriteLine("                  between them is the decoder and not the noise draw. Tonight");
+            _output.WriteLine("                  Ft8Sharp.Deep DELEGATES to Ft8Sharp, so the two columns are");
+            _output.WriteLine("                  expected to read identically, decode for decode. That is step 1");
+            _output.WriteLine("                  working, not an improvement - no decibel moves in this step.");
         }
 
         _output.WriteLine(string.Empty);
@@ -126,6 +134,28 @@ public class Ft8LadderHarnessTests
                 $"the harness delivered {result.DeliveredMean:F4} dB at a requested "
                 + $"{result.Requested:F1} dB, so the axis and not the receiver is what moved");
         }
+
+        // STEP 1'S THIRD MUST-PASS EXIT, asserted here because this is where the table is drawn.
+        // Both columns walk the SAME mixed samples, so at each rung every decoder must report the
+        // same three counts. This is NOT a bound on a decode rate - it is an equality between two
+        // columns of one paired run, and tonight it is trivially true because Ft8Sharp.Deep
+        // delegates to Ft8Sharp. The moment step 2 lands it stops being trivially true, and this
+        // assertion is what a later unit must come and change on purpose.
+        foreach (var rung in all.GroupBy(r => r.Requested))
+        {
+            var first = rung.First();
+            foreach (var other in rung.Skip(1))
+            {
+                Assert.True(
+                    first.Decoded == other.Decoded
+                        && first.Missed == other.Missed
+                        && first.Wrong == other.Wrong,
+                    $"at {rung.Key:F1} dB the columns disagree: {first.Decoder} read "
+                        + $"{first.Decoded}/{first.Missed}/{first.Wrong} and {other.Decoder} read "
+                        + $"{other.Decoded}/{other.Missed}/{other.Wrong} (decoded/missed/wrong) over "
+                        + "the same mixed samples");
+            }
+        }
     }
 
     /// <summary>
@@ -142,8 +172,12 @@ public class Ft8LadderHarnessTests
         const double rung = -19.0;
         var trials = Ft8Step6Ladder.Population().Count;
 
-        var first = Ft8LadderHarness.Run(rung, trials).Single();
-        var second = Ft8LadderHarness.Run(rung, trials).Single();
+        // One seat, deliberately: this is about the harness being deterministic, and walking both
+        // columns would double the cost to say the same thing twice.
+        var one = Ft8LadderHarness.Available().Take(1).ToArray();
+
+        var first = Ft8LadderHarness.Run(rung, trials, decoders: one).Single();
+        var second = Ft8LadderHarness.Run(rung, trials, decoders: one).Single();
 
         _output.WriteLine($"one block of {trials} trials at {rung:F1} dB, walked twice:");
         _output.WriteLine(Ft8LadderHarness.Header);
@@ -170,8 +204,10 @@ public class Ft8LadderHarnessTests
         const double rung = -19.0;
         var trials = Ft8Step6Ladder.Population().Count;
 
-        var asPublished = Ft8LadderHarness.Run(rung, trials).Single();
-        var elsewhere = Ft8LadderHarness.Run(rung, trials, seed: 243_001).Single();
+        var one = Ft8LadderHarness.Available().Take(1).ToArray();
+
+        var asPublished = Ft8LadderHarness.Run(rung, trials, decoders: one).Single();
+        var elsewhere = Ft8LadderHarness.Run(rung, trials, seed: 243_001, decoders: one).Single();
 
         _output.WriteLine(Ft8LadderHarness.Header);
         _output.WriteLine(asPublished.AsRow());

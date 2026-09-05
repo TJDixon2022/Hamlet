@@ -12,11 +12,12 @@ namespace Ft8Sharp.Tests.Fixtures;
 /// <remarks>
 /// <para>
 /// <c>PHASE_PLAN.md</c> step 0's fourth exit says the harness scores <c>Ft8Sharp.Deep</c> against a
-/// fixture, and <c>Ft8Sharp.Deep</c> does not exist until step 1. The arbiter's reading, recorded in
-/// unit 244's outcome entry: <b>the exit is met by the scoring path working through
-/// <c>Available()</c></b>, which today returns <c>Ft8Sharp</c> alone and which the sibling joins with
-/// one entry. So the thing to demonstrate is not that a second decoder exists - it is that the path
-/// counts every decoder it is handed and never indexes one.
+/// fixture. When unit 244 wrote this file the sibling did not exist, and the arbiter's reading -
+/// recorded in that unit's outcome entry - was that <b>the exit is met by the scoring path working
+/// through <c>Available()</c></b>, which the sibling would join with one entry. <b>Unit 245 created
+/// it, and from that unit these tests read the exit literally: <c>Available()</c> returns
+/// <c>Ft8Sharp</c> and <c>Ft8Sharp.Deep</c>, and the report grows a real second column.</b> 244's
+/// claim that it would do so with no other change is confirmed here rather than asserted.
 /// </para>
 /// <para>
 /// <b>These tests score against the worked example, and therefore through
@@ -57,33 +58,35 @@ public class Ft8FixtureScoringTests(ITestOutputHelper output)
     }
 
     /// <summary>
-    /// <b>Two decoders in, two rows out, with no change anywhere in the harness.</b> This is what
-    /// step 1 will do to <see cref="Ft8LadderHarness.Available"/>, done here with a second entry that
-    /// is the same port under another name.
+    /// <b>The real second column, where unit 244's placeholder was.</b> Two decoders in, two rows
+    /// out, with no change anywhere in the harness and none at this call site beyond the name.
     /// </summary>
     /// <remarks>
-    /// The second entry deliberately is <em>not</em> a different decoder - inventing one would be
-    /// building a piece of <c>Ft8Sharp.Deep</c>, which this phase parks until step 1. What is being
-    /// checked is the shape of the reporting path, and for that a second name is enough.
+    /// <para>
+    /// Unit 244 ran this with a second entry called <c>second-seat</c> that was the same port under
+    /// another name, because <c>Ft8Sharp.Deep</c> did not exist and inventing one would have been
+    /// building a piece of it. <b>Unit 245 replaced the placeholder with the sibling itself, through
+    /// <see cref="Ft8LadderHarness.Available"/>.</b> 244 asserted the report would grow a column with
+    /// no other change; this is where that claim is confirmed.
+    /// </para>
+    /// <para>
+    /// The two rows agree exactly, and that is trivially true tonight: <c>Ft8DeepSlotDecoder</c>
+    /// delegates to <c>Ft8SlotDecoder</c>, so the same decoder answers under both names over the same
+    /// samples. What it demonstrates is the paired shape - a difference between the columns is
+    /// attributable to the decoder rather than to the audio - and not an agreement between two
+    /// independently written decoders.
+    /// </para>
     /// </remarks>
     [Fact]
-    public void WhenASecondDecoderJoinsTheSeatTheReportGrowsAColumnAndNothingElseChanges()
+    public void TheSiblingTakesTheSecondSeatAndTheReportGrowsAColumnAndNothingElseChanges()
     {
-        var port = new Ft8SlotDecoder();
-        var two = new[]
-        {
-            new Ft8LadderHarness.Decoder("Ft8Sharp", samples => port.Decode(samples)),
-            new Ft8LadderHarness.Decoder("second-seat", samples => port.Decode(samples)),
-        };
-
-        var scores = Ft8LadderHarness.Compare(Example(), two);
+        var decoders = Ft8LadderHarness.Available();
+        var scores = Ft8LadderHarness.Compare(Example(), decoders);
 
         Assert.Equal(2, scores.Count);
-        Assert.Equal(["Ft8Sharp", "second-seat"], scores.Select(s => s.Decoder));
+        Assert.Equal(["Ft8Sharp", "Ft8Sharp.Deep"], scores.Select(s => s.Decoder));
 
-        // Same samples, same decoder behind both names, so the two rows agree exactly. That is the
-        // paired comparison the ladder's remarks describe, and it is what makes a difference between
-        // the columns attributable to the decoder rather than to the noise draw.
+        // Three counts, never two, and identical in both columns.
         Assert.Equal(scores[0].Matched, scores[1].Matched);
         Assert.Equal(scores[0].Missed, scores[1].Missed);
         Assert.Equal(scores[0].ReturnedWrong, scores[1].ReturnedWrong);
@@ -94,8 +97,8 @@ public class Ft8FixtureScoringTests(ITestOutputHelper output)
             output.WriteLine(line);
         }
 
-        Assert.Contains(report, l => l.StartsWith("Ft8Sharp", StringComparison.Ordinal));
-        Assert.Contains(report, l => l.StartsWith("second-seat", StringComparison.Ordinal));
+        Assert.Contains(report, l => l.StartsWith("Ft8Sharp ", StringComparison.Ordinal));
+        Assert.Contains(report, l => l.StartsWith("Ft8Sharp.Deep", StringComparison.Ordinal));
     }
 
     /// <summary>

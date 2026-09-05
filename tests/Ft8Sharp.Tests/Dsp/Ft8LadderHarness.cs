@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using Ft8Sharp.Deep;
 using Ft8Sharp.Dsp;
 using Ft8Sharp.Encode;
 using Ft8Sharp.Message;
@@ -41,11 +42,11 @@ namespace Ft8Sharp.Tests.Dsp;
 /// </para>
 /// <para>
 /// <b>Two decoders, side by side, on the same samples.</b> <see cref="Decoder"/> names an
-/// implementation; <see cref="Available"/> returns the ones this tree has. Today that is
-/// <c>Ft8Sharp</c> alone. When step 1 creates <c>Ft8Sharp.Deep</c>, adding it is one entry in that
-/// method and one project reference, and every trial then runs both decoders over the <em>same</em>
+/// implementation; <see cref="Available"/> returns the ones this tree has. Since unit 245 that is
+/// <c>Ft8Sharp</c> and <c>Ft8Sharp.Deep</c>, and every trial runs both decoders over the <em>same</em>
 /// mixed samples — which is a paired comparison and worth far more than two independent runs, since
-/// the noise draw is held identical between them.
+/// the noise draw is held identical between them. <b>Adding the sibling was one entry in that method
+/// and one project reference, and no caller in this tree changed.</b>
 /// </para>
 /// <para>
 /// <b>Nothing under <c>src/Ft8Sharp/</c> is touched.</b> The port is the instrument.
@@ -174,16 +175,31 @@ internal static class Ft8LadderHarness
     /// <b>The decoders this tree has, in the order a report prints them.</b>
     /// </summary>
     /// <remarks>
-    /// <b>Today this is one entry.</b> <c>Ft8Sharp.Deep</c> does not exist; step 1 of
-    /// <c>PHASE_PLAN.md</c> creates it, and the phase's ruling is that <c>Ft8Sharp</c> stays a
-    /// byte-identical port and every improvement lands in the sibling. <b>When it exists, add it
-    /// here</b> — a name and a lambda — and every caller in the tree starts reporting the pair side
-    /// by side without being changed. Nothing else in this file knows how many decoders there are.
+    /// <para>
+    /// <b>Two entries since unit 245, and the second one is the whole of step 1.</b>
+    /// <c>Ft8Sharp.Deep</c> now exists and takes the seat this method was written to hold open for
+    /// it. Every caller in the tree started reporting the pair side by side without being changed —
+    /// nothing else in this file, and nothing at any call site, knows how many decoders there are.
+    /// </para>
+    /// <para>
+    /// <b>Tonight the two columns are identical and that is the point rather than a result.</b>
+    /// <c>Ft8DeepSlotDecoder</c> delegates to an <see cref="Ft8SlotDecoder"/>, so the pair is one
+    /// decoder called twice; the phase ruling is that <c>Ft8Sharp</c> stays a byte-identical port
+    /// and every improvement lands in the sibling instead. From the unit that takes step 2, a
+    /// difference between these two columns is attributable to exactly one named change, which is
+    /// what the second seat buys and is worth far more than two independent runs, since
+    /// <see cref="Run"/> holds the noise draw identical between them.
+    /// </para>
     /// </remarks>
     internal static IReadOnlyList<Decoder> Available()
     {
         var port = new Ft8SlotDecoder();
-        return new[] { new Decoder("Ft8Sharp", samples => port.Decode(samples)) };
+        var deep = new Ft8DeepSlotDecoder();
+        return new[]
+        {
+            new Decoder("Ft8Sharp", samples => port.Decode(samples)),
+            new Decoder("Ft8Sharp.Deep", samples => deep.Decode(samples)),
+        };
     }
 
     /// <summary>
