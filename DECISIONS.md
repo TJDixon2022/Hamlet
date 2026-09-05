@@ -4,6 +4,53 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-153
+date: 2026-09-04
+refs: PHASE_PLAN.md, PHASE_STATUS.md, PROJECT_CARD.md, HM-OPEN-067, HM-DEC-131, unit 222, unit 243
+---
+
+**The phase is now *Hamlet reads FT8 as well as the best decoder there is, and
+then reads it further*, approved by Tim on 2026-09-04, and `PROJECT_CARD.md`
+carries it.**
+
+**What the phase is for, in one number.** `HM-OPEN-067` records that the 50 per
+cent decode crossing sits near **-19.5 dB** against a published threshold of
+**-21** — measured on 306 trials a rung, with the decibel axis checked against a
+second instrument sharing no line of code with the first and agreeing to
+**0.0098 dB** mean. **The shortfall is about 1.5 dB and it belongs to the
+receiver.** Unit 222 then took it apart and could not find it in any single
+stage: oracle alignment, unquantised magnitudes, physics-derived ratios and four
+times the iteration bound each landed inside the as-is 95 per cent interval. At
+-21 dB the hard decisions carry about **31 bit errors** against a code that
+recovers to zero at 17. **The demodulator is sound; belief propagation gives up
+while the answer is still reachable.** That is what the phase closes, and then it
+combines repeated transmissions to go past it.
+
+**The seam is split, and this is the part that constrains every unit.**
+`Ft8Sharp` stays a faithful MIT port of `ft8_lib`, byte-identical in behaviour,
+and **nothing in this phase changes a line of it.** Improvements live in a
+sibling, `Ft8Sharp.Deep`, which is GPL-3.0. The port's value is now precisely
+that it cannot drift: every measurement is taken against something known
+identical to upstream, so a gain is a gain against a fixed reference rather than
+against a moving one.
+
+**`PROJECT_CARD.md` changes only by ruling** (§13.3, HM-DEC-131), which is why
+this entry exists rather than an edit made in passing. The two lines that moved
+are `PHASE` and `PHASE_SET`, taken from `PHASE_STATUS.md`'s header, which
+`install-phase.bat` had already installed at the root before this unit ran.
+
+**Rejected: leaving the card on the closing phase until the first step lands.**
+A card naming a phase that is over reads as *the loop is on the old work*, and
+the panel is the only place anyone looks.
+
+**Recorded, not ruled: the version scheme.** HM-DEC-150 makes the minor the phase
+and the patch the work unit within it. Work instruction 243 names 1.12.45 to
+1.12.46 for this unit, so the minor did not move with the phase. **That is a
+mismatch between the standing scheme and this instruction, and the instruction was
+followed** — it is Tim's, and a session inventing a minor bump against a written
+instruction would be deciding rather than executing. Raised once, here.
+
+---
 id: HM-DEC-149
 date: 2026-08-21
 refs: src/Hamlet.App/ViewModels/MainWindowViewModel.cs, src/Hamlet.RadioEngine/Explore/ModeFollowPlan.cs, tests/Hamlet.App.Tests/ViewModels/ModeFollowsTheMapAgainTests.cs, HM-DEC-056, HM-DEC-148, HM-OPEN-041
