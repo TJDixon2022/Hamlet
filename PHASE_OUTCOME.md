@@ -1,7 +1,7 @@
 PHASE: Hamlet reads FT8 as well as the best decoder there is, and then reads it further
 PHASE_SET: 2026-09-04
 STEP: 0 | partial | there is a scoreboard, and the arbiter can read it
-STEP: 1 | not started | Ft8Sharp.Deep exists and changes nothing
+STEP: 1 | done | Ft8Sharp.Deep exists and changes nothing
 STEP: 2 | not started | ordered statistics decoding closes the code gap
 STEP: 3 | not started | strong signals are subtracted and the slot is read again
 STEP: 4 | not started | each candidate is re-synced at baseband
@@ -93,3 +93,18 @@ ACCOMPLISHED: the scoreboard reads real air as well as the ladder. Tim runs one 
 FATE: executed
 STATE_AFTER: partial
 STATE_WHY: The fixture format, the loud refusals, the baseline reproduction and the shack command are each met with quoted evidence, but two must-pass exits name Ft8Sharp.Deep as the thing decoded and scored and the report states it does not exist, substituting a generic second seat under what it calls the arbiter's reading.
+
+## UNIT 3 - STEP 1
+
+STEP: 1
+APPROACH: create Ft8Sharp.Deep as a pass-through sibling that delegates to Ft8Sharp and join it to the ladder Available seat as a second identical column
+HIT: section 4 wants a ruling: no - all four items are logged for the record and each states it asks for no ruling. None stands in the way of an exit criterion. The pinned ft8_lib clone was present so exit 2 ran over all 69 reference recordings rather than falling back to the plan named alternative.
+MOVE: continue
+WHY: step 1 was not started and no unit had ever attempted it - the one step 1 entry on record is unit 243 run judged against a step it was never aimed at with APPROACH not recorded. Step 1 is the single gate standing between the phase and steps 2 3 4 and 6 which are gated on it and on nothing else.
+DECIDED: nothing was decided that the instruction had not already ruled. Three arbiter rulings were carried in and executed rather than re-argued: that step 1 entry criterion is satisfied despite the two verdicts on step 0; that a ProjectReference from tests/Ft8Sharp.Tests to Ft8Sharp.Deep is not a breach of the port boundary; and that the sibling LICENSE may be verbatim GPL-3.0 or an SPDX pointer. The verbatim copy was taken - byte identical to the repository root LICENSE by diff - and it was produced by an MSBuild Copy task in a one-shot proj that removed itself rather than by hand transcription because the shell here refuses cp. One thing recorded and not decided: task 1.2 census found that Ft8CodewordResult cannot be constructed outside Ft8Sharp so an OSD recovered codeword cannot be turned into an Ft8SlotMessage directly. A public route round it was measured working - hand the codeword back to Ft8CodewordDecoder.Decode as normalised ratios - so nothing step 2 needs is unreachable without changing the port and no issue was opened.
+LICENCE: PHASE_PLAN.md step 1 and its four must-pass exits - the sibling compiles with its own tests and a mechanical boundary test; identical results on the reference recordings and the ladder; both scoreboard columns identical; a NOTICE citing the published sources before they are implemented. The phase ruling of 2026-09-04 that the seam is split and that Ft8Sharp.Deep is GPL-3.0 carrying its own LICENSE and NOTICE. The ruling that nothing in this phase changes a line of src/Ft8Sharp - Ft8Sharp stayed 0.10.7 and not one file under it was touched.
+COST: unknown
+ACCOMPLISHED: there is now somewhere for every improvement in this phase to live that cannot damage the instrument it is measured against. Ft8Sharp.Deep decodes the same audio as the port and returns the same thing - 248 of 306 at -19 dB and 73 at -20 and 13 at -21 with 0 wrong in all six rows at a delivered -21.001 dB - so the scoreboard reads two columns that agree today and from tomorrow every difference between them is attributable to exactly one named change. Exit 2 was run over all three sets whole rather than on Texts alone: two blocks of 51 ladder trials the committed example capture and all 69 reference recordings the pinned clone carries with 801 messages crossing the seam identically. The port stays MIT and separately publishable with a mechanical guard in both directions the sibling is GPL-3.0 with Fossorier and Lin and the QEX paper cited before a line of either is written and the four steps gated on this one are open. NO DECIBEL MOVED AND NONE WAS MEANT TO - step 1 is defined as changing no behaviour and identity between the columns is trivially true because the sibling delegates. What was proved is that the seam and the wiring cost nothing.
+FATE: executed
+STATE_AFTER: done
+STATE_WHY: all four must-pass exits met with evidence quoted in output.md. One: the sibling compiles and Hamlet.sln builds 10 of 10 with its own suite at 18 of 18 and a mechanical boundary test in both directions. Two: identical whole Ft8SlotResult on two ladder blocks the committed capture and all 69 reference recordings. Three: both scoreboard columns identical at every rung with three counts each. Four: the NOTICE cites both published sources by title before a line of either is implemented and a test reads it. Both suites green - Ft8Sharp.Tests 582 passed 0 failed 1 skipped against a 578 baseline with the four extra being the identity tests and the one skip unchanged and not a clone skip; Ft8Sharp.Deep.Tests 18 passed 0 failed 0 skipped.

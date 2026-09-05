@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
-TASK: 6 of 7
+STATE: DONE
+TASK: 7 of 7
 WORK_INSTRUCTION: 245 - Ft8Sharp.Deep exists, and the scoreboard grows a second column that reads the same
-BALL: claude
+BALL: tim
 RULES_AT: HM-DEC-153 (2026-09-04)
 NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-09-04T22:21:00-04:00
-NOTE: Both suites are in - 582 passed 0 failed 1 skipped in 5 m 14 s against the 578 baseline, the four extra being the identity tests, and the sibling at 18 of 18 in 1.3 s; the probe measured the one closed route open again through the port, so no issue is owed and the write-up says why
+UPDATED: 2026-09-04T22:26:00-04:00
+NOTE: Step 1 closed at four of four must-pass exits and steps 2, 3, 4 and 6 are open behind it; no decibel moved and none was meant to, the two scoreboard columns reading 13 of 306 at a delivered -21.001 dB with 0 wrong, and the only thing now waiting on Tim is whatever he makes of the census that says step 2 can reach everything it needs without touching the port
 
 ---
 
