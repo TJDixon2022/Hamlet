@@ -72,8 +72,15 @@ public sealed class Ft8DeepOsdSettings
     /// it needs more trials, not a bigger claim.
     /// </para>
     /// <para>
-    /// <b>Nothing here was tuned to a target.</b> No order in this table reaches step 2's 40 per cent,
-    /// and the default was not chosen by trying settings until one passed.
+    /// <b>Nothing here was tuned to a target.</b> No order in this table reaches step 2's 40 per cent
+    /// at -21 dB, and the default was not chosen by trying settings until one passed.
+    /// </para>
+    /// <para>
+    /// <b>Task 7 then ran this default over the whole ladder</b> - 306 trials at each of -19, -20 and
+    /// -21 dB - and it took the -21 dB rate from <b>4.2 per cent (13 of 306) to 10.8 per cent (33 of
+    /// 306)</b> with a 95 per cent Wilson interval of 7.8 to 14.8 and <b>zero wrong decodes on every
+    /// rung</b>, at 72.5 ms a trial against the port's 64.1 and a worst observed slot of 110 ms.
+    /// Whether order 1 would have done as much at 306 trials is not known and is not claimed.
     /// </para>
     /// </remarks>
     public static Ft8DeepOsdSettings Default { get; } = new(2);
