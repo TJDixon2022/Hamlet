@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: WORKING
-TASK: 6 of 7
+TASK: 7 of 7
 WORK_INSTRUCTION: 247 - the same transmission heard twice, combined before the decoder sees it
 BALL: claude
 RULES_AT: HM-DEC-153 (2026-09-04)
 NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-09-05T01:06:00-04:00
-NOTE: The scoreboard is taken and step 6 has its number. At -21 dB over 306 trials the combined column reads 68 of 306 at 22.2 per cent with the placement jitter on and far more with it off, against the port at 13 of 306 and OSD at 33, with zero wrong on all twelve rows across four configurations; 55 of 306 trials had no single slot decode alone and the combination did, on the jittered run. At -24 dB nothing decodes in any column, which is what task 1 predicted from the distances. Step 2's number was re-measured underneath and still reads 13 and 33 of 306 exactly. Re-running the -21 dB same-placement configuration to recapture its table for the report, then the write-up
+UPDATED: 2026-09-05T01:09:00-04:00
+NOTE: The write-up is going in while the whole Ft8Sharp.Tests suite runs for its closing total. docs/unit247-combining.md carries task 1's distance distributions and task 6's four tables so the next unit on step 6 does not re-measure them, and HM-OPEN-075 is opened for the one thing the numbers earned that nobody expected - placement jitter takes back about half the trials combining reaches, 149 of 306, which is a synchronisation cost and a second argument for step 4 beside HM-OPEN-074. Neither of the two conditions task 7 named for an issue actually held: the summed distance did fall below the recovery threshold and the pairing tolerance is narrow
 
 ---
 

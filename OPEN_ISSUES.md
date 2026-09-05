@@ -4,6 +4,64 @@ Questions with owner and severity. `owner` is who must act next. Format in
 `CLAUDE.md` §3.
 
 ---
+id: HM-OPEN-075
+status: open
+owner: claude
+raised: 2026-09-05
+severity: slows
+blocks: nothing — step 6 works and is measured either way; this is how much of it a real station's drift takes back, and it is an argument for step 4
+refs: PHASE_PLAN.md steps 4 and 6, docs/unit247-combining.md §4, tests/Ft8Sharp.Tests/Dsp/Ft8Unit247ScoreboardTests.cs, unit 247
+---
+
+**Soft combining loses more than half its gain when the two slots are not on the same
+sample and the same bin, and that loss is a synchronisation loss rather than a
+combining one.**
+
+Unit 247 measured the repeats ladder at -21 dB over 306 trials, two slots a trial,
+both ways. With both slots on the same bin and the same sample the combined column
+reads **217 of 306, 70.9 per cent, Wilson 65.6 to 75.7, zero wrong**, with **200 of
+306** trials that no single slot decoded alone. With the later slot moved **2.00 Hz and
+480 samples** — a third of an FT8 tone and a quarter of a symbol period, off the block
+grid and off the sub-block grid — it falls to **68 of 306, 22.2 per cent, Wilson 17.9
+to 27.2, zero wrong**, with **55 of 306** only-combined.
+
+**That is 149 of 306 trials, about half the population, that combining reaches on the
+same sample and does not reach a third of a tone away.** The tables are in
+`docs/unit247-combining.md` §4.
+
+**This is not either of the two things unit 247's task 7 was told to open an issue
+for.** The summed distance did fall below the code's recovery threshold — 23 of 51
+trials at -21 dB against 2 for the better single slot — and the pairing tolerance the
+ladder needs is narrow, a median 0.00 Hz and 0.000 s apart with 49 of 51 trials inside
+3.125 Hz and 0.16 s. **Both of those came out the good way.** This is a third thing the
+numbers earned and it is logged rather than argued.
+
+**Why it happens.** `Ft8SoftSymbols.Extract` reads a candidate's tone magnitudes out of
+the waterfall at that candidate's own block and bin. Two hearings placed differently
+are read at different sub-offsets, so the ratio at codeword position *i* in one slot
+and the ratio at position *i* in the other are extracted from differently aligned
+windows. They still describe the same transmitted bit — which is why combining works at
+all — but each carries more of its own alignment error, and adding them adds that too.
+
+**What it means for step 6.** Nothing is in the way. The step's gain is real, measured
+and quoted with the jitter on, which is the conservative half of the pair. What the
+number would be on air is somewhere between the two columns and this project has no
+fixture that could say where.
+
+**What it means for step 4.** *Each candidate is re-synced at baseband* is exactly the
+work that would recover the difference: a re-synced candidate is read at its own true
+alignment rather than at the waterfall's grid, so two hearings would arrive on the same
+footing before they are added. **`HM-OPEN-074` already argues step 4 has something to
+find for 4 per cent of trials that have no candidate near the signal at all. This is a
+second, larger argument for the same step**, and the two together are the case for
+taking step 4 next.
+
+**What would settle it.** The repeats ladder already takes `frequencyJitterHz` and
+`offsetJitterSamples`; walking a sweep of both at 306 trials would say how the gain
+falls off with each separately, and whether it is the frequency or the time that costs
+more. That is a measurement and not a build.
+
+---
 id: HM-OPEN-074
 status: open
 owner: claude
