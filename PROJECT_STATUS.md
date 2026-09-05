@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 6 of 6
-WORK_INSTRUCTION: 251 - the SNR column shows a number
-BALL: tim
+STATE: RUNNING
+TASK: 1 of 6
+WORK_INSTRUCTION: 252 - ordered statistics, taken as far as it goes
+BALL: claude
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-155 (2026-09-05)
-UPDATED: 2026-09-05T16:12:00-04:00
-NOTE: Six of six; the snr column shows a number on a measured 0.26 dB mean absolute error and 0.62 dB at the 95th over 510 messages, gate entry 9 cites a breakage record entry written for it, and the one test was run twice by name and no suite was run
+UPDATED: 2026-09-05T15:26:00-04:00
+NOTE: Reading Eliminate and the per-candidate loop to settle whether the 91 pivots come back in reliability order, which is what a least-reliable window would have to be defined over
 
 ---
 
