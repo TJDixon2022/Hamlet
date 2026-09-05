@@ -309,6 +309,411 @@ internal static class Ft8LadderHarness
         return results;
     }
 
+    // =====================================================================================
+    // THE REPEATS LADDER: R SLOTS A TRIAL, ALL CARRYING THE SAME MESSAGE.
+    //
+    // A SECOND ENTRY POINT AND NOT A CHANGED ONE. Run above is what every row this phase has
+    // recorded was taken through, including HM-OPEN-067's 13 of 306 and unit 246's 33 of 306,
+    // and a change to it would invalidate all of them. Everything below adds; nothing above
+    // this line moved.
+    // =====================================================================================
+
+    /// <summary>
+    /// <b>The seed stride between the repeats of one trial.</b> Slot <c>r</c> of block <c>s</c> at
+    /// rung <c>d</c> draws from <c>seed + s + round(d * 10) + r * RepeatSeedStride</c>.
+    /// </summary>
+    /// <remarks>
+    /// <b>Repeat 0 is therefore bit-for-bit the noise <see cref="Run"/> draws</b>, which is what makes
+    /// the repeats ladder's single-slot column directly comparable with every row already recorded.
+    /// The stride is far larger than the block index spans and than any rung offset, so no two
+    /// (rung, block, repeat) triples can collide.
+    /// </remarks>
+    internal const int RepeatSeedStride = 1000;
+
+    /// <summary>What a walk of the repeats ladder produced, beside the three scoreboard rows.</summary>
+    /// <param name="Rows">
+    /// One <see cref="Result"/> per column, in the order single slot, single slot + OSD, combined.
+    /// <b>The same type the ordinary ladder prints</b>, so the scoreboard stays one instrument.
+    /// </param>
+    /// <param name="Repeats">How many slots a trial carried.</param>
+    /// <param name="OnlyCombined">
+    /// <b>THE NUMBER THIS STEP IS JUDGED ON.</b> Trials where <em>no</em> single slot returned the
+    /// message on its own and the combination did.
+    /// </param>
+    /// <param name="AnySlotAlone">
+    /// Trials where <em>some</em> one of the R slots returned the message on its own, with no
+    /// combining involved. <b>The two-chances baseline</b>: hearing a transmission twice is worth
+    /// something before a single ratio is added, and separating that from the combining gain is what
+    /// this count is for.
+    /// </param>
+    /// <param name="LostByCombining">
+    /// Trials where a single slot returned the message and the combined column did not. <b>Zero by
+    /// construction</b> — combining only ever adds and the combined column is the union over the
+    /// trial's slots — so a non-zero count here is a defect and is reported as one.
+    /// </param>
+    /// <param name="PairsOffered">Candidate pairs the rule looked at across the whole walk.</param>
+    /// <param name="CombinationsSubmitted">
+    /// <b>Combinations put to the port's parity and CRC-14 gates across the whole walk.</b> The
+    /// false-accept budget, spent and counted.
+    /// </param>
+    /// <param name="CodewordsAccepted">Of those, how many the port took past both of its gates.</param>
+    /// <param name="CombinedDecodes">
+    /// Messages the combining stage added to a result that the single-slot path had not returned.
+    /// </param>
+    /// <param name="CombinedDecodesVerified">
+    /// Of those, how many were the message the ladder knows it transmitted. <b>Step 6's fifth exit</b>,
+    /// and the difference between this and <paramref name="CombinedDecodes"/> is a wrong decode.
+    /// </param>
+    /// <param name="WorstSlotMilliseconds">The slowest single slot observed anywhere in the walk.</param>
+    /// <param name="WorstSlotCandidates">How many candidates that slot carried.</param>
+    /// <param name="WorstSlotCombinations">How many combinations that slot submitted.</param>
+    /// <param name="Delivered">The mean ratio delivered to each repeat, in order.</param>
+    internal sealed record RepeatsRun(
+        IReadOnlyList<Result> Rows,
+        int Repeats,
+        int OnlyCombined,
+        int AnySlotAlone,
+        int LostByCombining,
+        long PairsOffered,
+        long CombinationsSubmitted,
+        long CodewordsAccepted,
+        int CombinedDecodes,
+        int CombinedDecodesVerified,
+        double WorstSlotMilliseconds,
+        int WorstSlotCandidates,
+        int WorstSlotCombinations,
+        IReadOnlyList<double> Delivered);
+
+    /// <summary>
+    /// <b>THE SECOND ENTRY POINT: one rung, a trial count, and R slots a trial all carrying the same
+    /// message.</b> Deterministic, and repeat 0 draws exactly what <see cref="Run"/> draws.
+    /// </summary>
+    /// <param name="rungDecibels">The ratio to deliver. Requested; the rows report what was delivered.</param>
+    /// <param name="trials">How many trials. 306 is six whole blocks of the 51-message population.</param>
+    /// <param name="repeats">How many slots a trial carries. Two is FT8's own repeat.</param>
+    /// <param name="seed">The base seed. See <see cref="RepeatSeedStride"/> for the arithmetic.</param>
+    /// <param name="frequencyHz">Where the synthesiser puts the first slot's lowest tone.</param>
+    /// <param name="offsetSamples">Where in the first slot the transmission begins.</param>
+    /// <param name="frequencyJitterHz">
+    /// <b>How far each later slot's frequency moves from the one before it</b>, as a real station's
+    /// oscillator would. Zero puts every repeat on the same bin, which is the easy case.
+    /// </param>
+    /// <param name="offsetJitterSamples">
+    /// <b>How far each later slot's start moves from the one before it</b>, as a real station's clock
+    /// would. Zero puts every repeat on the same sample, which is the easy case.
+    /// </param>
+    /// <param name="combining">The pairing rule and its budget. Its own default when null.</param>
+    /// <param name="log">Optional, called once per completed row.</param>
+    /// <remarks>
+    /// <para>
+    /// <b>THREE COLUMNS, AND THE THIRD IS ATTRIBUTABLE TO ONE NAMED CHANGE.</b> Column one is the port
+    /// on the first slot alone; column two is the sibling with ordered statistics decoding on, on the
+    /// same first slot; column three is the sibling with <b>ordered statistics decoding off and
+    /// combining on</b>, fed all R slots in order and scored on the last. So the difference between
+    /// columns one and three is soft combining and nothing else.
+    /// </para>
+    /// <para>
+    /// <b>Every column sees the same audio.</b> The R slots are synthesised once per trial and handed
+    /// to all three, so the comparison is paired and a difference is the decoder rather than the draw.
+    /// </para>
+    /// <para>
+    /// <b>Nothing is told to any decode path.</b> The frequencies and offsets go to the synthesiser;
+    /// each decoder is handed samples. The truth is used once, after the code has answered, to compare
+    /// the text — <see cref="Run"/>'s rule, and it stays.
+    /// </para>
+    /// </remarks>
+    internal static RepeatsRun RunRepeats(
+        double rungDecibels,
+        int trials,
+        int repeats = 2,
+        int seed = DefaultSeed,
+        double frequencyHz = DefaultFrequencyHz,
+        int? offsetSamples = null,
+        double frequencyJitterHz = 0.0,
+        int offsetJitterSamples = 0,
+        Ft8DeepCombineSettings? combining = null,
+        Action<string>? log = null)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(trials);
+        ArgumentOutOfRangeException.ThrowIfLessThan(repeats, 2);
+
+        var rule = combining ?? Ft8DeepCombineSettings.Default;
+        var offset = offsetSamples ?? DefaultOffsetSamples;
+        var population = Ft8Step6Ladder.Population();
+        var rungOffset = (int)Math.Round(rungDecibels * 10.0);
+
+        var port = new Ft8SlotDecoder();
+        var osd = new Ft8DeepSlotDecoder(osd: Ft8DeepOsdSettings.Default);
+        var repeat = new Ft8DeepRepeatDecoder(combining: rule);
+
+        var rows = new[]
+        {
+            new Result("single slot", rungDecibels, trials),
+            new Result("single + OSD", rungDecibels, trials),
+            new Result($"combined x{repeats}", rungDecibels, trials),
+        };
+
+        var clocks = new[] { new Stopwatch(), new Stopwatch(), new Stopwatch() };
+
+        var onlyCombined = 0;
+        var lostByCombining = 0;
+        var anySlotAloneCount = 0;
+        var pairsOffered = 0L;
+        var submitted = 0L;
+        var acceptedByThePort = 0L;
+        var combinedDecodes = 0;
+        var combinedVerified = 0;
+
+        var worstSlotMilliseconds = 0.0;
+        var worstSlotCandidates = 0;
+        var worstSlotCombinations = 0;
+
+        var delivered = new List<double>[repeats];
+        for (var r = 0; r < repeats; r++)
+        {
+            delivered[r] = new List<double>(trials);
+        }
+
+        var trial = 0;
+        for (var block = 0; trial < trials; block++)
+        {
+            // One noise source per repeat per block, drawn from in the population's fixed order, so a
+            // trial's noise depends only on the rung, the block and the repeat - never on iteration
+            // order. Repeat 0's source is Run's own.
+            var noise = new GaussianNoise[repeats];
+            for (var r = 0; r < repeats; r++)
+            {
+                noise[r] = new GaussianNoise(seed + block + rungOffset + (r * RepeatSeedStride));
+            }
+
+            var blockSeed = seed + block + rungOffset;
+
+            foreach (var entry in population)
+            {
+                if (trial >= trials)
+                {
+                    break;
+                }
+
+                var slots = new float[repeats][];
+                for (var r = 0; r < repeats; r++)
+                {
+                    // THE HARDER VARIANT: a later slot need not sit on the same sample or the same
+                    // bin. A combiner that only works when it does is not a decoder.
+                    var slotFrequency = frequencyHz + (r * frequencyJitterHz);
+                    var slotOffset = offset + (r * offsetJitterSamples);
+
+                    var (clean, _) = SearchFixture.OneSignal(Rate, entry, slotFrequency, slotOffset);
+                    var signalPower = SearchFixture.TransmissionPower(Rate, entry, slotFrequency);
+                    var sigma = SignalToNoise.NoiseAmplitudeFor(signalPower, rungDecibels, Rate);
+                    slots[r] = SearchFixture.AddNoise(clean, noise[r], sigma, out var noisePower);
+                    delivered[r].Add(SignalToNoise.DecibelsFor(signalPower, noisePower, Rate));
+                }
+
+                var sent = Ft8MessageDecoder.Decode(entry.Message).Text;
+
+                // COLUMN 1 -- the port, first slot alone.
+                clocks[0].Start();
+                var single = port.Decode(slots[0]);
+                clocks[0].Stop();
+                Score(rows[0], trial, blockSeed, delivered[0][^1], sent, single.Texts);
+
+                // COLUMN 2 -- the sibling with ordered statistics decoding on, same first slot.
+                clocks[1].Start();
+                var withOsd = osd.Decode(slots[0]);
+                clocks[1].Stop();
+                Score(rows[1], trial, blockSeed, delivered[0][^1], sent, withOsd.Texts);
+
+                // COLUMN 3 -- the sibling with combining on, all R slots in order, scored on the last.
+                repeat.Reset();
+                var anySlotAlone = false;
+
+                // THE COMBINED COLUMN IS SCORED ON THE UNION OVER THE TRIAL'S SLOTS, because that is
+                // what a decoder fed slots in order actually puts in front of an operator: each slot's
+                // messages as it finishes it. Scoring only the last slot would throw away a message
+                // the first slot gave up on its own, and would make the combined column smaller than
+                // the single-slot column on a trial the first slot decoded - which is a scoring
+                // artefact and not a decoder losing anything.
+                var combinedTexts = new List<string>();
+
+                for (var r = 0; r < repeats; r++)
+                {
+                    var slotClock = Stopwatch.StartNew();
+                    clocks[2].Start();
+                    var combinedResult = repeat.Decode(slots[r]);
+                    clocks[2].Stop();
+                    slotClock.Stop();
+
+                    var counts = repeat.LastCombine;
+                    pairsOffered += counts.Offered;
+                    submitted += counts.Submitted;
+                    acceptedByThePort += counts.Accepted;
+
+                    if (slotClock.Elapsed.TotalMilliseconds > worstSlotMilliseconds)
+                    {
+                        worstSlotMilliseconds = slotClock.Elapsed.TotalMilliseconds;
+                        worstSlotCandidates = combinedResult.CandidateCount;
+                        worstSlotCombinations = counts.Submitted;
+                    }
+
+                    // Combined messages are appended, so the first (count - added) are what this slot
+                    // gave up on its own. That is how "no single slot could decode this alone" is
+                    // established without decoding every slot a second time.
+                    var alone = combinedResult.Messages.Count - counts.Added;
+                    for (var m = 0; m < alone; m++)
+                    {
+                        if (string.Equals(combinedResult.Messages[m].Text, sent, StringComparison.Ordinal))
+                        {
+                            anySlotAlone = true;
+                        }
+                    }
+
+                    // EVERY COMBINED DECODE VERIFIED AGAINST THE LADDER'S OWN GROUND TRUTH. Step 6's
+                    // fifth exit, and the two counts are kept apart so the difference is visible.
+                    for (var m = alone; m < combinedResult.Messages.Count; m++)
+                    {
+                        combinedDecodes++;
+                        if (string.Equals(combinedResult.Messages[m].Text, sent, StringComparison.Ordinal))
+                        {
+                            combinedVerified++;
+                        }
+                    }
+
+                    foreach (var text in combinedResult.Texts)
+                    {
+                        if (!combinedTexts.Contains(text, StringComparer.Ordinal))
+                        {
+                            combinedTexts.Add(text);
+                        }
+                    }
+                }
+
+                if (anySlotAlone)
+                {
+                    anySlotAloneCount++;
+                }
+
+                var combinedDecoded = combinedTexts.Contains(sent, StringComparer.Ordinal);
+
+                // The combined row is read at the MEAN of the ratios delivered to its R slots, since
+                // it heard all of them. The single-slot rows are read at the first slot's.
+                Score(
+                    rows[2],
+                    trial,
+                    blockSeed,
+                    delivered.Select(d => d[^1]).Average(),
+                    sent,
+                    combinedTexts);
+
+                if (!anySlotAlone && combinedDecoded)
+                {
+                    onlyCombined++;
+                }
+
+                if (anySlotAlone && !combinedDecoded)
+                {
+                    lostByCombining++;
+                }
+
+                trial++;
+            }
+        }
+
+        for (var i = 0; i < rows.Length; i++)
+        {
+            rows[i].Elapsed = clocks[i].Elapsed;
+            log?.Invoke(rows[i].AsRow());
+        }
+
+        return new RepeatsRun(
+            rows,
+            repeats,
+            onlyCombined,
+            anySlotAloneCount,
+            lostByCombining,
+            pairsOffered,
+            submitted,
+            acceptedByThePort,
+            combinedDecodes,
+            combinedVerified,
+            worstSlotMilliseconds,
+            worstSlotCandidates,
+            worstSlotCombinations,
+            delivered.Select(d => d.Average()).ToArray());
+    }
+
+    /// <summary>
+    /// One trial's verdict into one row: decoded if the message sent came back, and every text that
+    /// was not sent recorded as a wrong return with the message sent beside it.
+    /// </summary>
+    private static void Score(
+        Result row, int trial, int seed, double delivered, string sent, IReadOnlyList<string> texts)
+    {
+        var decoded = texts.Contains(sent, StringComparer.Ordinal);
+        var wrong = texts
+            .Where(t => !string.Equals(t, sent, StringComparison.Ordinal))
+            .ToArray();
+
+        row.Add(trial, seed, delivered, decoded, sent, wrong);
+    }
+
+    /// <summary>
+    /// The whole report for one walk of the repeats ladder: the three rows, the number the step is
+    /// judged on, the submission budget as it was actually spent, and the time.
+    /// </summary>
+    /// <remarks>
+    /// <b>A rate is never printed without its wrong-decode count and a gain is never printed without
+    /// what it cost</b>, which is why this exists rather than each caller assembling its own lines and
+    /// one of them forgetting.
+    /// </remarks>
+    internal static IEnumerable<string> RepeatsReport(RepeatsRun run)
+    {
+        foreach (var line in Report(run.Rows))
+        {
+            yield return line;
+        }
+
+        yield return string.Empty;
+        yield return
+            $"  {run.Repeats} slots a trial. Delivered per slot: "
+            + string.Join(", ", run.Delivered.Select(d => $"{d:F3} dB"));
+        yield return string.Empty;
+        yield return "  THE NUMBER THIS STEP IS JUDGED ON:";
+        yield return
+            $"    trials NO single slot decoded alone and the combination DID: "
+            + $"{run.OnlyCombined} of {run.Rows[0].Trials}";
+        yield return
+            $"    trials SOME single slot decoded alone, no combining needed:  "
+            + $"{run.AnySlotAlone} of {run.Rows[0].Trials}   (the two-chances baseline)";
+        yield return
+            $"    trials a single slot decoded and the combination did NOT:    "
+            + $"{run.LostByCombining} of {run.Rows[0].Trials}   "
+            + (run.LostByCombining == 0
+                ? "(zero, as the superset property requires)"
+                : "*** NON-ZERO IS A DEFECT: combining is meant only to add ***");
+        yield return string.Empty;
+        yield return "  THE SUBMISSION BUDGET, AS IT WAS ACTUALLY SPENT:";
+        yield return $"    candidate pairs the rule looked at        {run.PairsOffered}";
+        yield return $"    combinations submitted to the port        {run.CombinationsSubmitted}";
+        yield return $"    of those, the PORT took past both gates   {run.CodewordsAccepted}";
+        yield return
+            $"    naive expected messages nobody sent       "
+            + $"{Ft8DeepCombineSettings.ExpectedFalseAccepts(run.CombinationsSubmitted):F3}";
+        yield return string.Empty;
+        yield return "  EVERY COMBINED DECODE AGAINST THE LADDER'S OWN GROUND TRUTH:";
+        yield return $"    messages the combining stage added        {run.CombinedDecodes}";
+        yield return $"    of those, the message that was sent       {run.CombinedDecodesVerified}";
+        yield return
+            $"    of those, a message that was NOT sent     "
+            + $"{run.CombinedDecodes - run.CombinedDecodesVerified}";
+        yield return string.Empty;
+        yield return
+            $"  WORST SINGLE SLOT: {run.WorstSlotMilliseconds:F1} ms, carrying "
+            + $"{run.WorstSlotCandidates} candidates and {run.WorstSlotCombinations} combinations - "
+            + $"a margin of {15000.0 / Math.Max(run.WorstSlotMilliseconds, 0.001):F0}x against FT8's "
+            + "15 seconds.";
+    }
+
     /// <summary>
     /// The whole report for one run, header and rows and every wrong return on its own line, ready
     /// to be written straight into a unit's output.

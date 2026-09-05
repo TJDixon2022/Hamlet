@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: WORKING
-TASK: 4 of 7
+TASK: 5 of 7
 WORK_INSTRUCTION: 247 - the same transmission heard twice, combined before the decoder sees it
 BALL: claude
 RULES_AT: HM-DEC-153 (2026-09-04)
 NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-09-05T01:38:00-04:00
-NOTE: The combiner is in the loop and it works on real audio. Ft8DeepRepeatDecoder takes slots in order, returns the single-slot result for each and then combines against a bounded history, and on a synthesised slot at a noise level where neither hearing decoded alone the two together returned the message. The superset property holds at every level swept - same messages, same order, five counts untouched - and combining off is still the port whole. Remembering a slot costs 11 kB at 17 candidates. Now moving to the repeats ladder, a second entry point beside Run, which is where the 306-trial number comes from
+UPDATED: 2026-09-05T02:04:00-04:00
+NOTE: The repeats ladder exists beside Run rather than instead of it, and one block at -21 dB says the approach works. Three columns: single slot 3 of 51, single plus OSD 4 of 51, combined across two slots 34 of 51 at 66.7 per cent with zero wrong, and 32 of those 51 trials had no single slot decode the message alone. With the harder variant - the later slot moved 2 Hz and 480 samples, off the block grid and off the sub-block grid - the combined column falls to 15 of 51 and 12 only-combined, still zero wrong, so placement jitter costs more than half the gain and that is a finding rather than a defect. Repeat 0 draws bit-for-bit the noise Run draws, asserted. Now taking the whole scoreboard, 306 trials at -21 and -24 dB both ways
 
 ---
 
