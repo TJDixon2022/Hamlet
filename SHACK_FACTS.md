@@ -5,6 +5,10 @@
 Recorded 2026-08-17 at the operator's instruction, after three separate
 sessions advised changing radio settings that were already correct.
 
+**FACT-004 added 2026-09-03**, after two units spent a night deriving a
+fault from an empty capture folder on a machine that has never had a radio
+attached to it.
+
 ---
 id: FACT-001
 status: standing
@@ -69,3 +73,43 @@ proceeds down-chain in this order, each step observable in telemetry:
 A session reporting "the waterfall works" without a nonzero received-
 frame count from a connected radio is making the claim §0.0 now
 forbids a display to make.
+
+---
+id: FACT-004
+status: standing
+source: operator statement, 2026-09-03; standing since the project began
+---
+
+**There are two computers, and only one of them has a radio on it.**
+
+- The **development machine** holds the repository, the toolchain and the test
+  suite. **No radio has ever been attached to it.** Hamlet has never captured
+  audio off the air on this machine and never will while that remains true.
+- The **shack machine** is where the IC-7300 is connected over USB, where the
+  bench check at 14.074 is performed, and where every capture, sidecar and
+  telemetry line about real air has ever been written.
+
+**Consequences, and no session may reason past them:**
+
+- **An absent capture folder, an empty telemetry file, a missing sidecar or a
+  capture count of zero on the development machine is the expected state.** It
+  is not a finding, not evidence of a defect in the capture path, and not a
+  reason to author a unit. Reading it as one is FACT-003's mistake in a new
+  place: eliminating a hypothesis that was never live.
+- **No session may derive a fault from the development machine's filesystem**,
+  nor propose a measurement whose result is the presence or absence of captures
+  on it.
+- **No measurement of the development machine's audio endpoints says anything
+  about the radio.** The IC-7300's USB codec is not present on this machine, so
+  what format tag, channel count, sample rate or encoding it declares is
+  **unknown from this side and may not be inferred**. A unit that clears or
+  implicates an audio-path defect by enumerating this machine's capture devices
+  has measured the wrong hardware and its conclusion does not stand.
+- **Which machine a piece of evidence came from is part of the evidence.** A
+  report that does not say is incomplete, and a claim about the bench check
+  drawn from the development machine is a claim about nothing.
+
+**Verification, when a session needs it:** whether a capture, a log line or a
+device exists at the radio is a question about the shack machine, and only the
+operator can answer it. Ask him, or say the answer is unknown. Do not answer it
+from the tree.

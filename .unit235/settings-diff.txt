@@ -1,0 +1,54 @@
+UNIT 235 TASK 2 - WHAT THE TEST RUN DID TO settings.json
+taken 2026-09-04T23:03:54Z
+backup: C:\Users\TimDi\AppData\Local\Temp\hamlet-unit235-backup\settings.json	exists=True
+live:   C:\Users\TimDi\AppData\Roaming\Hamlet\settings.json	exists=True
+
+keys before: 24	keys after: 24
+
+key	verdict	before	after
+ActivationLifetimeMinutes	same	60	60
+ContestLifetimeMinutes	same	180	180
+CopySpeedWpm	same	13	13
+CwPitchHz	same	600	600
+DistanceUnits	same	"Miles"	"Miles"
+Favorites	same	[]	[]
+HasMeasuredSwr	same	false	false
+HasTunedByWheel	same	false	false
+LastBylineIndex	CHANGED	31	3
+ModeFollowsTheMap	same	true	true
+Operator	CHANGED	[personal - 524 chars]	[personal - 677 chars]
+PanelExpanded	same	{}	{}
+Recent	same	[]	[]
+ReconnectOnStartup	same	true	true
+RestrictTransmitToPrivileges	same	true	true
+ShowKeyingSweep	same	[personal - 5 chars]	[personal - 5 chars]
+SkimmerLifetimeMinutes	same	20	20
+SourceEnabled	same	{}	{}
+SpotRefreshMinutes	same	5	5
+TelemetryCategories	same	{}	{}
+TelemetryMaxMegabytes	same	50	50
+UseJointDecoder	same	false	false
+UseReferenceDecoder	same	[personal - 5 chars]	[personal - 5 chars]
+WindowMaximized	same	false	false
+
+Operator sub-keys - names and present/absent only, no values
+subkey	kind	before	after
+Callsign	String	present [93E962C8]	present [93E962C8]	IDENTICAL
+CallsignSetOn	String	EMPTY [12AE32CB]	present [741DA315]	DIFFERENT
+CallsignSource	String	present [D8111032]	present [8626F748]	DIFFERENT
+CallsignSourceName	String	EMPTY [12AE32CB]	present [EF6D5FE0]	DIFFERENT
+CallsignVerifiedAs	String	EMPTY [12AE32CB]	present [93E962C8]	DIFFERENT
+GridSquare	String	EMPTY [12AE32CB]	present [FEF40332]	DIFFERENT
+GridSquareSetOn	String	EMPTY [12AE32CB]	present [741DA315]	DIFFERENT
+GridSquareSource	String	present [D8111032]	present [8626F748]	DIFFERENT
+GridSquareSourceName	String	EMPTY [12AE32CB]	present [EF6D5FE0]	DIFFERENT
+GridSquareVerifiedAs	String	EMPTY [12AE32CB]	present [FEF40332]	DIFFERENT
+Latitude	Number	key absent [--------]	present [AECCDE4F]	DIFFERENT
+LicenseClass	String	present [14C48491]	present [468D61A9]	DIFFERENT
+LicenseClassSetOn	String	EMPTY [12AE32CB]	present [741DA315]	DIFFERENT
+LicenseClassSource	String	present [D8111032]	present [8626F748]	DIFFERENT
+LicenseClassSourceName	String	EMPTY [12AE32CB]	present [EF6D5FE0]	DIFFERENT
+LicenseClassVerifiedAs	String	present [14C48491]	present [468D61A9]	DIFFERENT
+Location	String	EMPTY [12AE32CB]	EMPTY [12AE32CB]	IDENTICAL
+Longitude	Number	key absent [--------]	present [4CCBC047]	DIFFERENT
+OperatorName	String	EMPTY [12AE32CB]	EMPTY [12AE32CB]	IDENTICAL

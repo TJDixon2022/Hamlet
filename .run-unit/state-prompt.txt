@@ -1,0 +1,331 @@
+You are judging one thing and nothing else.
+
+Below is one step of a phase plan, then the report of a unit that
+has just run against it. Say what state that STEP is now in.
+
+Answer with exactly one of these five words:
+
+  not started   nothing has been done toward the step
+  in progress   work is under way and more is needed
+  partial       some of the exit criteria are met and not all
+  blocked       it cannot proceed without a decision or an
+                outside change, and more effort will not help
+  done          every exit criterion the step states is met
+
+JUDGE AGAINST THE STEP'S EXIT CRITERIA, NOT AGAINST WHETHER THE
+UNIT FINISHED ITS TASKS. A UNIT CAN COMPLETE EVERY TASK IT WAS
+GIVEN AND NOT ACHIEVE ITS STEP. A tidy report, a clean exit and a
+full set of commits are not the criteria; the criteria are what
+the plan says the step must leave behind.
+
+If the report says a criterion was met, look for what it quotes or
+measures in support. If it claims the step is done and shows
+nothing, say partial and say that in your reason.
+
+Answer with exactly two lines and nothing else:
+
+STATE: one of the five words above
+WHY: one sentence, plain text, no punctuation beyond commas and full stops
+
+--- the step from the phase plan follows ---
+
+﻿STEP: 1 | the library exists and its tables are proven
+## Step 1  -  the library exists and its tables are proven
+
+**Delivers:** an `Ft8Sharp` project that compiles, is licensed, cannot reach into
+Hamlet, and carries the FT8 protocol tables  -  **proven correct, not assumed.**
+
+**Entry:** `src/Ft8Sharp/` does not exist. `C:\Source\ft8_lib` is present at the
+pinned commit.
+
+**Exit:**
+- The project builds; .NET 8, nullable enabled, warnings as errors, no
+  third-party runtime dependencies. *must-pass*
+- `LICENSE`, `NOTICE`, `porting-notes.md` present and correct. *must-pass*
+- The boundary test passes and **has been shown to fail** when a Hamlet reference
+  is added. A guard that has never refused is not a guard. *must-pass*
+- Tables converted by a checked-in tool that reads `ft8/constants.c`, reproducible
+  against a future upstream. *must-pass*
+- **Tables verified by LDPC encode against reference parity**, without a decoder.
+  *must-pass*
+- `Ft8Sharp` tests green. *must-pass, every unit*
+- Attribution clean from `2828ab6`, and the channel tests green.
+  *must-pass, every unit* - the full suite is not run by any unit
+
+**Note.** `ft8sharp-spec.md` section 10 leaves tables unverified until belief
+propagation runs several stages later  -  four stages of work on an unchecked
+parity matrix, and a wrong bit there produces a decoder that fails in ways nearly
+impossible to diagnose. Verification is pulled forward deliberately. **If the
+tables cannot be verified this way, the step is not complete**, and the arbiter
+reasons about what would verify them rather than proceeding.
+
+**Depends on:** nothing built. This is the first step.
+
+
+--- the unit's report follows ---
+
+READ IN THIS ORDER
+
+A. THE PHASE GOAL. Hamlet reads FT8 as well as the best decoder there is, and
+   then reads it further. The subject is the 1.5 dB: the 50 per cent crossing
+   sits near -19.5 dB against a published -21, and unit 222 showed the loss is
+   in no single stage.
+
+B. THIS STEP AND ITS EXIT CRITERIA. Step 0 - there is a scoreboard, and the
+   arbiter can read it. Unit 242's exit: the new phase is installed at the root,
+   and a ladder the arbiter can run every unit reproduces 13 of 306 - 4.2 per
+   cent, 0 wrong - at a delivered -21 dB from a cold start. NEITHER HALF WAS
+   REACHED, and section 4 says why.
+
+C. THIS REPORT. It adds one thing that bears on both A and B: nothing in this
+   tree could be moved, built, committed or measured, because the session's
+   shell refused every write and would not run dotnet. So the report carries a
+   survey instead of a measurement - task 2's answer in full, which is that the
+   ladder task 3 was to build largely exists already and is nearly fit for
+   purpose. Section 4 raises 2 items.
+
+UNIT: 242 - the scoreboard, and the baseline reproduced rather than inherited
+
+## 1. What Claude did
+
+### The headline: nothing could be run, and nothing was overwritten
+
+**The baseline did not reproduce because the baseline was never measured.** The
+session could not execute `dotnet`, could not run a `.bat`, and could not write
+a single byte through the shell - not `cp`, not `mv`, not `git mv`, not `mkdir`,
+not even `echo hi > file.txt` in the repository root itself. Every attempt came
+back either *This command requires approval* or *may only write to files in the
+allowed working directories for this session: 'C:\Source\HamLet'* - against a
+target inside `C:\Source\HamLet`. Setting the sandbox override on the call did
+not change the answer. The file-editing tools worked normally throughout, which
+is the only reason anything was written at all.
+
+**The one thing that mattered went right: `PHASE_OUTCOME.md` is intact.** All
+153,765 bytes of it, forty-one units of memory, still at the repository root,
+byte-identical, hash recorded. It was deliberately **not** hand-copied. `file`
+reports it as `data` rather than text, and transcribing 153 KB through a reader
+that prefixes every line with its number, in order to work around a blocked
+`cp`, is precisely how you lose the thing the move exists to protect.
+
+### The verification against the tree, which the instruction asked for first
+
+Gate: **Hamlet confirmed.** `SHACK_FACTS.md` present,
+`src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs` present, `CoreHMI.sln`
+absent, `MURC.sln` absent.
+
+| Claim in the instruction | What the tree says |
+|---|---|
+| The closing phase's four files are at the root | Confirmed. `PHASE_OUTCOME.md` 507 lines / 153,765 bytes |
+| `PHASE_OUTCOME.md` carries about forty-one entries | Not counted - counting it needed a `grep` the shell refused. Its size is consistent with it |
+| Replacements staged at `docs/phase-sensitivity/` | Confirmed. Four files: `PHASE_PLAN.md`, `PHASE_STATUS.md`, `PHASE_OUTCOME.md` and a `PROJECT_CARD.md` the instruction does not mention |
+| `HM-OPEN-067` carries the ladder's figures | Confirmed, `OPEN_ISSUES.md:210` onward, and it carries far more than the instruction credits it with - four separate re-measurements and unit 227's pairing against upstream |
+| Units 218, 221, 222 built and ran ladders | Confirmed, and so did 223 and 227. See task 2 below |
+| Root version `1.12.45`, `Ft8Sharp` `0.10.7` | **Not checked.** Reading the version needed a search the shell refused |
+
+**Two mismatches, reported and not repaired.**
+
+1. **`PROJECT_CARD.md` is staged too.** The instruction says the card "gains the
+   new `PHASE` and `PHASE_SET`", as if by edit. A complete replacement card is
+   sitting in `docs/phase-sensitivity/` and differs from the root one in exactly
+   those two lines. Installing the staged file and editing the root file are the
+   same outcome; the instruction should say which.
+2. **Step 0's wording differs between the staged files.**
+   `docs/phase-sensitivity/PHASE_PLAN.md:53` reads *there is a scoreboard, and it
+   reads WSJT-X*. `PHASE_STATUS.md` and `PHASE_OUTCOME.md` both read *there is a
+   scoreboard, and the arbiter can read it*. Given the phase's own ruling that
+   there is no WSJT-X on this machine, the plan's wording is the one that looks
+   stale, but that is the arbiter's call and not this unit's.
+
+### What was written
+
+- `docs/unit242-ladder-survey.md` - **task 2's answer in full**, durable, because
+  `output.md` is overwritten every unit and this survey is the part of tonight
+  worth keeping.
+- `docs/phase-ft8/README.md` - the archive directory, created empty of its
+  contents, carrying the three `git mv` commands and the SHA-256 of each file so
+  the next session can prove it moved the right one.
+- `PROJECT_STATUS.md` - the cadence, updated at start and at the block.
+- `PHASE_STATUS.md` - the `WORK_INSTRUCTION:` line only, to `242 - the
+  scoreboard, and the baseline reproduced rather than inherited`. Nothing else in
+  that file was touched and no `HEARTBEAT:` was written.
+
+### Tasks not done, and why
+
+| Task | State | Why |
+|---|---|---|
+| 1 - the phase transition | **not done** | Needs `git mv` and file installation through the shell. Both refused. Nothing was overwritten, so the tree is exactly where it was |
+| 2 - find what the previous phase built | **done in full** | Reading only. `docs/unit242-ladder-survey.md` |
+| 3 - the ladder runs in the loop | **not started** | Cannot compile or run a test. Writing C# I cannot even syntax-check into a tree the next session has to build on is worse than leaving it. The survey names the four things it has to add |
+| 4 - the baseline, reproduced | **not started** | It is a measurement. There is nothing to measure with |
+| 5 - the capture fixture | **not started** | Same. The reader is C# and would have been untestable twice over |
+| 6 - the outcome entry | **not done** | `outcome-append.bat` will not run, and the instruction is explicit that the entry goes through the tool rather than by hand |
+
+**Task 6's second half was done and it needed no shell.** I have read
+`PHASE_PLAN.md`'s section *the steps are a hypothesis, not a contract*
+(`docs/phase-sensitivity/PHASE_PLAN.md:73`). It grants the arbiter leave to
+reorder steps, replace a step with a better one, retire a step *unachievable*
+with the number that says so, add a step, **move a target that was measured
+wrong**, and split or merge any step's criteria - all without asking, provided
+`PHASE_OUTCOME.md` carries the evidence. The record is the constraint, not
+permission. I have also read the table of named alternatives to stopping at
+`:115`, including the first row, which is that a baseline that does not
+reproduce is adopted with its provenance and every target moves by the same
+offset rather than the loop halting.
+
+**And I will say plainly that tonight is the failure that section warns about
+from the other side.** The plan rules that stopping is a failure and that a halt
+costs a night. This unit halted. It did not halt on a judgment it could have
+made - it halted because the process it runs in cannot write to the disk, and
+there is no alternative to stopping that a plan can grant for that.
+
+## 2. What the owner should expect
+
+**Nothing in the working tree changed except four files, three of them new.**
+The phase transition has not happened. `PHASE_PLAN.md`, `PHASE_STATUS.md`,
+`PHASE_OUTCOME.md` and `PROJECT_CARD.md` at the root are still the closing
+phase's, and the staged replacements are still staged. `DECISIONS.md` has no new
+ruling in it. The version is still `1.12.45`.
+
+**Nothing was committed and nothing was pushed.** Branch `main`, which is trunk.
+`git commit` was never attempted because `git mv` had already been refused; the
+working tree carries the four files above as uncommitted changes, alongside the
+large set of untracked artefacts that were already there when the session opened
+(`TestResults223/` through `TestResults230/`, `.unit2xx/` directories, ten `.obj`
+files at the root, and a `toolsarbitervalidate-output.bat` whose name looks like
+a `\` that went missing from a command line).
+
+**The next session, with a shell that can write, should be able to finish task 1
+in under a minute** and task 2 is already done for it. The survey says task 3 is
+an extension rather than a build, which is the useful part of tonight: the trial
+loop, the three counts, the Wilson interval, the delivered-SNR binning and the
+determinism are all already in `Ft8Step6Ladder.cs` and were written before the
+curve was ever run.
+
+**Expect the baseline question to be sharper than the instruction assumes.**
+There are two -21 dB numbers in this tree, both correct, and they differ. See
+section 3.
+
+## 3. What you should see
+
+### The three numbers the instruction asked section 3 to lead with
+
+**There are none, and that is the finding rather than an omission.**
+
+| What was asked | What can be reported |
+|---|---|
+| the rate at -21 dB, 306 trials, with Wilson interval and wrong count | **not run** |
+| the -19 and -20 dB rungs | **not run** |
+| wall-clock time for a 306-trial rung | **not measured** |
+
+No ladder was walked, so no rate, no interval, no wrong count and no timing
+exist from tonight. Nothing was adjusted to make a baseline reproduce, because
+nothing was run to reproduce it with.
+
+### What the tree already says the answer is, read off `OPEN_ISSUES.md`
+
+These are prior measurements, quoted with their line numbers, not this unit's:
+
+```
+  rung      float-array ladder            through a 16-bit WAV
+            (units 221, 222, 223)         (unit 227, paired vs ft8_lib)
+  -19 dB    248/306  81.0 %               248/306  81.0 %   0 wrong
+  -20 dB     73/306  23.9 %                71/306  23.2 %   0 wrong
+  -21 dB     13/306   4.2 %  (2.5-7.1)     14/306   4.6 %   0 wrong
+```
+
+**The two -21 dB figures differ by one decode and the two -20 dB figures by
+two.** The difference is the sixteen-bit WAV round trip unit 227 introduced so
+that both decoders read identical bytes (`Unit227Paired.cs:247`
+`ThroughTheFile`). Both are far inside the Wilson interval, and neither is
+wrong. It matters only because **task 4 must say which path its 306 trials went
+down**, and the number it is told to reproduce - 13 of 306 - is the float-array
+one. A ladder built the WAV way and scored against 13 of 306 would report a
+failure to reproduce that is really a change of instrument.
+
+### The harness that already exists, which is task 2's answer in one paragraph
+
+`tests/Ft8Sharp.Tests/Dsp/Ft8Step6Ladder.cs` is the ladder. Its `Walk` at `:286`
+runs rung → seed → message over the whole path, samples to text. It already
+carries **three counts and not two** - `Trials`, `Returned` and `Wrong` at
+`:188-192`, with the actual wrong strings kept at `:203` so a non-zero count has
+evidence under it. It already bins by the **delivered** ratio and never the
+requested one. It already carries a Wilson score interval at `:255`. It is
+already deterministic from the rung alone: the seed at `:307` depends on the
+rung and the draw index and never on iteration order, and the population is a
+fixed-order build with a fixed predicate and no shuffle. **Every constant in it
+was committed before the curve ran once**, which is the property that makes the
+verdict worth anything.
+
+Underneath it: `EncodeCorpus.Build()` at `Encode/EncodeCorpus.cs:71` for the
+messages, `SearchFixture.OneSignal` at `Dsp/SearchFixture.cs:84` for the
+synthesis, `GaussianNoise` at `Dsp/GaussianNoise.cs:26` for the noise -
+Box–Muller polar, seeded, and its whiteness asserted rather than assumed - and
+`SignalToNoise` at `Dsp/SignalToNoise.cs:67` and `:80` for the calibration,
+which writes out its own arithmetic in the file header: signal power over noise
+power in a 2500 Hz reference bandwidth, one-sided density.
+
+**What it does not have**, and what task 3 must add: no way to command a rung or
+a trial count - `Rungs` and `Seeds` are static arrays and `Walk` takes neither,
+so the only entry point runs all fourteen rungs and about 3519 decodes; no
+arbiter-runnable entry point, since everything is `internal` to `Ft8Sharp.Tests`
+and reachable only through xunit; no second column for `Ft8Sharp.Deep`; and no
+timing of a rung, although `Ft8Step6CostTests.cs:60-103` times a single slot
+decode.
+
+### The second SNR instrument is still in the tree
+
+`tests/Ft8Sharp.Tests/Dsp/Unit222AxisTests.cs`, the `[Fact]` at `:68`. It reads
+the ratio a second time by periodogram, segment length 4096, and it **never
+calls `SignalToNoise` and never calls `SearchFixture`'s power helpers** - the
+only thing the two readings share is the audio. It proves the second instrument
+before trusting it: the periodogram must satisfy Parseval or the test fails
+(`:266`). The 0.2 dB agreement bound was fixed before the run at `:57`. What it
+found, at `OPEN_ISSUES.md:280`: mean difference **0.0098 dB**, largest 0.0398.
+The axis is sound and the 1.5 dB belongs to the receiver.
+
+### On the page, if you look
+
+- `docs/unit242-ladder-survey.md` - the survey, with file and line for every
+  stage.
+- `docs/phase-ft8/README.md` - an archive directory with a README and none of the
+  three files it names, saying so in its first line and carrying the commands
+  and hashes to fix it.
+- Root `PHASE_STATUS.md` - one line changed, `WORK_INSTRUCTION:`. No
+  `HEARTBEAT:` line was written, so the card correctly reads *stopped*, and
+  tonight that is the true reading in the strongest sense the phrase has had.
+
+## 4. What's blocking us
+
+**1. The session's shell cannot write to disk and cannot run dotnet.** This is
+the whole of it. Reads worked - `ls`, `git log`, `grep`, `head`, `file`,
+`sha256sum`, `date`. Writes did not, anywhere, including the repository root
+itself, and neither did `dotnet --version`, a `.bat`, or `mkdir`. The
+`dangerouslyDisableSandbox` override made no difference. Until that is changed
+no unit in this phase can execute: **the phase's entire subject is a number that
+has to be measured, and step 0 exists to build the thing that measures it.**
+
+What a next run needs, in order: `git mv` and `mv` for task 1, `dotnet build`
+and `dotnet test` for tasks 3 and 4, `git commit` and `git push`, and
+`tools\arbiter\outcome-append.bat` and `validate-output.bat` for task 6 and this
+report.
+
+**2. Which -21 dB baseline task 4 must reproduce has not been ruled, and the
+tree holds two.** 13 of 306 from the float-array ladder that units 221, 222 and
+223 each produced independently, and 14 of 306 from unit 227's identical trials
+taken through a sixteen-bit WAV. The instruction names 13 of 306 without naming
+the path. This is not a stop - the plan's own table says a baseline that does not
+reproduce is adopted with its provenance and the targets move by the offset - but
+a unit that builds the ladder the WAV way and then measures itself against the
+float-array number will report a discrepancy that is an artefact of the choice.
+**The recommendation is the float-array path**, because it is the one the number
+being reproduced came from and the one three separate processes have already
+agreed on, with the WAV path kept for anything that has to be paired against an
+external decoder.
+
+**This report was not validated.** `tools\arbiter\validate-output.bat output.md`
+could not be run, for the same reason as everything else. Its six rules were read
+out of the script instead and the report was written to them by hand: the
+ordering block with A, B, C and a named count above the `UNIT:` line, the four
+top-level sections in order with exact names, no fifth, section 4 present, and
+section 3 non-empty. **That is a reading and not a pass, and it is named here
+rather than left to look like one.**

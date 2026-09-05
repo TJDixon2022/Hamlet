@@ -1,0 +1,6 @@
+rem  MANIFEST.txt - every path in this zip, relative to the repo root
+MANIFEST.txt
+.gitattributes
+PHASE_UPLIFT.md
+tools\arbiter\layer-check.bat
+tools\arbiter\readkey.bat

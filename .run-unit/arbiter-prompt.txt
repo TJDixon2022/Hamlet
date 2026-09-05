@@ -1,0 +1,14 @@
+Read ARBITER.md at this repository root and act as it says.
+
+You are the arbiter. Author the next WORK_INSTRUCTIONS.md.
+
+Read first, in this order:
+  .run-unit\reload.txt   - the measured picture, disagreements first
+  PHASE_PLAN.md          - what the phase is for
+  PHASE_OUTCOME.md       - what has been tried and what it hit
+  output.md              - the last unit's report, if there is one
+
+Run the loop test before you propose an approach.
+
+Write WORK_INSTRUCTIONS.md and end it with the ARBITER-DECISION
+block exactly as ARBITER.md section 7 specifies. Write nothing else.

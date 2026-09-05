@@ -1,0 +1,149 @@
+APPDATA                 = C:\Users\TimDi\AppData\Roaming
+AppSettings.DataFolder  = C:\Users\TimDi\AppData\Roaming\Hamlet   exists=True
+
+=== data root : C:\Users\TimDi\AppData\Roaming\Hamlet ===
+  [dir]  telemetry
+  layouts.json                                          819 bytes  written 2026-08-27 17:08:01 UTC
+  scan-segments.json                                   4601 bytes  written 2026-08-17 23:40:52 UTC
+  settings.json                                        1352 bytes  written 2026-09-03 12:34:32 UTC
+  spots.db                                           716800 bytes  written 2026-08-28 15:33:39 UTC
+  spots.db-shm                                        32768 bytes  written 2026-09-03 12:34:30 UTC
+  spots.db-wal                                       370832 bytes  written 2026-09-03 12:29:17 UTC
+
+=== captures : C:\Users\TimDi\AppData\Roaming\Hamlet\captures ===
+  DOES NOT EXIST
+
+=== captures/digital : C:\Users\TimDi\AppData\Roaming\Hamlet\captures\digital ===
+  DOES NOT EXIST
+
+=== telemetry : C:\Users\TimDi\AppData\Roaming\Hamlet\telemetry ===
+  2026-08-13.jsonl                                    84605 bytes  written 2026-08-13 23:19:03 UTC
+  2026-08-14.jsonl                                   109634 bytes  written 2026-08-14 23:55:13 UTC
+  2026-08-15.jsonl                                    69122 bytes  written 2026-08-15 23:59:22 UTC
+  2026-08-16.jsonl                                   214802 bytes  written 2026-08-16 13:53:56 UTC
+  2026-08-17.jsonl                                     8848 bytes  written 2026-08-17 13:35:14 UTC
+  2026-08-22.jsonl                                     7507 bytes  written 2026-08-22 21:28:19 UTC
+  2026-08-27.jsonl                                   144592 bytes  written 2026-08-27 17:51:06 UTC
+  2026-08-28.jsonl                                    36910 bytes  written 2026-08-28 15:33:38 UTC
+
+ft8-*.wav count = 0
+ft8-*.txt count = 0
+
+=== TELEMETRY TAIL: 2026-08-22.jsonl ===
+    {"ts":"2026-08-22T21:28:03.521Z","sessionId":"4e5b03f5","level":"info","appVersion":"1.10.10","category":"diagnostics","event":"app_start","data":{}}
+    {"ts":"2026-08-22T21:28:04.119Z","sessionId":"4e5b03f5","level":"info","appVersion":"1.10.10","category":"explore","event":"neighborhood_clicked","data":{"name":"CW main street"}}
+    {"ts":"2026-08-22T21:28:04.197Z","sessionId":"4e5b03f5","level":"info","appVersion":"1.10.10","category":"explore","event":"spot_timer_changed","data":{"running":true,"intervalMinutes":5}}
+    {"ts":"2026-08-22T21:28:04.710Z","sessionId":"4e5b03f5","level":"info","appVersion":"1.10.10","category":"rig","event":"connect_ok","data":{"port":"Training radio (no hardware)","rigType":"simulated"}}
+    {"ts":"2026-08-22T21:28:04.717Z","sessionId":"4e5b03f5","level":"info","appVersion":"1.10.10","category":"explore","event":"spectrum_source_changed","data":{"source":"training","band":"40 m","simulated":true}}
+    {"ts":"2026-08-22T21:28:04.808Z","sessionId":"4e5b03f5","level":"info","appVersion":"1.10.10","category":"decode","event":"decoder_started","data":{"simulated":true,"sampleRate":8000,"pitchHz":600}}
+    {"ts":"2026-08-22T21:28:04.818Z","sessionId":"4e5b03f5","level":"warn","appVersion":"1.10.10","category":"rig","event":"transmit_readiness","data":{"outcome":"refused","reason":"radio_cannot_transmit","determinedBy":[{"field":"connected","provenance":"read","value":1},{"field":"canTransmit","provenance":"read","value":0}],"trigger":"recomputed","state":"RadioCannotTransmit","rig":[{"field":"Frequency","provenance":"unknown"},{"field":"Mode","provenance":"unknown"},{"field":"DataMode","provenance":"unknown"},{"field":"FilterSelection","provenance":"unknown"},{"field":"FilterBandwidth","provenance":"unknown"},{"field":"SMeter","provenance":"unknown"},{"field":"TransmitStatus","provenance":"unknown"},{"field":"Overflow","provenance":"unknown"},{"field":"Swr","provenance":"unknown"},{"field":"PowerOut","provenance":"unknown"},{"field":"RfPower","provenance":"unknown"},{"field":"RfGain","provenance":"unknown"},{"field":"Squelch","provenance":"unknown"},{"field":"SquelchStatus","provenance":"unknown"},{"field":"Agc","provenance":"unknown"},{"field":"Preamp","provenance":"unknown"},{"field":"Attenuator","provenance":"unknown"},{"field":"NoiseBlanker","provenance":"unknown"},{"field":"NoiseBlankerLevel","provenance":"unknown"},{"field":"NoiseReduction","provenance":"unknown"},{"field":"NoiseReductionLevel","provenance":"unknown"},{"field":"AutoNotch","provenance":"unknown"},{"field":"ManualNotch","provenance":"unknown"},{"field":"BreakIn","provenance":"unknown"},{"field":"KeyerSpeed","provenance":"unknown"},{"field":"CwPitch","provenance":"unknown"},{"field":"AccUsbOutputSelect","provenance":"unknown"},{"field":"AccUsbAfLevel","provenance":"unknown"},{"field":"NotchPosition","provenance":"unknown"},{"field":"FilterShape","provenance":"unknown"},{"field":"AfLevel","provenance":"unknown"},{"field":"RfSqlFunction","provenance":"unknown"},{"field":"BreakInDelay","provenance":"unknown"},{"field":"AntennaTuner","provenance":"unknown"},{"field":"Alc","provenance":"unknown"},{"field":"AccUsbSquelch","provenance":"unknown"},{"field":"Split","provenance":"unknown"},{"field":"ScopeOn","provenance":"unknown"},{"field":"ScopeOutput","provenance":"unknown"},{"field":"CivUsbPort","provenance":"unknown"},{"field":"CivTransceive","provenance":"unknown"},{"field":"Vfo","provenance":"unknown"}],"rigKnownCount":0,"rigFieldCount":42}}
+    {"ts":"2026-08-22T21:28:05.200Z","sessionId":"4e5b03f5","level":"info","appVersion":"1.10.10","category":"diagnostics","event":"license_class_resolved","data":{"class":"General","source":"callook.info"}}
+    {"ts":"2026-08-22T21:28:05.359Z","sessionId":"4e5b03f5","level":"info","appVersion":"1.10.10","category":"explore","event":"spots_refreshed","data":{"trigger":"startup","spotCount":20,"newCount":0}}
+    {"ts":"2026-08-22T21:28:05.359Z","sessionId":"4e5b03f5","level":"info","appVersion":"1.10.10","category":"explore","event":"lead_card_built","data":{"hasSuggestion":true,"score":96}}
+    {"ts":"2026-08-22T21:28:05.939Z","sessionId":"4e5b03f5","level":"info","appVersion":"1.10.10","category":"rig","event":"rig_heartbeat","data":{"rig":[{"field":"Frequency","provenance":"read","value":7030000,"ageSeconds":0.1},{"field":"Mode","provenance":"read","value":3,"ageSeconds":1.1},{"field":"DataMode","provenance":"unsupported"},{"field":"FilterSelection","provenance":"unsupported"},{"field":"FilterBandwidth","provenance":"unsupported"},{"field":"SMeter","provenance":"unsupported"},{"field":"TransmitStatus","provenance":"unsupported"},{"field":"Overflow","provenance":"unsupported"},{"field":"Swr","provenance":"unsupported"},{"field":"PowerOut","provenance":"unsupported"},{"field":"RfPower","provenance":"unsupported"},{"field":"RfGain","provenance":"unsupported"},{"field":"Squelch","provenance":"unsupported"},{"field":"SquelchStatus","provenance":"unsupported"},{"field":"Agc","provenance":"unsupported"},{"field":"Preamp","provenance":"unsupported"},{"field":"Attenuator","provenance":"unsupported"},{"field":"NoiseBlanker","provenance":"unsupported"},{"field":"NoiseBlankerLevel","provenance":"unsupported"},{"field":"NoiseReduction","provenance":"unsupported"},{"field":"NoiseReductionLevel","provenance":"unsupported"},{"field":"AutoNotch","provenance":"unsupported"},{"field":"ManualNotch","provenance":"unsupported"},{"field":"BreakIn","provenance":"unsupported"},{"field":"KeyerSpeed","provenance":"unsupported"},{"field":"CwPitch","provenance":"unsupported"},{"field":"AccUsbOutputSelect","provenance":"unsupported"},{"field":"AccUsbAfLevel","provenance":"unsupported"},{"field":"NotchPosition","provenance":"unsupported"},{"field":"FilterShape","provenance":"unsupported"},{"field":"AfLevel","provenance":"unsupported"},{"field":"RfSqlFunction","provenance":"unsupported"},{"field":"BreakInDelay","provenance":"unsupported"},{"field":"AntennaTuner","provenance":"unsupported"},{"field":"Alc","provenance":"unsupported"},{"field":"AccUsbSquelch","provenance":"unsupported"},{"field":"Split","provenance":"unsupported"},{"field":"ScopeOn","provenance":"unsupported"},{"field":"ScopeOutput","provenance":"unsupported"},{"field":"CivUsbPort","provenance":"unsupported"},{"field":"CivTransceive","provenance":"unsupported"},{"field":"Vfo","provenance":"unsupported"}],"rigKnownCount":2,"rigFieldCount":42}}
+    {"ts":"2026-08-22T21:28:05.957Z","sessionId":"4e5b03f5","level":"info","appVersion":"1.10.10","category":"decode","event":"decode_quality","data":{"reason":"sampled","inputPeakDb":-90,"inputRmsDb":-90,"inputFloorDb":-90,"clipping":false,"nearlySilent":true,"wordSpacingUnmeasured":false,"toneHz":600,"snrDb":86.3,"elementsSeen":0,"elementsResolved":0,"charactersEmitted":0,"charactersUnsure":0}}
+    {"ts":"2026-08-22T21:28:07.287Z","sessionId":"4e5b03f5","level":"info","appVersion":"1.10.10","category":"diagnostics","event":"about_opened","data":{}}
+    {"ts":"2026-08-22T21:28:16.005Z","sessionId":"4e5b03f5","level":"info","appVersion":"1.10.10","category":"decode","event":"decode_quality","data":{"reason":"sampled","inputPeakDb":-6,"inputRmsDb":-12.2,"inputFloorDb":-83.7,"clipping":false,"nearlySilent":false,"wordSpacingUnmeasured":false,"toneHz":600,"snrDb":86.2,"elementsSeen":20,"elementsResolved":20,"charactersEmitted":6,"charactersUnsure":0}}
+    {"ts":"2026-08-22T21:28:19.610Z","sessionId":"4e5b03f5","level":"info","appVersion":"1.10.10","category":"diagnostics","event":"app_stop","data":{}}
+
+=== TELEMETRY TAIL: 2026-08-27.jsonl ===
+    {"ts":"2026-08-27T17:47:48.563Z","sessionId":"81e3b28b","level":"info","appVersion":"1.11.25","category":"tuning","event":"recent_folded","data":{"hz":7030000,"existingHz":7030000,"gapHz":0,"visits":3}}
+    {"ts":"2026-08-27T17:47:48.960Z","sessionId":"81e3b28b","level":"info","appVersion":"1.11.25","category":"decode","event":"decode_quality","data":{"reason":"sampled","inputPeakDb":-6,"inputRmsDb":-12.2,"inputFloorDb":-77.4,"clipping":false,"nearlySilent":false,"wordSpacingUnmeasured":false,"toneHz":600,"snrDb":86.2,"elementsSeen":37,"elementsResolved":37,"charactersEmitted":3,"charactersUnsure":3}}
+    {"ts":"2026-08-27T17:47:59.159Z","sessionId":"81e3b28b","level":"info","appVersion":"1.11.25","category":"decode","event":"decode_quality","data":{"reason":"sampled","inputPeakDb":-6,"inputRmsDb":-9.1,"inputFloorDb":-84.7,"clipping":false,"nearlySilent":false,"wordSpacingUnmeasured":false,"toneHz":600,"snrDb":86.3,"elementsSeen":57,"elementsResolved":57,"charactersEmitted":6,"charactersUnsure":6}}
+    {"ts":"2026-08-27T17:48:09.690Z","sessionId":"81e3b28b","level":"info","appVersion":"1.11.25","category":"decode","event":"decode_quality","data":{"reason":"sampled","inputPeakDb":-90,"inputRmsDb":-90,"inputFloorDb":-79.8,"clipping":false,"nearlySilent":true,"wordSpacingUnmeasured":false,"toneHz":600,"snrDb":86.2,"elementsSeen":57,"elementsResolved":57,"charactersEmitted":6,"charactersUnsure":6}}
+    {"ts":"2026-08-27T17:48:19.873Z","sessionId":"81e3b28b","level":"info","appVersion":"1.11.25","category":"decode","event":"decode_quality","data":{"reason":"sampled","inputPeakDb":-6,"inputRmsDb":-12.3,"inputFloorDb":-83.1,"clipping":false,"nearlySilent":false,"wordSpacingUnmeasured":false,"toneHz":600,"snrDb":86.2,"elementsSeen":116,"elementsResolved":116,"charactersEmitted":13,"charactersUnsure":13}}
+    {"ts":"2026-08-27T17:48:28.773Z","sessionId":"81e3b28b","level":"info","appVersion":"1.11.25","category":"rig","event":"rig_heartbeat","data":{"rigChanged":[],"rigKnownCount":2}}
+    {"ts":"2026-08-27T17:48:30.378Z","sessionId":"81e3b28b","level":"info","appVersion":"1.11.25","category":"decode","event":"decode_quality","data":{"reason":"sampled","inputPeakDb":-90,"inputRmsDb":-90,"inputFloorDb":-85.2,"clipping":false,"nearlySilent":true,"wordSpacingUnmeasured":false,"toneHz":600,"snrDb":86,"elementsSeen":116,"elementsResolved":116,"charactersEmitted":13,"charactersUnsure":13}}
+    {"ts":"2026-08-27T17:48:40.416Z","sessionId":"81e3b28b","level":"info","appVersion":"1.11.25","category":"decode","event":"decode_quality","data":{"reason":"sampled","inputPeakDb":-6,"inputRmsDb":-9.1,"inputFloorDb":-81,"clipping":false,"nearlySilent":false,"wordSpacingUnmeasured":false,"toneHz":600,"snrDb":86.3,"elementsSeen":151,"elementsResolved":151,"charactersEmitted":17,"charactersUnsure":17}}
+    {"ts":"2026-08-27T17:48:50.675Z","sessionId":"81e3b28b","level":"info","appVersion":"1.11.25","category":"decode","event":"decode_quality","data":{"reason":"sampled","inputPeakDb":-6,"inputRmsDb":-9.1,"inputFloorDb":-84.6,"clipping":false,"nearlySilent":false,"wordSpacingUnmeasured":false,"toneHz":600,"snrDb":86.2,"elementsSeen":165,"elementsResolved":165,"charactersEmitted":31,"charactersUnsure":31}}
+    {"ts":"2026-08-27T17:49:03.243Z","sessionId":"81e3b28b","level":"info","appVersion":"1.11.25","category":"decode","event":"decode_quality","data":{"reason":"sampled","inputPeakDb":-90,"inputRmsDb":-90,"inputFloorDb":-79.8,"clipping":false,"nearlySilent":true,"wordSpacingUnmeasured":false,"toneHz":600,"snrDb":86,"elementsSeen":165,"elementsResolved":165,"charactersEmitted":31,"charactersUnsure":31}}
+    {"ts":"2026-08-27T17:49:13.254Z","sessionId":"81e3b28b","level":"info","appVersion":"1.11.25","category":"decode","event":"decode_quality","data":{"reason":"sampled","inputPeakDb":-6,"inputRmsDb":-12.3,"inputFloorDb":-83.1,"clipping":false,"nearlySilent":false,"wordSpacingUnmeasured":false,"toneHz":600,"snrDb":86.2,"elementsSeen":185,"elementsResolved":185,"charactersEmitted":34,"charactersUnsure":34}}
+    {"ts":"2026-08-27T17:49:23.301Z","sessionId":"81e3b28b","level":"info","appVersion":"1.11.25","category":"decode","event":"decode_quality","data":{"reason":"sampled","inputPeakDb":-6,"inputRmsDb":-12.3,"inputFloorDb":-82.4,"clipping":false,"nearlySilent":false,"wordSpacingUnmeasured":false,"toneHz":600,"snrDb":86.1,"elementsSeen":227,"elementsResolved":227,"charactersEmitted":36,"charactersUnsure":36}}
+    {"ts":"2026-08-27T17:49:29.138Z","sessionId":"81e3b28b","level":"info","appVersion":"1.11.25","category":"rig","event":"rig_heartbeat","data":{"rigChanged":[],"rigKnownCount":2}}
+    {"ts":"2026-08-27T17:49:33.535Z","sessionId":"81e3b28b","level":"info","appVersion":"1.11.25","category":"decode","event":"decode_quality","data":{"reason":"sampled","inputPeakDb":-6,"inputRmsDb":-12.3,"inputFloorDb":-81.7,"clipping":false,"nearlySilent":false,"wordSpacingUnmeasured":false,"toneHz":600,"snrDb":86.2,"elementsSeen":247,"elementsResolved":247,"charactersEmitted":44,"charactersUnsure":44}}
+    {"ts":"2026-08-27T17:49:43.594Z","sessionId":"81e3b28b","level":"info","appVersion":"1.11.25","category":"decode","event":"decode_quality","data":{"reason":"sampled","inputPeakDb":-90,"inputRmsDb":-90,"inputFloorDb":-86.1,"clipping":false,"nearlySilent":true,"wordSpacingUnmeasured":false,"toneHz":600,"snrDb":86,"elementsSeen":280,"elementsResolved":280,"charactersEmitted":46,"charactersUnsure":46}}
+    {"ts":"2026-08-27T17:49:53.643Z","sessionId":"81e3b28b","level":"info","appVersion":"1.11.25","category":"decode","event":"decode_quality","data":{"reason":"sampled","inputPeakDb":-6,"inputRmsDb":-12.3,"inputFloorDb":-82.4,"clipping":false,"nearlySilent":false,"wordSpacingUnmeasured":false,"toneHz":600,"snrDb":86.2,"elementsSeen":294,"elementsResolved":294,"charactersEmitted":60,"charactersUnsure":60}}
+    {"ts":"2026-08-27T17:50:03.679Z","sessionId":"81e3b28b","level":"info","appVersion":"1.11.25","category":"decode","event":"decode_quality","data":{"reason":"sampled","inputPeakDb":-6,"inputRmsDb":-12.2,"inputFloorDb":-76.5,"clipping":false,"nearlySilent":false,"wordSpacingUnmeasured":false,"toneHz":600,"snrDb":86.3,"elementsSeen":331,"elementsResolved":331,"charactersEmitted":63,"charactersUnsure":63}}
+    {"ts":"2026-08-27T17:50:13.704Z","sessionId":"81e3b28b","level":"info","appVersion":"1.11.25","category":"decode","event":"decode_quality","data":{"reason":"sampled","inputPeakDb":-90,"inputRmsDb":-90,"inputFloorDb":-83.9,"clipping":false,"nearlySilent":true,"wordSpacingUnmeasured":false,"toneHz":600,"snrDb":86,"elementsSeen":351,"elementsResolved":351,"charactersEmitted":66,"charactersUnsure":66}}
+    {"ts":"2026-08-27T17:50:24.180Z","sessionId":"81e3b28b","level":"info","appVersion":"1.11.25","category":"decode","event":"decode_quality","data":{"reason":"sampled","inputPeakDb":-6,"inputRmsDb":-12.3,"inputFloorDb":-80.7,"clipping":false,"nearlySilent":false,"wordSpacingUnmeasured":false,"toneHz":600,"snrDb":86.3,"elementsSeen":351,"elementsResolved":351,"charactersEmitted":66,"charactersUnsure":66}}
+    {"ts":"2026-08-27T17:50:29.579Z","sessionId":"81e3b28b","level":"info","appVersion":"1.11.25","category":"rig","event":"rig_heartbeat","data":{"rigChanged":[],"rigKnownCount":2}}
+    {"ts":"2026-08-27T17:50:34.252Z","sessionId":"81e3b28b","level":"info","appVersion":"1.11.25","category":"decode","event":"decode_quality","data":{"reason":"sampled","inputPeakDb":-90,"inputRmsDb":-90,"inputFloorDb":-85.3,"clipping":false,"nearlySilent":true,"wordSpacingUnmeasured":false,"toneHz":600,"snrDb":85.7,"elementsSeen":410,"elementsResolved":410,"charactersEmitted":73,"charactersUnsure":73}}
+    {"ts":"2026-08-27T17:50:44.323Z","sessionId":"81e3b28b","level":"info","appVersion":"1.11.25","category":"decode","event":"decode_quality","data":{"reason":"sampled","inputPeakDb":-6,"inputRmsDb":-12.2,"inputFloorDb":-86.5,"clipping":false,"nearlySilent":false,"wordSpacingUnmeasured":false,"toneHz":600,"snrDb":86.3,"elementsSeen":410,"elementsResolved":410,"charactersEmitted":73,"charactersUnsure":73}}
+    {"ts":"2026-08-27T17:50:54.360Z","sessionId":"81e3b28b","level":"info","appVersion":"1.11.25","category":"decode","event":"decode_quality","data":{"reason":"sampled","inputPeakDb":-90,"inputRmsDb":-90,"inputFloorDb":-82.2,"clipping":false,"nearlySilent":true,"wordSpacingUnmeasured":false,"toneHz":600,"snrDb":86.1,"elementsSeen":445,"elementsResolved":445,"charactersEmitted":77,"charactersUnsure":77}}
+    {"ts":"2026-08-27T17:51:04.415Z","sessionId":"81e3b28b","level":"info","appVersion":"1.11.25","category":"decode","event":"decode_quality","data":{"reason":"sampled","inputPeakDb":-6,"inputRmsDb":-9.1,"inputFloorDb":-84,"clipping":false,"nearlySilent":false,"wordSpacingUnmeasured":false,"toneHz":600,"snrDb":86.3,"elementsSeen":459,"elementsResolved":459,"charactersEmitted":91,"charactersUnsure":91}}
+    {"ts":"2026-08-27T17:51:06.407Z","sessionId":"81e3b28b","level":"info","appVersion":"1.11.25","category":"diagnostics","event":"app_stop","data":{}}
+
+=== TELEMETRY TAIL: 2026-08-28.jsonl ===
+    {"ts":"2026-08-28T15:30:16.958Z","sessionId":"9fef370d","level":"info","appVersion":"1.12.0","category":"rig","event":"rig_heartbeat","data":{"rigChanged":[],"rigKnownCount":2}}
+    {"ts":"2026-08-28T15:30:21.471Z","sessionId":"9fef370d","level":"info","appVersion":"1.12.0","category":"decode","event":"decode_quality","data":{"reason":"sampled","inputPeakDb":-90,"inputRmsDb":-90,"inputFloorDb":-81.2,"clipping":false,"nearlySilent":true,"wordSpacingUnmeasured":false,"toneHz":600,"snrDb":86,"elementsSeen":645,"elementsResolved":645,"charactersEmitted":126,"charactersUnsure":126}}
+    {"ts":"2026-08-28T15:30:31.710Z","sessionId":"9fef370d","level":"info","appVersion":"1.12.0","category":"decode","event":"decode_quality","data":{"reason":"sampled","inputPeakDb":-6,"inputRmsDb":-12.3,"inputFloorDb":-79,"clipping":false,"nearlySilent":false,"wordSpacingUnmeasured":false,"toneHz":600,"snrDb":86.3,"elementsSeen":687,"elementsResolved":687,"charactersEmitted":128,"charactersUnsure":128}}
+    {"ts":"2026-08-28T15:30:41.714Z","sessionId":"9fef370d","level":"info","appVersion":"1.12.0","category":"decode","event":"decode_quality","data":{"reason":"sampled","inputPeakDb":-90,"inputRmsDb":-90,"inputFloorDb":-81.7,"clipping":false,"nearlySilent":true,"wordSpacingUnmeasured":false,"toneHz":600,"snrDb":86,"elementsSeen":704,"elementsResolved":704,"charactersEmitted":133,"charactersUnsure":133}}
+    {"ts":"2026-08-28T15:30:51.769Z","sessionId":"9fef370d","level":"info","appVersion":"1.12.0","category":"decode","event":"decode_quality","data":{"reason":"sampled","inputPeakDb":-6,"inputRmsDb":-9.1,"inputFloorDb":-84.7,"clipping":false,"nearlySilent":false,"wordSpacingUnmeasured":false,"toneHz":600,"snrDb":86.3,"elementsSeen":705,"elementsResolved":705,"charactersEmitted":134,"charactersUnsure":134}}
+    {"ts":"2026-08-28T15:31:01.807Z","sessionId":"9fef370d","level":"info","appVersion":"1.12.0","category":"decode","event":"decode_quality","data":{"reason":"sampled","inputPeakDb":-90,"inputRmsDb":-90,"inputFloorDb":-89.2,"clipping":false,"nearlySilent":true,"wordSpacingUnmeasured":false,"toneHz":600,"snrDb":84.5,"elementsSeen":753,"elementsResolved":753,"charactersEmitted":151,"charactersUnsure":151}}
+    {"ts":"2026-08-28T15:31:12.111Z","sessionId":"9fef370d","level":"info","appVersion":"1.12.0","category":"decode","event":"decode_quality","data":{"reason":"sampled","inputPeakDb":-6,"inputRmsDb":-9.1,"inputFloorDb":-83.7,"clipping":false,"nearlySilent":false,"wordSpacingUnmeasured":false,"toneHz":600,"snrDb":86.3,"elementsSeen":753,"elementsResolved":753,"charactersEmitted":151,"charactersUnsure":151}}
+    {"ts":"2026-08-28T15:31:17.331Z","sessionId":"9fef370d","level":"info","appVersion":"1.12.0","category":"rig","event":"rig_heartbeat","data":{"rigChanged":[],"rigKnownCount":2}}
+    {"ts":"2026-08-28T15:31:22.361Z","sessionId":"9fef370d","level":"info","appVersion":"1.12.0","category":"decode","event":"decode_quality","data":{"reason":"sampled","inputPeakDb":-90,"inputRmsDb":-90,"inputFloorDb":-80.6,"clipping":false,"nearlySilent":true,"wordSpacingUnmeasured":false,"toneHz":600,"snrDb":86.1,"elementsSeen":773,"elementsResolved":773,"charactersEmitted":154,"charactersUnsure":154}}
+    {"ts":"2026-08-28T15:31:32.386Z","sessionId":"9fef370d","level":"info","appVersion":"1.12.0","category":"decode","event":"decode_quality","data":{"reason":"sampled","inputPeakDb":-6,"inputRmsDb":-9.1,"inputFloorDb":-85.5,"clipping":false,"nearlySilent":false,"wordSpacingUnmeasured":false,"toneHz":600,"snrDb":86.3,"elementsSeen":815,"elementsResolved":815,"charactersEmitted":156,"charactersUnsure":156}}
+    {"ts":"2026-08-28T15:31:43.240Z","sessionId":"9fef370d","level":"info","appVersion":"1.12.0","category":"decode","event":"decode_quality","data":{"reason":"sampled","inputPeakDb":-90,"inputRmsDb":-90,"inputFloorDb":-79.8,"clipping":false,"nearlySilent":true,"wordSpacingUnmeasured":false,"toneHz":600,"snrDb":86.3,"elementsSeen":815,"elementsResolved":815,"charactersEmitted":156,"charactersUnsure":156}}
+    {"ts":"2026-08-28T15:31:53.346Z","sessionId":"9fef370d","level":"info","appVersion":"1.12.0","category":"decode","event":"decode_quality","data":{"reason":"sampled","inputPeakDb":-6,"inputRmsDb":-9.1,"inputFloorDb":-82.4,"clipping":false,"nearlySilent":false,"wordSpacingUnmeasured":false,"toneHz":600,"snrDb":86.3,"elementsSeen":835,"elementsResolved":835,"charactersEmitted":164,"charactersUnsure":164}}
+    {"ts":"2026-08-28T15:32:03.380Z","sessionId":"9fef370d","level":"info","appVersion":"1.12.0","category":"decode","event":"decode_quality","data":{"reason":"sampled","inputPeakDb":-6,"inputRmsDb":-12.3,"inputFloorDb":-83.6,"clipping":false,"nearlySilent":false,"wordSpacingUnmeasured":false,"toneHz":600,"snrDb":86.2,"elementsSeen":882,"elementsResolved":882,"charactersEmitted":180,"charactersUnsure":180}}
+    {"ts":"2026-08-28T15:32:13.629Z","sessionId":"9fef370d","level":"info","appVersion":"1.12.0","category":"decode","event":"decode_quality","data":{"reason":"sampled","inputPeakDb":-6,"inputRmsDb":-12.2,"inputFloorDb":-81,"clipping":false,"nearlySilent":false,"wordSpacingUnmeasured":false,"toneHz":600,"snrDb":86.3,"elementsSeen":919,"elementsResolved":919,"charactersEmitted":183,"charactersUnsure":183}}
+    {"ts":"2026-08-28T15:32:17.771Z","sessionId":"9fef370d","level":"info","appVersion":"1.12.0","category":"rig","event":"rig_heartbeat","data":{"rigChanged":[],"rigKnownCount":2}}
+    {"ts":"2026-08-28T15:32:23.644Z","sessionId":"9fef370d","level":"info","appVersion":"1.12.0","category":"decode","event":"decode_quality","data":{"reason":"sampled","inputPeakDb":-90,"inputRmsDb":-90,"inputFloorDb":-86.2,"clipping":false,"nearlySilent":true,"wordSpacingUnmeasured":false,"toneHz":600,"snrDb":86.3,"elementsSeen":939,"elementsResolved":939,"charactersEmitted":186,"charactersUnsure":186}}
+    {"ts":"2026-08-28T15:32:33.682Z","sessionId":"9fef370d","level":"info","appVersion":"1.12.0","category":"decode","event":"decode_quality","data":{"reason":"sampled","inputPeakDb":-6,"inputRmsDb":-12.3,"inputFloorDb":-81.7,"clipping":false,"nearlySilent":false,"wordSpacingUnmeasured":false,"toneHz":600,"snrDb":86.2,"elementsSeen":939,"elementsResolved":939,"charactersEmitted":186,"charactersUnsure":186}}
+    {"ts":"2026-08-28T15:32:43.720Z","sessionId":"9fef370d","level":"info","appVersion":"1.12.0","category":"decode","event":"decode_quality","data":{"reason":"sampled","inputPeakDb":-6,"inputRmsDb":-9.1,"inputFloorDb":-76.5,"clipping":false,"nearlySilent":false,"wordSpacingUnmeasured":false,"toneHz":600,"snrDb":86.3,"elementsSeen":981,"elementsResolved":981,"charactersEmitted":188,"charactersUnsure":188}}
+    {"ts":"2026-08-28T15:32:53.773Z","sessionId":"9fef370d","level":"info","appVersion":"1.12.0","category":"decode","event":"decode_quality","data":{"reason":"sampled","inputPeakDb":-6,"inputRmsDb":-12.2,"inputFloorDb":-83.1,"clipping":false,"nearlySilent":false,"wordSpacingUnmeasured":false,"toneHz":600,"snrDb":86.3,"elementsSeen":998,"elementsResolved":998,"charactersEmitted":193,"charactersUnsure":193}}
+    {"ts":"2026-08-28T15:33:03.846Z","sessionId":"9fef370d","level":"info","appVersion":"1.12.0","category":"decode","event":"decode_quality","data":{"reason":"sampled","inputPeakDb":-90,"inputRmsDb":-90,"inputFloorDb":-81.3,"clipping":false,"nearlySilent":true,"wordSpacingUnmeasured":false,"toneHz":600,"snrDb":86,"elementsSeen":999,"elementsResolved":999,"charactersEmitted":194,"charactersUnsure":194}}
+    {"ts":"2026-08-28T15:33:13.867Z","sessionId":"9fef370d","level":"info","appVersion":"1.12.0","category":"decode","event":"decode_quality","data":{"reason":"sampled","inputPeakDb":-90,"inputRmsDb":-90,"inputFloorDb":-85.3,"clipping":false,"nearlySilent":true,"wordSpacingUnmeasured":false,"toneHz":600,"snrDb":85.9,"elementsSeen":1047,"elementsResolved":1047,"charactersEmitted":211,"charactersUnsure":211}}
+    {"ts":"2026-08-28T15:33:18.269Z","sessionId":"9fef370d","level":"info","appVersion":"1.12.0","category":"rig","event":"rig_heartbeat","data":{"rigChanged":[],"rigKnownCount":2}}
+    {"ts":"2026-08-28T15:33:24.489Z","sessionId":"9fef370d","level":"info","appVersion":"1.12.0","category":"decode","event":"decode_quality","data":{"reason":"sampled","inputPeakDb":-6,"inputRmsDb":-12.2,"inputFloorDb":-85.8,"clipping":false,"nearlySilent":false,"wordSpacingUnmeasured":false,"toneHz":600,"snrDb":86.2,"elementsSeen":1047,"elementsResolved":1047,"charactersEmitted":211,"charactersUnsure":211}}
+    {"ts":"2026-08-28T15:33:35.510Z","sessionId":"9fef370d","level":"info","appVersion":"1.12.0","category":"decode","event":"decode_quality","data":{"reason":"sampled","inputPeakDb":-6,"inputRmsDb":-9.1,"inputFloorDb":-78.1,"clipping":false,"nearlySilent":false,"wordSpacingUnmeasured":false,"toneHz":600,"snrDb":86.3,"elementsSeen":1067,"elementsResolved":1067,"charactersEmitted":214,"charactersUnsure":214}}
+    {"ts":"2026-08-28T15:33:38.978Z","sessionId":"9fef370d","level":"info","appVersion":"1.12.0","category":"diagnostics","event":"app_stop","data":{}}
+
+=== settings.json VERBATIM ===
+{
+  "WindowMaximized": false,
+  "ReconnectOnStartup": true,
+  "ModeFollowsTheMap": true,
+  "Favorites": [],
+  "Recent": [],
+  "HasMeasuredSwr": false,
+  "Operator": {
+    "Callsign": "KC3QIS",
+    "CallsignSource": "LookedUp",
+    "CallsignSourceName": "callook.info",
+    "CallsignSetOn": "2026-09-03",
+    "CallsignVerifiedAs": "KC3QIS",
+    "OperatorName": "",
+    "Location": "",
+    "GridSquare": "FN00DJ",
+    "Latitude": 40.3782746,
+    "Longitude": -79.7081649,
+    "GridSquareSource": "LookedUp",
+    "GridSquareSourceName": "callook.info",
+    "GridSquareSetOn": "2026-09-03",
+    "GridSquareVerifiedAs": "FN00DJ",
+    "LicenseClass": "General",
+    "LicenseClassSource": "LookedUp",
+    "LicenseClassSourceName": "callook.info",
+    "LicenseClassSetOn": "2026-09-03",
+    "LicenseClassVerifiedAs": "General"
+  },
+  "SpotRefreshMinutes": 5,
+  "PanelExpanded": {},
+  "SourceEnabled": {},
+  "TelemetryCategories": {},
+  "TelemetryMaxMegabytes": 50,
+  "RestrictTransmitToPrivileges": true,
+  "DistanceUnits": "Miles",
+  "LastBylineIndex": 9,
+  "HasTunedByWheel": false,
+  "ShowKeyingSweep": false,
+  "UseJointDecoder": false,
+  "UseReferenceDecoder": false,
+  "CwPitchHz": 600,
+  "CopySpeedWpm": 13,
+  "ActivationLifetimeMinutes": 60,
+  "SkimmerLifetimeMinutes": 20,
+  "ContestLifetimeMinutes": 180
+}

@@ -1,0 +1,48 @@
+PROJECT: Hamlet
+Execute WORK_INSTRUCTIONS.md.
+
+Status cadence, for this and every session:
+
+After each task, before starting the next, update PROJECT_STATUS.md per
+CLAUDE.md - STATE, TASK: n of m, BALL, UPDATED from the clock, and
+NOTE saying what is moving inside the task, not restating the task name.
+
+Do the same every ten minutes while a task is running.
+
+Commit and push each task before starting the next.
+
+Also update PHASE_STATUS.md at the repository root: set its
+WORK_INSTRUCTION: line to the instruction you are executing, taken from
+the `# Work instruction <n> - <title>` heading in WORK_INSTRUCTIONS.md,
+in the form `<n> - <title>`.
+
+That line and PHASE:, PHASE_SET: and DESCRIPTION: are yours. HEARTBEAT:,
+CURRENT_STEP: and the STEP: lines belong to the launcher - do not write
+them, and do not reformat the file. Leave everything below the --- alone.
+
+Before you stop, for any reason at all, write output.md per
+CLAUDE_CODE.md section 8, opening with the ordering block: A the phase
+goal, B this step and its exit criteria, C what this report adds and
+whether any of it bears on A or B. Complete, blocked, failed or stopped early are
+all reported the same way and there is no exit that leaves the file
+unwritten. If you are stopping with tasks remaining, name them and
+say why in section 1.
+
+THE REPORT HAS EXACTLY FOUR TOP-LEVEL SECTIONS. These headings,
+spelled and ordered exactly like this, at ## level, and NO OTHERS
+at ## level anywhere in the file:
+
+  ## 1. What Claude did
+  ## 2. What the owner should expect
+  ## 3. What you should see
+  ## 4. What's blocking us
+
+Everything you want to say goes UNDER one of those four. Use ###
+and deeper for your own headings - those are ignored by the
+validator. Section 4 is present even when empty. Section 3 is
+never empty.
+
+THEN VALIDATE IT YOURSELF BEFORE YOU STOP:
+  tools\arbiter\validate-output.bat output.md
+It names the rule that failed. Exit 0 or the unit is failed
+whatever else it achieved. Fix the report and run it again.

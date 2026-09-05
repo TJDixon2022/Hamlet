@@ -1,4 +1,4 @@
-# Work instruction 228 - why nothing is decoding, said before the operator has to ask
+# Work instruction 242 - the scoreboard, and the baseline reproduced rather than inherited
 
 ```
 STOP. Verify the project before reading any further.
@@ -20,171 +20,262 @@ Reply with only: the path you are in, which checks failed, and
 If all four hold, say "Hamlet confirmed" and continue.
 ```
 
-Carried forward unchanged per `ARBITER.md` section 7.
-
 ---
 
-# THIS IS A SEED INSTRUCTION
+## Why this unit exists
 
-The launcher was given `--seed`. Iteration 1 executes this file; the arbiter
-authors every unit after it. Read `PHASE_PLAN.md` first.
+**This is the first unit of a new phase and it installs the phase.** The previous
+phase closed on 2026-09-04 at 21:41 UTC when Tim saw fourteen FT8 messages from
+one slot on 14.074. Its files are still at the root and must be archived, not
+overwritten.
 
----
+**The new phase's subject is the 1.5 dB.** `HM-OPEN-067` records it: the 50 per
+cent crossing near **-19.5 dB** against a published **-21**, on 306 trials a rung,
+with the SNR axis checked against a second instrument sharing no line of code with
+the first and agreeing to 0.0098 dB mean. Unit 222 then took it apart and found it
+in no single stage - oracle alignment, unquantised magnitudes, physics ratios and
+four times the iteration bound each landed inside the as-is interval. **At -21 dB
+the hard decisions carry about 31 bit errors against a code that recovers to zero
+at 17.** The demodulator is fine. Belief propagation gives up while the answer is
+still reachable.
 
-# Why this unit exists
-
-**Tomorrow morning the owner tunes to 14.074 and finds out what this decoder can
-do. Tonight's job is to make sure that measurement cannot be wrecked by something
-that has nothing to do with the decoder.**
-
-The state of the art on FT8, put plainly by someone asked to summarise it:
-
-> When FT8 fails, it is almost never the decoder. It is clock drift, wrong audio
-> device, radio in the wrong mode, or transmitting with ALC slamming.
-
-**Hamlet knows all three of those and says none of them in one place.** The clock
-is measured and described. The waterfall summary knows whether the source is
-simulated. The rig state knows the mode. An operator looking at an empty decoded
-table has to assemble that himself from three panels, and the one thing he cannot
-tell from a blank table is whether the band is quiet or the setup is wrong.
-
-**An empty panel is indistinguishable from a broken one** (Tim, 2026-08-28). That
-ruling is why every panel carries an idle line. This unit applies it to the case
-the idle lines cannot cover: **the table is empty and there is a reason.**
+**This unit builds none of that.** It builds the instrument that every later unit
+is scored on, and it reproduces the baseline rather than inheriting it.
 
 ```
-  PHASE GOAL:   Hamlet hears FT8 off the radio and displays the decoded text
-                on screen.
-  STEP:         7 of 7 - Hamlet displays decoded FT8.
-  UNIT GOAL:    When nothing is decoding and something is wrong, the Digital
-                tab says which thing, in the operator's words.
-  ADVANCES:     step 7, and the bench check tomorrow.
+PHASE GOAL:   Hamlet reads FT8 as well as the best decoder there is, and then
+              reads it further.
+UNIT GOAL:    The phase is installed, and a ladder the arbiter can run every unit
+              reproduces 4.2 per cent at -21 dB from a cold start.
+ADVANCES:     step 0
 ```
-
-**This is a small unit and it is meant to be.** The band is closed, the owner is
-at the desk, and the value is entirely in tomorrow morning not being wasted.
 
 ---
 
-# What already exists - use it, do not rebuild it
+## Verify this instruction against the tree
 
-Read from a harvest taken 2026-09-02. **Verify each against the tree.**
+**Nothing here describes the tree.** Check every claim and report any mismatch.
+Report it; do not repair the instruction.
 
-- **`ClockOffsetLine`** - `ClockOffset.Describe(DateTime.UtcNow)`, already a
-  sentence in the operator's language.
-- **`ClockIsConcerning`** - `ClockOffset.IsConcerning`, already the amber test.
-- **`DigitalWaterfallSummary`** - already says `no slot grid until the clock is
-  checked` when the clock is unknown, and appends `simulated` when
-  `DigitalSpectrum.IsSimulated`.
-- **`DigitalSpectrum.IsSimulated`** - true when the training radio is the source
-  rather than the rig.
-- **`RigState`** - carries the radio's mode. `DataMode` distinguishes USB from
-  USB-D and is UNKNOWN when unconfirmed, per HM-DEC-056.
-- **`DigitalDecodes`** - the bound collection, empty until something decodes.
-- **`DigitalIdleText`** - four idle strings, the owner's voice, **not deleted.**
+- `PHASE_PLAN.md`, `PHASE_STATUS.md`, `PHASE_OUTCOME.md` and `PROJECT_CARD.md` at
+  the root belong to the closing phase. `PHASE_OUTCOME.md` carries about
+  forty-one entries which are that phase's memory.
+- The replacements are staged at `docs/phase-sensitivity/` and were delivered
+  with this instruction.
+- `HM-OPEN-067` in `OPEN_ISSUES.md` carries the ladder's figures and the address
+  of the loss.
+- Units 218, 221 and 222 built and ran ladders. **Find what they left in the
+  tree** - the generator, the SNR delivery, the trial harness - and report what
+  exists before writing anything new.
+- Root version is `1.12.45` after work instruction 241. `Ft8Sharp` is `0.10.7`.
 
----
-
-# Tasks
-
-## Task 1 - the ground
-
-`Ft8Sharp` totals, attribution, channel tests. Then confirm the six things above
-exist and are shaped as described. **Report every mismatch.**
-
-## Task 2 - one line that says why
-
-A single readiness line on the Digital tab, above or beside the decoded table,
-that is **empty and invisible when everything is right** and says the first thing
-that is wrong when something is.
-
-The order matters, because the first wrong thing makes the rest moot:
-
-1. **Nothing is listening.** No audio source at all.
-2. **The source is simulated.** The training radio, not the rig. Real FT8 will
-   never appear and the operator should know before he waits.
-3. **The clock is out.** `ClockIsConcerning`. FT8 needs the PC within about a
-   second of UTC or nothing decodes and it fails silently. **This is the single
-   commonest newcomer failure in this mode** and the one the operator is least
-   likely to suspect.
-4. **The radio is not in a data mode.** USB-D is what FT8 is worked in. If
-   `DataMode` is UNKNOWN, say unknown rather than wrong - an unconfirmed read is
-   not a fault (HM-DEC-056).
-5. **The dial is not in a digital neighborhood.** The map already knows.
-
-**Write it in the CW terminal's voice**, the way `DigitalIdleText` is: the reason
-attached to the fact, and a way forward rather than a bare absence. Not
-`ERROR: CLOCK OFFSET`. Closer to *the PC clock is four seconds off UTC, and FT8
-needs it within about one - nothing will decode until that is fixed.*
-
-**When all five are right and the table is still empty, say nothing.** A quiet
-band is not a fault and the idle line already covers it.
-
-## Task 3 - the tests
-
-Each of the five conditions, asserted at the view-model seam without opening a
-window. And the control that matters: **all five right produces no line.** A
-readiness line that always says something is one the operator stops reading.
-
-## Task 4 - the mode strip, if the window allows - DROP CANDIDATE
-
-**Named as the drop candidate. Dropped whole, and say so.**
-
-The mode strip lights the digital mode the dial is sitting in. If it is still
-static, wire it to the neighborhood the map already resolves. If it is already
-live, say so and drop this.
+Expected to fail: `CwAdjudicationTests.ASpeedChangeInRealisticAudio`, and the 51
+inherited CW reds in `docs/unit239-failing-set.txt` which fail at the baseline
+`d541fc8` too. Do not chase either.
 
 ---
 
-# What not to do
+## Rulings in force for this phase
 
-- **Do not delete `DigitalIdleText`.** It is the owner's voice.
-- **Do not decide what a message means in plain English.** `CLAUDE.md` 12.1. The
-  "What people are saying" panel is not this unit's.
-- **Do not put a number in the `snr` column.** Unit 226 refused it for a reason
-  and what goes there is the owner's under 12.1.
-- **Do not correct the clock.** Hamlet measures and never sets it.
-- **Do not touch the decoder, any threshold, or `Ft8Sharp`.**
-- **Do not run the full Hamlet suite.**
-- **No transmit work.** `CLAUDE.md` 0.2.
+Transcribed from `PHASE_PLAN.md`. **Not to be re-argued by any unit.**
 
----
+**The seam is split, settling the divergence question open since 2026-08-31.**
+`Ft8Sharp` stays a faithful MIT port of `ft8_lib`, byte-identical in behaviour,
+and **nothing in this phase changes a line of it.** Improvements live in a
+sibling, `Ft8Sharp.Deep`. The port's value now is that it cannot drift: every
+measurement is taken against something known-identical to upstream.
 
-# Committing, pushing, reporting
+**There is no WSJT-X on the development machine and no unit may assume one.**
+Tim's ruling, 2026-09-04. The only machine that can measure against it has the
+radio attached (`SHACK_FACTS.md` FACT-004). **A unit that cannot close without a
+real-air comparison says so and stops.** It does not substitute
+`decode_ft8.exe`, which is `ft8_lib` and therefore the thing being improved on.
 
-Commit and push each task. Take the version bumps.
+**Tim generates the capture fixtures.** Ruled 2026-09-04. One command at the
+shack per batch of captures, committed.
 
-`output.md` per `CLAUDE_CODE.md` section 8. **Exactly four top-level sections at
-`##` level:**
+**Nothing is claimed without the scoreboard.** No unit may report an improvement
+except as a number on it.
 
-```
-## 1. What Claude did
-## 2. What the owner should expect
-## 3. What you should see
-## 4. What's blocking us
-```
+**A wrong decode is counted separately from a missed one, everywhere.** A message
+returned that was not sent is the one failure this phase cannot trade against
+rate (§0.0).
 
-Then run `tools\arbiter\validate-output.bat output.md` and fix until it exits 0.
-**If it is refused, say so and hand-check the six rules against the script's own
-body, as units 224 through 227 did.**
-
-**Section 3 leads with what the line says on this machine right now**, with the
-band closed and whatever the audio source currently is.
-
-Then stop.
+**No algorithm comes from WSJT-X's source or `ft4_ft8_public/`.** Published
+description only, cited at the point of use.
 
 ---
 
-```
-ARBITER-DECISION
-STEP: 7
-APPROACH: one readiness line on the Digital tab that names the first thing standing between the operator and a decode - no source, simulated source, clock out, wrong mode, wrong neighborhood - and says nothing at all when none of them is wrong
-MOVE: continue
-WHY: The owner tunes to 14.074 tomorrow morning to establish the baseline this whole phase exists to produce, and the state of the art on FT8 is that failures are almost never the decoder - they are clock drift, the wrong audio device, or the radio in the wrong mode. Hamlet already knows all three and says none of them in one place, so an operator looking at an empty table cannot tell a quiet band from a wrong setup. That is the case the idle lines cannot cover, and Tim's own 2026-08-28 ruling that an empty panel is indistinguishable from a broken one is what this applies. It is deliberately a small unit: the band is closed tonight and the value is entirely in tomorrow morning not being wasted on something that has nothing to do with the decoder.
-STATE: partial
-DECIDED: That the line is ordered and shows only the first wrong thing, because the first one makes the rest moot - a simulated source means the clock does not matter yet. That silence is the correct output when everything is right, and that this is asserted by a test, because a readiness line that always says something is one the operator stops reading. That an UNKNOWN data mode is reported as unknown rather than as wrong, per HM-DEC-056, since an unconfirmed read is not a fault. That the wording follows DigitalIdleText's voice rather than an error format - the reason attached to the fact and a way forward, which is 0.7 and HM-DEC-034. That nothing in the decoder, the thresholds or Ft8Sharp is touched, because tomorrow's measurement is worthless if tonight moved the thing being measured. That the snr column stays a dash, because unit 226 refused to print a Costas sync score under a decibel heading and what goes there is the owner's under 12.1. That the mode strip is the drop candidate because it is cosmetic beside the readiness line.
-LICENCE: PHASE_PLAN.md's step 7; the plan's 2026-09-02 ruling that steps 6 and 7 do not depend on each other, which lets step 7 move while step 6 waits on an owner ruling; the plan's 2026-09-01 ruling on when a step is done; HM-DEC-021, each panel carrying its own news, extended here to the case no panel covers; HM-DEC-034 and 0.7 for the voice; HM-DEC-056 for reporting an unconfirmed mode as unknown; CLAUDE.md 12.1, which keeps the plain-English panel and the snr column out of this unit; CLAUDE.md 0.2. Reported plainly: this instruction was written from a harvest of src/Hamlet.App taken 2026-09-02 and every claim about ClockOffsetLine, ClockIsConcerning, DigitalWaterfallSummary, IsSimulated, RigState and DigitalDecodes is to be checked rather than trusted.
-ACCOMPLISHED: Tomorrow morning the owner tunes to 14.074 and either sees callsigns or does not. If he does not, he currently has no way to tell whether the band is quiet, the clock drifted, the radio is in plain USB, or Hamlet is listening to its own training radio - and finding that out by elimination is how a morning gets spent. After tonight the tab tells him which one, in a sentence, in the voice he wrote for it in August, and says nothing at all when the answer is simply that nobody is transmitting. It is the smallest possible change that protects the measurement this entire phase was built to take.
-ADVANCES: Step 7, and the bench check. The step is not expected to close in this unit; the arbiter continues.
-END-ARBITER-DECISION
-```
+## Status cadence
+
+After each task, before starting the next, update `PROJECT_STATUS.md` per
+`CLAUDE.md` - `STATE`, `TASK: n of m`, `BALL`, `UPDATED` from the clock, and
+`NOTE` saying what is moving inside the task. The same every ten minutes while a
+task is running.
+
+---
+
+## Tasks
+
+### Task 1 - the phase transition
+
+**Nothing is overwritten. Everything is moved, then replaced, then committed, so
+git can undo the whole thing.**
+
+- Create `docs/phase-ft8/` and **move** the closing phase's `PHASE_PLAN.md`,
+  `PHASE_STATUS.md` and `PHASE_OUTCOME.md` into it. `PHASE_OUTCOME.md` carries
+  forty-one units of memory and **losing it is the failure this task exists to
+  avoid.**
+- Install the staged files from `docs/phase-sensitivity/` at the root:
+  `PHASE_PLAN.md`, `PHASE_STATUS.md`, `PHASE_OUTCOME.md`.
+- `PROJECT_CARD.md` gains the new `PHASE` and `PHASE_SET`. **This file is changed
+  only by ruling** (§13.3) and the ruling is Tim's approval of `PHASE_PLAN.md` on
+  2026-09-04. Append the ruling to `DECISIONS.md` in its own format, next id in
+  sequence, naming the phase set and citing the plan.
+- **There is no `HEARTBEAT:` line in the new `PHASE_STATUS.md` and none may be
+  written by hand.** The launcher writes it. Until it does, the card reading
+  *stopped* is the true one.
+- Verify: `tools\arbiter\layer-check.bat` and `status-check.bat` if they read
+  these files, and report what they say.
+- Commit and push before task 2. **If a piece of this cannot be completed, finish
+  what can be, record precisely what was not done, and continue to task 2.** A
+  half-installed layer is reported and repaired next unit; a stopped loop costs a
+  night. The one exception is losing `PHASE_OUTCOME.md`, which is why it is moved
+  and committed before anything else happens.
+
+### Task 2 - find what the previous phase already built
+
+- Units 218, 221 and 222 measured ladders. **Report what exists** with file and
+  line: the message generator, the signal synthesiser, the noise delivery and its
+  SNR calibration, the trial loop, and how a trial's result was scored.
+- **Report what the delivered SNR was verified against.** Unit 222 checked the
+  axis with a second instrument agreeing to 0.0098 dB mean. Say whether that
+  instrument is still in the tree.
+- If a usable harness exists, task 3 extends it. **If it does not, say so** - a
+  ladder rebuilt from scratch is a different measurement and the baseline
+  reproduction in task 4 is what decides whether it is the same one.
+
+### Task 3 - the ladder runs in the loop
+
+- A harness the arbiter can run every unit: synthesized messages at a commanded
+  SNR, decoded, scored against the message that went in. **No external decoder,
+  because the ground truth is what was transmitted.**
+- It takes both `Ft8Sharp` and, once step 1 exists, `Ft8Sharp.Deep`, and reports
+  them side by side.
+- **Three counts, never two**: decoded correctly, missed, and **returned wrong**.
+  A wrong decode is reported on its own line with the message sent and the
+  message returned.
+- Runs a commanded rung and trial count so a unit can take 306 trials at -21 dB
+  or a quick 50 for a smoke check.
+- Deterministic from a seed, so a result can be reproduced exactly.
+- Time for a 306-trial rung reported, since every later unit pays it.
+
+### Task 4 - the baseline, reproduced
+
+**This is the goal task and it is a measurement, not a build.**
+
+- Run the ladder at **-21 dB, 306 trials**, and report the rate with its Wilson
+  interval and the wrong-decode count.
+- **The number to reproduce is 13 of 306, 4.2 per cent, 0 wrong**, at a delivered
+  -21.001 dB.
+- **If it reproduces, the instrument is trusted and committed as the baseline.**
+- **If it does not, that is this unit's headline finding - and it is not a stop.**
+  Do not adjust the harness until it agrees, and do not halt over it. Record both
+  numbers with the delivered SNR each was measured at, **adopt this measurement as
+  the baseline with its provenance**, and note that every target in
+  `PHASE_PLAN.md` moves by the same offset. The relative gain is what this phase
+  measures; the absolute figure is a label on the axis.
+- Also run **-19 dB and -20 dB** and report against unit 221's 81.0 and 23.9 per
+  cent, so the shape is checked and not only one rung.
+
+### Task 5 - the capture fixture
+
+- A format: a committed text file per real capture, naming the capture, its UTC
+  and its **SHA-256**, listing what WSJT-X returned - message, frequency, dt and
+  SNR per row.
+- A harness that reads it and scores decodes against it, matching on message
+  text.
+- **A fixture whose capture is absent, or whose hash does not match, fails loudly
+  rather than passing quietly.** A stale fixture silently measures the wrong
+  thing, and this is the clause that prevents it.
+- **One command Tim runs at the shack** to produce a fixture from a capture, in
+  one step, no editing. It runs where WSJT-X is, which is not this machine, so
+  **it cannot be tested end to end here** - test the reader against a hand-written
+  fixture and say plainly that the generator is untested against the real
+  program.
+- Commit an example fixture, clearly marked as an example and not real air.
+
+### Task 6 - the phase's first outcome entry, and the plan's own escape hatches
+
+**This is the named drop candidate.**
+
+Append this unit's entry to the new `PHASE_OUTCOME.md` through
+`tools\arbiter\outcome-append.bat` rather than by hand, so the file's first entry
+proves the tool still works against a fresh phase. If the tool refuses, report
+what it said and leave the file alone.
+
+**Then read `PHASE_PLAN.md`'s section *the steps are a hypothesis, not a
+contract* and say in the report that you have.** It grants the arbiter leave to
+reorder, replace, retire and add steps and to move a target that was measured
+wrong, all without asking. Every later unit in this phase depends on that being
+understood, and a plan followed more literally than it was meant is the failure
+this phase is most likely to have.
+
+---
+
+## Parked - do not touch, do not raise
+
+- **Building `Ft8Sharp.Deep`.** Step 1. Not this unit.
+- **OSD, subtraction, baseband re-sync, SNR measurement, cross-slot combining.**
+  Steps 2 to 6. **No unit may start one before its scoreboard exists.**
+- **The decoded text panel.** Work instruction 241 owns it.
+- **The CW decoder**, including the 419 dropped chunks in the 21:58 capture and
+  the 51 inherited failing cases.
+- **`Ft8Sharp.Deep`'s licence** - **already ruled GPL-3.0** by Tim on 2026-09-04.
+  Do not raise it.
+- **The engine project's missing total**, **the waterfall's late first row**,
+  **`ReusableWindow`**, **`ProcessDelayForTests`**, **the tap's owner**, **unit
+  237's Extensible conclusion**, **work instruction 231's four tree items**,
+  **`validate-output.bat`'s permitted-spellings bug**, **the 101.33 ms pulse
+  above 6 kHz**.
+
+---
+
+## What not to do
+
+- **Do not delete `PHASE_OUTCOME.md`.** Move it. Forty-one units of memory.
+- **Do not write a `HEARTBEAT:` line.**
+- **Do not touch `src/Ft8Sharp/`.** Not a constant, not an arithmetic order. The
+  port is the instrument.
+- **Do not adjust the ladder to make the baseline reproduce.** If it disagrees,
+  that is the finding.
+- **Do not report a rate without its wrong-decode count.**
+- **Do not assume WSJT-X exists on this machine.**
+- **Do not run `Hamlet.App.Tests` unfiltered** - it stops partway. The four
+  commands in `docs/full-suite-run.md`. One project at a time, never
+  concurrently.
+
+---
+
+## Committing and pushing
+
+Commit and push each task before starting the next. Root version `1.12.45` to
+`1.12.46`; `Ft8Sharp` does not move. Name the branch and say whether the push
+succeeded.
+
+---
+
+## Reporting
+
+`output.md` at the repository root, overwritten, four sections per
+`CLAUDE_CODE.md` §8 with the header block above section 1.
+
+**Section 3 leads with three numbers:** the ladder's rate at -21 dB with its
+Wilson interval and wrong-decode count, against the 13 of 306 it must reproduce;
+the -19 and -20 dB rungs against 81.0 and 23.9 per cent; and the wall-clock time
+for a 306-trial rung, since every later unit pays it.
+
+**If the baseline did not reproduce, section 1 leads with that** and section 3
+says what the two measurements differ by.
+
+Write `output.md`, then stop. Do not start the next unit.

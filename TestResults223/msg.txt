@@ -1,0 +1,33 @@
+docs(ft8sharp): unit 223 complete - the information is not in the ratios, measured, and criterion 2 stays NOT MET
+
+Task 7's short branch: no library file changed, so the curve stands as units 221
+and 222 measured it and it was not re-run to fill a section. Criterion 2 stands
+NOT MET at 13 of 306, 4.2 per cent, re-measured in a fourth process at a
+delivered -21.001 dB against a band untouched tonight.
+
+porting-notes.md gains its unit-223 section: the twelve-term normalisation audit
+with its table, the four-row price of the approximation with the fast_atanh error
+table and the ceiling arithmetic under it, the independent decoder with all four
+controls, the score census, the twelve-target sweep, the reason there was no fix
+with the four numbers that could have moved and did not, and five things this is
+not evidence about with what ft8_lib itself would decode named first.
+
+HM-OPEN-067 updated in place and not duplicated - still open, still severity
+blocks, still blocking step 6 criterion 2 by name - with route 2 now marked
+COMPLETE rather than merely audited, route 1 gaining the normalisation audit and
+the sweep, and HM-OPEN-065 still first and still the only route left, cited and
+not re-raised.
+
+Versions bumped with the reason in the props files: Ft8Sharp 0.10.6 to 0.10.7
+under HM-DEC-152 and the root 1.12.29 to 1.12.30 under HM-DEC-150, both patches
+because no library file changed.
+
+Gates re-run after both bumps: Ft8Sharp 518 total, 517 passed, 0 failed, 1
+skipped from the TRX Counters element - six tests added and still the one correct
+skip, the table write gate; library 0 warnings 0 errors; 198 attribution paths
+with the src/Hamlet. tests/Hamlet. filter still returning 0; App channel 9 of 9;
+RadioEngine channel 38 of 38. Both channel sets run twice, green both times.
+
+The report is written and validated: all six rules passed, exit 0.
+
+Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>

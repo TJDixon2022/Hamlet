@@ -101,6 +101,7 @@ if /i "%~1"=="--max-iterations" set "MAXITER=%~2" & shift & shift & goto :parse
 if /i "%~1"=="--budget"         set "BUDGET=%~2" & shift & shift & goto :parse
 if /i "%~1"=="--minutes"        set "MINUTES=%~2" & shift & shift & goto :parse
 if /i "%~1"=="--poll"           set "POLL=%~2" & shift & shift & goto :parse
+if /i "%~1"=="--seed"           set "SEED=1" & shift & goto :parse
 echo ERROR: unexpected argument: %~1
 goto :usage
 
@@ -126,6 +127,7 @@ set "SPENT=0"
 set "ITER=0"
 set "STOPWHY="
 set "LASTPOS="
+if not defined SEED set "SEED=0"
 set "NOPROGRESS=0"
 
 echo.
@@ -219,20 +221,61 @@ if "%POSITION%"=="%LASTPOS%" (
   set "NOPROGRESS=0"
 )
 set "LASTPOS=%POSITION%"
-if %NOPROGRESS% GEQ 2 (
+rem  STOP 10 COUNTS STEP STATES, AND A STEP IS BIGGER THAN ITS STATE
+rem  WORD. Measured 2026-09-02 in Hamlet: two units took step 5 from
+rem  nothing to belief propagation proven at 0 wrong in 37952 trials,
+rem  then took its remaining criterion apart and showed 0 recoverable
+rem  decodes were being lost - and the step read partial throughout, so
+rem  the counter called it no progress and ended the night. A step of
+rem  real size absorbs four or five units and looks identical to a
+rem  stuck one at this resolution.
+rem
+rem  The threshold is 4 rather than 2, and the run says which it is on
+rem  so a genuine stall is still visible while it accumulates. Judging
+rem  progress properly means reading the outcome entries rather than
+rem  the header, which is the arbiter's to do and not this file's.
+if %NOPROGRESS% GEQ 2 if %NOPROGRESS% LSS 4 (
+  echo       note: %NOPROGRESS% consecutive units without the position moving.
+  echo       A large step absorbs several. Stopping at 4.
+)
+if %NOPROGRESS% GEQ 4 (
   echo.
-  echo   STOP 10: NO PROGRESS. Two consecutive units and the phase
+  echo   STOP 10: NO PROGRESS. Four consecutive units and the phase
   echo   position did not move.
-  set "STOPWHY=stop 10: no progress in two consecutive units"
+  set "STOPWHY=stop 10: no progress in four consecutive units"
   goto :stopped
 )
 
 rem --- 3. the arbiter ------------------------------------------
+rem  A SEEDED FIRST ITERATION SKIPS AUTHORING. --seed says the owner
+rem  has put a WORK_INSTRUCTIONS.md in the tree himself and wants it
+rem  executed as written, so iteration 1 runs it and the arbiter takes
+rem  over from iteration 2. It is a flag and not a detected condition
+rem  on purpose: an extract for any other reason also leaves that file
+rem  newer than output.md, and guessing from timestamps would silently
+rem  skip authoring on a run nobody meant to seed.
+rem
+rem  The decision block is still read out of the seed instruction, so
+rem  a seed carries STEP:, APPROACH:, MOVE: and the rest exactly as an
+rem  authored one does. Without them stage 5 records "not recorded".
+if "%ITER%"=="1" if "%SEED%"=="1" (
+  echo.
+  echo   [3] arbiter - SKIPPED, this iteration runs the seed instruction
+  if not exist "%ROOT%\WORK_INSTRUCTIONS.md" (
+    set "STOPWHY=--seed was given and there is no WORK_INSTRUCTIONS.md to run"
+    goto :stopped
+  )
+  call :heartbeat
+  call :readdecision
+  set "ARBRC=0"
+  goto :seeded
+)
 echo.
 echo   [3] arbiter - authoring the next unit, restricted
 call :heartbeat
 call :arbiter
 call :heartbeat
+:seeded
 if not "%ARBRC%"=="0" (
   set "STOPWHY=the arbiter session failed - exit %ARBRC%"
   goto :stopped
@@ -305,30 +348,6 @@ rem  BEFORE the record, so the verdict lands in PHASE_OUTCOME.md
 rem  rather than only on screen.
 call :judges4
 
-rem --- 4d. are the two status files telling the truth? ----------
-rem  PHASE_UPLIFT.md section 11. AFTER the unit and BEFORE the record,
-rem  so the verdict rides into PHASE_OUTCOME.md attached to the unit
-rem  that caused it rather than onto a screen nobody was watching.
-rem
-rem  IT DOES NOT HALT THE PHASE. A status file is a report about work
-rem  and not the work; throwing away a good unit because its caption
-rem  carried a bad timestamp is the worse outcome. The fault is carried
-rem  forward with its name on it instead.
-rem
-rem  THE VERDICT RIDES ON FATE, which section 11 names. FATE already
-rem  says what happened to the RUN as opposed to the step - `executed`
-rem  or `never ran` - so a status file that failed validation is the
-rem  same kind of fact about the same run, and it appends rather than
-rem  replaces so the run's own fate is not lost behind it.
-call "%HERE%status-check.bat" "%ROOT%"
-set "SCRC=%ERRORLEVEL%"
-if "%SCRC%"=="0" goto :statusok
-echo.
-echo       *** status-check exit %SCRC% - a status file is wrong. The phase
-echo       *** is NOT halted. The fault is recorded against unit %ITER%.
-set "RUNFATE=%RUNFATE%; status-check exit %SCRC% - a status file failed validation"
-:statusok
-
 rem --- 5. the record, with the arbiter's judgment ---------------
 echo.
 echo   [5] outcome-append - the record
@@ -352,50 +371,20 @@ call :scrub A_LICENCE
 call :scrub A_DID
 call :scrub J_WHY
 call "%HERE%outcome-append.bat" "%ITER%" "%A_STEP%" "%J_STATE%" "%A_APPROACH%" "%A_HIT%" "%A_MOVE%" "%A_WHY%" "%A_DECIDED%" "%A_LICENCE%" "%RUNCOST%" "%A_DID%" "%ROOT%\PHASE_OUTCOME.md" "%RUNFATE%" "%J_WHY%"
-set "OARC=%ERRORLEVEL%"
-if not "%OARC%"=="0" goto :appendfailed
-
-rem --- 5a. the card follows the record ---------------------------
-rem  PHASE_UPLIFT.md section 5. Guarded on the append having succeeded,
-rem  because PHASE_OUTCOME.md's header is the authority on where the
-rem  phase stands and a failed append means the authority did not move.
-rem  Copying from an unchanged header would paint the previous unit's
-rem  position as though this unit had confirmed it.
-call :phasesteps
-goto :appended
-
-:appendfailed
-echo.
-echo   *** outcome-append FAILED, exit %OARC%. The phase position
-echo   *** did not move. Stop 10 will fire on the next reload and it
-echo   *** will not be the truth about the work.
-echo   *** The card was NOT updated: the record is the authority and
-echo   *** it did not change.
-echo.
-
-:appended
+if errorlevel 1 (
+  echo.
+  echo   *** outcome-append FAILED, exit %ERRORLEVEL%. The phase position
+  echo   *** did not move. Stop 10 will fire on the next reload and it
+  echo   *** will not be the truth about the work.
+  echo.
+)
 echo       recorded step %A_STEP% as %J_STATE%, fate %RUNFATE%, cost %RUNCOST%
 
-rem --- :scrub - one forwarded field, made safe for a command line
-rem  Replaces the double quote with an apostrophe, which reads the same
-rem  in a report and cannot end an argument. Delayed expansion is local
-rem  to the subroutine; the endlocal line is parsed before it runs, so
-rem  %V% carries the scrubbed value out.
-:scrub
-setlocal enabledelayedexpansion
-set "V=!%~1!"
-if not defined V ( endlocal & goto :eof )
-set "V=!V:"='!"
-rem  AND CAP IT. cmd.exe refuses a command line over 8191 characters
-rem  with "The input line is too long." Measured 2026-09-01 in Hamlet:
-rem  outcome-append failed with exactly that on unit 211, so the phase
-rem  memory recorded nothing while the unit had succeeded. Eight prose
-rem  fields go into one call and the arbiter writes at length, so any
-rem  one of them left uncapped can sink the whole record. 900 each
-rem  keeps the worst case near 7200 with the paths and the flags.
-set "V=!V:~0,900!"
-endlocal & set "%~1=%V%"
-goto :eof
+rem  THE CARD FOLLOWS THE OUTCOME FILE, AND ONLY ON A GOOD APPEND.
+rem  PHASE_UPLIFT.md section 5: PHASE_OUTCOME.md is the authority and
+rem  a failed append means the authority did not move, so the card
+rem  must not move either.
+if not errorlevel 1 call :phasesteps
 
 rem --- 6. the stop conditions the run produced -----------------
 rem  EXIT 1 IS AMBIGUOUS AND HAS TO BE DISAMBIGUATED BY EVIDENCE.
@@ -1023,93 +1012,56 @@ rem  that file to the arbiter and the launcher does not invent one:
 rem  a file this routine composed would carry a phase, a current step
 rem  and a step list that nobody read off anything.
 rem ============================================================
-rem  The heartbeat. PHASE_PLAN.md step 4, and 054's dropped task 7.
+rem  The step states, copied from PHASE_OUTCOME.md into the card.
 rem ============================================================
-rem  THE CARD READS THIS AND NOTHING ELSE SAYS THE LOOP IS TURNING.
-rem  loopBeatView in PROJECT_ANNUNCIATOR.html reads HEARTBEAT: out of
-rem  PHASE_STATUS.md: fresh within CFG.loopBeatMin is `loop turning`,
-rem  and absent, unparseable, ahead of the clock or older than the
-rem  threshold are all `loop stopped`. Absent is read as stopped and
-rem  NEVER as turning, which is what makes removing the beat on the
-rem  way out an honest act rather than a hole.
+rem  WHY THIS EXISTS. The executor writes PHASE_STATUS.md by hand
+rem  during a unit, ARBITER.md section 5 forbids the arbiter to write
+rem  it, and the state judge produces the verdict and writes nowhere.
+rem  So nobody wrote the STEP: lines and the card sat one judgment
+rem  stale - measured in Hamlet across eight units reading step 2 of
+rem  7 while the phase was on step 4, and again reading step 4 while
+rem  the outcome file read step 5.
 rem
-rem  THE CLOCK IS READ, NEVER COMPOSED. Get-Date -Format is the
-rem  reading; CLAUDE_CODE.md section 11 records seven consecutive
-rem  composed timestamps in this repository, and CPS-DEC-029 is what
-rem  the panel does to one that lands ahead of its own clock.
+rem  WRITE SCOPES, AND THEY DO NOT OVERLAP. The launcher owns
+rem  HEARTBEAT:, the STEP: lines and CURRENT_STEP. The executor owns
+rem  PHASE:, PHASE_SET:, DESCRIPTION: and WORK_INSTRUCTION:. This
+rem  rewrites only the state field, byte for byte, and writes nothing
+rem  at all when there is nothing to do.
 rem
-rem  THE INSERT RULE, proved by 054 against this file's actual bytes
-rem  in tools\tests\heartbeat.test.js: replace an existing HEARTBEAT:
-rem  line in the header IN PLACE, otherwise insert immediately above
-rem  the FIRST ^STEP: line, and NEVER APPEND. Appended below the
-rem  terminator the key is collected into strandedNames and the whole
-rem  file returns not readable, which takes the entire phase region
-rem  off the card.
+rem  It follows :heartbeat exactly on bytes, BOM, newline and the
+rem  header boundary, and never appends below the --- terminator.
 rem
-rem  THE ANCHOR IS ^STEP: AND NOT THE SUBSTRING. `CURRENT_STEP: 4`
-rem  contains `STEP:` and comes FIRST in the real file, so what
-rem  findstr "STEP:" would find is the middle of the CURRENT_STEP
-rem  line - splitting it into a dangling `CURRENT_` and a bogus sixth
-rem  step, and leaving the card unable to say which step is current.
-rem  054's suite asserts that trap; this is the code it was asserted
-rem  against.
-rem
-rem  THE HEADER IS THE LEADING RUN OF KEY: VALUE LINES, ending at the
-rem  first line that is not one - STATUS_PROTOCOL.md 2.1's parse rule,
-rem  which is the same rule the panel's parser uses. Only that region
-rem  is searched, so a HEARTBEAT: written in the prose below the rule
-rem  is neither replaced nor trusted.
-rem
-rem  BYTES OUTSIDE THE ONE LINE DO NOT MOVE. The file is read as
-rem  bytes, its BOM and its newline are detected and reproduced, and
-rem  it is written back with the same encoding - because Get-Content
-rem  piped to Set-Content would rewrite every line ending in the file
-rem  and 054 asserted that nothing else moved.
-rem
-rem  NO PHASE_STATUS.md, NO BEAT. PHASE_CONTROL.md section 4 gives
-rem  that file to the arbiter and the launcher does not invent one:
-rem  a file this routine composed would carry a phase, a current step
-rem  and a step list that nobody read off anything.
-rem ============================================================
-rem  The card, copied from the record. Called from stage 5 and ONLY
-rem  after a successful outcome-append.
-rem ============================================================
-rem  WHAT THIS FIXES. PHASE_OUTCOME.md read step 1 partial, step 2 done,
-rem  step 3 blocked while PHASE_STATUS.md still read step 2 not started
-rem  with CURRENT_STEP 2. The card had been stale for the whole phase,
-rem  and the panel paints the card.
-rem
-rem  THE ROOT CAUSE WAS A WRITER NOBODY OWNED. PHASE_CONTROL.md section 4
-rem  assigned CURRENT_STEP and the STEP: lines to the ARBITER, and
-rem  ARBITER.md section 5 says the arbiter writes WORK_INSTRUCTIONS.md and
-rem  its decision block and THAT IS ALL - it never touches tools\ and
-rem  never commits. Both cannot hold, so nobody wrote them and the lines
-rem  never moved. The launcher owns them now: it is the participant that
-rem  already writes this file, on the beat.
-rem
-rem  WRITE SCOPES DO NOT OVERLAP. The launcher owns HEARTBEAT:, the
-rem  STEP: lines and CURRENT_STEP:. The executor owns PHASE:, PHASE_SET:,
-rem  DESCRIPTION: and WORK_INSTRUCTION:. Nothing below rewrites an
-rem  executor-owned line, and a test hashes those four before and after.
-rem
-rem  IT FOLLOWS :heartbeat EXACTLY on bytes, BOM, newline and the header
-rem  boundary, because two writers of one file that disagree about any of
-rem  those will corrupt it between them. The header is the LEADING run of
-rem  KEY: lines; nothing is ever read or written below it, so the ---
-rem  terminator and the prose under it cannot be reached.
-rem
-rem  ONLY THE STATE FIELD MOVES. The regex keeps the line prefix and
-rem  everything from the second pipe onward as captured groups, so the
-rem  step number, the spacing and the description are the original bytes.
-rem  When no line would change it writes NOTHING - not an identical file,
-rem  which would still move the mtime and read as a fresh write.
-rem
-rem  CURRENT_STEP IS THE LOWEST STEP NOT done, and when every step is done
-rem  it is the HIGHEST step number rather than 0 or absent - the panel
-rem  renders both of those as `current step not identified`, which is
-rem  measured in the test, not assumed.
+rem  ALL DONE TAKES THE HIGHEST STEP. Measured: 0 and an absent field
+rem  both render "current step not identified" about the one phase
+rem  whose position is not in doubt.
 :phasesteps
-powershell -NoProfile -Command "$o='%ROOT%\PHASE_OUTCOME.md'; $p='%ROOT%\PHASE_STATUS.md'; if(-not (Test-Path -LiteralPath $o)){ ' no PHASE_OUTCOME.md - the card was not touched'; exit }; if(-not (Test-Path -LiteralPath $p)){ ' no PHASE_STATUS.md - the card was not touched'; exit }; $ob=[System.IO.File]::ReadAllBytes($o); $obom=($ob.Length -ge 3 -and $ob[0] -eq 239 -and $ob[1] -eq 187 -and $ob[2] -eq 191); $oraw=[System.Text.Encoding]::UTF8.GetString($ob); if($obom){ $oraw=$oraw.Substring(1) }; $onl=[string][char]10; if($oraw.IndexOf([char]13) -ge 0){ $onl=[string][char]13+[string][char]10 }; $ol=@($oraw -split $onl); $oend=$ol.Count; for($i=0;$i -lt $ol.Count;$i++){ if($ol[$i] -notmatch '^[A-Za-z][A-Za-z0-9_]*:'){ $oend=$i; break } }; $state=@{}; for($i=0;$i -lt $oend;$i++){ if($ol[$i] -cmatch '^STEP:\s*([0-9]+)\s*\|\s*([^|]*?)\s*\|'){ $state[[int]$Matches[1]]=$Matches[2] } }; if($state.Count -eq 0){ ' REFUSED: PHASE_OUTCOME.md header carries no STEP: line, so there is nothing to copy'; exit }; $bytes=[System.IO.File]::ReadAllBytes($p); $bom=($bytes.Length -ge 3 -and $bytes[0] -eq 239 -and $bytes[1] -eq 187 -and $bytes[2] -eq 191); $raw=[System.Text.Encoding]::UTF8.GetString($bytes); if($bom){ $raw=$raw.Substring(1) }; $nl=[string][char]10; if($raw.IndexOf([char]13) -ge 0){ $nl=[string][char]13+[string][char]10 }; $lines=@($raw -split $nl); $end=$lines.Count; for($i=0;$i -lt $lines.Count;$i++){ if($lines[$i] -notmatch '^[A-Za-z][A-Za-z0-9_]*:'){ $end=$i; break } }; $first=-1; $cur=-1; for($i=0;$i -lt $end;$i++){ if($first -lt 0 -and $lines[$i] -cmatch '^STEP:'){ $first=$i }; if($cur -lt 0 -and $lines[$i] -cmatch '^CURRENT_STEP:'){ $cur=$i } }; if($first -lt 0){ ' REFUSED: PHASE_STATUS.md carries no STEP: line in its header, and a step line is never appended'; exit }; $moved=0; for($i=0;$i -lt $end;$i++){ if($lines[$i] -cmatch '^(STEP:\s*([0-9]+)\s*\|\s*)([^|]*?)(\s*\|.*)$'){ $n=[int]$Matches[2]; if($state.ContainsKey($n)){ $w=$Matches[1]+$state[$n]+$Matches[4]; if($w -cne $lines[$i]){ $lines[$i]=$w; $moved++ } } } }; $nums=@($state.Keys | Sort-Object); $open=@($nums | Where-Object { $state[$_] -cne 'done' }); if($open.Count -gt 0){ $target=[string]$open[0] } else { $target=[string]$nums[$nums.Count-1] }; if($cur -ge 0){ if($lines[$cur] -cmatch '^(CURRENT_STEP:\s*)(.*)$'){ $w=$Matches[1]+$target; if($w -cne $lines[$cur]){ $lines[$cur]=$w; $moved++ } } } else { $pre=@(); if($first -gt 0){ $pre=@($lines[0..($first-1)]) }; $lines=$pre + @('CURRENT_STEP: '+$target) + @($lines[$first..($lines.Count-1)]); $moved++ }; if($moved -eq 0){ ' the card already matches the record - nothing written'; exit }; [System.IO.File]::WriteAllText($p, ($lines -join $nl), (New-Object System.Text.UTF8Encoding($bom))); ' card updated from the record: ' + $moved + ' line(s), current step ' + $target"
+powershell -NoProfile -Command "$o='%ROOT%\PHASE_OUTCOME.md'; $p='%ROOT%\PHASE_STATUS.md'; if(-not (Test-Path -LiteralPath $o)){ '      no PHASE_OUTCOME.md - the card is not moved'; exit }; if(-not (Test-Path -LiteralPath $p)){ '      no PHASE_STATUS.md - the card is not moved'; exit }; $ob=[System.IO.File]::ReadAllBytes($o); $oraw=[System.Text.Encoding]::UTF8.GetString($ob); if($ob.Length -ge 3 -and $ob[0] -eq 239 -and $ob[1] -eq 187 -and $ob[2] -eq 191){ $oraw=$oraw.Substring(1) }; $onl=[string][char]10; if($oraw.IndexOf([char]13) -ge 0){ $onl=[string][char]13+[string][char]10 }; $ol=@($oraw -split $onl); $oend=$ol.Count; for($i=0;$i -lt $ol.Count;$i++){ if($ol[$i] -notmatch '^[A-Za-z][A-Za-z0-9_]*:'){ $oend=$i; break } }; $state=@{}; for($i=0;$i -lt $oend;$i++){ if($ol[$i] -cmatch '^STEP:\s*(\d+)\s*\|\s*([^|]+?)\s*\|'){ $state[[int]$Matches[1]]=$Matches[2] } }; if($state.Count -eq 0){ '      the outcome header carries no STEP: lines - the card is not moved'; exit }; $bytes=[System.IO.File]::ReadAllBytes($p); $bom=($bytes.Length -ge 3 -and $bytes[0] -eq 239 -and $bytes[1] -eq 187 -and $bytes[2] -eq 191); $raw=[System.Text.Encoding]::UTF8.GetString($bytes); if($bom){ $raw=$raw.Substring(1) }; $nl=[string][char]10; if($raw.IndexOf([char]13) -ge 0){ $nl=[string][char]13+[string][char]10 }; $lines=@($raw -split $nl); $end=$lines.Count; for($i=0;$i -lt $lines.Count;$i++){ if($lines[$i] -notmatch '^[A-Za-z][A-Za-z0-9_]*:'){ $end=$i; break } }; $seen=@(); $moved=0; for($i=0;$i -lt $end;$i++){ if($lines[$i] -cmatch '^(STEP:\s*)(\d+)(\s*\|\s*)([^|]+?)(\s*\|.*)$'){ $n=[int]$Matches[2]; $seen+=$n; if($state.ContainsKey($n) -and $state[$n] -ne $Matches[4]){ $lines[$i]=$Matches[1]+$Matches[2]+$Matches[3]+$state[$n]+$Matches[5]; $moved++ } } }; if($seen.Count -eq 0){ '      the card carries no STEP: lines - nothing moved'; exit }; $missing=@($seen | Where-Object { -not $state.ContainsKey($_) }); if($missing.Count){ '      FINDING: the card names step(s) ' + ($missing -join ',') + ' that the outcome header does not - reported, nothing changed'; exit }; $extra=@($state.Keys | Where-Object { $seen -notcontains $_ }); if($extra.Count){ '      FINDING: the outcome header names step(s) ' + ($extra -join ',') + ' that the card does not - reported, nothing changed'; exit }; $open=@($seen | Where-Object { $state[$_] -ne 'done' } | Sort-Object); if($open.Count){ $cur=$open[0] } else { $cur=($seen | Sort-Object)[-1] }; $curmoved=0; for($i=0;$i -lt $end;$i++){ if($lines[$i] -cmatch '^(CURRENT_STEP:\s*)(.*)$'){ if($Matches[2] -ne [string]$cur){ $lines[$i]='CURRENT_STEP: '+$cur; $curmoved=1 } } }; if($moved -eq 0 -and $curmoved -eq 0){ '      card already matches - nothing written'; exit }; [System.IO.File]::WriteAllText($p, ($lines -join $nl), (New-Object System.Text.UTF8Encoding($bom))); '      card moved: ' + $moved + ' step state(s), current step ' + $cur"
+goto :eof
+
+rem ============================================================
+rem  One forwarded field, made safe for a command line.
+rem ============================================================
+rem  MUST LIVE HERE, WITH THE OTHER SUBROUTINES, NOT IN THE LOOP
+rem  BODY. Measured 2026-09-02 in Hamlet: this routine was first
+rem  placed inline after stage 5, and cmd does not skip a label -
+rem  execution fell straight into it and its goto :eof ended the
+rem  whole script. Every run after that patch produced exactly one
+rem  unit and returned to the prompt with no halt banner and no
+rem  ledger line, which is what a silent exit looks like.
+:scrub
+setlocal enabledelayedexpansion
+set "V=!%~1!"
+if not defined V ( endlocal & goto :eof )
+set "V=!V:"='!"
+rem  AND CAP IT. cmd.exe refuses a command line over 8191 characters
+rem  with "The input line is too long." Measured 2026-09-01 in Hamlet:
+rem  outcome-append failed with exactly that on unit 211, so the phase
+rem  memory recorded nothing while the unit had succeeded. Eight prose
+rem  fields go into one call and the arbiter writes at length, so any
+rem  one of them left uncapped can sink the whole record. 900 each
+rem  keeps the worst case near 7200 with the paths and the flags.
+set "V=!V:~0,900!"
+endlocal & set "%~1=%V%"
 goto :eof
 
 :heartbeat

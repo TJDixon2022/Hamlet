@@ -1,0 +1,34 @@
+﻿
+**1. The session's shell cannot write to disk and cannot run dotnet.** This is
+the whole of it. Reads worked - `ls`, `git log`, `grep`, `head`, `file`,
+`sha256sum`, `date`. Writes did not, anywhere, including the repository root
+itself, and neither did `dotnet --version`, a `.bat`, or `mkdir`. The
+`dangerouslyDisableSandbox` override made no difference. Until that is changed
+no unit in this phase can execute: **the phase's entire subject is a number that
+has to be measured, and step 0 exists to build the thing that measures it.**
+
+What a next run needs, in order: `git mv` and `mv` for task 1, `dotnet build`
+and `dotnet test` for tasks 3 and 4, `git commit` and `git push`, and
+`tools\arbiter\outcome-append.bat` and `validate-output.bat` for task 6 and this
+report.
+
+**2. Which -21 dB baseline task 4 must reproduce has not been ruled, and the
+tree holds two.** 13 of 306 from the float-array ladder that units 221, 222 and
+223 each produced independently, and 14 of 306 from unit 227's identical trials
+taken through a sixteen-bit WAV. The instruction names 13 of 306 without naming
+the path. This is not a stop - the plan's own table says a baseline that does not
+reproduce is adopted with its provenance and the targets move by the offset - but
+a unit that builds the ladder the WAV way and then measures itself against the
+float-array number will report a discrepancy that is an artefact of the choice.
+**The recommendation is the float-array path**, because it is the one the number
+being reproduced came from and the one three separate processes have already
+agreed on, with the WAV path kept for anything that has to be paired against an
+external decoder.
+
+**This report was not validated.** `tools\arbiter\validate-output.bat output.md`
+could not be run, for the same reason as everything else. Its six rules were read
+out of the script instead and the report was written to them by hand: the
+ordering block with A, B, C and a named count above the `UNIT:` line, the four
+top-level sections in order with exact names, no fifth, section 4 present, and
+section 3 non-empty. **That is a reading and not a pass, and it is named here
+rather than left to look like one.**

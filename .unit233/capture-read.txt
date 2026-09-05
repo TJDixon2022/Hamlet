@@ -1,0 +1,9 @@
+captures found: 0
+
+=== CONTROL at 48000 Hz, same harness, same reader ===
+  round-tripped through WavAudio: rate 48000, samples 1440000
+  slots 1  candidates 8  refusal []  decodes 1
+    14:22:30  dt 1.36  1241 Hz  Costas match count 33  CQ K1ABC FN42
+  CONTROL DECODED: True
+
+NO CAPTURE ON THIS MACHINE - nothing to read.

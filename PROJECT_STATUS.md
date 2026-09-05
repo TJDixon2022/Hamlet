@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 6 of 6
-WORK_INSTRUCTION: 241 - the decoded text panel becomes readable
+STATE: BLOCKED
+TASK: 2 of 6
+WORK_INSTRUCTION: 242 - the scoreboard, and the baseline reproduced rather than inherited
 BALL: tim
 NEXT_PASTE: OUTPUT.md -> Claude Web
 RULES_AT: HM-DEC-152 (2026-08-31)
-UPDATED: 2026-09-04T19:07:13-04:00
-NOTE: Six of six done; every fault the operator named off his own screen is fixed and the panel that asserted an untruth is removed
+UPDATED: 2026-09-04T19:28:21-04:00
+NOTE: Shell is read-only and dotnet will not run, so nothing can be moved, built or measured; task 2's survey of the existing ladder is done from reading alone
 
 ---
 

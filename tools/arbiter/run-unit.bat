@@ -271,11 +271,7 @@ rem  window that labels itself from its folder name is the specific
 rem  failure this whole repository exists to prevent.
 set "UNIT_PROJECT="
 if exist "%ROOT%\PROJECT_CARD.md" (
-  rem  READ THROUGH readkey.bat, NOT findstr. PHASE_UPLIFT.md section 12.
-  rem  PROJECT: is the FIRST field of PROJECT_CARD.md, which is precisely
-  rem  the line a byte-order mark hides from findstr - and this value is
-  rem  the gate the unit prompt opens with.
-  call "%HERE%readkey.bat" "%ROOT%\PROJECT_CARD.md" "PROJECT" UNIT_PROJECT
+  for /f "usebackq tokens=1,* delims=:" %%A in (`findstr /b /c:"PROJECT:" "%ROOT%\PROJECT_CARD.md"`) do set "UNIT_PROJECT=%%B"
 )
 if defined UNIT_PROJECT call :trimproj
 if not defined UNIT_PROJECT (
@@ -620,6 +616,33 @@ rem  them, carried where it works rather than edited into their file.
 >>"%PROMPT%" echo all reported the same way and there is no exit that leaves the file
 >>"%PROMPT%" echo unwritten. If you are stopping with tasks remaining, name them and
 >>"%PROMPT%" echo say why in section 1.
+>>"%PROMPT%" echo.
+rem  THE FOUR HEADINGS, VERBATIM, IN THE PROMPT. Measured 2026-09-01
+rem  in Hamlet: six consecutive units did their work, wrote valid
+rem  prose and were failed at exit 4 because the report carried
+rem  fifteen top-level sections of its own naming instead of the four.
+rem  The prompt cited section 8 and never quoted it, so a session an
+rem  hour into a run wrote the shape that felt right. And the exit 4
+rem  message blames the denials, which sent the owner chasing
+rem  permissions for six launches while the report was the fault.
+>>"%PROMPT%" echo THE REPORT HAS EXACTLY FOUR TOP-LEVEL SECTIONS. These headings,
+>>"%PROMPT%" echo spelled and ordered exactly like this, at ## level, and NO OTHERS
+>>"%PROMPT%" echo at ## level anywhere in the file:
+>>"%PROMPT%" echo.
+>>"%PROMPT%" echo   ## 1. What Claude did
+>>"%PROMPT%" echo   ## 2. What the owner should expect
+>>"%PROMPT%" echo   ## 3. What you should see
+>>"%PROMPT%" echo   ## 4. What's blocking us
+>>"%PROMPT%" echo.
+>>"%PROMPT%" echo Everything you want to say goes UNDER one of those four. Use ###
+>>"%PROMPT%" echo and deeper for your own headings - those are ignored by the
+>>"%PROMPT%" echo validator. Section 4 is present even when empty. Section 3 is
+>>"%PROMPT%" echo never empty.
+>>"%PROMPT%" echo.
+>>"%PROMPT%" echo THEN VALIDATE IT YOURSELF BEFORE YOU STOP:
+>>"%PROMPT%" echo   tools\arbiter\validate-output.bat output.md
+>>"%PROMPT%" echo It names the rule that failed. Exit 0 or the unit is failed
+>>"%PROMPT%" echo whatever else it achieved. Fix the report and run it again.
 goto :eof
 
 rem ============================================================

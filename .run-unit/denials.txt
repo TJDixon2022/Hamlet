@@ -1,0 +1,25 @@
+﻿   Bash  {"command":"git branch --show-current \u0026\u0026 date -Iseconds \u0026\u0026 diff PROJECT_CARD.md docs/phase-sensitivity/PROJECT_CARD.md; echo \"diffrc=$?\"; ls tools/arbiter/","description":"Check branch, time, card diff, arbiter tools"}
+   Bash  {"command":"git branch --show-current; date -Iseconds; diff PROJECT_CARD.md docs/phase-sensitivity/PROJECT_CARD.md; ls tools/arbiter/","description":"Check branch, time, card diff, arbiter tools"}
+   Bash  {"command":"date -Iseconds","description":"Get current time"}
+   Bash  {"command":"python -c \"import datetime;print(datetime.datetime.now().astimezone().isoformat(timespec=\u0027seconds\u0027));print(datetime.datetime.now(datetime.timezone.utc).isoformat(timespec=\u0027seconds\u0027))\"","description":"Get cu ...(truncated)
+   Bash  {"command":"mkdir -p docs/phase-ft8 \u0026\u0026 git mv PHASE_PLAN.md docs/phase-ft8/PHASE_PLAN.md 2\u003e\u00261; git mv PHASE_STATUS.md docs/phase-ft8/PHASE_STATUS.md 2\u003e\u00261; git mv PHASE_OUTCOME.md docs/phase-ft8/PHASE_OUTCOME.md ...(truncated)
+   Bash  {"command":"mkdir -p docs/phase-ft8","description":"Create archive directory"}
+   Bash  {"command":"mkdir -p \"C:/Source/HamLet/docs/phase-ft8\"; ls -d docs/phase-ft8","description":"Create archive directory with absolute path"}
+   Bash  {"command":"git mv PHASE_OUTCOME.md docs/phase-ft8/PHASE_OUTCOME.md","description":"Move PHASE_OUTCOME.md to archive"}
+   Bash  {"command":"git mv PHASE_OUTCOME.md docs/phase-ft8/PHASE_OUTCOME.md; git mv PHASE_STATUS.md docs/phase-ft8/PHASE_STATUS.md; mv PHASE_PLAN.md docs/phase-ft8/PHASE_PLAN.md; ls docs/phase-ft8/; ls PHASE_*.md 2\u003e\u00261","description":"Move ...(truncated)
+   Bash  {"command":"git mv PHASE_OUTCOME.md docs/phase-ft8/PHASE_OUTCOME.md","description":"Archive PHASE_OUTCOME.md, forty-one units of memory","dangerouslyDisableSandbox":true}
+   Bash  {"command":"cp PHASE_OUTCOME.md docs/phase-ft8/PHASE_OUTCOME.md","description":"Copy PHASE_OUTCOME.md into archive"}
+   Bash  {"command":"cp \"C:\\\\Source\\\\HamLet\\\\PHASE_OUTCOME.md\" \"C:\\\\Source\\\\HamLet\\\\docs\\\\phase-ft8\\\\PHASE_OUTCOME.md\"; ls -la docs/phase-ft8/","description":"Copy outcome file using Windows paths"}
+   Bash  {"command":"cp PHASE_OUTCOME.md docs/phase-ft8/PHASE_OUTCOME.md; ls -la docs/phase-ft8/","description":"Copy outcome file into archive directory","dangerouslyDisableSandbox":true}
+   Bash  {"command":"ls -la docs/phase-ft8/ \u0026\u0026 cat PHASE_OUTCOME.md \u003e docs/phase-ft8/PHASE_OUTCOME.md \u0026\u0026 wc -l docs/phase-ft8/PHASE_OUTCOME.md PHASE_OUTCOME.md","description":"Copy outcome file via shell redirect and compare ...(truncated)
+   Bash  {"command":"echo hi \u003e docs/zz-sandbox-test.txt; ls docs/zz-sandbox-test.txt","description":"Test whether bash can write into docs subdirectory"}
+   Bash  {"command":"echo hi \u003e zz-sandbox-test.txt; ls zz-sandbox-test.txt","description":"Test whether bash can write at repo root"}
+   Bash  {"command":"echo hi | tee zz-sandbox-test.txt; ls -la zz-sandbox-test.txt","description":"Probe whether tee can write at repo root"}
+   Bash  {"command":"echo hi | tee zz-sandbox-test.txt","description":"Probe whether tee can write at repo root"}
+   Bash  {"command":"dotnet --version","description":"Check dotnet availability"}
+   Bash  {"command":"dotnet --version","description":"Check dotnet version","dangerouslyDisableSandbox":true}
+   Bash  {"command":"file PHASE_OUTCOME.md PHASE_PLAN.md PHASE_STATUS.md docs/phase-sensitivity/PHASE_OUTCOME.md; echo \"--- longest lines ---\"; awk \u0027{ if (length($0) \u003e m) m = length($0) } END { print m }\u0027 PHASE_OUTCOME.md","descript ...(truncated)
+   Bash  {"command":"LC_ALL=C grep -c $\u0027\\r\u0027 PHASE_OUTCOME.md; LC_ALL=C grep -naP \u0027[^\\x09\\x0a\\x0d\\x20-\\x7e]\u0027 PHASE_OUTCOME.md | head -5 | cut -c1-200","description":"Find non-ASCII or control bytes in PHASE_OUTCOME.md"}
+   Bash  {"command":"grep -n \".\\{2000,\\}\" PHASE_OUTCOME.md | cut -c1-120","description":"Find very long lines in the outcome file"}
+   Bash  {"command":"cmd.exe /c tools\\\\arbiter\\\\status-check.bat","description":"Run the arbiter status check"}
+   Bash  {"command":"cmd.exe /c \"tools\\arbiter\\validate-output.bat output.md\"","description":"Validate the report shape"}

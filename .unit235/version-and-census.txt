@@ -1,0 +1,68 @@
+UNIT 235 TASKS 3.3 AND 5
+taken 2026-09-04T23:02:29Z
+
+== 3.3 THE VERSION THIS TREE STAMPS ON ITS OWN BINARY ==
+Hamlet.App.dll	exists=True
+  last written UTC: 2026-09-04T23:01:07Z
+  Win32 FileVersion:    1.12.45.0
+  Win32 ProductVersion: 1.12.45+727cd0558256dd2cc46a900dd8e74da45e486624
+  AssemblyVersion:      1.12.45.0
+  GetName().Version.ToString(3) would yield: 1.12.45   <-- what App.axaml.cs:37 stamps on telemetry and About
+Hamlet.App.exe	exists=True
+  last written UTC: 2026-09-04T23:01:08Z
+  Win32 FileVersion:    1.12.45.0
+  Win32 ProductVersion: 1.12.45+727cd0558256dd2cc46a900dd8e74da45e486624
+  AssemblyVersion:      (not a managed assembly - apphost shim)
+
+== 5. WHAT HAMLET IS INSTALLED ON THIS MACHINE ==
+-- Desktop: C:\Users\TimDi\OneDrive\Desktop
+   (nothing)
+-- Start Menu (user): C:\Users\TimDi\AppData\Roaming\Microsoft\Windows\Start Menu
+   (nothing)
+-- Start Menu (common): C:\ProgramData\Microsoft\Windows\Start Menu
+   (nothing)
+-- Program Files: C:\Program Files
+   (4 sub-folder(s) refused and stepped over; the rest was searched)
+   (nothing)
+-- Program Files (x86): C:\Program Files (x86)
+   (nothing)
+-- Local AppData: C:\Users\TimDi\AppData\Local
+   (10 sub-folder(s) refused and stepped over; the rest was searched)
+   (nothing)
+-- AppData: C:\Users\TimDi\AppData\Roaming
+   C:\Users\TimDi\AppData\Roaming\Microsoft\Windows\Recent\Hamlet-work-instructions-024-2026-08-26.zip.lnk
+     bytes 1045   last written UTC 2026-08-27T00:02:49Z
+   C:\Users\TimDi\AppData\Roaming\Microsoft\Windows\Recent\Hamlet-work-instructions-025-2026-08-27.zip.lnk
+     bytes 1045   last written UTC 2026-08-27T01:24:43Z
+   C:\Users\TimDi\AppData\Roaming\Microsoft\Windows\Recent\Hamlet-work-instructions-026-2026-08-27.zip.lnk
+     bytes 1045   last written UTC 2026-08-27T14:39:25Z
+   C:\Users\TimDi\AppData\Roaming\Microsoft\Windows\Recent\Hamlet-work-instructions-027-2026-08-27.zip.lnk
+     bytes 1045   last written UTC 2026-08-28T00:56:32Z
+   C:\Users\TimDi\AppData\Roaming\Microsoft\Windows\Recent\Hamlet-work-instructions-035-2026-08-27.zip.lnk
+     bytes 1045   last written UTC 2026-08-27T22:38:28Z
+   C:\Users\TimDi\AppData\Roaming\Microsoft\Windows\Recent\Hamlet-work-instructions-036-2026-08-27.zip.lnk
+     bytes 1045   last written UTC 2026-08-28T02:04:12Z
+   C:\Users\TimDi\AppData\Roaming\Microsoft\Windows\Recent\HamLet.lnk
+     bytes 597   last written UTC 2026-09-02T18:09:22Z
+   C:\Users\TimDi\AppData\Roaming\Microsoft\Windows\Recent\Hamlet.sln.lnk
+     bytes 824   last written UTC 2026-09-01T19:39:42Z
+-- User profile: C:\Users\TimDi
+   (36 sub-folder(s) refused and stepped over; the rest was searched)
+   C:\Users\TimDi\AppData\Roaming\Microsoft\Windows\Recent\Hamlet-work-instructions-024-2026-08-26.zip.lnk
+     bytes 1045   last written UTC 2026-08-27T00:02:49Z
+   C:\Users\TimDi\AppData\Roaming\Microsoft\Windows\Recent\Hamlet-work-instructions-025-2026-08-27.zip.lnk
+     bytes 1045   last written UTC 2026-08-27T01:24:43Z
+   C:\Users\TimDi\AppData\Roaming\Microsoft\Windows\Recent\Hamlet-work-instructions-026-2026-08-27.zip.lnk
+     bytes 1045   last written UTC 2026-08-27T14:39:25Z
+   C:\Users\TimDi\AppData\Roaming\Microsoft\Windows\Recent\Hamlet-work-instructions-027-2026-08-27.zip.lnk
+     bytes 1045   last written UTC 2026-08-28T00:56:32Z
+   C:\Users\TimDi\AppData\Roaming\Microsoft\Windows\Recent\Hamlet-work-instructions-035-2026-08-27.zip.lnk
+     bytes 1045   last written UTC 2026-08-27T22:38:28Z
+   C:\Users\TimDi\AppData\Roaming\Microsoft\Windows\Recent\Hamlet-work-instructions-036-2026-08-27.zip.lnk
+     bytes 1045   last written UTC 2026-08-28T02:04:12Z
+   C:\Users\TimDi\AppData\Roaming\Microsoft\Windows\Recent\HamLet.lnk
+     bytes 597   last written UTC 2026-09-02T18:09:22Z
+   C:\Users\TimDi\AppData\Roaming\Microsoft\Windows\Recent\Hamlet.sln.lnk
+     bytes 824   last written UTC 2026-09-01T19:39:42Z
+
+*** 16 candidate(s) found outside the repository. ***

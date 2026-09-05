@@ -3,13 +3,16 @@ ONE_LINE: A C# MVVM desktop application controlling an Icom IC-7300 over one USB
 REPO_PATH: C:\Source\HamLet
 REMOTE: https://github.com/TJDixon2022/Hamlet.git
 TRUNK: main
+PHASE: Hamlet hears FT8 off the radio and displays the decoded text on screen
+PHASE_SET: 2026-08-31
+TEST_CMD: dotnet test
 
 ---
 
 ## What this file is
 
 Standing facts about Hamlet, read by the panel that shows every project on one
-screen. Five lines, and the reader takes the leading run of `KEY: value` lines and
+screen. Eight lines, and the reader takes the leading run of `KEY: value` lines and
 stops at the `---` above, so nothing below here is read by anything.
 
 `ONE_LINE` is what tells two similarly-named projects apart at a glance, and it is

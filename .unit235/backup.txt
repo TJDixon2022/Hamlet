@@ -1,0 +1,5 @@
+BACKUP OK
+source: C:\Users\TimDi\AppData\Roaming\Hamlet
+dest:   C:\Users\TimDi\AppData\Local\Temp\hamlet-unit235-backup
+files copied: 14
+bytes copied: 1803040

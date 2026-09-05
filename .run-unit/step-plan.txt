@@ -1,0 +1,32 @@
+﻿STEP: 1 | the library exists and its tables are proven
+## Step 1  -  the library exists and its tables are proven
+
+**Delivers:** an `Ft8Sharp` project that compiles, is licensed, cannot reach into
+Hamlet, and carries the FT8 protocol tables  -  **proven correct, not assumed.**
+
+**Entry:** `src/Ft8Sharp/` does not exist. `C:\Source\ft8_lib` is present at the
+pinned commit.
+
+**Exit:**
+- The project builds; .NET 8, nullable enabled, warnings as errors, no
+  third-party runtime dependencies. *must-pass*
+- `LICENSE`, `NOTICE`, `porting-notes.md` present and correct. *must-pass*
+- The boundary test passes and **has been shown to fail** when a Hamlet reference
+  is added. A guard that has never refused is not a guard. *must-pass*
+- Tables converted by a checked-in tool that reads `ft8/constants.c`, reproducible
+  against a future upstream. *must-pass*
+- **Tables verified by LDPC encode against reference parity**, without a decoder.
+  *must-pass*
+- `Ft8Sharp` tests green. *must-pass, every unit*
+- Attribution clean from `2828ab6`, and the channel tests green.
+  *must-pass, every unit* - the full suite is not run by any unit
+
+**Note.** `ft8sharp-spec.md` section 10 leaves tables unverified until belief
+propagation runs several stages later  -  four stages of work on an unchecked
+parity matrix, and a wrong bit there produces a decoder that fails in ways nearly
+impossible to diagnose. Verification is pulled forward deliberately. **If the
+tables cannot be verified this way, the step is not complete**, and the arbiter
+reasons about what would verify them rather than proceeding.
+
+**Depends on:** nothing built. This is the first step.
+
