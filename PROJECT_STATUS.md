@@ -6,8 +6,8 @@ WORK_INSTRUCTION: 252 - ordered statistics, taken as far as it goes
 BALL: claude
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-155 (2026-09-05)
-UPDATED: 2026-09-05T16:03:00-04:00
-NOTE: Unit 250's file passed unmodified on adoption; about to run it again by exact name, 480 s timeout, with twelve (order, window) cells added to its sweep on one busy slot
+UPDATED: 2026-09-05T16:12:00-04:00
+NOTE: The grid returned in 59.1 s with zero wrong on all eleven rows; order 3 over a window of 60 reached full-basis order 3's five decodes at 44 per cent of its price, and that is the cell going to 306
 
 ---
 

@@ -278,12 +278,107 @@ by one re-encoding, every figure in `docs/unit246-osd.md`, every row of
 
 ---
 
-## 6. The measurements
+## 6. The grid at 51 trials, and the cell taken to 306
 
-*Filled by tasks 3, 4 and 5.*
+`tests/Ft8Sharp.Tests/Dsp/Ft8Unit252GridTests.TheOrderAndWindowGridAtMinus21DbOverOneBlock`.
+One whole 51-trial block at -21 dB, delivered **-21.004 dB on every row**, every row
+seeing the same seed and the same noise draw. **664 candidates offered to the stage
+on every OSD row**, which is unit 246 §3's own figure to the candidate.
+
+```
+decoder      requested  delivered  trials  DECODED  MISSED  WRONG    rate   lo 95   hi 95    wall s    ms/tr
+Ft8Sharp         -21.0    -21.004      51        3      48      0     5.9     2.0    15.9      3.3     64.5
+Deep OSD off     -21.0    -21.004      51        3      48      0     5.9     2.0    15.9      3.3     64.6
+o2 full          -21.0    -21.004      51        4      47      0     7.8     3.1    18.5      3.8     73.7
+o2 W40           -21.0    -21.004      51        3      48      0     5.9     2.0    15.9      3.4     67.2
+o3 W20           -21.0    -21.004      51        3      48      0     5.9     2.0    15.9      3.5     68.5
+o3 W30           -21.0    -21.004      51        4      47      0     7.8     3.1    18.5      3.8     74.9
+o3 W40           -21.0    -21.004      51        4      47      0     7.8     3.1    18.5      4.4     86.1
+o3 W60           -21.0    -21.004      51        5      46      0     9.8     4.3    21.0      6.8    134.3
+o3 full          -21.0    -21.004      51        5      46      0     9.8     4.3    21.0     15.6    305.9
+o4 W20           -21.0    -21.004      51        4      47      0     7.8     3.1    18.5      4.0     77.7
+o4 W30           -21.0    -21.004      51        5      46      0     9.8     4.3    21.0      6.6    129.8
+```
+
+| row | order | window | per candidate | decoded | missed | **wrong** | ms/trial | worst slot ms | offered | accepted | re-encodings |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| `Ft8Sharp` | - | - | - | 3 | 48 | **0** | 64.5 | 72.0 | 0 | 0 | 0 |
+| Deep OSD off | - | - | - | 3 | 48 | **0** | 64.6 | 71.4 | 0 | 0 | 0 |
+| o2 full **(ships)** | 2 | full | 4 187 | 4 | 47 | **0** | 73.7 | 87.9 | 664 | 1 | 2 780 168 |
+| o2 W40 | 2 | 40 | 821 | 3 | 48 | **0** | 67.2 | 77.3 | 664 | 0 | 545 144 |
+| o3 W20 | 3 | 20 | 1 351 | 3 | 48 | **0** | 68.5 | 79.8 | 664 | 0 | 897 064 |
+| o3 W30 | 3 | 30 | 4 526 | 4 | 47 | **0** | 74.9 | 91.1 | 664 | 1 | 3 005 264 |
+| o3 W40 | 3 | 40 | 10 701 | 4 | 47 | **0** | 86.1 | 110.8 | 664 | 1 | 7 105 464 |
+| **o3 W60** | 3 | 60 | 36 051 | **5** | 46 | **0** | **134.3** | 198.8 | 664 | 2 | 23 937 864 |
+| o3 full | 3 | full | 125 672 | **5** | 46 | **0** | 305.9 | 512.9 | 664 | 2 | 83 446 208 |
+| o4 W20 | 4 | 20 | 6 196 | 4 | 47 | **0** | 77.7 | 95.2 | 664 | 1 | 4 114 144 |
+| o4 W30 | 4 | 30 | 31 931 | **5** | 46 | **0** | 129.8 | 194.0 | 664 | 2 | 21 202 184 |
+
+**Zero wrong on all eleven rows. The OSD-off row equals the port decode for decode,
+miss for miss and wrong for wrong**, asserted per row rather than printed.
+
+**The before reproduced.** Unit 246 §3 measured this same block at o2 full as **4 of
+51 at 74.3 ms a trial with 664 offered and 1 accepted**, and at o3 full as **5 of 51
+at 311.4 ms with 2 accepted**. Tonight: 4 of 51 at 73.7 with 664 offered and 1
+accepted, and 5 of 51 at 305.9 with 2 accepted. **Decode for decode identical; the
+clock within one per cent.**
+
+### Did the prediction of §3 hold?
+
+| cell | §3 predicted ms/trial | measured ms/trial | error |
+|---|---|---|---|
+| o2 W40 | 65.7 | 67.2 | +2 % |
+| o3 W20 | 66.8 | 68.5 | +3 % |
+| o3 W30 | 73.0 | 74.9 | +3 % |
+| o3 W40 | 85.2 | 86.1 | +1 % |
+| o3 W60 | 135.0 | 134.3 | -1 % |
+| o4 W20 | 76.3 | 77.7 | +2 % |
+| o4 W30 | 126.9 | 129.8 | +2 % |
+
+**The linear model held to within 3 per cent on every cell**, over a 40-fold range of
+re-encoding counts. The whole grid ran in **59.1 s of wall clock against 58.5 s of
+summed decoder time**, so the harness's own synthesis costs about **12 ms a trial**
+and a 306-trial rung's synthesis is about 3.6 s.
+
+### The decision, and what it was taken on
+
+**Order 3 over a window of 60 goes to 306 trials.**
+
+- It is the **cheapest cell that reached the best decode count on this block**: 5 of
+  51, the same 5 as full-basis order 3, at **134.3 ms a trial against 305.9** — 44 per
+  cent of the price — and its worst observed slot is 198.8 ms against 512.9.
+- It found **the same two codewords the full basis found** and the port's own gates
+  accepted both. That is the direct evidence that the window did not throw away
+  anything the whole basis reached, and it is the claim §1's prior was making.
+- **51 trials cannot separate 5 from 4 from 3**, and this document does not pretend
+  otherwise — the three Wilson intervals here are 4.3-21.0, 3.1-18.5 and 2.0-15.9 and
+  they overlap almost completely. **So the choice among the cells that reached 5 was
+  made on price**, which is exactly what unit 246 did when it chose order 2. `o4 W30`
+  also reached 5, at 129.8 ms — within 3 per cent of `o3 W60` and indistinguishable
+  on this block — and `o3 W60` was preferred because it is one axis away from what
+  ships rather than two, and because order 3 is the question unit 246 left open.
+- **`o2 W40` and `o3 W20` bought nothing over the port and are reported as buying
+  nothing.** A window can be too narrow, and 20 of 91 is.
+
+**AND THE NAMED DROP CANDIDATE IS NOT DROPPED.** Full-basis order 3 measured **305.9
+ms a trial**, so a 306-trial column costs **94 s**, not the *about 25 minutes* unit
+246 §5 item 4 predicted. It goes to 306 trials as a fifth column and unit 246's open
+question is settled rather than carried forward.
 
 ---
 
-## 7. Where this instruction and the tree disagreed
+## 7. The scoreboard at 306 trials
+
+*Filled by task 4.*
+
+---
+
+## 8. The verdict
+
+*Filled by task 5.*
+
+---
+
+## 9. Where this instruction and the tree disagreed
 
 *Filled by task 6.*
