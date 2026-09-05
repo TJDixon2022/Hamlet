@@ -489,3 +489,160 @@ grid, dropping fine sync would cost 7, 13 and 2 decodes; off the grid, dropping 
 would cost 245, 72 and 3. **The two stages are not redundant — they cover different
 failures**, and the configuration `Ft8Reception.cs:460` builds is the one that covers both.
 
+---
+
+## 4. The crossings and the cost
+
+**Everything in this section comes from §3 and from nothing else.** No figure here is
+copied from another unit; §4.3 is the only place other units appear and it is a comparison,
+not a source.
+
+### 4.1 The 50 per cent crossing, all six columns, both placements
+
+**Interpolated linearly between the two rungs that straddle 50 per cent, and quoted as an
+interpolation.** A column not straddled by -19, -20 and -21 reads **`not bracketed`** with
+its direction said. **Nothing is extrapolated** and no crossing is quoted from two rungs on
+the same side of 50 per cent.
+
+**On the grid**, every column is straddled by -19 and -20:
+
+| column | -19 dB rate (Wilson 95 %) | -20 dB rate (Wilson 95 %) | crossing |
+|---|---|---|---|
+| `Ft8Sharp` | 81.0 % (76.3 – 85.0) | 23.9 % (19.4 – 28.9) | **-19.54 dB** (interpolated) |
+| `Deep all off` | 81.0 % (76.3 – 85.0) | 23.9 % (19.4 – 28.9) | **-19.54 dB** (interpolated) |
+| `fine sync only` | 87.6 % (83.4 – 90.8) | 31.0 % (26.1 – 36.4) | **-19.66 dB** (interpolated) |
+| `OSD only` | 90.2 % (86.3 – 93.0) | 40.8 % (35.5 – 46.4) | **-19.81 dB** (interpolated) |
+| **`SHIPPING`** | **92.5 % (89.0 – 94.9)** | **45.1 % (39.6 – 50.7)** | **-19.90 dB** (interpolated) |
+| `subtraction only` | 81.0 % (76.3 – 85.0) | 23.9 % (19.4 – 28.9) | **-19.54 dB** (interpolated) |
+
+**At the cell centre**, three of the six are not straddled:
+
+| column | -19 dB rate (Wilson 95 %) | -20 dB rate (Wilson 95 %) | crossing |
+|---|---|---|---|
+| `Ft8Sharp` | 2.0 % (0.9 – 4.2) | 0.0 % (0.0 – 1.2) | **not bracketed** — below 50 % at all three rungs; the crossing lies **above -19 dB** |
+| `Deep all off` | 2.0 % (0.9 – 4.2) | 0.0 % (0.0 – 1.2) | **not bracketed** — above -19 dB |
+| `fine sync only` | 90.5 % (86.7 – 93.3) | 23.9 % (19.4 – 28.9) | **-19.61 dB** (interpolated) |
+| `OSD only` | 10.8 % (7.8 – 14.8) | 0.3 % (0.1 – 1.8) | **not bracketed** — above -19 dB |
+| **`SHIPPING`** | **90.8 % (87.1 – 93.6)** | **23.9 % (19.4 – 28.9)** | **-19.61 dB** (interpolated) |
+| `subtraction only` | 2.0 % (0.9 – 4.2) | 0.0 % (0.0 – 1.2) | **not bracketed** — above -19 dB |
+
+**`not bracketed` is a result and it is the point.** Three columns never reach 50 per cent
+at any rung this ladder measured off the grid, and saying so is the licensed answer — unit
+248 wrote the same sentence for two of its own columns. **To quote a number for them would
+require extrapolating from two rungs on the same side of 50 per cent, which ruling 3
+forbids.**
+
+**The shipping configuration has a 50 per cent crossing for the first time in this project:
+-19.90 dB on the grid and -19.61 dB at the cell centre.** Both are interpolations between
+-19 and -20; both rungs and both Wilson intervals are printed above.
+
+**Two things about that pair are worth reading twice.**
+
+- **-19.90 dB is 0.36 dB better than the port's -19.54**, and 0.09 dB better than ordered
+  statistics alone at -19.81. It is the best crossing anywhere in this project on the grid.
+- **-19.61 dB off the grid is better than the port's own on-grid -19.54.** Hamlet's
+  shipping decoder, at the worst placement in a coarse cell, crosses 50 per cent at a lower
+  ratio than the bare port does at the best placement. **The stack does not merely mitigate
+  the off-grid penalty at this rung; it more than erases it relative to the port's best
+  case.**
+- **Off the grid the shipping crossing and fine sync alone's crossing are the same number
+  to two decimals** (-19.610 against -19.608 before rounding). Ordered statistics
+  contributes essentially nothing to the crossing off the grid, which is §3.4's finding in
+  the crossing's own terms.
+
+### 4.2 The cost — step 6's third exit
+
+**Taken from tonight's worst observed slot across all six rung-placements, not copied from
+unit 252.**
+
+| rung-placement | SHIPPING worst slot | its candidates | margin vs 15 000 ms | SHIPPING ms/trial | walk wall clock |
+|---|---:|---:|---:|---:|---:|
+| -19.0, on grid | 310.3 ms | 23 | 48× | 195.9 | 233.6 s |
+| -20.0, on grid | 333.1 ms | 21 | 45× | 201.8 | 215.7 s |
+| -21.0, on grid | 333.3 ms | 24 | 45× | 203.8 | 209.5 s |
+| **-19.0, cell centre** | **336.8 ms** | **26** | **44.5×** | 216.1 | 216.8 s |
+| -20.0, cell centre | 335.5 ms | 25 | 45× | 212.1 | 212.5 s |
+| -21.0, cell centre | 331.8 ms | 24 | 45× | 203.6 | 206.6 s |
+
+> **THE ANSWER TO EXIT 3.** The shipping configuration's **worst observed single slot
+> tonight is 336.8 ms**, at -19 dB at the cell centre, on a slot carrying 26 candidates.
+> **FT8's budget is 15 000 ms, so the margin is 44.5×.** Its **mean cost is 205.6 ms a
+> slot** across all six rung-placements and 1 836 scored slots.
+
+**The decoder uses about 2.2 per cent of the slot it has to keep up with, in the worst
+single slot observed anywhere tonight.** Unit 252 recorded 330.4 ms and 45× at one rung and
+one placement; tonight's figure is 336.8 ms over six rung-placements, **1.9 per cent
+higher, at the same margin to the nearest integer.** The cost claim did not depend on the
+one cell it had been measured in.
+
+**Per-trial means for every column**, over all six rung-placements:
+
+| column | mean ms/trial | range | worst single slot anywhere |
+|---|---:|---|---:|
+| `Ft8Sharp` | **64.8** | 64.0 – 65.6 | 106.1 ms (141×) |
+| `Deep all off` | **64.7** | 64.1 – 65.7 | 106.0 ms (141×) |
+| `fine sync only` | **197.1** | 189.9 – 206.1 | 317.5 ms (47×) |
+| `OSD only` | **73.7** | 72.9 – 75.5 | 118.2 ms (127×) |
+| **`SHIPPING`** | **205.6** | 195.9 – 216.1 | **336.8 ms (44.5×)** |
+| `subtraction only` | **88.4** | 64.7 – 166.4 | 238.7 ms (63×) |
+
+**`Deep all off` costs 0.1 ms a slot less than the port**, which is nothing, and is the
+cost evidence for the attribution claim: the sibling with every stage null is the port.
+
+**Subtraction's cost is the one that varies**, from 64.7 ms where nothing decodes to
+166.4 ms at -19 dB on the grid where 248 slots decode and each buys a second pass. **That
+range is a finding**: unit 253 quoted 30.0 ms as the marginal cost from the -20 dB rung
+alone, where 73 slots decode; at -19 dB on the grid the marginal cost is **101.6 ms a
+slot**, three times as much, because the stopping rule runs a second pass on every slot
+that returned something. **§1.6's prediction used the -20 dB figure and was therefore low
+on this one column**; it did not matter because fine sync came in cheaper than predicted,
+and the six walks averaged **215.8 s against a predicted 217 s.**
+
+### 4.3 Against the record, column by column
+
+**A difference is a finding to report, not a defect to chase.** The verdict per row:
+
+**On the grid:**
+
+| column | rung | tonight | the record | verdict |
+|---|---|---:|---:|---|
+| `Ft8Sharp` | -19 / -20 / -21 | 248 / 73 / 13 | 248 / 73 / 13 (units 248 §4.1, 252) | **reproduced, to the decode** |
+| `Deep all off` | -19 / -20 / -21 | 248 / 73 / 13 | 248 / 73 / 13 (unit 252) | **reproduced, to the decode** |
+| `fine sync only` | -19 / -20 / -21 | 268 / 95 / 18 | 268 / 95 / 18 (unit 248 §4.1) | **reproduced, to the decode** |
+| `OSD only` | -19 / -20 / -21 | 276 / 125 / 33 | 276 / 125 / 33 (units 248 §4.1, 252) | **reproduced, to the decode** |
+| **`SHIPPING`** | **-21** | **35** | **35** (unit 252) | **reproduced, to the decode** |
+| **`SHIPPING`** | **-19 / -20** | **283 / 138** | *no record* | **new — never measured before tonight** |
+| `subtraction only` | -20 | 73 | 73 (unit 253 §8.4) | **reproduced, to the decode** |
+| `subtraction only` | -19 / -21 | 248 / 13 | *no record on this ladder* | **new**, and equal to the port as §8.4 predicts |
+
+**At the cell centre:**
+
+| column | rung | tonight | the record | verdict |
+|---|---|---:|---:|---|
+| `Ft8Sharp` | -19 / -20 / -21 | 6 / 0 / 0 | 6 / 0 / 0 (unit 248 §4.2) | **reproduced, to the decode** |
+| `fine sync only` | -19 / -20 / -21 | 277 / 73 / 3 | 277 / 73 / 3 (unit 248 §4.2) | **reproduced, to the decode** |
+| `OSD only` | -19 / -20 / -21 | 33 / 1 / 0 | 33 / 1 / 0 (unit 248 §4.2) | **reproduced, to the decode** |
+| `Deep all off` | all three | 6 / 0 / 0 | *no record* | **new**, and equal to the port, which unit 248 asserted but did not tabulate |
+| **`SHIPPING`** | **all three** | **278 / 73 / 3** | *no record* | **new — never measured before tonight** |
+| `subtraction only` | all three | 6 / 0 / 0 | *no record* | **new**, and equal to the port |
+
+**Crossings against the record:**
+
+| column, placement | tonight | the record | verdict |
+|---|---|---|---|
+| `Ft8Sharp`, grid | -19.54 dB | -19.54 dB (units 246, 252) | **reproduced** |
+| `fine sync only`, grid | -19.66 dB | -19.66 dB (unit 248 §4.1) | **reproduced** |
+| `OSD only`, grid | -19.81 dB | -19.81 dB (units 246, 252) | **reproduced** |
+| `Ft8Sharp`, cell centre | not bracketed | not bracketed (unit 248 §4.2) | **reproduced** |
+| `fine sync only`, cell centre | -19.61 dB | -19.61 dB (unit 248 §4.2) | **reproduced** |
+| `OSD only`, cell centre | not bracketed | not bracketed (unit 248 §4.2) | **reproduced** |
+| **`SHIPPING`, both** | **-19.90 / -19.61 dB** | *no record* | **new** |
+
+> **NOT ONE CONTROL FIGURE MOVED.** Twenty-one recorded decode counts and six recorded
+> crossings, taken at `Ft8Sharp.Deep` **0.4.0**, **0.5.0** and **0.6.0**, all reproduce
+> tonight at **0.8.0**, at both placements, to the decode and to the hundredth of a
+> decibel. **That is what says the instrument did not move underneath the three columns
+> that are new**, and it is why 283, 278, 138, 73 and 35 can be read as measurements of the
+> decoder rather than of the harness. Unit 252's reproduction of unit 246 is the precedent;
+> this is the same check run across four minor versions and two placements at once.
+

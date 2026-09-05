@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: RUNNING
-TASK: 3 of 7
+TASK: 4 of 7
 WORK_INSTRUCTION: 255 - the closing measurement, and what the operator actually gets
 BALL: claude
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-155 (2026-09-05)
-UPDATED: 2026-09-05T19:00:00-04:00
-NOTE: All thirty-six cells are measured, zero wrong in every one and the attribution column equal to the port in all six walks; writing the cross-placement table into section 3 before committing task 3, and the finding is that on the grid ordered statistics carries the column while off the grid fine sync does, so neither stage alone would do
+UPDATED: 2026-09-05T19:02:00-04:00
+NOTE: The shipping configuration has a 50 per cent crossing for the first time in this project - -19.90 dB on the grid and -19.61 dB at the cell centre, the second of which is better than the bare port's own on-grid -19.54 - and its worst observed slot tonight is 336.8 ms, a 44.5x margin; twenty-one recorded decode counts and six crossings all reproduce at Deep 0.8.0
 
 ---
 
