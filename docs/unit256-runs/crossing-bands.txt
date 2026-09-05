@@ -1,0 +1,48 @@
+UNIT 256, TASK 2: every crossing unit 255 published, with the band the two rungs it was interpolated between actually support.
+THE BAND IS NOT A CONFIDENCE INTERVAL ON THE CROSSING. It is obtained by pushing each rung's 95 per cent Wilson bounds through the SAME linear interpolation the point crossing uses, under the assumption unit 255 section 4.1 already makes - that the decode rate moves linearly in decibels between two rungs one decibel apart.
+A SIDE THAT DOES NOT REACH 50 PER CENT INSIDE THE BRACKET IS OPEN and is never extrapolated. Ruling 2 of unit 256, and unit 255's ruling 3 before it.
+SOURCE: committed counts from docs/unit255-runs/, 306 trials a rung, one signal, no neighbour, Ft8Sharp.Deep 0.8.0. NO LADDER IS WALKED BY THIS TEST.
+
+column               placement    upper rung                            lower rung                            point       band                             width
+Ft8Sharp             on grid       -19.0 dB   248 of  306   81.05 % ( 76.28 -  85.04)  -20.0 dB    73 of  306   23.86 % ( 19.42 -  28.94)   -19.54  -19.62 dB to -19.46 dB            0.162
+Deep all off         on grid       -19.0 dB   248 of  306   81.05 % ( 76.28 -  85.04)  -20.0 dB    73 of  306   23.86 % ( 19.42 -  28.94)   -19.54  -19.62 dB to -19.46 dB            0.162
+fine sync only       on grid       -19.0 dB   268 of  306   87.58 % ( 83.41 -  90.82)  -20.0 dB    95 of  306   31.05 % ( 26.12 -  36.44)   -19.66  -19.75 dB to -19.58 dB            0.167
+OSD only             on grid       -19.0 dB   276 of  306   90.20 % ( 86.35 -  93.05)  -20.0 dB   125 of  306   40.85 % ( 35.49 -  46.44)   -19.81  -19.92 dB to -19.71 dB            0.209
+SHIPPING             on grid       -19.0 dB   283 of  306   92.48 % ( 88.97 -  94.94)  -20.0 dB   138 of  306   45.10 % ( 39.62 -  50.70)   -19.90  open beyond -20.0 dB to -19.79 dB   open
+subtraction only     on grid       -19.0 dB   248 of  306   81.05 % ( 76.28 -  85.04)  -20.0 dB    73 of  306   23.86 % ( 19.42 -  28.94)   -19.54  -19.62 dB to -19.46 dB            0.162
+fine sync only       cell centre   -19.0 dB   277 of  306   90.52 % ( 86.72 -  93.32)  -20.0 dB    73 of  306   23.86 % ( 19.42 -  28.94)   -19.61  -19.67 dB to -19.55 dB            0.127
+SHIPPING             cell centre   -19.0 dB   278 of  306   90.85 % ( 87.09 -  93.59)  -20.0 dB    73 of  306   23.86 % ( 19.42 -  28.94)   -19.61  -19.67 dB to -19.55 dB            0.126
+
+WHAT UNIT 255 PUBLISHED, BESIDE WHAT THE ARITHMETIC RETURNS:
+column               placement     published    computed    agrees
+Ft8Sharp             on grid         -19.54    -19.5429         yes
+Deep all off         on grid         -19.54    -19.5429         yes
+fine sync only       on grid         -19.66    -19.6647         yes
+OSD only             on grid         -19.81    -19.8146         yes
+SHIPPING             on grid         -19.90    -19.8966         yes
+subtraction only     on grid         -19.54    -19.5429         yes
+fine sync only       cell centre     -19.61    -19.6078         yes
+SHIPPING             cell centre     -19.61    -19.6098         yes
+
+THE OPEN SIDES, AND WHY EACH ONE IS OPEN:
+  Ft8Sharp on grid: CLOSED on both sides, 0.162 dB wide.
+  Deep all off on grid: CLOSED on both sides, 0.162 dB wide.
+  fine sync only on grid: CLOSED on both sides, 0.167 dB wide.
+  OSD only on grid: CLOSED on both sides, 0.209 dB wide.
+  SHIPPING on grid: the -20.0 dB rung's Wilson UPPER bound is 50.700 %, still above 50, so the optimistic curve never crosses inside [-20.0, -19.0]. OPEN, and not extrapolated.
+  subtraction only on grid: CLOSED on both sides, 0.162 dB wide.
+  fine sync only cell centre: CLOSED on both sides, 0.127 dB wide.
+  SHIPPING cell centre: CLOSED on both sides, 0.126 dB wide.
+
+THE HAND-COMPUTED CASE, from docs/unit256-crossings-and-combining.md section 2.2:
+  283 of 306 = 92.48366 %, Wilson 88.974 - 94.940
+  138 of 306 = 45.09804 %, Wilson 39.618 - 50.700
+  point       = -19 - (92.48366 - 50) / (92.48366 - 45.09804) = -19.896552 dB
+  pessimistic = -19 - (88.974 - 50) / (88.974 - 39.618) = -19.789651 dB
+  optimistic  = the 50.700 % upper bound at -20 dB never falls below 50, so this side is OPEN beyond -20 dB
+  BY HAND, task 1: point -19.90 dB, band open beyond -20 dB to -19.79 dB.
+
+AND WHY THE PAIRING IS THE THING WORTH GETTING RIGHT - the same cell with the bounds paired the WRONG way round, upper at one rung against lower at the other:
+  hi(-19)=94.940 against lo(-20)=39.618 gives -19.812 dB, which is WORSE than the point crossing -19.897 dB it is meant to bracket
+  lo(-19)=88.974 against hi(-20)=50.700 gives -20.018 dB, which is outside the bracket entirely
+  so the wrongly-paired band is INVERTED and contains nothing at all. That is unit 256's watched failure and it is why this file exists.

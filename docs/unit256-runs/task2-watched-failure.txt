@@ -1,0 +1,108 @@
+UNIT 256, TASK 2 - THE WATCHED FAILURE, CAPTURED BEFORE THE FIX.
+
+The defect: Ft8Unit256CrossingBand.Crossing paired an upper Wilson bound at one rung
+against a LOWER bound at the other - hi(-19) with lo(-20) for the optimistic curve, and
+lo(-19) with hi(-20) for the pessimistic one - instead of pairing upper with upper and
+lower with lower.
+
+Run, foregrounded, filtered by exact full method name, stated timeout 300 s:
+
+  dotnet test tests/Ft8Sharp.Tests/Ft8Sharp.Tests.csproj -c Release --nologo --filter
+    "FullyQualifiedName=Ft8Sharp.Tests.Dsp.Ft8Unit256CrossingIntervalTests
+     .TheCrossingBandBracketsThePointAndIsBuiltFromTheRungsOwnIntervals"
+
+Wall clock: 11 ms of test time.
+
+================================================================================
+THE RED, VERBATIM
+================================================================================
+
+  Failed Ft8Sharp.Tests.Dsp.Ft8Unit256CrossingIntervalTests.TheCrossingBandBracketsThePointAndIsBuiltFromTheRungsOwnIntervals [11 ms]
+  Error Message:
+   Ft8Sharp on grid: the point crossing -19.5429 dB is NOT inside the band -19.53 dB to -19.56 dB. A band built from the two rungs' own Wilson bounds must contain the crossing built from their point rates, because the crossing's position in the bracket increases in both rung rates. A band that fails this is not bracketing anything and must not be published.
+  Stack Trace:
+     at Ft8Sharp.Tests.Dsp.Ft8Unit256CrossingIntervalTests.TheCrossingBandBracketsThePointAndIsBuiltFromTheRungsOwnIntervals() in C:\Source\HamLet\tests\Ft8Sharp.Tests\Dsp\Ft8Unit256CrossingIntervalTests.cs:line 227
+
+  Failed!  - Failed:     1, Passed:     0, Skipped:     0, Total:     1, Duration: 11 ms - Ft8Sharp.Tests.dll (net8.0)
+
+================================================================================
+THE TABLE THE DEFECT PRINTED - THIS IS WHAT WOULD HAVE BEEN PUBLISHED
+================================================================================
+
+column               placement    upper rung                            lower rung                            point       band                             width
+Ft8Sharp             on grid       -19.0 dB   248 of  306   81.05 % ( 76.28 -  85.04)  -20.0 dB    73 of  306   23.86 % ( 19.42 -  28.94)   -19.54  -19.53 dB to -19.56 dB           -0.021
+Deep all off         on grid       -19.0 dB   248 of  306   81.05 % ( 76.28 -  85.04)  -20.0 dB    73 of  306   23.86 % ( 19.42 -  28.94)   -19.54  -19.53 dB to -19.56 dB           -0.021
+fine sync only       on grid       -19.0 dB   268 of  306   87.58 % ( 83.41 -  90.82)  -20.0 dB    95 of  306   31.05 % ( 26.12 -  36.44)   -19.66  -19.63 dB to -19.71 dB           -0.080
+OSD only             on grid       -19.0 dB   276 of  306   90.20 % ( 86.35 -  93.05)  -20.0 dB   125 of  306   40.85 % ( 35.49 -  46.44)   -19.81  -19.75 dB to -19.91 dB           -0.163
+SHIPPING             on grid       -19.0 dB   283 of  306   92.48 % ( 88.97 -  94.94)  -20.0 dB   138 of  306   45.10 % ( 39.62 -  50.70)   -19.90  -19.81 dB to -20.02 dB           -0.206
+subtraction only     on grid       -19.0 dB   248 of  306   81.05 % ( 76.28 -  85.04)  -20.0 dB    73 of  306   23.86 % ( 19.42 -  28.94)   -19.54  -19.53 dB to -19.56 dB           -0.021
+fine sync only       cell centre   -19.0 dB   277 of  306   90.52 % ( 86.72 -  93.32)  -20.0 dB    73 of  306   23.86 % ( 19.42 -  28.94)   -19.61  -19.59 dB to -19.64 dB           -0.049
+SHIPPING             cell centre   -19.0 dB   278 of  306   90.85 % ( 87.09 -  93.59)  -20.0 dB    73 of  306   23.86 % ( 19.42 -  28.94)   -19.61  -19.59 dB to -19.64 dB           -0.050
+
+THE OPEN SIDES, AND WHY EACH ONE IS OPEN:
+  Ft8Sharp on grid: CLOSED on both sides, -0.021 dB wide.
+  Deep all off on grid: CLOSED on both sides, -0.021 dB wide.
+  fine sync only on grid: CLOSED on both sides, -0.080 dB wide.
+  OSD only on grid: CLOSED on both sides, -0.163 dB wide.
+  SHIPPING on grid: CLOSED on both sides, -0.206 dB wide.
+  subtraction only on grid: CLOSED on both sides, -0.021 dB wide.
+  fine sync only cell centre: CLOSED on both sides, -0.049 dB wide.
+  SHIPPING cell centre: CLOSED on both sides, -0.050 dB wide.
+
+================================================================================
+WHY THIS IS THE DEFECT WORTH WATCHING, AND NOT A TYPO
+================================================================================
+
+READ THE THREE THINGS THE DEFECTIVE TABLE SAYS.
+
+1. EVERY WIDTH IS NEGATIVE. The band is inverted on every single row - its
+   "optimistic" end sits at a WORSE ratio than its "pessimistic" one. An inverted
+   interval contains nothing at all, and the containment check is what said so.
+
+2. Ft8Sharp ON GRID READS -19.53 TO -19.56, A BAND 0.021 dB WIDE. The two rungs
+   support 0.162 dB, EIGHT TIMES WIDER. Published, that table would have claimed a
+   precision of two hundredths of a decibel from 306 trials, and the very next
+   sentence anybody wrote would have compared it with another decoder's figure.
+   CLAUDE.md 0.0 forbids exactly that comparison and the band exists to stop it.
+
+3. SHIPPING ON GRID READS "-19.81 dB to -20.02 dB" AND CLAIMS TO BE CLOSED ON BOTH
+   SIDES. It is not closed. Its -20 dB Wilson upper bound is 50.700 per cent, still
+   above 50, so the optimistic curve never crosses inside the bracket at all and
+   that side is OPEN. The defective pairing manufactured a bound where the
+   measurement has none - which is an extrapolation in all but name, and unit 255's
+   ruling 3 forbids it.
+
+THE ARITHMETIC BEHIND IT. Write the crossing's position in the bracket as
+
+    t(a, b) = (a - 50) / (a - b)
+
+with a the upper rung's rate and b the lower rung's. Both partial derivatives are
+positive:
+
+    dt/da = (50 - b) / (a - b)^2 > 0
+    dt/db = (a - 50) / (a - b)^2 > 0
+
+so t is increasing in BOTH arguments. t(hi, hi) is therefore the extreme optimistic
+end and t(lo, lo) the extreme pessimistic one, and any mixed pairing lands strictly
+inside - which is why the wrong pairing does not merely narrow the band, it inverts
+it. On SHIPPING on grid:
+
+  hi(-19)=94.940 against lo(-20)=39.618 gives -19.812 dB - WORSE than the point
+    crossing -19.897 dB it is meant to bracket
+  lo(-19)=88.974 against hi(-20)=50.700 gives -20.018 dB - outside the bracket
+    entirely
+
+================================================================================
+THE FIX, AND THE GREEN
+================================================================================
+
+Upper bound paired with upper bound, lower with lower. Re-run, same filter, same
+300 s timeout:
+
+  Passed!  - Failed:     0, Passed:     1, Skipped:     0, Total:     1, Duration: 6 ms - Ft8Sharp.Tests.dll (net8.0)
+
+The corrected table is docs/unit256-runs/crossing-bands.txt. Ft8Sharp on grid reads
+-19.62 to -19.46, 0.162 dB wide; SHIPPING on grid reads "open beyond -20.0 dB to
+-19.79 dB". Both were predicted by hand in
+docs/unit256-crossings-and-combining.md section 2.3 BEFORE this code was written,
+and both match.

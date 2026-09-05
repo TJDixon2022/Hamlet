@@ -422,13 +422,61 @@ version in the tree tonight — **so it is cited, not re-run**:
 
 | # | prediction | outcome |
 |---|---|---|
-| P1 | `SHIPPING` on grid: point -19.90 dB, band **open beyond -20 dB to -19.79 dB** | *task 2* |
-| P2 | `Ft8Sharp` on grid: point -19.54 dB, band **-19.62 to -19.46 dB**, 0.16 dB wide | *task 2* |
+| P1 | `SHIPPING` on grid: point -19.90 dB, band **open beyond -20 dB to -19.79 dB** | **exact.** `-19.896552` dB, `open beyond -20.0 dB to -19.789651 dB` |
+| P2 | `Ft8Sharp` on grid: point -19.54 dB, band **-19.62 to -19.46 dB**, 0.16 dB wide | **exact.** `-19.5429` dB, `-19.62 to -19.46`, **0.162 dB** wide |
 | P3 | the coarse search costs **≤ 94.2 s** | *task 3* |
 | P4 | each 306-trial cell-centre rung costs **≈ 113 s** | *task 3* |
 | P5 | each panel rung costs **130 – 150 s** | *task 4* |
 | P6 | every row of every walk reads **zero wrong** | *tasks 3, 4* |
 | P7 | `Deep all off` equals `Ft8Sharp` on every cell-centre rung | *task 3* |
+
+**And a correction to §2.3's own arithmetic, which changes nothing.** The hand computation
+wrote `Wilson(283, 306)`'s upper bound as `94.937`; the code returns **`94.940`**, and
+`Wilson(248, 306)` as `(76.280, 85.042)` against the code's **`(76.28, 85.04)`**. **The hand
+slip is in the fourth significant figure and no band in §2.3 moves because of it** — the
+optimistic side of `SHIPPING` was open either way, and both rounded band ends are exactly as
+predicted. The digits above are the computed ones.
+
+### 6.1 All eight published crossings, with the band the rungs support
+
+`docs/unit256-runs/crossing-bands.txt`, task 2, computed from committed counts, **no ladder
+walked**. Every one of the eight reproduces unit 255's published point crossing.
+
+| column | placement | point | **band** | width |
+|---|---|---:|---|---:|
+| `Ft8Sharp` | on grid | -19.54 | -19.62 to -19.46 dB | 0.162 dB |
+| `Deep all off` | on grid | -19.54 | -19.62 to -19.46 dB | 0.162 dB |
+| `fine sync only` | on grid | -19.66 | -19.75 to -19.58 dB | 0.167 dB |
+| `OSD only` | on grid | -19.81 | -19.92 to -19.71 dB | 0.209 dB |
+| **`SHIPPING`** | **on grid** | **-19.90** | **open beyond -20.0 dB to -19.79 dB** | **open** |
+| `subtraction only` | on grid | -19.54 | -19.62 to -19.46 dB | 0.162 dB |
+| `fine sync only` | cell centre | -19.61 | -19.67 to -19.55 dB | 0.127 dB |
+| **`SHIPPING`** | **cell centre** | **-19.61** | **-19.67 to -19.55 dB** | **0.126 dB** |
+
+> **THE NARROWEST BAND IN THIS TABLE IS 0.126 dB WIDE AND ONE IS OPEN.** A 0.2 dB
+> difference between two decoders is inside the width of this project's own bracket at 306
+> trials, and no sentence this project writes may call one a win over the other on that
+> margin.
+
+### 6.2 The gate-set judgement, and it is yes
+
+**The test earns entry 13 and a `docs/breakage-record.md` entry, `B18`**, written at task 6.
+Judged against `docs/gate-set.md`'s own rule 5 — *no test is added without naming the
+breakage it would have caught*:
+
+- **It names a breakage that actually happened, tonight, and was watched happening**
+  (`docs/unit256-runs/task2-watched-failure.txt`). `B11` is the precedent: a check written
+  against a placeholder token that could not see the token until it was watched failing.
+- **The defective pairing does not throw and does not look wrong.** It printed a complete,
+  plausible, publication-shaped table in which **every width was negative**, `Ft8Sharp` read
+  0.021 dB against the 0.162 dB its rungs support, and `SHIPPING` claimed a closed
+  optimistic bound where the measurement has none. **Nothing but the containment check
+  caught it**, and no number in the printed table announces itself as wrong to a reader.
+- **It costs 6 ms.** It walks no ladder and decodes nothing. It would be **the cheapest
+  entry in the set**, ahead of entry 12's 0.6 s.
+- **It guards the number this project will be quoted on for years.** The line 57 exclusion —
+  *the ladder is a measurement, not a test* — does not reach it, because this is arithmetic
+  on committed counts and not a walk.
 
 ---
 
