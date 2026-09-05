@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 5 of 5
-WORK_INSTRUCTION: 249 - Hamlet decodes through Ft8Sharp.Deep
-BALL: tim
-NEXT_PASTE: OUTPUT.md -> Claude Web
+STATE: EXECUTING
+TASK: 1 of 6
+WORK_INSTRUCTION: 250 - the gate set exists, and the slow tests are named
+BALL: code
+NEXT_PASTE: none
 RULES_AT: HM-DEC-152 (2026-08-31)
-UPDATED: 2026-09-05T11:54:41-04:00
-NOTE: Five of five; Hamlet decodes through Deep with both stages and the phase's gains reach the screen for the first time
+UPDATED: 2026-09-05T12:23:00-04:00
+NOTE: Task 1 running; Ft8Sharp.Tests timed and ranked at 610 tests in 14 m 14 s, engine suite now under way in namespace batches so a cut-off still leaves per-test times
 
 ---
 

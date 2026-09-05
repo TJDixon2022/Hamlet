@@ -1,5 +1,9 @@
-﻿   Bash  {"command":"tail -25 /c/Users/TimDi/AppData/Local/Temp/claude/C--Source-HamLet/d258edae-6c54-454f-8bbe-ddae35970641/tasks/brqubboq7.output 2\u003e/dev/null || echo \"no output yet\"","description":"Check test suite progress"}
-   Bash  {"command":"python -c \"\nimport re\np=\u0027PROJECT_STATUS.md\u0027\ns=open(p,encoding=\u0027utf-8\u0027).read()\ns=s.replace(\u0027TASK: 2 of 7\u0027,\u0027TASK: 3 of 7\u0027)\ns=re.sub(r\u0027UPDATED: .*\u0027, \u0027UPDATED: 2026-09-04T ...(truncated)
-   Bash  {"command":"dotnet run --project tools/Ft8FixtureMaker -- tests/fixtures/ft8/example/ft8-example-244.wav 2\u003e\u00261 | tail -25","timeout":300000,"description":"Run the shack command to see its refusal"}
-   Bash  {"command":"dotnet run --project tools/Ft8FixtureMaker -- tests/fixtures/ft8/example/ft8-example-244.wav","timeout":300000,"description":"Run the shack command"}
-   Bash  {"command":"until [ -s /c/Users/TimDi/AppData/Local/Temp/claude/C--Source-HamLet/d258edae-6c54-454f-8bbe-ddae35970641/tasks/b50ucnjgl.output ]; do :; done; echo DONE","timeout":600000,"description":"Wait for suite to finish"}
+﻿   Bash  {"command":"tail -5 /c/Users/TimDi/AppData/Local/Temp/claude/C--Source-HamLet/b700792a-606a-4a17-b24a-05e7bf7d5b01/tasks/bu304syxy.output 2\u003e/dev/null || echo \"no output yet\"","description":"Check baseline test progress"}
+   Bash  {"command":"ls -la /c/Users/TimDi/AppData/Local/Temp/claude/C--Source-HamLet/b700792a-606a-4a17-b24a-05e7bf7d5b01/tasks/ 2\u003e\u00261 | head","description":"Check background task output file size"}
+   Bash  {"command":"tasklist 2\u003e/dev/null | grep -ci testhost || echo \"0 testhost\"","description":"Check if test host still running"}
+   Bash  {"command":"sed -i \u0027s/typeof(Ft8DeepCombineWeighting),/typeof(Ft8DeepCombineCounts),\\n                typeof(Ft8DeepCombineSettings),\\n                typeof(Ft8DeepCombineWeighting),/\u0027 tests/Ft8Sharp.Deep.Tests/Ft8DeepSlotDecod ...(truncated)
+   Bash  {"command":"python -c \"\nimport re,io\np=\u0027tests/Ft8Sharp.Deep.Tests/Ft8DeepCombineGateTests.cs\u0027\ns=open(p,encoding=\u0027utf-8\u0027).read()\ns=s.replace(\u0027together.Text\u0027,\u0027together.Message.Text\u0027).replace(\u0027 ...(truncated)
+   Bash  {"command":"until grep -q \"exited with code\" /c/Users/TimDi/AppData/Local/Temp/claude/C--Source-HamLet/b700792a-606a-4a17-b24a-05e7bf7d5b01/tasks/bd8k219aa.output 2\u003e/dev/null; do sleep 15; done; date","timeout":900000,"description":" ...(truncated)
+   Bash  {"command":"git check-ignore -v output.md; git log --oneline -1 --stat | head -8; git status --short output.md","description":"Check whether output.md is tracked"}
+   Bash  {"command":"git check-ignore -v output.md || echo \"not ignored\"","description":"Check gitignore for output.md"}
+   Bash  {"command":"git ls-files | grep -i \"^output.md$\"","description":"Find the tracked spelling of the report"}

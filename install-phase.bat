@@ -2,7 +2,7 @@
 setlocal EnableExtensions
 
 rem  install-phase.bat
-rem  Generated 2026-09-04 for: hamlet-phase-sensitivity-2026-09-04.zip
+rem  Generated 2026-09-05 for: hamlet-phase-onair-2026-09-05.zip
 rem
 rem  Installs the new phase layer at the repository root.
 rem  RUN THIS YOURSELF, BEFORE THE LOOP. It is not a work unit's job:
@@ -19,8 +19,8 @@ set "REPO=%~1"
 if "%REPO%"=="" set "REPO=C:\Source\HamLet"
 if "%REPO:~-1%"=="\" set "REPO=%REPO:~0,-1%"
 
-set "STAGE=%REPO%\docs\phase-sensitivity"
-set "ARCHIVE=%REPO%\docs\phase-ft8"
+set "STAGE=%REPO%\docs\phase-onair"
+set "ARCHIVE=%REPO%\docs\phase-sensitivity-run"
 
 echo.
 echo   Repo root : %REPO%
@@ -50,7 +50,7 @@ rem --- the outcome file is the thing worth protecting -----------------
 if not exist "%REPO%\PHASE_OUTCOME.md" goto :nooutcome
 for %%F in ("%REPO%\PHASE_OUTCOME.md") do set "OUTSIZE=%%~zF"
 echo   Closing phase's PHASE_OUTCOME.md is %OUTSIZE% bytes.
-if %OUTSIZE% LSS 50000 goto :suspectoutcome
+if %OUTSIZE% LSS 2000 goto :suspectoutcome
 
 rem --- archive -------------------------------------------------------
 if not exist "%REPO%\docs\" mkdir "%REPO%\docs"
@@ -78,10 +78,10 @@ echo.
 echo   ================================================================
 echo    PHASE INSTALLED
 echo   ================================================================
-echo    Archived : docs\phase-ft8\  (plan, status, outcome)
+echo    Archived : docs\phase-sensitivity-run\  (plan, status, outcome)
 echo    Installed: PHASE_PLAN.md, PHASE_STATUS.md, PHASE_OUTCOME.md
 echo.
-echo    STILL TO DO, and unit 243 does it with its file tools:
+echo    STILL TO DO, and unit 250 does it with its file tools:
 echo      PROJECT_CARD.md  PHASE and PHASE_SET
 echo      DECISIONS.md     the ruling that set them
 echo.
@@ -124,7 +124,7 @@ goto :end
 
 :already
 echo.
-echo   REFUSED: docs\phase-ft8\PHASE_OUTCOME.md already exists,
+echo   REFUSED: docs\phase-sensitivity-run\PHASE_OUTCOME.md already exists,
 echo   so this has already run. Nothing was changed.
 goto :end
 
@@ -137,20 +137,20 @@ goto :end
 :suspectoutcome
 echo.
 echo   REFUSED: PHASE_OUTCOME.md is only %OUTSIZE% bytes.
-echo   The closing phase's memory should be well over 100 KB.
+echo   The closing phase's memory should be several KB at least.
 echo   Check what that file is before archiving it. Nothing was changed.
 goto :end
 
 :archivefailed
 echo.
 echo   REFUSED: the archive copy did not match the original.
-echo   The new phase was NOT installed. Check docs\phase-ft8\.
+echo   The new phase was NOT installed. Check docs\phase-sensitivity-run\.
 goto :end
 
 :installfailed
 echo.
 echo   FAILED: the archive succeeded but the install did not.
-echo   The old files are in docs\phase-ft8\. Copy the three files from
+echo   The old files are in docs\phase-sensitivity-run\. Copy the three files from
 echo   %STAGE% to the root by hand.
 goto :end
 

@@ -82,14 +82,14 @@ of nought.
 | 40 Hz | -12 dB | 0 | 0 | 0 | 0 | no characters | ` ` |
 | 80 Hz | +0 dB | 0 | 0 | 0 | 0 | no characters | ` ` |
 | 80 Hz | -6 dB | 0 | 0 | 0 | 0 | no characters | ` ` |
-| 80 Hz | -12 dB | 0 | 2 | 1 | 3 | 0 % | ` KK  ■ ` |
+| 80 Hz | -12 dB | 0 | 0 | 0 | 0 | no characters | ` ` |
 | 120 Hz | +0 dB | 0 | 0 | 0 | 0 | no characters | ` ` |
 | 120 Hz | -6 dB | 0 | 0 | 0 | 0 | no characters | ` ` |
 | 120 Hz | -12 dB | 0 | 0 | 0 | 0 | no characters | ` ` |
 | 200 Hz | +0 dB | 0 | 0 | 0 | 0 | no characters | ` ` |
 | 200 Hz | -6 dB | 0 | 0 | 0 | 0 | no characters | ` ` |
-| 200 Hz | -12 dB | 0 | 0 | 0 | 0 | no characters | `(nothing)` |
+| 200 Hz | -12 dB | 0 | 0 | 0 | 0 | no characters | ` ` |
 | 300 Hz | +0 dB | 0 | 0 | 0 | 0 | no characters | ` ` |
-| 300 Hz | -6 dB | 0 | 2 | 0 | 2 | 0 % | `K  ■ ` |
+| 300 Hz | -6 dB | 0 | 0 | 0 | 0 | no characters | ` ` |
 | 300 Hz | -12 dB | 0 | 0 | 0 | 0 | no characters | ` ` |
 

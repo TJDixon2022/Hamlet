@@ -60,3 +60,7 @@ the owner reads instead of watching.
 | phase | 2026-09-04T22:26 | 2026-09-04T22:26 | halted | 47.0902 | stop 2: budget exhausted - spent 47.0902 of 40.00 |
 | 1 | 2026-09-04T23:31 | 2026-09-05T00:15 | complete | 22.1820815 | ran unattended, 181 turns, 6 denied call(s) worked around, report valid |
 | 2 | 2026-09-05T00:25 | 2026-09-05T01:21 | complete | 30.093965499999992 | ran unattended, 211 turns, 9 denied call(s) worked around, report valid |
+| 3 | 2026-09-05T01:32 | 2026-09-05T02:48 | killed | unknown | killed by the watchdog: no status write within 12 min of the launch clock |
+| phase | 2026-09-05T02:48 | 2026-09-05T02:48 | halted | 52.2761 | the run could not take the session lock |
+| 1 | 2026-09-05T12:02 | 2026-09-05T12:35 | killed | unknown | killed by the watchdog: no status write within 12 min of the launch clock |
+| phase | 2026-09-05T12:36 | 2026-09-05T12:36 | halted | 0 | the run could not take the session lock |

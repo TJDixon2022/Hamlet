@@ -1,17 +1,17 @@
 UNIT 235 TASKS 3.3 AND 5
-taken 2026-09-04T23:02:29Z
+taken 2026-09-05T16:19:16Z
 
 == 3.3 THE VERSION THIS TREE STAMPS ON ITS OWN BINARY ==
 Hamlet.App.dll	exists=True
-  last written UTC: 2026-09-04T23:01:07Z
-  Win32 FileVersion:    1.12.45.0
-  Win32 ProductVersion: 1.12.45+727cd0558256dd2cc46a900dd8e74da45e486624
-  AssemblyVersion:      1.12.45.0
-  GetName().Version.ToString(3) would yield: 1.12.45   <-- what App.axaml.cs:37 stamps on telemetry and About
+  last written UTC: 2026-09-05T15:51:06Z
+  Win32 FileVersion:    1.12.51.0
+  Win32 ProductVersion: 1.12.51+57a2ad22fc144d66713769a458a70a65991d90b2
+  AssemblyVersion:      1.12.51.0
+  GetName().Version.ToString(3) would yield: 1.12.51   <-- what App.axaml.cs:37 stamps on telemetry and About
 Hamlet.App.exe	exists=True
-  last written UTC: 2026-09-04T23:01:08Z
-  Win32 FileVersion:    1.12.45.0
-  Win32 ProductVersion: 1.12.45+727cd0558256dd2cc46a900dd8e74da45e486624
+  last written UTC: 2026-09-05T15:51:06Z
+  Win32 FileVersion:    1.12.51.0
+  Win32 ProductVersion: 1.12.51+57a2ad22fc144d66713769a458a70a65991d90b2
   AssemblyVersion:      (not a managed assembly - apphost shim)
 
 == 5. WHAT HAMLET IS INSTALLED ON THIS MACHINE ==
