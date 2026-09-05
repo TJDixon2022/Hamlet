@@ -41,9 +41,27 @@
     reach codewords the port cannot. What it may NOT do is decide that any of them
     is a message - the port's parity gate and CRC-14 gate remain the only
     acceptance, and there is still no checksum in this library.
+
+    0.3.0 at unit 247, which is the next such bump: this library gained the soft
+    combiner, the pairing rule and the repeat decoder that carry one station's
+    ratios across slots, so it can reach codewords no single slot holds.
+
+    0.4.0 at unit 248, and it is a bump for the same reason again. This library
+    can now read a candidate BELOW the waterfall's grid: it mixes the slot's
+    samples to complex baseband about a candidate's eight tones, low-pass
+    filters and decimates them, searches sub-symbol time and sub-hertz frequency
+    by Costas correlation, and extracts the soft values at whatever position it
+    finds. Every figure this phase has recorded before tonight was measured at
+    the one placement where the coarse grid has nothing to lose - exactly on a
+    bin centre and exactly on a sub-block boundary - and unit 248's task 1
+    measured what the rest of the cell costs.
+
+    What it still may NOT do is decide that anything is a message. The port's
+    parity gate and CRC-14 gate remain the only acceptance and there is still no
+    checksum in this library, at most one extra submission per candidate.
   -->
   <PropertyGroup>
-    <Version>0.3.0</Version>
+    <Version>0.4.0</Version>
   </PropertyGroup>
 
   <!--
