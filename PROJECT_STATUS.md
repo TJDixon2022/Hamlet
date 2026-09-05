@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: DONE
-TASK: 8 of 8
-WORK_INSTRUCTION: 246 - ordered statistics decoding, on the most reliable basis, when belief propagation gives up
-BALL: tim
+STATE: WORKING
+TASK: 1 of 7
+WORK_INSTRUCTION: 247 - the same transmission heard twice, combined before the decoder sees it
+BALL: claude
 RULES_AT: HM-DEC-153 (2026-09-04)
 NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-09-05T02:05:00-04:00
-NOTE: Eight of eight, nothing dropped, and the only thing waiting on Tim is what the arbiter makes of the ceiling - the number moved 4.2 to 10.8 per cent at -21 dB over 306 trials with zero wrong on all nine rows, five of six must-pass exits met, but the distribution measured before a line of OSD was written says no order that fits in a slot reaches 40 per cent and that 49 of 51 trials had a candidate near the signal and still did not decode, so the remaining 1.2 dB is neither in the code nor in the synchronisation and the next unit on step 2 would be taking a different approach rather than tuning this one
+UPDATED: 2026-09-05T00:33:00-04:00
+NOTE: Writing the trace that decides the night - the same 51 messages synthesised twice at -21 and -24 dB with two independent noise draws, the closest candidate in each slot measured against the codeword the ladder knows it transmitted, and then the two normalised ratio vectors summed and re-normalised to see whether the summed distance falls from a median near 31 towards the code recovery threshold of about 17. Two whole 51-trial blocks at two rungs with two slots a trial, so this walks 204 slot decodes before it prints anything. The Ft8Sharp.Tests baseline is running beside it
 
 ---
 

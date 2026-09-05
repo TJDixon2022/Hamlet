@@ -142,7 +142,7 @@
     src/Ft8Sharp/ changed.
   -->
   <PropertyGroup>
-    <Version>1.12.49</Version>
+    <Version>1.12.50</Version>
   </PropertyGroup>
 
   <!--
