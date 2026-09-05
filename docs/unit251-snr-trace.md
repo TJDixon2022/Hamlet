@@ -361,6 +361,96 @@ never a floor.
 
 ---
 
+## 6. The measurement — added by task 3, after the estimator existed
+
+`tests/Ft8Sharp.Tests/Dsp/Ft8Unit251SnrAgreementTests.TheEstimateAgreesWithTheCommandedRatioOverTwoHundredSynthesizedMessages`,
+run twice, foregrounded, filtered by exact name, 480 s timeout, **2 m 25 s red
+and 2 m 24 s green**. No suite was run.
+
+**Decoder: `Ft8DeepSlotDecoder` with ordered statistics and fine sync both on**
+— what `Ft8Reader.Read` builds when nobody passes one, so the figure is the one
+Hamlet will actually produce.
+
+```
+placement     rung   trials  decoded  measured   MAE ref   p95 ref   bias ref   MAE raw   p95 raw
+on grid        -18       51       51        51      0.33      0.80       0.05      0.34      0.80
+on grid        -15       51       51        51      0.19      0.49      -0.06      0.20      0.49
+on grid        -12       51       51        51      0.22      0.51      -0.10      0.23      0.51
+on grid         -9       51       51        51      0.21      0.58      -0.17      0.22      0.56
+on grid         -6       51       51        51      0.35      0.65      -0.35      0.35      0.66
+cell centre    -18       51       51        51      0.31      0.72       0.06      3.78      4.52
+cell centre    -15       51       51        51      0.21      0.59      -0.07      4.80      5.68
+cell centre    -12       51       51        51      0.16      0.38      -0.04      6.14      6.94
+cell centre     -9       51       51        51      0.23      0.60      -0.19      8.34      9.21
+cell centre     -6       51       51        51      0.33      0.62      -0.32     10.57     11.58
+
+BOTH           all      510      510       510      0.26      0.62      -0.12      3.50     10.52
+
+trials 510, decoded 510, measured 510, re-pack refused 0, no measurement 0
+reference offset: 26.0206 dB, derived from a 6.2500 Hz bin against 2500 Hz. Nothing was fitted.
+```
+
+**The headline: mean absolute error 0.26 dB, 95th percentile 0.62 dB, over 510
+synthesized messages** across five rungs and two placements. Against
+`PHASE_PLAN.md`'s 2 dB, read by the arbiter's ruling against the mean absolute
+error: **the column shows a number.**
+
+### Four things the table says that a single figure would not
+
+**1. There is no selection effect at these rungs, because there was nothing to
+select from.** 510 trials, 510 decoded, 510 measured. Every message the ladder
+sent came back, so the sample is the whole population and not the lucky half of
+it. That is why the rungs stop at −18 dB: at −21 dB the rate is about 11 per
+cent and an agreement figure taken there would be measured on the trials whose
+noise happened to be kind. **Nothing in this unit is claimed at −21 dB.**
+
+**2. The refinement is the whole difference and it is not a small one.** On grid
+the two columns agree to a hundredth of a decibel — the coarse candidate is
+already at the signal, and there is nothing to refine. At the cell centre the
+unrefined estimate is **3.78 dB out at −18 and 10.57 dB out at −6**, and the
+column is a straight line in the wrong direction.
+
+**3. And the reason it gets *worse* as the signal gets stronger is worth
+naming.** A quarter-symbol time error and half-bin frequency error take energy
+out of the correct bin and put it into the neighbouring ones — which are among
+the seven "wrong" bins the noise is estimated from. At a weak rung that leakage
+is buried in real noise; at a strong one the noise estimate is **the signal's own
+leakage**, so the ratio saturates and the estimate stops tracking. An
+unrefined estimator would have read a 20 dB station as a 10 dB one and been most
+wrong about the stations the operator cares most about.
+
+**4. Route A held for all 510, including the hashed callsigns.** `re-pack refused
+0`. And the test asserts, on every one of the 510, that the symbols packed back
+out of the decoded text are **byte for byte the symbols that were transmitted**.
+The round-trip guard was never needed on this population; it stays because the
+population is 51 messages and the band is not.
+
+### What was watched failing, and what it said
+
+The first run asserted the **unrefined** figure — which is what a reader who had
+not done §4's placement arithmetic would write — and said:
+
+```
+the mean absolute error against the delivered ratio is 3.50 dB over 510
+messages, against a bound of 2.00 dB.
+```
+
+**That red is evidence and not ceremony.** It is the measurement that justifies
+the refinement existing at all, and the same run printed the refined column
+beside it at 0.26 dB. The assertion was then moved to the refined figure and the
+bound tightened from the plan's 2.00 dB to **1.00 dB**, which is four times the
+measured error and tight enough to catch a 2.5 dB floor-inversion or
+candidate-bias regression that 2.00 dB would let through.
+
+### Nothing was calibrated
+
+**No constant in `Ft8DeepSignalToNoise` was adjusted by anything on this table.**
+`ReferenceOffsetDecibels` is `10 log10(2500 / 6.25)` and was written down in §4
+before the estimator compiled. The unfitted figure and the shipped figure are
+the same figure, because there is no fitted one.
+
+---
+
 ## What this trace changes about task 2
 
 Four things, none of which were knowable without reading:
