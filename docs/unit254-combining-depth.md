@@ -640,7 +640,154 @@ never offered, and that is what the ladder in §4 has to contend with.
 
 ## 4. The ladder — what a third and fourth hearing bought
 
-*Task 4.*
+`tests/Ft8Sharp.Tests/Dsp/Ft8Unit254DepthLadderTests.cs`. Three test methods, each run alone
+by its exact full method name, foregrounded, 480 s timeout: 1 m 22 s, 3 m 41 s, 3 m 1 s.
+
+**The change to `RunRepeats` is two optional parameters defaulting to null**
+(`combinedOsd`, `combinedFineSync`), and the combined column's inner decoder is now
+constructed at the call site as `new Ft8DeepSlotDecoder(osd: combinedOsd, fineSync:
+combinedFineSync, rememberHearings: true)` — with both null, the identical object
+`Ft8DeepRepeatDecoder` builds for itself. `RepeatsRun` gained `DeepestHearings`.
+**`Ft8LadderHarness.Run` was not touched.** The third row is now labelled from what it
+computes: `combined x{repeats}` at accumulation depth 1, `summed x{depth+1}` above it.
+
+### 4a — the depth sweep, and it is the clean isolation
+
+One block of 51 trials, jittered, at -21 dB. **The same repeat count with accumulation on
+and off, and nothing else different.** History depth is `repeats - 1` in every
+configuration, so both columns reach back over exactly the same slots.
+
+| configuration | decoded | wrong | only-combined | submitted | accepted | **hearings in deepest** | ms a trial | worst slot |
+|---|---|---|---|---|---|---|---|---|
+| x3 pairwise (history 2, accumulation 1) | 36 of 51 | **0** | 33 | 203 | 59 | **2** | 198.5 | 80.1 ms, 187× |
+| **x3 accumulated** (history 2, accumulation 2) | **39 of 51** | **0** | 36 | **203** | 66 | **3** | 193.5 | 78.9 ms, 190× |
+| x4 pairwise (history 3, accumulation 1) | 37 of 51 | **0** | 34 | 359 | 76 | **2** | 259.7 | 80.0 ms, 187× |
+| **x4 accumulated** (history 3, accumulation 3) | **41 of 51** | **0** | 38 | **359** | 114 | **4** | 260.0 | 77.9 ms, 193× |
+
+**What accumulation bought, paired on identical audio:**
+
+| comparison | net | only pairwise | only accumulated |
+|---|---|---|---|
+| x3 pairwise 36 → x3 accumulated 39 | **+3 of 51** | 1 | 4 |
+| x4 pairwise 37 → x4 accumulated 41 | **+4 of 51** | 0 | 4 |
+
+**And the submission counts are identical — 203 against 203, 359 against 359.** The
+accumulated columns bought 3 and 4 decodes for **nothing**: not one extra codeword was put
+to the port's CRC-14. What moved instead is `accepted`, 59 → 66 and 76 → 114: the *same*
+submissions, carrying more hearings, passing the port's gates more often. That is what
+processing gain looks like from the outside.
+
+**Did the prediction hold?** §1.4 predicted, before the run, that accumulated x4 would beat
+pairwise x4 **by between 0 and 10 of 51** — non-zero but much smaller than 1.76 + 1.25 dB
+of processing gain suggests, because a chain needs the search to offer a candidate in every
+slot. **It read +4 of 51.** The prediction held, at the low end of its own range, and the
+sign of the x3 result (+3, smaller than +4) held too: the third hearing is worth 1.76 dB
+and the fourth 1.25 dB, and the smaller increment bought the smaller number of decodes.
+
+**One row is worth naming: x3 lost one trial.** *Only pairwise 1* — a trial the pairwise
+chain read and the three-way sum did not. That is `AccumulationDepth`'s stated cost
+(§3.1): the submission for remembered slot 2 is a three-way sum rather than the pair
+`(this slot, slot 2)`, and if the extra hearing is poor the sum can be worse than the pair.
+It happened once in 51 at three hearings and **not at all** at four.
+
+### 4b — the scoreboard, 306 trials, jittered, at -21 dB
+
+```
+decoder      requested  delivered  trials  DECODED  MISSED  WRONG    rate   lo 95   hi 95    wall s    ms/tr
+single slot      -21.0    -21.001     306       13     293      0     4.2     2.5     7.1     19.6     63.9
+single + OSD     -21.0    -21.001     306       33     273      0    10.8     7.8    14.8     22.1     72.3
+combined x2      -21.0    -21.000     306       68     238      0    22.2    17.9    27.2     39.4    128.6
+summed x4        -21.0    -21.000     306      252      54      0    82.4    77.7    86.2     79.5    259.6
+```
+
+**Zero wrong on all four rows.**
+
+| | combined x2 | summed x4 |
+|---|---|---|
+| only-combined (no single slot decoded alone and the combination did) | 55 of 306 | **236 of 306** |
+| any slot alone (the two-chances baseline) | 13 of 306 | 16 of 306 |
+| lost by combining | 0 | 0 |
+| candidate pairs offered | 50 677 | 299 908 |
+| combinations submitted | 516 | 2 232 |
+| the port took past both gates | 88 | 736 |
+| naive expected messages nobody sent | 0.031 | 0.136 |
+| **hearings in the deepest combination** | **2** | **4** |
+| messages the combining stage added | 62 | 470 |
+| of those, the message that was sent | **62** | **470** |
+| of those, a message that was NOT sent | **0** | **0** |
+| worst single slot | 75.5 ms, 199× | 85.4 ms, 176× |
+
+**The discordant counts against `combined x2`, on identical audio:**
+
+| comparison | only combined x2 | only the other |
+|---|---|---|
+| vs single slot | **55** | **0** |
+| vs single + OSD | 46 | 11 |
+| vs **summed x4** | **0** | **184** |
+
+**A free check that the two walks are one experiment:** the port column and the ordered
+statistics column appear in both, read 13 and 33 in both, and are asserted equal.
+
+**AND THE CAVEAT THAT MUST TRAVEL WITH 252 OF 306.** `RunRepeats` scores the combined
+column on the union over the trial's slots, so **a four-repeat column gets four single-slot
+attempts as well as deeper sums.** 68 → 252 is *not* the gain from accumulation; it
+conflates more hearings with more chances. **4a is the isolation and it says accumulation
+is worth +4 of 51 at four hearings.** The honest reading of 4b is: *a station heard four
+times, with the combiner accumulating, is read 252 times in 306 against 13 for one hearing
+through the port* — which is the number an operator would experience, and 4a is the number
+that says how much of it is the sum.
+
+### 4c — the stack, and it is what Hamlet actually ships
+
+**NOT PART OF THE ISOLATION**: two whole stages change at once, deliberately. 306 trials,
+jittered, at -21 dB, two repeats, combining at the default depth in both rows.
+
+```
+decoder                    trials  DECODED  MISSED  WRONG    rate   lo 95   hi 95    ms/tr
+single slot                   306       13     293      0     4.2     2.5     7.1     64.2
+single + OSD                  306       33     273      0    10.8     7.8    14.8     72.5
+combined x2, alone            306       68     238      0    22.2    17.9    27.2    128.9
+combined x2, STACKED          306       79     227      0    25.8    21.2    31.0    146.8
+```
+
+*"Stacked" is combining with `Ft8DeepOsdSettings.Default` and `Ft8DeepFineSyncSettings.Default`
+on the combined column's inner decoder — the configuration `Ft8Reception.cs:460` builds.*
+
+| | combining alone | combining stacked |
+|---|---|---|
+| decoded | 68 of 306 | **79 of 306** |
+| only-combined | 55 of 306 | 46 of 306 |
+| any slot alone | 13 of 306 | **33 of 306** |
+| lost by combining | 0 | 0 |
+| combinations submitted | 516 | **516** |
+| the port took past both gates | 88 | 88 |
+| combined decodes / verified | 62 / 62 | 62 / 62 |
+| worst single slot | 74.7 ms, 201× | **99.6 ms, 151×** |
+
+**The discordant counts, on identical audio:**
+
+| comparison | only the first | only the second |
+|---|---|---|
+| combining alone 68 vs stacked 79 | **0** | **11** |
+| single + OSD 33 vs stacked 79 | **0** | **46** |
+
+**The stack wins outright: it takes 11 trials combining alone did not and loses none.** And
+those 11 are exactly the 11 §2.4 flagged — the trials single + OSD had that the combined
+column did not, because the combined column ran with ordered statistics off. Unit 247 §5
+item 1's *the two stack in principle and were not run stacked* is now measured: **they
+stack, and the stacked column is a strict superset of both on this audio.**
+
+**But it is the ordered statistics doing the work, not the fine sync.** The submission
+budget is identical — 516 offered, 516 submitted, 88 accepted, 62 combined decodes in both
+rows. **The combining stage did precisely the same thing in both runs.** All 11 extra
+decodes came from the inner decoder reading a slot on its own that it could not read
+before: `any slot alone` rose from 13 to 33, exactly the 20 trials ordered statistics adds
+to a single slot. Unit 247 §5 item 2 hoped fine sync would recover the jitter cost
+`HM-OPEN-075` prices; **on this evidence it did not recover any of it — the pairing and the
+combining behaved identically with fine sync on, and `HM-OPEN-075` stands open.**
+
+The cost is 146.8 ms a trial against 128.9, and a worst observed slot of 99.6 ms — 151×
+inside FT8's 15 seconds.
 
 ---
 

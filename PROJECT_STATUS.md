@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: WORKING
-TASK: 3 of 6
+TASK: 4 of 6
 WORK_INSTRUCTION: 254 - repeated transmissions are combined across slots, and the sum is taken deeper than a pair
 BALL: claude
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-155 (2026-09-05)
-UPDATED: 2026-09-05T17:44:12-04:00
-NOTE: Accumulator built and all five of its tests green run one at a time - the red read "Expected: 4, Actual: 2", the budget is equal to the individual submission at one and two partners, and a message no slot and no pair could read came back from the sum of four at one noise level of eight
+UPDATED: 2026-09-05T17:57:48-04:00
+NOTE: All three ladder runs returned green - the stack reads 79 of 306 against combining alone's 68, discordant 11 to 0, on an identical submission budget, so ordered statistics did the work and fine sync recovered none of the jitter cost HM-OPEN-075 prices
 
 ---
 

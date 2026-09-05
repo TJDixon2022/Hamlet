@@ -394,6 +394,13 @@ internal static class Ft8LadderHarness
     /// <param name="WorstSlotCandidates">How many candidates that slot carried.</param>
     /// <param name="WorstSlotCombinations">How many combinations that slot submitted.</param>
     /// <param name="Delivered">The mean ratio delivered to each repeat, in order.</param>
+    /// <param name="DeepestHearings">
+    /// <b>The most hearings any one combination in the whole walk carried.</b> Unit 254's addition,
+    /// and the number that tells a <c>combined x4</c> column apart from a chain of pairs: before
+    /// unit 254 this was 2 at every repeat count, because <c>Ft8DeepRepeatDecoder</c> paired two
+    /// slots at a time however many it remembered. <b>A run whose label says four and whose deepest
+    /// combination says two is measuring 3.01 dB and claiming 6.02.</b>
+    /// </param>
     internal sealed record RepeatsRun(
         IReadOnlyList<Result> Rows,
         int Repeats,
@@ -408,7 +415,8 @@ internal static class Ft8LadderHarness
         double WorstSlotMilliseconds,
         int WorstSlotCandidates,
         int WorstSlotCombinations,
-        IReadOnlyList<double> Delivered);
+        IReadOnlyList<double> Delivered,
+        int DeepestHearings);
 
     /// <summary>
     /// <b>THE SECOND ENTRY POINT: one rung, a trial count, and R slots a trial all carrying the same
@@ -428,8 +436,21 @@ internal static class Ft8LadderHarness
     /// <b>How far each later slot's start moves from the one before it</b>, as a real station's clock
     /// would. Zero puts every repeat on the same sample, which is the easy case.
     /// </param>
-    /// <param name="combining">The pairing rule and its budget. Its own default when null.</param>
+    /// <param name="combining">
+    /// The pairing rule, its budget and its accumulation depth. Its own default when null — one slot
+    /// of history, one partner, and a sum of two hearings, which is what every row recorded before
+    /// unit 254 was taken at.
+    /// </param>
     /// <param name="log">Optional, called once per completed row.</param>
+    /// <param name="combinedOsd">
+    /// <b>Ordered statistics settings for the COMBINED column's inner decoder</b>, or
+    /// <see langword="null"/> — the default — for off, which is what unit 247 measured and what every
+    /// recorded row of this ladder was taken at.
+    /// </param>
+    /// <param name="combinedFineSync">
+    /// <b>Fine sync settings for the COMBINED column's inner decoder</b>, or <see langword="null"/> —
+    /// the default — for off.
+    /// </param>
     /// <remarks>
     /// <para>
     /// <b>THREE COLUMNS, AND THE THIRD IS ATTRIBUTABLE TO ONE NAMED CHANGE.</b> Column one is the port
@@ -458,7 +479,9 @@ internal static class Ft8LadderHarness
         double frequencyJitterHz = 0.0,
         int offsetJitterSamples = 0,
         Ft8DeepCombineSettings? combining = null,
-        Action<string>? log = null)
+        Action<string>? log = null,
+        Ft8DeepOsdSettings? combinedOsd = null,
+        Ft8DeepFineSyncSettings? combinedFineSync = null)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(trials);
         ArgumentOutOfRangeException.ThrowIfLessThan(repeats, 2);
@@ -470,13 +493,33 @@ internal static class Ft8LadderHarness
 
         var port = new Ft8SlotDecoder();
         var osd = new Ft8DeepSlotDecoder(osd: Ft8DeepOsdSettings.Default);
-        var repeat = new Ft8DeepRepeatDecoder(combining: rule);
+
+        // THE COMBINED COLUMN'S INNER DECODER, CONSTRUCTED HERE INSTEAD OF INSIDE THE REPEAT
+        // DECODER'S CONSTRUCTOR, AND THAT IS THE WHOLE OF UNIT 254'S CHANGE TO THIS METHOD.
+        // With both settings null this is new Ft8DeepSlotDecoder(rememberHearings: true), which is
+        // exactly the object Ft8DeepRepeatDecoder builds for itself when handed no inner decoder -
+        // the same object, built at the call site. Every existing caller therefore computes what it
+        // computed before, and unit 247 §5 item 1's "the two stack in principle and were not run
+        // stacked" becomes reachable in one argument.
+        var repeat = new Ft8DeepRepeatDecoder(
+            inner: new Ft8DeepSlotDecoder(
+                osd: combinedOsd, fineSync: combinedFineSync, rememberHearings: true),
+            combining: rule);
+
+        // THE THIRD ROW IS NAMED FROM WHAT IT COMPUTES AND NOT FROM WHAT IT WAS ASKED FOR. Before
+        // unit 254 the label read "combined x4" for a run that summed two hearings at a time, which
+        // is how a column came to claim 6.02 dB of processing gain while computing 3.01. At the
+        // default accumulation depth of 1 the label is unchanged, because at depth 1 the sum IS a
+        // pair and every recorded row was taken there.
+        var combinedLabel = rule.AccumulationDepth == 1
+            ? $"combined x{repeats}"
+            : $"summed x{rule.AccumulationDepth + 1}";
 
         var rows = new[]
         {
             new Result("single slot", rungDecibels, trials),
             new Result("single + OSD", rungDecibels, trials),
-            new Result($"combined x{repeats}", rungDecibels, trials),
+            new Result(combinedLabel, rungDecibels, trials),
         };
 
         var clocks = new[] { new Stopwatch(), new Stopwatch(), new Stopwatch() };
@@ -493,6 +536,7 @@ internal static class Ft8LadderHarness
         var worstSlotMilliseconds = 0.0;
         var worstSlotCandidates = 0;
         var worstSlotCombinations = 0;
+        var deepestHearings = 0;
 
         var delivered = new List<double>[repeats];
         for (var r = 0; r < repeats; r++)
@@ -574,6 +618,7 @@ internal static class Ft8LadderHarness
                     pairsOffered += counts.Offered;
                     submitted += counts.Submitted;
                     acceptedByThePort += counts.Accepted;
+                    deepestHearings = Math.Max(deepestHearings, counts.DeepestHearings);
 
                     if (slotClock.Elapsed.TotalMilliseconds > worstSlotMilliseconds)
                     {
@@ -665,7 +710,8 @@ internal static class Ft8LadderHarness
             worstSlotMilliseconds,
             worstSlotCandidates,
             worstSlotCombinations,
-            delivered.Select(d => d.Average()).ToArray());
+            delivered.Select(d => d.Average()).ToArray(),
+            deepestHearings);
     }
 
     /// <summary>
@@ -721,6 +767,12 @@ internal static class Ft8LadderHarness
         yield return "  THE SUBMISSION BUDGET, AS IT WAS ACTUALLY SPENT:";
         yield return $"    candidate pairs the rule looked at        {run.PairsOffered}";
         yield return $"    combinations submitted to the port        {run.CombinationsSubmitted}";
+        yield return
+            $"    HEARINGS IN THE DEEPEST COMBINATION        {run.DeepestHearings}"
+            + (run.DeepestHearings <= 2
+                ? "   (a pair - no sum went deeper anywhere in this walk)"
+                : $"   ({10.0 * Math.Log10(run.DeepestHearings):F2} dB of processing gain if the "
+                    + "hearings were independent)");
         yield return $"    of those, the PORT took past both gates   {run.CodewordsAccepted}";
         yield return
             $"    naive expected messages nobody sent       "
