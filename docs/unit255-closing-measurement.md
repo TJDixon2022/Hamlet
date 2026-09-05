@@ -783,3 +783,194 @@ run; it reads 254 of 306; it costs 109.6 ms in the worst slot, a **137× margin*
 this figure is a measurement handed to Tim, and §6.2 lists the surfaces that would have to
 move before any of it reached a radio.
 
+---
+
+## 6. What the operator should now see, and what he does not
+
+### 6.0 The sentence that goes before all the others
+
+> **Every figure in this document came off a synthesizer.** The ladder builds the audio
+> itself, so it knows exactly what it transmitted and can score what came back against it.
+> **Nothing in this phase has run on air.** No number here was measured against a real
+> signal, a real band or a real station, and none of them is a prediction of what a
+> particular evening on 14.074 will give.
+
+That is said first and plainly rather than buried, because everything below is worth less if
+it is read as an on-air result.
+
+### 6.1 What he gets
+
+**Each claim carries its figure and its trial count.**
+
+**1. Hamlet decodes through `Ft8Sharp.Deep`, with fine sync and ordered statistics both on.**
+`src/Hamlet.RadioEngine/Audio/Ft8Reception.cs:460` builds
+`new Ft8DeepSlotDecoder(osd: Ft8DeepOsdSettings.Default, fineSync: Ft8DeepFineSyncSettings.Default)`
+for every slot. That is step 0, and it is what every figure in §3's `SHIPPING` column was
+measured on.
+
+**2. On a station that lands on the analysis grid, it reads more than the port at every
+ratio measured.** At 306 trials a rung:
+
+| ratio | the bare port | **what Hamlet runs** |
+|---|---|---|
+| -19 dB | 248 of 306 — 81.0 % (76.3 – 85.0) | **283 of 306 — 92.5 % (89.0 – 94.9)** |
+| -20 dB | 73 of 306 — 23.9 % (19.4 – 28.9) | **138 of 306 — 45.1 % (39.6 – 50.7)** |
+| -21 dB | 13 of 306 — 4.2 % (2.5 – 7.1) | **35 of 306 — 11.4 % (8.3 – 15.5)** |
+
+**It never reads fewer.** On identical audio it took 35, 65 and 22 trials the port did not
+and **lost none at any rung.**
+
+**3. On a station that does not land on the grid — which is every real station — the
+difference is the whole decoder.** Real signals do not arrange themselves on Hamlet's
+analysis grid; at the centre of one coarse cell, 1.56 Hz and 480 samples off:
+
+| ratio | the bare port | **what Hamlet runs** |
+|---|---|---|
+| -19 dB | **6 of 306 — 2.0 %** (0.9 – 4.2) | **278 of 306 — 90.8 %** (87.1 – 93.6) |
+| -20 dB | 0 of 306 — 0.0 % (0.0 – 1.2) | **73 of 306 — 23.9 %** (19.4 – 28.9) |
+| -21 dB | 0 of 306 — 0.0 % (0.0 – 1.2) | **3 of 306 — 1.0 %** (0.3 – 2.8) |
+
+**In plain words: a station a hertz and a half off Hamlet's grid at -19 dB is one the bare
+port almost never hears — six times in 306 — and one Hamlet hears nearly always, 278 times
+in 306.** The stack takes 272 of those trials the port did not, and loses none. **That is
+the single largest thing this phase changed for the operator**, and it is the reason both
+stages ship rather than either one: on the grid ordered statistics does the work, off the
+grid fine sync does (§3.4).
+
+**4. It crosses 50 per cent at -19.90 dB on the grid and -19.61 dB off it**, both
+interpolated between the -19 and -20 dB rungs at 306 trials each (§4.1). **The off-grid
+crossing is better than the bare port's own on-grid -19.54 dB.**
+
+**5. It keeps up with the air with room to spare.** The worst single slot observed anywhere
+tonight — over six rung-placements and 1 836 scored slots — took **336.8 ms of FT8's
+15 000 ms**, a **44.5× margin**, and the mean was **205.6 ms a slot, 1.4 per cent of the
+budget** (§4.2).
+
+**6. The `snr` column carries a real ratio.** That is step 2. Measured against the ladder's
+commanded ratio over **510 messages**, at both placements: **mean absolute error 0.26 dB,
+95th percentile 0.62 dB** (`docs/unit251-snr-trace.md`). 510 trials, 510 decoded, 510
+measured — no message was skipped to improve the figure.
+
+**7. Nothing it shows him was invented.** **Zero wrong decodes in all thirty-six cells of
+§3's table — 11 016 scored slot decodes, not one message returned that nobody sent** — and
+zero in every cited table in §5. Both of the port's gates, parity and CRC-14, stay in the
+path for every message however it was recovered; nothing in `Ft8Sharp.Deep` decides that a
+message is real.
+
+### 6.2 What he does NOT get
+
+> **Subtraction and combining are OFF by default. No radio does either. Nobody's Hamlet has
+> ever done either.**
+
+This has to be said on the face of the closing table, because two of the four stages this
+phase measured produce the largest numbers in it and **none of those numbers is on anyone's
+screen.**
+
+| stage | what it reads in this document | what a radio does today |
+|---|---|---|
+| **subtraction** | 153 of 306 recovered under a co-frequency neighbour 6 dB up, against a ceiling of 304 (§5.1) | **nothing — off by default** |
+| **combining, four hearings accumulated** | 252 of 306 unstacked, **254 of 306 stacked**, against the port's 13 (§5.2, §5.3) | **nothing — off by default** |
+
+**254 of 306 against the port's 13 is the most impressive figure in this document and it is
+the one furthest from the operator.** If this table printed it without this paragraph, this
+project would have told its owner he has something he does not have.
+
+**What would have to change first**, from `docs/unit253-subtraction.md` **§6** and
+`docs/unit254-combining-depth.md` **§1.7** — *note that unit 253's list is at §6, not §1.7
+as this unit's instruction had it*:
+
+**For subtraction, five surfaces:**
+
+| # | surface | what must change |
+|---|---|---|
+| 1 | `Ft8Reception.cs:460` | the construction gains a subtraction settings argument, and the pass budget must be reconciled with the 15 000 ms slot budget for the **shipping** configuration, not the isolation |
+| 2 | `Ft8DecoderIdentity` | carries two stage flags today; subtraction is a third. A capture written by a subtracting decoder and read back as a two-flag identity says a pass ran that the reader cannot see |
+| 3 | the five-count census | `Ft8SlotResult`'s five counts are per `Decode` call; under multi-pass they are per **pass** |
+| 4 | the telemetry line | must say how many passes ran and how many messages were subtracted — `CLAUDE.md` §0.0.1 |
+| 5 | the capture sidecar | same as 2 and 4, on disk. A sidecar that cannot say whether subtraction was on is breakage `B13`'s shape exactly |
+
+**For combining, seven — a larger surface still:**
+
+| surface | what a cross-slot combiner needs |
+|---|---|
+| `Ft8Reception.cs:460` | an `Ft8DeepRepeatDecoder` **held across slots** rather than constructed per slot, with `Reset()` on band change, frequency change or a gap in the slot sequence — a slot heard after a five-minute silence must not be paired with the slot before it |
+| `Ft8DecoderIdentity` | a third flag, plus the depth and the partner count |
+| the five-count census | the four of `Ft8DeepCombineCounts` beside the port's five, plus hearings-per-combination |
+| the telemetry line | must distinguish *this slot decoded it* from *this slot plus the previous two decoded it*, or an operator cannot tell a fresh decode from a recovered one |
+| the capture sidecar | a combined message belongs to more than one slot; the per-message rows need which slots the sum drew on |
+| **the memory** | none today. At most 140 hearings × 174 floats — about **97 kB a slot**, under a megabyte at the maximum depth of eight |
+| the time | plus one `Normalise` and one `Decode` per submission; tonight's stacked accumulation measured a worst slot of **109.6 ms, 137×** (§5.3) |
+
+**Every one of those is a change to what a capture records about itself, which is step 0's
+must-pass.** That is why nothing was turned on tonight and why the decision is Tim's, with
+these figures in front of him, rather than a session's at the end of a long night.
+
+### 6.3 The two deferred criteria, and the artefact that settles both
+
+**`PHASE_PLAN.md` marks two criteria *deferred*:** step 2's *agreement with WSJT-X on a real
+capture* (`PHASE_PLAN.md:256`) and step 4's *decodes per slot against WSJT-X on a real
+capture* (`:305`). **Both are settled by the same artefact, and neither can be attempted
+here: there is no WSJT-X on the development machine and no unit may assume one.**
+`decode_ft8.exe` is never substituted for it.
+
+**What is needed — one pair of files, same stem, committed together:**
+
+```
+tests/fixtures/ft8/captured/<stem>.wav           the audio, exactly as it was recorded
+tests/fixtures/ft8/captured/<stem>.fixture.txt   what WSJT-X returned for it, message by message
+```
+
+- **Format:** `docs/ft8-capture-fixture-format.md`.
+- **Provenance must be `wsjtx`**, which is `Ft8CaptureFixtures.ProvenanceWsjtx` at
+  `tests/Ft8Sharp.Tests/Fixtures/Ft8CaptureFixture.cs:107`. `RequireScorable` (`:369`)
+  refuses to let a claim about WSJT-X be made from a worked example, and
+  `Ft8FixtureScoringTests.ScoreFixtureRefusesTheExampleWhileCompareDoesNot` is the test that
+  holds it to that. `RequireCapture` (`:335`) makes a fixture that names a `.wav` which is
+  not there a hard failure rather than a silent pass.
+
+> **THE COMMAND TIM RUNS AT THE SHACK**, from the folder's own README:
+>
+> ```
+> dotnet run --project tools/Ft8FixtureMaker -- <capture.wav>
+> ```
+>
+> `tools/Ft8FixtureMaker/` exists — `Program.cs`, `Ft8FixtureMaker.csproj`,
+> `make-fixture.proj` and a README.
+
+**`tests/fixtures/ft8/captured/` holds a `README.md` and nothing else**, and that is the
+correct state here: the radio lives on a different computer (`SHACK_FACTS.md` FACT-004).
+**Zero real fixtures passes cleanly and is not a defect.**
+
+**And the honest state of the scoring side, which is the part a finished-looking night would
+skip.** `Ft8LadderHarness.ScoreFixture` exists at `Ft8LadderHarness.cs:1117` and `Compare`
+at `:1151`. **No committed command calls `ScoreFixture` over the captured folder.** The only
+two callers in the tree are `Ft8FixtureGeneratorTests.cs:278`, which scores a fixture it has
+just written, and `Ft8FixtureScoringTests.cs:140`, which asserts that `ScoreFixture` refuses
+the committed example. **Neither iterates the folder. No test in the tree does.**
+
+**That gap is named here and deliberately not filled.** Gate-set rule 5 forbids adding a
+test without naming the breakage it would have caught, and **a test guarding a folder that
+has never held a file guards nothing** — it would pass vacuously today and go on passing
+vacuously. **Naming the gap is this unit's deliverable; filling it is the first job of
+whoever holds the first fixture**, and it should be written against that fixture, watched
+failing first, in the unit that adds it.
+
+### 6.4 The closing position of the phase
+
+**This is where the phase stands. It is not a declaration that the phase is closed** —
+that reading is the next arbiter's from `PHASE_OUTCOME.md`, and `PHASE_CONTROL.md` §6
+forbids a phase being reopened, which is exactly why nobody closes one in passing.
+
+| step | state | units | the one figure it produced |
+|---|---|---:|---|
+| 0 — Hamlet decodes through `Ft8Sharp.Deep` | done | 1 | Deep carries **27** candidates through to text where the port carries **9**, at **261 ms** of a 15 000 ms slot |
+| 1 — the gate set exists, slow tests named | done | 3 | **12** gate-set entries; the ladder is ruled a measurement and never one of them |
+| 2 — the `snr` column shows a number | done | 2 | **0.26 dB** mean absolute error, 95th percentile **0.62 dB**, over **510** messages |
+| 3 — ordered statistics, as far as it goes | done | 2 | **33 of 306** at -21 dB on grid, crossing **-19.81 dB** |
+| 4 — strong signals subtracted, slot read again | done | 2 | **153 of 306** recovered under a co-frequency neighbour 6 dB up, against a ceiling of **304** |
+| 5 — repeated transmissions combined | done | 2 | **252 of 306** at -21 dB from four hearings, against the port's **13** |
+| **6 — the closing measurement** | **this unit, the first spent on it** | **1** | **the shipping stack at 283 / 138 / 35 of 306 on grid and 278 / 73 / 3 at the cell centre, crossing at -19.90 and -19.61 dB, worst slot 336.8 ms at 44.5×, zero wrong in 11 016 slot decodes** |
+
+**Step 6 is the last step of the phase**, and every other step was closed before this unit
+began.
+
