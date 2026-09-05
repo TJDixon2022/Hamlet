@@ -181,6 +181,8 @@ public class Ft8DeepSlotDecoderTests(ITestOutputHelper output)
         Assert.Equal(
             new[]
             {
+                typeof(Ft8DeepOrderedStatistics),
+                typeof(Ft8DeepOsdResult),
                 typeof(Ft8DeepOsdSettings),
                 typeof(Ft8DeepSlotDecoder),
             },
