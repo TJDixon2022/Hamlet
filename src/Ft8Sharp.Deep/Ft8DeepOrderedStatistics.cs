@@ -1,5 +1,6 @@
 using System;
 using System.Numerics;
+using Ft8Sharp.Dsp;
 using Ft8Sharp.Ldpc;
 
 namespace Ft8Sharp.Deep;
@@ -221,6 +222,62 @@ public sealed class Ft8DeepOrderedStatistics
         }
 
         return new Ft8DeepOsdResult(_bestDistance, _reencodings);
+    }
+
+    /// <summary>
+    /// <b>Turns a recovered codeword into ratios the port will read, so that the PORT decides whether
+    /// it is a message.</b>
+    /// </summary>
+    /// <param name="codeword"><see cref="CodewordBits"/> bytes, one per bit.</param>
+    /// <param name="ratios">
+    /// <see cref="CodewordBits"/> ratios, written in full: plus or minus one in the port's convention,
+    /// then put on upstream's own scale by <c>Ft8SoftSymbols.Normalise</c>, which is called rather
+    /// than re-implemented.
+    /// </param>
+    /// <exception cref="ArgumentException">Either span is the wrong length.</exception>
+    /// <remarks>
+    /// <para>
+    /// <b>THIS IS THE ONLY WAY ANYTHING THIS LIBRARY RECOVERS BECOMES A MESSAGE, AND IT IS §0.0.</b>
+    /// The ratios go to <c>Ft8CodewordDecoder.Decode</c>; the port's belief propagation converges on
+    /// an already-valid codeword in one iteration, and then the port's <b>parity gate</b> and its
+    /// <b>CRC-14 gate</b> are applied exactly as they always are. A codeword this library got wrong
+    /// carries a checksum that does not match its own payload, and the port refuses it in the port's
+    /// own words. Nothing in <c>Ft8Sharp.Deep</c> decides that a message is real.
+    /// </para>
+    /// <para>
+    /// <b>It is a re-derivation, not a second check.</b> There is still exactly one CRC-14 comparison
+    /// in these two libraries and it is the port's.
+    /// </para>
+    /// <para>
+    /// This is route A of <c>docs/unit245-deep-seam.md</c> §4, which unit 245 measured working before
+    /// a line of OSD existed: a codeword handed back this way came through as a real
+    /// <c>Ft8CodewordResult</c> carrying its text, and one with forty bits flipped came back refused.
+    /// </para>
+    /// </remarks>
+    public static void Saturate(ReadOnlySpan<byte> codeword, Span<float> ratios)
+    {
+        if (codeword.Length != CodewordBits)
+        {
+            throw new ArgumentException(
+                $"A codeword is {CodewordBits} bytes, one per bit, and a span of {codeword.Length} "
+                + "was given.",
+                nameof(codeword));
+        }
+
+        if (ratios.Length != CodewordBits)
+        {
+            throw new ArgumentException(
+                $"The ratio buffer is {CodewordBits} long and a span of {ratios.Length} was given.",
+                nameof(ratios));
+        }
+
+        for (var i = 0; i < CodewordBits; i++)
+        {
+            // Positive means the bit is more likely one, which is the port's convention throughout.
+            ratios[i] = codeword[i] != 0 ? 1.0f : -1.0f;
+        }
+
+        Ft8SoftSymbols.Normalise(ratios);
     }
 
     /// <summary>
