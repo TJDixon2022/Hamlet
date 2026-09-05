@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 5 of 5
-WORK_INSTRUCTION: 250 - the gate set exists
-BALL: tim
+STATE: IN PROGRESS
+TASK: 1 of 6
+WORK_INSTRUCTION: 251 - the SNR column shows a number
+BALL: claude
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-155 (2026-09-05)
-UPDATED: 2026-09-05T15:12:00-04:00
-NOTE: Five of five; the gate set is 27 tests each naming a breakage that actually happened, the seven breakages no test could have caught are written down beside them, and no suite was run and the command was not executed once
+UPDATED: 2026-09-05T14:37:00-04:00
+NOTE: Pricing the two routes to a known symbol sequence for a message that just decoded - the decode result hands back text and carries no bits, and which route is taken decides what the estimator's signature can be
 
 ---
 
