@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: WORKING
+STATE: DONE
 TASK: 7 of 7
 WORK_INSTRUCTION: 247 - the same transmission heard twice, combined before the decoder sees it
-BALL: claude
+BALL: tim
 RULES_AT: HM-DEC-153 (2026-09-04)
 NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-09-05T01:09:00-04:00
-NOTE: The write-up is going in while the whole Ft8Sharp.Tests suite runs for its closing total. docs/unit247-combining.md carries task 1's distance distributions and task 6's four tables so the next unit on step 6 does not re-measure them, and HM-OPEN-075 is opened for the one thing the numbers earned that nobody expected - placement jitter takes back about half the trials combining reaches, 149 of 306, which is a synchronisation cost and a second argument for step 4 beside HM-OPEN-074. Neither of the two conditions task 7 named for an issue actually held: the summed distance did fall below the recovery threshold and the pairing tolerance is narrow
+UPDATED: 2026-09-05T01:19:00-04:00
+NOTE: Seven of seven, nothing dropped, and what waits on Tim is only what the arbiter makes of where the approach stops. Step 6 moved from not started to partial: at -21 dB over 306 trials the combined column reads 22.2 per cent with a realistic clock and oscillator error between the slots and 70.9 per cent without, against the port at 4.2, with zero wrong on all twelve rows of four configurations and every one of 273 combined decodes verified against the message the ladder transmitted. Four of five must-pass exits met outright and the fifth met at -21 dB but not at -24 dB, where the closest candidate sits a median 69 of 174 from the truth against a chance distance of 87 - so what is in the way is synchronisation rather than combining, and the same cause is what the placement jitter costs, opened as HM-OPEN-075 and an argument for taking step 4 next
 
 ---
 

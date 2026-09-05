@@ -1,415 +1,417 @@
-# READ IN THIS ORDER - A the phase goal, B this step and its exits, C this report
+READ IN THIS ORDER - A the phase goal, B this step and its exit criteria, C what this report adds.
 
-A. THE PHASE GOAL is that Hamlet reads FT8 as well as the best decoder there is and
-then reads it further - concretely the 1.5 dB between the `HM-OPEN-067` 50 per cent
-crossing near -19.5 dB and the published -21 dB, and step 2 is the step that holds it.
-Step 0 is closed and not re-audited (header `partial`, last entry `done`, entries win).
-Step 1 is `done` at four of four and is still true tonight: the OSD-off column equals
-the port on every rung. Step 2 is `partial` and the number is still moving. Steps 3, 4,
-5 and 6 are open and untouched - not one line - though step 4 gained a measured
-argument for itself, `HM-OPEN-074`. WHAT THIS UNIT DID TO THE NUMBER: the decode rate
-at -21 dB over 306 trials went from 4.2 per cent (13 of 306), 0 wrong, to 10.8 per cent
-(33 of 306), 0 wrong, 95 per cent Wilson 7.8 to 14.8. The interpolated 50 per cent
-crossing moved from -19.54 dB to -19.81 dB: about 0.27 dB of the 1.5 closed, about
-1.2 dB still out there.
+A. THE PHASE GOAL is that Hamlet reads FT8 as well as the best decoder there is and then reads it
+   further - the 1.5 dB between -19.5 and -21, and then past it. Step 6 is the half that goes past.
+   Steps 0 and 1 as this unit leaves them: step 0 `partial`, step 1 `done`, neither touched.
+   Step 2 stays `partial` at 10.8 per cent (33 of 306), 0 wrong - it was cut down by the arbiter
+   against unit 246's measured ceiling, not closed, and this unit re-measured it and it still reads
+   13 of 306 and 33 of 306 exactly. Steps 3, 4 and 5 are open and untouched, not one line.
+   Step 6 goes from `not started` to `partial`. What this unit did to the number it is judged on:
+   at -21 dB over 306 trials, 55 trials that no single slot decoded alone were decoded by the
+   combination with the placement jitter on and 200 with it off, 0 wrong in both. At -24 dB, 0 and
+   0 wrong - nothing decodes there in any column.
 
-B. THIS STEP AND ITS EXIT CRITERIA, one by one. Five of six must-pass met.
+B. THIS STEP AND ITS EXIT CRITERIA. Step 6's five must-pass and its one deferred, one by one.
+   1 A repeat identified and its soft values combined before decoding - MET. A stated bounded
+     pairing rule on frequency and time, with pairs offered and combinations submitted counted.
+   2 A message decoded that no single slot could decode alone, at a stated SNR below the
+     single-slot crossing - MET at -21 dB, which is 1.2 dB below the -19.81 dB crossing.
+     NOT MET at -24 dB: 0 of 306 in every column, and section 3 has the distribution that says why.
+   3 Zero wrong decodes, every combined decode passing the same CRC-14 - MET. 0 on all twelve rows
+     of four configurations, and nothing in Ft8Sharp.Deep decides a message is real.
+   4 The gain measured on the ladder and quoted with its trial count - MET. 68 of 306, 22.2 per
+     cent, Wilson 17.9 to 27.2 jittered; 217 of 306, 70.9 per cent, Wilson 65.6 to 75.7 same-placed.
+   5 Every combined decode verified against the ladder's own ground truth - MET. 273 combined
+     decodes across the -21 dB runs, every one checked, every one the message that was sent.
+   6 Decodes WSJT-X did not return on a real capture - DEFERRED by the plan itself. It needs a
+     capture fixture nobody has (`HM-OPEN-073`, Tim's) and it gated nothing tonight.
+   What is needed to close step 6: exit 2 at a rung below -21 dB. The distribution says that is
+   step 4's work and not more combining - see section 4.
 
-| # | Step 2 exit | Verdict |
-|---|---|---|
-| 1 | 40 per cent at -21 dB on 306 trials | **NOT MET.** Figure reached: **10.8 per cent (33 of 306)**, Wilson 7.8-14.8, 0 wrong |
-| 2 | Stays open while the number moves; closes *unachievable* with a figure when it does not | **MET, and it says stay open.** 4.2 to 10.8 per cent is a move outside its own interval |
-| 3 | Zero wrong decodes across the whole ladder | **MET.** 0 wrong on all nine rows: 3 rungs x 3 columns x 306 trials |
-| 4 | Order and search weight with the cost each buys, measured | **MET.** Orders 0-3 at -21 dB over 51 trials, same seed and noise draw per row |
-| 5 | From Fossorier and Lin 1995 and the QEX paper, cited at the point of use, no WSJT-X source read | **MET.** New `src/Ft8Sharp.Deep/porting-notes.md` and XML remarks; neither WSJT-X nor `ft4_ft8_public/` opened |
-| 6 | Worst-case time per slot inside 15 s with margin | **MET.** Worst observed slot **110.2 ms** on 14 candidates - a **136x** margin |
-| 7 | *nice-to-pass* - decodes per slot on real captures | **NOT MET.** Needs a fixture nobody has (`HM-OPEN-073`, Tim's). Gates nothing |
+C. THIS REPORT, weighed against A and B. The thing here is task 1's summed-distance distribution,
+   because it decided the night before a line of the combiner was written: at -21 dB the closest
+   candidate in each of two hearings sits a median 31 of 174 from the transmitted codeword against
+   a code that recovers to zero at about 17, and their sum sits at a median 18 with 23 of 51 trials
+   at or below 17 - so soft combining reaches, and 22 of 51 trials crossed that line where neither
+   hearing did. At -24 dB it does not: median 62 combined against 69 and 72 single, 0 of 51 under
+   17, because the search is barely finding the signal there. That bears directly on A - it is why
+   step 6's number moved 1.2 dB down and why it stops there - and on B's exits 2 and 4.
+   Section 4 raises 1 item. It asks for no ruling and it stands in the way of no exit criterion in
+   B; it is logged as `HM-OPEN-075` and it is an argument for which step comes next.
 
-Exit 1 is the one not met, and what it needs is not a better ordered statistics
-decoder. The figure reached is 10.8 per cent; what was tried is orders 0, 1, 2 and 3,
-all measured with their costs. Task 1's ceiling - taken against the codeword the ladder
-knows it transmitted - admits 7 of 51 trials at order 2, 10 of 51 at order 3 and 16 of
-51 at order 4, and order 4 is about two and a half million re-encodings per candidate.
-So 40 per cent is not reachable this way at any order that fits in a slot, and what
-exit 1 needs is whatever holds the other 1.2 dB.
-
-C. THIS REPORT, weighed against A and B. The thing here is task 1.3's ceiling
-distribution, because it says whether the remaining decibel is reachable by any amount
-of code searching. It says it is not: the closest candidate carries a median 31
-hard-decision errors of 174, about 6 of them inside the 91 most reliable positions -
-enough for order 2 to buy something real and nowhere near enough for any tractable
-order to reach 40 per cent. And 49 of 51 trials did have a candidate near the signal
-and were still not decoded, so it is not in synchronisation either, and unit 222
-settled that it is not in the ratios. That bears directly on A and on B's exit 1.
-Section 4 raises 2 items, neither of which asks for a ruling and neither of which
-stands in the way of an exit criterion in B: the `RULES_AT` mismatch this unit was told
-to report once, and a recorded fact about `HM-OPEN-074` that step 4's unit inherits.
-
-```
-UNIT:       246 — complete at task 8 of 8 — 2026-09-05 00:11
-PHASE GOAL: Hamlet reads FT8 as well as the best decoder there is, and then reads it
-            further — concretely, the 1.5 dB between -19.5 and -21.
-UNIT GOAL:  Ft8Sharp.Deep reaches codewords belief propagation refused, by re-ordering
-            bits by reliability and searching low-weight patterns among the most
-            reliable ones, with every codeword accepted or refused by the port's own
-            parity and CRC-14 gates and never by OSD's own say-so.
-ADVANCED:   yes — the -21 dB rate on the 306-trial ladder moved 4.2 -> 10.8 per cent
-            with 0 wrong, and five of step 2's six must-pass exits are met.
-NUMBER:     4.2 per cent (13 of 306), 0 wrong -> 10.8 per cent (33 of 306), 0 wrong.
-            Suites: Ft8Sharp.Tests 586 passed / 0 failed / 1 skipped in 5 m 23 s;
-            Ft8Sharp.Deep.Tests 35 passed / 0 failed / 0 skipped in 997 ms.
+UNIT:       247 - complete at task 7 of 7 - 2026-09-05 01:17
+PHASE GOAL: Hamlet reads FT8 as well as the best decoder there is, and then reads it further.
+UNIT GOAL:  Ft8Sharp.Deep identifies the same transmission repeated in a later slot at the same
+            frequency, adds the two slots' log-likelihood ratios before anything decodes them, and
+            recovers a message neither slot could give up alone - under the port's own parity and
+            CRC-14 gates and a stated, bounded number of submissions to them.
+ADVANCED:   yes - step 6 went from not started to partial, and at -21 dB over 306 trials the decode
+            rate went from the port's 4.2 per cent to 22.2 per cent jittered and 70.9 per cent
+            same-placed, with zero wrong decodes on every row.
+NUMBER:     trials only the combination decoded, of 306: -21 dB jittered 55, 0 wrong; -21 dB same
+            placement 200, 0 wrong; -24 dB 0 either way, 0 wrong. Suites: Ft8Sharp.Tests 593
+            passed / 0 failed / 1 skipped / 8 m 12 s; Ft8Sharp.Deep.Tests 51 / 0 / 0.
 DRIFT:      0 consecutive units without advance  (was 0)
-```
 
 ## 1. What Claude did
 
-**COMPLETE, at task 8 of 8. Nothing was dropped, including the named drop
-candidate.** Machine `C:\Source\HamLet`, project confirmed Hamlet by all four gate
-checks (`SHACK_FACTS.md` present, `src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs`
-present, no `CoreHMI.sln`, no `MURC.sln`), branch `main`, eight commits pushed.
+**Complete, at task 7 of 7. Nothing was dropped, including the named drop candidate.** Machine
+`C:\Source\HamLet`, project confirmed as Hamlet by the instruction's four filesystem checks - both
+must-exist files present, both must-not-exist absent. Branch `main`, which is trunk. Seven commits,
+one per task, every one pushed; the last is `10b30fe`.
 
-### The eight tasks
+### The instruction against the tree
 
-**Task 1 — the trace, and it is the finding this unit owes the phase.**
+**Every claim in the instruction's "Verify this instruction against the tree" section was checked
+and every one held.** `Ft8SoftSymbols.RatioCount` at `:73`, `Extract` at `:117`, `Normalise` at
+`:287` returning the variance, `Variance` at `:323`, `HardDecision` at `:351`;
+`Ft8CodewordDecoder.Decode` at `:70` with GATE 1 at `:80` and GATE 2 at `:96`, both commented as
+such; `Ft8Candidate` at `:48` with `FrequencyHz` at `:93` and `TimeSeconds` at `:103`;
+`Ft8DeepSlotDecoder.Decode` at `:171` and `:189` with `Osd` at `:130` and `LastOsd` at `:149`;
+`Ft8DeepOsdSettings.Default` order 2 at `:86`; the type-list tripwire at
+`Ft8DeepSlotDecoderTests.cs:181`; `Ft8LadderHarness.Run` at `:244` with `DefaultSeed` 221001;
+`Ft8Step6Ladder.Population()` returning 51 and `CollapseBottomDecibels` -24.0; root version
+`1.12.49`, `Ft8Sharp` `0.10.7`, `Ft8Sharp.Deep` `0.2.0`; highest issue id `HM-OPEN-074`.
+**No mismatches to report.**
 
-*1.1 The generator.* Read off the port's own encoder rather than unpacked from
-`Ft8Tables.LdpcGenerator`, whose 83 rows are the parity checks in upstream's packing:
-row *i* of **G** is `LdpcEncoder.Encode` of the payload with bit *i* set. Checked two
-ways — the 91 rows form the identity on columns 0–90, and **500 random payloads,
-87 000 codeword bits, agreed bit for bit** with `LdpcEncoder.Encode`. **It did.**
+**The going-in baselines both held.** `Ft8Sharp.Tests` measured **586 passed / 0 failed / 1 skipped
+/ 5 m 19 s**, against the instruction's 586 / 0 / 1 / 5 m 23 s. `Ft8Sharp.Deep.Tests` was **35 tests
+total**, of which 34 passed and 1 - the type-list tripwire - failed the moment task 2 added a type,
+which is the tripwire working. The one expected skip is
+`Ft8TableGenerationTests.RewriteTheCheckedInTablesFile` and no second skip appeared. **No red
+outside the expected set in either suite at any point.**
 
-*1.2 The population*, one whole 51-trial block at -21 dB, from `Ft8SlotResult`'s own
-five counts: **667 candidates, 3 reaching parity, 3 passing the checksum, 3 becoming
-text, 0 duplicates, 3 of 51 trials returning their own message, 0 empty searches.**
+### What was traced, built and measured
 
-*1.3 The ceiling.* See §3. Median closest distance **31 of 174**; median errors inside
-the 91 most reliable positions **6**; **2 of 51 trials with no candidate near the
-signal at all.**
+**Task 1, the trace, before a line of the combiner.** `Ft8Unit247CombiningTraceTests` synthesises
+each of the 51 population messages twice - same clean audio, two independent noise draws - at
+-21 dB and -24 dB, and measures the hard-decision distance from the closest candidate in each slot,
+and from their normalised sum, to the codeword the ladder knows it transmitted. Section 3 leads
+with the distributions. Slot A's row reproduces unit 246's ceiling exactly, median 31, which is
+what says the two measurements are of the same thing.
 
-*1.4 Where the reproduction has to be exact.* `Ft8SlotDecoder.Decode(Ft8Waterfall)`,
-`src/Ft8Sharp/Dsp/Ft8SlotDecoder.cs`, stage by stage:
+**Task 2, `Ft8DeepSoftCombiner`.** Normalise each input through the port's own
+`Ft8SoftSymbols.Normalise`, add position by position, re-normalise, and return the variance the sum
+carried before re-normalisation. Four properties pinned on synthesised ratios: disjoint errors
+repair each other at every planted count from 5 to 60; two different codewords combine to something
+at least three times further from either transmission than the hearing it came from; a hearing
+combined with itself decides exactly what it decided alone, under both weightings, and its array is
+not modified; and 72 degenerate combinations - all zero, all equal, both infinities, not-a-number,
+mixed - none refused and none producing a ratio that is not finite.
 
-| Line | What |
-|---|---|
-| `:143` | `_search.Find(waterfall)` — `Ft8SyncSearch.Find(Ft8Waterfall)` at `Ft8SyncSearch.cs:175` |
-| `:149` | **one `Ft8CallsignCache` for the slot**, created here, dropped on return |
-| `:151`–`:152` | the message list and the `seen` key list |
-| `:154`–`:157` | the four running counters; the fifth, `CandidateCount`, is `candidates.Count` at `:216` |
-| `:159`–`:160` | the ratio buffer (`Ft8SoftSymbols.RatioCount`) and codeword buffer (`LdpcDecoder.CodewordBits`), allocated once outside the loop |
-| `:164` | `Ft8SoftSymbols.Extract(waterfall, candidate, ratios)` |
-| `:165` | `Ft8SoftSymbols.Normalise(ratios)` |
-| `:167` | `Ft8CodewordDecoder.Decode(ratios, cache, MaxIterations)` |
-| `:169`–`:172` | `paritySatisfied++` for **every status that is not `ParityNeverSatisfied`** — so `ChecksumFailed` counts here |
-| `:174`–`:177` | `checksumPassed++` for `Decoded` **or** `MessageNotReadable` |
-| `:179`–`:182` | anything but `Decoded` stops here |
-| `:184` | `becameText++` |
-| `:195`–`:196` | **the de-duplication key: `LdpcDecoder.Decode` re-run over the same ratios**, then `codeword[..Ft8Payload.MessageBits]` |
-| `:198`–`:202` | `AlreadySeen` → `duplicates++` and `continue` |
-| `:204`–`:209` | the `MessageLimit` stop — **`continue`, not `break`, and it counts as nothing**; `becameText` was already incremented |
-| `:211`–`:212` | `seen.Add(key)`, `messages.Add(new Ft8SlotMessage(candidate, result))` |
+**Task 3, the pairing rule and the budget.** `Ft8DeepCombineSettings`. One FT8 tone of frequency
+tolerance and two symbol periods of time tolerance, both read off task 1's measurement rather than
+chosen; one partner per candidate per remembered slot, which is the smallest budget that can
+produce a combination at all. Section 3 has the arithmetic.
 
-**The dedup key at `:195` is the thing an OSD decode must not do**, and task 4
-measured why.
+**Task 4, the loop.** `Ft8DeepRepeatDecoder` takes slots in order, returns the ordinary single-slot
+result for each and then combines against a bounded history. `Ft8DeepSlotDecoder` grew
+`rememberHearings`, off by default, because a finished `Ft8SlotResult` does not carry the ratios
+the gate saw. **The superset property is asserted, not intended**, and the port's five counts are
+left exactly as the port reported them.
 
-**Task 2 — the reproduced loop, OSD off, identical to the port.** `Ft8DeepSlotDecoder`
-stopped delegating and now runs those stages itself through public members only.
-**I extended that type rather than adding one beside it**, because the harness's
-`Available()` seat and the two existing `Decode` overloads are what the scoreboard
-reads; a second type would have left the seat measuring the old path. An `Osd`
-setting arrived with it, **null by default, null meaning do exactly what the port
-does**. Ruling 4's identity test compares the **whole `Ft8SlotResult`** — five counts
-and every message's text, candidate, frequency and dt, in order — over one 51-trial
-block at -19 dB, one at -21 dB, the committed capture `ft8-example-244.wav`, and **all
-69 reference recordings, 801 messages**. Every one matched.
+**Task 5, the repeats ladder.** `Ft8LadderHarness.RunRepeats`, beside `Run` and not instead of it -
+`Run` at `:244` was not touched. Seed arithmetic in `Run`'s own shape, and a test asserts that
+repeat 0 draws bit-for-bit what `Run` draws, decode for decode and to nine decimal places of
+delivered ratio.
 
-**I changed a tripwire unit 245 left on purpose, rather than a test breaking.**
-`Ft8DeepSlotDecoderTests`'s `Assert.Single(types)` plus its refusal of any type named
-`Osd` or `Ordered` was written to force this unit to come here deliberately. It now
-asserts the sibling's whole type list, so the next unit that adds one has to come here
-too. Each identity test also asserts `deep.Osd is null`.
+**Task 6, the scoreboard.** 306 trials at -21 and -24 dB, both placements, four configurations,
+twelve rows, plus the step 2 regression column. Section 3 has the tables.
 
-**Task 3 — the OSD core.** `Ft8DeepOrderedStatistics`, from Fossorier and Lin 1995,
-cited in the new `src/Ft8Sharp.Deep/porting-notes.md` and in XML remarks at the point
-of use. Reliability ordering; most reliable basis by GF(2) elimination visiting columns
-in that order; order 0 re-encode; order λ over every subset of size 1 to λ; ranked by
-soft distance. Tests plant errors at known positions with every magnitude equal, so the
-basis is positions 0–90 by construction: **λ errors inside the basis recover at order λ
-and λ+1 do not, for λ = 0, 1, 2, 3**; twenty errors below the basis are overwritten for
-free at order 0; re-encoding counts pinned at **1, 92, 4187, 125 672**. On degenerate
-input — all zero, all equal, all infinite, all not-a-number, alternating extremes and
-twenty draws of noise — **the elimination returned 91 distinct independent columns every
-time and nothing threw**, and what came back was a codeword every time.
+**Task 7, the write-up.** `docs/unit247-combining.md` and `HM-OPEN-075`.
 
-**A decision I made for myself, in full.** The "is it a codeword" check goes through
-`LdpcEncoder`, not `LdpcDecoder`. The port **refuses the all-zero word outright** —
-upstream's *message converged to all-zeros, which is prohibited* — so on all-zero
-ratios its decoder reports a perfectly valid codeword as a failure. Re-encoding the
-recovered word's own first 91 bits and requiring all 174 back asks the same question
-with no such exception. It also means an OSD that returns the all-zero codeword can
-never produce a decode, which is a safety property and not a defect.
+### Decisions this session made for itself, reproduced in full
 
-**Task 4 — the gate.** `Ft8DeepOrderedStatistics.Saturate` makes ±1 ratios, puts them
-on upstream's scale through the port's own `Ft8SoftSymbols.Normalise`, and hands them
-to `Ft8CodewordDecoder.Decode`. **The port's parity gate and CRC-14 gate are the only
-acceptance.** A codeword OSD got *right* came back `Decoded`, `"HAMLET 246"`, one
-iteration. A codeword OSD got *wrong* — five basis errors against an order-1 search —
-came back **34 bits from the one that was sent, a genuine codeword with 0 unsatisfied
-checks**, and the port refused it: `ChecksumFailed`, empty text. And the dedup key:
-on a candidate of the shape OSD is offered, belief propagation spent 25 iterations,
-left **47 checks unsatisfied**, and its answer disagreed with OSD's codeword in **1 of
-the 77 key bits** — which is why the key is taken from OSD's own codeword.
+**1. The weighting is equal, and the measurement did not separate the two.** Task 1 measured both:
+at -21 dB, equal weight put 23 of 51 combinations at or below the recovery threshold and
+pre-normalisation-variance weighting put 24 of 51. **One trial of 51 is not a difference and it is
+not reported as one.** Equal weight is the default because the ladder delivers both hearings within
+hundredths of a decibel of each other, which is exactly the condition under which equal weight is
+optimal, and because the simpler rule is the one that cannot go wrong. Variance weighting exists
+and is documented as a proxy for the fading case the ladder does not present.
 
-**Task 5 — OSD in the loop.** Run only where the port's per-candidate result is
-`ParityNeverSatisfied`. **The stopping rule, both halves:** a *candidate* stops when
-the enumeration for its order is exhausted — it always ends with exactly one codeword,
-the best by soft distance, and that one is submitted once, with no retry and no second
-order; a *slot* stops when the candidate list runs out, with no early exit and no
-budget, so the worst case is the candidate limit times the order's re-encoding count
-and that is measured rather than believed. `Ft8DeepOsdCounts` carries offered,
-produced, accepted and re-encodings.
+**2. The combined column is scored on the union over a trial's slots, not on the last slot alone.**
+This was changed during task 5 after the first walk showed 1 trial of 51 reading as *decoded by a
+single slot and lost by the combination*, which the superset property makes impossible. It was an
+artefact of the scoring - the first slot had decoded the message on its own and the last slot's
+result did not carry it - and not a decoder losing anything. With the union it is **0 of 306 on
+every configuration**. The two-chances baseline is reported separately so the combining gain is
+still isolated.
 
-**Task 6 — the order table.** §3.
+**3. The combined column has ordered statistics decoding OFF.** Deliberately, so that the
+difference between column one and column three is soft combining and nothing else. The two stages
+have not been run stacked and that is said rather than implied.
 
-**Task 7 — the scoreboard, whole.** §3.
+**4. A wrong pairing that returns one of its own two transmissions is not a wrong decode.** Task 3's
+gate test found 5 of 56 deliberately wrong pairings decoding, and every one returned one of the two
+messages that went into it - where two messages are near-neighbours, the combination stays inside
+the stronger one's basin. **§0.0 is about messages nobody sent**, so the assertion is written to
+that count, and it is zero. Asserting that no wrong pairing may decode at all would have been
+asserting something the phase does not require.
 
-**Task 8 — the write-up. Not dropped.** `docs/unit246-osd.md` carries the ceiling
-distribution and the order table so the next unit does not re-measure them.
-**`HM-OPEN-074` opened**, because the numbers earned it: two of 51 trials had no
-candidate within 60 of the transmitted codeword, so no coding work can reach them and
-step 4's baseband re-sync is where they live. **The other half of task 8's condition did
-not hold and nothing was opened for it** — the errors do *not* sit outside the most
-reliable basis; the median trial carries about 6 of its 31 inside it, which is exactly
-why order 2 buys anything.
+**5. The type-list tripwire was changed three times, deliberately.** Unit 246 left it as a tripwire
+for exactly this. It fired at task 2 rather than task 4 because task 2 was where the first new type
+landed, and it was rewritten at tasks 2, 3 and 4 as the assembly grew. **A test broke because the
+assembly changed and the unit that changed the assembly came here** - it was not discovered
+afterwards.
 
-### Verify this instruction against the tree
+### One thing done wrong and corrected
 
-**Every line checked. Two mismatches, both trivial, neither repaired.**
-
-- `Ft8Tables` `LdpcM` 83 `:46`, `LdpcN` 174 `:49`, `LdpcKBytes` 12 `:52`,
-  `LdpcGenerator` `:76`, `LdpcNm` `:165`, `LdpcMn` `:254`, `LdpcNumRows` `:434` — all
-  exact. `LdpcEncoder.Encode` `:73` and `:91` — exact. `LdpcDecoder.Decode` `:136`,
-  `LdpcDecodeResult` carrying `UnsatisfiedChecks`/`Iterations`/`ParitySatisfied` —
-  exact. `Ft8CodewordDecoder.Decode` `:70` with GATE 1 at `:80` and GATE 2 at `:96` —
-  exact. `Ft8Payload` `MessageBits` `:57`, `PayloadBits` `:66`, `Create` `:98`,
-  `TryRead` `:165` — exact. `Ft8SoftSymbols` `:117`/`:287`/`:323`/`:351` — exact.
-  `Ft8SyncSearch` `DefaultMinimumScore` 10 `:82`, `DefaultCandidateLimit` 140 `:88` —
-  exact. `Ft8SlotDecoder.DefaultMessageLimit` 50 `:63` — exact.
-- **Mismatch 1.** `Ft8LadderHarness.Available()` is at **`:194`**, not "about `:190`".
-  Two entries, as stated.
-- **Mismatch 2.** The one-type tripwire assertion is at
-  **`Ft8DeepSlotDecoderTests.cs:164`**; `:156` is the `GetTypes()` line above it.
-- Versions as stated going in: root `1.12.48`, `Ft8Sharp` **`0.10.7`**,
-  `Ft8Sharp.Deep` `0.1.0`. Highest open issue id `HM-OPEN-073`.
-- `PROJECT_STATUS.md` `RULES_AT` reads `HM-DEC-153 (2026-09-04)` while `CLAUDE.md` §1
-  tops out at `CPS-DEC-0152`. **Still present. Reported once, here, and not
-  reconciled.**
-- `.run-unit/*` and the three root bookkeeping files were modified and uncommitted.
-  **`PHASE_OUTCOME.md`, `PHASE_STATUS.md` and `RUN_LEDGER.md` went in with the first
-  commit, as instructed.** `.run-unit/` was left to the launcher.
-
-### The shell
-
-Nothing new. `dotnet build`, `dotnet test` and `git` all ran. `git commit -F -` with a
-heredoc was refused by the static analyser, so the message went into a file under
-`.run-unit/scratch/` and `git commit -F <file>` ran — a permitted spelling found rather
-than a stop. Writing under `.git/` was refused as a sensitive path. Nothing halted.
+**Four `UPDATED:` timestamps in `PROJECT_STATUS.md` were composed rather than read from the clock**,
+running up to an hour ahead of it, before I checked `date` and found the drift. `CLAUDE_CODE.md` §7
+names that as one of the recurring failures the standard exists to prevent. The value was corrected
+and every subsequent one was read. The cadence itself was kept: the file was updated after every
+task with `STATE`, `TASK: n of m`, `BALL`, `UPDATED` and a `NOTE` about what was moving.
 
 ## 2. What the owner should expect
 
-**`Ft8Sharp.Deep` now hears things the port cannot, and it is off by default.**
-`new Ft8DeepSlotDecoder()` still reproduces `Ft8SlotDecoder` exactly; ordered
-statistics decoding only runs when a caller passes `Ft8DeepOsdSettings`. The
-scoreboard's OSD-on column is the only place it is switched on.
+**Hamlet can now hear a call it missed the first time, by adding what it heard then to what it
+heard the second time and reading the sum.** Nothing in WSJT-X does this. It is the first thing in
+this phase that aims past the best decoder there is rather than at it.
 
-**`Ft8Sharp` is untouched and still `0.10.7`.** Not one file under `src/Ft8Sharp/` was
-opened for writing, including its `porting-notes.md`. Root version went `1.12.48` →
-`1.12.49`; `Ft8Sharp.Deep` went `0.1.0` → `0.2.0`, because it has a capability of its
-own now.
+**Nothing is on by default and no behaviour Tim sees has changed.** `Ft8DeepRepeatDecoder` with
+combining null is `Ft8DeepSlotDecoder`, which with OSD null is exactly `Ft8SlotDecoder`. The
+application does not use the sibling yet.
 
-### What will look wrong and is not
+**What will look wrong and is not:**
 
-- **Step 2 reads `partial` in `PHASE_OUTCOME.md`, not `done`.** That is the correct
-  state: the rate exit is not met and the number is still moving, which is exactly the
-  condition step 2's own second exit says keeps a step open.
-- **`Ft8Sharp.Tests` went 582 → 586 tests but only 5 m 15 s → 5 m 23 s**, despite the
-  new scoreboard test alone taking 3 m 15 s. xunit runs test classes in parallel; the
-  new work fitted inside the existing wall clock. Nothing was skipped.
-- **`ParitySatisfiedCount` does not jump in the OSD-on column.** A codeword the port
-  refuses leaves the port's verdict standing, so the five counts stay a report on the
-  port's belief propagation. OSD's own three counts carry OSD's story. A rate that moved
-  with no OSD activity behind it would therefore be visible as exactly that.
-- **The OSD stage produces a codeword for nearly every candidate it is offered and the
-  port refuses nearly all of them** — 11 451 offered across the ladder, 100 accepted.
-  That is the ordinary case: most of what it is handed is noise, and the gate working is
-  what the low acceptance rate looks like.
-- **Order 2 is the default even though order 3 decoded more.** Order 3 bought one extra
-  decode of 51 for 246 ms a trial, which 51 trials cannot separate from noise. The
-  reasoning is on `Ft8DeepOsdSettings.Default` and order 3 is explicitly not ruled out.
+- **The combined column costs about 129 ms a trial against the port's 64.** A trial is now *two
+  slots*, and what has to fit inside FT8's 15 seconds is one slot. The worst single slot observed
+  anywhere in the measurement was **113.3 ms**, a 132-fold margin, and three of the four
+  worst-slot observations carried no combinations at all - what is slow is the search.
+- **The -24 dB tables are three columns of zero.** That is the measurement, taken deliberately at a
+  rung 4.2 dB below the single-slot crossing so that *no single slot could decode this alone*
+  needs no argument. Task 1 had already measured why it would be zero.
+- **The two -21 dB numbers are very far apart - 22.2 per cent and 70.9 per cent.** They are the
+  same measurement with and without a realistic clock and oscillator error between slots. **The
+  lower one is quoted everywhere a single figure is wanted**, and the gap is `HM-OPEN-075`.
+- **`Ft8Sharp.Tests` now takes 8 m 12 s rather than 5 m 19 s.** The three extra minutes are this
+  unit's 306-trial walks. Seven tests were added and one skip is unchanged.
+- **`Ft8DeepSlotDecoderTests.TheSiblingHoldsExactlyTheseTypesAndTheListIsAssertedWhole` was
+  rewritten.** That is a tripwire unit 246 left on purpose, walked into on purpose.
 
 ## 3. What you should see
 
-### 1. The three-column ladder, whole
+### 1. Task 1's distances - whether soft combining reaches a codeword at all
+
+`tests/Ft8Sharp.Tests/Dsp/Ft8Unit247CombiningTraceTests.cs`. The same 51 messages heard twice, and
+the closest candidate in each hearing measured against **the codeword the ladder knows it
+transmitted**. **The code's iterative recovery reaches zero at about 17 of 174.**
+
+**-21 dB.** Slot A seed 220791 delivered -21.004 dB, slot B seed 221791 delivered -21.002 dB - the
+same rung, and the delivered means are what say so.
+
+```
+what                                          median  min  max   at or below 17
+slot A's closest candidate                        31   15   81      2 of 51
+slot B's closest candidate                        31   20   48      0 of 51
+combined, oracle pairing, equal weight            18    8   48     23 of 51
+combined, oracle pairing, variance weighted       18    6   39     24 of 51
+combined, highest-scoring candidate each slot     23    8   98     16 of 51
+combined, best over every candidate pair          18    8   43     23 of 51
+```
+
+**Soft combining reaches, and it reaches by about half the distance.** The median falls from 31 to
+18. **48 of 51 trials had the combination strictly closer than the better of the two hearings, and
+22 of 51 had neither hearing under 17 and the combination under it.** The ceiling - the best of all
+7 790 candidate pairs examined - is the same 23 of 51 as the truth-chosen pairing, so a pairing rule
+has essentially no headroom to lose. **Summed variance before re-normalisation: median 69.0, min
+44.8, max 79.4**, against 48 for two independent hearings each arriving at the port's normalised
+variance of 24 - so the two hearings agreed on rather more than half of what they said.
+
+**-24 dB.**
+
+```
+what                                          median  min  max   at or below 17
+slot A's closest candidate                        69   42   84      0 of 51
+slot B's closest candidate                        72   40   84      0 of 51
+combined, oracle pairing, equal weight            62   39   81      0 of 51
+combined, best over every candidate pair          60   39   74      0 of 51
+```
+
+**It does not reach, and the reason is not the combining.** A candidate unrelated to the
+transmission draws its distance from Binomial(174, 0.5) - mean 87, standard deviation 6.6. A median
+closest candidate of 69 is under three standard deviations from pure chance: **at -24 dB the sync
+search is barely finding the signal**, and the summed variance says the same thing at a median of
+**48.9**, which is exactly what two independent vectors of no information sum to. **This is a
+synchronisation limit and it belongs to step 4.**
+
+**The pairing, measured before it was designed.** Between the two hearings' closest candidates at
+-21 dB: frequency gap median **0.00 Hz**, within 3.125 Hz on **49 of 51**; time gap median
+**0.000 s**, within 0.16 s on **49 of 51**. The two that miss are unit 246's two trials with no
+candidate near the signal at all. **The closest candidate is not the highest-scoring one in 10 of 51
+slot A trials and 9 of 51 slot B trials**, which is why the production rule iterates over every
+candidate of the later slot and chooses only the *partner* by score.
+
+### 2. The repeats ladder, whole
+
+`tests/Ft8Sharp.Tests/Dsp/Ft8Unit247ScoreboardTests.cs`. Column one is the port on the first slot
+alone; column two the sibling with ordered statistics decoding on, same slot; **column three the
+sibling with OSD off and combining on**, all slots in order.
+
+**-21 dB, 306 trials, both slots on the same bin and the same sample:**
 
 ```
 decoder      requested  delivered  trials  DECODED  MISSED  WRONG    rate   lo 95   hi 95    ms/tr
-Ft8Sharp         -19.0    -19.001     306      248      58      0    81.0    76.3    85.0     65.2
-Deep OSD off     -19.0    -19.001     306      248      58      0    81.0    76.3    85.0     64.3
-Deep OSD on      -19.0    -19.001     306      276      30      0    90.2    86.3    93.0     72.6
-Ft8Sharp         -20.0    -20.000     306       73     233      0    23.9    19.4    28.9     64.8
-Deep OSD off     -20.0    -20.000     306       73     233      0    23.9    19.4    28.9     64.2
-Deep OSD on      -20.0    -20.000     306      125     181      0    40.8    35.5    46.4     72.6
-Ft8Sharp         -21.0    -21.001     306       13     293      0     4.2     2.5     7.1     64.1
-Deep OSD off     -21.0    -21.001     306       13     293      0     4.2     2.5     7.1     63.7
-Deep OSD on      -21.0    -21.001     306       33     273      0    10.8     7.8    14.8     72.5
-
-  Ft8Sharp     at -19.0 / -20.0 / -21.0 dB: NO WRONG DECODES.
-  Deep OSD off at -19.0 / -20.0 / -21.0 dB: NO WRONG DECODES.
-  Deep OSD on  at -19.0 / -20.0 / -21.0 dB: NO WRONG DECODES.
+single slot      -21.0    -21.001     306       13     293      0     4.2     2.5     7.1     64.4
+single + OSD     -21.0    -21.001     306       33     273      0    10.8     7.8    14.8     72.6
+combined x2      -21.0    -21.000     306      217      89      0    70.9    65.6    75.7    129.0
 ```
 
-**The OSD-off column equalling the port is what makes the third column mean anything:**
-because the sibling reproduces the port's loop decode for decode and miss for miss on
-every rung — asserted per rung, not merely printed — a difference between the second and
-third columns is attributable to ordered statistics decoding and to nothing else.
-
-**The one number the phase reads: 4.2 per cent (13 of 306), 0 wrong → 10.8 per cent
-(33 of 306), 95 per cent Wilson 7.8 to 14.8, 0 wrong. It cost 8.4 ms a trial, thirteen
-per cent over the port.**
-
-Interpolating the 50 per cent crossing between the -19 and -20 rungs, which is the
-arithmetic `HM-OPEN-067`'s "near -19.5" was read off: **-19.54 dB → -19.81 dB**. About
-**0.27 dB** of the 1.5 dB, about **1.2 dB** still out there.
-
-### 2. The ceiling — the finding this unit owes the phase
-
-One whole 51-trial block at -21 dB, seed 220791, against **the codeword the ladder knows
-it transmitted**.
-
-Closest candidate's hard-decision distance, all 51 trials, sorted:
+**-21 dB, 306 trials, the later slot 2.00 Hz and 480 samples away** - a third of an FT8 tone and a
+quarter of a symbol period, off the block grid and off the sub-block grid:
 
 ```
-15 16 20 21 21 25 25 25 26 26 27 27 27 27 28 28 29 29 29 29 30 30 30 31 31 31 31
-31 31 32 32 33 34 34 34 35 35 36 38 38 38 39 40 40 41 42 43 44 45 71 81
+decoder      requested  delivered  trials  DECODED  MISSED  WRONG    rate   lo 95   hi 95    ms/tr
+single slot      -21.0    -21.001     306       13     293      0     4.2     2.5     7.1     64.2
+single + OSD     -21.0    -21.001     306       33     273      0    10.8     7.8    14.8     72.7
+combined x2      -21.0    -21.000     306       68     238      0    22.2    17.9    27.2    128.9
 ```
 
-Median about **31** — unit 222's figure — against a code whose iterative recovery
-reaches zero at about **17**. That is why belief propagation gives up.
-
-Of those errors, how many fall inside the **91 most reliable positions**:
+**-24 dB, 306 trials, both placements** - the jittered run is the same three zeros:
 
 ```
-0 1 2 2 2 2 2 3 3 3 4 4 4 4 4 4 5 5 5 5 5 6 6 6 7 7 7 7 7 7 7 7 8 8 8 8 8 8 9 9
-10 10 10 10 10 11 11 11 12 41 44
+decoder      requested  delivered  trials  DECODED  MISSED  WRONG    rate   lo 95   hi 95    ms/tr
+single slot      -24.0    -24.001     306        0     306      0     0.0     0.0     1.2     63.3
+single + OSD     -24.0    -24.001     306        0     306      0     0.0     0.0     1.2     70.9
+combined x2      -24.0    -24.000     306        0     306      0     0.0     0.0     1.2    126.6
 ```
 
-| order λ | trials whose basis carries at most λ errors |
-|---|---|
-| 0 | 1 of 51 |
-| 1 | 2 of 51 |
-| 2 | **7 of 51** |
-| 3 | 10 of 51 |
-| 4 | 16 of 51 |
+**The trials only the combination decoded, and the converse:**
 
-**Trials with no candidate within 60 of the truth at all: 2 of 51** — trial 3 at 81 of
-174 and trial 7 at 71 of 174, against a chance distance of 87. `HM-OPEN-074`.
+```
+configuration              no single slot alone, combination DID   some slot alone   lost by combining
+-21 dB, same placement                        200 of 306                17 of 306          0 of 306
+-21 dB, jittered                               55 of 306                13 of 306          0 of 306
+-24 dB, same placement                          0 of 306                 0 of 306          0 of 306
+-24 dB, jittered                                0 of 306                 0 of 306          0 of 306
+```
 
-**What order this distribution admits, plainly.** Order 2 admits at most **13.7 per
-cent** of trials, order 3 at most **19.6 per cent**, order 4 at most **31.4 per cent**
-at about two and a half million re-encodings a candidate. **No tractable order admits
-40 per cent.** And two caveats, both in the direction of *worse*: the count is taken
-against the leading 91 positions and so is a **lower bound** on the true basis error
-count, and reaching the codeword also requires it to **win** the soft-distance ranking
-against the single submission allowed. **So step 2's 40 per cent is not reachable by
-ordered statistics decoding, and 49 of 51 trials did have a candidate near the signal
-and were still not decoded — so the remaining 1.2 dB is not in synchronisation either.**
+**Lost by combining is zero everywhere, as the superset property requires.**
 
-### 3. The order table, and the time budget
+**Zero wrong decodes on all twelve rows of the four configurations.** Every combined decode was
+checked against the message the ladder transmitted: **211 of 211 at -21 dB same placement, 62 of 62
+at -21 dB jittered, and none to check at -24 dB.** No combined decode anywhere was a message that
+was not sent.
 
-One whole 51-trial block at -21 dB, **every row seeing the same seed and the same noise
-draw**, delivered -21.004 dB on every row.
+**The step 2 regression check**, re-measured underneath because task 4 added a hearing-capture path
+to `Ft8DeepSlotDecoder` and a claim that it changes no decision is worth what it is measured at:
 
-| row | decoded | missed | **wrong** | ms/trial | worst slot ms | offered | accepted | re-encodings |
-|---|---|---|---|---|---|---|---|---|
-| `Ft8Sharp` | 3 | 48 | **0** | 65.5 | 77.8 | 0 | 0 | 0 |
-| Deep OSD off | 3 | 48 | **0** | 64.9 | 74.3 | 0 | 0 | 0 |
-| Deep order 0 | 3 | 48 | **0** | 66.3 | 102.1 | 664 | 0 | 664 |
-| Deep order 1 | 4 | 47 | **0** | 65.8 | 75.5 | 664 | 1 | 61 088 |
-| Deep order 2 | 4 | 47 | **0** | 74.3 | 110.1 | 664 | 1 | 2 780 168 |
-| Deep order 3 | 5 | 46 | **0** | 311.4 | 511.6 | 664 | 2 | 83 446 208 |
+```
+decoder      requested  delivered  trials  DECODED  MISSED  WRONG    rate   lo 95   hi 95    ms/tr
+Ft8Sharp         -21.0    -21.001     306       13     293      0     4.2     2.5     7.1     64.5
+Deep OSD on      -21.0    -21.001     306       33     273      0    10.8     7.8    14.8     72.8
+```
 
-**Order 0 bought nothing** and is reported as buying nothing. **Order 1 bought one
-decode of 51 for no measurable cost. Order 2 bought nothing over order 1 on this block
-and cost 8.8 ms a trial. Order 3 bought one more and cost 246 ms a trial.**
+**Exactly what unit 246 left. Step 2's number did not move underneath step 6's.**
 
-**The default is set to order 2, and here is why, from this table.** One decode either
-way is well inside the noise at 51 trials, so the gains cannot be separated and the
-choice was made on cost against the headroom §3.2 measured: the ceiling admits 7 of 51
-at order 2 against 2 of 51 at order 1, and order 2's worst observed slot is 110 ms — a
-136-fold margin. Order 3 is **not** ruled out; separating it needs more trials, not a
-bigger claim. Nothing was tuned to hit a target: no order in this table reaches 40 per
-cent.
+### 3. The submission arithmetic and the time budget
 
-**Worst-case time per slot, over the whole 918-trial ladder, worst single slot rather
-than the mean:**
+**The rule.** For each candidate of the current slot, look through each remembered slot for
+candidates within **6.25 Hz** and **0.32 s**, take the **1** highest-scoring, and submit that one
+combination to `Ft8CodewordDecoder.Decode`. **The port's parity gate and CRC-14 gate are the only
+acceptance. There is no checksum anywhere in `Ft8Sharp.Deep`.**
 
-| column | worst slot ms | its candidates | margin against 15 s |
-|---|---|---|---|
-| `Ft8Sharp` | 103.5 | 20 | 145× |
-| Deep OSD off | 102.2 | 16 | 147× |
-| Deep OSD on | **110.2** | 14 | **136×** |
+**The budget, before the run**, at one in 16 384 per submission:
 
-The OSD stage across all three rungs: **11 451 candidates offered, 100 codewords the
-port then accepted, 47 945 337 re-encodings spent.**
+```
+case                                         cand/slot  subs/slot pair  over 306 trials  expected wrong
+pair every candidate with every candidate          140          19 600        5 997 600           366.1
+this rule, worst case at the candidate limit       140             140           42 840             2.61
+this rule, at the ladder's observed count           13              13            3 978             0.24
+```
+
+**The worst-case row is above one and is said to be**: it is a slot returning the port's full
+candidate limit on all 306 trials, and the ladder's slots carry one transmission and return about
+13. **What is quoted is what was counted, not the bound.**
+
+**What was actually spent**, from `Ft8DeepCombineCounts`:
+
+```
+configuration              pairs offered   submitted   accepted by the PORT   naive expected wrong
+-21 dB, same placement            48 344         357                    216                  0.022
+-21 dB, jittered                  50 677         516                     88                  0.031
+-24 dB, same placement            42 840          76                      0                  0.005
+-24 dB, jittered                  41 876          58                      0                  0.004
+```
+
+**Zero messages nobody sent were returned in any configuration.** At -24 dB the port accepted none
+of the 134 combinations put to it, which is the gates working rather than the stage failing.
+
+**And the gate refusing a wrong pairing, in the port's own words.** 56 deliberately wrong pairings
+of eight messages, every input decodable on its own, codewords 52 to 94 of 174 apart:
+**51 `ParityNeverSatisfied`, 0 `ChecksumFailed`, 0 `MessageNotReadable`, 5 decoded - and every one
+of those five returned one of its own two transmissions. 0 returned a message nobody sent.** GATE 1
+at `Ft8CodewordDecoder.cs:80`: *"Until this holds, the bits are the decoder's closest approach and
+not a codeword, so there is nothing here to compute a checksum over."* GATE 2 at `:96`: *"belief
+propagation can converge on a perfectly valid codeword that is not the one that was sent, and every
+parity check in the code will agree with it. Only the checksum knows."*
+
+**The worst-case time per slot, worst observed and not the mean:**
+
+```
+configuration              worst slot ms   its candidates   its combinations   margin against 15 s
+-21 dB, same placement             102.5               11                  0                 146x
+-21 dB, jittered                   101.8               11                  3                 147x
+-24 dB, same placement             100.2               12                  0                 150x
+-24 dB, jittered                   113.3               14                  0                 132x
+```
+
+**132-fold margin at the worst.** Three of the four carried no combinations, so what is slow is the
+search and not the combining - the whole -21 dB jittered walk spent 516 submissions across 612
+slots.
 
 ### 4. Both suites
 
-| suite | before | after |
-|---|---|---|
-| `Ft8Sharp.Tests` | 582 passed / 0 failed / 1 skipped / 5 m 15 s | **586 passed / 0 failed / 1 skipped / 5 m 23 s** |
-| `Ft8Sharp.Deep.Tests` | 18 passed / 0 failed / 0 skipped / 445 ms | **35 passed / 0 failed / 0 skipped / 997 ms** |
+**`Ft8Sharp.Tests`: 593 passed / 0 failed / 1 skipped / 8 m 12 s.** Baseline this session was 586 /
+0 / 1 / 5 m 19 s; the seven extra are this unit's measurements. **`Ft8Sharp.Deep.Tests`: 51 passed /
+0 failed / 0 skipped.** Baseline 35 / 0 / 0.
 
-**The baseline matched unit 245's exactly**, which is itself a finding and a clean one.
-**No red anywhere, so nothing is outside the expected set.** The one skip is
-`Ft8TableGenerationTests.RewriteTheCheckedInTablesFile`, unchanged and not a reference
-clone skip — the pinned clone was present and all 69 recordings ran.
-`Hamlet.App.Tests` and `Hamlet.RadioEngine.Tests` were not run; nothing here touches
-either, and the 51 inherited CW reds and
-`CwAdjudicationTests.ASpeedChangeInRealisticAudio` are not in these suites.
+**No red outside the expected set.** The one expected skip,
+`Ft8TableGenerationTests.RewriteTheCheckedInTablesFile`, is unchanged and no second skip appeared.
+`Hamlet.App.Tests` and `Hamlet.RadioEngine.Tests` were not run, as instructed, so
+`CwAdjudicationTests.ASpeedChangeInRealisticAudio` and the 51 inherited CW reds were not exercised.
 
-### The record
+### What a listener would notice
 
-`PHASE_OUTCOME.md` entry appended through
-`dotnet build tools/arbiter/outcome-append.proj -p:EntryProps=C:/Source/HamLet/.run-unit/scratch/unit246-outcome.props`
-— **`outcome-append exit 0`**, entry written as `## UNIT 4 - STEP 2` and the header's
-step 2 state updated to `partial` in the same call. Nothing was written by hand and
-nothing above the new entry was touched.
+**At -21 dB, roughly one call in twenty comes through today. With the same station repeating itself
+in the next slot, between one in five and seven in ten come through - and none of them is a message
+nobody sent.** That is a signal about 1.2 dB weaker than Hamlet could read this morning, heard
+twice.
 
 ## 4. What's blocking us
 
-**Nothing is blocking. Two items logged, neither asking for a ruling, neither standing
-in the way of any exit criterion in B.**
+**Step 6 is not closed. It is `partial`, at four of five must-pass exits met outright and the fifth
+met at -21 dB and not at -24 dB.** What the distribution says is in the way is not the combining:
+at -24 dB the closest candidate the sync search returns sits a median 69 of 174 from the transmitted
+codeword against a chance distance of 87, so there is nothing near the signal to combine, and the
+same cause takes back about half the gain at -21 dB the moment the two slots stop sitting on the
+same sample and the same bin. **The next move is step 4's baseband re-sync, not another approach at
+step 6.**
 
-### `RULES_AT` still disagrees with `CLAUDE.md`, reported once as instructed
+**One item, and it asks for no ruling.** Logged as logged.
 
-`PROJECT_STATUS.md` `RULES_AT` reads `HM-DEC-153 (2026-09-04)` while `CLAUDE.md` §1 tops
-out at `CPS-DEC-0152`. The work instruction said report once and go no further because
-`CLAUDE.md` is the owner's file. **This is that once. It asks for no ruling and nothing
-was reconciled.**
+### HM-OPEN-075 - placement jitter takes back about half of what combining reaches
 
-### `HM-OPEN-074` is opened and is step 4's to carry, not a question
+**Logged, not a question.** `owner: claude`, `severity: slows`, `blocks: nothing`.
 
-Two of 51 trials at -21 dB had no candidate within 60 of the transmitted codeword, so
-the sync search never returned a place where the signal was and there are no ratios for
-any coding work to operate on. That is a floor under step 2 and a measured argument that
-step 4's baseband re-sync has something to find. **It is logged, not asked.** It is also
-explicitly *not* where the missing 1.2 dB is: two trials cannot account for a decibel,
-and 49 of 51 trials did have a candidate near the signal and were still not decoded.
+At -21 dB over 306 trials, combining reaches **200 of 306** trials that no single slot decoded when
+the two hearings sit on the same sample and the same bin, and **55 of 306** when the later one is
+moved 2.00 Hz and 480 samples - a third of an FT8 tone and a quarter of a symbol period. **That is
+149 trials, about half the population, lost to placement.**
 
-### The one line the arbiter needs
+**It is not either of the two things this unit's task 7 was told to open an issue for**, and that is
+said explicitly in the entry: the summed distance *did* fall below the code's recovery threshold,
+and the pairing tolerance the ladder needs *is* narrow. Both came out the good way. This is a third
+thing the numbers earned.
 
-**Step 2 is not closed, and the number is still moving** — 4.2 to 10.8 per cent at
--21 dB with zero wrong, five of six must-pass exits met. **But the ceiling says this
-approach cannot reach 40 per cent at any order that fits in a slot**, so the next unit
-on step 2 would be taking a different approach, not tuning this one, and the arbiter has
-a distribution rather than an opinion on which to decide whether to do that or move to
-step 3 or step 4 instead.
+**Why it matters for what comes next.** `Ft8SoftSymbols.Extract` reads a candidate at that
+candidate's own block and bin, so two differently-placed hearings are read from differently aligned
+windows and each carries more of its own alignment error into the sum. **Step 4 - each candidate
+re-synced at baseband - is exactly the work that would recover it.** `HM-OPEN-074` already argues
+step 4 has something to find for the 4 per cent of trials with no candidate near the signal at all;
+**this is a second and much larger argument for the same step**, and the two together are the case
+for taking step 4 next rather than step 3 or step 5.
+
+**Nothing waits on an answer.** Step 6's gain is real, measured and quoted with the jitter on, which
+is the conservative half of the pair.
