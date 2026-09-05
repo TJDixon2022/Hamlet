@@ -566,7 +566,100 @@ five places. **This list is what step 6 reads:**
 
 ## 7. The masking survey — measured
 
-*Written by task 2. See §7 of the unit's `output.md` for the same table.*
+**`Ft8Sharp.Tests.Dsp.Ft8Unit253MaskingSurveyTests.AQuietStationBehindALoudOneIsSurveyedAcrossSeparationAndLevel`**,
+run alone by exact full method name, foregrounded, 480 s timeout, **1 m 16 s**.
+
+Quiet station requested at **-18.0 dB**, delivered **-17.998 dB**, at 1000.00 Hz,
+offset 5760 samples. One whole block of the 51-message population per cell, seed
+`220821` = `221001 + 0 + round(-18.0 * 10)`. Loud station is
+`population[(i + 25) mod 51]` at the same offset. **Ordered statistics off, fine sync
+off** — `new Ft8DeepSlotDecoder()`, which is the port exactly.
+
+**Ceiling — the quiet station alone in the identical noise draw: 50 of 51**, 64.8 ms
+a trial.
+
+| sep Hz | level dB | single pass | ceiling | gap | LOUD decoded | WRONG | ms/trial | worst slot ms |
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 0.00 | 0 | 0 | 50 | **50** | 1 | 0 | 67.2 | 78.1 |
+| 0.00 | 6 | 0 | 50 | **50** | **51** | 0 | 67.7 | 76.0 |
+| 0.00 | 13 | 0 | 50 | **50** | 51 | 0 | 69.3 | 76.6 |
+| 0.00 | 20 | 0 | 50 | **50** | 51 | 0 | 68.8 | 83.5 |
+| 6.25 | 0 | 0 | 50 | 50 | 0 | 0 | 65.5 | 71.7 |
+| 6.25 | 6 | 0 | 50 | 50 | 51 | 0 | 65.4 | 73.6 |
+| 6.25 | 13 | 0 | 50 | 50 | 51 | 0 | 67.6 | 78.3 |
+| 6.25 | 20 | 0 | 50 | 50 | 51 | 0 | 67.3 | 73.1 |
+| 12.50 | 0 | 0 | 50 | 50 | 2 | 0 | 65.1 | 72.7 |
+| 12.50 | 6 | 0 | 50 | 50 | 51 | 0 | 72.5 | 82.5 |
+| 12.50 | 13 | 0 | 50 | 50 | 51 | 0 | 70.3 | 81.3 |
+| 12.50 | 20 | 0 | 50 | 50 | 51 | 0 | 68.1 | 73.1 |
+| 25.00 | 0 | 7 | 50 | 43 | 7 | 0 | 65.3 | 71.5 |
+| 25.00 | 6 | 0 | 50 | 50 | 51 | 0 | 66.7 | 74.7 |
+| 25.00 | 13 | 0 | 50 | 50 | 51 | 0 | 68.9 | 78.2 |
+| 25.00 | 20 | 0 | 50 | 50 | 51 | 0 | 69.0 | 80.8 |
+| 50.00 | 0 | **51** | 50 | **-1** | 50 | 0 | 64.7 | 70.9 |
+| 50.00 | 6 | 50 | 50 | 0 | 51 | 0 | 67.3 | 77.3 |
+| 50.00 | 13 | 47 | 50 | 3 | 51 | 0 | 69.6 | 77.8 |
+| 50.00 | 20 | 20 | 50 | **30** | 51 | 0 | 69.0 | 74.8 |
+
+**Zero wrong on every row of the survey and on the ceiling column** — 1071 decodes,
+no message returned that neither station sent. Worst observed slot **83.5 ms**, a
+**180×** margin against 15 000 ms.
+
+### 7.1 What held and what did not
+
+| Prediction (§4.2) | Held? |
+|---|---|
+| 1. No measurable cost at S = 50 Hz at any level | **No, and this is the survey's biggest surprise.** At +13 dB it costs 3 of 50 and at **+20 dB it costs 30 of 50**. No tone bin is shared at 50 Hz, so the cost is GFSK skirt energy and 3.125 Hz analysis-bin leakage alone, and at 100× the power that is enough to bury a station |
+| 2. S = 0 Hz is the worst at every level | **Held**, but only because everything below 25 Hz is equally total |
+| 3. Cost rises monotonically with level difference below 50 Hz | **No — it is saturated.** At S ≤ 12.5 Hz the cost is already 50 of 50 at **0 dB**, so there is no room for it to rise. The prediction assumed a graded response and the instrument has a cliff |
+| 4. The knee is around +6 to +13 dB for S ≤ 12.5 Hz | **No. There is no knee below 25 Hz** — the quiet station is gone at 0 dB. The knee exists only at S = 50 Hz, and it sits between +13 and +20 dB |
+| 5. The ceiling is flat across the grid | **True by construction**, not by measurement — the ceiling column is one array reused across all twenty cells (§5.2), so this is a property of the fixture rather than a result |
+
+**Two findings worth carrying forward that were not predicted at all:**
+
+- **At 0 dB level difference, both stations are usually lost.** Look at the LOUD
+  column: 1, 0, 2, 7 at separations 0, 6.25, 12.5 and 25 Hz. Two equally loud,
+  time-aligned, overlapping FT8 transmissions do not produce one decode and one miss —
+  **they produce two misses.** That is mutual destruction and it is a case no amount
+  of subtraction can help, because there is nothing decoded to subtract.
+- **At 50 Hz and 0 dB the neighbour is worth +1**: 51 of 51 against a ceiling of 50 of
+  51. One trial the quiet station failed alone succeeded with a station 50 Hz away in
+  the slot. One trial of 51 is not a result — the Wilson interval on a difference of
+  one covers zero comfortably — but it is recorded rather than rounded away.
+
+### 7.2 The decision: which cell the ladder walks
+
+**The rule was written into the test before it ran, and it has three conditions
+because two are not enough:**
+
+1. the single pass loses the quiet message;
+2. the ceiling says the quiet message was recoverable;
+3. **the loud station itself decodes on the first pass in at least half the trials.**
+
+The third condition is the one the first version of this test did not have, and
+adding it changed the answer. **Without it the rule chose separation 0 Hz at 0 dB —
+gap 50, the largest in the table, and a cell where the loud station decodes once in
+51.** A subtractor subtracts a *decoded* message; in that cell there is nothing to
+subtract and the ladder's answer would have been zero before it was walked, for a
+reason that has nothing to do with subtraction.
+
+| | |
+|---|---|
+| cells with a gap at all | 18 of 20 |
+| cells where the loud station decoded in ≥ 25 trials | 16 of 20 |
+| **cells that are both** | **14 of 20** |
+
+> **THE LADDER WALKS SEPARATION 0.00 Hz, LEVEL DIFFERENCE +6 dB.** The single pass
+> returns **0 of 51**, the ceiling returns **50 of 51**, the gap is **50**, and the
+> loud station decodes in **51 of 51**. Chosen by the rule's own tie-break — smallest
+> separation, then smallest level difference, among the fourteen qualifying cells —
+> which lands on **the hardest cell that qualifies**: co-channel, time-aligned, and
+> with the smallest level difference at which the loud station still decodes. If
+> subtraction works there it works in the other thirteen.
+
+**There is a great deal to recover.** The gap is 50 of 51 — subtraction is not being
+asked to find a few extra decodes at the margin, it is being asked whether a station
+that is invisible today can be read at all.
 
 ## 8. The masked ladder — measured
 

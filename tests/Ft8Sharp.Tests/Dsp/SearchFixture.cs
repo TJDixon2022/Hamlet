@@ -46,18 +46,45 @@ internal static class SearchFixture
         new float[Ft8Waveform.SlotSampleCount(sampleRate)];
 
     /// <summary>
-    /// Sums one transmission into a slot at a chosen frequency and a chosen sample offset.
+    /// Sums one transmission into a slot at a chosen frequency, a chosen sample offset and a chosen
+    /// amplitude.
     /// </summary>
+    /// <param name="slot">The slot to sum into.</param>
+    /// <param name="sampleRate">Samples per second.</param>
+    /// <param name="entry">Which message of the corpus to place.</param>
+    /// <param name="baseFrequencyHz">The frequency of its lowest tone.</param>
+    /// <param name="offsetSamples">Where its first sample goes.</param>
+    /// <param name="amplitude">
+    /// <b>What to scale the synthesizer's unit-amplitude output by before summing. One by default,
+    /// and one is bit-identical to what this method did before the parameter existed.</b>
+    /// </param>
     /// <remarks>
+    /// <para>
     /// <b>Summed, not copied.</b> Twenty stations sharing a slot add to one another, which is what a
     /// receiver actually gets; overwriting would build a fixture easier than the air.
+    /// </para>
+    /// <para>
+    /// <b>THE AMPLITUDE WAS ADDED BY UNIT 253 AND IT IS OPTIONAL FOR A REASON.</b> Every recorded
+    /// figure in this phase was taken through a call site that does not pass it —
+    /// <see cref="OneSignal"/>, <see cref="ManySignals"/>, and the passband and slot-decoder tests
+    /// through them. <c>(float)(1.0 * signal[i])</c> is <c>signal[i]</c> exactly in IEEE 754, so the
+    /// default path is bit-identical rather than nearly so, and
+    /// <c>Ft8Unit253MaskingSurveyTests.UnitAmplitudePlacesBitIdenticalSamplesToTheSynthesizersOwn</c>
+    /// asserts that sample-for-sample rather than leaving it to this paragraph.
+    /// </para>
+    /// <para>
+    /// <b>Why a fixture needs it at all.</b> Until unit 253 this project had only ever measured a
+    /// slot containing exactly one transmission, so every station in every fixture was as loud as
+    /// every other. Masking is a question about level differences and cannot be asked without one.
+    /// </para>
     /// </remarks>
     internal static Truth Place(
         float[] slot,
         int sampleRate,
         EncodeCorpus.Entry entry,
         double baseFrequencyHz,
-        int offsetSamples)
+        int offsetSamples,
+        double amplitude = 1.0)
     {
         var symbols = Ft8SymbolEncoder.Encode(entry.Message);
         var signal = Ft8Waveform.Synthesize(symbols, sampleRate, (float)baseFrequencyHz);
@@ -74,7 +101,7 @@ internal static class SearchFixture
 
         for (var i = 0; i < signal.Length; i++)
         {
-            slot[offsetSamples + i] += signal[i];
+            slot[offsetSamples + i] += (float)(amplitude * signal[i]);
         }
 
         return new Truth(entry.Label, baseFrequencyHz, offsetSamples);
