@@ -1,5 +1,67 @@
 # Test baseline — the failing set, by name
 
+> ## SUPERSEDED IN PART, 2026-09-05, by work instruction 250
+>
+> **Read this box before you use any number below it.** Everything in this file
+> from *Counts* down was measured on 2026-09-01 and three of its central claims
+> are now false. The 2026-09-01 text is kept intact — a measurement is not
+> deleted because a later one disagreed with it — but it is no longer current.
+>
+> **What has changed, measured on 2026-09-05 from TRX files rather than from
+> console text:**
+>
+> | | 2026-09-01 said | 2026-09-05 measured |
+> |---|---|---|
+> | `Ft8Sharp.Tests` | 38 discovered, 38 run, 42 ms | **610 discovered, 610 run, 856 s wall clock**, 609 passed, 1 skipped |
+> | `Ft8Sharp.Deep.Tests` | did not exist | **69 discovered, 69 run, 10.4 s**, 69 passed |
+> | `Hamlet.RadioEngine.Tests` | 2157 discovered, **never completed**, no per-test time ever recorded | **2,281 discovered**; **1,541 run with per-test durations**, in four namespace batches, 42 red |
+> | `Hamlet.App.Tests` | 523 discovered, not run | **not re-measured on 2026-09-05**; the 523 is carried, not confirmed |
+> | Total discovered | 2718 | **2,960 across the three projects re-measured**, plus whatever `Hamlet.App.Tests` now holds |
+>
+> **The 38 for `Ft8Sharp.Tests` was never wrong — it has grown.** Units 216
+> through 249 added the ladder, the scoreboard, the placement traces and the
+> identity comparison to that project. It is now the second-slowest thing in
+> this repository.
+>
+> **The engine project has been timed for the first time.** It still has not been
+> run whole in one invocation, and this file's caveat 1 stands on that point.
+> What has changed is that a partial run in namespace batches leaves per-test
+> durations behind, so *which* engine tests are expensive is no longer unknown:
+> `Cw.Fixtures.TheIntegratorBandwidthTable.Write` alone is **362 s**, and the
+> twelve slowest outside `Cw` and `Rig` are 83 per cent of that batch's measured
+> test time. The 740 tests not reached are all inside
+> `Hamlet.RadioEngine.Tests.Cw`.
+>
+> **Caveat 2 is now a solved problem and the solution is not the one it
+> proposed.** It recommended the unfiltered console logger. That is wrong here:
+> **the console logs in this tree are UTF-16**, so filtering them as UTF-8 finds
+> nothing and reports zero — which is the mechanism by which a suite came to have
+> no total in four consecutive reports. **The correct instrument is a TRX logger
+> and `tools\arbiter\trx-rank.py`**, which carries a duration per test and is the
+> only place the per-test cost is written down.
+>
+> **What replaces the advice at the bottom of this file.** *Run everything* has
+> stopped being affordable and is **not what a unit does**. Tim ruled on
+> 2026-09-05 that **a unit runs no test suite at all** — only the test it
+> constructs in its own work instruction, filtered by exact name, foregrounded,
+> with a stated timeout — and that **the suites are his, by hand, uncontended,
+> once, at the end of the phase**. **`docs/gate-set.md` is the short list he
+> runs**, with the breakage each entry would have caught and the unit number
+> where it happened, and `tools\arbiter\gate-set.bat` is the command. This file
+> remains the name-by-name record of the inherited failing set; **it is not a
+> list of what to run**.
+>
+> **One failing name is new here.**
+> `Hamlet.RadioEngine.Tests.Scan.ScannerEndToEndTests.ADwellReachesTheDecoderAndTheVerdictCarriesItsConfidence`
+> was the single red outside `Cw` and `Rig` on 2026-09-05, in a batch of 988 that
+> was otherwise wholly green. It is not in unit 204's list below and not in
+> `docs/unit239-failing-set.txt`. **Nobody knows when it went red**, because no
+> unit had ever run that namespace to completion before, so there is no earlier
+> reading to diff it against. It is recorded as newly *observed*, not newly
+> caused.
+
+---
+
 **Rewritten 2026-09-01 by work unit 205, at `HEAD` `fb4d9af` on `main`, on Tim's
 Windows 11 Pro machine (10.0.26200).** Written for somebody who has never seen unit 204
 or unit 205 and needs to know what is red in this repository and what that means.
