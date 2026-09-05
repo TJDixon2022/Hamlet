@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: WORKING
-TASK: 6 of 6
-WORK_INSTRUCTION: 243 - what the ladder already is, and what this shell will actually run
+TASK: 1 of 7
+WORK_INSTRUCTION: 244 - the fixture format, the reader that refuses, and the command Tim runs
 BALL: claude
 RULES_AT: HM-DEC-153 (2026-09-04)
 NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-09-04T21:06:01-04:00
-NOTE: The outcome entry went in through the arbiter's own tool rather than by hand, step 0 reads partial in the phase header, and the report is being written against what the six tasks actually measured
+UPDATED: 2026-09-04T21:22:00-04:00
+NOTE: Ft8Sharp.Tests is running in the background for task 7; meanwhile the trace is reading what a decode carries per message and the answer on SNR is already looking like a plain no
 
 ---
 
