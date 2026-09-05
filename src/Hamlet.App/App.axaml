@@ -31,12 +31,23 @@
              told. Each says what the field is and, where it matters, what it is
              measured against.
 
-             **THE `snr` LINE SAYS THE COLUMN IS EMPTY AND WHY.** Nothing in this
-             path measures a signal-to-noise ratio, and a heading that describes
-             a measurement the column does not carry would be the same fault as
-             putting a plausible number in it (§0.0). -->
+             **THE `snr` LINE SAID THE COLUMN WAS EMPTY AND WHY, UNTIL UNIT 251.**
+             From work instruction 037 until then nothing in this path measured a
+             signal-to-noise ratio, and the sentence said so. `Ft8DeepSignalToNoise`
+             now measures one per message, so that sentence became FALSE and had
+             to be rewritten whichever way the plan's gate fell (§0.0).
+
+             **AND IT CARRIES THE SPREAD, NOT ONLY THE AVERAGE.** Over 510
+             synthesized messages at five rungs and two placements the estimate
+             agreed with the commanded ratio to a mean absolute error of 0.26 dB
+             and a 95th percentile of 0.62 dB. The 95th is the one an operator
+             needs, because the mean is the number that flatters it: a reader
+             told only the average would take a one-decibel difference between
+             two stations as real. The measurement is in
+             `docs/unit251-snr-trace.md` §6 and the test that produced it is
+             `Ft8Unit251SnrAgreementTests`. -->
         <x:String x:Key="HmDecodeUtcHelp">When the slot started, as hhmmss. FT8 runs on a strict fifteen-second grid, so every message decoded from one slot carries the same time.</x:String>
-        <x:String x:Key="HmDecodeSnrHelp">Signal-to-noise in decibels, measured against a 2500 Hz reference. Nothing in this path measures one yet, which is why the column shows a dash rather than a number.</x:String>
+        <x:String x:Key="HmDecodeSnrHelp">Signal-to-noise in decibels in a 2500 Hz reference bandwidth, which is how this mode is normally quoted. It is measured for each message from the power in the tone that was sent against the seven tones that were not. Over 510 synthesized messages it agreed with the ratio actually delivered to 0.26 dB on average and 0.62 dB at the 95th percentile, so it is shown in whole decibels and should not be read closer than about one. A dash means this message's ratio could not be measured.</x:String>
         <x:String x:Key="HmDecodeDtHelp">Seconds from the start of the slot to the moment that station began transmitting.</x:String>
         <x:String x:Key="HmDecodeHzHelp">The audio tone above the dial. The station is on the dial frequency plus this.</x:String>
         <x:String x:Key="HmDecodeMessageHelp">What was sent. Thirteen characters in three parts: who it is to, who it is from, and the payload.</x:String>
