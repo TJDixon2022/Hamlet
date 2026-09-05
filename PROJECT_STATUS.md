@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: WORKING
-TASK: 5 of 6
+TASK: 6 of 6
 WORK_INSTRUCTION: 243 - what the ladder already is, and what this shell will actually run
 BALL: claude
 RULES_AT: HM-DEC-153 (2026-09-04)
 NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-09-04T21:06:00-04:00
-NOTE: 13 of 306 at a delivered -21.001 dB, 0 wrong - not one decode different from unit 221, so no target moves; the harness returns the same three counts and the card and the ruling are written
+UPDATED: 2026-09-04T21:06:01-04:00
+NOTE: The outcome entry went in through the arbiter's own tool rather than by hand, step 0 reads partial in the phase header, and the report is being written against what the six tasks actually measured
 
 ---
 

@@ -24,6 +24,23 @@
 -->
 <Project DefaultTargets="Build">
 
+  <!--
+    THE FOURTEEN VALUES COME FROM A FILE, NOT FROM THE COMMAND LINE, and that is
+    not a preference. MSBuild's -p: switch splits a property value on commas and
+    semicolons, so the first comma in a sentence becomes a second switch and the
+    build fails with "Property is not valid" naming half a sentence. Measured on
+    the first attempt at this. Prose without commas is not prose, and %2C
+    everywhere is how a record acquires a typo it keeps forever.
+
+        dotnet build tools/arbiter/outcome-append.proj -p:EntryProps=<file>
+
+    where <file> is a props file setting Unit, Step, State, Approach, Hit, Move,
+    Why, Decided, Licence, Cost, Accomplished, Fate and StateWhy as elements.
+    XML has no comma problem. Put it under .run-unit\scratch\ so the unit's input
+    does not land in the tree.
+  -->
+  <Import Project="$(EntryProps)" Condition="'$(EntryProps)' != ''" />
+
   <PropertyGroup>
     <Cost Condition="'$(Cost)' == ''">unknown</Cost>
     <OutcomeFile Condition="'$(OutcomeFile)' == ''">$(MSBuildThisFileDirectory)..\..\PHASE_OUTCOME.md</OutcomeFile>
