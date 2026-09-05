@@ -8,15 +8,17 @@ using Xunit.Abstractions;
 namespace Ft8Sharp.Deep.Tests;
 
 /// <summary>
-/// <b>The sibling delegates, and the delegation is run rather than reasoned about.</b>
+/// <b>The sibling runs the port's loop itself, and with OSD off it returns what the port returns.</b>
 /// </summary>
 /// <remarks>
 /// <para>
-/// <b>A delegating decoder returning what it delegates to is trivially true</b> and nobody needs an
-/// experiment to believe it. What these tests are for is the part that is not trivial: that the
-/// parameters a caller hands this type reach the port unaltered, and that a whole
-/// <see cref="Ft8SlotResult"/> - all five counts and every message, in order - comes back across the
-/// seam without a count being dropped or a list being reordered.
+/// <b>This stopped being trivial at unit 246.</b> Until then the sibling delegated, and a delegating
+/// decoder returning what it delegates to needs no experiment. It now reproduces
+/// <c>Ft8SlotDecoder.Decode(Ft8Waterfall)</c> stage for stage through the port's public members, so
+/// that an ordered statistics stage has a place to sit, and the identity is a real claim about two
+/// pieces of code rather than about one called twice. These tests hold the parameters a caller hands
+/// this type to reaching the port unaltered, and a whole <see cref="Ft8SlotResult"/> - all five counts
+/// and every message, in order - to coming back the same.
 /// </para>
 /// <para>
 /// The identity over the ladder, the committed capture and the reference recordings is measured in
@@ -71,7 +73,7 @@ public class Ft8DeepSlotDecoderTests(ITestOutputHelper output)
             () => new Ft8DeepSlotDecoder(maxIterations: -1));
         Assert.Contains("cannot be negative", negativeIterations.Message, StringComparison.Ordinal);
 
-        Assert.Throws<ArgumentNullException>(() => new Ft8DeepSlotDecoder(null!));
+        Assert.Throws<ArgumentNullException>(() => new Ft8DeepSlotDecoder((Ft8SlotDecoder)null!));
         Assert.Throws<ArgumentNullException>(
             () => new Ft8DeepSlotDecoder().Decode((Ft8Waterfall)null!));
 
@@ -128,11 +130,11 @@ public class Ft8DeepSlotDecoderTests(ITestOutputHelper output)
     }
 
     /// <summary>
-    /// <b>The waterfall overload delegates too</b>, which matters because it is the one step 2 has to
-    /// get inside: <c>Ft8SlotDecoder.Decode(Ft8Waterfall)</c> is where an OSD stage would go.
+    /// <b>Both overloads reach the same loop</b>, which matters because the waterfall one is where the
+    /// OSD stage sits and the samples one is what the scoreboard's seat calls.
     /// </summary>
     [Fact]
-    public void TheWaterfallOverloadDelegatesAsWell()
+    public void BothOverloadsReachTheSameLoop()
     {
         var samples = CleanSlot("HAMLET 245");
         var deep = new Ft8DeepSlotDecoder();
@@ -147,11 +149,26 @@ public class Ft8DeepSlotDecoderTests(ITestOutputHelper output)
     }
 
     /// <summary>
-    /// <b>Nothing here decodes anything the port does not, and this says so on the record.</b> The
-    /// sibling's version is 0.1.0 and its capability is delegation; step 2 is where that changes.
+    /// <b>What the sibling holds, named one by one, and changed deliberately rather than
+    /// discovered.</b>
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// <b>Unit 245 left a tripwire here and unit 246 has walked into it on purpose.</b> The
+    /// assertion this replaces was <c>Assert.Single(types)</c> plus a refusal of any type whose name
+    /// contained "Osd" or "Ordered", and its stated reason was that the unit landing ordered
+    /// statistics decoding must come here and change it, rather than find out afterwards that step
+    /// 1's claim - that the sibling changes no behaviour - had quietly stopped being true.
+    /// </para>
+    /// <para>
+    /// <b>It has stopped being true, and here is the whole of what stopped it.</b> The sibling now
+    /// runs the port's per-candidate loop itself rather than delegating, and it carries the ordered
+    /// statistics stage that loop exists to host. The list below is exhaustive and is asserted
+    /// exhaustively, so the next unit that adds a type has to come here too.
+    /// </para>
+    /// </remarks>
     [Fact]
-    public void TheSiblingHoldsNoDecodeStageOfItsOwn()
+    public void TheSiblingHoldsExactlyTheseTypesAndTheListIsAssertedWhole()
     {
         var types = typeof(Ft8DeepSlotDecoder).Assembly.GetTypes();
 
@@ -161,16 +178,39 @@ public class Ft8DeepSlotDecoderTests(ITestOutputHelper output)
             output.WriteLine($"  {type.FullName}");
         }
 
-        Assert.Single(types);
-        Assert.Equal(typeof(Ft8DeepSlotDecoder), types[0]);
+        Assert.Equal(
+            new[]
+            {
+                typeof(Ft8DeepOsdSettings),
+                typeof(Ft8DeepSlotDecoder),
+            },
+            types.OrderBy(t => t.FullName, StringComparer.Ordinal).ToArray());
+    }
 
-        // Named so that the unit which lands ordered statistics decoding has to come here and change
-        // this assertion deliberately, rather than discovering afterwards that step 1's claim - that
-        // this version changes no behaviour - quietly stopped being true.
-        Assert.DoesNotContain(
-            types,
-            t => t.Name.Contains("Osd", StringComparison.OrdinalIgnoreCase)
-                || t.Name.Contains("Ordered", StringComparison.OrdinalIgnoreCase));
+    /// <summary>
+    /// <b>Off is the default, and off is what the scoreboard's second column is built on.</b>
+    /// </summary>
+    /// <remarks>
+    /// If this ever goes red, <c>Ft8DeepIdentityTests</c> has silently stopped comparing the port
+    /// against an exact reproduction and started comparing it against an OSD run, and every
+    /// difference between the scoreboard's columns stops being attributable to one named change.
+    /// </remarks>
+    [Fact]
+    public void OrderedStatisticsIsOffUnlessItIsAskedFor()
+    {
+        Assert.Null(new Ft8DeepSlotDecoder().Osd);
+        Assert.Null(new Ft8DeepSlotDecoder(new Ft8SlotDecoder()).Osd);
+
+        var on = new Ft8DeepSlotDecoder(osd: new Ft8DeepOsdSettings(2));
+        Assert.NotNull(on.Osd);
+        Assert.Equal(2, on.Osd!.Order);
+
+        var negative = Assert.Throws<ArgumentOutOfRangeException>(() => new Ft8DeepOsdSettings(-1));
+        var tooHigh = Assert.Throws<ArgumentOutOfRangeException>(
+            () => new Ft8DeepOsdSettings(Ft8DeepOsdSettings.MaximumOrder + 1));
+
+        output.WriteLine(negative.Message);
+        output.WriteLine(tooHigh.Message);
     }
 
     /// <summary>The default iteration count is the port's, not a second copy of the number.</summary>

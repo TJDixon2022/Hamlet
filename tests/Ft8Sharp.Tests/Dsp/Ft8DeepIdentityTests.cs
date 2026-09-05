@@ -14,18 +14,20 @@ namespace Ft8Sharp.Tests.Dsp;
 /// </summary>
 /// <remarks>
 /// <para>
-/// <b>THIS IS TRIVIALLY TRUE AND IT IS RUN ANYWAY. It is not dressed as a discovery.</b>
-/// <c>Ft8DeepSlotDecoder</c> holds an <see cref="Ft8SlotDecoder"/> and hands every call to it, so of
-/// course the two agree; nobody needs an experiment to believe that a delegating type delegates. The
-/// step's own point is that <em>a step that changes no behaviour is the point</em>. What the run
-/// proves, which reasoning does not, is that the SEAM and the HARNESS WIRING cost nothing: that a
-/// whole <see cref="Ft8SlotResult"/> crosses a project boundary and an <c>Available()</c> seat with
-/// no count dropped, no message reordered and no frequency or dt shifted.
+/// <b>THIS WAS TRIVIAL AT UNIT 245 AND IS NOT TRIVIAL NOW.</b> At step 1 the sibling held an
+/// <see cref="Ft8SlotDecoder"/> and handed every call to it, so of course the two agreed; there was
+/// one decoder and it was called twice, and what the run proved was only that the seam and the
+/// harness wiring cost nothing. <b>Since unit 246 the sibling runs the port's per-candidate loop
+/// itself</b>, through the port's public members, so that ordered statistics decoding has somewhere
+/// to sit. The two columns are now two pieces of code, and their agreeing is a measurement.
 /// </para>
 /// <para>
-/// <b>And it is emphatically not a claim that the sibling was "verified against" the port</b>, as
-/// though the two had been written independently. They have not. There is one decoder here and it is
-/// called twice.
+/// <b>THIS IS THE RULING-4 TEST OF UNIT 246 AND IT IS NOT OPTIONAL.</b> With OSD off the sibling must
+/// return the whole <see cref="Ft8SlotResult"/> the port returns - all five counts and every message
+/// in order - or a difference between the scoreboard's OSD-off and OSD-on columns is no longer
+/// attributable to OSD and the whole seam stops paying for itself. Every decoder built below asserts
+/// that its <c>Osd</c> is null, so a later unit that flips the default cannot quietly turn this into a
+/// comparison of the port against an OSD run.
 /// </para>
 /// <para>
 /// <b>THE WHOLE RESULT, NEVER JUST <see cref="Ft8SlotResult.Texts"/>.</b> A comparison on text alone
@@ -92,6 +94,11 @@ public class Ft8DeepIdentityTests(ITestOutputHelper output)
     {
         var port = new Ft8SlotDecoder();
         var deep = new Ft8DeepSlotDecoder();
+
+        // RULING 4: this is only evidence while the sibling is doing exactly what the port does. A
+        // flipped default would quietly turn it into a comparison of the port against an OSD run.
+        Assert.Null(deep.Osd);
+
         var population = Ft8Step6Ladder.Population();
         var offset = Ft8LadderHarness.DefaultOffsetSamples;
         var blockSeed = Ft8LadderHarness.DefaultSeed + (int)Math.Round(rung * 10.0);
@@ -131,10 +138,14 @@ public class Ft8DeepIdentityTests(ITestOutputHelper output)
         output.WriteLine($"Wall clock for both decoders over the block: {clock.Elapsed.TotalSeconds:F1} s.");
         output.WriteLine(string.Empty);
         output.WriteLine(
-            "IDENTITY HERE IS TRIVIALLY TRUE - the sibling delegates to the port, so there is one");
+            "THIS IS NO LONGER TRIVIAL. Since unit 246 the sibling runs the port's per-candidate");
         output.WriteLine(
-            "decoder called twice. What the run proves is that the seam costs nothing, not that two");
-        output.WriteLine("independently written decoders agree. They were not independently written.");
+            "loop itself through the port's public members, with OSD off, so the two columns are two");
+        output.WriteLine(
+            "pieces of code rather than one decoder called twice. This is unit 246's ruling 4: without");
+        output.WriteLine(
+            "it, a difference between the OSD-off and OSD-on columns of the scoreboard would not be");
+        output.WriteLine("attributable to OSD.");
 
         Assert.Equal(population.Count, trials);
 
@@ -168,6 +179,7 @@ public class Ft8DeepIdentityTests(ITestOutputHelper output)
 
         var port = new Ft8SlotDecoder();
         var deep = new Ft8DeepSlotDecoder();
+        Assert.Null(deep.Osd);
 
         var fromPort = port.Decode(samples);
         var fromDeep = deep.Decode(samples);
@@ -215,6 +227,8 @@ public class Ft8DeepIdentityTests(ITestOutputHelper output)
 
         var port = new Ft8SlotDecoder();
         var deep = new Ft8DeepSlotDecoder();
+        Assert.Null(deep.Osd);
+
         var clock = Stopwatch.StartNew();
         var messages = 0;
 
@@ -239,8 +253,10 @@ public class Ft8DeepIdentityTests(ITestOutputHelper output)
         output.WriteLine($"Wall clock for both decoders over the set: {clock.Elapsed.TotalSeconds:F1} s.");
         output.WriteLine(string.Empty);
         output.WriteLine(
-            "Again: trivially true, because the sibling delegates. The point is the seam, not a");
-        output.WriteLine("comparison between two independent decoders.");
+            "Again: with OSD off the sibling reproduces the port's loop rather than delegating to it,");
+        output.WriteLine(
+            "so this set is 69 real off-air recordings' worth of evidence that the reproduction is");
+        output.WriteLine("exact.");
 
         Assert.True(
             messages > 0,
