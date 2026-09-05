@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: RUNNING
-TASK: 2 of 6
+TASK: 3 of 6
 WORK_INSTRUCTION: 252 - ordered statistics, taken as far as it goes
 BALL: claude
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-155 (2026-09-05)
-UPDATED: 2026-09-05T15:56:00-04:00
-NOTE: The window is in and the theory is green on all sixteen rows; watched failing first at 11 of 16 with order 3 window 40 reading 125672 against 10701, and the whole tree builds unchanged
+UPDATED: 2026-09-05T16:03:00-04:00
+NOTE: Unit 250's file passed unmodified on adoption; about to run it again by exact name, 480 s timeout, with twelve (order, window) cells added to its sweep on one busy slot
 
 ---
 
