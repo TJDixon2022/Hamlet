@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 1 of 5
+TASK: 2 of 5
 WORK_INSTRUCTION: 249 - Hamlet decodes through Ft8Sharp.Deep
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-152 (2026-08-31)
-UPDATED: 2026-09-05T11:22:31-04:00
-NOTE: Seam measured: Deep returns the port's own result type, and the waterfall entry point cannot run fine sync at all
+UPDATED: 2026-09-05T11:28:12-04:00
+NOTE: Reader now decodes through Deep via samples; 261ms a slot, census 55/27/27/27, every message re-checked against the port's gates
 
 ---
 

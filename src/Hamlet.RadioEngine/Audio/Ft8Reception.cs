@@ -1,3 +1,4 @@
+﻿using Ft8Sharp.Deep;
 using Ft8Sharp.Dsp;
 
 namespace Hamlet.RadioEngine.Audio;
@@ -170,7 +171,7 @@ public static class Ft8Reader
     /// </param>
     /// <param name="offset">The measured clock offset.</param>
     /// <param name="decoder">
-    /// The decoder to use, or null for one at upstream's own settings.
+    /// The decoder to use, or null for Deep with both stages on.
     /// </param>
     /// <returns>The messages, and why there are as many as there are.</returns>
     /// <exception cref="ArgumentNullException">The audio is null.</exception>
@@ -178,7 +179,7 @@ public static class Ft8Reader
         MonoAudio audio,
         DateTime endedAtPcUtc,
         ClockOffset offset,
-        Ft8SlotDecoder? decoder = null)
+        Ft8DeepSlotDecoder? decoder = null)
     {
         ArgumentNullException.ThrowIfNull(audio);
 
@@ -196,7 +197,25 @@ public static class Ft8Reader
             };
         }
 
-        decoder ??= new Ft8SlotDecoder();
+        // **HAMLET DECODES THROUGH `Ft8Sharp.Deep` SINCE UNIT 249** (Tim's
+        // ruling, 2026-09-05), with fine sync and ordered statistics both on.
+        //
+        // **DEEP IS A PROVEN SUPERSET RATHER THAN A DIFFERENT DECODER.** Unit
+        // 246 asserted whole-result identity with the port over 69 reference
+        // recordings and 801 messages, and with both settings null Deep is the
+        // port byte for byte. What the two stages add, measured at -21 dB over
+        // 306 trials: 13 of 306 to 33 of 306 on the grid, **0 wrong either
+        // way** - and at the centre of a waterfall cell, which is where a real
+        // station lands because nothing on 14.074 arranges itself on Hamlet's
+        // analysis grid, 0 of 306 to 3 of 306.
+        //
+        // **BOTH OF THE PORT'S GATES STAY IN THE PATH.** Parity and CRC-14 are
+        // the port's own and every message below has passed them, whatever
+        // route its codeword took to get there. Deep recovers candidates the
+        // port gives up on; it does not lower the bar they have to clear.
+        decoder ??= new Ft8DeepSlotDecoder(
+            osd: Ft8DeepOsdSettings.Default,
+            fineSync: Ft8DeepFineSyncSettings.Default);
 
         // A mirror of the decoder's own search, built from the limit and minimum it
         // publishes. It exists for one thing the result type cannot give: the highest
@@ -216,7 +235,24 @@ public static class Ft8Reader
             var waterfall = monitor.Analyse(samples);
             var places = search.Find(waterfall);
 
-            var result = decoder.Decode(waterfall);
+            // **THE SAMPLES ENTRY POINT, NOT THE WATERFALL ONE, AND THE
+            // DIFFERENCE IS THE WHOLE UNIT.** `Decode(Ft8Waterfall)` hands
+            // Deep's loop an empty span, and a waterfall has no phase in it and
+            // no samples behind it, so there is nothing to re-sync from.
+            // Measured in unit 249 task 1 on the example slot: through the
+            // waterfall, fine sync refused all 42 candidates for want of
+            // samples; through the samples it re-synced 42 and accepted 14.
+            //
+            // **SO A READER THAT KEPT CALLING THE WATERFALL OVERLOAD WOULD PAY
+            // FOR DEEP AND GET NONE OF THE OFF-GRID REACH THE PHASE WAS FOR.**
+            //
+            // The waterfall above is still built and still used: `places` is
+            // read from it for the top Costas scores, which the result type
+            // cannot give for a slot that decoded nothing. Deep analyses its
+            // own waterfall internally from the same samples, which is one
+            // extra analysis a slot and is inside the budget with room to
+            // spare - 210 ms of 15,000.
+            var result = decoder.Decode(samples);
 
             candidates += result.CandidateCount;
 
