@@ -43,6 +43,9 @@ public sealed class Ft8DeepSlotDecoder
 {
     private readonly Ft8SlotDecoder _port;
     private readonly Ft8SyncSearch _search;
+    private readonly Ft8DeepOrderedStatistics? _statistics;
+    private readonly byte[] _osdCodeword;
+    private readonly float[] _osdRatios;
 
     /// <summary>
     /// Builds a sibling decoder over an <see cref="Ft8SlotDecoder"/> constructed with these same
@@ -72,6 +75,7 @@ public sealed class Ft8DeepSlotDecoder
         _port = new Ft8SlotDecoder(geometry, used, messageLimit, maxIterations);
         _search = used;
         Osd = osd;
+        (_statistics, _osdCodeword, _osdRatios) = Prepare(osd);
     }
 
     /// <summary>Builds a sibling decoder over a port decoder somebody else constructed.</summary>
@@ -100,7 +104,19 @@ public sealed class Ft8DeepSlotDecoder
         _port = port;
         _search = search ?? new Ft8SyncSearch(port.CandidateLimit, port.MinimumScore);
         Osd = osd;
+        (_statistics, _osdCodeword, _osdRatios) = Prepare(osd);
     }
+
+    /// <summary>
+    /// The ordered statistics stage and its scratch, or nothing at all when it is off. Built once per
+    /// decoder so that a per-candidate call allocates nothing.
+    /// </summary>
+    private static (Ft8DeepOrderedStatistics?, byte[], float[]) Prepare(Ft8DeepOsdSettings? osd) =>
+        osd is null
+            ? (null, [], [])
+            : (new Ft8DeepOrderedStatistics(),
+                new byte[Ft8DeepOrderedStatistics.CodewordBits],
+                new float[Ft8DeepOrderedStatistics.CodewordBits]);
 
     /// <summary>
     /// The port decoder this one takes its geometry, its limits and its refusals from.
@@ -112,6 +128,25 @@ public sealed class Ft8DeepSlotDecoder
     /// the default and means this decoder reproduces the port exactly.
     /// </summary>
     public Ft8DeepOsdSettings? Osd { get; }
+
+    /// <summary>
+    /// <b>What the ordered statistics stage did in the last slot decoded, beside the five counts the
+    /// port already returns.</b>
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// <b>A rate that moved with no visible OSD activity behind it is not evidence</b>, which is why
+    /// these are kept at all. Reset at the top of every <see cref="Decode(Ft8Waterfall)"/> and read
+    /// after it; all zero while <see cref="Osd"/> is null.
+    /// </para>
+    /// <para>
+    /// They live here rather than on <c>Ft8SlotResult</c> because <c>Ft8SlotResult</c> is the port's
+    /// own record and this phase changes no line of the port. The scoreboard's seat is
+    /// <c>Func&lt;float[], Ft8SlotResult&gt;</c>, so a report that wants these reads them from the
+    /// decoder after the call.
+    /// </para>
+    /// </remarks>
+    public Ft8DeepOsdCounts LastOsd { get; private set; }
 
     /// <summary>The extents this decoder analyses to. The port's.</summary>
     public Ft8WaterfallGeometry Geometry => _port.Geometry;
@@ -172,17 +207,59 @@ public sealed class Ft8DeepSlotDecoder
         var ratios = new float[Ft8SoftSymbols.RatioCount];
         var codeword = new byte[LdpcDecoder.CodewordBits];
 
+        var offered = 0;
+        var produced = 0;
+        var accepted = 0;
+        var reencodings = 0L;
+
         foreach (var candidate in candidates)
         {
             Ft8SoftSymbols.Extract(waterfall, candidate, ratios);
             Ft8SoftSymbols.Normalise(ratios);
 
             var result = Ft8CodewordDecoder.Decode(ratios, cache, MaxIterations);
+            byte[]? osdKey = null;
 
-            // WHERE THE ORDERED STATISTICS STAGE GOES, and the only place it can go: belief
-            // propagation has just given up on a candidate whose answer may still be reachable.
-            // Task 2 leaves it empty on purpose - nothing new decodes in this version, and the
-            // identity test above is what proves it.
+            // THE ORDERED STATISTICS STAGE, at the only place it can go: belief propagation has
+            // just given up on a candidate whose answer may still be reachable. Where it converged,
+            // the port's answer stands untouched and OSD is never asked.
+            if (_statistics is not null
+                && Osd is not null
+                && result.Status == Ft8CodewordStatus.ParityNeverSatisfied)
+            {
+                offered++;
+
+                // THE STOPPING RULE FOR A CANDIDATE: the search is exhaustive over every subset of
+                // the basis up to the order, and then it stops. It always produces exactly one
+                // codeword - the best by soft distance - and that one codeword is submitted once.
+                // There is no retry, no second order and no second submission.
+                var found = _statistics.Decode(ratios, Osd.Order, _osdCodeword);
+                reencodings += found.Reencodings;
+                produced++;
+
+                // ONE CODEWORD TO THE GATE, AND THE GATE IS THE PORT'S. Every codeword put to the
+                // CRC-14 is an independent chance of a false accept at about one in 16384;
+                // submitting a search's worth would put tens of messages nobody sent in front of
+                // the operator every slot, each carrying a valid checksum.
+                Ft8DeepOrderedStatistics.Saturate(_osdCodeword, _osdRatios);
+                var gated = Ft8CodewordDecoder.Decode(_osdRatios, cache, MaxIterations);
+
+                if (gated.Decoded)
+                {
+                    accepted++;
+                    result = gated;
+
+                    // THE KEY IS THE CODEWORD OSD ALREADY HAS. The port recovers its key by
+                    // re-running belief propagation over the original ratios, which cannot work for
+                    // exactly the candidates OSD rescued - it did not converge on them and will not
+                    // - and would return the same message twice.
+                    osdKey = _osdCodeword[..Ft8Payload.MessageBits];
+                }
+
+                // A codeword the port refused leaves the port's own verdict standing, so the five
+                // counts stay a report on the port's belief propagation and OSD's three counts
+                // carry OSD's story. Nothing here overrides a refusal.
+            }
 
             if (result.Status != Ft8CodewordStatus.ParityNeverSatisfied)
             {
@@ -201,11 +278,19 @@ public sealed class Ft8DeepSlotDecoder
 
             becameText++;
 
-            // The port's de-duplication key, recovered the port's way. The gate does not hand back
-            // the bits it accepted, so they are read out of a second run of the same deterministic
-            // decoder over the same ratios. It is not a second checksum check.
-            LdpcDecoder.Decode(ratios, codeword, MaxIterations);
-            var key = codeword[..Ft8Payload.MessageBits];
+            byte[] key;
+            if (osdKey is not null)
+            {
+                key = osdKey;
+            }
+            else
+            {
+                // The port's de-duplication key, recovered the port's way. The gate does not hand
+                // back the bits it accepted, so they are read out of a second run of the same
+                // deterministic decoder over the same ratios. It is not a second checksum check.
+                LdpcDecoder.Decode(ratios, codeword, MaxIterations);
+                key = codeword[..Ft8Payload.MessageBits];
+            }
 
             if (AlreadySeen(seen, key))
             {
@@ -223,6 +308,12 @@ public sealed class Ft8DeepSlotDecoder
             seen.Add(key);
             messages.Add(new Ft8SlotMessage(candidate, result));
         }
+
+        // THE STOPPING RULE FOR A SLOT: the candidate list runs out. There is no early exit, no time
+        // budget and no cap on how many candidates OSD is offered - so the worst-case cost of a slot
+        // is the search's candidate limit times the order's re-encoding count, which is a number
+        // that can be measured rather than a policy that has to be believed.
+        LastOsd = new Ft8DeepOsdCounts(offered, produced, accepted, reencodings);
 
         return new Ft8SlotResult(
             candidates.Count, paritySatisfied, checksumPassed, becameText, duplicates, messages);

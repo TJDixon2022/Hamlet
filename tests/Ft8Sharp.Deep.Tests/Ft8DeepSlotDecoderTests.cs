@@ -182,6 +182,7 @@ public class Ft8DeepSlotDecoderTests(ITestOutputHelper output)
             new[]
             {
                 typeof(Ft8DeepOrderedStatistics),
+                typeof(Ft8DeepOsdCounts),
                 typeof(Ft8DeepOsdResult),
                 typeof(Ft8DeepOsdSettings),
                 typeof(Ft8DeepSlotDecoder),
@@ -213,6 +214,58 @@ public class Ft8DeepSlotDecoderTests(ITestOutputHelper output)
 
         output.WriteLine(negative.Message);
         output.WriteLine(tooHigh.Message);
+    }
+
+    /// <summary>
+    /// <b>The stage runs where belief propagation gave up, and its three counts are kept beside the
+    /// port's five.</b>
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// The audio is one clean transmission buried in enough noise that most of the candidates the
+    /// search returns are places where nothing was sent. Those are the candidates belief propagation
+    /// refuses, and they are exactly what OSD is offered - which is the point: <b>most of what this
+    /// stage is handed is noise, and the port refusing nearly all of it is the ordinary case</b>.
+    /// </para>
+    /// <para>
+    /// <b>Nothing here asserts a decode rate.</b> The ladder is where rates are measured. What is
+    /// asserted is the wiring: OSD is asked once per refused candidate, produces exactly one codeword
+    /// each time, spends the re-encodings its order costs, and never accepts anything itself.
+    /// </para>
+    /// </remarks>
+    [Fact]
+    public void TheStageIsOfferedEveryCandidateBeliefPropagationRefusedAndNoOthers()
+    {
+        var clean = CleanSlot("HAMLET 245");
+        var random = new Random(246);
+        var noisy = new float[clean.Length];
+        for (var i = 0; i < clean.Length; i++)
+        {
+            noisy[i] = clean[i] + (float)((random.NextDouble() - 0.5) * 4.0);
+        }
+
+        var off = new Ft8DeepSlotDecoder();
+        var fromOff = off.Decode(noisy);
+
+        Assert.Equal(default, off.LastOsd);
+
+        var on = new Ft8DeepSlotDecoder(osd: new Ft8DeepOsdSettings(1));
+        var fromOn = on.Decode(noisy);
+        var counts = on.LastOsd;
+
+        output.WriteLine($"candidates                {fromOn.CandidateCount}");
+        output.WriteLine($"reached parity, OSD off   {fromOff.ParitySatisfiedCount}");
+        output.WriteLine($"offered to OSD            {counts.Offered}");
+        output.WriteLine($"codewords OSD produced    {counts.Produced}");
+        output.WriteLine($"of those, the PORT took   {counts.Accepted}");
+        output.WriteLine($"re-encodings spent        {counts.Reencodings}");
+
+        // Offered is exactly the candidates the port refused on parity, and no others.
+        Assert.Equal(fromOff.CandidateCount - fromOff.ParitySatisfiedCount, counts.Offered);
+        Assert.Equal(counts.Offered, counts.Produced);
+        Assert.Equal(counts.Offered * 92L, counts.Reencodings);
+        Assert.InRange(counts.Accepted, 0, counts.Produced);
+        Assert.True(counts.Offered > 0, "no candidate was refused, so this measures nothing.");
     }
 
     /// <summary>The default iteration count is the port's, not a second copy of the number.</summary>
