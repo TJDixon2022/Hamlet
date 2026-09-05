@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 2 of 5
+TASK: 3 of 5
 WORK_INSTRUCTION: 250 - the gate set exists
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-154 (2026-09-05)
-UPDATED: 2026-09-05T14:32:00-04:00
-NOTE: The gate set is rewritten against the breakage record - 27 methods over four projects, every entry citing a B-number - and the two claims an earlier attempt could not support, a 2 m 39 s wall clock and a watched failure, are removed rather than carried forward because no gate TRX exists in the tree
+UPDATED: 2026-09-05T14:42:00-04:00
+NOTE: Tim's command is checked by reading only - all twenty filters map onto the twenty-seven names in the file and back - and the script itself was found written with LF endings, which cmd.exe resumes by byte offset, so it is now CRLF like every other .bat in the folder
 
 ---
 

@@ -46,7 +46,17 @@ rem
 rem  ONE EXIT POINT, as lock.bat, layer-check.bat and
 rem  validate-output.bat. %~dp0 is captured before any shift.
 rem
-rem  Written by work instruction 250.
+rem  THIS IS TIM'S COMMAND AND NO UNIT RUNS IT. Tim's ruling of
+rem  2026-09-05: a unit runs no test suite, and may run only the
+rem  test it constructs in its own work instruction, filtered by
+rem  exact name, foregrounded, with a stated timeout. Three
+rem  sessions were killed by the twelve-minute watchdog that day
+rem  polling backgrounded test runs. docs\gate-set.md carries the
+rem  rules in full.
+rem
+rem  Written by work instruction 250. Verified by reading, not by
+rem  execution: every filter below names a test in docs\gate-set.md
+rem  and every test in that file appears below.
 rem ============================================================
 setlocal EnableExtensions EnableDelayedExpansion
 set "GSHERE=%~dp0"
@@ -145,8 +155,9 @@ if %NRED% GTR 0 (
   echo  EVERY GATE PASSED.
   echo.
   echo  THIS IS NOT "THE SUITE IS GREEN". It is the short list of
-  echo  properties this phase must not break. A unit still runs the
-  echo  channels it touched, whole, one project at a time.
+  echo  properties this phase must not break, and nothing else was
+  echo  run. The suites are Tim's, by hand, uncontended, once, at
+  echo  the end of the phase.
 )
 echo ============================================================
 goto :end
