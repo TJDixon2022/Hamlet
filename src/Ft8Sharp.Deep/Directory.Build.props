@@ -59,9 +59,30 @@
     What it still may NOT do is decide that anything is a message. The port's
     parity gate and CRC-14 gate remain the only acceptance and there is still no
     checksum in this library, at most one extra submission per candidate.
+
+    0.5.0 at unit 251, and it is a bump for the same reason again, but for a
+    capability of a different kind: this library can now say, in decibels in the
+    2500 Hz reference bandwidth the published FT8 figures are quoted against,
+    HOW STRONG ONE DECODED MESSAGE WAS. Ft8DeepSignalToNoise reads the power in
+    the tone that was transmitted against the seven tones that were not, at the
+    same instant, over the symbols whose windows lie inside the slot, and
+    carries the per-bin ratio to the reference by 10 log10(2500 / 6.25) =
+    26.0206 dB - a derivation from the tone spacing and the symbol period in
+    which the decimation, the filter and the sample rate all cancel.
+    Ft8DeepMessageSymbols recovers the symbol sequence it needs by packing the
+    decoded message again, with a round trip through the message layer as the
+    guard, because the decode result hands back text and carries no bits.
+
+    THIS IS THE FIRST TYPE IN THE TREE THAT IS ACTUALLY A SIGNAL-TO-NOISE RATIO,
+    and it says which definition and in which bandwidth in its own remarks. It
+    is PURE AND REPORT-ONLY: it touches no ratio, no gate, no count and no
+    decision, and Ft8DeepSlotDecoder does not call it.
+
+    What it still may NOT do is decide that anything is a message, and this
+    version does not move that line one inch.
   -->
   <PropertyGroup>
-    <Version>0.4.0</Version>
+    <Version>0.5.0</Version>
   </PropertyGroup>
 
   <!--
