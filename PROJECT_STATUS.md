@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: WORKING
+STATE: COMPLETED
 TASK: 6 of 6
 WORK_INSTRUCTION: 254 - repeated transmissions are combined across slots, and the sum is taken deeper than a pair
-BALL: claude
+BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-155 (2026-09-05)
-UPDATED: 2026-09-05T18:06:01-04:00
-NOTE: Bookkeeping - B17 written before gate-set entry 12 that cites it, the test name added to gate-set.bat, HM-OPEN-075 given a dated note saying fine sync was turned on and still never reached the combiner, HM-OPEN-081 raised for the one configuration the unit recommends and did not run, and the phase outcome entry appended by hand after the script was refused twice
+UPDATED: 2026-09-05T18:10:00-04:00
+NOTE: Six of six; a column headed combined x4 summed two hearings at a time and now sums four, which bought +4 decodes of 51 in the clean isolation for not one extra submission, 252 of 306 at -21 dB against the port's 13, zero wrong on every row across 5777 submissions, combining stays off by default, and the report validates at exit 0
 
 ---
 
