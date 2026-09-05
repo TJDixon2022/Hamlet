@@ -3,6 +3,7 @@ PHASE_SET: 2026-09-04
 DESCRIPTION: Close the measured 1.5 dB against the published threshold with a sibling library, then combine repeated transmissions to go past it
 CURRENT_STEP: 0
 WORK_INSTRUCTION: 243 - what the ladder already is, and what this shell will actually run
+HEARTBEAT: 2026-09-04 20:49:58
 STEP: 0 | not started | there is a scoreboard, and the arbiter can read it
 STEP: 1 | not started | Ft8Sharp.Deep exists and changes nothing
 STEP: 2 | not started | ordered statistics decoding closes the code gap

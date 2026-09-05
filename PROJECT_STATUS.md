@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: BLOCKED
+STATE: WORKING
 TASK: 2 of 6
-WORK_INSTRUCTION: 242 - the scoreboard, and the baseline reproduced rather than inherited
-BALL: tim
+WORK_INSTRUCTION: 243 - what the ladder already is, and what this shell will actually run
+BALL: claude
 NEXT_PASTE: OUTPUT.md -> Claude Web
 RULES_AT: HM-DEC-152 (2026-08-31)
-UPDATED: 2026-09-04T19:28:21-04:00
-NOTE: Shell is read-only and dotnet will not run, so nothing can be moved, built or measured; task 2's survey of the existing ladder is done from reading alone
+UPDATED: 2026-09-04T20:56:09-04:00
+NOTE: dotnet builds and tests in this shell - unit 242 read one refused spelling as a dead toolchain and it is not one; the eight probes are written up and the arbiter validator is reachable again through MSBuild
 
 ---
 
