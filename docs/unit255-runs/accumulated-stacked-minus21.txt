@@ -1,0 +1,42 @@
+UNIT 255, THE CELL NOBODY HAS RUN: accumulation STACKED with the shipping stages, -21.0 dB, 306 trials.
+LADDER: Ft8LadderHarness.RunRepeats - FOUR slots a trial carrying the same message, jittered 2.00 Hz and 480 samples between hearings. NOT the closing table's ladder and NOT comparable with it.
+COMBINING: new Ft8DeepCombineSettings(historyDepth: 3, accumulationDepth: 3) - three remembered slots, and up to three of them in ONE sum.
+STACKED: combinedOsd Ft8DeepOsdSettings.Default and combinedFineSync Ft8DeepFineSyncSettings.Default - the two stages Ft8Reception.cs:460 builds, on the combined column's inner decoder.
+THE RECORD THIS IS READ AGAINST: unit 254 section 4b measured 252 of 306 accumulated but UNSTACKED, and section 4c measured 79 of 306 stacked but at two hearings with combining at depth one. Neither is this cell.
+
+decoder      requested  delivered  trials  DECODED  MISSED  WRONG    rate   lo 95   hi 95    wall s    ms/tr
+single slot      -21.0    -21.001     306       13     293      0     4.2     2.5     7.1     19.5     63.8
+single + OSD     -21.0    -21.001     306       33     273      0    10.8     7.8    14.8     22.2     72.5
+summed x4        -21.0    -21.000     306      254      52      0    83.0    78.4    86.8     90.4    295.5
+
+  DECODED + MISSED = trials. WRONG is not part of that partition: a slot can
+  return the right message and a wrong one at once, and both are true.
+  lo 95 / hi 95 are the WILSON score interval on the decode rate.
+
+  single slot at -21.0 dB: NO WRONG DECODES. 0 messages returned that were not sent.
+  single + OSD at -21.0 dB: NO WRONG DECODES. 0 messages returned that were not sent.
+  summed x4 at -21.0 dB: NO WRONG DECODES. 0 messages returned that were not sent.
+
+  4 slots a trial. Delivered per slot: -21.001 dB, -20.999 dB, -20.999 dB, -21.000 dB
+
+  THE NUMBER THIS STEP IS JUDGED ON:
+    trials NO single slot decoded alone and the combination DID: 206 of 306
+    trials SOME single slot decoded alone, no combining needed:  48 of 306   (the two-chances baseline)
+    trials a single slot decoded and the combination did NOT:    0 of 306   (zero, as the superset property requires)
+
+  THE SUBMISSION BUDGET, AS IT WAS ACTUALLY SPENT:
+    candidate pairs the rule looked at        299908
+    combinations submitted to the port        2232
+    HEARINGS IN THE DEEPEST COMBINATION        4   (6.02 dB of processing gain if the hearings were independent)
+    of those, the PORT took past both gates   736
+    naive expected messages nobody sent       0.136
+
+  EVERY COMBINED DECODE AGAINST THE LADDER'S OWN GROUND TRUTH:
+    messages the combining stage added        458
+    of those, the message that was sent       458
+    of those, a message that was NOT sent     0
+
+  WORST SINGLE SLOT: 109.6 ms, carrying 13 candidates and 2 combinations - a margin of 137x against FT8's 15 seconds.
+
+  EXPECTED FALSE ACCEPTS beside the OBSERVED count: 0.136 expected against 0 observed, over 2232 submissions.
+  wall clock 145.3 s.

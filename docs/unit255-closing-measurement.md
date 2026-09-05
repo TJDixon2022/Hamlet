@@ -646,3 +646,140 @@ and the six walks averaged **215.8 s against a predicted 217 s.**
 > decoder rather than of the harness. Unit 252's reproduction of unit 246 is the precedent;
 > this is the same check run across four minor versions and two placements at once.
 
+---
+
+## 5. The two stages that need their own ladder, and the cell nobody had run
+
+### 5.0 Why these are not in §3's table, said plainly
+
+**Subtraction and combining cannot be shown on the closing table's ladder, and putting them
+there anyway would be a false comparison.**
+
+- **Subtraction needs a second signal to subtract.** §3 measured `subtraction only` on the
+  single-signal ladder at all six rung-placements and it **equalled the port in every one**.
+  That is not subtraction failing; it is the stopping rule correctly finding nothing to
+  remove. **Its ladder is unit 253's masked two-signal ladder** and its figures are §5.1's.
+- **Combining needs the same station heard more than once.** The closing table gives each
+  trial one slot. **Its ladder is `RunRepeats`**, four slots a trial with jitter between
+  them, and its figures are §5.2's and §5.3's.
+
+**No row in §5 is comparable with any row in §3**, and the two must not be read side by
+side. Every row below carries its ladder, its rung, its placement, its trial count and the
+`Ft8Sharp.Deep` version it was taken at on its own face, for exactly that reason.
+
+### 5.1 Subtraction — cited from unit 253, not re-run
+
+**Ladder: the masked two-signal ladder.** Two stations at the same frequency and the same
+sample, the loud one 6 dB up. **Rung -18.0 dB requested, 306 trials, `Ft8Sharp.Deep` 0.6.0.**
+Source: `docs/unit253-subtraction.md` §8.
+
+| configuration | ladder | rung | placement | trials | Deep | decoded | wrong |
+|---|---|---|---|---:|---|---:|---:|
+| single pass | masked two-signal | -18.0 | co-frequency, +6 dB loud | 306 | 0.6.0 | **0 of 306** (0.0 – 1.2) | **0** |
+| two passes | masked two-signal | -18.0 | co-frequency, +6 dB loud | 306 | 0.6.0 | **153 of 306** (44.4 – 55.6) | **0** |
+| three passes | masked two-signal | -18.0 | co-frequency, +6 dB loud | 306 | 0.6.0 | **153 of 306** | **0** |
+| ceiling — loud station absent, identical noise draw | masked two-signal | -18.0 | co-frequency | 306 | 0.6.0 | **304 of 306** (97.6 – 99.8) | **0** |
+
+Discordance against the single pass: **0 and 153**. **Zero wrong across 3 468 slot
+decodes.** And on the **single-signal** ladder at -20 dB, subtraction on and off read
+**73 of 306 and 73 of 306, identical trial for trial** — which §3 reproduced tonight at all
+three rungs and both placements.
+
+**What it is worth, in one line: subtraction recovers 153 of the 304 messages that were
+there to recover under a co-frequency 6 dB neighbour, and nothing at all when there is no
+neighbour.** The 151 it does not recover are `HM-OPEN-079` and are outside step 6.
+
+### 5.2 Combining — cited from unit 254, not re-run
+
+**Ladder: `RunRepeats`, four slots a trial, jittered 2.00 Hz and 480 samples between
+hearings.** **Rung -21.0 dB, 306 trials, `Ft8Sharp.Deep` 0.7.0 → 0.8.0.** Source:
+`docs/unit254-combining-depth.md` §4b and §4c.
+
+| configuration | ladder | rung | trials | Deep | decoded | wrong |
+|---|---|---|---:|---|---:|---:|
+| the port, one slot | repeats, jittered | -21.0 | 306 | 0.8.0 | **13 of 306** (2.5 – 7.1) | **0** |
+| single slot + ordered statistics | repeats, jittered | -21.0 | 306 | 0.8.0 | **33 of 306** (7.8 – 14.8) | **0** |
+| combined ×2 | repeats, jittered | -21.0 | 306 | 0.8.0 | **68 of 306** (17.9 – 27.2) | **0** |
+| combined ×2, **stacked** with fine sync and OSD | repeats, jittered | -21.0 | 306 | 0.8.0 | **79 of 306** (21.2 – 31.0) | **0** |
+| **four hearings accumulated**, unstacked | repeats, jittered | -21.0 | 306 | 0.8.0 | **252 of 306** (77.7 – 86.2) | **0** |
+
+**236 of 306** trials had no single slot decode alone while the combination did. **470 of
+470** combined decodes verified against the message that went in, **0 wrong across 5 777
+submissions**, worst slot **85.4 ms accumulated and 99.6 ms stacked**.
+
+**THE CAVEAT THAT TRAVELS WITH 252 OF 306, AND IT IS UNIT 254'S OWN.** `RunRepeats` scores
+the combined column on the union over the trial's slots, so **a four-repeat column gets four
+single-slot attempts as well as deeper sums.** 68 → 252 is **not** the gain from
+accumulation; it conflates more hearings with more chances. **Unit 254 §4a is the isolation
+and it says accumulation is worth +4 of 51 at four hearings.** The honest reading is: *a
+station heard four times, with the combiner accumulating, is read 252 times in 306 against
+13 for one hearing through the port.*
+
+### 5.3 The cell nobody had run — measured tonight
+
+**`HM-OPEN-081`.** Accumulation stacked with the stages Hamlet ships. One call, run at the
+**full 306 trials — the named drop candidate was NOT taken**, and that was decided at the
+start of the task rather than at the end: §1.6 priced it at 150–200 s against a 480 s
+ceiling and the six closing walks had already shown the pricing accurate to under one per
+cent. **It ran in 145.3 s.**
+
+```csharp
+Ft8LadderHarness.RunRepeats(
+    -21.0, 306, repeats: 4,
+    frequencyJitterHz: 2.0, offsetJitterSamples: 480,
+    combining: new Ft8DeepCombineSettings(historyDepth: 3, accumulationDepth: 3),
+    combinedOsd: Ft8DeepOsdSettings.Default,
+    combinedFineSync: Ft8DeepFineSyncSettings.Default)
+```
+
+```
+decoder      requested  delivered  trials  DECODED  MISSED  WRONG    rate   lo 95   hi 95    wall s    ms/tr
+single slot      -21.0    -21.001     306       13     293      0     4.2     2.5     7.1     19.5     63.8
+single + OSD     -21.0    -21.001     306       33     273      0    10.8     7.8    14.8     22.2     72.5
+summed x4        -21.0    -21.000     306      254      52      0    83.0    78.4    86.8     90.4    295.5
+```
+
+> **THE CELL: 254 of 306, 83.0 per cent, Wilson 78.4 – 86.8, zero wrong.**
+> Ladder `RunRepeats`, four slots a trial, jittered 2.00 Hz and 480 samples, -21.0 dB,
+> 306 trials, `Ft8Sharp.Deep` 0.8.0.
+
+| | this cell (stacked) | unit 254 §4b (unstacked) |
+|---|---:|---:|
+| decoded | **254 of 306** | 252 of 306 |
+| trials no single slot decoded alone and the combination did | **206 of 306** | 236 of 306 |
+| trials some slot decoded alone | **48 of 306** | 16 of 306 |
+| **lost by combining** | **0** | 0 |
+| candidate pairs the rule looked at | **299 908** | 299 908 |
+| **combinations submitted to the port** | **2 232** | **2 232** |
+| the port took past both gates | **736** | 736 |
+| hearings in the deepest combination | **4** (6.02 dB if independent) | 4 |
+| messages the combining stage added | **458** | 470 |
+| **of those, the message that was sent** | **458** | 470 |
+| **of those, a message that was NOT sent** | **0** | **0** |
+| naive expected messages nobody sent | 0.136 | 0.136 |
+| worst single slot | **109.6 ms, 137×** | 85.4 ms, 176× |
+
+**Three things this settles.**
+
+1. **Stacking the shipping stages onto accumulation buys +2 of 306, and costs nothing in
+   submissions.** 2 232 combinations submitted in both, 736 accepted in both, 299 908 pairs
+   offered in both — **identical budgets to the unit.** That is the same result unit 254
+   §4c found at two hearings, where the stack also submitted exactly 516 in both: **ordered
+   statistics and fine sync change which candidates decode, not how many combinations are
+   attempted, so the false-accept exposure does not move.**
+2. **The gain is small because the two overlap.** With the stack on, **48 trials of 306
+   decode from some single slot alone against 16 without it** — ordered statistics is
+   reading slots the combination would otherwise have had to rescue, so only-combined falls
+   from 236 to 206 while the total rises. **The two mechanisms compete for the same trials
+   at four hearings**, which is why +11 of 306 at two hearings (79 against 68) becomes +2 at
+   four. **Accumulation has already taken most of what there is to take.**
+3. **Zero wrong, and 458 of 458 combined decodes verified**, against 0.136 naively expected
+   false accepts over 2 232 submissions. **Nothing here manufactures a message.**
+
+**`HM-OPEN-081` is answered and is closed by this row.** The recommended configuration was
+run; it reads 254 of 306; it costs 109.6 ms in the worst slot, a **137× margin**.
+
+**And it changes nothing about what ships.** Ruling 2 stands: combining is off by default,
+this figure is a measurement handed to Tim, and §6.2 lists the surfaces that would have to
+move before any of it reached a radio.
+
