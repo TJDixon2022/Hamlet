@@ -367,9 +367,110 @@ the decision belongs to the closing measurement with the figures in front of it.
 
 ---
 
-## 2. The reproduction — is the instrument where unit 247 left it
+## 2. The reproduction — the instrument is exactly where unit 247 left it
 
-*Task 2.*
+`tests/Ft8Sharp.Tests/Dsp/Ft8Unit254ReproductionTests.cs`. Two test methods, each run alone
+by its exact full method name, foregrounded, 480 s timeout, 1 m 28 s and 1 m 27 s on the
+wall clock.
+
+### 2.1 -21 dB, jittered — the later slot 2.00 Hz and 480 samples away, 306 trials
+
+```
+decoder      requested  delivered  trials  DECODED  MISSED  WRONG    rate   lo 95   hi 95    wall s    ms/tr
+single slot      -21.0    -21.001     306       13     293      0     4.2     2.5     7.1     19.7     64.4
+single + OSD     -21.0    -21.001     306       33     273      0    10.8     7.8    14.8     22.3     72.8
+combined x2      -21.0    -21.000     306       68     238      0    22.2    17.9    27.2     39.7    129.7
+
+  2 slots a trial. Delivered per slot: -21.001 dB, -20.999 dB
+
+  trials NO single slot decoded alone and the combination DID: 55 of 306
+  trials SOME single slot decoded alone, no combining needed:  13 of 306
+  trials a single slot decoded and the combination did NOT:     0 of 306
+
+  candidate pairs the rule looked at        50677
+  combinations submitted to the port          516
+  of those, the PORT took past both gates      88
+  naive expected messages nobody sent       0.031
+
+  messages the combining stage added           62
+  of those, the message that was sent          62
+  of those, a message that was NOT sent         0
+
+  WORST SINGLE SLOT: 102.6 ms, 12 candidates, 3 combinations - 146x against FT8's 15 s
+```
+
+**The discordant counts, on identical audio** (`Ft8LadderHarness.Discordance`):
+
+| comparison | only the first | only the second |
+|---|---|---|
+| single slot vs combined x2 | **0** | **55** |
+| single + OSD vs combined x2 | 11 | 46 |
+
+### 2.2 -21 dB, same placement — both slots on the same bin and the same sample, 306 trials
+
+```
+decoder      requested  delivered  trials  DECODED  MISSED  WRONG    rate   lo 95   hi 95    wall s    ms/tr
+single slot      -21.0    -21.001     306       13     293      0     4.2     2.5     7.1     19.6     64.0
+single + OSD     -21.0    -21.001     306       33     273      0    10.8     7.8    14.8     22.1     72.3
+combined x2      -21.0    -21.000     306      217      89      0    70.9    65.6    75.7     39.3    128.4
+
+  trials NO single slot decoded alone and the combination DID: 200 of 306
+  trials SOME single slot decoded alone, no combining needed:  17 of 306
+  trials a single slot decoded and the combination did NOT:     0 of 306
+
+  candidate pairs the rule looked at        48344
+  combinations submitted to the port          357
+  of those, the PORT took past both gates     216
+  naive expected messages nobody sent       0.022
+
+  messages the combining stage added          211
+  of those, the message that was sent         211
+  of those, a message that was NOT sent         0
+
+  WORST SINGLE SLOT: 104.9 ms, 21 candidates, 0 combinations - 143x against FT8's 15 s
+```
+
+| comparison | only the first | only the second |
+|---|---|---|
+| single slot vs combined x2 | **0** | **204** |
+| single + OSD vs combined x2 | 2 | 186 |
+
+### 2.3 Against what unit 247 recorded at `Ft8Sharp.Deep` 0.3.0
+
+| row | unit 247 | tonight | moved by |
+|---|---|---|---|
+| single slot, jittered | 13 of 306 | **13 of 306** | 0 |
+| single + OSD, jittered | 33 of 306 | **33 of 306** | 0 |
+| combined x2, jittered | 68 of 306 | **68 of 306** | 0 |
+| only combined, jittered | 55 of 306 | **55 of 306** | 0 |
+| lost by combining, jittered | 0 | **0** | 0 |
+| pairs offered / submitted / accepted, jittered | 50 677 / 516 / 88 | **50 677 / 516 / 88** | 0 / 0 / 0 |
+| combined x2, same placement | 217 of 306 | **217 of 306** | 0 |
+| only combined, same placement | 200 of 306 | **200 of 306** | 0 |
+| pairs offered / submitted / accepted, same | 48 344 / 357 / 216 | **48 344 / 357 / 216** | 0 / 0 / 0 |
+
+**THE INSTRUMENT DID NOT MOVE.** Every column, every only-combined count and every line of
+the submission budget reads exactly what unit 247 read four sibling versions ago at
+`Ft8Sharp.Deep` 0.3.0. §1.5's prediction — that units 248, 251, 252 and 253 are all off by
+default in this configuration and none of them can touch these three columns — held to the
+decode and to the individual submission.
+
+The only numbers that differ are wall-clock ones (102.6 ms against 101.8 ms for the worst
+observed slot, and 21 candidates on that slot rather than 11, because the worst *observed*
+slot is whichever one the operating system interrupted), and those are properties of the
+machine rather than of the decoder.
+
+**Zero wrong on all six rows.** 62 of 62 and 211 of 211 combined decodes were the message
+the ladder knows it transmitted.
+
+### 2.4 The one thing in this table that is not a reproduction
+
+**11 trials that single + OSD decoded and the combined column did not**, jittered — and 2 of
+them at the same placement. That is not a defect and not a loss: the combined column runs
+with **ordered statistics off** (§1.6), so it is a different decoder from column two and
+not a superset of it. It is, however, exactly the size of the prize 4c goes after — those
+11 trials are decodes the shipping configuration would have had *and* combining would have
+had, if anybody had ever run them stacked.
 
 ---
 
