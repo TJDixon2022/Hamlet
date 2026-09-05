@@ -91,6 +91,7 @@ internal static class Ft8LadderHarness
     internal sealed class Result(string decoder, double requested, int trials)
     {
         private readonly List<double> _delivered = new(trials);
+        private readonly List<bool> _outcomes = new(trials);
 
         /// <summary>Which decoder this row is.</summary>
         internal string Decoder { get; } = decoder;
@@ -136,9 +137,34 @@ internal static class Ft8LadderHarness
         internal double MillisecondsPerTrial =>
             Trials == 0 ? double.NaN : Elapsed.TotalMilliseconds / Trials;
 
+        /// <summary>
+        /// <b>Whether each trial decoded, in trial order</b> — so two columns walked over the same
+        /// audio can be compared trial by trial rather than only total against total.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// <b>THIS IS <c>HM-OPEN-078</c>, AND IT IS HERE BECAUSE AN EXIT CRITERION NEEDED IT.</b>
+        /// Unit 252 could not say whether 41 of 306 beat 33 of 306, because <see cref="Run"/> is a
+        /// <em>paired</em> design — every column sees the identical audio, identical noise draw and
+        /// all — while <see cref="Ft8Step6Ladder.Wilson"/> is an interval for two
+        /// <em>independent</em> samples. Two overlapping Wilson intervals do not mean two paired
+        /// columns are indistinguishable; they mean the wrong question was asked. Step 4's second
+        /// exit is the same paired claim on the same instrument — <em>the ladder shows more decodes
+        /// from the same audio than a single pass</em> — so unit 253 records what the harness was
+        /// already computing and throws away.
+        /// </para>
+        /// <para>
+        /// <b>Nothing else moved.</b> <see cref="Add"/> already received <c>decoded</c>;
+        /// <see cref="AsRow"/>'s columns are untouched, the discordance prints on its own line, and
+        /// <see cref="Run"/> is not changed at all.
+        /// </para>
+        /// </remarks>
+        internal IReadOnlyList<bool> Outcomes => _outcomes;
+
         internal void Add(int trial, int seed, double delivered, bool decoded, string sent, IReadOnlyList<string> wrong)
         {
             _delivered.Add(delivered);
+            _outcomes.Add(decoded);
 
             if (decoded)
             {
@@ -756,6 +782,206 @@ internal static class Ft8LadderHarness
                 yield return wrong.ToString();
             }
         }
+    }
+
+    // =====================================================================================
+    // THE MASKED LADDER: TWO STATIONS IN ONE SLOT, AND ONLY THE QUIET ONE IS SCORED.
+    //
+    // A THIRD ENTRY POINT AND NOT A CHANGED ONE, which is unit 247's precedent above and its
+    // reason: Run is what every row this phase has recorded was taken through, including
+    // HM-OPEN-067's 13 of 306, unit 246's 33 of 306 and unit 252's 41 of 306, and a change to
+    // it would invalidate all of them. Everything below adds; nothing above this line moved
+    // except Result.Outcomes, which records what Add was already given and changes no count.
+    // =====================================================================================
+
+    /// <summary>
+    /// <b>Trials only the first column decoded, and trials only the second did.</b> The paired
+    /// statistic <c>HM-OPEN-078</c> asks for.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// <b>The concordant trials carry no information about which column is better and the
+    /// discordant ones carry all of it.</b> Two columns walked over identical audio that both
+    /// decode a trial, or both miss it, say nothing about the difference between them; the whole
+    /// evidence is in the trials where they disagree. That is why this is reported beside the two
+    /// Wilson intervals rather than instead of them: the intervals say how well each rate is
+    /// pinned down against a fresh sample of the world, and these two numbers say whether one
+    /// column beat the other on <em>this</em> audio.
+    /// </para>
+    /// <para>
+    /// <b>Nothing here computes a p-value</b>, and that is deliberate. McNemar's test on these two
+    /// counts is one line of arithmetic, but this project has no ruling on a significance level
+    /// and a unit that picked one tonight would be picking a threshold after seeing the data. The
+    /// two counts are printed; a reader with 50 and 0 does not need a test and a reader with 7 and
+    /// 5 is not helped by one.
+    /// </para>
+    /// </remarks>
+    internal static (int OnlyFirst, int OnlySecond) Discordance(Result first, Result second)
+    {
+        var onlyFirst = 0;
+        var onlySecond = 0;
+        var trials = Math.Min(first.Outcomes.Count, second.Outcomes.Count);
+
+        for (var i = 0; i < trials; i++)
+        {
+            if (first.Outcomes[i] && !second.Outcomes[i])
+            {
+                onlyFirst++;
+            }
+            else if (!first.Outcomes[i] && second.Outcomes[i])
+            {
+                onlySecond++;
+            }
+        }
+
+        return (onlyFirst, onlySecond);
+    }
+
+    /// <summary>One column of the masked ladder.</summary>
+    /// <param name="Name">What it is called in the report.</param>
+    /// <param name="Decode">Samples in, result out. Nothing else is told to it.</param>
+    /// <param name="Unmasked">
+    /// <b>True for the ceiling column</b>, which is handed the quiet station alone in the identical
+    /// noise draw. Every other column is handed the same array with the loud station summed into a
+    /// copy of it.
+    /// </param>
+    internal sealed record MaskedDecoder(string Name, Func<float[], Ft8SlotResult> Decode, bool Unmasked);
+
+    /// <summary>
+    /// <b>THE THIRD ENTRY POINT: two transmissions in one slot, the quiet one scored and the loud
+    /// one a neighbour.</b> Deterministic, and the ceiling column's audio is bit-for-bit what
+    /// <see cref="Run"/> draws.
+    /// </summary>
+    /// <param name="rungDecibels">The ratio to deliver <b>to the quiet station</b>, which is the one scored.</param>
+    /// <param name="trials">How many trials. 306 is six whole blocks of the 51-message population.</param>
+    /// <param name="separationHz">How far the loud station's lowest tone sits above the quiet one's.</param>
+    /// <param name="levelDecibels">How much louder the loud station is, in decibels.</param>
+    /// <param name="decoders">The columns to walk.</param>
+    /// <param name="seed">The base seed. Block <c>s</c> draws from <c>seed + s + round(rung * 10)</c>.</param>
+    /// <param name="frequencyHz">Where the synthesiser puts the quiet station's lowest tone.</param>
+    /// <param name="offsetSamples">Where in the slot both transmissions begin.</param>
+    /// <param name="loudStride">
+    /// How far along the population the loud message sits from the quiet one. <b>25, which is
+    /// co-prime with the 51-message population</b>, so the pairing is a fixed permutation and the
+    /// two stations never carry the same text.
+    /// </param>
+    /// <param name="log">Optional, called once per completed column with its row.</param>
+    /// <remarks>
+    /// <para>
+    /// <b>THE CEILING IS NOT A SEPARATE SYNTHESIS AND THAT IS THE WHOLE POINT.</b> The quiet
+    /// station is placed exactly as <see cref="Run"/> places its one station — same population
+    /// order, same seed arithmetic, same frequency, same offset, same
+    /// <c>SearchFixture.AddNoise</c> call — and <b>the array that call returns is the ceiling
+    /// column's audio</b>. The masked columns get a clone of that array with one more transmission
+    /// summed into it. So the noise is not merely drawn from the same distribution, it is the same
+    /// array, and the ceiling is bit-identical audio to the single-signal ladder every recorded row
+    /// of this phase was taken on.
+    /// </para>
+    /// <para>
+    /// <b>WRONG IS WHAT NEITHER STATION SENT.</b> The loud station's own text is a correct return —
+    /// it was transmitted — and counting it would fail every row for the decoder doing its job.
+    /// Anything else that comes back is a message nobody sent and is recorded with both sent
+    /// messages beside it.
+    /// </para>
+    /// <para>
+    /// <b>Nothing is told to any decode path.</b> The frequencies, the offsets and the amplitude go
+    /// to the synthesiser; each column is handed samples and nothing else. The truth is used once,
+    /// after the code has answered, to compare the text — <see cref="Run"/>'s rule, and it stays.
+    /// </para>
+    /// <para>
+    /// <b>A column that returns nothing is a measurement.</b> Nothing here throws on a poor result
+    /// and nothing here asserts a bound.
+    /// </para>
+    /// </remarks>
+    internal static IReadOnlyList<Result> RunMasked(
+        double rungDecibels,
+        int trials,
+        double separationHz,
+        double levelDecibels,
+        IReadOnlyList<MaskedDecoder> decoders,
+        int seed = DefaultSeed,
+        double frequencyHz = DefaultFrequencyHz,
+        int? offsetSamples = null,
+        int loudStride = 25,
+        Action<string>? log = null)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(trials);
+        ArgumentNullException.ThrowIfNull(decoders);
+
+        if (decoders.Count == 0)
+        {
+            throw new ArgumentException(
+                "A walk with no columns is not a measurement and would report an empty table as a "
+                + "result.",
+                nameof(decoders));
+        }
+
+        var offset = offsetSamples ?? DefaultOffsetSamples;
+        var population = Ft8Step6Ladder.Population();
+        var amplitude = Math.Pow(10.0, levelDecibels / 20.0);
+        var results = decoders.Select(d => new Result(d.Name, rungDecibels, trials)).ToArray();
+        var clocks = decoders.Select(_ => new Stopwatch()).ToArray();
+        var rungOffset = (int)Math.Round(rungDecibels * 10.0);
+
+        var trial = 0;
+        for (var block = 0; trial < trials; block++)
+        {
+            // Run's own line, verbatim: the seed depends only on the rung and the block, never on
+            // iteration order, so a fresh process walking the same rung draws the same noise.
+            var blockSeed = seed + block + rungOffset;
+            var noise = new GaussianNoise(blockSeed);
+
+            for (var index = 0; index < population.Count; index++)
+            {
+                if (trial >= trials)
+                {
+                    break;
+                }
+
+                var quiet = population[index];
+                var loud = population[(index + loudStride) % population.Count];
+
+                var (clean, _) = SearchFixture.OneSignal(Rate, quiet, frequencyHz, offset);
+                var signalPower = SearchFixture.TransmissionPower(Rate, quiet, frequencyHz);
+                var sigma = SignalToNoise.NoiseAmplitudeFor(signalPower, rungDecibels, Rate);
+                var unmasked = SearchFixture.AddNoise(clean, noise, sigma, out var noisePower);
+                var delivered = SignalToNoise.DecibelsFor(signalPower, noisePower, Rate);
+
+                var masked = (float[])unmasked.Clone();
+                SearchFixture.Place(
+                    masked, Rate, loud, frequencyHz + separationHz, offset, amplitude);
+
+                var quietSent = Ft8MessageDecoder.Decode(quiet.Message).Text;
+                var loudSent = Ft8MessageDecoder.Decode(loud.Message).Text;
+
+                for (var d = 0; d < decoders.Count; d++)
+                {
+                    var audio = decoders[d].Unmasked ? unmasked : masked;
+
+                    clocks[d].Start();
+                    var result = decoders[d].Decode(audio);
+                    clocks[d].Stop();
+
+                    var decoded = result.Texts.Contains(quietSent, StringComparer.Ordinal);
+                    var wrong = result.Texts
+                        .Where(t => !string.Equals(t, quietSent, StringComparison.Ordinal)
+                            && !string.Equals(t, loudSent, StringComparison.Ordinal))
+                        .ToArray();
+
+                    results[d].Add(trial, blockSeed, delivered, decoded, quietSent, wrong);
+                }
+
+                trial++;
+            }
+        }
+
+        for (var d = 0; d < results.Length; d++)
+        {
+            results[d].Elapsed = clocks[d].Elapsed;
+            log?.Invoke(results[d].AsRow());
+        }
+
+        return results;
     }
 
     // =====================================================================================

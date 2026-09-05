@@ -713,12 +713,235 @@ two slots, not two fits.
 
 ## 8. The masked ladder — measured
 
-*Written by task 4.*
+All four runs alone, by exact full method name, foregrounded, 480 s timeout, status line
+either side. **Ordered statistics off and fine synchronisation off on every column of
+§8.1, §8.2 and §8.4**, so a difference between columns is subtraction and nothing else.
 
-## 9. The pass-count sweep and the stopping rule as read off the data
+The cell is the one §7.2's rule chose: **separation 0.00 Hz, level difference +6 dB,
+quiet station requested at -18.0 dB.**
 
-*Written by task 4a and task 5.*
+### 8.1 The pass-count sweep — `ThePassCountSweepPricesWhatEachFurtherPassBuys`, 40 s
+
+51 trials, one whole block of the population.
+
+| column | requested | delivered | trials | DECODED | MISSED | WRONG | rate | lo 95 | hi 95 | wall s | ms/trial |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 1 pass | -18.0 | -17.998 | 51 | **0** | 51 | **0** | 0.0 | 0.0 | 7.0 | 3.5 | 67.8 |
+| 2 passes | -18.0 | -17.998 | 51 | **27** | 24 | **0** | 52.9 | 39.5 | 65.9 | 9.8 | 192.8 |
+| 3 passes | -18.0 | -17.998 | 51 | 27 | 24 | **0** | 52.9 | 39.5 | 65.9 | 13.2 | 258.2 |
+| 4 passes | -18.0 | -17.998 | 51 | 27 | 24 | **0** | 52.9 | 39.5 | 65.9 | 13.3 | 260.1 |
+
+| column | slots | passes | passes/slot | subtracted | refused-sym | refused-frame | dup-cross | later-pass | worst slot ms |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 1 pass | 51 | 51 | 1.00 | 0 | 0 | 0 | 0 | 0 | 83.4 |
+| 2 passes | 51 | 102 | 2.00 | 51 | 0 | 0 | 0 | 27 | 206.4 |
+| 3 passes | 51 | 129 | **2.53** | 78 | 0 | 0 | 0 | 27 | 330.3 |
+| 4 passes | 51 | 129 | **2.53** | 78 | 0 | 0 | 0 | 27 | 350.3 |
+
+**What each further pass bought and what it cost:**
+
+| | decodes of 51 | ms a trial | only the earlier | only the later |
+|---|---:|---:|---:|---:|
+| pass 2 over pass 1 | **+27** | +125.1 | 0 | **27** |
+| pass 3 over pass 2 | **0** | +65.4 | 0 | 0 |
+| pass 4 over pass 3 | **0** | +1.9 | 0 | 0 |
+
+**Read the passes-per-slot column.** The four-pass column ran **2.53** passes a slot,
+not four — identical to the three-pass column — so **the stopping rule is what capped
+it and not the budget.** The fourth pass cost 1.9 ms a trial because it almost never
+ran; the third cost 65.4 ms because it did run, on about half the slots, and bought
+nothing.
+
+### 8.2 The scoreboard — `TheMaskedLadderShowsWhatSubtractionBoughtAgainstTheCeiling`, 3 m 2 s
+
+306 trials, six whole blocks. **The named drop candidate — the three-pass column at 306
+trials — was kept rather than dropped**, because 4a had priced it at 51 trials and the
+night had the budget.
+
+| column | requested | delivered | trials | DECODED | MISSED | WRONG | rate | lo 95 | hi 95 | wall s | ms/trial |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| **1 pass — the before** | -18.0 | -17.999 | 306 | **0** | 306 | **0** | 0.0 | 0.0 | 1.2 | 20.5 | 66.9 |
+| **2 passes — the after** | -18.0 | -17.999 | 306 | **153** | 153 | **0** | 50.0 | 44.4 | 55.6 | 58.4 | 190.7 |
+| 3 passes | -18.0 | -17.999 | 306 | 153 | 153 | **0** | 50.0 | 44.4 | 55.6 | 77.1 | 252.0 |
+| **ceiling** | -18.0 | -17.999 | 306 | **304** | 2 | **0** | 99.3 | 97.6 | 99.8 | 19.4 | 63.3 |
+
+| column | slots | passes | passes/slot | subtracted | refused-sym | refused-frame | dup-cross | later-pass | worst slot ms |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 1 pass | 306 | 306 | 1.00 | 0 | 0 | 0 | 0 | 0 | 79.0 |
+| 2 passes | 306 | 612 | 2.00 | 306 | **0** | 0 | **0** | 153 | 208.1 |
+| 3 passes | 306 | 765 | 2.50 | 459 | **0** | 0 | **0** | 153 | 352.0 |
+| ceiling | 306 | 306 | 1.00 | 0 | 0 | 0 | 0 | 0 | 74.8 |
+
+**The discordant counts against the single pass — the paired statistic `HM-OPEN-078`
+asks for:**
+
+| against | only the single pass decoded it | only the other decoded it |
+|---|---:|---:|
+| 2 passes | **0** | **153** |
+| 3 passes | **0** | 153 |
+| ceiling | **0** | 304 |
+
+**Subtraction recovered 153 of the 304 the ceiling says were there — 50.3 per cent —
+and took nothing away on any of the 306 trials.**
+
+**Zero wrong on all four rows.** 1 683 slot decodes across the four columns, no message
+returned that neither station sent.
+
+### 8.3 The shipping configuration — NOT PART OF THE ISOLATION
+
+`TheShippingConfigurationIsMeasuredOnceAndIsLabelledNotPartOfTheIsolation`, 50 s.
+**Ordered statistics on at the settled default and fine synchronisation on**, so a
+difference between these columns is subtraction *in the presence of two other stages*
+and is not attributable to subtraction alone. **One block of 51 trials, not six**, so
+the interval is wide; it is printed and it is not comparable with §8.2.
+
+| column | requested | delivered | trials | DECODED | MISSED | WRONG | rate | lo 95 | hi 95 | ms/trial | worst slot ms |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| ship 1 pass | -18.0 | -17.998 | 51 | **0** | 51 | **0** | 0.0 | 0.0 | 7.0 | 245.9 | 370.9 |
+| ship 2 pass | -18.0 | -17.998 | 51 | **33** | 18 | **0** | 64.7 | 51.0 | 76.4 | 497.4 | **741.6** |
+| ship ceiling | -18.0 | -17.998 | 51 | **51** | 0 | **0** | 100.0 | 93.0 | 100.0 | 198.6 | 306.4 |
+
+Discordance: **only one pass 0, only two passes 33.** The shipping configuration
+recovers **33 of the 51** the ceiling says were there — 64.7 per cent, against the
+isolation's 50.3 — because ordered statistics and fine synchronisation get more out of
+the residual than the bare port does.
+
+### 8.4 The control — `SubtractionTakesNothingAwayFromTheSingleSignalLadder`, 51 s
+
+**Through `Ft8LadderHarness.Run` itself**, at -20.0 dB, 306 trials: one station, no
+neighbour, the same audio every recorded row of this phase was taken on.
+
+| column | requested | delivered | trials | DECODED | MISSED | WRONG | rate | lo 95 | hi 95 | ms/trial | worst slot ms |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| sub off | -20.0 | -20.000 | 306 | **73** | 233 | **0** | 23.9 | 19.4 | 28.9 | 63.8 | 72.4 |
+| sub on | -20.0 | -20.000 | 306 | **73** | 233 | **0** | 23.9 | 19.4 | 28.9 | 93.8 | 205.8 |
+
+| | |
+|---|---:|
+| trials only OFF decoded — **what subtraction took away** | **0** |
+| trials only ON decoded — what it added here | 0 |
+| passes a slot with it on | 1.24 |
+
+**Identical, trial for trial, and asserted so.** Subtraction ran a second pass on the
+73 slots that decoded something and on none of the 233 that did not — the stopping
+rule's second condition — and the second pass returned nothing new on any of them. The
+cost on the ordinary sensitivity case is **30.0 ms a slot on average**, which is what
+the operator pays on the great majority of slots that are not the masked case.
+
+---
+
+## 9. The pass-count sweep and the stopping rule, as read off the data
+
+**The rule was written into `Ft8DeepSubtractionSettings` before any of this ran** (§3.3
+and the type's own remarks). What the data settles is the *budget*, not the rule.
+
+> **THE STOPPING RULE.** A pass is the last pass when any one of these is true:
+> **(1)** the pass count has reached `MaxPasses`; **(2)** the pass returned no message
+> that had not already been returned; **(3)** no message in the pass could be
+> subtracted.
+>
+> **`MaxPasses` is two.**
+
+**And two is read off the table rather than chosen.** Over one block on the masked cell:
+
+| | decodes bought | ms a trial | discordance |
+|---|---:|---:|---|
+| pass 2 over pass 1 | **+27 of 51** | +125.1 | 0 lost, 27 gained |
+| pass 3 over pass 2 | **0** | +65.4 | 0 lost, 0 gained |
+| pass 4 over pass 3 | **0** | +1.9 | 0 lost, 0 gained |
+
+At 306 trials the three-pass column is **153 of 306, identical to the two-pass column,
+with 0 and 0 discordance** — so the 51-trial answer held at six times the sample.
+
+**Why the third pass buys nothing here, stated rather than left as a shrug.** Rule 2
+does most of the work: on a two-station slot, pass 1 returns the loud station, pass 2
+returns the quiet one, and pass 3 has nothing new to find, so **the loop stops itself on
+about half the slots without being told to.** The three-pass column ran 2.50 passes a
+slot and the four-pass column ran 2.53 — the budget was never the binding constraint
+above two. **On a slot with seven stations in it the answer could be different**, and
+that is logged in `OPEN_ISSUES.md` rather than extrapolated here: this measurement is
+two signals and says nothing about seven.
+
+---
 
 ## 10. The verdict
 
-*Written by task 5.*
+### 10.1 What subtraction bought
+
+| | of 306 | rate | 95 % Wilson |
+|---|---:|---:|---|
+| **single pass — the before** | **0** | 0.0 % | 0.0 – 1.2 |
+| **two passes — the after** | **153** | 50.0 % | 44.4 – 55.6 |
+| **the ceiling — what was there to recover** | **304** | 99.3 % | 97.6 – 99.8 |
+
+**Discordant counts, single pass against two passes: 0 and 153.** Not one trial of 306
+was lost, and 153 were gained. **The two Wilson intervals do not overlap**, and on this
+paired design the discordance is the stronger statement of the two: the columns saw
+bit-identical audio, so 0-versus-153 is the whole of the evidence and no interval is
+needed to read it.
+
+**Subtraction recovered 153 of the 304 messages the ceiling says were recoverable —
+50.3 per cent of what was there.** The other 151 are messages that were masked, were
+recoverable in principle, and the residual still did not give up. That gap is the
+honest headroom this step leaves behind and it is larger than what was recovered.
+
+### 10.2 The pass count and the stopping rule
+
+§9. **Two passes. The third buys zero decodes for 65.4 ms a trial, measured at 51 trials
+and confirmed at 306.**
+
+### 10.3 The time budget
+
+**The configuration recommended is subtraction off** (§10.5), which is unchanged at
+**330.4 ms worst observed slot, a 45× margin** — unit 252's figure, and this unit did
+not move the default path.
+
+**For the configuration this unit measured**, the worst observed slots were:
+
+| configuration | worst observed slot | margin against 15 000 ms |
+|---|---:|---:|
+| isolation, two passes, masked ladder | **208.1 ms** | **72×** |
+| isolation, three passes | 352.0 ms | 43× |
+| single-signal control, subtraction on | 205.8 ms | 73× |
+| **shipping configuration, two passes** | **741.6 ms** | **20×** |
+
+**Even the most expensive row measured tonight sits twenty times inside the budget.**
+Time is not what is stopping subtraction from shipping.
+
+### 10.4 The control
+
+**Subtraction cost the single-signal ladder nothing: 73 of 306 with it off and 73 of 306
+with it on, identical trial for trial — zero taken away, zero added, zero wrong — for
+30.0 ms a slot on average.**
+
+### 10.5 The shipping question, answered
+
+**Subtraction stays OFF by default this unit and `Ft8Reception.cs` is not touched.** That
+is the ruling this unit was given and it is not re-argued. What the measurement adds is
+the figures the decision needs:
+
+**What turning it on would buy the operator.** On a slot where a station is sitting on
+another 6 dB below it at the same frequency, **the quiet station goes from never being
+read to being read about two thirds of the time** — 33 of 51 in the shipping
+configuration, against 0 of 51 today and a ceiling of 51 of 51. On 14.074, where Tim's
+own 21:58 capture returned 80 candidates and 7 distinct messages from one slot, that is
+not a corner case.
+
+**What it would cost him a slot.** In the shipping configuration, **245.9 ms a slot
+becomes 497.4 ms — 251.5 ms more** — with a worst observed slot of 741.6 ms against the
+15 000 ms budget, a 20× margin. On the ordinary single-station slot the cost is far
+lower, **30.0 ms**, because the stopping rule's second condition ends the decode after
+one pass on every slot that returns nothing.
+
+**What it would cost him in wrong decodes.** Nothing was observed: **zero wrong on all
+fourteen rows measured tonight, over 3 468 slot decodes.** The arithmetic bound is in
+§3.1 — two passes doubles the CRC-14 submissions and therefore the false-accept
+expectation, from about 0.0085 to about 0.0171 messages a slot at the candidate-limit
+bound — and it is a bound, not a prediction, because only parity-satisfied codewords
+reach the checksum.
+
+**The five surfaces that must change first** are §6's list and they are unchanged:
+`Ft8Reception.cs:460`, `Ft8DecoderIdentity`'s stage flags, the five-count census, the
+telemetry line, and the capture sidecar. **The census one is not paperwork**: this
+unit's multi-pass path sums the five counts over the passes, which is a real change in
+what a census means, and gate-set entry 6 asserts that census reaches three surfaces.

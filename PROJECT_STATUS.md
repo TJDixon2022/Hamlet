@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: WORKING
-TASK: 3 of 6
+TASK: 4 of 6
 WORK_INSTRUCTION: 253 - strong signals are subtracted and the slot is read again
 BALL: claude
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-155 (2026-09-05)
-UPDATED: 2026-09-05T16:52:00-04:00
-NOTE: Task 2 committed, ladder cell chosen at 0.00 Hz and +6 dB. About to start Ft8DeepSubtractionTests.ASubtractedMessageNoLongerDecodesOutOfTheResidual alone by exact name, 480 s timeout, foreground, with the fit stubbed to unit gain and zero phase - watching it fail before the fit exists
+UPDATED: 2026-09-05T17:31:00-04:00
+NOTE: 4b returned in 3 m 2 s - 0 of 306 single pass, 153 of 306 at two passes, 153 at three, ceiling 304 of 306, zero wrong on all four rows and nothing lost. About to start Ft8Unit253MaskedLadderTests.SubtractionTakesNothingAwayFromTheSingleSignalLadder alone by exact name, 480 s timeout, foreground
 
 ---
 
