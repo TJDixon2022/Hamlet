@@ -43,6 +43,41 @@ public sealed class Ft8DeepOsdSettings
     /// </remarks>
     public const int MaximumOrder = 4;
 
+    /// <summary>
+    /// <b>The order this library uses when nobody names one, and it is read off a measurement.</b>
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Unit 246 task 6, one whole 51-trial block at -21 dB, every row seeing the same seed and the
+    /// same noise draw, with the port at 3 of 51 and zero wrong on every row:
+    /// </para>
+    /// <code>
+    /// order   decoded   ms/trial   worst slot ms   codewords the port accepted
+    ///     0         3       66.3           102.1                             0
+    ///     1         4       65.8            75.5                             1
+    ///     2         4       74.3           110.1                             1
+    ///     3         5      311.4           511.6                             2
+    /// </code>
+    /// <para>
+    /// <b>The gains cannot be separated at 51 trials</b> - one decode either way is well inside the
+    /// noise - so the choice is made on cost against the headroom task 1 measured. Task 1's ceiling
+    /// admits <b>7 of 51 trials at order 2 against 2 of 51 at order 1</b>, and order 2 costs 8.8 ms a
+    /// trial more than the port with a worst observed slot of 110 ms, which is a 136-fold margin
+    /// against FT8's 15 seconds. <b>Order 2 is therefore where the headroom is at a price that is
+    /// nothing.</b>
+    /// </para>
+    /// <para>
+    /// <b>Order 3 is not ruled out and is not the default.</b> It bought one more decode of 51 and
+    /// cost 246 ms a trial, and one decode of 51 is not a difference this table can resolve. Resolving
+    /// it needs more trials, not a bigger claim.
+    /// </para>
+    /// <para>
+    /// <b>Nothing here was tuned to a target.</b> No order in this table reaches step 2's 40 per cent,
+    /// and the default was not chosen by trying settings until one passed.
+    /// </para>
+    /// </remarks>
+    public static Ft8DeepOsdSettings Default { get; } = new(2);
+
     /// <summary>Builds settings for one order.</summary>
     /// <param name="order">
     /// How many basis positions may be flipped, 0 to <see cref="MaximumOrder"/>.
