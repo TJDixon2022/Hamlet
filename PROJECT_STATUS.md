@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: WORKING
-TASK: 2 of 7
+TASK: 3 of 7
 WORK_INSTRUCTION: 247 - the same transmission heard twice, combined before the decoder sees it
 BALL: claude
 RULES_AT: HM-DEC-153 (2026-09-04)
 NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-09-05T00:52:00-04:00
-NOTE: The trace answered yes and the combiner core is being built on it - at -21 dB the summed distance fell from a median of 31 to 18 and 22 of 51 trials crossed under the recovery threshold of 17 where neither slot alone did, while at -24 dB nothing reached at all. Now writing Ft8DeepSoftCombiner and its four properties on synthesised ratios: independent errors repair each other, two different codewords do not, a slot combined with itself decides exactly what it decided alone, and degenerate input is combined rather than refused. The type-list tripwire unit 246 left has fired as designed and is being changed deliberately
+UPDATED: 2026-09-05T01:14:00-04:00
+NOTE: The pairing rule and the false-accept budget are written and measured. One tone of frequency tolerance and two symbol periods of time tolerance, both read off task 1 where the two closest candidates sat a median 0.00 Hz and 0.000 s apart, and one partner per candidate per remembered slot - which is the smallest budget that can produce a combination at all and puts the naive expectation at 0.24 messages nobody sent across a 306-trial rung against 366 for unbounded pairing. The wrong-pairing gate test found something worth having: 5 of 56 deliberately wrong pairings did decode, and every one of them returned one of its own two transmissions rather than an invented message, so the count that must be zero is zero
 
 ---
 
