@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    ONE REFERENCE, TO Ft8Sharp, AND THAT IS THE POINT.
+
+    Ft8Sharp is a faithful MIT port of ft8_lib and this phase changes not one
+    line of it: it is the instrument every measurement in this phase is taken
+    against, and its value is precisely that it cannot drift. Everything that
+    tries to hear better than the port lives here instead, so a regression in
+    an improvement is always visible against something known-identical to
+    upstream.
+
+    The direction that would destroy that is Ft8Sharp referencing THIS project,
+    and Ft8SharpBoundaryTests.DeclaresNoReferences already refuses it - it reads
+    src/Ft8Sharp/Ft8Sharp.csproj off disk and asserts zero ProjectReference and
+    zero PackageReference elements. Ft8Sharp.DeepBoundaryTests in
+    tests/Ft8Sharp.Deep.Tests walks both built assemblies and asserts the same
+    thing from the other side.
+
+    So: one ProjectReference, to ..\Ft8Sharp\Ft8Sharp.csproj, and nothing else
+    outside the framework. No PackageReference, for anything.
+  -->
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Ft8Sharp\Ft8Sharp.csproj" />
+  </ItemGroup>
+
+</Project>

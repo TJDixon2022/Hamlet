@@ -1,0 +1,54 @@
+<Project>
+
+  <!--
+    THIS FILE DELIBERATELY DOES NOT IMPORT THE ROOT Directory.Build.props, for the
+    same reason src/Ft8Sharp/Directory.Build.props does not (HM-DEC-152).
+
+    MSBuild walks up from a project looking for the first Directory.Build.props and
+    stops at it. The usual courtesy is to import the one above before adding to it.
+    Not importing it is the whole point here, and the absence of that import is a
+    decision rather than an oversight.
+
+    The root file injects Version, and with it AssemblyVersion,
+    AssemblyInformationalVersion and BuildStampUtc, into every project in the
+    solution. Ft8Sharp.Deep is a library with its own licence, its own NOTICE and
+    its own reason to exist, and a library that announces itself as version 1.12.48
+    of a desktop program is wrong on the first line a reader of the package sees.
+    HM-DEC-063 exists so the tree has one answer to "what version is this app";
+    Ft8Sharp.Deep is not the app.
+
+    0.1.0 BECAUSE IT DELEGATES AND NOTHING ELSE.
+
+    Unit 245 creates this library to satisfy step 1 of PHASE_PLAN.md, whose whole
+    point is that BEHAVIOUR DOES NOT CHANGE. Ft8DeepSlotDecoder holds an
+    Ft8SlotDecoder built with the parameters it was handed and returns that
+    decoder's Ft8SlotResult unchanged - every count and every message, in order.
+    There is no ordered statistics decoding here, no subtraction, no re-sync, no
+    per-message SNR and no cross-slot combining. Those are steps 2 to 6 and not one
+    line of any of them is in this version.
+
+    So the scoreboard reads two columns tonight and they agree decode for decode,
+    which is a statement about the SEAM and about the harness wiring and about
+    nothing else. From the unit that takes step 2, a difference between the columns
+    is attributable to exactly one named change, and that is what this version buys.
+
+    A 0.1.0 rather than a 1.x, and the reason is the same as Ft8Sharp's own first
+    version: a 1.x would claim a maturity this library has not got. Bump the minor
+    when it gains a capability of its own - which, on the plan as it stands, is the
+    unit that lands OSD. Nothing here yet decodes anything the port does not.
+  -->
+  <PropertyGroup>
+    <Version>0.1.0</Version>
+  </PropertyGroup>
+
+  <!--
+    AND NO GIT COMMIT EITHER, for the reason recorded beside Ft8Sharp's own copy of
+    this property: the SDK appends the repository's source revision to
+    AssemblyInformationalVersion by itself, without help from the root file, so
+    dropping the inheritance above is not enough on its own.
+  -->
+  <PropertyGroup>
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+  </PropertyGroup>
+
+</Project>

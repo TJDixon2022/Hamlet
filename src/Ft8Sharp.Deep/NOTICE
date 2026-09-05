@@ -1,0 +1,73 @@
+NOTICE - Ft8Sharp.Deep
+
+What this library is
+--------------------
+
+Ft8Sharp.Deep is where Hamlet tries to hear better than the decoder it came
+from. Ft8Sharp beside it is a faithful MIT port of ft8_lib and stays one: it is
+the instrument every measurement in this phase is read against, and its value is
+that it cannot drift. Every improvement lives here instead, so a regression is
+always visible against something known-identical to upstream.
+
+Licence
+-------
+
+Ft8Sharp.Deep is licensed under the GNU General Public License, version 3 or
+later (SPDX: GPL-3.0-or-later). The verbatim text is in the LICENSE file beside
+this one, and it is the same text as the repository root's LICENSE. That matches
+Hamlet's own intended release licence (HM-DEC-004), and it is the phase ruling of
+2026-09-04 that the seam is split this way.
+
+It depends on Ft8Sharp, which is licensed under the MIT License and stays MIT.
+Nothing here changes that, and nothing here is copied into it. Ft8Sharp remains
+separately extractable and separately publishable, which is the whole reason it
+carries its own LICENSE, its own NOTICE, its own version and a mechanical
+boundary test that has been watched refusing a reference.
+
+Citations, written before a line of any of them is implemented
+--------------------------------------------------------------
+
+This section is not boilerplate and it is not written after the fact. It names
+the published sources this library implements from, and it is checked by
+Ft8DeepNoticeTests in tests/Ft8Sharp.Deep.Tests, because a NOTICE nothing checks
+is a NOTICE that will rot the first time somebody tidies it.
+
+Ordered statistics decoding - PHASE_PLAN.md step 2:
+
+    M. P. C. Fossorier and S. Lin, "Soft-Decision Decoding of Linear Block
+    Codes Based on Ordered Statistics," IEEE Transactions on Information
+    Theory, vol. 41, no. 5, pp. 1379-1396, September 1995
+
+The protocol itself:
+
+    Franke K9AN, Somerville G4WJS, Taylor K1JT, "The FT4 and FT8 Communication
+    Protocols," QEX, July/August 2020
+
+As of this version neither is implemented. Ft8DeepSlotDecoder delegates to
+Ft8Sharp and returns exactly what the port returns. The citations are here first
+so that when the algorithms arrive there is no moment at which the code exists
+and the credit does not.
+
+Where the algorithms come from, and where they do not
+-----------------------------------------------------
+
+Everything this library implements comes from published description.
+
+No WSJT-X source was read, and no ft4_ft8_public/ was read. That is a standing
+ruling of this phase and it is not a matter of preference: a decoder written from
+somebody else's source is a derivative of it, and this one is not. Where an
+algorithm is needed, it is written from the papers cited above and from public
+literature, and the source is cited at the point of use in the code as well as
+here.
+
+ft8_lib by Karlis Goba (https://github.com/kgoba/ft8_lib) is the ancestor of
+Ft8Sharp and its debt is acknowledged in that library's own NOTICE. It is not the
+ancestor of anything in Ft8Sharp.Deep, and it is the thing this library is trying
+to improve on rather than a source it draws from.
+
+Independence
+------------
+
+Ft8Sharp.Deep is not affiliated with or endorsed by the WSJT-X project, by
+Karlis Goba, or by any author of the papers cited above. Errors in this library
+are its own.
