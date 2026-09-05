@@ -12,6 +12,37 @@ face.
 
 ---
 
+> ## AMENDED BY UNIT 256, 2026-09-05
+>
+> **Four things changed and nothing was rewritten silently.**
+>
+> 1. **§4.1 is replaced whole.** Every crossing now carries **a band** computed from the two
+>    rungs it was interpolated between, and every row that read `not bracketed` at the cell
+>    centre now carries a crossing measured tonight at 306 trials. **The earlier §4.1 gave
+>    eight bare point values and marked four cell-centre rows `not bracketed`.** The point
+>    values themselves did not move — all eight reproduce to the hundredth of a decibel when
+>    the arithmetic is executed rather than done by hand.
+> 2. **§4.1's prose said *three of the six are not straddled* and its own table marked
+>    four.** The table was right. The replacement says **four**, and says what the earlier
+>    text said.
+> 3. **A new §5.4 gives combining an on-and-off panel of its own**, on the repeats ladder,
+>    with its own 50 per cent crossing — **-21.48 dB**, which no unit in this project had
+>    ever quoted. §5.2's citation from unit 254 stays exactly as it was.
+> 4. **§6.1 item 4 carries the two operator crossings' bands.** Nothing else in §6.1 moved
+>    and §6.4 gains a note; the checking is recorded at the foot of §6.1.
+>
+> **§3's thirty-six cells are untouched.** Not re-run, not re-tabulated, not re-worded.
+> §4.2, §4.3, §5.0 to §5.3, §6.0, §6.2 and §6.3 are untouched. **And §6.1 item 7's sentence
+> about zero wrong decodes now carries a qualification**, because unit 256 measured one — at
+> -23 dB, on the repeats ladder, two decibels below anything in this document. It is
+> `HM-OPEN-082` and it changes no figure printed here.
+>
+> Unit 256's working record — the trace, the price, the predictions and what they turned out
+> to be — is `docs/unit256-crossings-and-combining.md`. Its artefacts are
+> `docs/unit256-runs/`.
+
+---
+
 ## 1. The trace — what the tree says, at file and line
 
 ### 1.1 The six columns, defined against the constructor that builds them
@@ -497,58 +528,130 @@ failures**, and the configuration `Ft8Reception.cs:460` builds is the one that c
 copied from another unit; §4.3 is the only place other units appear and it is a comparison,
 not a source.
 
-### 4.1 The 50 per cent crossing, all six columns, both placements
+### 4.1 The 50 per cent crossing, all six columns, both placements, each with its band
 
-**Interpolated linearly between the two rungs that straddle 50 per cent, and quoted as an
-interpolation.** A column not straddled by -19, -20 and -21 reads **`not bracketed`** with
-its direction said. **Nothing is extrapolated** and no crossing is quoted from two rungs on
-the same side of 50 per cent.
+> **REPLACED WHOLE BY UNIT 256, 2026-09-05.** The earlier text gave eight bare point values
+> and marked four cell-centre rows `not bracketed`; **its prose said three of the six were
+> not straddled while its own table marked four**, and the table was right. The point values
+> are unchanged — all eight reproduce to the hundredth of a decibel when the arithmetic is
+> executed rather than done in prose (`docs/unit256-runs/crossing-bands.txt`). **What is new
+> is the band on every one of them, and a crossing for every row that had none.**
 
-**On the grid**, every column is straddled by -19 and -20:
+**The crossing is interpolated linearly between the two rungs that straddle 50 per cent, and
+is quoted as an interpolation.** Nothing is extrapolated and no crossing is quoted from two
+rungs on the same side of 50 per cent.
 
-| column | -19 dB rate (Wilson 95 %) | -20 dB rate (Wilson 95 %) | crossing |
-|---|---|---|---|
-| `Ft8Sharp` | 81.0 % (76.3 – 85.0) | 23.9 % (19.4 – 28.9) | **-19.54 dB** (interpolated) |
-| `Deep all off` | 81.0 % (76.3 – 85.0) | 23.9 % (19.4 – 28.9) | **-19.54 dB** (interpolated) |
-| `fine sync only` | 87.6 % (83.4 – 90.8) | 31.0 % (26.1 – 36.4) | **-19.66 dB** (interpolated) |
-| `OSD only` | 90.2 % (86.3 – 93.0) | 40.8 % (35.5 – 46.4) | **-19.81 dB** (interpolated) |
-| **`SHIPPING`** | **92.5 % (89.0 – 94.9)** | **45.1 % (39.6 – 50.7)** | **-19.90 dB** (interpolated) |
-| `subtraction only` | 81.0 % (76.3 – 85.0) | 23.9 % (19.4 – 28.9) | **-19.54 dB** (interpolated) |
+#### What the band is, and what it is not
 
-**At the cell centre**, three of the six are not straddled:
+**THE BAND IS NOT A CONFIDENCE INTERVAL ON THE CROSSING AND THIS DOCUMENT DOES NOT CALL IT
+ONE.** It is obtained by pushing each rung's **95 per cent Wilson interval** through the
+**same linear interpolation** the point crossing uses, under the assumption this section
+already makes — **that the decode rate moves linearly in decibels between two rungs one
+decibel apart.**
 
-| column | -19 dB rate (Wilson 95 %) | -20 dB rate (Wilson 95 %) | crossing |
-|---|---|---|---|
-| `Ft8Sharp` | 2.0 % (0.9 – 4.2) | 0.0 % (0.0 – 1.2) | **not bracketed** — below 50 % at all three rungs; the crossing lies **above -19 dB** |
-| `Deep all off` | 2.0 % (0.9 – 4.2) | 0.0 % (0.0 – 1.2) | **not bracketed** — above -19 dB |
-| `fine sync only` | 90.5 % (86.7 – 93.3) | 23.9 % (19.4 – 28.9) | **-19.61 dB** (interpolated) |
-| `OSD only` | 10.8 % (7.8 – 14.8) | 0.3 % (0.1 – 1.8) | **not bracketed** — above -19 dB |
-| **`SHIPPING`** | **90.8 % (87.1 – 93.6)** | **23.9 % (19.4 – 28.9)** | **-19.61 dB** (interpolated) |
-| `subtraction only` | 2.0 % (0.9 – 4.2) | 0.0 % (0.0 – 1.2) | **not bracketed** — above -19 dB |
+- Join the two rungs' **upper** Wilson bounds: that is the optimistic curve, and it reaches
+  50 per cent at the **lower (better)** ratio.
+- Join the two **lower** bounds: that is the pessimistic curve, and it reaches 50 per cent at
+  the **higher** ratio.
+- **The pair is the band.**
 
-**`not bracketed` is a result and it is the point.** Three columns never reach 50 per cent
-at any rung this ladder measured off the grid, and saying so is the licensed answer — unit
-248 wrote the same sentence for two of its own columns. **To quote a number for them would
-require extrapolating from two rungs on the same side of 50 per cent, which ruling 3
-forbids.**
+**Where a bound curve does not reach 50 per cent inside the bracket, that side of the band is
+OPEN and is written as open.** It is never extrapolated. Ruling 1 of unit 256, and unit 255's
+ruling 3 before it.
 
-**The shipping configuration has a 50 per cent crossing for the first time in this project:
--19.90 dB on the grid and -19.61 dB at the cell centre.** Both are interpolations between
--19 and -20; both rungs and both Wilson intervals are printed above.
+**Why it is worth having at all.** A crossing published as a bare number invites the
+comparison `CLAUDE.md` §0.0 forbids: someone sets -19.90 beside another decoder's -19.7 and
+declares a 0.2 dB win. **The narrowest band in either table below is 0.126 dB wide and one is
+open**, so a 0.2 dB difference is inside this project's own bracket at 306 trials and cannot
+be called a win.
 
-**Two things about that pair are worth reading twice.**
+**Computed, not hand-derived.** `Ft8Unit256CrossingBand` and
+`Ft8Unit256CrossingIntervalTests.TheCrossingBandBracketsThePointAndIsBuiltFromTheRungsOwnIntervals`,
+watched failing first on an inverted bound pairing
+(`docs/unit256-runs/task2-watched-failure.txt`).
+
+#### On the grid — every column straddled by -19 and -20, 306 trials a rung
+
+| column | -19 dB rate (Wilson 95 %) | -20 dB rate (Wilson 95 %) | crossing | **band** |
+|---|---|---|---|---|
+| `Ft8Sharp` | 81.05 % (76.28 – 85.04) | 23.86 % (19.42 – 28.94) | **-19.54 dB** | **-19.62 to -19.46 dB** (0.162 wide) |
+| `Deep all off` | 81.05 % (76.28 – 85.04) | 23.86 % (19.42 – 28.94) | **-19.54 dB** | **-19.62 to -19.46 dB** (0.162 wide) |
+| `fine sync only` | 87.58 % (83.41 – 90.82) | 31.05 % (26.12 – 36.44) | **-19.66 dB** | **-19.75 to -19.58 dB** (0.167 wide) |
+| `OSD only` | 90.20 % (86.35 – 93.05) | 40.85 % (35.49 – 46.44) | **-19.81 dB** | **-19.92 to -19.71 dB** (0.209 wide) |
+| **`SHIPPING`** | **92.48 % (88.97 – 94.94)** | **45.10 % (39.62 – 50.70)** | **-19.90 dB** | **OPEN beyond -20 dB, to -19.79 dB** |
+| `subtraction only` | 81.05 % (76.28 – 85.04) | 23.86 % (19.42 – 28.94) | **-19.54 dB** | **-19.62 to -19.46 dB** (0.162 wide) |
+
+> **`SHIPPING`'s BAND IS OPEN ON ITS OPTIMISTIC SIDE AND THE CELL SAYS SO.** Its -20 dB
+> rung's Wilson upper bound is **50.700 per cent — still above 50** — so the optimistic curve
+> never crosses inside `[-20, -19]` at all. The honest statement is *at least as good as
+> -19.79 dB, and this ladder cannot put a floor under how much better.* **It is open by 0.70
+> percentage points**, which is another way of saying that at 306 trials the -20 dB rung is
+> one decode away from straddling on its own.
+
+#### At the cell centre — 306 trials a rung, and the four unbracketed rows are bracketed
+
+**FOUR of the six were not straddled by -19, -20 and -21**, not three: `Ft8Sharp`,
+`Deep all off`, `OSD only` and `subtraction only`. **All four are bracketed below by rungs
+unit 256 measured at -17 and -18 dB**, at 306 trials each, at this same placement.
+
+| column | upper rung (Wilson 95 %) | lower rung (Wilson 95 %) | crossing | **band** |
+|---|---|---|---|---|
+| **`Ft8Sharp`** | **-17 dB: 235 of 306, 76.80 %** (71.75 – 81.18) | **-18 dB: 77 of 306, 25.16 %** (20.63 – 30.31) | **-17.52 dB** | **-17.61 to -17.43 dB** (0.187 wide) |
+| `Deep all off` | -17 dB: 235 of 306, 76.80 % (71.75 – 81.18) | -18 dB: 77 of 306, 25.16 % (20.63 – 30.31) | **-17.52 dB** | **-17.61 to -17.43 dB** (0.187 wide) |
+| `fine sync only` | -19 dB: 90.52 % (86.72 – 93.32) | -20 dB: 23.86 % (19.42 – 28.94) | **-19.61 dB** | **-19.67 to -19.55 dB** (0.127 wide) |
+| `OSD only` | **-18 dB: 172 of 306, 56.21 %** (50.61 – 61.66) | **-19 dB: 33 of 306, 10.78 %** (7.78 – 14.76) | **-18.14 dB** | **-18.25 to -18.01 dB** (0.234 wide) |
+| **`SHIPPING`** | **-19 dB: 90.85 %** (87.09 – 93.59) | **-20 dB: 23.86 %** (19.42 – 28.94) | **-19.61 dB** | **-19.67 to -19.55 dB** (0.126 wide) |
+| `subtraction only` | -17 dB: 235 of 306, 76.80 % (71.75 – 81.18) | -18 dB: 77 of 306, 25.16 % (20.63 – 30.31) | **-17.52 dB** | **-17.61 to -17.43 dB** (0.187 wide) |
+
+**Not one cell in either table above is `not bracketed`, and no side of any band at the cell
+centre is open.** `docs/unit256-runs/cell-centre-minus17.txt`,
+`docs/unit256-runs/cell-centre-minus18.txt`, and — for `OSD only`'s lower rung —
+`docs/unit255-runs/minus19-cell-centre.txt`, which is this document's own §3.2 row, measured
+at the same placement, the same seed and the same `Ft8Sharp.Deep` 0.8.0.
+
+**Three columns straddle at (-18, -17) and one at (-19, -18), and that is a measurement.**
+`OSD only` reads 172 of 306 at -18 dB — already above 50 — so its crossing lies a decibel
+deeper than the other three. **No column is interpolated from a 51-trial rung.** Unit 256's
+coarse search at 51 trials (`docs/unit256-runs/cell-centre-coarse.txt`) localised the
+crossings and is quoted nowhere as a crossing; it stopped at its very first rung, -17 dB, and
+**the -9 dB ceiling was never approached.**
+
+#### What the numbers say, now that all twelve are stated
+
+**1. THE BARE PORT NEEDS -17.52 dB, BAND -17.61 TO -17.43, TO HEAR HALF OF WHAT IS SENT AT
+THE CENTRE OF A COARSE WATERFALL CELL.** No unit in this project had been able to state that
+number. Unit 248 marked it `not bracketed` and this document reproduced the mark until unit
+256 measured the two rungs.
+
+**2. The off-grid penalty on the port is 2.02 dB**, -19.54 on the grid against -17.52 at the
+cell centre. Both bands are closed, 0.162 dB and 0.187 dB wide, against a 2.02 dB gap — **the
+first statement of that penalty as a ratio rather than as a decode count.**
+
+**3. The shipping configuration crosses at -19.90 dB on the grid and -19.61 dB at the cell
+centre**, both interpolated between -19 and -20 at 306 trials.
 
 - **-19.90 dB is 0.36 dB better than the port's -19.54**, and 0.09 dB better than ordered
   statistics alone at -19.81. It is the best crossing anywhere in this project on the grid.
-- **-19.61 dB off the grid is better than the port's own on-grid -19.54.** Hamlet's
-  shipping decoder, at the worst placement in a coarse cell, crosses 50 per cent at a lower
-  ratio than the bare port does at the best placement. **The stack does not merely mitigate
-  the off-grid penalty at this rung; it more than erases it relative to the port's best
-  case.**
-- **Off the grid the shipping crossing and fine sync alone's crossing are the same number
-  to two decimals** (-19.610 against -19.608 before rounding). Ordered statistics
-  contributes essentially nothing to the crossing off the grid, which is §3.4's finding in
-  the crossing's own terms.
+  **But its band is open on the optimistic side and `OSD only`'s band, -19.92 to -19.71,
+  overlaps it**: at 306 trials this ladder does not separate the shipping stack from ordered
+  statistics alone **on the grid**. That is §3.4's finding in the crossing's own terms and
+  the band is what makes it sayable.
+- **-19.61 dB off the grid is better than the port's own on-grid -19.54**, and the two bands
+  — -19.67 to -19.55 against -19.62 to -19.46 — **overlap by 0.07 dB**, so that particular
+  comparison is at the edge of what 306 trials support and is stated as such.
+- **Off the grid the shipping stack is 2.09 dB better than the bare port at the same
+  placement**, -19.61 against -17.52, and **the two bands are 1.94 dB apart at their nearest
+  edges.** That comparison is not close and no trial count in this project's reach would
+  change it. **It is the phase's headline number and it is now stated with its uncertainty.**
+- **Off the grid the shipping crossing and fine sync alone's crossing are the same number to
+  two decimals** (-19.610 against -19.608 before rounding), and **ordered statistics alone
+  gets only to -18.14 dB there** — 1.47 dB short, with bands nowhere near each other.
+  Ordered statistics contributes essentially nothing to the crossing off the grid and fine
+  sync contributes nearly all of it.
+
+**4. Subtraction alone crosses exactly where the port does, at both placements** — -19.54 on
+the grid and -17.52 at the cell centre, band for band. That is §5.0's *the stopping rule
+correctly finding nothing to remove* said in the crossing's own terms for the first time.
 
 ### 4.2 The cost — step 6's third exit
 
@@ -783,6 +886,115 @@ run; it reads 254 of 306; it costs 109.6 ms in the worst slot, a **137× margin*
 this figure is a measurement handed to Tim, and §6.2 lists the surfaces that would have to
 move before any of it reached a radio.
 
+### 5.4 Combining on and off, on its own ladder — added by unit 256, 2026-09-05
+
+> **ADDED BY UNIT 256.** Step 6's first exit asks for the port and Deep **with each stage on
+> and off**, and §3's table has six columns of which combining is not one. Until this section
+> combining appeared in this document only as §5.2's citation from unit 254 and §5.3's single
+> cell. **This is combining turned on and off against itself, at three rungs, with its own 50
+> per cent crossing.**
+
+**LADDER: `Ft8LadderHarness.RunRepeats`.** Four slots a trial carrying the same message,
+**jittered 2.00 Hz and 480 samples between hearings** as a real station's oscillator and clock
+would drift. **306 trials a rung. `Ft8Sharp.Deep` 0.8.0.** Every row on this panel sees the
+identical audio, so the comparison is paired.
+
+> **THIS LADDER IS NOT §3's AND NO ROW HERE IS COMPARABLE WITH ONE THERE.** §5.0 rules it and
+> it is repeated on this table's own face: §3 gives each trial **one** slot and this panel
+> gives each trial **four**. A row from here set beside a row from there is a false comparison.
+
+**ONE PLACEMENT, AND THAT IS DELIBERATE.** The first slot starts on grid and every later
+hearing is jittered from the one before it, **so the panel is already a mixed-placement
+instrument** and a second column labelled *cell centre* would not mean what that phrase means
+in §3. It is measured at the same placement as §5.3 so that section's -21 dB row can be cited
+rather than re-run.
+
+**THREE ROWS AND NOT FOUR**, and the third is labelled `summed x4` and not `combined x4`
+because the accumulation depth is 3 and the label is taken from the depth of the sum rather
+than from the repeat count (`Ft8LadderHarness.cs:514`). That distinction is `B17`.
+
+#### The panel
+
+| row | what it is | -21 dB *(cited, §5.3)* | **-22 dB** | **-23 dB** | wrong |
+|---|---|---:|---:|---:|---:|
+| `single slot` | **combining OFF** — the port on the first slot alone | 13 of 306, 4.2 % (2.5 – 7.1) | **0 of 306**, 0.0 % (0.0 – 1.2) | **0 of 306**, 0.0 % (0.0 – 1.2) | **0** |
+| `single + OSD` | **combining OFF** — the sibling with ordered statistics, same first slot | 33 of 306, 10.8 % (7.8 – 14.8) | **1 of 306**, 0.3 % (0.1 – 1.8) | **0 of 306**, 0.0 % (0.0 – 1.2) | **0** |
+| **`summed x4`** | **combining ON** — four hearings accumulated three deep, stacked with the shipping stages | **254 of 306, 83.0 %** (78.4 – 86.8) | **43 of 306, 14.1 %** (10.6 – 18.4) | **1 of 306**, 0.3 % (0.1 – 1.8) | **1 at -23 dB** |
+| | **`OnlyCombined`** — trials no single slot decoded alone and the combination did | **206 of 306** | **41 of 306** | **1 of 306** | |
+| | `LostByCombining` | **0** | **0** | **0** | |
+| | combinations submitted / accepted | 2 232 / 736 | **1 335 / 67** | **632 / 1** | |
+| | combined decodes / verified | 458 / **458** | **53 / 53** | **1 / 1** | |
+| | worst single slot | 109.6 ms, 137× | **76.2 ms, 197×** | **71.7 ms, 209×** | |
+
+**Rungs -22 and -23 are unit 256's** — `docs/unit256-runs/combining-panel-minus22.txt` and
+`combining-panel-minus23.txt`. **Rung -21 is §5.3's, cited and not re-run**, because the
+tree's `Ft8Sharp.Deep` is still 0.8.0 and the call's arguments were checked against the tree
+one by one before it was cited.
+
+#### The crossing, and no unit had ever quoted one
+
+| row | ladder | rungs | crossing | **band** |
+|---|---|---|---|---|
+| `single slot` | repeats ×4, 306 trials | -21 / -22 | **not bracketed — above -21 dB** | — |
+| `single + OSD` | repeats ×4, 306 trials | -21 / -22 | **not bracketed — above -21 dB** | — |
+| **`summed x4`** | **repeats ×4, 306 trials** | **-21 / -22** | **-21.48 dB** | **-21.54 to -21.42 dB** (0.119 wide) |
+
+> **COMBINING CROSSES 50 PER CENT AT -21.48 dB, BAND -21.54 TO -21.42, ON THE REPEATS LADDER
+> AT FOUR HEARINGS.** Interpolated between 254 of 306 at -21 dB and 43 of 306 at -22 dB, both
+> at 306 trials, both on this ladder. **The band is the same construction §4.1 uses and it is
+> not a confidence interval on the crossing.**
+
+**The two combining-off rows have no crossing on this ladder and the ceiling is named:
+above -21 dB.** They are already below 50 per cent at the panel's highest rung. **The panel
+was walked downward from -21 dB because that is where combining's crossing is**, and no rung
+above -21 was walked on this ladder — so `not bracketed - above -21 dB` is the licensed
+answer and nothing is extrapolated. Their -21 dB rates, **13 and 33 of 306, are exactly
+§3.1's on-grid `Ft8Sharp` and `OSD only` figures at the same rung**, which is the consistency
+check available without walking more of this ladder, and it holds to the decode.
+
+**The -24 dB rung was licensed and was not spent.** It was conditional on -23 dB still
+reading above 50 per cent; -23 dB reads 1 of 306. Unit 247 §1's floor is untouched.
+
+#### THE CAVEAT THAT TRAVELS WITH THE CROSSING, AND IT IS UNIT 254'S OWN
+
+**`RunRepeats` scores the combined column on the union over the trial's slots, so a
+four-repeat column gets four single-slot attempts as well as deeper sums.** 13 → 254 at
+-21 dB is **not** the gain from accumulation; it conflates more hearings with more chances.
+`OnlyCombined` is the honest statement of what combining added, and at the two rungs the
+crossing came from it reads **206 of 306** and **41 of 306**.
+
+**So -21.48 dB is what *a station heard four times, with the combiner accumulating and the
+shipping stages stacked on it,* crosses at.** It is **not** the gain from accumulation in
+isolation, which unit 254 §4a puts at **+4 of 51** at four hearings.
+
+#### One wrong decode, at -23 dB, and it is reported rather than buried
+
+**At -23 dB the `summed x4` row returned one message nobody sent.**
+
+```
+trial    29  seed 220771  SENT "CQ PY2ABC GG66"  RETURNED "WN8ESU/P JG5HKE/P R AH58"
+```
+
+**It reproduces on the same trial and the same seed on a second run — deterministic, not a
+flake.** It is the **first wrong decode measured anywhere in this phase**, against zero in
+all thirty-six cells of §3 and zero in every table of §5.1 to §5.3.
+
+**IT DID NOT COME FROM A COMBINATION.** At that rung the port took exactly **one** combination
+past both its gates, `CombinedDecodes` is 1 and `CombinedDecodesVerified` is 1 — **the one
+combination accepted was the message that was sent.** The wrong return came from the combined
+column's **inner** decoder acting on a single slot: the shipping stack, run on all four slots
+of every trial and therefore at **four times the exposure** of the `single + OSD` row, which
+reads zero wrong at the same rung.
+
+**It changes no figure in this document.** -23 dB is two decibels below the deepest rung in
+§3 and 1.5 dB below combining's own crossing. **It is `HM-OPEN-082`**, and the test that
+found it, `Ft8Unit256CombiningPanelTests.TheCombiningPanelAtMinus23`, **is left red in the
+tree with its assertion unweakened.**
+
+**And nothing here changes what ships.** Combining is off by default, this panel is a
+measurement handed to Tim, and §6.2 lists the surfaces that would have to move before any of
+it reached a radio.
+
 ---
 
 ## 6. What the operator should now see, and what he does not
@@ -841,6 +1053,29 @@ grid fine sync does (§3.4).
 interpolated between the -19 and -20 dB rungs at 306 trials each (§4.1). **The off-grid
 crossing is better than the bare port's own on-grid -19.54 dB.**
 
+> **AMENDED BY UNIT 256: both crossings now carry a band, and one of them is open.**
+>
+> | | crossing | **band** |
+> |---|---|---|
+> | on the grid | **-19.90 dB** | **open beyond -20 dB, to -19.79 dB** |
+> | at the cell centre | **-19.61 dB** | **-19.67 to -19.55 dB** |
+>
+> **The band is not a confidence interval on the crossing.** It is the two rungs' own 95 per
+> cent Wilson bounds pushed through the same interpolation, under the assumption the rate
+> moves linearly in decibels between them — §4.1 says it in full. **The open side is open
+> because the -20 dB rung's upper bound is 50.700 per cent, still above 50**, so this ladder
+> cannot put a floor under how good the on-grid crossing might be.
+>
+> **AND THE COMPARISON IN THIS ITEM CHANGES.** *The off-grid crossing is better than the bare
+> port's own on-grid -19.54 dB* is still true of the point values, **but the two bands overlap
+> by 0.07 dB** — -19.67 to -19.55 against -19.62 to -19.46 — **so that particular sentence is
+> at the edge of what 306 trials support and must not be read as a clean win.**
+>
+> **The comparison that is not close, and it is the better one to quote:** off the grid, the
+> shipping stack crosses at **-19.61 dB** against the bare port's **-17.52 dB** at the same
+> placement — **2.09 dB**, with **1.94 dB between the nearest edges of the two bands.**
+> The port's own cell-centre crossing was `not bracketed` until unit 256 measured it.
+
 **5. It keeps up with the air with room to spare.** The worst single slot observed anywhere
 tonight — over six rung-placements and 1 836 scored slots — took **336.8 ms of FT8's
 15 000 ms**, a **44.5× margin**, and the mean was **205.6 ms a slot, 1.4 per cent of the
@@ -856,6 +1091,33 @@ measured — no message was skipped to improve the figure.
 zero in every cited table in §5. Both of the port's gates, parity and CRC-14, stay in the
 path for every message however it was recovered; nothing in `Ft8Sharp.Deep` decides that a
 message is real.
+
+> **QUALIFIED BY UNIT 256, AND THIS IS THE ONE CLAIM IN §6.1 THAT DOES NOT SURVIVE
+> UNCHANGED.** Every figure above still reads zero wrong, and unit 256 added **2 448 more
+> scored slot decodes at the cell centre at -17 and -18 dB with zero wrong** and **918 at
+> -22 dB on the repeats ladder with zero wrong.** But at **-23 dB on the repeats ladder** —
+> two decibels below the deepest rung anywhere in this document — **the `summed x4` row
+> returned one message nobody sent**, reproducibly (§5.4). **The sentence "every column
+> measured in this project reads zero wrong" is no longer true without a rung qualifier**, and
+> it is `HM-OPEN-082`.
+>
+> **What it does not do.** It does not touch a figure in this document. It did not come from a
+> combination — the one combination the port accepted at that rung was correct — and both of
+> the port's gates were in the path when it happened, which is the point: **parity and CRC-14
+> are a filter and not a proof**, and at 632 submissions the naive expectation of a message
+> nobody sent was 0.039. **Nothing in `Ft8Sharp.Deep` decided that message was real; the
+> port's own gates let it through.**
+
+---
+
+**§6.1 RE-READ AGAINST UNIT 256'S NUMBERS, ITEM BY ITEM, 2026-09-05.** Item 4's two crossings
+gained bands and one of its comparisons was qualified, above. Item 7 was qualified, above.
+**Items 1, 2, 3, 5 and 6 were each checked against tonight's measurements and none of them
+moved**: item 1's `Ft8Reception.cs:460` was not touched; items 2 and 3 quote §3's
+thirty-six cells, which were not re-run; item 5's 336.8 ms and 44.5× are `SHIPPING`'s and
+`SHIPPING` was not re-run — **the worst slot anywhere in unit 256's own walks was 154.4 ms**,
+a 97× margin, and nothing tonight came near the budget; item 6's SNR figures are step 2's and
+were not touched. **The checking was done and this is the record of it.**
 
 ### 6.2 What he does NOT get
 
@@ -973,4 +1235,16 @@ forbids a phase being reopened, which is exactly why nobody closes one in passin
 
 **Step 6 is the last step of the phase**, and every other step was closed before this unit
 began.
+
+> **AMENDED BY UNIT 256, THE SECOND UNIT SPENT ON STEP 6.** It carried the two shortfalls the
+> session that judged this document named: **every crossing now carries a band** (§4.1, twelve
+> of them, and the four cell-centre rows that read `not bracketed` are bracketed at 306
+> trials), and **combining has an on-and-off panel of its own with its own crossing at
+> -21.48 dB** (§5.4). The one figure it produced that nobody could state before: **the bare
+> port needs -17.52 dB, band -17.61 to -17.43, to hear half of what is sent at the centre of a
+> coarse waterfall cell.** Its own working record is
+> `docs/unit256-crossings-and-combining.md`.
+>
+> **This is still not a declaration that the phase is closed.** That reading is the next
+> arbiter's.
 

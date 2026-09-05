@@ -708,14 +708,26 @@ does not move.**
 
 ---
 
-## 9. Where the deliverable is
+## 9. Where the deliverable is, and what was amended
 
 **`docs/unit255-closing-measurement.md` is the phase's closing statement and stays ONE
-document.** Tonight's numbers land there:
+document.** It was amended in place, visibly, and nothing in it was rewritten silently.
 
-- **§4.1**, replaced — every crossing with its band, both placements, the count corrected to
-  four, every previously unbracketed row resolved or reported against its ceiling.
-- **§5.4**, new — combining on and off, on its own ladder, with its own crossing.
-- **§6.1 item 4**, re-read — the operator's two crossings with their bands.
+| section | what changed | what the earlier text said |
+|---|---|---|
+| **head of file** | **new dated amendment note**, four numbered items | nothing — the note is new |
+| **§4.1** | **replaced whole.** Retitled *…each with its band*. What a band is and is not; twelve crossings with bands; four previously unbracketed cell-centre rows now carrying crossings from -17, -18 and -19 dB at 306 trials; the count corrected to **four** | eight bare point values; four cell-centre rows `not bracketed`; prose saying **three** against its own table's four |
+| **§5.4** | **new section.** Combining on and off on the repeats ladder, three rows, three rungs, `OnlyCombined` on each, the crossing at **-21.48 dB** with its band, unit 254's caveat, and the wrong decode at -23 dB | nothing — combining had no on-and-off reading of its own |
+| **§6.1 item 4** | **the two operator crossings gain their bands**, and the *better than the port's on-grid -19.54* comparison is qualified because the two bands overlap by 0.07 dB; the 2.09 dB off-grid comparison is offered as the one that is not close | *interpolated between the -19 and -20 dB rungs at 306 trials each. The off-grid crossing is better than the bare port's own on-grid -19.54 dB.* |
+| **§6.1 item 7** | **qualified.** Zero wrong still holds for every figure in the document and for 3 366 more slot decodes tonight, but not at -23 dB on the repeats ladder | *Zero wrong decodes in all thirty-six cells… and zero in every cited table in §5.* |
+| **§6.1, foot** | **new record of the item-by-item re-read** — items 1, 2, 3, 5 and 6 checked and unmoved, with why | nothing — the note is new |
+| **§6.4** | **new note** naming unit 256 as the second unit on step 6 and what it carried; the step table itself is unchanged | the step table, unchanged |
 
-**This file is the working record and does not duplicate them.**
+**Untouched, and deliberately:** §1, §2, **§3 and all thirty-six of its cells**, §4.2, §4.3,
+§5.0, §5.1, §5.2, §5.3, §6.0, §6.2, §6.3, and §6.4's step table.
+
+**No cross-reference had to follow a renumbering.** §5.4 was appended after §5.3 and §4.1 kept
+its number, so nothing that pointed at a section now points at a different one.
+
+**This file is the working record — the trace, the price, the predictions and what they turned
+out to be — and it does not duplicate the closing document.**
