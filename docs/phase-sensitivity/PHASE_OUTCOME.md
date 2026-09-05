@@ -22,8 +22,11 @@ they disagree, the header is wrong and the entries are what happened.
 Appended by `tools\arbiter\outcome-append.bat`. Five state words and no others:
 `not started`, `in progress`, `partial`, `blocked`, `done`.
 
-The previous phase's forty-one entries are archived at
-`docs/phase-ft8/PHASE_OUTCOME.md` and are not carried forward. Its closing
+The previous phase's entries are archived at `docs/phase-ft8/PHASE_OUTCOME.md`
+and are not carried forward. **Its last entry, `## UNIT 1 - STEP 1`, dated
+2026-09-04, belongs to no phase**: it was appended by a run of work instruction
+242 that halted before the phase transition, against the old plan's step 1. It is
+not an FT8-phase unit and should not be read as one. Its closing
 position: steps 1 to 5 done, step 6 blocked on `HM-OPEN-067`, step 7 closed by
 Tim's eyes at 21:41 UTC on 2026-09-04.
 

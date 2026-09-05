@@ -15,6 +15,11 @@ dist/
 
 # Test and coverage output
 TestResults/
+TestResults*/
+# Hang dumps from the Avalonia headless stalls. Units 228 and 229 left
+# 378 MB and 626 MB of them in TestResults228/ and TestResults229/, which
+# the line above did not match, and GitHub rejects any file over 100 MB.
+*.dmp
 coverage/
 *.coverage
 *.coveragexml
