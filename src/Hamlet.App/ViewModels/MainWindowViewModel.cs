@@ -7341,11 +7341,21 @@ public partial class MainWindowViewModel : ObservableObject
 
         var at = worst.SlotStartUtc.ToString("HH:mm:ss", CultureInfo.InvariantCulture);
 
+        // **AND WHAT READ IT** (unit 249). This line only ever speaks about a
+        // slot that gave up nothing readable, which is exactly the moment the
+        // operator wants to know what had already been tried on it. It names
+        // the decoder and stops there: whether a stage would have helped is the
+        // ladder's to say over hundreds of trials, and one slot cannot support
+        // that claim either way (§0.0).
+        var by = worst.Decoder.IsRecorded
+            ? ", read by " + worst.Decoder
+            : "";
+
         if (worst.CandidateCount == 0)
         {
             return $"the slot at {at} UTC was decoded and the search found no "
                 + "place in it that looked like the start of an FT8 transmission, "
-                + "so nothing reached the decoder at all";
+                + "so nothing reached the decoder at all" + by;
         }
 
         var places = worst.CandidateCount == 1
@@ -7356,19 +7366,19 @@ public partial class MainWindowViewModel : ObservableObject
         if (worst.ParitySatisfiedCount == 0)
         {
             return $"the slot at {at} UTC gave up {places}, and not one of them "
-                + "came out as a valid codeword";
+                + "came out as a valid codeword" + by;
         }
 
         if (worst.ChecksumPassedCount == 0)
         {
             return $"the slot at {at} UTC gave up {places}, "
                 + $"{worst.ParitySatisfiedCount} of them came out as valid "
-                + "codewords, and not one of those carried its own checksum";
+                + "codewords, and not one of those carried its own checksum" + by;
         }
 
         return $"the slot at {at} UTC gave up {places}, "
             + $"{worst.ChecksumPassedCount} of them carried their own checksum, "
-            + "and not one of those could be put into words";
+            + "and not one of those could be put into words" + by;
     }
 
     /// <summary>What a press made of the audio, in one line.</summary>

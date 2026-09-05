@@ -90,6 +90,80 @@ public sealed record Ft8SlotCensus(
     /// line built by a caller that had no audio to measure has.</para>
     /// </remarks>
     public Ft8SlotLevel Level { get; init; } = Ft8SlotLevel.None;
+
+    /// <summary>Which decoder read this slot, and which stages were on.</summary>
+    /// <remarks>
+    /// <para>**WITHOUT IT, EVERY CAPTURE FROM TONIGHT ONWARD IS
+    /// UNATTRIBUTABLE.** Six sidecars from 2026-09-03 are readable today only
+    /// because they recorded their own conditions, and this is the same
+    /// discipline: from unit 249 there is more than one decoder this project
+    /// might have used, and a count of candidates means a different thing
+    /// depending on which one produced it.</para>
+    /// <para>**ADDED RATHER THAN SUBSTITUTED**, on the precedent directly above.
+    /// Every member keeps its meaning and every construction site keeps
+    /// compiling.</para>
+    /// <para>Defaults to <see cref="Ft8DecoderIdentity.Unrecorded"/>, which is
+    /// what a census built by a caller that did not say has - and it says so
+    /// rather than naming a decoder it is guessing at (§0.0).</para>
+    /// </remarks>
+    public Ft8DecoderIdentity Decoder { get; init; } = Ft8DecoderIdentity.Unrecorded;
+}
+
+/// <summary>Which decoder read a slot, and what was turned on in it.</summary>
+/// <param name="Name">
+/// The decoder: <c>Ft8Sharp</c> for the faithful port, <c>Ft8Sharp.Deep</c> for
+/// the sibling, or an empty string where nobody recorded it.
+/// </param>
+/// <param name="FineSync">Whether the fine sync stage was on.</param>
+/// <param name="OrderedStatistics">Whether the ordered statistics stage was on.</param>
+/// <remarks>
+/// <para>**IT NAMES WHAT RAN AND INFERS NOTHING FROM IT.** It does not say the
+/// decode was better for having a stage on, or worse for not; those are the
+/// ladder's to say, over hundreds of trials, and a single slot cannot support
+/// either claim (§0.0).</para>
+/// <para>**AN UNRECORDED DECODER SAYS SO.** A census assembled by something that
+/// did not know which decoder ran carries <see cref="Unrecorded"/>, and the
+/// surfaces print that rather than defaulting to a name. Naming the port
+/// because it used to be the only one would put a false attribution in the one
+/// record that exists to settle attribution.</para>
+/// </remarks>
+public readonly record struct Ft8DecoderIdentity(
+    string Name,
+    bool FineSync,
+    bool OrderedStatistics)
+{
+    /// <summary>Nobody said which decoder ran.</summary>
+    public static Ft8DecoderIdentity Unrecorded { get; } = new("", false, false);
+
+    /// <summary>The faithful port, whose stages do not exist.</summary>
+    public static Ft8DecoderIdentity Port { get; } = new("Ft8Sharp", false, false);
+
+    /// <summary>True where a decoder was actually named.</summary>
+    public bool IsRecorded => Name.Length > 0;
+
+    /// <summary>What this says on a line somebody reads.</summary>
+    /// <returns>One phrase, naming the decoder and its stages.</returns>
+    public override string ToString()
+    {
+        if (!IsRecorded)
+        {
+            return "not recorded";
+        }
+
+        if (!FineSync && !OrderedStatistics)
+        {
+            return Name;
+        }
+
+        var stages = (FineSync, OrderedStatistics) switch
+        {
+            (true, true) => "fine sync and ordered statistics",
+            (true, false) => "fine sync",
+            _ => "ordered statistics",
+        };
+
+        return Name + " with " + stages;
+    }
 }
 
 /// <summary>What a stretch of captured audio gave up.</summary>
@@ -224,6 +298,15 @@ public static class Ft8Reader
         var search = new Ft8SyncSearch(decoder.CandidateLimit, decoder.MinimumScore);
         var monitor = new Ft8Monitor(decoder.Geometry);
 
+        // **WHAT THIS READ WAS DECODED BY, TAKEN FROM THE DECODER RATHER
+        // THAN FROM WHAT THIS METHOD DEFAULTS TO.** A caller may pass its own,
+        // and a record that named the default would be describing a decoder
+        // that did not run.
+        var identity = new Ft8DecoderIdentity(
+            "Ft8Sharp.Deep",
+            decoder.FineSync is not null,
+            decoder.Osd is not null);
+
         var found = new List<Ft8Decode>();
         var census = new List<Ft8SlotCensus>();
         var candidates = 0;
@@ -266,6 +349,8 @@ public static class Ft8Reader
                 TopScores(places),
                 slot.Audio.SampleRate)
             {
+                Decoder = identity,
+
                 // **MEASURED FROM `slot.Audio`, NOT FROM `samples`** (unit 236).
                 // The resampler above is one of the things a slot that found
                 // nothing could be, and a level taken downstream of a suspect

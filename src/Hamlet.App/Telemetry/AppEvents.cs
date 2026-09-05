@@ -1054,6 +1054,17 @@ public static class AppEvents
                         Math.Round(arrival.LongestFrameMicroseconds, 0),
                     ["sampleRate"] = slot.SampleRate,
 
+                    // Unit 249: which decoder read this slot and which stages
+                    // were on. An unrecorded one writes null rather than naming
+                    // the port, because naming a decoder nobody recorded would
+                    // put a false attribution in the record that exists to
+                    // settle attribution.
+                    ["decoder"] = slot.Decoder.IsRecorded
+                        ? slot.Decoder.Name
+                        : null,
+                    ["decoderFineSync"] = slot.Decoder.FineSync,
+                    ["decoderOrderedStatistics"] = slot.Decoder.OrderedStatistics,
+
                     // **HOW LOUD THE AUDIO WAS, WHICH NONE OF THE ABOVE COULD
                     // SAY** (unit 236). Everything before this line describes the
                     // decode. On 2026-09-03 the phase's closing line was performed

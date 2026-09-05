@@ -381,6 +381,15 @@ public static class DigitalCaptureSheet
             return;
         }
 
+        // **WHICH DECODER READ THIS, AND WHAT WAS ON IN IT** (unit 249).
+        // From tonight there is more than one decoder this project might have
+        // used, and a candidate count means a different thing depending on
+        // which produced it. Six sidecars from 2026-09-03 are readable today
+        // only because they recorded their own conditions.
+        line("decoder", census.Count == 0
+            ? Unread + "  (no slot ran, so nothing read this)"
+            : census[0].Decoder.ToString());
+
         line("refusal", "none");
         line("census", census.Count == 0
             ? "no slot was cut and run"
