@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: RUNNING
-TASK: 6 of 7
+STATE: COMPLETED
+TASK: 7 of 7
 WORK_INSTRUCTION: 255 - the closing measurement, and what the operator actually gets
-BALL: claude
+BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-155 (2026-09-05)
-UPDATED: 2026-09-05T19:08:00-04:00
-NOTE: The operator-facing section is written with a figure behind every claim and the plain sentence that nothing in this phase has run on air placed before all the others; subtraction and combining are stated as off with the twelve surfaces that would have to move first, and the scoring gap is named rather than filled because a test guarding a folder that has never held a file guards nothing
+UPDATED: 2026-09-05T19:10:00-04:00
+NOTE: Seven of seven; the closing table is committed at thirty-six cells with zero wrong in every one, a station a hertz and a half off the grid at -19 dB reads 6 of 306 through the bare port and 278 through what Hamlet ships, the shipping crossing is quoted for the first time at -19.90 and -19.61 dB, HM-OPEN-081 is closed at 254 of 306, root moves to 1.12.57 with both libraries untouched, and no breakage was found so the gate set stays at 12 and the breakage record at B17
 
 ---
 

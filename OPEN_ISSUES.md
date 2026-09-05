@@ -5,13 +5,42 @@ Questions with owner and severity. `owner` is who must act next. Format in
 
 ---
 id: HM-OPEN-081
-status: open
+status: closed — measured by unit 255, 2026-09-05
 owner: tim
 raised: 2026-09-05
+closed: 2026-09-05
 severity: slows
-blocks: nothing — combining is built, measured at every depth and off by default; what is missing is the one configuration this unit would actually recommend
-refs: PHASE_PLAN.md step 5, docs/unit254-combining-depth.md §4b, §4c and §5.4, tests/Ft8Sharp.Tests/Dsp/Ft8Unit254DepthLadderTests.cs, unit 254
+blocks: nothing — the cell was run at 306 trials and reads 254 of 306; what remains is Tim's decision on whether combining ships at all, which is not this issue
+refs: PHASE_PLAN.md step 5, docs/unit254-combining-depth.md §4b, §4c and §5.4, docs/unit255-closing-measurement.md §5.3, tests/Ft8Sharp.Tests/Dsp/Ft8Unit255RepeatsCellTests.cs, units 254 and 255
 ---
+
+> **CLOSED BY UNIT 255. The run was made at the full 306 trials, in 145.3 s, and it reads
+> 254 of 306 — 83.0 per cent, Wilson 78.4–86.8, zero wrong.**
+> `docs/unit255-closing-measurement.md` §5.3, artefact at
+> `docs/unit255-runs/accumulated-stacked-minus21.txt`.
+>
+> **The three things only that run could say, answered:**
+>
+> 1. **The two gains do NOT add — they compete.** 254 of 306 against 4b's 252, so
+>    **+2 of 306**, not the "well above 252" the third bullet allowed for. With the stack
+>    on, **48 trials of 306 decode from some single slot alone against 16 without it**, so
+>    ordered statistics reads slots the combination would otherwise have had to rescue and
+>    only-combined falls from 236 to 206 while the total rises. **Accumulation at four
+>    hearings has already taken most of what there is to take**, which is why +11 of 306 at
+>    two hearings becomes +2 at four.
+> 2. **The worst observed slot is 109.6 ms, a 137× margin** — above the 99.6 ms bound §5.4
+>    quoted and comfortably inside the range it bracketed. It carried 13 candidates and 2
+>    combinations.
+> 3. **The submission budget did not move at all.** 299 908 pairs offered, **2 232
+>    submitted**, 736 accepted — **identical to the unit** to 4b's unstacked figures. Ordered
+>    statistics and fine sync change *which* candidates decode, not *how many* combinations
+>    are attempted, so the false-accept exposure is unchanged: **0 observed against 0.136
+>    naively expected**, and **458 of 458** combined decodes verified against the message
+>    that went in.
+>
+> **This closes the measurement question and nothing else. Combining still ships OFF**, and
+> `docs/unit255-closing-measurement.md` §6.2 lists the seven surfaces that would have to
+> move before any of it reached a radio. That decision is Tim's.
 
 **The configuration unit 254 recommends is the one it did not measure: accumulated
 combining at depth 3 WITH the stages Hamlet ships.**
