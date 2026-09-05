@@ -305,3 +305,95 @@ of every row; and the one stacked-accumulation cell nobody has run, measured ton
 it is visible rather than silent.**
 
 ---
+
+## 2. How the walks were run
+
+**`tests/Ft8Sharp.Tests/Dsp/Ft8Unit255ClosingLadderTests.cs`, six methods, one rung-placement
+each.** Every one was run **alone, by its exact full method name, in the foreground, with a
+480 s stated timeout**, with a status line written into `PROJECT_STATUS.md` immediately
+before the call and immediately after it returned. **No suite was run. Nothing was
+backgrounded and nothing was polled.**
+
+**None of these methods was watched failing first, and that is correct rather than
+skipped.** `docs/gate-set.md` rules the ladder a measurement and not a test and never a
+gate-set entry, and rule 5 forbids adding a test without naming the breakage it would have
+caught. **A closing measurement has no defect to watch fail.** No red was manufactured to
+satisfy a rule that does not bind, none of tonight's methods enters the gate set, and none
+earns a breakage-record entry.
+
+**One thing had to be fixed before any number survived.** The first run of
+`TheClosingLadderAtMinus19OnGrid` **passed in 3 m 55 s and printed nothing**: VSTest does
+not surface `ITestOutputHelper` for a test that passes. The walk was re-run with a file
+sink added, and every table below is transcribed from a committed artefact under
+`docs/unit255-runs/` rather than from a console buffer. **That cost one 4-minute call and
+it is recorded rather than hidden.**
+
+**The price held.** §1.6 predicted **217 s** a rung-placement from the recorded per-trial
+costs. The measured rung-placement wall clocks are in §4.2's cost table, taken from the run
+logs. Every one is comfortably inside the 480 s ceiling and nowhere near the twelve-minute
+watchdog, and unit 246 §5 item 4's fifteen-fold error is not repeated.
+
+---
+
+## 3. The closing table, whole
+
+**Six columns, three rungs, both placements, 306 trials every cell.** The ladder is
+`Ft8LadderHarness.Run` — one signal, no neighbour — and it is **paired**: the audio is
+synthesised once per trial and every column is handed the same array.
+
+**`WRONG` reads 0 in all thirty-six cells.** That is 36 × 306 = **11 016 scored slot
+decodes with not one message returned that nobody sent.**
+
+### 3.1 On the grid — 1000.0 Hz, three whole symbol periods in
+
+```
+decoder      requested  delivered  trials  DECODED  MISSED  WRONG    rate   lo 95   hi 95    wall s    ms/tr
+Ft8Sharp         -19.0    -19.001     306      248      58      0    81.0    76.3    85.0     19.6     64.0
+Deep all off     -19.0    -19.001     306      248      58      0    81.0    76.3    85.0     19.6     64.2
+fine sync only   -19.0    -19.001     306      268      38      0    87.6    83.4    90.8     58.1    189.9
+OSD only         -19.0    -19.001     306      276      30      0    90.2    86.3    93.0     22.4     73.1
+SHIPPING         -19.0    -19.001     306      283      23      0    92.5    89.0    94.9     59.9    195.9
+subtraction only -19.0    -19.001     306      248      58      0    81.0    76.3    85.0     50.9    166.4
+
+Ft8Sharp         -20.0    -20.000     306       73     233      0    23.9    19.4    28.9     19.8     64.6
+Deep all off     -20.0    -20.000     306       73     233      0    23.9    19.4    28.9     19.6     64.1
+fine sync only   -20.0    -20.000     306       95     211      0    31.0    26.1    36.4     59.8    195.3
+OSD only         -20.0    -20.000     306      125     181      0    40.8    35.5    46.4     22.4     73.3
+SHIPPING         -20.0    -20.000     306      138     168      0    45.1    39.6    50.7     61.8    201.8
+subtraction only -20.0    -20.000     306       73     233      0    23.9    19.4    28.9     29.1     95.1
+
+Ft8Sharp         -21.0    -21.001     306       13     293      0     4.2     2.5     7.1     19.9     64.9
+Deep all off     -21.0    -21.001     306       13     293      0     4.2     2.5     7.1     19.8     64.8
+fine sync only   -21.0    -21.001     306       18     288      0     5.9     3.8     9.1     59.9    195.6
+OSD only         -21.0    -21.001     306       33     273      0    10.8     7.8    14.8     22.5     73.4
+SHIPPING         -21.0    -21.001     306       35     271      0    11.4     8.3    15.5     62.4    203.8
+subtraction only -21.0    -21.001     306       13     293      0     4.2     2.5     7.1     21.7     70.8
+```
+
+**The attribution column equals the port at all three rungs**, decoded for decoded, missed
+for missed, wrong for wrong — asserted per rung. Everything to its right is attributable to
+the stage that names it.
+
+**Subtraction alone equals the port at all three rungs too**, which is unit 253 §8.4's
+result reproduced at three rungs instead of one: **there is nothing in an unmasked slot to
+subtract.** It is the empirical justification for §1.7's narrowing, re-measured tonight
+rather than cited.
+
+**The discordant counts for SHIPPING, on identical audio:**
+
+| rung | only the port | only SHIPPING | only `Deep all off` | only SHIPPING |
+|---|---:|---:|---:|---:|
+| -19.0 | **0** | **35** | **0** | **35** |
+| -20.0 | **0** | **65** | **0** | **65** |
+| -21.0 | **0** | **22** | **0** | **22** |
+
+**SHIPPING is a strict superset of the port on this audio at every rung.** It takes 35, 65
+and 22 trials the port did not and **loses none at any rung** — which is the claim two
+overlapping Wilson intervals could never have supported, and it is what the paired design
+is for.
+
+### 3.2 At the cell centre — +1.56 Hz, +480 samples
+
+*Unit 248's `WorstFrequencyOffsetHz` and `WorstOffsetSamples` and no others, so these rows
+are comparable with its §4.2.*
+
