@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: WORKING
+STATE: DONE
 TASK: 7 of 7
 WORK_INSTRUCTION: 244 - the fixture format, the reader that refuses, and the command Tim runs
-BALL: claude
+BALL: tim
 RULES_AT: HM-DEC-153 (2026-09-04)
 NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-09-04T22:12:00-04:00
-NOTE: Ft8Sharp.Tests is running whole for the second time tonight, this time with the 27 new cases in it, and the totals it returns are what the report claims rather than the earlier baseline
+UPDATED: 2026-09-04T22:34:00-04:00
+NOTE: Step 0 closed at six of six must-pass exits; the suite came back 578 passed 0 failed 1 skipped in 5 m 12 s, and the only thing now waiting on Tim is one capture run through the shack command whenever he is next at the radio
 
 ---
 
