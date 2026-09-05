@@ -369,7 +369,99 @@ question is settled rather than carried forward.
 
 ## 7. The scoreboard at 306 trials
 
-*Filled by task 4.*
+`tests/Ft8Sharp.Tests/Dsp/Ft8Unit252ScoreboardTests`, **one test method per rung**,
+each run alone by its exact full method name in the foreground with a 480 s timeout.
+306 trials a rung, five columns, the same audio handed to all five. **Fine sync off on
+every column of the isolation.**
+
+```
+decoder      requested  delivered  trials  DECODED  MISSED  WRONG    rate   lo 95   hi 95    wall s    ms/tr
+Ft8Sharp         -19.0    -19.001     306      248      58      0    81.0    76.3    85.0     20.0     65.5
+Deep OSD off     -19.0    -19.001     306      248      58      0    81.0    76.3    85.0     19.5     63.7
+o2 full          -19.0    -19.001     306      276      30      0    90.2    86.3    93.0     22.0     71.7
+o3 W60           -19.0    -19.001     306      277      29      0    90.5    86.7    93.3     39.7    129.7
+o3 full          -19.0    -19.001     306      281      25      0    91.8    88.2    94.4     88.5    289.1
+
+Ft8Sharp         -20.0    -20.000     306       73     233      0    23.9    19.4    28.9     19.6     63.9
+Deep OSD off     -20.0    -20.000     306       73     233      0    23.9    19.4    28.9     19.8     64.7
+o2 full          -20.0    -20.000     306      125     181      0    40.8    35.5    46.4     22.4     73.2
+o3 W60           -20.0    -20.000     306      144     162      0    47.1    41.5    52.7     40.9    133.6
+o3 full          -20.0    -20.000     306      155     151      0    50.7    45.1    56.2     92.1    301.1
+
+Ft8Sharp         -21.0    -21.001     306       13     293      0     4.2     2.5     7.1     19.5     63.9
+Deep OSD off     -21.0    -21.001     306       13     293      0     4.2     2.5     7.1     19.6     64.2
+o2 full          -21.0    -21.001     306       33     273      0    10.8     7.8    14.8     22.1     72.3
+o3 W60           -21.0    -21.001     306       41     265      0    13.4    10.0    17.7     40.5    132.4
+o3 full          -21.0    -21.001     306       43     263      0    14.1    10.6    18.4     91.2    298.1
+```
+
+**Zero wrong decodes on all fifteen rows. The OSD-off column equals the port column
+on every rung**, decode for decode and miss for miss, asserted per rung.
+
+**The recorded before reproduced exactly.** Every figure `docs/unit246-osd.md` §4
+records came back to the decode: 248/248/276 at -19, 73/73/125 at -20, 13/13/33 at
+-21. **The instrument did not move underneath the measurement**, which is what makes
+the two new columns attributable.
+
+Wall clock: 193.2 s, 198.3 s and 196.6 s a rung, against a 480 s ceiling.
+
+### What the stage itself did, and the time budget
+
+| rung | column | worst slot ms | its candidates | margin vs 15 s | offered | accepted | re-encodings |
+|---|---|---|---|---|---|---|---|
+| -19 | `Ft8Sharp` | 74.2 | 15 | 202× | 0 | 0 | 0 |
+| -19 | Deep OSD off | 73.0 | 11 | 205× | 0 | 0 | 0 |
+| -19 | o2 full | 86.0 | 23 | 174× | 3 729 | 28 | 15 613 323 |
+| -19 | o3 W60 | 194.4 | 23 | 77× | 3 729 | 29 | 134 434 179 |
+| -19 | o3 full | 495.1 | 23 | 30× | 3 729 | 33 | 468 630 888 |
+| -20 | `Ft8Sharp` | 78.0 | 20 | 192× | 0 | 0 | 0 |
+| -20 | Deep OSD off | 99.4 | 14 | 151× | 0 | 0 | 0 |
+| -20 | o2 full | 97.1 | 20 | 155× | 3 863 | 52 | 16 174 381 |
+| -20 | o3 W60 | 192.1 | 22 | 78× | 3 863 | 71 | 139 265 013 |
+| -20 | o3 full | 485.9 | 22 | 31× | 3 863 | 82 | 485 470 936 |
+| -21 | `Ft8Sharp` | 97.0 | 10 | 155× | 0 | 0 | 0 |
+| -21 | Deep OSD off | 100.8 | 15 | 149× | 0 | 0 | 0 |
+| -21 | o2 full | 106.1 | 11 | 141× | 3 859 | 20 | 16 157 633 |
+| -21 | o3 W60 | 201.7 | 24 | 74× | 3 859 | 28 | 139 120 809 |
+| -21 | o3 full | 516.7 | 24 | 29× | 3 859 | 30 | 484 968 248 |
+
+**The same number of candidates is offered to every OSD column on a rung** — 3 729,
+3 863 and 3 859 — because the stage runs exactly where belief propagation gave up and
+the order and the window do not change that.
+
+**AND HERE IS THE THING WORTH NOTICING.** On every rung, the increase in trials
+decoded is *exactly* the increase in codewords the port's own gates accepted:
+
+| rung | accepted: o2 full → o3 W60 → o3 full | decoded: o2 full → o3 W60 → o3 full |
+|---|---|---|
+| -19 | 28 → 29 → 33 (+1, +4) | 276 → 277 → 281 (**+1, +4**) |
+| -20 | 52 → 71 → 82 (+19, +11) | 125 → 144 → 155 (**+19, +11**) |
+| -21 | 20 → 28 → 30 (+8, +2) | 33 → 41 → 43 (**+8, +2**) |
+
+Six deltas, six exact matches. **On this population the wider search kept everything
+the narrower one found and added to it** — it is additive, not a trade. That is not
+a proof of set inclusion, because equal deltas could in principle hide a loss and a
+gain, but six coincidences is a strong indication and §8 says what it does and does
+not license.
+
+### Nice to pass, and NOT part of the isolation: the shipping configuration
+
+`TheShippingConfigurationAtMinus21Db`, 306 trials, **fine sync on**, which is what
+`Ft8Reception.cs:460` builds. Two stages are stacked here and no figure from it is
+reported as step 3's.
+
+```
+decoder      requested  delivered  trials  DECODED  MISSED  WRONG    rate   lo 95   hi 95    wall s    ms/tr
+ship today       -21.0    -21.001     306       35     271      0    11.4     8.3    15.5     61.3    200.3
+ship o3 W60      -21.0    -21.001     306       43     263      0    14.1    10.6    18.4     79.6    260.3
+```
+
+| column | worst slot ms | margin vs 15 s |
+|---|---|---|
+| ship today (fine sync + o2 full) | 330.4 | **45×** |
+| ship o3 W60 (fine sync + o3 W60) | 476.0 | **32×** |
+
+**Zero wrong on both rows.** 144.1 s of wall clock.
 
 ---
 
