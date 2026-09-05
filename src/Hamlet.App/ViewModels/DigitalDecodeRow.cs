@@ -153,7 +153,7 @@ public sealed record DigitalDecodeRow(
 
         return new DigitalDecodeRow(
             decode.SlotStartUtc.ToString("HHmmss", CultureInfo.InvariantCulture),
-            NoMeasurement,
+            FormatSnr(decode.SignalToNoiseDb),
             decode.OffsetSeconds.ToString("0.0", CultureInfo.InvariantCulture),
             decode.FrequencyHz.ToString("0", CultureInfo.InvariantCulture),
             decode.Message);

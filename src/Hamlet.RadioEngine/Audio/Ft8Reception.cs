@@ -1,5 +1,6 @@
 ﻿using Ft8Sharp.Deep;
 using Ft8Sharp.Dsp;
+using Ft8Sharp.Encode;
 
 namespace Hamlet.RadioEngine.Audio;
 
@@ -25,7 +26,41 @@ public sealed record Ft8Decode(
     double OffsetSeconds,
     double FrequencyHz,
     int SyncScore,
-    string Message);
+    string Message)
+{
+    /// <summary>
+    /// How strong this message was, in decibels in a 2500 Hz reference bandwidth,
+    /// or null where it could not be measured (unit 251).
+    /// </summary>
+    /// <remarks>
+    /// <para>**ADDED RATHER THAN SUBSTITUTED**, on <see cref="Ft8SlotCensus.Level"/>'s
+    /// own precedent. <see cref="SyncScore"/> keeps its meaning and stays exactly
+    /// where it was, because it is a Costas match count and this is not; and every
+    /// construction site of the five positional members keeps compiling.</para>
+    /// <para>**AND THIS IS THE ONE THE OPERATOR READS FIRST.** From work
+    /// instruction 037 until unit 251 the `snr` column carried a dash, because
+    /// nothing in this path measured a ratio. `Ft8Sharp.Deep.Ft8DeepSignalToNoise`
+    /// now does: the power in the tone that was transmitted against the seven
+    /// tones that were not, at the same instant, carried to the reference
+    /// bandwidth by a derived 26.0206 dB. Measured over 510 synthesized messages
+    /// at five rungs and two placements it agreed with the ratio actually
+    /// delivered to **0.26 dB on average and 0.62 dB at the 95th percentile**
+    /// (`docs/unit251-snr-trace.md` §6).</para>
+    /// <para>**NULL IS "NOT MEASURED" AND IS NEVER A ZERO OR A FLOOR** (§0.0).
+    /// A message whose symbol sequence could not be packed back out of its own
+    /// text, or whose frame ran off the end of what was captured, has no figure —
+    /// and a substituted one would be indistinguishable downstream from a
+    /// measured weak signal, which is exactly the fault the dash existed to
+    /// prevent. <see cref="Ft8SlotLevel"/>'s remarks argue this at length and
+    /// this is the same argument.</para>
+    /// <para>**IT IS A MEASUREMENT AND NOT AN INTERPRETATION** (`CLAUDE.md`
+    /// §12.1). It says how strong the signal was. It does not say the band was
+    /// good, the station was far, or the decode was doubtful — every message
+    /// here has already passed the port's parity gate and its CRC-14, and a low
+    /// figure does not make one less likely to be what was sent.</para>
+    /// </remarks>
+    public double? SignalToNoiseDb { get; init; }
+}
 
 /// <summary>How far one slot's candidates got, stage by stage.</summary>
 /// <param name="SlotStartUtc">The quarter minute the slot opened on, corrected.</param>
@@ -115,6 +150,82 @@ public sealed record Ft8SlotCensus(
     /// comparison is off by default, so null is the ordinary state.
     /// </remarks>
     public Ft8PortComparison? PortComparison { get; init; }
+
+    /// <summary>How strong this slot's messages were (unit 251).</summary>
+    /// <remarks>
+    /// <para>**ADDED RATHER THAN SUBSTITUTED**, on the precedent directly above.
+    /// Every member keeps its meaning and every construction site keeps
+    /// compiling.</para>
+    /// <para>**AND IT IS ON THE CENSUS RATHER THAN ON THE TELEMETRY CALL FOR A
+    /// REASON.** `AppEvents` is handed the census and the refusal and never the
+    /// reception, which is **HM-DEC-018 enforced by a signature** — telemetry
+    /// records that a decode happened and how strong it was, **never what was
+    /// said**. A per-message telemetry line would have carried callsigns into the
+    /// one file that ruling keeps them out of. Four numbers on the census carry
+    /// the same fact and cannot carry a message.</para>
+    /// <para>Defaults to <see cref="Ft8SlotSnrs.None"/>, which is what a census
+    /// built by a caller that measured nothing has.</para>
+    /// </remarks>
+    public Ft8SlotSnrs SignalToNoise { get; init; } = Ft8SlotSnrs.None;
+}
+
+/// <summary>How strong one slot's messages were, without saying what any of them said.</summary>
+/// <param name="Measured">How many of the slot's messages carry a ratio.</param>
+/// <param name="NotMeasured">
+/// How many do not. **Kept separately from <paramref name="Measured"/> and never
+/// folded into it**: a slot where nothing could be measured and a slot with
+/// nothing in it are opposite facts and a single count reads as the second (§0.0).
+/// </param>
+/// <param name="WeakestDb">
+/// The weakest measured ratio in the slot, in decibels in the 2500 Hz reference
+/// bandwidth, or null where nothing was measured.
+/// </param>
+/// <param name="StrongestDb">The strongest, on the same terms.</param>
+/// <remarks>
+/// <para>**A SPREAD AND NOT AN AVERAGE.** A slot holds several stations at once
+/// and one number for all of them would be describing none of them. The weakest
+/// and the strongest are the two figures that say what the receiver was being
+/// asked to do; a mean between them would be an artefact of how many stations
+/// happened to be transmitting.</para>
+/// <para>**THE SAME NUMBER AS THE PANEL AND THE SIDECAR**, from the same
+/// estimator, in the same bandwidth, with null meaning not measured on all three.
+/// Step 0's criterion is that a number's meaning never changes silently between
+/// surfaces, and it applies to this one from the moment it exists.</para>
+/// </remarks>
+public readonly record struct Ft8SlotSnrs(
+    int Measured,
+    int NotMeasured,
+    double? WeakestDb,
+    double? StrongestDb)
+{
+    /// <summary>Nothing in this slot carries a ratio.</summary>
+    public static Ft8SlotSnrs None { get; } = new(0, 0, null, null);
+
+    /// <summary>True where at least one message in the slot was measured.</summary>
+    public bool IsMeasured => Measured > 0;
+
+    /// <summary>What this says on a line somebody reads.</summary>
+    /// <returns>One phrase, counts and decibels only.</returns>
+    public override string ToString()
+    {
+        if (Measured == 0)
+        {
+            return NotMeasured == 0
+                ? "no messages"
+                : string.Format(
+                    System.Globalization.CultureInfo.InvariantCulture,
+                    "{0} message(s), none measured",
+                    NotMeasured);
+        }
+
+        return string.Format(
+            System.Globalization.CultureInfo.InvariantCulture,
+            "{0} of {1} measured, {2:0.0} to {3:0.0} dB",
+            Measured,
+            Measured + NotMeasured,
+            WeakestDb,
+            StrongestDb);
+    }
 }
 
 /// <summary>What the port made of the same slot, where anybody asked.</summary>
@@ -422,6 +533,12 @@ public static class Ft8Reader
 
             candidates += result.CandidateCount;
 
+            // **HOW STRONG EACH MESSAGE WAS, MEASURED** (unit 251). Taken here
+            // rather than inside the decoder because it is REPORT-ONLY: it
+            // changes no ratio, no gate, no count and no decision, and
+            // `Ft8DeepSlotDecoder` does not know it exists.
+            var strengths = Measure(samples, result, decoder.Geometry);
+
             census.Add(new Ft8SlotCensus(
                 slot.StartUtc,
                 result.CandidateCount,
@@ -446,16 +563,26 @@ public static class Ft8Reader
                 // line above is the rate the audio arrived at rather than the
                 // twelve kilohertz grid it was put on.
                 Level = Ft8SlotLevel.Of(slot.Audio),
+
+                // **THE SPREAD, AND NOT ONE OF THE MESSAGES.** The census is
+                // what telemetry is handed, and HM-DEC-018 keeps decoded
+                // message content out of it.
+                SignalToNoise = Summarise(strengths),
             });
 
-            foreach (var message in result.Messages)
+            for (var i = 0; i < result.Messages.Count; i++)
             {
+                var message = result.Messages[i];
+
                 found.Add(new Ft8Decode(
                     slot.StartUtc,
                     message.TimeSeconds(decoder.Geometry),
                     message.FrequencyHz(decoder.Geometry),
                     message.Candidate.Score,
-                    message.Text));
+                    message.Text)
+                {
+                    SignalToNoiseDb = strengths[i],
+                });
             }
         }
 
@@ -464,6 +591,99 @@ public static class Ft8Reader
             Slots = census,
             Offset = offset,
         };
+    }
+
+    /// <summary>
+    /// How strong each of one slot's messages was, in decibels in the 2500 Hz
+    /// reference bandwidth, with null for one that could not be measured.
+    /// </summary>
+    /// <remarks>
+    /// <para>**PURE, AND IT DECIDES NOTHING** (`PHASE_PLAN.md` step 2's fourth
+    /// exit). Nothing here is fed back into the decode. It runs after the
+    /// decoder has answered, over the same samples the decoder was given, and
+    /// the result is carried to the record and to the screen and nowhere else.
+    /// `Ft8Unit251SnrAgreementTests` asserts that decoding the same slot again
+    /// after this has run returns the identical `Ft8SlotResult`.</para>
+    /// <para>**ONE BASEBAND BUILD PER MESSAGE, AND IT IS THE COST OF THIS
+    /// FEATURE.** `Ft8DeepSlotDecoder` builds a baseband only for candidates the
+    /// port refused, so a message that decoded has none behind it and one has to
+    /// be made. Unit 248 measured mixing, filtering and searching together at
+    /// 9.2 ms a candidate and recorded that the mixing and the 401-tap filter are
+    /// the expensive part; on a slot of fourteen messages this is of the order of
+    /// 150 to 250 ms against a slot period of 15,000.</para>
+    /// <para>**THE PLACE IS THE CANDIDATE'S, BIASED BY ONE SYMBOL.**
+    /// `Ft8SlotMessage.Candidate` is the coarse candidate even where fine sync
+    /// moved it, and `Ft8DeepSlotDecoder.CandidateTimeBiasSeconds` is the
+    /// measured distance from a candidate's nominal time to the start of the
+    /// signal it found. The estimator refines from there; without the bias it
+    /// would be reading a window one symbol early.</para>
+    /// <para>**AND THE SYMBOL SEQUENCE IS PACKED BACK OUT OF THE MESSAGE**, with
+    /// a round trip through the message layer as the guard, because the decode
+    /// result hands back text and carries no bits. Where the round trip does not
+    /// hold — a hashed callsign that would pack to different bits than were sent,
+    /// or a form this library can read and not write — there is **no
+    /// measurement**, which is a null and not a floor.</para>
+    /// </remarks>
+    private static double?[] Measure(
+        ReadOnlySpan<float> samples, Ft8SlotResult result, Ft8WaterfallGeometry geometry)
+    {
+        var strengths = new double?[result.Messages.Count];
+        Span<byte> symbols = stackalloc byte[Ft8SymbolEncoder.SymbolCount];
+
+        for (var i = 0; i < result.Messages.Count; i++)
+        {
+            var message = result.Messages[i];
+
+            if (!Ft8DeepMessageSymbols.TryEncode(message.Result.Message, symbols))
+            {
+                continue;
+            }
+
+            var estimate = Ft8DeepSignalToNoise.Estimate(
+                samples,
+                geometry.SampleRate,
+                message.FrequencyHz(geometry),
+                message.TimeSeconds(geometry) + Ft8DeepSlotDecoder.CandidateTimeBiasSeconds,
+                symbols);
+
+            if (estimate.IsMeasured)
+            {
+                strengths[i] = estimate.Decibels;
+            }
+        }
+
+        return strengths;
+    }
+
+    /// <summary>The slot's spread, for the census and therefore for telemetry.</summary>
+    /// <remarks>
+    /// **THE WEAKEST AND THE STRONGEST, NEVER A MEAN.** A slot holds several
+    /// stations at once, and one number averaged across them describes none of
+    /// them and moves with how many happened to be transmitting.
+    /// </remarks>
+    private static Ft8SlotSnrs Summarise(IReadOnlyList<double?> strengths)
+    {
+        var measured = 0;
+        var notMeasured = 0;
+        var weakest = double.PositiveInfinity;
+        var strongest = double.NegativeInfinity;
+
+        foreach (var strength in strengths)
+        {
+            if (strength is not { } decibels)
+            {
+                notMeasured++;
+                continue;
+            }
+
+            measured++;
+            weakest = Math.Min(weakest, decibels);
+            strongest = Math.Max(strongest, decibels);
+        }
+
+        return measured == 0
+            ? new Ft8SlotSnrs(0, notMeasured, null, null)
+            : new Ft8SlotSnrs(measured, notMeasured, weakest, strongest);
     }
 
     /// <summary>The three highest Costas match counts, strongest first.</summary>

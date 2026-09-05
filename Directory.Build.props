@@ -140,9 +140,44 @@
     enumerated here, both IeeeFloat 32-bit, neither clear nor implicate this defect. The question is
     one row on one capture sheet on the shack machine and it is in unit 237's report. No file under
     src/Ft8Sharp/ changed.
+
+    1.12.52 -> UNIT 251, UNDER HM-DEC-150. A PATCH BECAUSE PHASE_PLAN.md RESERVES THE MINOR FOR WHEN
+    THIS PHASE CLOSES, and it is the second change of the phase an operator will see without being
+    told where to look. THE snr COLUMN STOPS BEING A DASH. It has carried one since work instruction
+    037, which committed the column on the assumption that a signal-to-noise ratio is what a decoder
+    produces; it is not - Ft8Sharp returns a Costas sync score - and DigitalDecodeRow has said so in
+    prose for two hundred units while showing an em dash.
+
+    Ft8Sharp.Deep 0.4.0 -> 0.5.0 gains Ft8DeepSignalToNoise, which reads the power in the tone that
+    was transmitted against the seven tones that were not, at the same instant, over the symbols
+    whose windows lie inside the slot, and carries the per-bin ratio to the 2500 Hz reference
+    bandwidth by 10 log10(2500 / 6.25) = 26.0206 dB. That constant is DERIVED from the tone spacing
+    and the symbol period - the decimation, the filter length and the sample rate all cancel - and
+    NOTHING IN THIS UNIT IS FITTED TO THE LADDER. The symbol sequence it needs is packed back out of
+    the decoded message, guarded by a round trip through the message layer, because the decode result
+    hands back text and carries no bits.
+
+    MEASURED, and this is what the column shows a number on: over 510 synthesized messages, five
+    rungs from -18 to -6 dB and two placements, through the decoder Hamlet actually runs, the
+    estimate agreed with the ratio the ladder delivered to a MEAN ABSOLUTE ERROR OF 0.26 dB and a
+    95th PERCENTILE OF 0.62 dB, with 510 of 510 trials decoding so nothing is selected. PHASE_PLAN.md
+    says the dash stays if agreement is worse than 2 dB. It is not.
+
+    Whole decibels in the column, because one message in twenty is 0.62 dB or further out and a first
+    decimal would be noise drawn as signal. The tooltip carries the 95th percentile as well as the
+    mean. The dash did not go away - it now means a message whose ratio could not be measured, which
+    is a null and never a floor.
+
+    The number reaches all three surfaces with one meaning: the panel cell at the 48-pixel width
+    reserved for it since 037, four snr fields on the per-slot telemetry line, and per-message lines
+    on the capture sidecar. Telemetry gets a spread and not a message, because AppEvents is handed
+    the census and never the reception and HM-DEC-018 keeps decoded content out of that file.
+
+    REPORT-ONLY, asserted rather than claimed: decoding a slot again after the estimate has been
+    taken returns the identical Ft8SlotResult. No file under src/Ft8Sharp/ changed.
   -->
   <PropertyGroup>
-    <Version>1.12.52</Version>
+    <Version>1.12.53</Version>
   </PropertyGroup>
 
   <!--

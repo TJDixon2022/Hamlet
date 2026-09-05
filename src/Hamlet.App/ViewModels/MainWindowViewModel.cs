@@ -6827,7 +6827,12 @@ public partial class MainWindowViewModel : ObservableObject
                     DescribeAudioPath(),
                     heard.Slots,
                     heard.Refusal,
-                    MeasureArrival()));
+                    MeasureArrival(),
+
+                    // **THE MESSAGES, SO THE SHEET CAN CARRY THEIR RATIOS**
+                    // (unit 251). Already decoded above; nothing is decoded a
+                    // second time to write this.
+                    heard.Decodes));
 
             StatusText =
                 $"{_digitalDecodeNote}. Kept the last "

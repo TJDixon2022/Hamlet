@@ -101,6 +101,12 @@ public static class DigitalCaptureSheet
     /// <param name="refusal">
     /// Why the reading produced nothing, in the reader's own words, or "".
     /// </param>
+    /// <param name="decodes">
+    /// The messages the slots gave up, or null where nobody handed any over
+    /// (unit 251). **Passed in rather than decoded again**, on the same reasoning
+    /// as <paramref name="census"/>. Null and empty are different facts and the
+    /// sheet prints different lines for them.
+    /// </param>
     /// <returns>The sheet, ready to write.</returns>
     public static string Compose(
         DateTime capturedUtc,
@@ -114,7 +120,8 @@ public static class DigitalCaptureSheet
         AudioPath? audioPath = null,
         IReadOnlyList<Ft8SlotCensus>? census = null,
         string refusal = "",
-        AudioArrival arrival = default)
+        AudioArrival arrival = default,
+        IReadOnlyList<Ft8Decode>? decodes = null)
     {
         ArgumentNullException.ThrowIfNull(state);
 
@@ -244,6 +251,16 @@ public static class DigitalCaptureSheet
         sheet.Append('\n');
 
         AppendCensus(Line, sheet, census, refusal);
+
+        // **THE PER-MESSAGE LINES, AFTER THE CENSUS AND NOT INSIDE IT** (unit
+        // 251). The census counts candidates through the stages; these are the
+        // rows the operator was looking at. A refusal has no messages behind it,
+        // and a sheet that printed "messages none" under a refusal would be
+        // saying the band was empty rather than that nothing ran.
+        if (refusal.Length == 0)
+        {
+            AppendDecodes(Line, sheet, decodes);
+        }
 
         return sheet.ToString();
     }
@@ -440,6 +457,77 @@ public static class DigitalCaptureSheet
                 .Append(Stamp(slot.SlotStartUtc))
                 .Append("  ")
                 .Append(DescribeLevel(slot.Level))
+                .Append('\n');
+
+            // **AND HOW STRONG THE STATIONS IN IT WERE** (unit 251). Its own
+            // line for the same reason the level has one: a signal-to-noise
+            // ratio and a level are different kinds of thing, and the line
+            // above says in its own words that it is NOT one. This one is.
+            sheet
+                .Append("  snr      ")
+                .Append(Stamp(slot.SlotStartUtc))
+                .Append("  ")
+                .Append(slot.SignalToNoise.ToString())
+                .Append("  (2500 Hz reference bandwidth)")
+                .Append('\n');
+        }
+    }
+
+    /// <summary>
+    /// One line per message, carrying the ratio, the offset and the tone (unit 251).
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE THIRD SURFACE.** The panel shows the operator the ratio while
+    /// he is watching; the census line above summarises the slot; this is the row
+    /// somebody reads six months later beside the WAV it was cut from, which is
+    /// the whole reason the capture folder exists.</para>
+    /// <para>**THE OFFSET AND THE TONE, AND NOT THE MESSAGE.** A station is
+    /// identified inside its slot by where it sat — the dt and the hz are unique
+    /// to it — and the audio is in the file beside this one. **Putting the
+    /// decoded text here would start a second file recording who the operator
+    /// heard**, and HM-DEC-018 rules that out for telemetry in exactly those
+    /// words. It does not govern the capture folder, so this is a judgement and
+    /// not a ruling, and it is left for Tim rather than taken quietly: the lines
+    /// carry the measurement and the place, and adding the words is one edit if
+    /// he wants them.</para>
+    /// <para>**A DASH WHERE NOTHING WAS MEASURED**, which is the same token the
+    /// panel shows and means the same thing: no ratio, rather than a floored one.
+    /// </para>
+    /// </remarks>
+    private static void AppendDecodes(
+        Action<string, string> line,
+        StringBuilder sheet,
+        IReadOnlyList<Ft8Decode>? decodes)
+    {
+        if (decodes is null)
+        {
+            line("messages", Unread + "  (no decode was handed to this sheet)");
+            return;
+        }
+
+        if (decodes.Count == 0)
+        {
+            line("messages", "none");
+            return;
+        }
+
+        line("messages", $"{decodes.Count}, one line each below");
+
+        foreach (var decode in decodes)
+        {
+            sheet
+                .Append("  message  ")
+                .Append(Stamp(decode.SlotStartUtc))
+                .Append("  snr ")
+                .Append(decode.SignalToNoiseDb is { } decibels
+                    ? decibels.ToString("+0.0;-0.0;+0.0", CultureInfo.InvariantCulture)
+                    : "-")
+                .Append(" dB  dt ")
+                .Append(decode.OffsetSeconds.ToString("0.00", CultureInfo.InvariantCulture))
+                .Append(" s  hz ")
+                .Append(decode.FrequencyHz.ToString("0", CultureInfo.InvariantCulture))
+                .Append("  Costas match ")
+                .Append(decode.SyncScore.ToString(CultureInfo.InvariantCulture))
                 .Append('\n');
         }
     }

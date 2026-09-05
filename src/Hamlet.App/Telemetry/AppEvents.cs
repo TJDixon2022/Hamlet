@@ -1087,9 +1087,15 @@ public static class AppEvents
                     //
                     // **A LEVEL IS NOT A SIGNAL-TO-NOISE RATIO** (`CLAUDE.md`
                     // §0.0) and the keys say what they are: decibels relative to
-                    // full scale. There is no `snr` in this payload, no `signal`
-                    // and no `strength`, and nothing here is comparable with this
-                    // mode's published sensitivity figure.
+                    // full scale. **These keys are not the `snr*` keys below and
+                    // never were**: `audioRmsDbFullScale` is how loud the sound
+                    // card was, in decibels relative to full scale, and it is not
+                    // comparable with this mode's published sensitivity figure or
+                    // with anything in another slot recorded at another gain.
+                    // Until unit 251 this payload had no signal-to-noise ratio in
+                    // it at all and this comment said so; it now has four fields
+                    // that are one, named `snr`, and the two families are kept
+                    // apart by their names rather than by a reader's care.
                     //
                     // **NULL WHERE THE SLOT WAS ALL ZEROS** (HM-DEC-009). The
                     // logarithm of nought is not a number, and a floor written in
@@ -1109,6 +1115,40 @@ public static class AppEvents
                         slot.Level.ZeroSampleFraction is { } zeros
                             ? Math.Round(zeros, 6)
                             : null,
+
+                    // **HOW STRONG THE STATIONS IN THIS SLOT WERE** (unit 251),
+                    // in decibels in the 2500 Hz reference bandwidth this mode is
+                    // quoted in. **This one really is a signal-to-noise ratio**,
+                    // measured per message from the power in the tone that was
+                    // transmitted against the seven that were not, and agreeing
+                    // with a commanded ratio to 0.26 dB on average and 0.62 dB at
+                    // the 95th percentile over 510 synthesized messages.
+                    //
+                    // **A SPREAD AND NEVER A MEAN.** A slot holds several
+                    // stations at once and one averaged number would describe none
+                    // of them; the weakest and the strongest say what the receiver
+                    // was being asked to do.
+                    //
+                    // **AND STILL NOT ONE WORD OF WHAT WAS SAID** (HM-DEC-018).
+                    // This method is handed the census and never the reception,
+                    // and the census cannot hold a message. That is why these are
+                    // four numbers on the slot line rather than a per-message
+                    // event: a per-message line would have carried callsigns into
+                    // the one file that ruling keeps them out of.
+                    //
+                    // **NULL IS "NOTHING WAS MEASURED" AND NEVER A ZERO**, which
+                    // would read as a station at exactly 0 dB. `snrMeasured` and
+                    // `snrNotMeasured` are carried separately for the same reason
+                    // `audioZeroSamples` is: a slot where nothing could be
+                    // measured and a slot with nothing in it are opposite facts.
+                    ["snrMeasured"] = slot.SignalToNoise.Measured,
+                    ["snrNotMeasured"] = slot.SignalToNoise.NotMeasured,
+                    ["snrWeakestDb"] = slot.SignalToNoise.WeakestDb is { } weakest
+                        ? Math.Round(weakest, 1)
+                        : null,
+                    ["snrStrongestDb"] = slot.SignalToNoise.StrongestDb is { } strongest
+                        ? Math.Round(strongest, 1)
+                        : null,
 
                     ["clockOffsetSeconds"] = offset.OffsetSeconds is { } known
                         ? Math.Round(known, 3)
