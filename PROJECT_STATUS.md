@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: RUNNING
-TASK: 5 of 6
+TASK: 6 of 6
 WORK_INSTRUCTION: 252 - ordered statistics, taken as far as it goes
 BALL: claude
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-155 (2026-09-05)
-UPDATED: 2026-09-05T16:47:00-04:00
-NOTE: The default does not move; the Wilson intervals overlap on all three rungs, and the table that decided it is now on the property's own remarks with the paired-design qualification beside it
+UPDATED: 2026-09-05T16:58:00-04:00
+NOTE: Bookkeeping - B15 written before the gate-set entry that cites it, entry 10 added with the same test name put into gate-set.bat, HM-OPEN-078 logged for the paired statistic the ladder does not record
 
 ---
 

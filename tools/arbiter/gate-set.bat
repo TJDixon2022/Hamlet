@@ -119,15 +119,18 @@ rem ============================================================
 rem  2  Ft8Sharp.Deep.Tests
 rem     the boundary in the breaching direction; both sides of the
 rem     codeword seam; the two submission bounds that make ZERO
-rem     WRONG an arithmetic rather than a hope; and OSD off by
-rem     default, which is unit 246's ruling 4.
+rem     WRONG an arithmetic rather than a hope; OSD off by
+rem     default, which is unit 246's ruling 4; and entry 10, which
+rem     is unit 252's - the ordered-statistics search costs what it
+rem     says, and the full-basis path is bit-for-bit what every
+rem     recorded sensitivity figure was measured on.
 rem
 rem     NAMED ONE BY ONE, not by class. Running these classes whole
 rem     would drag in the whole-type-list tripwire, which is
 rem     known-red by design whenever a type is added to Deep.
 rem ============================================================
 call :gate "2" "tests\Ft8Sharp.Deep.Tests" ^
-  "FullyQualifiedName~Ft8DeepBoundaryTests.ThePortsBuiltAssemblyDoesNotReferenceTheSibling|FullyQualifiedName~Ft8DeepBoundaryTests.NoHamletAssemblyArrivesInEitherAssembly|FullyQualifiedName~Ft8DeepGateTests.ARightOsdCodewordComesBackThroughThePortAsTheMessage|FullyQualifiedName~Ft8DeepSeamProbeTests.AWrongCodewordHandedBackIsStillRefused|FullyQualifiedName~Ft8DeepCombineGateTests.ADeliberatelyWrongPairingIsRefusedByThePortsOwnGates|FullyQualifiedName~Ft8DeepFineSyncGateTests.WithEverythingOffTheWholeResultIsThePortsWholeResult|FullyQualifiedName~Ft8DeepFineSyncGateTests.EveryMessageTheOrdinaryPathReturnedIsStillThere|FullyQualifiedName~Ft8DeepFineSyncGateTests.TheSubmissionArithmeticIsBoundedAtOnePerRefusedCandidate|FullyQualifiedName~Ft8DeepRepeatDecoderTests.TheSubmissionsSpentNeverExceedTheBudgetTheSettingsBound|FullyQualifiedName~Ft8DeepSlotDecoderTests.OrderedStatisticsIsOffUnlessItIsAskedFor"
+  "FullyQualifiedName~Ft8DeepBoundaryTests.ThePortsBuiltAssemblyDoesNotReferenceTheSibling|FullyQualifiedName~Ft8DeepBoundaryTests.NoHamletAssemblyArrivesInEitherAssembly|FullyQualifiedName~Ft8DeepGateTests.ARightOsdCodewordComesBackThroughThePortAsTheMessage|FullyQualifiedName~Ft8DeepSeamProbeTests.AWrongCodewordHandedBackIsStillRefused|FullyQualifiedName~Ft8DeepCombineGateTests.ADeliberatelyWrongPairingIsRefusedByThePortsOwnGates|FullyQualifiedName~Ft8DeepFineSyncGateTests.WithEverythingOffTheWholeResultIsThePortsWholeResult|FullyQualifiedName~Ft8DeepFineSyncGateTests.EveryMessageTheOrdinaryPathReturnedIsStillThere|FullyQualifiedName~Ft8DeepFineSyncGateTests.TheSubmissionArithmeticIsBoundedAtOnePerRefusedCandidate|FullyQualifiedName~Ft8DeepRepeatDecoderTests.TheSubmissionsSpentNeverExceedTheBudgetTheSettingsBound|FullyQualifiedName~Ft8DeepSlotDecoderTests.OrderedStatisticsIsOffUnlessItIsAskedFor|FullyQualifiedName~Ft8DeepOrderedStatisticsTests.TheCostOfAnOrderInAWindowIsTheNumberOfSubsetsOfTheWindow"
 
 rem ============================================================
 rem  3  Hamlet.RadioEngine.Tests

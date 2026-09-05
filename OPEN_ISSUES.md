@@ -4,6 +4,52 @@ Questions with owner and severity. `owner` is who must act next. Format in
 `CLAUDE.md` §3.
 
 ---
+id: HM-OPEN-078
+status: open
+owner: tim
+raised: 2026-09-05
+severity: slows
+blocks: nothing — the window is built, measured and available; what is missing is the statistic that would say whether to make it the default
+refs: PHASE_PLAN.md step 3, docs/unit252-osd-window.md §7 and §8.4, tests/Ft8Sharp.Tests/Dsp/Ft8Unit252ScoreboardTests.cs, tests/Ft8Sharp.Tests/Dsp/Ft8LadderHarness.cs, src/Ft8Sharp.Deep/Ft8DeepOsdSettings.cs, unit 252, unit 246
+---
+
+**The ladder is a paired design and the only interval it computes is an
+independent-sample one, so a real difference between two columns cannot be
+separated from chance by anything in this tree.**
+
+Unit 252 measured order 3 over a window of 60 against the shipping order 2 over the
+full basis, 306 trials a rung, fine sync off, same audio to both, zero wrong on every
+row: **-21 dB 33 of 306 against 41 of 306, -20 dB 125 against 144, -19 dB 276 against
+277.** The 95 per cent Wilson intervals overlap at all three rungs, so **the default
+was left where it is** — moving it on a point estimate would be tuning until a number
+passed.
+
+**But Wilson is the wrong statistic here and the right one was not recorded.**
+`Ft8LadderHarness.Run` synthesises one audio array per trial and hands the *same*
+array to every column — the harness's own remarks call that *worth far more than two
+independent runs* — so the design is paired and an independent-sample interval
+overstates the uncertainty of a difference. McNemar on the trials where exactly one
+column decoded is the test, and it needs the **discordant pairs**, which
+`Ft8LadderHarness.Result` does not carry: it holds totals only.
+
+**There is evidence the difference is real and it is not a test.** On all three rungs
+the increase in trials decoded exactly equalled the increase in codewords the port's
+own gates accepted — **+1/+4, +19/+11 and +8/+2** — six deltas and six exact matches,
+which is what a strictly additive change looks like. Equal deltas could in principle
+hide a loss and a gain.
+
+**What would settle it, and it is cheap.** One field on `Ft8LadderHarness.Result` — a
+per-trial decoded flag, or just the discordant counts against a nominated reference
+column — and one run. **No new algorithm, no new audio, no change to the port**, and
+the same three rungs already cost about 200 s each. It bears directly on whether
+Hamlet ships a decoder that reads 41 of 306 at -21 dB instead of 33.
+
+**This is not the drop candidate.** Full-basis order 3 at 306 trials was *not*
+dropped — it measured 305.9 ms a trial rather than the *about 25 minutes* unit 246 §5
+item 4 predicted, and it is in unit 252's scoreboard on all three rungs at 281, 155
+and 43 of 306. Unit 246's open question about order 3 is settled; this one is new.
+
+---
 id: HM-OPEN-077
 status: open
 owner: tim

@@ -580,4 +580,27 @@ That is how far ordered statistics goes on this decoder, and the step closes on 
 
 ## 9. Where this instruction and the tree disagreed
 
-*Filled by task 6.*
+**Reported, not repaired.** Work instruction 252 asked for every claim in its
+*Verify this instruction against the tree* section to be checked and mismatches
+reported. **Every structural claim it made held.** The 515-line
+`Ft8DeepOrderedStatistics.cs`, `BasisBits` at 91, `Search`'s `for (var r = start; r <
+BasisBits; r++)`, `MostReliableBasis => _pivots`, one codeword per candidate,
+`Ft8DeepOsdSettings` with `Order`, one constructor, `MaximumOrder = 4` and
+`Default = new(2)` and no second knob, the `Ft8DeepSlotDecoder` constructor's eight
+optional parameters, `Ft8SyncSearch.DefaultCandidateLimit = 140` at
+`src/Ft8Sharp/Dsp/Ft8SyncSearch.cs:88`, the three test line numbers 209, 89 and 84,
+`Ft8LadderHarness.Run`'s signature and `internal` visibility, the untracked 174-line
+`Ft8DeepOsdCostTests.cs`, the six modified root files, `docs/gate-set.md` at entry 9
+and `docs/breakage-record.md` at B14 and G7 — **all as stated.**
+
+| what the instruction said | what the tree says | bearing |
+|---|---|---|
+| *306 trials at order 3 is about 25 minutes of wall clock*, quoted from `docs/unit246-osd.md` §5 item 4 and used as the premise for the whole night — *twenty-five minutes is now the constraint* | Unit 246 §3's own measured **311.4 ms a trial** at order 3 gives **1.6 minutes** for a 306-trial column, and unit 252 measured **91.2 s**. The two are out by **about fifteen-fold**. The error is in unit 246, not in this instruction, which transcribed it faithfully. | **Material, and acted on.** The named drop candidate was affordable, so it was kept and unit 246's *order 3 is unresolved* is settled at 306 trials on all three rungs rather than carried forward. |
+| The recorded `before` at -19 dB reads `Ft8Sharp` at **65.2 ms/tr** and OSD off at **64.3** | Tonight: 65.5 and 63.7. Decoded, missed and wrong reproduce **exactly**; the clock does not and was never expected to. | None. §5 said in advance that the clock is the one thing that is not bit-identical. |
+| Task 3: *at minimum order 3 at two window sizes, and order 4 at a window if task 1 says it fits* | Task 1 said every cell fitted, so the grid ran **five** order-3 windows including the full basis, two order-2 windows and two order-4 windows — eleven rows in 59.1 s. | None. More than asked for, at a price task 1 had already priced. |
+| Task 6: *`OPEN_ISSUES.md`: if full-basis order 3 was dropped, log it* | It was not dropped, so that entry was not written. **`HM-OPEN-078` was logged instead** for the thing that actually blocked a decision: the ladder is a paired design and records no discordant pairs. | Reported here so the substitution is visible rather than silent. |
+
+**One thing the instruction was right about that is worth restating.** It said
+*assume the same rate tonight* after unit 251 found four mismatches. Tonight's count
+is **one material mismatch, and it is an error the instruction inherited from a
+document rather than one it introduced.**

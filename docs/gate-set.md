@@ -104,16 +104,21 @@ an earlier attempt at this same work instruction left in `.run-unit\trx\` at
 
 ### Measured, by an earlier session, from the TRX
 
-**26 of the 28 methods have a measured duration in the tree.** The two
+**27 of the 29 methods have a measured duration in the tree.** The two
 `Hamlet.App.Tests` entries do not — that project was not re-measured.
 
 | Project | Gate-set tests | Measured per-test time |
 |---|---|---|
 | `Ft8Sharp.Tests` | 7 methods, 8 cases | **239.7 s** |
-| `Ft8Sharp.Deep.Tests` | 10 methods, 10 cases | **12.3 s** |
+| `Ft8Sharp.Deep.Tests` | 11 methods, 26 cases | **14.3 s** |
 | `Hamlet.RadioEngine.Tests` | 9 methods, 10 cases | **10.1 s** |
 | `Hamlet.App.Tests` | 2 methods, 2 cases | **not measured** |
-| | **28 methods, 30 cases** | **262.1 s over 28 of the 30 cases** |
+| | **29 methods, 46 cases** | **264.1 s over 44 of the 46 cases** |
+
+**Unit 252 added entry 10** and measured it on this machine, alone by exact name:
+**2 s for its sixteen theory cases**, green. That is the second figure in this
+table taken by the unit that added the entry, and it is the cheapest entry in the
+set.
 
 **Three entries are 91 per cent of that.** `Ft8Unit251SnrAgreementTests` is
 144.2 s, `Ft8DeepIdentityTests` is 54.7 s and `Unit222TraceTests` is 40.8 s, and
@@ -422,6 +427,43 @@ only one that measures a number the operator reads directly. It is **not a
 sensitivity measurement**: 510 of 510 trials decoded at these rungs, and nothing
 in it is claimed at −21 dB, where the rate is about 11 per cent and an agreement
 figure would be taken on the trials whose noise happened to be kind.
+
+### 10. The ordered-statistics search costs what it says, and the full basis has not moved
+
+| | |
+|---|---|
+| `Ft8Sharp.Deep.Tests.Ft8DeepOrderedStatisticsTests.TheCostOfAnOrderInAWindowIsTheNumberOfSubsetsOfTheWindow` | 2 s |
+
+**The property.** Two halves, and the second is the one that protects every figure
+this phase has recorded. **First:** the re-encoding count an `(order, window)` cell
+spends is `1 + sum over i of C(window, i)`, pinned against **sixteen written-out
+triples** from `(0, 91, 1)` to `(4, 30, 31931)` — so a window that is stored and
+reported but not honoured by the enumeration is red. **Second, on every one of those
+sixteen rows:** the **three-argument call**, which is the one
+`Ft8DeepSlotDecoder` and `Ft8DeepOsdSettings.Default` make, spends the pinned
+full-basis count and returns **the same 174 bits and the same soft distance** as an
+explicit `window: 91`.
+
+**The breakage it would have caught — `B15`, work instruction 252.** A search knob is
+one integer, and both of its failure modes leave the decoder returning correct
+messages. A window not honoured makes every price in the unit's tables a price nobody
+paid and closes step 3's third exit on a fiction. A default path moved by one
+re-encoding — an off-by-one in `BasisBits - window`, a default of 90 — invalidates
+`docs/unit246-osd.md`'s whole scoreboard, `HM-OPEN-067`'s rows, the -19.81 dB
+crossing and the 33 of 306 that unit 252 used as its own `before`, **all together and
+all silently**, because they are measurements of that path and are comparable only
+while it is byte for byte what it was.
+
+**And it caught the first half on its own first run.** Watched failing with the
+window plumbed through and the enumeration untouched: **11 of 16 rows red**,
+`(order: 3, window: 40, expected: 10701)` reading `Actual: 125672`, five full-basis
+rows green. Right answers at the wrong price, which is the shape of the whole
+failure.
+
+**Why 2 s is the whole cost.** It is synthesised ratios and no audio: sixteen
+theory rows, the dearest of them order 4 over the full basis at 2 798 342
+re-encodings. **It is the cheapest entry in this set and it guards the comparability
+of every sensitivity figure the project quotes.**
 
 ---
 

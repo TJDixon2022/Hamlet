@@ -229,6 +229,51 @@ first is **2.51 dB** low on the noise floor and therefore 2.51 dB high on the
 answer, and dropping `Ft8DeepSlotDecoder.CandidateTimeBiasSeconds` is one whole
 symbol and **2.5 dB**. Both would leave a plausible column.
 
+### B15 — a second knob on the search, and the two ways it goes wrong silently
+
+**Work instruction 252.** `Ft8DeepOrderedStatistics.Search` enumerated every subset
+of the whole 91-position basis, at a fixed cost of `1 + sum over i of C(91, i)` per
+candidate. Unit 252 added a **window** — how many of the least reliable basis
+positions the order's flips may fall in — so that an order the whole basis could not
+afford could be afforded over part of it. **The entire change is one integer: the
+position the enumeration starts at.** A change that small has exactly two failure
+modes and neither of them shows as a broken decode.
+
+**The first: a window accepted, stored, reported and not honoured.** The settings
+object reads `window: 60`, the report prints `o3 W60`, the ladder decodes perfectly
+well — and the enumeration spends 125 672 re-encodings a candidate rather than
+36 051. Every price in the unit's tables would then be a price nobody paid, and
+step 3's third exit — *order and search weight stated with the cost each buys,
+measured* — would close on a fiction. **The decodes would all be right.** Nothing
+about the output of a decoder distinguishes a search that cost what it said from one
+that cost thirty times more.
+
+**The second, and it is the expensive one: the default path moving under the new
+knob.** `docs/unit246-osd.md`'s whole scoreboard, `HM-OPEN-067`'s rows, the -19.81 dB
+crossing, the 33 of 306 that unit 252 used as its own `before` — **every one of them
+is a measurement of the full-basis path**, and they are comparable to a later
+measurement only for as long as that path is byte for byte what it was. A window
+implemented as an off-by-one in `BasisBits - window`, or as a default of 90 rather
+than 91, would move it by one re-encoding and invalidate all of them **while still
+decoding**, and the next unit would attribute the difference to whatever it had
+changed.
+
+**Found by:** unit 252, before it happened, by building the second half of the test
+before the first half of the feature.
+
+**A test catches both and it is one test.**
+`Ft8DeepOrderedStatisticsTests.TheCostOfAnOrderInAWindowIsTheNumberOfSubsetsOfTheWindow`
+pins the re-encoding count against sixteen written-out `(order, window, expected)`
+triples, and **on every row also runs the three-argument call every existing caller
+makes** and requires it to spend the pinned full-basis count and return the same 174
+bits as an explicit `window: 91`. Gate entry 10.
+
+**And it caught the first half on its own first run.** Watched failing before the
+enumeration was changed, with the window plumbed through the settings and through
+`Decode` and ignored: **11 of 16 rows red**, `(order: 3, window: 40, expected: 10701)`
+reading `Actual: 125672`, and the five full-basis rows green — which is exactly the
+shape of the invisible failure, right answers at the wrong price.
+
 ---
 
 ## B. Breakages no test would have caught
