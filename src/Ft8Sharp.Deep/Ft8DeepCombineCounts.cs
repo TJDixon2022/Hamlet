@@ -37,4 +37,19 @@ namespace Ft8Sharp.Deep;
 /// Of those accepted, how many were messages this slot's single-slot path had not already returned.
 /// <b>Combining only ever adds</b>, so this is the number of decodes attributable to the stage.
 /// </param>
-public readonly record struct Ft8DeepCombineCounts(int Offered, int Submitted, int Accepted, int Added);
+/// <param name="DeepestHearings">
+/// <b>How many hearings the deepest combination this slot submitted actually carried.</b> Zero when
+/// nothing was submitted, and never one — a combination is at least this slot and one partner.
+/// <b>Unit 254 added this count because without it a column headed <c>combined x4</c> and a column
+/// headed <c>combined x2</c> are indistinguishable from the outside</b>: before unit 254 the decoder
+/// paired two slots at a time however many it remembered, so a four-slot run reported four slots and
+/// computed a chain of pairs, and no count in this type could tell a reader that. It is a number
+/// about what was computed and <b>not</b> about what is true — a four-hearing sum that the port
+/// refuses is still a four-hearing sum.
+/// </param>
+public readonly record struct Ft8DeepCombineCounts(
+    int Offered,
+    int Submitted,
+    int Accepted,
+    int Added,
+    int DeepestHearings);

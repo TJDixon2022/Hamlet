@@ -7,10 +7,27 @@ using Ft8Sharp.Message;
 namespace Ft8Sharp.Deep;
 
 /// <summary>
-/// <b>Slots in order, results out — and a transmission that was repeated in a later slot is heard as
-/// the sum of both hearings before anything decodes it.</b> Step 6 of this phase.
+/// <b>Slots in order, results out — and a transmission that was repeated in later slots is heard as
+/// the sum of <em>every</em> hearing before anything decodes it.</b> Step 6 of the previous phase,
+/// taken deeper than a pair by unit 254.
 /// </summary>
 /// <remarks>
+/// <para>
+/// <b>UNTIL UNIT 254 EVERY SUM WAS A PAIR, WHATEVER THE HISTORY HELD.</b> This loop called the
+/// two-hearing overload of <see cref="Ft8DeepSoftCombiner"/> once per remembered slot, so a decoder
+/// handed four slots computed a chain of pairs and a column headed <c>combined x4</c> measured the
+/// 3.01 dB that two hearings are worth while its name claimed the 6.02 that four are. What changed
+/// is <see cref="Ft8DeepCombineSettings.AccumulationDepth"/> and one call site;
+/// <see cref="Ft8DeepCombineCounts.DeepestHearings"/> is what makes the difference visible from
+/// outside.
+/// </para>
+/// <para>
+/// <b>AND THE BUDGET DID NOT MOVE.</b> The rule is still one combination submitted per candidate per
+/// partner rank per remembered slot. Depth is a sliding window over the history — more hearings in
+/// each submission, never more submissions — because every codeword put to the port's CRC-14 is an
+/// independent chance of accepting a message nobody sent, and a deeper sum bought by spending more
+/// of that budget would be bought with the one thing this project will not trade.
+/// </para>
 /// <para>
 /// <b>COMBINING ONLY EVER ADDS, AND THAT IS THE PROPERTY EVERYTHING ELSE RESTS ON.</b> Every message
 /// the single-slot path returned for a slot is in this slot's result, in the same order, unchanged;
@@ -158,6 +175,7 @@ public sealed class Ft8DeepRepeatDecoder
         var submitted = 0;
         var accepted = 0;
         var added = 0;
+        var deepestHearings = 0;
 
         // The keys already returned, so a combined decode that repeats a single-slot decode is a
         // duplicate rather than a second message. The key is the first 77 bits of the codeword, which
@@ -184,23 +202,36 @@ public sealed class Ft8DeepRepeatDecoder
         // hashed callsign, and the port's own cache for this slot has already been consumed.
         var cache = new Ft8CallsignCache();
         var combined = new float[Ft8DeepSoftCombiner.RatioCount];
-        var partners = new List<Ft8DeepHearing>(settings.MaximumPartners);
 
-        // Most recent slot first, so a station that repeated in the immediately preceding slot is
-        // reached before one that repeated four slots ago.
-        for (var back = _history.Count - 1; back >= 0; back--)
+        // One ranked partner list per remembered slot, MOST RECENT FIRST, so index j is "j slots
+        // back plus one". Allocated once for the slot and cleared per candidate: the pairing itself
+        // is two floating-point comparisons per pair and must stay that cheap.
+        var perSlot = new List<Ft8DeepHearing>[_history.Count];
+        for (var j = 0; j < perSlot.Length; j++)
         {
-            var earlier = _history[back];
+            perSlot[j] = new List<Ft8DeepHearing>(settings.MaximumPartners);
+        }
 
-            foreach (var hearing in hearings)
+        // The hearings handed to one call of Ft8DeepSoftCombiner.Combine. A List<float[]> rather
+        // than a collection expression, for the reason Ft8DeepSoftCombiner's two-hearing overload
+        // gives: a synthesised read-only array type would reach the whole-type-list tripwire.
+        var chain = new List<float[]>(settings.AccumulationDepth + 1);
+
+        foreach (var hearing in hearings)
+        {
+            var frequency = hearing.Candidate.FrequencyHz(geometry);
+            var time = hearing.Candidate.TimeSeconds(geometry);
+
+            // THE PAIRING RULE, AND IT IS UNIT 247'S UNCHANGED. Two candidates are the same station
+            // repeating itself when they sit within the tolerances in frequency and in
+            // time-within-the-slot. A transmitter does not move by a tone between slots; unit 247
+            // task 1 measured how far it does move. Nothing here knows what was transmitted.
+            for (var j = 0; j < perSlot.Length; j++)
             {
-                var frequency = hearing.Candidate.FrequencyHz(geometry);
-                var time = hearing.Candidate.TimeSeconds(geometry);
-
-                // THE PAIRING RULE. Two candidates are the same station repeating itself when they sit
-                // within the tolerances in frequency and in time-within-the-slot. A transmitter does
-                // not move by a tone between slots; unit 247 task 1 measured how far it does move.
+                var earlier = _history[_history.Count - 1 - j];
+                var partners = perSlot[j];
                 partners.Clear();
+
                 foreach (var candidate in earlier)
                 {
                     offered++;
@@ -219,17 +250,64 @@ public sealed class Ft8DeepRepeatDecoder
 
                     Offer(partners, candidate, settings.MaximumPartners);
                 }
+            }
 
-                // THE BUDGET, SPENT HERE AND NOWHERE ELSE: at most MaximumPartners submissions per
-                // candidate per remembered slot, and every one of them is an independent chance of the
-                // port's CRC-14 accepting a message nobody sent.
-                foreach (var partner in partners)
+            // THE BUDGET, SPENT HERE AND NOWHERE ELSE: at most MaximumPartners submissions per
+            // candidate per remembered slot, and every one of them is an independent chance of the
+            // port's CRC-14 accepting a message nobody sent.
+            //
+            // THE ACCUMULATION IS A SLIDING WINDOW OVER THE HISTORY AND NOT AN EXTRA SUBMISSION.
+            // For each partner rank k and each remembered slot j there is exactly ONE combination,
+            // as there was when every combination was a pair - what changed is what is in it. At
+            // AccumulationDepth 1 the window is one slot wide and the combination is the pair
+            // (this slot, slot j), which is what this library computed at every depth before unit
+            // 254. At depth A it is this slot together with the rank-k partners of the last A
+            // remembered slots ending at j, so the deepest combination carries A + 1 hearings.
+            //
+            // A rule that submitted the 2-way AND the 3-way AND the 4-way would spend three chances
+            // of a false accept where the pairwise rule spent one. CLAUDE.md 0.0: a decode nobody
+            // sent is worse than a decode missed, so the depth is bought out of the same budget or
+            // it is not bought.
+            for (var k = 0; k < settings.MaximumPartners; k++)
+            {
+                for (var j = 0; j < perSlot.Length; j++)
                 {
-                    Ft8DeepSoftCombiner.Combine(
-                        hearing.Ratios, partner.Ratios, settings.Weighting, combined);
+                    if (k >= perSlot[j].Count)
+                    {
+                        // No rank-k partner in this remembered slot, so there is no combination to
+                        // submit for it - exactly as when this was a pairwise loop.
+                        continue;
+                    }
+
+                    chain.Clear();
+                    chain.Add(hearing.Ratios);
+
+                    var from = Math.Max(0, j - settings.AccumulationDepth + 1);
+                    for (var w = from; w <= j; w++)
+                    {
+                        // A slot inside the window that offered no rank-k partner is simply not in
+                        // the sum. The window shrinks; it never turns into a second submission.
+                        if (k < perSlot[w].Count)
+                        {
+                            chain.Add(perSlot[w][k].Ratios);
+                        }
+                    }
+
+                    // THE SUM ITSELF. Log-likelihood ratios of conditionally independent hearings of
+                    // one codeword add, which is 10 log10 R decibels of processing gain for R of
+                    // them - textbook, from nobody's source. What is cited is the frame the ratios
+                    // sit in: 174 bits in codeword order carrying a 77-bit payload and a CRC-14,
+                    // from Franke K9AN, Somerville G4WJS and Taylor K1JT, "The FT4 and FT8
+                    // Communication Protocols", QEX, July/August 2020 - position i means the same
+                    // codeword bit in every hearing because the protocol says so.
+                    Ft8DeepSoftCombiner.Combine(chain, settings.Weighting, combined);
 
                     var verdict = Ft8CodewordDecoder.Decode(combined, cache, _inner.MaxIterations);
                     submitted++;
+
+                    // HOW MANY HEARINGS THAT SUBMISSION ACTUALLY CARRIED, which before unit 254 was
+                    // two however many slots the decoder remembered.
+                    deepestHearings = Math.Max(deepestHearings, chain.Count);
 
                     if (!verdict.Decoded)
                     {
@@ -240,7 +318,7 @@ public sealed class Ft8DeepRepeatDecoder
 
                     // THE KEY IS THE CODEWORD THE COMBINATION PRODUCED, its first 77 bits - recovered
                     // by re-running the same deterministic decoder over the same combined ratios, not
-                    // over either slot's original ratios, which did not converge and will not.
+                    // over any slot's original ratios, which did not converge and will not.
                     LdpcDecoder.Decode(combined, codeword, _inner.MaxIterations);
                     var key = codeword[..Ft8Payload.MessageBits];
 
@@ -266,7 +344,7 @@ public sealed class Ft8DeepRepeatDecoder
             }
         }
 
-        LastCombine = new Ft8DeepCombineCounts(offered, submitted, accepted, added);
+        LastCombine = new Ft8DeepCombineCounts(offered, submitted, accepted, added, deepestHearings);
 
         // THE FIVE COUNTS STAY THE PORT'S REPORT ON THE PORT'S BELIEF PROPAGATION. Only the message
         // list grows, so a reader comparing the counts against a single-slot run sees the same five

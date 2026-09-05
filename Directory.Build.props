@@ -186,9 +186,23 @@
     did, which is asserted in a test rather than assumed, because every figure docs/unit246-osd.md
     records is a measurement of that path. No file under src/Ft8Sharp/ changed and nothing an
     operator can see changed except how many messages arrive.
+
+    1.12.55 -> UNIT 254. Cross-slot combining stopped being pairwise. Ft8DeepRepeatDecoder called
+    the two-hearing overload of Ft8DeepSoftCombiner.Combine once per remembered slot, so a decoder
+    handed four slots computed a chain of pairs while reporting a four-slot combination;
+    Ft8DeepCombineSettings.AccumulationDepth now says how many remembered slots may go into ONE
+    sum and Ft8DeepCombineCounts.DeepestHearings says how many hearings the deepest submission
+    carried. No new type was added, so the sibling's whole-type-list tripwire is untouched.
+
+    ACCUMULATION IS OFF BY DEFAULT at depth 1, which is a pair, and COMBINING ITSELF IS STILL OFF
+    BY DEFAULT: Ft8Reception.cs is not touched in this version and nothing an operator can see
+    changed at all. A cross-slot combiner has to live across slots, which moves the per-slot
+    decoder, Ft8DecoderIdentity, the census, the telemetry line and the capture sidecar together,
+    and docs/unit254-combining-depth.md section 1.7 lists those surfaces for the unit that ships
+    it. No file under src/Ft8Sharp/ changed.
   -->
   <PropertyGroup>
-    <Version>1.12.55</Version>
+    <Version>1.12.56</Version>
   </PropertyGroup>
 
   <!--

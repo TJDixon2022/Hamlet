@@ -476,7 +476,165 @@ had, if anybody had ever run them stacked.
 
 ## 3. The accumulator, and the deterministic watched failure
 
-*Task 3.*
+`Ft8Sharp.Deep` **0.7.0 → 0.8.0**. Root **1.12.55 → 1.12.56**. `Ft8Sharp` stays at
+**0.10.7** and not one line under `src/Ft8Sharp/` moved.
+
+### 3.1 What was built, and the one refinement to §1.3's rule
+
+**No new type.** `Ft8DeepCombineSettings` gained `AccumulationDepth` (a property and a
+constructor parameter, defaulting to 1); `Ft8DeepCombineCounts` gained `DeepestHearings`;
+`Ft8DeepRepeatDecoder.Combine` was rewritten around one call site. The sibling's
+whole-type-list tripwire,
+`Ft8DeepSlotDecoderTests.TheSiblingHoldsExactlyTheseTypesAndTheListIsAssertedWhole`, is
+untouched at 25 types and was not run — it is not this instruction's test.
+
+**§1.3 chose rule C, the prefix chain. It was implemented as a sliding window, and that is
+a refinement worth naming rather than burying.** The window is `AccumulationDepth` slots
+wide and it *ends* at each remembered slot `j`:
+
+```
+for each candidate in this slot
+  for each partner rank k = 1 .. MaximumPartners
+    for each remembered slot j = 1 .. HistoryDepth          (most recent first)
+      if slot j has no rank-k partner: no submission, exactly as before
+      otherwise submit ONE combination:
+        [ this slot ] + [ rank-k partners of slots max(1, j-A+1) .. j ]
+```
+
+Two consequences, and both are better than the prefix chain §1.3 described:
+
+1. **The submission count is now exactly equal to the pairwise rule's, not merely bounded
+   by it** — one combination per (candidate, rank, remembered slot), submitted under
+   precisely the condition the pairwise rule submitted under. §1.3 predicted "≤"; the
+   window delivers "=". Asserted, offered and submitted, in
+   `TheDeeperSumSpendsExactlyTheBudgetThePairwiseRuleSpent`.
+2. **The pairwise reach into deep history is not given up.** §1.3's prefix chain would
+   have stopped at the first remembered slot with no partner; the window submits for slot
+   `j` whenever slot `j` itself has a partner, and simply shrinks the sum over the missing
+   ones. Nothing a `HistoryDepth ≥ 2` caller could reach before is unreachable now.
+
+At `AccumulationDepth = 1` the window is one slot wide and every combination is the pair
+`(this slot, slot j)` — **which is what this library computed at every depth before
+tonight**, and is the identity in §3.4.
+
+The refusal is loud, in `Ft8DeepCombineSettings`' own voice:
+
+```
+One sum may draw on 1 to 2 remembered slots, which is the history depth this rule was
+built with, and the deepest combination therefore carries 3 hearings at most. A depth of 3
+asks for hearings the history does not hold; raise historyDepth if that is what was meant.
+Zero would mean combining is on and no partner may enter a sum, which is a state a caller
+cannot have meant. (Parameter 'accumulationDepth')
+```
+
+**What this is:** the sum of independent hearings of one transmission. The frame is cited
+at the point of use — 174 bits in codeword order carrying a 77-bit payload and a CRC-14,
+from Franke K9AN, Somerville G4WJS and Taylor K1JT, *The FT4 and FT8 Communication
+Protocols*, QEX, July/August 2020 — because position `i` means the same codeword bit in
+every hearing only because the protocol says so. The addition itself is textbook and comes
+from nobody's source.
+
+**What this is not:** a gate, a threshold or an acceptance rule. Every combination, at
+every depth, goes to `Ft8CodewordDecoder.Decode` and faces the port's parity gate and its
+CRC-14 exactly as a pair did.
+
+### 3.2 THE WATCHED FAILURE, QUOTED VERBATIM
+
+`Ft8Unit254AccumulationTests.TheDeepestCombinationOfFourHearingsCarriesFourAndNotTwo`, run
+alone by exact full method name, foregrounded, 480 s timeout, before the accumulator
+existed:
+
+```
+  Failed Ft8Sharp.Deep.Tests.Ft8Unit254AccumulationTests.TheDeepestCombinationOfFourHearingsCarriesFourAndNotTwo [319 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: 4
+Actual:   2
+  Stack Trace:
+     at Ft8Sharp.Deep.Tests.Ft8Unit254AccumulationTests.TheDeepestCombinationOfFourHearingsCarriesFourAndNotTwo() in C:\Source\HamLet\tests\Ft8Sharp.Deep.Tests\Ft8Unit254AccumulationTests.cs:line 100
+  Standard Output Messages:
+ slot 0: 0 slots remembered behind it, 0 combinations submitted, deepest carried 0 hearings
+ slot 1: 1 slots remembered behind it, 6 combinations submitted, deepest carried 2 hearings
+ slot 2: 2 slots remembered behind it, 13 combinations submitted, deepest carried 2 hearings
+ slot 3: 3 slots remembered behind it, 18 combinations submitted, deepest carried 2 hearings
+```
+
+**Four hearings of one transmission, three slots of history, an accumulation depth of
+three, and the deepest sum the fourth slot put to the port's gates carried two.** That is
+the breakage in one integer: *a decoder that reports a four-slot combination and computes
+a chain of pairs.*
+
+The same test after the accumulator, with **the submission counts unchanged**:
+
+```
+ slot 0: 0 slots remembered behind it, 0 combinations submitted, deepest carried 0 hearings
+ slot 1: 1 slots remembered behind it, 6 combinations submitted, deepest carried 2 hearings
+ slot 2: 2 slots remembered behind it, 13 combinations submitted, deepest carried 3 hearings
+ slot 3: 3 slots remembered behind it, 18 combinations submitted, deepest carried 4 hearings
+```
+
+0, 6, 13, 18 submissions before and 0, 6, 13, 18 after. **Depth was bought and nothing was
+spent for it.**
+
+### 3.3 The budget, asserted rather than argued
+
+`TheDeeperSumSpendsExactlyTheBudgetThePairwiseRuleSpent`, five slots of identical audio
+through a pairwise decoder and an accumulating one side by side, at one partner and at two:
+
+```
+ partners 1, slot 0: pairwise offered    0 submitted  0 deepest 0; accumulated offered    0 submitted  0 deepest 0
+ partners 1, slot 1: pairwise offered  483 submitted  6 deepest 2; accumulated offered  483 submitted  6 deepest 2
+ partners 1, slot 2: pairwise offered  704 submitted 14 deepest 2; accumulated offered  704 submitted 14 deepest 3
+ partners 1, slot 3: pairwise offered 1020 submitted 18 deepest 2; accumulated offered 1020 submitted 18 deepest 4
+ partners 1, slot 4: pairwise offered 1080 submitted 18 deepest 2; accumulated offered 1080 submitted 18 deepest 4
+ partners 2, slot 0: pairwise offered    0 submitted  0 deepest 0; accumulated offered    0 submitted  0 deepest 0
+ partners 2, slot 1: pairwise offered  483 submitted 12 deepest 2; accumulated offered  483 submitted 12 deepest 2
+ partners 2, slot 2: pairwise offered  704 submitted 26 deepest 2; accumulated offered  704 submitted 26 deepest 3
+ partners 2, slot 3: pairwise offered 1020 submitted 36 deepest 2; accumulated offered 1020 submitted 36 deepest 4
+ partners 2, slot 4: pairwise offered 1080 submitted 36 deepest 2; accumulated offered 1080 submitted 36 deepest 4
+```
+
+**Pairs offered equal and combinations submitted equal on every row.** The false-accept
+budget §1.3 multiplied out is the budget the deeper sum spends, to the individual
+submission.
+
+### 3.4 The two identities that protect every recorded figure
+
+| test | what it asserts | result |
+|---|---|---|
+| `WithCombiningOffTheRepeatDecoderIsStillThePortExactly` | with combining off, `Ft8DeepRepeatDecoder` returns the port's messages, in order, with the port's five counts, and no combine counts at all — at three noise amplitudes | **green** — 1 message and 8 / 20 / 15 candidates, identical through both |
+| `AtAccumulationDepthOneEverySubmissionIsStillAPair` | with combining on at depth 1 — the default — every submission carries exactly 2 hearings, at history depths 1, 2 and 3 | **green** — 4 of 5 slots submitted, every submission a pair, at all three histories |
+| `AnAccumulationDepthTheHistoryCannotSupplyIsRefused` | a depth above the history, and a depth of zero, are refused loudly rather than clamped, and `Default.AccumulationDepth` is 1 | **green** |
+
+**Combining stays off by default and accumulation stays at depth 1**, for the same reason
+ordered statistics and subtraction do.
+
+### 3.5 Step 5's second exit, taken deeper
+
+`AMessageNoSlotAndNoPairCouldReadIsReadOutOfTheSumOfFour`. Four hearings of one known
+transmission at eight noise amplitudes; every one of the six possible pairs tried through
+its own fresh pairwise decoder before the four-way sum is asked.
+
+```
+noise  any slot alone  any pair  SUM OF FOUR  submitted  deepest
+  6.0         decoded    missed       missed         13        4
+  8.0         decoded    missed       missed          6        4
+ 10.0         decoded   decoded      DECODED          4        4
+ 12.0          missed   decoded      DECODED          4        4
+ 14.0          missed    missed      DECODED          5        4
+ 16.0          missed    missed       missed          2        2
+ 18.0          missed    missed       missed          2        2
+ 20.0          missed    missed       missed          2        2
+```
+
+**At noise amplitude 14.0 no single slot read the message, none of the six pairs read it,
+and the sum of four did.** 1 of 8 levels, and zero wrong returns at any level.
+
+**And the last three rows are the trace's §1.4 term 3, visible.** At 16.0 and above the
+deepest combination falls back to 2 hearings and only 2 submissions are made — not because
+the sum got worse but because **the sync search stopped offering a candidate near the
+signal in enough slots to build a chain.** A deeper sum cannot help a candidate that was
+never offered, and that is what the ladder in §4 has to contend with.
 
 ---
 

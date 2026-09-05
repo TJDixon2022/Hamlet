@@ -93,8 +93,14 @@ public sealed class Ft8DeepCombineSettings
     /// slot.</b> 1 to <see cref="MaximumPartnersAllowed"/>.
     /// </param>
     /// <param name="weighting">How much each hearing counts for.</param>
+    /// <param name="accumulationDepth">
+    /// <b>How many remembered slots may go into ONE sum</b>, 1 to <paramref name="historyDepth"/>.
+    /// <b>One is the pairwise behaviour every figure recorded before unit 254 was measured at</b> and
+    /// is the default. See <see cref="AccumulationDepth"/> for what a larger number does and, more to
+    /// the point, what it does not do to the budget.
+    /// </param>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Any of the four numbers is outside its range. <b>Refused loudly rather than clamped
+    /// Any of the five numbers is outside its range. <b>Refused loudly rather than clamped
     /// silently</b>, because a caller who asked for eight partners and got one would be reading a
     /// measurement of something it did not ask for — and, the other way round, a caller who asked for
     /// a hundred and got them would be spending a false-accept budget it never counted.
@@ -104,7 +110,8 @@ public sealed class Ft8DeepCombineSettings
         double frequencyToleranceHz = 6.25,
         double timeToleranceSeconds = 0.32,
         int maximumPartners = 1,
-        Ft8DeepCombineWeighting weighting = Ft8DeepCombineWeighting.Equal)
+        Ft8DeepCombineWeighting weighting = Ft8DeepCombineWeighting.Equal,
+        int accumulationDepth = 1)
     {
         if (historyDepth < 1 || historyDepth > MaximumHistoryDepth)
         {
@@ -148,11 +155,30 @@ public sealed class Ft8DeepCombineSettings
                 + "the operator every slot pair.");
         }
 
+        // REFUSED RATHER THAN CLAMPED, and this one is the refusal unit 254 exists to make. A caller
+        // who asks for a four-hearing sum out of a one-slot history and is quietly handed a pair
+        // would be reading a "combined x4" column that computed a chain of pairs, which is exactly
+        // the breakage this unit found in the tree. The history is what supplies the hearings, so the
+        // accumulation depth can never exceed it.
+        if (accumulationDepth < 1 || accumulationDepth > historyDepth)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(accumulationDepth),
+                accumulationDepth,
+                $"One sum may draw on 1 to {historyDepth} remembered slots, which is the history "
+                + "depth this rule was built with, and the deepest combination therefore carries "
+                + $"{historyDepth + 1} hearings at most. A depth of {accumulationDepth} asks for "
+                + "hearings the history does not hold; raise historyDepth if that is what was meant. "
+                + "Zero would mean combining is on and no partner may enter a sum, which is a state a "
+                + "caller cannot have meant.");
+        }
+
         HistoryDepth = historyDepth;
         FrequencyToleranceHz = frequencyToleranceHz;
         TimeToleranceSeconds = timeToleranceSeconds;
         MaximumPartners = maximumPartners;
         Weighting = weighting;
+        AccumulationDepth = accumulationDepth;
     }
 
     /// <summary>How many previous slots are kept and looked back through.</summary>
@@ -172,6 +198,55 @@ public sealed class Ft8DeepCombineSettings
 
     /// <summary>How much each hearing counts for when they are added.</summary>
     public Ft8DeepCombineWeighting Weighting { get; }
+
+    /// <summary>
+    /// <b>How many remembered slots may go into ONE sum. The deepest combination carries
+    /// <c>AccumulationDepth + 1</c> hearings.</b> One — the default — is a pair, which is what this
+    /// library computed at every depth before unit 254.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// <b>THIS DOES NOT MOVE THE FALSE-ACCEPT BUDGET, AND THAT IS THE WHOLE DESIGN.</b> The rule is
+    /// still <em>one combination submitted per candidate, per partner rank, per remembered slot</em>
+    /// — the bound <see cref="SubmissionsPerSlot"/> multiplies out, unchanged, at every accumulation
+    /// depth. What changes is <em>what is in</em> the combination submitted for remembered slot
+    /// <c>j</c>: at depth 1 it is this slot and slot <c>j</c>'s partner; at depth <c>A</c> it is this
+    /// slot and the partners of the last <c>A</c> remembered slots ending at <c>j</c>. <b>More
+    /// hearings per submission, never more submissions.</b>
+    /// </para>
+    /// <para>
+    /// <b>Why depth is bought this way rather than by submitting every sum.</b> A rule that put the
+    /// 2-way and the 3-way and the 4-way to the port's gates would spend three chances of a false
+    /// accept where the pairwise rule spent one — <c>CLAUDE.md</c> §0.0 says a decode nobody sent is
+    /// worse than a decode missed, so the deeper sum has to be bought out of the same budget or not
+    /// at all. The sliding window buys it out of the same budget exactly.
+    /// </para>
+    /// <para>
+    /// <b>What it costs instead.</b> At depth <c>A</c> the submission for remembered slot <c>j</c> is
+    /// no longer the pair <c>(this slot, slot j)</c>; it is a sum that includes slot <c>j</c> along
+    /// with up to <c>A - 1</c> slots more recent than it. If those extra hearings are of a different
+    /// station the sum is worse than the pair would have been, and the port refuses it — which is a
+    /// missed decode rather than a wrong one, and is measured rather than argued. See
+    /// <c>docs/unit254-combining-depth.md</c> §4.
+    /// </para>
+    /// <para>
+    /// <b>The arithmetic the depth is worth.</b> Summing <c>R</c> conditionally independent hearings
+    /// of one codeword adds their log-likelihood ratios, whose mean grows as <c>R</c> and whose
+    /// variance grows as <c>R</c>, so the per-bit signal-to-noise ratio grows as <c>R</c> —
+    /// <c>10 log10 R</c> decibels, which is 3.01 dB at two hearings, 4.77 at three and 6.02 at four.
+    /// <b>Textbook soft-decision theory and no source but arithmetic.</b> What is cited is the frame:
+    /// 174 bits in codeword order carrying a 77-bit payload and a CRC-14, from S. Franke K9AN,
+    /// B. Somerville G4WJS and J. Taylor K1JT, <em>The FT4 and FT8 Communication Protocols</em>, QEX,
+    /// July/August 2020 — position <c>i</c> means the same codeword bit in every hearing because the
+    /// protocol says so, and a repeated CQ is the same 174 bits again.
+    /// </para>
+    /// <para>
+    /// <b>And nothing here decides that a message is real, at any depth.</b> A four-hearing sum goes
+    /// to <c>Ft8CodewordDecoder.Decode</c> and faces the port's parity gate and CRC-14 gate exactly
+    /// as a pair does. This is not a gate, not a threshold and not an acceptance rule.
+    /// </para>
+    /// </remarks>
+    public int AccumulationDepth { get; }
 
     /// <summary>
     /// <b>The worst case, multiplied out, for a caller who wants the number before the run.</b>

@@ -124,9 +124,35 @@
     per candidate per pass. What multiplies with the pass count is the number of
     passes, and docs/unit253-subtraction.md section 3.1 writes that arithmetic
     out.
+
+    0.8.0 takes the sum deeper than a pair. Until this version
+    Ft8DeepRepeatDecoder called the TWO-hearing overload of
+    Ft8DeepSoftCombiner.Combine once per remembered slot, so a decoder handed
+    four slots computed a chain of pairs and a column headed combined x4
+    measured the 3.01 dB two hearings are worth while its name claimed the 6.02
+    that four are. Ft8DeepCombineSettings gains AccumulationDepth, refused
+    loudly above the history depth rather than clamped, and
+    Ft8DeepCombineCounts gains DeepestHearings so the difference is visible
+    from outside the decoder at all. NO NEW TYPE was added.
+
+    ACCUMULATION IS OFF BY DEFAULT - AccumulationDepth is 1, which is a pair -
+    and the depth-1 path is bit-for-bit what 0.7.0 did, asserted by
+    Ft8Unit254AccumulationTests.AtAccumulationDepthOneEverySubmissionIsStillAPair
+    and by unit 254's own reproduction of unit 247's 13 / 33 / 68 of 306.
+
+    AND THE FALSE-ACCEPT BUDGET DID NOT MOVE, which is the whole of why the
+    depth is shaped the way it is. Depth is a sliding window over the history:
+    one combination submitted per candidate per partner rank per remembered
+    slot, exactly as when every combination was a pair, carrying more hearings
+    rather than being joined by more submissions. A rule that submitted the
+    2-way and the 3-way and the 4-way would have spent three chances of the
+    port's CRC-14 accepting a message nobody sent where the pairwise rule spent
+    one. Ft8Unit254AccumulationTests.TheDeeperSumSpendsExactlyTheBudgetThePairwiseRuleSpent
+    asserts the counts equal slot for slot, and
+    docs/unit254-combining-depth.md section 1.3 writes the arithmetic out.
   -->
   <PropertyGroup>
-    <Version>0.7.0</Version>
+    <Version>0.8.0</Version>
   </PropertyGroup>
 
   <!--
