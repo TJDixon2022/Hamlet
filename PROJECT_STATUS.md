@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: WORKING
-TASK: 6 of 7
+TASK: 7 of 7
 WORK_INSTRUCTION: 244 - the fixture format, the reader that refuses, and the command Tim runs
 BALL: claude
 RULES_AT: HM-DEC-153 (2026-09-04)
 NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-09-04T21:55:00-04:00
-NOTE: Building the shack command in two halves - the hashing, parsing and writing are testable here and are being tested; invoking WSJT-X is not reachable on this machine and Tim's first run is what exercises it
+UPDATED: 2026-09-04T22:12:00-04:00
+NOTE: Ft8Sharp.Tests is running whole for the second time tonight, this time with the 27 new cases in it, and the totals it returns are what the report claims rather than the earlier baseline
 
 ---
 
