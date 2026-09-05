@@ -26,14 +26,35 @@ namespace Ft8Sharp.Deep;
 /// orders 0, 1, 2 and 3.
 /// </para>
 /// <para>
+/// <b><see cref="Window"/> is how much of that basis the flips may fall in</b>, counted from the
+/// least reliable end. It is Fossorier and Lin's own segmentation of the most reliable basis, from
+/// the same 1995 paper, and it is the second knob: order says how many positions may be flipped,
+/// window says which positions those may be. The cost is <c>1 + sum over i of C(window, i)</c>, so
+/// order 3 over a window of 40 costs 10 701 re-encodings a candidate against the full basis's
+/// 125 672 - <b>eleven times cheaper at the same order</b>.
+/// </para>
+/// <para>
 /// <b>There is no threshold, no confidence and no acceptance rule here</b>, because
 /// <c>Ft8Sharp.Deep</c> never decides that a message is real. Whatever this stage produces is handed
 /// to the port's <c>Ft8CodewordDecoder</c> and accepted or refused by the port's own parity and
 /// CRC-14 gates. See <c>src/Ft8Sharp.Deep/porting-notes.md</c>.
 /// </para>
+/// <para>
+/// <b>AND THE WINDOW IS NOT AN ACCEPTANCE RULE EITHER.</b> It is not a threshold, not a confidence
+/// and not a gate; it narrows which patterns the search enumerates and nothing else. It does not
+/// change how many codewords are put to the port's gates - the stage produces exactly one codeword
+/// per candidate offered, before and after, and <c>docs/unit252-osd-window.md</c> §4 writes the
+/// arithmetic out.
+/// </para>
 /// </remarks>
 public sealed class Ft8DeepOsdSettings
 {
+    /// <summary>
+    /// <b>The whole most reliable basis, 91 positions</b>, which is what a window defaults to and is
+    /// what shipped before unit 252. <c>Ft8DeepOrderedStatistics.BasisBits</c>.
+    /// </summary>
+    public const int FullBasis = Ft8DeepOrderedStatistics.BasisBits;
+
     /// <summary>The largest order this library will run. Beyond it the search stops being tractable.</summary>
     /// <remarks>
     /// A bound rather than a tuning: order 4 is about two and a half million re-encodings per
@@ -85,14 +106,21 @@ public sealed class Ft8DeepOsdSettings
     /// </remarks>
     public static Ft8DeepOsdSettings Default { get; } = new(2);
 
-    /// <summary>Builds settings for one order.</summary>
+    /// <summary>Builds settings for one order, over the whole basis or over a window of it.</summary>
     /// <param name="order">
     /// How many basis positions may be flipped, 0 to <see cref="MaximumOrder"/>.
     /// </param>
+    /// <param name="window">
+    /// <b>How many of the least reliable basis positions those flips may fall in</b>, 1 to
+    /// <see cref="FullBasis"/>, and at least <paramref name="order"/>.
+    /// <see cref="FullBasis"/> - the default - is the whole basis and is the behaviour that shipped
+    /// before unit 252, unchanged in every re-encoding.
+    /// </param>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// The order is negative or above <see cref="MaximumOrder"/>.
+    /// The order is negative or above <see cref="MaximumOrder"/>, or the window is outside 1 to
+    /// <see cref="FullBasis"/>, or the window is smaller than the order.
     /// </exception>
-    public Ft8DeepOsdSettings(int order)
+    public Ft8DeepOsdSettings(int order, int window = FullBasis)
     {
         if (order < 0)
         {
@@ -113,9 +141,44 @@ public sealed class Ft8DeepOsdSettings
                 + "refusing would report a measurement of an order nobody asked for.");
         }
 
+        if (window < 1 || window > FullBasis)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(window),
+                window,
+                $"A window is 1 to {FullBasis} of the basis, counted from its least reliable end. "
+                + "Clamping instead of refusing would report a measurement of a search nobody asked "
+                + "for.");
+        }
+
+        if (window < order)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(window),
+                window,
+                $"A window of {window} positions cannot carry a search of order {order}: there are "
+                + "not that many positions to flip. This is a caller mistake rather than a bad "
+                + "signal, so it is refused rather than reduced to an order nobody asked for.");
+        }
+
         Order = order;
+        Window = window;
     }
 
     /// <summary>How many of the most reliable basis positions may be flipped.</summary>
     public int Order { get; }
+
+    /// <summary>
+    /// <b>How many of the least reliable basis positions the flips may fall in</b>, counted from the
+    /// bottom of the basis. <see cref="FullBasis"/> means the whole 91 and is what ships.
+    /// </summary>
+    /// <remarks>
+    /// <b>The window is over the basis, not over the codeword.</b> The basis is
+    /// <c>Ft8DeepOrderedStatistics.MostReliableBasis</c>, whose 91 pivots come back in
+    /// <c>|ratio|</c> order because the elimination visits columns in that order and appends pivots
+    /// in visitation order - so the last <see cref="Window"/> of them are the least reliable of the
+    /// basis. Positions the elimination stepped over are more reliable than any of them and are not
+    /// in the basis at all. <c>docs/unit252-osd-window.md</c> §1 has the reading with line numbers.
+    /// </remarks>
+    public int Window { get; }
 }

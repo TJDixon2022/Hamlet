@@ -175,9 +175,20 @@
 
     REPORT-ONLY, asserted rather than claimed: decoding a slot again after the estimate has been
     taken returns the identical Ft8SlotResult. No file under src/Ft8Sharp/ changed.
+
+    1.12.54 -> UNIT 252. The ordered statistics search gained a window: how much of the 91-position
+    most reliable basis the order's flips may fall in, counted from its least reliable end. One
+    integer on Ft8DeepOsdSettings and one loop bound in Ft8DeepOrderedStatistics.Search, costing
+    1 + sum over i of C(window, i) re-encodings a candidate instead of 1 + sum over i of C(91, i),
+    so order 3 over a window of 40 costs 10 701 against the full basis's 125 672.
+
+    The default did not move in this version and the full-basis path is bit-for-bit what 1.12.53
+    did, which is asserted in a test rather than assumed, because every figure docs/unit246-osd.md
+    records is a measurement of that path. No file under src/Ft8Sharp/ changed and nothing an
+    operator can see changed except how many messages arrive.
   -->
   <PropertyGroup>
-    <Version>1.12.53</Version>
+    <Version>1.12.54</Version>
   </PropertyGroup>
 
   <!--

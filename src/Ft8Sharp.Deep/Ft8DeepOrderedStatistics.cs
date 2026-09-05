@@ -118,9 +118,18 @@ public sealed class Ft8DeepOrderedStatistics
     /// <see cref="CodewordBits"/> bytes, one per bit, written in full. <b>Always a codeword of the
     /// code</b>, because it is built as a linear combination of the rows of a row-reduced generator.
     /// </param>
+    /// <param name="window">
+    /// <b>How many of the least reliable basis positions the flips may fall in</b>, 1 to
+    /// <see cref="BasisBits"/> and at least <paramref name="order"/>.
+    /// <see cref="Ft8DeepOsdSettings.FullBasis"/> - the default - is the whole basis and is the
+    /// behaviour that shipped before unit 252, unchanged in every re-encoding.
+    /// </param>
     /// <returns>The soft distance reached and what it cost in re-encodings.</returns>
     /// <exception cref="ArgumentException">Either span is the wrong length.</exception>
-    /// <exception cref="ArgumentOutOfRangeException">The order is negative or above the bound.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// The order is negative or above the bound, or the window is outside 1 to
+    /// <see cref="BasisBits"/>, or the window is smaller than the order.
+    /// </exception>
     /// <remarks>
     /// <para>
     /// The five steps are Fossorier and Lin's, in their order:
@@ -140,8 +149,22 @@ public sealed class Ft8DeepOrderedStatistics
     /// give the same codeword in every process. A decoder whose answer depended on iteration order
     /// would not be measurable on a ladder.
     /// </para>
+    /// <para>
+    /// <b>THE WINDOW, AND WHAT IT IS NOT.</b> <paramref name="window"/> is step 4's segmentation of
+    /// the most reliable basis, from Fossorier and Lin's own 1995 description and nowhere else: the
+    /// flips are restricted to the least reliable <paramref name="window"/> of the 91 basis
+    /// positions, which the errors concentrate in, so an order that could not be afforded over the
+    /// whole basis can be afforded over part of it. <b>It is not a threshold, not a confidence and
+    /// not an acceptance rule</b>, and it does not change how many codewords are put to the port's
+    /// gates - this method returns exactly one codeword whatever the window is, and
+    /// <see cref="Ft8DeepSlotDecoder"/> submits exactly that one.
+    /// </para>
     /// </remarks>
-    public Ft8DeepOsdResult Decode(ReadOnlySpan<float> ratios, int order, Span<byte> codeword)
+    public Ft8DeepOsdResult Decode(
+        ReadOnlySpan<float> ratios,
+        int order,
+        Span<byte> codeword,
+        int window = Ft8DeepOsdSettings.FullBasis)
     {
         if (ratios.Length != CodewordBits)
         {
@@ -166,6 +189,26 @@ public sealed class Ft8DeepOrderedStatistics
                 order,
                 $"An order is 0 to {Ft8DeepOsdSettings.MaximumOrder}. Clamping instead of refusing "
                 + "would report a measurement of an order nobody asked for.");
+        }
+
+        if (window < 1 || window > BasisBits)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(window),
+                window,
+                $"A window is 1 to {BasisBits} of the basis, counted from its least reliable end. "
+                + "Clamping instead of refusing would report a measurement of a search nobody asked "
+                + "for.");
+        }
+
+        if (window < order)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(window),
+                window,
+                $"A window of {window} positions cannot carry a search of order {order}: there are "
+                + "not that many positions to flip. This is a caller mistake rather than a bad "
+                + "signal, so it is refused rather than reduced to an order nobody asked for.");
         }
 
         // STEP 1 -- reliability. The hard decision is the port's own rule, l > 0, so a ratio of
@@ -207,10 +250,14 @@ public sealed class Ft8DeepOrderedStatistics
         _current.CopyTo(_best, 0);
         _reencodings = 1;
 
-        // STEP 4 -- order λ. Flipping basis position r toggles its bit, which adds that row.
+        // STEP 4 -- order λ, over the window. Flipping basis position r toggles its bit, which adds
+        // that row. THE WINDOW IS THIS ONE NUMBER: the enumeration starts at the first position of
+        // the least reliable `window` of the basis instead of at 0. Nothing else in the five steps
+        // moves - not the ranking, not the tie rule, not the fixed enumeration order, and not the
+        // single answer copied out below.
         if (order > 0)
         {
-            Search(1, 0, order);
+            Search(1, BasisBits - window, order);
         }
 
         // The answer, back out of difference space: best = codeword XOR hard, so codeword = best
@@ -281,13 +328,25 @@ public sealed class Ft8DeepOrderedStatistics
     }
 
     /// <summary>
-    /// STEP 4's enumeration: every subset of the basis of size <paramref name="depth"/> to
-    /// <c>order</c>, in a fixed order, with each pattern's soft distance ranked as it is produced.
+    /// STEP 4's enumeration: every subset of size <paramref name="depth"/> to <c>order</c> of the
+    /// basis positions from <paramref name="start"/> down, in a fixed order, with each pattern's
+    /// soft distance ranked as it is produced.
     /// </summary>
     /// <remarks>
+    /// <para>
     /// The recursion is at most <see cref="Ft8DeepOsdSettings.MaximumOrder"/> deep and toggles one
     /// row on the way in and off on the way out, so the whole search allocates nothing and each
     /// re-encoding costs three exclusive-ors rather than a matrix multiply.
+    /// </para>
+    /// <para>
+    /// <b><paramref name="start"/> is where the window begins.</b> Called with <c>0</c> it is the
+    /// whole basis, which is what shipped before unit 252 and what
+    /// <see cref="Ft8DeepOsdSettings.FullBasis"/> still means; called with
+    /// <c>BasisBits - window</c> it enumerates only the least reliable <c>window</c> positions,
+    /// costing <c>1 + sum over i of C(window, i)</c> instead of
+    /// <c>1 + sum over i of C(91, i)</c>. The pivots are in <c>|ratio|</c> order, so the tail of the
+    /// basis is its least reliable end - <c>docs/unit252-osd-window.md</c> §1.
+    /// </para>
     /// </remarks>
     private void Search(int depth, int start, int order)
     {

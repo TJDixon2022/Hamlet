@@ -221,6 +221,140 @@ public class Ft8DeepOrderedStatisticsTests(ITestOutputHelper output)
     }
 
     /// <summary>
+    /// <b>The cost of an order over a WINDOW of the basis is the number of subsets of the window -
+    /// and at the full basis the default path has not moved by one re-encoding or one bit.</b>
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// <b>THE BREAKAGE THIS WOULD HAVE CAUGHT, because no test is added to this tree without naming
+    /// one.</b> Unit 252 restricts the search to the least reliable <c>W</c> of the 91 basis
+    /// positions so that a higher order fits the slot. The whole of that change is one integer: the
+    /// position <c>Search</c> starts its enumeration at. <b>A window that is accepted, stored,
+    /// printed in a table and then not honoured by the enumeration is invisible</b> - the settings
+    /// object reads <c>window: 40</c>, the report prints <c>order 3, W = 40</c>, and the decoder
+    /// spends 125 672 re-encodings a candidate rather than 10 701 while returning perfectly good
+    /// decodes. The measurement would then be a table of prices that were never paid, and step 3's
+    /// third exit - <em>order and search weight stated with the cost each buys, measured</em> -
+    /// would close on a fiction. This test was run against exactly that state and watched failing
+    /// before the enumeration was changed; the red is quoted in unit 252's report.
+    /// </para>
+    /// <para>
+    /// <b>AND THE IDENTITY, WHICH IS THE HALF THAT PROTECTS EVERY FIGURE ALREADY RECORDED.</b> Each
+    /// row also runs the three-argument call - the one every existing caller makes, including
+    /// <c>Ft8DeepSlotDecoder</c> and <c>Ft8DeepOsdSettings.Default</c> - and requires it to spend
+    /// the pinned full-basis count and to return the same 174 bits as an explicit
+    /// <c>window: 91</c>. Every figure in <c>docs/unit246-osd.md</c>, every row of
+    /// <c>HM-OPEN-067</c> and unit 252's own <c>before</c> column are measurements of that path, and
+    /// they are all invalidated together if it moved.
+    /// </para>
+    /// </remarks>
+    [Theory]
+    [InlineData(0, 91, 1L)]
+    [InlineData(0, 20, 1L)]
+    [InlineData(1, 91, 92L)]
+    [InlineData(1, 20, 21L)]
+    [InlineData(2, 91, 4187L)]
+    [InlineData(2, 60, 1831L)]
+    [InlineData(2, 40, 821L)]
+    [InlineData(2, 20, 211L)]
+    [InlineData(3, 91, 125672L)]
+    [InlineData(3, 60, 36051L)]
+    [InlineData(3, 45, 15226L)]
+    [InlineData(3, 40, 10701L)]
+    [InlineData(3, 30, 4526L)]
+    [InlineData(3, 20, 1351L)]
+    [InlineData(4, 30, 31931L)]
+    [InlineData(4, 20, 6196L)]
+    public void TheCostOfAnOrderInAWindowIsTheNumberOfSubsetsOfTheWindow(
+        int order,
+        int window,
+        long expected)
+    {
+        var truth = TransmittedCodeword("HAMLET 252");
+        var ratios = RatiosFor(truth);
+
+        var osd = new Ft8DeepOrderedStatistics();
+
+        var windowed = new byte[N];
+        var result = osd.Decode(ratios, order, windowed, window);
+
+        output.WriteLine(
+            $"order {order}, window {window}: {result.Reencodings} re-encodings, "
+            + $"1 + sum C({window}, i) = {expected}");
+
+        Assert.Equal(expected, result.Reencodings);
+
+        // THE IDENTITY. The three-argument call is what every existing caller makes, and it must
+        // still be the full basis exactly - same count, same 174 bits.
+        var byDefault = new byte[N];
+        var untouched = osd.Decode(ratios, order, byDefault);
+
+        var explicitly = new byte[N];
+        var atFullBasis = osd.Decode(ratios, order, explicitly, Ft8DeepOsdSettings.FullBasis);
+
+        output.WriteLine(
+            $"  the default path at order {order}: {untouched.Reencodings} re-encodings, "
+            + $"full basis {FullBasisCost(order)}");
+
+        Assert.Equal(FullBasisCost(order), untouched.Reencodings);
+        Assert.Equal(untouched.Reencodings, atFullBasis.Reencodings);
+        Assert.Equal(byDefault, explicitly);
+        Assert.Equal(untouched.SoftDistance, atFullBasis.SoftDistance);
+    }
+
+    /// <summary>
+    /// <c>1 + sum over i of C(91, i)</c> for orders 0 to 4, written out rather than computed, so
+    /// that the number this test compares against is not produced by the same arithmetic it is
+    /// checking.
+    /// </summary>
+    private static long FullBasisCost(int order) => order switch
+    {
+        0 => 1L,
+        1 => 92L,
+        2 => 4187L,
+        3 => 125672L,
+        4 => 2798342L,
+        _ => throw new ArgumentOutOfRangeException(nameof(order)),
+    };
+
+    /// <summary>
+    /// <b>A window outside the basis, and a window too small to carry its own order, are refused
+    /// loudly rather than clamped.</b>
+    /// </summary>
+    /// <remarks>
+    /// <b>THE BREAKAGE THIS WOULD HAVE CAUGHT.</b> The whole of unit 252 is a measurement of what a
+    /// window costs and what it buys, reported cell by cell. A window silently clamped to the basis
+    /// - or an order silently reduced to fit a window that cannot hold it - would put a row in that
+    /// table labelled <c>order 4, W = 3</c> carrying the price and the decodes of something else
+    /// entirely, and the table is what the default is read off. It is the same fault
+    /// <c>Ft8DeepOsdSettings</c> already refuses the order for, in the same voice, and the refusal
+    /// is a caller mistake rather than a bad signal: it can never be reached from audio.
+    /// </remarks>
+    [Fact]
+    public void TheOutOfRangeWindowAndTheWindowTooSmallForItsOrderAreRefused()
+    {
+        var osd = new Ft8DeepOrderedStatistics();
+
+        Assert.Throws<ArgumentOutOfRangeException>(() => osd.Decode(new float[N], 1, new byte[N], 0));
+        Assert.Throws<ArgumentOutOfRangeException>(() => osd.Decode(new float[N], 1, new byte[N], -1));
+        Assert.Throws<ArgumentOutOfRangeException>(
+            () => osd.Decode(new float[N], 1, new byte[N], K + 1));
+        Assert.Throws<ArgumentOutOfRangeException>(() => osd.Decode(new float[N], 3, new byte[N], 2));
+
+        Assert.Throws<ArgumentOutOfRangeException>(() => new Ft8DeepOsdSettings(1, 0));
+        Assert.Throws<ArgumentOutOfRangeException>(() => new Ft8DeepOsdSettings(1, -1));
+        Assert.Throws<ArgumentOutOfRangeException>(() => new Ft8DeepOsdSettings(1, K + 1));
+        Assert.Throws<ArgumentOutOfRangeException>(() => new Ft8DeepOsdSettings(3, 2));
+
+        // The whole basis is the default and every existing call site keeps compiling and keeps
+        // meaning what it meant.
+        Assert.Equal(K, new Ft8DeepOsdSettings(2).Window);
+        Assert.Equal(K, Ft8DeepOsdSettings.Default.Window);
+        Assert.Equal(2, Ft8DeepOsdSettings.Default.Order);
+        Assert.Equal(K, Ft8DeepOsdSettings.FullBasis);
+    }
+
+    /// <summary>
     /// <b>The elimination returns 91 independent columns for every input tried, and it never
     /// throws.</b> It is called on noise, up to 140 times a slot, so degenerate is the ordinary case
     /// rather than the exceptional one.

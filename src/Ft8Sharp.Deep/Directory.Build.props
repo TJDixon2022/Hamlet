@@ -80,9 +80,33 @@
 
     What it still may NOT do is decide that anything is a message, and this
     version does not move that line one inch.
+
+    0.6.0 at unit 252, and it is a bump for the same reason again: the ordered
+    statistics search gained a SECOND KNOB. Ft8DeepOsdSettings.Window says how
+    many of the least reliable basis positions the order's flips may fall in,
+    and Ft8DeepOrderedStatistics.Search starts its enumeration there instead of
+    at 0. That is the whole change - one integer and one loop bound - and it
+    costs 1 + sum over i of C(window, i) re-encodings a candidate instead of
+    1 + sum over i of C(91, i), which is what makes an order the whole basis
+    could not afford affordable over part of it. It is Fossorier and Lin's own
+    segmentation of the most reliable basis, from the 1995 paper's published
+    description and nowhere else, cited at the point of use.
+
+    THE DEFAULT DID NOT MOVE IN THIS VERSION and the full-basis path is
+    bit-for-bit what 0.5.0 did: same re-encoding count, same recovered codeword,
+    asserted by
+    Ft8DeepOrderedStatisticsTests.TheCostOfAnOrderInAWindowIsTheNumberOfSubsetsOfTheWindow
+    rather than assumed, because every figure in docs/unit246-osd.md is a
+    measurement of that path.
+
+    What it still may NOT do is decide that anything is a message. A window is
+    not a threshold, not a confidence and not an acceptance rule; the stage still
+    produces exactly one codeword per candidate offered and submits exactly that
+    one to the port's gates, and docs/unit252-osd-window.md section 4 writes the
+    false-accept arithmetic out either side of the change.
   -->
   <PropertyGroup>
-    <Version>0.5.0</Version>
+    <Version>0.6.0</Version>
   </PropertyGroup>
 
   <!--

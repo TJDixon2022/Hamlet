@@ -404,10 +404,12 @@ public sealed class Ft8DeepSlotDecoder
                 offered++;
 
                 // THE STOPPING RULE FOR A CANDIDATE: the search is exhaustive over every subset of
-                // the basis up to the order, and then it stops. It always produces exactly one
+                // the window up to the order, and then it stops. It always produces exactly one
                 // codeword - the best by soft distance - and that one codeword is submitted once.
-                // There is no retry, no second order and no second submission.
-                var found = _statistics.Decode(ratios, Osd.Order, _osdCodeword);
+                // There is no retry, no second order and no second submission. THE WINDOW CANNOT
+                // MOVE THAT: it narrows which patterns are ranked, never how many answers come back
+                // - docs/unit252-osd-window.md section 4.
+                var found = _statistics.Decode(ratios, Osd.Order, _osdCodeword, Osd.Window);
                 reencodings += found.Reencodings;
                 produced++;
 
