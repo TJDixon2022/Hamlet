@@ -4,6 +4,87 @@ Questions with owner and severity. `owner` is who must act next. Format in
 `CLAUDE.md` §3.
 
 ---
+id: HM-OPEN-080
+status: open
+owner: tim
+raised: 2026-09-05
+severity: slows
+blocks: nothing — subtraction is built, measured and off by default; what is missing is a measurement of the case the operator actually has
+refs: PHASE_PLAN.md step 4, docs/unit253-subtraction.md §7 and §10.6, tests/Ft8Sharp.Tests/Dsp/Ft8Unit253MaskedLadderTests.cs, tests/Ft8Sharp.Tests/Dsp/Ft8LadderHarness.cs RunMasked, unit 253
+---
+
+**Every subtraction figure this project has is a two-station slot, and the band the
+operator is on is not a two-station slot.**
+
+Unit 253 measured 0 of 306 to 153 of 306 against a ceiling of 304 of 306, at one
+separation (0.00 Hz) and one level difference (+6 dB), with both stations starting on
+the same sample. **Tim's 21:58 capture returned 80 candidates and 7 distinct messages
+from a single slot.** Nothing measured says what happens when six stations have to be
+subtracted in sequence.
+
+**Three specific things the two-station measurement cannot answer.**
+
+1. **Whether the stopping rule still stops at two.** Unit 253's §9 reads `MaxPasses = 2`
+   off a table where pass 3 buys zero — but it buys zero *because there is nothing left
+   to find on a two-station slot*, and the three-pass column ran 2.50 passes a slot
+   because the rule stopped it, not the budget. On a seven-station slot the third,
+   fourth and fifth passes plausibly each buy something, and the pass count is a
+   false-accept budget.
+2. **Whether the errors compound.** Six subtractions write six fitted waveforms into the
+   same buffer. Each leaves a residue; unit 253 measured one residue and never two in
+   sequence.
+3. **The time.** The shipping configuration at two passes measured 741.6 ms worst slot,
+   a 20× margin. Six passes over a slot with seven stations, each pass fitting several
+   messages, is a different arithmetic and it has not been done.
+
+**What would settle it, and the price.** `Ft8LadderHarness.RunMasked` already takes a
+separation, a level and a column list; a variant placing *n* stations from
+`SearchFixture.ManySignals` and scoring the quietest is the same shape of change unit
+253 made to `Run`. **No new algorithm and no change to the port.** One block of 51
+trials at three station counts is about three minutes on the isolation and about fifteen
+on the shipping configuration.
+
+---
+id: HM-OPEN-079
+status: open
+owner: tim
+raised: 2026-09-05
+severity: slows
+blocks: nothing — the step closed on the figure it reached; this is the headroom it left
+refs: PHASE_PLAN.md step 4, docs/unit253-subtraction.md §8.2 and §10.6, src/Ft8Sharp.Deep/Ft8DeepMessageSubtractor.cs, unit 253
+---
+
+**Half the messages the ceiling says were recoverable are still not recovered after
+subtraction, and nothing says why.**
+
+Unit 253's scoreboard: single pass **0 of 306**, two passes **153 of 306**, ceiling
+**304 of 306**. Subtraction recovered **153 of the 304 that were there — 50.3 per
+cent — and the other 151 are unaccounted for.** The gap is larger than the gain.
+
+**Three candidate causes and the measurement does not separate them.**
+
+1. **The fit is not good enough.** The cancellation floor is bounded by three things
+   unit 253 named and only bounded one of: the FIR Hilbert transformer's amplitude
+   ripple (predicted about -40 dB, never measured), the residual frequency error after
+   the fine pass (0.00025 Hz, about -45 dB, derived), and one sample of residual time
+   error (about -39 dB, derived). **None of the three was measured against the others.**
+2. **The search does not find the quiet station in the residual.** After subtraction the
+   residual is close to the ceiling audio, which decodes 304 of 306 — but the candidate
+   list is re-derived from a *different* waterfall, and unit 246 §5 item 3 already
+   records that about 4 per cent of trials have no candidate near the signal at all.
+3. **The code cannot correct what is left.** The residue sits in the same bins as the
+   quiet station and raises its noise floor, so a message that was marginal against
+   thermal noise alone may be past the code's threshold against thermal noise plus
+   residue.
+
+**What would settle it, and it is cheap for cause 2.** The 151 trials are identifiable —
+`Ft8LadderHarness.Result.Outcomes` now carries the per-trial flag — so a trace over
+those trials alone, reporting for each whether the residual carried a candidate within
+one cell of the quiet station and what `ParitySatisfiedCount` it reached, separates
+cause 2 from causes 1 and 3 in one run of 151 slots. **Cause 1 needs the three floors
+measured separately**, which is a different unit.
+
+---
 id: HM-OPEN-078
 status: open
 owner: tim
@@ -48,6 +129,28 @@ Hamlet ships a decoder that reads 41 of 306 at -21 dB instead of 33.
 dropped — it measured 305.9 ms a trial rather than the *about 25 minutes* unit 246 §5
 item 4 predicted, and it is in unit 252's scoreboard on all three rungs at 281, 155
 and 43 of 306. Unit 246's open question about order 3 is settled; this one is new.
+
+**2026-09-05, unit 253 — the instrument now exists and the three rungs have not been
+re-run.** Step 4's second exit criterion is the same paired claim on the same
+instrument, so unit 253 built what this issue asks for: `Ft8LadderHarness.Result`
+carries `Outcomes`, the per-trial decode in trial order, and
+`Ft8LadderHarness.Discordance(first, second)` returns the two counts. **`Run` was not
+changed and `AsRow`'s columns did not move**; the discordance prints on its own line.
+Unit 253 used it on its own columns and read 0 and 153 — an unambiguous paired result
+where two Wilson intervals would have needed a test.
+
+**What remains is one run and it is not this unit's to make.** Re-walking unit 252's
+three rungs — order 2 full basis against order 3 window 60, 306 trials, fine sync off —
+now yields the discordant counts directly, at the same 200 s a rung it already cost. It
+would settle whether Hamlet ships a decoder that reads 41 of 306 at -21 dB instead of 33.
+**Deliberately not done tonight**: `Ft8DeepOsdSettings.Default` is parked by work
+instruction 253 and moving a default on the strength of a statistic computed in the same
+session that built the statistic is the shape of tuning this project refuses. **Tim's
+call, and the arithmetic is now available to make it with.**
+
+**Nothing here computes a p-value.** McNemar on the two counts is one line, but this
+project has no ruling on a significance level and a unit that picked one after seeing
+the data would be choosing a threshold to pass.
 
 ---
 id: HM-OPEN-077

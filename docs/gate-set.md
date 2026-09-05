@@ -465,6 +465,50 @@ theory rows, the dearest of them order 4 over the full basis at 2 798 342
 re-encodings. **It is the cheapest entry in this set and it guards the comparability
 of every sensitivity figure the project quotes.**
 
+### 11. A subtracted message is gone from the residual
+
+| | |
+|---|---|
+| `Ft8Sharp.Deep.Tests.Ft8DeepSubtractionTests.ASubtractedMessageNoLongerDecodesOutOfTheResidual` | 0.5 s |
+
+**The property.** One known transmission in a synthesised slot with **no noise**; the
+message is decoded, its 79 channel symbols recovered through
+`Ft8DeepMessageSymbols.TryEncode`, its place refined by
+`Ft8DeepSignalToNoise.Estimate`, and the fitted waveform subtracted. **The slot must
+then no longer decode it.** The energy removed is printed beside the assertion as a
+measurement and is **never compared against a bound**.
+
+**No noise on purpose.** On clean audio anything left in the residual is the fit's own
+fault — there is no draw to blame and no second station to hide behind.
+
+**The breakage it would have caught — `B16`, work instruction 253.** A subtraction that
+fits a single real gain removes `cos^2(theta)` of a transmission for an arrival phase
+`theta`: one half on average, **nothing at all at quadrature**, with the reported gain
+reading zero while the whole transmission stays in the buffer. **Every count such a
+stage publishes is indistinguishable from one that works** — the same message comes back
+on every pass, each repeat counts as a cross-pass duplicate, and the row reads *n passes
+run, n-1 subtracted* with the rate sitting exactly at the single-pass rate. It would have
+been reported as *subtraction bought nothing on this instrument*, which this phase's plan
+names as an acceptable outcome, and the defect would have entered the record as a result.
+
+**And it caught it on its own first run.** Watched failing with the fit stubbed to unit
+gain and zero phase: `Collection: ["HAMLET 253"] / Found: "HAMLET 253"`, the fit line
+reading **`-3.54 dB removed`** — subtracting an out-of-phase copy **added** 3.54 dB — and
+the residual carrying 35 candidates and returning the message. With the two-coefficient
+fit the same case removes 285 dB and the residual carries **0 candidates**.
+
+**Why the decibels are printed and not asserted, and it is necessity rather than
+caution.** Unit 253 measured the same fit removing 42.82 dB from a slot with nothing else
+in it and **the message still decoded**: `Ft8SoftSymbols.Normalise` normalises a
+candidate's ratios, so the decoder is scale-invariant and a clean transmission at one per
+cent is still a clean transmission. A threshold on the decibels would be a gate on a
+quantity that does not decide the question. **The consequence is what is asserted**, and
+no threshold can stand in for it.
+
+**Why 0.5 s is the whole cost.** One synthesised slot, three decodes and one fit. It is
+**the cheapest entry in this set after entry 10**, and it guards the only stage in this
+project's history that writes samples and then asks a decoder to believe them.
+
 ---
 
 ## Known red, inherited, never chased

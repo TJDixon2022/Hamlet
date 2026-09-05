@@ -274,6 +274,77 @@ enumeration was changed, with the window plumbed through the settings and throug
 reading `Actual: 125672`, and the five full-basis rows green — which is exactly the
 shape of the invisible failure, right answers at the wrong price.
 
+### B16 — a subtraction that removes half a transmission on average and nothing at all one time in four
+
+**Work instruction 253.** The stage subtracts a decoded message from the slot and
+decodes what is left. The message is re-synthesised through the port's own
+`Ft8Waveform.Synthesize`, which renders at **unit amplitude with the carrier starting
+at zero phase** and has no parameter for either. The copy actually in the slot arrived
+through a path with an arbitrary carrier phase, so it is `A sin(phi + theta)` for an
+unknown `A` and an unknown `theta`.
+
+**The obvious implementation fits one real gain, and the arithmetic says exactly what
+that costs.** The least-squares solution is `a = sum(r x) / sum(x^2)`, and expanding
+`sin(phi + theta)` over a frame where the in-phase and quadrature versions of a
+continuous-phase FM waveform are orthogonal to a part in ten thousand gives
+`a = A cos(theta)`. The residual keeps `A sin(theta) cos(phi)` — **so the fraction of
+the transmission's energy removed is `cos^2(theta)`, which is one half averaged over a
+uniform arrival phase and is zero at 90 degrees.** At quadrature the reported gain reads
+**zero** while the whole transmission stays in the buffer.
+
+**Why no count would show it.** A multi-pass decoder built on that fit returns the same
+message on every pass, counts each repeat as a cross-pass duplicate, and reports *n
+passes run* and *n-1 messages subtracted* — **every number it publishes is
+indistinguishable from a stage that works.** The decode rate would sit at the
+single-pass rate and be read as *subtraction bought nothing on this instrument*, which
+is a conclusion this phase's own plan names as an acceptable outcome. **The stage would
+have been measured, reported, and written off, and the defect would have been recorded
+as a result.**
+
+**And a second failure hides underneath the first.** A residual frequency error is not
+an amplitude error, it is a **phase ramp** of `2 pi df T` radians across the 12.64 s
+frame, so the cancellation floor is `-20 log10(pi df T / sqrt 3)`. Half of a 0.02 Hz
+search step caps it at **19.0 dB**, which looks like a working subtractor in every
+count and leaves enough of the transmission for it to decode again. Unit 253's trace
+had predicted "under 0.4 dB" for the same quantity.
+
+**Found by:** unit 253, by watching the assertion fail before the fit existed.
+
+**A test catches it, and it is the consequence and not the arithmetic that is
+asserted.**
+`Ft8Sharp.Deep.Tests.Ft8DeepSubtractionTests.ASubtractedMessageNoLongerDecodesOutOfTheResidual`
+puts one known transmission in a slot with no noise, subtracts it at its measured place,
+and requires that **the slot no longer decodes it**. The decibels removed are printed
+beside the assertion and are **never compared against a bound** — see below for why that
+is not caution but necessity. Gate entry 11.
+
+**The red, verbatim, with the fit stubbed to unit gain and zero phase:**
+
+```
+Assert.DoesNotContain() Failure: Item found in collection
+           ↓ (pos 0)
+Collection: ["HAMLET 253"]
+Found:      "HAMLET 253"
+
+fit: gain 1.00000 phase -0.0000 rad at 1000.000 Hz 1.18125 s,
+     -3.54 dB removed over 79 symbols (search moved 0 samples, 0.000 Hz)
+residual: 35 candidates, 3 past parity, 3 past the checksum, 1 messages.
+  residual returned "HAMLET 253"
+```
+
+**Note the sign.** `-3.54 dB removed`: subtracting an out-of-phase copy did not remove
+energy, it **added** 3.54 dB. With the two-coefficient fit the same case removes 285 dB
+and the residual carries **0 candidates**.
+
+**And the thing that would have made a threshold useless.** Unit 253 also found that a
+residual with nothing else in the slot **decodes at any cancellation depth whatever** —
+42.82 dB removed and the message still came back. `Ft8SoftSymbols.Normalise` normalises
+a candidate's ratios, so the decoder is **scale-invariant**: a clean transmission at one
+per cent of its amplitude is still a clean transmission. *How much energy was removed*
+does not answer *is the message gone*; only whether the residue is below whatever else
+is in the slot does. **A unit that had turned the decibels into a pass/fail threshold
+would have been asserting a quantity that does not decide the question.**
+
 ---
 
 ## B. Breakages no test would have caught

@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: WORKING
-TASK: 5 of 6
+TASK: 6 of 6
 WORK_INSTRUCTION: 253 - strong signals are subtracted and the slot is read again
 BALL: claude
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-155 (2026-09-05)
-UPDATED: 2026-09-05T17:02:00-04:00
-NOTE: Task 4 committed - all four measurements green with zero wrong on fourteen rows. Writing the verdict: what the 153 of 306 is against a ceiling of 304, what each pass bought, and what turning subtraction on would cost the operator a slot
+UPDATED: 2026-09-05T17:07:00-04:00
+NOTE: Bookkeeping - B16 written before gate entry 11 that cites it, HM-OPEN-079 and 080 filed, and the phase outcome entry appended by hand because outcome-append.bat was refused in three spellings
 
 ---
 
