@@ -261,8 +261,15 @@ stripping, and `RR73` and `RRR` stay different messages.
 
 ## How a fixture is scored
 
-`Ft8LadderHarness.ScoreFixture`. It decodes the named capture with **every decoder
-`Available()` returns** and reports, per decoder, **three counts, never two**:
+**Two entry points, and the split is the point.** `Ft8LadderHarness.ScoreFixture`
+is the call that makes a claim about WSJT-X, and it calls `RequireScorable` before
+it does anything else — so that sentence can never be produced from a worked
+example. `Ft8LadderHarness.Compare` does the same arithmetic without the claim, and
+**prints the fixture's provenance at the top of every report**, so counts cut out
+and pasted elsewhere carry the qualification with them.
+
+Either way it decodes the named capture with **every decoder `Available()`
+returns** and reports, per decoder, **three counts, never two**:
 
 - **matched** — a message in the fixture that this decoder also returned;
 - **missed** — a message in the fixture that it did not;

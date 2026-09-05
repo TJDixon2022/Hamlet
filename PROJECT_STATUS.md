@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: WORKING
-TASK: 3 of 7
+TASK: 4 of 7
 WORK_INSTRUCTION: 244 - the fixture format, the reader that refuses, and the command Tim runs
 BALL: claude
 RULES_AT: HM-DEC-153 (2026-09-04)
 NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-09-04T21:34:00-04:00
-NOTE: A test per refusal, and a separate one for the empty captured folder, because zero fixtures and a fixture naming a missing capture must never share a code path
+UPDATED: 2026-09-04T21:44:00-04:00
+NOTE: The harness is being extended rather than rebuilt; the third count is kept but carries a different meaning on a real capture than on the ladder, and the code says so where it is computed
 
 ---
 

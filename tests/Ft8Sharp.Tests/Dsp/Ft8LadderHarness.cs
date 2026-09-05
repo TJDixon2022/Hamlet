@@ -3,6 +3,7 @@ using Ft8Sharp.Dsp;
 using Ft8Sharp.Encode;
 using Ft8Sharp.Message;
 using Ft8Sharp.Tests.Encode;
+using Ft8Sharp.Tests.Fixtures;
 
 namespace Ft8Sharp.Tests.Dsp;
 
@@ -332,6 +333,280 @@ internal static class Ft8LadderHarness
             foreach (var wrong in result.WrongReturns)
             {
                 yield return wrong.ToString();
+            }
+        }
+    }
+
+    // =====================================================================================
+    // THE OTHER HALF OF THE SCOREBOARD: REAL AIR, SCORED AGAINST A COMMITTED FIXTURE.
+    //
+    // Everything above this line is the ladder, which knows what it transmitted. Everything
+    // below is a real capture scored against what another decoder returned for it, read out
+    // of a file Tim committed from the shack. THE TWO ARE DIFFERENT MEASUREMENTS and the
+    // report must never add their numbers together - see the remarks on FixtureScore.Wrong.
+    // =====================================================================================
+
+    /// <summary>What one decoder made of one committed capture, against the fixture's rows.</summary>
+    /// <remarks>
+    /// <para>
+    /// <b>THREE COUNTS, NEVER TWO</b>, exactly as the ladder has it.
+    /// <see cref="Matched"/> and <see cref="Missed"/> partition the fixture's rows;
+    /// <see cref="Wrong"/> counts messages this decoder returned that the fixture does not carry, and
+    /// every one of them is kept in <see cref="ReturnedWrong"/> so the count always has evidence
+    /// under it.
+    /// </para>
+    /// <para>
+    /// <b>BUT THE THIRD COUNT MEANS SOMETHING DIFFERENT HERE THAN IT DOES ON THE LADDER, AND THE TWO
+    /// MUST NEVER BE MERGED.</b> On the ladder the harness <em>knows what it transmitted</em>, so a
+    /// message returned that was not sent is an error, and the phase's zero-wrong criterion (§0.0)
+    /// bites on it. On a real capture the fixture is <em>another decoder's list</em>, not the air's:
+    /// a message WSJT-X missed and Hamlet found is a decode this phase is actively trying to produce.
+    /// <b>So this count is weaker evidence than the ladder's.</b> It is printed, on its own line, with
+    /// the message, and it is looked at - it is not scored as a fault and it is not compared against
+    /// the ladder's zero.
+    /// </para>
+    /// </remarks>
+    internal sealed class FixtureScore(string decoder, Ft8CaptureFixture fixture)
+    {
+        /// <summary>Which decoder this row is.</summary>
+        internal string Decoder { get; } = decoder;
+
+        /// <summary>The fixture scored against, so the row can name its provenance.</summary>
+        internal Ft8CaptureFixture Fixture { get; } = fixture;
+
+        /// <summary><b>Count one of three:</b> a message in the fixture that this decoder also returned.</summary>
+        internal List<string> Matched { get; } = [];
+
+        /// <summary><b>Count two of three:</b> a message in the fixture that this decoder did not return.</summary>
+        internal List<string> Missed { get; } = [];
+
+        /// <summary>
+        /// <b>Count three of three:</b> a message this decoder returned that is not in the fixture.
+        /// <b>Not a fault on a real capture</b> - see the remarks on this type.
+        /// </summary>
+        internal List<string> ReturnedWrong { get; } = [];
+
+        /// <summary>How long this decoder took over the capture.</summary>
+        internal TimeSpan Elapsed { get; set; }
+
+        /// <summary>Rows in the fixture. <c>Matched + Missed</c> and nothing else.</summary>
+        internal int Rows => Matched.Count + Missed.Count;
+
+        /// <summary>Matched as a percentage of the fixture's rows.</summary>
+        internal double Rate => Rows == 0 ? 0.0 : 100.0 * Matched.Count / Rows;
+
+        /// <summary>The one line this decoder reports as.</summary>
+        internal string AsRow() =>
+            $"{Decoder,-12} {Rows,6} {Matched.Count,8} {Missed.Count,7} {ReturnedWrong.Count,6} "
+            + $"{Rate,7:F1} {Elapsed.TotalSeconds,8:F1}";
+    }
+
+    /// <summary>The header <see cref="FixtureScore.AsRow"/> lines up under.</summary>
+    internal const string FixtureHeader =
+        "decoder        rows  MATCHED  MISSED  WRONG    rate   wall s";
+
+    /// <summary>
+    /// <b>THE ENTRY POINT FOR A CLAIM AGAINST WSJT-X.</b> Refuses anything whose provenance is not a
+    /// real WSJT-X run, then scores.
+    /// </summary>
+    /// <remarks>
+    /// This is the call a unit makes when it wants to say <em>Hamlet found n of the m messages
+    /// WSJT-X found</em>. <see cref="Ft8CaptureFixture.RequireScorable"/> is what stops that sentence
+    /// ever being produced from a worked example. <see cref="Compare"/> does the same arithmetic
+    /// without the claim, and says so on every line it prints.
+    /// </remarks>
+    internal static IReadOnlyList<FixtureScore> ScoreFixture(
+        Ft8CaptureFixture fixture,
+        IReadOnlyList<Decoder>? decoders = null,
+        Action<string>? log = null)
+    {
+        fixture.RequireScorable("Scoring Hamlet against this fixture");
+        return Compare(fixture, decoders, log);
+    }
+
+    /// <summary>
+    /// <b>Decodes the fixture's capture with every decoder <see cref="Available"/> returns and counts
+    /// three things per decoder.</b> Makes no claim about what produced the fixture's rows.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// <b>Every decoder, never an index.</b> Nothing here knows how many decoders there are; it
+    /// iterates <paramref name="decoders"/> and emits one <see cref="FixtureScore"/> per entry, in
+    /// order. <b>When step 1 adds <c>Ft8Sharp.Deep</c> to <see cref="Available"/>, this reports two
+    /// rows with no change here and none at any call site</b> - which is asserted rather than
+    /// asserted-in-a-comment, by <c>Ft8FixtureScoringTests</c> passing a two-entry list.
+    /// </para>
+    /// <para>
+    /// <b>The capture is read the way the decoder wants it</b>: one float per sixteen-bit count,
+    /// divided by 32768, which is upstream's own <c>load_wav</c> scaling and the same scaling
+    /// <see cref="ReferenceRecording.ReadSamples"/> applies. A differently-scaled signal is a
+    /// different measurement.
+    /// </para>
+    /// <para>
+    /// <b>The sample rate is checked here because nothing else checks it.</b> <c>WavFile</c> reads the
+    /// rate and compares it against nothing, and every committed capture in this repository today is
+    /// CW's at 48 kHz. A capture at the wrong rate decoded anyway would report a real decoder against
+    /// audio it was never given, and the miss count would look like a sensitivity result.
+    /// </para>
+    /// </remarks>
+    internal static IReadOnlyList<FixtureScore> Compare(
+        Ft8CaptureFixture fixture,
+        IReadOnlyList<Decoder>? decoders = null,
+        Action<string>? log = null)
+    {
+        // Refusals 1 and 2: the capture must be there and must be the audio these rows were
+        // measured on. Both throw; neither returns an empty result.
+        var capturePath = fixture.RequireCapture();
+
+        if (fixture.SampleRate != Rate)
+        {
+            throw new Ft8FixtureException(
+                fixture.FixturePath,
+                fixture.CaptureName,
+                $"it declares {fixture.SampleRate} samples per second and this decode path is built on "
+                + $"{Rate}. Decoding it anyway would measure a real decoder against audio it was never "
+                + "given, and the misses would read as a sensitivity result.");
+        }
+
+        var contents = WavFile.Read(capturePath);
+        if (contents.SampleRate != fixture.SampleRate)
+        {
+            throw new Ft8FixtureException(
+                fixture.FixturePath,
+                fixture.CaptureName,
+                $"the fixture says {fixture.SampleRate} samples per second and the capture's own fmt "
+                + $"chunk says {contents.SampleRate}. One of the two is about a different file.");
+        }
+
+        var samples = new float[contents.Samples.Length];
+        for (var i = 0; i < samples.Length; i++)
+        {
+            samples[i] = contents.Samples[i] / 32768.0f;
+        }
+
+        var used = decoders ?? Available();
+        var expected = fixture.Messages;
+        var scores = new List<FixtureScore>(used.Count);
+
+        foreach (var decoder in used)
+        {
+            var clock = Stopwatch.StartNew();
+            var result = decoder.Decode(samples);
+            clock.Stop();
+
+            // The fixture reader already normalised its side. The decoder's side goes through the
+            // SAME function - ReferenceRecording.Normalise, called and not re-implemented - so both
+            // sides of the comparison are laundered by exactly one rule, and that rule is the one
+            // upstream's own expected lists are read with.
+            var returned = result.Texts
+                .Select(ReferenceRecording.Normalise)
+                .Where(t => t.Length > 0)
+                .ToArray();
+
+            var score = new FixtureScore(decoder.Name, fixture) { Elapsed = clock.Elapsed };
+
+            foreach (var message in expected)
+            {
+                if (returned.Contains(message, StringComparer.Ordinal))
+                {
+                    score.Matched.Add(message);
+                }
+                else
+                {
+                    score.Missed.Add(message);
+                }
+            }
+
+            foreach (var message in returned)
+            {
+                if (!expected.Contains(message, StringComparer.Ordinal))
+                {
+                    score.ReturnedWrong.Add(message);
+                }
+            }
+
+            scores.Add(score);
+            log?.Invoke(score.AsRow());
+        }
+
+        return scores;
+    }
+
+    /// <summary>
+    /// The whole report for one fixture: what it was, header, a row per decoder, and every
+    /// returned-wrong message on its own line.
+    /// </summary>
+    /// <remarks>
+    /// <b>A matched count is never printed without its returned-wrong count</b>, which is why this
+    /// exists rather than each caller assembling its own lines and one of them forgetting. And the
+    /// provenance is printed at the top every time: a reader who sees these counts must be able to
+    /// tell, without leaving the report, whether the thing on the other side of the comparison was
+    /// WSJT-X or a worked example.
+    /// </remarks>
+    internal static IEnumerable<string> FixtureReport(IReadOnlyList<FixtureScore> scores)
+    {
+        if (scores.Count == 0)
+        {
+            yield return "  NO DECODERS. Available() returned nothing, which is not a result.";
+            yield break;
+        }
+
+        var fixture = scores[0].Fixture;
+
+        yield return $"  capture     {fixture.CaptureName}  ({fixture.Utc}, {fixture.SampleRate} Hz)";
+        yield return $"  sha256      {fixture.Sha256}";
+        yield return fixture.IsRealWsjtxRun
+            ? $"  provenance  {fixture.Provenance} - a real WSJT-X run: {fixture.Generator}"
+            : $"  provenance  {fixture.Provenance} - NOT WSJT-X. These rows are \"{fixture.Generator}\" "
+                + "and no claim about WSJT-X may be made from these counts.";
+        yield return string.Empty;
+
+        yield return FixtureHeader;
+
+        foreach (var score in scores)
+        {
+            yield return score.AsRow();
+        }
+
+        yield return string.Empty;
+        yield return "  MATCHED + MISSED = rows in the fixture. WRONG is not part of that partition.";
+        yield return "  WRONG HERE IS NOT THE LADDER'S WRONG. The ladder knows what it transmitted, so";
+        yield return "  a message it did not send is an error. This fixture is another decoder's list,";
+        yield return "  so a message it missed and Hamlet found is a decode this phase is TRYING to";
+        yield return "  produce. Printed and looked at; never scored as a fault, never added to the";
+        yield return "  ladder's zero-wrong count.";
+        yield return string.Empty;
+
+        foreach (var score in scores)
+        {
+            if (score.ReturnedWrong.Count == 0)
+            {
+                yield return $"  {score.Decoder}: 0 messages returned that the fixture does not carry.";
+                continue;
+            }
+
+            yield return
+                $"  {score.Decoder}: {score.ReturnedWrong.Count} returned that the fixture does not "
+                + "carry, each on its own line:";
+
+            foreach (var message in score.ReturnedWrong)
+            {
+                yield return $"    RETURNED \"{message}\"  NOT IN FIXTURE";
+            }
+        }
+
+        foreach (var score in scores)
+        {
+            if (score.Missed.Count == 0)
+            {
+                continue;
+            }
+
+            yield return $"  {score.Decoder}: {score.Missed.Count} in the fixture and not returned:";
+
+            foreach (var message in score.Missed)
+            {
+                yield return $"    MISSED   \"{message}\"";
             }
         }
     }
