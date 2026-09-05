@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 3 of 5
+TASK: 4 of 5
 WORK_INSTRUCTION: 249 - Hamlet decodes through Ft8Sharp.Deep
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-152 (2026-08-31)
-UPDATED: 2026-09-05T11:34:40-04:00
-NOTE: Slot census now carries the decoder's identity; sidecar, telemetry and census line all name it
+UPDATED: 2026-09-05T11:40:23-04:00
+NOTE: Comparison built and off by default; on this slot Deep recovers 27 text from 55 candidates where the port recovers 9
 
 ---
 

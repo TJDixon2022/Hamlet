@@ -393,6 +393,23 @@ public sealed class AppSettings
     /// </remarks>
     public bool DecodedNewestFirst { get; set; } = true;
 
+    /// <summary>
+    /// Whether every slot is also decoded through the faithful port, so the two
+    /// decoders' counts can be read side by side.
+    /// </summary>
+    /// <remarks>
+    /// <para>**OFF, AND OFF IS THE ANSWER FOR ALMOST EVERY EVENING.** Hamlet
+    /// decodes through `Ft8Sharp.Deep`, which unit 246 asserted is a whole-result
+    /// superset of the port over 69 recordings and 801 messages. Running both
+    /// permanently would pay for a comparison the ladder already makes over
+    /// hundreds of trials.</para>
+    /// <para>**AND WHEN IT IS ON, THE PANEL DOES NOT CHANGE.** The port's counts
+    /// go to telemetry and the capture sidecar as evidence; the messages on
+    /// screen stay Deep's alone. Two lists that disagree would hand the operator
+    /// an adjudication this application exists to make for him (§0.0).</para>
+    /// </remarks>
+    public bool CompareWithThePort { get; set; }
+
     /// <summary>True when the panel is expanded. Unknown panels are expanded.</summary>
     /// <param name="panelKey">Stable panel id, e.g. "spots".</param>
     public bool IsPanelExpanded(string panelKey)

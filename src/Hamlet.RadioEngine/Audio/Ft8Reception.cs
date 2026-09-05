@@ -107,6 +107,57 @@ public sealed record Ft8SlotCensus(
     /// rather than naming a decoder it is guessing at (§0.0).</para>
     /// </remarks>
     public Ft8DecoderIdentity Decoder { get; init; } = Ft8DecoderIdentity.Unrecorded;
+
+    /// <summary>What the port made of the same slot, or null where nobody asked.</summary>
+    /// <remarks>
+    /// **NULL IS "NOBODY ASKED" AND NOT "THE PORT FOUND NOTHING".** The two are
+    /// opposite facts and a zero here would read as the second (§0.0). The
+    /// comparison is off by default, so null is the ordinary state.
+    /// </remarks>
+    public Ft8PortComparison? PortComparison { get; init; }
+}
+
+/// <summary>What the port made of the same slot, where anybody asked.</summary>
+/// <param name="Messages">How many messages the port returned.</param>
+/// <param name="CandidateCount">Places its search found.</param>
+/// <param name="ParitySatisfiedCount">Of those, how many reached a valid codeword.</param>
+/// <param name="ChecksumPassedCount">Of those, how many carried their own checksum.</param>
+/// <param name="BecameTextCount">Of those, how many became words.</param>
+/// <param name="Milliseconds">What the port's decode of this slot cost.</param>
+/// <remarks>
+/// <para>**EVIDENCE, NEVER A SECOND LIST** (§0.0). The operator's panel shows
+/// the messages Hamlet decoded and only those. Two lists on screen that disagree
+/// would put the reader in the position of adjudicating between two decoders,
+/// which is precisely the judgement this application exists to make for him.
+/// These counts go to the record and stay there.</para>
+/// <para>**AND THE LADDER IS STILL THE EVIDENCE.** One slot compared two ways
+/// settles nothing - unit 248's 306 trials at each level is what supports a
+/// claim about either decoder. This is the convenience for an evening somebody
+/// wants to look, and it is off unless asked for.</para>
+/// </remarks>
+public readonly record struct Ft8PortComparison(
+    int Messages,
+    int CandidateCount,
+    int ParitySatisfiedCount,
+    int ChecksumPassedCount,
+    int BecameTextCount,
+    double Milliseconds)
+{
+    /// <summary>Nobody asked for a comparison.</summary>
+    public static Ft8PortComparison? NotRun => null;
+
+    /// <summary>What this says on a line somebody reads.</summary>
+    /// <returns>One phrase, counts only.</returns>
+    public override string ToString()
+        => string.Format(
+            System.Globalization.CultureInfo.InvariantCulture,
+            "{0} message(s), {1} candidates, {2} parity, {3} checksum, {4} text, {5:0} ms",
+            Messages,
+            CandidateCount,
+            ParitySatisfiedCount,
+            ChecksumPassedCount,
+            BecameTextCount,
+            Milliseconds);
 }
 
 /// <summary>Which decoder read a slot, and what was turned on in it.</summary>
@@ -247,13 +298,21 @@ public static class Ft8Reader
     /// <param name="decoder">
     /// The decoder to use, or null for Deep with both stages on.
     /// </param>
+    /// <param name="compareWithThePort">
+    /// Whether to decode every slot through the faithful port as well and record
+    /// what it made of it. **Off by default**, and when on it changes nothing
+    /// about what comes back in <see cref="Ft8Reception.Decodes"/> - the port's
+    /// counts go onto the census as evidence and the messages shown are Deep's
+    /// alone.
+    /// </param>
     /// <returns>The messages, and why there are as many as there are.</returns>
     /// <exception cref="ArgumentNullException">The audio is null.</exception>
     public static Ft8Reception Read(
         MonoAudio audio,
         DateTime endedAtPcUtc,
         ClockOffset offset,
-        Ft8DeepSlotDecoder? decoder = null)
+        Ft8DeepSlotDecoder? decoder = null,
+        bool compareWithThePort = false)
     {
         ArgumentNullException.ThrowIfNull(audio);
 
@@ -307,6 +366,12 @@ public static class Ft8Reader
             decoder.FineSync is not null,
             decoder.Osd is not null);
 
+        // **THE PORT, ONLY WHERE SOMEBODY ASKED FOR IT.** Built once outside
+        // the loop so the comparison costs a decode per slot and not a decoder
+        // per slot.
+        var port = compareWithThePort ? new Ft8SlotDecoder() : null;
+        var portMonitor = port is null ? null : new Ft8Monitor(port.Geometry);
+
         var found = new List<Ft8Decode>();
         var census = new List<Ft8SlotCensus>();
         var candidates = 0;
@@ -337,6 +402,24 @@ public static class Ft8Reader
             // spare - 210 ms of 15,000.
             var result = decoder.Decode(samples);
 
+            Ft8PortComparison? comparison = null;
+
+            if (port is not null && portMonitor is not null)
+            {
+                var started = System.Diagnostics.Stopwatch.GetTimestamp();
+                var alsoRan = port.Decode(portMonitor.Analyse(samples));
+                var ms = (System.Diagnostics.Stopwatch.GetTimestamp() - started)
+                    * 1000.0 / System.Diagnostics.Stopwatch.Frequency;
+
+                comparison = new Ft8PortComparison(
+                    alsoRan.Messages.Count,
+                    alsoRan.CandidateCount,
+                    alsoRan.ParitySatisfiedCount,
+                    alsoRan.ChecksumPassedCount,
+                    alsoRan.BecameTextCount,
+                    ms);
+            }
+
             candidates += result.CandidateCount;
 
             census.Add(new Ft8SlotCensus(
@@ -350,6 +433,11 @@ public static class Ft8Reader
                 slot.Audio.SampleRate)
             {
                 Decoder = identity,
+
+                // **NOTHING FROM THE PORT REACHES `found`.** The comparison is
+                // a count on the record; the messages the operator sees are
+                // Deep's and only Deep's.
+                PortComparison = comparison,
 
                 // **MEASURED FROM `slot.Audio`, NOT FROM `samples`** (unit 236).
                 // The resampler above is one of the things a slot that found

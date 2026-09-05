@@ -390,6 +390,14 @@ public static class DigitalCaptureSheet
             ? Unread + "  (no slot ran, so nothing read this)"
             : census[0].Decoder.ToString());
 
+        // **WHAT THE PORT MADE OF THE SAME SLOTS, WHERE ANYBODY ASKED.** Off
+        // by default, so "not run" is the ordinary line - and it says that
+        // rather than printing zeroes, because nobody asked and the port found
+        // nothing are opposite facts (§0.0).
+        line("portComparison", census.Count == 0 || census[0].PortComparison is null
+            ? "not run"
+            : census[0].PortComparison!.Value.ToString());
+
         line("refusal", "none");
         line("census", census.Count == 0
             ? "no slot was cut and run"

@@ -1065,6 +1065,18 @@ public static class AppEvents
                     ["decoderFineSync"] = slot.Decoder.FineSync,
                     ["decoderOrderedStatistics"] = slot.Decoder.OrderedStatistics,
 
+                    // The port's own counts beside them, where the comparison
+                    // was asked for. Null is "nobody asked" and never a zero,
+                    // which would read as "the port found nothing".
+                    ["portMessages"] = slot.PortComparison?.Messages,
+                    ["portCandidates"] = slot.PortComparison?.CandidateCount,
+                    ["portParitySatisfied"] = slot.PortComparison?.ParitySatisfiedCount,
+                    ["portChecksumPassed"] = slot.PortComparison?.ChecksumPassedCount,
+                    ["portBecameText"] = slot.PortComparison?.BecameTextCount,
+                    ["portMilliseconds"] = slot.PortComparison is null
+                        ? null
+                        : Math.Round(slot.PortComparison.Value.Milliseconds, 0),
+
                     // **HOW LOUD THE AUDIO WAS, WHICH NONE OF THE ABOVE COULD
                     // SAY** (unit 236). Everything before this line describes the
                     // decode. On 2026-09-03 the phase's closing line was performed

@@ -6919,7 +6919,9 @@ public partial class MainWindowViewModel : ObservableObject
     internal Ft8Reception ShowDecodes(
         MonoAudio audio, DateTime endedAtPcUtc, ClockOffset offset)
     {
-        var heard = Ft8Reader.Read(audio, endedAtPcUtc, offset);
+        var heard = Ft8Reader.Read(
+            audio, endedAtPcUtc, offset,
+            compareWithThePort: _settings.CompareWithThePort);
 
         NoteSlot(heard);
 
@@ -6999,7 +7001,9 @@ public partial class MainWindowViewModel : ObservableObject
         try
         {
             var heard = await Task
-                .Run(() => Ft8Reader.Read(ready.Audio, ready.EndedAtPcUtc, offset))
+                .Run(() => Ft8Reader.Read(
+                    ready.Audio, ready.EndedAtPcUtc, offset,
+                    compareWithThePort: _settings.CompareWithThePort))
                 .ConfigureAwait(true);
 
             NoteSlot(heard);
