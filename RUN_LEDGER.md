@@ -59,3 +59,4 @@ the owner reads instead of watching.
 | 3 | 2026-09-04T21:53 | 2026-09-04T22:25 | complete | 18.422151 | ran unattended, 192 turns, 11 denied call(s) worked around, report valid |
 | phase | 2026-09-04T22:26 | 2026-09-04T22:26 | halted | 47.0902 | stop 2: budget exhausted - spent 47.0902 of 40.00 |
 | 1 | 2026-09-04T23:31 | 2026-09-05T00:15 | complete | 22.1820815 | ran unattended, 181 turns, 6 denied call(s) worked around, report valid |
+| 2 | 2026-09-05T00:25 | 2026-09-05T01:21 | complete | 30.093965499999992 | ran unattended, 211 turns, 9 denied call(s) worked around, report valid |
