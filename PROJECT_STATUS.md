@@ -1,7 +1,7 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: WORKING
-TASK: 5 of 7
+TASK: 6 of 7
 WORK_INSTRUCTION: 244 - the fixture format, the reader that refuses, and the command Tim runs
 BALL: claude
 RULES_AT: HM-DEC-153 (2026-09-04)
