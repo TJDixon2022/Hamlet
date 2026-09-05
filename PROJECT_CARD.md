@@ -3,8 +3,8 @@ ONE_LINE: A C# MVVM desktop application controlling an Icom IC-7300 over one USB
 REPO_PATH: C:\Source\HamLet
 REMOTE: https://github.com/TJDixon2022/Hamlet.git
 TRUNK: main
-PHASE: Hamlet reads FT8 as well as the best decoder there is, and then reads it further
-PHASE_SET: 2026-09-04
+PHASE: Everything this project has built reaches the operator's screen, and the decoder is taken as far as it will go
+PHASE_SET: 2026-09-05
 TEST_CMD: dotnet test
 
 ---

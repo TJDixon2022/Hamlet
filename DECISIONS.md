@@ -4,6 +4,48 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-154
+date: 2026-09-05
+refs: PHASE_PLAN.md, PHASE_STATUS.md, PROJECT_CARD.md, docs/gate-set.md, HM-DEC-131, HM-DEC-153, unit 249, unit 250
+---
+
+**The phase is now *Everything this project has built reaches the operator's
+screen, and the decoder is taken as far as it will go*, approved by Tim on
+2026-09-05, and `PROJECT_CARD.md` carries it.**
+
+**Why this phase exists, in one sentence.** The phase it replaces built a better
+decoder and none of it ever ran on a radio. `Ft8Sharp.Deep` reads **33 of 306 at
+-21 dB** against the port's **13**, and at the centre of a waterfall cell — where
+a real station lands, because nothing on 14.074 arranges itself on an analysis
+grid — the port reads **0 of 306** and Deep reads **3**. All with zero wrong
+decodes. **Hamlet called the port.** Seven steps and not one of them wired the
+sibling into the application; the gains were real, measured, and invisible. This
+phase is ordered so the operator sees something early and often, and step 0
+closed on 2026-09-05 with `Ft8Reader` decoding through `Ft8Sharp.Deep`.
+
+**`PROJECT_CARD.md` changes only by ruling** (§13.3, HM-DEC-131), which is why
+this entry exists rather than an edit made in passing. The two lines that moved
+are `PHASE` and `PHASE_SET`, taken from `PHASE_STATUS.md`'s header, which
+`install-phase.bat` had already installed at the root before this unit ran. This
+is HM-DEC-153's reasoning applied to the next phase and nothing in it is new.
+
+**What is new, and it constrains every unit of this phase: a unit runs the gate
+set, the channels it touched, and nothing else.** `docs/gate-set.md` is that
+list. **A unit may not add a test — to the gate set or to the tree — without
+naming the breakage it would have caught.** The reason is a measurement rather
+than a preference: `Ft8Sharp.Tests` is 610 tests and **14 minutes**,
+`Hamlet.RadioEngine.Tests` is **2,281 tests and had never once completed a
+whole-project run**, and no per-test duration had ever been recorded for either,
+so four consecutive reports carried no total for the engine project. **A suite
+nobody can finish guards nothing.** The full engine suite is Tim's, by hand,
+uncontended, once; its absence never blocks a step.
+
+**Rejected: a coverage target, or a gate set assembled from what looked
+important.** Every entry names a real event with the unit number where it
+happened, and an entry that cannot name one is removed. That rule is the only
+thing stopping the list growing back into the suite it replaces.
+
+---
 id: HM-DEC-153
 date: 2026-09-04
 refs: PHASE_PLAN.md, PHASE_STATUS.md, PROJECT_CARD.md, HM-OPEN-067, HM-DEC-131, unit 222, unit 243

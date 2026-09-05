@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 1 of 6
+TASK: 5 of 6
 WORK_INSTRUCTION: 250 - the gate set exists, and the slow tests are named
 BALL: code
 NEXT_PASTE: none
-RULES_AT: HM-DEC-152 (2026-08-31)
-UPDATED: 2026-09-05T13:12:00-04:00
-NOTE: Task 1 ranking read out of five TRX files; Ft8Sharp 610 tests and Deep 69 both ranked, and the engine's four batches account for 1,541 of the 2,281 it discovers today, so the missing namespaces are being enumerated before the gap is reported
+RULES_AT: HM-DEC-154 (2026-09-05)
+UPDATED: 2026-09-05T13:35:00-04:00
+NOTE: Gate set committed at 27 tests over four projects, each entry naming a real breakage; its wall clock cannot be measured until the engine's remaining 740 Cw tests finish, so the phase bookkeeping is being done first rather than contending for the CPU
 
 ---
 
