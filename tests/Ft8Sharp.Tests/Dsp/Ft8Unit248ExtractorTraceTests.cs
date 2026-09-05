@@ -305,6 +305,92 @@ public class Ft8Unit248ExtractorTraceTests(ITestOutputHelper output)
     }
 
     /// <summary>
+    /// <b><c>HM-OPEN-074</c> re-measured over 306 trials, which is what that entry asked the unit
+    /// taking step 4 to do before quoting its figure.</b>
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// The entry says: about four per cent of trials at -21 dB have no candidate near the signal at
+    /// all, measured as <b>two of 51</b> with the closest candidate at 71 and 81 of 174 against a
+    /// chance distance of 87 — and that two trials is an estimate with a wide interval rather than a
+    /// figure. <b>Six whole blocks is what settles it</b>, and the same walk at the cell centre says
+    /// whether the placement changes it.
+    /// </para>
+    /// <para>
+    /// <b>60 of 174 is the threshold the entry itself used</b> and it is kept rather than chosen
+    /// afresh, so the two numbers are comparable. Nothing here re-syncs anything: refining a
+    /// candidate that does not exist cannot help, and <c>Ft8SyncSearch</c> is the port's and is
+    /// untouchable this phase.
+    /// </para>
+    /// </remarks>
+    [Fact]
+    public void TheCandidateAvailabilityOfHmOpen074RemeasuredOver306Trials()
+    {
+        const double rung = -21.0;
+        const int blocks = 6;
+
+        var geometry = new Ft8WaterfallGeometry(Rate);
+        var monitor = new Ft8Monitor(geometry);
+        var search = new Ft8SyncSearch();
+        var population = Ft8Step6Ladder.Population();
+
+        output.WriteLine($"HM-OPEN-074 RE-MEASURED at {rung:F1} dB over "
+            + $"{blocks * population.Count} trials");
+        output.WriteLine("=================================================================");
+        output.WriteLine("  placement      trials   none   >60 of 174   >=87 (chance)   median   "
+            + "worst");
+        output.WriteLine("  ------------------------------------------------------------------------");
+
+        foreach (var (label, offsetHz, offsetSamples) in new[]
+                 {
+                     ("ON GRID", 0.0, 0),
+                     ("CELL CENTRE", WorstFrequencyOffsetHz, WorstOffsetSamples),
+                 })
+        {
+            var closest = new List<int>();
+            var none = 0;
+
+            for (var block = 0; block < blocks; block++)
+            {
+                var noise = new GaussianNoise(
+                    Ft8LadderHarness.DefaultSeed + block + (int)Math.Round(rung * 10.0));
+
+                foreach (var entry in population)
+                {
+                    var placed = Ft8LadderHarness.DefaultFrequencyHz + offsetHz;
+                    var (clean, _) = SearchFixture.OneSignal(
+                        Rate, entry, placed, Ft8LadderHarness.DefaultOffsetSamples + offsetSamples);
+
+                    var samples = Noisy(clean, entry, placed, rung, noise);
+                    var waterfall = monitor.Analyse(samples);
+                    var candidates = search.Find(waterfall);
+
+                    if (candidates.Count == 0)
+                    {
+                        none++;
+                        continue;
+                    }
+
+                    closest.Add(Closest(waterfall, candidates, TrueCodeword(entry)).Distance);
+                }
+            }
+
+            var far = closest.Count(d => d > 60);
+            var chance = closest.Count(d => d >= 87);
+
+            output.WriteLine(
+                $"  {label,-13}  {closest.Count + none,6}   {none,4}   "
+                + $"{far,4} ({100.0 * far / (closest.Count + none),4:F1}%)   "
+                + $"{chance,6} ({100.0 * chance / (closest.Count + none),4:F1}%)   "
+                + $"{Median(closest),6}   {closest.Max(),5}");
+        }
+
+        output.WriteLine(string.Empty);
+        output.WriteLine("  HM-OPEN-074 read 2 of 51 above 60, which it called about four per cent");
+        output.WriteLine("  and said was an estimate with a wide interval. This is the figure.");
+    }
+
+    /// <summary>
     /// <b>The window shape, measured once rather than swept.</b> A rectangular window exactly one
     /// symbol long against the <c>Ft8Monitor.HannSquaredSine</c> taper the waterfall applies.
     /// </summary>

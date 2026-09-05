@@ -4,6 +4,54 @@ Questions with owner and severity. `owner` is who must act next. Format in
 `CLAUDE.md` §3.
 
 ---
+id: HM-OPEN-076
+status: open
+owner: tim
+raised: 2026-09-05
+severity: slows
+blocks: nothing — every figure this phase has recorded is correct at the placement it was taken at; this is about what those figures mean off it
+refs: PHASE_PLAN.md steps 0 and 4, docs/unit248-baseband-resync.md §1 and §4.2, tests/Ft8Sharp.Tests/Dsp/Ft8Unit248PlacementTraceTests.cs, tests/Ft8Sharp.Tests/Dsp/Ft8Unit248ScoreboardTests.cs, unit 248
+---
+
+**Every number this phase has quoted was measured at the one placement where the
+coarse analysis grid has nothing to lose, and the port loses almost all of its decode
+rate anywhere else in that grid cell.**
+
+`Ft8LadderHarness.DefaultFrequencyHz` is 1000.0 Hz, which is 320 transform bins
+exactly, and `DefaultOffsetSamples` is 5760, which is six sub-blocks exactly. **Both
+axes, exactly on the grid.** Unit 248 task 1 asserted that from the tree and then swept
+16 placements across one cell at -20 dB.
+
+At 306 trials at -20 dB the port reads **73 of 306 (23.9 per cent) on the grid and 0 of
+306 at the centre of the same cell** — `+1.56 Hz, +480 samples`, which is an eightieth
+of a second and one and a half hertz. At -19 dB it reads **248 of 306 (81.0 per cent)
+on the grid and 6 of 306 (2.0 per cent)** at the cell centre. Zero wrong on every row.
+
+**Averaged uniformly over the cell, which is what a real station delivers**, the port
+reads **8.1 per cent (66 of 816) against the 23.5 per cent this phase has been
+quoting** at -20 dB; the ordered statistics column reads 18.5 against 41.2.
+
+**This is not a defect in the harness and no target should be changed on it by a
+unit.** The ladder's placement is the one `Ft8Step6CurveTests` has always used and
+every recorded figure is correct at that placement. **What is open is what those
+figures mean**, and specifically whether `PHASE_PLAN.md`'s targets and
+`HM-OPEN-067`'s published comparison are meant to be read against an on-grid
+transmitter or against a uniformly placed one. **That is a ruling and it is Tim's or
+the arbiter's, not a measurement.**
+
+**What unit 248 did about it, so the next unit does not re-open it as a defect.** The
+fine sync column reads **90.5 per cent at the cell centre at -19 dB against the port's
+2.0**, and **23.9 per cent at -20 dB, which is the port's on-grid figure to one decimal
+place**. Its crossing off the grid is -19.61 dB against the port's -19.54 on it. **So a
+decoder that is flat across the cell now exists**; what has not been decided is which
+column the phase's headline number should be read off.
+
+**What would settle it.** A ruling on which placement the phase quotes at, and — if it
+is the uniform one — a second scoreboard column at a placement drawn uniformly over the
+cell rather than at the corner. That is one argument to `Ft8LadderHarness.Run`, which
+already takes both, and no change to it.
+
+---
 id: HM-OPEN-075
 status: open
 owner: claude
@@ -61,6 +109,40 @@ taking step 4 next.
 falls off with each separately, and whether it is the frequency or the time that costs
 more. That is a measurement and not a build.
 
+### Tested once by unit 248, and the claim about step 4 is NOT yet supported
+
+**Not closed, because the number did not move — and the reason it did not move says the
+test was the wrong one rather than the claim.** Unit 248 built the baseband re-sync,
+put it underneath combining at -21 dB over 306 trials with the same 2.00 Hz and
+480-sample jitter, and measured:
+
+```
+column                    DECODED   rate    lo 95   hi 95   WRONG   only-combined
+combined x2                   68    22.2    17.9    27.2       0              55
+combined x2 + fine sync       68    22.2    17.9    27.2       0              55
+```
+
+**Identical on every column.** The control ran through `Ft8LadderHarness.RunRepeats`
+unmodified and reproduced unit 247 exactly, so the instrument is sound.
+
+**Why it is identical, and it is arithmetic rather than a mystery.**
+`Ft8DeepSlotDecoder` captures a hearing from the **coarse** ratios, before the port's
+gate — where unit 247 put it, and deliberately, because `RemembersHearings` was
+specified as changing no decision. Fine synchronisation produces a *second* set of
+ratios at the re-synced position and submits those to the gate, but **it does not
+rewrite the hearing**. So the combiner is still adding two coarse hearings and the
+re-sync never reaches it.
+
+**What would actually test this entry's claim** is capturing the hearing at the
+re-synced position, so two hearings of one station arrive on the same footing before
+they are added — which is exactly what this entry describes and is **a change to step
+6's code**. Unit 248 was told in terms not to touch `Ft8DeepRepeatDecoder`,
+`Ft8DeepSoftCombiner` or `Ft8DeepCombineSettings`, so it did not, and it is not closing
+this on an argument.
+
+**This entry stays open with its claim untested rather than refuted**, and the next
+unit on step 4 or step 6 owns the one-line change that would test it.
+
 ---
 id: HM-OPEN-074
 status: open
@@ -104,6 +186,35 @@ account for a decibel.
 
 **No `Ft8Sharp` change is implied and none is permitted this phase.** The sync search
 is the port's and the port is the instrument.
+
+### Re-measured by unit 248 over 306 trials, as this entry asked
+
+**Not closed, because the number did not go away — but it moved, and the reason it
+moves is the placement rather than the rung.** Same measurement, six whole blocks at
+-21 dB, at both the placement every figure in this phase was taken at and the centre of
+one coarse grid cell:
+
+```
+placement      trials   none   >60 of 174   >=87 (chance)   median   worst
+ON GRID           306      0      7 ( 2.3%)        0 ( 0.0%)       31      81
+CELL CENTRE       306      0     57 (18.6%)        0 ( 0.0%)       47      84
+```
+
+**On the grid it is 2.3 per cent, not the four this entry estimated from two trials**,
+and the median of 31 is exactly unit 222's and unit 246's figure, so the harness is
+sound. **Off the grid it is 18.6 per cent — eight times as many.** No trial at either
+placement returned no candidate at all, and none reached the chance distance of 87.
+
+**And step 4 did not recover them, as this entry supposed it might.** Unit 248 built
+the baseband re-sync and measured it: **refining a candidate the search never returned
+cannot help**, and these trials are exactly that case. What step 4 did recover is the
+much larger population where a candidate *was* returned but at the wrong corner of the
+cell — `docs/unit248-baseband-resync.md` §4.2, where the -19 dB rate at the cell centre
+goes from 6 of 306 to 277 of 306.
+
+**So this entry now belongs to the candidate search rather than to candidate
+refinement**, and `Ft8SyncSearch` is the port's and is untouchable this phase. It is
+left open, owner unchanged, with the figure corrected and the wrong owner-step named.
 
 ---
 id: HM-OPEN-073
