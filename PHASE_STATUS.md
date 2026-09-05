@@ -1,15 +1,15 @@
-PHASE: Hamlet hears FT8 off the radio and displays the decoded text on screen
-PHASE_SET: 2026-08-31
-DESCRIPTION: Port ft8_lib to a managed FT8 decoder and wire it to Hamlet's audio and display
-CURRENT_STEP: 1
-WORK_INSTRUCTION: 242 - the scoreboard, and the baseline reproduced rather than inherited
-STEP: 1 | blocked | the library exists and its tables are proven
-STEP: 2 | done | messages round-trip through 77 bits
-STEP: 3 | done | a valid FT8 signal can be produced
-STEP: 4 | done | signals are found in noise
-STEP: 5 | done | a found signal becomes a message
-STEP: 6 | blocked | sensitivity meets the published threshold
-STEP: 7 | partial | Hamlet displays decoded FT8
+PHASE: Hamlet reads FT8 as well as the best decoder there is, and then reads it further
+PHASE_SET: 2026-09-04
+DESCRIPTION: Close the measured 1.5 dB against the published threshold with a sibling library, then combine repeated transmissions to go past it
+CURRENT_STEP: 0
+WORK_INSTRUCTION: 243 - what the ladder already is, and what this shell will actually run
+STEP: 0 | not started | there is a scoreboard, and the arbiter can read it
+STEP: 1 | not started | Ft8Sharp.Deep exists and changes nothing
+STEP: 2 | not started | ordered statistics decoding closes the code gap
+STEP: 3 | not started | strong signals are subtracted and the slot is read again
+STEP: 4 | not started | each candidate is re-synced at baseband
+STEP: 5 | not started | Hamlet's own SNR is measured and shown
+STEP: 6 | not started | repeated transmissions are combined across slots
 
 ---
 
@@ -27,3 +27,5 @@ that is the true reading today.
 collects them wherever it finds them and then returns the whole file unreadable,
 which takes the phase region off the card entirely. Prose here is free; keys are
 not.
+
+The previous phase's final status is archived at `docs/phase-ft8/PHASE_STATUS.md`.
