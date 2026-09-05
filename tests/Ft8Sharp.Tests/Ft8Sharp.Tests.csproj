@@ -17,10 +17,15 @@
     </PackageReference>
   </ItemGroup>
 
-  <!-- Ft8Sharp and nothing else. The boundary is a property of the library, not
-       of its tests, so this reference is not a breach of it. -->
+  <!-- Ft8Sharp and its sibling, and nothing else. The boundary is a property of
+       the LIBRARY, not of its tests, so neither of these is a breach of it: the
+       direction that would be one is Ft8Sharp referencing Ft8Sharp.Deep, and
+       Ft8SharpBoundaryTests.DeclaresNoReferences already catches that by reading
+       the port's project file off disk. Ruled by the arbiter for unit 245, which
+       needed the sibling here to put a second column on the scoreboard. -->
   <ItemGroup>
     <ProjectReference Include="..\..\src\Ft8Sharp\Ft8Sharp.csproj" />
+    <ProjectReference Include="..\..\src\Ft8Sharp.Deep\Ft8Sharp.Deep.csproj" />
   </ItemGroup>
 
   <!-- The shack command, and nothing else. tools/Ft8FixtureMaker writes the
