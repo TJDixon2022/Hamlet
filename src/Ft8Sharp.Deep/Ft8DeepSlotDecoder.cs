@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Ft8Sharp.Dsp;
 using Ft8Sharp.Ldpc;
 using Ft8Sharp.Message;
@@ -80,7 +81,8 @@ public sealed class Ft8DeepSlotDecoder
         Ft8DeepOsdSettings? osd = null,
         bool rememberHearings = false,
         Ft8DeepFineSyncSettings? fineSync = null,
-        Ft8DeepBasebandSettings? baseband = null)
+        Ft8DeepBasebandSettings? baseband = null,
+        Ft8DeepSubtractionSettings? subtraction = null)
     {
         var used = search ?? new Ft8SyncSearch();
         _port = new Ft8SlotDecoder(geometry, used, messageLimit, maxIterations);
@@ -89,6 +91,7 @@ public sealed class Ft8DeepSlotDecoder
         RemembersHearings = rememberHearings;
         FineSync = fineSync;
         Baseband = baseband;
+        Subtraction = subtraction;
         (_statistics, _osdCodeword, _osdRatios) = Prepare(osd);
         (_fineSync, _fineRatios, _fineGrid) = PrepareFineSync(fineSync);
     }
@@ -116,7 +119,8 @@ public sealed class Ft8DeepSlotDecoder
         Ft8DeepOsdSettings? osd = null,
         bool rememberHearings = false,
         Ft8DeepFineSyncSettings? fineSync = null,
-        Ft8DeepBasebandSettings? baseband = null)
+        Ft8DeepBasebandSettings? baseband = null,
+        Ft8DeepSubtractionSettings? subtraction = null)
     {
         ArgumentNullException.ThrowIfNull(port);
         _port = port;
@@ -125,6 +129,7 @@ public sealed class Ft8DeepSlotDecoder
         RemembersHearings = rememberHearings;
         FineSync = fineSync;
         Baseband = baseband;
+        Subtraction = subtraction;
         (_statistics, _osdCodeword, _osdRatios) = Prepare(osd);
         (_fineSync, _fineRatios, _fineGrid) = PrepareFineSync(fineSync);
     }
@@ -277,6 +282,61 @@ public sealed class Ft8DeepSlotDecoder
     /// </summary>
     public Ft8DeepFineSyncCounts LastFineSync { get; private set; }
 
+    /// <summary>
+    /// <b>How many times a slot is read and what is subtracted between the readings, or
+    /// <see langword="null"/> for off.</b> Null is the default and means this decoder does exactly
+    /// what it did at unit 252 - which, with <see cref="Osd"/> and <see cref="FineSync"/> also null,
+    /// is exactly what the port does.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// <b>OFF IS THE DEFAULT AND THAT IS LOAD-BEARING.</b> Every row of units 246, 248, 251 and 252
+    /// is a measurement of the default path. <c>Ft8DeepSubtractionTests</c> asserts whole-result
+    /// identity - all five counts and every message's text, candidate, frequency and dt - between a
+    /// decoder built with this null and one built with no arguments at all, on a slot that decodes,
+    /// because if the default path ever moved, every one of those rows would be invalidated at once
+    /// and nothing in the tree would say so.
+    /// </para>
+    /// <para>
+    /// <b>IT NEEDS THE SAMPLES, AND UNLIKE FINE SYNC IT REFUSES RATHER THAN COUNTS.</b> A waterfall
+    /// holds magnitudes on a grid with no phase and no audio behind it: there is nothing to fit a
+    /// carrier phase to, nothing to subtract a waveform from, and nothing to re-analyse afterwards.
+    /// <see cref="Decode(Ft8Waterfall)"/> with this configured <b>throws</b>. Fine sync's answer to
+    /// the same wall is to count the candidates it could not touch and carry on, which is right for
+    /// a per-candidate rescue and wrong here: subtraction is a whole extra pass over a whole slot,
+    /// and a caller who asked for four passes and silently got one has been told a decode ran that
+    /// did not run. Unit 249 found fine sync refusing 42 of 42 candidates in exactly that shape.
+    /// </para>
+    /// <para>
+    /// <b>NOTHING HERE DECIDES THAT A MESSAGE IS REAL.</b> A pass over a residual is an ordinary
+    /// decode of a different buffer: same search, same extract, same normalise, same
+    /// <c>Ft8CodewordDecoder.Decode</c>, <b>one codeword to the port's parity gate and CRC-14 per
+    /// candidate per pass</b>. What multiplies with the pass count is the number of passes, and
+    /// <c>docs/unit253-subtraction.md</c> §3.1 tabulates what that costs.
+    /// </para>
+    /// </remarks>
+    public Ft8DeepSubtractionSettings? Subtraction { get; }
+
+    /// <summary>
+    /// <b>What the subtraction stage did in the last slot decoded.</b> Reset at the top of every
+    /// decode and read after it; <c>PassesRun</c> is one and everything else is zero while
+    /// <see cref="Subtraction"/> is null.
+    /// </summary>
+    public Ft8DeepSubtractionCounts LastSubtraction { get; private set; } =
+        new(1, 0, 0, 0, 0, 0, 0, double.NaN);
+
+    /// <summary>
+    /// <b>Every fit the subtraction stage made in the last slot decoded, in the order it made
+    /// them</b>, or an empty list when it is off.
+    /// </summary>
+    /// <remarks>
+    /// The gain, the phase, the place and the decibels removed, one entry a message subtracted.
+    /// <b>Diagnostic, and reported rather than gated on</b> - see
+    /// <c>Ft8DeepSubtractionFit.DecibelsRemoved</c>.
+    /// </remarks>
+    public IReadOnlyList<Ft8DeepSubtractionFit> LastFits { get; private set; } =
+        Array.Empty<Ft8DeepSubtractionFit>();
+
     /// <summary>The extents this decoder analyses to. The port's.</summary>
     public Ft8WaterfallGeometry Geometry => _port.Geometry;
 
@@ -304,8 +364,232 @@ public sealed class Ft8DeepSlotDecoder
     /// nothing in one to re-sync from. <b>Nothing else about it changed</b>: with
     /// <see cref="FineSync"/> null it is the same call it always was.
     /// </remarks>
-    public Ft8SlotResult Decode(ReadOnlySpan<float> samples) =>
-        Decode(new Ft8Monitor(Geometry).Analyse(samples), samples);
+    public Ft8SlotResult Decode(ReadOnlySpan<float> samples)
+    {
+        if (Subtraction is null)
+        {
+            // THE DEFAULT PATH, UNTOUCHED. One analyse, one pass, the same call it always was.
+            LastSubtraction = new Ft8DeepSubtractionCounts(1, 0, 0, 0, 0, 0, 0, double.NaN);
+            LastFits = Array.Empty<Ft8DeepSubtractionFit>();
+            return Decode(new Ft8Monitor(Geometry).Analyse(samples), samples);
+        }
+
+        return DecodeWithSubtraction(samples, Subtraction);
+    }
+
+    /// <summary>
+    /// <b>Read the slot, subtract what it gave up, read what is left, and stop by the rule.</b>
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// <b>THE STOPPING RULE IS <c>Ft8DeepSubtractionSettings</c>'S AND IS WRITTEN OUT THERE.</b>
+    /// Three conditions, any one of which makes a pass the last: the pass budget is spent; the pass
+    /// returned nothing new; or nothing in the pass could be subtracted. The third matters because
+    /// without it a slot whose only message refuses to give up its symbols would run its whole
+    /// budget over a buffer that never changes.
+    /// </para>
+    /// <para>
+    /// <b>THE DUPLICATE RULE, AND IT IS ACROSS PASSES.</b> The port's own <c>seen</c> list is local
+    /// to one <c>Decode</c> call, so nothing in the tree stops a later pass returning a message an
+    /// earlier pass already returned - and an imperfectly subtracted transmission decodes again out
+    /// of its own remnant, which is the ordinary case rather than the exceptional one. A message
+    /// whose text a previous pass returned is counted in
+    /// <c>Ft8DeepSubtractionCounts.DuplicatesAcrossPasses</c> and is not added to the result.
+    /// <b>By text and not by the 77-bit key</b>: the key is not handed back by the gate and the port
+    /// recovers it by re-running belief propagation over the ratios that produced the decode, which
+    /// is inside a pass and not reachable from here. The text is a deterministic function of the
+    /// bits, so key equality implies text equality, and the only way the two rules could differ is
+    /// two distinct payloads printing the same string - in which case the operator sees one line
+    /// either way and merging them is the correct display.
+    /// </para>
+    /// <para>
+    /// <b>THE CALLER'S BUFFER IS NEVER WRITTEN.</b> The residual is built in a copy. A decode that
+    /// silently modified the samples it was handed would make every paired comparison in this
+    /// project - where two decoders are given the same array - depend on which ran first.
+    /// </para>
+    /// <para>
+    /// <b>THE FIVE COUNTS ARE SUMMED OVER THE PASSES</b>, and <c>LastSubtraction.PassesRun</c> is
+    /// the divisor that makes them readable. This is a real change in what the census means and it
+    /// is listed in <c>docs/unit253-subtraction.md</c> §6 as one of the five surfaces that must be
+    /// settled before subtraction ships. <b>With subtraction off exactly one pass runs, so the sums
+    /// are the single pass's own counts and the default path is bit-for-bit unchanged.</b>
+    /// </para>
+    /// </remarks>
+    private Ft8SlotResult DecodeWithSubtraction(
+        ReadOnlySpan<float> samples, Ft8DeepSubtractionSettings settings)
+    {
+        var working = samples.ToArray();
+        var monitor = new Ft8Monitor(Geometry);
+
+        var messages = new List<Ft8SlotMessage>();
+        var seen = new List<string>();
+        var subtracted = new List<string>();
+        var fits = new List<Ft8DeepSubtractionFit>();
+
+        var candidates = 0;
+        var parity = 0;
+        var checksum = 0;
+        var text = 0;
+        var duplicatesInPass = 0;
+
+        var passes = 0;
+        var offered = 0;
+        var removed = 0;
+        var refusedSymbols = 0;
+        var refusedFrame = 0;
+        var duplicatesAcrossPasses = 0;
+        var fromLaterPasses = 0;
+        var worstDecibels = double.NaN;
+
+        for (var pass = 0; pass < settings.MaxPasses; pass++)
+        {
+            var result = Decode(monitor.Analyse(working), working);
+            passes++;
+
+            candidates += result.CandidateCount;
+            parity += result.ParitySatisfiedCount;
+            checksum += result.ChecksumPassedCount;
+            text += result.BecameTextCount;
+            duplicatesInPass += result.DuplicateCount;
+
+            var added = 0;
+
+            foreach (var message in result.Messages)
+            {
+                if (seen.Contains(message.Text, StringComparer.Ordinal))
+                {
+                    duplicatesAcrossPasses++;
+                    continue;
+                }
+
+                seen.Add(message.Text);
+
+                if (messages.Count >= MessageLimit)
+                {
+                    // The port's own divergence from upstream, reproduced across passes: stop
+                    // adding, do not stop the loop, and do not count it as anything.
+                    continue;
+                }
+
+                messages.Add(message);
+                added++;
+
+                if (pass > 0)
+                {
+                    fromLaterPasses++;
+                }
+            }
+
+            // STOPPING RULE 2: nothing new came back, so the next residual would be this residual.
+            if (added == 0)
+            {
+                break;
+            }
+
+            // STOPPING RULE 1: the budget is spent. Checked here rather than by the loop condition
+            // alone so that the last pass does not pay for a subtraction nobody will read.
+            if (pass + 1 >= settings.MaxPasses)
+            {
+                break;
+            }
+
+            var removedThisPass = 0;
+
+            foreach (var message in result.Messages)
+            {
+                if (subtracted.Contains(message.Text, StringComparer.Ordinal))
+                {
+                    continue;
+                }
+
+                offered++;
+                var symbols = Ft8DeepMessageSymbols.TryEncode(message.Result.Message);
+
+                if (symbols is null)
+                {
+                    // A REFUSAL IS A CORRECT ANSWER AND IT IS COUNTED. The message stands in the
+                    // result; it is simply not removed from the buffer, so whatever it masks stays
+                    // masked. Hiding this is how a stage comes to report a pass it did not make.
+                    refusedSymbols++;
+                    continue;
+                }
+
+                var fit = Fit(working, message, symbols, settings);
+
+                if (!fit.IsFitted)
+                {
+                    refusedFrame++;
+                    continue;
+                }
+
+                subtracted.Add(message.Text);
+                fits.Add(fit);
+                removed++;
+                removedThisPass++;
+
+                if (double.IsNaN(worstDecibels) || fit.DecibelsRemoved < worstDecibels)
+                {
+                    worstDecibels = fit.DecibelsRemoved;
+                }
+            }
+
+            // STOPPING RULE 3: the buffer did not change, so neither can the answer.
+            if (removedThisPass == 0)
+            {
+                break;
+            }
+        }
+
+        LastSubtraction = new Ft8DeepSubtractionCounts(
+            passes,
+            offered,
+            removed,
+            refusedSymbols,
+            refusedFrame,
+            duplicatesAcrossPasses,
+            fromLaterPasses,
+            worstDecibels);
+
+        LastFits = fits;
+
+        return new Ft8SlotResult(candidates, parity, checksum, text, duplicatesInPass, messages);
+    }
+
+    /// <summary>
+    /// Refines one decoded message's place and subtracts it from the working buffer.
+    /// </summary>
+    /// <remarks>
+    /// <b>THE PLACE ARRIVES IN THREE PARTS AND ALL THREE ARE NEEDED.</b> The candidate's own
+    /// frequency and time, quantised to the waterfall's 0.080 s by 3.125 Hz cell;
+    /// <see cref="CandidateTimeBiasSeconds"/>, which is exactly minus one symbol period and was
+    /// measured by unit 248; and <c>Ft8DeepSignalToNoise.Estimate</c>'s coordinate search, which
+    /// moves the window onto the signal rather than onto the analysis cell - unit 251 measured that
+    /// not refining reads 3.50 dB out. <b>What the estimator leaves is still not good enough</b>:
+    /// its 0.40 Hz frequency step leaves up to ±0.20 Hz, which is 2.53 whole cycles of phase over a
+    /// 12.64 s frame, so <c>Ft8DeepMessageSubtractor</c> searches again on its own axis. The
+    /// estimator gets the fit into the basin; it does not finish the job.
+    /// </remarks>
+    private Ft8DeepSubtractionFit Fit(
+        float[] working,
+        Ft8SlotMessage message,
+        byte[] symbols,
+        Ft8DeepSubtractionSettings settings)
+    {
+        var frequency = message.FrequencyHz(Geometry);
+        var start = message.TimeSeconds(Geometry) + CandidateTimeBiasSeconds;
+
+        var baseband = Ft8DeepBaseband.Build(working, Geometry.SampleRate, frequency, Baseband);
+        var estimate = Ft8DeepSignalToNoise.Estimate(baseband, start, 0.0, symbols, refine: true);
+
+        if (estimate.IsMeasured)
+        {
+            start += estimate.TimeAdjustmentSeconds;
+            frequency += estimate.FrequencyAdjustmentHz;
+        }
+
+        return Ft8DeepMessageSubtractor.Subtract(
+            working, Geometry.SampleRate, symbols, frequency, start, settings);
+    }
 
     /// <summary>Decodes one slot from a waterfall that has already been built.</summary>
     /// <param name="waterfall">The spectrogram of one slot.</param>
@@ -322,8 +606,26 @@ public sealed class Ft8DeepSlotDecoder
     /// <c>LdpcDecoder.Decode</c> over the same ratios - and the message limit stops adding without
     /// stopping the loop.
     /// </remarks>
-    public Ft8SlotResult Decode(Ft8Waterfall waterfall) =>
-        Decode(waterfall, ReadOnlySpan<float>.Empty);
+    public Ft8SlotResult Decode(Ft8Waterfall waterfall)
+    {
+        if (Subtraction is not null)
+        {
+            // REFUSED LOUDLY, AND DELIBERATELY NOT COUNTED-AND-CARRIED-ON. See the remarks on
+            // Subtraction: a caller who asked for several passes and silently got one has been told
+            // a decode ran that did not run.
+            throw new InvalidOperationException(
+                "This decoder is configured to subtract decoded messages and read the slot again, "
+                + "and a waterfall has no samples behind it - magnitudes on a grid, quantised to "
+                + "half a decibel, with no phase. There is nothing to fit a carrier phase to, "
+                + "nothing to subtract a waveform from, and nothing to re-analyse afterwards. Call "
+                + "Decode(ReadOnlySpan<float>), which is the entry point that has the audio, or "
+                + "build this decoder with subtraction null. Nothing has been decoded.");
+        }
+
+        LastSubtraction = new Ft8DeepSubtractionCounts(1, 0, 0, 0, 0, 0, 0, double.NaN);
+        LastFits = Array.Empty<Ft8DeepSubtractionFit>();
+        return Decode(waterfall, ReadOnlySpan<float>.Empty);
+    }
 
     /// <summary>
     /// The whole loop, with the audio behind the waterfall when there is any and an empty span when

@@ -1,43 +1,35 @@
 ﻿
-**Nothing is blocking.** The step sequence is paused by Tim's ruling and no
-successor unit was authored.
+**Nothing blocks step 3. All five of its must-pass exits are met and evidenced.** The
+three items below are open questions and a standing gap, not blockers.
 
-One item, which asks for no ruling:
+**1. The ladder cannot tell you whether the window's gain is real - `HM-OPEN-078`,
+raised tonight, owner Tim.** `Ft8LadderHarness.Run` is a paired design and
+`Ft8Step6Ladder.Wilson` is an independent-sample interval, so the interval this project
+quotes overstates the uncertainty of a difference between two columns. McNemar is the
+right test and `Ft8LadderHarness.Result` records totals rather than discordant pairs.
+**This is the only reason `Ft8DeepOsdSettings.Default` did not move tonight**, and it
+is worth 8 decodes of 306 at -21 dB and 19 at -20. One field on `Result` and one run
+would settle it - no new algorithm, no new audio, no change to the port.
 
-> **Ordered statistics re-encodes 192,602 times on one slot of clean synthetic
-> audio, and nothing bounds that number.**
->
-> Measured in task 1: `Ft8DeepOsdCounts { Offered = 46, Produced = 46,
-> Accepted = 4, Reencodings = 192602 }`. It is well inside the budget here, 210 ms
-> of 15,000, and it is the one figure in this unit not obviously bounded by
-> anything. The order is 2 and the count is combinatorial in the order; what
-> varies is how many candidates fail the cheap path, which is exactly what a
-> crowded evening on 14.074 changes.
->
-> The alternatives: leave it, on the grounds that 1.74 per cent of the budget has
-> room for a lot of multiplication; cap the re-encodings per slot, which would
-> make the decoder's reach depend on how busy the band is and do so silently; or
-> measure it on a real off-air capture before deciding, which needs a capture
-> fixture nobody has.
->
-> **It is not treated as a defect** - no measurement says it is one, and
-> `Ft8Sharp.Deep` is parked for this unit in any case. It is raised because the
-> shack machine is a different computer and this is the number most likely to
-> behave differently there.
+**2. `docs/unit246-osd.md` Â§5 item 4 carries a wall-clock figure that is wrong by
+about fifteen-fold**, and it is still in the tree. *306 trials at order 3 is about 25
+minutes* against its own Â§3's measured 311.4 ms a trial, which is 1.6 minutes, and
+against tonight's measured 91.2 s. **It is not repaired here** - this unit reports
+mismatches and does not edit another unit's measurement document - but it is the
+sentence that shaped the whole design of work instruction 252, and step 6 will read
+that document. **It cost nothing tonight because the arithmetic was re-derived rather
+than trusted**, which is what task 1 exists for.
 
-### Asks still outstanding
+**3. The gate set's whole-command wall clock is still an estimate and this unit could
+not improve it.** `docs/gate-set.md` says *the estimate is five to six minutes cold*
+and that **the gate set has never been seen fail as a whole**, and its own note says a
+gate set nobody has seen fail is a list and not a gate. This unit added entry 10 and
+measured that entry alone at 2 s, and updated the cost table's counts accordingly - but
+`tools\arbiter\gate-set.bat` is Tim's command and no unit runs it, so the whole-command
+figure is unchanged and still unmeasured. **Recorded so the next person to run it knows
+the table is one entry newer than the last time anybody timed the whole thing.**
 
-1. **Ordered statistics' unbounded re-encoding count** - raised above,
-   2026-09-05. **New.**
-2. **The decoded panel's family colour** - unit 241, 2026-09-04. The markup says
-   `Lavender`; the sender field is green.
-3. **The waterfall's dropped window and its late first row** - unit 240,
-   2026-09-03.
-4. **`ReusableWindow`'s borrowed buffer** - unit 239, 2026-09-03.
-5. **`ProcessDelayForTests` as a hook or a seam** - unit 238, 2026-09-03.
-6. **The tap's owner** - parked since work instruction 238.
-7. **Unit 237's Extensible-format conclusion** - the fix stands, the exoneration
-   does not (FACT-004).
-8. **Work instruction 231's four tree items.**
-9. **`validate-output.bat`'s permitted-spellings bug** - parked by this
-   instruction and not touched. Rule 7 was added beside it without disturbing it.
+**Not raised, because they are parked and were not touched:** the two column
+definitions for one table, whether the capture sidecar's per-message lines carry the
+decoded text, `HM-OPEN-077`'s standing `CLAUDE.md` Â§1 gap, the inherited reds, and
+steps 4 to 6.

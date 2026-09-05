@@ -1,13 +1,13 @@
 PHASE: Everything this project has built reaches the operator's screen, and the decoder is taken as far as it will go
 PHASE_SET: 2026-09-05
 DESCRIPTION: Wire Ft8Sharp.Deep into Hamlet, show a real SNR, then take ordered statistics, subtraction and cross-slot combining as far as they go
-CURRENT_STEP: 1
-WORK_INSTRUCTION: 250 - the gate set exists
-HEARTBEAT: 2026-09-05 14:05:10
+CURRENT_STEP: 4
+WORK_INSTRUCTION: 253 - strong signals are subtracted and the slot is read again
+HEARTBEAT: 2026-09-05 16:17:56
 STEP: 0 | done | Hamlet decodes through Ft8Sharp.Deep
-STEP: 1 | not started | the gate set exists, and the slow tests are named
-STEP: 2 | not started | the SNR column shows a number
-STEP: 3 | not started | ordered statistics, taken as far as it goes
+STEP: 1 | done | the gate set exists, and the slow tests are named
+STEP: 2 | done | the SNR column shows a number
+STEP: 3 | done | ordered statistics, taken as far as it goes
 STEP: 4 | not started | strong signals are subtracted and the slot is read again
 STEP: 5 | not started | repeated transmissions are combined across slots
 STEP: 6 | not started | the closing measurement

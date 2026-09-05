@@ -1,9 +1,9 @@
-﻿   Bash  {"command":"tail -5 /c/Users/TimDi/AppData/Local/Temp/claude/C--Source-HamLet/b700792a-606a-4a17-b24a-05e7bf7d5b01/tasks/bu304syxy.output 2\u003e/dev/null || echo \"no output yet\"","description":"Check baseline test progress"}
-   Bash  {"command":"ls -la /c/Users/TimDi/AppData/Local/Temp/claude/C--Source-HamLet/b700792a-606a-4a17-b24a-05e7bf7d5b01/tasks/ 2\u003e\u00261 | head","description":"Check background task output file size"}
-   Bash  {"command":"tasklist 2\u003e/dev/null | grep -ci testhost || echo \"0 testhost\"","description":"Check if test host still running"}
-   Bash  {"command":"sed -i \u0027s/typeof(Ft8DeepCombineWeighting),/typeof(Ft8DeepCombineCounts),\\n                typeof(Ft8DeepCombineSettings),\\n                typeof(Ft8DeepCombineWeighting),/\u0027 tests/Ft8Sharp.Deep.Tests/Ft8DeepSlotDecod ...(truncated)
-   Bash  {"command":"python -c \"\nimport re,io\np=\u0027tests/Ft8Sharp.Deep.Tests/Ft8DeepCombineGateTests.cs\u0027\ns=open(p,encoding=\u0027utf-8\u0027).read()\ns=s.replace(\u0027together.Text\u0027,\u0027together.Message.Text\u0027).replace(\u0027 ...(truncated)
-   Bash  {"command":"until grep -q \"exited with code\" /c/Users/TimDi/AppData/Local/Temp/claude/C--Source-HamLet/b700792a-606a-4a17-b24a-05e7bf7d5b01/tasks/bd8k219aa.output 2\u003e/dev/null; do sleep 15; done; date","timeout":900000,"description":" ...(truncated)
-   Bash  {"command":"git check-ignore -v output.md; git log --oneline -1 --stat | head -8; git status --short output.md","description":"Check whether output.md is tracked"}
-   Bash  {"command":"git check-ignore -v output.md || echo \"not ignored\"","description":"Check gitignore for output.md"}
-   Bash  {"command":"git ls-files | grep -i \"^output.md$\"","description":"Find the tracked spelling of the report"}
+﻿   Bash  {"command":"python -c \"\nfrom math import comb\nWs=[91,60,45,40,30,20]\nprint(\u0027order \u0027 + \u0027 \u0027.join(f\u0027{w:\u003e10}\u0027 for w in Ws))\nfor o in [2,3,4]:\n    row=[1+sum(comb(w,i) for i in range(1,o+1)) for w in Ws]\ ...(truncated)
+   Bash  {"command":"python .run-unit/cost.py","description":"Run cost table script"}
+   Bash  {"command":"py .run-unit/cost.py","description":"Run cost script via py launcher"}
+   Bash  {"command":"rm -f .run-unit/cost.py \u0026\u0026 git add docs/unit252-osd-window.md PROJECT_STATUS.md \u0026\u0026 git status --porcelain --untracked-files=no","description":"Stage task 1 files"}
+   Bash  {"command":"sed -i \u0027s/^## 7\\. Where this instruction and the tree disagreed$/## 9. Where this instruction and the tree disagreed/\u0027 docs/unit252-osd-window.md \u0026\u0026 grep -n \"^## \" docs/unit252-osd-window.md","description" ...(truncated)
+   Bash  {"command":"cmd //c \"tools\\arbiter\\outcome-append.bat\" 2\u003e\u00261 | head -30","description":"Probe the outcome-append script"}
+   Bash  {"command":"tools/arbiter/outcome-append.bat","description":"Run the outcome-append script for usage"}
+   Bash  {"command":"tools/arbiter/validate-output.bat output.md 2\u003e\u00261 | tail -30; echo \"EXIT=$?\"","description":"Validate the report"}
+   Bash  {"command":"tools/arbiter/validate-output.bat output.md","description":"Validate the report"}

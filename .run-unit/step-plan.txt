@@ -1,22 +1,22 @@
-﻿STEP: 1 | Ft8Sharp.Deep exists and changes nothing
-## Step 1 - `Ft8Sharp.Deep` exists and changes nothing
+﻿## Step 3 - ordered statistics, taken as far as it goes
 
-**Delivers:** a sibling project that reproduces the port's results exactly.
+**Delivers:** OSD tuned and measured to its practical limit.
 
-**Entry:** step 0 complete.
+**Entry:** step 0 complete. Independent of steps 4 and 5.
 
 **Exit:**
-- `Ft8Sharp.Deep` compiles, has its own tests, and **a mechanical test asserts
-  `Ft8Sharp` references nothing outside itself**, preserving the boundary that
-  keeps the port publishable. *must-pass*
-- Given the same audio, `Ft8Sharp.Deep` returns **exactly** what `Ft8Sharp`
-  returns, on the reference recordings and the ladder. *must-pass*
-- The scoreboard shows both columns identical. *must-pass*
-- The sibling's `NOTICE` cites the published sources for anything it will
-  implement, before it implements them. *must-pass*
-
-**A step that changes no behaviour is the point.** It establishes that the seam
-costs nothing, so every later difference is attributable to one named change.
+- **The 50 per cent crossing and the -21 dB rate quoted with trial counts and
+  Wilson intervals**, before and after, separately from every other stage.
+  *must-pass*
+- **Zero wrong decodes.** An approach that returns one is rejected and another
+  taken. *must-pass*
+- **Order and search weight stated with the cost each buys, measured.** Not tuned
+  until a number passes. *must-pass*
+- Worst-case time per slot inside the 15-second budget, margin stated. *must-pass*
+- **The step closes on the figure reached.** The previous plan's waypoint was 40
+  per cent at -21 dB; the built implementation reads about 11 per cent, which is
+  33 of 306 against the port's 13. **Reaching 40 is not this step's gate and
+  never was a fact.** *must-pass*
 
 **Depends on:** step 0.
 

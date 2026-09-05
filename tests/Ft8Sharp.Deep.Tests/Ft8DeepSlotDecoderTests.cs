@@ -184,6 +184,26 @@ public class Ft8DeepSlotDecoderTests(ITestOutputHelper output)
     /// added the counts that say what it did — <c>Ft8DeepFineSyncCounts</c>. <b>This list was
     /// rewritten by unit 248 deliberately and is not a test that broke.</b>
     /// </para>
+    /// <para>
+    /// <b>UNIT 251 ADDED THREE AND DID NOT COME HERE, SO THIS TEST WAS RED IN THE TREE BEFORE UNIT
+    /// 253 TOUCHED ANYTHING.</b> Those three are <c>Ft8DeepSignalToNoise</c>,
+    /// <c>Ft8DeepSnrEstimate</c> and <c>Ft8DeepMessageSymbols</c> — the per-message signal-to-noise
+    /// estimator, its result, and the round-trip recovery of a decoded message's 79 channel symbols.
+    /// <b>They are named as unit 251's here and in unit 253's report so the record shows who added
+    /// what</b>, and unit 253 carried them because it could not make its own additions green without
+    /// carrying them. That is the file's own rule working: the list is rewritten by the unit that
+    /// changed the assembly, and where that did not happen the next unit through carries the debt
+    /// and says whose it was.
+    /// </para>
+    /// <para>
+    /// <b>Unit 253 added four, on purpose.</b> Task 3 added the subtraction stage —
+    /// <c>Ft8DeepSubtractionSettings</c> for the pass count and the stopping rule,
+    /// <c>Ft8DeepMessageSubtractor</c> for the amplitude-and-phase fit and the subtraction itself,
+    /// <c>Ft8DeepSubtractionFit</c> for what one subtraction fitted and removed, and
+    /// <c>Ft8DeepSubtractionCounts</c> for what the stage did over a whole slot. <b>Twenty-five
+    /// types, of which eighteen were listed before tonight, three are unit 251's debt and four are
+    /// unit 253's own.</b>
+    /// </para>
     /// </remarks>
     [Fact]
     public void TheSiblingHoldsExactlyTheseTypesAndTheListIsAssertedWhole()
@@ -210,13 +230,33 @@ public class Ft8DeepSlotDecoderTests(ITestOutputHelper output)
                 typeof(Ft8DeepFineSyncResult),
                 typeof(Ft8DeepFineSyncSettings),
                 typeof(Ft8DeepHearing),
+
+                // UNIT 253'S.
+                typeof(Ft8DeepMessageSubtractor),
+
+                // UNIT 251'S, carried by unit 253 rather than added by it - see the remarks.
+                typeof(Ft8DeepMessageSymbols),
+
                 typeof(Ft8DeepOrderedStatistics),
                 typeof(Ft8DeepOsdCounts),
                 typeof(Ft8DeepOsdResult),
                 typeof(Ft8DeepOsdSettings),
                 typeof(Ft8DeepRepeatDecoder),
+
+                // UNIT 251'S, carried by unit 253.
+                typeof(Ft8DeepSignalToNoise),
+
                 typeof(Ft8DeepSlotDecoder),
+
+                // UNIT 251'S, carried by unit 253.
+                typeof(Ft8DeepSnrEstimate),
+
                 typeof(Ft8DeepSoftCombiner),
+
+                // UNIT 253'S.
+                typeof(Ft8DeepSubtractionCounts),
+                typeof(Ft8DeepSubtractionFit),
+                typeof(Ft8DeepSubtractionSettings),
             },
             types.OrderBy(t => t.FullName, StringComparer.Ordinal).ToArray());
     }

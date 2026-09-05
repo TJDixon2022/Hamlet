@@ -661,6 +661,56 @@ reason that has nothing to do with subtraction.
 asked to find a few extra decodes at the margin, it is being asked whether a station
 that is invisible today can be read at all.
 
+## 7.3 Two things §2 got wrong, corrected by measurement
+
+**§2.5's frequency-step arithmetic was wrong and it mattered.** It said a residual
+frequency error of half a 0.02 Hz step "costs under 0.4 dB of cancellation". That
+treats a frequency error as an amplitude error and it is not one: **a frequency error
+`df` is a phase *ramp* of `2 pi df T` radians across the frame.** The fit's constant
+phase absorbs the middle of the ramp and the ends are left, so the residual is the
+root-mean-square of a linear ramp of half-width `pi df T`, which is `pi df T /
+sqrt(3)`, and the cancellation floor is `-20 log10` of that. At `T = 12.64 s`:
+
+| Residual frequency error | Cancellation floor |
+|---:|---:|
+| 0.0100 Hz (half a 0.02 Hz step) | **-19.0 dB** |
+| 0.0044 Hz | -20 dB |
+| 0.0004 Hz | -40 dB |
+| 0.00025 Hz (half a 0.0005 Hz step) | **-44.8 dB** |
+
+**The first run of `AnOffGridTransmissionIsFoundAndRemovedByTheFitsOwnSearch` settled
+0.0050 Hz from the truth and removed 18.89 dB**, which is what the corrected formula
+predicts to a hundredth of a decibel, and the message decoded out of the residual. A
+second frequency pass at a fortieth of the step — `Ft8DeepMessageSubtractor.FrequencyFineDivisor`
+— took the same case to **42.82 dB**. The fine pass costs about forty thousand
+multiply-adds because the evaluation is block-summed, so the error was cheap to fix
+and would have been expensive to leave.
+
+**And the noiseless slot is the wrong instrument for judging *gone*.** At 42.82 dB
+removed, with nothing else in the slot, **the message still decoded.**
+`Ft8SoftSymbols.Normalise` normalises a candidate's ratios, so **the decoder is
+scale-invariant**: a clean transmission at one per cent of its amplitude is still a
+clean transmission and there is nothing for it to be small against. The exactly-on-grid
+watched failure escapes only because the reference is bit-identical to what was placed
+and the cancellation runs into float precision at 285 dB, leaving arithmetic noise with
+no shape in it — an artefact of the fixture, not a property of the fit.
+
+**The consequence is the reason the decibels are not a gate**, and it is a stronger
+reason than the one §2.4 gave. *How much energy was removed* does not answer *is the
+message gone*. What answers it is whether the residue is below whatever else is in the
+slot, and on the air there always is something else. A unit that had turned the
+decibels into a threshold would have been asserting a quantity that does not decide the
+question. `Ft8DeepSubtractionFit.DecibelsRemoved` says so on the property itself.
+
+**One more consequence for readers of the tables below.** On a slot with noise in it,
+`DecibelsRemoved` is bounded above by the transmission's own signal-to-noise ratio over
+the frame, however perfect the fit: **the same transmission reads 285 dB removed with
+no noise and 7.06 dB removed with noise added, from a fit that removed the message
+completely in both cases.** Two of these numbers compared against each other compare
+two slots, not two fits.
+
+---
+
 ## 8. The masked ladder — measured
 
 *Written by task 4.*

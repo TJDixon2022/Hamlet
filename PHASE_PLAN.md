@@ -124,27 +124,39 @@ stops checking.
 
 ## What a unit runs, and what it does not
 
-**Tests in this tree have grown faster than their value.** `Ft8Sharp.Tests` is
-593 tests in **7 minutes 44 seconds**. `Hamlet.RadioEngine.Tests` is 2,157 and
-**has never once completed a whole-project run** - started alone at 08:15 on
-2026-09-01 and cut off at 09:16. Nobody knows which tests are expensive because
-no run has ever finished.
+**Tim's ruling, 2026-09-05. A unit runs no test suite. He runs them, once, at the
+end of the phase.**
 
-**Step 1 fixes this and every later unit is cheaper for it.**
+**A unit may run only the unit test it constructs in that work instruction**,
+filtered by exact name. Nothing else. Not the project it sits in, not the channel,
+not "just the fast ones".
 
-Until it does, and after:
+**And it never backgrounds a command and polls for it.** Three sessions were
+killed by the watchdog on 2026-09-05, at 33, 38 and 38 minutes, each one sitting
+in `until grep -q "exited with code" ...; do sleep 15; done` with a 900,000 ms
+timeout. **The watchdog fires after twelve minutes without a status write.** The
+suite was incidental; the poll was fatal.
 
-- **A unit runs the gate set, every time.** That is the short, named list step 1
-  builds: the tests that guard the properties this phase must not break.
-- **A unit runs the channels it touched**, whole, one project at a time, never
-  concurrently. Contention once turned one standing failure into five.
-- **A unit does not run anything else.** Not for completeness, not to be safe.
+So, standing for every unit of this phase:
+
+- **`dotnet build` is allowed**, with a stated timeout, run in the foreground.
+- **`dotnet test --filter` naming the test this unit just wrote is allowed**, with
+  a timeout of a few minutes, run in the foreground.
+- **An unfiltered `dotnet test` on any project is forbidden.**
+- **Backgrounding anything and polling for it is forbidden.** If a command cannot
+  finish in the foreground inside a stated timeout, it does not belong in a unit.
+- **Watched-failing-first still holds** for the test a unit writes. That is what
+  the allowance is for.
 - **A unit may not add a test without naming the breakage it would have caught.**
-  A test that guards nothing that has ever broken is cost without cover.
-- **The ladder is a measurement, not a test.** It is run when a step needs a
-  number and is never in the gate set.
-- **The full engine suite is Tim's, by hand, uncontended, once.** It is not a
-  unit's job and its absence never blocks a step.
+
+Why this costs less than it looks: `Ft8Sharp.Tests` is 609 tests in about seven
+minutes forty-four, `Hamlet.RadioEngine.Tests` is 2,157 and **has never once
+completed a whole-project run** - started alone at 08:15 on 2026-09-01, cut off at
+09:16. One filtered test runs in seconds. **Nobody was ever getting value from the
+other 2,700.**
+
+**The gate set is a list, not a job.** Step 1 defines it and every later unit
+maintains it. **Tim runs it.** No unit executes it.
 
 Known reds, inherited, **never chased**:
 `CwAdjudicationTests.ASpeedChangeInRealisticAudio`; the 51 CW cases in
@@ -187,32 +199,36 @@ have never run on a radio.
 
 ---
 
-## Step 1 - the gate set exists, and the slow tests are named
+## Step 1 - the gate set exists
 
-**Delivers:** a short named list of tests every unit runs, and a duration ranking
-of everything else.
+**Delivers:** a short named list of tests that guard what this phase must not
+break, for Tim to run at the end of the phase.
 
-**Entry:** none. Best taken immediately after step 0.
+**Entry:** none.
 
 **Exit:**
-- **Per-test durations for `Ft8Sharp.Tests` and `Ft8Sharp.Deep.Tests`**, from the
-  TRX, ranked. The twenty slowest named with their times. *must-pass*
-- **A gate set defined and committed** in `docs/gate-set.md`: each entry with the
-  property it guards and **the breakage it would have caught**. An entry that
-  cannot name one does not belong in it. *must-pass*
-- **The gate set runs in under three minutes**, measured. If it cannot, say what
-  the floor is and why. *must-pass*
-- A command that runs exactly the gate set and nothing else. *must-pass*
-- The same ranking attempted for `Hamlet.RadioEngine.Tests`, from whatever a
-  partial run reaches. **A cut-off run still times the tests it got to.**
-  *nice-to-pass*
+- **`docs/gate-set.md` committed.** Every entry: the test's full name, the
+  property it guards, and **the breakage it would have caught**, with the unit
+  number where that breakage happened. *must-pass*
+- **An entry that cannot name a breakage is not in the set.** That rule is written
+  into the file, because it is what stops the list growing back into the suite it
+  replaces. *must-pass*
+- **A command that runs exactly the gate set and nothing else**, in
+  `tools/arbiter/`, for Tim. **No unit runs it.** *must-pass*
+- **The standing rules recorded in the same file**: a unit runs no suite; a unit
+  may run only the test it just wrote, filtered, foregrounded, with a timeout; no
+  backgrounding and polling; no test added without naming its breakage; and the
+  inherited known-reds listed so a session finds them in one place. *must-pass*
+- Each entry sourced from the record - `PHASE_OUTCOME.md`, the reports, the
+  ledger - rather than from a stopwatch. **This step runs no suite and needs no
+  timing.** *must-pass*
 
 **The properties the gate set must cover**, at minimum: Deep is a superset of the
-port; the port's gates are in the decode path; `Ft8Sharp` references nothing
-outside itself; the ladder reports zero wrong; the census reaches all three
-surfaces.
+port; the port's parity and CRC-14 gates are in the decode path; `Ft8Sharp`
+references nothing outside itself; the ladder returns nothing that was not sent;
+the census reaches all three surfaces; a decoder's identity is recorded.
 
-**This step pays for itself inside two units.**
+**Do not pad it.** A dozen tests that each earned their place beats fifty.
 
 **Depends on:** nothing.
 
