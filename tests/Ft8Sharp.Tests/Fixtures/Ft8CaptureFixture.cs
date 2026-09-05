@@ -174,8 +174,14 @@ internal sealed record Ft8CaptureFixture(
                 continue;
             }
 
+            // A bare known key is an EMPTY VALUE, not an unreadable line. The two produce different
+            // messages and the difference is worth keeping: "the generator header is empty" sends
+            // whoever reads it somewhere useful, and "this line makes no sense" does not.
             var split = line.IndexOfAny([' ', '\t']);
-            if (split < 0)
+            var key = split < 0 ? line : line[..split];
+            var value = split < 0 ? string.Empty : line[split..].Trim();
+
+            if (split < 0 && !Keys.Contains(key, StringComparer.Ordinal))
             {
                 throw new Ft8FixtureException(
                     fixturePath,
@@ -184,9 +190,6 @@ internal sealed record Ft8CaptureFixture(
                     + "nor a ROW. A line this reader does not understand is a refusal and never a "
                     + "line it skips.");
             }
-
-            var key = line[..split];
-            var value = line[split..].Trim();
 
             if (!Keys.Contains(key, StringComparer.Ordinal))
             {
@@ -301,7 +304,8 @@ internal sealed record Ft8CaptureFixture(
             throw new Ft8FixtureException(
                 fixturePath,
                 capture,
-                "the generator header is empty. It has to name what actually produced the rows, "
+                "there is no \"generator\" header value - the key is there and the value is empty. It "
+                + "has to name what actually produced the rows, "
                 + "because provenance alone says which kind of thing it was and not which thing.");
         }
 

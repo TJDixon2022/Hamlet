@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: WORKING
-TASK: 2 of 7
+TASK: 3 of 7
 WORK_INSTRUCTION: 244 - the fixture format, the reader that refuses, and the command Tim runs
 BALL: claude
 RULES_AT: HM-DEC-153 (2026-09-04)
 NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-09-04T21:28:00-04:00
-NOTE: The format is being written down with a provenance token the reader checks, so an example fixture can be read but never scored as though it were a real WSJT-X run
+UPDATED: 2026-09-04T21:34:00-04:00
+NOTE: A test per refusal, and a separate one for the empty captured folder, because zero fixtures and a fixture naming a missing capture must never share a code path
 
 ---
 
