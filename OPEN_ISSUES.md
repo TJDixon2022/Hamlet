@@ -4,6 +4,53 @@ Questions with owner and severity. `owner` is who must act next. Format in
 `CLAUDE.md` §3.
 
 ---
+id: HM-OPEN-081
+status: open
+owner: tim
+raised: 2026-09-05
+severity: slows
+blocks: nothing — combining is built, measured at every depth and off by default; what is missing is the one configuration this unit would actually recommend
+refs: PHASE_PLAN.md step 5, docs/unit254-combining-depth.md §4b, §4c and §5.4, tests/Ft8Sharp.Tests/Dsp/Ft8Unit254DepthLadderTests.cs, unit 254
+---
+
+**The configuration unit 254 recommends is the one it did not measure: accumulated
+combining at depth 3 WITH the stages Hamlet ships.**
+
+Unit 254 measured accumulation without the stack (4b: **252 of 306**, 82.4 per cent,
+Wilson 77.7–86.2, four hearings in the deepest sum, zero wrong) and the stack without
+accumulation (4c: **79 of 306**, 25.8 per cent, 21.2–31.0, two hearings, zero wrong).
+**It never ran the two together**, and that combination is what §5.6 recommends and what
+step 6 would have to price.
+
+**Three things only that run can say.**
+
+1. **Whether the two gains add.** 4c's 11 extra decodes came entirely from the inner
+   decoder reading slots alone, not from combining, so on a four-slot trial there are four
+   chances at that gain rather than one — the stacked accumulated column could be well
+   above 252 of 306, or could saturate.
+2. **The worst observed slot, which is the only time figure that matters.** §5.4 bounds it
+   between 85.4 ms (accumulated, stages off, 176×) and 99.6 ms (stages on, depth 1, 151×)
+   and says plainly that it is a bound and not a figure. The recommendation in §5.6 quotes
+   99.6 ms for exactly that reason.
+3. **Whether the submission budget behaves.** Ordered statistics changes which candidates
+   carry usable ratios, so the pairing may offer more; 4b spent 2 232 submissions at depth
+   3 and 4c spent 516 at depth 1, and the product of the two effects has not been observed.
+
+**What would settle it, and the price.** One call.
+`Ft8LadderHarness.RunRepeats(-21.0, 306, repeats: 4, frequencyJitterHz: 2.0,
+offsetJitterSamples: 480, combining: new Ft8DeepCombineSettings(historyDepth: 3,
+accumulationDepth: 3), combinedOsd: Ft8DeepOsdSettings.Default, combinedFineSync:
+Ft8DeepFineSyncSettings.Default)` — **every parameter already exists.** No new algorithm,
+no change to the port, no change to `Ft8LadderHarness.Run`. From 4b's 3 m 41 s and 4c's
+3 m 1 s the run is about five minutes at 306 trials and under a minute at 51, which fits
+one foregrounded call inside the 480 s ceiling either way.
+
+**Why unit 254 did not do it.** Its task 4 named three methods and this is a fourth, and
+the unit's own drop discipline is that a column is cut before a measurement is shrunk.
+Nothing was dropped and nothing was shrunk; this is a measurement that was never
+commissioned, and it is logged rather than taken.
+
+---
 id: HM-OPEN-080
 status: open
 owner: tim
@@ -316,6 +363,37 @@ this on an argument.
 
 **This entry stays open with its claim untested rather than refuted**, and the next
 unit on step 4 or step 6 owns the one-line change that would test it.
+
+### Tested again by unit 254, 2026-09-05, and it is still open for the same reason
+
+**Unit 254 ran combining stacked with fine sync AND ordered statistics at their settled
+defaults**, at -21 dB over 306 trials with the same 2.00 Hz and 480-sample jitter — the
+configuration `src/Hamlet.RadioEngine/Audio/Ft8Reception.cs:460` actually builds, and the
+one unit 247 §5 item 1 said had never been run:
+
+```
+column                                 DECODED   rate    lo 95   hi 95   WRONG   only-combined
+combined x2, alone                          68   22.2     17.9    27.2        0              55
+combined x2 + fine sync + OSD               79   25.8     21.2    31.0        0              46
+```
+
+**The stacked column wins 11 trials and loses none** — discordant 11 to 0 on identical
+audio. **But none of the 11 came from combining.** The submission budget is identical in
+both runs: 50 677 pairs offered, 516 submitted, 88 accepted, 62 combined decodes, 62
+verified. **The combining stage did precisely the same thing with fine sync on as with it
+off**, and the 11 came from the inner decoder reading a slot on its own that it could not
+read before — *any slot alone* rose from 13 of 306 to 33, which is exactly what ordered
+statistics adds to a single slot.
+
+**So this entry is confirmed at a second turn of the same handle, and for the reason unit
+248 already gave**: the hearing is still captured from the **coarse** ratios, and fine
+sync's re-synced ratios never reach the combiner. Turning fine sync on around the combiner
+does not test this claim; **capturing the hearing at the re-synced position is what would**,
+and no unit has done it. Unit 254 was told the baseband and fine sync are settled and not
+to be tuned, so it did not.
+
+**Still open, still untested rather than refuted, and now with two runs saying the same
+thing about the wrong knob.**
 
 ---
 id: HM-OPEN-074

@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: WORKING
-TASK: 5 of 6
+TASK: 6 of 6
 WORK_INSTRUCTION: 254 - repeated transmissions are combined across slots, and the sum is taken deeper than a pair
 BALL: claude
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-155 (2026-09-05)
-UPDATED: 2026-09-05T17:59:18-04:00
-NOTE: Verdict written - 5777 submissions across the whole unit for an expected 0.353 messages nobody sent and zero returned, the drop candidate was not taken, and the shipping question is answered with the surfaces that must change first rather than left open
+UPDATED: 2026-09-05T18:06:01-04:00
+NOTE: Bookkeeping - B17 written before gate-set entry 12 that cites it, the test name added to gate-set.bat, HM-OPEN-075 given a dated note saying fine sync was turned on and still never reached the combiner, HM-OPEN-081 raised for the one configuration the unit recommends and did not run, and the phase outcome entry appended by hand after the script was refused twice
 
 ---
 

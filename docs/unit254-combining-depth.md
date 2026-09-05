@@ -11,9 +11,28 @@ cannot carry it. Unit 247's figures are cited rather than restated — see
 
 ## 0. The one-line answer
 
-Sections 2, 4 and 5 are filled in by tasks 2, 4 and 5 of this unit. Section 1 is the
-trace, written and committed before a line of the accumulator existed, and section 1
-§3's prediction is on the record so that section 4 can say whether it held.
+**A `combined x4` column summed two hearings at a time. It sums four now, it bought +4
+decodes of 51 in the clean isolation, and it cost not one extra codeword put to the port's
+CRC-14.**
+
+At -21 dB jittered over 306 trials: the port **13 of 306**, the single slot with ordered
+statistics **33**, combining across two slots **68**, combining across two slots stacked
+with the stages Hamlet ships **79**, and a station heard four times with the sum
+accumulated **252 of 306** — 82.4 per cent, Wilson 77.7 to 86.2, **236 of them trials no
+single slot decoded alone, zero wrong on every row, and 470 of 470 combined decodes
+verified against the message that went in.**
+
+**The instrument did not move**: task 2 reproduced unit 247's 13 / 33 / 68 and 13 / 33 /
+217, its only-combined counts and every line of its submission budget, exactly, four
+sibling versions later.
+
+**And the depth is free.** 4a's two isolations spent 203 submissions against 203 and 359
+against 359. What the deeper sum changed is how often the port's own gates accepted one:
+59 → 66 and 76 → 114.
+
+Section 1 is the trace, written and committed before a line of the accumulator existed,
+and §1.4's prediction is on the record so that §4 can say whether it held. **It held, at
+the low end of its own stated range.**
 
 ---
 

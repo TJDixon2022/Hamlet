@@ -345,6 +345,70 @@ does not answer *is the message gone*; only whether the residue is below whateve
 is in the slot does. **A unit that had turned the decibels into a pass/fail threshold
 would have been asserting a quantity that does not decide the question.**
 
+### B17 — a column headed `combined x4` that summed two hearings at a time
+
+**Work instruction 254.** `Ft8DeepSoftCombiner.Combine(IReadOnlyList<float[]>, ...)` sums
+any number of hearings and has done since unit 247. `Ft8DeepRepeatDecoder` called it
+through the **two-hearing overload**, once per remembered slot, so a decoder handed four
+slots computed *a chain of pairs* — `(slot 4, slot 3)`, then `(slot 4, slot 2)`, then
+`(slot 4, slot 1)` — and never a sum of four. `Ft8LadderHarness.RunRepeats` labelled its
+third column `combined x{repeats}` **from the repeat count and never from the depth of any
+sum**.
+
+**So a column headed `combined x4` measured the 3.01 dB that two hearings are worth while
+its name claimed the 6.02 that four are**, and `PHASE_PLAN.md`'s own sentence — *two
+repeats is 3 dB of processing gain and four is 6* — **was not reachable by the code as it
+stood.**
+
+**Why no count would have shown it.** `Ft8DeepCombineCounts` reported offered, submitted,
+accepted and added. All four are correct for a chain of pairs and all four are correct for
+a sum of four; **they are the same numbers either way**, because the rule is one submission
+per candidate per remembered slot in both. `Ft8DeepRepeatDecoder.RememberedSlots` says how
+many slots are held, not how many entered a sum. **Nothing the type published could tell a
+reader which was happening**, and nothing in the tree asserted anything about three
+hearings — `Ft8DeepSoftCombinerTests`' five facts are all about two.
+
+**And it would have been reported as a result.** A four-repeat run would have shown a gain
+over a two-repeat one — it does, because `RunRepeats` scores the union over a trial's slots
+and four slots is four single-slot attempts — so the column would have been read as *the
+depth is working and four repeats is worth about what two are*, and the honest conclusion
+*a third and fourth hearing buy little on this instrument* would have been drawn from code
+that never summed a third hearing.
+
+**Found by:** unit 254, by watching the assertion fail before the accumulator existed.
+
+**A test catches it, and what is asserted is the depth of the sum and not the rate.**
+`Ft8Sharp.Deep.Tests.Ft8Unit254AccumulationTests.TheDeepestCombinationOfFourHearingsCarriesFourAndNotTwo`
+puts four hearings of one known transmission through the decoder at a history of three and
+an accumulation depth of three, and asks how many hearings the deepest combination the
+fourth slot submitted actually carried. Its red, before the accumulator:
+
+```
+  Assert.Equal() Failure: Values differ
+Expected: 4
+Actual:   2
+
+ slot 0: 0 slots remembered behind it, 0 combinations submitted, deepest carried 0 hearings
+ slot 1: 1 slots remembered behind it, 6 combinations submitted, deepest carried 2 hearings
+ slot 2: 2 slots remembered behind it, 13 combinations submitted, deepest carried 2 hearings
+ slot 3: 3 slots remembered behind it, 18 combinations submitted, deepest carried 2 hearings
+```
+
+**The count is the fix as much as the accumulator is.**
+`Ft8DeepCombineCounts.DeepestHearings` and `Ft8LadderHarness.RepeatsRun.DeepestHearings`
+put the depth of the sum on the face of every report, so the next reader of a `combined x4`
+row does not have to read the decoder to know what it computed.
+
+**And the second half of the breakage is one a fix could easily have introduced.** The
+obvious way to sum four hearings is to submit the 2-way, the 3-way and the 4-way, which
+spends **three** chances of the port's CRC-14 accepting a message nobody sent where the
+pairwise rule spent one. `CLAUDE.md` §0.0 makes that trade unacceptable, so the depth is a
+sliding window over the history — more hearings per submission, never more submissions —
+and
+`Ft8Sharp.Deep.Tests.Ft8Unit254AccumulationTests.TheDeeperSumSpendsExactlyTheBudgetThePairwiseRuleSpent`
+asserts the offered and submitted counts equal, slot for slot, against a pairwise decoder
+on identical audio.
+
 ---
 
 ## B. Breakages no test would have caught
@@ -448,6 +512,13 @@ photograph of the bug.**
 | 7. A decoder's identity is recorded | B13 |
 | 8. One slot decodes inside the budget | B1 |
 | 9. The `snr` column carries a ratio and not something else | B14 |
+| 10. The ordered-statistics search costs what it says | B15 |
+| 11. A subtracted message is gone from the residual | B16 |
+| 12. A combination that says four hearings carries four | B17 |
+
+**Rows 10 and 11 were added by unit 254.** This table had stopped at 9 while
+`docs/gate-set.md` ran to 11; the two entries and the two breakages were both already
+written, and only the index of one against the other was missing.
 
 **B8, B9, B10 and B11 are real and are deliberately not in the gate set**: two are
 guarded by their own units' tests over code this phase does not touch, and two are

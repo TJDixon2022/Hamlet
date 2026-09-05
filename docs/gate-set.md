@@ -511,6 +511,57 @@ project's history that writes samples and then asks a decoder to believe them.
 
 ---
 
+### 12. A combination that says four hearings carries four
+
+| | |
+|---|---|
+| `Ft8Sharp.Deep.Tests.Ft8Unit254AccumulationTests.TheDeepestCombinationOfFourHearingsCarriesFourAndNotTwo` | 0.6 s |
+
+**The property.** Four hearings of one known transmission go through
+`Ft8DeepRepeatDecoder` at a history depth of three and an accumulation depth of three, and
+`Ft8DeepCombineCounts.DeepestHearings` is asked how many hearings the deepest combination
+each slot submitted **actually carried**. The answer must be 0, 2, 3, 4 as the history
+fills. **The depth of the sum is asserted; no rate is, and no bound is.**
+
+**The breakage it would have caught — `B17`, work instruction 254.** `Ft8DeepRepeatDecoder`
+called the **two-hearing** overload of `Ft8DeepSoftCombiner.Combine` once per remembered
+slot, so a decoder handed four slots computed a chain of pairs and never a sum of four,
+while `Ft8LadderHarness.RunRepeats` labelled its third column `combined x{repeats}` from
+the repeat count. **A column headed `combined x4` measured the 3.01 dB two hearings are
+worth and claimed the 6.02 that four are.**
+
+**Why no other count can stand in for it.** Offered, submitted, accepted and added are
+*identical* for a chain of pairs and for a sum of four — the rule is one submission per
+candidate per remembered slot either way — and `RememberedSlots` says how many slots are
+held, not how many entered a sum. **There is no number in the tree, other than this one,
+from which a reader could tell the two apart**, and the wrong one would have been reported
+as a result: a four-repeat run does gain over a two-repeat run, because the combined column
+is scored on the union over a trial's slots.
+
+**And it caught it on its own first run.** Watched failing before the accumulator existed:
+
+```
+  Assert.Equal() Failure: Values differ
+Expected: 4
+Actual:   2
+ slot 3: 3 slots remembered behind it, 18 combinations submitted, deepest carried 2 hearings
+```
+
+After the accumulator the same four slots report 0, 2, 3, 4 hearings on submission counts
+of **0, 6, 13, 18 — the counts they reported before.**
+
+**One entry and not two, deliberately.** The companion assertion —
+`TheDeeperSumSpendsExactlyTheBudgetThePairwiseRuleSpent`, which holds the false-accept
+budget equal slot for slot against a pairwise decoder — guards a property this set already
+covers in spirit through entry 4, and this file's own rule is *do not pad it*. It lives in
+the suite and is named in `B17`.
+
+**Why 0.6 s is the whole cost.** Four synthesised slots and one integer. It is the cheapest
+entry in this set, and it guards the one thing about a combining stage that cannot be read
+off any count it publishes.
+
+---
+
 ## Known red, inherited, never chased
 
 **These are red before any unit starts and are not that unit's finding.** They are
