@@ -4,6 +4,50 @@ Questions with owner and severity. `owner` is who must act next. Format in
 `CLAUDE.md` §3.
 
 ---
+id: HM-OPEN-074
+status: open
+owner: claude
+raised: 2026-09-05
+severity: slows
+blocks: nothing — it is a bound on step 2 and a measured argument for step 4, and no step waits on it
+refs: PHASE_PLAN.md steps 2 and 4, docs/unit246-osd.md §1, tests/Ft8Sharp.Tests/Dsp/Ft8Unit246CeilingTests.cs, unit 246
+---
+
+**About four per cent of trials at -21 dB have no candidate near the signal at all,
+so no amount of code searching can reach them and they belong to step 4.**
+
+Unit 246 task 1 measured, over one whole 51-trial block at -21 dB with the harness's
+own seed, the smallest hard-decision distance between any candidate the sync search
+returned and **the codeword the ladder knows it transmitted**. For 49 of 51 trials
+that distance was 15 to 45 of 174, plainly the signal. **For two it was 71 and 81**,
+against a chance distance of 87 for a candidate unrelated to the transmission.
+
+```
+trial  3  a report acknowledged: closest 81 of 174
+trial  7  a compound call:       closest 71 of 174
+```
+
+**What it means for step 2.** It is a floor. Ordered statistics decoding, subtraction
+and any other coding work operate on a candidate's ratios, and for these two trials
+the search never returned a place where the signal was, so there are no ratios to
+work on. Step 2 cannot reach them and neither can step 3.
+
+**What it means for step 4.** *Each candidate is re-synced at baseband* is the step
+that could recover them, because the failure is a synchronisation failure and not a
+coding one. **This entry is the measured argument that step 4 has something to find**,
+and it says how much: about 4 per cent of the population at this rung, on 51 trials,
+which is two trials and is therefore an estimate with a wide interval rather than a
+figure. A unit taking step 4 should re-measure it over 306 before quoting it.
+
+**And what it is not.** It is **not** where the missing 1.2 dB is. Forty-nine of 51
+trials did have a candidate near the signal and were still not decoded; the ceiling
+distribution in `docs/unit246-osd.md` §1 is where that sits. Two trials cannot
+account for a decibel.
+
+**No `Ft8Sharp` change is implied and none is permitted this phase.** The sync search
+is the port's and the port is the instrument.
+
+---
 id: HM-OPEN-073
 status: open
 owner: tim
