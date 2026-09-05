@@ -1,0 +1,25 @@
+UNIT 256, TASK 3, THE LOWER BRACKET RUNG: -18.0 dB, 306 trials, 4 columns.
+PLACEMENT: CELL CENTRE - +1.56 Hz, +480 samples, from Ft8Unit255ClosingLadderTests :62 and :64, originally unit 248's. These two numbers and no others.
+LADDER: Ft8LadderHarness.Run - one signal, no neighbour. The audio is synthesised once per trial and every column is handed the same array, so this is a PAIRED design.
+THE RUNG WAS SET FROM THE COARSE SEARCH at 51 trials, whose table is docs/unit256-runs/cell-centre-coarse.txt. It is not carried over from any earlier unit.
+COLUMNS: Ft8Sharp, Deep all off, OSD only, subtraction only - the four that read "not bracketed" in unit 255 section 4.1's cell-centre table.
+
+decoder      requested  delivered  trials  DECODED  MISSED  WRONG    rate   lo 95   hi 95    wall s    ms/tr
+Ft8Sharp         -18.0    -17.999     306       77     229      0    25.2    20.6    30.3      5.8     18.9
+Deep all off     -18.0    -17.999     306       77     229      0    25.2    20.6    30.3      5.7     18.5
+OSD only         -18.0    -17.999     306      172     134      0    56.2    50.6    61.7      6.5     21.3
+subtraction only     -18.0    -17.999     306       77     229      0    25.2    20.6    30.3      8.8     28.8
+
+THE TIME BUDGET, at -18.0 dB at the cell centre:
+column              worst slot ms   its candidates   margin vs 15 000 ms      ms/trial
+Ft8Sharp                     78.8               18                  190x          18.9
+Deep all off                 62.4               18                  241x          18.5
+OSD only                     76.7               18                  196x          21.3
+subtraction only            153.1               31                   98x          28.8
+
+THE DISCORDANT COUNTS, on identical audio:
+OSD only vs Ft8Sharp             only Ft8Sharp      0   only OSD only     95
+
+rung wall clock 28.9 s.
+TOTAL WRONG ACROSS ALL FOUR COLUMNS AT THIS RUNG: 0.
+TOTAL SCORED SLOT DECODES AT THIS RUNG: 1224.

@@ -1,0 +1,39 @@
+UNIT 256, TASK 3, THE COARSE SEARCH: 51 trials a rung - ONE WHOLE BLOCK of the 51-message population - climbing -17, -15, -13, -11, -9 dB, CAPPED at -9.
+PLACEMENT: CELL CENTRE - +1.56 Hz, +480 samples, from Ft8Unit255ClosingLadderTests :62 and :64, originally unit 248's. These two numbers and no others.
+COLUMNS: the four that read "not bracketed" in unit 255 section 4.1's cell-centre table. fine sync only and SHIPPING already cross at -19.61 dB there and are not re-run.
+THE BELOW-50 SIDE IS ALREADY KNOWN, at 306 trials, from docs/unit255-runs/minus19-cell-centre.txt: Ft8Sharp 6 of 306, Deep all off 6 of 306, OSD only 33 of 306, subtraction only 6 of 306 - all far below 50 per cent, so the crossings lie ABOVE -19 dB and this search only has to find the first rung above.
+51 TRIALS IS ONE BLOCK AND ITS WILSON INTERVALS ARE WIDE. That is the point of doing it first and cheaply. NO RATE HERE IS QUOTED AS A CROSSING.
+
+--- COARSE RUNG -17.0 dB, 51 trials, 6.3 s
+decoder      requested  delivered  trials  DECODED  MISSED  WRONG    rate   lo 95   hi 95    wall s    ms/tr
+Ft8Sharp         -17.0    -16.999      51       41      10      0    80.4    67.5    89.0      1.0     20.1
+Deep all off     -17.0    -16.999      51       41      10      0    80.4    67.5    89.0      1.0     20.2
+OSD only         -17.0    -16.999      51       51       0      0   100.0    93.0   100.0      1.2     23.6
+subtraction only     -17.0    -16.999      51       41      10      0    80.4    67.5    89.0      2.7     52.7
+  worst slots: Ft8Sharp 80.4 ms (187x), Deep all off 95.2 ms (158x), OSD only 84.5 ms (178x), subtraction only 158.9 ms (94x)
+
+STOPPING EARLY at -17.0 dB: every column has now been seen ABOVE 50 per cent here and BELOW it at -19 dB. The remaining coarse rungs are not walked.
+
+--- REFINEMENT RUNG -18.0 dB, 51 trials: the climb localised every crossing to (-19.0, -17.0), a TWO decibel gap, and the 306-trial pair must be ONE decibel apart.
+    4.8 s
+decoder      requested  delivered  trials  DECODED  MISSED  WRONG    rate   lo 95   hi 95    wall s    ms/tr
+Ft8Sharp         -18.0    -17.998      51       14      37      0    27.5    17.1    40.9      0.9     18.1
+Deep all off     -18.0    -17.998      51       14      37      0    27.5    17.1    40.9      0.9     18.0
+OSD only         -18.0    -17.998      51       30      21      0    58.8    45.2    71.2      1.1     21.5
+subtraction only     -18.0    -17.998      51       14      37      0    27.5    17.1    40.9      1.5     29.1
+  worst slots: Ft8Sharp 20.2 ms (741x), Deep all off 19.6 ms (766x), OSD only 54.9 ms (273x), subtraction only 58.2 ms (258x)
+
+WHERE EACH COLUMN WAS FIRST SEEN ABOVE 50 PER CENT, at 51 trials:
+  Ft8Sharp             known   6 of 306 at -19 dB   first above 50 %: -17.0 dB
+  Deep all off         known   6 of 306 at -19 dB   first above 50 %: -17.0 dB
+  OSD only             known  33 of 306 at -19 dB   first above 50 %: -17.0 dB
+  subtraction only     known   6 of 306 at -19 dB   first above 50 %: -17.0 dB
+
+AND WHERE THE REFINEMENT RUNG PUT EACH ONE:
+  Ft8Sharp             at -18.0 dB:  14 of 51 =  27.5 % - below 50
+  Deep all off         at -18.0 dB:  14 of 51 =  27.5 % - below 50
+  OSD only             at -18.0 dB:  30 of 51 =  58.8 % - ABOVE 50
+  subtraction only     at -18.0 dB:  14 of 51 =  27.5 % - below 50
+
+COARSE SEARCH WALL CLOCK 11.3 s.
+THE 306-TRIAL PAIR IS SET FROM THIS TABLE, in docs/unit256-crossings-and-combining.md, and the two constants at the top of Ft8Unit256CellCentreBracketTests are set from it.

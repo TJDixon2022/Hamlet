@@ -76,6 +76,46 @@ public class Ft8Unit256CrossingIntervalTests(ITestOutputHelper output)
     ];
 
     /// <summary>
+    /// <b>The four cell-centre columns unit 255 could only mark <c>not bracketed</c>, bracketed by
+    /// rungs unit 256 measured tonight.</b>
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// <b>Every rung below is 306 trials at the cell centre — <c>+1.56 Hz</c>, <c>+480
+    /// samples</c> — and none of them is a 51-trial coarse rung.</b> The coarse search at 51
+    /// trials localised the crossings and is quoted nowhere as a crossing;
+    /// <c>docs/unit256-runs/cell-centre-coarse.txt</c> is the record of it.
+    /// </para>
+    /// <para>
+    /// <b>Three columns straddle at (-18, -17) and one at (-19, -18), and that is a measurement
+    /// rather than an inconsistency.</b> <c>OSD only</c> reads <b>172 of 306, 56.2 per cent</b> at
+    /// -18 dB — already above 50 — so its crossing lies a decibel deeper than the other three.
+    /// <b>Its lower rung is unit 255's own -19 dB cell-centre row</b>, 33 of 306, measured at the
+    /// same placement, the same seed and the same <c>Ft8Sharp.Deep</c> 0.8.0
+    /// (<c>docs/unit255-runs/minus19-cell-centre.txt</c>) — <b>so all four are bracketed by
+    /// 306-trial rungs and unit 256's named drop candidate was not taken.</b>
+    /// </para>
+    /// </remarks>
+    private static IReadOnlyList<(
+        string Column,
+        string Placement,
+        double UpperDecibels,
+        int UpperDecoded,
+        double LowerDecibels,
+        int LowerDecoded,
+        string Source)> BracketedTonight =>
+    [
+        ("Ft8Sharp", "cell centre", -17.0, 235, -18.0, 77,
+            "unit 256 cell-centre-minus17.txt / cell-centre-minus18.txt"),
+        ("Deep all off", "cell centre", -17.0, 235, -18.0, 77,
+            "unit 256 cell-centre-minus17.txt / cell-centre-minus18.txt"),
+        ("OSD only", "cell centre", -18.0, 172, -19.0, 33,
+            "unit 256 cell-centre-minus18.txt / unit 255 minus19-cell-centre.txt"),
+        ("subtraction only", "cell centre", -17.0, 235, -18.0, 77,
+            "unit 256 cell-centre-minus17.txt / cell-centre-minus18.txt"),
+    ];
+
+    /// <summary>
     /// <b>The band brackets the point, is open where a bound curve never reaches 50 per cent, and
     /// reproduces the one crossing this project has already published by hand.</b>
     /// </summary>
@@ -121,6 +161,33 @@ public class Ft8Unit256CrossingIntervalTests(ITestOutputHelper output)
         }
 
         Say(string.Empty);
+        Say(
+            "AND THE FOUR CELL-CENTRE COLUMNS UNIT 255 COULD ONLY MARK \"not bracketed\", "
+            + $"BRACKETED TONIGHT. Every rung {Trials} trials at the cell centre, +1.56 Hz "
+            + "and +480 samples. NO 51-TRIAL COARSE RUNG IS QUOTED HERE.");
+        Say(Ft8Unit256CrossingBand.Header);
+
+        foreach (var row in BracketedTonight)
+        {
+            var band = Ft8Unit256CrossingBand.Crossing(
+                new Ft8Unit256CrossingBand.Rung(row.UpperDecibels, row.UpperDecoded, Trials),
+                new Ft8Unit256CrossingBand.Rung(row.LowerDecibels, row.LowerDecoded, Trials));
+
+            bands.Add((row.Column, row.Placement, band));
+            Say(Ft8Unit256CrossingBand.AsRow(row.Column, row.Placement, band));
+        }
+
+        Say(string.Empty);
+        Say("WHERE EACH OF THOSE FOUR RUNGS CAME FROM:");
+
+        foreach (var row in BracketedTonight)
+        {
+            Say(
+                $"  {row.Column,-20} {row.UpperDecibels,6:F1} dB and {row.LowerDecibels,6:F1} dB   "
+                + row.Source);
+        }
+
+        Say(string.Empty);
         Say("WHAT UNIT 255 PUBLISHED, BESIDE WHAT THE ARITHMETIC RETURNS:");
         Say("column               placement     published    computed    agrees");
 
@@ -129,7 +196,9 @@ public class Ft8Unit256CrossingIntervalTests(ITestOutputHelper output)
             -19.54, -19.54, -19.66, -19.81, -19.90, -19.54, -19.61, -19.61,
         };
 
-        for (var i = 0; i < bands.Count; i++)
+        // ONLY THE EIGHT UNIT 255 PUBLISHED. The four bracketed tonight had no published value to
+        // agree with - that is the whole reason they were measured.
+        for (var i = 0; i < publishedPoints.Length; i++)
         {
             var (column, placement, band) = bands[i];
             var agrees = Math.Abs(Math.Round(band.Point, 2) - publishedPoints[i]) < 0.005;

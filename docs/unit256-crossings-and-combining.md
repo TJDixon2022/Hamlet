@@ -424,11 +424,22 @@ version in the tree tonight — **so it is cited, not re-run**:
 |---|---|---|
 | P1 | `SHIPPING` on grid: point -19.90 dB, band **open beyond -20 dB to -19.79 dB** | **exact.** `-19.896552` dB, `open beyond -20.0 dB to -19.789651 dB` |
 | P2 | `Ft8Sharp` on grid: point -19.54 dB, band **-19.62 to -19.46 dB**, 0.16 dB wide | **exact.** `-19.5429` dB, `-19.62 to -19.46`, **0.162 dB** wide |
-| P3 | the coarse search costs **≤ 94.2 s** | *task 3* |
-| P4 | each 306-trial cell-centre rung costs **≈ 113 s** | *task 3* |
+| P3 | the coarse search costs **≤ 94.2 s** | **11.3 s.** It stopped at its first rung |
+| P4 | each 306-trial cell-centre rung costs **≈ 113 s** | **34.8 s** at -17 and **28.9 s** at -18 — **the prediction was 3.5× high** |
 | P5 | each panel rung costs **130 – 150 s** | *task 4* |
-| P6 | every row of every walk reads **zero wrong** | *tasks 3, 4* |
-| P7 | `Deep all off` equals `Ft8Sharp` on every cell-centre rung | *task 3* |
+| P6 | every row of every walk reads **zero wrong** | **held on every cell-centre row.** *task 4 outstanding* |
+| P7 | `Deep all off` equals `Ft8Sharp` on every cell-centre rung | **held**, 235/71/0 and 77/229/0, decode for decode |
+
+> **P4 IS THE INTERESTING MISS AND IT IS WORTH THE PARAGRAPH.** §3.1 priced the bracket rungs
+> at **369.6 ms a trial** on the reasoning that `subtraction only` gets *dearer* as the decode
+> rate rises. **It measured 116.6 ms a trial at -17 dB and 86.7 at -18** — and
+> `subtraction only` itself came in at **48.6 ms a trial at -17 dB against the 166.4 ms it cost
+> at -19 dB on the grid.** Per-trial cost **falls** as the ratio improves, on every column
+> including subtraction, because a slot whose message decodes cleanly is a slot the sifting
+> stops early on; the 166.4 ms figure was measured where the rate is 81 per cent and the
+> sifting is doing the most work, not where it is highest. **The task 1 pricing was
+> conservative in the safe direction and by a factor of three and a half**, and the correction
+> is recorded here rather than in `docs/unit246-osd.md` §5 item 4, which stays parked.
 
 **And a correction to §2.3's own arithmetic, which changes nothing.** The hand computation
 wrote `Wilson(283, 306)`'s upper bound as `94.937`; the code returns **`94.940`**, and
@@ -480,7 +491,106 @@ breakage it would have caught*:
 
 ---
 
-## 7. Where the deliverable is
+## 7. Task 3 — the four cell-centre columns, bracketed
+
+**Ladder: `Ft8LadderHarness.Run`, one signal, no neighbour, paired — every column handed the
+identical array. Placement: the cell centre, `+1.56 Hz` and `+480 samples`.
+`Ft8Sharp.Deep` 0.8.0.**
+
+### 7.1 The coarse search, and it stopped at its first rung
+
+`docs/unit256-runs/cell-centre-coarse.txt`. **51 trials — one whole block of the 51-message
+population — climbing -17, -15, -13, -11, -9 dB, capped at -9.** The below-50 side was
+already known at 306 trials from `docs/unit255-runs/minus19-cell-centre.txt` (6, 6, 33 and 6
+of 306), so the climb only had to find the first rung above.
+
+| rung | trials | `Ft8Sharp` | `Deep all off` | `OSD only` | `subtraction only` |
+|---|---:|---:|---:|---:|---:|
+| **-17.0** | 51 | **41 of 51, 80.4 %** | 41, 80.4 % | **51 of 51, 100 %** | 41, 80.4 % |
+| **-18.0** *(refinement)* | 51 | **14 of 51, 27.5 %** | 14, 27.5 % | **30 of 51, 58.8 %** | 14, 27.5 % |
+
+**Every column was above 50 per cent at the very first coarse rung**, so -15, -13, -11 and -9
+were never walked and **the -9 dB cap was never approached.** The whole search cost **11.3 s**.
+
+**The refinement to one decibel is this unit's own step and it is stated rather than assumed.**
+The coarse ladder steps two decibels; the 306-trial pair the crossing is interpolated between
+must be one decibel apart, as every crossing in this project is. Having localised every column
+to the gap `(-19, -17)`, the method probed the single integer rung inside it, **-18 dB, at the
+same 51 trials**, for one more block of cost. **No 51-trial rate is quoted anywhere as a
+crossing.**
+
+### 7.2 The two 306-trial rungs
+
+`docs/unit256-runs/cell-centre-minus17.txt` and `cell-centre-minus18.txt`.
+
+| column | -17.0 dB (Wilson 95 %) | -18.0 dB (Wilson 95 %) | wrong |
+|---|---|---|---:|
+| `Ft8Sharp` | **235 of 306, 76.80 %** (71.75 – 81.18) | **77 of 306, 25.16 %** (20.63 – 30.31) | **0** |
+| `Deep all off` | **235 of 306, 76.80 %** | **77 of 306, 25.16 %** | **0** |
+| `OSD only` | 289 of 306, 94.44 % (91.34 – 96.47) | **172 of 306, 56.21 %** (50.61 – 61.66) | **0** |
+| `subtraction only` | **235 of 306, 76.80 %** | **77 of 306, 25.16 %** | **0** |
+
+**Wall clocks 34.8 s and 28.9 s. 2 448 scored slot decodes, zero wrong.**
+**`Deep all off` equals `Ft8Sharp` on both rungs in decoded, missed and wrong** — 235/71/0 and
+77/229/0 — so every column beside it is attributable to the stage that names it.
+
+**Worst single slot anywhere in task 3: 154.4 ms**, `subtraction only` at -17 dB on a slot
+carrying 42 candidates — a **97× margin** against FT8's 15 000 ms. Nothing here disturbs
+unit 255's exit-3 figure of 336.8 ms and 44.5×, which was `SHIPPING`'s and `SHIPPING` was not
+re-run tonight.
+
+### 7.3 Which pair straddles which column, and the drop candidate
+
+**Three columns straddle at (-18, -17) and one at (-19, -18)**, and that is a measurement
+rather than an inconsistency. `OSD only` reads **172 of 306, 56.2 per cent at -18 dB** —
+already above 50 — so its crossing lies a decibel deeper than the other three.
+
+**(-18, -17) brackets three of the four**, which is the most of any pair, and it is the pair
+the two 306-trial methods measured. **`OSD only`'s lower rung is unit 255's own -19 dB
+cell-centre row, 33 of 306** — same placement, same seed, same `Ft8Sharp.Deep` 0.8.0,
+`docs/unit255-runs/minus19-cell-centre.txt`.
+
+> **SO NO COLUMN IS LEFT TO BE INTERPOLATED FROM A 51-TRIAL RUNG, AND THE NAMED DROP
+> CANDIDATE WAS NOT TAKEN.** All four crossings are interpolated between rungs measured at the
+> full 306 trials. The decision was made at the start of task 3 and recorded at §5.1 before
+> any of it was walked; the outcome is better than the decision needed it to be, because
+> `OSD only`'s bracket cost nothing at all — its lower rung was already in the tree.
+
+### 7.4 The port's own cell-centre crossing, stated as a sentence
+
+`docs/unit256-runs/crossing-bands.txt`.
+
+| column | placement | rungs | point | **band** | width |
+|---|---|---|---:|---|---:|
+| **`Ft8Sharp`** | cell centre | -17 / -18, 306 each | **-17.52 dB** | **-17.61 to -17.43 dB** | 0.187 dB |
+| `Deep all off` | cell centre | -17 / -18, 306 each | -17.52 dB | -17.61 to -17.43 dB | 0.187 dB |
+| `OSD only` | cell centre | -18 / -19, 306 each | **-18.14 dB** | **-18.25 to -18.01 dB** | 0.234 dB |
+| `subtraction only` | cell centre | -17 / -18, 306 each | -17.52 dB | -17.61 to -17.43 dB | 0.187 dB |
+
+> **THE BARE PORT NEEDS -17.52 dB, BAND -17.61 TO -17.43, TO HEAR HALF OF WHAT IS SENT AT THE
+> CENTRE OF A COARSE WATERFALL CELL.** Interpolated between 235 of 306 at -17 dB and 77 of 306
+> at -18 dB, both measured tonight at 306 trials at `+1.56 Hz` and `+480 samples`.
+> **No unit in this project has been able to state that number before.** Unit 248 marked it
+> `not bracketed` and unit 255 reproduced the mark.
+
+**Three things it settles.**
+
+1. **The off-grid penalty on the port is 2.02 dB**, `-19.54` on the grid against `-17.52` at
+   the cell centre — and **both bands are closed and neither overlaps the other**, 0.162 dB and
+   0.187 dB wide against a 2.02 dB gap. **This is the first statement of that penalty as a
+   ratio rather than as a decode count.**
+2. **What Hamlet ships crosses 2.09 dB below the bare port at the same placement** — `SHIPPING`
+   at **-19.61 dB** (band -19.67 to -19.55) against the port's **-17.52 dB** (band -17.61 to
+   -17.43). **The two bands are 1.94 dB apart at their nearest edges**, so the gap is far
+   outside anything 306 trials could confuse.
+3. **Ordered statistics alone recovers 0.62 dB of the 2.09**, crossing at -18.14 dB, and
+   **subtraction alone recovers none of it** — its crossing is the port's, to the decode, which
+   is §5.0's *the stopping rule correctly finding nothing to remove* said in the crossing's own
+   terms for the first time.
+
+---
+
+## 8. Where the deliverable is
 
 **`docs/unit255-closing-measurement.md` is the phase's closing statement and stays ONE
 document.** Tonight's numbers land there:
