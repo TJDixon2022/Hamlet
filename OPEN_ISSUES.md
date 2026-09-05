@@ -4,6 +4,31 @@ Questions with owner and severity. `owner` is who must act next. Format in
 `CLAUDE.md` §3.
 
 ---
+id: HM-OPEN-077
+status: open
+owner: tim
+raised: 2026-09-05
+severity: slows
+blocks: nothing — the rulings are all in DECISIONS.md and in force; what is missing is the summary a session reads first
+refs: CLAUDE.md §1, DECISIONS.md, PROJECT_STATUS.md RULES_AT, HM-DEC-153, HM-DEC-154, HM-DEC-155, docs/gate-set.md, unit 251
+---
+
+**`CLAUDE.md` §1's ruling table stops at `CPS-DEC-0152` while `DECISIONS.md` runs
+to `HM-DEC-155`, so the three most recent rulings — including the one that governs
+what every unit is allowed to run — are absent from the file a session reads
+first.**
+
+`PROJECT_STATUS.md`'s `RULES_AT` already says `HM-DEC-155`. 153, 154 and 155 were
+never added to §1's table, and **155 supersedes 154** in the specific matter of
+what a unit may run: a unit runs no test suite, and may run only the test it
+constructs in its own work instruction, filtered by exact name, foregrounded, with
+a stated timeout. `docs/gate-set.md` carries all three in full and is where the
+last three units have taken them from.
+
+**Logged and not chased.** Unit 251 was told not to edit `CLAUDE.md` and did not.
+The gap is standing and it is Tim's to close.
+
+---
 id: HM-OPEN-076
 status: open
 owner: tim

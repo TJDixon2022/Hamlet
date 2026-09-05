@@ -86,7 +86,7 @@ set.**
 **It never runs `Hamlet.App.Tests` unfiltered.** That project stops partway when
 run whole; `docs/full-suite-run.md` holds the four filtered commands for it.
 
-**Five of the twenty filters name a class rather than a method** —
+**Five of the twenty-one filters name a class rather than a method** —
 `Ft8SharpBoundaryTests`, `Ft8DeepIdentityTests`, `Unit222TraceTests`,
 `HamletDecodesThroughDeepTests`, `ACaptureSaysWhichDecoderReadItTests`. Each of
 those classes today holds **exactly** the methods listed below and nothing else,
@@ -104,31 +104,41 @@ an earlier attempt at this same work instruction left in `.run-unit\trx\` at
 
 ### Measured, by an earlier session, from the TRX
 
-**25 of the 27 methods have a measured duration in the tree.** The two
+**26 of the 28 methods have a measured duration in the tree.** The two
 `Hamlet.App.Tests` entries do not — that project was not re-measured.
 
 | Project | Gate-set tests | Measured per-test time |
 |---|---|---|
-| `Ft8Sharp.Tests` | 6 methods, 7 cases | **95.5 s** |
+| `Ft8Sharp.Tests` | 7 methods, 8 cases | **239.7 s** |
 | `Ft8Sharp.Deep.Tests` | 10 methods, 10 cases | **12.3 s** |
 | `Hamlet.RadioEngine.Tests` | 9 methods, 10 cases | **10.1 s** |
 | `Hamlet.App.Tests` | 2 methods, 2 cases | **not measured** |
-| | **27 methods, 29 cases** | **117.9 s over 27 of the 29 cases** |
+| | **28 methods, 30 cases** | **262.1 s over 28 of the 30 cases** |
 
-**Two entries are 79 per cent of that.** `Ft8DeepIdentityTests` is 54.7 s and
-`Unit222TraceTests` is 40.8 s, and they are the two entries the phase would be
-least willing to lose.
+**Three entries are 91 per cent of that.** `Ft8Unit251SnrAgreementTests` is
+144.2 s, `Ft8DeepIdentityTests` is 54.7 s and `Unit222TraceTests` is 40.8 s, and
+they are the three entries the phase would be least willing to lose.
+**Unit 251's is measured, on this machine, twice** — red at 2 m 25 s and green
+at 2 m 24 s — and is the only figure in this table taken by the unit that added
+the entry.
 
 ### Estimated, not measured
 
 **The whole command has never been run.** Four `dotnet test` invocations pay four
-build-and-discovery costs on top of the 118 s of test time, and this tree has no
-figure for a single invocation's build. **The estimate is three to four minutes
+build-and-discovery costs on top of the 262 s of test time, and this tree has no
+figure for a single invocation's build. **The estimate is five to six minutes
 cold**, and it is an estimate — the script prints its own wall clock every run,
 and the first person to run it should write the real figure in here.
 
+**THE THREE-MINUTE WAYPOINT IS NOW PAST**, and it was passed deliberately by unit
+251 rather than drifted past. It is a waypoint and not a gate, and the rule that
+put it there says so: *a slow gate set that guards the right things beats a fast
+one that does not, and no entry was dropped to reach a number*. Entry 9 measures
+the one number in this project that an operator reads before he reads the
+message, and it caught a 10 dB error on its own first run.
+
 **Against the counts in `docs/test-baseline.md`, corrected below**: the gate set
-is **29 cases** against **2,960 discovered across the three projects re-measured
+is **30 cases** against **2,960 discovered across the three projects re-measured
 plus whatever `Hamlet.App.Tests` now holds**. The alternative it replaces is
 **856 s for `Ft8Sharp.Tests` alone** and an engine project that **has never
 finished**. That is the trade, and it is why the target of *under three minutes*
@@ -369,6 +379,49 @@ budget** — and found on the way that ordered statistics **re-encoded 192,602
 times on one slot of clean synthetic audio, with nothing bounding that number**.
 **Steps 3, 4 and 5 of this phase all add work inside the slot. This is the one
 test that will say so.**
+
+### 9. The `snr` column carries a ratio and not something else
+
+| | |
+|---|---|
+| `Ft8Sharp.Tests.Dsp.Ft8Unit251SnrAgreementTests.TheEstimateAgreesWithTheCommandedRatioOverTwoHundredSynthesizedMessages` | 2 m 24 s |
+
+**The property.** The number under the `snr` heading is a **signal-to-noise ratio
+in a 2500 Hz reference bandwidth**, and it agrees with the ratio actually
+delivered to a **mean absolute error inside 1 dB** over **510 synthesized
+messages** across five rungs and two placements, taken **at the place the decoder
+itself reports** and against a symbol sequence **packed back out of the decoded
+text**, through the decoder Hamlet actually runs. Beside it: every recovered
+symbol sequence is byte for byte the transmitted one, and **the whole
+`Ft8SlotResult` is identical when the slot is decoded again after the estimate
+has been taken** — which is step 2's report-only criterion stated as an assertion
+rather than as a claim.
+
+**The breakage it would have caught — `B14`, work instruction 037 to unit 251.**
+The column was committed on the assumption that a signal-to-noise ratio is what a
+decoder produces. It is not — `Ft8Sharp` returns a Costas sync score, which is
+carried on `Ft8Decode.SyncScore` and has sat **one formatting call away from the
+cell** for two hundred units. Prose in `DigitalDecodeRow` and `Ft8Reception` is
+all that held the line, and prose cannot stop the next edit.
+
+**And it caught something on its own first run.** Watched failing first, the
+estimate taken at the decoder's reported place *without* alignment read **3.50 dB
+out over 510 messages** — 10.57 dB at the strongest rung, all of it at the cell
+centre, and **worsening as the signal got stronger** because the noise estimate
+becomes the signal's own leakage into the neighbouring bins. **A number 10 dB out
+under the heading an operator reads before the message**, one commit from
+shipping. The bound is **1.00 dB against a measured 0.26**, deliberately tighter
+than `PHASE_PLAN.md`'s 2 dB display gate, because the two single-edit regressions
+this also guards — averaging the grid's decibels rather than inverting its floor,
+and dropping `CandidateTimeBiasSeconds` — are **2.5 dB each** and would slip
+through 2 dB.
+
+**Why 2 m 24 s is worth paying, and what it buys that is not the rate.** It is
+the second-largest entry in the set after `Ft8DeepIdentityTests`, and it is the
+only one that measures a number the operator reads directly. It is **not a
+sensitivity measurement**: 510 of 510 trials decoded at these rungs, and nothing
+in it is claimed at −21 dB, where the rate is about 11 per cent and an agreement
+figure would be taken on the trials whose noise happened to be kind.
 
 ---
 

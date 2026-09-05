@@ -191,6 +191,44 @@ most and costs nothing: **an unstamped census says *unrecorded* rather than
 naming the port by default**, because a plausible default is worse than a hole.
 Gate entry 7.
 
+### B14 — a column headed `snr` was committed on the assumption that a decoder produces one
+
+**Work instruction 037, and it stood for two hundred units.** The Digital tab's
+decoded table was committed with five columns, one of them `snr`, **48 pixels
+wide and reserved**. `Ft8Sharp` does not produce a signal-to-noise ratio: it
+produces a **Costas sync score**, a count of how far the expected tone stood
+above the average of the eight, in no units and calibrated against nothing. That
+count is carried on `Ft8Decode.SyncScore` and has sat **one formatting call away
+from the cell** ever since.
+
+**Found by:** review, not by a test. `DigitalDecodeRow` and `Ft8Reception` each
+grew a paragraph saying in prose that the column carries a dash and why, and the
+column carried the dash from 037 until unit 251. **The prose worked. It is the
+only thing that did.**
+
+**A test would have caught the thing the prose cannot stop**, which is the *next*
+edit rather than the original one: a plausible number appearing under that
+heading. Unit 251's measurement is that test — it takes the estimate at the place
+the decoder actually reports and compares it against the ratio the ladder
+delivered, so **anything that is not a signal-to-noise ratio in the 2500 Hz
+reference bandwidth reddens it by tens of decibels**. A sync score substituted
+for the estimate does not agree with a commanded ratio at all.
+
+**And it caught something on its first run, which is why the entry is here rather
+than in part B.** Watched failing first, the estimate taken at the decoder's own
+reported place without alignment was **3.50 dB out over 510 messages** — 3.78 dB
+at −18 and 10.57 dB at −6, all of it at the cell centre, worsening as the signal
+got *stronger*. **That is a number 10 dB out under a heading an operator reads
+before the message**, and it was one commit from shipping. `CLAUDE.md` §0.0's
+arithmetic — a message shown that nobody sent is worse than a message missed —
+governs a decibel figure nobody measured in exactly the same way.
+
+**The two smaller regressions it also guards** are named because each is a single
+edit: averaging `TonePowerGrid`'s decibels instead of inverting its `1e-12` floor
+first is **2.51 dB** low on the noise floor and therefore 2.51 dB high on the
+answer, and dropping `Ft8DeepSlotDecoder.CandidateTimeBiasSeconds` is one whole
+symbol and **2.5 dB**. Both would leave a plausible column.
+
 ---
 
 ## B. Breakages no test would have caught
@@ -293,6 +331,7 @@ photograph of the bug.**
 | 6. The census reaches all three surfaces | B7 |
 | 7. A decoder's identity is recorded | B13 |
 | 8. One slot decodes inside the budget | B1 |
+| 9. The `snr` column carries a ratio and not something else | B14 |
 
 **B8, B9, B10 and B11 are real and are deliberately not in the gate set**: two are
 guarded by their own units' tests over code this phase does not touch, and two are

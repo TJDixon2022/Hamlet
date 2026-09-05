@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: IN PROGRESS
+STATE: COMPLETED
 TASK: 6 of 6
 WORK_INSTRUCTION: 251 - the SNR column shows a number
-BALL: claude
+BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-155 (2026-09-05)
-UPDATED: 2026-09-05T15:58:00-04:00
-NOTE: All three surfaces have the number and the drop candidate was not taken - the sidecar carries per-message lines with the ratio and the place, telemetry carries a spread rather than a message because the census is all it is ever handed, and the whole solution builds at 0 warnings without a suite being run
+UPDATED: 2026-09-05T16:12:00-04:00
+NOTE: Six of six; the snr column shows a number on a measured 0.26 dB mean absolute error and 0.62 dB at the 95th over 510 messages, gate entry 9 cites a breakage record entry written for it, and the one test was run twice by name and no suite was run
 
 ---
 

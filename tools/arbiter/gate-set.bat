@@ -57,6 +57,11 @@ rem
 rem  Written by work instruction 250. Verified by reading, not by
 rem  execution: every filter below names a test in docs\gate-set.md
 rem  and every test in that file appears below.
+rem
+rem  Entry 9 added by work instruction 251, which did NOT run this
+rem  script. Its one test was run by name, twice, on its own - red
+rem  at 2 m 25 s and green at 2 m 24 s - and that measured duration
+rem  is what docs\gate-set.md quotes for it.
 rem ============================================================
 setlocal EnableExtensions EnableDelayedExpansion
 set "GSHERE=%~dp0"
@@ -96,9 +101,19 @@ rem     Ft8SharpBoundaryTests   the port references nothing outside itself
 rem     Ft8DeepIdentityTests    Deep is a superset - whole-result identity,
 rem                             69 reference recordings, 801 messages
 rem     Unit222TraceTests       the ladder reports ZERO WRONG at 306 trials
+rem     Ft8Unit251SnrAgreementTests
+rem                             the snr column carries a RATIO and not a
+rem                             Costas sync score - 510 messages, five
+rem                             rungs, both placements, mean absolute
+rem                             error inside 1 dB. Added by unit 251 and
+rem                             it is 2 m 24 s, which took this script's
+rem                             estimate past the three-minute waypoint.
+rem                             NAMED ONE BY ONE rather than by class, so
+rem                             a method added to that class later does
+rem                             not join the gate set silently.
 rem ============================================================
 call :gate "1" "tests\Ft8Sharp.Tests" ^
-  "FullyQualifiedName~Ft8SharpBoundaryTests|FullyQualifiedName~Ft8DeepIdentityTests|FullyQualifiedName~Unit222TraceTests"
+  "FullyQualifiedName~Ft8SharpBoundaryTests|FullyQualifiedName~Ft8DeepIdentityTests|FullyQualifiedName~Unit222TraceTests|FullyQualifiedName~Ft8Unit251SnrAgreementTests.TheEstimateAgreesWithTheCommandedRatioOverTwoHundredSynthesizedMessages"
 
 rem ============================================================
 rem  2  Ft8Sharp.Deep.Tests
