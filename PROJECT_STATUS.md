@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: WORKING
+STATE: COMPLETED
 TASK: 6 of 6
 WORK_INSTRUCTION: 253 - strong signals are subtracted and the slot is read again
-BALL: claude
+BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-155 (2026-09-05)
-UPDATED: 2026-09-05T17:07:00-04:00
-NOTE: Bookkeeping - B16 written before gate entry 11 that cites it, HM-OPEN-079 and 080 filed, and the phase outcome entry appended by hand because outcome-append.bat was refused in three spellings
+UPDATED: 2026-09-05T17:11:00-04:00
+NOTE: Six of six; a station 6 dB under another goes from 0 of 306 to 153 of 306 against a ceiling of 304, nothing lost on any trial, zero wrong on all fourteen rows, subtraction stays off by default, and the report validates at exit 0
 
 ---
 
