@@ -1,4 +1,4 @@
-# Work instruction 244 - the fixture format, the reader that refuses, and the command Tim runs
+# Work instruction 245 - Ft8Sharp.Deep exists, and the scoreboard grows a second column that reads the same
 
 ```
 STOP. Verify the project before reading any further.
@@ -24,8 +24,8 @@ If all four hold, say "Hamlet confirmed" and continue.
 
 ## THE TOOL RULE - read this before task 1
 
-Unit 243 measured this environment and the finding stands: **two different faults
-have been conflated for a week and they behave oppositely.**
+Carried forward from unit 244 unchanged, because it is measured and it still
+holds. **Two different faults behave oppositely and have been conflated before.**
 
 | | What it is | How it announces itself | The answer |
 |---|---|---|---|
@@ -35,15 +35,23 @@ have been conflated for a week and they behave oppositely.**
 `docs/shell-probe-243.md` has all eight probes verbatim. What runs: `dotnet build
 <path>`, `dotnet test <path>`, `git` throughout, `ls`, `grep`, `sed`, `head`,
 `tail`, `find`, `wc`, `date`. What never runs: `mkdir`, `cp`, `mv`, `git mv`, any
-redirect write, and any compound line where one part is refused. `dotnet --version`
-is refused and **is not evidence about the toolchain** - unit 242 lost a night to
-exactly that inference.
+redirect write, and any compound line where one part is refused. `dotnet
+--version` is refused and **is not evidence about the toolchain.**
 
-**`tools\arbiter\*.bat` is a closed loop** - every permitted spelling is destroyed
-by Git Bash before an interpreter sees it, and every spelling that survives is
-refused. Go through `dotnet build tools/arbiter/validate-output.proj` and
-`dotnet build tools/arbiter/outcome-append.proj`, which 243 built for this and
-which call the scripts unmodified.
+**This unit creates four new directories and a dozen new files.** Every one of
+them goes in with `Write`. Do not try `mkdir` first and do not report its refusal
+as a finding - it is task-shaped work, not a discovery.
+
+**`tools\arbiter\*.bat` is a closed loop.** Go through `dotnet build
+tools/arbiter/outcome-append.proj` and `dotnet build
+tools/arbiter/validate-output.proj`, which 243 built for this.
+
+**One thing measured tonight, by the arbiter, on that route: an apostrophe in a
+field breaks it.** `outcome-read.bat` was handed an approach containing `ladder's`
+and PowerShell failed to parse the line; re-run without the apostrophe it worked
+first time. **Write the `PHASE_OUTCOME.md` entry fields with no apostrophes.** It
+costs nothing and it is the difference between the entry landing and the entry
+being silently mangled.
 
 **A refused shell call is a signal to reach for the other tool, not to stop.**
 Nothing in this unit halts the loop.
@@ -52,72 +60,90 @@ Nothing in this unit halts the loop.
 
 ## Why this unit exists
 
-**This is unit 244. It is the second unit of this phase, and the second aimed at
-step 0.**
+**This is unit 245. It is the third unit of this phase, and the first aimed at
+step 1.**
 
-`PHASE_OUTCOME.md` shows two entries and **that is bookkeeping, not history.** Both
-carry the same cost, `13.1837...`, because both were written about the same run -
-unit 243's. The one headed `## UNIT 1 - STEP 1` is that run judged against step 1's
-exit criteria, which it was never aimed at, and its `not started` verdict is
-correct. **No unit has yet attempted step 1. `Ft8Sharp.Deep` does not exist and
-`src/` holds `Ft8Sharp`, `Hamlet.App` and `Hamlet.RadioEngine` and nothing else.**
-Do not read `units spent: 1` against step 1 as an approach that was tried.
+Step 0 is closed. Six of six must-pass exits, each with a measurement under it:
+the ladder runs in the loop through `Ft8LadderHarness.Run`; the as-is baseline
+reproduced at 13 of 306 at a delivered -21.001 dB with 0 wrong; a wrong decode is
+counted separately from a missed one everywhere; the capture fixture format is
+committed with a worked example; the reader refuses four ways with a test for
+each; and the shack command runs and refuses loudly. The seventh exit, one real
+fixture, is *deferred by the plan itself*, gates nothing, and is `HM-OPEN-073`.
 
-Step 0 stands at **three of six must-pass exits met**, each with a measurement
-under it: the ladder runs in the loop through `Ft8LadderHarness.Run`; the as-is
-baseline reproduced at 13 of 306 at a delivered -21.001 dB with 0 wrong, not one
-decode different from unit 221; and a wrong decode is counted separately from a
-missed one everywhere.
+**`PHASE_OUTCOME.md` carries two verdicts on that run and they disagree** - one
+`done`, one `partial`. The `partial` one names a single reason: two of step 0's
+exits say the harness scores **`Ft8Sharp.Deep`**, and `Ft8Sharp.Deep` does not
+exist. **That is not a defect in step 0. It is step 1, and it is this unit.** The
+arbiter has ruled step 1's entry satisfied - see the rulings below - because
+holding step 1 behind a criterion that only step 1 can satisfy is a circle, and
+`PHASE_PLAN.md` forbids a must-pass criterion no unit can reach.
 
-**The three that are untouched are all this unit's, and none of them needs a
-radio.** They are the capture fixture format, a reader that fails loudly rather
-than quietly on a stale or absent capture, and the one-step command Tim runs at the
-shack. Only the *fixture itself* waits on Tim, and `PHASE_PLAN.md` marks that one
-deferred so no step is held by it.
+**Nothing in this tree has ever attempted step 1.** `src/` holds `Ft8Sharp`,
+`Hamlet.App` and `Hamlet.RadioEngine` and nothing else. The `## UNIT 1 - STEP 1`
+entry in `PHASE_OUTCOME.md` is unit 243's run judged against a step it was never
+aimed at; its `APPROACH` field reads `not recorded` and its verdict `not started`
+is correct. **Do not read `units spent: 1` against step 1 as an approach that was
+tried.**
 
 ```
 PHASE GOAL:   Hamlet reads FT8 as well as the best decoder there is, and then
               reads it further.
-UNIT GOAL:    Step 0 closes. A real capture can be scored against WSJT-X's own
-              output without WSJT-X being on this machine, and a fixture that has
-              gone stale says so instead of measuring the wrong thing.
-ADVANCES:     step 0 - the four capture-fixture exits, three of them must-pass:
-              the format, the reader with its loud failure, and the shack command.
-              Closing them satisfies step 1's entry criterion, which is the gate
-              on steps 2, 3, 4 and 6.
+UNIT GOAL:    Ft8Sharp.Deep exists, is GPL-3.0 with its sources cited before a
+              line of them is implemented, and returns exactly what the port
+              returns - proven by running it, not by reasoning about it.
+ADVANCES:     step 1, all four must-pass exits. Closing it opens steps 2, 3, 4
+              and 6, every one of which is gated on step 1 and nothing else.
 ```
 
-**Why this and not `Ft8Sharp.Deep` tonight.** Step 1's entry is *step 0 complete*
-and step 0 is `partial`. The remaining exits are the half of the scoreboard that
-reads real air, and steps 3 and 5 close on nothing else. A sibling built over an
-unfinished scoreboard is a sibling whose gains cannot be shown.
+**Why the sibling and not a decibel tonight.** Steps 2, 3, 4 and 6 all depend on
+step 1 and on nothing else, so this is the single gate standing between the phase
+and every remaining step. It is also the cheapest step in the plan: it is meant to
+change no behaviour at all.
 
 ---
 
 ## Verify this instruction against the tree
 
-**Nothing here describes the tree.** Check every claim below and **report
-mismatches in section 1; do not repair them and do not repair this instruction.**
+**Nothing here describes the tree.** Check every claim and **report mismatches in
+section 1; do not repair them and do not repair this instruction.**
 
-- `tests/Ft8Sharp.Tests/Dsp/Ft8LadderHarness.cs` exists, and `Available()` at
-  about `:182` is the seat where a second decoder joins.
-- `tests/Ft8Sharp.Tests/Dsp/ReferenceRecordings.cs` reads off-air audio from
-  `C:\Source\ft8_lib` at run time and **copies nothing into this repository.**
-  That ruling is untouched by this unit.
-- The CW precedent for a committed capture plus its truth file is
-  `tests/fixtures/cw/captured/` - a `.wav` and a sibling `.txt` per capture, with
-  `MANIFEST.md` under `unadjudicated/`.
-- `tools/score-fixtures/score-fixtures.py` exists and is CW's.
-- **No FT8 capture `.wav` is committed anywhere.** `git ls-files "*.wav"` returns
-  CW fixtures only. Per `SHACK_FACTS.md` FACT-004 that is **the expected state on
-  this machine and is not a finding.**
-- `HM-OPEN-067` in `OPEN_ISSUES.md` carries the ladder's figures.
-- Root version `1.12.46`. `Ft8Sharp` `0.10.7`.
+- `src/Ft8Sharp/Ft8Sharp.csproj` declares **no** `ProjectReference` and **no**
+  `PackageReference`, and its own comment says that is the point.
+- `tests/Ft8Sharp.Tests/Ft8SharpBoundaryTests.cs` is the mechanical guard, two
+  halves: `DeclaresNoReferences` reads the project file, `NoHamletAssemblyArrives`
+  walks the built assembly. Its remarks record it being watched refusing a
+  reference on 2026-08-31.
+- `tests/Ft8Sharp.Tests/Dsp/Ft8LadderHarness.cs`: `Available()` at about `:183`
+  returns one `Decoder`, and the `Decoder` record is at about `:73`.
+- `src/Ft8Sharp/Dsp/Ft8SlotDecoder.cs`: `Decode(ReadOnlySpan<float>)` at about
+  `:133`, `Decode(Ft8Waterfall)` at about `:139`, `Ft8SlotResult` at about `:270`
+  with five counts and a message list.
+- `src/Ft8Sharp/LICENSE` is MIT; `src/Ft8Sharp/NOTICE` cites `ft8_lib` and the QEX
+  paper. The repository root `LICENSE` is GPL-3.0.
+- Root version `1.12.47` in `Directory.Build.props:145`. `Ft8Sharp` `0.10.7` in
+  `src/Ft8Sharp/Directory.Build.props`.
+- `tests/fixtures/ft8/example/ft8-example-244.wav` and its `.fixture.txt` are
+  committed. `tests/fixtures/ft8/captured/` is empty and that is FACT-004's
+  expected state.
+- The highest issue id in `OPEN_ISSUES.md` is `HM-OPEN-073`.
 
-**Expected to fail, and not this unit's:** `CwAdjudicationTests.ASpeedChangeInRealisticAudio`,
-and the 51 inherited CW reds listed in `docs/unit239-failing-set.txt`. Do not chase
-either. If `Ft8Sharp.Tests` shows red that is **not** in that set, that is a
-finding and it goes in section 1.
+**Two disagreements the reload measured, reported here so this unit is not
+surprised by them and does not chase them:**
+
+1. `PROJECT_STATUS.md` `RULES_AT` reads `HM-DEC-153 (2026-09-04)` while
+   `CLAUDE.md` §1 holds `CPS-DEC-0152`. **Report if still present. Do not
+   reconcile it** - `CLAUDE.md` is the owner's file.
+2. `PHASE_OUTCOME.md`, `PHASE_STATUS.md` and `RUN_LEDGER.md` were modified and
+   uncommitted at the root when this instruction was authored. **They are the
+   loop's own bookkeeping. Commit them with your first task's commit and say you
+   did.**
+
+**Expected to fail, and not this unit's:**
+`CwAdjudicationTests.ASpeedChangeInRealisticAudio` and the 51 inherited CW reds in
+`docs/unit239-failing-set.txt`. **None of those is in `Ft8Sharp.Tests`.** If
+`Ft8Sharp.Tests` shows red that is not in that set, that is a finding and it goes
+in section 1.
 
 ---
 
@@ -131,50 +157,50 @@ Improvements live in `Ft8Sharp.Deep`. The port's value now is that it cannot
 drift: every measurement in this phase is taken against something known-identical
 to upstream, so a regression in the sibling is always visible.
 
-**`Ft8Sharp.Deep` is GPL-3.0**, carrying its own `LICENSE` and a `NOTICE`.
-`Ft8Sharp` remains MIT. Ruled by Tim, 2026-09-04. **No unit raises this and no
-step is held by it.**
-
-**WSJT-X may be run as a measuring instrument, on the shack machine only.** It
-decodes the same WAV, its output is compared message by message, and **its source
-is not read.** This is the *testing rather than derivation* the spec already
-permits.
-
-**There is no WSJT-X on the development machine and no unit may assume one.**
-Tim's ruling, 2026-09-04. **A unit that cannot close without a real-air comparison
-says so**; it does not substitute `decode_ft8.exe`, which is `ft8_lib` and
-therefore the thing being improved on.
-
-**Tim generates the capture fixtures.** Ruled 2026-09-04. He runs one command at
-the shack per batch of captures and commits the result.
-
-**A wrong decode is counted separately from a missed one, everywhere, in every
-report.** A message returned that was not sent is the one failure this phase
-cannot trade against rate (§0.0).
+**`Ft8Sharp.Deep` is GPL-3.0**, matching Hamlet's own release licence, carrying
+its own `LICENSE` and a `NOTICE` citing the published sources it implements.
+`Ft8Sharp` remains MIT and separately publishable. Ruled by Tim, 2026-09-04. **No
+unit raises this and no step is held by it.**
 
 **No algorithm comes from WSJT-X's source or `ft4_ft8_public/`.** Published
-description only, cited at the point of use in `porting-notes.md`.
+description only - Fossorier and Lin 1995 for ordered statistics, and the QEX
+paper (Franke K9AN, Somerville G4WJS, Taylor K1JT, "The FT4 and FT8 Communication
+Protocols," QEX, July/August 2020) - cited at the point of use.
+
+**There is no WSJT-X on the development machine and no unit may assume one.** A
+unit that cannot close without a real-air comparison says so; it does not
+substitute `decode_ft8.exe`, which is `ft8_lib` and therefore the thing being
+improved on.
+
+**Nothing is claimed without the scoreboard.** No unit in steps 1 to 6 may report
+an improvement except as a number on step 0's instrument.
+
+**A wrong decode is counted separately from a missed one, everywhere, in every
+report.** (§0.0.)
 
 **The steps are a hypothesis, not a contract.** `PHASE_PLAN.md` grants leave to
-reorder, replace, retire and add steps and to move a target measured wrong, all
-without asking, with the record in `PHASE_OUTCOME.md` as the only constraint.
+reorder, replace, retire and add steps and to split or re-scope criteria, with the
+record in `PHASE_OUTCOME.md` as the only constraint.
 
-### Two things the arbiter decided, so this unit does not spend a night on them
+### Three things the arbiter decided, so this unit does not spend a night on them
 
-1. **Step 0's title is *there is a scoreboard, and the arbiter can read it*.** The
-   one-line step list at `PHASE_PLAN.md:53` reads *and it reads WSJT-X*; the step's
-   own section heading, `PHASE_STATUS.md` and `PHASE_OUTCOME.md` all read *and the
-   arbiter can read it*, and the phase's own ruling forbids assuming WSJT-X here.
-   **The step list is the stale line.** Units 242 and 243 both reported it.
-   **Report it once more if it is still there and go no further with it** - the
-   plan is the owner's file and neither the arbiter nor this unit edits it.
-2. **Step 0's fourth exit says the harness "scores `Ft8Sharp.Deep` against it", and
-   `Ft8Sharp.Deep` does not exist until step 1.** That is circular as written. The
-   reading in force: **the harness scores every decoder `Available()` returns, which
-   today is `Ft8Sharp` alone**, and the sibling joins at that same seat with one
-   entry when step 1 creates it. **This exit is met by the scoring path existing and
-   working through the seat**, not by the sibling existing. Recorded in this unit's
-   outcome entry as an arbiter re-scoping under the plan's leave to split criteria.
+1. **Step 1's entry criterion is satisfied.** `PHASE_OUTCOME.md` holds a `done`
+   and a `partial` verdict on unit 244's run. The `partial` one's whole reason is
+   that two step-0 exits name `Ft8Sharp.Deep`, which step 1 creates. Step 0's six
+   must-pass exits are met and evidenced; the sibling's absence is step 1's
+   subject, not step 0's shortfall. **Proceed. Do not re-audit step 0** - if this
+   unit lands, both readings converge, because from tonight the harness scores
+   `Ft8Sharp.Deep` literally rather than through the arbiter's re-scoping.
+2. **A `ProjectReference` from `tests/Ft8Sharp.Tests` to `Ft8Sharp.Deep` is not a
+   breach of the boundary.** The boundary is a property of the *library*, not of
+   its tests, and that project's own csproj already says so about its reference to
+   `Ft8Sharp`. The direction that would be a breach is `Ft8Sharp` referencing the
+   sibling, and `Ft8SharpBoundaryTests.DeclaresNoReferences` already catches it.
+3. **The sibling's `LICENSE` may be the verbatim GPL-3.0 text or a file that names
+   GPL-3.0 by SPDX identifier and points at the verbatim text at the repository
+   root.** Prefer the verbatim copy. **Say in the report which you did and why.**
+   Do not spend a quarter of the night hand-transcribing licence text, and do not
+   raise the licence question - it is ruled.
 
 ---
 
@@ -189,240 +215,229 @@ task is running. **Use the file-editing tools if the shell refuses.**
 
 ## Tasks
 
-Seven tasks. Task 1 is a trace and comes first because this unit must measure what
-is there before it designs a format. **Task 6 is the named drop candidate.**
+Seven tasks. **Task 1 is a trace and comes first**, because this unit must measure
+what the port's surface actually exposes before it decides where the seam goes.
+**Task 7 is the named drop candidate.**
 
-### Task 1 - the trace: what a fixture has to fit into
+**Start the `Ft8Sharp.Tests` baseline run early** - it is 5 m 12 s and it can run
+while task 1 is being written.
 
-**Reading only. This task cannot be refused, and nothing is designed until it is
+### Task 1 - the trace: where the seam can be cut
+
+**Reading only. This task cannot be refused, and nothing is built until it is
 done.** Report each with file and line.
 
-1. **What a decode looks like coming out of Hamlet today.** The type
-   `Ft8LadderHarness` and the slot decoder return per decoded message - name every
-   field, and say specifically whether **frequency, dt and SNR** are available per
-   message or not. `PHASE_PLAN.md` step 0 wants a fixture row of *message,
-   frequency, dt and SNR*; if Hamlet cannot produce one of those four today, **say
-   which and say it plainly** - that is a finding this unit reports rather than
-   works around, and step 5 is the step that owes the SNR.
-2. **How `Ft8LadderHarness` compares a returned message with an expected one.**
-   The exact normalisation, and where `ReferenceRecordings` does the same job for
-   upstream's lists - it documents its own normalisation in the file header.
-   **Whatever the fixture reader does must be that same normalisation, called and
-   not re-implemented**, for the same reason the harness extends the ladder rather
-   than replacing it.
-3. **The CW capture fixture precedent**, `tests/fixtures/cw/captured/`: what the
-   sidecar `.txt` next to each `.wav` holds, its exact shape, whether anything
-   verifies the pairing, and whether any hash of the audio is recorded anywhere.
-   Say whether it is a format worth following or worth diverging from, and why.
-4. **Whether anything in this tree already hashes a file.** Search for SHA-256 use.
-   If there is a helper, name it; if there is none, say so.
-5. **`Available()` in `Ft8LadderHarness`** - its exact signature and what a
-   `Decoder` entry consists of, since task 4 scores through it.
-6. **Whether `tests/Ft8Sharp.Tests` can read a committed WAV at all today** - name
-   the WAV reader it would use and where it lives.
+1. **The port's decode surface.** The exact signature of `Ft8SlotDecoder`'s
+   constructor and both `Decode` overloads, and every member of `Ft8SlotResult`
+   and `Ft8SlotMessage`. Which are `public` and which are `internal`.
+2. **The reachability census, and this is the finding this unit owes step 2.**
+   For each stage of the decode - the monitor and waterfall, the sync search and
+   its candidates, soft-symbol extraction, the LDPC and codeword decode, the
+   message decode - say whether the type and the method are **`public` on
+   `Ft8Sharp`'s surface** or not. Then answer plainly: **could the loop inside
+   `Ft8SlotDecoder.Decode(Ft8Waterfall)` be reproduced from outside the assembly,
+   using only public members, without `InternalsVisibleTo` and without copying a
+   line of it?** If the answer is no, **name exactly what is out of reach**, since
+   step 2 has to insert an OSD stage into that loop and every route into it costs
+   something different. **Do not build any of it tonight. Measure and say.**
+3. **`Available()` and the `Decoder` record** in `Ft8LadderHarness` - the exact
+   shape, and what one added entry costs. Task 5 goes through it.
+4. **`Ft8SharpBoundaryTests`** - its two halves, and **which of them would catch a
+   `ProjectReference` from `Ft8Sharp` to `Ft8Sharp.Deep`.** Say whether the guard
+   as written already covers the new direction or needs anything.
+5. **Whether `C:\Source\ft8_lib` is on this machine**, how many recordings
+   `ReferenceRecordings.All` returns, and what `[RequiresReferenceCloneFact]` does
+   when it is absent. **This decides how much of exit 2 can be evidenced tonight
+   and the report must state the answer either way.**
+6. **How a project joins `Hamlet.sln`** - the exact shape of the two existing
+   `Ft8Sharp` entries, the configuration lines each carries, and the nesting
+   section.
 
 **Say what you find, not what this instruction expects.**
 
-### Task 2 - the fixture format, written down and committed
+### Task 2 - the sibling project, its licence and its NOTICE
 
-Write the format specification as a document, and commit it. It is read by Tim at
-the shack and by a session six units from now, so it is prose with an example in
-it, not a schema dump.
+Create `src/Ft8Sharp.Deep/`:
 
-The format must carry, at minimum, what `PHASE_PLAN.md` step 0 names:
+- **`Ft8Sharp.Deep.csproj`** - `net8.0`, `Nullable` enable,
+  `TreatWarningsAsErrors` true, **one `ProjectReference`, to
+  `..\Ft8Sharp\Ft8Sharp.csproj`, and nothing else outside the framework.**
+- **`Directory.Build.props`** carrying `<Version>0.1.0</Version>`, following the
+  shape of `src/Ft8Sharp/Directory.Build.props`.
+- **`LICENSE`** - GPL-3.0, per the ruling above.
+- **`NOTICE`** - **this is exit 4 and it is not boilerplate.** It must, *before a
+  line of any of them is implemented*, cite:
+  - **Fossorier and Lin 1995** for ordered statistics decoding (step 2);
+  - **the QEX paper** - Franke K9AN, Somerville G4WJS, Taylor K1JT, "The FT4 and
+    FT8 Communication Protocols," QEX, July/August 2020 - for the protocol;
 
-- **the capture's name**, **its UTC**, and **its SHA-256**;
-- **one row per message WSJT-X returned** - message, frequency, dt, SNR;
-- **a provenance field naming what produced the rows.**
+  and state: that this library is GPL-3.0; that it depends on `Ft8Sharp`, which is
+  MIT and stays MIT; that **no WSJT-X source and no `ft4_ft8_public/` was read**;
+  and that everything it implements comes from published description. Follow
+  `src/Ft8Sharp/NOTICE`'s tone - it is a good model and it is in this tree.
 
-That last field is not in the plan and it is this unit's addition, for a reason
-that matters more than the rest of the format: **it is the difference between a
-measurement and a fabrication.** The reader in task 3 refuses to score against any
-fixture whose provenance is not a real WSJT-X run.
+Then **add both new projects to `Hamlet.sln`.** Try `dotnet sln add` once; if it
+is refused, edit `Hamlet.sln` with the file tools following task 1.6's shape, and
+verify with `dotnet build Hamlet.sln`. **A mis-nested solution folder is cosmetic;
+do not spend the night on it.**
 
-Decide the file's location and extension yourself and **say why** - the CW
-precedent puts the sidecar beside the audio, and following it is defensible; so is
-a dedicated `tests/fixtures/ft8/` tree. Either way the capture and its fixture are
-committed together.
+### Task 3 - the pass-through decoder, and the sibling's own tests
 
-**Also commit one worked example**, so the reader has something to be tested
-against and Tim has something to compare his first real one with. **Its rows may
-not claim to be WSJT-X's.** Build it from audio this repository can legitimately
-produce - the ladder synthesises a slot at a commanded SNR and knows exactly what
-went into it - and mark its provenance as an example. **An example fixture carrying
-invented WSJT-X rows would be the single worst artefact this unit could leave
-behind**, because every later unit would score against it believing it.
+**The smallest thing that closes, and no more.**
 
-### Task 3 - the reader, and the four ways it must refuse
+A public type in `Ft8Sharp.Deep` - name it and say the name in the report - that
+holds an `Ft8SlotDecoder` constructed with the same parameters and returns its
+`Ft8SlotResult` unchanged.
 
-Write the reader in `Ft8Sharp.Tests`, and **write a test for each refusal.** A
-refusal that is not tested is a refusal that will not happen.
+**Do not design step 2's API tonight.** No OSD hook, no stage interface, no
+strategy abstraction, no extension point for something that does not exist. An
+abstraction invented before the algorithm it is meant to carry is an abstraction
+that will be wrong, and task 1.2 is what step 2 will be authored from instead.
 
-It must fail **loudly**, with an exception naming the fixture, the capture and what
-was wrong, in each of these cases:
+Create `tests/Ft8Sharp.Deep.Tests/` - xunit, referencing `Ft8Sharp.Deep`, matching
+`tests/Ft8Sharp.Tests/Ft8Sharp.Tests.csproj`'s package versions. It carries at
+least:
 
-1. **The named capture is absent.**
-2. **The capture is present and its SHA-256 does not match.** This is the one the
-   plan calls out by name: *a stale fixture silently measures the wrong thing.*
-3. **A row is malformed** - the wrong field count, an unparseable number, an empty
-   message.
-4. **The provenance is not a real WSJT-X run** and the caller asked to *score*
-   against it. Reading an example fixture is fine; scoring a claim against one is
-   not.
+- **the sibling's built assembly references `Ft8Sharp`** - so the seam is real and
+  not a coincidence;
+- **the port's built assembly does not reference `Ft8Sharp.Deep`** - the direction
+  that would destroy the port's publishability;
+- **`LICENSE` and `NOTICE` exist beside the csproj**, and the `NOTICE` names both
+  published sources by title. **A NOTICE nothing checks is a NOTICE that will rot
+  the first time someone tidies it.**
 
-**Loudly means the test suite goes red and the message says which fixture and
-why.** A skip, a warning, a zero-row result or a silently empty list is the
-failure mode this exit exists to prevent, and if you find yourself writing one,
-that is the wrong branch.
+### Task 4 - identity, mechanically, over the whole result
 
-**A fixture whose capture is absent is not the same as no fixtures at all.** Zero
-committed fixtures on this machine is FACT-004's expected state and must remain a
-clean pass; a fixture that *names* a capture which is not there is a hard failure.
-Test both, separately, and say in the report that you did.
+**Given the same audio, the sibling returns exactly what the port returns.** Exit
+2, and *exactly* is the operative word.
 
-### Task 4 - the harness scores a fixture
+Compare **the whole `Ft8SlotResult`** - all five counts and every message's text,
+frequency and dt, in order - **not just `Texts`.** A comparison on text alone
+passes while the counts differ, and the counts are what steps 2, 3 and 4 will be
+read on.
 
-Extend `Ft8LadderHarness` - **extend, as 243 did, calling rather than copying.**
+Over three sets of audio:
 
-Given a fixture, it decodes the named capture with **every decoder `Available()`
-returns** and reports per decoder:
+1. **The ladder** - at least one whole block of 51 trials at a rung where decodes
+   actually happen, and one at -21 dB.
+2. **The committed example capture**, `tests/fixtures/ft8/example/ft8-example-244.wav`.
+3. **Every reference recording `ReferenceRecordings.All` returns**, if the clone
+   is on this machine. If it is not, those tests skip, **the report says so with
+   the count found**, and exit 2 closes on 1 and 2. That is the plan's own named
+   alternative and it is not a failure.
 
-- **matched** - a message in the fixture that this decoder also returned;
-- **missed** - a message in the fixture that it did not;
-- **returned wrong** - a message it returned that is not in the fixture.
+**Say plainly in the report that a delegating sibling makes this identity
+trivially true.** That is the step's point - the plan says *a step that changes no
+behaviour is the point* - but the assertion must be **run, not reasoned**, because
+what is being proven is that the seam and the harness wiring cost nothing. **Do
+not dress a tautology as a discovery**, and do not claim the sibling was
+"verified against" the port as though the two had been written independently.
 
-**Three counts, never two**, and the third keeps its own line with the message
-printed, exactly as the ladder does. Note in the code's own comment that on a real
-capture the third count is **weaker evidence than on the ladder**: the ladder knows
-what it transmitted, whereas a message WSJT-X missed and Hamlet found is a decode
-this phase is trying to produce, not necessarily an error. **Say that in the report
-too.** Do not let this count be read as the ladder's zero-wrong criterion; they are
-different measurements and the report must not merge them.
+### Task 5 - the scoreboard's second column
 
-The comparison uses task 1.2's normalisation. When step 1 lands, this reports two
-columns with no further change - check that it would, and say so.
+One entry in `Available()`, one `ProjectReference` from `Ft8Sharp.Tests` to
+`Ft8Sharp.Deep`. Ruled above; it is not a breach.
 
-### Task 5 - the command Tim runs at the shack
+- **Run a paired ladder rung and print both columns.** At -21 dB, 306 trials,
+  seed `DefaultSeed` - the run unit 243 reproduced at 13 of 306, 0 wrong. **Both
+  columns must read identically, decode for decode**, and the report quotes the
+  table whole. It costs about 20 s a rung by 243's measurement.
+- **Run the fixture report** unit 244 built and show it with the real sibling
+  where the placeholder `second-seat` was. 244 asserted it would grow a second
+  column with no other change; **this is where that claim is either confirmed or
+  found wrong**, and if it is found wrong that is a finding, not a repair job.
+- **Three counts, never two**, in every table.
 
-One command, one capture in, one committed fixture out, **no editing afterwards.**
+### Task 6 - both suites
 
-It computes the SHA-256, runs WSJT-X's decoder over the WAV, parses the rows,
-writes the fixture with its provenance set to a real run, and puts it where task 2
-decided.
+`PHASE_PLAN.md`: `Ft8Sharp.Tests` **and** `Ft8Sharp.Deep.Tests`, every unit.
 
-**Be honest about the split, because it decides whether this unit can close.**
+- `dotnet test tests/Ft8Sharp.Tests` whole - baseline before your first code
+  change and totals after. Unit 244 left it at **578 passed, 0 failed, 1 skipped,
+  5 m 12 s**; a different baseline is itself a finding.
+- `dotnet test tests/Ft8Sharp.Deep.Tests` whole.
+- **One project at a time and never concurrently.** Report passed, failed, skipped
+  and wall clock for each, and any red against the expected set.
+- **Do not run `Hamlet.App.Tests` or `Hamlet.RadioEngine.Tests`.** Nothing here
+  touches either.
 
-- **Reachable here and must work:** the hashing, the row parsing, the fixture
-  writing, the loud refusal when the WSJT-X decoder is not found, and the loud
-  refusal when it produced nothing. **Unit-test all of these against decode text
-  committed as a test input.**
-- **Not reachable here:** invoking WSJT-X and getting real rows back. There is no
-  WSJT-X on this machine and no unit may assume one. **Write the invocation,
-  document exactly how the executable is located, and say in the report that this
-  half is unexercised and that Tim's first run is what exercises it.**
-
-**On the row format you parse:** derive it from WSJT-X's *output*, which is
-permitted, and **state in the document where your understanding of that format came
-from.** If you cannot establish it from anything in this tree or from published
-description, **say so and make the parser strict and loud rather than lenient** - a
-parser that guesses is how a wrong number reaches a report. Do not read WSJT-X
-source. Do not substitute `decode_ft8.exe`.
-
-**It must refuse to write a half-fixture.** A file that exists but is incomplete is
-worse than no file, because the reader in task 3 will happily read it.
-
-### Task 6 - the record, and this is the named drop candidate
+### Task 7 - the seam write-up and the record. THIS IS THE DROP CANDIDATE
 
 **If the night runs short, this is what is shed, and the report says it was.**
 
-- Name in `OPEN_ISSUES.md`, each as its own item with an id: the **one real
-  fixture** Tim generates (step 0, deferred); **decodes per slot within 10 per cent
-  of WSJT-X's across twenty slots** (step 3, deferred); **SNR agreement with WSJT-X
-  within 2 dB on real captures** (step 5, deferred). The plan requires each to be
-  recorded by name and none of them gates its step.
-- Update `HM-OPEN-067` with the reproduction unit 243 measured if it does not
-  already carry it.
+- `docs/unit245-deep-seam.md` - task 1.2's census written up, so the unit that is
+  authored against step 2 does not have to re-measure it.
+- An `OPEN_ISSUES.md` entry at the next free id (`HM-OPEN-074` unless something
+  took it) naming anything step 2 needs from the port and cannot reach without
+  changing it. If task 1.2 found nothing out of reach, **say that instead and open
+  no issue** - an empty issue is worse than none.
 
-**Dropping this task costs the phase a record, not a criterion.** Tasks 2 to 5 are
-the must-pass exits; this one is bookkeeping over criteria already marked deferred.
-Do not drop tasks 2 to 5 in its favour.
-
-### Task 7 - the suite, which unit 243 started and never recorded
-
-**Run `Ft8Sharp.Tests` whole and report the totals** - passed, failed, skipped, and
-the wall clock. Unit 243 started this run, ran out of night, and its report
-correctly makes no claim about the suite. **`PHASE_PLAN.md` says a unit runs
-`Ft8Sharp.Tests` every unit**, and this is the second unit in a row that would
-otherwise not have.
-
-It is slow - `Ft8Step6CurveTests` alone is 4 m 23 s - so **start it early and let
-it run while you work.** One project at a time and never concurrently. Report red
-against the expected set named above.
-
-**Do not run `Hamlet.App.Tests` or `Hamlet.RadioEngine.Tests`.** Nothing in this
-unit touches either.
+**Dropping this costs the phase a document, not a criterion.** Tasks 2 to 6 are
+the four must-pass exits. **The census finding itself still goes in section 3 of
+the report even if this task is dropped** - what is shed is the write-up, not the
+measurement.
 
 ---
 
 ## Parked - do not touch, do not raise
 
-- **Building `Ft8Sharp.Deep`**, **OSD**, **subtraction**, **baseband re-sync**,
-  **SNR measurement**, **cross-slot combining.** Steps 1 to 6. **Not one line of
-  the sibling this unit** - a half-built `Ft8Sharp.Deep` is worse than none,
-  because step 1's whole point is that the seam demonstrably changes nothing.
+- **OSD, subtraction, baseband re-sync, per-message SNR, cross-slot combining.**
+  Steps 2 to 6. Not one line tonight. **A half-built OSD inside a step whose whole
+  point is that behaviour does not change is the worst thing this unit could
+  leave behind.**
 - **`Ft8Sharp.Deep`'s licence.** Ruled GPL-3.0. Do not raise it.
-- **The shell permission fault and `allowed.txt`.** Unit 243 asked for one line to
-  be added and it is the owner's file. It is **banked, not blocking** - the
-  `.proj` route works. Do not repair it, do not re-argue it, do not spend a probe
-  on it.
-- **`PHASE_PLAN.md:53`'s stale step-0 wording.** Decided above. Report if present;
-  go no further.
-- **The staged `docs/phase-sensitivity/PROJECT_CARD.md`.** Dead weight, harmless,
-  and `install-phase.bat`'s owner's problem.
-- **`toolsarbitervalidate-output.bat` at the root.** Unit 228's shim. Harmless.
-- **The CW decoder**, the 419 dropped chunks in the 21:58 capture, the 51
-  inherited failing cases, the engine project's missing total, the waterfall's
-  late first row, `ReusableWindow`, `ProcessDelayForTests`, the tap's owner, unit
-  237's Extensible conclusion, work instruction 231's four tree items, the
-  101.33 ms pulse above 6 kHz.
+- **`PHASE_PLAN.md:53`'s stale step-0 wording.** Decided by the arbiter twice
+  already. Do not report it a fourth time.
+- **The `RULES_AT` mismatch** between `PROJECT_STATUS.md` and `CLAUDE.md` §1.
+  Report once under "verify against the tree"; go no further.
+- **The shell permission fault and `allowed.txt`.** Banked, not blocking. The
+  `.proj` route works. Do not probe it.
+- **`HM-OPEN-071`'s missing per-message SNR.** Measured by unit 244, owed by step
+  5, blocks nothing here.
+- **`HM-OPEN-073`, the real capture fixture.** Tim's, deferred, gates nothing.
+- **The staged `docs/phase-sensitivity/PROJECT_CARD.md`**, and
+  `toolsarbitervalidate-output.bat` at the root. Harmless.
+- **The CW decoder**, the 419 dropped chunks, the 51 inherited failing cases, the
+  engine project's missing total, the waterfall's late first row,
+  `ReusableWindow`, `ProcessDelayForTests`, the tap's owner.
 
 ---
 
 ## What not to do
 
-- **Do not write a fixture row that claims to be WSJT-X's and is not.** §12.1 and
-  §0.0. This is the one thing in this unit that would do lasting damage, because a
-  fabricated fixture is indistinguishable from a real one to every later unit.
-- **Do not assume WSJT-X exists on this machine**, and do not substitute
-  `decode_ft8.exe` for it. The phase ruling above.
+- **Do not touch `src/Ft8Sharp/`.** The port is the instrument and the phase
+  ruling is that nothing in this phase changes a line of it. **If `Ft8Sharp`'s
+  version moves off `0.10.7`, something changed and that is a finding, not a
+  bump.**
+- **Do not give the sibling any reference except `Ft8Sharp`**, and do not add one
+  to `Ft8Sharp` in either direction.
 - **Do not read WSJT-X source or `ft4_ft8_public/`.** The second of the three
   things the arbiter may not reason past.
-- **Do not touch `src/Ft8Sharp/`.** The port is the instrument.
 - **Do not copy anything out of `C:\Source\ft8_lib` into this repository.**
   `ReferenceRecordings.cs` states that ruling; it is unchanged.
-- **Do not treat an absent capture folder as a defect.** `SHACK_FACTS.md` FACT-004.
-- **Do not make a failing fixture check a skip or a warning.** Task 3 exists
-  because quiet is the failure mode.
+- **Do not treat an absent reference clone as a defect.** It is a skip and a
+  reported count.
+- **Do not compare only `Texts`.** Task 4 says why.
+- **Do not claim an improvement.** Nothing improves tonight and nothing may be
+  reported as though it did. §12.1.
+- **Do not report a count of matches without its returned-wrong count.**
 - **Do not stop because the shell refused something.** Record it, switch tools,
   continue.
-- **Do not rebuild the ladder.** Extend it, per unit 243's finding and the same
-  reasoning.
-- **Do not report a count of matches without its returned-wrong count.**
 
 ---
 
 ## Committing and pushing
 
 Commit and push each task before starting the next, on `main`, which is trunk.
-Root version `1.12.46` to **`1.12.47`** if anything was committed; if nothing could
-be committed, do not bump the version and say why.
+**Commit the three uncommitted root bookkeeping files with your first commit.**
+Root version `1.12.47` to **`1.12.48`** if anything was committed; if nothing
+could be committed, do not bump and say why. **`Ft8Sharp` stays `0.10.7`.**
 
-Append this unit's entry to `PHASE_OUTCOME.md` through
-`dotnet build tools/arbiter/outcome-append.proj`, which reaches
-`outcome-append.bat` unmodified. **Use the tool rather than writing the entry by
-hand** - it updates the header's step state in the same call, and a hand-written
-entry gets the entry and forgets the state. If it refuses, write the entry in
-exactly the format the existing entries use **and update the `STEP: 0` header line
+Append this unit's entry to `PHASE_OUTCOME.md` through `dotnet build
+tools/arbiter/outcome-append.proj`. **Use the tool rather than writing the entry
+by hand** - it updates the header's step state in the same call. **No apostrophes
+in the field text**, per the tool rule above. If it refuses, write the entry in
+exactly the format the existing entries use, **update the `STEP: 1` header line
 yourself**, and say in the report that you did.
 
 Validate `output.md` through `dotnet build tools/arbiter/validate-output.proj`
@@ -438,33 +453,39 @@ before you finish, and report the rule count and the exit code.
 **First, above everything, the ordering block. `validate-output.bat` refuses a
 report without it.** Three parts, every line specific to this unit:
 
-- **A - THE PHASE GOAL**, and **the state of all seven steps** as this unit leaves
-  them. Say which steps are gated on step 0 and which on step 1.
-- **B - THIS STEP AND ITS EXIT CRITERIA.** Step 0's seven exits, six must-pass,
-  **listed one by one with met or not met against each**, distinguishing the three
-  unit 243 met from the ones this unit was aimed at. If step 0 does not close, the
-  block says which exit is open and what is needed - not a summary of effort.
+- **A - THE PHASE GOAL**, and the state of all seven steps as this unit leaves
+  them. **Say which steps step 1 unblocks** - 2, 3, 4 and 6 are gated on it and on
+  nothing else - and say plainly that **no decibel moved tonight**, because step 1
+  is defined as changing no behaviour.
+- **B - THIS STEP AND ITS EXIT CRITERIA.** Step 1's four must-pass exits, listed
+  one by one with met or not met against each: the sibling compiles with its own
+  tests and the mechanical boundary test; identical results on the reference
+  recordings and the ladder; both scoreboard columns identical; the NOTICE citing
+  its sources before implementing them. **If an exit is not met, say which and
+  what is needed - not a summary of effort.** If the reference clone is absent,
+  say so under exit 2 with the count found.
 - **C - THIS REPORT**, weighed against A and B: what it found that bears on the
-  goal and the criteria, **how many items section 4 raises**, and **whether any of
-  them stands in the way of an exit criterion in B.** An item that asks for no
-  ruling is logged there as logged.
+  goal and the criteria - **task 1.2's reachability census is the thing here, and
+  it is what step 2 will be authored from** - **how many items section 4 raises**,
+  and **whether any of them stands in the way of an exit criterion in B.** An item
+  that asks for no ruling is logged there as logged.
 
 Then the six-line header: `UNIT`, `PHASE GOAL`, `UNIT GOAL`, `ADVANCED`, `NUMBER`,
-`DRIFT`. **`NUMBER` for this unit is the count of step 0's must-pass exits met**,
-`3 of 6` going in, whatever it is coming out - plus the suite totals from task 7.
-No dB moves tonight and the header must not imply one did.
+`DRIFT`. **`NUMBER` for this unit is the count of step 1's must-pass exits met**,
+`0 of 4` going in, whatever it is coming out - plus both suites' totals. **No dB
+moves tonight and the header must not imply one did.**
 
 **Section 3 leads with three things, in this order:**
 
-1. **The four refusals, demonstrated.** For each of task 3's four cases, the
-   failure message a session would actually see, verbatim. This is the exit that
-   says a stale fixture fails loudly, and prose claiming it does is not evidence -
-   the message is.
-2. **The fixture format in one glance** - the worked example, whole, with its
-   provenance field visible, and one sentence on where it lives and why there.
-3. **The suite totals**, and whether any red is outside the expected set.
+1. **The paired ladder table, whole**, both columns, three counts each, at -21 dB
+   over 306 trials - with one sentence saying plainly that identity here is
+   trivially true because the sibling delegates, and that the point is that the
+   seam and the wiring cost nothing.
+2. **The reachability census** from task 1.2 - which stages of the port's decode
+   loop are public, and exactly what step 2 would have to get past to insert OSD.
+3. **Both suites' totals**, and whether any red is outside the expected set.
 
-**Section 4 says, in one line, whether step 0 is closed**, and if it is not, the
+**Section 4 says, in one line, whether step 1 is closed**, and if it is not, the
 single smallest thing that would close it.
 
 Write `output.md`, then stop. Do not start the next unit.
@@ -473,14 +494,14 @@ Write `output.md`, then stop. Do not start the next unit.
 
 ```
 ARBITER-DECISION
-STEP: 0
-APPROACH: capture fixture format, its reader with loud hash and absence failures, harness scoring through the Available seat, and a one-step shack generator command
+STEP: 1
+APPROACH: create Ft8Sharp.Deep as a pass-through sibling that delegates to Ft8Sharp and join it to the ladder Available seat as a second identical column
 MOVE: continue
-WHY: step 0 is partial with three must-pass exits untouched and all three reachable by unit effort alone - only the fixture itself waits on Tim and the plan already marks that deferred. The loop test returns NOT FOUND and the one approach on record, unit 243's shell probe and ladder handle, bears no resemblance to it.
-STATE: partial
-DECIDED: two, both under the plan's leave to split or re-scope criteria with the record as the constraint. First, step 0's fourth exit says the harness scores Ft8Sharp.Deep against a fixture, and Ft8Sharp.Deep does not exist until step 1, so the exit is read as the scoring path working through Available(), which today returns Ft8Sharp alone and which the sibling joins with one entry. Second, step 0's title is "there is a scoreboard, and the arbiter can read it" - the step section, PHASE_STATUS.md and PHASE_OUTCOME.md agree and the step list line at PHASE_PLAN.md:53 naming WSJT-X is stale against the phase's own ruling that no WSJT-X exists here. Units 242 and 243 both raised it; neither the arbiter nor the unit edits the plan, so it is decided here and parked. Also added to the format, not in the plan: a provenance field the reader checks, so an example fixture can never be scored against as though it were a real WSJT-X run.
-LICENCE: PHASE_PLAN.md step 0, whose remaining must-pass exits are a capture fixture format naming the capture, its UTC and its SHA-256 with a row per WSJT-X message; a fixture whose capture is absent or whose hash does not match failing loudly rather than passing quietly; and a one-step command Tim runs at the shack. The plan's section "the steps are a hypothesis, not a contract" for the two decisions above. The ruling of 2026-09-04 that Tim generates the fixtures and that no unit may assume WSJT-X on the development machine.
-ACCOMPLISHED: the scoreboard reads real air as well as the ladder. Tim runs one command at the shack over a capture and commits a file; from then on any unit scores Hamlet against what WSJT-X actually returned for that exact audio, message by message, without WSJT-X ever being on the development machine - and if the audio is ever swapped or lost the hash says so loudly instead of the number quietly changing meaning.
-ADVANCES: step 0, exits four, five and seven - the capture fixture format, the loud failure on an absent capture or a mismatched hash, and the one-step shack command. Closing them completes step 0 and satisfies step 1's entry criterion, which is the gate on steps 2, 3, 4 and 6.
+WHY: step 1 is the gate on steps 2, 3, 4 and 6 and no unit has ever attempted it - the one step-1 entry in PHASE_OUTCOME.md is unit 243's run judged against a step it was never aimed at, with APPROACH not recorded. The loop test returns NOT FOUND and no approach on record resembles this one.
+STATE: not started
+DECIDED: three. First, that step 1's entry criterion is satisfied despite PHASE_OUTCOME.md carrying both a done and a partial verdict on step 0, because the partial verdict's only stated reason is that two step-0 exits name Ft8Sharp.Deep, which is the thing step 1 creates - holding step 1 behind that is a circle, and PHASE_PLAN.md forbids a must-pass criterion no unit can reach. Second, that a ProjectReference from tests/Ft8Sharp.Tests to Ft8Sharp.Deep is not a breach of the port's boundary, since the boundary is a property of the library and the breaching direction is the reverse one, which the existing mechanical guard already catches. Third, that the sibling's LICENSE may be the verbatim GPL-3.0 text or a file naming it by SPDX identifier and pointing at the verbatim text at the root, so that no part of the night is spent transcribing licence text. Also logged and not chased, per the ruling that the phase goal is the heavy hand: output.md section 4 raised four items and every one of them states it asks for no ruling.
+LICENCE: PHASE_PLAN.md step 1 and its four must-pass exits - the sibling compiles with its own tests and a mechanical test that Ft8Sharp references nothing outside itself; identical results on the reference recordings and the ladder; both scoreboard columns identical; and a NOTICE citing the published sources before they are implemented. The phase ruling of 2026-09-04 that the seam is split and that Ft8Sharp.Deep is GPL-3.0 carrying its own LICENSE and NOTICE. The plan section that the steps are a hypothesis and not a contract, and its named alternative that a criterion needing something absent is deferred rather than stopped, for the reference clone.
+ACCOMPLISHED: there is now somewhere for every improvement in this phase to live that cannot damage the instrument it is measured against. Ft8Sharp.Deep decodes the same audio as the port and returns the same thing to the decode, so the scoreboard reads two columns that agree today - and from tomorrow every difference between them is attributable to exactly one named change. The port stays MIT and separately publishable, the sibling is GPL-3.0 with Fossorier and Lin and the QEX paper cited before a line of either is written, and the four steps that were gated on this one are open.
+ADVANCES: step 1, all four must-pass exits - the sibling compiling with its own tests and the boundary guard, exact identity with the port on the ladder and the committed capture and the reference recordings, both scoreboard columns identical, and the NOTICE citing its sources before implementing them. Closing step 1 opens steps 2, 3, 4 and 6, which are gated on it and on nothing else.
 END-ARBITER-DECISION
 ```

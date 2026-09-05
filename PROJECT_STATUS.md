@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: DONE
-TASK: 7 of 7
-WORK_INSTRUCTION: 244 - the fixture format, the reader that refuses, and the command Tim runs
-BALL: tim
+STATE: EXECUTING
+TASK: 1 of 7
+WORK_INSTRUCTION: 245 - Ft8Sharp.Deep exists, and the scoreboard grows a second column that reads the same
+BALL: claude
 RULES_AT: HM-DEC-153 (2026-09-04)
 NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-09-04T22:34:00-04:00
-NOTE: Step 0 closed at six of six must-pass exits; the suite came back 578 passed 0 failed 1 skipped in 5 m 12 s, and the only thing now waiting on Tim is one capture run through the shack command whenever he is next at the radio
+UPDATED: 2026-09-04T21:59:00-04:00
+NOTE: The census is taken - every stage of the decode loop is public, and the one thing out of reach is a constructed Ft8CodewordResult, whose factories are internal; baseline came back 578 passed 0 failed 1 skipped in 5 m 8 s and the single skip is the table generator, not a clone skip, so ft8_lib is on this machine
 
 ---
 

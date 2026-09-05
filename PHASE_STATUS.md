@@ -2,8 +2,8 @@ PHASE: Hamlet reads FT8 as well as the best decoder there is, and then reads it 
 PHASE_SET: 2026-09-04
 DESCRIPTION: Close the measured 1.5 dB against the published threshold with a sibling library, then combine repeated transmissions to go past it
 CURRENT_STEP: 0
-WORK_INSTRUCTION: 244 - the fixture format, the reader that refuses, and the command Tim runs
-HEARTBEAT: 2026-09-04 21:17:34
+WORK_INSTRUCTION: 245 - Ft8Sharp.Deep exists, and the scoreboard grows a second column that reads the same
+HEARTBEAT: 2026-09-04 21:53:54
 STEP: 0 | partial | there is a scoreboard, and the arbiter can read it
 STEP: 1 | not started | Ft8Sharp.Deep exists and changes nothing
 STEP: 2 | not started | ordered statistics decoding closes the code gap
