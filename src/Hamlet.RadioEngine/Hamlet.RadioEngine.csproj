@@ -31,6 +31,16 @@
        than in the shell. -->
   <ItemGroup>
     <ProjectReference Include="..\Ft8Sharp\Ft8Sharp.csproj" />
+
+    <!-- **THE SIBLING, ADDED IN UNIT 249, AND IT DOES NOT WEAKEN THE PORT'S
+         BOUNDARY.** What keeps `Ft8Sharp` extractable is that IT references
+         nothing, which its own test enforces by reading its project file and
+         refusing any reference at all. An application referencing the sibling is
+         an arrow pointing the other way and touches none of that.
+
+         `Ft8Sharp.Deep` is GPL-3.0 and Hamlet is headed for GPL-3.0 release
+         (ruled 2026-09-04), so the licences sit correctly. -->
+    <ProjectReference Include="..\Ft8Sharp.Deep\Ft8Sharp.Deep.csproj" />
   </ItemGroup>
 
   <!-- The cited Part 97 privileges data lives in /data as its single source

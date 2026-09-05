@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: WORKING
-TASK: 6 of 7
-WORK_INSTRUCTION: 248 - the candidate re-synced below the grid it was found on
-BALL: claude
-RULES_AT: HM-DEC-153 (2026-09-04)
-NEXT_PASTE: OUTPUT.md -> Claude Web
-UPDATED: 2026-09-05T02:35:36-04:00
-NOTE: Task 7 was not dropped and it returned a null with a precise reason - fine sync underneath combining reads 68 of 306 and 55 only-combined, identical on every column to combining without it, because the hearing the combiner adds is captured from the coarse ratios before the gate and the re-sync produces a second set the hearing never sees. Testing HM-OPEN-075 claim properly needs the hearing captured at the re-synced position, which is a change to step 6 code this unit was told not to touch, so the entry is left open with its claim untested rather than refuted. The write-up and both issue entries are written. Ft8Sharp.Deep.Tests is 69 passed 0 failed 0 skipped against a 51 baseline. Ft8Sharp.Tests is walking for the final total. Earlier: on the grid the 50 per cent crossing moved from the port -19.54 dB to -19.66 dB with fine sync alone, and at the centre of one coarse cell at -19 dB the port reads 6 of 306 where fine sync reads 277, zero wrong on all eighteen rows.
+STATE: EXECUTING
+TASK: 1 of 5
+WORK_INSTRUCTION: 249 - Hamlet decodes through Ft8Sharp.Deep
+BALL: code
+NEXT_PASTE: none
+RULES_AT: HM-DEC-152 (2026-08-31)
+UPDATED: 2026-09-05T11:22:31-04:00
+NOTE: Seam measured: Deep returns the port's own result type, and the waterfall entry point cannot run fine sync at all
 
 ---
 
